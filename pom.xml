@@ -71,6 +71,8 @@
 	    <version>5.1.38</version>
 	</dependency>
 	
+	
+	
 	<!-- oracle -->
 <!-- 	<dependency>
 	    <groupId>com.oracle</groupId>
@@ -183,9 +185,9 @@
 		</resource>
 	</resources>
 	
+	<!-- maven插件 -->
 	<plugins>
 		<plugin>
-		
 			<groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
             <version>1.2.2.RELEASE</version>
@@ -199,11 +201,10 @@
 	                <version>1.2.3.RELEASE</version>
 	            </dependency>
         	</dependencies>
-        	
 	  	</plugin>
 	  	<plugin>  <!-- 验证码编译时报错：com.sun.image.codec.jpeg不存在，增加此插件配置 -->
-		    <groupId>org.apache.maven.plugins</groupId>  
-		    <artifactId>maven-compiler-plugin</artifactId>  
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-compiler-plugin</artifactId>
 		    <version>3.5.1</version>  
 		    <configuration>  
 		        <source>${java.version}</source>  
@@ -214,7 +215,7 @@
 		              <bootclasspath>${java.home}/lib/rt.jar;${java.home}/lib/jce.jar</bootclasspath>  
 		        </compilerArguments>  
 		    </configuration>  
-		</plugin>  
+		</plugin>
 	</plugins>
 	
   </build>
