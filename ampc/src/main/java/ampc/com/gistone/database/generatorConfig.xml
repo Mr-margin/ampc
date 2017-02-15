@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration >
+<!-- mysql -->
+    <classPathEntry location="D:\work\201608\assa\WebRoot\WEB-INF\lib\mysql-connector-java-5.1.7-bin.jar" />
+    <!-- oracle -->
+    <!-- <classPathEntry location="D:\360PhoneInfo\workSpace\Jwhlw\WebRoot\WEB-INF\lib\ojdbc14_g.jar" /> -->
+    <context id="water_context" >
+      <!-- 为了防止生成的代码中有很多注释，比较难看，加入下面的配置控制 -->
+    <commentGenerator>
+      <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+      <property name="suppressAllComments" value="true" />
+      <property name="suppressDate" value="true" />
+    </commentGenerator>
+    <!-- 注释控制完毕 -->
+	<!-- mysql -->
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/assa?useUnicode=true&amp;characterEncoding=utf-8" userId="root" password="root" />
+   <!--  oracle -->
+    <!-- <jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver" connectionURL="jdbc:oracle:thin:@192.168.1.6:1521:ORCL" userId="sjsb" password="sjsb" /> -->
+    
+    <javaModelGenerator targetPackage="ampc.com.gistone.database.model" targetProject="ampc">  
+        <property name="trimStrings" value="true"/>  <!-- 是否对数据库查询结果进行trim操作 -->
+    </javaModelGenerator>
+        
+    <sqlMapGenerator targetPackage="ampc.com.gistone.database.mapper" targetProject="ampc" />
+    
+    <javaClientGenerator targetPackage="ampc.com.gistone.database.inter" targetProject="ampc" type="XMLMAPPER" />
+        
+          
+    <table tableName="APP_VERSION" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> 
+    <!-- <table tableName="da_company" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> 
+    <table tableName="da_current_expenditure" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> 
+     -->
+        
+  </context>
+</generatorConfiguration>
