@@ -163,7 +163,14 @@
 	    <artifactId>spring-boot-starter-websocket</artifactId>
 	    <version>1.4.3.RELEASE</version>
 	</dependency>
-		
+	
+	<!-- nc文件读取操作 -->
+	<dependency>
+	    <groupId>edu.ucar</groupId>
+	    <artifactId>netcdfAll</artifactId>
+	    <version>4.6.5</version>
+	</dependency>
+
   </dependencies>
   
   <build>
