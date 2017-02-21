@@ -1,0 +1,54 @@
+﻿{
+  "ret": 0,
+  "msg": "query mission_list success!",
+  "data": {
+    "page": 2,
+    "total": 12,
+    "rows": [
+      {
+        "missionName": "1月12日减排测试",
+        "missionId":10,
+        "missionDomain": "3-范围3",
+        "missionDomainId": 1,
+        "esNationId": 1,
+        "esNationName": "3-清单3",
+        "addTime": "2017-01-02 18:00:00",
+        "startDate": "2017-01-03",
+        "endDate": "2017-01-04"
+      },
+      {
+        "missionName": "1月12日减排测试",
+        "missionId":10,
+        "missionDomain": "3-范围3",
+        "missionDomainId": 1,
+        "esNationId": 1,
+        "esNationName": "3-清单3",
+        "addTime": "2017-01-02 18:00:00",
+        "startDate": "2017-01-03",
+        "endDate": "2017-01-04"
+      },
+      {
+        "missionName": "1月12日减排测试",
+        "missionId":10,
+        "missionDomain": "3-范围3",
+        "missionDomainId": 1,
+        "esNationId": 1,
+        "esNationName": "3-清单3",
+        "addTime": "2017-01-02 18:00:00",
+        "startDate": "2017-01-03",
+        "endDate": "2017-01-04"
+      },
+      {
+        "missionName": "1月12日减排测试",
+        "missionId":10,
+        "missionDomain": "3-范围3",
+        "missionDomainId": 1,
+        "esNationId": 1,
+        "esNationName": "3-清单3",
+        "addTime": "2017-01-02 18:00:00",
+        "startDate": "2017-01-03",
+        "endDate": "2017-01-04"
+      }
+    ]
+  }
+}
