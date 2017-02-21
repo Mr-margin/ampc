@@ -30,6 +30,13 @@
   <link href="css/main.css" rel="stylesheet" />
 
   <meta name="msapplication-TileColor" content="#3399cc" />
+  <style>
+    iframe{
+      border: 0;
+      width:100%
+    }
+
+  </style>
 </head>
 <body>
 <!-- Start #header -->
@@ -37,7 +44,7 @@
   <div class="container-fluid">
     <div class="navbar">
       <div class="navbar-header">
-        <a class="navbar-brand" href="home.html">
+        <a class="navbar-brand" href="index.html">
           <i class="me-lightning4 text-logo-element animated bounceIn" style=" color:#FFFFFF; "></i><span class="text-logo">环境空气质量</span><span class="text-slogan">动态模拟云平台</span>
         </a>
       </div>
@@ -108,132 +115,220 @@
 <!-- Start #sidebar -->
 <div id="sidebar">
   <!-- Start .sidebar-inner -->
-  <div class="sidebar-inner">
-    <!-- Start #sideNav -->
-    <ul id="sideNav" class="nav nav-pills nav-stacked">
 
-      <li><a href="home.html">首页 <i class="im-screen"></i></a>
-      </li>
-      <li><a href="#">源清单 <i class="st-folder-settings"></i></a>
-      </li>
-      <li><a href="#"> 空气质量预报 <i class="me-cloudy"></i></a>
-        <ul class="nav sub">
-          <li><a href="#"><i class="ec-pencil2"></i> 选项1</a>
-          </li>
-          <li><a href="#"><i class="ec-pencil2"></i> 选项1</a>
-          </li>
-          <li><a href="#"><i class="ec-pencil2"></i> 选项1</a>
-          </li>
-        </ul>
-      </li>
-      <li><a href="#"> 任务管理 <i class="im-calendar"></i></a>
-        <ul class="nav sub">
-          <li><a href="#"><i class="ec-pencil2"></i> 选项1</a>
-          </li>
-          <li><a href="#"><i class="ec-pencil2"></i> 选项1</a>
-          </li>
-        </ul>
-      </li>
-      <li><a href="#"> 效果评估 <i class="im-paste2"></i></a>
-        <ul class="nav sub">
-          <li><a href="#"><i class="fa-bell"></i> 时间顺序</a>
-          </li>
-          <li><a href="#"><i class="fa-bell"></i> 空间分布</a>
-          </li>
-        </ul>
-      </li>
-      <li><a href="#"><i class="im-cabinet"></i> 预案库</a>
-        <ul class="nav sub">
-          <li><a href="#"><i class="ec-pencil2"></i> 选项1</a>
-          </li>
-          <li><a href="#"><i class="ec-pencil2"></i> 选项1</a>
-          </li>
-          <li><a style="height:100%;">
+  <div class="panel-group accordion" id="accordion1">
+    <div class="panel panel-default" id="spr_3">
+      <div class="panel-heading">
+        <h5 class="panel-title">
+          <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#sy">首页 <i class="im-home2"></i></a>
+        </h5>
+      </div>
+      <div id="sy" class="panel-collapse collapse in" style="height: auto;">
+        <div class="panel-body totalH">
 
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default" id="spr_4">
+      <div class="panel-heading">
+        <h5 class="panel-title">
+          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#yqd">源清单 <i class="st-align-justify"></i></a>
+        </h5>
+      </div>
+      <div id="yqd" class="panel-collapse collapse" style="height: 0px;">
+        <div class="panel-body totalH">
 
-            <div class="col-lg-14">
-              <!-- col-lg-2 start here -->
-              <div class="panel panel-default">
-                <!-- Start .panel -->
-                <div class="panel-heading" style=" background-color:#5D9CFF; padding-left:10px; padding-right:10px; height:35px;">
-                  <h4 class="panel-title" style=" color:#FFFFFF; padding-top:10px;">任务查找</h4>
-                </div>
-                <div class="panel-body" style="padding:10px;">
-                  <div class="col-lg-13 col-md-13">
-                    <div class="row">
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default" id="spr_5">
+      <div class="panel-heading">
+        <h5 class="panel-title">
+          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#ypg">预评估 <i class="st-folder-settings"></i></a>
+        </h5>
+      </div>
+      <div id="ypg" class="panel-collapse collapse" style="height: 0px;">
+        <div class="panel-body totalH">
 
-                      <div class="col-lg-12 col-md-12">
-                        <div class="input-group">
-                          <input type="text" class="form-control">
-                                                            <span class="input-group-btn">
-                                                <button class="btn btn-primary" type="button">查找</button>
-                                            </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default" id="spr_6">
+      <div class="panel-heading">
+        <h5 class="panel-title">
+          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#hpg">后评估 <i class="im-paste2"></i></a>
+        </h5>
+      </div>
+      <div id="hpg" class="panel-collapse collapse" style="height: 0px;">
+        <div class="panel-body totalH">
 
-                <div class="panel-heading" style=" background-color:#5D9CFF; padding-left:10px; padding-right:10px; height:35px;">
-                  <h4 class="panel-title" style=" color:#FFFFFF; padding-top:10px;">情景查找</h4>
-                </div>
-                <div class="panel-body" style="padding:10px;">
-                  <div class="col-lg-13 col-md-13">
-                    <div class="row">
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default" id="spr_7">
+      <div class="panel-heading">
+        <h5 class="panel-title">
+          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#kqzlyb">空气质量预报 <i class="me-cloudy"></i></a>
+        </h5>
+      </div>
+      <div id="kqzlyb" class="panel-collapse collapse" style="height: 0px;">
+        <div class="panel-body totalH">
 
-                      <div class="col-lg-12 col-md-12">
-                        <div class="input-group">
-                          <input type="text" class="form-control">
-                                                            <span class="input-group-btn">
-                                                <button class="btn btn-primary" type="button">搜索</button>
-                                            </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="panel-heading" style=" background-color:#5D9CFF; padding-left:10px; padding-right:10px; height:35px;">
-                  <h4 class="panel-title" style=" color:#FFFFFF; padding-top:10px;">时间查找</h4>
-                </div>
-                <div class="panel-body" style="padding:10px;">
-                  <div class="col-lg-14 col-md-14">
-                    <div class="row">
-                      <div class="col-lg-12 col-md-12">
-                        <div class="input-group">
-                          <input class="form-control" id="daterangepicker">
-                          <span class="input-group-addon"><i class="fa-calendar"></i></span>
-                        </div>
-                      </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default" id="spr_8">
+      <div class="panel-heading">
+        <h5 class="panel-title">
+          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#sjkj">数据空间 <i class="im-storage"></i></a>
+        </h5>
+      </div>
+      <div id="sjkj" class="panel-collapse collapse" style="height: 0px;">
+        <div class="panel-body totalH">
 
-                    </div>
-                  </div>
-                </div>
-                <div class="panel-body">
-                  <button type="submit" class="btn btn-primary start">
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default" id="spr_9">
+      <div class="panel-heading">
+        <h5 class="panel-title">
+          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#hsz">回收站 <i class="ec-trashcan"></i></a>
+        </h5>
+      </div>
+      <div id="hsz" class="panel-collapse collapse" style="height: 0px;">
+        <!--<div class="panel-body">-->
 
-                    <span style="font-size:14px;">确&nbsp;定</span>
-                  </button>
-                  <button type="reset" class="btn btn-warning cancel">
-
-                    <span style="font-size:14px;">取&nbsp;消</span>
-                  </button>
-                </div>
-              </div>
-              <!-- End .panel -->
-            </div>
-
-          </a></li>
-        </ul>
-      </li>
-      <li><a href="#"><i class="im-storage"></i> 数据空间</a>
-      </li>
-      <li><a href="#"><i class="ec-archive"></i> 回收站</a>
-      </li>
-
-    </ul>
-    <!-- End #sideNav -->
-
+        <!--</div>-->
+      </div>
+    </div>
   </div>
+
+  <!--<div class="sidebar-inner">
+      &lt;!&ndash; Start #sideNav &ndash;&gt;
+      <ul id="sideNav" class="nav nav-pills nav-stacked">
+
+          <li><a href="index.html">首页 <i class="im-screen"></i></a>
+          </li>
+          <li><a href="1.html">源清单 <i class="st-folder-settings"></i></a>
+          </li>
+          <li><a href="#"> 空气质量预报 <i class="me-cloudy"></i></a>
+              <ul class="nav sub">
+                  <li><a href="#" onclick="html()"><i class="ec-pencil2"></i> 选项1</a>
+                  </li>
+                  <li><a href="#"><i class="ec-pencil2"></i> 选项1</a>
+                  </li>
+                  <li><a href="#"><i class="ec-pencil2"></i> 选项1</a>
+                  </li>
+              </ul>
+          </li>
+          <li><a href="#"> 任务管理 <i class="im-calendar"></i></a>
+              <ul class="nav sub">
+                  <li><a href="#"><i class="ec-pencil2"></i> 选项1</a>
+                  </li>
+                  <li><a href="#"><i class="ec-pencil2"></i> 选项1</a>
+                  </li>
+              </ul>
+          </li>
+          <li><a href="#"> 效果评估 <i class="im-paste2"></i></a>
+              <ul class="nav sub">
+                  <li><a href=""><i class="fa-bell"></i> 时间顺序</a>
+                  </li>
+                  <li><a href=""><i class="fa-bell"></i> 空间分布</a>
+                  </li>
+              </ul>
+          </li>
+          <li><a href="#"><i class="im-cabinet"></i> 预案库</a>
+              <ul class="nav sub">
+                  <li><a href="#"><i class="ec-pencil2"></i> 选项1</a>
+                  </li>
+                  <li><a href="#"><i class="ec-pencil2"></i> 选项1</a>
+                  </li>
+                  <li><a style="height:100%;">
+
+
+                  <div class="col-lg-14">
+                  &lt;!&ndash; col-lg-2 start here &ndash;&gt;
+                  <div class="panel panel-default">
+                      &lt;!&ndash; Start .panel &ndash;&gt;
+                      <div class="panel-heading" style=" background-color:#5D9CFF; padding-left:10px; padding-right:10px; height:35px;">
+                          <h4 class="panel-title" style=" color:#FFFFFF; padding-top:10px;">任务查找</h4>
+                      </div>
+                      <div class="panel-body" style="padding:10px;">
+                       <div class="col-lg-13 col-md-13">
+                                      <div class="row">
+
+                                          <div class="col-lg-12 col-md-12">
+                                              <div class="input-group">
+                                                  <input type="text" class="form-control">
+                                                  <span class="input-group-btn">
+                                      <button class="btn btn-primary" type="button">查找</button>
+                                  </span>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                      </div>
+
+                      <div class="panel-heading" style=" background-color:#5D9CFF; padding-left:10px; padding-right:10px; height:35px;">
+                          <h4 class="panel-title" style=" color:#FFFFFF; padding-top:10px;">情景查找</h4>
+                      </div>
+                      <div class="panel-body" style="padding:10px;">
+                        <div class="col-lg-13 col-md-13">
+                                      <div class="row">
+
+                                          <div class="col-lg-12 col-md-12">
+                                              <div class="input-group">
+                                                  <input type="text" class="form-control">
+                                                  <span class="input-group-btn">
+                                      <button class="btn btn-primary" type="button">搜索</button>
+                                  </span>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                      </div>
+                      <div class="panel-heading" style=" background-color:#5D9CFF; padding-left:10px; padding-right:10px; height:35px;">
+                          <h4 class="panel-title" style=" color:#FFFFFF; padding-top:10px;">时间查找</h4>
+                      </div>
+                      <div class="panel-body" style="padding:10px;">
+                          <div class="col-lg-14 col-md-14">
+                                      <div class="row">
+                                          <div class="col-lg-12 col-md-12">
+                                              <div class="input-group">
+                                                  <input class="form-control" id="daterangepicker">
+                                                  <span class="input-group-addon"><i class="fa-calendar"></i></span>
+                                              </div>
+                                          </div>
+
+                                      </div>
+                                  </div>
+                      </div>
+                      <div class="panel-body">
+                      <button type="submit" class="btn btn-primary start">
+
+                                  <span style="font-size:14px;">确&nbsp;定</span>
+                              </button>
+                              <button type="reset" class="btn btn-warning cancel">
+
+                                  <span style="font-size:14px;">取&nbsp;消</span>
+                              </button>
+                      </div>
+                  </div>
+                  &lt;!&ndash; End .panel &ndash;&gt;
+              </div>
+
+                  </a></li>
+              </ul>
+          </li>
+          <li><a href="#"><i class="im-storage"></i> 数据空间</a>
+          </li>
+          <li><a href="#"><i class="ec-archive"></i> 回收站</a>
+          </li>
+
+      </ul>
+      &lt;!&ndash; End #sideNav &ndash;&gt;
+
+  </div>-->
   <!-- End .sidebar-inner -->
 </div>
 <!-- Start #content -->
@@ -261,7 +356,6 @@
       <!-- 内容所在区域 -->
       <div class="row">
         <!-- 页面内容 -->
-        <iframe src="index.html" style="width:100%;"></iframe>
       </div>
       <!-- 内容所在区域结束 -->
       <!-- End .row -->
@@ -305,7 +399,7 @@
 <script src="js/plugins/misc/highlight/highlight.pack.js"></script>
 <script src="js/plugins/misc/countTo/jquery.countTo.js"></script>
 <script src="js/jquery.sprFlat.js"></script>
-<script src="js/app.js"></script>
+<script src="home.js"></script>
 
 </body>
 </html>
