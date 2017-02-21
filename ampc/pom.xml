@@ -165,11 +165,11 @@
 	</dependency>
 	
 	<!-- nc文件读取操作 -->
-	<dependency>
+ 	<!-- <dependency>
 	    <groupId>edu.ucar</groupId>
 	    <artifactId>netcdfAll</artifactId>
 	    <version>4.6.5</version>
-	</dependency>
+	</dependency>  -->
 
   </dependencies>
   
