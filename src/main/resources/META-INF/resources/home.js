@@ -18,24 +18,22 @@ var isAndroid = (nua.indexOf('Mozilla/5.0') > -1 && nua.indexOf('Android ') > -1
 if (isAndroid) {
   $('select.form-control').removeClass('form-control').css('width', '100%')
 }
+var llqHeight = document.documentElement.clientHeight;
+var cssStyle = '#sidebar .panel-body{overflow:auto;border-top:0;border-bottom:0;padding:0;height: '+ (llqHeight-400) +'px;} ';
+$('head').append($('<style></style>').html(cssStyle));
 
 //doc ready function
 $(document).ready(function() {
  	//Disable certain links
-    $('#sideNav a[href^=#]').click(function (e) {
+    $('#sidebar a').click(function (e) {
         e.preventDefault();
-        $('#sideNav .active').removeClass('active');
-        $(e.target).addClass('active');
-        if(!$(e.target).hasClass('expand') && !$(e.target).parent().parent().parent().children().hasClass('expand')){
-            sprObject.collapseSideBarNav();
-        }
     });
 
     //------------- Highlight code  -------------//
     hljs.initHighlightingOnLoad();
 
  	//------------- Init our plugin -------------//
- 	$('body').sprFlat({
+    $('body').sprFlat({
         //main color scheme for template
         //be sure to be same as colors on main.css or custom-variables.less
         colors : {
@@ -126,7 +124,7 @@ $(document).ready(function() {
             animation: true, //animation effect for dropdown
             openEffect: 'fadeInDown',//open effect for menu see http://daneden.github.io/animate.css/
         }
- 	});
+    });
 
     //get settings object
     var sprObject = $('body').data('sprFlat');
