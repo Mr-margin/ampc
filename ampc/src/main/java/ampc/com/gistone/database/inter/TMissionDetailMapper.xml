@@ -24,6 +24,13 @@
     from T_MISSION_DETAIL
     where MISSION_ID = #{missionId,jdbcType=DECIMAL}
   </select>
+  
+  <select id="selectByPrimaryAll" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_MISSION_DETAIL
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from T_MISSION_DETAIL
     where MISSION_ID = #{missionId,jdbcType=DECIMAL}
