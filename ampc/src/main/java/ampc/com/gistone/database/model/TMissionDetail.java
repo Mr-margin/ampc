@@ -1,28 +1,34 @@
 package ampc.com.gistone.database.model;
 
 import java.util.Date;
-
+/**
+ * 任务详情实体类
+ * @author WangShanxi
+ * @version v.0.1
+ * @date 2017年2月23日
+ */
 public class TMissionDetail {
-    private Long id;
-
+	//任务Id
+    private Long id; 
+    //任务名称
     private Object missionName;
-
+    //模拟范围ID
     private Long missionDomainId;
-
+    //清单ID
     private Long esCouplingId;
-
+    //任务开始时间
     private Date missionStartDate;
-
+    //任务结束时间
     private Date missionEndDate;
-
+    //任务添加时间
     private Date addTime;
-
+    //任务修改时间
     private Date updateTime;
-
+    //用户ID
     private Long userId;
-
+    //是否有效  1有效 0无效
     private String isEffective;
-
+    //删除时间
     private Date deleteTime;
 
     public Long getId() {
