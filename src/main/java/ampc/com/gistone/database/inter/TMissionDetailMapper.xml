@@ -14,6 +14,59 @@
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
     <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
   </resultMap>
+  <!-- 返回任务查询列表的数据 -->
+  <resultMap id="missionListMap" type="hashMap" >
+    <id column="MISSION_ID" property="missionId" jdbcType="DECIMAL" />
+    <result column="MISSION_NAME" property="missionName" jdbcType="OTHER" />
+    <result column="MISSION_DOMAIN_ID" property="missionDomainId" jdbcType="DECIMAL" />
+    <result column="V1" property="v1" jdbcType="VARCHAR" />
+    <result column="ES_COUPLING_ID" property="esCouplingId" jdbcType="DECIMAL" />
+    <result column="ES_COUPLING_NAME" property="esCouplingName" jdbcType="OTHER" />
+    <result column="MISSION_START_DATE" property="missionStartDate" jdbcType="DATE" />
+    <result column="MISSION_END_DATE" property="missionEndDate" jdbcType="DATE" />
+    <result column="MISSION_ADD_TIME" property="missionAddTime" jdbcType="DATE" />
+  </resultMap>
+  <!-- 返回任务查询列表的列 -->
+  <sql id="mission_Column_List" >
+  	MISSION_ID,MISSION_NAME,MISSION_DOMAIN_ID,V1,MISS.ES_COUPLING_ID,
+   ES_COUPLING_NAME,MISSION_ADD_TIME,MISSION_START_DATE,MISSION_END_DATE
+  </sql>
+  
+  
+  <!-- 查询所有记录分页 -->
+  <select id="selectAll" parameterType="hashMap" resultMap="missionListMap" >
+   	SELECT * FROM (
+   	   SELECT T.*,ROWNUM FROM (
+         SELECT <include refid="mission_Column_List"/> FROM T_MISSION_DETAIL  MISS 
+		   INNER JOIN T_ES_COUPLING  COUP ON MISS.ES_COUPLING_ID= COUP.ES_COUPLING_ID
+           INNER JOIN T_DOMAIN_MISSION DOMA ON MISS.MISSION_DOMAIN_ID=DOMA.DOMAIN_ID
+			  WHERE MISS.IS_EFFECTIVE='1'
+			  ORDER BY MISS.MISSION_ID DESC
+	      ) T WHERE ROWNUM>=#{pageNum,jdbcType=OTHER}
+	   ) 
+	  WHERE ROWNUM &lt;=#{pageSize,jdbcType=OTHER}
+  </select>
+  <!-- 根据任务名查询分页 -->
+  <select id="selectByMissionName" parameterType="hashMap" resultMap="missionListMap" >
+   	SELECT * FROM (
+   	   SELECT T.*,ROWNUM FROM (
+         SELECT <include refid="mission_Column_List"/> FROM T_MISSION_DETAIL  MISS 
+		   INNER JOIN T_ES_COUPLING  COUP ON MISS.ES_COUPLING_ID= COUP.ES_COUPLING_ID
+           INNER JOIN T_DOMAIN_MISSION DOMA ON MISS.MISSION_DOMAIN_ID=DOMA.DOMAIN_ID
+			  WHERE MISS.IS_EFFECTIVE='1'
+			  ORDER BY MISS.MISSION_ID DESC
+	      ) T WHERE ROWNUM>=#{pageNum,jdbcType=OTHER}
+	   ) 
+	  WHERE ROWNUM &lt;=#{pageSize,jdbcType=OTHER}  AND MISSION_NAME LIKE #{missionName,jdbcType=OTHER}
+  </select>
+  <!--查询全部任务总条数  -->
+  <select id="selectCount" >
+  	 SELECT COUNT(*) FROM T_MISSION_DETAIL WHERE IS_EFFECTIVE='1' AND MISSION_NAME LIKE #{missionName,jdbcType=OTHER}
+  </select>
+  <!--查询根据任务名称查询总条数  -->
+  <select id="selectByMissionNameCount" parameterType="java.lang.String" resultType="int">
+  	SELECT COUNT(*) FROM T_MISSION_DETAIL WHERE IS_EFFECTIVE='1'
+  </select>
   <sql id="Base_Column_List" >
     MISSION_ID, MISSION_NAME, MISSION_DOMAIN_ID, ES_COUPLING_ID, MISSION_START_DATE, 
     MISSION_END_DATE, MISSION_ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME
@@ -24,13 +77,6 @@
     from T_MISSION_DETAIL
     where MISSION_ID = #{missionId,jdbcType=DECIMAL}
   </select>
-  
-  <select id="selectByPrimaryAll" resultMap="BaseResultMap" >
-    select 
-    <include refid="Base_Column_List" />
-    from T_MISSION_DETAIL
-  </select>
-  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from T_MISSION_DETAIL
     where MISSION_ID = #{missionId,jdbcType=DECIMAL}

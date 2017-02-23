@@ -1,32 +1,38 @@
 package ampc.com.gistone.database.model;
 
 import java.util.Date;
-
+/**
+ * 耦合后清单实体类
+ * @author WangShanxi
+ * @version v.0.1
+ * @date 2017年2月23日
+ */
 public class TEsCoupling {
+	//耦合后清单ID
     private Long esCouplingId;
-
+    //耦合后清单名称
     private Object esCouplingName;
-
+    //耦合后清单详细
     private Object esCouplingDesc;
-
+    //耦合后清单年份
     private Short esCouplingYear;
-
+    //全国清单ID
     private Long esCouplingNationId;
-
+    //本地清单ID
     private Long esCouplingNativeId;
-
+    //与云平台关联ID
     private Long esCoupingRelationId;
-
+    //创建时间
     private Date addTime;
-
+    //更新时间
     private Date updateTime;
-
+    //用户ID
     private Long userId;
-
+    //是否有效 0无效 1有效
     private String isEffective;
-
+    //删除时间
     private Date deleteTime;
-
+    //使用历史
     private String historyCoupling;
 
     public Long getEsCouplingId() {

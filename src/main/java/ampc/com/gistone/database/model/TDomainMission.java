@@ -1,24 +1,29 @@
 package ampc.com.gistone.database.model;
 
 import java.util.Date;
-
+/**
+ * 任务模拟范围实体类
+ * @author WangShanxi
+ * @version v.0.1
+ * @date 2017年2月23日
+ */
 public class TDomainMission {
+	//范围ID
     private Long domainId;
-
+    //范围名称
     private Object domainName;
-
+    //创建时间
     private Date addTime;
-
+    //修改时间
     private Date updateTime;
-
+    //用户ID
     private Long userId;
-
+    //是否有效 0无效 1有效
     private String idEffective;
-
+    //删除时间
     private Date deleteTime;
-
+    //范围值
     private String v1;
-
     private String v2;
 
     private String v3;
