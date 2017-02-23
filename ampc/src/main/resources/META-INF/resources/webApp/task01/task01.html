@@ -3,116 +3,202 @@
 <head lang="en">
   <meta charset="UTF-8">
   <title></title>
-  <link href="../../css/icons.css" rel="stylesheet" />
-  <link href="../../css/plugins/sprflat-theme/jquery.ui.all.css" rel="stylesheet" />
-  <link href="../../css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../../css/icons.css" rel="stylesheet"/>
+  <link href="../../css/plugins/sprflat-theme/jquery.ui.all.css" rel="stylesheet"/>
+  <link href="../../css/bootstrap.min.css" rel="stylesheet"/>
   <!--<link rel="stylesheet" href="../../css/plugins/iCheck/custom.css"/>-->
   <link rel="stylesheet" href="../../js/plugins/forms/icheck/flat/_all.css"/>
   <link rel="stylesheet" href="../../css/plugins/bootstrap-table/bootstrap-table.min.css"/>
   <link rel="stylesheet" href="../../css/plugins/sweetalert/sweetalert.css"/>
-  <link href="../../css/main.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.css"/>
+  <link href="../../css/main.css" rel="stylesheet"/>
   <style>
-    #rwToolbar,#qjToolbar{
+    #rwToolbar, #qjToolbar {
       margin: 10px;
+    }
+
+    .lh29 {
+      line-height: 29px;
     }
   </style>
 </head>
 <body>
 
-  <div class="content">
-    <div class="row">
-      <div class="col-md-6 pr0">
-        <div class="panel panel-default plain ">
-          <!-- Start .panel -->
-          <div class="panel-heading white-bg" style="border: none">
-            <div class="col-md-6">
-              <h4 class="panel-title">任务列表<i class="im-file3"></i></h4>
-            </div>
-          </div>
-          <div class="panel-body" style="padding:0px;border-right: none">
-            <div id="rwToolbar" class="btn-group">
-              <div class="col-md-6">
-                <button type="button" class="btn btn-default">
-                  <i class="glyphicon glyphicon-plus"></i> 创建
-                </button>
-                <button disabled type="button" class="btn btn-default rwDel" onclick="deleteFun('rw')">
-                  <i class="glyphicon glyphicon-trash"></i> 删除
-                </button>
-              </div>
-              <div class="input-group col-md-4 col-md-offset-8">
-                <input type="text" class="form-control rw " placeholder="输入任务名称或字段">
-                <span class="input-group-btn">
-                  <button class="btn btn-default " type="button" onclick="search('rw')"><i class="ec-search"></i></button>
-                </span>
-              </div><!-- /input-group -->
-            </div>
-            <table id="rwTable">
-              <thead>
-                <tr class="info">
-                  <th data-checkbox="true">   </th>
-                  <th data-formatter="rwName">任务名称</th>
-                  <th data-formatter="rwDomain">模拟范围</th>
-                  <th data-field="esNationName">清单</th>
-                </tr>
-              </thead>
-            </table>
+<div class="content">
+  <div class="row">
+    <div class="col-md-6 pr0">
+      <div class="panel panel-default plain ">
+        <!-- Start .panel -->
+        <div class="panel-heading white-bg" style="border: none">
+          <div class="col-md-6">
+            <h4 class="panel-title">任务列表<i class="im-file3"></i></h4>
           </div>
         </div>
-      </div>
-      <div class="col-md-6 pl0">
-        <div class="panel panel-default plain " >
-          <!-- Start .panel -->
-          <div class="panel-heading white-bg" style="border: none">
+        <div class="panel-body" style="padding:0px;border-right: none">
+          <div id="rwToolbar" class="btn-group">
             <div class="col-md-6">
-              <h4 class="panel-title">情景列表<i class="im-file3"></i></h4>
+              <button type="button" class="btn btn-default" data-whatever="创建新任务" data-type="rw" data-toggle="modal"
+                      data-target="#createModal">
+                <i class="glyphicon glyphicon-plus"></i> 创建
+              </button>
+              <button disabled type="button" class="btn btn-default rwDel" onclick="deleteFun('rw')">
+                <i class="glyphicon glyphicon-trash"></i> 删除
+              </button>
             </div>
-          </div>
-          <div class="panel-body" style="padding:0px;border-left: none; ">
-            <div id="qjToolbar" class="btn-group">
-              <div class="col-md-6">
-                <button type="button" class="btn btn-default">
-                  <i class="glyphicon glyphicon-plus"></i> 创建
-                </button>
-                <button disabled type="button" class="btn btn-default qjDel" onclick="deleteFun('qj')">
-                  <i class="glyphicon glyphicon-trash"></i> 删除
-                </button>
-              </div>
-              <div class="input-group col-md-4 col-md-offset-8">
-                <input type="text" class="form-control qj " placeholder="输入情景名称或字段">
+            <div class="input-group col-md-4 col-md-offset-8">
+              <input type="text" class="form-control rw " placeholder="输入任务名称或字段">
                 <span class="input-group-btn">
-                  <button class="btn btn-default " type="button" onclick="search('qj')"><i class="ec-search"></i></button>
+                  <button class="btn btn-default " type="button" onclick="search('rw')"><i class="ec-search"></i>
+                  </button>
                 </span>
-              </div><!-- /input-group -->
             </div>
-            <table id="qjTable">
-              <thead>
-                <tr>
-                  <th data-checkbox="true">   </th>
-                  <th data-formatter="qjName">情景名称</th>
-                  <th data-formatter="qjOrder">操作</th>
-                  <th data-field="scenarinoStatus">情景状态</th>
-                  <th data-formatter="qjEffectEvaluation"></th>
-                </tr>
-              </thead>
-            </table>
+            <!-- /input-group -->
           </div>
+          <table id="rwTable">
+            <thead>
+            <tr class="info">
+              <th data-checkbox="true"></th>
+              <th data-formatter="rwName">任务名称</th>
+              <th data-formatter="rwDomain">模拟范围</th>
+              <th data-field="esCouplingName">清单</th>
+            </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 pl0">
+      <div class="panel panel-default plain ">
+        <!-- Start .panel -->
+        <div class="panel-heading white-bg" style="border: none">
+          <div class="col-md-6">
+            <h4 class="panel-title">情景列表<i class="im-file3"></i></h4>
+          </div>
+        </div>
+        <div class="panel-body" style="padding:0px;border-left: none; ">
+          <div id="qjToolbar" class="btn-group">
+            <div class="col-md-6">
+              <button type="button" class="btn btn-default" data-whatever="创建新情景" data-type="qj" data-toggle="modal"
+                      data-target="#createModal">
+                <i class="glyphicon glyphicon-plus"></i> 创建
+              </button>
+              <button disabled type="button" class="btn btn-default qjDel" onclick="deleteFun('qj')">
+                <i class="glyphicon glyphicon-trash"></i> 删除
+              </button>
+            </div>
+            <div class="input-group col-md-4 col-md-offset-8">
+              <input type="text" class="form-control qj " placeholder="输入情景名称或字段">
+                <span class="input-group-btn">
+                  <button class="btn btn-default " type="button" onclick="search('qj')"><i class="ec-search"></i>
+                  </button>
+                </span>
+            </div>
+            <!-- /input-group -->
+          </div>
+          <table id="qjTable">
+            <thead>
+            <tr>
+              <th data-checkbox="true"></th>
+              <th data-formatter="qjName">情景名称</th>
+              <th data-formatter="qjOrder">操作</th>
+              <th data-field="scenarinoStatus">情景状态</th>
+              <th data-formatter="qjEffectEvaluation"></th>
+            </tr>
+            </thead>
+          </table>
         </div>
       </div>
     </div>
   </div>
-  <ul id="RWcontext-menu" class="dropdown-menu">
-    <li data-item="rename"><a href="#">修改名称</a></li>
-    <!--<li data-item="delete"><a>Delete</a></li>-->
-    <!--<li data-item="action1"><a>Action Here</a></li>-->
-    <!--<li data-item="action2"><a>And Action Here</a></li>-->
-  </ul>
-  <ul id="QJcontext-menu" class="dropdown-menu">
-    <li data-item="rename"><a href="#">修改名称</a></li>
-    <!--<li data-item="delete"><a>Delete</a></li>-->
-    <!--<li data-item="action1"><a>Action Here</a></li>-->
-    <!--<li data-item="action2"><a>And Action Here</a></li>-->
-  </ul>
+</div>
+<ul id="RWcontext-menu" class="dropdown-menu">
+  <li data-item="rename"><a href="#">修改名称</a></li>
+  <!--<li data-item="delete"><a>Delete</a></li>-->
+  <!--<li data-item="action1"><a>Action Here</a></li>-->
+  <!--<li data-item="action2"><a>And Action Here</a></li>-->
+</ul>
+<ul id="QJcontext-menu" class="dropdown-menu">
+  <li data-item="rename"><a href="#">修改名称</a></li>
+  <!--<li data-item="delete"><a>Delete</a></li>-->
+  <!--<li data-item="action1"><a>Action Here</a></li>-->
+  <!--<li data-item="action2"><a>And Action Here</a></li>-->
+</ul>
 
+
+<!-- Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="createTitle"></h4>
+      </div>
+      <div class="modal-body">
+        <div class="createRw">
+          <div class="form-group mt10 clearfix">
+            <label for="rwName" class="col-md-2 control-label lh29">任务名称</label>
+
+            <div class="col-md-10">
+              <input type="text" class="form-control" id="rwName" placeholder="任务名称">
+            </div>
+          </div>
+          <div class="form-group mt10 clearfix">
+            <label for="mnfw" class="col-md-2 control-label lh29">模拟范围</label>
+
+            <div class="col-md-10">
+              <select id="mnfw" class="form-control">
+                <option value="1">1</option>
+                <!--<option>2</option>-->
+                <!--<option>3</option>-->
+                <!--<option>4</option>-->
+                <!--<option>5</option>-->
+              </select>
+            </div>
+            <div class="col-md-10 col-md-offset-2">
+              <button class="btn btn-primary mt10 mnfwTopSelect">高级</button>
+            </div>
+          </div>
+          <div class="form-group mt10 clearfix">
+            <label for="qd" class="col-md-2 control-label lh29">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单</label>
+
+            <div class="col-md-10">
+              <select id="qd" class="form-control">
+                <option value="1">1</option>
+                <!--<option>2</option>-->
+                <!--<option>3</option>-->
+                <!--<option>4</option>-->
+                <!--<option>5</option>-->
+              </select>
+            </div>
+          </div>
+          <div class="form-group mt10 clearfix">
+            <label for="rwStartDate" class="col-md-2 control-label lh29">开始日期</label>
+
+            <div class="col-md-10">
+              <input type="text" class="form-control" id="rwStartDate" readonly placeholder="请选择日期···">
+            </div>
+          </div>
+          <div class="form-group mt10 clearfix">
+            <label for="rwEndDate" class="col-md-2 control-label lh29">结束日期</label>
+
+            <div class="col-md-10">
+              <input type="text" class="form-control" id="rwEndDate" readonly placeholder="请选择日期···">
+            </div>
+          </div>
+        </div>
+        <div class="createQj">
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary createRun" onclick="create(this,true)">创建并执行基准模拟</button>
+        <button type="button" class="btn btn-primary create" onclick="create(this)">创建</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 </body>
@@ -126,17 +212,22 @@
 <script src="../../js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
 <script src="../../js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
 <script src="../../js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="../../js/plugins/core/moment/moment.js"></script>
+<script src="../../js/plugins/forms/datetimepicker/bootstrap-datetimepicker.js"></script>
+<script src="../../js/plugins/forms/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
 
 <script src="../../js/plugins/sweetalert/sweetalert.min.js"></script>
 <script src="../../js/bootstrap-table-contextmenu.js.js"></script>
+<script src="../../BackstageIP.js"></script>
 <script>
-  var userId = 111;
+  //  console.log(BackstageIP);
+  var userId = 1;
   var selectRW;
-  var delRWid={},delQJid={};
-  var parameterPar = {total:'',data:{}};
-  function refreshIcheck(){
+  var delRWid = {}, delQJid = {};
+  var parameterPar = {total: '', data: {}};
+  function refreshIcheck() {
     var callbacks_list = $('.rwTable ul');
-    $('body input').on('ifCreated ifClicked ifChanged ifChecked ifUnchecked ifDisabled ifEnabled ifDestroyed', function(event){
+    $('body input').on('ifCreated ifClicked ifChanged ifChecked ifUnchecked ifDisabled ifEnabled ifDestroyed', function (event) {
       callbacks_list.prepend('<li><span>#' + this.id + '</span> is ' + event.type.replace('if', '').toLowerCase() + '</li>');
     }).iCheck({
       checkboxClass: 'icheckbox_flat-aero',
@@ -147,75 +238,78 @@
 
 
   /*看名字*/
-  function ajaxPost(url,parameter){
+  function ajaxPost(url, parameter) {
     parameterPar.data = parameter;
     var p = JSON.stringify(parameterPar);
-    return $.ajax(url,{
-      contentType:"application/json",
+    return $.ajax(BackstageIP + url, {
+      contentType: "application/json",
       type: "POST",
-      async:true,
+      async: true,
       dataType: 'JSON',
       data: p
     })
   }
 
-  $(document).ready(function(){
+  $(document).ready(function () {
     initialize();
+    initDate();
   });
 
-  function initialize(){
+  function initialize() {
     initRwTable();
   }
 
-  function initRwTable(){
+  function initRwTable() {
     $('#rwTable').bootstrapTable({
-      method : 'POST',
-      url : 'rw.json',
-      dataType : "json",
-      contentType : "application/json", // 请求远程数据的内容类型。
-      toobar:'#rwToolbar',
-      iconSize : "outline",
-      search:false,
-      searchAlign:'right',
+      method: 'POST',
+      url: 'rw.json',
+//      url : BackstageIP+'/mission/get_mission_list',
+//      url : 'http://localhost:8097/mission/get_mission_list',
+      dataType: "json",
+      contentType: "application/json", // 请求远程数据的内容类型。
+      toobar: '#rwToolbar',
+      iconSize: "outline",
+      search: false,
+      searchAlign: 'right',
 //      height:500,
-      maintainSelected:true,
-      clickToSelect : false,// 点击选中行
-      pagination : true, // 在表格底部显示分页工具栏
-      pageSize : 10, // 页面大小
-      pageNumber : 1, // 页数
-      pageList : [10],
-      striped : true, // 使表格带有条纹
-      sidePagination : "server",// 表格分页的位置 client||server
-      rowStyle:function(row,index){
-        if(index == 0){
+      maintainSelected: true,
+      clickToSelect: false,// 点击选中行
+      pagination: true, // 在表格底部显示分页工具栏
+      pageSize: 1, // 页面大小
+      pageNumber: 1, // 页数
+      pageList: [10],
+      striped: true, // 使表格带有条纹
+      sidePagination: "server",// 表格分页的位置 client||server
+      rowStyle: function (row, index) {
+        if (index == 0) {
           return {
             classes: 'info'
           };
         }
         return {};
       },
-      queryParams : function formPm(m){
+      queryParams: function formPm(m) {
         var json = {
           "token": "",
           "data": {
-            "missionName": m.searchText||'',
+            "missionName": m.searchText || '',
             "pageNum": m.pageNumber,
             "pageSize": m.pageSize,
-            "sort": null,
+            "sort": '',
             "userId": 1
           }
         };
 
         return JSON.stringify(json);
       },
-      responseHandler:function(res){
+      responseHandler: function (res) {
         selectRW = res.data.rows[0];
         initQjTable();
         return res.data
       },
-      queryParamsType : "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
-      silent : true, // 刷新事件必须设置
-      onClickRow : function(row, $element) {
+      queryParamsType: "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
+      silent: true, // 刷新事件必须设置
+      onClickRow: function (row, $element) {
         $('.qj').val('');
         selectRW = row;
         $('#qjTable').bootstrapTable('destroy');
@@ -224,59 +318,59 @@
         $($element).addClass('info');
       },
       /*复选框设置*/
-      onCheck:function(row){
-        $('.rwDel').attr('disabled',false);
+      onCheck: function (row) {
+        $('.rwDel').attr('disabled', false);
         delRWid[row.missionId] = 'true';
       },
-      onUncheck:function(row){
+      onUncheck: function (row) {
         delete delRWid[row.missionId];
-        if($.isEmptyObject(delRWid)){
-          $('.rwDel').attr('disabled',true)
+        if ($.isEmptyObject(delRWid)) {
+          $('.rwDel').attr('disabled', true)
         }
       },
-      onCheckAll:function(rows){
-        $('.rwDel').attr('disabled',false);
-        for(var i=0;i<rows.length;i++){
+      onCheckAll: function (rows) {
+        $('.rwDel').attr('disabled', false);
+        for (var i = 0; i < rows.length; i++) {
           delRWid[rows[i].missionId] = 'true';
         }
       },
-      onUncheckAll:function(rows){
+      onUncheckAll: function (rows) {
         delRWid = {};
-        $('.rwDel').attr('disabled',true);
+        $('.rwDel').attr('disabled', true);
       },
 
       /*右键菜单*/
       contextMenu: '#RWcontext-menu',
-      onContextMenuItem: function(row, $el){
-        if($el.data("item") == "rename"){
-          rename('rw',row.missionId);
+      onContextMenuItem: function (row, $el) {
+        if ($el.data("item") == "rename") {
+          rename('rw', row.missionId);
         }
       }
     });
   }
 
   /*搜索事件*/
-  function search(type){
-    var params = $('#'+type+'Table').bootstrapTable('getOptions');
-    params.queryParams = function(params) {
+  function search(type) {
+    var params = $('#' + type + 'Table').bootstrapTable('getOptions');
+    params.queryParams = function (params) {
       var json;
-      if(type == 'rw'){
+      if (type == 'rw') {
         json = {
           "token": "",
           "data": {
-            "missionName": params.searchText||'',
+            "missionName": params.searchText || '',
             "pageNum": 1,
             "pageSize": params.pageSize,
             "sort": null,
             "userId": 1
           }
         };
-      }else{
+      } else {
         json = {
           "token": "",
           "data": {
-            "missionId":selectRW.missionId,
-            "scrnarinoName": params.searchText||'',
+            "missionId": selectRW.missionId,
+            "scrnarinoName": params.searchText || '',
             "pageNum": params.pageNumber,
             "pageSize": params.pageSize,
             "sort": null,
@@ -284,136 +378,137 @@
           }
         };
       }
-      json.data.missionName = $('.'+type).val();
+      json.data.missionName = $('.' + type).val();
       params = JSON.stringify(json);
       console.info(params);
       return params;
     };
-    $('#'+type+'Table').bootstrapTable('refresh', params);
+    $('#' + type + 'Table').bootstrapTable('refresh', params);
   }
 
 
-  function initQjTable(){
+  function initQjTable() {
     $('#qjTable').bootstrapTable({
-      method : 'POST',
-      url : 'qj.json',
-      dataType : "json",
-      contentType : "application/json", // 请求远程数据的内容类型。
-      toobar:'#qjToolbar',
-      iconSize : "outline",
-      search:false,
-      searchAlign:'right',
+      method: 'POST',
+      url: 'qj.json',
+//      url : BackstageIP+'/scenarino/scenarinoListBymissionId',
+      dataType: "json",
+      contentType: "application/json", // 请求远程数据的内容类型。
+      toobar: '#qjToolbar',
+      iconSize: "outline",
+      search: false,
+      searchAlign: 'right',
 //      height:441,
-      maintainSelected:true,
-      clickToSelect : false,// 点击选中行
-      pagination : false, // 在表格底部显示分页工具栏
-      onlyInfoPagination:true,
-      pageSize : 10, // 页面大小
-      pageNumber : 1, // 页数
-      pageList : [10],
-      striped : false, // 使表格带有条纹
-      sidePagination : "server",// 表格分页的位置 client||server
-      rowStyle:function(row,index){
+      maintainSelected: true,
+      clickToSelect: false,// 点击选中行
+      pagination: false, // 在表格底部显示分页工具栏
+      onlyInfoPagination: true,
+      pageSize: 10, // 页面大小
+      pageNumber: 1, // 页数
+      pageList: [10],
+      striped: false, // 使表格带有条纹
+      sidePagination: "server",// 表格分页的位置 client||server
+      rowStyle: function (row, index) {
         return {
           classes: 'info'
         };
       },
-      queryParams : function formPm(m){
+      queryParams: function formPm(m) {
         var json = {
           "token": "",
           "data": {
-            "missionId":selectRW.missionId,
-            "scrnarinoName": m.searchText||'',
-            "pageNum": m.pageNumber,
-            "pageSize": m.pageSize,
-            "sort": null,
+            "missionId": selectRW.missionId,
+            "scrnarinoName": '',
+//            "pageNum": m.pageNumber,
+//            "pageSize": m.pageSize,
+            "sort": '',
             "userId": 1
           }
         };
 
         return JSON.stringify(json);
       },
-      responseHandler:function(res){
+      responseHandler: function (res) {
         return res.data
       },
-      queryParamsType : "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
-      silent : true, // 刷新事件必须设置
-      onClickRow : function(row, $element) {
-        $('.success').addClass('info').removeClass('success');
-        $($element).removeClass('info').addClass('success');
+      queryParamsType: "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
+      silent: true, // 刷新事件必须设置
+      onClickRow: function (row, $element) {
+//        $('.success').addClass('info').removeClass('success');
+//        $($element).removeClass('info').addClass('success');
       },
       /*复选框设置*/
-      onCheck:function(row){
-        $('.qjDel').attr('disabled',false);
+      onCheck: function (row) {
+        $('.qjDel').attr('disabled', false);
         delQJid[row.scenarinoId] = 'true';
       },
-      onUncheck:function(row){
+      onUncheck: function (row) {
         delete delQJid[row.scenarinoId];
-        if($.isEmptyObject(delQJid)){
-          $('.qjDel').attr('disabled',true)
+        if ($.isEmptyObject(delQJid)) {
+          $('.qjDel').attr('disabled', true)
         }
       },
-      onCheckAll:function(rows){
-        $('.qjDel').attr('disabled',false);
-        for(var i=0;i<rows.length;i++){
+      onCheckAll: function (rows) {
+        $('.qjDel').attr('disabled', false);
+        for (var i = 0; i < rows.length; i++) {
           delQJid[rows[i].scenarinoId] = 'true';
         }
       },
-      onUncheckAll:function(rows){
+      onUncheckAll: function (rows) {
         delQJid = {};
-        $('.qjDel').attr('disabled',true);
+        $('.qjDel').attr('disabled', true);
       },
 
       /*右键菜单*/
       contextMenu: '#QJcontext-menu',
-      onContextMenuItem: function(row, $el){
-        if($el.data("item") == "rename"){
-          rename('qj',row.scenarinoId);
+      onContextMenuItem: function (row, $el) {
+        if ($el.data("item") == "rename") {
+          rename('qj', row.scenarinoId);
         }
       }
     });
   }
 
   /*format 函数*/
-  function rwName(v,row,i){
-    return '<a href="#">'+ row.missionName +'</a><br><a style="font-size:12px; color:#a1a1a1;">创建时间：'+ row.addTime +'</a>'
+  function rwName(v, row, i) {
+    return '<a href="#">' + row.missionName + '</a><br><a style="font-size:12px; color:#a1a1a1;">创建时间：' + moment(row.missionAddTime).format('YYYY-MM-DD HH') + '</a>'
   }
 
-  function rwDomain(v,row,i){
-    return row.missionDomain +'<br><a style="font-size:12px; color:#a1a1a1;">起止日期：'+ row.startDate+' - '+row.endDate +'</a>'
+  function rwDomain(v, row, i) {
+    return row.v1 + '<br><a style="font-size:12px; color:#a1a1a1;">起止日期：' + moment(row.missionStartDate).format('YYYY-MM-DD HH') + ' - ' + moment(row.missionEndDate).format('YYYY-MM-DD HH') + '</a>'
   }
 
-  function qjName(v,row,i){
-    return '<a href="#">'+ row.scenarinoName +'</a><br>'+
-        '<a style="font-size:12px; color:#a1a1a1;">创建时间：'+ row.addTime +'</a><br/>'+
-        '<a style="font-size:12px; color:#a1a1a1;">起止日期：'+ row.startDate+' - '+ row.endDate +'</a>'
+  function qjName(v, row, i) {
+    return '<a href="#">' + row.scenarinoName + '</a><br>' +
+        '<a style="font-size:12px; color:#a1a1a1;">创建时间：' + row.addTime + '</a><br/>' +
+        '<a style="font-size:12px; color:#a1a1a1;">起止日期：' + row.startDate + ' - ' + row.endDate + '</a>'
   }
 
-  function qjOrder(v,row,i){
-    return '<button class="btn btn-primary mb10 mr10">启动</button>'+
-        '<button class="btn btn-primary mb10">终止</button>'+
-        '<br/>'+
-        '<button class="btn btn-primary mr10">续跑</button>'+
+  function qjOrder(v, row, i) {
+    return '<button class="btn btn-primary mb10 mr10">启动</button>' +
+        '<button class="btn btn-primary mb10">终止</button>' +
+        '<br/>' +
+        '<button class="btn btn-primary mr10">续跑</button>' +
         '<button class="btn btn-primary">暂停</button>'
   }
 
-  function qjEffectEvaluation(v,row,i){
+  function qjEffectEvaluation(v, row, i) {
     return '<button class="btn btn-primary mb10 mr10">效果评估</button>'
   }
 
 
   /*delete 函数*/
-  function deleteFun(type){
-    var params = {userId:userId};
-    var delList = [],url;
-    if(type == 'rw'){
-      for(var i in delRWid){
+  function deleteFun(type) {
+    var params = {userId: userId};
+    var delList = [], url;
+    if (type == 'rw') {
+      for (var i in delRWid) {
         delList.push(i);
       }
       params.missionIds = delList;
       url = '/mission/mission_delete';
-    }else{
-      for(var ii in delQJid){
+    } else {
+      for (var ii in delQJid) {
         delList.push(ii);
       }
       params.scenarinoIds = delList;
@@ -426,36 +521,113 @@
           showCancelButton: true,
           confirmButtonColor: "#DD6B55",
           confirmButtonText: "删除",
-          cancelButtonText:"取消",
+          cancelButtonText: "取消",
           closeOnConfirm: false
         },
-        function(){
-
-          ajaxPost(url,params).success(function(){
-            if(type == 'rw'){
+        function () {
+          window.setTimeout(function () {
+            swal("删除失败!", "", "error");
+          }, 2000);
+          ajaxPost(url, params).success(function () {
+            if (type == 'rw') {
               $('#rwTable').bootstrapTable('destroy');
               initRwTable();
-            }else{
+            } else {
               $('#qjTable').bootstrapTable('destroy');
               initQjTable();
             }
-            swal("已删除!","", "success");
-          }).error(function(){
-            swal("删除失败!","", "error");
+            swal("已删除!", "", "success");
+          }).error(function () {
+            swal("删除失败!", "", "error");
           })
 
         });
+  }
 
+
+  /*模态框打开处理*/
+  $('#createModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget);
+    var recipient = button.data('whatever');
+    var type = button.data('type');
+    var modal = $(this);
+    modal.find('.modal-title').text(recipient);
+    modal.find('.create').attr('data-type', type);
+    modal.find('.createRun').attr('data-type', type);
+
+
+    /*不同类型出现内容不同*/
+    if (type == 'rw') {
+
+    } else {
+
+    }
+
+  });
+
+  /*任务、情景创建*/
+  function create(e,run) {
+    var url;
+    var params;
+    var type = $(e).attr('data-type');
+    if(type == 'rw'){
+      url = '/mission/mission_save';
+      params = {};
+      params.missionName = $('#rwName').val();
+      params.missionDomainId = $('#mnfw').val();
+      params.esNationId = $('#qd').val();
+      params.startDate = $('#rwStartDate').val();
+      params.endDate = $('#rwendDate').val();
+      params.userId = userId;
+      if(run){
+        params.createType = 2;
+      }else{
+        params.createType = 1;
+      }
+    }else{
+
+    }
+
+    ajaxPost(url, params).success(function () {
+      console.log('success')
+    }).error(function () {
+      console.log('error');
+      swal('添加失败', '', 'error')
+    })
+  }
+
+
+  /*初始化日期插件*/
+  function initDate() {
+    $("#rwStartDate").datetimepicker({
+      format: 'yyyy-mm-dd hh',
+      minView: 'day',
+      startView: 'year',
+      language: 'zh-CN',
+      autoclose: true,
+      todayBtn: true
+    });
+    $("#rwEndDate").datetimepicker({
+      format: 'yyyy-mm-dd hh',
+      minView: 'day',
+      startView: 'year',
+      language: 'zh-CN',
+      autoclose: true,
+      todayBtn: true
+    });
   }
 
   /*修改名称*/
-  function rename(type,id){
-    var url = 'rw.json';
-    var params = {userId:userId};
-    if(type == 'rw'){
+  function rename(type, id) {
+//    var url = 'rw.json';
+    var url;
+    var params = {userId: userId};
+    if (type == 'rw') {
       params.missionId = id;
-    }else{
+      url = '/mission/mission_update';
+    } else {
       params.scenarinoId = id;
+      url = '/scenarino/scenarino_update';
     }
 
     swal({
@@ -465,11 +637,12 @@
           showCancelButton: true,
           closeOnConfirm: false,
           confirmButtonText: "修改",
-          cancelButtonText:"取消",
+          cancelButtonText: "取消",
           animation: "slide-from-top",
-          inputPlaceholder: "请输入新名称:"
+          inputPlaceholder: "请输入新名称:",
+          showLoaderOnConfirm: true
         },
-        function(inputValue){
+        function (inputValue) {
           if (inputValue === false) return false;
 
           if (inputValue === "") {
@@ -477,23 +650,23 @@
             return false
           }
 
-          if(type == 'rw'){
+          if (type == 'rw') {
             params.missionName = inputValue;
-          }else{
+          } else {
             params.scenarinoName = inputValue;
           }
 
-          ajaxPost(url,params).success(function(){
-            if(type == 'rw'){
+          ajaxPost(url, params).success(function () {
+            if (type == 'rw') {
               $('#rwTable').bootstrapTable('destroy');
               initRwTable();
-            }else{
+            } else {
               $('#qjTable').bootstrapTable('destroy');
               initQjTable();
             }
-            swal("已修改!","修改名称为："+ inputValue, "success");
-          }).error(function(){
-            swal("修改失败!","名称未修改为："+ inputValue, "error");
+            swal("已修改!", "修改名称为：" + inputValue, "success");
+          }).error(function () {
+            swal("修改失败!", "名称未修改为：" + inputValue, "error");
           })
 
 //          swal("Nice!", "You wrote: " + inputValue, "success");

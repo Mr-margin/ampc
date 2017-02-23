@@ -1,121 +1,47 @@
 ﻿{
   "ret": 0,
   "msg": "query mission_list success!",
-  "data":{
+  "data": {
     "page": 2,
     "total": 40,
     "rows": [
       {
-        "missionName": "1减排测试",
-        "missionId":111,
-        "missionDomain": "3-范围3",
+        "missionId": 1,
+        "missionName": "2月份任务",
         "missionDomainId": 1,
-        "esNationId": 1,
-        "esNationName": "3-清单3",
-        "addTime": "2017-01-02 18:00:00",
-        "startDate": "2017-01-03",
-        "endDate": "2017-01-04"
+        "v1":"abc",
+        "esCouplingId": 1,
+        "esCouplingName": "3-清单3",
+        "missionStartDate": 1485878400000,
+        "missionEndDate": 1486656000000,
+        "missionAddTime": 1487692800000,
+        "userId": 1
+      }
+    ,
+      {
+        "missionId": 2,
+        "missionName": "3月份任务",
+        "missionDomainId": 1,
+        "v1":"abc",
+        "esCouplingId": 1,
+        "esCouplingName": "3-清单3",
+        "missionStartDate": 1485878400000,
+        "missionEndDate": 1486656000000,
+        "missionAddTime": 1487692800000,
+        "userId": 1
       },
       {
-        "missionName": "1月12日减排测试",
-        "missionId":2222,
-        "missionDomain": "3-范围3",
+        "missionId": 3,
+        "missionName": "4月份任务",
         "missionDomainId": 1,
-        "esNationId": 1,
-        "esNationName": "3-清单3",
-        "addTime": "2017-01-02 18:00:00",
-        "startDate": "2017-01-03",
-        "endDate": "2017-01-04"
-      },
-      {
-        "missionName": "减排",
-        "missionId":3333,
-        "missionDomain": "3-3",
-        "missionDomainId": 1,
-        "esNationId": 1,
-        "esNationName": "3-清单3",
-        "addTime": "2017-01-02 18:00:00",
-        "startDate": "2017-01-03",
-        "endDate": "2017-01-04"
-      },
-      {
-        "missionName": "1月12日",
-        "missionId":4444,
-        "missionDomain": "3-范围3",
-        "missionDomainId": 1,
-        "esNationId": 1,
-        "esNationName": "3-单3",
-        "addTime": "2017-01-02 18:00:00",
-        "startDate": "2017-01-03",
-        "endDate": "2017-01-04"
-      },
-      {
-        "missionName": "1减排测试",
-        "missionId":5555,
-        "missionDomain": "3-范围3",
-        "missionDomainId": 1,
-        "esNationId": 1,
-        "esNationName": "3-清单3",
-        "addTime": "2017-01-02 18:00:00",
-        "startDate": "2017-01-03",
-        "endDate": "2017-01-04"
-      },
-      {
-        "missionName": "1减排测试",
-        "missionId":111,
-        "missionDomain": "3-范围3",
-        "missionDomainId": 1,
-        "esNationId": 1,
-        "esNationName": "3-清单3",
-        "addTime": "2017-01-02 18:00:00",
-        "startDate": "2017-01-03",
-        "endDate": "2017-01-04"
-      },
-      {
-        "missionName": "1月12日减排测试",
-        "missionId":2222,
-        "missionDomain": "3-范围3",
-        "missionDomainId": 1,
-        "esNationId": 1,
-        "esNationName": "3-清单3",
-        "addTime": "2017-01-02 18:00:00",
-        "startDate": "2017-01-03",
-        "endDate": "2017-01-04"
-      },
-      {
-        "missionName": "减排",
-        "missionId":3333,
-        "missionDomain": "3-3",
-        "missionDomainId": 1,
-        "esNationId": 1,
-        "esNationName": "3-清单3",
-        "addTime": "2017-01-02 18:00:00",
-        "startDate": "2017-01-03",
-        "endDate": "2017-01-04"
-      },
-      {
-        "missionName": "1月12日",
-        "missionId":4444,
-        "missionDomain": "3-范围3",
-        "missionDomainId": 1,
-        "esNationId": 1,
-        "esNationName": "3-单3",
-        "addTime": "2017-01-02 18:00:00",
-        "startDate": "2017-01-03",
-        "endDate": "2017-01-04"
-      },
-      {
-        "missionName": "1减排测试",
-        "missionId":5555,
-        "missionDomain": "3-范围3",
-        "missionDomainId": 1,
-        "esNationId": 1,
-        "esNationName": "3-清单3",
-        "addTime": "2017-01-02 18:00:00",
-        "startDate": "2017-01-03",
-        "endDate": "2017-01-04"
+        "v1":"abc",
+        "esCouplingId": 1,
+        "esCouplingName": "3-清单3",
+        "missionStartDate": 1485878400000,
+        "missionEndDate": 1486656000000,
+        "missionAddTime": 1487692800000,
+        "userId": 1
       }
     ]
   }
-
 }
