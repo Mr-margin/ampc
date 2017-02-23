@@ -53,7 +53,6 @@ public class MissionAndScenarinoController {
 			String sort=request.getParameter("sort");
 			//用户的id  暂时没用
 			Integer userId=Integer.valueOf(request.getParameter("userId"));
-			
 			/*Integer pageNum=1;
 			Integer pageSize=2;
 			String missionName="4";*/
