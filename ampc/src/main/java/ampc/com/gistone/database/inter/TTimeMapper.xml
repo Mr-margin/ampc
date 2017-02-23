@@ -3,15 +3,15 @@
 <mapper namespace="ampc.com.gistone.database.inter.TTimeMapper" >
   <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TTime" >
     <id column="TIME_ID" property="timeId" jdbcType="DECIMAL" />
-    <result column="TIME_START_DATE" property="timeStartDate" jdbcType="DATE" />
-    <result column="TIME_END_DATE" property="timeEndDate" jdbcType="DATE" />
+    <result column="TIME_START_DATE" property="timeStartDate" jdbcType="TIMESTAMP" />
+    <result column="TIME_END_DATE" property="timeEndDate" jdbcType="TIMESTAMP" />
     <result column="AREA_ID" property="areaId" jdbcType="DECIMAL" />
     <result column="MISSION_ID" property="missionId" jdbcType="DECIMAL" />
     <result column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
     <result column="PLAN_ID" property="planId" jdbcType="DECIMAL" />
     <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
-    <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     TIME_ID, TIME_START_DATE, TIME_END_DATE, AREA_ID, MISSION_ID, SCENARINO_ID, PLAN_ID, 
@@ -32,10 +32,10 @@
       AREA_ID, MISSION_ID, SCENARINO_ID, 
       PLAN_ID, USER_ID, IS_EFFECTIVE, 
       DELETE_TIME)
-    values (#{timeId,jdbcType=DECIMAL}, #{timeStartDate,jdbcType=DATE}, #{timeEndDate,jdbcType=DATE}, 
+    values (#{timeId,jdbcType=DECIMAL}, #{timeStartDate,jdbcType=TIMESTAMP}, #{timeEndDate,jdbcType=TIMESTAMP}, 
       #{areaId,jdbcType=DECIMAL}, #{missionId,jdbcType=DECIMAL}, #{scenarinoId,jdbcType=DECIMAL}, 
       #{planId,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{isEffective,jdbcType=VARCHAR}, 
-      #{deleteTime,jdbcType=DATE})
+      #{deleteTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TTime" >
     insert into T_TIME
@@ -76,10 +76,10 @@
         #{timeId,jdbcType=DECIMAL},
       </if>
       <if test="timeStartDate != null" >
-        #{timeStartDate,jdbcType=DATE},
+        #{timeStartDate,jdbcType=TIMESTAMP},
       </if>
       <if test="timeEndDate != null" >
-        #{timeEndDate,jdbcType=DATE},
+        #{timeEndDate,jdbcType=TIMESTAMP},
       </if>
       <if test="areaId != null" >
         #{areaId,jdbcType=DECIMAL},
@@ -100,7 +100,7 @@
         #{isEffective,jdbcType=VARCHAR},
       </if>
       <if test="deleteTime != null" >
-        #{deleteTime,jdbcType=DATE},
+        #{deleteTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -108,10 +108,10 @@
     update T_TIME
     <set >
       <if test="timeStartDate != null" >
-        TIME_START_DATE = #{timeStartDate,jdbcType=DATE},
+        TIME_START_DATE = #{timeStartDate,jdbcType=TIMESTAMP},
       </if>
       <if test="timeEndDate != null" >
-        TIME_END_DATE = #{timeEndDate,jdbcType=DATE},
+        TIME_END_DATE = #{timeEndDate,jdbcType=TIMESTAMP},
       </if>
       <if test="areaId != null" >
         AREA_ID = #{areaId,jdbcType=DECIMAL},
@@ -132,22 +132,22 @@
         IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
       </if>
       <if test="deleteTime != null" >
-        DELETE_TIME = #{deleteTime,jdbcType=DATE},
+        DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where TIME_ID = #{timeId,jdbcType=DECIMAL}
   </update>
   <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TTime" >
     update T_TIME
-    set TIME_START_DATE = #{timeStartDate,jdbcType=DATE},
-      TIME_END_DATE = #{timeEndDate,jdbcType=DATE},
+    set TIME_START_DATE = #{timeStartDate,jdbcType=TIMESTAMP},
+      TIME_END_DATE = #{timeEndDate,jdbcType=TIMESTAMP},
       AREA_ID = #{areaId,jdbcType=DECIMAL},
       MISSION_ID = #{missionId,jdbcType=DECIMAL},
       SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL},
       PLAN_ID = #{planId,jdbcType=DECIMAL},
       USER_ID = #{userId,jdbcType=DECIMAL},
       IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
-      DELETE_TIME = #{deleteTime,jdbcType=DATE}
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP}
     where TIME_ID = #{timeId,jdbcType=DECIMAL}
   </update>
 </mapper>
