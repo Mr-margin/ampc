@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TMissionDetailMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TMissionDetail" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="MISSION_NAME" property="missionName" jdbcType="OTHER" />
+    <result column="MISSION_DOMAIN_ID" property="missionDomainId" jdbcType="DECIMAL" />
+    <result column="ES_COUPLING_ID" property="esCouplingId" jdbcType="DECIMAL" />
+    <result column="MISSION_START_DATE" property="missionStartDate" jdbcType="DATE" />
+    <result column="MISSION_END_DATE" property="missionEndDate" jdbcType="DATE" />
+    <result column="ADD_TIME" property="addTime" jdbcType="DATE" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="DATE" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MISSION_NAME, MISSION_DOMAIN_ID, ES_COUPLING_ID, MISSION_START_DATE, MISSION_END_DATE, 
+    ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_MISSION_DETAIL
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_MISSION_DETAIL
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TMissionDetail" >
+    insert into T_MISSION_DETAIL (ID, MISSION_NAME, MISSION_DOMAIN_ID, 
+      ES_COUPLING_ID, MISSION_START_DATE, MISSION_END_DATE, 
+      ADD_TIME, UPDATE_TIME, USER_ID, 
+      IS_EFFECTIVE, DELETE_TIME)
+    values (#{id,jdbcType=DECIMAL}, #{missionName,jdbcType=OTHER}, #{missionDomainId,jdbcType=DECIMAL}, 
+      #{esCouplingId,jdbcType=DECIMAL}, #{missionStartDate,jdbcType=DATE}, #{missionEndDate,jdbcType=DATE}, 
+      #{addTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE}, #{userId,jdbcType=DECIMAL}, 
+      #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TMissionDetail" >
+    insert into T_MISSION_DETAIL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="missionName != null" >
+        MISSION_NAME,
+      </if>
+      <if test="missionDomainId != null" >
+        MISSION_DOMAIN_ID,
+      </if>
+      <if test="esCouplingId != null" >
+        ES_COUPLING_ID,
+      </if>
+      <if test="missionStartDate != null" >
+        MISSION_START_DATE,
+      </if>
+      <if test="missionEndDate != null" >
+        MISSION_END_DATE,
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE,
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="missionName != null" >
+        #{missionName,jdbcType=OTHER},
+      </if>
+      <if test="missionDomainId != null" >
+        #{missionDomainId,jdbcType=DECIMAL},
+      </if>
+      <if test="esCouplingId != null" >
+        #{esCouplingId,jdbcType=DECIMAL},
+      </if>
+      <if test="missionStartDate != null" >
+        #{missionStartDate,jdbcType=DATE},
+      </if>
+      <if test="missionEndDate != null" >
+        #{missionEndDate,jdbcType=DATE},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=DATE},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="isEffective != null" >
+        #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        #{deleteTime,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TMissionDetail" >
+    update T_MISSION_DETAIL
+    <set >
+      <if test="missionName != null" >
+        MISSION_NAME = #{missionName,jdbcType=OTHER},
+      </if>
+      <if test="missionDomainId != null" >
+        MISSION_DOMAIN_ID = #{missionDomainId,jdbcType=DECIMAL},
+      </if>
+      <if test="esCouplingId != null" >
+        ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL},
+      </if>
+      <if test="missionStartDate != null" >
+        MISSION_START_DATE = #{missionStartDate,jdbcType=DATE},
+      </if>
+      <if test="missionEndDate != null" >
+        MISSION_END_DATE = #{missionEndDate,jdbcType=DATE},
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME = #{addTime,jdbcType=DATE},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TMissionDetail" >
+    update T_MISSION_DETAIL
+    set MISSION_NAME = #{missionName,jdbcType=OTHER},
+      MISSION_DOMAIN_ID = #{missionDomainId,jdbcType=DECIMAL},
+      ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL},
+      MISSION_START_DATE = #{missionStartDate,jdbcType=DATE},
+      MISSION_END_DATE = #{missionEndDate,jdbcType=DATE},
+      ADD_TIME = #{addTime,jdbcType=DATE},
+      UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      USER_ID = #{userId,jdbcType=DECIMAL},
+      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      DELETE_TIME = #{deleteTime,jdbcType=DATE}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+</mapper>
