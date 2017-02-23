@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TPlanReuseMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TPlanReuse" >
+    <id column="PLAN_REUSE_ID" property="planReuseId" jdbcType="DECIMAL" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="PLAN_REUSE_NAME" property="planReuseName" jdbcType="OTHER" />
+    <result column="ADD_TIME" property="addTime" jdbcType="DATE" />
+    <result column="USED_BY" property="usedBy" jdbcType="DECIMAL" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
+    <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
+    <result column="SCENARIO_ID" property="scenarioId" jdbcType="DECIMAL" />
+    <result column="MISSION_ID" property="missionId" jdbcType="DECIMAL" />
+    <result column="PLAN_REUSE_START_TIME" property="planReuseStartTime" jdbcType="DATE" />
+    <result column="PLAN_REUSE_END_TIME" property="planReuseEndTime" jdbcType="DATE" />
+    <result column="AREA_ID" property="areaId" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    PLAN_REUSE_ID, USER_ID, PLAN_REUSE_NAME, ADD_TIME, USED_BY, DELETE_TIME, IS_EFFECTIVE, 
+    SCENARIO_ID, MISSION_ID, PLAN_REUSE_START_TIME, PLAN_REUSE_END_TIME, AREA_ID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_PLAN_REUSE
+    where PLAN_REUSE_ID = #{planReuseId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_PLAN_REUSE
+    where PLAN_REUSE_ID = #{planReuseId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TPlanReuse" >
+    insert into T_PLAN_REUSE (PLAN_REUSE_ID, USER_ID, PLAN_REUSE_NAME, 
+      ADD_TIME, USED_BY, DELETE_TIME, 
+      IS_EFFECTIVE, SCENARIO_ID, MISSION_ID, 
+      PLAN_REUSE_START_TIME, PLAN_REUSE_END_TIME, AREA_ID
+      )
+    values (#{planReuseId,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{planReuseName,jdbcType=OTHER}, 
+      #{addTime,jdbcType=DATE}, #{usedBy,jdbcType=DECIMAL}, #{deleteTime,jdbcType=DATE}, 
+      #{isEffective,jdbcType=VARCHAR}, #{scenarioId,jdbcType=DECIMAL}, #{missionId,jdbcType=DECIMAL}, 
+      #{planReuseStartTime,jdbcType=DATE}, #{planReuseEndTime,jdbcType=DATE}, #{areaId,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TPlanReuse" >
+    insert into T_PLAN_REUSE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="planReuseId != null" >
+        PLAN_REUSE_ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="planReuseName != null" >
+        PLAN_REUSE_NAME,
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME,
+      </if>
+      <if test="usedBy != null" >
+        USED_BY,
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME,
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE,
+      </if>
+      <if test="scenarioId != null" >
+        SCENARIO_ID,
+      </if>
+      <if test="missionId != null" >
+        MISSION_ID,
+      </if>
+      <if test="planReuseStartTime != null" >
+        PLAN_REUSE_START_TIME,
+      </if>
+      <if test="planReuseEndTime != null" >
+        PLAN_REUSE_END_TIME,
+      </if>
+      <if test="areaId != null" >
+        AREA_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="planReuseId != null" >
+        #{planReuseId,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="planReuseName != null" >
+        #{planReuseName,jdbcType=OTHER},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=DATE},
+      </if>
+      <if test="usedBy != null" >
+        #{usedBy,jdbcType=DECIMAL},
+      </if>
+      <if test="deleteTime != null" >
+        #{deleteTime,jdbcType=DATE},
+      </if>
+      <if test="isEffective != null" >
+        #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="scenarioId != null" >
+        #{scenarioId,jdbcType=DECIMAL},
+      </if>
+      <if test="missionId != null" >
+        #{missionId,jdbcType=DECIMAL},
+      </if>
+      <if test="planReuseStartTime != null" >
+        #{planReuseStartTime,jdbcType=DATE},
+      </if>
+      <if test="planReuseEndTime != null" >
+        #{planReuseEndTime,jdbcType=DATE},
+      </if>
+      <if test="areaId != null" >
+        #{areaId,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TPlanReuse" >
+    update T_PLAN_REUSE
+    <set >
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="planReuseName != null" >
+        PLAN_REUSE_NAME = #{planReuseName,jdbcType=OTHER},
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME = #{addTime,jdbcType=DATE},
+      </if>
+      <if test="usedBy != null" >
+        USED_BY = #{usedBy,jdbcType=DECIMAL},
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="scenarioId != null" >
+        SCENARIO_ID = #{scenarioId,jdbcType=DECIMAL},
+      </if>
+      <if test="missionId != null" >
+        MISSION_ID = #{missionId,jdbcType=DECIMAL},
+      </if>
+      <if test="planReuseStartTime != null" >
+        PLAN_REUSE_START_TIME = #{planReuseStartTime,jdbcType=DATE},
+      </if>
+      <if test="planReuseEndTime != null" >
+        PLAN_REUSE_END_TIME = #{planReuseEndTime,jdbcType=DATE},
+      </if>
+      <if test="areaId != null" >
+        AREA_ID = #{areaId,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where PLAN_REUSE_ID = #{planReuseId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TPlanReuse" >
+    update T_PLAN_REUSE
+    set USER_ID = #{userId,jdbcType=DECIMAL},
+      PLAN_REUSE_NAME = #{planReuseName,jdbcType=OTHER},
+      ADD_TIME = #{addTime,jdbcType=DATE},
+      USED_BY = #{usedBy,jdbcType=DECIMAL},
+      DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      SCENARIO_ID = #{scenarioId,jdbcType=DECIMAL},
+      MISSION_ID = #{missionId,jdbcType=DECIMAL},
+      PLAN_REUSE_START_TIME = #{planReuseStartTime,jdbcType=DATE},
+      PLAN_REUSE_END_TIME = #{planReuseEndTime,jdbcType=DATE},
+      AREA_ID = #{areaId,jdbcType=DECIMAL}
+    where PLAN_REUSE_ID = #{planReuseId,jdbcType=DECIMAL}
+  </update>
+</mapper>
