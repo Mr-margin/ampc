@@ -55,11 +55,11 @@ public class AreaAndTimeController {
 		// 时间操作，结束时间与开始时间的数据有一位数间隔，需要时间计算
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(timeDate);
-		cal.set(Calendar.HOUR, Calendar.HOUR - 6);
+		cal.set(Calendar.HOUR, Calendar.HOUR - 4);
 		String addTimeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 				.format(cal.getTime());
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		java.util.Date timeEndDate = sdf.parse(addTimeDate);
+		Date timeEndDate = sdf.parse(addTimeDate);
 
 		TTime tTime = new TTime();
 		// 查询添加时段处的结束时间
