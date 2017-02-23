@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @SpringBootApplication
 @ServletComponentScan
-@MapperScan("com.gistone.MyBatis.config")
+@MapperScan("ampc.com.gistone.database.config")
 public class AmpcSampleApplication extends SpringBootServletInitializer {
 
 	@RequestMapping(value="/")
