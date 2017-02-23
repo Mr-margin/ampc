@@ -2,6 +2,8 @@ package ampc.com.gistone.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -36,26 +38,28 @@ public class AreaAndTimeController {
 	 * @param request
 	 * @param response
 	 * @throws IOException 
+	 * @throws ParseException 
 	 */
 	@RequestMapping("/time/time_save")
-	public void add_TIME(HttpServletRequest request,HttpServletResponse response) throws IOException{
+	public AmpcResult add_TIME(HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
 		
-		Long areaId =Long.parseLong(request.getParameter("areaId"));//区域ID
-		Long scenarinoId =Long.parseLong(request.getParameter("scenarinoId"));//情景id
-		Long missionId =Long.parseLong(request.getParameter("missionId"));//任务id
+		Long areaId =1l;//Long.parseLong(request.getParameter("areaId"));//区域ID
+		Long scenarinoId =1l;//Long.parseLong(request.getParameter("scenarinoId"));//情景id
+		Long missionId =1l;//Long.parseLong(request.getParameter("missionId"));//任务id
 		Long userId =1l; //Long.parseLong(request.getParameter("userId"));//用户id
 		Long selectTimeId =1l; //Long.parseLong(request.getParameter("selectTimeId"));//添加时段处在的时段id
 		Date timeDate = new Date();//new Date(request.getParameter("addTimeDate"));//新增时段时间
-
+		  
+		
 		// 时间操作，结束时间与开始时间的数据有一位数间隔，需要时间计算
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(timeDate);
-		cal.set(Calendar.HOUR, Calendar.HOUR - 1);
-		String addTimeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-				.format(cal.getTime());
-		Date timeEndDate = new Date();
-	
-		TTime tTime=new TTime();
+		cal.set(Calendar.HOUR, Calendar.HOUR - 6);
+		String addTimeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+		java.util.Date timeEndDate=sdf.parse(addTimeDate);
+		
+			TTime tTime=new TTime();
 			//查询添加时段处的结束时间
 			tTime=tTimeMapper.selectByPrimaryKey(selectTimeId);
 			//查询时段表当前最大id，并且+1当做所添加时段的id
@@ -65,7 +69,6 @@ public class AreaAndTimeController {
 			//添加一个新的时段
 			TTime add_tTime=new TTime();
 			add_tTime.setAreaId(areaId);
-			add_tTime.setDeleteTime(tTime.getTimeEndDate());
 			add_tTime.setUserId(userId);
 			add_tTime.setTimeId(max);
 			add_tTime.setMissionId(missionId);
@@ -90,7 +93,8 @@ public class AreaAndTimeController {
 				start=1;
 				msg="save_time error";
 			}
+			
 			//返回json数据
-		response.getWriter().write(AmpcResult.build(start,msg, obj).toString());
+		return AmpcResult.build(start,msg, obj);
 	}
 }
