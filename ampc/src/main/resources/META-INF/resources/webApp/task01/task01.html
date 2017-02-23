@@ -21,15 +21,15 @@
 
   <div class="content">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-6 pr0">
         <div class="panel panel-default plain ">
           <!-- Start .panel -->
-          <div class="panel-heading white-bg">
+          <div class="panel-heading white-bg" style="border: none">
             <div class="col-md-6">
               <h4 class="panel-title">任务列表<i class="im-file3"></i></h4>
             </div>
           </div>
-          <div class="panel-body" style="padding:0px;">
+          <div class="panel-body" style="padding:0px;border-right: none">
             <div id="rwToolbar" class="btn-group">
               <div class="col-md-6">
                 <button type="button" class="btn btn-default">
@@ -48,7 +48,7 @@
             </div>
             <table id="rwTable">
               <thead>
-                <tr>
+                <tr class="info">
                   <th data-checkbox="true">   </th>
                   <th data-formatter="rwName">任务名称</th>
                   <th data-formatter="rwDomain">模拟范围</th>
@@ -59,15 +59,15 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6 pl0">
         <div class="panel panel-default plain " >
           <!-- Start .panel -->
-          <div class="panel-heading white-bg">
+          <div class="panel-heading white-bg" style="border: none">
             <div class="col-md-6">
               <h4 class="panel-title">情景列表<i class="im-file3"></i></h4>
             </div>
           </div>
-          <div class="panel-body" style="padding:0px; ">
+          <div class="panel-body" style="padding:0px;border-left: none; ">
             <div id="qjToolbar" class="btn-group">
               <div class="col-md-6">
                 <button type="button" class="btn btn-default">
@@ -100,6 +100,18 @@
       </div>
     </div>
   </div>
+  <ul id="RWcontext-menu" class="dropdown-menu">
+    <li data-item="rename"><a href="#">修改名称</a></li>
+    <!--<li data-item="delete"><a>Delete</a></li>-->
+    <!--<li data-item="action1"><a>Action Here</a></li>-->
+    <!--<li data-item="action2"><a>And Action Here</a></li>-->
+  </ul>
+  <ul id="QJcontext-menu" class="dropdown-menu">
+    <li data-item="rename"><a href="#">修改名称</a></li>
+    <!--<li data-item="delete"><a>Delete</a></li>-->
+    <!--<li data-item="action1"><a>Action Here</a></li>-->
+    <!--<li data-item="action2"><a>And Action Here</a></li>-->
+  </ul>
 
 
 
@@ -116,6 +128,7 @@
 <script src="../../js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
 
 <script src="../../js/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="../../js/bootstrap-table-contextmenu.js.js"></script>
 <script>
   var userId = 111;
   var selectRW;
@@ -164,6 +177,7 @@
       iconSize : "outline",
       search:false,
       searchAlign:'right',
+//      height:500,
       maintainSelected:true,
       clickToSelect : false,// 点击选中行
       pagination : true, // 在表格底部显示分页工具栏
@@ -172,6 +186,14 @@
       pageList : [10],
       striped : true, // 使表格带有条纹
       sidePagination : "server",// 表格分页的位置 client||server
+      rowStyle:function(row,index){
+        if(index == 0){
+          return {
+            classes: 'info'
+          };
+        }
+        return {};
+      },
       queryParams : function formPm(m){
         var json = {
           "token": "",
@@ -201,6 +223,7 @@
         $('.info').removeClass('info');
         $($element).addClass('info');
       },
+      /*复选框设置*/
       onCheck:function(row){
         $('.rwDel').attr('disabled',false);
         delRWid[row.missionId] = 'true';
@@ -220,6 +243,14 @@
       onUncheckAll:function(rows){
         delRWid = {};
         $('.rwDel').attr('disabled',true);
+      },
+
+      /*右键菜单*/
+      contextMenu: '#RWcontext-menu',
+      onContextMenuItem: function(row, $el){
+        if($el.data("item") == "rename"){
+          rename('rw',row.missionId);
+        }
       }
     });
   }
@@ -272,14 +303,21 @@
       iconSize : "outline",
       search:false,
       searchAlign:'right',
+//      height:441,
       maintainSelected:true,
       clickToSelect : false,// 点击选中行
-      pagination : true, // 在表格底部显示分页工具栏
+      pagination : false, // 在表格底部显示分页工具栏
+      onlyInfoPagination:true,
       pageSize : 10, // 页面大小
       pageNumber : 1, // 页数
       pageList : [10],
-      striped : true, // 使表格带有条纹
+      striped : false, // 使表格带有条纹
       sidePagination : "server",// 表格分页的位置 client||server
+      rowStyle:function(row,index){
+        return {
+          classes: 'info'
+        };
+      },
       queryParams : function formPm(m){
         var json = {
           "token": "",
@@ -301,9 +339,10 @@
       queryParamsType : "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
       silent : true, // 刷新事件必须设置
       onClickRow : function(row, $element) {
-        $('.info').removeClass('info');
-        $($element).addClass('info');
+        $('.success').addClass('info').removeClass('success');
+        $($element).removeClass('info').addClass('success');
       },
+      /*复选框设置*/
       onCheck:function(row){
         $('.qjDel').attr('disabled',false);
         delQJid[row.scenarinoId] = 'true';
@@ -322,7 +361,15 @@
       },
       onUncheckAll:function(rows){
         delQJid = {};
-        $('.qjDel').attr('disabled',false);
+        $('.qjDel').attr('disabled',true);
+      },
+
+      /*右键菜单*/
+      contextMenu: '#QJcontext-menu',
+      onContextMenuItem: function(row, $el){
+        if($el.data("item") == "rename"){
+          rename('qj',row.scenarinoId);
+        }
       }
     });
   }
@@ -400,5 +447,59 @@
         });
 
   }
+
+  /*修改名称*/
+  function rename(type,id){
+    var url = 'rw.json';
+    var params = {userId:userId};
+    if(type == 'rw'){
+      params.missionId = id;
+    }else{
+      params.scenarinoId = id;
+    }
+
+    swal({
+          title: "名称修改",
+//          text: "请输入新名称:",
+          type: "input",
+          showCancelButton: true,
+          closeOnConfirm: false,
+          confirmButtonText: "修改",
+          cancelButtonText:"取消",
+          animation: "slide-from-top",
+          inputPlaceholder: "请输入新名称:"
+        },
+        function(inputValue){
+          if (inputValue === false) return false;
+
+          if (inputValue === "") {
+            swal.showInputError("请输入内容!");
+            return false
+          }
+
+          if(type == 'rw'){
+            params.missionName = inputValue;
+          }else{
+            params.scenarinoName = inputValue;
+          }
+
+          ajaxPost(url,params).success(function(){
+            if(type == 'rw'){
+              $('#rwTable').bootstrapTable('destroy');
+              initRwTable();
+            }else{
+              $('#qjTable').bootstrapTable('destroy');
+              initQjTable();
+            }
+            swal("已修改!","修改名称为："+ inputValue, "success");
+          }).error(function(){
+            swal("修改失败!","名称未修改为："+ inputValue, "error");
+          })
+
+//          swal("Nice!", "You wrote: " + inputValue, "success");
+        });
+
+  }
+
 </script>
 </html>
