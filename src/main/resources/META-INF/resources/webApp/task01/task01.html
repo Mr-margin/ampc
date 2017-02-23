@@ -8,7 +8,14 @@
   <link href="../../css/bootstrap.min.css" rel="stylesheet" />
   <!--<link rel="stylesheet" href="../../css/plugins/iCheck/custom.css"/>-->
   <link rel="stylesheet" href="../../js/plugins/forms/icheck/flat/_all.css"/>
+  <link rel="stylesheet" href="../../css/plugins/bootstrap-table/bootstrap-table.min.css"/>
+  <link rel="stylesheet" href="../../css/plugins/sweetalert/sweetalert.css"/>
   <link href="../../css/main.css" rel="stylesheet" />
+  <style>
+    #rwToolbar,#qjToolbar{
+      margin: 10px;
+    }
+  </style>
 </head>
 <body>
 
@@ -21,41 +28,33 @@
             <div class="col-md-6">
               <h4 class="panel-title">任务列表<i class="im-file3"></i></h4>
             </div>
-            <div class="col-lg-6">
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="输入任务名称或字段">
-                <span class="input-group-btn">
-                  <button class="btn btn-default" type="button" onclick="search('rw')"><i class="ec-search"></i></button>
-                </span>
-              </div><!-- /input-group -->
-            </div><!-- /.col-lg-6 -->
           </div>
           <div class="panel-body" style="padding:0px;">
-            <table class="table table-hover rwTable" >
+            <div id="rwToolbar" class="btn-group">
+              <div class="col-md-6">
+                <button type="button" class="btn btn-default">
+                  <i class="glyphicon glyphicon-plus"></i> 创建
+                </button>
+                <button disabled type="button" class="btn btn-default rwDel" onclick="deleteFun('rw')">
+                  <i class="glyphicon glyphicon-trash"></i> 删除
+                </button>
+              </div>
+              <div class="input-group col-md-4 col-md-offset-8">
+                <input type="text" class="form-control rw " placeholder="输入任务名称或字段">
+                <span class="input-group-btn">
+                  <button class="btn btn-default " type="button" onclick="search('rw')"><i class="ec-search"></i></button>
+                </span>
+              </div><!-- /input-group -->
+            </div>
+            <table id="rwTable">
               <thead>
-              <tr>
-                <th class="per5">
-                  <label class="checkbox">
-                    <input class="checkedAll" type="checkbox" name="rw">
-                  </label>
-                </th>
-                <th>任务列表</th>
-                <th>模拟范围</th>
-                <th>清单</th>
-              </tr>
+                <tr>
+                  <th data-checkbox="true">   </th>
+                  <th data-formatter="rwName">任务名称</th>
+                  <th data-formatter="rwDomain">模拟范围</th>
+                  <th data-field="esNationName">清单</th>
+                </tr>
               </thead>
-              <tbody>
-                <!--<tr>-->
-                  <!--<td>-->
-                    <!--<label class="checkbox">-->
-                      <!--<input type="checkbox" name="rw" value="1">-->
-                    <!--</label>-->
-                  <!--</td>-->
-                  <!--<td><a href="#">一月上旬排放量调查</a><br><a style="font-size:12px; color:#C5C5C5;">创建时间：2017/02/17  12:32:49</a></td>-->
-                  <!--<td>346-范围29<br><a style="font-size:12px; color:#C5C5C5;">起止日期：2017/02/17-2017/02/28</a></td>-->
-                  <!--<td>2530-清单2</td>-->
-                <!--</tr>-->
-              </tbody>
             </table>
           </div>
         </div>
@@ -67,57 +66,34 @@
             <div class="col-md-6">
               <h4 class="panel-title">情景列表<i class="im-file3"></i></h4>
             </div>
-            <div class="col-lg-6">
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="输入情景名称或字段">
-                <span class="input-group-btn">
-                  <button class="btn btn-default" type="button" onclick="search('qj')"><i class="ec-search"></i></button>
-                </span>
-              </div><!-- /input-group -->
-            </div><!-- /.col-lg-6 -->
           </div>
           <div class="panel-body" style="padding:0px; ">
-            <table class="table table-striped qjTable">
+            <div id="qjToolbar" class="btn-group">
+              <div class="col-md-6">
+                <button type="button" class="btn btn-default">
+                  <i class="glyphicon glyphicon-plus"></i> 创建
+                </button>
+                <button disabled type="button" class="btn btn-default qjDel" onclick="deleteFun('qj')">
+                  <i class="glyphicon glyphicon-trash"></i> 删除
+                </button>
+              </div>
+              <div class="input-group col-md-4 col-md-offset-8">
+                <input type="text" class="form-control qj " placeholder="输入情景名称或字段">
+                <span class="input-group-btn">
+                  <button class="btn btn-default " type="button" onclick="search('qj')"><i class="ec-search"></i></button>
+                </span>
+              </div><!-- /input-group -->
+            </div>
+            <table id="qjTable">
               <thead>
-              <tr>
-                <th class="per5">
-                  <label class="checkbox">
-                    <input class="check-all" type="checkbox" name="qj">
-                  </label>
-                </th>
-                <th>情景名称</th>
-                <th style="text-align: center">操作</th>
-                <th>情景状态</th>
-                <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-              </tr>
+                <tr>
+                  <th data-checkbox="true">   </th>
+                  <th data-formatter="qjName">情景名称</th>
+                  <th data-formatter="qjOrder">操作</th>
+                  <th data-field="scenarinoStatus">情景状态</th>
+                  <th data-formatter="qjEffectEvaluation"></th>
+                </tr>
               </thead>
-              <tbody>
-              <!--<tr>-->
-                <!--<td>-->
-                  <!--<label class="checkbox">-->
-                    <!--<input class="check" type="checkbox" name="qj">-->
-                  <!--</label>-->
-                <!--</td>-->
-                <!--<td>-->
-                  <!--<a href="#">二月下旬排放量调查</a><br>-->
-                  <!--<a style="font-size:12px; color:#C5C5C5;">创建时间：2017/02/17  12:32:49</a><br/>-->
-                  <!--<a style="font-size:12px; color:#C5C5C5;">起止日期：2017/02/17-2017/02/17</a>-->
-                <!--</td>-->
-                <!--<td class="text-center">-->
-                  <!--<button class="btn btn-primary mb10">启动</button>-->
-                  <!--<button class="btn btn-primary mb10">终止</button>-->
-                  <!--<br/>-->
-                  <!--<button class="btn btn-primary">续跑</button>-->
-                  <!--<button class="btn btn-primary">暂停</button>-->
-                <!--</td>-->
-                <!--<td style="line-height: 70px">-->
-                  <!--<a hrea="#">执行完毕</a>-->
-                <!--</td>-->
-                <!--<td style="line-height: 70px">-->
-                  <!--<button class="btn btn-primary">效果评估</button>-->
-                <!--</td>-->
-              <!--</tr>-->
-              </tbody>
             </table>
           </div>
         </div>
@@ -135,24 +111,16 @@
 <script src="../../js/jquery-ui-1.10.4.min.js"></script>
 <script src="../../js/plugins/forms/icheck/jquery.icheck.js"></script>
 <script src="../../js/bootstrap.min.js"></script>
+<script src="../../js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="../../js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+<script src="../../js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+
+<script src="../../js/plugins/sweetalert/sweetalert.min.js"></script>
 <script>
-
-  var parameterPar = {
-    token:'',
-    data:{}
-  };
-  var rwMap,qjMap;
-
-  $(document).ready(function(){
-    refreshIcheck();
-    initialize();
-
-
-
-
-
-  });
-
+  var userId = 111;
+  var selectRW;
+  var delRWid={},delQJid={};
+  var parameterPar = {total:'',data:{}};
   function refreshIcheck(){
     var callbacks_list = $('.rwTable ul');
     $('body input').on('ifCreated ifClicked ifChanged ifChecked ifUnchecked ifDisabled ifEnabled ifDestroyed', function(event){
@@ -165,87 +133,272 @@
   }
 
 
-
-
-
-
-
-  function initialize(){
-    var parameter = {};
-    var selectAjax = ajaxPost('rw.json',parameter);
-    $.when(selectAjax).done(function(res){
-        rwMap = res.data;
-        var qjSelect = ajaxPost('qj.json',{});
-        qjSelect.then(function(res){
-          qjMap = res.data;
-          for(var qj=0;qj<qjMap.rows.length;qj++){
-            $('.qjTable tbody').append(setQJtr(qjMap.rows[qj]))
-          }
-          refreshIcheck();
-        });
-        for(var rw=0;rw<rwMap.rows.length;rw++){
-          $('.rwTable tbody').append(setRWtr(rwMap.rows[rw]))
-        }
-        refreshIcheck();
-      })
-  }
-
+  /*看名字*/
   function ajaxPost(url,parameter){
     parameterPar.data = parameter;
-    return $.ajax({
-      url: url,//请求地址
-      type: "GET",
+    var p = JSON.stringify(parameterPar);
+    return $.ajax(url,{
+      contentType:"application/json",
+      type: "POST",
       async:true,
       dataType: 'JSON',
-      data: parameterPar
+      data: p
     })
-
   }
 
-  function getParameter(){
+  $(document).ready(function(){
+    initialize();
+  });
 
+  function initialize(){
+    initRwTable();
   }
 
-  function setRWtr(rw){
-    return '<tr>'+
-        '<td>'+
-        '<label class="checkbox">'+
-        '<input type="checkbox" name="rw" value="'+ rw.missionId +'">'+
-        '</label>'+
-        '</td>'+
-        '<td><a href="#">'+ rw.missionName +'</a><br><a style="font-size:12px; color:#C5C5C5;">创建时间：'+ rw.addTime +'</a></td>'+
-        '<td>'+ rw.missionDomain +'<br><a style="font-size:12px; color:#C5C5C5;">起止日期：'+ rw.startDate+' - '+rw.endDate +'</a></td>'+
-        '<td>'+ rw.esNationName +'</td>'+
-        '</tr>'
+  function initRwTable(){
+    $('#rwTable').bootstrapTable({
+      method : 'POST',
+      url : 'rw.json',
+      dataType : "json",
+      contentType : "application/json", // 请求远程数据的内容类型。
+      toobar:'#rwToolbar',
+      iconSize : "outline",
+      search:false,
+      searchAlign:'right',
+      maintainSelected:true,
+      clickToSelect : false,// 点击选中行
+      pagination : true, // 在表格底部显示分页工具栏
+      pageSize : 10, // 页面大小
+      pageNumber : 1, // 页数
+      pageList : [10],
+      striped : true, // 使表格带有条纹
+      sidePagination : "server",// 表格分页的位置 client||server
+      queryParams : function formPm(m){
+        var json = {
+          "token": "",
+          "data": {
+            "missionName": m.searchText||'',
+            "pageNum": m.pageNumber,
+            "pageSize": m.pageSize,
+            "sort": null,
+            "userId": 1
+          }
+        };
+
+        return JSON.stringify(json);
+      },
+      responseHandler:function(res){
+        selectRW = res.data.rows[0];
+        initQjTable();
+        return res.data
+      },
+      queryParamsType : "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
+      silent : true, // 刷新事件必须设置
+      onClickRow : function(row, $element) {
+        $('.qj').val('');
+        selectRW = row;
+        $('#qjTable').bootstrapTable('destroy');
+        initQjTable();
+        $('.info').removeClass('info');
+        $($element).addClass('info');
+      },
+      onCheck:function(row){
+        $('.rwDel').attr('disabled',false);
+        delRWid[row.missionId] = 'true';
+      },
+      onUncheck:function(row){
+        delete delRWid[row.missionId];
+        if($.isEmptyObject(delRWid)){
+          $('.rwDel').attr('disabled',true)
+        }
+      },
+      onCheckAll:function(rows){
+        $('.rwDel').attr('disabled',false);
+        for(var i=0;i<rows.length;i++){
+          delRWid[rows[i].missionId] = 'true';
+        }
+      },
+      onUncheckAll:function(rows){
+        delRWid = {};
+        $('.rwDel').attr('disabled',true);
+      }
+    });
   }
 
-  function setQJtr(qj){
-    return '<tr>'+
-              '<td>'+
-                '<label class="checkbox">'+
-                '<input class="check" type="checkbox" name="qj" value="'+ qj.scenarinoId +'">'+
-                '</label>'+
-              '</td>'+
-              '<td>'+
-                '<a href="#">'+ qj.scenarinoName +'</a><br>'+
-                '<a style="font-size:12px; color:#C5C5C5;">创建时间：'+ qj.addTime +'</a><br/>'+
-                '<a style="font-size:12px; color:#C5C5C5;">起止日期：'+ qj.startDate+' - '+ qj.endDate +'</a>'+
-              '</td>'+
-                '<td class="text-center">'+
-                '<button class="btn btn-primary mb10 mr10">启动</button>'+
-                '<button class="btn btn-primary mb10">终止</button>'+
-                '<br/>'+
-                '<button class="btn btn-primary mr10">续跑</button>'+
-                '<button class="btn btn-primary">暂停</button>'+
-              '</td>'+
-              '<td style="line-height: 70px">'+
-                '<a hrea="#">'+ qj.scenarinoStatus +'</a>'+
-              '</td>'+
-              '<td style="line-height: 70px">'+
-                '<button class="btn btn-primary">效果评估</button>'+
-              '</td>'+
-            '</tr>'
+  /*搜索事件*/
+  function search(type){
+    var params = $('#'+type+'Table').bootstrapTable('getOptions');
+    params.queryParams = function(params) {
+      var json;
+      if(type == 'rw'){
+        json = {
+          "token": "",
+          "data": {
+            "missionName": params.searchText||'',
+            "pageNum": 1,
+            "pageSize": params.pageSize,
+            "sort": null,
+            "userId": 1
+          }
+        };
+      }else{
+        json = {
+          "token": "",
+          "data": {
+            "missionId":selectRW.missionId,
+            "scrnarinoName": params.searchText||'',
+            "pageNum": params.pageNumber,
+            "pageSize": params.pageSize,
+            "sort": null,
+            "userId": 1
+          }
+        };
+      }
+      json.data.missionName = $('.'+type).val();
+      params = JSON.stringify(json);
+      console.info(params);
+      return params;
+    };
+    $('#'+type+'Table').bootstrapTable('refresh', params);
   }
 
+
+  function initQjTable(){
+    $('#qjTable').bootstrapTable({
+      method : 'POST',
+      url : 'qj.json',
+      dataType : "json",
+      contentType : "application/json", // 请求远程数据的内容类型。
+      toobar:'#qjToolbar',
+      iconSize : "outline",
+      search:false,
+      searchAlign:'right',
+      maintainSelected:true,
+      clickToSelect : false,// 点击选中行
+      pagination : true, // 在表格底部显示分页工具栏
+      pageSize : 10, // 页面大小
+      pageNumber : 1, // 页数
+      pageList : [10],
+      striped : true, // 使表格带有条纹
+      sidePagination : "server",// 表格分页的位置 client||server
+      queryParams : function formPm(m){
+        var json = {
+          "token": "",
+          "data": {
+            "missionId":selectRW.missionId,
+            "scrnarinoName": m.searchText||'',
+            "pageNum": m.pageNumber,
+            "pageSize": m.pageSize,
+            "sort": null,
+            "userId": 1
+          }
+        };
+
+        return JSON.stringify(json);
+      },
+      responseHandler:function(res){
+        return res.data
+      },
+      queryParamsType : "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
+      silent : true, // 刷新事件必须设置
+      onClickRow : function(row, $element) {
+        $('.info').removeClass('info');
+        $($element).addClass('info');
+      },
+      onCheck:function(row){
+        $('.qjDel').attr('disabled',false);
+        delQJid[row.scenarinoId] = 'true';
+      },
+      onUncheck:function(row){
+        delete delQJid[row.scenarinoId];
+        if($.isEmptyObject(delQJid)){
+          $('.qjDel').attr('disabled',true)
+        }
+      },
+      onCheckAll:function(rows){
+        $('.qjDel').attr('disabled',false);
+        for(var i=0;i<rows.length;i++){
+          delQJid[rows[i].scenarinoId] = 'true';
+        }
+      },
+      onUncheckAll:function(rows){
+        delQJid = {};
+        $('.qjDel').attr('disabled',false);
+      }
+    });
+  }
+
+  /*format 函数*/
+  function rwName(v,row,i){
+    return '<a href="#">'+ row.missionName +'</a><br><a style="font-size:12px; color:#a1a1a1;">创建时间：'+ row.addTime +'</a>'
+  }
+
+  function rwDomain(v,row,i){
+    return row.missionDomain +'<br><a style="font-size:12px; color:#a1a1a1;">起止日期：'+ row.startDate+' - '+row.endDate +'</a>'
+  }
+
+  function qjName(v,row,i){
+    return '<a href="#">'+ row.scenarinoName +'</a><br>'+
+        '<a style="font-size:12px; color:#a1a1a1;">创建时间：'+ row.addTime +'</a><br/>'+
+        '<a style="font-size:12px; color:#a1a1a1;">起止日期：'+ row.startDate+' - '+ row.endDate +'</a>'
+  }
+
+  function qjOrder(v,row,i){
+    return '<button class="btn btn-primary mb10 mr10">启动</button>'+
+        '<button class="btn btn-primary mb10">终止</button>'+
+        '<br/>'+
+        '<button class="btn btn-primary mr10">续跑</button>'+
+        '<button class="btn btn-primary">暂停</button>'
+  }
+
+  function qjEffectEvaluation(v,row,i){
+    return '<button class="btn btn-primary mb10 mr10">效果评估</button>'
+  }
+
+
+  /*delete 函数*/
+  function deleteFun(type){
+    var params = {userId:userId};
+    var delList = [],url;
+    if(type == 'rw'){
+      for(var i in delRWid){
+        delList.push(i);
+      }
+      params.missionIds = delList;
+      url = '/mission/mission_delete';
+    }else{
+      for(var ii in delQJid){
+        delList.push(ii);
+      }
+      params.scenarinoIds = delList;
+      url = '/scenarino/scenarino_delete'
+    }
+
+    swal({
+          title: "确定要删除?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#DD6B55",
+          confirmButtonText: "删除",
+          cancelButtonText:"取消",
+          closeOnConfirm: false
+        },
+        function(){
+
+          ajaxPost(url,params).success(function(){
+            if(type == 'rw'){
+              $('#rwTable').bootstrapTable('destroy');
+              initRwTable();
+            }else{
+              $('#qjTable').bootstrapTable('destroy');
+              initQjTable();
+            }
+            swal("已删除!","", "success");
+          }).error(function(){
+            swal("删除失败!","", "error");
+          })
+
+        });
+
+  }
 </script>
 </html>
