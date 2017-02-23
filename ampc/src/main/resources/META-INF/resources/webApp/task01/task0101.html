@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+  <link href="../../css/icons.css" rel="stylesheet" />
+  <link href="../../css/plugins/sprflat-theme/jquery.ui.all.css" rel="stylesheet" />
+  <link href="../../css/bootstrap.min.css" rel="stylesheet" />
+  <!--<link rel="stylesheet" href="../../css/plugins/iCheck/custom.css"/>-->
+  <link rel="stylesheet" href="../../js/plugins/forms/icheck/flat/_all.css"/>
+  <link href="../../css/main.css" rel="stylesheet" />
+  <style>
+    .pagination > li > a, .pagination > li > span {
+      position: relative;
+      float: left;
+      padding: 6px 12px;
+      line-height: 1.42857143;
+      text-decoration: none;
+      color: #3498da;
+      background-color: #fff;
+      border: 1px solid #cfcfcf;
+      margin-left: -1px;
+    }
+    .pageNav{
+      float: right;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="content">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="panel panel-default plain ">
+          <!-- Start .panel -->
+          <div class="panel-heading white-bg">
+            <div class="col-md-6">
+              <h4 class="panel-title">任务列表<i class="im-file3"></i></h4>
+            </div>
+            <div class="col-lg-6">
+              <div class="input-group mt10">
+                <input type="text" class="form-control rw" placeholder="输入任务名称或字段">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" onclick="search('rw')"><i class="ec-search"></i></button>
+                </span>
+              </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
+          </div>
+          <div class="panel-body" style="padding:0px;">
+            <table class="table table-hover rwTable" >
+              <thead>
+              <tr>
+                <th class="per5">
+                  <label class="checkbox">
+                    <input class="checkedAll" type="checkbox" name="rw">
+                  </label>
+                </th>
+                <th>任务列表</th>
+                <th>模拟范围</th>
+                <th>清单</th>
+              </tr>
+              </thead>
+              <tbody>
+                <!--<tr>-->
+                  <!--<td>-->
+                    <!--<label class="checkbox">-->
+                      <!--<input type="checkbox" name="rw" value="1">-->
+                    <!--</label>-->
+                  <!--</td>-->
+                  <!--<td><a href="#">一月上旬排放量调查</a><br><a style="font-size:12px; color:#C5C5C5;">创建时间：2017/02/17  12:32:49</a></td>-->
+                  <!--<td>346-范围29<br><a style="font-size:12px; color:#C5C5C5;">起止日期：2017/02/17-2017/02/28</a></td>-->
+                  <!--<td>2530-清单2</td>-->
+                <!--</tr>-->
+              </tbody>
+            </table>
+            <div class="pageNav mr15">
+              <nav aria-label="Page navigation">
+                <ul class="pagination">
+                  <li>
+                    <a href="#" aria-label="Previous" class="before" onclick="clickBA('before')">
+                      <span>&laquo;</span>
+                    </a>
+                  </li>
+                  <!--<li><a href="#">1</a></li>-->
+                  <!--<li><a href="#">2</a></li>-->
+                  <!--<li><a href="#">3</a></li>-->
+                  <!--<li><a href="#">4</a></li>-->
+                  <!--<li><a href="#">5</a></li>-->
+                  <li>
+                    <a href="#" aria-label="Next" class="after" onclick="clickBA('after')">
+                      <span>&raquo;</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="panel panel-default plain " >
+          <!-- Start .panel -->
+          <div class="panel-heading white-bg">
+            <div class="col-md-6">
+              <h4 class="panel-title">情景列表<i class="im-file3"></i></h4>
+            </div>
+            <div class="col-lg-6">
+              <div class="input-group mt10">
+                <input type="text" class="form-control qj" placeholder="输入情景名称或字段">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" onclick="search('qj')"><i class="ec-search"></i></button>
+                </span>
+              </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
+          </div>
+          <div class="panel-body" style="padding:0px; ">
+            <table class="table table-striped qjTable">
+              <thead>
+              <tr>
+                <th class="per5">
+                  <label class="checkbox">
+                    <input class="check-all" type="checkbox" name="qj">
+                  </label>
+                </th>
+                <th>情景名称</th>
+                <th style="text-align: center">操作</th>
+                <th>情景状态</th>
+                <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+              </tr>
+              </thead>
+              <tbody>
+              <!--<tr>-->
+                <!--<td>-->
+                  <!--<label class="checkbox">-->
+                    <!--<input class="check" type="checkbox" name="qj">-->
+                  <!--</label>-->
+                <!--</td>-->
+                <!--<td>-->
+                  <!--<a href="#">二月下旬排放量调查</a><br>-->
+                  <!--<a style="font-size:12px; color:#C5C5C5;">创建时间：2017/02/17  12:32:49</a><br/>-->
+                  <!--<a style="font-size:12px; color:#C5C5C5;">起止日期：2017/02/17-2017/02/17</a>-->
+                <!--</td>-->
+                <!--<td class="text-center">-->
+                  <!--<button class="btn btn-primary mb10">启动</button>-->
+                  <!--<button class="btn btn-primary mb10">终止</button>-->
+                  <!--<br/>-->
+                  <!--<button class="btn btn-primary">续跑</button>-->
+                  <!--<button class="btn btn-primary">暂停</button>-->
+                <!--</td>-->
+                <!--<td style="line-height: 70px">-->
+                  <!--<a hrea="#">执行完毕</a>-->
+                <!--</td>-->
+                <!--<td style="line-height: 70px">-->
+                  <!--<button class="btn btn-primary">效果评估</button>-->
+                <!--</td>-->
+              <!--</tr>-->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+</body>
+<script src="../../js/jquery.min.js"></script>
+<script>
+  window.jQuery || document.write('<script src="../../js/jquery.min.js">\x3C/script>')
+</script>
+<script src="../../js/jquery-ui-1.10.4.min.js"></script>
+<script src="../../js/plugins/forms/icheck/jquery.icheck.js"></script>
+<script src="../../js/bootstrap.min.js"></script>
+<script>
+  var userId = 111;
+  var findMes = {
+    rw:null,
+    qj:null
+  }
+  var page = {
+    after:2,
+    before:1,
+    now:1,
+    all:0,
+    num:0,
+    size:30
+  };
+  var parameterPar = {
+    token:'',
+    data:{}
+  };
+  var rwP,qjP;
+  var rwMap,qjMap;
+
+
+  function refreshIcheck(){
+    var callbacks_list = $('.rwTable ul');
+    $('body input').on('ifCreated ifClicked ifChanged ifChecked ifUnchecked ifDisabled ifEnabled ifDestroyed', function(event){
+      callbacks_list.prepend('<li><span>#' + this.id + '</span> is ' + event.type.replace('if', '').toLowerCase() + '</li>');
+    }).iCheck({
+      checkboxClass: 'icheckbox_flat-aero',
+      radioClass: 'iradio_flat-aero',
+      increaseArea: '20%'
+    });
+  }
+
+
+  /*page 分页相关*/
+  function clickBA(type){
+    $('.pageNav li').eq(page.now).removeClass('active');
+    if(type == 'before'){
+      page.after = page.now;
+      page.now = page.before;
+      page.before--;
+    }else if(type == 'after'){
+      page.before = page.now;
+      page.now = page.after;
+      page.after++;
+    }
+    if(page.before == 0){
+      $('.before').css('display','none')
+    }else{
+      $('.before').css('display','block')
+    }
+    if(page.after == page.num+1){
+      $('.after').css('display','none')
+    }else{
+      $('.after').css('display','block')
+    }
+    refreshTable(page);
+    $('.pageNav li').eq(page.now).addClass('active');
+  }
+
+  function clickPage(pageNpw){
+    $('.pageNav li').eq(page.now).removeClass('active');
+    page.now = pageNpw;
+    page.before = pageNpw-1;
+    page.after = pageNpw+1;
+    if(pageNpw == page.num){
+      $('.after').css('display','none');
+    }else{
+      $('.after').css('display','block');
+    }
+    if(pageNpw == 1){
+      $('.before').css('display','none');
+    }else{
+      $('.before').css('display','block');
+    }
+    refreshTable(page);
+    $('.pageNav li').eq(page.now).addClass('active');
+  }
+
+  /*看名字*/
+  function ajaxPost(url,parameter){
+    parameterPar.data = parameter;
+    var p = JSON.stringify(parameterPar);
+    return $.ajax(url,{
+      contentType:"application/json",
+      type: "POST",
+      async:true,
+      dataType: 'JSON',
+      data: p
+    })
+
+  }
+
+  /*条件查询*/
+  function search(type){
+    findMes[type] = $('.'+type).val();
+    if(type == 'rw'){
+      refreshTable(page);
+    }else {
+      ajaxPost('qj.json', {
+        scrnarinoName: findMes.qj,
+        missionId: rwMap.rows[0].missionId,
+        userId: userId,
+        sort: null
+      }).then(function(res){
+        $('.qjTable tbody').empty();
+        qjMap = res.data;
+        for(var qj=0;qj<qjMap.rows.length;qj++){
+          $('.qjTable tbody').append(setQJtr(qjMap.rows[qj]))
+        }
+        refreshIcheck();
+      })
+    }
+  }
+
+  /*选中任务，查看情景*/
+  function selectRw(id,index){
+    console.log(id)
+    console.log(index)
+
+    $('.rwTable .active').removeClass('active');
+    $('.rwTable tr').eq(index+1).addClass('active');
+
+  }
+
+
+  function refreshTable(page){
+    var selectAjax = ajaxPost('rw.json',{
+      missionName:findMes.rw,
+      sort:null,
+      pageNum:1,
+      pageSize:page.size,
+      userId:userId
+    });
+    $.when(selectAjax).done(function(res){
+      $('.rwTable tbody').empty();
+      rwMap = res.data;
+      var qjSelect = ajaxPost('qj.json',{
+        scrnarinoName:findMes.qj,
+        missionId:rwMap.rows[0].missionId,
+        userId:userId,
+        sort:null
+      });
+      for(var rw=0;rw<rwMap.rows.length;rw++){
+        $('.rwTable tbody').append(setRWtr(rwMap.rows[rw],rw))
+      }
+      qjSelect.then(function(res){
+        $('.qjTable tbody').empty();
+        qjMap = res.data;
+        for(var qj=0;qj<qjMap.rows.length;qj++){
+          $('.qjTable tbody').append(setQJtr(qjMap.rows[qj]))
+        }
+        refreshIcheck();
+      });
+    })
+  }
+
+
+
+
+  $(document).ready(function(){
+//    refreshIcheck();
+    initialize();
+  });
+
+  function initialize(){
+    var selectAjax = ajaxPost('rw.json',{
+      missionName:findMes.rw,
+      sort:null,
+      pageNum:1,
+      pageSize:page.size,
+      userId:userId
+    });
+//    var selectAjax = ajaxPost('http://localhost:8097/http/post',parameter);
+    $.when(selectAjax).done(function(res){
+      rwMap = res.data;
+      var qjSelect = ajaxPost('qj.json',{
+        scrnarinoName:findMes.qj,
+        missionId:rwMap.rows[0].missionId,
+        userId:userId,
+        sort:null
+      });
+      for(var rw=0;rw<rwMap.rows.length;rw++){
+        $('.rwTable tbody').append(setRWtr(rwMap.rows[rw],rw))
+      }
+      qjSelect.then(function(res){
+        qjMap = res.data;
+        for(var qj=0;qj<qjMap.rows.length;qj++){
+          $('.qjTable tbody').append(setQJtr(qjMap.rows[qj]))
+        }
+        refreshIcheck();
+      });
+      page.all = rwMap.total;
+      page.num = Math.ceil(page.all/page.size);
+      if(page.num == 1){
+        $('.pageNav').css('display','none');
+      }
+      for(var p=0;p<page.num;p++){
+        $('.after').parent().before('<li><a href="#" onclick="clickPage('+( p+1) +')">'+ ( p+1) +'</a></li>')
+      }
+      $('.pageNav li').eq(1).addClass('active');
+      $('.before').css('display','none')
+    })
+  }
+
+  function setRWtr(rw,index){
+    return '<tr>'+
+        '<td>'+
+        '<label class="checkbox">'+
+        '<input type="checkbox" name="rw" value="'+ rw.missionId +'">'+
+        '</label>'+
+        '</td>'+
+        '<td><a href="#" onclick="selectRw('+ rw.missionId+','+ index +')">'+ rw.missionName +'</a><br><a style="font-size:12px; color:#C5C5C5;">创建时间：'+ rw.addTime +'</a></td>'+
+        '<td>'+ rw.missionDomain +'<br><a style="font-size:12px; color:#C5C5C5;">起止日期：'+ rw.startDate+' - '+rw.endDate +'</a></td>'+
+        '<td>'+ rw.esNationName +'</td>'+
+        '</tr>'
+  }
+
+  function setQJtr(qj){
+    return '<tr>'+
+        '<td>'+
+        '<label class="checkbox">'+
+        '<input class="check" type="checkbox" name="qj" value="'+ qj.scenarinoId +'">'+
+        '</label>'+
+        '</td>'+
+        '<td>'+
+        '<a href="#">'+ qj.scenarinoName +'</a><br>'+
+        '<a style="font-size:12px; color:#C5C5C5;">创建时间：'+ qj.addTime +'</a><br/>'+
+        '<a style="font-size:12px; color:#C5C5C5;">起止日期：'+ qj.startDate+' - '+ qj.endDate +'</a>'+
+        '</td>'+
+        '<td class="text-center">'+
+        '<button class="btn btn-primary mb10 mr10">启动</button>'+
+        '<button class="btn btn-primary mb10">终止</button>'+
+        '<br/>'+
+        '<button class="btn btn-primary mr10">续跑</button>'+
+        '<button class="btn btn-primary">暂停</button>'+
+        '</td>'+
+        '<td style="line-height: 70px">'+
+        '<a hrea="#">'+ qj.scenarinoStatus +'</a>'+
+        '</td>'+
+        '<td style="line-height: 70px">'+
+        '<button class="btn btn-primary">效果评估</button>'+
+        '</td>'+
+        '</tr>'
+  }
+
+</script>
+</html>
