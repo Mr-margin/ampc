@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TPlanMeasureMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TPlanMeasure" >
+    <id column="PLAN_MEASURE_ID" property="planMeasureId" jdbcType="DECIMAL" />
+    <result column="PLAN_ID" property="planId" jdbcType="DECIMAL" />
+    <result column="SECTOR_ID" property="sectorId" jdbcType="DECIMAL" />
+    <result column="MEASURE_ID" property="measureId" jdbcType="DECIMAL" />
+    <result column="ADD_TIME" property="addTime" jdbcType="DATE" />
+    <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.database.model.TPlanMeasure" extends="BaseResultMap" >
+    <result column="MEASURE_CONTENT" property="measureContent" jdbcType="CLOB" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    PLAN_MEASURE_ID, PLAN_ID, SECTOR_ID, MEASURE_ID, ADD_TIME, IS_EFFECTIVE, DELETE_TIME
+  </sql>
+  <sql id="Blob_Column_List" >
+    MEASURE_CONTENT
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from T_PLAN_MEASURE
+    where PLAN_MEASURE_ID = #{planMeasureId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_PLAN_MEASURE
+    where PLAN_MEASURE_ID = #{planMeasureId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TPlanMeasure" >
+    insert into T_PLAN_MEASURE (PLAN_MEASURE_ID, PLAN_ID, SECTOR_ID, 
+      MEASURE_ID, ADD_TIME, IS_EFFECTIVE, 
+      DELETE_TIME, MEASURE_CONTENT)
+    values (#{planMeasureId,jdbcType=DECIMAL}, #{planId,jdbcType=DECIMAL}, #{sectorId,jdbcType=DECIMAL}, 
+      #{measureId,jdbcType=DECIMAL}, #{addTime,jdbcType=DATE}, #{isEffective,jdbcType=VARCHAR}, 
+      #{deleteTime,jdbcType=DATE}, #{measureContent,jdbcType=CLOB})
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TPlanMeasure" >
+    insert into T_PLAN_MEASURE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="planMeasureId != null" >
+        PLAN_MEASURE_ID,
+      </if>
+      <if test="planId != null" >
+        PLAN_ID,
+      </if>
+      <if test="sectorId != null" >
+        SECTOR_ID,
+      </if>
+      <if test="measureId != null" >
+        MEASURE_ID,
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME,
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE,
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME,
+      </if>
+      <if test="measureContent != null" >
+        MEASURE_CONTENT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="planMeasureId != null" >
+        #{planMeasureId,jdbcType=DECIMAL},
+      </if>
+      <if test="planId != null" >
+        #{planId,jdbcType=DECIMAL},
+      </if>
+      <if test="sectorId != null" >
+        #{sectorId,jdbcType=DECIMAL},
+      </if>
+      <if test="measureId != null" >
+        #{measureId,jdbcType=DECIMAL},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=DATE},
+      </if>
+      <if test="isEffective != null" >
+        #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        #{deleteTime,jdbcType=DATE},
+      </if>
+      <if test="measureContent != null" >
+        #{measureContent,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TPlanMeasure" >
+    update T_PLAN_MEASURE
+    <set >
+      <if test="planId != null" >
+        PLAN_ID = #{planId,jdbcType=DECIMAL},
+      </if>
+      <if test="sectorId != null" >
+        SECTOR_ID = #{sectorId,jdbcType=DECIMAL},
+      </if>
+      <if test="measureId != null" >
+        MEASURE_ID = #{measureId,jdbcType=DECIMAL},
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME = #{addTime,jdbcType=DATE},
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      </if>
+      <if test="measureContent != null" >
+        MEASURE_CONTENT = #{measureContent,jdbcType=CLOB},
+      </if>
+    </set>
+    where PLAN_MEASURE_ID = #{planMeasureId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="ampc.com.gistone.database.model.TPlanMeasure" >
+    update T_PLAN_MEASURE
+    set PLAN_ID = #{planId,jdbcType=DECIMAL},
+      SECTOR_ID = #{sectorId,jdbcType=DECIMAL},
+      MEASURE_ID = #{measureId,jdbcType=DECIMAL},
+      ADD_TIME = #{addTime,jdbcType=DATE},
+      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      MEASURE_CONTENT = #{measureContent,jdbcType=CLOB}
+    where PLAN_MEASURE_ID = #{planMeasureId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TPlanMeasure" >
+    update T_PLAN_MEASURE
+    set PLAN_ID = #{planId,jdbcType=DECIMAL},
+      SECTOR_ID = #{sectorId,jdbcType=DECIMAL},
+      MEASURE_ID = #{measureId,jdbcType=DECIMAL},
+      ADD_TIME = #{addTime,jdbcType=DATE},
+      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      DELETE_TIME = #{deleteTime,jdbcType=DATE}
+    where PLAN_MEASURE_ID = #{planMeasureId,jdbcType=DECIMAL}
+  </update>
+</mapper>
