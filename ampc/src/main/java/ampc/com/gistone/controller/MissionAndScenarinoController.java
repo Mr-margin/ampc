@@ -1,5 +1,7 @@
 package ampc.com.gistone.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -52,6 +54,9 @@ public class MissionAndScenarinoController {
 //		TMissionDetail t=tMissionDetailMapper.selectByPrimaryKey(i);
 		
 		TMissionDetail tt = this.tMissionDetailMapper.selectByPrimaryKey(new Long(1));
+		
+		List<TMissionDetail> list = this.tMissionDetailMapper.selectByPrimaryAll();
+		System.out.println(list.size());
 		
 		return AmpcResult.ok(tt);
 	}
