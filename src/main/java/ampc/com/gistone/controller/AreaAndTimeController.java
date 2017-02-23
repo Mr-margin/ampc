@@ -31,8 +31,6 @@ public class AreaAndTimeController {
 	@Autowired
 	private TTimeMapper tTimeMapper;
 	
-	@Autowired
-	private AmpcResult ampcResult;
 	/**
 	 * 在原有基础上添加时段
 	 * @param request
@@ -42,12 +40,12 @@ public class AreaAndTimeController {
 	@RequestMapping("/time/time_save")
 	public void add_TIME(HttpServletRequest request,HttpServletResponse response) throws IOException{
 		
-		Long areaId = Long.parseLong(request.getParameter("areaId"));//区域ID
-		Long scenarinoId = Long.parseLong(request.getParameter("scenarinoId"));//情景id
-		Long missionId = Long.parseLong(request.getParameter("missionId"));//任务id
-		Long userId = Long.parseLong(request.getParameter("userId"));//用户id
-		Long selectTimeId = Long.parseLong(request.getParameter("selectTimeId"));//添加时段处在的时段id
-		Date timeDate = new Date(request.getParameter("addTimeDate"));//新增时段时间
+		Long areaId =Long.parseLong(request.getParameter("areaId"));//区域ID
+		Long scenarinoId =Long.parseLong(request.getParameter("scenarinoId"));//情景id
+		Long missionId =Long.parseLong(request.getParameter("missionId"));//任务id
+		Long userId =1l; //Long.parseLong(request.getParameter("userId"));//用户id
+		Long selectTimeId =1l; //Long.parseLong(request.getParameter("selectTimeId"));//添加时段处在的时段id
+		Date timeDate = new Date();//new Date(request.getParameter("addTimeDate"));//新增时段时间
 
 		// 时间操作，结束时间与开始时间的数据有一位数间隔，需要时间计算
 		Calendar cal = Calendar.getInstance();
@@ -55,7 +53,7 @@ public class AreaAndTimeController {
 		cal.set(Calendar.HOUR, Calendar.HOUR - 1);
 		String addTimeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 				.format(cal.getTime());
-		Date timeEndDate = new Date(addTimeDate);
+		Date timeEndDate = new Date();
 	
 		TTime tTime=new TTime();
 			//查询添加时段处的结束时间
@@ -73,7 +71,8 @@ public class AreaAndTimeController {
 			add_tTime.setMissionId(missionId);
 			add_tTime.setScenarinoId(scenarinoId);
 			add_tTime.setTimeStartDate(timeDate);
-			int insert_start=tTimeMapper.insert(add_tTime);
+			add_tTime.setTimeEndDate(tTime.getTimeEndDate());
+			int insert_start=tTimeMapper.insertSelective(add_tTime);//insertSelective(add_tTime);
 			//修改原有时段
 		    TTime update_tTime=new TTime();
 			update_tTime.setTimeId(selectTimeId);
@@ -92,6 +91,6 @@ public class AreaAndTimeController {
 				msg="save_time error";
 			}
 			//返回json数据
-		response.getWriter().write(ampcResult.build(start,msg, obj).toString());
+		response.getWriter().write(AmpcResult.build(start,msg, obj).toString());
 	}
 }
