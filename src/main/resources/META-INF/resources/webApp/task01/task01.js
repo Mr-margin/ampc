@@ -239,7 +239,7 @@ function initQjTable() {
     method: 'POST',
     //url: 'qj.json',
 //      url : BackstageIP+'/scenarino/scenarinoListBymissionId',
-      url : '/ampc/scenarino/scenarinoListBymissionId',
+      url : '/ampc/scenarino/get_scenarinoListBymissionId',
     dataType: "json",
     contentType: "application/json", // 请求远程数据的内容类型。
     toobar: '#qjToolbar',
