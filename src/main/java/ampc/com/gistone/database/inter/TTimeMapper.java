@@ -1,5 +1,7 @@
 package ampc.com.gistone.database.inter;
 
+import java.util.List;
+
 import ampc.com.gistone.database.model.TTime;
 
 public interface TTimeMapper {
@@ -14,4 +16,5 @@ public interface TTimeMapper {
     int updateByPrimaryKeySelective(TTime record);
 
     int updateByPrimaryKey(TTime record);
+    List<TTime> selectByPrimaryKeysort(TTime record);
 }
