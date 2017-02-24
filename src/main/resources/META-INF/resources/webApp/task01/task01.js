@@ -106,7 +106,7 @@ function initRwTable() {
     iconSize: "outline",
     search: false,
     searchAlign: 'right',
-//      height:500,
+    //height:453,
     maintainSelected: true,
     clickToSelect: false,// 点击选中行
     pagination: true, // 在表格底部显示分页工具栏
@@ -174,9 +174,14 @@ function initRwTable() {
     onLoadSuccess:function(data){
       //console.log(data);
       selectRW = data.rows[0];
-      $('.qjtableDiv').css('background-color','#d9edf7')
+      $('.qjtableDiv').css('background-color','#d9edf7');
       QJheight = $('.rwtableDiv').height();
-      QJheight = QJheight>400?QJheight:400;
+
+      if(QJheight<400){
+        QJheight = 400;
+        $('#rwTable').bootstrapTable('resetView',{height:406})
+      }
+      //QJheight = QJheight>400?QJheight:400;
       initQjTable();
     },
     /*右键菜单*/
@@ -241,7 +246,7 @@ function initQjTable() {
     iconSize: "outline",
     search: false,
     searchAlign: 'right',
-    height:QJheight,
+    height:QJheight-53,
     maintainSelected: true,
     clickToSelect: false,// 点击选中行
     pagination: false, // 在表格底部显示分页工具栏
