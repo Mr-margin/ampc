@@ -16,7 +16,7 @@
 	<!-- mysql -->
     <!-- <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/assa?useUnicode=true&amp;characterEncoding=utf-8" userId="root" password="root" /> -->
    <!--  oracle -->
-    <jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver" connectionURL="jdbc:oracle:thin:@192.168.1.210:1521:ORCL" userId="ampc" password="MakenvAMPC" />
+    <jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver" connectionURL="jdbc:oracle:thin:@192.168.1.132:1521:ORCL" userId="ampc" password="MakenvAMPC" />
     
     <javaModelGenerator targetPackage="ampc.com.gistone.database.model" targetProject="ampc">  
         <property name="trimStrings" value="true"/>  <!-- 是否对数据库查询结果进行trim操作 -->
