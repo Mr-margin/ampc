@@ -20,6 +20,7 @@
     .lh29 {
       line-height: 29px;
     }
+
   </style>
 </head>
 <body>
@@ -142,6 +143,9 @@
             <div class="col-md-10">
               <input type="text" class="form-control" id="rwName" placeholder="任务名称">
             </div>
+            <div class="col-md-10 col-md-offset-2">
+              <span>（限15字以内）</span>
+            </div>
           </div>
           <div class="form-group mt10 clearfix">
             <label for="mnfw" class="col-md-2 control-label lh29">模拟范围</label>
@@ -188,11 +192,34 @@
           </div>
         </div>
         <div class="createQj">
+          <div class="form-group mt10 clearfix">
+            <label for="qjName" class="col-md-2 control-label lh29">情景名称</label>
 
+            <div class="col-md-10">
+              <input type="text" class="form-control" id="qjName" placeholder="协同控制方案">
+            </div>
+            <div class="col-md-10 col-md-offset-2">
+              <span>（限15字以内）</span>
+            </div>
+          </div>
+          <div class="form-group mt10 clearfix">
+            <label for="qjStartDate" class="col-md-2 control-label lh29">开始日期</label>
+
+            <div class="col-md-10">
+              <input type="text" class="form-control" id="qjStartDate" readonly placeholder="请选择日期···">
+            </div>
+          </div>
+          <div class="form-group mt10 clearfix">
+            <label for="qjEndDate" class="col-md-2 control-label lh29">结束日期</label>
+
+            <div class="col-md-10">
+              <input type="text" class="form-control" id="qjEndDate" readonly placeholder="请选择日期···">
+            </div>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary createRun" onclick="create(this,true)">创建并执行基准模拟</button>
+        <button type="button" class="btn btn-primary createRun" onclick="create(this,true)"></button>
         <button type="button" class="btn btn-primary create" onclick="create(this)">创建</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
       </div>
@@ -547,6 +574,7 @@
 
   /*模态框打开处理*/
   $('#createModal').on('show.bs.modal', function (event) {
+    if(!event.relatedTarget)return;
     var button = $(event.relatedTarget);
     var recipient = button.data('whatever');
     var type = button.data('type');
@@ -558,9 +586,15 @@
 
     /*不同类型出现内容不同*/
     if (type == 'rw') {
-
+      modal.find('.createRun').text('创建并执行基准模拟');
+      modal.find('.createRun').attr('data-href','');
+      $('.createRw').css('display','block');
+      $('.createQj').css('display','none');
     } else {
-
+      modal.find('.createRun').text('创建并开始编辑情景');
+      modal.find('.createRun').attr('data-href','xxxxxxx.html');
+      $('.createRw').css('display','none');
+      $('.createQj').css('display','block');
     }
 
   });
@@ -577,7 +611,7 @@
       params.missionDomainId = $('#mnfw').val();
       params.esNationId = $('#qd').val();
       params.startDate = $('#rwStartDate').val();
-      params.endDate = $('#rwendDate').val();
+      params.endDate = $('#rwEndDate').val();
       params.userId = userId;
       if(run){
         params.createType = 2;
@@ -586,6 +620,19 @@
       }
     }else{
 
+      url = '/scenarino/scenarino_save';
+      params = {};
+      params.scenarinoName = $('#qjName').val();
+      params.missionId = selectRW.missionId;
+      params.esNationId = $('#qd').val();
+      params.startDate = $('#qjStartDate').val();
+      params.endDate = $('#qjEndDate').val();
+      params.userId = userId;
+      if(run){
+        params.scenarinoType = 2;
+      }else{
+        params.scenarinoType = 1;
+      }
     }
 
     ajaxPost(url, params).success(function () {
@@ -608,6 +655,22 @@
       todayBtn: true
     });
     $("#rwEndDate").datetimepicker({
+      format: 'yyyy-mm-dd hh',
+      minView: 'day',
+      startView: 'year',
+      language: 'zh-CN',
+      autoclose: true,
+      todayBtn: true
+    });
+    $("#qjStartDate").datetimepicker({
+      format: 'yyyy-mm-dd hh',
+      minView: 'day',
+      startView: 'year',
+      language: 'zh-CN',
+      autoclose: true,
+      todayBtn: true
+    });
+    $("#qjEndDate").datetimepicker({
       format: 'yyyy-mm-dd hh',
       minView: 'day',
       startView: 'year',
