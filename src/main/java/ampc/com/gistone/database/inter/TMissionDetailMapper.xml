@@ -31,42 +31,42 @@
   	MISSION_ID,MISSION_NAME,MISSION_DOMAIN_ID,V1,MISS.ES_COUPLING_ID,
    ES_COUPLING_NAME,MISSION_ADD_TIME,MISSION_START_DATE,MISSION_END_DATE
   </sql>
-  
-  
-  <!-- 查询所有记录分页 -->
-  <select id="selectAll" parameterType="hashMap" resultMap="missionListMap" >
+  <!-- 查询所有记录分页 可根据名称模糊查询 -->
+  <select id="selectAllOrByMissionName" parameterType="hashMap" resultMap="missionListMap" >
    	SELECT * FROM (
-   	   SELECT T.*,ROWNUM FROM (
+   	   SELECT T.*,ROWNUM AS RN FROM (
          SELECT <include refid="mission_Column_List"/> FROM T_MISSION_DETAIL  MISS 
 		   INNER JOIN T_ES_COUPLING  COUP ON MISS.ES_COUPLING_ID= COUP.ES_COUPLING_ID
            INNER JOIN T_DOMAIN_MISSION DOMA ON MISS.MISSION_DOMAIN_ID=DOMA.DOMAIN_ID
-			  WHERE MISS.IS_EFFECTIVE='1'
+			  WHERE MISS.IS_EFFECTIVE='1' AND MISS.USER_ID=#{userId,jdbcType=OTHER} 
+			  <if test="missionName != null" >
+        		AND MISSION_NAME LIKE #{missionName,jdbcType=OTHER}
+      		 </if>
 			  ORDER BY MISS.MISSION_ID DESC
-	      ) T WHERE ROWNUM>=#{pageNum,jdbcType=OTHER}
+	      ) T WHERE ROWNUM &lt;=#{endNum,jdbcType=OTHER}
 	   ) 
-	  WHERE ROWNUM &lt;=#{pageSize,jdbcType=OTHER}
+	  WHERE RN > #{startNum,jdbcType=OTHER}
+	   
   </select>
-  <!-- 根据任务名查询分页 -->
-  <select id="selectByMissionName" parameterType="hashMap" resultMap="missionListMap" >
-   	SELECT * FROM (
-   	   SELECT T.*,ROWNUM FROM (
-         SELECT <include refid="mission_Column_List"/> FROM T_MISSION_DETAIL  MISS 
-		   INNER JOIN T_ES_COUPLING  COUP ON MISS.ES_COUPLING_ID= COUP.ES_COUPLING_ID
-           INNER JOIN T_DOMAIN_MISSION DOMA ON MISS.MISSION_DOMAIN_ID=DOMA.DOMAIN_ID
-			  WHERE MISS.IS_EFFECTIVE='1'
-			  ORDER BY MISS.MISSION_ID DESC
-	      ) T WHERE ROWNUM>=#{pageNum,jdbcType=OTHER}
-	   ) 
-	  WHERE ROWNUM &lt;=#{pageSize,jdbcType=OTHER}  AND MISSION_NAME LIKE #{missionName,jdbcType=OTHER}
+  
+  <!--查询全部任务总条数  可根据名称模糊查询-->
+  <select id="selectCountOrByMissionName" parameterType="hashMap" resultType="int">
+  	 SELECT COUNT(*) FROM T_MISSION_DETAIL WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+  	  <if test="missionName != null" >
+        	AND MISSION_NAME LIKE #{missionName,jdbcType=OTHER}
+      </if>
   </select>
-  <!--查询全部任务总条数  -->
-  <select id="selectCount" >
-  	 SELECT COUNT(*) FROM T_MISSION_DETAIL WHERE IS_EFFECTIVE='1' AND MISSION_NAME LIKE #{missionName,jdbcType=OTHER}
-  </select>
-  <!--查询根据任务名称查询总条数  -->
-  <select id="selectByMissionNameCount" parameterType="java.lang.String" resultType="int">
-  	SELECT COUNT(*) FROM T_MISSION_DETAIL WHERE IS_EFFECTIVE='1'
-  </select>
+  
+  <!-- 修改所有的任务状态 相当于删除 -->
+  <update id="updateIsEffeByIds" parameterType="java.lang.String">
+    update T_MISSION_DETAIL
+    set 
+      IS_EFFECTIVE = '0',
+      DELETE_TIME = (select sysdate from dual)
+    where MISSION_ID in #{missionIds,jdbcType=VARCHAR}
+  </update>
+  
+  
   <sql id="Base_Column_List" >
     MISSION_ID, MISSION_NAME, MISSION_DOMAIN_ID, ES_COUPLING_ID, MISSION_START_DATE, 
     MISSION_END_DATE, MISSION_ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME
