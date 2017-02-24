@@ -25,6 +25,7 @@ $('head').append($('<style></style>').html(cssStyle));
 //doc ready function
 $(document).ready(function() {
  	//Disable certain links
+    $('iframe').css('height',llqHeight-160);
     $('#sidebar a').click(function (e) {
         e.preventDefault();
     });
