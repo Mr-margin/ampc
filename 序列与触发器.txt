@@ -1,0 +1,17 @@
+--ÐòÁÐ
+create sequence DA_HELP_VISIT_SEQ
+minvalue 1        --??§³?
+nomaxvalue        --??????????
+start with 51003     --??1???????
+increment by 1    --??¦Ì?1??
+nocycle           --???????????
+cache 20; 
+
+--´¥·¢Æ÷
+CREATE OR REPLACE TRIGGER PKC_1_1_1_REP 
+BEFORE INSERT ON PKC_1_1_1 FOR EACH ROW WHEN (new.pkid is null)
+begin
+select DA_HELP_VISIT_SEQ.nextval into:new.pkid from dual;
+end;
+
+
