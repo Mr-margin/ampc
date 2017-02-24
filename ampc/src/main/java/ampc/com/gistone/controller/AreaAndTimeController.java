@@ -235,4 +235,6 @@ public class AreaAndTimeController {
 		return AmpcResult.build(1, "delete_time error");
 		}
 	}
+	
+	
 }
