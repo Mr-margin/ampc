@@ -14,7 +14,8 @@ public interface TTimeMapper {
     TTime selectByPrimaryKey(Long timeId);
 
     int updateByPrimaryKeySelective(TTime record);
-
+    
     int updateByPrimaryKey(TTime record);
+    
     List<TTime> selectByPrimaryKeysort(TTime record);
 }
