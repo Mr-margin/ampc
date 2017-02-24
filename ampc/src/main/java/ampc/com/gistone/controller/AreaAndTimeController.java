@@ -61,7 +61,7 @@ public class AreaAndTimeController {
 		// 时间操作，结束时间与开始时间的数据有一位数间隔，需要时间计算
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(timeDate);
-		cal.set(Calendar.HOUR, Calendar.HOUR - 10);
+		cal.add(Calendar.HOUR, - 1);
 		String addTimeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 				.format(cal.getTime());
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -136,7 +136,7 @@ public class AreaAndTimeController {
 		//修改时间减一个小时作为前一个时段的结束时间
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(updateDate);
-		cal.set(Calendar.HOUR, Calendar.HOUR - 10);
+		cal.add(Calendar.HOUR, - 1);
 		String addTimeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 				.format(cal.getTime());
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -172,10 +172,12 @@ public class AreaAndTimeController {
 		Long areaId=1l;//Long.parseLong(request.getParameter("areaId"));//区域id
 		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户的id
 		String sort="timeStartDate";//request.getParameter("sort");//排序字段
+		String isEffective="1"; //Long.parseLong(request.getParameter("isEffective"));//是否有效
 		//查询时段信息
 		TTime find_time = new TTime();
 		find_time.setAreaId(areaId);
 		find_time.setUserId(userId);
+		find_time.setIsEffective(isEffective);
 		find_time.setSort(sort);
 		List<TTime> timelist=tTimeMapper.selectByPrimaryKeysort(find_time);
 		JSONArray objlist=new JSONArray();
@@ -194,10 +196,43 @@ public class AreaAndTimeController {
 			}
 			JSONObject obj=new JSONObject();
 			obj.put("timeItem", objlist);
-			return AmpcResult.build(0, "find_TIME error",obj);
+			return AmpcResult.build(0, "find_TIME success",obj);
 		}else{
 			return AmpcResult.build(1, "find_TIME error");
 		}
 		
+	}
+	
+	/**
+	 * 删除当前用户选择的时段节点
+	 */
+	@RequestMapping("/time/delete_time")
+	public AmpcResult delete_TIME(HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
+		Long beforeTimeId=1l;//Long.parseLong(request.getParameter("beforeTimeId"));//上一个时段的时段Id
+		Long afterTimeId=18l;//Long.parseLong(request.getParameter("beforeTimeId"));//下一个时段的时段Id
+		Date timeEndDate=new Date();//request.getParameter("beforeTimeId"));//删除时段的结束时间
+		//Long userId=Long.parseLong(request.getParameter("userId"));//用户的id
+		//Long planId=Long.parseLong(request.getParameter("userId"));//预案id
+		
+		//修改要删除时段的状态
+		TTime delete_time = new TTime();
+		delete_time.setTimeId(afterTimeId);
+		delete_time.setIsEffective("0");
+		int delete_timestatus=tTimeMapper.updateByPrimaryKeySelective(delete_time);
+		//判断要删除时段的状态书否修改成功,如果成功修改上一时段的结束时间
+		if(delete_timestatus!=0){
+			TTime update_time = new TTime();	
+			update_time.setTimeEndDate(timeEndDate);
+			update_time.setTimeId(beforeTimeId);
+			int update_timestatus=tTimeMapper.updateByPrimaryKeySelective(update_time);
+			//判断上一个时段的结束时间是否修改成功
+			if(update_timestatus!=0){
+				return AmpcResult.build(0, "delete_time success");
+			}else{
+				return AmpcResult.build(1, "delete_time error");	
+			}
+		}else{
+		return AmpcResult.build(1, "delete_time error");
+		}
 	}
 }
