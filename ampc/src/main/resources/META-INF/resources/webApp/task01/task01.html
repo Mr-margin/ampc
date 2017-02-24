@@ -596,13 +596,13 @@
         delList.push(i);
       }
       params.missionIds = delList;
-      url = '/mission/mission_delete';
+      url = '/mission/delete_mission';
     } else {
       for (var ii in delQJid) {
         delList.push(ii);
       }
       params.scenarinoIds = delList;
-      url = '/scenarino/scenarino_delete'
+      url = '/scenarino/delete_scenarino'
     }
 
     swal({
@@ -671,13 +671,13 @@
       var params;
       var type = $(e).attr('data-type');
       if(type == 'rw'){
-        url = '/mission/mission_save';
+        url = '/mission/save_mission';
         params = {};
         params.missionName = $('#rwName').val();
         params.missionDomainId = $('#mnfw').val();
-        params.esNationId = $('#qd').val();
-        params.startDate = $('#rwStartDate').val();
-        params.endDate = $('#rwEndDate').val();
+        params.esCouplingId = $('#qd').val();
+        params.missionStartDate = $('#rwStartDate').val();
+        params.missionEndDate = $('#rwEndDate').val();
         params.userId = userId;
         if(run){
           params.createType = 2;
@@ -686,18 +686,18 @@
         }
       }else{
 
-        url = '/scenarino/scenarino_save';
+        url = '/scenarino/save_scenarino';
         params = {};
         params.scenarinoName = $('#qjName').val();
         params.missionId = selectRW.missionId;
-        params.esNationId = $('#qd').val();
-        params.startDate = $('#qjStartDate').val();
-        params.endDate = $('#qjEndDate').val();
+        params.scenarinoStartDate = $('#qjStartDate').val();
+        params.scenarinoEndDate = $('#qjEndDate').val();
         params.userId = userId;
+        params.scenarinoId = '';
         if(run){
-          params.scenarinoType = 2;
+          params.createType = 2;
         }else{
-          params.scenarinoType = 1;
+          params.createType = 1;
         }
       }
 
@@ -705,7 +705,7 @@
         console.log('success');
         $('#' + type + 'Table').bootstrapTable('refresh', {silent:true});
       }).error(function () {
-        console.log('error');
+//        console.log('error');
         swal('添加失败', '', 'error')
       })
     }
@@ -776,10 +776,11 @@
     var params = {userId: userId};
     if (type == 'rw') {
       params.missionId = id;
-      url = '/mission/mission_update';
+      url = '/mission/update_mission';
     } else {
       params.scenarinoId = id;
-      url = '/scenarino/scenarino_update';
+      params.state = -1;
+      url = '/scenarino/updat_scenarino';
     }
 
     swal({
@@ -819,9 +820,8 @@
             swal("已修改!", "修改名称为：" + inputValue, "success");
           }).error(function () {
             swal("修改失败!", "名称未修改为：" + inputValue, "error");
-          })
+          });
 
-//          swal("Nice!", "You wrote: " + inputValue, "success");
         });
 
   }
