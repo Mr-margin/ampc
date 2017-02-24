@@ -22,6 +22,8 @@ public class TTime {
     private String isEffective;
 
     private Date deleteTime;
+    
+    private String sort;//排序字段
 
     public Long getTimeId() {
         return timeId;
@@ -31,7 +33,15 @@ public class TTime {
         this.timeId = timeId;
     }
 
-    public Date getTimeStartDate() {
+    public String getSort() {
+		return sort;
+	}
+
+	public void setSort(String sort) {
+		this.sort = sort;
+	}
+
+	public Date getTimeStartDate() {
         return timeStartDate;
     }
 
