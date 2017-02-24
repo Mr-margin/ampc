@@ -20,7 +20,9 @@
     .lh29 {
       line-height: 29px;
     }
-
+    .error{
+      color:red;
+    }
   </style>
 </head>
 <body>
@@ -136,87 +138,90 @@
         <h4 class="modal-title" id="createTitle"></h4>
       </div>
       <div class="modal-body">
-        <div class="createRw">
-          <div class="form-group mt10 clearfix">
-            <label for="rwName" class="col-md-2 control-label lh29">任务名称</label>
+        <form class="formCreate" id="formCreate">
+          <div class="createRw">
+            <div class="form-group mt10 clearfix">
+              <label for="rwName" class="col-md-2 control-label lh29">任务名称</label>
 
-            <div class="col-md-10">
-              <input type="text" class="form-control" id="rwName" placeholder="任务名称">
+              <div class="col-md-10">
+                <input type="text" class="form-control" id="rwName" name="rwName" placeholder="任务名称">
+              </div>
+              <div class="col-md-10 col-md-offset-2">
+                <span>（限15字以内）</span>
+              </div>
             </div>
-            <div class="col-md-10 col-md-offset-2">
-              <span>（限15字以内）</span>
+            <div class="form-group mt10 clearfix">
+              <label for="mnfw" class="col-md-2 control-label lh29">模拟范围</label>
+
+              <div class="col-md-10">
+                <select id="mnfw" class="form-control">
+                  <option value="1">1</option>
+                  <!--<option>2</option>-->
+                  <!--<option>3</option>-->
+                  <!--<option>4</option>-->
+                  <!--<option>5</option>-->
+                </select>
+              </div>
+              <div class="col-md-10 col-md-offset-2">
+                <button class="btn btn-primary mt10 mnfwTopSelect">高级</button>
+              </div>
+            </div>
+            <div class="form-group mt10 clearfix">
+              <label for="qd" class="col-md-2 control-label lh29">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单</label>
+
+              <div class="col-md-10">
+                <select id="qd" class="form-control">
+                  <option value="1">1</option>
+                  <!--<option>2</option>-->
+                  <!--<option>3</option>-->
+                  <!--<option>4</option>-->
+                  <!--<option>5</option>-->
+                </select>
+              </div>
+            </div>
+            <div class="form-group mt10 clearfix">
+              <label for="rwStartDate" class="col-md-2 control-label lh29">开始日期</label>
+
+              <div class="col-md-10">
+                <input type="text" class="form-control" id="rwStartDate" name="rwStartDate" readonly placeholder="请选择日期···">
+              </div>
+            </div>
+            <div class="form-group mt10 clearfix">
+              <label for="rwEndDate" class="col-md-2 control-label lh29">结束日期</label>
+
+              <div class="col-md-10">
+                <input type="text" class="form-control" id="rwEndDate" name="rwEndDate" readonly placeholder="请选择日期···">
+              </div>
             </div>
           </div>
-          <div class="form-group mt10 clearfix">
-            <label for="mnfw" class="col-md-2 control-label lh29">模拟范围</label>
+          <div class="createQj">
+            <div class="form-group mt10 clearfix">
+              <label for="qjName" class="col-md-2 control-label lh29">情景名称</label>
 
-            <div class="col-md-10">
-              <select id="mnfw" class="form-control">
-                <option value="1">1</option>
-                <!--<option>2</option>-->
-                <!--<option>3</option>-->
-                <!--<option>4</option>-->
-                <!--<option>5</option>-->
-              </select>
+              <div class="col-md-10">
+                <input type="text" class="form-control" id="qjName" name="qjName" placeholder="协同控制方案">
+              </div>
+              <div class="col-md-10 col-md-offset-2">
+                <span>（限15字以内）</span>
+              </div>
             </div>
-            <div class="col-md-10 col-md-offset-2">
-              <button class="btn btn-primary mt10 mnfwTopSelect">高级</button>
+            <div class="form-group mt10 clearfix">
+              <label for="qjStartDate" class="col-md-2 control-label lh29">开始日期</label>
+
+              <div class="col-md-10">
+                <input type="text" class="form-control" id="qjStartDate" name="qjStartDate" readonly placeholder="请选择日期···">
+              </div>
+            </div>
+            <div class="form-group mt10 clearfix">
+              <label for="qjEndDate" class="col-md-2 control-label lh29">结束日期</label>
+
+              <div class="col-md-10">
+                <input type="text" class="form-control" id="qjEndDate" name="qjEndDate" readonly placeholder="请选择日期···">
+              </div>
             </div>
           </div>
-          <div class="form-group mt10 clearfix">
-            <label for="qd" class="col-md-2 control-label lh29">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单</label>
-
-            <div class="col-md-10">
-              <select id="qd" class="form-control">
-                <option value="1">1</option>
-                <!--<option>2</option>-->
-                <!--<option>3</option>-->
-                <!--<option>4</option>-->
-                <!--<option>5</option>-->
-              </select>
-            </div>
-          </div>
-          <div class="form-group mt10 clearfix">
-            <label for="rwStartDate" class="col-md-2 control-label lh29">开始日期</label>
-
-            <div class="col-md-10">
-              <input type="text" class="form-control" id="rwStartDate" readonly placeholder="请选择日期···">
-            </div>
-          </div>
-          <div class="form-group mt10 clearfix">
-            <label for="rwEndDate" class="col-md-2 control-label lh29">结束日期</label>
-
-            <div class="col-md-10">
-              <input type="text" class="form-control" id="rwEndDate" readonly placeholder="请选择日期···">
-            </div>
-          </div>
-        </div>
-        <div class="createQj">
-          <div class="form-group mt10 clearfix">
-            <label for="qjName" class="col-md-2 control-label lh29">情景名称</label>
-
-            <div class="col-md-10">
-              <input type="text" class="form-control" id="qjName" placeholder="协同控制方案">
-            </div>
-            <div class="col-md-10 col-md-offset-2">
-              <span>（限15字以内）</span>
-            </div>
-          </div>
-          <div class="form-group mt10 clearfix">
-            <label for="qjStartDate" class="col-md-2 control-label lh29">开始日期</label>
-
-            <div class="col-md-10">
-              <input type="text" class="form-control" id="qjStartDate" readonly placeholder="请选择日期···">
-            </div>
-          </div>
-          <div class="form-group mt10 clearfix">
-            <label for="qjEndDate" class="col-md-2 control-label lh29">结束日期</label>
-
-            <div class="col-md-10">
-              <input type="text" class="form-control" id="qjEndDate" readonly placeholder="请选择日期···">
-            </div>
-          </div>
-        </div>
+          <input type="submit" class="createSubmit" style="display: none"/>
+        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary createRun" onclick="create(this,true)"></button>
@@ -242,6 +247,9 @@
 <script src="../../js/plugins/core/moment/moment.js"></script>
 <script src="../../js/plugins/forms/datetimepicker/bootstrap-datetimepicker.js"></script>
 <script src="../../js/plugins/forms/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+<script src="../../js/plugins/validate/additional-methods.min.js"></script>
+<script src="../../js/plugins/validate/messages_zh.min.js"></script>
 
 <script src="../../js/plugins/sweetalert/sweetalert.min.js"></script>
 <script src="../../js/bootstrap-table-contextmenu.js.js"></script>
@@ -249,6 +257,7 @@
 <script>
   //  console.log(BackstageIP);
   var userId = 1;
+  var formCreate;
   var selectRW;
   var delRWid = {}, delQJid = {};
   var parameterPar = {total: '', data: {}};
@@ -261,6 +270,56 @@
       radioClass: 'iradio_flat-aero',
       increaseArea: '20%'
     });
+  }
+
+  function formVerify(){
+    formCreate = $("#formCreate").validate({
+      rules:{
+        rwName:{
+          required: true,
+          maxlength: 15
+        },
+        rwStartDate:{
+          required: true
+        },
+        rwEndDate:{
+          required: true
+        },
+        qjName:{
+          required: true,
+          maxlength: 15
+        },
+        qjStartDate:{
+          required: true
+        },
+        qjEndDate:{
+          required: true
+        }
+      },
+      messages: {
+        rwName:{
+          required: '请填写任务名称',
+          maxlength: '不可超过15个字符'
+        },
+        rwStartDate:{
+          required: '请填写日期'
+        },
+        rwEndDate:{
+          required: '请填写日期'
+        },
+        qjName:{
+          required: '请填写情景名称',
+          maxlength: '不可超过15个字符'
+        },
+        qjStartDate:{
+          required: '请填写日期'
+        },
+        qjEndDate:{
+          required: '请填写日期'
+        }
+      }
+
+    })
   }
 
 
@@ -280,6 +339,7 @@
   $(document).ready(function () {
     initialize();
     initDate();
+    formVerify();
   });
 
   function initialize() {
@@ -386,26 +446,28 @@
           "token": "",
           "data": {
             "missionName": params.searchText || '',
-            "pageNum": 1,
+            "pageNum": params.pageNumber,
             "pageSize": params.pageSize,
-            "sort": null,
+            "sort": '',
             "userId": 1
           }
         };
+        json.data.missionName = $('.rw').val();
       } else {
         json = {
           "token": "",
           "data": {
             "missionId": selectRW.missionId,
             "scrnarinoName": params.searchText || '',
-            "pageNum": params.pageNumber,
-            "pageSize": params.pageSize,
-            "sort": null,
+//            "pageNum": params.pageNumber,
+//            "pageSize": params.pageSize,
+            "sort": '',
             "userId": 1
           }
         };
+        json.data.scrnarinoName = $('.qj').val();
       }
-      json.data.missionName = $('.' + type).val();
+//      json.data.missionName = $('.' + type).val();
       params = JSON.stringify(json);
       console.info(params);
       return params;
@@ -601,78 +663,83 @@
 
   /*任务、情景创建*/
   function create(e,run) {
-    var url;
-    var params;
-    var type = $(e).attr('data-type');
-    if(type == 'rw'){
-      url = '/mission/mission_save';
-      params = {};
-      params.missionName = $('#rwName').val();
-      params.missionDomainId = $('#mnfw').val();
-      params.esNationId = $('#qd').val();
-      params.startDate = $('#rwStartDate').val();
-      params.endDate = $('#rwEndDate').val();
-      params.userId = userId;
-      if(run){
-        params.createType = 2;
-      }else{
-        params.createType = 1;
-      }
-    }else{
 
-      url = '/scenarino/scenarino_save';
-      params = {};
-      params.scenarinoName = $('#qjName').val();
-      params.missionId = selectRW.missionId;
-      params.esNationId = $('#qd').val();
-      params.startDate = $('#qjStartDate').val();
-      params.endDate = $('#qjEndDate').val();
-      params.userId = userId;
-      if(run){
-        params.scenarinoType = 2;
+    $('.createSubmit').click();
+    if(formCreate.form()){
+      var url;
+      var params;
+      var type = $(e).attr('data-type');
+      if(type == 'rw'){
+        url = '/mission/mission_save';
+        params = {};
+        params.missionName = $('#rwName').val();
+        params.missionDomainId = $('#mnfw').val();
+        params.esNationId = $('#qd').val();
+        params.startDate = $('#rwStartDate').val();
+        params.endDate = $('#rwEndDate').val();
+        params.userId = userId;
+        if(run){
+          params.createType = 2;
+        }else{
+          params.createType = 1;
+        }
       }else{
-        params.scenarinoType = 1;
+
+        url = '/scenarino/scenarino_save';
+        params = {};
+        params.scenarinoName = $('#qjName').val();
+        params.missionId = selectRW.missionId;
+        params.esNationId = $('#qd').val();
+        params.startDate = $('#qjStartDate').val();
+        params.endDate = $('#qjEndDate').val();
+        params.userId = userId;
+        if(run){
+          params.scenarinoType = 2;
+        }else{
+          params.scenarinoType = 1;
+        }
       }
+
+      ajaxPost(url, params).success(function () {
+        console.log('success');
+        $('#' + type + 'Table').bootstrapTable('refresh', {silent:true});
+      }).error(function () {
+        console.log('error');
+        swal('添加失败', '', 'error')
+      })
     }
-
-    ajaxPost(url, params).success(function () {
-      console.log('success')
-    }).error(function () {
-      console.log('error');
-      swal('添加失败', '', 'error')
-    })
   }
 
 
   /*初始化日期插件*/
   function initDate() {
     $("#rwStartDate").datetimepicker({
-      format: 'yyyy-mm-dd hh',
-      minView: 'day',
+      format: 'yyyy-mm-dd',
+      minView: 'month',
       startView: 'year',
       language: 'zh-CN',
       autoclose: true,
       todayBtn: true
     });
     $("#rwEndDate").datetimepicker({
-      format: 'yyyy-mm-dd hh',
-      minView: 'day',
+      format: 'yyyy-mm-dd',
+      minView: 'month',
       startView: 'year',
       language: 'zh-CN',
       autoclose: true,
       todayBtn: true
     });
     $("#qjStartDate").datetimepicker({
-      format: 'yyyy-mm-dd hh',
-      minView: 'day',
+      format: 'yyyy-mm-dd',
+      minView: 'month',
       startView: 'year',
       language: 'zh-CN',
       autoclose: true,
       todayBtn: true
     });
     $("#qjEndDate").datetimepicker({
-      format: 'yyyy-mm-dd hh',
-      minView: 'day',
+      format: 'yyyy-mm-dd',
+      minView: 'month',
       startView: 'year',
       language: 'zh-CN',
       autoclose: true,
