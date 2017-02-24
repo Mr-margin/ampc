@@ -150,4 +150,11 @@
       DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP}
     where TIME_ID = #{timeId,jdbcType=DECIMAL}
   </update>
+    <select id="selectByPrimaryKeysort" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_TIME
+    where AREA_ID = #{areaId,jdbcType=DECIMAL} and USER_ID = #{userId,jdbcType=DECIMAL}
+    order by TIME_START_DATE asc
+  </select>
 </mapper>
