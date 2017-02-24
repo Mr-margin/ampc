@@ -57,16 +57,18 @@
             </div>
             <!-- /input-group -->
           </div>
-          <table id="rwTable">
-            <thead>
-            <tr class="info">
-              <th data-checkbox="true"></th>
-              <th data-formatter="rwName">任务名称</th>
-              <th data-formatter="rwDomain">模拟范围</th>
-              <th data-field="esCouplingName">清单</th>
-            </tr>
-            </thead>
-          </table>
+          <div class="tableDiv">
+            <table id="rwTable">
+              <thead>
+              <tr class="info">
+                <th data-checkbox="true"></th>
+                <th data-formatter="rwName">任务名称</th>
+                <th data-formatter="rwDomain">模拟范围</th>
+                <th data-field="esCouplingName">清单</th>
+              </tr>
+              </thead>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -363,7 +365,7 @@
       maintainSelected: true,
       clickToSelect: false,// 点击选中行
       pagination: true, // 在表格底部显示分页工具栏
-      pageSize: 1, // 页面大小
+      pageSize: 10, // 页面大小
       pageNumber: 1, // 页数
       pageList: [10],
       striped: true, // 使表格带有条纹
@@ -590,17 +592,19 @@
   /*delete 函数*/
   function deleteFun(type) {
     var params = {userId: userId};
-    var delList = [], url;
+    var delList = '', url;
     if (type == 'rw') {
       for (var i in delRWid) {
-        delList.push(i);
+        delList+=i+',';
       }
+      delList = delList.substr(0,delList.length-1);
       params.missionIds = delList;
       url = '/mission/delete_mission';
     } else {
       for (var ii in delQJid) {
-        delList.push(ii);
+        delList+=ii+',';
       }
+      delList = delList.substr(0,delList.length-1);
       params.scenarinoIds = delList;
       url = '/scenarino/delete_scenarino'
     }
@@ -615,9 +619,9 @@
           closeOnConfirm: false
         },
         function () {
-          window.setTimeout(function () {
-            swal("删除失败!", "", "error");
-          }, 2000);
+//          window.setTimeout(function () {
+//            swal("删除失败!", "", "error");
+//          }, 2000);
           ajaxPost(url, params).success(function () {
             if (type == 'rw') {
               $('#rwTable').bootstrapTable('destroy');
@@ -704,8 +708,10 @@
       ajaxPost(url, params).success(function () {
         console.log('success');
         $('#' + type + 'Table').bootstrapTable('refresh', {silent:true});
+        $('#createModal').modal('hide')
       }).error(function () {
 //        console.log('error');
+        $('#createModal').modal('hide')
         swal('添加失败', '', 'error')
       })
     }
