@@ -14,30 +14,26 @@ import ampc.com.gistone.database.model.TMissionDetail;
 public interface TMissionDetailMapper {
     
     /**
-     * 查询所有任务列表
+     * 查询所有任务列表 可根据任务名模糊查询
      * @param map 分页参数
      * @return 结果集
      */
-    List<Map> selectAll(Map map);
+    List<Map> selectAllOrByMissionName(Map map);
+    
     
     /**
-     * 查询任务根据名称
-     * @param map 分页参数
-     * @return 结果集
-     */
-    List<Map> selectByMissionName(Map map);
-    
-    /**
-     * 不分页查询所有任务有效的条数
+     * 不分页查询所有任务有效的条数 可根据任务名
      * @return 总条数
      */
-    int selectCount();
+    int selectCountOrByMissionName(Map map);
+    
     
     /**
-     * 根据名称不分页查询所有任务有效的条数
-     * @return 总条数
+     * 修改任务是否有效
+     * @param missionId
+     * @return
      */
-    int selectByMissionNameCount(String name);
+    int updateIsEffeByIds(String missionIds);
     
     int deleteByPrimaryKey(Long missionId);
 
