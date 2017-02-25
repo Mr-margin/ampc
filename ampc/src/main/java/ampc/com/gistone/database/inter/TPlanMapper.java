@@ -14,4 +14,6 @@ public interface TPlanMapper {
     int updateByPrimaryKeySelective(TPlan record);
 
     int updateByPrimaryKey(TPlan record);
+    
+    
 }
