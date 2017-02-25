@@ -74,7 +74,8 @@ function formVerify(){
 function ajaxPost(url, parameter) {
   parameterPar.data = parameter;
   var p = JSON.stringify(parameterPar);
-  return $.ajax(BackstageIP + url, {
+  //return $.ajax(BackstageIP + url, {
+  return $.ajax('/ampc' + url, {
     contentType: "application/json",
     type: "POST",
     async: true,
@@ -173,6 +174,7 @@ function initRwTable() {
     },
     onLoadSuccess:function(data){
       //console.log(data);
+      $('#rwTable').bootstrapTable('resetView',{height:null})
       selectRW = data.rows[0];
       $('.qjtableDiv').css('background-color','#d9edf7');
       QJheight = $('.rwtableDiv').height();
@@ -182,6 +184,7 @@ function initRwTable() {
         $('#rwTable').bootstrapTable('resetView',{height:406})
       }
       //QJheight = QJheight>400?QJheight:400;
+      $('#qjTable').bootstrapTable('destroy');
       initQjTable();
     },
     /*右键菜单*/
@@ -236,10 +239,10 @@ function search(type) {
 
 function initQjTable() {
   $('#qjTable').bootstrapTable({
-    method: 'POST',
-    //url: 'qj.json',
+    method: 'GET',
+    url: 'webApp/task01/qj.json',
 //      url : BackstageIP+'/scenarino/scenarinoListBymissionId',
-      url : '/ampc/scenarino/get_scenarinoListBymissionId',
+//      url : '/ampc/scenarino/get_scenarinoListBymissionId',
     dataType: "json",
     contentType: "application/json", // 请求远程数据的内容类型。
     toobar: '#qjToolbar',
@@ -379,15 +382,19 @@ function deleteFun(type) {
 //          window.setTimeout(function () {
 //            swal("删除失败!", "", "error");
 //          }, 2000);
-      ajaxPost(url, params).success(function () {
-        if (type == 'rw') {
-          $('#rwTable').bootstrapTable('destroy');
-          initRwTable();
-        } else {
-          $('#qjTable').bootstrapTable('destroy');
-          initQjTable();
+      ajaxPost(url, params).success(function (res) {
+        if(res.status == 0){
+          if (type == 'rw') {
+            $('#rwTable').bootstrapTable('destroy');
+            initRwTable();
+          } else {
+            $('#qjTable').bootstrapTable('destroy');
+            initQjTable();
+          }
+          swal("已删除!", "", "success");
+        }else{
+          swal("删除失败!", "", "error");
         }
-        swal("已删除!", "", "success");
       }).error(function () {
         swal("删除失败!", "", "error");
       })
@@ -464,7 +471,13 @@ function create(e,run) {
 
     ajaxPost(url, params).success(function () {
       //console.log('success');
-      $('#' + type + 'Table').bootstrapTable('refresh', {silent:true});
+      if (type == 'rw') {
+        $('#rwTable').bootstrapTable('destroy');
+        initRwTable();
+      } else {
+        $('#qjTable').bootstrapTable('destroy');
+        initQjTable();
+      }
       $('#createModal').modal('hide')
     }).error(function () {
 //        console.log('error');
@@ -478,7 +491,7 @@ function create(e,run) {
 /*初始化日期插件*/
 function initDate() {
   $("#rwStartDate").datetimepicker({
-    format: 'yyyy-mm-dd',
+    format: 'yyyy/mm/dd',
     minView: 'month',
     startView: 'year',
     language: 'zh-CN',
@@ -491,7 +504,7 @@ function initDate() {
       $('#rwStartDate').datetimepicker('setEndDate', null);
     });
   $("#rwEndDate").datetimepicker({
-    format: 'yyyy-mm-dd',
+    format: 'yyyy/mm/dd',
     minView: 'month',
     startView: 'year',
     language: 'zh-CN',
@@ -505,7 +518,7 @@ function initDate() {
       $('#rwEndDate').datetimepicker('setStartDate', null);
     });
   $("#qjStartDate").datetimepicker({
-    format: 'yyyy-mm-dd',
+    format: 'yyyy/mm/dd',
     minView: 'month',
     startView: 'year',
     language: 'zh-CN',
@@ -518,7 +531,7 @@ function initDate() {
       $('#qjStartDate').datetimepicker('setStartDate', null);
     });
   $("#qjEndDate").datetimepicker({
-    format: 'yyyy-mm-dd',
+    format: 'yyyy/mm/dd',
     minView: 'month',
     startView: 'year',
     language: 'zh-CN',
