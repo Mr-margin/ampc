@@ -181,8 +181,13 @@
       DELETE_TIME = #{deleteTime,jdbcType=DATE}
     where SCENARINO_AREA_ID = #{scenarinoAreaId,jdbcType=DECIMAL}
   </update>
-   <select id="selectByEntity" parameterType="ampc.com.gistone.database.model.TScenarinoArea" resultType="ampc.com.gistone.database.model.TScenarinoArea" >
- 		select * from T_SCENARINO_AREA
+
+ <select id="selectByEntity" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from T_SCENARINO_AREA
  		where IS_EFFECTIVE =1
          <if test="scenarinoAreaId != null">
                and SCENARINO_AREA_ID = #{scenarinoAreaId,jdbcType=DECIMAL}
