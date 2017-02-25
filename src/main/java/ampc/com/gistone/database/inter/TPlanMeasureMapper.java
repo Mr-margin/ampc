@@ -1,5 +1,7 @@
 package ampc.com.gistone.database.inter;
 
+import java.util.List;
+
 import ampc.com.gistone.database.model.TPlanMeasure;
 
 public interface TPlanMeasureMapper {
@@ -16,4 +18,6 @@ public interface TPlanMeasureMapper {
     int updateByPrimaryKeyWithBLOBs(TPlanMeasure record);
 
     int updateByPrimaryKey(TPlanMeasure record);
+    
+    List<TPlanMeasure> selectByEntity(TPlanMeasure record);
 }
