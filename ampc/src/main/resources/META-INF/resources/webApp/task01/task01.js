@@ -179,9 +179,9 @@ function initRwTable() {
       $('.qjtableDiv').css('background-color','#d9edf7');
       //QJheight = $('.rwtableDiv').height();
 
-      if(QJheight<400){
-        QJheight = 400;
-        $('#rwTable').bootstrapTable('resetView',{height:400})
+      if(QJheight<600){
+        QJheight = 600;
+        $('#rwTable').bootstrapTable('resetView',{height:600})
       }else{
         $('#rwTable').bootstrapTable('resetView',{height:QJheight})
       }
