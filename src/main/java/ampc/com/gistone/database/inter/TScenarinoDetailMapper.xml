@@ -15,6 +15,61 @@
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
     <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
   </resultMap>
+  <!-- 返回情景查询列表的数据 -->
+  <resultMap id="scenarinoListMap" type="hashMap" >
+    <id column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
+    <result column="SCENARINO_NAME" property="scenarinoName" jdbcType="OTHER" />
+    <result column="SCENARINO_START_DATE" property="scenarinoStartDate" jdbcType="DATE" />
+    <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="DATE" />
+    <result column="SCENARINO_STATUS" property="scenarinoStatus" jdbcType="DECIMAL" />
+    <result column="SCENARINO_STATU_NAME" property="scenarinoStatuName" jdbcType="OTHER" />
+    <result column="SCENARINO_ADD_TIME" property="scenarinoAddTime" jdbcType="DATE" />
+  </resultMap>
+  <!-- 返回情景查询列表的列 -->
+  <sql id="scenarino_Column_List" >
+  	SCENARINO_ID,SCENARINO_NAME,SCENARINO_START_DATE,SCENARINO_END_DATE,SCENARINO_STATUS,
+   SCENARINO_STATU_NAME,SCENARINO_ADD_TIME
+  </sql>
+  
+   <!-- 根据任务Id查询情景列表 并可根据情景名模糊查询 -->
+  <select id="selectByMissionIdAndScenarinoName" parameterType="hashMap" resultMap="scenarinoListMap" >
+   	 SELECT  <include refid="scenarino_Column_List"/>
+  		FROM T_SCENARINO_DETAIL  SCEN 
+  		INNER JOIN T_SCENARINO_STATUS STAT  ON SCEN.SCENARINO_STATUS=STAT.SCENARINO_STATU_ID
+			  WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+			  AND MISSION_ID=#{missionId,jdbcType=OTHER}
+			  <if test="scenarinoName != null" >
+        		AND SCENARINO_NAME LIKE #{scenarinoName,jdbcType=OTHER}
+      		 </if>
+			  ORDER BY SCENARINO_ID DESC
+  </select>
+  
+  
+  <!-- 根据任务Id查询出所有的情景Id 用来级联删除 -->
+  <select id="selectByMissionId" parameterType="java.lang.Long" resultType="java.util.List" >
+   	 SELECT  SCENARINO_ID
+  		FROM T_SCENARINO_DETAIL  
+			   MISSION_ID=#{missionId,jdbcType=DECIMAL}
+  </select>
+  
+  
+  
+  <!-- 修改所有的任务状态 相当于删除 -->
+  <update id="updateIsEffeByIds" parameterType="java.util.List">
+    update T_SCENARINO_DETAIL
+    set 
+      IS_EFFECTIVE = '0',
+      DELETE_TIME = (select sysdate from dual) 
+     where SCENARINO_ID in 
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+     		 #{item,jdbcType=DECIMAL}
+  		</foreach>
+  </update>
+  
+  
+  
+  
+  
   <sql id="Base_Column_List" >
     SCENARINO_ID, SCENARINO_TYPE, SCENARINO_NAME, SCENARINO_START_DATE, SCENARINO_END_DATE, 
     SCENARINO_STATUS, MISSION_ID, SCENARINO_ADD_TIME, USER_ID, UPDATE_TIME, IS_EFFECTIVE, 
