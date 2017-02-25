@@ -8,40 +8,45 @@
 </head>
 <body>
 
+<!-- header -->
+<header>
+  This is header.
+</header>
 
-<table id="table">
-  <thead>
-    <tr>
-      <th data-formatter="check">   </th>
-      <th data-formatter="asd">任务名称</th>
-      <th data-field="missionDomain">模拟范围</th>
-      <th data-field="esNationName">清单</th>
-    </tr>
-  </thead>
-</table>
+<!-- main -->
+<div id="main">
+  <div class="ui-view"></div>
+</div>
+
+<!-- footer -->
+<footer>
+  This is footer.
+</footer>
+<a href="#/home">home</a>
+<a href="#/content">content</a>
+
 
 </body>
 <script src="../../js/jquery.min.js"></script>
 <script src="../../js/bootstrap.min.js"></script>
 <script src="../../js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
 <script src="../../js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+<script src="../../js/vipspa.min.js"></script>
 <script>
-  $.ajax('rw.json',{
-    contentType:"application/json",
-    type: "POST",
-    async:true,
-    dataType: 'JSON',
-    data: ''
-  }).then(function(res){
-    $('#table').bootstrapTable({
-      data:res.data.rows
-    })
-  })
-  function check(v,row,index){
-    return index
-  }
-  function asd(v,row,i){
-    return '<a href="#">'+ row.missionName +'</a><br><a style="font-size:12px; color:#C5C5C5;">创建时间：'+ row.addTime +'</a>'
-  }
+  vipspa.start({
+    view: '.ui-view',// 装载视图的dom
+    router: {
+      '/home': {
+        templateUrl: 'task01.html',
+        controller: 'task01.js'
+      },
+      '/content': {
+        templateUrl: 'task0101.html',
+        controller: 'task01.js'
+      },
+      'defaults': '/home'// 不符合上述路由时，默认跳至
+    },
+    errorTemplateId: '#error'
+  });
 </script>
 </html>

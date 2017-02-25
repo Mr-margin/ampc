@@ -3,39 +3,37 @@
 <head>
   <meta charset="utf-8">
   <title>环境空气质量动态模拟云平台</title>
-  <!-- Mobile specific metas -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <!-- Force IE9 to render in normal mode -->
   <!--[if IE]><meta http-equiv="x-ua-compatible" content="IE=9" /><![endif]-->
   <meta name="author" content="SuggeElson" />
-  <meta name="description" content=""
-      />
-  <meta name="keywords" content=""
-      />
+  <meta name="description" content=""/>
+  <meta name="keywords" content=""/>
   <meta name="application-name" content="sprFlat admin template" />
-  <!-- Import google fonts - Heading first/ text second -->
-  <link rel='stylesheet' type='text/css' >
-  <!--[if lt IE 9]>
 
-  <![endif]-->
-  <!-- Css files -->
-  <!-- Icons -->
-  <link href="css/icons.css" rel="stylesheet" />
-  <!-- jQueryUI -->
-  <link href="css/plugins/sprflat-theme/jquery.ui.all.css" rel="stylesheet" />
-  <!-- Bootstrap stylesheets (included template modifications) -->
-  <link href="css/bootstrap.min.css" rel="stylesheet" />
-
-  <!-- Main stylesheets (template main css file) -->
+  <link href="css/icons.css" rel="stylesheet"/>
+  <link href="css/plugins/sprflat-theme/jquery.ui.all.css" rel="stylesheet"/>
+  <link href="css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="js/plugins/forms/icheck/flat/_all.css"/>
+  <link rel="stylesheet" href="css/plugins/bootstrap-table/bootstrap-table.min.css"/>
+  <link rel="stylesheet" href="css/plugins/sweetalert/sweetalert.css"/>
+  <link rel="stylesheet" href="css/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.css"/>
   <link href="css/main.css" rel="stylesheet" />
-
   <meta name="msapplication-TileColor" content="#3399cc" />
   <style>
     iframe{
       border: 0;
       width:100%
     }
+    #rwToolbar, #qjToolbar {
+      margin: 10px;
+    }
 
+    .lh29 {
+      line-height: 29px;
+    }
+    .error{
+      color:red;
+    }
   </style>
 </head>
 <body>
@@ -109,21 +107,17 @@
       </nav>
     </div>
   </div>
-  <!-- Start .header-inner -->
 </div>
-<!-- End #header -->
-<!-- Start #sidebar -->
+<a id="clickA"></a>
 <div id="sidebar">
-  <!-- Start .sidebar-inner -->
-
   <div class="panel-group accordion" id="accordion1">
     <div class="panel panel-default" id="spr_3">
       <div class="panel-heading">
         <h5 class="panel-title">
-          <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#sy">首页 <i class="im-home2"></i></a>
+          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#sy">首页 <i class="im-home2"></i></a>
         </h5>
       </div>
-      <div id="sy" class="panel-collapse collapse in" style="height: auto;">
+      <div id="sy" class="panel-collapse collapse" style="height: 0px;">
         <div class="panel-body totalH">
 
         </div>
@@ -144,10 +138,10 @@
     <div class="panel panel-default" id="spr_5">
       <div class="panel-heading">
         <h5 class="panel-title">
-          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#ypg">预评估 <i class="st-folder-settings"></i></a>
+          <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#ypg">预评估 <i class="st-folder-settings"></i></a>
         </h5>
       </div>
-      <div id="ypg" class="panel-collapse collapse" style="height: 0px;">
+      <div id="ypg" class="panel-collapse collapse  in" style="height: auto;">
         <div class="panel-body totalH">
 
         </div>
@@ -202,81 +196,58 @@
       </div>
     </div>
   </div>
-
-  <!-- End .sidebar-inner -->
 </div>
-<!-- Start #content -->
 <div id="content">
-  <!-- Start .content-wrapper -->
   <div class="content-wrapper">
     <div class="row">
-      <!-- Start .row -->
-      <!-- Start .page-header -->
       <div class="col-lg-12 heading">
         <h1 class="page-header"></h1>
-        <!-- Start .bredcrumb -->
         <ul id="crumb" class="breadcrumb">
         </ul>
-        <!-- End .breadcrumb -->
-        <!-- Start .option-buttons -->
-
-        <!-- End .option-buttons -->
       </div>
-      <!-- End .page-header -->
     </div>
-    <!-- End .row -->
     <div class="outlet">
       <!-- Start .outlet -->
       <!-- 内容所在区域 -->
       <div class="row">
 
-        <div class="col-md-12">
-          <iframe src="webApp/task01/task01.html"></iframe>
+        <div class="col-md-12 ui-view">
+          <!--<iframe src="webApp/task01/task01.html"></iframe>-->
         </div>
+
         <!-- 页面内容 -->
       </div>
-      <!-- 内容所在区域结束 -->
-      <!-- End .row -->
-      <!-- Page End here -->
     </div>
-    <!-- End .outlet -->
   </div>
-  <!-- End .content-wrapper -->
   <div class="clearfix"></div>
 </div>
-<!-- End #content -->
-<!-- Javascripts -->
-<!-- Load pace first -->
-<script src="js/plugins/core/pace/pace.min.js"></script>
-<!-- Important javascript libs(put in all pages) -->
 <script src="js/jquery.min.js"></script>
-<script>
-  window.jQuery || document.write('<script src="js/jquery.min.js">\x3C/script>')
-</script>
 <script src="js/jquery-ui-1.10.4.min.js"></script>
-<script>
-  window.jQuery || document.write('<script src="js/jquery-ui-1.10.4.min.js">\x3C/script>')
-</script>
-<!--[if lt IE 9]>
-<!--<script type="text/javascript" src="js/excanvas.min.js"></script>-->
-<!--<script type="text/javascript" src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>-->
-<!--<script type="text/javascript" src="js/respond.min.js"></script>-->
-<![endif]-->
-<!-- Bootstrap plugins -->
+<script src="js/plugins/forms/icheck/jquery.icheck.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<!-- Core plugins ( not remove ever) -->
-<!-- Handle responsive view functions -->
+<script src="js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+<script src="js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="js/bootstrap-table-contextmenu.js.js"></script>
+<script src="js/plugins/core/moment/moment.js"></script>
+<script src="js/plugins/forms/datetimepicker/bootstrap-datetimepicker.js"></script>
+<script src="js/plugins/forms/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="js/plugins/validate/jquery.validate.min.js"></script>
+<script src="js/plugins/validate/additional-methods.min.js"></script>
+<script src="js/plugins/validate/messages_zh.min.js"></script>
+<script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="js/plugins/core/pace/pace.min.js"></script>
 <script src="js/jRespond.min.js"></script>
-<!-- Custom scroll for sidebars,tables and etc. -->
 <script src="js/plugins/core/slimscroll/jquery.slimscroll.js"></script>
 <script src="js/plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js"></script>
-
-<!-- Proivde quick search for many widgets -->
 <script src="js/plugins/core/quicksearch/jquery.quicksearch.js"></script>
-<script src="js/plugins/forms/icheck/jquery.icheck.js"></script><!--导航自动填写-->
 <script src="js/plugins/misc/highlight/highlight.pack.js"></script>
 <script src="js/plugins/misc/countTo/jquery.countTo.js"></script>
 <script src="js/jquery.sprFlat.js"></script>
+<script src="js/vipspa.min.js"></script>
+<!--自己的js文件-->
+<script src="BackstageIP.js"></script>
+<script src="homeRouter.js"></script>
 <script src="home.js"></script>
 
 </body>
