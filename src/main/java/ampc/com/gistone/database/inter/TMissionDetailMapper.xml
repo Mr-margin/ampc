@@ -15,6 +15,81 @@
     <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
     <result column="MISSION_STATUS" property="missionStatus" jdbcType="OTHER" />
   </resultMap>
+  
+  <!-- 返回任务查询列表的数据 -->
+  <resultMap id="missionListMap" type="hashMap" >
+    <id column="MISSION_ID" property="missionId" jdbcType="DECIMAL" />
+    <result column="MISSION_NAME" property="missionName" jdbcType="OTHER" />
+    <result column="MISSION_DOMAIN_ID" property="missionDomainId" jdbcType="DECIMAL" />
+    <result column="V1" property="v1" jdbcType="VARCHAR" />
+    <result column="ES_COUPLING_ID" property="esCouplingId" jdbcType="DECIMAL" />
+    <result column="ES_COUPLING_NAME" property="esCouplingName" jdbcType="OTHER" />
+    <result column="MISSION_START_DATE" property="missionStartDate" jdbcType="DATE" />
+    <result column="MISSION_END_DATE" property="missionEndDate" jdbcType="DATE" />
+    <result column="MISSION_ADD_TIME" property="missionAddTime" jdbcType="DATE" />
+    <result column="MISSION_STATUS" property="missionStatus" jdbcType="OTHER" />
+  </resultMap>
+  <!-- 返回任务查询列表的列 -->
+  <sql id="mission_Column_List" >
+  	MISSION_ID,MISSION_NAME,MISSION_DOMAIN_ID,V1,MISS.ES_COUPLING_ID,
+   ES_COUPLING_NAME,MISSION_ADD_TIME,MISSION_START_DATE,MISSION_END_DATE,MISSION_STATUS
+  </sql>
+  <!-- 查询所有记录分页 可根据名称模糊查询 -->
+  <select id="selectAllOrByMissionName" parameterType="hashMap" resultMap="missionListMap" >
+   	SELECT * FROM (
+   	   SELECT T.*,ROWNUM AS RN FROM (
+         SELECT <include refid="mission_Column_List"/> FROM T_MISSION_DETAIL  MISS 
+		   INNER JOIN T_ES_COUPLING  COUP ON MISS.ES_COUPLING_ID= COUP.ES_COUPLING_ID
+           INNER JOIN T_DOMAIN_MISSION DOMA ON MISS.MISSION_DOMAIN_ID=DOMA.DOMAIN_ID
+			  WHERE MISS.IS_EFFECTIVE='1' AND MISS.USER_ID=#{userId,jdbcType=OTHER}  
+			  <if test="missionStatus != null" >
+        		AND MISS.MISSION_STATUS= #{missionStatus,jdbcType=OTHER}
+      		 </if>
+			  <if test="missionName != null" >
+        		AND MISSION_NAME LIKE #{missionName,jdbcType=OTHER}
+      		 </if>
+			  ORDER BY MISS.MISSION_ID DESC
+	      ) T WHERE ROWNUM &lt;=#{endNum,jdbcType=OTHER}
+	   ) 
+	  WHERE RN > #{startNum,jdbcType=OTHER}
+  </select>
+  
+  <!--查询全部任务总条数  可根据名称模糊查询-->
+  <select id="selectCountOrByMissionName" parameterType="hashMap" resultType="int">
+  	 SELECT COUNT(*) FROM T_MISSION_DETAIL WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+  	  <if test="missionName != null" >
+        	AND MISSION_NAME LIKE #{missionName,jdbcType=OTHER}
+      </if>
+      <if test="missionStatus != null" >
+            AND MISS.MISSION_STATUS= #{missionStatus,jdbcType=OTHER}
+      </if>
+  </select>
+  
+  <!-- 修改所有的任务状态 相当于删除 -->
+  <update id="updateIsEffeByIds" parameterType="java.util.List">
+    update T_MISSION_DETAIL
+    set 
+      IS_EFFECTIVE = '0',
+      DELETE_TIME = (select sysdate from dual) 
+     where MISSION_ID in 
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+     		 #{item,jdbcType=DECIMAL}
+  		</foreach>
+  </update>
+  
+  
+  <!--添加任务对名称重复判断-->
+  <select id="check_MissioName" parameterType="hashMap" resultType="int">
+  	 SELECT COUNT(*) FROM T_MISSION_DETAIL WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+  	  <if test="missionName != null" >
+        	AND MISSION_NAME = #{missionName,jdbcType=OTHER}
+      </if>
+  </select>
+  
+  
+  
+  
+  
   <sql id="Base_Column_List" >
     MISSION_ID, MISSION_NAME, MISSION_DOMAIN_ID, ES_COUPLING_ID, MISSION_START_DATE, 
     MISSION_END_DATE, MISSION_ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME, 
