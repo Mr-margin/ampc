@@ -181,4 +181,29 @@
       DELETE_TIME = #{deleteTime,jdbcType=DATE}
     where SCENARINO_AREA_ID = #{scenarinoAreaId,jdbcType=DECIMAL}
   </update>
+   <select id="selectByEntity" parameterType="ampc.com.gistone.database.model.TScenarinoArea" resultType="ampc.com.gistone.database.model.TScenarinoArea" >
+ 		select * from T_SCENARINO_AREA
+ 		where IS_EFFECTIVE =1
+         <if test="SCENARINO_AREA_ID != null">
+               and SCENARINO_AREA_ID = #{scenarinoAreaId,jdbcType=DECIMAL}
+            </if>
+            <if test="AREA_NAME != null">
+                and AREA_NAME = #{areaName,jdbcType=OTHER},
+            </if>
+            <if test="ADD_TIME != null">
+                and ADD_TIME = #{addTime,jdbcType=DATE}
+            </if>
+            <if test="USER_ID != null">
+                and USER_ID = #{userId,jdbcType=DECIMAL}
+            </if>
+            <if test="UPDATE_TIME != null and agentTel !=''">
+                and UPDATE_TIME = #{updateTime,jdbcType=DATE}
+            </if>
+            <if test="DELETE_TIME != null">
+               and DELETE_TIME = #{deleteTime,jdbcType=DATE}
+            </if>
+            <if test="SCENARINO_DETAIL_ID != null">
+                and SCENARINO_DETAIL_ID = #{scenarinoDetailId,jdbcType=DECIMAL}
+            </if>
+    </select>
 </mapper>
