@@ -21,9 +21,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
+import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TPlanMapper;
+import ampc.com.gistone.database.inter.TScenarinoAreaMapper;
+import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTimeMapper;
+import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TPlan;
+import ampc.com.gistone.database.model.TScenarinoArea;
+import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTime;
 import ampc.com.gistone.util.AmpcResult;
 
@@ -39,6 +45,17 @@ public class AreaAndTimeController {
 	
 	@Autowired
 	private TPlanMapper tPlanMapper;
+	
+	@Autowired
+	private TScenarinoDetailMapper tScenarinoDetailMapper;
+	
+	@Autowired
+	private TMissionDetailMapper tMissionDetailMapper;
+	
+	@Autowired
+	private TScenarinoAreaMapper tScenarinoAreaMapper;
+	
+	
 	/**
 	 * 在原有基础上添加时段
 	 * @param request
@@ -219,7 +236,7 @@ public class AreaAndTimeController {
 		delete_time.setTimeId(afterTimeId);
 		delete_time.setIsEffective("0");
 		int delete_timestatus=tTimeMapper.updateByPrimaryKeySelective(delete_time);
-		//判断要删除时段的状态书否修改成功,如果成功修改上一时段的结束时间
+		//判断要删除时段的状态是否修改成功,如果成功修改上一时段的结束时间
 		if(delete_timestatus!=0){
 			TTime update_time = new TTime();	
 			update_time.setTimeEndDate(timeEndDate);
@@ -232,9 +249,36 @@ public class AreaAndTimeController {
 				return AmpcResult.build(1, "delete_time error");	
 			}
 		}else{
-		return AmpcResult.build(1, "delete_time error");
+		  return AmpcResult.build(1, "delete_time error");
 		}
 	}
 	
-	
+//	/**
+//	 * 区域查询接口
+//	 */
+//	@RequestMapping("/area/areaAndTimeList")
+//	public AmpcResult areaAndTimeList(HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
+//		try{
+//		Long scenarinoId=13l;//Long.parseLong(request.getParameter("scenarinoId"));//情景id 
+//		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户的id
+//		//先查询情景详情,以及任务详情
+//		JSONObject obj=new JSONObject();
+//		TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);//情景
+//		
+//		if(tScenarinoDetail.getMissionId()!=null){
+//		TMissionDetail tMissionDetail =tMissionDetailMapper.selectByPrimaryKey(tScenarinoDetail.getMissionId());//任务
+//		//然后根据情景id查询区域，要求出查询到多少条
+//		TScenarinoArea tScenarinoArea=new TScenarinoArea();
+//		tScenarinoArea.setScenarinoAreaId(scenarinoId);
+//		tScenarinoAreaMapper.selectByEntity(scenarinoAreaId);
+//		//根据情景id查询时段
+//		return AmpcResult.build(1, "delete_time error");
+//		}
+//		
+//		return AmpcResult.build(1, "delete_time error");
+//		}catch(NullPointerException n){
+//			System.out.println(n);
+//			return AmpcResult.build(1, "delete_time error");
+//		}
+//	}
 }
