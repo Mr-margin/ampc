@@ -2,29 +2,36 @@ package ampc.com.gistone.database.model;
 
 import java.util.Date;
 
+/**
+ * 情景详情实体类
+ * @author WangShanxi
+ * @version v.0.1
+ * @date 2017年2月25日
+ */
 public class TScenarinoDetail {
+	//情景ID
     private Long scenarinoId;
-
+    //情景的类型 1为基准 2为自定义
     private Long scenarinoType;
-
+    //情景名称
     private Object scenarinoName;
-
+    //情景开始时间
     private Date scenarinoStartDate;
-
+    //情景结束时间
     private Date scenarinoEndDate;
-
+    //情景执行状态 0为初始化
     private Long scenarinoStatus;
-
+    //任务的Id
     private Long missionId;
-
+    //创建时间
     private Date scenarinoAddTime;
-
+    //用户ID
     private Long userId;
-
+    //更新时间
     private Date updateTime;
-
+    //是否有效 0无效 1有效
     private String isEffective;
-
+    //删除时间
     private Date deleteTime;
 
     public Long getScenarinoId() {
