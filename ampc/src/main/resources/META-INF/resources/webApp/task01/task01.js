@@ -174,15 +174,18 @@ function initRwTable() {
     },
     onLoadSuccess:function(data){
       //console.log(data);
-      $('#rwTable').bootstrapTable('resetView',{height:null})
       selectRW = data.rows[0];
+      QJheight = data.rows.length *57 + 98;
       $('.qjtableDiv').css('background-color','#d9edf7');
-      QJheight = $('.rwtableDiv').height();
+      //QJheight = $('.rwtableDiv').height();
 
       if(QJheight<400){
         QJheight = 400;
-        $('#rwTable').bootstrapTable('resetView',{height:406})
+        $('#rwTable').bootstrapTable('resetView',{height:400})
+      }else{
+        $('#rwTable').bootstrapTable('resetView',{height:QJheight})
       }
+
       //QJheight = QJheight>400?QJheight:400;
       $('#qjTable').bootstrapTable('destroy');
       initQjTable();
@@ -249,7 +252,7 @@ function initQjTable() {
     iconSize: "outline",
     search: false,
     searchAlign: 'right',
-    height:QJheight-53,
+    height:QJheight-59,
     maintainSelected: true,
     clickToSelect: false,// 点击选中行
     pagination: false, // 在表格底部显示分页工具栏
