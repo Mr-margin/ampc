@@ -20,4 +20,6 @@ public interface TPlanMeasureMapper {
     int updateByPrimaryKey(TPlanMeasure record);
     
     List<TPlanMeasure> selectByEntity(TPlanMeasure record);
+    
+    int deleteByPlanId(Long planId);
 }
