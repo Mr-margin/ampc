@@ -172,4 +172,8 @@
                 MEASURE_CONTENT = #{measureContent,jdbcType=CLOB}
             </if>
   </select>
+   <delete id="deleteByPlanId" parameterType="java.lang.Long" >
+    delete from T_PLAN_MEASURE
+    where PLAN_ID = #{planId,jdbcType=DECIMAL}
+  </delete>
 </mapper>
