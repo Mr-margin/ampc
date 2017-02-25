@@ -28,6 +28,11 @@ $(document).ready(function() {
     $('iframe').css('height',llqHeight-160);
     $('#sidebar a').click(function (e) {
         e.preventDefault();
+        var href = e.target.hash.replace('#','#/');
+        var a = $('#clickA');
+        if(a.attr('href') == href) return;
+        a.attr('href',href);
+        a[0].click();
     });
 
     //------------- Highlight code  -------------//
