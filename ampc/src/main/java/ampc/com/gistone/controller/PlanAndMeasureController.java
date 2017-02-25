@@ -247,12 +247,15 @@ public class PlanAndMeasureController {
 	    TPlan del_tPlan=new TPlan();
 	    del_tPlan.setPlanId(planId);
 	    del_tPlan.setIsEffective("0");
+	    //修改预案中的状态
 	    int del_status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
 	    if(del_status!=0){
 	    	 TPlanMeasure  tPlanMeasure=new TPlanMeasure();
 	    	 tPlanMeasure.setPlanId(planId);
+	    	 //查看预案是否有措施
 	    	List<TPlanMeasure> list=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
 	    	if(!list.isEmpty()){
+	    		//删除预案中的措施
 	         int status=tPlanMeasureMapper.deleteByPlanId(planId);
 	         if(status!=0){
 	        	 return AmpcResult.build(0, "merge_plan success");
@@ -277,6 +280,7 @@ public class PlanAndMeasureController {
 	@RequestMapping("/plan/copy_plan")
 	public  AmpcResult copy_plan(HttpServletRequest request,
 			HttpServletResponse response){
+		try{
 		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
 		Long planId=Long.parseLong(request.getParameter("planId"));//预案id
 		Long timeId=Long.parseLong(request.getParameter("timeId"));//时段id
@@ -288,8 +292,12 @@ public class PlanAndMeasureController {
 		int copy_status=tTimeMapper.updateByPrimaryKeySelective(tTime);
 		//判断是否成功
 		if(copy_status!=0){
-			return AmpcResult.build(0, "copy_plan success");
+			return AmpcResult.build(0,"copy_plan success");
 		}
-		return AmpcResult.build(1, "copy_plan error");
+		return AmpcResult.build(1,"copy_plan error");
+	}catch(NullPointerException n){
+		System.out.println(n);
+		return AmpcResult.build(1,"copy_plan error");
 	}
+		}
 }
