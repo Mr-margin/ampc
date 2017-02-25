@@ -1,5 +1,7 @@
 package ampc.com.gistone.database.inter;
 
+import java.util.List;
+
 import ampc.com.gistone.database.model.TScenarinoArea;
 import ampc.com.gistone.database.model.TScenarinoAreaWithBLOBs;
 
@@ -17,4 +19,6 @@ public interface TScenarinoAreaMapper {
     int updateByPrimaryKeyWithBLOBs(TScenarinoAreaWithBLOBs record);
 
     int updateByPrimaryKey(TScenarinoArea record);
+    
+    List<TScenarinoArea> selectByEntity(TScenarinoArea record);
 }
