@@ -184,25 +184,25 @@
    <select id="selectByEntity" parameterType="ampc.com.gistone.database.model.TScenarinoArea" resultType="ampc.com.gistone.database.model.TScenarinoArea" >
  		select * from T_SCENARINO_AREA
  		where IS_EFFECTIVE =1
-         <if test="SCENARINO_AREA_ID != null">
+         <if test="scenarinoAreaId != null">
                and SCENARINO_AREA_ID = #{scenarinoAreaId,jdbcType=DECIMAL}
             </if>
-            <if test="AREA_NAME != null">
+            <if test="areaName != null">
                 and AREA_NAME = #{areaName,jdbcType=OTHER}
             </if>
-            <if test="ADD_TIME != null">
+            <if test="addTime != null">
                 and ADD_TIME = #{addTime,jdbcType=DATE}
             </if>
-            <if test="USER_ID != null">
+            <if test="userId != null">
                 and USER_ID = #{userId,jdbcType=DECIMAL}
             </if>
-            <if test="UPDATE_TIME != null and agentTel !=''">
+            <if test="updateTime != null and agentTel !=''">
                 and UPDATE_TIME = #{updateTime,jdbcType=DATE}
             </if>
-            <if test="DELETE_TIME != null">
+            <if test="deleteTime != null">
                and DELETE_TIME = #{deleteTime,jdbcType=DATE}
             </if>
-            <if test="SCENARINO_DETAIL_ID != null">
+            <if test="scenarinoDetailId != null">
                 and SCENARINO_DETAIL_ID = #{scenarinoDetailId,jdbcType=DECIMAL}
             </if>
     </select>
