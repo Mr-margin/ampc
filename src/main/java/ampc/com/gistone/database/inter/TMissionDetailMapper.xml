@@ -61,7 +61,7 @@
         	AND MISSION_NAME LIKE #{missionName,jdbcType=OTHER}
       </if>
       <if test="missionStatus != null" >
-            AND MISS.MISSION_STATUS= #{missionStatus,jdbcType=OTHER}
+            AND MISSION_STATUS= #{missionStatus,jdbcType=OTHER}
       </if>
   </select>
   
