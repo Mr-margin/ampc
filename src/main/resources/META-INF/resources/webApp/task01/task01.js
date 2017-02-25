@@ -5,6 +5,7 @@
 var userId = 1;
 var formCreate;
 var selectRW;
+var statusRW = '';
 var delRWid = {}, delQJid = {};
 var parameterPar = {total: '', data: {}};
 function refreshIcheck() {
@@ -97,10 +98,10 @@ function initialize() {
 var QJheight;
 function initRwTable() {
   $('#rwTable').bootstrapTable({
-    method: 'POST',
-    //url: 'rw.json',
+    method: 'GET',
+    url: 'webApp/task01/rw.json',
 //      url : BackstageIP+'/mission/get_mission_list',
-      url : '/ampc/mission/get_mission_list',
+//      url : '/ampc/mission/get_mission_list',
     dataType: "json",
     contentType: "application/json", // 请求远程数据的内容类型。
     toobar: '#rwToolbar',
@@ -129,6 +130,7 @@ function initRwTable() {
         "token": "",
         "data": {
           "missionName": m.searchText || '',
+          "missionStatus":statusRW,
           "pageNum": m.pageNumber,
           "pageSize": m.pageSize,
           "sort": '',
@@ -200,6 +202,12 @@ function initRwTable() {
   });
 }
 
+/*筛选*/
+function statusRWfun(status,t){
+  statusRW = status;
+  search('rw');
+}
+
 /*搜索事件*/
 function search(type) {
   var params = $('#' + type + 'Table').bootstrapTable('getOptions');
@@ -212,6 +220,7 @@ function search(type) {
           "missionName": params.searchText || '',
           "pageNum": params.pageNumber,
           "pageSize": params.pageSize,
+          "missionStatus":statusRW,
           "sort": '',
           "userId": 1
         }

@@ -38,13 +38,23 @@
         </div>
         <div class="panel-body" style="padding:0px;border: none">
           <div id="rwToolbar" class="btn-group">
-            <div class="col-md-6">
+            <div class="col-md-8">
               <button type="button" class="btn btn-default" data-whatever="创建新任务" data-type="rw" data-toggle="modal"
                       data-target="#createModal">
                 <i class="glyphicon glyphicon-plus"></i> 创建
               </button>
               <button disabled type="button" class="btn btn-default rwDel" onclick="deleteFun('rw')">
                 <i class="glyphicon glyphicon-trash"></i> 删除
+              </button>
+
+              <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('',this)">
+                <i class="im-folder-open"></i> 全部
+              </button>
+              <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('预评估',this)">
+                <i class="st-folder-settings"></i> 预评估
+              </button>
+              <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('后评估',this)">
+                <i class="im-paste2"></i> 后评估
               </button>
             </div>
             <div class="input-group col-md-4 col-md-offset-8">
@@ -64,6 +74,7 @@
                 <th data-formatter="rwName">任务名称</th>
                 <th data-formatter="rwDomain">模拟范围</th>
                 <th data-field="esCouplingName">清单</th>
+                <th data-field="missionStatus">状态</th>
               </tr>
               </thead>
             </table>
