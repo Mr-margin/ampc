@@ -15,6 +15,7 @@
         "missionStartDate": 1485878400000,
         "missionEndDate": 1486656000000,
         "missionAddTime": 1487692800000,
+        "missionStatus":"后评估",
         "userId": 1
       }
     ,
@@ -28,6 +29,7 @@
         "missionStartDate": 1485878400000,
         "missionEndDate": 1486656000000,
         "missionAddTime": 1487692800000,
+        "missionStatus":"预评估",
         "userId": 1
       },
       {
@@ -40,6 +42,7 @@
         "missionStartDate": 1485878400000,
         "missionEndDate": 1486656000000,
         "missionAddTime": 1487692800000,
+        "missionStatus":"后评估",
         "userId": 1
       },
       {
@@ -52,6 +55,7 @@
         "missionStartDate": 1485878400000,
         "missionEndDate": 1486656000000,
         "missionAddTime": 1487692800000,
+        "missionStatus":"预评估",
         "userId": 1
       }
     ,
@@ -65,6 +69,7 @@
         "missionStartDate": 1485878400000,
         "missionEndDate": 1486656000000,
         "missionAddTime": 1487692800000,
+        "missionStatus":"后评估",
         "userId": 1
       },
       {
@@ -77,6 +82,7 @@
         "missionStartDate": 1485878400000,
         "missionEndDate": 1486656000000,
         "missionAddTime": 1487692800000,
+        "missionStatus":"预评估",
         "userId": 1
       },
       {
@@ -89,6 +95,7 @@
         "missionStartDate": 1485878400000,
         "missionEndDate": 1486656000000,
         "missionAddTime": 1487692800000,
+        "missionStatus":"后评估",
         "userId": 1
       },
       {
@@ -101,6 +108,7 @@
         "missionStartDate": 1485878400000,
         "missionEndDate": 1486656000000,
         "missionAddTime": 1487692800000,
+        "missionStatus":"预评估",
         "userId": 1
       },
       {
@@ -113,6 +121,7 @@
         "missionStartDate": 1485878400000,
         "missionEndDate": 1486656000000,
         "missionAddTime": 1487692800000,
+        "missionStatus":"后评估",
         "userId": 1
       },
       {
@@ -125,6 +134,7 @@
         "missionStartDate": 1485878400000,
         "missionEndDate": 1486656000000,
         "missionAddTime": 1487692800000,
+        "missionStatus":"预评估",
         "userId": 1
       }
     ]
