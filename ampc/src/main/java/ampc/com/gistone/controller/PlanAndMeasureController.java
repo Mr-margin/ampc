@@ -17,10 +17,12 @@ import ampc.com.gistone.database.inter.TMeasureMapper;
 import ampc.com.gistone.database.inter.TPlanMapper;
 import ampc.com.gistone.database.inter.TPlanMeasureMapper;
 import ampc.com.gistone.database.inter.TSectorMapper;
+import ampc.com.gistone.database.inter.TTimeMapper;
 import ampc.com.gistone.database.model.TMeasure;
 import ampc.com.gistone.database.model.TPlan;
 import ampc.com.gistone.database.model.TPlanMeasure;
 import ampc.com.gistone.database.model.TSector;
+import ampc.com.gistone.database.model.TTime;
 import ampc.com.gistone.util.AmpcResult;
 
 @RestController
@@ -37,6 +39,9 @@ public class PlanAndMeasureController {
 	
 	@Autowired
 	private TPlanMapper tPlanMapper;
+	
+	@Autowired
+	private TTimeMapper tTimeMapper;
 	
 	/**
 	 * 措施汇总查询
@@ -216,6 +221,75 @@ public class PlanAndMeasureController {
 	}
 		}
 	
+	/**
+	 * 预案合并
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/plan/merge_plan")
+	public  AmpcResult merge_plan(HttpServletRequest request,
+			HttpServletResponse response){
+	try{
+		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
+		Long chiefPlanId=Long.parseLong(request.getParameter("chiefPlanId"));//蓝本预案id
+		Long planId=Long.parseLong(request.getParameter("planId"));//被合并预案id
+	    Date startTime=new Date(request.getParameter("startTime"));//合并后的开始时间
+	    Date endTime=new Date(request.getParameter("endTime"));//合并后的结束时间
+	    //修改蓝本预案信息
+	    TPlan tPlan=new TPlan();
+	    tPlan.setPlanId(chiefPlanId);
+	    tPlan.setPlanEndTime(endTime);
+	    tPlan.setPlanStartTime(startTime);
+	    int update_status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
+	    //判断是否修改成功，成功后删除被合并预案以及其措施
+	    if(update_status!=0){
+	    TPlan del_tPlan=new TPlan();
+	    del_tPlan.setPlanId(planId);
+	    del_tPlan.setIsEffective("0");
+	    int del_status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
+	    if(del_status!=0){
+	    	 TPlanMeasure  tPlanMeasure=new TPlanMeasure();
+	    	 tPlanMeasure.setPlanId(planId);
+	    	List<TPlanMeasure> list=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
+	    	if(!list.isEmpty()){
+	         int status=tPlanMeasureMapper.deleteByPlanId(planId);
+	         if(status!=0){
+	        	 return AmpcResult.build(0, "merge_plan success");
+	         }
+	         return AmpcResult.build(1, "merge_plan error");
+	    	}
+	    	 return AmpcResult.build(1, "merge_plan error");
+	    }
+	    return AmpcResult.build(1, "merge_plan error");
+	    }
+	    return AmpcResult.build(1, "merge_plan error");
+	}catch(NullPointerException n){
+		System.out.println(n);
+		 return AmpcResult.build(1, "merge_plan error");
+	}
+	}
 	
 	
+	/**
+	 * 复制预案
+	 */
+	@RequestMapping("/plan/copy_plan")
+	public  AmpcResult copy_plan(HttpServletRequest request,
+			HttpServletResponse response){
+		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
+		Long planId=Long.parseLong(request.getParameter("planId"));//预案id
+		Long timeId=Long.parseLong(request.getParameter("timeId"));//时段id
+		
+		//将被复制的预案id存入要复制到的时段里
+		TTime tTime=new TTime();
+		tTime.setPlanId(planId);
+		tTime.setTimeId(timeId);
+		int copy_status=tTimeMapper.updateByPrimaryKeySelective(tTime);
+		//判断是否成功
+		if(copy_status!=0){
+			return AmpcResult.build(0, "copy_plan success");
+		}
+		return AmpcResult.build(1, "copy_plan error");
+	}
 }
