@@ -188,7 +188,7 @@
                and SCENARINO_AREA_ID = #{scenarinoAreaId,jdbcType=DECIMAL}
             </if>
             <if test="AREA_NAME != null">
-                and AREA_NAME = #{areaName,jdbcType=OTHER},
+                and AREA_NAME = #{areaName,jdbcType=OTHER}
             </if>
             <if test="ADD_TIME != null">
                 and ADD_TIME = #{addTime,jdbcType=DATE}
