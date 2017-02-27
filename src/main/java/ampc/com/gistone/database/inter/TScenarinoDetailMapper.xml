@@ -31,6 +31,68 @@
    SCENARINO_STATU_NAME,SCENARINO_ADD_TIME
   </sql>
   
+  <!-- 返回情景复制列表的数据 -->
+  <resultMap id="copyScenarinoListMap" type="hashMap" >
+    <id column="MISSION_ID" property="missionId" jdbcType="DECIMAL" />
+    <result column="MISSION_NAME" property="missionName" jdbcType="OTHER" />
+    <result column="MISSION_DOMAIN_ID" property="missionDomainId" jdbcType="DECIMAL" />
+    <result column="V1" property="v1" jdbcType="VARCHAR" />
+    <result column="ES_COUPLING_ID" property="esCouplingId" jdbcType="DECIMAL" />
+    <result column="ES_COUPLING_NAME" property="esCouplingName" jdbcType="OTHER" />
+    <result column="MISSION_START_DATE" property="missionStartDate" jdbcType="DATE" />
+    <result column="MISSION_END_DATE" property="missionEndDate" jdbcType="DATE" />
+    <result column="MISSION_ADD_TIME" property="missionAddTime" jdbcType="DATE" />
+    <result column="MISSION_STATUS" property="missionStatus" jdbcType="OTHER" />
+    <result column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
+    <result column="SCENARINO_NAME" property="scenarinoName" jdbcType="OTHER" />
+    <result column="SCENARINO_START_DATE" property="scenarinoStartDate" jdbcType="DATE" />
+    <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="DATE" />
+    <result column="SCENARINO_STATUS" property="scenarinoStatus" jdbcType="DECIMAL" />
+    <result column="SCENARINO_STATU_NAME" property="scenarinoStatuName" jdbcType="OTHER" />
+    <result column="SCENARINO_ADD_TIME" property="scenarinoAddTime" jdbcType="DATE" />
+  </resultMap>
+  
+  <!-- 返回情景复制列表的列 -->
+  <sql id="copyScenarino_Column_List" >
+  	  MISS.MISSION_ID,MISSION_NAME,MISSION_DOMAIN_ID,V1,MISS.ES_COUPLING_ID,
+	  ES_COUPLING_NAME,MISSION_ADD_TIME,MISSION_START_DATE,MISSION_END_DATE,MISSION_STATUS,
+	  SCENARINO_ID,SCENARINO_NAME,SCENARINO_START_DATE,SCENARINO_END_DATE,SCENARINO_STATUS,
+      SCENARINO_STATU_NAME,SCENARINO_ADD_TIME
+  </sql>
+  
+  <!-- 查询所有任务列表和情景列表 可根据情景名模糊查询 -->
+  <select id="selectAllOrByScenarinoName" parameterType="hashMap" resultMap="copyScenarinoListMap" >
+   SELECT * FROM (
+   	 SELECT T.*,ROWNUM AS RN FROM (
+         SELECT  <include refid="copyScenarino_Column_List"/>
+             FROM T_MISSION_DETAIL  MISS 
+							INNER JOIN T_ES_COUPLING  COUP ON MISS.ES_COUPLING_ID= COUP.ES_COUPLING_ID
+							INNER JOIN T_DOMAIN_MISSION DOMA ON MISS.MISSION_DOMAIN_ID=DOMA.DOMAIN_ID
+						  INNER JOIN T_SCENARINO_DETAIL SCEN ON MISS.MISSION_ID=SCEN.MISSION_ID
+						  INNER JOIN T_SCENARINO_STATUS STAT  ON SCEN.SCENARINO_STATUS=STAT.SCENARINO_STATU_ID
+									WHERE MISS.IS_EFFECTIVE='1' AND MISS.USER_ID=#{userId,jdbcType=OTHER}  AND
+											  SCEN.IS_EFFECTIVE='1' AND SCEN.USER_ID=#{userId,jdbcType=OTHER} 
+										         <if test="scenarinoName != null" >
+													AND SCENARINO_NAME LIKE #{scenarinoName,jdbcType=OTHER}
+												 </if>
+											ORDER BY MISS.MISSION_ID DESC
+	    ) T WHERE ROWNUM &lt;=#{endNum,jdbcType=OTHER}
+	) 
+ 	WHERE RN > #{startNum,jdbcType=OTHER}
+   	
+  </select>
+  
+  <!--不分页查询所有有效的条数 可根据情景名模糊查询-->
+  <select id="selectCountOrByScenarinoName" parameterType="hashMap" resultType="int">
+  	 SELECT COUNT(*) FROM T_SCENARINO_DETAIL WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+  	 	<if test="scenarinoName != null" >
+			AND SCENARINO_NAME LIKE #{scenarinoName,jdbcType=OTHER}
+		</if>
+  </select>
+  
+  
+  
+  
    <!-- 根据任务Id查询情景列表 并可根据情景名模糊查询 -->
   <select id="selectByMissionIdAndScenarinoName" parameterType="hashMap" resultMap="scenarinoListMap" >
    	 SELECT  <include refid="scenarino_Column_List"/>
@@ -49,12 +111,28 @@
   <select id="selectByMissionId" parameterType="java.lang.Long" resultType="java.util.List" >
    	 SELECT  SCENARINO_ID
   		FROM T_SCENARINO_DETAIL  
-			   MISSION_ID=#{missionId,jdbcType=DECIMAL}
+			 WHERE  MISSION_ID=#{missionId,jdbcType=DECIMAL}
+  </select>
+  
+  <!-- 根据任务ID和情景名称 查询情景ID -->
+  <select id="selectByMidAndSName" parameterType="map" resultType="int" >
+   	 SELECT  SCENARINO_ID
+  		FROM T_SCENARINO_DETAIL  
+			 WHERE MISSION_ID=#{missionId,jdbcType=OTHER}
+			 	AND SCENARINO_NAME=#{scenarinoName,jdbcType=OTHER}
   </select>
   
   
+   <!--添加情景对名称重复判断-->
+  <select id="check_ScenarinoName" parameterType="hashMap" resultType="int">
+  	 SELECT COUNT(*) FROM T_SCENARINO_DETAIL WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+  	     AND MISSION_ID=#{missionId,jdbcType=OTHER}
+  	  <if test="scenarinoName != null" >
+        	AND SCENARINO_NAME = #{scenarinoName,jdbcType=OTHER}
+      </if>
+  </select>
   
-  <!-- 修改所有的任务状态 相当于删除 -->
+  <!-- 修改所有的情景状态 相当于删除 -->
   <update id="updateIsEffeByIds" parameterType="java.util.List">
     update T_SCENARINO_DETAIL
     set 
