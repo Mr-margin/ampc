@@ -13,25 +13,25 @@ import ampc.com.gistone.database.model.TScenarinoDetail;
 public interface TScenarinoDetailMapper {
 	
 	 /**
-     * 查询所有任务列表和情景列表 可根据情景名模糊查询
+     * 查询所有任务列表和情景列表 可根据条件名模糊查询
      * @param map 分页参数
      * @return 结果集
      */
-    List<Map> selectAllOrByScenarinoName(Map map);
+    List<Map> selectAllOrByQueryName(Map map);
     
     
     /**
-     * 不分页查询所有有效的条数 可根据情景名模糊查询
+     * 不分页查询所有有效的条数 可根据条件名模糊查询
      * @return 总条数
      */
-    int selectCountOrByScenarinoName(Map map);
+    int selectCountOrByQueryName(Map map);
 	
 	 /**
-     * 根据任务Id查询情景列表 并可根据情景名模糊查询
+     * 根据任务Id查询情景列表 并可根据条件名模糊查询
      * @param map 参数
      * @return 结果集
      */
-    List<Map> selectByMissionIdAndScenarinoName(Map map);
+    List<Map> selectByMissionIdAndQueryName(Map map);
     
     
     /**
