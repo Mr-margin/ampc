@@ -13,6 +13,20 @@ import ampc.com.gistone.database.model.TScenarinoDetail;
 public interface TScenarinoDetailMapper {
 	
 	 /**
+     * 查询所有任务列表和情景列表 可根据情景名模糊查询
+     * @param map 分页参数
+     * @return 结果集
+     */
+    List<Map> selectAllOrByScenarinoName(Map map);
+    
+    
+    /**
+     * 不分页查询所有有效的条数 可根据情景名模糊查询
+     * @return 总条数
+     */
+    int selectCountOrByScenarinoName(Map map);
+	
+	 /**
      * 根据任务Id查询情景列表 并可根据情景名模糊查询
      * @param map 参数
      * @return 结果集
@@ -26,6 +40,21 @@ public interface TScenarinoDetailMapper {
      */
     List<Integer> selectByMissionId(long missionId);
     
+   
+    /**
+     * 根据任务ID和情景名称 查询情景ID
+     * @param map 参数
+     * @return 情景ID
+     */
+    Integer selectByMidAndSName(Map map);
+    
+    
+    /**
+     * 添加情景对名称重复判断
+     * @param map
+     * @return
+     */
+    int check_ScenarinoName(Map map);
     
     /**
      * 修改任务是否有效
