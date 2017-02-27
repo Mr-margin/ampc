@@ -181,6 +181,11 @@ function initRwTable() {
       initQjTable();
       $('.info').removeClass('info');
       $($element).addClass('info');
+
+
+      $('#qjStartDate').datetimepicker('setStartDate', moment(selectRW.missionStartDate).format('YYYY-MM-DD')).datetimepicker('setEndDate', moment(selectRW.missionEndDate).format('YYYY-MM-DD'));
+      $('#qjEndDate').datetimepicker('setStartDate', moment(selectRW.missionStartDate).format('YYYY-MM-DD')).datetimepicker('setStartDate', moment(selectRW.missionEndDate).format('YYYY-MM-DD'));
+
     },
     /*复选框设置*/
     onCheck: function (row) {
@@ -575,14 +580,14 @@ function initOldQj(){
     pageList: [10],
     striped: true, // 使表格带有条纹
     sidePagination: "server",// 表格分页的位置 client||server
-    rowStyle: function (row, index) {
-      if (index == 0) {
-        return {
-          classes: 'info'
-        };
-      }
-      return {};
-    },
+//    rowStyle: function (row, index) {
+//      //if (index == 0) {
+//      //  return {
+//      //    classes: 'info'
+//      //  };
+//      //}
+//      //return {};
+//    },
     queryParams: function formPm(m) {
       var json = {
         "token": "",
@@ -605,8 +610,9 @@ function initOldQj(){
     silent: true, // 刷新事件必须设置
     onClickRow: function (row, $element) {
       qjId = row.scenarinoId;
+      $('.selectOldQj .info').removeClass('info');
+      $element.addClass('info');
     }
-
 
   });
 }
@@ -749,8 +755,13 @@ function initDate() {
   })
     .on('changeDate', function(ev){
       var date = moment(ev.date).format('YYYY-MM-DD');
-      $('#qjEndDate').datetimepicker('setStartDate', date);
-      $('#qjStartDate').datetimepicker('setEndDate', null);
+      if(date>moment(selectRW.missionStartDate).format('YYYY-MM-DD')){
+        $('#qjEndDate').datetimepicker('setStartDate', date);
+      }else{
+
+      }
+
+      $('#qjStartDate').datetimepicker('setEndDate', moment(selectRW.missionEndDate).format('YYYY-MM-DD'));
     });
   $("#qjEndDate").datetimepicker({
     format: 'yyyy/mm/dd',
@@ -762,8 +773,14 @@ function initDate() {
   })
     .on('changeDate', function(ev){
       var date = moment(ev.date).format('YYYY-MM-DD');
-      $('#qjStartDate').datetimepicker('setEndDate', date);
-      $('#qjEndDate').datetimepicker('setStartDate', null);
+      if(date < moment(selectRW.missionEndDate).format('YYYY-MM-DD')){
+        $('#qjStartDate').datetimepicker('setEndDate', date);
+      }else{
+        //$('#qjStartDate').datetimepicker('setEndDate', moment(selectRW.missionEndDate).format('YYYY-MM-DD'));
+      }
+
+
+      $('#qjEndDate').datetimepicker('setStartDate', moment(selectRW.missionStartDate).format('YYYY-MM-DD'));
     });
 }
 
