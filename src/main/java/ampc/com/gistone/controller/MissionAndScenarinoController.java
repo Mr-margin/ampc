@@ -138,7 +138,7 @@ public class MissionAndScenarinoController {
 			if(result>0){
 				if(createType==2){
 					/**
-					 * To_Do 更改基准情景的执行状态
+					 * TODO 更改基准情景的执行状态
 					 */
 					
 					
@@ -275,7 +275,7 @@ public class MissionAndScenarinoController {
 			//设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
-			//情景Id
+			//任务Id
 			long missionId=Long.parseLong(data.get("missionId").toString());
 			//情景名称
 			String scrnarinoName=data.get("scrnarinoName").toString();
@@ -297,13 +297,68 @@ public class MissionAndScenarinoController {
 			}
 			//查询全部
 			List<Map> list = this.tScenarinoDetailMapper.selectByMissionIdAndScenarinoName(map);
-			return AmpcResult.ok(list);
+			mapResult.put("rows",list);
+			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
 			e.printStackTrace();
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
+	
+	
+	/**
+	 * 情景复制查询方法
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
+	 */
+	@RequestMapping("scenarino/get_CopyScenarinoList")
+	public AmpcResult get_CopyScenarinoList(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+		//添加异常捕捉
+		try {
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//情景名称
+			String scrnarinoName=data.get("scrnarinoName").toString();
+			//当前页码
+			Integer pageNum=Integer.valueOf(data.get("pageNum").toString());
+			//每页展示的条数
+			Integer pageSize=Integer.valueOf(data.get("pageSize").toString());
+			//列表排序  暂时内定按照任务ID逆序排序
+			//String sort=data.get("sort").toString();
+			//用户的id  确定当前用户
+			Integer userId=Integer.valueOf(data.get("userId").toString());
+			//添加分页信息到参数中
+			Map<String,Object> map=new HashMap<String,Object>();
+			map.put("startNum", ((pageNum-1)*pageSize));
+			map.put("endNum", (pageNum*pageSize));
+			map.put("userId", userId);
+			//新建返回结果的Map
+			Map<String,Object> mapResult=new HashMap<String,Object>();
+			//返回的页码
+			mapResult.put("page", pageNum);
+			//判断是否有情景名称,如果有则调用根据情景名模糊查询
+			if(null!=scrnarinoName&&!scrnarinoName.equals("")){
+				String name="%"+scrnarinoName+"%";
+				map.put("scrnarinoName",name);
+			}else{
+				map.put("scrnarinoName",null);
+			}
+			//查询全部
+			List<Map> list = this.tScenarinoDetailMapper.selectAllOrByScenarinoName(map);
+			mapResult.put("total", this.tScenarinoDetailMapper.selectCountOrByScenarinoName(map));
+			mapResult.put("rows",list);
+			return AmpcResult.ok(mapResult);
+		} catch (Exception e) {
+			e.printStackTrace();
+			//返回错误信息
+			return AmpcResult.build(1000, "参数错误",null);
+		}
+	}
+	
+	
 	
 	/**
 	 * 情景创建方法
@@ -332,20 +387,23 @@ public class MissionAndScenarinoController {
 			scenarino.setUserId(Long.parseLong(data.get("userId").toString()));
 			//创建类型 1.只创建情景 2.创建并编辑情景  3.复制情景
 			Integer createType=Integer.valueOf(data.get("createType").toString());
-			if(createType==1){
-				//执行添加操作
-				int result=this.tScenarinoDetailMapper.insertSelective(scenarino);
-				return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "情景修改失败",null);
-			}else if(createType==2){
-				/**
-				 * TO_DO 
-				 * 需要返回新创建的情景ID
-				 */
+			int result=this.tScenarinoDetailMapper.insertSelective(scenarino);
+			if(createType==1&&result>0){
+				return AmpcResult.ok(result);
 			}else{
-				/**
-				 * TO_DO 
-				 * 需要复制信息 状态  以及更改时段时间信息等
-				 */
+				Map map=new HashMap();
+				map.put("missionId", scenarino.getMissionId());
+				map.put("scrnarinoName", scenarino.getScenarinoName());
+				Integer sid=this.tScenarinoDetailMapper.selectByMidAndSName(map);
+				if(createType==2){
+					//直接返回新建的情景ID
+					return AmpcResult.ok(sid);
+				}else{
+					/**
+					 * TODO 
+					 * 需要复制信息 状态  以及更改时段时间信息等
+					 */
+				}
 			}
 			return AmpcResult.build(1000, "添加失败",null);
 		} catch (Exception e) {
@@ -383,8 +441,10 @@ public class MissionAndScenarinoController {
 				int result=this.tScenarinoDetailMapper.updateByPrimaryKeySelective(scenarino);
 				return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "情景修改失败",null);
 			}else{
+				
+				
 				/**
-				 * TO_DO 
+				 * TODO 
 				 * 需要调用计算接口 并更改情景的执行状态  
 				 * 等待计算接口的实现
 				 */
@@ -436,6 +496,40 @@ public class MissionAndScenarinoController {
 			
 			
 			return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "任务修改失败",null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			//返回错误信息
+			return AmpcResult.build(1000, "参数错误",null);
+		}
+	}
+	
+	/**
+	 * 添加情景对名称重复判断
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
+	 */
+	@RequestMapping("scenarino/check_scenarinoname")
+	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
+	public AmpcResult check_ScenarinoName(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response)throws Exception{
+		//添加异常捕捉
+		try {
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//要添加的任务名称
+			String scenarinoName=data.get("scenarinoName").toString();
+			//用户的id  确定当前用户
+			Integer userId=Integer.valueOf(data.get("userId").toString());
+			//任务Id
+			long missionId=Long.parseLong(data.get("missionId").toString());
+			Map<String,Object> map=new HashMap<String,Object>();
+			map.put("missionId", missionId);
+			map.put("scenarinoName", scenarinoName);
+			map.put("userId", userId);
+			int result=this.tScenarinoDetailMapper.check_ScenarinoName(map);
+			//返回true 表示可用  返回false 已存在
+			return result==0?AmpcResult.ok(true):AmpcResult.build(1000, "名称已存在",false);
 		} catch (Exception e) {
 			e.printStackTrace();
 			//返回错误信息
