@@ -1,6 +1,7 @@
 package ampc.com.gistone.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -330,4 +331,135 @@ public class PlanAndMeasureController {
 		return AmpcResult.build(1,"copy_plan error");
 	}
 		}
+	/**
+	 * 预案编辑功能（预案中措施修改，包含可复用预案）
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	@RequestMapping("/plan/copy_new")
+	public  AmpcResult demo_plan(HttpServletRequest request,
+			HttpServletResponse response) throws UnsupportedEncodingException{
+		Long userId=1l;//用户id
+		Long planId= 4l;//预案id
+		String copyPlan="1";//是否是可复制预案
+		JSONObject obj=new JSONObject();
+		//判断是否是可复制预案
+		if(copyPlan.equals("1")){
+			//查询可复制预案数据
+		TPlan tplan=tPlanMapper.selectByPrimaryKey(planId);
+		  String maxid = "select max(PLAN_ID) from T_PLAN";
+			Long max = (long) this.getBySqlMapper.findrows(maxid);
+			max += 1;
+		TPlan newtplan=new TPlan();
+		newtplan.setPlanId(max);
+		newtplan.setUserId(userId);
+		newtplan.setAddTime(new Date());
+		newtplan.setPlanName(tplan.getPlanName());
+		newtplan.setAreaId(tplan.getAreaId());
+		newtplan.setIsEffective(tplan.getIsEffective());
+		newtplan.setMissionId(tplan.getMissionId());
+		newtplan.setPlanEndTime(tplan.getPlanEndTime());
+		newtplan.setPlanStartTime(tplan.getPlanStartTime());
+		newtplan.setUsedBy(tplan.getUsedBy());
+		newtplan.setScenarioId(tplan.getScenarioId());
+		//根据可复制预案信息新建预案数据
+		int whats=tPlanMapper.insertSelective(newtplan);
+		if(whats!=0){
+			//根据可复制预案id查询预案中的措施
+		TPlanMeasure tPlanMeasure=new TPlanMeasure();
+		tPlanMeasure.setPlanId(planId);
+		List<TPlanMeasure> list=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
+		List lis=new ArrayList();
+		obj.put("planId", max);
+		if(!list.isEmpty()){
+			//根据可复制预案中的措施创建新建预案的措施
+			JSONArray arr=new JSONArray();
+		for(TPlanMeasure t:list){
+			TPlanMeasure newtPlanMeasure=new TPlanMeasure();
+			String maxids = "select max(PLAN_MEASURE_ID) from T_PLAN_MEASURE";
+			Long maxs = (long) this.getBySqlMapper.findrows(maxids);
+			maxs += 1;
+			newtPlanMeasure.setAddTime(new Date());
+			newtPlanMeasure.setMeasureContent(t.getMeasureContent());
+			newtPlanMeasure.setPlanId(max);
+			newtPlanMeasure.setPlanMeasureId(maxs);
+			newtPlanMeasure.setSectorId(t.getSectorId());
+			newtPlanMeasure.setMeasureId(t.getMeasureId());
+			int ssr=tPlanMeasureMapper.insertSelective(newtPlanMeasure);
+			
+			TSector Sector=tSectorMapper.selectByPrimaryKey(t.getSectorId());
+			TMeasure tMeasure=tMeasureMapper.selectByPrimaryKey(t.getMeasureId());
+			JSONObject objs=new JSONObject();
+			objs.put("planId",max);
+			objs.put("sectorName", Sector.getSectorName());
+			objs.put("measureName", tMeasure.getMeasureName());
+			objs.put("intensity", tMeasure.getIntensity());
+			//objs.put("measureContent", t.getMeasureContent());
+			arr.add(objs);
+			}
+		//查询新建预案的措施信息
+	
+//		TPlanMeasure tPlanMeasures=new TPlanMeasure();
+//		tPlanMeasures.setPlanId(max);
+//		//查看行业id是否为空，不为空添加，为空不加
+//		if(request.getParameter("sectorId")!=null){	
+//			Long sectorId=1l;//Long.parseLong(request.getParameter("sectorId"));
+//			tPlanMeasures.setSectorId(sectorId);
+//		}
+//		//查询措施
+//		List<TPlanMeasure> Measurelist=tPlanMeasureMapper.selectByEntity(tPlanMeasures);
+//		JSONArray arr=new JSONArray();
+//		//判断查询结果是否为空，返回对应的值
+//		if(!Measurelist.isEmpty()){
+//		for(TPlanMeasure tsPlanMeasure:Measurelist){
+//			TSector Sector=tSectorMapper.selectByPrimaryKey(tsPlanMeasure.getSectorId());
+//			TMeasure tMeasure=tMeasureMapper.selectByPrimaryKey(tsPlanMeasure.getMeasureId());
+//			JSONObject objs=new JSONObject();
+//			objs.put("planId",tsPlanMeasure.getPlanId());
+//			objs.put("sectorName", Sector.getSectorName());
+//			objs.put("measureName", tMeasure.getMeasureName());
+//			objs.put("intensity", tMeasure.getIntensity());
+//			//objs.put("measureContent", tsPlanMeasure.getMeasureContent());
+//			arr.add(objs);
+	//	}
+		obj.put("measurelist", arr);
+		return AmpcResult.build(0, "copy_new success",obj);
+		}
+		return AmpcResult.build(0,"copy_new success",obj);
+		}
+		return AmpcResult.build(1,"copy_new error");
+		}else{
+			//如果不是可复制预案，直接查询
+		TPlanMeasure tPlanMeasures=new TPlanMeasure();
+		tPlanMeasures.setPlanId(planId);
+		//查看行业id是否为空，不为空添加，为空不加
+		if(request.getParameter("sectorId")!=null){	
+			Long sectorId=1l;//Long.parseLong(request.getParameter("sectorId"));
+			tPlanMeasures.setSectorId(sectorId);
+		}
+		//查询措施
+		List<TPlanMeasure> Measurelist=tPlanMeasureMapper.selectByEntity(tPlanMeasures);
+		JSONArray arr=new JSONArray();
+		//判断查询结果是否为空，返回对应的值
+		if(!Measurelist.isEmpty()){
+		for(TPlanMeasure tsPlanMeasure:Measurelist){
+			TSector Sector=tSectorMapper.selectByPrimaryKey(tsPlanMeasure.getSectorId());
+			TMeasure tMeasure=tMeasureMapper.selectByPrimaryKey(tsPlanMeasure.getMeasureId());
+			JSONObject objs=new JSONObject();
+			objs.put("planId",tsPlanMeasure.getPlanId());
+			objs.put("sectorName", Sector.getSectorName());
+			objs.put("measureName", tMeasure.getMeasureName());
+			objs.put("intensity", tMeasure.getIntensity());
+			//objs.put("measureContent", tsPlanMeasure.getMeasureContent());
+			arr.add(objs);
+		}
+		obj.put("measurelist", arr);
+		return AmpcResult.build(0, "copy_new success",obj);
+		}else{
+		return AmpcResult.build(1, "copy_new error");
+		}
+		}
+	}
 }
