@@ -322,6 +322,8 @@ public class MissionAndScenarinoController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//条件名称
 			String queryName=data.get("queryName").toString();
+			//任务状态
+			String missionStatus=data.get("missionStatus").toString();
 			//当前页码
 			Integer pageNum=Integer.valueOf(data.get("pageNum").toString());
 			//每页展示的条数
@@ -345,6 +347,11 @@ public class MissionAndScenarinoController {
 				map.put("queryName",name);
 			}else{
 				map.put("queryName",null);
+			}
+			if(null!=missionStatus&&!missionStatus.equals("")){
+				map.put("missionStatus",missionStatus);
+			}else{
+				map.put("missionStatus",null);
 			}
 			//查询全部
 			List<Map> list = this.tScenarinoDetailMapper.selectAllOrByQueryName(map);
