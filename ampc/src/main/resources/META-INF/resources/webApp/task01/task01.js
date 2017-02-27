@@ -8,20 +8,41 @@ var selectRW;
 var statusRW = '';
 var delRWid = {}, delQJid = {};
 var parameterPar = {total: '', data: {}};
-function refreshIcheck() {
-  var callbacks_list = $('.rwTable ul');
-  $('body input').on('ifCreated ifClicked ifChanged ifChecked ifUnchecked ifDisabled ifEnabled ifDestroyed', function (event) {
-    callbacks_list.prepend('<li><span>#' + this.id + '</span> is ' + event.type.replace('if', '').toLowerCase() + '</li>');
-  }).iCheck({
-    checkboxClass: 'icheckbox_flat-aero',
-    radioClass: 'iradio_flat-aero',
-    increaseArea: '20%'
-  });
-}
 
 function formVerify(){
+  //$.validator.setDefaults({
+  //  highlight: function(e) {
+  //    $(e).closest(".form-group").removeClass("has-success").addClass("has-error")
+  //  },
+  //  success: function(e) {
+  //    e.closest(".form-group").removeClass("has-error").addClass("has-success")
+  //  },
+  //  errorElement: "span",
+  //  errorPlacement: function(e, r) {
+  //    e.appendTo(r.is(":radio") || r.is(":checkbox") ? r.parent().parent().parent() : r.parent())
+  //  },
+  //  errorClass: "help-block m-b-none error",
+  //  validClass: "help-block m-b-none error"
+  //});
+  //$.validator.addMethod("chinese", function(value, element) {
+  //  var chinese = /^[\u4e00-\u9fa5]+$/;
+  //  return this.optional(element) || (chinese.test(value));
+  //}, "只能输入中文");
+  //$.validator.addMethod("qingxuanze", function(value, element) {
+  //  var valtext = '请选择';
+  //  var valtext = value != '请选择';
+  //  return this.optional(element) || (valtext);
+  //}, "必选选择");
+
+
+
+
+
   formCreate = $("#formCreate").validate({
-    debug:true,
+//    debug:true,
+    onfocusout:function(element){
+      $(element).valid();
+    },
     rules:{
       rwName:{
         required: true,
@@ -68,7 +89,13 @@ function formVerify(){
     }
 
   })
-}
+
+    //$("#formCreate").validate({
+    //  onfocusout: function(element){
+    //    $(element).valid();
+    //  }
+    //});
+  }
 
 
 /*看名字*/
@@ -93,15 +120,17 @@ $(document).ready(function () {
 
 function initialize() {
   initRwTable();
+		var param = vipspa.getMessage('home_msg');
+		console.log(param);
 }
 
 var QJheight;
 function initRwTable() {
   $('#rwTable').bootstrapTable({
-    method: 'GET',
-    url: 'webApp/task01/rw.json',
+    method: 'POST',
+    //url: 'webApp/task01/rw.json',
 //      url : BackstageIP+'/mission/get_mission_list',
-//      url : '/ampc/mission/get_mission_list',
+      url : '/ampc/mission/get_mission_list',
     dataType: "json",
     contentType: "application/json", // 请求远程数据的内容类型。
     toobar: '#rwToolbar',
@@ -141,7 +170,7 @@ function initRwTable() {
       return JSON.stringify(json);
     },
     responseHandler: function (res) {
-      return res.data
+      return res.data 
     },
     queryParamsType: "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
     silent: true, // 刷新事件必须设置
@@ -189,6 +218,10 @@ function initRwTable() {
       }
 
       //QJheight = QJheight>400?QJheight:400;
+      if(data.rows.length == 0){
+        $('#qjTable').bootstrapTable('resetView',{height:600})
+        return;
+      }
       $('#qjTable').bootstrapTable('destroy');
       initQjTable();
     },
@@ -242,7 +275,7 @@ function search(type) {
     }
 //      json.data.missionName = $('.' + type).val();
     params = JSON.stringify(json);
-    console.info(params);
+    //console.info(params);
     return params;
   };
   $('#' + type + 'Table').bootstrapTable('refresh', params);
@@ -251,10 +284,10 @@ function search(type) {
 
 function initQjTable() {
   $('#qjTable').bootstrapTable({
-    method: 'GET',
-    url: 'webApp/task01/qj.json',
+    method: 'POST',
+    //url: 'webApp/task01/qj.json',
 //      url : BackstageIP+'/scenarino/scenarinoListBymissionId',
-//      url : '/ampc/scenarino/get_scenarinoListBymissionId',
+      url : '/ampc/scenarino/get_scenarinoListBymissionId',
     dataType: "json",
     contentType: "application/json", // 请求远程数据的内容类型。
     toobar: '#qjToolbar',
@@ -335,7 +368,7 @@ function initQjTable() {
 
 /*format 函数*/
 function rwName(v, row, i) {
-  return '<a href="#">' + row.missionName + '</a><br><a style="font-size:12px; color:#a1a1a1;">创建时间：' + moment(row.missionAddTime).format('YYYY-MM-DD HH') + '</a>'
+  return '<a href="javascript:">' + row.missionName + '</a><br><a style="font-size:12px; color:#a1a1a1;">创建时间：' + moment(row.missionAddTime).format('YYYY-MM-DD HH') + '</a>'
 }
 
 function rwDomain(v, row, i) {
@@ -343,9 +376,9 @@ function rwDomain(v, row, i) {
 }
 
 function qjName(v, row, i) {
-  return '<a href="#">' + row.scenarinoName + '</a><br>' +
-    '<a style="font-size:12px; color:#a1a1a1;">创建时间：' + row.addTime + '</a><br/>' +
-    '<a style="font-size:12px; color:#a1a1a1;">起止日期：' + row.startDate + ' - ' + row.endDate + '</a>'
+  return '<a href="javascript:">' + row.scenarinoName + '</a><br>' +
+    '<a style="font-size:12px; color:#a1a1a1;">创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH') + '</a><br/>' +
+    '<a style="font-size:12px; color:#a1a1a1;">起止日期：' +moment(row.scenarinoStartDate).format('YYYY-MM-DD HH') + ' - ' + moment(row.scenarinoEndDate).format('YYYY-MM-DD HH') + '</a>'
 }
 
 function qjOrder(v, row, i) {
@@ -433,32 +466,85 @@ $('#createModal').on('show.bs.modal', function (event) {
     modal.find('.createRun').attr('data-href','');
     $('.createRw').css('display','block');
     $('.createQj').css('display','none');
+    $('.createRw').parent().removeClass('col-md-6');
+    $('.selectOldQj').css('display','none');
+    $('#createModal .modal-dialog').removeClass('modal-lg');
+
   } else {
     modal.find('.createRun').text('创建并开始编辑情景');
     modal.find('.createRun').attr('data-href','xxxxxxx.html');
+
     $('.createRw').css('display','none');
     $('.createQj').css('display','block');
+    $('.createRw').parent().removeClass('col-md-6');
+    $('.selectOldQj').css('display','none');
+    $('#createModal .modal-dialog').removeClass('modal-lg');
+
+    $('.createQj-in').css('display','none');
+    $('.qjSelectWay').css('display','block');
+    $('.new-foot').css('display','none');
+    $('.old-foot').css('display','block');
+
   }
 
 });
 
+function newQj(){
+  $('.qjSelectWay').css('display','none');
+  $('.findQjDiv').css('display','none');
+  $('.createQj-in').css('display','block');
+
+  $('.new-foot').css('display','block');
+  $('.old-foot').css('display','none');
+
+}
+
+function oldQj(){
+  $('.qjSelectWay').css('display','none');
+  $('.findQjDiv').css('display','block');
+  $('.createQj-in').css('display','block');
+
+  $('.new-foot').css('display','block');
+  $('.old-foot').css('display','none');
+
+}
+
+function findOldQj(){
+  $('#createModal .modal-dialog').addClass('modal-lg');
+  $('.selectOldQj').css('display','block');
+  $('.createQj').parent().addClass('col-md-6');
+}
+
+function findRW(){
+
+}
+
+function findQJ(){
+
+}
+
+
+
+
 /*任务、情景创建*/
 function create(e,run) {
 
-  $('.createSubmit').click();
+  //$('.createSubmit').click();
   if(formCreate.form()){
-    var url;
-    var params;
+    var url,urlName;
+    var params,paramsName;
     var type = $(e).attr('data-type');
     if(type == 'rw'){
       url = '/mission/save_mission';
+      urlName = '/mission/check_missioname';
       params = {};
-      params.missionName = $('#rwName').val();
+      paramsName = {};
+      params.missionName = paramsName.missionName = $('#rwName').val();
       params.missionDomainId = $('#mnfw').val();
       params.esCouplingId = $('#qd').val();
       params.missionStartDate = $('#rwStartDate').val();
       params.missionEndDate = $('#rwEndDate').val();
-      params.userId = userId;
+      params.userId = paramsName.userId = userId;
       if(run){
         params.createType = 2;
       }else{
@@ -467,12 +553,14 @@ function create(e,run) {
     }else{
 
       url = '/scenarino/save_scenarino';
+      urlName = '/scenarino/check_scenarinoname';
       params = {};
-      params.scenarinoName = $('#qjName').val();
-      params.missionId = selectRW.missionId;
+      paramsName = {};
+      params.scenarinoName = paramsName.scenarinoName = $('#qjName').val();
+      params.missionId = paramsName.missionId = selectRW.missionId;
       params.scenarinoStartDate = $('#qjStartDate').val();
       params.scenarinoEndDate = $('#qjEndDate').val();
-      params.userId = userId;
+      params.userId = paramsName.userId = userId;
       params.scenarinoId = '';
       if(run){
         params.createType = 2;
@@ -481,21 +569,32 @@ function create(e,run) {
       }
     }
 
-    ajaxPost(url, params).success(function () {
-      //console.log('success');
-      if (type == 'rw') {
-        $('#rwTable').bootstrapTable('destroy');
-        initRwTable();
-      } else {
-        $('#qjTable').bootstrapTable('destroy');
-        initQjTable();
-      }
-      $('#createModal').modal('hide')
-    }).error(function () {
+    ajaxPost(urlName,paramsName).success(function(res){
+      if(res.data){
+        ajaxPost(url, params).success(function () {
+          //console.log('success');
+          if (type == 'rw') {
+            $('#rwTable').bootstrapTable('destroy');
+            initRwTable();
+          } else {
+            $('#qjTable').bootstrapTable('destroy');
+            initQjTable();
+          }
+          $('#createModal').modal('hide');
+          swal('添加成功', '', 'success')
+        }).error(function () {
 //        console.log('error');
-      $('#createModal').modal('hide')
-      swal('添加失败', '', 'error')
+          $('#createModal').modal('hide');
+          swal('添加失败', '', 'error')
+        })
+      }else{
+        swal('名称重复', '', 'error')
+      }
+    }).error(function(){
+      swal('校验失败', '', 'error')
     })
+
+
   }
 }
 
@@ -505,7 +604,7 @@ function initDate() {
   $("#rwStartDate").datetimepicker({
     format: 'yyyy/mm/dd',
     minView: 'month',
-    startView: 'year',
+    startView: 'month',
     language: 'zh-CN',
     autoclose: true,
     todayBtn: true
@@ -518,21 +617,22 @@ function initDate() {
   $("#rwEndDate").datetimepicker({
     format: 'yyyy/mm/dd',
     minView: 'month',
-    startView: 'year',
+    startView: 'month',
     language: 'zh-CN',
     autoclose: true,
-    todayBtn: true,
-    startDate:'2017-02-24'
+    todayBtn: true
   })
     .on('changeDate', function(ev){
       var date = moment(ev.date).format('YYYY-MM-DD');
       $('#rwStartDate').datetimepicker('setEndDate', date);
       $('#rwEndDate').datetimepicker('setStartDate', null);
     });
+
+
   $("#qjStartDate").datetimepicker({
     format: 'yyyy/mm/dd',
     minView: 'month',
-    startView: 'year',
+    startView: 'month',
     language: 'zh-CN',
     autoclose: true,
     todayBtn: true
@@ -540,35 +640,37 @@ function initDate() {
     .on('changeDate', function(ev){
       var date = moment(ev.date).format('YYYY-MM-DD');
       $('#qjEndDate').datetimepicker('setStartDate', date);
-      $('#qjStartDate').datetimepicker('setStartDate', null);
+      $('#qjStartDate').datetimepicker('setEndDate', null);
     });
   $("#qjEndDate").datetimepicker({
     format: 'yyyy/mm/dd',
     minView: 'month',
-    startView: 'year',
+    startView: 'month',
     language: 'zh-CN',
     autoclose: true,
     todayBtn: true
   })
     .on('changeDate', function(ev){
       var date = moment(ev.date).format('YYYY-MM-DD');
-      $('#qjStartDate').datetimepicker('setStartDate', date);
-      $('#qjEndDate').datetimepicker('setEndDate', null);
+      $('#qjStartDate').datetimepicker('setEndDate', date);
+      $('#qjEndDate').datetimepicker('setStartDate', null);
     });
 }
 
 /*修改名称*/
 function rename(type, id) {
 //    var url = 'rw.json';
-  var url;
+  var url,urlName;
   var params = {userId: userId};
   if (type == 'rw') {
     params.missionId = id;
     url = '/mission/update_mission';
+    urlName = '/mission/check_missioname';
   } else {
     params.scenarinoId = id;
     params.state = -1;
     url = '/scenarino/updat_scenarino';
+    urlName = '/scenarino/check_scenarinoname';
   }
 
   swal({
@@ -596,20 +698,30 @@ function rename(type, id) {
       } else {
         params.scenarinoName = inputValue;
       }
-
-      ajaxPost(url, params).success(function () {
-        if (type == 'rw') {
-          $('#rwTable').bootstrapTable('destroy');
-          initRwTable();
-        } else {
-          $('#qjTable').bootstrapTable('destroy');
-          initQjTable();
+      ajaxPost(urlName,params).success(function(res){
+        if(res.data){
+          ajaxPost(url, params).success(function () {
+            if (type == 'rw') {
+              $('#rwTable').bootstrapTable('destroy');
+              initRwTable();
+            } else {
+              $('#qjTable').bootstrapTable('destroy');
+              initQjTable();
+            }
+            swal("已修改!", "修改名称为：" + inputValue, "success");
+          }).error(function () {
+            swal("修改失败!", "名称未修改为：" + inputValue, "error");
+          }).error(function () {
+//        console.log('error');
+            $('#createModal').modal('hide');
+            swal('添加失败', '', 'error')
+          })
+        }else{
+          swal('名称重复', '', 'error')
         }
-        swal("已修改!", "修改名称为：" + inputValue, "success");
-      }).error(function () {
-        swal("修改失败!", "名称未修改为：" + inputValue, "error");
-      });
-
+      }).error(function(){
+        swal('校验失败', '', 'error')
+      })
     });
 
 }

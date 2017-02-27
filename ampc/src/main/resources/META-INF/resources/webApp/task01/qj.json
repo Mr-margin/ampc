@@ -2,8 +2,6 @@
   "ret": 0,
   "msg": "scenarinoListBymissionId success!",
   "data": {
-    "page": 2,
-    "total": 12,
     "rows": [
       {
         "scenarinoName": "强排方案",

@@ -8021,7 +8021,7 @@ fieldset[disabled] .btn-white.btn-alt.active {
 }
 /* ------------------ Nav pills --------------------*/
 .nav-pills > li > a {
-	background-color: #eeeeee;
+	/*background-color: #eeeeee;*/
 }
 .nav-pills > li.active > a,
 .nav-pills > li.active > a:hover,

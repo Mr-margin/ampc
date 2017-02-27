@@ -135,5 +135,14 @@ $(document).ready(function() {
     //get settings object
     var sprObject = $('body').data('sprFlat');
     var settings = sprObject.settings;
+    var msg = {
+    	    'id': 'home_msg',
+    	    'content': {
+    	        name: "Jack",
+    	        age:"18"
+    	    }
+    	};
+    	vipspa.setMessage(msg);
+    	//location.hash = 'home';
 
 });
