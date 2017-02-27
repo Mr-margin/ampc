@@ -14,10 +14,11 @@
     <result column="PLAN_START_TIME" property="planStartTime" jdbcType="DATE" />
     <result column="PLAN_END_TIME" property="planEndTime" jdbcType="DATE" />
     <result column="AREA_ID" property="areaId" jdbcType="DECIMAL" />
+    <result column="COPY_PLAN" property="copyPlan" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     PLAN_ID, USER_ID, PLAN_NAME, ADD_TIME, USED_BY, DELETE_TIME, IS_EFFECTIVE, SCENARIO_ID, 
-    MISSION_ID, PLAN_START_TIME, PLAN_END_TIME, AREA_ID
+    MISSION_ID, PLAN_START_TIME, PLAN_END_TIME, AREA_ID, COPY_PLAN
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -33,12 +34,13 @@
     insert into T_PLAN (PLAN_ID, USER_ID, PLAN_NAME, 
       ADD_TIME, USED_BY, DELETE_TIME, 
       IS_EFFECTIVE, SCENARIO_ID, MISSION_ID, 
-      PLAN_START_TIME, PLAN_END_TIME, AREA_ID
+      PLAN_START_TIME, PLAN_END_TIME, AREA_ID, COPY_PLAN
       )
     values (#{planId,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{planName,jdbcType=OTHER}, 
       #{addTime,jdbcType=DATE}, #{usedBy,jdbcType=DECIMAL}, #{deleteTime,jdbcType=DATE}, 
       #{isEffective,jdbcType=VARCHAR}, #{scenarioId,jdbcType=DECIMAL}, #{missionId,jdbcType=DECIMAL}, 
-      #{planStartTime,jdbcType=DATE}, #{planEndTime,jdbcType=DATE}, #{areaId,jdbcType=DECIMAL}
+      #{planStartTime,jdbcType=DATE}, #{planEndTime,jdbcType=DATE}, #{areaId,jdbcType=DECIMAL},
+      #{copyPlan,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TPlan" >
@@ -80,6 +82,9 @@
       <if test="areaId != null" >
         AREA_ID,
       </if>
+      <if test="copyPlan != null" >
+        COPY_PLAN,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="planId != null" >
@@ -117,6 +122,9 @@
       </if>
       <if test="areaId != null" >
         #{areaId,jdbcType=DECIMAL},
+      </if>
+      <if test="copyPlan != null" >
+        #{copyPlan,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -156,6 +164,9 @@
       <if test="areaId != null" >
         AREA_ID = #{areaId,jdbcType=DECIMAL},
       </if>
+       <if test="copyPlan != null" >
+        COPY_PLAN = #{copyPlan,jdbcType=VARCHAR},
+      </if>
     </set>
     where PLAN_ID = #{planId,jdbcType=DECIMAL}
   </update>
@@ -171,7 +182,8 @@
       MISSION_ID = #{missionId,jdbcType=DECIMAL},
       PLAN_START_TIME = #{planStartTime,jdbcType=DATE},
       PLAN_END_TIME = #{planEndTime,jdbcType=DATE},
-      AREA_ID = #{areaId,jdbcType=DECIMAL}
+      AREA_ID = #{areaId,jdbcType=DECIMAL},
+      COPY_PLAN = #{copyPlan,jdbcType=VARCHAR}
     where PLAN_ID = #{planId,jdbcType=DECIMAL}
   </update>
 </mapper>
