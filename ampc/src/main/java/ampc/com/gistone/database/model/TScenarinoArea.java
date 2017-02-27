@@ -1,24 +1,30 @@
 package ampc.com.gistone.database.model;
 
 import java.util.Date;
-
+/**
+ * 区域实体类
+ * @author WangShanxi
+ * @version v.0.1
+ * @date 2017年2月27日
+ */
 public class TScenarinoArea {
+	//区域ID
     private Long scenarinoAreaId;
-
+    //所属情景ID
     private Long scenarinoDetailId;
-
+    //区域名称
     private Object areaName;
-
+    //创建时间
     private Date addTime;
-
+    //用户ID
     private Long userId;
-
+    //修改时间
     private Date updateTime;
-
+    //是否有效 0无效 1有效
     private String isEffective;
-
+    //删除时间
     private Date deleteTime;
-
+    
     public Long getScenarinoAreaId() {
         return scenarinoAreaId;
     }
