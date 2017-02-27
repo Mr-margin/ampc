@@ -291,7 +291,8 @@ public class MissionAndScenarinoController {
 			Map<String,Object> mapResult=new HashMap<String,Object>();
 			//判断是否有条件名称,如果有则调用根据条件名模糊查询
 			if(queryName!=null&&!queryName.equals("")){
-				map.put("queryName", queryName);
+				String name="%"+queryName+"%";
+				map.put("queryName", name);
 			}else{
 				map.put("queryName", null);
 			}
@@ -383,7 +384,7 @@ public class MissionAndScenarinoController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			TScenarinoDetail scenarino=new TScenarinoDetail();
 			//情景名称
-			scenarino.setScenarinoName(data.get("scrnarinoName").toString());
+			scenarino.setScenarinoName(data.get("scenarinoName").toString());
 			//情景的开始时间
 			scenarino.setScenarinoStartDate(new Date(data.get("scenarinoStartDate").toString()));
 			//情景的结束时间
@@ -436,7 +437,7 @@ public class MissionAndScenarinoController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			TScenarinoDetail scenarino=new TScenarinoDetail();
 			//情景名称
-			scenarino.setScenarinoName(data.get("scrnarinoName").toString());
+			scenarino.setScenarinoName(data.get("scenarinoName").toString());
 			//用户的id  确定当前用户
 			scenarino.setUserId(Long.parseLong(data.get("userId").toString()));
 			//情景ID 
