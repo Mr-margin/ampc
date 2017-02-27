@@ -158,7 +158,7 @@ function initRwTable() {
       var json = {
         "token": "",
         "data": {
-          "missionName": m.searchText || '',
+          "queryName": m.searchText || '',
           "missionStatus":statusRW,
           "pageNum": m.pageNumber,
           "pageSize": m.pageSize,
@@ -250,7 +250,7 @@ function search(type) {
       json = {
         "token": "",
         "data": {
-          "missionName": params.searchText || '',
+          "queryName": params.searchText || '',
           "pageNum": params.pageNumber,
           "pageSize": params.pageSize,
           "missionStatus":statusRW,
@@ -258,22 +258,22 @@ function search(type) {
           "userId": 1
         }
       };
-      json.data.missionName = $('.rw').val();
+      json.data.queryName = $('.rw').val();
     } else {
       json = {
         "token": "",
         "data": {
           "missionId": selectRW.missionId,
-          "scrnarinoName": params.searchText || '',
+          "queryName": params.searchText || '',
 //            "pageNum": params.pageNumber,
 //            "pageSize": params.pageSize,
           "sort": '',
           "userId": 1
         }
       };
-      json.data.scrnarinoName = $('.qj').val();
+      json.data.queryName = $('.qj').val();
     }
-//      json.data.missionName = $('.' + type).val();
+//      json.data.queryName = $('.' + type).val();
     params = JSON.stringify(json);
     //console.info(params);
     return params;
@@ -314,7 +314,7 @@ function initQjTable() {
         "token": "",
         "data": {
           "missionId": selectRW.missionId,
-          "scrnarinoName": '',
+          "queryName": '',
 //            "pageNum": m.pageNumber,
 //            "pageSize": m.pageSize,
           "sort": '',
@@ -509,19 +509,129 @@ function oldQj(){
 
 }
 
+var oldType = '';
+function selectOldType(e){
+  $('.selectOldQj .active').removeClass('active');
+  $(e).addClass('active');
+  oldType = $(e).attr('data-type');
+
+  $('#oldQJ').bootstrapTable('destroy');
+  initOldQj();
+}
+
+var qjId = '';
 function findOldQj(){
   $('#createModal .modal-dialog').addClass('modal-lg');
   $('.selectOldQj').css('display','block');
   $('.createQj').parent().addClass('col-md-6');
-}
 
-function findRW(){
-
-}
-
-function findQJ(){
+  initOldQj();
 
 }
+
+function oldSearch(){
+  var params = $('#oldQJ').bootstrapTable('getOptions');
+  params.queryParams = function (params) {
+    var json;
+    json = {
+      "token": "",
+      "data": {
+        "queryName": params.searchText || '',
+        "missionStatus":oldType,
+        "pageNum": params.pageNumber,
+        "pageSize": params.pageSize,
+        "sort": '',
+        "userId": userId
+      }
+    };
+    json.data.queryName = $('.oldQjText').val();
+
+//      json.data.missionName = $('.' + type).val();
+    params = JSON.stringify(json);
+    //console.info(params);
+    return params;
+  };
+  $('#oldQJ').bootstrapTable('refresh', params);
+}
+
+function initOldQj(){
+  $('#oldQJ').bootstrapTable({
+    method: 'POST',
+    //url: 'webApp/task01/testQJ.json',
+//      url : BackstageIP+'/mission/get_mission_list',
+    url : '/ampc/scenarino/get_CopyScenarinoList',
+    dataType: "json",
+    contentType: "application/json", // 请求远程数据的内容类型。
+    toobar: '#rwToolbar',
+    iconSize: "outline",
+    search: false,
+    searchAlign: 'right',
+    height:500,
+    maintainSelected: true,
+    clickToSelect: true,// 点击选中行
+    pagination: true, // 在表格底部显示分页工具栏
+    pageSize: 5, // 页面大小
+    pageNumber: 1, // 页数
+    pageList: [10],
+    striped: true, // 使表格带有条纹
+    sidePagination: "server",// 表格分页的位置 client||server
+    rowStyle: function (row, index) {
+      if (index == 0) {
+        return {
+          classes: 'info'
+        };
+      }
+      return {};
+    },
+    queryParams: function formPm(m) {
+      var json = {
+        "token": "",
+        "data": {
+          "queryName": m.searchText || '',
+          "missionStatus":oldType,
+          "pageNum": m.pageNumber,
+          "pageSize": m.pageSize,
+          "sort": '',
+          "userId": userId
+        }
+      };
+
+      return JSON.stringify(json);
+    },
+    responseHandler: function (res) {
+      return res.data
+    },
+    queryParamsType: "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
+    silent: true, // 刷新事件必须设置
+    onClickRow: function (row, $element) {
+      qjId = row.scenarinoId;
+    }
+
+
+  });
+}
+
+function oldQJ_rw(v,row,i){
+  return '<a href="javascript:">'+ row.missionName + '</a><br /><span> 模拟范围：'+ row.v1 +'</span><br /><span>清单：'+ row.esCouplingName +'</span>'
+}
+
+
+//
+//function findRW(){
+//  var url = '/mission/get_mission_list';
+//  ajaxPost(url,{
+//    "missionName": "",
+//    "pageNum": 1,
+//    "pageSize": 5,
+//    "sort": "addTime desc",
+//    "userId": 1 ,
+//    "missionStatus":  "预评估"
+//  })
+//}
+//
+//function findQJ(){
+//
+//}
 
 
 
@@ -561,7 +671,7 @@ function create(e,run) {
       params.scenarinoStartDate = $('#qjStartDate').val();
       params.scenarinoEndDate = $('#qjEndDate').val();
       params.userId = paramsName.userId = userId;
-      params.scenarinoId = '';
+      params.scenarinoId = qjId;
       if(run){
         params.createType = 2;
       }else{
