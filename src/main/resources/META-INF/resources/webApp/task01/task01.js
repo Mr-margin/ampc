@@ -4,10 +4,35 @@
 //  console.log(BackstageIP);
 var userId = 1;
 var formCreate;
-var selectRW;
+var selectRW = {};
 var statusRW = '';
 var delRWid = {}, delQJid = {};
 var parameterPar = {total: '', data: {}};
+var msg = {
+  'id': 'qjMessage',
+  'content': {
+    rwId:'',
+    rwName:'',
+    qjId:'',
+    qjName:'',
+    qjStartDate:'',
+    qjEndDate:''
+
+  }
+};
+
+$(window).resize(function(e) {
+  if($(window).width()<1370){
+    $('.cjsc').removeClass('col-md-4').addClass('col-md-6');
+    $('.smallP').css('display','block');
+    $('.bigP').css('display','none');
+  }else{
+    $('.smallP').css('display','none');
+    $('.bigP').css('display','block');
+    $('.cjsc').removeClass('col-md-6').addClass('col-md-4')
+
+  }
+});
 
 function formVerify(){
   //$.validator.setDefaults({
@@ -120,8 +145,8 @@ $(document).ready(function () {
 
 function initialize() {
   initRwTable();
-		var param = vipspa.getMessage('home_msg');
-		console.log(param);
+  var param = vipspa.getMessage('home_msg');
+  console.log(param);
 }
 
 var QJheight;
@@ -242,6 +267,7 @@ function initRwTable() {
 
 /*筛选*/
 function statusRWfun(status,t){
+  $('.seeName').html($(t).children('a').html());
   statusRW = status;
   search('rw');
 }
@@ -335,8 +361,13 @@ function initQjTable() {
     queryParamsType: "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
     silent: true, // 刷新事件必须设置
     onClickRow: function (row, $element) {
-//        $('.success').addClass('info').removeClass('success');
-//        $($element).removeClass('info').addClass('success');
+      msg.content.rwId=selectRW.missionId;
+      msg.content.rwName=selectRW.missionName;
+      msg.content.qjName = row.scenarinoName;
+      msg.content.qjId = row.scenarinoId;
+      msg.content.qjStartDate = row.scenarinoStartDate;
+      msg.content.qjEndDate = row.scenarinoEndDate;
+      console.log(msg);
     },
     /*复选框设置*/
     onCheck: function (row) {
@@ -381,7 +412,7 @@ function rwDomain(v, row, i) {
 }
 
 function qjName(v, row, i) {
-  return '<a href="javascript:">' + row.scenarinoName + '</a><br>' +
+  return '<a href="#/hpg">' + row.scenarinoName + '</a><br>' +
     '<a style="font-size:12px; color:#a1a1a1;">创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH') + '</a><br/>' +
     '<a style="font-size:12px; color:#a1a1a1;">起止日期：' +moment(row.scenarinoStartDate).format('YYYY-MM-DD HH') + ' - ' + moment(row.scenarinoEndDate).format('YYYY-MM-DD HH') + '</a>'
 }
@@ -828,7 +859,7 @@ function rename(type, id) {
         params.scenarinoName = inputValue;
         paramsName.scenarinoName = inputValue;
       }
-      ajaxPost(urlName,paramsName).success(function(res){
+      ajaxPost(urlName,type == 'rw'?params:paramsName).success(function(res){
         if(res.data){
           ajaxPost(url, params).success(function () {
             if (type == 'rw') {

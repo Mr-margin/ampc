@@ -12,9 +12,13 @@ vipspa.start({
       templateUrl: 'a.html',
       controller: ''
     },
-    '/ypg': {      //预评估
+    '/rwgl': {      //预评估
       templateUrl: 'webApp/task01/task01.html',
       controller: 'webApp/task01/task01.js'
+    },
+    '/yabj': {      //预评估
+      templateUrl: 'webApp/task02/task02.html',
+      controller: 'webApp/task02/task02.js'
     },
     '/hpg': {      //后评估
         templateUrl: 'a.html',
@@ -36,7 +40,7 @@ vipspa.start({
       templateUrl: 'a.html',
       controller: ''
     },
-    'defaults': '/ypg'     //默认显示页面
+    'defaults': '/rwgl'     //默认显示页面
   },
   errorTemplateId: '#error'//错误显示页面
 });
