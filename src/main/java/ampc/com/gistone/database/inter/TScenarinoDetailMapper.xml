@@ -33,35 +33,27 @@
   
   <!-- 返回情景复制列表的数据 -->
   <resultMap id="copyScenarinoListMap" type="hashMap" >
-    <id column="MISSION_ID" property="missionId" jdbcType="DECIMAL" />
     <result column="MISSION_NAME" property="missionName" jdbcType="OTHER" />
-    <result column="MISSION_DOMAIN_ID" property="missionDomainId" jdbcType="DECIMAL" />
     <result column="V1" property="v1" jdbcType="VARCHAR" />
-    <result column="ES_COUPLING_ID" property="esCouplingId" jdbcType="DECIMAL" />
     <result column="ES_COUPLING_NAME" property="esCouplingName" jdbcType="OTHER" />
-    <result column="MISSION_START_DATE" property="missionStartDate" jdbcType="DATE" />
-    <result column="MISSION_END_DATE" property="missionEndDate" jdbcType="DATE" />
-    <result column="MISSION_ADD_TIME" property="missionAddTime" jdbcType="DATE" />
     <result column="MISSION_STATUS" property="missionStatus" jdbcType="OTHER" />
     <result column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
     <result column="SCENARINO_NAME" property="scenarinoName" jdbcType="OTHER" />
     <result column="SCENARINO_START_DATE" property="scenarinoStartDate" jdbcType="DATE" />
     <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="DATE" />
-    <result column="SCENARINO_STATUS" property="scenarinoStatus" jdbcType="DECIMAL" />
     <result column="SCENARINO_STATU_NAME" property="scenarinoStatuName" jdbcType="OTHER" />
     <result column="SCENARINO_ADD_TIME" property="scenarinoAddTime" jdbcType="DATE" />
   </resultMap>
   
   <!-- 返回情景复制列表的列 -->
   <sql id="copyScenarino_Column_List" >
-  	  MISS.MISSION_ID,MISSION_NAME,MISSION_DOMAIN_ID,V1,MISS.ES_COUPLING_ID,
-	  ES_COUPLING_NAME,MISSION_ADD_TIME,MISSION_START_DATE,MISSION_END_DATE,MISSION_STATUS,
-	  SCENARINO_ID,SCENARINO_NAME,SCENARINO_START_DATE,SCENARINO_END_DATE,SCENARINO_STATUS,
+  	  MISSION_NAME,V1,ES_COUPLING_NAME,MISSION_STATUS,
+	  SCENARINO_ID,SCENARINO_NAME,SCENARINO_START_DATE,SCENARINO_END_DATE,
       SCENARINO_STATU_NAME,SCENARINO_ADD_TIME
   </sql>
   
   <!-- 查询所有任务列表和情景列表 可根据情景名模糊查询 -->
-  <select id="selectAllOrByScenarinoName" parameterType="hashMap" resultMap="copyScenarinoListMap" >
+  <select id="selectAllOrByQueryName" parameterType="hashMap" resultMap="copyScenarinoListMap" >
    SELECT * FROM (
    	 SELECT T.*,ROWNUM AS RN FROM (
          SELECT  <include refid="copyScenarino_Column_List"/>
@@ -72,9 +64,17 @@
 						  INNER JOIN T_SCENARINO_STATUS STAT  ON SCEN.SCENARINO_STATUS=STAT.SCENARINO_STATU_ID
 									WHERE MISS.IS_EFFECTIVE='1' AND MISS.USER_ID=#{userId,jdbcType=OTHER}  AND
 											  SCEN.IS_EFFECTIVE='1' AND SCEN.USER_ID=#{userId,jdbcType=OTHER} 
-										         <if test="scenarinoName != null" >
-													AND SCENARINO_NAME LIKE #{scenarinoName,jdbcType=OTHER}
-												 </if>
+										         <if test="queryName != null" >
+										       		AND (MISSION_NAME LIKE #{queryName,jdbcType=OTHER}
+										       		OR V1 LIKE #{queryName,jdbcType=OTHER})
+										       		OR ES_COUPLING_NAME LIKE #{queryName,jdbcType=OTHER})
+										       		OR MISSION_STATUS LIKE #{queryName,jdbcType=OTHER})
+										       		OR SCENARINO_NAME LIKE #{queryName,jdbcType=OTHER})
+										       		OR to_char(SCENARINO_START_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+										       		OR to_char(SCENARINO_END_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+										       		OR to_char(SCENARINO_ADD_TIME,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+										       		OR SCENARINO_STATU_NAME LIKE #{queryName,jdbcType=OTHER})
+										      	</if>
 											ORDER BY MISS.MISSION_ID DESC
 	    ) T WHERE ROWNUM &lt;=#{endNum,jdbcType=OTHER}
 	) 
@@ -83,27 +83,46 @@
   </select>
   
   <!--不分页查询所有有效的条数 可根据情景名模糊查询-->
-  <select id="selectCountOrByScenarinoName" parameterType="hashMap" resultType="int">
-  	 SELECT COUNT(*) FROM T_SCENARINO_DETAIL WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
-  	 	<if test="scenarinoName != null" >
-			AND SCENARINO_NAME LIKE #{scenarinoName,jdbcType=OTHER}
-		</if>
+  <select id="selectCountOrByQueryName" parameterType="hashMap" resultType="int">
+  	 SELECT COUNT(*) FROM T_SCENARINO_DETAIL SCEN 
+  	   INNER JOIN T_MISSION_DETAIL MISS
+  		 WHERE MISS.IS_EFFECTIVE='1' AND MISS.USER_ID=#{userId,jdbcType=OTHER}  AND
+			SCEN.IS_EFFECTIVE='1' AND SCEN.USER_ID=#{userId,jdbcType=OTHER} 
+  	    <if test="missionStatus != null" >
+        	AND MISSION_STATUS= #{missionStatus,jdbcType=OTHER}
+      	</if>
+  	    <if test="queryName != null" >
+       		AND (MISSION_NAME LIKE #{queryName,jdbcType=OTHER}
+       		OR V1 LIKE #{queryName,jdbcType=OTHER})
+       		OR ES_COUPLING_NAME LIKE #{queryName,jdbcType=OTHER})
+       		OR MISSION_STATUS LIKE #{queryName,jdbcType=OTHER})
+       		OR SCENARINO_NAME LIKE #{queryName,jdbcType=OTHER})
+       		OR to_char(SCENARINO_START_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+       		OR to_char(SCENARINO_END_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+       		OR to_char(SCENARINO_ADD_TIME,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+       		OR SCENARINO_STATU_NAME LIKE #{queryName,jdbcType=OTHER})
+      	</if>
   </select>
   
   
   
   
    <!-- 根据任务Id查询情景列表 并可根据情景名模糊查询 -->
-  <select id="selectByMissionIdAndScenarinoName" parameterType="hashMap" resultMap="scenarinoListMap" >
+  <select id="selectByMissionIdAndQueryName" parameterType="hashMap" resultMap="scenarinoListMap" >
    	 SELECT  <include refid="scenarino_Column_List"/>
   		FROM T_SCENARINO_DETAIL  SCEN 
   		INNER JOIN T_SCENARINO_STATUS STAT  ON SCEN.SCENARINO_STATUS=STAT.SCENARINO_STATU_ID
 			  WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
 			  AND MISSION_ID=#{missionId,jdbcType=OTHER}
-			  <if test="scenarinoName != null" >
-        		AND SCENARINO_NAME LIKE #{scenarinoName,jdbcType=OTHER}
+			  <if test="queryName != null" >
+        		AND (SCENARINO_NAME LIKE #{queryName,jdbcType=OTHER}
+        		OR to_char(SCENARINO_START_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+        		OR to_char(SCENARINO_END_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+        		OR to_char(SCENARINO_ADD_TIME,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+        		OR SCENARINO_STATU_NAME LIKE #{queryName,jdbcType=OTHER})
       		 </if>
 			  ORDER BY SCENARINO_ID DESC
+			  
   </select>
   
   
