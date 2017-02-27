@@ -1,5 +1,6 @@
 package ampc.com.gistone.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMeasureMapper;
 import ampc.com.gistone.database.inter.TPlanMapper;
 import ampc.com.gistone.database.inter.TPlanMeasureMapper;
@@ -24,6 +26,7 @@ import ampc.com.gistone.database.model.TPlanMeasure;
 import ampc.com.gistone.database.model.TSector;
 import ampc.com.gistone.database.model.TTime;
 import ampc.com.gistone.util.AmpcResult;
+import ampc.com.gistone.util.ClientUtil;
 
 @RestController
 @RequestMapping
@@ -43,12 +46,17 @@ public class PlanAndMeasureController {
 	@Autowired
 	private TTimeMapper tTimeMapper;
 	
+	@Autowired
+	private GetBySqlMapper getBySqlMapper;
+	
 	/**
 	 * 措施汇总查询
+	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/measure/list_measure")
 	public  AmpcResult list_measure(HttpServletRequest request,
-			HttpServletResponse response){
+			HttpServletResponse response) throws UnsupportedEncodingException{
+		ClientUtil.SetCharsetAndHeader(request, response);
 		try{
 		Long planId=1l;//Long.parseLong(request.getParameter("planId"));//预案id
 		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户id
@@ -89,16 +97,22 @@ public class PlanAndMeasureController {
 	
 	/**
 	 * 预案添加措施
+	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/measure/add_measure")
 	public  AmpcResult add_measure(HttpServletRequest request,
-			HttpServletResponse response){
+			HttpServletResponse response) throws UnsupportedEncodingException{
+		ClientUtil.SetCharsetAndHeader(request, response);
 		try{	
-		Long sectorId=Long.parseLong(request.getParameter("sectorId"));//行业id
-		Long measureId=Long.parseLong(request.getParameter("measureId"));//措施id
-		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
-		Long planId=Long.parseLong(request.getParameter("planId"));//预案id
+		Long sectorId=1l;//Long.parseLong(request.getParameter("sectorId"));//行业id
+		Long measureId=1l;//Long.parseLong(request.getParameter("measureId"));//措施id
+		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户id
+		Long planId=1l;//Long.parseLong(request.getParameter("planId"));//预案id
+		String maxid = "select max(PLAN_MEASURE_ID) from T_PLAN_MEASURE";
+		Long max = (long) this.getBySqlMapper.findrows(maxid);
+		max += 1;
 		TPlanMeasure tPlanMeasure=new TPlanMeasure();
+		tPlanMeasure.setPlanMeasureId(max);
 		tPlanMeasure.setMeasureId(measureId);
 		tPlanMeasure.setPlanId(planId);
 		tPlanMeasure.setSectorId(sectorId);
@@ -116,22 +130,28 @@ public class PlanAndMeasureController {
 		}
 	
 	/**
-	 * 添加预案
+	 * 创建预案
+	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/plan/add_plan")
 	public  AmpcResult add_plan(HttpServletRequest request,
-			HttpServletResponse response){
-		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
-		String planName=request.getParameter("planName");//预案名称
-	    Date addTime=new Date(request.getParameter("addTime"));//添加时间
-	    Long usedBy=Long.parseLong(request.getParameter("usedBy"));//情景id
-	    Long scenarioId=Long.parseLong(request.getParameter("scenarioId"));//行业id
-	    Long missionId=Long.parseLong(request.getParameter("missionId"));//所属任务id
-	    Date timeStartDate=new Date(request.getParameter("timeStartDate"));//时段开始时间
-	    Date timeEndEate=new Date(request.getParameter("timeEndEate"));//时段结束时间
-	    Long areaId=Long.parseLong(request.getParameter("areaId"));//区域id
+			HttpServletResponse response) throws UnsupportedEncodingException{
+		ClientUtil.SetCharsetAndHeader(request, response);
+		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户id
+		String planName="各种减排";//request.getParameter("planName");//预案名称
+	    Date addTime=new Date();//(request.getParameter("addTime"));//添加时间
+	    Long usedBy=1l;//Long.parseLong(request.getParameter("usedBy"));//情景id
+	    Long scenarioId=1l;//Long.parseLong(request.getParameter("scenarioId"));//行业id
+	    Long missionId=1l;//Long.parseLong(request.getParameter("missionId"));//所属任务id
+	    Date timeStartDate=new Date();//(request.getParameter("timeStartDate"));//时段开始时间
+	    Date timeEndEate=new Date();//(request.getParameter("timeEndEate"));//时段结束时间
+	    Long areaId=1l;//Long.parseLong(request.getParameter("areaId"));//区域id
 	    
+	    String maxid = "select max(PLAN_ID) from T_PLAN";
+		Long max = (long) this.getBySqlMapper.findrows(maxid);
+		max += 1;
 	    TPlan tPlan=new TPlan();
+	    tPlan.setPlanId(max);
 	    tPlan.setAddTime(addTime);
 	    tPlan.setAreaId(areaId);
 	    tPlan.setMissionId(missionId);
@@ -151,14 +171,16 @@ public class PlanAndMeasureController {
 	}
 	/**
 	 * 措施详情修改
+	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/measure/update_measureContent")
 	public  AmpcResult update_measureContent(HttpServletRequest request,
-			HttpServletResponse response){
+			HttpServletResponse response) throws UnsupportedEncodingException{
+		ClientUtil.SetCharsetAndHeader(request, response);
 		try{
-		String measureContent=request.getParameter("measureContent");//措施详情
-		Long planMeasureId=Long.parseLong(request.getParameter("planMeasureId"));//预案措施表id
-		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
+		String measureContent="一个大仓库";//request.getParameter("measureContent");//措施详情
+		Long planMeasureId=1l;//Long.parseLong(request.getParameter("planMeasureId"));//预案措施表id
+		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户id
 		TPlanMeasure tPlanMeasure=new TPlanMeasure();
 		tPlanMeasure.setPlanMeasureId(planMeasureId);
 		tPlanMeasure.setMeasureContent(measureContent);
@@ -180,19 +202,21 @@ public class PlanAndMeasureController {
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/measure/list_measureContent")
 	public  AmpcResult list_measureContent(HttpServletRequest request,
-			HttpServletResponse response){
+			HttpServletResponse response) throws UnsupportedEncodingException{
+		ClientUtil.SetCharsetAndHeader(request, response);
 		try{
-		Long planMeasureId=Long.parseLong(request.getParameter("planMeasureId"));//预案措施表id
-		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
+		Long planMeasureId=1l;//Long.parseLong(request.getParameter("planMeasureId"));//预案措施表id
+		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户id
 		//查询预案措施表
 		TPlanMeasure tPlanMeasure=tPlanMeasureMapper.selectByPrimaryKey(planMeasureId);
 		JSONObject obj=new JSONObject();
 		if(tPlanMeasure.getMeasureContent()!=null){
 		obj.put("measureContent", tPlanMeasure.getMeasureContent());
-		 return AmpcResult.build(0, "list_measureContent error");
+		 return AmpcResult.build(0, "list_measureContent success",obj);
 		}
 		 return AmpcResult.build(1, "list_measureContent error");
 		}catch(NullPointerException n){
@@ -202,13 +226,15 @@ public class PlanAndMeasureController {
 	}
 	/**
 	 * 删除预案中的措施
+	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/measure/delete_measure")
 	public  AmpcResult delete_measure(HttpServletRequest request,
-			HttpServletResponse response){
+			HttpServletResponse response) throws UnsupportedEncodingException{
+		ClientUtil.SetCharsetAndHeader(request, response);
 		try{
-		Long planMeasureId=Long.parseLong(request.getParameter("planMeasureId"));//预案措施表id
-		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
+		Long planMeasureId=5l;//Long.parseLong(request.getParameter("planMeasureId"));//预案措施表id
+		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户id
 		//删除预案中的措施
 		int delete_status=tPlanMeasureMapper.deleteByPrimaryKey(planMeasureId);
 		if(delete_status!=0){
@@ -226,16 +252,18 @@ public class PlanAndMeasureController {
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/plan/merge_plan")
 	public  AmpcResult merge_plan(HttpServletRequest request,
-			HttpServletResponse response){
+			HttpServletResponse response) throws UnsupportedEncodingException{
+		ClientUtil.SetCharsetAndHeader(request, response);
 	try{
-		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
-		Long chiefPlanId=Long.parseLong(request.getParameter("chiefPlanId"));//蓝本预案id
-		Long planId=Long.parseLong(request.getParameter("planId"));//被合并预案id
-	    Date startTime=new Date(request.getParameter("startTime"));//合并后的开始时间
-	    Date endTime=new Date(request.getParameter("endTime"));//合并后的结束时间
+		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户id
+		Long chiefPlanId=3l;//Long.parseLong(request.getParameter("chiefPlanId"));//蓝本预案id
+		Long planId=4l;//Long.parseLong(request.getParameter("planId"));//被合并预案id
+	    Date startTime=new Date();//(request.getParameter("startTime"));//合并后的开始时间
+	    Date endTime=new Date();//(request.getParameter("endTime"));//合并后的结束时间
 	    //修改蓝本预案信息
 	    TPlan tPlan=new TPlan();
 	    tPlan.setPlanId(chiefPlanId);
@@ -262,7 +290,7 @@ public class PlanAndMeasureController {
 	         }
 	         return AmpcResult.build(1, "merge_plan error");
 	    	}
-	    	 return AmpcResult.build(1, "merge_plan error");
+	    	 return AmpcResult.build(0, "merge_plan success");
 	    }
 	    return AmpcResult.build(1, "merge_plan error");
 	    }
@@ -276,14 +304,16 @@ public class PlanAndMeasureController {
 	
 	/**
 	 * 复制预案
+	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/plan/copy_plan")
 	public  AmpcResult copy_plan(HttpServletRequest request,
-			HttpServletResponse response){
+			HttpServletResponse response) throws UnsupportedEncodingException{
+		ClientUtil.SetCharsetAndHeader(request, response);
 		try{
-		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
-		Long planId=Long.parseLong(request.getParameter("planId"));//预案id
-		Long timeId=Long.parseLong(request.getParameter("timeId"));//时段id
+		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户id
+		Long planId=1l;//Long.parseLong(request.getParameter("planId"));//预案id
+		Long timeId=5l;//Long.parseLong(request.getParameter("timeId"));//时段id
 		
 		//将被复制的预案id存入要复制到的时段里
 		TTime tTime=new TTime();
