@@ -449,8 +449,6 @@ public class MissionAndScenarinoController {
 				int result=this.tScenarinoDetailMapper.updateByPrimaryKeySelective(scenarino);
 				return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "情景修改失败",null);
 			}else{
-				
-				
 				/**
 				 * TODO 
 				 * 需要调用计算接口 并更改情景的执行状态  
