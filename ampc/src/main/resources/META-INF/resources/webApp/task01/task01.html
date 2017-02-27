@@ -38,7 +38,7 @@
         </div>
         <div class="panel-body" style="padding:0px;border: none">
           <div id="rwToolbar" class="btn-group">
-            <div class="col-md-3">
+            <div class="col-md-4 cjsc">
               <button type="button" class="btn btn-default" data-whatever="创建任务" data-type="rw" data-toggle="modal"
                       data-target="#createModal">
                 <i class="glyphicon glyphicon-plus"></i> 创建
@@ -47,7 +47,7 @@
                 <i class="glyphicon glyphicon-trash"></i> 删除
               </button>
             </div>
-            <div class="col-md-5 text-right">
+            <div class="col-md-5 text-right bigP">
               <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('',this)">
                 <i class="im-folder-open"></i> 全部
               </button>
@@ -58,7 +58,20 @@
                 <i class="im-paste2"></i> 后评估
               </button>
             </div>
-            <div class="input-group col-md-4 col-md-offset-8">
+            <div class="smallP col-md-2" style="display: none;">
+              <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  <span class="seeName">全部</span>
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                  <li onclick="statusRWfun('',this)"><a href="javascript:">全部</a></li>
+                  <li onclick="statusRWfun('预评估',this)"><a href="javascript:">预评估</a></li>
+                  <li onclick="statusRWfun('后评估',this)"><a href="javascript:">后评估</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="input-group col-md-3 col-md-offset-9">
               <input type="text" class="form-control rw " placeholder="输入任务名称或字段">
                 <span class="input-group-btn">
                   <button class="btn btn-default " type="button" onclick="search('rw')"><i class="ec-search"></i>
@@ -102,7 +115,7 @@
                 <i class="glyphicon glyphicon-trash"></i> 删除
               </button>
             </div>
-            <div class="input-group col-md-4 col-md-offset-8">
+            <div class="input-group col-md-3 col-md-offset-9">
               <input type="text" class="form-control qj " placeholder="输入情景名称或字段">
                 <span class="input-group-btn">
                   <button class="btn btn-default " type="button" onclick="search('qj')"><i class="ec-search"></i>
@@ -263,7 +276,7 @@
               	</ul>
              </div>
               <div class="input-group col-md-4">
-                <input type="text" class="form-control oldQjText " placeholder="输入查询字段">
+                <input type="text" class="form-control oldQjText " name="xxx" placeholder="输入查询字段">
                 <span class="input-group-btn">
                   <button class="btn btn-default " type="button" onclick="oldSearch()"><i class="ec-search"></i>
                   </button>
