@@ -393,25 +393,32 @@ public class MissionAndScenarinoController {
 			scenarino.setMissionId(Long.parseLong(data.get("missionId").toString()));
 			//用户的id  确定当前用户
 			scenarino.setUserId(Long.parseLong(data.get("userId").toString()));
-			//创建类型 1.只创建情景 2.创建并编辑情景  3.复制情景
+			//创建类型 1.只创建情景 2.创建并编辑情景 
 			Integer createType=Integer.valueOf(data.get("createType").toString());
+			//情景的id  用来判断是否是复用情景
+			Integer scenarinoId=Integer.valueOf(data.get("scenarinoId").toString());
+			if(null!=scenarinoId&&!scenarinoId.equals("")&&createType==1){
+				/**
+				 * TODO 复制情景
+				 */
+				
+			}
+			if(null!=scenarinoId&&!scenarinoId.equals("")&&createType==2){
+				/**
+				 * TODO 复制情景 并返回新建的情景ID
+				 */
+			}
 			int result=this.tScenarinoDetailMapper.insertSelective(scenarino);
-			if(createType==1&&result>0){
+			if(null==scenarinoId&&scenarinoId.equals("")&&createType==1&&result>0){
 				return AmpcResult.ok(result);
-			}else{
+			}
+			if(null==scenarinoId&&scenarinoId.equals("")&&createType==2&&result>0){
 				Map map=new HashMap();
 				map.put("missionId", scenarino.getMissionId());
 				map.put("scrnarinoName", scenarino.getScenarinoName());
 				Integer sid=this.tScenarinoDetailMapper.selectByMidAndSName(map);
-				if(createType==2){
-					//直接返回新建的情景ID
-					return AmpcResult.ok(sid);
-				}else{
-					/**
-					 * TODO 
-					 * 需要复制信息 状态  以及更改时段时间信息等
-					 */
-				}
+				//直接返回新建的情景ID
+				return AmpcResult.ok(sid);
 			}
 			return AmpcResult.build(1000, "添加失败",null);
 		} catch (Exception e) {
