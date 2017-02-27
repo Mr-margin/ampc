@@ -56,8 +56,8 @@ public class MissionAndScenarinoController {
 			//设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
-			//任务名称
-			String missionName=data.get("missionName").toString();
+			//条件名称
+			String queryName=data.get("queryName").toString();
 			//任务状态
 			String missionStatus=data.get("missionStatus").toString();
 			//当前页码
@@ -77,12 +77,12 @@ public class MissionAndScenarinoController {
 			Map<String,Object> mapResult=new HashMap<String,Object>();
 			//返回的页码
 			mapResult.put("page", pageNum);
-			//判断是否有任务名称,如果有则调用根据任务名模糊查询
-			if(null!=missionName&&!missionName.equals("")){
-				String name="%"+missionName+"%";
-				map.put("missionName",name);
+			//判断是否有条件名称,如果有则调用根据条件名模糊查询
+			if(null!=queryName&&!queryName.equals("")){
+				String name="%"+queryName+"%";
+				map.put("queryName",name);
 			}else{
-				map.put("missionName",null);
+				map.put("queryName",null);
 			}
 			if(null!=missionStatus&&!missionStatus.equals("")){
 				map.put("missionStatus",missionStatus);
@@ -90,8 +90,8 @@ public class MissionAndScenarinoController {
 				map.put("missionStatus",null);
 			}
 			//查询全部
-			List<Map> list = this.tMissionDetailMapper.selectAllOrByMissionName(map);
-			mapResult.put("total", this.tMissionDetailMapper.selectCountOrByMissionName(map));
+			List<Map> list = this.tMissionDetailMapper.selectAllOrByQueryName(map);
+			mapResult.put("total", this.tMissionDetailMapper.selectCountOrByQueryName(map));
 			mapResult.put("rows",list);
 			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
@@ -277,8 +277,8 @@ public class MissionAndScenarinoController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//任务Id
 			long missionId=Long.parseLong(data.get("missionId").toString());
-			//情景名称
-			String scrnarinoName=data.get("scrnarinoName").toString();
+			//条件名称
+			String queryName=data.get("queryName").toString();
 			//列表排序  暂时内定按照任务ID逆序排序
 			//String sort=data.get("sort").toString();
 			//用户的id  确定当前用户
@@ -289,14 +289,14 @@ public class MissionAndScenarinoController {
 			map.put("userId", userId);
 			//新建返回结果的Map
 			Map<String,Object> mapResult=new HashMap<String,Object>();
-			//判断是否有任务名称,如果有则调用根据任务名模糊查询
-			if(scrnarinoName!=null&&!scrnarinoName.equals("")){
-				map.put("scrnarinoName", scrnarinoName);
+			//判断是否有条件名称,如果有则调用根据条件名模糊查询
+			if(queryName!=null&&!queryName.equals("")){
+				map.put("queryName", queryName);
 			}else{
-				map.put("scrnarinoName", null);
+				map.put("queryName", null);
 			}
 			//查询全部
-			List<Map> list = this.tScenarinoDetailMapper.selectByMissionIdAndScenarinoName(map);
+			List<Map> list = this.tScenarinoDetailMapper.selectByMissionIdAndQueryName(map);
 			mapResult.put("rows",list);
 			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
@@ -320,8 +320,8 @@ public class MissionAndScenarinoController {
 			//设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
-			//情景名称
-			String scrnarinoName=data.get("scrnarinoName").toString();
+			//条件名称
+			String queryName=data.get("queryName").toString();
 			//当前页码
 			Integer pageNum=Integer.valueOf(data.get("pageNum").toString());
 			//每页展示的条数
@@ -339,16 +339,16 @@ public class MissionAndScenarinoController {
 			Map<String,Object> mapResult=new HashMap<String,Object>();
 			//返回的页码
 			mapResult.put("page", pageNum);
-			//判断是否有情景名称,如果有则调用根据情景名模糊查询
-			if(null!=scrnarinoName&&!scrnarinoName.equals("")){
-				String name="%"+scrnarinoName+"%";
-				map.put("scrnarinoName",name);
+			//判断是否有条件名称,如果有则调用根据条件名模糊查询
+			if(null!=queryName&&!queryName.equals("")){
+				String name="%"+queryName+"%";
+				map.put("queryName",name);
 			}else{
-				map.put("scrnarinoName",null);
+				map.put("queryName",null);
 			}
 			//查询全部
-			List<Map> list = this.tScenarinoDetailMapper.selectAllOrByScenarinoName(map);
-			mapResult.put("total", this.tScenarinoDetailMapper.selectCountOrByScenarinoName(map));
+			List<Map> list = this.tScenarinoDetailMapper.selectAllOrByQueryName(map);
+			mapResult.put("total", this.tScenarinoDetailMapper.selectCountOrByQueryName(map));
 			mapResult.put("rows",list);
 			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
