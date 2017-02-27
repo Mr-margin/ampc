@@ -39,7 +39,7 @@ function formVerify(){
 
 
   formCreate = $("#formCreate").validate({
-//    debug:true,
+    debug:true,
     onfocusout:function(element){
       $(element).valid();
     },
@@ -219,7 +219,7 @@ function initRwTable() {
 
       //QJheight = QJheight>400?QJheight:400;
       if(data.rows.length == 0){
-        $('#qjTable').bootstrapTable('resetView',{height:600})
+        $('#qjTable').bootstrapTable('resetView',{height:600});
         return;
       }
       $('#qjTable').bootstrapTable('destroy');
