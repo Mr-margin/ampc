@@ -64,6 +64,9 @@
 						  INNER JOIN T_SCENARINO_STATUS STAT  ON SCEN.SCENARINO_STATUS=STAT.SCENARINO_STATU_ID
 									WHERE MISS.IS_EFFECTIVE='1' AND MISS.USER_ID=#{userId,jdbcType=OTHER}  AND
 											  SCEN.IS_EFFECTIVE='1' AND SCEN.USER_ID=#{userId,jdbcType=OTHER} 
+											    <if test="missionStatus != null" >
+        											AND MISSION_STATUS= #{missionStatus,jdbcType=OTHER}
+      		 									</if>
 										         <if test="queryName != null" >
 										       		AND (MISSION_NAME LIKE #{queryName,jdbcType=OTHER}
 										       		OR V1 LIKE #{queryName,jdbcType=OTHER})
@@ -84,8 +87,11 @@
   
   <!--不分页查询所有有效的条数 可根据情景名模糊查询-->
   <select id="selectCountOrByQueryName" parameterType="hashMap" resultType="int">
-  	 SELECT COUNT(*) FROM T_SCENARINO_DETAIL SCEN 
-  	   INNER JOIN T_MISSION_DETAIL MISS
+  	 SELECT COUNT(*) FROM T_MISSION_DETAIL  MISS 
+  	  				INNER JOIN T_ES_COUPLING  COUP ON MISS.ES_COUPLING_ID= COUP.ES_COUPLING_ID
+					INNER JOIN T_DOMAIN_MISSION DOMA ON MISS.MISSION_DOMAIN_ID=DOMA.DOMAIN_ID
+					INNER JOIN T_SCENARINO_DETAIL SCEN ON MISS.MISSION_ID=SCEN.MISSION_ID
+					INNER JOIN T_SCENARINO_STATUS STAT  ON SCEN.SCENARINO_STATUS=STAT.SCENARINO_STATU_ID
   		 WHERE MISS.IS_EFFECTIVE='1' AND MISS.USER_ID=#{userId,jdbcType=OTHER}  AND
 			SCEN.IS_EFFECTIVE='1' AND SCEN.USER_ID=#{userId,jdbcType=OTHER} 
   	    <if test="missionStatus != null" >
