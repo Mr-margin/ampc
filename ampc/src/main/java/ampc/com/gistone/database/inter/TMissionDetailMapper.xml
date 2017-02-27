@@ -62,7 +62,10 @@
   
   <!--查询全部任务总条数  可根据名称模糊查询-->
   <select id="selectCountOrByQueryName" parameterType="hashMap" resultType="int">
-  	 SELECT COUNT(*) FROM T_MISSION_DETAIL WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+  	 SELECT COUNT(*) FROM T_MISSION_DETAIL MISS
+  	 INNER JOIN T_ES_COUPLING  COUP ON MISS.ES_COUPLING_ID= COUP.ES_COUPLING_ID
+     INNER JOIN T_DOMAIN_MISSION DOMA ON MISS.MISSION_DOMAIN_ID=DOMA.DOMAIN_ID
+  	  WHERE MISS.IS_EFFECTIVE='1' AND MISS.USER_ID=#{userId,jdbcType=OTHER} 
   	    <if test="missionStatus != null" >
             AND MISSION_STATUS= #{missionStatus,jdbcType=OTHER}
         </if>
