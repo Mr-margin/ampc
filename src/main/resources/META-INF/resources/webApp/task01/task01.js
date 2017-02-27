@@ -772,12 +772,14 @@ function rename(type, id) {
 //    var url = 'rw.json';
   var url,urlName;
   var params = {userId: userId};
+  var paramsName = {userId: userId};
   if (type == 'rw') {
     params.missionId = id;
     url = '/mission/update_mission';
     urlName = '/mission/check_missioname';
   } else {
     params.scenarinoId = id;
+    paramsName.missionId = selectRW.missionId;
     params.state = -1;
     url = '/scenarino/updat_scenarino';
     urlName = '/scenarino/check_scenarinoname';
@@ -807,8 +809,9 @@ function rename(type, id) {
         params.missionName = inputValue;
       } else {
         params.scenarinoName = inputValue;
+        paramsName.scenarinoName = inputValue;
       }
-      ajaxPost(urlName,params).success(function(res){
+      ajaxPost(urlName,paramsName).success(function(res){
         if(res.data){
           ajaxPost(url, params).success(function () {
             if (type == 'rw') {
