@@ -12,6 +12,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -338,9 +339,11 @@ public class PlanAndMeasureController {
 	 * @return
 	 * @throws UnsupportedEncodingException
 	 */
+	@Transactional
 	@RequestMapping("/plan/copy_new")
 	public  AmpcResult demo_plan(HttpServletRequest request,
 			HttpServletResponse response) throws UnsupportedEncodingException{
+		ClientUtil.SetCharsetAndHeader(request, response);
 		Long userId=1l;//用户id
 		Long planId= 4l;//预案id
 		String copyPlan="1";//是否是可复制预案
@@ -392,6 +395,7 @@ public class PlanAndMeasureController {
 			TSector Sector=tSectorMapper.selectByPrimaryKey(t.getSectorId());
 			TMeasure tMeasure=tMeasureMapper.selectByPrimaryKey(t.getMeasureId());
 			JSONObject objs=new JSONObject();
+			objs.put("planMeasureId",maxs);
 			objs.put("planId",max);
 			objs.put("sectorName", Sector.getSectorName());
 			objs.put("measureName", tMeasure.getMeasureName());
@@ -448,8 +452,10 @@ public class PlanAndMeasureController {
 			TSector Sector=tSectorMapper.selectByPrimaryKey(tsPlanMeasure.getSectorId());
 			TMeasure tMeasure=tMeasureMapper.selectByPrimaryKey(tsPlanMeasure.getMeasureId());
 			JSONObject objs=new JSONObject();
+			objs.put("planMeasureId", tsPlanMeasure.getPlanMeasureId());
 			objs.put("planId",tsPlanMeasure.getPlanId());
 			objs.put("sectorName", Sector.getSectorName());
+			objs.put("sectorId", Sector.getSectorId());
 			objs.put("measureName", tMeasure.getMeasureName());
 			objs.put("intensity", tMeasure.getIntensity());
 			//objs.put("measureContent", tsPlanMeasure.getMeasureContent());
@@ -461,5 +467,27 @@ public class PlanAndMeasureController {
 		return AmpcResult.build(1, "copy_new error");
 		}
 		}
+	}
+	
+	
+	/**
+	 * 预案设置成可复制
+	 * @throws UnsupportedEncodingException 
+	 */
+	@Transactional
+	@RequestMapping("/plan/iscopy_plan")
+	public  AmpcResult iscopy_plan(HttpServletRequest request,
+			HttpServletResponse response) throws UnsupportedEncodingException{
+		ClientUtil.SetCharsetAndHeader(request, response);
+		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户id
+		Long planId=8l;//Long.parseLong(request.getParameter("planId"));//预案id
+		TPlan tPlan=new TPlan();
+		tPlan.setPlanId(planId);
+		tPlan.setCopyPlan("1");
+		int status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
+		if(status!=0){
+			return AmpcResult.build(0, "iscopy_plan success");
+		}
+		return AmpcResult.build(1, "iscopy_plan error");
 	}
 }
