@@ -481,10 +481,12 @@ public class PlanAndMeasureController {
 		ClientUtil.SetCharsetAndHeader(request, response);
 		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户id
 		Long planId=8l;//Long.parseLong(request.getParameter("planId"));//预案id
+		//将预案的是否可以复制状态改为可复制
 		TPlan tPlan=new TPlan();
 		tPlan.setPlanId(planId);
 		tPlan.setCopyPlan("1");
 		int status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
+		//查看修改是否成功
 		if(status!=0){
 			return AmpcResult.build(0, "iscopy_plan success");
 		}
