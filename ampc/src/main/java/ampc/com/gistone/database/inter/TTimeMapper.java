@@ -1,11 +1,27 @@
 package ampc.com.gistone.database.inter;
 
 import java.util.List;
+import java.util.Map;
 
 import ampc.com.gistone.database.model.TTime;
-
+/**
+ * 时段映射
+ * @author WangShanxi
+ * @version v.0.1
+ * @date 2017年2月27日
+ */
 public interface TTimeMapper {
-    int deleteByPrimaryKey(Long timeId);
+	/**
+	 * 根据区域ID 获取时段和预案
+	 * @param id 区域ID
+	 * @return
+	 */
+	List<Map> selectByAreaId(Object id);
+    
+	
+	
+	
+	int deleteByPrimaryKey(Long timeId);
 
     int insert(TTime record);
 
