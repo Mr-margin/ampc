@@ -412,7 +412,7 @@ function rwDomain(v, row, i) {
 }
 
 function qjName(v, row, i) {
-  return '<a href="#/hpg">' + row.scenarinoName + '</a><br>' +
+  return '<a href="#/yabj">' + row.scenarinoName + '</a><br>' +
     '<a style="font-size:12px; color:#a1a1a1;">创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH') + '</a><br/>' +
     '<a style="font-size:12px; color:#a1a1a1;">起止日期：' +moment(row.scenarinoStartDate).format('YYYY-MM-DD HH') + ' - ' + moment(row.scenarinoEndDate).format('YYYY-MM-DD HH') + '</a>'
 }

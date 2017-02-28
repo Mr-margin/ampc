@@ -1,0 +1,127 @@
+#rwToolbar, #qjToolbar {
+  margin: 10px;
+}
+
+.lh29 {
+  line-height: 29px;
+}
+.error{
+  color:red;
+}
+.old-foot{
+  display: none;
+}
+
+.date_div{
+  height: 10px;
+  position: relative;
+  background-color: #75b9e6;
+}
+
+.date_div:after{
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    border: 12px solid transparent;
+    border-left-color: #75b9e6;
+    position: absolute;
+    right: -24px;
+    top: -6px;
+}
+
+.date_div span{
+  position: absolute;
+  top: -30px;
+  transform: rotate(-17deg);
+}
+
+.date_div span:nth-child(1){
+  left: 10%;
+}
+
+.date_div span:nth-child(2){
+  left: 30%;
+}
+
+.date_div span:nth-child(3){
+  left: 50%;
+}
+
+.date_div span:nth-child(4){
+  left: 70%;
+}
+
+.date_div span:nth-child(5){
+  left: 90%;
+}
+
+.front{
+  height: 150px;
+  width: 150px;
+  float: left;
+  border: 1px solid #aaa;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.period{
+  height: 150px;
+  width: calc(100% - 150px);
+  float: left;
+  border: 1px solid #aaa;
+  overflow: hidden;
+}
+.period .time{
+  height:150px;
+  width:50%;
+  float: left;
+  text-align: center;
+  position: relative;
+}
+.area{
+  position: relative;
+}
+.areaMsg div{
+  box-sizing: border-box;
+}
+
+.area .front>span{
+  line-height: 150px;
+  font-size: 20px;
+}
+.areaToolDiv,.timeToolDiv{
+  position: absolute;
+  bottom: -25px;
+  transition: bottom 0.3s linear;
+}
+
+.toolShow{
+  position: relative;
+}
+.toolShow span{
+  display: none;
+  width: 60px;
+  height: 20px;
+  text-align: center;
+  background-color: #fefefe;
+  border: 1px solid #cacaca;
+  position: absolute;
+  left: 4px;
+  top: -30px;
+}
+.toolShow span:after{
+  content: '';
+  display: block;
+  border: 9px solid transparent;
+  border-top-color: #D9D9D9;
+  position: absolute;
+  left: -2px;
+}
+.toolShow:hover span{
+  display: block;
+}
+.time:hover .timeToolDiv,.front:hover .areaToolDiv{
+  bottom:0;
+}
+
