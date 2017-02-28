@@ -169,7 +169,7 @@
                and DELETE_TIME = #{deleteTime,jdbcType=DATE}
             </if>
             <if test="measureContent != null">
-                MEASURE_CONTENT = #{measureContent,jdbcType=CLOB}
+               and MEASURE_CONTENT = #{measureContent,jdbcType=CLOB}
             </if>
   </select>
    <delete id="deleteByPlanId" parameterType="java.lang.Long" >
