@@ -1,18 +1,25 @@
 package ampc.com.gistone.database.model;
 
+/**
+ * 地址实体类
+ * @author WangShanxi
+ * @version v.0.1
+ * @date 2017年2月28日
+ */
 public class TAddress {
+	//地址ID
     private Integer addressId;
-
+    //地址名称
     private Object addressName;
-
+    //地址编码
     private Integer addressCode;
-
+    //地区级别 1省 2市 3区
     private String addressLevel;
-
+    //省级编码
     private String provinceCode;
-
+    //市级编码
     private String cityCode;
-
+    //区县级编码
     private String countyCode;
 
     public Integer getAddressId() {
