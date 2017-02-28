@@ -183,7 +183,7 @@ public class PlanAndMeasureController {
 		tPlanMeasure.setPlanMeasureId(planMeasureId);
 		tPlanMeasure.setMeasureContent(measureContent);
 		//修改措施详情
-		int update_status=tPlanMeasureMapper.updateByPrimaryKeySelective(tPlanMeasure);
+		int update_status=tPlanMeasureMapper.updateByPrimaryKeyWithBLOBs(tPlanMeasure);
 		//判断是否修改成功
 		if(update_status!=0){
 			return AmpcResult.build(0, "update_measureContent error");
@@ -222,6 +222,7 @@ public class PlanAndMeasureController {
 			return AmpcResult.build(1, "list_measureContent error");
 		}
 	}
+	
 	/**
 	 * 删除预案中的措施
 	 * @throws UnsupportedEncodingException 
@@ -341,7 +342,7 @@ public class PlanAndMeasureController {
 			HttpServletResponse response) throws UnsupportedEncodingException{
 		ClientUtil.SetCharsetAndHeader(request, response);
 		Long userId=1l;//用户id
-		Long planId= 4l;//预案id
+		Long planId= 1l;//预案id
 		String copyPlan="1";//是否是可复制预案
 		JSONObject obj=new JSONObject();
 		//判断是否是可复制预案
@@ -395,7 +396,7 @@ public class PlanAndMeasureController {
 			objs.put("sectorName", Sector.getSectorName());
 			objs.put("measureName", tMeasure.getMeasureName());
 			objs.put("intensity", tMeasure.getIntensity());
-			//objs.put("measureContent", t.getMeasureContent());
+			objs.put("measureContent", t.getMeasureContent());
 			arr.add(objs);
 			}
 		//查询新建预案的措施信息
@@ -453,7 +454,7 @@ public class PlanAndMeasureController {
 			objs.put("sectorId", Sector.getSectorId());
 			objs.put("measureName", tMeasure.getMeasureName());
 			objs.put("intensity", tMeasure.getIntensity());
-			//objs.put("measureContent", tsPlanMeasure.getMeasureContent());
+			objs.put("measureContent", tsPlanMeasure.getMeasureContent());
 			arr.add(objs);
 		}
 		obj.put("measurelist", arr);
@@ -487,4 +488,57 @@ public class PlanAndMeasureController {
 		}
 		return AmpcResult.build(1, "iscopy_plan error");
 	}
+	
+	
+	/**
+	 * 措施编辑完成操作
+	 * @param request
+	 * @param responsey
+	 * @return
+	 */
+	@RequestMapping("/plan/finish_plan")
+	public  AmpcResult finish_plan(HttpServletRequest request,
+			HttpServletResponse response){
+		Long planId=8l;//Long.parseLong(request.getParameter("planId"));//预案id
+		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户id
+		TPlanMeasure tPlanMeasure=new TPlanMeasure();
+		tPlanMeasure.setPlanId(planId);
+		List<TPlanMeasure> tlist=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
+		int i=0;
+		int y=0;
+		for(TPlanMeasure t:tlist){
+			if(t.getMeasureContent().equals("-1")&&t.getMeasureContent()==null){
+				i++;
+				int status=tPlanMeasureMapper.deleteByPrimaryKey(t.getPlanMeasureId());
+				if(status!=0){
+					y++;
+				}
+			}
+			if(i==y){
+				return AmpcResult.build(0, "finish_plan success");
+			}
+		}
+		return AmpcResult.build(1, "finish_plan error");
+	}
+	
+	
+	/**
+	 * 删除措施详情
+	 * 
+	 * 
+	 */
+	@RequestMapping("/measure/del_measureContent")
+	public  AmpcResult del_measureContent(HttpServletRequest request,
+			HttpServletResponse response){
+		Long planMeasureId=10l;//Long.parseLong(request.getParameter("planMeasureId"));
+		Long userId=1l;//Long.parseLong(request.getParameter("userId"));
+		TPlanMeasure tPlanMeasure=new TPlanMeasure();
+		tPlanMeasure.setMeasureContent("-1");
+		int tstatus=tPlanMeasureMapper.updateByPrimaryKeyWithBLOBs(tPlanMeasure);
+		if(tstatus!=0){
+		return AmpcResult.build(0, "del_measureContent success");
+		}
+		return AmpcResult.build(1, "del_measureContent error");
+	}
+	
 }
