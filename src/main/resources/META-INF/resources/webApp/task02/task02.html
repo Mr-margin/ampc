@@ -1,3 +1,79 @@
-<div>
-  预案编辑
+<div class="qjbj row">
+
+  <div class="col-md-6">
+    <!--<div class="bjTitle col-md-7">-->
+      <!--<ul class="nav nav-pills nav-justified">-->
+        <!--<li role="presentation" class="active"><a href="javascript:">编辑区域和时段</a></li>-->
+        <!--<li role="presentation"><a href="javascript:">添加预案</a></li>-->
+        <!--&lt;!&ndash;<li role="presentation"><a href="#">Messages</a></li>&ndash;&gt;-->
+      <!--</ul>-->
+    <!--</div>-->
+    <div class="bjDate col-md-12 mt50 mb15">
+      <div class="date_div">
+        <span>2017-01-01</span>
+        <span>2017-01-01</span>
+        <span>2017-01-01</span>
+        <span>2017-01-01</span>
+        <span>2017-01-01</span>
+      </div>
+    </div>
+    <div class="areaMsg col-md-12">
+      <div class="area clearfix">
+        <div class="front">
+          <span>类别一</span>
+          <div class="areaToolDiv text-center">
+            <button type="button" class="btn btn-default btn-xs toolShow" title="区域编辑"><i class="ec-pencil"></i><span>区域编辑</span></button>
+            <button type="button" class="btn btn-default btn-xs toolShow" title="删除区域"><i class="ec-trashcan"></i><span>删除区域</span></button>
+            <button type="button" class="btn btn-default btn-xs toolShow" title="添加时段"><i class="im-plus"></i><span>添加时段</span></button>
+          </div>
+        </div>
+        <div class="period clearfix" data-index="1">
+
+          <div class="time">
+            <div class="timeToolDiv text-center">
+              <button type="button" class="btn btn-default btn-xs toolShow" title="添加预案"><i class="im-google-plus"></i><span>添加预案</span></button>
+              <button type="button" class="btn btn-default btn-xs toolShow" title="删除预案"><i class="ec-trashcan"></i><span>删除预案</span></button>
+              <button type="button" class="btn btn-default btn-xs toolShow" title="移除时段"><i class="im-close"></i><span>移除时段</span></button>
+            </div>
+          </div>
+
+          <div class="time">
+            <div class="timeToolDiv text-center">
+              <button type="button" class="btn btn-default btn-xs toolShow" title="添加预案"><i class="im-google-plus"></i><span>添加预案</span></button>
+              <button type="button" class="btn btn-default btn-xs toolShow" title="删除预案"><i class="ec-trashcan"></i><span>删除预案</span></button>
+              <button type="button" class="btn btn-default btn-xs toolShow" title="移除时段"><i class="im-close"></i><span>移除时段</span></button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="area clearfix">
+        <div class="front"><span>类别二</span></div>
+        <div class="period" data-index="2"></div>
+      </div>
+
+      <div class="area clearfix">
+        <div class="front"><span>类别三</span></div>
+        <div class="period" data-index="3"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 showMap text-center" style="border: 1px solid #999;height: 600px;">
+    <h2 style="line-height: 600px">地图显示</h2>
+  </div>
+
 </div>
+
+
+
+
+<script>
+  $('[data-toggle="tooltip"]').tooltip()
+  var param = vipspa.getMessage('qjMessage');
+  console.log(param);
+
+
+
+</script>
