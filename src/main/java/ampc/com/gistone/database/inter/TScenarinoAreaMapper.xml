@@ -16,6 +16,20 @@
     <result column="CITY_CODES" property="cityCodes" jdbcType="CLOB" />
     <result column="COUNTY_CODES" property="countyCodes" jdbcType="CLOB" />
   </resultMap>
+  <!-- 区域id和区域名称 -->
+  <resultMap id="showIdAndName" type="hashMap" >
+     <id column="SCENARINO_AREA_ID" property="areaId" jdbcType="DECIMAL" />
+    <result column="AREA_NAME" property="areaName" jdbcType="OTHER" />
+  </resultMap>
+  
+  <!-- 区域id和区域名称和行政区划 -->
+  <resultMap id="showInfo" type="hashMap">
+     <id column="SCENARINO_AREA_ID" property="areaId" jdbcType="DECIMAL" />
+    <result column="AREA_NAME" property="areaName" jdbcType="OTHER" />
+    <result column="PROVINCE_CODES" property="provinceCodes" jdbcType="CLOB" />
+    <result column="CITY_CODES" property="cityCodes" jdbcType="CLOB" />
+    <result column="COUNTY_CODES" property="countyCodes" jdbcType="CLOB" />
+  </resultMap>
   <sql id="Base_Column_List" >
     SCENARINO_AREA_ID, SCENARINO_DETAIL_ID, AREA_NAME, ADD_TIME, USER_ID, UPDATE_TIME, 
     IS_EFFECTIVE, DELETE_TIME
@@ -23,6 +37,27 @@
   <sql id="Blob_Column_List" >
     PROVINCE_CODES, CITY_CODES, COUNTY_CODES
   </sql>
+ 
+ <!-- 根据情景ID 查询区域ID和区域名称 -->
+ <select id="selectByScenarinoId" parameterType="hashMap" resultMap="showIdAndName">
+    SELECT SCENARINO_AREA_ID,AREA_NAME FROM T_SCENARINO_AREA WHERE IS_EFFECTIVE='1' 
+      AND USER_ID=#{userId,jdbcType=OTHER} AND SCENARINO_DETAIL_ID=#{scenarinoId,jdbcType=OTHER}
+ </select>
+ 
+  <!-- 根据区域ID 查询区域信息 -->
+ <select id="selectByAreaId" parameterType="hashMap" resultMap="showInfo">
+    SELECT SCENARINO_AREA_ID,AREA_NAME,PROVINCE_CODES, CITY_CODES, COUNTY_CODES 
+         FROM T_SCENARINO_AREA WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+             AND SCENARINO_AREA_ID=#{areaId,jdbcType=OTHER}
+ </select>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
