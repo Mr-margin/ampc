@@ -34,13 +34,13 @@ import ampc.com.gistone.util.ClientUtil;
 @RestController
 @RequestMapping
 public class MissionAndScenarinoController {
-
+    //默认映射
 	@Autowired
 	private GetBySqlMapper getBySqlMapper;
-	
+	//任务映射
 	@Autowired
 	private TMissionDetailMapper tMissionDetailMapper;
-	
+	//情景映射
 	@Autowired
 	private TScenarinoDetailMapper tScenarinoDetailMapper;
 	/**
@@ -84,15 +84,17 @@ public class MissionAndScenarinoController {
 			}else{
 				map.put("queryName",null);
 			}
+			//判断任务状态
 			if(null!=missionStatus&&!missionStatus.equals("")){
 				map.put("missionStatus",missionStatus);
 			}else{
 				map.put("missionStatus",null);
 			}
-			//查询全部
+			//查询全部写入返回结果集
 			List<Map> list = this.tMissionDetailMapper.selectAllOrByQueryName(map);
 			mapResult.put("total", this.tMissionDetailMapper.selectCountOrByQueryName(map));
 			mapResult.put("rows",list);
+			//返回结果
 			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -122,20 +124,21 @@ public class MissionAndScenarinoController {
 			mission.setMissionDomainId(Long.parseLong(data.get("missionDomainId").toString()));
 			//全国清单id
 			mission.setEsCouplingId(Long.parseLong(data.get("esCouplingId").toString()));
-			System.out.println(data.get("missionStartDate").toString());
 			//任务的开始时间
 			mission.setMissionStartDate(new Date(data.get("missionStartDate").toString()));
 			//任务的结束时间
 			mission.setMissionEndDate(new Date(data.get("missionEndDate").toString()));
 			//用户的id  确定当前用户
 			mission.setUserId(Long.parseLong(data.get("userId").toString()));
+			//默认新建任务会赋值预评估
 			mission.setMissionStatus("预评估");
 			//创建类型 (1.只创建任务 2.创建任务并执行基准情景)
 			Integer createType=Integer.valueOf(data.get("createType").toString());
 			//执行添加操作
 			int result=this.tMissionDetailMapper.insertSelective(mission);
-			System.out.println(mission.getMissionId());
+			//判断添加结果
 			if(result>0){
+				//判断添加类型
 				if(createType==2){
 					/**
 					 * TODO 更改基准情景的执行状态
@@ -145,9 +148,11 @@ public class MissionAndScenarinoController {
 					
 					return AmpcResult.ok(result);
 				}else{
+					//只创建任务
 					return AmpcResult.ok(result);
 				}
 			}
+			//添加失败
 			return AmpcResult.build(1000, "添加失败",null);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -170,6 +175,7 @@ public class MissionAndScenarinoController {
 			//设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
+			//建立实体类
 			TMissionDetail mission=new TMissionDetail();
 			//任务名称
 			mission.setMissionName(data.get("missionName").toString());
@@ -179,6 +185,7 @@ public class MissionAndScenarinoController {
 			mission.setMissionId(Long.parseLong(data.get("missionId").toString()));
 			//执行修改操作
 			int result=this.tMissionDetailMapper.updateByPrimaryKeySelective(mission);
+			//判断执行结果返回对应数据
 			return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "任务修改失败",null);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -219,7 +226,7 @@ public class MissionAndScenarinoController {
 		     */
 			
 			
-			
+			//判断执行结果返回对应数据
 			return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "任务修改失败",null);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -248,9 +255,11 @@ public class MissionAndScenarinoController {
 			String missionName=data.get("missionName").toString();
 			//用户的id  确定当前用户
 			Integer userId=Integer.valueOf(data.get("userId").toString());
+			//添加信息到参数中
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("missionName", missionName);
 			map.put("userId", userId);
+			//执行判断操作
 			int result=this.tMissionDetailMapper.check_MissioName(map);
 			//返回true 表示可用  返回false 已存在
 			return result==0?AmpcResult.ok(true):AmpcResult.build(1000, "名称已存在",false);
@@ -296,7 +305,7 @@ public class MissionAndScenarinoController {
 			}else{
 				map.put("queryName", null);
 			}
-			//查询全部
+			//查询全部并写入结果集
 			List<Map> list = this.tScenarinoDetailMapper.selectByMissionIdAndQueryName(map);
 			mapResult.put("rows",list);
 			return AmpcResult.ok(mapResult);
@@ -349,12 +358,13 @@ public class MissionAndScenarinoController {
 			}else{
 				map.put("queryName",null);
 			}
+			//判断任务状态 预评估还是后评估
 			if(null!=missionStatus&&!missionStatus.equals("")){
 				map.put("missionStatus",missionStatus);
 			}else{
 				map.put("missionStatus",null);
 			}
-			//查询全部
+			//查询全部 写入结果集 返回
 			List<Map> list = this.tScenarinoDetailMapper.selectAllOrByQueryName(map);
 			mapResult.put("total", this.tScenarinoDetailMapper.selectCountOrByQueryName(map));
 			mapResult.put("rows",list);
@@ -397,6 +407,7 @@ public class MissionAndScenarinoController {
 			Integer createType=Integer.valueOf(data.get("createType").toString());
 			//情景的id  用来判断是否是复用情景
 			Integer scenarinoId=Integer.valueOf(data.get("scenarinoId").toString());
+			//判断是否是复用情景 和创建类型
 			if(null!=scenarinoId&&!scenarinoId.equals("")&&createType==1){
 				/**
 				 * TODO 复制情景
@@ -408,7 +419,9 @@ public class MissionAndScenarinoController {
 				 * TODO 复制情景 并返回新建的情景ID
 				 */
 			}
+			//执行添加操作
 			int result=this.tScenarinoDetailMapper.insertSelective(scenarino);
+			//判断非复用情景
 			if(null==scenarinoId&&scenarinoId.equals("")&&createType==1&&result>0){
 				return AmpcResult.ok(result);
 			}
@@ -420,6 +433,7 @@ public class MissionAndScenarinoController {
 				//直接返回新建的情景ID
 				return AmpcResult.ok(sid);
 			}
+			//返回结果
 			return AmpcResult.build(1000, "添加失败",null);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -442,6 +456,7 @@ public class MissionAndScenarinoController {
 			//设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
+			//创建情景实体类
 			TScenarinoDetail scenarino=new TScenarinoDetail();
 			//情景名称
 			scenarino.setScenarinoName(data.get("scenarinoName").toString());
@@ -451,6 +466,7 @@ public class MissionAndScenarinoController {
 			scenarino.setScenarinoId(Long.parseLong(data.get("scenarinoId").toString()));
 			//执行状态 
 			long state=Long.parseLong(data.get("state").toString());
+			//判断执行状态 -1为只修改名称
 			if(state==-1){
 				//执行修改操作
 				int result=this.tScenarinoDetailMapper.updateByPrimaryKeySelective(scenarino);
@@ -507,7 +523,7 @@ public class MissionAndScenarinoController {
 		     */
 			
 			
-			
+			//判断执行结果 返回对应结果
 			return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "任务修改失败",null);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -536,10 +552,12 @@ public class MissionAndScenarinoController {
 			Integer userId=Integer.valueOf(data.get("userId").toString());
 			//任务Id
 			long missionId=Long.parseLong(data.get("missionId").toString());
+			//讲信息写入参数中
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("missionId", missionId);
 			map.put("scenarinoName", scenarinoName);
 			map.put("userId", userId);
+			//执行判断
 			int result=this.tScenarinoDetailMapper.check_ScenarinoName(map);
 			//返回true 表示可用  返回false 已存在
 			return result==0?AmpcResult.ok(true):AmpcResult.build(1000, "名称已存在",false);
