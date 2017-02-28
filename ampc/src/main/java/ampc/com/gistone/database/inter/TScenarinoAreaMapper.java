@@ -15,17 +15,38 @@ public interface TScenarinoAreaMapper {
 	
 	/**
 	 * 根据情景ID 查询区域ID和区域名称
-	 * @param map
+	 * @param map 参数
 	 * @return
 	 */
 	List<Map> selectByScenarinoId(Map map);
 	
 	/**
 	 * 根据区域ID 查询区域信息
-	 * @param map
+	 * @param map 参数
 	 * @return
 	 */
 	Map selectByAreaId(Map map);
+	
+	/**
+	 * 根据情景ID 区域名称 查询区域ID
+	 * @param map 参数
+	 * @return
+	 */
+	long selectAreaIdByParam(Map map);
+	
+	/**
+     * 修改区域是否有效
+     * @param missionId
+     * @return
+     */
+    int updateIsEffeById(long areaId);
+    
+    /**
+     * 添加区域对名称重复判断
+     * @param map
+     * @return
+     */
+    int check_AreaName(Map map);
 	
 	
     int deleteByPrimaryKey(Long scenarinoAreaId);
