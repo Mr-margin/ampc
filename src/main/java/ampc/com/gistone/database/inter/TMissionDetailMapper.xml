@@ -232,9 +232,7 @@
       <if test="missionAddTime != null" >
         MISSION_ADD_TIME = #{missionAddTime,jdbcType=DATE},
       </if>
-      <if test="updateTime != null" >
-        UPDATE_TIME = #{updateTime,jdbcType=DATE},
-      </if>
+        UPDATE_TIME = (select sysdate from dual),
       <if test="userId != null" >
         USER_ID = #{userId,jdbcType=DECIMAL},
       </if>
