@@ -1,13 +1,17 @@
 package ampc.com.gistone.controller;
 
 import java.io.IOException;
+import java.sql.Clob;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,9 +20,14 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
@@ -31,7 +40,10 @@ import ampc.com.gistone.database.model.TPlan;
 import ampc.com.gistone.database.model.TScenarinoArea;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTime;
+import ampc.com.gistone.entity.AreaUtil;
 import ampc.com.gistone.util.AmpcResult;
+import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.JsonUtil;
 
 
 @RestController
@@ -253,32 +265,272 @@ public class AreaAndTimeController {
 		}
 	}
 	
+	
+	
+	/**
+	 * 区域查询方法
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
+	 * @author WangShanxi
+	 */
+	@RequestMapping("area/get_areaAndTimeList")
+	public AmpcResult get_AreaAndTimeList(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+	    //添加异常捕捉
+		try {
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//情景Id
+			Integer scenarinoId=Integer.valueOf(data.get("scenarinoId").toString());
+			//用户的id  确定当前用户
+			Integer userId=Integer.valueOf(data.get("userId").toString());
+			//添加信息到参数中
+			Map<String,Object> map=new HashMap<String,Object>();
+			map.put("scenarinoId",scenarinoId);
+			map.put("userId", userId);
+			//新建返回结果的Map
+			List mapResult=new ArrayList();
+			//查询全部的区域ID和区域名称
+			List<Map> areaAndName = this.tScenarinoAreaMapper.selectByScenarinoId(map);
+			//循环结果  根据区域ID获取时段和预案信息
+		    for (Map area : areaAndName) {
+		    	AreaUtil areaUtil =new AreaUtil();
+		    	Object id=area.get("areaId");
+		    	areaUtil.setAreaId(id);
+		    	areaUtil.setAreaName(area.get("areaName"));
+		    	areaUtil.setTimeItems(this.tTimeMapper.selectByAreaId(id));
+		    	mapResult.add(areaUtil);
+			}
+		    //返回结果
+			return AmpcResult.ok(mapResult);
+		} catch (Exception e) {
+			e.printStackTrace();
+			//返回错误信息
+			return AmpcResult.build(1000, "参数错误",null);
+		}
+	}
+	
+	
+	/**
+	 * 区域查询接口(只查询省市县区域不查询时段)
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
+	 * @author WangShanxi
+	 */
+	@RequestMapping("area/get_areaList")
+	public AmpcResult get_AreaList(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+		//添加异常捕捉
+		try {
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//区域Id
+			Integer areaId=Integer.valueOf(data.get("areaId").toString());
+			//用户的id  确定当前用户
+			Integer userId=Integer.valueOf(data.get("userId").toString());
+			//添加信息到参数中
+			Map<String,Object> map=new HashMap<String,Object>();
+			map.put("areaId",areaId);
+			map.put("userId", userId);
+			//查询全部的区域ID和区域名称
+			Map areaInfo = this.tScenarinoAreaMapper.selectByAreaId(map);
+			//进行Clob转换
+			Object obj=JsonUtil.clobToObject((Clob)areaInfo.get("provinceCodes"));
+			Object obj1=JsonUtil.clobToObject((Clob)areaInfo.get("cityCodes"));
+			Object obj2=JsonUtil.clobToObject((Clob)areaInfo.get("countyCodes"));
+			//重新写入返回结果集
+			areaInfo.put("provinceCodes", obj);
+			areaInfo.put("cityCodes", obj1);
+			areaInfo.put("countyCodes", obj2);
+			//返回结果
+			return AmpcResult.ok(areaInfo);
+		} catch (Exception e) {
+			e.printStackTrace();
+			//返回错误信息
+			return AmpcResult.build(1000, "参数错误",null);
+		}
+	}
+	
+	
+	
 //	/**
-//	 * 区域查询接口
+//	 * 情景创建方法
+//	 * @param request 请求
+//	 * @param response 响应
+//	 * @return 返回响应结果对象
+//	 * @author WangShanxi
 //	 */
-//	@RequestMapping("/area/areaAndTimeList")
-//	public AmpcResult areaAndTimeList(HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
-//		try{
-//		Long scenarinoId=13l;//Long.parseLong(request.getParameter("scenarinoId"));//情景id 
-//		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户的id
-//		//先查询情景详情,以及任务详情
-//		JSONObject obj=new JSONObject();
-//		TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);//情景
-//		
-//		if(tScenarinoDetail.getMissionId()!=null){
-//		TMissionDetail tMissionDetail =tMissionDetailMapper.selectByPrimaryKey(tScenarinoDetail.getMissionId());//任务
-//		//然后根据情景id查询区域，要求出查询到多少条
-//		TScenarinoArea tScenarinoArea=new TScenarinoArea();
-//		tScenarinoArea.setScenarinoAreaId(scenarinoId);
-//		tScenarinoAreaMapper.selectByEntity(scenarinoAreaId);
-//		//根据情景id查询时段
-//		return AmpcResult.build(1, "delete_time error");
+//	@Transactional
+//	@RequestMapping("scenarino/save_scenarino")
+//	public AmpcResult save_Scenarino(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+//	    //添加异常捕捉
+//		try {
+//			//设置跨域
+//			ClientUtil.SetCharsetAndHeader(request, response);
+//			Map<String,Object> data=(Map)requestDate.get("data");
+//			TScenarinoDetail scenarino=new TScenarinoDetail();
+//			//情景名称
+//			scenarino.setScenarinoName(data.get("scenarinoName").toString());
+//			//情景的开始时间
+//			scenarino.setScenarinoStartDate(new Date(data.get("scenarinoStartDate").toString()));
+//			//情景的结束时间
+//			scenarino.setScenarinoEndDate(new Date(data.get("scenarinoEndDate").toString()));
+//			//任务id  
+//			scenarino.setMissionId(Long.parseLong(data.get("missionId").toString()));
+//			//用户的id  确定当前用户
+//			scenarino.setUserId(Long.parseLong(data.get("userId").toString()));
+//			//创建类型 1.只创建情景 2.创建并编辑情景  3.复制情景
+//			Integer createType=Integer.valueOf(data.get("createType").toString());
+//			int result=this.tScenarinoDetailMapper.insertSelective(scenarino);
+//			if(createType==1&&result>0){
+//				return AmpcResult.ok(result);
+//			}else{
+//				Map map=new HashMap();
+//				map.put("missionId", scenarino.getMissionId());
+//				map.put("scrnarinoName", scenarino.getScenarinoName());
+//				Integer sid=this.tScenarinoDetailMapper.selectByMidAndSName(map);
+//				if(createType==2){
+//					//直接返回新建的情景ID
+//					return AmpcResult.ok(sid);
+//				}else{
+//					/**
+//					 * TODO 
+//					 * 需要复制信息 状态  以及更改时段时间信息等
+//					 */
+//				}
+//			}
+//			return AmpcResult.build(1000, "添加失败",null);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			//返回错误信息
+//			return AmpcResult.build(1000, "参数错误",null);
 //		}
-//		
-//		return AmpcResult.build(1, "delete_time error");
-//		}catch(NullPointerException n){
-//			System.out.println(n);
-//			return AmpcResult.build(1, "delete_time error");
+//	}
+//	
+//	/**
+//	 * 情景修改方法
+//	 * @param request 请求
+//	 * @param response 响应
+//	 * @return 返回响应结果对象
+//	 * @author WangShanxi
+//	 */
+//	@Transactional
+//	@RequestMapping("scenarino/updat_scenarino")
+//	public AmpcResult updat_Scenarino(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+//	    //添加异常捕捉
+//		try {
+//			//设置跨域
+//			ClientUtil.SetCharsetAndHeader(request, response);
+//			Map<String,Object> data=(Map)requestDate.get("data");
+//			TScenarinoDetail scenarino=new TScenarinoDetail();
+//			//情景名称
+//			scenarino.setScenarinoName(data.get("scenarinoName").toString());
+//			//用户的id  确定当前用户
+//			scenarino.setUserId(Long.parseLong(data.get("userId").toString()));
+//			//情景ID 
+//			scenarino.setScenarinoId(Long.parseLong(data.get("scenarinoId").toString()));
+//			//执行状态 
+//			long state=Long.parseLong(data.get("state").toString());
+//			if(state==-1){
+//				//执行修改操作
+//				int result=this.tScenarinoDetailMapper.updateByPrimaryKeySelective(scenarino);
+//				return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "情景修改失败",null);
+//			}else{
+//				/**
+//				 * TODO 
+//				 * 需要调用计算接口 并更改情景的执行状态  
+//				 * 等待计算接口的实现
+//				 */
+//				
+//				
+//				
+//				
+//				return AmpcResult.build(1000, "等待计算接口的实现",null);
+//			}
+//			
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			//返回错误信息
+//			return AmpcResult.build(1000, "参数错误",null);
+//		}
+//	}
+//	
+//	/**
+//	 * 情景删除方法 实际为修改数据的状态
+//	 * @param request 请求
+//	 * @param response 响应
+//	 * @return 返回响应结果对象
+//	 * @author WangShanxi
+//	 */
+//	//@Transactional
+//	@RequestMapping("scenarino/delete_scenarino")
+//	public AmpcResult delete_Scenarino(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+//		//添加异常捕捉
+//		try {
+//			//设置跨域
+//			ClientUtil.SetCharsetAndHeader(request, response);
+//			Map<String,Object> data=(Map)requestDate.get("data");
+//			//要删除的任务集合
+//			String scenarinoIds=data.get("scenarinoIds").toString();
+//			//用户的id  确定当前用户
+//			Integer userId=Integer.valueOf(data.get("userId").toString());
+//			//将得到的数据拆分 放入集合中
+//			String[] idss=scenarinoIds.split(",");
+//			List<Integer> list=new ArrayList<Integer>();
+//			for(int i=0;i<idss.length;i++){
+//				list.add(Integer.valueOf(idss[i]));
+//			}
+//			//进行批量删除
+//			int result=this.tScenarinoDetailMapper.updateIsEffeByIds(list);
+//			 /**
+//		     * TODO 等待时段删除完成 直接添加
+//		     *      删除涉及到多次数据库操作，在事务的一致性有待提高
+//		     */
+//			
+//			
+//			
+//			return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "任务修改失败",null);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			//返回错误信息
+//			return AmpcResult.build(1000, "参数错误",null);
+//		}
+//	}
+//	
+//	/**
+//	 * 添加情景对名称重复判断
+//	 * @param request 请求
+//	 * @param response 响应
+//	 * @return 返回响应结果对象
+//	 * @author WangShanxi
+//	 */
+//	@RequestMapping("scenarino/check_scenarinoname")
+//	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
+//	public AmpcResult check_ScenarinoName(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response)throws Exception{
+//		//添加异常捕捉
+//		try {
+//			//设置跨域
+//			ClientUtil.SetCharsetAndHeader(request, response);
+//			Map<String,Object> data=(Map)requestDate.get("data");
+//			//要添加的任务名称
+//			String scenarinoName=data.get("scenarinoName").toString();
+//			//用户的id  确定当前用户
+//			Integer userId=Integer.valueOf(data.get("userId").toString());
+//			//任务Id
+//			long missionId=Long.parseLong(data.get("missionId").toString());
+//			Map<String,Object> map=new HashMap<String,Object>();
+//			map.put("missionId", missionId);
+//			map.put("scenarinoName", scenarinoName);
+//			map.put("userId", userId);
+//			int result=this.tScenarinoDetailMapper.check_ScenarinoName(map);
+//			//返回true 表示可用  返回false 已存在
+//			return result==0?AmpcResult.ok(true):AmpcResult.build(1000, "名称已存在",false);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			//返回错误信息
+//			return AmpcResult.build(1000, "参数错误",null);
 //		}
 //	}
 }
