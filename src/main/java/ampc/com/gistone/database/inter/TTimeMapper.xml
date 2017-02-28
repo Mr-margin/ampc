@@ -13,10 +13,29 @@
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
     <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
   </resultMap>
+  <resultMap id="timeAndPlan" type="hashMap" >
+    <id column="TIME_ID" property="timeId" jdbcType="DECIMAL" />
+    <result column="TIME_START_DATE" property="timeStartDate" jdbcType="TIMESTAMP" />
+    <result column="TIME_END_DATE" property="timeEndDate" jdbcType="TIMESTAMP" />
+    <result column="PLAN_ID" property="planId" jdbcType="DECIMAL" />
+    <result column="PLAN_NAME" property="planName" jdbcType="OTHER" />
+  </resultMap>
   <sql id="Base_Column_List" >
     TIME_ID, TIME_START_DATE, TIME_END_DATE, AREA_ID, MISSION_ID, SCENARINO_ID, PLAN_ID, 
     USER_ID, IS_EFFECTIVE, DELETE_TIME
   </sql>
+  
+  <!-- 根据区域ID 获取时段和预案 -->
+  <select id="selectByAreaId" resultMap="timeAndPlan" parameterType="java.lang.Object" >
+    select 
+    TIM.TIME_ID,TIME_START_DATE,TIME_END_DATE,PL.PLAN_ID,PLAN_NAME
+    from T_TIME TIM 
+    INNER JOIN T_PLAN PL ON TIM.PLAN_ID=PL.PLAN_ID
+    where TIM.AREA_ID = #{areaId,jdbcType=OTHER}
+  </select>
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
