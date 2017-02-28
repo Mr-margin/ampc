@@ -149,11 +149,7 @@ public class PlanAndMeasureController {
 	    Date timeEndEate=new Date();//(request.getParameter("timeEndEate"));//时段结束时间
 	    Long areaId=1l;//Long.parseLong(request.getParameter("areaId"));//区域id
 	    
-	    String maxid = "select max(PLAN_ID) from T_PLAN";
-		Long max = (long) this.getBySqlMapper.findrows(maxid);
-		max += 1;
 	    TPlan tPlan=new TPlan();
-	    tPlan.setPlanId(max);
 	    tPlan.setAddTime(addTime);
 	    tPlan.setAreaId(areaId);
 	    tPlan.setMissionId(missionId);
@@ -375,7 +371,6 @@ public class PlanAndMeasureController {
 		tPlanMeasure.setPlanId(planId);
 		List<TPlanMeasure> list=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
 		List lis=new ArrayList();
-		obj.put("planId", max);
 		if(!list.isEmpty()){
 			//根据可复制预案中的措施创建新建预案的措施
 			JSONArray arr=new JSONArray();
