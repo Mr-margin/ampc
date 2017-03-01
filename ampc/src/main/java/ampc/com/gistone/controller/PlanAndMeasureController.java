@@ -558,7 +558,7 @@ public class PlanAndMeasureController {
 			JSONObject objs=new JSONObject();
 			objs.put("planName", plan.getPlanName());
 			objs.put("planId", plan.getPlanId());
-			arr.add(objs);			
+			arr.add(objs);
 		}
 		obj.put("copyPlanlist", arr);
 		return AmpcResult.build(0, "copy_plan_list success",obj);
