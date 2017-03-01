@@ -1,5 +1,20 @@
 // make console.log safe to use
 window.console||(console={log:function(){}});
+var parameterPar = {total: '', data: {}};
+var userId = 1;
+/*¿´Ãû×Ö*/
+function ajaxPost(url, parameter) {
+    parameterPar.data = parameter;
+    var p = JSON.stringify(parameterPar);
+    //return $.ajax(BackstageIP + url, {
+    return $.ajax('/ampc' + url, {
+        contentType: "application/json",
+        type: "POST",
+        async: true,
+        dataType: 'JSON',
+        data: p
+    })
+}
 
 //Internet Explorer 10 in Windows 8 and Windows Phone 8 fix
 if (navigator.userAgent.match(/IEMobile\/10\.0/)) {

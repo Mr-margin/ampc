@@ -2,12 +2,12 @@
  * Created by lvcheng on 2017/2/21.
  */
 //  console.log(BackstageIP);
-var userId = 1;
+//var userId = 1;
 var formCreate;
 var selectRW = {};
 var statusRW = '';
 var delRWid = {}, delQJid = {};
-var parameterPar = {total: '', data: {}};
+//var parameterPar = {total: '', data: {}};
 var msg = {
   'id': 'qjMessage',
   'content': {
@@ -124,7 +124,7 @@ function formVerify(){
 
 
 /*看名字*/
-function ajaxPost(url, parameter) {
+/*function ajaxPost(url, parameter) {
   parameterPar.data = parameter;
   var p = JSON.stringify(parameterPar);
   //return $.ajax(BackstageIP + url, {
@@ -135,7 +135,7 @@ function ajaxPost(url, parameter) {
     dataType: 'JSON',
     data: p
   })
-}
+}*/
 
 $(document).ready(function () {
   initialize();
@@ -145,8 +145,8 @@ $(document).ready(function () {
 
 function initialize() {
   initRwTable();
-  var param = vipspa.getMessage('home_msg');
-  console.log(param);
+//  var param = vipspa.getMessage('home_msg');
+//  console.log(param);
 }
 
 var QJheight;
@@ -316,7 +316,7 @@ function search(type) {
 function initQjTable() {
   $('#qjTable').bootstrapTable({
     method: 'POST',
-    //url: 'webApp/task01/qj.json',
+    //url: 'webApp/task01/qy.json',
 //      url : BackstageIP+'/scenarino/scenarinoListBymissionId',
       url : '/ampc/scenarino/get_scenarinoListBymissionId',
     dataType: "json",
@@ -367,7 +367,7 @@ function initQjTable() {
       msg.content.qjId = row.scenarinoId;
       msg.content.qjStartDate = row.scenarinoStartDate;
       msg.content.qjEndDate = row.scenarinoEndDate;
-      console.log(msg);
+      vipspa.setMessage(msg);
     },
     /*复选框设置*/
     onCheck: function (row) {
