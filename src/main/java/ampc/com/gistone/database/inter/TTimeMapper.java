@@ -34,4 +34,5 @@ public interface TTimeMapper {
     int updateByPrimaryKey(TTime record);
     
     List<TTime> selectByPrimaryKeysort(TTime record);
+    List<TTime> selectListByAreaId(Long areaId);
 }
