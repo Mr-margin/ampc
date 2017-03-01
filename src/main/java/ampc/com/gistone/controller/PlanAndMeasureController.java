@@ -548,7 +548,6 @@ public class PlanAndMeasureController {
 	@RequestMapping("/plan/copy_plan_list")
 	public  AmpcResult copy_plan_list(HttpServletRequest request,
 			HttpServletResponse response){
-		
 		TPlan tPlan=new TPlan();
 		tPlan.setCopyPlan("1");
 		List<TPlan> planlist=tPlanMapper.selectByEntity(tPlan);
