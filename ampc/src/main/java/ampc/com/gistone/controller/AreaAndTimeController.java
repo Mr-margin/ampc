@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TPlanMapper;
+import ampc.com.gistone.database.inter.TPlanMeasureMapper;
 import ampc.com.gistone.database.inter.TScenarinoAreaMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTimeMapper;
@@ -67,6 +68,9 @@ public class AreaAndTimeController {
 	
 	@Autowired
 	private TScenarinoAreaMapper tScenarinoAreaMapper;
+	
+	@Autowired
+	private TPlanMeasureMapper tPlanMeasureMapper;
 	
 	
 	/**
@@ -252,6 +256,7 @@ public class AreaAndTimeController {
 		delete_time.setTimeId(afterTimeId);
 		delete_time.setIsEffective("0");
 		int delete_timestatus=tTimeMapper.updateByPrimaryKeySelective(delete_time);
+		TTime times=tTimeMapper.selectByPrimaryKey(afterTimeId);
 		//判断要删除时段的状态是否修改成功,如果成功修改上一时段的结束时间
 		if(delete_timestatus!=0){
 			TTime update_time = new TTime();	
@@ -260,7 +265,29 @@ public class AreaAndTimeController {
 			int update_timestatus=tTimeMapper.updateByPrimaryKeySelective(update_time);
 			//判断上一个时段的结束时间是否修改成功
 			if(update_timestatus!=0){
+				TTime update_pland = new TTime();
+				update_pland.setTimeId(afterTimeId);
+				update_pland.setPlanId(-1l);
+				int update_status=tTimeMapper.updateByPrimaryKeySelective(update_pland);
+				//判断修改是否成功
+				if(update_status!=0){
+				TPlan tPlan=tPlanMapper.selectByPrimaryKey(times.getPlanId());
+				//查看预案是否为可复制预案
+				if(tPlan.getCopyPlan().equals("0")){
+					//为零则将预案设置为无效
+					tPlan.setIsEffective("0");
+					int up_status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
+					if(up_status!=0){
+						int del_status=tPlanMeasureMapper.deleteByPlanId(times.getPlanId());	
+						if(del_status!=0){
+							return AmpcResult.build(0, "delete_time success");
+						}
+						return AmpcResult.build(1, "delete_time error");
+					}
+				}
 				return AmpcResult.build(0, "delete_time success");
+				}
+				return AmpcResult.build(1, "delete_time error");
 			}else{
 				return AmpcResult.build(1, "delete_time error");	
 			}
@@ -269,7 +296,39 @@ public class AreaAndTimeController {
 		}
 	}
 	
-	
+	/**
+	 * 删除当前时段的预案 
+	 */
+	@RequestMapping("/time/delete_plan")
+	public AmpcResult delete_plan(HttpServletRequest request,HttpServletResponse response){
+		Long timeId=Long.parseLong(request.getParameter("timeId"));
+		Long planId=Long.parseLong(request.getParameter("planId"));
+		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户的id
+		//修改时段中的预案
+		TTime update_pland = new TTime();
+		update_pland.setTimeId(timeId);
+		update_pland.setPlanId(-1l);
+		int update_status=tTimeMapper.updateByPrimaryKeySelective(update_pland);
+		//查看预案是否为可复制预案
+		if(update_status!=0){
+		TPlan tPlan=tPlanMapper.selectByPrimaryKey(planId);
+		if(tPlan.getCopyPlan().equals("0")){
+			//为零则将预案设置为无效
+			tPlan.setIsEffective("0");
+			int up_status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
+			if(up_status!=0){
+				int del_status=tPlanMeasureMapper.deleteByPlanId(planId);	
+				if(del_status!=0){
+					return AmpcResult.build(0, "delete_plan success");
+				}
+				return AmpcResult.build(1, "delete_plan error");
+			}
+		}
+		return AmpcResult.build(0, "delete_plan success");
+		}else{
+		return AmpcResult.build(1, "delete_plan error");
+		}
+	}
 	
 	/**
 	 * 区域查询方法
