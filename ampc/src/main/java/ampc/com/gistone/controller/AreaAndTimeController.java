@@ -317,11 +317,7 @@ public class AreaAndTimeController {
 			tPlan.setIsEffective("0");
 			int up_status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
 			if(up_status!=0){
-				int del_status=tPlanMeasureMapper.deleteByPlanId(planId);	
-				if(del_status!=0){
-					return AmpcResult.build(0, "delete_plan success");
-				}
-				return AmpcResult.build(1, "delete_plan error");
+				int del_status=tPlanMeasureMapper.deleteByPlanId(planId);
 			}
 		}
 		return AmpcResult.build(0, "delete_plan success");
@@ -329,6 +325,54 @@ public class AreaAndTimeController {
 		return AmpcResult.build(1, "delete_plan error");
 		}
 	}
+	
+     /**
+      * 根据区域id删除时段（级联）
+      */
+	@RequestMapping("/time/delete_times")
+	public Map delete_times(Long areaId){
+	try{	
+		TTime tTime=new TTime();
+	    tTime.setAreaId(2l);
+		List<TTime> tlist=tTimeMapper.selectListByAreaId(2l);
+		Map map=new HashMap();
+		for(TTime t:tlist){
+			t.setIsEffective("0");
+			//修改时段状态为无效
+			int tstatus=tTimeMapper.updateByPrimaryKeySelective(t);
+			if(tstatus!=0){
+				TPlan tPlan=tPlanMapper.selectByPrimaryKey(t.getPlanId());
+				if(tPlan.getCopyPlan().equals("0")){
+					//修改预案为无效状态
+					tPlan.setIsEffective("0");
+					int up_status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
+					if(up_status!=0){
+						//删除预案的措施
+						int del_status=tPlanMeasureMapper.deleteByPlanId(tPlan.getPlanId());						
+					}else{
+					map.put("false", "预案删除错误！");
+					return map;
+					}
+				}
+				
+			}else{
+				map.put("false", "时段删除错误！");
+				return map;
+			}
+		}
+		map.put("true", "成功");
+		return map;
+	}catch(Exception e){
+		System.out.println(e);
+		Map map=new HashMap();
+		map.put("false", "失败");
+		return map;
+	}
+	}
+	
+	
+	
+	
 	
 	/**
 	 * 区域查询方法
