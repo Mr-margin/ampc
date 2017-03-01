@@ -46,7 +46,7 @@ public interface TScenarinoDetailMapper {
      * @param map 参数
      * @return 情景ID
      */
-    Integer selectByMidAndSName(Map map);
+    long selectByMidAndSName(Map map);
     
     
     /**
