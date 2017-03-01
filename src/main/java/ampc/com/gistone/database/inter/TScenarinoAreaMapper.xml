@@ -81,6 +81,14 @@
   </select>
  
  
+ <!--查询区域条数 根据情景ID-->
+  <select id="selectCountByScenarinoId" parameterType="hashMap" resultType="int">
+  	 SELECT COUNT(*) FROM T_SCENARINO_AREA 
+  	  WHERE USER_ID=#{userId,jdbcType=OTHER} 
+            AND  SCENARINO_DETAIL_ID=#{scenarinoId,jdbcType=OTHER}
+  </select>
+ 
+ 
  
  
  
