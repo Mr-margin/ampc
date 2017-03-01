@@ -349,22 +349,26 @@ public class AreaAndTimeController {
 						//删除预案的措施
 						int del_status=tPlanMeasureMapper.deleteByPlanId(tPlan.getPlanId());						
 					}else{
-					map.put("false", "预案删除错误！");
-					return map;
+						map.put("result", "-1");
+						map.put("msg", "预案删除错误！");
+						return map;
 					}
 				}
 				
 			}else{
-				map.put("false", "时段删除错误！");
+				map.put("result", "-1");
+				map.put("msg", "时段删除错误！");
 				return map;
 			}
 		}
-		map.put("true", "成功");
+		map.put("result", "1");
+		map.put("msg", "成功");
 		return map;
 	}catch(Exception e){
 		System.out.println(e);
 		Map map=new HashMap();
-		map.put("false", "失败");
+		map.put("result", "-1");
+		map.put("msg", "失败");
 		return map;
 	}
 	}
