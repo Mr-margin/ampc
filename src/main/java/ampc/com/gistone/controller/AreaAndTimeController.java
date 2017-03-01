@@ -79,7 +79,7 @@ public class AreaAndTimeController {
 	@RequestMapping("/time/time_save")
 	public AmpcResult add_TIME(HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ParseException {
-
+		ClientUtil.SetCharsetAndHeader(request, response);
 		Long areaId = 1l;// Long.parseLong(request.getParameter("areaId"));//区域ID
 		Long scenarinoId = 1l;// Long.parseLong(request.getParameter("scenarinoId"));//情景id
 		Long missionId = 1l;// Long.parseLong(request.getParameter("missionId"));//任务id
@@ -159,6 +159,7 @@ public class AreaAndTimeController {
 	 */
 	@RequestMapping("/time/time_update")
 	public AmpcResult update_TIME(HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
+		ClientUtil.SetCharsetAndHeader(request, response);
 		Long beforeTimeId=15l;//Long.parseLong(request.getParameter("beforeTimeId"));//修改时段前一个的时段Id
 		Long afterTimeId=16l;//Long.parseLong(request.getParameter("afterTimeId"));//修改时段后一个的时段Id
 		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户id
@@ -199,6 +200,7 @@ public class AreaAndTimeController {
 	 */
 	@RequestMapping("/time/time_list")
 	public AmpcResult find_TIME(HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
+		ClientUtil.SetCharsetAndHeader(request, response);
 		Long areaId=1l;//Long.parseLong(request.getParameter("areaId"));//区域id
 		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户的id
 		String sort="timeStartDate";//request.getParameter("sort");//排序字段
@@ -238,6 +240,7 @@ public class AreaAndTimeController {
 	 */
 	@RequestMapping("/time/delete_time")
 	public AmpcResult delete_TIME(HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
+		ClientUtil.SetCharsetAndHeader(request, response);
 		Long beforeTimeId=1l;//Long.parseLong(request.getParameter("beforeTimeId"));//上一个时段的时段Id
 		Long afterTimeId=18l;//Long.parseLong(request.getParameter("beforeTimeId"));//下一个时段的时段Id
 		Date timeEndDate=new Date();//request.getParameter("beforeTimeId"));//删除时段的结束时间
