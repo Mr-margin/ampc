@@ -61,12 +61,15 @@
  
  
   <!-- 修改区域状态 相当于删除 -->
-  <update id="updateIsEffeById" parameterType="java.lang.Long">
+  <update id="updateIsEffeById" parameterType="java.util.List">
     update T_SCENARINO_AREA
     set 
       IS_EFFECTIVE = '0',
       DELETE_TIME = (select sysdate from dual) 
-     where SCENARINO_AREA_ID =#{areaId,jdbcType=DECIMAL}
+     where SCENARINO_AREA_ID in 
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+     		 #{item,jdbcType=DECIMAL}
+  		</foreach>
   </update>
  
  <!--添加区域对名称重复判断-->
