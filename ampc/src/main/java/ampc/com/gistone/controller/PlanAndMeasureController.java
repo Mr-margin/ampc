@@ -541,4 +541,26 @@ public class PlanAndMeasureController {
 		return AmpcResult.build(1, "del_measureContent error");
 	}
 	
+	
+	/**
+	 *查询可复制预案
+	 */
+	@RequestMapping("/plan/copy_plan_list")
+	public  AmpcResult copy_plan_list(HttpServletRequest request,
+			HttpServletResponse response){
+		
+		TPlan tPlan=new TPlan();
+		tPlan.setCopyPlan("1");
+		List<TPlan> planlist=tPlanMapper.selectByEntity(tPlan);
+		JSONObject obj=new JSONObject();
+		JSONArray arr=new JSONArray();
+		for(TPlan plan:planlist){
+			JSONObject objs=new JSONObject();
+			objs.put("planName", plan.getPlanName());
+			objs.put("planId", plan.getPlanId());
+			arr.add(objs);			
+		}
+		obj.put("copyPlanlist", arr);
+		return AmpcResult.build(0, "copy_plan_list success",obj);
+	}
 }
