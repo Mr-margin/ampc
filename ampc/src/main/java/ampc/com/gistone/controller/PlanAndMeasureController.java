@@ -563,4 +563,6 @@ public class PlanAndMeasureController {
 		obj.put("copyPlanlist", arr);
 		return AmpcResult.build(0, "copy_plan_list success",obj);
 	}
+	
+	
 }
