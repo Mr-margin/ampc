@@ -329,7 +329,6 @@ public class AreaAndTimeController {
      /**
       * 根据区域id删除时段（级联）
       */
-	@RequestMapping("/time/delete_times")
 	public Map delete_times(Long areaId){
 	try{	
 		TTime tTime=new TTime();
