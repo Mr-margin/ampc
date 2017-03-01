@@ -47,6 +47,12 @@ public interface TScenarinoAreaMapper {
      * @return
      */
     int check_AreaName(Map map);
+    
+    /**
+     * 查询区域条数 根据情景ID
+     * @return 总条数
+     */
+    int selectCountByScenarinoId(Map map);
 	
 	
     int deleteByPrimaryKey(Long scenarinoAreaId);
