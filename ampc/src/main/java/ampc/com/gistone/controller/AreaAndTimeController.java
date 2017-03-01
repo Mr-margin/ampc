@@ -572,16 +572,31 @@ public class AreaAndTimeController {
 			Integer userId=Integer.valueOf(data.get("userId").toString());
 			//将得到的数据拆分 放入集合中
 			String[] idss=areaIds.split(",");
-			List<Integer> list=new ArrayList<Integer>();
+			List<Long> areaIdss=new ArrayList<Long>();
 			for(int i=0;i<idss.length;i++){
-				list.add(Integer.valueOf(idss[i]));
+				areaIdss.add(Long.parseLong(idss[i]));
 			}
-			//进行批量删除
-			int result=this.tScenarinoAreaMapper.updateIsEffeByIds(list);
-			 /**
-		     * TODO 等待时段删除完成 直接添加
-		     *      删除涉及到多次数据库操作，在事务的一致性有待提高
-		     */
+			/**
+			 * TODO 用事务更能保证一致性
+			 */
+			//统计时段的所有ID
+			List<Long> timeIdss=new ArrayList<Long>();
+			//记录时段的所有ID
+			for (Long areaId: areaIdss) {
+				List<Long> timeIds=this.tTimeMapper.selectTimeIdByAreaId(areaId);
+				for (Long timeId : timeIds) {
+					timeIdss.add(timeId);
+				}
+			}
+			//执行时段级联删除方法
+			Map res=this.delete_times(timeIdss);
+			String str=res.get("result").toString();
+			//判断时段级联方法是否执行成功  -1 不成功  1成功
+			if(str.equals("-1")){
+				return AmpcResult.build(1000, res.get("msg").toString(),null);
+			}
+			//执行区域删除方法
+			int result=this.tScenarinoAreaMapper.updateIsEffeByIds(areaIdss);
 			//判断执行结果返回对应数据
 			return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "区域删除失败",null);
 		} catch (Exception e) {

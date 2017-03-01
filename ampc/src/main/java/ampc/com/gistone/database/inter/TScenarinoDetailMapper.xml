@@ -132,10 +132,9 @@
   
   
   <!-- 根据任务Id查询出所有的情景Id 用来级联删除 -->
-  <select id="selectByMissionId" parameterType="java.lang.Long" resultType="java.util.List" >
-   	 SELECT  SCENARINO_ID
-  		FROM T_SCENARINO_DETAIL  
-			 WHERE  MISSION_ID=#{missionId,jdbcType=DECIMAL}
+  <select id="selectByMissionId" parameterType="hashMap" resultType="java.util.List" >
+     SELECT SCENARINO_ID FROM T_SCENARINO_DETAIL 
+		WHERE MISSION_ID=#{missionId,jdbcType=OTHER} AND IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
   </select>
   
   <!-- 根据任务ID和情景名称 查询情景ID -->

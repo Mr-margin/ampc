@@ -38,7 +38,7 @@ public interface TScenarinoDetailMapper {
      * 根据任务Id查询出所有的情景Id 用来级联删除
      * @return 总条数
      */
-    List<Integer> selectByMissionId(long missionId);
+    List<Long> selectByMissionId(Map map);
     
    
     /**
@@ -61,7 +61,7 @@ public interface TScenarinoDetailMapper {
      * @param missionId
      * @return
      */
-    int updateIsEffeByIds(List<Integer> list);
+    int updateIsEffeByIds(List<Long> list);
 	
     int deleteByPrimaryKey(Long scenarinoId);
 

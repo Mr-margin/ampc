@@ -49,16 +49,14 @@ public class MissionAndScenarinoController {
 	//情景映射
 	@Autowired
 	private TScenarinoDetailMapper tScenarinoDetailMapper;
-	
 	//区域映射
 	@Autowired
 	private TScenarinoAreaMapper tScenarinoAreaMapper;
-	
 	//时段映射
 	@Autowired
 	private TTimeMapper tTimeMapper;
 	
-	
+	private AreaAndTimeController atc=new AreaAndTimeController();
 	/**
 	 * 任务查询方法
 	 * @param request 请求
@@ -234,16 +232,66 @@ public class MissionAndScenarinoController {
 			for(int i=0;i<idss.length;i++){
 				list.add(Integer.valueOf(idss[i]));
 			}
-			//进行批量删除
-			int result=this.tMissionDetailMapper.updateIsEffeByIds(list);
-			 /**
-		     * TODO 等待时段删除完成 直接添加
-		     *      删除涉及到多次数据库操作，在事务的一致性有待提高
-		     */
-			
-			
-			//判断执行结果返回对应数据
-			return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "任务修改失败",null);
+			/**
+			 * TODO 用事务更能保证一致性
+			 */
+			//统计情景的所有ID
+			List<Long> scenarinoIdss=new ArrayList<Long>();
+			//统计区域的所有ID
+			List<Long> areaIdss=new ArrayList<Long>();
+			//统计时段的所有ID
+			List<Long> timeIdss=new ArrayList<Long>();
+			//记录情景的所有ID
+			for (Integer missionId : list) {
+				Map map=new HashMap();
+				map.put("userId", userId);
+				map.put("missionId", missionId);
+				List<Long> scenarinoIds=this.tScenarinoDetailMapper.selectByMissionId(map);
+				for (Long scenarinoId : scenarinoIds) {
+					scenarinoIdss.add(scenarinoId);
+				}
+			}
+			//记录区域的所有ID
+			for (Long scenarinoId: scenarinoIdss) {
+				Map map1=new HashMap();
+				map1.put("userId", userId);
+				map1.put("scenarinoId", scenarinoId);
+				List<Long> areaIds=this.tScenarinoAreaMapper.selectBySid(map1);
+				for (Long areaId : areaIds) {
+					areaIdss.add(areaId);
+				}
+			}
+			//记录时段的所有ID
+			for (Long areaId: areaIdss) {
+				List<Long> timeIds=this.tTimeMapper.selectTimeIdByAreaId(areaId);
+				for (Long timeId : timeIds) {
+					timeIdss.add(timeId);
+				}
+			}
+			//执行时段级联删除方法
+			Map res=atc.delete_times(timeIdss);
+			String str=res.get("result").toString();
+			//判断时段级联方法是否执行成功  -1 不成功  1成功
+			if(str.equals("-1")){
+				return AmpcResult.build(1000, res.get("msg").toString(),null);
+			}
+			//执行区域删除方法
+			int result=this.tScenarinoAreaMapper.updateIsEffeByIds(areaIdss);
+			//判断是否执行成功
+			if(result>0){
+				//执行情景删除方法
+				result=this.tScenarinoDetailMapper.updateIsEffeByIds(scenarinoIdss);
+				if(result>0){
+					//执行任务删除方法
+					result=this.tMissionDetailMapper.updateIsEffeByIds(list);
+					//判断执行结果返回对应数据
+					return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "任务修改失败",null);
+				}else{
+					return AmpcResult.build(1000, "情景修改失败",null);
+				}
+			}else{
+				return AmpcResult.build(1000, "区域修改失败",null);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			//返回错误信息
@@ -577,20 +625,51 @@ public class MissionAndScenarinoController {
 			Integer userId=Integer.valueOf(data.get("userId").toString());
 			//将得到的数据拆分 放入集合中
 			String[] idss=scenarinoIds.split(",");
-			List<Integer> list=new ArrayList<Integer>();
+			List<Long> scenarinoIdss=new ArrayList<Long>();
 			for(int i=0;i<idss.length;i++){
-				list.add(Integer.valueOf(idss[i]));
+				scenarinoIdss.add(Long.parseLong(idss[i]));
 			}
-			//进行批量删除
-			int result=this.tScenarinoDetailMapper.updateIsEffeByIds(list);
-			 /**
-		     * TODO 等待时段删除完成 直接添加
-		     *      删除涉及到多次数据库操作，在事务的一致性有待提高
-		     */
-			
-			
-			//判断执行结果 返回对应结果
-			return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "任务修改失败",null);
+			/**
+			 * TODO 用事务更能保证一致性
+			 */
+			//统计区域的所有ID
+			List<Long> areaIdss=new ArrayList<Long>();
+			//统计时段的所有ID
+			List<Long> timeIdss=new ArrayList<Long>();
+			//记录区域的所有ID
+			for (Long scenarinoId: scenarinoIdss) {
+				Map map1=new HashMap();
+				map1.put("userId", userId);
+				map1.put("scenarinoId", scenarinoId);
+				List<Long> areaIds=this.tScenarinoAreaMapper.selectBySid(map1);
+				for (Long areaId : areaIds) {
+					areaIdss.add(areaId);
+				}
+			}
+			//记录时段的所有ID
+			for (Long areaId: areaIdss) {
+				List<Long> timeIds=this.tTimeMapper.selectTimeIdByAreaId(areaId);
+				for (Long timeId : timeIds) {
+					timeIdss.add(timeId);
+				}
+			}
+			//执行时段级联删除方法
+			Map res=atc.delete_times(timeIdss);
+			String str=res.get("result").toString();
+			//判断时段级联方法是否执行成功  -1 不成功  1成功
+			if(str.equals("-1")){
+				return AmpcResult.build(1000, res.get("msg").toString(),null);
+			}
+			//执行区域删除方法
+			int result=this.tScenarinoAreaMapper.updateIsEffeByIds(areaIdss);
+			//判断是否执行成功
+			if(result>0){
+				//执行情景删除方法
+				result=this.tScenarinoDetailMapper.updateIsEffeByIds(scenarinoIdss);
+				return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "情景修改失败",null);
+			}else{
+				return AmpcResult.build(1000, "区域修改失败",null);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			//返回错误信息
