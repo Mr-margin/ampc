@@ -186,4 +186,46 @@
       COPY_PLAN = #{copyPlan,jdbcType=VARCHAR}
     where PLAN_ID = #{planId,jdbcType=DECIMAL}
   </update>
+      <select id="selectByEntity" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TPlan" >
+    select 
+     <include refid="Base_Column_List" />
+    from T_PLAN
+    where IS_EFFECTIVE = 1
+         <if test="planName != null">
+               and PLAN_NAME = #{planName,jdbcType=OTHER}
+            </if>
+            <if test="addTime != null">
+                and ADD_TIME = #{addTime,jdbcType=DATE}
+            </if>
+            <if test="usedBy != null">
+                and USED_BY = #{usedBy,jdbcType=DECIMAL}
+            </if>
+            <if test="scenarioId != null">
+                and  SCENARIO_ID = #{scenarioId,jdbcType=DECIMAL}
+            </if>
+            <if test="missionId != null">
+                and MISSION_ID = #{missionId,jdbcType=DECIMAL}
+            </if>
+            <if test="deleteTime != null">
+               and DELETE_TIME = #{deleteTime,jdbcType=DATE}
+            </if>
+            <if test="planStartTime != null">
+               and PLAN_START_TIME = #{planStartTime,jdbcType=DATE}
+            </if>
+            <if test="planEndTime != null">
+               and PLAN_END_TIME = #{planEndTime,jdbcType=DATE}
+            </if>
+            <if test="areaId != null">
+               and AREA_ID = #{areaId,jdbcType=DECIMAL}
+            </if>
+            <if test="userId != null">
+               and AUSER_ID = #{userId,jdbcType=DECIMAL}
+            </if>
+            <if test="copyPlan != null">
+               and COPY_PLAN = #{copyPlan,jdbcType=VARCHAR}
+            </if>
+            <if test="planId != null">
+               and PLAN_ID = #{planId,jdbcType=DECIMAL}
+            </if>
+  </select>
 </mapper>
