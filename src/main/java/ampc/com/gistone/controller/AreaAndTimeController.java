@@ -456,18 +456,22 @@ public class AreaAndTimeController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//要删除的任务集合
-			long areaId=Long.parseLong(data.get("areaId").toString());
+			String areaIds=data.get("areaIds").toString();
 			//用户的id  确定当前用户
 			Integer userId=Integer.valueOf(data.get("userId").toString());
-			//进行删除
-			int result=this.tScenarinoAreaMapper.updateIsEffeById(areaId);
+			//将得到的数据拆分 放入集合中
+			String[] idss=areaIds.split(",");
+			List<Integer> list=new ArrayList<Integer>();
+			for(int i=0;i<idss.length;i++){
+				list.add(Integer.valueOf(idss[i]));
+			}
+			//进行批量删除
+			int result=this.tScenarinoAreaMapper.updateIsEffeByIds(list);
 			 /**
 		     * TODO 等待时段删除完成 直接添加
 		     *      删除涉及到多次数据库操作，在事务的一致性有待提高
 		     */
-			
-			
-			
+			//判断执行结果返回对应数据
 			return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "区域删除失败",null);
 		} catch (Exception e) {
 			e.printStackTrace();
