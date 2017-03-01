@@ -18,7 +18,12 @@ public interface TTimeMapper {
 	 */
 	List<Map> selectByAreaId(Object id);
     
-	
+	/**
+	 * 根据区域ID查询所有的时段Id
+	 * @param areaId
+	 * @return
+	 */
+	List<Long> selectTimeIdByAreaId(Long areaId);
 	
 	
 	int deleteByPrimaryKey(Long timeId);
@@ -34,5 +39,5 @@ public interface TTimeMapper {
     int updateByPrimaryKey(TTime record);
     
     List<TTime> selectByPrimaryKeysort(TTime record);
-    List<TTime> selectListByAreaId(Long areaId);
+    
 }
