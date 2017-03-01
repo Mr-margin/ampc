@@ -329,18 +329,18 @@ public class AreaAndTimeController {
      /**
       * 根据区域id删除时段（级联）
       */
-	public Map delete_times(Long areaId){
+	public Map delete_times(List<Long> timeIds){
 	try{	
-		TTime tTime=new TTime();
-	    tTime.setAreaId(2l);
-		List<TTime> tlist=tTimeMapper.selectListByAreaId(2l);
 		Map map=new HashMap();
-		for(TTime t:tlist){
+			for(Long ids:timeIds){
+			TTime t=new TTime();
+			t.setTimeId(ids);
 			t.setIsEffective("0");
 			//修改时段状态为无效
 			int tstatus=tTimeMapper.updateByPrimaryKeySelective(t);
+			TTime times=tTimeMapper.selectByPrimaryKey(ids);
 			if(tstatus!=0){
-				TPlan tPlan=tPlanMapper.selectByPrimaryKey(t.getPlanId());
+				TPlan tPlan=tPlanMapper.selectByPrimaryKey(times.getPlanId());
 				if(tPlan.getCopyPlan().equals("0")){
 					//修改预案为无效状态
 					tPlan.setIsEffective("0");
@@ -364,6 +364,8 @@ public class AreaAndTimeController {
 		map.put("result", "1");
 		map.put("msg", "成功");
 		return map;
+	
+	
 	}catch(Exception e){
 		System.out.println(e);
 		Map map=new HashMap();
