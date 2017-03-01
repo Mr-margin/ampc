@@ -71,10 +71,14 @@
   float: left;
   border: 1px solid #aaa;
   overflow: hidden;
+
+  /*background-color: #eaeaea;*/
+  /*margin: 35px 0 0 0;*/
+  position: relative;
 }
 .period .time{
   height:150px;
-  width:50%;
+  width:10%;
   float: left;
   text-align: center;
   position: relative;
@@ -92,7 +96,7 @@
 }
 .areaToolDiv,.timeToolDiv{
   position: absolute;
-  bottom: -25px;
+  bottom: -70px;
   transition: bottom 0.3s linear;
 }
 
@@ -122,6 +126,101 @@
   display: block;
 }
 .time:hover .timeToolDiv,.front:hover .areaToolDiv{
-  bottom:0;
+  bottom:4px;
 }
+
+.disNone{
+  display: none;
+}
+
+.period .showLine{
+  width: 100%;
+  height: 2px;
+  position: absolute;
+  background-color: #aaa;
+  bottom: 0;
+}
+
+.hk{
+  width: 4px;
+  height: 150px;
+  position: absolute;
+  /*left: 15%;*/
+  background-color: #aaa;
+  top: -148px;
+  cursor: ew-resize;
+}
+.hk:after{
+  display: none;
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 10px solid #aaa;
+  transform: rotate(45deg);
+  left: -8px;
+  top: 60px;
+}
+.hk:hover:after{
+  display: block;
+}
+.hk:hover .showTips{
+  display: block;
+}
+
+.showTipsLeft{
+  display: none;
+  color: #333;
+  width: 100px;
+  font-size: 12px;
+  height: 25px;
+  line-height: 25px;
+  z-index: 2;
+  position: absolute;
+  bottom: 16px;
+  left: 18px;
+  text-align: center;
+  background-color: #eaeaea;
+}
+.showTipsLeft:after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
+  border: 7px solid transparent;
+  border-right: 25px solid #eaeaea;
+  transform: rotate(-45deg);
+  top: 24px;
+  left: -22px;
+}
+
+.showTipsRight{
+  display: none;
+  color: #333;
+  width: 100px;
+  font-size: 12px;
+  height: 25px;
+  line-height: 25px;
+  z-index: 2;
+  position: absolute;
+  bottom: 16px;
+  right: 18px;
+  text-align: center;
+  background-color: #eaeaea;
+}
+.showTipsRight:after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
+  border: 7px solid transparent;
+  border-right: 25px solid #eaeaea;
+  transform: rotate(-135deg);
+  top: 24px;
+  right: -22px;
+}
+
+
 

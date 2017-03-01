@@ -18,45 +18,36 @@
       </div>
     </div>
     <div class="areaMsg col-md-12">
-      <div class="area clearfix">
+    <!--  <div class="area clearfix">
         <div class="front">
           <span>类别一</span>
           <div class="areaToolDiv text-center">
-            <button type="button" class="btn btn-default btn-xs toolShow" title="区域编辑"><i class="ec-pencil"></i><span>区域编辑</span></button>
-            <button type="button" class="btn btn-default btn-xs toolShow" title="删除区域"><i class="ec-trashcan"></i><span>删除区域</span></button>
-            <button type="button" class="btn btn-default btn-xs toolShow" title="添加时段"><i class="im-plus"></i><span>添加时段</span></button>
+            <button type="button" onclick="editArea()" class="btn btn-default btn-xs toolShow" title="区域编辑"><i class="ec-pencil"></i><span>区域编辑</span></button>
+            <button type="button" onclick="delArea()" class="btn btn-default btn-xs toolShow" title="删除区域"><i class="ec-trashcan"></i><span>删除区域</span></button>
+            <button type="button" onclick="addTimes()" class="btn btn-default btn-xs toolShow" title="添加时段"><i class="im-plus"></i><span>添加时段</span></button>
           </div>
         </div>
-        <div class="period clearfix" data-index="1">
+        <div class="period clearfix">
 
           <div class="time">
+            <div class="yaMsg">
+              <h4>无</h4>
+              &lt;!&ndash;<p class="yaStartDate">开始时间：<span>2017-12-12 00</span></p>&ndash;&gt;
+              &lt;!&ndash;<p  class="yaEndDate">结束时间：<span>2017-12-22 00</span></p>&ndash;&gt;
+            </div>
             <div class="timeToolDiv text-center">
-              <button type="button" class="btn btn-default btn-xs toolShow" title="添加预案"><i class="im-google-plus"></i><span>添加预案</span></button>
-              <button type="button" class="btn btn-default btn-xs toolShow" title="删除预案"><i class="ec-trashcan"></i><span>删除预案</span></button>
-              <button type="button" class="btn btn-default btn-xs toolShow" title="移除时段"><i class="im-close"></i><span>移除时段</span></button>
+              <button type="button" onclick="addPlan()" class="btn btn-default btn-xs toolShow" title="添加预案"><i class="im-google-plus"></i><span>添加预案</span></button>
+              <button type="button" onclick="delPlan()" class="btn btn-default btn-xs toolShow" title="删除预案"><i class="ec-trashcan"></i><span>删除预案</span></button>
+              <button type="button" onclick="delTimes()" class="btn btn-default btn-xs toolShow" title="移除时段"><i class="im-close"></i><span>移除时段</span></button>
             </div>
           </div>
 
-          <div class="time">
-            <div class="timeToolDiv text-center">
-              <button type="button" class="btn btn-default btn-xs toolShow" title="添加预案"><i class="im-google-plus"></i><span>添加预案</span></button>
-              <button type="button" class="btn btn-default btn-xs toolShow" title="删除预案"><i class="ec-trashcan"></i><span>删除预案</span></button>
-              <button type="button" class="btn btn-default btn-xs toolShow" title="移除时段"><i class="im-close"></i><span>移除时段</span></button>
-            </div>
+          <div class="showLine">
+            <div class="hk" style="left:15%"><span class="showTips showTipsLeft" >20%</span></div>
           </div>
-
         </div>
-      </div>
+      </div> -->
 
-      <div class="area clearfix">
-        <div class="front"><span>类别二</span></div>
-        <div class="period" data-index="2"></div>
-      </div>
-
-      <div class="area clearfix">
-        <div class="front"><span>类别三</span></div>
-        <div class="period" data-index="3"></div>
-      </div>
     </div>
   </div>
 
@@ -69,11 +60,37 @@
 
 
 
-<script>
-  $('[data-toggle="tooltip"]').tooltip()
-  var param = vipspa.getMessage('qjMessage');
-  console.log(param);
 
+<!--模板DOM-->
 
+<div class="area clearfix disNone">
+  <div class="front">
+    <span>类别一</span>
+    <div class="areaToolDiv text-center">
+      <button type="button" onclick="editArea()" class="btn btn-default btn-xs toolShow" title="区域编辑"><i class="ec-pencil"></i><span>区域编辑</span></button>
+      <button type="button" onclick="delArea()" class="btn btn-default btn-xs toolShow" title="删除区域"><i class="ec-trashcan"></i><span>删除区域</span></button>
+      <button type="button" onclick="addTimes()" class="btn btn-default btn-xs toolShow" title="添加时段"><i class="im-plus"></i><span>添加时段</span></button>
+    </div>
+  </div>
+  <div class="period clearfix">
 
-</script>
+    <div class="showLine">
+
+    </div>
+  </div>
+</div>
+
+<div class="hk disNone"><span class="showTips showTipsLeft" >2017-12-12 00</span></div>
+
+<div class="time disNone">
+  <div class="yaMsg">
+    <h4>无</h4>
+    <!--<p class="yaStartDate">开始时间：<span>2017-12-12 00</span></p>-->
+    <!--<p  class="yaEndDate">结束时间：<span>2017-12-22 00</span></p>-->
+  </div>
+  <div class="timeToolDiv text-center">
+    <button type="button" onclick="addPlan()" class="btn btn-default btn-xs toolShow" title="添加预案"><i class="im-google-plus"></i><span>添加预案</span></button>
+    <button type="button" onclick="delPlan()" class="btn btn-default btn-xs toolShow" title="删除预案"><i class="ec-trashcan"></i><span>删除预案</span></button>
+    <button type="button" onclick="delTimes()" class="btn btn-default btn-xs toolShow" title="移除时段"><i class="im-close"></i><span>移除时段</span></button>
+  </div>
+</div>

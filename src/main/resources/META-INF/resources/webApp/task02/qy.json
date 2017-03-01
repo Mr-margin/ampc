@@ -1,0 +1,66 @@
+﻿{
+  "ret": 0,
+  "msg": "areaAndTimeList success!",
+  "data": [
+    {
+      "areaId": 1,
+      "areaName": "类别一",
+      "timeItems": [
+        {
+          "timeId": 1,
+          "timeStartDate": 1485792000000,
+          "timeEndDate": 1485878400000,
+          "planId": 1,
+          "planName": "预案0"
+        },
+        {
+          "timeId": 2,
+          "timeStartDate": 1485878400000,
+          "timeEndDate": 1486051200000,
+          "planId": 2,
+          "planName": "预案1"
+        },
+        {
+          "timeId": 2,
+          "timeStartDate": 1486051200000,
+          "timeEndDate": 1486137600000,
+          "planId": 2,
+          "planName": "预案11"
+        }
+      ]
+    },
+    {
+      "areaId": 2,
+      "areaName": "类别二",
+      "timeItems": [
+        {
+          "timeId": 1,
+          "timeStartDate": 1485792000000,
+          "timeEndDate": 1485878400000,
+          "planId": 1,
+          "planName": "预案2"
+        },
+        {
+          "timeId": 2,
+          "timeStartDate": 1485878400000,
+          "timeEndDate": 1486137600000,
+          "planId": 2,
+          "planName": "预案3"
+        }
+      ]
+    },
+    {
+      "areaId": 3,
+      "areaName": "类别三",
+      "timeItems": [
+        {
+          "timeId": 1,
+          "timeStartDate": 1485792000000,
+          "timeEndDate": 1486137600000,
+          "planId": 1,
+          "planName": "预案4"
+        }
+      ]
+    }
+  ]
+}
