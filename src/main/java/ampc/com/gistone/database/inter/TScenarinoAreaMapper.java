@@ -21,6 +21,13 @@ public interface TScenarinoAreaMapper {
 	List<Map> selectByScenarinoId(Map map);
 	
 	/**
+	 * 根据情景ID 查询区域ID
+	 * @param map 参数
+	 * @return
+	 */
+	List<Long> selectBySid(Map map);
+	
+	/**
 	 * 根据区域ID 查询区域信息
 	 * @param map 参数
 	 * @return
@@ -39,7 +46,7 @@ public interface TScenarinoAreaMapper {
      * @param missionId
      * @return
      */
-    int updateIsEffeByIds(List<Integer> list);
+    int updateIsEffeByIds(List<Long> list);
     
     /**
      * 添加区域对名称重复判断

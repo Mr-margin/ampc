@@ -44,6 +44,12 @@
       AND USER_ID=#{userId,jdbcType=OTHER} AND SCENARINO_DETAIL_ID=#{scenarinoId,jdbcType=OTHER}
  </select>
  
+  <!-- 根据情景ID 查询区域ID -->
+ <select id="selectBySid" parameterType="hashMap" resultType="java.util.List">
+    SELECT SCENARINO_AREA_ID FROM T_SCENARINO_AREA WHERE IS_EFFECTIVE='1' 
+      AND USER_ID=#{userId,jdbcType=OTHER} AND SCENARINO_DETAIL_ID=#{scenarinoId,jdbcType=OTHER}
+ </select>
+ 
   <!-- 根据区域ID 查询区域信息 -->
  <select id="selectByAreaId" parameterType="hashMap" resultMap="showInfo">
     SELECT SCENARINO_AREA_ID,AREA_NAME,PROVINCE_CODES, CITY_CODES, COUNTY_CODES 
