@@ -39,7 +39,7 @@ public interface TScenarinoAreaMapper {
      * @param missionId
      * @return
      */
-    int updateIsEffeById(long areaId);
+    int updateIsEffeByIds(List<Integer> list);
     
     /**
      * 添加区域对名称重复判断
