@@ -1,6 +1,8 @@
 package ampc.com.gistone.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,9 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
+import ampc.com.gistone.database.inter.TScenarinoAreaMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
+import ampc.com.gistone.database.inter.TTimeMapper;
 import ampc.com.gistone.database.model.TMissionDetail;
+import ampc.com.gistone.database.model.TScenarinoAreaWithBLOBs;
 import ampc.com.gistone.database.model.TScenarinoDetail;
+import ampc.com.gistone.database.model.TTime;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 
@@ -43,6 +49,16 @@ public class MissionAndScenarinoController {
 	//情景映射
 	@Autowired
 	private TScenarinoDetailMapper tScenarinoDetailMapper;
+	
+	//区域映射
+	@Autowired
+	private TScenarinoAreaMapper tScenarinoAreaMapper;
+	
+	//时段映射
+	@Autowired
+	private TTimeMapper tTimeMapper;
+	
+	
 	/**
 	 * 任务查询方法
 	 * @param request 请求
@@ -421,20 +437,70 @@ public class MissionAndScenarinoController {
 			}
 			//执行添加操作
 			int result=this.tScenarinoDetailMapper.insertSelective(scenarino);
+			Map map=new HashMap();
+			map.put("missionId", scenarino.getMissionId());
+			map.put("scrnarinoName", scenarino.getScenarinoName());
+			long sid=this.tScenarinoDetailMapper.selectByMidAndSName(map);
+			if(result>0){
+				for(int i=1;i<=3;i++){
+					TScenarinoAreaWithBLOBs area=new TScenarinoAreaWithBLOBs();
+					//区域名称
+					area.setAreaName(i+"类区");
+					//用户的id  确定当前用户
+					area.setUserId(Long.parseLong(data.get("userId").toString()));
+					//情景ID
+					area.setScenarinoDetailId(sid);
+					//执行添加操作
+					int resu=this.tScenarinoAreaMapper.insertSelective(area);
+					if(resu>0){
+						Map<String,Object> map1=new HashMap<String,Object>();
+						map1.put("scenarinoId",area.getScenarinoDetailId());
+						map1.put("areaName",area.getAreaName());
+						map1.put("userId", area.getUserId());
+						long areId=this.tScenarinoAreaMapper.selectAreaIdByParam(map1);
+						//情景开始时间
+						Date startDate=new Date(data.get("scenarinoStartDate").toString());
+						//情景结束时间
+						Date endDate=new Date(data.get("scenarinoEndDate").toString());
+						// 时间操作，将情景结束时间减少一个小时
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(endDate);
+						cal.add(Calendar.HOUR, - 1);
+						String addTimeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+								.format(cal.getTime());
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						Date timeEndDate = sdf.parse(addTimeDate);
+						//新建时段
+						TTime add_tTime = new TTime();
+						add_tTime.setAreaId(areId);
+						add_tTime.setUserId(area.getUserId());
+						add_tTime.setMissionId(Long.parseLong(data.get("missionId").toString()));
+						add_tTime.setScenarinoId(area.getScenarinoDetailId());
+						add_tTime.setTimeStartDate(startDate);
+						add_tTime.setTimeEndDate(timeEndDate);
+					    resu = tTimeMapper.insertSelective(add_tTime);
+					    if(resu<1){
+					    	//添加失败
+							return AmpcResult.build(1000, "添加时段失败",null);
+					    }
+					}else{
+						//添加失败
+						return AmpcResult.build(1000, "添加区域失败",null);
+					}
+				}
+			}else{
+				//返回结果
+				return AmpcResult.build(1000, "添加情景失败",null);
+			}
 			//判断非复用情景
 			if(null==scenarinoId&&scenarinoId.equals("")&&createType==1&&result>0){
 				return AmpcResult.ok(result);
-			}
-			if(null==scenarinoId&&scenarinoId.equals("")&&createType==2&&result>0){
-				Map map=new HashMap();
-				map.put("missionId", scenarino.getMissionId());
-				map.put("scrnarinoName", scenarino.getScenarinoName());
-				Integer sid=this.tScenarinoDetailMapper.selectByMidAndSName(map);
+			}else if(null==scenarinoId&&scenarinoId.equals("")&&createType==2&&result>0){
 				//直接返回新建的情景ID
 				return AmpcResult.ok(sid);
+			}else{
+				return AmpcResult.build(1000, "参数错误",null);
 			}
-			//返回结果
-			return AmpcResult.build(1000, "添加失败",null);
 		} catch (Exception e) {
 			e.printStackTrace();
 			//返回错误信息
