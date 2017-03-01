@@ -34,9 +34,9 @@
     where TIM.AREA_ID = #{areaId,jdbcType=OTHER}
   </select>
   
-    <select id="selectListByAreaId" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TTime" >
-    select 
-   <include refid="Base_Column_List" />
+  <!-- 根据区域ID查询所有的时段Id -->
+   <select id="selectTimeIdByAreaId" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TTime" >
+    select TIME_ID
     from T_TIME 
     where AREA_ID = #{areaId,jdbcType=OTHER}
   </select>
