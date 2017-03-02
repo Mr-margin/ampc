@@ -35,10 +35,17 @@
   </select>
   
   <!-- 根据区域ID查询所有的时段Id -->
-   <select id="selectTimeIdByAreaId" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TTime" >
+   <select id="selectTimeIdByAreaId" resultMap="BaseResultMap" parameterType="java.lang.Object" >
     select TIME_ID
     from T_TIME 
-    where AREA_ID = #{areaId,jdbcType=OTHER}
+    where AREA_ID = #{areaId,jdbcType=OTHER} AND IS_EFFECTIVE='1'
+  </select>
+  
+  <!-- 根据区域ID查询所有的时段 -->
+   <select id="selectByAreaId" resultMap="BaseResultMap" parameterType="java.lang.Object" >
+    select <include refid="Base_Column_List" />
+    from T_TIME 
+    where AREA_ID = #{areaId,jdbcType=OTHER} AND IS_EFFECTIVE='1'
   </select>
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
