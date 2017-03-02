@@ -51,7 +51,7 @@
  </select>
  
  <!-- 根据情景ID 查询区域对象集合 -->
- <select id="selectBySids" parameterType="ResultMapWithBLOBs" resultType="java.util.List">
+ <select id="selectBySids" parameterType="hashMap" resultType="java.util.List">
     select 
     <include refid="Base_Column_List" />
     ,
