@@ -493,7 +493,7 @@ public class MissionAndScenarinoController {
 				//循环所有的区域对象
 				for (TScenarinoAreaWithBLOBs tScenarinoAreaWithBLOBs : areas) {
 					//根据区域ID 获取当前区域的所有时段
-					List<TTime> timeList=this.tTimeMapper.selectByAreaId(tScenarinoAreaWithBLOBs.getScenarinoAreaId());
+					List<TTime> timeList=this.tTimeMapper.selectAllByAreaId(tScenarinoAreaWithBLOBs.getScenarinoAreaId());
 					if(timeList.size()>0&&null!=timeList){
 						//循环所有的时段对象
 						for (TTime tTime : timeList) {
