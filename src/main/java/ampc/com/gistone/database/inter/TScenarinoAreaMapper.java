@@ -28,6 +28,13 @@ public interface TScenarinoAreaMapper {
 	List<Long> selectBySid(Map map);
 	
 	/**
+	 * 根据情景ID 查询区域对象集合
+	 * @param map 参数
+	 * @return
+	 */
+	List<TScenarinoAreaWithBLOBs> selectBySids(Map map);
+	
+	/**
 	 * 根据区域ID 查询区域信息
 	 * @param map 参数
 	 * @return
