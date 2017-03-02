@@ -80,7 +80,7 @@ public class AreaAndTimeController {
 	 * @throws IOException 
 	 * @throws ParseException 
 	 */
-	@RequestMapping("/time/time_save")
+	@RequestMapping("/time/save_time")
 	public AmpcResult add_TIME(HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ParseException {
 		ClientUtil.SetCharsetAndHeader(request, response);
