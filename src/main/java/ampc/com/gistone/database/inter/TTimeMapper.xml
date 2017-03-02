@@ -42,7 +42,7 @@
   </select>
   
   <!-- 根据区域ID查询所有的时段 -->
-   <select id="selectByAreaId" resultMap="BaseResultMap" parameterType="java.lang.Object" >
+   <select id="selectAllByAreaId" resultMap="BaseResultMap" parameterType="java.lang.Object" >
     select <include refid="Base_Column_List" />
     from T_TIME 
     where AREA_ID = #{areaId,jdbcType=OTHER} AND IS_EFFECTIVE='1'
