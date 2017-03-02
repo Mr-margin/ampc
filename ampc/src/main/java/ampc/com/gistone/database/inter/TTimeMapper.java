@@ -30,7 +30,7 @@ public interface TTimeMapper {
 	 * @param areaId
 	 * @return
 	 */
-	List<TTime> selectByAreaId(Long areaId);
+	List<TTime> selectAllByAreaId(Long areaId);
 	
 	
 	int deleteByPrimaryKey(Long timeId);
