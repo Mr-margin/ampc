@@ -36,7 +36,7 @@ vipspa.start({
       templateUrl: 'a.html',
       controller: ''
     },
-    '/t3':{
+    '/csbj':{
       templateUrl: 'webApp/task03/task03.html',
       controller: 'webApp/task03/task03.js'
     },
