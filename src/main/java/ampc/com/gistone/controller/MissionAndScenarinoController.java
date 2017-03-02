@@ -470,12 +470,43 @@ public class MissionAndScenarinoController {
 			//创建类型 1.只创建情景 2.创建并编辑情景 
 			Integer createType=Integer.valueOf(data.get("createType").toString());
 			//情景的id  用来判断是否是复用情景
-			Integer scenarinoId=Integer.valueOf(data.get("scenarinoId").toString());
+			Long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());
 			//判断是否是复用情景 和创建类型
 			if(null!=scenarinoId&&!scenarinoId.equals("")&&createType==1){
 				/**
 				 * TODO 复制情景
 				 */
+				//情景开始时间
+				Date startDate=new Date(data.get("scenarinoStartDate").toString());
+				//情景结束时间
+				Date endDate=new Date(data.get("scenarinoEndDate").toString());
+				long start=startDate.getTime();
+				long end=endDate.getTime();
+				long differ=end-start;
+				//获取到要复制的情景对象
+				TScenarinoDetail scenarinoOld=this.tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+				//要获取复制情景下的所有区域
+				Map map=new HashMap();
+				map.put("userId", scenarino.getUserId());
+				map.put("scenarinoId", scenarinoId);
+				List<TScenarinoAreaWithBLOBs> areas=this.tScenarinoAreaMapper.selectBySids(map);
+				//循环所有的区域对象
+				for (TScenarinoAreaWithBLOBs tScenarinoAreaWithBLOBs : areas) {
+					//根据区域ID 获取当前区域的所有时段
+					List<TTime> timeList=this.tTimeMapper.selectByAreaId(tScenarinoAreaWithBLOBs.getScenarinoAreaId());
+					if(timeList.size()>0&&null!=timeList){
+						//循环所有的时段对象
+						for (TTime tTime : timeList) {
+							long d=tTime.getTimeEndDate().getTime()-tTime.getTimeStartDate().getTime();
+							
+							
+						}
+					}else{
+						/**
+						 * 当前区域没有时段
+						 */
+					}
+				}
 				
 			}
 			if(null!=scenarinoId&&!scenarinoId.equals("")&&createType==2){
