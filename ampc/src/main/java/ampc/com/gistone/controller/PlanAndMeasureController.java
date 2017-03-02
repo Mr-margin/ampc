@@ -145,16 +145,12 @@ public class PlanAndMeasureController {
 	    Long usedBy=1l;//Long.parseLong(request.getParameter("usedBy"));//情景id
 	    Long scenarioId=1l;//Long.parseLong(request.getParameter("scenarioId"));//行业id
 	    Long missionId=1l;//Long.parseLong(request.getParameter("missionId"));//所属任务id
-	    Date timeStartDate=new Date();//(request.getParameter("timeStartDate"));//时段开始时间
-	    Date timeEndEate=new Date();//(request.getParameter("timeEndEate"));//时段结束时间
 	    Long areaId=1l;//Long.parseLong(request.getParameter("areaId"));//区域id
 	    
 	    TPlan tPlan=new TPlan();
 	    tPlan.setAddTime(addTime);
 	    tPlan.setAreaId(areaId);
 	    tPlan.setMissionId(missionId);
-	    tPlan.setPlanEndTime(timeEndEate);
-	    tPlan.setPlanStartTime(timeStartDate);
 	    tPlan.setScenarioId(scenarioId);
 	    tPlan.setUsedBy(usedBy);
 	    tPlan.setUserId(userId);
@@ -343,7 +339,7 @@ public class PlanAndMeasureController {
 		ClientUtil.SetCharsetAndHeader(request, response);
 		Long userId=1l;//用户id
 		Long planId= 1l;//预案id
-		String copyPlan="1";//是否是可复制预案
+		String copyPlan="1";//是否是可复制预案"1为可复制，0为普通"
 		JSONObject obj=new JSONObject();
 		//判断是否是可复制预案
 		if(copyPlan.equals("1")){
@@ -360,8 +356,6 @@ public class PlanAndMeasureController {
 		newtplan.setAreaId(tplan.getAreaId());
 		newtplan.setIsEffective(tplan.getIsEffective());
 		newtplan.setMissionId(tplan.getMissionId());
-		newtplan.setPlanEndTime(tplan.getPlanEndTime());
-		newtplan.setPlanStartTime(tplan.getPlanStartTime());
 		newtplan.setUsedBy(tplan.getUsedBy());
 		newtplan.setScenarioId(tplan.getScenarioId());
 		//根据可复制预案信息新建预案数据
