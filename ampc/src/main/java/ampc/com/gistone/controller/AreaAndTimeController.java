@@ -90,15 +90,16 @@ public class AreaAndTimeController {
 		Long missionId =Long.parseLong(data.get("missionId").toString());//任务id
 		Long userId =Long.parseLong(data.get("userId").toString());//用户id
 		Long selectTimeId = Long.parseLong(data.get("selectTimeId").toString());//添加时段处在的时段id
-		Date timeDate = new Date(data.get("addTimeDate").toString());//新增时段时间
-
+		String imeDate = data.get("addTimeDate").toString();//新增时段时间
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH");
+		Date timeDate=sdf.parse(imeDate);
 		// 时间操作，结束时间与开始时间的数据有一位数间隔，需要时间计算
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(timeDate);
 		cal.add(Calendar.HOUR, - 1);
-		String addTimeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+		String addTimeDate = new SimpleDateFormat("yyyy/MM/dd HH")
 				.format(cal.getTime());
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
 		Date timeEndDate = sdf.parse(addTimeDate);
 
 		TTime tTime = new TTime();
@@ -168,14 +169,16 @@ public class AreaAndTimeController {
 		Long beforeTimeId=Long.parseLong(data.get("beforeTimeId").toString());//修改时段前一个的时段Id
 		Long afterTimeId=Long.parseLong(data.get("afterTimeId").toString());//修改时段后一个的时段Id
 		Long userId=Long.parseLong(data.get("userId").toString());//用户id
-		Date updateDate=new Date(data.get("updateDate").toString());//时段的修改时间
+		String teDate=data.get("updateDate").toString();//时段的修改时间
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH");
+		Date updateDate=sdf.parse(teDate);
 		//修改时间减一个小时作为前一个时段的结束时间
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(updateDate);
 		cal.add(Calendar.HOUR, - 1);
-		String addTimeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+		String addTimeDate = new SimpleDateFormat("yyyy/MM/dd HH")
 				.format(cal.getTime());
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
 		Date timeEndDate = sdf.parse(addTimeDate);
 		//修改前一个时段的结束时间
 		TTime updatet_beforetTime = new TTime();
@@ -244,31 +247,33 @@ public class AreaAndTimeController {
 	 * 删除当前用户选择的时段节点
 	 */
 	@RequestMapping("/time/delete_time")
-	public AmpcResult delete_TIME(HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
+	public AmpcResult delete_TIME(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
 		ClientUtil.SetCharsetAndHeader(request, response);
-		Long beforeTimeId=1l;//Long.parseLong(request.getParameter("beforeTimeId"));//上一个时段的时段Id
-		Long afterTimeId=18l;//Long.parseLong(request.getParameter("beforeTimeId"));//下一个时段的时段Id
-		Date timeEndDate=new Date();//request.getParameter("beforeTimeId"));//删除时段的结束时间
-		//Long userId=Long.parseLong(request.getParameter("userId"));//用户的id
-		//Long planId=Long.parseLong(request.getParameter("userId"));//预案id
-		
+		 Map<String,Object> data=(Map)requestDate.get("data");
+		Long beforeTimeId=Long.parseLong(data.get("beforeTimeId").toString());//上一个时段的时段Id
+		Long afterTimeId=Long.parseLong(data.get("beforeTimeId").toString());//下一个时段的时段Id
+		String endDate=data.get("beforeTimeId").toString();//删除时段的结束时间
+		//Long userId=Long.parseLong(data.get("userId").toString());//用户的id
+		Long planId=Long.parseLong(data.get("planId").toString());//预案id
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH");
+		Date timeEndDate=sdf.parse(endDate);
 		//修改要删除时段的状态
 		TTime delete_time = new TTime();
 		delete_time.setTimeId(afterTimeId);
 		delete_time.setIsEffective("0");
 		int delete_timestatus=tTimeMapper.updateByPrimaryKeySelective(delete_time);
 		TTime times=tTimeMapper.selectByPrimaryKey(afterTimeId);
-		//判断要删除时段的状态是否修改成功,如果成功修改上一时段的结束时间
+		//判断要删除时段的状态是否修改成功,如果成功修改上一时段的结束时间以及预案
 		if(delete_timestatus!=0){
 			TTime update_time = new TTime();	
 			update_time.setTimeEndDate(timeEndDate);
 			update_time.setTimeId(beforeTimeId);
+			update_time.setPlanId(planId);
 			int update_timestatus=tTimeMapper.updateByPrimaryKeySelective(update_time);
 			//判断上一个时段的结束时间是否修改成功
 			if(update_timestatus!=0){
 				TTime update_pland = new TTime();
 				update_pland.setTimeId(afterTimeId);
-				update_pland.setPlanId(-1l);
 				int update_status=tTimeMapper.updateByPrimaryKeySelective(update_pland);
 				//判断修改是否成功
 				if(update_status!=0){
@@ -279,6 +284,7 @@ public class AreaAndTimeController {
 					tPlan.setIsEffective("0");
 					int up_status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
 					if(up_status!=0){
+						//删除预案的措施
 						int del_status=tPlanMeasureMapper.deleteByPlanId(times.getPlanId());	
 						if(del_status!=0){
 							return AmpcResult.build(0, "delete_time success");
@@ -301,7 +307,7 @@ public class AreaAndTimeController {
 	 * 删除当前时段的预案 
 	 */
 	@RequestMapping("/time/delete_plan")
-	public AmpcResult delete_plan(HttpServletRequest request,HttpServletResponse response){
+	public AmpcResult delete_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
 		Long timeId=Long.parseLong(request.getParameter("timeId"));
 		Long planId=Long.parseLong(request.getParameter("planId"));
 		Long userId=Long.parseLong(request.getParameter("userId"));//用户的id
@@ -572,11 +578,15 @@ public class AreaAndTimeController {
 			//用户的id  确定当前用户
 			Integer userId=Integer.valueOf(data.get("userId").toString());
 			//将得到的数据拆分 放入集合中
-			String[] idss=areaIds.split(",");
 			List<Long> areaIdss=new ArrayList<Long>();
+			if(areaIds.indexOf(",")!=-1){
+			String[] idss=areaIds.split(",");
 			for(int i=0;i<idss.length;i++){
 				areaIdss.add(Long.parseLong(idss[i]));
 			}
+			}else{
+				areaIdss.add(Long.parseLong(areaIds));
+				}
 			/**
 			 * TODO 用事务更能保证一致性
 			 */
@@ -584,9 +594,9 @@ public class AreaAndTimeController {
 			List<Long> timeIdss=new ArrayList<Long>();
 			//记录时段的所有ID
 			for (Long areaId: areaIdss) {
-				List<Long> timeIds=this.tTimeMapper.selectTimeIdByAreaId(areaId);
-				for (Long timeId : timeIds) {
-					timeIdss.add(timeId);
+				List<TTime> times=tTimeMapper.selectAllByAreaId(areaId);
+				for (TTime time : times) {
+					timeIdss.add(time.getTimeId());
 				}
 			}
 			//执行时段级联删除方法
@@ -597,9 +607,19 @@ public class AreaAndTimeController {
 				return AmpcResult.build(1000, res.get("msg").toString(),null);
 			}
 			//执行区域删除方法
-			int result=this.tScenarinoAreaMapper.updateIsEffeByIds(areaIdss);
+			int s=0;
+			for(Long areaid:areaIdss){
+				TScenarinoAreaWithBLOBs tScenarinoArea=new TScenarinoAreaWithBLOBs();
+				tScenarinoArea.setScenarinoAreaId(areaid);
+				tScenarinoArea.setIsEffective("0");
+				int status=tScenarinoAreaMapper.updateByPrimaryKeySelective(tScenarinoArea);
+				if(status!=0){
+				s++;	
+				}
+			}
+			//int result=tScenarinoAreaMapper.updateIsEffeByIds(areaIdss);
 			//判断执行结果返回对应数据
-			return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "区域删除失败",null);
+			return s==areaIdss.size()?AmpcResult.ok(s):AmpcResult.build(1000, "区域删除失败",null);
 		} catch (Exception e) {
 			e.printStackTrace();
 			//返回错误信息
