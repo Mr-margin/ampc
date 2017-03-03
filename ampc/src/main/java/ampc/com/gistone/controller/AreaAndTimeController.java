@@ -207,18 +207,19 @@ public class AreaAndTimeController {
 	 * 获取时段信息
 	 */
 	@RequestMapping("/time/time_list")
-	public AmpcResult find_TIME(HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
+	public AmpcResult find_TIME(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
+		try{
 		ClientUtil.SetCharsetAndHeader(request, response);
-		Long areaId=Long.parseLong(request.getParameter("areaId"));//区域id
-		Long userId=Long.parseLong(request.getParameter("userId"));//用户的id
-		String sort="timeStartDate";//request.getParameter("sort");//排序字段
-		String isEffective="1"; //Long.parseLong(request.getParameter("isEffective"));//是否有效
+		Map<String,Object> data=(Map)requestDate.get("data");
+		Long areaId=Long.parseLong(data.get("areaId").toString());//区域id
+		Long userId=Long.parseLong(data.get("userId").toString());//用户的id
+		String isEffective="1"; //Long.parseLong(data.get("isEffective").toString());//是否有效
 		//查询时段信息
 		TTime find_time = new TTime();
 		find_time.setAreaId(areaId);
 		find_time.setUserId(userId);
 		find_time.setIsEffective(isEffective);
-		find_time.setSort(sort);
+		
 		List<TTime> timelist=tTimeMapper.selectByPrimaryKeysort(find_time);
 		JSONArray objlist=new JSONArray();
 		//判断查询后是否有值，有值则查询预案并转成json格式返回，没有值则返回无值信息
@@ -240,14 +241,17 @@ public class AreaAndTimeController {
 		}else{
 			return AmpcResult.build(1, "find_TIME error");
 		}
-		
+		}catch(Exception e){
+			System.out.println(e);
+			return AmpcResult.build(1000, "参数错误",null);
+		}
 	}
 	
 	/**
 	 * 删除当前用户选择的时段节点
 	 */
-	@RequestMapping("/time/delete_time")
-	public AmpcResult delete_TIME(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
+	@RequestMapping("/time/deleteno_time")
+	public AmpcResult deleteno_TIME(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
 		ClientUtil.SetCharsetAndHeader(request, response);
 		 Map<String,Object> data=(Map)requestDate.get("data");
 		Long beforeTimeId=Long.parseLong(data.get("beforeTimeId").toString());//上一个时段的时段Id
@@ -303,14 +307,78 @@ public class AreaAndTimeController {
 		}
 	}
 	
+	@RequestMapping("/time/delete_time")
+	public AmpcResult delete_TIME(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
+		try{
+		ClientUtil.SetCharsetAndHeader(request, response);
+		 Map<String,Object> data=(Map)requestDate.get("data");
+		Long deleteTimeId=Long.parseLong(data.get("deleteTimeId").toString());//删除时段的时段Id
+		Long mergeTimeId=Long.parseLong(data.get("mergeTimeId").toString());//合并时段的时段Id
+		String endDate=data.get("endDate").toString();//删除时段的结束时间
+		String startDate=data.get("startDate").toString();//删除时段的结束时间
+		//Long userId=Long.parseLong(data.get("userId").toString());//用户的id
+		String status=data.get("status").toString();//预案id
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH");
+		Date timeEndDate=sdf.parse(endDate);
+		Date timeStartDate=sdf.parse(startDate);
+		int updateStatus=0;//合并时段修改状态（0为修改失败）
+		int upstatus=0;//删除时段的修改状态（0为修改失败）
+		TTime tTime=new TTime();
+		if(status.equals("up")){
+			tTime.setTimeEndDate(timeEndDate);
+			tTime.setTimeId(mergeTimeId);
+		    updateStatus=tTimeMapper.updateByPrimaryKeySelective(tTime);
+			
+		}else{
+			tTime.setTimeStartDate(timeStartDate);
+			tTime.setTimeId(mergeTimeId);
+			updateStatus=tTimeMapper.updateByPrimaryKeySelective(tTime);
+		}
+		TTime deltime=tTimeMapper.selectByPrimaryKey(deleteTimeId);
+		//查看合并时间的开始或者结束时间是否修改，修改完成修改要删除时间的状态
+		if(updateStatus!=0){
+			TTime time=new TTime();
+			time.setTimeId(deleteTimeId);
+			time.setPlanId(-1l);
+			upstatus=tTimeMapper.updateByPrimaryKeySelective(time);
+			if(upstatus!=0){
+				TPlan tPlan=tPlanMapper.selectByPrimaryKey(deltime.getPlanId());
+				//查看预案是否为可复制预案
+				if(tPlan.getCopyPlan().equals("0")){
+					//为零则将预案设置为无效
+					tPlan.setIsEffective("0");
+					int up_status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
+					if(up_status!=0){
+						//删除预案的措施
+						int del_status=tPlanMeasureMapper.deleteByPlanId(deltime.getPlanId());	
+						if(del_status!=0){
+							return AmpcResult.build(0, "delete_time success");
+						}
+						return AmpcResult.build(1, "delete_time error");
+					}
+				}
+				}
+		}
+		//查看修改时段状态是否成功
+		
+		return AmpcResult.build(1, "delete_time error");
+		}catch(Exception e){
+			System.out.println(e);
+			return AmpcResult.build(1000, "参数错误",null);
+		}
+	}
+	
 	/**
 	 * 删除当前时段的预案 
 	 */
 	@RequestMapping("/time/delete_plan")
 	public AmpcResult delete_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
-		Long timeId=Long.parseLong(request.getParameter("timeId"));
-		Long planId=Long.parseLong(request.getParameter("planId"));
-		Long userId=Long.parseLong(request.getParameter("userId"));//用户的id
+		try{
+		ClientUtil.SetCharsetAndHeader(request, response);
+		Map<String,Object> data=(Map)requestDate.get("data");
+		Long timeId=Long.parseLong(data.get("timeId").toString());
+		Long planId=Long.parseLong(data.get("planId").toString());
+		Long userId=Long.parseLong(data.get("userId").toString());//用户的id
 		//修改时段中的预案
 		TTime update_pland = new TTime();
 		update_pland.setTimeId(timeId);
@@ -330,6 +398,10 @@ public class AreaAndTimeController {
 		return AmpcResult.build(0, "delete_plan success");
 		}else{
 		return AmpcResult.build(1, "delete_plan error");
+		}
+		}catch(Exception e){
+			System.out.println(e);
+			return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
 	
