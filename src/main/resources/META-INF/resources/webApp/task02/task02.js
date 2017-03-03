@@ -319,10 +319,13 @@ function delTimes(){
   var url = '/time/delete_time';
   var mId;
   var ub = $('.delSelect input:checked').val();
+  var delTime;
   if(ub == 'up'){
     mId = allData[areaIndex].timeItems[timeIndex-1].timeId;
+    delTime = moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate)).format('YYYY/MM/DD HH');
   }else{
     mId = allData[areaIndex].timeItems[timeIndex+1].timeId;
+    delTime = moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate)).format('YYYY/MM/DD HH');
   }
 
   ajaxPost(url,{
@@ -333,8 +336,29 @@ function delTimes(){
     userId:userId,
     status:ub
   }).success(function(){
+    var index = allData[areaIndex].timeFrame.indexOf(delTime);
+    allData[areaIndex].timeFrame.splice(index,1);
+    var delTime = $('.area').eq(areaIndex).find('.time').eq(timeIndex);
+    var delWidth = delTime.width();
+    var mTime,hk;
+    if(ub == 'up'){
+      allData[areaIndex].timeItems[timeIndex-1].timeEndDate = allData[areaIndex].timeItems[timeIndex].timeEndDate;
+      mTime = $('.area').eq(areaIndex).find('.time').eq(timeIndex-1);
+      hk = $('.area').eq(areaIndex).find('.hk').eq(timeIndex-1);
+    }else{
+      allData[areaIndex].timeItems[timeIndex+1].timeStartDate = allData[areaIndex].timeItems[timeIndex].timeStartDate;
+      mTime = $('.area').eq(areaIndex).find('.time').eq(timeIndex+1);
+      hk = $('.area').eq(areaIndex).find('.hk').eq(timeIndex+1);
+    }
+    var mWidth = (delWidth + mTime.width())/totalWidth*100;
+    mTime.css('width',mWidth+'%');
+    delTime.remove();
+    hk.remove();
+    allData[areaIndex].timeItems.splice(timeIndex,1);
+
 
   })
+
 }
 
 /*添加预案*/
