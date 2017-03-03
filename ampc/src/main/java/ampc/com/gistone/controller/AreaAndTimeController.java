@@ -248,7 +248,7 @@ public class AreaAndTimeController {
 	}
 	
 	/**
-	 * 删除当前用户选择的时段节点
+	 * 删除当前用户选择的时段节点(暂时没用)
 	 */
 	@RequestMapping("/time/deleteno_time")
 	public AmpcResult deleteno_TIME(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
@@ -306,7 +306,14 @@ public class AreaAndTimeController {
 		  return AmpcResult.build(1, "delete_time error");
 		}
 	}
-	
+	/**
+	 * 删除当前用户选择的时段节点
+	 * 
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping("/time/delete_time")
 	public AmpcResult delete_TIME(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
 		try{
