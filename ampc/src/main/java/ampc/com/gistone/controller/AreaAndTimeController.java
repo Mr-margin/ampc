@@ -81,15 +81,16 @@ public class AreaAndTimeController {
 	 * @throws ParseException 
 	 */
 	@RequestMapping("/time/save_time")
-	public AmpcResult add_TIME(HttpServletRequest request,
+	public AmpcResult add_TIME(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ParseException {
 		ClientUtil.SetCharsetAndHeader(request, response);
-		Long areaId = Long.parseLong(request.getParameter("areaId"));//区域ID
-		Long scenarinoId = Long.parseLong(request.getParameter("scenarinoId"));//情景id
-		Long missionId =Long.parseLong(request.getParameter("missionId"));//任务id
-		Long userId =Long.parseLong(request.getParameter("userId"));//用户id
-		Long selectTimeId = Long.parseLong(request.getParameter("selectTimeId"));//添加时段处在的时段id
-		Date timeDate = new Date(request.getParameter("addTimeDate"));//新增时段时间
+		 Map<String,Object> data=(Map)requestDate.get("data");
+		Long areaId = Long.parseLong(data.get("areaId").toString());//区域ID
+		Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());//情景id
+		Long missionId =Long.parseLong(data.get("missionId").toString());//任务id
+		Long userId =Long.parseLong(data.get("userId").toString());//用户id
+		Long selectTimeId = Long.parseLong(data.get("selectTimeId").toString());//添加时段处在的时段id
+		Date timeDate = new Date(data.get("addTimeDate").toString());//新增时段时间
 
 		// 时间操作，结束时间与开始时间的数据有一位数间隔，需要时间计算
 		Calendar cal = Calendar.getInstance();
@@ -160,13 +161,14 @@ public class AreaAndTimeController {
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	@RequestMapping("/time/time_update")
-	public AmpcResult update_TIME(HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
+	@RequestMapping("/time/update_time")
+	public AmpcResult update_TIME(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
 		ClientUtil.SetCharsetAndHeader(request, response);
-		Long beforeTimeId=Long.parseLong(request.getParameter("beforeTimeId"));//修改时段前一个的时段Id
-		Long afterTimeId=Long.parseLong(request.getParameter("afterTimeId"));//修改时段后一个的时段Id
-		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
-		Date updateDate=new Date(request.getParameter("updateDate"));//时段的修改时间
+		 Map<String,Object> data=(Map)requestDate.get("data");
+		Long beforeTimeId=Long.parseLong(data.get("beforeTimeId").toString());//修改时段前一个的时段Id
+		Long afterTimeId=Long.parseLong(data.get("afterTimeId").toString());//修改时段后一个的时段Id
+		Long userId=Long.parseLong(data.get("userId").toString());//用户id
+		Date updateDate=new Date(data.get("updateDate").toString());//时段的修改时间
 		//修改时间减一个小时作为前一个时段的结束时间
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(updateDate);
@@ -204,8 +206,8 @@ public class AreaAndTimeController {
 	@RequestMapping("/time/time_list")
 	public AmpcResult find_TIME(HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
 		ClientUtil.SetCharsetAndHeader(request, response);
-		Long areaId=1l;//Long.parseLong(request.getParameter("areaId"));//区域id
-		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户的id
+		Long areaId=Long.parseLong(request.getParameter("areaId"));//区域id
+		Long userId=Long.parseLong(request.getParameter("userId"));//用户的id
 		String sort="timeStartDate";//request.getParameter("sort");//排序字段
 		String isEffective="1"; //Long.parseLong(request.getParameter("isEffective"));//是否有效
 		//查询时段信息
@@ -302,7 +304,7 @@ public class AreaAndTimeController {
 	public AmpcResult delete_plan(HttpServletRequest request,HttpServletResponse response){
 		Long timeId=Long.parseLong(request.getParameter("timeId"));
 		Long planId=Long.parseLong(request.getParameter("planId"));
-		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户的id
+		Long userId=Long.parseLong(request.getParameter("userId"));//用户的id
 		//修改时段中的预案
 		TTime update_pland = new TTime();
 		update_pland.setTimeId(timeId);
