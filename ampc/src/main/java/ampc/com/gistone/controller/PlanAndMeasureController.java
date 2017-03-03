@@ -295,7 +295,7 @@ public class PlanAndMeasureController {
 	    return AmpcResult.build(1, "merge_plan error");
 	}catch(NullPointerException n){
 		System.out.println(n);
-		 return AmpcResult.build(1, "merge_plan error");
+		return AmpcResult.build(1, "merge_plan error");
 	}
 	}
 	
