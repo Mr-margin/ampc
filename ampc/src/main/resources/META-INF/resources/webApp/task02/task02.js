@@ -191,13 +191,13 @@ function delArea(e){
   console.log(e);
   var indexPar = $('.area').index($(e).parents('.area'));
   var url = '/area/delete_area';
-  var areaIds = [allData[indexPar].areaId.toString()]
+  //var areaIds = [allData[indexPar].areaId.toString()];
   var params = {
     userId:userId,
-    areaIds:areaIds
+    areaIds:allData[indexPar].areaId.toString()
   };
   swal({
-      title: "确定要删除?",
+      title: "确定要删除区域-"+allData[indexPar].areaName,
       type: "warning",
       showCancelButton: true,
       confirmButtonColor: "#DD6B55",
@@ -206,12 +206,8 @@ function delArea(e){
       closeOnConfirm: false
     },
     function () {
-//          window.setTimeout(function () {
-//            swal("删除失败!", "", "error");
-//          }, 2000);
       ajaxPost(url, params).success(function (res) {
         if(res.status == 0){
-          $('.area').eq(indexPar).remove();
           $('.area').eq(indexPar).remove();
           swal("已删除!", "", "success");
         }else{
@@ -311,7 +307,9 @@ function momentDate(d){
 }
 
 /*删除时间段*/
-function delTimes(e){}
+function delTimes(e){
+
+}
 
 /*添加预案*/
 function addPlan(e){}
@@ -321,6 +319,14 @@ function delPlan(e){}
 
 $('#qyTime').on('show.bs.modal', function (event) {
 	//console.log(event);
+  var button = $(event.relatedTarget);
+  if(button.length == 0)return;
+  addTimeIndex = $('.area').index(button.parents('.area'));
+  console.log(addTimeIndex)
+});
+
+$('#delTime').on('show.bs.modal', function (event) {
+  //console.log(event);
   var button = $(event.relatedTarget);
   if(button.length == 0)return;
   addTimeIndex = $('.area').index(button.parents('.area'));

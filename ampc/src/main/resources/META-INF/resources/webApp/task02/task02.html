@@ -59,7 +59,7 @@
 
 
 
-<!-- Modal -->
+<!-- Modal 添加时段-->
 <div class="modal fade" id="qyTime" tabindex="-1" role="dialog" aria-labelledby="qyTimeLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -76,6 +76,28 @@
             <input type="text" class="form-control" id="qyTimePoint" name="qyTimePoint" readonly placeholder="请选择时间点···">
           </div>
         </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addTimes()">确认添加</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal 删除时段-->
+<div class="modal fade" id="delTime" tabindex="-1" role="dialog" aria-labelledby="delTimeLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="delTimeLabel">删除时段</h4>
+      </div>
+      <div class="modal-body">
+
+
 
       </div>
       <div class="modal-footer">
@@ -117,7 +139,7 @@
   </div>
   <div class="timeToolDiv text-center">
     <button type="button" onclick="addPlan(this)" class="btn btn-default btn-xs toolShow" title="添加预案"><i class="im-google-plus"></i><span>添加预案</span></button>
-    <button type="button" onclick="delPlan(this)" class="btn btn-default btn-xs toolShow" title="删除预案"><i class="ec-trashcan"></i><span>删除预案</span></button>
-    <button type="button" onclick="delTimes(this)" class="btn btn-default btn-xs toolShow" title="移除时段"><i class="im-close"></i><span>移除时段</span></button>
+    <!--<button type="button" onclick="delPlan(this)" class="btn btn-default btn-xs toolShow" title="删除预案"><i class="ec-trashcan"></i><span>删除预案</span></button>-->
+    <button type="button" onclick="delTimes(this)" class="btn btn-default btn-xs toolShow" title="删除时段" data-toggle="modal" data-target="#delTime"><i class="im-close"></i><span>删除时段</span></button>
   </div>
 </div>
