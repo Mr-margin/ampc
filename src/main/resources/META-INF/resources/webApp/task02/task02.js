@@ -337,25 +337,30 @@ function delTimes(){
     status:ub
   }).success(function(){
     var index = allData[areaIndex].timeFrame.indexOf(delTime);
-    allData[areaIndex].timeFrame.splice(index,1);
-    var delTime = $('.area').eq(areaIndex).find('.time').eq(timeIndex);
-    var delWidth = delTime.width();
+    var totalWidth = $('.area').eq(areaIndex).find('.period').width();
+    var delTimes = $('.area').eq(areaIndex).find('.time').eq(timeIndex);
+    var delWidth = delTimes.width();
     var mTime,hk;
     if(ub == 'up'){
       allData[areaIndex].timeItems[timeIndex-1].timeEndDate = allData[areaIndex].timeItems[timeIndex].timeEndDate;
+      //index = allData[areaIndex].timeFrame.indexOf(moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate)).format('YYYY/MM/DD HH'));
       mTime = $('.area').eq(areaIndex).find('.time').eq(timeIndex-1);
       hk = $('.area').eq(areaIndex).find('.hk').eq(timeIndex-1);
     }else{
       allData[areaIndex].timeItems[timeIndex+1].timeStartDate = allData[areaIndex].timeItems[timeIndex].timeStartDate;
+      //index = allData[areaIndex].timeFrame.indexOf(moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate)).format('YYYY/MM/DD HH'));
       mTime = $('.area').eq(areaIndex).find('.time').eq(timeIndex+1);
-      hk = $('.area').eq(areaIndex).find('.hk').eq(timeIndex+1);
+      hk = $('.area').eq(areaIndex).find('.hk').eq(timeIndex);
     }
     var mWidth = (delWidth + mTime.width())/totalWidth*100;
     mTime.css('width',mWidth+'%');
-    delTime.remove();
+    delTimes.remove();
     hk.remove();
+    allData[areaIndex].timeFrame.splice(index,1);
     allData[areaIndex].timeItems.splice(timeIndex,1);
-
+    if(allData[areaIndex].timeFrame.length == 0){
+      mTime.find('.timeToolDiv .btn').eq(2).attr('disabled','disabled');
+    }
 
   })
 
