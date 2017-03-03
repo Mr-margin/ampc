@@ -7,6 +7,20 @@ var totalWidth,totalDate,startDate,qjMsg;
 var index,indexPar,handle,minLeft,maxLeft,selfLeft,startX,leftWidth,rightWidth;
 var allData = [];
 var areaIndex,timeIndex;
+var msg = {
+  'id': 'yaMessage',
+  'content': {
+    rwId:'',
+    rwName:'',
+    qjId:'',
+    qjName:'',
+    qjStartDate:'',
+    qjEndDate:'',
+    areaName:'',
+    areaId:'',
+    timeId:''
+  }
+};
 
 /*test使用*/
 var parameterPar = {total: '', data: {}};
@@ -71,6 +85,7 @@ function initialize(){
         if(timeItems[item].planId == -1){
           times.find('.timeToolDiv .btn').eq(1).attr('disabled','disabled');
         }else{
+          times.find('.timeToolDiv .btn').eq(0).attr('disabled','disabled');
           times.find('h4').html(timeItems[item].planName);
         }
         if(tLength == 1){
@@ -367,10 +382,57 @@ function delTimes(){
 }
 
 /*添加预案*/
-function addPlan(e){}
+function addPlan(){
+
+  var planId = $('#copyPlan').val();
+  var planName = $('#copyPlan').find("option:selected").text();
+  var url = '/plan/copy_plan';
+
+  ajaxPost(url,{
+    userId:userId,
+    planId:planId,
+    timeId:allData[areaIndex].timeItems[timeIndex].timeId
+  }).success(function(){
+    allData[areaIndex].timeItems[timeIndex].planId = planId;
+    allData[areaIndex].timeItems[timeIndex].planName = planName;
+    $('.area').eq(areaIndex).find('.time').eq(timeIndex).find('.yaMsg h4').html(planName);
+    $('.area').eq(areaIndex).find('.time').eq(timeIndex).find('.timeToolDiv .btn').eq(0).attr('disabled','disabled');
+    $('.area').eq(areaIndex).find('.time').eq(timeIndex).find('.timeToolDiv .btn').eq(1).removeAttr('disabled');
+  })
+}
+
+/*创建新预案*/
+function createNewPlan(e){
+  window.setTimeout(function(){
+    $(e).parent().find('a')[0].click();
+    console.log(123)
+  },500)
+}
+
+/*选择已有预案*/
+function copyPlan(e){
+  $(e).parents('#addYA').find('.modal-footer').removeClass('disNone');
+  $(e).parents('#addYA').find('.addCopyPlan').removeClass('disNone');
+  $(e).parents('.selectAdd').addClass('disNone');
+
+  var url = '/plan/copy_plan_list';
+  ajaxPost(url,{
+    userId:userId
+  }).success(function(res){
+    $(e).parents('#addYA').find('.modal-footer').removeClass('disNone');
+    $(e).parents('#addYA').find('.addCopyPlan').removeClass('disNone');
+    $(e).parents('.selectAdd').addClass('disNone');
+
+    for(var i=0;i<res.data.copyPlanlist.length;i++){
+      $('<option value="'+ res.data.copyPlanlist[i].planId +'">'+ res.data.copyPlanlist[i].planName +'</option>').appendTo('#copyPlan')
+    }
+  })
+}
 
 /*删除预案*/
 function delPlan(e){}
+
+
 
 $('#qyTime').on('show.bs.modal', function (event) {
 	//console.log(event);
@@ -378,6 +440,21 @@ $('#qyTime').on('show.bs.modal', function (event) {
   if(button.length == 0)return;
   areaIndex = $('.area').index(button.parents('.area'));
   console.log(areaIndex)
+});
+
+$('#addYA').on('show.bs.modal', function (event) {
+
+  var button = $(event.relatedTarget);
+  if(button.length == 0)return;
+  areaIndex = $('.area').index(button.parents('.area'));
+  timeIndex = button.parents('.area').find('.time').index(button.parents('.time'));
+
+  $(event.target).find('.modal-footer').addClass('disNone');
+  $(event.target).find('.addCopyPlan').addClass('disNone');
+  $(event.target).find('.selectAdd').removeClass('disNone');
+  $(event.target).find('#copyPlan').empty();
+
+
 });
 
 $('#delTime').on('show.bs.modal', function (event) {
