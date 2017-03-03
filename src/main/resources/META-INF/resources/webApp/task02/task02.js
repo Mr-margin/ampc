@@ -55,12 +55,15 @@ function initialize(){
     allData = res.data;
     for(var i=0;i<res.data.length;i++){
       allData[i].timeFrame = [];
+      /*克隆区域进行添加*/
       var area = $('.area.disNone').clone().removeClass('disNone');
       area.find('.front>span').html(res.data[i].areaName);
       var timeItems = res.data[i].timeItems;
       $('.areaMsg').append(area);
       for(var item=0;item<timeItems.length;item++){
         var totalWidth = $('.period').width();
+
+        /*克隆时段进行添加*/
         var times = $('.time.disNone').clone().removeClass('disNone');
         area.find('.showLine').before(times);
         times.find('h4').html(timeItems[item].planName);
@@ -68,14 +71,16 @@ function initialize(){
           var sD = timeItems[item].timeStartDate ;
           allData[i].timeFrame[item-1] = moment(sD).format('YYYY/MM/DD HH');
 
+          /*克隆滑块进行添加*/
           var hk = $('.hk.disNone').clone().removeClass('disNone');
           hk.find('.showTips').html(moment(sD).format('YYYY/MM/DD HH'));
-          var left = ((sD - startDate)/totalDate) * totalWidth;
+          var left = ((sD - startDate)/totalDate);
           area.find('.showLine').append(hk);
-          hk.css('left',(left/totalWidth)*100+'%');
+          hk.css('left',left*100+'%');
         }
+        var tw;
 
-        var tw = ((timeItems[item].timeEndDate - timeItems[item].timeStartDate)/totalDate)*totalWidth - 1;
+        tw = ((timeItems[item].timeEndDate - timeItems[item].timeStartDate)/totalDate)*totalWidth - 1;
         times.css('width',(tw/totalWidth)*100 + '%');
 
       }
@@ -123,10 +128,10 @@ $('.areaMsg').on('mousedown','.hk',function(e){
 });
 $('.areaMsg').on('mouseup','.area',function(e){
   //index = $('.hk').index(this);
-
+  if(!handle)return;
   allData[indexPar].timeFrame[index] = allData[indexPar].timeItems[index].timeEndDate;
 
-  ajaxPost('/time/time_update',{
+  ajaxPost('/time/update_time',{
     userId:userId,
     updateDate:allData[indexPar].timeItems[index].timeEndDate,
     beforeTimeId:allData[indexPar].timeItems[index].timeId,
@@ -182,7 +187,43 @@ $('.areaMsg').on('mousemove','.period',function(e){
 function editArea(e){}
 
 /*删除区域*/
-function delArea(e){}
+function delArea(e){
+  console.log(e);
+  var indexPar = $('.area').index($(e).parents('.area'));
+  var url = '/area/delete_area';
+  var areaIds = [allData[indexPar].areaId.toString()]
+  var params = {
+    userId:userId,
+    areaIds:areaIds
+  };
+  swal({
+      title: "确定要删除?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "删除",
+      cancelButtonText: "取消",
+      closeOnConfirm: false
+    },
+    function () {
+//          window.setTimeout(function () {
+//            swal("删除失败!", "", "error");
+//          }, 2000);
+      ajaxPost(url, params).success(function (res) {
+        if(res.status == 0){
+          $('.area').eq(indexPar).remove();
+          $('.area').eq(indexPar).remove();
+          swal("已删除!", "", "success");
+        }else{
+          swal("删除失败!", "", "error");
+        }
+      }).error(function () {
+        swal("删除失败!", "", "error");
+      })
+
+    });
+
+}
 
 /*添加时间段*/
 function addTimes(){
@@ -193,7 +234,7 @@ function addTimes(){
   timeFrame.sort();
   var index = timeFrame.indexOf(timePoint);
 
-  var url = '/time/time_save';
+  var url = '/time/save_time';
   ajaxPost(url,{
     missionId:qjMsg.rwId,
     scenarinoId:qjMsg.qjId,
