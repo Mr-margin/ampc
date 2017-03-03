@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TMeasureExcelMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TMeasureExcel" >
+    <id column="MEASURE_EXCEL_ID" property="measureExcelId" jdbcType="DECIMAL" />
+    <result column="MEASURE_EXCEL_VERSION" property="measureExcelVersion" jdbcType="DECIMAL" />
+    <result column="MEASURE_EXCEL_NAME" property="measureExcelName" jdbcType="VARCHAR" />
+    <result column="MEASURE_EXCEL_DEBUG" property="measureExcelDebug" jdbcType="DECIMAL" />
+    <result column="MEASURE_EXCEL_DISPLAY" property="measureExcelDisplay" jdbcType="OTHER" />
+    <result column="MEASURE_EXCEL_TYPE" property="measureExcelType" jdbcType="OTHER" />
+    <result column="MEASURE_EXCEL_LEVEL" property="measureExcelLevel" jdbcType="DECIMAL" />
+    <result column="MEASURE_EXCEL_L4S" property="measureExcelL4s" jdbcType="VARCHAR" />
+    <result column="MEASURE_EXCEL_OP" property="measureExcelOp" jdbcType="VARCHAR" />
+    <result column="MEASURE_EXCEL_A" property="measureExcelA" jdbcType="DECIMAL" />
+    <result column="MEASURE_EXCEL_A1" property="measureExcelA1" jdbcType="DECIMAL" />
+    <result column="MEASURE_EXCEL_INTENSITY" property="measureExcelIntensity" jdbcType="DECIMAL" />
+    <result column="MEASURE_EXCEL_INTENSITY1" property="measureExcelIntensity1" jdbcType="DECIMAL" />
+    <result column="MEASURE_EXCEL_ASH" property="measureExcelAsh" jdbcType="DECIMAL" />
+    <result column="MEASURE_EXCEL_SULFER" property="measureExcelSulfer" jdbcType="DECIMAL" />
+    <result column="MEASURE_EXCEL_SV" property="measureExcelSv" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    MEASURE_EXCEL_ID, MEASURE_EXCEL_VERSION, MEASURE_EXCEL_NAME, MEASURE_EXCEL_DEBUG, 
+    MEASURE_EXCEL_DISPLAY, MEASURE_EXCEL_TYPE, MEASURE_EXCEL_LEVEL, MEASURE_EXCEL_L4S, 
+    MEASURE_EXCEL_OP, MEASURE_EXCEL_A, MEASURE_EXCEL_A1, MEASURE_EXCEL_INTENSITY, MEASURE_EXCEL_INTENSITY1, 
+    MEASURE_EXCEL_ASH, MEASURE_EXCEL_SULFER, MEASURE_EXCEL_SV
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_MEASURE_EXCEL
+    where MEASURE_EXCEL_ID = #{measureExcelId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_MEASURE_EXCEL
+    where MEASURE_EXCEL_ID = #{measureExcelId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TMeasureExcel" >
+    insert into T_MEASURE_EXCEL (MEASURE_EXCEL_ID, MEASURE_EXCEL_VERSION, 
+      MEASURE_EXCEL_NAME, MEASURE_EXCEL_DEBUG, MEASURE_EXCEL_DISPLAY, 
+      MEASURE_EXCEL_TYPE, MEASURE_EXCEL_LEVEL, MEASURE_EXCEL_L4S, 
+      MEASURE_EXCEL_OP, MEASURE_EXCEL_A, MEASURE_EXCEL_A1, 
+      MEASURE_EXCEL_INTENSITY, MEASURE_EXCEL_INTENSITY1, 
+      MEASURE_EXCEL_ASH, MEASURE_EXCEL_SULFER, MEASURE_EXCEL_SV
+      )
+    values (#{measureExcelId,jdbcType=DECIMAL}, #{measureExcelVersion,jdbcType=DECIMAL}, 
+      #{measureExcelName,jdbcType=VARCHAR}, #{measureExcelDebug,jdbcType=DECIMAL}, #{measureExcelDisplay,jdbcType=OTHER}, 
+      #{measureExcelType,jdbcType=OTHER}, #{measureExcelLevel,jdbcType=DECIMAL}, #{measureExcelL4s,jdbcType=VARCHAR}, 
+      #{measureExcelOp,jdbcType=VARCHAR}, #{measureExcelA,jdbcType=DECIMAL}, #{measureExcelA1,jdbcType=DECIMAL}, 
+      #{measureExcelIntensity,jdbcType=DECIMAL}, #{measureExcelIntensity1,jdbcType=DECIMAL}, 
+      #{measureExcelAsh,jdbcType=DECIMAL}, #{measureExcelSulfer,jdbcType=DECIMAL}, #{measureExcelSv,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TMeasureExcel" >
+    insert into T_MEASURE_EXCEL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="measureExcelId != null" >
+        MEASURE_EXCEL_ID,
+      </if>
+      <if test="measureExcelVersion != null" >
+        MEASURE_EXCEL_VERSION,
+      </if>
+      <if test="measureExcelName != null" >
+        MEASURE_EXCEL_NAME,
+      </if>
+      <if test="measureExcelDebug != null" >
+        MEASURE_EXCEL_DEBUG,
+      </if>
+      <if test="measureExcelDisplay != null" >
+        MEASURE_EXCEL_DISPLAY,
+      </if>
+      <if test="measureExcelType != null" >
+        MEASURE_EXCEL_TYPE,
+      </if>
+      <if test="measureExcelLevel != null" >
+        MEASURE_EXCEL_LEVEL,
+      </if>
+      <if test="measureExcelL4s != null" >
+        MEASURE_EXCEL_L4S,
+      </if>
+      <if test="measureExcelOp != null" >
+        MEASURE_EXCEL_OP,
+      </if>
+      <if test="measureExcelA != null" >
+        MEASURE_EXCEL_A,
+      </if>
+      <if test="measureExcelA1 != null" >
+        MEASURE_EXCEL_A1,
+      </if>
+      <if test="measureExcelIntensity != null" >
+        MEASURE_EXCEL_INTENSITY,
+      </if>
+      <if test="measureExcelIntensity1 != null" >
+        MEASURE_EXCEL_INTENSITY1,
+      </if>
+      <if test="measureExcelAsh != null" >
+        MEASURE_EXCEL_ASH,
+      </if>
+      <if test="measureExcelSulfer != null" >
+        MEASURE_EXCEL_SULFER,
+      </if>
+      <if test="measureExcelSv != null" >
+        MEASURE_EXCEL_SV,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="measureExcelId != null" >
+        #{measureExcelId,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelVersion != null" >
+        #{measureExcelVersion,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelName != null" >
+        #{measureExcelName,jdbcType=VARCHAR},
+      </if>
+      <if test="measureExcelDebug != null" >
+        #{measureExcelDebug,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelDisplay != null" >
+        #{measureExcelDisplay,jdbcType=OTHER},
+      </if>
+      <if test="measureExcelType != null" >
+        #{measureExcelType,jdbcType=OTHER},
+      </if>
+      <if test="measureExcelLevel != null" >
+        #{measureExcelLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelL4s != null" >
+        #{measureExcelL4s,jdbcType=VARCHAR},
+      </if>
+      <if test="measureExcelOp != null" >
+        #{measureExcelOp,jdbcType=VARCHAR},
+      </if>
+      <if test="measureExcelA != null" >
+        #{measureExcelA,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelA1 != null" >
+        #{measureExcelA1,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelIntensity != null" >
+        #{measureExcelIntensity,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelIntensity1 != null" >
+        #{measureExcelIntensity1,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelAsh != null" >
+        #{measureExcelAsh,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelSulfer != null" >
+        #{measureExcelSulfer,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelSv != null" >
+        #{measureExcelSv,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TMeasureExcel" >
+    update T_MEASURE_EXCEL
+    <set >
+      <if test="measureExcelVersion != null" >
+        MEASURE_EXCEL_VERSION = #{measureExcelVersion,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelName != null" >
+        MEASURE_EXCEL_NAME = #{measureExcelName,jdbcType=VARCHAR},
+      </if>
+      <if test="measureExcelDebug != null" >
+        MEASURE_EXCEL_DEBUG = #{measureExcelDebug,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelDisplay != null" >
+        MEASURE_EXCEL_DISPLAY = #{measureExcelDisplay,jdbcType=OTHER},
+      </if>
+      <if test="measureExcelType != null" >
+        MEASURE_EXCEL_TYPE = #{measureExcelType,jdbcType=OTHER},
+      </if>
+      <if test="measureExcelLevel != null" >
+        MEASURE_EXCEL_LEVEL = #{measureExcelLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelL4s != null" >
+        MEASURE_EXCEL_L4S = #{measureExcelL4s,jdbcType=VARCHAR},
+      </if>
+      <if test="measureExcelOp != null" >
+        MEASURE_EXCEL_OP = #{measureExcelOp,jdbcType=VARCHAR},
+      </if>
+      <if test="measureExcelA != null" >
+        MEASURE_EXCEL_A = #{measureExcelA,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelA1 != null" >
+        MEASURE_EXCEL_A1 = #{measureExcelA1,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelIntensity != null" >
+        MEASURE_EXCEL_INTENSITY = #{measureExcelIntensity,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelIntensity1 != null" >
+        MEASURE_EXCEL_INTENSITY1 = #{measureExcelIntensity1,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelAsh != null" >
+        MEASURE_EXCEL_ASH = #{measureExcelAsh,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelSulfer != null" >
+        MEASURE_EXCEL_SULFER = #{measureExcelSulfer,jdbcType=DECIMAL},
+      </if>
+      <if test="measureExcelSv != null" >
+        MEASURE_EXCEL_SV = #{measureExcelSv,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where MEASURE_EXCEL_ID = #{measureExcelId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TMeasureExcel" >
+    update T_MEASURE_EXCEL
+    set MEASURE_EXCEL_VERSION = #{measureExcelVersion,jdbcType=DECIMAL},
+      MEASURE_EXCEL_NAME = #{measureExcelName,jdbcType=VARCHAR},
+      MEASURE_EXCEL_DEBUG = #{measureExcelDebug,jdbcType=DECIMAL},
+      MEASURE_EXCEL_DISPLAY = #{measureExcelDisplay,jdbcType=OTHER},
+      MEASURE_EXCEL_TYPE = #{measureExcelType,jdbcType=OTHER},
+      MEASURE_EXCEL_LEVEL = #{measureExcelLevel,jdbcType=DECIMAL},
+      MEASURE_EXCEL_L4S = #{measureExcelL4s,jdbcType=VARCHAR},
+      MEASURE_EXCEL_OP = #{measureExcelOp,jdbcType=VARCHAR},
+      MEASURE_EXCEL_A = #{measureExcelA,jdbcType=DECIMAL},
+      MEASURE_EXCEL_A1 = #{measureExcelA1,jdbcType=DECIMAL},
+      MEASURE_EXCEL_INTENSITY = #{measureExcelIntensity,jdbcType=DECIMAL},
+      MEASURE_EXCEL_INTENSITY1 = #{measureExcelIntensity1,jdbcType=DECIMAL},
+      MEASURE_EXCEL_ASH = #{measureExcelAsh,jdbcType=DECIMAL},
+      MEASURE_EXCEL_SULFER = #{measureExcelSulfer,jdbcType=DECIMAL},
+      MEASURE_EXCEL_SV = #{measureExcelSv,jdbcType=VARCHAR}
+    where MEASURE_EXCEL_ID = #{measureExcelId,jdbcType=DECIMAL}
+  </update>
+</mapper>
