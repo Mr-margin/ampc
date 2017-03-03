@@ -84,13 +84,12 @@ public class AreaAndTimeController {
 	public AmpcResult add_TIME(HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ParseException {
 		ClientUtil.SetCharsetAndHeader(request, response);
-		Long areaId = 1l;// Long.parseLong(request.getParameter("areaId"));//区域ID
-		Long scenarinoId = 1l;// Long.parseLong(request.getParameter("scenarinoId"));//情景id
-		Long missionId = 1l;// Long.parseLong(request.getParameter("missionId"));//任务id
-		Long userId = 1l; // Long.parseLong(request.getParameter("userId"));//用户id
-		Long selectTimeId = 1l; // Long.parseLong(request.getParameter("selectTimeId"));//添加时段处在的时段id
-		Date timeDate = new Date();// new
-									// Date(request.getParameter("addTimeDate"));//新增时段时间
+		Long areaId = Long.parseLong(request.getParameter("areaId"));//区域ID
+		Long scenarinoId = Long.parseLong(request.getParameter("scenarinoId"));//情景id
+		Long missionId =Long.parseLong(request.getParameter("missionId"));//任务id
+		Long userId =Long.parseLong(request.getParameter("userId"));//用户id
+		Long selectTimeId = Long.parseLong(request.getParameter("selectTimeId"));//添加时段处在的时段id
+		Date timeDate = new Date(request.getParameter("addTimeDate"));//新增时段时间
 
 		// 时间操作，结束时间与开始时间的数据有一位数间隔，需要时间计算
 		Calendar cal = Calendar.getInstance();
@@ -164,10 +163,10 @@ public class AreaAndTimeController {
 	@RequestMapping("/time/time_update")
 	public AmpcResult update_TIME(HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
 		ClientUtil.SetCharsetAndHeader(request, response);
-		Long beforeTimeId=15l;//Long.parseLong(request.getParameter("beforeTimeId"));//修改时段前一个的时段Id
-		Long afterTimeId=16l;//Long.parseLong(request.getParameter("afterTimeId"));//修改时段后一个的时段Id
-		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户id
-		Date updateDate=new Date();//request.getParameter("addTimeDate"));//时段的修改时间
+		Long beforeTimeId=Long.parseLong(request.getParameter("beforeTimeId"));//修改时段前一个的时段Id
+		Long afterTimeId=Long.parseLong(request.getParameter("afterTimeId"));//修改时段后一个的时段Id
+		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
+		Date updateDate=new Date(request.getParameter("updateDate"));//时段的修改时间
 		//修改时间减一个小时作为前一个时段的结束时间
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(updateDate);
@@ -496,7 +495,7 @@ public class AreaAndTimeController {
 			//县级区域代码数组
 			area.setCountyCodes(data.get("countyCodes").toString());
 			//判断区域Id 用来确定是添加还是修改
-			if(null!=areaId&&!areaId.equals("")){
+			if(null!=areaId && !areaId.equals("")){
 				//修改
 				area.setScenarinoAreaId((Long.parseLong(areaId)));
 				int result=this.tScenarinoAreaMapper.updateByPrimaryKeySelective(area);
