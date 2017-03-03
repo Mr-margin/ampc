@@ -223,3 +223,6 @@
   top: 24px;
   right: -22px;
 }
+.modal-lg.bigModal{
+  width: 80%;
+}
