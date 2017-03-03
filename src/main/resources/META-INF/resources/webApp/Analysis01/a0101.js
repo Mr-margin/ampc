@@ -1,46 +1,28 @@
-var ip = "192.168.1.142";
-var url = "http://"+ip+":6080/arcgis/rest/services/china_j/MapServer";//基础底图
-//var url = "http://cache1.arcgisonline.cn/ArcGIS/rest/services/ChinaOnlineStreetWarm/MapServer";
-var gp_ampc = "http://"+ip+":6080/arcgis/rest/services/ampc/GPServer/ampcNC";
-
-var NetCDF = "http://"+ip+":6080/arcgis/rest/services/NetCDF1/GPServer/NetCDF";
-
-var ncfile_path = "http://192.168.1.154:8082/ampc/ncfile/Daily.Combine.Surf.Column.AOD.together.d03.2017049";
-//var ncfile_path = "http://192.168.1.154:8082/ampc/ncfile/PM25_2013.nc";
+var ip = "192.168.1.132";
+var url = "http://"+ip+":6080/arcgis/rest/services/china_ampc/MapServer";//基础底图
+var gp32 = "http://192.168.1.132:6080/arcgis/rest/services/FactorToResult/GPServer/FTR";
+var gp33 = "http://192.168.1.133:6080/arcgis/rest/services/ceshi/GPServer/ceshi1";
 //通用属性
 var stat = {};
 //地图范围
-stat.maxScale=8017.530719061126;
-stat.minScale=16419902.912621401;
-stat.scale=4104975.7281553536;
+stat.maxScale=36978595.474472;
+stat.minScale=72223.819286;
 //中心点坐标
-stat.cPointx=115.955;
-stat.cPointy=39.107;
-
-var mod5={};
-//画高亮矩形样式
-mod5.rect_symbol={
-		color:[0, 112,255, 0.5],
-		linecolor:[255, 255, 0],
-		linewidth:3
-}
-//选中区域样式
-mod5.forcusarea={
-		color:[0, 112,255, 0.0],
-		linecolor:[25,8,155],
-		linewidth:3
-};
-//默认市级区域样式
-mod5.mrarea={
-		color:[0, 0,0, 0.0],
-		linecolor:[25,8,155],
-		linewidth:1
-};
-mod5.scale=8209951.456310134;
+stat.cPointx=116;
+stat.cPointy=28;
 
 
 var app = {};
 var dong = {};
+
+var dojoConfig = {
+	async: true,
+    parseOnLoad: true,  
+    packages: [{  
+        name: 'tdlib',  
+        location: "/js/tdlib"  
+    }]
+};
 require(
 	[
 	 	"esri/map", 
@@ -58,6 +40,7 @@ require(
 	 	"esri/symbols/SimpleMarkerSymbol", 
 	 	"esri/geometry/Multipoint", 
 	 	"esri/geometry/Point", 
+	 	"esri/geometry/Extent",
         "esri/renderers/SimpleRenderer", 
         "esri/graphic", 
         "esri/lang",
@@ -68,154 +51,273 @@ require(
         "dijit/TooltipDialog", 
         "dijit/popup", 
         "dojox/widget/ColorPicker", 
+        "esri/layers/RasterLayer",
+        "tdlib/gaodeLayer",
+        "esri/tasks/FeatureSet",
+        "esri/SpatialReference",
         "dojo/domReady!"
 	], 
 	function(Map, Geoprocessor,ImageParameters,DynamicLayerInfo,RasterDataSource,TableDataSource
-			,LayerDataSource,FeatureLayer,GraphicsLayer,LayerDrawingOptions,SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Multipoint,Point,SimpleRenderer, Graphic, esriLang,
-	        Color, array, number, domStyle, TooltipDialog, dijitPopup, ColorPicker) {
-		dong.Graphic = Graphic;
+			,LayerDataSource,FeatureLayer,GraphicsLayer,LayerDrawingOptions,SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Multipoint,Point,Extent,SimpleRenderer, Graphic, esriLang,
+	        Color, array, number, domStyle, TooltipDialog, dijitPopup, ColorPicker, RasterLayer, gaodeLayer, FeatureSet, SpatialReference) {
+		
+		dong.gaodeLayer = gaodeLayer;
 		dong.Geoprocessor = Geoprocessor;
-		dong.ImageParameters = ImageParameters;
-		app.gp = new dong.Geoprocessor(gp_ampc);
-		app.gp1 = new dong.Geoprocessor(NetCDF);
+		dong.Graphic = Graphic;
+		dong.Point = Point;
+		dong.FeatureSet = FeatureSet;
+		dong.GraphicsLayer = GraphicsLayer;
+		dong.SpatialReference = SpatialReference;
 		
-//		app.map1 = new Map("mapDiv1",{slider: false, logo:false, scale:mod5.scale, center:[stat.cPointx,stat.cPointy], maxScale:stat.maxScale,minScale:stat.minScale});
-		app.map1 = new Map("mapDiv1");
-		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer(url);//创建动态地图
+		esri.config.defaults.io.proxyUrl = "http://192.168.1.147:8091/Java/proxy.jsp";
+    	esri.config.defaults.io.alwaysUseProxy = false;
 		
-		app.map1.addLayer(app.layer);//加载底图
-		app.map1.on("load", function() {
-//		    app.map1.disablePan();//需要鼠标平移
-//		    app.map1.disableRubberBandZoom();//启用时,用户可以画一个边界框的放大或缩小地图使用鼠标
-//		    app.map1.disableScrollWheelZoom();//取消滚轮缩放
-//		    app.map1.disableDoubleClickZoom();//取消双击放大
-//		    app.map1.disableShiftDoubleClickZoom();//shift+双击或者拉框操作
-//		    app.map1.disableKeyboardNavigation();//键盘操作
-//		    app.gp = new dong.Geoprocessor("http://192.168.1.38:6080/arcgis/rest/services/MakeNetCDFRasterLayer/GPServer/创建 NetCDF 栅格图层");
-		    //
-		    
-//		    app.fl1 = new FeatureLayer(hebei_shi_url, {
-//				//maxAllowableOffset: app.map1.extent.getWidth() / app.map1.width,
-//		        mode: FeatureLayer.MODE_SNAPSHOT,
-//		        outFields: ["NAME"],
-//		        visible: true
-//			});
-//			app.fl1.setRenderer(new SimpleRenderer(app.touming));
-//			app.map1.addLayer(app.fl1);
-//			
-//			app.fl1.on("click", function(evt) {
-//				app.map1.graphics.clear();
-//				var xzGraphic1 = new Graphic(evt.graphic.geometry,app.symbol);
-//				app.map1.graphics.add(xzGraphic1);
-//				
-//				app.map2.graphics.clear();
-//				var xzGraphic2 = new Graphic(evt.graphic.geometry,app.symbol);
-//				app.map2.graphics.add(xzGraphic2);
-//			});
-			app.map1.on("mouse-move", showCoordinates);
-  			app.map1.on("mouse-drag", showCoordinates);
-
+		app.mapList = new Array();
+		app.baselayerList = new Array();//默认加载矢量 new gaodeLayer({layertype:"road"});也可以
+		app.stlayerList = new Array();//加载卫星图
+		app.labellayerList = new Array();//加载标注图
+		
+//		app.mapExtent = new esri.geometry.Extent({ 
+//	           "xmin":7184564.28421679, 
+//	           "ymin":-234108.71524707237, 
+//	           "xmax":16547794.50103525, 
+//	           "ymax":7964832.6867318945, 
+//	           "spatialReference":{"wkid":3857}
+//	         });
+		
+		for(var i = 0;i<2;i++){
+			var map = new Map("mapDiv"+i, {
+//				extent:app.mapExtent,
+				logo:false,
+		        center: [stat.cPointx, stat.cPointy],
+		        minZoom:4,
+		        maxZoom:13,
+//		        minScale:stat.minScale,
+//		        maxScale:stat.maxScale,
+		        zoom: 4
+			});
+//			map.setExtent(app.mapExtent);
+			
+			app.mapList.push(map);
+			app.baselayerList[i] = new dong.gaodeLayer();
+			app.stlayerList[i] = new dong.gaodeLayer({layertype: "st"});
+			app.labellayerList[i] = new dong.gaodeLayer({layertype: "label"});
+			app.mapList[i].addLayer(app.baselayerList[i]);//添加高德地图到map容器
+			app.mapList[i].addLayers([app.baselayerList[i]]);//添加高德地图到map容器
+		}
+		
+		app.gLyr = new dong.GraphicsLayer({"id":"gLyr"});
+		app.mapList[0].addLayer(app.gLyr);
+		
+		//多个地图互相联动效果
+		var source = -1;
+		app.mapList[0].on("extent-change",function(event){
+			if(source == -1){
+				source = 0;
+				for(var i = 0;i<app.mapList.length;i++){
+					if(i != source){
+						app.mapList[i].setExtent(event.extent);
+					}
+				}
+				$("#info").html("xmax="+event.extent.xmax+"  xmin="+event.extent.xmin+"  ymax="+event.extent.ymax+"  ymin="+event.extent.ymin);
+			}else{
+				source = -1;
+			}
 		});
-        
-        // 鼠标选中后图层二次高亮的样式
-		app.highlightSymbol = new SimpleFillSymbol(
-			SimpleFillSymbol.STYLE_SOLID,
-			new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color(mod5.rect_symbol.linecolor),mod5.rect_symbol.linewidth), 
-			new Color(mod5.rect_symbol.color)
-		);
+		app.mapList[1].on("extent-change",function(event){
+			if(source == -1){
+				source = 1;
+				for(var i = 0;i<app.mapList.length;i++){
+					if(i != source){
+						app.mapList[i].setExtent(event.extent);
+					}
+				}
+				
+			}else{
+				source = -1;
+			}
+		});
 		
-		app.symbol = new SimpleFillSymbol(
-			SimpleFillSymbol.STYLE_SOLID,
-			new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color(mod5.forcusarea.linecolor), mod5.forcusarea.linewidth), 
-			new Color(mod5.forcusarea.color)
-		);
+		app.mapList[0].on("mouse-move", showCoordinates);
+		app.mapList[0].on("mouse-drag", showCoordinates);
 		
-        app.touming = new SimpleFillSymbol(
-			SimpleFillSymbol.STYLE_SOLID,
-			new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color(mod5.mrarea.linecolor),mod5.mrarea.linewidth ), 
-			new Color(mod5.mrarea.color)
-		);
+//		$("#info").html("xmax="+event.extent.xmax+"  xmin="+event.extent.xmin+"  ymax="+event.extent.ymax+"  ymin="+event.extent.ymin);
+//		
+//		event.extent.xmin;
+//		event.extent.ymin;//左下
+//		
+//		event.extent.xmax;
+//		event.extent.ymax;//右上
 		
-		function showCoordinates(evt) {
-	        var mp = esri.geometry.webMercatorToGeographic(evt.mapPoint);
-	        dojo.byId("Point").innerHTML = evt.mapPoint.x.toFixed(3) + ", " + evt.mapPoint.y.toFixed(3);
+		
+		function showCoordinates(event) {
+//	        var mp = esri.geometry.webMercatorToGeographic(evt.mapPoint);
+	        dojo.byId("Point").innerHTML = event.mapPoint.x.toFixed(3) + ", " + event.mapPoint.y.toFixed(3);
 	    	
-	    	$("#scale").html("scale="+app.map1.getScale());
-	    	$("#Zoom").html("Zoom="+app.map1.getZoom());
-	    	$("#Level").html("Level="+app.map1.getLevel());
+	    	$("#scale").html("scale="+app.mapList[0].getScale());
+	    	$("#Zoom").html("Zoom="+app.mapList[0].getZoom());
+	    	$("#Level").html("Level="+app.mapList[0].getLevel());
 	    }
-
 });
 
 function bianji(){
+	var myDate = new Date();
+	var v1 = myDate.getTime();
+	var features = [];
 	
-	var impot = ncfile_path;
-	var variable = "PM25";
-	var xdimension = "COL";
-	var ydimension = "ROW";
-	var valueFunction = "";
-	var output = "D:\dynamic\dynamic_2";
 	
-	var parms1 = {
-			"impot" : "{'url': '"+impot+"'}",
-			"variable" : variable,
-			"xdimension" : xdimension,
-			"ydimension" : ydimension,
-			"output" : output
-		};
-	app.gp1.submitJob(parms1, completeCallback, gpJobStatus, gpJobFailed);
-}
-
-function bianji1(){
-//	var parms1 = {
-//			"in_netCDF_file" : "{'url': '"+ncfile_path+"'}",
-//			"variable" : "PM25",
-//			"x_dimension" : "COL",
-//			"y_dimension" : "ROW",
-//			"out_raster_layer" : "D:\dynamic\dynamic_1"
+	$.get('data.json', function (data) {
+		$.each(data, function(i, col) {
+			var point = new dong.Point(col.x, col.y, new dong.SpatialReference({ wkid: 3857 }));
+			var attr = {};
+	        attr["FID"] = i;
+	        attr["dqvalue"] = col.v;
+//	        console.log(col.x+"---"+col.y);
+			var graphic = new dong.Graphic(point);
+			graphic.setAttributes(attr);
+			features.push(graphic);
+		});
+		
+		var featureset = new dong.FeatureSet();
+		featureset.fields = [{
+			"name": "dqvalue",
+			"type": "esriFieldTypeSingle",
+			"alias": "dqvalue"
+		},{
+			"name": "FID",
+			"type": "esriFieldTypeOID",
+			"alias": "FID"
+		}];
+		featureset.fieldAliases = {"dqvalue" : "dqvalue","FID":"FID"};
+		featureset.spatialReference =  new dong.SpatialReference({ wkid: 3857 });
+	    featureset.features = features;
+	    featureset.exceededTransferLimit = false;
+	    
+		app.gp = new esri.tasks.Geoprocessor(gp33);
+		var parms = {
+				"p1" : featureset,
+				"p2" : "dqvalue",
+				"p3" : "Spherical #",
+				"p4" : "3000",
+				"p5" : "VARIABLE 12",
+				"o1" : "out_raster_layer"//raster_Layer
+			};
+		app.gp.submitJob(parms, function(jobInfo){
+			app.gpResultLayer = app.gp.getResultImageLayer(jobInfo.jobId, "o1");//这里的名字是跟着返回图层的变量名走的，不一样的话是不出图的
+			//需要判断一下是否已经添加过图层，先移除，再添加
+			var out_raster_layer = app.mapList[0].getLayer('out_raster_layer');
+		    if(out_raster_layer){
+		    	app.mapList[0].removeLayer(out_raster_layer);
+		    }
+		    app.mapList[0].addLayer(app.gpResultLayer);
+			
+			var myDate2 = new Date();
+			var v2 = myDate2.getTime();
+			console.log(v2-v1);
+			
+		}, function(jobinfo){
+			var jobstatus = '';
+		    switch (jobinfo.jobStatus) {
+		      case 'esriJobSubmitted':
+		        jobstatus = '图一正在提交...';
+		        break;
+		      case 'esriJobExecuting':
+		        jobstatus = '图一处理中...';
+		        break;
+		      case 'esriJobSucceeded':
+		    	jobstatus = '图一处理完成...';
+		        break;
+		    }
+		    dojo.byId("info").innerHTML = jobstatus;
+		}, function(error){
+			dojo.byId("info").innerHTML = "图一"+error;//错误执行方法
+		});
+		
+	});
+	
+//	console.log(JSON.stringify(cha_json));
+//	console.log(JSON.stringify(xyv));
+	
+	
+	
+//	var xmax=13292188.592313899;
+//	var xmin=12121784.815211596;
+//	var ymax=5108533.813772183;
+//	var ymin=4252439.096978439;
+//	var hangjiege = (xmax-xmin)/20;
+//	var liejiege = (ymax-ymin)/20;
+//	var k = 1;
+//	var yy = ymin;
+//	for(var i=1;i<=21;i++){
+//		var xx = xmin;
+//		for(var j=1;j<=21;j++){
+//			
+//			var point = new dong.Point(xx, yy, new dong.SpatialReference({ wkid: 3857 }));
+//			k++;
+//			var attr = {};
+//	        attr["FID"] = k;
+//	        attr["dqvalue"] = Math.random()*300.123456;
+//	          
+//			var graphic = new dong.Graphic(point);
+//			graphic.setAttributes(attr);
+//			features.push(graphic);
+//			xx = xmin+(hangjiege*j);
+//		}
+//		yy = ymin+(liejiege*i);
+//	}
+//	var featureset = new dong.FeatureSet();
+//	featureset.fields = [{
+//		"name": "dqvalue",
+//		"type": "esriFieldTypeSingle",
+//		"alias": "dqvalue"
+//	},{
+//		"name": "FID",
+//		"type": "esriFieldTypeOID",
+//		"alias": "FID"
+//	}];
+//	featureset.fieldAliases = {"dqvalue" : "dqvalue","FID":"FID"};
+//	featureset.spatialReference =  new dong.SpatialReference({ wkid: 3857 });
+//    featureset.features = features;
+//    featureset.exceededTransferLimit = false;
+//    
+//	app.gp = new esri.tasks.Geoprocessor(gp32);
+//	var parms = {
+//			"p1" : featureset,
+//			"p2" : "dqvalue",
+//			"p3" : "Spherical #",
+//			"p4" : "3000",
+//			"p5" : "VARIABLE 12",
+//			"o1" : "out_raster_layer"//raster_Layer
 //		};
-	var parms1 = {
-			"in_netCDF_file" : "{'url': '"+ncfile_path+"'}",
-			"variable" : "PM25",
-//			"x_dimension" : "lon",
-//			"y_dimension" : "lat",
-			"x_dimension" : "COL",
-			"y_dimension" : "ROW",
-			"out_raster_layer" : "dynamic_Layer"
-		};
-	app.gp1.submitJob(parms1, completeCallback, gpJobStatus, gpJobFailed);
+//	app.gp.submitJob(parms, function(jobInfo){
+//		app.gpResultLayer = app.gp.getResultImageLayer(jobInfo.jobId, "o1");//这里的名字是跟着返回图层的变量名走的，不一样的话是不出图的
+//		//需要判断一下是否已经添加过图层，先移除，再添加
+//		var out_raster_layer = app.mapList[0].getLayer('out_raster_layer');
+//	    if(out_raster_layer){
+//	    	app.mapList[0].removeLayer(out_raster_layer);
+//	    }
+//	    app.mapList[0].addLayer(app.gpResultLayer);
+//		
+//		var myDate2 = new Date();
+//		var v2 = myDate2.getTime();
+//		console.log(v2-v1);
+//		
+//	}, function(jobinfo){
+//		var jobstatus = '';
+//	    switch (jobinfo.jobStatus) {
+//	      case 'esriJobSubmitted':
+//	        jobstatus = '图一正在提交...';
+//	        break;
+//	      case 'esriJobExecuting':
+//	        jobstatus = '图一处理中...';
+//	        break;
+//	      case 'esriJobSucceeded':
+//	    	jobstatus = '图一处理完成...';
+//	        break;
+//	    }
+//	    dojo.byId("info").innerHTML = jobstatus;
+//	}, function(error){
+//		dojo.byId("info").innerHTML = "图一"+error;//错误执行方法
+//	});
 }
 
-
-function gpJobStatus(jobinfo){
-    var jobstatus = '';
-    switch (jobinfo.jobStatus) {
-      case 'esriJobSubmitted':
-        jobstatus = '图一正在提交...';
-        break;
-      case 'esriJobExecuting':
-        jobstatus = '图一处理中...';
-        break;
-      case 'esriJobSucceeded':
-    	jobstatus = '图一处理完成...';
-        break;
-    }
-    dojo.byId("info").innerHTML = jobstatus;
-}
-//错误执行方法
-function gpJobFailed(error) {    
-//	dojo.byId("info").innerHTML = "图一"+error;
-}
-//放回正常方法
-function completeCallback(jobInfo){
-	var jobId = jobInfo.jobId;//获取返回的临时空间ID
-	//创建栅格图层
-	app.gpResultLayer = app.gp1.getResultImageLayer(jobId, "dynamic_Layer");
-	//需要判断一下是否已经添加过图层，先移除，再添加
-	var out_raster_layer = app.map1.getLayer('dynamic_Layer');
-    if(out_raster_layer){
-    	app.map2.removeLayer(out_raster_layer);
-    }
-	app.map1.addLayer(app.gpResultLayer);
-//	dojo.byId("info").innerHTML = "";
-}
