@@ -10,8 +10,8 @@
           "timeId": 1,
           "timeStartDate": 1485792000000,
           "timeEndDate": 1485878400000,
-          "planId": 1,
-          "planName": "预案0"
+          "planId": -1,
+          "planName": "预案3"
         },
         {
           "timeId": 2,
@@ -37,8 +37,8 @@
           "timeId": 1,
           "timeStartDate": 1485792000000,
           "timeEndDate": 1485878400000,
-          "planId": 1,
-          "planName": "预案2"
+          "planId": -1,
+          "planName": "预案3"
         },
         {
           "timeId": 2,
