@@ -6,6 +6,7 @@
 var totalWidth,totalDate,startDate,qjMsg;
 var index,indexPar,handle,minLeft,maxLeft,selfLeft,startX,leftWidth,rightWidth;
 var allData = [];
+var addTimeIndex;
 
 /*test使用*/
 var parameterPar = {total: '', data: {}};
@@ -46,6 +47,7 @@ function initialize(){
     userId:userId
   });
 
+  initDate();
   /*test使用*/
   var scenarino1 = ajaxPost1('webApp/task02/qy.json',{});
 
@@ -64,17 +66,17 @@ function initialize(){
         times.find('h4').html(timeItems[item].planName);
         if(item>0){
           var sD = timeItems[item].timeStartDate ;
-          allData[i].timeFrame[item-1] = moment(sD).format('YYYY-MM-DD HH');
+          allData[i].timeFrame[item-1] = moment(sD).format('YYYY/MM/DD HH');
 
           var hk = $('.hk.disNone').clone().removeClass('disNone');
-          hk.find('.showTips').html(moment(sD).format('YYYY-MM-DD HH'));
+          hk.find('.showTips').html(moment(sD).format('YYYY/MM/DD HH'));
           var left = ((sD - startDate)/totalDate) * totalWidth;
           area.find('.showLine').append(hk);
-          hk.css('left',left+'px');
+          hk.css('left',(left/totalWidth)*100+'%');
         }
 
         var tw = ((timeItems[item].timeEndDate - timeItems[item].timeStartDate)/totalDate)*totalWidth - 1;
-        times.css('width',tw + 'px');
+        times.css('width',(tw/totalWidth)*100 + '%');
 
       }
 
@@ -84,32 +86,10 @@ function initialize(){
 
 }
 
-
-
-
-
-
-
-
-
 function sub(){
   data.push($('input[type=text]').val());
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 $('.areaMsg').on('mouseenter','.hk',function(e){
 //    index = $('.hk').index(this);
@@ -143,7 +123,19 @@ $('.areaMsg').on('mousedown','.hk',function(e){
 });
 $('.areaMsg').on('mouseup','.area',function(e){
   //index = $('.hk').index(this);
-  console.log(allData)
+
+  allData[indexPar].timeFrame[index] = allData[indexPar].timeItems[index].timeEndDate;
+
+  ajaxPost('/time/time_update',{
+    userId:userId,
+    updateDate:allData[indexPar].timeItems[index].timeEndDate,
+    beforeTimeId:allData[indexPar].timeItems[index].timeId,
+    afterTimeId:allData[indexPar].timeItems[index+1].timeId
+  }).success(function(res){
+    console.log(res)
+  })
+
+  console.log(allData);
   handle = false;
   $(this).find('.showTips').css('display','none');
 });
@@ -165,7 +157,7 @@ $('.areaMsg').on('mousemove','.period',function(e){
       if(newLeft<(minLeft+4))newLeft = minLeft+4;
     }
     //data[index] = newLeft;
-    $('.area').eq(indexPar).find('.hk').eq(index).css('left',newLeft+'px');
+    $('.area').eq(indexPar).find('.hk').eq(index).css('left',(newLeft/widthP)*100+'%');
 
     if(newLeft > (widthP/2)){
       $('.area').eq(indexPar).find('.hk').eq(index).find('.showTips').removeClass('showTipsLeft').addClass('showTipsRight');
@@ -173,11 +165,10 @@ $('.areaMsg').on('mousemove','.period',function(e){
       $('.area').eq(indexPar).find('.hk').eq(index).find('.showTips').removeClass('showTipsRight').addClass('showTipsLeft');
     }
 
+    $(this).children('.time').eq(index).css('width',((newLeft - selfLeft+leftWidth)/widthP)*100+'%');
+    $(this).children('.time').eq(index+1).css('width',((+rightWidth - (newLeft - selfLeft))/widthP)*100+'%');
 
-    $(this).children('.time').eq(index).css('width',(newLeft - selfLeft+leftWidth)+'px');
-    $(this).children('.time').eq(index+1).css('width',(+rightWidth - (newLeft - selfLeft))+'px');
-
-    var showDate = moment((newLeft/widthP*totalDate)+startDate).format('YYYY-MM-DD HH');
+    var showDate = moment((newLeft/widthP*totalDate)+startDate).format('YYYY/MM/DD HH');
     $('.area').eq(indexPar).find('.hk').eq(index).find('.showTips').html(showDate);
 
     allData[indexPar].timeItems[index].timeEndDate = showDate;
@@ -188,41 +179,130 @@ $('.areaMsg').on('mousemove','.period',function(e){
 });
 
 /*编辑区域*/
-function editArea(){}
+function editArea(e){}
 
 /*删除区域*/
-function delArea(){}
+function delArea(e){}
 
 /*添加时间段*/
-function addTimes(){}
+function addTimes(){
+  console.log(123);
+  var timePoint = $('#qyTimePoint').val();
+  var timeFrame = allData[addTimeIndex].timeFrame;
+  timeFrame.push(timePoint);
+  timeFrame.sort();
+  var index = timeFrame.indexOf(timePoint);
 
-/*删除时间段*/
-function delTimes(){}
+  var url = '/time/time_save';
+  ajaxPost(url,{
+    missionId:qjMsg.rwId,
+    scenarinoId:qjMsg.qjId,
+    userId:userId,
+    areaId:allData[addTimeIndex].areaId,
+    selectTimeId:allData[addTimeIndex].timeItems[index].timeId,
+    addTimeDate:timePoint
+  }).success(function(res){
+    console.log(res);
 
-/*添加预案*/
-function addPlan(){}
+    allData[addTimeIndex].timeItems.splice(index+1,0,{
+      timeStartDate:timePoint,
+      timeId:res.data.timeId,
+      timeEndDate:allData[addTimeIndex].timeItems[index].timeEndDate
+    });
+    allData[addTimeIndex].timeItems[index].timeEndDate = timePoint;
 
-/*删除预案*/
-function delPlan(){}
+    var area = $('.area').eq(addTimeIndex);
+    var hk = $('.hk.disNone').clone().removeClass('disNone');
 
-/*添加区域处工具*/
-function addAreaTool(){
+    if(timeFrame.length > 1){
 
-  var div = '<div class="areaToolDiv text-center">'+
-              '<button type="button" onclick="editArea()" class="btn btn-default btn-xs toolShow" title="编辑区域"><i class="ec-pencil"></i><span>编辑区域</span></button>'+
-              '<button type="button" onclick="delArea()" class="btn btn-default btn-xs toolShow" title="删除区域"><i class="ec-trashcan"></i><span>删除区域</span></button>'+
-              '<button type="button" onclick="addTimes()" class="btn btn-default btn-xs toolShow" title="添加时段"><i class="im-plus"></i><span>添加时段</span></button>'+
-            '</div>'
+      if(index == 0){
+        area.find('.hk').eq(index).before(hk);
+      }else{
+        area.find('.hk').eq(index-1).after(hk);
+      }
+    }else{
+      area.find('.showLine').append(hk);
+    }
+    hk.find('.showTips').html(timePoint);
+    var left = (moment(momentDate(timePoint)) - moment(momentDate(startDate)))/totalDate*100;
+    hk.css('left',left+'%');
+
+    var times = $('.time.disNone').clone().removeClass('disNone');
+    var totalWidth = area.find('.period').width();
+    var indextime = area.find('.time').eq(index);
+    indextime.after(times);
+
+    var beforeL = 0;
+    var afterL = totalWidth-20;
+    if(index != 0){
+      beforeL =  parseInt(area.find('.hk').eq(index-1).css('left'))
+    }
+    if(index < allData[addTimeIndex].timeFrame.length-1){
+      afterL = parseInt(area.find('.hk').eq(index+1).css('left'))
+    }
+
+    var timeWidth = left - ((beforeL/totalWidth)*100);
+    var newTimeWidth = ((afterL/totalWidth)*100) - left;
+
+
+
+    //var timeWidth = (moment(momentDate(allData[addTimeIndex].timeItems[index].timeEndDate))-moment(momentDate(allData[addTimeIndex].timeItems[index].timeStartDate)))/totalDate*100 ;
+    indextime.css('width',timeWidth+'%');
+    //var newTimeWidth = (moment(momentDate(allData[addTimeIndex].timeItems[index+1].timeEndDate))-moment(momentDate(allData[addTimeIndex].timeItems[index+1].timeStartDate)))/totalDate*100;
+    times.css('width',newTimeWidth+'%');
+
+  }).error(function(){
+    timeFrame.splice(index,1);
+    swal('添加失败！！！','','error')
+  });
 
 }
 
-/*添加时间段处工具*/
-function addTimesTool(){
+/*返回YYYY-MM-DD HH格式*/
+function momentDate(d){
+  var n = Number(d);
+  if (!isNaN(n)){
+    return moment(d).format('YYYY-MM-DD HH')
+  }else{
+    return moment(d,'YYYY-MM-DD HH').format('YYYY-MM-DD HH')
+  }
+}
 
-  var div = '<div class="timeToolDiv text-center">'+
-              '<button type="button" onclick="addPlan()" class="btn btn-default btn-xs toolShow" title="添加预案"><i class="im-google-plus"></i><span>添加预案</span></button>'+
-              '<button type="button" onclick="delPlan()" class="btn btn-default btn-xs toolShow" title="删除预案"><i class="ec-trashcan"></i><span>删除预案</span></button>'+
-              '<button type="button" onclick="delTimes()" class="btn btn-default btn-xs toolShow" title="删除时段"><i class="im-close"></i><span>删除时段</span></button>'+
-            '</div>'
+/*删除时间段*/
+function delTimes(e){}
+
+/*添加预案*/
+function addPlan(e){}
+
+/*删除预案*/
+function delPlan(e){}
+
+$('#qyTime').on('show.bs.modal', function (event) {
+	//console.log(event);
+  var button = $(event.relatedTarget);
+  if(button.length == 0)return;
+  addTimeIndex = $('.area').index(button.parents('.area'));
+  console.log(addTimeIndex)
+});
+
+
+function initDate(){
+  $("#qyTimePoint").datetimepicker({
+    format: 'yyyy/mm/dd hh',
+    todayHighlight:false,
+    minView: 'day',
+    startView: 'month',
+    language: 'zh-CN',
+    autoclose: true,
+    todayBtn: true,
+    startDate:moment(qjMsg.qjStartDate).format('YYYY-MM-DD HH'),
+    endDate:moment(qjMsg.qjEndDate).format('YYYY-MM-DD HH')
+  })
+    .on('changeDate', function(ev){
+      var date = moment(ev.date).format('YYYY/MM/DD HH');
+      //$('#rwEndDate').datetimepicker('setStartDate', date);
+      //$('#rwStartDate').datetimepicker('setEndDate', null);
+    });
 
 }

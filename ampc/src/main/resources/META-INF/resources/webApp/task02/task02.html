@@ -59,6 +59,33 @@
 
 
 
+<!-- Modal -->
+<div class="modal fade" id="qyTime" tabindex="-1" role="dialog" aria-labelledby="qyTimeLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="qyTimeLabel">添加时段</h4>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-group mt10 clearfix">
+          <label for="qyTimePoint" class="col-md-12 control-label lh29">请选择需要分割的时间点：</label>
+
+          <div class="col-md-12">
+            <input type="text" class="form-control" id="qyTimePoint" name="qyTimePoint" readonly placeholder="请选择时间点···">
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addTimes()">确认添加</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
 <!--模板DOM-->
@@ -67,9 +94,9 @@
   <div class="front">
     <span>类别一</span>
     <div class="areaToolDiv text-center">
-      <button type="button" onclick="editArea()" class="btn btn-default btn-xs toolShow" title="区域编辑"><i class="ec-pencil"></i><span>区域编辑</span></button>
-      <button type="button" onclick="delArea()" class="btn btn-default btn-xs toolShow" title="删除区域"><i class="ec-trashcan"></i><span>删除区域</span></button>
-      <button type="button" onclick="addTimes()" class="btn btn-default btn-xs toolShow" title="添加时段"><i class="im-plus"></i><span>添加时段</span></button>
+      <button type="button" onclick="editArea(this)" class="btn btn-default btn-xs toolShow" title="区域编辑"><i class="ec-pencil"></i><span>区域编辑</span></button>
+      <button type="button" onclick="delArea(this)" class="btn btn-default btn-xs toolShow" title="删除区域"><i class="ec-trashcan"></i><span>删除区域</span></button>
+      <button type="button" class="btn btn-default btn-xs toolShow" title="添加时段" data-toggle="modal" data-target="#qyTime"><i class="im-plus"></i><span>添加时段</span></button>
     </div>
   </div>
   <div class="period clearfix">
@@ -89,8 +116,8 @@
     <!--<p  class="yaEndDate">结束时间：<span>2017-12-22 00</span></p>-->
   </div>
   <div class="timeToolDiv text-center">
-    <button type="button" onclick="addPlan()" class="btn btn-default btn-xs toolShow" title="添加预案"><i class="im-google-plus"></i><span>添加预案</span></button>
-    <button type="button" onclick="delPlan()" class="btn btn-default btn-xs toolShow" title="删除预案"><i class="ec-trashcan"></i><span>删除预案</span></button>
-    <button type="button" onclick="delTimes()" class="btn btn-default btn-xs toolShow" title="移除时段"><i class="im-close"></i><span>移除时段</span></button>
+    <button type="button" onclick="addPlan(this)" class="btn btn-default btn-xs toolShow" title="添加预案"><i class="im-google-plus"></i><span>添加预案</span></button>
+    <button type="button" onclick="delPlan(this)" class="btn btn-default btn-xs toolShow" title="删除预案"><i class="ec-trashcan"></i><span>删除预案</span></button>
+    <button type="button" onclick="delTimes(this)" class="btn btn-default btn-xs toolShow" title="移除时段"><i class="im-close"></i><span>移除时段</span></button>
   </div>
 </div>
