@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>a0101.html</title>
+	
+    <meta name="keywords" content="keyword1,keyword2,keyword3">
+    <meta name="description" content="this is my page">
+    <meta name="content-type" content="text/html; charset=UTF-8">
+    
+    <link href="../../css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="../../css/font-awesome.min.css" rel="stylesheet">
+	<link href="../../css/animate.css" rel="stylesheet">
+	<link href="../../css/style.css" rel="stylesheet">
+    
+    <link rel="stylesheet" type="text/css" href="http://localhost:8091/arcgis_js_api/library/3.19/3.19/dijit/themes/tundra/tundra.css"/>
+    <link rel="stylesheet" type="text/css" href="http://localhost:8091/arcgis_js_api/library/3.19/3.19/esri/css/esri.css" />
+    <script type="text/javascript" src="http://localhost:8091/arcgis_js_api/library/3.19/3.19/init.js"></script>
+    
+    <!-- <link rel="stylesheet" type="text/css" href="http://localhost:8091/arcgis_js_v39_sdk/arcgis_js_api/library/3.9/3.9/js/dojo/dijit/themes/tundra/tundra.css" />
+    <link rel="stylesheet" type="text/css" href="http://localhost:8091/arcgis_js_v39_sdk/arcgis_js_api/library/3.9/3.9/js/esri/css/esri.css" />
+    <script type="text/javascript" src="http://localhost:8091/arcgis_js_v39_sdk/arcgis_js_api/library/3.9/3.9/init.js"></script> -->
+  </head>
+  <body>
+    <div dojotype="dijit.layout.BorderContainer" design="headline" gutters="true" style="margin:1px; width:100%;height:100%;">
+    	<div style="width:80%;float:left;margin:0px">
+    	
+			<div id="mapDiv1" style="width:100%;height:700px; float:left; display:inline;"></div>
+			<div id="map_ctrl" style="width:100%;float:left;">
+				<button type="button" class="btn btn-outline btn-lG" id="bianji_sb" onclick="bianji1();"><i class='fa fa-binoculars'></i> 编辑</button> <br/><br/>
+				<span id="Point" style="color:#000;"></span><br/>
+				<span id="scale" style="color:#000;"></span><br/>
+				<span id="Zoom" style="color:#000;"></span><br/>
+				<span id="Level" style="color:#000;"></span><br/>
+				<span id="info" style="color:#000;"></span><br/>
+			</div>
+			
+		</div>
+    </div>
+    <script type="text/javascript" src="../../js/jquery.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="a0101.js"></script>
+	
+  </body>
+</html>
