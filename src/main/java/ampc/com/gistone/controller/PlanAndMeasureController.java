@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +14,7 @@ import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -136,16 +138,17 @@ public class PlanAndMeasureController {
 	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/plan/add_plan")
-	public  AmpcResult add_plan(HttpServletRequest request,
+	public  AmpcResult add_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
 			HttpServletResponse response) throws UnsupportedEncodingException{
 		ClientUtil.SetCharsetAndHeader(request, response);
-		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户id
-		String planName="各种减排";//request.getParameter("planName");//预案名称
-	    Date addTime=new Date();//(request.getParameter("addTime"));//添加时间
-	    Long usedBy=1l;//Long.parseLong(request.getParameter("usedBy"));//情景id
-	    Long scenarioId=1l;//Long.parseLong(request.getParameter("scenarioId"));//行业id
-	    Long missionId=1l;//Long.parseLong(request.getParameter("missionId"));//所属任务id
-	    Long areaId=1l;//Long.parseLong(request.getParameter("areaId"));//区域id
+		Map<String,Object> data=(Map)requestDate.get("data");
+		Long userId=Long.parseLong(data.get("userId").toString());//用户id
+		String planName=data.get("planName").toString();//预案名称
+	    Date addTime=new Date();//添加时间
+	    Long usedBy=Long.parseLong(data.get("usedBy").toString());//情景id
+	    Long scenarioId=Long.parseLong(data.get("scenarioId").toString());//行业id
+	    Long missionId=Long.parseLong(data.get("missionId").toString());//所属任务id
+	    Long areaId=Long.parseLong(data.get("areaId").toString());//区域id
 	    
 	    TPlan tPlan=new TPlan();
 	    tPlan.setAddTime(addTime);
@@ -538,12 +541,17 @@ public class PlanAndMeasureController {
 	
 	/**
 	 *查询可复制预案
+	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/plan/copy_plan_list")
-	public  AmpcResult copy_plan_list(HttpServletRequest request,
-			HttpServletResponse response){
+	public  AmpcResult copy_plan_list(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
+			HttpServletResponse response) throws UnsupportedEncodingException{
+		ClientUtil.SetCharsetAndHeader(request, response);
+		Map<String,Object> data=(Map)requestDate.get("data");
+		Long userId=Long.parseLong(data.get("userId").toString());
 		TPlan tPlan=new TPlan();
 		tPlan.setCopyPlan("1");
+		tPlan.setIsEffective("1");
 		List<TPlan> planlist=tPlanMapper.selectByEntity(tPlan);
 		JSONObject obj=new JSONObject();
 		JSONArray arr=new JSONArray();
