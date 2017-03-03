@@ -104,7 +104,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addTimes()">确定删除</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="delTimes()">确定删除</button>
       </div>
     </div>
   </div>
@@ -142,13 +142,13 @@
   <div class="timeToolDiv text-center">
     <button type="button" onclick="addPlan(this)" class="btn btn-default btn-xs toolShow" title="添加预案"><i class="im-google-plus"></i><span>添加预案</span></button>
     <button type="button" onclick="editPlan(this)" class="btn btn-default btn-xs toolShow" title="编辑预案"><i class="ec-pencil"></i><span>编辑预案</span></button>
-    <button type="button" onclick="delTimes(this)" class="btn btn-default btn-xs toolShow" title="删除时段" data-toggle="modal" data-target="#delTime"><i class="im-close"></i><span>删除时段</span></button>
+    <button type="button" class="btn btn-default btn-xs toolShow" title="删除时段" data-toggle="modal" data-target="#delTime"><i class="im-close"></i><span>删除时段</span></button>
   </div>
 </div>
 <!--redio dom-->
 <div class="radio disNone">
   <label>
-    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+    <input type="radio" name="optionsRadios" id="optionsRadios1" value="">
     <span></span>
   </label>
 </div>

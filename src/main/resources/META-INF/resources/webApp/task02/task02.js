@@ -315,8 +315,26 @@ function momentDate(d){
 }
 
 /*删除时间段*/
-function delTimes(e){
+function delTimes(){
+  var url = '/time/delete_time';
+  var mId;
+  var ub = $('.delSelect input:checked').val();
+  if(ub == 'up'){
+    mId = allData[areaIndex].timeItems[timeIndex-1].timeId;
+  }else{
+    mId = allData[areaIndex].timeItems[timeIndex+1].timeId;
+  }
 
+  ajaxPost(url,{
+    deleteTimeId:allData[areaIndex].timeItems[timeIndex].timeId,
+    startDate:moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate)).format('YYYY/MM/DD HH'),
+    endDate:moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate)).format('YYYY/MM/DD HH'),
+    mergeTimeId:mId,
+    userId:userId,
+    status:ub
+  }).success(function(){
+
+  })
 }
 
 /*添加预案*/
@@ -343,18 +361,21 @@ $('#delTime').on('show.bs.modal', function (event) {
 
   var redio = $('.radio.disNone').clone().removeClass('disNone');
   if(timeIndex == 0){
-    redio.find('span').html('时   段ID：'+allData[areaIndex].timeItems[timeIndex+1].timeId+'<br />' +'开始时间：'+momentDate(allData[areaIndex].timeItems[timeIndex+1].timeStartDate)+'<br />'+'结束时间：'+momentDate(allData[areaIndex].timeItems[timeIndex+1].timeEndDate));
+    redio.find('span').html('时   段ID：'+allData[areaIndex].timeItems[timeIndex+1].timeId+'<br />' +'开始时间：'+momentDate(allData[areaIndex].timeItems[timeIndex+1].timeStartDate)+'&nbsp;&nbsp;&nbsp;&nbsp;'+'结束时间：'+momentDate(allData[areaIndex].timeItems[timeIndex+1].timeEndDate));
+    redio.find('input').val('down');
   }else if(timeIndex == (allData[areaIndex].timeItems.length-1) ){
     redio.find('span').html('时   段ID：'+allData[areaIndex].timeItems[timeIndex-1].timeId+'<br />' +'开始时间：'+momentDate(allData[areaIndex].timeItems[timeIndex-1].timeStartDate)+'<br />'+'结束时间：'+momentDate(allData[areaIndex].timeItems[timeIndex-1].timeEndDate));
+    redio.find('input').val('up');
   }else{
     var redio2 = $('.radio.disNone').clone().removeClass('disNone');
-    redio2.find('span').html('时   段ID：'+allData[areaIndex].timeItems[timeIndex-1].timeId+'<br />' +'开始时间：'+momentDate(allData[areaIndex].timeItems[timeIndex-1].timeStartDate)+'<br />'+'结束时间：'+momentDate(allData[areaIndex].timeItems[timeIndex-1].timeEndDate));
-    redio.find('span').html('时   段ID：'+allData[areaIndex].timeItems[timeIndex+1].timeId+'<br />' +'开始时间：'+momentDate(allData[areaIndex].timeItems[timeIndex+1].timeStartDate)+'<br />'+'结束时间：'+momentDate(allData[areaIndex].timeItems[timeIndex+1].timeEndDate));
+    redio2.find('span').html('时   段ID：'+allData[areaIndex].timeItems[timeIndex-1].timeId+'<br />' +'开始时间：'+momentDate(allData[areaIndex].timeItems[timeIndex-1].timeStartDate)+'&nbsp;&nbsp;&nbsp;&nbsp;'+'结束时间：'+momentDate(allData[areaIndex].timeItems[timeIndex-1].timeEndDate));
+    redio2.find('input').val('up');
+    redio.find('span').html('时   段ID：'+allData[areaIndex].timeItems[timeIndex+1].timeId+'<br />' +'开始时间：'+momentDate(allData[areaIndex].timeItems[timeIndex+1].timeStartDate)+'&nbsp;&nbsp;&nbsp;&nbsp;'+'结束时间：'+momentDate(allData[areaIndex].timeItems[timeIndex+1].timeEndDate));
+    redio.find('input').val('down');
     $(event.target).find('.delSelect').append(redio2);
   }
   $(event.target).find('.delSelect').append(redio);
-
-
+  redio.find('input').attr('checked','checked');
   console.log(areaIndex,timeIndex)
 });
 
