@@ -254,9 +254,9 @@ public class PlanAndMeasureController {
 	 */
 	@RequestMapping("/plan/merge_plan")
 	public  AmpcResult merge_plan(HttpServletRequest request,
-			HttpServletResponse response) throws UnsupportedEncodingException{
-		ClientUtil.SetCharsetAndHeader(request, response);
+			HttpServletResponse response) throws UnsupportedEncodingException{	
 	try{
+		ClientUtil.SetCharsetAndHeader(request, response);
 		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户id
 		Long chiefPlanId=3l;//Long.parseLong(request.getParameter("chiefPlanId"));//蓝本预案id
 		Long planId=4l;//Long.parseLong(request.getParameter("planId"));//被合并预案id
@@ -293,7 +293,7 @@ public class PlanAndMeasureController {
 	    return AmpcResult.build(1, "merge_plan error");
 	    }
 	    return AmpcResult.build(1, "merge_plan error");
-	}catch(NullPointerException n){
+	}catch(Exception n){
 		System.out.println(n);
 		return AmpcResult.build(1, "merge_plan error");
 	}
@@ -469,11 +469,13 @@ public class PlanAndMeasureController {
 	 */
 	@Transactional
 	@RequestMapping("/plan/iscopy_plan")
-	public  AmpcResult iscopy_plan(HttpServletRequest request,
+	public  AmpcResult iscopy_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
 			HttpServletResponse response) throws UnsupportedEncodingException{
+		try{
 		ClientUtil.SetCharsetAndHeader(request, response);
-		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户id
-		Long planId=8l;//Long.parseLong(request.getParameter("planId"));//预案id
+		Map<String,Object> data=(Map)requestDate.get("data");
+		Long userId=Long.parseLong(data.get("userId").toString());//用户id
+		Long planId=Long.parseLong(data.get("planId").toString());//预案id
 		//将预案的是否可以复制状态改为可复制
 		TPlan tPlan=new TPlan();
 		tPlan.setPlanId(planId);
@@ -484,6 +486,10 @@ public class PlanAndMeasureController {
 			return AmpcResult.build(0, "iscopy_plan success");
 		}
 		return AmpcResult.build(1, "iscopy_plan error");
+		}catch(Exception e){
+			System.out.println(e);
+			return AmpcResult.build(1000, "参数错误",null);
+		}
 	}
 	
 	
@@ -494,10 +500,13 @@ public class PlanAndMeasureController {
 	 * @return
 	 */
 	@RequestMapping("/plan/finish_plan")
-	public  AmpcResult finish_plan(HttpServletRequest request,
+	public  AmpcResult finish_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
 			HttpServletResponse response){
-		Long planId=8l;//Long.parseLong(request.getParameter("planId"));//预案id
-		Long userId=1l;//Long.parseLong(request.getParameter("userId"));//用户id
+		try{
+		ClientUtil.SetCharsetAndHeader(request, response);
+		Map<String,Object> data=(Map)requestDate.get("data");
+		Long planId=Long.parseLong(data.get("planId").toString());//预案id
+		Long userId=Long.parseLong(data.get("userId").toString());//用户id
 		TPlanMeasure tPlanMeasure=new TPlanMeasure();
 		tPlanMeasure.setPlanId(planId);
 		List<TPlanMeasure> tlist=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
@@ -516,6 +525,10 @@ public class PlanAndMeasureController {
 			}
 		}
 		return AmpcResult.build(1, "finish_plan error");
+		}catch(Exception e){
+			System.out.println(e);
+			return AmpcResult.build(1000, "参数错误",null);	
+		}
 	}
 	
 	
@@ -525,10 +538,13 @@ public class PlanAndMeasureController {
 	 * 
 	 */
 	@RequestMapping("/measure/del_measureContent")
-	public  AmpcResult del_measureContent(HttpServletRequest request,
+	public  AmpcResult del_measureContent(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
 			HttpServletResponse response){
-		Long planMeasureId=10l;//Long.parseLong(request.getParameter("planMeasureId"));
-		Long userId=1l;//Long.parseLong(request.getParameter("userId"));
+		try{
+		ClientUtil.SetCharsetAndHeader(request, response);
+		Map<String,Object> data=(Map)requestDate.get("data");
+		Long planMeasureId=Long.parseLong(data.get("planMeasureId").toString());
+		Long userId=Long.parseLong(data.get("userId").toString());
 		TPlanMeasure tPlanMeasure=new TPlanMeasure();
 		tPlanMeasure.setMeasureContent("-1");
 		int tstatus=tPlanMeasureMapper.updateByPrimaryKeyWithBLOBs(tPlanMeasure);
@@ -536,6 +552,10 @@ public class PlanAndMeasureController {
 		return AmpcResult.build(0, "del_measureContent success");
 		}
 		return AmpcResult.build(1, "del_measureContent error");
+		}catch(Exception e){
+			System.out.println(e);
+			return AmpcResult.build(1000, "参数错误",null);
+		}
 	}
 	
 	
@@ -552,6 +572,7 @@ public class PlanAndMeasureController {
 		TPlan tPlan=new TPlan();
 		tPlan.setCopyPlan("1");
 		tPlan.setIsEffective("1");
+		//根据是否为可复制预案和是否有效字段查询
 		List<TPlan> planlist=tPlanMapper.selectByEntity(tPlan);
 		JSONObject obj=new JSONObject();
 		JSONArray arr=new JSONArray();
