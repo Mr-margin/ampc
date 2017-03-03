@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
+import ampc.com.gistone.database.inter.TMeasureExcelMapper;
 import ampc.com.gistone.database.inter.TSectorExcelMapper;
 import ampc.com.gistone.database.inter.TSectorMapper;
+import ampc.com.gistone.database.model.TMeasureExcel;
 import ampc.com.gistone.database.model.TSector;
 import ampc.com.gistone.database.model.TSectorExcel;
 import ampc.com.gistone.util.AmpcResult;
@@ -48,7 +50,9 @@ public class ExcelToDateController {
 	@Autowired
 	private TSectorExcelMapper tSectorExcelMapper;
 
-	
+	//措施Excel映射
+	@Autowired
+	private TMeasureExcelMapper tMeasureExcelMapper;
 	
 	
 	/**
@@ -57,8 +61,8 @@ public class ExcelToDateController {
 	 * @param response    响应
 	 * @return 返回响应结果对象
 	 */
-	@RequestMapping("sectorexcel/update_sectorExcelDate")
-	public AmpcResult update_sectorDate(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping("excel/update_sectorExcelDate")
+	public AmpcResult update_SectorDate(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
 		// 添加异常捕捉
 		try {
 			// 设置跨域
@@ -80,6 +84,47 @@ public class ExcelToDateController {
 			List<TSectorExcel> readSector = ExcelToDate.ReadSector(fileName,versionId,userId);
 			for (TSectorExcel tSector : readSector) {
 				int result=tSectorExcelMapper.insertSelective(tSector);
+				if(result<1){
+					return AmpcResult.build(1000, "添加失败!", null);
+				}
+			}
+			return AmpcResult.ok("更新成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			// 返回错误信息
+			return AmpcResult.build(1000, "参数错误", null);
+		}
+	}
+	
+	/**
+	 * 根据Excel更改措施Excel表中数据
+	 * @param request     请求
+	 * @param response    响应
+	 * @return 返回响应结果对象
+	 */
+	@RequestMapping("excel/update_measureExcelDate")
+	public AmpcResult update_MeasureExcelDate(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
+		// 添加异常捕捉
+		try {
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			// 用户的id 确定当前用户
+			Long userId = Long.parseLong(data.get("userId").toString());
+			/**
+			 * 根据request获取excel地址
+			 */
+			String fileName = request.getServletContext().getRealPath("/")+ "***.xlsx";
+			Long versionId=tMeasureExcelMapper.selectMaxVersion(userId);
+			if(versionId==null){
+				versionId=1L;
+			}else{
+				versionId++;
+			}
+			//地址不确定  先写死了 获取到所有Excel中需要的数据
+			List<TMeasureExcel> readTMeasure = ExcelToDate.ReadMeasure(fileName,versionId,userId);
+			for (TMeasureExcel tMeasure : readTMeasure) {
+				int result=tMeasureExcelMapper.insertSelective(tMeasure);
 				if(result<1){
 					return AmpcResult.build(1000, "添加失败!", null);
 				}

@@ -25,17 +25,28 @@ public class TMeasureExcel {
 
     private BigDecimal measureExcelA1;
 
-    private Long measureExcelIntensity;
+    private BigDecimal measureExcelIntensity;
 
-    private Long measureExcelIntensity1;
+    private BigDecimal measureExcelIntensity1;
 
     private Long measureExcelAsh;
 
     private Long measureExcelSulfer;
 
     private String measureExcelSv;
+    
+    private Long userId;
+    
 
-    public Long getMeasureExcelId() {
+    public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public Long getMeasureExcelId() {
         return measureExcelId;
     }
 
@@ -123,23 +134,24 @@ public class TMeasureExcel {
         this.measureExcelA1 = measureExcelA1;
     }
 
-    public Long getMeasureExcelIntensity() {
-        return measureExcelIntensity;
-    }
+    
+    public BigDecimal getMeasureExcelIntensity() {
+		return measureExcelIntensity;
+	}
 
-    public void setMeasureExcelIntensity(Long measureExcelIntensity) {
-        this.measureExcelIntensity = measureExcelIntensity;
-    }
+	public void setMeasureExcelIntensity(BigDecimal measureExcelIntensity) {
+		this.measureExcelIntensity = measureExcelIntensity;
+	}
 
-    public Long getMeasureExcelIntensity1() {
-        return measureExcelIntensity1;
-    }
+	public BigDecimal getMeasureExcelIntensity1() {
+		return measureExcelIntensity1;
+	}
 
-    public void setMeasureExcelIntensity1(Long measureExcelIntensity1) {
-        this.measureExcelIntensity1 = measureExcelIntensity1;
-    }
+	public void setMeasureExcelIntensity1(BigDecimal measureExcelIntensity1) {
+		this.measureExcelIntensity1 = measureExcelIntensity1;
+	}
 
-    public Long getMeasureExcelAsh() {
+	public Long getMeasureExcelAsh() {
         return measureExcelAsh;
     }
 

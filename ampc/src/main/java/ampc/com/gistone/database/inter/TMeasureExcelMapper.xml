@@ -25,6 +25,24 @@
     MEASURE_EXCEL_OP, MEASURE_EXCEL_A, MEASURE_EXCEL_A1, MEASURE_EXCEL_INTENSITY, MEASURE_EXCEL_INTENSITY1, 
     MEASURE_EXCEL_ASH, MEASURE_EXCEL_SULFER, MEASURE_EXCEL_SV
   </sql>
+  
+  
+   <!--查询当前行业表中的最高版本号-->
+  <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
+  	select max(MEASURE_EXCEL_VERSION) from T_MEASURE_EXCEL where USER_ID=#{userId,jdbcType=DECIMAL} 
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -102,6 +120,9 @@
       <if test="measureExcelSv != null" >
         MEASURE_EXCEL_SV,
       </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="measureExcelId != null" >
@@ -151,6 +172,9 @@
       </if>
       <if test="measureExcelSv != null" >
         #{measureExcelSv,jdbcType=VARCHAR},
+      </if>
+       <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
