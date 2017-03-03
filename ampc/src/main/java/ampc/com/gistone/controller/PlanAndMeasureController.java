@@ -284,7 +284,7 @@ public class PlanAndMeasureController {
 	    		//删除预案中的措施
 	         int status=tPlanMeasureMapper.deleteByPlanId(planId);
 	         if(status!=0){
-	        	 return AmpcResult.build(0, "merge_plan success");
+	         return AmpcResult.build(0, "merge_plan success");
 	         }
 	         return AmpcResult.build(1, "merge_plan error");
 	    	}
