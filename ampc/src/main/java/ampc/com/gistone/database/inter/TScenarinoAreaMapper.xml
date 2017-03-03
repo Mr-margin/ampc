@@ -78,7 +78,7 @@
  
  
   <!-- 修改区域状态 相当于删除 -->
-  <update id="updateIsEffeById" parameterType="java.util.List">
+  <update id="updateIsEffeByIds" parameterType="java.util.List">
     update T_SCENARINO_AREA
     set 
       IS_EFFECTIVE = '0',
