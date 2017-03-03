@@ -13,6 +13,22 @@
   <sql id="Base_Column_List" >
     SECTOR_ID, VERSION_ID, SECTOR_NAME, L4S, ADD_TIME, UPDATE_TIME, MEASURE_IDS
   </sql>
+  
+  
+  <!--查询当前行业表中的最高版本号-->
+  <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
+  	select max(version_id) from T_SECTOR where USER_ID=#{userId,jdbcType=DECIMAL} 
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -55,6 +71,9 @@
       <if test="measureIds != null" >
         MEASURE_IDS,
       </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="sectorId != null" >
@@ -77,6 +96,9 @@
       </if>
       <if test="measureIds != null" >
         #{measureIds,jdbcType=OTHER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
