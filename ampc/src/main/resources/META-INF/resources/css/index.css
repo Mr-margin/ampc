@@ -77,6 +77,7 @@
   position: relative;
 }
 .period .time{
+  overflow: hidden;
   height:150px;
   width:10%;
   float: left;
@@ -96,8 +97,9 @@
 }
 .areaToolDiv,.timeToolDiv{
   position: absolute;
-  bottom: -70px;
-  transition: bottom 0.3s linear;
+  left: -85px;
+  bottom: 4px;
+  transition: left 0.3s linear;
 }
 
 .toolShow{
@@ -126,7 +128,7 @@
   display: block;
 }
 .time:hover .timeToolDiv,.front:hover .areaToolDiv{
-  bottom:4px;
+  left: 4px;
 }
 
 .disNone{
@@ -221,95 +223,3 @@
   top: 24px;
   right: -22px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*  */
-
-
-
-
-/*  */
-
