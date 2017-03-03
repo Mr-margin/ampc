@@ -6,7 +6,7 @@
 var totalWidth,totalDate,startDate,qjMsg;
 var index,indexPar,handle,minLeft,maxLeft,selfLeft,startX,leftWidth,rightWidth;
 var allData = [];
-var addTimeIndex;
+var areaIndex,timeIndex;
 
 /*test使用*/
 var parameterPar = {total: '', data: {}};
@@ -59,14 +59,24 @@ function initialize(){
       var area = $('.area.disNone').clone().removeClass('disNone');
       area.find('.front>span').html(res.data[i].areaName);
       var timeItems = res.data[i].timeItems;
+      var tLength = timeItems.length;
       $('.areaMsg').append(area);
-      for(var item=0;item<timeItems.length;item++){
+      for(var item=0;item<tLength;item++){
         var totalWidth = $('.period').width();
 
         /*克隆时段进行添加*/
         var times = $('.time.disNone').clone().removeClass('disNone');
         area.find('.showLine').before(times);
-        times.find('h4').html(timeItems[item].planName);
+
+        if(timeItems[item].planId == -1){
+          times.find('.timeToolDiv .btn').eq(1).attr('disabled','disabled');
+        }else{
+          times.find('h4').html(timeItems[item].planName);
+        }
+        if(tLength == 1){
+          times.find('.timeToolDiv .btn').eq(2).attr('disabled','disabled');
+        }
+
         if(item>0){
           var sD = timeItems[item].timeStartDate ;
           allData[i].timeFrame[item-1] = moment(sD).format('YYYY/MM/DD HH');
@@ -225,7 +235,7 @@ function delArea(e){
 function addTimes(){
   console.log(123);
   var timePoint = $('#qyTimePoint').val();
-  var timeFrame = allData[addTimeIndex].timeFrame;
+  var timeFrame = allData[areaIndex].timeFrame;
   timeFrame.push(timePoint);
   timeFrame.sort();
   var index = timeFrame.indexOf(timePoint);
@@ -235,20 +245,20 @@ function addTimes(){
     missionId:qjMsg.rwId,
     scenarinoId:qjMsg.qjId,
     userId:userId,
-    areaId:allData[addTimeIndex].areaId,
-    selectTimeId:allData[addTimeIndex].timeItems[index].timeId,
+    areaId:allData[areaIndex].areaId,
+    selectTimeId:allData[areaIndex].timeItems[index].timeId,
     addTimeDate:timePoint
   }).success(function(res){
     console.log(res);
 
-    allData[addTimeIndex].timeItems.splice(index+1,0,{
+    allData[areaIndex].timeItems.splice(index+1,0,{
       timeStartDate:timePoint,
       timeId:res.data.timeId,
-      timeEndDate:allData[addTimeIndex].timeItems[index].timeEndDate
+      timeEndDate:allData[areaIndex].timeItems[index].timeEndDate
     });
-    allData[addTimeIndex].timeItems[index].timeEndDate = timePoint;
+    allData[areaIndex].timeItems[index].timeEndDate = timePoint;
 
-    var area = $('.area').eq(addTimeIndex);
+    var area = $('.area').eq(areaIndex);
     var hk = $('.hk.disNone').clone().removeClass('disNone');
 
     if(timeFrame.length > 1){
@@ -275,7 +285,7 @@ function addTimes(){
     if(index != 0){
       beforeL =  parseInt(area.find('.hk').eq(index-1).css('left'))
     }
-    if(index < allData[addTimeIndex].timeFrame.length-1){
+    if(index < allData[areaIndex].timeFrame.length-1){
       afterL = parseInt(area.find('.hk').eq(index+1).css('left'))
     }
 
@@ -284,9 +294,7 @@ function addTimes(){
 
 
 
-    //var timeWidth = (moment(momentDate(allData[addTimeIndex].timeItems[index].timeEndDate))-moment(momentDate(allData[addTimeIndex].timeItems[index].timeStartDate)))/totalDate*100 ;
     indextime.css('width',timeWidth+'%');
-    //var newTimeWidth = (moment(momentDate(allData[addTimeIndex].timeItems[index+1].timeEndDate))-moment(momentDate(allData[addTimeIndex].timeItems[index+1].timeStartDate)))/totalDate*100;
     times.css('width',newTimeWidth+'%');
 
   }).error(function(){
@@ -321,16 +329,33 @@ $('#qyTime').on('show.bs.modal', function (event) {
 	//console.log(event);
   var button = $(event.relatedTarget);
   if(button.length == 0)return;
-  addTimeIndex = $('.area').index(button.parents('.area'));
-  console.log(addTimeIndex)
+  areaIndex = $('.area').index(button.parents('.area'));
+  console.log(areaIndex)
 });
 
 $('#delTime').on('show.bs.modal', function (event) {
   //console.log(event);
   var button = $(event.relatedTarget);
   if(button.length == 0)return;
-  addTimeIndex = $('.area').index(button.parents('.area'));
-  console.log(addTimeIndex)
+  areaIndex = $('.area').index(button.parents('.area'));
+  timeIndex = button.parents('.area').find('.time').index(button.parents('.time'));
+  $(event.target).find('.delSelect').empty();
+
+  var redio = $('.radio.disNone').clone().removeClass('disNone');
+  if(timeIndex == 0){
+    redio.find('span').html('时   段ID：'+allData[areaIndex].timeItems[timeIndex+1].timeId+'<br />' +'开始时间：'+momentDate(allData[areaIndex].timeItems[timeIndex+1].timeStartDate)+'<br />'+'结束时间：'+momentDate(allData[areaIndex].timeItems[timeIndex+1].timeEndDate));
+  }else if(timeIndex == (allData[areaIndex].timeItems.length-1) ){
+    redio.find('span').html('时   段ID：'+allData[areaIndex].timeItems[timeIndex-1].timeId+'<br />' +'开始时间：'+momentDate(allData[areaIndex].timeItems[timeIndex-1].timeStartDate)+'<br />'+'结束时间：'+momentDate(allData[areaIndex].timeItems[timeIndex-1].timeEndDate));
+  }else{
+    var redio2 = $('.radio.disNone').clone().removeClass('disNone');
+    redio2.find('span').html('时   段ID：'+allData[areaIndex].timeItems[timeIndex-1].timeId+'<br />' +'开始时间：'+momentDate(allData[areaIndex].timeItems[timeIndex-1].timeStartDate)+'<br />'+'结束时间：'+momentDate(allData[areaIndex].timeItems[timeIndex-1].timeEndDate));
+    redio.find('span').html('时   段ID：'+allData[areaIndex].timeItems[timeIndex+1].timeId+'<br />' +'开始时间：'+momentDate(allData[areaIndex].timeItems[timeIndex+1].timeStartDate)+'<br />'+'结束时间：'+momentDate(allData[areaIndex].timeItems[timeIndex+1].timeEndDate));
+    $(event.target).find('.delSelect').append(redio2);
+  }
+  $(event.target).find('.delSelect').append(redio);
+
+
+  console.log(areaIndex,timeIndex)
 });
 
 
