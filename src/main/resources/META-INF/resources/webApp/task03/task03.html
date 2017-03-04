@@ -1,116 +1,154 @@
-<!-- 整体的div -->
-<div>
-	<!-- 左边的div -->
-	<div class='col-md-6'>
-		<div class="row">
-			<span>行业-措施选择</span>
-		</div>
-		<div class="leftSomething">
-			<div class="ibox-content">
-				<div class="panel-body">
-					<div class="panel-group" id="accordion">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h5 class="panel-title">
-									<a data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapseOne">集中供热</a>
-								</h5>
-							</div>
-							<div id="collapseOne" class="panel-collapse collapse in">
-								<div class="panel-body"></div>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a data-toggle="collapse" data-parent="#accordion"
-										href="tabs_panels.html#collapseTwo">工业锅炉</a>
-								</h4>
-							</div>
-							<div id="collapseTwo" class="panel-collapse collapse">
-								<div class="panel-body"></div>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a data-toggle="collapse" data-parent="#accordion"
-										href="tabs_panels.html#collapseThree">钢铁</a>
-								</h4>
-							</div>
-							<div id="collapseThree" class="panel-collapse collapse">
-								<div class="panel-body"></div>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a data-toggle="collapse" data-parent="#accordion"
-										href="tabs_panels.html#collapsefour">水泥</a>
-								</h4>
-							</div>
-							<div id="collapsefour" class="panel-collapse collapse">
-								<div class="panel-body"></div>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a data-toggle="collapse" data-parent="#accordion"
-										href="tabs_panels.html#collapsefive">独立焦化</a>
-								</h4>
-							</div>
-							<div id="collapsefive" class="panel-collapse collapse">
-								<div class="panel-body"></div>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a data-toggle="collapse" data-parent="#accordion"
-										href="tabs_panels.html#collapsesix">玻璃</a>
-								</h4>
-							</div>
-							<div id="collapsesix" class="panel-collapse collapse">
-								<div class="panel-body"></div>
-							</div>
-						</div>
-					</div>
+<!-- 
+	<div class='col-md-6' style="height:100%;">
+		<span style="height:34px;">行业-措施选择</span>
+		<div class="row" style="border:1px solid #F00;height:100%;overflow-y: auto;">
+			
+			<div class="leftSomething">
+				<div class="ibox-content">
+					
 				</div>
 			</div>
 		</div>
-	</div><!-- 左边的div -->
+	</div> -->
+	
+<div class='col-md-6' style="height:100%;padding-left: 0px;">
+	<div class="ibox float-e-margins" style="height:100%;">
+	    <div class="ibox-title">
+	        <h5>行业-措施选择</h5>
+	    </div>
+	    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;">
+	    
+	    
+	        <div class="panel-body" style="padding-left: 0px;">
+				<div class="panel-group" id="accordion">
+				
+				
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h5 class="panel-title">
+								<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">集中供热</a>
+							</h5>
+						</div>
+						<div id="collapseOne" class="panel-collapse collapse in">
+							<div class="panel-body"></div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">工业锅炉</a>
+							</h4>
+						</div>
+						<div id="collapseTwo" class="panel-collapse collapse">
+							<div class="panel-body"></div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+			
+			
+	    </div>
+	</div>
+</div>
+		
+<div class='col-md-6' style="height:100%;padding-left: 0px;padding-right: 0px;">
+	<div class="ibox float-e-margins" style="height:50%;margin-bottom: 15px;">
+	    <div class="ibox-title">
+	        <h5>地图展示</h5>
+	    </div>
+	    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;padding: 5px 5px 5px 5px;">
+	    	<div class="col-md-12" style="height:100%;background-color: orange;">放地图</div>
+	    </div>
+	</div>
+	<div class="ibox float-e-margins" style="height:calc(50% - 15px);margin-bottom: 0px;">
+	    <div class="ibox-title">
+	        <h5>措施汇总</h5>
+	    </div>
+	    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;">
+	    	<table class="table table-hover table-striped">
+				<thead>
+					<tr>
+						<th><label for="checkall"><input type="checkbox" id="checkall"></label></th>
+						<th>行业</th>
+						<th>措施</th>
+						<th>点源实际范围</th>
+						<th>设计排放占比</th>
+						<th>减排占比</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><input type="checkbox" name="check1" /></td>
+						<td>火力发电</td>
+						<td>限产</td>
+						<td><p class="text-center">173/223</p></td>
+						<td><p class="text-center">11.0%</p></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" name="check1" /></td>
+						<td>火力发电</td>
+						<td>限产</td>
+						<td><p class="text-center">173/223</p></td>
+						<td><p class="text-center">11.0%</p></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" name="check1" /></td>
+						<td>火力发电</td>
+						<td>限产</td>
+						<td><p class="text-center">173/223</p></td>
+						<td><p class="text-center">11.0%</p></td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+	    </div>
+	</div>
+</div>
+		
+	
 
-	<!-- 右边的div -->
-	<div class='col-md-6'>
-		<div class="row" style="margin:5px;">
-			<!-- <div class="col-md-2">
-				<span>地图展示</span> 
-				</div>  -->
-			<div class="col-md-4">
-				<span>污染物</span>
+
+
+
+
+	<!-- <div class='col-md-6' style="height:100%;">
+	
+		<div class="row" style="border:1px solid #F00;height:50%;">
+			<div class="" style="">
+				<div class="col-md-2">
+					<span>地图展示</span> 
+					</div> 
+				<div class="col-md-2">
+					<span>污染物</span>
+				</div>
+				<div class="col-md-4">
+					<button data-toggle="dropdown"
+						class="btn btn-default dropdown-toggle">
+						SO2 <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu">
+						<li><a href="buttons.html#">工厂废气</a></li>
+						<li><a href="buttons.html#" class="font-bold">车辆尾气</a></li>
+						<li><a href="buttons.html#">生活垃圾</a></li>
+						<li class="divider"></li>
+						<li><a href="buttons.html#">删除</a></li>
+					</ul>
+				</div>
+				<div class="col-md-4">
+					<button class="btn btn-default" type="button">全部</button>
+					<button class="btn btn-default" type="button">当前行业</button>
+				</div>
 			</div>
-			<div class="btn-group col-md-4">
-				<button data-toggle="dropdown"
-					class="btn btn-default dropdown-toggle">
-					SO2 <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu">
-					<li><a href="buttons.html#">工厂废气</a></li>
-					<li><a href="buttons.html#" class="font-bold">车辆尾气</a></li>
-					<li><a href="buttons.html#">生活垃圾</a></li>
-					<li class="divider"></li>
-					<li><a href="buttons.html#">删除</a></li>
-				</ul>
-			</div>
-			<div class="btn-group col-md-4">
-				<button class="btn btn-default" type="button">全部</button>
-				<button class="btn btn-default" type="button">当前行业</button>
+			
+			<div class="" style="height:100%;">
+				<div class="col-md-12" style="height:100%;background-color: orange;">放地图</div>
 			</div>
 		</div>
+		
 
-		<div class="boxMapImg" style="margin:8px;">放地图</div>
-
-		<!-- 右下方div -->
 		<div class="tableInall">
 			<div class="row">
 				<div class="col-md-4">
@@ -129,52 +167,13 @@
 				</div>
 			</div>
 
-			<!-- 表格 -->
 			<div>
 				<div class="ibox float-e-margins">
 					<div class="ibox-content">
-						<table class="table table-hover table-striped">
-							<thead>
-								<tr>
-									<th><label for="checkall"><input type="checkbox" id="checkall"></label></th>
-									<th>行业</th>
-									<th>措施</th>
-									<th>点源实际范围</th>
-									<th>设计排放占比</th>
-									<th>减排占比</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td><input type="checkbox" name="check1" /></td>
-									<td>火力发电</td>
-									<td>限产</td>
-									<td><p class="text-center">173/223</p></td>
-									<td><p class="text-center">11.0%</p></td>
-									<td></td>
-								</tr>
-								<tr>
-									<td><input type="checkbox" name="check1" /></td>
-									<td>火力发电</td>
-									<td>限产</td>
-									<td><p class="text-center">173/223</p></td>
-									<td><p class="text-center">11.0%</p></td>
-									<td></td>
-								</tr>
-								<tr>
-									<td><input type="checkbox" name="check1" /></td>
-									<td>火力发电</td>
-									<td>限产</td>
-									<td><p class="text-center">173/223</p></td>
-									<td><p class="text-center">11.0%</p></td>
-									<td></td>
-								</tr>
-							</tbody>
-						</table>
+						
 					</div>
 				</div>
 			</div>
 		</div>
-	</div><!-- 右边的div -->
+	</div> -->
 	
-</div>
