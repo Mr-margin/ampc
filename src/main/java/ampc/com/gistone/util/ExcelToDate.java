@@ -159,12 +159,14 @@ public class ExcelToDate {
                     //获取措施ash信息
                     String ash=getCellValue(row.getCell(12));
                     if(ash!=null&&!ash.equals("")){
-                    	measure.setMeasureExcelAsh(Long.parseLong(ash.substring(0,ash.indexOf('.'))));
+                    	BigDecimal bash=new BigDecimal(ash);
+                    	measure.setMeasureExcelAsh(bash);
                     }
                     //获取措施sulfer信息
                     String sulfer=getCellValue(row.getCell(13));
                     if(sulfer!=null&&!sulfer.equals("")){
-                    	measure.setMeasureExcelSulfer(Long.parseLong(sulfer.substring(0,sulfer.indexOf('.'))));
+                    	BigDecimal bsulfer=new BigDecimal(sulfer);
+                    	measure.setMeasureExcelSulfer(bsulfer);
                     }
                     //获取措施sv信息
                     String sv=getCellValue(row.getCell(14));
