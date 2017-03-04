@@ -115,4 +115,31 @@
       COUNTY_CODE = #{countyCode,jdbcType=VARCHAR}
     where ADDRESS_ID = #{addressId,jdbcType=DECIMAL}
   </update>
+  <select id="selectBLevel" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TAddress" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_ADDRESS
+    where 1=1
+     <if test="addressName != null">
+               and ADDRESS_NAME = #{addressName,jdbcType=OTHER}
+            </if>
+            <if test="addressCode != null">
+                and ADDRESS_CODE = #{addressCode,jdbcType=DECIMAL}
+            </if>
+            <if test="addressLevel != null">
+                and  ADDRESS_LEVEL = #{addressLevel,jdbcType=VARCHAR}
+            </if>
+            <if test="provinceCode != null">
+                and  PROVINCE_CODE = #{provinceCode,jdbcType=VARCHAR}
+            </if>
+            <if test="cityCode != null">
+                and CITY_CODE = #{cityCode,jdbcType=VARCHAR}
+            </if>
+            <if test="countyCode != null">
+               and COUNTY_CODE = #{countyCode,jdbcType=VARCHAR}
+            </if>
+            <if test="addressId != null">
+               and ADDRESS_ID = #{addressId,jdbcType=DECIMAL}
+            </if>
+  </select>
 </mapper>
