@@ -226,3 +226,25 @@
 .modal-lg.bigModal{
   width: 80%;
 }
+
+
+/* 刘俊 */
+/* .topChoose{
+	float: left;
+	margin: 0;
+}
+.leftSomething{
+	float: left;
+	margin: 0;	
+} */
+.boxMapImg{   
+	height: 300px;
+	background-color: orange;
+	border: 1px;
+	left: 800px;
+	
+} 
+
+.tableInall{
+	
+}
