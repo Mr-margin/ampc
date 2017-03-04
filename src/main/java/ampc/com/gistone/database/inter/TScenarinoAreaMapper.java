@@ -83,5 +83,5 @@ public interface TScenarinoAreaMapper {
 
     int updateByPrimaryKey(TScenarinoArea record);
     
-    List<TScenarinoArea> selectByEntity(TScenarinoArea record);
+    List<TScenarinoAreaWithBLOBs> selectByEntity(TScenarinoAreaWithBLOBs record);
 }
