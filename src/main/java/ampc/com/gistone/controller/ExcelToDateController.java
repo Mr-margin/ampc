@@ -1,24 +1,12 @@
 package ampc.com.gistone.controller;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMeasureExcelMapper;
+import ampc.com.gistone.database.inter.TMeasureTemplateMapper;
 import ampc.com.gistone.database.inter.TSectorExcelMapper;
-import ampc.com.gistone.database.inter.TSectorMapper;
 import ampc.com.gistone.database.model.TMeasureExcel;
-import ampc.com.gistone.database.model.TSector;
+import ampc.com.gistone.database.model.TMeasureTemplate;
 import ampc.com.gistone.database.model.TSectorExcel;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.CheckUtil;
@@ -60,15 +48,49 @@ public class ExcelToDateController {
 	@Autowired
 	private TMeasureExcelMapper tMeasureExcelMapper;
 	
+	//措施版本映射
+	@Autowired
+	public TMeasureTemplateMapper tMeasureTemplateMapper;
+	
+	
+	
+	
+	/**
+	 * 用来进行类型装换
+	 * @param tse
+	 * @param tme
+	 * @return
+	 */
+	public TMeasureTemplate castClass(TSectorExcel tse,TMeasureExcel tme){
+		TMeasureTemplate tmt=new TMeasureTemplate();
+		tmt.setDebugModel(tme.getMeasureExcelDebug());
+		tmt.setMeasureTemplateA(tme.getMeasureExcelA());
+		tmt.setMeasureTemplateA1(tme.getMeasureExcelA1());
+		tmt.setMeasureTemplateAsh(tme.getMeasureExcelAsh());
+		tmt.setMeasureTemplateDisplay(tme.getMeasureExcelDisplay());
+		tmt.setMeasureTemplateIntensity(tme.getMeasureExcelIntensity());
+		tmt.setMeasureTemplateIntensity1(tme.getMeasureExcelIntensity1());
+		tmt.setMeasureTemplateLevel(tme.getMeasureExcelLevel());
+		tmt.setMeasureTemplateName(tme.getMeasureExcelName());
+		tmt.setMeasureTemplateOp(tme.getMeasureExcelOp());
+		tmt.setMeasureTemplateSulfer(tme.getMeasureExcelSulfer());
+		tmt.setMeasureTemplateSv(tme.getMeasureExcelSv());
+		tmt.setMeasureTemplateType(tme.getMeasureExcelType());
+		tmt.setSectorsname(tse.getSectorExcelName());
+		tmt.setUserId(tme.getUserId());
+		tmt.setVersionId(tme.getMeasureExcelVersion());
+		return tmt;
+	}
+	
 	
 	/**
 	 * 验证L4s
 	 */
-	public void checkInfo(){
+	public Set<TMeasureTemplate> checkInfo(){
+		//创建一个满足条件的
+		Set<TMeasureTemplate> tmtSet = new HashSet<TMeasureTemplate>();
 		//获取所有的行业信息
 		List<TSectorExcel> tseList=tSectorExcelMapper.selectAll();
-		//获取到所有的行业名称
-		List<String> nameList=tSectorExcelMapper.selectNameByGroupName();
 		//所有措施中的匹配数据
 		List<CheckUtil1> checkUtil1=getMeasure();
 		//循环所有的行业信息
@@ -99,6 +121,8 @@ public class ExcelToDateController {
 							//获取第二个id[2]的条件集合
 							List<CheckUtil> check2 = cu11.getCheck2();
 							if(check2==null){
+								//保存结果
+								tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
 								System.out.println("没有id[2]的条件,该条成立");
 								//返回证明 该条l4s符合这条措施
 								break CU1;
@@ -112,9 +136,11 @@ public class ExcelToDateController {
 										//获取第三个id[3]的条件集合
 										List<CheckUtil> check3 = cu11.getCheck3();
 										if(check3==null){
+											//保存结果
+											tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
 											System.out.println("没有id[3]的条件,该条成立");
 											//返回证明 该条l4s符合这条措施
-											break;
+											break CU1;
 										}
 										//如果不为空 就循环id[3]的条件集合 
 										for (CheckUtil cu3 : check3) {
@@ -125,9 +151,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
 														System.out.println("没有id[4]的条件,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -135,27 +163,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -173,9 +207,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
 														System.out.println("没有id[4]的条件,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -183,27 +219,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -220,9 +262,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("没有id[4],该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -230,27 +274,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -274,9 +324,11 @@ public class ExcelToDateController {
 										//获取第三个id[3]的条件集合
 										List<CheckUtil> check3 = cu11.getCheck3();
 										if(check3==null){
-											System.out.println("没有id[3]的条件,该条成立");
+											//保存结果
+											tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+											System.out.println("没有id[3],该条成立");
 											//返回证明 该条l4s符合这条措施
-											break;
+											break CU1;
 										}
 										//如果不为空 就循环id[3]的条件集合 
 										for (CheckUtil cu3 : check3) {
@@ -287,9 +339,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("没有id[4],该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -297,27 +351,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -335,9 +395,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("没有id[4],该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -345,27 +407,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -382,9 +450,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("没有id[4],该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -392,27 +462,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -436,9 +512,11 @@ public class ExcelToDateController {
 										//获取第三个id[3]的条件集合
 										List<CheckUtil> check3 = cu11.getCheck3();
 										if(check3==null){
-											System.out.println("没有id[3]的条件,该条成立");
+											//保存结果
+											tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+											System.out.println("没有id3,该条成立");
 											//返回证明 该条l4s符合这条措施
-											break;
+											break CU1;
 										}
 										//如果不为空 就循环id[3]的条件集合 
 										for (CheckUtil cu3 : check3) {
@@ -449,9 +527,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("没有id4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -459,27 +539,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -497,9 +583,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("没有id4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -507,27 +595,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -544,9 +638,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("没有id4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -554,27 +650,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -605,7 +707,9 @@ public class ExcelToDateController {
 							//获取第二个id[2]的条件集合
 							List<CheckUtil> check2 = cu11.getCheck2();
 							if(check2==null){
-								System.out.println("没有id[2]的条件,该条成立");
+								//保存结果
+								tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+								System.out.println("m2,该条成立");
 								//返回证明 该条l4s符合这条措施
 								break CU1;
 							}
@@ -618,9 +722,11 @@ public class ExcelToDateController {
 										//获取第三个id[3]的条件集合
 										List<CheckUtil> check3 = cu11.getCheck3();
 										if(check3==null){
-											System.out.println("没有id[3]的条件,该条成立");
+											//保存结果
+											tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+											System.out.println("m3,该条成立");
 											//返回证明 该条l4s符合这条措施
-											break;
+											break CU1;
 										}
 										//如果不为空 就循环id[3]的条件集合 
 										for (CheckUtil cu3 : check3) {
@@ -631,9 +737,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -641,27 +749,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -679,9 +793,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -689,27 +805,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -726,9 +848,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -736,27 +860,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -780,9 +910,11 @@ public class ExcelToDateController {
 										//获取第三个id[3]的条件集合
 										List<CheckUtil> check3 = cu11.getCheck3();
 										if(check3==null){
-											System.out.println("没有id[3]的条件,该条成立");
+											//保存结果
+											tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+											System.out.println("m3,该条成立");
 											//返回证明 该条l4s符合这条措施
-											break;
+											break CU1;
 										}
 										//如果不为空 就循环id[3]的条件集合 
 										for (CheckUtil cu3 : check3) {
@@ -793,9 +925,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -803,27 +937,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -841,9 +981,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -851,27 +993,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -888,9 +1036,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -898,27 +1048,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -942,9 +1098,11 @@ public class ExcelToDateController {
 										//获取第三个id[3]的条件集合
 										List<CheckUtil> check3 = cu11.getCheck3();
 										if(check3==null){
-											System.out.println("没有id[3]的条件,该条成立");
+											//保存结果
+											tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+											System.out.println("m3,该条成立");
 											//返回证明 该条l4s符合这条措施
-											break;
+											break CU1;
 										}
 										//如果不为空 就循环id[3]的条件集合 
 										for (CheckUtil cu3 : check3) {
@@ -955,9 +1113,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -965,27 +1125,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -1003,9 +1169,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -1013,27 +1181,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -1050,9 +1224,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -1060,27 +1236,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -1111,7 +1293,9 @@ public class ExcelToDateController {
 							//获取第二个id[2]的条件集合
 							List<CheckUtil> check2 = cu11.getCheck2();
 							if(check2==null){
-								System.out.println("没有id[2]的条件,该条成立");
+								//保存结果
+								tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+								System.out.println("m2,该条成立");
 								//返回证明 该条l4s符合这条措施
 								break CU1;
 							}
@@ -1124,9 +1308,11 @@ public class ExcelToDateController {
 										//获取第三个id[3]的条件集合
 										List<CheckUtil> check3 = cu11.getCheck3();
 										if(check3==null){
-											System.out.println("没有id[3]的条件,该条成立");
+											//保存结果
+											tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+											System.out.println("m3,该条成立");
 											//返回证明 该条l4s符合这条措施
-											break;
+											break CU1;
 										}
 										//如果不为空 就循环id[3]的条件集合 
 										for (CheckUtil cu3 : check3) {
@@ -1137,9 +1323,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -1147,27 +1335,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -1185,9 +1379,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -1195,27 +1391,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -1232,9 +1434,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -1242,27 +1446,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -1286,9 +1496,11 @@ public class ExcelToDateController {
 										//获取第三个id[3]的条件集合
 										List<CheckUtil> check3 = cu11.getCheck3();
 										if(check3==null){
-											System.out.println("没有id[3]的条件,该条成立");
+											//保存结果
+											tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+											System.out.println("m3,该条成立");
 											//返回证明 该条l4s符合这条措施
-											break;
+											break CU1;
 										}
 										//如果不为空 就循环id[3]的条件集合 
 										for (CheckUtil cu3 : check3) {
@@ -1299,9 +1511,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -1309,27 +1523,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -1347,9 +1567,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -1357,27 +1579,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -1394,9 +1622,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m3,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -1404,27 +1634,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -1448,9 +1684,11 @@ public class ExcelToDateController {
 										//获取第三个id[3]的条件集合
 										List<CheckUtil> check3 = cu11.getCheck3();
 										if(check3==null){
-											System.out.println("没有id[3]的条件,该条成立");
+											//保存结果
+											tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+											System.out.println("m3,该条成立");
 											//返回证明 该条l4s符合这条措施
-											break;
+											break CU1;
 										}
 										//如果不为空 就循环id[3]的条件集合 
 										for (CheckUtil cu3 : check3) {
@@ -1461,9 +1699,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -1471,27 +1711,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -1509,9 +1755,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -1519,27 +1767,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -1556,9 +1810,11 @@ public class ExcelToDateController {
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
-														System.out.println("没有id[4]的条件,该条成立");
+														//保存结果
+														tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+														System.out.println("m4,该条成立");
 														//返回证明 该条l4s符合这条措施
-														break;
+														break CU1;
 													}
 													//如果不为空 就循环id[4]的条件集合 
 													for (CheckUtil cu4 : check4) {
@@ -1566,27 +1822,33 @@ public class ExcelToDateController {
 														if(cu4.getMethod().equals("or")){
 															//如果为or 则满足一个就可以 如果为true 
 															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("between")){
 															//如果为between;规定数字在两个数之间 
 															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
 														}else if(cu4.getMethod().equals("and")){
 															//and规定数字和第一个数字==为true
 															if(cu4.getNum1()==id4){
-																System.out.println("全部成立,返回结果");
+																//保存结果
+																tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+																System.out.println("全部符合,该条成立");
 																//返回证明 该条l4s符合这条措施
-																break;
+																break CU1;
 															}else{
 																continue;
 															}
@@ -1616,6 +1878,20 @@ public class ExcelToDateController {
 			}
 			//返回没有匹配结果 该条行业不匹配
 			System.out.println("id[1]没有匹配的");
+		}
+		//返回结果集
+		return tmtSet;
+	}
+	
+	
+	/**
+	 * 保存到措施模版表
+	 */
+	@RequestMapping("excel/save_TMeasureTemplate")
+	public void saveTMeasureTemplate(){
+		Set<TMeasureTemplate> tmtSet=checkInfo();
+		for (TMeasureTemplate tmt : tmtSet) {
+			tMeasureTemplateMapper.insertSelective(tmt);
 		}
 	}
 	
