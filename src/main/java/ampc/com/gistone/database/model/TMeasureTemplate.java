@@ -1,5 +1,7 @@
 package ampc.com.gistone.database.model;
 
+import java.math.BigDecimal;
+
 public class TMeasureTemplate {
     private Long measureTemplateId;
 
@@ -13,15 +15,33 @@ public class TMeasureTemplate {
 
     private Object mDesc;
 
-    private Object op;
+    private Object measureTemplateOp;
 
-    private Double intensity;
+    private BigDecimal measureTemplateIntensity;
 
-    private Object sectors;
+    private Object sectorsname;
 
     private Object content;
 
-    private Object display;
+    private Object measureTemplateDisplay;
+
+    private Long debugModel;
+
+    private Object measureTemplateType;
+
+    private Long measureTemplateLevel;
+
+    private BigDecimal measureTemplateA;
+
+    private BigDecimal measureTemplateA1;
+
+    private BigDecimal measureTemplateIntensity1;
+
+    private BigDecimal measureTemplateAsh;
+
+    private BigDecimal measureTemplateSulfer;
+
+    private Object measureTemplateSv;
 
     public Long getMeasureTemplateId() {
         return measureTemplateId;
@@ -71,28 +91,28 @@ public class TMeasureTemplate {
         this.mDesc = mDesc;
     }
 
-    public Object getOp() {
-        return op;
+    public Object getMeasureTemplateOp() {
+        return measureTemplateOp;
     }
 
-    public void setOp(Object op) {
-        this.op = op;
+    public void setMeasureTemplateOp(Object measureTemplateOp) {
+        this.measureTemplateOp = measureTemplateOp;
     }
 
-    public Double getIntensity() {
-        return intensity;
+    public BigDecimal getMeasureTemplateIntensity() {
+        return measureTemplateIntensity;
     }
 
-    public void setIntensity(Double intensity) {
-        this.intensity = intensity;
+    public void setMeasureTemplateIntensity(BigDecimal measureTemplateIntensity) {
+        this.measureTemplateIntensity = measureTemplateIntensity;
     }
 
-    public Object getSectors() {
-        return sectors;
+    public Object getSectorsname() {
+        return sectorsname;
     }
 
-    public void setSectors(Object sectors) {
-        this.sectors = sectors;
+    public void setSectorsname(Object sectorsname) {
+        this.sectorsname = sectorsname;
     }
 
     public Object getContent() {
@@ -103,11 +123,83 @@ public class TMeasureTemplate {
         this.content = content;
     }
 
-    public Object getDisplay() {
-        return display;
+    public Object getMeasureTemplateDisplay() {
+        return measureTemplateDisplay;
     }
 
-    public void setDisplay(Object display) {
-        this.display = display;
+    public void setMeasureTemplateDisplay(Object measureTemplateDisplay) {
+        this.measureTemplateDisplay = measureTemplateDisplay;
+    }
+
+    public Long getDebugModel() {
+        return debugModel;
+    }
+
+    public void setDebugModel(Long debugModel) {
+        this.debugModel = debugModel;
+    }
+
+    public Object getMeasureTemplateType() {
+        return measureTemplateType;
+    }
+
+    public void setMeasureTemplateType(Object measureTemplateType) {
+        this.measureTemplateType = measureTemplateType;
+    }
+
+    public Long getMeasureTemplateLevel() {
+        return measureTemplateLevel;
+    }
+
+    public void setMeasureTemplateLevel(Long measureTemplateLevel) {
+        this.measureTemplateLevel = measureTemplateLevel;
+    }
+
+    public BigDecimal getMeasureTemplateA() {
+        return measureTemplateA;
+    }
+
+    public void setMeasureTemplateA(BigDecimal measureTemplateA) {
+        this.measureTemplateA = measureTemplateA;
+    }
+
+    public BigDecimal getMeasureTemplateA1() {
+        return measureTemplateA1;
+    }
+
+    public void setMeasureTemplateA1(BigDecimal measureTemplateA1) {
+        this.measureTemplateA1 = measureTemplateA1;
+    }
+
+    public BigDecimal getMeasureTemplateIntensity1() {
+        return measureTemplateIntensity1;
+    }
+
+    public void setMeasureTemplateIntensity1(BigDecimal measureTemplateIntensity1) {
+        this.measureTemplateIntensity1 = measureTemplateIntensity1;
+    }
+
+    public BigDecimal getMeasureTemplateAsh() {
+        return measureTemplateAsh;
+    }
+
+    public void setMeasureTemplateAsh(BigDecimal measureTemplateAsh) {
+        this.measureTemplateAsh = measureTemplateAsh;
+    }
+
+    public BigDecimal getMeasureTemplateSulfer() {
+        return measureTemplateSulfer;
+    }
+
+    public void setMeasureTemplateSulfer(BigDecimal measureTemplateSulfer) {
+        this.measureTemplateSulfer = measureTemplateSulfer;
+    }
+
+    public Object getMeasureTemplateSv() {
+        return measureTemplateSv;
+    }
+
+    public void setMeasureTemplateSv(Object measureTemplateSv) {
+        this.measureTemplateSv = measureTemplateSv;
     }
 }

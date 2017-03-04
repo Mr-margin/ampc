@@ -18,16 +18,17 @@
     <result column="MEASURE_EXCEL_ASH" property="measureExcelAsh" jdbcType="DECIMAL" />
     <result column="MEASURE_EXCEL_SULFER" property="measureExcelSulfer" jdbcType="DECIMAL" />
     <result column="MEASURE_EXCEL_SV" property="measureExcelSv" jdbcType="VARCHAR" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Base_Column_List" >
     MEASURE_EXCEL_ID, MEASURE_EXCEL_VERSION, MEASURE_EXCEL_NAME, MEASURE_EXCEL_DEBUG, 
     MEASURE_EXCEL_DISPLAY, MEASURE_EXCEL_TYPE, MEASURE_EXCEL_LEVEL, MEASURE_EXCEL_L4S, 
     MEASURE_EXCEL_OP, MEASURE_EXCEL_A, MEASURE_EXCEL_A1, MEASURE_EXCEL_INTENSITY, MEASURE_EXCEL_INTENSITY1, 
-    MEASURE_EXCEL_ASH, MEASURE_EXCEL_SULFER, MEASURE_EXCEL_SV
+    MEASURE_EXCEL_ASH, MEASURE_EXCEL_SULFER, MEASURE_EXCEL_SV, USER_ID
   </sql>
   
   
-   <!--查询当前措施表中的最高版本号-->
+  <!--查询当前措施表中的最高版本号-->
   <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
   	select max(MEASURE_EXCEL_VERSION) from T_MEASURE_EXCEL where USER_ID=#{userId,jdbcType=DECIMAL} 
   </select>
@@ -37,7 +38,7 @@
   	select <include refid="Base_Column_List" />
     from T_MEASURE_EXCEL
   </select>
-  
+
   
   
   
@@ -63,15 +64,15 @@
       MEASURE_EXCEL_TYPE, MEASURE_EXCEL_LEVEL, MEASURE_EXCEL_L4S, 
       MEASURE_EXCEL_OP, MEASURE_EXCEL_A, MEASURE_EXCEL_A1, 
       MEASURE_EXCEL_INTENSITY, MEASURE_EXCEL_INTENSITY1, 
-      MEASURE_EXCEL_ASH, MEASURE_EXCEL_SULFER, MEASURE_EXCEL_SV
-      )
+      MEASURE_EXCEL_ASH, MEASURE_EXCEL_SULFER, MEASURE_EXCEL_SV, 
+      USER_ID)
     values (#{measureExcelId,jdbcType=DECIMAL}, #{measureExcelVersion,jdbcType=DECIMAL}, 
       #{measureExcelName,jdbcType=VARCHAR}, #{measureExcelDebug,jdbcType=DECIMAL}, #{measureExcelDisplay,jdbcType=OTHER}, 
       #{measureExcelType,jdbcType=OTHER}, #{measureExcelLevel,jdbcType=DECIMAL}, #{measureExcelL4s,jdbcType=VARCHAR}, 
       #{measureExcelOp,jdbcType=VARCHAR}, #{measureExcelA,jdbcType=DECIMAL}, #{measureExcelA1,jdbcType=DECIMAL}, 
       #{measureExcelIntensity,jdbcType=DECIMAL}, #{measureExcelIntensity1,jdbcType=DECIMAL}, 
-      #{measureExcelAsh,jdbcType=DECIMAL}, #{measureExcelSulfer,jdbcType=DECIMAL}, #{measureExcelSv,jdbcType=VARCHAR}
-      )
+      #{measureExcelAsh,jdbcType=DECIMAL}, #{measureExcelSulfer,jdbcType=DECIMAL}, #{measureExcelSv,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TMeasureExcel" >
     insert into T_MEASURE_EXCEL
@@ -177,7 +178,7 @@
       <if test="measureExcelSv != null" >
         #{measureExcelSv,jdbcType=VARCHAR},
       </if>
-       <if test="userId != null" >
+      <if test="userId != null" >
         #{userId,jdbcType=DECIMAL},
       </if>
     </trim>
@@ -230,6 +231,9 @@
       <if test="measureExcelSv != null" >
         MEASURE_EXCEL_SV = #{measureExcelSv,jdbcType=VARCHAR},
       </if>
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
     </set>
     where MEASURE_EXCEL_ID = #{measureExcelId,jdbcType=DECIMAL}
   </update>
@@ -249,7 +253,8 @@
       MEASURE_EXCEL_INTENSITY1 = #{measureExcelIntensity1,jdbcType=DECIMAL},
       MEASURE_EXCEL_ASH = #{measureExcelAsh,jdbcType=DECIMAL},
       MEASURE_EXCEL_SULFER = #{measureExcelSulfer,jdbcType=DECIMAL},
-      MEASURE_EXCEL_SV = #{measureExcelSv,jdbcType=VARCHAR}
+      MEASURE_EXCEL_SV = #{measureExcelSv,jdbcType=VARCHAR},
+      USER_ID = #{userId,jdbcType=DECIMAL}
     where MEASURE_EXCEL_ID = #{measureExcelId,jdbcType=DECIMAL}
   </update>
 </mapper>
