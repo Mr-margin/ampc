@@ -1,5 +1,6 @@
 package ampc.com.gistone.database.model;
 
+
 import java.math.BigDecimal;
 
 public class TMeasureTemplate {
@@ -202,4 +203,16 @@ public class TMeasureTemplate {
     public void setMeasureTemplateSv(Object measureTemplateSv) {
         this.measureTemplateSv = measureTemplateSv;
     }
+    @Override
+	public boolean equals(Object obj) {
+    	TMeasureTemplate s = (TMeasureTemplate) obj;
+		return measureTemplateName.equals(s.measureTemplateName) && sectorsname.equals(s.sectorsname);
+	}
+
+	@Override
+	public int hashCode() {
+		String in = measureTemplateName.toString() + sectorsname;
+		return in.hashCode();
+	}
+    
 }
