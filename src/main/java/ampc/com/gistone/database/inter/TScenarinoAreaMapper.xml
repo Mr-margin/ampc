@@ -266,7 +266,7 @@
     where SCENARINO_AREA_ID = #{scenarinoAreaId,jdbcType=DECIMAL}
   </update>
 
- <select id="selectByEntity" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+ <select id="selectByEntity" resultMap="ResultMapWithBLOBs" parameterType="ampc.com.gistone.database.model.TScenarinoAreaWithBLOBs" >
     select 
     <include refid="Base_Column_List" />
     ,
