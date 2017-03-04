@@ -83,7 +83,7 @@ public class ExcelToDateController {
 			int id3=Integer.valueOf(ids[2]);
 			int id4=Integer.valueOf(ids[3]);
 			//循环所有的措施条件集合帮助类
-			for (CheckUtil1 cu11 : checkUtil1) {
+			CU1:for (CheckUtil1 cu11 : checkUtil1) {
 				//获取第一个id[1]的条件集合
 				List<CheckUtil> check1 = cu11.getCheck1();
 				if(check1==null){
@@ -101,7 +101,7 @@ public class ExcelToDateController {
 							if(check2==null){
 								System.out.println("没有id[2]的条件,该条成立");
 								//返回证明 该条l4s符合这条措施
-								break;
+								break CU1;
 							}
 							//如果不为空 就循环id[2]的条件集合 
 							for (CheckUtil cu2 : check2) {
@@ -122,10 +122,6 @@ public class ExcelToDateController {
 											if(cu3.getMethod().equals("or")){
 												//如果为or 则满足一个就可以 如果为true 
 												if(id3==cu3.getNum1()||id3==cu3.getNum2()){
-													
-													
-													
-													
 													//获取第四个id[4]的条件集合
 													List<CheckUtil> check4 = cu11.getCheck4();
 													if(check4==null){
@@ -165,59 +161,1461 @@ public class ExcelToDateController {
 															}
 														}
 													}
-													System.out.println("没有匹配的");
 													//返回没有匹配结果 该条行业不匹配
-												
-												
-												
-												
-												
+													System.out.println("id[4]没有匹配的");
 												}else{
-													//第三层的条件不匹配  继续判断下一条条件
+													//第三层的第一个条件不匹配 
 													continue;
 												}
 											}else if(cu3.getMethod().equals("between")){
-												if(id1<=cu1.getNum1()&&id1>=cu1.getNum2()){
-													
+												//如果为between;规定数字在两个数之间 
+												if(cu3.getNum1()<=id3&&id3<=cu3.getNum2()){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
 												}else{
 													continue;
 												}
-											}else if(cu1.getMethod().equals("and")){
-												
-												
+											}else if(cu3.getMethod().equals("and")){
+												//and规定数字和第一个数字==为true
+												if(cu3.getNum1()==id3){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													continue;
+												}
 											}
-										
 										}
+										//返回没有匹配结果 该条行业不匹配
+										System.out.println("id[3]没有匹配的");
 									}else{
 										continue;
 									}
-								}else if(cu1.getMethod().equals("between")){
-									if(id1<=cu1.getNum1()&&id1>=cu1.getNum2()){
-										
+								}else if(cu2.getMethod().equals("between")){
+									//如果为between;规定数字在两个数之间 
+									if(cu2.getNum1()<=id2&&id2<=cu2.getNum2()){
+										//获取第三个id[3]的条件集合
+										List<CheckUtil> check3 = cu11.getCheck3();
+										if(check3==null){
+											System.out.println("没有id[3]的条件,该条成立");
+											//返回证明 该条l4s符合这条措施
+											break;
+										}
+										//如果不为空 就循环id[3]的条件集合 
+										for (CheckUtil cu3 : check3) {
+											//判断符号的条件  
+											if(cu3.getMethod().equals("or")){
+												//如果为or 则满足一个就可以 如果为true 
+												if(id3==cu3.getNum1()||id3==cu3.getNum2()){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													//第三层的第一个条件不匹配 
+													continue;
+												}
+											}else if(cu3.getMethod().equals("between")){
+												//如果为between;规定数字在两个数之间 
+												if(cu3.getNum1()<=id3&&id3<=cu3.getNum2()){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													continue;
+												}
+											}else if(cu3.getMethod().equals("and")){
+												//and规定数字和第一个数字==为true
+												if(cu3.getNum1()==id3){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													continue;
+												}
+											}
+										}
+										//返回没有匹配结果 该条行业不匹配
+										System.out.println("id[3]没有匹配的");
 									}else{
 										continue;
 									}
-								}else if(cu1.getMethod().equals("and")){
-									
-									
+								}else if(cu2.getMethod().equals("and")){
+									//and规定数字和第一个数字==为true
+									if(cu2.getNum1()==id2){
+										//获取第三个id[3]的条件集合
+										List<CheckUtil> check3 = cu11.getCheck3();
+										if(check3==null){
+											System.out.println("没有id[3]的条件,该条成立");
+											//返回证明 该条l4s符合这条措施
+											break;
+										}
+										//如果不为空 就循环id[3]的条件集合 
+										for (CheckUtil cu3 : check3) {
+											//判断符号的条件  
+											if(cu3.getMethod().equals("or")){
+												//如果为or 则满足一个就可以 如果为true 
+												if(id3==cu3.getNum1()||id3==cu3.getNum2()){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													//第三层的第一个条件不匹配 
+													continue;
+												}
+											}else if(cu3.getMethod().equals("between")){
+												//如果为between;规定数字在两个数之间 
+												if(cu3.getNum1()<=id3&&id3<=cu3.getNum2()){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													continue;
+												}
+											}else if(cu3.getMethod().equals("and")){
+												//and规定数字和第一个数字==为true
+												if(cu3.getNum1()==id3){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													continue;
+												}
+											}
+										}
+										//返回没有匹配结果 该条行业不匹配
+										System.out.println("id[3]没有匹配的");
+									}else{
+										continue;
+									}
 								}
 							}
+							//返回没有匹配结果 该条行业不匹配
+							System.out.println("id[2]没有匹配的");
 						}else{
 							continue;
 						}
 					}else if(cu1.getMethod().equals("between")){
-						if(id1<=cu1.getNum1()&&id1>=cu1.getNum2()){
-							
+						//如果为between;规定数字在两个数之间 
+						if(cu1.getNum1()<=id1&&id1<=cu1.getNum2()){
+							//获取第二个id[2]的条件集合
+							List<CheckUtil> check2 = cu11.getCheck2();
+							if(check2==null){
+								System.out.println("没有id[2]的条件,该条成立");
+								//返回证明 该条l4s符合这条措施
+								break CU1;
+							}
+							//如果不为空 就循环id[2]的条件集合 
+							for (CheckUtil cu2 : check2) {
+								//判断符号的条件  
+								if(cu2.getMethod().equals("or")){
+									//如果为or 则满足一个就可以 如果为true 
+									if(id2==cu2.getNum1()||id2==cu2.getNum2()){
+										//获取第三个id[3]的条件集合
+										List<CheckUtil> check3 = cu11.getCheck3();
+										if(check3==null){
+											System.out.println("没有id[3]的条件,该条成立");
+											//返回证明 该条l4s符合这条措施
+											break;
+										}
+										//如果不为空 就循环id[3]的条件集合 
+										for (CheckUtil cu3 : check3) {
+											//判断符号的条件  
+											if(cu3.getMethod().equals("or")){
+												//如果为or 则满足一个就可以 如果为true 
+												if(id3==cu3.getNum1()||id3==cu3.getNum2()){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													//第三层的第一个条件不匹配 
+													continue;
+												}
+											}else if(cu3.getMethod().equals("between")){
+												//如果为between;规定数字在两个数之间 
+												if(cu3.getNum1()<=id3&&id3<=cu3.getNum2()){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													continue;
+												}
+											}else if(cu3.getMethod().equals("and")){
+												//and规定数字和第一个数字==为true
+												if(cu3.getNum1()==id3){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													continue;
+												}
+											}
+										}
+										//返回没有匹配结果 该条行业不匹配
+										System.out.println("id[3]没有匹配的");
+									}else{
+										continue;
+									}
+								}else if(cu2.getMethod().equals("between")){
+									//如果为between;规定数字在两个数之间 
+									if(cu2.getNum1()<=id2&&id2<=cu2.getNum2()){
+										//获取第三个id[3]的条件集合
+										List<CheckUtil> check3 = cu11.getCheck3();
+										if(check3==null){
+											System.out.println("没有id[3]的条件,该条成立");
+											//返回证明 该条l4s符合这条措施
+											break;
+										}
+										//如果不为空 就循环id[3]的条件集合 
+										for (CheckUtil cu3 : check3) {
+											//判断符号的条件  
+											if(cu3.getMethod().equals("or")){
+												//如果为or 则满足一个就可以 如果为true 
+												if(id3==cu3.getNum1()||id3==cu3.getNum2()){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													//第三层的第一个条件不匹配 
+													continue;
+												}
+											}else if(cu3.getMethod().equals("between")){
+												//如果为between;规定数字在两个数之间 
+												if(cu3.getNum1()<=id3&&id3<=cu3.getNum2()){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													continue;
+												}
+											}else if(cu3.getMethod().equals("and")){
+												//and规定数字和第一个数字==为true
+												if(cu3.getNum1()==id3){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													continue;
+												}
+											}
+										}
+										//返回没有匹配结果 该条行业不匹配
+										System.out.println("id[3]没有匹配的");
+									}else{
+										continue;
+									}
+								}else if(cu2.getMethod().equals("and")){
+									//and规定数字和第一个数字==为true
+									if(cu2.getNum1()==id2){
+										//获取第三个id[3]的条件集合
+										List<CheckUtil> check3 = cu11.getCheck3();
+										if(check3==null){
+											System.out.println("没有id[3]的条件,该条成立");
+											//返回证明 该条l4s符合这条措施
+											break;
+										}
+										//如果不为空 就循环id[3]的条件集合 
+										for (CheckUtil cu3 : check3) {
+											//判断符号的条件  
+											if(cu3.getMethod().equals("or")){
+												//如果为or 则满足一个就可以 如果为true 
+												if(id3==cu3.getNum1()||id3==cu3.getNum2()){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													//第三层的第一个条件不匹配 
+													continue;
+												}
+											}else if(cu3.getMethod().equals("between")){
+												//如果为between;规定数字在两个数之间 
+												if(cu3.getNum1()<=id3&&id3<=cu3.getNum2()){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													continue;
+												}
+											}else if(cu3.getMethod().equals("and")){
+												//and规定数字和第一个数字==为true
+												if(cu3.getNum1()==id3){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													continue;
+												}
+											}
+										}
+										//返回没有匹配结果 该条行业不匹配
+										System.out.println("id[3]没有匹配的");
+									}else{
+										continue;
+									}
+								}
+							}
+							//返回没有匹配结果 该条行业不匹配
+							System.out.println("id[2]没有匹配的");
 						}else{
 							continue;
 						}
 					}else if(cu1.getMethod().equals("and")){
-						
-						
+						//and规定数字和第一个数字==为true
+						if(cu1.getNum1()==id1){
+							//获取第二个id[2]的条件集合
+							List<CheckUtil> check2 = cu11.getCheck2();
+							if(check2==null){
+								System.out.println("没有id[2]的条件,该条成立");
+								//返回证明 该条l4s符合这条措施
+								break CU1;
+							}
+							//如果不为空 就循环id[2]的条件集合 
+							for (CheckUtil cu2 : check2) {
+								//判断符号的条件  
+								if(cu2.getMethod().equals("or")){
+									//如果为or 则满足一个就可以 如果为true 
+									if(id2==cu2.getNum1()||id2==cu2.getNum2()){
+										//获取第三个id[3]的条件集合
+										List<CheckUtil> check3 = cu11.getCheck3();
+										if(check3==null){
+											System.out.println("没有id[3]的条件,该条成立");
+											//返回证明 该条l4s符合这条措施
+											break;
+										}
+										//如果不为空 就循环id[3]的条件集合 
+										for (CheckUtil cu3 : check3) {
+											//判断符号的条件  
+											if(cu3.getMethod().equals("or")){
+												//如果为or 则满足一个就可以 如果为true 
+												if(id3==cu3.getNum1()||id3==cu3.getNum2()){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													//第三层的第一个条件不匹配 
+													continue;
+												}
+											}else if(cu3.getMethod().equals("between")){
+												//如果为between;规定数字在两个数之间 
+												if(cu3.getNum1()<=id3&&id3<=cu3.getNum2()){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													continue;
+												}
+											}else if(cu3.getMethod().equals("and")){
+												//and规定数字和第一个数字==为true
+												if(cu3.getNum1()==id3){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													continue;
+												}
+											}
+										}
+										//返回没有匹配结果 该条行业不匹配
+										System.out.println("id[3]没有匹配的");
+									}else{
+										continue;
+									}
+								}else if(cu2.getMethod().equals("between")){
+									//如果为between;规定数字在两个数之间 
+									if(cu2.getNum1()<=id2&&id2<=cu2.getNum2()){
+										//获取第三个id[3]的条件集合
+										List<CheckUtil> check3 = cu11.getCheck3();
+										if(check3==null){
+											System.out.println("没有id[3]的条件,该条成立");
+											//返回证明 该条l4s符合这条措施
+											break;
+										}
+										//如果不为空 就循环id[3]的条件集合 
+										for (CheckUtil cu3 : check3) {
+											//判断符号的条件  
+											if(cu3.getMethod().equals("or")){
+												//如果为or 则满足一个就可以 如果为true 
+												if(id3==cu3.getNum1()||id3==cu3.getNum2()){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													//第三层的第一个条件不匹配 
+													continue;
+												}
+											}else if(cu3.getMethod().equals("between")){
+												//如果为between;规定数字在两个数之间 
+												if(cu3.getNum1()<=id3&&id3<=cu3.getNum2()){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													continue;
+												}
+											}else if(cu3.getMethod().equals("and")){
+												//and规定数字和第一个数字==为true
+												if(cu3.getNum1()==id3){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													continue;
+												}
+											}
+										}
+										//返回没有匹配结果 该条行业不匹配
+										System.out.println("id[3]没有匹配的");
+									}else{
+										continue;
+									}
+								}else if(cu2.getMethod().equals("and")){
+									//and规定数字和第一个数字==为true
+									if(cu2.getNum1()==id2){
+										//获取第三个id[3]的条件集合
+										List<CheckUtil> check3 = cu11.getCheck3();
+										if(check3==null){
+											System.out.println("没有id[3]的条件,该条成立");
+											//返回证明 该条l4s符合这条措施
+											break;
+										}
+										//如果不为空 就循环id[3]的条件集合 
+										for (CheckUtil cu3 : check3) {
+											//判断符号的条件  
+											if(cu3.getMethod().equals("or")){
+												//如果为or 则满足一个就可以 如果为true 
+												if(id3==cu3.getNum1()||id3==cu3.getNum2()){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													//第三层的第一个条件不匹配 
+													continue;
+												}
+											}else if(cu3.getMethod().equals("between")){
+												//如果为between;规定数字在两个数之间 
+												if(cu3.getNum1()<=id3&&id3<=cu3.getNum2()){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													continue;
+												}
+											}else if(cu3.getMethod().equals("and")){
+												//and规定数字和第一个数字==为true
+												if(cu3.getNum1()==id3){
+													//获取第四个id[4]的条件集合
+													List<CheckUtil> check4 = cu11.getCheck4();
+													if(check4==null){
+														System.out.println("没有id[4]的条件,该条成立");
+														//返回证明 该条l4s符合这条措施
+														break;
+													}
+													//如果不为空 就循环id[4]的条件集合 
+													for (CheckUtil cu4 : check4) {
+														//判断符号的条件  
+														if(cu4.getMethod().equals("or")){
+															//如果为or 则满足一个就可以 如果为true 
+															if(id4==cu4.getNum1()||id4==cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("between")){
+															//如果为between;规定数字在两个数之间 
+															if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}else if(cu4.getMethod().equals("and")){
+															//and规定数字和第一个数字==为true
+															if(cu4.getNum1()==id4){
+																System.out.println("全部成立,返回结果");
+																//返回证明 该条l4s符合这条措施
+																break;
+															}else{
+																continue;
+															}
+														}
+													}
+													//返回没有匹配结果 该条行业不匹配
+													System.out.println("id[4]没有匹配的");
+												}else{
+													continue;
+												}
+											}
+										}
+										//返回没有匹配结果 该条行业不匹配
+										System.out.println("id[3]没有匹配的");
+									}else{
+										continue;
+									}
+								}
+							}
+							//返回没有匹配结果 该条行业不匹配
+							System.out.println("id[2]没有匹配的");
+						}else{
+							continue;
+						}
 					}
 				}
-				
 			}
+			//返回没有匹配结果 该条行业不匹配
+			System.out.println("id[1]没有匹配的");
 		}
 	}
 	
@@ -356,62 +1754,6 @@ public class ExcelToDateController {
 	
 
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
