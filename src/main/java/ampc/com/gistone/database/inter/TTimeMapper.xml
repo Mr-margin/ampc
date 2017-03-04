@@ -32,6 +32,7 @@
     from T_TIME TIM 
     INNER JOIN T_PLAN PL ON TIM.PLAN_ID=PL.PLAN_ID
     where TIM.AREA_ID = #{areaId,jdbcType=OTHER}
+    order by TIME_START_DATE asc
   </select>
   
   <!-- 根据区域ID查询所有的时段Id -->
