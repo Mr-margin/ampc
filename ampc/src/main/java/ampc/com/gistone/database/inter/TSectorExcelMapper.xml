@@ -3,21 +3,34 @@
 <mapper namespace="ampc.com.gistone.database.inter.TSectorExcelMapper" >
   <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TSectorExcel" >
     <id column="SECTOR_EXCEL_ID" property="sectorExcelId" jdbcType="DECIMAL" />
-    <result column="VERSION_EXCEL__ID" property="versionExcelId" jdbcType="DECIMAL" />
-    <result column="SECTOR_EXCEL__NAME" property="sectorExcelName" jdbcType="OTHER" />
+    <result column="VERSION_EXCEL_ID" property="versionExcelId" jdbcType="DECIMAL" />
+    <result column="SECTOR_EXCEL_NAME" property="sectorExcelName" jdbcType="OTHER" />
     <result column="SECTOR_EXCEL_L4S" property="sectorExcelL4s" jdbcType="OTHER" />
     <result column="SECTOR_EXCEL_ADD_TIME" property="sectorExcelAddTime" jdbcType="TIMESTAMP" />
     <result column="SECTOR_EXCEL_UPDATE_TIME" property="sectorExcelUpdateTime" jdbcType="TIMESTAMP" />
-    <result column="SECTOR_EXCEL_MEASURE_IDS" property="sectorExcelMeasureIds" jdbcType="OTHER" />
     <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="ID" property="id" jdbcType="OTHER" />
+    <result column="ID0" property="id0" jdbcType="VARCHAR" />
+    <result column="ID0NAME" property="id0name" jdbcType="OTHER" />
+    <result column="ID1" property="id1" jdbcType="VARCHAR" />
+    <result column="ID1NAME" property="id1name" jdbcType="OTHER" />
+    <result column="ID2" property="id2" jdbcType="VARCHAR" />
+    <result column="ID2NAME" property="id2name" jdbcType="OTHER" />
+    <result column="ID3" property="id3" jdbcType="VARCHAR" />
+    <result column="ID3NAME" property="id3name" jdbcType="OTHER" />
+    <result column="GROUP_1" property="group1" jdbcType="OTHER" />
+    <result column="GROUP_2" property="group2" jdbcType="OTHER" />
+    <result column="GROUP_3" property="group3" jdbcType="OTHER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    SECTOR_EXCEL_ID, VERSION_EXCEL__ID, SECTOR_EXCEL__NAME, SECTOR_EXCEL_L4S, SECTOR_EXCEL_ADD_TIME, 
-    SECTOR_EXCEL_UPDATE_TIME, SECTOR_EXCEL_MEASURE_IDS, USER_ID
+    SECTOR_EXCEL_ID, VERSION_EXCEL_ID, SECTOR_EXCEL_NAME, SECTOR_EXCEL_L4S, SECTOR_EXCEL_ADD_TIME, 
+    SECTOR_EXCEL_UPDATE_TIME, USER_ID, ID, ID0, ID0NAME, ID1, ID1NAME, ID2, ID2NAME, 
+    ID3, ID3NAME, GROUP_1, GROUP_2, GROUP_3
   </sql>
-  
-  
-  <!--查询当前行业表中的最高版本号-->
+ 
+ 
+ 
+ <!--查询当前行业表中的最高版本号-->
   <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
   	select max(version_id) from T_SECTOR_EXCEL where USER_ID=#{userId,jdbcType=DECIMAL} 
   </select>
@@ -33,25 +46,31 @@
   	select SECTOR_EXCEL__NAME
     from T_SECTOR_EXCEL GROUP BY SECTOR_EXCEL__NAME
   </select>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -63,12 +82,18 @@
     where SECTOR_EXCEL_ID = #{sectorExcelId,jdbcType=DECIMAL}
   </delete>
   <insert id="insert" parameterType="ampc.com.gistone.database.model.TSectorExcel" >
-    insert into T_SECTOR_EXCEL (SECTOR_EXCEL_ID, VERSION_EXCEL__ID, SECTOR_EXCEL__NAME, 
+    insert into T_SECTOR_EXCEL (SECTOR_EXCEL_ID, VERSION_EXCEL_ID, SECTOR_EXCEL_NAME, 
       SECTOR_EXCEL_L4S, SECTOR_EXCEL_ADD_TIME, SECTOR_EXCEL_UPDATE_TIME, 
-      SECTOR_EXCEL_MEASURE_IDS, USER_ID)
+      USER_ID, ID, ID0, ID0NAME, 
+      ID1, ID1NAME, ID2, ID2NAME, 
+      ID3, ID3NAME, GROUP_1, GROUP_2, 
+      GROUP_3)
     values (#{sectorExcelId,jdbcType=DECIMAL}, #{versionExcelId,jdbcType=DECIMAL}, #{sectorExcelName,jdbcType=OTHER}, 
       #{sectorExcelL4s,jdbcType=OTHER}, #{sectorExcelAddTime,jdbcType=TIMESTAMP}, #{sectorExcelUpdateTime,jdbcType=TIMESTAMP}, 
-      #{sectorExcelMeasureIds,jdbcType=OTHER}, #{userId,jdbcType=DECIMAL})
+      #{userId,jdbcType=DECIMAL}, #{id,jdbcType=OTHER}, #{id0,jdbcType=VARCHAR}, #{id0name,jdbcType=OTHER}, 
+      #{id1,jdbcType=VARCHAR}, #{id1name,jdbcType=OTHER}, #{id2,jdbcType=VARCHAR}, #{id2name,jdbcType=OTHER}, 
+      #{id3,jdbcType=VARCHAR}, #{id3name,jdbcType=OTHER}, #{group1,jdbcType=OTHER}, #{group2,jdbcType=OTHER}, 
+      #{group3,jdbcType=OTHER})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TSectorExcel" >
     insert into T_SECTOR_EXCEL
@@ -77,10 +102,10 @@
         SECTOR_EXCEL_ID,
       </if>
       <if test="versionExcelId != null" >
-        VERSION_EXCEL__ID,
+        VERSION_EXCEL_ID,
       </if>
       <if test="sectorExcelName != null" >
-        SECTOR_EXCEL__NAME,
+        SECTOR_EXCEL_NAME,
       </if>
       <if test="sectorExcelL4s != null" >
         SECTOR_EXCEL_L4S,
@@ -91,11 +116,44 @@
       <if test="sectorExcelUpdateTime != null" >
         SECTOR_EXCEL_UPDATE_TIME,
       </if>
-      <if test="sectorExcelMeasureIds != null" >
-        SECTOR_EXCEL_MEASURE_IDS,
-      </if>
       <if test="userId != null" >
         USER_ID,
+      </if>
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="id0 != null" >
+        ID0,
+      </if>
+      <if test="id0name != null" >
+        ID0NAME,
+      </if>
+      <if test="id1 != null" >
+        ID1,
+      </if>
+      <if test="id1name != null" >
+        ID1NAME,
+      </if>
+      <if test="id2 != null" >
+        ID2,
+      </if>
+      <if test="id2name != null" >
+        ID2NAME,
+      </if>
+      <if test="id3 != null" >
+        ID3,
+      </if>
+      <if test="id3name != null" >
+        ID3NAME,
+      </if>
+      <if test="group1 != null" >
+        GROUP_1,
+      </if>
+      <if test="group2 != null" >
+        GROUP_2,
+      </if>
+      <if test="group3 != null" >
+        GROUP_3,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -117,11 +175,44 @@
       <if test="sectorExcelUpdateTime != null" >
         #{sectorExcelUpdateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="sectorExcelMeasureIds != null" >
-        #{sectorExcelMeasureIds,jdbcType=OTHER},
-      </if>
       <if test="userId != null" >
         #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="id != null" >
+        #{id,jdbcType=OTHER},
+      </if>
+      <if test="id0 != null" >
+        #{id0,jdbcType=VARCHAR},
+      </if>
+      <if test="id0name != null" >
+        #{id0name,jdbcType=OTHER},
+      </if>
+      <if test="id1 != null" >
+        #{id1,jdbcType=VARCHAR},
+      </if>
+      <if test="id1name != null" >
+        #{id1name,jdbcType=OTHER},
+      </if>
+      <if test="id2 != null" >
+        #{id2,jdbcType=VARCHAR},
+      </if>
+      <if test="id2name != null" >
+        #{id2name,jdbcType=OTHER},
+      </if>
+      <if test="id3 != null" >
+        #{id3,jdbcType=VARCHAR},
+      </if>
+      <if test="id3name != null" >
+        #{id3name,jdbcType=OTHER},
+      </if>
+      <if test="group1 != null" >
+        #{group1,jdbcType=OTHER},
+      </if>
+      <if test="group2 != null" >
+        #{group2,jdbcType=OTHER},
+      </if>
+      <if test="group3 != null" >
+        #{group3,jdbcType=OTHER},
       </if>
     </trim>
   </insert>
@@ -129,10 +220,10 @@
     update T_SECTOR_EXCEL
     <set >
       <if test="versionExcelId != null" >
-        VERSION_EXCEL__ID = #{versionExcelId,jdbcType=DECIMAL},
+        VERSION_EXCEL_ID = #{versionExcelId,jdbcType=DECIMAL},
       </if>
       <if test="sectorExcelName != null" >
-        SECTOR_EXCEL__NAME = #{sectorExcelName,jdbcType=OTHER},
+        SECTOR_EXCEL_NAME = #{sectorExcelName,jdbcType=OTHER},
       </if>
       <if test="sectorExcelL4s != null" >
         SECTOR_EXCEL_L4S = #{sectorExcelL4s,jdbcType=OTHER},
@@ -143,24 +234,68 @@
       <if test="sectorExcelUpdateTime != null" >
         SECTOR_EXCEL_UPDATE_TIME = #{sectorExcelUpdateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="sectorExcelMeasureIds != null" >
-        SECTOR_EXCEL_MEASURE_IDS = #{sectorExcelMeasureIds,jdbcType=OTHER},
-      </if>
       <if test="userId != null" >
         USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="id != null" >
+        ID = #{id,jdbcType=OTHER},
+      </if>
+      <if test="id0 != null" >
+        ID0 = #{id0,jdbcType=VARCHAR},
+      </if>
+      <if test="id0name != null" >
+        ID0NAME = #{id0name,jdbcType=OTHER},
+      </if>
+      <if test="id1 != null" >
+        ID1 = #{id1,jdbcType=VARCHAR},
+      </if>
+      <if test="id1name != null" >
+        ID1NAME = #{id1name,jdbcType=OTHER},
+      </if>
+      <if test="id2 != null" >
+        ID2 = #{id2,jdbcType=VARCHAR},
+      </if>
+      <if test="id2name != null" >
+        ID2NAME = #{id2name,jdbcType=OTHER},
+      </if>
+      <if test="id3 != null" >
+        ID3 = #{id3,jdbcType=VARCHAR},
+      </if>
+      <if test="id3name != null" >
+        ID3NAME = #{id3name,jdbcType=OTHER},
+      </if>
+      <if test="group1 != null" >
+        GROUP_1 = #{group1,jdbcType=OTHER},
+      </if>
+      <if test="group2 != null" >
+        GROUP_2 = #{group2,jdbcType=OTHER},
+      </if>
+      <if test="group3 != null" >
+        GROUP_3 = #{group3,jdbcType=OTHER},
       </if>
     </set>
     where SECTOR_EXCEL_ID = #{sectorExcelId,jdbcType=DECIMAL}
   </update>
   <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TSectorExcel" >
     update T_SECTOR_EXCEL
-    set VERSION_EXCEL__ID = #{versionExcelId,jdbcType=DECIMAL},
-      SECTOR_EXCEL__NAME = #{sectorExcelName,jdbcType=OTHER},
+    set VERSION_EXCEL_ID = #{versionExcelId,jdbcType=DECIMAL},
+      SECTOR_EXCEL_NAME = #{sectorExcelName,jdbcType=OTHER},
       SECTOR_EXCEL_L4S = #{sectorExcelL4s,jdbcType=OTHER},
       SECTOR_EXCEL_ADD_TIME = #{sectorExcelAddTime,jdbcType=TIMESTAMP},
       SECTOR_EXCEL_UPDATE_TIME = #{sectorExcelUpdateTime,jdbcType=TIMESTAMP},
-      SECTOR_EXCEL_MEASURE_IDS = #{sectorExcelMeasureIds,jdbcType=OTHER},
-      USER_ID = #{userId,jdbcType=DECIMAL}
+      USER_ID = #{userId,jdbcType=DECIMAL},
+      ID = #{id,jdbcType=OTHER},
+      ID0 = #{id0,jdbcType=VARCHAR},
+      ID0NAME = #{id0name,jdbcType=OTHER},
+      ID1 = #{id1,jdbcType=VARCHAR},
+      ID1NAME = #{id1name,jdbcType=OTHER},
+      ID2 = #{id2,jdbcType=VARCHAR},
+      ID2NAME = #{id2name,jdbcType=OTHER},
+      ID3 = #{id3,jdbcType=VARCHAR},
+      ID3NAME = #{id3name,jdbcType=OTHER},
+      GROUP_1 = #{group1,jdbcType=OTHER},
+      GROUP_2 = #{group2,jdbcType=OTHER},
+      GROUP_3 = #{group3,jdbcType=OTHER}
     where SECTOR_EXCEL_ID = #{sectorExcelId,jdbcType=DECIMAL}
   </update>
 </mapper>

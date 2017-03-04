@@ -4,13 +4,8 @@ import java.util.List;
 
 import ampc.com.gistone.database.model.TSectorExcel;
 
-/**
- * Excel映射
- * @author WangShanxi
- * @version v.0.1
- * @date 2017年3月3日
- */
 public interface TSectorExcelMapper {
+
 	/**
 	 * 查询当前行业Excel表中的最高版本号
 	 * @param map

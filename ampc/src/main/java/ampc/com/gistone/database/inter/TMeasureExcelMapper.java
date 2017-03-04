@@ -3,7 +3,6 @@ package ampc.com.gistone.database.inter;
 import java.util.List;
 
 import ampc.com.gistone.database.model.TMeasureExcel;
-import ampc.com.gistone.database.model.TSectorExcel;
 
 /**
  * 措施excel映射
