@@ -52,6 +52,100 @@ public class ExcelToDateController {
 	@Autowired
 	public TMeasureTemplateMapper tMeasureTemplateMapper;
 	
+	/**
+	 * 保存到措施模版表
+	 */
+	@RequestMapping("excel/save_TMeasureTemplate")
+	public void saveTMeasureTemplate(){
+		Set<TMeasureTemplate> tmtSet=checkInfo();
+		System.out.println(tmtSet.size());
+		for (TMeasureTemplate tmt : tmtSet) {
+			tMeasureTemplateMapper.insertSelective(tmt);
+		}
+	}
+	
+	/**
+	 * 根据Excel更改措施Excel表中数据
+	 * @param request     请求
+	 * @param response    响应
+	 * @return 返回响应结果对象
+	 */
+	@RequestMapping("excel/update_measureExcelDate")
+	public AmpcResult update_MeasureExcelDate(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
+		// 添加异常捕捉
+		try {
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			// 用户的id 确定当前用户
+			Long userId = Long.parseLong(data.get("userId").toString());
+			/**
+			 * 根据request获取excel地址
+			 */
+			String fileName = request.getServletContext().getRealPath("/")+ "***.xlsx";
+			Long versionId=tMeasureExcelMapper.selectMaxVersion(userId);
+			if(versionId==null){
+				versionId=1L;
+			}else{
+				versionId++;
+			}
+			//地址不确定  先写死了 获取到所有Excel中需要的数据
+			List<TMeasureExcel> readTMeasure = ExcelToDate.ReadMeasure(fileName,versionId,userId);
+			for (TMeasureExcel tMeasure : readTMeasure) {
+				int result=tMeasureExcelMapper.insertSelective(tMeasure);
+				if(result<1){
+					return AmpcResult.build(1000, "添加失败!", null);
+				}
+			}
+			return AmpcResult.ok("更新成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			// 返回错误信息
+			return AmpcResult.build(1000, "参数错误", null);
+		}
+	}
+	
+	/**
+	 * 根据Excel更改行业Excel表中数据
+	 * @param request     请求
+	 * @param response    响应
+	 * @return 返回响应结果对象
+	 */
+	@RequestMapping("excel/update_sectorExcelDate")
+	public AmpcResult update_SectorDate(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
+		// 添加异常捕捉
+		try {
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			// 用户的id 确定当前用户
+			Long userId = Long.parseLong(data.get("userId").toString());
+			/**
+			 * 根据request获取excel地址
+			 */
+			String fileName = request.getServletContext().getRealPath("/")+ "***.xlsx";
+			Long versionId=tSectorExcelMapper.selectMaxVersion(userId);
+			if(versionId==null){
+				versionId=1L;
+			}else{
+				versionId++;
+			}
+			//地址不确定  先写死了 获取到所有Excel中需要的数据
+			List<TSectorExcel> readSector = ExcelToDate.ReadSector(fileName,versionId,userId);
+			for (TSectorExcel tSector : readSector) {
+				int result=tSectorExcelMapper.insertSelective(tSector);
+				if(result<1){
+					return AmpcResult.build(1000, "添加失败!", null);
+				}
+			}
+			return AmpcResult.ok("更新成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			// 返回错误信息
+			return AmpcResult.build(1000, "参数错误", null);
+		}
+	}
+	
 	
 	/**
 	 * 用来进行类型装换
@@ -258,7 +352,6 @@ public class ExcelToDateController {
 		return "no";
 	}
 	
-	
 	/**
 	 * TODO
 	 * 验证L4s
@@ -334,19 +427,6 @@ public class ExcelToDateController {
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
-		}
-	}
-	
-	
-	/**
-	 * 保存到措施模版表
-	 */
-	@RequestMapping("excel/save_TMeasureTemplate")
-	public void saveTMeasureTemplate(){
-		Set<TMeasureTemplate> tmtSet=checkInfo();
-		System.out.println(tmtSet.size());
-		for (TMeasureTemplate tmt : tmtSet) {
-			tMeasureTemplateMapper.insertSelective(tmt);
 		}
 	}
 	
@@ -429,7 +509,6 @@ public class ExcelToDateController {
 		return reg;
 	}
 	
-	
 	/**
 	 * 验证字符  返回判断集合
 	 * @param str
@@ -484,90 +563,6 @@ public class ExcelToDateController {
 		}
 	
 
-	}
-	
-	
-	
-	/**
-	 * 根据Excel更改行业Excel表中数据
-	 * @param request     请求
-	 * @param response    响应
-	 * @return 返回响应结果对象
-	 */
-	@RequestMapping("excel/update_sectorExcelDate")
-	public AmpcResult update_SectorDate(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
-		// 添加异常捕捉
-		try {
-			// 设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String, Object> data = (Map) requestDate.get("data");
-			// 用户的id 确定当前用户
-			Long userId = Long.parseLong(data.get("userId").toString());
-			/**
-			 * 根据request获取excel地址
-			 */
-			String fileName = request.getServletContext().getRealPath("/")+ "***.xlsx";
-			Long versionId=tSectorExcelMapper.selectMaxVersion(userId);
-			if(versionId==null){
-				versionId=1L;
-			}else{
-				versionId++;
-			}
-			//地址不确定  先写死了 获取到所有Excel中需要的数据
-			List<TSectorExcel> readSector = ExcelToDate.ReadSector(fileName,versionId,userId);
-			for (TSectorExcel tSector : readSector) {
-				int result=tSectorExcelMapper.insertSelective(tSector);
-				if(result<1){
-					return AmpcResult.build(1000, "添加失败!", null);
-				}
-			}
-			return AmpcResult.ok("更新成功");
-		} catch (Exception e) {
-			e.printStackTrace();
-			// 返回错误信息
-			return AmpcResult.build(1000, "参数错误", null);
-		}
-	}
-	
-	/**
-	 * 根据Excel更改措施Excel表中数据
-	 * @param request     请求
-	 * @param response    响应
-	 * @return 返回响应结果对象
-	 */
-	@RequestMapping("excel/update_measureExcelDate")
-	public AmpcResult update_MeasureExcelDate(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
-		// 添加异常捕捉
-		try {
-			// 设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String, Object> data = (Map) requestDate.get("data");
-			// 用户的id 确定当前用户
-			Long userId = Long.parseLong(data.get("userId").toString());
-			/**
-			 * 根据request获取excel地址
-			 */
-			String fileName = request.getServletContext().getRealPath("/")+ "***.xlsx";
-			Long versionId=tMeasureExcelMapper.selectMaxVersion(userId);
-			if(versionId==null){
-				versionId=1L;
-			}else{
-				versionId++;
-			}
-			//地址不确定  先写死了 获取到所有Excel中需要的数据
-			List<TMeasureExcel> readTMeasure = ExcelToDate.ReadMeasure(fileName,versionId,userId);
-			for (TMeasureExcel tMeasure : readTMeasure) {
-				int result=tMeasureExcelMapper.insertSelective(tMeasure);
-				if(result<1){
-					return AmpcResult.build(1000, "添加失败!", null);
-				}
-			}
-			return AmpcResult.ok("更新成功");
-		} catch (Exception e) {
-			e.printStackTrace();
-			// 返回错误信息
-			return AmpcResult.build(1000, "参数错误", null);
-		}
 	}
 	
 }
