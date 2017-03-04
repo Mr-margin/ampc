@@ -53,6 +53,30 @@ public class ExcelToDate {
                     Cell cellName=row.getCell(9);
                     String sectorName= getCellValue(cellName);
                     sector.setSectorExcelName(sectorName);
+                    //写入公式
+                    sector.setId(getCellValue(row.getCell(0)));
+                    //写入id0
+                    sector.setId0(getCellValue(row.getCell(1)));
+                    //写入id0name
+                    sector.setId0name(getCellValue(row.getCell(2)));
+                    //写入id1
+                    sector.setId1(getCellValue(row.getCell(3)));
+                    //写入id1name
+                    sector.setId1name(getCellValue(row.getCell(4)));
+                    //写入id2
+                    sector.setId2(getCellValue(row.getCell(5)));
+                    //写入id2name
+                    sector.setId2name(getCellValue(row.getCell(6)));
+                    //写入id3
+                    sector.setId3(getCellValue(row.getCell(7)));
+                    //写入id3name
+                    sector.setId3name(getCellValue(row.getCell(8)));
+                    //写入Group1
+                    sector.setGroup1(getCellValue(row.getCell(10)));
+                    //写入Group2
+                    sector.setGroup2(getCellValue(row.getCell(11)));
+                    //写入Group3
+                    sector.setGroup3(getCellValue(row.getCell(12)));
                     //写入版本等信息
                     sector.setVersionExcelId(versionId);
                     sector.setUserId(userId);
