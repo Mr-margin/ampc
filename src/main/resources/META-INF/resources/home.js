@@ -2,7 +2,7 @@
 window.console||(console={log:function(){}});
 var parameterPar = {total: '', data: {}};
 var userId = 1;
-/*¿´Ãû×Ö*/
+/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 function ajaxPost(url, parameter) {
     parameterPar.data = parameter;
     var p = JSON.stringify(parameterPar);
@@ -36,6 +36,7 @@ if (isAndroid) {
 var llqHeight = document.documentElement.clientHeight;
 var cssStyle = '#sidebar .panel-body{overflow:auto;border-top:0;border-bottom:0;padding:0;height: '+ (llqHeight-400) +'px;} ';
 $('head').append($('<style></style>').html(cssStyle));
+$("#Route_conter").css("height",llqHeight-150+"px");
 
 //doc ready function
 $(document).ready(function() {

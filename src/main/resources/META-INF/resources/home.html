@@ -19,233 +19,218 @@
   <link rel="stylesheet" href="css/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.css"/>
   <link rel="stylesheet" href="css/bootstrap-table-filter-control.css"/>
   <link href="css/main.css" rel="stylesheet" />
+  <link href="css/style.css" rel="stylesheet" />
   <link rel="stylesheet" href="css/index.css"/>
   <meta name="msapplication-TileColor" content="#3399cc" />
 </head>
 <body>
-<!-- Start #header -->
-<div id="header">
-  <div class="container-fluid">
-    <div class="navbar">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="index.html">
-          <i class="me-lightning4 text-logo-element animated bounceIn" style=" color:#FFFFFF; "></i><span class="text-logo">环境空气质量</span><span class="text-slogan">动态模拟云平台</span>
-        </a>
-      </div>
-      <nav class="top-nav" role="navigation">
-        <ul class="nav navbar-nav pull-left">
-          <li id="toggle-sidebar-li">
-            <a href="#" id="toggle-sidebar"><i class="en-arrow-left2"></i>
-            </a>
-          </li>
+	<!-- Start #header -->
+	<div id="header">
+		<div class="container-fluid">
+			<div class="navbar">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="index.html"> <i
+						class="me-lightning4 text-logo-element animated bounceIn"
+						style=" color:#FFFFFF; "></i><span class="text-logo">环境空气质量</span><span
+						class="text-slogan">动态模拟云平台</span>
+					</a>
+				</div>
+				<nav class="top-nav" role="navigation">
+					<ul class="nav navbar-nav pull-left">
+						<li id="toggle-sidebar-li"><a href="#" id="toggle-sidebar"><i
+								class="en-arrow-left2"></i> </a></li>
 
-        </ul>
-        <ul class="nav navbar-nav pull-right">
-
-
-          <li class="dropdown">
-            <a href="#" data-toggle="dropdown"><i class="br-alarm"></i> <span class="notification">5</span></a>
-            <ul class="dropdown-menu notification-menu right" role="menu">
-              <li class="clearfix">
-                <i class="ec-chat"></i>
-                <a href="#" class="notification-user"> 系统提示： </a>
-                <span class="notification-action"> 有错误数据 </span>
-                <a href="#" class="notification-link"> 点击查看</a>
-              </li>
-              <li class="clearfix">
-                <i class="st-pencil"></i>
-                <a href="#" class="notification-user"> 平台信息： </a>
-                <span class="notification-action"> 版本更新信息 </span>
-                <a href="#" class="notification-link"> 点击查看</a>
-              </li>
-              <li class="clearfix">
-                <i class="ec-trashcan"></i>
-                <a href="#" class="notification-user"> 系统提示： </a>
-                <span class="notification-action">数据有变动</span>
-                <a href="#" class="notification-link">点击查看</a>
-              </li>
-              <li class="clearfix">
-                <i class="st-paperclip"></i>
-                <a href="#" class="notification-user">收藏信息：</a>
-                <span class="notification-action">您收藏的数据有更新</span>
-              </li>
-
-            </ul>
-          </li>
-          <li class="dropdown">
-            <a href="#" data-toggle="dropdown">
-              <img class="user-avatar" src="img/a1.jpg" alt="SuggeElson">无锡市管理员</a>
-            <ul class="dropdown-menu right" role="menu">
-              <li><a href=""><i class="st-user"></i> 用户信息</a>
-              </li>
-              <li><a href=""><i class="st-cloud"></i>用户数据</a>
-              </li>
-              <li><a href=""><i class="st-settings"></i>用户设置</a>
-              </li>
-              <li><a href=""><i class="im-exit"></i>注销登录</a>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <a href="#" class="full-screen"><i class="fa-fullscreen"></i></a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </div>
-</div>
-<a id="clickA"></a>
-<div id="sidebar">
-  <div class="panel-group accordion" id="accordion1">
-    <div class="panel panel-default" id="spr_3">
-      <div class="panel-heading">
-        <h5 class="panel-title">
-          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#sy">首页 <i class="im-home2"></i></a>
-        </h5>
-      </div>
-      <div id="sy" class="panel-collapse collapse" style="height: 0px;">
-        <div class="panel-body totalH">
-
-        </div>
-      </div>
-    </div>
-    <div class="panel panel-default" id="spr_4">
-      <div class="panel-heading">
-        <h5 class="panel-title">
-          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#yqd">源清单 <i class="st-align-justify"></i></a>
-        </h5>
-      </div>
-      <div id="yqd" class="panel-collapse collapse" style="height: 0px;">
-        <div class="panel-body totalH">
-
-        </div>
-      </div>
-    </div>
-    <div class="panel panel-default" id="spr_5">
-      <div class="panel-heading">
-        <h5 class="panel-title">
-          <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#rwgl">任务管理 <i class="st-folder-settings"></i></a>
-        </h5>
-      </div>
-      <div id="rwgl" class="panel-collapse collapse  in" style="height: auto;">
-        <div class="panel-body totalH">
-
-        </div>
-      </div>
-    </div>
-    <div class="panel panel-default" id="spr_6">
-      <div class="panel-heading">
-        <h5 class="panel-title">
-          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#xgpg">效果评估 <i class="im-paste2"></i></a>
-        </h5>
-      </div>
-      <div id="xgpg" class="panel-collapse collapse" style="height: 0px;">
-        <div class="panel-body totalH">
-          <div class="list-group text-right">
-            <a href="" class="list-group-item disabled">
-              水平分布
-            </a>
-            <a href="" class="list-group-item">垂直分布</a>
-            <!--<a href="javascript:" class="list-group-item">Morbi leo risus</a>-->
-            <!--<a href="javascript:" class="list-group-item">Porta ac consectetur ac</a>-->
-            <!--<a href="javascript:" class="list-group-item">Vestibulum at eros</a>-->
-          </div>
+					</ul>
+					<ul class="nav navbar-nav pull-right">
 
 
-        </div>
-      </div>
-    </div>
-    <div class="panel panel-default" id="spr_7">
-      <div class="panel-heading">
-        <h5 class="panel-title">
-          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#kqzlyb">空气质量预报 <i class="me-cloudy"></i></a>
-        </h5>
-      </div>
-      <div id="kqzlyb" class="panel-collapse collapse" style="height: 0px;">
-        <div class="panel-body totalH">
+						<li class="dropdown"><a href="#" data-toggle="dropdown"><i
+								class="br-alarm"></i> <span class="notification">5</span></a>
+							<ul class="dropdown-menu notification-menu right" role="menu">
+								<li class="clearfix"><i class="ec-chat"></i> <a href="#"
+									class="notification-user"> 系统提示： </a> <span
+									class="notification-action"> 有错误数据 </span> <a href="#"
+									class="notification-link"> 点击查看</a></li>
+								<li class="clearfix"><i class="st-pencil"></i> <a href="#"
+									class="notification-user"> 平台信息： </a> <span
+									class="notification-action"> 版本更新信息 </span> <a href="#"
+									class="notification-link"> 点击查看</a></li>
+								<li class="clearfix"><i class="ec-trashcan"></i> <a
+									href="#" class="notification-user"> 系统提示： </a> <span
+									class="notification-action">数据有变动</span> <a href="#"
+									class="notification-link">点击查看</a></li>
+								<li class="clearfix"><i class="st-paperclip"></i> <a
+									href="#" class="notification-user">收藏信息：</a> <span
+									class="notification-action">您收藏的数据有更新</span></li>
 
-        </div>
-      </div>
-    </div>
-    <div class="panel panel-default" id="spr_8">
-      <div class="panel-heading">
-        <h5 class="panel-title">
-          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#sjkj">数据空间 <i class="im-storage"></i></a>
-        </h5>
-      </div>
-      <div id="sjkj" class="panel-collapse collapse" style="height: 0px;">
-        <div class="panel-body totalH">
+							</ul></li>
+						<li class="dropdown"><a href="#" data-toggle="dropdown">
+								<img class="user-avatar" src="img/a1.jpg" alt="SuggeElson">无锡市管理员
+						</a>
+							<ul class="dropdown-menu right" role="menu">
+								<li><a href=""><i class="st-user"></i> 用户信息</a></li>
+								<li><a href=""><i class="st-cloud"></i>用户数据</a></li>
+								<li><a href=""><i class="st-settings"></i>用户设置</a></li>
+								<li><a href=""><i class="im-exit"></i>注销登录</a></li>
+							</ul></li>
+						<li><a href="#" class="full-screen"><i
+								class="fa-fullscreen"></i></a></li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+	<a id="clickA"></a>
+	<div id="sidebar">
+		<div class="panel-group accordion" id="accordion1">
+			<div class="panel panel-default" id="spr_3">
+				<div class="panel-heading">
+					<h5 class="panel-title">
+						<a class="accordion-toggle collapsed" data-toggle="collapse"
+							data-parent="#accordion1" href="#sy">首页 <i class="im-home2"></i></a>
+					</h5>
+				</div>
+				<div id="sy" class="panel-collapse collapse" style="height: 0px;">
+					<div class="panel-body totalH"></div>
+				</div>
+			</div>
+			<div class="panel panel-default" id="spr_4">
+				<div class="panel-heading">
+					<h5 class="panel-title">
+						<a class="accordion-toggle collapsed" data-toggle="collapse"
+							data-parent="#accordion1" href="#yqd">源清单 <i
+							class="st-align-justify"></i></a>
+					</h5>
+				</div>
+				<div id="yqd" class="panel-collapse collapse" style="height: 0px;">
+					<div class="panel-body totalH"></div>
+				</div>
+			</div>
+			<div class="panel panel-default" id="spr_5">
+				<div class="panel-heading">
+					<h5 class="panel-title">
+						<a class="accordion-toggle" data-toggle="collapse"
+							data-parent="#accordion1" href="#rwgl">任务管理 <i
+							class="st-folder-settings"></i></a>
+					</h5>
+				</div>
+				<div id="rwgl" class="panel-collapse collapse  in"
+					style="height: auto;">
+					<div class="panel-body totalH"></div>
+				</div>
+			</div>
+			<div class="panel panel-default" id="spr_6">
+				<div class="panel-heading">
+					<h5 class="panel-title">
+						<a class="accordion-toggle collapsed" data-toggle="collapse"
+							data-parent="#accordion1" href="#xgpg">效果评估 <i
+							class="im-paste2"></i></a>
+					</h5>
+				</div>
+				<div id="xgpg" class="panel-collapse collapse" style="height: 0px;">
+					<div class="panel-body totalH">
+						<div class="list-group text-right">
+							<a href="#xgpg" class="list-group-item disabled">水平分布</a> <a
+								href="#xgpg" class="list-group-item">垂直分布</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-default" id="spr_7">
+				<div class="panel-heading">
+					<h5 class="panel-title">
+						<a class="accordion-toggle collapsed" data-toggle="collapse"
+							data-parent="#accordion1" href="#kqzlyb">空气质量预报 <i
+							class="me-cloudy"></i></a>
+					</h5>
+				</div>
+				<div id="kqzlyb" class="panel-collapse collapse"
+					style="height: 0px;">
+					<div class="panel-body totalH"></div>
+				</div>
+			</div>
+			<div class="panel panel-default" id="spr_8">
+				<div class="panel-heading">
+					<h5 class="panel-title">
+						<a class="accordion-toggle collapsed" data-toggle="collapse"
+							data-parent="#accordion1" href="#sjkj">数据空间 <i
+							class="im-storage"></i></a>
+					</h5>
+				</div>
+				<div id="sjkj" class="panel-collapse collapse" style="height: 0px;">
+					<div class="panel-body totalH"></div>
+				</div>
+			</div>
+			<div class="panel panel-default" id="spr_9">
+				<div class="panel-heading">
+					<h5 class="panel-title">
+						<a class="accordion-toggle collapsed" data-toggle="collapse"
+							data-parent="#accordion1" href="#hsz">回收站 <i
+							class="ec-trashcan"></i></a>
+					</h5>
+				</div>
+				<div id="hsz" class="panel-collapse collapse" style="height: 0px;">
+					<!--<div class="panel-body">-->
 
-        </div>
-      </div>
-    </div>
-    <div class="panel panel-default" id="spr_9">
-      <div class="panel-heading">
-        <h5 class="panel-title">
-          <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#hsz">回收站 <i class="ec-trashcan"></i></a>
-        </h5>
-      </div>
-      <div id="hsz" class="panel-collapse collapse" style="height: 0px;">
-        <!--<div class="panel-body">-->
+					<!--</div>-->
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="content">
+		<div class="content-wrapper">
+			<div class="row">
+				<div class="col-lg-12 heading" style="padding-left:5px;padding-right:7px;">
+					<h1 class="page-header"></h1>
+					<ul id="crumb" class="breadcrumb">
+					</ul>
+				</div>
+			</div>
+			<div class="outlet">
+				<!-- Start .outlet -->
+				<!-- 内容所在区域 -->
+				<div class="row">
 
-        <!--</div>-->
-      </div>
-    </div>
-  </div>
-</div>
-<div id="content">
-  <div class="content-wrapper">
-    <div class="row">
-      <div class="col-lg-12 heading">
-        <h1 class="page-header"></h1>
-        <ul id="crumb" class="breadcrumb">
-        </ul>
-      </div>
-    </div>
-    <div class="outlet">
-      <!-- Start .outlet -->
-      <!-- 内容所在区域 -->
-      <div class="row">
+					<div id="Route_conter" class="col-md-12 ui-view" style="padding-left:5px;padding-right:7px;">
+						<!--<iframe src="webApp/task01/task01.html"></iframe>-->
+					</div>
 
-        <div class="col-md-12 ui-view">
-          <!--<iframe src="webApp/task01/task01.html"></iframe>-->
-        </div>
-
-        <!-- 页面内容 -->
-      </div>
-    </div>
-  </div>
-  <div class="clearfix"></div>
-</div>
-<script src="js/jquery.min.js"></script>
-<script src="js/jquery-ui-1.10.4.min.js"></script>
-<script src="js/plugins/forms/icheck/jquery.icheck.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
-<script src="js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
-<script src="js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
-<script src="js/bootstrap-table-contextmenu.js.js"></script>
-<script src="js/plugins/core/moment/moment.js"></script>
-<script src="js/plugins/forms/datetimepicker/bootstrap-datetimepicker.js"></script>
-<script src="js/plugins/forms/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
-<script src="js/bootstrap-table-filter-control.js"></script>
-<script src="js/plugins/validate/jquery.validate.min.js"></script>
-<script src="js/plugins/validate/additional-methods.min.js"></script>
-<script src="js/plugins/validate/messages_zh.min.js"></script>
-<script src="js/plugins/sweetalert/sweetalert.min.js"></script>
-<script src="js/plugins/core/pace/pace.min.js"></script>
-<script src="js/jRespond.min.js"></script>
-<script src="js/plugins/core/slimscroll/jquery.slimscroll.js"></script>
-<script src="js/plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js"></script>
-<script src="js/plugins/core/quicksearch/jquery.quicksearch.js"></script>
-<script src="js/plugins/misc/highlight/highlight.pack.js"></script>
-<script src="js/plugins/misc/countTo/jquery.countTo.js"></script>
-<script src="js/jquery.sprFlat.js"></script>
-<script src="js/vipspa.min.js"></script>
-<!--自己的js文件-->
-<script src="BackstageIP.js"></script>
-<script src="homeRouter.js"></script>
-<script src="home.js"></script>
-
+					<!-- 页面内容 -->
+				</div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+	
+	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-ui-1.10.4.min.js"></script>
+	<script src="js/plugins/forms/icheck/jquery.icheck.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+	<script src="js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+	<script src="js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+	<script src="js/bootstrap-table-contextmenu.js.js"></script>
+	<script src="js/plugins/core/moment/moment.js"></script>
+	<script src="js/plugins/forms/datetimepicker/bootstrap-datetimepicker.js"></script>
+	<script src="js/plugins/forms/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+	<script src="js/bootstrap-table-filter-control.js"></script>
+	<script src="js/plugins/validate/jquery.validate.min.js"></script>
+	<script src="js/plugins/validate/additional-methods.min.js"></script>
+	<script src="js/plugins/validate/messages_zh.min.js"></script>
+	<script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+	<script src="js/plugins/core/pace/pace.min.js"></script>
+	<script src="js/jRespond.min.js"></script>
+	<script src="js/plugins/core/slimscroll/jquery.slimscroll.js"></script>
+	<script src="js/plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js"></script>
+	<script src="js/plugins/core/quicksearch/jquery.quicksearch.js"></script>
+	<script src="js/plugins/misc/highlight/highlight.pack.js"></script>
+	<script src="js/plugins/misc/countTo/jquery.countTo.js"></script>
+	<script src="js/jquery.sprFlat.js"></script>
+	<script src="js/vipspa.min.js"></script>
+	<!--自己的js文件-->
+	<script src="BackstageIP.js"></script>
+	<script src="homeRouter.js"></script>
+	<script src="home.js"></script>
 </body>
 </html>
