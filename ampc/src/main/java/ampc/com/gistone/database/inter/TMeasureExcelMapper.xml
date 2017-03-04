@@ -34,7 +34,7 @@
   </select>
   
   <!--获取到所有的措施信息-->
-  <select id="selectAll"  resultType="java.util.List">
+  <select id="selectAll"  resultMap="BaseResultMap">
   	select <include refid="Base_Column_List" />
     from T_MEASURE_EXCEL
   </select>
