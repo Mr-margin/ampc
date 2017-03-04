@@ -1,6 +1,9 @@
 package ampc.com.gistone.database.inter;
 
+import java.util.List;
+
 import ampc.com.gistone.database.model.TMeasureExcel;
+import ampc.com.gistone.database.model.TSectorExcel;
 
 /**
  * 措施excel映射
@@ -15,6 +18,16 @@ public interface TMeasureExcelMapper {
 	 * @return
 	 */
 	Long selectMaxVersion(Long userId);
+	
+	
+	/**
+	 * 获取到所有的措施信息
+	 * @param sectorExcelId
+	 * @return
+	 */
+	List<TMeasureExcel> selectAll();
+	
+	
     int deleteByPrimaryKey(Long measureExcelId);
 
     int insert(TMeasureExcel record);
