@@ -8,15 +8,26 @@
     <result column="MID" property="mid" jdbcType="OTHER" />
     <result column="MEASURE_TEMPLATE_NAME" property="measureTemplateName" jdbcType="OTHER" />
     <result column="M_DESC" property="mDesc" jdbcType="OTHER" />
-    <result column="OP" property="op" jdbcType="OTHER" />
-    <result column="INTENSITY" property="intensity" jdbcType="FLOAT" />
-    <result column="SECTORS" property="sectors" jdbcType="OTHER" />
+    <result column="MEASURE_TEMPLATE_OP" property="measureTemplateOp" jdbcType="OTHER" />
+    <result column="MEASURE_TEMPLATE_INTENSITY" property="measureTemplateIntensity" jdbcType="DECIMAL" />
+    <result column="SECTORSNAME" property="sectorsname" jdbcType="OTHER" />
     <result column="CONTENT" property="content" jdbcType="OTHER" />
-    <result column="DISPLAY" property="display" jdbcType="OTHER" />
+    <result column="MEASURE_TEMPLATE_DISPLAY" property="measureTemplateDisplay" jdbcType="OTHER" />
+    <result column="DEBUG_MODEL" property="debugModel" jdbcType="DECIMAL" />
+    <result column="MEASURE_TEMPLATE_TYPE" property="measureTemplateType" jdbcType="OTHER" />
+    <result column="MEASURE_TEMPLATE_LEVEL" property="measureTemplateLevel" jdbcType="DECIMAL" />
+    <result column="MEASURE_TEMPLATE_A" property="measureTemplateA" jdbcType="DECIMAL" />
+    <result column="MEASURE_TEMPLATE_A1" property="measureTemplateA1" jdbcType="DECIMAL" />
+    <result column="MEASURE_TEMPLATE_INTENSITY1" property="measureTemplateIntensity1" jdbcType="DECIMAL" />
+    <result column="MEASURE_TEMPLATE_ASH" property="measureTemplateAsh" jdbcType="DECIMAL" />
+    <result column="MEASURE_TEMPLATE_SULFER" property="measureTemplateSulfer" jdbcType="DECIMAL" />
+    <result column="MEASURE_TEMPLATE_SV" property="measureTemplateSv" jdbcType="OTHER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    MEASURE_TEMPLATE_ID, USER_ID, VERSION_ID, MID, MEASURE_TEMPLATE_NAME, M_DESC, OP, 
-    INTENSITY, SECTORS, CONTENT, DISPLAY
+    MEASURE_TEMPLATE_ID, USER_ID, VERSION_ID, MID, MEASURE_TEMPLATE_NAME, M_DESC, MEASURE_TEMPLATE_OP, 
+    MEASURE_TEMPLATE_INTENSITY, SECTORSNAME, CONTENT, MEASURE_TEMPLATE_DISPLAY, DEBUG_MODEL, 
+    MEASURE_TEMPLATE_TYPE, MEASURE_TEMPLATE_LEVEL, MEASURE_TEMPLATE_A, MEASURE_TEMPLATE_A1, 
+    MEASURE_TEMPLATE_INTENSITY1, MEASURE_TEMPLATE_ASH, MEASURE_TEMPLATE_SULFER, MEASURE_TEMPLATE_SV
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -31,12 +42,20 @@
   <insert id="insert" parameterType="ampc.com.gistone.database.model.TMeasureTemplate" >
     insert into T_MEASURE_TEMPLATE (MEASURE_TEMPLATE_ID, USER_ID, VERSION_ID, 
       MID, MEASURE_TEMPLATE_NAME, M_DESC, 
-      OP, INTENSITY, SECTORS, CONTENT, 
-      DISPLAY)
+      MEASURE_TEMPLATE_OP, MEASURE_TEMPLATE_INTENSITY, 
+      SECTORSNAME, CONTENT, MEASURE_TEMPLATE_DISPLAY, 
+      DEBUG_MODEL, MEASURE_TEMPLATE_TYPE, MEASURE_TEMPLATE_LEVEL, 
+      MEASURE_TEMPLATE_A, MEASURE_TEMPLATE_A1, MEASURE_TEMPLATE_INTENSITY1, 
+      MEASURE_TEMPLATE_ASH, MEASURE_TEMPLATE_SULFER, 
+      MEASURE_TEMPLATE_SV)
     values (#{measureTemplateId,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{versionId,jdbcType=DECIMAL}, 
       #{mid,jdbcType=OTHER}, #{measureTemplateName,jdbcType=OTHER}, #{mDesc,jdbcType=OTHER}, 
-      #{op,jdbcType=OTHER}, #{intensity,jdbcType=FLOAT}, #{sectors,jdbcType=OTHER}, #{content,jdbcType=OTHER}, 
-      #{display,jdbcType=OTHER})
+      #{measureTemplateOp,jdbcType=OTHER}, #{measureTemplateIntensity,jdbcType=DECIMAL}, 
+      #{sectorsname,jdbcType=OTHER}, #{content,jdbcType=OTHER}, #{measureTemplateDisplay,jdbcType=OTHER}, 
+      #{debugModel,jdbcType=DECIMAL}, #{measureTemplateType,jdbcType=OTHER}, #{measureTemplateLevel,jdbcType=DECIMAL}, 
+      #{measureTemplateA,jdbcType=DECIMAL}, #{measureTemplateA1,jdbcType=DECIMAL}, #{measureTemplateIntensity1,jdbcType=DECIMAL}, 
+      #{measureTemplateAsh,jdbcType=DECIMAL}, #{measureTemplateSulfer,jdbcType=DECIMAL}, 
+      #{measureTemplateSv,jdbcType=OTHER})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TMeasureTemplate" >
     insert into T_MEASURE_TEMPLATE
@@ -59,20 +78,47 @@
       <if test="mDesc != null" >
         M_DESC,
       </if>
-      <if test="op != null" >
-        OP,
+      <if test="measureTemplateOp != null" >
+        MEASURE_TEMPLATE_OP,
       </if>
-      <if test="intensity != null" >
-        INTENSITY,
+      <if test="measureTemplateIntensity != null" >
+        MEASURE_TEMPLATE_INTENSITY,
       </if>
-      <if test="sectors != null" >
-        SECTORS,
+      <if test="sectorsname != null" >
+        SECTORSNAME,
       </if>
       <if test="content != null" >
         CONTENT,
       </if>
-      <if test="display != null" >
-        DISPLAY,
+      <if test="measureTemplateDisplay != null" >
+        MEASURE_TEMPLATE_DISPLAY,
+      </if>
+      <if test="debugModel != null" >
+        DEBUG_MODEL,
+      </if>
+      <if test="measureTemplateType != null" >
+        MEASURE_TEMPLATE_TYPE,
+      </if>
+      <if test="measureTemplateLevel != null" >
+        MEASURE_TEMPLATE_LEVEL,
+      </if>
+      <if test="measureTemplateA != null" >
+        MEASURE_TEMPLATE_A,
+      </if>
+      <if test="measureTemplateA1 != null" >
+        MEASURE_TEMPLATE_A1,
+      </if>
+      <if test="measureTemplateIntensity1 != null" >
+        MEASURE_TEMPLATE_INTENSITY1,
+      </if>
+      <if test="measureTemplateAsh != null" >
+        MEASURE_TEMPLATE_ASH,
+      </if>
+      <if test="measureTemplateSulfer != null" >
+        MEASURE_TEMPLATE_SULFER,
+      </if>
+      <if test="measureTemplateSv != null" >
+        MEASURE_TEMPLATE_SV,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -94,20 +140,47 @@
       <if test="mDesc != null" >
         #{mDesc,jdbcType=OTHER},
       </if>
-      <if test="op != null" >
-        #{op,jdbcType=OTHER},
+      <if test="measureTemplateOp != null" >
+        #{measureTemplateOp,jdbcType=OTHER},
       </if>
-      <if test="intensity != null" >
-        #{intensity,jdbcType=FLOAT},
+      <if test="measureTemplateIntensity != null" >
+        #{measureTemplateIntensity,jdbcType=DECIMAL},
       </if>
-      <if test="sectors != null" >
-        #{sectors,jdbcType=OTHER},
+      <if test="sectorsname != null" >
+        #{sectorsname,jdbcType=OTHER},
       </if>
       <if test="content != null" >
         #{content,jdbcType=OTHER},
       </if>
-      <if test="display != null" >
-        #{display,jdbcType=OTHER},
+      <if test="measureTemplateDisplay != null" >
+        #{measureTemplateDisplay,jdbcType=OTHER},
+      </if>
+      <if test="debugModel != null" >
+        #{debugModel,jdbcType=DECIMAL},
+      </if>
+      <if test="measureTemplateType != null" >
+        #{measureTemplateType,jdbcType=OTHER},
+      </if>
+      <if test="measureTemplateLevel != null" >
+        #{measureTemplateLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="measureTemplateA != null" >
+        #{measureTemplateA,jdbcType=DECIMAL},
+      </if>
+      <if test="measureTemplateA1 != null" >
+        #{measureTemplateA1,jdbcType=DECIMAL},
+      </if>
+      <if test="measureTemplateIntensity1 != null" >
+        #{measureTemplateIntensity1,jdbcType=DECIMAL},
+      </if>
+      <if test="measureTemplateAsh != null" >
+        #{measureTemplateAsh,jdbcType=DECIMAL},
+      </if>
+      <if test="measureTemplateSulfer != null" >
+        #{measureTemplateSulfer,jdbcType=DECIMAL},
+      </if>
+      <if test="measureTemplateSv != null" >
+        #{measureTemplateSv,jdbcType=OTHER},
       </if>
     </trim>
   </insert>
@@ -129,20 +202,47 @@
       <if test="mDesc != null" >
         M_DESC = #{mDesc,jdbcType=OTHER},
       </if>
-      <if test="op != null" >
-        OP = #{op,jdbcType=OTHER},
+      <if test="measureTemplateOp != null" >
+        MEASURE_TEMPLATE_OP = #{measureTemplateOp,jdbcType=OTHER},
       </if>
-      <if test="intensity != null" >
-        INTENSITY = #{intensity,jdbcType=FLOAT},
+      <if test="measureTemplateIntensity != null" >
+        MEASURE_TEMPLATE_INTENSITY = #{measureTemplateIntensity,jdbcType=DECIMAL},
       </if>
-      <if test="sectors != null" >
-        SECTORS = #{sectors,jdbcType=OTHER},
+      <if test="sectorsname != null" >
+        SECTORSNAME = #{sectorsname,jdbcType=OTHER},
       </if>
       <if test="content != null" >
         CONTENT = #{content,jdbcType=OTHER},
       </if>
-      <if test="display != null" >
-        DISPLAY = #{display,jdbcType=OTHER},
+      <if test="measureTemplateDisplay != null" >
+        MEASURE_TEMPLATE_DISPLAY = #{measureTemplateDisplay,jdbcType=OTHER},
+      </if>
+      <if test="debugModel != null" >
+        DEBUG_MODEL = #{debugModel,jdbcType=DECIMAL},
+      </if>
+      <if test="measureTemplateType != null" >
+        MEASURE_TEMPLATE_TYPE = #{measureTemplateType,jdbcType=OTHER},
+      </if>
+      <if test="measureTemplateLevel != null" >
+        MEASURE_TEMPLATE_LEVEL = #{measureTemplateLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="measureTemplateA != null" >
+        MEASURE_TEMPLATE_A = #{measureTemplateA,jdbcType=DECIMAL},
+      </if>
+      <if test="measureTemplateA1 != null" >
+        MEASURE_TEMPLATE_A1 = #{measureTemplateA1,jdbcType=DECIMAL},
+      </if>
+      <if test="measureTemplateIntensity1 != null" >
+        MEASURE_TEMPLATE_INTENSITY1 = #{measureTemplateIntensity1,jdbcType=DECIMAL},
+      </if>
+      <if test="measureTemplateAsh != null" >
+        MEASURE_TEMPLATE_ASH = #{measureTemplateAsh,jdbcType=DECIMAL},
+      </if>
+      <if test="measureTemplateSulfer != null" >
+        MEASURE_TEMPLATE_SULFER = #{measureTemplateSulfer,jdbcType=DECIMAL},
+      </if>
+      <if test="measureTemplateSv != null" >
+        MEASURE_TEMPLATE_SV = #{measureTemplateSv,jdbcType=OTHER},
       </if>
     </set>
     where MEASURE_TEMPLATE_ID = #{measureTemplateId,jdbcType=DECIMAL}
@@ -154,11 +254,20 @@
       MID = #{mid,jdbcType=OTHER},
       MEASURE_TEMPLATE_NAME = #{measureTemplateName,jdbcType=OTHER},
       M_DESC = #{mDesc,jdbcType=OTHER},
-      OP = #{op,jdbcType=OTHER},
-      INTENSITY = #{intensity,jdbcType=FLOAT},
-      SECTORS = #{sectors,jdbcType=OTHER},
+      MEASURE_TEMPLATE_OP = #{measureTemplateOp,jdbcType=OTHER},
+      MEASURE_TEMPLATE_INTENSITY = #{measureTemplateIntensity,jdbcType=DECIMAL},
+      SECTORSNAME = #{sectorsname,jdbcType=OTHER},
       CONTENT = #{content,jdbcType=OTHER},
-      DISPLAY = #{display,jdbcType=OTHER}
+      MEASURE_TEMPLATE_DISPLAY = #{measureTemplateDisplay,jdbcType=OTHER},
+      DEBUG_MODEL = #{debugModel,jdbcType=DECIMAL},
+      MEASURE_TEMPLATE_TYPE = #{measureTemplateType,jdbcType=OTHER},
+      MEASURE_TEMPLATE_LEVEL = #{measureTemplateLevel,jdbcType=DECIMAL},
+      MEASURE_TEMPLATE_A = #{measureTemplateA,jdbcType=DECIMAL},
+      MEASURE_TEMPLATE_A1 = #{measureTemplateA1,jdbcType=DECIMAL},
+      MEASURE_TEMPLATE_INTENSITY1 = #{measureTemplateIntensity1,jdbcType=DECIMAL},
+      MEASURE_TEMPLATE_ASH = #{measureTemplateAsh,jdbcType=DECIMAL},
+      MEASURE_TEMPLATE_SULFER = #{measureTemplateSulfer,jdbcType=DECIMAL},
+      MEASURE_TEMPLATE_SV = #{measureTemplateSv,jdbcType=OTHER}
     where MEASURE_TEMPLATE_ID = #{measureTemplateId,jdbcType=DECIMAL}
   </update>
 </mapper>

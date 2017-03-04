@@ -29,24 +29,15 @@ public class TMeasureExcel {
 
     private BigDecimal measureExcelIntensity1;
 
-    private Long measureExcelAsh;
+    private BigDecimal measureExcelAsh;
 
-    private Long measureExcelSulfer;
+    private BigDecimal measureExcelSulfer;
 
     private String measureExcelSv;
-    
+
     private Long userId;
-    
 
-    public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-
-	public Long getMeasureExcelId() {
+    public Long getMeasureExcelId() {
         return measureExcelId;
     }
 
@@ -134,36 +125,35 @@ public class TMeasureExcel {
         this.measureExcelA1 = measureExcelA1;
     }
 
-    
     public BigDecimal getMeasureExcelIntensity() {
-		return measureExcelIntensity;
-	}
+        return measureExcelIntensity;
+    }
 
-	public void setMeasureExcelIntensity(BigDecimal measureExcelIntensity) {
-		this.measureExcelIntensity = measureExcelIntensity;
-	}
+    public void setMeasureExcelIntensity(BigDecimal measureExcelIntensity) {
+        this.measureExcelIntensity = measureExcelIntensity;
+    }
 
-	public BigDecimal getMeasureExcelIntensity1() {
-		return measureExcelIntensity1;
-	}
+    public BigDecimal getMeasureExcelIntensity1() {
+        return measureExcelIntensity1;
+    }
 
-	public void setMeasureExcelIntensity1(BigDecimal measureExcelIntensity1) {
-		this.measureExcelIntensity1 = measureExcelIntensity1;
-	}
+    public void setMeasureExcelIntensity1(BigDecimal measureExcelIntensity1) {
+        this.measureExcelIntensity1 = measureExcelIntensity1;
+    }
 
-	public Long getMeasureExcelAsh() {
+    public BigDecimal getMeasureExcelAsh() {
         return measureExcelAsh;
     }
 
-    public void setMeasureExcelAsh(Long measureExcelAsh) {
+    public void setMeasureExcelAsh(BigDecimal measureExcelAsh) {
         this.measureExcelAsh = measureExcelAsh;
     }
 
-    public Long getMeasureExcelSulfer() {
+    public BigDecimal getMeasureExcelSulfer() {
         return measureExcelSulfer;
     }
 
-    public void setMeasureExcelSulfer(Long measureExcelSulfer) {
+    public void setMeasureExcelSulfer(BigDecimal measureExcelSulfer) {
         this.measureExcelSulfer = measureExcelSulfer;
     }
 
@@ -173,5 +163,13 @@ public class TMeasureExcel {
 
     public void setMeasureExcelSv(String measureExcelSv) {
         this.measureExcelSv = measureExcelSv == null ? null : measureExcelSv.trim();
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }
