@@ -1259,6 +1259,7 @@ body.full-screen #header {
 #content {
   margin-left: 210px;
   padding: 50px 25px 25px 25px;
+  background-color:#f3f3f4;/* 背景色改为灰色 */
 }
 #content.sidebar-page {
   margin-left: 210px;
@@ -1313,6 +1314,7 @@ body.full-screen #header {
   line-height: 20px;
   border-radius: 4px;
   background: #f3f5f6;
+  background-color:#fff;/* 导航条背景色改为白色 */
   padding: 15px;
   margin-bottom: 12.5px;
 }
