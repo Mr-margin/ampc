@@ -1,0 +1,211 @@
+
+<!-- 整体的div -->
+<div>
+
+<!-- 左边的div -->
+<div class='col-md-6'>
+	<div class="row">
+	<div class="topChoose col-md-5">
+		<span>行业-措施选择</span>
+	</div>
+	</div>
+		<div class="leftSomething">
+                    <div class="ibox-content">
+                        <div class="panel-body">
+                            <div class="panel-group" id="accordion">
+                                <div class="panel panel-default">
+										<div class="panel-heading">
+															<h5 class="panel-title">
+																<a data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapseOne">集中供热</a>
+															</h5>
+										</div>
+										<div id="collapseOne" class="panel-collapse collapse in">
+											<div class="panel-body">
+												
+											</div>
+										</div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapseTwo">工业锅炉</a>
+                                            </h4>
+                                    </div>
+                                    <div id="collapseTwo" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapseThree">钢铁</a>
+                                            </h4>
+                                    </div>
+                                    <div id="collapseThree" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapsefour">水泥</a>
+                                            </h4>
+                                    </div>
+                                    <div id="collapsefour" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                  <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapsefive">独立焦化</a>
+                                            </h4>
+                                    </div>
+                                    <div id="collapsefive" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                     <div class="panel panel-default">
+											<div class="panel-heading">
+													<h4 class="panel-title">
+														<a data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapsesix">玻璃</a>
+													</h4>
+											</div>
+													<div id="collapsesix" class="panel-collapse collapse">
+														<div class="panel-body">
+															
+														</div>
+													</div>
+									</div>
+                             </div>
+                       </div>
+                </div>
+         </div>
+	
+
+</div>
+
+<!-- 右边的div -->
+<div class='col-md-6'>
+		<div class="row" style="margin:5px;">
+				<!-- <div class="col-md-2">
+				<span>地图展示</span> 
+				</div>  --> 
+					<div class="col-md-4">          
+						<span>污染物</span>
+					</div> 
+				             <div class="btn-group col-md-4">
+				             		
+			                                <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">SO2 <span class="caret"></span>
+			                                </button>
+			                                <ul class="dropdown-menu">
+			                                    <li><a href="buttons.html#">工厂废气</a>
+			                                    </li>
+			                                    <li><a href="buttons.html#" class="font-bold">车辆尾气</a>
+			                                    </li>
+			                                    <li><a href="buttons.html#">生活垃圾</a>
+			                                    </li>
+			                                    <li class="divider"></li>
+			                                    <li><a href="buttons.html#">删除</a>
+			                                    </li>
+			                                </ul>
+                            </div>
+				          
+					 <div class="btn-group col-md-4">
+                        <button class="btn btn-default" type="button"> 全部</button>
+                        <button class="btn btn-default" type="button">当前行业</button>
+                    </div>
+					
+					<!-- <div>
+						<a href="#" data-toggle="dropdown">
+              		<img class="user-avatar" src="" alt=""></a>
+					</div> -->
+		
+		</div>
+		
+		<div class="boxMapImg" style="margin:8px;">
+			放地图
+		</div>
+		
+<!-- 右下方div -->
+		<div class="tableInall">
+			<div class="row">
+					<div class="col-md-4"><span>措施汇总</span>
+					</div>
+				  	<div class="btn-group col-md-8" role="group">
+				  	<div class="col-md-4"> <button type="button" class="btn btn-default">计算减排</button></div>
+				  	<div class="col-md-4"> <button type="button" class="btn btn-default">修改</button></div>
+				  	<div class="col-md-4"> <button type="button" class="btn btn-default">清除</button></div>
+				  	</div>
+			</div>
+			
+
+<!-- 表格 -->			
+			   <div>
+                <div class="ibox float-e-margins">
+
+                    <div class="ibox-content">
+
+                        <table class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th><label for="checkall"><input type="checkbox" id="checkall"></label></th>
+                                    <th>行业</th>
+                                    <th>措施</th>
+                                    <th>点源实际范围</th>
+                                    <th>设计排放占比</th>
+                                    <th>减排占比</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="checkbox" name="check1"/></td>
+                                    <td>火力发电
+                                    </td>
+                                    <td>限产</td>
+                                    <td><p class="text-center">173/223</p></td>
+                                   	<td><p class="text-center">11.0%</p></td>
+                                   	<td></td>
+                                </tr>
+                              
+                              	<tr>
+                                    <td><input type="checkbox" name="check1"/></td>
+                                    <td>火力发电
+                                    </td>
+                                    <td>限产</td>
+                                    <td><p class="text-center">173/223</p></td>
+                                   	<td><p class="text-center">11.0%</p></td>
+                                   	<td></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td><input type="checkbox" name="check1"/></td>
+                                    <td>火力发电
+                                    </td>
+                                    <td>限产</td>
+                                    <td><p class="text-center">173/223</p></td>
+                                   	<td><p class="text-center">11.0%</p></td>
+                                   	<td></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+			
+			
+		</div>
+
+</div>
+
+
+</div>
