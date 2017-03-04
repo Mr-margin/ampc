@@ -27,12 +27,16 @@
   </sql>
   
   
-   <!--查询当前行业表中的最高版本号-->
+   <!--查询当前措施表中的最高版本号-->
   <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
   	select max(MEASURE_EXCEL_VERSION) from T_MEASURE_EXCEL where USER_ID=#{userId,jdbcType=DECIMAL} 
   </select>
   
-  
+  <!--获取到所有的措施信息-->
+  <select id="selectAll"  resultType="java.util.List">
+  	select <include refid="Base_Column_List" />
+    from T_MEASURE_EXCEL
+  </select>
   
   
   
