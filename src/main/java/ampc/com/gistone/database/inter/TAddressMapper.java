@@ -1,5 +1,7 @@
 package ampc.com.gistone.database.inter;
 
+import java.util.List;
+
 import ampc.com.gistone.database.model.TAddress;
 
 public interface TAddressMapper {
@@ -14,4 +16,6 @@ public interface TAddressMapper {
     int updateByPrimaryKeySelective(TAddress record);
 
     int updateByPrimaryKey(TAddress record);
+    
+    List<TAddress> selectBLevel(TAddress record);
 }
