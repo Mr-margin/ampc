@@ -28,20 +28,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.tools.javac.code.Attribute.Array;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
+import ampc.com.gistone.database.inter.TAddressMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TPlanMapper;
 import ampc.com.gistone.database.inter.TPlanMeasureMapper;
 import ampc.com.gistone.database.inter.TScenarinoAreaMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTimeMapper;
+import ampc.com.gistone.database.inter.TUserMapper;
+import ampc.com.gistone.database.model.TAddress;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TPlan;
 import ampc.com.gistone.database.model.TScenarinoArea;
 import ampc.com.gistone.database.model.TScenarinoAreaWithBLOBs;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTime;
+import ampc.com.gistone.database.model.TUser;
 import ampc.com.gistone.entity.AreaUtil;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
@@ -72,6 +77,12 @@ public class AreaAndTimeController {
 	@Autowired
 	private TPlanMeasureMapper tPlanMeasureMapper;
 	
+	@Autowired
+	private TUserMapper tUserMapper;
+	
+	
+	@Autowired
+	private TAddressMapper tAddressMapper;
 	
 	/**
 	 * 在原有基础上添加时段
@@ -237,6 +248,7 @@ public class AreaAndTimeController {
 			}
 			JSONObject obj=new JSONObject();
 			obj.put("timeItem", objlist);
+			System.out.println(obj);
 			return AmpcResult.build(0, "find_TIME success",obj);
 		}else{
 			return AmpcResult.build(1, "find_TIME error");
@@ -323,7 +335,7 @@ public class AreaAndTimeController {
 		Long mergeTimeId=Long.parseLong(data.get("mergeTimeId").toString());//合并时段的时段Id
 		String endDate=data.get("endDate").toString();//删除时段的结束时间
 		String startDate=data.get("startDate").toString();//删除时段的结束时间
-		//Long userId=Long.parseLong(data.get("userId").toString());//用户的id
+		Long userId=Long.parseLong(data.get("userId").toString());//用户的id
 		String status=data.get("status").toString();//预案id
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH");
 		Date timeEndDate=sdf.parse(endDate);
@@ -361,7 +373,7 @@ public class AreaAndTimeController {
 						if(del_status!=0){
 							return AmpcResult.build(0, "delete_time success");
 						}
-						return AmpcResult.build(1, "delete_time error");
+						return AmpcResult.build(0, "delete_time success");
 					}
 				}
 				}
@@ -579,6 +591,7 @@ public class AreaAndTimeController {
 			area.setProvinceCodes(data.get("provinceCodes").toString());
 			//市级区域代码数组
 			area.setCityCodes(data.get("cityCodes").toString());
+			
 			//县级区域代码数组
 			area.setCountyCodes(data.get("countyCodes").toString());
 			//判断区域Id 用来确定是添加还是修改
@@ -588,7 +601,7 @@ public class AreaAndTimeController {
 				int result=this.tScenarinoAreaMapper.updateByPrimaryKeySelective(area);
 				//判断修改是否成功
 			    return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "添加时段失败",null);
-			}else{
+			}else{ 
 				//情景ID
 				area.setScenarinoDetailId(Long.parseLong(data.get("scenarinoId").toString()));
 				//执行添加操作
@@ -607,9 +620,9 @@ public class AreaAndTimeController {
 					Calendar cal = Calendar.getInstance();
 					cal.setTime(endDate);
 					cal.add(Calendar.HOUR, - 1);
-					String addTimeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+					String addTimeDate = new SimpleDateFormat("yyyy-MM-dd HH")
 							.format(cal.getTime());
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH");
 					Date timeEndDate = sdf.parse(addTimeDate);
 					//新建时段
 					TTime add_tTime = new TTime();
@@ -745,4 +758,93 @@ public class AreaAndTimeController {
 			return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
+	/**
+	 *查询省市区接口
+	 */
+	@RequestMapping("area/find_areas")
+	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
+	public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Long userId=Long.parseLong(data.get("userId").toString());
+			TUser user=tUserMapper.selectByPrimaryKey(userId);		
+			
+			Long scenarinoDetailId=Long.parseLong(data.get("scenarinoDetailId").toString());
+			TScenarinoAreaWithBLOBs tScenarinoArea=new TScenarinoAreaWithBLOBs();
+			tScenarinoArea.setScenarinoDetailId(scenarinoDetailId);
+			List<TScenarinoAreaWithBLOBs> arealist=tScenarinoAreaMapper.selectByEntity(tScenarinoArea);
+	
+			TAddress tAddress=new TAddress();
+			tAddress.setAddressLevel("1");
+			List<TAddress> prolist=tAddressMapper.selectBLevel(tAddress);
+			JSONArray arr=new JSONArray();
+			//遍历省级区域
+			
+			for(TAddress pro:prolist){
+				JSONObject probj=new JSONObject();
+				JSONArray cityarr=new JSONArray();
+				probj.put("adcode", pro.getAddressCode());
+				probj.put("name", pro.getAddressName());
+				probj.put("level", pro.getAddressLevel());
+				if(user.getPassword().equals(pro.getProvinceCode())){
+					probj.put("open",true);
+				}
+				//查询省包含的市
+				TAddress cityAd=new TAddress();
+				cityAd.setAddressLevel("2");
+				cityAd.setProvinceCode(pro.getProvinceCode());
+				List<TAddress> citylist=tAddressMapper.selectBLevel(cityAd);
+				//在省级区域里遍历市级区域
+				for(TAddress city:citylist){
+					JSONArray counarr=new JSONArray();
+					
+					JSONObject cityobj=new JSONObject();
+					cityobj.put("adcode", city.getAddressCode());
+					cityobj.put("name", city.getAddressName());
+					cityobj.put("level", city.getAddressLevel());
+					if(user.getPassword().equals(city.getCityCode())){
+						cityobj.put("open",true);
+					}
+					//查询市包含的区
+					TAddress counAd=new TAddress();
+					counAd.setAddressLevel("3");
+					counAd.setProvinceCode(pro.getProvinceCode());
+					counAd.setCityCode(city.getCityCode());
+					List<TAddress> coulist=tAddressMapper.selectBLevel(counAd);
+					//遍历市包含的区
+					for(TAddress county:coulist){
+						
+						JSONObject counobj=new JSONObject();
+						counobj.put("adcode", county.getAddressCode());
+						counobj.put("name", county.getAddressName());
+
+						for(TScenarinoAreaWithBLOBs areabol:arealist){
+							if(areabol.getCountyCodes().indexOf(county.getAddressCode())!=-1){
+								counobj.put("name", county.getAddressName()+"("+areabol.getAreaName()+")");
+								counobj.put("chkDisabled", true);
+								
+							}
+						}
+						counobj.put("level", county.getAddressLevel());
+						if(user.getPassword().equals(county.getCountyCode())){
+							counobj.put("open",true);
+						}
+						counarr.add(counobj);
+					}
+					cityobj.put("children", counarr);
+					cityarr.add(cityobj);	
+				}
+				probj.put("children", cityarr);
+				arr.add(probj);
+				boolean sv=arr.isEmpty();
+			}
+			return AmpcResult.build(0, "find_areas success",arr);
+		}catch(Exception e){
+			System.out.println(e);
+			return AmpcResult.build(1000, "参数错误",null);
+		}
+		
+	}
+
 }
