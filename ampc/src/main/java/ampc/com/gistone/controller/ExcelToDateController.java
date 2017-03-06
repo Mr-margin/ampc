@@ -72,8 +72,8 @@ public class ExcelToDateController {
 	 * @param response    响应
 	 * @return 返回响应结果对象
 	 */
-	@RequestMapping("excel/update_measureExcelDate")
-	public AmpcResult update_MeasureExcelDate(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping("excel/update_measureExcelData")
+	public AmpcResult update_MeasureExcelData(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
 		// 添加异常捕捉
 		try {
 			// 设置跨域
@@ -113,8 +113,8 @@ public class ExcelToDateController {
 	 * @param response    响应
 	 * @return 返回响应结果对象
 	 */
-	@RequestMapping("excel/update_sectorExcelDate")
-	public AmpcResult update_SectorDate(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping("excel/update_sectorExcelData")
+	public AmpcResult update_SectorData(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
 		// 添加异常捕捉
 		try {
 			// 设置跨域
