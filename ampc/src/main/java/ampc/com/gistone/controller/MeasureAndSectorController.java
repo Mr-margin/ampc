@@ -40,7 +40,7 @@ public class MeasureAndSectorController {
 	 * @param response 响应
 	 * @return 返回响应结果对象
 	 */
-	@RequestMapping("ms/get_msInfo")
+	@RequestMapping(value = "ms/get_msInfo")
 	public AmpcResult get_MsInfo(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
 	    //添加异常捕捉
 		try {
