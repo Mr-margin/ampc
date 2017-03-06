@@ -5,9 +5,11 @@
     <id column="USER_ID" property="userId" jdbcType="DECIMAL" />
     <result column="USER_NAME" property="userName" jdbcType="OTHER" />
     <result column="PASSWORD" property="password" jdbcType="OTHER" />
+    <result column="PROVINCE_CODE" property="provinceCode" jdbcType="VARCHAR" />
+    <result column="CITY_CODE" property="cityCode" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    USER_ID, USER_NAME, PASSWORD
+    USER_ID, USER_NAME, PASSWORD, PROVINCE_CODE, CITY_CODE
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -20,10 +22,10 @@
     where USER_ID = #{userId,jdbcType=DECIMAL}
   </delete>
   <insert id="insert" parameterType="ampc.com.gistone.database.model.TUser" >
-    insert into T_USER (USER_ID, USER_NAME, PASSWORD
-      )
-    values (#{userId,jdbcType=DECIMAL}, #{userName,jdbcType=OTHER}, #{password,jdbcType=OTHER}
-      )
+    insert into T_USER (USER_ID, USER_NAME, PASSWORD, 
+      PROVINCE_CODE, CITY_CODE)
+    values (#{userId,jdbcType=DECIMAL}, #{userName,jdbcType=OTHER}, #{password,jdbcType=OTHER}, 
+      #{provinceCode,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TUser" >
     insert into T_USER
@@ -37,6 +39,12 @@
       <if test="password != null" >
         PASSWORD,
       </if>
+      <if test="provinceCode != null" >
+        PROVINCE_CODE,
+      </if>
+      <if test="cityCode != null" >
+        CITY_CODE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="userId != null" >
@@ -47,6 +55,12 @@
       </if>
       <if test="password != null" >
         #{password,jdbcType=OTHER},
+      </if>
+      <if test="provinceCode != null" >
+        #{provinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null" >
+        #{cityCode,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -59,13 +73,21 @@
       <if test="password != null" >
         PASSWORD = #{password,jdbcType=OTHER},
       </if>
+      <if test="provinceCode != null" >
+        PROVINCE_CODE = #{provinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null" >
+        CITY_CODE = #{cityCode,jdbcType=VARCHAR},
+      </if>
     </set>
     where USER_ID = #{userId,jdbcType=DECIMAL}
   </update>
   <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TUser" >
     update T_USER
     set USER_NAME = #{userName,jdbcType=OTHER},
-      PASSWORD = #{password,jdbcType=OTHER}
+      PASSWORD = #{password,jdbcType=OTHER},
+      PROVINCE_CODE = #{provinceCode,jdbcType=VARCHAR},
+      CITY_CODE = #{cityCode,jdbcType=VARCHAR}
     where USER_ID = #{userId,jdbcType=DECIMAL}
   </update>
 </mapper>

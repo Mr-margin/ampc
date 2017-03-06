@@ -7,6 +7,10 @@ public class TUser {
 
     private Object password;
 
+    private String provinceCode;
+
+    private String cityCode;
+
     public Long getUserId() {
         return userId;
     }
@@ -29,5 +33,21 @@ public class TUser {
 
     public void setPassword(Object password) {
         this.password = password;
+    }
+
+    public String getProvinceCode() {
+        return provinceCode;
+    }
+
+    public void setProvinceCode(String provinceCode) {
+        this.provinceCode = provinceCode == null ? null : provinceCode.trim();
+    }
+
+    public String getCityCode() {
+        return cityCode;
+    }
+
+    public void setCityCode(String cityCode) {
+        this.cityCode = cityCode == null ? null : cityCode.trim();
     }
 }
