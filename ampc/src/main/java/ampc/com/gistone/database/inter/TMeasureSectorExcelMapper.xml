@@ -24,13 +24,18 @@
     <result column="MS_EXCEL_SV" property="msExcelSv" jdbcType="OTHER" />
     <result column="SID" property="sid" jdbcType="DECIMAL" />
   </resultMap>
-  <!-- 根据userId 查询返回结果 -->
+  <!-- 根据userId 查询返回行业措施结果 -->
   <resultMap id="mapByUserId" type="hashMap" >
     <id column="MS_EXCEL_ID" property="msExcelId" jdbcType="DECIMAL" />
     <result column="MID" property="mid" jdbcType="DECIMAL" />
     <result column="SECTORSNAME" property="sectorsname" jdbcType="OTHER" />
     <result column="MS_EXCEL_DISPLAY" property="measureame" jdbcType="OTHER" />
     <result column="SID" property="sid" jdbcType="DECIMAL" />
+  </resultMap>
+  <!-- 根据userId 查询返回措施结果 -->
+  <resultMap id="mapBySname" type="hashMap" >
+    <result column="MID" property="mid" jdbcType="DECIMAL" />
+    <result column="MS_EXCEL_DISPLAY" property="measureame" jdbcType="OTHER" />
   </resultMap>
   <sql id="Base_Column_List" >
     MS_EXCEL_ID, USER_ID, MS_EXCEL_VERSION_ID, MID, MS_EXCEL_NAME, MS_EXCEL_DESC, MS_EXCEL_OP, 
@@ -48,8 +53,17 @@
   <select id="selectByUserId" parameterType="java.lang.Long" resultMap="mapByUserId">
   	select MS_EXCEL_ID,MID,MS_EXCEL_DISPLAY,SID,SECTORSNAME from T_MEASURE_SECTOR_EXCEL where USER_ID=#{userId,jdbcType=DECIMAL} 
   </select>
+  
+  <!--根据用户ID 获取所有的行业名称-->
+  <select id="getSectorInfo" parameterType="java.lang.Long" resultType="java.lang.String">
+  	select SECTORSNAME from T_MEASURE_SECTOR_EXCEL where USER_ID=#{userId,jdbcType=DECIMAL} 
+	 GROUP BY SECTORSNAME 
+  </select>
  
- 
+ <!--根据条件查询对应的措施-->
+  <select id="getMeasureInfo" parameterType="hashMap" resultMap="mapBySname">
+  	select MID,MS_EXCEL_DISPLAY from T_MEASURE_SECTOR_EXCEL where USER_ID=#{userId,jdbcType=OTHER} and SECTORSNAME =#{sectorsName,jdbcType=OTHER}
+  </select>
  
  
  
