@@ -25,7 +25,8 @@ public interface TMeasureExcelMapper {
 	 * @return
 	 */
 	List<TMeasureExcel> selectAll();
-    int deleteByPrimaryKey(Long measureExcelId);
+  
+	int deleteByPrimaryKey(Long measureExcelId);
 
     int insert(TMeasureExcel record);
 
