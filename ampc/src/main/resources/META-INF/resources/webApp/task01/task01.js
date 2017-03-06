@@ -325,7 +325,7 @@ function initQjTable() {
     iconSize: "outline",
     search: false,
     searchAlign: 'right',
-    height:QJheight-59,
+    height:QJheight-57,
     maintainSelected: true,
     clickToSelect: false,// 点击选中行
     pagination: false, // 在表格底部显示分页工具栏
@@ -504,7 +504,7 @@ $('#createModal').on('show.bs.modal', function (event) {
     $('.createQj').css('display','none');
     $('.createRw').parent().removeClass('col-md-6');
     $('.selectOldQj').css('display','none');
-    $('#createModal .modal-dialog').removeClass('modal-lg');
+    $('#createModal .modal-dialog').removeClass('w80');
 
   } else {
     modal.find('.createRun').text('创建并开始编辑情景');
@@ -514,7 +514,7 @@ $('#createModal').on('show.bs.modal', function (event) {
     $('.createQj').css('display','block');
     $('.createRw').parent().removeClass('col-md-6');
     $('.selectOldQj').css('display','none');
-    $('#createModal .modal-dialog').removeClass('modal-lg');
+    $('#createModal .modal-dialog').removeClass('w80');
 
     $('.createQj-in').css('display','none');
     $('.qjSelectWay').css('display','block');
@@ -557,7 +557,7 @@ function selectOldType(e){
 
 var qjId = '';
 function findOldQj(){
-  $('#createModal .modal-dialog').addClass('modal-lg');
+  $('#createModal .modal-dialog').addClass('w80');
   $('.selectOldQj').css('display','block');
   $('.createQj').parent().addClass('col-md-6');
 
