@@ -20,7 +20,6 @@ public interface TSectorExcelMapper {
 	
 	/**
 	 * 获取到所有的行业信息
-	 * @param sectorExcelId
 	 * @return
 	 */
 	List<TSectorExcel> selectAll();
