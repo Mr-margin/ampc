@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TMeasureSectorExcelMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TMeasureSectorExcel" >
+    <id column="MS_EXCEL_ID" property="msExcelId" jdbcType="DECIMAL" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="MS_EXCEL_VERSION_ID" property="msExcelVersionId" jdbcType="DECIMAL" />
+    <result column="MID" property="mid" jdbcType="DECIMAL" />
+    <result column="MS_EXCEL_NAME" property="msExcelName" jdbcType="OTHER" />
+    <result column="MS_EXCEL_DESC" property="msExcelDesc" jdbcType="OTHER" />
+    <result column="MS_EXCEL_OP" property="msExcelOp" jdbcType="OTHER" />
+    <result column="MS_EXCEL_INTENSITY" property="msExcelIntensity" jdbcType="DECIMAL" />
+    <result column="SECTORSNAME" property="sectorsname" jdbcType="OTHER" />
+    <result column="CONTENT" property="content" jdbcType="OTHER" />
+    <result column="MS_EXCEL_DISPLAY" property="msExcelDisplay" jdbcType="OTHER" />
+    <result column="DEBUG_MODEL" property="debugModel" jdbcType="DECIMAL" />
+    <result column="MS_EXCEL_TYPE" property="msExcelType" jdbcType="OTHER" />
+    <result column="MS_EXCEL_LEVEL" property="msExcelLevel" jdbcType="DECIMAL" />
+    <result column="MS_EXCEL_A" property="msExcelA" jdbcType="DECIMAL" />
+    <result column="MS_EXCEL_A1" property="msExcelA1" jdbcType="DECIMAL" />
+    <result column="MS_EXCEL_INTENSITY1" property="msExcelIntensity1" jdbcType="DECIMAL" />
+    <result column="MS_EXCEL_ASH" property="msExcelAsh" jdbcType="DECIMAL" />
+    <result column="MS_EXCEL_SULFER" property="msExcelSulfer" jdbcType="DECIMAL" />
+    <result column="MS_EXCEL_SV" property="msExcelSv" jdbcType="OTHER" />
+    <result column="SID" property="sid" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    MS_EXCEL_ID, USER_ID, MS_EXCEL_VERSION_ID, MID, MS_EXCEL_NAME, MS_EXCEL_DESC, MS_EXCEL_OP, 
+    MS_EXCEL_INTENSITY, SECTORSNAME, CONTENT, MS_EXCEL_DISPLAY, DEBUG_MODEL, MS_EXCEL_TYPE, 
+    MS_EXCEL_LEVEL, MS_EXCEL_A, MS_EXCEL_A1, MS_EXCEL_INTENSITY1, MS_EXCEL_ASH, MS_EXCEL_SULFER, 
+    MS_EXCEL_SV, SID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_MEASURE_SECTOR_EXCEL
+    where MS_EXCEL_ID = #{msExcelId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_MEASURE_SECTOR_EXCEL
+    where MS_EXCEL_ID = #{msExcelId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TMeasureSectorExcel" >
+    insert into T_MEASURE_SECTOR_EXCEL (MS_EXCEL_ID, USER_ID, MS_EXCEL_VERSION_ID, 
+      MID, MS_EXCEL_NAME, MS_EXCEL_DESC, 
+      MS_EXCEL_OP, MS_EXCEL_INTENSITY, SECTORSNAME, 
+      CONTENT, MS_EXCEL_DISPLAY, DEBUG_MODEL, 
+      MS_EXCEL_TYPE, MS_EXCEL_LEVEL, MS_EXCEL_A, 
+      MS_EXCEL_A1, MS_EXCEL_INTENSITY1, MS_EXCEL_ASH, 
+      MS_EXCEL_SULFER, MS_EXCEL_SV, SID
+      )
+    values (#{msExcelId,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{msExcelVersionId,jdbcType=DECIMAL}, 
+      #{mid,jdbcType=DECIMAL}, #{msExcelName,jdbcType=OTHER}, #{msExcelDesc,jdbcType=OTHER}, 
+      #{msExcelOp,jdbcType=OTHER}, #{msExcelIntensity,jdbcType=DECIMAL}, #{sectorsname,jdbcType=OTHER}, 
+      #{content,jdbcType=OTHER}, #{msExcelDisplay,jdbcType=OTHER}, #{debugModel,jdbcType=DECIMAL}, 
+      #{msExcelType,jdbcType=OTHER}, #{msExcelLevel,jdbcType=DECIMAL}, #{msExcelA,jdbcType=DECIMAL}, 
+      #{msExcelA1,jdbcType=DECIMAL}, #{msExcelIntensity1,jdbcType=DECIMAL}, #{msExcelAsh,jdbcType=DECIMAL}, 
+      #{msExcelSulfer,jdbcType=DECIMAL}, #{msExcelSv,jdbcType=OTHER}, #{sid,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TMeasureSectorExcel" >
+    insert into T_MEASURE_SECTOR_EXCEL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="msExcelId != null" >
+        MS_EXCEL_ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="msExcelVersionId != null" >
+        MS_EXCEL_VERSION_ID,
+      </if>
+      <if test="mid != null" >
+        MID,
+      </if>
+      <if test="msExcelName != null" >
+        MS_EXCEL_NAME,
+      </if>
+      <if test="msExcelDesc != null" >
+        MS_EXCEL_DESC,
+      </if>
+      <if test="msExcelOp != null" >
+        MS_EXCEL_OP,
+      </if>
+      <if test="msExcelIntensity != null" >
+        MS_EXCEL_INTENSITY,
+      </if>
+      <if test="sectorsname != null" >
+        SECTORSNAME,
+      </if>
+      <if test="content != null" >
+        CONTENT,
+      </if>
+      <if test="msExcelDisplay != null" >
+        MS_EXCEL_DISPLAY,
+      </if>
+      <if test="debugModel != null" >
+        DEBUG_MODEL,
+      </if>
+      <if test="msExcelType != null" >
+        MS_EXCEL_TYPE,
+      </if>
+      <if test="msExcelLevel != null" >
+        MS_EXCEL_LEVEL,
+      </if>
+      <if test="msExcelA != null" >
+        MS_EXCEL_A,
+      </if>
+      <if test="msExcelA1 != null" >
+        MS_EXCEL_A1,
+      </if>
+      <if test="msExcelIntensity1 != null" >
+        MS_EXCEL_INTENSITY1,
+      </if>
+      <if test="msExcelAsh != null" >
+        MS_EXCEL_ASH,
+      </if>
+      <if test="msExcelSulfer != null" >
+        MS_EXCEL_SULFER,
+      </if>
+      <if test="msExcelSv != null" >
+        MS_EXCEL_SV,
+      </if>
+      <if test="sid != null" >
+        SID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="msExcelId != null" >
+        #{msExcelId,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelVersionId != null" >
+        #{msExcelVersionId,jdbcType=DECIMAL},
+      </if>
+      <if test="mid != null" >
+        #{mid,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelName != null" >
+        #{msExcelName,jdbcType=OTHER},
+      </if>
+      <if test="msExcelDesc != null" >
+        #{msExcelDesc,jdbcType=OTHER},
+      </if>
+      <if test="msExcelOp != null" >
+        #{msExcelOp,jdbcType=OTHER},
+      </if>
+      <if test="msExcelIntensity != null" >
+        #{msExcelIntensity,jdbcType=DECIMAL},
+      </if>
+      <if test="sectorsname != null" >
+        #{sectorsname,jdbcType=OTHER},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=OTHER},
+      </if>
+      <if test="msExcelDisplay != null" >
+        #{msExcelDisplay,jdbcType=OTHER},
+      </if>
+      <if test="debugModel != null" >
+        #{debugModel,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelType != null" >
+        #{msExcelType,jdbcType=OTHER},
+      </if>
+      <if test="msExcelLevel != null" >
+        #{msExcelLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelA != null" >
+        #{msExcelA,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelA1 != null" >
+        #{msExcelA1,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelIntensity1 != null" >
+        #{msExcelIntensity1,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelAsh != null" >
+        #{msExcelAsh,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelSulfer != null" >
+        #{msExcelSulfer,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelSv != null" >
+        #{msExcelSv,jdbcType=OTHER},
+      </if>
+      <if test="sid != null" >
+        #{sid,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TMeasureSectorExcel" >
+    update T_MEASURE_SECTOR_EXCEL
+    <set >
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelVersionId != null" >
+        MS_EXCEL_VERSION_ID = #{msExcelVersionId,jdbcType=DECIMAL},
+      </if>
+      <if test="mid != null" >
+        MID = #{mid,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelName != null" >
+        MS_EXCEL_NAME = #{msExcelName,jdbcType=OTHER},
+      </if>
+      <if test="msExcelDesc != null" >
+        MS_EXCEL_DESC = #{msExcelDesc,jdbcType=OTHER},
+      </if>
+      <if test="msExcelOp != null" >
+        MS_EXCEL_OP = #{msExcelOp,jdbcType=OTHER},
+      </if>
+      <if test="msExcelIntensity != null" >
+        MS_EXCEL_INTENSITY = #{msExcelIntensity,jdbcType=DECIMAL},
+      </if>
+      <if test="sectorsname != null" >
+        SECTORSNAME = #{sectorsname,jdbcType=OTHER},
+      </if>
+      <if test="content != null" >
+        CONTENT = #{content,jdbcType=OTHER},
+      </if>
+      <if test="msExcelDisplay != null" >
+        MS_EXCEL_DISPLAY = #{msExcelDisplay,jdbcType=OTHER},
+      </if>
+      <if test="debugModel != null" >
+        DEBUG_MODEL = #{debugModel,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelType != null" >
+        MS_EXCEL_TYPE = #{msExcelType,jdbcType=OTHER},
+      </if>
+      <if test="msExcelLevel != null" >
+        MS_EXCEL_LEVEL = #{msExcelLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelA != null" >
+        MS_EXCEL_A = #{msExcelA,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelA1 != null" >
+        MS_EXCEL_A1 = #{msExcelA1,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelIntensity1 != null" >
+        MS_EXCEL_INTENSITY1 = #{msExcelIntensity1,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelAsh != null" >
+        MS_EXCEL_ASH = #{msExcelAsh,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelSulfer != null" >
+        MS_EXCEL_SULFER = #{msExcelSulfer,jdbcType=DECIMAL},
+      </if>
+      <if test="msExcelSv != null" >
+        MS_EXCEL_SV = #{msExcelSv,jdbcType=OTHER},
+      </if>
+      <if test="sid != null" >
+        SID = #{sid,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where MS_EXCEL_ID = #{msExcelId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TMeasureSectorExcel" >
+    update T_MEASURE_SECTOR_EXCEL
+    set USER_ID = #{userId,jdbcType=DECIMAL},
+      MS_EXCEL_VERSION_ID = #{msExcelVersionId,jdbcType=DECIMAL},
+      MID = #{mid,jdbcType=DECIMAL},
+      MS_EXCEL_NAME = #{msExcelName,jdbcType=OTHER},
+      MS_EXCEL_DESC = #{msExcelDesc,jdbcType=OTHER},
+      MS_EXCEL_OP = #{msExcelOp,jdbcType=OTHER},
+      MS_EXCEL_INTENSITY = #{msExcelIntensity,jdbcType=DECIMAL},
+      SECTORSNAME = #{sectorsname,jdbcType=OTHER},
+      CONTENT = #{content,jdbcType=OTHER},
+      MS_EXCEL_DISPLAY = #{msExcelDisplay,jdbcType=OTHER},
+      DEBUG_MODEL = #{debugModel,jdbcType=DECIMAL},
+      MS_EXCEL_TYPE = #{msExcelType,jdbcType=OTHER},
+      MS_EXCEL_LEVEL = #{msExcelLevel,jdbcType=DECIMAL},
+      MS_EXCEL_A = #{msExcelA,jdbcType=DECIMAL},
+      MS_EXCEL_A1 = #{msExcelA1,jdbcType=DECIMAL},
+      MS_EXCEL_INTENSITY1 = #{msExcelIntensity1,jdbcType=DECIMAL},
+      MS_EXCEL_ASH = #{msExcelAsh,jdbcType=DECIMAL},
+      MS_EXCEL_SULFER = #{msExcelSulfer,jdbcType=DECIMAL},
+      MS_EXCEL_SV = #{msExcelSv,jdbcType=OTHER},
+      SID = #{sid,jdbcType=DECIMAL}
+    where MS_EXCEL_ID = #{msExcelId,jdbcType=DECIMAL}
+  </update>
+</mapper>
