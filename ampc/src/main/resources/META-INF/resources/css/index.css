@@ -1,6 +1,9 @@
 #rwToolbar, #qjToolbar {
   margin: 10px;
 }
+.rwtableDiv>.clearfix{
+  border:1px solid #e7eaec;
+}
 
 .lh29 {
   line-height: 29px;
@@ -100,6 +103,9 @@
   left: -85px;
   bottom: 4px;
   transition: left 0.3s linear;
+}
+.areaToolDiv button:hover,.timeToolDiv button:hover{
+  color:#676a6c;
 }
 
 .toolShow{
@@ -236,6 +242,16 @@
 }
 .editAreaTitle p,.editAreaTitle label{
   line-height: 28px;
+}
+
+.qjbjDiv{
+  background-color: #fff;
+}
+.qjbj{
+  margin-right: 15px;
+}
+.w80{
+  width: 80%;
 }
 
 
