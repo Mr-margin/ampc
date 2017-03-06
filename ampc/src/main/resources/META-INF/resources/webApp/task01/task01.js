@@ -137,11 +137,11 @@ function formVerify(){
   })
 }*/
 
-$(document).ready(function () {
+//$(document).ready(function () {
   initialize();
   initDate();
   formVerify();
-});
+//});
 
 function initialize() {
   initRwTable();
