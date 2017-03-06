@@ -58,6 +58,7 @@ function initialize(){
   var url = '/area/get_areaAndTimeList';
   var scenarino = ajaxPost(url,{
     scenarinoId:qjMsg.qjId,
+//	  scenarinoId:1,
     userId:userId
   });
 
@@ -113,6 +114,11 @@ function initialize(){
     }
     console.log(allData)
   })
+
+}
+
+/*初始化zTree*/
+function initZTree(){
 
 }
 
