@@ -212,4 +212,15 @@ public class TMeasureSectorExcel {
     public void setSid(Long sid) {
         this.sid = sid;
     }
+    @Override
+	public boolean equals(Object obj) {
+    	TMeasureSectorExcel s = (TMeasureSectorExcel) obj;
+		return msExcelName.equals(s.msExcelName) && sectorsname.equals(s.sectorsname);
+	}
+
+	@Override
+	public int hashCode() {
+		String in = msExcelName.toString() + sectorsname;
+		return in.hashCode();
+	}
 }
