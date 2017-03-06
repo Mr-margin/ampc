@@ -30,6 +30,20 @@
     MS_EXCEL_LEVEL, MS_EXCEL_A, MS_EXCEL_A1, MS_EXCEL_INTENSITY1, MS_EXCEL_ASH, MS_EXCEL_SULFER, 
     MS_EXCEL_SV, SID
   </sql>
+ 
+  <!--查询当前措施表中的最高版本号-->
+  <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
+  	select max(MS_EXCEL_VERSION_ID) from T_MEASURE_SECTOR_EXCEL where USER_ID=#{userId,jdbcType=DECIMAL} 
+  </select>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
