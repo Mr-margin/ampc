@@ -1,5 +1,8 @@
 package ampc.com.gistone.database.inter;
 
+import java.util.List;
+import java.util.Map;
+
 import ampc.com.gistone.database.model.TMeasureSectorExcel;
 
 /**
@@ -15,6 +18,14 @@ public interface TMeasureSectorExcelMapper {
 	 * @return
 	 */
 	Long selectMaxVersion(Long userId);
+	
+	/**
+	 * 根据用户ID 查询行业措施数据
+	 * @param msExcelId
+	 * @return
+	 */
+	List<Map> selectByUserId(Long userId);
+	
 	
     int deleteByPrimaryKey(Long msExcelId);
 
