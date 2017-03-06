@@ -5,8 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMeasureExcelMapper;
-import ampc.com.gistone.database.inter.TMeasureTemplateMapper;
+import ampc.com.gistone.database.inter.TMeasureSectorExcelMapper;
 import ampc.com.gistone.database.inter.TSectorExcelMapper;
 import ampc.com.gistone.database.model.TMeasureExcel;
-import ampc.com.gistone.database.model.TMeasureTemplate;
+import ampc.com.gistone.database.model.TMeasureSectorExcel;
 import ampc.com.gistone.database.model.TSectorExcel;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.CheckUtil;
@@ -50,17 +52,17 @@ public class ExcelToDateController {
 	
 	//措施版本映射
 	@Autowired
-	public TMeasureTemplateMapper tMeasureTemplateMapper;
+	public TMeasureSectorExcelMapper tMeasureSectorExcelMapper;
 	
 	/**
 	 * 保存到措施模版表
 	 */
-	@RequestMapping("excel/save_TMeasureTemplate")
-	public void saveTMeasureTemplate(){
-		Set<TMeasureTemplate> tmtSet=checkInfo();
-		System.out.println(tmtSet.size());
-		for (TMeasureTemplate tmt : tmtSet) {
-			tMeasureTemplateMapper.insertSelective(tmt);
+	@RequestMapping("excel/save_ms")
+	public void save_MS(){
+		Set<TMeasureSectorExcel> ms=checkInfo();
+		System.out.println(ms.size());
+		for (TMeasureSectorExcel tmt : ms) {
+			tMeasureSectorExcelMapper.insertSelective(tmt);
 		}
 	}
 	
@@ -153,24 +155,25 @@ public class ExcelToDateController {
 	 * @param tme
 	 * @return
 	 */
-	public TMeasureTemplate castClass(TSectorExcel tse,TMeasureExcel tme){
-		TMeasureTemplate tmt=new TMeasureTemplate();
+	public TMeasureSectorExcel castClass(TSectorExcel tse,TMeasureExcel tme){
+		TMeasureSectorExcel tmt=new TMeasureSectorExcel();
 		tmt.setDebugModel(tme.getMeasureExcelDebug());
-		tmt.setMeasureTemplateA(tme.getMeasureExcelA());
-		tmt.setMeasureTemplateA1(tme.getMeasureExcelA1());
-		tmt.setMeasureTemplateAsh(tme.getMeasureExcelAsh());
-		tmt.setMeasureTemplateDisplay(tme.getMeasureExcelDisplay());
-		tmt.setMeasureTemplateIntensity(tme.getMeasureExcelIntensity());
-		tmt.setMeasureTemplateIntensity1(tme.getMeasureExcelIntensity1());
-		tmt.setMeasureTemplateLevel(tme.getMeasureExcelLevel());
-		tmt.setMeasureTemplateName(tme.getMeasureExcelName());
-		tmt.setMeasureTemplateOp(tme.getMeasureExcelOp());
-		tmt.setMeasureTemplateSulfer(tme.getMeasureExcelSulfer());
-		tmt.setMeasureTemplateSv(tme.getMeasureExcelSv());
-		tmt.setMeasureTemplateType(tme.getMeasureExcelType());
+		tmt.setMsExcelA(tme.getMeasureExcelA());
+		tmt.setMsExcelA1(tme.getMeasureExcelA1());
+		tmt.setMsExcelAsh(tme.getMeasureExcelAsh());
+		tmt.setMsExcelDisplay(tme.getMeasureExcelDisplay());
+		tmt.setMsExcelIntensity(tme.getMeasureExcelIntensity());
+		tmt.setMsExcelIntensity1(tme.getMeasureExcelIntensity1());
+		tmt.setMsExcelLevel(tme.getMeasureExcelLevel());
+		tmt.setMsExcelName(tme.getMeasureExcelName());
+		tmt.setMsExcelOp(tme.getMeasureExcelOp());
+		tmt.setMsExcelSulfer(tme.getMeasureExcelSulfer());
+		tmt.setMsExcelSv(tme.getMeasureExcelSv());
+		tmt.setMsExcelType(tme.getMeasureExcelType());
 		tmt.setSectorsname(tse.getSectorExcelName());
 		tmt.setUserId(tme.getUserId());
-		tmt.setVersionId(tme.getMeasureExcelVersion());
+		tmt.setMsExcelVersionId(tme.getMeasureExcelVersion());
+		tmt.setSid(tse.getSectorExcelId());
 		return tmt;
 	}
 	
@@ -178,12 +181,12 @@ public class ExcelToDateController {
 	 * TODO
 	 * c1
 	 */
-	public String c1(Set<TMeasureTemplate> tmtSet,CheckUtil1 cu11,TSectorExcel tse,int id1,int id2,int id3,int id4){
+	public String c1(Set<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id1,int id2,int id3,int id4){
 		//获取第二个id[2]的条件集合
 		List<CheckUtil> check2 = cu11.getCheck2();
 		if(check2==null){
 			//保存结果
-			tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+			ms.add(castClass(tse,cu11.gettMeasureExcel()));
 			System.out.println("没有id[2]的条件,该条成立");
 			//返回证明 该条l4s符合这条措施
 			return "ok";
@@ -194,7 +197,7 @@ public class ExcelToDateController {
 			if(cu2.getMethod().equals("or")){
 				//如果为or 则满足一个就可以 如果为true 
 				if(id2==cu2.getNum1()||id2==cu2.getNum2()){
-					String result=c2(tmtSet,cu11,tse,id3,id4);
+					String result=c2(ms,cu11,tse,id3,id4);
 					if(result.equals("ok")){
 						return "ok";
 					}else{
@@ -206,7 +209,7 @@ public class ExcelToDateController {
 			}else if(cu2.getMethod().equals("between")){
 				//如果为between;规定数字在两个数之间 
 				if(cu2.getNum1()<=id2&&id2<=cu2.getNum2()){
-					String result=c2(tmtSet,cu11,tse,id3,id4);
+					String result=c2(ms,cu11,tse,id3,id4);
 					if(result.equals("ok")){
 						return "ok";
 					}else{
@@ -218,7 +221,7 @@ public class ExcelToDateController {
 			}else if(cu2.getMethod().equals("and")){
 				//and规定数字和第一个数字==为true
 				if(cu2.getNum1()==id2){
-					String result=c2(tmtSet,cu11,tse,id3,id4);
+					String result=c2(ms,cu11,tse,id3,id4);
 					if(result.equals("ok")){
 						return "ok";
 					}else{
@@ -239,12 +242,12 @@ public class ExcelToDateController {
 	 * c2
 	 * @return
 	 */
-	public String c2(Set<TMeasureTemplate> tmtSet,CheckUtil1 cu11,TSectorExcel tse,int id3,int id4){
+	public String c2(Set<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id3,int id4){
 		//获取第三个id[3]的条件集合
 		List<CheckUtil> check3 = cu11.getCheck3();
 		if(check3==null){
 			//保存结果
-			tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+			ms.add(castClass(tse,cu11.gettMeasureExcel()));
 			System.out.println("没有id[3]的条件,该条成立");
 			//返回证明 该条l4s符合这条措施
 			return "ok";
@@ -255,7 +258,7 @@ public class ExcelToDateController {
 			if(cu3.getMethod().equals("or")){
 				//如果为or 则满足一个就可以 如果为true 
 				if(id3==cu3.getNum1()||id3==cu3.getNum2()){
-					String result=c3(tmtSet,cu11,tse,id4);
+					String result=c3(ms,cu11,tse,id4);
 					if(result.equals("ok")){
 						return "ok";
 					}else{
@@ -268,7 +271,7 @@ public class ExcelToDateController {
 			}else if(cu3.getMethod().equals("between")){
 				//如果为between;规定数字在两个数之间 
 				if(cu3.getNum1()<=id3&&id3<=cu3.getNum2()){
-					String result=c3(tmtSet,cu11,tse,id4);
+					String result=c3(ms,cu11,tse,id4);
 					if(result.equals("ok")){
 						return "ok";
 					}else{
@@ -280,7 +283,7 @@ public class ExcelToDateController {
 			}else if(cu3.getMethod().equals("and")){
 				//and规定数字和第一个数字==为true
 				if(cu3.getNum1()==id3){
-					String result=c3(tmtSet,cu11,tse,id4);
+					String result=c3(ms,cu11,tse,id4);
 					if(result.equals("ok")){
 						return "ok";
 					}else{
@@ -299,12 +302,12 @@ public class ExcelToDateController {
 	 * TODO
 	 * c3
 	 */
-	public String c3(Set<TMeasureTemplate> tmtSet,CheckUtil1 cu11,TSectorExcel tse,int id4){
+	public String c3(Set<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id4){
 		//获取第四个id[4]的条件集合
 		List<CheckUtil> check4 = cu11.getCheck4();
 		if(check4==null){
 			//保存结果
-			tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+			ms.add(castClass(tse,cu11.gettMeasureExcel()));
 			System.out.println("没有id[4]的条件,该条成立");
 			//返回证明 该条l4s符合这条措施
 			return "ok";
@@ -316,7 +319,7 @@ public class ExcelToDateController {
 				//如果为or 则满足一个就可以 如果为true 
 				if(id4==cu4.getNum1()||id4==cu4.getNum2()){
 					//保存结果
-					tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+					ms.add(castClass(tse,cu11.gettMeasureExcel()));
 					System.out.println("全部符合,该条成立");
 					//返回证明 该条l4s符合这条措施
 					return "ok";
@@ -327,7 +330,7 @@ public class ExcelToDateController {
 				//如果为between;规定数字在两个数之间 
 				if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
 					//保存结果
-					tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+					ms.add(castClass(tse,cu11.gettMeasureExcel()));
 					System.out.println("全部符合,该条成立");
 					//返回证明 该条l4s符合这条措施
 					return "ok";
@@ -338,7 +341,7 @@ public class ExcelToDateController {
 				//and规定数字和第一个数字==为true
 				if(cu4.getNum1()==id4){
 					//保存结果
-					tmtSet.add(castClass(tse,cu11.gettMeasureExcel()));
+					ms.add(castClass(tse,cu11.gettMeasureExcel()));
 					System.out.println("全部符合,该条成立");
 					//返回证明 该条l4s符合这条措施
 					return "ok";
@@ -356,10 +359,10 @@ public class ExcelToDateController {
 	 * TODO
 	 * 验证L4s
 	 */
-	public Set<TMeasureTemplate> checkInfo(){
+	public Set<TMeasureSectorExcel> checkInfo(){
 		try{
 		//创建一个满足条件的
-		Set<TMeasureTemplate> tmtSet = new HashSet<TMeasureTemplate>();
+		Set<TMeasureSectorExcel> ms = new HashSet<TMeasureSectorExcel>();
 		//获取所有的行业信息
 		List<TSectorExcel> tseList=tSectorExcelMapper.selectAll();
 		//所有措施中的匹配数据
@@ -389,7 +392,7 @@ public class ExcelToDateController {
 					if(cu1.getMethod().equals("or")){
 						//如果为or 则满足一个就可以 如果为true 
 						if(id1==cu1.getNum1()||id1==cu1.getNum2()){
-							String result=c1(tmtSet,cu11,tse,id1,id2,id3,id4);
+							String result=c1(ms,cu11,tse,id1,id2,id3,id4);
 							if(result.equals("ok")){
 								break CU1;
 							}
@@ -399,7 +402,7 @@ public class ExcelToDateController {
 					}else if(cu1.getMethod().equals("between")){
 						//如果为between;规定数字在两个数之间 
 						if(cu1.getNum1()<=id1&&id1<=cu1.getNum2()){
-							String result=c1(tmtSet,cu11,tse,id1,id2,id3,id4);
+							String result=c1(ms,cu11,tse,id1,id2,id3,id4);
 							if(result.equals("ok")){
 								break CU1;
 							}
@@ -409,7 +412,7 @@ public class ExcelToDateController {
 					}else if(cu1.getMethod().equals("and")){
 						//and规定数字和第一个数字==为true
 						if(cu1.getNum1()==id1){
-							String result=c1(tmtSet,cu11,tse,id1,id2,id3,id4);
+							String result=c1(ms,cu11,tse,id1,id2,id3,id4);
 							if(result.equals("ok")){
 								break CU1;
 							}
@@ -423,7 +426,7 @@ public class ExcelToDateController {
 			System.out.println("id[1]没有匹配的");
 		}
 		//返回结果集
-		return tmtSet;
+		return ms;
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
