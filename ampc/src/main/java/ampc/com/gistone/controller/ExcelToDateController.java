@@ -190,6 +190,7 @@ public class ExcelToDateController {
 		tmt.setMsExcelSv(tme.getMeasureExcelSv());
 		tmt.setMsExcelType(tme.getMeasureExcelType());
 		tmt.setSectorsname(tse.getSectorExcelName());
+		tmt.setMid(tme.getMeasureExcelId());
 		tmt.setUserId(uid);
 		tmt.setMsExcelVersionId(vid);
 		tmt.setSid(tse.getSectorExcelId());
