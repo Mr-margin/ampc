@@ -26,6 +26,21 @@ public interface TMeasureSectorExcelMapper {
 	 */
 	List<Map> selectByUserId(Long userId);
 	
+	/**
+	 * 根据用户ID 获取所有的行业名称
+	 * @param msExcelId
+	 * @return
+	 */
+	List<String> getSectorInfo(Long userId);
+	
+	/**
+	 * 根据条件查询对应的措施
+	 * @param msExcelId
+	 * @return
+	 */
+	List<Map> getMeasureInfo(Map map);
+	
+	
 	
     int deleteByPrimaryKey(Long msExcelId);
 
