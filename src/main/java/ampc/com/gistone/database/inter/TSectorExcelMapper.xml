@@ -35,10 +35,9 @@
     from T_SECTOR_EXCEL
   </select>
   
-  <!--获取所有分组后的行业名称-->
-  <select id="selectNameByGroupName"  resultType="java.util.List">
-  	select SECTOR_EXCEL_NAME
-    from T_SECTOR_EXCEL GROUP BY SECTOR_EXCEL_NAME
+  <!--查询当前措施表中的最高版本号-->
+  <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
+  	select max(VERSION_EXCEL_ID) from T_SECTOR_EXCEL where USER_ID=#{userId,jdbcType=DECIMAL} 
   </select>
   
   
