@@ -58,11 +58,30 @@ public class ExcelToDateController {
 	 * 保存到措施模版表
 	 */
 	@RequestMapping("excel/save_ms")
-	public void save_MS(){
-		Set<TMeasureSectorExcel> ms=checkInfo();
-		System.out.println(ms.size());
-		for (TMeasureSectorExcel tmt : ms) {
-			tMeasureSectorExcelMapper.insertSelective(tmt);
+	public AmpcResult save_MS(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+		// 添加异常捕捉
+		try {
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			// 用户的id 确定当前用户
+			Long userId = Long.parseLong(data.get("userId").toString());
+			Long versionId=tMeasureSectorExcelMapper.selectMaxVersion(userId);
+			if(versionId==null){
+				versionId=1L;
+			}else{
+				versionId++;
+			}
+			Set<TMeasureSectorExcel> ms=checkInfo(versionId,userId);
+			System.out.println(ms.size());
+			for (TMeasureSectorExcel tmt : ms) {
+				tMeasureSectorExcelMapper.insertSelective(tmt);
+			}
+			return AmpcResult.ok("更新成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			// 返回错误信息
+			return AmpcResult.build(1000, "参数错误", null);
 		}
 	}
 	
@@ -155,7 +174,7 @@ public class ExcelToDateController {
 	 * @param tme
 	 * @return
 	 */
-	public TMeasureSectorExcel castClass(TSectorExcel tse,TMeasureExcel tme){
+	public TMeasureSectorExcel castClass(TSectorExcel tse,TMeasureExcel tme,Long vid,Long uid){
 		TMeasureSectorExcel tmt=new TMeasureSectorExcel();
 		tmt.setDebugModel(tme.getMeasureExcelDebug());
 		tmt.setMsExcelA(tme.getMeasureExcelA());
@@ -171,8 +190,8 @@ public class ExcelToDateController {
 		tmt.setMsExcelSv(tme.getMeasureExcelSv());
 		tmt.setMsExcelType(tme.getMeasureExcelType());
 		tmt.setSectorsname(tse.getSectorExcelName());
-		tmt.setUserId(tme.getUserId());
-		tmt.setMsExcelVersionId(tme.getMeasureExcelVersion());
+		tmt.setUserId(uid);
+		tmt.setMsExcelVersionId(vid);
 		tmt.setSid(tse.getSectorExcelId());
 		return tmt;
 	}
@@ -181,12 +200,12 @@ public class ExcelToDateController {
 	 * TODO
 	 * c1
 	 */
-	public String c1(Set<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id1,int id2,int id3,int id4){
+	public String c1(Set<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id1,int id2,int id3,int id4,Long vid,Long uid){
 		//获取第二个id[2]的条件集合
 		List<CheckUtil> check2 = cu11.getCheck2();
 		if(check2==null){
 			//保存结果
-			ms.add(castClass(tse,cu11.gettMeasureExcel()));
+			ms.add(castClass(tse,cu11.gettMeasureExcel(),vid,uid));
 			System.out.println("没有id[2]的条件,该条成立");
 			//返回证明 该条l4s符合这条措施
 			return "ok";
@@ -197,7 +216,7 @@ public class ExcelToDateController {
 			if(cu2.getMethod().equals("or")){
 				//如果为or 则满足一个就可以 如果为true 
 				if(id2==cu2.getNum1()||id2==cu2.getNum2()){
-					String result=c2(ms,cu11,tse,id3,id4);
+					String result=c2(ms,cu11,tse,id3,id4,vid,uid);
 					if(result.equals("ok")){
 						return "ok";
 					}else{
@@ -209,7 +228,7 @@ public class ExcelToDateController {
 			}else if(cu2.getMethod().equals("between")){
 				//如果为between;规定数字在两个数之间 
 				if(cu2.getNum1()<=id2&&id2<=cu2.getNum2()){
-					String result=c2(ms,cu11,tse,id3,id4);
+					String result=c2(ms,cu11,tse,id3,id4,vid,uid);
 					if(result.equals("ok")){
 						return "ok";
 					}else{
@@ -221,7 +240,7 @@ public class ExcelToDateController {
 			}else if(cu2.getMethod().equals("and")){
 				//and规定数字和第一个数字==为true
 				if(cu2.getNum1()==id2){
-					String result=c2(ms,cu11,tse,id3,id4);
+					String result=c2(ms,cu11,tse,id3,id4,vid,uid);
 					if(result.equals("ok")){
 						return "ok";
 					}else{
@@ -242,12 +261,12 @@ public class ExcelToDateController {
 	 * c2
 	 * @return
 	 */
-	public String c2(Set<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id3,int id4){
+	public String c2(Set<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id3,int id4,Long vid,Long uid){
 		//获取第三个id[3]的条件集合
 		List<CheckUtil> check3 = cu11.getCheck3();
 		if(check3==null){
 			//保存结果
-			ms.add(castClass(tse,cu11.gettMeasureExcel()));
+			ms.add(castClass(tse,cu11.gettMeasureExcel(),vid,uid));
 			System.out.println("没有id[3]的条件,该条成立");
 			//返回证明 该条l4s符合这条措施
 			return "ok";
@@ -258,7 +277,7 @@ public class ExcelToDateController {
 			if(cu3.getMethod().equals("or")){
 				//如果为or 则满足一个就可以 如果为true 
 				if(id3==cu3.getNum1()||id3==cu3.getNum2()){
-					String result=c3(ms,cu11,tse,id4);
+					String result=c3(ms,cu11,tse,id4,vid,uid);
 					if(result.equals("ok")){
 						return "ok";
 					}else{
@@ -271,7 +290,7 @@ public class ExcelToDateController {
 			}else if(cu3.getMethod().equals("between")){
 				//如果为between;规定数字在两个数之间 
 				if(cu3.getNum1()<=id3&&id3<=cu3.getNum2()){
-					String result=c3(ms,cu11,tse,id4);
+					String result=c3(ms,cu11,tse,id4,vid,uid);
 					if(result.equals("ok")){
 						return "ok";
 					}else{
@@ -283,7 +302,7 @@ public class ExcelToDateController {
 			}else if(cu3.getMethod().equals("and")){
 				//and规定数字和第一个数字==为true
 				if(cu3.getNum1()==id3){
-					String result=c3(ms,cu11,tse,id4);
+					String result=c3(ms,cu11,tse,id4,vid,uid);
 					if(result.equals("ok")){
 						return "ok";
 					}else{
@@ -302,12 +321,12 @@ public class ExcelToDateController {
 	 * TODO
 	 * c3
 	 */
-	public String c3(Set<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id4){
+	public String c3(Set<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id4,Long vid,Long uid){
 		//获取第四个id[4]的条件集合
 		List<CheckUtil> check4 = cu11.getCheck4();
 		if(check4==null){
 			//保存结果
-			ms.add(castClass(tse,cu11.gettMeasureExcel()));
+			ms.add(castClass(tse,cu11.gettMeasureExcel(),vid,uid));
 			System.out.println("没有id[4]的条件,该条成立");
 			//返回证明 该条l4s符合这条措施
 			return "ok";
@@ -319,7 +338,7 @@ public class ExcelToDateController {
 				//如果为or 则满足一个就可以 如果为true 
 				if(id4==cu4.getNum1()||id4==cu4.getNum2()){
 					//保存结果
-					ms.add(castClass(tse,cu11.gettMeasureExcel()));
+					ms.add(castClass(tse,cu11.gettMeasureExcel(),vid,uid));
 					System.out.println("全部符合,该条成立");
 					//返回证明 该条l4s符合这条措施
 					return "ok";
@@ -330,7 +349,7 @@ public class ExcelToDateController {
 				//如果为between;规定数字在两个数之间 
 				if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
 					//保存结果
-					ms.add(castClass(tse,cu11.gettMeasureExcel()));
+					ms.add(castClass(tse,cu11.gettMeasureExcel(),vid,uid));
 					System.out.println("全部符合,该条成立");
 					//返回证明 该条l4s符合这条措施
 					return "ok";
@@ -341,7 +360,7 @@ public class ExcelToDateController {
 				//and规定数字和第一个数字==为true
 				if(cu4.getNum1()==id4){
 					//保存结果
-					ms.add(castClass(tse,cu11.gettMeasureExcel()));
+					ms.add(castClass(tse,cu11.gettMeasureExcel(),vid,uid));
 					System.out.println("全部符合,该条成立");
 					//返回证明 该条l4s符合这条措施
 					return "ok";
@@ -359,8 +378,9 @@ public class ExcelToDateController {
 	 * TODO
 	 * 验证L4s
 	 */
-	public Set<TMeasureSectorExcel> checkInfo(){
+	public Set<TMeasureSectorExcel> checkInfo(Long vid,Long uid){
 		try{
+			
 		//创建一个满足条件的
 		Set<TMeasureSectorExcel> ms = new HashSet<TMeasureSectorExcel>();
 		//获取所有的行业信息
@@ -392,7 +412,7 @@ public class ExcelToDateController {
 					if(cu1.getMethod().equals("or")){
 						//如果为or 则满足一个就可以 如果为true 
 						if(id1==cu1.getNum1()||id1==cu1.getNum2()){
-							String result=c1(ms,cu11,tse,id1,id2,id3,id4);
+							String result=c1(ms,cu11,tse,id1,id2,id3,id4,vid,uid);
 							if(result.equals("ok")){
 								break CU1;
 							}
@@ -402,7 +422,7 @@ public class ExcelToDateController {
 					}else if(cu1.getMethod().equals("between")){
 						//如果为between;规定数字在两个数之间 
 						if(cu1.getNum1()<=id1&&id1<=cu1.getNum2()){
-							String result=c1(ms,cu11,tse,id1,id2,id3,id4);
+							String result=c1(ms,cu11,tse,id1,id2,id3,id4,vid,uid);
 							if(result.equals("ok")){
 								break CU1;
 							}
@@ -412,7 +432,7 @@ public class ExcelToDateController {
 					}else if(cu1.getMethod().equals("and")){
 						//and规定数字和第一个数字==为true
 						if(cu1.getNum1()==id1){
-							String result=c1(ms,cu11,tse,id1,id2,id3,id4);
+							String result=c1(ms,cu11,tse,id1,id2,id3,id4,vid,uid);
 							if(result.equals("ok")){
 								break CU1;
 							}
