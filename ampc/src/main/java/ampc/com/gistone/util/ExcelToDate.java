@@ -12,10 +12,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import ampc.com.gistone.database.model.TMeasureExcel;
-import ampc.com.gistone.database.model.TSector;
 import ampc.com.gistone.database.model.TSectorExcel;
 
 
