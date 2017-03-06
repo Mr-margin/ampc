@@ -19,15 +19,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
-import ampc.com.gistone.database.inter.TMeasureMapper;
+import ampc.com.gistone.database.inter.TMeasureExcelMapper;
 import ampc.com.gistone.database.inter.TPlanMapper;
 import ampc.com.gistone.database.inter.TPlanMeasureMapper;
-import ampc.com.gistone.database.inter.TSectorMapper;
+import ampc.com.gistone.database.inter.TSectorExcelMapper;
 import ampc.com.gistone.database.inter.TTimeMapper;
-import ampc.com.gistone.database.model.TMeasure;
+import ampc.com.gistone.database.model.TMeasureExcel;
 import ampc.com.gistone.database.model.TPlan;
 import ampc.com.gistone.database.model.TPlanMeasure;
-import ampc.com.gistone.database.model.TSector;
+import ampc.com.gistone.database.model.TSectorExcel;
 import ampc.com.gistone.database.model.TTime;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
@@ -39,10 +39,10 @@ public class PlanAndMeasureController {
 	private TPlanMeasureMapper tPlanMeasureMapper;
 	
 	@Autowired
-	private TSectorMapper tSectorMapper;
+	private TSectorExcelMapper tSectorExcelMapper;
 	
 	@Autowired
-	private TMeasureMapper tMeasureMapper;
+	private TMeasureExcelMapper tMeasureExcelMapper;
 	
 	@Autowired
 	private TPlanMapper tPlanMapper;
@@ -79,12 +79,12 @@ public class PlanAndMeasureController {
 		//判断查询结果是否为空，返回对应的值
 		if(!Measurelist.isEmpty()){
 		for(TPlanMeasure TPlanMeasure:Measurelist){
-			TSector Sector=tSectorMapper.selectByPrimaryKey(TPlanMeasure.getSectorId());
-			TMeasure tMeasure=tMeasureMapper.selectByPrimaryKey(TPlanMeasure.getMeasureId());
+			TSectorExcel Sector=tSectorExcelMapper.selectByPrimaryKey(TPlanMeasure.getSectorId());
+			TMeasureExcel tMeasure=tMeasureExcelMapper.selectByPrimaryKey(TPlanMeasure.getMeasureId());
 			JSONObject objs=new JSONObject();
-			objs.put("sectorName", Sector.getSectorName());
-			objs.put("measureName", tMeasure.getMeasureName());
-			objs.put("intensity", tMeasure.getIntensity());
+			objs.put("sectorName", Sector.getSectorExcelName());
+			objs.put("measureName", tMeasure.getMeasureExcelDisplay());
+			objs.put("intensity", tMeasure.getMeasureExcelIntensity());
 			//objs.put("measureContent", TPlanMeasure.getMeasureContent());
 			arr.add(objs);
 		}
@@ -385,14 +385,14 @@ public class PlanAndMeasureController {
 			newtPlanMeasure.setMeasureId(t.getMeasureId());
 			int ssr=tPlanMeasureMapper.insertSelective(newtPlanMeasure);
 			
-			TSector Sector=tSectorMapper.selectByPrimaryKey(t.getSectorId());
-			TMeasure tMeasure=tMeasureMapper.selectByPrimaryKey(t.getMeasureId());
+			TSectorExcel Sector=tSectorExcelMapper.selectByPrimaryKey(t.getSectorId());
+			TMeasureExcel tMeasure=tMeasureExcelMapper.selectByPrimaryKey(t.getMeasureId());
 			JSONObject objs=new JSONObject();
 			objs.put("planMeasureId",maxs);
 			objs.put("planId",max);
-			objs.put("sectorName", Sector.getSectorName());
-			objs.put("measureName", tMeasure.getMeasureName());
-			objs.put("intensity", tMeasure.getIntensity());
+			objs.put("sectorName", Sector.getSectorExcelName());
+			objs.put("measureName", tMeasure.getMeasureExcelDisplay());
+			objs.put("intensity", tMeasure.getMeasureExcelIntensity());
 			objs.put("measureContent", t.getMeasureContent());
 			arr.add(objs);
 			}
@@ -442,15 +442,15 @@ public class PlanAndMeasureController {
 		//判断查询结果是否为空，返回对应的值
 		if(!Measurelist.isEmpty()){
 		for(TPlanMeasure tsPlanMeasure:Measurelist){
-			TSector Sector=tSectorMapper.selectByPrimaryKey(tsPlanMeasure.getSectorId());
-			TMeasure tMeasure=tMeasureMapper.selectByPrimaryKey(tsPlanMeasure.getMeasureId());
+			TSectorExcel Sector=tSectorExcelMapper.selectByPrimaryKey(tsPlanMeasure.getSectorId());
+			TMeasureExcel tMeasure=tMeasureExcelMapper.selectByPrimaryKey(tsPlanMeasure.getMeasureId());
 			JSONObject objs=new JSONObject();
 			objs.put("planMeasureId", tsPlanMeasure.getPlanMeasureId());
 			objs.put("planId",tsPlanMeasure.getPlanId());
-			objs.put("sectorName", Sector.getSectorName());
-			objs.put("sectorId", Sector.getSectorId());
-			objs.put("measureName", tMeasure.getMeasureName());
-			objs.put("intensity", tMeasure.getIntensity());
+			objs.put("sectorName", Sector.getSectorExcelName());
+			objs.put("sectorId", Sector.getSectorExcelId());
+			objs.put("measureName", tMeasure.getMeasureExcelDisplay());
+			objs.put("intensity", tMeasure.getMeasureExcelIntensity());
 			objs.put("measureContent", tsPlanMeasure.getMeasureContent());
 			arr.add(objs);
 		}
