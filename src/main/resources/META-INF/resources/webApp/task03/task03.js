@@ -21,7 +21,7 @@
 var stat = {};
 //中心点坐标
 stat.cPointx=116;
-stat.cPointy=28;
+stat.cPointy=35;
 var app = {};
 var dong = {};
 
@@ -63,9 +63,9 @@ require(
 		app.map = new Map("mapDiv", {
 			logo:false,
 	        center: [stat.cPointx, stat.cPointy],
-	        minZoom:4,
+	        minZoom:3,
 	        maxZoom:13,
-	        zoom: 4
+	        zoom: 3
 		});
 		app.baselayerList = new dong.gaodeLayer();
 		app.stlayerList = new dong.gaodeLayer({layertype: "st"});
@@ -75,6 +75,11 @@ require(
 		
 		app.gLyr = new dong.GraphicsLayer({"id":"gLyr"});
 		app.map.addLayer(app.gLyr);
+		
+//		var point = new dong.Point(12367606.298176643, 4092838.5819190354, new dong.SpatialReference({ wkid: 3857 }));
+//		app.str = new SimpleMarkerSymbol('esriSMSCircle','20','','red');
+//		var graphic = new dong.Graphic(point, app.str);
+//		app.gLyr.add(graphic);
 });
 
 
