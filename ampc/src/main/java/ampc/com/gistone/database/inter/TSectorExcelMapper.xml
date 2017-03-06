@@ -27,6 +27,32 @@
     SECTOR_EXCEL_UPDATE_TIME, USER_ID, ID, ID0, ID0NAME, ID1, ID1NAME, ID2, ID2NAME, 
     ID3, ID3NAME, GROUP_1, GROUP_2, GROUP_3
   </sql>
+  
+  
+  <!--获取到所有的行业信息-->
+  <select id="selectAll"  resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List" />
+    from T_SECTOR_EXCEL
+  </select>
+  
+  <!--获取所有分组后的行业名称-->
+  <select id="selectNameByGroupName"  resultType="java.util.List">
+  	select SECTOR_EXCEL_NAME
+    from T_SECTOR_EXCEL GROUP BY SECTOR_EXCEL_NAME
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

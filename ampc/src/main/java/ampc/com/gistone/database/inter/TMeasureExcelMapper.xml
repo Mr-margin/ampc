@@ -26,6 +26,28 @@
     MEASURE_EXCEL_OP, MEASURE_EXCEL_A, MEASURE_EXCEL_A1, MEASURE_EXCEL_INTENSITY, MEASURE_EXCEL_INTENSITY1, 
     MEASURE_EXCEL_ASH, MEASURE_EXCEL_SULFER, MEASURE_EXCEL_SV, USER_ID
   </sql>
+  
+  
+  <!--查询当前措施表中的最高版本号-->
+  <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
+  	select max(MEASURE_EXCEL_VERSION) from T_MEASURE_EXCEL where USER_ID=#{userId,jdbcType=DECIMAL} 
+  </select>
+  
+  <!--获取到所有的措施信息-->
+  <select id="selectAll"  resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List" />
+    from T_MEASURE_EXCEL
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
