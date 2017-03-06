@@ -1,0 +1,73 @@
+{
+  "msg":"",
+  "data":[
+    {
+      "adcode": 12,
+      "name": "天津市",
+      "children": [
+        {
+          "adcode": 1201,
+          "name": "天津市",
+          "children": [
+            {
+              "adcode": 120101,
+              "name": "市辖区"
+            },
+            {
+              "adcode": 120102,
+              "name": "某某区"
+            }
+          ]
+        },
+        {
+          "adcode": 1202,
+          "name": "蓟县",
+          "children": [
+            {
+              "adcode": 120101,
+              "name": "市辖区"
+            },
+            {
+              "adcode": 120202,
+              "name": "某某区"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "adcode": 13,
+      "name": "河北省",
+      "children": [
+        {
+          "adcode": 1301,
+          "name": "石家庄",
+          "children": [
+            {
+              "adcode": 130101,
+              "name": "市辖区"
+            },
+            {
+              "adcode": 130102,
+              "name": "某某区"
+            }
+          ]
+        },
+        {
+          "adcode": 1302,
+          "name": "保定",
+          "children": [
+            {
+              "adcode": 130101,
+              "name": "市辖区"
+            },
+            {
+              "adcode": 130202,
+              "name": "某某区"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

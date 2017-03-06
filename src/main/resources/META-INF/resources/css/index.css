@@ -226,6 +226,18 @@
 .modal-lg.bigModal{
   width: 80%;
 }
+.rightArrow{
+  float: left;
+  width: 60px;
+}
+.codeTree{
+  float: left;
+  width: calc(100% - 60px);
+}
+.editAreaTitle p,.editAreaTitle label{
+  line-height: 28px;
+}
+
 
 
 /* 刘俊 */
