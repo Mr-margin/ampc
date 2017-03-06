@@ -85,7 +85,7 @@ public class PlanAndMeasureController {
 			objs.put("sectorName", Sector.getSectorExcelName());
 			objs.put("measureName", tMeasure.getMeasureExcelDisplay());
 			objs.put("intensity", tMeasure.getMeasureExcelIntensity());
-			//objs.put("measureContent", TPlanMeasure.getMeasureContent());
+			objs.put("measureContent", TPlanMeasure.getMeasureContent());
 			arr.add(objs);
 		}
 		obj.put("measurelist", arr);
