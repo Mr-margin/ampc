@@ -762,14 +762,16 @@ public class AreaAndTimeController {
 
 
 @RequestMapping("area/find_areas")
-
-public AmpcResult find_areas(HttpServletRequest request, HttpServletResponse response){
+@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
+public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
 	try{
-	Long userId=1l;//Long.parseLong(data.get("userId").toString());//用户id
+	ClientUtil.SetCharsetAndHeader(request, response);
+	Map<String,Object> data=(Map)requestDate.get("data");
+	Long userId=Long.parseLong(data.get("userId").toString());//用户id
 	TUser user=tUserMapper.selectByPrimaryKey(userId);		
 	
 	//根据情景id查询所有的区域
-	Long scenarinoId=1l;//Long.parseLong(data.get("scenarinoId").toString());//情景id
+	Long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());//情景id
 	TScenarinoAreaWithBLOBs tScenarinoArea=new TScenarinoAreaWithBLOBs();
 	tScenarinoArea.setScenarinoDetailId(scenarinoId);
 	List<TScenarinoAreaWithBLOBs> arealist=tScenarinoAreaMapper.selectByEntity(tScenarinoArea);
@@ -779,8 +781,8 @@ public AmpcResult find_areas(HttpServletRequest request, HttpServletResponse res
 	List<TAddress> prolist=tAddressMapper.selectBLevel(tAddress);
 	JSONArray arr=new JSONArray();
 	
-	if(true){
-		Long areaId =1l;//Long.parseLong(data.get("areaId").toString());//用户id
+	if(data.get("areaId")!=null){
+		Long areaId =Long.parseLong(data.get("areaId").toString());//用户id
 		TScenarinoAreaWithBLOBs area=tScenarinoAreaMapper.selectByPrimaryKey(areaId);
 		for(TScenarinoAreaWithBLOBs areas:arealist){
 			if(areas.getScenarinoAreaId()==areaId){
