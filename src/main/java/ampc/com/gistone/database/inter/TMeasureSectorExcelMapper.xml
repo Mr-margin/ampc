@@ -37,6 +37,11 @@
     <result column="MID" property="mid" jdbcType="DECIMAL" />
     <result column="MS_EXCEL_DISPLAY" property="measureame" jdbcType="OTHER" />
   </resultMap>
+   <!-- 根据用户ID 获取所有的行业名称 -->
+  <resultMap id="mapGetName" type="hashMap" >
+    <result column="SID" property="sid" jdbcType="DECIMAL" />
+    <result column="SECTORSNAME" property="sectorsname" jdbcType="OTHER" />
+  </resultMap>
   <sql id="Base_Column_List" >
     MS_EXCEL_ID, USER_ID, MS_EXCEL_VERSION_ID, MID, MS_EXCEL_NAME, MS_EXCEL_DESC, MS_EXCEL_OP, 
     MS_EXCEL_INTENSITY, SECTORSNAME, CONTENT, MS_EXCEL_DISPLAY, DEBUG_MODEL, MS_EXCEL_TYPE, 
@@ -46,23 +51,36 @@
  
   <!--查询当前措施表中的最高版本号-->
   <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
-  	select max(MS_EXCEL_VERSION_ID) from T_MEASURE_SECTOR_EXCEL where USER_ID=#{userId,jdbcType=DECIMAL} 
+  	select max(MS_EXCEL_VERSION_ID) from T_MEASURE_SECTOR_EXCEL 
+  	  <if test="userId != null" >
+        where USER_ID=#{userId,jdbcType=DECIMAL} 
+      </if>
   </select>
  
  <!--根据用户ID 查询行业措施数据-->
   <select id="selectByUserId" parameterType="java.lang.Long" resultMap="mapByUserId">
-  	select MS_EXCEL_ID,MID,MS_EXCEL_DISPLAY,SID,SECTORSNAME from T_MEASURE_SECTOR_EXCEL where USER_ID=#{userId,jdbcType=DECIMAL} 
+  	select MS_EXCEL_ID,MID,MS_EXCEL_DISPLAY,SID,SECTORSNAME from T_MEASURE_SECTOR_EXCEL 
+  	<if test="userId != null" >
+        where USER_ID=#{userId,jdbcType=DECIMAL} 
+      </if>
   </select>
   
   <!--根据用户ID 获取所有的行业名称-->
-  <select id="getSectorInfo" parameterType="java.lang.Long" resultType="java.lang.String">
-  	select SECTORSNAME from T_MEASURE_SECTOR_EXCEL where USER_ID=#{userId,jdbcType=DECIMAL} 
-	 GROUP BY SECTORSNAME 
+  <select id="getSectorInfo" parameterType="java.lang.Long" resultMap="mapGetName">
+  	select SECTORSNAME,SID from T_MEASURE_SECTOR_EXCEL 
+  	  <if test="userId != null" >
+        where USER_ID=#{userId,jdbcType=DECIMAL} 
+      </if> GROUP BY SECTORSNAME,SID ORDER BY SID
+  	
   </select>
  
  <!--根据条件查询对应的措施-->
   <select id="getMeasureInfo" parameterType="hashMap" resultMap="mapBySname">
-  	select MID,MS_EXCEL_DISPLAY from T_MEASURE_SECTOR_EXCEL where USER_ID=#{userId,jdbcType=OTHER} and SECTORSNAME =#{sectorsName,jdbcType=OTHER}
+  	select MID,MS_EXCEL_DISPLAY from T_MEASURE_SECTOR_EXCEL 
+  	where  SECTORSNAME =#{sectorsName,jdbcType=OTHER}
+  	<if test="userId != null" >
+        and where USER_ID=#{userId,jdbcType=DECIMAL} 
+      </if>
   </select>
  
  

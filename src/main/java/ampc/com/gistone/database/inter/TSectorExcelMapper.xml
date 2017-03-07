@@ -32,12 +32,15 @@
   <!--获取到所有的行业信息-->
   <select id="selectAll"  resultMap="BaseResultMap">
   	select <include refid="Base_Column_List" />
-    from T_SECTOR_EXCEL
+    from T_SECTOR_EXCEL ORDER BY SECTOR_EXCEL_ID
   </select>
   
   <!--查询当前措施表中的最高版本号-->
   <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
-  	select max(VERSION_EXCEL_ID) from T_SECTOR_EXCEL where USER_ID=#{userId,jdbcType=DECIMAL} 
+  	select max(VERSION_EXCEL_ID) from T_SECTOR_EXCEL
+  	  <if test="userId != null" >
+        where USER_ID=#{userId,jdbcType=DECIMAL} 
+      </if> 
   </select>
   
   
