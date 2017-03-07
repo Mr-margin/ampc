@@ -250,7 +250,8 @@
 }
 .codeTree{
   float: left;
-  width: calc(100% - 45px);
+  /*width: calc(100% - 45px);*/
+  width: 100%;
 }
 .editAreaTitle{
   background-color: #fff;
@@ -293,6 +294,9 @@
 }
 .pr0{
   padding-right: 0;
+}
+
+.adcodeList p{
 }
 
 
