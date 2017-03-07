@@ -7,11 +7,21 @@ public class TUser {
 
     private Object password;
 
-    private String provinceCode;
+    private Integer provinceCode;
 
-    private String cityCode;
+    private Integer cityCode;
+    
+    private Integer countyCode;
 
-    public Long getUserId() {
+    public Integer getCountyCode() {
+		return countyCode;
+	}
+
+	public void setCountyCode(Integer countyCode) {
+		this.countyCode = countyCode;
+	}
+
+	public Long getUserId() {
         return userId;
     }
 
@@ -35,19 +45,21 @@ public class TUser {
         this.password = password;
     }
 
-    public String getProvinceCode() {
-        return provinceCode;
-    }
+	public Integer getProvinceCode() {
+		return provinceCode;
+	}
 
-    public void setProvinceCode(String provinceCode) {
-        this.provinceCode = provinceCode == null ? null : provinceCode.trim();
-    }
+	public void setProvinceCode(Integer provinceCode) {
+		this.provinceCode = provinceCode;
+	}
 
-    public String getCityCode() {
-        return cityCode;
-    }
+	public Integer getCityCode() {
+		return cityCode;
+	}
 
-    public void setCityCode(String cityCode) {
-        this.cityCode = cityCode == null ? null : cityCode.trim();
-    }
+	public void setCityCode(Integer cityCode) {
+		this.cityCode = cityCode;
+	}
+
+
 }
