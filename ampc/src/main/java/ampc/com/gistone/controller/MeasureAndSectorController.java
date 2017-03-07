@@ -2,6 +2,7 @@ package ampc.com.gistone.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.w3c.dom.stylesheets.LinkStyle;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMeasureSectorExcelMapper;
@@ -51,11 +53,18 @@ public class MeasureAndSectorController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//用户的id  确定当前用户
-			Long userId=Long.parseLong(data.get("userId").toString());
+			Long userId=null;
+			if(data.get("userId")!=null){
+				userId = Long.parseLong(data.get("userId").toString());
+			}
 			//查询全部写入返回结果集
-			List<String> nameList = this.tMeasureSectorExcelMapper.getSectorInfo(userId);
+			List<Map> nameList = this.tMeasureSectorExcelMapper.getSectorInfo(userId);
+			LinkedHashSet<String> nameSet=new LinkedHashSet<String>();
+			for (Map map : nameList) {
+				nameSet.add(map.get("sectorsname").toString());
+			}
 			List<SMUtil> result=new ArrayList<SMUtil>();
-			for (String name : nameList) {
+			for (String name : nameSet) {
 				SMUtil sm=new SMUtil();
 				Map<String,Object> map=new HashMap<String,Object>();
 				map.put("sectorsName", name);

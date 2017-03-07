@@ -2,6 +2,7 @@ package ampc.com.gistone.controller;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,14 +66,17 @@ public class ExcelToDateController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			// 用户的id 确定当前用户
-			Long userId = Long.parseLong(data.get("userId").toString());
+			Long userId=null;
+			if(data.get("userId")!=null){
+				userId = Long.parseLong(data.get("userId").toString());
+			}
 			Long versionId=tMeasureSectorExcelMapper.selectMaxVersion(userId);
 			if(versionId==null){
 				versionId=1L;
 			}else{
 				versionId++;
 			}
-			Set<TMeasureSectorExcel> ms=checkInfo(versionId,userId);
+			LinkedHashSet<TMeasureSectorExcel> ms=checkInfo(versionId,userId);
 			System.out.println(ms.size());
 			for (TMeasureSectorExcel tmt : ms) {
 				tMeasureSectorExcelMapper.insertSelective(tmt);
@@ -99,7 +103,10 @@ public class ExcelToDateController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			// 用户的id 确定当前用户
-			Long userId = Long.parseLong(data.get("userId").toString());
+			Long userId=null;
+			if(data.get("userId")!=null){
+				userId = Long.parseLong(data.get("userId").toString());
+			}
 			/**
 			 * 根据request获取excel地址
 			 */
@@ -140,7 +147,10 @@ public class ExcelToDateController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			// 用户的id 确定当前用户
-			Long userId = Long.parseLong(data.get("userId").toString());
+			Long userId=null;
+			if(data.get("userId")!=null){
+				userId = Long.parseLong(data.get("userId").toString());
+			}
 			/**
 			 * 根据request获取excel地址
 			 */
@@ -379,11 +389,11 @@ public class ExcelToDateController {
 	 * TODO
 	 * 验证L4s
 	 */
-	public Set<TMeasureSectorExcel> checkInfo(Long vid,Long uid){
+	public LinkedHashSet<TMeasureSectorExcel> checkInfo(Long vid,Long uid){
 		try{
 			
 		//创建一个满足条件的
-		Set<TMeasureSectorExcel> ms = new HashSet<TMeasureSectorExcel>();
+		LinkedHashSet<TMeasureSectorExcel> ms = new LinkedHashSet<TMeasureSectorExcel>();
 		//获取所有的行业信息
 		List<TSectorExcel> tseList=tSectorExcelMapper.selectAll();
 		//所有措施中的匹配数据
