@@ -18,4 +18,6 @@ public interface TAddressMapper {
     int updateByPrimaryKey(TAddress record);
     
     List<TAddress> selectBLevel(TAddress record);
+    
+    List<TAddress> selectAll();
 }
