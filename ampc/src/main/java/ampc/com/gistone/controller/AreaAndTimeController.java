@@ -758,93 +758,220 @@ public class AreaAndTimeController {
 			return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
-	/**
-	 *查询省市区接口
-	 */
-	@RequestMapping("area/find_areas")
-	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
-	public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
-		try{
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String,Object> data=(Map)requestDate.get("data");
-			Long userId=Long.parseLong(data.get("userId").toString());
-			TUser user=tUserMapper.selectByPrimaryKey(userId);		
-			
-			Long scenarinoDetailId=Long.parseLong(data.get("scenarinoDetailId").toString());
-			TScenarinoAreaWithBLOBs tScenarinoArea=new TScenarinoAreaWithBLOBs();
-			tScenarinoArea.setScenarinoDetailId(scenarinoDetailId);
-			List<TScenarinoAreaWithBLOBs> arealist=tScenarinoAreaMapper.selectByEntity(tScenarinoArea);
 	
-			TAddress tAddress=new TAddress();
-			tAddress.setAddressLevel("1");
-			List<TAddress> prolist=tAddressMapper.selectBLevel(tAddress);
-			JSONArray arr=new JSONArray();
-			//遍历省级区域
-			
-			for(TAddress pro:prolist){
-				JSONObject probj=new JSONObject();
-				JSONArray cityarr=new JSONArray();
-				probj.put("adcode", pro.getAddressCode());
-				probj.put("name", pro.getAddressName());
-				probj.put("level", pro.getAddressLevel());
-				if(user.getPassword().equals(pro.getProvinceCode())){
-					probj.put("open",true);
-				}
-				//查询省包含的市
-				TAddress cityAd=new TAddress();
-				cityAd.setAddressLevel("2");
-				cityAd.setProvinceCode(pro.getProvinceCode());
-				List<TAddress> citylist=tAddressMapper.selectBLevel(cityAd);
-				//在省级区域里遍历市级区域
-				for(TAddress city:citylist){
-					JSONArray counarr=new JSONArray();
-					
-					JSONObject cityobj=new JSONObject();
-					cityobj.put("adcode", city.getAddressCode());
-					cityobj.put("name", city.getAddressName());
-					cityobj.put("level", city.getAddressLevel());
-					if(user.getPassword().equals(city.getCityCode())){
-						cityobj.put("open",true);
-					}
-					//查询市包含的区
-					TAddress counAd=new TAddress();
-					counAd.setAddressLevel("3");
-					counAd.setProvinceCode(pro.getProvinceCode());
-					counAd.setCityCode(city.getCityCode());
-					List<TAddress> coulist=tAddressMapper.selectBLevel(counAd);
-					//遍历市包含的区
-					for(TAddress county:coulist){
-						
-						JSONObject counobj=new JSONObject();
-						counobj.put("adcode", county.getAddressCode());
-						counobj.put("name", county.getAddressName());
 
-						for(TScenarinoAreaWithBLOBs areabol:arealist){
-							if(areabol.getCountyCodes().indexOf(county.getAddressCode())!=-1){
-								counobj.put("name", county.getAddressName()+"("+areabol.getAreaName()+")");
-								counobj.put("chkDisabled", true);
-								
-							}
-						}
-						counobj.put("level", county.getAddressLevel());
-						if(user.getPassword().equals(county.getCountyCode())){
-							counobj.put("open",true);
-						}
-						counarr.add(counobj);
-					}
-					cityobj.put("children", counarr);
-					cityarr.add(cityobj);	
-				}
-				probj.put("children", cityarr);
-				arr.add(probj);
-				boolean sv=arr.isEmpty();
+
+@RequestMapping("area/find_areas")
+
+public AmpcResult find_areas(HttpServletRequest request, HttpServletResponse response){
+	try{
+	Long userId=1l;//Long.parseLong(data.get("userId").toString());//用户id
+	TUser user=tUserMapper.selectByPrimaryKey(userId);		
+	
+	//根据情景id查询所有的区域
+	Long scenarinoId=1l;//Long.parseLong(data.get("scenarinoId").toString());//情景id
+	TScenarinoAreaWithBLOBs tScenarinoArea=new TScenarinoAreaWithBLOBs();
+	tScenarinoArea.setScenarinoDetailId(scenarinoId);
+	List<TScenarinoAreaWithBLOBs> arealist=tScenarinoAreaMapper.selectByEntity(tScenarinoArea);
+	
+	//查询所有省市区
+	TAddress tAddress=new TAddress();
+	List<TAddress> prolist=tAddressMapper.selectBLevel(tAddress);
+	JSONArray arr=new JSONArray();
+	
+	if(true){
+		Long areaId =1l;//Long.parseLong(data.get("areaId").toString());//用户id
+		TScenarinoAreaWithBLOBs area=tScenarinoAreaMapper.selectByPrimaryKey(areaId);
+		for(TScenarinoAreaWithBLOBs areas:arealist){
+			if(areas.getScenarinoAreaId()==areaId){
+				arealist.remove(areas);	
 			}
-			return AmpcResult.build(0, "find_areas success",arr);
-		}catch(Exception e){
-			System.out.println(e);
-			return AmpcResult.build(1000, "参数错误",null);
+		}
+
+	for(TAddress address:prolist){
+		
+		JSONObject obj=new JSONObject();
+		
+		//省
+		if(address.getAddressLevel().equals("1")){
+			obj.put("adcode", address.getProvinceCode());
+			obj.put("name",  address.getAddressName());
+			for(TScenarinoAreaWithBLOBs aresa:arealist){
+				JSONArray Province=JSONArray.fromObject(aresa.getProvinceCodes());
+				for (int i = 0; i < Province.size(); i++) {
+					JSONObject ob  = (JSONObject) Province.get(i);
+					String obs=ob.toString();
+					if(obs.indexOf(address.getProvinceCode().toString())!=-1){
+						String couname="("+(String) aresa.getAreaName()+")";
+						obj.put("name",(address.getAddressName())+couname);
+						obj.put("chkDisabled", true);
+					}
+					}
+			}
+			obj.put("level", address.getAddressLevel());
+			if(user.getProvinceCode().equals(address.getAddressCode())){
+				obj.put("open",true);
+			}
+			if(area.getProvinceCodes().equals(address.getAddressCode())){
+				obj.put("checked",true);
+				
+			}
+		
+		}//省
+		
+		//市
+		if(address.getAddressLevel().equals("2")){
+			obj.put("adcode", address.getProvinceCode()+address.getCityCode());
+			obj.put("padcode", address.getProvinceCode());
+			obj.put("name",address.getAddressName());
+			for(TScenarinoAreaWithBLOBs aresa:arealist){
+			JSONArray Province=JSONArray.fromObject(aresa.getCityCodes());
+			for (int i = 0; i < Province.size(); i++) {
+				JSONObject ob  = (JSONObject) Province.get(i);
+				String obs=ob.toString();
+				String code=address.getProvinceCode().toString()+address.getCityCode().toString();
+				if(obs.indexOf(code)!=-1){
+					String couname="("+(String) area.getAreaName()+")";
+					obj.put("name",(address.getAddressName())+couname);
+					obj.put("chkDisabled", true);
+				}
+				}
+			}
+			obj.put("level", address.getAddressLevel());
+			if(user.getCityCode().equals(address.getAddressCode())){
+				obj.put("open",true);
+			}
+			if(area.getCityCodes().equals(address.getAddressCode())){
+				obj.put("open",true);
+			}
+			
+			
+		}//市
+		
+		if(address.getAddressLevel().equals("3")){
+			obj.put("adcode", address.getProvinceCode()+address.getCityCode()+address.getCountyCode());
+			obj.put("padcode", address.getProvinceCode()+address.getCityCode());
+			obj.put("name", address.getAddressName());
+			for(TScenarinoAreaWithBLOBs aresa:arealist){
+			JSONArray Province=JSONArray.fromObject(aresa.getCountyCodes());
+			for (int i = 0; i < Province.size(); i++) {
+				JSONObject ob  = (JSONObject) Province.get(i);
+				String obs=ob.toString();
+				String code=address.getAddressCode().toString();
+				if(obs.indexOf(address.getAddressCode().toString())!=-1){
+					String couname="("+(String) aresa.getAreaName()+")";
+					obj.put("name",(address.getAddressName())+couname);
+					obj.put("chkDisabled", true);
+
+				}
+				}
+			}
+			obj.put("level", address.getAddressLevel());
+			
+		}
+		arr.add(obj);
+	}
+	
+	//如果没有区域id
+	}else{
+		for(TAddress address:prolist){
+			
+			JSONObject obj=new JSONObject();
+			
+			//省
+			if(address.getAddressLevel().equals("1")){
+				obj.put("adcode", address.getProvinceCode());
+				obj.put("name",  address.getAddressName());
+				for(TScenarinoAreaWithBLOBs area:arealist){
+					JSONArray Province=JSONArray.fromObject(area.getProvinceCodes());
+					for (int i = 0; i < Province.size(); i++) {
+						JSONObject ob  = (JSONObject) Province.get(i);
+						String obs=ob.toString();
+						if(obs.indexOf(address.getProvinceCode().toString())!=-1){
+							String couname="("+(String) area.getAreaName()+")";
+							obj.put("name",(address.getAddressName())+couname);
+							obj.put("chkDisabled", true);
+						}
+						}
+				}
+				obj.put("level", address.getAddressLevel());
+				if(user.getProvinceCode().equals(address.getAddressCode())){
+					obj.put("open",true);
+				}
+				
+			
+			}//省
+			
+			//市
+			if(address.getAddressLevel().equals("2")){
+				obj.put("adcode", address.getProvinceCode()+address.getCityCode());
+				obj.put("padcode", address.getProvinceCode());
+				obj.put("name",address.getAddressName());
+				for(TScenarinoAreaWithBLOBs area:arealist){
+				JSONArray Province=JSONArray.fromObject(area.getCityCodes());
+				for (int i = 0; i < Province.size(); i++) {
+					JSONObject ob  = (JSONObject) Province.get(i);
+					String obs=ob.toString();
+					String code=address.getProvinceCode().toString()+address.getCityCode().toString();
+					if(obs.indexOf(code)!=-1){
+						String couname="("+(String) area.getAreaName()+")";
+						obj.put("name",(address.getAddressName())+couname);
+						obj.put("chkDisabled", true);
+					}
+					}
+				}
+				obj.put("level", address.getAddressLevel());
+				if(user.getCityCode().equals(address.getAddressCode())){
+					obj.put("open",true);
+				}
+			}//市
+			
+			if(address.getAddressLevel().equals("3")){
+				obj.put("adcode", address.getProvinceCode()+address.getCityCode()+address.getCountyCode());
+				obj.put("padcode", address.getProvinceCode()+address.getCityCode());
+				obj.put("name", address.getAddressName());
+				for(TScenarinoAreaWithBLOBs area:arealist){
+				JSONArray Province=JSONArray.fromObject(area.getCountyCodes());
+				for (int i = 0; i < Province.size(); i++) {
+					JSONObject ob  = (JSONObject) Province.get(i);
+					String obs=ob.toString();
+					String code=address.getAddressCode().toString();
+					if(obs.indexOf(address.getAddressCode().toString())!=-1){
+						String couname="("+(String) area.getAreaName()+")";
+						obj.put("name",(address.getAddressName())+couname);
+						obj.put("chkDisabled", true);
+
+					}
+					}
+				}
+				obj.put("level", address.getAddressLevel());
+				
+			}
+			arr.add(obj);
+
+			
 		}
 		
+		
+		
 	}
+	return AmpcResult.build(0, "find_areas success",arr);	
+	}catch(Exception e){
+		System.out.println(e);
+		return AmpcResult.build(1, "find_areas error");	
+	}
+}
+
+
+
+
+@RequestMapping("area/find_areas4")
+
+public AmpcResult find_areas4(HttpServletRequest request, HttpServletResponse response){
+	List<TAddress> prolist=tAddressMapper.selectAll();
+	
+
+	return AmpcResult.build(0, "find_areas success",prolist);	
+}
 
 }
