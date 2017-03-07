@@ -17,6 +17,19 @@
 //    });   
 //}); 
 
+$('.collapse-link').click(function () {
+    var ibox = $(this).closest('div.ibox');
+    var button = $(this).find('i');
+    var content = ibox.find('div.ibox-content');
+    content.slideToggle(200);
+    button.toggleClass('fa-chevron-up').toggleClass('fa-chevron-down');
+    ibox.toggleClass('').toggleClass('border-bottom');
+    setTimeout(function () {
+        ibox.resize();
+        ibox.find('[id^=map-]').resize();
+    }, 50);
+});
+
 //通用属性
 var stat = {};
 //中心点坐标
@@ -60,21 +73,29 @@ require(
 		dong.GraphicsLayer = GraphicsLayer;
 		dong.SpatialReference = SpatialReference;
 		
-		app.map = new Map("mapDiv", {
-			logo:false,
-	        center: [stat.cPointx, stat.cPointy],
-	        minZoom:3,
-	        maxZoom:13,
-	        zoom: 3
-		});
-		app.baselayerList = new dong.gaodeLayer();
-		app.stlayerList = new dong.gaodeLayer({layertype: "st"});
-		app.labellayerList = new dong.gaodeLayer({layertype: "label"});
-		app.map.addLayer(app.baselayerList);//添加高德地图到map容器
-		app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
+		app.mapList = new Array();
+		app.baselayerList = new Array();//默认加载矢量 new gaodeLayer({layertype:"road"});也可以
+		app.stlayerList = new Array();//加载卫星图
+		app.labellayerList = new Array();//加载标注图
 		
+		for(var i = 0;i<2;i++){
+			var map = new Map("mapDiv"+i, {
+				logo:false,
+		        center: [stat.cPointx, stat.cPointy],
+		        minZoom:3,
+		        maxZoom:13,
+		        zoom: 3
+			});
+			
+			app.mapList.push(map);
+			app.baselayerList[i] = new dong.gaodeLayer();
+			app.stlayerList[i] = new dong.gaodeLayer({layertype: "st"});
+			app.labellayerList[i] = new dong.gaodeLayer({layertype: "label"});
+			app.mapList[i].addLayer(app.baselayerList[i]);//添加高德地图到map容器
+			app.mapList[i].addLayers([app.baselayerList[i]]);//添加高德地图到map容器
+		}
 		app.gLyr = new dong.GraphicsLayer({"id":"gLyr"});
-		app.map.addLayer(app.gLyr);
+		app.mapList[0].addLayer(app.gLyr);
 		
 //		var point = new dong.Point(12367606.298176643, 4092838.5819190354, new dong.SpatialReference({ wkid: 3857 }));
 //		app.str = new SimpleMarkerSymbol('esriSMSCircle','20','','red');

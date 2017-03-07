@@ -1,24 +1,9 @@
-<!-- 
-	<div class='col-md-6' style="height:100%;">
-		<span style="height:34px;">行业-措施选择</span>
-		<div class="row" style="border:1px solid #F00;height:100%;overflow-y: auto;">
-			
-			<div class="leftSomething">
-				<div class="ibox-content">
-					
-				</div>
-			</div>
-		</div>
-	</div> -->
-	
 <div class='col-md-6' style="height:100%;padding-left: 0px;">
 	<div class="ibox float-e-margins" style="height:100%;">
 	    <div class="ibox-title">
 	        <h5>行业-措施选择</h5>
 	    </div>
 	    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;background-color: #EDF7FF;border:1px solid #75B9E6;padding: 0px;">
-	    
-	    
 	        <div class="panel-body" style="padding: 0px;">
 				<div class="panel-group" id="accordion">
 				
@@ -31,7 +16,10 @@
 						</div>
 						<div id="collapseOne" class="panel-collapse collapse in" style="background-color: #EDF7FF;">
 							<div class="panel-body" style="border: 0px;">
-								sdf
+								<button type="button" class="btn btn-default" data-whatever="创建任务" data-type="rw" data-toggle="modal"
+				                      data-target="#createModal">
+				                <i class="glyphicon glyphicon-plus"></i> 创建
+				              </button>
 								asd
 								asd
 							</div>
@@ -54,8 +42,6 @@
 					
 				</div>
 			</div>
-			
-			
 	    </div>
 	</div>
 </div>
@@ -65,32 +51,58 @@
 	    <div class="ibox-title">
 	        <h5>地图展示</h5>
 	        <div class="ibox-tools">
-	        	<div class="btn-group" style="margin-top: -5px;">
-                     <button data-toggle="dropdown" class="btn btn-default btn-sm dropdown-toggle" style="margin-bottom: 0px;">污染物 <span class="caret"></span>
-                     </button>
-                     <ul class="dropdown-menu">
-                         <li><a href="buttons.html#">置顶</a>
-                         </li>
-                         <li><a href="buttons.html#" class="font-bold">修改</a>
-                         </li>
-                         <li><a href="buttons.html#">禁用</a>
-                         </li>
-                         <li class="divider"></li>
-                         <li><a href="buttons.html#">删除</a>
-                         </li>
-                     </ul>
-                 </div>
+	        	<div class="row" style="margin-top: -5px;">
+	        		<div class='col-md-6'>
+	        			<div class="btn-group" >
+		                     <button data-toggle="dropdown" class="btn btn-default  dropdown-toggle" style="margin-bottom: 0px;">污染物 <span class="caret"></span>
+		                     </button>
+		                     <ul class="dropdown-menu" style="min-width: 80.83px;">
+		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
+		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
+		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
+		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
+		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
+		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
+		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
+		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
+		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
+		                     </ul>
+		                 </div>
+	        		</div>
+	        		<div class='col-md-6'>
+		                 <div class="btn-group" >
+		                     <button data-toggle="dropdown" class="btn btn-default  dropdown-toggle" style="margin-bottom: 0px;">全部行业 <span class="caret"></span>
+		                     </button>
+		                     <ul class="dropdown-menu" style="min-width: 95.09px;">
+		                         <li><a class="font-bold">当前行业</sub></a></li>
+		                     </ul>
+		                 </div>
+	        		</div>
+	        	</div>
+                        
 	        </div>
 	    </div>
-	    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;padding: 5px 5px 5px 5px;">
-	    	<div class="col-md-12" id="mapDiv" style="height:100%;"></div>
+	    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;padding: 0px 0px 0px 0px;">
+	    	<div class="col-md-12" id="mapDiv0" style="height:100%;border:1px solid #75B9E6;padding: 0px;"></div>
 	    </div>
 	</div>
 	<div class="ibox float-e-margins" style="height:calc(50% - 15px);margin-bottom: 0px;">
 	    <div class="ibox-title">
 	        <h5>措施汇总</h5>
+	        <div class="ibox-tools">
+       			<div class="btn-group">
+                     <button data-toggle="dropdown" class="btn btn-default  dropdown-toggle" style="margin-bottom: 0px;margin-top: -5px;">操作 <span class="caret"></span>
+                     </button>
+                     <ul class="dropdown-menu" style="min-width: 95px;">
+                         <li><a class="font-bold">计算减排</a></li>
+                         <li class="divider"></li>
+                         <li><a class="font-bold">修改</a></li>
+                         <li><a class="font-bold">删除</a></li>
+                     </ul>
+                 </div>
+	        </div>
 	    </div>
-	    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;">
+	    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;border:1px solid #75B9E6;padding: 0px;">
 	    	<table class="table table-hover table-striped">
 				<thead>
 					<tr>
@@ -127,78 +139,227 @@
 						<td><p class="text-center">11.0%</p></td>
 						<td></td>
 					</tr>
+					<tr>
+						<td><input type="checkbox" name="check1" /></td>
+						<td>火力发电</td>
+						<td>限产</td>
+						<td><p class="text-center">173/223</p></td>
+						<td><p class="text-center">11.0%</p></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" name="check1" /></td>
+						<td>火力发电</td>
+						<td>限产</td>
+						<td><p class="text-center">173/223</p></td>
+						<td><p class="text-center">11.0%</p></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" name="check1" /></td>
+						<td>火力发电</td>
+						<td>限产</td>
+						<td><p class="text-center">173/223</p></td>
+						<td><p class="text-center">11.0%</p></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" name="check1" /></td>
+						<td>火力发电</td>
+						<td>限产</td>
+						<td><p class="text-center">173/223</p></td>
+						<td><p class="text-center">11.0%</p></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" name="check1" /></td>
+						<td>火力发电</td>
+						<td>限产</td>
+						<td><p class="text-center">173/223</p></td>
+						<td><p class="text-center">11.0%</p></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" name="check1" /></td>
+						<td>火力发电</td>
+						<td>限产</td>
+						<td><p class="text-center">173/223</p></td>
+						<td><p class="text-center">11.0%</p></td>
+						<td></td>
+					</tr>
 				</tbody>
 			</table>
 	    </div>
 	</div>
 </div>
-		
-	
 
 
 
-
-
-	<!-- <div class='col-md-6' style="height:100%;">
-	
-		<div class="row" style="border:1px solid #F00;height:50%;">
-			<div class="" style="">
-				<div class="col-md-2">
-					<span>地图展示</span> 
-					</div> 
-				<div class="col-md-2">
-					<span>污染物</span>
-				</div>
-				<div class="col-md-4">
-					<button data-toggle="dropdown"
-						class="btn btn-default dropdown-toggle">
-						SO2 <span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu">
-						<li><a href="buttons.html#">工厂废气</a></li>
-						<li><a href="buttons.html#" class="font-bold">车辆尾气</a></li>
-						<li><a href="buttons.html#">生活垃圾</a></li>
-						<li class="divider"></li>
-						<li><a href="buttons.html#">删除</a></li>
-					</ul>
-				</div>
-				<div class="col-md-4">
-					<button class="btn btn-default" type="button">全部</button>
-					<button class="btn btn-default" type="button">当前行业</button>
-				</div>
+<!-- Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" id="changeModeal" role="document" style="width: 90%;height:90%;">
+		<div class="modal-content" style="height:100%;">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="createTitle">措施详情</h4>
 			</div>
+			<div class="modal-body"  style="height:calc(100% - 95px);background-color: #E2F0D9;padding: 15px;">
 			
-			<div class="" style="height:100%;">
-				<div class="col-md-12" style="height:100%;background-color: orange;">放地图</div>
+				<div class='col-md-12' style="height:40px;padding-left: 0px;background-color: #FFF;margin-bottom: 15px;">
+					<div class='col-md-3' style="padding: 8px 10px 5px 25px;">
+						<h5>措施：限产</h5>
+					</div>
+					<div class='col-md-3' style="padding: 8px 00px 5px 15px;">
+						<h5>行业：火力发电</h5>
+					</div>
+					<div class='col-md-3' style="padding: 8px 00px 5px 15px;">
+						<h5>点源总数：223</h5>
+					</div>
+					<div class='col-md-3' style="padding: 8px 10px 5px 0px;">
+						<h5>点源排放占比：98%</h5>
+					</div>
+				</div>
+			
+       			<div class='col-md-6' style="height:calc(100% - 55px);padding-left: 0px;">
+					<div class="ibox float-e-margins" style="height:50%;margin-bottom: 15px;">
+					    <div class="ibox-title">
+					        <h5>筛选方式</h5>
+					    </div>
+					    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;padding: 0px;">
+					    
+					    
+					    
+					    </div>
+					</div>
+					
+					<div class="ibox float-e-margins" style="height:calc(50% - 15px);margin-bottom: 0px;">
+					    <div class="ibox-title">
+					        <h5>筛选点源列表</h5>
+					    </div>
+					    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;border:1px solid #75B9E6;padding: 5px;">
+					    	<table class="table table-hover table-striped">
+								<thead>
+									<tr>
+										<th><label for="checkall"><input type="checkbox" id="checkall"></label></th>
+										<th>所属</th>
+										<th>企业名称</th>
+										<th>设备名称</th>
+										<th>设备数</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td><input type="checkbox" name="check1" /></td>
+										<td>火力发电</td>
+										<td>限产</td>
+										<td>173/223</td>
+										<td>11.0%</td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" name="check1" /></td>
+										<td>火力发电</td>
+										<td>限产</td>
+										<td>173/223</td>
+										<td>11.0%</td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" name="check1" /></td>
+										<td>火力发电</td>
+										<td>限产</td>
+										<td>173/223</td>
+										<td>11.0%</td>
+									</tr>
+								</tbody>
+							</table>
+					    </div>
+					</div>
+				</div>
+				<div class='col-md-6' style="height:calc(100% - 55px);padding-left: 0px;padding-right: 0px;">
+					<div class="ibox float-e-margins" style="height:50%;margin-bottom: 15px;">
+					    <div class="ibox-title">
+					        <h5>地图展示</h5>
+					    </div>
+					    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;padding: 0px 0px 0px 0px;">
+					    	<div class="col-md-12" id="mapDiv1" style="height:100%;border:1px solid #75B9E6;padding: 0px;"></div>
+					    </div>
+					</div>
+					<div class="ibox float-e-margins" style="height:calc(50% - 15px);margin-bottom: 0px;">
+					    <div class="ibox-title">
+					        <h5>子措施列表</h5>
+					    </div>
+					    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;border:1px solid #75B9E6;padding: 5px;">
+					    	<table class="table table-hover table-striped">
+								<thead>
+									<tr>
+										<th>措施</th>
+										<th>点源实施范围</th>
+										<th>总装机容量</th>
+										<th>SO2</th>
+										<th>NOX</th>
+										<th>VOC8</th>
+										<th>PM2.5</th>
+										<th>PM10</th>
+										<th>限产系数</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>火力发电</td>
+										<td>限产</td>
+										<td>173/223</td>
+										<td>11.0%</td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>火力发电</td>
+										<td>限产</td>
+										<td>173/223</td>
+										<td>11.0%</td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>火力发电</td>
+										<td>限产</td>
+										<td>173/223</td>
+										<td>11.0%</td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+									</tr>
+								</tbody>
+							</table>
+					    </div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer new-foot">
+				<div style="text-align: left;margin-left: 10px;width:calc(100% - 150px);float: left;padding: 8px 0px 5px 0px;">
+					<div class='col-md-3' style="padding: 0px 0px 0px 0px;">
+						<h5>当前情景：协同控制方案</h5>
+					</div>
+					<div class='col-md-3' style="padding: 0px 0px 0px 0px;">
+						<h5>当前区域：核心区</h5>
+					</div>
+					<div class='col-md-6' style="padding: 0px 0px 0px 0px;">
+						<h5>当前时段：2017-01-01 00时 至 2017-01-04 07时</h5>
+					</div>
+				</div>
+				<button type="button" class="btn btn-primary create" style="float: left;" onclick="create(this)">确定</button>
+				<button type="button" class="btn btn-default" style="float: left;" data-dismiss="modal">取消</button>
 			</div>
 		</div>
-		
+	</div>
+</div>
 
-		<div class="tableInall">
-			<div class="row">
-				<div class="col-md-4">
-					<span>措施汇总</span>
-				</div>
-				<div class="btn-group col-md-8" role="group">
-					<div class="col-md-4">
-						<button type="button" class="btn btn-default">计算减排</button>
-					</div>
-					<div class="col-md-4">
-						<button type="button" class="btn btn-default">修改</button>
-					</div>
-					<div class="col-md-4">
-						<button type="button" class="btn btn-default">清除</button>
-					</div>
-				</div>
-			</div>
-
-			<div>
-				<div class="ibox float-e-margins">
-					<div class="ibox-content">
-						
-					</div>
-				</div>
-			</div>
-		</div>
-	</div> -->
-	
