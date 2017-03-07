@@ -4,11 +4,12 @@ import java.util.List;
 
 import ampc.com.gistone.database.model.TMeasureExcel;
 
+
 /**
  * 措施映射
  * @author WangShanxi
  * @version v.0.1
- * @date 2017年3月6日
+ * @date 2017年3月7日
  */
 public interface TMeasureExcelMapper {
 	/**
@@ -25,8 +26,8 @@ public interface TMeasureExcelMapper {
 	 * @return
 	 */
 	List<TMeasureExcel> selectAll();
-  
-	int deleteByPrimaryKey(Long measureExcelId);
+	
+    int deleteByPrimaryKey(Long measureExcelId);
 
     int insert(TMeasureExcel record);
 

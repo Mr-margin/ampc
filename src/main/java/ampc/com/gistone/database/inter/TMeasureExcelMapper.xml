@@ -28,7 +28,8 @@
   </sql>
   
   
-  <!--查询当前措施表中的最高版本号-->
+  
+<!--查询当前措施表中的最高版本号-->
   <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
   	select max(MEASURE_EXCEL_VERSION) from T_MEASURE_EXCEL 
   	<if test="userId != null" >
@@ -41,6 +42,7 @@
   	select <include refid="Base_Column_List" />
     from T_MEASURE_EXCEL ORDER BY MEASURE_EXCEL_ID
   </select>
+ 
   
   
   
