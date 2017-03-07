@@ -59,9 +59,25 @@ var zTreeSetting = {
         }
       }
 
+      $('.adcodeList').empty();
+      for(var i=0;i<3;i++){
+        for(var ad in showCode[i]){
+          if(i == 0){
+            $('.adcodeList').append(addP(ad,showCode[i][ad]))
+          }else{
+            for(var add in showCode[i][ad]){
+              $('.adcodeList').append(addP(ad,showCode[i][ad][add]))
+            }
+          }
+        }
+      }
       console.log(showCode)
     }
   }
+};
+
+function addP(adcode,name){
+  return $('<p class="col-md-3">'+ name +' &nbsp;&nbsp;<i class="im-close" style="cursor: pointer" onclick="delAdcode('+ adcode +')"></i></p>')
 }
 
 /*test使用*/
@@ -155,19 +171,9 @@ function initialize(){
 
     }
     console.log(allData)
-  })
-
-  var data = [
-    {adcode:110000,name:'北京市',open:true},
-    {adcode:110100,name:'北京市',pAdcode:110000,open:true},
-    {adcode:110101,name:'某区某区某区某区某',pAdcode:110100},
-    {adcode:120000,name:'天津市'},
-    {adcode:120100,name:'天津市',pAdcode:120000},
-    {adcode:120101,name:'天津某区',pAdcode:120100}
-  ];
+  });
 
 
-  initZTree(data);
 }
 
 /*初始化zTree*/
@@ -488,9 +494,60 @@ function copyPlan(e){
   })
 }
 
-/*删除预案*/
-function delPlan(e){}
+///*删除预案*/
+//function delPlan(e){}
 
+
+$('#editArea').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget);
+  var create = button.data('new');
+  var areaId,findUrl;
+  var treeUrl = '/area/find_areas';
+
+  if(create){
+
+  }else{
+    findUrl = '/area/get_areaAndTimeList';
+    indexPar = $('.area').index(button.parents('.area'));
+    areaId = allData[indexPar].areaId;
+    console.log(areaId);
+    ajaxPost(findUrl,{
+      scenarinoId:qjMsg.qjId,
+      userId:userId
+    }).success(function(res){
+
+    })
+  }
+
+  ajaxPost(treeUrl,{
+    scenarinoId:qjMsg.qjId,
+    userId:userId,
+    areaId:areaId
+  }).success(function(res){
+
+  })
+
+
+
+  var data = [
+    {adcode:110000,name:'北京市',open:true},
+    {adcode:110100,name:'北京市',pAdcode:110000,open:true},
+    {adcode:110101,name:'某区某1',pAdcode:110100},
+    {adcode:110102,name:'某区某2',pAdcode:110100},
+    {adcode:110103,name:'某区某3',pAdcode:110100},
+    {adcode:110104,name:'某区某4',pAdcode:110100},
+    {adcode:120000,name:'天津市'},
+    {adcode:120100,name:'天津市',pAdcode:120000},
+    {adcode:120101,name:'天津某区1',pAdcode:120100},
+    {adcode:120102,name:'天津某区2',pAdcode:120100},
+    {adcode:120103,name:'天津某区3',pAdcode:120100},
+    {adcode:120104,name:'天津某区4',pAdcode:120100},
+    {adcode:120105,name:'天津某区5',pAdcode:120100}
+  ];
+
+
+  initZTree(data);
+});
 
 
 $('#qyTime').on('show.bs.modal', function (event) {
@@ -590,7 +647,7 @@ function level0(node){
 
   for(var i=1;i<showCode.length;i++){
     for(var a in showCode[i]){
-      if(a.substr(0,2) == node.adcode.substr(0,2)){
+      if(a.toString().substr(0,2) == node.adcode.toString().substr(0,2)){
         delete showCode[i][a];
       }
     }
