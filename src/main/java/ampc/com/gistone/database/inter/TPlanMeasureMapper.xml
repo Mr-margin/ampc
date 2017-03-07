@@ -12,9 +12,47 @@
     <result column="IMPLEMENTATION_SCOPE" property="implementationScope" jdbcType="VARCHAR" />
     <result column="REDUCTION_RATIO" property="reductionRatio" jdbcType="VARCHAR" />
   </resultMap>
+  <!--根据条件查询措施汇总的信息Map  -->
+  <resultMap id="MapByQuery" type="hashMap" >
+    <id column="PLAN_MEASURE_ID" property="planMeasureId" jdbcType="DECIMAL" />
+    <result column="PLAN_ID" property="planId" jdbcType="DECIMAL" />
+    <result column="SECTOR_ID" property="sectorId" jdbcType="DECIMAL" />
+    <result column="MEASURE_ID" property="measureId" jdbcType="DECIMAL" />
+    <result column="MEASURE_EXCEL_DISPLAY" property="measureName" jdbcType="DECIMAL" />
+    <result column="SECTOR_EXCEL_NAME" property="sectorName" jdbcType="DECIMAL" />
+    <result column="IMPLEMENTATION_SCOPE" property="implementationScope" jdbcType="VARCHAR" />
+    <result column="REDUCTION_RATIO" property="reductionRatio" jdbcType="VARCHAR" />
+  </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.database.model.TPlanMeasure" extends="BaseResultMap" >
     <result column="MEASURE_CONTENT" property="measureContent" jdbcType="CLOB" />
   </resultMap>
+  
+  
+  <!-- 根据条件查询措施汇总的信息 -->
+   <select id="selectByQuery" resultMap="MapByQuery" parameterType="hashMap" >
+		SELECT PLAN_MEASURE_ID,PLAN_ID,MEASURE_ID,MEASURE_EXCEL_DISPLAY,
+			SECTOR_ID,SECTOR_EXCEL_NAME,IMPLEMENTATION_SCOPE,REDUCTION_RATIO
+			FROM T_PLAN_MEASURE TPM 
+  				INNER JOIN T_MEASURE_EXCEL TME ON TPM.MEASURE_ID=TME.MEASURE_EXCEL_ID
+  				INNER JOIN T_SECTOR_EXCEL TSE ON TPM.SECTOR_ID=TSE.SECTOR_EXCEL_ID
+				WHERE  IS_EFFECTIVE='1' AND TME.USER_ID=#{userId,jdbcType=OTHER}
+				  <if test="sectorId != null" >
+       					 AND TPM.SECTOR_ID=#{sectorId,jdbcType=OTHER}
+     			  </if>
+				 <if test="measureId != null" >
+       					 AND TPM.MEASURE_ID=#{measureId,jdbcType=DECIMAL} 
+     			  </if>
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <sql id="Base_Column_List" >
     PLAN_MEASURE_ID, PLAN_ID, SECTOR_ID, MEASURE_ID, ADD_TIME, IS_EFFECTIVE, DELETE_TIME, 
     IMPLEMENTATION_SCOPE, REDUCTION_RATIO
