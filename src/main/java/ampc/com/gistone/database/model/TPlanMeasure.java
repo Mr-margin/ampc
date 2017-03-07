@@ -17,6 +17,10 @@ public class TPlanMeasure {
 
     private Date deleteTime;
 
+    private String implementationScope;
+
+    private String reductionRatio;
+
     private String measureContent;
 
     public Long getPlanMeasureId() {
@@ -73,6 +77,22 @@ public class TPlanMeasure {
 
     public void setDeleteTime(Date deleteTime) {
         this.deleteTime = deleteTime;
+    }
+
+    public String getImplementationScope() {
+        return implementationScope;
+    }
+
+    public void setImplementationScope(String implementationScope) {
+        this.implementationScope = implementationScope == null ? null : implementationScope.trim();
+    }
+
+    public String getReductionRatio() {
+        return reductionRatio;
+    }
+
+    public void setReductionRatio(String reductionRatio) {
+        this.reductionRatio = reductionRatio == null ? null : reductionRatio.trim();
     }
 
     public String getMeasureContent() {
