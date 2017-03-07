@@ -7,6 +7,7 @@ var totalWidth,totalDate,startDate,qjMsg;
 var index,indexPar,handle,minLeft,maxLeft,selfLeft,startX,leftWidth,rightWidth;
 var allData = [];
 var areaIndex,timeIndex;
+var showCode = [{},{},{}];
 var msg = {
   'id': 'yaMessage',
   'content': {
@@ -22,6 +23,47 @@ var msg = {
   }
 };
 
+var zTreeSetting = {
+  check: {
+    enable: true,
+//				autoCheckTrigger:true,
+    chkboxType: { "Y": "s", "N": "s" }, //子父级联动控制，仅子级联动
+    chkDisabledInherit: true //是否沿用disabled
+  },
+  data:{
+    simpleData:{
+      enable: true,     //简单数据模式
+      idKey: "adcode",
+      pIdKey: "pAdcode" //子父级关系对照
+    },
+    key:{
+      name:'name',
+    }
+  },
+  callback: {
+    onCheck: function(e,t,tr){
+      var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+
+      selectNode(tr);
+      if(tr.checked){
+        if(tr.level == 0){
+          level0(tr)
+        }else{
+          level12(tr)
+        }
+      }else{
+        if(tr.level == 0){
+          delNode0(tr)
+        }else{
+          delNode12(tr)
+        }
+      }
+
+      console.log(showCode)
+    }
+  }
+}
+
 /*test使用*/
 var parameterPar = {total: '', data: {}};
 function ajaxPost1(url, parameter) {
@@ -34,8 +76,8 @@ function ajaxPost1(url, parameter) {
  async: true,
  dataType: 'JSON',
  data: p
- })
- }
+})
+}
 
 initialize();
 
@@ -115,11 +157,22 @@ function initialize(){
     console.log(allData)
   })
 
+  var data = [
+    {adcode:110000,name:'北京市',open:true},
+    {adcode:110100,name:'北京市',pAdcode:110000,open:true},
+    {adcode:110101,name:'某区某区某区某区某',pAdcode:110100},
+    {adcode:120000,name:'天津市'},
+    {adcode:120100,name:'天津市',pAdcode:120000},
+    {adcode:120101,name:'天津某区',pAdcode:120100}
+  ];
+
+
+  initZTree(data);
 }
 
 /*初始化zTree*/
-function initZTree(){
-
+function initZTree(data){
+  $.fn.zTree.init($("#adcodeTree"), zTreeSetting, data);
 }
 
 function sub(){
@@ -491,6 +544,102 @@ $('#delTime').on('show.bs.modal', function (event) {
   console.log(areaIndex,timeIndex)
 });
 
+
+/*初始化zTree*/
+function initZtree(){
+  
+}
+
+/*zTree相关方法*/
+/*选择节点，控制勾选状态*/
+function selectNode(node){
+  var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+  var parNode = node.getParentNode();
+
+  if(parNode){
+    treeObj.checkNode(parNode,true,false,false);
+    var child = parNode.children;
+    for(var c=0;c<child.length;c++){
+      if(!child[c].checked){
+        treeObj.checkNode(parNode,false,false,false);
+        if(parNode.getParentNode()){
+          treeObj.checkNode(parNode.getParentNode(),false,false,false);
+        }
+        break;
+      }
+    }
+    if(parNode.checked){
+      var parparNode = parNode.getParentNode();
+      if(parparNode){
+        treeObj.checkNode(parparNode,true,false,false);
+        var proChild = parparNode.children;
+        for(var c=0;c<proChild.length;c++){
+          if(!proChild[c].checked){
+            treeObj.checkNode(parparNode,false,false,false);
+            break;
+          }
+        }
+      }
+    }
+  }
+}
+
+function level0(node){
+  showCode[node.level][node.adcode] = node.name;
+  delete showCode[node.level+1][node.adcode];
+
+  for(var i=1;i<showCode.length;i++){
+    for(var a in showCode[i]){
+      if(a.substr(0,2) == node.adcode.substr(0,2)){
+        delete showCode[i][a];
+      }
+    }
+  }
+}
+
+function level12(node){
+  var parNode = node.getParentNode();
+  if(!showCode[node.level][parNode.adcode]){
+    showCode[node.level][parNode.adcode] = {}
+  }
+  showCode[node.level][parNode.adcode][node.adcode] = node.name;
+  if(parNode.children.length == Object.keys(showCode[node.level][parNode.adcode]).length){
+    delete showCode[node.level][parNode.adcode];
+    if(node.level == 1){
+      level0(parNode);
+    }else{
+      level12(parNode);
+    }
+  }
+
+  if(node.level == 1){
+    delete showCode[node.level+1][node.adcode];
+  }
+}
+
+function delNode0(node){
+  delete showCode[node.level][node.adcode]
+}
+
+function delNode12(node){
+  var parNode = node.getParentNode();
+  if(!showCode[node.level][parNode.adcode]){
+    if(node.level == 1){
+      delNode0(parNode);
+    }else{
+      delNode12(parNode);
+    }
+    showCode[node.level][parNode.adcode] = {};
+    var child = parNode.children;
+    for(var n=0;n<child.length;n++){
+      showCode[node.level][parNode.adcode][child[n].adcode] = child[n].name;
+    }
+  }
+  delete showCode[node.level][parNode.adcode][node.adcode];
+  if($.isEmptyObject(showCode[node.level][parNode.adcode])){
+    delete showCode[node.level][parNode.adcode];
+  }
+}
 
 function initDate(){
   $("#qyTimePoint").datetimepicker({
