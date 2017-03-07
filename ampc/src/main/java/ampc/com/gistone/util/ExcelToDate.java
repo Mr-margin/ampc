@@ -94,6 +94,7 @@ public class ExcelToDate {
 	public static List<TMeasureExcel> ReadMeasure(String fileName,Long versionId,Long userId){  
 		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\03.措施设计\\measure_sets_QYv1.xlsx";
 		List<TMeasureExcel> measureList=new ArrayList<TMeasureExcel>();
+		List<ColorUtil> colorList=getColor();
         try {  
             Workbook wb  = null;  
             //自动根据Excel版本创建对应的Workbook
@@ -222,8 +223,6 @@ public class ExcelToDate {
 		color=new ColorUtil("bdb76b","btn-cuoshi-qian");
 		list.add(color);
 		color=new ColorUtil("483d8b","btn-cuoshi-shen");
-		list.add(color);
-		color=new ColorUtil("a9a9a9","btn-cuoshi-shen");
 		list.add(color);
 		color=new ColorUtil("a9a9a9","btn-cuoshi-shen");
 		list.add(color);
@@ -437,34 +436,50 @@ public class ExcelToDate {
 		list.add(color);
 		color=new ColorUtil("fffafa","btn-cuoshi-qian");
 		list.add(color);
-		color=new ColorUtil("","btn-cuoshi-qian");
+		color=new ColorUtil("faf0e6","btn-cuoshi-qian");
 		list.add(color);
-		color=new ColorUtil("","btn-cuoshi-qian");
+		color=new ColorUtil("f5f5f5","btn-cuoshi-qian");
 		list.add(color);
-		color=new ColorUtil("","btn-cuoshi-qian");
+		color=new ColorUtil("dda0dd","btn-cuoshi-qian");
 		list.add(color);
-		color=new ColorUtil("","btn-cuoshi-qian");
+		color=new ColorUtil("c0c0c0","btn-cuoshi-qian");
 		list.add(color);
-		color=new ColorUtil("","btn-cuoshi-qian");
+		color=new ColorUtil("cd5c5c","btn-cuoshi-shen");
 		list.add(color);
-		color=new ColorUtil("","btn-cuoshi-qian");
+		color=new ColorUtil("f8f8ff","btn-cuoshi-qian");
 		list.add(color);
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		color=new ColorUtil("a0522d","btn-cuoshi-shen");
+		list.add(color);
+		color=new ColorUtil("7b68ee","btn-cuoshi-qian");
+		list.add(color);
+		color=new ColorUtil("00fa9a","btn-cuoshi-qian");
+		list.add(color);
+		color=new ColorUtil("ba55d3","btn-cuoshi-shen");
+		list.add(color);
+		color=new ColorUtil("3cb371","btn-cuoshi-shen");
+		list.add(color);
+		color=new ColorUtil("191970","btn-cuoshi-shen");
+		list.add(color);
+		color=new ColorUtil("0000cd","btn-cuoshi-shen");
+		list.add(color);
+		color=new ColorUtil("48d1cc","btn-cuoshi-qian");
+		list.add(color);
+		color=new ColorUtil("66cdaa","btn-cuoshi-qian");
+		list.add(color);
+		color=new ColorUtil("c71585","btn-cuoshi-shen");
+		list.add(color);
+		color=new ColorUtil("9370db","btn-cuoshi-shen");
+		list.add(color);
+		color=new ColorUtil("8b4513","btn-cuoshi-shen");
+		list.add(color);
+		color=new ColorUtil("ff00ff","btn-cuoshi-qian");
+		list.add(color);
+		color=new ColorUtil("ee82ee","btn-cuoshi-qian");
+		list.add(color);
+		color=new ColorUtil("8a2be2","btn-cuoshi-shen");
+		list.add(color);
+		color=new ColorUtil("800080","btn-cuoshi-shen");
+		list.add(color);
 		return list;
 	}
 }

@@ -45,6 +45,10 @@ public class TMeasureSectorExcel {
 
     private Long sid;
 
+    private String colorcode;
+
+    private Object colorname;
+
     public Long getMsExcelId() {
         return msExcelId;
     }
@@ -212,6 +216,22 @@ public class TMeasureSectorExcel {
     public void setSid(Long sid) {
         this.sid = sid;
     }
+
+    public String getColorcode() {
+        return colorcode;
+    }
+
+    public void setColorcode(String colorcode) {
+        this.colorcode = colorcode == null ? null : colorcode.trim();
+    }
+
+    public Object getColorname() {
+        return colorname;
+    }
+
+    public void setColorname(Object colorname) {
+        this.colorname = colorname;
+    }
     @Override
 	public boolean equals(Object obj) {
     	TMeasureSectorExcel s = (TMeasureSectorExcel) obj;
@@ -223,4 +243,5 @@ public class TMeasureSectorExcel {
 		String in = msExcelName.toString() + sectorsname;
 		return in.hashCode();
 	}
+
 }
