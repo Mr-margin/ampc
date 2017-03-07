@@ -38,6 +38,8 @@
   <resultMap id="mapBySname" type="hashMap" >
     <result column="MID" property="mid" jdbcType="DECIMAL" />
     <result column="MS_EXCEL_DISPLAY" property="measureame" jdbcType="OTHER" />
+    <result column="COLORCODE" property="colorcode" jdbcType="VARCHAR" />
+    <result column="COLORNAME" property="colorname" jdbcType="OTHER" />
   </resultMap>
    <!-- 根据用户ID 获取所有的行业名称 -->
   <resultMap id="mapGetName" type="hashMap" >
