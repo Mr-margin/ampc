@@ -64,24 +64,28 @@ public class ExcelToDateController {
 	public AmpcResult save_MS(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response){
 		// 添加异常捕捉
 		try {
+			// 获取到颜色集合
 			List<ColorUtil> colorUtil=ColorUtil.getColor();
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			// 用户的id 确定当前用户
+			// 用户的id 确定当前用户 如果为空代表是系统默认
 			Long userId=null;
 			if(data.get("userId")!=null){
 				userId = Long.parseLong(data.get("userId").toString());
 			}
+			//自动获取到最新版本
 			Long versionId=tMeasureSectorExcelMapper.selectMaxVersion(userId);
 			if(versionId==null){
 				versionId=1L;
 			}else{
 				versionId++;
 			}
+			//获取到筛选后的数据
 			LinkedHashSet<TMeasureSectorExcel> ms=checkInfo(versionId,userId);
 			Iterator<TMeasureSectorExcel> iterator = ms.iterator();
 			int i=0;
+			//循环添加  并补充颜色
 			while(iterator.hasNext()){
 				TMeasureSectorExcel tmse =iterator.next();
 				if(i==colorUtil.size()){
@@ -113,7 +117,7 @@ public class ExcelToDateController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			// 用户的id 确定当前用户
+			// 用户的id 确定当前用户 如果为空代表是系统默认
 			Long userId=null;
 			if(data.get("userId")!=null){
 				userId = Long.parseLong(data.get("userId").toString());
@@ -157,7 +161,7 @@ public class ExcelToDateController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			// 用户的id 确定当前用户
+			// 用户的id 确定当前用户 如果为空代表是系统默认
 			Long userId=null;
 			if(data.get("userId")!=null){
 				userId = Long.parseLong(data.get("userId").toString());
