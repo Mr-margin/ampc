@@ -50,6 +50,9 @@
           </div> -->
 
       </div>
+      <div class="addArea col-md-12 mt20">
+        <button class="btn btn-primary" data-new="true" data-toggle="modal" data-target="#editArea">添加区域</button>
+      </div>
     </div>
 
     <div class="col-md-5 showMap text-center" style="border: 1px solid #999;height: 600px;">
@@ -150,13 +153,7 @@
     </div>
   </div>
 
-
-
-  <!-- Button trigger modal -->
-  <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#editArea">
-    Launch demo modal
-  </button>
-
+  
   <!-- Modal 区域编辑-->
   <div class="modal fade bs-example-modal-lg" id="editArea" tabindex="-1" role="dialog" aria-labelledby="editAreaLabel">
     <div class="modal-dialog modal-lg bigModal" role="document">
@@ -187,23 +184,35 @@
             </div>
           </div>
           <div class="editAreaCon">
-            <div class="col-md-3 pl0 pr0">
+            <div class="col-md-3 pl0">
               <div class="codeTree">
                 <ul id="adcodeTree" class="ztree">
                 
                 </ul>
               </div>
-              <div class="rightArrow">
-                <div>
-                  <i class="fa-chevron-right"></i>
-                </div>
-              </div>
+              <!--<div class="rightArrow">-->
+                <!--<div>-->
+                  <!--<i class="fa-chevron-right"></i>-->
+                <!--</div>-->
+              <!--</div>-->
             </div>
-            <div class="col-md-9  pl0 pr0">
-              <div class="col-md-6 pl0">
-                <div class="showCode">
-                  <div class="clearCode">
-                    <button class="btn btn-primary">qingkong</button>
+            <div class="col-md-9 pr0">
+              <div class="col-md-6 pl0 " >
+                <div class="showCode" style="border: 1px solid transparent;">
+                  <div class="clearCode text-right mt10 mr10">
+                    <button class="btn btn-primary">清空</button>
+                  </div>
+                  <div class="adcodeList mt20">
+                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer"></i></p>-->
+                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer"></i></p>-->
+                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer"></i></p>-->
+                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer"></i></p>-->
+                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer"></i></p>-->
+                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer"></i></p>-->
+                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer"></i></p>-->
+                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer"></i></p>-->
+                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer" onclick="delAdcode()"></i></p>-->
+
                   </div>
                 </div>
               </div>
@@ -215,9 +224,20 @@
             </div>
           </div>
         </div>
-        <div class="modal-footer bcg">
-          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <div class="modal-footer ">
+          <div style="text-align: left;margin-left: 10px;width:calc(100% - 150px);float: left;padding: 8px 0px 5px 0px;">
+            <div class='col-md-3' style="padding: 0px 0px 0px 0px;">
+              <h5>当前情景：协同控制方案</h5>
+            </div>
+            <div class='col-md-3' style="padding: 0px 0px 0px 0px;">
+              <h5>当前区域：核心区</h5>
+            </div>
+            <div class='col-md-6' style="padding: 0px 0px 0px 0px;">
+              <h5>当前时段：2017-01-01 00时 至 2017-01-04 07时</h5>
+            </div>
+          </div>
           <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
         </div>
       </div>
     </div>
@@ -232,7 +252,7 @@
     <div class="front">
       <span>类别一</span>
       <div class="areaToolDiv text-center">
-        <button type="button" onclick="editArea(this)" class="btn btn-default btn-xs toolShow" title="区域编辑" data-toggle="modal" data-target="#editArea"><i class="ec-pencil"></i><span>区域编辑</span></button>
+        <button type="button" onclick="editArea(this)" data-new="false" class="btn btn-default btn-xs toolShow" title="区域编辑" data-toggle="modal" data-target="#editArea"><i class="ec-pencil"></i><span>区域编辑</span></button>
         <button type="button" onclick="delArea(this)" class="btn btn-default btn-xs toolShow" title="删除区域"><i class="ec-trashcan"></i><span>删除区域</span></button>
         <button type="button" class="btn btn-default btn-xs toolShow" title="添加时段" data-toggle="modal" data-target="#qyTime"><i class="im-plus"></i><span>添加时段</span></button>
       </div>
