@@ -241,7 +241,7 @@
   width: calc(100% - 60px);
 }
 .editAreaTitle p,.editAreaTitle label{
-  line-height: 28px;
+  line-height: 33px;
 }
 
 .qjbjDiv{
@@ -253,6 +253,30 @@
 .w80{
   width: 80%;
 }
+
+
+
+.codeTree,.rightArrow,.showCode,.showMap{
+  height: 650px;
+  background-color: #fff;
+}
+
+.codeTree{
+  border: 1px solid #eaeaea;
+}
+.rightArrow i{
+	display:block;
+	padding:5px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 50px;
+  background-color: rgb(91,155,213);
+  color: #fff;
+}
+
+
+
+
 
 
 
