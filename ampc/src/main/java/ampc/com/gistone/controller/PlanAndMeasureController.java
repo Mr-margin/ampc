@@ -112,11 +112,7 @@ public class PlanAndMeasureController {
 		Long measureId=Long.parseLong(request.getParameter("measureId"));//措施id
 		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
 		Long planId=Long.parseLong(request.getParameter("planId"));//预案id
-		String maxid = "select max(PLAN_MEASURE_ID) from T_PLAN_MEASURE";
-		Long max = (long) this.getBySqlMapper.findrows(maxid);
-		max += 1;
 		TPlanMeasure tPlanMeasure=new TPlanMeasure();
-		tPlanMeasure.setPlanMeasureId(max);
 		tPlanMeasure.setMeasureId(measureId);
 		tPlanMeasure.setPlanId(planId);
 		tPlanMeasure.setSectorId(sectorId);
@@ -149,7 +145,6 @@ public class PlanAndMeasureController {
 	    Long scenarioId=Long.parseLong(data.get("scenarioId").toString());//行业id
 	    Long missionId=Long.parseLong(data.get("missionId").toString());//所属任务id
 	    Long areaId=Long.parseLong(data.get("areaId").toString());//区域id
-	    
 	    TPlan tPlan=new TPlan();
 	    tPlan.setAddTime(addTime);
 	    tPlan.setAreaId(areaId);
