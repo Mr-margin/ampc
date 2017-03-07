@@ -165,42 +165,57 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title" id="editAreaLabel">定义区域范围：</h4>
         </div>
-        <div class="modal-body">
-          <div class="editAreaTitle row">
-            <div class="col-md-3">
+        <div class="modal-body bcg">
+          <div class="editAreaTitle col-md-12 mb20">
+            <div class="col-md-4">
+
               <div class="form-group">
-                <label for="areaName" class="text-right col-md-7" style="padding-right: 0">当前区域名称：</label>
-                <div class=" col-md-5"  style="padding-left: 0">
-                  <input type="text"  class="form-control" id="areaName">
+<!--                 <label class="col-md-7 control-label text-right" style="padding-right:0">当前区域名称：</label> -->
+                <div class="col-md-12" style="padding-left:0;padding-right:0">
+                  当前区域名称：<input type="text" class="form-control required" id="areaName" style="width: 50%;display: inline-block">
                 </div>
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2 text-center">
               <p class="proNumber">涉及省级区域数量：<span>1</span></p>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2 text-center">
               <p class="cityNumber">涉及市级区域数量：<span>1</span></p>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2 text-center">
               <p class="countyNumber">涉及县级区域数量：<span>1</span></p>
             </div>
           </div>
-          <div class="row editAreaCon">
-            <div class="col-md-3">
+          <div class="editAreaCon">
+            <div class="col-md-3 pl0 pr0">
               <div class="codeTree">
-                <ul id="adcodeTree" class="ztree"></ul>
+                <ul id="adcodeTree" class="ztree">
+                
+                </ul>
               </div>
               <div class="rightArrow">
-                这里有个箭头，注意了！！！！！
+                <div>
+                  <i class="fa-chevron-right"></i>
+                </div>
               </div>
             </div>
-            <div class="col-md-9">
-              <div class="col-md-6 showCode">显示选择的行政区划</div>
-              <div class="col-md-6 showMap">显示地图信息</div>
+            <div class="col-md-9  pl0 pr0">
+              <div class="col-md-6 pl0">
+                <div class="showCode">
+                  <div class="clearCode">
+                    <button class="btn btn-primary">qingkong</button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 pr0">
+                <div class="showMap">
+                  显示地图信息
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer bcg">
           <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
           <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
         </div>
