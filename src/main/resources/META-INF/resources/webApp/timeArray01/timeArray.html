@@ -1,0 +1,92 @@
+<!-- 空气质量预报 》》 时间序列 -->
+<div class="col-sm-6" style="padding-left: 0px;">
+	<div class="input-group">
+		<span class="input-group-addon">开始日期：</span>
+		<div class="chaxundiv_2 selectDiv" id="data_1">
+			<div class="input-group date" id="datetimeStart" style="width: 100%;">
+				<span class="input-group-addon"><i class="fa-calendar"></i></span> <input
+					type="text" style="width: 100%;height: 33px;" readonly="true" />
+			</div>
+		</div>
+	</div>
+</div>
+<div class="col-sm-6">
+	<div class="input-group">
+		<span class="input-group-addon">结束日期：</span>
+		<div class="chaxundiv_3 selectDiv" id="data_2">
+			<div class="input-group date" id="datetimeEnd" style="width: 100%;">
+				<span class="input-group-addon"><i class="fa-calendar"></i></span> <input
+					type="text" style="width: 100%;height: 33px;" readonly="true" />
+			</div>
+		</div>
+	</div>
+</div>
+<div class="col-md-6" style="padding-left: 0px;">
+	<div style="margin:8px;">
+		<th><label>检测站点</label></th>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<div class="input-group group-select" style="width:100%">
+				<select class="form-control m-b">
+					<option>浙江省</option>
+					<option>--</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="col-md-4">
+			<div class="input-group group-select" style="width:100%">
+				<select class="form-control m-b">
+					<option>杭州市</option>
+					<option>--</option>
+				</select>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="input-group group-select" style="width:100%">
+				<select class="form-control m-b">
+					<option>平均</option>
+					<option>--</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="btn-group" style="margin:5px;padding-left:11px">
+			<button class="btn btn-default" type="button">污染物</button>
+			<button class="btn btn-default" type="button">气象要素</button>
+		</div>
+	</div>
+</div>
+<div class="col-md-6 ">
+	<!-- 右边 时间分辨率 -->
+	<div style="margin:8px;">
+		<th><label>时间分辨率</label></th>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<button type="button" class="btn btn-success btn-block">逐小时</button>
+
+		</div>
+		<div class="col-md-4">
+			<button type="button" class="btn btn-success btn-block">逐日</button>
+
+		</div>
+	</div>
+</div>
+<!-- 右边 时间分辨率 -->
+
+
+<!-- 模拟数据-- 观测数据 -->
+<div class="row">
+	<div class="" id="main"style="height: 300px;width:910px;margin-left:auto;margin-right:auto;margin-top:50px"></div>
+	<div class="col-md-9 col-md-offset-10" style="margin-top:130px">
+		<button type="button" class="btn btn-success"><lable>组分收起</lable></button>
+	</div>
+	<div class="" id="mainTwo"style="height: 300px;width:910px;margin-left:auto;margin-right:auto;margin-top:110px"></div>
+</div>
+
+
+
+
+

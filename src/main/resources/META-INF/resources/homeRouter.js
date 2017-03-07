@@ -44,6 +44,10 @@ vipspa.start({
     	templateUrl: 'a.html',
     	controller: ''
     },
+    '/sjxl': {       //时间序列
+    	templateUrl: 'webApp/timeArray01/timeArray.html',
+    	controller: 'webApp/timeArray01/timeArray.js'
+    },
     'defaults': '/rwgl'     //默认显示页面
   },
   errorTemplateId: '#error'//错误显示页面
