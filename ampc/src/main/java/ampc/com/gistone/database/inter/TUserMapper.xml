@@ -5,11 +5,12 @@
     <id column="USER_ID" property="userId" jdbcType="DECIMAL" />
     <result column="USER_NAME" property="userName" jdbcType="OTHER" />
     <result column="PASSWORD" property="password" jdbcType="OTHER" />
-    <result column="PROVINCE_CODE" property="provinceCode" jdbcType="VARCHAR" />
-    <result column="CITY_CODE" property="cityCode" jdbcType="VARCHAR" />
+    <result column="PROVINCE_CODE" property="provinceCode" jdbcType="DECIMAL" />
+    <result column="CITY_CODE" property="cityCode" jdbcType="DECIMAL" />
+    <result column="COUNTY_CODE" property="countyCode" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Base_Column_List" >
-    USER_ID, USER_NAME, PASSWORD, PROVINCE_CODE, CITY_CODE
+    USER_ID, USER_NAME, PASSWORD, PROVINCE_CODE, CITY_CODE, COUNTY_CODE
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -25,7 +26,7 @@
     insert into T_USER (USER_ID, USER_NAME, PASSWORD, 
       PROVINCE_CODE, CITY_CODE)
     values (#{userId,jdbcType=DECIMAL}, #{userName,jdbcType=OTHER}, #{password,jdbcType=OTHER}, 
-      #{provinceCode,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR})
+      #{provinceCode,jdbcType=DECIMAL}, #{cityCode,jdbcType=DECIMAL}, #{countyCode,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TUser" >
     insert into T_USER
@@ -45,6 +46,9 @@
       <if test="cityCode != null" >
         CITY_CODE,
       </if>
+       <if test="countyCode != null" >
+        COUNTY_CODE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="userId != null" >
@@ -57,10 +61,13 @@
         #{password,jdbcType=OTHER},
       </if>
       <if test="provinceCode != null" >
-        #{provinceCode,jdbcType=VARCHAR},
+        #{provinceCode,jdbcType=DECIMAL},
       </if>
       <if test="cityCode != null" >
-        #{cityCode,jdbcType=VARCHAR},
+        #{cityCode,jdbcType=DECIMAL},
+      </if>
+      <if test="countyCode != null" >
+        #{countyCode,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -74,10 +81,13 @@
         PASSWORD = #{password,jdbcType=OTHER},
       </if>
       <if test="provinceCode != null" >
-        PROVINCE_CODE = #{provinceCode,jdbcType=VARCHAR},
+        PROVINCE_CODE = #{provinceCode,jdbcType=DECIMAL},
       </if>
       <if test="cityCode != null" >
-        CITY_CODE = #{cityCode,jdbcType=VARCHAR},
+        CITY_CODE = #{cityCode,jdbcType=DECIMAL},
+      </if>
+      <if test="countyCode != null" >
+        COUNTY_CODE = #{countyCode,jdbcType=DECIMAL},
       </if>
     </set>
     where USER_ID = #{userId,jdbcType=DECIMAL}
@@ -86,8 +96,9 @@
     update T_USER
     set USER_NAME = #{userName,jdbcType=OTHER},
       PASSWORD = #{password,jdbcType=OTHER},
-      PROVINCE_CODE = #{provinceCode,jdbcType=VARCHAR},
-      CITY_CODE = #{cityCode,jdbcType=VARCHAR}
+      PROVINCE_CODE = #{provinceCode,jdbcType=DECIMAL},
+      CITY_CODE = #{cityCode,jdbcType=DECIMAL},
+      COUNTY_CODE = #{countyCode,jdbcType=DECIMAL},
     where USER_ID = #{userId,jdbcType=DECIMAL}
   </update>
 </mapper>
