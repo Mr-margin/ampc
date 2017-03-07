@@ -1,3 +1,12 @@
+<style type="text/css">
+	.price_list{list-style:none}
+	.price_list li{float:left; line-height:22px; margin-right:10px; padding:2px 6px}
+	.price_list li.title{display:block; width:80px; height:40px;}
+	#custom{border:1px solid #d3d3d3; padding:0 16px 0 2px; background:url(img/icon.gif) no-repeat right 8px; position:relative;}
+	#slider_wrap{width:250px; height:80px; padding:10px; position:absolute; left:-1px; top:22px; border:1px solid #d3d3d3; background:#fff; display:none;}
+	#slider_wrap p{width:230px; margin:4px auto}
+</style>
+
 <div class='col-md-6' style="height:100%;padding-left: 0px;">
 	<div class="ibox float-e-margins" style="height:100%;">
 	    <div class="ibox-title">
@@ -229,7 +238,54 @@
 					    </div>
 					    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;padding: 0px;">
 					    
-					    
+					    	<div class="row" style="margin-left: 0px;margin-right: 0px;border:1px solid #75B9E6;">
+					    		<ul class="price_list">
+							      <li class="title">价格范围：</li>
+							      <li><a>3000元以下</a></li>
+							      <li><a>3000-4000元</a></li>
+							      <li><a>4000-5000元</a></li>
+							      <li><a>5000-6000元</a></li>
+							      <li><a>6000-7000元</a></li>
+							      <li><a>7000-8000元</a></li>
+							      <li><a>7000-8000元</a></li>
+							      <li><a>7000-8000元</a></li>
+							      <li id="custom"><a href="javascript:;" id="show">自定义</a>
+							        <div id="slider_wrap">
+							        	<div class="input-daterange input-group" id="datepicker">
+			                                <input type="text" class=" form-control" id="start" value="" />
+			                                <span class="input-group-addon">-</span>
+			                                <input type="text" class=" form-control" id="end" value="" />
+			                                <span class="input-group-btn"> <button type="button" class="btn btn-primary">确定</button> </span>
+			                            </div>
+							        </div>
+							      </li>
+							    </ul>
+					    	</div>
+					    	<div class="row" style="margin-left: 0px;margin-right: 0px;">
+					    		<ul class="price_list">
+							      <li class="title">价格范围：</li>
+							      <li><a>3000元以下</a></li>
+							      <li><a>3000-4000元</a></li>
+							      <li><a>4000-5000元</a></li>
+							      <li><a>5000-6000元</a></li>
+							      <li><a>6000-7000元</a></li>
+							      <li><a>7000-8000元</a></li>
+							      <li><a>10000元以上</a></li>
+							      <!-- <li id="custom"><a href="javascript:;" id="show">自定义</a>
+							        <div id="slider_wrap">
+							          <div id="slider">
+							            <div id="range"></div>
+							          </div>
+							          <p>
+							            <input type="text" class="input" id="start" value="0"  />
+							            -
+							            <input type="text" class="input" id="end" value="3000" />
+							            <input type="button" class="btn" id="btn_ok" value="确 定" />
+							          </p>
+							        </div>
+							      </li> -->
+							    </ul>
+					    	</div>
 					    
 					    </div>
 					</div>
