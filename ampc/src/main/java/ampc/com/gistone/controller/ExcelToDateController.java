@@ -2,6 +2,7 @@ package ampc.com.gistone.controller;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.CheckUtil;
 import ampc.com.gistone.util.CheckUtil1;
 import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.ColorUtil;
 import ampc.com.gistone.util.ExcelToDate;
 
 /**
@@ -62,6 +64,7 @@ public class ExcelToDateController {
 	public AmpcResult save_MS(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response){
 		// 添加异常捕捉
 		try {
+			List<ColorUtil> colorUtil=ColorUtil.getColor();
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
@@ -77,9 +80,17 @@ public class ExcelToDateController {
 				versionId++;
 			}
 			LinkedHashSet<TMeasureSectorExcel> ms=checkInfo(versionId,userId);
-			System.out.println(ms.size());
-			for (TMeasureSectorExcel tmt : ms) {
-				tMeasureSectorExcelMapper.insertSelective(tmt);
+			Iterator<TMeasureSectorExcel> iterator = ms.iterator();
+			int i=0;
+			while(iterator.hasNext()){
+				TMeasureSectorExcel tmse =iterator.next();
+				if(i==colorUtil.size()){
+					i=0;
+				}
+				tmse.setColorcode(colorUtil.get(i).getColorCode());
+				tmse.setColorname(colorUtil.get(i).getColorName());
+				tMeasureSectorExcelMapper.insertSelective(tmse);
+				i++;
 			}
 			return AmpcResult.ok("更新成功");
 		} catch (Exception e) {
