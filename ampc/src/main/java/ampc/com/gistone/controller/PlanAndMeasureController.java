@@ -3,6 +3,7 @@ package ampc.com.gistone.controller;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,48 +56,37 @@ public class PlanAndMeasureController {
 	
 	/**
 	 * 措施汇总查询
+	 * @author WangShanxi
 	 * @throws UnsupportedEncodingException 
 	 */
-	@RequestMapping("/measure/list_measure")
-	public  AmpcResult list_measure(HttpServletRequest request,
-			HttpServletResponse response) throws UnsupportedEncodingException{
-		ClientUtil.SetCharsetAndHeader(request, response);
+	@RequestMapping("/measure/get_measureList")
+	public  AmpcResult get_MeasureList(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
+		//添加异常捕捉
 		try{
-		Long planId=Long.parseLong(request.getParameter("planId"));//预案id
-		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
-		JSONObject obj=new JSONObject();
-		
-		TPlanMeasure tPlanMeasure=new TPlanMeasure();
-		tPlanMeasure.setPlanId(planId);
-		//查看行业id是否为空，不为空添加，为空不加
-		if(request.getParameter("sectorId")!=null){	
-			Long sectorId=Long.parseLong(request.getParameter("sectorId"));
-			tPlanMeasure.setSectorId(sectorId);
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//预案id
+			Long planId=Long.parseLong(data.get("planId").toString());
+			//用户id
+			Long userId=Long.parseLong(data.get("userId").toString());
+			//添加信息到参数中
+			Map<String,Object> map=new HashMap<String,Object>();
+			map.put("planId", planId);
+			map.put("userId", userId);
+			//查看行业id是否为空，不为空添加，为空不加
+			if(data.get("sectorId")!=null){	
+				map.put("sectorId", data.get("sectorId"));
+			}else{
+				map.put("sectorId", null);
+			}
+			//查询措施
+			List<Map> list=tPlanMeasureMapper.selectByQuery(map);
+			return AmpcResult.ok(list);
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000, "参数错误");
 		}
-		//查询措施
-		List<TPlanMeasure> Measurelist=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
-		JSONArray arr=new JSONArray();
-		//判断查询结果是否为空，返回对应的值
-		if(!Measurelist.isEmpty()){
-		for(TPlanMeasure TPlanMeasure:Measurelist){
-			TSectorExcel Sector=tSectorExcelMapper.selectByPrimaryKey(TPlanMeasure.getSectorId());
-			TMeasureExcel tMeasure=tMeasureExcelMapper.selectByPrimaryKey(TPlanMeasure.getMeasureId());
-			JSONObject objs=new JSONObject();
-			objs.put("sectorName", Sector.getSectorExcelName());
-			objs.put("measureName", tMeasure.getMeasureExcelDisplay());
-			objs.put("intensity", tMeasure.getMeasureExcelIntensity());
-			objs.put("measureContent", TPlanMeasure.getMeasureContent());
-			arr.add(objs);
-		}
-		obj.put("measurelist", arr);
-		return AmpcResult.build(0, "list_measure success",obj);
-		}else{
-		return AmpcResult.build(1, "list_measure error");
-		}
-	}catch(NullPointerException n){
-		System.out.println(n);
-		return AmpcResult.build(1, "list_measure error");
-	}
 	}
 	
 	/**
@@ -104,62 +94,68 @@ public class PlanAndMeasureController {
 	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/measure/add_measure")
-	public  AmpcResult add_measure(HttpServletRequest request,
-			HttpServletResponse response) throws UnsupportedEncodingException{
+	public  AmpcResult add_measure(HttpServletRequest request,HttpServletResponse response) throws UnsupportedEncodingException{
 		ClientUtil.SetCharsetAndHeader(request, response);
 		try{	
-		Long sectorId=Long.parseLong(request.getParameter("sectorId"));//行业id
-		Long measureId=Long.parseLong(request.getParameter("measureId"));//措施id
-		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
-		Long planId=Long.parseLong(request.getParameter("planId"));//预案id
-		TPlanMeasure tPlanMeasure=new TPlanMeasure();
-		tPlanMeasure.setMeasureId(measureId);
-		tPlanMeasure.setPlanId(planId);
-		tPlanMeasure.setSectorId(sectorId);
-		//预案添加措施
-		int addstatus=tPlanMeasureMapper.insertSelective(tPlanMeasure);
-		//判断是否成功
-		if(addstatus!=0){
-		return AmpcResult.build(0, "add_measure error");
+			Long sectorId=Long.parseLong(request.getParameter("sectorId"));//行业id
+			Long measureId=Long.parseLong(request.getParameter("measureId"));//措施id
+			Long userId=Long.parseLong(request.getParameter("userId"));//用户id
+			Long planId=Long.parseLong(request.getParameter("planId"));//预案id
+			TPlanMeasure tPlanMeasure=new TPlanMeasure();
+			tPlanMeasure.setMeasureId(measureId);
+			tPlanMeasure.setPlanId(planId);
+			tPlanMeasure.setSectorId(sectorId);
+			/**
+			 * TODO 这里会调用计算接口 获取到范围和减排比 的数据
+			 */
+			//预案添加措施
+			int addstatus=tPlanMeasureMapper.insertSelective(tPlanMeasure);
+			//判断是否成功
+			if(addstatus!=0){
+			return AmpcResult.build(0, "add_measure error");
+			}
+			return AmpcResult.build(1, "add_measure error");
+		}catch(NullPointerException n){
+			System.out.println(n);
+			return AmpcResult.build(1, "add_measure error");
 		}
-		return AmpcResult.build(1, "add_measure error");
-	}catch(NullPointerException n){
-		System.out.println(n);
-		return AmpcResult.build(1, "add_measure error");
 	}
-		}
 	
 	/**
 	 * 创建预案
 	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/plan/add_plan")
-	public  AmpcResult add_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
-			HttpServletResponse response) throws UnsupportedEncodingException{
-		ClientUtil.SetCharsetAndHeader(request, response);
-		Map<String,Object> data=(Map)requestDate.get("data");
-		Long userId=Long.parseLong(data.get("userId").toString());//用户id
-		String planName=data.get("planName").toString();//预案名称
-	    Date addTime=new Date();//添加时间
-	    Long usedBy=Long.parseLong(data.get("usedBy").toString());//情景id
-	    Long scenarioId=Long.parseLong(data.get("scenarioId").toString());//行业id
-	    Long missionId=Long.parseLong(data.get("missionId").toString());//所属任务id
-	    Long areaId=Long.parseLong(data.get("areaId").toString());//区域id
-	    TPlan tPlan=new TPlan();
-	    tPlan.setAddTime(addTime);
-	    tPlan.setAreaId(areaId);
-	    tPlan.setMissionId(missionId);
-	    tPlan.setScenarioId(scenarioId);
-	    tPlan.setUsedBy(usedBy);
-	    tPlan.setUserId(userId);
-	    tPlan.setPlanName(planName);
-	    //添加预案
-	    int addstatus=tPlanMapper.insertSelective(tPlan);
-	   //判断是否添加成功，根据结果返回值
-	    if(addstatus!=0){
-	    	 return AmpcResult.build(0, "add_plan error");	
-	    }
-	    return AmpcResult.build(1, "add_plan error");
+	public  AmpcResult add_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Long userId=Long.parseLong(data.get("userId").toString());//用户id
+			String planName=data.get("planName").toString();//预案名称
+		    Date addTime=new Date();//添加时间
+		    Long usedBy=Long.parseLong(data.get("usedBy").toString());//情景id
+		    Long scenarioId=Long.parseLong(data.get("scenarioId").toString());//行业id
+		    Long missionId=Long.parseLong(data.get("missionId").toString());//所属任务id
+		    Long areaId=Long.parseLong(data.get("areaId").toString());//区域id
+		    TPlan tPlan=new TPlan();
+		    tPlan.setAddTime(addTime);
+		    tPlan.setAreaId(areaId);
+		    tPlan.setMissionId(missionId);
+		    tPlan.setScenarioId(scenarioId);
+		    tPlan.setUsedBy(usedBy);
+		    tPlan.setUserId(userId);
+		    tPlan.setPlanName(planName);
+		    //添加预案
+		    int addstatus=tPlanMapper.insertSelective(tPlan);
+		   //判断是否添加成功，根据结果返回值
+		    if(addstatus!=0){
+		    	 return AmpcResult.ok("添加成功");	
+		    }
+		    return AmpcResult.build(1000, "添加失败");
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000, "参数错误");
+		}
 	}
 	/**
 	 * 措施详情修改
