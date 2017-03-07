@@ -142,4 +142,9 @@
                and ADDRESS_ID = #{addressId,jdbcType=DECIMAL}
             </if>
   </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_ADDRESS
+     </select>
 </mapper>
