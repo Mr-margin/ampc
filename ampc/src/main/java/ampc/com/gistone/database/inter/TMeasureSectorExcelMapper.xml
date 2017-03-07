@@ -80,7 +80,7 @@
  
  <!--根据条件查询对应的措施-->
   <select id="getMeasureInfo" parameterType="hashMap" resultMap="mapBySname">
-  	select MID,MS_EXCEL_DISPLAY from T_MEASURE_SECTOR_EXCEL 
+  	select MID,MS_EXCEL_DISPLAY,COLORNAME,COLORCODE from T_MEASURE_SECTOR_EXCEL 
   	where  SECTORSNAME =#{sectorsName,jdbcType=OTHER}
   	<if test="userId != null" >
         and where USER_ID=#{userId,jdbcType=DECIMAL} 
