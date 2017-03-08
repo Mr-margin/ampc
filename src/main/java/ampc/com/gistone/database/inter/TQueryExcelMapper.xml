@@ -37,7 +37,13 @@
       </if> 
   </select>
   
-  
+  <!--获取所有-->
+  <select id="selectByMap"  resultMap="BaseResultMap" parameterType="hashMap">
+  	select <include refid="Base_Column_List" /> from T_QUERY_EXCEL WHERE SECTOR_NAME=#{sectorName,jdbcType=OTHER} 
+  		<if test="userId != null" >
+        AND USER_ID=#{userId,jdbcType=OTHER} 
+      </if> 
+  </select>
   
   
   
