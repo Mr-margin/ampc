@@ -101,7 +101,10 @@ public class PlanAndMeasureController {
 			MeasureUtil mu=null;
 			TMeasureExcel tme=tMeasureExcelMapper.selectByPrimaryKey(measureId);
 			if(tme.getMeasureExcelOp()!=null){
-				
+				mu=new MeasureUtil();
+				mu.setName("op");
+				mu.setValue(tme.getMeasureExcelOp());
+				mlist.add(mu);
 			}
 			if(tme.getMeasureExcelA()!=null){
 				mu=new MeasureUtil();
