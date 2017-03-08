@@ -580,7 +580,7 @@ $('#editArea').on('show.bs.modal', function (event) {
       }
       updataCodeList();
     });
-    $('#areaName').val(allData[indexPar].areaName);
+    $('#areaName').val(allData[indexPar].areaName).attr('data-id',areaId);
   }
 
   ajaxPost(treeUrl,{
@@ -591,6 +591,51 @@ $('#editArea').on('show.bs.modal', function (event) {
     initZTree(res.data);
   })
 });
+
+function createEditArea(){
+  var url = '/area/saveorupdate_area';
+  var areaName = $('#areaName').val();
+  if(!areaName){
+    alert('kong')
+  }
+  var obj = {
+    missionId:qjMsg.rwId,
+    scenarinoId:qjMsg.qjId,
+    areaName:areaName,
+    userId:userId,
+    scenarinoStartDate:moment(momentDate(qjMsg.qjStartDate)).format('YYYY/MM/DD HH'),
+    scenarinoEndDate:moment(momentDate(qjMsg.qjEndDate)).format('YYYY/MM/DD HH'),
+    areaId:$('#areaName').attr('data-id')||'',
+    provinceCodes:[],
+    cityCodes:[],
+    countyCodes:[]
+  }
+
+  for(var i in showCode[0]){
+    var proObj = {};
+    proObj[i] = showCode[0][i];
+    obj.provinceCodes.push(proObj);
+  }
+  for(var i in showCode[1]){
+    for(var ii in showCode[1][i]){
+      var cityObj = {};
+      cityObj[ii] = showCode[1][i][ii];
+      obj.cityCodes.push(cityObj)
+    }
+  }
+  for(var i in showCode[2]){
+    for(var ii in showCode[2][i]){
+      var countyObj = {};
+      countyObj[ii] = showCode[1][i][ii];
+      obj.countyCodes.push(countyObj)
+    }
+  }
+
+  ajaxPost(url,obj).success(function(res){
+    console.log(res);
+  })
+
+}
 
 function setShowCode(data){
 
