@@ -58,6 +58,19 @@ public class ExcelToDateController {
 	public TMeasureSectorExcelMapper tMeasureSectorExcelMapper;
 	
 	/**
+	 * 删除数据方法
+	 * @param type
+	 */
+	public void deleteInfo(int type){
+		//只添加措施Excel
+		if(type==1){
+			
+		}else if(type==2){  //多个表一起添加时删除的
+			
+		}
+	}
+	
+	/**
 	 * 保存到措施模版表
 	 */
 	@RequestMapping("excel/save_ms")
