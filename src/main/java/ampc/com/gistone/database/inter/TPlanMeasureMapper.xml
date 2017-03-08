@@ -53,7 +53,39 @@
      			  </if>
   </select>
   
-  
+  <select id="selectByEntity" resultMap="ResultMapWithBLOBs" parameterType="ampc.com.gistone.database.model.TPlanMeasure" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from T_PLAN_MEASURE 
+    where IS_EFFECTIVE = 1
+         <if test="planMeasureId != null and planMeasureId != ''">
+               and PLAN_MEASURE_ID = #{planMeasureId,jdbcType=DECIMAL}
+            </if>
+            <if test="planId != null and planId != ''">
+                and PLAN_ID = #{planId,jdbcType=DECIMAL}
+            </if>
+            <if test="sectorId != null and sectorId != ''">
+                and SECTOR_ID = #{sectorId,jdbcType=DECIMAL}
+            </if>
+            <if test="measureId != null and measureId != ''">
+                and  MEASURE_ID = #{measureId,jdbcType=DECIMAL}
+            </if>
+            <if test="addTime != null and agentTel !=''">
+                and ADD_TIME = #{addTime,jdbcType=DATE}
+            </if>
+            <if test="deleteTime != null">
+               and DELETE_TIME = #{deleteTime,jdbcType=DATE}
+            </if>
+            <if test="measureContent != null">
+               and MEASURE_CONTENT = #{measureContent,jdbcType=CLOB}
+            </if>
+  </select>
+   <delete id="deleteByPlanId" parameterType="java.lang.Long" >
+    delete from T_PLAN_MEASURE
+    where PLAN_ID = #{planId,jdbcType=DECIMAL}
+  </delete>
   
   
   

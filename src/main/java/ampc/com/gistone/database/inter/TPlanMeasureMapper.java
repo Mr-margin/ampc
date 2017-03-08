@@ -21,6 +21,10 @@ public interface TPlanMeasureMapper {
 	 * @return
 	 */
 	List<Map> selectByQuery(Map map);
+	
+	List<TPlanMeasure> selectByEntity(TPlanMeasure record);
+    
+    int deleteByPlanId(Long planId);
 
     int deleteByPrimaryKey(Long planMeasureId);
 
