@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TSectordocExcelMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TSectordocExcel" >
+    <id column="SECTORDOC_ID" property="sectordocId" jdbcType="DECIMAL" />
+    <result column="SECTORDOC_NAME" property="sectordocName" jdbcType="OTHER" />
+    <result column="SECTORDOC_ETITLE" property="sectordocEtitle" jdbcType="VARCHAR" />
+    <result column="SECTORDOC_CTITLE" property="sectordocCtitle" jdbcType="OTHER" />
+    <result column="SECTORDOC_TYPE" property="sectordocType" jdbcType="VARCHAR" />
+    <result column="SECTORDOC_STYPE" property="sectordocStype" jdbcType="OTHER" />
+    <result column="SECTORDOC_DOC" property="sectordocDoc" jdbcType="OTHER" />
+    <result column="SECTORDOC_DISNAME" property="sectordocDisname" jdbcType="OTHER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    SECTORDOC_ID, SECTORDOC_NAME, SECTORDOC_ETITLE, SECTORDOC_CTITLE, SECTORDOC_TYPE, 
+    SECTORDOC_STYPE, SECTORDOC_DOC, SECTORDOC_DISNAME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_SECTORDOC_EXCEL
+    where SECTORDOC_ID = #{sectordocId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_SECTORDOC_EXCEL
+    where SECTORDOC_ID = #{sectordocId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TSectordocExcel" >
+    insert into T_SECTORDOC_EXCEL (SECTORDOC_ID, SECTORDOC_NAME, SECTORDOC_ETITLE, 
+      SECTORDOC_CTITLE, SECTORDOC_TYPE, SECTORDOC_STYPE, 
+      SECTORDOC_DOC, SECTORDOC_DISNAME)
+    values (#{sectordocId,jdbcType=DECIMAL}, #{sectordocName,jdbcType=OTHER}, #{sectordocEtitle,jdbcType=VARCHAR}, 
+      #{sectordocCtitle,jdbcType=OTHER}, #{sectordocType,jdbcType=VARCHAR}, #{sectordocStype,jdbcType=OTHER}, 
+      #{sectordocDoc,jdbcType=OTHER}, #{sectordocDisname,jdbcType=OTHER})
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TSectordocExcel" >
+    insert into T_SECTORDOC_EXCEL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="sectordocId != null" >
+        SECTORDOC_ID,
+      </if>
+      <if test="sectordocName != null" >
+        SECTORDOC_NAME,
+      </if>
+      <if test="sectordocEtitle != null" >
+        SECTORDOC_ETITLE,
+      </if>
+      <if test="sectordocCtitle != null" >
+        SECTORDOC_CTITLE,
+      </if>
+      <if test="sectordocType != null" >
+        SECTORDOC_TYPE,
+      </if>
+      <if test="sectordocStype != null" >
+        SECTORDOC_STYPE,
+      </if>
+      <if test="sectordocDoc != null" >
+        SECTORDOC_DOC,
+      </if>
+      <if test="sectordocDisname != null" >
+        SECTORDOC_DISNAME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="sectordocId != null" >
+        #{sectordocId,jdbcType=DECIMAL},
+      </if>
+      <if test="sectordocName != null" >
+        #{sectordocName,jdbcType=OTHER},
+      </if>
+      <if test="sectordocEtitle != null" >
+        #{sectordocEtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="sectordocCtitle != null" >
+        #{sectordocCtitle,jdbcType=OTHER},
+      </if>
+      <if test="sectordocType != null" >
+        #{sectordocType,jdbcType=VARCHAR},
+      </if>
+      <if test="sectordocStype != null" >
+        #{sectordocStype,jdbcType=OTHER},
+      </if>
+      <if test="sectordocDoc != null" >
+        #{sectordocDoc,jdbcType=OTHER},
+      </if>
+      <if test="sectordocDisname != null" >
+        #{sectordocDisname,jdbcType=OTHER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TSectordocExcel" >
+    update T_SECTORDOC_EXCEL
+    <set >
+      <if test="sectordocName != null" >
+        SECTORDOC_NAME = #{sectordocName,jdbcType=OTHER},
+      </if>
+      <if test="sectordocEtitle != null" >
+        SECTORDOC_ETITLE = #{sectordocEtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="sectordocCtitle != null" >
+        SECTORDOC_CTITLE = #{sectordocCtitle,jdbcType=OTHER},
+      </if>
+      <if test="sectordocType != null" >
+        SECTORDOC_TYPE = #{sectordocType,jdbcType=VARCHAR},
+      </if>
+      <if test="sectordocStype != null" >
+        SECTORDOC_STYPE = #{sectordocStype,jdbcType=OTHER},
+      </if>
+      <if test="sectordocDoc != null" >
+        SECTORDOC_DOC = #{sectordocDoc,jdbcType=OTHER},
+      </if>
+      <if test="sectordocDisname != null" >
+        SECTORDOC_DISNAME = #{sectordocDisname,jdbcType=OTHER},
+      </if>
+    </set>
+    where SECTORDOC_ID = #{sectordocId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TSectordocExcel" >
+    update T_SECTORDOC_EXCEL
+    set SECTORDOC_NAME = #{sectordocName,jdbcType=OTHER},
+      SECTORDOC_ETITLE = #{sectordocEtitle,jdbcType=VARCHAR},
+      SECTORDOC_CTITLE = #{sectordocCtitle,jdbcType=OTHER},
+      SECTORDOC_TYPE = #{sectordocType,jdbcType=VARCHAR},
+      SECTORDOC_STYPE = #{sectordocStype,jdbcType=OTHER},
+      SECTORDOC_DOC = #{sectordocDoc,jdbcType=OTHER},
+      SECTORDOC_DISNAME = #{sectordocDisname,jdbcType=OTHER}
+    where SECTORDOC_ID = #{sectordocId,jdbcType=DECIMAL}
+  </update>
+</mapper>
