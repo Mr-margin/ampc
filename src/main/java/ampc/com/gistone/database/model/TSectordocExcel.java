@@ -17,6 +17,10 @@ public class TSectordocExcel {
 
     private Object sectordocDisname;
 
+    private Long sectordocVersion;
+
+    private Object userId;
+
     public Long getSectordocId() {
         return sectordocId;
     }
@@ -79,5 +83,21 @@ public class TSectordocExcel {
 
     public void setSectordocDisname(Object sectordocDisname) {
         this.sectordocDisname = sectordocDisname;
+    }
+
+    public Long getSectordocVersion() {
+        return sectordocVersion;
+    }
+
+    public void setSectordocVersion(Long sectordocVersion) {
+        this.sectordocVersion = sectordocVersion;
+    }
+
+    public Object getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Object userId) {
+        this.userId = userId;
     }
 }

@@ -14,10 +14,13 @@
     <result column="QUERY_OPTION4" property="queryOption4" jdbcType="OTHER" />
     <result column="QUERY_OPTION5" property="queryOption5" jdbcType="OTHER" />
     <result column="SECTOR_NAME" property="sectorName" jdbcType="OTHER" />
+    <result column="QUERY_VERSION" property="queryVersion" jdbcType="DECIMAL" />
+    <result column="USER_ID" property="userId" jdbcType="OTHER" />
   </resultMap>
   <sql id="Base_Column_List" >
     QUERY_ID, QUERY_NAME, QUERY_ETITLE, QUERY_SHOWQUERY, QUERY_VALUE, QUERY_OPTIONTYPE, 
-    QUERY_OPTION1, QUERY_OPTION2, QUERY_OPTION3, QUERY_OPTION4, QUERY_OPTION5, SECTOR_NAME
+    QUERY_OPTION1, QUERY_OPTION2, QUERY_OPTION3, QUERY_OPTION4, QUERY_OPTION5, SECTOR_NAME, 
+    QUERY_VERSION, USER_ID
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -33,13 +36,13 @@
     insert into T_QUERY_EXCEL (QUERY_ID, QUERY_NAME, QUERY_ETITLE, 
       QUERY_SHOWQUERY, QUERY_VALUE, QUERY_OPTIONTYPE, 
       QUERY_OPTION1, QUERY_OPTION2, QUERY_OPTION3, 
-      QUERY_OPTION4, QUERY_OPTION5, SECTOR_NAME
-      )
+      QUERY_OPTION4, QUERY_OPTION5, SECTOR_NAME, 
+      QUERY_VERSION, USER_ID)
     values (#{queryId,jdbcType=DECIMAL}, #{queryName,jdbcType=OTHER}, #{queryEtitle,jdbcType=VARCHAR}, 
       #{queryShowquery,jdbcType=OTHER}, #{queryValue,jdbcType=OTHER}, #{queryOptiontype,jdbcType=OTHER}, 
       #{queryOption1,jdbcType=OTHER}, #{queryOption2,jdbcType=OTHER}, #{queryOption3,jdbcType=OTHER}, 
-      #{queryOption4,jdbcType=OTHER}, #{queryOption5,jdbcType=OTHER}, #{sectorName,jdbcType=OTHER}
-      )
+      #{queryOption4,jdbcType=OTHER}, #{queryOption5,jdbcType=OTHER}, #{sectorName,jdbcType=OTHER}, 
+      #{queryVersion,jdbcType=DECIMAL}, #{userId,jdbcType=OTHER})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TQueryExcel" >
     insert into T_QUERY_EXCEL
@@ -80,6 +83,12 @@
       <if test="sectorName != null" >
         SECTOR_NAME,
       </if>
+      <if test="queryVersion != null" >
+        QUERY_VERSION,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="queryId != null" >
@@ -117,6 +126,12 @@
       </if>
       <if test="sectorName != null" >
         #{sectorName,jdbcType=OTHER},
+      </if>
+      <if test="queryVersion != null" >
+        #{queryVersion,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=OTHER},
       </if>
     </trim>
   </insert>
@@ -156,6 +171,12 @@
       <if test="sectorName != null" >
         SECTOR_NAME = #{sectorName,jdbcType=OTHER},
       </if>
+      <if test="queryVersion != null" >
+        QUERY_VERSION = #{queryVersion,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=OTHER},
+      </if>
     </set>
     where QUERY_ID = #{queryId,jdbcType=DECIMAL}
   </update>
@@ -171,7 +192,9 @@
       QUERY_OPTION3 = #{queryOption3,jdbcType=OTHER},
       QUERY_OPTION4 = #{queryOption4,jdbcType=OTHER},
       QUERY_OPTION5 = #{queryOption5,jdbcType=OTHER},
-      SECTOR_NAME = #{sectorName,jdbcType=OTHER}
+      SECTOR_NAME = #{sectorName,jdbcType=OTHER},
+      QUERY_VERSION = #{queryVersion,jdbcType=DECIMAL},
+      USER_ID = #{userId,jdbcType=OTHER}
     where QUERY_ID = #{queryId,jdbcType=DECIMAL}
   </update>
 </mapper>

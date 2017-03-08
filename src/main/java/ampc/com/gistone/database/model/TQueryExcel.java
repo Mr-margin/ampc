@@ -25,6 +25,10 @@ public class TQueryExcel {
 
     private Object sectorName;
 
+    private Long queryVersion;
+
+    private Object userId;
+
     public Long getQueryId() {
         return queryId;
     }
@@ -119,5 +123,21 @@ public class TQueryExcel {
 
     public void setSectorName(Object sectorName) {
         this.sectorName = sectorName;
+    }
+
+    public Long getQueryVersion() {
+        return queryVersion;
+    }
+
+    public void setQueryVersion(Long queryVersion) {
+        this.queryVersion = queryVersion;
+    }
+
+    public Object getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Object userId) {
+        this.userId = userId;
     }
 }
