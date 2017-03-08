@@ -116,10 +116,10 @@ function delAdcode(adcode,level){
       delete showCode[level][adcode];
       break;
     case 1:
-      delete showCode[level][adcode.toString().substr(0,2)][adcode];
+      delete showCode[level][adcode.toString().substr(0,2)+"0000"][adcode];
       break;
     case 2:
-      delete showCode[level][adcode.toString().substr(0,4)][adcode];
+      delete showCode[level][adcode.toString().substr(0,4)+'00'][adcode];
       break;
   }
   updataCodeList();
