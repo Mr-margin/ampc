@@ -886,3 +886,61 @@ function rename(type, id) {
     });
 
 }
+
+
+
+
+/*新改任务创建*/
+function createRw(){
+  var url = '/mission/save_mission';
+  var urlName = '/mission/check_missioname';
+  var params = {};
+  var paramsName = {};
+  params.missionName = paramsName.missionName = $('#rwName').val();
+  params.missionDomainId = $('#mnfw').val();
+  params.esCouplingId = $('#qd').val();
+  params.missionStartDate = $('#rwStartDate').val();
+  params.missionEndDate = $('#rwEndDate').val();
+  params.userId = paramsName.userId = userId;
+  params.missionStauts = $('#rwType').val();
+
+
+  ajaxPost(urlName,paramsName).success(function(res){
+    if(res.data){
+      ajaxPost(url, params).success(function (res) {
+        if(res.status == 0){
+          $('#rwTable').bootstrapTable('destroy');
+          initRwTable();
+          $('#createRwModal').modal('hide');
+          swal('添加成功', '', 'success')
+        }else{
+          $('#createRwModal').modal('hide');
+          swal('添加失败', '', 'error')
+        }
+      }).error(function () {
+        $('#createRwModal').modal('hide');
+        swal('添加失败', '', 'error')
+      })
+    }else{
+      swal('名称重复', '', 'error')
+    }
+  }).error(function(){
+    swal('校验失败', '', 'error')
+  })
+}
+
+
+/*新改情景创建*/
+function createQj(){
+
+}
+
+
+
+
+
+
+
+
+
+
