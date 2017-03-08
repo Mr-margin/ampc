@@ -346,7 +346,7 @@ public class ExcelToDateController {
 	 * TODO
 	 * c1
 	 */
-	public String c1(Set<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id1,int id2,int id3,int id4,Long vid,Long uid){
+	public String c1(LinkedHashSet<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id1,int id2,int id3,int id4,Long vid,Long uid){
 		//获取第二个id[2]的条件集合
 		List<CheckUtil> check2 = cu11.getCheck2();
 		if(check2==null){
@@ -407,7 +407,7 @@ public class ExcelToDateController {
 	 * c2
 	 * @return
 	 */
-	public String c2(Set<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id3,int id4,Long vid,Long uid){
+	public String c2(LinkedHashSet<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id3,int id4,Long vid,Long uid){
 		//获取第三个id[3]的条件集合
 		List<CheckUtil> check3 = cu11.getCheck3();
 		if(check3==null){
@@ -467,7 +467,7 @@ public class ExcelToDateController {
 	 * TODO
 	 * c3
 	 */
-	public String c3(Set<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id4,Long vid,Long uid){
+	public String c3(LinkedHashSet<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id4,Long vid,Long uid){
 		//获取第四个id[4]的条件集合
 		List<CheckUtil> check4 = cu11.getCheck4();
 		if(check4==null){
