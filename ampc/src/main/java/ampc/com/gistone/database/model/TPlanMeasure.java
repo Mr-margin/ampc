@@ -21,6 +21,8 @@ public class TPlanMeasure {
 
     private String reductionRatio;
 
+    private String ratio;
+
     private String measureContent;
 
     public Long getPlanMeasureId() {
@@ -93,6 +95,14 @@ public class TPlanMeasure {
 
     public void setReductionRatio(String reductionRatio) {
         this.reductionRatio = reductionRatio == null ? null : reductionRatio.trim();
+    }
+
+    public String getRatio() {
+        return ratio;
+    }
+
+    public void setRatio(String ratio) {
+        this.ratio = ratio == null ? null : ratio.trim();
     }
 
     public String getMeasureContent() {
