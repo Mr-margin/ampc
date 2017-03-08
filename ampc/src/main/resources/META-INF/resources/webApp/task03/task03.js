@@ -57,7 +57,8 @@ hyc();
  */
 function hyc(){
 	var urlName = '/ms/get_msInfo';
-	var paramsName = {userId:1};
+	var paramsName = {};
+	paramsName.userId = 1;
 	
 	ajaxPost(urlName,paramsName).success(function(res){
 		
@@ -65,14 +66,17 @@ function hyc(){
 		if(res.status == 0){
 			$.each(res.data, function(i, col) {
 				
+				var inn = i == 0 ? "in" : "";
+				
 				accordion_html += '<div class="panel panel-default"><div class="panel-heading" style="background-color: #FFF;"><h5 class="panel-title">';
-				accordion_html += '<a data-toggle="collapse" data-parent="#accordion" href="#collapse'+i+'">'+col.sectorsName+'&nbsp;&nbsp;&nbsp;~~&nbsp;已使用';
-				accordion_html += '<code>&nbsp;4&nbsp;</code>条措施&nbsp;~~</a></h5></div>';
-				accordion_html += '<div id="collapse'+i+'" class="panel-collapse collapse" style="background-color: #EDF7FF;"><div class="panel-body" style="border: 0px;">';
+				accordion_html += '<a data-toggle="collapse" data-parent="#accordion" style="font-weight: 700;" href="#collapse'+i+'">'+col.sectorsName+'</a>';
+				accordion_html += '<code class="pull-right">已使用&nbsp;4&nbsp;条措施</code></h5></div>';
+				accordion_html += '<div id="collapse'+i+'" class="panel-collapse collapse '+inn+'" style="background-color: #EDF7FF;"><div class="panel-body" style="border: 0px;">';
 				
 				$.each(col.measureItems, function(j, vol) {
 					accordion_html += '<div class="col-md-6 c6center">';
-					accordion_html += '<button type="button" class="btn btn-default btn-cuoshi-qian" style="background-color: #f0f8ff;width:80%;">'+vol.measureame+'</button>';
+//					accordion_html += '<button type="button" onclick="open_cs('+vol.measureame+');" class="btn btn-default '+vol.colorname+'" style="background-color: #'+vol.colorcode+';width:80%;">'+vol.measureame+'</button>';
+					accordion_html += '<a class="btn btn-success-cs btn-outline" style="width:80%;" onclick="open_cs(\''+col.sectorsName+'\',\''+vol.measureame+'\');"><i class="fa fa-ban"> </i>&nbsp;&nbsp;&nbsp;'+vol.measureame+'</a>';//fa fa-check-circle-o
 					accordion_html += '</div>';
 				});
 				accordion_html += '</div></div></div>';
@@ -88,6 +92,21 @@ function hyc(){
 }
 
 
+/**
+ * 打开措施的窗口，数据初始化
+ * sectorsName:行业名称
+ * measureame:措施名称
+ */
+function open_cs(sectorsName,measureame){
+	$("#measureame").html("措施："+measureame);
+	$("#sectorsName").html("行业："+sectorsName);
+
+	
+	
+	
+	
+	$("#createModal").modal();
+}
 
 
 
