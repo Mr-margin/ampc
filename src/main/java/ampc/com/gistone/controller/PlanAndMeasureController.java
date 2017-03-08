@@ -30,6 +30,7 @@ import ampc.com.gistone.database.inter.TTimeMapper;
 import ampc.com.gistone.database.model.TMeasureExcel;
 import ampc.com.gistone.database.model.TPlan;
 import ampc.com.gistone.database.model.TPlanMeasure;
+import ampc.com.gistone.database.model.TQueryExcel;
 import ampc.com.gistone.database.model.TSectorExcel;
 import ampc.com.gistone.database.model.TTime;
 import ampc.com.gistone.util.AmpcResult;
@@ -80,25 +81,26 @@ public class PlanAndMeasureController {
 			//措施id
 			Long measureId=Long.parseLong(data.get("measureId").toString());
 			//行业名称
-			Long sectorName=Long.parseLong(data.get("sectorName").toString());
+			String sectorName=data.get("sectorName").toString();
 			//用户id
-			Long userId=Long.parseLong(data.get("userId").toString());
+			Long userId=null;
+			if(data.get("userId")!=null){
+				userId = Long.parseLong(data.get("userId").toString());
+			}
 			//添加信息到参数中
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("sectorName", sectorName);
 			map.put("userId", userId);
 			List<Map> sdMap=tSectordocExcelMapper.selectByUserId(map);
-			
-			
-			//查看行业id是否为空，不为空添加，为空不加
-			if(data.get("sectorId")!=null){	
-				map.put("sectorId", data.get("sectorId"));
-			}else{
-				map.put("sectorId", null);
+			if(sdMap.size()==0){
+				map.put("userId", null);
+				sdMap=tSectordocExcelMapper.selectByUserId(map);
 			}
-			//查询措施
-			List<Map> list=tPlanMeasureMapper.selectByQuery(map);
-			return AmpcResult.ok(list);
+			List<TQueryExcel> tqeList=tQueryExcelMapper.selectByMap(map);
+			Map resultMap=new HashMap();
+			resultMap.put("measureColumn", sdMap);
+			resultMap.put("query", tqeList);
+			return AmpcResult.ok(resultMap);
 		}catch(Exception e){
 			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误");
