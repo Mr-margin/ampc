@@ -139,15 +139,18 @@ public class MissionAndScenarinoController {
 			//全国清单id
 			mission.setEsCouplingId(Long.parseLong(data.get("esCouplingId").toString()));
 			//任务的开始时间
-			mission.setMissionStartDate(new Date(data.get("missionStartDate").toString()));
+			String startDate=data.get("missionStartDate").toString();
+			String endDate=data.get("missionEndDate").toString();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+			Date missionStartDate=sdf.parse(startDate);
+			Date missionEndDate=sdf.parse(endDate);
+			mission.setMissionStartDate(missionStartDate);
 			//任务的结束时间
-			mission.setMissionEndDate(new Date(data.get("missionEndDate").toString()));
+			mission.setMissionEndDate(missionEndDate);
 			//用户的id  确定当前用户
 			mission.setUserId(Long.parseLong(data.get("userId").toString()));
 			//默认新建任务会赋值预评估
-			mission.setMissionStatus(data.get("missionStatus").toString());
-			//创建类型 (1.只创建任务 2.创建任务并执行基准情景)
-			Integer createType=Integer.valueOf(data.get("createType").toString());
+			mission.setMissionStatus(data.get("missionStauts").toString());
 			//执行添加操作
 			int result=this.tMissionDetailMapper.insertSelective(mission);
 			//判断添加结果
