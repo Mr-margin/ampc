@@ -620,9 +620,9 @@ public class AreaAndTimeController {
 					Calendar cal = Calendar.getInstance();
 					cal.setTime(endDate);
 					cal.add(Calendar.HOUR, - 1);
-					String addTimeDate = new SimpleDateFormat("yyyy-MM-dd HH")
+					String addTimeDate = new SimpleDateFormat("yyyy/MM/dd HH")
 							.format(cal.getTime());
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH");
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH");
 					Date timeEndDate = sdf.parse(addTimeDate);
 					//新建时段
 					TTime add_tTime = new TTime();
@@ -884,6 +884,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 			if(address.getAddressLevel().equals("1")){
 				obj.put("adcode", address.getProvinceCode());
 				obj.put("name",  address.getAddressName());
+				obj.put("code", address.getAddressCode());
 				for(TScenarinoAreaWithBLOBs area:arealist){
 					JSONArray Province=JSONArray.fromObject(area.getProvinceCodes());
 					for (int i = 0; i < Province.size(); i++) {
@@ -909,6 +910,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 				obj.put("adcode", address.getProvinceCode()+address.getCityCode());
 				obj.put("padcode", address.getProvinceCode());
 				obj.put("name",address.getAddressName());
+				obj.put("code", address.getAddressCode());
 				for(TScenarinoAreaWithBLOBs area:arealist){
 				JSONArray Province=JSONArray.fromObject(area.getCityCodes());
 				for (int i = 0; i < Province.size(); i++) {
@@ -932,6 +934,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 				obj.put("adcode", address.getProvinceCode()+address.getCityCode()+address.getCountyCode());
 				obj.put("padcode", address.getProvinceCode()+address.getCityCode());
 				obj.put("name", address.getAddressName());
+				obj.put("code", address.getAddressCode());
 				for(TScenarinoAreaWithBLOBs area:arealist){
 				JSONArray Province=JSONArray.fromObject(area.getCountyCodes());
 				for (int i = 0; i < Province.size(); i++) {
