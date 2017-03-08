@@ -916,7 +916,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 				for (int i = 0; i < Province.size(); i++) {
 					JSONObject ob  = (JSONObject) Province.get(i);
 					String obs=ob.toString();
-					String code=address.getProvinceCode().toString()+address.getCityCode().toString()+"00";
+					String code=address.getProvinceCode().toString()+address.getCityCode().toString();
 					if(obs.indexOf(code)!=-1){
 						String couname="("+(String) area.getAreaName()+")";
 						obj.put("name",(address.getAddressName())+couname);
