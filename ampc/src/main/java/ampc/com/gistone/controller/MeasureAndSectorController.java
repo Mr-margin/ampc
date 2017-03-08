@@ -59,8 +59,9 @@ public class MeasureAndSectorController {
 			}
 			//查询全部写入返回结果集
 			List<Map> nameList = this.tMeasureSectorExcelMapper.getSectorInfo(userId);
-			if(nameList==null&&nameList.size()==0){
-				nameList = this.tMeasureSectorExcelMapper.getSectorInfo(null);
+			if(nameList.size()==0){
+				userId=null;
+				nameList = this.tMeasureSectorExcelMapper.getSectorInfo(userId);
 			}
 			LinkedHashSet<String> nameSet=new LinkedHashSet<String>();
 			for (Map map : nameList) {
