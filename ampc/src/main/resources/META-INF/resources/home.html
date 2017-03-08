@@ -1,32 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>环境空气质量动态模拟云平台</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <!--[if IE]><meta http-equiv="x-ua-compatible" content="IE=9" /><![endif]-->
-  <meta name="author" content="SuggeElson" />
-  <meta name="description" content=""/>
-  <meta name="keywords" content=""/>
-  <meta name="application-name" content="sprFlat admin template" />
+<meta charset="utf-8">
+<title>环境空气质量动态模拟云平台</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<!--[if IE]><meta http-equiv="x-ua-compatible" content="IE=9" /><![endif]-->
+<meta name="author" content="SuggeElson" />
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<meta name="application-name" content="sprFlat admin template" />
 
-  <link href="css/icons.css" rel="stylesheet"/>
- 
-  <link href="css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="css/font-awesome.css" rel="stylesheet">
-  <link href="css/animate.css" rel="stylesheet">
-  <link href="css/style.css" rel="stylesheet" />
-  
-  <link href="css/plugins/sprflat-theme/jquery.ui.all.css" rel="stylesheet"/>
-  <link rel="stylesheet" href="js/plugins/forms/icheck/flat/_all.css"/>
-  <link rel="stylesheet" href="css/plugins/bootstrap-table/bootstrap-table.min.css"/>
-  <link rel="stylesheet" href="css/plugins/sweetalert/sweetalert.css"/>
-  <link rel="stylesheet" href="css/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.css"/>
-  <link rel="stylesheet" href="css/bootstrap-table-filter-control.css"/>
-	<link rel="stylesheet" href="css/plugins/zTreeStyle/zTreeStyle.css"/>
-  <link href="css/main.css" rel="stylesheet" />
-  <link rel="stylesheet" href="css/index.css"/>
-  <meta name="msapplication-TileColor" content="#3399cc" />
+<link href="css/icons.css" rel="stylesheet" />
+
+<link href="css/bootstrap.min.css" rel="stylesheet" />
+<link href="css/font-awesome.css" rel="stylesheet">
+<link href="css/animate.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet" />
+
+<link href="css/plugins/sprflat-theme/jquery.ui.all.css"
+	rel="stylesheet" />
+<link rel="stylesheet" href="js/plugins/forms/icheck/flat/_all.css" />
+<link rel="stylesheet"
+	href="css/plugins/bootstrap-table/bootstrap-table.min.css" />
+<link rel="stylesheet" href="css/plugins/sweetalert/sweetalert.css" />
+<link rel="stylesheet"
+	href="css/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.css" />
+<link rel="stylesheet" href="css/bootstrap-table-filter-control.css" />
+<link rel="stylesheet" href="css/plugins/zTreeStyle/zTreeStyle.css" />
+<link href="css/main.css" rel="stylesheet" />
+<link rel="stylesheet" href="css/index.css" />
+<meta name="msapplication-TileColor" content="#3399cc" />
 </head>
 <body>
 	<!-- Start #header -->
@@ -151,7 +155,89 @@
 				</div>
 				<div id="kqzlyb" class="panel-collapse collapse"
 					style="height: 0px;">
-					<div class="panel-body totalH"></div>
+					<div class="panel-body totalH">
+						<div class="list-group text-left">
+							<a href="#xgpg" class="list-group-item">预报检验</a> <a href="#sjxl"
+								class="list-group-item">时间序列</a> <a href="#xgpg"
+								class="list-group-item">水平分布</a> <a href="#xgpg"
+								class="list-group-item">垂直分布</a>
+						</div>
+						<div style="padding-right: 5px;">
+							<div class="input-group">
+								<span class="input-group-addon"><small>开始日期：</small></span>
+								<div class="chaxundiv_2 selectDiv" id="data_1">
+									<div class="input-group date" id="datetimeStart"
+										style="width: 100%;">
+										<span class="input-group-addon"><i class="fa-calendar"></i></span>
+										<input type="text" style="width: 100%;height: 33px;"
+											readonly="true" />
+									</div>
+								</div>
+							</div>
+							<div class="input-group" style="margin-top:5px;">
+								<span class="input-group-addon"><small>结束日期：</small></span>
+								<div class="chaxundiv_3 selectDiv" id="data_2">
+									<div class="input-group date" id="datetimeEnd"
+										style="width: 100%;">
+										<span class="input-group-addon"><i class="fa-calendar"></i></span>
+										<input type="text" style="width: 100%;height: 33px;"
+											readonly="true" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- 检测站点 -->
+						<div class="ibox-tools" style="padding-right: 5px;">
+							<div class="jczd" style="background-color: #EDF7FF;width:193px;height: 25px;margin-left:4px;padding-top:2px;padding-left:10px;margin-top:5px;">
+								<h5>检测站点</h5>
+							</div>
+							<div class="row col-sm-12" style="padding-right:0px;margin-top:5px; width:202px;">
+								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
+									<div class="input-group group-select" style="margin-left:5px;">
+										<select class="form-control m-b">
+											<option>浙江省</option>
+											<option>--</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
+									<div class="input-group group-select" style="margin-right:0px;">
+										<select class="form-control m-b">
+											<option>杭州市</option>
+											<option>--</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
+									<div class="input-group group-select" style="padding-right:0px;">
+										<select class="form-control m-b" style="width:70px;">
+											<option>平均</option>
+											<option>--</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- 检测站点结束 -->
+
+						<div class="" style="margin-top:30px;">
+							<div
+								style="background-color: #EDF7FF;width:193px;height: 25px;margin-left:4px;margin-top:90px;padding-top:2px;padding-left:10px;">
+								<h5>时间分布率</h5>
+							</div>
+							<div class="row" style="margin-top:3px;">
+								<div class="col-md-6">
+									<button type="button" class="btn btn-defult btn-xs">逐小时</button>
+
+								</div>
+								<div class="col-md-6">
+									<button type="button" class="btn btn-defult btn-xs">逐日</button>
+
+								</div>
+							</div>
+						</div>
+						<!-- 时间分辨率结束 -->
+					</div>
 				</div>
 			</div>
 			<div class="panel panel-default" id="spr_8">
@@ -185,7 +271,8 @@
 	<div id="content">
 		<div class="content-wrapper">
 			<div class="row">
-				<div class="col-lg-12 heading" style="padding-left:5px;padding-right:7px;">
+				<div class="col-lg-12 heading"
+					style="padding-left:5px;padding-right:7px;">
 					<h1 class="page-header"></h1>
 					<ul id="crumb" class="breadcrumb">
 					</ul>
@@ -196,7 +283,8 @@
 				<!-- 内容所在区域 -->
 				<div class="row">
 
-					<div id="Route_conter" class="col-md-12 ui-view" style="padding-left:5px;padding-right:7px;">
+					<div id="Route_conter" class="col-md-12 ui-view"
+						style="padding-left:5px;padding-right:7px;">
 						<!--<iframe src="webApp/task01/task01.html"></iframe>-->
 					</div>
 
@@ -206,17 +294,19 @@
 		</div>
 		<div class="clearfix"></div>
 	</div>
-	
+
 	<script src="js/jquery.min.js"></script>
 	<script src="js/jquery-ui-1.10.4.min.js"></script>
 	<script src="js/plugins/forms/icheck/jquery.icheck.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
 	<script src="js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
-	<script src="js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+	<script
+		src="js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
 	<script src="js/bootstrap-table-contextmenu.js.js"></script>
 	<script src="js/plugins/core/moment/moment.js"></script>
-	<script src="js/plugins/forms/datetimepicker/bootstrap-datetimepicker.js"></script>
+	<script
+		src="js/plugins/forms/datetimepicker/bootstrap-datetimepicker.js"></script>
 	<!-- <script src="js/plugins/forms/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script> -->
 	<script src="js/bootstrap-table-filter-control.js"></script>
 	<script src="js/plugins/validate/jquery.validate.min.js"></script>
@@ -226,7 +316,8 @@
 	<script src="js/plugins/core/pace/pace.min.js"></script>
 	<script src="js/jRespond.min.js"></script>
 	<script src="js/plugins/core/slimscroll/jquery.slimscroll.js"></script>
-	<script src="js/plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js"></script>
+	<script
+		src="js/plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js"></script>
 	<script src="js/plugins/core/quicksearch/jquery.quicksearch.js"></script>
 	<script src="js/plugins/misc/highlight/highlight.pack.js"></script>
 	<script src="js/plugins/misc/countTo/jquery.countTo.js"></script>
