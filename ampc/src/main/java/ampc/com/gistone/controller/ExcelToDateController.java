@@ -62,10 +62,10 @@ public class ExcelToDateController {
 	 * @param type
 	 */
 	public void deleteInfo(int type){
-		//只添加措施Excel
+		//只添加措施Excel 时删除对应的表中数据
 		if(type==1){
 			
-		}else if(type==2){  //多个表一起添加时删除的
+		}else if(type==2){  //多个表一起添加时删除的 时删除对应的表中数据
 			
 		}
 	}
@@ -78,7 +78,7 @@ public class ExcelToDateController {
 		// 添加异常捕捉
 		try {
 			// 获取到颜色集合
-			List<ColorUtil> colorUtil=ColorUtil.getColor();
+			//List<ColorUtil> colorUtil=ColorUtil.getColor();   暂时不添加颜色
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
@@ -101,11 +101,11 @@ public class ExcelToDateController {
 			//循环添加  并补充颜色
 			while(iterator.hasNext()){
 				TMeasureSectorExcel tmse =iterator.next();
-				if(i==colorUtil.size()){
-					i=0;
-				}
-				tmse.setColorcode(colorUtil.get(i).getColorCode());
-				tmse.setColorname(colorUtil.get(i).getColorName());
+//				if(i==colorUtil.size()){
+//					i=0;
+//				}
+//				tmse.setColorcode(colorUtil.get(i).getColorCode());    暂时不添加颜色
+//				tmse.setColorname(colorUtil.get(i).getColorName());
 				tMeasureSectorExcelMapper.insertSelective(tmse);
 				i++;
 			}
