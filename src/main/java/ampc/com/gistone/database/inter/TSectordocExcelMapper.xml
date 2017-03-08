@@ -13,10 +13,7 @@
     <result column="SECTORDOC_VERSION" property="sectordocVersion" jdbcType="DECIMAL" />
     <result column="USER_ID" property="userId" jdbcType="OTHER" />
   </resultMap>
-   <resultMap id="selectByMap" type="hashMap" >
-    <id column="SECTORDOC_ID" property="sectordocId" jdbcType="DECIMAL" />
-    <result column="SECTORDOC_ETITLE" property="sectordocEtitle" jdbcType="VARCHAR" />
-  </resultMap>
+ 
   <sql id="Base_Column_List" >
     SECTORDOC_ID, SECTORDOC_NAME, SECTORDOC_ETITLE, SECTORDOC_CTITLE, SECTORDOC_TYPE, 
     SECTORDOC_STYPE, SECTORDOC_DOC, SECTORDOC_DISNAME, SECTORDOC_VERSION, USER_ID
@@ -37,9 +34,9 @@
       </if> 
   </select>
  
- <!--获取ID和etitle-->
-  <select id="selectByUserId"  resultMap="selectByMap" parameterType="hashMap">
-  	select sectordoc_id,sectordoc_etitle from T_SECTORDOC_EXCEL WHERE SECTORDOC_DISNAME=#{sectorName,jdbcType=OTHER} 
+ <!--获取etitle-->
+  <select id="selectByUserId"  resultType="java.lang.String" parameterType="hashMap">
+  	select sectordoc_etitle from T_SECTORDOC_EXCEL WHERE SECTORDOC_DISNAME=#{sectorName,jdbcType=OTHER} 
   		<if test="userId != null" >
         AND USER_ID=#{userId,jdbcType=OTHER} 
       </if> 
