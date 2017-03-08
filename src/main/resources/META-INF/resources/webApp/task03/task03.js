@@ -76,7 +76,7 @@ function hyc(){
 				$.each(col.measureItems, function(j, vol) {
 					accordion_html += '<div class="col-md-6 c6center">';
 //					accordion_html += '<button type="button" onclick="open_cs('+vol.measureame+');" class="btn btn-default '+vol.colorname+'" style="background-color: #'+vol.colorcode+';width:80%;">'+vol.measureame+'</button>';
-					accordion_html += '<a class="btn btn-success-cs btn-outline" style="width:80%;" onclick="open_cs(\''+col.sectorsName+'\',\''+vol.measureame+'\');"><i class="fa fa-ban"> </i>&nbsp;&nbsp;&nbsp;'+vol.measureame+'</a>';//fa fa-check-circle-o
+					accordion_html += '<a class="btn btn-success-cs btn-outline" style="width:80%;" onclick="open_cs(\''+col.sectorsName+'\',\''+vol.measureame+'\',\''+vol.mid+'\');"><i class="fa fa-ban"> </i>&nbsp;&nbsp;&nbsp;'+vol.measureame+'</a>';//fa fa-check-circle-o
 					accordion_html += '</div>';
 				});
 				accordion_html += '</div></div></div>';
@@ -93,16 +93,92 @@ function hyc(){
 
 
 /**
+ * 获取措施汇总
+ */
+function metTable_hj_info(){
+	$('#'+tablename).bootstrapTable({
+		method: 'POST',
+		url: url,
+		dataType: "json",
+		columns: columns, //列
+		iconSize: "outline",
+		clickToSelect: true,//点击选中行
+		pagination: true,	//在表格底部显示分页工具栏
+		icons: {
+			refresh: "glyphicon-repeat",
+			toggle: "glyphicon-list-alt",
+			columns: "glyphicon-list"
+		},
+		pageSize: tablepageSize,	//页面大小
+		pageNumber: 1,	//页数
+		striped: true,	 //使表格带有条纹
+		sidePagination: "server",//表格分页的位置 client||server
+		queryParams: queryParams, //参数
+		queryParamsType: "limit", //参数格式,发送标准的RESTFul类型的参数请求
+		silent: true,  //刷新事件必须设置
+		contentType: "application/x-www-form-urlencoded",	//请求远程数据的内容类型。
+		onClickRow: function (row, $element) {
+			$('.success').removeClass('success');
+			$($element).addClass('success');
+			row_sheetname = sheet;
+		},
+		onEditableSave: function (field, row, oldValue, $el){
+			if(row.id == "insert"){
+				$.each(reValue, function(i, column) {
+					if(column.sheetName == sheet){
+						column.value[field] = row[field];
+					}
+				});
+				
+			}else{
+				dandu_save(row.id, field, row[field]);//保存方法
+			}
+		}
+	});
+}
+
+/**
  * 打开措施的窗口，数据初始化
  * sectorsName:行业名称
  * measureame:措施名称
+ * mid:措施ID
  */
-function open_cs(sectorsName,measureame){
+function open_cs(sectorsName,measureame,mid){
 	$("#measureame").html("措施："+measureame);
 	$("#sectorsName").html("行业："+sectorsName);
 
-	
-	
+	var urlName = '/measure/get_measureQuery';
+	var paramsName = {};
+	paramsName.userId = 1;
+	paramsName.sectorName = sectorsName;
+	paramsName.mid = mid;
+	ajaxPost(urlName,paramsName).success(function(res){
+		console.log(res);
+//		var accordion_html = "";
+//		if(res.status == 0){
+//			$.each(res.data, function(i, col) {
+//				
+//				var inn = i == 0 ? "in" : "";
+//				
+//				accordion_html += '<div class="panel panel-default"><div class="panel-heading" style="background-color: #FFF;"><h5 class="panel-title">';
+//				accordion_html += '<a data-toggle="collapse" data-parent="#accordion" style="font-weight: 700;" href="#collapse'+i+'">'+col.sectorsName+'</a>';
+//				accordion_html += '<code class="pull-right">已使用&nbsp;4&nbsp;条措施</code></h5></div>';
+//				accordion_html += '<div id="collapse'+i+'" class="panel-collapse collapse '+inn+'" style="background-color: #EDF7FF;"><div class="panel-body" style="border: 0px;">';
+//				
+//				$.each(col.measureItems, function(j, vol) {
+//					accordion_html += '<div class="col-md-6 c6center">';
+//					accordion_html += '<a class="btn btn-success-cs btn-outline" style="width:80%;" onclick="open_cs(\''+col.sectorsName+'\',\''+vol.measureame+'\');"><i class="fa fa-ban"> </i>&nbsp;&nbsp;&nbsp;'+vol.measureame+'</a>';//fa fa-check-circle-o
+//					accordion_html += '</div>';
+//				});
+//				accordion_html += '</div></div></div>';
+//			});
+//			$("#accordion").html(accordion_html);
+		}else{
+			swal('连接错误', '', 'error');
+		}
+	}).error(function(){
+		swal('校验失败', '', 'error')
+	})
 	
 	
 	$("#createModal").modal();
