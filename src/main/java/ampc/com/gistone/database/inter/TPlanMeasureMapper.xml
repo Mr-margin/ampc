@@ -11,7 +11,19 @@
     <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="IMPLEMENTATION_SCOPE" property="implementationScope" jdbcType="VARCHAR" />
     <result column="REDUCTION_RATIO" property="reductionRatio" jdbcType="VARCHAR" />
+    <result column="RATIO" property="ratio" jdbcType="VARCHAR" />
   </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.database.model.TPlanMeasure" extends="BaseResultMap" >
+    <result column="MEASURE_CONTENT" property="measureContent" jdbcType="CLOB" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    PLAN_MEASURE_ID, PLAN_ID, SECTOR_ID, MEASURE_ID, ADD_TIME, IS_EFFECTIVE, DELETE_TIME, 
+    IMPLEMENTATION_SCOPE, REDUCTION_RATIO, RATIO
+  </sql>
+  <sql id="Blob_Column_List" >
+    MEASURE_CONTENT
+  </sql>
+  
   <!--根据条件查询措施汇总的信息Map  -->
   <resultMap id="MapByQuery" type="hashMap" >
     <id column="PLAN_MEASURE_ID" property="planMeasureId" jdbcType="DECIMAL" />
@@ -23,11 +35,8 @@
     <result column="IMPLEMENTATION_SCOPE" property="implementationScope" jdbcType="VARCHAR" />
     <result column="REDUCTION_RATIO" property="reductionRatio" jdbcType="VARCHAR" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.database.model.TPlanMeasure" extends="BaseResultMap" >
-    <result column="MEASURE_CONTENT" property="measureContent" jdbcType="CLOB" />
-  </resultMap>
-  
-  
+
+
   <!-- 根据条件查询措施汇总的信息 -->
    <select id="selectByQuery" resultMap="MapByQuery" parameterType="hashMap" >
 		SELECT PLAN_MEASURE_ID,PLAN_ID,MEASURE_ID,MEASURE_EXCEL_DISPLAY,
@@ -53,13 +62,6 @@
   
   
   
-  <sql id="Base_Column_List" >
-    PLAN_MEASURE_ID, PLAN_ID, SECTOR_ID, MEASURE_ID, ADD_TIME, IS_EFFECTIVE, DELETE_TIME, 
-    IMPLEMENTATION_SCOPE, REDUCTION_RATIO
-  </sql>
-  <sql id="Blob_Column_List" >
-    MEASURE_CONTENT
-  </sql>
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -76,11 +78,11 @@
     insert into T_PLAN_MEASURE (PLAN_MEASURE_ID, PLAN_ID, SECTOR_ID, 
       MEASURE_ID, ADD_TIME, IS_EFFECTIVE, 
       DELETE_TIME, IMPLEMENTATION_SCOPE, REDUCTION_RATIO, 
-      MEASURE_CONTENT)
+      RATIO, MEASURE_CONTENT)
     values (#{planMeasureId,jdbcType=DECIMAL}, #{planId,jdbcType=DECIMAL}, #{sectorId,jdbcType=DECIMAL}, 
       #{measureId,jdbcType=DECIMAL}, #{addTime,jdbcType=TIMESTAMP}, #{isEffective,jdbcType=VARCHAR}, 
       #{deleteTime,jdbcType=TIMESTAMP}, #{implementationScope,jdbcType=VARCHAR}, #{reductionRatio,jdbcType=VARCHAR}, 
-      #{measureContent,jdbcType=CLOB})
+      #{ratio,jdbcType=VARCHAR}, #{measureContent,jdbcType=CLOB})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TPlanMeasure" >
     insert into T_PLAN_MEASURE
@@ -111,6 +113,9 @@
       </if>
       <if test="reductionRatio != null" >
         REDUCTION_RATIO,
+      </if>
+      <if test="ratio != null" >
+        RATIO,
       </if>
       <if test="measureContent != null" >
         MEASURE_CONTENT,
@@ -144,6 +149,9 @@
       <if test="reductionRatio != null" >
         #{reductionRatio,jdbcType=VARCHAR},
       </if>
+      <if test="ratio != null" >
+        #{ratio,jdbcType=VARCHAR},
+      </if>
       <if test="measureContent != null" >
         #{measureContent,jdbcType=CLOB},
       </if>
@@ -176,6 +184,9 @@
       <if test="reductionRatio != null" >
         REDUCTION_RATIO = #{reductionRatio,jdbcType=VARCHAR},
       </if>
+      <if test="ratio != null" >
+        RATIO = #{ratio,jdbcType=VARCHAR},
+      </if>
       <if test="measureContent != null" >
         MEASURE_CONTENT = #{measureContent,jdbcType=CLOB},
       </if>
@@ -192,6 +203,7 @@
       DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       IMPLEMENTATION_SCOPE = #{implementationScope,jdbcType=VARCHAR},
       REDUCTION_RATIO = #{reductionRatio,jdbcType=VARCHAR},
+      RATIO = #{ratio,jdbcType=VARCHAR},
       MEASURE_CONTENT = #{measureContent,jdbcType=CLOB}
     where PLAN_MEASURE_ID = #{planMeasureId,jdbcType=DECIMAL}
   </update>
@@ -204,41 +216,8 @@
       IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
       DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       IMPLEMENTATION_SCOPE = #{implementationScope,jdbcType=VARCHAR},
-      REDUCTION_RATIO = #{reductionRatio,jdbcType=VARCHAR}
+      REDUCTION_RATIO = #{reductionRatio,jdbcType=VARCHAR},
+      RATIO = #{ratio,jdbcType=VARCHAR}
     where PLAN_MEASURE_ID = #{planMeasureId,jdbcType=DECIMAL}
   </update>
-  <select id="selectByEntity" resultMap="ResultMapWithBLOBs" parameterType="ampc.com.gistone.database.model.TPlanMeasure" >
-    select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from T_PLAN_MEASURE 
-    where IS_EFFECTIVE = 1
-         <if test="planMeasureId != null and planMeasureId != ''">
-               and PLAN_MEASURE_ID = #{planMeasureId,jdbcType=DECIMAL}
-            </if>
-            <if test="planId != null and planId != ''">
-                and PLAN_ID = #{planId,jdbcType=DECIMAL}
-            </if>
-            <if test="sectorId != null and sectorId != ''">
-                and SECTOR_ID = #{sectorId,jdbcType=DECIMAL}
-            </if>
-            <if test="measureId != null and measureId != ''">
-                and  MEASURE_ID = #{measureId,jdbcType=DECIMAL}
-            </if>
-            <if test="addTime != null and agentTel !=''">
-                and ADD_TIME = #{addTime,jdbcType=DATE}
-            </if>
-            <if test="deleteTime != null">
-               and DELETE_TIME = #{deleteTime,jdbcType=DATE}
-            </if>
-            <if test="measureContent != null">
-               and MEASURE_CONTENT = #{measureContent,jdbcType=CLOB}
-            </if>
-  </select>
-   <delete id="deleteByPlanId" parameterType="java.lang.Long" >
-    delete from T_PLAN_MEASURE
-    where PLAN_ID = #{planId,jdbcType=DECIMAL}
-  </delete>
-  
 </mapper>

@@ -5,6 +5,9 @@ import java.util.Map;
 
 import ampc.com.gistone.database.model.TPlanMeasure;
 
+
+
+
 /**
  * 预案措施映射
  * @author WangShanxi
@@ -18,7 +21,7 @@ public interface TPlanMeasureMapper {
 	 * @return
 	 */
 	List<Map> selectByQuery(Map map);
-	
+
     int deleteByPrimaryKey(Long planMeasureId);
 
     int insert(TPlanMeasure record);
@@ -32,9 +35,4 @@ public interface TPlanMeasureMapper {
     int updateByPrimaryKeyWithBLOBs(TPlanMeasure record);
 
     int updateByPrimaryKey(TPlanMeasure record);
-    
-
-    List<TPlanMeasure> selectByEntity(TPlanMeasure record);
-      
-    int deleteByPlanId(Long planId);
 }
