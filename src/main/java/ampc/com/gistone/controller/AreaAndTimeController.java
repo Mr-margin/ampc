@@ -882,7 +882,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 			
 			//省
 			if(address.getAddressLevel().equals("1")){
-				obj.put("adcode", address.getProvinceCode());
+				obj.put("adcode", address.getProvinceCode()+"0000");
 				obj.put("name",  address.getAddressName());
 				obj.put("code", address.getAddressCode());
 				for(TScenarinoAreaWithBLOBs area:arealist){
@@ -890,7 +890,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 					for (int i = 0; i < Province.size(); i++) {
 						JSONObject ob  = (JSONObject) Province.get(i);
 						String obs=ob.toString();
-						if(obs.indexOf(address.getProvinceCode().toString())!=-1){
+						if(obs.indexOf(address.getProvinceCode().toString()+"0000")!=-1){
 							String couname="("+(String) area.getAreaName()+")";
 							obj.put("name",(address.getAddressName())+couname);
 							obj.put("chkDisabled", true);
@@ -907,7 +907,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 			
 			//市
 			if(address.getAddressLevel().equals("2")){
-				obj.put("adcode", address.getProvinceCode()+address.getCityCode());
+				obj.put("adcode", address.getProvinceCode()+address.getCityCode()+"00");
 				obj.put("padcode", address.getProvinceCode());
 				obj.put("name",address.getAddressName());
 				obj.put("code", address.getAddressCode());
@@ -916,7 +916,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 				for (int i = 0; i < Province.size(); i++) {
 					JSONObject ob  = (JSONObject) Province.get(i);
 					String obs=ob.toString();
-					String code=address.getProvinceCode().toString()+address.getCityCode().toString();
+					String code=address.getProvinceCode().toString()+address.getCityCode().toString()+"00";
 					if(obs.indexOf(code)!=-1){
 						String couname="("+(String) area.getAreaName()+")";
 						obj.put("name",(address.getAddressName())+couname);
