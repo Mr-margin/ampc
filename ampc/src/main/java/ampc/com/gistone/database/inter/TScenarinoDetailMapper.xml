@@ -138,7 +138,7 @@
   </select>
   
   <!-- 根据任务ID和情景名称 查询情景ID -->
-  <select id="selectByMidAndSName" parameterType="map" resultType="java.lang.Long" >
+  <select id="selectByMidAndSName" parameterType="hashMap" resultType="java.lang.Long" >
    	 SELECT  SCENARINO_ID
   		FROM T_SCENARINO_DETAIL  
 			 WHERE MISSION_ID=#{missionId,jdbcType=OTHER} AND IS_EFFECTIVE='1'
