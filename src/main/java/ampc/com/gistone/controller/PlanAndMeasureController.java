@@ -113,7 +113,7 @@ public class PlanAndMeasureController {
 			int addstatus=tPlanMeasureMapper.insertSelective(tPlanMeasure);
 			//判断是否成功
 			if(addstatus!=0){
-			return AmpcResult.build(0, "add_measure error");
+			return AmpcResult.ok("添加成功！");
 			}
 			return AmpcResult.build(1, "add_measure error");
 		}catch(NullPointerException n){
