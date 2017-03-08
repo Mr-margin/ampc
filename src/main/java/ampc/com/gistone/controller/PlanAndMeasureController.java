@@ -96,36 +96,38 @@ public class PlanAndMeasureController {
 				map.put("userId", null);
 				sdMap=tSectordocExcelMapper.selectByUserId(map);
 			}
+			List<String> mList=new ArrayList<String>();
 			TMeasureExcel tme=tMeasureExcelMapper.selectByPrimaryKey(measureId);
 			if(tme.getMeasureExcelOp()!=null){
-				sdMap.add("op");
+				mList.add("op");
 			}
 			if(tme.getMeasureExcelA()!=null){
-				sdMap.add("a");
+				mList.add("a");
 			}
 			if(tme.getMeasureExcelA1()!=null){
-				sdMap.add("a1");
+				mList.add("a1");
 			}
 			if(tme.getMeasureExcelType().equals("中长期措施")){
 				if(tme.getMeasureExcelIntensity()!=null){
-					sdMap.add("intensity");
+					mList.add("intensity");
 				}
 			}
 			if(tme.getMeasureExcelIntensity1()!=null){
-				sdMap.add("intensity1");
+				mList.add("intensity1");
 			}
 			if(tme.getMeasureExcelAsh()!=null){
-				sdMap.add("ash");
+				mList.add("ash");
 			}
 			if(tme.getMeasureExcelSulfer()!=null){
-				sdMap.add("sulfer");
+				mList.add("sulfer");
 			}
 			if(tme.getMeasureExcelSv()!=null){
-				sdMap.add("sv");
+				mList.add("sv");
 			}
 			List<TQueryExcel> tqeList=tQueryExcelMapper.selectByMap(map);
 			Map resultMap=new HashMap();
 			resultMap.put("measureColumn", sdMap);
+			resultMap.put("measureList", mList);
 			resultMap.put("query", tqeList);
 			return AmpcResult.ok(resultMap);
 		}catch(Exception e){
