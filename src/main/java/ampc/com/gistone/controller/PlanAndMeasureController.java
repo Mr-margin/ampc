@@ -94,13 +94,14 @@ public class PlanAndMeasureController {
 	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/measure/add_measure")
-	public  AmpcResult add_measure(HttpServletRequest request,HttpServletResponse response) throws UnsupportedEncodingException{
+	public  AmpcResult add_measure(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) throws UnsupportedEncodingException{
 		ClientUtil.SetCharsetAndHeader(request, response);
 		try{	
-			Long sectorId=Long.parseLong(request.getParameter("sectorId"));//行业id
-			Long measureId=Long.parseLong(request.getParameter("measureId"));//措施id
-			Long userId=Long.parseLong(request.getParameter("userId"));//用户id
-			Long planId=Long.parseLong(request.getParameter("planId"));//预案id
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Long sectorId=Long.parseLong(data.get("sectorId").toString());//行业id
+			Long measureId=Long.parseLong(data.get("measureId").toString());//措施id
+			Long userId=Long.parseLong(data.get("userId").toString());//用户id
+			Long planId=Long.parseLong(data.get("planId").toString());//预案id
 			TPlanMeasure tPlanMeasure=new TPlanMeasure();
 			tPlanMeasure.setMeasureId(measureId);
 			tPlanMeasure.setPlanId(planId);
@@ -162,27 +163,28 @@ public class PlanAndMeasureController {
 	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/measure/update_measureContent")
-	public  AmpcResult update_measureContent(HttpServletRequest request,
+	public  AmpcResult update_measureContent(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
 			HttpServletResponse response) throws UnsupportedEncodingException{
 		ClientUtil.SetCharsetAndHeader(request, response);
 		try{
-		String measureContent=request.getParameter("measureContent");//措施详情
-		Long planMeasureId=Long.parseLong(request.getParameter("planMeasureId"));//预案措施表id
-		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
-		TPlanMeasure tPlanMeasure=new TPlanMeasure();
-		tPlanMeasure.setPlanMeasureId(planMeasureId);
-		tPlanMeasure.setMeasureContent(measureContent);
-		//修改措施详情
-		int update_status=tPlanMeasureMapper.updateByPrimaryKeyWithBLOBs(tPlanMeasure);
-		//判断是否修改成功
-		if(update_status!=0){
-			return AmpcResult.build(0, "update_measureContent error");
-		}
+			Map<String,Object> data=(Map)requestDate.get("data");
+			String measureContent=data.get("measureContent").toString();//措施详情
+			Long planMeasureId=Long.parseLong(data.get("planMeasureId").toString());//预案措施表id
+			Long userId=Long.parseLong(data.get("userId").toString());//用户id
+			TPlanMeasure tPlanMeasure=new TPlanMeasure();
+			tPlanMeasure.setPlanMeasureId(planMeasureId);
+			tPlanMeasure.setMeasureContent(measureContent);
+			//修改措施详情
+			int update_status=tPlanMeasureMapper.updateByPrimaryKeyWithBLOBs(tPlanMeasure);
+			//判断是否修改成功
+			if(update_status!=0){
+				return AmpcResult.build(0, "update_measureContent error");
+			}
+				return AmpcResult.build(1, "update_measureContent error");
+		}catch(NullPointerException n){
+			System.out.println(n);
 			return AmpcResult.build(1, "update_measureContent error");
-	}catch(NullPointerException n){
-		System.out.println(n);
-		return AmpcResult.build(1, "update_measureContent error");
-	}
+		}
 	}
 	
 	/**
@@ -193,20 +195,21 @@ public class PlanAndMeasureController {
 	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/measure/list_measureContent")
-	public  AmpcResult list_measureContent(HttpServletRequest request,
+	public  AmpcResult list_measureContent(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
 			HttpServletResponse response) throws UnsupportedEncodingException{
 		ClientUtil.SetCharsetAndHeader(request, response);
 		try{
-		Long planMeasureId=Long.parseLong(request.getParameter("planMeasureId"));//预案措施表id
-		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
-		//查询预案措施表
-		TPlanMeasure tPlanMeasure=tPlanMeasureMapper.selectByPrimaryKey(planMeasureId);
-		JSONObject obj=new JSONObject();
-		if(tPlanMeasure.getMeasureContent()!=null){
-		obj.put("measureContent", tPlanMeasure.getMeasureContent());
-		 return AmpcResult.build(0, "list_measureContent success",obj);
-		}
-		 return AmpcResult.build(1, "list_measureContent error");
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Long planMeasureId=Long.parseLong(data.get("planMeasureId").toString());//预案措施表id
+			Long userId=Long.parseLong(data.get("userId").toString());//用户id
+			//查询预案措施表
+			TPlanMeasure tPlanMeasure=tPlanMeasureMapper.selectByPrimaryKey(planMeasureId);
+			JSONObject obj=new JSONObject();
+			if(tPlanMeasure.getMeasureContent()!=null){
+			obj.put("measureContent", tPlanMeasure.getMeasureContent());
+			 return AmpcResult.build(0, "list_measureContent success",obj);
+			}
+			 return AmpcResult.build(1, "list_measureContent error");
 		}catch(NullPointerException n){
 			System.out.println(n);
 			return AmpcResult.build(1, "list_measureContent error");
@@ -218,23 +221,24 @@ public class PlanAndMeasureController {
 	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/measure/delete_measure")
-	public  AmpcResult delete_measure(HttpServletRequest request,
+	public  AmpcResult delete_measure(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
 			HttpServletResponse response) throws UnsupportedEncodingException{
 		ClientUtil.SetCharsetAndHeader(request, response);
 		try{
-		Long planMeasureId=Long.parseLong(request.getParameter("planMeasureId"));//预案措施表id
-		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
-		//删除预案中的措施
-		int delete_status=tPlanMeasureMapper.deleteByPrimaryKey(planMeasureId);
-		if(delete_status!=0){
-			return AmpcResult.build(0, "delete_measure success");
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Long planMeasureId=Long.parseLong(data.get("planMeasureId").toString());//预案措施表id
+			Long userId=Long.parseLong(data.get("userId").toString());//用户id
+			//删除预案中的措施
+			int delete_status=tPlanMeasureMapper.deleteByPrimaryKey(planMeasureId);
+			if(delete_status!=0){
+				return AmpcResult.build(0, "delete_measure success");
+			}
+			return AmpcResult.build(1, "delete_measure error");
+		}catch(NullPointerException n){
+			System.out.println(n);
+			return AmpcResult.build(1, "delete_measure error");
 		}
-		return AmpcResult.build(1, "delete_measure error");
-	}catch(NullPointerException n){
-		System.out.println(n);
-		return AmpcResult.build(1, "delete_measure error");
 	}
-		}
 	
 	/**
 	 * 预案合并
@@ -244,15 +248,16 @@ public class PlanAndMeasureController {
 	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/plan/merge_plan")
-	public  AmpcResult merge_plan(HttpServletRequest request,
+	public  AmpcResult merge_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
 			HttpServletResponse response) throws UnsupportedEncodingException{	
 	try{
 		ClientUtil.SetCharsetAndHeader(request, response);
-		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
-		Long chiefPlanId=Long.parseLong(request.getParameter("chiefPlanId"));//蓝本预案id
-		Long planId=Long.parseLong(request.getParameter("planId"));//被合并预案id
-	    Date startTime=new Date(request.getParameter("startTime"));//合并后的开始时间
-	    Date endTime=new Date(request.getParameter("endTime"));//合并后的结束时间
+		Map<String,Object> data=(Map)requestDate.get("data");
+		Long userId=Long.parseLong(data.get("userId").toString());//用户id
+		Long chiefPlanId=Long.parseLong(data.get("chiefPlanId").toString());//蓝本预案id
+		Long planId=Long.parseLong(data.get("planId").toString());//被合并预案id
+	    Date startTime=new Date(data.get("startTime").toString());//合并后的开始时间
+	    Date endTime=new Date(data.get("endTime").toString());//合并后的结束时间
 	    //修改蓝本预案信息
 	    TPlan tPlan=new TPlan();
 	    tPlan.setPlanId(chiefPlanId);
@@ -296,29 +301,30 @@ public class PlanAndMeasureController {
 	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/plan/copy_plan")
-	public  AmpcResult copy_plan(HttpServletRequest request,
+	public  AmpcResult copy_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
 			HttpServletResponse response) throws UnsupportedEncodingException{
 		ClientUtil.SetCharsetAndHeader(request, response);
 		try{
-		Long userId=Long.parseLong(request.getParameter("userId"));//用户id
-		Long planId=Long.parseLong(request.getParameter("planId"));//预案id
-		Long timeId=Long.parseLong(request.getParameter("timeId"));//时段id
-		
-		//将被复制的预案id存入要复制到的时段里
-		TTime tTime=new TTime();
-		tTime.setPlanId(planId);
-		tTime.setTimeId(timeId);
-		int copy_status=tTimeMapper.updateByPrimaryKeySelective(tTime);
-		//判断是否成功
-		if(copy_status!=0){
-			return AmpcResult.build(0,"copy_plan success");
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Long userId=Long.parseLong(data.get("userId").toString());//用户id
+			Long planId=Long.parseLong(data.get("planId").toString());//预案id
+			Long timeId=Long.parseLong(data.get("timeId").toString());//时段id
+			
+			//将被复制的预案id存入要复制到的时段里
+			TTime tTime=new TTime();
+			tTime.setPlanId(planId);
+			tTime.setTimeId(timeId);
+			int copy_status=tTimeMapper.updateByPrimaryKeySelective(tTime);
+			//判断是否成功
+			if(copy_status!=0){
+				return AmpcResult.build(0,"copy_plan success");
+			}
+			return AmpcResult.build(1,"copy_plan error");
+		}catch(NullPointerException n){
+			System.out.println(n);
+			return AmpcResult.build(1,"copy_plan error");
 		}
-		return AmpcResult.build(1,"copy_plan error");
-	}catch(NullPointerException n){
-		System.out.println(n);
-		return AmpcResult.build(1,"copy_plan error");
 	}
-		}
 	/**
 	 * 预案编辑功能（预案中措施修改，包含可复用预案）
 	 * @param request
@@ -328,7 +334,7 @@ public class PlanAndMeasureController {
 	 */
 	@Transactional
 	@RequestMapping("/plan/copy_new")
-	public  AmpcResult demo_plan(HttpServletRequest request,
+	public  AmpcResult demo_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
 			HttpServletResponse response) throws UnsupportedEncodingException{
 		ClientUtil.SetCharsetAndHeader(request, response);
 		Long userId=1l;//用户id
