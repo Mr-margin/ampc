@@ -14,10 +14,138 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import ampc.com.gistone.database.model.TMeasureExcel;
+import ampc.com.gistone.database.model.TQueryExcel;
 import ampc.com.gistone.database.model.TSectorExcel;
+import ampc.com.gistone.database.model.TSectordocExcel;
 
 
 public class ExcelToDate {
+	/**  
+	* 读取excel描述数据   读取行业描述Excel表
+	* @param path  
+	*/
+	public static List<TSectordocExcel> ReadSectorDOC(String fileName,Long versionId,Long userId){  
+		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_1描述文件.xlsx";
+		List<TSectordocExcel> sectorDocList=new ArrayList<TSectordocExcel>();
+        try {  
+            Workbook wb  = null;  
+            //自动根据Excel版本创建对应的Workbook
+            wb = WorkbookFactory.create(new File(path));  
+            //获得所有页数
+            int sheetCount=wb.getNumberOfSheets();
+            //循环每一页
+            for(int i=0;i<sheetCount;i++){
+            	//获得当前页
+            	Sheet sheet = wb.getSheetAt(i);  
+            	String sheetName=sheet.getSheetName();
+            	//获得所有行
+            	Iterator<Row> rows = sheet.rowIterator(); 
+            	//循环所有行
+            	while (rows.hasNext()) {  
+                    Row row = rows.next();  //获得行数据  
+                    if(row.getRowNum()==0){
+                    	continue;
+                    }
+                    String t=getCellValue(row.getCell(4));
+                    if(t.equals("统计")||t.equals("筛选和统计")){
+                    	TSectordocExcel sectorDoc=new TSectordocExcel();
+                        //写入行业表中名称
+                        sectorDoc.setSectordocName(getCellValue(row.getCell(0)));
+                        //写入行业Etitle
+                        sectorDoc.setSectordocEtitle(getCellValue(row.getCell(1)));
+                        //写入行业名头
+                        sectorDoc.setSectordocCtitle(getCellValue(row.getCell(2)));
+                        //写入属性
+                        sectorDoc.setSectordocType(getCellValue(row.getCell(3)));
+                        //写入属性类型
+                        sectorDoc.setSectordocStype(getCellValue(row.getCell(4)));
+                        //写入用户填写说明
+                        sectorDoc.setSectordocDoc(getCellValue(row.getCell(5)));
+                        //写入行业显示的名称
+                        sectorDoc.setSectordocDisname(sheetName);
+                        //写入版本等信息
+                        sectorDoc.setSectordocVersion(versionId);
+                        sectorDoc.setUserId(userId);
+                        sectorDocList.add(sectorDoc);
+                    }
+                }  
+            }
+            return sectorDocList;
+        } catch (Exception ex) {  
+            ex.printStackTrace();
+            return null;
+        }  
+    }  
+	
+	
+	/**  
+	* 读取excel筛选逻辑数据   读取筛选逻辑Excel表
+	* @param path  
+	*/
+	public static List<TQueryExcel> ReadQuery(String fileName,Long versionId,Long userId){  
+		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_2筛选逻辑.xlsx";
+		List<TQueryExcel> queryList=new ArrayList<TQueryExcel>();
+        try {  
+            Workbook wb  = null;  
+            //自动根据Excel版本创建对应的Workbook
+            wb = WorkbookFactory.create(new File(path));  
+            //获得所有页数
+            int sheetCount=wb.getNumberOfSheets();
+            //循环每一页
+            for(int i=0;i<sheetCount;i++){
+            	//获得当前页
+            	Sheet sheet = wb.getSheetAt(i);  
+            	String sheetName=sheet.getSheetName();
+            	//获得所有行
+            	Iterator<Row> rows = sheet.rowIterator(); 
+            	//循环所有行
+            	while (rows.hasNext()) {  
+                    Row row = rows.next();  //获得行数据  
+                    if(row.getRowNum()==0){
+                    	continue;
+                    }
+                    TQueryExcel query=new TQueryExcel();
+                    //写入行业Etitle
+                    query.setQueryEtitle(getCellValue(row.getCell(0)));
+                    //写入条件名称
+                    query.setQueryName(getCellValue(row.getCell(1)));
+                    //写入出现条件
+                    query.setQueryShowquery(getCellValue(row.getCell(2)));
+                    //写入条件值
+                    query.setQueryValue(getCellValue(row.getCell(3)));
+                    //写入选项类型
+                    query.setQueryOptiontype(getCellValue(row.getCell(4)));
+                    //写入选项1
+                    query.setQueryOption1(getCellValue(row.getCell(5)));
+                    //写入选项2
+                    query.setQueryOption2(getCellValue(row.getCell(6)));
+                    //写入选项3
+                    query.setQueryOption3(getCellValue(row.getCell(7)));
+                    //写入选项4
+                    query.setQueryOption4(getCellValue(row.getCell(8)));
+                    //写入选项5
+                    query.setQueryOption5(getCellValue(row.getCell(9)));
+                    //写入行业显示名称
+                    query.setSectorName(sheetName);
+                    //写入版本等信息
+                    query.setQueryVersion(versionId);
+                    query.setUserId(userId);
+                    queryList.add(query);
+                }  
+            }
+            return queryList;
+        } catch (Exception ex) {  
+            ex.printStackTrace();
+            return null;
+        }  
+    }  
+	
+	
+	
+	
+	
+	
+	
 	/**  
 	* 读取excel数据   读取行业Excel表
 	* @param path  
