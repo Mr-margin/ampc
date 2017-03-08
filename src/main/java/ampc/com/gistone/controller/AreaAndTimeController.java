@@ -613,16 +613,19 @@ public class AreaAndTimeController {
 					map.put("userId", area.getUserId());
 					long areId=this.tScenarinoAreaMapper.selectAreaIdByParam(map);
 					//情景开始时间
-					Date startDate=new Date(data.get("scenarinoStartDate").toString());
+					String scenarinoStartDate=data.get("scenarinoStartDate").toString();
 					//情景结束时间
-					Date endDate=new Date(data.get("scenarinoEndDate").toString());
+					String scenarinoEndDate=data.get("scenarinoEndDate").toString();
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH");
+					Date endDate=sdf.parse(scenarinoEndDate);
+					Date startDate=sdf.parse(scenarinoStartDate);
 					// 时间操作，将情景结束时间减少一个小时
 					Calendar cal = Calendar.getInstance();
 					cal.setTime(endDate);
 					cal.add(Calendar.HOUR, - 1);
 					String addTimeDate = new SimpleDateFormat("yyyy/MM/dd HH")
 							.format(cal.getTime());
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH");
+					
 					Date timeEndDate = sdf.parse(addTimeDate);
 					//新建时段
 					TTime add_tTime = new TTime();
@@ -890,7 +893,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 					for (int i = 0; i < Province.size(); i++) {
 						JSONObject ob  = (JSONObject) Province.get(i);
 						String obs=ob.toString();
-						if(obs.indexOf(address.getAddressCode().toString())!=-1){
+						if(obs.indexOf(address.getProvinceCode().toString()+"0000")!=-1){
 							String couname="("+(String) area.getAreaName()+")";
 							obj.put("name",(address.getAddressName())+couname);
 							obj.put("chkDisabled", true);
@@ -916,7 +919,8 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 				for (int i = 0; i < Province.size(); i++) {
 					JSONObject ob  = (JSONObject) Province.get(i);
 					String obs=ob.toString();
-					String code=address.getAddressCode().toString();
+					String code=address.getProvinceCode().toString()+address.getCityCode().toString();
+					code+="00";
 					if(obs.indexOf(code)!=-1){
 						String couname="("+(String) area.getAreaName()+")";
 						obj.put("name",(address.getAddressName())+couname);
@@ -940,7 +944,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 				for (int i = 0; i < Province.size(); i++) {
 					JSONObject ob  = (JSONObject) Province.get(i);
 					String obs=ob.toString();
-					String code=address.getAddressCode().toString();
+					String code=address.getProvinceCode().toString()+address.getCityCode().toString()+address.getCountyCode().toString();
 					if(obs.indexOf(code)!=-1){
 						String couname="("+(String) area.getAreaName()+")";
 						obj.put("name",(address.getAddressName())+couname);
