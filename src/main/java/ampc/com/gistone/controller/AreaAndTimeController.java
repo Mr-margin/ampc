@@ -890,7 +890,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 					for (int i = 0; i < Province.size(); i++) {
 						JSONObject ob  = (JSONObject) Province.get(i);
 						String obs=ob.toString();
-						if(obs.indexOf(address.getProvinceCode().toString()+"0000")!=-1){
+						if(obs.indexOf(address.getAddressCode().toString())!=-1){
 							String couname="("+(String) area.getAreaName()+")";
 							obj.put("name",(address.getAddressName())+couname);
 							obj.put("chkDisabled", true);
@@ -916,7 +916,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 				for (int i = 0; i < Province.size(); i++) {
 					JSONObject ob  = (JSONObject) Province.get(i);
 					String obs=ob.toString();
-					String code=address.getProvinceCode().toString()+address.getCityCode().toString();
+					String code=address.getAddressCode().toString();
 					if(obs.indexOf(code)!=-1){
 						String couname="("+(String) area.getAreaName()+")";
 						obj.put("name",(address.getAddressName())+couname);
@@ -941,7 +941,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 					JSONObject ob  = (JSONObject) Province.get(i);
 					String obs=ob.toString();
 					String code=address.getAddressCode().toString();
-					if(obs.indexOf(address.getAddressCode().toString())!=-1){
+					if(obs.indexOf(code)!=-1){
 						String couname="("+(String) area.getAreaName()+")";
 						obj.put("name",(address.getAddressName())+couname);
 						obj.put("chkDisabled", true);
