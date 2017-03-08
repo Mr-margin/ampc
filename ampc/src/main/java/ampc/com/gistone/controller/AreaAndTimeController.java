@@ -908,7 +908,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 			//市
 			if(address.getAddressLevel().equals("2")){
 				obj.put("adcode", address.getProvinceCode()+address.getCityCode()+"00");
-				obj.put("padcode", address.getProvinceCode());
+				obj.put("padcode", address.getProvinceCode()+"0000");
 				obj.put("name",address.getAddressName());
 				obj.put("code", address.getAddressCode());
 				for(TScenarinoAreaWithBLOBs area:arealist){
@@ -932,7 +932,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 			
 			if(address.getAddressLevel().equals("3")){
 				obj.put("adcode", address.getProvinceCode()+address.getCityCode()+address.getCountyCode());
-				obj.put("padcode", address.getProvinceCode()+address.getCityCode());
+				obj.put("padcode", address.getProvinceCode()+address.getCityCode()+"00");
 				obj.put("name", address.getAddressName());
 				obj.put("code", address.getAddressCode());
 				for(TScenarinoAreaWithBLOBs area:arealist){
