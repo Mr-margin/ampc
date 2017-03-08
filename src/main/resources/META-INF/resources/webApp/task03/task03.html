@@ -1,10 +1,104 @@
 <style type="text/css">
-	.price_list{list-style:none}
-	.price_list li{float:left; line-height:22px; margin-right:10px; padding:2px 6px}
-	.price_list li.title{display:block; width:80px; height:40px;}
-	#custom{border:1px solid #d3d3d3; padding:0 16px 0 2px; background:url(img/icon.gif) no-repeat right 8px; position:relative;}
-	#slider_wrap{width:250px; height:80px; padding:10px; position:absolute; left:-1px; top:22px; border:1px solid #d3d3d3; background:#fff; display:none;}
-	#slider_wrap p{width:230px; margin:4px auto}
+.price_list {
+	list-style: none
+}
+
+.price_list li {
+	float: left;
+	line-height: 22px;
+	margin-right: 10px;
+	padding: 2px 6px
+}
+
+.price_list li.title {
+	display: block;
+	width: 80px;
+	height: 40px;
+}
+
+#custom {
+	border: 1px solid #d3d3d3;
+	padding: 0 16px 0 2px;
+	background: url(img/icon.gif) no-repeat right 8px;
+	position: relative;
+}
+
+#slider_wrap {
+	width: 250px;
+	height: 80px;
+	padding: 10px;
+	position: absolute;
+	left: -1px;
+	top: 22px;
+	border: 1px solid #d3d3d3;
+	background: #fff;
+	display: none;
+}
+
+#slider_wrap p {
+	width: 230px;
+	margin: 4px auto
+}
+
+.btn-cuoshi-qian:hover {
+	color: #FF0;
+	border: 1px solid #FF0;
+}
+
+.btn-cuoshi-shen:hover {
+	color: #FF0;
+	border: 1px solid #FF0;
+}
+
+.c6center {
+	text-align: center;
+}
+
+.tiaojian {
+	width:100%;
+	padding: 5px 5px 20px 5px;
+}
+.tiaojian-title{
+	float: left;
+	height: 30px;
+	padding: 5px 25px 5px 5px;
+}
+
+.btn-d1.active {
+	background-color: #1a7bb9;
+	box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+	height: 30px;
+	color: #FFF;
+	font-size: 12px;
+}
+
+.btn-d1 {
+	color: #1a7bb9;
+	background-color: #fff;
+	border-color: #1c84c6;
+	border-radius: 0;
+	height: 30px;
+	font-size: 12px;
+}
+
+.btn-group.btn-group-circle>.btn:first-child {
+	border-radius: 3px 0 0 3px !important
+}
+
+.btn-group.btn-group-circle>.btn:last-child {
+	border-radius: 0 3px 3px 0 !important
+}
+.btn-group>.btn-group:first-child:not(:last-child)>.btn:last-child, .btn-group>.btn-group:first-child:not(:last-child)>.dropdown-toggle, .btn-group>.btn:first-child:not(:last-child):not(.dropdown-toggle) {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+.btn-group-vertical>.btn:not(:first-child):not(:last-child), .btn-group>.btn-group:not(:first-child):not(:last-child)>.btn, .btn-group>.btn:not(:first-child):not(:last-child):not(.dropdown-toggle) {
+    border-radius: 0;
+}
+.btn-group>.btn-group:last-child:not(:first-child)>.btn:first-child, .btn-group>.btn:last-child:not(:first-child), .btn-group>.dropdown-toggle:not(:first-child) {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
 </style>
 
 <div class='col-md-6' style="height:100%;padding-left: 0px;">
@@ -14,42 +108,7 @@
 	    </div>
 	    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;background-color: #EDF7FF;border:1px solid #75B9E6;padding: 0px;">
 	        <div class="panel-body" style="padding: 0px;">
-				<div class="panel-group" id="accordion">
-				
-				
-					<div class="panel panel-default">
-						<div class="panel-heading" style="background-color: #FFF;">
-							<h5 class="panel-title">
-								<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">集中供热&nbsp;&nbsp;&nbsp;~~&nbsp;已使用<code>&nbsp;4&nbsp;</code>条措施&nbsp;~~</a>
-							</h5>
-						</div>
-						<div id="collapseOne" class="panel-collapse collapse in" style="background-color: #EDF7FF;">
-							<div class="panel-body" style="border: 0px;">
-								<button type="button" class="btn btn-default" data-whatever="创建任务" data-type="rw" data-toggle="modal"
-				                      data-target="#createModal">
-				                <i class="glyphicon glyphicon-plus"></i> 创建
-				              </button>
-								asd
-								asd
-							</div>
-						</div>
-					</div>
-					<div class="panel panel-default">
-						<div class="panel-heading"  style="background-color: #FFF;">
-							<h5 class="panel-title">
-								<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">工业锅炉&nbsp;&nbsp;&nbsp;~~&nbsp;已使用<code>&nbsp;4&nbsp;</code>条措施&nbsp;~~</a>
-							</h5>
-						</div>
-						<div id="collapseTwo" class="panel-collapse collapse" style="background-color: #EDF7FF;">
-							<div class="panel-body" style="border: 0px;">
-								sdf
-								asd
-								asd
-							</div>
-						</div>
-					</div>
-					
-				</div>
+				<div class="panel-group" id="accordion"></div>
 			</div>
 	    </div>
 	</div>
@@ -61,6 +120,13 @@
 	        <h5>地图展示</h5>
 	        <div class="ibox-tools">
 	        	<div class="row" style="margin-top: -5px;">
+	        	
+	        	
+	        		<button type="button" class="btn btn-default" style="background-color: #FF0;" data-whatever="创建任务" data-type="rw" data-toggle="modal" data-target="#createModal">
+				                	<i class="glyphicon glyphicon-plus"></i> 创建
+								</button>
+								
+								
 	        		<div class='col-md-6'>
 	        			<div class="btn-group" >
 		                     <button data-toggle="dropdown" class="btn btn-default  dropdown-toggle" style="margin-bottom: 0px;">污染物 <span class="caret"></span>
@@ -236,56 +302,46 @@
 					    <div class="ibox-title">
 					        <h5>筛选方式</h5>
 					    </div>
-					    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;padding: 0px;">
-					    
-					    	<div class="row" style="margin-left: 0px;margin-right: 0px;border:1px solid #75B9E6;">
-					    		<ul class="price_list">
-							      <li class="title">价格范围：</li>
-							      <li><a>3000元以下</a></li>
-							      <li><a>3000-4000元</a></li>
-							      <li><a>4000-5000元</a></li>
-							      <li><a>5000-6000元</a></li>
-							      <li><a>6000-7000元</a></li>
-							      <li><a>7000-8000元</a></li>
-							      <li><a>7000-8000元</a></li>
-							      <li><a>7000-8000元</a></li>
-							      <li id="custom"><a href="javascript:;" id="show">自定义</a>
-							        <div id="slider_wrap">
-							        	<div class="input-daterange input-group" id="datepicker">
-			                                <input type="text" class=" form-control" id="start" value="" />
-			                                <span class="input-group-addon">-</span>
-			                                <input type="text" class=" form-control" id="end" value="" />
-			                                <span class="input-group-btn"> <button type="button" class="btn btn-primary">确定</button> </span>
-			                            </div>
-							        </div>
-							      </li>
-							    </ul>
-					    	</div>
-					    	<div class="row" style="margin-left: 0px;margin-right: 0px;">
-					    		<ul class="price_list">
-							      <li class="title">价格范围：</li>
-							      <li><a>3000元以下</a></li>
-							      <li><a>3000-4000元</a></li>
-							      <li><a>4000-5000元</a></li>
-							      <li><a>5000-6000元</a></li>
-							      <li><a>6000-7000元</a></li>
-							      <li><a>7000-8000元</a></li>
-							      <li><a>10000元以上</a></li>
-							      <!-- <li id="custom"><a href="javascript:;" id="show">自定义</a>
-							        <div id="slider_wrap">
-							          <div id="slider">
-							            <div id="range"></div>
-							          </div>
-							          <p>
-							            <input type="text" class="input" id="start" value="0"  />
-							            -
-							            <input type="text" class="input" id="end" value="3000" />
-							            <input type="button" class="btn" id="btn_ok" value="确 定" />
-							          </p>
-							        </div>
-							      </li> -->
-							    </ul>
-					    	</div>
+					    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;padding: 10px;">
+
+
+							
+							<div class="btn-group" style="width:100%;padding: 5px 5px 20px 5px;" id="b1">
+								<span class="font-bold" style="float: left;height: 30px;padding: 5px 25px 5px 5px;">装机容量</span>
+								<button data-parent="#b1" type="button" class="btn btn-outline btn-sm btn-success">不限</button>
+								<button data-parent="#b1" type="button" class="btn btn-outline btn-sm btn-success">10-20</button>
+								<button data-parent="#b1" type="button" class="btn btn-outline btn-sm btn-success">20-50</button>
+								<button data-parent="#b1" type="button" class="btn btn-outline btn-sm btn-success">50-100</button>
+								<button data-parent="#b1" type="button" class="btn btn-outline btn-sm btn-success">100-200</button>
+								<button data-parent="#b1" type="button" class="btn btn-outline btn-sm btn-success">200+</button>
+								<form role="form" class="form-inline">
+									<div class="form-group" style="padding-left:20px;">
+										<input type="name" placeholder="" id="exampleInputEmail2" class="form-control" style="width:60px;height: 30px;">
+									</div>
+									—
+									<div class="form-group">
+										<input type="name" placeholder="" id="exampleInputPassword2" class="form-control" style="width:60px;height: 30px;">
+									</div>
+								</form>
+							</div>
+							
+							
+							<div class="btn-group tiaojian" id="b2">
+								<span class="font-bold tiaojian-title">燃料类型</span>
+								<div class="btn-group btn-group-circle" data-toggle="buttons">
+	                                <label class="btn btn-d1 active"><input type="radio" class="toggle">不限</label>
+	                                <label class="btn btn-d1"><input type="radio" class="toggle">燃煤</label>
+	                                <label class="btn btn-d1"><input type="radio" class="toggle">燃气</label>
+	                                <label class="btn btn-d1"><input type="radio" class="toggle">燃油</label>
+								</div>
+							</div>
+							
+
+
+							<br> <br>
+							<button class="btn btn-success " type="button">
+								<i class="fa fa-upload"></i>&nbsp;&nbsp;<span class="bold">上传</span>
+							</button>
 					    
 					    </div>
 					</div>

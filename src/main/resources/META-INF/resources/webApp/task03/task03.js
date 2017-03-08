@@ -49,6 +49,49 @@ $("#show").click(function(){
  */
 $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">添加预案</a>>><span style="padding-left: 15px;padding-right: 15px;">措施编辑</span>');
 
+var userid = "1";
+hyc();
+
+/**
+ * 获取用户的行业与措施
+ */
+function hyc(){
+	var urlName = '/ms/get_msInfo';
+	var paramsName = {userId:1};
+	
+	ajaxPost(urlName,paramsName).success(function(res){
+		
+		var accordion_html = "";
+		if(res.status == 0){
+			$.each(res.data, function(i, col) {
+				
+				accordion_html += '<div class="panel panel-default"><div class="panel-heading" style="background-color: #FFF;"><h5 class="panel-title">';
+				accordion_html += '<a data-toggle="collapse" data-parent="#accordion" href="#collapse'+i+'">'+col.sectorsName+'&nbsp;&nbsp;&nbsp;~~&nbsp;已使用';
+				accordion_html += '<code>&nbsp;4&nbsp;</code>条措施&nbsp;~~</a></h5></div>';
+				accordion_html += '<div id="collapse'+i+'" class="panel-collapse collapse" style="background-color: #EDF7FF;"><div class="panel-body" style="border: 0px;">';
+				
+				$.each(col.measureItems, function(j, vol) {
+					accordion_html += '<div class="col-md-6 c6center">';
+					accordion_html += '<button type="button" class="btn btn-default btn-cuoshi-qian" style="background-color: #f0f8ff;width:80%;">'+vol.measureame+'</button>';
+					accordion_html += '</div>';
+				});
+				accordion_html += '</div></div></div>';
+			});
+			$("#accordion").html(accordion_html);
+		}else{
+			swal('连接错误', '', 'error');
+//			swal('添加成功', '', 'success');
+		}
+	}).error(function(){
+		swal('校验失败', '', 'error')
+	})
+}
+
+
+
+
+
+
 
 /**
  * 操作地图显示
