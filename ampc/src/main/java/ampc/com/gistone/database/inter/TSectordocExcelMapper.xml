@@ -13,10 +13,49 @@
     <result column="SECTORDOC_VERSION" property="sectordocVersion" jdbcType="DECIMAL" />
     <result column="USER_ID" property="userId" jdbcType="OTHER" />
   </resultMap>
+   <resultMap id="selectByMap" type="ampc.com.gistone.database.model.TSectordocExcel" >
+    <id column="SECTORDOC_ID" property="sectordocId" jdbcType="DECIMAL" />
+    <result column="SECTORDOC_ETITLE" property="sectordocEtitle" jdbcType="VARCHAR" />
+  </resultMap>
   <sql id="Base_Column_List" >
     SECTORDOC_ID, SECTORDOC_NAME, SECTORDOC_ETITLE, SECTORDOC_CTITLE, SECTORDOC_TYPE, 
     SECTORDOC_STYPE, SECTORDOC_DOC, SECTORDOC_DISNAME, SECTORDOC_VERSION, USER_ID
   </sql>
+ 
+ 
+ <!--获取到所有的行业信息-->
+  <select id="selectAll"  resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List" />
+    from T_SECTORDOC_EXCEL ORDER BY SECTORDOC_ID
+  </select>
+  
+  <!--查询当前措施表中的最高版本号-->
+  <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
+  	select max(SECTORDOC_VERSION) from T_SECTORDOC_EXCEL
+  	  <if test="_parameter != null" >
+        where USER_ID=#{_parameter,jdbcType=DECIMAL} 
+      </if> 
+  </select>
+ 
+ <!--获取ID和etitle-->
+  <select id="selectByUserId"  resultMap="selectByMap" parameterType="hashMap">
+  	select sectordoc_id,sectordoc_etitle from T_SECTORDOC_EXCEL WHERE SECTORDOC_DISNAME=#{sectorName,jdbcType=OTHER} 
+  		<if test="userId != null" >
+        AND USER_ID=#{userId,jdbcType=OTHER} 
+      </if> 
+  </select>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

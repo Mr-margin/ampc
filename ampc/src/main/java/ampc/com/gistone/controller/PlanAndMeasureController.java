@@ -23,7 +23,9 @@ import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMeasureExcelMapper;
 import ampc.com.gistone.database.inter.TPlanMapper;
 import ampc.com.gistone.database.inter.TPlanMeasureMapper;
+import ampc.com.gistone.database.inter.TQueryExcelMapper;
 import ampc.com.gistone.database.inter.TSectorExcelMapper;
+import ampc.com.gistone.database.inter.TSectordocExcelMapper;
 import ampc.com.gistone.database.inter.TTimeMapper;
 import ampc.com.gistone.database.model.TMeasureExcel;
 import ampc.com.gistone.database.model.TPlan;
@@ -53,6 +55,58 @@ public class PlanAndMeasureController {
 	
 	@Autowired
 	private GetBySqlMapper getBySqlMapper;
+	
+	//行业条件映射
+	@Autowired
+	public TQueryExcelMapper tQueryExcelMapper;
+			
+	//行业描述映射
+	@Autowired
+	public TSectordocExcelMapper tSectordocExcelMapper;
+	/**
+	 * 子措施条件查询
+	 * @author WangShanxi
+	 * @throws UnsupportedEncodingException 
+	 */
+	@RequestMapping("/measure/get_measureQuery")
+	public  AmpcResult get_MeasureQuery(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
+		//添加异常捕捉
+		try{
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//预案id
+			Long planId=Long.parseLong(data.get("planId").toString());
+			//措施id
+			Long measureId=Long.parseLong(data.get("measureId").toString());
+			//行业名称
+			Long sectorName=Long.parseLong(data.get("sectorName").toString());
+			//用户id
+			Long userId=Long.parseLong(data.get("userId").toString());
+			//添加信息到参数中
+			Map<String,Object> map=new HashMap<String,Object>();
+			map.put("sectorName", sectorName);
+			map.put("userId", userId);
+			List<Map> sdMap=tSectordocExcelMapper.selectByUserId(map);
+			
+			
+			//查看行业id是否为空，不为空添加，为空不加
+			if(data.get("sectorId")!=null){	
+				map.put("sectorId", data.get("sectorId"));
+			}else{
+				map.put("sectorId", null);
+			}
+			//查询措施
+			List<Map> list=tPlanMeasureMapper.selectByQuery(map);
+			return AmpcResult.ok(list);
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000, "参数错误");
+		}
+	}
+	
+	
+	
 	
 	/**
 	 * 措施汇总查询

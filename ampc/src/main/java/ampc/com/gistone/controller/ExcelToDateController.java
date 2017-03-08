@@ -19,10 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMeasureExcelMapper;
 import ampc.com.gistone.database.inter.TMeasureSectorExcelMapper;
+import ampc.com.gistone.database.inter.TQueryExcelMapper;
 import ampc.com.gistone.database.inter.TSectorExcelMapper;
+import ampc.com.gistone.database.inter.TSectordocExcelMapper;
 import ampc.com.gistone.database.model.TMeasureExcel;
 import ampc.com.gistone.database.model.TMeasureSectorExcel;
+import ampc.com.gistone.database.model.TQueryExcel;
 import ampc.com.gistone.database.model.TSectorExcel;
+import ampc.com.gistone.database.model.TSectordocExcel;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.CheckUtil;
 import ampc.com.gistone.util.CheckUtil1;
@@ -56,6 +60,14 @@ public class ExcelToDateController {
 	//措施版本映射
 	@Autowired
 	public TMeasureSectorExcelMapper tMeasureSectorExcelMapper;
+	
+	//行业条件映射
+	@Autowired
+	public TQueryExcelMapper tQueryExcelMapper;
+		
+	//行业描述映射
+	@Autowired
+	public TSectordocExcelMapper tSectordocExcelMapper;
 	
 	/**
 	 * 删除数据方法
@@ -116,6 +128,101 @@ public class ExcelToDateController {
 			return AmpcResult.build(1000, "参数错误", null);
 		}
 	}
+	
+	/**
+	 * 根据Excel更改行业描述Excel表中数据
+	 * @param request     请求
+	 * @param response    响应
+	 * @return 返回响应结果对象
+	 * TODO 行业描述
+	 */
+	@RequestMapping("excel/update_sectorDocExcelData")
+	public AmpcResult update_SectorDocExcelData(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
+		// 添加异常捕捉
+		try {
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			// 用户的id 确定当前用户 如果为空代表是系统默认
+			Long userId=null;
+			if(data.get("userId")!=null){
+				userId = Long.parseLong(data.get("userId").toString());
+			}
+			/**
+			 * 根据request获取excel地址
+			 */
+			String fileName = request.getServletContext().getRealPath("/")+ "***.xlsx";
+			Long versionId=tSectordocExcelMapper.selectMaxVersion(userId);
+			if(versionId==null){
+				versionId=1L;
+			}else{
+				versionId++;
+			}
+			//地址不确定  先写死了 获取到所有Excel中需要的数据
+			List<TSectordocExcel> tse = ExcelToDate.ReadSectorDOC(fileName,versionId,userId);
+			for (TSectordocExcel tsd : tse) {
+				int result=tSectordocExcelMapper.insertSelective(tsd);
+				if(result<1){
+					return AmpcResult.build(1000, "添加失败!", null);
+				}
+			}
+			return AmpcResult.ok("更新成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			// 返回错误信息
+			return AmpcResult.build(1000, "参数错误", null);
+		}
+	}
+	
+	
+	
+	
+	/**
+	 * 根据Excel更改措施Excel表中数据
+	 * @param request     请求
+	 * @param response    响应
+	 * @return 返回响应结果对象
+	 * TODO 条件
+	 */
+	@RequestMapping("excel/update_queryExcelData")
+	public AmpcResult update_QueryExcelData(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
+		// 添加异常捕捉
+		try {
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			// 用户的id 确定当前用户 如果为空代表是系统默认
+			Long userId=null;
+			if(data.get("userId")!=null){
+				userId = Long.parseLong(data.get("userId").toString());
+			}
+			/**
+			 * 根据request获取excel地址
+			 */
+			String fileName = request.getServletContext().getRealPath("/")+ "***.xlsx";
+			Long versionId=tQueryExcelMapper.selectMaxVersion(userId);
+			if(versionId==null){
+				versionId=1L;
+			}else{
+				versionId++;
+			}
+			//地址不确定  先写死了 获取到所有Excel中需要的数据
+			List<TQueryExcel> tqe = ExcelToDate.ReadQuery(fileName,versionId,userId);
+			for (TQueryExcel t : tqe) {
+				int result=tQueryExcelMapper.insertSelective(t);
+				if(result<1){
+					return AmpcResult.build(1000, "添加失败!", null);
+				}
+			}
+			return AmpcResult.ok("更新成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			// 返回错误信息
+			return AmpcResult.build(1000, "参数错误", null);
+		}
+	}
+	
+	
 	
 	/**
 	 * 根据Excel更改措施Excel表中数据
