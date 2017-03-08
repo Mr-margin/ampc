@@ -8,6 +8,7 @@ var index,indexPar,handle,minLeft,maxLeft,selfLeft,startX,leftWidth,rightWidth;
 var allData = [];
 var areaIndex,timeIndex;
 var showCode = [{},{},{}];
+var proNum,cityNum,countyNum;
 var msg = {
   'id': 'yaMessage',
   'content': {
@@ -34,7 +35,7 @@ var zTreeSetting = {
     simpleData:{
       enable: true,     //简单数据模式
       idKey: "adcode",
-      pIdKey: "pAdcode" //子父级关系对照
+      pIdKey: "padcode" //子父级关系对照
     },
     key:{
       name:'name',
@@ -59,25 +60,81 @@ var zTreeSetting = {
         }
       }
 
-      $('.adcodeList').empty();
-      for(var i=0;i<3;i++){
-        for(var ad in showCode[i]){
-          if(i == 0){
-            $('.adcodeList').append(addP(ad,showCode[i][ad]))
-          }else{
-            for(var add in showCode[i][ad]){
-              $('.adcodeList').append(addP(ad,showCode[i][ad][add]))
-            }
-          }
-        }
-      }
+
+
+      updataCodeList();
       console.log(showCode)
     }
   }
 };
 
-function addP(adcode,name){
-  return $('<p class="col-md-3">'+ name +' &nbsp;&nbsp;<i class="im-close" style="cursor: pointer" onclick="delAdcode('+ adcode +')"></i></p>')
+function addP(adcode,name,level){
+  return $('<p class="col-md-3">'+ name +' &nbsp;&nbsp;<i class="im-close" style="cursor: pointer" onclick="delAdcode('+ adcode +','+ level+')"></i></p>')
+}
+
+function updataCodeList(){
+  $('.adcodeList').empty();
+  for(var i=0;i<3;i++){
+    for(var ad in showCode[i]){
+      if(i == 0){
+        $('.adcodeList').append(addP(ad,showCode[i][ad],i))
+      }else{
+        for(var add in showCode[i][ad]){
+          $('.adcodeList').append(addP(add,showCode[i][ad][add],i))
+        }
+      }
+    }
+  }
+  proNum = Object.keys(showCode[0]).length;
+  cityNum = (function (){
+    var n = 0;
+    for(var ad in showCode[1]){
+      n += Object.keys(showCode[1][ad]).length;
+    }
+    return n;
+  })();
+  countyNum = (function (){
+    var n = 0;
+    for(var ad in showCode[2]){
+      n += Object.keys(showCode[2][ad]).length;
+    }
+    return n;
+  })();
+
+  $('.proNumber span').html(proNum);
+  $('.cityNumber span').html(cityNum);
+  $('.countyNumber span').html(countyNum);
+
+  console.log(proNum,cityNum,countyNum);
+}
+
+/*删除所选地区*/
+function delAdcode(adcode,level){
+  var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+  var node = treeObj.getNodeByParam("adcode", adcode, null);
+  treeObj.checkNode(node,false,true);
+  switch(level){
+    case 0:
+      delete showCode[level][adcode];
+      break;
+    case 1:
+      delete showCode[level][adcode.toString().substr(0,2)][adcode];
+      break;
+    case 2:
+      delete showCode[level][adcode.toString().substr(0,4)][adcode];
+      break;
+  }
+  updataCodeList();
+  console.log(adcode)
+}
+
+/*删除所有所选地区*/
+function clearAllArea(){
+  var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+  treeObj.checkAllNodes(false);
+  showCode = [{},{},{}];
+  updataCodeList();
+
 }
 
 /*test使用*/
@@ -108,6 +165,9 @@ function initialize(){
     rwId: 65,
     rwName: "gjfhdxghxdf"
   };
+
+  $('.footerShow .rw span').html(qjMsg.rwName);
+  $('.footerShow .qj span').html(qjMsg.qjName);
 
   /*总时长*/
   totalDate = qjMsg.qjEndDate - qjMsg.qjStartDate;
@@ -512,11 +572,15 @@ $('#editArea').on('show.bs.modal', function (event) {
     areaId = allData[indexPar].areaId;
     console.log(areaId);
     ajaxPost(findUrl,{
-      scenarinoId:qjMsg.qjId,
+      areaId:areaId,
       userId:userId
     }).success(function(res){
-
-    })
+      if(res.data){
+        setShowCode(res.data);
+      }
+      updataCodeList();
+    });
+    $('#areaName').val(allData[indexPar].areaName);
   }
 
   ajaxPost(treeUrl,{
@@ -524,30 +588,30 @@ $('#editArea').on('show.bs.modal', function (event) {
     userId:userId,
     areaId:areaId
   }).success(function(res){
-
+    initZTree(res.data);
   })
-
-
-
-  var data = [
-    {adcode:110000,name:'北京市',open:true},
-    {adcode:110100,name:'北京市',pAdcode:110000,open:true},
-    {adcode:110101,name:'某区某1',pAdcode:110100},
-    {adcode:110102,name:'某区某2',pAdcode:110100},
-    {adcode:110103,name:'某区某3',pAdcode:110100},
-    {adcode:110104,name:'某区某4',pAdcode:110100},
-    {adcode:120000,name:'天津市'},
-    {adcode:120100,name:'天津市',pAdcode:120000},
-    {adcode:120101,name:'天津某区1',pAdcode:120100},
-    {adcode:120102,name:'天津某区2',pAdcode:120100},
-    {adcode:120103,name:'天津某区3',pAdcode:120100},
-    {adcode:120104,name:'天津某区4',pAdcode:120100},
-    {adcode:120105,name:'天津某区5',pAdcode:120100}
-  ];
-
-
-  initZTree(data);
 });
+
+function setShowCode(data){
+
+  proNum = data.provinceCodes.length;
+  cityNum = data.cityCodes.length;
+  countyNum = data.countyCodes.length;
+
+  for(var i=0;i<proNum;i++){
+    $.extend(showCode[0],data.provinceCodes[i]);
+  }
+  for(var ii=0;ii<cityNum;ii++){
+    var adcode1 = Object.keys(data.cityCodes[ii])[0];
+    if(!showCode[1][adcode1.substr(0,2)])showCode[1][adcode1.substr(0,2)] = {};
+    $.extend(showCode[1][adcode1.substr(0,2)],data.cityCodes[ii]);
+  }
+  for(var iii=0;iii<countyNum;iii++){
+    var adcode2 = Object.keys(data.countyCodes[iii])[0];
+    if(!showCode[2][adcode2.substr(0,4)])showCode[2][adcode2.substr(0,4)] = {};
+    $.extend(showCode[2][adcode2.substr(0,4)],data.countyCodes[iii]);
+  }
+}
 
 
 $('#qyTime').on('show.bs.modal', function (event) {
