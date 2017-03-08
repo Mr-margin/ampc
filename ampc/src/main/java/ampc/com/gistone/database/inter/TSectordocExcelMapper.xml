@@ -13,7 +13,7 @@
     <result column="SECTORDOC_VERSION" property="sectordocVersion" jdbcType="DECIMAL" />
     <result column="USER_ID" property="userId" jdbcType="OTHER" />
   </resultMap>
-   <resultMap id="selectByMap" type="ampc.com.gistone.database.model.TSectordocExcel" >
+   <resultMap id="selectByMap" type="hashMap" >
     <id column="SECTORDOC_ID" property="sectordocId" jdbcType="DECIMAL" />
     <result column="SECTORDOC_ETITLE" property="sectordocEtitle" jdbcType="VARCHAR" />
   </resultMap>
