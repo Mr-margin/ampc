@@ -91,10 +91,37 @@ public class PlanAndMeasureController {
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("sectorName", sectorName);
 			map.put("userId", userId);
-			List<Map> sdMap=tSectordocExcelMapper.selectByUserId(map);
+			List<String> sdMap=tSectordocExcelMapper.selectByUserId(map);
 			if(sdMap.size()==0){
 				map.put("userId", null);
 				sdMap=tSectordocExcelMapper.selectByUserId(map);
+			}
+			TMeasureExcel tme=tMeasureExcelMapper.selectByPrimaryKey(measureId);
+			if(tme.getMeasureExcelOp()!=null){
+				sdMap.add("op");
+			}
+			if(tme.getMeasureExcelA()!=null){
+				sdMap.add("a");
+			}
+			if(tme.getMeasureExcelA1()!=null){
+				sdMap.add("a1");
+			}
+			if(tme.getMeasureExcelType().equals("中长期措施")){
+				if(tme.getMeasureExcelIntensity()!=null){
+					sdMap.add("intensity");
+				}
+			}
+			if(tme.getMeasureExcelIntensity1()!=null){
+				sdMap.add("intensity1");
+			}
+			if(tme.getMeasureExcelAsh()!=null){
+				sdMap.add("ash");
+			}
+			if(tme.getMeasureExcelSulfer()!=null){
+				sdMap.add("sulfer");
+			}
+			if(tme.getMeasureExcelSv()!=null){
+				sdMap.add("sv");
 			}
 			List<TQueryExcel> tqeList=tQueryExcelMapper.selectByMap(map);
 			Map resultMap=new HashMap();
