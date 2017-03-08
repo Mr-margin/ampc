@@ -20,11 +20,11 @@ public interface TSectordocExcelMapper {
 	List<TSectordocExcel> selectAll();
 	
 	/**
-	 * 获取ID
+	 * 获取ETITLE和中文
 	 * @param map
 	 * @return
 	 */
-	List<String> selectByUserId(Map map);
+	List<Map> selectByUserId(Map map);
 	
     int deleteByPrimaryKey(Long sectordocId);
 

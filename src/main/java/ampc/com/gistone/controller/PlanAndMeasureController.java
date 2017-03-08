@@ -91,38 +91,38 @@ public class PlanAndMeasureController {
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("sectorName", sectorName);
 			map.put("userId", userId);
-			List<String> sdMap=tSectordocExcelMapper.selectByUserId(map);
+			List<Map> sdMap=tSectordocExcelMapper.selectByUserId(map);
 			if(sdMap.size()==0){
 				map.put("userId", null);
 				sdMap=tSectordocExcelMapper.selectByUserId(map);
 			}
-			List<String> mList=new ArrayList<String>();
+			Map mList=new HashMap();
 			TMeasureExcel tme=tMeasureExcelMapper.selectByPrimaryKey(measureId);
 			if(tme.getMeasureExcelOp()!=null){
-				mList.add("op");
+				mList.put("op", tme.getMeasureExcelOp());
 			}
 			if(tme.getMeasureExcelA()!=null){
-				mList.add("a");
+				mList.put("a", tme.getMeasureExcelA());
 			}
 			if(tme.getMeasureExcelA1()!=null){
-				mList.add("a1");
+				mList.put("a1", tme.getMeasureExcelA1());
 			}
 			if(tme.getMeasureExcelType().equals("中长期措施")){
 				if(tme.getMeasureExcelIntensity()!=null){
-					mList.add("intensity");
+					mList.put("intensity", tme.getMeasureExcelIntensity());
 				}
 			}
 			if(tme.getMeasureExcelIntensity1()!=null){
-				mList.add("intensity1");
+				mList.put("intensity1", tme.getMeasureExcelIntensity1());
 			}
 			if(tme.getMeasureExcelAsh()!=null){
-				mList.add("ash");
+				mList.put("ash", tme.getMeasureExcelAsh());
 			}
 			if(tme.getMeasureExcelSulfer()!=null){
-				mList.add("sulfer");
+				mList.put("sulfer", tme.getMeasureExcelSulfer());
 			}
 			if(tme.getMeasureExcelSv()!=null){
-				mList.add("sv");
+				mList.put("sv", tme.getMeasureExcelSv());
 			}
 			List<TQueryExcel> tqeList=tQueryExcelMapper.selectByMap(map);
 			Map resultMap=new HashMap();
