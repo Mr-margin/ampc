@@ -145,7 +145,7 @@ public class MissionAndScenarinoController {
 			//用户的id  确定当前用户
 			mission.setUserId(Long.parseLong(data.get("userId").toString()));
 			//默认新建任务会赋值预评估
-			mission.setMissionStatus("预评估");
+			mission.setMissionStatus(data.get("missionStatus").toString());
 			//创建类型 (1.只创建任务 2.创建任务并执行基准情景)
 			Integer createType=Integer.valueOf(data.get("createType").toString());
 			//执行添加操作
@@ -153,18 +153,18 @@ public class MissionAndScenarinoController {
 			//判断添加结果
 			if(result>0){
 				//判断添加类型
-				if(createType==2){
-					/**
-					 * TODO 更改基准情景的执行状态
-					 */
-					
-					
-					
-					return AmpcResult.ok(result);
-				}else{
+//				if(createType==2){
+//					/**
+//					 * TODO 更改基准情景的执行状态
+//					 */
+//					
+//					
+//					
+//					return AmpcResult.ok(result);
+//				}else{
 					//只创建任务
 					return AmpcResult.ok(result);
-				}
+				//}
 			}
 			//添加失败
 			return AmpcResult.build(1000, "添加失败",null);
