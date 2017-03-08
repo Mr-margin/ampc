@@ -32,8 +32,8 @@
 <!--查询当前措施表中的最高版本号-->
   <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
   	select max(MEASURE_EXCEL_VERSION) from T_MEASURE_EXCEL 
-  	<if test="userId != null" >
-        where USER_ID=#{userId,jdbcType=DECIMAL} 
+  	<if test="_parameter != null" >
+        where USER_ID=#{_parameter,jdbcType=DECIMAL} 
       </if> 
   </select>
   

@@ -58,24 +58,24 @@
  <!--查询当前措施表中的最高版本号-->
   <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
   	select max(MS_EXCEL_VERSION_ID) from T_MEASURE_SECTOR_EXCEL 
-  	  <if test="userId != null" >
-        where USER_ID=#{userId,jdbcType=DECIMAL} 
+  	  <if test="_parameter != null" >
+        where USER_ID=#{_parameter,jdbcType=DECIMAL} 
       </if>
   </select>
  
  <!--根据用户ID 查询行业措施数据-->
   <select id="selectByUserId" parameterType="java.lang.Long" resultMap="mapByUserId">
   	select MS_EXCEL_ID,MID,MS_EXCEL_DISPLAY,SID,SECTORSNAME from T_MEASURE_SECTOR_EXCEL 
-  	<if test="userId != null" >
-        where USER_ID=#{userId,jdbcType=DECIMAL} 
+  	<if test="_parameter != null" >
+        where USER_ID=#{_parameter,jdbcType=DECIMAL} 
       </if>
   </select>
   
   <!--根据用户ID 获取所有的行业名称-->
   <select id="getSectorInfo" parameterType="java.lang.Long" resultMap="mapGetName">
   	select SECTORSNAME,SID from T_MEASURE_SECTOR_EXCEL 
-  	  <if test="userId != null" >
-        where USER_ID=#{userId,jdbcType=DECIMAL} 
+  	  <if test="_parameter != null" >
+        where USER_ID=#{_parameter,jdbcType=DECIMAL} 
       </if> GROUP BY SECTORSNAME,SID ORDER BY SID
   	
   </select>
