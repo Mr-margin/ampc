@@ -41,13 +41,28 @@
 }
 
 .btn-cuoshi-qian:hover {
-	color: #FF0;
-	border: 1px solid #FF0;
+	color: #595959;
+	border: 1px solid #595959;
 }
 
 .btn-cuoshi-shen:hover {
-	color: #FF0;
-	border: 1px solid #FF0;
+	color: #ffffff;
+	border: 1px solid #ffffff;
+}
+.btn-success-cs{
+	font-weight: 400;
+	font-size: 14px;
+	border-color: #4f9de0;
+	color: #4f9de0;
+	text-align: left;
+}
+.btn-success-cs:hover, .btn-success-cs:focus, .btn-success-cs:active, .btn-success-cs.active, .open .dropdown-toggle.btn-success-cs {
+    background-color: #4f9de0;
+    border-color: #4f9de0;
+    color: #FFFFFF;
+}
+.btn-success-cs.btn-outline:hover {
+    color: #fff;
 }
 
 .c6center {
@@ -120,13 +135,6 @@
 	        <h5>地图展示</h5>
 	        <div class="ibox-tools">
 	        	<div class="row" style="margin-top: -5px;">
-	        	
-	        	
-	        		<button type="button" class="btn btn-default" style="background-color: #FF0;" data-whatever="创建任务" data-type="rw" data-toggle="modal" data-target="#createModal">
-				                	<i class="glyphicon glyphicon-plus"></i> 创建
-								</button>
-								
-								
 	        		<div class='col-md-6'>
 	        			<div class="btn-group" >
 		                     <button data-toggle="dropdown" class="btn btn-default  dropdown-toggle" style="margin-bottom: 0px;">污染物 <span class="caret"></span>
@@ -284,10 +292,10 @@
 			
 				<div class='col-md-12' style="height:40px;padding-left: 0px;background-color: #FFF;margin-bottom: 15px;">
 					<div class='col-md-3' style="padding: 8px 10px 5px 25px;">
-						<h5>措施：限产</h5>
+						<h5 id="measureame">措施：限产</h5>
 					</div>
 					<div class='col-md-3' style="padding: 8px 00px 5px 15px;">
-						<h5>行业：火力发电</h5>
+						<h5 id="sectorsName">行业：火力发电</h5>
 					</div>
 					<div class='col-md-3' style="padding: 8px 00px 5px 15px;">
 						<h5>点源总数：223</h5>
@@ -334,6 +342,25 @@
 	                                <label class="btn btn-d1"><input type="radio" class="toggle">燃气</label>
 	                                <label class="btn btn-d1"><input type="radio" class="toggle">燃油</label>
 								</div>
+							</div>
+							
+							<div class="btn-group tiaojian" id="b2">
+								<span class="font-bold tiaojian-title">燃料类型</span>
+								<div class="btn-group btn-group-circle" data-toggle="buttons">
+	                                <label class="btn btn-d1 active"><input type="radio" class="toggle">不限</label>
+	                                <label class="btn btn-d1"><input type="radio" class="toggle">燃煤</label>
+	                                <label class="btn btn-d1"><input type="radio" class="toggle">燃气</label>
+	                                <label class="btn btn-d1"><input type="radio" class="toggle">燃油</label>
+								</div>
+								<form role="form" class="form-inline">
+									<div class="form-group" style="padding-left:20px;">
+										<input type="name" placeholder="" id="exampleInputEmail2" class="form-control" style="width:60px;height: 30px;">
+									</div>
+									—
+									<div class="form-group">
+										<input type="name" placeholder="" id="exampleInputPassword2" class="form-control" style="width:60px;height: 30px;">
+									</div>
+								</form>
 							</div>
 							
 
