@@ -45,8 +45,8 @@ var zTreeSetting = {
     onCheck: function(e,t,tr){
       var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
       selectNode(tr);
-      console.log(tr)
       if(tr.checked){
+    	  setExtent(tr);
         if(tr.level == 0){
           level0(tr)
         }else{
@@ -59,9 +59,8 @@ var zTreeSetting = {
           delNode12(tr)
         }
       }
+      addLayer(showCode);
       updataCodeList();
-      shuju_clear();
-      area(showCode);
     }
   }
 };
@@ -69,18 +68,19 @@ var zTreeSetting = {
 function addP(adcode,name,level){
   return $('<p class="col-md-3">'+ name +' &nbsp;&nbsp;<i class="im-close" style="cursor: pointer" onclick="delAdcode('+ adcode +','+ level+')"></i></p>')
 }
-
 function updataCodeList(){
   $('.adcodeList').empty();
   for(var i=0;i<3;i++){
     for(var ad in showCode[i]){
       if(i == 0){
         $('.adcodeList').append(addP(ad,showCode[i][ad],i))
+        console.log(showCode)
       }else{
         for(var add in showCode[i][ad]){
           $('.adcodeList').append(addP(add,showCode[i][ad][add],i))
         }
       }
+     
     }
   }
   proNum = Object.keys(showCode[0]).length;
@@ -122,9 +122,9 @@ function delAdcode(adcode,level){
       delete showCode[level][adcode.toString().substr(0,4)+'00'][adcode];
       break;
   }
+  addLayer(showCode);
   updataCodeList();
-  shuju_clear();
-  area(showCode);
+
 }
 
 /*删除所有所选地区*/
@@ -132,8 +132,8 @@ function clearAllArea(){
   var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
   treeObj.checkAllNodes(false);
   showCode = [{},{},{}];
+  addLayer(showCode);
   updataCodeList();
-  shuju_clear();
 }
 
 /*test使用*/
@@ -910,6 +910,22 @@ require(
 		dong.ClassBreaksRenderer = ClassBreaksRenderer;
 		dong.UniqueValueRenderer = UniqueValueRenderer ;
 		dong.InfoTemplate = InfoTemplate;
+		/*****************************************************/
+		app.map1 = new Map("mapDiv1", {
+			logo:false,
+	        center: [stat.cPointx, stat.cPointy],
+	        minZoom:3,
+	        maxZoom:13,
+	        zoom: 3
+		});
+		app.baselayerList1 = new dong.gaodeLayer();
+		app.stlayerList1 = new dong.gaodeLayer({layertype: "st1"});
+		app.labellayerList1 = new dong.gaodeLayer({layertype: "label1"});
+		app.map1.addLayer(app.baselayerList1);//添加高德地图到map容器
+		app.map1.addLayers([app.baselayerList1]);//添加高德地图到map容器
+		app.gLyr1 = new dong.GraphicsLayer({"id":"gLyr1"});
+		app.map1.addLayer(app.gLyr1);
+		/*************************************************************************/
 		app.map = new Map("mapDiv", {
 			logo:false,
 	        center: [stat.cPointx, stat.cPointy],
@@ -924,28 +940,30 @@ require(
 		app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
 		app.gLyr = new dong.GraphicsLayer({"id":"gLyr"});
 		app.map.addLayer(app.gLyr);
-		
+		/******************************************/
 });
+ function addLayer(data) {
+	 shuju_clear();
+	 app.featureLayer1 = new dong.FeatureLayer("http://192.168.1.132:6080/arcgis/rest/services/china_x/MapServer/2", {infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+	        mode: dong.FeatureLayer.MODE_ONDEMAND,
+	        outFields: ["NAME"]
+	      });
+		app.featureLayer2 = new dong.FeatureLayer("http://192.168.1.132:6080/arcgis/rest/services/china_x/MapServer/1", {infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+	        mode: dong.FeatureLayer.MODE_ONDEMAND,
+	        outFields: ["NAME"]
+	      });
+		app.featureLayer3 = new dong.FeatureLayer("http://192.168.1.132:6080/arcgis/rest/services/china_x/MapServer/0", {infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+	        mode: dong.FeatureLayer.MODE_ONDEMAND,
+	        outFields: ["NAME"]
+	      });
+	     app.map.addLayer(app.featureLayer1);
+	     app.map.addLayer(app.featureLayer2);
+	     app.map.addLayer(app.featureLayer3);
+	     area(data);
+ }
+
+var admin ;
 function area (data) {
-	app.featureLayer1 = new dong.FeatureLayer("http://192.168.1.132:6080/arcgis/rest/services/china_x/MapServer/2", {infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-        mode: dong.FeatureLayer.MODE_ONDEMAND,
-        outFields: ["NAME"]
-      });
-	app.featureLayer2 = new dong.FeatureLayer("http://192.168.1.132:6080/arcgis/rest/services/china_x/MapServer/1", {infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-        mode: dong.FeatureLayer.MODE_ONDEMAND,
-        outFields: ["NAME"]
-      });
-	app.featureLayer3 = new dong.FeatureLayer("http://192.168.1.132:6080/arcgis/rest/services/china_x/MapServer/0", {infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-        mode: dong.FeatureLayer.MODE_ONDEMAND,
-        outFields: ["NAME"]
-      });
-	
-//	app.map.removeLayer(app.featureLayer1);
-//	app.featureLayer1.clear();
-//	app.featureLayer2.clear();
-//	app.featureLayer3.clear();
-	
-	
     var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
     defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
 	for ( var i = 0 ; i < 3; i ++ ) {
@@ -964,22 +982,17 @@ function area (data) {
 			 for (var prop in data[i]) {
 				  if (data[i].hasOwnProperty(prop)) { 
 					  for (var prop1 in data[i][prop]) {
-						  var td_color = "";
-						  if(i==1){
-							  td_color = sz_corlor.c_color8;
-						  } else {
-							  td_color = sz_corlor.c_color9;
-						  }
-						  renderer.addValue(prop1, new dong.SimpleFillSymbol().setColor(new dong.Color(td_color)));
+						  renderer.addValue(prop1, new dong.SimpleFillSymbol().setColor(new dong.Color(sz_corlor.c_color7)));
 					  }
 				  } 
 			}
 		 }
-		 app.featureLayer = new dong.FeatureLayer("http://192.168.1.132:6080/arcgis/rest/services/china_x/MapServer/"+(2-i), {infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+		 var str = "featureLayer"+i
+		 app.str = new dong.FeatureLayer("http://192.168.1.132:6080/arcgis/rest/services/china_x/MapServer/"+(2-i), {
+			 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
 		        mode: dong.FeatureLayer.MODE_ONDEMAND,
 		        outFields: ["NAME"]
 		      });
-		 
 		 if ( i == "0" ) {
 			 app.featureLayer1.setRenderer(renderer);
 		     app.map.addLayer(app.featureLayer1);
@@ -991,25 +1004,49 @@ function area (data) {
 		     app.map.addLayer(app.featureLayer3);
 		 }
 	 }
+	admin = app.featureLayer1;
+	admin = app.featureLayer1;
 }
-
-
-
+//清空地图
 function shuju_clear() {
-	console.log(app.featureLayer1);
-	console.log(app.featureLayer2);
-	console.log(app.featureLayer3);
+	
 	if (app.featureLayer1 != undefined && app.featureLayer1 != null && app.featureLayer1 != "" ) {
-		app.featureLayer1.clear();
+		app.map.removeLayer(app.featureLayer1);
+	}
+	if (app.featureLayer1 != undefined && app.featureLayer1 != null && app.featureLayer1 != "" ) {
+		app.map.removeLayer(app.featureLayer1)
 	}
 	if (app.featureLayer2 != undefined && app.featureLayer2 != null && app.featureLayer2 != "" ) {
-		app.featureLayer2.clear();
+//		app.featureLayer2.clear();
+		app.map.removeLayer(app.featureLayer2)
 	}
-	if (app.featureLayer3 != undefined && app.featureLayer3 != null && app.featureLayer3 != "" ) {
-		app.featureLayer3.clear();
-	}
+	
+	
+}
+
+function setExtent(data) {
+	 var code = data.adcode.substring(0,2)+"0000";
+	if ( app.featureLayer1 != "" && app.featureLayer1 != null && app.featureLayer1 != undefined ) {
+		var ss = app.featureLayer1.graphics
+		if ( data.checked == true ) {
+			$.each(app.featureLayer1.graphics,function(i,gra){
+				if(gra.attributes.ADMINCODE == code ){
+					app.map.setExtent(app.featureLayer1.graphics[i].geometry.getExtent());
+					}
+				})
+		}
+	} 
 }
 
 
+//app.map.setExtent(new esri.geometry.Extent({  
+//"xmin": 8175445.558800001,  
+//"ymin": 2056264.7553000003,  
+//"xmax": 15037808.260399997,  
+//"ymax": 7087593.985299997,  
+//"spatialReference": {  
+//    "wkid": 102100  
+//}  
+//})); 
 
 
