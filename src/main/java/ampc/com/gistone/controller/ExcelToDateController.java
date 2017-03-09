@@ -73,16 +73,17 @@ public class ExcelToDateController {
 	 * 删除数据方法
 	 * @param type
 	 */
-	public void deleteInfo(int type){
+	public void deleteInfo(int type,Long userId){
 		//只添加措施Excel 时删除对应的表中数据
 		if(type==1){
 			
 		}else if(type==2){  //多个表一起添加时删除的 时删除对应的表中数据
-			
+			tSectorExcelMapper.updateIsEffeByIds(userId);
 		}
 	}
 	
 	/**
+	 * 中间表保存
 	 * 保存到措施模版表
 	 */
 	@RequestMapping("excel/save_ms")
@@ -118,9 +119,10 @@ public class ExcelToDateController {
 //				}
 //				tmse.setColorcode(colorUtil.get(i).getColorCode());    暂时不添加颜色
 //				tmse.setColorname(colorUtil.get(i).getColorName());
-				tMeasureSectorExcelMapper.insertSelective(tmse);
+				//tMeasureSectorExcelMapper.insertSelective(tmse);
 				i++;
 			}
+			System.out.println(i);
 			return AmpcResult.ok("更新成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -130,6 +132,7 @@ public class ExcelToDateController {
 	}
 	
 	/**
+	 * 行业描述Excel
 	 * 根据Excel更改行业描述Excel表中数据
 	 * @param request     请求
 	 * @param response    响应
@@ -178,6 +181,7 @@ public class ExcelToDateController {
 	
 	
 	/**
+	 * 筛选条件Excel
 	 * 根据Excel更改措施Excel表中数据
 	 * @param request     请求
 	 * @param response    响应
@@ -226,6 +230,7 @@ public class ExcelToDateController {
 	
 	
 	/**
+	 * 措施Excel
 	 * 根据Excel更改措施Excel表中数据
 	 * @param request     请求
 	 * @param response    响应
@@ -270,6 +275,7 @@ public class ExcelToDateController {
 	}
 	
 	/**
+	 * 行业Excel
 	 * 根据Excel更改行业Excel表中数据
 	 * @param request     请求
 	 * @param response    响应
@@ -531,7 +537,10 @@ public class ExcelToDateController {
 		//创建一个满足条件的
 		LinkedHashSet<TMeasureSectorExcel> ms = new LinkedHashSet<TMeasureSectorExcel>();
 		//获取所有的行业信息
-		List<TSectorExcel> tseList=tSectorExcelMapper.selectAll();
+		List<TSectorExcel> tseList=tSectorExcelMapper.selectAll(uid);
+		if(tseList.size()==0){
+			tseList=tSectorExcelMapper.selectAll(null);
+		}
 		//所有措施中的匹配数据
 		List<CheckUtil1> checkUtil1=getMeasure();
 		//循环所有的行业信息
