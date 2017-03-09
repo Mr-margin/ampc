@@ -304,78 +304,104 @@
       </div>
       <div class="modal-body">
 
-        <div class="form-group mt10 clearfix">
-          <label for="rwName" class="col-md-2 control-label lh29">任务名称</label>
-
-          <div class="col-md-10">
-            <input type="text" class="form-control" id="rwName" name="rwName" placeholder="任务名称">
+        <div class="rwType text-center">
+          <div class="col-md-12">
+            <button class="btn btn-primary btn-lg mt20" onclick="selectType('y')">预评估</button>
           </div>
-          <div class="col-md-10 col-md-offset-2">
-            <span>（限15字以内）</span>
+          <div class="col-md-12">
+            <button class="btn btn-primary btn-lg mt20" onclick="selectType('h')">后评估</button>
           </div>
         </div>
-        <div class="form-group mt10 clearfix">
-          <label for="mnfw" class="col-md-2 control-label lh29">任务类型</label>
 
-          <div class="col-md-10">
-            <select name="rwType" id="rwType" class="form-control">
-              <option value="预评估">预评估</option>
-              <option value="后评估">后评估</option>
-            </select>
+        <div class="rwCon" style="display: none">
+          <div class="form-group mt10 clearfix">
+            <label for="rwName" class="col-md-2 control-label lh29">任务名称</label>
+
+            <div class="col-md-10">
+              <input type="text" class="form-control" id="rwName" name="rwName" placeholder="任务名称">
+            </div>
+            <div class="col-md-10 col-md-offset-2">
+              <span>（限15字以内）</span>
+            </div>
+          </div>
+          <div class="form-group mt10 clearfix">
+            <label for="mnfw" class="col-md-2 control-label lh29">模拟范围</label>
+
+            <div class="col-md-10">
+              <select name="mnfw" id="mnfw" class="form-control">
+                <option value="1">1</option>
+              </select>
+            </div>
+            <div class="col-md-10 col-md-offset-2">
+              <button class="btn btn-primary mt10 mnfwTopSelect">高级</button>
+            </div>
+          </div>
+          <div class="form-group mt10 clearfix">
+            <label for="qd" class="col-md-2 control-label lh29">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单</label>
+
+            <div class="col-md-10">
+              <select name="qd" id="qd" class="form-control">
+                <option value="1">1</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group mt10 clearfix">
+            <label for="rwStartDate" class="col-md-2 control-label lh29">开始日期</label>
+
+            <div class="col-md-10">
+              <input type="text" class="form-control" id="rwStartDate" name="rwStartDate" readonly placeholder="请选择日期···">
+            </div>
+          </div>
+          <div class="form-group mt10 clearfix">
+            <label for="rwEndDate" class="col-md-2 control-label lh29">结束日期</label>
+
+            <div class="col-md-10">
+              <input type="text" class="form-control" id="rwEndDate" name="rwEndDate" readonly placeholder="请选择日期···">
+            </div>
           </div>
         </div>
-        <div class="form-group mt10 clearfix">
-          <label for="mnfw" class="col-md-2 control-label lh29">模拟范围</label>
 
-          <div class="col-md-10">
-            <select name="mnfw" id="mnfw" class="form-control">
-              <option value="1">1</option>
-              <!--<option>2</option>-->
-              <!--<option>3</option>-->
-              <!--<option>4</option>-->
-              <!--<option>5</option>-->
-            </select>
-          </div>
-          <div class="col-md-10 col-md-offset-2">
-            <button class="btn btn-primary mt10 mnfwTopSelect">高级</button>
-          </div>
-        </div>
-        <div class="form-group mt10 clearfix">
-          <label for="qd" class="col-md-2 control-label lh29">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单</label>
-
-          <div class="col-md-10">
-            <select name="qd" id="qd" class="form-control">
-              <option value="1">1</option>
-              <!--<option>2</option>-->
-              <!--<option>3</option>-->
-              <!--<option>4</option>-->
-              <!--<option>5</option>-->
-            </select>
-          </div>
-        </div>
-        <div class="form-group mt10 clearfix">
-          <label for="rwStartDate" class="col-md-2 control-label lh29">开始日期</label>
-
-          <div class="col-md-10">
-            <input type="text" class="form-control" id="rwStartDate" name="rwStartDate" readonly placeholder="请选择日期···">
-          </div>
-        </div>
-        <div class="form-group mt10 clearfix">
-          <label for="rwEndDate" class="col-md-2 control-label lh29">结束日期</label>
-
-          <div class="col-md-10">
-            <input type="text" class="form-control" id="rwEndDate" name="rwEndDate" readonly placeholder="请选择日期···">
-          </div>
-        </div>
 
       </div>
       <div class="modal-footer new-foot">
-        <button type="button" class="btn btn-primary create" onclick="createRw()">创建</button>
+        <button type="button" class="btn btn-primary return_S_rw" style="display: none" onclick="returnLeft('rw')">返回上一步</button>
+        <button type="button" class="btn btn-primary createRwBtn" style="display: none" onclick="createRw()">创建</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
       </div>
     </div>
   </div>
 </div>
+
+
+
+<script>
+
+//   $('#rwStartDate').daterangepicker({
+//     singleDatePicker: true,  //显示单个日历
+//     timePicker:false,  //允许选择时间
+//     timePicker24Hour:true, //时间24小时制
+//     minDate:'2017-01-01',//最早可选日期
+//     maxDate:'2017-01-10',//最大可选日期
+//     locale: {
+//       format: "YYYY-MM-DD",
+//      separator: " - ",
+//      applyLabel: "确定", //按钮文字
+//      cancelLabel: "取消",//按钮文字
+//      weekLabel: "W",
+//       daysOfWeek: [
+//         "日","一","二","三","四","五","六"
+//       ],
+//       monthNames: [
+//         "一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"
+//       ],
+//       firstDay: 1
+//     },
+//     "startDate": "03/03/2017",
+//     "endDate": "03/09/2017",
+//     "opens": "center"
+//   })
+
+</script>
 
 
 
@@ -409,166 +435,167 @@
   </div>
 </div>
 
-<!-- Create hpqj Modal -->
-<div class="modal fade" id="createHpQjModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="createTitle"></h4>
-      </div>
-      <div class="modal-body">
-        <form class="formCreate" id="formCreate">
-          <div class="">
-            <div class="createRw">
-              <div class="form-group mt10 clearfix">
-                <label for="rwName" class="col-md-2 control-label lh29">任务名称</label>
+<!--&lt;!&ndash; Create hpqj Modal &ndash;&gt;-->
+<!--<div class="modal fade" id="createHpQjModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">-->
+  <!--<div class="modal-dialog" role="document">-->
+    <!--<div class="modal-content">-->
+      <!--<div class="modal-header">-->
+        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span-->
+            <!--aria-hidden="true">&times;</span></button>-->
+        <!--<h4 class="modal-title" id="createTitle"></h4>-->
+      <!--</div>-->
+      <!--<div class="modal-body">-->
+        <!--<form class="formCreate" id="formCreate">-->
+          <!--<div class="">-->
+            <!--<div class="">-->
+              <!--<div class="form-group mt10 clearfix">-->
+                <!--<label for="rwName" class="col-md-2 control-label lh29">任务名称</label>-->
 
-                <div class="col-md-10">
-                  <input type="text" class="form-control" id="rwName" name="rwName" placeholder="任务名称">
-                </div>
-                <div class="col-md-10 col-md-offset-2">
-                  <span>（限15字以内）</span>
-                </div>
-              </div>
-              <div class="form-group mt10 clearfix">
-                <label for="mnfw" class="col-md-2 control-label lh29">模拟范围</label>
+                <!--<div class="col-md-10">-->
+                  <!--<input type="text" class="form-control" id="rwName" name="rwName" placeholder="任务名称">-->
+                <!--</div>-->
+                <!--<div class="col-md-10 col-md-offset-2">-->
+                  <!--<span>（限15字以内）</span>-->
+                <!--</div>-->
+              <!--</div>-->
+              <!--<div class="form-group mt10 clearfix">-->
+                <!--<label for="mnfw" class="col-md-2 control-label lh29">模拟范围</label>-->
 
-                <div class="col-md-10">
-                  <select name="mnfw" id="mnfw" class="form-control">
-                    <option value="1">1</option>
-                    <!--<option>2</option>-->
-                    <!--<option>3</option>-->
-                    <!--<option>4</option>-->
-                    <!--<option>5</option>-->
-                  </select>
-                </div>
-                <div class="col-md-10 col-md-offset-2">
-                  <button class="btn btn-primary mt10 mnfwTopSelect">高级</button>
-                </div>
-              </div>
-              <div class="form-group mt10 clearfix">
-                <label for="qd" class="col-md-2 control-label lh29">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单</label>
+                <!--<div class="col-md-10">-->
+                  <!--<select name="mnfw" id="mnfw" class="form-control">-->
+                    <!--<option value="1">1</option>-->
+                    <!--&lt;!&ndash;<option>2</option>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<option>3</option>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<option>4</option>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<option>5</option>&ndash;&gt;-->
+                  <!--</select>-->
+                <!--</div>-->
+                <!--<div class="col-md-10 col-md-offset-2">-->
+                  <!--<button class="btn btn-primary mt10 mnfwTopSelect">高级</button>-->
+                <!--</div>-->
+              <!--</div>-->
+              <!--<div class="form-group mt10 clearfix">-->
+                <!--<label for="qd" class="col-md-2 control-label lh29">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单</label>-->
 
-                <div class="col-md-10">
-                  <select name="qd" id="qd" class="form-control">
-                    <option value="1">1</option>
-                    <!--<option>2</option>-->
-                    <!--<option>3</option>-->
-                    <!--<option>4</option>-->
-                    <!--<option>5</option>-->
-                  </select>
-                </div>
-              </div>
-              <div class="form-group mt10 clearfix">
-                <label for="rwStartDate" class="col-md-2 control-label lh29">开始日期</label>
+                <!--<div class="col-md-10">-->
+                  <!--<select name="qd" id="qd" class="form-control">-->
+                    <!--<option value="1">1</option>-->
+                    <!--&lt;!&ndash;<option>2</option>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<option>3</option>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<option>4</option>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<option>5</option>&ndash;&gt;-->
+                  <!--</select>-->
+                <!--</div>-->
+              <!--</div>-->
+              <!--<div class="form-group mt10 clearfix">-->
+                <!--<label for="rwStartDate" class="col-md-2 control-label lh29">开始日期</label>-->
 
-                <div class="col-md-10">
-                  <input type="text" class="form-control" id="rwStartDate" name="rwStartDate" readonly placeholder="请选择日期···">
-                </div>
-              </div>
-              <div class="form-group mt10 clearfix">
-                <label for="rwEndDate" class="col-md-2 control-label lh29">结束日期</label>
+                <!--<div class="col-md-10">-->
+                  <!--<input type="text" class="form-control" id="rwStartDate" name="rwStartDate" readonly placeholder="请选择日期···">-->
+                <!--</div>-->
+              <!--</div>-->
+              <!--<div class="form-group mt10 clearfix">-->
+                <!--<label for="rwEndDate" class="col-md-2 control-label lh29">结束日期</label>-->
 
-                <div class="col-md-10">
-                  <input type="text" class="form-control" id="rwEndDate" name="rwEndDate" readonly placeholder="请选择日期···">
-                </div>
-              </div>
-            </div>
-            <div class="createQj">
+                <!--<div class="col-md-10">-->
+                  <!--<input type="text" class="form-control" id="rwEndDate" name="rwEndDate" readonly placeholder="请选择日期···">-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+            <!--<div class="createQj">-->
 
-              <div class="qjSelectWay">
-                <div class="text-center mt20">
-                  <button class="btn btn-primary newQj" onclick="newQj()">创建新情景</button>
-                </div>
-                <div class="text-center mt20">
-                  <button class="btn btn-primary oldQj" onclick="oldQj()">复制已有新情景</button>
-                </div>
-              </div>
+              <!--<div class="qjSelectWay">-->
+                <!--<div class="text-center mt20">-->
+                  <!--<button class="btn btn-primary newQj" onclick="newQj()">创建新情景</button>-->
+                <!--</div>-->
+                <!--<div class="text-center mt20">-->
+                  <!--<button class="btn btn-primary oldQj" onclick="oldQj()">复制已有新情景</button>-->
+                <!--</div>-->
+              <!--</div>-->
 
-              <div class="createQj-in">
-                <div class="form-group mt10 clearfix">
-                  <label for="qjName" class=" control-label lh29">情景名称</label>
+              <!--<div class="createQj-in">-->
+                <!--<div class="form-group mt10 clearfix">-->
+                  <!--<label for="qjName" class=" control-label lh29">情景名称</label>-->
 
-                  <input type="text" class="form-control" id="qjName" name="qjName" placeholder="协同控制方案">
-                  <div class="col-md-10 col-md-offset-2">
-                    <span>（限15字以内）</span>
-                  </div>
-                </div>
-                <div class="form-group mt10 clearfix">
-                  <label for="qjStartDate" class=" control-label lh29">开始日期</label>
+                  <!--<input type="text" class="form-control" id="qjName" name="qjName" placeholder="协同控制方案">-->
+                  <!--<div class="col-md-10 col-md-offset-2">-->
+                    <!--<span>（限15字以内）</span>-->
+                  <!--</div>-->
+                <!--</div>-->
+                <!--<div class="form-group mt10 clearfix">-->
+                  <!--<label for="qjStartDate" class=" control-label lh29">开始日期</label>-->
 
-                  <input type="text" class="form-control" id="qjStartDate" name="qjStartDate" readonly placeholder="请选择日期···">
-                </div>
-                <div class="form-group mt10 clearfix">
-                  <label for="qjEndDate" class=" control-label lh29">结束日期</label>
+                  <!--<input type="text" class="form-control" id="qjStartDate" name="qjStartDate" readonly placeholder="请选择日期···">-->
+                <!--</div>-->
+                <!--<div class="form-group mt10 clearfix">-->
+                  <!--<label for="qjEndDate" class=" control-label lh29">结束日期</label>-->
 
-                  <input type="text" class="form-control" id="qjEndDate" name="qjEndDate" readonly placeholder="请选择日期···">
-                </div>
-                <div class="form-group mt10 clearfix findQjDiv">
-                  <label class="col-md-6 control-label lh29">已有情景</label>
-                  <div class="col-md-6 text-right">
-                    <button class="btn btn-primary findQj" onclick="findOldQj()">查找</button>
-                  </div>
-                </div>
-              </div>
+                  <!--<input type="text" class="form-control" id="qjEndDate" name="qjEndDate" readonly placeholder="请选择日期···">-->
+                <!--</div>-->
+                <!--<div class="form-group mt10 clearfix findQjDiv">-->
+                  <!--<label class="col-md-6 control-label lh29">已有情景</label>-->
+                  <!--<div class="col-md-6 text-right">-->
+                    <!--<button class="btn btn-primary findQj" onclick="findOldQj()">查找</button>-->
+                  <!--</div>-->
+                <!--</div>-->
+              <!--</div>-->
 
-            </div>
-          </div>
+            <!--</div>-->
+          <!--</div>-->
 
 
-          <div class="col-md-6 selectOldQj" style="display: none;">
+          <!--<div class="col-md-6 selectOldQj" style="display: none;">-->
 
-            <div id="oldQjToolbar" class="btn-group">
-              <div class='col-md-8 '>
-                <ul class="nav nav-pills nav-justified" >
-                  <li role="presentation" class="active" onclick="selectOldType(this)" data-type=""><a href="javascript:">全部</a></li>
-                  <li role="presentation" class="" onclick="selectOldType(this)" data-type="预评估"><a href="javascript:">预评估</a></li>
-                  <li role="presentation" class="" onclick="selectOldType(this)" data-type="后评估"><a href="javascript:">后评估</a></li>
-                </ul>
-              </div>
-              <div class="input-group col-md-4">
-                <input type="text" class="form-control oldQjText " name="xxx" placeholder="输入查询字段">
-                <span class="input-group-btn">
-                  <button class="btn btn-default " type="button" onclick="oldSearch()"><i class="ec-search"></i>
-                  </button>
-                </span>
-              </div>
-              <!-- /input-group -->
-            </div>
+            <!--<div id="oldQjToolbar" class="btn-group">-->
+              <!--<div class='col-md-8 '>-->
+                <!--<ul class="nav nav-pills nav-justified" >-->
+                  <!--<li role="presentation" class="active" onclick="selectOldType(this)" data-type=""><a href="javascript:">全部</a></li>-->
+                  <!--<li role="presentation" class="" onclick="selectOldType(this)" data-type="预评估"><a href="javascript:">预评估</a></li>-->
+                  <!--<li role="presentation" class="" onclick="selectOldType(this)" data-type="后评估"><a href="javascript:">后评估</a></li>-->
+                <!--</ul>-->
+              <!--</div>-->
+              <!--<div class="input-group col-md-4">-->
+                <!--<input type="text" class="form-control oldQjText " name="xxx" placeholder="输入查询字段">-->
+                <!--<span class="input-group-btn">-->
+                  <!--<button class="btn btn-default " type="button" onclick="oldSearch()"><i class="ec-search"></i>-->
+                  <!--</button>-->
+                <!--</span>-->
+              <!--</div>-->
+              <!--&lt;!&ndash; /input-group &ndash;&gt;-->
+            <!--</div>-->
 
-            <div class="oldQJtable">
-              <table id="oldQJ">
-                <thead>
-                <tr>
-                  <th data-radio="true"></th>
-                  <th data-formatter="oldQJ_rw">任务名称</th>
-                  <th data-field="scenarinoName">情景名称</th>
-                  <th data-field="missionStatus">状态</th>
-                </tr>
-                </thead>
-              </table>
-            </div>
+            <!--<div class="oldQJtable">-->
+              <!--<table id="oldQJ">-->
+                <!--<thead>-->
+                <!--<tr>-->
+                  <!--<th data-radio="true"></th>-->
+                  <!--<th data-formatter="oldQJ_rw">任务名称</th>-->
+                  <!--<th data-field="scenarinoName">情景名称</th>-->
+                  <!--<th data-field="missionStatus">状态</th>-->
+                <!--</tr>-->
+                <!--</thead>-->
+              <!--</table>-->
+            <!--</div>-->
 
-          </div>
+          <!--</div>-->
 
-          <input type="submit" class="createSubmit" style="display: none"/>
-        </form>
-      </div>
-      <div class="modal-footer new-foot">
-        <button type="button" class="btn btn-primary createRun" onclick="create(this,true)"></button>
-        <button type="button" class="btn btn-primary create" onclick="create(this)">创建</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-      </div>
-      <div class="modal-footer old-foot">
+          <!--<input type="submit" class="createSubmit" style="display: none"/>-->
+        <!--</form>-->
+      <!--</div>-->
+      <!--<div class="modal-footer new-foot">-->
         <!--<button type="button" class="btn btn-primary createRun" onclick="create(this,true)"></button>-->
         <!--<button type="button" class="btn btn-primary create" onclick="create(this)">创建</button>-->
-        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-      </div>
-    </div>
-  </div>
-</div>
+        <!--<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>-->
+      <!--</div>-->
+      <!--<div class="modal-footer old-foot">-->
+        <!--&lt;!&ndash;<button type="button" class="btn btn-primary createRun" onclick="create(this,true)"></button>&ndash;&gt;-->
+        <!--&lt;!&ndash;<button type="button" class="btn btn-primary create" onclick="create(this)">创建</button>&ndash;&gt;-->
+        <!--<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
+<!--</div>-->
+
 
 
 </body>
