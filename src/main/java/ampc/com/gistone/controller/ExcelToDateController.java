@@ -209,11 +209,12 @@ public class ExcelToDateController {
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			List<TQueryExcel> tqe = ExcelToDate.ReadQuery(fileName,versionId,userId);
 			for (TQueryExcel t : tqe) {
-				int result=tQueryExcelMapper.insertSelective(t);
-				if(result<1){
-					return AmpcResult.build(1000, "添加失败!", null);
-				}
+//				int result=tQueryExcelMapper.insertSelective(t);
+//				if(result<1){
+//					return AmpcResult.build(1000, "添加失败!", null);
+//				}
 			}
+			System.out.println(tqe.size());
 			return AmpcResult.ok("更新成功");
 		} catch (Exception e) {
 			e.printStackTrace();
