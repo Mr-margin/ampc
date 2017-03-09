@@ -40,7 +40,7 @@ public interface TMeasureSectorExcelMapper {
 	 * @return
 	 */
 	List<Map> getMeasureInfo(Map map);
-   
+    
 	int deleteByPrimaryKey(Long msExcelId);
 
     int insert(TMeasureSectorExcel record);

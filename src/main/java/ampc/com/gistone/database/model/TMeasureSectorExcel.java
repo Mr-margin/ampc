@@ -1,6 +1,8 @@
 package ampc.com.gistone.database.model;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.UUID;
 
 public class TMeasureSectorExcel {
     private Long msExcelId;
@@ -48,6 +50,12 @@ public class TMeasureSectorExcel {
     private String colorcode;
 
     private Object colorname;
+
+    private Date addTime;
+
+    private Date deleteTime;
+
+    private String isEffective;
 
     public Long getMsExcelId() {
         return msExcelId;
@@ -232,16 +240,43 @@ public class TMeasureSectorExcel {
     public void setColorname(Object colorname) {
         this.colorname = colorname;
     }
-    @Override
-	public boolean equals(Object obj) {
-    	TMeasureSectorExcel s = (TMeasureSectorExcel) obj;
-		return msExcelName.equals(s.msExcelName) && sectorsname.equals(s.sectorsname);
-	}
 
-	@Override
-	public int hashCode() {
-		String in = msExcelName.toString() + sectorsname;
-		return in.hashCode();
-	}
+    public Date getAddTime() {
+        return addTime;
+    }
+
+    public void setAddTime(Date addTime) {
+        this.addTime = addTime;
+    }
+
+    public Date getDeleteTime() {
+        return deleteTime;
+    }
+
+    public void setDeleteTime(Date deleteTime) {
+        this.deleteTime = deleteTime;
+    }
+
+    public String getIsEffective() {
+        return isEffective;
+    }
+
+    public void setIsEffective(String isEffective) {
+        this.isEffective = isEffective == null ? null : isEffective.trim();
+    }
+
+
+    @Override
+   	public boolean equals(Object obj) {
+       	TMeasureSectorExcel s = (TMeasureSectorExcel) obj;
+   		return msExcelName.equals(s.msExcelName) && sectorsname.equals(s.sectorsname);
+   	}
+
+   	@Override
+   	public int hashCode() {
+   		UUID uuid = UUID.randomUUID();
+   		String in = (uuid.toString()+msExcelName.toString() + sectorsname.toString());
+   		return in.hashCode();
+   	}
 
 }

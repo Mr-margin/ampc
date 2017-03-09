@@ -1,5 +1,7 @@
 package ampc.com.gistone.database.model;
 
+import java.util.Date;
+
 public class TSectordocExcel {
     private Long sectordocId;
 
@@ -20,6 +22,12 @@ public class TSectordocExcel {
     private Long sectordocVersion;
 
     private Object userId;
+
+    private Date addTime;
+
+    private Date deleteTime;
+
+    private String isEffective;
 
     public Long getSectordocId() {
         return sectordocId;
@@ -99,5 +107,29 @@ public class TSectordocExcel {
 
     public void setUserId(Object userId) {
         this.userId = userId;
+    }
+
+    public Date getAddTime() {
+        return addTime;
+    }
+
+    public void setAddTime(Date addTime) {
+        this.addTime = addTime;
+    }
+
+    public Date getDeleteTime() {
+        return deleteTime;
+    }
+
+    public void setDeleteTime(Date deleteTime) {
+        this.deleteTime = deleteTime;
+    }
+
+    public String getIsEffective() {
+        return isEffective;
+    }
+
+    public void setIsEffective(String isEffective) {
+        this.isEffective = isEffective == null ? null : isEffective.trim();
     }
 }

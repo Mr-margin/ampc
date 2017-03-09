@@ -25,7 +25,6 @@ public interface TSectordocExcelMapper {
 	 * @return
 	 */
 	List<Map> selectByUserId(Map map);
-	
     int deleteByPrimaryKey(Long sectordocId);
 
     int insert(TSectordocExcel record);

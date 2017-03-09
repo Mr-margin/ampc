@@ -21,15 +21,19 @@
     <result column="GROUP_1" property="group1" jdbcType="OTHER" />
     <result column="GROUP_2" property="group2" jdbcType="OTHER" />
     <result column="GROUP_3" property="group3" jdbcType="OTHER" />
+    <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
+    <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     SECTOR_EXCEL_ID, VERSION_EXCEL_ID, SECTOR_EXCEL_NAME, SECTOR_EXCEL_L4S, SECTOR_EXCEL_ADD_TIME, 
     SECTOR_EXCEL_UPDATE_TIME, USER_ID, ID, ID0, ID0NAME, ID1, ID1NAME, ID2, ID2NAME, 
-    ID3, ID3NAME, GROUP_1, GROUP_2, GROUP_3
+    ID3, ID3NAME, GROUP_1, GROUP_2, GROUP_3, ADD_TIME, DELETE_TIME, IS_EFFECTIVE
   </sql>
   
   
-  <!--获取到所有的行业信息-->
+  
+<!--获取到所有的行业信息-->
   <select id="selectAll"  resultMap="BaseResultMap">
   	select <include refid="Base_Column_List" />
     from T_SECTOR_EXCEL ORDER BY SECTOR_EXCEL_ID
@@ -42,9 +46,6 @@
         where USER_ID=#{_parameter,jdbcType=DECIMAL} 
       </if> 
   </select>
-  
-  
-  
   
   
   
@@ -71,13 +72,15 @@
       USER_ID, ID, ID0, ID0NAME, 
       ID1, ID1NAME, ID2, ID2NAME, 
       ID3, ID3NAME, GROUP_1, GROUP_2, 
-      GROUP_3)
+      GROUP_3, ADD_TIME, DELETE_TIME, 
+      IS_EFFECTIVE)
     values (#{sectorExcelId,jdbcType=DECIMAL}, #{versionExcelId,jdbcType=DECIMAL}, #{sectorExcelName,jdbcType=OTHER}, 
       #{sectorExcelL4s,jdbcType=OTHER}, #{sectorExcelAddTime,jdbcType=TIMESTAMP}, #{sectorExcelUpdateTime,jdbcType=TIMESTAMP}, 
       #{userId,jdbcType=DECIMAL}, #{id,jdbcType=OTHER}, #{id0,jdbcType=VARCHAR}, #{id0name,jdbcType=OTHER}, 
       #{id1,jdbcType=VARCHAR}, #{id1name,jdbcType=OTHER}, #{id2,jdbcType=VARCHAR}, #{id2name,jdbcType=OTHER}, 
       #{id3,jdbcType=VARCHAR}, #{id3name,jdbcType=OTHER}, #{group1,jdbcType=OTHER}, #{group2,jdbcType=OTHER}, 
-      #{group3,jdbcType=OTHER})
+      #{group3,jdbcType=OTHER}, #{addTime,jdbcType=TIMESTAMP}, #{deleteTime,jdbcType=TIMESTAMP}, 
+      #{isEffective,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TSectorExcel" >
     insert into T_SECTOR_EXCEL
@@ -139,6 +142,15 @@
       <if test="group3 != null" >
         GROUP_3,
       </if>
+      <if test="addTime != null" >
+        ADD_TIME,
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME,
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="sectorExcelId != null" >
@@ -197,6 +209,15 @@
       </if>
       <if test="group3 != null" >
         #{group3,jdbcType=OTHER},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteTime != null" >
+        #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isEffective != null" >
+        #{isEffective,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -257,6 +278,15 @@
       <if test="group3 != null" >
         GROUP_3 = #{group3,jdbcType=OTHER},
       </if>
+      <if test="addTime != null" >
+        ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      </if>
     </set>
     where SECTOR_EXCEL_ID = #{sectorExcelId,jdbcType=DECIMAL}
   </update>
@@ -279,7 +309,10 @@
       ID3NAME = #{id3name,jdbcType=OTHER},
       GROUP_1 = #{group1,jdbcType=OTHER},
       GROUP_2 = #{group2,jdbcType=OTHER},
-      GROUP_3 = #{group3,jdbcType=OTHER}
+      GROUP_3 = #{group3,jdbcType=OTHER},
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR}
     where SECTOR_EXCEL_ID = #{sectorExcelId,jdbcType=DECIMAL}
   </update>
 </mapper>

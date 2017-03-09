@@ -1,6 +1,7 @@
 package ampc.com.gistone.database.model;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class TMeasureExcel {
     private Long measureExcelId;
@@ -36,6 +37,12 @@ public class TMeasureExcel {
     private String measureExcelSv;
 
     private Long userId;
+
+    private Date addTime;
+
+    private String isEffective;
+
+    private Date deleteTime;
 
     public Long getMeasureExcelId() {
         return measureExcelId;
@@ -171,5 +178,29 @@ public class TMeasureExcel {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Date getAddTime() {
+        return addTime;
+    }
+
+    public void setAddTime(Date addTime) {
+        this.addTime = addTime;
+    }
+
+    public String getIsEffective() {
+        return isEffective;
+    }
+
+    public void setIsEffective(String isEffective) {
+        this.isEffective = isEffective == null ? null : isEffective.trim();
+    }
+
+    public Date getDeleteTime() {
+        return deleteTime;
+    }
+
+    public void setDeleteTime(Date deleteTime) {
+        this.deleteTime = deleteTime;
     }
 }

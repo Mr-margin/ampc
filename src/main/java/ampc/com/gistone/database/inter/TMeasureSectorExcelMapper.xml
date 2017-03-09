@@ -25,8 +25,22 @@
     <result column="SID" property="sid" jdbcType="DECIMAL" />
     <result column="COLORCODE" property="colorcode" jdbcType="VARCHAR" />
     <result column="COLORNAME" property="colorname" jdbcType="OTHER" />
+    <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
+    <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
   </resultMap>
-  <!-- 根据userId 查询返回行业措施结果 -->
+  <sql id="Base_Column_List" >
+    MS_EXCEL_ID, USER_ID, MS_EXCEL_VERSION_ID, MID, MS_EXCEL_NAME, MS_EXCEL_DESC, MS_EXCEL_OP, 
+    MS_EXCEL_INTENSITY, SECTORSNAME, CONTENT, MS_EXCEL_DISPLAY, DEBUG_MODEL, MS_EXCEL_TYPE, 
+    MS_EXCEL_LEVEL, MS_EXCEL_A, MS_EXCEL_A1, MS_EXCEL_INTENSITY1, MS_EXCEL_ASH, MS_EXCEL_SULFER, 
+    MS_EXCEL_SV, SID, COLORCODE, COLORNAME, ADD_TIME, DELETE_TIME, IS_EFFECTIVE
+  </sql>
+ 
+ 
+ 
+ 
+ 
+ <!-- 根据userId 查询返回行业措施结果 -->
   <resultMap id="mapByUserId" type="hashMap" >
     <id column="MS_EXCEL_ID" property="msExcelId" jdbcType="DECIMAL" />
     <result column="MID" property="mid" jdbcType="DECIMAL" />
@@ -46,13 +60,6 @@
     <result column="SID" property="sid" jdbcType="DECIMAL" />
     <result column="SECTORSNAME" property="sectorsname" jdbcType="OTHER" />
   </resultMap>
-  
-  <sql id="Base_Column_List" >
-    MS_EXCEL_ID, USER_ID, MS_EXCEL_VERSION_ID, MID, MS_EXCEL_NAME, MS_EXCEL_DESC, MS_EXCEL_OP, 
-    MS_EXCEL_INTENSITY, SECTORSNAME, CONTENT, MS_EXCEL_DISPLAY, DEBUG_MODEL, MS_EXCEL_TYPE, 
-    MS_EXCEL_LEVEL, MS_EXCEL_A, MS_EXCEL_A1, MS_EXCEL_INTENSITY1, MS_EXCEL_ASH, MS_EXCEL_SULFER, 
-    MS_EXCEL_SV, SID, COLORCODE, COLORNAME
-  </sql>
  
  
  <!--查询当前措施表中的最高版本号-->
@@ -104,8 +111,6 @@
  
  
  
- 
- 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -124,7 +129,8 @@
       MS_EXCEL_TYPE, MS_EXCEL_LEVEL, MS_EXCEL_A, 
       MS_EXCEL_A1, MS_EXCEL_INTENSITY1, MS_EXCEL_ASH, 
       MS_EXCEL_SULFER, MS_EXCEL_SV, SID, 
-      COLORCODE, COLORNAME)
+      COLORCODE, COLORNAME, ADD_TIME, 
+      DELETE_TIME, IS_EFFECTIVE)
     values (#{msExcelId,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{msExcelVersionId,jdbcType=DECIMAL}, 
       #{mid,jdbcType=DECIMAL}, #{msExcelName,jdbcType=OTHER}, #{msExcelDesc,jdbcType=OTHER}, 
       #{msExcelOp,jdbcType=OTHER}, #{msExcelIntensity,jdbcType=DECIMAL}, #{sectorsname,jdbcType=OTHER}, 
@@ -132,7 +138,8 @@
       #{msExcelType,jdbcType=OTHER}, #{msExcelLevel,jdbcType=DECIMAL}, #{msExcelA,jdbcType=DECIMAL}, 
       #{msExcelA1,jdbcType=DECIMAL}, #{msExcelIntensity1,jdbcType=DECIMAL}, #{msExcelAsh,jdbcType=DECIMAL}, 
       #{msExcelSulfer,jdbcType=DECIMAL}, #{msExcelSv,jdbcType=OTHER}, #{sid,jdbcType=DECIMAL}, 
-      #{colorcode,jdbcType=VARCHAR}, #{colorname,jdbcType=OTHER})
+      #{colorcode,jdbcType=VARCHAR}, #{colorname,jdbcType=OTHER}, #{addTime,jdbcType=TIMESTAMP}, 
+      #{deleteTime,jdbcType=TIMESTAMP}, #{isEffective,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TMeasureSectorExcel" >
     insert into T_MEASURE_SECTOR_EXCEL
@@ -206,6 +213,15 @@
       <if test="colorname != null" >
         COLORNAME,
       </if>
+      <if test="addTime != null" >
+        ADD_TIME,
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME,
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="msExcelId != null" >
@@ -276,6 +292,15 @@
       </if>
       <if test="colorname != null" >
         #{colorname,jdbcType=OTHER},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteTime != null" >
+        #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isEffective != null" >
+        #{isEffective,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -348,6 +373,15 @@
       <if test="colorname != null" >
         COLORNAME = #{colorname,jdbcType=OTHER},
       </if>
+      <if test="addTime != null" >
+        ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      </if>
     </set>
     where MS_EXCEL_ID = #{msExcelId,jdbcType=DECIMAL}
   </update>
@@ -374,7 +408,10 @@
       MS_EXCEL_SV = #{msExcelSv,jdbcType=OTHER},
       SID = #{sid,jdbcType=DECIMAL},
       COLORCODE = #{colorcode,jdbcType=VARCHAR},
-      COLORNAME = #{colorname,jdbcType=OTHER}
+      COLORNAME = #{colorname,jdbcType=OTHER},
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR}
     where MS_EXCEL_ID = #{msExcelId,jdbcType=DECIMAL}
   </update>
 </mapper>
