@@ -24,7 +24,15 @@ public interface TSectorExcelMapper {
 	 * 获取到所有的行业信息
 	 * @return
 	 */
-	List<TSectorExcel> selectAll();
+	List<TSectorExcel> selectAll(Long userId);
+	
+	 /**
+     * 修改行业是否有效
+     * @param userId
+     * @return
+     */
+    int updateIsEffeByIds(Long userId);
+	
     int deleteByPrimaryKey(Long sectorExcelId);
 
     int insert(TSectorExcel record);
