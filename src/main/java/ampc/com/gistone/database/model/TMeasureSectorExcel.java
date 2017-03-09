@@ -274,8 +274,8 @@ public class TMeasureSectorExcel {
 
    	@Override
    	public int hashCode() {
-   		UUID uuid = UUID.randomUUID();
-   		String in = (uuid.toString()+msExcelName.toString() + sectorsname.toString());
+   		//UUID uuid = UUID.randomUUID();
+   		String in = (msExcelName.toString() + sectorsname.toString());
    		return in.hashCode();
    	}
 
