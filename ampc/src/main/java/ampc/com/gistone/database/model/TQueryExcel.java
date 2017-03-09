@@ -1,5 +1,7 @@
 package ampc.com.gistone.database.model;
 
+import java.util.Date;
+
 public class TQueryExcel {
     private Long queryId;
 
@@ -28,6 +30,12 @@ public class TQueryExcel {
     private Long queryVersion;
 
     private Object userId;
+
+    private Date addTime;
+
+    private String isEffective;
+
+    private Date deleteTime;
 
     public Long getQueryId() {
         return queryId;
@@ -139,5 +147,29 @@ public class TQueryExcel {
 
     public void setUserId(Object userId) {
         this.userId = userId;
+    }
+
+    public Date getAddTime() {
+        return addTime;
+    }
+
+    public void setAddTime(Date addTime) {
+        this.addTime = addTime;
+    }
+
+    public String getIsEffective() {
+        return isEffective;
+    }
+
+    public void setIsEffective(String isEffective) {
+        this.isEffective = isEffective == null ? null : isEffective.trim();
+    }
+
+    public Date getDeleteTime() {
+        return deleteTime;
+    }
+
+    public void setDeleteTime(Date deleteTime) {
+        this.deleteTime = deleteTime;
     }
 }

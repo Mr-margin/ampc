@@ -12,16 +12,23 @@
     <result column="SECTORDOC_DISNAME" property="sectordocDisname" jdbcType="OTHER" />
     <result column="SECTORDOC_VERSION" property="sectordocVersion" jdbcType="DECIMAL" />
     <result column="USER_ID" property="userId" jdbcType="OTHER" />
+    <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
+    <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
   </resultMap>
-  <resultMap id="mapSelect" type="hashMap" >
+  <sql id="Base_Column_List" >
+    SECTORDOC_ID, SECTORDOC_NAME, SECTORDOC_ETITLE, SECTORDOC_CTITLE, SECTORDOC_TYPE, 
+    SECTORDOC_STYPE, SECTORDOC_DOC, SECTORDOC_DISNAME, SECTORDOC_VERSION, USER_ID, ADD_TIME, 
+    DELETE_TIME, IS_EFFECTIVE
+  </sql>
+  
+  
+  
+  
+   <resultMap id="mapSelect" type="hashMap" >
     <result column="SECTORDOC_ETITLE" property="sectordocEtitle" jdbcType="VARCHAR" />
     <result column="SECTORDOC_CTITLE" property="sectordocCtitle" jdbcType="OTHER" />
   </resultMap>
- 
-  <sql id="Base_Column_List" >
-    SECTORDOC_ID, SECTORDOC_NAME, SECTORDOC_ETITLE, SECTORDOC_CTITLE, SECTORDOC_TYPE, 
-    SECTORDOC_STYPE, SECTORDOC_DOC, SECTORDOC_DISNAME, SECTORDOC_VERSION, USER_ID
-  </sql>
  
  
  <!--获取到所有的行业信息-->
@@ -45,18 +52,16 @@
         AND USER_ID=#{userId,jdbcType=OTHER} 
       </if> 
   </select>
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -71,11 +76,13 @@
     insert into T_SECTORDOC_EXCEL (SECTORDOC_ID, SECTORDOC_NAME, SECTORDOC_ETITLE, 
       SECTORDOC_CTITLE, SECTORDOC_TYPE, SECTORDOC_STYPE, 
       SECTORDOC_DOC, SECTORDOC_DISNAME, SECTORDOC_VERSION, 
-      USER_ID)
+      USER_ID, ADD_TIME, DELETE_TIME, 
+      IS_EFFECTIVE)
     values (#{sectordocId,jdbcType=DECIMAL}, #{sectordocName,jdbcType=OTHER}, #{sectordocEtitle,jdbcType=VARCHAR}, 
       #{sectordocCtitle,jdbcType=OTHER}, #{sectordocType,jdbcType=VARCHAR}, #{sectordocStype,jdbcType=OTHER}, 
       #{sectordocDoc,jdbcType=OTHER}, #{sectordocDisname,jdbcType=OTHER}, #{sectordocVersion,jdbcType=DECIMAL}, 
-      #{userId,jdbcType=OTHER})
+      #{userId,jdbcType=OTHER}, #{addTime,jdbcType=TIMESTAMP}, #{deleteTime,jdbcType=TIMESTAMP}, 
+      #{isEffective,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TSectordocExcel" >
     insert into T_SECTORDOC_EXCEL
@@ -110,6 +117,15 @@
       <if test="userId != null" >
         USER_ID,
       </if>
+      <if test="addTime != null" >
+        ADD_TIME,
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME,
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="sectordocId != null" >
@@ -141,6 +157,15 @@
       </if>
       <if test="userId != null" >
         #{userId,jdbcType=OTHER},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteTime != null" >
+        #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isEffective != null" >
+        #{isEffective,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -174,6 +199,15 @@
       <if test="userId != null" >
         USER_ID = #{userId,jdbcType=OTHER},
       </if>
+      <if test="addTime != null" >
+        ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      </if>
     </set>
     where SECTORDOC_ID = #{sectordocId,jdbcType=DECIMAL}
   </update>
@@ -187,7 +221,10 @@
       SECTORDOC_DOC = #{sectordocDoc,jdbcType=OTHER},
       SECTORDOC_DISNAME = #{sectordocDisname,jdbcType=OTHER},
       SECTORDOC_VERSION = #{sectordocVersion,jdbcType=DECIMAL},
-      USER_ID = #{userId,jdbcType=OTHER}
+      USER_ID = #{userId,jdbcType=OTHER},
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR}
     where SECTORDOC_ID = #{sectordocId,jdbcType=DECIMAL}
   </update>
 </mapper>

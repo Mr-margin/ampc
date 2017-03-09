@@ -41,6 +41,12 @@ public class TSectorExcel {
 
     private Object group3;
 
+    private Date addTime;
+
+    private Date deleteTime;
+
+    private String isEffective;
+
     public Long getSectorExcelId() {
         return sectorExcelId;
     }
@@ -191,5 +197,29 @@ public class TSectorExcel {
 
     public void setGroup3(Object group3) {
         this.group3 = group3;
+    }
+
+    public Date getAddTime() {
+        return addTime;
+    }
+
+    public void setAddTime(Date addTime) {
+        this.addTime = addTime;
+    }
+
+    public Date getDeleteTime() {
+        return deleteTime;
+    }
+
+    public void setDeleteTime(Date deleteTime) {
+        this.deleteTime = deleteTime;
+    }
+
+    public String getIsEffective() {
+        return isEffective;
+    }
+
+    public void setIsEffective(String isEffective) {
+        this.isEffective = isEffective == null ? null : isEffective.trim();
     }
 }

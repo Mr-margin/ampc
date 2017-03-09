@@ -19,17 +19,24 @@
     <result column="MEASURE_EXCEL_SULFER" property="measureExcelSulfer" jdbcType="DECIMAL" />
     <result column="MEASURE_EXCEL_SV" property="measureExcelSv" jdbcType="VARCHAR" />
     <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     MEASURE_EXCEL_ID, MEASURE_EXCEL_VERSION, MEASURE_EXCEL_NAME, MEASURE_EXCEL_DEBUG, 
     MEASURE_EXCEL_DISPLAY, MEASURE_EXCEL_TYPE, MEASURE_EXCEL_LEVEL, MEASURE_EXCEL_L4S, 
     MEASURE_EXCEL_OP, MEASURE_EXCEL_A, MEASURE_EXCEL_A1, MEASURE_EXCEL_INTENSITY, MEASURE_EXCEL_INTENSITY1, 
-    MEASURE_EXCEL_ASH, MEASURE_EXCEL_SULFER, MEASURE_EXCEL_SV, USER_ID
+    MEASURE_EXCEL_ASH, MEASURE_EXCEL_SULFER, MEASURE_EXCEL_SV, USER_ID, ADD_TIME, IS_EFFECTIVE, 
+    DELETE_TIME
   </sql>
   
   
   
-<!--查询当前措施表中的最高版本号-->
+  
+  
+  
+  <!--查询当前措施表中的最高版本号-->
   <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
   	select max(MEASURE_EXCEL_VERSION) from T_MEASURE_EXCEL 
   	<if test="_parameter != null" >
@@ -43,6 +50,12 @@
     from T_MEASURE_EXCEL ORDER BY MEASURE_EXCEL_ID
   </select>
  
+  
+  
+  
+  
+  
+  
   
   
   
@@ -70,14 +83,16 @@
       MEASURE_EXCEL_OP, MEASURE_EXCEL_A, MEASURE_EXCEL_A1, 
       MEASURE_EXCEL_INTENSITY, MEASURE_EXCEL_INTENSITY1, 
       MEASURE_EXCEL_ASH, MEASURE_EXCEL_SULFER, MEASURE_EXCEL_SV, 
-      USER_ID)
+      USER_ID, ADD_TIME, IS_EFFECTIVE, 
+      DELETE_TIME)
     values (#{measureExcelId,jdbcType=DECIMAL}, #{measureExcelVersion,jdbcType=DECIMAL}, 
       #{measureExcelName,jdbcType=VARCHAR}, #{measureExcelDebug,jdbcType=DECIMAL}, #{measureExcelDisplay,jdbcType=OTHER}, 
       #{measureExcelType,jdbcType=OTHER}, #{measureExcelLevel,jdbcType=DECIMAL}, #{measureExcelL4s,jdbcType=VARCHAR}, 
       #{measureExcelOp,jdbcType=VARCHAR}, #{measureExcelA,jdbcType=DECIMAL}, #{measureExcelA1,jdbcType=DECIMAL}, 
       #{measureExcelIntensity,jdbcType=DECIMAL}, #{measureExcelIntensity1,jdbcType=DECIMAL}, 
       #{measureExcelAsh,jdbcType=DECIMAL}, #{measureExcelSulfer,jdbcType=DECIMAL}, #{measureExcelSv,jdbcType=VARCHAR}, 
-      #{userId,jdbcType=DECIMAL})
+      #{userId,jdbcType=DECIMAL}, #{addTime,jdbcType=TIMESTAMP}, #{isEffective,jdbcType=VARCHAR}, 
+      #{deleteTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TMeasureExcel" >
     insert into T_MEASURE_EXCEL
@@ -133,6 +148,15 @@
       <if test="userId != null" >
         USER_ID,
       </if>
+      <if test="addTime != null" >
+        ADD_TIME,
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE,
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="measureExcelId != null" >
@@ -185,6 +209,15 @@
       </if>
       <if test="userId != null" >
         #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isEffective != null" >
+        #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        #{deleteTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -239,6 +272,15 @@
       <if test="userId != null" >
         USER_ID = #{userId,jdbcType=DECIMAL},
       </if>
+      <if test="addTime != null" >
+        ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where MEASURE_EXCEL_ID = #{measureExcelId,jdbcType=DECIMAL}
   </update>
@@ -259,7 +301,10 @@
       MEASURE_EXCEL_ASH = #{measureExcelAsh,jdbcType=DECIMAL},
       MEASURE_EXCEL_SULFER = #{measureExcelSulfer,jdbcType=DECIMAL},
       MEASURE_EXCEL_SV = #{measureExcelSv,jdbcType=VARCHAR},
-      USER_ID = #{userId,jdbcType=DECIMAL}
+      USER_ID = #{userId,jdbcType=DECIMAL},
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP}
     where MEASURE_EXCEL_ID = #{measureExcelId,jdbcType=DECIMAL}
   </update>
 </mapper>

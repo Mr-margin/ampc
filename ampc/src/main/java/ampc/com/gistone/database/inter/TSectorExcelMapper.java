@@ -1,8 +1,10 @@
 package ampc.com.gistone.database.inter;
 
 import java.util.List;
+import java.util.Map;
 
 import ampc.com.gistone.database.model.TSectorExcel;
+import ampc.com.gistone.database.model.TSectordocExcel;
 
 /**
  * 行业映射
@@ -23,7 +25,6 @@ public interface TSectorExcelMapper {
 	 * @return
 	 */
 	List<TSectorExcel> selectAll();
-	
     int deleteByPrimaryKey(Long sectorExcelId);
 
     int insert(TSectorExcel record);
