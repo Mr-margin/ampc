@@ -128,7 +128,7 @@ public class ExcelToDateController {
 //				}
 //				tmse.setColorcode(colorUtil.get(i).getColorCode());    暂时不添加颜色
 //				tmse.setColorname(colorUtil.get(i).getColorName());
-				//tMeasureSectorExcelMapper.insertSelective(tmse);
+//			tMeasureSectorExcelMapper.insertSelective(tmse);
 				i++;
 			}
 			System.out.println(i);
@@ -556,6 +556,7 @@ public class ExcelToDateController {
 		for (TSectorExcel tse : tseList) {
 			//先获取l4s的值
 			String l4s=tse.getSectorExcelL4s().toString();
+			//l4s="0003-4701-1901-1823";
 			//对l4s进行拆分
 			String[] ids=l4s.split("-");
 			//对每一段进行转换int用来比对
@@ -563,8 +564,10 @@ public class ExcelToDateController {
 			int id2=Integer.valueOf(ids[1]);
 			int id3=Integer.valueOf(ids[2]);
 			int id4=Integer.valueOf(ids[3]);
+			System.out.println(checkUtil1.size());
 			//循环所有的措施条件集合帮助类
-			CU1:for (CheckUtil1 cu11 : checkUtil1) {
+			for (CheckUtil1 cu11 : checkUtil1) {
+				System.out.println(cu11.gettMeasureExcel().getMeasureExcelL4s());
 				//获取第一个id[1]的条件集合
 				List<CheckUtil> check1 = cu11.getCheck1();
 				if(check1==null){
@@ -572,14 +575,14 @@ public class ExcelToDateController {
 					break;
 				}
 				//循环第一个id[i]的条件集合
-				for (CheckUtil cu1 : check1) {
+				CU1:for (CheckUtil cu1 : check1) {
 					//判断符号的条件  
 					if(cu1.getMethod().equals("or")){
 						//如果为or 则满足一个就可以 如果为true 
 						if(id1==cu1.getNum1()||id1==cu1.getNum2()){
 							String result=c1(ms,cu11,tse,id1,id2,id3,id4,vid,uid);
 							if(result.equals("ok")){
-								break CU1;
+								 break CU1;
 							}
 						}else{
 							continue;
@@ -589,7 +592,7 @@ public class ExcelToDateController {
 						if(cu1.getNum1()<=id1&&id1<=cu1.getNum2()){
 							String result=c1(ms,cu11,tse,id1,id2,id3,id4,vid,uid);
 							if(result.equals("ok")){
-								break CU1;
+								 break CU1;
 							}
 						}else{
 							continue;
@@ -599,7 +602,7 @@ public class ExcelToDateController {
 						if(cu1.getNum1()==id1){
 							String result=c1(ms,cu11,tse,id1,id2,id3,id4,vid,uid);
 							if(result.equals("ok")){
-								break CU1;
+								 break CU1;
 							}
 						}else{
 							continue;
@@ -607,6 +610,7 @@ public class ExcelToDateController {
 					}
 				}
 			}
+			System.out.println(ms.size());
 			//返回没有匹配结果 该条行业不匹配
 			System.out.println("id[1]没有匹配的");
 		}
@@ -665,6 +669,33 @@ public class ExcelToDateController {
 					checkChar(id2,list2);
 					checkChar(id3,list3);
 					checkChar(id4,list4);
+					System.out.println("条件1");
+					for (CheckUtil ccc : list1) {
+						System.out.println(ccc.getMethod());
+						System.out.println(ccc.getNum1());
+						System.out.println(ccc.getNum2());
+					}
+					System.out.println("\n\n");
+					System.out.println("条件2");
+					for (CheckUtil ccc : list2) {
+						System.out.println(ccc.getMethod());
+						System.out.println(ccc.getNum1());
+						System.out.println(ccc.getNum2());
+					}
+					System.out.println("\n\n");
+					System.out.println("条件3");
+					for (CheckUtil ccc : list3) {
+						System.out.println(ccc.getMethod());
+						System.out.println(ccc.getNum1());
+						System.out.println(ccc.getNum2());
+					}
+					System.out.println("\n\n");
+					System.out.println("条件4");
+					for (CheckUtil ccc : list4) {
+						System.out.println(ccc.getMethod());
+						System.out.println(ccc.getNum1());
+						System.out.println(ccc.getNum2());
+					}
 					checkUtil1.setCheck1(list1);
 					checkUtil1.setCheck2(list2);
 					checkUtil1.setCheck3(list3);
@@ -718,7 +749,7 @@ public class ExcelToDateController {
 			//如果字符串的长度大于14则代表还要进行第二次递归判断
 			String str2=null;
 			if(str.length()>=14){
-				str2 = str.substring(5,14);
+				str2 = str.substring(5);
 			}
 			//将第一个数字进行转换  符号左边的
 			int num1 = Integer.valueOf(str1.substring(0,4));
