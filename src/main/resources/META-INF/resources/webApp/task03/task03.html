@@ -76,7 +76,7 @@
 .tiaojian-title{
 	float: left;
 	height: 30px;
-	padding: 5px 25px 5px 5px;
+	padding: 5px 5px 5px 5px;
 }
 
 .btn-d1.active {
@@ -94,6 +94,7 @@
 	border-radius: 0;
 	height: 30px;
 	font-size: 12px;
+	padding: 6px 8px;
 }
 
 .btn-group.btn-group-circle>.btn:first-child {
@@ -311,7 +312,7 @@
 					    <div class="ibox-title">
 					        <h5>筛选方式</h5>
 					    </div>
-					    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;padding: 10px;">
+					    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;padding: 10px;" id="sc_conter">
 
 
 							
@@ -337,7 +338,7 @@
 							
 							<div class="btn-group tiaojian" id="b2">
 								<span class="font-bold tiaojian-title">燃料类型</span>
-								<div class="btn-group btn-group-circle" data-toggle="buttons">
+								<div class="btn-group btn-group-circle" data-toggle="buttons" onclick="alert('aa');">
 	                                <label class="btn btn-d1 active"><input type="radio" class="toggle">不限</label>
 	                                <label class="btn btn-d1"><input type="radio" class="toggle">燃煤</label>
 	                                <label class="btn btn-d1"><input type="radio" class="toggle">燃气</label>
@@ -347,11 +348,11 @@
 							
 							<div class="btn-group tiaojian" id="b2">
 								<span class="font-bold tiaojian-title">燃料类型</span>
-								<div class="btn-group btn-group-circle" data-toggle="buttons">
-	                                <label class="btn btn-d1 active"><input type="radio" class="toggle">不限</label>
-	                                <label class="btn btn-d1"><input type="radio" class="toggle">燃煤</label>
-	                                <label class="btn btn-d1"><input type="radio" class="toggle">燃气</label>
-	                                <label class="btn btn-d1"><input type="radio" class="toggle">燃油</label>
+								<div class="btn-group btn-group-circle" data-toggle="buttons" onclick="val_handle($(this));">
+	                                <label class="btn btn-d1 active" val_name="不限"><input type="radio" class="toggle">不限</label>
+	                                <label class="btn btn-d1" val_name="燃煤"><input type="radio" class="toggle">燃煤</label>
+	                                <label class="btn btn-d1" val_name="燃气"><input type="radio" class="toggle">燃气</label>
+	                                <label class="btn btn-d1" val_name="燃油"><input type="radio" class="toggle">燃油</label>
 								</div>
 								<form role="form" class="form-inline">
 									<div class="form-group" style="padding-left:20px;">
