@@ -40,6 +40,13 @@ public interface TMeasureSectorExcelMapper {
 	 * @return
 	 */
 	List<Map> getMeasureInfo(Map map);
+	
+	/**
+     * 修改中间表是否有效
+     * @param userId
+     * @return
+     */
+    int updateIsEffeByIds(Long userId);
     
 	int deleteByPrimaryKey(Long msExcelId);
 

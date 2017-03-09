@@ -38,7 +38,7 @@
   	select <include refid="Base_Column_List" />
     from T_SECTOR_EXCEL where IS_EFFECTIVE='1' 
     	<if test="_parameter != null" >
-        	where USER_ID=#{_parameter,jdbcType=DECIMAL} 
+        	And USER_ID=#{_parameter,jdbcType=DECIMAL} 
         </if> 
       ORDER BY SECTOR_EXCEL_ID
   </select>

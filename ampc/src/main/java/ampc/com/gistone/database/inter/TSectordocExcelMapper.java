@@ -13,11 +13,7 @@ public interface TSectordocExcelMapper {
 	 */
 	Long selectMaxVersion(Long userId);
 	
-	/**
-	 * 获取到所有的行业信息
-	 * @return
-	 */
-	List<TSectordocExcel> selectAll();
+	
 	
 	/**
 	 * 获取ETITLE和中文
@@ -25,6 +21,13 @@ public interface TSectordocExcelMapper {
 	 * @return
 	 */
 	List<Map> selectByUserId(Map map);
+	
+	/**
+     * 修改行业是否有效
+     * @param userId
+     * @return
+     */
+    int updateIsEffeByIds(Long userId);
     int deleteByPrimaryKey(Long sectordocId);
 
     int insert(TSectordocExcel record);

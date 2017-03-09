@@ -77,6 +77,7 @@ public class ExcelToDateController {
 			
 		}else if(type==2){  //多个表一起添加时删除的 时删除对应的表中数据
 			tSectorExcelMapper.updateIsEffeByIds(userId);
+			tMeasureExcelMapper.updateIsEffeByIds(userId);
 		}
 	}
 	
@@ -540,7 +541,7 @@ public class ExcelToDateController {
 			tseList=tSectorExcelMapper.selectAll(null);
 		}
 		//所有措施中的匹配数据
-		List<CheckUtil1> checkUtil1=getMeasure();
+		List<CheckUtil1> checkUtil1=getMeasure(uid);
 		//循环所有的行业信息
 		for (TSectorExcel tse : tseList) {
 			//先获取l4s的值
@@ -611,10 +612,13 @@ public class ExcelToDateController {
 	 * 将每一条措施中的L4s进行拆分 得到一个条件的结果集
 	 * @return
 	 */
-	public List<CheckUtil1> getMeasure(){
+	public List<CheckUtil1> getMeasure(Long userId){
 		//创建l4s分段条件类集合
 		List<CheckUtil1> reg=new ArrayList<CheckUtil1>();
-		List<TMeasureExcel> tmeList=tMeasureExcelMapper.selectAll();
+		List<TMeasureExcel> tmeList=tMeasureExcelMapper.selectAll(userId);
+		if(tmeList.size()==0){
+			tmeList=tMeasureExcelMapper.selectAll(null);
+		}
 		for (TMeasureExcel tme : tmeList) {
 			//获取到措施中的过滤L4sfilter
 			String filterL4s=tme.getMeasureExcelL4s();

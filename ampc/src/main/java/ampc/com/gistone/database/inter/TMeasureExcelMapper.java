@@ -24,7 +24,15 @@ public interface TMeasureExcelMapper {
 	 * @param sectorExcelId
 	 * @return
 	 */
-	List<TMeasureExcel> selectAll();
+	List<TMeasureExcel> selectAll(Long userId);
+	
+	/**
+     * 修改措施是否有效
+     * @param userId
+     * @return
+     */
+    int updateIsEffeByIds(Long userId);
+	
     int deleteByPrimaryKey(Long measureExcelId);
 
     int insert(TMeasureExcel record);
