@@ -7,6 +7,7 @@ var formCreate;
 var selectRW = {};
 var statusRW = '';
 var delRWid = {}, delQJid = {};
+var rwSelectType;
 //var parameterPar = {total: '', data: {}};
 var msg = {
   'id': 'qjMessage',
@@ -137,11 +138,12 @@ function formVerify(){
   })
 }*/
 
-//$(document).ready(function () {
+$(document).ready(function () {
   initialize();
-  initDate();
+  //initDate();
+  initRwDate();
   formVerify();
-//});
+});
 
 function initialize() {
   initRwTable();
@@ -195,7 +197,7 @@ function initRwTable() {
       return JSON.stringify(json);
     },
     responseHandler: function (res) {
-      return res.data 
+      return res.data
     },
     queryParamsType: "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
     silent: true, // 刷新事件必须设置
@@ -748,71 +750,71 @@ function create(e,run) {
 
 /*初始化日期插件*/
 function initDate() {
-  $("#rwStartDate").datetimepicker({
-    format: 'yyyy/mm/dd',
-    minView: 'month',
-    startView: 'month',
-    language: 'zh-CN',
-    autoclose: true,
-    todayBtn: true
-  })
-    .on('changeDate', function(ev){
-      var date = moment(ev.date).format('YYYY-MM-DD');
-      $('#rwEndDate').datetimepicker('setStartDate', date);
-      $('#rwStartDate').datetimepicker('setEndDate', null);
-    });
-  $("#rwEndDate").datetimepicker({
-    format: 'yyyy/mm/dd',
-    minView: 'month',
-    startView: 'month',
-    language: 'zh-CN',
-    autoclose: true,
-    todayBtn: true
-  })
-    .on('changeDate', function(ev){
-      var date = moment(ev.date).format('YYYY-MM-DD');
-      $('#rwStartDate').datetimepicker('setEndDate', date);
-      $('#rwEndDate').datetimepicker('setStartDate', null);
-    });
-
-
-  $("#qjStartDate").datetimepicker({
-    format: 'yyyy/mm/dd',
-    minView: 'month',
-    startView: 'month',
-    language: 'zh-CN',
-    autoclose: true,
-    todayBtn: true
-  })
-    .on('changeDate', function(ev){
-      var date = moment(ev.date).format('YYYY-MM-DD');
-      if(date>moment(selectRW.missionStartDate).format('YYYY-MM-DD')){
-        $('#qjEndDate').datetimepicker('setStartDate', date);
-      }else{
-
-      }
-
-      $('#qjStartDate').datetimepicker('setEndDate', moment(selectRW.missionEndDate).format('YYYY-MM-DD'));
-    });
-  $("#qjEndDate").datetimepicker({
-    format: 'yyyy/mm/dd',
-    minView: 'month',
-    startView: 'month',
-    language: 'zh-CN',
-    autoclose: true,
-    todayBtn: true
-  })
-    .on('changeDate', function(ev){
-      var date = moment(ev.date).format('YYYY-MM-DD');
-      if(date < moment(selectRW.missionEndDate).format('YYYY-MM-DD')){
-        $('#qjStartDate').datetimepicker('setEndDate', date);
-      }else{
-        //$('#qjStartDate').datetimepicker('setEndDate', moment(selectRW.missionEndDate).format('YYYY-MM-DD'));
-      }
-
-
-      $('#qjEndDate').datetimepicker('setStartDate', moment(selectRW.missionStartDate).format('YYYY-MM-DD'));
-    });
+//  $("#rwStartDate").datetimepicker({
+//    format: 'yyyy/mm/dd',
+//    minView: 'month',
+//    startView: 'month',
+//    language: 'zh-CN',
+//    autoclose: true,
+//    todayBtn: true
+//  })
+//    .on('changeDate', function(ev){
+//      var date = moment(ev.date).format('YYYY-MM-DD');
+//      $('#rwEndDate').datetimepicker('setStartDate', date);
+//      $('#rwStartDate').datetimepicker('setEndDate', null);
+//    });
+//  $("#rwEndDate").datetimepicker({
+//    format: 'yyyy/mm/dd',
+//    minView: 'month',
+//    startView: 'month',
+//    language: 'zh-CN',
+//    autoclose: true,
+//    todayBtn: true
+//  })
+//    .on('changeDate', function(ev){
+//      var date = moment(ev.date).format('YYYY-MM-DD');
+//      $('#rwStartDate').datetimepicker('setEndDate', date);
+//      $('#rwEndDate').datetimepicker('setStartDate', null);
+//    });
+//
+//
+//  $("#qjStartDate").datetimepicker({
+//    format: 'yyyy/mm/dd',
+//    minView: 'month',
+//    startView: 'month',
+//    language: 'zh-CN',
+//    autoclose: true,
+//    todayBtn: true
+//  })
+//    .on('changeDate', function(ev){
+//      var date = moment(ev.date).format('YYYY-MM-DD');
+//      if(date>moment(selectRW.missionStartDate).format('YYYY-MM-DD')){
+//        $('#qjEndDate').datetimepicker('setStartDate', date);
+//      }else{
+//
+//      }
+//
+//      $('#qjStartDate').datetimepicker('setEndDate', moment(selectRW.missionEndDate).format('YYYY-MM-DD'));
+//    });
+//  $("#qjEndDate").datetimepicker({
+//    format: 'yyyy/mm/dd',
+//    minView: 'month',
+//    startView: 'month',
+//    language: 'zh-CN',
+//    autoclose: true,
+//    todayBtn: true
+//  })
+//    .on('changeDate', function(ev){
+//      var date = moment(ev.date).format('YYYY-MM-DD');
+//      if(date < moment(selectRW.missionEndDate).format('YYYY-MM-DD')){
+//        $('#qjStartDate').datetimepicker('setEndDate', date);
+//      }else{
+//        //$('#qjStartDate').datetimepicker('setEndDate', moment(selectRW.missionEndDate).format('YYYY-MM-DD'));
+//      }
+//
+//
+//      $('#qjEndDate').datetimepicker('setStartDate', moment(selectRW.missionStartDate).format('YYYY-MM-DD'));
+//    });
 }
 
 /*修改名称*/
@@ -888,7 +890,38 @@ function rename(type, id) {
 }
 
 
+/*返回上一步操作*/
+function returnLeft(type){
+  if(type == 'rw'){
+    $('.rwType').css('display','block');
+    $('.rwCon').css('display','none');
+    $('.createRwBtn').css('display','none');
+    $('.return_S_rw').css('display','none');
+  }
+}
 
+
+
+/*创建任务选择预评估或后评估*/
+function selectType(type){
+  var startDate;
+  var endDate;
+  if(type == 'y'){
+    startDate = moment().subtract(2, 'w').format('YYYY-MM-DD');
+    endDate = moment().add(1,'y').format('YYYY-MM-DD');
+    rwSelectType = '预评估';
+  }else if(type == 'h'){
+    startDate = '2007-01-01';
+    endDate = moment().subtract(2, 'd').format('YYYY-MM-DD')
+    rwSelectType = '后评估';
+  }
+
+  $('.rwType').css('display','none');
+  $('.rwCon').css('display','block');
+
+  $('.createRwBtn').css('display','inline-block');
+  $('.return_S_rw').css('display','inline-block');
+}
 
 /*新改任务创建*/
 function createRw(){
@@ -902,8 +935,7 @@ function createRw(){
   params.missionStartDate = $('#rwStartDate').val();
   params.missionEndDate = $('#rwEndDate').val();
   params.userId = paramsName.userId = userId;
-  params.missionStauts = $('#rwType').val();
-
+  params.missionStauts = rwSelectType;
 
   ajaxPost(urlName,paramsName).success(function(res){
     if(res.data){
@@ -929,11 +961,39 @@ function createRw(){
   })
 }
 
+function initRwDate(){
+  $('#rwStartDate').daterangepicker({
+    singleDatePicker: true,  //显示单个日历
+    timePicker:false,  //允许选择时间
+    timePicker24Hour:true, //时间24小时制
+    minDate:'2017-01-01',//最早可选日期
+    maxDate:'2017-01-10',//最大可选日期
+    locale: {
+      format: "YYYY-MM-DD",
+//      separator: " - ",
+//      applyLabel: "确定", //按钮文字
+//      cancelLabel: "取消",//按钮文字
+//      weekLabel: "W",
+      daysOfWeek: [
+        "日","一","二","三","四","五","六"
+      ],
+      monthNames: [
+        "一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"
+      ],
+      firstDay: 1
+    },
+    "startDate": "03/03/2017",
+    "endDate": "03/09/2017",
+    "opens": "center"
+  })
+}
+
 
 /*新改情景创建*/
 function createQj(){
 
 }
+
 
 
 
