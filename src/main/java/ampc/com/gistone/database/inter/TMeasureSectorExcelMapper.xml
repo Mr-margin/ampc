@@ -73,16 +73,17 @@
  <!--根据用户ID 查询行业措施数据-->
   <select id="selectByUserId" parameterType="java.lang.Long" resultMap="mapByUserId">
   	select MS_EXCEL_ID,MID,MS_EXCEL_DISPLAY,SID,SECTORSNAME from T_MEASURE_SECTOR_EXCEL 
+  	  where IS_EFFECTIVE='1' 
   	<if test="_parameter != null" >
-        where USER_ID=#{_parameter,jdbcType=DECIMAL} 
+        and USER_ID=#{_parameter,jdbcType=DECIMAL} 
       </if>
   </select>
   
   <!--根据用户ID 获取所有的行业名称-->
   <select id="getSectorInfo" parameterType="java.lang.Long" resultMap="mapGetName">
-  	select SECTORSNAME,SID from T_MEASURE_SECTOR_EXCEL 
+  	select SECTORSNAME,SID from T_MEASURE_SECTOR_EXCEL   where IS_EFFECTIVE='1' 
   	  <if test="_parameter != null" >
-        where USER_ID=#{_parameter,jdbcType=DECIMAL} 
+        and USER_ID=#{_parameter,jdbcType=DECIMAL} 
       </if> GROUP BY SECTORSNAME,SID ORDER BY SID
   	
   </select>
@@ -90,14 +91,23 @@
  <!--根据条件查询对应的措施-->
   <select id="getMeasureInfo" parameterType="hashMap" resultMap="mapBySname">
   	select MID,MS_EXCEL_DISPLAY,COLORNAME,COLORCODE from T_MEASURE_SECTOR_EXCEL 
-  	where  SECTORSNAME =#{sectorsName,jdbcType=OTHER}
+  	where  IS_EFFECTIVE='1'  and SECTORSNAME =#{sectorsName,jdbcType=OTHER}
   	<if test="userId != null" >
-        and where USER_ID=#{userId,jdbcType=DECIMAL} 
+        and USER_ID=#{userId,jdbcType=DECIMAL} 
       </if>
   </select>
  
  
- 
+  <!-- 修改所有的行业状态 相当于删除 -->
+  <update id="updateIsEffeByIds" parameterType="java.lang.Long">
+    update T_MEASURE_SECTOR_EXCEL
+    set 
+      IS_EFFECTIVE = '0',
+      DELETE_TIME = (select sysdate from dual) 
+     <if test="_parameter != null" >
+        where USER_ID=#{_parameter,jdbcType=DECIMAL} 
+      </if> 
+  </update>
  
  
  

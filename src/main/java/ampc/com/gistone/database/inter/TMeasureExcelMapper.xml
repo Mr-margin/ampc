@@ -47,11 +47,25 @@
   <!--获取到所有的措施信息-->
   <select id="selectAll"  resultMap="BaseResultMap">
   	select <include refid="Base_Column_List" />
-    from T_MEASURE_EXCEL ORDER BY MEASURE_EXCEL_ID
+    from T_MEASURE_EXCEL 
+     where IS_EFFECTIVE='1' 
+    	<if test="_parameter != null" >
+        	and USER_ID=#{_parameter,jdbcType=DECIMAL} 
+        </if> 
+    ORDER BY MEASURE_EXCEL_ID
   </select>
  
   
-  
+  <!-- 修改所有的措施状态 相当于删除 -->
+  <update id="updateIsEffeByIds" parameterType="java.lang.Long">
+    update T_MEASURE_EXCEL
+    set 
+      IS_EFFECTIVE = '0',
+      DELETE_TIME = (select sysdate from dual) 
+     <if test="_parameter != null" >
+        where USER_ID=#{_parameter,jdbcType=DECIMAL} 
+      </if> 
+  </update>
   
   
   

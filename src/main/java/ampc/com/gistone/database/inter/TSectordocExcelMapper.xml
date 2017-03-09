@@ -31,12 +31,7 @@
   </resultMap>
  
  
- <!--获取到所有的行业信息-->
-  <select id="selectAll"  resultMap="BaseResultMap">
-  	select <include refid="Base_Column_List" />
-    from T_SECTORDOC_EXCEL ORDER BY SECTORDOC_ID
-  </select>
-  
+ 
   <!--查询当前措施表中的最高版本号-->
   <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
   	select max(SECTORDOC_VERSION) from T_SECTORDOC_EXCEL
@@ -47,13 +42,23 @@
  
  <!--获取etitle-->
   <select id="selectByUserId"  resultMap="mapSelect" parameterType="hashMap">
-  	select sectordoc_etitle,SECTORDOC_CTITLE from T_SECTORDOC_EXCEL WHERE SECTORDOC_DISNAME=#{sectorName,jdbcType=OTHER} 
+  	select sectordoc_etitle,SECTORDOC_CTITLE from T_SECTORDOC_EXCEL WHERE 
+  	 IS_EFFECTIVE='1' and SECTORDOC_DISNAME=#{sectorName,jdbcType=OTHER} 
   		<if test="userId != null" >
         AND USER_ID=#{userId,jdbcType=OTHER} 
       </if> 
   </select>
   
-  
+  <!-- 修改所有的行业状态 相当于删除 -->
+  <update id="updateIsEffeByIds" parameterType="java.lang.Long">
+    update T_SECTORDOC_EXCEL
+    set 
+      IS_EFFECTIVE = '0',
+      DELETE_TIME = (select sysdate from dual) 
+     <if test="_parameter != null" >
+        where USER_ID=#{_parameter,jdbcType=DECIMAL} 
+      </if> 
+  </update>
   
   
   
