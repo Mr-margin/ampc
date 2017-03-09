@@ -269,7 +269,7 @@ public class TMeasureSectorExcel {
     @Override
    	public boolean equals(Object obj) {
        	TMeasureSectorExcel s = (TMeasureSectorExcel) obj;
-   		return msExcelName.equals(s.msExcelName) && sectorsname.equals(s.sectorsname);
+   		return (msExcelName.equals(s.msExcelName) && sectorsname.equals(s.sectorsname));
    	}
 
    	@Override
