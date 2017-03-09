@@ -53,6 +53,22 @@
      			  </if>
   </select>
   
+  
+  <!-- 修改所有的措施状态 相当于删除 -->
+  <update id="updateIsEffeByIds" >
+    update T_PLAN_MEASURE
+    set 
+      IS_EFFECTIVE = '0',
+      DELETE_TIME = (select sysdate from dual) 
+  </update>
+  
+  
+  
+  
+  
+  
+  
+  
   <select id="selectByEntity" resultMap="ResultMapWithBLOBs" parameterType="ampc.com.gistone.database.model.TPlanMeasure" >
     select 
     <include refid="Base_Column_List" />
