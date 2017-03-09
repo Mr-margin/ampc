@@ -151,7 +151,7 @@ public class ExcelToDate {
 	* @param path  
 	*/
 	public static List<TSectorExcel> ReadSector(String fileName,Long versionId,Long userId){  
-		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\03.措施设计\\sector_mapping.xlsx";
+		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_4行业匹配.xlsx";
 		List<TSectorExcel> sectorList=new ArrayList<TSectorExcel>();
         try {  
             Workbook wb  = null;  
@@ -220,7 +220,7 @@ public class ExcelToDate {
 	* @param path  
 	*/
 	public static List<TMeasureExcel> ReadMeasure(String fileName,Long versionId,Long userId){  
-		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\03.措施设计\\measure_sets_QYv1.xlsx";
+		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\03.措施设计\\measure_sets_demo_QYv1.xlsx";
 		List<TMeasureExcel> measureList=new ArrayList<TMeasureExcel>();
         try {  
             Workbook wb  = null;  
