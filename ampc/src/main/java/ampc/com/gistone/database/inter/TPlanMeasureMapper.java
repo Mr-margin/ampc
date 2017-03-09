@@ -22,6 +22,13 @@ public interface TPlanMeasureMapper {
 	 */
 	List<Map> selectByQuery(Map map);
 	
+	/**
+     * 修改预案措施是否有效
+     * @param userId
+     * @return
+     */
+    int updateIsEffeByIds();
+	
 	List<TPlanMeasure> selectByEntity(TPlanMeasure record);
     
     int deleteByPlanId(Long planId);
