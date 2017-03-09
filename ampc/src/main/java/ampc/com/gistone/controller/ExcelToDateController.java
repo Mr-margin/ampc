@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMeasureExcelMapper;
 import ampc.com.gistone.database.inter.TMeasureSectorExcelMapper;
+import ampc.com.gistone.database.inter.TPlanMeasureMapper;
 import ampc.com.gistone.database.inter.TQueryExcelMapper;
 import ampc.com.gistone.database.inter.TSectorExcelMapper;
 import ampc.com.gistone.database.inter.TSectordocExcelMapper;
@@ -67,6 +68,10 @@ public class ExcelToDateController {
 	@Autowired
 	public TSectordocExcelMapper tSectordocExcelMapper;
 	
+	//预案措施映射
+	@Autowired
+	public TPlanMeasureMapper tPlanMeasureMapper;
+		
 	/**
 	 * 删除数据方法
 	 * @param type
@@ -74,10 +79,15 @@ public class ExcelToDateController {
 	public void deleteInfo(int type,Long userId){
 		//只添加措施Excel 时删除对应的表中数据
 		if(type==1){
-			
+			tMeasureExcelMapper.updateIsEffeByIds(userId);
+			tPlanMeasureMapper.updateIsEffeByIds();
 		}else if(type==2){  //多个表一起添加时删除的 时删除对应的表中数据
 			tSectorExcelMapper.updateIsEffeByIds(userId);
 			tMeasureExcelMapper.updateIsEffeByIds(userId);
+			tMeasureSectorExcelMapper.updateIsEffeByIds(userId);
+			tQueryExcelMapper.updateIsEffeByIds(userId);
+			tSectordocExcelMapper.updateIsEffeByIds(userId);
+			tPlanMeasureMapper.updateIsEffeByIds();
 		}
 	}
 	
@@ -212,10 +222,10 @@ public class ExcelToDateController {
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			List<TQueryExcel> tqe = ExcelToDate.ReadQuery(fileName,versionId,userId);
 			for (TQueryExcel t : tqe) {
-//				int result=tQueryExcelMapper.insertSelective(t);
-//				if(result<1){
-//					return AmpcResult.build(1000, "添加失败!", null);
-//				}
+				int result=tQueryExcelMapper.insertSelective(t);
+				if(result<1){
+					return AmpcResult.build(1000, "添加失败!", null);
+				}
 			}
 			System.out.println(tqe.size());
 			return AmpcResult.ok("更新成功");
@@ -615,10 +625,13 @@ public class ExcelToDateController {
 	public List<CheckUtil1> getMeasure(Long userId){
 		//创建l4s分段条件类集合
 		List<CheckUtil1> reg=new ArrayList<CheckUtil1>();
+		//获取到所有措施
 		List<TMeasureExcel> tmeList=tMeasureExcelMapper.selectAll(userId);
+		//如果没有获取默认的
 		if(tmeList.size()==0){
 			tmeList=tMeasureExcelMapper.selectAll(null);
 		}
+		//循环所有的措施
 		for (TMeasureExcel tme : tmeList) {
 			//获取到措施中的过滤L4sfilter
 			String filterL4s=tme.getMeasureExcelL4s();
