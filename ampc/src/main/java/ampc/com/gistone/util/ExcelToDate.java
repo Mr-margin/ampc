@@ -18,9 +18,15 @@ import ampc.com.gistone.database.model.TQueryExcel;
 import ampc.com.gistone.database.model.TSectorExcel;
 import ampc.com.gistone.database.model.TSectordocExcel;
 
-
+/**
+ * Excel解析帮助类
+ * @author WangShanxi
+ * @version v.0.1
+ * @date 2017年3月9日
+ */
 public class ExcelToDate {
 	/**  
+	 *行业描述Excel表
 	* 读取excel描述数据   读取行业描述Excel表
 	* @param path  
 	*/
@@ -47,6 +53,7 @@ public class ExcelToDate {
                     	continue;
                     }
                     String t=getCellValue(row.getCell(4));
+                    //只保留属性为 统计 和 筛选和统计 的信息
                     if(t.equals("统计")||t.equals("筛选和统计")){
                     	TSectordocExcel sectorDoc=new TSectordocExcel();
                         //写入行业表中名称
@@ -79,6 +86,7 @@ public class ExcelToDate {
 	
 	
 	/**  
+	 * 筛选条件 Excel
 	* 读取excel筛选逻辑数据   读取筛选逻辑Excel表
 	* @param path  
 	*/
@@ -147,6 +155,7 @@ public class ExcelToDate {
 	
 	
 	/**  
+	 *行业Excel表
 	* 读取excel数据   读取行业Excel表
 	* @param path  
 	*/
@@ -216,6 +225,7 @@ public class ExcelToDate {
         }  
     }  
 	/**  
+	 * 措施Excel表
 	* 读取excel数据   读取措施Excel表
 	* @param path  
 	*/
