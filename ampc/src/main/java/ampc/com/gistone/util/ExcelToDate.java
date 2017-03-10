@@ -117,22 +117,24 @@ public class ExcelToDate {
                     query.setQueryEtitle(getCellValue(row.getCell(0)));
                     //写入条件名称
                     query.setQueryName(getCellValue(row.getCell(1)));
+                    //写入出现条件英文
+                    query.setQueryShowqueryen(getCellValue(row.getCell(2)));
                     //写入出现条件
-                    query.setQueryShowquery(getCellValue(row.getCell(2)));
+                    query.setQueryShowquery(getCellValue(row.getCell(3)));
                     //写入条件值
-                    query.setQueryValue(getCellValue(row.getCell(3)));
+                    query.setQueryValue(getCellValue(row.getCell(4)));
                     //写入选项类型
-                    query.setQueryOptiontype(getCellValue(row.getCell(4)));
+                    query.setQueryOptiontype(getCellValue(row.getCell(5)));
                     //写入选项1
-                    query.setQueryOption1(getCellValue(row.getCell(5)));
+                    query.setQueryOption1(getCellValue(row.getCell(6)));
                     //写入选项2
-                    query.setQueryOption2(getCellValue(row.getCell(6)));
+                    query.setQueryOption2(getCellValue(row.getCell(7)));
                     //写入选项3
-                    query.setQueryOption3(getCellValue(row.getCell(7)));
+                    query.setQueryOption3(getCellValue(row.getCell(8)));
                     //写入选项4
-                    query.setQueryOption4(getCellValue(row.getCell(8)));
+                    query.setQueryOption4(getCellValue(row.getCell(9)));
                     //写入选项5
-                    query.setQueryOption5(getCellValue(row.getCell(9)));
+                    query.setQueryOption5(getCellValue(row.getCell(10)));
                     //写入行业显示名称
                     query.setSectorName(sheetName);
                     //写入版本等信息
