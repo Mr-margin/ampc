@@ -33,8 +33,60 @@ public class TScenarinoDetail {
     private String isEffective;
     //删除时间
     private Date deleteTime;
+    //基础情景id
+    private Long basisScenarinoId;
+    //基础日期
+    private Date basisTime;
+    //对比情景id
+    private Long controstScenarinoId;
+    //情景类型
+    private String scenType;
+    //起报日期
+    private Date pathDate;
+    
+    private Long spanUp;
+    
+    public Date getPathDate() {
+		return pathDate;
+	}
 
-    public Long getScenarinoId() {
+	public void setPathDate(Date pathDate) {
+		this.pathDate = pathDate;
+	}
+
+	public Long getBasisScenarinoId() {
+		return basisScenarinoId;
+	}
+
+	public void setBasisScenarinoId(Long basisScenarinoId) {
+		this.basisScenarinoId = basisScenarinoId;
+	}
+
+	public Date getBasisTime() {
+		return basisTime;
+	}
+
+	public void setBasisTime(Date basisTime) {
+		this.basisTime = basisTime;
+	}
+
+	public Long getControstScenarinoId() {
+		return controstScenarinoId;
+	}
+
+	public void setControstScenarinoId(Long controstScenarinoId) {
+		this.controstScenarinoId = controstScenarinoId;
+	}
+
+	public String getScenType() {
+		return scenType;
+	}
+
+	public void setScenType(String scenType) {
+		this.scenType = scenType;
+	}
+
+	public Long getScenarinoId() {
         return scenarinoId;
     }
 
