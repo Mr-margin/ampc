@@ -74,4 +74,8 @@ public interface TScenarinoDetailMapper {
     int updateByPrimaryKeySelective(TScenarinoDetail record);
 
     int updateByPrimaryKey(TScenarinoDetail record);
+    
+    List<TScenarinoDetail> selectAllByMissionId(Long missionId);
+    
+    TScenarinoDetail selectMaxEndTime();
 }
