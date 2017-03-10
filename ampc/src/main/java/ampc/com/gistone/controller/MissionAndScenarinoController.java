@@ -149,7 +149,7 @@ public class MissionAndScenarinoController {
 			//任务的开始时间
 			String startDate=data.get("missionStartDate").toString();
 			String endDate=data.get("missionEndDate").toString();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date missionStartDate=sdf.parse(startDate);
 			Date missionEndDate=sdf.parse(endDate);
 			mission.setMissionStartDate(missionStartDate);
@@ -827,8 +827,10 @@ public class MissionAndScenarinoController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			String scenType=data.get("scenType").toString();//任务id
 			Long userId=Long.parseLong(data.get("userId").toString());//情景id
+			//查询用户信息
 			TUser tUser=tUserMapper.selectByPrimaryKey(userId);
 			Integer predictionTime=tUser.getPredictionTime();
+			//获取当前时间
 			Date date=new Date();
 			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 			JSONObject obj=new JSONObject();
