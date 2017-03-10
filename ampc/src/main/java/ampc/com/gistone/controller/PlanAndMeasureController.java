@@ -78,7 +78,7 @@ public class PlanAndMeasureController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//预案id
-			//Long planId=Long.parseLong(data.get("planId").toString());
+			Long planId=Long.parseLong(data.get("planId").toString());
 			//措施id
 			Long measureId=Long.parseLong(data.get("measureId").toString());
 			//行业名称
@@ -186,10 +186,10 @@ public class PlanAndMeasureController {
 			map.put("planId", planId);
 			map.put("userId", userId);
 			//查看行业id是否为空，不为空添加，为空不加
-			if(data.get("sectorId")!=null){	
-				map.put("sectorId", data.get("sectorId"));
+			if(data.get("sectorName")!=null){	
+				map.put("sectorName", data.get("sectorName"));
 			}else{
-				map.put("sectorId", null);
+				map.put("sectorName", null);
 			}
 			//查询措施
 			List<Map> list=tPlanMeasureMapper.selectByQuery(map);
@@ -261,7 +261,12 @@ public class PlanAndMeasureController {
 		    int addstatus=tPlanMapper.insertSelective(tPlan);
 		   //判断是否添加成功，根据结果返回值
 		    if(addstatus!=0){
-		    	 return AmpcResult.ok("添加成功");	
+		    	Map map=new HashMap();
+		    	map.put("userId", userId);
+		    	map.put("scenarioId", scenarioId);
+		    	map.put("planName", planName);
+		    	Integer id=tPlanMapper.getIdByQuery(map);
+		    	return AmpcResult.ok(id);
 		    }
 		    return AmpcResult.build(1000, "添加失败");
 		}catch(Exception e){

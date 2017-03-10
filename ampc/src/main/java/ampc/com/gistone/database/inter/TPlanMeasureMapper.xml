@@ -44,9 +44,12 @@
 			FROM T_PLAN_MEASURE TPM 
   				INNER JOIN T_MEASURE_EXCEL TME ON TPM.MEASURE_ID=TME.MEASURE_EXCEL_ID
   				INNER JOIN T_SECTOR_EXCEL TSE ON TPM.SECTOR_ID=TSE.SECTOR_EXCEL_ID
-				WHERE  IS_EFFECTIVE='1' AND TME.USER_ID=#{userId,jdbcType=OTHER}
-				  <if test="sectorId != null" >
-       					 AND TPM.SECTOR_ID=#{sectorId,jdbcType=OTHER}
+				WHERE  IS_EFFECTIVE='1' 
+				  <if test="userId != null" >
+        				AND TME.USER_ID=#{userId,jdbcType=OTHER}
+     			 </if>
+				  <if test="sectorName != null" >
+       					 AND TPM.SECTOR_EXCEL_NAME=#{sectorName,jdbcType=OTHER}
      			  </if>
 				 <if test="measureId != null" >
        					 AND TPM.MEASURE_ID=#{measureId,jdbcType=DECIMAL} 

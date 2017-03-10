@@ -1,10 +1,17 @@
 package ampc.com.gistone.database.inter;
 
 import java.util.List;
+import java.util.Map;
 
 import ampc.com.gistone.database.model.TPlan;
 
 public interface TPlanMapper {
+	/**
+	 * 根据条件查询ID
+	 * @param map
+	 * @return
+	 */
+	int getIdByQuery(Map map);
     int deleteByPrimaryKey(Long planId);
 
     int insert(TPlan record);

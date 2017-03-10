@@ -17,6 +17,7 @@ import org.w3c.dom.stylesheets.LinkStyle;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMeasureSectorExcelMapper;
+import ampc.com.gistone.database.inter.TPlanMeasureMapper;
 import ampc.com.gistone.entity.SMUtil;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
@@ -31,6 +32,9 @@ import ampc.com.gistone.util.ClientUtil;
 @RequestMapping
 public class MeasureAndSectorController {
 
+	@Autowired
+	private TPlanMeasureMapper tPlanMeasureMapper;
+	
 	//默认映射
 	@Autowired
 	private GetBySqlMapper getBySqlMapper;
@@ -52,6 +56,8 @@ public class MeasureAndSectorController {
 			//设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
+			//预案id
+			Long planId=Long.parseLong(data.get("planId").toString());
 			//用户的id  确定当前用户
 			Long userId=null;
 			if(data.get("userId")!=null){
@@ -79,6 +85,13 @@ public class MeasureAndSectorController {
 				//查询全部写入返回结果集
 				List<Map> list = this.tMeasureSectorExcelMapper.getMeasureInfo(map);
 				sm.setMeasureItems(list);
+				map=new HashMap<String,Object>();
+				map.put("planId", planId);
+				map.put("userId", userId);
+				map.put("sectorName", data.get("sectorName"));
+				List<Map> measureList=tPlanMeasureMapper.selectByQuery(map);
+				sm.setCount(measureList.size());
+				sm.setPlanMeasure(measureList);
 				result.add(sm);
 			}
 			
