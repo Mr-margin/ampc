@@ -368,7 +368,6 @@ public class ExcelToDateController {
 		if(check2==null){
 			//保存结果
 			ms.add(castClass(tse,cu11.gettMeasureExcel(),vid,uid));
-			System.out.println("没有id[2]的条件,该条成立");
 			//返回证明 该条l4s符合这条措施
 			return "ok";
 		}
@@ -413,8 +412,6 @@ public class ExcelToDateController {
 				}
 			}
 		}
-		//返回没有匹配结果 该条行业不匹配
-		System.out.println("id[2]没有匹配的");
 		return "no";
 	}
 	
@@ -429,7 +426,6 @@ public class ExcelToDateController {
 		if(check3==null){
 			//保存结果
 			ms.add(castClass(tse,cu11.gettMeasureExcel(),vid,uid));
-			System.out.println("没有id[3]的条件,该条成立");
 			//返回证明 该条l4s符合这条措施
 			return "ok";
 		}
@@ -489,7 +485,6 @@ public class ExcelToDateController {
 		if(check4==null){
 			//保存结果
 			ms.add(castClass(tse,cu11.gettMeasureExcel(),vid,uid));
-			System.out.println("没有id[4]的条件,该条成立");
 			//返回证明 该条l4s符合这条措施
 			return "ok";
 		}
@@ -501,7 +496,6 @@ public class ExcelToDateController {
 				if(id4==cu4.getNum1()||id4==cu4.getNum2()){
 					//保存结果
 					ms.add(castClass(tse,cu11.gettMeasureExcel(),vid,uid));
-					System.out.println("全部符合,该条成立");
 					//返回证明 该条l4s符合这条措施
 					return "ok";
 				}else{
@@ -512,7 +506,6 @@ public class ExcelToDateController {
 				if(cu4.getNum1()<=id4&&id4<=cu4.getNum2()){
 					//保存结果
 					ms.add(castClass(tse,cu11.gettMeasureExcel(),vid,uid));
-					System.out.println("全部符合,该条成立");
 					//返回证明 该条l4s符合这条措施
 					return "ok";
 				}else{
@@ -523,7 +516,6 @@ public class ExcelToDateController {
 				if(cu4.getNum1()==id4){
 					//保存结果
 					ms.add(castClass(tse,cu11.gettMeasureExcel(),vid,uid));
-					System.out.println("全部符合,该条成立");
 					//返回证明 该条l4s符合这条措施
 					return "ok";
 				}else{
@@ -532,7 +524,6 @@ public class ExcelToDateController {
 			}
 		}
 		//返回没有匹配结果 该条行业不匹配
-		System.out.println("id[4]没有匹配的");
 		return "no";
 	}
 	
@@ -556,7 +547,6 @@ public class ExcelToDateController {
 		for (TSectorExcel tse : tseList) {
 			//先获取l4s的值
 			String l4s=tse.getSectorExcelL4s().toString();
-			//l4s="0003-4701-1901-1823";
 			//对l4s进行拆分
 			String[] ids=l4s.split("-");
 			//对每一段进行转换int用来比对
@@ -571,7 +561,6 @@ public class ExcelToDateController {
 				//获取第一个id[1]的条件集合
 				List<CheckUtil> check1 = cu11.getCheck1();
 				if(check1==null){
-					System.out.println("没有第一个条件,退出,应该是出错了！");
 					break;
 				}
 				//循环第一个id[i]的条件集合
@@ -611,8 +600,6 @@ public class ExcelToDateController {
 				}
 			}
 			System.out.println(ms.size());
-			//返回没有匹配结果 该条行业不匹配
-			System.out.println("id[1]没有匹配的");
 		}
 		//返回结果集
 		return ms;
@@ -669,33 +656,6 @@ public class ExcelToDateController {
 					checkChar(id2,list2);
 					checkChar(id3,list3);
 					checkChar(id4,list4);
-					System.out.println("条件1");
-					for (CheckUtil ccc : list1) {
-						System.out.println(ccc.getMethod());
-						System.out.println(ccc.getNum1());
-						System.out.println(ccc.getNum2());
-					}
-					System.out.println("\n\n");
-					System.out.println("条件2");
-					for (CheckUtil ccc : list2) {
-						System.out.println(ccc.getMethod());
-						System.out.println(ccc.getNum1());
-						System.out.println(ccc.getNum2());
-					}
-					System.out.println("\n\n");
-					System.out.println("条件3");
-					for (CheckUtil ccc : list3) {
-						System.out.println(ccc.getMethod());
-						System.out.println(ccc.getNum1());
-						System.out.println(ccc.getNum2());
-					}
-					System.out.println("\n\n");
-					System.out.println("条件4");
-					for (CheckUtil ccc : list4) {
-						System.out.println(ccc.getMethod());
-						System.out.println(ccc.getNum1());
-						System.out.println(ccc.getNum2());
-					}
 					checkUtil1.setCheck1(list1);
 					checkUtil1.setCheck2(list2);
 					checkUtil1.setCheck3(list3);
