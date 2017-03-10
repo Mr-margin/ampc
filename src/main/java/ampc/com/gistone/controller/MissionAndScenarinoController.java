@@ -11,6 +11,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -24,10 +27,12 @@ import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TScenarinoAreaMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTimeMapper;
+import ampc.com.gistone.database.inter.TUserMapper;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoAreaWithBLOBs;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTime;
+import ampc.com.gistone.database.model.TUser;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 
@@ -55,6 +60,9 @@ public class MissionAndScenarinoController {
 	//时段映射
 	@Autowired
 	private TTimeMapper tTimeMapper;
+	
+	@Autowired
+	private TUserMapper tUserMapper;
 	
 	private AreaAndTimeController atc=new AreaAndTimeController();
 	/**
@@ -744,6 +752,105 @@ public class MissionAndScenarinoController {
 			e.printStackTrace();
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
+		}
+	}
+	
+	@RequestMapping("scenarino/find_scenarino_time")
+	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
+	public AmpcResult find_scenarino_time(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Long missionId=Long.parseLong(data.get("missionId").toString());//任务id
+			Long userId=Long.parseLong(data.get("userId").toString());//情景id
+			//根据id查询任务
+			TMissionDetail tMission=tMissionDetailMapper.selectByPrimaryKey(missionId);
+			//根据任务id查询所有情景
+			List<TScenarinoDetail> scenarlist=tScenarinoDetailMapper.selectAllByMissionId(missionId);
+			//查询基准情景最大结束时间
+			TScenarinoDetail scenar=tScenarinoDetailMapper.selectMaxEndTime();
+			//转换类型
+			String missiondate=tMission.getMissionStartDate().toString();
+			String times=scenar.getScenarinoEndDate().toString();
+			SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");  
+		    Date maxendtime = formatter.parse(times);
+		    Date maxstarttime=formatter.parse(missiondate);
+			JSONArray arr=new JSONArray();
+			for(TScenarinoDetail tscenar:scenarlist){
+				JSONObject obj=new JSONObject();
+				//为预评估情景时保存数据
+				if(tscenar.getScenType().equals("1")){
+					obj.put("scenarinoId", tscenar.getScenarinoId());
+					obj.put("scenarinoName", tscenar.getScenarinoName());
+					String starttime=tscenar.getScenarinoStartDate().toString();
+					String endtime=tscenar.getScenarinoEndDate().toString(); 
+					String padate=tscenar.getPathDate().toString();
+				    Date scenarinoStartDate=formatter.parse(starttime);
+				    Date scenarinoEndDate=formatter.parse(endtime);
+				    Date pathDate=formatter.parse(padate);
+					obj.put("scenarinoStartDate", tscenar.getScenarinoStartDate());
+					obj.put("scenarinoEndDate", scenarinoEndDate);
+					obj.put("pathDate", pathDate);
+					arr.add(obj);
+				}
+				//为后处理情景时保存数据
+				if(tscenar.getScenType().equals("2")){
+					obj.put("scenarinoId", tscenar.getScenarinoId());
+					obj.put("scenarinoName", tscenar.getScenarinoName());
+					String starttime=tscenar.getScenarinoStartDate().toString();  
+					String endtime=tscenar.getScenarinoEndDate().toString();
+				    Date scenarinoStartDate=formatter.parse(starttime);
+				    Date scenarinoEndDate=formatter.parse(endtime);
+					obj.put("scenarinoStartDate", tscenar.getScenarinoStartDate());
+					obj.put("scenarinoEndDate", scenarinoEndDate);
+					arr.add(obj);
+				}	
+			}
+			//为基准情景保存数据
+			JSONObject lastobj=new JSONObject();
+			lastobj.put("scenarinoId", -1);
+			lastobj.put("scenarinoName", "基准情景");
+			lastobj.put("scenarinoStartDate", maxstarttime);
+			lastobj.put("scenarinoEndDate", maxendtime);
+			arr.add(lastobj);
+			return AmpcResult.build(0, "find_scenarino_time success",arr);
+		}catch(Exception e){
+			e.printStackTrace();
+		return AmpcResult.build(1000, "参数错误",null);
+		}
+	}
+	@RequestMapping("scenarino/find_endTime")
+	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
+	public AmpcResult find_endTime(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+       try{
+    	   ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			String scenType=data.get("scenType").toString();//任务id
+			Long userId=Long.parseLong(data.get("userId").toString());//情景id
+			TUser tUser=tUserMapper.selectByPrimaryKey(userId);
+			Integer predictionTime=tUser.getPredictionTime();
+			Date date=new Date();
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+			JSONObject obj=new JSONObject();
+			if(scenType.equals("1")){
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+			cal.add(Calendar.DATE, predictionTime);
+			String addTimeDate =sdf.format(cal.getTime());
+			Date endTime=sdf.parse(addTimeDate);
+			obj.put("endTime", endTime);
+			}else{
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(date);
+				cal.add(Calendar.DATE, -1);
+				String addTimeDate =sdf.format(cal.getTime());
+				Date endTime=sdf.parse(addTimeDate);
+				obj.put("endTime", endTime);
+			} 
+    	   return AmpcResult.build(0, "find_endTime success",obj);
+       }catch(Exception e){
+			e.printStackTrace();
+		return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
 }
