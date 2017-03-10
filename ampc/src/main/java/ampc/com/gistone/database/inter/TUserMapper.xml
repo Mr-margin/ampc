@@ -8,9 +8,10 @@
     <result column="PROVINCE_CODE" property="provinceCode" jdbcType="DECIMAL" />
     <result column="CITY_CODE" property="cityCode" jdbcType="DECIMAL" />
     <result column="COUNTY_CODE" property="countyCode" jdbcType="DECIMAL" />
+    <result column="PREDICTION_TIME" property="predictionTime" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Base_Column_List" >
-    USER_ID, USER_NAME, PASSWORD, PROVINCE_CODE, CITY_CODE, COUNTY_CODE
+    USER_ID, USER_NAME, PASSWORD, PROVINCE_CODE, CITY_CODE, COUNTY_CODE, PREDICTION_TIME
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -24,9 +25,9 @@
   </delete>
   <insert id="insert" parameterType="ampc.com.gistone.database.model.TUser" >
     insert into T_USER (USER_ID, USER_NAME, PASSWORD, 
-      PROVINCE_CODE, CITY_CODE)
+      PROVINCE_CODE, CITY_CODE, PREDICTION_TIME)
     values (#{userId,jdbcType=DECIMAL}, #{userName,jdbcType=OTHER}, #{password,jdbcType=OTHER}, 
-      #{provinceCode,jdbcType=DECIMAL}, #{cityCode,jdbcType=DECIMAL}, #{countyCode,jdbcType=DECIMAL})
+      #{provinceCode,jdbcType=DECIMAL}, #{cityCode,jdbcType=DECIMAL}, #{countyCode,jdbcType=DECIMAL}, #{predictionTime,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TUser" >
     insert into T_USER
@@ -49,6 +50,9 @@
        <if test="countyCode != null" >
         COUNTY_CODE,
       </if>
+       <if test="predictionTime != null" >
+        PREDICTION_TIME,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="userId != null" >
@@ -68,6 +72,9 @@
       </if>
       <if test="countyCode != null" >
         #{countyCode,jdbcType=DECIMAL},
+      </if>
+      <if test="predictionTime != null" >
+        #{predictionTime,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -89,6 +96,9 @@
       <if test="countyCode != null" >
         COUNTY_CODE = #{countyCode,jdbcType=DECIMAL},
       </if>
+      <if test="predictionTime != null" >
+        PREDICTION_TIME = #{predictionTime,jdbcType=DECIMAL}
+      </if>
     </set>
     where USER_ID = #{userId,jdbcType=DECIMAL}
   </update>
@@ -99,6 +109,7 @@
       PROVINCE_CODE = #{provinceCode,jdbcType=DECIMAL},
       CITY_CODE = #{cityCode,jdbcType=DECIMAL},
       COUNTY_CODE = #{countyCode,jdbcType=DECIMAL},
+      PREDICTION_TIME = #{predictionTime,jdbcType=DECIMAL}
     where USER_ID = #{userId,jdbcType=DECIMAL}
   </update>
 </mapper>
