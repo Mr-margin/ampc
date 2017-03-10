@@ -58,7 +58,7 @@ vipspa.start({
 
 var parameterPar = {total: '', data: {}};
 var userId = 1;
-/*������*/
+/*看名字*/
 function ajaxPost(url, parameter) {
     parameterPar.data = parameter;
     var p = JSON.stringify(parameterPar);
