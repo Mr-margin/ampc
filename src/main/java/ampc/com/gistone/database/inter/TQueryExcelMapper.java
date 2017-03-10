@@ -6,8 +6,7 @@ import java.util.Map;
 import ampc.com.gistone.database.model.TQueryExcel;
 
 public interface TQueryExcelMapper {
-
-    /**
+	/**
 	 * 查询当前行业Excel表中的最高版本号
 	 * @param map
 	 * @return
@@ -28,6 +27,7 @@ public interface TQueryExcelMapper {
      * @return
      */
     int updateIsEffeByIds(Long userId);
+
     int deleteByPrimaryKey(Long queryId);
 
     int insert(TQueryExcel record);
