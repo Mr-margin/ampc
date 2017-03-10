@@ -14,6 +14,12 @@
     <result column="UPDATE_TIME" property="updateTime" jdbcType="DATE" />
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
     <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
+    <result column="BASIS_SCENARINO_ID" property="basisScenarinoId" jdbcType="DECIMAL" />
+    <result column="BASIS_TIME" property="basisTime" jdbcType="DATE" />
+    <result column="CONTRAST_SCENARINO_ID" property="controstScenarinoId" jdbcType="DECIMAL" />
+    <result column="SCEN_TYPE" property="scenType" jdbcType="VARCHAR" />
+    <result column="PATH_DATE" property="pathDate" jdbcType="DATE" />
+    <result column="SPINUP" property="spinUp" jdbcType="DECIMAL" />
   </resultMap>
   <!-- 返回情景查询列表的数据 -->
   <resultMap id="scenarinoListMap" type="hashMap" >
@@ -28,7 +34,8 @@
   <!-- 返回情景查询列表的列 -->
   <sql id="scenarino_Column_List" >
   	SCENARINO_ID,SCENARINO_NAME,SCENARINO_START_DATE,SCENARINO_END_DATE,SCENARINO_STATUS,
-   SCENARINO_STATU_NAME,SCENARINO_ADD_TIME
+   SCENARINO_STATU_NAME,SCENARINO_ADD_TIME,BASIS_SCENARINO_ID,BASIS_TIME,CONTRAST_SCENARINO_ID,SCEN_TYPE,
+   PATH_DATE,SPINUP
   </sql>
   
   <!-- 返回情景复制列表的数据 -->
@@ -49,7 +56,8 @@
   <sql id="copyScenarino_Column_List" >
   	  MISSION_NAME,V1,ES_COUPLING_NAME,MISSION_STATUS,
 	  SCENARINO_ID,SCENARINO_NAME,SCENARINO_START_DATE,SCENARINO_END_DATE,
-      SCENARINO_STATU_NAME,SCENARINO_ADD_TIME
+      SCENARINO_STATU_NAME,SCENARINO_ADD_TIME,BASIS_SCENARINO_ID,BASIS_TIME,CONTRAST_SCENARINO_ID,SCEN_TYPE,
+   PATH_DATE,SPINUP
   </sql>
   
   <!-- 查询所有任务列表和情景列表 可根据情景名模糊查询 -->
@@ -190,12 +198,16 @@
     insert into T_SCENARINO_DETAIL (SCENARINO_ID, SCENARINO_TYPE, SCENARINO_NAME, 
       SCENARINO_START_DATE, SCENARINO_END_DATE, SCENARINO_STATUS, 
       MISSION_ID, SCENARINO_ADD_TIME, USER_ID, 
-      UPDATE_TIME, IS_EFFECTIVE, DELETE_TIME
+      UPDATE_TIME, IS_EFFECTIVE, DELETE_TIME,
+      BASIS_SCENARINO_ID, BASIS_TIME, CONTRAST_SCENARINO_ID,SCEN_TYPE,
+      PATH_DATE,SPINUP
       )
     values (#{scenarinoId,jdbcType=DECIMAL}, #{scenarinoType,jdbcType=DECIMAL}, #{scenarinoName,jdbcType=OTHER}, 
       #{scenarinoStartDate,jdbcType=DATE}, #{scenarinoEndDate,jdbcType=DATE}, #{scenarinoStatus,jdbcType=DECIMAL}, 
       #{missionId,jdbcType=DECIMAL}, #{scenarinoAddTime,jdbcType=DATE}, #{userId,jdbcType=DECIMAL}, 
-      #{updateTime,jdbcType=DATE}, #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=DATE}
+      #{updateTime,jdbcType=DATE}, #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=DATE},
+      #{basisScenarinoId,jdbcType=DECIMAL},#{basisTime,jdbcType=DATE},#{controstScenarinoId,jdbcType=DECIMAL},
+      #{scenType,jdbcType=VARCHAR},#{pathDate,jdbcType=DATE},#{spinUp,jdbcType=DECIMAL}
       )
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TScenarinoDetail" >
@@ -237,6 +249,24 @@
       <if test="deleteTime != null" >
         DELETE_TIME,
       </if>
+       <if test="basisScenarinoId != null" >
+        BASIS_SCENARINO_ID,
+      </if>
+       <if test="basisTime != null" >
+        BASIS_TIME,
+      </if>
+       <if test="controstScenarinoId != null" >
+        CONTRAST_SCENARINO_ID,
+      </if>
+       <if test="scenType != null" >
+        SCEN_TYPE,
+      </if>
+      <if test="pathDate != null" >
+        PATH_DATE,
+      </if>
+       <if test="spinUp != null" >
+        SPINUP,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="scenarinoId != null" >
@@ -274,6 +304,24 @@
       </if>
       <if test="deleteTime != null" >
         #{deleteTime,jdbcType=DATE},
+      </if>
+      <if test="basisScenarinoId != null" >
+         #{basisScenarinoId,jdbcType=DECIMAL},
+      </if>
+      <if test="basisTime != null" >
+         #{basisTime,jdbcType=DATE},
+      </if>
+      <if test="controstScenarinoId != null" >
+         #{controstScenarinoId,jdbcType=DECIMAL},
+      </if>
+      <if test="scenType != null" >
+         #{scenType,jdbcType=VARCHAR},
+      </if>
+      <if test="pathDate != null" >
+         #{pathDate,jdbcType=DATE},
+      </if>
+      <if test="spinUp != null" >
+         #{spinUp,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -313,6 +361,24 @@
       <if test="deleteTime != null" >
         DELETE_TIME = #{deleteTime,jdbcType=DATE},
       </if>
+       <if test="basisScenarinoId != null" >
+        BASIS_SCENARINO_ID = #{basisScenarinoId,jdbcType=DECIMAL},
+      </if>
+       <if test="basisTime != null" >
+        BASIS_TIME = #{basisTime,jdbcType=DATE},
+      </if>
+       <if test="controstScenarinoId != null" >
+        CONTRAST_SCENARINO_ID = #{controstScenarinoId,jdbcType=DECIMAL},
+      </if>
+       <if test="scenType != null" >
+        SCEN_TYPE = #{scenType,jdbcType=VARCHAR},
+      </if>
+       <if test="pathDate != null" >
+        PATH_DATE = #{pathDate,jdbcType=DATE},
+      </if>
+      <if test="spinUp != null" >
+        SPINUP = #{spinUp,jdbcType=DECIMAL},
+      </if>
     </set>
     where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
   </update>
@@ -328,7 +394,24 @@
       USER_ID = #{userId,jdbcType=DECIMAL},
       UPDATE_TIME = #{updateTime,jdbcType=DATE},
       IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
-      DELETE_TIME = #{deleteTime,jdbcType=DATE}
+      DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      BASIS_SCENARINO_ID = #{basisScenarinoId,jdbcType=DECIMAL},
+      BASIS_TIME = #{basisTime,jdbcType=DATE},
+      CONTRAST_SCENARINO_ID = #{controstScenarinoId,jdbcType=DECIMAL},
+      SCEN_TYPE = #{scenType,jdbcType=VARCHAR},
+      PATH_DATE = #{pathDate,jdbcType=DATE},
+      SPINUP = #{spinUp,jdbcType=DECIMAL}
     where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
   </update>
+   <select id="selectAllByMissionId" parameterType="java.lang.Long" resultType="ampc.com.gistone.database.model.TScenarinoDetail" >
+   	 SELECT  *
+  		FROM T_SCENARINO_DETAIL  
+			 WHERE MISSION_ID=#{missionId,jdbcType=OTHER} AND IS_EFFECTIVE='1'
+		ORDER BY SCENARINO_END_DATE DESC
+  </select>
+  <select id="selectMaxEndTime" resultType="ampc.com.gistone.database.model.TScenarinoDetail" >
+   	 SELECT  max(SCENARINO_END_DATE)
+  		FROM T_SCENARINO_DETAIL  
+			 WHERE SCEN_TYPE='3' AND IS_EFFECTIVE='1'
+  </select>
 </mapper>
