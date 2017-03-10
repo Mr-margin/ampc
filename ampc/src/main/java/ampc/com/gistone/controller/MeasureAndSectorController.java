@@ -57,16 +57,18 @@ public class MeasureAndSectorController {
 			if(data.get("userId")!=null){
 				userId = Long.parseLong(data.get("userId").toString());
 			}
-			//查询全部写入返回结果集
+			//根据UserId查询所有的行业名称
 			List<Map> nameList = this.tMeasureSectorExcelMapper.getSectorInfo(userId);
 			if(nameList.size()==0){
 				userId=null;
 				nameList = this.tMeasureSectorExcelMapper.getSectorInfo(userId);
 			}
+			//过滤掉一些重复的名称
 			LinkedHashSet<String> nameSet=new LinkedHashSet<String>();
 			for (Map map : nameList) {
 				nameSet.add(map.get("sectorsname").toString());
 			}
+			//将结果同意放在一个帮助类中 用来返回结果
 			List<SMUtil> result=new ArrayList<SMUtil>();
 			for (String name : nameSet) {
 				SMUtil sm=new SMUtil();
