@@ -78,7 +78,7 @@ public class PlanAndMeasureController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//预案id
-			Long planId=Long.parseLong(data.get("planId").toString());
+			//Long planId=Long.parseLong(data.get("planId").toString());
 			//措施id
 			Long measureId=Long.parseLong(data.get("measureId").toString());
 			//行业名称
