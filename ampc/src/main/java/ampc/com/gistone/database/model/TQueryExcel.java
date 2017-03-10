@@ -37,6 +37,8 @@ public class TQueryExcel {
 
     private Date deleteTime;
 
+    private Object queryShowqueryen;
+
     public Long getQueryId() {
         return queryId;
     }
@@ -171,5 +173,13 @@ public class TQueryExcel {
 
     public void setDeleteTime(Date deleteTime) {
         this.deleteTime = deleteTime;
+    }
+
+    public Object getQueryShowqueryen() {
+        return queryShowqueryen;
+    }
+
+    public void setQueryShowqueryen(Object queryShowqueryen) {
+        this.queryShowqueryen = queryShowqueryen;
     }
 }

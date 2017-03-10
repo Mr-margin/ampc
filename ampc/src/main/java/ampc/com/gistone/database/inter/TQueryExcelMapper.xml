@@ -19,16 +19,20 @@
     <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
     <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
+    <result column="QUERY_SHOWQUERYEN" property="queryShowqueryen" jdbcType="OTHER" />
   </resultMap>
   <sql id="Base_Column_List" >
     QUERY_ID, QUERY_NAME, QUERY_ETITLE, QUERY_SHOWQUERY, QUERY_VALUE, QUERY_OPTIONTYPE, 
     QUERY_OPTION1, QUERY_OPTION2, QUERY_OPTION3, QUERY_OPTION4, QUERY_OPTION5, SECTOR_NAME, 
-    QUERY_VERSION, USER_ID, ADD_TIME, IS_EFFECTIVE, DELETE_TIME
+    QUERY_VERSION, USER_ID, ADD_TIME, IS_EFFECTIVE, DELETE_TIME, QUERY_SHOWQUERYEN
   </sql>
- 
- 
   
-  <!--查询当前措施表中的最高版本号-->
+  
+  
+  
+  
+  
+   <!--查询当前措施表中的最高版本号-->
   <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
   	select max(QUERY_VERSION) from T_QUERY_EXCEL
   	  <if test="_parameter != null" >
@@ -56,18 +60,20 @@
         where USER_ID=#{_parameter,jdbcType=DECIMAL} 
       </if> 
   </update>
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -84,13 +90,15 @@
       QUERY_OPTION1, QUERY_OPTION2, QUERY_OPTION3, 
       QUERY_OPTION4, QUERY_OPTION5, SECTOR_NAME, 
       QUERY_VERSION, USER_ID, ADD_TIME, 
-      IS_EFFECTIVE, DELETE_TIME)
+      IS_EFFECTIVE, DELETE_TIME, QUERY_SHOWQUERYEN
+      )
     values (#{queryId,jdbcType=DECIMAL}, #{queryName,jdbcType=OTHER}, #{queryEtitle,jdbcType=VARCHAR}, 
       #{queryShowquery,jdbcType=OTHER}, #{queryValue,jdbcType=OTHER}, #{queryOptiontype,jdbcType=OTHER}, 
       #{queryOption1,jdbcType=OTHER}, #{queryOption2,jdbcType=OTHER}, #{queryOption3,jdbcType=OTHER}, 
       #{queryOption4,jdbcType=OTHER}, #{queryOption5,jdbcType=OTHER}, #{sectorName,jdbcType=OTHER}, 
       #{queryVersion,jdbcType=DECIMAL}, #{userId,jdbcType=OTHER}, #{addTime,jdbcType=TIMESTAMP}, 
-      #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=TIMESTAMP})
+      #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=TIMESTAMP}, #{queryShowqueryen,jdbcType=OTHER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TQueryExcel" >
     insert into T_QUERY_EXCEL
@@ -146,6 +154,9 @@
       <if test="deleteTime != null" >
         DELETE_TIME,
       </if>
+      <if test="queryShowqueryen != null" >
+        QUERY_SHOWQUERYEN,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="queryId != null" >
@@ -198,6 +209,9 @@
       </if>
       <if test="deleteTime != null" >
         #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="queryShowqueryen != null" >
+        #{queryShowqueryen,jdbcType=OTHER},
       </if>
     </trim>
   </insert>
@@ -252,6 +266,9 @@
       <if test="deleteTime != null" >
         DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="queryShowqueryen != null" >
+        QUERY_SHOWQUERYEN = #{queryShowqueryen,jdbcType=OTHER},
+      </if>
     </set>
     where QUERY_ID = #{queryId,jdbcType=DECIMAL}
   </update>
@@ -272,7 +289,8 @@
       USER_ID = #{userId,jdbcType=OTHER},
       ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
       IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
-      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP}
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      QUERY_SHOWQUERYEN = #{queryShowqueryen,jdbcType=OTHER}
     where QUERY_ID = #{queryId,jdbcType=DECIMAL}
   </update>
 </mapper>
