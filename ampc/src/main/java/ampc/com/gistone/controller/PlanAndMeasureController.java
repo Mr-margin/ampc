@@ -209,14 +209,14 @@ public class PlanAndMeasureController {
 		ClientUtil.SetCharsetAndHeader(request, response);
 		try{	
 			Map<String,Object> data=(Map)requestDate.get("data");
-			Long sectorId=Long.parseLong(data.get("sectorId").toString());//行业id
+			Long sectorName=Long.parseLong(data.get("sectorName").toString());//行业id
 			Long measureId=Long.parseLong(data.get("measureId").toString());//措施id
 			Long userId=Long.parseLong(data.get("userId").toString());//用户id
 			Long planId=Long.parseLong(data.get("planId").toString());//预案id
 			TPlanMeasure tPlanMeasure=new TPlanMeasure();
 			tPlanMeasure.setMeasureId(measureId);
 			tPlanMeasure.setPlanId(planId);
-			tPlanMeasure.setSectorId(sectorId);
+			tPlanMeasure.setSectorName(sectorName);
 			/**
 			 * TODO 这里会调用计算接口 获取到范围和减排比 的数据
 			 */
@@ -494,11 +494,11 @@ public class PlanAndMeasureController {
 			newtPlanMeasure.setMeasureContent(t.getMeasureContent());
 			newtPlanMeasure.setPlanId(max);
 			newtPlanMeasure.setPlanMeasureId(maxs);
-			newtPlanMeasure.setSectorId(t.getSectorId());
+			newtPlanMeasure.setSectorName(t.getSectorName());
 			newtPlanMeasure.setMeasureId(t.getMeasureId());
 			int ssr=tPlanMeasureMapper.insertSelective(newtPlanMeasure);
 			
-			TSectorExcel Sector=tSectorExcelMapper.selectByPrimaryKey(t.getSectorId());
+			TSectorExcel Sector=tSectorExcelMapper.selectByPrimaryKey(t.getSectorName());
 			TMeasureExcel tMeasure=tMeasureExcelMapper.selectByPrimaryKey(t.getMeasureId());
 			JSONObject objs=new JSONObject();
 			objs.put("planMeasureId",maxs);
@@ -521,9 +521,9 @@ public class PlanAndMeasureController {
 		TPlanMeasure tPlanMeasures=new TPlanMeasure();
 		tPlanMeasures.setPlanId(planId);
 		//查看行业id是否为空，不为空添加，为空不加
-		if(request.getParameter("sectorId")!=null){	
-			Long sectorId=Long.parseLong(request.getParameter("sectorId"));
-			tPlanMeasures.setSectorId(sectorId);
+		if(request.getParameter("sectorName")!=null){	
+			Long sectorName=Long.parseLong(request.getParameter("sectorName"));
+			tPlanMeasures.setSectorName(sectorName);
 		}
 		//查询措施
 		List<TPlanMeasure> Measurelist=tPlanMeasureMapper.selectByEntity(tPlanMeasures);
@@ -531,7 +531,7 @@ public class PlanAndMeasureController {
 		//判断查询结果是否为空，返回对应的值
 		if(!Measurelist.isEmpty()){
 		for(TPlanMeasure tsPlanMeasure:Measurelist){
-			TSectorExcel Sector=tSectorExcelMapper.selectByPrimaryKey(tsPlanMeasure.getSectorId());
+			TSectorExcel Sector=tSectorExcelMapper.selectByPrimaryKey(tsPlanMeasure.getSectorName());
 			TMeasureExcel tMeasure=tMeasureExcelMapper.selectByPrimaryKey(tsPlanMeasure.getMeasureId());
 			JSONObject objs=new JSONObject();
 			objs.put("planMeasureId", tsPlanMeasure.getPlanMeasureId());

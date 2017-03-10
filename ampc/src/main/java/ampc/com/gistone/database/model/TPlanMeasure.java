@@ -7,7 +7,7 @@ public class TPlanMeasure {
 
     private Long planId;
 
-    private Long sectorId;
+    private Long sectorName;
 
     private Long measureId;
 
@@ -41,15 +41,16 @@ public class TPlanMeasure {
         this.planId = planId;
     }
 
-    public Long getSectorId() {
-        return sectorId;
-    }
 
-    public void setSectorId(Long sectorId) {
-        this.sectorId = sectorId;
-    }
+    public Long getSectorName() {
+		return sectorName;
+	}
 
-    public Long getMeasureId() {
+	public void setSectorName(Long sectorName) {
+		this.sectorName = sectorName;
+	}
+
+	public Long getMeasureId() {
         return measureId;
     }
 
