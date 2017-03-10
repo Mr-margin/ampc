@@ -128,7 +128,7 @@ public class ExcelToDateController {
 //				}
 //				tmse.setColorcode(colorUtil.get(i).getColorCode());    暂时不添加颜色
 //				tmse.setColorname(colorUtil.get(i).getColorName());
-//			tMeasureSectorExcelMapper.insertSelective(tmse);
+			tMeasureSectorExcelMapper.insertSelective(tmse);
 				i++;
 			}
 			System.out.println(i);
