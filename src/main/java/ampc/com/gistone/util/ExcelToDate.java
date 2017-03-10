@@ -230,7 +230,7 @@ public class ExcelToDate {
 	* @param path  
 	*/
 	public static List<TMeasureExcel> ReadMeasure(String fileName,Long versionId,Long userId){  
-		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\03.措施设计\\measure_sets_demo_QYv1.xlsx";
+		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\03.措施设计\\其他素材\\新版Measure_Tables.xlsx";
 		List<TMeasureExcel> measureList=new ArrayList<TMeasureExcel>();
         try {  
             Workbook wb  = null;  
