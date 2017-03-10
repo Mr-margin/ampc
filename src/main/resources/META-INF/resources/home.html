@@ -150,95 +150,93 @@
 			<div class="panel panel-default" id="spr_7">
 				<div class="panel-heading">
 					<h5 class="panel-title">
-						<a class="accordion-toggle collapsed" data-toggle="collapse"
-							data-parent="#accordion1" href="#kqzlyb">空气质量预报 <i
-							class="me-cloudy"></i></a>
+						<a class="accordion-toggle collapsed" data-toggle="collapse"data-parent="#accordion1" href="#kqzlyb">空气质量预报 <i class="me-cloudy"></i></a>
 					</h5>
 				</div>
-				<div id="kqzlyb" class="panel-collapse collapse"
-					style="height: 0px;">
+				<div id="kqzlyb" class="panel-collapse collapse"style="height: 0px;">
 					<div class="panel-body totalH">
 						<div class="list-group text-left">
-							<a href="#xgpg" class="list-group-item">预报检验</a> <a href="#sjxl"
-								class="list-group-item">时间序列</a> <a href="#xgpg"
-								class="list-group-item">水平分布</a> <a href="#xgpg"
-								class="list-group-item">垂直分布</a>
+							<a href="#xgpg"class="list-group-item">预报检验</a> 
+							<a href="#sjxl"class="list-group-item" onclick="divShow();">时间序列</a> 
+							<a href="#xgpg"class="list-group-item">水平分布</a> 
+							<a href="#xgpg"class="list-group-item">垂直分布</a>
 						</div>
-						<div style="padding-right: 5px;">
+						<div style="padding-right:5px;" id="timeArrayCondi">
 							<div class="input-group">
 								<span class="input-group-addon"><small>开始日期：</small></span>
 								<div class="chaxundiv_2 selectDiv" id="data_1">
-									<div class="input-group date" id="datetimeStart"
-										style="width: 100%;">
+									<div class="input-group date" id="datetimeStart"style="width: 100%;">
 										<span class="input-group-addon"><i class="fa-calendar"></i></span>
-										<input type="text" style="width: 100%;height: 33px;"
-											readonly="true" />
+										<input type="text" style="width: 100%;height: 33px;"readonly="true" />
 									</div>
 								</div>
 							</div>
 							<div class="input-group" style="margin-top:5px;">
 								<span class="input-group-addon"><small>结束日期：</small></span>
 								<div class="chaxundiv_3 selectDiv" id="data_2">
-									<div class="input-group date" id="datetimeEnd"
-										style="width: 100%;">
+									<div class="input-group date" id="datetimeEnd"style="width: 100%;">
 										<span class="input-group-addon"><i class="fa-calendar"></i></span>
-										<input type="text" style="width: 100%;height: 33px;"
-											readonly="true" />
+										<input type="text" style="width: 100%;height: 33px;"readonly="true" />
 									</div>
 								</div>
 							</div>
-						</div>
+						
 						<!-- 检测站点 -->
-						<div class="ibox-tools" style="padding-right: 5px;">
-							<div class="jczd" style="background-color: #EDF7FF;width:193px;height: 25px;margin-left:4px;padding-top:2px;padding-left:10px;margin-top:5px;">
-								<h5>检测站点</h5>
-							</div>
-							<div class="row col-sm-12" style="padding-right:0px;margin-top:5px; width:202px;">
-								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
-									<div class="input-group group-select" style="margin-left:5px;">
-										<select class="form-control m-b">
-											<option>浙江省</option>
-											<option>--</option>
-										</select>
+							<div class="ibox-content"style="width:210px;height:66px;padding: 0px 0px 0px 0px;margin-top:5px;">
+								<div class="col-md-2" id=""style="width:203px;height:66px;border:1px solid #75B9E6;padding: 0px;">
+									<div class="ibox-tools" style="padding-right: 0px;">
+										<div class="jczd"style="background-color: #EDF7FF;width:200px;height: 25px;margin-left:0px;padding-top:2px;padding-left:0px;margin-top:0px;">
+											<h5>检测站点</h5>
+										</div>
+										<div class="row col-sm-12"style="padding-right:0px;margin-top:5px; width:204px;">
+											<div class="col-sm-4"style="padding-left:0px;padding-right:0px;">
+												<div class="input-group group-select"style="margin-left:0px;">
+													<select class="form-control m-b" style="width:72px;">
+														<option>浙江省</option>
+														<option>--</option>
+													</select>
+												</div>
+											</div>
+											<div class="col-sm-4"style="padding-left:0px;padding-right:0px;">
+												<div class="input-group group-select"style="margin-right:0px;">
+													<select class="form-control m-b" style="width:73px;">
+														<option>杭州市</option>
+														<option>--</option>
+													</select>
+												</div>
+											</div>
+											<div class="col-sm-4"style="padding-left:0px;padding-right:0px;">
+												<div class="input-group group-select"
+													style="padding-right:0px;">
+													<select class="form-control m-b" style="width:72px;">
+														<option>平均</option>
+														<option>--</option>
+													</select>
+												</div>
+											</div>
+										</div>
 									</div>
 								</div>
-								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
-									<div class="input-group group-select" style="margin-right:0px;">
-										<select class="form-control m-b">
-											<option>杭州市</option>
-											<option>--</option>
-										</select>
+							</div>
+							<div class="ibox-content"style="width:210px;height:66px;padding: 0px 0px 0px 0px;margin-top:5px;">
+								<div class="col-md-2" id=""style="width:203px;height:66px;border:1px solid #75B9E6;padding: 0px;">
+									<div class="ibox-tools" style="padding-right: 0px;">
+										<div class="jczd"style="background-color: #EDF7FF;width:200px;height: 25px;margin-left:0px;padding-top:2px;padding-left:0px;margin-top:0px;">
+											<h5>时间分辩率</h5>
+										</div>
+										<div class="row" style="margin-top:10px;">
+											<div class="col-md-4 col-md-offset-2">
+												<button type="button"class="btn btn-outline btn-success btn-xs">逐小时</button>
+											</div>
+											<div class="col-md-4">
+												<button type="button"class="btn btn-outline btn-success btn-xs">逐日</button>
+											</div>
+										</div>
 									</div>
 								</div>
-								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
-									<div class="input-group group-select" style="padding-right:0px;">
-										<select class="form-control m-b" style="width:70px;">
-											<option>平均</option>
-											<option>--</option>
-										</select>
-									</div>
-								</div>
 							</div>
-						</div>
-						<!-- 检测站点结束 -->
-
-						<div class="" style="margin-top:30px;">
-							<div
-								style="background-color: #EDF7FF;width:193px;height: 25px;margin-left:4px;margin-top:90px;padding-top:2px;padding-left:10px;">
-								<h5>时间分布率</h5>
-							</div>
-							<div class="row" style="margin-top:3px;">
-								<div class="col-md-6">
-									<button type="button" class="btn btn-defult btn-xs">逐小时</button>
-
-								</div>
-								<div class="col-md-6">
-									<button type="button" class="btn btn-defult btn-xs">逐日</button>
-
-								</div>
-							</div>
-						</div>
 						<!-- 时间分辨率结束 -->
+					</div>	
 					</div>
 				</div>
 			</div>
