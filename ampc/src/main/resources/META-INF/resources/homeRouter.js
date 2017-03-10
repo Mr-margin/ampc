@@ -44,9 +44,13 @@ vipspa.start({
     	templateUrl: 'a.html',
     	controller: ''
     },
-    '/sjxl': {       //时间序列
+    '/sjxl': {       //空气质量报告》》时间序列
     	templateUrl: 'webApp/timeArray01/timeArray.html',
     	controller: 'webApp/timeArray01/timeArray.js'
+    },
+    '/effectTime': {       //效果评估》》时间序列
+    	templateUrl: 'webApp/effectEvaluate/effectEval01.html',
+    	controller: 'webApp/effectEvaluate/effectEval01.js'
     },
     'defaults': '/rwgl'     //默认显示页面
   },
