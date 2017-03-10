@@ -12,8 +12,19 @@ public class TUser {
     private Integer cityCode;
     
     private Integer countyCode;
+    
+    private Integer predictionTime;
 
-    public Integer getCountyCode() {
+
+	public Integer getPredictionTime() {
+		return predictionTime;
+	}
+
+	public void setPredictionTime(Integer predictionTime) {
+		this.predictionTime = predictionTime;
+	}
+
+	public Integer getCountyCode() {
 		return countyCode;
 	}
 
