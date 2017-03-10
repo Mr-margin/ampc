@@ -7,7 +7,13 @@ var formCreate;
 var selectRW = {};
 var statusRW = '';
 var delRWid = {}, delQJid = {};
+var rwStartDate;
+var rwEndDate;
 var rwSelectType;
+var basisArr;
+var qjType;
+var selectEndDate;
+var __dsp = {};//用于存储请求信息，做Promise存储
 //var parameterPar = {total: '', data: {}};
 var msg = {
   'id': 'qjMessage',
@@ -141,12 +147,14 @@ function formVerify(){
 $(document).ready(function () {
   initialize();
   //initDate();
-  initRwDate();
+  //initRwDate();
   formVerify();
 });
 
 function initialize() {
   initRwTable();
+  getMnfw();
+  getQD();
 //  var param = vipspa.getMessage('home_msg');
 //  console.log(param);
 }
@@ -208,11 +216,6 @@ function initRwTable() {
       initQjTable();
       $('.info').removeClass('info');
       $($element).addClass('info');
-
-
-      $('#qjStartDate').datetimepicker('setStartDate', moment(selectRW.missionStartDate).format('YYYY-MM-DD')).datetimepicker('setEndDate', moment(selectRW.missionEndDate).format('YYYY-MM-DD'));
-      $('#qjEndDate').datetimepicker('setStartDate', moment(selectRW.missionStartDate).format('YYYY-MM-DD')).datetimepicker('setStartDate', moment(selectRW.missionEndDate).format('YYYY-MM-DD'));
-
     },
     /*复选框设置*/
     onCheck: function (row) {
@@ -655,26 +658,6 @@ function oldQJ_rw(v,row,i){
 }
 
 
-//
-//function findRW(){
-//  var url = '/mission/get_mission_list';
-//  ajaxPost(url,{
-//    "missionName": "",
-//    "pageNum": 1,
-//    "pageSize": 5,
-//    "sort": "addTime desc",
-//    "userId": 1 ,
-//    "missionStatus":  "预评估"
-//  })
-//}
-//
-//function findQJ(){
-//
-//}
-
-
-
-
 /*任务、情景创建*/
 function create(e,run) {
 
@@ -748,74 +731,7 @@ function create(e,run) {
 }
 
 
-/*初始化日期插件*/
-function initDate() {
-//  $("#rwStartDate").datetimepicker({
-//    format: 'yyyy/mm/dd',
-//    minView: 'month',
-//    startView: 'month',
-//    language: 'zh-CN',
-//    autoclose: true,
-//    todayBtn: true
-//  })
-//    .on('changeDate', function(ev){
-//      var date = moment(ev.date).format('YYYY-MM-DD');
-//      $('#rwEndDate').datetimepicker('setStartDate', date);
-//      $('#rwStartDate').datetimepicker('setEndDate', null);
-//    });
-//  $("#rwEndDate").datetimepicker({
-//    format: 'yyyy/mm/dd',
-//    minView: 'month',
-//    startView: 'month',
-//    language: 'zh-CN',
-//    autoclose: true,
-//    todayBtn: true
-//  })
-//    .on('changeDate', function(ev){
-//      var date = moment(ev.date).format('YYYY-MM-DD');
-//      $('#rwStartDate').datetimepicker('setEndDate', date);
-//      $('#rwEndDate').datetimepicker('setStartDate', null);
-//    });
-//
-//
-//  $("#qjStartDate").datetimepicker({
-//    format: 'yyyy/mm/dd',
-//    minView: 'month',
-//    startView: 'month',
-//    language: 'zh-CN',
-//    autoclose: true,
-//    todayBtn: true
-//  })
-//    .on('changeDate', function(ev){
-//      var date = moment(ev.date).format('YYYY-MM-DD');
-//      if(date>moment(selectRW.missionStartDate).format('YYYY-MM-DD')){
-//        $('#qjEndDate').datetimepicker('setStartDate', date);
-//      }else{
-//
-//      }
-//
-//      $('#qjStartDate').datetimepicker('setEndDate', moment(selectRW.missionEndDate).format('YYYY-MM-DD'));
-//    });
-//  $("#qjEndDate").datetimepicker({
-//    format: 'yyyy/mm/dd',
-//    minView: 'month',
-//    startView: 'month',
-//    language: 'zh-CN',
-//    autoclose: true,
-//    todayBtn: true
-//  })
-//    .on('changeDate', function(ev){
-//      var date = moment(ev.date).format('YYYY-MM-DD');
-//      if(date < moment(selectRW.missionEndDate).format('YYYY-MM-DD')){
-//        $('#qjStartDate').datetimepicker('setEndDate', date);
-//      }else{
-//        //$('#qjStartDate').datetimepicker('setEndDate', moment(selectRW.missionEndDate).format('YYYY-MM-DD'));
-//      }
-//
-//
-//      $('#qjEndDate').datetimepicker('setStartDate', moment(selectRW.missionStartDate).format('YYYY-MM-DD'));
-//    });
-}
+
 
 /*修改名称*/
 function rename(type, id) {
@@ -897,6 +813,17 @@ function returnLeft(type){
     $('.rwCon').css('display','none');
     $('.createRwBtn').css('display','none');
     $('.return_S_rw').css('display','none');
+    $('.rwTitle').html('创建任务')
+  }else if(type == 'yqj'){
+    $('.ypgQJType').css('display','block');
+    $('.ypgQJCon').css('display','none');
+    $('.createQjBtn').css('display','none');
+    $('.return_S_qj').css('display','none');
+  }else if(type == 'hqj'){
+    $('.hpgQJType').css('display','block');
+    $('.hpgQJCon').css('display','none');
+    $('.createQjBtn').css('display','none');
+    $('.return_S_qj').css('display','none');
   }
 }
 
@@ -910,10 +837,12 @@ function selectType(type){
     startDate = moment().subtract(2, 'w').format('YYYY-MM-DD');
     endDate = moment().add(1,'y').format('YYYY-MM-DD');
     rwSelectType = '预评估';
+    $('.rwTitle').html('创建预评估任务')
   }else if(type == 'h'){
     startDate = '2007-01-01';
-    endDate = moment().subtract(2, 'd').format('YYYY-MM-DD')
+    endDate = moment().subtract(2, 'd').format('YYYY-MM-DD');
     rwSelectType = '后评估';
+    $('.rwTitle').html('创建后评估任务')
   }
 
   $('.rwType').css('display','none');
@@ -921,7 +850,203 @@ function selectType(type){
 
   $('.createRwBtn').css('display','inline-block');
   $('.return_S_rw').css('display','inline-block');
+  rwStartDate = moment().subtract(2,'w').format('YYYY-MM-DD');
+  rwEndDate = moment().subtract(2,'d').format('YYYY-MM-DD');
+  initRwDate(startDate,endDate);
 }
+
+/*创建情景选择类型*/
+function selectQJtype(type){
+
+  //var url = '/scenarino/find_endTime';
+  var url = 'end.json';
+  var params = {
+    userId:userId
+  };
+
+  __dsp['jcqj'+selectRW.rwId].then(function(res){
+    basisArr = res.data;
+
+    //reverse  倒序
+    switch(type){
+      case 'yy':
+        $('.ypgQJType').css('display','none');
+        $('.ypgQJCon').css('display','block');
+        $('.dbqj').css('display','none');
+        $('.createQjBtn').css('display','inline-block');
+        $('.return_S_qj').css('display','inline-block');
+        qjType = 1;
+        params.scenarinoType = qjType;
+
+        setOption('#jcqj',basisArr);
+        var dateArr = setSelectDate(basisArr[0].scenarinoStartDate,basisArr[0].scenarinoEndDate,basisArr[0].pathDate);
+        $('#jcdate').empty();
+        for(var i=0;i<dateArr.length;i++){
+          $('#jcdate').append($('<option value="'+ dateArr[i] +'">'+ dateArr[i] +'</option>'))
+        }
+        var startD = moment(moment(dateArr[0])).add(1,'d').format('YYYY-MM-DD');
+        $('#yStartDate').empty().append($('<option value="'+ startD +'">'+ startD +'</option>'));
+        ajaxPost1(url,params).success(function(res){
+          selectEndDate = res.data.scenarinoEndDate;
+          selectEndDate = moment(selectRW.missionStartDate).isBefore(selectEndDate)?moment(selectRW.missionStartDate).format('YYYY-MM-DD'):selectEndDate;
+          var endDateArr = setSelectDate($('#yStartDate').val(),selectEndDate);
+          $('#yEndDate').empty();
+          for(var i=0;i<endDateArr.length;i++){
+            $('#yEndDate').append($('<option value="'+ endDateArr[i] +'">'+ endDateArr[i] +'</option>'))
+          }
+        });
+
+        break;
+      case 'yh':
+        $('.ypgQJType').css('display','none');
+        $('.ypgQJCon').css('display','block');
+        $('.dbqj').css('display','block');
+        $('.createQjBtn').css('display','inline-block');
+        $('.return_S_qj').css('display','inline-block');
+        getdbqj();
+        $('#dbqj').attr('disabled',true);
+        $('#jcqj').removeAttr('disabled');
+        $('#jcdate').removeAttr('disabled');
+        $('#yEndDate').removeAttr('disabled');
+        qjType = 2;
+        params.scenarinoType = qjType;
+
+        setOption('#dbqj',basisArr);
+        setOption('#jcqj',basisArr);
+
+        var dateArr = setSelectDate(basisArr[0].scenarinoStartDate,basisArr[0].scenarinoEndDate,basisArr[0].pathDate);
+        dateArr = dateArr.reverse();
+        $('#jcdate').empty();
+        for(var i=0;i<dateArr.length;i++){
+          $('#jcdate').append($('<option value="'+ dateArr[i] +'">'+ dateArr[i] +'</option>'))
+        }
+        var startD = moment(moment(dateArr[0])).add(1,'d').format('YYYY-MM-DD');
+        $('#yStartDate').empty().append($('<option value="'+ startD +'">'+ startD +'</option>'));
+
+        ajaxPost1(url,params).success(function(res){
+          selectEndDate = res.data.scenarinoEndDate;
+          selectEndDate = moment(selectRW.missionStartDate).isBefore(selectEndDate)?moment(selectRW.missionStartDate).format('YYYY-MM-DD'):selectEndDate;
+          var endDateArr = setSelectDate($('#yStartDate').val(),selectEndDate);
+          $('#yEndDate').empty();
+          for(var i=0;i<endDateArr.length;i++){
+            $('#yEndDate').append($('<option value="'+ endDateArr[i] +'">'+ endDateArr[i] +'</option>'))
+          }
+        });
+
+
+
+        break;
+      case 'hh':
+        $('.hpgQJType').css('display','none');
+        $('.hpgQJCon').css('display','block');
+        $('.createQjBtn').css('display','inline-block');
+        $('.return_S_qj').css('display','inline-block');
+        $('.diffNo').css('display','block');
+        $('.spinup').css('display','none');
+        getdbqj();
+        $('#dbqj1').attr('disabled',true);
+        $('#jcqj1').removeAttr('disabled');
+        $('#jcdate1').removeAttr('disabled');
+        $('#hEndDate').removeAttr('disabled');
+        qjType = 2;
+
+        setOption('#dbqj1',basisArr);
+        setOption('#jcqj1',basisArr);
+        var dateArr = setSelectDate(basisArr[0].scenarinoStartDate,moment(selectRW.missionEndDate).subtract(2,'d').format('YYYY-MM-DD'));
+        dateArr = dateArr.reverse();
+        $('#jcdate1').empty();
+        for(var i=0;i<dateArr.length;i++){
+          $('#jcdate1').append($('<option value="'+ dateArr[i] +'">'+ dateArr[i] +'</option>'))
+        }
+        var startD = moment(moment(dateArr[0])).add(1,'d').format('YYYY-MM-DD');
+        $('#hStartDate').empty().append($('<option value="'+ startD +'">'+ startD +'</option>'));
+
+
+        var endDateArr = setSelectDate($('#hStartDate').val(),moment(selectRW.missionEndDate));
+        $('#hEndDate').empty();
+        for(var i=0;i<endDateArr.length;i++){
+          $('#hEndDate').append($('<option value="'+ endDateArr[i] +'">'+ endDateArr[i] +'</option>'))
+        }
+        break;
+      case 'hj':
+        $('.hpgQJType').css('display','none');
+        $('.hpgQJCon').css('display','block');
+        $('.createQjBtn').css('display','inline-block');
+        $('.return_S_qj').css('display','inline-block');
+        $('.diffNo').css('display','none');
+        $('.spinup').css('display','block');
+        $('#hEndDate').attr('disabled',true);
+        qjType = 3;
+        $('#hStartDate').empty().append($('<option value="'+ moment(selectRW.missionStartDate).format('YYYY-MM-DD') +'">'+ moment(selectRW.missionStartDate).format('YYYY-MM-DD') +'</option>'));
+        $('#hEndDate').empty().append($('<option value="'+ moment(selectRW.missionEndDate).format('YYYY-MM-DD') +'">'+ moment(selectRW.missionEndDate).format('YYYY-MM-DD') +'</option>'));
+
+
+
+        break;
+    }
+
+  },function(){
+    console.log('基础情景获取失败！！！！！');
+    if(type == 'hj'){
+      $('.hpgQJType').css('display','none');
+      $('.hpgQJCon').css('display','block');
+      $('.createQjBtn').css('display','inline-block');
+      $('.return_S_qj').css('display','inline-block');
+      $('.diffNo').css('display','none');
+      $('.spinup').css('display','block');
+      $('#hEndDate').attr('disabled',true);
+      qjType = 3;
+      $('#hStartDate').empty().append($('<option value="'+ moment(selectRW.missionStartDate).format('YYYY-MM-DD') +'">'+ moment(selectRW.missionStartDate).format('YYYY-MM-DD') +'</option>'));
+      $('#hEndDate').empty().append($('<option value="'+ moment(selectRW.missionEndDate).format('YYYY-MM-DD') +'">'+ moment(selectRW.missionEndDate).format('YYYY-MM-DD') +'</option>'));
+    }
+  })
+
+
+
+
+}
+
+function getdbqj(){
+  $('#dbqj').empty();
+  var url = '';
+  var params = {
+    userId:userId
+  };
+  ajaxPost(url,params).success(function(res){
+
+    setOption('#dbqj',res);
+
+  }).error(function(){
+    console.log('未获取到对比情景！！！')
+  })
+}
+
+function checkedDB(t){
+  console.log(t);
+  if($(t)[0].checked){
+    $('#dbqj').removeAttr('disabled');
+    $('#jcqj').attr('disabled',true);
+    $('#jcdate').attr('disabled',true);
+    $('#yEndDate').attr('disabled',true);
+
+    $('#dbqj1').removeAttr('disabled');
+    $('#jcqj1').attr('disabled',true);
+    $('#jcdate1').attr('disabled',true);
+    $('#hEndDate').attr('disabled',true);
+  }else{
+    $('#dbqj').attr('disabled',true);
+    $('#jcqj').removeAttr('disabled');
+    $('#jcdate').removeAttr('disabled');
+    $('#yEndDate').removeAttr('disabled');
+
+    $('#dbqj1').attr('disabled',true);
+    $('#jcqj1').removeAttr('disabled');
+    $('#jcdate1').removeAttr('disabled');
+    $('#hEndDate').removeAttr('disabled');
+  }
+}
+
+
 
 /*新改任务创建*/
 function createRw(){
@@ -932,8 +1057,8 @@ function createRw(){
   params.missionName = paramsName.missionName = $('#rwName').val();
   params.missionDomainId = $('#mnfw').val();
   params.esCouplingId = $('#qd').val();
-  params.missionStartDate = $('#rwStartDate').val();
-  params.missionEndDate = $('#rwEndDate').val();
+  params.missionStartDate = rwStartDate;
+  params.missionEndDate = rwEndDate;
   params.userId = paramsName.userId = userId;
   params.missionStauts = rwSelectType;
 
@@ -944,6 +1069,7 @@ function createRw(){
           $('#rwTable').bootstrapTable('destroy');
           initRwTable();
           $('#createRwModal').modal('hide');
+          $('#rwName').val('');
           swal('添加成功', '', 'success')
         }else{
           $('#createRwModal').modal('hide');
@@ -961,19 +1087,20 @@ function createRw(){
   })
 }
 
-function initRwDate(){
-  $('#rwStartDate').daterangepicker({
-    singleDatePicker: true,  //显示单个日历
+/*初始化日期插件*/
+function initRwDate(s,e){
+  $('#rwDate').daterangepicker({
+    singleDatePicker: false,  //显示单个日历
     timePicker:false,  //允许选择时间
     timePicker24Hour:true, //时间24小时制
-    minDate:'2017-01-01',//最早可选日期
-    maxDate:'2017-01-10',//最大可选日期
+    minDate:s,//最早可选日期
+    maxDate:e,//最大可选日期
     locale: {
       format: "YYYY-MM-DD",
-//      separator: " - ",
-//      applyLabel: "确定", //按钮文字
-//      cancelLabel: "取消",//按钮文字
-//      weekLabel: "W",
+      separator: " 至 ",
+      applyLabel: "确定", //按钮文字
+      cancelLabel: "取消",//按钮文字
+      weekLabel: "W",
       daysOfWeek: [
         "日","一","二","三","四","五","六"
       ],
@@ -982,22 +1109,250 @@ function initRwDate(){
       ],
       firstDay: 1
     },
-    "startDate": "03/03/2017",
-    "endDate": "03/09/2017",
-    "opens": "center"
+    "startDate": moment().subtract(2,'w'),
+    "endDate": moment().subtract(2,'d'),
+    "opens": "right"
+  },function(start, end, label) {
+    rwStartDate = start.format('YYYY-MM-DD');
+    rwEndDate = end.format('YYYY-MM-DD');
+    console.log(rwStartDate, rwEndDate, label);
   })
 }
 
+/*创建情景时选择模态框*/
+function createQJselect(){
+  console.log(selectRW);
+  //var oldQJUrl = '/scenarino/find_scenarino_time';
+  var oldQJUrl = 'date.json';
+  var oldQJparams = {
+    userId:userId,
+    missionId:selectRW.rwId
+  };
+  if((!__dsp['jcqj'+selectRW.rwId]) || (basisArr.length ==0)){
+    __dsp['jcqj'+selectRW.rwId] = ajaxPost1(oldQJUrl,oldQJparams);
+  }
+
+  if(selectRW.missionStatus == "预评估"){
+    $('#createYpQjModal').modal('show');
+    returnLeft('yqj');
+  }else if(selectRW.missionStatus == "后评估"){
+    $('#createHpQjModal').modal('show');
+    returnLeft('hqj');
+  }
+}
+
+/*配置日期*/
+function setSelectDate(qjS,qjE,pathD){
+  var dateArr = [];
+  if(pathD){
+    var p = moment(pathD);
+    while(p.format('YYYY-MM-DD') > qjS){
+      dateArr.push(p.subtract(1,'d').format('YYYY-MM-DD'));
+      console.log(p.format('YYYY-MM-DD'))
+    }
+  }else{
+    var e = moment(qjE);
+    while(e.format('YYYY-MM-DD') > qjS){
+      dateArr.push(e.subtract(1,'d').format('YYYY-MM-DD'));
+      console.log(e.format('YYYY-MM-DD'))
+    }
+  }
+  return dateArr
+}
+
+/*基础情景改变的时候，基础日期随之改变*/
+function changeJcqj(t){
+  var index = $(t).val();
+  var selectJcqj = basisArr[index];
+  var dateArr = setSelectDate(selectJcqj.scenarinoStartDate,selectJcqj.scenarinoEndDate,selectJcqj.pathDate);
+  if(qjType == 2){
+    dateArr = dateArr.reverse();
+  }
+  $('#jcdate').empty();
+  for(var i=0;i<dateArr.length;i++){
+    $('#jcdate').append($('<option value="'+ dateArr[i] +'">'+ dateArr[i] +'</option>'))
+  }
+  var startD = moment(moment(dateArr[0])).add(1,'d').format('YYYY-MM-DD');
+  $('#yStartDate').empty().append($('<option value="'+ startD +'">'+ startD +'</option>'));
+
+  var endDateArr = setSelectDate($('#yStartDate').val(),selectEndDate);
+  $('#yEndDate').empty();
+  for(var i=0;i<endDateArr.length;i++){
+    $('#yEndDate').append($('<option value="'+ endDateArr[i] +'">'+ endDateArr[i] +'</option>'))
+  }
+}
+
+function changeJcDate(t){
+  var date = $(t).val();
+  var startD = moment(moment(date)).add(1,'d').format('YYYY-MM-DD');
+  $('#yStartDate').empty().append($('<option value="'+ startD +'">'+ startD +'</option>'));
+
+  var endDateArr = setSelectDate($('#yStartDate').val(),selectEndDate);
+  $('#yEndDate').empty();
+  for(var i=0;i<endDateArr.length;i++){
+    $('#yEndDate').append($('<option value="'+ endDateArr[i] +'">'+ endDateArr[i] +'</option>'))
+  }
+}
+
+/*基础情景改变的时候，基础日期随之改变*/
+function changeJcqj1(t){
+  var index = $(t).val();
+  var selectJcqj = basisArr[index];
+  var dateArr = setSelectDate(selectJcqj.scenarinoStartDate,moment(selectRW.missionEndDate).subtract(2,'d').format('YYYY-MM-DD'));
+  dateArr = dateArr.reverse();
+  $('#jcdate1').empty();
+  for(var i=0;i<dateArr.length;i++){
+    $('#jcdate1').append($('<option value="'+ dateArr[i] +'">'+ dateArr[i] +'</option>'))
+  }
+  var startD = moment(moment(dateArr[0])).add(1,'d').format('YYYY-MM-DD');
+  $('#hStartDate').empty().append($('<option value="'+ startD +'">'+ startD +'</option>'));
+
+  var endDateArr = setSelectDate($('#hStartDate').val(),moment(selectRW.missionEndDate).format('YYYY-MM-DD'));
+  $('#hEndDate').empty();
+  for(var i=0;i<endDateArr.length;i++){
+    $('#hEndDate').append($('<option value="'+ endDateArr[i] +'">'+ endDateArr[i] +'</option>'))
+  }
+}
+
+function changeJcDate1(t){
+  var date = $(t).val();
+  var startD = moment(moment(date)).add(1,'d').format('YYYY-MM-DD');
+  $('#hStartDate').empty().append($('<option value="'+ startD +'">'+ startD +'</option>'));
+
+  var endDateArr = setSelectDate($('#hStartDate').val(),moment(selectRW.missionEndDate).format('YYYY-MM-DD'));
+  $('#hEndDate').empty();
+  for(var i=0;i<endDateArr.length;i++){
+    $('#hEndDate').append($('<option value="'+ endDateArr[i] +'">'+ endDateArr[i] +'</option>'))
+  }
+}
+
+
+/*添加option*/
+function setOption(ele,res){
+  $(ele).empty();
+  for(var i=0;i<res.length;i++){
+    if((ele == '#dbqj') && (res[i].scenarinoId == -1))continue;
+    $(ele).append($('<option value="'+ i +'">'+ res[i].scenarinoName +'</option>'))
+  }
+}
 
 /*新改情景创建*/
-function createQj(){
+function createQj(type){
+  var url,urlName;
+  var params,paramsName;
+  url = '/scenarino/save_scenarino';
+  urlName = '/scenarino/check_scenarinoname';
+  if(type == 'ypg' ){
+    params = {};
+    paramsName = {};
+    params.scenarinoName = paramsName.scenarinoName = $('#qjName').val();
+    params.missionId = paramsName.missionId = selectRW.missionId;
+    params.scenarinoStartDate = $('#qjStartDate').val();
+    params.scenarinoEndDate = $('#qjEndDate').val();
+    params.userId = paramsName.userId = userId;
+    params.scenarinoId = qjId;
+    /*
+     * 这里应该还会有几个参数
+     * */
 
+
+    /*
+    * 预评估任务，后评估情景
+    * 判断$('.changeDB')是否有被checked
+    * 然后考虑组织参数
+    * */
+  }else{
+    params = {};
+    paramsName = {};
+    params.scenarinoName = paramsName.scenarinoName = $('#qjName').val();
+    params.missionId = paramsName.missionId = selectRW.missionId;
+    params.scenarinoStartDate = $('#qjStartDate').val();
+    params.scenarinoEndDate = $('#qjEndDate').val();
+    params.userId = paramsName.userId = userId;
+    params.scenarinoId = qjId;
+    /*
+     * 这里应该还会有几个参数
+     * */
+
+
+    /*
+     * 预评估任务，后评估情景
+     * 判断$('.changeDB')是否有被checked
+     * 然后考虑组织参数
+     * */
+  }
+
+  ajaxPost(urlName,paramsName).success(function(res){
+    if(res.data){
+      ajaxPost(url, params).success(function () {
+        //console.log('success');
+
+        $('#createModal').modal('hide');
+        swal('添加成功', '', 'success')
+      }).error(function () {
+        swal('添加失败', '', 'error')
+      })
+    }else{
+      swal('名称重复', '', 'error')
+    }
+  }).error(function(){
+    swal('校验失败', '', 'error')
+  })
+
+
+}
+
+/*获取模拟范围*/
+function getMnfw(){
+  var url = '';
+  var params = {
+    userId:userId
+  };
+  ajaxPost(url,params).success(function(res){
+
+    for(var i=0;i<res.data;i++){
+      $('#mnfw').append($('<option value=""></option>'))
+    }
+
+  }).error(function(){
+    console.log('模拟范围未获取到！！！！')
+  })
+  $('#mnfw').append($('<option value="1">范围1</option>'))
+}
+
+/*获取清单*/
+function getQD(){
+  var url = '';
+  var params = {
+    userId:userId
+  };
+  ajaxPost(url,params).success(function(res){
+
+    for(var i=0;i<res.data;i++){
+      $('#qd').append($('<option value=""></option>'))
+    }
+
+  }).error(function(){
+    console.log('清单未获取到！！！！')
+  })
+  $('#qd').append($('<option value="1">清单1</option>'))
 }
 
 
 
 
-
+function ajaxPost1(url, parameter) {
+  parameterPar.data = parameter;
+  var p = JSON.stringify(parameterPar);
+  //return $.ajax(BackstageIP + url, {
+  return $.ajax('webApp/task01/'+ url, {
+    contentType: "application/json",
+    type: "GET",
+    async: true,
+    dataType: 'JSON',
+    //data: p
+  })
+}
 
 
 
