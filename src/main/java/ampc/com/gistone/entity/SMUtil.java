@@ -12,6 +12,21 @@ import java.util.Map;
 public class SMUtil {
 	private String sectorsName;
 	private List<Map> measureItems;
+	private Integer count;
+	private List<Map> planMeasure;
+	
+	public Integer getCount() {
+		return count;
+	}
+	public void setCount(Integer count) {
+		this.count = count;
+	}
+	public List<Map> getPlanMeasure() {
+		return planMeasure;
+	}
+	public void setPlanMeasure(List<Map> planMeasure) {
+		this.planMeasure = planMeasure;
+	}
 	public String getSectorsName() {
 		return sectorsName;
 	}
