@@ -44,14 +44,102 @@ public class TScenarinoDetail {
     //起报日期
     private Date pathDate;
     
-    private Long spanUp;
-    
-    public Date getPathDate() {
-		return pathDate;
+    private Long spinUp;
+
+	public Long getScenarinoId() {
+		return scenarinoId;
 	}
 
-	public void setPathDate(Date pathDate) {
-		this.pathDate = pathDate;
+	public void setScenarinoId(Long scenarinoId) {
+		this.scenarinoId = scenarinoId;
+	}
+
+	public Long getScenarinoType() {
+		return scenarinoType;
+	}
+
+	public void setScenarinoType(Long scenarinoType) {
+		this.scenarinoType = scenarinoType;
+	}
+
+	public Object getScenarinoName() {
+		return scenarinoName;
+	}
+
+	public void setScenarinoName(Object scenarinoName) {
+		this.scenarinoName = scenarinoName;
+	}
+
+	public Date getScenarinoStartDate() {
+		return scenarinoStartDate;
+	}
+
+	public void setScenarinoStartDate(Date scenarinoStartDate) {
+		this.scenarinoStartDate = scenarinoStartDate;
+	}
+
+	public Date getScenarinoEndDate() {
+		return scenarinoEndDate;
+	}
+
+	public void setScenarinoEndDate(Date scenarinoEndDate) {
+		this.scenarinoEndDate = scenarinoEndDate;
+	}
+
+	public Long getScenarinoStatus() {
+		return scenarinoStatus;
+	}
+
+	public void setScenarinoStatus(Long scenarinoStatus) {
+		this.scenarinoStatus = scenarinoStatus;
+	}
+
+	public Long getMissionId() {
+		return missionId;
+	}
+
+	public void setMissionId(Long missionId) {
+		this.missionId = missionId;
+	}
+
+	public Date getScenarinoAddTime() {
+		return scenarinoAddTime;
+	}
+
+	public void setScenarinoAddTime(Date scenarinoAddTime) {
+		this.scenarinoAddTime = scenarinoAddTime;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public String getIsEffective() {
+		return isEffective;
+	}
+
+	public void setIsEffective(String isEffective) {
+		this.isEffective = isEffective;
+	}
+
+	public Date getDeleteTime() {
+		return deleteTime;
+	}
+
+	public void setDeleteTime(Date deleteTime) {
+		this.deleteTime = deleteTime;
 	}
 
 	public Long getBasisScenarinoId() {
@@ -86,99 +174,23 @@ public class TScenarinoDetail {
 		this.scenType = scenType;
 	}
 
-	public Long getScenarinoId() {
-        return scenarinoId;
-    }
+	public Date getPathDate() {
+		return pathDate;
+	}
 
-    public void setScenarinoId(Long scenarinoId) {
-        this.scenarinoId = scenarinoId;
-    }
+	public void setPathDate(Date pathDate) {
+		this.pathDate = pathDate;
+	}
 
-    public Long getScenarinoType() {
-        return scenarinoType;
-    }
+	public Long getSpinUp() {
+		return spinUp;
+	}
 
-    public void setScenarinoType(Long scenarinoType) {
-        this.scenarinoType = scenarinoType;
-    }
+	public void setSpinUp(Long spinUp) {
+		this.spinUp = spinUp;
+	}
 
-    public Object getScenarinoName() {
-        return scenarinoName;
-    }
-
-    public void setScenarinoName(Object scenarinoName) {
-        this.scenarinoName = scenarinoName;
-    }
-
-    public Date getScenarinoStartDate() {
-        return scenarinoStartDate;
-    }
-
-    public void setScenarinoStartDate(Date scenarinoStartDate) {
-        this.scenarinoStartDate = scenarinoStartDate;
-    }
-
-    public Date getScenarinoEndDate() {
-        return scenarinoEndDate;
-    }
-
-    public void setScenarinoEndDate(Date scenarinoEndDate) {
-        this.scenarinoEndDate = scenarinoEndDate;
-    }
-
-    public Long getScenarinoStatus() {
-        return scenarinoStatus;
-    }
-
-    public void setScenarinoStatus(Long scenarinoStatus) {
-        this.scenarinoStatus = scenarinoStatus;
-    }
-
-    public Long getMissionId() {
-        return missionId;
-    }
-
-    public void setMissionId(Long missionId) {
-        this.missionId = missionId;
-    }
-
-    public Date getScenarinoAddTime() {
-        return scenarinoAddTime;
-    }
-
-    public void setScenarinoAddTime(Date scenarinoAddTime) {
-        this.scenarinoAddTime = scenarinoAddTime;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getIsEffective() {
-        return isEffective;
-    }
-
-    public void setIsEffective(String isEffective) {
-        this.isEffective = isEffective == null ? null : isEffective.trim();
-    }
-
-    public Date getDeleteTime() {
-        return deleteTime;
-    }
-
-    public void setDeleteTime(Date deleteTime) {
-        this.deleteTime = deleteTime;
-    }
+	
+    
+  
 }
