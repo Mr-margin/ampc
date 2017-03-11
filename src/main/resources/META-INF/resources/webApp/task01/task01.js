@@ -120,7 +120,7 @@ function formVerify(){
       }
     }
 
-  })
+  });
 
     //$("#formCreate").validate({
     //  onfocusout: function(element){
@@ -129,20 +129,6 @@ function formVerify(){
     //});
   }
 
-
-/*看名字*/
-/*function ajaxPost(url, parameter) {
-  parameterPar.data = parameter;
-  var p = JSON.stringify(parameterPar);
-  //return $.ajax(BackstageIP + url, {
-  return $.ajax('/ampc' + url, {
-    contentType: "application/json",
-    type: "POST",
-    async: true,
-    dataType: 'JSON',
-    data: p
-  })
-}*/
 
 $(document).ready(function () {
   initialize();
@@ -530,7 +516,7 @@ $('#createModal').on('show.bs.modal', function (event) {
 
 });
 
-function newQj(){
+/*function newQj(){
   $('.qjSelectWay').css('display','none');
   $('.findQjDiv').css('display','none');
   $('.createQj-in').css('display','block');
@@ -548,9 +534,9 @@ function oldQj(){
   $('.new-foot').css('display','block');
   $('.old-foot').css('display','none');
 
-}
+}*/
 
-var oldType = '';
+/*var oldType = '';
 function selectOldType(e){
   $('.selectOldQj .active').removeClass('active');
   $(e).addClass('active');
@@ -558,19 +544,19 @@ function selectOldType(e){
 
   $('#oldQJ').bootstrapTable('destroy');
   initOldQj();
-}
+}*/
 
 var qjId = '';
-function findOldQj(){
+/*function findOldQj(){
   $('#createModal .modal-dialog').addClass('w80');
   $('.selectOldQj').css('display','block');
   $('.createQj').parent().addClass('col-md-6');
 
   initOldQj();
 
-}
+}*/
 
-function oldSearch(){
+/*function oldSearch(){
   var params = $('#oldQJ').bootstrapTable('getOptions');
   params.queryParams = function (params) {
     var json;
@@ -593,9 +579,9 @@ function oldSearch(){
     return params;
   };
   $('#oldQJ').bootstrapTable('refresh', params);
-}
+}*/
 
-function initOldQj(){
+/*function initOldQj(){
   $('#oldQJ').bootstrapTable({
     method: 'POST',
     //url: 'webApp/task01/testQJ.json',
@@ -651,14 +637,14 @@ function initOldQj(){
     }
 
   });
-}
+}*/
 
-function oldQJ_rw(v,row,i){
+/*function oldQJ_rw(v,row,i){
   return '<a href="javascript:">'+ row.missionName + '</a><br /><span> 模拟范围：'+ row.v1 +'</span><br /><span>清单：'+ row.esCouplingName +'</span>'
-}
+}*/
 
 
-/*任务、情景创建*/
+/*/!*任务、情景创建*!/
 function create(e,run) {
 
   //$('.createSubmit').click();
@@ -728,7 +714,7 @@ function create(e,run) {
 
 
   }
-}
+}*/
 
 
 
@@ -858,14 +844,15 @@ function selectType(type){
 /*创建情景选择类型*/
 function selectQJtype(type){
 
-  //var url = '/scenarino/find_endTime';
-  var url = 'end.json';
+  var url = '/scenarino/find_endTime';
+  //var url = 'end.json';
   var params = {
     userId:userId
   };
 
-  __dsp['jcqj'+selectRW.rwId].then(function(res){
+  __dsp['jcqj'+selectRW.missionId].then(function(res){
     basisArr = res.data;
+    if(basisArr)
 
     //reverse  倒序
     switch(type){
@@ -886,7 +873,7 @@ function selectQJtype(type){
         }
         var startD = moment(moment(dateArr[0])).add(1,'d').format('YYYY-MM-DD');
         $('#yStartDate').empty().append($('<option value="'+ startD +'">'+ startD +'</option>'));
-        ajaxPost1(url,params).success(function(res){
+        ajaxPost(url,params).success(function(res){
           selectEndDate = res.data.scenarinoEndDate;
           selectEndDate = moment(selectRW.missionStartDate).isBefore(selectEndDate)?moment(selectRW.missionStartDate).format('YYYY-MM-DD'):selectEndDate;
           var endDateArr = setSelectDate($('#yStartDate').val(),selectEndDate);
@@ -903,7 +890,6 @@ function selectQJtype(type){
         $('.dbqj').css('display','block');
         $('.createQjBtn').css('display','inline-block');
         $('.return_S_qj').css('display','inline-block');
-        getdbqj();
         $('#dbqj').attr('disabled',true);
         $('#jcqj').removeAttr('disabled');
         $('#jcdate').removeAttr('disabled');
@@ -923,7 +909,7 @@ function selectQJtype(type){
         var startD = moment(moment(dateArr[0])).add(1,'d').format('YYYY-MM-DD');
         $('#yStartDate').empty().append($('<option value="'+ startD +'">'+ startD +'</option>'));
 
-        ajaxPost1(url,params).success(function(res){
+        ajaxPost(url,params).success(function(res){
           selectEndDate = res.data.scenarinoEndDate;
           selectEndDate = moment(selectRW.missionStartDate).isBefore(selectEndDate)?moment(selectRW.missionStartDate).format('YYYY-MM-DD'):selectEndDate;
           var endDateArr = setSelectDate($('#yStartDate').val(),selectEndDate);
@@ -943,7 +929,6 @@ function selectQJtype(type){
         $('.return_S_qj').css('display','inline-block');
         $('.diffNo').css('display','block');
         $('.spinup').css('display','none');
-        getdbqj();
         $('#dbqj1').attr('disabled',true);
         $('#jcqj1').removeAttr('disabled');
         $('#jcdate1').removeAttr('disabled');
@@ -1004,21 +989,6 @@ function selectQJtype(type){
 
 
 
-}
-
-function getdbqj(){
-  $('#dbqj').empty();
-  var url = '';
-  var params = {
-    userId:userId
-  };
-  ajaxPost(url,params).success(function(res){
-
-    setOption('#dbqj',res);
-
-  }).error(function(){
-    console.log('未获取到对比情景！！！')
-  })
 }
 
 function checkedDB(t){
@@ -1122,14 +1092,14 @@ function initRwDate(s,e){
 /*创建情景时选择模态框*/
 function createQJselect(){
   console.log(selectRW);
-  //var oldQJUrl = '/scenarino/find_scenarino_time';
-  var oldQJUrl = 'date.json';
+  var oldQJUrl = '/scenarino/find_scenarino_time';
+  //var oldQJUrl = 'date.json';
   var oldQJparams = {
     userId:userId,
-    missionId:selectRW.rwId
+    missionId:selectRW.missionId
   };
-  if((!__dsp['jcqj'+selectRW.rwId]) || (basisArr.length ==0)){
-    __dsp['jcqj'+selectRW.rwId] = ajaxPost1(oldQJUrl,oldQJparams);
+  if((!__dsp['jcqj'+selectRW.missionId]) || (basisArr.length ==0)){
+    __dsp['jcqj'+selectRW.missionId] = ajaxPost(oldQJUrl,oldQJparams);
   }
 
   if(selectRW.missionStatus == "预评估"){
