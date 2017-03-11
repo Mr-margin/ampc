@@ -843,8 +843,8 @@ public class MissionAndScenarinoController {
 			JSONObject lastobj=new JSONObject();
 			lastobj.put("scenarinoId", -1);
 			lastobj.put("scenarinoName", "基准情景");
-			lastobj.put("scenarinoStartDate", times);
-			lastobj.put("scenarinoEndDate", missiondate);
+			lastobj.put("scenarinoStartDate", missiondate);
+			lastobj.put("scenarinoEndDate", times);
 			arr.add(lastobj);
 			return AmpcResult.build(0, "find_scenarino_time success",arr);
 		}catch(Exception e){
