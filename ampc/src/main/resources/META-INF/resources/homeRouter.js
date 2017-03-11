@@ -76,6 +76,38 @@ function ajaxPost(url, parameter) {
     })
 }
 
+function ajaxPost_w(url, parameter) {
+    //parameterPar.data = parameter;
+    //var p = JSON.stringify(parameterPar);
+    //return $.ajax(BackstageIP + url, {
+    return $.ajax(url, {
+        contentType: "application/json",
+        type: "POST",
+        async: true,
+        dataType: 'JSON',
+        data: JSON.stringify(parameter)
+    })
+}
+
+//经度转墨卡托
+function handle_x(x) {
+	return (x / 180.0) * 20037508.34;
+}
+
+//纬度度转墨卡托
+function handle_y(y) {
+	if (y > 85.05112) {
+		y = 85.05112;
+	}
+	if (y < -85.05112) {
+		y = -85.05112;
+	}
+	y = (Math.PI / 180.0) * y;
+	var tmp = Math.PI / 4.0 + y / 2.0;
+	return 20037508.34 * Math.log(Math.tan(tmp)) / Math.PI;
+
+}
+
 var llqHeight = document.documentElement.clientHeight;
 var cssStyle = '#sidebar .panel-body{overflow:auto;border-top:0;border-bottom:0;padding:0;height: '+ (llqHeight-400) +'px;} ';
 $('head').append($('<style></style>').html(cssStyle));
