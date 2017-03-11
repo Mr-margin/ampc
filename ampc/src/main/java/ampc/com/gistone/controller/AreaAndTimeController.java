@@ -642,7 +642,7 @@ public class AreaAndTimeController {
 				   TTime t=time.get(0);
 				  obj.put("timeId", t.getTimeId());
 				  obj.put("areaId", areId);
-				    return result>0?AmpcResult.build(0, "ok",obj):AmpcResult.build(1000, "添加时段失败",null);
+				    return result>0?AmpcResult.ok(obj):AmpcResult.build(1000, "添加时段失败",null);
 				}else{
 					//添加失败
 					return AmpcResult.build(1000, "添加区域失败",null);
