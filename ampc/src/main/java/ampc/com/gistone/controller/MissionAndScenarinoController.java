@@ -768,11 +768,13 @@ public class MissionAndScenarinoController {
 			//根据任务id查询所有情景
 			List<TScenarinoDetail> scenarlist=tScenarinoDetailMapper.selectAllByMissionId(missionId);
 			//查询基准情景最大结束时间
-			TScenarinoDetail scenar=tScenarinoDetailMapper.selectMaxEndTime();
+			Date scenar=tScenarinoDetailMapper.selectMaxEndTime();
 			//转换类型
-			String missiondate=tMission.getMissionStartDate().toString();
-			String times=scenar.getScenarinoEndDate().toString();
-			SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");  
+			Date mission=tMission.getMissionStartDate();
+			
+			SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");
+			String times=formatter.format(scenar);
+			String missiondate=formatter.format(mission);
 		    Date maxendtime = formatter.parse(times);
 		    Date maxstarttime=formatter.parse(missiondate);
 			JSONArray arr=new JSONArray();
@@ -782,9 +784,9 @@ public class MissionAndScenarinoController {
 				if(tscenar.getScenType().equals("1")){
 					obj.put("scenarinoId", tscenar.getScenarinoId());
 					obj.put("scenarinoName", tscenar.getScenarinoName());
-					String starttime=tscenar.getScenarinoStartDate().toString();
-					String endtime=tscenar.getScenarinoEndDate().toString(); 
-					String padate=tscenar.getPathDate().toString();
+					String starttime=formatter.format(tscenar.getScenarinoStartDate());
+					String endtime=formatter.format(tscenar.getScenarinoEndDate());
+					String padate=formatter.format(tscenar.getPathDate());
 				    Date scenarinoStartDate=formatter.parse(starttime);
 				    Date scenarinoEndDate=formatter.parse(endtime);
 				    Date pathDate=formatter.parse(padate);
@@ -797,8 +799,8 @@ public class MissionAndScenarinoController {
 				if(tscenar.getScenType().equals("2")){
 					obj.put("scenarinoId", tscenar.getScenarinoId());
 					obj.put("scenarinoName", tscenar.getScenarinoName());
-					String starttime=tscenar.getScenarinoStartDate().toString();  
-					String endtime=tscenar.getScenarinoEndDate().toString();
+					String starttime=formatter.format(tscenar.getScenarinoStartDate());  
+					String endtime=formatter.format(tscenar.getScenarinoEndDate());
 				    Date scenarinoStartDate=formatter.parse(starttime);
 				    Date scenarinoEndDate=formatter.parse(endtime);
 					obj.put("scenarinoStartDate", tscenar.getScenarinoStartDate());
