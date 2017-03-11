@@ -289,18 +289,18 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 			$("#show_zicuoshi_table").css("width",(z_num*20)+"px");
 			$("#show_zicuoshi").html(show_zicuoshi);
 			
+			ajaxPost_w('http://192.168.1.116:8089/search/companyCount',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName,"summary":sc_val.summary}).success(function(res){
+				console.log(JSON.stringify(res));
+				$("#dianyaunzushu").html("点源总数："+res.data.length);
+				
+				add_point(res.data);
+			});
+			
 		}else{
 			swal('连接错误', '', 'error');
 		}
 	}).error(function(){
 		swal('校验失败', '', 'error')
-	});
-	
-	ajaxPost_w('http://192.168.1.116:8089/search/companyCount',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName,"summary":sc_val.summary}).success(function(res){
-		console.log(JSON.stringify(res));
-		$("#dianyaunzushu").html("点源总数："+res.data.length);
-		
-		add_point(res.data);
 	});
 	
 	$("#createModal").modal();
