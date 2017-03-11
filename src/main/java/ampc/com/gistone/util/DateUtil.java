@@ -20,7 +20,7 @@ public class DateUtil {
 	 */
 	public static String DateToStr(Date date) {
 
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH");
 		String str = format.format(date);
 		return str;
 	}
@@ -33,7 +33,7 @@ public class DateUtil {
 	 */
 	public static Date StrToDate(String str) {
 
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH");
 		Date date = null;
 		try {
 			date = format.parse(str);
