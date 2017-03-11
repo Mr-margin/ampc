@@ -52,6 +52,10 @@ vipspa.start({
     	templateUrl: 'webApp/effectEvaluate/effectEval01.html',
     	controller: 'webApp/effectEvaluate/effectEval01.js'
     },
+    '/verticalSpread': {       //效果评估》》垂直分布
+    	templateUrl: 'webApp/effectEvaluate/verticalSpread02.html',
+    	controller: 'webApp/effectEvaluate/verticalSpread02.js'
+    },
     'defaults': '/rwgl'     //默认显示页面
   },
   errorTemplateId: '#error'//错误显示页面
