@@ -416,4 +416,61 @@
   		FROM T_SCENARINO_DETAIL  
 			 WHERE SCEN_TYPE='3' AND IS_EFFECTIVE='1'
   </select>
+  <select id="selectid" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TScenarinoDetail" >
+   	 SELECT 
+		<include refid="Base_Column_List" />
+  		FROM T_SCENARINO_DETAIL  
+			 WHERE 1=1
+			 <if test="scenarinoType != null" >
+       and SCENARINO_TYPE = #{scenarinoType,jdbcType=DECIMAL}
+      </if>
+      <if test="scenarinoName != null" >
+       and SCENARINO_NAME = #{scenarinoName,jdbcType=OTHER}
+      </if>
+      <if test="scenarinoStartDate != null" >
+       and SCENARINO_START_DATE = #{scenarinoStartDate,jdbcType=DATE}
+      </if>
+      <if test="scenarinoEndDate != null" >
+       and SCENARINO_END_DATE = #{scenarinoEndDate,jdbcType=DATE}
+      </if>
+      <if test="scenarinoStatus != null" >
+       and SCENARINO_STATUS = #{scenarinoStatus,jdbcType=DECIMAL}
+      </if>
+      <if test="missionId != null" >
+       and MISSION_ID = #{missionId,jdbcType=DECIMAL}
+      </if>
+      <if test="scenarinoAddTime != null" >
+       and SCENARINO_ADD_TIME = #{scenarinoAddTime,jdbcType=DATE}
+      </if>
+      <if test="userId != null" >
+       and USER_ID = #{userId,jdbcType=DECIMAL}
+      </if>
+      <if test="updateTime != null" >
+       and UPDATE_TIME = #{updateTime,jdbcType=DATE}
+      </if>
+      <if test="isEffective != null" >
+       and IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR}
+      </if>
+      <if test="deleteTime != null" >
+       and DELETE_TIME = #{deleteTime,jdbcType=DATE}
+      </if>
+       <if test="basisScenarinoId != null" >
+       and BASIS_SCENARINO_ID = #{basisScenarinoId,jdbcType=DECIMAL}
+      </if>
+       <if test="basisTime != null" >
+       and BASIS_TIME = #{basisTime,jdbcType=DATE}
+      </if>
+       <if test="controstScenarinoId != null" >
+       and CONTRAST_SCENARINO_ID = #{controstScenarinoId,jdbcType=DECIMAL}
+      </if>
+       <if test="scenType != null" >
+       and SCEN_TYPE = #{scenType,jdbcType=VARCHAR}
+      </if>
+       <if test="pathDate != null" >
+       and PATH_DATE = #{pathDate,jdbcType=DATE}
+      </if>
+      <if test="spinUp != null" >
+       and SPINUP = #{spinUp,jdbcType=DECIMAL}
+      </if>
+  </select>
 </mapper>
