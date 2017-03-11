@@ -191,7 +191,7 @@ function initialize(){
   /*test使用*/
   var scenarino1 = ajaxPost1('webApp/task02/qy.json',{});
 
-  scenarino1.then(function(res){
+  scenarino.then(function(res){
 	  
     allData = res.data;
     for(var i=0;i<res.data.length;i++){
@@ -522,6 +522,7 @@ function addPlan(){
   if(newPlan){
     var url = '/plan/add_plan';
     var params = {
+      timeId:msg.content.timeId,
       userId:userId,
       missionId:msg.content.rwId,
       scenarioId:msg.content.qjId,
