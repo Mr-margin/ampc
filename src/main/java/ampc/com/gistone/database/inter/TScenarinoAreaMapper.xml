@@ -84,8 +84,8 @@
       IS_EFFECTIVE = '0',
       DELETE_TIME = (select sysdate from dual) 
      where SCENARINO_AREA_ID in 
-         <foreach collection="list" item="scenarinoAreaId" index="index" open="(" close=")" separator=",">
-     		 #{scenarinoAreaId,jdbcType=DECIMAL}
+         <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+     		 #{item,jdbcType=DECIMAL}
   		</foreach>
   </update>
  
