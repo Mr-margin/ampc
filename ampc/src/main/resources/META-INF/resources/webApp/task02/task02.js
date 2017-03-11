@@ -164,17 +164,6 @@ function initialize(){
     ls.setItem('qjMsg',JSON.stringify(qjMsg));
   }
 
-  //
-  //qjMsg = vipspa.getMessage('qjMessage').content;
-  //qjMsg = {
-  //  qjEndDate: 1486137600000,
-  //  qjId: 19,
-  //  qjName: "dfgerg",
-  //  qjStartDate: 1485792000000,
-  //  rwId: 65,
-  //  rwName: "gjfhdxghxdf"
-  //};
-
   msg.content.rwId = qjMsg.rwId;
   msg.content.rwName = qjMsg.rwName;
   msg.content.qjId = qjMsg.qjId;
@@ -677,7 +666,7 @@ function createEditArea(){
 	    provinceCodes:'',
 	    cityCodes:'',
 	    countyCodes:''
-	  }
+	  };
 	
 	  var pArr = [];
 	  for(var i in showCode[0]){
@@ -700,14 +689,36 @@ function createEditArea(){
 	    for(var ii in showCode[2][i]){
 	      var countyObj = {};
 	      countyObj[ii] = showCode[1][i][ii];
-	      crArrs.push(countyObj)
+	      crArr.push(countyObj)
 	    }
 	  }
 	  obj.countyCodes = JSON.stringify(crArr);
   ajaxPost(url,obj).success(function(res){
     console.log(res);
-  })
 
+    var area = $('.area.disNone').clone().removeClass('disNone');
+    area.find('.front>span').html(areaName);
+    $('.areaMsg').append(area);
+
+    /*克隆时段进行添加*/
+    var times = $('.time.disNone').clone().removeClass('disNone');
+    area.find('.showLine').before(times);
+    times.find('.timeToolDiv .btn').eq(1).attr('disabled','disabled');
+    times.find('.timeToolDiv .btn').eq(2).attr('disabled','disabled');
+    times.css('width',$('.period').width()+'px');
+    var obj = {};
+    obj.areaId = res.data.areaId;
+    obj.areaName = areaName;
+    obj.timeFrame = [];
+    obj.timeItems = [{
+      planId:-1,
+      planName:'',
+      timeId:res.data.timeId,
+      timeEndDate:qjMsg.qjEndDate,
+      timeStartDate:qjMsg.qjStartDate
+    }];
+    allData
+  })
 }
 
 function setShowCode(data){
