@@ -730,15 +730,15 @@ public class PlanAndMeasureController {
 		tPlan.setCopyPlan("1");
 		tPlan.setIsEffective("1");
 		//根据是否为可复制预案和是否有效字段查询
-		List<TPlan> planlist=tPlanMapper.selectByEntity(tPlan);
+		//List<TPlan> planlist=tPlanMapper.selectByEntity(tPlan);
 		JSONObject obj=new JSONObject();
 		JSONArray arr=new JSONArray();
-		for(TPlan plan:planlist){
-			JSONObject objs=new JSONObject();
-			objs.put("planName", plan.getPlanName());
-			objs.put("planId", plan.getPlanId());
-			arr.add(objs);
-		}
+//		for(TPlan plan:planlist){
+//			JSONObject objs=new JSONObject();
+//			objs.put("planName", plan.getPlanName());
+//			objs.put("planId", plan.getPlanId());
+//			arr.add(objs);
+//		}
 		obj.put("copyPlanlist", arr);
 		return AmpcResult.build(0, "copy_plan_list success",obj);
 	}
