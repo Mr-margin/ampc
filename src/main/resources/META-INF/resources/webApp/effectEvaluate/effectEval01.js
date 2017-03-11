@@ -1,8 +1,9 @@
 $(function(){
-//	创建ECharts图表
+	
+	//	创建ECharts图表
 	var myChart = echarts.init(document.getElementById('main'));
 	var myChartTwo = echarts.init(document.getElementById('mainTwo'));
-//	指定图表的配置项和数据	
+    //指定图表的配置项和数据	
     var option = {  
             //标题，每个图表最多仅有一个标题控件，每个标题控件可设主副标题  
             title: {  
@@ -115,6 +116,7 @@ $(function(){
                     type: 'bar',  
                     //系列中的数据内容数组，折线图以及柱状图时数组长度等于所使用类目轴文本标签数组axis.data的长度，并且他们间是一一对应的。数组项通常为数值  
                     data: [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3],  
+                    
                     //系列中的数据标注内容  
                     markPoint: {  
                         data: [  
@@ -198,12 +200,43 @@ $(function(){
 
 	myChart.setOption(option);
 	myChartTwo.setOption(option);
-//	图表结束	
+	
+	myChart.hideLoding();
+	//getChartData(); //与java后台交互
 
 });
 
 
+function getChartData(){
+	var options = myChart.getOption();
+	$.ajax({
+		type:"post",
+		async:false,
+		url:"xxxx.do",
+		data:{},
+		dataType:"json",
+		success:function(result){
+			if (result) {
+				//legend categrop data0 data1 data2 data3 后台定义的属性
+				options.legend.data = result.legend;
+				options.xAxis[0].data = result.timeData;
+				options.series[0].data = result.series[0].data0;
+				options.series[1].data = result.series[1].data1;
+				options.series[2].data = result.series[2].data2;
+				options.series[3].data = result.series[3].data3;
+				
+				myCharts.hideLoading();
+				myCharts.setOption(options);
+				
+			} 
+		},
+		error:function(){
+			alert("请求数据失败！！！");
+			myChart.hideloding();
+		}
 
+	});
+}
 
 
 
