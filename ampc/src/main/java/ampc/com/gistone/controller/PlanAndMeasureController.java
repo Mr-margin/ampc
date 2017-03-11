@@ -236,6 +236,8 @@ public class PlanAndMeasureController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//用户id
 			Long userId=Long.parseLong(data.get("userId").toString());
+			//时段id
+			Long timeId=Long.parseLong(data.get("timeId").toString());
 			//预案名称
 			String planName=data.get("planName").toString();
 			//行业id
@@ -266,6 +268,10 @@ public class PlanAndMeasureController {
 		    	map.put("scenarioId", scenarioId);
 		    	map.put("planName", planName);
 		    	Integer id=tPlanMapper.getIdByQuery(map);
+		    	TTime t=new TTime();
+		    	t.setTimeId(timeId);
+		    	t.setPlanId(Long.parseLong(id.toString()));
+		    	tTimeMapper.updateByPrimaryKey(t);
 		    	return AmpcResult.ok(id);
 		    }
 		    return AmpcResult.build(1000, "添加失败");
