@@ -1,5 +1,6 @@
 package ampc.com.gistone.database.inter;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -77,5 +78,5 @@ public interface TScenarinoDetailMapper {
     
     List<TScenarinoDetail> selectAllByMissionId(Long missionId);
     
-    TScenarinoDetail selectMaxEndTime();
+    Date selectMaxEndTime();
 }
