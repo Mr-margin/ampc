@@ -489,8 +489,8 @@ public class MissionAndScenarinoController {
 	 * @return 返回响应结果对象
 	 */
 	@Transactional
-	@RequestMapping("scenarino/save_scenarino")
-	public AmpcResult save_Scenarino(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+	@RequestMapping("scenarino/save_scenarino2")
+	public AmpcResult save_Scenarino2(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
 	    //添加异常捕捉
 		try {
 			//设置跨域
@@ -884,6 +884,171 @@ public class MissionAndScenarinoController {
        }catch(Exception e){
 			e.printStackTrace();
 		return AmpcResult.build(1000, "参数错误",null);
+		}
+	}
+	
+	/**
+	 * 情景创建方法
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
+	 */
+	@Transactional
+	@RequestMapping("scenarino/save_scenarino")
+	public AmpcResult save_Scenarino(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			String scenarinoName=data.get("scenarinoName").toString();
+			String startDate =data.get("scenarinoStartDate").toString();
+			String endDate= data.get("scenarinoEndDate").toString();
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+			Date scenarinoStartDate=sdf.parse(startDate);
+			Date scenarinoEndDate= sdf.parse(endDate);
+			Long missionId=Long.valueOf(data.get("scenarinoStartDate").toString());
+			Long userId=Long.valueOf(data.get("userId").toString());
+			String missionType=data.get("missionType").toString();
+			Long basisScenarinoId=Long.valueOf(data.get("basisScenarinoId").toString());
+			String baTime=data.get("basisTime").toString();
+			Date basisTime=sdf.parse(baTime);
+			Long controstScenarinoId=Long.valueOf(data.get("controstScenarinoId").toString());
+			Long spinUp=Long.valueOf(data.get("spinUp").toString());
+			String scenType=data.get("scenType").toString();
+			Date date=new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+			cal.add(Calendar.DATE, -1);
+			String addTimeDate =sdf.format(cal.getTime());
+			Date pathDate=sdf.parse(addTimeDate);
+			
+			Long sdid=0l;
+			int d=0;
+			int a=0;
+			if(missionType.equals("预评估")){
+				if(scenType.equals("1")){
+				TScenarinoDetail tsd=new TScenarinoDetail();
+				
+				tsd.setBasisScenarinoId(basisScenarinoId);
+				tsd.setBasisTime(basisTime);
+				tsd.setScenarinoName(scenarinoName);
+				tsd.setScenarinoStartDate(scenarinoStartDate);
+				tsd.setScenarinoEndDate(scenarinoEndDate);
+				tsd.setScenType(scenType);
+				tsd.setMissionId(missionId);
+				tsd.setPathDate(pathDate);
+				tsd.setUserId(userId);
+				a=tScenarinoDetailMapper.insertSelective(tsd);
+				TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
+				sdid=tScenarinoDetail.getScenarinoId();
+				}
+			if(scenType.equals("2")){
+					if(controstScenarinoId==null){
+						TScenarinoDetail tsd=new TScenarinoDetail();
+						
+						tsd.setBasisScenarinoId(basisScenarinoId);
+						tsd.setBasisTime(basisTime);
+						tsd.setScenarinoName(scenarinoName);
+						tsd.setScenarinoStartDate(scenarinoStartDate);
+						tsd.setScenarinoEndDate(scenarinoEndDate);
+						tsd.setScenType(scenType);
+						tsd.setMissionId(missionId);
+						tsd.setUserId(userId);
+						a=tScenarinoDetailMapper.insertSelective(tsd);
+						TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
+						sdid=tScenarinoDetail.getScenarinoId();
+					}else{
+                        TScenarinoDetail tsd=new TScenarinoDetail();
+						tsd.setScenarinoName(scenarinoName);
+						tsd.setScenType(scenType);
+						tsd.setMissionId(missionId);
+						tsd.setUserId(userId);
+						a=tScenarinoDetailMapper.insertSelective(tsd);
+						TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
+						sdid=tScenarinoDetail.getScenarinoId();
+					}
+					
+				}
+				
+			}
+			if(missionType.equals("后评估")){
+				if(scenType.equals("2")){
+					if(controstScenarinoId==null){
+						TScenarinoDetail tsd=new TScenarinoDetail();
+						
+						tsd.setBasisScenarinoId(basisScenarinoId);
+						tsd.setBasisTime(basisTime);
+						tsd.setScenarinoName(scenarinoName);
+						tsd.setScenarinoStartDate(scenarinoStartDate);
+						tsd.setScenarinoEndDate(scenarinoEndDate);
+						tsd.setScenType(scenType);
+						tsd.setMissionId(missionId);
+						tsd.setUserId(userId);
+						a=tScenarinoDetailMapper.insertSelective(tsd);
+						TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
+						sdid=tScenarinoDetail.getScenarinoId();
+					}else{
+                        TScenarinoDetail tsd=new TScenarinoDetail();
+						tsd.setScenarinoName(scenarinoName);
+						tsd.setScenType(scenType);
+						tsd.setMissionId(missionId);
+						tsd.setUserId(userId);
+						a=tScenarinoDetailMapper.insertSelective(tsd);
+						TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
+						sdid=tScenarinoDetail.getScenarinoId();
+					}
+					
+				}
+				if(scenType.equals("3")){
+					TScenarinoDetail tsd=new TScenarinoDetail();
+					
+					tsd.setScenarinoName(scenarinoName);
+					tsd.setScenarinoStartDate(scenarinoStartDate);
+					tsd.setScenarinoEndDate(scenarinoEndDate);
+					tsd.setScenType(scenType);
+					tsd.setMissionId(missionId);
+					tsd.setUserId(userId);
+					tsd.setSpinUp(spinUp);
+					a=tScenarinoDetailMapper.insertSelective(tsd);
+					TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
+					sdid=tScenarinoDetail.getScenarinoId();
+				}	
+			}
+			if(a!=0){
+				List<String> areanamelist=new ArrayList();
+				areanamelist.add("第一区域");
+				areanamelist.add("第二区域");
+				areanamelist.add("第三区域");
+				for(String area:areanamelist){
+				TScenarinoAreaWithBLOBs ScenarinoArea =new TScenarinoAreaWithBLOBs();
+				ScenarinoArea.setAreaName(area);
+				ScenarinoArea.setUserId(userId);
+				int c=tScenarinoAreaMapper.insertSelective(ScenarinoArea);
+				List<TScenarinoAreaWithBLOBs> list=tScenarinoAreaMapper.selectByEntity(ScenarinoArea);
+				TScenarinoAreaWithBLOBs s=list.get(0);
+				if(c!=0){
+					TTime times=new TTime();
+					times.setAreaId(s.getScenarinoAreaId());
+					times.setTimeEndDate(scenarinoEndDate);
+					times.setTimeStartDate(scenarinoStartDate);
+					times.setMissionId(missionId);
+					times.setUserId(userId);
+					times.setScenarinoId(sdid);
+					d=tTimeMapper.insertSelective(times);
+				}
+				}
+				
+				
+			}
+			if(d!=0){
+				JSONObject obj=new JSONObject();
+				obj.put("scenarinoId", sdid);
+				return AmpcResult.build(0, "ok",obj);
+			}
+
+			 return AmpcResult.build(1000, "参数错误",null);
+		}catch(Exception e){
+			
+			return AmpcResult.build(1000, "参数错误",null);				
 		}
 	}
 }
