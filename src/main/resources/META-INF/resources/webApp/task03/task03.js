@@ -30,12 +30,12 @@ $("#show").click(function(){
 $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">添加预案</a>>><span style="padding-left: 15px;padding-right: 15px;">措施编辑</span>');
 
 var ls = window.localStorage;
-var qjMsg = vipspa.getMessage('qjMessage').content;
+var qjMsg = vipspa.getMessage('yaMessage').content;
 
 if(!qjMsg){
-  qjMsg = JSON.parse(ls.getItem('qjMsg'));
+  qjMsg = JSON.parse(ls.getItem('yaMsg'));
 }else{
-  ls.setItem('qjMsg',JSON.stringify(qjMsg));
+  ls.setItem('yaMsg',JSON.stringify(qjMsg));
 }
 
 hyc();
