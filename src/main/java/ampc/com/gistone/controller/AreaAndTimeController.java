@@ -641,6 +641,7 @@ public class AreaAndTimeController {
 				   List<TTime> time =tTimeMapper.selectAllByAreaId(areId);
 				   TTime t=time.get(0);
 				  obj.put("timeId", t.getTimeId());
+				  obj.put("areaId", areId);
 				    return result>0?AmpcResult.build(0, "ok",obj):AmpcResult.build(1000, "添加时段失败",null);
 				}else{
 					//添加失败
