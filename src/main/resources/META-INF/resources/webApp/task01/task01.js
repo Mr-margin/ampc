@@ -23,8 +23,9 @@ var msg = {
     qjId:'',
     qjName:'',
     qjStartDate:'',
-    qjEndDate:''
-
+    qjEndDate:'',
+    esCouplingId:'',
+    esCouplingName:''
   }
 };
 
@@ -358,6 +359,8 @@ function initQjTable() {
       msg.content.qjId = row.scenarinoId;
       msg.content.qjStartDate = row.scenarinoStartDate;
       msg.content.qjEndDate = row.scenarinoEndDate;
+      msg.content.esCouplingId = selectRW.esCouplingId;
+      msg.content.esCouplingName = selectRW.esCouplingName;
       vipspa.setMessage(msg);
     },
     /*复选框设置*/
@@ -1201,7 +1204,7 @@ function changeJcDate1(t){
 function setOption(ele,res){
   $(ele).empty();
   for(var i=0;i<res.length;i++){
-    if((ele == '#dbqj') && (res[i].scenarinoId == -1))continue;
+    if(((ele == '#dbqj')||(ele == '#dbqj1')) && (res[i].scenarinoId == -1))continue;
     $(ele).append($('<option value="'+ i +'">'+ res[i].scenarinoName +'</option>'))
   }
 }
