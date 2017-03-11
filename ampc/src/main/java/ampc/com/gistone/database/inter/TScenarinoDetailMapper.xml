@@ -140,7 +140,7 @@
   
   
   <!-- 根据任务Id查询出所有的情景Id 用来级联删除 -->
-  <select id="selectByMissionId" parameterType="hashMap" resultType="java.util.List" >
+  <select id="selectByMissionId" parameterType="hashMap" resultType="java.lang.Long" >
      SELECT SCENARINO_ID FROM T_SCENARINO_DETAIL 
 		WHERE MISSION_ID=#{missionId,jdbcType=OTHER} AND IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
   </select>
@@ -182,7 +182,8 @@
   <sql id="Base_Column_List" >
     SCENARINO_ID, SCENARINO_TYPE, SCENARINO_NAME, SCENARINO_START_DATE, SCENARINO_END_DATE, 
     SCENARINO_STATUS, MISSION_ID, SCENARINO_ADD_TIME, USER_ID, UPDATE_TIME, IS_EFFECTIVE, 
-    DELETE_TIME
+    DELETE_TIME, BASIS_SCENARINO_ID, BASIS_TIME, CONTRAST_SCENARINO_ID, SCEN_TYPE,
+    PATH_DATE, SPINUP
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -403,13 +404,14 @@
       SPINUP = #{spinUp,jdbcType=DECIMAL}
     where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
   </update>
-   <select id="selectAllByMissionId" parameterType="java.lang.Long" resultType="ampc.com.gistone.database.model.TScenarinoDetail" >
-   	 SELECT  *
+   <select id="selectAllByMissionId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+   	 SELECT 
+		<include refid="Base_Column_List" />
   		FROM T_SCENARINO_DETAIL  
-			 WHERE MISSION_ID=#{missionId,jdbcType=OTHER} AND IS_EFFECTIVE='1'
+			 WHERE MISSION_ID=#{missionId,jdbcType=DECIMAL} AND IS_EFFECTIVE='1'
 		ORDER BY SCENARINO_END_DATE DESC
   </select>
-  <select id="selectMaxEndTime" resultType="ampc.com.gistone.database.model.TScenarinoDetail" >
+  <select id="selectMaxEndTime" resultType="java.util.Date" >
    	 SELECT  max(SCENARINO_END_DATE)
   		FROM T_SCENARINO_DETAIL  
 			 WHERE SCEN_TYPE='3' AND IS_EFFECTIVE='1'
