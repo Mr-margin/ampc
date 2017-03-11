@@ -289,7 +289,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 			$("#show_zicuoshi_table").css("width",(z_num*20)+"px");
 			$("#show_zicuoshi").html(show_zicuoshi);
 			
-			ajaxPost_w('http://192.168.1.116:8089/search/companyCount',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName,"summary":sc_val.summary}).success(function(res){
+			ajaxPost_w('http://192.168.1.116:8089/search/companyCount',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName}).success(function(res){
 				console.log(JSON.stringify(res));
 				$("#dianyaunzushu").html("点源总数："+res.data.length);
 				
@@ -613,5 +613,14 @@ function add_point(col){
 	
 	app.mapList[1].setExtent(extent);
 	
+	var ert = {};
+	ert.bigIndex = "应急系统新_1描述文件.xlsx";
+	ert.smallIndex = sc_val.smallIndex;
+	ert.filters = [{"companyId":""}];
+	ert.summary = sc_val.summary;
+	
+	ajaxPost_w('http://192.168.1.116:8089/',ert).success(function(res){
+		
+	});
 	
 }
