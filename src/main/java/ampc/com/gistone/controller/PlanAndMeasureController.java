@@ -40,31 +40,31 @@ import ampc.com.gistone.util.ClientUtil;
 @RestController
 @RequestMapping
 public class PlanAndMeasureController {
+	//预案措施映射
 	@Autowired
 	private TPlanMeasureMapper tPlanMeasureMapper;
-	
+	//行业映射
 	@Autowired
 	private TSectorExcelMapper tSectorExcelMapper;
-	
+	//措施映射
 	@Autowired
 	private TMeasureExcelMapper tMeasureExcelMapper;
-	
+	//预案映射
 	@Autowired
 	private TPlanMapper tPlanMapper;
-	
+	//时段映射
 	@Autowired
 	private TTimeMapper tTimeMapper;
-	
+	//默认映射
 	@Autowired
 	private GetBySqlMapper getBySqlMapper;
-	
 	//行业条件映射
 	@Autowired
 	public TQueryExcelMapper tQueryExcelMapper;
-			
 	//行业描述映射
 	@Autowired
 	public TSectordocExcelMapper tSectordocExcelMapper;
+	
 	/**
 	 * 子措施条件查询
 	 * @author WangShanxi
@@ -90,16 +90,21 @@ public class PlanAndMeasureController {
 			}
 			//添加信息到参数中
 			Map<String,Object> map=new HashMap<String,Object>();
+			map.put("planId", planId);
 			map.put("sectorName", sectorName);
 			map.put("userId", userId);
+			//获取所有和当前用户相关的行业描述  右下角1
 			List<Map> sdMap=tSectordocExcelMapper.selectByUserId(map);
+			//如果没有就给默认的行业描述
 			if(sdMap.size()==0){
 				map.put("userId", null);
 				sdMap=tSectordocExcelMapper.selectByUserId(map);
 			}
 			List<MeasureUtil> mlist=new ArrayList<MeasureUtil>();
 			MeasureUtil mu=null;
+			//查询措施的内容
 			TMeasureExcel tme=tMeasureExcelMapper.selectByPrimaryKey(measureId);
+			//这个里面主要是子措施的列 右下角2
 			if(tme.getMeasureExcelOp()!=null){
 				mu=new MeasureUtil();
 				mu.setName("op");
@@ -118,6 +123,7 @@ public class PlanAndMeasureController {
 				mu.setValue(tme.getMeasureExcelA1());
 				mlist.add(mu);
 			}
+			//只显示中长期的
 			if(tme.getMeasureExcelType().equals("中长期措施")){
 				if(tme.getMeasureExcelIntensity()!=null){
 					mu=new MeasureUtil();
@@ -150,11 +156,14 @@ public class PlanAndMeasureController {
 				mu.setValue(tme.getMeasureExcelSv());
 				mlist.add(mu);
 			}
+			//查询条件
 			List<TQueryExcel> tqeList=tQueryExcelMapper.selectByMap(map);
+			//创建结果集 并写入对应信息
 			Map resultMap=new HashMap();
 			resultMap.put("measureColumn", sdMap);
 			resultMap.put("measureList", mlist);
 			resultMap.put("query", tqeList);
+			//返回结果
 			return AmpcResult.ok(resultMap);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -208,14 +217,14 @@ public class PlanAndMeasureController {
 	
 	/**
 	 * 预案添加措施
-	 * @throws UnsupportedEncodingException 
+	 * @author WangShanxi
 	 */
 	@RequestMapping("/measure/add_measure")
-	public  AmpcResult add_measure(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) throws UnsupportedEncodingException{
-		ClientUtil.SetCharsetAndHeader(request, response);
+	public  AmpcResult add_measure(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
 		try{	
+			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
-			Long sectorName=Long.parseLong(data.get("sectorName").toString());//行业id
+			Long sectorName=Long.parseLong(data.get("sectorName").toString());//行业名称
 			Long measureId=Long.parseLong(data.get("measureId").toString());//措施id
 			Long userId=Long.parseLong(data.get("userId").toString());//用户id
 			Long planId=Long.parseLong(data.get("planId").toString());//预案id
@@ -230,56 +239,16 @@ public class PlanAndMeasureController {
 			int addstatus=tPlanMeasureMapper.insertSelective(tPlanMeasure);
 			//判断是否成功
 			if(addstatus!=0){
-			return AmpcResult.ok("添加成功！");
+			return AmpcResult.ok("添加成功");
 			}
-			return AmpcResult.build(1, "add_measure error");
-		}catch(NullPointerException n){
-			System.out.println(n);
-			return AmpcResult.build(1, "add_measure error");
+			return AmpcResult.build(1000,"添加失败");
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000,"参数错误");
 		}
 	}
 	
-	/**
-	 * 创建预案
-	 * @throws UnsupportedEncodingException 
-	 */
-	@RequestMapping("/plan/add_plan")
-	public  AmpcResult add_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
-		try{
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String,Object> data=(Map)requestDate.get("data");
-			Long userId=Long.parseLong(data.get("userId").toString());//用户id
-			String planName=data.get("planName").toString();//预案名称
-		    Date addTime=new Date();//添加时间
-		    Long usedBy=Long.parseLong(data.get("usedBy").toString());//情景id
-		    Long scenarioId=Long.parseLong(data.get("scenarioId").toString());//行业id
-		    Long missionId=Long.parseLong(data.get("missionId").toString());//所属任务id
-		    Long areaId=Long.parseLong(data.get("areaId").toString());//区域id
-		    TPlan tPlan=new TPlan();
-		    tPlan.setAddTime(addTime);
-		    tPlan.setAreaId(areaId);
-		    tPlan.setMissionId(missionId);
-		    tPlan.setScenarioId(scenarioId);
-		    tPlan.setUsedBy(usedBy);
-		    tPlan.setUserId(userId);
-		    tPlan.setPlanName(planName);
-		    //添加预案
-		    int addstatus=tPlanMapper.insertSelective(tPlan);
-		   //判断是否添加成功，根据结果返回值
-		    if(addstatus!=0){
-		    	Map map=new HashMap();
-		    	map.put("userId", userId);
-		    	map.put("scenarioId", scenarioId);
-		    	map.put("planName", planName);
-		    	Integer id=tPlanMapper.getIdByQuery(map);
-		    	return AmpcResult.ok(id);
-		    }
-		    return AmpcResult.build(1000, "添加失败");
-		}catch(Exception e){
-			e.printStackTrace();
-			return AmpcResult.build(1000, "参数错误");
-		}
-	}
+	
 	/**
 	 * 措施详情修改
 	 * @throws UnsupportedEncodingException 
@@ -337,6 +306,81 @@ public class PlanAndMeasureController {
 			return AmpcResult.build(1, "list_measureContent error");
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * 创建预案
+	 * @throws UnsupportedEncodingException 
+	 */
+	@RequestMapping("/plan/add_plan")
+	public  AmpcResult add_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Long userId=Long.parseLong(data.get("userId").toString());//用户id
+			String planName=data.get("planName").toString();//预案名称
+		    Date addTime=new Date();//添加时间
+		    Long usedBy=Long.parseLong(data.get("usedBy").toString());//情景id
+		    Long scenarioId=Long.parseLong(data.get("scenarioId").toString());//行业id
+		    Long missionId=Long.parseLong(data.get("missionId").toString());//所属任务id
+		    Long areaId=Long.parseLong(data.get("areaId").toString());//区域id
+		    TPlan tPlan=new TPlan();
+		    tPlan.setAddTime(addTime);
+		    tPlan.setAreaId(areaId);
+		    tPlan.setMissionId(missionId);
+		    tPlan.setScenarioId(scenarioId);
+		    tPlan.setUsedBy(usedBy);
+		    tPlan.setUserId(userId);
+		    tPlan.setPlanName(planName);
+		    //添加预案
+		    int addstatus=tPlanMapper.insertSelective(tPlan);
+		   //判断是否添加成功，根据结果返回值
+		    if(addstatus!=0){
+		    	Map map=new HashMap();
+		    	map.put("userId", userId);
+		    	map.put("scenarioId", scenarioId);
+		    	map.put("planName", planName);
+		    	Integer id=tPlanMapper.getIdByQuery(map);
+		    	return AmpcResult.ok(id);
+		    }
+		    return AmpcResult.build(1000, "添加失败");
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000, "参数错误");
+		}
+	}
+	
+	
+	
 	
 	/**
 	 * 删除预案中的措施

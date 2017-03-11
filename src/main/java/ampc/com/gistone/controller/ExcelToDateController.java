@@ -80,14 +80,14 @@ public class ExcelToDateController {
 		//只添加措施Excel 时删除对应的表中数据
 		if(type==1){
 			tMeasureExcelMapper.updateIsEffeByIds(userId);
-			tPlanMeasureMapper.updateIsEffeByIds();
+			tPlanMeasureMapper.updateIsEffeByIds(userId);
 		}else if(type==2){  //多个表一起添加时删除的 时删除对应的表中数据
 			tSectorExcelMapper.updateIsEffeByIds(userId);
 			tMeasureExcelMapper.updateIsEffeByIds(userId);
 			tMeasureSectorExcelMapper.updateIsEffeByIds(userId);
 			tQueryExcelMapper.updateIsEffeByIds(userId);
 			tSectordocExcelMapper.updateIsEffeByIds(userId);
-			tPlanMeasureMapper.updateIsEffeByIds();
+			tPlanMeasureMapper.updateIsEffeByIds(userId);
 		}
 	}
 	
