@@ -637,7 +637,11 @@ public class AreaAndTimeController {
 					add_tTime.setTimeEndDate(timeEndDate);
 				    result = tTimeMapper.insertSelective(add_tTime);
 				    //判断添加时段是否成功
-				    return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "添加时段失败",null);
+				    JSONObject obj=new JSONObject();
+				   List<TTime> time =tTimeMapper.selectAllByAreaId(areId);
+				   TTime t=time.get(0);
+				  obj.put("timeId", t.getTimeId());
+				    return result>0?AmpcResult.build(0, "ok",obj):AmpcResult.build(1000, "添加时段失败",null);
 				}else{
 					//添加失败
 					return AmpcResult.build(1000, "添加区域失败",null);
