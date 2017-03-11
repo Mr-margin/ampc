@@ -153,10 +153,16 @@ public class PlanAndMeasureController {
 				mlist.add(mu);
 			}
 			if(tme.getMeasureExcelSv()!=null){
-				mu=new MeasureUtil();
-				mu.setName("sv");
-				mu.setValue(tme.getMeasureExcelSv());
-				mlist.add(mu);
+				String sv=tme.getMeasureExcelSv();
+				String[] svs=sv.split(";");
+				for(int i=0;i<svs.length;i++){
+					String svss=svs[i];
+					String[] svsss=svss.split("=");
+					mu=new MeasureUtil();
+					mu.setName(svsss[0]);
+					mu.setValue(svsss[1]);
+					mlist.add(mu);
+				}
 			}
 			
 			//创建结果集 并写入对应信息
