@@ -688,7 +688,7 @@ function createEditArea(){
 	  for(var i in showCode[2]){
 	    for(var ii in showCode[2][i]){
 	      var countyObj = {};
-	      countyObj[ii] = showCode[1][i][ii];
+	      countyObj[ii] = showCode[2][i][ii];
 	      crArr.push(countyObj)
 	    }
 	  }
