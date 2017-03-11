@@ -504,12 +504,12 @@ public class PlanAndMeasureController {
 			newtPlanMeasure.setMeasureId(t.getMeasureId());
 			int ssr=tPlanMeasureMapper.insertSelective(newtPlanMeasure);
 			
-			TSectorExcel Sector=tSectorExcelMapper.selectByPrimaryKey(t.getSectorName());
+			//TSectorExcel Sector=tSectorExcelMapper.selectByPrimaryKey(t.getSectorName());
 			TMeasureExcel tMeasure=tMeasureExcelMapper.selectByPrimaryKey(t.getMeasureId());
 			JSONObject objs=new JSONObject();
 			objs.put("planMeasureId",maxs);
 			objs.put("planId",max);
-			objs.put("sectorName", Sector.getSectorExcelName());
+			//objs.put("sectorName", Sector.getSectorExcelName());
 			objs.put("measureName", tMeasure.getMeasureExcelDisplay());
 			objs.put("intensity", tMeasure.getMeasureExcelIntensity());
 			objs.put("measureContent", t.getMeasureContent());
@@ -537,13 +537,13 @@ public class PlanAndMeasureController {
 		//判断查询结果是否为空，返回对应的值
 		if(!Measurelist.isEmpty()){
 		for(TPlanMeasure tsPlanMeasure:Measurelist){
-			TSectorExcel Sector=tSectorExcelMapper.selectByPrimaryKey(tsPlanMeasure.getSectorName());
+			//TSectorExcel Sector=tSectorExcelMapper.selectByPrimaryKey(tsPlanMeasure.getSectorName());
 			TMeasureExcel tMeasure=tMeasureExcelMapper.selectByPrimaryKey(tsPlanMeasure.getMeasureId());
 			JSONObject objs=new JSONObject();
 			objs.put("planMeasureId", tsPlanMeasure.getPlanMeasureId());
 			objs.put("planId",tsPlanMeasure.getPlanId());
-			objs.put("sectorName", Sector.getSectorExcelName());
-			objs.put("sectorId", Sector.getSectorExcelId());
+			//objs.put("sectorName", Sector.getSectorExcelName());
+			//objs.put("sectorId", Sector.getSectorExcelId());
 			objs.put("measureName", tMeasure.getMeasureExcelDisplay());
 			objs.put("intensity", tMeasure.getMeasureExcelIntensity());
 			objs.put("measureContent", tsPlanMeasure.getMeasureContent());
