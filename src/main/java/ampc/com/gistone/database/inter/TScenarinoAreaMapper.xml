@@ -47,7 +47,7 @@
   <!-- 根据情景ID 查询区域ID -->
  <select id="selectBySid" parameterType="hashMap" resultType="java.util.List">
     SELECT SCENARINO_AREA_ID FROM T_SCENARINO_AREA WHERE IS_EFFECTIVE='1' 
-      AND USER_ID=#{userId,jdbcType=OTHER} AND SCENARINO_DETAIL_ID=#{scenarinoId,jdbcType=OTHER}
+      AND USER_ID=#{userId,jdbcType=DECIMAL} AND SCENARINO_DETAIL_ID=#{scenarinoId,jdbcType=DECIMAL}
  </select>
  
  <!-- 根据情景ID 查询区域对象集合 -->
@@ -78,14 +78,14 @@
  
  
   <!-- 修改区域状态 相当于删除 -->
-  <update id="updateIsEffeByIds" parameterType="java.util.List">
+  <update id="updateIsEffeByIds" parameterType="java.util.List" >
     update T_SCENARINO_AREA
     set 
       IS_EFFECTIVE = '0',
-      DELETE_TIME = (select to_date(systimestamp, 'yyyymmdd hh24:mi:ss.ff') from dual) 
+      DELETE_TIME = (select sysdate from dual) 
      where SCENARINO_AREA_ID in 
-        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
-     		 #{item,jdbcType=DECIMAL}
+         <foreach collection="list" item="scenarinoAreaId" index="index" open="(" close=")" separator=",">
+     		 #{scenarinoAreaId,jdbcType=DECIMAL}
   		</foreach>
   </update>
  
