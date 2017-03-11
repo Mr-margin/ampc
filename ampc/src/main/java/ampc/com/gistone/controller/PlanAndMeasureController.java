@@ -36,6 +36,7 @@ import ampc.com.gistone.database.model.TTime;
 import ampc.com.gistone.entity.MeasureUtil;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.DateUtil;
 
 @RestController
 @RequestMapping
@@ -85,6 +86,11 @@ public class PlanAndMeasureController {
 			String sectorName=data.get("sectorName").toString();
 			//用户id
 			Long userId=null;
+			//预案措施id
+			Long planMeasureId=null;
+			if(data.get("planId")!=null){
+				planMeasureId = Long.parseLong(data.get("planId").toString());
+			}
 			if(data.get("userId")!=null){
 				userId = Long.parseLong(data.get("userId").toString());
 			}
@@ -163,6 +169,10 @@ public class PlanAndMeasureController {
 			resultMap.put("measureColumn", sdMap);
 			resultMap.put("measureList", mlist);
 			resultMap.put("query", tqeList);
+			if(planMeasureId!=null){
+				TPlanMeasure tPlanMeasure=tPlanMeasureMapper.selectByPrimaryKey(planMeasureId);
+				resultMap.put("measureContent", tPlanMeasure.getMeasureContent());
+			}
 			//返回结果
 			return AmpcResult.ok(resultMap);
 		}catch(Exception e){
@@ -212,7 +222,56 @@ public class PlanAndMeasureController {
 	
 	
 	
-	
+	/**
+	 * 创建预案
+	 *  @author WangShanxi
+	 */
+	@RequestMapping("/plan/add_plan")
+	public  AmpcResult add_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
+		try{
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//用户id
+			Long userId=Long.parseLong(data.get("userId").toString());
+			//预案名称
+			String planName=data.get("planName").toString();
+			//行业id
+			Long scenarioId=Long.parseLong(data.get("scenarioId").toString());
+			//所属任务id
+		    Long missionId=Long.parseLong(data.get("missionId").toString());
+		    //区域id
+		    Long areaId=Long.parseLong(data.get("areaId").toString());
+		    //预案开始时间
+			Date startDate=DateUtil.StrToDate(data.get("timeStartTime").toString());
+			//预案结束时间
+			Date endDate=DateUtil.StrToDate(data.get("timeEndTime").toString());
+			//创建预案对象
+		    TPlan tPlan=new TPlan();
+		    tPlan.setAreaId(areaId);
+		    tPlan.setMissionId(missionId);
+		    tPlan.setScenarioId(scenarioId);
+		    tPlan.setUserId(userId);
+		    tPlan.setPlanName(planName);
+		    tPlan.setPlanStartTime(startDate);
+		    tPlan.setPlanEndTime(endDate);
+		    //添加预案
+		    int addstatus=tPlanMapper.insertSelective(tPlan);
+		   //判断是否添加成功，根据结果返回值
+		    if(addstatus!=0){
+		    	Map map=new HashMap();
+		    	map.put("userId", userId);
+		    	map.put("scenarioId", scenarioId);
+		    	map.put("planName", planName);
+		    	Integer id=tPlanMapper.getIdByQuery(map);
+		    	return AmpcResult.ok(id);
+		    }
+		    return AmpcResult.build(1000, "添加失败");
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000, "参数错误");
+		}
+	}
 	
 	
 	/**
@@ -283,7 +342,6 @@ public class PlanAndMeasureController {
 	 * @param request
 	 * @param response
 	 * @return
-	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/measure/list_measureContent")
 	public  AmpcResult list_measureContent(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
@@ -337,47 +395,7 @@ public class PlanAndMeasureController {
 	
 	
 	
-	/**
-	 * 创建预案
-	 * @throws UnsupportedEncodingException 
-	 */
-	@RequestMapping("/plan/add_plan")
-	public  AmpcResult add_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
-		try{
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String,Object> data=(Map)requestDate.get("data");
-			Long userId=Long.parseLong(data.get("userId").toString());//用户id
-			String planName=data.get("planName").toString();//预案名称
-		    Date addTime=new Date();//添加时间
-		    Long usedBy=Long.parseLong(data.get("usedBy").toString());//情景id
-		    Long scenarioId=Long.parseLong(data.get("scenarioId").toString());//行业id
-		    Long missionId=Long.parseLong(data.get("missionId").toString());//所属任务id
-		    Long areaId=Long.parseLong(data.get("areaId").toString());//区域id
-		    TPlan tPlan=new TPlan();
-		    tPlan.setAddTime(addTime);
-		    tPlan.setAreaId(areaId);
-		    tPlan.setMissionId(missionId);
-		    tPlan.setScenarioId(scenarioId);
-		    tPlan.setUsedBy(usedBy);
-		    tPlan.setUserId(userId);
-		    tPlan.setPlanName(planName);
-		    //添加预案
-		    int addstatus=tPlanMapper.insertSelective(tPlan);
-		   //判断是否添加成功，根据结果返回值
-		    if(addstatus!=0){
-		    	Map map=new HashMap();
-		    	map.put("userId", userId);
-		    	map.put("scenarioId", scenarioId);
-		    	map.put("planName", planName);
-		    	Integer id=tPlanMapper.getIdByQuery(map);
-		    	return AmpcResult.ok(id);
-		    }
-		    return AmpcResult.build(1000, "添加失败");
-		}catch(Exception e){
-			e.printStackTrace();
-			return AmpcResult.build(1000, "参数错误");
-		}
-	}
+	
 	
 	
 	
