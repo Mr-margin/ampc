@@ -82,7 +82,7 @@
     update T_SCENARINO_AREA
     set 
       IS_EFFECTIVE = '0',
-      DELETE_TIME = (select sysdate from dual) 
+      DELETE_TIME = (select to_date(systimestamp, 'yyyymmdd hh24:mi:ss.ff') from dual) 
      where SCENARINO_AREA_ID in 
         <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
      		 #{item,jdbcType=DECIMAL}
