@@ -64,6 +64,23 @@
 .btn-success-cs.btn-outline:hover {
     color: #fff;
 }
+.btn-success-cs-w{
+	font-weight: 400;
+	font-size: 14px;
+	border-color: #4f9de0;
+	color: #4f9de0;
+	text-align: left;
+	background-color: #4f9de0;
+	color: #FFFFFF;
+}
+.btn-success-cs-w:hover, .btn-success-cs-w:focus, .btn-success-cs-w:active, .btn-success-cs-w.active, .open .dropdown-toggle.btn-success-cs-w {
+    background-color: #4f9de0;
+    border-color: #4f9de0;
+    color: #FFFFFF;
+}
+.btn-success-cs-w.btn-outline:hover {
+    color: #fff;
+}
 
 .c6center {
 	text-align: center;
@@ -433,8 +450,8 @@
 					        <h5>子措施列表</h5>
 					    </div>
 					    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;border:1px solid #75B9E6;padding: 5px;">
-					    	<table class="table table-hover table-striped">
-								<thead>
+					    	<table class="table table-hover table-striped" id="show_zicuoshi_table">
+								<thead id="show_zicuoshi">
 									<tr>
 										<th>措施</th>
 										<th>点源实施范围</th>
@@ -448,7 +465,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
+									<!-- <tr>
 										<td>火力发电</td>
 										<td>限产</td>
 										<td>173/223</td>
@@ -480,7 +497,7 @@
 										<td></td>
 										<td></td>
 										<td></td>
-									</tr>
+									</tr> -->
 								</tbody>
 							</table>
 					    </div>

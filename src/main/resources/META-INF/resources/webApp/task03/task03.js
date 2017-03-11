@@ -29,35 +29,54 @@ $("#show").click(function(){
  */
 $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">添加预案</a>>><span style="padding-left: 15px;padding-right: 15px;">措施编辑</span>');
 
-var userid = "1";
+var ls = window.localStorage;
+var qjMsg = vipspa.getMessage('qjMessage').content;
+
+if(!qjMsg){
+  qjMsg = JSON.parse(ls.getItem('qjMsg'));
+}else{
+  ls.setItem('qjMsg',JSON.stringify(qjMsg));
+}
 
 hyc();
 
 /**
- * 获取用户的行业与措施
+ * 获取用户的行业与措施，页面初始化赋值
  */
 function hyc(){
-	var urlName = '/ms/get_msInfo';
 	var paramsName = {};
-	paramsName.userId = 1;
+	paramsName.userId = userId;
+//	paramsName.planId = qjMsg.content.planId;
+	paramsName.planId = 1;
 	
-	ajaxPost(urlName,paramsName).success(function(res){
-		console.log(JSON.stringify(res));
+	ajaxPost('/ms/get_msInfo',paramsName).success(function(res){
+//		console.log(JSON.stringify(res));
 		var accordion_html = "";
 		if(res.status == 0){
 			$.each(res.data, function(i, col) {
 				
-				var inn = i == 0 ? "in" : "";
-				
+				var inn = i == 0 ? "in" : "";//第一个手风琴页签打开
 				accordion_html += '<div class="panel panel-default"><div class="panel-heading" style="background-color: #FFF;">';
 				accordion_html += '<a data-toggle="collapse" data-parent="#accordion" style="font-weight: 700;" href="#collapse'+i+'"><h5 class="panel-title">'+col.sectorsName+'';
-				accordion_html += '<code class="pull-right">已使用&nbsp;4&nbsp;条措施</code></h5></a></div>';
-				accordion_html += '<div id="collapse'+i+'" class="panel-collapse collapse '+inn+'" style="background-color: #EDF7FF;"><div class="panel-body" style="border: 0px;">';
+				if(col.count != "0"){
+					accordion_html += '<code class="pull-right">已使用&nbsp;'+col.count+'&nbsp;条措施</code>';
+				}
+				accordion_html += '</h5></a></div><div id="collapse'+i+'" class="panel-collapse collapse '+inn+'" style="background-color: #EDF7FF;"><div class="panel-body" style="border: 0px;">';
 				
 				$.each(col.measureItems, function(j, vol) {
 					accordion_html += '<div class="col-md-6 c6center">';
-//					accordion_html += '<button type="button" onclick="open_cs('+vol.measureame+');" class="btn btn-default '+vol.colorname+'" style="background-color: #'+vol.colorcode+';width:80%;">'+vol.measureame+'</button>';
-					accordion_html += '<a class="btn btn-success-cs btn-outline" style="width:80%;" onclick="open_cs(\''+col.sectorsName+'\',\''+vol.measureame+'\',\''+vol.mid+'\');"><i class="fa fa-ban"> </i>&nbsp;&nbsp;&nbsp;'+vol.measureame+'</a>';//fa fa-check-circle-o
+					var bggh = true;
+					if(col.planMeasure.length > 0){
+						$.each(col.planMeasure, function(k, ool) {//循环已选中的措施
+							if(ool.measureId == vol.mid){//已选中的措施和措施列表的ID相同，标签需要更改效果
+								accordion_html += '<a class="btn btn-success-cs-w" style="width:80%;" onclick="open_cs(\''+col.sectorsName+'\',\''+vol.measureame+'\',\''+vol.mid+'\',\''+ool.planMeasureId+'\');"><i class="fa fa-check"> </i>&nbsp;&nbsp;&nbsp;'+vol.measureame+'</a>';
+								bggh = false;//如果已选中，在这里添加，否则需要添加未选中的标签
+							}
+						});
+					}
+					if(bggh){
+						accordion_html += '<a class="btn btn-success-cs btn-outline" style="width:80%;" onclick="open_cs(\''+col.sectorsName+'\',\''+vol.measureame+'\',\''+vol.mid+'\',\'null\');"><i class="fa fa-ban"> </i>&nbsp;&nbsp;&nbsp;'+vol.measureame+'</a>';
+					}
 					accordion_html += '</div>';
 				});
 				accordion_html += '</div></div></div>';
@@ -115,17 +134,19 @@ var temp_val_v1 = {};//单次查询的缓存
  * sectorsName:行业名称
  * measureame:措施名称
  * mid:措施ID
+ * planMeasureId: 已经选中的措施ID，如果为null，证明是新建，否则为修改
  */
-function open_cs(sectorsName,measureame,mid){
-	$("#measureame").html("措施："+measureame);
+function open_cs(sectorsName, measureame, mid, planMeasureId){
+	$("#measureame").html("措施："+measureame);//发开弹出窗，设置标题、行业、措施等内容
 	$("#sectorsName").html("行业："+sectorsName);
 
-	var urlName = '/measure/get_measureQuery';
 	var paramsName = {};
-	paramsName.userId = 1;
+	paramsName.userId = userId;
 	paramsName.sectorName = sectorsName;
 	paramsName.measureId = mid;
-	paramsName.planId = 1;
+//	paramsName.planId = qjMsg.content.planId;
+	paramsName.planId =1;
+	paramsName.planMeasureId = planMeasureId;
 	
 	sc_val = {};//初始化缓存
 	sc_val.bigIndex = "";
@@ -133,38 +154,39 @@ function open_cs(sectorsName,measureame,mid){
 	sc_val.filters = [];
 	sc_val.summary = {};
 	
-	ajaxPost(urlName,paramsName).success(function(res){
+	ajaxPost('/measure/get_measureQuery',paramsName).success(function(res){
 		console.log(JSON.stringify(res));
 		if(res.status == 0){//返回状态正常
 			if(res.data.query.length>0){//返回筛选条件
-				var sc_conter = '';
-				var name_length = 0;
-				$.each(res.data.query, function(i, col) {
+				var sc_conter = '';//页面的标签
+				var name_length = 0;//记录标题的长度，用于设置每个条件的标题的宽度
+				$.each(res.data.query, function(i, col) {//循环每个条件，第一次循环实现页面标签实体化
 					
 					var type = col.queryOptiontype.indexOf("复选")>=0 ? "checkbox" : "radio";//根据类型区别复选或单选
 					var queryShowquery = col.queryShowquery == null ? '' : 'style="display:none;"';//如果有出现条件，默认隐藏
+					//获取单位之外的标题长度，根据最长的标题的字数决定宽度，决定标题与单位的分割是英文的括号
 					var temp_name = col.queryName.indexOf("(")>0 ? col.queryName.substring(0,col.queryName.indexOf("(")) : col.queryName;
 					name_length = temp_name.length > name_length ? temp_name.length : name_length;//记录字数最多的标题
 					
 					sc_conter += '<div class="btn-group tiaojian" '+queryShowquery+' sc_su="'+col.queryShowqueryen+'" sc_su_val="'+col.queryValue+'">';
 					sc_conter += '<span class="font-bold tiaojian-title" style="width: 90px;">'+col.queryName.replace("(","<br>(")+'</span>';
-					sc_conter += '<div class="btn-group btn-group-circle" data-toggle="buttons" id="'+col.queryEtitle+'" onclick="val_handle($(this),\''+col.queryEtitle+'\',\''+col.queryName+'\',\''+type+'\');">';
+					sc_conter += '<div class="btn-group btn-group-circle" data-toggle="buttons" id="'+col.queryEtitle+'" onclick="val_handle($(this),\''+col.queryEtitle+'\',\''+col.queryName+'\',\''+type+'\',\'onclick\');">';
 					if(col.queryOptiontype.indexOf("值域")>=0){//所有的值域需要自定义修改
 						sc_conter += '<label class="btn btn-d1 active" val_name="不限"><input type="'+type+'" class="toggle">不限</label>';
 						
-						for(var k = 1;k<6;k++){
-							if(col["queryOption"+k] == null){
-								if(k>1){
+						for(var k = 1;k<6;k++){//循环五个指标项，
+							if(col["queryOption"+k] == null){//指标项为空
+								if(k>1){//不是第一个指标项，增加最后一个第六项，大于最大值
 									sc_conter += '<label class="btn btn-d1" val_name="'+col["queryOption"+(k-1)]+'~"><input type="'+type+'" class="toggle">≥'+col["queryOption"+(k-1)]+'</label>';
 									break;
 								}
 							}else{
-								if(k == 1){
+								if(k == 1){//指标项有内容的情况下，第一个指标从零开始
 									sc_conter += '<label class="btn btn-d1" val_name="0~'+(col.queryOption1-1)+'"><input type="'+type+'" class="toggle">0-'+(col.queryOption1-1)+'</label>';
-								}else{
+								}else{//其余的指标均是上一段到本段减一
 									sc_conter += '<label class="btn btn-d1" val_name="'+(col["queryOption"+(k-1)]-0)+'~'+(col["queryOption"+k]-1)+'"><input type="'+type+'" class="toggle">'+(col["queryOption"+(k-1)]-0)+'-'+(col["queryOption"+k]-1)+'</label>';
 								}
-								if(k == 5){
+								if(k == 5){//到最后一个指标项的时候，增加第六项
 									sc_conter += '<label class="btn btn-d1" val_name="'+(col["queryOption"+k]-0)+'~"><input type="'+type+'" class="toggle">≥'+(col["queryOption"+k]-0)+'</label>';
 									break;
 								}
@@ -172,11 +194,11 @@ function open_cs(sectorsName,measureame,mid){
 						}
 						sc_conter += '</div>';
 						sc_conter += '<form role="form" class="form-inline"><div class="form-group" style="padding-left:10px;">';
-						sc_conter += '<input type="name" id="" class="form-control" style="width:50px;height: 30px;padding: 6px 3px;">';
+						sc_conter += '<input type="name" id="'+col.queryEtitle+'_1" onchange="val_handle($(this),\''+col.queryEtitle+'\',\''+col.queryName+'\',\''+type+'\',\'onchange\');" class="form-control" style="width:50px;height: 30px;padding: 6px 3px;">';
 						sc_conter += '</div>-<div class="form-group">';
-						sc_conter += '<input type="name" id="" class="form-control" style="width:50px;height: 30px;padding: 6px 3px;">';
+						sc_conter += '<input type="name" id="'+col.queryEtitle+'_2" onchange="val_handle($(this),\''+col.queryEtitle+'\',\''+col.queryName+'\',\''+type+'\',\'onchange\');" class="form-control" style="width:50px;height: 30px;padding: 6px 3px;">';
 						sc_conter += '</div></form>';
-					}else{
+					}else{//单选或者复选项直接判断
 						sc_conter += '<label class="btn btn-d1 active" val_name="不限"><input type="'+type+'" class="toggle">不限</label>';
 						sc_conter +=  col.queryOption1 == null ? '' : '<label class="btn btn-d1" val_name="'+col.queryOption1+'"><input type="'+type+'" class="toggle">'+col.queryOption1+'</label>';
 						sc_conter +=  col.queryOption2 == null ? '' : '<label class="btn btn-d1" val_name="'+col.queryOption2+'"><input type="'+type+'" class="toggle">'+col.queryOption2+'</label>';
@@ -188,7 +210,7 @@ function open_cs(sectorsName,measureame,mid){
 					
 					sc_conter += '</div>';
 				});
-				sc_conter += '<div style="text-align: right;padding-right: 20px;">';
+				sc_conter += '<div id="se_bu" style="text-align: right;padding-right: 20px;">';
 				sc_conter += '<button class="btn btn-success" onclick="search_button();" type="button">';
 				sc_conter += '<i class="fa fa-search"></i>&nbsp;&nbsp;<span class="bold">筛选</span>';
 				sc_conter += '</button></div>';
@@ -197,6 +219,7 @@ function open_cs(sectorsName,measureame,mid){
 				sc_conter = sc_conter.replace(re, (name_length*16)+"px;");
 				$("#sc_conter").html(sc_conter);
 				
+				//初始化条件结构，将前置条件与后置条件分离，前置条件中的复选框做数组处理
 				temp_val = {};
 				$.each(res.data.query, function(i, col) {//组织条件的样例结构
 					if(col.queryShowquery == null){//是一级节点
@@ -225,13 +248,13 @@ function open_cs(sectorsName,measureame,mid){
 				ty = "";
 				$.each(res.data.query, function(i, col) {//组织条件的样例结构
 					if(col.queryShowquery != null){//是二级节点
-						if(ty.indexOf(col.queryShowquery) == -1){
+						if(ty.indexOf(col.queryShowquery) == -1){//记录前置条件的同时，判断每个前置条件只处理一次
 							if(jQuery.isArray(temp_val[col.queryShowqueryen])){//判断前置条件是否是数组，数组意味着复选框
 								var temp = [];
 								$.each(temp_val[col.queryShowqueryen], function(k, vol) {//循环这个数组，每个元素转换为对象
 									var tt = {};
 									tt[col.queryShowqueryen] = vol;
-									temp.push(tt);
+									temp.push(tt);//将复选框条件的值增加到数据元素的对象中
 								});
 								temp_val[col.queryShowqueryen] = temp;
 								ty += col.queryShowquery+",";
@@ -240,83 +263,78 @@ function open_cs(sectorsName,measureame,mid){
 						
 					}
 				});
-				temp_val_v1 = temp_val;
-				
+				temp_val_v1 = jQuery.extend(true, {}, temp_val);//保留空白结构的备份，下一个条件还要继续使用
 //				console.log(JSON.stringify(temp_val));
 			}
+			
+			//要显示的列
+			var show_zicuoshi = "<tr><th>措施</th><th>点源实施范围</th>";
+			var z_num = 8;
+			if(res.data.measureColumn.length>0){
+				var sum = [];
+				$.each(res.data.measureColumn, function(i, col) {
+					sum.push(col.sectordocEtitle);//记录英文名称
+					show_zicuoshi += "<th>"+col.sectordocCtitle+"</th>"
+					z_num += col.sectordocCtitle.length;
+				});
+				sc_val.summary.sum = sum;//将英文名称添加到计算需求的模板中
+			}
+			
+			//要修改的列
+			if(res.data.measureList.length>0){
+				$.each(res.data.measureList, function(i, col) {
+					show_zicuoshi += "<th>"+col.name+"</th>"
+					z_num += col.name.length;
+				});
+			}
+			show_zicuoshi += "</tr>";
+			$("#show_zicuoshi_table").css("width",(z_num*20)+"px");
+			$("#show_zicuoshi").html(show_zicuoshi);
+			
 		}else{
 			swal('连接错误', '', 'error');
 		}
 	}).error(function(){
 		swal('校验失败', '', 'error')
 	})
-	
-	
 	$("#createModal").modal();
 }
 
-/**
- * 组织初始化数据
- */
-function info_data(){
-	
-}
 
 /**
  * 筛选条件的值处理
- * e:当前操作的条件的外层DIV对象
+ * e: 当前操作的条件的外层DIV对象
+ * queryEtitle: 点击的条件的en名称
+ * queryName: 点击的条件的cn名称
+ * type: 点击的条件的类型，用于区分复选单选
  */
-function val_handle(e, queryEtitle, queryName, type){
+function val_handle(e, queryEtitle, queryName, type, sourceType){
 	var xuanze_val = "";//
 	setTimeout(function(){//等待1/10秒，待css改变后再获取选择的值
 		
-		var queryShowqueryen = e.parent().attr("sc_su");
-		var queryValue = e.parent().attr("sc_su_val");
+		var queryShowqueryen = e.parent().attr("sc_su");//前置条件的名称
+		var queryValue = e.parent().attr("sc_su_val");//前置条件的值
 		
 		var kk = [];//复选框的值记录
 		var pp = "";//单选框记录的值
-		e.children().each(function(){//循环当前条件下所有的可选项
-			var val_name = $(this).attr("val_name");
-			if(val_name != "不限"){
-				if(type == "radio"){
-					if($(this).is('.active')){
-						pp = val_name;
-						xuanze_val += val_name+",";
-					}else{
-						$("#sc_conter").children().each(function(){
-							if($(this).attr("sc_su")!="null"){
-								if($(this).attr("sc_su")==queryEtitle){//条件的名字与其他条件的前置条件名相同
-									if($(this).attr("sc_su_val") == val_name){//值包含
-										$(this).children("div").each(function(){
-											$(this).children().each(function(){
-												$(this).removeClass("active");
-												if($(this).attr("val_name") == "不限"){
-													$(this).addClass("active");
-												}
-											});
-										});
-									}
-								}
-							}
-						});
-					}
-				}else{
-					if(ty.indexOf(queryName) >= 0){//当前的条件属于前置条件
-						
+		
+		if (sourceType == "onchange") {//操作来源是文本框的值改变
+			pp = $("#"+queryEtitle+"_1").val()+"~"+$("#"+queryEtitle+"_2").val();
+		}else{
+			e.children().each(function(){//循环当前条件下所有的可选项
+				var val_name = $(this).attr("val_name");
+				if(val_name != "不限"){
+					if(type == "radio"){
 						if($(this).is('.active')){
+							pp = val_name;
 							xuanze_val += val_name+",";
+							if(val_name.indexOf("~")>=0){//如果值得中间有波折号，说明是值域，为文本框赋值
+								var s = val_name.split("~");
+								$("#"+queryEtitle+"_1").val(s[0]);
+								$("#"+queryEtitle+"_2").val(s[1]==""?999999:s[1]);
+							}
 						}else{
-							$.each(temp_val_v1[queryEtitle], function(i, col) {
-								if(col[queryEtitle] == val_name){
-									$.each(col, function(k, vol) {
-										if(k != queryEtitle){
-											delete col[k];
-										}
-									});
-								}
-							});
-							
-							$("#sc_conter").children().each(function(){
+							$("#sc_conter").children().each(function(){//为单选的前置条件设置，清空后置条件的显隐设置
 								if($(this).attr("sc_su")!="null"){
 									if($(this).attr("sc_su")==queryEtitle){//条件的名字与其他条件的前置条件名相同
 										if($(this).attr("sc_su_val") == val_name){//值包含
@@ -332,18 +350,50 @@ function val_handle(e, queryEtitle, queryName, type){
 									}
 								}
 							});
-							
 						}
-						
-					}else{
-						if($(this).is('.active')){
-							kk.push(val_name);
-							xuanze_val += val_name+",";
+					}else{//复选框
+						if(ty.indexOf(queryName) >= 0){//当前的条件属于前置条件
+							if($(this).is('.active')){
+								xuanze_val += val_name+",";
+							}else{
+								$.each(temp_val_v1[queryEtitle], function(i, col) {
+									if(col[queryEtitle] == val_name){
+										$.each(col, function(k, vol) {
+											if(k != queryEtitle){
+												delete col[k];
+											}
+										});
+									}
+								});
+								
+								$("#sc_conter").children().each(function(){
+									if($(this).attr("sc_su")!="null"){
+										if($(this).attr("sc_su")==queryEtitle){//条件的名字与其他条件的前置条件名相同
+											if($(this).attr("sc_su_val") == val_name){//值包含
+												$(this).children("div").each(function(){
+													$(this).children().each(function(){
+														$(this).removeClass("active");
+														if($(this).attr("val_name") == "不限"){
+															$(this).addClass("active");
+														}
+													});
+												});
+											}
+										}
+									}
+								});
+							}
+						}else{
+							if($(this).is('.active')){
+								kk.push(val_name);
+								xuanze_val += val_name+",";
+							}
 						}
 					}
 				}
-			}
-		});
+			});
+		}
+		
 		if(queryShowqueryen == "null"){//没有前置条件
 			if(type == "checkbox"){
 				if(ty.indexOf(queryName) >= 0){
@@ -424,7 +474,32 @@ function search_button(){
 	sc_val.filters.push(temp_val_v1);
 	console.log(JSON.stringify(sc_val));
 	
-	temp_val_v1 = temp_val;
+	temp_val_v1 = jQuery.extend(true, {}, temp_val);//赋值模板到操作缓存
+	
+	//所有查询条件初始化
+	$("#sc_conter").children().each(function(){//循环一级标签
+		if($(this).attr("sc_su")!="null"){//没有前置条件显示，有前置条件隐藏
+			$(this).hide();
+		}
+		$("#se_bu").show();//筛选按钮打开
+		
+		//循环下级的div标签，div内的子项为单选和复选，全部初始化为不限
+		$(this).children("div").each(function(){
+			$(this).children().each(function(){
+				$(this).removeClass("active");
+				if($(this).attr("val_name") == "不限"){
+					$(this).addClass("active");
+				}
+			});
+		});
+		
+		//循环下级的文本框，文本框清空
+		$(this).find("input").each(function(){
+			$(this).val("");
+		});
+	});
+	
+	
 	//获取点源相应的减排占比等内容，数据加入到表格显示，刷新显示区域
 	
 }
@@ -440,6 +515,10 @@ function JSONLength(obj) {
 	}
 	return size;
 };
+
+function Trim(str){ 
+	return str.replace(/(^\s*)|(\s*$)/g, ""); 
+}
 
 /**
  * 操作地图显示
