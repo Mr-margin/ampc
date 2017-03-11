@@ -1,23 +1,3 @@
-//$(function(){  
-//    $("#checkall").click(function(){   
-//        //第一种方法 全选全不选  
-//        if(this.checked){   
-//            $("input[name='check1']:checkbox").attr('checked',true);   
-//        }else{   
-//            $("input[name='check1']:checkbox").attr('checked',false);    
-//        }  
-//        //第二种方法 全选全不选   
-//        //$('[name=check1]:checkbox').attr('checked',this.checked);//checked为true时为默认显示的状态   
-//    });  
-//    $("#checkrev").click(function(){  
-//        //实现反选功能  
-//        $('[name=check1]:checkbox').each(function(){  
-//            this.checked=!this.checked;  
-//        });  
-//    });   
-//}); 
-
-
 /**
  * 白色区域的收缩效果
  */
@@ -50,6 +30,7 @@ $("#show").click(function(){
 $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">添加预案</a>>><span style="padding-left: 15px;padding-right: 15px;">措施编辑</span>');
 
 var userid = "1";
+
 hyc();
 
 /**
@@ -61,7 +42,7 @@ function hyc(){
 	paramsName.userId = 1;
 	
 	ajaxPost(urlName,paramsName).success(function(res){
-		
+		console.log(JSON.stringify(res));
 		var accordion_html = "";
 		if(res.status == 0){
 			$.each(res.data, function(i, col) {
@@ -126,7 +107,9 @@ function metTable_hj_info(){
 }
 
 var sc_val = {};//存储最终的自措施条件
-
+var temp_val = {};//单次查询的缓存
+var ty = "";
+var temp_val_v1 = {};//单次查询的缓存
 /**
  * 打开措施的窗口，数据初始化
  * sectorsName:行业名称
@@ -143,8 +126,15 @@ function open_cs(sectorsName,measureame,mid){
 	paramsName.sectorName = sectorsName;
 	paramsName.measureId = mid;
 	paramsName.planId = 1;
+	
+	sc_val = {};//初始化缓存
+	sc_val.bigIndex = "";
+	sc_val.smallIndex = sectorsName;//记录行业
+	sc_val.filters = [];
+	sc_val.summary = {};
+	
 	ajaxPost(urlName,paramsName).success(function(res){
-		
+		console.log(JSON.stringify(res));
 		if(res.status == 0){//返回状态正常
 			if(res.data.query.length>0){//返回筛选条件
 				var sc_conter = '';
@@ -153,32 +143,29 @@ function open_cs(sectorsName,measureame,mid){
 					
 					var type = col.queryOptiontype.indexOf("复选")>=0 ? "checkbox" : "radio";//根据类型区别复选或单选
 					var queryShowquery = col.queryShowquery == null ? '' : 'style="display:none;"';//如果有出现条件，默认隐藏
-					sc_val[col.queryEtitle] = queryShowquery == '' ? '不限' : '';//存储最终的自措施条件，,根据是否有条件，决定默认不限还是默认为空
-					
-//					var temp_name = col.queryName.replace("(","").replace(")","").replace("/","");
 					var temp_name = col.queryName.indexOf("(")>0 ? col.queryName.substring(0,col.queryName.indexOf("(")) : col.queryName;
 					name_length = temp_name.length > name_length ? temp_name.length : name_length;//记录字数最多的标题
 					
-					sc_conter += '<div class="btn-group tiaojian" '+queryShowquery+' sc_su="'+col.queryShowquery+'" sc_su_val="'+col.queryValue+'">';
+					sc_conter += '<div class="btn-group tiaojian" '+queryShowquery+' sc_su="'+col.queryShowqueryen+'" sc_su_val="'+col.queryValue+'">';
 					sc_conter += '<span class="font-bold tiaojian-title" style="width: 90px;">'+col.queryName.replace("(","<br>(")+'</span>';
-					sc_conter += '<div class="btn-group btn-group-circle" data-toggle="buttons" onclick="val_handle($(this),\''+col.queryEtitle+'\',\''+col.queryName+'\');">';
+					sc_conter += '<div class="btn-group btn-group-circle" data-toggle="buttons" id="'+col.queryEtitle+'" onclick="val_handle($(this),\''+col.queryEtitle+'\',\''+col.queryName+'\',\''+type+'\');">';
 					if(col.queryOptiontype.indexOf("值域")>=0){//所有的值域需要自定义修改
 						sc_conter += '<label class="btn btn-d1 active" val_name="不限"><input type="'+type+'" class="toggle">不限</label>';
 						
 						for(var k = 1;k<6;k++){
 							if(col["queryOption"+k] == null){
 								if(k>1){
-									sc_conter += '<label class="btn btn-d1" val_name=">='+col["queryOption"+(k-1)]+'"><input type="'+type+'" class="toggle">≥'+col["queryOption"+(k-1)]+'</label>';
+									sc_conter += '<label class="btn btn-d1" val_name="'+col["queryOption"+(k-1)]+'~"><input type="'+type+'" class="toggle">≥'+col["queryOption"+(k-1)]+'</label>';
 									break;
 								}
 							}else{
 								if(k == 1){
-									sc_conter += '<label class="btn btn-d1" val_name="0-'+(col.queryOption1-1)+'"><input type="'+type+'" class="toggle">0-'+(col.queryOption1-1)+'</label>';
+									sc_conter += '<label class="btn btn-d1" val_name="0~'+(col.queryOption1-1)+'"><input type="'+type+'" class="toggle">0-'+(col.queryOption1-1)+'</label>';
 								}else{
-									sc_conter += '<label class="btn btn-d1" val_name="'+(col["queryOption"+(k-1)]-0)+'-'+(col["queryOption"+k]-1)+'"><input type="'+type+'" class="toggle">'+(col["queryOption"+(k-1)]-0)+'-'+(col["queryOption"+k]-1)+'</label>';
+									sc_conter += '<label class="btn btn-d1" val_name="'+(col["queryOption"+(k-1)]-0)+'~'+(col["queryOption"+k]-1)+'"><input type="'+type+'" class="toggle">'+(col["queryOption"+(k-1)]-0)+'-'+(col["queryOption"+k]-1)+'</label>';
 								}
 								if(k == 5){
-									sc_conter += '<label class="btn btn-d1" val_name=">='+(col["queryOption"+k]-0)+'"><input type="'+type+'" class="toggle">≥'+(col["queryOption"+k]-0)+'</label>';
+									sc_conter += '<label class="btn btn-d1" val_name="'+(col["queryOption"+k]-0)+'~"><input type="'+type+'" class="toggle">≥'+(col["queryOption"+k]-0)+'</label>';
 									break;
 								}
 							}
@@ -200,12 +187,62 @@ function open_cs(sectorsName,measureame,mid){
 					}
 					
 					sc_conter += '</div>';
-					sc_conter += '';
-					sc_conter += '';
 				});
+				sc_conter += '<div style="text-align: right;padding-right: 20px;">';
+				sc_conter += '<button class="btn btn-success" onclick="search_button();" type="button">';
+				sc_conter += '<i class="fa fa-search"></i>&nbsp;&nbsp;<span class="bold">筛选</span>';
+				sc_conter += '</button></div>';
+				
 				re = new RegExp("90px;","g");
 				sc_conter = sc_conter.replace(re, (name_length*16)+"px;");
 				$("#sc_conter").html(sc_conter);
+				
+				temp_val = {};
+				$.each(res.data.query, function(i, col) {//组织条件的样例结构
+					if(col.queryShowquery == null){//是一级节点
+						if(col.queryOptiontype.indexOf("复选")>=0){//是复选框
+							temp_val[col.queryEtitle] = [];
+							if(col.queryOption1 != null){
+								temp_val[col.queryEtitle].push(col.queryOption1);
+							}
+							if(col.queryOption2 != null){
+								temp_val[col.queryEtitle].push(col.queryOption2);
+							}
+							if(col.queryOption3 != null){
+								temp_val[col.queryEtitle].push(col.queryOption3);
+							}
+							if(col.queryOption4 != null){
+								temp_val[col.queryEtitle].push(col.queryOption4);
+							}
+							if(col.queryOption5 != null){
+								temp_val[col.queryEtitle].push(col.queryOption5);
+							}
+						}else{//是单选
+							temp_val[col.queryEtitle] = "";
+						}
+					}
+				});
+				ty = "";
+				$.each(res.data.query, function(i, col) {//组织条件的样例结构
+					if(col.queryShowquery != null){//是二级节点
+						if(ty.indexOf(col.queryShowquery) == -1){
+							if(jQuery.isArray(temp_val[col.queryShowqueryen])){//判断前置条件是否是数组，数组意味着复选框
+								var temp = [];
+								$.each(temp_val[col.queryShowqueryen], function(k, vol) {//循环这个数组，每个元素转换为对象
+									var tt = {};
+									tt[col.queryShowqueryen] = vol;
+									temp.push(tt);
+								});
+								temp_val[col.queryShowqueryen] = temp;
+								ty += col.queryShowquery+",";
+							}
+						}
+						
+					}
+				});
+				temp_val_v1 = temp_val;
+				
+//				console.log(JSON.stringify(temp_val));
 			}
 		}else{
 			swal('连接错误', '', 'error');
@@ -217,25 +254,125 @@ function open_cs(sectorsName,measureame,mid){
 	
 	$("#createModal").modal();
 }
-console.log(sc_val);
+
+/**
+ * 组织初始化数据
+ */
+function info_data(){
+	
+}
 
 /**
  * 筛选条件的值处理
  * e:当前操作的条件的外层DIV对象
  */
-function val_handle(e, queryEtitle, queryName){
-	var xuanze_val = "";
+function val_handle(e, queryEtitle, queryName, type){
+	var xuanze_val = "";//
 	setTimeout(function(){//等待1/10秒，待css改变后再获取选择的值
+		
+		var queryShowqueryen = e.parent().attr("sc_su");
+		var queryValue = e.parent().attr("sc_su_val");
+		
+		var kk = [];//复选框的值记录
+		var pp = "";//单选框记录的值
 		e.children().each(function(){//循环当前条件下所有的可选项
-			if($(this).is('.active')){
-				sc_val[queryEtitle] = $(this).attr("val_name");
-				xuanze_val = $(this).attr("val_name");
+			var val_name = $(this).attr("val_name");
+			if(val_name != "不限"){
+				if(type == "radio"){
+					if($(this).is('.active')){
+						pp = val_name;
+						xuanze_val += val_name+",";
+					}else{
+						$("#sc_conter").children().each(function(){
+							if($(this).attr("sc_su")!="null"){
+								if($(this).attr("sc_su")==queryEtitle){//条件的名字与其他条件的前置条件名相同
+									if($(this).attr("sc_su_val") == val_name){//值包含
+										$(this).children("div").each(function(){
+											$(this).children().each(function(){
+												$(this).removeClass("active");
+												if($(this).attr("val_name") == "不限"){
+													$(this).addClass("active");
+												}
+											});
+										});
+									}
+								}
+							}
+						});
+					}
+				}else{
+					if(ty.indexOf(queryName) >= 0){//当前的条件属于前置条件
+						
+						if($(this).is('.active')){
+							xuanze_val += val_name+",";
+						}else{
+							$.each(temp_val_v1[queryEtitle], function(i, col) {
+								if(col[queryEtitle] == val_name){
+									$.each(col, function(k, vol) {
+										if(k != queryEtitle){
+											delete col[k];
+										}
+									});
+								}
+							});
+							
+							$("#sc_conter").children().each(function(){
+								if($(this).attr("sc_su")!="null"){
+									if($(this).attr("sc_su")==queryEtitle){//条件的名字与其他条件的前置条件名相同
+										if($(this).attr("sc_su_val") == val_name){//值包含
+											$(this).children("div").each(function(){
+												$(this).children().each(function(){
+													$(this).removeClass("active");
+													if($(this).attr("val_name") == "不限"){
+														$(this).addClass("active");
+													}
+												});
+											});
+										}
+									}
+								}
+							});
+							
+						}
+						
+					}else{
+						if($(this).is('.active')){
+							kk.push(val_name);
+							xuanze_val += val_name+",";
+						}
+					}
+				}
 			}
 		});
+		if(queryShowqueryen == "null"){//没有前置条件
+			if(type == "checkbox"){
+				if(ty.indexOf(queryName) >= 0){
+					
+				}else{
+					temp_val_v1[queryEtitle] = kk;
+				}
+			}else{
+				temp_val_v1[queryEtitle] = pp;
+			}
+		}else{//有前置条件，需要进一步增加层级
+			if(jQuery.isArray(temp_val_v1[queryShowqueryen])){
+				$.each(temp_val_v1[queryShowqueryen], function(i, col) {
+					if(col[queryShowqueryen] == queryValue){
+						if(type == "checkbox"){
+							temp_val_v1[queryShowqueryen][i][queryEtitle] = kk;
+						}else{
+							temp_val_v1[queryShowqueryen][i][queryEtitle] = pp;
+						}
+					}
+				});
+			}else{
+				temp_val_v1[queryEtitle] = pp;
+			}
+		}
 		$("#sc_conter").children().each(function(){//循环所有的条件
-			if($(this).attr("sc_su")!=null){
-				if($(this).attr("sc_su")==queryName){//条件的名字与其他条件的前置条件名相同
-					if($(this).attr("sc_su_val")==xuanze_val){//值相同
+			if($(this).attr("sc_su")!="null"){
+				if($(this).attr("sc_su")==queryEtitle){//条件的名字与其他条件的前置条件名相同
+					if(xuanze_val.indexOf($(this).attr("sc_su_val"))>=0){//值包含
 						$(this).show();
 					}else{
 						$(this).hide();
@@ -243,12 +380,66 @@ function val_handle(e, queryEtitle, queryName){
 				}
 			}
 		});
-		
 	},100);
-	console.log(sc_val);
 }
 
 
+/**
+ * 筛选按钮
+ */
+function search_button(){
+	//条件缓存中的空值删除
+	$.each(temp_val_v1, function(key, col) {
+		if(jQuery.isArray(col)){//判断值是否数组
+			
+			var ttp = [];//有效数组
+			var bool = false;//记录是否进行了处理
+			$.each(col, function(i, vol) {//循环数组
+				if((typeof vol=='string') && vol.constructor==String){//字符串不需处理
+					
+				}else{
+					bool = true;
+					$("#"+key).children().each(function(){//循环数组的页面，查看现有的元素是否选中
+						if($(this).attr("val_name") == vol[key]){//如果当前的标签的值与数组中唯一元素的值相同，同时数组中唯一元素的key与顶层key一致，说明找到标签
+							if($(this).is(".active")){//判断这个标签是否被选中，如果选中说明正常，未选中需要再数组中删除这个元素
+								ttp.push(vol);//删除操作就是将有效数组放入到新数组中，循环结束一次性覆盖
+							}
+						}
+					});
+				}
+			});
+			
+			if(bool){
+				temp_val_v1[key] = ttp;
+			}
+			
+		}else{
+			if(col == ""){//不是数组，同时为空值，删除
+				delete temp_val_v1[key];
+			}
+		}
+	});
+
+	//将本次查询的缓存加入到总条件中
+	sc_val.filters.push(temp_val_v1);
+	console.log(JSON.stringify(sc_val));
+	
+	temp_val_v1 = temp_val;
+	//获取点源相应的减排占比等内容，数据加入到表格显示，刷新显示区域
+	
+}
+
+
+/**
+ * json元素的个数
+ */
+function JSONLength(obj) {
+	var size = 0, key;
+	for (key in obj) {
+		if (obj.hasOwnProperty(key)) size++;
+	}
+	return size;
+};
 
 /**
  * 操作地图显示
