@@ -152,6 +152,7 @@ public class PlanAndMeasureController {
 				mu.setValue(tme.getMeasureExcelSulfer());
 				mlist.add(mu);
 			}
+			//将sv进行拆分
 			if(tme.getMeasureExcelSv()!=null){
 				String sv=tme.getMeasureExcelSv();
 				String[] svs=sv.split(";");
