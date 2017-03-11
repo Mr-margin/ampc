@@ -271,7 +271,7 @@ public class PlanAndMeasureController {
 		    	TTime t=new TTime();
 		    	t.setTimeId(timeId);
 		    	t.setPlanId(Long.parseLong(id.toString()));
-		    	tTimeMapper.updateByPrimaryKey(t);
+		    	tTimeMapper.updateByPrimaryKeySelective(t);
 		    	return AmpcResult.ok(id);
 		    }
 		    return AmpcResult.build(1000, "添加失败");
