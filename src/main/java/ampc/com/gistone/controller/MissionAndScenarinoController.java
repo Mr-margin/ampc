@@ -775,8 +775,6 @@ public class MissionAndScenarinoController {
 			SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");
 			String times=formatter.format(scenar);
 			String missiondate=formatter.format(mission);
-		    Date maxendtime = formatter.parse(times);
-		    Date maxstarttime=formatter.parse(missiondate);
 			JSONArray arr=new JSONArray();
 			for(TScenarinoDetail tscenar:scenarlist){
 				JSONObject obj=new JSONObject();
@@ -787,12 +785,9 @@ public class MissionAndScenarinoController {
 					String starttime=formatter.format(tscenar.getScenarinoStartDate());
 					String endtime=formatter.format(tscenar.getScenarinoEndDate());
 					String padate=formatter.format(tscenar.getPathDate());
-				    Date scenarinoStartDate=formatter.parse(starttime);
-				    Date scenarinoEndDate=formatter.parse(endtime);
-				    Date pathDate=formatter.parse(padate);
-					obj.put("scenarinoStartDate", tscenar.getScenarinoStartDate());
-					obj.put("scenarinoEndDate", scenarinoEndDate);
-					obj.put("pathDate", pathDate);
+					obj.put("scenarinoStartDate",starttime);
+					obj.put("scenarinoEndDate", endtime);
+					obj.put("pathDate", padate);
 					arr.add(obj);
 				}
 				//为后处理情景时保存数据
@@ -801,10 +796,9 @@ public class MissionAndScenarinoController {
 					obj.put("scenarinoName", tscenar.getScenarinoName());
 					String starttime=formatter.format(tscenar.getScenarinoStartDate());  
 					String endtime=formatter.format(tscenar.getScenarinoEndDate());
-				    Date scenarinoStartDate=formatter.parse(starttime);
-				    Date scenarinoEndDate=formatter.parse(endtime);
-					obj.put("scenarinoStartDate", tscenar.getScenarinoStartDate());
-					obj.put("scenarinoEndDate", scenarinoEndDate);
+				 
+					obj.put("scenarinoStartDate",starttime);
+					obj.put("scenarinoEndDate", endtime);
 					arr.add(obj);
 				}	
 			}
@@ -812,8 +806,8 @@ public class MissionAndScenarinoController {
 			JSONObject lastobj=new JSONObject();
 			lastobj.put("scenarinoId", -1);
 			lastobj.put("scenarinoName", "基准情景");
-			lastobj.put("scenarinoStartDate", maxstarttime);
-			lastobj.put("scenarinoEndDate", maxendtime);
+			lastobj.put("scenarinoStartDate", times);
+			lastobj.put("scenarinoEndDate", missiondate);
 			arr.add(lastobj);
 			return AmpcResult.build(0, "find_scenarino_time success",arr);
 		}catch(Exception e){
@@ -841,15 +835,13 @@ public class MissionAndScenarinoController {
 			cal.setTime(date);
 			cal.add(Calendar.DATE, predictionTime);
 			String addTimeDate =sdf.format(cal.getTime());
-			Date endTime=sdf.parse(addTimeDate);
-			obj.put("endTime", endTime);
+			obj.put("endTime", addTimeDate);
 			}else{
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(date);
 				cal.add(Calendar.DATE, -1);
 				String addTimeDate =sdf.format(cal.getTime());
-				Date endTime=sdf.parse(addTimeDate);
-				obj.put("endTime", endTime);
+				obj.put("endTime", addTimeDate);
 			} 
     	   return AmpcResult.build(0, "find_endTime success",obj);
        }catch(Exception e){
