@@ -88,8 +88,8 @@ public class PlanAndMeasureController {
 			Long userId=null;
 			//预案措施id
 			Long planMeasureId=null;
-			if(data.get("planId")!=null){
-				planMeasureId = Long.parseLong(data.get("planId").toString());
+			if(data.get("planMeasureId")!=null){
+				planMeasureId = Long.parseLong(data.get("planMeasureId").toString());
 			}
 			if(data.get("userId")!=null){
 				userId = Long.parseLong(data.get("userId").toString());
@@ -99,6 +99,8 @@ public class PlanAndMeasureController {
 			map.put("planId", planId);
 			map.put("sectorName", sectorName);
 			map.put("userId", userId);
+			//查询条件
+			List<TQueryExcel> tqeList=tQueryExcelMapper.selectByMap(map);
 			//获取所有和当前用户相关的行业描述  右下角1
 			List<Map> sdMap=tSectordocExcelMapper.selectByUserId(map);
 			//如果没有就给默认的行业描述
@@ -111,12 +113,6 @@ public class PlanAndMeasureController {
 			//查询措施的内容
 			TMeasureExcel tme=tMeasureExcelMapper.selectByPrimaryKey(measureId);
 			//这个里面主要是子措施的列 右下角2
-			if(tme.getMeasureExcelOp()!=null){
-				mu=new MeasureUtil();
-				mu.setName("op");
-				mu.setValue(tme.getMeasureExcelOp());
-				mlist.add(mu);
-			}
 			if(tme.getMeasureExcelA()!=null){
 				mu=new MeasureUtil();
 				mu.setName("a");
@@ -162,8 +158,7 @@ public class PlanAndMeasureController {
 				mu.setValue(tme.getMeasureExcelSv());
 				mlist.add(mu);
 			}
-			//查询条件
-			List<TQueryExcel> tqeList=tQueryExcelMapper.selectByMap(map);
+			
 			//创建结果集 并写入对应信息
 			Map resultMap=new HashMap();
 			resultMap.put("measureColumn", sdMap);
