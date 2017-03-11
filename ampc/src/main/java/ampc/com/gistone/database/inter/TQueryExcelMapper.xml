@@ -41,12 +41,9 @@
   </select>
   
   <!--获取所有-->
-  <select id="selectByMap"  resultMap="BaseResultMap" parameterType="hashMap">
+  <select id="selectByMap" parameterType="hashMap"  resultMap="BaseResultMap" >
   	select <include refid="Base_Column_List" /> from T_QUERY_EXCEL 
-  	   WHERE IS_EFFECTIVE='1' and SECTOR_NAME=#{sectorName,jdbcType=OTHER} 
-  		<if test="userId != null" >
-        AND USER_ID=#{userId,jdbcType=OTHER} 
-      </if> 
+  	   WHERE IS_EFFECTIVE='1' and SECTOR_NAME= #{sectorName,jdbcType=OTHER} 
   </select>
   
  
