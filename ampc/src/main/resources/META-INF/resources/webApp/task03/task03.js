@@ -46,8 +46,7 @@ hyc();
 function hyc(){
 	var paramsName = {};
 	paramsName.userId = userId;
-//	paramsName.planId = qjMsg.content.planId;
-	paramsName.planId = 1;
+	paramsName.planId = qjMsg.planId;
 	
 	ajaxPost('/ms/get_msInfo',paramsName).success(function(res){
 //		console.log(JSON.stringify(res));
@@ -144,8 +143,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 	paramsName.userId = userId;
 	paramsName.sectorName = sectorsName;
 	paramsName.measureId = mid;
-//	paramsName.planId = qjMsg.content.planId;
-	paramsName.planId =1;
+	paramsName.planId = qjMsg.planId;
 	paramsName.planMeasureId = planMeasureId;
 	
 	sc_val = {};//初始化缓存
