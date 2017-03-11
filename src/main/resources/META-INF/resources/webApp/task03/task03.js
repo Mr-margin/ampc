@@ -147,13 +147,13 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 	paramsName.planMeasureId = planMeasureId;
 	
 	sc_val = {};//初始化缓存
-	sc_val.bigIndex = "";
+	sc_val.bigIndex = "应急系统新_1描述文件.xlsx";
 	sc_val.smallIndex = sectorsName;//记录行业
 	sc_val.filters = [];
 	sc_val.summary = {};
 	
 	ajaxPost('/measure/get_measureQuery',paramsName).success(function(res){
-		console.log(JSON.stringify(res));
+//		console.log(JSON.stringify(res));
 		if(res.status == 0){//返回状态正常
 			if(res.data.query.length>0){//返回筛选条件
 				var sc_conter = '';//页面的标签
@@ -294,7 +294,15 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 		}
 	}).error(function(){
 		swal('校验失败', '', 'error')
-	})
+	});
+	
+	ajaxPost_w('http://192.168.1.116:8089/search/companyCount',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName,"summary":sc_val.summary}).success(function(res){
+		console.log(JSON.stringify(res));
+		$("#dianyaunzushu").html("点源总数："+res.data.length);
+		
+		add_point(res.data);
+	});
+	
 	$("#createModal").modal();
 }
 
@@ -540,6 +548,8 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 		dong.Point = Point;
 		dong.GraphicsLayer = GraphicsLayer;
 		dong.SpatialReference = SpatialReference;
+		dong.SimpleMarkerSymbol = SimpleMarkerSymbol;
+		dong.Extent = Extent;
 		
 		app.mapList = new Array();
 		app.baselayerList = new Array();//默认加载矢量 new gaodeLayer({layertype:"road"});也可以
@@ -565,12 +575,43 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 		app.gLyr = new dong.GraphicsLayer({"id":"gLyr"});
 		app.mapList[0].addLayer(app.gLyr);
 		
+		app.pint = new dong.GraphicsLayer({"id":"pint"});
+		app.mapList[1].addLayer(app.pint);
+		
 		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer("http://192.168.1.132:6080/arcgis/rest/services/china_gd/MapServer");//创建动态地图
 		app.mapList[0].addLayer(app.layer);
-		
-		
-//		var point = new dong.Point(12367606.298176643, 4092838.5819190354, new dong.SpatialReference({ wkid: 3857 }));
-//		app.str = new SimpleMarkerSymbol('esriSMSCircle','20','','red');
-//		var graphic = new dong.Graphic(point, app.str);
-//		app.gLyr.add(graphic);
 });
+
+//地图加点
+function add_point(col){
+	
+	var xmax = 0,xmin = 0,ymax = 0,ymin = 0;
+	$.each(col, function(i, vol) {
+		
+		var x = handle_x(vol.lon);
+		var y = handle_y(vol.lat);
+		
+		if(i == 0){
+			xmax = x;
+			xmin = x;
+			ymax = y;
+			ymin = y;
+		}else{
+			xmin = x < xmin ? x : xmin;
+			xmax = x > xmax ? x : xmax;
+			ymin = y < ymin ? y : ymin;
+			ymax = y > ymax ? y : ymax;
+		}
+		
+		var point = new dong.Point(x, y, new dong.SpatialReference({ wkid: 3857 }));
+		app.str = new dong.SimpleMarkerSymbol('esriSMSCircle','20','','red');
+		var graphic = new dong.Graphic(point, app.str);
+		app.pint.add(graphic);
+	});
+	
+	var extent = new dong.Extent(xmin,ymin,xmax,ymax, new dong.SpatialReference({ wkid:3857 }));
+	
+	app.mapList[1].setExtent(extent);
+	
+	
+}
