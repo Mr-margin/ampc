@@ -286,22 +286,51 @@ public class MissionAndScenarinoController {
 			if(str.equals("-1")){
 				return AmpcResult.build(1000, res.get("msg").toString(),null);
 			}
-			//执行区域删除方法
-			int result=this.tScenarinoAreaMapper.updateIsEffeByIds(areaIdss);
-			//判断是否执行成功
-			if(result>0){
-				//执行情景删除方法
-				result=this.tScenarinoDetailMapper.updateIsEffeByIds(scenarinoIdss);
+			int result;
+			if(areaIdss.size()>0){
+				//执行区域删除方法
+				result=this.tScenarinoAreaMapper.updateIsEffeByIds(areaIdss);
+				//判断是否执行成功
 				if(result>0){
+					if(scenarinoIdss.size()>0){
+						//执行情景删除方法
+						result=this.tScenarinoDetailMapper.updateIsEffeByIds(scenarinoIdss);
+						if(result>0){
+							//执行任务删除方法
+							result=this.tMissionDetailMapper.updateIsEffeByIds(list);
+							//判断执行结果返回对应数据
+							return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "任务修改失败",null);
+						}else{
+							return AmpcResult.build(1000, "情景修改失败",null);
+						}
+					}else{
+						//执行任务删除方法
+						result=this.tMissionDetailMapper.updateIsEffeByIds(list);
+						//判断执行结果返回对应数据
+						return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "任务修改失败",null);
+					}
+				}else{
+					return AmpcResult.build(1000, "区域修改失败",null);
+				}
+			}else{
+				if(scenarinoIdss.size()>0){
+					//执行情景删除方法
+					result=this.tScenarinoDetailMapper.updateIsEffeByIds(scenarinoIdss);
+					if(result>0){
+						//执行任务删除方法
+						result=this.tMissionDetailMapper.updateIsEffeByIds(list);
+						//判断执行结果返回对应数据
+						return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "任务修改失败",null);
+					}else{
+						return AmpcResult.build(1000, "情景修改失败",null);
+					}
+				}else{
 					//执行任务删除方法
 					result=this.tMissionDetailMapper.updateIsEffeByIds(list);
 					//判断执行结果返回对应数据
 					return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "任务修改失败",null);
-				}else{
-					return AmpcResult.build(1000, "情景修改失败",null);
 				}
-			}else{
-				return AmpcResult.build(1000, "区域修改失败",null);
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -702,16 +731,24 @@ public class MissionAndScenarinoController {
 			if(str.equals("-1")){
 				return AmpcResult.build(1000, res.get("msg").toString(),null);
 			}
-			//执行区域删除方法
-			int result=this.tScenarinoAreaMapper.updateIsEffeByIds(areaIdss);
-			//判断是否执行成功
-			if(result>0){
+			int result;
+			if(areaIdss.size()>0){
+				//执行区域删除方法
+				result=this.tScenarinoAreaMapper.updateIsEffeByIds(areaIdss);
+				//判断是否执行成功
+				if(result>0){
+					//执行情景删除方法
+					result=this.tScenarinoDetailMapper.updateIsEffeByIds(scenarinoIdss);
+					return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "情景修改失败",null);
+				}else{
+					return AmpcResult.build(1000, "区域修改失败",null);
+				}
+			}else{
 				//执行情景删除方法
 				result=this.tScenarinoDetailMapper.updateIsEffeByIds(scenarinoIdss);
 				return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "情景修改失败",null);
-			}else{
-				return AmpcResult.build(1000, "区域修改失败",null);
 			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			//返回错误信息
