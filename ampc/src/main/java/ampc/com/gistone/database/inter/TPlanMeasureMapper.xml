@@ -12,17 +12,21 @@
     <result column="IMPLEMENTATION_SCOPE" property="implementationScope" jdbcType="VARCHAR" />
     <result column="REDUCTION_RATIO" property="reductionRatio" jdbcType="VARCHAR" />
     <result column="RATIO" property="ratio" jdbcType="VARCHAR" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.database.model.TPlanMeasure" extends="BaseResultMap" >
     <result column="MEASURE_CONTENT" property="measureContent" jdbcType="CLOB" />
   </resultMap>
   <sql id="Base_Column_List" >
     PLAN_MEASURE_ID, PLAN_ID, SECTOR_NAME, MEASURE_ID, ADD_TIME, IS_EFFECTIVE, DELETE_TIME, 
-    IMPLEMENTATION_SCOPE, REDUCTION_RATIO, RATIO
+    IMPLEMENTATION_SCOPE, REDUCTION_RATIO, RATIO, USER_ID
   </sql>
   <sql id="Blob_Column_List" >
     MEASURE_CONTENT
   </sql>
+  
+  
+  
   
   <!--根据条件查询措施汇总的信息Map  -->
   <resultMap id="MapByQuery" type="hashMap" >
@@ -49,6 +53,9 @@
 			FROM T_PLAN_MEASURE TPM 
   				INNER JOIN T_MEASURE_EXCEL TME ON TPM.MEASURE_ID=TME.MEASURE_EXCEL_ID
 				WHERE  TPM.IS_EFFECTIVE='1' 
+				 <if test="planId != null" >
+        				AND TPM.PLAN_ID=#{planId,jdbcType=OTHER}
+     			 </if>
 				  <if test="userId != null" >
         				AND TPM.USER_ID=#{userId,jdbcType=OTHER}
      			 </if>
@@ -67,6 +74,9 @@
 			FROM T_PLAN_MEASURE TPM 
   				INNER JOIN T_MEASURE_EXCEL TME ON TPM.MEASURE_ID=TME.MEASURE_EXCEL_ID
 				WHERE  TPM.IS_EFFECTIVE='1' 
+				 <if test="planId != null" >
+        				AND TPM.PLAN_ID=#{planId,jdbcType=OTHER}
+     			 </if>
 				  <if test="userId != null" >
         				AND TPM.USER_ID=#{userId,jdbcType=OTHER}
      			 </if>
@@ -80,11 +90,15 @@
   
   
   <!-- 修改所有的措施状态 相当于删除 -->
-  <update id="updateIsEffeByIds" >
+  <update id="updateIsEffeByIds" parameterType="java.lang.Long">
     update T_PLAN_MEASURE
     set 
       IS_EFFECTIVE = '0',
       DELETE_TIME = (select sysdate from dual) 
+      
+      <if test="userId != null" >
+        	WHERE USER_ID=#{userId,jdbcType=OTHER}
+     </if>
   </update>
   
   
@@ -135,6 +149,26 @@
   
   
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -151,11 +185,13 @@
     insert into T_PLAN_MEASURE (PLAN_MEASURE_ID, PLAN_ID, SECTOR_NAME, 
       MEASURE_ID, ADD_TIME, IS_EFFECTIVE, 
       DELETE_TIME, IMPLEMENTATION_SCOPE, REDUCTION_RATIO, 
-      RATIO, MEASURE_CONTENT)
+      RATIO, USER_ID, MEASURE_CONTENT
+      )
     values (#{planMeasureId,jdbcType=DECIMAL}, #{planId,jdbcType=DECIMAL}, #{sectorName,jdbcType=OTHER}, 
       #{measureId,jdbcType=DECIMAL}, #{addTime,jdbcType=TIMESTAMP}, #{isEffective,jdbcType=VARCHAR}, 
       #{deleteTime,jdbcType=TIMESTAMP}, #{implementationScope,jdbcType=VARCHAR}, #{reductionRatio,jdbcType=VARCHAR}, 
-      #{ratio,jdbcType=VARCHAR}, #{measureContent,jdbcType=CLOB})
+      #{ratio,jdbcType=VARCHAR}, #{userId,jdbcType=DECIMAL}, #{measureContent,jdbcType=CLOB}
+      )
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TPlanMeasure" >
     insert into T_PLAN_MEASURE
@@ -190,6 +226,9 @@
       <if test="ratio != null" >
         RATIO,
       </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
       <if test="measureContent != null" >
         MEASURE_CONTENT,
       </if>
@@ -202,7 +241,7 @@
         #{planId,jdbcType=DECIMAL},
       </if>
       <if test="sectorName != null" >
-        #{sectorName,jdbcType=DECIMAL},
+        #{sectorName,jdbcType=OTHER},
       </if>
       <if test="measureId != null" >
         #{measureId,jdbcType=DECIMAL},
@@ -225,6 +264,9 @@
       <if test="ratio != null" >
         #{ratio,jdbcType=VARCHAR},
       </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
+      </if>
       <if test="measureContent != null" >
         #{measureContent,jdbcType=CLOB},
       </if>
@@ -237,7 +279,7 @@
         PLAN_ID = #{planId,jdbcType=DECIMAL},
       </if>
       <if test="sectorName != null" >
-        SECTOR_NAME = #{sectorName,jdbcType=DECIMAL},
+        SECTOR_NAME = #{sectorName,jdbcType=OTHER},
       </if>
       <if test="measureId != null" >
         MEASURE_ID = #{measureId,jdbcType=DECIMAL},
@@ -260,6 +302,9 @@
       <if test="ratio != null" >
         RATIO = #{ratio,jdbcType=VARCHAR},
       </if>
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
       <if test="measureContent != null" >
         MEASURE_CONTENT = #{measureContent,jdbcType=CLOB},
       </if>
@@ -277,6 +322,7 @@
       IMPLEMENTATION_SCOPE = #{implementationScope,jdbcType=VARCHAR},
       REDUCTION_RATIO = #{reductionRatio,jdbcType=VARCHAR},
       RATIO = #{ratio,jdbcType=VARCHAR},
+      USER_ID = #{userId,jdbcType=DECIMAL},
       MEASURE_CONTENT = #{measureContent,jdbcType=CLOB}
     where PLAN_MEASURE_ID = #{planMeasureId,jdbcType=DECIMAL}
   </update>
@@ -290,7 +336,8 @@
       DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       IMPLEMENTATION_SCOPE = #{implementationScope,jdbcType=VARCHAR},
       REDUCTION_RATIO = #{reductionRatio,jdbcType=VARCHAR},
-      RATIO = #{ratio,jdbcType=VARCHAR}
+      RATIO = #{ratio,jdbcType=VARCHAR},
+      USER_ID = #{userId,jdbcType=DECIMAL}
     where PLAN_MEASURE_ID = #{planMeasureId,jdbcType=DECIMAL}
   </update>
 </mapper>

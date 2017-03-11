@@ -77,21 +77,26 @@ public class MeasureAndSectorController {
 			//将结果同意放在一个帮助类中 用来返回结果
 			List<SMUtil> result=new ArrayList<SMUtil>();
 			for (String name : nameSet) {
+				//创建结果对象
 				SMUtil sm=new SMUtil();
+				//创建条件 
 				Map<String,Object> map=new HashMap<String,Object>();
 				map.put("sectorsName", name);
 				map.put("userId", userId);
 				sm.setSectorsName(name);
-				//查询全部写入返回结果集
+				//查询当前名称下有几个措施
 				List<Map> list = this.tMeasureSectorExcelMapper.getMeasureInfo(map);
 				sm.setMeasureItems(list);
+				//创建条件 
 				map=new HashMap<String,Object>();
 				map.put("planId", planId);
 				map.put("userId", userId);
 				map.put("sectorName", name);
+				//用来去查预案措施中的数据，用来确认当前有几个措施正在使用
 				List<Map> measureList=tPlanMeasureMapper.selectIdByQuery(map);
 				sm.setPlanMeasure(measureList);
 				sm.setCount(measureList.size());
+				//将结果放入结果集中！
 				result.add(sm);
 			}
 			

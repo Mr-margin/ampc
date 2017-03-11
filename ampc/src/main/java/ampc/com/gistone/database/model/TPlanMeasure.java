@@ -23,6 +23,8 @@ public class TPlanMeasure {
 
     private String ratio;
 
+    private Long userId;
+
     private String measureContent;
 
     public Long getPlanMeasureId() {
@@ -41,18 +43,15 @@ public class TPlanMeasure {
         this.planId = planId;
     }
 
+    public Object getSectorName() {
+        return sectorName;
+    }
 
-   
+    public void setSectorName(Object sectorName) {
+        this.sectorName = sectorName;
+    }
 
-	public Object getSectorName() {
-		return sectorName;
-	}
-
-	public void setSectorName(Object sectorName) {
-		this.sectorName = sectorName;
-	}
-
-	public Long getMeasureId() {
+    public Long getMeasureId() {
         return measureId;
     }
 
@@ -106,6 +105,14 @@ public class TPlanMeasure {
 
     public void setRatio(String ratio) {
         this.ratio = ratio == null ? null : ratio.trim();
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getMeasureContent() {

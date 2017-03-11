@@ -5,15 +5,12 @@ import java.util.Map;
 
 import ampc.com.gistone.database.model.TPlanMeasure;
 
-
-
-
 /**
- * 预案措施映射
- * @author WangShanxi
- * @version v.0.1
- * @date 2017年3月7日
- */
+* 预案措施映射
+* @author WangShanxi
+* @version v.0.1
+* @date 2017年3月7日
+*/
 public interface TPlanMeasureMapper {
 	/**
 	 * 根据条件查询措施汇总的信息
@@ -30,15 +27,15 @@ public interface TPlanMeasureMapper {
 	List<Map> selectIdByQuery(Map map);
 	
 	/**
-     * 修改预案措施是否有效
-     * @param userId
-     * @return
-     */
-    int updateIsEffeByIds();
+    * 修改预案措施是否有效
+    * @param userId
+    * @return
+    */
+   int updateIsEffeByIds(Long userId);
 	
 	List<TPlanMeasure> selectByEntity(TPlanMeasure record);
-    
-    int deleteByPlanId(Long planId);
+   
+   int deleteByPlanId(Long planId);
 
     int deleteByPrimaryKey(Long planMeasureId);
 
