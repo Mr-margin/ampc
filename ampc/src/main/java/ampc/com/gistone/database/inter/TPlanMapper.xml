@@ -5,23 +5,19 @@
     <id column="PLAN_ID" property="planId" jdbcType="DECIMAL" />
     <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
     <result column="PLAN_NAME" property="planName" jdbcType="OTHER" />
-    <result column="ADD_TIME" property="addTime" jdbcType="DATE" />
+    <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
     <result column="USED_BY" property="usedBy" jdbcType="DECIMAL" />
-    <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
     <result column="SCENARIO_ID" property="scenarioId" jdbcType="DECIMAL" />
     <result column="MISSION_ID" property="missionId" jdbcType="DECIMAL" />
-    <result column="PLAN_START_TIME" property="planStartTime" jdbcType="DATE" />
-    <result column="PLAN_END_TIME" property="planEndTime" jdbcType="DATE" />
+    <result column="PLAN_START_TIME" property="planStartTime" jdbcType="TIMESTAMP" />
+    <result column="PLAN_END_TIME" property="planEndTime" jdbcType="TIMESTAMP" />
     <result column="AREA_ID" property="areaId" jdbcType="DECIMAL" />
     <result column="COPY_PLAN" property="copyPlan" jdbcType="VARCHAR" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    PLAN_ID, USER_ID, PLAN_NAME, ADD_TIME, USED_BY, DELETE_TIME, IS_EFFECTIVE, SCENARIO_ID, 
-    MISSION_ID, PLAN_START_TIME, PLAN_END_TIME, AREA_ID, COPY_PLAN
-  </sql>
   
-  <!-- 根据条件查询ID -->
+   <!-- 根据条件查询ID -->
   <select id="getIdByQuery" resultType="java.lang.Integer" parameterType="hashMap" >
     select PLAN_ID from T_PLAN
     where USER_ID = #{userId,jdbcType=OTHER} and PLAN_NAME=#{planName,jdbcType=OTHER} and IS_EFFECTIVE='1'
@@ -29,17 +25,10 @@
   </select>
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <sql id="Base_Column_List" >
+    PLAN_ID, USER_ID, PLAN_NAME, ADD_TIME, USED_BY, DELETE_TIME, IS_EFFECTIVE, SCENARIO_ID, 
+    MISSION_ID, PLAN_START_TIME, PLAN_END_TIME, AREA_ID, COPY_PLAN
+  </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -54,14 +43,13 @@
     insert into T_PLAN (PLAN_ID, USER_ID, PLAN_NAME, 
       ADD_TIME, USED_BY, DELETE_TIME, 
       IS_EFFECTIVE, SCENARIO_ID, MISSION_ID, 
-      PLAN_START_TIME, PLAN_END_TIME, AREA_ID, COPY_PLAN
-      )
+      PLAN_START_TIME, PLAN_END_TIME, AREA_ID, 
+      COPY_PLAN)
     values (#{planId,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{planName,jdbcType=OTHER}, 
-      #{addTime,jdbcType=DATE}, #{usedBy,jdbcType=DECIMAL}, #{deleteTime,jdbcType=DATE}, 
+      #{addTime,jdbcType=TIMESTAMP}, #{usedBy,jdbcType=DECIMAL}, #{deleteTime,jdbcType=TIMESTAMP}, 
       #{isEffective,jdbcType=VARCHAR}, #{scenarioId,jdbcType=DECIMAL}, #{missionId,jdbcType=DECIMAL}, 
-      #{planStartTime,jdbcType=DATE}, #{planEndTime,jdbcType=DATE}, #{areaId,jdbcType=DECIMAL},
-      #{copyPlan,jdbcType=VARCHAR}
-      )
+      #{planStartTime,jdbcType=TIMESTAMP}, #{planEndTime,jdbcType=TIMESTAMP}, #{areaId,jdbcType=DECIMAL}, 
+      #{copyPlan,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TPlan" >
     insert into T_PLAN
@@ -117,13 +105,13 @@
         #{planName,jdbcType=OTHER},
       </if>
       <if test="addTime != null" >
-        #{addTime,jdbcType=DATE},
+        #{addTime,jdbcType=TIMESTAMP},
       </if>
       <if test="usedBy != null" >
         #{usedBy,jdbcType=DECIMAL},
       </if>
       <if test="deleteTime != null" >
-        #{deleteTime,jdbcType=DATE},
+        #{deleteTime,jdbcType=TIMESTAMP},
       </if>
       <if test="isEffective != null" >
         #{isEffective,jdbcType=VARCHAR},
@@ -135,10 +123,10 @@
         #{missionId,jdbcType=DECIMAL},
       </if>
       <if test="planStartTime != null" >
-        #{planStartTime,jdbcType=DATE},
+        #{planStartTime,jdbcType=TIMESTAMP},
       </if>
       <if test="planEndTime != null" >
-        #{planEndTime,jdbcType=DATE},
+        #{planEndTime,jdbcType=TIMESTAMP},
       </if>
       <if test="areaId != null" >
         #{areaId,jdbcType=DECIMAL},
@@ -158,13 +146,13 @@
         PLAN_NAME = #{planName,jdbcType=OTHER},
       </if>
       <if test="addTime != null" >
-        ADD_TIME = #{addTime,jdbcType=DATE},
+        ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
       </if>
       <if test="usedBy != null" >
         USED_BY = #{usedBy,jdbcType=DECIMAL},
       </if>
       <if test="deleteTime != null" >
-        DELETE_TIME = #{deleteTime,jdbcType=DATE},
+        DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       </if>
       <if test="isEffective != null" >
         IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
@@ -176,15 +164,15 @@
         MISSION_ID = #{missionId,jdbcType=DECIMAL},
       </if>
       <if test="planStartTime != null" >
-        PLAN_START_TIME = #{planStartTime,jdbcType=DATE},
+        PLAN_START_TIME = #{planStartTime,jdbcType=TIMESTAMP},
       </if>
       <if test="planEndTime != null" >
-        PLAN_END_TIME = #{planEndTime,jdbcType=DATE},
+        PLAN_END_TIME = #{planEndTime,jdbcType=TIMESTAMP},
       </if>
       <if test="areaId != null" >
         AREA_ID = #{areaId,jdbcType=DECIMAL},
       </if>
-       <if test="copyPlan != null" >
+      <if test="copyPlan != null" >
         COPY_PLAN = #{copyPlan,jdbcType=VARCHAR},
       </if>
     </set>
@@ -194,58 +182,16 @@
     update T_PLAN
     set USER_ID = #{userId,jdbcType=DECIMAL},
       PLAN_NAME = #{planName,jdbcType=OTHER},
-      ADD_TIME = #{addTime,jdbcType=DATE},
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
       USED_BY = #{usedBy,jdbcType=DECIMAL},
-      DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
       SCENARIO_ID = #{scenarioId,jdbcType=DECIMAL},
       MISSION_ID = #{missionId,jdbcType=DECIMAL},
-      PLAN_START_TIME = #{planStartTime,jdbcType=DATE},
-      PLAN_END_TIME = #{planEndTime,jdbcType=DATE},
+      PLAN_START_TIME = #{planStartTime,jdbcType=TIMESTAMP},
+      PLAN_END_TIME = #{planEndTime,jdbcType=TIMESTAMP},
       AREA_ID = #{areaId,jdbcType=DECIMAL},
       COPY_PLAN = #{copyPlan,jdbcType=VARCHAR}
     where PLAN_ID = #{planId,jdbcType=DECIMAL}
   </update>
-      <select id="selectByEntity" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TPlan" >
-    select 
-     <include refid="Base_Column_List" />
-    from T_PLAN
-    where IS_EFFECTIVE = 1
-         <if test="planName != null">
-               and PLAN_NAME = #{planName,jdbcType=OTHER}
-            </if>
-            <if test="addTime != null">
-                and ADD_TIME = #{addTime,jdbcType=DATE}
-            </if>
-            <if test="usedBy != null">
-                and USED_BY = #{usedBy,jdbcType=DECIMAL}
-            </if>
-            <if test="scenarioId != null">
-                and  SCENARIO_ID = #{scenarioId,jdbcType=DECIMAL}
-            </if>
-            <if test="missionId != null">
-                and MISSION_ID = #{missionId,jdbcType=DECIMAL}
-            </if>
-            <if test="deleteTime != null">
-               and DELETE_TIME = #{deleteTime,jdbcType=DATE}
-            </if>
-            <if test="planStartTime != null">
-               and PLAN_START_TIME = #{planStartTime,jdbcType=DATE}
-            </if>
-            <if test="planEndTime != null">
-               and PLAN_END_TIME = #{planEndTime,jdbcType=DATE}
-            </if>
-            <if test="areaId != null">
-               and AREA_ID = #{areaId,jdbcType=DECIMAL}
-            </if>
-            <if test="userId != null">
-               and AUSER_ID = #{userId,jdbcType=DECIMAL}
-            </if>
-            <if test="copyPlan != null">
-               and COPY_PLAN = #{copyPlan,jdbcType=VARCHAR}
-            </if>
-            <if test="planId != null">
-               and PLAN_ID = #{planId,jdbcType=DECIMAL}
-            </if>
-  </select>
 </mapper>

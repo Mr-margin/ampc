@@ -26,18 +26,10 @@ public class TPlan {
     private Date planEndTime;
 
     private Long areaId;
-    
+
     private String copyPlan;
 
-    public String getCopyPlan() {
-		return copyPlan;
-	}
-
-	public void setCopyPlan(String copyPlan) {
-		this.copyPlan = copyPlan;
-	}
-
-	public Long getPlanId() {
+    public Long getPlanId() {
         return planId;
     }
 
@@ -131,5 +123,13 @@ public class TPlan {
 
     public void setAreaId(Long areaId) {
         this.areaId = areaId;
+    }
+
+    public String getCopyPlan() {
+        return copyPlan;
+    }
+
+    public void setCopyPlan(String copyPlan) {
+        this.copyPlan = copyPlan == null ? null : copyPlan.trim();
     }
 }
