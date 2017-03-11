@@ -1,6 +1,5 @@
 package ampc.com.gistone.database.inter;
 
-import java.util.List;
 import java.util.Map;
 
 import ampc.com.gistone.database.model.TPlan;
@@ -12,6 +11,7 @@ public interface TPlanMapper {
 	 * @return
 	 */
 	int getIdByQuery(Map map);
+
     int deleteByPrimaryKey(Long planId);
 
     int insert(TPlan record);
@@ -23,6 +23,4 @@ public interface TPlanMapper {
     int updateByPrimaryKeySelective(TPlan record);
 
     int updateByPrimaryKey(TPlan record);
-    
-    List<TPlan> selectByEntity(TPlan record);
 }
