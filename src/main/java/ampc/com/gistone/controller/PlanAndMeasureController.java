@@ -88,7 +88,7 @@ public class PlanAndMeasureController {
 			Long userId=null;
 			//预案措施id
 			Long planMeasureId=null;
-			if(data.get("planMeasureId")!=null){
+			if(!data.get("planMeasureId").toString().equals("null")){
 				planMeasureId = Long.parseLong(data.get("planMeasureId").toString());
 			}
 			if(data.get("userId")!=null){
@@ -338,6 +338,43 @@ public class PlanAndMeasureController {
 			return AmpcResult.build(1, "update_measureContent error");
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 *措施详情查询
