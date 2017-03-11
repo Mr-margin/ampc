@@ -191,6 +191,7 @@ function initialize(){
   var scenarino1 = ajaxPost1('webApp/task02/qy.json',{});
 
   scenarino1.then(function(res){
+	  
     allData = res.data;
     for(var i=0;i<res.data.length;i++){
       allData[i].timeFrame = [];
@@ -942,27 +943,29 @@ require(
 		app.map.addLayer(app.gLyr);
 		/******************************************/
 });
+//添加服务
  function addLayer(data) {
 	 shuju_clear();
 	 app.featureLayer1 = new dong.FeatureLayer("http://192.168.1.132:6080/arcgis/rest/services/china_x/MapServer/2", {infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-	        mode: dong.FeatureLayer.MODE_ONDEMAND,
-	        outFields: ["NAME"]
-	      });
-		app.featureLayer2 = new dong.FeatureLayer("http://192.168.1.132:6080/arcgis/rest/services/china_x/MapServer/1", {infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-	        mode: dong.FeatureLayer.MODE_ONDEMAND,
-	        outFields: ["NAME"]
-	      });
-		app.featureLayer3 = new dong.FeatureLayer("http://192.168.1.132:6080/arcgis/rest/services/china_x/MapServer/0", {infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-	        mode: dong.FeatureLayer.MODE_ONDEMAND,
-	        outFields: ["NAME"]
-	      });
-	     app.map.addLayer(app.featureLayer1);
-	     app.map.addLayer(app.featureLayer2);
-	     app.map.addLayer(app.featureLayer3);
-	     area(data);
+        mode: dong.FeatureLayer.MODE_ONDEMAND,
+        outFields: ["NAME"]
+      });
+	 app.featureLayer2 = new dong.FeatureLayer("http://192.168.1.132:6080/arcgis/rest/services/china_x/MapServer/1", {infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+        mode: dong.FeatureLayer.MODE_ONDEMAND,
+        outFields: ["NAME"]
+      });
+	app.featureLayer3 = new dong.FeatureLayer("http://192.168.1.132:6080/arcgis/rest/services/china_x/MapServer/0", {infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+        mode: dong.FeatureLayer.MODE_ONDEMAND,
+        outFields: ["NAME"]
+//		visible:""
+		
+      });
+	 app.map.addLayer(app.featureLayer1);
+	 app.map.addLayer(app.featureLayer2);
+	 app.map.addLayer(app.featureLayer3);
+	 area(data);
  }
-
-var admin ;
+//行政区划渲染
 function area (data) {
     var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
     defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
@@ -1004,12 +1007,9 @@ function area (data) {
 		     app.map.addLayer(app.featureLayer3);
 		 }
 	 }
-	admin = app.featureLayer1;
-	admin = app.featureLayer1;
 }
 //清空地图
 function shuju_clear() {
-	
 	if (app.featureLayer1 != undefined && app.featureLayer1 != null && app.featureLayer1 != "" ) {
 		app.map.removeLayer(app.featureLayer1);
 	}
@@ -1020,10 +1020,8 @@ function shuju_clear() {
 //		app.featureLayer2.clear();
 		app.map.removeLayer(app.featureLayer2)
 	}
-	
-	
 }
-
+//对地图的定位  
 function setExtent(data) {
 	 var code = data.adcode.substring(0,2)+"0000";
 	if ( app.featureLayer1 != "" && app.featureLayer1 != null && app.featureLayer1 != undefined ) {
@@ -1037,8 +1035,6 @@ function setExtent(data) {
 		}
 	} 
 }
-
-
 //app.map.setExtent(new esri.geometry.Extent({  
 //"xmin": 8175445.558800001,  
 //"ymin": 2056264.7553000003,  
@@ -1049,4 +1045,14 @@ function setExtent(data) {
 //}  
 //})); 
 /**********************************任务管理进来地图*****************************************************/
+function app2 () {
+	$.get('test.json',function(data){
+		console.log(data.data);
+		$.each(data.data,function(i,item){
+			
+		})
+		
+	})
+}
+
 
