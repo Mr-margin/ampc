@@ -152,25 +152,37 @@ function ajaxPost1(url, parameter) {
 }
 
 initialize();
-var ls = window.localStorage;
-qjMsg = vipspa.getMessage('qjMessage').content;
 
-if(!qjMsg){
-  qjMsg = JSON.parse(ls.getItem('qjMsg'));
-}else{
-  ls.setItem('qjMsg',JSON.stringify(qjMsg));
-}
 
 function initialize(){
+  var ls = window.localStorage;
   qjMsg = vipspa.getMessage('qjMessage').content;
-  qjMsg = {
-    qjEndDate: 1486137600000,
-    qjId: 19,
-    qjName: "dfgerg",
-    qjStartDate: 1485792000000,
-    rwId: 65,
-    rwName: "gjfhdxghxdf"
-  };
+
+  if(!qjMsg){
+    qjMsg = JSON.parse(ls.getItem('qjMsg'));
+  }else{
+    ls.setItem('qjMsg',JSON.stringify(qjMsg));
+  }
+
+  //
+  //qjMsg = vipspa.getMessage('qjMessage').content;
+  //qjMsg = {
+  //  qjEndDate: 1486137600000,
+  //  qjId: 19,
+  //  qjName: "dfgerg",
+  //  qjStartDate: 1485792000000,
+  //  rwId: 65,
+  //  rwName: "gjfhdxghxdf"
+  //};
+
+  msg.content.rwId = qjMsg.rwId;
+  msg.content.rwName = qjMsg.rwName;
+  msg.content.qjId = qjMsg.qjId;
+  msg.content.qjName = qjMsg.qjName;
+  msg.content.qjStartDate = qjMsg.qjStartDate;
+  msg.content.qjEndDate = qjMsg.qjEndDate;
+  msg.content.esCouplingId = qjMsg.esCouplingId;
+  msg.content.esCouplingName = qjMsg.esCouplingName;
 
   $('.footerShow .rw span').html(qjMsg.rwName);
   $('.footerShow .qj span').html(qjMsg.qjName);
@@ -513,40 +525,72 @@ function delTimes(){
 
 }
 
+var newPlan;
 /*添加预案*/
 function addPlan(){
 
-  var planId = $('#copyPlan').val();
-  var planName = $('#copyPlan').find("option:selected").text();
-  var url = '/plan/copy_plan';
 
-  ajaxPost(url,{
-    userId:userId,
-    planId:planId,
-    timeId:allData[areaIndex].timeItems[timeIndex].timeId
-  }).success(function(){
-    allData[areaIndex].timeItems[timeIndex].planId = planId;
-    allData[areaIndex].timeItems[timeIndex].planName = planName;
-    $('.area').eq(areaIndex).find('.time').eq(timeIndex).find('.yaMsg h4').html(planName);
-    $('.area').eq(areaIndex).find('.time').eq(timeIndex).find('.timeToolDiv .btn').eq(0).attr('disabled','disabled');
-    $('.area').eq(areaIndex).find('.time').eq(timeIndex).find('.timeToolDiv .btn').eq(1).removeAttr('disabled');
-  })
+  if(newPlan){
+    var url = '/plan/add_plan';
+    var params = {
+      userId:userId,
+      missionId:msg.content.rwId,
+      scenarioId:msg.content.qjId,
+      areaId:msg.content.areaId,
+      timeStartTime:moment(msg.content.timeStartDate).format('YYYY-MM-DD HH'),
+      timeEndTime:moment(msg.content.timeEndDate).format('YYYY-MM-DD HH'),
+      planName:$('#yaName').val()
+    };
+    ajaxPost(url,params).success(function(res){
+      msg.content.planId = res.data;
+      msg.content.planName = $('#yaName').val();
+      vipspa.setMessage(msg);
+      createNewPlan();
+      $('#yaName').val('');
+    });
+  }else{
+    var planId = $('#copyPlan').val();
+    var planName = $('#copyPlan').find("option:selected").text();
+    var url = '/plan/copy_plan';
+
+    ajaxPost(url,{
+      userId:userId,
+      planId:planId,
+      timeId:allData[areaIndex].timeItems[timeIndex].timeId
+    }).success(function(){
+      allData[areaIndex].timeItems[timeIndex].planId = planId;
+      allData[areaIndex].timeItems[timeIndex].planName = planName;
+      $('.area').eq(areaIndex).find('.time').eq(timeIndex).find('.yaMsg h4').html(planName);
+      $('.area').eq(areaIndex).find('.time').eq(timeIndex).find('.timeToolDiv .btn').eq(0).attr('disabled','disabled');
+      $('.area').eq(areaIndex).find('.time').eq(timeIndex).find('.timeToolDiv .btn').eq(1).removeAttr('disabled');
+    })
+  }
 }
 
 /*创建新预案*/
 function createNewPlan(e){
   window.setTimeout(function(){
-    $(e).parent().find('a')[0].click();
+    $('#addCSBJ')[0].click();
     console.log(123)
   },500)
+}
+
+/*添加新预案按钮*/
+function addNewPlan(e){
+  $(e).parents('#addYA').find('.modal-footer').removeClass('disNone');
+  $(e).parents('#addYA').find('.addNewPlan').removeClass('disNone');
+  $(e).parents('#addYA').find('.addCopyPlan').addClass('disNone');
+  $(e).parents('.selectAdd').addClass('disNone');
+  newPlan = true;
 }
 
 /*选择已有预案*/
 function copyPlan(e){
   $(e).parents('#addYA').find('.modal-footer').removeClass('disNone');
   $(e).parents('#addYA').find('.addCopyPlan').removeClass('disNone');
+  $(e).parents('#addYA').find('.addNewPlan').addClass('disNone');
   $(e).parents('.selectAdd').addClass('disNone');
-
+  newPlan = false;
   var url = '/plan/copy_plan_list';
   ajaxPost(url,{
     userId:userId
@@ -559,6 +603,22 @@ function copyPlan(e){
       $('<option value="'+ res.data.copyPlanlist[i].planId +'">'+ res.data.copyPlanlist[i].planName +'</option>').appendTo('#copyPlan')
     }
   })
+}
+
+/*编辑预案*/
+function editPlan(t){
+  areaIndex = $('.area').index($(t).parents('.area'));
+  timeIndex = $(t).parents('.area').find('.time').index($(t).parents('.time'));
+
+  msg.content.areaId = allData[areaIndex].areaId;
+  msg.content.areaName = allData[areaIndex].areaName;
+  msg.content.timeId = allData[areaIndex].timeItems[timeIndex].timeId;
+  msg.content.timeEndDate = allData[areaIndex].timeItems[timeIndex].timeEndDate;
+  msg.content.timeStartDate = allData[areaIndex].timeItems[timeIndex].timeStartDate;
+  msg.content.planId = allData[areaIndex].timeItems[timeIndex].planId;
+  msg.content.planName = allData[areaIndex].timeItems[timeIndex].planName;
+  vipspa.setMessage(msg);
+  createNewPlan();
 }
 
 ///*删除预案*/
@@ -689,10 +749,15 @@ $('#addYA').on('show.bs.modal', function (event) {
 
   $(event.target).find('.modal-footer').addClass('disNone');
   $(event.target).find('.addCopyPlan').addClass('disNone');
+  $(event.target).find('.addNewPlan').addClass('disNone');
   $(event.target).find('.selectAdd').removeClass('disNone');
   $(event.target).find('#copyPlan').empty();
 
-
+  msg.content.areaId = allData[areaIndex].areaId;
+  msg.content.areaName = allData[areaIndex].areaName;
+  msg.content.timeId = allData[areaIndex].timeItems[timeIndex].timeId;
+  msg.content.timeEndDate = allData[areaIndex].timeItems[timeIndex].timeEndDate;
+  msg.content.timeStartDate = allData[areaIndex].timeItems[timeIndex].timeStartDate;
 });
 
 $('#delTime').on('show.bs.modal', function (event) {
@@ -875,27 +940,27 @@ var sz_corlor={
 };
 require(
 	[
-	 	"esri/map", 
+	 	"esri/map",
 	 	"esri/layers/FeatureLayer",
 	 	"esri/layers/GraphicsLayer",
-	 	"esri/symbols/SimpleFillSymbol", 
-	 	"esri/symbols/SimpleLineSymbol", 
-	 	"esri/symbols/SimpleMarkerSymbol", 
+	 	"esri/symbols/SimpleFillSymbol",
+	 	"esri/symbols/SimpleLineSymbol",
+	 	"esri/symbols/SimpleMarkerSymbol",
 	 	"esri/renderers/ClassBreaksRenderer",
-	 	"esri/geometry/Point", 
+	 	"esri/geometry/Point",
 	 	"esri/geometry/Extent",
-        "esri/renderers/SimpleRenderer", 
-        "esri/graphic", 
-        "dojo/_base/Color", 
-        "dojo/dom-style", 
+        "esri/renderers/SimpleRenderer",
+        "esri/graphic",
+        "dojo/_base/Color",
+        "dojo/dom-style",
         "esri/tasks/FeatureSet",
         "esri/SpatialReference",
         "tdlib/gaodeLayer",
         "esri/InfoTemplate",
-        "esri/renderers/UniqueValueRenderer", 
+        "esri/renderers/UniqueValueRenderer",
         "dojo/domReady!"
-        
-	], 
+
+	],
 	function(Map,FeatureLayer,GraphicsLayer,SimpleFillSymbol,SimpleLineSymbol,SimpleMarkerSymbol,ClassBreaksRenderer,Point,Extent,SimpleRenderer,
 			Graphic,Color,style,FeatureSet,SpatialReference,gaodeLayer,InfoTemplate,UniqueValueRenderer) {
 		dong.gaodeLayer = gaodeLayer;
