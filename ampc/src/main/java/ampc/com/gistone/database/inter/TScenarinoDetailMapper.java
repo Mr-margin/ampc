@@ -79,4 +79,6 @@ public interface TScenarinoDetailMapper {
     List<TScenarinoDetail> selectAllByMissionId(Long missionId);
     
     Date selectMaxEndTime();
+    
+    TScenarinoDetail selectid(TScenarinoDetail tScenarinoDetail);
 }
