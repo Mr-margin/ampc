@@ -899,21 +899,22 @@ public class MissionAndScenarinoController {
 		try{
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
-			String scenarinoName=data.get("scenarinoName").toString();
-			String startDate =data.get("scenarinoStartDate").toString();
-			String endDate= data.get("scenarinoEndDate").toString();
+			String scenarinoName=data.get("scenarinoName").toString();//情景名称
+			String startDate =data.get("scenarinoStartDate").toString();//开始时间
+			String endDate= data.get("scenarinoEndDate").toString();//结束时间
+			//修改时间格式
 			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 			Date scenarinoStartDate=sdf.parse(startDate);
 			Date scenarinoEndDate= sdf.parse(endDate);
-			Long missionId=Long.valueOf(data.get("scenarinoStartDate").toString());
-			Long userId=Long.valueOf(data.get("userId").toString());
-			String missionType=data.get("missionType").toString();
-			Long basisScenarinoId=Long.valueOf(data.get("basisScenarinoId").toString());
-			String baTime=data.get("basisTime").toString();
+			Long missionId=Long.valueOf(data.get("scenarinoStartDate").toString());//任务id
+			Long userId=Long.valueOf(data.get("userId").toString());//用户id
+			String missionType=data.get("missionType").toString();//任务类型
+			Long basisScenarinoId=Long.valueOf(data.get("basisScenarinoId").toString());//基础情景
+			String baTime=data.get("basisTime").toString();//基础时间
 			Date basisTime=sdf.parse(baTime);
-			Long controstScenarinoId=Long.valueOf(data.get("controstScenarinoId").toString());
-			Long spinUp=Long.valueOf(data.get("spinUp").toString());
-			String scenType=data.get("scenType").toString();
+			Long controstScenarinoId=Long.valueOf(data.get("controstScenarinoId").toString());//对比情景id
+			Long spinUp=Long.valueOf(data.get("spinUp").toString());//spinup
+			String scenType=data.get("scenType").toString();//情景类型
 			Date date=new Date();
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(date);
@@ -924,7 +925,9 @@ public class MissionAndScenarinoController {
 			Long sdid=0l;
 			int d=0;
 			int a=0;
+			//预评估任务创建情景
 			if(missionType.equals("预评估")){
+				//预评估任务创建预评估情景
 				if(scenType.equals("1")){
 				TScenarinoDetail tsd=new TScenarinoDetail();
 				
@@ -941,7 +944,9 @@ public class MissionAndScenarinoController {
 				TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
 				sdid=tScenarinoDetail.getScenarinoId();
 				}
+				//预评估任务创建后评估情景
 			if(scenType.equals("2")){
+				//基础情景
 					if(controstScenarinoId==null){
 						TScenarinoDetail tsd=new TScenarinoDetail();
 						
@@ -956,7 +961,7 @@ public class MissionAndScenarinoController {
 						a=tScenarinoDetailMapper.insertSelective(tsd);
 						TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
 						sdid=tScenarinoDetail.getScenarinoId();
-					}else{
+					}else{//对比情景
                         TScenarinoDetail tsd=new TScenarinoDetail();
 						tsd.setScenarinoName(scenarinoName);
 						tsd.setScenType(scenType);
@@ -970,8 +975,11 @@ public class MissionAndScenarinoController {
 				}
 				
 			}
+			//后评估任务创建情景
 			if(missionType.equals("后评估")){
+				//创建后评估情景
 				if(scenType.equals("2")){
+					//基础情景
 					if(controstScenarinoId==null){
 						TScenarinoDetail tsd=new TScenarinoDetail();
 						
@@ -986,7 +994,7 @@ public class MissionAndScenarinoController {
 						a=tScenarinoDetailMapper.insertSelective(tsd);
 						TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
 						sdid=tScenarinoDetail.getScenarinoId();
-					}else{
+					}else{//对比情景
                         TScenarinoDetail tsd=new TScenarinoDetail();
 						tsd.setScenarinoName(scenarinoName);
 						tsd.setScenType(scenType);
@@ -998,6 +1006,7 @@ public class MissionAndScenarinoController {
 					}
 					
 				}
+				//创建基准情景
 				if(scenType.equals("3")){
 					TScenarinoDetail tsd=new TScenarinoDetail();
 					
@@ -1013,7 +1022,7 @@ public class MissionAndScenarinoController {
 					sdid=tScenarinoDetail.getScenarinoId();
 				}	
 			}
-			if(a!=0){
+			if(a!=0){//创建区域
 				List<String> areanamelist=new ArrayList();
 				areanamelist.add("第一区域");
 				areanamelist.add("第二区域");
@@ -1025,6 +1034,7 @@ public class MissionAndScenarinoController {
 				int c=tScenarinoAreaMapper.insertSelective(ScenarinoArea);
 				List<TScenarinoAreaWithBLOBs> list=tScenarinoAreaMapper.selectByEntity(ScenarinoArea);
 				TScenarinoAreaWithBLOBs s=list.get(0);
+				//创建时段
 				if(c!=0){
 					TTime times=new TTime();
 					times.setAreaId(s.getScenarinoAreaId());
