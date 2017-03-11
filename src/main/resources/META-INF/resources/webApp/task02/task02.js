@@ -527,8 +527,8 @@ function addPlan(){
       missionId:msg.content.rwId,
       scenarioId:msg.content.qjId,
       areaId:msg.content.areaId,
-      timeStartTime:moment(msg.content.timeStartDate).format('YYYY-MM-DD HH'),
-      timeEndTime:moment(msg.content.timeEndDate).format('YYYY-MM-DD HH'),
+      timeStartTime:moment(momentDate(msg.content.timeStartDate)).format('YYYY-MM-DD HH'),
+      timeEndTime:moment(momentDate(msg.content.timeEndDate)).format('YYYY-MM-DD HH'),
       planName:$('#yaName').val()
     };
     ajaxPost(url,params).success(function(res){
