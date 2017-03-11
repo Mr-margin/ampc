@@ -23,6 +23,13 @@ public interface TPlanMeasureMapper {
 	List<Map> selectByQuery(Map map);
 	
 	/**
+	 * 根据条件查询ID信息
+	 * @param map
+	 * @return
+	 */
+	List<Map> selectIdByQuery(Map map);
+	
+	/**
      * 修改预案措施是否有效
      * @param userId
      * @return

@@ -34,12 +34,36 @@
     <result column="IMPLEMENTATION_SCOPE" property="implementationScope" jdbcType="VARCHAR" />
     <result column="REDUCTION_RATIO" property="reductionRatio" jdbcType="VARCHAR" />
   </resultMap>
+  
+   <!--根据条件查询措施汇总的信息Map  -->
+  <resultMap id="selectIdByQuery" type="hashMap" >
+    <id column="PLAN_MEASURE_ID" property="planMeasureId" jdbcType="DECIMAL" />
+    <result column="MEASURE_ID" property="measureId" jdbcType="DECIMAL" />
+  </resultMap>
 
 
   <!-- 根据条件查询措施汇总的信息 -->
    <select id="selectByQuery" resultMap="MapByQuery" parameterType="hashMap" >
 		SELECT PLAN_MEASURE_ID,PLAN_ID,TPM.MEASURE_ID,MEASURE_EXCEL_DISPLAY,
 			SECTOR_NAME,IMPLEMENTATION_SCOPE,REDUCTION_RATIO
+			FROM T_PLAN_MEASURE TPM 
+  				INNER JOIN T_MEASURE_EXCEL TME ON TPM.MEASURE_ID=TME.MEASURE_EXCEL_ID
+				WHERE  TPM.IS_EFFECTIVE='1' 
+				  <if test="userId != null" >
+        				AND TPM.USER_ID=#{userId,jdbcType=OTHER}
+     			 </if>
+				  <if test="sectorName != null" >
+       					 AND SECTOR_NAME=#{sectorName,jdbcType=OTHER}
+     			  </if>
+				 <if test="measureId != null" >
+       					 AND TPM.MEASURE_ID=#{measureId,jdbcType=DECIMAL} 
+     			  </if>
+  </select>
+  
+  
+  <!-- 根据条件查询措施id信息 -->
+   <select id="selectIdByQuery" resultMap="selectIdByQuery" parameterType="hashMap" >
+		SELECT PLAN_MEASURE_ID,TPM.MEASURE_ID 
 			FROM T_PLAN_MEASURE TPM 
   				INNER JOIN T_MEASURE_EXCEL TME ON TPM.MEASURE_ID=TME.MEASURE_EXCEL_ID
 				WHERE  TPM.IS_EFFECTIVE='1' 

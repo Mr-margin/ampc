@@ -88,10 +88,10 @@ public class MeasureAndSectorController {
 				map=new HashMap<String,Object>();
 				map.put("planId", planId);
 				map.put("userId", userId);
-				map.put("sectorName", data.get("sectorName"));
-				List<Map> measureList=tPlanMeasureMapper.selectByQuery(map);
-				sm.setCount(measureList.size());
+				map.put("sectorName", name);
+				List<Map> measureList=tPlanMeasureMapper.selectIdByQuery(map);
 				sm.setPlanMeasure(measureList);
+				sm.setCount(measureList.size());
 				result.add(sm);
 			}
 			
