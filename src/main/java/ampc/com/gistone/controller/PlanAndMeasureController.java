@@ -268,6 +268,7 @@ public class PlanAndMeasureController {
 		    	map.put("scenarioId", scenarioId);
 		    	map.put("planName", planName);
 		    	Integer id=tPlanMapper.getIdByQuery(map);
+		    	//创建预案要更改时段的状态
 		    	TTime t=new TTime();
 		    	t.setTimeId(timeId);
 		    	t.setPlanId(Long.parseLong(id.toString()));
@@ -289,19 +290,31 @@ public class PlanAndMeasureController {
 	@RequestMapping("/measure/add_measure")
 	public  AmpcResult add_measure(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
 		try{	
+			//添加跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
-			Long sectorName=Long.parseLong(data.get("sectorName").toString());//行业名称
-			Long measureId=Long.parseLong(data.get("measureId").toString());//措施id
-			Long userId=Long.parseLong(data.get("userId").toString());//用户id
-			Long planId=Long.parseLong(data.get("planId").toString());//预案id
+			//行业名称
+			Long sectorName=Long.parseLong(data.get("sectorName").toString());
+			//措施id
+			Long measureId=Long.parseLong(data.get("measureId").toString());
+			//用户id
+			Long userId=Long.parseLong(data.get("userId").toString());
+			//预案id 
+			Long planId=Long.parseLong(data.get("planId").toString());
+			//预案措施中的子措施Json串
+			String measureContent=data.get("measureContent").toString();
+			//实施范围
+			String implementAtionScope=data.get("implementAtionScope").toString();
+			//减排占比
+			String reductionRatio=data.get("reductionRatio").toString();
 			TPlanMeasure tPlanMeasure=new TPlanMeasure();
 			tPlanMeasure.setMeasureId(measureId);
 			tPlanMeasure.setPlanId(planId);
 			tPlanMeasure.setSectorName(sectorName);
-			/**
-			 * TODO 这里会调用计算接口 获取到范围和减排比 的数据
-			 */
+			tPlanMeasure.setUserId(userId);
+			tPlanMeasure.setImplementationScope(implementAtionScope);
+			tPlanMeasure.setMeasureContent(measureContent);
+			tPlanMeasure.setReductionRatio(reductionRatio);
 			//预案添加措施
 			int addstatus=tPlanMeasureMapper.insertSelective(tPlanMeasure);
 			//判断是否成功
@@ -318,30 +331,58 @@ public class PlanAndMeasureController {
 	
 	/**
 	 * 措施详情修改
-	 * @throws UnsupportedEncodingException 
+	 *  @author WangShanxi
 	 */
 	@RequestMapping("/measure/update_measureContent")
 	public  AmpcResult update_measureContent(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
-			HttpServletResponse response) throws UnsupportedEncodingException{
-		ClientUtil.SetCharsetAndHeader(request, response);
+			HttpServletResponse response){
 		try{
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
-			String measureContent=data.get("measureContent").toString();//措施详情
-			Long planMeasureId=Long.parseLong(data.get("planMeasureId").toString());//预案措施表id
-			Long userId=Long.parseLong(data.get("userId").toString());//用户id
+			//措施详情
+			String measureContent=data.get("measureContent").toString();
+			//预案措施表id
+			Long planMeasureId=Long.parseLong(data.get("planMeasureId").toString());
+			//用户id
+			Long userId=Long.parseLong(data.get("userId").toString());
+			//建立新对象用来修改
 			TPlanMeasure tPlanMeasure=new TPlanMeasure();
 			tPlanMeasure.setPlanMeasureId(planMeasureId);
 			tPlanMeasure.setMeasureContent(measureContent);
+			tPlanMeasure.setUserId(userId);
 			//修改措施详情
 			int update_status=tPlanMeasureMapper.updateByPrimaryKeyWithBLOBs(tPlanMeasure);
 			//判断是否修改成功
 			if(update_status!=0){
-				return AmpcResult.build(0, "update_measureContent error");
+				return AmpcResult.ok(update_status);
 			}
-				return AmpcResult.build(1, "update_measureContent error");
-		}catch(NullPointerException n){
-			System.out.println(n);
-			return AmpcResult.build(1, "update_measureContent error");
+			return AmpcResult.build(1000, "添加失败");
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000, "参数错误");
+		}
+	}
+	
+	/**
+	 * 查询可复制预案
+	 * @author WangShanxi
+	 */
+	@RequestMapping("/plan/copy_plan_list")
+	public  AmpcResult copy_plan_list(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
+			HttpServletResponse response){
+		try{
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//用户Id
+			Long userId=Long.parseLong(data.get("userId").toString());
+			//根据是否为可复制预案和是否有效字段查询
+			List<Map> list=tPlanMapper.selectCopyList(userId);
+			return AmpcResult.ok(list);
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000,"参数错误");
 		}
 	}
 	
@@ -380,9 +421,9 @@ public class PlanAndMeasureController {
 	
 	
 	
-	
-	
-	/**
+	/**、
+	 * 
+	 * TODO 啦啦啦
 	 *措施详情查询
 	 * @param request
 	 * @param response
@@ -554,6 +595,12 @@ public class PlanAndMeasureController {
 			return AmpcResult.build(1,"copy_plan error");
 		}
 	}
+	
+	
+	
+	
+	
+	
 	/**
 	 * 预案编辑功能（预案中措施修改，包含可复用预案）
 	 * @param request
@@ -761,32 +808,7 @@ public class PlanAndMeasureController {
 	}
 	
 	
-	/**
-	 *查询可复制预案
-	 * @throws UnsupportedEncodingException 
-	 */
-	@RequestMapping("/plan/copy_plan_list")
-	public  AmpcResult copy_plan_list(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
-			HttpServletResponse response) throws UnsupportedEncodingException{
-		ClientUtil.SetCharsetAndHeader(request, response);
-		Map<String,Object> data=(Map)requestDate.get("data");
-		Long userId=Long.parseLong(data.get("userId").toString());
-		TPlan tPlan=new TPlan();
-		tPlan.setCopyPlan("1");
-		tPlan.setIsEffective("1");
-		//根据是否为可复制预案和是否有效字段查询
-		//List<TPlan> planlist=tPlanMapper.selectByEntity(tPlan);
-		JSONObject obj=new JSONObject();
-		JSONArray arr=new JSONArray();
-//		for(TPlan plan:planlist){
-//			JSONObject objs=new JSONObject();
-//			objs.put("planName", plan.getPlanName());
-//			objs.put("planId", plan.getPlanId());
-//			arr.add(objs);
-//		}
-		obj.put("copyPlanlist", arr);
-		return AmpcResult.build(0, "copy_plan_list success",obj);
-	}
+	
 	
 	
 }
