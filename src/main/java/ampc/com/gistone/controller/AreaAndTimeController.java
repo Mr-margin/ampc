@@ -358,6 +358,7 @@ public class AreaAndTimeController {
 		if(updateStatus!=0){
 			TTime time=new TTime();
 			time.setTimeId(deleteTimeId);
+			time.setIsEffective("0");
 			time.setPlanId(-1l);
 			upstatus=tTimeMapper.updateByPrimaryKeySelective(time);
 			if(upstatus!=0){
