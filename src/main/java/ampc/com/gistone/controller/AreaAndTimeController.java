@@ -362,6 +362,33 @@ public class AreaAndTimeController {
 			upstatus=tTimeMapper.updateByPrimaryKeySelective(time);
 			if(upstatus!=0){
 				TPlan tPlan=tPlanMapper.selectByPrimaryKey(deltime.getPlanId());
+				TTime newtime=tTimeMapper.selectByPrimaryKey(mergeTimeId);
+				TPlan newPlan=tPlanMapper.selectByPrimaryKey(newtime.getPlanId());
+				if(newPlan.getCopyPlan().equals("1")){
+					newPlan.setPlanId(null);
+					if(status.equals("up")){
+						newPlan.setPlanEndTime(timeEndDate);	
+					}else{
+						
+						newPlan.setPlanStartTime(timeStartDate);
+					}
+					
+					int a=tPlanMapper.insertSelective(newPlan);
+					if(a!=0){
+						List<TPlan> list=tPlanMapper.selectByEnty(newPlan);
+						TPlan tp=list.get(0);
+						newtime.setPlanId(tp.getPlanId());
+						tTimeMapper.updateByPrimaryKeySelective(newtime);
+					}
+				}else{
+					if(status.equals("up")){
+						newPlan.setPlanEndTime(timeEndDate);	
+					}else{
+						
+						newPlan.setPlanStartTime(timeStartDate);
+					}
+					int a=tPlanMapper.updateByPrimaryKeySelective(newPlan);
+				}
 				//查看预案是否为可复制预案
 				if(tPlan.getCopyPlan().equals("0")){
 					//为零则将预案设置为无效
