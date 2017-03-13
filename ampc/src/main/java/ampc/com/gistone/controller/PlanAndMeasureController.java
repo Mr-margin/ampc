@@ -78,6 +78,287 @@ public class PlanAndMeasureController {
 	@Autowired
 	public TMeasureSectorExcelMapper tMeasureSectorExcelMapper;
 	
+	/**
+	 * 预案添加措施  或者修改
+	 * @author WangShanxi
+	 */
+	@RequestMapping("/measure/addOrUpdate_measure")
+	public  AmpcResult addOrUpdate_measure(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
+		try{	
+			//添加跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//行业名称
+			Long sectorName=Long.parseLong(data.get("sectorName").toString());
+			//措施id
+			Long measureId=Long.parseLong(data.get("measureId").toString());
+			//用户id
+			Long userId=Long.parseLong(data.get("userId").toString());
+			//预案id 
+			Long planId=Long.parseLong(data.get("planId").toString());
+			//预案措施id
+			Long planMeasureId=null;
+			if(data.get("planMeasureId")!=null){
+				planMeasureId = Long.parseLong(data.get("planMeasureId").toString());
+			}
+			//预案措施中的子措施Json串
+			String measureContent=data.get("measureContent").toString();
+			//实施范围
+			String implementAtionScope=data.get("implementAtionScope").toString();
+			//减排占比
+			String reductionRatio=data.get("reductionRatio").toString();
+			TPlanMeasure tPlanMeasure=new TPlanMeasure();
+			tPlanMeasure.setMeasureId(measureId);
+			tPlanMeasure.setPlanId(planId);
+			tPlanMeasure.setSectorName(sectorName);
+			tPlanMeasure.setUserId(userId);
+			tPlanMeasure.setImplementationScope(implementAtionScope);
+			tPlanMeasure.setMeasureContent(measureContent);
+			tPlanMeasure.setReductionRatio(reductionRatio);
+			if(planMeasureId!=null){
+				//预案添加措施
+				int addstatus=tPlanMeasureMapper.insertSelective(tPlanMeasure);
+				//判断是否成功
+				if(addstatus!=0){
+					return AmpcResult.ok("添加成功");
+				}else{
+					return AmpcResult.build(1000,"添加失败");
+				}
+			}else{
+				//预案修改措施
+				tPlanMeasure.setPlanMeasureId(planMeasureId);
+				int updatestatus=tPlanMeasureMapper.updateByPrimaryKeyWithBLOBs(tPlanMeasure);
+				//判断是否成功
+				if(updatestatus!=0){
+					return AmpcResult.ok("修改成功");
+				}else{
+					return AmpcResult.build(1000,"修改失败");
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000,"参数错误");
+		}
+	}
+	
+	/**
+	 * 创建预案
+	 *  @author WangShanxi
+	 */
+	@RequestMapping("/plan/add_plan")
+	public  AmpcResult add_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
+		try{
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//用户id
+			Long userId=Long.parseLong(data.get("userId").toString());
+			//时段id
+			Long timeId=Long.parseLong(data.get("timeId").toString());
+			//预案名称
+			String planName=data.get("planName").toString();
+			//行业id
+			Long scenarioId=Long.parseLong(data.get("scenarioId").toString());
+			//所属任务id
+		    Long missionId=Long.parseLong(data.get("missionId").toString());
+		    //区域id
+		    Long areaId=Long.parseLong(data.get("areaId").toString());
+		    //预案开始时间
+			Date startDate=DateUtil.StrToDate(data.get("timeStartTime").toString());
+			//预案结束时间
+			Date endDate=DateUtil.StrToDate(data.get("timeEndTime").toString());
+			//创建预案对象
+		    TPlan tPlan=new TPlan();
+		    tPlan.setAreaId(areaId);
+		    tPlan.setMissionId(missionId);
+		    tPlan.setScenarioId(scenarioId);
+		    tPlan.setUserId(userId);
+		    tPlan.setPlanName(planName);
+		    tPlan.setPlanStartTime(startDate);
+		    tPlan.setPlanEndTime(endDate);
+		    //添加预案
+		    int addstatus=tPlanMapper.insertSelective(tPlan);
+		   //判断是否添加成功，根据结果返回值
+		    if(addstatus!=0){
+		    	Map map=new HashMap();
+		    	map.put("userId", userId);
+		    	map.put("scenarioId", scenarioId);
+		    	map.put("planName", planName);
+		    	Long id=tPlanMapper.getIdByQuery(map);
+		    	//创建预案要更改时段的状态
+		    	TTime t=new TTime();
+		    	t.setTimeId(timeId);
+		    	t.setPlanId(id);
+		    	tTimeMapper.updateByPrimaryKeySelective(t);
+		    	return AmpcResult.ok(id);
+		    }
+		    return AmpcResult.build(1000, "添加失败");
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000, "参数错误");
+		}
+	}
+	
+	/**
+	 * 复制预案
+	 * @author WangShanxi
+	 */
+	@RequestMapping("/plan/copy_plan")
+	public  AmpcResult copy_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
+			HttpServletResponse response){
+		try{
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//用户id
+			Long userId=Long.parseLong(data.get("userId").toString());
+			//预案id
+			Long planId=Long.parseLong(data.get("planId").toString());
+			//时段id
+			Long timeId=Long.parseLong(data.get("timeId").toString());
+			//将被复制的预案id存入要复制到的时段里
+			TTime tTime=new TTime();
+			tTime.setPlanId(planId);
+			tTime.setTimeId(timeId);
+			tTime.setUserId(userId);
+			int copy_status=tTimeMapper.updateByPrimaryKeySelective(tTime);
+			//判断是否成功
+			if(copy_status!=0){
+				return AmpcResult.ok("复用成功");
+			}
+			return AmpcResult.build(1000,"复用失败");
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000,"参数错误");
+		}
+	}
+	
+	/**
+	 * 预案设置成可复制
+	 * @author WangShanxi 
+	 */
+	@RequestMapping("/plan/iscopy_plan")
+	public  AmpcResult iscopy_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
+			HttpServletResponse response) {
+		try{
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//用户id
+			Long userId=Long.parseLong(data.get("userId").toString());
+			//预案id
+			Long planId=Long.parseLong(data.get("planId").toString());
+			//将预案的是否可以复制状态改为可复制
+			TPlan tPlan=new TPlan();
+			tPlan.setPlanId(planId);
+			tPlan.setCopyPlan("1");
+			tPlan.setUserId(userId);
+			int status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
+			//查看修改是否成功
+			if(status!=0){
+				return AmpcResult.ok("修改成功");
+			}
+			return AmpcResult.build(1000, "修改失败");
+		}catch(Exception e){
+			System.out.println(e);
+			return AmpcResult.build(1000, "参数错误",null);
+		}
+	}
+	
+	/**
+	 * 预案编辑完成操作
+	 * @author WangShanxi
+	 */
+	@RequestMapping("/plan/finish_plan")
+	public  AmpcResult finish_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
+			HttpServletResponse response){
+		try{
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//预案id
+			Long planId=Long.parseLong(data.get("planId").toString());
+			//用户id
+			Long userId=Long.parseLong(data.get("userId").toString());
+			//创建条件进行查询所有预案措施
+			TPlanMeasure tPlanMeasure=new TPlanMeasure();
+			tPlanMeasure.setPlanId(planId);
+			tPlanMeasure.setUserId(userId);
+			List<TPlanMeasure> tlist=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
+			for(TPlanMeasure t:tlist){
+				//如果预案措施中的子措施为空 则删除掉该条预案措施
+				if(t.getMeasureContent().equals("-1")||t.getMeasureContent()==null){
+					int status=tPlanMeasureMapper.deleteByPrimaryKey(t.getPlanMeasureId());
+					//如果删除后的返回值小于0 则删除失败
+					if(status<0){
+						return AmpcResult.build(1000, "删除失败",null);	
+					}
+				}
+			}
+			return AmpcResult.ok("删除成功");	
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000, "参数错误",null);	
+		}
+	}
+	
+	/**
+	 * 查询可复制预案
+	 * @author WangShanxi
+	 */
+	@RequestMapping("/plan/copy_plan_list")
+	public  AmpcResult copy_plan_list(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
+			HttpServletResponse response){
+		try{
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//用户Id
+			Long userId=Long.parseLong(data.get("userId").toString());
+			//根据是否为可复制预案和是否有效字段查询
+			List<Map> list=tPlanMapper.selectCopyList(userId);
+			return AmpcResult.ok(list);
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000,"参数错误");
+		}
+	}
+	
+	/**
+	 * 措施汇总查询
+	 * @author WangShanxi
+	 * @throws UnsupportedEncodingException 
+	 */
+	@RequestMapping("/measure/get_measureList")
+	public  AmpcResult get_MeasureList(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
+		//添加异常捕捉
+		try{
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//预案id
+			Long planId=Long.parseLong(data.get("planId").toString());
+			//用户id
+			Long userId=Long.parseLong(data.get("userId").toString());
+			//添加信息到参数中
+			Map<String,Object> map=new HashMap<String,Object>();
+			map.put("planId", planId);
+			map.put("userId", userId);
+			//查看行业id是否为空，不为空添加，为空不加
+			if(data.get("sectorName")!=null){	
+				map.put("sectorName", data.get("sectorName"));
+			}else{
+				map.put("sectorName", null);
+			}
+			//查询措施
+			List<Map> list=tPlanMeasureMapper.selectByQuery(map);
+			return AmpcResult.ok(list);
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000, "参数错误");
+		}
+	}
+	
 	
 	/**
 	 * 子措施条件查询
@@ -178,7 +459,6 @@ public class PlanAndMeasureController {
 					mlist.add(mu);
 				}
 			}
-			
 			//创建结果集 并写入对应信息
 			Map resultMap=new HashMap();
 			resultMap.put("measureColumn", sdMap);
@@ -195,170 +475,6 @@ public class PlanAndMeasureController {
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
-	
-	
-	
-	
-	/**
-	 * 措施汇总查询
-	 * @author WangShanxi
-	 * @throws UnsupportedEncodingException 
-	 */
-	@RequestMapping("/measure/get_measureList")
-	public  AmpcResult get_MeasureList(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
-		//添加异常捕捉
-		try{
-			//设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String,Object> data=(Map)requestDate.get("data");
-			//预案id
-			Long planId=Long.parseLong(data.get("planId").toString());
-			//用户id
-			Long userId=Long.parseLong(data.get("userId").toString());
-			//添加信息到参数中
-			Map<String,Object> map=new HashMap<String,Object>();
-			map.put("planId", planId);
-			map.put("userId", userId);
-			//查看行业id是否为空，不为空添加，为空不加
-			if(data.get("sectorName")!=null){	
-				map.put("sectorName", data.get("sectorName"));
-			}else{
-				map.put("sectorName", null);
-			}
-			//查询措施
-			List<Map> list=tPlanMeasureMapper.selectByQuery(map);
-			return AmpcResult.ok(list);
-		}catch(Exception e){
-			e.printStackTrace();
-			return AmpcResult.build(1000, "参数错误");
-		}
-	}
-	
-	
-	
-	
-	/**
-	 * 创建预案
-	 *  @author WangShanxi
-	 */
-	@RequestMapping("/plan/add_plan")
-	public  AmpcResult add_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
-		try{
-			//设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String,Object> data=(Map)requestDate.get("data");
-			//用户id
-			Long userId=Long.parseLong(data.get("userId").toString());
-			//时段id
-			Long timeId=Long.parseLong(data.get("timeId").toString());
-			//预案名称
-			String planName=data.get("planName").toString();
-			//行业id
-			Long scenarioId=Long.parseLong(data.get("scenarioId").toString());
-			//所属任务id
-		    Long missionId=Long.parseLong(data.get("missionId").toString());
-		    //区域id
-		    Long areaId=Long.parseLong(data.get("areaId").toString());
-		    //预案开始时间
-			Date startDate=DateUtil.StrToDate(data.get("timeStartTime").toString());
-			//预案结束时间
-			Date endDate=DateUtil.StrToDate(data.get("timeEndTime").toString());
-			//创建预案对象
-		    TPlan tPlan=new TPlan();
-		    tPlan.setAreaId(areaId);
-		    tPlan.setMissionId(missionId);
-		    tPlan.setScenarioId(scenarioId);
-		    tPlan.setUserId(userId);
-		    tPlan.setPlanName(planName);
-		    tPlan.setPlanStartTime(startDate);
-		    tPlan.setPlanEndTime(endDate);
-		    //添加预案
-		    int addstatus=tPlanMapper.insertSelective(tPlan);
-		   //判断是否添加成功，根据结果返回值
-		    if(addstatus!=0){
-		    	Map map=new HashMap();
-		    	map.put("userId", userId);
-		    	map.put("scenarioId", scenarioId);
-		    	map.put("planName", planName);
-		    	Long id=tPlanMapper.getIdByQuery(map);
-		    	//创建预案要更改时段的状态
-		    	TTime t=new TTime();
-		    	t.setTimeId(timeId);
-		    	t.setPlanId(id);
-		    	tTimeMapper.updateByPrimaryKeySelective(t);
-		    	return AmpcResult.ok(id);
-		    }
-		    return AmpcResult.build(1000, "添加失败");
-		}catch(Exception e){
-			e.printStackTrace();
-			return AmpcResult.build(1000, "参数错误");
-		}
-	}
-	
-	
-	/**
-	 * 预案添加措施  或者修改
-	 * @author WangShanxi
-	 */
-	@RequestMapping("/measure/addOrUpdate_measure")
-	public  AmpcResult addOrUpdate_measure(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
-		try{	
-			//添加跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String,Object> data=(Map)requestDate.get("data");
-			//行业名称
-			Long sectorName=Long.parseLong(data.get("sectorName").toString());
-			//措施id
-			Long measureId=Long.parseLong(data.get("measureId").toString());
-			//用户id
-			Long userId=Long.parseLong(data.get("userId").toString());
-			//预案id 
-			Long planId=Long.parseLong(data.get("planId").toString());
-			//预案措施id
-			Long planMeasureId=null;
-			if(data.get("planMeasureId")!=null){
-				planMeasureId = Long.parseLong(data.get("planMeasureId").toString());
-			}
-			//预案措施中的子措施Json串
-			String measureContent=data.get("measureContent").toString();
-			//实施范围
-			String implementAtionScope=data.get("implementAtionScope").toString();
-			//减排占比
-			String reductionRatio=data.get("reductionRatio").toString();
-			TPlanMeasure tPlanMeasure=new TPlanMeasure();
-			tPlanMeasure.setMeasureId(measureId);
-			tPlanMeasure.setPlanId(planId);
-			tPlanMeasure.setSectorName(sectorName);
-			tPlanMeasure.setUserId(userId);
-			tPlanMeasure.setImplementationScope(implementAtionScope);
-			tPlanMeasure.setMeasureContent(measureContent);
-			tPlanMeasure.setReductionRatio(reductionRatio);
-			if(planMeasureId!=null){
-				//预案添加措施
-				int addstatus=tPlanMeasureMapper.insertSelective(tPlanMeasure);
-				//判断是否成功
-				if(addstatus!=0){
-					return AmpcResult.ok("添加成功");
-				}else{
-					return AmpcResult.build(1000,"添加失败");
-				}
-			}else{
-				//预案修改措施
-				tPlanMeasure.setPlanMeasureId(planMeasureId);
-				int updatestatus=tPlanMeasureMapper.updateByPrimaryKeyWithBLOBs(tPlanMeasure);
-				//判断是否成功
-				if(updatestatus!=0){
-					return AmpcResult.ok("修改成功");
-				}else{
-					return AmpcResult.build(1000,"修改失败");
-				}
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-			return AmpcResult.build(1000,"参数错误");
-		}
-	}
-	
 	
 	/**
 	 * 措施详情修改
@@ -392,60 +508,6 @@ public class PlanAndMeasureController {
 		}catch(Exception e){
 			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误");
-		}
-	}
-	
-	/**
-	 * 查询可复制预案
-	 * @author WangShanxi
-	 */
-	@RequestMapping("/plan/copy_plan_list")
-	public  AmpcResult copy_plan_list(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
-			HttpServletResponse response){
-		try{
-			//设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String,Object> data=(Map)requestDate.get("data");
-			//用户Id
-			Long userId=Long.parseLong(data.get("userId").toString());
-			//根据是否为可复制预案和是否有效字段查询
-			List<Map> list=tPlanMapper.selectCopyList(userId);
-			return AmpcResult.ok(list);
-		}catch(Exception e){
-			e.printStackTrace();
-			return AmpcResult.build(1000,"参数错误");
-		}
-	}
-	
-	/**
-	 * 预案设置成可复制
-	 * @author WangShanxi 
-	 */
-	@RequestMapping("/plan/iscopy_plan")
-	public  AmpcResult iscopy_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
-			HttpServletResponse response) {
-		try{
-			//设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String,Object> data=(Map)requestDate.get("data");
-			//用户id
-			Long userId=Long.parseLong(data.get("userId").toString());
-			//预案id
-			Long planId=Long.parseLong(data.get("planId").toString());
-			//将预案的是否可以复制状态改为可复制
-			TPlan tPlan=new TPlan();
-			tPlan.setPlanId(planId);
-			tPlan.setCopyPlan("1");
-			tPlan.setUserId(userId);
-			int status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
-			//查看修改是否成功
-			if(status!=0){
-				return AmpcResult.ok("修改成功");
-			}
-			return AmpcResult.build(1000, "修改失败");
-		}catch(Exception e){
-			System.out.println(e);
-			return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
 	
@@ -485,79 +547,6 @@ public class PlanAndMeasureController {
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
-	
-	
-	/**
-	 * 复制预案
-	 * @author WangShanxi
-	 */
-	@RequestMapping("/plan/copy_plan")
-	public  AmpcResult copy_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
-			HttpServletResponse response){
-		try{
-			//设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String,Object> data=(Map)requestDate.get("data");
-			//用户id
-			Long userId=Long.parseLong(data.get("userId").toString());
-			//预案id
-			Long planId=Long.parseLong(data.get("planId").toString());
-			//时段id
-			Long timeId=Long.parseLong(data.get("timeId").toString());
-			//将被复制的预案id存入要复制到的时段里
-			TTime tTime=new TTime();
-			tTime.setPlanId(planId);
-			tTime.setTimeId(timeId);
-			tTime.setUserId(userId);
-			int copy_status=tTimeMapper.updateByPrimaryKeySelective(tTime);
-			//判断是否成功
-			if(copy_status!=0){
-				return AmpcResult.ok("复用成功");
-			}
-			return AmpcResult.build(1000,"复用失败");
-		}catch(Exception e){
-			e.printStackTrace();
-			return AmpcResult.build(1000,"参数错误");
-		}
-	}
-	
-	/**
-	 * 措施编辑完成操作
-	 * @author WangShanxi
-	 */
-	@RequestMapping("/plan/finish_plan")
-	public  AmpcResult finish_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
-			HttpServletResponse response){
-		try{
-			//设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String,Object> data=(Map)requestDate.get("data");
-			//预案id
-			Long planId=Long.parseLong(data.get("planId").toString());
-			//用户id
-			Long userId=Long.parseLong(data.get("userId").toString());
-			//创建条件进行查询所有预案措施
-			TPlanMeasure tPlanMeasure=new TPlanMeasure();
-			tPlanMeasure.setPlanId(planId);
-			tPlanMeasure.setUserId(userId);
-			List<TPlanMeasure> tlist=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
-			for(TPlanMeasure t:tlist){
-				//如果预案措施中的子措施为空 则删除掉该条预案措施
-				if(t.getMeasureContent().equals("-1")||t.getMeasureContent()==null){
-					int status=tPlanMeasureMapper.deleteByPrimaryKey(t.getPlanMeasureId());
-					//如果删除后的返回值小于0 则删除失败
-					if(status<0){
-						return AmpcResult.build(1000, "删除失败",null);	
-					}
-				}
-			}
-			return AmpcResult.ok("删除成功");	
-		}catch(Exception e){
-			e.printStackTrace();
-			return AmpcResult.build(1000, "参数错误",null);	
-		}
-	}
-	
 	
 	/**
 	 * 中间表查询方法
