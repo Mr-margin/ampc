@@ -16,6 +16,20 @@
     <result column="AREA_ID" property="areaId" jdbcType="DECIMAL" />
     <result column="COPY_PLAN" property="copyPlan" jdbcType="VARCHAR" />
   </resultMap>
+  <!--  查询当前用户下的所有可复制情景  -->
+  <resultMap id="copyListMap" type="hashMap" >
+    <id column="PLAN_ID" property="planId" jdbcType="DECIMAL" />
+    <result column="PLAN_NAME" property="planName" jdbcType="OTHER" />
+  </resultMap>
+  
+  
+  <sql id="Base_Column_List" >
+    PLAN_ID, USER_ID, PLAN_NAME, ADD_TIME, USED_BY, DELETE_TIME, IS_EFFECTIVE, SCENARIO_ID, 
+    MISSION_ID, PLAN_START_TIME, PLAN_END_TIME, AREA_ID, COPY_PLAN
+  </sql>
+  
+  
+  
   
    <!-- 根据条件查询ID -->
   <select id="getIdByQuery" resultType="java.lang.Integer" parameterType="hashMap" >
@@ -25,10 +39,35 @@
   </select>
   
   
-  <sql id="Base_Column_List" >
-    PLAN_ID, USER_ID, PLAN_NAME, ADD_TIME, USED_BY, DELETE_TIME, IS_EFFECTIVE, SCENARIO_ID, 
-    MISSION_ID, PLAN_START_TIME, PLAN_END_TIME, AREA_ID, COPY_PLAN
-  </sql>
+  <!--  查询当前用户下的所有可复制情景  -->
+  <select id="selectCopyList" resultMap="copyListMap" parameterType="java.lang.Long" >
+    select PLAN_ID,PLAN_NAME from T_PLAN
+    where USER_ID = #{userId,jdbcType=OTHER}  and IS_EFFECTIVE='1'
+     and COPY_PLAN=1
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
