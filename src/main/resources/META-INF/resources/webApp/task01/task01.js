@@ -1218,10 +1218,10 @@ function createQj(type){
   if(type == 'ypg' ){
     params = {};
     paramsName = {};
-    params.scenarinoName = paramsName.scenarinoName = $('#qjName').val();
+    params.scenarinoName = paramsName.scenarinoName = $('#yName').val();
     params.missionId = paramsName.missionId = selectRW.missionId;
-    params.scenarinoStartDate = $('#qjStartDate').val();
-    params.scenarinoEndDate = $('#qjEndDate').val();
+    params.scenarinoStartDate = $('#yStartDate').val();
+    params.scenarinoEndDate = $('#yEndDate').val();
     params.userId = paramsName.userId = userId;
     params.scenarinoId = qjId;
     /*
@@ -1237,7 +1237,7 @@ function createQj(type){
   }else{
     params = {};
     paramsName = {};
-    params.scenarinoName = paramsName.scenarinoName = $('#qjName').val();
+    params.scenarinoName = paramsName.scenarinoName = $('#hName').val();
     params.missionId = paramsName.missionId = selectRW.missionId;
     params.scenarinoStartDate = $('#qjStartDate').val();
     params.scenarinoEndDate = $('#qjEndDate').val();
