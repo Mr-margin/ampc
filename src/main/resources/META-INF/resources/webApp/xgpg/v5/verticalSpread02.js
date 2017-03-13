@@ -9,7 +9,7 @@ $(function(){
     //指定图表的配置项和数据	
 	  var option = {
 			  	title: {
-			  		text : 'PM2.5',
+			  		text :'PM2.5',
 			  		x:'center',
 			  		y:'top'
 			  	},
@@ -20,7 +20,9 @@ $(function(){
 	                }
 	            },
 	            legend: {
-	                //data:['高度（m）','高度2（m）'],
+	            	x:'right',
+	            	y:'top',
+	                //data:['基准','长三角管控'],
 	            },
 	            grid: {
 	                left: '30%',
@@ -36,9 +38,7 @@ $(function(){
 	                	nameGap : 20,
 	                    type : 'category',
 	                    data : ['9.15', '9.16', '9.17', '9.18', '9.19', '9.20', '9.21', '9.22', '9.23', '9.24']
-	                  
-	                },
-	            
+	                }
 	            ],
 	            yAxis : [
 	                {
@@ -46,42 +46,34 @@ $(function(){
 	                         name: '高度（米）',
 	                         position: 'left',
 	                         max:500,
-	                         splitNumber:5,
 	                        
 	                },
 	                {
 	                    type: 'value',
-	                    name: '高度2',
 	                    position: 'right',
 	                  
+	                },
+	                {
+	                	yAxisIndex: 1
 	                }
 	            ],
 	            series : [
 	                {
-	                    name:'高度（m1）',
+	                    name:'基准',
 	                    type:'line',
 	                    symbolSize: 8,
 	                    hoverAnimation: false,
-	                    //barWidth: '20%',
 	                    yAxis: 1, 
-	                    itemStyle:{normal:{color:'#d14a61'}},
 	                    data:[10, 52, 20, 98, 66, 200, 152,333,452,410]
 	                },
 	                {
-	                    name:'高度（m3）',
+	                    name:'长三角管控',
 	                    type:'line',
 	                    symbolSize: 8,
 	                    hoverAnimation: false,
-	                    //barWidth: '20%',
 	                    yAxis: 1, 
-	                    itemStyle:{normal:{color:'#d14a61'}},
+	                    //itemStyle:{normal:{color:'#d14a63'}},
 	                    data:[11, 54, 20, 198, 66, 203, 157,233,33,444]
-	                },
-	                {
-	                        name:'高度2（m）',
-	                        type:'line',
-	                        yAxisIndex: 1,
-	                        //data:[10, 52, 100, 150, 200, 250, 300,350,400,430]
 	                },
 	           
 	            ]

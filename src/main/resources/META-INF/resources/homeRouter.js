@@ -37,8 +37,8 @@ vipspa.start({
     	controller: ''
     },
     '/xgpg_v3': {      //效果评估-时间序列
-    	templateUrl: 'webApp/xgpg/v5//effectEval01.html',
-    	controller: 'webApp/xgpg/v5/effectEval01.js'
+    	templateUrl: 'webApp/xgpg/v3/effectEval01.html',
+    	controller: 'webApp/xgpg/v3/effectEval01.js'
     },
     '/xgpg_v4': {      //效果评估-水平分布
     	templateUrl: 'webApp/xgpg/v4/a0101.html',

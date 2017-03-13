@@ -1,5 +1,4 @@
 $(function(){
-	
 	//	创建ECharts图表
 	var myChart = echarts.init(document.getElementById('main'));
 	var myChartTwo = echarts.init(document.getElementById('mainTwo'));
@@ -36,6 +35,11 @@ $(function(){
                 //legend的data: 用于设置图例，data内的字符串数组需要与sereis数组内每一个series的name值对应  
                 data: ['观测数据','1073基数','1068杭州管控','1069长三角管控']  
             },
+            grid: {
+                left: '30px',
+                right: '30px',
+                bottom: '40px',
+            },
             dataZoom:[
                       {
                     	  show:'true',
@@ -54,7 +58,7 @@ $(function(){
                       ],
             //工具箱，每个图表最多仅有一个工具箱  
             toolbox: {  
-                //显示策略，可选为：true（显示） | false（隐藏），默认值为false  
+                /*//显示策略，可选为：true（显示） | false（隐藏），默认值为false  
                 show: true,  
                 //启用功能，目前支持feature，工具箱自定义功能回调处理  
                 feature: {  
@@ -76,7 +80,7 @@ $(function(){
                     restore: {show: true},  
                     //saveAsImage，保存图片（IE8-不支持）,图片类型默认为'png'  
                     saveAsImage: {show: true}  
-                }  
+                }  */
             },  
             //是否启用拖拽重计算特性，默认关闭(即值为false)  
             calculable: true,  
@@ -89,7 +93,7 @@ $(function(){
                     //坐标轴类型，横轴默认为类目型'category'  
                     type: 'category',  
                     //类目型坐标轴文本标签数组，指定label内容。 数组项通常为文本，'\n'指定换行  
-                    data: ['2016-08-23','2016-08-23','2016-08-23','2016-08-23','2016-08-23','2016-08-23','2016-08-23','2016-08-23','2016-08-23','2016-08-23','2016-08-23','2016-08-23']  
+                    data: ['2017-02-01','2016-02-03','2016-02-05','2016-02-07','2016-02-09','2016-02-11','2016-02-13','2016-02-15','2016-02-17','2016-02-19','2016-02-21','2016-02-23']  
                 }  
             ],  
             //直角坐标系中纵轴数组，数组中每一项代表一条纵轴坐标轴，仅有一条时可省略数值  
@@ -201,13 +205,12 @@ $(function(){
 	myChart.setOption(option);
 	myChartTwo.setOption(option);
 	
-	myChart.hideLoding();
 	//getChartData(); //与java后台交互
 
 });
 
 
-function getChartData(){
+/*function getChartData(){
 	var options = myChart.getOption();
 	$.ajax({
 		type:"post",
@@ -236,7 +239,7 @@ function getChartData(){
 		}
 
 	});
-}
+}*/
 
 
 
