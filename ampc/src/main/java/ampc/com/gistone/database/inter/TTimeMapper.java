@@ -16,7 +16,7 @@ public interface TTimeMapper {
 	 * @param id 区域ID
 	 * @return
 	 */
-	List<Map> selectByAreaId(Object id);
+	List<Map> selectByAreaId(Long id);
     
 	/**
 	 * 根据区域ID查询所有的时段Id
