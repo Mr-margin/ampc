@@ -611,8 +611,10 @@ public class PlanAndMeasureController {
 					TPlanMeasure tPlanMeasure=new TPlanMeasure();
 					tPlanMeasure.setPlanId(planId);
 					tPlanMeasure.setUserId(userId);
+					//根据预案措施对象的条件查询所有的预案措施满足条件的信息
 					List<TPlanMeasure> planMeasureList=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
 					if(planMeasureList.size()>0){
+						//循环结果 并复制信息 新建
 						for(TPlanMeasure t:planMeasureList){
 							TPlanMeasure newtPlanMeasure=new TPlanMeasure();
 							tPlanMeasure.setMeasureId(t.getMeasureId());
@@ -626,7 +628,6 @@ public class PlanAndMeasureController {
 							if(result<0){
 								return AmpcResult.build(1000, "复制预案措施时出错");
 							}
-						
 						}
 					}
 					//将时段中的预案ID修改成已经新建的预案Id
@@ -639,6 +640,8 @@ public class PlanAndMeasureController {
 					if(result <0){
 						return AmpcResult.build(1000, "修改时段信息时出错");
 					}
+					//将复制后的情景Id 保存
+					planId=newPlanId;
 				}else{
 					return AmpcResult.build(1000, "复制预案信息时出错");
 				}
@@ -646,8 +649,7 @@ public class PlanAndMeasureController {
 			//根据UserId查询所有的行业名称
 			List<Map> nameList = this.tMeasureSectorExcelMapper.getSectorInfo(userId);
 			if(nameList.size()==0){
-				userId=null;
-				nameList = this.tMeasureSectorExcelMapper.getSectorInfo(userId);
+				nameList = this.tMeasureSectorExcelMapper.getSectorInfo(null);
 			}
 			//过滤掉一些重复的名称
 			LinkedHashSet<String> nameSet=new LinkedHashSet<String>();
@@ -666,6 +668,10 @@ public class PlanAndMeasureController {
 				sm.setSectorsName(name);
 				//查询当前名称下有几个措施
 				List<Map> list = this.tMeasureSectorExcelMapper.getMeasureInfo(map);
+				if(list.size()==0){
+					map.put("userId", null);
+					list = this.tMeasureSectorExcelMapper.getMeasureInfo(map);
+				}
 				sm.setMeasureItems(list);
 				//创建条件 
 				map=new HashMap<String,Object>();
@@ -674,6 +680,10 @@ public class PlanAndMeasureController {
 				map.put("sectorName", name);
 				//用来去查预案措施中的数据，用来确认当前有几个措施正在使用
 				List<Map> measureList=tPlanMeasureMapper.selectIdByQuery(map);
+				if(measureList.size()==0){
+					map.put("userId", null);
+					measureList=tPlanMeasureMapper.selectIdByQuery(map);
+				}
 				sm.setPlanMeasure(measureList);
 				sm.setCount(measureList.size());
 				//将结果放入结果集中！
