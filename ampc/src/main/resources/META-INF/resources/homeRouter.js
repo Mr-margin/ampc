@@ -12,6 +12,8 @@ vipspa.start({
     	templateUrl: 'a.html',
     	controller: ''
     },
+    
+    
     '/rwgl': {      //任务管理-任务情景
     	templateUrl: 'webApp/task01/task01.html',
     	controller: 'webApp/task01/task01.js'
@@ -23,7 +25,9 @@ vipspa.start({
     '/csbj':{		//任务管理-措施子措施
         templateUrl: 'webApp/task03/task03.html',
         controller: 'webApp/task03/task03.js'
-      },
+    },
+      
+      
     '/xgpg_v1': {      //效果评估-减排分析
         templateUrl: '',
         controller: ''
@@ -49,10 +53,25 @@ vipspa.start({
     	controller: ''
     },
     
-    '/kqzlyb': {      //空气质量预报
+    
+    '/kqzlyb_v1': {      //空气质量预报-预报检验
     	templateUrl: 'a.html',
     	controller: ''
     },
+    '/kqzlyb_v2': {      //空气质量预报-时间序列
+    	templateUrl: 'webApp/kqzlyb/v2/timeArray.html',
+    	controller: 'webApp/kqzlyb/v2/timeArray.js'
+    },
+    '/kqzlyb_v3': {      //空气质量预报-水平分布
+    	templateUrl: 'a.html',
+    	controller: ''
+    },
+    '/kqzlyb_v4': {      //空气质量预报-垂直分布
+    	templateUrl: 'a.html',
+    	controller: ''
+    },
+    
+    
     '/sjkj': {      //数据空间
     	templateUrl: 'a.html',
     	controller: ''
@@ -65,18 +84,7 @@ vipspa.start({
     	templateUrl: 'a.html',
     	controller: ''
     },
-    '/sjxl': {       //空气质量报告》》时间序列
-    	templateUrl: 'webApp/timeArray01/timeArray.html',
-    	controller: 'webApp/timeArray01/timeArray.js'
-    },
-    '/effectTime': {       //效果评估》》时间序列
-    	templateUrl: 'webApp/effectEvaluate/effectEval01.html',
-    	controller: 'webApp/effectEvaluate/effectEval01.js'
-    },
-    '/verticalSpread': {       //效果评估》》垂直分布
-    	templateUrl: 'webApp/effectEvaluate/verticalSpread02.html',
-    	controller: 'webApp/effectEvaluate/verticalSpread02.js'
-    },
+
     'defaults': '/rwgl'     //默认显示页面
   },
   errorTemplateId: '#error'//错误显示页面
