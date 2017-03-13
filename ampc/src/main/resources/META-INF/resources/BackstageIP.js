@@ -1,5 +1,5 @@
 var BackstageIP = "http://192.168.1.57:8082/ampc";
-var ArcGisUrl = "http://192.168.1.152:8091";//ArcGis服务器javascript API地址
+var ArcGisUrl = "http://192.168.1.165:8091";//ArcGis服务器javascript API地址
 //var ArcGisUrl = "http://localhost:8091";//ArcGis服务器javascript API地址
 var ArcGisServerUrl = "http://192.168.1.132:6080";//ArcGis地图服务器地址
 
