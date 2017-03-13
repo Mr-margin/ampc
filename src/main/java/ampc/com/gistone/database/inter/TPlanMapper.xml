@@ -32,10 +32,15 @@
   
   
    <!-- 根据条件查询ID -->
-  <select id="getIdByQuery" resultType="java.lang.Integer" parameterType="hashMap" >
-    select PLAN_ID from T_PLAN
-    where USER_ID = #{userId,jdbcType=OTHER} and PLAN_NAME=#{planName,jdbcType=OTHER} and IS_EFFECTIVE='1'
-     and SCENARIO_ID=#{scenarioId,jdbcType=OTHER}
+  <select id="getIdByQuery" resultType="java.lang.Long" parameterType="hashMap" >
+   select PLAN_ID from
+       (
+		select PLAN_ID from T_PLAN 
+			where USER_ID = #{userId,jdbcType=OTHER} and PLAN_NAME=#{planName,jdbcType=OTHER}
+			 and IS_EFFECTIVE='1' and SCENARIO_ID=#{scenarioId,jdbcType=OTHER}
+   				order by ADD_TIME desc
+   		)
+   		 WHERE ROWNUM=1
   </select>
   
   

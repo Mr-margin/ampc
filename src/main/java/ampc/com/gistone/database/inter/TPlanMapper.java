@@ -17,7 +17,7 @@ public interface TPlanMapper {
 	 * @param map
 	 * @return
 	 */
-	int getIdByQuery(Map map);
+	Long getIdByQuery(Map map);
 	
 	/**
 	 * 查询当前用户下的所有可复制情景  
