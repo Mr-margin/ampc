@@ -1223,6 +1223,13 @@ function createQj(type){
     params.missionId = paramsName.missionId = selectRW.missionId;
     params.missionType = selectRW.missionStatus;
     params.scenType = qjType;
+    params.scenarinoStartDate = '';
+    params.scenarinoEndDate = '';
+    params.basisScenarinoId = '';
+    params.basisTime = '';
+    params.controstScenarinoId = '';
+    params.spinUp = '';
+
     if(qjType == 1){
       params.scenarinoStartDate = $('#yStartDate').val();
       params.scenarinoEndDate = $('#yEndDate').val();
@@ -1246,6 +1253,12 @@ function createQj(type){
     params.missionType = selectRW.missionStatus;
     params.userId = paramsName.userId = userId;
     params.scenType = qjType;
+    params.scenarinoStartDate = '';
+    params.scenarinoEndDate = '';
+    params.basisScenarinoId = '';
+    params.basisTime = '';
+    params.controstScenarinoId = '';
+    params.spinUp = '';
     if(qjType == 2){
       if($('.dbqj1 input[type=checkbox]')[0].checked){
         params.controstScenarinoId = basisArr[$('#dbqj1').val()].scenarinoId;
