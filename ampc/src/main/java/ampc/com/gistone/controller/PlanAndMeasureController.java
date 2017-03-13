@@ -386,6 +386,138 @@ public class PlanAndMeasureController {
 		}
 	}
 	
+	/**
+	 * 预案设置成可复制
+	 * @author WangShanxi 
+	 */
+	@RequestMapping("/plan/iscopy_plan")
+	public  AmpcResult iscopy_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
+			HttpServletResponse response) {
+		try{
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//用户id
+			Long userId=Long.parseLong(data.get("userId").toString());
+			//预案id
+			Long planId=Long.parseLong(data.get("planId").toString());
+			//将预案的是否可以复制状态改为可复制
+			TPlan tPlan=new TPlan();
+			tPlan.setPlanId(planId);
+			tPlan.setCopyPlan("1");
+			tPlan.setUserId(userId);
+			int status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
+			//查看修改是否成功
+			if(status!=0){
+				return AmpcResult.ok("修改成功");
+			}
+			return AmpcResult.build(1000, "修改失败");
+		}catch(Exception e){
+			System.out.println(e);
+			return AmpcResult.build(1000, "参数错误",null);
+		}
+	}
+	
+	/**
+	 * 删除预案中的措施
+	 * @author WangShanxi 
+	 */
+	@RequestMapping("/measure/delete_measure")
+	public  AmpcResult delete_measure(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
+			HttpServletResponse response) {
+		try{
+			//添加跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//预案措施表集合
+			String planMeasureIds=data.get("planMeasureIds").toString();
+			//用户id
+			Long userId=Long.parseLong(data.get("userId").toString());
+			//拆分要删除的id
+			List<Long> idss=new ArrayList<Long>();
+			String[] ids=planMeasureIds.split(",");
+			for(int i=0;i<ids.length;i++){
+				idss.add(Long.parseLong(ids[i]));
+			}
+			//放入条件
+			Map map =new HashMap();
+			map.put("userId", userId);
+			map.put("idss", idss);
+			//删除预案中的措施
+			int delete_status=tPlanMeasureMapper.deleteMeasures(map);
+			if(delete_status!=0){
+				return AmpcResult.ok("删除成功！");
+			}
+			return AmpcResult.build(1000, "删除失败");
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000, "参数错误");
+		}
+	}
+	
+	
+	/**
+	 * 复制预案
+	 * @author WangShanxi
+	 */
+	@RequestMapping("/plan/copy_plan")
+	public  AmpcResult copy_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
+			HttpServletResponse response){
+		try{
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//用户id
+			Long userId=Long.parseLong(data.get("userId").toString());
+			//预案id
+			Long planId=Long.parseLong(data.get("planId").toString());
+			//时段id
+			Long timeId=Long.parseLong(data.get("timeId").toString());
+			
+			//将被复制的预案id存入要复制到的时段里
+			TTime tTime=new TTime();
+			tTime.setPlanId(planId);
+			tTime.setTimeId(timeId);
+			int copy_status=tTimeMapper.updateByPrimaryKeySelective(tTime);
+			//判断是否成功
+			if(copy_status!=0){
+				return AmpcResult.build(0,"copy_plan success");
+			}
+			return AmpcResult.build(1,"copy_plan error");
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1,"copy_plan error");
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -453,63 +585,6 @@ public class PlanAndMeasureController {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/**
-	 * 删除预案中的措施
-	 * @throws UnsupportedEncodingException 
-	 */
-	@RequestMapping("/measure/delete_measure")
-	public  AmpcResult delete_measure(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
-			HttpServletResponse response) throws UnsupportedEncodingException{
-		ClientUtil.SetCharsetAndHeader(request, response);
-		try{
-			Map<String,Object> data=(Map)requestDate.get("data");
-			Long planMeasureId=Long.parseLong(data.get("planMeasureId").toString());//预案措施表id
-			Long userId=Long.parseLong(data.get("userId").toString());//用户id
-			//删除预案中的措施
-			int delete_status=tPlanMeasureMapper.deleteByPrimaryKey(planMeasureId);
-			if(delete_status!=0){
-				return AmpcResult.build(0, "delete_measure success");
-			}
-			return AmpcResult.build(1, "delete_measure error");
-		}catch(NullPointerException n){
-			System.out.println(n);
-			return AmpcResult.build(1, "delete_measure error");
-		}
-	}
-	
 	/**
 	 * 预案合并
 	 * @param request
@@ -566,35 +641,7 @@ public class PlanAndMeasureController {
 	}
 	
 	
-	/**
-	 * 复制预案
-	 * @throws UnsupportedEncodingException 
-	 */
-	@RequestMapping("/plan/copy_plan")
-	public  AmpcResult copy_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
-			HttpServletResponse response) throws UnsupportedEncodingException{
-		ClientUtil.SetCharsetAndHeader(request, response);
-		try{
-			Map<String,Object> data=(Map)requestDate.get("data");
-			Long userId=Long.parseLong(data.get("userId").toString());//用户id
-			Long planId=Long.parseLong(data.get("planId").toString());//预案id
-			Long timeId=Long.parseLong(data.get("timeId").toString());//时段id
-			
-			//将被复制的预案id存入要复制到的时段里
-			TTime tTime=new TTime();
-			tTime.setPlanId(planId);
-			tTime.setTimeId(timeId);
-			int copy_status=tTimeMapper.updateByPrimaryKeySelective(tTime);
-			//判断是否成功
-			if(copy_status!=0){
-				return AmpcResult.build(0,"copy_plan success");
-			}
-			return AmpcResult.build(1,"copy_plan error");
-		}catch(NullPointerException n){
-			System.out.println(n);
-			return AmpcResult.build(1,"copy_plan error");
-		}
-	}
+	
 	
 	
 	
@@ -712,34 +759,7 @@ public class PlanAndMeasureController {
 	}
 	
 	
-	/**
-	 * 预案设置成可复制
-	 * @throws UnsupportedEncodingException 
-	 */
-	@Transactional
-	@RequestMapping("/plan/iscopy_plan")
-	public  AmpcResult iscopy_plan(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
-			HttpServletResponse response) throws UnsupportedEncodingException{
-		try{
-		ClientUtil.SetCharsetAndHeader(request, response);
-		Map<String,Object> data=(Map)requestDate.get("data");
-		Long userId=Long.parseLong(data.get("userId").toString());//用户id
-		Long planId=Long.parseLong(data.get("planId").toString());//预案id
-		//将预案的是否可以复制状态改为可复制
-		TPlan tPlan=new TPlan();
-		tPlan.setPlanId(planId);
-		tPlan.setCopyPlan("1");
-		int status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
-		//查看修改是否成功
-		if(status!=0){
-			return AmpcResult.build(0, "iscopy_plan success");
-		}
-		return AmpcResult.build(1, "iscopy_plan error");
-		}catch(Exception e){
-			System.out.println(e);
-			return AmpcResult.build(1000, "参数错误",null);
-		}
-	}
+	
 	
 	
 	/**

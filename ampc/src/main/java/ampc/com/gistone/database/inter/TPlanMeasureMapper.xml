@@ -95,13 +95,19 @@
     set 
       IS_EFFECTIVE = '0',
       DELETE_TIME = (select sysdate from dual) 
-      
       <if test="userId != null" >
         	WHERE USER_ID=#{userId,jdbcType=OTHER}
      </if>
   </update>
   
-  
+  <!-- 删除预案措施 -->
+  <delete id="deleteMeasures" parameterType="hashMap">
+    delete T_PLAN_MEASURE
+     where USER_ID=#{userId,jdbcType=OTHER} and PLAN_MEASURE_ID in 
+        <foreach collection="idss" index="index" item="item" separator="," open="(" close=")">
+     		 #{item,jdbcType=OTHER}
+  		</foreach>
+  </delete>
   
   
   
