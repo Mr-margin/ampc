@@ -1222,49 +1222,44 @@ function createQj(type){
     params.userId = paramsName.userId = userId;
     params.missionId = paramsName.missionId = selectRW.missionId;
     params.missionType = selectRW.missionStatus;
-    params.scenarinoStartDate = $('#yStartDate').val();
-    params.scenarinoEndDate = $('#yEndDate').val();
     params.scenType = qjType;
     if(qjType == 1){
+      params.scenarinoStartDate = $('#yStartDate').val();
+      params.scenarinoEndDate = $('#yEndDate').val();
       params.basisScenarinoId = basisArr[$('#jcqj').val()].scenarinoId;
       params.basisTime = $('#jcdate').val();
     }else if(qjType == 2){
-      if($('.dbqj input[type=checkbox]').checked){
-        params.basisScenarinoId = basisArr[$('#dbqj').val()].scenarinoId;
+      if($('.dbqj input[type=checkbox]')[0].checked){
+        params.controstScenarinoId = basisArr[$('#dbqj').val()].scenarinoId;
       }else{
+        params.scenarinoStartDate = $('#yStartDate').val();
+        params.scenarinoEndDate = $('#yEndDate').val();
         params.basisScenarinoId = basisArr[$('#jcqj').val()].scenarinoId;
         params.basisTime = $('#jcdate').val();
       }
     }
-    /*
-     * 这里应该还会有几个参数
-     * */
-
-
-    /*
-    * 预评估任务，后评估情景
-    * 判断$('.changeDB')是否有被checked
-    * 然后考虑组织参数
-    * */
   }else{
     params = {};
     paramsName = {};
     params.scenarinoName = paramsName.scenarinoName = $('#hName').val();
     params.missionId = paramsName.missionId = selectRW.missionId;
-    params.scenarinoStartDate = $('#qjStartDate').val();
-    params.scenarinoEndDate = $('#qjEndDate').val();
+    params.missionType = selectRW.missionStatus;
     params.userId = paramsName.userId = userId;
-    params.scenarinoId = qjId;
-    /*
-     * 这里应该还会有几个参数
-     * */
-
-
-    /*
-     * 预评估任务，后评估情景
-     * 判断$('.changeDB')是否有被checked
-     * 然后考虑组织参数
-     * */
+    params.scenType = qjType;
+    if(qjType == 2){
+      if($('.dbqj1 input[type=checkbox]')[0].checked){
+        params.controstScenarinoId = basisArr[$('#dbqj1').val()].scenarinoId;
+      }else{
+        params.scenarinoStartDate = $('#hStartDate').val();
+        params.scenarinoEndDate = $('#hEndDate').val();
+        params.basisScenarinoId = basisArr[$('#jcqj1').val()].scenarinoId;
+        params.basisTime = $('#jcdate1').val();
+      }
+    }else if(qjType == 3){
+      params.scenarinoStartDate = $('#hStartDate').val();
+      params.scenarinoEndDate = $('#hEndDate').val();
+      params.spinUp = $('#spinup').val();
+    }
   }
 
   ajaxPost(urlName,paramsName).success(function(res){
