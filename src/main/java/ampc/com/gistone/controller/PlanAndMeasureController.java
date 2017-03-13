@@ -78,68 +78,7 @@ public class PlanAndMeasureController {
 	@Autowired
 	public TMeasureSectorExcelMapper tMeasureSectorExcelMapper;
 	
-	/**
-	 * 预案添加措施  或者修改
-	 * @author WangShanxi
-	 */
-	@RequestMapping("/measure/addOrUpdate_measure")
-	public  AmpcResult addOrUpdate_measure(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
-		try{	
-			//添加跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String,Object> data=(Map)requestDate.get("data");
-			//行业名称
-			Long sectorName=Long.parseLong(data.get("sectorName").toString());
-			//措施id
-			Long measureId=Long.parseLong(data.get("measureId").toString());
-			//用户id
-			Long userId=Long.parseLong(data.get("userId").toString());
-			//预案id 
-			Long planId=Long.parseLong(data.get("planId").toString());
-			//预案措施id
-			Long planMeasureId=null;
-			if(data.get("planMeasureId")!=null){
-				planMeasureId = Long.parseLong(data.get("planMeasureId").toString());
-			}
-			//预案措施中的子措施Json串
-			String measureContent=data.get("measureContent").toString();
-			//实施范围
-			String implementAtionScope=data.get("implementAtionScope").toString();
-			//减排占比
-			String reductionRatio=data.get("reductionRatio").toString();
-			TPlanMeasure tPlanMeasure=new TPlanMeasure();
-			tPlanMeasure.setMeasureId(measureId);
-			tPlanMeasure.setPlanId(planId);
-			tPlanMeasure.setSectorName(sectorName);
-			tPlanMeasure.setUserId(userId);
-			tPlanMeasure.setImplementationScope(implementAtionScope);
-			tPlanMeasure.setMeasureContent(measureContent);
-			tPlanMeasure.setReductionRatio(reductionRatio);
-			if(planMeasureId!=null){
-				//预案添加措施
-				int addstatus=tPlanMeasureMapper.insertSelective(tPlanMeasure);
-				//判断是否成功
-				if(addstatus!=0){
-					return AmpcResult.ok("添加成功");
-				}else{
-					return AmpcResult.build(1000,"添加失败");
-				}
-			}else{
-				//预案修改措施
-				tPlanMeasure.setPlanMeasureId(planMeasureId);
-				int updatestatus=tPlanMeasureMapper.updateByPrimaryKeyWithBLOBs(tPlanMeasure);
-				//判断是否成功
-				if(updatestatus!=0){
-					return AmpcResult.ok("修改成功");
-				}else{
-					return AmpcResult.build(1000,"修改失败");
-				}
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-			return AmpcResult.build(1000,"参数错误");
-		}
-	}
+	
 	
 	/**
 	 * 创建预案
@@ -325,6 +264,147 @@ public class PlanAndMeasureController {
 	}
 	
 	/**
+	 * 预案编辑方法
+	 * @author WangShanxi
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
+	 */
+	@RequestMapping("plan/get_planInfo")
+	public AmpcResult get_planInfo(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+	    //添加异常捕捉
+		try {
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//预案id
+			Long planId=Long.parseLong(data.get("planId").toString());
+			//时段id
+			Long timeId=Long.parseLong(data.get("timeId").toString());
+			//预案开始时间
+			Date startDate=DateUtil.StrToDate(data.get("timeStartTime").toString());
+			//预案结束时间
+			Date endDate=DateUtil.StrToDate(data.get("timeEndTime").toString());
+			//用户的id  确定当前用户
+			Long userId=null;
+			if(data.get("userId")!=null){
+				userId = Long.parseLong(data.get("userId").toString());
+			}
+			TPlan tplan=tPlanMapper.selectByPrimaryKey(planId);
+			//判断是否是可复制预案
+			if(tplan.getCopyPlan().equals("1")){
+				//新建预案
+				TPlan newtplan=new TPlan();
+				newtplan.setUserId(userId);
+				newtplan.setPlanName(tplan.getPlanName());
+				newtplan.setAreaId(tplan.getAreaId());
+				newtplan.setMissionId(tplan.getMissionId());
+				newtplan.setScenarioId(tplan.getScenarioId());
+				newtplan.setPlanStartTime(startDate);
+				newtplan.setPlanEndTime(endDate);
+				//根据可复制预案信息新建预案数据
+				int result=tPlanMapper.insertSelective(newtplan);
+				if(result>0){
+					//创建条件查询新添加的预案的Id
+					Map map=new HashMap();
+					map.put("userId", userId);
+					map.put("scenarioId", newtplan.getScenarioId());
+					map.put("planName", newtplan.getPlanName());
+					Long newPlanId=tPlanMapper.getIdByQuery(map);
+					//根据可复制预案id查询预案中的措施
+					TPlanMeasure tPlanMeasure=new TPlanMeasure();
+					tPlanMeasure.setPlanId(planId);
+					tPlanMeasure.setUserId(userId);
+					//根据预案措施对象的条件查询所有的预案措施满足条件的信息
+					List<TPlanMeasure> planMeasureList=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
+					if(planMeasureList.size()>0){
+						//循环结果 并复制信息 新建
+						for(TPlanMeasure t:planMeasureList){
+							TPlanMeasure newtPlanMeasure=new TPlanMeasure();
+							tPlanMeasure.setMeasureId(t.getMeasureId());
+							tPlanMeasure.setPlanId(newPlanId);
+							tPlanMeasure.setSectorName(t.getSectorName());
+							tPlanMeasure.setUserId(userId);
+							tPlanMeasure.setImplementationScope(t.getImplementationScope());
+							tPlanMeasure.setMeasureContent(t.getMeasureContent());
+							tPlanMeasure.setReductionRatio(t.getReductionRatio());
+							result=tPlanMeasureMapper.insertSelective(newtPlanMeasure);
+							if(result<0){
+								return AmpcResult.build(1000, "复制预案措施时出错");
+							}
+						}
+					}
+					//将时段中的预案ID修改成已经新建的预案Id
+					TTime tTime=new TTime();
+					tTime.setPlanId(newPlanId);
+					tTime.setTimeId(timeId);
+					tTime.setUserId(userId);
+					result =tTimeMapper.updateByPrimaryKeySelective(tTime);
+					//判断是否成功
+					if(result <0){
+						return AmpcResult.build(1000, "修改时段信息时出错");
+					}
+					//将复制后的情景Id 保存
+					planId=newPlanId;
+				}else{
+					return AmpcResult.build(1000, "复制预案信息时出错");
+				}
+			}
+			//根据UserId查询所有的行业名称
+			List<Map> nameList = this.tMeasureSectorExcelMapper.getSectorInfo(userId);
+			if(nameList.size()==0){
+				nameList = this.tMeasureSectorExcelMapper.getSectorInfo(null);
+			}
+			//过滤掉一些重复的名称
+			LinkedHashSet<String> nameSet=new LinkedHashSet<String>();
+			for (Map map : nameList) {
+				nameSet.add(map.get("sectorsname").toString());
+			}
+			//将结果同意放在一个帮助类中 用来返回结果
+			List<SMUtil> result=new ArrayList<SMUtil>();
+			for (String name : nameSet) {
+				//创建结果对象
+				SMUtil sm=new SMUtil();
+				//创建条件 
+				Map<String,Object> map=new HashMap<String,Object>();
+				map.put("sectorsName", name);
+				map.put("userId", userId);
+				sm.setSectorsName(name);
+				//查询当前名称下有几个措施
+				List<Map> list = this.tMeasureSectorExcelMapper.getMeasureInfo(map);
+				if(list.size()==0){
+					map.put("userId", null);
+					list = this.tMeasureSectorExcelMapper.getMeasureInfo(map);
+				}
+				sm.setMeasureItems(list);
+				//创建条件 
+				map=new HashMap<String,Object>();
+				map.put("planId", planId);
+				map.put("userId", userId);
+				map.put("sectorName", name);
+				//用来去查预案措施中的数据，用来确认当前有几个措施正在使用
+				List<Map> measureList=tPlanMeasureMapper.selectIdByQuery(map);
+				if(measureList.size()==0){
+					map.put("userId", null);
+					measureList=tPlanMeasureMapper.selectIdByQuery(map);
+				}
+				sm.setPlanMeasure(measureList);
+				sm.setCount(measureList.size());
+				//将结果放入结果集中！
+				result.add(sm);
+			}
+			//返回结果
+			return AmpcResult.ok(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			//返回错误信息
+			return AmpcResult.build(1000, "参数错误",null);
+		}
+	}
+	
+	
+	
+	/**
 	 * 措施汇总查询
 	 * @author WangShanxi
 	 * @throws UnsupportedEncodingException 
@@ -477,37 +557,65 @@ public class PlanAndMeasureController {
 	}
 	
 	/**
-	 * 措施详情修改
-	 *  @author WangShanxi
+	 * 预案添加措施  或者修改
+	 * @author WangShanxi
 	 */
-	@RequestMapping("/measure/update_measureContent")
-	public  AmpcResult update_measureContent(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,
-			HttpServletResponse response){
-		try{
-			//设置跨域
+	@RequestMapping("/measure/addOrUpdate_measure")
+	public  AmpcResult addOrUpdate_measure(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
+		try{	
+			//添加跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
-			//措施详情
-			String measureContent=data.get("measureContent").toString();
-			//预案措施表id
-			Long planMeasureId=Long.parseLong(data.get("planMeasureId").toString());
+			//行业名称
+			Long sectorName=Long.parseLong(data.get("sectorName").toString());
+			//措施id
+			Long measureId=Long.parseLong(data.get("measureId").toString());
 			//用户id
 			Long userId=Long.parseLong(data.get("userId").toString());
-			//建立新对象用来修改
-			TPlanMeasure tPlanMeasure=new TPlanMeasure();
-			tPlanMeasure.setPlanMeasureId(planMeasureId);
-			tPlanMeasure.setMeasureContent(measureContent);
-			tPlanMeasure.setUserId(userId);
-			//修改措施详情
-			int update_status=tPlanMeasureMapper.updateByPrimaryKeyWithBLOBs(tPlanMeasure);
-			//判断是否修改成功
-			if(update_status!=0){
-				return AmpcResult.ok(update_status);
+			//预案id 
+			Long planId=Long.parseLong(data.get("planId").toString());
+			//预案措施id
+			Long planMeasureId=null;
+			if(data.get("planMeasureId")!=null){
+				planMeasureId = Long.parseLong(data.get("planMeasureId").toString());
 			}
-			return AmpcResult.build(1000, "添加失败");
+			//预案措施中的子措施Json串
+			String measureContent=data.get("measureContent").toString();
+			//实施范围
+			String implementAtionScope=data.get("implementAtionScope").toString();
+			//减排占比
+			String reductionRatio=data.get("reductionRatio").toString();
+			TPlanMeasure tPlanMeasure=new TPlanMeasure();
+			tPlanMeasure.setMeasureId(measureId);
+			tPlanMeasure.setPlanId(planId);
+			tPlanMeasure.setSectorName(sectorName);
+			tPlanMeasure.setUserId(userId);
+			tPlanMeasure.setImplementationScope(implementAtionScope);
+			tPlanMeasure.setMeasureContent(measureContent);
+			tPlanMeasure.setReductionRatio(reductionRatio);
+			if(planMeasureId!=null){
+				//预案添加措施
+				int addstatus=tPlanMeasureMapper.insertSelective(tPlanMeasure);
+				//判断是否成功
+				if(addstatus!=0){
+					return AmpcResult.ok("添加成功");
+				}else{
+					return AmpcResult.build(1000,"添加失败");
+				}
+			}else{
+				//预案修改措施
+				tPlanMeasure.setPlanMeasureId(planMeasureId);
+				int updatestatus=tPlanMeasureMapper.updateByPrimaryKeyWithBLOBs(tPlanMeasure);
+				//判断是否成功
+				if(updatestatus!=0){
+					return AmpcResult.ok("修改成功");
+				}else{
+					return AmpcResult.build(1000,"修改失败");
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
-			return AmpcResult.build(1000, "参数错误");
+			return AmpcResult.build(1000,"参数错误");
 		}
 	}
 	
@@ -548,143 +656,6 @@ public class PlanAndMeasureController {
 		}
 	}
 	
-	/**
-	 * 中间表查询方法
-	 * @author WangShanxi
-	 * @param request 请求
-	 * @param response 响应
-	 * @return 返回响应结果对象
-	 */
-	@RequestMapping("ms/get_msInfo")
-	public AmpcResult get_MsInfo(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
-	    //添加异常捕捉
-		try {
-			//设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String,Object> data=(Map)requestDate.get("data");
-			//预案id
-			Long planId=Long.parseLong(data.get("planId").toString());
-			//时段id
-			Long timeId=Long.parseLong(data.get("timeId").toString());
-			//预案开始时间
-			Date startDate=DateUtil.StrToDate(data.get("timeStartTime").toString());
-			//预案结束时间
-			Date endDate=DateUtil.StrToDate(data.get("timeEndTime").toString());
-			//用户的id  确定当前用户
-			Long userId=null;
-			if(data.get("userId")!=null){
-				userId = Long.parseLong(data.get("userId").toString());
-			}
-			TPlan tplan=tPlanMapper.selectByPrimaryKey(planId);
-			//判断是否是可复制预案
-			if(tplan.getCopyPlan().equals("1")){
-				//新建预案
-				TPlan newtplan=new TPlan();
-				newtplan.setUserId(userId);
-				newtplan.setPlanName(tplan.getPlanName());
-				newtplan.setAreaId(tplan.getAreaId());
-				newtplan.setMissionId(tplan.getMissionId());
-				newtplan.setScenarioId(tplan.getScenarioId());
-				newtplan.setPlanStartTime(startDate);
-				newtplan.setPlanEndTime(endDate);
-				//根据可复制预案信息新建预案数据
-				int result=tPlanMapper.insertSelective(newtplan);
-				if(result>0){
-					//创建条件查询新添加的预案的Id
-					Map map=new HashMap();
-					map.put("userId", userId);
-					map.put("scenarioId", newtplan.getScenarioId());
-					map.put("planName", newtplan.getPlanName());
-					Long newPlanId=tPlanMapper.getIdByQuery(map);
-					//根据可复制预案id查询预案中的措施
-					TPlanMeasure tPlanMeasure=new TPlanMeasure();
-					tPlanMeasure.setPlanId(planId);
-					tPlanMeasure.setUserId(userId);
-					//根据预案措施对象的条件查询所有的预案措施满足条件的信息
-					List<TPlanMeasure> planMeasureList=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
-					if(planMeasureList.size()>0){
-						//循环结果 并复制信息 新建
-						for(TPlanMeasure t:planMeasureList){
-							TPlanMeasure newtPlanMeasure=new TPlanMeasure();
-							tPlanMeasure.setMeasureId(t.getMeasureId());
-							tPlanMeasure.setPlanId(newPlanId);
-							tPlanMeasure.setSectorName(t.getSectorName());
-							tPlanMeasure.setUserId(userId);
-							tPlanMeasure.setImplementationScope(t.getImplementationScope());
-							tPlanMeasure.setMeasureContent(t.getMeasureContent());
-							tPlanMeasure.setReductionRatio(t.getReductionRatio());
-							result=tPlanMeasureMapper.insertSelective(newtPlanMeasure);
-							if(result<0){
-								return AmpcResult.build(1000, "复制预案措施时出错");
-							}
-						}
-					}
-					//将时段中的预案ID修改成已经新建的预案Id
-					TTime tTime=new TTime();
-					tTime.setPlanId(newPlanId);
-					tTime.setTimeId(timeId);
-					tTime.setUserId(userId);
-					result =tTimeMapper.updateByPrimaryKeySelective(tTime);
-					//判断是否成功
-					if(result <0){
-						return AmpcResult.build(1000, "修改时段信息时出错");
-					}
-					//将复制后的情景Id 保存
-					planId=newPlanId;
-				}else{
-					return AmpcResult.build(1000, "复制预案信息时出错");
-				}
-			}
-			//根据UserId查询所有的行业名称
-			List<Map> nameList = this.tMeasureSectorExcelMapper.getSectorInfo(userId);
-			if(nameList.size()==0){
-				nameList = this.tMeasureSectorExcelMapper.getSectorInfo(null);
-			}
-			//过滤掉一些重复的名称
-			LinkedHashSet<String> nameSet=new LinkedHashSet<String>();
-			for (Map map : nameList) {
-				nameSet.add(map.get("sectorsname").toString());
-			}
-			//将结果同意放在一个帮助类中 用来返回结果
-			List<SMUtil> result=new ArrayList<SMUtil>();
-			for (String name : nameSet) {
-				//创建结果对象
-				SMUtil sm=new SMUtil();
-				//创建条件 
-				Map<String,Object> map=new HashMap<String,Object>();
-				map.put("sectorsName", name);
-				map.put("userId", userId);
-				sm.setSectorsName(name);
-				//查询当前名称下有几个措施
-				List<Map> list = this.tMeasureSectorExcelMapper.getMeasureInfo(map);
-				if(list.size()==0){
-					map.put("userId", null);
-					list = this.tMeasureSectorExcelMapper.getMeasureInfo(map);
-				}
-				sm.setMeasureItems(list);
-				//创建条件 
-				map=new HashMap<String,Object>();
-				map.put("planId", planId);
-				map.put("userId", userId);
-				map.put("sectorName", name);
-				//用来去查预案措施中的数据，用来确认当前有几个措施正在使用
-				List<Map> measureList=tPlanMeasureMapper.selectIdByQuery(map);
-				if(measureList.size()==0){
-					map.put("userId", null);
-					measureList=tPlanMeasureMapper.selectIdByQuery(map);
-				}
-				sm.setPlanMeasure(measureList);
-				sm.setCount(measureList.size());
-				//将结果放入结果集中！
-				result.add(sm);
-			}
-			//返回结果
-			return AmpcResult.ok(result);
-		} catch (Exception e) {
-			e.printStackTrace();
-			//返回错误信息
-			return AmpcResult.build(1000, "参数错误",null);
-		}
-	}
+	
 	
 }
