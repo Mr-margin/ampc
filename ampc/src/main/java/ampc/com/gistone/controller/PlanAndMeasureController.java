@@ -280,76 +280,76 @@ public class PlanAndMeasureController {
 			//预案id
 			Long planId=Long.parseLong(data.get("planId").toString());
 			//时段id
-			Long timeId=Long.parseLong(data.get("timeId").toString());
+			//Long timeId=Long.parseLong(data.get("timeId").toString());
 			//预案开始时间
-			Date startDate=DateUtil.StrToDate(data.get("timeStartTime").toString());
+			//Date startDate=DateUtil.StrToDate(data.get("timeStartTime").toString());
 			//预案结束时间
-			Date endDate=DateUtil.StrToDate(data.get("timeEndTime").toString());
+			//Date endDate=DateUtil.StrToDate(data.get("timeEndTime").toString());
 			//用户的id  确定当前用户
 			Long userId=null;
 			if(data.get("userId")!=null){
 				userId = Long.parseLong(data.get("userId").toString());
 			}
-			TPlan tplan=tPlanMapper.selectByPrimaryKey(planId);
-			//判断是否是可复制预案
-			if(tplan.getCopyPlan().equals("1")){
-				//新建预案
-				TPlan newtplan=new TPlan();
-				newtplan.setUserId(userId);
-				newtplan.setPlanName(tplan.getPlanName());
-				newtplan.setAreaId(tplan.getAreaId());
-				newtplan.setMissionId(tplan.getMissionId());
-				newtplan.setScenarioId(tplan.getScenarioId());
-				newtplan.setPlanStartTime(startDate);
-				newtplan.setPlanEndTime(endDate);
-				//根据可复制预案信息新建预案数据
-				int result=tPlanMapper.insertSelective(newtplan);
-				if(result>0){
-					//创建条件查询新添加的预案的Id
-					Map map=new HashMap();
-					map.put("userId", userId);
-					map.put("scenarioId", newtplan.getScenarioId());
-					map.put("planName", newtplan.getPlanName());
-					Long newPlanId=tPlanMapper.getIdByQuery(map);
-					//根据可复制预案id查询预案中的措施
-					TPlanMeasure tPlanMeasure=new TPlanMeasure();
-					tPlanMeasure.setPlanId(planId);
-					tPlanMeasure.setUserId(userId);
-					//根据预案措施对象的条件查询所有的预案措施满足条件的信息
-					List<TPlanMeasure> planMeasureList=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
-					if(planMeasureList.size()>0){
-						//循环结果 并复制信息 新建
-						for(TPlanMeasure t:planMeasureList){
-							TPlanMeasure newtPlanMeasure=new TPlanMeasure();
-							tPlanMeasure.setMeasureId(t.getMeasureId());
-							tPlanMeasure.setPlanId(newPlanId);
-							tPlanMeasure.setSectorName(t.getSectorName());
-							tPlanMeasure.setUserId(userId);
-							tPlanMeasure.setImplementationScope(t.getImplementationScope());
-							tPlanMeasure.setMeasureContent(t.getMeasureContent());
-							tPlanMeasure.setReductionRatio(t.getReductionRatio());
-							result=tPlanMeasureMapper.insertSelective(newtPlanMeasure);
-							if(result<0){
-								return AmpcResult.build(1000, "复制预案措施时出错");
-							}
-						}
-					}
-					//将时段中的预案ID修改成已经新建的预案Id
-					TTime tTime=new TTime();
-					tTime.setPlanId(newPlanId);
-					tTime.setTimeId(timeId);
-					tTime.setUserId(userId);
-					result =tTimeMapper.updateByPrimaryKeySelective(tTime);
-					//判断是否成功
-					if(result <0){
-						return AmpcResult.build(1000, "修改时段信息时出错");
-					}
-					//将复制后的情景Id 保存
-					planId=newPlanId;
-				}else{
-					return AmpcResult.build(1000, "复制预案信息时出错");
-				}
-			}
+//			TPlan tplan=tPlanMapper.selectByPrimaryKey(planId);
+//			//判断是否是可复制预案
+//			if(tplan.getCopyPlan().equals("1")){
+//				//新建预案
+//				TPlan newtplan=new TPlan();
+//				newtplan.setUserId(userId);
+//				newtplan.setPlanName(tplan.getPlanName());
+//				newtplan.setAreaId(tplan.getAreaId());
+//				newtplan.setMissionId(tplan.getMissionId());
+//				newtplan.setScenarioId(tplan.getScenarioId());
+//				newtplan.setPlanStartTime(startDate);
+//				newtplan.setPlanEndTime(endDate);
+//				//根据可复制预案信息新建预案数据
+//				int result=tPlanMapper.insertSelective(newtplan);
+//				if(result>0){
+//					//创建条件查询新添加的预案的Id
+//					Map map=new HashMap();
+//					map.put("userId", userId);
+//					map.put("scenarioId", newtplan.getScenarioId());
+//					map.put("planName", newtplan.getPlanName());
+//					Long newPlanId=tPlanMapper.getIdByQuery(map);
+//					//根据可复制预案id查询预案中的措施
+//					TPlanMeasure tPlanMeasure=new TPlanMeasure();
+//					tPlanMeasure.setPlanId(planId);
+//					tPlanMeasure.setUserId(userId);
+//					//根据预案措施对象的条件查询所有的预案措施满足条件的信息
+//					List<TPlanMeasure> planMeasureList=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
+//					if(planMeasureList.size()>0){
+//						//循环结果 并复制信息 新建
+//						for(TPlanMeasure t:planMeasureList){
+//							TPlanMeasure newtPlanMeasure=new TPlanMeasure();
+//							tPlanMeasure.setMeasureId(t.getMeasureId());
+//							tPlanMeasure.setPlanId(newPlanId);
+//							tPlanMeasure.setSectorName(t.getSectorName());
+//							tPlanMeasure.setUserId(userId);
+//							tPlanMeasure.setImplementationScope(t.getImplementationScope());
+//							tPlanMeasure.setMeasureContent(t.getMeasureContent());
+//							tPlanMeasure.setReductionRatio(t.getReductionRatio());
+//							result=tPlanMeasureMapper.insertSelective(newtPlanMeasure);
+//							if(result<0){
+//								return AmpcResult.build(1000, "复制预案措施时出错");
+//							}
+//						}
+//					}
+//					//将时段中的预案ID修改成已经新建的预案Id
+//					TTime tTime=new TTime();
+//					tTime.setPlanId(newPlanId);
+//					tTime.setTimeId(timeId);
+//					tTime.setUserId(userId);
+//					result =tTimeMapper.updateByPrimaryKeySelective(tTime);
+//					//判断是否成功
+//					if(result <0){
+//						return AmpcResult.build(1000, "修改时段信息时出错");
+//					}
+//					//将复制后的情景Id 保存
+//					planId=newPlanId;
+//				}else{
+//					return AmpcResult.build(1000, "复制预案信息时出错");
+//				}
+//			}
 			//根据UserId查询所有的行业名称
 			List<Map> nameList = this.tMeasureSectorExcelMapper.getSectorInfo(userId);
 			if(nameList.size()==0){
