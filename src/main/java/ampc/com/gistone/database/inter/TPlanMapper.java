@@ -1,9 +1,16 @@
 package ampc.com.gistone.database.inter;
 
+import java.util.List;
 import java.util.Map;
 
 import ampc.com.gistone.database.model.TPlan;
 
+/**
+ * 预案映射
+ * @author WangShanxi
+ * @version v.0.1
+ * @date 2017年3月13日
+ */
 public interface TPlanMapper {
 	/**
 	 * 根据条件查询ID
@@ -11,6 +18,13 @@ public interface TPlanMapper {
 	 * @return
 	 */
 	int getIdByQuery(Map map);
+	
+	/**
+	 * 查询当前用户下的所有可复制情景  
+	 * @param userId
+	 * @return
+	 */
+	List<Map> selectCopyList(Long userId);
 
     int deleteByPrimaryKey(Long planId);
 
