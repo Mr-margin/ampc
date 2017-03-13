@@ -912,8 +912,6 @@ public class MissionAndScenarinoController {
 			Long basisScenarinoId=Long.valueOf(data.get("basisScenarinoId").toString());//基础情景
 			String baTime=data.get("basisTime").toString();//基础时间
 			Date basisTime=sdf.parse(baTime);
-			Long controstScenarinoId=Long.valueOf(data.get("controstScenarinoId").toString());//对比情景id
-			Long spinUp=Long.valueOf(data.get("spinUp").toString());//spinup
 			String scenType=data.get("scenType").toString();//情景类型
 			Date date=new Date();
 			Calendar cal = Calendar.getInstance();
@@ -947,7 +945,7 @@ public class MissionAndScenarinoController {
 				//预评估任务创建后评估情景
 			if(scenType.equals("2")){
 				//基础情景
-					if(controstScenarinoId==null){
+					if(data.get("controstScenarinoId")==null||data.get("controstScenarinoId")==""){
 						TScenarinoDetail tsd=new TScenarinoDetail();
 						
 						tsd.setBasisScenarinoId(basisScenarinoId);
@@ -962,11 +960,13 @@ public class MissionAndScenarinoController {
 						TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
 						sdid=tScenarinoDetail.getScenarinoId();
 					}else{//对比情景
+						Long controstScenarinoId=Long.valueOf(data.get("controstScenarinoId").toString());//对比情景id
                         TScenarinoDetail tsd=new TScenarinoDetail();
 						tsd.setScenarinoName(scenarinoName);
 						tsd.setScenType(scenType);
 						tsd.setMissionId(missionId);
 						tsd.setUserId(userId);
+						tsd.setControstScenarinoId(controstScenarinoId);
 						a=tScenarinoDetailMapper.insertSelective(tsd);
 						TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
 						sdid=tScenarinoDetail.getScenarinoId();
@@ -980,7 +980,7 @@ public class MissionAndScenarinoController {
 				//创建后评估情景
 				if(scenType.equals("2")){
 					//基础情景
-					if(controstScenarinoId==null){
+					if(data.get("controstScenarinoId")==null||data.get("controstScenarinoId")==""){
 						TScenarinoDetail tsd=new TScenarinoDetail();
 						
 						tsd.setBasisScenarinoId(basisScenarinoId);
@@ -995,11 +995,13 @@ public class MissionAndScenarinoController {
 						TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
 						sdid=tScenarinoDetail.getScenarinoId();
 					}else{//对比情景
+						Long controstScenarinoId=Long.valueOf(data.get("controstScenarinoId").toString());//对比情景id
                         TScenarinoDetail tsd=new TScenarinoDetail();
 						tsd.setScenarinoName(scenarinoName);
 						tsd.setScenType(scenType);
 						tsd.setMissionId(missionId);
 						tsd.setUserId(userId);
+						tsd.setControstScenarinoId(controstScenarinoId);
 						a=tScenarinoDetailMapper.insertSelective(tsd);
 						TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
 						sdid=tScenarinoDetail.getScenarinoId();
@@ -1008,6 +1010,7 @@ public class MissionAndScenarinoController {
 				}
 				//创建基准情景
 				if(scenType.equals("3")){
+					Long spinUp=Long.valueOf(data.get("spinUp").toString());
 					TScenarinoDetail tsd=new TScenarinoDetail();
 					
 					tsd.setScenarinoName(scenarinoName);
@@ -1031,6 +1034,7 @@ public class MissionAndScenarinoController {
 				TScenarinoAreaWithBLOBs ScenarinoArea =new TScenarinoAreaWithBLOBs();
 				ScenarinoArea.setAreaName(area);
 				ScenarinoArea.setUserId(userId);
+				ScenarinoArea.setScenarinoAreaId(sdid);
 				int c=tScenarinoAreaMapper.insertSelective(ScenarinoArea);
 				List<TScenarinoAreaWithBLOBs> list=tScenarinoAreaMapper.selectByEntity(ScenarinoArea);
 				TScenarinoAreaWithBLOBs s=list.get(0);
