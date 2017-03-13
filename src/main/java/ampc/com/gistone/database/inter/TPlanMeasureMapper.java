@@ -32,6 +32,13 @@ public interface TPlanMeasureMapper {
     * @return
     */
    int updateIsEffeByIds(Long userId);
+   
+   /**
+    * 删除预案措施
+    * @param userId
+    * @return
+    */
+   int deleteMeasures(Map map);
 	
 	List<TPlanMeasure> selectByEntity(TPlanMeasure record);
    
