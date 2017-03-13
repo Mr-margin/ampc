@@ -1034,7 +1034,7 @@ public class MissionAndScenarinoController {
 				TScenarinoAreaWithBLOBs ScenarinoArea =new TScenarinoAreaWithBLOBs();
 				ScenarinoArea.setAreaName(area);
 				ScenarinoArea.setUserId(userId);
-				ScenarinoArea.setScenarinoAreaId(sdid);
+				ScenarinoArea.setScenarinoDetailId(sdid);
 				int c=tScenarinoAreaMapper.insertSelective(ScenarinoArea);
 				List<TScenarinoAreaWithBLOBs> list=tScenarinoAreaMapper.selectByEntity(ScenarinoArea);
 				TScenarinoAreaWithBLOBs s=list.get(0);
