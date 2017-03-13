@@ -12,18 +12,43 @@ vipspa.start({
     	templateUrl: 'a.html',
     	controller: ''
     },
-    '/rwgl': {      //任务管理
+    '/rwgl': {      //任务管理-任务情景
     	templateUrl: 'webApp/task01/task01.html',
     	controller: 'webApp/task01/task01.js'
     },
-    '/yabj': {      //预评估
+    '/yabj': {      //任务管理-区域时段
     	templateUrl: 'webApp/task02/task02.html',
     	controller: 'webApp/task02/task02.js'
     },
-    '/xgpg': {      //效果评估
-        templateUrl: 'webApp/Analysis02/a0201.html',
-        controller: 'webApp/Analysis02/a0201.js'
+    '/csbj':{		//任务管理-措施子措施
+        templateUrl: 'webApp/task03/task03.html',
+        controller: 'webApp/task03/task03.js'
+      },
+    '/xgpg_v1': {      //效果评估-减排分析
+        templateUrl: '',
+        controller: ''
     },
+    '/xgpg_v2': {      //效果评估-网格化排放
+    	templateUrl: '',
+    	controller: ''
+    },
+    '/xgpg_v3': {      //效果评估-时间序列
+    	templateUrl: '',
+    	controller: ''
+    },
+    '/xgpg_v4': {      //效果评估-水平分布
+    	templateUrl: 'webApp/xgpg/v4/a0101.html',
+    	controller: 'webApp/xgpg/v4/a0101.js'
+    },
+    '/xgpg_v5': {      //效果评估-垂直分布
+    	templateUrl: '',
+    	controller: ''
+    },
+    '/xgpg_v6': {      //效果评估-评估报告
+    	templateUrl: '',
+    	controller: ''
+    },
+    
     '/kqzlyb': {      //空气质量预报
     	templateUrl: 'a.html',
     	controller: ''
@@ -33,12 +58,8 @@ vipspa.start({
     	controller: ''
     },
     '/hsz': {        //首页回收站
-    	templateUrl: 'webApp/Analysis01/a0101.html',
-    	controller: 'webApp/Analysis01/a0101.js'
-    },
-    '/csbj':{
-      templateUrl: 'webApp/task03/task03.html',
-      controller: 'webApp/task03/task03.js'
+    	templateUrl: '',
+    	controller: ''
     },
     '/test': {
     	templateUrl: 'a.html',
