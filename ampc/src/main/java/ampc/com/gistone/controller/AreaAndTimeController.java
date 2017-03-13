@@ -534,7 +534,7 @@ public class AreaAndTimeController {
 			//循环结果  根据区域ID获取时段和预案信息
 		    for (Map area : areaAndName) {
 		    	AreaUtil areaUtil =new AreaUtil();
-		    	Object id=area.get("areaId");
+		    	Long id=Long.parseLong(area.get("areaId").toString());
 		    	areaUtil.setAreaId(id);
 		    	areaUtil.setAreaName(area.get("areaName"));
 		    	areaUtil.setTimeItems(this.tTimeMapper.selectByAreaId(id));
