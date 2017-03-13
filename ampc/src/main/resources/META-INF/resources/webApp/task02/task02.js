@@ -589,8 +589,8 @@ function copyPlan(e){
     $(e).parents('#addYA').find('.addCopyPlan').removeClass('disNone');
     $(e).parents('.selectAdd').addClass('disNone');
 
-    for(var i=0;i<res.data.copyPlanlist.length;i++){
-      $('<option value="'+ res.data.copyPlanlist[i].planId +'">'+ res.data.copyPlanlist[i].planName +'</option>').appendTo('#copyPlan')
+    for(var i=0;i<res.data.length;i++){
+      $('<option value="'+ res.data[i].planId +'">'+ res.data[i].planName +'</option>').appendTo('#copyPlan')
     }
   })
 }
