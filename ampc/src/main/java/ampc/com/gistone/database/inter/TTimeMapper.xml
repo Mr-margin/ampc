@@ -31,7 +31,7 @@
     TIM.TIME_ID,TIME_START_DATE,TIME_END_DATE,PL.PLAN_ID,PLAN_NAME
     from T_TIME TIM 
     INNER JOIN T_PLAN PL ON TIM.PLAN_ID=PL.PLAN_ID
-    where TIM.AREA_ID = #{areaId,jdbcType=OTHER} and IS_EFFECTIVE='1'
+    where TIM.AREA_ID = #{areaId,jdbcType=OTHER} and TIM.IS_EFFECTIVE='1'
     order by TIME_START_DATE asc
   </select>
   
