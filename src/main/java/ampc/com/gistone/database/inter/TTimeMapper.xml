@@ -26,12 +26,12 @@
   </sql>
   
   <!-- 根据区域ID 获取时段和预案 -->
-  <select id="selectByAreaId" resultMap="timeAndPlan" parameterType="java.lang.Object" >
+  <select id="selectByAreaId" resultMap="timeAndPlan" parameterType="java.lang.Long" >
     select 
     TIM.TIME_ID,TIME_START_DATE,TIME_END_DATE,PL.PLAN_ID,PLAN_NAME
     from T_TIME TIM 
-    INNER JOIN T_PLAN PL ON TIM.PLAN_ID=PL.PLAN_ID
-    where TIM.AREA_ID = #{areaId,jdbcType=OTHER} AND TIM.IS_EFFECTIVE='1'
+    left JOIN T_PLAN PL ON TIM.PLAN_ID=PL.PLAN_ID
+    where TIM.AREA_ID = #{_parameter,jdbcType=DECIMAL} AND TIM.IS_EFFECTIVE='1'
     order by TIME_START_DATE asc
   </select>
   
@@ -179,7 +179,7 @@
       PLAN_ID = #{planId,jdbcType=DECIMAL},
       USER_ID = #{userId,jdbcType=DECIMAL},
       IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
-      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP}
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
     where TIME_ID = #{timeId,jdbcType=DECIMAL}
   </update>
     <select id="selectByPrimaryKeysort" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TTime" >
@@ -189,4 +189,9 @@
     where AREA_ID = #{areaId,jdbcType=DECIMAL} and USER_ID = #{userId,jdbcType=DECIMAL} and IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR}
     order by TIME_START_DATE asc
   </select>
+  <update id="updateByisEffective" parameterType="java.lang.Long" >
+    update T_TIME
+    set IS_EFFECTIVE = '0',
+    where TIME_ID =#{timeId,jdbcType=DECIMAL}
+  </update>
 </mapper>
