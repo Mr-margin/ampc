@@ -45,7 +45,7 @@
  </select>
  
   <!-- 根据情景ID 查询区域ID -->
- <select id="selectBySid" parameterType="hashMap" resultType="java.util.List">
+ <select id="selectBySid" parameterType="hashMap" resultType="java.lang.Long">
     SELECT SCENARINO_AREA_ID FROM T_SCENARINO_AREA WHERE IS_EFFECTIVE='1' 
       AND USER_ID=#{userId,jdbcType=DECIMAL} AND SCENARINO_DETAIL_ID=#{scenarinoId,jdbcType=DECIMAL}
  </select>
