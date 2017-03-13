@@ -120,20 +120,20 @@
     ,
     <include refid="Blob_Column_List" />
     from T_PLAN_MEASURE 
-    where IS_EFFECTIVE = 1
-         <if test="planMeasureId != null and planMeasureId != ''">
+    where IS_EFFECTIVE = '1'
+         <if test="planMeasureId != null">
                and PLAN_MEASURE_ID = #{planMeasureId,jdbcType=DECIMAL}
             </if>
-            <if test="planId != null and planId != ''">
+            <if test="planId != null">
                 and PLAN_ID = #{planId,jdbcType=DECIMAL}
             </if>
-            <if test="sectorName != null and sectorName != ''">
+            <if test="sectorName != null">
                 and SECTOR_NAME = #{sectorName,jdbcType=OTHER}
             </if>
-            <if test="measureId != null and measureId != ''">
+            <if test="measureId != null">
                 and  MEASURE_ID = #{measureId,jdbcType=DECIMAL}
             </if>
-            <if test="addTime != null and agentTel !=''">
+            <if test="addTime != null">
                 and ADD_TIME = #{addTime,jdbcType=DATE}
             </if>
             <if test="deleteTime != null">
@@ -142,7 +142,11 @@
             <if test="measureContent != null">
                and MEASURE_CONTENT = #{measureContent,jdbcType=CLOB}
             </if>
+            <if test="userId != null" >
+        	    and USER_ID== #{userId,jdbcType=DECIMAL}
+      		</if>
   </select>
+  
    <delete id="deleteByPlanId" parameterType="java.lang.Long" >
     delete from T_PLAN_MEASURE
     where PLAN_ID = #{planId,jdbcType=DECIMAL}
