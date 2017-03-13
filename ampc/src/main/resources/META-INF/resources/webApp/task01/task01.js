@@ -1278,9 +1278,10 @@ function createQj(type){
   ajaxPost(urlName,paramsName).success(function(res){
     if(res.data){
       ajaxPost(url, params).success(function () {
-        //console.log('success');
-
-        $('#createModal').modal('hide');
+        $('#qjTable').bootstrapTable('destroy');
+        initQjTable();
+        $('#createHpQjModal').modal('hide');
+        $('#createYpQjModal').modal('hide');
         swal('添加成功', '', 'success')
       }).error(function () {
         swal('添加失败', '', 'error')
