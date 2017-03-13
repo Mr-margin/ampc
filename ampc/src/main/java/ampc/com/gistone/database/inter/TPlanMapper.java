@@ -37,4 +37,5 @@ public interface TPlanMapper {
     int updateByPrimaryKeySelective(TPlan record);
 
     int updateByPrimaryKey(TPlan record);
+    List<TPlan> selectByEnty(TPlan record);
 }
