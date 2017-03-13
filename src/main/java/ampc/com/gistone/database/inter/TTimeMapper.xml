@@ -36,10 +36,10 @@
   </select>
   
   <!-- 根据区域ID查询所有的时段Id -->
-   <select id="selectTimeIdByAreaId" resultMap="BaseResultMap" parameterType="java.lang.Object" >
+   <select id="selectTimeIdByAreaId" resultType="java.lang.Long" parameterType="java.lang.Long" >
     select TIME_ID
     from T_TIME 
-    where AREA_ID = #{areaId,jdbcType=OTHER} AND IS_EFFECTIVE='1'
+    where AREA_ID = #{_parameter,jdbcType=DECIMAL} AND IS_EFFECTIVE='1'
   </select>
   
   <!-- 根据区域ID查询所有的时段 -->
