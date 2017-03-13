@@ -290,6 +290,9 @@ public class PlanAndMeasureController {
 			if(data.get("userId")!=null){
 				userId = Long.parseLong(data.get("userId").toString());
 			}
+			/**
+			 * TODO sdfsdfsdf 
+			 */
 //			TPlan tplan=tPlanMapper.selectByPrimaryKey(planId);
 //			//判断是否是可复制预案
 //			if(tplan.getCopyPlan().equals("1")){
