@@ -456,10 +456,10 @@ public class AreaAndTimeController {
       * 删除时段（级联）
       */
 	
-	public Map delete_times(List<Long> timeIds){
+	public Map delete_times(List<Long> timeIdss){
 	try{	
 		Map map=new HashMap();
-			for(Long timeId:timeIds){
+			for(Long timeId:timeIdss){
 			TTime t=new TTime();
 			t.setTimeId(timeId);
 			t.setIsEffective("0");
@@ -467,8 +467,8 @@ public class AreaAndTimeController {
 			t.setDeleteTime(date);
 			//修改时段状态为无效
 			
-			TTime times=tTimeMapper.selectByPrimaryKey(timeId);
-			tTimeMapper.updateByPrimaryKeySelective(t);
+			TTime times=this.tTimeMapper.selectByPrimaryKey(timeId);
+			this.tTimeMapper.updateByPrimaryKeySelective(t);
 			//if(tstatus!=0){
 				if(times.getPlanId()!=null && times.getPlanId()!=-1){
 				TPlan tPlan=tPlanMapper.selectByPrimaryKey(times.getPlanId());
@@ -479,13 +479,10 @@ public class AreaAndTimeController {
 					if(up_status!=0){
 						//删除预案的措施
 						int del_status=tPlanMeasureMapper.deleteByPlanId(tPlan.getPlanId());						
-					}else{
-						map.put("result", "-1");
-						map.put("msg", "预案删除错误！");
-						return map;
 					}
+					
 				}
-				
+			
 			}else{
 				map.put("result", "-1");
 				map.put("msg", "时段删除错误！");
