@@ -899,19 +899,11 @@ public class MissionAndScenarinoController {
 		try{
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
-			String scenarinoName=data.get("scenarinoName").toString();//情景名称
-			String startDate =data.get("scenarinoStartDate").toString();//开始时间
-			String endDate= data.get("scenarinoEndDate").toString();//结束时间
-			//修改时间格式
 			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-			Date scenarinoStartDate=sdf.parse(startDate);
-			Date scenarinoEndDate= sdf.parse(endDate);
 			Long missionId=Long.valueOf(data.get("missionId").toString());//任务id
 			Long userId=Long.valueOf(data.get("userId").toString());//用户id
 			String missionType=data.get("missionType").toString();//任务类型
-			Long basisScenarinoId=Long.valueOf(data.get("basisScenarinoId").toString());//基础情景
-			String baTime=data.get("basisTime").toString();//基础时间
-			Date basisTime=sdf.parse(baTime);
+			String scenarinoName=data.get("scenarinoName").toString();//情景名称
 			String scenType=data.get("scenType").toString();//情景类型
 			Date date=new Date();
 			Calendar cal = Calendar.getInstance();
@@ -927,6 +919,13 @@ public class MissionAndScenarinoController {
 			if(missionType.equals("预评估")){
 				//预评估任务创建预评估情景
 				if(scenType.equals("1")){
+					String startDate =data.get("scenarinoStartDate").toString();//开始时间
+					String endDate= data.get("scenarinoEndDate").toString();//结束时间
+					Date scenarinoStartDate=sdf.parse(startDate);
+					Date scenarinoEndDate= sdf.parse(endDate);
+					Long basisScenarinoId=Long.valueOf(data.get("basisScenarinoId").toString());//基础情景
+					String baTime=data.get("basisTime").toString();//基础时间
+					Date basisTime=sdf.parse(baTime);
 				TScenarinoDetail tsd=new TScenarinoDetail();
 				
 				tsd.setBasisScenarinoId(basisScenarinoId);
@@ -946,6 +945,14 @@ public class MissionAndScenarinoController {
 			if(scenType.equals("2")){
 				//基础情景
 					if(data.get("controstScenarinoId")==null||data.get("controstScenarinoId")==""){
+						
+						String startDate =data.get("scenarinoStartDate").toString();//开始时间
+						String endDate= data.get("scenarinoEndDate").toString();//结束时间
+						Date scenarinoStartDate=sdf.parse(startDate);
+						Date scenarinoEndDate= sdf.parse(endDate);
+						Long basisScenarinoId=Long.valueOf(data.get("basisScenarinoId").toString());//基础情景
+						String baTime=data.get("basisTime").toString();//基础时间
+						Date basisTime=sdf.parse(baTime);
 						TScenarinoDetail tsd=new TScenarinoDetail();
 						
 						tsd.setBasisScenarinoId(basisScenarinoId);
@@ -981,6 +988,14 @@ public class MissionAndScenarinoController {
 				if(scenType.equals("2")){
 					//基础情景
 					if(data.get("controstScenarinoId")==null||data.get("controstScenarinoId")==""){
+						
+						String startDate =data.get("scenarinoStartDate").toString();//开始时间
+						String endDate= data.get("scenarinoEndDate").toString();//结束时间
+						Date scenarinoStartDate=sdf.parse(startDate);
+						Date scenarinoEndDate= sdf.parse(endDate);
+						Long basisScenarinoId=Long.valueOf(data.get("basisScenarinoId").toString());//基础情景
+						String baTime=data.get("basisTime").toString();//基础时间
+						Date basisTime=sdf.parse(baTime);
 						TScenarinoDetail tsd=new TScenarinoDetail();
 						
 						tsd.setBasisScenarinoId(basisScenarinoId);
@@ -1011,6 +1026,10 @@ public class MissionAndScenarinoController {
 				//创建基准情景
 				if(scenType.equals("3")){
 					Long spinUp=Long.valueOf(data.get("spinUp").toString());
+					String startDate =data.get("scenarinoStartDate").toString();//开始时间
+					String endDate= data.get("scenarinoEndDate").toString();//结束时间
+					Date scenarinoStartDate=sdf.parse(startDate);
+					Date scenarinoEndDate= sdf.parse(endDate);
 					TScenarinoDetail tsd=new TScenarinoDetail();
 					
 					tsd.setScenarinoName(scenarinoName);
@@ -1040,6 +1059,10 @@ public class MissionAndScenarinoController {
 				TScenarinoAreaWithBLOBs s=list.get(0);
 				//创建时段
 				if(c!=0){
+					String startDate =data.get("scenarinoStartDate").toString();//开始时间
+					String endDate= data.get("scenarinoEndDate").toString();//结束时间
+					Date scenarinoStartDate=sdf.parse(startDate);
+					Date scenarinoEndDate= sdf.parse(endDate);
 					TTime times=new TTime();
 					times.setAreaId(s.getScenarinoAreaId());
 					times.setTimeEndDate(scenarinoEndDate);
@@ -1061,7 +1084,7 @@ public class MissionAndScenarinoController {
 
 			 return AmpcResult.build(1000, "参数错误",null);
 		}catch(Exception e){
-			
+			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误",null);				
 		}
 	}
