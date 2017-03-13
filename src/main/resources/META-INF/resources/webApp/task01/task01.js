@@ -866,7 +866,7 @@ function selectQJtype(type){
         $('.createQjBtn').css('display','inline-block');
         $('.return_S_qj').css('display','inline-block');
         qjType = 1;
-        params.scenarinoType = qjType;
+        params.scenType = qjType;
 
         setOption('#jcqj',basisArr);
         var dateArr = setSelectDate(basisArr[0].scenarinoStartDate,basisArr[0].scenarinoEndDate,basisArr[0].pathDate);
@@ -877,8 +877,8 @@ function selectQJtype(type){
         var startD = moment(moment(dateArr[0])).add(1,'d').format('YYYY-MM-DD');
         $('#yStartDate').empty().append($('<option value="'+ startD +'">'+ startD +'</option>'));
         ajaxPost(url,params).success(function(res){
-          selectEndDate = res.data.scenarinoEndDate;
-          selectEndDate = moment(selectRW.missionStartDate).isBefore(selectEndDate)?moment(selectRW.missionStartDate).format('YYYY-MM-DD'):selectEndDate;
+          selectEndDate = res.data.endTime;
+          selectEndDate = moment(selectRW.missionEndDate).isBefore(selectEndDate)?moment(selectRW.missionEndDate).format('YYYY-MM-DD'):selectEndDate;
           var endDateArr = setSelectDate($('#yStartDate').val(),selectEndDate);
           $('#yEndDate').empty();
           for(var i=0;i<endDateArr.length;i++){
@@ -898,7 +898,7 @@ function selectQJtype(type){
         $('#jcdate').removeAttr('disabled');
         $('#yEndDate').removeAttr('disabled');
         qjType = 2;
-        params.scenarinoType = qjType;
+        params.scenType = qjType;
 
         setOption('#dbqj',basisArr);
         setOption('#jcqj',basisArr);
@@ -913,8 +913,8 @@ function selectQJtype(type){
         $('#yStartDate').empty().append($('<option value="'+ startD +'">'+ startD +'</option>'));
 
         ajaxPost(url,params).success(function(res){
-          selectEndDate = res.data.scenarinoEndDate;
-          selectEndDate = moment(selectRW.missionStartDate).isBefore(selectEndDate)?moment(selectRW.missionStartDate).format('YYYY-MM-DD'):selectEndDate;
+          selectEndDate = res.data.endTime;
+          selectEndDate = moment(selectRW.missionEndDate).isBefore(selectEndDate)?moment(selectRW.missionEndDate).format('YYYY-MM-DD'):selectEndDate;
           var endDateArr = setSelectDate($('#yStartDate').val(),selectEndDate);
           $('#yEndDate').empty();
           for(var i=0;i<endDateArr.length;i++){
@@ -1219,11 +1219,23 @@ function createQj(type){
     params = {};
     paramsName = {};
     params.scenarinoName = paramsName.scenarinoName = $('#yName').val();
+    params.userId = paramsName.userId = userId;
     params.missionId = paramsName.missionId = selectRW.missionId;
+    params.missionType = selectRW.missionStatus;
     params.scenarinoStartDate = $('#yStartDate').val();
     params.scenarinoEndDate = $('#yEndDate').val();
-    params.userId = paramsName.userId = userId;
-    params.scenarinoId = qjId;
+    params.scenType = qjType;
+    if(qjType == 1){
+      params.basisScenarinoId = basisArr[$('#jcqj').val()].scenarinoId;
+      params.basisTime = $('#jcdate').val();
+    }else if(qjType == 2){
+      if($('.dbqj input[type=checkbox]').checked){
+        params.basisScenarinoId = basisArr[$('#dbqj').val()].scenarinoId;
+      }else{
+        params.basisScenarinoId = basisArr[$('#jcqj').val()].scenarinoId;
+        params.basisTime = $('#jcdate').val();
+      }
+    }
     /*
      * 这里应该还会有几个参数
      * */
