@@ -906,7 +906,7 @@ public class MissionAndScenarinoController {
 			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 			Date scenarinoStartDate=sdf.parse(startDate);
 			Date scenarinoEndDate= sdf.parse(endDate);
-			Long missionId=Long.valueOf(data.get("scenarinoStartDate").toString());//任务id
+			Long missionId=Long.valueOf(data.get("missionId").toString());//任务id
 			Long userId=Long.valueOf(data.get("userId").toString());//用户id
 			String missionType=data.get("missionType").toString();//任务类型
 			Long basisScenarinoId=Long.valueOf(data.get("basisScenarinoId").toString());//基础情景
