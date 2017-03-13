@@ -968,10 +968,17 @@ public class MissionAndScenarinoController {
 						sdid=tScenarinoDetail.getScenarinoId();
 					}else{//对比情景
 						Long controstScenarinoId=Long.valueOf(data.get("controstScenarinoId").toString());//对比情景id
-                        TScenarinoDetail tsd=new TScenarinoDetail();
+						TScenarinoDetail tscent=tScenarinoDetailMapper.selectByPrimaryKey(controstScenarinoId);
+						Date scenarinoStartDate =tscent.getScenarinoStartDate();
+						Date scenarinoEndDate=tscent.getScenarinoEndDate();
+						TScenarinoDetail tsd=new TScenarinoDetail();
 						tsd.setScenarinoName(scenarinoName);
+						tsd.setBasisScenarinoId(tscent.getBasisScenarinoId());
+						tsd.setBasisTime(tscent.getBasisTime());
 						tsd.setScenType(scenType);
 						tsd.setMissionId(missionId);
+						tsd.setScenarinoEndDate(scenarinoEndDate);
+						tsd.setScenarinoStartDate(scenarinoStartDate);
 						tsd.setUserId(userId);
 						tsd.setControstScenarinoId(controstScenarinoId);
 						a=tScenarinoDetailMapper.insertSelective(tsd);
@@ -1011,10 +1018,17 @@ public class MissionAndScenarinoController {
 						sdid=tScenarinoDetail.getScenarinoId();
 					}else{//对比情景
 						Long controstScenarinoId=Long.valueOf(data.get("controstScenarinoId").toString());//对比情景id
-                        TScenarinoDetail tsd=new TScenarinoDetail();
+						TScenarinoDetail tscent=tScenarinoDetailMapper.selectByPrimaryKey(controstScenarinoId);
+						Date scenarinoStartDate =tscent.getScenarinoStartDate();
+						Date scenarinoEndDate=tscent.getScenarinoEndDate();
+						TScenarinoDetail tsd=new TScenarinoDetail();
 						tsd.setScenarinoName(scenarinoName);
+						tsd.setBasisScenarinoId(tscent.getBasisScenarinoId());
+						tsd.setBasisTime(tscent.getBasisTime());
 						tsd.setScenType(scenType);
 						tsd.setMissionId(missionId);
+						tsd.setScenarinoEndDate(scenarinoEndDate);
+						tsd.setScenarinoStartDate(scenarinoStartDate);
 						tsd.setUserId(userId);
 						tsd.setControstScenarinoId(controstScenarinoId);
 						a=tScenarinoDetailMapper.insertSelective(tsd);
@@ -1059,14 +1073,28 @@ public class MissionAndScenarinoController {
 				TScenarinoAreaWithBLOBs s=list.get(0);
 				//创建时段
 				if(c!=0){
+					TTime times=new TTime();
+					if(data.get("controstScenarinoId")==null||data.get("controstScenarinoId")==""){
 					String startDate =data.get("scenarinoStartDate").toString();//开始时间
 					String endDate= data.get("scenarinoEndDate").toString();//结束时间
 					Date scenarinoStartDate=sdf.parse(startDate);
 					Date scenarinoEndDate= sdf.parse(endDate);
-					TTime times=new TTime();
-					times.setAreaId(s.getScenarinoAreaId());
 					times.setTimeEndDate(scenarinoEndDate);
 					times.setTimeStartDate(scenarinoStartDate);
+					}else{
+						Long controstScenarinoId=Long.valueOf(data.get("controstScenarinoId").toString());//对比情景id
+						TScenarinoDetail tscent=tScenarinoDetailMapper.selectByPrimaryKey(controstScenarinoId);
+						Date startDate =tscent.getScenarinoStartDate();
+						Date endDate=tscent.getScenarinoEndDate();
+						String end=sdf.format(endDate);
+						String start=sdf.format(startDate);
+						Date scenarinoEndDate=sdf.parse(end);
+						Date scenarinoStartDate=sdf.parse(start);
+						times.setTimeEndDate(scenarinoEndDate);
+						times.setTimeStartDate(scenarinoStartDate);
+					}
+					
+					times.setAreaId(s.getScenarinoAreaId());
 					times.setMissionId(missionId);
 					times.setUserId(userId);
 					times.setScenarinoId(sdid);
