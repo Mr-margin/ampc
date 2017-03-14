@@ -1,11 +1,14 @@
 $(function(){
 	
 	//	创建ECharts图表
-	var myChart = echarts.init(document.getElementById('main'));
-	var myChartTwo = echarts.init(document.getElementById('mainTwo'));
-	var myCharThree = echarts.init(document.getElementById('mainThree'));
-	var myCharFour = echarts.init(document.getElementById('mainFour'));
-	
+	var myChart1 = echarts.init(document.getElementById('main1'));
+	var myChart2 = echarts.init(document.getElementById('main2'));
+	var myChart3 = echarts.init(document.getElementById('main3'));
+	var myChart4 = echarts.init(document.getElementById('main4'));
+	var myChart5 = echarts.init(document.getElementById('main5'));
+	var myChart6 = echarts.init(document.getElementById('main6'));
+	var myChart7 = echarts.init(document.getElementById('main7'));
+	var myChart8 = echarts.init(document.getElementById('main8'));
     //指定图表的配置项和数据	
 	  var option = {
 			  	title: {
@@ -37,22 +40,25 @@ $(function(){
 	                	nameLocation: 'start',
 	                	nameGap : 20,
 	                    type : 'category',
-	                    data : ['9.15', '9.16', '9.17', '9.18', '9.19', '9.20', '9.21', '9.22', '9.23', '9.24']
+	                    data : ['50', '35', '75', '80', '100', '200', '300', '222', '500', '400']
+	                },
+	                {
+	                	type: 'category',
+	                	xAxisIndex: 1,
+	                	interval:10
+	                	//data : ['50', '35', '75', '80', '100', '200', '300', '222', '500', '400']
 	                }
 	            ],
 	            yAxis : [
 	                {
-	                         type: 'value',
+	                         type: 'category',
 	                         name: '高度（米）',
 	                         position: 'left',
-	                         max:500,
+	                         //max:500,
+	                         data:['0','50','100','200','300','400','500','700','1000','1500','2000','3000'],
 	                        
 	                },
-	                {
-	                    type: 'value',
-	                    position: 'right',
-	                  
-	                },
+	                
 	                {
 	                	yAxisIndex: 1
 	                }
@@ -64,7 +70,7 @@ $(function(){
 	                    symbolSize: 8,
 	                    hoverAnimation: false,
 	                    yAxis: 1, 
-	                    data:[10, 52, 20, 98, 66, 200, 152,333,452,410]
+	                    data:[100, 52, 200, 198, 266, 500, 752,333,452,910]
 	                },
 	                {
 	                    name:'长三角管控',
@@ -79,10 +85,14 @@ $(function(){
 	            ]
 	        };
 
-	myChart.setOption(option);
-	myChartTwo.setOption(option);
-	myCharThree.setOption(option);
-	myCharFour.setOption(option);
+	  myChart1.setOption(option);
+	  myChart2.setOption(option);
+	  myChart3.setOption(option);
+	  myChart4.setOption(option);
+	  myChart5.setOption(option);
+	  myChart6.setOption(option);
+	  myChart7.setOption(option);
+	  myChart8.setOption(option);
 	
 	//myChart.hideLoding();
 	//getChartData(); //与java后台交互

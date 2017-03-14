@@ -1,8 +1,19 @@
 $(function(){
 	//	创建ECharts图表
-	var myChart = echarts.init(document.getElementById('main'));
-	var myChartTwo = echarts.init(document.getElementById('mainTwo'));
-	var myChartThree = echarts.init(document.getElementById('mainThree'));
+	var myChart1 = echarts.init(document.getElementById('mainDiv1'));
+	var myChart2 = echarts.init(document.getElementById('mainDiv2'));
+	var myChart3 = echarts.init(document.getElementById('mainDiv3'));
+	var myChart4 = echarts.init(document.getElementById('mainDiv4'));
+	var myChart5 = echarts.init(document.getElementById('mainDiv5'));
+	var myChart6 = echarts.init(document.getElementById('mainDiv6'));
+	var myChart7 = echarts.init(document.getElementById('mainDiv7'));
+	var myChart8 = echarts.init(document.getElementById('mainDiv8'));
+	var myChart9 = echarts.init(document.getElementById('mainDiv9'));
+	var myChart10 = echarts.init(document.getElementById('mainDiv10'));
+	var myChart11 = echarts.init(document.getElementById('mainDiv11'));
+	var myChart12 = echarts.init(document.getElementById('mainDiv12'));
+	var myChart13 = echarts.init(document.getElementById('mainDiv13'));
+	var myChart14 = echarts.init(document.getElementById('mainDiv14'));
     //指定图表的配置项和数据	
     var option = {  
             //标题，每个图表最多仅有一个标题控件，每个标题控件可设主副标题  
@@ -184,10 +195,21 @@ $(function(){
             ]  
         }; 
 
-	myChart.setOption(option);
-	myChartTwo.setOption(option);
-	myChartThree.setOption(option);
-	
+    myChart1.setOption(option);
+    myChart2.setOption(option);
+    myChart3.setOption(option);
+    myChart4.setOption(option);
+    myChart5.setOption(option);
+    myChart6.setOption(option);
+    myChart7.setOption(option);
+    myChart8.setOption(option);
+    myChart9.setOption(option);
+    myChart10.setOption(option);
+    myChart11.setOption(option);
+    myChart12.setOption(option);
+    myChart13.setOption(option);
+    myChart14.setOption(option);
+    
 	//getChartData(); //与java后台交互
 
 });
