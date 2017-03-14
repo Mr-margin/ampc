@@ -1,99 +1,111 @@
-<div>
-<!-- 效果评估 》》垂直分布 -->
+
+<div style="height:100%;    background:#ffffff;">
+	<div class="ibox-title" style="height:6%">
+		<div class="row">
+			<div class="col-sm-3">
+				<div class="input-group m-b" style="margin-bottom: 0px">
+					<span class="input-group-addon" style="border: 1px solid #E5E6E7;">检测站点:</span>
+					<div class="" style="margin-bottom:0px;padding-left:0px;">
+						<div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
+							<div class="input-group group-select" style="margin-left:0px;">
+								<select class="form-control m-b">
+									<option>浙江省</option>
+									<option>--</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
+							<div class="input-group group-select" style="margin-right:0px;">
+								<select class="form-control m-b">
+									<option>杭州市</option>
+									<option>--</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
+							<div class="input-group group-select" style="padding-right:0px;">
+								<select class="form-control m-b" >
+									<option>平均</option>
+									<option>--</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-2">
+				<div class="input-group m-b" style="margin-bottom: 0px">
+					<span class="input-group-addon" style="border: 1px solid #E5E6E7;">时间分辩率:
+					</span>
+					<div class="" style="margin-bottom:0px;padding-left:0px;">
+						<div class="btn-group">
+							<button class="btn btn-outline btn-success" type="button">逐小时</button>
+							<button class="btn btn-outline btn-success" type="button">逐日</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<div class="input-group m-b" style="margin-bottom: 0px">
+					<span class="input-group-addon" style="border: 1px solid #E5E6E7;">空间分辩率:
+					</span>
+					<div class="" style="margin-bottom:0px;padding-left:0px;">
+						<div class="btn-group">
+							<button class="btn btn-outline btn-success" type="button">36公里</button>
+							<button class="btn btn-outline btn-success" type="button">12公里</button>
+							<button class="btn btn-outline btn-success" type="button">4公里</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<div class="input-group m-b" style="margin-bottom: 0px">
+					<div class="" style="margin-bottom:0px;padding-left:0px;">
+						<div class="btn-group">
+							<button class="btn btn-outline btn-success" type="button">绝对量比较</button>
+							<button class="btn btn-outline btn-success" type="button">相对变化</button>
+						</div>
+	
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-1">
+				<div class="input-group m-b" style="margin-bottom: 0px">
+					<div class="" style="margin-bottom:0px;padding-left:0px;">
+						<div class="btn-group">
+							<button class="btn btn-outline btn-success" type="button">组分展开</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class='col-md-12' style="height:94%;padding-left: 0px;padding-right: 0px;margin-top:20px;overflow-y: auto;">
+		<div class="ibox float-e-margins" >
+			<div class="ibox-content" style="padding: 0px;">
+				<div class="" id="mapNums"style="width:100%;height:100%;border:0px solid #75B9E6;padding: 0px;">
+					<div class="col-md-10" style="margin-left:70px;">
+						<div class="col-md-4" id="main"style="height:500px;width:24%;margin-left:20px;margin-right:auto;margin-top:10px"></div>
+						<div class="col-md-2" id="mainTwo"style="height: 500px;width:24%;margin-left:auto;margin-right:auto;margin-top:10px"></div>
+						<div class="col-md-2" id="mainThree"style="height: 500px;width:24%;margin-left:auto;margin-right:auto;margin-top:10px"></div>
+						<div class="col-md-2" id="mainFour"style="height: 500px;width:24%;margin-left:auto;margin-right:auto;margin-top:10px"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-<div class="ibox-content"style="width:100%;height:100%;padding: 0px 0px 0px 0px;">
-	<div class="col-md-2 col-md-offset-1" style="margin-top:5px;">
-		<div class="" id=""style="width:280px;height:69px;border:1px solid #75B9E6;padding: 0px;">
-			<div class="ibox-tools" style="padding-right: 0px;">
-				<div class="jczd"style="background-color: #EDF7FF;width:278px;height: 25px;margin-left:5px;padding-top:2px;padding-left:20px;margin-top:0px;">
-					<h5>检测站点</h5>
-				</div>
-				<div class="row"style="padding-right:0px;margin-top:5px; width:218px;">
-					<div class="col-sm-4" style="padding-left:12px;padding-right:0px;">
-						<div class="input-group group-select" style="margin-left:10px;">
-							<select class="form-control m-b" style="width:90px;">
-								<option>浙江省</option>
-								<option>--</option>
-							</select>
-						</div>
-					</div>
-					<div class="col-sm-4" style="padding-left:40px;padding-right:0px;">
-						<div class="input-group group-select" style="margin-right:0px;">
-							<select class="form-control m-b" style="width:90px;">
-								<option>杭州市</option>
-								<option>--</option>
-							</select>
-						</div>
-					</div>
-					<div class="col-sm-4" style="padding-left:59px;padding-right:0px;">
-						<div class="input-group group-select" style="padding-right:10px;">
-							<select class="form-control m-b" style="width:90px;">
-								<option>平均</option>
-								<option>--</option>
-							</select>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-2 col-md-offset-1" style="margin-top:5px;">
-			<div class="" id=""
-				style="width:283px;height:69px;border:1px solid #75B9E6;padding: 0px;">
-				<div class="ibox-tools" style="padding-right: 0px;">
-					<div class="jczd"
-						style="background-color: #EDF7FF;width:280px;height: 25px;margin-left:0px;padding-top:2px;padding-left:20px;margin-top:0px;">
-						<h5>时间分辩率</h5>
-					</div>
-					<div class="" style="margin-top:10px;">
-						<div class="col-md-4 col-md-offset-2">
-							<button type="button" class="btn btn-outline btn-success btn-sm">逐小时</button>
-						</div>
-						<div class="col-md-4">
-							<button type="button" class="btn btn-outline btn-success btn-sm">逐日</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
 
-		<div class="col-md-2 col-md-offset-1" style="margin-top:5px;">
-			<div class="col-md-4" id=""
-				style="width:283px;height:69px;border:1px solid #75B9E6;padding: 0px;">
-				<div class="ibox-tools" style="padding-right: 0px;">
-					<div class="jczd"
-						style="background-color: #EDF7FF;width:280px;height: 25px;margin-left:0px;padding-top:2px;padding-left:20px;margin-top:0px;">
-						<h5>空间分辩率</h5>
-					</div>
-					<div class="" style="margin-top:10px;">
-						<div class="col-md-4">
-							<button type="button" class="btn btn-outline btn-success btn-sm">36公里</button>
-						</div>
-						<div class="col-md-4">
-							<button type="button" class="btn btn-outline btn-success btn-sm">12公里</button>
-						</div>
-						<div class="col-md-4">
-							<button type="button" class="btn btn-outline btn-success btn-sm">4公里</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
 
-	<div class="row col-md-3 col-md-offset-9" style="margin-top:10px;">
-		<div class="btn-group">
-			<button class="btn btn-outline btn-success" type="button">绝对量比较</button>
-			<button class="btn btn-outline btn-success" type="button">相对变化</button>
-		</div>
-	</div>
-	<div class="" id="mapNums"style="width:100%;height:100%;border:0px solid #75B9E6;padding: 0px;">
+<!-- 	<div class="" id="mapNums"style="width:100%;height:100%;border:0px solid #75B9E6;padding: 0px;">
 		<div class="col-md-10" style="margin-left:70px;">
 			<div class="col-md-4" id="main"style="height:500px;width:24%;margin-left:20px;margin-right:auto;margin-top:10px"></div>
 			<div class="col-md-2" id="mainTwo"style="height: 500px;width:24%;margin-left:auto;margin-right:auto;margin-top:10px"></div>
 			<div class="col-md-2" id="mainThree"style="height: 500px;width:24%;margin-left:auto;margin-right:auto;margin-top:10px"></div>
 			<div class="col-md-2" id="mainFour"style="height: 500px;width:24%;margin-left:auto;margin-right:auto;margin-top:10px"></div>
 		</div>
-	</div>
+	</div> -->
 	
 	
 	

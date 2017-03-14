@@ -2,12 +2,13 @@ $(function(){
 	//	创建ECharts图表
 	var myChart = echarts.init(document.getElementById('main'));
 	var myChartTwo = echarts.init(document.getElementById('mainTwo'));
+	var myChartThree = echarts.init(document.getElementById('mainThree'));
     //指定图表的配置项和数据	
     var option = {  
             //标题，每个图表最多仅有一个标题控件，每个标题控件可设主副标题  
             title: {  
                 //主标题文本，'\n'指定换行  
-                text: '',  
+                text: 'AQI指数数据图',  
                 //主标题文本超链接  
                 link: '',  
                 //副标题文本，'\n'指定换行  
@@ -130,7 +131,7 @@ $(function(){
                     //系列中的数据标线内容  
                     markLine: {  
                         data: [  
-                            {type: 'average', name: '平均值'}  
+                            {yAxis: 50, name: '基准线'}  
                         ]  
                     }  
                 },  
@@ -151,7 +152,7 @@ $(function(){
                     //系列中的数据标线内容  
                     markLine: {  
                         data: [  
-                            {type: 'average', name: '平均值'}  
+                            {yAxis: 100, name: '基准线'}  
                         ]  
                     }  
                 },
@@ -168,13 +169,8 @@ $(function(){
                             {type: 'max', name: '最大值'},  
                             {type: 'min', name: '最小值'}  
                         ]  
-                    },  
-                    //系列中的数据标线内容  
-                    markLine: {  
-                        data: [  
-                            {type: 'average', name: '平均值'}  
-                        ]  
                     }  
+                  
                 }, 
                 {  
                     //系列名称，如果启用legend，该值将被legend.data索引相关  
@@ -190,6 +186,7 @@ $(function(){
 
 	myChart.setOption(option);
 	myChartTwo.setOption(option);
+	myChartThree.setOption(option);
 	
 	//getChartData(); //与java后台交互
 

@@ -84,7 +84,7 @@ $(function(){
 	myCharThree.setOption(option);
 	myCharFour.setOption(option);
 	
-	myChart.hideLoding();
+	//myChart.hideLoding();
 	//getChartData(); //与java后台交互
 
 });
