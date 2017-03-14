@@ -9,7 +9,7 @@
       <!--&lt;!&ndash;<li role="presentation"><a href="#">Messages</a></li>&ndash;&gt;-->
       <!--</ul>-->
       <!--</div>-->
-      <div class="bjDate col-md-12 mt50 mb15">
+      <div class="bjDate col-md-12 mt50 mb15 disNone">
         <div class="date_div">
           <span>2017-01-01</span>
           <span>2017-01-01</span>
@@ -18,49 +18,84 @@
           <span>2017-01-01</span>
         </div>
       </div>
-      <div class="areaMsg col-md-12">
-        <!--  <div class="area clearfix">
-            <div class="front">
-              <span>类别一</span>
-              <div class="areaToolDiv text-center">
-                <button type="button" onclick="editArea()" class="btn btn-default btn-xs toolShow" title="区域编辑"><i class="ec-pencil"></i><span>区域编辑</span></button>
-                <button type="button" onclick="delArea()" class="btn btn-default btn-xs toolShow" title="删除区域"><i class="ec-trashcan"></i><span>删除区域</span></button>
-                <button type="button" onclick="addTimes()" class="btn btn-default btn-xs toolShow" title="添加时段"><i class="im-plus"></i><span>添加时段</span></button>
-              </div>
-            </div>
-            <div class="period clearfix">
-
-              <div class="time">
-                <div class="yaMsg">
-                  <h4>无</h4>
-                  &lt;!&ndash;<p class="yaStartDate">开始时间：<span>2017-12-12 00</span></p>&ndash;&gt;
-                  &lt;!&ndash;<p  class="yaEndDate">结束时间：<span>2017-12-22 00</span></p>&ndash;&gt;
-                </div>
-                <div class="timeToolDiv text-center">
-                  <button type="button" onclick="addPlan()" class="btn btn-default btn-xs toolShow" title="添加预案"><i class="im-google-plus"></i><span>添加预案</span></button>
-                  <button type="button" onclick="delPlan()" class="btn btn-default btn-xs toolShow" title="删除预案"><i class="ec-trashcan"></i><span>删除预案</span></button>
-                  <button type="button" onclick="delTimes()" class="btn btn-default btn-xs toolShow" title="移除时段"><i class="im-close"></i><span>移除时段</span></button>
-                </div>
-              </div>
-
-              <div class="showLine">
-                <div class="hk" style="left:15%"><span class="showTips showTipsLeft" >20%</span></div>
-              </div>
-            </div>
-          </div> -->
-
+      <div class="areaMsg col-md-12 clearfix">
+        <div class="areaTitle" style="float: left; width: 20%;">
+          <!--<div class="areaTitle_con">-->
+          <!--<span>diyiquyu</span>-->
+          <!--</div>-->
+        </div>
+        <div class="areaCon" style="float: left;width: 80%">
+          <div id="timeline"></div>
+        </div>
       </div>
       <div class="addArea col-md-12 mt20">
         <button class="btn btn-primary" data-new="true" data-toggle="modal" data-target="#editArea">添加区域</button>
       </div>
     </div>
 
-    <div class="col-md-5 showMap text-center" style="border: 1px solid #999;height: 600px; padding-left:0px;padding-right:0px;">
-			<div id="mapDiv1" class="showMap" style="width:100%;height:100%"></div>
-		</div>
+    <div class="col-md-5 showMap text-center"
+         style="border: 1px solid #999;height: 600px; padding-left:0px;padding-right:0px;">
+      <div id="mapDiv1" class="showMap" style="width:100%;height:100%"></div>
+    </div>
 
   </div>
 
+  <!--模板代码 start-->
+  <div class="areaTitle_con disNone">
+    <i class='fa-th-list'></i> <b></b>
+
+    <div class="areaToolDiv text-center">
+      <button type="button" onclick="editArea(this)" data-new="false" class="btn btn-default btn-xs toolShow"
+              title="区域编辑" data-toggle="modal" data-target="#editArea"><i class="ec-pencil"></i><span>区域编辑</span>
+      </button>
+      <button type="button" onclick="delArea(this)" class="btn btn-default btn-xs toolShow" title="删除区域"><i
+          class="ec-trashcan"></i><span>删除区域</span></button>
+      <button type="button" class="btn btn-default btn-xs toolShow" title="添加时段" data-toggle="modal"
+              data-target="#qyTime"><i class="im-plus"></i><span>添加时段</span></button>
+    </div>
+  </div>
+  <!--模板代码 end-->
+
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#editTime">
+    Launch demo modal
+  </button>
+
+  <!-- Modal 时段编辑 -->
+  <div class="modal fade" id="editTime" tabindex="-1" role="dialog" aria-labelledby="editTimeLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="editTimeLabel">时段编辑</h4>
+        </div>
+        <div class="modal-body">
+          <div class="editTimeBtnMsg text-center">
+            <div class="col-md-6">
+              <button class="btn btn-primary btn-lg mt20">添加新预案</button>
+            </div>
+            <div class="col-md-6">
+              <button class="btn btn-primary btn-lg mt20">复制已有预案</button>
+            </div>
+            <div class="col-md-6">
+              <button class="btn btn-primary btn-lg mt20">编辑预案</button>
+            </div>
+            <div class="col-md-6">
+              <button class="btn btn-primary btn-lg mt20">删除预案</button>
+            </div>
+            <div class="col-md-12">
+              <button class="btn btn-primary btn-lg mt20">删除时段</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
   <!-- Modal 添加时段-->
@@ -68,7 +103,8 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
           <h4 class="modal-title" id="qyTimeLabel">添加时段</h4>
         </div>
         <div class="modal-body">
@@ -77,7 +113,8 @@
             <label for="qyTimePoint" class="col-md-12 control-label lh29">请选择需要分割的时间点：</label>
 
             <div class="col-md-12">
-              <input type="text" class="form-control" id="qyTimePoint" name="qyTimePoint" readonly placeholder="请选择时间点···">
+              <input type="text" class="form-control" id="qyTimePoint" name="qyTimePoint" readonly
+                     placeholder="请选择时间点···">
             </div>
           </div>
 
@@ -96,11 +133,14 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="delTimeLabel">删除时段 <span style="font-size:14px;color: #f35454">注：删除时段，将同时删除此时段上预案信息！！</span></h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="delTimeLabel">删除时段 <span style="font-size:14px;color: #f35454">注：删除时段，将同时删除此时段上预案信息！！</span>
+          </h4>
         </div>
         <div class="modal-body">
           <h4>请选择删除后需要合并的时段：</h4>
+
           <div class="delSelect">
 
           </div>
@@ -120,7 +160,8 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
           <h4 class="modal-title" id="addYALabel">添加预案</h4>
         </div>
         <div class="modal-body">
@@ -161,13 +202,14 @@
     </div>
   </div>
 
-  
+
   <!-- Modal 区域编辑-->
   <div class="modal fade bs-example-modal-lg" id="editArea" tabindex="-1" role="dialog" aria-labelledby="editAreaLabel">
     <div class="modal-dialog modal-lg bigModal" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
           <h4 class="modal-title" id="editAreaLabel">定义区域范围：</h4>
         </div>
         <div class="modal-body bcg">
@@ -175,9 +217,10 @@
             <div class="col-md-4">
 
               <div class="form-group">
-<!--                 <label class="col-md-7 control-label text-right" style="padding-right:0">当前区域名称：</label> -->
+                <!--                 <label class="col-md-7 control-label text-right" style="padding-right:0">当前区域名称：</label> -->
                 <div class="col-md-12" style="padding-left:0;padding-right:0">
-                  当前区域名称：<input type="text" class="form-control required" id="areaName" style="width: 50%;display: inline-block" placeholder='请输入区域名称'>
+                  当前区域名称：<input type="text" class="form-control required" id="areaName"
+                                style="width: 50%;display: inline-block" placeholder='请输入区域名称'>
                 </div>
               </div>
             </div>
@@ -195,17 +238,17 @@
             <div class="col-md-2 pl0">
               <div class="codeTree">
                 <ul id="adcodeTree" class="ztree">
-                
+
                 </ul>
               </div>
               <!--<div class="rightArrow">-->
-                <!--<div>-->
-                  <!--<i class="fa-chevron-right"></i>-->
-                <!--</div>-->
+              <!--<div>-->
+              <!--<i class="fa-chevron-right"></i>-->
+              <!--</div>-->
               <!--</div>-->
             </div>
             <div class="col-md-10 pr0">
-              <div class="col-md-6 pl0 " >
+              <div class="col-md-6 pl0 ">
                 <div class="showCode" style="border: 1px solid transparent;">
                   <div class="clearCode text-right mt10 mr10">
                     <button class="btn btn-primary" onclick="clearAllArea()">清空</button>
@@ -226,14 +269,15 @@
               </div>
               <div class="col-md-6 pr0">
                 <div id="mapDiv" class="showMap">
-             
+
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div class="modal-footer ">
-          <div class="footerShow" style="text-align: left;margin-left: 10px;width:calc(100% - 150px);float: left;padding: 8px 0px 5px 0px;">
+          <div class="footerShow"
+               style="text-align: left;margin-left: 10px;width:calc(100% - 150px);float: left;padding: 8px 0px 5px 0px;">
             <div class='col-md-3 rw' style="padding: 0px 0px 0px 0px;">
               <h5>当前任务：<span></span></h5>
             </div>
@@ -249,17 +293,20 @@
   </div>
 
 
-
-
   <!--模板DOM-->
   <!--区域dom-->
   <div class="area clearfix disNone">
     <div class="front">
       <span>类别一</span>
+
       <div class="areaToolDiv text-center">
-        <button type="button" onclick="editArea(this)" data-new="false" class="btn btn-default btn-xs toolShow" title="区域编辑" data-toggle="modal" data-target="#editArea"><i class="ec-pencil"></i><span>区域编辑</span></button>
-        <button type="button" onclick="delArea(this)" class="btn btn-default btn-xs toolShow" title="删除区域"><i class="ec-trashcan"></i><span>删除区域</span></button>
-        <button type="button" class="btn btn-default btn-xs toolShow" title="添加时段" data-toggle="modal" data-target="#qyTime"><i class="im-plus"></i><span>添加时段</span></button>
+        <button type="button" onclick="editArea(this)" data-new="false" class="btn btn-default btn-xs toolShow"
+                title="区域编辑" data-toggle="modal" data-target="#editArea"><i class="ec-pencil"></i><span>区域编辑</span>
+        </button>
+        <button type="button" onclick="delArea(this)" class="btn btn-default btn-xs toolShow" title="删除区域"><i
+            class="ec-trashcan"></i><span>删除区域</span></button>
+        <button type="button" class="btn btn-default btn-xs toolShow" title="添加时段" data-toggle="modal"
+                data-target="#qyTime"><i class="im-plus"></i><span>添加时段</span></button>
       </div>
     </div>
     <div class="period clearfix">
@@ -270,7 +317,7 @@
     </div>
   </div>
   <!--滑块dom-->
-  <div class="hk disNone"><span class="showTips showTipsLeft" >2017-12-12 00</span></div>
+  <div class="hk disNone"><span class="showTips showTipsLeft">2017-12-12 00</span></div>
   <!--时段dom-->
   <div class="time disNone">
     <div class="yaMsg">
@@ -279,9 +326,12 @@
       <!--<p  class="yaEndDate">结束时间：<span>2017-12-22 00</span></p>-->
     </div>
     <div class="timeToolDiv text-center">
-      <button type="button" class="btn btn-default btn-xs toolShow" title="添加预案" data-toggle="modal" data-target="#addYA"><i class="im-google-plus"></i><span>添加预案</span></button>
-      <button type="button" onclick="editPlan(this)" class="btn btn-default btn-xs toolShow" title="编辑预案"><i class="ec-pencil"></i><span>编辑预案</span></button>
-      <button type="button" class="btn btn-default btn-xs toolShow" title="删除时段" data-toggle="modal" data-target="#delTime"><i class="im-close"></i><span>删除时段</span></button>
+      <button type="button" class="btn btn-default btn-xs toolShow" title="添加预案" data-toggle="modal"
+              data-target="#addYA"><i class="im-google-plus"></i><span>添加预案</span></button>
+      <button type="button" onclick="editPlan(this)" class="btn btn-default btn-xs toolShow" title="编辑预案"><i
+          class="ec-pencil"></i><span>编辑预案</span></button>
+      <button type="button" class="btn btn-default btn-xs toolShow" title="删除时段" data-toggle="modal"
+              data-target="#delTime"><i class="im-close"></i><span>删除时段</span></button>
     </div>
   </div>
   <!--redio dom-->
