@@ -296,4 +296,13 @@
                 and SCENARINO_DETAIL_ID = #{scenarinoDetailId,jdbcType=DECIMAL}
             </if>
     </select>
+    
+    <select id="selectAllAreaByScenarinoId" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    SELECT 
+     <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+     FROM T_SCENARINO_AREA WHERE IS_EFFECTIVE='1' 
+      AND SCENARINO_DETAIL_ID=#{scenarinoId,jdbcType=OTHER}
+ </select>
 </mapper>
