@@ -24,11 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
+import ampc.com.gistone.database.inter.TPlanMapper;
+import ampc.com.gistone.database.inter.TPlanMeasureMapper;
 import ampc.com.gistone.database.inter.TScenarinoAreaMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTimeMapper;
 import ampc.com.gistone.database.inter.TUserMapper;
 import ampc.com.gistone.database.model.TMissionDetail;
+import ampc.com.gistone.database.model.TPlan;
 import ampc.com.gistone.database.model.TScenarinoAreaWithBLOBs;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTime;
@@ -63,8 +66,15 @@ public class MissionAndScenarinoController {
 	
 	@Autowired
 	private TUserMapper tUserMapper;
-	
+
+	@Autowired
 	private AreaAndTimeController atc=new AreaAndTimeController();
+	
+	@Autowired
+	private TPlanMapper tPlanMapper;
+	
+	@Autowired
+	private TPlanMeasureMapper tPlanMeasureMapper;
 	/**
 	 * 任务查询方法
 	 * @param request 请求
@@ -274,12 +284,31 @@ public class MissionAndScenarinoController {
 			}
 			//记录时段的所有ID
 			for (Long areaId: areaIdss) {
-				List<Long> timeIds=this.tTimeMapper.selectTimeIdByAreaId(areaId);
-				for (Long timeId : timeIds) {
-					timeIdss.add(timeId);
+				List<TTime> timeIds=this.tTimeMapper.selectEntityByAreaId(areaId);
+				for (TTime timeId : timeIds) {
+					timeIdss.add(timeId.getTimeId());
 				}
 			}
 			//执行时段级联删除方法
+//			for(Long timeId:timeIdss){
+//				int a=tTimeMapper.updateByisEffective(timeId);
+//				TTime times=this.tTimeMapper.selectByPrimaryKey(152l);
+//				if(a!=0){
+//					if(times.getPlanId()!=null && times.getPlanId()!=-1){
+//						TPlan tPlan=tPlanMapper.selectByPrimaryKey(times.getPlanId());
+//						if(tPlan.getCopyPlan().equals("0")){
+//							//修改预案为无效状态
+//							tPlan.setIsEffective("0");
+//							int up_status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
+//							if(up_status!=0){
+//								//删除预案的措施
+//								int del_status=tPlanMeasureMapper.deleteByPlanId(tPlan.getPlanId());						
+//							}
+//							
+//						}
+//						}
+//				}
+//			}
 			Map res=atc.delete_times(timeIdss);
 			String str=res.get("result").toString();
 			//判断时段级联方法是否执行成功  -1 不成功  1成功
