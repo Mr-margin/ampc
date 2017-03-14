@@ -51,7 +51,7 @@
  </select>
  
  <!-- 根据情景ID 查询区域对象集合 -->
- <select id="selectBySids" parameterType="hashMap" resultType="java.util.List">
+ <select id="selectBySids" parameterType="hashMap" resultType="java.lang.Long">
     select 
     <include refid="Base_Column_List" />
     ,
@@ -65,7 +65,7 @@
  <select id="selectByAreaId" parameterType="hashMap" resultMap="showInfo">
     SELECT SCENARINO_AREA_ID,AREA_NAME,PROVINCE_CODES, CITY_CODES, COUNTY_CODES 
          FROM T_SCENARINO_AREA WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
-             AND SCENARINO_AREA_ID=#{areaId,jdbcType=OTHER}
+             AND SCENARINO_AREA_ID=#{areaId,jdbcType=DECIMAL}
              ORDER BY ADD_TIME
  </select>
  
