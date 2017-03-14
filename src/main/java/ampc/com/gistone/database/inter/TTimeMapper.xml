@@ -28,7 +28,7 @@
   <!-- 根据区域ID 获取时段和预案 -->
   <select id="selectByAreaId" resultMap="timeAndPlan" parameterType="java.lang.Long" >
     select 
-    TIM.TIME_ID,TIME_START_DATE,TIME_END_DATE,PL.PLAN_ID,PLAN_NAME
+    TIM.TIME_ID,TIME_START_DATE,TIME_END_DATE,TIM.PLAN_ID,PLAN_NAME
     from T_TIME TIM 
     left JOIN T_PLAN PL ON TIM.PLAN_ID=PL.PLAN_ID
     where TIM.AREA_ID = #{_parameter,jdbcType=DECIMAL} AND TIM.IS_EFFECTIVE='1'
