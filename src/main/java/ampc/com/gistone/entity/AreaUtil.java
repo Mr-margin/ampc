@@ -2,6 +2,8 @@ package ampc.com.gistone.entity;
 
 import java.util.List;
 import java.util.Map;
+
+import net.sf.json.JSONArray;
 /**
  * 区域显示帮助类
  * @author WangShanxi
@@ -16,27 +18,28 @@ public class AreaUtil {
 	//时段的集合
 	private List<Map> timeItems;
 	//省级区域代码数
-    private String provinceCodes;
+    private JSONArray provinceCodes;
     //市级区域代码数
-    private String cityCodes;
+    private JSONArray cityCodes;
     //区县区域代码数
-    private String countyCodes;
-	public String getProvinceCodes() {
+    private JSONArray countyCodes;
+	
+	public JSONArray getProvinceCodes() {
 		return provinceCodes;
 	}
-	public void setProvinceCodes(String provinceCodes) {
+	public void setProvinceCodes(JSONArray provinceCodes) {
 		this.provinceCodes = provinceCodes;
 	}
-	public String getCityCodes() {
+	public JSONArray getCityCodes() {
 		return cityCodes;
 	}
-	public void setCityCodes(String cityCodes) {
+	public void setCityCodes(JSONArray cityCodes) {
 		this.cityCodes = cityCodes;
 	}
-	public String getCountyCodes() {
+	public JSONArray getCountyCodes() {
 		return countyCodes;
 	}
-	public void setCountyCodes(String countyCodes) {
+	public void setCountyCodes(JSONArray countyCodes) {
 		this.countyCodes = countyCodes;
 	}
 	public Object getAreaId() {
