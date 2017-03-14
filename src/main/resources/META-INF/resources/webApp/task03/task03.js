@@ -47,8 +47,11 @@ function hyc(){
 	var paramsName = {};
 	paramsName.userId = userId;
 	paramsName.planId = qjMsg.planId;
+	paramsName.timeId=qjMsg.timeId;
+	paramsName.timeStartTime=qjMsg.timeStartDate;
+	paramsName.timeEndTime=qjMsg.timeEndDate;
 	
-	ajaxPost('/ms/get_msInfo',paramsName).success(function(res){
+	ajaxPost('/plan/get_planInfo',paramsName).success(function(res){
 //		console.log(JSON.stringify(res));
 		var accordion_html = "";
 		if(res.status == 0){
@@ -89,8 +92,6 @@ function hyc(){
 		swal('校验失败', '', 'error')
 	})
 }
-
-
 /**
  * 获取措施汇总
  */
@@ -538,11 +539,11 @@ var dojoConfig = {
         location: "/js/tdlib"  
     }]
 };
-require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", 
-	 	"esri/symbols/SimpleMarkerSymbol", "esri/geometry/Point", "esri/geometry/Extent", "esri/renderers/SimpleRenderer", "esri/graphic", 
-        "dojo/_base/Color", "dojo/dom-style", "esri/tasks/FeatureSet", "esri/SpatialReference", "tdlib/gaodeLayer", "dojo/domReady!"], 
-	function(Map, FeatureLayer,GraphicsLayer, SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Point,Extent,SimpleRenderer, Graphic,
-	        Color, domStyle, FeatureSet, SpatialReference, gaodeLayer) {
+require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol",  'esri/symbols/PictureMarkerSymbol',
+         'esri/renderers/ClassBreaksRenderer',"esri/symbols/SimpleMarkerSymbol",'esri/dijit/PopupTemplate', "esri/geometry/Point", "esri/geometry/Extent", "esri/renderers/SimpleRenderer", "esri/graphic", 
+        "dojo/_base/Color", "dojo/dom-style",'dojo/query', "esri/tasks/FeatureSet", "esri/SpatialReference", 'extras/ClusterFeatureLayer',"tdlib/gaodeLayer", "dojo/domReady!"], 
+	function(Map, FeatureLayer,GraphicsLayer, SimpleFillSymbol, SimpleLineSymbol,PictureMarkerSymbol, ClassBreaksRenderer, SimpleMarkerSymbol,PopupTemplate, Point,Extent,SimpleRenderer, Graphic,
+	        Color, domStyle,query, FeatureSet, SpatialReference,ClusterFeatureLayer, gaodeLayer) {
 		dong.gaodeLayer = gaodeLayer;
 		dong.Graphic = Graphic;
 		dong.Point = Point;
@@ -550,7 +551,14 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 		dong.SpatialReference = SpatialReference;
 		dong.SimpleMarkerSymbol = SimpleMarkerSymbol;
 		dong.Extent = Extent;
-		
+		dong.SimpleLineSymbol =SimpleLineSymbol;
+		dong.Color = Color;
+		dong.PopupTemplate = PopupTemplate;
+		dong.ClusterFeatureLayer = ClusterFeatureLayer ;
+		dong.PictureMarkerSymbol = PictureMarkerSymbol;
+		dong.ClassBreaksRenderer = ClassBreaksRenderer ;
+		dong.domStyle = domStyle ;
+		dong.query = query;
 		app.mapList = new Array();
 		app.baselayerList = new Array();//默认加载矢量 new gaodeLayer({layertype:"road"});也可以
 		app.stlayerList = new Array();//加载卫星图
@@ -580,11 +588,20 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 		
 		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer("http://192.168.1.132:6080/arcgis/rest/services/china_gd/MapServer");//创建动态地图
 		app.mapList[0].addLayer(app.layer);
+		
+		app.str = {
+	            'markerSymbol': new SimpleMarkerSymbol('circle', 20, null, new Color([0, 0, 0, 0.25])),
+	            'marginLeft': '20',
+	            'marginTop': '20'
+	          };
 });
 
+var point_message = "";
 //地图加点
 function add_point(col){
-	
+	dong.domStyle.set(dong.query('a.action.zoomTo')[0], 'display', 'none');
+	point_message = col;
+	var point_sz = [];
 	var xmax = 0,xmin = 0,ymax = 0,ymin = 0;
 	$.each(col, function(i, vol) {
 		
@@ -602,25 +619,151 @@ function add_point(col){
 			ymin = y < ymin ? y : ymin;
 			ymax = y > ymax ? y : ymax;
 		}
+		app.str = new dong.SimpleMarkerSymbol('circle', 30,
+                new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([148,0,211,0.25]), 15),
+                new dong.Color([148,0,211,0.5]));
 		
 		var point = new dong.Point(x, y, new dong.SpatialReference({ wkid: 3857 }));
-		app.str = new dong.SimpleMarkerSymbol('esriSMSCircle','20','','red');
-		var graphic = new dong.Graphic(point, app.str);
-		app.pint.add(graphic);
+		
+		point_sz[i]= {"x":x,"y":y,"attributes":3857}
 	});
 	
+	
+//	 var popupTemplate = dong.PopupTemplate({
+//         'title': '',
+//         'fieldInfos': [{
+//           'fieldName': 'ADMINCODE',
+//           'label': 'Tract: ',
+//           visible: true
+//         }, {
+//           'fieldName': 'NAME',
+//           'label': 'Name: ',
+//           visible: true
+//         }]
+//       });
+	clusterLayer = new dong.ClusterFeatureLayer({
+//		   'url': 'http://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/CT2010_pts/FeatureServer/0',
+		 "data": point_sz,
+         "distance": 100,
+         "id": "clusters",
+         "labelColor": "#fff",
+         "labelOffset": 10,
+//         "resolution": map.extent.getWidth() / map.width,
+         "singleColor": "#888",
+//         "singleTemplate": popupTemplate
+      });
+	
+	
+	
+	 var picBaseUrl = 'http://static.arcgis.com/images/Symbols/Shapes/';
+     var defaultSym = new dong.PictureMarkerSymbol(picBaseUrl + 'BluePin1LargeB.png', 32, 32).setOffset(0, 15);
+     var renderer = new dong.ClassBreaksRenderer(defaultSym, 'clusterCount');
+     var small = new dong.SimpleMarkerSymbol('circle', 30,
+             new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([148,0,211,0.25]), 15),
+             new dong.Color([148,0,211,0.5]));
+    renderer.addBreak(0, Infinity, small);
+    
+    clusterLayer.setRenderer(renderer);
+    app.mapList[1].addLayer(clusterLayer);
+    app.mapList[1].on('click', cleanUp());
+	app.mapList[1].on('key-down', function(e) {
+         if (e.keyCode === 27) {
+           cleanUp();
+         }
+       });
+	console.log(point_sz)
+//	dojo.connect(app.pint, "onClick", optionclick);
 	var extent = new dong.Extent(xmin,ymin,xmax,ymax, new dong.SpatialReference({ wkid:3857 }));
-	
 	app.mapList[1].setExtent(extent);
-	
+	/***********************************************************/
+	function cleanUp() {
+		alert(2);
+		app.mapList[1].infoWindow.hide();
+	    //clusterLayer.clearSingles();
+	  }
+}
+function cleanUp() {
+	app.mapList[1].infoWindow.hide();
+    //clusterLayer.clearSingles();
+  }
+function error(err) {
+    console.log('something failed: ', err);
+  }
+window.showExtents = function() {
+    var extents = map.getLayer('clusterExtents');
+    if ( extents ) {
+      map.removeLayer(extents);
+    }
+    extents = new GraphicsLayer({ id: 'clusterExtents' });
+    var sym = new SimpleFillSymbol().setColor(new Color([205, 193, 197, 0.5]));
+
+    arrayUtils.forEach(clusterLayer._clusters, function(c, idx) {
+      var e = c.attributes.extent;
+      extents.add(new Graphic(new Extent(e[0], e[1], e[2], e[3], map.spatialReference), sym));
+    }, this);
+    map.addLayer(extents, 0);
+  }
+
+//点击点的事件
+function optionclick(event) {
+	app.mapList[0].infoWindow.hide();
+	var companyId = "";
+	$.each(point_message,function(i,item){
+		console.log(event.graphic._extent.xmax);
+		if(handle_x(item.lon) == event.graphic._extent.xmax && handle_y(item.lat) == event.graphic._extent.ymax){
+			companyId = item.companyId;
+		}
+	})
 	var ert = {};
 	ert.bigIndex = "应急系统新_1描述文件.xlsx";
 	ert.smallIndex = sc_val.smallIndex;
-	ert.filters = [{"companyId":""}];
+	ert.filters = [{"companyId":companyId}];
 	ert.summary = sc_val.summary;
 	
-	ajaxPost_w('http://192.168.1.116:8089/',ert).success(function(res){
-		
+	ajaxPost_w('http://192.168.1.116:8089/search/companyInfo',ert).success(function(res){
+		console.log(res);
+		if ( res.status == "success" ) {
+			
+		}
+//		 var content =  "22222<br><b>Order</b>: erer<br><b>SubOrder</b>: 23<br><b>Description</b>: ssss<br><b>Drainage</b>:graphic.attributes.DrainageCl " + 
+//	       + "<br><a href='#' onclick=\"infoWindowMobileHandler(event)\" class='info-window-mobile-button ui-btn'>Close</a> ";
+//	     app.mapList[1].infoWindow.setTitle("");
+//	     app.mapList[1].infoWindow.setContent(content);
+//	     app.mapList[1].infoWindow.show(event.mapPoint);
 	});
-	
+}
+//筛选点源列表
+function point_table () {
+	$('#metTable_point').bootstrapTable({
+		method : 'POST',
+		url : '192.168.1.116:8089/search/companyList',
+		dataType : "json",
+		iconSize : "outline",
+		clickToSelect : true,// 点击选中行
+		pagination : true, // 在表格底部显示分页工具栏
+		pageSize : 10, // 页面大小
+		pageNumber : 1, // 页数
+		pageList : [ 10, 20, 50, 100 ],
+		striped : true, // 使表格带有条纹
+		sidePagination : "server",// 表格分页的位置 client||server
+		queryParams : function(params) {
+			return {
+				pageSize : params.limit,
+				pageNumber : params.offset,
+			}
+		},
+		queryParamsType : "limit", // 参数格式,发送标准的RESTFul类型的参数请求
+		silent : true, // 刷新事件必须设置
+		contentType : "application/x-www-form-urlencoded", // 请求远程数据的内容类型。
+		onClickRow : function(row, $element) {
+			$('.success').removeClass('success');
+			$($element).addClass('success');
+		},
+		icons : {
+			refresh : "glyphicon-repeat",
+			toggle : "glyphicon-list-alt",
+			columns : "glyphicon-list"
+		}
+	});
+//	 $('#renwu_select').bootstrapTable('hideColumn', 'taskId');
 }
