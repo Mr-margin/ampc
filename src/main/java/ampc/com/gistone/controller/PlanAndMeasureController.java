@@ -490,13 +490,13 @@ public class PlanAndMeasureController {
 			//这个里面主要是子措施的列 右下角2
 			if(tme.getMeasureExcelA()!=null){
 				mu=new MeasureUtil();
-				mu.setName("a");
+				mu.setName(tme.getMeasureExcelAname().toString());
 				mu.setValue(tme.getMeasureExcelA());
 				mlist.add(mu);
 			}
 			if(tme.getMeasureExcelA1()!=null){
 				mu=new MeasureUtil();
-				mu.setName("a1");
+				mu.setName(tme.getMeasureExcelA1name().toString());
 				mu.setValue(tme.getMeasureExcelA1());
 				mlist.add(mu);
 			}
@@ -504,26 +504,26 @@ public class PlanAndMeasureController {
 			if(tme.getMeasureExcelType().equals("中长期措施")){
 				if(tme.getMeasureExcelIntensity()!=null){
 					mu=new MeasureUtil();
-					mu.setName("intensity");
+					mu.setName(tme.getMeasureExcelIntensityname().toString());
 					mu.setValue(tme.getMeasureExcelIntensity());
 					mlist.add(mu);
 				}
 			}
 			if(tme.getMeasureExcelIntensity1()!=null){
 				mu=new MeasureUtil();
-				mu.setName("intensity1");
+				mu.setName(tme.getMeasureExcelIntensity1name().toString());
 				mu.setValue(tme.getMeasureExcelIntensity1());
 				mlist.add(mu);
 			}
 			if(tme.getMeasureExcelAsh()!=null){
 				mu=new MeasureUtil();
-				mu.setName("ash");
+				mu.setName(tme.getMeasureExcelAshname().toString());
 				mu.setValue(tme.getMeasureExcelAsh());
 				mlist.add(mu);
 			}
 			if(tme.getMeasureExcelSulfer()!=null){
 				mu=new MeasureUtil();
-				mu.setName("sulfer");
+				mu.setName(tme.getMeasureExcelSulfername().toString());
 				mu.setValue(tme.getMeasureExcelSulfer());
 				mlist.add(mu);
 			}
