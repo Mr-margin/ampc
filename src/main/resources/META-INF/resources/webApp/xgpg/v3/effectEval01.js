@@ -38,7 +38,7 @@ $(function(){
             grid: {
                 left: '30px',
                 right: '30px',
-                bottom: '40px',
+                bottom: '70px',
             },
             dataZoom:[
                       {
@@ -54,7 +54,6 @@ $(function(){
                     	  start:60,
                     	  end:80
                       }
-                      
                       ],
             //工具箱，每个图表最多仅有一个工具箱  
             toolbox: {  
@@ -184,19 +183,6 @@ $(function(){
                     type: 'bar',  
                     //系列中的数据内容数组，折线图以及柱状图时数组长度等于所使用类目轴文本标签数组axis.data的长度，并且他们间是一一对应的。数组项通常为数值  
                     data: [5, 9, 24, 26, 28, 70, 175, 182, 48, 33.8, 22, 8],  
-                    //系列中的数据标注内容  
-                    markPoint: {  
-                        data: [  
-                            {type: 'max', name: '最大值'},  
-                            {type: 'min', name: '最小值'}  
-                        ]  
-                    },  
-                    //系列中的数据标线内容  
-                    markLine: {  
-                        data: [  
-                            {type: 'average', name: '平均值'}  
-                        ]  
-                    }  
                 }
                 
             ]  
