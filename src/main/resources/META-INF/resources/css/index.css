@@ -59,6 +59,32 @@
   left: 90%;
 }
 
+.areaTitle{
+  /*position: relative;*/
+}
+.areaTitle_con{
+  /*position: absolute;*/
+  width: 80%;
+  /*left: 20%;*/
+  height: 80px;
+  border: 1px solid #D9D9D9;
+  border-radius: 4px;
+  text-align: center;
+}
+.areaTitle_con b{
+  line-height: 50px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.areaTitle_con>i{
+  line-height: 48px;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+
+
 .front{
   height: 150px;
   width: 150px;
@@ -99,10 +125,10 @@
   font-size: 20px;
 }
 .areaToolDiv,.timeToolDiv{
-  position: absolute;
+ /*  position: absolute;
   left: -85px;
   bottom: 4px;
-  transition: left 0.3s linear;
+  transition: left 0.3s linear; */
 }
 .areaToolDiv button:hover,.timeToolDiv button:hover{
   color:#676a6c;
