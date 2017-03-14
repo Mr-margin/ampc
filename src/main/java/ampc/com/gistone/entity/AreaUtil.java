@@ -15,6 +15,30 @@ public class AreaUtil {
 	private Object areaName;
 	//时段的集合
 	private List<Map> timeItems;
+	//省级区域代码数
+    private String provinceCodes;
+    //市级区域代码数
+    private String cityCodes;
+    //区县区域代码数
+    private String countyCodes;
+	public String getProvinceCodes() {
+		return provinceCodes;
+	}
+	public void setProvinceCodes(String provinceCodes) {
+		this.provinceCodes = provinceCodes;
+	}
+	public String getCityCodes() {
+		return cityCodes;
+	}
+	public void setCityCodes(String cityCodes) {
+		this.cityCodes = cityCodes;
+	}
+	public String getCountyCodes() {
+		return countyCodes;
+	}
+	public void setCountyCodes(String countyCodes) {
+		this.countyCodes = countyCodes;
+	}
 	public Object getAreaId() {
 		return areaId;
 	}
