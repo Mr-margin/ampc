@@ -6,7 +6,7 @@ import java.util.Date;
 public class TMeasureExcel {
     private Long measureExcelId;
 
-    private Long measureExcelVersion;
+    private Object measureExcelVersion;
 
     private String measureExcelName;
 
@@ -44,6 +44,20 @@ public class TMeasureExcel {
 
     private Date deleteTime;
 
+    private Object measureExcelAname;
+
+    private Object measureExcelA1name;
+
+    private Object measureExcelIntensityname;
+
+    private Object measureExcelIntensity1name;
+
+    private Object measureExcelAshname;
+
+    private Object measureExcelSulfername;
+
+    private Object measureExcelSvname;
+
     public Long getMeasureExcelId() {
         return measureExcelId;
     }
@@ -52,11 +66,11 @@ public class TMeasureExcel {
         this.measureExcelId = measureExcelId;
     }
 
-    public Long getMeasureExcelVersion() {
+    public Object getMeasureExcelVersion() {
         return measureExcelVersion;
     }
 
-    public void setMeasureExcelVersion(Long measureExcelVersion) {
+    public void setMeasureExcelVersion(Object measureExcelVersion) {
         this.measureExcelVersion = measureExcelVersion;
     }
 
@@ -202,5 +216,61 @@ public class TMeasureExcel {
 
     public void setDeleteTime(Date deleteTime) {
         this.deleteTime = deleteTime;
+    }
+
+    public Object getMeasureExcelAname() {
+        return measureExcelAname;
+    }
+
+    public void setMeasureExcelAname(Object measureExcelAname) {
+        this.measureExcelAname = measureExcelAname;
+    }
+
+    public Object getMeasureExcelA1name() {
+        return measureExcelA1name;
+    }
+
+    public void setMeasureExcelA1name(Object measureExcelA1name) {
+        this.measureExcelA1name = measureExcelA1name;
+    }
+
+    public Object getMeasureExcelIntensityname() {
+        return measureExcelIntensityname;
+    }
+
+    public void setMeasureExcelIntensityname(Object measureExcelIntensityname) {
+        this.measureExcelIntensityname = measureExcelIntensityname;
+    }
+
+    public Object getMeasureExcelIntensity1name() {
+        return measureExcelIntensity1name;
+    }
+
+    public void setMeasureExcelIntensity1name(Object measureExcelIntensity1name) {
+        this.measureExcelIntensity1name = measureExcelIntensity1name;
+    }
+
+    public Object getMeasureExcelAshname() {
+        return measureExcelAshname;
+    }
+
+    public void setMeasureExcelAshname(Object measureExcelAshname) {
+        this.measureExcelAshname = measureExcelAshname;
+    }
+
+    public Object getMeasureExcelSulfername() {
+        return measureExcelSulfername;
+    }
+
+    public void setMeasureExcelSulfername(Object measureExcelSulfername) {
+        this.measureExcelSulfername = measureExcelSulfername;
+    }
+
+    public Object getMeasureExcelSvname() {
+        return measureExcelSvname;
+    }
+
+    public void setMeasureExcelSvname(Object measureExcelSvname) {
+        this.measureExcelSvname = measureExcelSvname;
     }
 }
