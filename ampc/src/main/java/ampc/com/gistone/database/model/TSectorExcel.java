@@ -5,7 +5,7 @@ import java.util.Date;
 public class TSectorExcel {
     private Long sectorExcelId;
 
-    private Long versionExcelId;
+    private Object versionExcelId;
 
     private Object sectorExcelName;
 
@@ -55,11 +55,11 @@ public class TSectorExcel {
         this.sectorExcelId = sectorExcelId;
     }
 
-    public Long getVersionExcelId() {
+    public Object getVersionExcelId() {
         return versionExcelId;
     }
 
-    public void setVersionExcelId(Long versionExcelId) {
+    public void setVersionExcelId(Object versionExcelId) {
         this.versionExcelId = versionExcelId;
     }
 
