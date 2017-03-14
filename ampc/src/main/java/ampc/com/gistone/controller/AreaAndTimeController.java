@@ -520,7 +520,7 @@ public class AreaAndTimeController {
 	 * @return 返回响应结果对象
 	 * @author WangShanxi
 	 */
-	@RequestMapping("area/get_areaAndTimeList")
+	@RequestMapping("/area/get_areaAndTimeList")
 	public AmpcResult get_AreaAndTimeList(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
 	    //添加异常捕捉
 		try {
