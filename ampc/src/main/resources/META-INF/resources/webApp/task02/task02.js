@@ -1030,6 +1030,7 @@ require(
  }
 //行政区划渲染
 function area (data) {
+	console.log(data)
     var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
     defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
 	for ( var i = 0 ; i < 3; i ++ ) {
@@ -1141,7 +1142,6 @@ function app2() {
 					 app.fea1.setRenderer(renderer);
 					 app.map1.addLayer(app.fea1);
 				} 
-				
 			}
 			if ( item.cityCodes != "" && item.cityCodes != null && item.cityCodes != undefined ) {//市
 				for(var i = 0 ; i < item.cityCodes.length; i++ ) {
@@ -1159,7 +1159,6 @@ function app2() {
 					      });
 					 app.fea2.setRenderer(renderer);
 					 app.map1.addLayer(app.fea2);
-//					 app.map1.setExtent(app.fea2.getExtent());
 				}
 				console.log(app.fea2)
 				console.log(app.fea2.graphics);
@@ -1193,5 +1192,3 @@ function app2() {
 		}  
 	})); 
 }
-
-
