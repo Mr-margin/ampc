@@ -16,6 +16,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
+
+
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -545,6 +549,7 @@ public class AreaAndTimeController {
 		    		if(tp.get("planId")==null){
 		    			
 		    			tp.put("planId", -1);
+		    			tp.put("planName", "无");
 		    		}
 		    		
 		    	}
@@ -576,25 +581,25 @@ public class AreaAndTimeController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//区域Id
-			Integer areaId=Integer.valueOf(data.get("areaId").toString());
+			Long areaId=Long.valueOf(data.get("areaId").toString());
 			//用户的id  确定当前用户
-			Integer userId=Integer.valueOf(data.get("userId").toString());
+			Long userId=Long.valueOf(data.get("userId").toString());
 			//添加信息到参数中
-			Map<String,Object> map=new HashMap<String,Object>();
-			map.put("areaId",areaId);
-			map.put("userId", userId);
 			//查询全部的区域ID和区域名称
-			Map areaInfo = this.tScenarinoAreaMapper.selectByAreaId(map);
+			JSONObject obj=new JSONObject();
+			TScenarinoAreaWithBLOBs areaInfo = tScenarinoAreaMapper.selectByPrimaryKey(areaId);
 			//进行Clob转换
-			Object obj=JsonUtil.clobToObject((Clob)areaInfo.get("provinceCodes"));
-			Object obj1=JsonUtil.clobToObject((Clob)areaInfo.get("cityCodes"));
-			Object obj2=JsonUtil.clobToObject((Clob)areaInfo.get("countyCodes"));
+			JSONArray arr=JSONArray.fromObject(areaInfo.getProvinceCodes());
+			JSONArray arr1=JSONArray.fromObject(areaInfo.getCityCodes());
+			JSONArray arr2=JSONArray.fromObject(areaInfo.getCountyCodes());
 			//重新写入返回结果集
-			areaInfo.put("provinceCodes", obj);
-			areaInfo.put("cityCodes", obj1);
-			areaInfo.put("countyCodes", obj2);
+			obj.put("areaId",areaId);
+			obj.put("areaName", areaInfo.getAreaName());
+			obj.put("provinceCodes", arr);
+			obj.put("cityCodes", arr1);
+			obj.put("countyCodes", arr2);
 			//返回结果
-			return AmpcResult.ok(areaInfo);
+			return AmpcResult.build(0, "ok",obj);
 		} catch (Exception e) {
 			e.printStackTrace();
 			//返回错误信息
@@ -827,16 +832,19 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 	TAddress tAddress=new TAddress();
 	List<TAddress> prolist=tAddressMapper.selectBLevel(tAddress);
 	JSONArray arr=new JSONArray();
-	
+	TScenarinoAreaWithBLOBs tsa=new TScenarinoAreaWithBLOBs();
 	if(data.get("areaId")!=null){
 		Long areaId =Long.parseLong(data.get("areaId").toString());//用户id
 		TScenarinoAreaWithBLOBs area=tScenarinoAreaMapper.selectByPrimaryKey(areaId);
 		for(TScenarinoAreaWithBLOBs areas:arealist){
 			if(areas.getScenarinoAreaId()==areaId){
-				arealist.remove(areas);	
+				tsa=area;	
 			}
 		}
-
+		if(tsa.getScenarinoAreaId()!=null){
+			arealist.remove(tsa);
+			
+		}
 	for(TAddress address:prolist){
 		
 		JSONObject obj=new JSONObject();
@@ -845,7 +853,9 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 		if(address.getAddressLevel().equals("1")){
 			obj.put("adcode", address.getProvinceCode());
 			obj.put("name",  address.getAddressName());
+			
 			for(TScenarinoAreaWithBLOBs aresa:arealist){
+				if(aresa.getProvinceCodes()!=null&&aresa.getProvinceCodes()!=""){
 				JSONArray Province=JSONArray.fromObject(aresa.getProvinceCodes());
 				for (int i = 0; i < Province.size(); i++) {
 					JSONObject ob  = (JSONObject) Province.get(i);
@@ -856,16 +866,19 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 						obj.put("chkDisabled", true);
 					}
 					}
+				}
 			}
+			
 			obj.put("level", address.getAddressLevel());
 			if(user.getProvinceCode().equals(address.getAddressCode())){
 				obj.put("open",true);
 			}
+			if(area.getProvinceCodes()!=null&&area.getProvinceCodes()!=""){
 			if(area.getProvinceCodes().equals(address.getAddressCode())){
 				obj.put("checked",true);
 				
 			}
-		
+			}
 		}//省
 		
 		//市
@@ -874,6 +887,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 			obj.put("padcode", address.getProvinceCode());
 			obj.put("name",address.getAddressName());
 			for(TScenarinoAreaWithBLOBs aresa:arealist){
+				if(aresa.getCityCodes()!=null&&aresa.getCityCodes()!=""){
 			JSONArray Province=JSONArray.fromObject(aresa.getCityCodes());
 			for (int i = 0; i < Province.size(); i++) {
 				JSONObject ob  = (JSONObject) Province.get(i);
@@ -885,15 +899,17 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 					obj.put("chkDisabled", true);
 				}
 				}
+				}
 			}
 			obj.put("level", address.getAddressLevel());
 			if(user.getCityCode().equals(address.getAddressCode())){
 				obj.put("open",true);
 			}
+			if(area.getCityCodes()!=null&&area.getCityCodes()!=""){
 			if(area.getCityCodes().equals(address.getAddressCode())){
-				obj.put("open",true);
+				obj.put("checked",true);
 			}
-			
+			}
 			
 		}//市
 		
@@ -902,6 +918,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 			obj.put("padcode", address.getProvinceCode()+address.getCityCode());
 			obj.put("name", address.getAddressName());
 			for(TScenarinoAreaWithBLOBs aresa:arealist){
+				if(aresa.getCountyCodes()!=null&&aresa.getCountyCodes()!=""){
 			JSONArray Province=JSONArray.fromObject(aresa.getCountyCodes());
 			for (int i = 0; i < Province.size(); i++) {
 				JSONObject ob  = (JSONObject) Province.get(i);
@@ -912,6 +929,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 					obj.put("name",(address.getAddressName())+couname);
 					obj.put("chkDisabled", true);
 
+				}
 				}
 				}
 			}
@@ -933,6 +951,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 				obj.put("name",  address.getAddressName());
 				obj.put("code", address.getAddressCode());
 				for(TScenarinoAreaWithBLOBs area:arealist){
+					if(area.getProvinceCodes()!=null&area.getProvinceCodes()!=""){
 					JSONArray Province=JSONArray.fromObject(area.getProvinceCodes());
 					for (int i = 0; i < Province.size(); i++) {
 						JSONObject ob  = (JSONObject) Province.get(i);
@@ -943,6 +962,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 							obj.put("chkDisabled", true);
 						}
 						}
+					}
 				}
 				obj.put("level", address.getAddressLevel());
 				if(user.getProvinceCode().equals(address.getAddressCode())){
@@ -959,6 +979,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 				obj.put("name",address.getAddressName());
 				obj.put("code", address.getAddressCode());
 				for(TScenarinoAreaWithBLOBs area:arealist){
+					if(area.getCityCodes()!=null&&area.getCityCodes()!=""){
 				JSONArray Province=JSONArray.fromObject(area.getCityCodes());
 				for (int i = 0; i < Province.size(); i++) {
 					JSONObject ob  = (JSONObject) Province.get(i);
@@ -969,6 +990,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 						String couname="("+(String) area.getAreaName()+")";
 						obj.put("name",(address.getAddressName())+couname);
 						obj.put("chkDisabled", true);
+					}
 					}
 					}
 				}
@@ -984,7 +1006,8 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 				obj.put("name", address.getAddressName());
 				obj.put("code", address.getAddressCode());
 				for(TScenarinoAreaWithBLOBs area:arealist){
-				JSONArray Province=JSONArray.fromObject(area.getCountyCodes());
+				if(area.getCountyCodes()!=null&&area.getCountyCodes()!=""){
+					JSONArray Province=JSONArray.fromObject(area.getCountyCodes());
 				for (int i = 0; i < Province.size(); i++) {
 					JSONObject ob  = (JSONObject) Province.get(i);
 					String obs=ob.toString();
@@ -996,6 +1019,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 
 					}
 					}
+				}
 				}
 				obj.put("level", address.getAddressLevel());
 				
@@ -1010,7 +1034,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 	}
 	return AmpcResult.build(0, "find_areas success",arr);	
 	}catch(Exception e){
-		System.out.println(e);
+		e.printStackTrace();
 		return AmpcResult.build(1, "find_areas error");	
 	}
 }
