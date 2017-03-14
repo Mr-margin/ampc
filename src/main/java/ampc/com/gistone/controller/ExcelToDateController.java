@@ -262,12 +262,8 @@ public class ExcelToDateController {
 			 * 根据request获取excel地址
 			 */
 			String fileName = request.getServletContext().getRealPath("/")+ "***.xlsx";
-			Long versionId=tMeasureExcelMapper.selectMaxVersion(userId);
-			if(versionId==null){
-				versionId=1L;
-			}else{
-				versionId++;
-			}
+			Long time=new Date().getTime();
+			String versionId="措施文件"+time;
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			List<TMeasureExcel> readTMeasure = ExcelToDate.ReadMeasure(fileName,versionId,userId);
 			for (TMeasureExcel tMeasure : readTMeasure) {
@@ -308,7 +304,7 @@ public class ExcelToDateController {
 			 */
 			String fileName = request.getServletContext().getRealPath("/")+ "***.xlsx";
 			Long time=new Date().getTime();
-			String versionId="文件"+time;
+			String versionId="行业文件"+time;
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			List<TSectorExcel> readSector = ExcelToDate.ReadSector(fileName,versionId,userId);
 			for (TSectorExcel tSector : readSector) {
