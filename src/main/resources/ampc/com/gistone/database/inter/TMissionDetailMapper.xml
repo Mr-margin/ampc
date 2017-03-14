@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TMissionDetailMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TMissionDetail" >
+    <id column="MISSION_ID" property="missionId" jdbcType="DECIMAL" />
+    <result column="MISSION_NAME" property="missionName" jdbcType="OTHER" />
+    <result column="MISSION_DOMAIN_ID" property="missionDomainId" jdbcType="DECIMAL" />
+    <result column="ES_COUPLING_ID" property="esCouplingId" jdbcType="DECIMAL" />
+    <result column="MISSION_START_DATE" property="missionStartDate" jdbcType="DATE" />
+    <result column="MISSION_END_DATE" property="missionEndDate" jdbcType="DATE" />
+    <result column="MISSION_ADD_TIME" property="missionAddTime" jdbcType="DATE" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="DATE" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
+    <result column="MISSION_STATUS" property="missionStatus" jdbcType="OTHER" />
+  </resultMap>
+  
+  <!-- 返回任务查询列表的数据 -->
+  <resultMap id="missionListMap" type="hashMap" >
+    <id column="MISSION_ID" property="missionId" jdbcType="DECIMAL" />
+    <result column="MISSION_NAME" property="missionName" jdbcType="OTHER" />
+    <result column="MISSION_DOMAIN_ID" property="missionDomainId" jdbcType="DECIMAL" />
+    <result column="V1" property="v1" jdbcType="VARCHAR" />
+    <result column="ES_COUPLING_ID" property="esCouplingId" jdbcType="DECIMAL" />
+    <result column="ES_COUPLING_NAME" property="esCouplingName" jdbcType="OTHER" />
+    <result column="MISSION_START_DATE" property="missionStartDate" jdbcType="DATE" />
+    <result column="MISSION_END_DATE" property="missionEndDate" jdbcType="DATE" />
+    <result column="MISSION_ADD_TIME" property="missionAddTime" jdbcType="DATE" />
+    <result column="MISSION_STATUS" property="missionStatus" jdbcType="OTHER" />
+  </resultMap>
+  <!-- 返回任务查询列表的列 -->
+  <sql id="mission_Column_List" >
+  	MISSION_ID,MISSION_NAME,MISSION_DOMAIN_ID,V1,MISS.ES_COUPLING_ID,
+   ES_COUPLING_NAME,MISSION_ADD_TIME,MISSION_START_DATE,MISSION_END_DATE,MISSION_STATUS
+  </sql>
+  <!-- 查询所有记录分页 可根据名称模糊查询 -->
+  <select id="selectAllOrByQueryName" parameterType="hashMap" resultMap="missionListMap" >
+   	SELECT * FROM (
+   	   SELECT T.*,ROWNUM AS RN FROM (
+         SELECT <include refid="mission_Column_List"/> FROM T_MISSION_DETAIL  MISS 
+		   INNER JOIN T_ES_COUPLING  COUP ON MISS.ES_COUPLING_ID= COUP.ES_COUPLING_ID
+           INNER JOIN T_DOMAIN_MISSION DOMA ON MISS.MISSION_DOMAIN_ID=DOMA.DOMAIN_ID
+			  WHERE MISS.IS_EFFECTIVE='1' AND MISS.USER_ID=#{userId,jdbcType=OTHER}  
+			  <if test="missionStatus != null" >
+        		AND MISS.MISSION_STATUS= #{missionStatus,jdbcType=OTHER}
+      		 </if>
+			  <if test="queryName != null" >
+        		AND (MISSION_NAME LIKE #{queryName,jdbcType=OTHER}
+        		OR V1 LIKE #{queryName,jdbcType=OTHER}
+        		OR ES_COUPLING_NAME LIKE #{queryName,jdbcType=OTHER}
+        		OR to_char(MISSION_ADD_TIME,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+        		OR to_char(MISSION_START_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+        		OR to_char(MISSION_END_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+        		OR MISSION_STATUS LIKE #{queryName,jdbcType=OTHER})
+      		 </if>
+			  ORDER BY MISS.MISSION_ID DESC
+	      ) T WHERE ROWNUM &lt;=#{endNum,jdbcType=OTHER}
+	   ) 
+	  WHERE RN > #{startNum,jdbcType=OTHER}
+  </select>
+  
+  <!--查询全部任务总条数  可根据名称模糊查询-->
+  <select id="selectCountOrByQueryName" parameterType="hashMap" resultType="int">
+  	 SELECT COUNT(*) FROM T_MISSION_DETAIL MISS
+  	 INNER JOIN T_ES_COUPLING  COUP ON MISS.ES_COUPLING_ID= COUP.ES_COUPLING_ID
+     INNER JOIN T_DOMAIN_MISSION DOMA ON MISS.MISSION_DOMAIN_ID=DOMA.DOMAIN_ID
+  	  WHERE MISS.IS_EFFECTIVE='1' AND MISS.USER_ID=#{userId,jdbcType=OTHER} 
+  	    <if test="missionStatus != null" >
+            AND MISSION_STATUS= #{missionStatus,jdbcType=OTHER}
+        </if>
+  	    <if test="queryName != null" >
+       		AND (MISSION_NAME LIKE #{queryName,jdbcType=OTHER}
+       		OR V1 LIKE #{queryName,jdbcType=OTHER}
+       		OR ES_COUPLING_NAME LIKE #{queryName,jdbcType=OTHER}
+       		OR to_char(MISSION_ADD_TIME,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+       		OR to_char(MISSION_START_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+       		OR to_char(MISSION_END_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+       		OR MISSION_STATUS LIKE #{queryName,jdbcType=OTHER})
+      </if>
+  </select>
+  
+  <!-- 修改所有的任务状态 相当于删除 -->
+  <update id="updateIsEffeByIds" parameterType="java.util.List">
+    update T_MISSION_DETAIL
+    set 
+      IS_EFFECTIVE = '0',
+      DELETE_TIME = (select sysdate from dual) 
+     where MISSION_ID in 
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+     		 #{item,jdbcType=DECIMAL}
+  		</foreach>
+  </update>
+  
+  
+  <!--添加任务对名称重复判断-->
+  <select id="check_MissioName" parameterType="hashMap" resultType="int">
+  	 SELECT COUNT(*) FROM T_MISSION_DETAIL WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+  	  <if test="missionName != null" >
+        	AND MISSION_NAME = #{missionName,jdbcType=OTHER}
+      </if>
+  </select>
+  
+  
+  
+  
+  
+  <sql id="Base_Column_List" >
+    MISSION_ID, MISSION_NAME, MISSION_DOMAIN_ID, ES_COUPLING_ID, MISSION_START_DATE, 
+    MISSION_END_DATE, MISSION_ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME, 
+    MISSION_STATUS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_MISSION_DETAIL
+    where MISSION_ID = #{missionId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_MISSION_DETAIL
+    where MISSION_ID = #{missionId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TMissionDetail" >
+    insert into T_MISSION_DETAIL (MISSION_ID, MISSION_NAME, MISSION_DOMAIN_ID, 
+      ES_COUPLING_ID, MISSION_START_DATE, MISSION_END_DATE, 
+      MISSION_ADD_TIME, UPDATE_TIME, USER_ID, 
+      IS_EFFECTIVE, DELETE_TIME, MISSION_STATUS
+      )
+    values (#{missionId,jdbcType=DECIMAL}, #{missionName,jdbcType=OTHER}, #{missionDomainId,jdbcType=DECIMAL}, 
+      #{esCouplingId,jdbcType=DECIMAL}, #{missionStartDate,jdbcType=DATE}, #{missionEndDate,jdbcType=DATE}, 
+      #{missionAddTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE}, #{userId,jdbcType=DECIMAL}, 
+      #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=DATE}, #{missionStatus,jdbcType=OTHER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TMissionDetail" >
+    insert into T_MISSION_DETAIL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="missionId != null" >
+        MISSION_ID,
+      </if>
+      <if test="missionName != null" >
+        MISSION_NAME,
+      </if>
+      <if test="missionDomainId != null" >
+        MISSION_DOMAIN_ID,
+      </if>
+      <if test="esCouplingId != null" >
+        ES_COUPLING_ID,
+      </if>
+      <if test="missionStartDate != null" >
+        MISSION_START_DATE,
+      </if>
+      <if test="missionEndDate != null" >
+        MISSION_END_DATE,
+      </if>
+      <if test="missionAddTime != null" >
+        MISSION_ADD_TIME,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE,
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME,
+      </if>
+      <if test="missionStatus != null" >
+        MISSION_STATUS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="missionId != null" >
+        #{missionId,jdbcType=DECIMAL},
+      </if>
+      <if test="missionName != null" >
+        #{missionName,jdbcType=OTHER},
+      </if>
+      <if test="missionDomainId != null" >
+        #{missionDomainId,jdbcType=DECIMAL},
+      </if>
+      <if test="esCouplingId != null" >
+        #{esCouplingId,jdbcType=DECIMAL},
+      </if>
+      <if test="missionStartDate != null" >
+        #{missionStartDate,jdbcType=DATE},
+      </if>
+      <if test="missionEndDate != null" >
+        #{missionEndDate,jdbcType=DATE},
+      </if>
+      <if test="missionAddTime != null" >
+        #{missionAddTime,jdbcType=DATE},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="isEffective != null" >
+        #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        #{deleteTime,jdbcType=DATE},
+      </if>
+      <if test="missionStatus != null" >
+        #{missionStatus,jdbcType=OTHER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TMissionDetail" >
+    update T_MISSION_DETAIL
+    <set >
+      <if test="missionName != null" >
+        MISSION_NAME = #{missionName,jdbcType=OTHER},
+      </if>
+      <if test="missionDomainId != null" >
+        MISSION_DOMAIN_ID = #{missionDomainId,jdbcType=DECIMAL},
+      </if>
+      <if test="esCouplingId != null" >
+        ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL},
+      </if>
+      <if test="missionStartDate != null" >
+        MISSION_START_DATE = #{missionStartDate,jdbcType=DATE},
+      </if>
+      <if test="missionEndDate != null" >
+        MISSION_END_DATE = #{missionEndDate,jdbcType=DATE},
+      </if>
+      <if test="missionAddTime != null" >
+        MISSION_ADD_TIME = #{missionAddTime,jdbcType=DATE},
+      </if>
+        UPDATE_TIME = (select sysdate from dual),
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      </if>
+      <if test="missionStatus != null" >
+        MISSION_STATUS = #{missionStatus,jdbcType=OTHER},
+      </if>
+    </set>
+    where MISSION_ID = #{missionId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TMissionDetail" >
+    update T_MISSION_DETAIL
+    set MISSION_NAME = #{missionName,jdbcType=OTHER},
+      MISSION_DOMAIN_ID = #{missionDomainId,jdbcType=DECIMAL},
+      ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL},
+      MISSION_START_DATE = #{missionStartDate,jdbcType=DATE},
+      MISSION_END_DATE = #{missionEndDate,jdbcType=DATE},
+      MISSION_ADD_TIME = #{missionAddTime,jdbcType=DATE},
+      UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      USER_ID = #{userId,jdbcType=DECIMAL},
+      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      MISSION_STATUS = #{missionStatus,jdbcType=OTHER}
+    where MISSION_ID = #{missionId,jdbcType=DECIMAL}
+  </update>
+</mapper>

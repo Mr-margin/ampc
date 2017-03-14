@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TScenarinoAreaMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TScenarinoArea" >
+    <id column="SCENARINO_AREA_ID" property="scenarinoAreaId" jdbcType="DECIMAL" />
+    <result column="SCENARINO_DETAIL_ID" property="scenarinoDetailId" jdbcType="DECIMAL" />
+    <result column="AREA_NAME" property="areaName" jdbcType="OTHER" />
+    <result column="ADD_TIME" property="addTime" jdbcType="DATE" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="DATE" />
+    <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.database.model.TScenarinoAreaWithBLOBs" extends="BaseResultMap" >
+    <result column="PROVINCE_CODES" property="provinceCodes" jdbcType="CLOB" />
+    <result column="CITY_CODES" property="cityCodes" jdbcType="CLOB" />
+    <result column="COUNTY_CODES" property="countyCodes" jdbcType="CLOB" />
+  </resultMap>
+  <!-- 区域id和区域名称 -->
+  <resultMap id="showIdAndName" type="hashMap" >
+     <id column="SCENARINO_AREA_ID" property="areaId" jdbcType="DECIMAL" />
+    <result column="AREA_NAME" property="areaName" jdbcType="OTHER" />
+  </resultMap>
+  
+  <!-- 区域id和区域名称和行政区划 -->
+  <resultMap id="showInfo" type="hashMap">
+     <id column="SCENARINO_AREA_ID" property="areaId" jdbcType="DECIMAL" />
+    <result column="AREA_NAME" property="areaName" jdbcType="OTHER" />
+    <result column="PROVINCE_CODES" property="provinceCodes" jdbcType="CLOB" />
+    <result column="CITY_CODES" property="cityCodes" jdbcType="CLOB" />
+    <result column="COUNTY_CODES" property="countyCodes" jdbcType="CLOB" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    SCENARINO_AREA_ID, SCENARINO_DETAIL_ID, AREA_NAME, ADD_TIME, USER_ID, UPDATE_TIME, 
+    IS_EFFECTIVE, DELETE_TIME
+  </sql>
+  <sql id="Blob_Column_List" >
+    PROVINCE_CODES, CITY_CODES, COUNTY_CODES
+  </sql>
+ 
+ <!-- 根据情景ID 查询区域ID和区域名称 -->
+ <select id="selectByScenarinoId" parameterType="hashMap" resultMap="showIdAndName">
+    SELECT SCENARINO_AREA_ID,AREA_NAME FROM T_SCENARINO_AREA WHERE IS_EFFECTIVE='1' 
+      AND USER_ID=#{userId,jdbcType=OTHER} AND SCENARINO_DETAIL_ID=#{scenarinoId,jdbcType=OTHER}
+ </select>
+ 
+  <!-- 根据情景ID 查询区域ID -->
+ <select id="selectBySid" parameterType="hashMap" resultType="java.lang.Long">
+    SELECT SCENARINO_AREA_ID FROM T_SCENARINO_AREA WHERE IS_EFFECTIVE='1' 
+      AND USER_ID=#{userId,jdbcType=DECIMAL} AND SCENARINO_DETAIL_ID=#{scenarinoId,jdbcType=DECIMAL}
+ </select>
+ 
+ <!-- 根据情景ID 查询区域对象集合 -->
+ <select id="selectBySids" parameterType="hashMap" resultType="java.util.List">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from T_SCENARINO_AREA
+    where IS_EFFECTIVE='1' 
+      AND USER_ID=#{userId,jdbcType=OTHER} AND SCENARINO_DETAIL_ID=#{scenarinoId,jdbcType=OTHER}
+ </select>
+ 
+  <!-- 根据区域ID 查询区域信息 -->
+ <select id="selectByAreaId" parameterType="hashMap" resultMap="showInfo">
+    SELECT SCENARINO_AREA_ID,AREA_NAME,PROVINCE_CODES, CITY_CODES, COUNTY_CODES 
+         FROM T_SCENARINO_AREA WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+             AND SCENARINO_AREA_ID=#{areaId,jdbcType=OTHER}
+             ORDER BY ADD_TIME
+ </select>
+ 
+ 
+ <!-- 根据情景ID 区域名称 查询区域ID -->
+ <select id="selectAreaIdByParam" parameterType="hashMap" resultType="java.lang.Long">
+    SELECT SCENARINO_AREA_ID
+         FROM T_SCENARINO_AREA WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+             AND SCENARINO_DETAIL_ID=#{scenarinoId,jdbcType=OTHER} AND AREA_NAME=#{areaName,jdbcType=OTHER}
+ </select>
+ 
+ 
+  <!-- 修改区域状态 相当于删除 -->
+  <update id="updateIsEffeByIds" parameterType="java.util.List" >
+    update T_SCENARINO_AREA
+    set 
+      IS_EFFECTIVE = '0',
+      DELETE_TIME = (select sysdate from dual) 
+     where SCENARINO_AREA_ID in 
+         <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+     		 #{item,jdbcType=DECIMAL}
+  		</foreach>
+  </update>
+ 
+ <!--添加区域对名称重复判断-->
+  <select id="check_AreaName" parameterType="hashMap" resultType="int">
+  	 SELECT COUNT(*) FROM T_SCENARINO_AREA WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+  	  <if test="areaName != null" >
+        	AND AREA_NAME = #{areaName,jdbcType=OTHER}
+      </if>
+  </select>
+ 
+ 
+ <!--查询区域条数 根据情景ID-->
+  <select id="selectCountByScenarinoId" parameterType="hashMap" resultType="int">
+  	 SELECT COUNT(*) FROM T_SCENARINO_AREA 
+  	  WHERE USER_ID=#{userId,jdbcType=OTHER} 
+            AND  SCENARINO_DETAIL_ID=#{scenarinoId,jdbcType=OTHER}
+  </select>
+ 
+ 
+ 
+ 
+ 
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from T_SCENARINO_AREA
+    where SCENARINO_AREA_ID = #{scenarinoAreaId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_SCENARINO_AREA
+    where SCENARINO_AREA_ID = #{scenarinoAreaId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TScenarinoAreaWithBLOBs" >
+    insert into T_SCENARINO_AREA (SCENARINO_AREA_ID, SCENARINO_DETAIL_ID, 
+      AREA_NAME, ADD_TIME, USER_ID, 
+      UPDATE_TIME, IS_EFFECTIVE, DELETE_TIME, 
+      PROVINCE_CODES, CITY_CODES, COUNTY_CODES
+      )
+    values (#{scenarinoAreaId,jdbcType=DECIMAL}, #{scenarinoDetailId,jdbcType=DECIMAL}, 
+      #{areaName,jdbcType=OTHER}, #{addTime,jdbcType=DATE}, #{userId,jdbcType=DECIMAL}, 
+      #{updateTime,jdbcType=DATE}, #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=DATE}, 
+      #{provinceCodes,jdbcType=CLOB}, #{cityCodes,jdbcType=CLOB}, #{countyCodes,jdbcType=CLOB}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TScenarinoAreaWithBLOBs" >
+    insert into T_SCENARINO_AREA
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="scenarinoAreaId != null" >
+        SCENARINO_AREA_ID,
+      </if>
+      <if test="scenarinoDetailId != null" >
+        SCENARINO_DETAIL_ID,
+      </if>
+      <if test="areaName != null" >
+        AREA_NAME,
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE,
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME,
+      </if>
+      <if test="provinceCodes != null" >
+        PROVINCE_CODES,
+      </if>
+      <if test="cityCodes != null" >
+        CITY_CODES,
+      </if>
+      <if test="countyCodes != null" >
+        COUNTY_CODES,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="scenarinoAreaId != null" >
+        #{scenarinoAreaId,jdbcType=DECIMAL},
+      </if>
+      <if test="scenarinoDetailId != null" >
+        #{scenarinoDetailId,jdbcType=DECIMAL},
+      </if>
+      <if test="areaName != null" >
+        #{areaName,jdbcType=OTHER},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=DATE},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="isEffective != null" >
+        #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        #{deleteTime,jdbcType=DATE},
+      </if>
+      <if test="provinceCodes != null" >
+        #{provinceCodes,jdbcType=CLOB},
+      </if>
+      <if test="cityCodes != null" >
+        #{cityCodes,jdbcType=CLOB},
+      </if>
+      <if test="countyCodes != null" >
+        #{countyCodes,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TScenarinoAreaWithBLOBs" >
+    update T_SCENARINO_AREA
+    <set >
+      <if test="scenarinoDetailId != null" >
+        SCENARINO_DETAIL_ID = #{scenarinoDetailId,jdbcType=DECIMAL},
+      </if>
+      <if test="areaName != null" >
+        AREA_NAME = #{areaName,jdbcType=OTHER},
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME = #{addTime,jdbcType=DATE},
+      </if>
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
+        UPDATE_TIME = (select sysdate from dual),
+      <if test="isEffective != null" >
+        IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      </if>
+      <if test="provinceCodes != null" >
+        PROVINCE_CODES = #{provinceCodes,jdbcType=CLOB},
+      </if>
+      <if test="cityCodes != null" >
+        CITY_CODES = #{cityCodes,jdbcType=CLOB},
+      </if>
+      <if test="countyCodes != null" >
+        COUNTY_CODES = #{countyCodes,jdbcType=CLOB},
+      </if>
+    </set>
+    where SCENARINO_AREA_ID = #{scenarinoAreaId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="ampc.com.gistone.database.model.TScenarinoAreaWithBLOBs" >
+    update T_SCENARINO_AREA
+    set SCENARINO_DETAIL_ID = #{scenarinoDetailId,jdbcType=DECIMAL},
+      AREA_NAME = #{areaName,jdbcType=OTHER},
+      ADD_TIME = #{addTime,jdbcType=DATE},
+      USER_ID = #{userId,jdbcType=DECIMAL},
+      UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      PROVINCE_CODES = #{provinceCodes,jdbcType=CLOB},
+      CITY_CODES = #{cityCodes,jdbcType=CLOB},
+      COUNTY_CODES = #{countyCodes,jdbcType=CLOB}
+    where SCENARINO_AREA_ID = #{scenarinoAreaId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TScenarinoArea" >
+    update T_SCENARINO_AREA
+    set SCENARINO_DETAIL_ID = #{scenarinoDetailId,jdbcType=DECIMAL},
+      AREA_NAME = #{areaName,jdbcType=OTHER},
+      ADD_TIME = #{addTime,jdbcType=DATE},
+      USER_ID = #{userId,jdbcType=DECIMAL},
+      UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      DELETE_TIME = #{deleteTime,jdbcType=DATE}
+    where SCENARINO_AREA_ID = #{scenarinoAreaId,jdbcType=DECIMAL}
+  </update>
+
+ <select id="selectByEntity" resultMap="ResultMapWithBLOBs" parameterType="ampc.com.gistone.database.model.TScenarinoAreaWithBLOBs" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from T_SCENARINO_AREA
+ 		where IS_EFFECTIVE =1
+         <if test="scenarinoAreaId != null">
+               and SCENARINO_AREA_ID = #{scenarinoAreaId,jdbcType=DECIMAL}
+            </if>
+            <if test="areaName != null">
+                and AREA_NAME = #{areaName,jdbcType=OTHER}
+            </if>
+            <if test="addTime != null">
+                and ADD_TIME = #{addTime,jdbcType=DATE}
+            </if>
+            <if test="userId != null">
+                and USER_ID = #{userId,jdbcType=DECIMAL}
+            </if>
+            <if test="updateTime != null and agentTel !=''">
+                and UPDATE_TIME = #{updateTime,jdbcType=DATE}
+            </if>
+            <if test="deleteTime != null">
+               and DELETE_TIME = #{deleteTime,jdbcType=DATE}
+            </if>
+            <if test="scenarinoDetailId != null">
+                and SCENARINO_DETAIL_ID = #{scenarinoDetailId,jdbcType=DECIMAL}
+            </if>
+    </select>
+</mapper>

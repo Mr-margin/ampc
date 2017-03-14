@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TScenarinoDetailMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TScenarinoDetail" >
+    <id column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
+    <result column="SCENARINO_TYPE" property="scenarinoType" jdbcType="DECIMAL" />
+    <result column="SCENARINO_NAME" property="scenarinoName" jdbcType="OTHER" />
+    <result column="SCENARINO_START_DATE" property="scenarinoStartDate" jdbcType="DATE" />
+    <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="DATE" />
+    <result column="SCENARINO_STATUS" property="scenarinoStatus" jdbcType="DECIMAL" />
+    <result column="MISSION_ID" property="missionId" jdbcType="DECIMAL" />
+    <result column="SCENARINO_ADD_TIME" property="scenarinoAddTime" jdbcType="DATE" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="DATE" />
+    <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
+    <result column="BASIS_SCENARINO_ID" property="basisScenarinoId" jdbcType="DECIMAL" />
+    <result column="BASIS_TIME" property="basisTime" jdbcType="DATE" />
+    <result column="CONTRAST_SCENARINO_ID" property="controstScenarinoId" jdbcType="DECIMAL" />
+    <result column="SCEN_TYPE" property="scenType" jdbcType="VARCHAR" />
+    <result column="PATH_DATE" property="pathDate" jdbcType="DATE" />
+    <result column="SPINUP" property="spinUp" jdbcType="DECIMAL" />
+  </resultMap>
+  <!-- 返回情景查询列表的数据 -->
+  <resultMap id="scenarinoListMap" type="hashMap" >
+    <id column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
+    <result column="SCENARINO_NAME" property="scenarinoName" jdbcType="OTHER" />
+    <result column="SCENARINO_START_DATE" property="scenarinoStartDate" jdbcType="DATE" />
+    <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="DATE" />
+    <result column="SCENARINO_STATUS" property="scenarinoStatus" jdbcType="DECIMAL" />
+    <result column="SCENARINO_STATU_NAME" property="scenarinoStatuName" jdbcType="OTHER" />
+    <result column="SCENARINO_ADD_TIME" property="scenarinoAddTime" jdbcType="DATE" />
+  </resultMap>
+  <!-- 返回情景查询列表的列 -->
+  <sql id="scenarino_Column_List" >
+  	SCENARINO_ID,SCENARINO_NAME,SCENARINO_START_DATE,SCENARINO_END_DATE,SCENARINO_STATUS,
+   SCENARINO_STATU_NAME,SCENARINO_ADD_TIME,BASIS_SCENARINO_ID,BASIS_TIME,CONTRAST_SCENARINO_ID,SCEN_TYPE,
+   PATH_DATE,SPINUP
+  </sql>
+  
+  <!-- 返回情景复制列表的数据 -->
+  <resultMap id="copyScenarinoListMap" type="hashMap" >
+    <result column="MISSION_NAME" property="missionName" jdbcType="OTHER" />
+    <result column="V1" property="v1" jdbcType="VARCHAR" />
+    <result column="ES_COUPLING_NAME" property="esCouplingName" jdbcType="OTHER" />
+    <result column="MISSION_STATUS" property="missionStatus" jdbcType="OTHER" />
+    <result column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
+    <result column="SCENARINO_NAME" property="scenarinoName" jdbcType="OTHER" />
+    <result column="SCENARINO_START_DATE" property="scenarinoStartDate" jdbcType="DATE" />
+    <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="DATE" />
+    <result column="SCENARINO_STATU_NAME" property="scenarinoStatuName" jdbcType="OTHER" />
+    <result column="SCENARINO_ADD_TIME" property="scenarinoAddTime" jdbcType="DATE" />
+  </resultMap>
+  
+  <!-- 返回情景复制列表的列 -->
+  <sql id="copyScenarino_Column_List" >
+  	  MISSION_NAME,V1,ES_COUPLING_NAME,MISSION_STATUS,
+	  SCENARINO_ID,SCENARINO_NAME,SCENARINO_START_DATE,SCENARINO_END_DATE,
+      SCENARINO_STATU_NAME,SCENARINO_ADD_TIME,BASIS_SCENARINO_ID,BASIS_TIME,CONTRAST_SCENARINO_ID,SCEN_TYPE,
+   PATH_DATE,SPINUP
+  </sql>
+  
+  <!-- 查询所有任务列表和情景列表 可根据情景名模糊查询 -->
+  <select id="selectAllOrByQueryName" parameterType="hashMap" resultMap="copyScenarinoListMap" >
+   SELECT * FROM (
+   	 SELECT T.*,ROWNUM AS RN FROM (
+         SELECT  <include refid="copyScenarino_Column_List"/>
+             FROM T_MISSION_DETAIL  MISS 
+							INNER JOIN T_ES_COUPLING  COUP ON MISS.ES_COUPLING_ID= COUP.ES_COUPLING_ID
+							INNER JOIN T_DOMAIN_MISSION DOMA ON MISS.MISSION_DOMAIN_ID=DOMA.DOMAIN_ID
+						  INNER JOIN T_SCENARINO_DETAIL SCEN ON MISS.MISSION_ID=SCEN.MISSION_ID
+						  INNER JOIN T_SCENARINO_STATUS STAT  ON SCEN.SCENARINO_STATUS=STAT.SCENARINO_STATU_ID
+									WHERE MISS.IS_EFFECTIVE='1' AND MISS.USER_ID=#{userId,jdbcType=OTHER}  AND
+											  SCEN.IS_EFFECTIVE='1' AND SCEN.USER_ID=#{userId,jdbcType=OTHER} 
+											    <if test="missionStatus != null" >
+        											AND MISSION_STATUS= #{missionStatus,jdbcType=OTHER}
+      		 									</if>
+										         <if test="queryName != null" >
+										       		AND (MISSION_NAME LIKE #{queryName,jdbcType=OTHER}
+										       		OR V1 LIKE #{queryName,jdbcType=OTHER})
+										       		OR ES_COUPLING_NAME LIKE #{queryName,jdbcType=OTHER})
+										       		OR MISSION_STATUS LIKE #{queryName,jdbcType=OTHER})
+										       		OR SCENARINO_NAME LIKE #{queryName,jdbcType=OTHER})
+										       		OR to_char(SCENARINO_START_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+										       		OR to_char(SCENARINO_END_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+										       		OR to_char(SCENARINO_ADD_TIME,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+										       		OR SCENARINO_STATU_NAME LIKE #{queryName,jdbcType=OTHER})
+										      	</if>
+											ORDER BY MISS.MISSION_ID DESC
+	    ) T WHERE ROWNUM &lt;=#{endNum,jdbcType=OTHER}
+	) 
+ 	WHERE RN > #{startNum,jdbcType=OTHER}
+   	
+  </select>
+  
+  <!--不分页查询所有有效的条数 可根据条件名模糊查询-->
+  <select id="selectCountOrByQueryName" parameterType="hashMap" resultType="int">
+  	 SELECT COUNT(*) FROM T_MISSION_DETAIL  MISS 
+  	  				INNER JOIN T_ES_COUPLING  COUP ON MISS.ES_COUPLING_ID= COUP.ES_COUPLING_ID
+					INNER JOIN T_DOMAIN_MISSION DOMA ON MISS.MISSION_DOMAIN_ID=DOMA.DOMAIN_ID
+					INNER JOIN T_SCENARINO_DETAIL SCEN ON MISS.MISSION_ID=SCEN.MISSION_ID
+					INNER JOIN T_SCENARINO_STATUS STAT  ON SCEN.SCENARINO_STATUS=STAT.SCENARINO_STATU_ID
+  		 WHERE MISS.IS_EFFECTIVE='1' AND MISS.USER_ID=#{userId,jdbcType=OTHER}  AND
+			SCEN.IS_EFFECTIVE='1' AND SCEN.USER_ID=#{userId,jdbcType=OTHER} 
+  	    <if test="missionStatus != null" >
+        	AND MISSION_STATUS= #{missionStatus,jdbcType=OTHER}
+      	</if>
+  	    <if test="queryName != null" >
+       		AND (MISSION_NAME LIKE #{queryName,jdbcType=OTHER}
+       		OR V1 LIKE #{queryName,jdbcType=OTHER})
+       		OR ES_COUPLING_NAME LIKE #{queryName,jdbcType=OTHER})
+       		OR MISSION_STATUS LIKE #{queryName,jdbcType=OTHER})
+       		OR SCENARINO_NAME LIKE #{queryName,jdbcType=OTHER})
+       		OR to_char(SCENARINO_START_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+       		OR to_char(SCENARINO_END_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+       		OR to_char(SCENARINO_ADD_TIME,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+       		OR SCENARINO_STATU_NAME LIKE #{queryName,jdbcType=OTHER})
+      	</if>
+  </select>
+  
+  
+  
+  
+   <!-- 根据任务Id查询情景列表 并可根据条件名模糊查询 -->
+  <select id="selectByMissionIdAndQueryName" parameterType="hashMap" resultMap="scenarinoListMap" >
+   	 SELECT  <include refid="scenarino_Column_List"/>
+  		FROM T_SCENARINO_DETAIL  SCEN 
+  		INNER JOIN T_SCENARINO_STATUS STAT  ON SCEN.SCENARINO_STATUS=STAT.SCENARINO_STATU_ID
+			  WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+			  AND MISSION_ID=#{missionId,jdbcType=OTHER}
+			  <if test="queryName != null" >
+        		AND (SCENARINO_NAME LIKE #{queryName,jdbcType=OTHER}
+        		OR to_char(SCENARINO_START_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+        		OR to_char(SCENARINO_END_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+        		OR to_char(SCENARINO_ADD_TIME,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
+        		OR SCENARINO_STATU_NAME LIKE #{queryName,jdbcType=OTHER})
+      		 </if>
+			  ORDER BY SCENARINO_ID DESC
+  </select>
+  
+  
+  <!-- 根据任务Id查询出所有的情景Id 用来级联删除 -->
+  <select id="selectByMissionId" parameterType="hashMap" resultType="java.lang.Long" >
+     SELECT SCENARINO_ID FROM T_SCENARINO_DETAIL 
+		WHERE MISSION_ID=#{missionId,jdbcType=OTHER} AND IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+  </select>
+  
+  <!-- 根据任务ID和情景名称 查询情景ID -->
+  <select id="selectByMidAndSName" parameterType="hashMap" resultType="java.lang.Long" >
+   	 SELECT  SCENARINO_ID
+  		FROM T_SCENARINO_DETAIL  
+			 WHERE MISSION_ID=#{missionId,jdbcType=OTHER} AND IS_EFFECTIVE='1'
+			 	AND SCENARINO_NAME=#{scenarinoName,jdbcType=OTHER}
+  </select>
+  
+  
+   <!--添加情景对名称重复判断-->
+  <select id="check_ScenarinoName" parameterType="hashMap" resultType="int">
+  	 SELECT COUNT(*) FROM T_SCENARINO_DETAIL WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+  	     AND MISSION_ID=#{missionId,jdbcType=OTHER}
+  	  <if test="scenarinoName != null" >
+        	AND SCENARINO_NAME = #{scenarinoName,jdbcType=OTHER}
+      </if>
+  </select>
+  
+  <!-- 修改所有的情景状态 相当于删除 -->
+  <update id="updateIsEffeByIds" parameterType="java.util.List">
+    update T_SCENARINO_DETAIL
+    set 
+      IS_EFFECTIVE = '0',
+      DELETE_TIME = (select sysdate from dual) 
+     where SCENARINO_ID in 
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+     		 #{item,jdbcType=DECIMAL}
+  		</foreach>
+  </update>
+  
+  
+  
+  
+  
+  <sql id="Base_Column_List" >
+    SCENARINO_ID, SCENARINO_TYPE, SCENARINO_NAME, SCENARINO_START_DATE, SCENARINO_END_DATE, 
+    SCENARINO_STATUS, MISSION_ID, SCENARINO_ADD_TIME, USER_ID, UPDATE_TIME, IS_EFFECTIVE, 
+    DELETE_TIME, BASIS_SCENARINO_ID, BASIS_TIME, CONTRAST_SCENARINO_ID, SCEN_TYPE,
+    PATH_DATE, SPINUP
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_SCENARINO_DETAIL
+    where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_SCENARINO_DETAIL
+    where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TScenarinoDetail" >
+    insert into T_SCENARINO_DETAIL (SCENARINO_ID, SCENARINO_TYPE, SCENARINO_NAME, 
+      SCENARINO_START_DATE, SCENARINO_END_DATE, SCENARINO_STATUS, 
+      MISSION_ID, SCENARINO_ADD_TIME, USER_ID, 
+      UPDATE_TIME, IS_EFFECTIVE, DELETE_TIME,
+      BASIS_SCENARINO_ID, BASIS_TIME, CONTRAST_SCENARINO_ID,SCEN_TYPE,
+      PATH_DATE,SPINUP
+      )
+    values (#{scenarinoId,jdbcType=DECIMAL}, #{scenarinoType,jdbcType=DECIMAL}, #{scenarinoName,jdbcType=OTHER}, 
+      #{scenarinoStartDate,jdbcType=DATE}, #{scenarinoEndDate,jdbcType=DATE}, #{scenarinoStatus,jdbcType=DECIMAL}, 
+      #{missionId,jdbcType=DECIMAL}, #{scenarinoAddTime,jdbcType=DATE}, #{userId,jdbcType=DECIMAL}, 
+      #{updateTime,jdbcType=DATE}, #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=DATE},
+      #{basisScenarinoId,jdbcType=DECIMAL},#{basisTime,jdbcType=DATE},#{controstScenarinoId,jdbcType=DECIMAL},
+      #{scenType,jdbcType=VARCHAR},#{pathDate,jdbcType=DATE},#{spinUp,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TScenarinoDetail" >
+    insert into T_SCENARINO_DETAIL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="scenarinoId != null" >
+        SCENARINO_ID,
+      </if>
+      <if test="scenarinoType != null" >
+        SCENARINO_TYPE,
+      </if>
+      <if test="scenarinoName != null" >
+        SCENARINO_NAME,
+      </if>
+      <if test="scenarinoStartDate != null" >
+        SCENARINO_START_DATE,
+      </if>
+      <if test="scenarinoEndDate != null" >
+        SCENARINO_END_DATE,
+      </if>
+      <if test="scenarinoStatus != null" >
+        SCENARINO_STATUS,
+      </if>
+      <if test="missionId != null" >
+        MISSION_ID,
+      </if>
+      <if test="scenarinoAddTime != null" >
+        SCENARINO_ADD_TIME,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE,
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME,
+      </if>
+       <if test="basisScenarinoId != null" >
+        BASIS_SCENARINO_ID,
+      </if>
+       <if test="basisTime != null" >
+        BASIS_TIME,
+      </if>
+       <if test="controstScenarinoId != null" >
+        CONTRAST_SCENARINO_ID,
+      </if>
+       <if test="scenType != null" >
+        SCEN_TYPE,
+      </if>
+      <if test="pathDate != null" >
+        PATH_DATE,
+      </if>
+       <if test="spinUp != null" >
+        SPINUP,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="scenarinoId != null" >
+        #{scenarinoId,jdbcType=DECIMAL},
+      </if>
+      <if test="scenarinoType != null" >
+        #{scenarinoType,jdbcType=DECIMAL},
+      </if>
+      <if test="scenarinoName != null" >
+        #{scenarinoName,jdbcType=OTHER},
+      </if>
+      <if test="scenarinoStartDate != null" >
+        #{scenarinoStartDate,jdbcType=DATE},
+      </if>
+      <if test="scenarinoEndDate != null" >
+        #{scenarinoEndDate,jdbcType=DATE},
+      </if>
+      <if test="scenarinoStatus != null" >
+        #{scenarinoStatus,jdbcType=DECIMAL},
+      </if>
+      <if test="missionId != null" >
+        #{missionId,jdbcType=DECIMAL},
+      </if>
+      <if test="scenarinoAddTime != null" >
+        #{scenarinoAddTime,jdbcType=DATE},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="isEffective != null" >
+        #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        #{deleteTime,jdbcType=DATE},
+      </if>
+      <if test="basisScenarinoId != null" >
+         #{basisScenarinoId,jdbcType=DECIMAL},
+      </if>
+      <if test="basisTime != null" >
+         #{basisTime,jdbcType=DATE},
+      </if>
+      <if test="controstScenarinoId != null" >
+         #{controstScenarinoId,jdbcType=DECIMAL},
+      </if>
+      <if test="scenType != null" >
+         #{scenType,jdbcType=VARCHAR},
+      </if>
+      <if test="pathDate != null" >
+         #{pathDate,jdbcType=DATE},
+      </if>
+      <if test="spinUp != null" >
+         #{spinUp,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TScenarinoDetail" >
+    update T_SCENARINO_DETAIL
+    <set >
+      <if test="scenarinoType != null" >
+        SCENARINO_TYPE = #{scenarinoType,jdbcType=DECIMAL},
+      </if>
+      <if test="scenarinoName != null" >
+        SCENARINO_NAME = #{scenarinoName,jdbcType=OTHER},
+      </if>
+      <if test="scenarinoStartDate != null" >
+        SCENARINO_START_DATE = #{scenarinoStartDate,jdbcType=DATE},
+      </if>
+      <if test="scenarinoEndDate != null" >
+        SCENARINO_END_DATE = #{scenarinoEndDate,jdbcType=DATE},
+      </if>
+      <if test="scenarinoStatus != null" >
+        SCENARINO_STATUS = #{scenarinoStatus,jdbcType=DECIMAL},
+      </if>
+      <if test="missionId != null" >
+        MISSION_ID = #{missionId,jdbcType=DECIMAL},
+      </if>
+      <if test="scenarinoAddTime != null" >
+        SCENARINO_ADD_TIME = #{scenarinoAddTime,jdbcType=DATE},
+      </if>
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      </if>
+       <if test="basisScenarinoId != null" >
+        BASIS_SCENARINO_ID = #{basisScenarinoId,jdbcType=DECIMAL},
+      </if>
+       <if test="basisTime != null" >
+        BASIS_TIME = #{basisTime,jdbcType=DATE},
+      </if>
+       <if test="controstScenarinoId != null" >
+        CONTRAST_SCENARINO_ID = #{controstScenarinoId,jdbcType=DECIMAL},
+      </if>
+       <if test="scenType != null" >
+        SCEN_TYPE = #{scenType,jdbcType=VARCHAR},
+      </if>
+       <if test="pathDate != null" >
+        PATH_DATE = #{pathDate,jdbcType=DATE},
+      </if>
+      <if test="spinUp != null" >
+        SPINUP = #{spinUp,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TScenarinoDetail" >
+    update T_SCENARINO_DETAIL
+    set SCENARINO_TYPE = #{scenarinoType,jdbcType=DECIMAL},
+      SCENARINO_NAME = #{scenarinoName,jdbcType=OTHER},
+      SCENARINO_START_DATE = #{scenarinoStartDate,jdbcType=DATE},
+      SCENARINO_END_DATE = #{scenarinoEndDate,jdbcType=DATE},
+      SCENARINO_STATUS = #{scenarinoStatus,jdbcType=DECIMAL},
+      MISSION_ID = #{missionId,jdbcType=DECIMAL},
+      SCENARINO_ADD_TIME = #{scenarinoAddTime,jdbcType=DATE},
+      USER_ID = #{userId,jdbcType=DECIMAL},
+      UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      BASIS_SCENARINO_ID = #{basisScenarinoId,jdbcType=DECIMAL},
+      BASIS_TIME = #{basisTime,jdbcType=DATE},
+      CONTRAST_SCENARINO_ID = #{controstScenarinoId,jdbcType=DECIMAL},
+      SCEN_TYPE = #{scenType,jdbcType=VARCHAR},
+      PATH_DATE = #{pathDate,jdbcType=DATE},
+      SPINUP = #{spinUp,jdbcType=DECIMAL}
+    where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
+  </update>
+   <select id="selectAllByMissionId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+   	 SELECT 
+		<include refid="Base_Column_List" />
+  		FROM T_SCENARINO_DETAIL  
+			 WHERE MISSION_ID=#{missionId,jdbcType=DECIMAL} AND IS_EFFECTIVE='1'
+		ORDER BY SCENARINO_END_DATE DESC
+  </select>
+  <select id="selectMaxEndTime" resultType="java.util.Date" >
+   	 SELECT  max(SCENARINO_END_DATE)
+  		FROM T_SCENARINO_DETAIL  
+			 WHERE SCEN_TYPE='3' AND IS_EFFECTIVE='1'
+  </select>
+  <select id="selectid" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TScenarinoDetail" >
+   	 SELECT 
+		<include refid="Base_Column_List" />
+  		FROM T_SCENARINO_DETAIL  
+			 WHERE 1=1
+			 <if test="scenarinoType != null" >
+       and SCENARINO_TYPE = #{scenarinoType,jdbcType=DECIMAL}
+      </if>
+      <if test="scenarinoName != null" >
+       and SCENARINO_NAME = #{scenarinoName,jdbcType=OTHER}
+      </if>
+      <if test="scenarinoStartDate != null" >
+       and SCENARINO_START_DATE = #{scenarinoStartDate,jdbcType=DATE}
+      </if>
+      <if test="scenarinoEndDate != null" >
+       and SCENARINO_END_DATE = #{scenarinoEndDate,jdbcType=DATE}
+      </if>
+      <if test="scenarinoStatus != null" >
+       and SCENARINO_STATUS = #{scenarinoStatus,jdbcType=DECIMAL}
+      </if>
+      <if test="missionId != null" >
+       and MISSION_ID = #{missionId,jdbcType=DECIMAL}
+      </if>
+      <if test="scenarinoAddTime != null" >
+       and SCENARINO_ADD_TIME = #{scenarinoAddTime,jdbcType=DATE}
+      </if>
+      <if test="userId != null" >
+       and USER_ID = #{userId,jdbcType=DECIMAL}
+      </if>
+      <if test="updateTime != null" >
+       and UPDATE_TIME = #{updateTime,jdbcType=DATE}
+      </if>
+      <if test="isEffective != null" >
+       and IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR}
+      </if>
+      <if test="deleteTime != null" >
+       and DELETE_TIME = #{deleteTime,jdbcType=DATE}
+      </if>
+       <if test="basisScenarinoId != null" >
+       and BASIS_SCENARINO_ID = #{basisScenarinoId,jdbcType=DECIMAL}
+      </if>
+       <if test="basisTime != null" >
+       and BASIS_TIME = #{basisTime,jdbcType=DATE}
+      </if>
+       <if test="controstScenarinoId != null" >
+       and CONTRAST_SCENARINO_ID = #{controstScenarinoId,jdbcType=DECIMAL}
+      </if>
+       <if test="scenType != null" >
+       and SCEN_TYPE = #{scenType,jdbcType=VARCHAR}
+      </if>
+       <if test="pathDate != null" >
+       and PATH_DATE = #{pathDate,jdbcType=DATE}
+      </if>
+      <if test="spinUp != null" >
+       and SPINUP = #{spinUp,jdbcType=DECIMAL}
+      </if>
+  </select>
+</mapper>

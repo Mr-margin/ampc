@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TAddressMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TAddress" >
+    <id column="ADDRESS_ID" property="addressId" jdbcType="DECIMAL" />
+    <result column="ADDRESS_NAME" property="addressName" jdbcType="OTHER" />
+    <result column="ADDRESS_CODE" property="addressCode" jdbcType="DECIMAL" />
+    <result column="ADDRESS_LEVEL" property="addressLevel" jdbcType="VARCHAR" />
+    <result column="PROVINCE_CODE" property="provinceCode" jdbcType="VARCHAR" />
+    <result column="CITY_CODE" property="cityCode" jdbcType="VARCHAR" />
+    <result column="COUNTY_CODE" property="countyCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ADDRESS_ID, ADDRESS_NAME, ADDRESS_CODE, ADDRESS_LEVEL, PROVINCE_CODE, CITY_CODE, 
+    COUNTY_CODE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_ADDRESS
+    where ADDRESS_ID = #{addressId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from T_ADDRESS
+    where ADDRESS_ID = #{addressId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TAddress" >
+    insert into T_ADDRESS (ADDRESS_ID, ADDRESS_NAME, ADDRESS_CODE, 
+      ADDRESS_LEVEL, PROVINCE_CODE, CITY_CODE, 
+      COUNTY_CODE)
+    values (#{addressId,jdbcType=DECIMAL}, #{addressName,jdbcType=OTHER}, #{addressCode,jdbcType=DECIMAL}, 
+      #{addressLevel,jdbcType=VARCHAR}, #{provinceCode,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR}, 
+      #{countyCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TAddress" >
+    insert into T_ADDRESS
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="addressId != null" >
+        ADDRESS_ID,
+      </if>
+      <if test="addressName != null" >
+        ADDRESS_NAME,
+      </if>
+      <if test="addressCode != null" >
+        ADDRESS_CODE,
+      </if>
+      <if test="addressLevel != null" >
+        ADDRESS_LEVEL,
+      </if>
+      <if test="provinceCode != null" >
+        PROVINCE_CODE,
+      </if>
+      <if test="cityCode != null" >
+        CITY_CODE,
+      </if>
+      <if test="countyCode != null" >
+        COUNTY_CODE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="addressId != null" >
+        #{addressId,jdbcType=DECIMAL},
+      </if>
+      <if test="addressName != null" >
+        #{addressName,jdbcType=OTHER},
+      </if>
+      <if test="addressCode != null" >
+        #{addressCode,jdbcType=DECIMAL},
+      </if>
+      <if test="addressLevel != null" >
+        #{addressLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceCode != null" >
+        #{provinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null" >
+        #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="countyCode != null" >
+        #{countyCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TAddress" >
+    update T_ADDRESS
+    <set >
+      <if test="addressName != null" >
+        ADDRESS_NAME = #{addressName,jdbcType=OTHER},
+      </if>
+      <if test="addressCode != null" >
+        ADDRESS_CODE = #{addressCode,jdbcType=DECIMAL},
+      </if>
+      <if test="addressLevel != null" >
+        ADDRESS_LEVEL = #{addressLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceCode != null" >
+        PROVINCE_CODE = #{provinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null" >
+        CITY_CODE = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="countyCode != null" >
+        COUNTY_CODE = #{countyCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ADDRESS_ID = #{addressId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TAddress" >
+    update T_ADDRESS
+    set ADDRESS_NAME = #{addressName,jdbcType=OTHER},
+      ADDRESS_CODE = #{addressCode,jdbcType=DECIMAL},
+      ADDRESS_LEVEL = #{addressLevel,jdbcType=VARCHAR},
+      PROVINCE_CODE = #{provinceCode,jdbcType=VARCHAR},
+      CITY_CODE = #{cityCode,jdbcType=VARCHAR},
+      COUNTY_CODE = #{countyCode,jdbcType=VARCHAR}
+    where ADDRESS_ID = #{addressId,jdbcType=DECIMAL}
+  </update>
+  <select id="selectBLevel" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TAddress" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_ADDRESS
+    where 1=1
+     <if test="addressName != null">
+               and ADDRESS_NAME = #{addressName,jdbcType=OTHER}
+            </if>
+            <if test="addressCode != null">
+                and ADDRESS_CODE = #{addressCode,jdbcType=DECIMAL}
+            </if>
+            <if test="addressLevel != null">
+                and  ADDRESS_LEVEL = #{addressLevel,jdbcType=VARCHAR}
+            </if>
+            <if test="provinceCode != null">
+                and  PROVINCE_CODE = #{provinceCode,jdbcType=VARCHAR}
+            </if>
+            <if test="cityCode != null">
+                and CITY_CODE = #{cityCode,jdbcType=VARCHAR}
+            </if>
+            <if test="countyCode != null">
+               and COUNTY_CODE = #{countyCode,jdbcType=VARCHAR}
+            </if>
+            <if test="addressId != null">
+               and ADDRESS_ID = #{addressId,jdbcType=DECIMAL}
+            </if>
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_ADDRESS
+     </select>
+</mapper>
