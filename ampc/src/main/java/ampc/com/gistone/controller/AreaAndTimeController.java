@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -555,7 +556,8 @@ public class AreaAndTimeController {
 			    	}
 		    	List<Map> timeplan=this.tTimeMapper.selectByAreaId(area.getScenarinoAreaId());
 		    	for(Map tp:timeplan){
-		    		if(tp.get("planId")==null){
+		    		Long s=Long.valueOf(tp.get("planId").toString());
+		    		if(tp.get("planId")==null||s==-1){
 		    			tp.put("planId", -1);
 		    			tp.put("planName", "无");
 		    		}
