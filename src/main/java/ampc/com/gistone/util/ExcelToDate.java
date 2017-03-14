@@ -161,7 +161,7 @@ public class ExcelToDate {
 	* 读取excel数据   读取行业Excel表
 	* @param path  
 	*/
-	public static List<TSectorExcel> ReadSector(String fileName,Long versionId,Long userId){  
+	public static List<TSectorExcel> ReadSector(String fileName,String versionId,Long userId){  
 		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_4行业匹配.xlsx";
 		List<TSectorExcel> sectorList=new ArrayList<TSectorExcel>();
         try {  
