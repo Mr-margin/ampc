@@ -133,7 +133,6 @@
     border-top-left-radius: 0;
 }
 </style>
-
 <div class='col-md-6' style="height:100%;padding-left: 0px;">
 	<div class="ibox float-e-margins" style="height:100%;">
 	    <div class="ibox-title">
@@ -337,18 +336,29 @@
 					        <h5>筛选点源列表</h5>
 					    </div>
 					    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;border:1px solid #75B9E6;padding: 5px;">
-					    	<table class="table table-hover table-striped">
+					    	<table id="metTable_point">
 								<thead>
 									<tr>
-										<th><label for="checkall"><input type="checkbox" id="checkall"></label></th>
-										<th>所属</th>
-										<th>企业名称</th>
-										<th>设备名称</th>
-										<th>设备数</th>
-									</tr>
-								</thead>
-								<tbody></tbody>
-							</table>
+	                                   	<th data-field="state" data-checkbox="true" formatter="stateFormatter"></th>
+	                                   	<th data-field="v3" data-halign="center" data-align="center">所属</th>
+	                                   	<th data-field="v4" data-halign="center" data-align="center">企业名称</th>
+	                                    <th data-field="v5" data-halign="center" data-align="center">设备名称</th>
+	                                    <th data-field="v9" data-halign="center" data-align="center">设备数</th>
+                                    </tr>
+                                  </thead>
+                              </table>
+<!-- 					    	<table class="table table-hover table-striped"> -->
+<!-- 								<thead> -->
+<!-- 									<tr> -->
+<!-- 										<th><label for="checkall"><input type="checkbox" id="checkall"></label></th> -->
+<!-- 										<th>所属</th> -->
+<!-- 										<th>企业名称</th> -->
+<!-- 										<th>设备名称</th> -->
+<!-- 										<th>设备数</th> -->
+<!-- 									</tr> -->
+<!-- 								</thead> -->
+<!-- 								<tbody></tbody> -->
+<!-- 							</table> -->
 					    </div>
 					</div>
 				</div>
