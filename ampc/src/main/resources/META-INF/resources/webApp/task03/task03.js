@@ -676,10 +676,6 @@ function add_point(col){
 	var extent = new dong.Extent(xmin,ymin,xmax,ymax, new dong.SpatialReference({ wkid:3857 }));
 	app.mapList[1].setExtent(extent);
 	/***********************************************************/
-	function cleanUp() {
-		app.mapList[1].infoWindow.hide();
-	    //clusterLayer.clearSingles();
-	  }
 }
 function cleanUp() {
 	app.mapList[1].infoWindow.hide();
