@@ -11,12 +11,6 @@ import ampc.com.gistone.database.model.TMeasureExcel;
  * @date 2017年3月7日
  */
 public interface TMeasureExcelMapper {
-	/**
-	 * 查询当前行业措施Excel表中的最高版本号
-	 * @param map
-	 * @return
-	 */
-	Long selectMaxVersion(Long userId);
 	
 	
 	/**
@@ -32,7 +26,6 @@ public interface TMeasureExcelMapper {
      * @return
      */
     int updateIsEffeByIds(Long userId);
-	
     int deleteByPrimaryKey(Long measureExcelId);
 
     int insert(TMeasureExcel record);

@@ -231,8 +231,8 @@ public class ExcelToDate {
 	* 读取excel数据   读取措施Excel表
 	* @param path  
 	*/
-	public static List<TMeasureExcel> ReadMeasure(String fileName,Long versionId,Long userId){  
-		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\03.措施设计\\其他素材\\新版Measure_Tables.xlsx";
+	public static List<TMeasureExcel> ReadMeasure(String fileName,Object versionId,Long userId){  
+		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\03.措施设计\\measure_sets_demo_dispname_YQ3.xlsx";
 		List<TMeasureExcel> measureList=new ArrayList<TMeasureExcel>();
         try {  
             Workbook wb  = null;  
@@ -255,61 +255,75 @@ public class ExcelToDate {
                     }
                     TMeasureExcel measure=new TMeasureExcel();
                     //获取措施名称
-                    measure.setMeasureExcelName(getCellValue(row.getCell(1)));
+                    measure.setMeasureExcelName(getCellValue(row.getCell(0)));
                     //获取措施检测
-                    String debug=getCellValue(row.getCell(2));
+                    String debug=getCellValue(row.getCell(1));
                     measure.setMeasureExcelDebug(Long.parseLong(debug.substring(0,debug.indexOf('.'))));
                     //获取显示信息
-                    measure.setMeasureExcelDisplay(getCellValue(row.getCell(3)));
+                    measure.setMeasureExcelDisplay(getCellValue(row.getCell(2)));
                     //获取措施类型信息
-                    measure.setMeasureExcelType(getCellValue(row.getCell(4)));
+                    measure.setMeasureExcelType(getCellValue(row.getCell(3)));
                     //获取措施等级信息
-                    String level=getCellValue(row.getCell(5));
+                    String level=getCellValue(row.getCell(4));
                     measure.setMeasureExcelLevel(Long.parseLong(level.substring(0,level.indexOf('.'))));
                     //获取措施L4s过滤信息
-                    measure.setMeasureExcelL4s(getCellValue(row.getCell(6)));
+                    measure.setMeasureExcelL4s(getCellValue(row.getCell(5)));
                     //获取措施OP信息
-                    measure.setMeasureExcelOp(getCellValue(row.getCell(7)));
+                    measure.setMeasureExcelOp(getCellValue(row.getCell(6)));
                     //获取措施A信息
-                    String a=getCellValue(row.getCell(8));
+                    String a=getCellValue(row.getCell(7));
                     if(a!=null&&!a.equals("")){
                     	BigDecimal ba=new BigDecimal(a);
                     	measure.setMeasureExcelA(ba);
+                    	//获取措施A中文信息
+                    	measure.setMeasureExcelAname(getCellValue(row.getCell(14)));
                     }
                     //获取措施A1信息
                     String a1=getCellValue(row.getCell(9));
                     if(a1!=null&&!a1.equals("")){
                     	BigDecimal ba1=new BigDecimal(a1);
                     	measure.setMeasureExcelA1(ba1);
+                    	//获取措施A1中文信息
+                    	measure.setMeasureExcelA1name(getCellValue(row.getCell(15)));
                     }
                     //获取措施Intensity信息
                     String Intensity=getCellValue(row.getCell(10));
                     if(Intensity!=null&&!Intensity.equals("")){
                     	BigDecimal bIntensity=new BigDecimal(Intensity);
                     	measure.setMeasureExcelIntensity(bIntensity);
+                    	//获取措施Intensity中文信息
+                    	measure.setMeasureExcelIntensityname(getCellValue(row.getCell(16)));
                     }
                     //获取措施Intensity1信息
                     String Intensity1=getCellValue(row.getCell(11));
                     if(Intensity1!=null&&!Intensity1.equals("")){
                     	BigDecimal bIntensity1=new BigDecimal(Intensity1);
                     	measure.setMeasureExcelIntensity(bIntensity1);
+                    	//获取措施Intensity1中文信息
+                    	measure.setMeasureExcelIntensity1name(getCellValue(row.getCell(17)));
                     }
                     //获取措施ash信息
                     String ash=getCellValue(row.getCell(12));
                     if(ash!=null&&!ash.equals("")){
                     	BigDecimal bash=new BigDecimal(ash);
                     	measure.setMeasureExcelAsh(bash);
+                    	//获取措施ash中文信息
+                    	measure.setMeasureExcelAshname(getCellValue(row.getCell(18)));
                     }
                     //获取措施sulfer信息
                     String sulfer=getCellValue(row.getCell(13));
                     if(sulfer!=null&&!sulfer.equals("")){
                     	BigDecimal bsulfer=new BigDecimal(sulfer);
                     	measure.setMeasureExcelSulfer(bsulfer);
+                    	//获取措施sulfer中文信息
+                    	measure.setMeasureExcelSulfername(getCellValue(row.getCell(19)));
                     }
                     //获取措施sv信息
                     String sv=getCellValue(row.getCell(14));
                     if(sv!=null&&!sv.equals("")){
                     	measure.setMeasureExcelSv(sv);
+                    	//获取措施sv中文信息
+                    	measure.setMeasureExcelSvname(getCellValue(row.getCell(20)));
                     }
                     //写入版本等信息
                     measure.setMeasureExcelVersion(versionId);

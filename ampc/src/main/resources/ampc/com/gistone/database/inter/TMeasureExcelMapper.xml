@@ -3,7 +3,7 @@
 <mapper namespace="ampc.com.gistone.database.inter.TMeasureExcelMapper" >
   <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TMeasureExcel" >
     <id column="MEASURE_EXCEL_ID" property="measureExcelId" jdbcType="DECIMAL" />
-    <result column="MEASURE_EXCEL_VERSION" property="measureExcelVersion" jdbcType="DECIMAL" />
+    <result column="MEASURE_EXCEL_VERSION" property="measureExcelVersion" jdbcType="OTHER" />
     <result column="MEASURE_EXCEL_NAME" property="measureExcelName" jdbcType="VARCHAR" />
     <result column="MEASURE_EXCEL_DEBUG" property="measureExcelDebug" jdbcType="DECIMAL" />
     <result column="MEASURE_EXCEL_DISPLAY" property="measureExcelDisplay" jdbcType="OTHER" />
@@ -22,27 +22,23 @@
     <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
     <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
+    <result column="MEASURE_EXCEL_ANAME" property="measureExcelAname" jdbcType="OTHER" />
+    <result column="MEASURE_EXCEL_A1NAME" property="measureExcelA1name" jdbcType="OTHER" />
+    <result column="MEASURE_EXCEL_INTENSITYNAME" property="measureExcelIntensityname" jdbcType="OTHER" />
+    <result column="MEASURE_EXCEL_INTENSITY1NAME" property="measureExcelIntensity1name" jdbcType="OTHER" />
+    <result column="MEASURE_EXCEL_ASHNAME" property="measureExcelAshname" jdbcType="OTHER" />
+    <result column="MEASURE_EXCEL_SULFERNAME" property="measureExcelSulfername" jdbcType="OTHER" />
+    <result column="MEASURE_EXCEL_SVNAME" property="measureExcelSvname" jdbcType="OTHER" />
   </resultMap>
   <sql id="Base_Column_List" >
     MEASURE_EXCEL_ID, MEASURE_EXCEL_VERSION, MEASURE_EXCEL_NAME, MEASURE_EXCEL_DEBUG, 
     MEASURE_EXCEL_DISPLAY, MEASURE_EXCEL_TYPE, MEASURE_EXCEL_LEVEL, MEASURE_EXCEL_L4S, 
     MEASURE_EXCEL_OP, MEASURE_EXCEL_A, MEASURE_EXCEL_A1, MEASURE_EXCEL_INTENSITY, MEASURE_EXCEL_INTENSITY1, 
     MEASURE_EXCEL_ASH, MEASURE_EXCEL_SULFER, MEASURE_EXCEL_SV, USER_ID, ADD_TIME, IS_EFFECTIVE, 
-    DELETE_TIME
+    DELETE_TIME, MEASURE_EXCEL_ANAME, MEASURE_EXCEL_A1NAME, MEASURE_EXCEL_INTENSITYNAME, 
+    MEASURE_EXCEL_INTENSITY1NAME, MEASURE_EXCEL_ASHNAME, MEASURE_EXCEL_SULFERNAME, MEASURE_EXCEL_SVNAME
   </sql>
   
-  
-  
-  
-  
-  
-  <!--查询当前措施表中的最高版本号-->
-  <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
-  	select max(MEASURE_EXCEL_VERSION) from T_MEASURE_EXCEL 
-  	<if test="_parameter != null" >
-        where USER_ID=#{_parameter,jdbcType=DECIMAL} 
-      </if> 
-  </select>
   
   <!--获取到所有的措施信息-->
   <select id="selectAll"  resultMap="BaseResultMap">
@@ -66,6 +62,19 @@
         where USER_ID=#{_parameter,jdbcType=DECIMAL} 
       </if> 
   </update>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   
@@ -98,15 +107,21 @@
       MEASURE_EXCEL_INTENSITY, MEASURE_EXCEL_INTENSITY1, 
       MEASURE_EXCEL_ASH, MEASURE_EXCEL_SULFER, MEASURE_EXCEL_SV, 
       USER_ID, ADD_TIME, IS_EFFECTIVE, 
-      DELETE_TIME)
-    values (#{measureExcelId,jdbcType=DECIMAL}, #{measureExcelVersion,jdbcType=DECIMAL}, 
+      DELETE_TIME, MEASURE_EXCEL_ANAME, MEASURE_EXCEL_A1NAME, 
+      MEASURE_EXCEL_INTENSITYNAME, MEASURE_EXCEL_INTENSITY1NAME, 
+      MEASURE_EXCEL_ASHNAME, MEASURE_EXCEL_SULFERNAME, 
+      MEASURE_EXCEL_SVNAME)
+    values (#{measureExcelId,jdbcType=DECIMAL}, #{measureExcelVersion,jdbcType=OTHER}, 
       #{measureExcelName,jdbcType=VARCHAR}, #{measureExcelDebug,jdbcType=DECIMAL}, #{measureExcelDisplay,jdbcType=OTHER}, 
       #{measureExcelType,jdbcType=OTHER}, #{measureExcelLevel,jdbcType=DECIMAL}, #{measureExcelL4s,jdbcType=VARCHAR}, 
       #{measureExcelOp,jdbcType=VARCHAR}, #{measureExcelA,jdbcType=DECIMAL}, #{measureExcelA1,jdbcType=DECIMAL}, 
       #{measureExcelIntensity,jdbcType=DECIMAL}, #{measureExcelIntensity1,jdbcType=DECIMAL}, 
       #{measureExcelAsh,jdbcType=DECIMAL}, #{measureExcelSulfer,jdbcType=DECIMAL}, #{measureExcelSv,jdbcType=VARCHAR}, 
       #{userId,jdbcType=DECIMAL}, #{addTime,jdbcType=TIMESTAMP}, #{isEffective,jdbcType=VARCHAR}, 
-      #{deleteTime,jdbcType=TIMESTAMP})
+      #{deleteTime,jdbcType=TIMESTAMP}, #{measureExcelAname,jdbcType=OTHER}, #{measureExcelA1name,jdbcType=OTHER}, 
+      #{measureExcelIntensityname,jdbcType=OTHER}, #{measureExcelIntensity1name,jdbcType=OTHER}, 
+      #{measureExcelAshname,jdbcType=OTHER}, #{measureExcelSulfername,jdbcType=OTHER}, 
+      #{measureExcelSvname,jdbcType=OTHER})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TMeasureExcel" >
     insert into T_MEASURE_EXCEL
@@ -171,13 +186,34 @@
       <if test="deleteTime != null" >
         DELETE_TIME,
       </if>
+      <if test="measureExcelAname != null" >
+        MEASURE_EXCEL_ANAME,
+      </if>
+      <if test="measureExcelA1name != null" >
+        MEASURE_EXCEL_A1NAME,
+      </if>
+      <if test="measureExcelIntensityname != null" >
+        MEASURE_EXCEL_INTENSITYNAME,
+      </if>
+      <if test="measureExcelIntensity1name != null" >
+        MEASURE_EXCEL_INTENSITY1NAME,
+      </if>
+      <if test="measureExcelAshname != null" >
+        MEASURE_EXCEL_ASHNAME,
+      </if>
+      <if test="measureExcelSulfername != null" >
+        MEASURE_EXCEL_SULFERNAME,
+      </if>
+      <if test="measureExcelSvname != null" >
+        MEASURE_EXCEL_SVNAME,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="measureExcelId != null" >
         #{measureExcelId,jdbcType=DECIMAL},
       </if>
       <if test="measureExcelVersion != null" >
-        #{measureExcelVersion,jdbcType=DECIMAL},
+        #{measureExcelVersion,jdbcType=OTHER},
       </if>
       <if test="measureExcelName != null" >
         #{measureExcelName,jdbcType=VARCHAR},
@@ -233,13 +269,34 @@
       <if test="deleteTime != null" >
         #{deleteTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="measureExcelAname != null" >
+        #{measureExcelAname,jdbcType=OTHER},
+      </if>
+      <if test="measureExcelA1name != null" >
+        #{measureExcelA1name,jdbcType=OTHER},
+      </if>
+      <if test="measureExcelIntensityname != null" >
+        #{measureExcelIntensityname,jdbcType=OTHER},
+      </if>
+      <if test="measureExcelIntensity1name != null" >
+        #{measureExcelIntensity1name,jdbcType=OTHER},
+      </if>
+      <if test="measureExcelAshname != null" >
+        #{measureExcelAshname,jdbcType=OTHER},
+      </if>
+      <if test="measureExcelSulfername != null" >
+        #{measureExcelSulfername,jdbcType=OTHER},
+      </if>
+      <if test="measureExcelSvname != null" >
+        #{measureExcelSvname,jdbcType=OTHER},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TMeasureExcel" >
     update T_MEASURE_EXCEL
     <set >
       <if test="measureExcelVersion != null" >
-        MEASURE_EXCEL_VERSION = #{measureExcelVersion,jdbcType=DECIMAL},
+        MEASURE_EXCEL_VERSION = #{measureExcelVersion,jdbcType=OTHER},
       </if>
       <if test="measureExcelName != null" >
         MEASURE_EXCEL_NAME = #{measureExcelName,jdbcType=VARCHAR},
@@ -295,12 +352,33 @@
       <if test="deleteTime != null" >
         DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="measureExcelAname != null" >
+        MEASURE_EXCEL_ANAME = #{measureExcelAname,jdbcType=OTHER},
+      </if>
+      <if test="measureExcelA1name != null" >
+        MEASURE_EXCEL_A1NAME = #{measureExcelA1name,jdbcType=OTHER},
+      </if>
+      <if test="measureExcelIntensityname != null" >
+        MEASURE_EXCEL_INTENSITYNAME = #{measureExcelIntensityname,jdbcType=OTHER},
+      </if>
+      <if test="measureExcelIntensity1name != null" >
+        MEASURE_EXCEL_INTENSITY1NAME = #{measureExcelIntensity1name,jdbcType=OTHER},
+      </if>
+      <if test="measureExcelAshname != null" >
+        MEASURE_EXCEL_ASHNAME = #{measureExcelAshname,jdbcType=OTHER},
+      </if>
+      <if test="measureExcelSulfername != null" >
+        MEASURE_EXCEL_SULFERNAME = #{measureExcelSulfername,jdbcType=OTHER},
+      </if>
+      <if test="measureExcelSvname != null" >
+        MEASURE_EXCEL_SVNAME = #{measureExcelSvname,jdbcType=OTHER},
+      </if>
     </set>
     where MEASURE_EXCEL_ID = #{measureExcelId,jdbcType=DECIMAL}
   </update>
   <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TMeasureExcel" >
     update T_MEASURE_EXCEL
-    set MEASURE_EXCEL_VERSION = #{measureExcelVersion,jdbcType=DECIMAL},
+    set MEASURE_EXCEL_VERSION = #{measureExcelVersion,jdbcType=OTHER},
       MEASURE_EXCEL_NAME = #{measureExcelName,jdbcType=VARCHAR},
       MEASURE_EXCEL_DEBUG = #{measureExcelDebug,jdbcType=DECIMAL},
       MEASURE_EXCEL_DISPLAY = #{measureExcelDisplay,jdbcType=OTHER},
@@ -318,7 +396,14 @@
       USER_ID = #{userId,jdbcType=DECIMAL},
       ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
       IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
-      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP}
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      MEASURE_EXCEL_ANAME = #{measureExcelAname,jdbcType=OTHER},
+      MEASURE_EXCEL_A1NAME = #{measureExcelA1name,jdbcType=OTHER},
+      MEASURE_EXCEL_INTENSITYNAME = #{measureExcelIntensityname,jdbcType=OTHER},
+      MEASURE_EXCEL_INTENSITY1NAME = #{measureExcelIntensity1name,jdbcType=OTHER},
+      MEASURE_EXCEL_ASHNAME = #{measureExcelAshname,jdbcType=OTHER},
+      MEASURE_EXCEL_SULFERNAME = #{measureExcelSulfername,jdbcType=OTHER},
+      MEASURE_EXCEL_SVNAME = #{measureExcelSvname,jdbcType=OTHER}
     where MEASURE_EXCEL_ID = #{measureExcelId,jdbcType=DECIMAL}
   </update>
 </mapper>
