@@ -466,13 +466,13 @@ public class AreaAndTimeController {
 		Map map=new HashMap();
 			for(Long timeId:timeIdss){
 			TTime t=new TTime();
-			t.setTimeId(152l);
+			t.setTimeId(timeId);
 			t.setIsEffective("0");
 			Date date=new Date();
 			t.setDeleteTime(date);
 			//修改时段状态为无效
 			
-			TTime times=this.tTimeMapper.selectByPrimaryKey(152l);
+			TTime times=this.tTimeMapper.selectByPrimaryKey(timeId);
 			int tstatus=this.tTimeMapper.updateByPrimaryKeySelective(t);
 			if(tstatus!=0){
 				if(times.getPlanId()!=null && times.getPlanId()!=-1){
@@ -766,7 +766,7 @@ public class AreaAndTimeController {
 			List<Long> timeIdss=new ArrayList<Long>();
 			//记录时段的所有ID
 			for (Long areaId: areaIdss) {
-				List<TTime> times=tTimeMapper.selectAllByAreaId(areaId);
+				List<TTime> times=tTimeMapper.selectEntityByAreaId(areaId);
 				for (TTime time : times) {
 					timeIdss.add(time.getTimeId());
 				}
@@ -975,7 +975,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 			
 			//省
 			if(address.getAddressLevel().equals("1")){
-				obj.put("adcode", address.getProvinceCode()+"0000");
+				obj.put("adcode", (address.getProvinceCode()+"0000"));
 				obj.put("name",  address.getAddressName());
 				obj.put("code", address.getAddressCode());
 				for(TScenarinoAreaWithBLOBs area:arealist){
@@ -1002,8 +1002,8 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 			
 			//市
 			if(address.getAddressLevel().equals("2")){
-				obj.put("adcode", address.getProvinceCode()+address.getCityCode()+"00");
-				obj.put("padcode", address.getProvinceCode()+"0000");
+				obj.put("adcode", (address.getProvinceCode()+address.getCityCode()+"00"));
+				obj.put("padcode", (address.getProvinceCode()+"0000"));
 				obj.put("name",address.getAddressName());
 				obj.put("code", address.getAddressCode());
 				for(TScenarinoAreaWithBLOBs area:arealist){
@@ -1030,7 +1030,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 			
 			if(address.getAddressLevel().equals("3")){
 				obj.put("adcode", address.getProvinceCode()+address.getCityCode()+address.getCountyCode());
-				obj.put("padcode", address.getProvinceCode()+address.getCityCode()+"00");
+				obj.put("padcode", (address.getProvinceCode()+address.getCityCode()+"00"));
 				obj.put("name", address.getAddressName());
 				obj.put("code", address.getAddressCode());
 				for(TScenarinoAreaWithBLOBs area:arealist){
