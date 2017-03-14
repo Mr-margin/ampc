@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TUserMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TUser" >
+    <id column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="USER_NAME" property="userName" jdbcType="OTHER" />
+    <result column="PASSWORD" property="password" jdbcType="OTHER" />
+    <result column="PROVINCE_CODE" property="provinceCode" jdbcType="DECIMAL" />
+    <result column="CITY_CODE" property="cityCode" jdbcType="DECIMAL" />
+    <result column="COUNTY_CODE" property="countyCode" jdbcType="DECIMAL" />
+    <result column="PREDICTION_TIME" property="predictionTime" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    USER_ID, USER_NAME, PASSWORD, PROVINCE_CODE, CITY_CODE, COUNTY_CODE, PREDICTION_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_USER
+    where USER_ID = #{userId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_USER
+    where USER_ID = #{userId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TUser" >
+    insert into T_USER (USER_ID, USER_NAME, PASSWORD, 
+      PROVINCE_CODE, CITY_CODE, PREDICTION_TIME)
+    values (#{userId,jdbcType=DECIMAL}, #{userName,jdbcType=OTHER}, #{password,jdbcType=OTHER}, 
+      #{provinceCode,jdbcType=DECIMAL}, #{cityCode,jdbcType=DECIMAL}, #{countyCode,jdbcType=DECIMAL}, #{predictionTime,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TUser" >
+    insert into T_USER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="userName != null" >
+        USER_NAME,
+      </if>
+      <if test="password != null" >
+        PASSWORD,
+      </if>
+      <if test="provinceCode != null" >
+        PROVINCE_CODE,
+      </if>
+      <if test="cityCode != null" >
+        CITY_CODE,
+      </if>
+       <if test="countyCode != null" >
+        COUNTY_CODE,
+      </if>
+       <if test="predictionTime != null" >
+        PREDICTION_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=OTHER},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=OTHER},
+      </if>
+      <if test="provinceCode != null" >
+        #{provinceCode,jdbcType=DECIMAL},
+      </if>
+      <if test="cityCode != null" >
+        #{cityCode,jdbcType=DECIMAL},
+      </if>
+      <if test="countyCode != null" >
+        #{countyCode,jdbcType=DECIMAL},
+      </if>
+      <if test="predictionTime != null" >
+        #{predictionTime,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TUser" >
+    update T_USER
+    <set >
+      <if test="userName != null" >
+        USER_NAME = #{userName,jdbcType=OTHER},
+      </if>
+      <if test="password != null" >
+        PASSWORD = #{password,jdbcType=OTHER},
+      </if>
+      <if test="provinceCode != null" >
+        PROVINCE_CODE = #{provinceCode,jdbcType=DECIMAL},
+      </if>
+      <if test="cityCode != null" >
+        CITY_CODE = #{cityCode,jdbcType=DECIMAL},
+      </if>
+      <if test="countyCode != null" >
+        COUNTY_CODE = #{countyCode,jdbcType=DECIMAL},
+      </if>
+      <if test="predictionTime != null" >
+        PREDICTION_TIME = #{predictionTime,jdbcType=DECIMAL}
+      </if>
+    </set>
+    where USER_ID = #{userId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TUser" >
+    update T_USER
+    set USER_NAME = #{userName,jdbcType=OTHER},
+      PASSWORD = #{password,jdbcType=OTHER},
+      PROVINCE_CODE = #{provinceCode,jdbcType=DECIMAL},
+      CITY_CODE = #{cityCode,jdbcType=DECIMAL},
+      COUNTY_CODE = #{countyCode,jdbcType=DECIMAL},
+      PREDICTION_TIME = #{predictionTime,jdbcType=DECIMAL}
+    where USER_ID = #{userId,jdbcType=DECIMAL}
+  </update>
+</mapper>

@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TQueryExcelMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TQueryExcel" >
+    <id column="QUERY_ID" property="queryId" jdbcType="DECIMAL" />
+    <result column="QUERY_NAME" property="queryName" jdbcType="OTHER" />
+    <result column="QUERY_ETITLE" property="queryEtitle" jdbcType="VARCHAR" />
+    <result column="QUERY_SHOWQUERY" property="queryShowquery" jdbcType="OTHER" />
+    <result column="QUERY_VALUE" property="queryValue" jdbcType="OTHER" />
+    <result column="QUERY_OPTIONTYPE" property="queryOptiontype" jdbcType="OTHER" />
+    <result column="QUERY_OPTION1" property="queryOption1" jdbcType="OTHER" />
+    <result column="QUERY_OPTION2" property="queryOption2" jdbcType="OTHER" />
+    <result column="QUERY_OPTION3" property="queryOption3" jdbcType="OTHER" />
+    <result column="QUERY_OPTION4" property="queryOption4" jdbcType="OTHER" />
+    <result column="QUERY_OPTION5" property="queryOption5" jdbcType="OTHER" />
+    <result column="SECTOR_NAME" property="sectorName" jdbcType="OTHER" />
+    <result column="QUERY_VERSION" property="queryVersion" jdbcType="DECIMAL" />
+    <result column="USER_ID" property="userId" jdbcType="OTHER" />
+    <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
+    <result column="QUERY_SHOWQUERYEN" property="queryShowqueryen" jdbcType="OTHER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    QUERY_ID, QUERY_NAME, QUERY_ETITLE, QUERY_SHOWQUERY, QUERY_VALUE, QUERY_OPTIONTYPE, 
+    QUERY_OPTION1, QUERY_OPTION2, QUERY_OPTION3, QUERY_OPTION4, QUERY_OPTION5, SECTOR_NAME, 
+    QUERY_VERSION, USER_ID, ADD_TIME, IS_EFFECTIVE, DELETE_TIME, QUERY_SHOWQUERYEN
+  </sql>
+  
+  
+  
+  
+  
+  
+   <!--查询当前措施表中的最高版本号-->
+  <select id="selectMaxVersion" parameterType="java.lang.Long" resultType="java.lang.Long">
+  	select max(QUERY_VERSION) from T_QUERY_EXCEL
+  	  <if test="_parameter != null" >
+        where USER_ID=#{_parameter,jdbcType=DECIMAL} 
+      </if> 
+  </select>
+  
+  <!--获取所有-->
+  <select id="selectByMap" parameterType="hashMap"  resultMap="BaseResultMap" >
+  	select <include refid="Base_Column_List" /> from T_QUERY_EXCEL 
+  	   WHERE IS_EFFECTIVE='1' and SECTOR_NAME= #{sectorName,jdbcType=OTHER} 
+  </select>
+  
+ 
+ <!-- 修改所有的行业状态 相当于删除 -->
+  <update id="updateIsEffeByIds" parameterType="java.lang.Long">
+    update T_QUERY_EXCEL
+    set 
+      IS_EFFECTIVE = '0',
+      DELETE_TIME = (select sysdate from dual) 
+     <if test="_parameter != null" >
+        where USER_ID=#{_parameter,jdbcType=DECIMAL} 
+      </if> 
+  </update>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_QUERY_EXCEL
+    where QUERY_ID = #{queryId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_QUERY_EXCEL
+    where QUERY_ID = #{queryId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TQueryExcel" >
+    insert into T_QUERY_EXCEL (QUERY_ID, QUERY_NAME, QUERY_ETITLE, 
+      QUERY_SHOWQUERY, QUERY_VALUE, QUERY_OPTIONTYPE, 
+      QUERY_OPTION1, QUERY_OPTION2, QUERY_OPTION3, 
+      QUERY_OPTION4, QUERY_OPTION5, SECTOR_NAME, 
+      QUERY_VERSION, USER_ID, ADD_TIME, 
+      IS_EFFECTIVE, DELETE_TIME, QUERY_SHOWQUERYEN
+      )
+    values (#{queryId,jdbcType=DECIMAL}, #{queryName,jdbcType=OTHER}, #{queryEtitle,jdbcType=VARCHAR}, 
+      #{queryShowquery,jdbcType=OTHER}, #{queryValue,jdbcType=OTHER}, #{queryOptiontype,jdbcType=OTHER}, 
+      #{queryOption1,jdbcType=OTHER}, #{queryOption2,jdbcType=OTHER}, #{queryOption3,jdbcType=OTHER}, 
+      #{queryOption4,jdbcType=OTHER}, #{queryOption5,jdbcType=OTHER}, #{sectorName,jdbcType=OTHER}, 
+      #{queryVersion,jdbcType=DECIMAL}, #{userId,jdbcType=OTHER}, #{addTime,jdbcType=TIMESTAMP}, 
+      #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=TIMESTAMP}, #{queryShowqueryen,jdbcType=OTHER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TQueryExcel" >
+    insert into T_QUERY_EXCEL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="queryId != null" >
+        QUERY_ID,
+      </if>
+      <if test="queryName != null" >
+        QUERY_NAME,
+      </if>
+      <if test="queryEtitle != null" >
+        QUERY_ETITLE,
+      </if>
+      <if test="queryShowquery != null" >
+        QUERY_SHOWQUERY,
+      </if>
+      <if test="queryValue != null" >
+        QUERY_VALUE,
+      </if>
+      <if test="queryOptiontype != null" >
+        QUERY_OPTIONTYPE,
+      </if>
+      <if test="queryOption1 != null" >
+        QUERY_OPTION1,
+      </if>
+      <if test="queryOption2 != null" >
+        QUERY_OPTION2,
+      </if>
+      <if test="queryOption3 != null" >
+        QUERY_OPTION3,
+      </if>
+      <if test="queryOption4 != null" >
+        QUERY_OPTION4,
+      </if>
+      <if test="queryOption5 != null" >
+        QUERY_OPTION5,
+      </if>
+      <if test="sectorName != null" >
+        SECTOR_NAME,
+      </if>
+      <if test="queryVersion != null" >
+        QUERY_VERSION,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME,
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE,
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME,
+      </if>
+      <if test="queryShowqueryen != null" >
+        QUERY_SHOWQUERYEN,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="queryId != null" >
+        #{queryId,jdbcType=DECIMAL},
+      </if>
+      <if test="queryName != null" >
+        #{queryName,jdbcType=OTHER},
+      </if>
+      <if test="queryEtitle != null" >
+        #{queryEtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="queryShowquery != null" >
+        #{queryShowquery,jdbcType=OTHER},
+      </if>
+      <if test="queryValue != null" >
+        #{queryValue,jdbcType=OTHER},
+      </if>
+      <if test="queryOptiontype != null" >
+        #{queryOptiontype,jdbcType=OTHER},
+      </if>
+      <if test="queryOption1 != null" >
+        #{queryOption1,jdbcType=OTHER},
+      </if>
+      <if test="queryOption2 != null" >
+        #{queryOption2,jdbcType=OTHER},
+      </if>
+      <if test="queryOption3 != null" >
+        #{queryOption3,jdbcType=OTHER},
+      </if>
+      <if test="queryOption4 != null" >
+        #{queryOption4,jdbcType=OTHER},
+      </if>
+      <if test="queryOption5 != null" >
+        #{queryOption5,jdbcType=OTHER},
+      </if>
+      <if test="sectorName != null" >
+        #{sectorName,jdbcType=OTHER},
+      </if>
+      <if test="queryVersion != null" >
+        #{queryVersion,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=OTHER},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isEffective != null" >
+        #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="queryShowqueryen != null" >
+        #{queryShowqueryen,jdbcType=OTHER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TQueryExcel" >
+    update T_QUERY_EXCEL
+    <set >
+      <if test="queryName != null" >
+        QUERY_NAME = #{queryName,jdbcType=OTHER},
+      </if>
+      <if test="queryEtitle != null" >
+        QUERY_ETITLE = #{queryEtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="queryShowquery != null" >
+        QUERY_SHOWQUERY = #{queryShowquery,jdbcType=OTHER},
+      </if>
+      <if test="queryValue != null" >
+        QUERY_VALUE = #{queryValue,jdbcType=OTHER},
+      </if>
+      <if test="queryOptiontype != null" >
+        QUERY_OPTIONTYPE = #{queryOptiontype,jdbcType=OTHER},
+      </if>
+      <if test="queryOption1 != null" >
+        QUERY_OPTION1 = #{queryOption1,jdbcType=OTHER},
+      </if>
+      <if test="queryOption2 != null" >
+        QUERY_OPTION2 = #{queryOption2,jdbcType=OTHER},
+      </if>
+      <if test="queryOption3 != null" >
+        QUERY_OPTION3 = #{queryOption3,jdbcType=OTHER},
+      </if>
+      <if test="queryOption4 != null" >
+        QUERY_OPTION4 = #{queryOption4,jdbcType=OTHER},
+      </if>
+      <if test="queryOption5 != null" >
+        QUERY_OPTION5 = #{queryOption5,jdbcType=OTHER},
+      </if>
+      <if test="sectorName != null" >
+        SECTOR_NAME = #{sectorName,jdbcType=OTHER},
+      </if>
+      <if test="queryVersion != null" >
+        QUERY_VERSION = #{queryVersion,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=OTHER},
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="queryShowqueryen != null" >
+        QUERY_SHOWQUERYEN = #{queryShowqueryen,jdbcType=OTHER},
+      </if>
+    </set>
+    where QUERY_ID = #{queryId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TQueryExcel" >
+    update T_QUERY_EXCEL
+    set QUERY_NAME = #{queryName,jdbcType=OTHER},
+      QUERY_ETITLE = #{queryEtitle,jdbcType=VARCHAR},
+      QUERY_SHOWQUERY = #{queryShowquery,jdbcType=OTHER},
+      QUERY_VALUE = #{queryValue,jdbcType=OTHER},
+      QUERY_OPTIONTYPE = #{queryOptiontype,jdbcType=OTHER},
+      QUERY_OPTION1 = #{queryOption1,jdbcType=OTHER},
+      QUERY_OPTION2 = #{queryOption2,jdbcType=OTHER},
+      QUERY_OPTION3 = #{queryOption3,jdbcType=OTHER},
+      QUERY_OPTION4 = #{queryOption4,jdbcType=OTHER},
+      QUERY_OPTION5 = #{queryOption5,jdbcType=OTHER},
+      SECTOR_NAME = #{sectorName,jdbcType=OTHER},
+      QUERY_VERSION = #{queryVersion,jdbcType=DECIMAL},
+      USER_ID = #{userId,jdbcType=OTHER},
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      QUERY_SHOWQUERYEN = #{queryShowqueryen,jdbcType=OTHER}
+    where QUERY_ID = #{queryId,jdbcType=DECIMAL}
+  </update>
+</mapper>
