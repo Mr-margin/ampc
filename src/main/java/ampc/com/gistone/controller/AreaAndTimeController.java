@@ -527,27 +527,32 @@ public class AreaAndTimeController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//情景Id
-			Integer scenarinoId=Integer.valueOf(data.get("scenarinoId").toString());
+			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());
 			//用户的id  确定当前用户
-			Integer userId=Integer.valueOf(data.get("userId").toString());
+			Long userId=Long.valueOf(data.get("userId").toString());
 			//添加信息到参数中
-			Map<String,Object> map=new HashMap<String,Object>();
-			map.put("scenarinoId",scenarinoId);
-			map.put("userId", userId);
 			//新建返回结果的Map
 			List mapResult=new ArrayList();
 			//查询全部的区域ID和区域名称
-			List<Map> areaAndName = this.tScenarinoAreaMapper.selectByScenarinoId(map);
+			List<TScenarinoAreaWithBLOBs> areaAndName = this.tScenarinoAreaMapper.selectAllAreaByScenarinoId(scenarinoId);
 			//循环结果  根据区域ID获取时段和预案信息
-		    for (Map area : areaAndName) {
+		    for (TScenarinoAreaWithBLOBs area : areaAndName) {
 		    	AreaUtil areaUtil =new AreaUtil();
-		    	Long id=Long.parseLong(area.get("areaId").toString());
-		    	areaUtil.setAreaId(id);
-		    	areaUtil.setAreaName(area.get("areaName"));
-		    	List<Map> timeplan=this.tTimeMapper.selectByAreaId(id);
+		    	
+		    	areaUtil.setAreaId(area.getScenarinoAreaId());
+		    	areaUtil.setAreaName(area.getAreaName());
+		    	if(area.getCityCodes()!=null){
+		    	areaUtil.setProvinceCodes(area.getCityCodes());
+		    	}
+		    	if(area.getProvinceCodes()!=null){
+			    	areaUtil.setProvinceCodes(area.getProvinceCodes());
+			    	}
+		    	if(area.getCountyCodes()!=null){
+			    	areaUtil.setProvinceCodes(area.getCityCodes());
+			    	}
+		    	List<Map> timeplan=this.tTimeMapper.selectByAreaId(area.getScenarinoAreaId());
 		    	for(Map tp:timeplan){
 		    		if(tp.get("planId")==null){
-		    			
 		    			tp.put("planId", -1);
 		    			tp.put("planName", "无");
 		    		}
@@ -587,11 +592,29 @@ public class AreaAndTimeController {
 			//添加信息到参数中
 			//查询全部的区域ID和区域名称
 			JSONObject obj=new JSONObject();
+			JSONArray arr=new JSONArray();
+			JSONArray arr1=new JSONArray();
+			JSONArray arr2=new JSONArray();
 			TScenarinoAreaWithBLOBs areaInfo = tScenarinoAreaMapper.selectByPrimaryKey(areaId);
 			//进行Clob转换
-			JSONArray arr=JSONArray.fromObject(areaInfo.getProvinceCodes());
-			JSONArray arr1=JSONArray.fromObject(areaInfo.getCityCodes());
-			JSONArray arr2=JSONArray.fromObject(areaInfo.getCountyCodes());
+			if(areaInfo.getProvinceCodes()!=null){
+			 arr=JSONArray.fromObject(areaInfo.getProvinceCodes());
+			}else{
+				
+				arr.add("");
+			}
+			if(areaInfo.getCityCodes()!=null){
+			arr1=JSONArray.fromObject(areaInfo.getCityCodes());
+			}else{
+				
+				arr1.add("");
+			}
+			if(areaInfo.getCountyCodes()!=null){
+			arr2=JSONArray.fromObject(areaInfo.getCountyCodes());
+			}else{
+				
+				arr2.add("");
+			}
 			//重新写入返回结果集
 			obj.put("areaId",areaId);
 			obj.put("areaName", areaInfo.getAreaName());
@@ -599,7 +622,7 @@ public class AreaAndTimeController {
 			obj.put("cityCodes", arr1);
 			obj.put("countyCodes", arr2);
 			//返回结果
-			return AmpcResult.build(0, "ok",obj);
+			return AmpcResult.build(0,"get_areaList success",obj);
 		} catch (Exception e) {
 			e.printStackTrace();
 			//返回错误信息
