@@ -282,9 +282,9 @@ public class PlanAndMeasureController {
 			//时段id
 			Long timeId=Long.parseLong(data.get("timeId").toString());
 			//预案开始时间
-			Date startDate=DateUtil.StrToDate(data.get("timeStartTime").toString());
+			Date startDate=new Date(Long.parseLong(data.get("timeStartTime").toString()));
 			//预案结束时间
-			Date endDate=DateUtil.StrToDate(data.get("timeEndTime").toString());
+			Date endDate=new Date(Long.parseLong(data.get("timeEndTime").toString()));
 			//用户的id  确定当前用户
 			Long userId=null;
 			if(data.get("userId")!=null){
@@ -322,13 +322,13 @@ public class PlanAndMeasureController {
 						//循环结果 并复制信息 新建
 						for(TPlanMeasure t:planMeasureList){
 							TPlanMeasure newtPlanMeasure=new TPlanMeasure();
-							tPlanMeasure.setMeasureId(t.getMeasureId());
-							tPlanMeasure.setPlanId(newPlanId);
-							tPlanMeasure.setSectorName(t.getSectorName());
-							tPlanMeasure.setUserId(userId);
-							tPlanMeasure.setImplementationScope(t.getImplementationScope());
-							tPlanMeasure.setMeasureContent(t.getMeasureContent());
-							tPlanMeasure.setReductionRatio(t.getReductionRatio());
+							newtPlanMeasure.setMeasureId(t.getMeasureId());
+							newtPlanMeasure.setPlanId(newPlanId);
+							newtPlanMeasure.setSectorName(t.getSectorName());
+							newtPlanMeasure.setUserId(userId);
+							newtPlanMeasure.setImplementationScope(t.getImplementationScope());
+							newtPlanMeasure.setMeasureContent(t.getMeasureContent());
+							newtPlanMeasure.setReductionRatio(t.getReductionRatio());
 							result=tPlanMeasureMapper.insertSelective(newtPlanMeasure);
 							if(result<0){
 								return AmpcResult.build(1000, "复制预案措施时出错");
