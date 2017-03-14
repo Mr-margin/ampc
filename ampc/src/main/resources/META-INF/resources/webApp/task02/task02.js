@@ -3,24 +3,24 @@
  */
 
 /*全局变量*/
-var totalWidth,totalDate,startDate,qjMsg;
-var index,indexPar,handle,minLeft,maxLeft,selfLeft,startX,leftWidth,rightWidth;
+var totalWidth, totalDate, startDate, qjMsg;
+var index, indexPar, handle, minLeft, maxLeft, selfLeft, startX, leftWidth, rightWidth;
 var allData = [];
-var areaIndex,timeIndex;
-var showCode = [{},{},{}];
-var proNum,cityNum,countyNum;
+var areaIndex, timeIndex;
+var showCode = [{}, {}, {}];
+var proNum, cityNum, countyNum;
 var msg = {
   'id': 'yaMessage',
   'content': {
-    rwId:'',
-    rwName:'',
-    qjId:'',
-    qjName:'',
-    qjStartDate:'',
-    qjEndDate:'',
-    areaName:'',
-    areaId:'',
-    timeId:''
+    rwId: '',
+    rwName: '',
+    qjId: '',
+    qjName: '',
+    qjStartDate: '',
+    qjEndDate: '',
+    areaName: '',
+    areaId: '',
+    timeId: ''
   }
 };
 
@@ -28,34 +28,34 @@ var zTreeSetting = {
   check: {
     enable: true,
 //				autoCheckTrigger:true,
-    chkboxType: { "Y": "s", "N": "s" }, //子父级联动控制，仅子级联动
+    chkboxType: {"Y": "s", "N": "s"}, //子父级联动控制，仅子级联动
     chkDisabledInherit: true //是否沿用disabled
   },
-  data:{
-    simpleData:{
+  data: {
+    simpleData: {
       enable: true,     //简单数据模式
       idKey: "adcode",
       pIdKey: "padcode" //子父级关系对照
     },
-    key:{
-      name:'name',
+    key: {
+      name: 'name',
     }
   },
   callback: {
-    onCheck: function(e,t,tr){
+    onCheck: function (e, t, tr) {
       var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
       selectNode(tr);
-      if(tr.checked){
+      if (tr.checked) {
 //    	  setExtent(tr);
-        if(tr.level == 0){
+        if (tr.level == 0) {
           level0(tr)
-        }else{
+        } else {
           level12(tr)
         }
-      }else{
-        if(tr.level == 0){
+      } else {
+        if (tr.level == 0) {
           delNode0(tr)
-        }else{
+        } else {
           delNode12(tr)
         }
       }
@@ -65,35 +65,35 @@ var zTreeSetting = {
   }
 };
 
-function addP(adcode,name,level){
-  return $('<p class="col-md-3">'+ name +' &nbsp;&nbsp;<i class="im-close" style="cursor: pointer" onclick="delAdcode('+ adcode +','+ level+')"></i></p>')
+function addP(adcode, name, level) {
+  return $('<p class="col-md-3">' + name + ' &nbsp;&nbsp;<i class="im-close" style="cursor: pointer" onclick="delAdcode(' + adcode + ',' + level + ')"></i></p>')
 }
-function updataCodeList(){
+function updataCodeList() {
   $('.adcodeList').empty();
-  for(var i=0;i<3;i++){
-    for(var ad in showCode[i]){
-      if(i == 0){
-        $('.adcodeList').append(addP(ad,showCode[i][ad],i))
+  for (var i = 0; i < 3; i++) {
+    for (var ad in showCode[i]) {
+      if (i == 0) {
+        $('.adcodeList').append(addP(ad, showCode[i][ad], i))
         console.log(showCode)
-      }else{
-        for(var add in showCode[i][ad]){
-          $('.adcodeList').append(addP(add,showCode[i][ad][add],i))
+      } else {
+        for (var add in showCode[i][ad]) {
+          $('.adcodeList').append(addP(add, showCode[i][ad][add], i))
         }
       }
-     
+
     }
   }
   proNum = Object.keys(showCode[0]).length;
-  cityNum = (function (){
+  cityNum = (function () {
     var n = 0;
-    for(var ad in showCode[1]){
+    for (var ad in showCode[1]) {
       n += Object.keys(showCode[1][ad]).length;
     }
     return n;
   })();
-  countyNum = (function (){
+  countyNum = (function () {
     var n = 0;
-    for(var ad in showCode[2]){
+    for (var ad in showCode[2]) {
       n += Object.keys(showCode[2][ad]).length;
     }
     return n;
@@ -103,23 +103,23 @@ function updataCodeList(){
   $('.cityNumber span').html(cityNum);
   $('.countyNumber span').html(countyNum);
 
-  console.log(proNum,cityNum,countyNum);
+  console.log(proNum, cityNum, countyNum);
 }
 
 /*删除所选地区*/
-function delAdcode(adcode,level){
+function delAdcode(adcode, level) {
   var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
   var node = treeObj.getNodeByParam("adcode", adcode, null);
-  treeObj.checkNode(node,false,true);
-  switch(level){
+  treeObj.checkNode(node, false, true);
+  switch (level) {
     case 0:
       delete showCode[level][adcode];
       break;
     case 1:
-      delete showCode[level][adcode.toString().substr(0,2)+"0000"][adcode];
+      delete showCode[level][adcode.toString().substr(0, 2) + "0000"][adcode];
       break;
     case 2:
-      delete showCode[level][adcode.toString().substr(0,4)+'00'][adcode];
+      delete showCode[level][adcode.toString().substr(0, 4) + '00'][adcode];
       break;
   }
   addLayer(showCode);
@@ -128,10 +128,10 @@ function delAdcode(adcode,level){
 }
 
 /*删除所有所选地区*/
-function clearAllArea(){
+function clearAllArea() {
   var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
   treeObj.checkAllNodes(false);
-  showCode = [{},{},{}];
+  showCode = [{}, {}, {}];
   addLayer(showCode);
   updataCodeList();
 }
@@ -139,29 +139,29 @@ function clearAllArea(){
 /*test使用*/
 var parameterPar = {total: '', data: {}};
 function ajaxPost1(url, parameter) {
- parameterPar.data = parameter;
- var p = JSON.stringify(parameterPar);
- //return $.ajax(BackstageIP + url, {
- return $.ajax( url, {
- contentType: "application/json",
- type: "GET",
- async: true,
- dataType: 'JSON',
- data: p
-})
+  parameterPar.data = parameter;
+  var p = JSON.stringify(parameterPar);
+  //return $.ajax(BackstageIP + url, {
+  return $.ajax(url, {
+    contentType: "application/json",
+    type: "GET",
+    async: true,
+    dataType: 'JSON',
+    data: p
+  })
 }
 
 initialize();
 
 
-function initialize(){
+function initialize() {
   var ls = window.localStorage;
   qjMsg = vipspa.getMessage('qjMessage').content;
 
-  if(!qjMsg){
+  if (!qjMsg) {
     qjMsg = JSON.parse(ls.getItem('qjMsg'));
-  }else{
-    ls.setItem('qjMsg',JSON.stringify(qjMsg));
+  } else {
+    ls.setItem('qjMsg', JSON.stringify(qjMsg));
   }
 
   msg.content.rwId = qjMsg.rwId;
@@ -181,181 +181,212 @@ function initialize(){
   startDate = qjMsg.qjStartDate;
 
   var url = '/area/get_areaAndTimeList';
-  var scenarino = ajaxPost(url,{
-    scenarinoId:qjMsg.qjId,
-//	  scenarinoId:1,
-    userId:userId
+  var scenarino = ajaxPost(url, {
+    scenarinoId: qjMsg.qjId,
+    userId: userId
   });
   initDate();
   /*test使用*/
-  var scenarino1 = ajaxPost1('webApp/task02/qy.json',{});
+  var scenarino1 = ajaxPost1('webApp/task02/qy.json', {});
 
-  scenarino.then(function(res){
-	  
+  scenarino.then(function (res) {
+
     allData = res.data;
-    for(var i=0;i<res.data.length;i++){
+    for (var i = 0; i < res.data.length; i++) {
       allData[i].timeFrame = [];
       /*克隆区域进行添加*/
-      var area = $('.area.disNone').clone().removeClass('disNone');
-      area.find('.front>span').html(res.data[i].areaName);
+      //var area = $('.area.disNone').clone().removeClass('disNone');
+      //area.find('.front>span').html(res.data[i].areaName);
       var timeItems = res.data[i].timeItems;
       var tLength = timeItems.length;
-      $('.areaMsg').append(area);
-      for(var item=0;item<tLength;item++){
-        var totalWidth = $('.period').width();
+      //$('.areaMsg').append(area);
+      for (var item = 0; item < tLength; item++) {
+        //var totalWidth = $('.period').width();
+        //
+        ///*克隆时段进行添加*/
+        //var times = $('.time.disNone').clone().removeClass('disNone');
+        //area.find('.showLine').before(times);
+        //
+        //if(timeItems[item].planId == -1){
+        //  times.find('.timeToolDiv .btn').eq(1).attr('disabled','disabled');
+        //}else{
+        //  times.find('.timeToolDiv .btn').eq(0).attr('disabled','disabled');
+        //  times.find('h4').html(timeItems[item].planName);
+        //}
+        //if(tLength == 1){
+        //  times.find('.timeToolDiv .btn').eq(2).attr('disabled','disabled');
+        //}
 
-        /*克隆时段进行添加*/
-        var times = $('.time.disNone').clone().removeClass('disNone');
-        area.find('.showLine').before(times);
-
-        if(timeItems[item].planId == -1){
-          times.find('.timeToolDiv .btn').eq(1).attr('disabled','disabled');
-        }else{
-          times.find('.timeToolDiv .btn').eq(0).attr('disabled','disabled');
-          times.find('h4').html(timeItems[item].planName);
-        }
-        if(tLength == 1){
-          times.find('.timeToolDiv .btn').eq(2).attr('disabled','disabled');
-        }
-
-        if(item>0){
-          var sD = timeItems[item].timeStartDate ;
-          allData[i].timeFrame[item-1] = moment(sD).format('YYYY/MM/DD HH');
+        if (item > 0) {
+          var sD = timeItems[item].timeStartDate;
+          allData[i].timeFrame[item - 1] = moment(sD).format('YYYY/MM/DD HH');
 
           /*克隆滑块进行添加*/
-          var hk = $('.hk.disNone').clone().removeClass('disNone');
-          hk.find('.showTips').html(moment(sD).format('YYYY/MM/DD HH'));
-          var left = ((sD - startDate)/totalDate);
-          area.find('.showLine').append(hk);
-          hk.css('left',left*100+'%');
+          //var hk = $('.hk.disNone').clone().removeClass('disNone');
+          //hk.find('.showTips').html(moment(sD).format('YYYY/MM/DD HH'));
+          //var left = ((sD - startDate)/totalDate);
+          //area.find('.showLine').append(hk);
+          //hk.css('left',left*100+'%');
         }
-        var tw;
+        //var tw;
 
-        tw = ((timeItems[item].timeEndDate - timeItems[item].timeStartDate)/totalDate)*totalWidth - 1;
-        times.css('width',(tw/totalWidth)*100 + '%');
+        //tw = ((timeItems[item].timeEndDate - timeItems[item].timeStartDate)/totalDate)*totalWidth - 1;
+        //times.css('width',(tw/totalWidth)*100 + '%');
 
       }
 
     }
+
+
+    showTimeline(allData);
     console.log(allData)
     app2();
   });
 
 
 }
+var scenarino;
+/*请求区域及时段*/
+function getAreaAndTime() {
+  var url = '/area/get_areaAndTimeList';
+  scenarino = ajaxPost(url, {
+    scenarinoId: qjMsg.qjId,
+    userId: userId
+  });
+
+  scenarino.then(function (res) {
+    allData = res.data;
+    for (var i = 0; i < res.data.length; i++) {
+      allData[i].timeFrame = [];
+      var timeItems = res.data[i].timeItems;
+      var tLength = timeItems.length;
+      for (var item = 0; item < tLength; item++) {
+        if (item > 0) {
+          var sD = timeItems[item].timeStartDate;
+          allData[i].timeFrame[item - 1] = moment(sD).format('YYYY/MM/DD HH');
+        }
+      }
+    }
+    showTimeline(allData);
+    console.log(allData)
+  });
+}
 
 /*初始化zTree*/
-function initZTree(data){
+function initZTree(data) {
   $.fn.zTree.init($("#adcodeTree"), zTreeSetting, data);
 }
 
-function sub(){
+function sub() {
   data.push($('input[type=text]').val());
 
 }
 
-$('.areaMsg').on('mouseenter','.hk',function(e){
+$('.areaMsg').on('mouseenter', '.hk', function (e) {
 //    index = $('.hk').index(this);
 //    startX = e.pageX;
-  $(this).find('.showTips').css('display','block');
+  $(this).find('.showTips').css('display', 'block');
 });
-$('.areaMsg').on('mouseleave','.hk',function(e){
+$('.areaMsg').on('mouseleave', '.hk', function (e) {
 //    index = $('.hk').index(this);
-  $(this).find('.showTips').css('display','none');
+  $(this).find('.showTips').css('display', 'none');
 });
 
-$('.areaMsg').on('mousedown','.hk',function(e){
+$('.areaMsg').on('mousedown', '.hk', function (e) {
   var widthP = $('.period').width();
   indexPar = $('.area').index($(this).parents('.area'));
   index = $('.area').eq(indexPar).find('.hk').index(this);
   leftWidth = $('.area').eq(indexPar).children('.period').children('.time').eq(index).width();
-  rightWidth = $('.area').eq(indexPar).children('.period').children('.time').eq(index+1).width();
+  rightWidth = $('.area').eq(indexPar).children('.period').children('.time').eq(index + 1).width();
   handle = true;
   startX = e.pageX;
-  $(this).find('.showTips').css('display','block');
+  $(this).find('.showTips').css('display', 'block');
   selfLeft = parseInt($(this).css('left'));
-  minLeft = parseInt($('.area').eq(indexPar).find('.hk').eq(index-1).css('left'));
-  maxLeft = parseInt($('.area').eq(indexPar).find('.hk').eq(index+1).css('left'));
-  if(selfLeft > (widthP/2)){
+  minLeft = parseInt($('.area').eq(indexPar).find('.hk').eq(index - 1).css('left'));
+  maxLeft = parseInt($('.area').eq(indexPar).find('.hk').eq(index + 1).css('left'));
+  if (selfLeft > (widthP / 2)) {
     $('.area').eq(indexPar).find('.hk').eq(index).find('.showTips').removeClass('showTipsLeft').addClass('showTipsRight');
-  }else{
+  } else {
     $('.area').eq(indexPar).find('.hk').eq(index).find('.showTips').removeClass('showTipsRight').addClass('showTipsLeft');
   }
   console.log(allData)
   //data[index] = selfLeft;
 });
-$('.areaMsg').on('mouseup','.area',function(e){
+$('.areaMsg').on('mouseup', '.area', function (e) {
   //index = $('.hk').index(this);
-  if(!handle)return;
+  if (!handle)return;
   allData[indexPar].timeFrame[index] = allData[indexPar].timeItems[index].timeEndDate;
 
-  ajaxPost('/time/update_time',{
-    userId:userId,
-    updateDate:allData[indexPar].timeItems[index].timeEndDate,
-    beforeTimeId:allData[indexPar].timeItems[index].timeId,
-    afterTimeId:allData[indexPar].timeItems[index+1].timeId
-  }).success(function(res){
+  ajaxPost('/time/update_time', {
+    userId: userId,
+    updateDate: allData[indexPar].timeItems[index].timeEndDate,
+    beforeTimeId: allData[indexPar].timeItems[index].timeId,
+    afterTimeId: allData[indexPar].timeItems[index + 1].timeId
+  }).success(function (res) {
     console.log(res)
   })
 
   console.log(allData);
   handle = false;
-  $(this).find('.showTips').css('display','none');
+  $(this).find('.showTips').css('display', 'none');
 });
 
-$('.areaMsg').on('mousemove','.period',function(e){
+$('.areaMsg').on('mousemove', '.period', function (e) {
   e.stopPropagation();
-  if(handle){
+  if (handle) {
     var widthP = $(this).width();
     var moveX = e.pageX;
-    if(!maxLeft){
-      maxLeft = widthP-4;
+    if (!maxLeft) {
+      maxLeft = widthP - 4;
     }
     var newLeft = moveX - startX + selfLeft;
-    if(newLeft>(maxLeft-4))newLeft = maxLeft-4;
-    if(index == 0){
-      if(newLeft<4)newLeft = 4;
+    if (newLeft > (maxLeft - 4))newLeft = maxLeft - 4;
+    if (index == 0) {
+      if (newLeft < 4)newLeft = 4;
 
-    }else{
-      if(newLeft<(minLeft+4))newLeft = minLeft+4;
+    } else {
+      if (newLeft < (minLeft + 4))newLeft = minLeft + 4;
     }
     //data[index] = newLeft;
-    $('.area').eq(indexPar).find('.hk').eq(index).css('left',(newLeft/widthP)*100+'%');
+    $('.area').eq(indexPar).find('.hk').eq(index).css('left', (newLeft / widthP) * 100 + '%');
 
-    if(newLeft > (widthP/2)){
+    if (newLeft > (widthP / 2)) {
       $('.area').eq(indexPar).find('.hk').eq(index).find('.showTips').removeClass('showTipsLeft').addClass('showTipsRight');
-    }else{
+    } else {
       $('.area').eq(indexPar).find('.hk').eq(index).find('.showTips').removeClass('showTipsRight').addClass('showTipsLeft');
     }
 
-    $(this).children('.time').eq(index).css('width',((newLeft - selfLeft+leftWidth)/widthP)*100+'%');
-    $(this).children('.time').eq(index+1).css('width',((+rightWidth - (newLeft - selfLeft))/widthP)*100+'%');
+    $(this).children('.time').eq(index).css('width', ((newLeft - selfLeft + leftWidth) / widthP) * 100 + '%');
+    $(this).children('.time').eq(index + 1).css('width', ((+rightWidth - (newLeft - selfLeft)) / widthP) * 100 + '%');
 
-    var showDate = moment((newLeft/widthP*totalDate)+startDate).format('YYYY/MM/DD HH');
+    var showDate = moment((newLeft / widthP * totalDate) + startDate).format('YYYY/MM/DD HH');
     $('.area').eq(indexPar).find('.hk').eq(index).find('.showTips').html(showDate);
 
     allData[indexPar].timeItems[index].timeEndDate = showDate;
-    allData[indexPar].timeItems[index+1].timeStartDate = showDate;
+    allData[indexPar].timeItems[index + 1].timeStartDate = showDate;
     //console.log(moment((newLeft/widthP*totalDate)+startDate).format('YYYY-MM-DD HH'))
   }
 //    console.log(widthP,startX,moveX,selfLeft)
 });
 
 /*编辑区域*/
-function editArea(e){}
+function editArea(e) {
+
+}
 
 /*删除区域*/
-function delArea(e){
+function delArea(e) {
   console.log(e);
-  var indexPar = $('.area').index($(e).parents('.area'));
+  var indexPar = $('.areaTitle_con').index($(e).parents('.areaTitle_con'));
   var url = '/area/delete_area';
   //var areaIds = [allData[indexPar].areaId.toString()];
   var params = {
-    userId:userId,
-    areaIds:allData[indexPar].areaId.toString()
+    userId: userId,
+    //areaIds: allData[indexPar].areaId.toString()
+    areaIds: $(e).parents('.areaTitle_con').attr('id')
   };
   swal({
-      title: "确定要删除区域-"+allData[indexPar].areaName,
+      title: "确定要删除区域-" + allData[indexPar].areaName,
       type: "warning",
       showCancelButton: true,
       confirmButtonColor: "#DD6B55",
@@ -365,10 +396,13 @@ function delArea(e){
     },
     function () {
       ajaxPost(url, params).success(function (res) {
-        if(res.status == 0){
-          $('.area').eq(indexPar).remove();
+        if (res.status == 0) {
+          allData.splice(indexPar,1);
+          $('.areaTitle_con').eq(indexPar).remove();
+          showTimeline(allData);
+          //$('.areaTitle_con').eq(indexPar).remove();
           swal("已删除!", "", "success");
-        }else{
+        } else {
           swal("删除失败!", "", "error");
         }
       }).error(function () {
@@ -379,8 +413,17 @@ function delArea(e){
 
 }
 
+/*点击时段编辑信息*/
+function editTimes(){
+
+}
+
+function editPlan(t){
+  console.log(t);
+}
+
 /*添加时间段*/
-function addTimes(){
+function addTimes() {
   console.log(123);
   var timePoint = $('#qyTimePoint').val();
   var timeFrame = allData[areaIndex].timeFrame;
@@ -389,125 +432,83 @@ function addTimes(){
   var index = timeFrame.indexOf(timePoint);
 
   var url = '/time/save_time';
-  ajaxPost(url,{
-    missionId:qjMsg.rwId,
-    scenarinoId:qjMsg.qjId,
-    userId:userId,
-    areaId:allData[areaIndex].areaId,
-    selectTimeId:allData[areaIndex].timeItems[index].timeId,
-    addTimeDate:timePoint
-  }).success(function(res){
+  ajaxPost(url, {
+    missionId: qjMsg.rwId,
+    scenarinoId: qjMsg.qjId,
+    userId: userId,
+    areaId: allData[areaIndex].areaId,
+    selectTimeId: allData[areaIndex].timeItems[index].timeId,
+    addTimeDate: timePoint
+  }).success(function (res) {
     console.log(res);
 
-    allData[areaIndex].timeItems.splice(index+1,0,{
-      timeStartDate:timePoint,
-      timeId:res.data.timeId,
-      timeEndDate:allData[areaIndex].timeItems[index].timeEndDate
-    });
-    allData[areaIndex].timeItems[index].timeEndDate = timePoint;
-
-    var area = $('.area').eq(areaIndex);
-    var hk = $('.hk.disNone').clone().removeClass('disNone');
-
-    if(timeFrame.length > 1){
-
-      if(index == 0){
-        area.find('.hk').eq(index).before(hk);
-      }else{
-        area.find('.hk').eq(index-1).after(hk);
-      }
-    }else{
-      area.find('.showLine').append(hk);
-    }
-    hk.find('.showTips').html(timePoint);
-    var left = (moment(momentDate(timePoint)) - moment(momentDate(startDate)))/totalDate*100;
-    hk.css('left',left+'%');
-
-    var times = $('.time.disNone').clone().removeClass('disNone');
-    var totalWidth = area.find('.period').width();
-    var indextime = area.find('.time').eq(index);
-    indextime.after(times);
-
-    var beforeL = 0;
-    var afterL = totalWidth-20;
-    if(index != 0){
-      beforeL =  parseInt(area.find('.hk').eq(index-1).css('left'))
-    }
-    if(index < allData[areaIndex].timeFrame.length-1){
-      afterL = parseInt(area.find('.hk').eq(index+1).css('left'))
-    }
-
-    var timeWidth = left - ((beforeL/totalWidth)*100);
-    var newTimeWidth = ((afterL/totalWidth)*100) - left;
+    getAreaAndTime();
 
 
 
-    indextime.css('width',timeWidth+'%');
-    times.css('width',newTimeWidth+'%');
-
-  }).error(function(){
-    timeFrame.splice(index,1);
-    swal('添加失败！！！','','error')
+  }).error(function () {
+    timeFrame.splice(index, 1);
+    swal('添加失败！！！', '', 'error')
   });
 
 }
 
 /*返回YYYY-MM-DD HH格式*/
-function momentDate(d){
+function momentDate(d) {
   var n = Number(d);
-  if (!isNaN(n)){
+  if (!isNaN(n)) {
     return moment(d).format('YYYY-MM-DD HH')
-  }else{
-    return moment(d,'YYYY-MM-DD HH').format('YYYY-MM-DD HH')
+  } else {
+    return moment(d, 'YYYY-MM-DD HH').format('YYYY-MM-DD HH')
   }
 }
 
 /*删除时间段*/
-function delTimes(){
+function delTimes() {
   var url = '/time/delete_time';
   var mId;
   var ub = $('.delSelect input:checked').val();
   var delTime;
-  if(ub == 'up'){
-    mId = allData[areaIndex].timeItems[timeIndex-1].timeId;
+  if (ub == 'up') {
+    mId = allData[areaIndex].timeItems[timeIndex - 1].timeId;
     delTime = moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate)).format('YYYY/MM/DD HH');
-  }else{
-    mId = allData[areaIndex].timeItems[timeIndex+1].timeId;
+  } else {
+    mId = allData[areaIndex].timeItems[timeIndex + 1].timeId;
     delTime = moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate)).format('YYYY/MM/DD HH');
   }
 
-  ajaxPost(url,{
-    deleteTimeId:allData[areaIndex].timeItems[timeIndex].timeId,
-    startDate:moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate)).format('YYYY/MM/DD HH'),
-    endDate:moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate)).format('YYYY/MM/DD HH'),
-    mergeTimeId:mId,
-    userId:userId,
-    status:ub
-  }).success(function(){
+  ajaxPost(url, {
+    deleteTimeId: allData[areaIndex].timeItems[timeIndex].timeId,
+    startDate: moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate)).format('YYYY/MM/DD HH'),
+    endDate: moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate)).format('YYYY/MM/DD HH'),
+    mergeTimeId: mId,
+    userId: userId,
+    status: ub
+  }).success(function () {
     var index = allData[areaIndex].timeFrame.indexOf(delTime);
     var totalWidth = $('.area').eq(areaIndex).find('.period').width();
     var delTimes = $('.area').eq(areaIndex).find('.time').eq(timeIndex);
     var delWidth = delTimes.width();
-    var mTime,hk;
-    if(ub == 'up'){
-      allData[areaIndex].timeItems[timeIndex-1].timeEndDate = allData[areaIndex].timeItems[timeIndex].timeEndDate;
+    var mTime, hk;
+    if (ub == 'up') {
+      allData[areaIndex].timeItems[timeIndex - 1].timeEndDate = allData[areaIndex].timeItems[timeIndex].timeEndDate;
       //index = allData[areaIndex].timeFrame.indexOf(moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate)).format('YYYY/MM/DD HH'));
-      mTime = $('.area').eq(areaIndex).find('.time').eq(timeIndex-1);
-      hk = $('.area').eq(areaIndex).find('.hk').eq(timeIndex-1);
-    }else{
-      allData[areaIndex].timeItems[timeIndex+1].timeStartDate = allData[areaIndex].timeItems[timeIndex].timeStartDate;
+      mTime = $('.area').eq(areaIndex).find('.time').eq(timeIndex - 1);
+      hk = $('.area').eq(areaIndex).find('.hk').eq(timeIndex - 1);
+    } else {
+      allData[areaIndex].timeItems[timeIndex + 1].timeStartDate = allData[areaIndex].timeItems[timeIndex].timeStartDate;
       //index = allData[areaIndex].timeFrame.indexOf(moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate)).format('YYYY/MM/DD HH'));
-      mTime = $('.area').eq(areaIndex).find('.time').eq(timeIndex+1);
+      mTime = $('.area').eq(areaIndex).find('.time').eq(timeIndex + 1);
       hk = $('.area').eq(areaIndex).find('.hk').eq(timeIndex);
     }
-    var mWidth = (delWidth + mTime.width())/totalWidth*100;
-    mTime.css('width',mWidth+'%');
+    var mWidth = (delWidth + mTime.width()) / totalWidth * 100;
+    mTime.css('width', mWidth + '%');
     delTimes.remove();
     hk.remove();
-    allData[areaIndex].timeFrame.splice(index,1);
-    allData[areaIndex].timeItems.splice(timeIndex,1);
-    if(allData[areaIndex].timeFrame.length == 0){
-      mTime.find('.timeToolDiv .btn').eq(2).attr('disabled','disabled');
+    allData[areaIndex].timeFrame.splice(index, 1);
+    allData[areaIndex].timeItems.splice(timeIndex, 1);
+    if (allData[areaIndex].timeFrame.length == 0) {
+      mTime.find('.timeToolDiv .btn').eq(2).attr('disabled', 'disabled');
     }
 
   })
@@ -516,57 +517,57 @@ function delTimes(){
 
 var newPlan;
 /*添加预案*/
-function addPlan(){
+function addPlan() {
 
 
-  if(newPlan){
+  if (newPlan) {
     var url = '/plan/add_plan';
     var params = {
-      timeId:msg.content.timeId,
-      userId:userId,
-      missionId:msg.content.rwId,
-      scenarioId:msg.content.qjId,
-      areaId:msg.content.areaId,
-      timeStartTime:moment(momentDate(msg.content.timeStartDate)).format('YYYY-MM-DD HH'),
-      timeEndTime:moment(momentDate(msg.content.timeEndDate)).format('YYYY-MM-DD HH'),
-      planName:$('#yaName').val()
+      timeId: msg.content.timeId,
+      userId: userId,
+      missionId: msg.content.rwId,
+      scenarioId: msg.content.qjId,
+      areaId: msg.content.areaId,
+      timeStartTime: moment(momentDate(msg.content.timeStartDate)).format('YYYY-MM-DD HH'),
+      timeEndTime: moment(momentDate(msg.content.timeEndDate)).format('YYYY-MM-DD HH'),
+      planName: $('#yaName').val()
     };
-    ajaxPost(url,params).success(function(res){
+    ajaxPost(url, params).success(function (res) {
       msg.content.planId = res.data;
       msg.content.planName = $('#yaName').val();
       vipspa.setMessage(msg);
       createNewPlan();
       $('#yaName').val('');
     });
-  }else{
+  } else {
     var planId = $('#copyPlan').val();
     var planName = $('#copyPlan').find("option:selected").text();
     var url = '/plan/copy_plan';
 
-    ajaxPost(url,{
-      userId:userId,
-      planId:planId,
-      timeId:allData[areaIndex].timeItems[timeIndex].timeId
-    }).success(function(){
+    ajaxPost(url, {
+      userId: userId,
+      planId: planId,
+      timeId: allData[areaIndex].timeItems[timeIndex].timeId
+    }).success(function () {
       allData[areaIndex].timeItems[timeIndex].planId = planId;
       allData[areaIndex].timeItems[timeIndex].planName = planName;
-      $('.area').eq(areaIndex).find('.time').eq(timeIndex).find('.yaMsg h4').html(planName);
-      $('.area').eq(areaIndex).find('.time').eq(timeIndex).find('.timeToolDiv .btn').eq(0).attr('disabled','disabled');
-      $('.area').eq(areaIndex).find('.time').eq(timeIndex).find('.timeToolDiv .btn').eq(1).removeAttr('disabled');
+      $('.areaTitle_con').eq(areaIndex).find('.time').eq(timeIndex).find('.yaMsg h4').html(planName);
+      $('.areaTitle_con').eq(areaIndex).find('.time').eq(timeIndex).find('.timeToolDiv .btn').eq(0).attr('disabled', 'disabled');
+      $('.areaTitle_con').eq(areaIndex).find('.time').eq(timeIndex).find('.timeToolDiv .btn').eq(1).removeAttr('disabled');
     })
   }
 }
 
 /*创建新预案*/
-function createNewPlan(e){
-  window.setTimeout(function(){
+function createNewPlan(e) {
+  window.setTimeout(function () {
     $('#addCSBJ')[0].click();
     console.log(123)
-  },500)
+  }, 500)
 }
 
 /*添加新预案按钮*/
-function addNewPlan(e){
+function addNewPlan(e) {
   $(e).parents('#addYA').find('.modal-footer').removeClass('disNone');
   $(e).parents('#addYA').find('.addNewPlan').removeClass('disNone');
   $(e).parents('#addYA').find('.addCopyPlan').addClass('disNone');
@@ -575,30 +576,32 @@ function addNewPlan(e){
 }
 
 /*选择已有预案*/
-function copyPlan(e){
+function copyPlan(e) {
   $(e).parents('#addYA').find('.modal-footer').removeClass('disNone');
   $(e).parents('#addYA').find('.addCopyPlan').removeClass('disNone');
   $(e).parents('#addYA').find('.addNewPlan').addClass('disNone');
   $(e).parents('.selectAdd').addClass('disNone');
   newPlan = false;
   var url = '/plan/copy_plan_list';
-  ajaxPost(url,{
-    userId:userId
-  }).success(function(res){
+  ajaxPost(url, {
+    userId: userId
+  }).success(function (res) {
     $(e).parents('#addYA').find('.modal-footer').removeClass('disNone');
     $(e).parents('#addYA').find('.addCopyPlan').removeClass('disNone');
     $(e).parents('.selectAdd').addClass('disNone');
 
-    for(var i=0;i<res.data.length;i++){
-      $('<option value="'+ res.data[i].planId +'">'+ res.data[i].planName +'</option>').appendTo('#copyPlan')
+    for (var i = 0; i < res.data.length; i++) {
+      $('<option value="' + res.data[i].planId + '">' + res.data[i].planName + '</option>').appendTo('#copyPlan')
     }
   })
 }
 
 /*编辑预案*/
-function editPlan(t){
-  areaIndex = $('.area').index($(t).parents('.area'));
-  timeIndex = $(t).parents('.area').find('.time').index($(t).parents('.time'));
+function editPlan(t) {
+  //areaIndex = $('.areaTitle_con').index($(t).parents('.areaTitle_con'));
+  //timeIndex = $(t).parents('.area').find('.time').index($(t).parents('.time'));
+  areaIndex = $(t).attr('data-index');
+  timeIndex = $(t).attr('data-indexNum');
 
   msg.content.areaId = allData[areaIndex].areaId;
   msg.content.areaName = allData[areaIndex].areaName;
@@ -608,6 +611,9 @@ function editPlan(t){
   msg.content.planId = allData[areaIndex].timeItems[timeIndex].planId;
   msg.content.planName = allData[areaIndex].timeItems[timeIndex].planName;
   vipspa.setMessage(msg);
+
+  if(msg.content.planId == -1)return;
+
   createNewPlan();
 }
 
@@ -618,83 +624,84 @@ function editPlan(t){
 $('#editArea').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget);
   var create = button.data('new');
-  var areaId,findUrl;
+  var areaId, findUrl;
   var treeUrl = '/area/find_areas';
 
-  if(create){
+  if (create) {
 
-  }else{
-    findUrl = '/area/get_areaAndTimeList';
-    indexPar = $('.area').index(button.parents('.area'));
-    areaId = allData[indexPar].areaId;
+  } else {
+    findUrl = '/area/get_areaList';
+    //indexPar = $('.area').index(button.parents('.area'));
+    //areaId = allData[indexPar].areaId;
+    areaId = button.parents('.areaTitle_con').attr('id');
     console.log(areaId);
-    ajaxPost(findUrl,{
-      areaId:areaId,
-      userId:userId
-    }).success(function(res){
-      if(res.data){
+    ajaxPost(findUrl, {
+      areaId: areaId,
+      userId: userId
+    }).success(function (res) {
+      if (res.data) {
         setShowCode(res.data);
       }
       updataCodeList();
     });
-    $('#areaName').val(allData[indexPar].areaName).attr('data-id',areaId);
+    $('#areaName').val(button.parents('.areaTitle_con').find('b').html()).attr('data-id', areaId);
   }
 
-  ajaxPost(treeUrl,{
-    scenarinoId:qjMsg.qjId,
-    userId:userId,
-    areaId:areaId
-  }).success(function(res){
+  ajaxPost(treeUrl, {
+    scenarinoId: qjMsg.qjId,
+    userId: userId,
+    areaId: areaId
+  }).success(function (res) {
     initZTree(res.data);
   })
 });
 
-function createEditArea(){
+function createEditArea() {
   var url = '/area/saveorupdate_area';
   var areaName = $('#areaName').val();
-  if(!areaName){
+  if (!areaName) {
     alert('kong')
   }
-  
+
   var obj = {
-	    missionId:qjMsg.rwId,
-	    scenarinoId:qjMsg.qjId,
-	    areaName:areaName,	
-	    userId:userId,
-	    scenarinoStartDate:moment(momentDate(qjMsg.qjStartDate)).format('YYYY/MM/DD HH'),
-	    scenarinoEndDate:moment(momentDate(qjMsg.qjEndDate)).format('YYYY/MM/DD HH'),
-	    areaId:$('#areaName').attr('data-id')||'',
-	    provinceCodes:'',
-	    cityCodes:'',
-	    countyCodes:''
-	  };
-	
-	  var pArr = [];
-	  for(var i in showCode[0]){
-	    var proObj = {};
-	    proObj[i] = showCode[0][i];
-	    pArr.push(proObj);
-	  }
-	  obj.provinceCodes = JSON.stringify(pArr);
-	  var ctArr = [];
-	  for(var i in showCode[1]){
-	    for(var ii in showCode[1][i]){
-	      var cityObj = {};
-	      cityObj[ii] = showCode[1][i][ii];
-	      ctArr.push(cityObj)
-	    }
-	  }
-	  obj.cityCodes = JSON.stringify(ctArr);
-	  var crArr = [];
-	  for(var i in showCode[2]){
-	    for(var ii in showCode[2][i]){
-	      var countyObj = {};
-	      countyObj[ii] = showCode[2][i][ii];
-	      crArr.push(countyObj)
-	    }
-	  }
-	  obj.countyCodes = JSON.stringify(crArr);
-  ajaxPost(url,obj).success(function(res){
+    missionId: qjMsg.rwId,
+    scenarinoId: qjMsg.qjId,
+    areaName: areaName,
+    userId: userId,
+    scenarinoStartDate: moment(momentDate(qjMsg.qjStartDate)).format('YYYY/MM/DD HH'),
+    scenarinoEndDate: moment(momentDate(qjMsg.qjEndDate)).format('YYYY/MM/DD HH'),
+    areaId: $('#areaName').attr('data-id') || '',
+    provinceCodes: '',
+    cityCodes: '',
+    countyCodes: ''
+  };
+
+  var pArr = [];
+  for (var i in showCode[0]) {
+    var proObj = {};
+    proObj[i] = showCode[0][i];
+    pArr.push(proObj);
+  }
+  obj.provinceCodes = JSON.stringify(pArr);
+  var ctArr = [];
+  for (var i in showCode[1]) {
+    for (var ii in showCode[1][i]) {
+      var cityObj = {};
+      cityObj[ii] = showCode[1][i][ii];
+      ctArr.push(cityObj)
+    }
+  }
+  obj.cityCodes = JSON.stringify(ctArr);
+  var crArr = [];
+  for (var i in showCode[2]) {
+    for (var ii in showCode[2][i]) {
+      var countyObj = {};
+      countyObj[ii] = showCode[2][i][ii];
+      crArr.push(countyObj)
+    }
+  }
+  obj.countyCodes = JSON.stringify(crArr);
+  ajaxPost(url, obj).success(function (res) {
     console.log(res);
 
     var area = $('.area.disNone').clone().removeClass('disNone');
@@ -704,59 +711,59 @@ function createEditArea(){
     /*克隆时段进行添加*/
     var times = $('.time.disNone').clone().removeClass('disNone');
     area.find('.showLine').before(times);
-    times.find('.timeToolDiv .btn').eq(1).attr('disabled','disabled');
-    times.find('.timeToolDiv .btn').eq(2).attr('disabled','disabled');
-    times.css('width',$('.period').width()+'px');
+    times.find('.timeToolDiv .btn').eq(1).attr('disabled', 'disabled');
+    times.find('.timeToolDiv .btn').eq(2).attr('disabled', 'disabled');
+    times.css('width', $('.period').width() + 'px');
     var obj = {};
     obj.areaId = res.data.areaId;
     obj.areaName = areaName;
     obj.timeFrame = [];
     obj.timeItems = [{
-      planId:-1,
-      planName:'',
-      timeId:res.data.timeId,
-      timeEndDate:qjMsg.qjEndDate,
-      timeStartDate:qjMsg.qjStartDate
+      planId: -1,
+      planName: '',
+      timeId: res.data.timeId,
+      timeEndDate: qjMsg.qjEndDate,
+      timeStartDate: qjMsg.qjStartDate
     }];
     allData
   })
 }
 
-function setShowCode(data){
+function setShowCode(data) {
 
   proNum = data.provinceCodes.length;
   cityNum = data.cityCodes.length;
   countyNum = data.countyCodes.length;
 
-  for(var i=0;i<proNum;i++){
-    $.extend(showCode[0],data.provinceCodes[i]);
+  for (var i = 0; i < proNum; i++) {
+    $.extend(showCode[0], data.provinceCodes[i]);
   }
-  for(var ii=0;ii<cityNum;ii++){
+  for (var ii = 0; ii < cityNum; ii++) {
     var adcode1 = Object.keys(data.cityCodes[ii])[0];
-    if(!showCode[1][adcode1.substr(0,2)])showCode[1][adcode1.substr(0,2)] = {};
-    $.extend(showCode[1][adcode1.substr(0,2)],data.cityCodes[ii]);
+    if (!showCode[1][adcode1.substr(0, 2)])showCode[1][adcode1.substr(0, 2)] = {};
+    $.extend(showCode[1][adcode1.substr(0, 2)], data.cityCodes[ii]);
   }
-  for(var iii=0;iii<countyNum;iii++){
+  for (var iii = 0; iii < countyNum; iii++) {
     var adcode2 = Object.keys(data.countyCodes[iii])[0];
-    if(!showCode[2][adcode2.substr(0,4)])showCode[2][adcode2.substr(0,4)] = {};
-    $.extend(showCode[2][adcode2.substr(0,4)],data.countyCodes[iii]);
+    if (!showCode[2][adcode2.substr(0, 4)])showCode[2][adcode2.substr(0, 4)] = {};
+    $.extend(showCode[2][adcode2.substr(0, 4)], data.countyCodes[iii]);
   }
 }
 
 
 $('#qyTime').on('show.bs.modal', function (event) {
-	//console.log(event);
+  //console.log(event);
   var button = $(event.relatedTarget);
-  if(button.length == 0)return;
-  areaIndex = $('.area').index(button.parents('.area'));
+  if (button.length == 0)return;
+  areaIndex = $('.areaTitle_con').index(button.parents('.areaTitle_con'));
   console.log(areaIndex)
 });
 
 $('#addYA').on('show.bs.modal', function (event) {
 
   var button = $(event.relatedTarget);
-  if(button.length == 0)return;
-  areaIndex = $('.area').index(button.parents('.area'));
+  if (button.length == 0)return;
+  areaIndex = $('.areaTitle_con').index(button.parents('.areaTitle_con'));
   timeIndex = button.parents('.area').find('.time').index(button.parents('.time'));
 
   $(event.target).find('.modal-footer').addClass('disNone');
@@ -775,63 +782,63 @@ $('#addYA').on('show.bs.modal', function (event) {
 $('#delTime').on('show.bs.modal', function (event) {
   //console.log(event);
   var button = $(event.relatedTarget);
-  if(button.length == 0)return;
-  areaIndex = $('.area').index(button.parents('.area'));
+  if (button.length == 0)return;
+  areaIndex = $('.areaTitle_con').index(button.parents('.areaTitle_con'));
   timeIndex = button.parents('.area').find('.time').index(button.parents('.time'));
   $(event.target).find('.delSelect').empty();
 
   var redio = $('.radio.disNone').clone().removeClass('disNone');
-  if(timeIndex == 0){
-    redio.find('span').html('时   段ID：'+allData[areaIndex].timeItems[timeIndex+1].timeId+'<br />' +'开始时间：'+momentDate(allData[areaIndex].timeItems[timeIndex+1].timeStartDate)+'&nbsp;&nbsp;&nbsp;&nbsp;'+'结束时间：'+momentDate(allData[areaIndex].timeItems[timeIndex+1].timeEndDate));
+  if (timeIndex == 0) {
+    redio.find('span').html('时   段ID：' + allData[areaIndex].timeItems[timeIndex + 1].timeId + '<br />' + '开始时间：' + momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeStartDate) + '&nbsp;&nbsp;&nbsp;&nbsp;' + '结束时间：' + momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeEndDate));
     redio.find('input').val('down');
-  }else if(timeIndex == (allData[areaIndex].timeItems.length-1) ){
-    redio.find('span').html('时   段ID：'+allData[areaIndex].timeItems[timeIndex-1].timeId+'<br />' +'开始时间：'+momentDate(allData[areaIndex].timeItems[timeIndex-1].timeStartDate)+'<br />'+'结束时间：'+momentDate(allData[areaIndex].timeItems[timeIndex-1].timeEndDate));
+  } else if (timeIndex == (allData[areaIndex].timeItems.length - 1)) {
+    redio.find('span').html('时   段ID：' + allData[areaIndex].timeItems[timeIndex - 1].timeId + '<br />' + '开始时间：' + momentDate(allData[areaIndex].timeItems[timeIndex - 1].timeStartDate) + '<br />' + '结束时间：' + momentDate(allData[areaIndex].timeItems[timeIndex - 1].timeEndDate));
     redio.find('input').val('up');
-  }else{
+  } else {
     var redio2 = $('.radio.disNone').clone().removeClass('disNone');
-    redio2.find('span').html('时   段ID：'+allData[areaIndex].timeItems[timeIndex-1].timeId+'<br />' +'开始时间：'+momentDate(allData[areaIndex].timeItems[timeIndex-1].timeStartDate)+'&nbsp;&nbsp;&nbsp;&nbsp;'+'结束时间：'+momentDate(allData[areaIndex].timeItems[timeIndex-1].timeEndDate));
+    redio2.find('span').html('时   段ID：' + allData[areaIndex].timeItems[timeIndex - 1].timeId + '<br />' + '开始时间：' + momentDate(allData[areaIndex].timeItems[timeIndex - 1].timeStartDate) + '&nbsp;&nbsp;&nbsp;&nbsp;' + '结束时间：' + momentDate(allData[areaIndex].timeItems[timeIndex - 1].timeEndDate));
     redio2.find('input').val('up');
-    redio.find('span').html('时   段ID：'+allData[areaIndex].timeItems[timeIndex+1].timeId+'<br />' +'开始时间：'+momentDate(allData[areaIndex].timeItems[timeIndex+1].timeStartDate)+'&nbsp;&nbsp;&nbsp;&nbsp;'+'结束时间：'+momentDate(allData[areaIndex].timeItems[timeIndex+1].timeEndDate));
+    redio.find('span').html('时   段ID：' + allData[areaIndex].timeItems[timeIndex + 1].timeId + '<br />' + '开始时间：' + momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeStartDate) + '&nbsp;&nbsp;&nbsp;&nbsp;' + '结束时间：' + momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeEndDate));
     redio.find('input').val('down');
     $(event.target).find('.delSelect').append(redio2);
   }
   $(event.target).find('.delSelect').append(redio);
-  redio.find('input').attr('checked','checked');
-  console.log(areaIndex,timeIndex)
+  redio.find('input').attr('checked', 'checked');
+  console.log(areaIndex, timeIndex)
 });
 
 
 /*初始化zTree*/
-function initZtree(){
-  
+function initZtree() {
+
 }
 
 /*zTree相关方法*/
 /*选择节点，控制勾选状态*/
-function selectNode(node){
+function selectNode(node) {
   var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
   var parNode = node.getParentNode();
 
-  if(parNode){
-    treeObj.checkNode(parNode,true,false,false);
+  if (parNode) {
+    treeObj.checkNode(parNode, true, false, false);
     var child = parNode.children;
-    for(var c=0;c<child.length;c++){
-      if(!child[c].checked){
-        treeObj.checkNode(parNode,false,false,false);
-        if(parNode.getParentNode()){
-          treeObj.checkNode(parNode.getParentNode(),false,false,false);
+    for (var c = 0; c < child.length; c++) {
+      if (!child[c].checked) {
+        treeObj.checkNode(parNode, false, false, false);
+        if (parNode.getParentNode()) {
+          treeObj.checkNode(parNode.getParentNode(), false, false, false);
         }
         break;
       }
     }
-    if(parNode.checked){
+    if (parNode.checked) {
       var parparNode = parNode.getParentNode();
-      if(parparNode){
-        treeObj.checkNode(parparNode,true,false,false);
+      if (parparNode) {
+        treeObj.checkNode(parparNode, true, false, false);
         var proChild = parparNode.children;
-        for(var c=0;c<proChild.length;c++){
-          if(!proChild[c].checked){
-            treeObj.checkNode(parparNode,false,false,false);
+        for (var c = 0; c < proChild.length; c++) {
+          if (!proChild[c].checked) {
+            treeObj.checkNode(parparNode, false, false, false);
             break;
           }
         }
@@ -840,76 +847,76 @@ function selectNode(node){
   }
 }
 
-function level0(node){
+function level0(node) {
   showCode[node.level][node.adcode] = node.name;
-  delete showCode[node.level+1][node.adcode];
+  delete showCode[node.level + 1][node.adcode];
 
-  for(var i=1;i<showCode.length;i++){
-    for(var a in showCode[i]){
-      if(a.toString().substr(0,2) == node.adcode.toString().substr(0,2)){
+  for (var i = 1; i < showCode.length; i++) {
+    for (var a in showCode[i]) {
+      if (a.toString().substr(0, 2) == node.adcode.toString().substr(0, 2)) {
         delete showCode[i][a];
       }
     }
   }
 }
 
-function level12(node){
+function level12(node) {
   var parNode = node.getParentNode();
-  if(!showCode[node.level][parNode.adcode]){
+  if (!showCode[node.level][parNode.adcode]) {
     showCode[node.level][parNode.adcode] = {}
   }
   showCode[node.level][parNode.adcode][node.adcode] = node.name;
-  if(parNode.children.length == Object.keys(showCode[node.level][parNode.adcode]).length){
+  if (parNode.children.length == Object.keys(showCode[node.level][parNode.adcode]).length) {
     delete showCode[node.level][parNode.adcode];
-    if(node.level == 1){
+    if (node.level == 1) {
       level0(parNode);
-    }else{
+    } else {
       level12(parNode);
     }
   }
 
-  if(node.level == 1){
-    delete showCode[node.level+1][node.adcode];
+  if (node.level == 1) {
+    delete showCode[node.level + 1][node.adcode];
   }
 }
 
-function delNode0(node){
+function delNode0(node) {
   delete showCode[node.level][node.adcode]
 }
 
-function delNode12(node){
+function delNode12(node) {
   var parNode = node.getParentNode();
-  if(!showCode[node.level][parNode.adcode]){
-    if(node.level == 1){
+  if (!showCode[node.level][parNode.adcode]) {
+    if (node.level == 1) {
       delNode0(parNode);
-    }else{
+    } else {
       delNode12(parNode);
     }
     showCode[node.level][parNode.adcode] = {};
     var child = parNode.children;
-    for(var n=0;n<child.length;n++){
+    for (var n = 0; n < child.length; n++) {
       showCode[node.level][parNode.adcode][child[n].adcode] = child[n].name;
     }
   }
   delete showCode[node.level][parNode.adcode][node.adcode];
-  if($.isEmptyObject(showCode[node.level][parNode.adcode])){
+  if ($.isEmptyObject(showCode[node.level][parNode.adcode])) {
     delete showCode[node.level][parNode.adcode];
   }
 }
 
-function initDate(){
+function initDate() {
   $("#qyTimePoint").datetimepicker({
     format: 'yyyy/mm/dd hh',
-    todayHighlight:false,
+    todayHighlight: false,
     minView: 'day',
     startView: 'month',
     language: 'zh-CN',
     autoclose: true,
     todayBtn: true,
-    startDate:moment(qjMsg.qjStartDate).format('YYYY-MM-DD HH'),
-    endDate:moment(qjMsg.qjEndDate).format('YYYY-MM-DD HH')
+    startDate: moment(qjMsg.qjStartDate).format('YYYY-MM-DD HH'),
+    endDate: moment(qjMsg.qjEndDate).format('YYYY-MM-DD HH')
   })
-    .on('changeDate', function(ev){
+    .on('changeDate', function (ev) {
       var date = moment(ev.date).format('YYYY/MM/DD HH');
       //$('#rwEndDate').datetimepicker('setStartDate', date);
       //$('#rwStartDate').datetimepicker('setEndDate', null);
@@ -921,113 +928,116 @@ function initDate(){
 //通用属性
 var stat = {};
 //中心点坐标
-stat.cPointx=116;
-stat.cPointy=35;
+stat.cPointx = 116;
+stat.cPointy = 35;
 var app = {};
 var dong = {};
 
 var dojoConfig = {
-	async: true,
-    parseOnLoad: true,  
-    packages: [{  
-        name: 'tdlib',  
-        location: "/js/tdlib"  
-    }]
+  async: true,
+  parseOnLoad: true,
+  packages: [{
+    name: 'tdlib',
+    location: "/js/tdlib"
+  }]
 };
 
 require(
-	[
-	 	"esri/map",
-	 	"esri/layers/FeatureLayer",
-	 	"esri/layers/GraphicsLayer",
-	 	"esri/symbols/SimpleFillSymbol",
-	 	"esri/symbols/SimpleLineSymbol",
-	 	"esri/symbols/SimpleMarkerSymbol",
-	 	"esri/renderers/ClassBreaksRenderer",
-	 	"esri/geometry/Point",
-	 	"esri/geometry/Extent",
-        "esri/renderers/SimpleRenderer",
-        "esri/graphic",
-        "dojo/_base/Color",
-        "dojo/dom-style",
-        "esri/tasks/FeatureSet",
-        "esri/SpatialReference",
-        "tdlib/gaodeLayer",
-        "esri/InfoTemplate",
-        "esri/renderers/UniqueValueRenderer",
-        "dojo/domReady!"
+  [
+    "esri/map",
+    "esri/layers/FeatureLayer",
+    "esri/layers/GraphicsLayer",
+    "esri/symbols/SimpleFillSymbol",
+    "esri/symbols/SimpleLineSymbol",
+    "esri/symbols/SimpleMarkerSymbol",
+    "esri/renderers/ClassBreaksRenderer",
+    "esri/geometry/Point",
+    "esri/geometry/Extent",
+    "esri/renderers/SimpleRenderer",
+    "esri/graphic",
+    "dojo/_base/Color",
+    "dojo/dom-style",
+    "esri/tasks/FeatureSet",
+    "esri/SpatialReference",
+    "tdlib/gaodeLayer",
+    "esri/InfoTemplate",
+    "esri/renderers/UniqueValueRenderer",
+    "dojo/domReady!"
 
-	],
-	function(Map,FeatureLayer,GraphicsLayer,SimpleFillSymbol,SimpleLineSymbol,SimpleMarkerSymbol,ClassBreaksRenderer,Point,Extent,SimpleRenderer,
-			Graphic,Color,style,FeatureSet,SpatialReference,gaodeLayer,InfoTemplate,UniqueValueRenderer) {
-		dong.gaodeLayer = gaodeLayer;
-		dong.Graphic = Graphic;
-		dong.Point = Point;
-		dong.GraphicsLayer = GraphicsLayer;
-		dong.SpatialReference = SpatialReference;
-		dong.SimpleLineSymbol = SimpleLineSymbol ;
-		dong.FeatureLayer = FeatureLayer ;
-		dong.SimpleRenderer = SimpleRenderer ;
-		dong.SimpleFillSymbol = SimpleFillSymbol;
-		dong.Color = Color;
-		dong.ClassBreaksRenderer = ClassBreaksRenderer;
-		dong.UniqueValueRenderer = UniqueValueRenderer ;
-		dong.InfoTemplate = InfoTemplate;
-		/*****************************************************/
-		app.map1 = new Map("mapDiv1", {
-			logo:false,
-	        center: [stat.cPointx, stat.cPointy],
-	        minZoom:3,
-	        maxZoom:13,
-	        zoom: 3
-		});
-		app.baselayerList1 = new dong.gaodeLayer();
-		app.stlayerList1 = new dong.gaodeLayer({layertype: "st1"});
-		app.labellayerList1 = new dong.gaodeLayer({layertype: "label1"});
-		app.map1.addLayer(app.baselayerList1);//添加高德地图到map容器
-		app.map1.addLayers([app.baselayerList1]);//添加高德地图到map容器
-		app.gLyr1 = new dong.GraphicsLayer({"id":"gLyr1"});
-		app.map1.addLayer(app.gLyr1);
-		app.map1.on("loaded",app2())
-		/*************************************************************************/
-		app.map = new Map("mapDiv", {
-			logo:false,
-	        center: [stat.cPointx, stat.cPointy],
-	        minZoom:3,
-	        maxZoom:13,
-	        zoom: 3
-		});
-		app.baselayerList = new dong.gaodeLayer();
-		app.stlayerList = new dong.gaodeLayer({layertype: "st"});
-		app.labellayerList = new dong.gaodeLayer({layertype: "label"});
-		app.map.addLayer(app.baselayerList);//添加高德地图到map容器
-		app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
-		app.gLyr = new dong.GraphicsLayer({"id":"gLyr"});
-		app.map.addLayer(app.gLyr);
-		/******************************************/
-		
-});
+  ],
+  function (Map, FeatureLayer, GraphicsLayer, SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, ClassBreaksRenderer, Point, Extent, SimpleRenderer,
+            Graphic, Color, style, FeatureSet, SpatialReference, gaodeLayer, InfoTemplate, UniqueValueRenderer) {
+    dong.gaodeLayer = gaodeLayer;
+    dong.Graphic = Graphic;
+    dong.Point = Point;
+    dong.GraphicsLayer = GraphicsLayer;
+    dong.SpatialReference = SpatialReference;
+    dong.SimpleLineSymbol = SimpleLineSymbol;
+    dong.FeatureLayer = FeatureLayer;
+    dong.SimpleRenderer = SimpleRenderer;
+    dong.SimpleFillSymbol = SimpleFillSymbol;
+    dong.Color = Color;
+    dong.ClassBreaksRenderer = ClassBreaksRenderer;
+    dong.UniqueValueRenderer = UniqueValueRenderer;
+    dong.InfoTemplate = InfoTemplate;
+    /*****************************************************/
+    app.map1 = new Map("mapDiv1", {
+      logo: false,
+      center: [stat.cPointx, stat.cPointy],
+      minZoom: 3,
+      maxZoom: 13,
+      zoom: 3
+    });
+    app.baselayerList1 = new dong.gaodeLayer();
+    app.stlayerList1 = new dong.gaodeLayer({layertype: "st1"});
+    app.labellayerList1 = new dong.gaodeLayer({layertype: "label1"});
+    app.map1.addLayer(app.baselayerList1);//添加高德地图到map容器
+    app.map1.addLayers([app.baselayerList1]);//添加高德地图到map容器
+    app.gLyr1 = new dong.GraphicsLayer({"id": "gLyr1"});
+    app.map1.addLayer(app.gLyr1);
+    app.map1.on("loaded", app2())
+    /*************************************************************************/
+    app.map = new Map("mapDiv", {
+      logo: false,
+      center: [stat.cPointx, stat.cPointy],
+      minZoom: 3,
+      maxZoom: 13,
+      zoom: 3
+    });
+    app.baselayerList = new dong.gaodeLayer();
+    app.stlayerList = new dong.gaodeLayer({layertype: "st"});
+    app.labellayerList = new dong.gaodeLayer({layertype: "label"});
+    app.map.addLayer(app.baselayerList);//添加高德地图到map容器
+    app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
+    app.gLyr = new dong.GraphicsLayer({"id": "gLyr"});
+    app.map.addLayer(app.gLyr);
+    /******************************************/
+
+  });
 //添加服务
- function addLayer(data) {
-	 shuju_clear();
-	 app.featureLayer1 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/2", {infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-        mode: dong.FeatureLayer.MODE_ONDEMAND,
-        outFields: ["NAME"]
-      });
-	 app.featureLayer2 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/1", {infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-        mode: dong.FeatureLayer.MODE_ONDEMAND,
-        outFields: ["NAME"]
-      });
-	app.featureLayer3 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/0", {infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-        mode: dong.FeatureLayer.MODE_ONDEMAND,
-        outFields: ["NAME"]
+function addLayer(data) {
+  shuju_clear();
+  app.featureLayer1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/2", {
+    infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+    mode: dong.FeatureLayer.MODE_ONDEMAND,
+    outFields: ["NAME"]
+  });
+  app.featureLayer2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/1", {
+    infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+    mode: dong.FeatureLayer.MODE_ONDEMAND,
+    outFields: ["NAME"]
+  });
+  app.featureLayer3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/0", {
+    infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+    mode: dong.FeatureLayer.MODE_ONDEMAND,
+    outFields: ["NAME"]
 //		visible:""
-      });
-	 app.map.addLayer(app.featureLayer1);
-	 app.map.addLayer(app.featureLayer2);
-	 app.map.addLayer(app.featureLayer3);
-	 area(data);
- }
+  });
+  app.map.addLayer(app.featureLayer1);
+  app.map.addLayer(app.featureLayer2);
+  app.map.addLayer(app.featureLayer3);
+  area(data);
+}
 //行政区划渲染
 function area (data) {
 	console.log(data)
@@ -1072,123 +1082,196 @@ function area (data) {
 		 }
 	 }
 //	 app.map.on("loaded",setExtent())
-	app.map.setExtent(new esri.geometry.Extent({  
-		"xmin": 8180595.1985,  
-		"ymin": 2051330.0834,  
-		"xmax": 15038957.856799997,  
-		"ymax": 7087544.693899997,  
-		"spatialReference": {  
-		    "wkid": 102100  
-		}  
-	})); 
+  app.map.setExtent(new esri.geometry.Extent({
+    "xmin": 8180595.1985,
+    "ymin": 2051330.0834,
+    "xmax": 15038957.856799997,
+    "ymax": 7087544.693899997,
+    "spatialReference": {
+      "wkid": 102100
+    }
+  }));
 }
 //清空地图
 function shuju_clear() {
-	if (app.featureLayer1 != undefined && app.featureLayer1 != null && app.featureLayer1 != "" ) {
-		app.map.removeLayer(app.featureLayer1);
-	}
-	if (app.featureLayer1 != undefined && app.featureLayer1 != null && app.featureLayer1 != "" ) {
-		app.map.removeLayer(app.featureLayer1)
-	}
-	if (app.featureLayer2 != undefined && app.featureLayer2 != null && app.featureLayer2 != "" ) {
+  if (app.featureLayer1 != undefined && app.featureLayer1 != null && app.featureLayer1 != "") {
+    app.map.removeLayer(app.featureLayer1);
+  }
+  if (app.featureLayer1 != undefined && app.featureLayer1 != null && app.featureLayer1 != "") {
+    app.map.removeLayer(app.featureLayer1)
+  }
+  if (app.featureLayer2 != undefined && app.featureLayer2 != null && app.featureLayer2 != "") {
 //		app.featureLayer2.clear();
-		app.map.removeLayer(app.featureLayer2)
-	}
+    app.map.removeLayer(app.featureLayer2)
+  }
 }
 //对地图的定位  
 function setExtent(data) {
-	if(data != "" && data != undefined ) {
-		 var code = data.adcode.substring(0,2)+"0000";
-			if ( app.featureLayer1 != "" && app.featureLayer1 != null && app.featureLayer1 != undefined ) {
-				var ss = app.featureLayer1.graphics;
-				if ( data.checked == true ) {
-					$.each(app.featureLayer1.graphics,function(i,gra){
-						if(gra.attributes.ADMINCODE == code ){
-							app.map.setExtent(app.featureLayer1.graphics[i].geometry.getExtent());
-							}
-						})
-				}
-			}
-	}
+  if (data != "" && data != undefined) {
+    var code = data.adcode.substring(0, 2) + "0000";
+    if (app.featureLayer1 != "" && app.featureLayer1 != null && app.featureLayer1 != undefined) {
+      var ss = app.featureLayer1.graphics;
+      if (data.checked == true) {
+        $.each(app.featureLayer1.graphics, function (i, gra) {
+          if (gra.attributes.ADMINCODE == code) {
+            app.map.setExtent(app.featureLayer1.graphics[i].geometry.getExtent());
+          }
+        })
+      }
+    }
+  }
 }
 //颜色数组
-var sz_corlor= ["#000080","#6495ED","#00FFFF","#CD5C5C","#FF00FF","#9370DB","#8B8682","#EED5B7","#FFF0F5","	#9F79EE","#A2B5CD","#FFE1FF","#B23AEE"];
+var sz_corlor = ["#000080", "#6495ED", "#00FFFF", "#CD5C5C", "#FF00FF", "#9370DB", "#8B8682", "#EED5B7", "#FFF0F5", "	#9F79EE", "#A2B5CD", "#FFE1FF", "#B23AEE"];
 /**********************************任务管理进来地图*****************************************************/
 
 //根据区域在地图上显示
 function app2() {
-	var xmax = 0,xmin = 0,ymax = 0,ymin = 0;
-	if ( allData != "" && allData != null && allData != undefined ) {
-		var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
-		defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
-		$.each(allData,function(k,item){
-			var str = sz_corlor[k];
-			if(item.provinceCodes != "" && item.provinceCodes != null && item.provinceCodes != undefined ) {
-				if(item.provinceCodes.length>0 ) {//市
-					var renderer = new  dong.UniqueValueRenderer(defaultSymbol,"ADMINCODE");
-					for ( var i = 0 ; i< item.provinceCodes.length; i++ ) {
-						 for (var prop in item.provinceCodes[i]) {
-							  if (item.provinceCodes[i].hasOwnProperty(prop)) { 
-								  var code = prop+"0000";
-								  renderer.addValue(code, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
-							  } 
-						}
-					}
-					 app.fea1 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/2", {//添加省的图层
-						 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-					        mode: dong.FeatureLayer.MODE_ONDEMAND,
-					        outFields: ["NAME"]
-					      });
-					 app.fea1.setRenderer(renderer);
-					 app.map1.addLayer(app.fea1);
-				} 
-			}
-			if ( item.cityCodes != "" && item.cityCodes != null && item.cityCodes != undefined ) {//市
-				for(var i = 0 ; i < item.cityCodes.length; i++ ) {
-					var renderer = new  dong.UniqueValueRenderer(defaultSymbol,"CITYCODE");
-					 for (var prop in item.cityCodes[i]) {
-						  if (item.cityCodes[i].hasOwnProperty(prop)) { 
-							  var code = prop+"00";
-							  renderer.addValue(code, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
-						  } 
-					}
-					 app.fea2 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/1", {//市的图层
-						 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-					        mode: dong.FeatureLayer.MODE_ONDEMAND,
-					        outFields: ["NAME"]
-					      });
-					 app.fea2.setRenderer(renderer);
-					 app.map1.addLayer(app.fea2);
-				}
-				console.log(app.fea2)
-				console.log(app.fea2.graphics);
-			}
-			if (item.countyCodes !="" && item.countyCodes != null && item.countyCodes != undefined ) {//区县
-				var renderer = new  dong.UniqueValueRenderer(defaultSymbol,"ADMINCODE");
-				for ( var i = 0 ; i < item.countyCodes.length; i ++ ) {
-					for (var prop in item.countyCodes[i]) {
-						  if (item.countyCodes[i].hasOwnProperty(prop)) { 
-							  renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
-						  } 
-					}
-					 app.fea3 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/0", {//区县的图层
-						 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-					        mode: dong.FeatureLayer.MODE_ONDEMAND,
-					        outFields: ["NAME"]
-					      });
-					 app.fea3.setRenderer(renderer);
-					 app.map1.addLayer(app.fea3);
-				} 
-			}
-		})
-	} 
-	app.map1.setExtent(new esri.geometry.Extent({  
-		"xmin": 8180595.1985,  
-		"ymin": 2051330.0834,  
-		"xmax": 15038957.856799997,  
-		"ymax": 7087544.693899997,  
-		"spatialReference": {  
-		    "wkid": 102100  
-		}  
-	})); 
+  var xmax = 0, xmin = 0, ymax = 0, ymin = 0;
+  if (allData != "" && allData != null && allData != undefined) {
+    var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
+    defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
+    $.each(allData, function (k, item) {
+      var str = sz_corlor[k];
+      if (item.provinceCodes != "" && item.provinceCodes != null && item.provinceCodes != undefined) {
+        if (item.provinceCodes.length > 0) {//市
+          var renderer = new dong.UniqueValueRenderer(defaultSymbol, "ADMINCODE");
+          for (var i = 0; i < item.provinceCodes.length; i++) {
+            for (var prop in item.provinceCodes[i]) {
+              if (item.provinceCodes[i].hasOwnProperty(prop)) {
+                var code = prop + "0000";
+                renderer.addValue(code, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
+              }
+            }
+          }
+          app.fea1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/2", {//添加省的图层
+            infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+            mode: dong.FeatureLayer.MODE_ONDEMAND,
+            outFields: ["NAME"]
+          });
+          app.fea1.setRenderer(renderer);
+          app.map1.addLayer(app.fea1);
+        }
+
+      }
+      if (item.cityCodes != "" && item.cityCodes != null && item.cityCodes != undefined) {//市
+        for (var i = 0; i < item.cityCodes.length; i++) {
+          var renderer = new dong.UniqueValueRenderer(defaultSymbol, "CITYCODE");
+          for (var prop in item.cityCodes[i]) {
+            if (item.cityCodes[i].hasOwnProperty(prop)) {
+              var code = prop + "00";
+              renderer.addValue(code, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
+            }
+          }
+          app.fea2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/1", {//市的图层
+            infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+            mode: dong.FeatureLayer.MODE_ONDEMAND,
+            outFields: ["NAME"]
+          });
+          app.fea2.setRenderer(renderer);
+          app.map1.addLayer(app.fea2);
+        }
+        console.log(app.fea2)
+        console.log(app.fea2.graphics);
+      }
+      if (item.countyCodes != "" && item.countyCodes != null && item.countyCodes != undefined) {//区县
+        var renderer = new dong.UniqueValueRenderer(defaultSymbol, "ADMINCODE");
+        for (var i = 0; i < item.countyCodes.length; i++) {
+          for (var prop in item.countyCodes[i]) {
+            if (item.countyCodes[i].hasOwnProperty(prop)) {
+              renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
+            }
+          }
+          app.fea3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/0", {//区县的图层
+            infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+            mode: dong.FeatureLayer.MODE_ONDEMAND,
+            outFields: ["NAME"]
+          });
+          app.fea3.setRenderer(renderer);
+          app.map1.addLayer(app.fea3);
+        }
+      }
+    })
+  }
+  app.map1.setExtent(new esri.geometry.Extent({
+    "xmin": 8180595.1985,
+    "ymin": 2051330.0834,
+    "xmax": 15038957.856799997,
+    "ymax": 7087544.693899997,
+    "spatialReference": {
+      "wkid": 102100
+    }
+  }));
+}
+
+
+var timeline;
+
+$().ready(function () {
+
+  $('#autoAdjustTime').on('change', function (event) {
+    var value = $(this).val();
+    $('#startTime').attr('disabled', value === 'both' || value === 'start');
+    $('#endTime').attr('disabled', value === 'both' || value === 'end');
+  });
+
+  $('#guides').on('change', function (event) {
+    $('#showGuidesLabel').attr('disabled', $(this).val() === 'none');
+  });
+
+  $('#zoom').on('change', function (event) {
+    if (timeline) {
+      timeline.timeline('zoom', $(this).val());
+    }
+  });
+
+  $('#refresh')
+    .on('click', showTimeline);
+
+
+});
+
+function showTimeline(data) {
+//            var testData = $('#testData').val();
+//  var testData = '2';
+  //$.getJSON(testData, function (data) {
+  //    var options = {};
+  //    options.startTime = $('#startTime').val();
+  //    options.endTime = $('#endTime').val();
+  //    options.showArrow = $('#showArrow')[0].checked;
+  //    options.timeScalePosition = $('#timeScalePosition').val();
+  //    options.autoAdjustTime = $('#autoAdjustTime').val();
+  //    options.smoothScroll = $('#smoothScroll').val();
+  //    options.guides = $('#guides').val();
+  //    options.showGuidesLabel = $('#showGuidesLabel')[0].checked;
+  //    options.showSlider = $('#showSlider')[0].checked;
+  //    options.zoom = $('#zoom').val();
+  //    options.data = data;
+  //    timeline = $('#timeline').timeline(options);
+  //});
+
+  var options = {};
+  //options.startTime = $('#startTime').val();
+  //options.endTime = $('#endTime').val();
+  options.startTime = qjMsg.qjStartDate;
+  options.endTime = qjMsg.qjEndDate;
+//  options.showArrow = $('#showArrow')[0].checked;
+//  options.timeScalePosition = $('#timeScalePosition').val();
+//  options.autoAdjustTime = $('#autoAdjustTime').val();
+//  options.smoothScroll = $('#smoothScroll').val();
+//  options.guides = $('#guides').val();
+//  options.showGuidesLabel = $('#showGuidesLabel')[0].checked;
+//  options.showSlider = $('#showSlider')[0].checked;
+//  options.zoom = $('#zoom').val();
+  //options.data = testData === '1' ? testdata1 : testData === '2' ? testdata2 : testdata3;
+  options.data = data;
+  timeline = $('#timeline').timeline(options);
+}
+
+
+/*移除显示，刷新*/
+function destroyTimeline() {
+//  timeline._destroy();
+//  $('#timeline').empty();
+//  $('.areaTitle').empty();
 }
