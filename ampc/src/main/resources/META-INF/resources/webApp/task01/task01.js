@@ -1101,9 +1101,9 @@ function createQJselect(){
     userId:userId,
     missionId:selectRW.missionId
   };
-  if((!__dsp['jcqj'+selectRW.missionId]) || (basisArr.length ==0)){
+  //if((!__dsp['jcqj'+selectRW.missionId]) || (basisArr.length ==0)){
     __dsp['jcqj'+selectRW.missionId] = ajaxPost(oldQJUrl,oldQJparams);
-  }
+  //}
 
   if(selectRW.missionStatus == "预评估"){
     $('#createYpQjModal').modal('show');
