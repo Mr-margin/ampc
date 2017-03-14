@@ -677,7 +677,6 @@ function add_point(col){
 	app.mapList[1].setExtent(extent);
 	/***********************************************************/
 	function cleanUp() {
-		alert(2);
 		app.mapList[1].infoWindow.hide();
 	    //clusterLayer.clearSingles();
 	  }
