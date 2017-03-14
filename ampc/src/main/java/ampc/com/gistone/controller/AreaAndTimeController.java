@@ -542,13 +542,16 @@ public class AreaAndTimeController {
 		    	areaUtil.setAreaId(area.getScenarinoAreaId());
 		    	areaUtil.setAreaName(area.getAreaName());
 		    	if(area.getCityCodes()!=null){
-		    	areaUtil.setProvinceCodes(area.getCityCodes());
+		    	JSONArray arr=JSONArray.fromObject(area.getCityCodes());
+		    	areaUtil.setProvinceCodes(arr);
 		    	}
 		    	if(area.getProvinceCodes()!=null){
-			    	areaUtil.setProvinceCodes(area.getProvinceCodes());
+		    		JSONArray arr1=JSONArray.fromObject(area.getProvinceCodes());
+			    	areaUtil.setProvinceCodes(arr1);
 			    	}
 		    	if(area.getCountyCodes()!=null){
-			    	areaUtil.setProvinceCodes(area.getCityCodes());
+		    		JSONArray arr2=JSONArray.fromObject(area.getCityCodes());
+			    	areaUtil.setProvinceCodes(arr2);
 			    	}
 		    	List<Map> timeplan=this.tTimeMapper.selectByAreaId(area.getScenarinoAreaId());
 		    	for(Map tp:timeplan){
