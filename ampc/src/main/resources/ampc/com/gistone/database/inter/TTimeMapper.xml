@@ -194,4 +194,9 @@
     set IS_EFFECTIVE = '0',
     where TIME_ID =#{timeId,jdbcType=DECIMAL}
   </update>
+  <select id="selectEntityByAreaId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select <include refid="Base_Column_List" />
+    from T_TIME 
+    where AREA_ID = #{areaId,jdbcType=DECIMAL} AND IS_EFFECTIVE='1'
+  </select>
 </mapper>
