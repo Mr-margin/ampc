@@ -48,5 +48,6 @@ public interface TTimeMapper {
     List<TTime> selectByPrimaryKeysort(TTime record);
     
     int updateByisEffective(Long timeId);
+    List<TTime> selectEntityByAreaId(Long areaId);
     
 }
