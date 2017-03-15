@@ -51,6 +51,8 @@ function hyc(){
 	paramsName.timeStartTime=qjMsg.timeStartDate;
 	paramsName.timeEndTime=qjMsg.timeEndDate;
 	
+	m_planId = qjMsg.planId;
+	
 	ajaxPost('/plan/get_planInfo',paramsName).success(function(res){
 //		console.log(JSON.stringify(res));
 		var accordion_html = "";
@@ -92,6 +94,7 @@ function hyc(){
 		swal('校验失败', '', 'error')
 	})
 }
+
 /**
  * 获取措施汇总
  */
@@ -126,9 +129,18 @@ function metTable_hj_info(){
 }
 
 var sc_val = {};//存储最终的自措施条件
+var sc_v1 = {};
 var temp_val = {};//单次查询的缓存
 var ty = "";
 var temp_val_v1 = {};//单次查询的缓存
+var xishu_temp = [];//需要填写的内容
+var xishu_temp_ch = [];//需要填写的内容中文
+//var show_lenght =[];//要显示的列长度
+var measureame_temp = "";//措施名称
+var query = [];//返回的条件内容
+
+var m_mid,m_planId,m_sectorName,m_planMeasureId;
+
 /**
  * 打开措施的窗口，数据初始化
  * sectorsName:行业名称
@@ -139,7 +151,11 @@ var temp_val_v1 = {};//单次查询的缓存
 function open_cs(sectorsName, measureame, mid, planMeasureId){
 	$("#measureame").html("措施："+measureame);//发开弹出窗，设置标题、行业、措施等内容
 	$("#sectorsName").html("行业："+sectorsName);
-
+	measureame_temp = measureame;
+	m_mid = mid;
+	m_sectorName = sectorsName;
+	m_planMeasureId = planMeasureId;
+	
 	var paramsName = {};
 	paramsName.userId = userId;
 	paramsName.sectorName = sectorsName;
@@ -155,8 +171,12 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 	
 	ajaxPost('/measure/get_measureQuery',paramsName).success(function(res){
 //		console.log(JSON.stringify(res));
+		$("#sc_conter").html("");
+		$("#val_zicuoshi").html("");
+		
 		if(res.status == 0){//返回状态正常
 			if(res.data.query.length>0){//返回筛选条件
+				query = jQuery.extend(true, {}, res.data.query);//保存一份返回的条件结果集
 				var sc_conter = '';//页面的标签
 				var name_length = 0;//记录标题的长度，用于设置每个条件的标题的宽度
 				$.each(res.data.query, function(i, col) {//循环每个条件，第一次循环实现页面标签实体化
@@ -267,35 +287,112 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 			}
 			
 			//要显示的列
-			var show_zicuoshi = "<tr><th>措施</th><th>点源实施范围</th>";
-			var z_num = 8;
 			if(res.data.measureColumn.length>0){
 				var sum = [];
 				$.each(res.data.measureColumn, function(i, col) {
 					sum.push(col.sectordocEtitle);//记录英文名称
-					show_zicuoshi += "<th>"+col.sectordocCtitle+"</th>"
-					z_num += col.sectordocCtitle.length;
 				});
 				sc_val.summary.sum = sum;//将英文名称添加到计算需求的模板中
 			}
 			
+			xishu_temp = [];//需要填写的内容
+			xishu_temp_ch = [];//需要填写的内容中文
+			
+			var xishuMO = "";//修改的表单
 			//要修改的列
 			if(res.data.measureList.length>0){
 				$.each(res.data.measureList, function(i, col) {
-					show_zicuoshi += "<th>"+col.name+"</th>"
-					z_num += col.name.length;
+					
+					xishu_temp.push(col.nameen);
+					xishu_temp_ch.push(col.namech);
+					
+					xishuMO += '<div class="col-md-6" style="margin-top: 10px;">';
+					xishuMO += '<div class="input-group m-b" style="margin-bottom: 0px">';
+					xishuMO += '<span class="input-group-addon" style="border: 1px solid #E5E6E7;">'+col.namech+'</span>';
+					xishuMO += '<input type="text" class="form-control" id="'+col.nameen+'" name="'+col.nameen+'">';
+					xishuMO += '</div></div>';
 				});
+				$("#xishuMO").html(xishuMO);
 			}
 			show_zicuoshi += "</tr>";
-			$("#show_zicuoshi_table").css("width",(z_num*20)+"px");
-			$("#show_zicuoshi").html(show_zicuoshi);
 			
-			ajaxPost_w('http://192.168.1.116:8089/search/companyCount',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName}).success(function(res){
-				console.log(JSON.stringify(res));
-				$("#dianyaunzushu").html("点源总数："+res.data.length);
-				
-				add_point(res.data);
+			ajaxPost_w(jianpaiUrl+'/search/companyCount',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName}).success(function(res){
+//				console.log(JSON.stringify(res));
+				if(res.status == 'success'){
+					$("#dianyaunzushu").html("点源总数："+res.data.count);
+					add_point(res.data.company);
+				}else{
+					swal('连接错误1', '', 'error');
+				}
 			});
+			
+			//添加区域4的结果表格
+			console.log(JSON.stringify({"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName,"summary":sc_val.summary}));
+			ajaxPost_w(jianpaiUrl+'/search/summarySource',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName,"summary":sc_val.summary}).success(function(da){
+				console.log(JSON.stringify(da));
+				
+				if(da.status == 'success'){
+					var columns = [];
+					columns.push({field: 'f1', title: '措施', align: 'center'});
+					columns.push({field: 'f2', title: '点源实施范围', align: 'center'});
+					var b_data = [];
+					var zz = {"f1": "汇总", "f2" : "0/"+da.data.P[0].count}, pp = {"f1": "剩余点源", "f2" : da.data.P[0].count}, ss = {"f1": "面源", "f2" : ""};
+					
+					$.each(res.data.measureColumn, function(i, vol) {
+						columns.push({field: vol.sectordocEtitle, title: vol.sectordocCtitle, align: 'center'});
+						zz[vol.sectordocEtitle] = "0/"+(Math.round(da.data.P[0][vol.sectordocEtitle])+Math.round(da.data.S[0][vol.sectordocEtitle]));
+						pp[vol.sectordocEtitle] = Math.round(da.data.P[0][vol.sectordocEtitle]);
+						ss[vol.sectordocEtitle] = Math.round(da.data.S[0][vol.sectordocEtitle]);
+					});
+					$.each(res.data.measureList, function(i, col) {
+						columns.push({field: col.nameen, title: col.namech, align: 'center'});
+						zz[col.nameen] = "";
+						pp[col.nameen] = "";
+						ss[col.nameen] = "";
+					});
+					b_data.push(zz);
+					b_data.push(pp);
+					b_data.push(ss);
+					
+					$('#show_zicuoshi_table').bootstrapTable('destroy');
+					$('#show_zicuoshi_table').bootstrapTable({
+						columns : columns,
+						data : b_data,
+						height : $("#show_zicuoshi_table_div").height(),
+						clickToSelect : false,// 点击选中行
+						detailView : true,//显示详细页面模式
+						pagination : false, // 在表格底部显示分页工具栏
+						striped : false, // 使表格带有条纹
+						silent : true, // 刷新事件必须设置
+						detailFormatter : function(index, row){
+							if(row.f1 == "汇总" || row.f1 == "剩余点源" || row.f1 == "面源"){
+								
+							}else{
+								return row.tiaojian;
+							}
+						},
+						onClickRow : function(row, $element) {
+							
+						},
+						onLoadSuccess : function(data){
+							
+						},
+						onLoadError : function(){
+							swal('连接错误', '', 'error');
+						}
+					});
+					$('#show_zicuoshi_table').bootstrapTable('expandRow', 0);
+					$('#show_zicuoshi_table').bootstrapTable('expandRow', 1);
+					$('#show_zicuoshi_table').bootstrapTable('expandRow', 2);
+					
+				}else{
+					swal('连接错误', '', 'error');
+				}
+				
+			});
+			
+			//初始化的时候，将固定条件组织好，复制一份保存使用
+			sc_v1 = jQuery.extend(true, {}, sc_val);
 			
 		}else{
 			swal('连接错误', '', 'error');
@@ -338,7 +435,7 @@ function val_handle(e, queryEtitle, queryName, type, sourceType){
 							if(val_name.indexOf("~")>=0){//如果值得中间有波折号，说明是值域，为文本框赋值
 								var s = val_name.split("~");
 								$("#"+queryEtitle+"_1").val(s[0]);
-								$("#"+queryEtitle+"_2").val(s[1]==""?999999:s[1]);
+								$("#"+queryEtitle+"_2").val(s[1]==""?"":s[1]);
 							}
 						}else{
 							$("#sc_conter").children().each(function(){//为单选的前置条件设置，清空后置条件的显隐设置
@@ -477,11 +574,20 @@ function search_button(){
 		}
 	});
 
+	
+	//先将备份的内容复制到查询条件中，只有保存子措施后，备份内容才添加
+	sc_val = jQuery.extend(true, {}, sc_v1);
+	
+	
 	//将本次查询的缓存加入到总条件中
 	sc_val.filters.push(temp_val_v1);
-	console.log(JSON.stringify(sc_val));
+//	console.log(JSON.stringify(sc_val));
 	
 	temp_val_v1 = jQuery.extend(true, {}, temp_val);//赋值模板到操作缓存
+	
+	
+	//根据筛选条件获取点源，准备填写空值系数
+	point_table();
 	
 	//所有查询条件初始化
 	$("#sc_conter").children().each(function(){//循环一级标签
@@ -505,10 +611,170 @@ function search_button(){
 			$(this).val("");
 		});
 	});
-	
-	
 	//获取点源相应的减排占比等内容，数据加入到表格显示，刷新显示区域
 	
+}
+
+//筛选点源列表
+function point_table () {
+	$('#metTable_point').bootstrapTable('destroy');//销毁现有表格数据
+	$("#mic").show();
+	$("#xishuMO").hide();
+	$("#xishuMOB").hide();
+	$('#metTable_point').bootstrapTable({
+		method : 'POST',
+		url : jianpaiUrl+'/search/sourceList',
+		dataType : "json",
+		iconSize : "outline",
+		clickToSelect : true,// 点击选中行
+		pagination : true, // 在表格底部显示分页工具栏
+		pageSize : 5, // 页面大小
+		pageNumber : 1, // 页数
+		pageList : [ 5, 10, 20 ],
+		striped : true, // 使表格带有条纹
+		sidePagination : "server",// 表格分页的位置 client||server
+		queryParams : function(params) {
+			var temp_sc_val = jQuery.extend(true, {}, sc_val);
+			delete temp_sc_val.summary;
+			temp_sc_val.pageHelper = {};
+			temp_sc_val.pageHelper.pageSize = params.limit;
+			temp_sc_val.pageHelper.pageNumber = params.offset;
+			return JSON.stringify(temp_sc_val);
+		},
+		queryParamsType : "limit", // 参数格式,发送标准的RESTFul类型的参数请求
+		silent : true, // 刷新事件必须设置
+//		contentType : "application/x-www-form-urlencoded", // 请求远程数据的内容类型。
+		contentType : "application/json", // 请求远程数据的内容类型。
+		onClickRow : function(row, $element) {
+			$('.success').removeClass('success');
+			$($element).addClass('success');
+		},
+		icons : {
+			refresh : "glyphicon-repeat",
+			toggle : "glyphicon-list-alt",
+			columns : "glyphicon-list"
+		},
+		onLoadSuccess : function(data){
+//			console.log(data);
+			data.total > 0 ? $("#metTable_tools").show() : $("#metTable_tools").hide();
+		},
+		onLoadError : function(){
+			swal('连接错误', '', 'error');
+		}
+	});
+}
+
+
+/**
+ * 保存子措施，打开控制系数页面
+ */
+function xishuMo(){
+	
+	$("#mic").hide();
+	$("#metTable_tools").hide();
+	$("#xishuMO").show();
+	$("#xishuMOB").show();
+}
+
+/**
+ * 系数表单保存
+ */
+function xishu_save(){
+	ajaxPost_w(jianpaiUrl+'/search/summary',sc_val).success(function(res){
+//		console.log(JSON.stringify(res));
+		if(res.status == 'success'){
+			
+			var ttr = {"f1": measureame_temp, "f2" : res.data.count};
+			
+			$.each(sc_val.summary.sum, function(i, vol) {
+				ttr[vol] = Math.round(res.data[vol]);
+			});
+			$.each(xishu_temp, function(i, vol) {
+				ttr[vol] = $("#"+vol).val();
+			});
+			
+			var showjieguo = {};
+			$.each(sc_val.filters[sc_val.filters.length-1], function(k, vol) {//循环最后一个条件，这个条件是要添加显示的条件
+				$.each(query, function(i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
+					if(col.queryEtitle == k){
+						showjieguo[col.queryName] = vol;
+					}
+				});
+			});
+			
+			var re1 = new RegExp("{","g");
+			var re2 = new RegExp("}","g");
+			var re3 = new RegExp("\"","g");
+			
+			ttr.tiaojian = JSON.stringify(showjieguo).replace(re1, "").replace(re2, "").replace(re2, "");
+			$('#show_zicuoshi_table').bootstrapTable('insertRow', {index: 1, row: ttr});
+			
+			$.each(sc_val.filters, function(i, vol) {
+				$('#show_zicuoshi_table').bootstrapTable('expandRow', i);
+			});
+			$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length);
+			$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length+1);
+			$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length+2);
+			
+			
+			
+			//计算完成，将结果保存为上一级的缓存
+			sc_v1 = jQuery.extend(true, {}, sc_val);
+			console.log(JSON.stringify(sc_v1));
+		}
+	});
+	
+	$("#mic").hide();
+	$("#metTable_tools").hide();
+	$("#xishuMO").hide();
+	$("#xishuMOB").hide();
+}
+
+/**
+ * 系数表单不保存关闭
+ */
+function xishu_close(){
+	$("#mic").show();
+	$("#metTable_tools").show();
+	$("#xishuMO").hide();
+	$("#xishuMOB").hide();
+}
+
+/**
+ * 子措施保存
+ */
+function create(){
+//	delete sc_v1.summary;
+	
+	var row = $('#show_zicuoshi_table').bootstrapTable('getData');
+	
+//	delete row[0].f1;
+//	delete row[0].f2;
+//	delete row[row.length-1].f1;
+//	delete row[row.length-1].f2;
+//	
+//	sc_v1.p = row[0];
+//	sc_v1.s = row[row.length-1];
+	
+	sc_v1.table = row;
+	
+//	m_mid = mid;
+//	m_planId = ;
+//	m_sectorName = sectorsName;
+//	m_planMeasureId = planMeasureId;
+	
+	var paramsName = {};
+	paramsName.userId = userId;
+	paramsName.sectorName = m_sectorName;
+	paramsName.measureId = m_mid;
+	paramsName.planId = m_planId;
+	paramsName.planMeasureId = m_planMeasureId;
+	
+	ajaxPost('/measure/addOrUpdate_measure',paramsName).success(function(res){
+		
+	});
+	console.log(JSON.stringify(sc_v1));
+//	$("#zicuoshi_close").click();
 }
 
 
@@ -671,7 +937,7 @@ function add_point(col){
            cleanUp();
          }
        });
-	console.log(point_sz)
+//	console.log(point_sz)
 //	dojo.connect(app.pint, "onClick", optionclick);
 	var extent = new dong.Extent(xmin,ymin,xmax,ymax, new dong.SpatialReference({ wkid:3857 }));
 	app.mapList[1].setExtent(extent);
@@ -715,7 +981,7 @@ function optionclick(event) {
 	ert.filters = [{"companyId":companyId}];
 	ert.summary = sc_val.summary;
 	
-	ajaxPost_w('http://192.168.1.116:8089/search/companyInfo',ert).success(function(res){
+	ajaxPost_w(jianpaiUrl+'/search/companyInfo',ert).success(function(res){
 		console.log(res);
 		if ( res.status == "success" ) {
 			
@@ -726,39 +992,4 @@ function optionclick(event) {
 //	     app.mapList[1].infoWindow.setContent(content);
 //	     app.mapList[1].infoWindow.show(event.mapPoint);
 	});
-}
-//筛选点源列表
-function point_table () {
-	$('#metTable_point').bootstrapTable({
-		method : 'POST',
-		url : '192.168.1.116:8089/search/companyList',
-		dataType : "json",
-		iconSize : "outline",
-		clickToSelect : true,// 点击选中行
-		pagination : true, // 在表格底部显示分页工具栏
-		pageSize : 10, // 页面大小
-		pageNumber : 1, // 页数
-		pageList : [ 10, 20, 50, 100 ],
-		striped : true, // 使表格带有条纹
-		sidePagination : "server",// 表格分页的位置 client||server
-		queryParams : function(params) {
-			return {
-				pageSize : params.limit,
-				pageNumber : params.offset,
-			}
-		},
-		queryParamsType : "limit", // 参数格式,发送标准的RESTFul类型的参数请求
-		silent : true, // 刷新事件必须设置
-		contentType : "application/x-www-form-urlencoded", // 请求远程数据的内容类型。
-		onClickRow : function(row, $element) {
-			$('.success').removeClass('success');
-			$($element).addClass('success');
-		},
-		icons : {
-			refresh : "glyphicon-repeat",
-			toggle : "glyphicon-list-alt",
-			columns : "glyphicon-list"
-		}
-	});
-//	 $('#renwu_select').bootstrapTable('hideColumn', 'taskId');
 }
