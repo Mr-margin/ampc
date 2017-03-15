@@ -890,6 +890,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 			if(user.getProvinceCode().equals(address.getAddressCode())){
 				obj.put("open",true);
 			}
+			if(areas.getProvinceCodes()!=null&areas.getProvinceCodes()!=""){
 			JSONArray Province=JSONArray.fromObject(areas.getProvinceCodes());
 			for (int i = 0; i < Province.size(); i++) {
 				JSONObject ob  = (JSONObject) Province.get(i);
@@ -898,7 +899,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 				obj.put("checked", true);
 			}
 			}
-		
+			}
 		}//省
 		
 		//市
@@ -927,6 +928,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 			if(user.getCityCode().equals(address.getAddressCode())){
 				obj.put("open",true);
 			}
+			if(areas.getCityCodes()!=null&&areas.getCityCodes()!=""){
 			JSONArray Province=JSONArray.fromObject(areas.getCityCodes());
 			for (int i = 0; i < Province.size(); i++) {
 				JSONObject ob  = (JSONObject) Province.get(i);
@@ -935,6 +937,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 				code+="00";
 			if(obs.indexOf(code)!=-1){	
 				obj.put("checked", true);
+			}
 			}
 			}
 		}//市
@@ -962,6 +965,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 			}
 			
 			obj.put("level", address.getAddressLevel());
+			if(areas.getCountyCodes()!=null&&areas.getCountyCodes()!=""){
 			JSONArray Province=JSONArray.fromObject(areas.getCountyCodes());
 			for (int i = 0; i < Province.size(); i++) {
 				JSONObject ob  = (JSONObject) Province.get(i);
@@ -969,6 +973,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 				String code=address.getProvinceCode().toString()+address.getCityCode().toString()+address.getCountyCode().toString();
 			if(obs.indexOf(code)!=-1){	
 				obj.put("checked", true);
+			}
 			}
 			}
 		}
