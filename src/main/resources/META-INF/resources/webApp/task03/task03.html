@@ -224,70 +224,6 @@
 						<td><p class="text-center">11.0%</p></td>
 						<td></td>
 					</tr>
-					<tr>
-						<td><input type="checkbox" name="check1" /></td>
-						<td>火力发电</td>
-						<td>限产</td>
-						<td><p class="text-center">173/223</p></td>
-						<td><p class="text-center">11.0%</p></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="check1" /></td>
-						<td>火力发电</td>
-						<td>限产</td>
-						<td><p class="text-center">173/223</p></td>
-						<td><p class="text-center">11.0%</p></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="check1" /></td>
-						<td>火力发电</td>
-						<td>限产</td>
-						<td><p class="text-center">173/223</p></td>
-						<td><p class="text-center">11.0%</p></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="check1" /></td>
-						<td>火力发电</td>
-						<td>限产</td>
-						<td><p class="text-center">173/223</p></td>
-						<td><p class="text-center">11.0%</p></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="check1" /></td>
-						<td>火力发电</td>
-						<td>限产</td>
-						<td><p class="text-center">173/223</p></td>
-						<td><p class="text-center">11.0%</p></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="check1" /></td>
-						<td>火力发电</td>
-						<td>限产</td>
-						<td><p class="text-center">173/223</p></td>
-						<td><p class="text-center">11.0%</p></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="check1" /></td>
-						<td>火力发电</td>
-						<td>限产</td>
-						<td><p class="text-center">173/223</p></td>
-						<td><p class="text-center">11.0%</p></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="check1" /></td>
-						<td>火力发电</td>
-						<td>限产</td>
-						<td><p class="text-center">173/223</p></td>
-						<td><p class="text-center">11.0%</p></td>
-						<td></td>
-					</tr>
 				</tbody>
 			</table> -->
 	    </div>
@@ -334,31 +270,41 @@
 					<div class="ibox float-e-margins" style="height:calc(50% - 15px);margin-bottom: 0px;">
 					    <div class="ibox-title">
 					        <h5>筛选点源列表</h5>
+					        <div class="ibox-tools" id="metTable_tools" style="display:none;">
+                                <button class="btn btn-success" style="margin-bottom: 0px;margin-top: -7px;" onclick="xishuMo();" type="button">
+									<i class="fa fa-save"></i>&nbsp;&nbsp;<span class="bold">保存子措施</span>
+								</button>
+                            </div>
 					    </div>
 					    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;border:1px solid #75B9E6;padding: 5px;">
-					    	<table id="metTable_point">
-								<thead>
-									<tr>
-	                                   	<th data-field="state" data-checkbox="true" formatter="stateFormatter"></th>
-	                                   	<th data-field="v3" data-halign="center" data-align="center">所属</th>
-	                                   	<th data-field="v4" data-halign="center" data-align="center">企业名称</th>
-	                                    <th data-field="v5" data-halign="center" data-align="center">设备名称</th>
-	                                    <th data-field="v9" data-halign="center" data-align="center">设备数</th>
-                                    </tr>
-                                  </thead>
-                              </table>
-<!-- 					    	<table class="table table-hover table-striped"> -->
-<!-- 								<thead> -->
-<!-- 									<tr> -->
-<!-- 										<th><label for="checkall"><input type="checkbox" id="checkall"></label></th> -->
-<!-- 										<th>所属</th> -->
-<!-- 										<th>企业名称</th> -->
-<!-- 										<th>设备名称</th> -->
-<!-- 										<th>设备数</th> -->
-<!-- 									</tr> -->
-<!-- 								</thead> -->
-<!-- 								<tbody></tbody> -->
-<!-- 							</table> -->
+					    	<div id="mic" style="display:none;">
+					    		<table id="metTable_point">
+									<thead>
+										<tr>
+		                                   	<th data-field="state" data-checkbox="true" formatter="stateFormatter"></th>
+		                                   	<th data-field="regionName" data-halign="center" data-align="center">所属</th>
+		                                   	<th data-field="companyname" data-halign="center" data-align="center">企业名称</th>
+		                                    <th data-field="equipname" data-halign="center" data-align="center">设备名称</th>
+		                                    <th data-field="equipnumbers" data-halign="center" data-align="center">设备数</th>
+	                                    </tr>
+	                                  </thead>
+								</table>
+					    	</div>
+							
+							<div class="row" id="xishuMO" style="margin-left: 0px;margin-right: 0px;display:none;"></div>
+							<div class="row" id="xishuMOB" style="margin-left: 0px;margin-right: 0px;margin-top: 20px;display:none;">
+								<div class="col-md-6" style="margin-top: 10px;"></div>
+								<div class="col-md-6" style="margin-top: 10px;text-align:right;">
+									<button class="btn btn-success" onclick="xishu_save();" style="margin-bottom: 0px;margin-top: -7px;" type="button">
+										<i class="fa fa-save"></i>&nbsp;&nbsp;<span class="bold">保存</span>
+									</button>
+									<button class="btn btn-default" onclick="xishu_close();" style="margin-left: 20px;margin-bottom: 0px;margin-top: -7px;" type="button">
+										<i class="fa fa-close"></i>&nbsp;&nbsp;<span class="bold">取消</span>
+									</button>
+								</div>
+							</div>
+							
+							
 					    </div>
 					</div>
 				</div>
@@ -375,57 +321,12 @@
 					    <div class="ibox-title">
 					        <h5>子措施列表</h5>
 					    </div>
-					    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;border:1px solid #75B9E6;padding: 5px;">
+					    <div id="show_zicuoshi_table_div" class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;border:1px solid #75B9E6;padding: 5px;">
 					    	<table class="table table-hover table-striped" id="show_zicuoshi_table">
-								<thead id="show_zicuoshi">
-									<tr>
-										<th>措施</th>
-										<th>点源实施范围</th>
-										<th>总装机容量</th>
-										<th>SO2</th>
-										<th>NOX</th>
-										<th>VOC8</th>
-										<th>PM2.5</th>
-										<th>PM10</th>
-										<th>限产系数</th>
-									</tr>
-								</thead>
-								<tbody>
-									<!-- <tr>
-										<td>火力发电</td>
-										<td>限产</td>
-										<td>173/223</td>
-										<td>11.0%</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-									</tr>
-									<tr>
-										<td>火力发电</td>
-										<td>限产</td>
-										<td>173/223</td>
-										<td>11.0%</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-									</tr>
-									<tr>
-										<td>火力发电</td>
-										<td>限产</td>
-										<td>173/223</td>
-										<td>11.0%</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-									</tr> -->
-								</tbody>
+								<thead id="show_zicuoshi"></thead>
+								<tbody id="val_zicuoshi"></tbody>
 							</table>
+							<table id="show_zicuoshi_table"></table>
 					    </div>
 					</div>
 				</div>
@@ -442,10 +343,9 @@
 						<h5>当前时段：2017-01-01 00时 至 2017-01-04 07时</h5>
 					</div>
 				</div>
-				<button type="button" class="btn btn-primary create" style="float: left;" onclick="create(this)">确定</button>
-				<button type="button" class="btn btn-default" style="float: left;" data-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-primary create" style="float: left;" onclick="create();">确定</button>
+				<button type="button" class="btn btn-default" style="float: left;" id="zicuoshi_close" data-dismiss="modal">取消</button>
 			</div>
 		</div>
 	</div>
 </div>
-
