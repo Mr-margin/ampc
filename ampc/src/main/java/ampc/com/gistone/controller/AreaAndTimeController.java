@@ -861,66 +861,69 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 	List<TAddress> prolist=tAddressMapper.selectBLevel(tAddress);
 	JSONArray arr=new JSONArray();
 	TScenarinoAreaWithBLOBs tsa=new TScenarinoAreaWithBLOBs();
-	if(data.get("areaId")!=null){
+	if(data.get("areaId")!=null && data.get("areaId")!=""){
 		Long areaId =Long.parseLong(data.get("areaId").toString());//用户id
-		TScenarinoAreaWithBLOBs area=tScenarinoAreaMapper.selectByPrimaryKey(areaId);
-		for(TScenarinoAreaWithBLOBs areas:arealist){
-			if(areas.getScenarinoAreaId()==areaId){
-				tsa=area;	
-			}
+		TScenarinoAreaWithBLOBs areas=tScenarinoAreaMapper.selectByPrimaryKey(areaId);
+		for(int a=0;a<arealist.size();a++){
+			if(areas.getScenarinoAreaId()==arealist.get(a).getScenarinoAreaId()){
+				arealist.remove(arealist.get(a));
+			}		
 		}
-		if(tsa.getScenarinoAreaId()!=null){
-			arealist.remove(tsa);
-			
-		}
+		
+		
+		
 	for(TAddress address:prolist){
 		
 		JSONObject obj=new JSONObject();
 		
 		//省
 		if(address.getAddressLevel().equals("1")){
-			obj.put("adcode", address.getProvinceCode());
+			obj.put("adcode", (address.getProvinceCode()+"0000"));
 			obj.put("name",  address.getAddressName());
-			
-			for(TScenarinoAreaWithBLOBs aresa:arealist){
-				if(aresa.getProvinceCodes()!=null&&aresa.getProvinceCodes()!=""){
-				JSONArray Province=JSONArray.fromObject(aresa.getProvinceCodes());
+			obj.put("code", address.getAddressCode());
+			for(TScenarinoAreaWithBLOBs area:arealist){
+				if(area.getProvinceCodes()!=null&area.getProvinceCodes()!=""){
+				JSONArray Province=JSONArray.fromObject(area.getProvinceCodes());
 				for (int i = 0; i < Province.size(); i++) {
 					JSONObject ob  = (JSONObject) Province.get(i);
 					String obs=ob.toString();
-					if(obs.indexOf(address.getProvinceCode().toString())!=-1){
-						String couname="("+(String) aresa.getAreaName()+")";
+					if(obs.indexOf(address.getProvinceCode().toString()+"0000")!=-1){
+						String couname="("+(String) area.getAreaName()+")";
 						obj.put("name",(address.getAddressName())+couname);
 						obj.put("chkDisabled", true);
 					}
 					}
 				}
 			}
-			
 			obj.put("level", address.getAddressLevel());
 			if(user.getProvinceCode().equals(address.getAddressCode())){
 				obj.put("open",true);
 			}
-			if(area.getProvinceCodes()!=null&&area.getProvinceCodes()!=""){
-			if(area.getProvinceCodes().equals(address.getAddressCode())){
-				obj.put("checked",true);
-				
+			JSONArray Province=JSONArray.fromObject(areas.getProvinceCodes());
+			for (int i = 0; i < Province.size(); i++) {
+				JSONObject ob  = (JSONObject) Province.get(i);
+				String obs=ob.toString();
+			if(obs.indexOf(address.getProvinceCode().toString()+"0000")!=-1){	
+				obj.put("checked", true);
 			}
 			}
+		
 		}//省
 		
 		//市
 		if(address.getAddressLevel().equals("2")){
-			obj.put("adcode", address.getProvinceCode()+address.getCityCode());
-			obj.put("padcode", address.getProvinceCode());
+			obj.put("adcode", (address.getProvinceCode()+address.getCityCode()+"00"));
+			obj.put("padcode", (address.getProvinceCode()+"0000"));
 			obj.put("name",address.getAddressName());
-			for(TScenarinoAreaWithBLOBs aresa:arealist){
-				if(aresa.getCityCodes()!=null&&aresa.getCityCodes()!=""){
-			JSONArray Province=JSONArray.fromObject(aresa.getCityCodes());
+			obj.put("code", address.getAddressCode());
+			for(TScenarinoAreaWithBLOBs area:arealist){
+				if(area.getCityCodes()!=null&&area.getCityCodes()!=""){
+			JSONArray Province=JSONArray.fromObject(area.getCityCodes());
 			for (int i = 0; i < Province.size(); i++) {
 				JSONObject ob  = (JSONObject) Province.get(i);
 				String obs=ob.toString();
 				String code=address.getProvinceCode().toString()+address.getCityCode().toString();
+				code+="00";
 				if(obs.indexOf(code)!=-1){
 					String couname="("+(String) area.getAreaName()+")";
 					obj.put("name",(address.getAddressName())+couname);
@@ -933,36 +936,50 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 			if(user.getCityCode().equals(address.getAddressCode())){
 				obj.put("open",true);
 			}
-			if(area.getCityCodes()!=null&&area.getCityCodes()!=""){
-			if(area.getCityCodes().equals(address.getAddressCode())){
-				obj.put("checked",true);
+			JSONArray Province=JSONArray.fromObject(areas.getCityCodes());
+			for (int i = 0; i < Province.size(); i++) {
+				JSONObject ob  = (JSONObject) Province.get(i);
+				String obs=ob.toString();
+				String code=address.getProvinceCode().toString()+address.getCityCode().toString();
+				code+="00";
+			if(obs.indexOf(code)!=-1){	
+				obj.put("checked", true);
 			}
 			}
-			
 		}//市
 		
 		if(address.getAddressLevel().equals("3")){
 			obj.put("adcode", address.getProvinceCode()+address.getCityCode()+address.getCountyCode());
-			obj.put("padcode", address.getProvinceCode()+address.getCityCode());
+			obj.put("padcode", (address.getProvinceCode()+address.getCityCode()+"00"));
 			obj.put("name", address.getAddressName());
-			for(TScenarinoAreaWithBLOBs aresa:arealist){
-				if(aresa.getCountyCodes()!=null&&aresa.getCountyCodes()!=""){
-			JSONArray Province=JSONArray.fromObject(aresa.getCountyCodes());
+			obj.put("code", address.getAddressCode());
+			for(TScenarinoAreaWithBLOBs area:arealist){
+			if(area.getCountyCodes()!=null&&area.getCountyCodes()!=""){
+				JSONArray Province=JSONArray.fromObject(area.getCountyCodes());
 			for (int i = 0; i < Province.size(); i++) {
 				JSONObject ob  = (JSONObject) Province.get(i);
 				String obs=ob.toString();
-				String code=address.getAddressCode().toString();
-				if(obs.indexOf(address.getAddressCode().toString())!=-1){
-					String couname="("+(String) aresa.getAreaName()+")";
+				String code=address.getProvinceCode().toString()+address.getCityCode().toString()+address.getCountyCode().toString();
+				if(obs.indexOf(code)!=-1){
+					String couname="("+(String) area.getAreaName()+")";
 					obj.put("name",(address.getAddressName())+couname);
 					obj.put("chkDisabled", true);
 
 				}
 				}
-				}
 			}
-			obj.put("level", address.getAddressLevel());
+			}
 			
+			obj.put("level", address.getAddressLevel());
+			JSONArray Province=JSONArray.fromObject(areas.getCountyCodes());
+			for (int i = 0; i < Province.size(); i++) {
+				JSONObject ob  = (JSONObject) Province.get(i);
+				String obs=ob.toString();
+				String code=address.getProvinceCode().toString()+address.getCityCode().toString()+address.getCountyCode().toString();
+			if(obs.indexOf(code)!=-1){	
+				obj.put("checked", true);
+			}
+			}
 		}
 		arr.add(obj);
 	}
