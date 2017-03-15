@@ -418,10 +418,6 @@ function editTimes(){
 
 }
 
-function editPlan(t){
-  console.log(t);
-}
-
 /*添加时间段*/
 function addTimes() {
   console.log(123);
@@ -515,10 +511,74 @@ function delTimes() {
 
 }
 
+/*当前选中的时段*/
+var selectedTimes;
+function ontTimes(data){
+  selectedTimes = data;
+  if(data.planId != -1){
+    $('.yacz').attr('disabled',true);
+  }else{
+    $('.yacz').removeAttr('disabled');
+  }
+  $('#editTime').modal('show')
+}
+
+/*时段预案操作模态框选择 start*/
+function selectOperate(type){
+  if(type == 'sTime'){
+    $('.btnSelect').css({
+      'right':'-100%',
+      'opacity': 0
+    });
+    $('.'+type).css({
+      left:0,
+      'opacity': 1
+    })
+  }else{
+    $('.btnSelect').css({
+      'left':'-100%',
+      'opacity': 0
+    });
+    $('.'+type).css({
+      right:0,
+      'opacity': 1
+    })
+  }
+}
+
+$('#editTime').on('show.bs.modal', function (event) {
+  $('.btnSelect').css({
+    'right':0,
+    'left':0,
+    'opacity': 1
+  });
+  $('.sTime').css({
+    left:'-100%',
+    'opacity': 0
+  });
+  $('.sPlan').css({
+    right:'-100%',
+    'opacity': 0
+  })
+});
+
+/*打开预案编辑*/
+function openAddYA(){
+  $('#addYA .selectAdd').removeClass('disNone');
+  $('#addYA .addCopyPlan').addClass('disNone');
+  $('#addYA .addNewPlan').addClass('disNone');
+  $('#addYA .modal-footer').addClass('disNone');
+
+  window.setTimeout(function(){
+    $('#addYA').modal('show')
+  },350)
+}
+
+/*时段预案操作模态框选择 end*/
+
 var newPlan;
 /*添加预案*/
 function addPlan() {
-
 
   if (newPlan) {
     var url = '/plan/add_plan';
@@ -600,8 +660,8 @@ function copyPlan(e) {
 function editPlan(t) {
   //areaIndex = $('.areaTitle_con').index($(t).parents('.areaTitle_con'));
   //timeIndex = $(t).parents('.area').find('.time').index($(t).parents('.time'));
-  areaIndex = $(t).attr('data-index');
-  timeIndex = $(t).attr('data-indexNum');
+  areaIndex = t.index;
+  timeIndex = t.indexNum;
 
   msg.content.areaId = allData[areaIndex].areaId;
   msg.content.areaName = allData[areaIndex].areaName;
@@ -761,10 +821,14 @@ $('#qyTime').on('show.bs.modal', function (event) {
 
 $('#addYA').on('show.bs.modal', function (event) {
 
-  var button = $(event.relatedTarget);
-  if (button.length == 0)return;
-  areaIndex = $('.areaTitle_con').index(button.parents('.areaTitle_con'));
-  timeIndex = button.parents('.area').find('.time').index(button.parents('.time'));
+  //var button = $(event.relatedTarget);
+  //if (button.length == 0)return;
+  //areaIndex = $('.areaTitle_con').index(button.parents('.areaTitle_con'));
+  //timeIndex = button.parents('.area').find('.time').index(button.parents('.time'));
+
+  console.log(selectedTimes);
+  areaIndex = selectedTimes.index;
+  timeIndex = selectedTimes.indexNum;
 
   $(event.target).find('.modal-footer').addClass('disNone');
   $(event.target).find('.addCopyPlan').addClass('disNone');
