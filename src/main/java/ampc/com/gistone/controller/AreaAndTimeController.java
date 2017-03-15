@@ -604,21 +604,12 @@ public class AreaAndTimeController {
 			//进行Clob转换
 			if(areaInfo.getProvinceCodes()!=null){
 			 arr=JSONArray.fromObject(areaInfo.getProvinceCodes());
-			}else{
-				
-				arr.add("");
 			}
 			if(areaInfo.getCityCodes()!=null){
 			arr1=JSONArray.fromObject(areaInfo.getCityCodes());
-			}else{
-				
-				arr1.add("");
 			}
 			if(areaInfo.getCountyCodes()!=null){
 			arr2=JSONArray.fromObject(areaInfo.getCountyCodes());
-			}else{
-				
-				arr2.add("");
 			}
 			//重新写入返回结果集
 			obj.put("areaId",areaId);
