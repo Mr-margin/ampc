@@ -68,14 +68,14 @@
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="editTimeLabel">时段预案操作</h4>
+          <h4 class="modal-title" id="editTimeLabel">已选择时段预案操作</h4>
         </div>
         <div class="modal-body">
 
          <div class="selectOperate">
            <div class="btnSelect text-center">
              <div class="col-md-12">
-               <button class="btn btn-primary btn-lg mt20" onclick="selectOperate('sTime')">时段操作</button>
+               <button class="btn btn-primary btn-lg mt20 timeOpe" onclick="selectOperate('sTime')">时段操作</button>
              </div>
              <div class="col-md-12">
                <!--<button class="btn btn-primary btn-lg mt20" onclick="selectOperate('sPlan')" data-dismiss="modal">预案操作</button>-->
@@ -85,10 +85,10 @@
            <div class="sTime">
              <div class="sTimeOpType text-center">
                <div class="col-md-12">
-                 <button class="btn btn-primary btn-lg mt20" data-dismiss="modal">删除时段</button>
+                 <button class="btn btn-primary btn-lg mt20 delTimeBtn" data-dismiss="modal" onclick="openDelTimes()">删除时段</button>
                </div>
                <div class="col-md-12">
-                 <button class="btn btn-primary btn-lg mt20" data-dismiss="modal">修改时段时间</button>
+                 <button class="btn btn-primary btn-lg mt20 editTimeBtn" data-dismiss="modal">修改时段时间</button>
                </div>
              </div>
            </div>
