@@ -243,7 +243,7 @@ public class ExcelToDate {
             //循环每一页
             for(int i=0;i<sheetCount;i++){
             	//获得当前页
-            	Sheet sheet = wb.getSheetAt(i);  
+            	Sheet sheet = wb.getSheetAt(0);  
             	//获得所有行
             	Iterator<Row> rows = sheet.rowIterator(); 
             	//循环所有行
@@ -279,7 +279,7 @@ public class ExcelToDate {
                     	measure.setMeasureExcelAname(getCellValue(row.getCell(14)));
                     }
                     //获取措施A1信息
-                    String a1=getCellValue(row.getCell(9));
+                    String a1=getCellValue(row.getCell(8));
                     if(a1!=null&&!a1.equals("")){
                     	BigDecimal ba1=new BigDecimal(a1);
                     	measure.setMeasureExcelA1(ba1);
@@ -287,7 +287,7 @@ public class ExcelToDate {
                     	measure.setMeasureExcelA1name(getCellValue(row.getCell(15)));
                     }
                     //获取措施Intensity信息
-                    String Intensity=getCellValue(row.getCell(10));
+                    String Intensity=getCellValue(row.getCell(9));
                     if(Intensity!=null&&!Intensity.equals("")){
                     	BigDecimal bIntensity=new BigDecimal(Intensity);
                     	measure.setMeasureExcelIntensity(bIntensity);
@@ -295,7 +295,7 @@ public class ExcelToDate {
                     	measure.setMeasureExcelIntensityname(getCellValue(row.getCell(16)));
                     }
                     //获取措施Intensity1信息
-                    String Intensity1=getCellValue(row.getCell(11));
+                    String Intensity1=getCellValue(row.getCell(10));
                     if(Intensity1!=null&&!Intensity1.equals("")){
                     	BigDecimal bIntensity1=new BigDecimal(Intensity1);
                     	measure.setMeasureExcelIntensity(bIntensity1);
@@ -303,7 +303,7 @@ public class ExcelToDate {
                     	measure.setMeasureExcelIntensity1name(getCellValue(row.getCell(17)));
                     }
                     //获取措施ash信息
-                    String ash=getCellValue(row.getCell(12));
+                    String ash=getCellValue(row.getCell(11));
                     if(ash!=null&&!ash.equals("")){
                     	BigDecimal bash=new BigDecimal(ash);
                     	measure.setMeasureExcelAsh(bash);
@@ -311,7 +311,7 @@ public class ExcelToDate {
                     	measure.setMeasureExcelAshname(getCellValue(row.getCell(18)));
                     }
                     //获取措施sulfer信息
-                    String sulfer=getCellValue(row.getCell(13));
+                    String sulfer=getCellValue(row.getCell(12));
                     if(sulfer!=null&&!sulfer.equals("")){
                     	BigDecimal bsulfer=new BigDecimal(sulfer);
                     	measure.setMeasureExcelSulfer(bsulfer);
@@ -319,7 +319,7 @@ public class ExcelToDate {
                     	measure.setMeasureExcelSulfername(getCellValue(row.getCell(19)));
                     }
                     //获取措施sv信息
-                    String sv=getCellValue(row.getCell(14));
+                    String sv=getCellValue(row.getCell(13));
                     if(sv!=null&&!sv.equals("")){
                     	measure.setMeasureExcelSv(sv);
                     	//获取措施sv中文信息
