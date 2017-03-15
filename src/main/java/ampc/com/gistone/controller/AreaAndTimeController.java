@@ -186,13 +186,13 @@ public class AreaAndTimeController {
 		Long afterTimeId=Long.parseLong(data.get("afterTimeId").toString());//修改时段后一个的时段Id
 		Long userId=Long.parseLong(data.get("userId").toString());//用户id
 		String teDate=data.get("updateDate").toString();//时段的修改时间
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH");
 		Date updateDate=sdf.parse(teDate);
 		//修改时间减一个小时作为前一个时段的结束时间
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(updateDate);
 		cal.add(Calendar.HOUR, - 1);
-		String addTimeDate = new SimpleDateFormat("yyyy/MM/dd HH")
+		String addTimeDate = new SimpleDateFormat("yyyy-MM-dd HH")
 				.format(cal.getTime());
 		
 		Date timeEndDate = sdf.parse(addTimeDate);
@@ -847,7 +847,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 	ClientUtil.SetCharsetAndHeader(request, response);
 	Map<String,Object> data=(Map)requestDate.get("data");
 	Long userId=Long.parseLong(data.get("userId").toString());//用户id
-	TUser user=tUserMapper.selectByPrimaryKey(userId);		
+	TUser user=tUserMapper.selectByPrimaryKey(userId);
 	
 	//根据情景id查询所有的区域
 	Long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());//情景id
@@ -866,7 +866,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 		for(int a=0;a<arealist.size();a++){
 			if(areas.getScenarinoAreaId()==arealist.get(a).getScenarinoAreaId()){
 				arealist.remove(arealist.get(a));
-			}		
+			}
 		}
 		
 		
