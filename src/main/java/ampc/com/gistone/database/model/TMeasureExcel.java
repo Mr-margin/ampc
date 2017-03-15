@@ -58,6 +58,20 @@ public class TMeasureExcel {
 
     private Object measureExcelSvname;
 
+    private Object measureExcelArange;
+
+    private Object measureExcelA1range;
+
+    private Object measureExcelIntensityrange;
+
+    private Object measureExcelIntensity1range;
+
+    private Object measureExcelAshrange;
+
+    private Object measureExcelSulferrange;
+
+    private Object measureExcelSvrange;
+
     public Long getMeasureExcelId() {
         return measureExcelId;
     }
@@ -272,5 +286,61 @@ public class TMeasureExcel {
 
     public void setMeasureExcelSvname(Object measureExcelSvname) {
         this.measureExcelSvname = measureExcelSvname;
+    }
+
+    public Object getMeasureExcelArange() {
+        return measureExcelArange;
+    }
+
+    public void setMeasureExcelArange(Object measureExcelArange) {
+        this.measureExcelArange = measureExcelArange;
+    }
+
+    public Object getMeasureExcelA1range() {
+        return measureExcelA1range;
+    }
+
+    public void setMeasureExcelA1range(Object measureExcelA1range) {
+        this.measureExcelA1range = measureExcelA1range;
+    }
+
+    public Object getMeasureExcelIntensityrange() {
+        return measureExcelIntensityrange;
+    }
+
+    public void setMeasureExcelIntensityrange(Object measureExcelIntensityrange) {
+        this.measureExcelIntensityrange = measureExcelIntensityrange;
+    }
+
+    public Object getMeasureExcelIntensity1range() {
+        return measureExcelIntensity1range;
+    }
+
+    public void setMeasureExcelIntensity1range(Object measureExcelIntensity1range) {
+        this.measureExcelIntensity1range = measureExcelIntensity1range;
+    }
+
+    public Object getMeasureExcelAshrange() {
+        return measureExcelAshrange;
+    }
+
+    public void setMeasureExcelAshrange(Object measureExcelAshrange) {
+        this.measureExcelAshrange = measureExcelAshrange;
+    }
+
+    public Object getMeasureExcelSulferrange() {
+        return measureExcelSulferrange;
+    }
+
+    public void setMeasureExcelSulferrange(Object measureExcelSulferrange) {
+        this.measureExcelSulferrange = measureExcelSulferrange;
+    }
+
+    public Object getMeasureExcelSvrange() {
+        return measureExcelSvrange;
+    }
+
+    public void setMeasureExcelSvrange(Object measureExcelSvrange) {
+        this.measureExcelSvrange = measureExcelSvrange;
     }
 }

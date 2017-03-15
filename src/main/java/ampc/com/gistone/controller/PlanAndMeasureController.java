@@ -490,41 +490,65 @@ public class PlanAndMeasureController {
 			//这个里面主要是子措施的列 右下角2
 			if(tme.getMeasureExcelA()!=null){
 				mu=new MeasureUtil();
-				mu.setName(tme.getMeasureExcelAname().toString());
+				mu.setNameen("a");
+				mu.setNamech(tme.getMeasureExcelAname().toString());
 				mu.setValue(tme.getMeasureExcelA());
+				String[] a=CheckRange(tme.getMeasureExcelArange().toString());
+				mu.setMinValue(a[0]);
+				mu.setMaxValue(a[1]);
 				mlist.add(mu);
 			}
 			if(tme.getMeasureExcelA1()!=null){
 				mu=new MeasureUtil();
-				mu.setName(tme.getMeasureExcelA1name().toString());
+				mu.setNameen("a1");
+				mu.setNamech(tme.getMeasureExcelA1name().toString());
 				mu.setValue(tme.getMeasureExcelA1());
+				String[] a1=CheckRange(tme.getMeasureExcelA1range().toString());
+				mu.setMinValue(a1[0]);
+				mu.setMaxValue(a1[1]);
 				mlist.add(mu);
 			}
 			//只显示中长期的
 			if(tme.getMeasureExcelType().equals("中长期措施")){
 				if(tme.getMeasureExcelIntensity()!=null){
 					mu=new MeasureUtil();
-					mu.setName(tme.getMeasureExcelIntensityname().toString());
+					mu.setNameen("intensity");
+					mu.setNamech(tme.getMeasureExcelIntensityname().toString());
 					mu.setValue(tme.getMeasureExcelIntensity());
+					String[] intensity=CheckRange(tme.getMeasureExcelIntensityrange().toString());
+					mu.setMinValue(intensity[0]);
+					mu.setMaxValue(intensity[1]);
 					mlist.add(mu);
 				}
 			}
 			if(tme.getMeasureExcelIntensity1()!=null){
 				mu=new MeasureUtil();
-				mu.setName(tme.getMeasureExcelIntensity1name().toString());
+				mu.setNameen("intensity1");
+				mu.setNamech(tme.getMeasureExcelIntensity1name().toString());
 				mu.setValue(tme.getMeasureExcelIntensity1());
+				String[] intensity1=CheckRange(tme.getMeasureExcelIntensity1range().toString());
+				mu.setMinValue(intensity1[0]);
+				mu.setMaxValue(intensity1[1]);
 				mlist.add(mu);
 			}
 			if(tme.getMeasureExcelAsh()!=null){
 				mu=new MeasureUtil();
-				mu.setName(tme.getMeasureExcelAshname().toString());
+				mu.setNameen("ash");
+				mu.setNamech(tme.getMeasureExcelAshname().toString());
 				mu.setValue(tme.getMeasureExcelAsh());
+				String[] ash=CheckRange(tme.getMeasureExcelAshrange().toString());
+				mu.setMinValue(ash[0]);
+				mu.setMaxValue(ash[1]);
 				mlist.add(mu);
 			}
 			if(tme.getMeasureExcelSulfer()!=null){
 				mu=new MeasureUtil();
-				mu.setName(tme.getMeasureExcelSulfername().toString());
+				mu.setNameen("sulfer");
+				mu.setNamech(tme.getMeasureExcelSulfername().toString());
 				mu.setValue(tme.getMeasureExcelSulfer());
+				String[] sulfer=CheckRange(tme.getMeasureExcelSulferrange().toString());
+				mu.setMinValue(sulfer[0]);
+				mu.setMaxValue(sulfer[1]);
 				mlist.add(mu);
 			}
 			//将sv进行拆分
@@ -535,8 +559,12 @@ public class PlanAndMeasureController {
 					String svss=svs[i];
 					String[] svsss=svss.split("=");
 					mu=new MeasureUtil();
-					mu.setName(svsss[0]);
+					mu.setNamech(tme.getMeasureExcelSvname().toString());
+					mu.setNameen(svsss[0]);
 					mu.setValue(svsss[1]);
+					String[] svsv=CheckRange(tme.getMeasureExcelSvrange().toString());
+					mu.setMinValue(svsv[0]);
+					mu.setMaxValue(svsv[1]);
 					mlist.add(mu);
 				}
 			}
@@ -657,6 +685,20 @@ public class PlanAndMeasureController {
 		}
 	}
 	
-	
+	/**
+	 * 取值范围验证方法
+	 * @param str
+	 * @return
+	 */
+	public static String[] CheckRange(String str){
+		String[] temp=str.split("~");
+		if(temp[0].equals("inf")){
+			temp[0]="null";
+		}
+		if(temp[1].equals("inf")){
+			temp[1]="null";
+		}
+		return temp;
+	}
 	
 }
