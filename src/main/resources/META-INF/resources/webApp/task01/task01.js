@@ -691,6 +691,7 @@ function selectQJtype(type){
           var endDateArr = setSelectDate($('#yStartDate').val(),selectEndDate);
           $('#yEndDate').empty();
           for(var i=0;i<endDateArr.length;i++){
+            if(endDateArr[i]<=moment().format('YYYY-MM-DD'))continue;
             $('#yEndDate').append($('<option value="'+ endDateArr[i] +'">'+ endDateArr[i] +'</option>'))
           }
         });
@@ -709,6 +710,11 @@ function selectQJtype(type){
         qjType = 2;
         params.scenType = qjType;
 
+        if(basisArr.length<=1){
+          $('.chengeDB').attr('disabled',true)
+        }else{
+          $('.chengeDB').removeAttr('disabled')
+        }
         setOption('#dbqj',basisArr);
         setOption('#jcqj',basisArr);
 
@@ -747,6 +753,11 @@ function selectQJtype(type){
         $('#hEndDate').removeAttr('disabled');
         qjType = 2;
 
+        if(basisArr.length<=1){
+          $('.chengeDB').attr('disabled',true)
+        }else{
+          $('.chengeDB').removeAttr('disabled')
+        }
         setOption('#dbqj1',basisArr);
         setOption('#jcqj1',basisArr);
         var dateArr = setSelectDate(basisArr[0].scenarinoStartDate,moment(selectRW.missionEndDate).subtract(2,'d').format('YYYY-MM-DD'));
