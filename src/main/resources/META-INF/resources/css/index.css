@@ -83,6 +83,26 @@
   margin-bottom: 2px;
 }
 
+.selectOperate{
+  width: 100%;
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+.btnSelect,.sTime,.sPlan{
+  width: 100%;
+  position: absolute;
+  transition: all 0.3s linear;
+  height:100%;
+}
+.sTime{
+  left: -100%;
+  opacity: 0;
+}
+.sPlan{
+  right: -100%;
+  opacity: 0;
+}
 
 
 .front{
