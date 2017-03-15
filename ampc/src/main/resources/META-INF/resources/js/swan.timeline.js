@@ -544,7 +544,7 @@ $(function() {
                 item.element = $('<div class="swan-timeline-item"></div>')
                   .html($('<span>')
                     .attr('title', item.title)
-                    .html('&nbsp;&nbsp;<a href="javascript:" data-indexNum="'+ item.indexNum+'" data-index="'+item.index+'" onclick="editPlan(this)">'+item.title+'</a>'))
+                    .html('&nbsp;&nbsp;<a href="javascript:" data-indexNum="'+ item.indexNum+'" data-index="'+item.index+'">'+item.title+'</a>'))
                   .appendTo(this._itemArea);
 
                 var leftAndWidth = this._getLeftAndWidth(item.startTime, item.endTime);
@@ -589,7 +589,11 @@ $(function() {
                     $(this)
                       .on('click', function(event) {
                           //self._currentItem = self._findItem($(this));
-                          //test(self._findItem($(this)));
+                          if(event.toElement.tagName == 'A'){
+                              editPlan(self._findItem($(this)))
+                          }else{
+                              ontTimes(self._findItem($(this)));
+                          }
                       })
                       .on('mouseenter', function(event) {
                           self._currentItem = self._findItem($(this));
