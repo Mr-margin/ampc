@@ -202,10 +202,9 @@ public class AreaAndTimeController {
 		updatet_beforetTime.setTimeEndDate(timeEndDate);
 		int beforetTimestatus=tTimeMapper.updateByPrimaryKeySelective(updatet_beforetTime);
 		//判断修改前一个时段的结束时间是否成功，成功执行修改后一个时段的开始时间，失败返回失败信息
-		
-			Long afterTimeId=Long.parseLong(data.get("afterTimeId").toString());//修改时段后一个的时段Id
 		if(beforetTimestatus!=0){
 			if(data.get("afterTimeId")!=null&&data.get("afterTimeId")!=""){
+			Long afterTimeId=Long.parseLong(data.get("afterTimeId").toString());//修改时段后一个的时段Id
 			//开始修改后一个时段的开始时间
 			TTime updatet_afterTimeId = new TTime();
 			updatet_afterTimeId.setTimeId(afterTimeId);
