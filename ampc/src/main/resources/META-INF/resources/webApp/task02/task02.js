@@ -66,7 +66,7 @@ var zTreeSetting = {
 };
 
 function addP(adcode, name, level) {
-  return $('<p class="col-md-3">' + name + ' &nbsp;&nbsp;<i class="im-close" style="cursor: pointer" onclick="delAdcode(' + adcode + ',' + level + ')"></i></p>')
+  return $('<p class="col-md-3"><i class="im-close" style="cursor: pointer" onclick="delAdcode(' + adcode + ',' + level + ')"></i>&nbsp;&nbsp;' + name + ' </p>')
 }
 function updataCodeList() {
   $('.adcodeList').empty();
@@ -186,8 +186,6 @@ function initialize() {
     userId: userId
   });
   initDate();
-  /*test使用*/
-  var scenarino1 = ajaxPost1('webApp/task02/qy.json', {});
 
   scenarino.then(function (res) {
 
@@ -369,11 +367,6 @@ $('.areaMsg').on('mousemove', '.period', function (e) {
 //    console.log(widthP,startX,moveX,selfLeft)
 });
 
-/*编辑区域*/
-function editArea(e) {
-
-}
-
 /*删除区域*/
 function delArea(e) {
   console.log(e);
@@ -418,6 +411,84 @@ function editTimes(){
 
 }
 
+/*初始化日期插件*/
+function initEditTimeDate(s,e){
+	console.log(s,e);
+  $('#editDate').daterangepicker({
+    singleDatePicker: true,  //显示单个日历
+    timePicker:true,  //允许选择时间
+    timePicker24Hour:true, //时间24小时制
+    minDate:s,//最早可选日期
+    maxDate:e,//最大可选日期
+    locale: {
+      format: "YYYY-MM-DD HH",
+      separator: " 至 ",
+      applyLabel: "确定", //按钮文字
+      cancelLabel: "取消",//按钮文字
+      weekLabel: "W",
+      daysOfWeek: [
+        "日","一","二","三","四","五","六"
+      ],
+      monthNames: [
+        "一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"
+      ],
+      firstDay: 1
+    },
+    //"startDate": moment().subtract(2,'w'),
+    //"endDate": end,
+    "opens": "right"
+  },function(start, end, label) {
+
+    if(editTimeDateObj.type == 'start'){
+      if(editTimeDateObj.beforeS >= moment(start).subtract(1,'h').format('YYYY-MM-DD HH')){
+        console.log('时间不合理请重新选择！！！');
+        return
+      }
+      editTimeDateObj.s = moment(start).format('YYYY-MM-DD HH');
+      editTimeDateObj.beforeE = moment(start).subtract(1,'h').format('YYYY-MM-DD HH')
+    }else{
+      if(moment(start).add(1,'h').format('YYYY-MM-DD HH') >= editTimeDateObj.afterE){
+        console.log('时间不合理请重新选择！！！');
+        return
+      }
+      editTimeDateObj.e = moment(start).format('YYYY-MM-DD HH');
+      editTimeDateObj.afterS = moment(start).add(1,'h').format('YYYY-MM-DD HH')
+    }
+    updatetimeSow();
+  })
+}
+
+function sunEditTimeDate(){
+  var url = '/time/update_time';
+  var after,before,date;
+  if(editTimeDateObj.type == 'start'){
+    date = editTimeDateObj.s;
+    before = allData[indexPar].timeItems[index-1].timeId;
+    after = allData[indexPar].timeItems[index].timeId
+  }else{
+    date = editTimeDateObj.e;
+    after = allData[indexPar].timeItems[index+1].timeId;
+    before = allData[indexPar].timeItems[index].timeId
+  }
+  ajaxPost(url,{
+    userId:userId,
+    updateDate:moment(date).add(1,'h').format('YYYY-MM-DD HH'),
+    beforeTimeId:before,
+    afterTimeId:after
+  }).success(function(res){
+    if(res.status == 0){
+      if(editTimeDateObj.type == 'start'){
+        allData[indexPar].timeItems[index].timeStartDate = moment(date).format('x')-0;
+        allData[indexPar].timeItems[index-1].timeEndDate = moment(editTimeDateObj.beforeE).format('x')-0;
+      }else{
+        allData[indexPar].timeItems[index].timeEndDate = moment(date).format('x')-0;
+        allData[indexPar].timeItems[index+1].timeStartDate = moment(editTimeDateObj.afterS).format('x')-0;
+      }
+      showTimeline(allData);
+    }
+  })
+}
+
 /*添加时间段*/
 function addTimes() {
   console.log(123);
@@ -459,6 +530,10 @@ function momentDate(d) {
   }
 }
 
+/*打开删除时段模态框*/
+function openDelTimes(){
+  $('#delTime').modal('show');
+}
 /*删除时间段*/
 function delTimes() {
   var url = '/time/delete_time';
@@ -485,28 +560,15 @@ function delTimes() {
     var totalWidth = $('.area').eq(areaIndex).find('.period').width();
     var delTimes = $('.area').eq(areaIndex).find('.time').eq(timeIndex);
     var delWidth = delTimes.width();
-    var mTime, hk;
     if (ub == 'up') {
       allData[areaIndex].timeItems[timeIndex - 1].timeEndDate = allData[areaIndex].timeItems[timeIndex].timeEndDate;
-      //index = allData[areaIndex].timeFrame.indexOf(moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate)).format('YYYY/MM/DD HH'));
-      mTime = $('.area').eq(areaIndex).find('.time').eq(timeIndex - 1);
-      hk = $('.area').eq(areaIndex).find('.hk').eq(timeIndex - 1);
     } else {
       allData[areaIndex].timeItems[timeIndex + 1].timeStartDate = allData[areaIndex].timeItems[timeIndex].timeStartDate;
-      //index = allData[areaIndex].timeFrame.indexOf(moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate)).format('YYYY/MM/DD HH'));
-      mTime = $('.area').eq(areaIndex).find('.time').eq(timeIndex + 1);
-      hk = $('.area').eq(areaIndex).find('.hk').eq(timeIndex);
     }
-    var mWidth = (delWidth + mTime.width()) / totalWidth * 100;
-    mTime.css('width', mWidth + '%');
     delTimes.remove();
-    hk.remove();
     allData[areaIndex].timeFrame.splice(index, 1);
     allData[areaIndex].timeItems.splice(timeIndex, 1);
-    if (allData[areaIndex].timeFrame.length == 0) {
-      mTime.find('.timeToolDiv .btn').eq(2).attr('disabled', 'disabled');
-    }
-
+    showTimeline(allData);
   })
 
 }
@@ -534,6 +596,15 @@ function selectOperate(type){
       left:0,
       'opacity': 1
     })
+
+    if(allData[selectedTimes.index].timeItems.length <=1){
+      $('.delTimeBtn').attr('disabled',true);
+      $('.editTimeBtn').attr('disabled',true);
+    }else{
+      $('.delTimeBtn').removeAttr('disabled');
+      $('.editTimeBtn').removeAttr('disabled');
+    }
+
   }else{
     $('.btnSelect').css({
       'left':'-100%',
@@ -611,9 +682,7 @@ function addPlan() {
     }).success(function () {
       allData[areaIndex].timeItems[timeIndex].planId = planId;
       allData[areaIndex].timeItems[timeIndex].planName = planName;
-      $('.areaTitle_con').eq(areaIndex).find('.time').eq(timeIndex).find('.yaMsg h4').html(planName);
-      $('.areaTitle_con').eq(areaIndex).find('.time').eq(timeIndex).find('.timeToolDiv .btn').eq(0).attr('disabled', 'disabled');
-      $('.areaTitle_con').eq(areaIndex).find('.time').eq(timeIndex).find('.timeToolDiv .btn').eq(1).removeAttr('disabled');
+      showTimeline(allData);
     })
   }
 }
@@ -680,6 +749,94 @@ function editPlan(t) {
 ///*删除预案*/
 //function delPlan(e){}
 
+var editTimeDateObj = {};
+function clearTimeDate(){
+  editTimeDateObj = {};
+  editTimeDateObj.s =  moment(selectedTimes.startTime).format('YYYY-MM-DD HH');
+  editTimeDateObj.e =  moment(selectedTimes.endTime).format('YYYY-MM-DD HH');
+  if(index == 0){
+    editTimeDateObj.afterS = moment(allData[indexPar].timeItems[index+1].timeStartDate).format('YYYY-MM-DD HH');
+    editTimeDateObj.afterE = moment(allData[indexPar].timeItems[index+1].timeEndDate).format('YYYY-MM-DD HH');
+  }else if(index == allData[indexPar].timeItems.length-1){
+    editTimeDateObj.beforeS = moment(allData[indexPar].timeItems[index-1].timeStartDate).format('YYYY-MM-DD HH');
+    editTimeDateObj.beforeE = moment(allData[indexPar].timeItems[index-1].timeEndDate).format('YYYY-MM-DD HH');
+  }else{
+    editTimeDateObj.afterS = moment(allData[indexPar].timeItems[index+1].timeStartDate).format('YYYY-MM-DD HH');
+    editTimeDateObj.afterE = moment(allData[indexPar].timeItems[index+1].timeEndDate).format('YYYY-MM-DD HH');
+    editTimeDateObj.beforeS = moment(allData[indexPar].timeItems[index-1].timeStartDate).format('YYYY-MM-DD HH');
+    editTimeDateObj.beforeE = moment(allData[indexPar].timeItems[index-1].timeEndDate).format('YYYY-MM-DD HH');
+  }
+}
+
+$('#editTimeDate').on('show.bs.modal', function (event) {
+  indexPar = selectedTimes.index;
+  index = selectedTimes.indexNum;
+  clearTimeDate();
+  updatetimeSow();
+  editTimeDateObj.type = $('#selectEditPoint').val();
+});
+
+  function updatetimeSow(){
+    $('.showTimes .col-md-4 p').eq(0).empty();
+    $('.showTimes .col-md-4 p').eq(1).empty();
+    $('.showTimes .col-md-4 p').eq(2).empty();
+    $('#selectEditPoint').empty();
+    var s,e;
+    s = editTimeDateObj.s;
+    e = editTimeDateObj.e;
+    if(index == 0){
+      e = editTimeDateObj.afterE;
+      $('.showTimes .col-md-4 p').eq(0)
+        .html('<h4>无时段</h4>');
+      $('.showTimes .col-md-4 p').eq(2)
+        .html(editTimeDateObj.afterS+'<br />至<br/>'+editTimeDateObj.afterE);
+      $('#selectEditPoint').append($('<option value="end">结束时间</option>'))
+      //editTimeDateObj.type = 'end'
+    }else if(index == allData[indexPar].timeItems.length-1){
+      s = editTimeDateObj.beforeS;
+      $('.showTimes .col-md-4 p').eq(2)
+        .html('<h4>无时段</h4>');
+      $('.showTimes .col-md-4 p').eq(0)
+        .html( editTimeDateObj.beforeS+'<br />至<br/>'+editTimeDateObj.beforeE);
+      $('#selectEditPoint').append($('<option value="start">开始时间</option>'))
+      //editTimeDateObj.type = 'start'
+    }else{
+      s = editTimeDateObj.beforeS;
+      $('#selectEditPoint').append($('<option value="start">开始时间</option>'));
+      $('#selectEditPoint').append($('<option value="end">结束时间</option>'));
+      $('.showTimes .col-md-4 p').eq(0)
+        .html( editTimeDateObj.beforeS+'<br />至<br/>'+editTimeDateObj.beforeE);
+      $('.showTimes .col-md-4 p').eq(2)
+        .html(editTimeDateObj.afterS+'<br />至<br/>'+editTimeDateObj.afterE);
+      //editTimeDateObj.type = 'start'
+    }
+    $('.showTimes .col-md-4 p').eq(1).html(editTimeDateObj.s+'<br />至<br/>'+editTimeDateObj.e);
+    initEditTimeDate(s,e);
+    initEditTimeDate(s,e);
+  }
+
+function selectEditPoint(t){
+  var s,e;
+  if($(t).val() == 'start'){
+    s = editTimeDateObj.beforeS;
+    e = editTimeDateObj.e;
+    editTimeDateObj.type = 'start'
+  }else{
+    s = editTimeDateObj.s;
+    e = editTimeDateObj.afterE;
+    editTimeDateObj.type = 'end'
+  }
+
+  initEditTimeDate(s,e);
+  initEditTimeDate(s,e);
+}
+
+function editTimeDate(){
+  $('#editTimeDate').modal('show');
+    window.setTimeout(function(){
+  },350)
+}
+
 
 $('#editArea').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget);
@@ -688,7 +845,7 @@ $('#editArea').on('show.bs.modal', function (event) {
   var treeUrl = '/area/find_areas';
 
   if (create) {
-
+    $('#areaName').val('').removeAttr('data-id');
   } else {
     findUrl = '/area/get_areaList';
     //indexPar = $('.area').index(button.parents('.area'));
@@ -764,28 +921,21 @@ function createEditArea() {
   ajaxPost(url, obj).success(function (res) {
     console.log(res);
 
-    var area = $('.area.disNone').clone().removeClass('disNone');
-    area.find('.front>span').html(areaName);
-    $('.areaMsg').append(area);
-
-    /*克隆时段进行添加*/
-    var times = $('.time.disNone').clone().removeClass('disNone');
-    area.find('.showLine').before(times);
-    times.find('.timeToolDiv .btn').eq(1).attr('disabled', 'disabled');
-    times.find('.timeToolDiv .btn').eq(2).attr('disabled', 'disabled');
-    times.css('width', $('.period').width() + 'px');
-    var obj = {};
-    obj.areaId = res.data.areaId;
-    obj.areaName = areaName;
-    obj.timeFrame = [];
-    obj.timeItems = [{
-      planId: -1,
-      planName: '',
-      timeId: res.data.timeId,
-      timeEndDate: qjMsg.qjEndDate,
-      timeStartDate: qjMsg.qjStartDate
-    }];
-    allData
+    if(!$('#areaName').attr('data-id')){
+      var obj = {};
+      obj.areaId = res.data.areaId;
+      obj.areaName = areaName;
+      obj.timeFrame = [];
+      obj.timeItems = [{
+        planId: -1,
+        planName: '无',
+        timeId: res.data.timeId,
+        timeEndDate: qjMsg.qjEndDate,
+        timeStartDate: qjMsg.qjStartDate
+      }];
+      allData.push(obj);
+      showTimeline(allData);
+    }
   })
 }
 
@@ -795,19 +945,32 @@ function setShowCode(data) {
   cityNum = data.cityCodes.length;
   countyNum = data.countyCodes.length;
 
-  for (var i = 0; i < proNum; i++) {
-    $.extend(showCode[0], data.provinceCodes[i]);
+  if(proNum == 0){
+    showCode[0] = {};
+  }else{
+    for (var i = 0; i < proNum; i++) {
+      $.extend(showCode[0], data.provinceCodes[i]);
+    }
   }
-  for (var ii = 0; ii < cityNum; ii++) {
-    var adcode1 = Object.keys(data.cityCodes[ii])[0];
-    if (!showCode[1][adcode1.substr(0, 2)])showCode[1][adcode1.substr(0, 2)] = {};
-    $.extend(showCode[1][adcode1.substr(0, 2)], data.cityCodes[ii]);
+  if(cityNum == 0){
+    showCode[1] = {};
+  }else{
+    for (var ii = 0; ii < cityNum; ii++) {
+      var adcode1 = Object.keys(data.cityCodes[ii])[0];
+      if (!showCode[1][adcode1.substr(0, 2)])showCode[1][adcode1.substr(0, 2)] = {};
+      $.extend(showCode[1][adcode1.substr(0, 2)], data.cityCodes[ii]);
+    }
   }
-  for (var iii = 0; iii < countyNum; iii++) {
-    var adcode2 = Object.keys(data.countyCodes[iii])[0];
-    if (!showCode[2][adcode2.substr(0, 4)])showCode[2][adcode2.substr(0, 4)] = {};
-    $.extend(showCode[2][adcode2.substr(0, 4)], data.countyCodes[iii]);
+  if(countyNum == 0){
+    showCode[2] = {};
+  }else{
+    for (var iii = 0; iii < countyNum; iii++) {
+      var adcode2 = Object.keys(data.countyCodes[iii])[0];
+      if (!showCode[2][adcode2.substr(0, 4)])showCode[2][adcode2.substr(0, 4)] = {};
+      $.extend(showCode[2][adcode2.substr(0, 4)], data.countyCodes[iii]);
+    }
   }
+
 }
 
 
@@ -845,10 +1008,12 @@ $('#addYA').on('show.bs.modal', function (event) {
 
 $('#delTime').on('show.bs.modal', function (event) {
   //console.log(event);
-  var button = $(event.relatedTarget);
-  if (button.length == 0)return;
-  areaIndex = $('.areaTitle_con').index(button.parents('.areaTitle_con'));
-  timeIndex = button.parents('.area').find('.time').index(button.parents('.time'));
+//  var button = $(event.relatedTarget);
+//  if (button.length == 0)return;
+  //areaIndex = $('.areaTitle_con').index(button.parents('.areaTitle_con'));
+  //timeIndex = button.parents('.area').find('.time').index(button.parents('.time'));
+  areaIndex = selectedTimes.index;
+  timeIndex = selectedTimes.indexNum;
   $(event.target).find('.delSelect').empty();
 
   var redio = $('.radio.disNone').clone().removeClass('disNone');
