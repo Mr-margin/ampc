@@ -390,7 +390,7 @@ function delArea(e) {
     function () {
       ajaxPost(url, params).success(function (res) {
         if (res.status == 0) {
-          allData.splice(indexPar,1);
+          allData.splice(indexPar, 1);
           $('.areaTitle_con').eq(indexPar).remove();
           showTimeline(allData);
           //$('.areaTitle_con').eq(indexPar).remove();
@@ -407,19 +407,19 @@ function delArea(e) {
 }
 
 /*点击时段编辑信息*/
-function editTimes(){
+function editTimes() {
 
 }
 
 /*初始化日期插件*/
-function initEditTimeDate(s,e){
-	console.log(s,e);
+function initEditTimeDate(s, e) {
+  console.log(s, e);
   $('#editDate').daterangepicker({
     singleDatePicker: true,  //显示单个日历
-    timePicker:true,  //允许选择时间
-    timePicker24Hour:true, //时间24小时制
-    minDate:s,//最早可选日期
-    maxDate:e,//最大可选日期
+    timePicker: true,  //允许选择时间
+    timePicker24Hour: true, //时间24小时制
+    minDate: s,//最早可选日期
+    maxDate: e,//最大可选日期
     locale: {
       format: "YYYY-MM-DD HH",
       separator: " 至 ",
@@ -427,62 +427,62 @@ function initEditTimeDate(s,e){
       cancelLabel: "取消",//按钮文字
       weekLabel: "W",
       daysOfWeek: [
-        "日","一","二","三","四","五","六"
+        "日", "一", "二", "三", "四", "五", "六"
       ],
       monthNames: [
-        "一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"
+        "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"
       ],
       firstDay: 1
     },
     //"startDate": moment().subtract(2,'w'),
     //"endDate": end,
     "opens": "right"
-  },function(start, end, label) {
+  }, function (start, end, label) {
 
-    if(editTimeDateObj.type == 'start'){
-      if(editTimeDateObj.beforeS >= moment(start).subtract(1,'h').format('YYYY-MM-DD HH')){
+    if (editTimeDateObj.type == 'start') {
+      if (editTimeDateObj.beforeS >= moment(start).subtract(1, 'h').format('YYYY-MM-DD HH')) {
         console.log('时间不合理请重新选择！！！');
         return
       }
       editTimeDateObj.s = moment(start).format('YYYY-MM-DD HH');
-      editTimeDateObj.beforeE = moment(start).subtract(1,'h').format('YYYY-MM-DD HH')
-    }else{
-      if(moment(start).add(1,'h').format('YYYY-MM-DD HH') >= editTimeDateObj.afterE){
+      editTimeDateObj.beforeE = moment(start).subtract(1, 'h').format('YYYY-MM-DD HH')
+    } else {
+      if (moment(start).add(1, 'h').format('YYYY-MM-DD HH') >= editTimeDateObj.afterE) {
         console.log('时间不合理请重新选择！！！');
         return
       }
       editTimeDateObj.e = moment(start).format('YYYY-MM-DD HH');
-      editTimeDateObj.afterS = moment(start).add(1,'h').format('YYYY-MM-DD HH')
+      editTimeDateObj.afterS = moment(start).add(1, 'h').format('YYYY-MM-DD HH')
     }
     updatetimeSow();
   })
 }
 
-function sunEditTimeDate(){
+function sunEditTimeDate() {
   var url = '/time/update_time';
-  var after,before,date;
-  if(editTimeDateObj.type == 'start'){
+  var after, before, date;
+  if (editTimeDateObj.type == 'start') {
     date = editTimeDateObj.s;
-    before = allData[indexPar].timeItems[index-1].timeId;
+    before = allData[indexPar].timeItems[index - 1].timeId;
     after = allData[indexPar].timeItems[index].timeId
-  }else{
+  } else {
     date = editTimeDateObj.e;
-    after = allData[indexPar].timeItems[index+1].timeId;
+    after = allData[indexPar].timeItems[index + 1].timeId;
     before = allData[indexPar].timeItems[index].timeId
   }
-  ajaxPost(url,{
-    userId:userId,
-    updateDate:moment(date).add(1,'h').format('YYYY-MM-DD HH'),
-    beforeTimeId:before,
-    afterTimeId:after
-  }).success(function(res){
-    if(res.status == 0){
-      if(editTimeDateObj.type == 'start'){
-        allData[indexPar].timeItems[index].timeStartDate = moment(date).format('x')-0;
-        allData[indexPar].timeItems[index-1].timeEndDate = moment(editTimeDateObj.beforeE).format('x')-0;
-      }else{
-        allData[indexPar].timeItems[index].timeEndDate = moment(date).format('x')-0;
-        allData[indexPar].timeItems[index+1].timeStartDate = moment(editTimeDateObj.afterS).format('x')-0;
+  ajaxPost(url, {
+    userId: userId,
+    updateDate: moment(date).add(1, 'h').format('YYYY-MM-DD HH'),
+    beforeTimeId: before,
+    afterTimeId: after
+  }).success(function (res) {
+    if (res.status == 0) {
+      if (editTimeDateObj.type == 'start') {
+        allData[indexPar].timeItems[index].timeStartDate = moment(date).format('x') - 0;
+        allData[indexPar].timeItems[index - 1].timeEndDate = moment(editTimeDateObj.beforeE).format('x') - 0;
+      } else {
+        allData[indexPar].timeItems[index].timeEndDate = moment(date).format('x') - 0;
+        allData[indexPar].timeItems[index + 1].timeStartDate = moment(editTimeDateObj.afterS).format('x') - 0;
       }
       showTimeline(allData);
     }
@@ -512,7 +512,6 @@ function addTimes() {
     getAreaAndTime();
 
 
-
   }).error(function () {
     timeFrame.splice(index, 1);
     swal('添加失败！！！', '', 'error')
@@ -531,7 +530,7 @@ function momentDate(d) {
 }
 
 /*打开删除时段模态框*/
-function openDelTimes(){
+function openDelTimes() {
   $('#delTime').modal('show');
 }
 /*删除时间段*/
@@ -575,43 +574,43 @@ function delTimes() {
 
 /*当前选中的时段*/
 var selectedTimes;
-function ontTimes(data){
+function ontTimes(data) {
   selectedTimes = data;
-  if(data.planId != -1){
-    $('.yacz').attr('disabled',true);
-  }else{
+  if (data.planId != -1) {
+    $('.yacz').attr('disabled', true);
+  } else {
     $('.yacz').removeAttr('disabled');
   }
   $('#editTime').modal('show')
 }
 
 /*时段预案操作模态框选择 start*/
-function selectOperate(type){
-  if(type == 'sTime'){
+function selectOperate(type) {
+  if (type == 'sTime') {
     $('.btnSelect').css({
-      'right':'-100%',
+      'right': '-100%',
       'opacity': 0
     });
-    $('.'+type).css({
-      left:0,
+    $('.' + type).css({
+      left: 0,
       'opacity': 1
     })
 
-    if(allData[selectedTimes.index].timeItems.length <=1){
-      $('.delTimeBtn').attr('disabled',true);
-      $('.editTimeBtn').attr('disabled',true);
-    }else{
+    if (allData[selectedTimes.index].timeItems.length <= 1) {
+      $('.delTimeBtn').attr('disabled', true);
+      $('.editTimeBtn').attr('disabled', true);
+    } else {
       $('.delTimeBtn').removeAttr('disabled');
       $('.editTimeBtn').removeAttr('disabled');
     }
 
-  }else{
+  } else {
     $('.btnSelect').css({
-      'left':'-100%',
+      'left': '-100%',
       'opacity': 0
     });
-    $('.'+type).css({
-      right:0,
+    $('.' + type).css({
+      right: 0,
       'opacity': 1
     })
   }
@@ -619,30 +618,30 @@ function selectOperate(type){
 
 $('#editTime').on('show.bs.modal', function (event) {
   $('.btnSelect').css({
-    'right':0,
-    'left':0,
+    'right': 0,
+    'left': 0,
     'opacity': 1
   });
   $('.sTime').css({
-    left:'-100%',
+    left: '-100%',
     'opacity': 0
   });
   $('.sPlan').css({
-    right:'-100%',
+    right: '-100%',
     'opacity': 0
   })
 });
 
 /*打开预案编辑*/
-function openAddYA(){
+function openAddYA() {
   $('#addYA .selectAdd').removeClass('disNone');
   $('#addYA .addCopyPlan').addClass('disNone');
   $('#addYA .addNewPlan').addClass('disNone');
   $('#addYA .modal-footer').addClass('disNone');
 
-  window.setTimeout(function(){
+  window.setTimeout(function () {
     $('#addYA').modal('show')
-  },350)
+  }, 350)
 }
 
 /*时段预案操作模态框选择 end*/
@@ -741,7 +740,7 @@ function editPlan(t) {
   msg.content.planName = allData[areaIndex].timeItems[timeIndex].planName;
   vipspa.setMessage(msg);
 
-  if(msg.content.planId == -1)return;
+  if (msg.content.planId == -1)return;
 
   createNewPlan();
 }
@@ -750,21 +749,21 @@ function editPlan(t) {
 //function delPlan(e){}
 
 var editTimeDateObj = {};
-function clearTimeDate(){
+function clearTimeDate() {
   editTimeDateObj = {};
-  editTimeDateObj.s =  moment(selectedTimes.startTime).format('YYYY-MM-DD HH');
-  editTimeDateObj.e =  moment(selectedTimes.endTime).format('YYYY-MM-DD HH');
-  if(index == 0){
-    editTimeDateObj.afterS = moment(allData[indexPar].timeItems[index+1].timeStartDate).format('YYYY-MM-DD HH');
-    editTimeDateObj.afterE = moment(allData[indexPar].timeItems[index+1].timeEndDate).format('YYYY-MM-DD HH');
-  }else if(index == allData[indexPar].timeItems.length-1){
-    editTimeDateObj.beforeS = moment(allData[indexPar].timeItems[index-1].timeStartDate).format('YYYY-MM-DD HH');
-    editTimeDateObj.beforeE = moment(allData[indexPar].timeItems[index-1].timeEndDate).format('YYYY-MM-DD HH');
-  }else{
-    editTimeDateObj.afterS = moment(allData[indexPar].timeItems[index+1].timeStartDate).format('YYYY-MM-DD HH');
-    editTimeDateObj.afterE = moment(allData[indexPar].timeItems[index+1].timeEndDate).format('YYYY-MM-DD HH');
-    editTimeDateObj.beforeS = moment(allData[indexPar].timeItems[index-1].timeStartDate).format('YYYY-MM-DD HH');
-    editTimeDateObj.beforeE = moment(allData[indexPar].timeItems[index-1].timeEndDate).format('YYYY-MM-DD HH');
+  editTimeDateObj.s = moment(selectedTimes.startTime).format('YYYY-MM-DD HH');
+  editTimeDateObj.e = moment(selectedTimes.endTime).format('YYYY-MM-DD HH');
+  if (index == 0) {
+    editTimeDateObj.afterS = moment(allData[indexPar].timeItems[index + 1].timeStartDate).format('YYYY-MM-DD HH');
+    editTimeDateObj.afterE = moment(allData[indexPar].timeItems[index + 1].timeEndDate).format('YYYY-MM-DD HH');
+  } else if (index == allData[indexPar].timeItems.length - 1) {
+    editTimeDateObj.beforeS = moment(allData[indexPar].timeItems[index - 1].timeStartDate).format('YYYY-MM-DD HH');
+    editTimeDateObj.beforeE = moment(allData[indexPar].timeItems[index - 1].timeEndDate).format('YYYY-MM-DD HH');
+  } else {
+    editTimeDateObj.afterS = moment(allData[indexPar].timeItems[index + 1].timeStartDate).format('YYYY-MM-DD HH');
+    editTimeDateObj.afterE = moment(allData[indexPar].timeItems[index + 1].timeEndDate).format('YYYY-MM-DD HH');
+    editTimeDateObj.beforeS = moment(allData[indexPar].timeItems[index - 1].timeStartDate).format('YYYY-MM-DD HH');
+    editTimeDateObj.beforeE = moment(allData[indexPar].timeItems[index - 1].timeEndDate).format('YYYY-MM-DD HH');
   }
 }
 
@@ -776,67 +775,70 @@ $('#editTimeDate').on('show.bs.modal', function (event) {
   editTimeDateObj.type = $('#selectEditPoint').val();
 });
 
-  function updatetimeSow(){
-    $('.showTimes .col-md-4 p').eq(0).empty();
-    $('.showTimes .col-md-4 p').eq(1).empty();
-    $('.showTimes .col-md-4 p').eq(2).empty();
-    $('#selectEditPoint').empty();
-    var s,e;
-    s = editTimeDateObj.s;
-    e = editTimeDateObj.e;
-    if(index == 0){
-      e = editTimeDateObj.afterE;
-      $('.showTimes .col-md-4 p').eq(0)
-        .html('<h4>无时段</h4>');
-      $('.showTimes .col-md-4 p').eq(2)
-        .html(editTimeDateObj.afterS+'<br />至<br/>'+editTimeDateObj.afterE);
-      $('#selectEditPoint').append($('<option value="end">结束时间</option>'))
-      //editTimeDateObj.type = 'end'
-    }else if(index == allData[indexPar].timeItems.length-1){
-      s = editTimeDateObj.beforeS;
-      $('.showTimes .col-md-4 p').eq(2)
-        .html('<h4>无时段</h4>');
-      $('.showTimes .col-md-4 p').eq(0)
-        .html( editTimeDateObj.beforeS+'<br />至<br/>'+editTimeDateObj.beforeE);
-      $('#selectEditPoint').append($('<option value="start">开始时间</option>'))
-      //editTimeDateObj.type = 'start'
-    }else{
-      s = editTimeDateObj.beforeS;
-      $('#selectEditPoint').append($('<option value="start">开始时间</option>'));
-      $('#selectEditPoint').append($('<option value="end">结束时间</option>'));
-      $('.showTimes .col-md-4 p').eq(0)
-        .html( editTimeDateObj.beforeS+'<br />至<br/>'+editTimeDateObj.beforeE);
-      $('.showTimes .col-md-4 p').eq(2)
-        .html(editTimeDateObj.afterS+'<br />至<br/>'+editTimeDateObj.afterE);
-      //editTimeDateObj.type = 'start'
-    }
-    $('.showTimes .col-md-4 p').eq(1).html(editTimeDateObj.s+'<br />至<br/>'+editTimeDateObj.e);
-    initEditTimeDate(s,e);
-    initEditTimeDate(s,e);
+function updatetimeSow() {
+  $('.showTimes .col-md-4 p').eq(0).empty();
+  $('.showTimes .col-md-4 p').eq(1).empty();
+  $('.showTimes .col-md-4 p').eq(2).empty();
+  $('#selectEditPoint').empty();
+  var s, e;
+  s = editTimeDateObj.s;
+  e = editTimeDateObj.e;
+  if (index == 0) {
+    e = editTimeDateObj.afterE;
+    $('.showTimes .col-md-4 p').eq(0)
+      .html('<h4>无时段</h4>');
+    $('.showTimes .col-md-4 p').eq(2)
+      .html(editTimeDateObj.afterS + '<br />至<br/>' + editTimeDateObj.afterE);
+    $('#selectEditPoint').append($('<option value="end">结束时间</option>'))
+    //editTimeDateObj.type = 'end'
+  } else if (index == allData[indexPar].timeItems.length - 1) {
+    s = editTimeDateObj.beforeS;
+    $('.showTimes .col-md-4 p').eq(2)
+      .html('<h4>无时段</h4>');
+    $('.showTimes .col-md-4 p').eq(0)
+      .html(editTimeDateObj.beforeS + '<br />至<br/>' + editTimeDateObj.beforeE);
+    $('#selectEditPoint').append($('<option value="start">开始时间</option>'))
+    //editTimeDateObj.type = 'start'
+  } else {
+    s = editTimeDateObj.beforeS;
+    $('#selectEditPoint').append($('<option value="start">开始时间</option>'));
+    $('#selectEditPoint').append($('<option value="end">结束时间</option>'));
+    $('.showTimes .col-md-4 p').eq(0)
+      .html(editTimeDateObj.beforeS + '<br />至<br/>' + editTimeDateObj.beforeE);
+    $('.showTimes .col-md-4 p').eq(2)
+      .html(editTimeDateObj.afterS + '<br />至<br/>' + editTimeDateObj.afterE);
+    //editTimeDateObj.type = 'start'
   }
+  $('.showTimes .col-md-4 p').eq(1).html(editTimeDateObj.s + '<br />至<br/>' + editTimeDateObj.e);
+  initEditTimeDate(s, e);
+  initEditTimeDate(s, e);
+}
 
-function selectEditPoint(t){
-  var s,e;
-  if($(t).val() == 'start'){
+function selectEditPoint(t) {
+  var s, e;
+  if ($(t).val() == 'start') {
     s = editTimeDateObj.beforeS;
     e = editTimeDateObj.e;
     editTimeDateObj.type = 'start'
-  }else{
+  } else {
     s = editTimeDateObj.s;
     e = editTimeDateObj.afterE;
     editTimeDateObj.type = 'end'
   }
 
-  initEditTimeDate(s,e);
-  initEditTimeDate(s,e);
+  initEditTimeDate(s, e);
+  initEditTimeDate(s, e);
 }
 
-function editTimeDate(){
+function editTimeDate() {
   $('#editTimeDate').modal('show');
-    window.setTimeout(function(){
-  },350)
+  window.setTimeout(function () {
+  }, 350)
 }
 
+
+function editArea() {
+}
 
 $('#editArea').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget);
@@ -921,7 +923,7 @@ function createEditArea() {
   ajaxPost(url, obj).success(function (res) {
     console.log(res);
 
-    if(!$('#areaName').attr('data-id')){
+    if (!$('#areaName').attr('data-id')) {
       var obj = {};
       obj.areaId = res.data.areaId;
       obj.areaName = areaName;
@@ -945,25 +947,25 @@ function setShowCode(data) {
   cityNum = data.cityCodes.length;
   countyNum = data.countyCodes.length;
 
-  if(proNum == 0){
+  if (proNum == 0) {
     showCode[0] = {};
-  }else{
+  } else {
     for (var i = 0; i < proNum; i++) {
       $.extend(showCode[0], data.provinceCodes[i]);
     }
   }
-  if(cityNum == 0){
+  if (cityNum == 0) {
     showCode[1] = {};
-  }else{
+  } else {
     for (var ii = 0; ii < cityNum; ii++) {
       var adcode1 = Object.keys(data.cityCodes[ii])[0];
       if (!showCode[1][adcode1.substr(0, 2)])showCode[1][adcode1.substr(0, 2)] = {};
       $.extend(showCode[1][adcode1.substr(0, 2)], data.cityCodes[ii]);
     }
   }
-  if(countyNum == 0){
+  if (countyNum == 0) {
     showCode[2] = {};
-  }else{
+  } else {
     for (var iii = 0; iii < countyNum; iii++) {
       var adcode2 = Object.keys(data.countyCodes[iii])[0];
       if (!showCode[2][adcode2.substr(0, 4)])showCode[2][adcode2.substr(0, 4)] = {};
@@ -1076,37 +1078,100 @@ function selectNode(node) {
   }
 }
 
-function level0(node) {
-  showCode[node.level][node.adcode] = node.name;
-  delete showCode[node.level + 1][node.adcode];
+//function level0(node) {
+//  showCode[node.level][node.adcode] = node.name;
+//  delete showCode[node.level + 1][node.adcode];
+//
+//  for (var i = 1; i < showCode.length; i++) {
+//    for (var a in showCode[i]) {
+//      if (a.toString().substr(0, 2) == node.adcode.toString().substr(0, 2)) {
+//        delete showCode[i][a];
+//      }
+//    }
+//  }
+//}
 
-  for (var i = 1; i < showCode.length; i++) {
-    for (var a in showCode[i]) {
-      if (a.toString().substr(0, 2) == node.adcode.toString().substr(0, 2)) {
-        delete showCode[i][a];
+
+//function level12(node) {
+//  var parNode = node.getParentNode();
+//  if (!showCode[node.level][parNode.adcode]) {
+//    showCode[node.level][parNode.adcode] = {}
+//  }
+//  showCode[node.level][parNode.adcode][node.adcode] = node.name;
+//  if (parNode.children.length == Object.keys(showCode[node.level][parNode.adcode]).length) {
+//    delete showCode[node.level][parNode.adcode];
+//    if (node.level == 1) {
+//      level0(parNode);
+//    } else {
+//      level12(parNode);
+//    }
+//  }
+//
+//  if (node.level == 1) {
+//    delete showCode[node.level + 1][node.adcode];
+//  }
+//}
+
+function level0(node) {
+  var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+  var nodesDis = treeObj.getNodesByParam('chkDisabled', true, node);
+  if (nodesDis.length == 0) {
+    showCode[node.level][node.adcode] = node.name;
+    delete showCode[node.level + 1][node.adcode];
+    for (var i = 1; i < showCode.length; i++) {
+      for (var a in showCode[i]) {
+        if (a.toString().substr(0, 2) == node.adcode.toString().substr(0, 2)) {
+          delete showCode[i][a];
+        }
+      }
+    }
+  } else {
+    treeObj.checkNode(node, false, false, false);
+    var child = node.children;
+    for(var ch=0;ch<child.length;ch++){
+      if (!child[ch].chkDisabled) {
+        level12(child[ch])
       }
     }
   }
+
 }
 
 function level12(node) {
+  var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+  var nodesDis = treeObj.getNodesByParam('chkDisabled', true, node);
   var parNode = node.getParentNode();
-  if (!showCode[node.level][parNode.adcode]) {
-    showCode[node.level][parNode.adcode] = {}
-  }
-  showCode[node.level][parNode.adcode][node.adcode] = node.name;
-  if (parNode.children.length == Object.keys(showCode[node.level][parNode.adcode]).length) {
-    delete showCode[node.level][parNode.adcode];
+
+  if (nodesDis.length == 0) {
+    if (!showCode[node.level][parNode.adcode]) {
+      showCode[node.level][parNode.adcode] = {}
+    }
+    showCode[node.level][parNode.adcode][node.adcode] = node.name;
+    if (parNode.children.length == Object.keys(showCode[node.level][parNode.adcode]).length) {
+      delete showCode[node.level][parNode.adcode];
+      if (node.level == 1) {
+        level0(parNode);
+      } else {
+        level12(parNode);
+      }
+    }
     if (node.level == 1) {
-      level0(parNode);
-    } else {
-      level12(parNode);
+      delete showCode[node.level + 1][node.adcode];
+    }
+  } else {
+//    delete showCode[node.level][parNode.adcode];
+    treeObj.checkNode(node, false, false, false);
+    var child = node.children;
+    if (!showCode[node.level + 1][node.adcode]) {
+      showCode[node.level + 1][node.adcode] = {};
+    }
+    for (var ch = 0; ch < child.length; ch++) {
+      if (!child[ch].chkDisabled) {
+        showCode[node.level + 1][node.adcode][child[ch].adcode] = child[ch].name;
+      }
     }
   }
 
-  if (node.level == 1) {
-    delete showCode[node.level + 1][node.adcode];
-  }
 }
 
 function delNode0(node) {
@@ -1153,285 +1218,285 @@ function initDate() {
 }
 
 
-/**********************************模态窗口地图部分*****************************************************/
-//通用属性
-var stat = {};
-//中心点坐标
-stat.cPointx = 116;
-stat.cPointy = 35;
-var app = {};
-var dong = {};
+ /**********************************模态窗口地图部分*****************************************************/
+ //通用属性
+ var stat = {};
+ //中心点坐标
+ stat.cPointx = 116;
+ stat.cPointy = 35;
+ var app = {};
+ var dong = {};
 
-var dojoConfig = {
-  async: true,
-  parseOnLoad: true,
-  packages: [{
-    name: 'tdlib',
-    location: "/js/tdlib"
-  }]
-};
+ var dojoConfig = {
+ async: true,
+ parseOnLoad: true,
+ packages: [{
+ name: 'tdlib',
+ location: "/js/tdlib"
+ }]
+ };
 
-require(
-  [
-    "esri/map",
-    "esri/layers/FeatureLayer",
-    "esri/layers/GraphicsLayer",
-    "esri/symbols/SimpleFillSymbol",
-    "esri/symbols/SimpleLineSymbol",
-    "esri/symbols/SimpleMarkerSymbol",
-    "esri/renderers/ClassBreaksRenderer",
-    "esri/geometry/Point",
-    "esri/geometry/Extent",
-    "esri/renderers/SimpleRenderer",
-    "esri/graphic",
-    "dojo/_base/Color",
-    "dojo/dom-style",
-    "esri/tasks/FeatureSet",
-    "esri/SpatialReference",
-    "tdlib/gaodeLayer",
-    "esri/InfoTemplate",
-    "esri/renderers/UniqueValueRenderer",
-    "dojo/domReady!"
+ require(
+ [
+ "esri/map",
+ "esri/layers/FeatureLayer",
+ "esri/layers/GraphicsLayer",
+ "esri/symbols/SimpleFillSymbol",
+ "esri/symbols/SimpleLineSymbol",
+ "esri/symbols/SimpleMarkerSymbol",
+ "esri/renderers/ClassBreaksRenderer",
+ "esri/geometry/Point",
+ "esri/geometry/Extent",
+ "esri/renderers/SimpleRenderer",
+ "esri/graphic",
+ "dojo/_base/Color",
+ "dojo/dom-style",
+ "esri/tasks/FeatureSet",
+ "esri/SpatialReference",
+ "tdlib/gaodeLayer",
+ "esri/InfoTemplate",
+ "esri/renderers/UniqueValueRenderer",
+ "dojo/domReady!"
 
-  ],
-  function (Map, FeatureLayer, GraphicsLayer, SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, ClassBreaksRenderer, Point, Extent, SimpleRenderer,
-            Graphic, Color, style, FeatureSet, SpatialReference, gaodeLayer, InfoTemplate, UniqueValueRenderer) {
-    dong.gaodeLayer = gaodeLayer;
-    dong.Graphic = Graphic;
-    dong.Point = Point;
-    dong.GraphicsLayer = GraphicsLayer;
-    dong.SpatialReference = SpatialReference;
-    dong.SimpleLineSymbol = SimpleLineSymbol;
-    dong.FeatureLayer = FeatureLayer;
-    dong.SimpleRenderer = SimpleRenderer;
-    dong.SimpleFillSymbol = SimpleFillSymbol;
-    dong.Color = Color;
-    dong.ClassBreaksRenderer = ClassBreaksRenderer;
-    dong.UniqueValueRenderer = UniqueValueRenderer;
-    dong.InfoTemplate = InfoTemplate;
-    /*****************************************************/
-    app.map1 = new Map("mapDiv1", {
-      logo: false,
-      center: [stat.cPointx, stat.cPointy],
-      minZoom: 3,
-      maxZoom: 13,
-      zoom: 3
-    });
-    app.baselayerList1 = new dong.gaodeLayer();
-    app.stlayerList1 = new dong.gaodeLayer({layertype: "st1"});
-    app.labellayerList1 = new dong.gaodeLayer({layertype: "label1"});
-    app.map1.addLayer(app.baselayerList1);//添加高德地图到map容器
-    app.map1.addLayers([app.baselayerList1]);//添加高德地图到map容器
-    app.gLyr1 = new dong.GraphicsLayer({"id": "gLyr1"});
-    app.map1.addLayer(app.gLyr1);
-    app.map1.on("loaded", app2())
-    /*************************************************************************/
-    app.map = new Map("mapDiv", {
-      logo: false,
-      center: [stat.cPointx, stat.cPointy],
-      minZoom: 3,
-      maxZoom: 13,
-      zoom: 3
-    });
-    app.baselayerList = new dong.gaodeLayer();
-    app.stlayerList = new dong.gaodeLayer({layertype: "st"});
-    app.labellayerList = new dong.gaodeLayer({layertype: "label"});
-    app.map.addLayer(app.baselayerList);//添加高德地图到map容器
-    app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
-    app.gLyr = new dong.GraphicsLayer({"id": "gLyr"});
-    app.map.addLayer(app.gLyr);
-    /******************************************/
+ ],
+ function (Map, FeatureLayer, GraphicsLayer, SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, ClassBreaksRenderer, Point, Extent, SimpleRenderer,
+ Graphic, Color, style, FeatureSet, SpatialReference, gaodeLayer, InfoTemplate, UniqueValueRenderer) {
+ dong.gaodeLayer = gaodeLayer;
+ dong.Graphic = Graphic;
+ dong.Point = Point;
+ dong.GraphicsLayer = GraphicsLayer;
+ dong.SpatialReference = SpatialReference;
+ dong.SimpleLineSymbol = SimpleLineSymbol;
+ dong.FeatureLayer = FeatureLayer;
+ dong.SimpleRenderer = SimpleRenderer;
+ dong.SimpleFillSymbol = SimpleFillSymbol;
+ dong.Color = Color;
+ dong.ClassBreaksRenderer = ClassBreaksRenderer;
+ dong.UniqueValueRenderer = UniqueValueRenderer;
+ dong.InfoTemplate = InfoTemplate;
+ /*****************************************************/
+ app.map1 = new Map("mapDiv1", {
+ logo: false,
+ center: [stat.cPointx, stat.cPointy],
+ minZoom: 3,
+ maxZoom: 13,
+ zoom: 3
+ });
+ app.baselayerList1 = new dong.gaodeLayer();
+ app.stlayerList1 = new dong.gaodeLayer({layertype: "st1"});
+ app.labellayerList1 = new dong.gaodeLayer({layertype: "label1"});
+ app.map1.addLayer(app.baselayerList1);//添加高德地图到map容器
+ app.map1.addLayers([app.baselayerList1]);//添加高德地图到map容器
+ app.gLyr1 = new dong.GraphicsLayer({"id": "gLyr1"});
+ app.map1.addLayer(app.gLyr1);
+ app.map1.on("loaded", app2())
+ /*************************************************************************/
+ app.map = new Map("mapDiv", {
+ logo: false,
+ center: [stat.cPointx, stat.cPointy],
+ minZoom: 3,
+ maxZoom: 13,
+ zoom: 3
+ });
+ app.baselayerList = new dong.gaodeLayer();
+ app.stlayerList = new dong.gaodeLayer({layertype: "st"});
+ app.labellayerList = new dong.gaodeLayer({layertype: "label"});
+ app.map.addLayer(app.baselayerList);//添加高德地图到map容器
+ app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
+ app.gLyr = new dong.GraphicsLayer({"id": "gLyr"});
+ app.map.addLayer(app.gLyr);
+ /******************************************/
 
-  });
-//添加服务
-function addLayer(data) {
-  shuju_clear();
-  app.featureLayer1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/2", {
-    infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-    mode: dong.FeatureLayer.MODE_ONDEMAND,
-    outFields: ["NAME"]
-  });
-  app.featureLayer2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/1", {
-    infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-    mode: dong.FeatureLayer.MODE_ONDEMAND,
-    outFields: ["NAME"]
-  });
-  app.featureLayer3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/0", {
-    infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-    mode: dong.FeatureLayer.MODE_ONDEMAND,
-    outFields: ["NAME"]
-//		visible:""
-  });
-  app.map.addLayer(app.featureLayer1);
-  app.map.addLayer(app.featureLayer2);
-  app.map.addLayer(app.featureLayer3);
-  area(data);
-}
-//行政区划渲染
-function area (data) {
-	console.log(data)
-    var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
-    defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
-	for ( var i = 0 ; i < 3; i ++ ) {
-		 var str = "ADMINCODE";
-		 if ( i == 1 ) {
-			 str = "CITYCODE" ;
-		 }
-		 var renderer = new  dong.UniqueValueRenderer(defaultSymbol,str);
-		 if(i == 0 ) {
-			 for (var prop in data[i]) {
-				  if (data[i].hasOwnProperty(prop)) { 
-					  renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color([221, 160, 221, 0.5])));
-				  } 
-			}
-		 } else {
-			 for (var prop in data[i]) {
-				  if (data[i].hasOwnProperty(prop)) { 
-					  for (var prop1 in data[i][prop]) {
-						  renderer.addValue(prop1, new dong.SimpleFillSymbol().setColor(new dong.Color([221, 160, 221, 0.5])));
-					  }
-				  } 
-			}
-		 }
-		 var str = "featureLayer"+i
-		 app.str = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/"+(2-i), {
-			 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-		        mode: dong.FeatureLayer.MODE_ONDEMAND,
-		        outFields: ["NAME"]
-		      });
-		 if ( i == "0" ) {
-			 app.featureLayer1.setRenderer(renderer);
-		     app.map.addLayer(app.featureLayer1);
-		 } else if ( i == "1" ) {
-			 app.featureLayer2.setRenderer(renderer);
-		     app.map.addLayer(app.featureLayer2);
-		 } else if ( i =="2" ) {
-			 app.featureLayer3.setRenderer(renderer);
-		     app.map.addLayer(app.featureLayer3);
-		 }
-	 }
-//	 app.map.on("loaded",setExtent())
-  app.map.setExtent(new esri.geometry.Extent({
-    "xmin": 8180595.1985,
-    "ymin": 2051330.0834,
-    "xmax": 15038957.856799997,
-    "ymax": 7087544.693899997,
-    "spatialReference": {
-      "wkid": 102100
-    }
-  }));
-}
-//清空地图
-function shuju_clear() {
-  if (app.featureLayer1 != undefined && app.featureLayer1 != null && app.featureLayer1 != "") {
-    app.map.removeLayer(app.featureLayer1);
-  }
-  if (app.featureLayer1 != undefined && app.featureLayer1 != null && app.featureLayer1 != "") {
-    app.map.removeLayer(app.featureLayer1)
-  }
-  if (app.featureLayer2 != undefined && app.featureLayer2 != null && app.featureLayer2 != "") {
-//		app.featureLayer2.clear();
-    app.map.removeLayer(app.featureLayer2)
-  }
-}
-//对地图的定位  
-function setExtent(data) {
-  if (data != "" && data != undefined) {
-    var code = data.adcode.substring(0, 2) + "0000";
-    if (app.featureLayer1 != "" && app.featureLayer1 != null && app.featureLayer1 != undefined) {
-      var ss = app.featureLayer1.graphics;
-      if (data.checked == true) {
-        $.each(app.featureLayer1.graphics, function (i, gra) {
-          if (gra.attributes.ADMINCODE == code) {
-            app.map.setExtent(app.featureLayer1.graphics[i].geometry.getExtent());
-          }
-        })
-      }
-    }
-  }
-}
-//颜色数组
-var sz_corlor = ["#000080", "#6495ED", "#00FFFF", "#CD5C5C", "#FF00FF", "#9370DB", "#8B8682", "#EED5B7", "#FFF0F5", "	#9F79EE", "#A2B5CD", "#FFE1FF", "#B23AEE"];
-/**********************************任务管理进来地图*****************************************************/
+ });
+ //添加服务
+ function addLayer(data) {
+ shuju_clear();
+ app.featureLayer1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/2", {
+ infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+ mode: dong.FeatureLayer.MODE_ONDEMAND,
+ outFields: ["NAME"]
+ });
+ app.featureLayer2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/1", {
+ infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+ mode: dong.FeatureLayer.MODE_ONDEMAND,
+ outFields: ["NAME"]
+ });
+ app.featureLayer3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/0", {
+ infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+ mode: dong.FeatureLayer.MODE_ONDEMAND,
+ outFields: ["NAME"]
+ //		visible:""
+ });
+ app.map.addLayer(app.featureLayer1);
+ app.map.addLayer(app.featureLayer2);
+ app.map.addLayer(app.featureLayer3);
+ area(data);
+ }
+ //行政区划渲染
+ function area (data) {
+ console.log(data)
+ var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
+ defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
+ for ( var i = 0 ; i < 3; i ++ ) {
+ var str = "ADMINCODE";
+ if ( i == 1 ) {
+ str = "CITYCODE" ;
+ }
+ var renderer = new  dong.UniqueValueRenderer(defaultSymbol,str);
+ if(i == 0 ) {
+ for (var prop in data[i]) {
+ if (data[i].hasOwnProperty(prop)) {
+ renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color([221, 160, 221, 0.5])));
+ }
+ }
+ } else {
+ for (var prop in data[i]) {
+ if (data[i].hasOwnProperty(prop)) {
+ for (var prop1 in data[i][prop]) {
+ renderer.addValue(prop1, new dong.SimpleFillSymbol().setColor(new dong.Color([221, 160, 221, 0.5])));
+ }
+ }
+ }
+ }
+ var str = "featureLayer"+i
+ app.str = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/"+(2-i), {
+ infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+ mode: dong.FeatureLayer.MODE_ONDEMAND,
+ outFields: ["NAME"]
+ });
+ if ( i == "0" ) {
+ app.featureLayer1.setRenderer(renderer);
+ app.map.addLayer(app.featureLayer1);
+ } else if ( i == "1" ) {
+ app.featureLayer2.setRenderer(renderer);
+ app.map.addLayer(app.featureLayer2);
+ } else if ( i =="2" ) {
+ app.featureLayer3.setRenderer(renderer);
+ app.map.addLayer(app.featureLayer3);
+ }
+ }
+ //	 app.map.on("loaded",setExtent())
+ app.map.setExtent(new esri.geometry.Extent({
+ "xmin": 8180595.1985,
+ "ymin": 2051330.0834,
+ "xmax": 15038957.856799997,
+ "ymax": 7087544.693899997,
+ "spatialReference": {
+ "wkid": 102100
+ }
+ }));
+ }
+ //清空地图
+ function shuju_clear() {
+ if (app.featureLayer1 != undefined && app.featureLayer1 != null && app.featureLayer1 != "") {
+ app.map.removeLayer(app.featureLayer1);
+ }
+ if (app.featureLayer1 != undefined && app.featureLayer1 != null && app.featureLayer1 != "") {
+ app.map.removeLayer(app.featureLayer1)
+ }
+ if (app.featureLayer2 != undefined && app.featureLayer2 != null && app.featureLayer2 != "") {
+ //		app.featureLayer2.clear();
+ app.map.removeLayer(app.featureLayer2)
+ }
+ }
+ //对地图的定位
+ function setExtent(data) {
+ if (data != "" && data != undefined) {
+ var code = data.adcode.substring(0, 2) + "0000";
+ if (app.featureLayer1 != "" && app.featureLayer1 != null && app.featureLayer1 != undefined) {
+ var ss = app.featureLayer1.graphics;
+ if (data.checked == true) {
+ $.each(app.featureLayer1.graphics, function (i, gra) {
+ if (gra.attributes.ADMINCODE == code) {
+ app.map.setExtent(app.featureLayer1.graphics[i].geometry.getExtent());
+ }
+ })
+ }
+ }
+ }
+ }
+ //颜色数组
+ var sz_corlor = ["#000080", "#6495ED", "#00FFFF", "#CD5C5C", "#FF00FF", "#9370DB", "#8B8682", "#EED5B7", "#FFF0F5", "	#9F79EE", "#A2B5CD", "#FFE1FF", "#B23AEE"];
+ /**********************************任务管理进来地图*****************************************************/
 
-//根据区域在地图上显示
-function app2() {
-  var xmax = 0, xmin = 0, ymax = 0, ymin = 0;
-  if (allData != "" && allData != null && allData != undefined) {
-    var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
-    defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
-    $.each(allData, function (k, item) {
-      var str = sz_corlor[k];
-      if (item.provinceCodes != "" && item.provinceCodes != null && item.provinceCodes != undefined) {
-        if (item.provinceCodes.length > 0) {//市
-          var renderer = new dong.UniqueValueRenderer(defaultSymbol, "ADMINCODE");
-          for (var i = 0; i < item.provinceCodes.length; i++) {
-            for (var prop in item.provinceCodes[i]) {
-              if (item.provinceCodes[i].hasOwnProperty(prop)) {
-                var code = prop + "0000";
-                renderer.addValue(code, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
-              }
-            }
-          }
-          app.fea1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/2", {//添加省的图层
-            infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-            mode: dong.FeatureLayer.MODE_ONDEMAND,
-            outFields: ["NAME"]
-          });
-          app.fea1.setRenderer(renderer);
-          app.map1.addLayer(app.fea1);
-        }
+ //根据区域在地图上显示
+ function app2() {
+ var xmax = 0, xmin = 0, ymax = 0, ymin = 0;
+ if (allData != "" && allData != null && allData != undefined) {
+ var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
+ defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
+ $.each(allData, function (k, item) {
+ var str = sz_corlor[k];
+ if (item.provinceCodes != "" && item.provinceCodes != null && item.provinceCodes != undefined) {
+ if (item.provinceCodes.length > 0) {//市
+ var renderer = new dong.UniqueValueRenderer(defaultSymbol, "ADMINCODE");
+ for (var i = 0; i < item.provinceCodes.length; i++) {
+ for (var prop in item.provinceCodes[i]) {
+ if (item.provinceCodes[i].hasOwnProperty(prop)) {
+ var code = prop + "0000";
+ renderer.addValue(code, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
+ }
+ }
+ }
+ app.fea1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/2", {//添加省的图层
+ infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+ mode: dong.FeatureLayer.MODE_ONDEMAND,
+ outFields: ["NAME"]
+ });
+ app.fea1.setRenderer(renderer);
+ app.map1.addLayer(app.fea1);
+ }
 
-      }
-      if (item.cityCodes != "" && item.cityCodes != null && item.cityCodes != undefined) {//市
-        for (var i = 0; i < item.cityCodes.length; i++) {
-          var renderer = new dong.UniqueValueRenderer(defaultSymbol, "CITYCODE");
-          for (var prop in item.cityCodes[i]) {
-            if (item.cityCodes[i].hasOwnProperty(prop)) {
-              var code = prop + "00";
-              renderer.addValue(code, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
-            }
-          }
-          app.fea2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/1", {//市的图层
-            infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-            mode: dong.FeatureLayer.MODE_ONDEMAND,
-            outFields: ["NAME"]
-          });
-          app.fea2.setRenderer(renderer);
-          app.map1.addLayer(app.fea2);
-        }
-        console.log(app.fea2)
-        console.log(app.fea2.graphics);
-      }
-      if (item.countyCodes != "" && item.countyCodes != null && item.countyCodes != undefined) {//区县
-        var renderer = new dong.UniqueValueRenderer(defaultSymbol, "ADMINCODE");
-        for (var i = 0; i < item.countyCodes.length; i++) {
-          for (var prop in item.countyCodes[i]) {
-            if (item.countyCodes[i].hasOwnProperty(prop)) {
-              renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
-            }
-          }
-          app.fea3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/0", {//区县的图层
-            infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-            mode: dong.FeatureLayer.MODE_ONDEMAND,
-            outFields: ["NAME"]
-          });
-          app.fea3.setRenderer(renderer);
-          app.map1.addLayer(app.fea3);
-        }
-      }
-    })
-  }
-  app.map1.setExtent(new esri.geometry.Extent({
-    "xmin": 8180595.1985,
-    "ymin": 2051330.0834,
-    "xmax": 15038957.856799997,
-    "ymax": 7087544.693899997,
-    "spatialReference": {
-      "wkid": 102100
-    }
-  }));
-}
+ }
+ if (item.cityCodes != "" && item.cityCodes != null && item.cityCodes != undefined) {//市
+ for (var i = 0; i < item.cityCodes.length; i++) {
+ var renderer = new dong.UniqueValueRenderer(defaultSymbol, "CITYCODE");
+ for (var prop in item.cityCodes[i]) {
+ if (item.cityCodes[i].hasOwnProperty(prop)) {
+ var code = prop + "00";
+ renderer.addValue(code, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
+ }
+ }
+ app.fea2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/1", {//市的图层
+ infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+ mode: dong.FeatureLayer.MODE_ONDEMAND,
+ outFields: ["NAME"]
+ });
+ app.fea2.setRenderer(renderer);
+ app.map1.addLayer(app.fea2);
+ }
+ console.log(app.fea2)
+ console.log(app.fea2.graphics);
+ }
+ if (item.countyCodes != "" && item.countyCodes != null && item.countyCodes != undefined) {//区县
+ var renderer = new dong.UniqueValueRenderer(defaultSymbol, "ADMINCODE");
+ for (var i = 0; i < item.countyCodes.length; i++) {
+ for (var prop in item.countyCodes[i]) {
+ if (item.countyCodes[i].hasOwnProperty(prop)) {
+ renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
+ }
+ }
+ app.fea3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/0", {//区县的图层
+ infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+ mode: dong.FeatureLayer.MODE_ONDEMAND,
+ outFields: ["NAME"]
+ });
+ app.fea3.setRenderer(renderer);
+ app.map1.addLayer(app.fea3);
+ }
+ }
+ })
+ }
+ app.map1.setExtent(new esri.geometry.Extent({
+ "xmin": 8180595.1985,
+ "ymin": 2051330.0834,
+ "xmax": 15038957.856799997,
+ "ymax": 7087544.693899997,
+ "spatialReference": {
+ "wkid": 102100
+ }
+ }));
+ }
 
 
 var timeline;
