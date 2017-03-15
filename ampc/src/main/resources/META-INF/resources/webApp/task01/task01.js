@@ -478,6 +478,10 @@ function deleteFun(type) {
 }
 
 
+$('#createRwModal').on('show.bs.modal', function (event) {
+  $('.rwDateTip').addClass('disNone');
+})
+
 /*模态框打开处理*/
 $('#createModal').on('show.bs.modal', function (event) {
   if(!event.relatedTarget)return;
@@ -624,14 +628,17 @@ function returnLeft(type){
 function selectType(type){
   var startDate;
   var endDate;
+  var end;
   if(type == 'y'){
     startDate = moment().subtract(2, 'w').format('YYYY-MM-DD');
     endDate = moment().add(1,'y').format('YYYY-MM-DD');
+    end = moment().add(2,'d').format('YYYY-MM-DD');
     rwSelectType = '预评估';
     $('.rwTitle').html('创建预评估任务')
   }else if(type == 'h'){
     startDate = '2007-01-01';
     endDate = moment().subtract(2, 'd').format('YYYY-MM-DD');
+    end = moment().subtract(2, 'd').format('YYYY-MM-DD');
     rwSelectType = '后评估';
     $('.rwTitle').html('创建后评估任务')
   }
@@ -643,7 +650,7 @@ function selectType(type){
   $('.return_S_rw').css('display','inline-block');
   rwStartDate = moment().subtract(2,'w').format('YYYY-MM-DD');
   rwEndDate = moment().subtract(2,'d').format('YYYY-MM-DD');
-  initRwDate(startDate,endDate);
+  initRwDate(startDate,endDate,end);
 }
 
 /*创建情景选择类型*/
@@ -839,7 +846,7 @@ function createRw(){
 
   if(rwSelectType == '预评估'){
     if(rwEndDate < moment().format('YYYY-MM-DD')){
-      console.log('预评估任务结束日期不应小于当前日期');
+      $('.rwDateTip').removeClass('disNone');
       return;
     }
   }
@@ -870,7 +877,7 @@ function createRw(){
 }
 
 /*初始化日期插件*/
-function initRwDate(s,e){
+function initRwDate(s,e,end){
   $('#rwDate').daterangepicker({
     singleDatePicker: false,  //显示单个日历
     timePicker:false,  //允许选择时间
@@ -892,7 +899,7 @@ function initRwDate(s,e){
       firstDay: 1
     },
     "startDate": moment().subtract(2,'w'),
-    "endDate": moment().subtract(2,'d'),
+    "endDate": end,
     "opens": "right"
   },function(start, end, label) {
     rwStartDate = start.format('YYYY-MM-DD');
