@@ -13,7 +13,7 @@ $(function(){
 	  var option = {
 			  	title: {
 			  		text :'PM2.5',
-			  		x:'center',
+			  		x:'left',
 			  		y:'top'
 			  	},
 	            tooltip : {
@@ -25,7 +25,8 @@ $(function(){
 	            legend: {
 	            	x:'right',
 	            	y:'top',
-	                //data:['基准','长三角管控'],
+	                data:['基准','长三角管控'],
+	                borderWidth:1,
 	            },
 	            grid: {
 	                left: '30%',
@@ -39,27 +40,30 @@ $(function(){
 	                	name : '地面',
 	                	nameLocation: 'start',
 	                	nameGap : 20,
-	                    type : 'category',
-	                    data : ['50', '35', '75', '80', '100', '200', '300', '222', '500', '400']
+	                	axisTick:{inside:true}
+	                    //type : 'category',  类目轴 要对应放数据
+	                    //data : ['50', '35', '75', '80', '100', '200', '300', '222', '500', '400']
 	                },
 	                {
 	                	type: 'category',
 	                	xAxisIndex: 1,
-	                	interval:10
+	                	//interval:10
 	                	//data : ['50', '35', '75', '80', '100', '200', '300', '222', '500', '400']
 	                }
 	            ],
 	            yAxis : [
 	                {
-	                         type: 'category',
+	                         //type: 'category',
 	                         name: '高度（米）',
 	                         position: 'left',
 	                         //max:500,
 	                         data:['0','50','100','200','300','400','500','700','1000','1500','2000','3000'],
-	                        
+	                         //刻度朝内侧
+	                         axisTick:{inside:true},
+	               
 	                },
-	                
 	                {
+	                	axisTick:{inside:true},
 	                	yAxisIndex: 1
 	                }
 	            ],
@@ -70,7 +74,7 @@ $(function(){
 	                    symbolSize: 8,
 	                    hoverAnimation: false,
 	                    yAxis: 1, 
-	                    data:[100, 52, 200, 198, 266, 500, 752,333,452,910]
+	                    data:[100, 52, 200, 198, 266, 500, 752,333,452,666]
 	                },
 	                {
 	                    name:'长三角管控',
@@ -79,7 +83,7 @@ $(function(){
 	                    hoverAnimation: false,
 	                    yAxis: 1, 
 	                    //itemStyle:{normal:{color:'#d14a63'}},
-	                    data:[11, 54, 20, 198, 66, 203, 157,233,33,444]
+	                    data:[11, 54, 20, 198, 66, 203, 157,233,555,665]
 	                },
 	           
 	            ]
