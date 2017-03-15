@@ -183,7 +183,7 @@ public class AreaAndTimeController {
 		ClientUtil.SetCharsetAndHeader(request, response);
 		 Map<String,Object> data=(Map)requestDate.get("data");
 		Long beforeTimeId=Long.parseLong(data.get("beforeTimeId").toString());//修改时段前一个的时段Id
-		
+		Long afterTimeId=Long.parseLong(data.get("afterTimeId").toString());//修改时段后一个的时段Id
 		Long userId=Long.parseLong(data.get("userId").toString());//用户id
 		String teDate=data.get("updateDate").toString();//时段的修改时间
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH");
@@ -203,8 +203,6 @@ public class AreaAndTimeController {
 		int beforetTimestatus=tTimeMapper.updateByPrimaryKeySelective(updatet_beforetTime);
 		//判断修改前一个时段的结束时间是否成功，成功执行修改后一个时段的开始时间，失败返回失败信息
 		if(beforetTimestatus!=0){
-			if(data.get("afterTimeId")!=null&&data.get("afterTimeId")!=""){
-			Long afterTimeId=Long.parseLong(data.get("afterTimeId").toString());//修改时段后一个的时段Id
 			//开始修改后一个时段的开始时间
 			TTime updatet_afterTimeId = new TTime();
 			updatet_afterTimeId.setTimeId(afterTimeId);
@@ -216,13 +214,9 @@ public class AreaAndTimeController {
 			}else{
 				return AmpcResult.build(1, "update_TIME error");
 			}
-			}else{
-				return AmpcResult.build(0, "update_TIME success");
-			}
 		}else{
 		return AmpcResult.build(1, "update_TIME error");
 		}
-		
 	}
 	
 	/**
