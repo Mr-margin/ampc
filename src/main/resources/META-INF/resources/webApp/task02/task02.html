@@ -68,31 +68,48 @@
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="editTimeLabel">时段编辑</h4>
+          <h4 class="modal-title" id="editTimeLabel">时段预案操作</h4>
         </div>
         <div class="modal-body">
-          <div class="editTimeBtnMsg text-center">
-            <div class="col-md-6">
-              <button class="btn btn-primary btn-lg mt20">添加新预案</button>
-            </div>
-            <div class="col-md-6">
-              <button class="btn btn-primary btn-lg mt20">复制已有预案</button>
-            </div>
-            <div class="col-md-6">
-              <button class="btn btn-primary btn-lg mt20">编辑预案</button>
-            </div>
-            <div class="col-md-6">
-              <button class="btn btn-primary btn-lg mt20">删除预案</button>
-            </div>
-            <div class="col-md-12">
-              <button class="btn btn-primary btn-lg mt20">删除时段</button>
-            </div>
-          </div>
+
+         <div class="selectOperate">
+           <div class="btnSelect text-center">
+             <div class="col-md-12">
+               <button class="btn btn-primary btn-lg mt20" onclick="selectOperate('sTime')">时段操作</button>
+             </div>
+             <div class="col-md-12">
+               <!--<button class="btn btn-primary btn-lg mt20" onclick="selectOperate('sPlan')" data-dismiss="modal">预案操作</button>-->
+               <button class="btn btn-primary btn-lg mt20 yacz" data-dismiss="modal" onclick="openAddYA()">预案操作</button>
+             </div>
+           </div>
+           <div class="sTime">
+             <div class="sTimeOpType text-center">
+               <div class="col-md-12">
+                 <button class="btn btn-primary btn-lg mt20" data-dismiss="modal">删除时段</button>
+               </div>
+               <div class="col-md-12">
+                 <button class="btn btn-primary btn-lg mt20" data-dismiss="modal">修改时段时间</button>
+               </div>
+             </div>
+           </div>
+           <div class="sPlan">
+             <div class="sPlanOpType text-center">
+               <div class="col-md-12">
+                 <button class="btn btn-primary btn-lg mt20" data-dismiss="modal">添加新预案</button>
+               </div>
+               <div class="col-md-12">
+                 <button class="btn btn-primary btn-lg mt20" data-dismiss="modal">复制已有预案</button>
+               </div>
+             </div>
+           </div>
+         </div>
+
+
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-        </div>
+<!--         <div class="modal-footer"> -->
+<!--           <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button> -->
+<!--           <button type="button" class="btn btn-default" data-dismiss="modal">取消</button> -->
+<!--         </div> -->
       </div>
     </div>
   </div>
