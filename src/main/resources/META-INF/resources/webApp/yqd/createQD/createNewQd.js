@@ -166,6 +166,10 @@ function selectQGQDyear(){
 
 initialize();
 function initialize(){
+  /**
+   * 设置导航条菜单
+   */
+  $("#crumb").html('<a href="#/yqd" style="padding-left: 15px;padding-right: 15px;">源清单</a>>><a href="#/newQd" style="padding-left: 15px;padding-right: 15px;">创建清单</a>');
   getAllYear();
   initQgqdListTable();
   initBdqdListTable();

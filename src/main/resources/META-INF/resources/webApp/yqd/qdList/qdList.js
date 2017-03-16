@@ -3,8 +3,14 @@
  */
 
 var delQDMap = {};
-
-initQdListTable();
+initialize();
+function initialize(){
+  /**
+   * 设置导航条菜单
+   */
+  $("#crumb").html('<a href="#/yqd" style="padding-left: 15px;padding-right: 15px;">源清单</a>');
+  initQdListTable();
+}
 function initQdListTable() {
   $('#qdList').bootstrapTable({
     method: 'GET',
