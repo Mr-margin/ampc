@@ -9,8 +9,8 @@ vipspa.start({
     	controller: ''
     },
     '/yqd':{       //源清单
-    	templateUrl: 'a.html',
-    	controller: ''
+    	templateUrl: 'webApp/yqd/qdList/qdList.html',
+    	controller: 'webApp/yqd/qdList/qdList.js'
     },
     
     
@@ -71,7 +71,11 @@ vipspa.start({
     	controller: ''
     },
     
-    
+
+    '/userSZ':{//用户设置
+      templateUrl: 'a.html',
+      controller: ''
+    },
     '/sjkj': {      //数据空间
     	templateUrl: 'a.html',
     	controller: ''
@@ -142,7 +146,7 @@ function handle_y(y) {
 }
 
 var llqHeight = document.documentElement.clientHeight;
-var cssStyle = '#sidebar .panel-body{overflow:auto;border-top:0;border-bottom:0;padding:0;height: '+ (llqHeight-400) +'px;} ';
+var cssStyle = '#sidebar .panel-body{overflow:auto;border-top:0;border-bottom:0;padding:0;height: '+ (llqHeight-441) +'px;} ';
 $('head').append($('<style></style>').html(cssStyle));
 $("#Route_conter").css("height",llqHeight-150+"px");
 
