@@ -1375,7 +1375,7 @@ function initDate() {
  app.map.addLayer(app.featureLayer3);
  }
  }
- //	 app.map.on("loaded",setExtent())
+ // app.map.on("loaded",setExtent())
  app.map.setExtent(new esri.geometry.Extent({
  "xmin": 8180595.1985,
  "ymin": 2051330.0834,
@@ -1391,12 +1391,12 @@ function initDate() {
  if (app.featureLayer1 != undefined && app.featureLayer1 != null && app.featureLayer1 != "") {
  app.map.removeLayer(app.featureLayer1);
  }
- if (app.featureLayer1 != undefined && app.featureLayer1 != null && app.featureLayer1 != "") {
- app.map.removeLayer(app.featureLayer1)
- }
- if (app.featureLayer2 != undefined && app.featureLayer2 != null && app.featureLayer2 != "") {
- //		app.featureLayer2.clear();
+ if (app.featureLayer2 != undefined && app.featureLayer1 != null && app.featureLayer1 != "") {
  app.map.removeLayer(app.featureLayer2)
+ }
+ if (app.featureLayer3 != undefined && app.featureLayer2 != null && app.featureLayer2 != "") {
+ //		app.featureLayer2.clear();
+ app.map.removeLayer(app.featureLayer3)
  }
  }
  //对地图的定位
