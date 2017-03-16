@@ -14,7 +14,8 @@ $(function(){
 	var myChart12 = echarts.init(document.getElementById('mainDiv12'));
 	var myChart13 = echarts.init(document.getElementById('mainDiv13'));
 	var myChart14 = echarts.init(document.getElementById('mainDiv14'));
-    //指定图表的配置项和数据	
+   
+	//指定图表的配置项和数据	
     var option = {  
             //标题，每个图表最多仅有一个标题控件，每个标题控件可设主副标题  
             title: {  
@@ -48,9 +49,11 @@ $(function(){
                 data: ['观测数据','1073基数','1068杭州管控','1069长三角管控']  
             },
             grid: {
-                left: '30px',
-                right: '30px',
-                bottom: '70px',
+            	//直角坐标系网格
+            	show: true,
+                left: '3%',
+                right: '3%',
+                bottom: '20%',
             },
             dataZoom:[
                       {
