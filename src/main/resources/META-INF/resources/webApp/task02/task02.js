@@ -959,8 +959,8 @@ function setShowCode(data) {
   } else {
     for (var ii = 0; ii < cityNum; ii++) {
       var adcode1 = Object.keys(data.cityCodes[ii])[0];
-      if (!showCode[1][adcode1.substr(0, 2)])showCode[1][adcode1.substr(0, 2)] = {};
-      $.extend(showCode[1][adcode1.substr(0, 2)], data.cityCodes[ii]);
+      if (!showCode[1][adcode1.substr(0, 2)+'0000'])showCode[1][adcode1.substr(0, 2)+'0000'] = {};
+      $.extend(showCode[1][adcode1.substr(0, 2)+'0000'], data.cityCodes[ii]);
     }
   }
   if (countyNum == 0) {
@@ -968,8 +968,8 @@ function setShowCode(data) {
   } else {
     for (var iii = 0; iii < countyNum; iii++) {
       var adcode2 = Object.keys(data.countyCodes[iii])[0];
-      if (!showCode[2][adcode2.substr(0, 4)])showCode[2][adcode2.substr(0, 4)] = {};
-      $.extend(showCode[2][adcode2.substr(0, 4)], data.countyCodes[iii]);
+      if (!showCode[2][adcode2.substr(0, 4)+'00'])showCode[2][adcode2.substr(0, 4)+'00'] = {};
+      $.extend(showCode[2][adcode2.substr(0, 4)+'00'], data.countyCodes[iii]);
     }
   }
 
