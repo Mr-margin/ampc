@@ -769,11 +769,12 @@ function create(){
 	paramsName.measureId = m_mid;
 	paramsName.planId = m_planId;
 	paramsName.planMeasureId = m_planMeasureId;
+	paramsName.measureContent = JSON.stringify(sc_v1);
 	
 	ajaxPost('/measure/addOrUpdate_measure',paramsName).success(function(res){
-		
+		console.log(JSON.stringify(sc_v1));
 	});
-	console.log(JSON.stringify(sc_v1));
+	
 //	$("#zicuoshi_close").click();
 }
 
