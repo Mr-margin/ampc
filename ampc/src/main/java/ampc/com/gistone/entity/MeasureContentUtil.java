@@ -1,5 +1,7 @@
 package ampc.com.gistone.entity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +14,16 @@ import java.util.Map;
 public class MeasureContentUtil {
 	private String bigIndex;
 	private String smallIndex;
-	private List<Map> filters;
-	private List<String> summary;
-	private List<Map> table;
+	private List<Map> filters=new ArrayList<Map>();
+	private Map summary=new HashMap();
+	private List<Map> table=new ArrayList<Map>();
+	private List<Map> table1=new ArrayList<Map>();
+	public List<Map> getTable1() {
+		return table1;
+	}
+	public void setTable1(List<Map> table1) {
+		this.table1 = table1;
+	}
 	public String getBigIndex() {
 		return bigIndex;
 	}
@@ -33,10 +42,10 @@ public class MeasureContentUtil {
 	public void setFilters(List<Map> filters) {
 		this.filters = filters;
 	}
-	public List<String> getSummary() {
+	public Map getSummary() {
 		return summary;
 	}
-	public void setSummary(List<String> summary) {
+	public void setSummary(Map summary) {
 		this.summary = summary;
 	}
 	public List<Map> getTable() {

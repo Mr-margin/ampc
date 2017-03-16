@@ -1,6 +1,9 @@
 package ampc.com.gistone.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.sql.Clob;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,6 +18,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,11 +39,14 @@ import ampc.com.gistone.database.model.TPlanMeasure;
 import ampc.com.gistone.database.model.TQueryExcel;
 import ampc.com.gistone.database.model.TSectorExcel;
 import ampc.com.gistone.database.model.TTime;
+import ampc.com.gistone.entity.JPResult;
+import ampc.com.gistone.entity.MeasureContentUtil;
 import ampc.com.gistone.entity.MeasureUtil;
 import ampc.com.gistone.entity.SMUtil;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.DateUtil;
+import ampc.com.gistone.util.JsonUtil;
 
 /**
  * 预案措施控制类
@@ -608,7 +615,8 @@ public class PlanAndMeasureController {
 			if(!data.get("planMeasureId").equals("null")){
 				planMeasureId = Long.parseLong(data.get("planMeasureId").toString());
 			}
-			//预案措施中的子措施Json串
+			//预案措施中的子措施Json串、
+			System.out.println(data.get("measureContent").toString());
 			String measureContent=data.get("measureContent").toString();
 			TPlanMeasure tPlanMeasure=new TPlanMeasure();
 			tPlanMeasure.setMeasureId(measureId);
@@ -684,6 +692,107 @@ public class PlanAndMeasureController {
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
+	
+	
+	
+	/**
+	 * TODO  减排计算
+	 * 措施汇总中数据的减排计算
+	 * @author WangShanxi
+	 */
+	@RequestMapping("/jp/pmjp")
+	public AmpcResult pmjp(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
+		//添加异常捕捉
+		try{
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//预案id
+			String planMeasureIds=data.get("planMeasureIds").toString();
+			//将得到的数据拆分 放入集合中
+			String[] idss=planMeasureIds.split(",");
+			List<Long> planMeasureIdss=new ArrayList<Long>();
+			for(int i=0;i<idss.length;i++){
+				planMeasureIdss.add(Long.parseLong(idss[i]));
+			}
+			//根据拆分后得到的id查询所有的预案措施对象
+			List<Map> pmList=tPlanMeasureMapper.getPmByIds(planMeasureIdss);
+			//创建一个减排的结果集合
+			List<JPResult> jpList=new ArrayList<JPResult>();
+			//循环每一个预案措施对象 拼接想要的数据放入JPResult帮助类集合中
+			for (Map pm : pmList) {
+				//创建JPResult帮助类;
+				JPResult result=new JPResult();
+				//将子措施转换成JsonObject对象进行解析
+				Clob clob=(Clob)pm.get("measureContent");
+				JSONObject jsonobject = JSONObject.fromObject(clob.getSubString(1, (int) clob.length()));
+				//设置内部值的转换类型
+				Map<String, Class> cmap = new HashMap<String, Class>(); 
+				cmap.put("filters", HashMap.class);
+				cmap.put("summary", HashMap.class); 
+				cmap.put("table", HashMap.class);
+				cmap.put("table1", HashMap.class);
+				cmap.put("oopp", HashMap.class);
+				//将json对象转换成Java对象
+				MeasureContentUtil mcu= (MeasureContentUtil)JSONObject.toBean(jsonobject,MeasureContentUtil.class,cmap);
+				result.setBigIndex(mcu.getBigIndex());
+				result.setSmallIndex(mcu.getSmallIndex());
+				result.setGroupName(pm.get("planMeasureId").toString()+pm.get("planName"));
+				System.out.println(pm.get("planStartTime").toString());
+				System.out.println(pm.get("planEndTime").toString());
+//				DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00:00.S");
+//				LocalDateTime start=LocalDateTime.parse(pm.get("planStartTime").toString(),dtf);
+//				DateTimeFormatter dtf1=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:59:59.S");
+//				LocalDateTime end=LocalDateTime.parse(pm.get("planEndTime").toString(),dtf1);
+				result.setStart(pm.get("planStartTime").toString().substring(0,pm.get("planStartTime").toString().indexOf(".")));
+				result.setEnd(pm.get("planEndTime").toString().substring(0,pm.get("planEndTime").toString().indexOf(".")));
+				List<Map> lms=mcu.getFilters();
+				List<Map> table1=mcu.getTable1();
+				List<Object> opList=new ArrayList<Object>();
+				for(int i=0;i<lms.size();i++){
+					Map opresult=new HashMap();
+					Map t1map=table1.get(i);
+					Map opmap=(Map)t1map.get("oopp");
+					opresult.put("filter", lms.get(i));
+					opresult.put("l4sFilter", pm.get("l4sFilter"));
+					opresult.put("opLevel",pm.get("level"));
+					opresult.put("opName", pm.get("measureName"));
+					opresult.put("opType", pm.get("op"));
+					for(Object obj : opmap.keySet()){
+						opresult.put(obj, Double.parseDouble(opmap.get(obj).toString()));
+					}
+					opList.add(opresult);
+				}
+				result.setOps(opList);
+				jpList.add(result);
+			}
+			JSONArray json = JSONArray.fromObject(jpList);//将java对象转换为json对象
+			String str = json.toString();
+			Map<String,String> remap=new HashMap<String,String>();
+			remap.put("data", str);
+			System.out.println(str);
+			String getResult=ClientUtil.doPost("http://192.168.1.53:8089/calc/submit/subSector",remap);
+			
+			return AmpcResult.ok(getResult);
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000, "参数错误");
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * 取值范围验证方法

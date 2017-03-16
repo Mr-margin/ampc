@@ -17,7 +17,7 @@ public class JsonUtil {
 
 	private static ObjectMapper MAPPER = new ObjectMapper();
 	/**
-	 * 讲Clob转换成Object对象
+	 * 将Clob转换成Object对象
 	 * @param clob
 	 * @return
 	 * @throws SQLException 
@@ -25,7 +25,14 @@ public class JsonUtil {
 	public static Object clobToObject(Clob clob) throws Exception{
 		String string=clob.getSubString(1, (int) clob.length());
 		return MAPPER.readValue(string, Object.class);
-		
-		
+	}
+	/**
+	 * 将String转换成指定对象
+	 * @param clob
+	 * @return
+	 * @throws SQLException 
+	 */
+	public static Object strToClass(String str,Class clazz) throws Exception{
+		return MAPPER.readValue(str, clazz);
 	}
 }
