@@ -137,6 +137,7 @@ var xishu_temp = [];//需要填写的内容
 var xishu_temp_ch = [];//需要填写的内容中文
 //var show_lenght =[];//要显示的列长度
 var measureame_temp = "";//措施名称
+var measureame_temp_en = "";//措施名称英文
 var query = [];//返回的条件内容
 
 var m_mid,m_planId,m_sectorName,m_planMeasureId;
@@ -346,9 +347,9 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 					});
 					$.each(res.data.measureList, function(i, col) {
 						columns.push({field: col.nameen, title: col.namech, align: 'center'});
-						zz[col.nameen] = "";
-						pp[col.nameen] = "";
-						ss[col.nameen] = "";
+						zz["_"+col.nameen] = "";
+						pp["_"+col.nameen] = "";
+						ss["_"+col.nameen] = "";
 					});
 					b_data.push(zz);
 					b_data.push(pp);
@@ -684,13 +685,13 @@ function xishu_save(){
 //		console.log(JSON.stringify(res));
 		if(res.status == 'success'){
 			
-			var ttr = {"f1": measureame_temp, "f2" : res.data.count};
+			var ttr = {"f1": measureame_temp, "f2" : res.data.count, "f3" : ""};
 			
 			$.each(sc_val.summary.sum, function(i, vol) {
 				ttr[vol] = Math.round(res.data[vol]);
 			});
 			$.each(xishu_temp, function(i, vol) {
-				ttr[vol] = $("#"+vol).val();
+				ttr["_"+vol] = $("#"+vol).val();
 			});
 			
 			var showjieguo = {};
