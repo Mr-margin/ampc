@@ -1561,8 +1561,81 @@ function showTimeline(data) {
   options.data = data;
   timeline = $('#timeline').timeline(options);
 }
-
-
+//根据区域在地图上显示
+function app2() {
+	var xmax = 0,xmin = 0,ymax = 0,ymin = 0;
+	if ( allData != "" && allData != null && allData != undefined ) {
+		var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
+		defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
+		$.each(allData,function(k,item){
+			var str = sz_corlor[k];
+			if(item.provinceCodes != "" && item.provinceCodes != null && item.provinceCodes != undefined ) {
+				if(item.provinceCodes.length>0 ) {//市
+					var renderer = new  dong.UniqueValueRenderer(defaultSymbol,"ADMINCODE");
+					for ( var i = 0 ; i< item.provinceCodes.length; i++ ) {//省
+						 for (var prop in item.provinceCodes[i]) {
+							  if (item.provinceCodes[i].hasOwnProperty(prop)) { 
+								  renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
+							  } 
+						}
+					}
+					 app.fea1 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/2", {//添加省的图层
+						 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+					        mode: dong.FeatureLayer.MODE_ONDEMAND,
+					        outFields: ["NAME"]
+					      });
+					 app.fea1.setRenderer(renderer);
+					 app.map1.addLayer(app.fea1);
+				} 
+			}
+			if ( item.cityCodes != "" && item.cityCodes != null && item.cityCodes != undefined ) {//市
+				for(var i = 0 ; i < item.cityCodes.length; i++ ) {
+					var renderer = new  dong.UniqueValueRenderer(defaultSymbol,"CITYCODE");
+					 for (var prop in item.cityCodes[i]) {
+						  if (item.cityCodes[i].hasOwnProperty(prop)) { 
+							  renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
+						  } 
+					}
+					 app.fea2 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/1", {//市的图层
+						 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+					        mode: dong.FeatureLayer.MODE_ONDEMAND,
+					        outFields: ["NAME"]
+					      });
+					 app.fea2.setRenderer(renderer);
+					 app.map1.addLayer(app.fea2);
+				}
+				console.log(app.fea2)
+				console.log(app.fea2.graphics);
+			}
+			if (item.countyCodes !="" && item.countyCodes != null && item.countyCodes != undefined ) {//区县
+				var renderer = new  dong.UniqueValueRenderer(defaultSymbol,"ADMINCODE");
+				for ( var i = 0 ; i < item.countyCodes.length; i ++ ) {
+					for (var prop in item.countyCodes[i]) {
+						  if (item.countyCodes[i].hasOwnProperty(prop)) { 
+							  renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
+						  } 
+					}
+					 app.fea3 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/0", {//区县的图层
+						 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+					        mode: dong.FeatureLayer.MODE_ONDEMAND,
+					        outFields: ["NAME"]
+					      });
+					 app.fea3.setRenderer(renderer);
+					 app.map1.addLayer(app.fea3);
+				} 
+			}
+		})
+	} 
+	app.map1.setExtent(new esri.geometry.Extent({  
+		"xmin": 8180595.1985,  
+		"ymin": 2051330.0834,  
+		"xmax": 15038957.856799997,  
+		"ymax": 7087544.693899997,  
+		"spatialReference": {  
+		    "wkid": 102100  
+		}  
+	})); 
+}
 /*移除显示，刷新*/
 function destroyTimeline() {
 //  timeline._destroy();
