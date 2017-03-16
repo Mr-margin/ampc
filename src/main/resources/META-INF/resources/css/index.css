@@ -359,7 +359,7 @@
 }
 
 /*清单样式 start*/
-.qdListBox{
+.qdListBox,.qdCreate{
   background-color: #fff;
 }
 /*清单样式 end*/
