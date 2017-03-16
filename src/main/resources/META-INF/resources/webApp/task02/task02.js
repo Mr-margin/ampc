@@ -1306,30 +1306,38 @@ function initDate() {
  app.gLyr = new dong.GraphicsLayer({"id": "gLyr"});
  app.map.addLayer(app.gLyr);
  /******************************************/
-
+ app.map.setExtent(new esri.geometry.Extent({  
+		"xmin": 8180595.1985,  
+		"ymin": 2051330.0834,  
+		"xmax": 15038957.856799997,  
+		"ymax": 7087544.693899997,  
+		"spatialReference": {  
+		    "wkid": 102100  
+		}  
+	}));
  });
  //添加服务
  function addLayer(data) {
  shuju_clear();
  app.featureLayer1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/2", {
- infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
- mode: dong.FeatureLayer.MODE_ONDEMAND,
- outFields: ["NAME"]
- });
- app.featureLayer2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/1", {
- infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
- mode: dong.FeatureLayer.MODE_ONDEMAND,
- outFields: ["NAME"]
- });
- app.featureLayer3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/0", {
- infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
- mode: dong.FeatureLayer.MODE_ONDEMAND,
- outFields: ["NAME"]
- //		visible:""
- });
- app.map.addLayer(app.featureLayer1);
- app.map.addLayer(app.featureLayer2);
- app.map.addLayer(app.featureLayer3);
+	 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+	 mode: dong.FeatureLayer.MODE_ONDEMAND,
+	 outFields: ["NAME"]
+	 });
+	 app.featureLayer2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/1", {
+	 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+	 mode: dong.FeatureLayer.MODE_ONDEMAND,
+	 outFields: ["NAME"]
+	 });
+	 app.featureLayer3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/0", {
+	 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+	 mode: dong.FeatureLayer.MODE_ONDEMAND,
+	 outFields: ["NAME"]
+	 });
+	 app.map.addLayer(app.featureLayer1);
+	 app.map.addLayer(app.featureLayer2);
+	 app.map.addLayer(app.featureLayer3);
+ 
  area(data);
  }
  //行政区划渲染
@@ -1358,12 +1366,12 @@ function initDate() {
  }
  }
  }
- var str = "featureLayer"+i
- app.str = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/"+(2-i), {
- infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
- mode: dong.FeatureLayer.MODE_ONDEMAND,
- outFields: ["NAME"]
- });
+// var str = "featureLayer"+i
+// app.str = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/"+(2-i), {
+// infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+// mode: dong.FeatureLayer.MODE_ONDEMAND,
+// outFields: ["NAME"]
+// });
  if ( i == "0" ) {
  app.featureLayer1.setRenderer(renderer);
  app.map.addLayer(app.featureLayer1);
@@ -1375,28 +1383,22 @@ function initDate() {
  app.map.addLayer(app.featureLayer3);
  }
  }
- // app.map.on("loaded",setExtent())
- app.map.setExtent(new esri.geometry.Extent({
- "xmin": 8180595.1985,
- "ymin": 2051330.0834,
- "xmax": 15038957.856799997,
- "ymax": 7087544.693899997,
- "spatialReference": {
- "wkid": 102100
- }
- }));
  }
  //清空地图
  function shuju_clear() {
+	 
  if (app.featureLayer1 != undefined && app.featureLayer1 != null && app.featureLayer1 != "") {
- app.map.removeLayer(app.featureLayer1);
+// app.map.removeLayer(app.featureLayer1);
+ app.featureLayer1.clear();
  }
  if (app.featureLayer2 != undefined && app.featureLayer1 != null && app.featureLayer1 != "") {
- app.map.removeLayer(app.featureLayer2)
+// app.map.removeLayer(app.featureLayer2)
+ app.featureLayer2.clear();
  }
  if (app.featureLayer3 != undefined && app.featureLayer2 != null && app.featureLayer2 != "") {
  //		app.featureLayer2.clear();
- app.map.removeLayer(app.featureLayer3)
+// app.map.removeLayer(app.featureLayer3)
+ app.featureLayer3.clear();
  }
  }
  //对地图的定位
@@ -1418,87 +1420,6 @@ function initDate() {
  //颜色数组
  var sz_corlor = ["#000080", "#6495ED", "#00FFFF", "#CD5C5C", "#FF00FF", "#9370DB", "#8B8682", "#EED5B7", "#FFF0F5", "	#9F79EE", "#A2B5CD", "#FFE1FF", "#B23AEE"];
  /**********************************任务管理进来地图*****************************************************/
-
- //根据区域在地图上显示
- function app2() {
- var xmax = 0, xmin = 0, ymax = 0, ymin = 0;
- if (allData != "" && allData != null && allData != undefined) {
- var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
- defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
- $.each(allData, function (k, item) {
- var str = sz_corlor[k];
- if (item.provinceCodes != "" && item.provinceCodes != null && item.provinceCodes != undefined) {
- if (item.provinceCodes.length > 0) {//市
- var renderer = new dong.UniqueValueRenderer(defaultSymbol, "ADMINCODE");
- for (var i = 0; i < item.provinceCodes.length; i++) {
- for (var prop in item.provinceCodes[i]) {
- if (item.provinceCodes[i].hasOwnProperty(prop)) {
- var code = prop + "0000";
- renderer.addValue(code, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
- }
- }
- }
- app.fea1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/2", {//添加省的图层
- infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
- mode: dong.FeatureLayer.MODE_ONDEMAND,
- outFields: ["NAME"]
- });
- app.fea1.setRenderer(renderer);
- app.map1.addLayer(app.fea1);
- }
-
- }
- if (item.cityCodes != "" && item.cityCodes != null && item.cityCodes != undefined) {//市
- for (var i = 0; i < item.cityCodes.length; i++) {
- var renderer = new dong.UniqueValueRenderer(defaultSymbol, "CITYCODE");
- for (var prop in item.cityCodes[i]) {
- if (item.cityCodes[i].hasOwnProperty(prop)) {
- var code = prop + "00";
- renderer.addValue(code, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
- }
- }
- app.fea2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/1", {//市的图层
- infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
- mode: dong.FeatureLayer.MODE_ONDEMAND,
- outFields: ["NAME"]
- });
- app.fea2.setRenderer(renderer);
- app.map1.addLayer(app.fea2);
- }
- console.log(app.fea2)
- console.log(app.fea2.graphics);
- }
- if (item.countyCodes != "" && item.countyCodes != null && item.countyCodes != undefined) {//区县
- var renderer = new dong.UniqueValueRenderer(defaultSymbol, "ADMINCODE");
- for (var i = 0; i < item.countyCodes.length; i++) {
- for (var prop in item.countyCodes[i]) {
- if (item.countyCodes[i].hasOwnProperty(prop)) {
- renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
- }
- }
- app.fea3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/0", {//区县的图层
- infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
- mode: dong.FeatureLayer.MODE_ONDEMAND,
- outFields: ["NAME"]
- });
- app.fea3.setRenderer(renderer);
- app.map1.addLayer(app.fea3);
- }
- }
- })
- }
- app.map1.setExtent(new esri.geometry.Extent({
- "xmin": 8180595.1985,
- "ymin": 2051330.0834,
- "xmax": 15038957.856799997,
- "ymax": 7087544.693899997,
- "spatialReference": {
- "wkid": 102100
- }
- }));
- }
-
-
 var timeline;
 
 $().ready(function () {
@@ -1564,11 +1485,30 @@ function showTimeline(data) {
 //根据区域在地图上显示
 function app2() {
 	var xmax = 0,xmin = 0,ymax = 0,ymin = 0;
+	if ( app.map1 == "" || app.map1 == null || app.map1 == undefined ) {
+		return;
+	}
 	if ( allData != "" && allData != null && allData != undefined ) {
 		var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
 		defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
 		$.each(allData,function(k,item){
 			var str = sz_corlor[k];
+			app.fea1 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/2", {//添加省的图层
+				 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+			        mode: dong.FeatureLayer.MODE_ONDEMAND,
+			        outFields: ["NAME"]
+			      });
+			app.fea2 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/1", {//市的图层
+				 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+			        mode: dong.FeatureLayer.MODE_ONDEMAND,
+			        outFields: ["NAME"]
+			      });
+			 app.fea3 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/0", {//区县的图层
+				 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+			        mode: dong.FeatureLayer.MODE_ONDEMAND,
+			        outFields: ["NAME"]
+			      });
+			
 			if(item.provinceCodes != "" && item.provinceCodes != null && item.provinceCodes != undefined ) {
 				if(item.provinceCodes.length>0 ) {//市
 					var renderer = new  dong.UniqueValueRenderer(defaultSymbol,"ADMINCODE");
@@ -1578,63 +1518,45 @@ function app2() {
 								  renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
 							  } 
 						}
+						 app.fea1.setRenderer(renderer);
+						 app.map1.addLayer(app.fea1);
 					}
-					 app.fea1 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/2", {//添加省的图层
-						 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-					        mode: dong.FeatureLayer.MODE_ONDEMAND,
-					        outFields: ["NAME"]
-					      });
-					 app.fea1.setRenderer(renderer);
-					 app.map1.addLayer(app.fea1);
+					 
 				} 
 			}
 			if ( item.cityCodes != "" && item.cityCodes != null && item.cityCodes != undefined ) {//市
-				for(var i = 0 ; i < item.cityCodes.length; i++ ) {
+				if( item.cityCodes.length>0) {
 					var renderer = new  dong.UniqueValueRenderer(defaultSymbol,"CITYCODE");
-					 for (var prop in item.cityCodes[i]) {
-						  if (item.cityCodes[i].hasOwnProperty(prop)) { 
-							  renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
-						  } 
+					for(var i = 0 ; i < item.cityCodes.length; i++ ) {
+						 for (var prop in item.cityCodes[i]) {
+							  if (item.cityCodes[i].hasOwnProperty(prop)) { 
+								  renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
+							  } 
+						}
+						 
+						 app.fea2.setRenderer(renderer);
+						 app.map1.addLayer(app.fea2);
 					}
-					 app.fea2 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/1", {//市的图层
-						 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-					        mode: dong.FeatureLayer.MODE_ONDEMAND,
-					        outFields: ["NAME"]
-					      });
-					 app.fea2.setRenderer(renderer);
-					 app.map1.addLayer(app.fea2);
 				}
-				console.log(app.fea2)
-				console.log(app.fea2.graphics);
 			}
 			if (item.countyCodes !="" && item.countyCodes != null && item.countyCodes != undefined ) {//区县
-				var renderer = new  dong.UniqueValueRenderer(defaultSymbol,"ADMINCODE");
-				for ( var i = 0 ; i < item.countyCodes.length; i ++ ) {
-					for (var prop in item.countyCodes[i]) {
-						  if (item.countyCodes[i].hasOwnProperty(prop)) { 
-							  renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
-						  } 
-					}
-					 app.fea3 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/0", {//区县的图层
-						 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-					        mode: dong.FeatureLayer.MODE_ONDEMAND,
-					        outFields: ["NAME"]
-					      });
-					 app.fea3.setRenderer(renderer);
-					 app.map1.addLayer(app.fea3);
-				} 
+				if ( item.countyCodes.length > 0 ) {
+					var renderer = new  dong.UniqueValueRenderer(defaultSymbol,"ADMINCODE");
+					for ( var i = 0 ; i < item.countyCodes.length; i ++ ) {
+						
+						for (var prop in item.countyCodes[i]) {
+							  if (item.countyCodes[i].hasOwnProperty(prop)) { 
+								  renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
+							  } 
+						}
+						 app.fea3.setRenderer(renderer);
+						 app.map1.addLayer(app.fea3);
+					} 
+				}
 			}
 		})
 	} 
-	app.map1.setExtent(new esri.geometry.Extent({  
-		"xmin": 8180595.1985,  
-		"ymin": 2051330.0834,  
-		"xmax": 15038957.856799997,  
-		"ymax": 7087544.693899997,  
-		"spatialReference": {  
-		    "wkid": 102100  
-		}  
-	})); 
+	 
 }
 /*移除显示，刷新*/
 function destroyTimeline() {
