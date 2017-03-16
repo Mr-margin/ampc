@@ -383,7 +383,21 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 							}
 						},
 						onClickRow : function(row, $element) {
-							alert('a');
+							setTimeout(function(){
+								var row = $('#show_zicuoshi_table').bootstrapTable('getSelections');
+								if(row.length>0){//有选择值
+									if(row[0].f1 != "剩余点源" && row[0].f1 != "面源" ){
+										$("#zicuoshi_tools_de").show();
+										$("#zicuoshi_tools_up").show();
+									}else{
+										$("#zicuoshi_tools_de").hide();
+										$("#zicuoshi_tools_up").show();
+									}
+								}else{
+									$("#zicuoshi_tools_de").hide();
+									$("#zicuoshi_tools_up").hide();
+								}
+							},100);
 						},
 						onLoadSuccess : function(data){
 							
