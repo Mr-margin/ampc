@@ -771,7 +771,7 @@ public class PlanAndMeasureController {
 			Map<String,String> remap=new HashMap<String,String>();
 			remap.put("data", str);
 			System.out.println(str);
-			String getResult=ClientUtil.doPost("http://192.168.1.53:8089/calc/submit/subSector",remap);
+			String getResult=ClientUtil.doPost("http://192.168.1.53:8089/calc/submit/subSector",str);
 			
 			return AmpcResult.ok(getResult);
 		}catch(Exception e){
