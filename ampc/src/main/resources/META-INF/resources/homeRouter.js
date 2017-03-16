@@ -12,6 +12,10 @@ vipspa.start({
     	templateUrl: 'webApp/yqd/qdList/qdList.html',
     	controller: 'webApp/yqd/qdList/qdList.js'
     },
+    '/newQd':{       //源清单
+      templateUrl: 'webApp/yqd/createQD/createNewQd.html',
+      controller: 'webApp/yqd/createQD/createNewQd.js'
+    },
     
     
     '/rwgl': {      //任务管理-任务情景
@@ -146,9 +150,10 @@ function handle_y(y) {
 }
 
 var llqHeight = document.documentElement.clientHeight;
-var cssStyle = '#sidebar .panel-body{overflow:auto;border-top:0;border-bottom:0;padding:0;height: '+ (llqHeight-441) +'px;} ';
+var cssStyle = '.qdCreate{height:'+ (llqHeight-138) +'px;}#sidebar .panel-body{overflow:auto;border-top:0;border-bottom:0;padding:0;height: '+ (llqHeight-441) +'px;} ';
 $('head').append($('<style></style>').html(cssStyle));
 $("#Route_conter").css("height",llqHeight-150+"px");
+$(".qdCreate").css("height",llqHeight-138+"px");
 
 
 $('#sidebar a').click(function (e) {
