@@ -768,6 +768,9 @@ function create(){
 				temm[k.substring(1,k.length)] = vol;
 				delete row[i][k];
 			}
+			if(k == "tiaojian"){
+				delete row[i][k];
+			}
 		});
 		row[i].oopp = temm;
 		sc_v1.table1.push(row[i]);
