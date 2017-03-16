@@ -34,6 +34,13 @@ public interface TPlanMeasureMapper {
    int updateIsEffeByIds(Long userId);
    
    /**
+    * 根据id集合获取所有的预案措施
+    * @param idss
+    * @return
+    */
+   List<Map> getPmByIds(List<Long> idss);
+   
+   /**
     * 删除预案措施
     * @param userId
     * @return
