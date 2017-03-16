@@ -685,7 +685,15 @@ function xishu_save(){
 //		console.log(JSON.stringify(res));
 		if(res.status == 'success'){
 			
-			var ttr = {"f1": measureame_temp, "f2" : res.data.count};
+			var ttr = {};
+			
+			var re1 = new RegExp("{","g");
+			var re2 = new RegExp("}","g");
+			var re3 = new RegExp("\"","g");
+			
+			ttr.tiaojian = JSON.stringify(showjieguo).replace(re1, "").replace(re2, "").replace(re2, "");
+			ttr.f1 = measureame_temp;
+			ttr.f2 = res.data.count;
 			
 			$.each(sc_val.summary.sum, function(i, vol) {
 				ttr[vol] = Math.round(res.data[vol]);
@@ -703,11 +711,6 @@ function xishu_save(){
 				});
 			});
 			
-			var re1 = new RegExp("{","g");
-			var re2 = new RegExp("}","g");
-			var re3 = new RegExp("\"","g");
-			
-			ttr.tiaojian = JSON.stringify(showjieguo).replace(re1, "").replace(re2, "").replace(re2, "");
 			$('#show_zicuoshi_table').bootstrapTable('insertRow', {index: 1, row: ttr});
 			
 			$.each(sc_val.filters, function(i, vol) {
