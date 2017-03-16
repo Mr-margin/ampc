@@ -45,11 +45,14 @@
 						<span class="input-group-addon" style="border: 0px solid #E5E6E7;">时间分辩率：</span> 
 						
 						<div class="" style="margin-top:5px;">
-							<div class="btn-group">
-								<!-- <button class="btn btn-default" >时间分辩率：</button> -->
-								<button class="btn btn-outline btn-success" type="button">逐小时</button>
-								<button class="btn btn-outline btn-success active" type="button">逐日</button>
-							</div>
+								<div class="btn-group" data-toggle="buttons">
+									<label class="btn btn-outline btn-success">
+										<input type="radio" name="options" id="sjOption1" >逐小时
+									</label>
+									<label class="btn btn-outline btn-success active">
+										<input type="radio" name="options" id="sjOption2">逐日
+									</label>
+								</div>
 						</div>
 					</div>
 				</div>
@@ -57,10 +60,16 @@
 					<div class="input-group m-b" style="margin-bottom: 0px">
 						 	<span class="input-group-addon" style="border: 0px solid #E5E6E7;">空间分辩率：</span> 
 						<div class="" style="margin-top:5px;">
-							<div class="btn-group">
-								<button class="btn btn-outline btn-success" type="button">36公里</button>
-								<button class="btn btn-outline btn-success" type="button">12公里</button>
-								<button class="btn btn-outline btn-success active" type="button">4公里</button>
+							<div class="btn-group" data-toggle="buttons">
+								<label class="btn btn-outline btn-success">
+									<input type="radio" name="options" id="kjOption1">36公里
+								</label>
+								<label class="btn btn-outline btn-success active">
+									<input type="radio" name="options" id="kjOption2">12公里
+								</label>
+								<label class="btn btn-outline btn-success">
+									<input type="radio" name="options" id="kjOption3">4公里
+								</label>
 							</div>
 						</div>
 					</div>
@@ -70,20 +79,27 @@
 				<div class="col-sm-4" style="padding-left:13px;">
 					<div class="input-group m-b" style="margin-bottom: 0px">
 						<div class="" style="margin-top:5px;">
-							<div class="btn-group">
-								<button class="btn btn-outline btn-success active" type="button">绝对量比较</button>
-								<button class="btn btn-outline btn-success" type="button">相对变化</button>
+							<div class="btn-group" data-toggle="buttons">
+								<label class="btn btn-outline btn-success active">
+									<input type="radio" name="options" id="compareOption1">绝对量比较
+								</label>
+								<label class="btn btn-outline btn-success">
+									<input type="radio" name="options" id="changeOption2">相对变化
+								</label>
 							</div>
-		
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-4">
 					<div class="input-group m-b" style="margin-bottom: 0px">
 						<div class="" style="margin-bottom:0px;padding-left:7px;">
-							<div class="btn-group">
-								<button class="btn btn-outline btn-success" type="button">组分展开</button>
-								<button class="btn btn-outline btn-success active" type="button">PM2.5组分展开</button>
+							<div class="btn-group" data-toggle="buttons">
+								<label class="btn btn-outline btn-success">
+									<input type="radio" name="spread" id="spreadOption1">组分展开
+								</label>
+								<label class="btn btn-outline btn-success active">
+									<input type="radio" name="PmSpread" id="spreadOption2">PM2.5组分展开
+								</label>
 							</div>
 						</div>
 					</div>
