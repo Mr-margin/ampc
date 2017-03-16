@@ -1,0 +1,142 @@
+<!--<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <meta charset="utf-8">
+  <title>环境空气质量动态模拟云平台</title>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1">
+  &lt;!&ndash;[if IE]>
+  <meta http-equiv="x-ua-compatible" content="IE=9"/><![endif]&ndash;&gt;
+  <meta name="author" content="SuggeElson"/>
+  <meta name="description" content=""/>
+  <meta name="keywords" content=""/>
+  <meta name="application-name" content="sprFlat admin template"/>
+
+  <link href="../../../css/icons.css" rel="stylesheet"/>
+
+  <link href="../../../css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="../../../css/font-awesome.css" rel="stylesheet">
+  <link href="../../../css/animate.css" rel="stylesheet">
+  <link href="../../../css/style.css" rel="stylesheet"/>
+
+  <link href="../../../css/plugins/sprflat-theme/jquery.ui.all.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../../css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css"/>
+  <link rel="stylesheet" href="../../../css/swan.timeline.min.css"/>
+  <link rel="stylesheet" href="../../../js/plugins/forms/icheck/flat/_all.css"/>
+  <link rel="stylesheet" href="../../../css/plugins/bootstrap-table/bootstrap-table.min.css"/>
+  <link rel="stylesheet" href="../../../css/plugins/sweetalert/sweetalert.css"/>
+  <link rel="stylesheet" href="../../../css/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.css"/>
+
+  <link rel="stylesheet" href="../../../css/bootstrap-table-filter-control.css"/>
+  <link rel="stylesheet" href="../../../css/plugins/zTreeStyle/zTreeStyle.css"/>
+  <link rel="stylesheet" href="../../../js/plugins/forms/daterangepicker/daterangepicker.css"/>
+  <link href="../../../css/main.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../../css/index.css"/>
+</head>
+<body>-->
+
+<div class="qdCreate clearfix">
+  <div class="col-md-6" style="">
+   <div class="qgqdTable" style="height: 50%;overflow: auto">
+     <div style="position: relative;top: 40px;font-size: 17px">全国清单</div>
+     <div id="qgqdToolbar" class="btn-group col-md-5 col-md-offset-7">
+       <div class="form-group mt10 clearfix col-md-12">
+         <label for="qgqdnf" class="col-md-3 control-label lh29 text-right">年 份</label>
+
+         <div class="col-md-9">
+           <select name="qgqdnf" id="qgqdnf" class="form-control" onchange="selectQGQDyear()">
+             <option value="2017">2017</option>
+           </select>
+         </div>
+       </div>
+     </div>
+     <div class="qgqdList_con">
+       <table id="qgqdList">
+         <thead>
+         <th data-field="qdmc">清单名称</th>
+         <th data-field="nf">年份</th>
+         <th data-field="fbsj">发布时间</th>
+         </thead>
+       </table>
+     </div>
+   </div>
+    <div class="bdqdTable" style="height: 50%;overflow: auto">
+      <div style="position: relative;top: 40px;font-size: 17px">本地清单</div>
+      <div id="bdqdToolbar" class="text-right mb10">
+        <button type="button" class="btn btn-default mr10" >
+          <i class="glyphicon glyphicon-plus"></i> 上传新的本地清单
+        </button>
+        <button type="button" class="btn btn-default delBDQD mr20" onclick="delBDQD()">
+          <i class="glyphicon glyphicon-trash"></i> 删除
+        </button>
+      </div>
+      <div class="bdqdList_con">
+        <table id="bdqdList">
+          <thead>
+          <th data-field="qdmc">清单名称</th>
+          <th data-field="nf">年份</th>
+          <th data-field="scsj">发布时间</th>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6" style="height: 100%">
+    <div class="col-md-12" style="height: 50%">
+      <img src="webApp/yqd/createQD/1.png" alt=""/>
+    </div>
+    <div class="col-md-12" style="height: 50%">
+      <img src="webApp/yqd/createQD/2.png" alt=""/>
+    </div>
+  </div>
+</div>
+
+<!--
+</body>
+
+<script src="../../../js/jquery.min.js"></script>
+<script src="../../../js/jquery-ui-1.10.4.min.js"></script>
+<script src="../../../js/plugins/forms/icheck/jquery.icheck.js"></script>
+<script src="../../../js/bootstrap.min.js"></script>
+<script src="../../../js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="../../../js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+<script src="../../../js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="../../../js/bootstrap-table-contextmenu.js.js"></script>
+<script src="../../../js/plugins/core/moment/moment.js"></script>
+<script src="../../../js/plugins/forms/datetimepicker/bootstrap-datetimepicker.js"></script>
+&lt;!&ndash;<script src="js/plugins/forms/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>&ndash;&gt;
+
+<script src="../../../js/jquery.mousewheel.js"></script>
+<script src="../../../js/bootstrap-table-filter-control.js"></script>
+<script src="../../../js/plugins/validate/jquery.validate.min.js"></script>
+<script src="../../../js/plugins/validate/additional-methods.min.js"></script>
+<script src="../../../js/plugins/validate/messages_zh.min.js"></script>
+<script src="../../../js/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="../../../js/plugins/core/pace/pace.min.js"></script>
+<script src="../../../js/jRespond.min.js"></script>
+<script src="../../../js/plugins/core/slimscroll/jquery.slimscroll.js"></script>
+<script src="../../../js/plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js"></script>
+<script src="../../../js/plugins/core/quicksearch/jquery.quicksearch.js"></script>
+<script src="../../../js/plugins/misc/highlight/highlight.pack.js"></script>
+<script src="../../../js/plugins/misc/countTo/jquery.countTo.js"></script>
+<script src="../../../js/plugins/zTree/jquery.ztree.core.min.js"></script>
+<script src="../../../js/plugins/zTree/jquery.ztree.excheck.min.js"></script>
+&lt;!&ndash; <script src="js/jquery.sprFlat.js"></script> &ndash;&gt;
+<script src="../../../js/vipspa.min.js"></script>
+<script src="../../../js/plugins/echarts/echarts.min.js"></script>
+<script src="../../../js/plugins/forms/daterangepicker/daterangepicker.js"></script>
+<script src="../../../js/swan.timeline.js"></script>
+&lt;!&ndash;自己的js文件&ndash;&gt;
+&lt;!&ndash;<script src="../../../BackstageIP.js"></script>&ndash;&gt;
+&lt;!&ndash;<script src="../../../homeRouter.js"></script>&ndash;&gt;
+
+</html>
+<script>
+
+  /*个人js文件*/
+
+
+
+
+</script>-->
