@@ -845,9 +845,11 @@ $('#editArea').on('show.bs.modal', function (event) {
   var create = button.data('new');
   var areaId, findUrl;
   var treeUrl = '/area/find_areas';
-
+  $('.adcodeList.mt20').empty();
   if (create) {
     $('#areaName').val('').removeAttr('data-id');
+    showCode = [{},{},{}];
+    $('.adcodeList.mt20').empty();
   } else {
     findUrl = '/area/get_areaList';
     //indexPar = $('.area').index(button.parents('.area'));
