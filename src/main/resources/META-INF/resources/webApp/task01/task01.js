@@ -248,7 +248,7 @@ function initRwTable() {
       initQjTable();
     },
     /*右键菜单*/
-    contextMenu: '#RWcontext-menu',
+    contextMenu: '#RWcontext-menu', //右键菜单ID
     onContextMenuItem: function (row, $el) {
       if ($el.data("item") == "rename") {
         rename('rw', row.missionId);
