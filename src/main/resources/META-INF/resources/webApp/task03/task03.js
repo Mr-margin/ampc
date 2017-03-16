@@ -334,6 +334,14 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 				
 				if(da.status == 'success'){
 					var columns = [];
+					columns.push({field: 'state', title: '', align: 'center', checkbox: true, formatter: function(value, row, index){
+						if (index === 0) {
+					        return {
+					            disabled: true
+					        }
+					    }
+					    return value;
+					}});
 					columns.push({field: 'f1', title: '措施', align: 'center'});
 					columns.push({field: 'f2', title: '点源实施范围', align: 'center'});
 					var b_data = [];
@@ -346,10 +354,10 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 						ss[vol.sectordocEtitle] = Math.round(da.data.S[0][vol.sectordocEtitle]);
 					});
 					$.each(res.data.measureList, function(i, col) {
-						columns.push({field: col.nameen, title: col.namech, align: 'center'});
-						zz["_"+col.nameen] = "";
-						pp["_"+col.nameen] = "";
-						ss["_"+col.nameen] = "";
+						columns.push({field: "psl_"+col.nameen, title: col.namech, align: 'center'});
+						zz["psl_"+col.nameen] = "";
+						pp["psl_"+col.nameen] = "";
+						ss["psl_"+col.nameen] = "";
 					});
 					b_data.push(zz);
 					b_data.push(pp);
@@ -363,6 +371,8 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 						clickToSelect : false,// 点击选中行
 						detailView : true,//显示详细页面模式
 						pagination : false, // 在表格底部显示分页工具栏
+						clickToSelect : true,//设置true 将在点击行时，自动选择rediobox 和 checkbox
+						singleSelect : true,//设置True 将禁止多选
 						striped : false, // 使表格带有条纹
 						silent : true, // 刷新事件必须设置
 						detailFormatter : function(index, row){
@@ -373,7 +383,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 							}
 						},
 						onClickRow : function(row, $element) {
-							
+							alert('a');
 						},
 						onLoadSuccess : function(data){
 							
@@ -708,12 +718,36 @@ function xishu_save(){
 				ttr[vol] = Math.round(res.data[vol]);
 			});
 			$.each(xishu_temp, function(i, vol) {
-				ttr["_"+vol] = $("#"+vol).val();
+				ttr["psl_"+vol] = $("#"+vol).val();
 			});
 			
 			
 			
 			$('#show_zicuoshi_table').bootstrapTable('insertRow', {index: 1, row: ttr});
+			
+			var row = $('#show_zicuoshi_table').bootstrapTable('getData');//添加后所有的数据
+			var syd_i = row.length-2;//剩余点源的行号
+			
+			var row_0_temp = jQuery.extend(true, {}, row[0]);
+			var row_2_temp = jQuery.extend(true, {}, row[syd_i]);
+			
+			$.each(row_0_temp, function(k, vol) {//循环汇总行
+				if(k.indexOf("psl_")==0 && k == "tiaojian" && k == "f1" && k == "state"){//第一个字母是下划线开头,中文条件字段，措施字段均不需要计算
+					//不需要计算
+				}else{
+					if(vol.indexOf("/")>=0){
+						var yuyu = vol.split("/");//汇总行的数据
+						row_0_temp[k] = (parseInt(yuyu[0])+parseInt(ttr[k]))+"/"+yuyu[1];
+						
+						var ttui = row_2_temp[k];//剩余点源的数据
+						row_2_temp[k] = parseInt(ttui)-parseInt(ttr[k]);
+					}
+				}
+			});
+			
+			$('#show_zicuoshi_table').bootstrapTable('updateRow', {index: 0, row: row_0_temp});
+			$('#show_zicuoshi_table').bootstrapTable('updateRow', {index: syd_i, row: row_2_temp});
+			
 			
 			$.each(sc_val.filters, function(i, vol) {
 				$('#show_zicuoshi_table').bootstrapTable('expandRow', i);
@@ -764,11 +798,11 @@ function create(){
 		
 		var temm = {};
 		$.each(row[i], function(k, vol) {
-			if(k.indexOf("_")==0){//第一个字母是下划线开头
-				temm[k.substring(1,k.length)] = vol;
+			if(k.indexOf("psl_")==0){//第一个字母是下划线开头
+				temm[k.substring(4,k.length)] = vol;
 				delete row[i][k];
 			}
-			if(k == "tiaojian"){
+			if(k == "tiaojian" || k == "state"){
 				delete row[i][k];
 			}
 		});
