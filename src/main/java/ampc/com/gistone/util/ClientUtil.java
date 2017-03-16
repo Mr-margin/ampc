@@ -73,6 +73,28 @@ public class ClientUtil {
 			// 执行http请求
 			response = httpClient.execute(httpPost);
 			resultString = EntityUtils.toString(response.getEntity(), "utf-8");
+			
+			
+			URL httpClient = new URL(add_url);  
+			HttpURLConnection connection = (HttpURLConnection)httpClient.openConnection();  
+			connection.setDoInput(true);  
+			connection.setDoOutput(true);  
+			connection.setRequestMethod("POST");  
+			connection.setUseCaches(false);  
+			connection.setInstanceFollowRedirects(true);  
+			connection.setRequestProperty("Content-Type","application/json");  
+			connection.connect();  
+			DataOutputStream out = new DataOutputStream(connection.getOutputStream());  
+			
+			JSONObject obj = new JSONObject();  
+			obj.put("code", -1002);       
+			obj.put("message", "msg");  
+			
+			
+		   	out.writeBytes(obj.toString());  
+		   	out.flush();  
+		   	out.close();
+		   	
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
