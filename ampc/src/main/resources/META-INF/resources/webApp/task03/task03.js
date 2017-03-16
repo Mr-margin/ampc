@@ -691,6 +691,15 @@ function xishu_save(){
 			var re2 = new RegExp("}","g");
 			var re3 = new RegExp("\"","g");
 			
+			var showjieguo = {};
+			$.each(sc_val.filters[sc_val.filters.length-1], function(k, vol) {//循环最后一个条件，这个条件是要添加显示的条件
+				$.each(query, function(i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
+					if(col.queryEtitle == k){
+						showjieguo[col.queryName] = vol;
+					}
+				});
+			});
+			
 			ttr.tiaojian = JSON.stringify(showjieguo).replace(re1, "").replace(re2, "").replace(re2, "");
 			ttr.f1 = measureame_temp;
 			ttr.f2 = res.data.count;
@@ -702,14 +711,7 @@ function xishu_save(){
 				ttr["_"+vol] = $("#"+vol).val();
 			});
 			
-			var showjieguo = {};
-			$.each(sc_val.filters[sc_val.filters.length-1], function(k, vol) {//循环最后一个条件，这个条件是要添加显示的条件
-				$.each(query, function(i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
-					if(col.queryEtitle == k){
-						showjieguo[col.queryName] = vol;
-					}
-				});
-			});
+			
 			
 			$('#show_zicuoshi_table').bootstrapTable('insertRow', {index: 1, row: ttr});
 			
@@ -752,20 +754,27 @@ function create(){
 	
 	var row = $('#show_zicuoshi_table').bootstrapTable('getData');
 	
-//	delete row[0].f1;
-//	delete row[0].f2;
-//	delete row[row.length-1].f1;
-//	delete row[row.length-1].f2;
-//	
-//	sc_v1.p = row[0];
-//	sc_v1.s = row[row.length-1];
+	sc_v1.table = [];
+	sc_v1.table.push(row[0]);
+	sc_v1.table.push(row[row.length-2]);
+	sc_v1.table.push(row[row.length-1]);
 	
-	sc_v1.table = row;
+	sc_v1.table1 = [];
+	for(var i = row.length-3; i>0;i--){
+		
+		var temm = {};
+		$.each(row[i], function(k, vol) {
+			if(k.indexOf("_")==0){//第一个字母是下划线开头
+				temm[k.substring(1,k.length)] = vol;
+				delete row[i][k];
+			}
+		});
+		row[i].oopp = temm;
+		sc_v1.table1.push(row[i]);
+	}
 	
-//	m_mid = mid;
-//	m_planId = ;
-//	m_sectorName = sectorsName;
-//	m_planMeasureId = planMeasureId;
+	
+//	sc_v1.table = row;
 	
 	var paramsName = {};
 	paramsName.userId = userId;
