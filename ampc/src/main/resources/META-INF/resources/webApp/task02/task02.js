@@ -59,11 +59,14 @@ var zTreeSetting = {
           delNode12(tr)
         }
       }
-      addLayer(showCode);
       updataCodeList();
     }
   }
 };
+
+function showMap(){
+  addLayer(showCode);
+}
 
 function addP(adcode, name, level) {
   return $('<p class="col-md-3"><i class="im-close" style="cursor: pointer" onclick="delAdcode(' + adcode + ',' + level + ')"></i>&nbsp;&nbsp;' + name + ' </p>')
@@ -1549,9 +1552,6 @@ function app2() {
 	} 
 	 
 }
-/*移除显示，刷新*/
-function destroyTimeline() {
-//  timeline._destroy();
-//  $('#timeline').empty();
-//  $('.areaTitle').empty();
-}
+
+
+/*test 前端设置disabled*/
