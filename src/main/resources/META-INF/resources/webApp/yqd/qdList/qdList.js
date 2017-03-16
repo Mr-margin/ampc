@@ -2,6 +2,8 @@
  * Created by lvcheng on 2017/3/16.
  */
 
+var delQDMap = {};
+
 initQdListTable();
 function initQdListTable() {
   $('#qdList').bootstrapTable({
@@ -55,22 +57,30 @@ function initQdListTable() {
     },
 
     onCheck: function (row) {
-
+      $('.delQD').attr('disabled', false);
+      delQDMap[row.qdId] = 'true';
     },
     onUncheck: function (row) {
-
+      delete delQDMap[row.qdId];
+      if ($.isEmptyObject(delQDMap)) {
+        $('.delQD').attr('disabled', true)
+      }
     },
     onCheckAll: function (rows) {
-
+      $('.delQD').attr('disabled', false);
+      for (var i = 0; i < rows.length; i++) {
+        delQDMap[rows[i].qdId] = 'true';
+      }
     },
     onUncheckAll: function (rows) {
-
+      delQDMap = {};
+      $('.delQD').attr('disabled', true);
     },
     onLoadSuccess:function(data){
 
     },
     
-    contextMenu: '#RWcontext-menu',
+    contextMenu: '#RWcontext-menu',//右键菜单ID
     onContextMenuItem: function (row, $el) {
 //        if ($el.data("item") == "rename") {
 //          rename('rw', row.missionId);
@@ -96,4 +106,16 @@ function search(type) {
     return params;
   };
   $('#qdList').bootstrapTable('refresh', params);
+}
+
+/*创建新清单*/
+function createNewQd(){
+  var a = document.createElement('a');
+  a.href = '#/newQd';
+  a.click();
+}
+
+function delQD(){
+  console.log(delQDMap);
+  /*这里将有一个请求，处理清单删除*/
 }
