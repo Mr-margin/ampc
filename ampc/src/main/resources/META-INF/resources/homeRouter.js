@@ -152,6 +152,7 @@ $('#sidebar a').click(function (e) {
     var href = e.target.hash.replace('#','#/');
     var a = $('#clickA');
     if(a.attr('href') == href) return;
+    if(href == '#/xgpg'|| href == '#/kqzlyb')return;
     a.attr('href',href);
     a[0].click();
 });
