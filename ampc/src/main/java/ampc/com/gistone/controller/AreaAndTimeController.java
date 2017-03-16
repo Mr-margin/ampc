@@ -10,11 +10,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 
 
@@ -863,9 +865,12 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 	if(data.get("areaId")!=null && data.get("areaId")!=""){
 		Long areaId =Long.parseLong(data.get("areaId").toString());//用户id
 		TScenarinoAreaWithBLOBs areas=tScenarinoAreaMapper.selectByPrimaryKey(areaId);
-		for(int a=0;a<arealist.size();a++){
-			if(areas.getScenarinoAreaId()==arealist.get(a).getScenarinoAreaId()){
-				arealist.remove(arealist.get(a));
+		
+		 Iterator<TScenarinoAreaWithBLOBs> areaIter = arealist.iterator();  
+		while(areaIter.hasNext()){
+			TScenarinoAreaWithBLOBs area=areaIter.next();
+			if(area.getScenarinoAreaId().equals(areas.getScenarinoAreaId())){
+				areaIter.remove();
 			}
 		}
 		
