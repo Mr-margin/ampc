@@ -862,6 +862,7 @@ $('#editArea').on('show.bs.modal', function (event) {
     }).success(function (res) {
       if (res.data) {
         setShowCode(res.data);
+        addLayer(showCode);
       }
       updataCodeList();
     });
@@ -1308,15 +1309,6 @@ function initDate() {
  app.gLyr = new dong.GraphicsLayer({"id": "gLyr"});
  app.map.addLayer(app.gLyr);
  /******************************************/
- app.map.setExtent(new esri.geometry.Extent({  
-		"xmin": 8180595.1985,  
-		"ymin": 2051330.0834,  
-		"xmax": 15038957.856799997,  
-		"ymax": 7087544.693899997,  
-		"spatialReference": {  
-		    "wkid": 102100  
-		}  
-	}));
  });
  //添加服务
  function addLayer(data) {
@@ -1390,17 +1382,17 @@ function initDate() {
  function shuju_clear() {
 	 
  if (app.featureLayer1 != undefined && app.featureLayer1 != null && app.featureLayer1 != "") {
-// app.map.removeLayer(app.featureLayer1);
- app.featureLayer1.clear();
+ app.map.removeLayer(app.featureLayer1);
+// app.featureLayer1.clear();
  }
- if (app.featureLayer2 != undefined && app.featureLayer1 != null && app.featureLayer1 != "") {
-// app.map.removeLayer(app.featureLayer2)
- app.featureLayer2.clear();
+ if (app.featureLayer2 != undefined && app.featureLayer2 != null && app.featureLayer2 != "") {
+ app.map.removeLayer(app.featureLayer2)
+// app.featureLayer2.clear();
  }
- if (app.featureLayer3 != undefined && app.featureLayer2 != null && app.featureLayer2 != "") {
+ if (app.featureLayer3 != undefined && app.featureLayer3 != null && app.featureLayer3 != "") {
  //		app.featureLayer2.clear();
-// app.map.removeLayer(app.featureLayer3)
- app.featureLayer3.clear();
+ app.map.removeLayer(app.featureLayer3)
+// app.featureLayer3.clear();
  }
  }
  //对地图的定位
@@ -1523,7 +1515,6 @@ function app2() {
 						 app.fea1.setRenderer(renderer);
 						 app.map1.addLayer(app.fea1);
 					}
-					 
 				} 
 			}
 			if ( item.cityCodes != "" && item.cityCodes != null && item.cityCodes != undefined ) {//市
@@ -1535,7 +1526,6 @@ function app2() {
 								  renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
 							  } 
 						}
-						 
 						 app.fea2.setRenderer(renderer);
 						 app.map1.addLayer(app.fea2);
 					}
@@ -1545,7 +1535,6 @@ function app2() {
 				if ( item.countyCodes.length > 0 ) {
 					var renderer = new  dong.UniqueValueRenderer(defaultSymbol,"ADMINCODE");
 					for ( var i = 0 ; i < item.countyCodes.length; i ++ ) {
-						
 						for (var prop in item.countyCodes[i]) {
 							  if (item.countyCodes[i].hasOwnProperty(prop)) { 
 								  renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
