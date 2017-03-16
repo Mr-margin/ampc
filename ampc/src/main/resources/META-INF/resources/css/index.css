@@ -1,4 +1,4 @@
-#rwToolbar, #qjToolbar {
+#rwToolbar, #qjToolbar ,#qdToolbar{
   margin: 10px;
 }
 .rwtableDiv>.clearfix{
@@ -358,7 +358,11 @@
   overflow: auto;
 }
 
-
+/*清单样式 start*/
+.qdListBox{
+  background-color: #fff;
+}
+/*清单样式 end*/
 
 
 
