@@ -13,50 +13,48 @@ $(function(){
 	  var option = {
 			  	title: {
 			  		text :'PM2.5',
-			  		x:'left',
+			  		x:'center',
 			  		y:'top'
 			  	},
 	            tooltip : {
 	                trigger: 'axis',
 	                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-	                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+	                    type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
 	                }
 	            },
 	            legend: {
 	            	x:'right',
 	            	y:'top',
-	                data:['基准','长三角管控'],
-	                borderWidth:1,
+	                //data:['基准','长三角管控'],   //后面设成一行 一个基准 ，其他三个不要，标题放中间
+	                borderWidth:0,              //表格宽度
 	            },
 	            grid: {
 	                left: '30%',
 	                right: '15%',
 	                bottom: '18%',
-	                //containLabel: true
 	            },
-	           // calculable : true,
 	            xAxis : [
 	                {
 	                	name : '地面',
 	                	nameLocation: 'start',
 	                	nameGap : 20,
-	                	axisTick:{inside:true}
-	                    //type : 'category',  类目轴 要对应放数据
-	                    //data : ['50', '35', '75', '80', '100', '200', '300', '222', '500', '400']
+	                	axisTick:{inside:true},
+	                    type : 'category',  //类目轴 要对应放数据
+	                    data : ['0', '1', '1.5', '2', '2.5', '3', '4.5', '5', '5.5', '6']
 	                },
 	                {
 	                	type: 'category',
-	                	xAxisIndex: 1,
+	                	xAxisIndex: 1
 	                	//interval:10
 	                	//data : ['50', '35', '75', '80', '100', '200', '300', '222', '500', '400']
 	                }
 	            ],
 	            yAxis : [
 	                {
-	                         //type: 'category',
+	                         type: 'value',
 	                         name: '高度（米）',
 	                         position: 'left',
-	                         //max:500,
+	                         max:3000,
 	                         data:['0','50','100','200','300','400','500','700','1000','1500','2000','3000'],
 	                         //刻度朝内侧
 	                         axisTick:{inside:true},
@@ -71,19 +69,21 @@ $(function(){
 	                {
 	                    name:'基准',
 	                    type:'line',
-	                    symbolSize: 8,
+	                    smooth:true,
+	                    symbolSize: 3,
 	                    hoverAnimation: false,
 	                    yAxis: 1, 
-	                    data:[100, 52, 200, 198, 266, 500, 752,333,452,666]
+	                    data:[212, 321, 342, 350, 400, 800, 862,950,1200,2322]
 	                },
 	                {
 	                    name:'长三角管控',
 	                    type:'line',
-	                    symbolSize: 8,
+	                    smooth:true,
+	                    symbolSize: 3,
 	                    hoverAnimation: false,
 	                    yAxis: 1, 
 	                    //itemStyle:{normal:{color:'#d14a63'}},
-	                    data:[11, 54, 20, 198, 66, 203, 157,233,555,665]
+	                    data:[66, 105, 123, 124, 125, 126, 130,243,432,600]
 	                },
 	           
 	            ]

@@ -4,7 +4,6 @@
 	    border: 1px solid #4f9de0;
 	}
 </style>
-
 <div class='col-md-12' style="height:100%;padding-left: 0px;padding-right: 0px;">
 	<div class="ibox float-e-margins" style="height:100%;">
 		<div class="ibox-content" style="height:100%;overflow-y: auto;padding: 0px;">
@@ -14,24 +13,24 @@
 							<span class="input-group-addon" style="border: 0px solid #E5E6E7;">检测站点:</span>
 							<div class="" style="margin-bottom:0px;padding-left:0px;">
 								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
-									<div class="input-group group-select" style="margin-left:0px;">
-										<select class="form-control m-b">
+									<div class="input-group group-select">
+										<select class="form-control m-b" style="border-color: #1c84c6;">
 											<option>浙江省</option>
 											<option>--</option>
 										</select>
 									</div>
 								</div>
 								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
-									<div class="input-group group-select" style="margin-right:0px;">
-										<select class="form-control m-b">
+									<div class="input-group group-select">
+										<select class="form-control m-b" style="border-color: #1c84c6;">
 											<option>杭州市</option>
 											<option>--</option>
 										</select>
 									</div>
 								</div>
 								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
-									<div class="input-group group-select" style="padding-right:0px;">
-										<select class="form-control m-b" >
+									<div class="input-group group-select">
+										<select class="form-control m-b" style="border-color: #1c84c6;">
 											<option>平均</option>
 											<option>--</option>
 										</select>
@@ -45,9 +44,13 @@
 						<span class="input-group-addon" style="border: 0px solid #E5E6E7;">时间分辩率:
 						</span>
 						<div class="" style="margin-top:5px;">
-							<div class="btn-group">
-								<button class="btn btn-outline btn-success" type="button">逐小时</button>
-								<button class="btn btn-outline btn-success active" type="button">逐日</button>
+							<div class="btn-group" data-toggle="buttons">
+								<label class="btn btn-outline btn-success">
+									<input type="radio" name="options" id="hoursOption1">逐小时
+								</label>
+								<label class="btn btn-outline btn-success active">
+									<input type="radio" name="options" id="dayOption2">逐日
+								</label>
 							</div>
 						</div>
 					</div>
@@ -56,10 +59,16 @@
 					<div class="input-group m-b" style="margin-bottom: 0px">
 						<span class="input-group-addon" style="border: 0px solid #E5E6E7;">空间分辩率:</span>
 						<div class="" style="margin-top:5px;">
-							<div class="btn-group">
-								<button class="btn btn-outline btn-success" type="button">36公里</button>
-								<button class="btn btn-outline btn-success" type="button">12公里</button>
-								<button class="btn btn-outline btn-success active" type="button">4公里</button>
+							<div class="btn-group" data-toggle="buttons">
+								<label class="btn btn-outline btn-success">
+									<input type="radio" name="kjOptions1" id="kjOptions1">36公里
+								</label>
+								<label class="btn btn-outline btn-success">
+									<input type="radio" name="kjOptions2" id="kjOptins2">12公里
+								</label>
+								<label class="btn btn-outline btn-success active">
+									<input type="radio" name="kjOptions3" id="kjOptions3">4公里
+								</label>
 							</div>
 						</div>
 					</div>
