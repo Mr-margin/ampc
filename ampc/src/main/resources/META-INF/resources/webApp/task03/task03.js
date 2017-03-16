@@ -852,7 +852,7 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 		app.pint = new dong.GraphicsLayer({"id":"pint"});
 		app.mapList[1].addLayer(app.pint);
 		
-		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer("http://192.168.1.132:6080/arcgis/rest/services/china_gd/MapServer");//创建动态地图
+		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/china_gd/MapServer");//创建动态地图
 		app.mapList[0].addLayer(app.layer);
 		
 		app.str = {
