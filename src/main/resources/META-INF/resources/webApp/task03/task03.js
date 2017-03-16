@@ -685,7 +685,7 @@ function xishu_save(){
 //		console.log(JSON.stringify(res));
 		if(res.status == 'success'){
 			
-			var ttr = {"f1": measureame_temp, "f2" : res.data.count, "f3" : ""};
+			var ttr = {"f1": measureame_temp, "f2" : res.data.count};
 			
 			$.each(sc_val.summary.sum, function(i, vol) {
 				ttr[vol] = Math.round(res.data[vol]);
