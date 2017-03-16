@@ -687,11 +687,11 @@ function selectQJtype(type){
         $('#yStartDate').empty().append($('<option value="'+ startD +'">'+ startD +'</option>'));
         ajaxPost(url,params).success(function(res){
           selectEndDate = res.data.endTime;
-          selectEndDate = moment(selectRW.missionEndDate).isBefore(selectEndDate)?moment(selectRW.missionEndDate).format('YYYY-MM-DD'):selectEndDate;
+          selectEndDate = moment(selectRW.missionEndDate).add(1,'d').isBefore(selectEndDate)?moment(selectRW.missionEndDate).format('YYYY-MM-DD'):selectEndDate;
           var endDateArr = setSelectDate($('#yStartDate').val(),selectEndDate);
           $('#yEndDate').empty();
           for(var i=0;i<endDateArr.length;i++){
-            if(endDateArr[i]<=moment().format('YYYY-MM-DD'))continue;
+            if(endDateArr[i]<moment().format('YYYY-MM-DD'))continue;
             $('#yEndDate').append($('<option value="'+ endDateArr[i] +'">'+ endDateArr[i] +'</option>'))
           }
         });
@@ -729,7 +729,7 @@ function selectQJtype(type){
 
         ajaxPost(url,params).success(function(res){
           selectEndDate = res.data.endTime;
-          selectEndDate = moment(selectRW.missionEndDate).isBefore(selectEndDate)?moment(selectRW.missionEndDate).format('YYYY-MM-DD'):selectEndDate;
+          selectEndDate = moment(selectRW.missionEndDate).add(1,'d').isBefore(selectEndDate)?moment(selectRW.missionEndDate).format('YYYY-MM-DD'):selectEndDate;
           var endDateArr = setSelectDate($('#yStartDate').val(),selectEndDate);
           $('#yEndDate').empty();
           for(var i=0;i<endDateArr.length;i++){
@@ -933,6 +933,11 @@ function createQJselect(){
   //}
 
   if(selectRW.missionStatus == "预评估"){
+    if(moment(selectRW.missionEndDate).isBefore(moment(),'day')){
+      $('.disYQJ').attr('disabled',true);
+    }else{
+      $('.disYQJ').removeAttr('disabled');
+    }
     $('#createYpQjModal').modal('show');
     returnLeft('yqj');
   }else if(selectRW.missionStatus == "后评估"){
@@ -953,7 +958,8 @@ function setSelectDate(qjS,qjE,pathD){
   }else{
     var e = moment(qjE);
     while(e.format('YYYY-MM-DD') > qjS){
-      dateArr.push(e.subtract(1,'d').format('YYYY-MM-DD'));
+      dateArr.push(e.format('YYYY-MM-DD'));
+      e.subtract(1,'d');
       console.log(e.format('YYYY-MM-DD'))
     }
   }
