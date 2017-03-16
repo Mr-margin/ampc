@@ -850,6 +850,7 @@ $('#editArea').on('show.bs.modal', function (event) {
   var treeUrl = '/area/find_areas';
   $('.adcodeList.mt20').empty();
   if (create) {
+
     $('#areaName').val('').removeAttr('data-id');
     showCode = [{},{},{}];
     $('.adcodeList.mt20').empty();
@@ -878,6 +879,7 @@ $('#editArea').on('show.bs.modal', function (event) {
     areaId: areaId
   }).success(function (res) {
     initZTree(res.data);
+    testDis();
   })
 });
 
@@ -1553,5 +1555,41 @@ function app2() {
 	 
 }
 
-
 /*test 前端设置disabled*/
+function testDis(data){
+  var a = $.ajax('webApp/task02/test.json',{
+    contentType: "application/json",
+    type: "GET",
+    async: true,
+    dataType: 'JSON'
+  })
+  var disObj = [];
+  $.when(a).then(function(res){
+    var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+    for(var i=0;i<res.length;i++){
+      var name = '('+ res[i].areaName +')';
+      for(var pro=0;pro<res[i].provinceCodes.length;pro++){
+        var node = treeObj.getNodeByParam("adcode", Object.keys(res[i].provinceCodes[pro]), null);
+        node.name += name;
+        node.chkDisabled = true;
+        treeObj.updateNode(node);
+      }
+
+      for(var ci=0;ci<res[i].cityCodes.length;ci++){
+        var node = treeObj.getNodeByParam("adcode", Object.keys(res[i].cityCodes[ci]), null);
+        node.name += name;
+        node.chkDisabled = true;
+        treeObj.updateNode(node);
+      }
+
+      for(var ct=0;ct<res[i].countyCodes.length;ct++){
+        var node = treeObj.getNodeByParam("adcode", Object.keys(res[i].countyCodes[ct]), null);
+        node.name += name;
+        node.chkDisabled = true;
+        treeObj.updateNode(node);
+      }
+
+    }
+    console.log(res)
+  })
+}
