@@ -1,7 +1,9 @@
 package ampc.com.gistone.util;
 
+
 import java.sql.Clob;
 import java.sql.SQLException;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -23,5 +25,7 @@ public class JsonUtil {
 	public static Object clobToObject(Clob clob) throws Exception{
 		String string=clob.getSubString(1, (int) clob.length());
 		return MAPPER.readValue(string, Object.class);
+		
+		
 	}
 }

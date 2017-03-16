@@ -596,7 +596,7 @@ public class PlanAndMeasureController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//行业名称
-			Long sectorName=Long.parseLong(data.get("sectorName").toString());
+			String sectorName=data.get("sectorName").toString();
 			//措施id
 			Long measureId=Long.parseLong(data.get("measureId").toString());
 			//用户id
@@ -605,24 +605,24 @@ public class PlanAndMeasureController {
 			Long planId=Long.parseLong(data.get("planId").toString());
 			//预案措施id
 			Long planMeasureId=null;
-			if(data.get("planMeasureId")!=null){
+			if(!data.get("planMeasureId").equals("null")){
 				planMeasureId = Long.parseLong(data.get("planMeasureId").toString());
 			}
 			//预案措施中的子措施Json串
 			String measureContent=data.get("measureContent").toString();
-			//实施范围
-			String implementAtionScope=data.get("implementAtionScope").toString();
-			//减排占比
-			String reductionRatio=data.get("reductionRatio").toString();
 			TPlanMeasure tPlanMeasure=new TPlanMeasure();
 			tPlanMeasure.setMeasureId(measureId);
 			tPlanMeasure.setPlanId(planId);
 			tPlanMeasure.setSectorName(sectorName);
 			tPlanMeasure.setUserId(userId);
-			tPlanMeasure.setImplementationScope(implementAtionScope);
 			tPlanMeasure.setMeasureContent(measureContent);
-			tPlanMeasure.setReductionRatio(reductionRatio);
-			if(planMeasureId!=null){
+			
+			/**
+			 * TODO  需要自己解析得到减排比例
+			 */
+			//tPlanMeasure.setImplementationScope(implementAtionScope);
+			//tPlanMeasure.setReductionRatio(reductionRatio);
+			if(data.get("planMeasureId").equals("null")){
 				//预案添加措施
 				int addstatus=tPlanMeasureMapper.insertSelective(tPlanMeasure);
 				//判断是否成功
