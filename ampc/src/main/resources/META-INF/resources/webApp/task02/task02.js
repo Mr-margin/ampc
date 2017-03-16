@@ -1264,11 +1264,13 @@ function initDate() {
  "tdlib/gaodeLayer",
  "esri/InfoTemplate",
  "esri/renderers/UniqueValueRenderer",
+ "esri/tasks/query",
+ "esri/geometry/Extent",
  "dojo/domReady!"
 
  ],
  function (Map, FeatureLayer, GraphicsLayer, SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, ClassBreaksRenderer, Point, Extent, SimpleRenderer,
- Graphic, Color, style, FeatureSet, SpatialReference, gaodeLayer, InfoTemplate, UniqueValueRenderer) {
+ Graphic, Color, style, FeatureSet, SpatialReference, gaodeLayer, InfoTemplate, UniqueValueRenderer, query, Extent) {
  dong.gaodeLayer = gaodeLayer;
  dong.Graphic = Graphic;
  dong.Point = Point;
@@ -1282,6 +1284,8 @@ function initDate() {
  dong.ClassBreaksRenderer = ClassBreaksRenderer;
  dong.UniqueValueRenderer = UniqueValueRenderer;
  dong.InfoTemplate = InfoTemplate;
+ dong.Query = query;
+ dong.Extent = Extent;
  /*****************************************************/
  app.map1 = new Map("mapDiv1", {
  logo: false,
@@ -1483,31 +1487,32 @@ function showTimeline(data) {
 }
 //根据区域在地图上显示
 function app2() {
-	var xmax = 0,xmin = 0,ymax = 0,ymin = 0;
 	if ( app.map1 == "" || app.map1 == null || app.map1 == undefined ) {
 		return;
 	}
 	if ( allData != "" && allData != null && allData != undefined ) {
 		var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
 		defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
+		
+		app.fea1 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/2", {//添加省的图层
+			infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+			mode: dong.FeatureLayer.MODE_ONDEMAND,
+			outFields: ["NAME"]
+		});
+		app.fea2 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/1", {//市的图层
+			infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+			mode: dong.FeatureLayer.MODE_ONDEMAND,
+			outFields: ["NAME"]
+		});
+		app.fea3 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/0", {//区县的图层
+			infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+			mode: dong.FeatureLayer.MODE_ONDEMAND,
+			outFields: ["NAME"]
+		});
+		var t1 = "",t2 = "",t3 = "";
+		
 		$.each(allData,function(k,item){
 			var str = sz_corlor[k];
-			app.fea1 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/2", {//添加省的图层
-				 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-			        mode: dong.FeatureLayer.MODE_ONDEMAND,
-			        outFields: ["NAME"]
-			      });
-			app.fea2 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/1", {//市的图层
-				 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-			        mode: dong.FeatureLayer.MODE_ONDEMAND,
-			        outFields: ["NAME"]
-			      });
-			 app.fea3 = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/0", {//区县的图层
-				 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-			        mode: dong.FeatureLayer.MODE_ONDEMAND,
-			        outFields: ["NAME"]
-			      });
-			
 			if(item.provinceCodes != "" && item.provinceCodes != null && item.provinceCodes != undefined ) {
 				if(item.provinceCodes.length>0 ) {//市
 					var renderer = new  dong.UniqueValueRenderer(defaultSymbol,"ADMINCODE");
@@ -1515,11 +1520,13 @@ function app2() {
 						 for (var prop in item.provinceCodes[i]) {
 							  if (item.provinceCodes[i].hasOwnProperty(prop)) { 
 								  renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
+								  t1 += "'"+prop+"',";
 							  } 
 						}
 						 app.fea1.setRenderer(renderer);
 						 app.map1.addLayer(app.fea1);
 					}
+					dingwei(t1,"1");
 				} 
 			}
 			if ( item.cityCodes != "" && item.cityCodes != null && item.cityCodes != undefined ) {//市
@@ -1529,31 +1536,107 @@ function app2() {
 						 for (var prop in item.cityCodes[i]) {
 							  if (item.cityCodes[i].hasOwnProperty(prop)) { 
 								  renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
+								  t2 += "'"+prop+"',";
 							  } 
 						}
 						 app.fea2.setRenderer(renderer);
 						 app.map1.addLayer(app.fea2);
 					}
+					dingwei(t2,"2");
 				}
 			}
 			if (item.countyCodes !="" && item.countyCodes != null && item.countyCodes != undefined ) {//区县
+				var tiaojian = "";
 				if ( item.countyCodes.length > 0 ) {
 					var renderer = new  dong.UniqueValueRenderer(defaultSymbol,"ADMINCODE");
 					for ( var i = 0 ; i < item.countyCodes.length; i ++ ) {
 						for (var prop in item.countyCodes[i]) {
 							  if (item.countyCodes[i].hasOwnProperty(prop)) { 
 								  renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
+								  t3 += "'"+prop+"',";
 							  } 
 						}
 						 app.fea3.setRenderer(renderer);
 						 app.map1.addLayer(app.fea3);
-					} 
+					}
+					dingwei(t3,"3");
 				}
 			}
-		})
-	} 
-	 
+		});
+	}
 }
+var xmax = 0,xmin = 0,ymax = 0,ymin = 0;
+var kk = 0;
+function dingwei(tiaojian, type){
+	
+	var query = new dong.Query();
+	if(type == "1"){
+		query.where = "ADMINCODE IN ("+tiaojian.substring(0,tiaojian.length-1)+")";
+		
+		app.fea1.queryFeatures(query, function(featureSet) {
+			for (var i = 0, il = featureSet.features.length; i < il; i++) {
+				var graphic = featureSet.features[i];
+				if(kk == 0){
+					xmax = graphic.geometry.getExtent().xmax;
+					xmin = graphic.geometry.getExtent().xmin;
+					ymax = graphic.geometry.getExtent().ymax;
+					ymin = graphic.geometry.getExtent().ymin;
+					kk++;
+				}else{
+					xmin = graphic.geometry.getExtent().xmin < xmin ? graphic.geometry.getExtent().xmin : xmin;
+					xmax = graphic.geometry.getExtent().xmax > xmax ? graphic.geometry.getExtent().xmax : xmax;
+					ymin = graphic.geometry.getExtent().ymin < ymin ? graphic.geometry.getExtent().ymin : ymin;
+					ymax = graphic.geometry.getExtent().ymax > ymax ? graphic.geometry.getExtent().ymax : ymax;
+				}
+			}
+			var extent = new dong.Extent(xmin,ymin,xmax,ymax, new dong.SpatialReference({ wkid:3857 }));
+			app.map1.setExtent(extent.expand(1.5));
+		});
+	}else if(type == "2"){
+		query.where = "CITYCODE IN ("+tiaojian.substring(0,tiaojian.length-1)+")";
+		app.fea2.queryFeatures(query, function(featureSet) {
+			for (var i = 0, il = featureSet.features.length; i < il; i++) {
+				var graphic = featureSet.features[i];
+				if(kk == 0){
+					xmax = graphic.geometry.getExtent().xmax;
+					xmin = graphic.geometry.getExtent().xmin;
+					ymax = graphic.geometry.getExtent().ymax;
+					ymin = graphic.geometry.getExtent().ymin;
+					kk++;
+				}else{
+					xmin = graphic.geometry.getExtent().xmin < xmin ? graphic.geometry.getExtent().xmin : xmin;
+					xmax = graphic.geometry.getExtent().xmax > xmax ? graphic.geometry.getExtent().xmax : xmax;
+					ymin = graphic.geometry.getExtent().ymin < ymin ? graphic.geometry.getExtent().ymin : ymin;
+					ymax = graphic.geometry.getExtent().ymax > ymax ? graphic.geometry.getExtent().ymax : ymax;
+				}
+			}
+			var extent = new dong.Extent(xmin,ymin,xmax,ymax, new dong.SpatialReference({ wkid:3857 }));
+			app.map1.setExtent(extent.expand(1.5));
+		});
+	}else if(type == "3"){
+		query.where = "ADMINCODE IN ("+tiaojian.substring(0,tiaojian.length-1)+")";
+		app.fea3.queryFeatures(query, function(featureSet) {
+			for (var i = 0, il = featureSet.features.length; i < il; i++) {
+				var graphic = featureSet.features[i];
+				if(kk == 0){
+					xmax = graphic.geometry.getExtent().xmax;
+					xmin = graphic.geometry.getExtent().xmin;
+					ymax = graphic.geometry.getExtent().ymax;
+					ymin = graphic.geometry.getExtent().ymin;
+					kk++;
+				}else{
+					xmin = graphic.geometry.getExtent().xmin < xmin ? graphic.geometry.getExtent().xmin : xmin;
+					xmax = graphic.geometry.getExtent().xmax > xmax ? graphic.geometry.getExtent().xmax : xmax;
+					ymin = graphic.geometry.getExtent().ymin < ymin ? graphic.geometry.getExtent().ymin : ymin;
+					ymax = graphic.geometry.getExtent().ymax > ymax ? graphic.geometry.getExtent().ymax : ymax;
+				}
+			}
+			var extent = new dong.Extent(xmin,ymin,xmax,ymax, new dong.SpatialReference({ wkid:3857 }));
+			app.map1.setExtent(extent.expand(1.5));
+		});
+	}
+}
+
 
 /*test 前端设置disabled*/
 function testDis(data){
