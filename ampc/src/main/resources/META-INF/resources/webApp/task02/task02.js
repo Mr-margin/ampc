@@ -1412,19 +1412,19 @@ function initDate() {
  }
  //对地图的定位
  function setExtent(data) {
- if (data != "" && data != undefined) {
- var code = data.adcode.substring(0, 2) + "0000";
- if (app.featureLayer1 != "" && app.featureLayer1 != null && app.featureLayer1 != undefined) {
- var ss = app.featureLayer1.graphics;
- if (data.checked == true) {
- $.each(app.featureLayer1.graphics, function (i, gra) {
- if (gra.attributes.ADMINCODE == code) {
- app.map.setExtent(app.featureLayer1.graphics[i].geometry.getExtent());
- }
- })
- }
- }
- }
+	 if (data != "" && data != undefined) {
+		 var code = data.adcode.substring(0, 2) + "0000";
+		 if (app.featureLayer1 != "" && app.featureLayer1 != null && app.featureLayer1 != undefined) {
+			 var ss = app.featureLayer1.graphics;
+			 if (data.checked == true) {
+				 $.each(app.featureLayer1.graphics, function (i, gra) {
+					 if (gra.attributes.ADMINCODE == code) {
+						 app.map.setExtent(app.featureLayer1.graphics[i].geometry.getExtent());
+					 }
+				 })
+			 }
+		 }
+	 }
  }
  //颜色数组
  var sz_corlor = ["#000080", "#6495ED", "#00FFFF", "#CD5C5C", "#FF00FF", "#9370DB", "#8B8682", "#EED5B7", "#FFF0F5", "	#9F79EE", "#A2B5CD", "#FFE1FF", "#B23AEE"];
