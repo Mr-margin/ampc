@@ -25,18 +25,28 @@
     MEASURE_CONTENT
   </sql>
   
-  
-  
-  
   <!--根据条件查询措施汇总的信息Map  -->
   <resultMap id="MapByQuery" type="hashMap" >
     <id column="PLAN_MEASURE_ID" property="planMeasureId" jdbcType="DECIMAL" />
     <result column="PLAN_ID" property="planId" jdbcType="DECIMAL" />
     <result column="SECTOR_NAME" property="sectorName" jdbcType="OTHER" />
     <result column="MEASURE_ID" property="measureId" jdbcType="DECIMAL" />
-    <result column="MEASURE_EXCEL_DISPLAY" property="measureName" jdbcType="DECIMAL" />
+    <result column="MEASURE_EXCEL_DISPLAY" property="measureName" jdbcType="OTHER" />
     <result column="IMPLEMENTATION_SCOPE" property="implementationScope" jdbcType="VARCHAR" />
     <result column="REDUCTION_RATIO" property="reductionRatio" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!--查询措施汇总的信息用来减排-->
+  <resultMap id="JPMap" type="hashMap" >
+    <id column="PLAN_MEASURE_ID" property="planMeasureId" jdbcType="DECIMAL" />
+    <result column="PLAN_NAME" property="planName" jdbcType="OTHER" />
+    <result column="MEASURE_EXCEL_L4S" property="l4sFilter" jdbcType="VARCHAR" />
+    <result column="MEASURE_EXCEL_LEVEL" property="level" jdbcType="DECIMAL" />
+    <result column="MEASURE_EXCEL_DISPLAY" property="measureName" jdbcType="OTHER" />
+    <result column="MEASURE_EXCEL_OP" property="op" jdbcType="VARCHAR" />
+    <result column="PLAN_START_TIME" property="planStartTime" jdbcType="TIMESTAMP" />
+    <result column="PLAN_END_TIME" property="planEndTime" jdbcType="TIMESTAMP" />
+    <result column="MEASURE_CONTENT" property="measureContent" jdbcType="CLOB" />
   </resultMap>
   
    <!--根据条件查询措施汇总的信息Map  -->
@@ -110,6 +120,18 @@
   </delete>
   
   
+  <!-- 根据id集合获取所有的预案措施 -->
+  <select id="getPmByIds" resultMap="JPMap" parameterType="java.util.List" >
+    select PLAN_MEASURE_ID,PLAN_NAME,MEASURE_EXCEL_L4S,MEASURE_EXCEL_LEVEL,MEASURE_EXCEL_DISPLAY,
+         MEASURE_EXCEL_OP,PLAN_START_TIME,PLAN_END_TIME,MEASURE_CONTENT from 
+  T_PLAN_MEASURE tpm
+   INNER JOIN T_PLAN  tp on TPM.PLAN_ID=TP.PLAN_ID
+   INNER JOIN T_MEASURE_EXCEL tme on tpm.measure_Id=tme.measure_excel_Id
+    where PLAN_MEASURE_ID in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+     		 #{item,jdbcType=DECIMAL}
+  		</foreach>
+  </select>
   
   
   
