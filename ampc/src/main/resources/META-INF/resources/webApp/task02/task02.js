@@ -202,45 +202,15 @@ function initialize() {
     allData = res.data;
     for (var i = 0; i < res.data.length; i++) {
       allData[i].timeFrame = [];
-      /*克隆区域进行添加*/
-      //var area = $('.area.disNone').clone().removeClass('disNone');
-      //area.find('.front>span').html(res.data[i].areaName);
       var timeItems = res.data[i].timeItems;
       var tLength = timeItems.length;
       //$('.areaMsg').append(area);
       for (var item = 0; item < tLength; item++) {
-        //var totalWidth = $('.period').width();
-        //
-        ///*克隆时段进行添加*/
-        //var times = $('.time.disNone').clone().removeClass('disNone');
-        //area.find('.showLine').before(times);
-        //
-        //if(timeItems[item].planId == -1){
-        //  times.find('.timeToolDiv .btn').eq(1).attr('disabled','disabled');
-        //}else{
-        //  times.find('.timeToolDiv .btn').eq(0).attr('disabled','disabled');
-        //  times.find('h4').html(timeItems[item].planName);
-        //}
-        //if(tLength == 1){
-        //  times.find('.timeToolDiv .btn').eq(2).attr('disabled','disabled');
-        //}
 
         if (item > 0) {
           var sD = timeItems[item].timeStartDate;
-          allData[i].timeFrame[item - 1] = moment(sD).format('YYYY/MM/DD HH');
-
-          /*克隆滑块进行添加*/
-          //var hk = $('.hk.disNone').clone().removeClass('disNone');
-          //hk.find('.showTips').html(moment(sD).format('YYYY/MM/DD HH'));
-          //var left = ((sD - startDate)/totalDate);
-          //area.find('.showLine').append(hk);
-          //hk.css('left',left*100+'%');
+          allData[i].timeFrame[item - 1] = moment(sD).format('YYYY-MM-DD HH');
         }
-        //var tw;
-
-        //tw = ((timeItems[item].timeEndDate - timeItems[item].timeStartDate)/totalDate)*totalWidth - 1;
-        //times.css('width',(tw/totalWidth)*100 + '%');
-
       }
 
     }
@@ -271,7 +241,7 @@ function getAreaAndTime() {
       for (var item = 0; item < tLength; item++) {
         if (item > 0) {
           var sD = timeItems[item].timeStartDate;
-          allData[i].timeFrame[item - 1] = moment(sD).format('YYYY/MM/DD HH');
+          allData[i].timeFrame[item - 1] = moment(sD).format('YYYY-MM-DD HH');
         }
       }
     }
@@ -464,16 +434,16 @@ function delTimes() {
   var delTime;
   if (ub == 'up') {
     mId = allData[areaIndex].timeItems[timeIndex - 1].timeId;
-    delTime = moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate)).format('YYYY/MM/DD HH');
+    delTime = moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate)).format('YYYY-MM-DD HH');
   } else {
     mId = allData[areaIndex].timeItems[timeIndex + 1].timeId;
-    delTime = moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate)).format('YYYY/MM/DD HH');
+    delTime = moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate)).format('YYYY-MM-DD HH');
   }
 
   ajaxPost(url, {
     deleteTimeId: allData[areaIndex].timeItems[timeIndex].timeId,
-    startDate: moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate)).format('YYYY/MM/DD HH'),
-    endDate: moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate)).format('YYYY/MM/DD HH'),
+    startDate: moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate)).format('YYYY-MM-DD HH:mm:ss'),
+    endDate: moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate)).format('YYYY-MM-DD HH:mm:ss'),
     mergeTimeId: mId,
     userId: userId,
     status: ub
@@ -811,8 +781,8 @@ function createEditArea() {
     scenarinoId: qjMsg.qjId,
     areaName: areaName,
     userId: userId,
-    scenarinoStartDate: moment(momentDate(qjMsg.qjStartDate)).format('YYYY/MM/DD HH'),
-    scenarinoEndDate: moment(momentDate(qjMsg.qjEndDate)).format('YYYY/MM/DD HH'),
+    scenarinoStartDate: moment(momentDate(qjMsg.qjStartDate)).format('YYYY-MM-DD HH:mm:ss'),
+    scenarinoEndDate: moment(momentDate(qjMsg.qjEndDate)).format('YYYY-MM-DD HH:mm:ss'),
     areaId: $('#areaName').attr('data-id') || '',
     provinceCodes: '',
     cityCodes: '',
@@ -1101,7 +1071,7 @@ function initDate() {
     endDate: moment(qjMsg.qjEndDate).format('YYYY-MM-DD HH')
   })
     .on('changeDate', function (ev) {
-      var date = moment(ev.date).format('YYYY/MM/DD HH');
+      var date = moment(ev.date).format('YYYY-MM-DD HH');
       //$('#rwEndDate').datetimepicker('setStartDate', date);
       //$('#rwStartDate').datetimepicker('setEndDate', null);
     });
