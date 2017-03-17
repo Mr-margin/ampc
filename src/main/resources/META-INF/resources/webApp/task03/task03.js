@@ -738,8 +738,11 @@ function xishu_save(){
 			ajaxPost_w(jianpaiUrl+'/search/summary',sc_val).success(function(res){
 //				console.log(JSON.stringify(res));
 				if(res.status == 'success'){
+					var timestamp = Date.parse(new Date());
+					timestamp = timestamp / 1000;
 					
 					var ttr = {};
+					ttr.id = timestamp;
 					
 					var re1 = new RegExp("{","g");
 					var re2 = new RegExp("}","g");
@@ -844,17 +847,51 @@ function zicuoshi_up(){
  * 子措施的删除
  */
 function zicuoshi_de(){
+	
+//	var row = $('#show_zicuoshi_table').bootstrapTable('getSelections');
+//	
+//	zicuoshi_up_index = null;
+//	
+//	console.log(JSON.stringify(sc_v1));
+//	sc_v1.filters.splice(sc_v1.filters.length-i,1);
+//	console.log(JSON.stringify(sc_v1));
+//	
+//	ajaxPost_w(jianpaiUrl+'/search/summaryLevel',sc_v1).success(function(res){
+//		console.log(JSON.stringify(res));
+//		if(res.status == 'success'){
+//			
+//			$.each(res.data, function(k, col) {//循环返回的数据
+//				var ttr = {};
+//				$.each(sc_val.summary.sum, function(i, vol) {
+//					ttr[vol] = Math.round(col[vol]);
+//				});
+//				
+//				$('#show_zicuoshi_table').bootstrapTable('updateRow', {index: (res.data.length-k)+1, row: ttr});
+//				restion_table();
+//				
+//			});
+//			restion_table();
+//		}
+//	});
+	
+	
+	
+	
+	
 	var row = $('#show_zicuoshi_table').bootstrapTable('getData');//所有的记录
 	zicuoshi_up_index = null;
 	
 	$.each(row, function(i, col) {
-		if(row[i].state == true){//如果被选中
-//			$('#show_zicuoshi_table').bootstrapTable('removeByUniqueId', i);
+		if(col.state == true){//如果被选中
 			
-			var ids = $.map($table.bootstrapTable('getSelections'), function (row) {
-                return row.id;
-            });
-			
+			var rowq = $('#show_zicuoshi_table').bootstrapTable('getSelections');
+			SKUNo = $.map(rowq, function (rowww) {  
+		        return rowww.state;  
+		    }); 
+			$('#show_zicuoshi_table').bootstrapTable('remove', {  
+		        field: 'state',  
+		        values: SKUNo  
+		    });
 			
 			if(i > 1){
 				
@@ -932,7 +969,7 @@ function restion_table(){
 			if(i == 1){//一个表格只要有一次初始化即可
 				//汇总行和剩余点源行初始化
 				$.each(row_0_temp, function(k, vol) {//循环汇总行
-					if(k.indexOf("psl_")==0 && k == "tiaojian" && k == "f1" && k == "state"){//第一个字母是下划线开头,中文条件字段，措施字段均不需要计算
+					if(k.indexOf("psl_")==0 && k == "tiaojian" && k == "f1" && k == "state" && k == "id"){//第一个字母是下划线开头,中文条件字段，措施字段均不需要计算
 						//不需要计算
 					}else{
 						if(vol.toString().indexOf("/") >= 0){
@@ -946,7 +983,7 @@ function restion_table(){
 			
 			
 			$.each(row_0_temp, function(k, vol) {//循环汇总行
-				if(k.indexOf("psl_")==0 && k == "tiaojian" && k == "f1" && k == "state"){//第一个字母是下划线开头,中文条件字段，措施字段均不需要计算
+				if(k.indexOf("psl_")==0 && k == "tiaojian" && k == "f1" && k == "state" && k == "id"){//第一个字母是下划线开头,中文条件字段，措施字段均不需要计算
 					//不需要计算
 				}else{
 					if(vol.toString().indexOf("/") >= 0){
