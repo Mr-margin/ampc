@@ -444,7 +444,7 @@ function delTimes() {
     } else {
       allData[areaIndex].timeItems[timeIndex + 1].timeStartDate = allData[areaIndex].timeItems[timeIndex].timeStartDate;
     }
-    delTimes.remove();
+    //delTimes.remove();
     allData[areaIndex].timeFrame.splice(index, 1);
     allData[areaIndex].timeItems.splice(timeIndex, 1);
     showTimeline(allData);
