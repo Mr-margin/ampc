@@ -24,7 +24,7 @@ function initQdListTable() {
     iconSize: "outline",
     search: false,
     searchAlign: 'right',
-    //height:453,
+    height:llqHeight-200,
     maintainSelected: true,
     clickToSelect: false,
     pagination: true,
