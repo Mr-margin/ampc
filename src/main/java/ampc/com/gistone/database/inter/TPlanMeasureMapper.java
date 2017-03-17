@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import ampc.com.gistone.database.model.TPlanMeasure;
+import ampc.com.gistone.database.model.TPlanMeasureWithBLOBs;
 
 /**
 * 预案措施映射
@@ -47,21 +48,29 @@ public interface TPlanMeasureMapper {
     */
    int deleteMeasures(Map map);
 	
-	List<TPlanMeasure> selectByEntity(TPlanMeasure record);
-   
+   /**
+    * 根据对象中的条件查询数据
+    * @param record
+    * @return
+    */
+	List<TPlanMeasureWithBLOBs> selectByEntity(TPlanMeasure record);
+   /**
+    * 根据预案ID 删除对应的所有预案措施
+    * @param planId
+    * @return
+    */
    int deleteByPlanId(Long planId);
-
     int deleteByPrimaryKey(Long planMeasureId);
 
-    int insert(TPlanMeasure record);
+    int insert(TPlanMeasureWithBLOBs record);
 
-    int insertSelective(TPlanMeasure record);
+    int insertSelective(TPlanMeasureWithBLOBs record);
 
-    TPlanMeasure selectByPrimaryKey(Long planMeasureId);
+    TPlanMeasureWithBLOBs selectByPrimaryKey(Long planMeasureId);
 
-    int updateByPrimaryKeySelective(TPlanMeasure record);
+    int updateByPrimaryKeySelective(TPlanMeasureWithBLOBs record);
 
-    int updateByPrimaryKeyWithBLOBs(TPlanMeasure record);
+    int updateByPrimaryKeyWithBLOBs(TPlanMeasureWithBLOBs record);
 
     int updateByPrimaryKey(TPlanMeasure record);
 }

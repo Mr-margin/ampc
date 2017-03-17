@@ -5,7 +5,7 @@ import java.util.Map;
 
 import net.sf.json.JSONArray;
 /**
- * 区域显示帮助类
+ * 区域显示帮助类      是用来在区域的帮助类
  * @author WangShanxi
  * @version v.0.1
  * @date 2017年2月27日
