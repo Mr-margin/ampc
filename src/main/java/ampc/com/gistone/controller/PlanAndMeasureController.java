@@ -738,12 +738,6 @@ public class PlanAndMeasureController {
 				result.setBigIndex(mcu.getBigIndex());
 				result.setSmallIndex(mcu.getSmallIndex());
 				result.setGroupName(pm.get("planMeasureId").toString()+pm.get("planName"));
-				System.out.println(pm.get("planStartTime").toString());
-				System.out.println(pm.get("planEndTime").toString());
-//				DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00:00.S");
-//				LocalDateTime start=LocalDateTime.parse(pm.get("planStartTime").toString(),dtf);
-//				DateTimeFormatter dtf1=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:59:59.S");
-//				LocalDateTime end=LocalDateTime.parse(pm.get("planEndTime").toString(),dtf1);
 				result.setStart(pm.get("planStartTime").toString().substring(0,pm.get("planStartTime").toString().indexOf(".")));
 				result.setEnd(pm.get("planEndTime").toString().substring(0,pm.get("planEndTime").toString().indexOf(".")));
 				List<Map> lms=mcu.getFilters();
@@ -768,11 +762,9 @@ public class PlanAndMeasureController {
 			}
 			JSONArray json = JSONArray.fromObject(jpList);//将java对象转换为json对象
 			String str = json.toString();
-			Map<String,String> remap=new HashMap<String,String>();
-			remap.put("data", str);
 			System.out.println(str);
 			String getResult=ClientUtil.doPost("http://192.168.1.53:8089/calc/submit/subSector",str);
-			
+			System.out.println(getResult);
 			return AmpcResult.ok(getResult);
 		}catch(Exception e){
 			e.printStackTrace();
