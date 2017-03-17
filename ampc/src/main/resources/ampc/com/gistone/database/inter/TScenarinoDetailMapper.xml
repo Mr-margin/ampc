@@ -5,31 +5,31 @@
     <id column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
     <result column="SCENARINO_TYPE" property="scenarinoType" jdbcType="DECIMAL" />
     <result column="SCENARINO_NAME" property="scenarinoName" jdbcType="OTHER" />
-    <result column="SCENARINO_START_DATE" property="scenarinoStartDate" jdbcType="DATE" />
-    <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="DATE" />
+    <result column="SCENARINO_START_DATE" property="scenarinoStartDate" jdbcType="TIMESTAMP" />
+    <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="TIMESTAMP" />
     <result column="SCENARINO_STATUS" property="scenarinoStatus" jdbcType="DECIMAL" />
     <result column="MISSION_ID" property="missionId" jdbcType="DECIMAL" />
-    <result column="SCENARINO_ADD_TIME" property="scenarinoAddTime" jdbcType="DATE" />
+    <result column="SCENARINO_ADD_TIME" property="scenarinoAddTime" jdbcType="TIMESTAMP" />
     <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
-    <result column="UPDATE_TIME" property="updateTime" jdbcType="DATE" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
-    <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="BASIS_SCENARINO_ID" property="basisScenarinoId" jdbcType="DECIMAL" />
-    <result column="BASIS_TIME" property="basisTime" jdbcType="DATE" />
+    <result column="BASIS_TIME" property="basisTime" jdbcType="TIMESTAMP" />
     <result column="CONTRAST_SCENARINO_ID" property="controstScenarinoId" jdbcType="DECIMAL" />
     <result column="SCEN_TYPE" property="scenType" jdbcType="VARCHAR" />
-    <result column="PATH_DATE" property="pathDate" jdbcType="DATE" />
+    <result column="PATH_DATE" property="pathDate" jdbcType="TIMESTAMP" />
     <result column="SPINUP" property="spinUp" jdbcType="DECIMAL" />
   </resultMap>
   <!-- 返回情景查询列表的数据 -->
   <resultMap id="scenarinoListMap" type="hashMap" >
     <id column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
     <result column="SCENARINO_NAME" property="scenarinoName" jdbcType="OTHER" />
-    <result column="SCENARINO_START_DATE" property="scenarinoStartDate" jdbcType="DATE" />
-    <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="DATE" />
+    <result column="SCENARINO_START_DATE" property="scenarinoStartDate" jdbcType="TIMESTAMP" />
+    <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="TIMESTAMP" />
     <result column="SCENARINO_STATUS" property="scenarinoStatus" jdbcType="DECIMAL" />
     <result column="SCENARINO_STATU_NAME" property="scenarinoStatuName" jdbcType="OTHER" />
-    <result column="SCENARINO_ADD_TIME" property="scenarinoAddTime" jdbcType="DATE" />
+    <result column="SCENARINO_ADD_TIME" property="scenarinoAddTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <!-- 返回情景查询列表的列 -->
   <sql id="scenarino_Column_List" >
@@ -47,9 +47,9 @@
     <result column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
     <result column="SCENARINO_NAME" property="scenarinoName" jdbcType="OTHER" />
     <result column="SCENARINO_START_DATE" property="scenarinoStartDate" jdbcType="DATE" />
-    <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="DATE" />
+    <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="TIMESTAMP" />
     <result column="SCENARINO_STATU_NAME" property="scenarinoStatuName" jdbcType="OTHER" />
-    <result column="SCENARINO_ADD_TIME" property="scenarinoAddTime" jdbcType="DATE" />
+    <result column="SCENARINO_ADD_TIME" property="scenarinoAddTime" jdbcType="TIMESTAMP" />
   </resultMap>
   
   <!-- 返回情景复制列表的列 -->
@@ -204,11 +204,11 @@
       PATH_DATE,SPINUP
       )
     values (#{scenarinoId,jdbcType=DECIMAL}, #{scenarinoType,jdbcType=DECIMAL}, #{scenarinoName,jdbcType=OTHER}, 
-      #{scenarinoStartDate,jdbcType=DATE}, #{scenarinoEndDate,jdbcType=DATE}, #{scenarinoStatus,jdbcType=DECIMAL}, 
-      #{missionId,jdbcType=DECIMAL}, #{scenarinoAddTime,jdbcType=DATE}, #{userId,jdbcType=DECIMAL}, 
-      #{updateTime,jdbcType=DATE}, #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=DATE},
-      #{basisScenarinoId,jdbcType=DECIMAL},#{basisTime,jdbcType=DATE},#{controstScenarinoId,jdbcType=DECIMAL},
-      #{scenType,jdbcType=VARCHAR},#{pathDate,jdbcType=DATE},#{spinUp,jdbcType=DECIMAL}
+      #{scenarinoStartDate,jdbcType=TIMESTAMP}, #{scenarinoEndDate,jdbcType=TIMESTAMP}, #{scenarinoStatus,jdbcType=DECIMAL}, 
+      #{missionId,jdbcType=DECIMAL}, #{scenarinoAddTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=DECIMAL}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=TIMESTAMP},
+      #{basisScenarinoId,jdbcType=DECIMAL},#{basisTime,jdbcType=TIMESTAMP},#{controstScenarinoId,jdbcType=DECIMAL},
+      #{scenType,jdbcType=VARCHAR},#{pathDate,jdbcType=TIMESTAMP},#{spinUp,jdbcType=DECIMAL}
       )
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TScenarinoDetail" >
@@ -280,10 +280,10 @@
         #{scenarinoName,jdbcType=OTHER},
       </if>
       <if test="scenarinoStartDate != null" >
-        #{scenarinoStartDate,jdbcType=DATE},
+        #{scenarinoStartDate,jdbcType=TIMESTAMP},
       </if>
       <if test="scenarinoEndDate != null" >
-        #{scenarinoEndDate,jdbcType=DATE},
+        #{scenarinoEndDate,jdbcType=TIMESTAMP},
       </if>
       <if test="scenarinoStatus != null" >
         #{scenarinoStatus,jdbcType=DECIMAL},
@@ -292,25 +292,25 @@
         #{missionId,jdbcType=DECIMAL},
       </if>
       <if test="scenarinoAddTime != null" >
-        #{scenarinoAddTime,jdbcType=DATE},
+        #{scenarinoAddTime,jdbcType=TIMESTAMP},
       </if>
       <if test="userId != null" >
         #{userId,jdbcType=DECIMAL},
       </if>
       <if test="updateTime != null" >
-        #{updateTime,jdbcType=DATE},
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="isEffective != null" >
         #{isEffective,jdbcType=VARCHAR},
       </if>
       <if test="deleteTime != null" >
-        #{deleteTime,jdbcType=DATE},
+        #{deleteTime,jdbcType=TIMESTAMP},
       </if>
       <if test="basisScenarinoId != null" >
          #{basisScenarinoId,jdbcType=DECIMAL},
       </if>
       <if test="basisTime != null" >
-         #{basisTime,jdbcType=DATE},
+         #{basisTime,jdbcType=TIMESTAMP},
       </if>
       <if test="controstScenarinoId != null" >
          #{controstScenarinoId,jdbcType=DECIMAL},
@@ -319,7 +319,7 @@
          #{scenType,jdbcType=VARCHAR},
       </if>
       <if test="pathDate != null" >
-         #{pathDate,jdbcType=DATE},
+         #{pathDate,jdbcType=TIMESTAMP},
       </if>
       <if test="spinUp != null" >
          #{spinUp,jdbcType=DECIMAL},
@@ -336,10 +336,10 @@
         SCENARINO_NAME = #{scenarinoName,jdbcType=OTHER},
       </if>
       <if test="scenarinoStartDate != null" >
-        SCENARINO_START_DATE = #{scenarinoStartDate,jdbcType=DATE},
+        SCENARINO_START_DATE = #{scenarinoStartDate,jdbcType=TIMESTAMP},
       </if>
       <if test="scenarinoEndDate != null" >
-        SCENARINO_END_DATE = #{scenarinoEndDate,jdbcType=DATE},
+        SCENARINO_END_DATE = #{scenarinoEndDate,jdbcType=TIMESTAMP},
       </if>
       <if test="scenarinoStatus != null" >
         SCENARINO_STATUS = #{scenarinoStatus,jdbcType=DECIMAL},
@@ -348,25 +348,25 @@
         MISSION_ID = #{missionId,jdbcType=DECIMAL},
       </if>
       <if test="scenarinoAddTime != null" >
-        SCENARINO_ADD_TIME = #{scenarinoAddTime,jdbcType=DATE},
+        SCENARINO_ADD_TIME = #{scenarinoAddTime,jdbcType=TIMESTAMP},
       </if>
       <if test="userId != null" >
         USER_ID = #{userId,jdbcType=DECIMAL},
       </if>
       <if test="updateTime != null" >
-        UPDATE_TIME = #{updateTime,jdbcType=DATE},
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="isEffective != null" >
         IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
       </if>
       <if test="deleteTime != null" >
-        DELETE_TIME = #{deleteTime,jdbcType=DATE},
+        DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       </if>
        <if test="basisScenarinoId != null" >
         BASIS_SCENARINO_ID = #{basisScenarinoId,jdbcType=DECIMAL},
       </if>
        <if test="basisTime != null" >
-        BASIS_TIME = #{basisTime,jdbcType=DATE},
+        BASIS_TIME = #{basisTime,jdbcType=TIMESTAMP},
       </if>
        <if test="controstScenarinoId != null" >
         CONTRAST_SCENARINO_ID = #{controstScenarinoId,jdbcType=DECIMAL},
@@ -375,7 +375,7 @@
         SCEN_TYPE = #{scenType,jdbcType=VARCHAR},
       </if>
        <if test="pathDate != null" >
-        PATH_DATE = #{pathDate,jdbcType=DATE},
+        PATH_DATE = #{pathDate,jdbcType=TIMESTAMP},
       </if>
       <if test="spinUp != null" >
         SPINUP = #{spinUp,jdbcType=DECIMAL},
@@ -387,20 +387,20 @@
     update T_SCENARINO_DETAIL
     set SCENARINO_TYPE = #{scenarinoType,jdbcType=DECIMAL},
       SCENARINO_NAME = #{scenarinoName,jdbcType=OTHER},
-      SCENARINO_START_DATE = #{scenarinoStartDate,jdbcType=DATE},
-      SCENARINO_END_DATE = #{scenarinoEndDate,jdbcType=DATE},
+      SCENARINO_START_DATE = #{scenarinoStartDate,jdbcType=TIMESTAMP},
+      SCENARINO_END_DATE = #{scenarinoEndDate,jdbcType=TIMESTAMP},
       SCENARINO_STATUS = #{scenarinoStatus,jdbcType=DECIMAL},
       MISSION_ID = #{missionId,jdbcType=DECIMAL},
-      SCENARINO_ADD_TIME = #{scenarinoAddTime,jdbcType=DATE},
+      SCENARINO_ADD_TIME = #{scenarinoAddTime,jdbcType=TIMESTAMP},
       USER_ID = #{userId,jdbcType=DECIMAL},
-      UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
-      DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       BASIS_SCENARINO_ID = #{basisScenarinoId,jdbcType=DECIMAL},
-      BASIS_TIME = #{basisTime,jdbcType=DATE},
+      BASIS_TIME = #{basisTime,jdbcType=TIMESTAMP},
       CONTRAST_SCENARINO_ID = #{controstScenarinoId,jdbcType=DECIMAL},
       SCEN_TYPE = #{scenType,jdbcType=VARCHAR},
-      PATH_DATE = #{pathDate,jdbcType=DATE},
+      PATH_DATE = #{pathDate,jdbcType=TIMESTAMP},
       SPINUP = #{spinUp,jdbcType=DECIMAL}
     where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
   </update>
@@ -428,10 +428,10 @@
        and SCENARINO_NAME = #{scenarinoName,jdbcType=OTHER}
       </if>
       <if test="scenarinoStartDate != null" >
-       and SCENARINO_START_DATE = #{scenarinoStartDate,jdbcType=DATE}
+       and SCENARINO_START_DATE = #{scenarinoStartDate,jdbcType=TIMESTAMP}
       </if>
       <if test="scenarinoEndDate != null" >
-       and SCENARINO_END_DATE = #{scenarinoEndDate,jdbcType=DATE}
+       and SCENARINO_END_DATE = #{scenarinoEndDate,jdbcType=TIMESTAMP}
       </if>
       <if test="scenarinoStatus != null" >
        and SCENARINO_STATUS = #{scenarinoStatus,jdbcType=DECIMAL}
@@ -440,25 +440,25 @@
        and MISSION_ID = #{missionId,jdbcType=DECIMAL}
       </if>
       <if test="scenarinoAddTime != null" >
-       and SCENARINO_ADD_TIME = #{scenarinoAddTime,jdbcType=DATE}
+       and SCENARINO_ADD_TIME = #{scenarinoAddTime,jdbcType=TIMESTAMP}
       </if>
       <if test="userId != null" >
        and USER_ID = #{userId,jdbcType=DECIMAL}
       </if>
       <if test="updateTime != null" >
-       and UPDATE_TIME = #{updateTime,jdbcType=DATE}
+       and UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
       </if>
       <if test="isEffective != null" >
        and IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR}
       </if>
       <if test="deleteTime != null" >
-       and DELETE_TIME = #{deleteTime,jdbcType=DATE}
+       and DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP}
       </if>
        <if test="basisScenarinoId != null" >
        and BASIS_SCENARINO_ID = #{basisScenarinoId,jdbcType=DECIMAL}
       </if>
        <if test="basisTime != null" >
-       and BASIS_TIME = #{basisTime,jdbcType=DATE}
+       and BASIS_TIME = #{basisTime,jdbcType=TIMESTAMP}
       </if>
        <if test="controstScenarinoId != null" >
        and CONTRAST_SCENARINO_ID = #{controstScenarinoId,jdbcType=DECIMAL}
@@ -467,7 +467,7 @@
        and SCEN_TYPE = #{scenType,jdbcType=VARCHAR}
       </if>
        <if test="pathDate != null" >
-       and PATH_DATE = #{pathDate,jdbcType=DATE}
+       and PATH_DATE = #{pathDate,jdbcType=TIMESTAMP}
       </if>
       <if test="spinUp != null" >
        and SPINUP = #{spinUp,jdbcType=DECIMAL}
