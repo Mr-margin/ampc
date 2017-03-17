@@ -159,7 +159,7 @@ public class MissionAndScenarinoController {
 			//任务的开始时间
 			String startDate=data.get("missionStartDate").toString();
 			String endDate=data.get("missionEndDate").toString();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date missionStartDate=sdf.parse(startDate);
 			Date missionEndDate=sdf.parse(endDate);
 			mission.setMissionStartDate(missionStartDate);
@@ -607,17 +607,12 @@ public class MissionAndScenarinoController {
 						map1.put("userId", area.getUserId());
 						long areId=this.tScenarinoAreaMapper.selectAreaIdByParam(map1);
 						//情景开始时间
-						Date startDate=new Date(data.get("scenarinoStartDate").toString());
+						String start_Date=data.get("scenarinoStartDate").toString();
 						//情景结束时间
-						Date endDate=new Date(data.get("scenarinoEndDate").toString());
-						// 时间操作，将情景结束时间减少一个小时
-						Calendar cal = Calendar.getInstance();
-						cal.setTime(endDate);
-						cal.add(Calendar.HOUR, - 1);
-						String addTimeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-								.format(cal.getTime());
+						String endDate=data.get("scenarinoEndDate").toString();
 						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-						Date timeEndDate = sdf.parse(addTimeDate);
+						Date timeEndDate = sdf.parse(endDate);
+						Date startDate=sdf.parse(start_Date);
 						//新建时段
 						TTime add_tTime = new TTime();
 						add_tTime.setAreaId(areId);
@@ -838,7 +833,7 @@ public class MissionAndScenarinoController {
 			//转换类型
 			Date mission=tMission.getMissionStartDate();
 			
-			SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String times=formatter.format(scenar);
 			String missiondate=formatter.format(mission);
 			JSONArray arr=new JSONArray();
@@ -881,6 +876,7 @@ public class MissionAndScenarinoController {
 		return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
+	//查询结束日期
 	@RequestMapping("scenarino/find_endTime")
 	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
 	public AmpcResult find_endTime(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
@@ -894,7 +890,7 @@ public class MissionAndScenarinoController {
 			Integer predictionTime=tUser.getPredictionTime();
 			//获取当前时间
 			Date date=new Date();
-			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			JSONObject obj=new JSONObject();
 			if(scenType.equals("1")){
 			Calendar cal = Calendar.getInstance();
@@ -928,7 +924,7 @@ public class MissionAndScenarinoController {
 		try{
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
-			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Long missionId=Long.valueOf(data.get("missionId").toString());//任务id
 			Long userId=Long.valueOf(data.get("userId").toString());//用户id
 			String missionType=data.get("missionType").toString();//任务类型
