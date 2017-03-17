@@ -1,5 +1,13 @@
 $(function(){
-	//	创建ECharts图表
+
+	timeBar();
+    
+	//getChartData(); //与java后台交互
+
+});
+//	创建ECharts图表
+function timeBar(){
+	
 	var myChart1 = echarts.init(document.getElementById('mainDiv1'));
 	var myChart2 = echarts.init(document.getElementById('mainDiv2'));
 	var myChart3 = echarts.init(document.getElementById('mainDiv3'));
@@ -213,26 +221,30 @@ $(function(){
     myChart13.setOption(option);
     myChart14.setOption(option);
     //图标改成自适应大小
-    window.onresize = myChart1.resize;
-    window.onresize = myChart2.resize;
-    window.onresize = myChart3.resize;
-    window.onresize = myChart4.resize;
-    window.onresize = myChart5.resize;
-    window.onresize = myChart6.resize;
-    window.onresize = myChart7.resize;
-    window.onresize = myChart8.resize;
-    window.onresize = myChart9.resize;
-    window.onresize = myChart10.resize;
-    window.onresize = myChart11.resize;
-    window.onresize = myChart12.resize;
-    window.onresize = myChart13.resize;
-    window.onresize = myChart14.resize;
+    window.addEventListener("resize",function(){
+    	
+    	myChart1.resize();
+    	myChart2.resize();
+    	myChart3.resize();
+    	myChart4.resize();
+    	myChart5.resize();
+    	myChart6.resize();
+    	myChart7.resize();
+    	myChart8.resize();
+    	myChart9.resize();
+    	myChart10.resize();
+    	myChart11.resize();
+    	myChart12.resize();
+    	myChart13.resize();
+    	myChart14.resize();
+    	
+    });
     
-	//getChartData(); //与java后台交互
+	
+}
 
-});
 
-
+//测试
 /*function getChartData(){
 	var options = myChart.getOption();
 	$.ajax({
