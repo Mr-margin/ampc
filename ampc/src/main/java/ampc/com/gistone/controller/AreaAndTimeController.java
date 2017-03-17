@@ -109,13 +109,13 @@ public class AreaAndTimeController {
 		Long userId =Long.parseLong(data.get("userId").toString());//用户id
 		Long selectTimeId = Long.parseLong(data.get("selectTimeId").toString());//添加时段处在的时段id
 		String imeDate = data.get("addTimeDate").toString();//新增时段时间
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date timeDate=sdf.parse(imeDate);
 		// 时间操作，结束时间与开始时间的数据有一位数间隔，需要时间计算
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(timeDate);
 		cal.add(Calendar.SECOND, - 1);
-		String addTimeDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+		String addTimeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 				.format(cal.getTime());
 		
 		Date timeEndDate = sdf.parse(addTimeDate);
