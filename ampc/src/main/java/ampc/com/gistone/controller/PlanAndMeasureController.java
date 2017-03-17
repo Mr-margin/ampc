@@ -36,6 +36,7 @@ import ampc.com.gistone.database.inter.TTimeMapper;
 import ampc.com.gistone.database.model.TMeasureExcel;
 import ampc.com.gistone.database.model.TPlan;
 import ampc.com.gistone.database.model.TPlanMeasure;
+import ampc.com.gistone.database.model.TPlanMeasureWithBLOBs;
 import ampc.com.gistone.database.model.TQueryExcel;
 import ampc.com.gistone.database.model.TSectorExcel;
 import ampc.com.gistone.database.model.TTime;
@@ -230,8 +231,8 @@ public class PlanAndMeasureController {
 			TPlanMeasure tPlanMeasure=new TPlanMeasure();
 			tPlanMeasure.setPlanId(planId);
 			tPlanMeasure.setUserId(userId);
-			List<TPlanMeasure> tlist=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
-			for(TPlanMeasure t:tlist){
+			List<TPlanMeasureWithBLOBs> tlist=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
+			for(TPlanMeasureWithBLOBs t:tlist){
 				//如果预案措施中的子措施为空 则删除掉该条预案措施
 				if(t.getMeasureContent().equals("-1")||t.getMeasureContent()==null){
 					int status=tPlanMeasureMapper.deleteByPrimaryKey(t.getPlanMeasureId());
@@ -324,11 +325,11 @@ public class PlanAndMeasureController {
 					tPlanMeasure.setPlanId(planId);
 					tPlanMeasure.setUserId(userId);
 					//根据预案措施对象的条件查询所有的预案措施满足条件的信息
-					List<TPlanMeasure> planMeasureList=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
+					List<TPlanMeasureWithBLOBs> planMeasureList=tPlanMeasureMapper.selectByEntity(tPlanMeasure);
 					if(planMeasureList.size()>0){
 						//循环结果 并复制信息 新建
-						for(TPlanMeasure t:planMeasureList){
-							TPlanMeasure newtPlanMeasure=new TPlanMeasure();
+						for(TPlanMeasureWithBLOBs t:planMeasureList){
+							TPlanMeasureWithBLOBs newtPlanMeasure=new TPlanMeasureWithBLOBs();
 							newtPlanMeasure.setMeasureId(t.getMeasureId());
 							newtPlanMeasure.setPlanId(newPlanId);
 							newtPlanMeasure.setSectorName(t.getSectorName());
@@ -581,7 +582,7 @@ public class PlanAndMeasureController {
 			resultMap.put("measureList", mlist);
 			resultMap.put("query", tqeList);
 			if(planMeasureId!=null){
-				TPlanMeasure tPlanMeasure=tPlanMeasureMapper.selectByPrimaryKey(planMeasureId);
+				TPlanMeasureWithBLOBs tPlanMeasure=tPlanMeasureMapper.selectByPrimaryKey(planMeasureId);
 				resultMap.put("measureContent", tPlanMeasure.getMeasureContent());
 			}
 			//返回结果
@@ -618,12 +619,24 @@ public class PlanAndMeasureController {
 			//预案措施中的子措施Json串、
 			System.out.println(data.get("measureContent").toString());
 			String measureContent=data.get("measureContent").toString();
-			TPlanMeasure tPlanMeasure=new TPlanMeasure();
+			TPlanMeasureWithBLOBs tPlanMeasure=new TPlanMeasureWithBLOBs();
 			tPlanMeasure.setMeasureId(measureId);
 			tPlanMeasure.setPlanId(planId);
 			tPlanMeasure.setSectorName(sectorName);
 			tPlanMeasure.setUserId(userId);
 			tPlanMeasure.setMeasureContent(measureContent);
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			
 			/**
 			 * TODO  需要自己解析得到减排比例
@@ -696,7 +709,7 @@ public class PlanAndMeasureController {
 	
 	
 	/**
-	 * TODO  减排计算
+	 * 
 	 * 措施汇总中数据的减排计算
 	 * @author WangShanxi
 	 */
@@ -735,17 +748,28 @@ public class PlanAndMeasureController {
 				cmap.put("oopp", HashMap.class);
 				//将json对象转换成Java对象
 				MeasureContentUtil mcu= (MeasureContentUtil)JSONObject.toBean(jsonobject,MeasureContentUtil.class,cmap);
+				//写入BigIndex
 				result.setBigIndex(mcu.getBigIndex());
+				//写入SmallIndex
 				result.setSmallIndex(mcu.getSmallIndex());
+				//写入唯一Id 是预案措施Id + 预案名称  
 				result.setGroupName(pm.get("planMeasureId").toString()+pm.get("planName"));
+				//写入预案开始时间
 				result.setStart(pm.get("planStartTime").toString().substring(0,pm.get("planStartTime").toString().indexOf(".")));
+				//写入预案结束时间
 				result.setEnd(pm.get("planEndTime").toString().substring(0,pm.get("planEndTime").toString().indexOf(".")));
+				//获取Json中的Filter
 				List<Map> lms=mcu.getFilters();
+				//获取Json中的子措施汇总
 				List<Map> table1=mcu.getTable1();
+				//创建要减排分析中的子项
 				List<Object> opList=new ArrayList<Object>();
+				//循环Filter 因为Filter中的项 和 子措施汇总的是相同的 所以循环一个
 				for(int i=0;i<lms.size();i++){
 					Map opresult=new HashMap();
+					//获取对应Filter中的子措施
 					Map t1map=table1.get(i);
+					//获取用户修改的OP
 					Map opmap=(Map)t1map.get("oopp");
 					opresult.put("filter", lms.get(i));
 					opresult.put("l4sFilter", pm.get("l4sFilter"));
@@ -760,11 +784,33 @@ public class PlanAndMeasureController {
 				result.setOps(opList);
 				jpList.add(result);
 			}
-			JSONArray json = JSONArray.fromObject(jpList);//将java对象转换为json对象
+			//将java对象转换为json对象
+			JSONArray json = JSONArray.fromObject(jpList);
 			String str = json.toString();
 			System.out.println(str);
+			//调用减排计算接口 并获取结果Json
 			String getResult=ClientUtil.doPost("http://192.168.1.53:8089/calc/submit/subSector",str);
 			System.out.println(getResult);
+			
+			/**
+			 * TODO  要保存减排结果
+			 */
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			return AmpcResult.ok(getResult);
 		}catch(Exception e){
 			e.printStackTrace();

@@ -25,8 +25,6 @@ public class TPlanMeasure {
 
     private Long userId;
 
-    private String measureContent;
-
     public Long getPlanMeasureId() {
         return planMeasureId;
     }
@@ -113,13 +111,5 @@ public class TPlanMeasure {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public String getMeasureContent() {
-        return measureContent;
-    }
-
-    public void setMeasureContent(String measureContent) {
-        this.measureContent = measureContent == null ? null : measureContent.trim();
     }
 }

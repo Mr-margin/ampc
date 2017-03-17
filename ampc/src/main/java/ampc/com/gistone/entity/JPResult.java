@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 /**
- * 减排计算最后结果类
+ * 减排计算最后结果类   用来调用减排计算接口 传值的帮助类
  * @author WangShanxi
  * @version v.0.1
  * @date 2017年3月7日

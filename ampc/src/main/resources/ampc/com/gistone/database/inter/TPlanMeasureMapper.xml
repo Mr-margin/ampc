@@ -14,18 +14,28 @@
     <result column="RATIO" property="ratio" jdbcType="VARCHAR" />
     <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.database.model.TPlanMeasure" extends="BaseResultMap" >
+  <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.database.model.TPlanMeasureWithBLOBs" extends="BaseResultMap" >
     <result column="MEASURE_CONTENT" property="measureContent" jdbcType="CLOB" />
+    <result column="TABLE_POOL" property="tablePool" jdbcType="CLOB" />
+    <result column="TABLE_ITEM" property="tableItem" jdbcType="CLOB" />
+    <result column="TABLE_RATIO" property="tableRatio" jdbcType="CLOB" />
   </resultMap>
   <sql id="Base_Column_List" >
     PLAN_MEASURE_ID, PLAN_ID, SECTOR_NAME, MEASURE_ID, ADD_TIME, IS_EFFECTIVE, DELETE_TIME, 
     IMPLEMENTATION_SCOPE, REDUCTION_RATIO, RATIO, USER_ID
   </sql>
   <sql id="Blob_Column_List" >
-    MEASURE_CONTENT
+    MEASURE_CONTENT, TABLE_POOL, TABLE_ITEM, TABLE_RATIO
   </sql>
-  
-  <!--根据条件查询措施汇总的信息Map  -->
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ <!--根据条件查询措施汇总的信息Map  -->
   <resultMap id="MapByQuery" type="hashMap" >
     <id column="PLAN_MEASURE_ID" property="planMeasureId" jdbcType="DECIMAL" />
     <result column="PLAN_ID" property="planId" jdbcType="DECIMAL" />
@@ -133,9 +143,7 @@
   		</foreach>
   </select>
   
-  
-  
-  
+  <!-- 根据对象中的条件查询数据 -->
   <select id="selectByEntity" resultMap="ResultMapWithBLOBs" parameterType="ampc.com.gistone.database.model.TPlanMeasure" >
     select 
     <include refid="Base_Column_List" />
@@ -169,38 +177,42 @@
       		</if>
   </select>
   
+  <!-- 根据预案ID 删除对应的所有预案措施 -->
    <delete id="deleteByPlanId" parameterType="java.lang.Long" >
     delete from T_PLAN_MEASURE
     where PLAN_ID = #{planId,jdbcType=DECIMAL}
   </delete>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -213,19 +225,21 @@
     delete from T_PLAN_MEASURE
     where PLAN_MEASURE_ID = #{planMeasureId,jdbcType=DECIMAL}
   </delete>
-  <insert id="insert" parameterType="ampc.com.gistone.database.model.TPlanMeasure" >
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TPlanMeasureWithBLOBs" >
     insert into T_PLAN_MEASURE (PLAN_MEASURE_ID, PLAN_ID, SECTOR_NAME, 
       MEASURE_ID, ADD_TIME, IS_EFFECTIVE, 
       DELETE_TIME, IMPLEMENTATION_SCOPE, REDUCTION_RATIO, 
-      RATIO, USER_ID, MEASURE_CONTENT
+      RATIO, USER_ID, MEASURE_CONTENT, 
+      TABLE_POOL, TABLE_ITEM, TABLE_RATIO
       )
     values (#{planMeasureId,jdbcType=DECIMAL}, #{planId,jdbcType=DECIMAL}, #{sectorName,jdbcType=OTHER}, 
       #{measureId,jdbcType=DECIMAL}, #{addTime,jdbcType=TIMESTAMP}, #{isEffective,jdbcType=VARCHAR}, 
       #{deleteTime,jdbcType=TIMESTAMP}, #{implementationScope,jdbcType=VARCHAR}, #{reductionRatio,jdbcType=VARCHAR}, 
-      #{ratio,jdbcType=VARCHAR}, #{userId,jdbcType=DECIMAL}, #{measureContent,jdbcType=CLOB}
+      #{ratio,jdbcType=VARCHAR}, #{userId,jdbcType=DECIMAL}, #{measureContent,jdbcType=CLOB}, 
+      #{tablePool,jdbcType=CLOB}, #{tableItem,jdbcType=CLOB}, #{tableRatio,jdbcType=CLOB}
       )
   </insert>
-  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TPlanMeasure" >
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TPlanMeasureWithBLOBs" >
     insert into T_PLAN_MEASURE
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="planMeasureId != null" >
@@ -264,8 +278,17 @@
       <if test="measureContent != null" >
         MEASURE_CONTENT,
       </if>
+      <if test="tablePool != null" >
+        TABLE_POOL,
+      </if>
+      <if test="tableItem != null" >
+        TABLE_ITEM,
+      </if>
+      <if test="tableRatio != null" >
+        TABLE_RATIO,
+      </if>
     </trim>
-    <trim prefix="values(" suffix=")" suffixOverrides="," >
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="planMeasureId != null" >
         #{planMeasureId,jdbcType=DECIMAL},
       </if>
@@ -302,9 +325,18 @@
       <if test="measureContent != null" >
         #{measureContent,jdbcType=CLOB},
       </if>
+      <if test="tablePool != null" >
+        #{tablePool,jdbcType=CLOB},
+      </if>
+      <if test="tableItem != null" >
+        #{tableItem,jdbcType=CLOB},
+      </if>
+      <if test="tableRatio != null" >
+        #{tableRatio,jdbcType=CLOB},
+      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TPlanMeasure" >
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TPlanMeasureWithBLOBs" >
     update T_PLAN_MEASURE
     <set >
       <if test="planId != null" >
@@ -340,10 +372,19 @@
       <if test="measureContent != null" >
         MEASURE_CONTENT = #{measureContent,jdbcType=CLOB},
       </if>
+      <if test="tablePool != null" >
+        TABLE_POOL = #{tablePool,jdbcType=CLOB},
+      </if>
+      <if test="tableItem != null" >
+        TABLE_ITEM = #{tableItem,jdbcType=CLOB},
+      </if>
+      <if test="tableRatio != null" >
+        TABLE_RATIO = #{tableRatio,jdbcType=CLOB},
+      </if>
     </set>
     where PLAN_MEASURE_ID = #{planMeasureId,jdbcType=DECIMAL}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="ampc.com.gistone.database.model.TPlanMeasure" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="ampc.com.gistone.database.model.TPlanMeasureWithBLOBs" >
     update T_PLAN_MEASURE
     set PLAN_ID = #{planId,jdbcType=DECIMAL},
       SECTOR_NAME = #{sectorName,jdbcType=OTHER},
@@ -355,7 +396,10 @@
       REDUCTION_RATIO = #{reductionRatio,jdbcType=VARCHAR},
       RATIO = #{ratio,jdbcType=VARCHAR},
       USER_ID = #{userId,jdbcType=DECIMAL},
-      MEASURE_CONTENT = #{measureContent,jdbcType=CLOB}
+      MEASURE_CONTENT = #{measureContent,jdbcType=CLOB},
+      TABLE_POOL = #{tablePool,jdbcType=CLOB},
+      TABLE_ITEM = #{tableItem,jdbcType=CLOB},
+      TABLE_RATIO = #{tableRatio,jdbcType=CLOB}
     where PLAN_MEASURE_ID = #{planMeasureId,jdbcType=DECIMAL}
   </update>
   <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TPlanMeasure" >

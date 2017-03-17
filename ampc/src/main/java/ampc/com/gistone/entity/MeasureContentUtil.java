@@ -12,11 +12,17 @@ import java.util.Map;
  * @date 2017年3月16日
  */
 public class MeasureContentUtil {
+	//清单标识
 	private String bigIndex;
+	//行业标识
 	private String smallIndex;
+	//过滤条件
 	private List<Map> filters=new ArrayList<Map>();
+	//一共要控制的项集合
 	private Map summary=new HashMap();
+	//放着 汇总 剩余 和 点源的 集合
 	private List<Map> table=new ArrayList<Map>();
+	//放着 子措施 的数据
 	private List<Map> table1=new ArrayList<Map>();
 	public List<Map> getTable1() {
 		return table1;
