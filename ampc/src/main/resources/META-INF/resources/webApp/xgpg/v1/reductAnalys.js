@@ -1,7 +1,27 @@
 $(function(){
+	bar();
+	pie();
 	
+	$("#tradeId").change(function(){
+		
+		pie();
+		
+	});
+	
+	$("#measureId").change(function(){
+		
+		pie();
+	});
+	/**
+	 *设置导航条信息
+	 */
+	//$("#crumb").html('<a href="#" class="col-sm-2 col-sm-offset-10" style="padding-left:15px;padding-right: 15px;margin-top:-10px;"><span id="">可选情景</apan></a>');
+
+
+})
+//柱状图
+function bar () {
 	var myPfChart = echarts.init(document.getElementById('pfDiv1'));
-	
 	var option = {
 		    title : {
 		        text: '减排图表',
@@ -20,21 +40,17 @@ $(function(){
 		        }
 		    },
 		    legend: {
-		        selectedMode:false,
-		        data:['实际排放量', '排放量']
+		    	//不触动
+		        selectedMode:true,
+		        data:['实际排放量', '减排量']
 		    },
-		  /*  toolbox: {
-		        show : true,
-		        feature : {
-		            mark : {show: true},
-		            dataView : {show: true, readOnly: false},
-		            restore : {show: true},
-		            saveAsImage : {show: true}
-		        }
-		    },*/
+		    grid:{
+		    		show:true
+		    },
 		    calculable : true,
 		    xAxis : [
 		        {
+		        	show: true, 
 		            type : 'category',
 		            data : ['2016-11-17','2016-11-22','2016-11-27','2016-12-02','2016-12-07','2016-11-10']
 		        }
@@ -42,7 +58,10 @@ $(function(){
 		    yAxis : [
 		        {
 		            type : 'value',
-		            boundaryGap: [0, 0.1]
+		            name : '吨',
+		            boundaryGap: [0, 0.1],
+		            splitArea : {show : true},
+		            show:true
 		        }
 		    ],
 		    series : [
@@ -65,14 +84,14 @@ $(function(){
 		            data:[260, 200, 220, 120, 100, 80]
 		        },
 		        {
-		            name:'排放量',
+		            name:'减排量',
 		            type:'bar',
 		            stack: 'sum',
 		            itemStyle: {
 		                normal: {
 		                    color: '#fff',
-		                    borderColor: 'tomato',
-		                    barBorderWidth: 8,
+		                    barBorderColor: 'tomato',
+		                    barBorderWidth: 4,
 		                    barBorderRadius:0,
 		                    label : {
 		                        show: true, 
@@ -94,7 +113,27 @@ $(function(){
 		        }
 		    ]
 		};
-	
+		myPfChart.on('click', function (params) {
+		console.log(params);
+		pie();
+		
+	});
+		//减排量echarts
+		myPfChart.setOption(option);
+		//自适应屏幕大小变化
+		window.addEventListener("resize",function(){
+
+			 myPfChart.resize();
+
+		 });
+
+
+
+}
+
+//行业措施饼状图
+function  pie () {
+
 	var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
 	var option2 = {
 		    title : {
@@ -141,16 +180,9 @@ $(function(){
 		        }
 		    ]
 		};
-	
-	
-			//减排量echarts
-			myPfChart.setOption(option);
-			window.onresize = myPfChart.resize;
 			//行业措施分担饼状图
 			myhycsChart.setOption(option2);
 			window.onresize = myhycsChart.resize;	
 
-			
-			
-})
 
+}
