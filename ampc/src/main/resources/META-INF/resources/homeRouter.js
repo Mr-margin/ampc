@@ -33,8 +33,8 @@ vipspa.start({
       
       
     '/xgpg_v1': {      //效果评估-减排分析
-        templateUrl: '',
-        controller: ''
+        templateUrl: 'webApp/xgpg/v1/reductAnalys.html',
+        controller: 'webApp/xgpg/v1/reductAnalys.js'
     },
     '/xgpg_v2': {      //效果评估-网格化排放
     	templateUrl: '',
