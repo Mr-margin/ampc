@@ -109,13 +109,13 @@ public class AreaAndTimeController {
 		Long userId =Long.parseLong(data.get("userId").toString());//用户id
 		Long selectTimeId = Long.parseLong(data.get("selectTimeId").toString());//添加时段处在的时段id
 		String imeDate = data.get("addTimeDate").toString();//新增时段时间
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date timeDate=sdf.parse(imeDate);
 		// 时间操作，结束时间与开始时间的数据有一位数间隔，需要时间计算
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(timeDate);
-		cal.add(Calendar.HOUR, - 1);
-		String addTimeDate = new SimpleDateFormat("yyyy/MM/dd HH")
+		cal.add(Calendar.SECOND, - 1);
+		String addTimeDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
 				.format(cal.getTime());
 		
 		Date timeEndDate = sdf.parse(addTimeDate);
@@ -188,13 +188,13 @@ public class AreaAndTimeController {
 		Long afterTimeId=Long.parseLong(data.get("afterTimeId").toString());//修改时段后一个的时段Id
 		Long userId=Long.parseLong(data.get("userId").toString());//用户id
 		String teDate=data.get("updateDate").toString();//时段的修改时间
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date updateDate=sdf.parse(teDate);
 		//修改时间减一个小时作为前一个时段的结束时间
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(updateDate);
-		cal.add(Calendar.HOUR, - 1);
-		String addTimeDate = new SimpleDateFormat("yyyy-MM-dd HH")
+		cal.add(Calendar.SECOND, - 1);
+		String addTimeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 				.format(cal.getTime());
 		
 		Date timeEndDate = sdf.parse(addTimeDate);
@@ -278,7 +278,7 @@ public class AreaAndTimeController {
 		String endDate=data.get("beforeTimeId").toString();//删除时段的结束时间
 		//Long userId=Long.parseLong(data.get("userId").toString());//用户的id
 		Long planId=Long.parseLong(data.get("planId").toString());//预案id
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date timeEndDate=sdf.parse(endDate);
 		//修改要删除时段的状态
 		TTime delete_time = new TTime();
@@ -344,7 +344,7 @@ public class AreaAndTimeController {
 		String startDate=data.get("startDate").toString();//删除时段的结束时间
 		Long userId=Long.parseLong(data.get("userId").toString());//用户的id
 		String status=data.get("status").toString();//预案id
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date timeEndDate=sdf.parse(endDate);
 		Date timeStartDate=sdf.parse(startDate);
 		int updateStatus=0;//合并时段修改状态（0为修改失败）
@@ -689,17 +689,10 @@ public class AreaAndTimeController {
 					String scenarinoStartDate=data.get("scenarinoStartDate").toString();
 					//情景结束时间
 					String scenarinoEndDate=data.get("scenarinoEndDate").toString();
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH");
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 					Date endDate=sdf.parse(scenarinoEndDate);
 					Date startDate=sdf.parse(scenarinoStartDate);
 					// 时间操作，将情景结束时间减少一个小时
-					Calendar cal = Calendar.getInstance();
-					cal.setTime(endDate);
-					cal.add(Calendar.HOUR, - 1);
-					String addTimeDate = new SimpleDateFormat("yyyy/MM/dd HH")
-							.format(cal.getTime());
-					
-					Date timeEndDate = sdf.parse(addTimeDate);
 					//新建时段
 					TTime add_tTime = new TTime();
 					add_tTime.setAreaId(areId);
@@ -707,7 +700,7 @@ public class AreaAndTimeController {
 					add_tTime.setMissionId(Long.parseLong(data.get("missionId").toString()));
 					add_tTime.setScenarinoId(area.getScenarinoDetailId());
 					add_tTime.setTimeStartDate(startDate);
-					add_tTime.setTimeEndDate(timeEndDate);
+					add_tTime.setTimeEndDate(endDate);
 				    result = tTimeMapper.insertSelective(add_tTime);
 				    //判断添加时段是否成功
 				    JSONObject obj=new JSONObject();
