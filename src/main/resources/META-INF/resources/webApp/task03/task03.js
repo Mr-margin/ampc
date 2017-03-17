@@ -135,6 +135,7 @@ var ty = "";
 var temp_val_v1 = {};//单次查询的缓存
 var xishu_temp = [];//需要填写的内容
 var xishu_temp_ch = [];//需要填写的内容中文
+var xishu_temp_v = [];//需要填写的内容默认值
 //var show_lenght =[];//要显示的列长度
 var measureame_temp = "";//措施名称
 var measureame_temp_en = "";//措施名称英文
@@ -298,6 +299,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 			
 			xishu_temp = [];//需要填写的内容
 			xishu_temp_ch = [];//需要填写的内容中文
+			xishu_temp_v = [];
 			
 			var xishuMO = "";//修改的表单
 			//要修改的列
@@ -306,11 +308,22 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 					
 					xishu_temp.push(col.nameen);
 					xishu_temp_ch.push(col.namech);
+					xishu_temp_v.push(col.value);
 					
 					xishuMO += '<div class="col-md-6" style="margin-top: 10px;">';
 					xishuMO += '<div class="input-group m-b" style="margin-bottom: 0px">';
 					xishuMO += '<span class="input-group-addon" style="border: 1px solid #E5E6E7;">'+col.namech+'</span>';
-					xishuMO += '<input type="text" class="form-control" id="'+col.nameen+'" name="'+col.nameen+'">';
+					
+					var step="";
+					if(col.value.toString().indexOf(".")>=0){
+						var tthj = "";
+						for(var i = 0;i<col.value.toString().split(".")[1].length-1;i++){
+							tthj += "0";
+						}
+						step = 'step="0.'+tthj+'1"';
+					}
+					
+					xishuMO += '<input type="number" class="form-control" min="'+col.minValue+'" '+step+' max="'+col.maxValue+'" id="'+col.nameen+'" name="'+col.nameen+'" value="'+col.value+'">';
 					xishuMO += '</div></div>';
 				});
 				$("#xishuMO").html(xishuMO);
@@ -328,9 +341,8 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 			});
 			
 			//添加区域4的结果表格
-			console.log(JSON.stringify({"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName,"summary":sc_val.summary}));
 			ajaxPost_w(jianpaiUrl+'/search/summarySource',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName,"summary":sc_val.summary}).success(function(da){
-				console.log(JSON.stringify(da));
+//				console.log(JSON.stringify(da));
 				
 				if(da.status == 'success'){
 					var columns = [];
@@ -345,7 +357,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 					columns.push({field: 'f1', title: '措施', align: 'center'});
 					columns.push({field: 'f2', title: '点源实施范围', align: 'center'});
 					var b_data = [];
-					var zz = {"f1": "汇总", "f2" : "0/"+da.data.P[0].count}, pp = {"f1": "剩余点源", "f2" : da.data.P[0].count}, ss = {"f1": "面源", "f2" : ""};
+					var zz = {"f1": "汇总", "f2" : "0/"+da.data.P[0].count}, pp = {"f1": "剩余点源", "f2" : da.data.P[0].count}, ss = {"f1": "面源", "f2" : "0"};
 					
 					$.each(res.data.measureColumn, function(i, vol) {
 						columns.push({field: vol.sectordocEtitle, title: vol.sectordocCtitle, align: 'center'});
@@ -701,97 +713,292 @@ function xishuMo(){
 	$("#xishuMOB").show();
 }
 
+var zicuoshi_up_index;//修改或者删除的时候记录的子措施的行号
+
 /**
  * 系数表单保存
  */
 function xishu_save(){
-	ajaxPost_w(jianpaiUrl+'/search/summary',sc_val).success(function(res){
-//		console.log(JSON.stringify(res));
-		if(res.status == 'success'){
+	
+	var ttwr = true;
+	//值域校验
+	$.each(xishu_temp, function(i, vol) {
+		var min = parseFloat($("#"+vol).attr("min"));
+		var max = parseFloat($("#"+vol).attr("max"));
+		var vv = parseFloat($("#"+vol).val());
+		if(vv < min || vv > max){
+			ttwr = false;
+			$("#"+vol).addClass("erroe_input");//加红色边框
+		}
+	});
+	
+	if(ttwr){
+		
+		if(zicuoshi_up_index == null){//添加新的子措施
+			ajaxPost_w(jianpaiUrl+'/search/summary',sc_val).success(function(res){
+//				console.log(JSON.stringify(res));
+				if(res.status == 'success'){
+					
+					var ttr = {};
+					
+					var re1 = new RegExp("{","g");
+					var re2 = new RegExp("}","g");
+					var re3 = new RegExp("\"","g");
+					
+					var showjieguo = {};
+					$.each(sc_val.filters[sc_val.filters.length-1], function(k, vol) {//循环最后一个条件，这个条件是要添加显示的条件
+						$.each(query, function(i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
+							if(col.queryEtitle == k){
+								showjieguo[col.queryName] = vol;
+							}
+						});
+					});
+					
+					ttr.tiaojian = JSON.stringify(showjieguo).replace(re1, "").replace(re2, "").replace(re2, "");
+					ttr.f1 = measureame_temp;
+					ttr.f2 = res.data.count;
+					
+					$.each(sc_val.summary.sum, function(i, vol) {
+						ttr[vol] = Math.round(res.data[vol]);
+					});
+					$.each(xishu_temp, function(i, vol) {
+						ttr["psl_"+vol] = $("#"+vol).val();
+					});
+					
+					
+					
+					$('#show_zicuoshi_table').bootstrapTable('insertRow', {index: 1, row: ttr});
+					restion_table();
+					
+					//计算完成，将结果保存为上一级的缓存
+					sc_v1 = jQuery.extend(true, {}, sc_val);
+//					console.log(JSON.stringify(sc_v1));
+					
+					//输入框初始化
+					$.each(xishu_temp, function(i, vol) {
+						$("#"+vol).removeClass("erroe_input");//删除红色边框
+						$("#"+vol).val(xishu_temp_v[i]);
+					});
+					$('#metTable_point').bootstrapTable('destroy');//销毁现有表格数据
+					
+				}
+			});
 			
-			var ttr = {};
+		}else{//修改已有子措施
 			
-			var re1 = new RegExp("{","g");
-			var re2 = new RegExp("}","g");
-			var re3 = new RegExp("\"","g");
+			var up_row = {};
+			$.each(xishu_temp, function(i, vol) {
+				up_row["psl_"+vol] = $("#"+vol).val();
+			});
+			$('#show_zicuoshi_table').bootstrapTable('updateRow', {index: zicuoshi_up_index, row: up_row});
 			
-			var showjieguo = {};
-			$.each(sc_val.filters[sc_val.filters.length-1], function(k, vol) {//循环最后一个条件，这个条件是要添加显示的条件
-				$.each(query, function(i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
-					if(col.queryEtitle == k){
-						showjieguo[col.queryName] = vol;
+			restion_table();
+			
+			zicuoshi_up_index = null;
+			
+			//输入框初始化
+			$.each(xishu_temp, function(i, vol) {
+				$("#"+vol).removeClass("erroe_input");//删除红色边框
+				$("#"+vol).val(xishu_temp_v[i]);
+			});
+			
+		}
+		
+		$("#mic").hide();
+		$("#metTable_tools").hide();
+		$("#xishuMO").hide();
+		$("#xishuMOB").hide();
+		
+	}
+}
+
+
+
+/**
+ * 子措施的修改
+ */
+function zicuoshi_up(){
+	var row = $('#show_zicuoshi_table').bootstrapTable('getData');//所有的记录
+	zicuoshi_up_index = null;
+	
+	$.each(row, function(i, col) {
+		if(col.state == true){//如果被选中
+			
+			$.each(col, function(k, vol) {
+				if(k.indexOf("psl_")==0){
+					$("#"+k.substring(4,k.length)).val(vol);
+				}
+			});
+			//打开控制系数填写页面
+			$("#mic").hide();
+			$("#metTable_tools").hide();
+			$("#xishuMO").show();
+			$("#xishuMOB").show();
+			zicuoshi_up_index = i;//当前选中的行是要修改的子措施
+		}
+	});
+	
+}
+
+/**
+ * 子措施的删除
+ */
+function zicuoshi_de(){
+	var row = $('#show_zicuoshi_table').bootstrapTable('getData');//所有的记录
+	zicuoshi_up_index = null;
+	
+	$.each(row, function(i, col) {
+		if(row[i].state == true){//如果被选中
+//			$('#show_zicuoshi_table').bootstrapTable('removeByUniqueId', i);
+			
+			var ids = $.map($table.bootstrapTable('getSelections'), function (row) {
+                return row.id;
+            });
+			
+			
+			if(i > 1){
+				
+				console.log(JSON.stringify(sc_v1));
+				sc_v1.filters.splice(sc_v1.filters.length-i,1);
+				console.log(JSON.stringify(sc_v1));
+				
+				ajaxPost_w(jianpaiUrl+'/search/summaryLevel',sc_v1).success(function(res){
+					console.log(JSON.stringify(res));
+					if(res.status == 'success'){
+						
+						$.each(res.data, function(k, col) {//循环返回的数据
+							var ttr = {};
+							$.each(sc_val.summary.sum, function(i, vol) {
+								ttr[vol] = Math.round(col[vol]);
+							});
+							
+							$('#show_zicuoshi_table').bootstrapTable('updateRow', {index: (res.data.length-k)+1, row: ttr});
+							
+						});
 					}
 				});
-			});
+				
+			}else{//删除的是第一条，不用重新计算，只要把条件的最后一条删除即可
+				console.log(JSON.stringify(sc_v1));
+				sc_v1.filters.splice(sc_v1.filters.length,1);
+				console.log(JSON.stringify(sc_v1));
+			}
 			
-			ttr.tiaojian = JSON.stringify(showjieguo).replace(re1, "").replace(re2, "").replace(re2, "");
-			ttr.f1 = measureame_temp;
-			ttr.f2 = res.data.count;
+			restion_table();
 			
-			$.each(sc_val.summary.sum, function(i, vol) {
-				ttr[vol] = Math.round(res.data[vol]);
-			});
-			$.each(xishu_temp, function(i, vol) {
-				ttr["psl_"+vol] = $("#"+vol).val();
-			});
+		}
+	});
+}
+
+/**
+ * 重新计算并打开表格
+ */
+function restion_table(){
+	var row = $('#show_zicuoshi_table').bootstrapTable('getData');//添加后所有的数据
+	
+	var row_0_temp = jQuery.extend(true, {}, row[0]);
+	var row_1_temp = jQuery.extend(true, {}, row[row.length-1]);//面源
+	var row_2_temp = jQuery.extend(true, {}, row[row.length-2]);//剩余点源
+	
+	$.each(row, function(i, col) {//循环所有记录
+		var ttwre = false;//是否计算
+		var ttfg = true;//剩余点源和面源不需要做减法改变行内的值
+		if(col.f1 == "汇总"){
+			//汇总行不需要计算
+			ttwre = false;
+		}else{
+			if(col.f1 == "剩余点源" || col.f1 == "面源"){
+				//如果是剩余点源和面源，需要看是否填写了控制措施，填写控制措施的进入计算，否则不计算
+				$.each(row_0_temp, function(k, vol) {//循环所有的列
+					if(k.indexOf("psl_")==0){
+						if(col[k] != ""){//只要有一个控制措施有值，就进入计算
+							ttwre = true;
+							ttfg = false;
+						}
+//						if(!isNaN(vol)){
+//							ttwre = true;
+//							ttfg = true;
+//						}
+						
+					}
+				});
+			}else{
+				//直接计算
+				ttwre = true;
+			}
+		}
+		//开始计算
+		if(ttwre){
+			if(i == 1){//一个表格只要有一次初始化即可
+				//汇总行和剩余点源行初始化
+				$.each(row_0_temp, function(k, vol) {//循环汇总行
+					if(k.indexOf("psl_")==0 && k == "tiaojian" && k == "f1" && k == "state"){//第一个字母是下划线开头,中文条件字段，措施字段均不需要计算
+						//不需要计算
+					}else{
+						if(vol.toString().indexOf("/") >= 0){
+							var yuyu = vol.split("/");//汇总行的数据
+							row_0_temp[k] = "0/"+yuyu[1];
+							row_2_temp[k] = parseInt(yuyu[1])-parseInt(row_1_temp[k]);
+						}
+					}
+				});
+			}
 			
-			
-			
-			$('#show_zicuoshi_table').bootstrapTable('insertRow', {index: 1, row: ttr});
-			
-			var row = $('#show_zicuoshi_table').bootstrapTable('getData');//添加后所有的数据
-			var syd_i = row.length-2;//剩余点源的行号
-			
-			var row_0_temp = jQuery.extend(true, {}, row[0]);
-			var row_2_temp = jQuery.extend(true, {}, row[syd_i]);
 			
 			$.each(row_0_temp, function(k, vol) {//循环汇总行
 				if(k.indexOf("psl_")==0 && k == "tiaojian" && k == "f1" && k == "state"){//第一个字母是下划线开头,中文条件字段，措施字段均不需要计算
 					//不需要计算
 				}else{
-					if(vol.indexOf("/")>=0){
+					if(vol.toString().indexOf("/") >= 0){
 						var yuyu = vol.split("/");//汇总行的数据
-						row_0_temp[k] = (parseInt(yuyu[0])+parseInt(ttr[k]))+"/"+yuyu[1];
+						if(col.f1 == "剩余点源"){
+							row_0_temp[k] = (parseInt(yuyu[0])+parseInt(row_2_temp[k]))+"/"+yuyu[1];
+						}else{
+							row_0_temp[k] = (parseInt(yuyu[0])+parseInt(col[k]))+"/"+yuyu[1];
+						}
 						
-						var ttui = row_2_temp[k];//剩余点源的数据
-						row_2_temp[k] = parseInt(ttui)-parseInt(ttr[k]);
+						
+						if(ttfg){//只有普通的子措施时剩余点源才参与计算，剩余点源自己和面源参加到子措施时不能减少剩余点源的值
+							var ttui = row_2_temp[k];//剩余点源的数据
+							row_2_temp[k] = parseInt(ttui)-parseInt(col[k]);
+						}
+						
 					}
 				}
 			});
-			
-			$('#show_zicuoshi_table').bootstrapTable('updateRow', {index: 0, row: row_0_temp});
-			$('#show_zicuoshi_table').bootstrapTable('updateRow', {index: syd_i, row: row_2_temp});
-			
-			
-			$.each(sc_val.filters, function(i, vol) {
-				$('#show_zicuoshi_table').bootstrapTable('expandRow', i);
-			});
-			$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length);
-			$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length+1);
-			$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length+2);
-			
-			
-			
-			//计算完成，将结果保存为上一级的缓存
-			sc_v1 = jQuery.extend(true, {}, sc_val);
-			console.log(JSON.stringify(sc_v1));
 		}
+		
 	});
 	
-	$("#mic").hide();
-	$("#metTable_tools").hide();
-	$("#xishuMO").hide();
-	$("#xishuMOB").hide();
+	$('#show_zicuoshi_table').bootstrapTable('updateRow', {index: 0, row: row_0_temp});
+	$('#show_zicuoshi_table').bootstrapTable('updateRow', {index: row.length-2, row: row_2_temp});
+	
+	
+	$.each(sc_val.filters, function(i, vol) {
+		$('#show_zicuoshi_table').bootstrapTable('expandRow', i);
+	});
+	$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length);
+	$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length+1);
+	$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length+2);
 }
+
 
 /**
  * 系数表单不保存关闭
  */
 function xishu_close(){
-	$("#mic").show();
-	$("#metTable_tools").show();
-	$("#xishuMO").hide();
-	$("#xishuMOB").hide();
+	if(zicuoshi_up_index == null){
+		$("#mic").show();
+		$("#metTable_tools").show();
+		$("#xishuMO").hide();
+		$("#xishuMOB").hide();
+	}else{
+		$("#mic").hide();
+		$("#metTable_tools").hide();
+		$("#xishuMO").hide();
+		$("#xishuMOB").hide();
+		zicuoshi_up_index = null;
+	}
 }
 
 /**
@@ -836,11 +1043,11 @@ function create(){
 	paramsName.measureContent = JSON.stringify(sc_v1);
 	
 	ajaxPost('/measure/addOrUpdate_measure',paramsName).success(function(res){
-		console.log(JSON.stringify(sc_v1));
+//		console.log(JSON.stringify(sc_v1));
 	});
 	
-//	$("#zicuoshi_close").click();
 }
+
 
 
 /**
