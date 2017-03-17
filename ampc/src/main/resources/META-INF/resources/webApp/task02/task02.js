@@ -77,7 +77,6 @@ function updataCodeList() {
     for (var ad in showCode[i]) {
       if (i == 0) {
         $('.adcodeList').append(addP(ad, showCode[i][ad], i))
-        console.log(showCode)
       } else {
         for (var add in showCode[i][ad]) {
           $('.adcodeList').append(addP(add, showCode[i][ad][add], i))
@@ -106,7 +105,6 @@ function updataCodeList() {
   $('.cityNumber span').html(cityNum);
   $('.countyNumber span').html(countyNum);
 
-  console.log(proNum, cityNum, countyNum);
 }
 
 /*删除所选地区*/
@@ -158,6 +156,7 @@ function ajaxPost1(url, parameter) {
 initialize();
 
 
+var zTreeData;
 function initialize() {
 
   /**
@@ -186,10 +185,6 @@ function initialize() {
   $('.footerShow .rw span').html(qjMsg.rwName);
   $('.footerShow .qj span').html(qjMsg.qjName);
 
-  /*总时长*/
-  totalDate = qjMsg.qjEndDate - qjMsg.qjStartDate;
-  startDate = qjMsg.qjStartDate;
-
   var url = '/area/get_areaAndTimeList';
   var scenarino = ajaxPost(url, {
     scenarinoId: qjMsg.qjId,
@@ -217,12 +212,23 @@ function initialize() {
 
 
     showTimeline(allData);
-    console.log(allData)
     app2();
   });
 
-
+  initZTree()  //初始化zTree数据
 }
+
+/*初始化zTree数据*/
+function initZTree() {
+  var url = '/area/find_areas_new';
+  ajaxPost(url,{
+    userId:userId
+  }).success(function(res){
+    zTreeData = res.data;
+  });
+}
+
+
 var scenarino;
 /*请求区域及时段*/
 function getAreaAndTime() {
@@ -246,23 +252,12 @@ function getAreaAndTime() {
       }
     }
     showTimeline(allData);
-    console.log(allData)
   });
 }
 
-/*初始化zTree*/
-function initZTree(data) {
-  $.fn.zTree.init($("#adcodeTree"), zTreeSetting, data);
-}
-
-function sub() {
-  data.push($('input[type=text]').val());
-
-}
 
 /*删除区域*/
 function delArea(e) {
-  console.log(e);
   var indexPar = $('.areaTitle_con').index($(e).parents('.areaTitle_con'));
   var url = '/area/delete_area';
   //var areaIds = [allData[indexPar].areaId.toString()];
@@ -299,14 +294,9 @@ function delArea(e) {
 
 }
 
-/*点击时段编辑信息*/
-function editTimes() {
-
-}
 
 /*初始化日期插件*/
 function initEditTimeDate(s, e) {
-  console.log(s, e);
   $('#editDate').daterangepicker({
     singleDatePicker: true,  //显示单个日历
     timePicker: true,  //允许选择时间
@@ -351,6 +341,7 @@ function initEditTimeDate(s, e) {
   })
 }
 
+/*编辑时段时间*/
 function sunEditTimeDate() {
   var url = '/time/update_time';
   var after, before, date;
@@ -384,7 +375,6 @@ function sunEditTimeDate() {
 
 /*添加时间段*/
 function addTimes() {
-  console.log(123);
   var timePoint = moment($('#qyTimePoint').val()).format('YYYY-MM-DD HH:mm:ss');
   var timeFrame = allData[areaIndex].timeFrame;
   timeFrame.push(timePoint);
@@ -400,7 +390,6 @@ function addTimes() {
     selectTimeId: allData[areaIndex].timeItems[index].timeId,
     addTimeDate: timePoint
   }).success(function (res) {
-    console.log(res);
 
     getAreaAndTime();
 
@@ -426,6 +415,7 @@ function momentDate(d) {
 function openDelTimes() {
   $('#delTime').modal('show');
 }
+
 /*删除时间段*/
 function delTimes() {
   var url = '/time/delete_time';
@@ -449,9 +439,6 @@ function delTimes() {
     status: ub
   }).success(function () {
     var index = allData[areaIndex].timeFrame.indexOf(delTime);
-    var totalWidth = $('.area').eq(areaIndex).find('.period').width();
-    var delTimes = $('.area').eq(areaIndex).find('.time').eq(timeIndex);
-    var delWidth = delTimes.width();
     if (ub == 'up') {
       allData[areaIndex].timeItems[timeIndex - 1].timeEndDate = allData[areaIndex].timeItems[timeIndex].timeEndDate;
     } else {
@@ -583,7 +570,6 @@ function addPlan() {
 function createNewPlan(e) {
   window.setTimeout(function () {
     $('#addCSBJ')[0].click();
-    console.log(123)
   }, 500)
 }
 
@@ -596,7 +582,7 @@ function addNewPlan(e) {
   newPlan = true;
 }
 
-/*选择已有预案*/
+/*选择已有预案按钮*/
 function copyPlan(e) {
   $(e).parents('#addYA').find('.modal-footer').removeClass('disNone');
   $(e).parents('#addYA').find('.addCopyPlan').removeClass('disNone');
@@ -619,8 +605,6 @@ function copyPlan(e) {
 
 /*编辑预案*/
 function editPlan(t) {
-  //areaIndex = $('.areaTitle_con').index($(t).parents('.areaTitle_con'));
-  //timeIndex = $(t).parents('.area').find('.time').index($(t).parents('.time'));
   areaIndex = t.index;
   timeIndex = t.indexNum;
 
@@ -638,9 +622,7 @@ function editPlan(t) {
   createNewPlan();
 }
 
-///*删除预案*/
-//function delPlan(e){}
-
+/*编辑时段时间使用*/
 var editTimeDateObj = {};
 function clearTimeDate() {
   editTimeDateObj = {};
@@ -668,6 +650,7 @@ $('#editTimeDate').on('show.bs.modal', function (event) {
   editTimeDateObj.type = $('#selectEditPoint').val();
 });
 
+/*编辑时段时间html*/
 function updatetimeSow() {
   $('.showTimes .col-md-4 p').eq(0).empty();
   $('.showTimes .col-md-4 p').eq(1).empty();
@@ -707,6 +690,7 @@ function updatetimeSow() {
   initEditTimeDate(s, e);
 }
 
+/*选择修改时段开始时间或结束时间*/
 function selectEditPoint(t) {
   var s, e;
   if ($(t).val() == 'start') {
@@ -719,6 +703,7 @@ function selectEditPoint(t) {
     editTimeDateObj.type = 'end'
   }
 
+  /*初始化方法执行两遍，否则有问题*/
   initEditTimeDate(s, e);
   initEditTimeDate(s, e);
 }
@@ -730,22 +715,19 @@ function editTimeDate() {
 }
 
 $('#editArea').on('show.bs.modal', function (event) {
+  $.fn.zTree.init($("#adcodeTree"), zTreeSetting, zTreeData);
   var button = $(event.relatedTarget);
   var create = button.data('new');
   var areaId, findUrl;
-  var treeUrl = '/area/find_areas';
+  var allUrl = '/area/find_areaAll';
   $('.adcodeList.mt20').empty();
   if (create) {
-
     $('#areaName').val('').removeAttr('data-id');
     showCode = [{},{},{}];
     $('.adcodeList.mt20').empty();
   } else {
     findUrl = '/area/get_areaList';
-    //indexPar = $('.area').index(button.parents('.area'));
-    //areaId = allData[indexPar].areaId;
     areaId = button.parents('.areaTitle_con').attr('id');
-    console.log(areaId);
     ajaxPost(findUrl, {
       areaId: areaId,
       userId: userId
@@ -759,16 +741,17 @@ $('#editArea').on('show.bs.modal', function (event) {
     $('#areaName').val(button.parents('.areaTitle_con').find('b').html()).attr('data-id', areaId);
   }
 
-  ajaxPost(treeUrl, {
+  ajaxPost(allUrl, {
     scenarinoId: qjMsg.qjId,
     userId: userId,
     areaId: areaId
   }).success(function (res) {
-    initZTree(res.data);
-    //testDis();
-  })
+    setDisabled(res.data);
+  });
+
 });
 
+/*创建/编辑区域*/
 function createEditArea() {
   var url = '/area/saveorupdate_area';
   var areaName = $('#areaName').val();
@@ -815,7 +798,6 @@ function createEditArea() {
   }
   obj.countyCodes = JSON.stringify(crArr);
   ajaxPost(url, obj).success(function (res) {
-    console.log(res);
 
     if (!$('#areaName').attr('data-id')) {
       var obj = {};
@@ -835,8 +817,9 @@ function createEditArea() {
   })
 }
 
+/*显示已选择code,并进行checked*/
 function setShowCode(data) {
-
+  var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
   proNum = data.provinceCodes.length;
   cityNum = data.cityCodes.length;
   countyNum = data.countyCodes.length;
@@ -846,6 +829,9 @@ function setShowCode(data) {
   } else {
     for (var i = 0; i < proNum; i++) {
       $.extend(showCode[0], data.provinceCodes[i]);
+
+      var node = treeObj.getNodeByParam("adcode", Object.keys(data.provinceCodes[i]), null);
+      treeObj.checkNode(node,true,true,false);
     }
   }
   if (cityNum == 0) {
@@ -855,6 +841,9 @@ function setShowCode(data) {
       var adcode1 = Object.keys(data.cityCodes[ii])[0];
       if (!showCode[1][adcode1.substr(0, 2)+'0000'])showCode[1][adcode1.substr(0, 2)+'0000'] = {};
       $.extend(showCode[1][adcode1.substr(0, 2)+'0000'], data.cityCodes[ii]);
+
+      var node = treeObj.getNodeByParam("adcode", Object.keys(data.cityCodes[ii]), null);
+      treeObj.checkNode(node,true,true,false);
     }
   }
   if (countyNum == 0) {
@@ -864,28 +853,22 @@ function setShowCode(data) {
       var adcode2 = Object.keys(data.countyCodes[iii])[0];
       if (!showCode[2][adcode2.substr(0, 4)+'00'])showCode[2][adcode2.substr(0, 4)+'00'] = {};
       $.extend(showCode[2][adcode2.substr(0, 4)+'00'], data.countyCodes[iii]);
+
+      var node = treeObj.getNodeByParam("adcode", Object.keys(data.countyCodes[iii]), null);
+      treeObj.checkNode(node,true,true,false);
     }
   }
-
 }
 
-
 $('#qyTime').on('show.bs.modal', function (event) {
-  //console.log(event);
   var button = $(event.relatedTarget);
   if (button.length == 0)return;
   areaIndex = $('.areaTitle_con').index(button.parents('.areaTitle_con'));
-  console.log(areaIndex)
 });
 
 $('#addYA').on('show.bs.modal', function (event) {
 
-  //var button = $(event.relatedTarget);
-  //if (button.length == 0)return;
-  //areaIndex = $('.areaTitle_con').index(button.parents('.areaTitle_con'));
-  //timeIndex = button.parents('.area').find('.time').index(button.parents('.time'));
 
-  console.log(selectedTimes);
   areaIndex = selectedTimes.index;
   timeIndex = selectedTimes.indexNum;
 
@@ -903,11 +886,6 @@ $('#addYA').on('show.bs.modal', function (event) {
 });
 
 $('#delTime').on('show.bs.modal', function (event) {
-  //console.log(event);
-//  var button = $(event.relatedTarget);
-//  if (button.length == 0)return;
-  //areaIndex = $('.areaTitle_con').index(button.parents('.areaTitle_con'));
-  //timeIndex = button.parents('.area').find('.time').index(button.parents('.time'));
   areaIndex = selectedTimes.index;
   timeIndex = selectedTimes.indexNum;
   $(event.target).find('.delSelect').empty();
@@ -929,14 +907,7 @@ $('#delTime').on('show.bs.modal', function (event) {
   }
   $(event.target).find('.delSelect').append(redio);
   redio.find('input').attr('checked', 'checked');
-  console.log(areaIndex, timeIndex)
 });
-
-
-/*初始化zTree*/
-function initZtree() {
-
-}
 
 /*zTree相关方法*/
 /*选择节点，控制勾选状态*/
@@ -1072,9 +1043,37 @@ function initDate() {
   })
     .on('changeDate', function (ev) {
       var date = moment(ev.date).format('YYYY-MM-DD HH');
-      //$('#rwEndDate').datetimepicker('setStartDate', date);
-      //$('#rwStartDate').datetimepicker('setEndDate', null);
     });
+}
+
+
+
+/*前端设置disabled*/
+function setDisabled(data){
+  var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+  for(var i=0;i<data.length;i++){
+    var name = '('+ data[i].areaName +')';
+    for(var pro=0;pro<data[i].provinceCodes.length;pro++){
+      var node = treeObj.getNodeByParam("adcode", Object.keys(data[i].provinceCodes[pro]), null);
+      node.name += name;
+      node.chkDisabled = true;
+      treeObj.updateNode(node);
+    }
+
+    for(var ci=0;ci<data[i].cityCodes.length;ci++){
+      var node = treeObj.getNodeByParam("adcode", Object.keys(data[i].cityCodes[ci]), null);
+      node.name += name;
+      node.chkDisabled = true;
+      treeObj.updateNode(node);
+    }
+
+    for(var ct=0;ct<data[i].countyCodes.length;ct++){
+      var node = treeObj.getNodeByParam("adcode", Object.keys(data[i].countyCodes[ct]), null);
+      node.name += name;
+      node.chkDisabled = true;
+      treeObj.updateNode(node);
+    }
+  }
 }
 
 
@@ -1550,41 +1549,4 @@ function dingwei(tiaojian, type){
 			app.map1.setExtent(extent.expand(1.5));
 		});
 	}
-}
-/*test 前端设置disabled*/
-function testDis(data){
-  var a = $.ajax('webApp/task02/test.json',{
-    contentType: "application/json",
-    type: "GET",
-    async: true,
-    dataType: 'JSON'
-  });
-  $.when(a).then(function(res){
-    var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
-    for(var i=0;i<res.length;i++){
-      var name = '('+ res[i].areaName +')';
-      for(var pro=0;pro<res[i].provinceCodes.length;pro++){
-        var node = treeObj.getNodeByParam("adcode", Object.keys(res[i].provinceCodes[pro]), null);
-        node.name += name;
-        node.chkDisabled = true;
-        treeObj.updateNode(node);
-      }
-
-      for(var ci=0;ci<res[i].cityCodes.length;ci++){
-        var node = treeObj.getNodeByParam("adcode", Object.keys(res[i].cityCodes[ci]), null);
-        node.name += name;
-        node.chkDisabled = true;
-        treeObj.updateNode(node);
-      }
-
-      for(var ct=0;ct<res[i].countyCodes.length;ct++){
-        var node = treeObj.getNodeByParam("adcode", Object.keys(res[i].countyCodes[ct]), null);
-        node.name += name;
-        node.chkDisabled = true;
-        treeObj.updateNode(node);
-      }
-
-    }
-    console.log(res)
-  })
 }
