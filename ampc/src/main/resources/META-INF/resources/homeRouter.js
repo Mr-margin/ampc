@@ -150,7 +150,7 @@ function handle_y(y) {
 }
 
 var llqHeight = document.documentElement.clientHeight;
-var cssStyle = '.qdCreate,.qdListBox{height:'+ (llqHeight-138) +'px;}#sidebar .panel-body{overflow:auto;border-top:0;border-bottom:0;padding:0;height: '+ (llqHeight-441) +'px;} ';
+var cssStyle = '.qjbjDiv,.rwContent,.qdCreate,.qdListBox{height:'+ (llqHeight-138) +'px;}#sidebar .panel-body{overflow:auto;border-top:0;border-bottom:0;padding:0;height: '+ (llqHeight-441) +'px;} ';
 $('head').append($('<style></style>').html(cssStyle));
 $("#Route_conter").css("height",llqHeight-150+"px");
 $(".qdCreate").css("height",llqHeight-138+"px");
