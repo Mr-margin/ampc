@@ -137,7 +137,6 @@ public class AreaAndTimeController {
 		add_tTime.setTimeStartDate(timeDate);
 		add_tTime.setTimeEndDate(tTime.getTimeEndDate());
 		int insert_start = tTimeMapper.insertSelective(add_tTime);// insertSelective(add_tTime);
-		System.out.println(insert_start);
 		// 判断添加操作是否成功，成功后修改原有时段
 		// 判断数据库操作是否成功，并添加对应数据
 		JSONObject obj = new JSONObject();
@@ -341,7 +340,7 @@ public class AreaAndTimeController {
 		Long deleteTimeId=Long.parseLong(data.get("deleteTimeId").toString());//删除时段的时段Id
 		Long mergeTimeId=Long.parseLong(data.get("mergeTimeId").toString());//合并时段的时段Id
 		String endDate=data.get("endDate").toString();//删除时段的结束时间
-		String startDate=data.get("startDate").toString();//删除时段的结束时间
+		String startDate=data.get("startDate").toString();//删除时段的开始时间
 		Long userId=Long.parseLong(data.get("userId").toString());//用户的id
 		String status=data.get("status").toString();//预案id
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -372,6 +371,7 @@ public class AreaAndTimeController {
 				TPlan tPlan=tPlanMapper.selectByPrimaryKey(deltime.getPlanId());
 				TTime newtime=tTimeMapper.selectByPrimaryKey(mergeTimeId);
 				TPlan newPlan=tPlanMapper.selectByPrimaryKey(newtime.getPlanId());
+				if(tPlanMapper.selectByPrimaryKey(newtime.getPlanId())!=null){
 				if(newPlan.getCopyPlan().equals("1")){
 					newPlan.setPlanId(null);
 					if(status.equals("up")){
@@ -411,13 +411,17 @@ public class AreaAndTimeController {
 						return AmpcResult.build(0, "delete_time success");
 					}
 				}
+				}else{
+					
+					return AmpcResult.build(0, "delete_time success");
+				}
 				}
 		}
 		//查看修改时段状态是否成功
 		
 		return AmpcResult.build(1, "delete_time error");
 		}catch(Exception e){
-			System.out.println(e);
+			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
@@ -692,7 +696,6 @@ public class AreaAndTimeController {
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					Date endDate=sdf.parse(scenarinoEndDate);
 					Date startDate=sdf.parse(scenarinoStartDate);
-					// 时间操作，将情景结束时间减少一个小时
 					//新建时段
 					TTime add_tTime = new TTime();
 					add_tTime.setAreaId(areId);
