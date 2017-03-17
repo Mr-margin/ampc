@@ -2,27 +2,8 @@
   <div class="qjbj row">
 
     <div class="col-md-7">
-      <!--<div class="bjTitle col-md-7">-->
-      <!--<ul class="nav nav-pills nav-justified">-->
-      <!--<li role="presentation" class="active"><a href="javascript:">编辑区域和时段</a></li>-->
-      <!--<li role="presentation"><a href="javascript:">添加预案</a></li>-->
-      <!--&lt;!&ndash;<li role="presentation"><a href="#">Messages</a></li>&ndash;&gt;-->
-      <!--</ul>-->
-      <!--</div>-->
-      <div class="bjDate col-md-12 mt50 mb15 disNone">
-        <div class="date_div">
-          <span>2017-01-01</span>
-          <span>2017-01-01</span>
-          <span>2017-01-01</span>
-          <span>2017-01-01</span>
-          <span>2017-01-01</span>
-        </div>
-      </div>
       <div class="areaMsg col-md-12 clearfix">
         <div class="areaTitle" style="float: left; width: 20%;">
-          <!--<div class="areaTitle_con">-->
-          <!--<span>diyiquyu</span>-->
-          <!--</div>-->
         </div>
         <div class="areaCon" style="float: left;width: 80%">
           <div id="timeline"></div>
@@ -45,7 +26,7 @@
     <i class='fa-th-list'></i> <b></b>
 
     <div class="areaToolDiv text-center">
-      <button type="button" onclick="editArea(this)" data-new="false" class="btn btn-default btn-xs toolShow"
+      <button type="button" data-new="false" class="btn btn-default btn-xs toolShow"
               title="区域编辑" data-toggle="modal" data-target="#editArea"><i class="ec-pencil"></i><span>区域编辑</span>
       </button>
       <button type="button" onclick="delArea(this)" class="btn btn-default btn-xs toolShow" title="删除区域"><i
@@ -253,11 +234,6 @@
 
                 </ul>
               </div>
-              <!--<div class="rightArrow">-->
-              <!--<div>-->
-              <!--<i class="fa-chevron-right"></i>-->
-              <!--</div>-->
-              <!--</div>-->
             </div>
             <div class="col-md-10 pr0">
               <div class="col-md-6 pl0 ">
@@ -267,15 +243,6 @@
                     <button class="btn btn-primary" onclick="showMap()" style="float: right;">地图展示</button>
                   </div>
                   <div class="adcodeList mt20">
-                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer"></i></p>-->
-                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer"></i></p>-->
-                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer"></i></p>-->
-                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer"></i></p>-->
-                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer"></i></p>-->
-                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer"></i></p>-->
-                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer"></i></p>-->
-                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer"></i></p>-->
-                    <!--<p class="col-md-3">北京市 &nbsp;&nbsp;<i class="im-close" style="cursor: pointer" onclick="delAdcode()"></i></p>-->
 
                   </div>
                 </div>
@@ -358,47 +325,6 @@
   </div>
 
 
-  <!--&lt;!&ndash;模板DOM&ndash;&gt;-->
-  <!--&lt;!&ndash;区域dom&ndash;&gt;-->
-  <!--<div class="area clearfix disNone">-->
-    <!--<div class="front">-->
-      <!--<span>类别一</span>-->
-
-      <!--<div class="areaToolDiv text-center">-->
-        <!--<button type="button" onclick="editArea(this)" data-new="false" class="btn btn-default btn-xs toolShow"-->
-                <!--title="区域编辑" data-toggle="modal" data-target="#editArea"><i class="ec-pencil"></i><span>区域编辑</span>-->
-        <!--</button>-->
-        <!--<button type="button" onclick="delArea(this)" class="btn btn-default btn-xs toolShow" title="删除区域"><i-->
-            <!--class="ec-trashcan"></i><span>删除区域</span></button>-->
-        <!--<button type="button" class="btn btn-default btn-xs toolShow" title="添加时段" data-toggle="modal"-->
-                <!--data-target="#qyTime"><i class="im-plus"></i><span>添加时段</span></button>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--<div class="period clearfix">-->
-
-      <!--<div class="showLine">-->
-
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
-  <!--&lt;!&ndash;滑块dom&ndash;&gt;-->
-  <!--<div class="hk disNone"><span class="showTips showTipsLeft">2017-12-12 00</span></div>-->
-  <!--&lt;!&ndash;时段dom&ndash;&gt;-->
-  <!--<div class="time disNone">-->
-    <!--<div class="yaMsg">-->
-      <!--<h4>无</h4>-->
-      <!--&lt;!&ndash;<p class="yaStartDate">开始时间：<span>2017-12-12 00</span></p>&ndash;&gt;-->
-      <!--&lt;!&ndash;<p  class="yaEndDate">结束时间：<span>2017-12-22 00</span></p>&ndash;&gt;-->
-    <!--</div>-->
-    <!--<div class="timeToolDiv text-center">-->
-      <!--<button type="button" class="btn btn-default btn-xs toolShow" title="添加预案" data-toggle="modal"-->
-              <!--data-target="#addYA"><i class="im-google-plus"></i><span>添加预案</span></button>-->
-      <!--<button type="button" onclick="editPlan(this)" class="btn btn-default btn-xs toolShow" title="编辑预案"><i-->
-          <!--class="ec-pencil"></i><span>编辑预案</span></button>-->
-      <!--<button type="button" class="btn btn-default btn-xs toolShow" title="删除时段" data-toggle="modal"-->
-              <!--data-target="#delTime"><i class="im-close"></i><span>删除时段</span></button>-->
-    <!--</div>-->
-  <!--</div>-->
 
   <!--redio dom-->
   <div class="radio disNone">

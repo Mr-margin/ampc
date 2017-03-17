@@ -1,7 +1,6 @@
 ﻿/**
  * Created by lvcheng on 2017/2/21.
  */
-//  console.log(BackstageIP);
 //var userId = 1;
 var formCreate;
 var selectRW = {};
@@ -149,7 +148,6 @@ function initialize() {
   getMnfw();
   getQD();
 //  var param = vipspa.getMessage('home_msg');
-//  console.log(param);
 }
 
 var QJheight;
@@ -232,7 +230,6 @@ function initRwTable() {
       $('.rwDel').attr('disabled', true);
     },
     onLoadSuccess:function(data){
-      //console.log(data);
       selectRW = data.rows[0];
       QJheight = data.rows.length *57 + 98;
       $('.qjtableDiv').css('background-color','#d9edf7');
@@ -592,7 +589,6 @@ function rename(type, id) {
           }).error(function () {
             swal("修改失败!", "名称未修改为：" + inputValue, "error");
           }).error(function () {
-//        console.log('error');
             $('#createModal').modal('hide');
             swal('添加失败', '', 'error')
           })
@@ -823,7 +819,6 @@ function selectQJtype(type){
 }
 
 function checkedDB(t){
-  console.log(t);
   if($(t)[0].checked){
     $('#dbqj').removeAttr('disabled');
     $('#jcqj').attr('disabled',true);
@@ -923,13 +918,11 @@ function initRwDate(s,e,end){
   },function(start, end, label) {
     rwStartDate = start.format('YYYY-MM-DD');
     rwEndDate = end.format('YYYY-MM-DD');
-    console.log(rwStartDate, rwEndDate, label);
   })
 }
 
 /*创建情景时选择模态框*/
 function createQJselect(){
-  console.log(selectRW);
   var oldQJUrl = '/scenarino/find_scenarino_time';
   //var oldQJUrl = 'date.json';
   var oldQJparams = {
@@ -961,14 +954,12 @@ function setSelectDate(qjS,qjE,pathD){
     var p = moment(pathD);
     while(p.format('YYYY-MM-DD') > qjS){
       dateArr.push(p.subtract(1,'d').format('YYYY-MM-DD'));
-      console.log(p.format('YYYY-MM-DD'))
     }
   }else{
     var e = moment(qjE);
     while(e.format('YYYY-MM-DD') > qjS){
       dateArr.push(e.format('YYYY-MM-DD'));
       e.subtract(1,'d');
-      console.log(e.format('YYYY-MM-DD'))
     }
   }
   return dateArr
@@ -1188,9 +1179,3 @@ function ajaxPost1(url, parameter) {
     //data: p
   })
 }
-
-
-
-
-
-
