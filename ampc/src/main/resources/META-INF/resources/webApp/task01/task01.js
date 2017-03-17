@@ -408,13 +408,13 @@ function rwName(v, row, i) {
 }
 
 function rwDomain(v, row, i) {
-  return row.v1 + '<br><a style="font-size:12px; color:#a1a1a1;">起止日期：' + moment(row.missionStartDate).format('YYYY-MM-DD HH') + ' - ' + moment(row.missionEndDate).format('YYYY-MM-DD HH') + '</a>'
+  return row.v1 + '<br><a style="font-size:12px; color:#a1a1a1;">起止日期：' + moment(row.missionStartDate).format('YYYY-MM-DD') + ' - ' + moment(row.missionEndDate).format('YYYY-MM-DD') + '</a>'
 }
 
 function qjName(v, row, i) {
   return '<a href="#/yabj">' + row.scenarinoName + '</a><br>' +
     '<a style="font-size:12px; color:#a1a1a1;">创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH') + '</a><br/>' +
-    '<a style="font-size:12px; color:#a1a1a1;">起止日期：' +moment(row.scenarinoStartDate).format('YYYY-MM-DD HH') + ' - ' + moment(row.scenarinoEndDate).format('YYYY-MM-DD HH') + '</a>'
+    '<a style="font-size:12px; color:#a1a1a1;">起止日期：' +moment(row.scenarinoStartDate).format('YYYY-MM-DD') + ' 至 ' + moment(row.scenarinoEndDate).format('YYYY-MM-DD') + '</a>'
 }
 
 function qjOrder(v, row, i) {
@@ -640,13 +640,15 @@ function selectType(type){
     endDate = moment().add(1,'y').format('YYYY-MM-DD');
     end = moment().add(2,'d').format('YYYY-MM-DD');
     rwSelectType = '预评估';
-    $('.rwTitle').html('创建预评估任务')
+    $('.rwTitle').html('创建预评估任务');
+    rwEndDate = moment().add(2,'d').format('YYYY-MM-DD');
   }else if(type == 'h'){
     startDate = '2007-01-01';
     endDate = moment().subtract(2, 'd').format('YYYY-MM-DD');
     end = moment().subtract(2, 'd').format('YYYY-MM-DD');
     rwSelectType = '后评估';
-    $('.rwTitle').html('创建后评估任务')
+    $('.rwTitle').html('创建后评估任务');
+    rwEndDate = moment().subtract(2,'d').format('YYYY-MM-DD');
   }
 
   $('.rwType').css('display','none');
@@ -655,7 +657,7 @@ function selectType(type){
   $('.createRwBtn').css('display','inline-block');
   $('.return_S_rw').css('display','inline-block');
   rwStartDate = moment().subtract(2,'w').format('YYYY-MM-DD');
-  rwEndDate = moment().subtract(2,'d').format('YYYY-MM-DD');
+
   initRwDate(startDate,endDate,end);
 }
 
@@ -856,8 +858,8 @@ function createRw(){
   params.missionName = paramsName.missionName = $('#rwName').val();
   params.missionDomainId = $('#mnfw').val();
   params.esCouplingId = $('#qd').val();
-  params.missionStartDate = rwStartDate;
-  params.missionEndDate = rwEndDate;
+  params.missionStartDate = moment(rwStartDate).format('YYYY-MM-DD HH:mm:ss');
+  params.missionEndDate = moment(rwEndDate).add(1,'d').subtract(1,'s').format('YYYY-MM-DD HH:mm:ss');
   params.userId = paramsName.userId = userId;
   params.missionStauts = rwSelectType;
 
@@ -1070,18 +1072,18 @@ function createQj(type){
     params.spinUp = '';
 
     if(qjType == 1){
-      params.scenarinoStartDate = $('#yStartDate').val();
-      params.scenarinoEndDate = $('#yEndDate').val();
+      params.scenarinoStartDate = moment($('#yStartDate').val()).format('YYYY-MM-DD HH:mm:ss');
+      params.scenarinoEndDate = moment($('#yEndDate').val()).add(1,'d').subtract(1,'s').format('YYYY-MM-DD HH:mm:ss');
       params.basisScenarinoId = basisArr[$('#jcqj').val()].scenarinoId;
-      params.basisTime = $('#jcdate').val();
+      params.basisTime = moment($('#jcdate').val()).format('YYYY-MM-DD HH:mm:ss');
     }else if(qjType == 2){
       if($('.dbqj input[type=checkbox]')[0].checked){
         params.controstScenarinoId = basisArr[$('#dbqj').val()].scenarinoId;
       }else{
-        params.scenarinoStartDate = $('#yStartDate').val();
-        params.scenarinoEndDate = $('#yEndDate').val();
+        params.scenarinoStartDate = moment($('#yStartDate').val()).format('YYYY-MM-DD HH:mm:ss');
+        params.scenarinoEndDate = moment($('#yEndDate').val()).add(1,'d').subtract(1,'s').format('YYYY-MM-DD HH:mm:ss');
         params.basisScenarinoId = basisArr[$('#jcqj').val()].scenarinoId;
-        params.basisTime = $('#jcdate').val();
+        params.basisTime = moment($('#jcdate').val()).format('YYYY-MM-DD HH:mm:ss');
       }
     }
   }else{
@@ -1102,14 +1104,14 @@ function createQj(type){
       if($('.dbqj1 input[type=checkbox]')[0].checked){
         params.controstScenarinoId = basisArr[$('#dbqj1').val()].scenarinoId;
       }else{
-        params.scenarinoStartDate = $('#hStartDate').val();
-        params.scenarinoEndDate = $('#hEndDate').val();
+        params.scenarinoStartDate = moment($('#hStartDate').val()).format('YYYY-MM-DD HH:mm:ss');
+        params.scenarinoEndDate = moment($('#hEndDate').val()).add(1,'d').subtract(1,'s').format('YYYY-MM-DD HH:mm:ss');
         params.basisScenarinoId = basisArr[$('#jcqj1').val()].scenarinoId;
-        params.basisTime = $('#jcdate1').val();
+        params.basisTime = moment($('#jcdate1').val()).format('YYYY-MM-DD HH:mm:ss');
       }
     }else if(qjType == 3){
-      params.scenarinoStartDate = $('#hStartDate').val();
-      params.scenarinoEndDate = $('#hEndDate').val();
+    	params.scenarinoStartDate = moment($('#hStartDate').val()).format('YYYY-MM-DD HH:mm:ss');
+        params.scenarinoEndDate = moment($('#hEndDate').val()).add(1,'d').subtract(1,'s').format('YYYY-MM-DD HH:mm:ss');
       params.spinUp = $('#spinup').val();
     }
   }
