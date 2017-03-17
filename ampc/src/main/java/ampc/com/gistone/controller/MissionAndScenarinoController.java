@@ -1050,7 +1050,7 @@ public class MissionAndScenarinoController {
 						TScenarinoDetail tscent=tScenarinoDetailMapper.selectByPrimaryKey(controstScenarinoId);
 						Date scenarinoStartDate =tscent.getScenarinoStartDate();
 						Date scenarinoEndDate=tscent.getScenarinoEndDate();
-						TScenarinoDetail tsd=new TScenarinoDetail();
+						TScenarinoDetail tsd=new TScenarinoDetail(); 
 						tsd.setScenarinoName(scenarinoName);
 						tsd.setBasisScenarinoId(tscent.getBasisScenarinoId());
 						tsd.setBasisTime(tscent.getBasisTime());
