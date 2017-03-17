@@ -1,116 +1,118 @@
 
 <body>
 
-<div class="content">
-  <div class="row">
-    <div class="col-md-6 pr0">
-      <div class="panel panel-default plain ">
-        <!-- Start .panel -->
-        <div class="panel-heading white-bg" style="border: none">
-          <div class="col-md-6">
-            <h4 class="panel-title">任务列表<i class="im-file3"></i></h4>
+<div class="content rwContent">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-6 pr0">
+        <div class="panel panel-default plain ">
+          <!-- Start .panel -->
+          <div class="panel-heading white-bg" style="border: none">
+            <div class="col-md-6">
+              <h4 class="panel-title">任务列表<i class="im-file3"></i></h4>
+            </div>
           </div>
-        </div>
-        <div class="panel-body" style="padding:0px;border: none">
-          <div id="rwToolbar" class="btn-group">
-            <div class="col-md-4 cjsc">
-              <button type="button" class="btn btn-default" onclick="returnLeft('rw')" data-whatever="创建任务" data-type="rw" data-toggle="modal"
-                      data-target="#createRwModal">
-                <i class="glyphicon glyphicon-plus"></i> 创建
-              </button>
-              <button disabled type="button" class="btn btn-default rwDel" onclick="deleteFun('rw')">
-                <i class="glyphicon glyphicon-trash"></i> 删除
-              </button>
-            </div>
-            <div class="col-md-5 text-right bigP">
-              <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('',this)">
-                <i class="im-folder-open"></i> 全部
-              </button>
-              <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('预评估',this)">
-                <i class="st-folder-settings"></i> 预评估
-              </button>
-              <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('后评估',this)">
-                <i class="im-paste2"></i> 后评估
-              </button>
-            </div>
-            <div class="smallP col-md-2" style="display: none;">
-              <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                  <span class="seeName">全部</span>
-                  <span class="caret"></span>
+          <div class="panel-body" style="padding:0px;border: none">
+            <div id="rwToolbar" class="btn-group">
+              <div class="col-md-4 cjsc">
+                <button type="button" class="btn btn-default" onclick="returnLeft('rw')" data-whatever="创建任务" data-type="rw" data-toggle="modal"
+                        data-target="#createRwModal">
+                  <i class="glyphicon glyphicon-plus"></i> 创建
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                  <li onclick="statusRWfun('',this)"><a href="javascript:">全部</a></li>
-                  <li onclick="statusRWfun('预评估',this)"><a href="javascript:">预评估</a></li>
-                  <li onclick="statusRWfun('后评估',this)"><a href="javascript:">后评估</a></li>
-                </ul>
+                <button disabled type="button" class="btn btn-default rwDel" onclick="deleteFun('rw')">
+                  <i class="glyphicon glyphicon-trash"></i> 删除
+                </button>
               </div>
-            </div>
-            <div class="input-group col-md-3 col-md-offset-9">
-              <input type="text" class="form-control rw " placeholder="输入任务名称或字段">
+              <div class="col-md-5 text-right bigP">
+                <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('',this)">
+                  <i class="im-folder-open"></i> 全部
+                </button>
+                <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('预评估',this)">
+                  <i class="st-folder-settings"></i> 预评估
+                </button>
+                <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('后评估',this)">
+                  <i class="im-paste2"></i> 后评估
+                </button>
+              </div>
+              <div class="smallP col-md-2" style="display: none;">
+                <div class="dropdown">
+                  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="seeName">全部</span>
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li onclick="statusRWfun('',this)"><a href="javascript:">全部</a></li>
+                    <li onclick="statusRWfun('预评估',this)"><a href="javascript:">预评估</a></li>
+                    <li onclick="statusRWfun('后评估',this)"><a href="javascript:">后评估</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="input-group col-md-3 col-md-offset-9">
+                <input type="text" class="form-control rw " placeholder="输入任务名称或字段">
                 <span class="input-group-btn">
                   <button class="btn btn-default " type="button" onclick="search('rw')"><i class="ec-search"></i>
                   </button>
                 </span>
+              </div>
+              <!-- /input-group -->
             </div>
-            <!-- /input-group -->
-          </div>
-          <div class="rwtableDiv">
-            <table id="rwTable">
-              <thead>
-              <tr class="info">
-                <th data-checkbox="true"></th>
-                <th data-formatter="rwName">任务名称</th>
-                <th data-formatter="rwDomain">模拟范围</th>
-                <th data-field="esCouplingName">清单</th>
-                <th data-field="missionStatus">类型</th>
-              </tr>
-              </thead>
-            </table>
+            <div class="rwtableDiv">
+              <table id="rwTable">
+                <thead>
+                <tr class="info">
+                  <th data-checkbox="true"></th>
+                  <th data-formatter="rwName">任务名称</th>
+                  <th data-formatter="rwDomain">模拟范围</th>
+                  <th data-field="esCouplingName">清单</th>
+                  <th data-field="missionStatus">类型</th>
+                </tr>
+                </thead>
+              </table>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="col-md-6 pl0">
-      <div class="panel panel-default plain ">
-        <!-- Start .panel -->
-        <div class="panel-heading white-bg" style="border: none">
-          <div class="col-md-6">
-            <h4 class="panel-title">情景列表<i class="im-file3"></i></h4>
-          </div>
-        </div>
-        <div class="panel-body" style="padding:0px;border: none; ">
-          <div id="qjToolbar" class="btn-group">
+      <div class="col-md-6 pl0">
+        <div class="panel panel-default plain ">
+          <!-- Start .panel -->
+          <div class="panel-heading white-bg" style="border: none">
             <div class="col-md-6">
-              <button type="button" class="btn btn-default" onclick="createQJselect()">
-                <i class="glyphicon glyphicon-plus"></i> 创建
-              </button>
-              <button disabled type="button" class="btn btn-default qjDel" onclick="deleteFun('qj')">
-                <i class="glyphicon glyphicon-trash"></i> 删除
-              </button>
+              <h4 class="panel-title">情景列表<i class="im-file3"></i></h4>
             </div>
-            <div class="input-group col-md-3 col-md-offset-9">
-              <input type="text" class="form-control qj " placeholder="输入情景名称或字段">
+          </div>
+          <div class="panel-body" style="padding:0px;border: none; ">
+            <div id="qjToolbar" class="btn-group">
+              <div class="col-md-6">
+                <button type="button" class="btn btn-default" onclick="createQJselect()">
+                  <i class="glyphicon glyphicon-plus"></i> 创建
+                </button>
+                <button disabled type="button" class="btn btn-default qjDel" onclick="deleteFun('qj')">
+                  <i class="glyphicon glyphicon-trash"></i> 删除
+                </button>
+              </div>
+              <div class="input-group col-md-3 col-md-offset-9">
+                <input type="text" class="form-control qj " placeholder="输入情景名称或字段">
                 <span class="input-group-btn">
                   <button class="btn btn-default " type="button" onclick="search('qj')"><i class="ec-search"></i>
                   </button>
                 </span>
+              </div>
+              <!-- /input-group -->
             </div>
-            <!-- /input-group -->
-          </div>
-          <div class="qjtableDiv">
-            <table id="qjTable">
-              <thead>
-              <tr>
-                <th data-checkbox="true"></th>
-                <th data-formatter="qjName">情景名称</th>
-                <th data-formatter="qjOrder">操作</th>
-                <th data-field="scenarinoStatuName">情景状态</th>
-                <th data-field="SCEN_TYPE">类型</th>
-                <th data-formatter="qjEffectEvaluation"></th>
-              </tr>
-              </thead>
-            </table>
+            <div class="qjtableDiv">
+              <table id="qjTable">
+                <thead>
+                <tr>
+                  <th data-checkbox="true"></th>
+                  <th data-formatter="qjName">情景名称</th>
+                  <th data-formatter="qjOrder">操作</th>
+                  <th data-field="scenarinoStatuName">情景状态</th>
+                  <th data-field="SCEN_TYPE">类型</th>
+                  <th data-formatter="qjEffectEvaluation"></th>
+                </tr>
+                </thead>
+              </table>
+            </div>
           </div>
         </div>
       </div>
