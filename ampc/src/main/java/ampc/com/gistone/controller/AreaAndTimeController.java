@@ -344,7 +344,7 @@ public class AreaAndTimeController {
 		String startDate=data.get("startDate").toString();//删除时段的结束时间
 		Long userId=Long.parseLong(data.get("userId").toString());//用户的id
 		String status=data.get("status").toString();//预案id
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date timeEndDate=sdf.parse(endDate);
 		Date timeStartDate=sdf.parse(startDate);
 		int updateStatus=0;//合并时段修改状态（0为修改失败）
@@ -689,7 +689,7 @@ public class AreaAndTimeController {
 					String scenarinoStartDate=data.get("scenarinoStartDate").toString();
 					//情景结束时间
 					String scenarinoEndDate=data.get("scenarinoEndDate").toString();
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					Date endDate=sdf.parse(scenarinoEndDate);
 					Date startDate=sdf.parse(scenarinoStartDate);
 					// 时间操作，将情景结束时间减少一个小时
