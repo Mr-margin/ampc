@@ -1196,14 +1196,14 @@ public AmpcResult find_areaAll (@RequestBody Map<String,Object> requestDate,Http
 			obj.put("provinceCodes", new JSONArray());
 			}
 			if(area.getCountyCodes()!=null){
-			obj.put("cityCode", cityCode);
+			obj.put("cityCodes", cityCode);
 			}else{
-			obj.put("cityCode", new JSONArray());
+			obj.put("cityCodes", new JSONArray());
 			}
 			if(area.getCityCodes()!=null){
-			obj.put("countyCode", countyCode);
+			obj.put("countyCodes", countyCode);
 			}else{
-			obj.put("countyCode", new JSONArray());
+			obj.put("countyCodes", new JSONArray());
 			}
 			arr.add(obj);
 		}
