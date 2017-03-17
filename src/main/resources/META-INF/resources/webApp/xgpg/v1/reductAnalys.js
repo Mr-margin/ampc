@@ -47,6 +47,21 @@ function bar () {
 		    grid:{
 		    		show:true
 		    },
+            dataZoom:[
+                      {
+                    	  show:'true',
+                    	  realtime:'true',
+                    	  start:20,
+                    	  end:80
+                    	  
+                      },
+                      {
+                    	  type:'inside',
+                    	  realtime:'true',
+                    	  start:60,
+                    	  end:80
+                      }
+                      ],
 		    calculable : true,
 		    xAxis : [
 		        {
