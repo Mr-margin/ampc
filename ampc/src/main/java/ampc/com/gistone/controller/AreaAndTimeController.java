@@ -1103,7 +1103,7 @@ public AmpcResult find_areas_new (@RequestBody Map<String,Object> requestDate,Ht
 	Map<String,Object> data=(Map)requestDate.get("data");
 		//查询所有省市区code
 	List<TAddress> prolist=tAddressMapper.selectAll();
-	Long userId=1l;//Long.parseLong(data.get("userId").toString());//用户id
+	Long userId=Long.parseLong(data.get("userId").toString());//用户id
 	//通过userId获取用户信息
 	TUser user=tUserMapper.selectByPrimaryKey(userId);
 	JSONArray arr=new JSONArray();
@@ -1172,7 +1172,7 @@ public AmpcResult find_areaAll (@RequestBody Map<String,Object> requestDate,Http
 		JSONArray arr=new JSONArray();
 		TScenarinoAreaWithBLOBs tsa=new TScenarinoAreaWithBLOBs();
 		if(data.get("areaId")!=null && data.get("areaId")!=""){
-			Long areaId =Long.parseLong(data.get("areaId").toString());
+			Long areaId =Long.parseLong(data.get("areaId").toString());//区域id
 			TScenarinoAreaWithBLOBs areas=tScenarinoAreaMapper.selectByPrimaryKey(areaId);
 			
 			 Iterator<TScenarinoAreaWithBLOBs> areaIter = arealist.iterator();  
@@ -1190,9 +1190,21 @@ public AmpcResult find_areaAll (@RequestBody Map<String,Object> requestDate,Http
 			JSONArray provinceCodes=JSONArray.fromObject(area.getProvinceCodes());
 			JSONArray countyCode=JSONArray.fromObject(area.getCountyCodes());
 			JSONArray cityCode=JSONArray.fromObject(area.getCityCodes());
+			if(area.getProvinceCodes()!=null){
 			obj.put("provinceCodes", provinceCodes);
+			}else{
+			obj.put("provinceCodes", new JSONArray());
+			}
+			if(area.getCountyCodes()!=null){
 			obj.put("cityCode", cityCode);
+			}else{
+			obj.put("cityCode", new JSONArray());
+			}
+			if(area.getCityCodes()!=null){
 			obj.put("countyCode", countyCode);
+			}else{
+			obj.put("countyCode", new JSONArray());
+			}
 			arr.add(obj);
 		}
 
