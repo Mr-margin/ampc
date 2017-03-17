@@ -153,6 +153,7 @@ function ajaxPost1(url, parameter) {
     data: p
   })
 }
+/*test使用 end*/
 
 initialize();
 
@@ -289,93 +290,6 @@ function sub() {
 
 }
 
-$('.areaMsg').on('mouseenter', '.hk', function (e) {
-//    index = $('.hk').index(this);
-//    startX = e.pageX;
-  $(this).find('.showTips').css('display', 'block');
-});
-$('.areaMsg').on('mouseleave', '.hk', function (e) {
-//    index = $('.hk').index(this);
-  $(this).find('.showTips').css('display', 'none');
-});
-
-$('.areaMsg').on('mousedown', '.hk', function (e) {
-  var widthP = $('.period').width();
-  indexPar = $('.area').index($(this).parents('.area'));
-  index = $('.area').eq(indexPar).find('.hk').index(this);
-  leftWidth = $('.area').eq(indexPar).children('.period').children('.time').eq(index).width();
-  rightWidth = $('.area').eq(indexPar).children('.period').children('.time').eq(index + 1).width();
-  handle = true;
-  startX = e.pageX;
-  $(this).find('.showTips').css('display', 'block');
-  selfLeft = parseInt($(this).css('left'));
-  minLeft = parseInt($('.area').eq(indexPar).find('.hk').eq(index - 1).css('left'));
-  maxLeft = parseInt($('.area').eq(indexPar).find('.hk').eq(index + 1).css('left'));
-  if (selfLeft > (widthP / 2)) {
-    $('.area').eq(indexPar).find('.hk').eq(index).find('.showTips').removeClass('showTipsLeft').addClass('showTipsRight');
-  } else {
-    $('.area').eq(indexPar).find('.hk').eq(index).find('.showTips').removeClass('showTipsRight').addClass('showTipsLeft');
-  }
-  console.log(allData)
-  //data[index] = selfLeft;
-});
-$('.areaMsg').on('mouseup', '.area', function (e) {
-  //index = $('.hk').index(this);
-  if (!handle)return;
-  allData[indexPar].timeFrame[index] = allData[indexPar].timeItems[index].timeEndDate;
-
-  ajaxPost('/time/update_time', {
-    userId: userId,
-    updateDate: allData[indexPar].timeItems[index].timeEndDate,
-    beforeTimeId: allData[indexPar].timeItems[index].timeId,
-    afterTimeId: allData[indexPar].timeItems[index + 1].timeId
-  }).success(function (res) {
-    console.log(res)
-  })
-
-  console.log(allData);
-  handle = false;
-  $(this).find('.showTips').css('display', 'none');
-});
-
-$('.areaMsg').on('mousemove', '.period', function (e) {
-  e.stopPropagation();
-  if (handle) {
-    var widthP = $(this).width();
-    var moveX = e.pageX;
-    if (!maxLeft) {
-      maxLeft = widthP - 4;
-    }
-    var newLeft = moveX - startX + selfLeft;
-    if (newLeft > (maxLeft - 4))newLeft = maxLeft - 4;
-    if (index == 0) {
-      if (newLeft < 4)newLeft = 4;
-
-    } else {
-      if (newLeft < (minLeft + 4))newLeft = minLeft + 4;
-    }
-    //data[index] = newLeft;
-    $('.area').eq(indexPar).find('.hk').eq(index).css('left', (newLeft / widthP) * 100 + '%');
-
-    if (newLeft > (widthP / 2)) {
-      $('.area').eq(indexPar).find('.hk').eq(index).find('.showTips').removeClass('showTipsLeft').addClass('showTipsRight');
-    } else {
-      $('.area').eq(indexPar).find('.hk').eq(index).find('.showTips').removeClass('showTipsRight').addClass('showTipsLeft');
-    }
-
-    $(this).children('.time').eq(index).css('width', ((newLeft - selfLeft + leftWidth) / widthP) * 100 + '%');
-    $(this).children('.time').eq(index + 1).css('width', ((+rightWidth - (newLeft - selfLeft)) / widthP) * 100 + '%');
-
-    var showDate = moment((newLeft / widthP * totalDate) + startDate).format('YYYY/MM/DD HH');
-    $('.area').eq(indexPar).find('.hk').eq(index).find('.showTips').html(showDate);
-
-    allData[indexPar].timeItems[index].timeEndDate = showDate;
-    allData[indexPar].timeItems[index + 1].timeStartDate = showDate;
-    //console.log(moment((newLeft/widthP*totalDate)+startDate).format('YYYY-MM-DD HH'))
-  }
-//    console.log(widthP,startX,moveX,selfLeft)
-});
-
 /*删除区域*/
 function delArea(e) {
   console.log(e);
@@ -471,17 +385,17 @@ function sunEditTimeDate() {
   var url = '/time/update_time';
   var after, before, date;
   if (editTimeDateObj.type == 'start') {
-    date = editTimeDateObj.s;
+    date = moment(editTimeDateObj.s).format('YYYY-MM-DD HH:mm:ss');
     before = allData[indexPar].timeItems[index - 1].timeId;
     after = allData[indexPar].timeItems[index].timeId
   } else {
-    date = editTimeDateObj.e;
+    date = moment(editTimeDateObj.e).add(1,'h').format('YYYY-MM-DD HH:mm:ss');
     after = allData[indexPar].timeItems[index + 1].timeId;
     before = allData[indexPar].timeItems[index].timeId
   }
   ajaxPost(url, {
     userId: userId,
-    updateDate: moment(date).add(1, 'h').format('YYYY-MM-DD HH'),
+    updateDate: date,
     beforeTimeId: before,
     afterTimeId: after
   }).success(function (res) {
@@ -501,7 +415,7 @@ function sunEditTimeDate() {
 /*添加时间段*/
 function addTimes() {
   console.log(123);
-  var timePoint = $('#qyTimePoint').val();
+  var timePoint = moment($('#qyTimePoint').val()).format('YYYY-MM-DD HH:mm:ss');
   var timeFrame = allData[areaIndex].timeFrame;
   timeFrame.push(timePoint);
   timeFrame.sort();
@@ -845,10 +759,6 @@ function editTimeDate() {
   }, 350)
 }
 
-
-function editArea() {
-}
-
 $('#editArea').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget);
   var create = button.data('new');
@@ -885,7 +795,7 @@ $('#editArea').on('show.bs.modal', function (event) {
     areaId: areaId
   }).success(function (res) {
     initZTree(res.data);
-    testDis();
+    //testDis();
   })
 });
 
@@ -1092,40 +1002,6 @@ function selectNode(node) {
   }
 }
 
-//function level0(node) {
-//  showCode[node.level][node.adcode] = node.name;
-//  delete showCode[node.level + 1][node.adcode];
-//
-//  for (var i = 1; i < showCode.length; i++) {
-//    for (var a in showCode[i]) {
-//      if (a.toString().substr(0, 2) == node.adcode.toString().substr(0, 2)) {
-//        delete showCode[i][a];
-//      }
-//    }
-//  }
-//}
-
-
-//function level12(node) {
-//  var parNode = node.getParentNode();
-//  if (!showCode[node.level][parNode.adcode]) {
-//    showCode[node.level][parNode.adcode] = {}
-//  }
-//  showCode[node.level][parNode.adcode][node.adcode] = node.name;
-//  if (parNode.children.length == Object.keys(showCode[node.level][parNode.adcode]).length) {
-//    delete showCode[node.level][parNode.adcode];
-//    if (node.level == 1) {
-//      level0(parNode);
-//    } else {
-//      level12(parNode);
-//    }
-//  }
-//
-//  if (node.level == 1) {
-//    delete showCode[node.level + 1][node.adcode];
-//  }
-//}
-
 function level0(node) {
   var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
   var nodesDis = treeObj.getNodesByParam('chkDisabled', true, node);
@@ -1214,7 +1090,7 @@ function delNode12(node) {
 
 function initDate() {
   $("#qyTimePoint").datetimepicker({
-    format: 'yyyy/mm/dd hh',
+    format: 'yyyy-mm-dd hh',
     todayHighlight: false,
     minView: 'day',
     startView: 'month',
@@ -1412,19 +1288,19 @@ function initDate() {
  }
  //对地图的定位
  function setExtent(data) {
-	 if (data != "" && data != undefined) {
-		 var code = data.adcode.substring(0, 2) + "0000";
-		 if (app.featureLayer1 != "" && app.featureLayer1 != null && app.featureLayer1 != undefined) {
-			 var ss = app.featureLayer1.graphics;
-			 if (data.checked == true) {
-				 $.each(app.featureLayer1.graphics, function (i, gra) {
-					 if (gra.attributes.ADMINCODE == code) {
-						 app.map.setExtent(app.featureLayer1.graphics[i].geometry.getExtent());
-					 }
-				 })
-			 }
-		 }
-	 }
+ if (data != "" && data != undefined) {
+ var code = data.adcode.substring(0, 2) + "0000";
+ if (app.featureLayer1 != "" && app.featureLayer1 != null && app.featureLayer1 != undefined) {
+ var ss = app.featureLayer1.graphics;
+ if (data.checked == true) {
+ $.each(app.featureLayer1.graphics, function (i, gra) {
+ if (gra.attributes.ADMINCODE == code) {
+ app.map.setExtent(app.featureLayer1.graphics[i].geometry.getExtent());
+ }
+ })
+ }
+ }
+ }
  }
  //颜色数组
  var sz_corlor = ["#000080", "#6495ED", "#00FFFF", "#CD5C5C", "#FF00FF", "#9370DB", "#8B8682", "#EED5B7", "#FFF0F5", "	#9F79EE", "#A2B5CD", "#FFE1FF", "#B23AEE"];
@@ -1651,8 +1527,7 @@ function testDis(data){
     type: "GET",
     async: true,
     dataType: 'JSON'
-  })
-  var disObj = [];
+  });
   $.when(a).then(function(res){
     var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
     for(var i=0;i<res.length;i++){
