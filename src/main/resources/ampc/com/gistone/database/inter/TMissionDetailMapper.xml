@@ -6,13 +6,13 @@
     <result column="MISSION_NAME" property="missionName" jdbcType="OTHER" />
     <result column="MISSION_DOMAIN_ID" property="missionDomainId" jdbcType="DECIMAL" />
     <result column="ES_COUPLING_ID" property="esCouplingId" jdbcType="DECIMAL" />
-    <result column="MISSION_START_DATE" property="missionStartDate" jdbcType="DATE" />
-    <result column="MISSION_END_DATE" property="missionEndDate" jdbcType="DATE" />
-    <result column="MISSION_ADD_TIME" property="missionAddTime" jdbcType="DATE" />
-    <result column="UPDATE_TIME" property="updateTime" jdbcType="DATE" />
+    <result column="MISSION_START_DATE" property="missionStartDate" jdbcType="TIMESTAMP" />
+    <result column="MISSION_END_DATE" property="missionEndDate" jdbcType="TIMESTAMP" />
+    <result column="MISSION_ADD_TIME" property="missionAddTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
-    <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="MISSION_STATUS" property="missionStatus" jdbcType="OTHER" />
   </resultMap>
   
@@ -24,9 +24,9 @@
     <result column="V1" property="v1" jdbcType="VARCHAR" />
     <result column="ES_COUPLING_ID" property="esCouplingId" jdbcType="DECIMAL" />
     <result column="ES_COUPLING_NAME" property="esCouplingName" jdbcType="OTHER" />
-    <result column="MISSION_START_DATE" property="missionStartDate" jdbcType="DATE" />
-    <result column="MISSION_END_DATE" property="missionEndDate" jdbcType="DATE" />
-    <result column="MISSION_ADD_TIME" property="missionAddTime" jdbcType="DATE" />
+    <result column="MISSION_START_DATE" property="missionStartDate" jdbcType="TIMESTAMP" />
+    <result column="MISSION_END_DATE" property="missionEndDate" jdbcType="TIMESTAMP" />
+    <result column="MISSION_ADD_TIME" property="missionAddTime" jdbcType="TIMESTAMP" />
     <result column="MISSION_STATUS" property="missionStatus" jdbcType="OTHER" />
   </resultMap>
   <!-- 返回任务查询列表的列 -->
@@ -127,9 +127,9 @@
       IS_EFFECTIVE, DELETE_TIME, MISSION_STATUS
       )
     values (#{missionId,jdbcType=DECIMAL}, #{missionName,jdbcType=OTHER}, #{missionDomainId,jdbcType=DECIMAL}, 
-      #{esCouplingId,jdbcType=DECIMAL}, #{missionStartDate,jdbcType=DATE}, #{missionEndDate,jdbcType=DATE}, 
-      #{missionAddTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE}, #{userId,jdbcType=DECIMAL}, 
-      #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=DATE}, #{missionStatus,jdbcType=OTHER}
+      #{esCouplingId,jdbcType=DECIMAL}, #{missionStartDate,jdbcType=TIMESTAMP}, #{missionEndDate,jdbcType=TIMESTAMP}, 
+      #{missionAddTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=DECIMAL}, 
+      #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=TIMESTAMP}, #{missionStatus,jdbcType=OTHER}
       )
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TMissionDetail" >
@@ -186,16 +186,16 @@
         #{esCouplingId,jdbcType=DECIMAL},
       </if>
       <if test="missionStartDate != null" >
-        #{missionStartDate,jdbcType=DATE},
+        #{missionStartDate,jdbcType=TIMESTAMP},
       </if>
       <if test="missionEndDate != null" >
-        #{missionEndDate,jdbcType=DATE},
+        #{missionEndDate,jdbcType=TIMESTAMP},
       </if>
       <if test="missionAddTime != null" >
-        #{missionAddTime,jdbcType=DATE},
+        #{missionAddTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updateTime != null" >
-        #{updateTime,jdbcType=DATE},
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="userId != null" >
         #{userId,jdbcType=DECIMAL},
@@ -204,7 +204,7 @@
         #{isEffective,jdbcType=VARCHAR},
       </if>
       <if test="deleteTime != null" >
-        #{deleteTime,jdbcType=DATE},
+        #{deleteTime,jdbcType=TIMESTAMP},
       </if>
       <if test="missionStatus != null" >
         #{missionStatus,jdbcType=OTHER},
@@ -224,13 +224,13 @@
         ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL},
       </if>
       <if test="missionStartDate != null" >
-        MISSION_START_DATE = #{missionStartDate,jdbcType=DATE},
+        MISSION_START_DATE = #{missionStartDate,jdbcType=TIMESTAMP},
       </if>
       <if test="missionEndDate != null" >
-        MISSION_END_DATE = #{missionEndDate,jdbcType=DATE},
+        MISSION_END_DATE = #{missionEndDate,jdbcType=TIMESTAMP},
       </if>
       <if test="missionAddTime != null" >
-        MISSION_ADD_TIME = #{missionAddTime,jdbcType=DATE},
+        MISSION_ADD_TIME = #{missionAddTime,jdbcType=TIMESTAMP},
       </if>
         UPDATE_TIME = (select sysdate from dual),
       <if test="userId != null" >
@@ -240,7 +240,7 @@
         IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
       </if>
       <if test="deleteTime != null" >
-        DELETE_TIME = #{deleteTime,jdbcType=DATE},
+        DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       </if>
       <if test="missionStatus != null" >
         MISSION_STATUS = #{missionStatus,jdbcType=OTHER},
@@ -253,13 +253,13 @@
     set MISSION_NAME = #{missionName,jdbcType=OTHER},
       MISSION_DOMAIN_ID = #{missionDomainId,jdbcType=DECIMAL},
       ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL},
-      MISSION_START_DATE = #{missionStartDate,jdbcType=DATE},
-      MISSION_END_DATE = #{missionEndDate,jdbcType=DATE},
-      MISSION_ADD_TIME = #{missionAddTime,jdbcType=DATE},
-      UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      MISSION_START_DATE = #{missionStartDate,jdbcType=TIMESTAMP},
+      MISSION_END_DATE = #{missionEndDate,jdbcType=TIMESTAMP},
+      MISSION_ADD_TIME = #{missionAddTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       USER_ID = #{userId,jdbcType=DECIMAL},
       IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
-      DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       MISSION_STATUS = #{missionStatus,jdbcType=OTHER}
     where MISSION_ID = #{missionId,jdbcType=DECIMAL}
   </update>
