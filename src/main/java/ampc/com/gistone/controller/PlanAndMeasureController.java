@@ -2,8 +2,6 @@ package ampc.com.gistone.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.Clob;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,8 +16,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,7 +37,6 @@ import ampc.com.gistone.database.model.TPlan;
 import ampc.com.gistone.database.model.TPlanMeasure;
 import ampc.com.gistone.database.model.TPlanMeasureWithBLOBs;
 import ampc.com.gistone.database.model.TQueryExcel;
-import ampc.com.gistone.database.model.TSectorExcel;
 import ampc.com.gistone.database.model.TTime;
 import ampc.com.gistone.entity.JPResult;
 import ampc.com.gistone.entity.MeasureContentUtil;
@@ -50,7 +45,6 @@ import ampc.com.gistone.entity.SMUtil;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.DateUtil;
-import ampc.com.gistone.util.JsonUtil;
 
 /**
  * 预案措施控制类
