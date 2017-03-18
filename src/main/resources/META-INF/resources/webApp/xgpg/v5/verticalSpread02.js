@@ -1,4 +1,7 @@
 $(function(){
+	//初始化模态框显示
+	$("#createRwModal").modal();	
+	//垂直分布
 	czBar();
 
 });

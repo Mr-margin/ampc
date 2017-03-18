@@ -1,5 +1,7 @@
 $(function(){
-
+	//初始化模态框显示
+	$("#createRwModal").modal();
+	//柱状图
 	timeBar();
     
 	//getChartData(); //与java后台交互
