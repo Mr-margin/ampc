@@ -511,8 +511,11 @@ public class PlanAndMeasureController {
 				list.get(j).remove("tableItem");
 				list.get(j).remove("tableRatio");
 			}
+			Map resultMap=new HashMap();
+			resultMap.put("total", list.size());
+			resultMap.put("row", list);
 			//返回结果
-			return AmpcResult.ok(list);
+			return AmpcResult.ok(resultMap);
 		}catch(Exception e){
 			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误");
