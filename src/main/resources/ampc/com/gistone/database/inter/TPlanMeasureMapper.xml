@@ -43,7 +43,9 @@
     <result column="MEASURE_ID" property="measureId" jdbcType="DECIMAL" />
     <result column="MEASURE_EXCEL_DISPLAY" property="measureName" jdbcType="OTHER" />
     <result column="IMPLEMENTATION_SCOPE" property="implementationScope" jdbcType="VARCHAR" />
-    <result column="REDUCTION_RATIO" property="reductionRatio" jdbcType="VARCHAR" />
+    <result column="TABLE_POOL" property="tablePool" jdbcType="CLOB" />
+    <result column="TABLE_ITEM" property="tableItem" jdbcType="CLOB" />
+    <result column="TABLE_RATIO" property="tableRatio" jdbcType="CLOB" />
   </resultMap>
   
   <!--查询措施汇总的信息用来减排-->
@@ -69,7 +71,7 @@
   <!-- 根据条件查询措施汇总的信息 -->
    <select id="selectByQuery" resultMap="MapByQuery" parameterType="hashMap" >
 		SELECT PLAN_MEASURE_ID,PLAN_ID,TPM.MEASURE_ID,MEASURE_EXCEL_DISPLAY,
-			SECTOR_NAME,IMPLEMENTATION_SCOPE,REDUCTION_RATIO
+			SECTOR_NAME,IMPLEMENTATION_SCOPE,TABLE_POOL, TABLE_ITEM, TABLE_RATIO
 			FROM T_PLAN_MEASURE TPM 
   				INNER JOIN T_MEASURE_EXCEL TME ON TPM.MEASURE_ID=TME.MEASURE_EXCEL_ID
 				WHERE  TPM.IS_EFFECTIVE='1' 
