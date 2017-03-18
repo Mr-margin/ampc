@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMeasureExcelMapper;
 import ampc.com.gistone.database.inter.TMeasureSectorExcelMapper;
@@ -617,32 +620,37 @@ public class PlanAndMeasureController {
 				planMeasureId = Long.parseLong(data.get("planMeasureId").toString());
 			}
 			//预案措施中的子措施Json串、
-			System.out.println(data.get("measureContent").toString());
 			String measureContent=data.get("measureContent").toString();
 			TPlanMeasureWithBLOBs tPlanMeasure=new TPlanMeasureWithBLOBs();
 			tPlanMeasure.setMeasureId(measureId);
 			tPlanMeasure.setPlanId(planId);
 			tPlanMeasure.setSectorName(sectorName);
 			tPlanMeasure.setUserId(userId);
+			//写入子措施
 			tPlanMeasure.setMeasureContent(measureContent);
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			/**
-			 * TODO  需要自己解析得到减排比例
-			 */
-			//tPlanMeasure.setImplementationScope(implementAtionScope);
-			//tPlanMeasure.setReductionRatio(reductionRatio);
+			//将子措施转换成JsonObject对象进行解析
+			JSONObject jsonobject = JSONObject.fromObject(data.get("measureContent").toString());
+			//设置内部值的转换类型
+			Map<String, Class> cmap = new HashMap<String, Class>(); 
+			cmap.put("filters", HashMap.class);
+			cmap.put("summary", HashMap.class); 
+			cmap.put("table", HashMap.class);
+			cmap.put("table1", HashMap.class);
+			cmap.put("oopp", HashMap.class);
+			//将json对象转换成Java对象
+			MeasureContentUtil mcu= (MeasureContentUtil)JSONObject.toBean(jsonobject,MeasureContentUtil.class,cmap);
+			//获取汇总的集合
+			List<Map> poolMap=mcu.getTable();
+			//获取到总的点源范围
+			String f2=poolMap.get(0).get("f2").toString();
+			//获取子措施的集合
+			List<Map> itemMap=mcu.getTable1();
+			//写入点源范围
+			tPlanMeasure.setImplementationScope(f2);
+			//写入汇总的Json
+			tPlanMeasure.setTablePool(JSONArray.fromObject(poolMap).toString());
+			//写入子措施的Json
+			tPlanMeasure.setTableItem(JSONArray.fromObject(itemMap).toString());
 			if(data.get("planMeasureId").equals("null")){
 				//预案添加措施
 				int addstatus=tPlanMeasureMapper.insertSelective(tPlanMeasure);
@@ -655,7 +663,7 @@ public class PlanAndMeasureController {
 			}else{
 				//预案修改措施
 				tPlanMeasure.setPlanMeasureId(planMeasureId);
-				int updatestatus=tPlanMeasureMapper.updateByPrimaryKeyWithBLOBs(tPlanMeasure);
+				int updatestatus=tPlanMeasureMapper.updateByPrimaryKeySelective(tPlanMeasure);
 				//判断是否成功
 				if(updatestatus!=0){
 					return AmpcResult.ok("修改成功");
@@ -753,17 +761,41 @@ public class PlanAndMeasureController {
 				//写入SmallIndex
 				result.setSmallIndex(mcu.getSmallIndex());
 				//写入唯一Id 是预案措施Id + 预案名称  
-				result.setGroupName(pm.get("planMeasureId").toString()+pm.get("planName"));
+				result.setGroupName(pm.get("planMeasureId").toString()+"-"+pm.get("planName"));
 				//写入预案开始时间
 				result.setStart(pm.get("planStartTime").toString().substring(0,pm.get("planStartTime").toString().indexOf(".")));
 				//写入预案结束时间
 				result.setEnd(pm.get("planEndTime").toString().substring(0,pm.get("planEndTime").toString().indexOf(".")));
 				//获取Json中的Filter
 				List<Map> lms=mcu.getFilters();
-				//获取Json中的子措施汇总
+				//获取Json中的子措施集合
 				List<Map> table1=mcu.getTable1();
 				//创建要减排分析中的子项
 				List<Object> opList=new ArrayList<Object>();
+				//循环Filter 因为Filter中的项 和 子措施汇总的是相同的 所以循环一个
+				for(int i=0;i<lms.size();i++){
+					Map opresult=new HashMap();
+					//获取对应Filter中的子措施
+					Map t1map=table1.get(i);
+					//获取用户修改的OP
+					Map opmap=(Map)t1map.get("oopp");
+					opresult.put("filter", lms.get(i));
+					opresult.put("l4sFilter", pm.get("l4sFilter"));
+					opresult.put("opLevel",pm.get("level"));
+					opresult.put("opName", pm.get("measureName"));
+					opresult.put("opType", pm.get("op"));
+					for(Object obj : opmap.keySet()){
+						opresult.put(obj, Double.parseDouble(opmap.get(obj).toString()));
+					}
+					opList.add(opresult);
+				}
+				//获取Json中的汇总集合
+				List<Map> table=mcu.getTable1();
+				if(table.size()>1){
+					for (Map map : table) {
+						
+					}
+				}
 				//循环Filter 因为Filter中的项 和 子措施汇总的是相同的 所以循环一个
 				for(int i=0;i<lms.size();i++){
 					Map opresult=new HashMap();
@@ -795,22 +827,31 @@ public class PlanAndMeasureController {
 			/**
 			 * TODO  要保存减排结果
 			 */
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+			//创建Json处理对象
+			ObjectMapper MAPPER = new ObjectMapper();
+			//并根据减排分析得到的结果进行JsonTree的解析
+			JsonNode jsonNode = MAPPER.readTree(getResult);
+			//获取到data中的Json数据
+			JsonNode dataNode = jsonNode.get("data");
+			//
+			Map obj123=MAPPER.readValue(dataNode.toString(), Map.class);
+			for (Object obj : obj123.keySet()) {
+				TPlanMeasureWithBLOBs tPlanMeasure=new TPlanMeasureWithBLOBs();
+				Long id=Long.parseLong(obj.toString().split("-")[0]);
+				tPlanMeasure.setPlanMeasureId(id);
+				Map map=((Map)obj123.get(obj));
+				Map map1=(Map)((Map)(((Map)obj123.get(obj)).values().toArray()[0])).get("reduce");
+				JSONObject jsonObject = JSONObject.fromObject(map1);
+				String strResult = jsonObject.toString();
+				tPlanMeasure.setTableRatio(strResult);
+				int updatestatus=tPlanMeasureMapper.updateByPrimaryKeySelective(tPlanMeasure);
+				//判断是否成功
+				if(updatestatus!=0){
+					return AmpcResult.ok("修改成功");
+				}else{
+					return AmpcResult.build(1000,"修改失败");
+				}
+			}
 			return AmpcResult.ok(getResult);
 		}catch(Exception e){
 			e.printStackTrace();
