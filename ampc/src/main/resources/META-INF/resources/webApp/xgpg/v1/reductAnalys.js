@@ -1,24 +1,37 @@
 $(function(){
+	//初始化模态框显示
+	$("#createRwModal").modal();
+	//柱状图
 	bar();
 	pie();
-	
+	//行业 措施联动
 	$("#tradeId").change(function(){
 		
 		pie();
-		
 	});
-	
 	$("#measureId").change(function(){
 		
 		pie();
 	});
+	
 	/**
 	 *设置导航条信息
 	 */
-	//$("#crumb").html('<a href="#" class="col-sm-2 col-sm-offset-10" style="padding-left:15px;padding-right: 15px;margin-top:-10px;"><span id="">可选情景</apan></a>');
-
-
+	$("#crumb").html('<a href="" style="padding-left: 15px;padding-right: 15px;"><span class="col-md-2 col-md-offset-9">切换情景范围</span></a>');
+	
+	
 })
+
+//下拉选框
+function selectQj(value){
+	if (value == 'j1' || value == 'j2') {
+		$("#tableId").css('display','block');
+		
+	} else {
+		$("#tableId").css('display','none');
+	}
+
+}
 //柱状图
 function bar () {
 	var myPfChart = echarts.init(document.getElementById('pfDiv1'));
@@ -201,3 +214,11 @@ function  pie () {
 
 
 }
+
+
+
+
+
+
+
+
