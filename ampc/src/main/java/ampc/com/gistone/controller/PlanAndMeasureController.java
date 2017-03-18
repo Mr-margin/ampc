@@ -912,9 +912,12 @@ public class PlanAndMeasureController {
 			//将java对象转换为json对象
 			JSONArray json = JSONArray.fromObject(jpList);
 			String str = json.toString();
-			System.out.println(str);
 			//调用减排计算接口 并获取结果Json
 			String getResult=ClientUtil.doPost(JPJSURL,str);
+			
+			
+			System.out.println(getResult);
+			
 			//创建Json处理对象
 			ObjectMapper MAPPER = new ObjectMapper();
 			//并根据减排分析得到的结果进行JsonTree的解析
