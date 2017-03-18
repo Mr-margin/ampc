@@ -40,7 +40,6 @@ if(!qjMsg){
 
 hyc();
 metTable_hj_info();
-
 /**
  * 获取用户的行业与措施，页面初始化赋值
  */
@@ -87,6 +86,7 @@ function hyc(){
 				accordion_html += '</div></div></div>';
 			});
 			$("#accordion").html(accordion_html);
+			
 		}else{
 			swal('连接错误', '', 'error');
 //			swal('添加成功', '', 'success');
@@ -125,28 +125,29 @@ function metTable_hj_info(){
 		}
 	});
 	
-	var columns = [];
-	columns.push({field: 'state', title: '', align: 'center', checkbox: true});
-	columns.push({field: 'sectorName', title: '行业', align: 'center'});
-	columns.push({field: 'measureName', title: '措施', align: 'center'});
-	columns.push({field: 'implementationScope', title: '点源实际范围', align: 'center'});
-	columns.push({field: 'reduct', title: '涉及排放占比', align: 'center', formatter: function(value, row, index){
+	var columnsw = [];
+	columnsw.push({field: 'state', title: '', align: 'center', checkbox: true});
+	columnsw.push({field: 'sectorName', title: '行业', align: 'center'});
+	columnsw.push({field: 'measureName', title: '措施', align: 'center'});
+	columnsw.push({field: 'implementationScope', title: '点源实际范围', align: 'center'});
+	columnsw.push({field: 'reduct', title: '涉及排放占比', align: 'center', formatter: function(value, row, index){
 		
 	    return value;
 	}});
-	columns.push({field: 'ratio', title: '减排占比', align: 'center', formatter: function(value, row, index){
+	columnsw.push({field: 'ratio', title: '减排占比', align: 'center', formatter: function(value, row, index){
 		
 	    return value;
 	}});
-	
 	$('#metTable_hj').bootstrapTable({
 		method: 'POST',
 		url: "/ampc/measure/get_measureList",
 		dataType: "json",
-		columns: columns, //列
-		clickToSelect: true,//点击选中行
-		pagination: false,	//在表格底部显示分页工具栏
-		striped: true,	 //使表格带有条纹
+		columns: columnsw, //列
+		clickToSelect : true,// 点击选中行
+		pagination : false, // 在表格底部显示分页工具栏
+		singleSelect : true,//设置True 将禁止多选
+		striped : false, // 使表格带有条纹
+		silent : true, // 刷新事件必须设置
 		queryParams: function(params) {
 			var data = {};
 			data.planId = qjMsg.planId;
@@ -158,10 +159,9 @@ function metTable_hj_info(){
 			return JSON.stringify({"token": "","data": data});
 		}, 
 		queryParamsType: "limit", //参数格式,发送标准的RESTFul类型的参数请求
-		silent: true,  //刷新事件必须设置
 		contentType : "application/json", // 请求远程数据的内容类型。
 		responseHandler: function (res) {
-			return res.data
+			return res.data.rows;
 		},
 		onClickRow: function (row, $element) {
 			$('.success').removeClass('success');
@@ -445,107 +445,111 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 				});
 				$("#xishuMO").html(xishuMO);
 			}
-			show_zicuoshi += "</tr>";
 			
-			ajaxPost_w(jianpaiUrl+'/search/companyCount',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName}).success(function(res){
-//				console.log(JSON.stringify(res));
-				if(res.status == 'success'){
-					$("#dianyaunzushu").html("点源总数："+res.data.count);
-					add_point(res.data.company);
-				}else{
-					swal('连接错误search/companyCount', '', 'error');
-				}
-			});
+			if(res.data.query.length>0){//返回筛选条件，说明有点源可以筛选
+				ajaxPost_w(jianpaiUrl+'/search/companyCount',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName}).success(function(res){
+//					console.log(JSON.stringify(res));
+					if(res.status == 'success'){
+						$("#dianyaunzushu").html("点源总数："+res.data.count);
+						add_point(res.data.company);
+					}else{
+						swal('连接错误search/companyCount', '', 'error');
+					}
+				});
+			}
 			
-			//添加区域4的结果表格
-			ajaxPost_w(jianpaiUrl+'/search/summarySource',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName,"summary":sc_val.summary}).success(function(da){
-				console.log(JSON.stringify({"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName,"summary":sc_val.summary}));
-				console.log(JSON.stringify(da));
-				
-				if(da.status == 'success'){
-					var columns = [];
-					columns.push({field: 'state', title: '', align: 'center', checkbox: true, formatter: function(value, row, index){
-						if (index === 0) {
-					        return {
-					            disabled: true
-					        }
-					    }
-					    return value;
-					}});
-					columns.push({field: 'f1', title: '措施', align: 'center'});
-					columns.push({field: 'f2', title: '点源实施范围', align: 'center'});
-					var b_data = [];
-					var zz = {"f1": "汇总", "f2" : "0/"+da.data.P[0].count}, pp = {"f1": "剩余点源", "f2" : da.data.P[0].count}, ss = {"f1": "面源", "f2" : "0"};
-					
-					$.each(res.data.measureColumn, function(i, vol) {
-						columns.push({field: vol.sectordocEtitle, title: vol.sectordocCtitle, align: 'center'});
-						zz[vol.sectordocEtitle] = "0/"+(Math.round(da.data.P[0][vol.sectordocEtitle])+Math.round(da.data.S[0][vol.sectordocEtitle]));
-						pp[vol.sectordocEtitle] = Math.round(da.data.P[0][vol.sectordocEtitle]);
-						ss[vol.sectordocEtitle] = Math.round(da.data.S[0][vol.sectordocEtitle]);
-					});
-					$.each(res.data.measureList, function(i, col) {
-						columns.push({field: "psl_"+col.nameen, title: col.namech, align: 'center'});
-						zz["psl_"+col.nameen] = "";
-						pp["psl_"+col.nameen] = "";
-						ss["psl_"+col.nameen] = "";
-					});
-					b_data.push(zz);
-					b_data.push(pp);
-					b_data.push(ss);
-					
-					$('#show_zicuoshi_table').bootstrapTable('destroy');
-					$('#show_zicuoshi_table').bootstrapTable({
-						columns : columns,
-						data : b_data,
-						height : $("#show_zicuoshi_table_div").height(),
-						clickToSelect : false,// 点击选中行
-						detailView : true,//显示详细页面模式
-						pagination : false, // 在表格底部显示分页工具栏
-						clickToSelect : true,//设置true 将在点击行时，自动选择rediobox 和 checkbox
-						singleSelect : true,//设置True 将禁止多选
-						striped : false, // 使表格带有条纹
-						silent : true, // 刷新事件必须设置
-						detailFormatter : function(index, row){
-							if(row.f1 == "汇总" || row.f1 == "剩余点源" || row.f1 == "面源"){
-								
-							}else{
-								return row.tiaojian;
-							}
-						},
-						onClickRow : function(row, $element) {
-							$('.success').removeClass('success');
-							$($element).addClass('success');
-							setTimeout(function(){
-								if(row.state == true){//如果被选中
-									if(row.f1 != "剩余点源" && row.f1 != "面源" ){
-										$("#zicuoshi_tools_de").show();
-										$("#zicuoshi_tools_up").show();
+			var measureContent = {};
+			if (typeof res.data.measureContent != "undefined") {
+				alert(measureContent);
+			}else{
+				//添加区域4的结果表格
+				ajaxPost_w(jianpaiUrl+'/search/summarySource',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName,"summary":sc_val.summary}).success(function(da){
+//					console.log(JSON.stringify(da));
+					if(da.status == 'success'){
+						var columns = [];
+						columns.push({field: 'state', title: '', align: 'center', checkbox: true, formatter: function(value, row, index){
+							if (index === 0) {
+						        return {
+						            disabled: true
+						        }
+						    }
+						    return value;
+						}});
+						columns.push({field: 'f1', title: '措施', align: 'center'});
+						columns.push({field: 'f2', title: '点源实施范围', align: 'center'});
+						var b_data = [];
+						var zz = {"f1": "汇总", "f2" : "0/"+da.data.P[0].count}, pp = {"f1": "剩余点源", "f2" : da.data.P[0].count}, ss = {"f1": "面源", "f2" : "0"};
+						
+						$.each(res.data.measureColumn, function(i, vol) {
+							columns.push({field: vol.sectordocEtitle, title: vol.sectordocCtitle, align: 'center'});
+							zz[vol.sectordocEtitle] = "0/"+(Math.round(da.data.P[0][vol.sectordocEtitle])+Math.round(da.data.S[0][vol.sectordocEtitle]));
+							pp[vol.sectordocEtitle] = Math.round(da.data.P[0][vol.sectordocEtitle]);
+							ss[vol.sectordocEtitle] = Math.round(da.data.S[0][vol.sectordocEtitle]);
+						});
+						$.each(res.data.measureList, function(i, col) {
+							columns.push({field: "psl_"+col.nameen, title: col.namech, align: 'center'});
+							zz["psl_"+col.nameen] = "";
+							pp["psl_"+col.nameen] = "";
+							ss["psl_"+col.nameen] = "";
+						});
+						b_data.push(zz);
+						b_data.push(pp);
+						b_data.push(ss);
+						
+						$('#show_zicuoshi_table').bootstrapTable('destroy');
+						$('#show_zicuoshi_table').bootstrapTable({
+							columns : columns,
+							data : b_data,
+							height : $("#show_zicuoshi_table_div").height(),
+							clickToSelect : false,// 点击选中行
+							detailView : true,//显示详细页面模式
+							pagination : false, // 在表格底部显示分页工具栏
+							clickToSelect : true,//设置true 将在点击行时，自动选择rediobox 和 checkbox
+							singleSelect : true,//设置True 将禁止多选
+							striped : false, // 使表格带有条纹
+							silent : true, // 刷新事件必须设置
+							detailFormatter : function(index, row){
+								if(row.f1 == "汇总" || row.f1 == "剩余点源" || row.f1 == "面源"){
+									
+								}else{
+									return row.tiaojian;
+								}
+							},
+							onClickRow : function(row, $element) {
+								$('.success').removeClass('success');
+								$($element).addClass('success');
+								setTimeout(function(){
+									if(row.state == true){//如果被选中
+										if(row.f1 != "剩余点源" && row.f1 != "面源" ){
+											$("#zicuoshi_tools_de").show();
+											$("#zicuoshi_tools_up").show();
+										}else{
+											$("#zicuoshi_tools_de").hide();
+											$("#zicuoshi_tools_up").show();
+										}
 									}else{
 										$("#zicuoshi_tools_de").hide();
-										$("#zicuoshi_tools_up").show();
+										$("#zicuoshi_tools_up").hide();
 									}
-								}else{
-									$("#zicuoshi_tools_de").hide();
-									$("#zicuoshi_tools_up").hide();
-								}
-							},100);
-						},
-						onLoadSuccess : function(data){
-							
-						},
-						onLoadError : function(){
-							swal('连接错误', '', 'error');
-						}
-					});
-					$('#show_zicuoshi_table').bootstrapTable('expandRow', 0);
-					$('#show_zicuoshi_table').bootstrapTable('expandRow', 1);
-					$('#show_zicuoshi_table').bootstrapTable('expandRow', 2);
+								},100);
+							},
+							onLoadSuccess : function(data){
+								
+							},
+							onLoadError : function(){
+								swal('连接错误', '', 'error');
+							}
+						});
+						$('#show_zicuoshi_table').bootstrapTable('expandRow', 0);
+						$('#show_zicuoshi_table').bootstrapTable('expandRow', 1);
+						$('#show_zicuoshi_table').bootstrapTable('expandRow', 2);
+						
+					}else{
+						swal('连接错误search/summarySource', '', 'error');
+					}
 					
-				}else{
-					swal('连接错误search/summarySource', '', 'error');
-				}
-				
-			});
+				});
+			}
 			
 			//初始化的时候，将固定条件组织好，复制一份保存使用
 			sc_v1 = jQuery.extend(true, {}, sc_val);
@@ -805,6 +809,9 @@ function point_table () {
 		queryParamsType : "limit", // 参数格式,发送标准的RESTFul类型的参数请求
 		silent : true, // 刷新事件必须设置
 		contentType : "application/json", // 请求远程数据的内容类型。
+		responseHandler: function (res) {
+			return res
+		},
 		onClickRow : function(row, $element) {
 			$('.success').removeClass('success');
 			$($element).addClass('success');
