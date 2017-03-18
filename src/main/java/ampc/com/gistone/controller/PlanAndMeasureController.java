@@ -514,7 +514,7 @@ public class PlanAndMeasureController {
 			}
 			Map resultMap=new HashMap();
 			resultMap.put("total", list.size());
-			resultMap.put("row", list);
+			resultMap.put("rows", list);
 			//返回结果
 			return AmpcResult.ok(resultMap);
 		}catch(Exception e){
