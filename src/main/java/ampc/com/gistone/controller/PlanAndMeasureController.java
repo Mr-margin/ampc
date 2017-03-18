@@ -625,7 +625,7 @@ public class PlanAndMeasureController {
 			}
 			if(tme.getMeasureExcelSulfer()!=null){
 				mu=new MeasureUtil();
-				mu.setNameen("sulfer");
+				mu.setNameen("sulfur");
 				mu.setNamech(tme.getMeasureExcelSulfername().toString());
 				mu.setValue(tme.getMeasureExcelSulfer());
 				String[] sulfer=CheckRange(tme.getMeasureExcelSulferrange().toString());
