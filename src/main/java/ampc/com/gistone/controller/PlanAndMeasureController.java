@@ -61,7 +61,6 @@ import ampc.com.gistone.util.JsonUtil;
 @RestController
 @RequestMapping
 public class PlanAndMeasureController {
-	
 	//措施汇总调用减排分析时使用的接口Url
 	private  static final String JPJSURL="http://192.168.1.53:8089/calc/submit/subSector";
 	//预案措施映射
@@ -91,8 +90,6 @@ public class PlanAndMeasureController {
 	//行业措施中间表映射
 	@Autowired
 	public TMeasureSectorExcelMapper tMeasureSectorExcelMapper;
-	
-	
 	
 	/**
 	 * 创建预案
@@ -418,7 +415,6 @@ public class PlanAndMeasureController {
 	}
 	
 	/**
-	 * TODO
 	 * 措施汇总查询
 	 * @author WangShanxi
 	 * @throws UnsupportedEncodingException 
@@ -532,7 +528,6 @@ public class PlanAndMeasureController {
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
-	
 	
 	/**
 	 * 子措施条件查询
@@ -762,7 +757,6 @@ public class PlanAndMeasureController {
 	}
 	
 	/**
-	 * TODO
 	 * 删除预案中的措施
 	 * @author WangShanxi 
 	 */
@@ -963,7 +957,6 @@ public class PlanAndMeasureController {
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
-	
 	
 	/**
 	 * 取值范围验证方法
