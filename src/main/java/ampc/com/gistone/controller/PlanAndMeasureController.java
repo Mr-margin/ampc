@@ -490,10 +490,20 @@ public class PlanAndMeasureController {
 										}
 										//如果子措施和汇总都有对应污染物 则计算涉及减排比
 										if(ratioMap!=null){
-											if(ratioMap.get(stainType)!=null&&pool.get(stainType)!=null){
-												double dratio=Double.parseDouble(ratioMap.get(stainType).toString());
-												double dpool=Double.parseDouble(pool.get(stainType).toString().split("/")[1]);
-												list.get(i).put("ratio", dratio/dpool);
+											//如果是PM10需要计算PMcoarse  PM25
+											if(!stainType.equals("PM10")){
+												if(ratioMap.get(stainType)!=null&&pool.get(stainType)!=null){
+													double dratio=Double.parseDouble(ratioMap.get(stainType).toString());
+													double dpool=Double.parseDouble(pool.get(stainType).toString().split("/")[1]);
+													list.get(i).put("ratio", dratio/dpool);
+												}
+											}else{
+												if(ratioMap.get("PMcoarse")!=null&&ratioMap.get("PM25")!=null&&pool.get(stainType)!=null){
+													double pMcoarse=Double.parseDouble(ratioMap.get("PMcoarse").toString());
+													double pM25=Double.parseDouble(ratioMap.get("PM25").toString());
+													double dpool=Double.parseDouble(pool.get(stainType).toString().split("/")[1]);
+													list.get(i).put("ratio", (pMcoarse+pM25)/dpool);
+												}
 											}
 										}
 									}
