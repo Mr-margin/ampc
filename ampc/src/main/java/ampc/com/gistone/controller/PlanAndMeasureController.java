@@ -61,6 +61,9 @@ import ampc.com.gistone.util.JsonUtil;
 @RestController
 @RequestMapping
 public class PlanAndMeasureController {
+	//措施汇总调用减排分析时使用的接口Url
+	private  static final String JPJSURL="http://192.168.1.53:8089/calc/submit/subSector";
+	
 	//预案措施映射
 	@Autowired
 	private TPlanMeasureMapper tPlanMeasureMapper;
@@ -915,7 +918,7 @@ public class PlanAndMeasureController {
 			String str = json.toString();
 			System.out.println(str);
 			//调用减排计算接口 并获取结果Json
-			String getResult=ClientUtil.doPost("http://192.168.1.53:8089/calc/submit/subSector",str);
+			String getResult=ClientUtil.doPost(JPJSURL,str);
 			//创建Json处理对象
 			ObjectMapper MAPPER = new ObjectMapper();
 			//并根据减排分析得到的结果进行JsonTree的解析
