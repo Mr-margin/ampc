@@ -460,7 +460,14 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 			
 			var measureContent = {};
 			if (typeof res.data.measureContent != "undefined") {
-				alert(measureContent);
+//				var re3 = new RegExp("\\\\","g");
+//				var new_data = JSON.parse(JSON.stringify(res.data.measureContent).replace(re3, ""));
+				measureContent = JSON.parse(res.data.measureContent);
+				
+				
+				
+				
+				console.log(JSON.stringify(measureContent));
 			}else{
 				//添加区域4的结果表格
 				ajaxPost_w(jianpaiUrl+'/search/summarySource',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName,"summary":sc_val.summary}).success(function(da){
