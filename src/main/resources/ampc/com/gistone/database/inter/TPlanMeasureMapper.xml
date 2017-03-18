@@ -92,21 +92,36 @@
   
   <!-- 根据条件查询措施id信息 -->
    <select id="selectIdByQuery" resultMap="selectIdByQuery" parameterType="hashMap" >
-		SELECT PLAN_MEASURE_ID,TPM.MEASURE_ID 
-			FROM T_PLAN_MEASURE TPM 
-  				INNER JOIN T_MEASURE_EXCEL TME ON TPM.MEASURE_ID=TME.MEASURE_EXCEL_ID
-				WHERE  TPM.IS_EFFECTIVE='1' 
+		SELECT PLAN_MEASURE_ID,MEASURE_ID 
+			FROM T_PLAN_MEASURE 
+				WHERE  IS_EFFECTIVE='1' 
 				 <if test="planId != null" >
-        				AND TPM.PLAN_ID=#{planId,jdbcType=OTHER}
+        				AND PLAN_ID=#{planId,jdbcType=OTHER}
      			 </if>
 				  <if test="userId != null" >
-        				AND TPM.USER_ID=#{userId,jdbcType=OTHER}
+        				AND USER_ID=#{userId,jdbcType=OTHER}
      			 </if>
 				  <if test="sectorName != null" >
        					 AND SECTOR_NAME=#{sectorName,jdbcType=OTHER}
      			  </if>
 				 <if test="measureId != null" >
-       					 AND TPM.MEASURE_ID=#{measureId,jdbcType=DECIMAL} 
+       					 AND MEASURE_ID=#{measureId,jdbcType=DECIMAL} 
+     			  </if>
+  </select>
+  
+  <!-- 根据条件查询措施id信息 -->
+   <select id="selectIdByMap" resultType="java.lang.Long" parameterType="hashMap" >
+		SELECT PLAN_MEASURE_ID
+			FROM T_PLAN_MEASURE 
+				WHERE  IS_EFFECTIVE='1' 
+				 <if test="planId != null" >
+        				AND PLAN_ID=#{planId,jdbcType=OTHER}
+     			 </if>
+				  <if test="userId != null" >
+        				AND USER_ID=#{userId,jdbcType=OTHER}
+     			 </if>
+				  <if test="sectorName != null" >
+       					 AND SECTOR_NAME=#{sectorName,jdbcType=OTHER}
      			  </if>
   </select>
   
@@ -117,20 +132,27 @@
     set 
       IS_EFFECTIVE = '0',
       DELETE_TIME = (select sysdate from dual) 
-      <if test="userId != null" >
-        	WHERE USER_ID=#{userId,jdbcType=OTHER}
+      <if test="_parameter != null" >
+        	WHERE USER_ID=#{_parameter,jdbcType=OTHER}
      </if>
   </update>
   
   <!-- 删除预案措施 -->
-  <delete id="deleteMeasures" parameterType="hashMap">
+  <delete id="deleteMeasures" parameterType="java.lang.Long">
     delete T_PLAN_MEASURE
-     where USER_ID=#{userId,jdbcType=OTHER} and PLAN_MEASURE_ID in 
-        <foreach collection="idss" index="index" item="item" separator="," open="(" close=")">
-     		 #{item,jdbcType=OTHER}
-  		</foreach>
+     where  PLAN_MEASURE_ID = #{_parameter jdbcType=OTHER}
   </delete>
   
+  <!-- 修改所有的措施状态 相当于删除 -->
+  <update id="updateRatio" parameterType="java.util.List">
+    update T_PLAN_MEASURE
+    set 
+      TABLE_RATIO = NULL 
+      where PLAN_MEASURE_ID in
+       <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+     		 #{item,jdbcType=DECIMAL}
+  		</foreach>
+  </update>
   
   <!-- 根据id集合获取所有的预案措施 -->
   <select id="getPmByIds" resultMap="JPMap" parameterType="java.util.List" >
