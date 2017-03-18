@@ -414,8 +414,6 @@ public class PlanAndMeasureController {
 		}
 	}
 	
-	
-	
 	/**
 	 * TODO
 	 * 措施汇总查询
@@ -797,8 +795,6 @@ public class PlanAndMeasureController {
 		}
 	}
 	
-	
-	
 	/**
 	 * 
 	 * 措施汇总中数据的减排计算
@@ -956,19 +952,6 @@ public class PlanAndMeasureController {
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	/**
