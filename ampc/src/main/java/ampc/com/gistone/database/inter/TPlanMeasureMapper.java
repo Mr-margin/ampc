@@ -28,6 +28,20 @@ public interface TPlanMeasureMapper {
 	List<Map> selectIdByQuery(Map map);
 	
 	/**
+	 * 根据条件Map查询ID信息
+	 * @param map
+	 * @return
+	 */
+	List<Long> selectIdByMap(Map map);
+	
+	/**
+    * 修改所有的减排为空
+    * @param userId
+    * @return
+    */
+    int updateRatio(List<Long> plist);
+	
+	/**
     * 修改预案措施是否有效
     * @param userId
     * @return
@@ -46,7 +60,7 @@ public interface TPlanMeasureMapper {
     * @param userId
     * @return
     */
-   int deleteMeasures(Map map);
+   int deleteMeasures(Long planMeasureId);
 	
    /**
     * 根据对象中的条件查询数据
