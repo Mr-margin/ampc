@@ -154,81 +154,46 @@
 	    <div class="ibox-title">
 	        <h5>地图展示</h5>
 	        <div class="ibox-tools">
-	        	<div class="row" style="margin-top: -5px;">
-	        		<div class='col-md-6'>
-	        			<div class="btn-group" >
-		                     <button data-toggle="dropdown" class="btn btn-default  dropdown-toggle" style="margin-bottom: 0px;">污染物 <span class="caret"></span>
-		                     </button>
-		                     <ul class="dropdown-menu" style="min-width: 80.83px;">
-		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
-		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
-		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
-		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
-		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
-		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
-		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
-		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
-		                         <li><a class="font-bold">SO<sub>2</sub></a></li>
-		                     </ul>
-		                 </div>
-	        		</div>
-	        		<div class='col-md-6'>
-		                 <div class="btn-group" >
-		                     <button data-toggle="dropdown" class="btn btn-default  dropdown-toggle" style="margin-bottom: 0px;">全部行业 <span class="caret"></span>
-		                     </button>
-		                     <ul class="dropdown-menu" style="min-width: 95.09px;">
-		                         <li><a class="font-bold">当前行业</sub></a></li>
-		                     </ul>
-		                 </div>
-	        		</div>
-	        	</div>
-                        
+				<div class="btn-group" style="margin-bottom: 0px;margin-top: -10px;">
+					<div class="input-group m-b" style="margin-bottom: 0px;width:180px;">
+						<span class="input-group-addon" style="border: 1px solid #E5E6E7;">污染物: </span>
+						<select name="hz_wrw" id="hz_wrw" class="form-control" onchange="metTable_hj_info();">
+							<option value="PM25">PM25</option>
+							<option value="PM10">PM10</option><!-- PM10=PM25+PMcoarse -->
+							<option value="SO2">SO2</option>
+							<option value="NOx">NOx</option>
+							<option value="VOC">VOC</option>
+		              	</select>
+					</div>
+				</div>
+	        	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	        	<div class="btn-group btn-group-circle" id="hangyedetype" onClick="hangye_type_info();" data-toggle="buttons" style="margin-bottom: 0px;margin-top: -5px;">
+					<label class="btn btn-outline btn-success active" val_name="all"><input type="radio" class="toggle">全部行业</label> 
+					<label class="btn btn-outline btn-success" val_name="dq"><input type="radio" class="toggle">当前行业</label>
+				</div>
 	        </div>
 	    </div>
-	    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;padding: 0px 0px 0px 0px;">
-	    	<div class="col-md-12" id="mapDiv0" style="height:100%;border:1px solid #75B9E6;padding: 0px;"></div>
+	    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;border:1px solid #75B9E6;padding: 0px;">
+	    	<div class="col-md-12" id="mapDiv0" style="height:100%;padding: 0px;"></div>
 	    </div>
 	</div>
 	<div class="ibox float-e-margins" style="height:calc(50% - 15px);margin-bottom: 0px;">
 	    <div class="ibox-title">
 	        <h5>措施汇总</h5>
 	        <div class="ibox-tools">
-       			<div class="btn-group">
-                     <button data-toggle="dropdown" class="btn btn-default  dropdown-toggle" style="margin-bottom: 0px;margin-top: -5px;">操作 <span class="caret"></span>
-                     </button>
-                     <ul class="dropdown-menu" style="min-width: 95px;">
-                         <li><a class="font-bold">计算减排</a></li>
-                         <li class="divider"></li>
-                         <li><a class="font-bold">修改</a></li>
-                         <li><a class="font-bold">删除</a></li>
-                     </ul>
-                 </div>
+	        	<button class="btn btn-success" id="hz_up" style="margin-bottom: 0px;margin-top: -7px;" onclick="hz_up();" type="button">
+					<i class="fa fa-edit"></i>&nbsp;&nbsp;<span class="bold">修改</span>
+				</button>
+				<button class="btn btn-success" id="hz_de" style="margin-bottom: 0px;margin-top: -7px;" onclick="hz_de();" type="button">
+					<i class="fa fa-close"></i>&nbsp;&nbsp;<span class="bold">删除</span>
+				</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<button class="btn btn-success" id="jianpaijisuan" style="margin-bottom: 0px;margin-top: -7px;" onclick="jianpaijisuan();" type="button">
+					<i class="fa fa-hourglass-2"></i>&nbsp;&nbsp;<span class="bold">计算减排</span>
+				</button>
 	        </div>
 	    </div>
 	    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;border:1px solid #75B9E6;padding: 0px;">
 	    	<table id='metTable_hj' class='table-bordered'></table>
-	    	<!-- <table class="table table-hover table-striped">
-				<thead>
-					<tr>
-						<th><label for="checkall"><input type="checkbox" id="checkall"></label></th>
-						<th>行业</th>
-						<th>措施</th>
-						<th>点源实际范围</th>
-						<th>设计排放占比</th>
-						<th>减排占比</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td><input type="checkbox" name="check1" /></td>
-						<td>火力发电</td>
-						<td>限产</td>
-						<td><p class="text-center">173/223</p></td>
-						<td><p class="text-center">11.0%</p></td>
-						<td></td>
-					</tr>
-				</tbody>
-			</table> -->
 	    </div>
 	</div>
 </div>
@@ -249,16 +214,16 @@
 			
 				<div class='col-md-12' style="height:40px;padding-left: 0px;background-color: #FFF;margin-bottom: 15px;">
 					<div class='col-md-3' style="padding: 8px 10px 5px 25px;">
-						<h5 id="measureame">措施：限产</h5>
+						<h5 id="measureame"></h5>
 					</div>
 					<div class='col-md-3' style="padding: 8px 00px 5px 15px;">
-						<h5 id="sectorsName">行业：火力发电</h5>
+						<h5 id="sectorsName"></h5>
 					</div>
 					<div class='col-md-3' style="padding: 8px 00px 5px 15px;">
-						<h5 id="dianyaunzushu">点源总数：223</h5>
+						<h5 id="dianyaunzushu"></h5>
 					</div>
 					<div class='col-md-3' style="padding: 8px 10px 5px 0px;">
-						<h5>点源排放占比：98%</h5>
+						<h5 id="xiangxizhibiao">点源排放占比：98%</h5>
 					</div>
 				</div>
 			

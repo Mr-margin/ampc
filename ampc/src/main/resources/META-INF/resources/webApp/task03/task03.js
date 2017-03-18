@@ -39,6 +39,7 @@ if(!qjMsg){
 }
 
 hyc();
+metTable_hj_info();
 
 /**
  * 获取用户的行业与措施，页面初始化赋值
@@ -52,7 +53,7 @@ function hyc(){
 	paramsName.timeEndTime=qjMsg.timeEndDate;
 	
 	m_planId = qjMsg.planId;
-	
+	$("#accordion").html("");
 	ajaxPost('/plan/get_planInfo',paramsName).success(function(res){
 //		console.log(JSON.stringify(res));
 		var accordion_html = "";
@@ -60,7 +61,7 @@ function hyc(){
 			$.each(res.data, function(i, col) {
 				
 				var inn = i == 0 ? "in" : "";//第一个手风琴页签打开
-				accordion_html += '<div class="panel panel-default"><div class="panel-heading" style="background-color: #FFF;">';
+				accordion_html += '<div class="panel panel-default" val_name="'+col.sectorsName+'"><div class="panel-heading" style="background-color: #FFF;">';
 				accordion_html += '<a data-toggle="collapse" data-parent="#accordion" style="font-weight: 700;" href="#collapse'+i+'"><h5 class="panel-title">'+col.sectorsName+'';
 				if(col.count != "0"){
 					accordion_html += '<code class="pull-right">已使用&nbsp;'+col.count+'&nbsp;条措施</code>';
@@ -73,7 +74,7 @@ function hyc(){
 					if(col.planMeasure.length > 0){
 						$.each(col.planMeasure, function(k, ool) {//循环已选中的措施
 							if(ool.measureId == vol.mid){//已选中的措施和措施列表的ID相同，标签需要更改效果
-								accordion_html += '<a class="btn btn-success-cs-w" style="width:80%;" onclick="open_cs(\''+col.sectorsName+'\',\''+vol.measureame+'\',\''+vol.mid+'\',\''+ool.planMeasureId+'\');"><i class="fa fa-check"> </i>&nbsp;&nbsp;&nbsp;'+vol.measureame+'</a>';
+								accordion_html += '<a class="btn btn-success-cs-w" id="'+ool.planMeasureId+'" style="width:80%;" onclick="open_cs(\''+col.sectorsName+'\',\''+vol.measureame+'\',\''+vol.mid+'\',\''+ool.planMeasureId+'\');"><i class="fa fa-check"> </i>&nbsp;&nbsp;&nbsp;'+vol.measureame+'</a>';
 								bggh = false;//如果已选中，在这里添加，否则需要添加未选中的标签
 							}
 						});
@@ -99,34 +100,150 @@ function hyc(){
  * 获取措施汇总
  */
 function metTable_hj_info(){
+	$('#metTable_hj').bootstrapTable('destroy');
+	
+	$("#hz_de").hide();
+	$("#hz_up").hide();
+	$("#jianpaijisuan").hide();
+	
+	var hangye = "";//手风琴当前打开的内容
+	//循环手风琴列表下所有的一级子节点，查找哪个正在打开
+	$("#accordion").children().each(function(){
+		var e = $(this);
+		e.children().each(function(){//再循环一次，这次下面有两个div，一个标题，一个内容
+			if($(this).is('.in')){
+				hangye = e.attr("val_name");
+			}
+		});
+	});
+	
+	//行业的查询状态
+	var hangyede_type = "";
+	$("#hangyedetype").children().each(function(){
+		if($(this).is('.active')){
+			hangyede_type = $(this).attr("val_name");
+		}
+	});
+	
+	var columns = [];
+	columns.push({field: 'state', title: '', align: 'center', checkbox: true});
+	columns.push({field: 'sectorName', title: '行业', align: 'center'});
+	columns.push({field: 'measureName', title: '措施', align: 'center'});
+	columns.push({field: 'implementationScope', title: '点源实际范围', align: 'center'});
+	columns.push({field: 'reduct', title: '涉及排放占比', align: 'center', formatter: function(value, row, index){
+		
+	    return value;
+	}});
+	columns.push({field: 'ratio', title: '减排占比', align: 'center', formatter: function(value, row, index){
+		
+	    return value;
+	}});
+	
 	$('#metTable_hj').bootstrapTable({
 		method: 'POST',
-		url: url,
+		url: "/ampc/measure/get_measureList",
 		dataType: "json",
 		columns: columns, //列
-		iconSize: "outline",
 		clickToSelect: true,//点击选中行
 		pagination: false,	//在表格底部显示分页工具栏
-		icons: {
-			refresh: "glyphicon-repeat",
-			toggle: "glyphicon-list-alt",
-			columns: "glyphicon-list"
-		},
-//		pageSize: tablepageSize,	//页面大小
-//		pageNumber: 1,	//页数
 		striped: true,	 //使表格带有条纹
-//		sidePagination: "server",//表格分页的位置 client||server
-		queryParams: queryParams, //参数
+		queryParams: function(params) {
+			var data = {};
+			data.planId = qjMsg.planId;
+			data.userId = userId;
+			data.stainType = $('#hz_wrw').val();
+			if(hangyede_type == "dq"){
+				data.sectorName = hangye;
+			}
+			return JSON.stringify({"token": "","data": data});
+		}, 
 		queryParamsType: "limit", //参数格式,发送标准的RESTFul类型的参数请求
 		silent: true,  //刷新事件必须设置
-		contentType: "application/x-www-form-urlencoded",	//请求远程数据的内容类型。
+		contentType : "application/json", // 请求远程数据的内容类型。
+		responseHandler: function (res) {
+			return res.data
+		},
 		onClickRow: function (row, $element) {
 			$('.success').removeClass('success');
 			$($element).addClass('success');
-//			row_sheetname = sheet;
+			setTimeout(function(){
+				if(row.state == true){//如果被选中
+					$("#hz_de").show();
+					$("#hz_up").show();
+				}else{
+					$("#hz_de").hide();
+					$("#hz_up").hide();
+				}
+			},100);
+		},
+		onLoadSuccess : function(data){
+			if(data.length>0){
+				$("#jianpaijisuan").show();
+			}
 		}
 	});
 }
+
+/**
+ * 更换行业类型查询查询
+ */
+function hangye_type_info(){
+	setTimeout(function(){
+		metTable_hj_info();
+	},100);
+}
+
+/**
+ * 汇总的修改按钮
+ */
+
+function hz_up(){
+	var row = $('#metTable_hj').bootstrapTable('getSelections');
+	if(row.length>0){
+		open_cs(row[0].sectorName, row[0].measureName, row[0].measureId, row[0].planMeasureId);
+	}
+}
+
+/**
+ * 汇总的删除按钮
+ */
+function hz_de(){
+	var row = $('#metTable_hj').bootstrapTable('getSelections');
+	if(row.length>0){
+		var paramsName = {};
+		paramsName.planMeasureId = row[0].planMeasureId;
+		paramsName.sectorName = row[0].sectorName;
+		paramsName.planId = row[0].planId;
+		paramsName.userId = userId;
+		ajaxPost('/measure/ delete_measure',paramsName).success(function(res){
+			metTable_hj_info();
+			hyc();
+		});
+	}
+}
+
+/**
+ * 减排计算按钮
+ */
+function jianpaijisuan(){
+	var row = $('#metTable_hj').bootstrapTable('getData');//获取所有的数据
+	var planMeasureIds = "";
+	$.each(row, function(i, col) {
+		planMeasureIds += col.planMeasureId+",";
+	});
+	$("#zhezhao").show();//计算中
+	$("#zhezhao_title").show();
+	ajaxPost('/jp/pmjp',{"planMeasureIds": planMeasureIds.substring(0,planMeasureIds.length-1)}).success(function(res){
+		metTable_hj_info();
+		$("#zhezhao").hide();//计算中
+    	$("#zhezhao_title").hide();
+	}).error(function(res){
+		$("#zhezhao").hide();//计算中
+    	$("#zhezhao_title").hide();
+		swal('连接错误', '', 'error');
+	});
+}
+
 
 var sc_val = {};//存储最终的自措施条件
 var sc_v1 = {};
@@ -172,7 +289,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 	sc_val.summary = {};
 	
 	ajaxPost('/measure/get_measureQuery',paramsName).success(function(res){
-//		console.log(JSON.stringify(res));
+		console.log(JSON.stringify(res));
 		$("#sc_conter").html("");
 		$("#val_zicuoshi").html("");
 		
@@ -336,13 +453,14 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 					$("#dianyaunzushu").html("点源总数："+res.data.count);
 					add_point(res.data.company);
 				}else{
-					swal('连接错误1', '', 'error');
+					swal('连接错误search/companyCount', '', 'error');
 				}
 			});
 			
 			//添加区域4的结果表格
 			ajaxPost_w(jianpaiUrl+'/search/summarySource',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName,"summary":sc_val.summary}).success(function(da){
-//				console.log(JSON.stringify(da));
+				console.log(JSON.stringify({"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName,"summary":sc_val.summary}));
+				console.log(JSON.stringify(da));
 				
 				if(da.status == 'success'){
 					var columns = [];
@@ -395,10 +513,11 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 							}
 						},
 						onClickRow : function(row, $element) {
+							$('.success').removeClass('success');
+							$($element).addClass('success');
 							setTimeout(function(){
-								var row = $('#show_zicuoshi_table').bootstrapTable('getSelections');
-								if(row.length>0){//有选择值
-									if(row[0].f1 != "剩余点源" && row[0].f1 != "面源" ){
+								if(row.state == true){//如果被选中
+									if(row.f1 != "剩余点源" && row.f1 != "面源" ){
 										$("#zicuoshi_tools_de").show();
 										$("#zicuoshi_tools_up").show();
 									}else{
@@ -423,7 +542,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 					$('#show_zicuoshi_table').bootstrapTable('expandRow', 2);
 					
 				}else{
-					swal('连接错误', '', 'error');
+					swal('连接错误search/summarySource', '', 'error');
 				}
 				
 			});
@@ -432,7 +551,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 			sc_v1 = jQuery.extend(true, {}, sc_val);
 			
 		}else{
-			swal('连接错误', '', 'error');
+			swal('连接错误get_measureQuery', '', 'error');
 		}
 	}).error(function(){
 		swal('校验失败', '', 'error')
@@ -622,13 +741,11 @@ function search_button(){
 	//先将备份的内容复制到查询条件中，只有保存子措施后，备份内容才添加
 	sc_val = jQuery.extend(true, {}, sc_v1);
 	
-	
 	//将本次查询的缓存加入到总条件中
 	sc_val.filters.push(temp_val_v1);
-	console.log(JSON.stringify(sc_val));
+//	console.log(JSON.stringify(sc_val));
 	
 	temp_val_v1 = jQuery.extend(true, {}, temp_val);//赋值模板到操作缓存
-	
 	
 	//根据筛选条件获取点源，准备填写空值系数
 	point_table();
@@ -687,7 +804,6 @@ function point_table () {
 		},
 		queryParamsType : "limit", // 参数格式,发送标准的RESTFul类型的参数请求
 		silent : true, // 刷新事件必须设置
-//		contentType : "application/x-www-form-urlencoded", // 请求远程数据的内容类型。
 		contentType : "application/json", // 请求远程数据的内容类型。
 		onClickRow : function(row, $element) {
 			$('.success').removeClass('success');
@@ -772,8 +888,6 @@ function xishu_save(){
 						ttr["psl_"+vol] = $("#"+vol).val();
 					});
 					
-					
-					
 					$('#show_zicuoshi_table').bootstrapTable('insertRow', {index: 1, row: ttr});
 					restion_table();
 					
@@ -787,7 +901,6 @@ function xishu_save(){
 						$("#"+vol).val(xishu_temp_v[i]);
 					});
 					$('#metTable_point').bootstrapTable('destroy');//销毁现有表格数据
-					
 				}
 			});
 			
@@ -798,11 +911,8 @@ function xishu_save(){
 				up_row["psl_"+vol] = $("#"+vol).val();
 			});
 			$('#show_zicuoshi_table').bootstrapTable('updateRow', {index: zicuoshi_up_index, row: up_row});
-			
 			restion_table();
-			
 			zicuoshi_up_index = null;
-			
 			//输入框初始化
 			$.each(xishu_temp, function(i, vol) {
 				$("#"+vol).removeClass("erroe_input");//删除红色边框
@@ -815,7 +925,6 @@ function xishu_save(){
 		$("#metTable_tools").hide();
 		$("#xishuMO").hide();
 		$("#xishuMOB").hide();
-		
 	}
 }
 
@@ -967,13 +1076,10 @@ function restion_table(){
 							}else{
 								row_0_temp[k] = (parseInt(yuyu[0])+parseInt(col[k]))+"/"+yuyu[1];
 							}
-							
-							
 							if(ttfg){//只有普通的子措施时剩余点源才参与计算，剩余点源自己和面源参加到子措施时不能减少剩余点源的值
 								var ttui = row_2_temp[k];//剩余点源的数据
 								row_2_temp[k] = parseInt(ttui)-parseInt(col[k]);
 							}
-							
 						}
 					}
 				});
@@ -1007,32 +1113,27 @@ function restion_table(){
 			
 		});
 		
-		
-			$.each(row_0_temp, function(k, vol) {
-				if(k.indexOf("psl_")==0 && k == "tiaojian" && k == "f1" && k == "state"){//第一个字母是下划线开头,中文条件字段，措施字段均不需要计算
-					//不需要计算
-				}else{
-					if(vol.toString().indexOf("/") >= 0){
-						var yuyu = vol.split("/");//汇总行的数据
-						
-						if(ttwre){
-							row_0_temp[k] = (parseInt(yuyu[0])+parseInt(row_2_temp[k]))+"/"+yuyu[1];
-						}
-						
-						if(ttqwe){
-							row_0_temp[k] = (parseInt(yuyu[0])+parseInt(row_1_temp[k]))+"/"+yuyu[1];
-						}
+		$.each(row_0_temp, function(k, vol) {
+			if(k.indexOf("psl_")==0 && k == "tiaojian" && k == "f1" && k == "state"){//第一个字母是下划线开头,中文条件字段，措施字段均不需要计算
+				//不需要计算
+			}else{
+				if(vol.toString().indexOf("/") >= 0){
+					var yuyu = vol.split("/");//汇总行的数据
+					
+					if(ttwre){
+						row_0_temp[k] = (parseInt(yuyu[0])+parseInt(row_2_temp[k]))+"/"+yuyu[1];
+					}
+					if(ttqwe){
+						row_0_temp[k] = (parseInt(yuyu[0])+parseInt(row_1_temp[k]))+"/"+yuyu[1];
 					}
 				}
-			});
+			}
+		});
 		
 	}
 	
-	
-	
 	$('#show_zicuoshi_table').bootstrapTable('updateRow', {index: 0, row: row_0_temp});
 	$('#show_zicuoshi_table').bootstrapTable('updateRow', {index: row.length-2, row: row_2_temp});
-	
 	
 	$.each(sc_val.filters, function(i, vol) {
 		$('#show_zicuoshi_table').bootstrapTable('expandRow', i);
@@ -1119,9 +1220,6 @@ function create(){
 		sc_v1.table.push(row[row.length-1]);
 	}
 	
-//	sc_v1.table.push(row[row.length-2]);
-//	sc_v1.table.push(row[row.length-1]);
-	
 	sc_v1.table1 = [];
 	for(var i = row.length-3; i>0;i--){
 		
@@ -1138,9 +1236,6 @@ function create(){
 		row[i].oopp = temm;
 		sc_v1.table1.push(row[i]);
 	}
-	
-	
-//	sc_v1.table = row;
 	
 	var paramsName = {};
 	paramsName.userId = userId;
