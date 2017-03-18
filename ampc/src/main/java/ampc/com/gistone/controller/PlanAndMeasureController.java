@@ -61,9 +61,9 @@ import ampc.com.gistone.util.JsonUtil;
 @RestController
 @RequestMapping
 public class PlanAndMeasureController {
+	
 	//措施汇总调用减排分析时使用的接口Url
 	private  static final String JPJSURL="http://192.168.1.53:8089/calc/submit/subSector";
-	
 	//预案措施映射
 	@Autowired
 	private TPlanMeasureMapper tPlanMeasureMapper;
@@ -440,7 +440,7 @@ public class PlanAndMeasureController {
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("planId", planId);
 			map.put("userId", userId);
-			//查看行业id是否为空，不为空添加，为空不加
+			//查看行业名称是否为空，不为空添加，为空不加
 			if(data.get("sectorName")!=null){	
 				map.put("sectorName", data.get("sectorName"));
 			}else{
@@ -668,7 +668,9 @@ public class PlanAndMeasureController {
 			resultMap.put("query", tqeList);
 			if(planMeasureId!=null){
 				TPlanMeasureWithBLOBs tPlanMeasure=tPlanMeasureMapper.selectByPrimaryKey(planMeasureId);
-				resultMap.put("measureContent", tPlanMeasure.getMeasureContent());
+				String str=tPlanMeasure.getMeasureContent();
+				System.out.println(str);
+				resultMap.put("measureContent", str);
 			}
 			//返回结果
 			return AmpcResult.ok(resultMap);
@@ -708,8 +710,6 @@ public class PlanAndMeasureController {
 			tPlanMeasure.setPlanId(planId);
 			tPlanMeasure.setSectorName(sectorName);
 			tPlanMeasure.setUserId(userId);
-			
-			System.out.println(measureContent);
 			//写入子措施
 			tPlanMeasure.setMeasureContent(measureContent);
 			//将子措施转换成JsonObject对象进行解析
@@ -762,6 +762,7 @@ public class PlanAndMeasureController {
 	}
 	
 	/**
+	 * TODO
 	 * 删除预案中的措施
 	 * @author WangShanxi 
 	 */
@@ -773,23 +774,30 @@ public class PlanAndMeasureController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//预案措施表集合
-			String planMeasureIds=data.get("planMeasureIds").toString();
+			Long planMeasureId=Long.parseLong(data.get("planMeasureId").toString());
 			//用户id
 			Long userId=Long.parseLong(data.get("userId").toString());
-			//拆分要删除的id
-			List<Long> idss=new ArrayList<Long>();
-			String[] ids=planMeasureIds.split(",");
-			for(int i=0;i<ids.length;i++){
-				idss.add(Long.parseLong(ids[i]));
+			//预案id
+			Long planId=Long.parseLong(data.get("planId").toString());
+			//行业名称
+			String sectorName=null;
+			//查看行业名称是否为空，不为空添加，为空不加
+			if(data.get("sectorName")!=null){	
+				sectorName=data.get("sectorName").toString();
 			}
-			//放入条件
-			Map map =new HashMap();
-			map.put("userId", userId);
-			map.put("idss", idss);
 			//删除预案中的措施
-			int delete_status=tPlanMeasureMapper.deleteMeasures(map);
-			if(delete_status!=0){
-				return AmpcResult.ok("删除成功！");
+			int delete_status=tPlanMeasureMapper.deleteMeasures(planMeasureId);
+			if(delete_status>=0){
+				//添加信息到参数中
+				Map<String,Object> map=new HashMap<String,Object>();
+				map.put("planId", planId);
+				map.put("userId", userId);
+				map.put("sectorName",sectorName);
+				List<Long> plist=tPlanMeasureMapper.selectIdByMap(map);
+				int update_status=tPlanMeasureMapper.updateRatio(plist);
+				if(update_status>=0){
+					return AmpcResult.ok("删除成功");
+				}
 			}
 			return AmpcResult.build(1000, "删除失败");
 		}catch(Exception e){
