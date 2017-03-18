@@ -417,11 +417,12 @@ public class PlanAndMeasureController {
 	
 	
 	/**
+	 * TODO
 	 * 措施汇总查询
 	 * @author WangShanxi
 	 * @throws UnsupportedEncodingException 
 	 */
-	@RequestMapping("/measure/get_measureList")
+	@RequestMapping("measure/get_measureList")
 	public  AmpcResult get_MeasureList(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
 		//添加异常捕捉
 		try{
@@ -432,6 +433,8 @@ public class PlanAndMeasureController {
 			Long planId=Long.parseLong(data.get("planId").toString());
 			//用户id
 			Long userId=Long.parseLong(data.get("userId").toString());
+			//污染物类型
+			String stainType=data.get("stainType").toString();
 			//添加信息到参数中
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("planId", planId);
@@ -442,8 +445,73 @@ public class PlanAndMeasureController {
 			}else{
 				map.put("sectorName", null);
 			}
+			ObjectMapper mapper=new ObjectMapper();
 			//查询措施
 			List<Map> list=tPlanMeasureMapper.selectByQuery(map);
+			for (int i=0;i<list.size();i++) {
+				//直接给电源范围
+				if(list.get(i).get("implementationScope")!=null){
+					list.get(i).put("implementationScope", list.get(i).get("implementationScope"));
+				}
+				//判断是否有汇总 和子措施的Json串
+				if(list.get(i).get("tablePool")!=null&&list.get(i).get("tableItem")!=null){
+					//对Clob对象进行转换成对应Java对象
+					Clob clob1=(Clob)list.get(i).get("tablePool");
+					Clob clob2=(Clob)list.get(i).get("tableItem");
+					Clob clob3=(Clob)list.get(i).get("tableRatio");
+					List<Object> poolList=null;
+					if(clob1!=null){
+						poolList=mapper.readValue(clob1.getSubString(1, (int) clob1.length()), ArrayList.class);
+					}
+					List<Object> itemList=null;
+				    if(clob2!=null) {
+				    	itemList=mapper.readValue(clob2.getSubString(1, (int) clob2.length()), ArrayList.class);
+				    }
+				    Map ratioMap=null;
+					if(clob3!=null) {
+						ratioMap=mapper.readValue(clob3.getSubString(1, (int) clob3.length()), Map.class);
+					}
+					//如果汇总有 则进入循环
+					if(poolList!=null){
+						for (Object object : poolList) {
+							Map pool=(Map)object;
+							String f1=pool.get("f1").toString();
+							//判断如果是汇总则进入  其他继续循环
+							if(f1.equals("汇总")){
+								//判断子措施是否包含  包含继续循环
+								if(itemList!=null){
+									for (Object obj : itemList) {
+										Map item=(Map)obj;
+										//如果子措施和汇总都有对应污染物 则计算涉及减排占比
+										if(item.get(stainType)!=null&&pool.get(stainType)!=null){
+											double ditem=Double.parseDouble(item.get(stainType).toString());
+											double dpool=Double.parseDouble(pool.get(stainType).toString().split("/")[1]);
+											list.get(i).put("reduct", ditem/dpool);
+										}
+										//如果子措施和汇总都有对应污染物 则计算涉及减排比
+										if(ratioMap!=null){
+											if(ratioMap.get(stainType)!=null&&pool.get(stainType)!=null){
+												double dratio=Double.parseDouble(ratioMap.get(stainType).toString());
+												double dpool=Double.parseDouble(pool.get(stainType).toString().split("/")[1]);
+												list.get(i).put("ratio", dratio/dpool);
+											}
+										}
+									}
+								}
+							}else{
+								continue;
+							}
+						}
+					}
+				}
+			}
+			//移除多余的项  
+			for (int j = 0; j < list.size(); j++) {
+				list.get(j).remove("tablePool");
+				list.get(j).remove("tableItem");
+				list.get(j).remove("tableRatio");
+			}
+			//返回结果
 			return AmpcResult.ok(list);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -626,6 +694,8 @@ public class PlanAndMeasureController {
 			tPlanMeasure.setPlanId(planId);
 			tPlanMeasure.setSectorName(sectorName);
 			tPlanMeasure.setUserId(userId);
+			
+			System.out.println(measureContent);
 			//写入子措施
 			tPlanMeasure.setMeasureContent(measureContent);
 			//将子措施转换成JsonObject对象进行解析
@@ -791,27 +861,42 @@ public class PlanAndMeasureController {
 				}
 				//获取Json中的汇总集合
 				List<Map> table=mcu.getTable1();
+				//判断汇总中是否有对点源和面源的计算
 				if(table.size()>1){
+					//循环汇总中的所有数据  包括 会总管
 					for (Map map : table) {
-						
+						String f1=map.get("f1").toString();
+						if(f1.equals("汇总")) continue;
+						Map opresult=new HashMap();
+						//获取用户修改的OP
+						Map opmap=(Map)map.get("oopp");
+						//用来定义Filter
+						Map mf=new HashMap();
+						//判断类型
+						if(f1.equals("剩余点源")){
+							mf.put("unitType","P");
+							opresult.put("filter", mf);
+							opresult.put("l4sFilter", pm.get("l4sFilter"));
+							opresult.put("opLevel",pm.get("level"));
+							opresult.put("opName", pm.get("measureName"));
+							opresult.put("opType", pm.get("op"));
+							for(Object obj : opmap.keySet()){
+								opresult.put(obj, Double.parseDouble(opmap.get(obj).toString()));
+							}
+							opList.add(opresult);
+						}else if(f1.equals("面源")){
+							mf.put("unitType","S");
+							opresult.put("filter", mf);
+							opresult.put("l4sFilter", pm.get("l4sFilter"));
+							opresult.put("opLevel",pm.get("level"));
+							opresult.put("opName", pm.get("measureName"));
+							opresult.put("opType", pm.get("op"));
+							for(Object obj : opmap.keySet()){
+								opresult.put(obj, Double.parseDouble(opmap.get(obj).toString()));
+							}
+							opList.add(opresult);
+						}
 					}
-				}
-				//循环Filter 因为Filter中的项 和 子措施汇总的是相同的 所以循环一个
-				for(int i=0;i<lms.size();i++){
-					Map opresult=new HashMap();
-					//获取对应Filter中的子措施
-					Map t1map=table1.get(i);
-					//获取用户修改的OP
-					Map opmap=(Map)t1map.get("oopp");
-					opresult.put("filter", lms.get(i));
-					opresult.put("l4sFilter", pm.get("l4sFilter"));
-					opresult.put("opLevel",pm.get("level"));
-					opresult.put("opName", pm.get("measureName"));
-					opresult.put("opType", pm.get("op"));
-					for(Object obj : opmap.keySet()){
-						opresult.put(obj, Double.parseDouble(opmap.get(obj).toString()));
-					}
-					opList.add(opresult);
 				}
 				result.setOps(opList);
 				jpList.add(result);
@@ -822,28 +907,28 @@ public class PlanAndMeasureController {
 			System.out.println(str);
 			//调用减排计算接口 并获取结果Json
 			String getResult=ClientUtil.doPost("http://192.168.1.53:8089/calc/submit/subSector",str);
-			System.out.println(getResult);
-			
-			/**
-			 * TODO  要保存减排结果
-			 */
 			//创建Json处理对象
 			ObjectMapper MAPPER = new ObjectMapper();
 			//并根据减排分析得到的结果进行JsonTree的解析
 			JsonNode jsonNode = MAPPER.readTree(getResult);
 			//获取到data中的Json数据
 			JsonNode dataNode = jsonNode.get("data");
-			//
-			Map obj123=MAPPER.readValue(dataNode.toString(), Map.class);
-			for (Object obj : obj123.keySet()) {
+			//讲数据转换成Map
+			Map dataMap=MAPPER.readValue(dataNode.toString(), Map.class);
+			//每一个对象对应一个预案措施
+			for (Object obj : dataMap.keySet()) {
+				//定义临时对象
 				TPlanMeasureWithBLOBs tPlanMeasure=new TPlanMeasureWithBLOBs();
+				//获取预案措施Id
 				Long id=Long.parseLong(obj.toString().split("-")[0]);
 				tPlanMeasure.setPlanMeasureId(id);
-				Map map=((Map)obj123.get(obj));
-				Map map1=(Map)((Map)(((Map)obj123.get(obj)).values().toArray()[0])).get("reduce");
-				JSONObject jsonObject = JSONObject.fromObject(map1);
+				//获取到减排记录的结果集
+				Map tempMap=(Map)((Map)(((Map)dataMap.get(obj)).values().toArray()[0])).get("reduce");
+			    //将结果集进行转换
+				JSONObject jsonObject = JSONObject.fromObject(tempMap);
 				String strResult = jsonObject.toString();
 				tPlanMeasure.setTableRatio(strResult);
+				//根据Id修改预案措施  补全减排Json列的数据
 				int updatestatus=tPlanMeasureMapper.updateByPrimaryKeySelective(tPlanMeasure);
 				//判断是否成功
 				if(updatestatus!=0){
