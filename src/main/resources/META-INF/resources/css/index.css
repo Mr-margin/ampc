@@ -388,3 +388,28 @@
 .tableInall{
 	
 }
+
+.zhezhao { 
+	 width:100%; 
+	 height:100%; 
+	 background-color:#000; 
+	 filter:alpha(opacity=50); 
+	 -moz-opacity:0.5; 
+	 opacity:0.5; 
+	 position:absolute; 
+	 left:0px; 
+	 top:0px; 
+	 display:none; 
+	 z-index:1000; 
+}
+.zhezhao_title { 
+	 width:280px; 
+	 height:180px; 
+	 position:absolute; 
+	 top:200px; 
+	 left:50%; 
+	/*  background-color:#000;  */
+	 margin-left:-140px; 
+	 display:none; 
+	 z-index:1500; 
+} 
