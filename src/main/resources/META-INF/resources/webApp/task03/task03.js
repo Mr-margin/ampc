@@ -531,6 +531,13 @@ function val_handle(e, queryEtitle, queryName, type, sourceType){
 							}
 						}
 					}
+				}else{
+					if($(this).is('.active')){
+						if(type == "radio"){
+							$("#"+queryEtitle+"_1").val("");
+							$("#"+queryEtitle+"_2").val("");
+						}
+					}
 				}
 			});
 		}
@@ -894,10 +901,9 @@ function zicuoshi_de(){
 			console.log(JSON.stringify(sc_v1));
 			restion_table();
 		}
-		
-		
+		$("#zicuoshi_tools_de").hide();
+		$("#zicuoshi_tools_up").hide();
 	}
-	
 }
 
 /**
@@ -926,11 +932,6 @@ function restion_table(){
 								ttwre = true;
 								ttfg = false;
 							}
-//							if(!isNaN(vol)){
-//								ttwre = true;
-//								ttfg = true;
-//							}
-							
 						}
 					});
 				}else{
@@ -954,7 +955,6 @@ function restion_table(){
 						}
 					});
 				}
-				
 				
 				$.each(row_0_temp, function(k, vol) {//循环汇总行
 					if(k.indexOf("psl_")==0 && k == "tiaojian" && k == "f1" && k == "state"){//第一个字母是下划线开头,中文条件字段，措施字段均不需要计算
@@ -1071,8 +1071,56 @@ function create(){
 	
 	sc_v1.table = [];
 	sc_v1.table.push(row[0]);
-	sc_v1.table.push(row[row.length-2]);
-	sc_v1.table.push(row[row.length-1]);
+	
+	//判断剩余点源与面源是否需要向后传送
+	var tt1 = false;//剩余点源是否填写
+	var tt2 = false;//面源是否填写
+	$.each(row[row.length-2], function(k, vol) {//循环所有的列
+		if(k.indexOf("psl_")==0){
+			if(vol != ""){//只要有一个控制措施有值，就进入计算
+				tt1 = true;
+			}
+		}
+	});
+	if(tt1){
+		var temm = {};
+		$.each(row[row.length-2], function(k, vol) {
+			if(k.indexOf("psl_")==0){//第一个字母是下划线开头
+				temm[k.substring(4,k.length)] = vol;
+				delete row[row.length-2][k];
+			}
+			if(k == "tiaojian" || k == "state"){
+				delete row[row.length-2][k];
+			}
+		});
+		row[row.length-2].oopp = temm;
+		sc_v1.table.push(row[row.length-2]);
+	}
+	
+	$.each(row[row.length-1], function(k, vol) {//循环所有的列
+		if(k.indexOf("psl_")==0){
+			if(vol != ""){//只要有一个控制措施有值，就进入计算
+				tt2 = true;
+			}
+		}
+	});
+	if(tt2){
+		var temm = {};
+		$.each(row[row.length-1], function(k, vol) {
+			if(k.indexOf("psl_")==0){//第一个字母是下划线开头
+				temm[k.substring(4,k.length)] = vol;
+				delete row[row.length-1][k];
+			}
+			if(k == "tiaojian" || k == "state"){
+				delete row[row.length-1][k];
+			}
+		});
+		row[row.length-1].oopp = temm;
+		sc_v1.table.push(row[row.length-1]);
+	}
+	
+//	sc_v1.table.push(row[row.length-2]);
+//	sc_v1.table.push(row[row.length-1]);
 	
 	sc_v1.table1 = [];
 	for(var i = row.length-3; i>0;i--){
@@ -1102,10 +1150,11 @@ function create(){
 	paramsName.planMeasureId = m_planMeasureId;
 	paramsName.measureContent = JSON.stringify(sc_v1);
 	
+	console.log(JSON.stringify(sc_v1));
 	ajaxPost('/measure/addOrUpdate_measure',paramsName).success(function(res){
 //		console.log(JSON.stringify(sc_v1));
 	});
-	
+	$("#zicuoshi_close").click();
 }
 
 
