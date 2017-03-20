@@ -27,10 +27,10 @@
                 <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('',this)">
                   <i class="im-folder-open"></i> 全部
                 </button>
-                <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('预评估',this)">
+                <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('1',this)">
                   <i class="st-folder-settings"></i> 预评估
                 </button>
-                <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('后评估',this)">
+                <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('2',this)">
                   <i class="im-paste2"></i> 后评估
                 </button>
               </div>
@@ -42,8 +42,8 @@
                   </button>
                   <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                     <li onclick="statusRWfun('',this)"><a href="javascript:">全部</a></li>
-                    <li onclick="statusRWfun('预评估',this)"><a href="javascript:">预评估</a></li>
-                    <li onclick="statusRWfun('后评估',this)"><a href="javascript:">后评估</a></li>
+                    <li onclick="statusRWfun('1',this)"><a href="javascript:">预评估</a></li>
+                    <li onclick="statusRWfun('2',this)"><a href="javascript:">后评估</a></li>
                   </ul>
                 </div>
               </div>
@@ -64,7 +64,7 @@
                   <th data-formatter="rwName">任务名称</th>
                   <th data-formatter="rwDomain">模拟范围</th>
                   <th data-field="esCouplingName">清单</th>
-                  <th data-field="missionStatus">类型</th>
+                  <th data-formatter="rwType">类型</th>
                 </tr>
                 </thead>
               </table>
@@ -107,7 +107,7 @@
                   <th data-formatter="qjName">情景名称</th>
                   <th data-formatter="qjOrder">操作</th>
                   <th data-field="scenarinoStatuName">情景状态</th>
-                  <th data-field="SCEN_TYPE">类型</th>
+                  <th data-formatter="qjType">类型</th>
                   <th data-formatter="qjEffectEvaluation"></th>
                 </tr>
                 </thead>
@@ -154,45 +154,49 @@
         </div>
 
         <div class="rwCon" style="display: none">
-          <div class="form-group mt10 clearfix">
-            <label for="rwName" class="col-md-2 control-label lh29">任务名称</label>
+          <form class="rwForm" id="rwForm">
 
-            <div class="col-md-10">
-              <input type="text" class="form-control" id="rwName" name="rwName" placeholder="任务名称">
-            </div>
-            <div class="col-md-10 col-md-offset-2">
-              <span>（限15字以内）</span>
-            </div>
-          </div>
-          <div class="form-group mt10 clearfix">
-            <label for="mnfw" class="col-md-2 control-label lh29">模拟范围</label>
+            <div class="form-group mt10 clearfix">
+              <label for="rwName" class="col-md-2 control-label lh29">任务名称</label>
 
-            <div class="col-md-10">
-              <select name="mnfw" id="mnfw" class="form-control">
-              </select>
+              <div class="col-md-10">
+                <input type="text" class="form-control" id="rwName" name="rwName" placeholder="任务名称">
+              </div>
+              <div class="col-md-10 col-md-offset-2">
+                <span>（限15字以内）</span>
+              </div>
             </div>
-            <div class="col-md-10 col-md-offset-2">
-              <button class="btn btn-primary mt10 mnfwTopSelect">高级</button>
-            </div>
-          </div>
-          <div class="form-group mt10 clearfix">
-            <label for="qd" class="col-md-2 control-label lh29">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单</label>
+            <div class="form-group mt10 clearfix">
+              <label for="mnfw" class="col-md-2 control-label lh29">模拟范围</label>
 
-            <div class="col-md-10">
-              <select name="qd" id="qd" class="form-control">
-              </select>
+              <div class="col-md-10">
+                <select name="mnfw" id="mnfw" class="form-control">
+                </select>
+              </div>
+              <div class="col-md-10 col-md-offset-2">
+                <button class="btn btn-primary mt10 mnfwTopSelect">高级</button>
+              </div>
             </div>
-          </div>
-          <div class="form-group mt10 clearfix">
-            <label for="rwDate" class="col-md-2 control-label lh29">日期范围</label>
+            <div class="form-group mt10 clearfix">
+              <label for="qd" class="col-md-2 control-label lh29">清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单</label>
 
-            <div class="col-md-10">
-              <input type="text" class="form-control" id="rwDate" name="rwStartDate" readonly placeholder="请选择日期···">
+              <div class="col-md-10">
+                <select name="qd" id="qd" class="form-control">
+                </select>
+              </div>
             </div>
-            <div class="col-md-10 col-md-offset-2">
-              <span class="rwDateTip disNone" style="color: red;">预评估任务结束日期不应小于当前日期</span>
+            <div class="form-group mt10 clearfix">
+              <label for="rwDate" class="col-md-2 control-label lh29">日期范围</label>
+
+              <div class="col-md-10">
+                <input type="text" class="form-control" id="rwDate" name="rwStartDate" readonly placeholder="请选择日期···">
+              </div>
+              <div class="col-md-10 col-md-offset-2">
+                <span class="rwDateTip disNone" style="color: red;">预评估任务结束日期不应小于当前日期</span>
+              </div>
             </div>
-          </div>
+
+          </form>
         </div>
 
 
@@ -230,65 +234,68 @@
         </div>
         <div class="ypgQJCon" style="display: none">
 
-          <div class="form-group mt10 clearfix">
-            <label for="yName" class="col-md-2 control-label lh29">情景名称</label>
 
-            <div class="col-md-10">
-              <input type="text" class="form-control" id="yName" name="yName" placeholder="情景名称">
-            </div>
-            <div class="col-md-10 col-md-offset-2">
-              <span>（限15字以内）</span>
-            </div>
-          </div>
-          <div class="form-group mt10 clearfix dbqj">
-            <label for="dbqj" class="col-md-2 control-label lh29">
-              <input style="position: absolute;left: -5px;top: 4px;" type="checkbox" class="chengeDB" onchange="checkedDB(this)"/>
-              对比情景
-            </label>
+          <form class="yqjForm" id="yqjForm">
+            <div class="form-group mt10 clearfix">
+              <label for="yName" class="col-md-2 control-label lh29">情景名称</label>
 
-            <div class="col-md-10">
-              <select name="dbqj" id="dbqj" class="form-control hqj" disabled>
-                <option value="1">1</option>
-              </select>
+              <div class="col-md-10">
+                <input type="text" class="form-control" id="yName" name="yName" placeholder="情景名称">
+              </div>
+              <div class="col-md-10 col-md-offset-2">
+                <span>（限15字以内）</span>
+              </div>
             </div>
-          </div>
-          <div class="form-group mt10 clearfix">
-            <label for="jcqj" class="col-md-2 control-label lh29">基础情景</label>
+            <div class="form-group mt10 clearfix dbqj">
+              <label for="dbqj" class="col-md-2 control-label lh29">
+                <input style="position: absolute;left: -5px;top: 4px;" type="checkbox" class="chengeDB" onchange="checkedDB(this)"/>
+                对比情景
+              </label>
 
-            <div class="col-md-10">
-              <select name="jcqj" id="jcqj" class="form-control yqj jcqj" onchange="changeJcqj(this)">
-                <option value="1">1</option>
-                <option value="2">2</option>
-              </select>
+              <div class="col-md-10">
+                <select name="dbqj" id="dbqj" class="form-control hqj" disabled>
+                  <option value="1">1</option>
+                </select>
+              </div>
             </div>
-          </div>
-          <div class="form-group mt10 clearfix">
-            <label for="jcdate" class="col-md-2 control-label lh29">基础日期</label>
+            <div class="form-group mt10 clearfix">
+              <label for="jcqj" class="col-md-2 control-label lh29">基础情景</label>
 
-            <div class="col-md-10">
-              <select name="jcdate" id="jcdate" class="form-control yqj jcdate" onchange="changeJcDate(this)">
-                <option value="1">1</option>
-              </select>
+              <div class="col-md-10">
+                <select name="jcqj" id="jcqj" class="form-control yqj jcqj" onchange="changeJcqj(this)">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                </select>
+              </div>
             </div>
-          </div>
-          <div class="form-group mt10 clearfix">
-            <label for="yStartDate" class="col-md-2 control-label lh29">开始日期</label>
+            <div class="form-group mt10 clearfix">
+              <label for="jcdate" class="col-md-2 control-label lh29">基础日期</label>
 
-            <div class="col-md-10">
-              <select name="yStartDate" id="yStartDate" class="form-control" disabled>
-                <option value="1">1</option>
-              </select>
+              <div class="col-md-10">
+                <select name="jcdate" id="jcdate" class="form-control yqj jcdate" onchange="changeJcDate(this)">
+                  <option value="1">1</option>
+                </select>
+              </div>
             </div>
-          </div>
-          <div class="form-group mt10 clearfix">
-            <label for="yEndDate" class="col-md-2 control-label lh29">结束日期</label>
+            <div class="form-group mt10 clearfix">
+              <label for="yStartDate" class="col-md-2 control-label lh29">开始日期</label>
 
-            <div class="col-md-10">
-              <select name="yEndDate" id="yEndDate" class="form-control yqj">
-                <option value="1">1</option>
-              </select>
+              <div class="col-md-10">
+                <select name="yStartDate" id="yStartDate" class="form-control" disabled>
+                  <option value="1">1</option>
+                </select>
+              </div>
             </div>
-          </div>
+            <div class="form-group mt10 clearfix">
+              <label for="yEndDate" class="col-md-2 control-label lh29">结束日期</label>
+
+              <div class="col-md-10">
+                <select name="yEndDate" id="yEndDate" class="form-control yqj">
+                  <option value="1">1</option>
+                </select>
+              </div>
+            </div>
+          </form>
 
 
         </div>
@@ -328,80 +335,82 @@
         <div class="hpgQJCon" style="display: none">
 
 
-          <div class="form-group mt10 clearfix">
-            <label for="hName" class="col-md-2 control-label lh29">情景名称</label>
-
-            <div class="col-md-10">
-              <input type="text" class="form-control" id="hName" name="hName" placeholder="情景名称">
-            </div>
-            <div class="col-md-10 col-md-offset-2">
-              <span>（限15字以内）</span>
-            </div>
-          </div>
-
-          <div class="form-group mt10 clearfix spinup">
-            <label for="spinup" class="col-md-2 control-label lh29">spinup <br/> 天数</label>
-
-            <div class="col-md-10">
-              <select name="spinup" id="spinup" class="form-control">
-                <option value="7">7</option>
-                <option value="14">14</option>
-                <option value="21">21</option>
-                <option value="28">28</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="diffNo">
-            <div class="form-group mt10 clearfix dbqj1">
-              <label for="dbqj1" class="col-md-2 control-label lh29">
-                <input style="position: absolute;left: -5px;top: 4px;" type="checkbox" class="chengeDB" onchange="checkedDB(this)"/>
-                对比情景
-              </label>
+          <form class="hqjForm" id="hqjForm">
+            <div class="form-group mt10 clearfix">
+              <label for="hName" class="col-md-2 control-label lh29">情景名称</label>
 
               <div class="col-md-10">
-                <select name="dbqj1" id="dbqj1" class="form-control hqj" disabled>
+                <input type="text" class="form-control" id="hName" name="hName" placeholder="情景名称">
+              </div>
+              <div class="col-md-10 col-md-offset-2">
+                <span>（限15字以内）</span>
+              </div>
+            </div>
+
+            <div class="form-group mt10 clearfix spinup">
+              <label for="spinup" class="col-md-2 control-label lh29">spinup <br/> 天数</label>
+
+              <div class="col-md-10">
+                <select name="spinup" id="spinup" class="form-control">
+                  <option value="7">7</option>
+                  <option value="14">14</option>
+                  <option value="21">21</option>
+                  <option value="28">28</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="diffNo">
+              <div class="form-group mt10 clearfix dbqj1">
+                <label for="dbqj1" class="col-md-2 control-label lh29">
+                  <input style="position: absolute;left: -5px;top: 4px;" type="checkbox" class="chengeDB" onchange="checkedDB(this)"/>
+                  对比情景
+                </label>
+
+                <div class="col-md-10">
+                  <select name="dbqj1" id="dbqj1" class="form-control hqj" disabled>
+                    <option value="1">1</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group mt10 clearfix">
+                <label for="jcqj1" class="col-md-2 control-label lh29">基础情景</label>
+
+                <div class="col-md-10">
+                  <select name="mnfw" id="jcqj1" class="form-control jcqj" onchange="changeJcqj1(this)">
+                    <option value="1">1</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group mt10 clearfix">
+                <label for="jcdate1" class="col-md-2 control-label lh29">基础日期</label>
+
+                <div class="col-md-10">
+                  <select name="jcdate1" id="jcdate1" class="form-control jcdate"  onchange="changeJcDate1(this)">
+                    <option value="1">1</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="form-group mt10 clearfix">
+              <label for="hStartDate" class="col-md-2 control-label lh29">开始日期</label>
+
+              <div class="col-md-10">
+                <select name="hStartDate" id="hStartDate" class="form-control" disabled>
                   <option value="1">1</option>
                 </select>
               </div>
             </div>
             <div class="form-group mt10 clearfix">
-              <label for="jcqj1" class="col-md-2 control-label lh29">基础情景</label>
+              <label for="hEndDate" class="col-md-2 control-label lh29">结束日期</label>
 
               <div class="col-md-10">
-                <select name="mnfw" id="jcqj1" class="form-control jcqj" onchange="changeJcqj1(this)">
+                <select name="hEndDate" id="hEndDate" class="form-control">
                   <option value="1">1</option>
                 </select>
               </div>
             </div>
-            <div class="form-group mt10 clearfix">
-              <label for="jcdate1" class="col-md-2 control-label lh29">基础日期</label>
-
-              <div class="col-md-10">
-                <select name="jcdate1" id="jcdate1" class="form-control jcdate"  onchange="changeJcDate1(this)">
-                  <option value="1">1</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="form-group mt10 clearfix">
-            <label for="hStartDate" class="col-md-2 control-label lh29">开始日期</label>
-
-            <div class="col-md-10">
-              <select name="hStartDate" id="hStartDate" class="form-control" disabled>
-                <option value="1">1</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group mt10 clearfix">
-            <label for="hEndDate" class="col-md-2 control-label lh29">结束日期</label>
-
-            <div class="col-md-10">
-              <select name="hEndDate" id="hEndDate" class="form-control">
-                <option value="1">1</option>
-              </select>
-            </div>
-          </div>
+          </form>
 
 
 
