@@ -14,11 +14,12 @@ $(function(){
 		pie();
 	});
 	
+	
 	/**
 	 *设置导航条信息
 	 */
-	$("#crumb").html('<a href="" style="padding-left: 15px;padding-right: 15px;"><span class="col-md-2 col-md-offset-9">切换情景范围</span></a>');
 	
+	$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
 	
 })
 
