@@ -111,7 +111,7 @@
 </div>
 
 <!-- 模态框 -->
-<div class="modal fade" id="createRwModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade createRwModal" id="" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -137,26 +137,26 @@
 						</div>
 					</div>
 					<div class="form-group mt10 clearfix">
-						<label for="rwDate" class="col-md-2 control-label lh29">日期范围</label>
-
-						<div class="col-md-10">
-							<input type="text" class="form-control" id="rwDate"
-								name="rwStartDate" readonly placeholder="请选择日期···">
-						</div>
 						<div class="col-md-10 col-md-offset-2" id="tableId" style="display: none">
 							<table class="table table-striped table-bordered table-hover" style="margin-top:5px;">
+								<thead>
+										<tr>
+											<th>情景名称</th>
+											<th>时间</th>
+										</tr>								
+								</thead>
 								<tbody>
 										<tr>
-											<th><input type="checkbox" name="check1"></th>
 											<th>情景一</th>
+											<th>2017-3-18</th>
 										</tr>
 										<tr>
-											<th><input type="checkbox" name="check2"></th>
 											<th>情景二</th>
+											<th>2017-3-19</th>
 										</tr>
 										<tr>
-											<th><input type="checkbox" name="check3"></th>
 											<th>情景三</th>
+											<th>2017-3-20</th>
 										</tr>
 								</tbody>
 							</table>

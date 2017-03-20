@@ -20,16 +20,23 @@
 					</div>
 				</div>
 				<div class='col-md-5 col-md-offset-2' style="margin-top: -10px;">
-					<div class="btn-group" data-toggle="buttons">
-						<label class="btn btn-outline btn-success active"> <input type="radio" name="option" id="mapId">地图展示
-						</label> <label class="btn btn-outline btn-success"><input type="radio" name="options" id="ListsId">列表展示
+					<div class="btn-group" data-toggle="buttons" id="#color">
+						<label class="btn btn-outline btn-success active"> <input type="radio" name="toggle" id="mapId">地图展示
+						</label> <label class="btn btn-outline btn-success"><input type="radio" name="toggle" id="listShow">列表展示
 						</label>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="ibox-content" style="height:calc(100% - 48px);overflow-y: hide;background-color: #EDF7FF;border:1px solid #75B9E6;padding: 0px;">
-	        <img alt="" style="width:100%;height:100%;" src="img/map01.png">
+		<div class="ibox-content" style="height:calc(100% - 48px);overflow-y: hide;border:1px solid #75B9E6;padding: 0px;">
+	        <div id="map_showId"><img alt=""  style="width:100%;height:100%;" src="img/map01.png"></div>
+	    	<!-- 列表展示modal -->
+	    	<div  id="listModal" style="display: none;">
+	    		<table class="table table-hover" id="table_listShow">
+	    			
+	    		</table>
+	    	</div>
+	    
 	    </div>
 	</div>
 </div>
@@ -56,14 +63,14 @@
 					</div>
 			</div>
 		</div>
-		<div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;background-color: #EDF7FF;border:1px solid #EDF7FF;padding: 0px;">
+		<div class="ibox-content" style="height:calc(100% - 48px);overflow-y: hide;background-color: #EDF7FF;border:1px solid #EDF7FF;padding: 0px;">
 	    	<div class="col-md-12" id="hycsDiv1" style="height:100%;border:1px solid #75B9E6;padding: 0px;"></div>
 	    </div>
 	</div>
 </div>
 
 <!-- 模态框 -->
-<div class="modal fade" id="createRwModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade createRwModal" id="" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -89,26 +96,26 @@
 						</div>
 					</div>
 					<div class="form-group mt10 clearfix">
-						<label for="rwDate" class="col-md-2 control-label lh29">日期范围</label>
-
-						<div class="col-md-10">
-							<input type="text" class="form-control" id="rwDate"
-								name="rwStartDate" readonly placeholder="请选择日期···">
-						</div>
 						<div class="col-md-10 col-md-offset-2" id="tableId" style="display: none">
 							<table class="table table-striped table-bordered table-hover" style="margin-top:5px;">
+								<thead>
+										<tr>
+											<th>情景名称</th>
+											<th>时间</th>
+										</tr>								
+								</thead>
 								<tbody>
 										<tr>
-											<th><input type="checkbox" name="check1"></th>
 											<th>情景一</th>
+											<th>2017-3-18</th>
 										</tr>
 										<tr>
-											<th><input type="checkbox" name="check2"></th>
 											<th>情景二</th>
+											<th>2017-3-19</th>
 										</tr>
 										<tr>
-											<th><input type="checkbox" name="check3"></th>
 											<th>情景三</th>
+											<th>2017-3-20</th>
 										</tr>
 								</tbody>
 							</table>
@@ -123,5 +130,8 @@
 		</div>
 	</div>
 </div>
+
+
+
 
 
