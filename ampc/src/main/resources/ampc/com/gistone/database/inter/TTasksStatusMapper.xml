@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TTasksStatusMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TTasksStatus" >
+    <id column="TASKS_ID" property="tasksId" jdbcType="DECIMAL" />
+    <result column="TASKS_SCENARINO_ID" property="tasksScenarinoId" jdbcType="DECIMAL" />
+    <result column="ERROR_STATUS" property="errorStatus" jdbcType="VARCHAR" />
+    <result column="SCENARINO_START_DATE" property="scenarinoStartDate" jdbcType="TIMESTAMP" />
+    <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="TIMESTAMP" />
+    <result column="RANGE_DAY" property="rangeDay" jdbcType="DECIMAL" />
+    <result column="STEPINDEX" property="stepindex" jdbcType="DECIMAL" />
+    <result column="TASKS_END_DATE" property="tasksEndDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    TASKS_ID, TASKS_SCENARINO_ID, ERROR_STATUS, SCENARINO_START_DATE, SCENARINO_END_DATE, 
+    RANGE_DAY, STEPINDEX, TASKS_END_DATE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_TASKS_STATUS
+    where TASKS_ID = #{tasksId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_TASKS_STATUS
+    where TASKS_ID = #{tasksId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TTasksStatus" >
+    insert into T_TASKS_STATUS (TASKS_ID, TASKS_SCENARINO_ID, ERROR_STATUS, 
+      SCENARINO_START_DATE, SCENARINO_END_DATE, 
+      RANGE_DAY, STEPINDEX, TASKS_END_DATE
+      )
+    values (#{tasksId,jdbcType=DECIMAL}, #{tasksScenarinoId,jdbcType=DECIMAL}, #{errorStatus,jdbcType=VARCHAR}, 
+      #{scenarinoStartDate,jdbcType=TIMESTAMP}, #{scenarinoEndDate,jdbcType=TIMESTAMP}, 
+      #{rangeDay,jdbcType=DECIMAL}, #{stepindex,jdbcType=DECIMAL}, #{tasksEndDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TTasksStatus" >
+    insert into T_TASKS_STATUS
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="tasksId != null" >
+        TASKS_ID,
+      </if>
+      <if test="tasksScenarinoId != null" >
+        TASKS_SCENARINO_ID,
+      </if>
+      <if test="errorStatus != null" >
+        ERROR_STATUS,
+      </if>
+      <if test="scenarinoStartDate != null" >
+        SCENARINO_START_DATE,
+      </if>
+      <if test="scenarinoEndDate != null" >
+        SCENARINO_END_DATE,
+      </if>
+      <if test="rangeDay != null" >
+        RANGE_DAY,
+      </if>
+      <if test="stepindex != null" >
+        STEPINDEX,
+      </if>
+      <if test="tasksEndDate != null" >
+        TASKS_END_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="tasksId != null" >
+        #{tasksId,jdbcType=DECIMAL},
+      </if>
+      <if test="tasksScenarinoId != null" >
+        #{tasksScenarinoId,jdbcType=DECIMAL},
+      </if>
+      <if test="errorStatus != null" >
+        #{errorStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="scenarinoStartDate != null" >
+        #{scenarinoStartDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scenarinoEndDate != null" >
+        #{scenarinoEndDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rangeDay != null" >
+        #{rangeDay,jdbcType=DECIMAL},
+      </if>
+      <if test="stepindex != null" >
+        #{stepindex,jdbcType=DECIMAL},
+      </if>
+      <if test="tasksEndDate != null" >
+        #{tasksEndDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TTasksStatus" >
+    update T_TASKS_STATUS
+    <set >
+      <if test="tasksScenarinoId != null" >
+        TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL},
+      </if>
+      <if test="errorStatus != null" >
+        ERROR_STATUS = #{errorStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="scenarinoStartDate != null" >
+        SCENARINO_START_DATE = #{scenarinoStartDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scenarinoEndDate != null" >
+        SCENARINO_END_DATE = #{scenarinoEndDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rangeDay != null" >
+        RANGE_DAY = #{rangeDay,jdbcType=DECIMAL},
+      </if>
+      <if test="stepindex != null" >
+        STEPINDEX = #{stepindex,jdbcType=DECIMAL},
+      </if>
+      <if test="tasksEndDate != null" >
+        TASKS_END_DATE = #{tasksEndDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where TASKS_ID = #{tasksId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TTasksStatus" >
+    update T_TASKS_STATUS
+    set TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL},
+      ERROR_STATUS = #{errorStatus,jdbcType=VARCHAR},
+      SCENARINO_START_DATE = #{scenarinoStartDate,jdbcType=TIMESTAMP},
+      SCENARINO_END_DATE = #{scenarinoEndDate,jdbcType=TIMESTAMP},
+      RANGE_DAY = #{rangeDay,jdbcType=DECIMAL},
+      STEPINDEX = #{stepindex,jdbcType=DECIMAL},
+      TASKS_END_DATE = #{tasksEndDate,jdbcType=TIMESTAMP}
+    where TASKS_ID = #{tasksId,jdbcType=DECIMAL}
+  </update>
+</mapper>
