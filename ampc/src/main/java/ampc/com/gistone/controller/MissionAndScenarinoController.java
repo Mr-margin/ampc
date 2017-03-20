@@ -175,11 +175,8 @@ public class MissionAndScenarinoController {
 			//用户的id  确定当前用户
 			mission.setUserId(Long.parseLong(data.get("userId").toString()));
 			//默认新建任务会赋值预评估
-			if(data.get("missionStauts").toString().equals("预评估")){
-			mission.setMissionStatus("1");
-			}else{
-				mission.setMissionStatus("2");	
-			}
+			mission.setMissionStatus(data.get("missionStauts").toString());
+		
 			//执行添加操作
 			int result=this.tMissionDetailMapper.insertSelective(mission);
 			//判断添加结果
@@ -954,7 +951,7 @@ public class MissionAndScenarinoController {
 			int d=0;
 			int a=0;
 			//预评估任务创建情景
-			if(missionType.equals("预评估")){
+			if(missionType.equals("1")){
 				//预评估任务创建预评估情景
 				if(scenType.equals("1")){
 					String startDate =data.get("scenarinoStartDate").toString();//开始时间
@@ -1029,12 +1026,10 @@ public class MissionAndScenarinoController {
 						enddate=tScenarinoDetail.getScenarinoEndDate();
 						startdate=tScenarinoDetail.getScenarinoStartDate();
 					}
-					
-				}
-				
+				}		
 			}
 			//后评估任务创建情景
-			if(missionType.equals("后评估")){
+			if(missionType.equals("2")){
 				//创建后评估情景
 				if(scenType.equals("2")){
 					//基础情景
@@ -1117,7 +1112,7 @@ public class MissionAndScenarinoController {
 			       aCalendar.setTime(startdate);
 			       int day2 = aCalendar.get(Calendar.DAY_OF_YEAR);
 			     int days= day1-day2;
-				tasks.setRangeDay(Long.valueOf(days));
+				tasks.setRangeDay(Long.valueOf(days+1));
 				tasks.setScenarinoEndDate(enddate);
 				tasks.setScenarinoStartDate(startdate);
 				tTasksStatusMapper.insertSelective(tasks);
