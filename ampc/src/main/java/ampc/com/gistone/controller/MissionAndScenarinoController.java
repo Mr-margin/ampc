@@ -1118,7 +1118,6 @@ public class MissionAndScenarinoController {
 				tasks.setScenarinoStartDate(startdate);
 				tTasksStatusMapper.insertSelective(tasks);
 
-	
 				List<String> areanamelist=new ArrayList();
 				areanamelist.add("第一区域");
 				areanamelist.add("第二区域");
