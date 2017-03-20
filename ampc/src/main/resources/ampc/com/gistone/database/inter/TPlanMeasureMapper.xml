@@ -52,6 +52,7 @@
   <resultMap id="JPMap" type="hashMap" >
     <id column="PLAN_MEASURE_ID" property="planMeasureId" jdbcType="DECIMAL" />
     <result column="PLAN_NAME" property="planName" jdbcType="OTHER" />
+    <result column="SECTOR_NAME" property="sectorName" jdbcType="OTHER" />
     <result column="MEASURE_EXCEL_L4S" property="l4sFilter" jdbcType="VARCHAR" />
     <result column="MEASURE_EXCEL_LEVEL" property="level" jdbcType="DECIMAL" />
     <result column="MEASURE_EXCEL_DISPLAY" property="measureName" jdbcType="OTHER" />
@@ -157,7 +158,7 @@
   <!-- 根据id集合获取所有的预案措施 -->
   <select id="getPmByIds" resultMap="JPMap" parameterType="java.util.List" >
     select PLAN_MEASURE_ID,PLAN_NAME,MEASURE_EXCEL_L4S,MEASURE_EXCEL_LEVEL,MEASURE_EXCEL_DISPLAY,
-         MEASURE_EXCEL_OP,PLAN_START_TIME,PLAN_END_TIME,MEASURE_CONTENT from 
+         MEASURE_EXCEL_OP,PLAN_START_TIME,PLAN_END_TIME,MEASURE_CONTENT,SECTOR_NAME from 
   T_PLAN_MEASURE tpm
    INNER JOIN T_PLAN  tp on TPM.PLAN_ID=TP.PLAN_ID
    INNER JOIN T_MEASURE_EXCEL tme on tpm.measure_Id=tme.measure_excel_Id
@@ -165,6 +166,7 @@
         <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
      		 #{item,jdbcType=DECIMAL}
   		</foreach>
+  		 Order by SECTOR_NAME
   </select>
   
   <!-- 根据对象中的条件查询数据 -->
