@@ -1,6 +1,5 @@
 package ampc.com.gistone.database.model;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 public class TMeasureExcel {
@@ -16,23 +15,23 @@ public class TMeasureExcel {
 
     private Object measureExcelType;
 
-    private Long measureExcelLevel;
+    private String measureExcelLevel;
 
     private String measureExcelL4s;
 
     private String measureExcelOp;
 
-    private BigDecimal measureExcelA;
+    private String measureExcelA;
 
-    private BigDecimal measureExcelA1;
+    private String measureExcelA1;
 
-    private BigDecimal measureExcelIntensity;
+    private String measureExcelIntensity;
 
-    private BigDecimal measureExcelIntensity1;
+    private String measureExcelIntensity1;
 
-    private BigDecimal measureExcelAsh;
+    private String measureExcelAsh;
 
-    private BigDecimal measureExcelSulfer;
+    private String measureExcelSulfer;
 
     private String measureExcelSv;
 
@@ -120,12 +119,12 @@ public class TMeasureExcel {
         this.measureExcelType = measureExcelType;
     }
 
-    public Long getMeasureExcelLevel() {
+    public String getMeasureExcelLevel() {
         return measureExcelLevel;
     }
 
-    public void setMeasureExcelLevel(Long measureExcelLevel) {
-        this.measureExcelLevel = measureExcelLevel;
+    public void setMeasureExcelLevel(String measureExcelLevel) {
+        this.measureExcelLevel = measureExcelLevel == null ? null : measureExcelLevel.trim();
     }
 
     public String getMeasureExcelL4s() {
@@ -144,52 +143,52 @@ public class TMeasureExcel {
         this.measureExcelOp = measureExcelOp == null ? null : measureExcelOp.trim();
     }
 
-    public BigDecimal getMeasureExcelA() {
+    public String getMeasureExcelA() {
         return measureExcelA;
     }
 
-    public void setMeasureExcelA(BigDecimal measureExcelA) {
-        this.measureExcelA = measureExcelA;
+    public void setMeasureExcelA(String measureExcelA) {
+        this.measureExcelA = measureExcelA == null ? null : measureExcelA.trim();
     }
 
-    public BigDecimal getMeasureExcelA1() {
+    public String getMeasureExcelA1() {
         return measureExcelA1;
     }
 
-    public void setMeasureExcelA1(BigDecimal measureExcelA1) {
-        this.measureExcelA1 = measureExcelA1;
+    public void setMeasureExcelA1(String measureExcelA1) {
+        this.measureExcelA1 = measureExcelA1 == null ? null : measureExcelA1.trim();
     }
 
-    public BigDecimal getMeasureExcelIntensity() {
+    public String getMeasureExcelIntensity() {
         return measureExcelIntensity;
     }
 
-    public void setMeasureExcelIntensity(BigDecimal measureExcelIntensity) {
-        this.measureExcelIntensity = measureExcelIntensity;
+    public void setMeasureExcelIntensity(String measureExcelIntensity) {
+        this.measureExcelIntensity = measureExcelIntensity == null ? null : measureExcelIntensity.trim();
     }
 
-    public BigDecimal getMeasureExcelIntensity1() {
+    public String getMeasureExcelIntensity1() {
         return measureExcelIntensity1;
     }
 
-    public void setMeasureExcelIntensity1(BigDecimal measureExcelIntensity1) {
-        this.measureExcelIntensity1 = measureExcelIntensity1;
+    public void setMeasureExcelIntensity1(String measureExcelIntensity1) {
+        this.measureExcelIntensity1 = measureExcelIntensity1 == null ? null : measureExcelIntensity1.trim();
     }
 
-    public BigDecimal getMeasureExcelAsh() {
+    public String getMeasureExcelAsh() {
         return measureExcelAsh;
     }
 
-    public void setMeasureExcelAsh(BigDecimal measureExcelAsh) {
-        this.measureExcelAsh = measureExcelAsh;
+    public void setMeasureExcelAsh(String measureExcelAsh) {
+        this.measureExcelAsh = measureExcelAsh == null ? null : measureExcelAsh.trim();
     }
 
-    public BigDecimal getMeasureExcelSulfer() {
+    public String getMeasureExcelSulfer() {
         return measureExcelSulfer;
     }
 
-    public void setMeasureExcelSulfer(BigDecimal measureExcelSulfer) {
-        this.measureExcelSulfer = measureExcelSulfer;
+    public void setMeasureExcelSulfer(String measureExcelSulfer) {
+        this.measureExcelSulfer = measureExcelSulfer == null ? null : measureExcelSulfer.trim();
     }
 
     public String getMeasureExcelSv() {
