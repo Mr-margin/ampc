@@ -30,7 +30,7 @@ $(function(){
     	$("#map_showId").hide();
 
     })
-    //构建table  
+    //构建列表展示table  
     $("#table_listShow").bootstrapTable({
     	method:'POST',
     	url:'',
@@ -82,11 +82,7 @@ $(function(){
     	
     })
     	
-    	
-    	
-    
-    
-	
+  	
 });
 //下拉选框
 function selectQj(value){
@@ -96,7 +92,6 @@ function selectQj(value){
 	} else {
 		$("#tableId").css('display','none');
 	}
-
 }
 //柱状图
 function bar () {
