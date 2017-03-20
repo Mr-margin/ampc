@@ -175,7 +175,11 @@ public class MissionAndScenarinoController {
 			//用户的id  确定当前用户
 			mission.setUserId(Long.parseLong(data.get("userId").toString()));
 			//默认新建任务会赋值预评估
-			mission.setMissionStatus(data.get("missionStauts").toString());
+			if(data.get("missionStauts").toString().equals("预评估")){
+			mission.setMissionStatus("1");
+			}else{
+				mission.setMissionStatus("2");	
+			}
 			//执行添加操作
 			int result=this.tMissionDetailMapper.insertSelective(mission);
 			//判断添加结果
