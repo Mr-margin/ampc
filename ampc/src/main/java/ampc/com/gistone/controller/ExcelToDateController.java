@@ -110,13 +110,8 @@ public class ExcelToDateController {
 			if(data.get("userId")!=null){
 				userId = Long.parseLong(data.get("userId").toString());
 			}
-			//自动获取到最新版本
-			Long versionId=tMeasureSectorExcelMapper.selectMaxVersion(userId);
-			if(versionId==null){
-				versionId=1L;
-			}else{
-				versionId++;
-			}
+			Long time=new Date().getTime();
+			String versionId="中间表"+time;
 			//获取到筛选后的数据
 			LinkedHashSet<TMeasureSectorExcel> ms=checkInfo(versionId,userId);
 			Iterator<TMeasureSectorExcel> iterator = ms.iterator();
@@ -328,7 +323,7 @@ public class ExcelToDateController {
 	 * @param tme
 	 * @return
 	 */
-	public TMeasureSectorExcel castClass(TSectorExcel tse,TMeasureExcel tme,Long vid,Long uid){
+	public TMeasureSectorExcel castClass(TSectorExcel tse,TMeasureExcel tme,String vid,Long uid){
 		TMeasureSectorExcel tmt=new TMeasureSectorExcel();
 		tmt.setDebugModel(tme.getMeasureExcelDebug());
 		tmt.setMsExcelA(tme.getMeasureExcelA());
@@ -355,7 +350,7 @@ public class ExcelToDateController {
 	 * TODO
 	 * c1
 	 */
-	public String c1(LinkedHashSet<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id1,int id2,int id3,int id4,Long vid,Long uid){
+	public String c1(LinkedHashSet<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id1,int id2,int id3,int id4,String vid,Long uid){
 		//获取第二个id[2]的条件集合
 		List<CheckUtil> check2 = cu11.getCheck2();
 		if(check2==null){
@@ -413,7 +408,7 @@ public class ExcelToDateController {
 	 * c2
 	 * @return
 	 */
-	public String c2(LinkedHashSet<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id3,int id4,Long vid,Long uid){
+	public String c2(LinkedHashSet<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id3,int id4,String vid,Long uid){
 		//获取第三个id[3]的条件集合
 		List<CheckUtil> check3 = cu11.getCheck3();
 		if(check3==null){
@@ -472,7 +467,7 @@ public class ExcelToDateController {
 	 * TODO
 	 * c3
 	 */
-	public String c3(LinkedHashSet<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id4,Long vid,Long uid){
+	public String c3(LinkedHashSet<TMeasureSectorExcel> ms,CheckUtil1 cu11,TSectorExcel tse,int id4,String vid,Long uid){
 		//获取第四个id[4]的条件集合
 		List<CheckUtil> check4 = cu11.getCheck4();
 		if(check4==null){
@@ -524,7 +519,7 @@ public class ExcelToDateController {
 	 * TODO
 	 * 验证L4s
 	 */
-	public LinkedHashSet<TMeasureSectorExcel> checkInfo(Long vid,Long uid){
+	public LinkedHashSet<TMeasureSectorExcel> checkInfo(String vid,Long uid){
 		try{
 			
 		//创建一个满足条件的
