@@ -324,12 +324,7 @@
     </div>
   </div>
 
-  <!-- Button trigger modal -->
-  <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#selectCreateQj">
-    Launch demo modal
-  </button>
-
-  <!-- Modal -->
+  <!-- Modal 情景复制-->
   <div class="modal fade" id="selectCreateQj" tabindex="-1" role="dialog" aria-labelledby="selectCreateQjLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -340,10 +335,10 @@
         <div class="modal-body">
           <div class="selectCQJbtn text-center">
             <div class="col-md-12">
-              <button class="btn btn-primary btn-lg mt20">编辑新情景</button>
+              <button class="btn btn-primary btn-lg mt20" data-dismiss="modal" onclick="selectCopy(false)">编辑新情景</button>
             </div>
             <div class="col-md-12">
-              <button class="btn btn-primary btn-lg mt20">复制已有情景</button>
+              <button class="btn btn-primary btn-lg mt20" onclick="selectCopy(true)">复制已有情景</button>
             </div>
           </div>
           <div class="selectCopyQj">
@@ -352,10 +347,10 @@
                 <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('',this)">
                   <i class="im-folder-open"></i> 全部
                 </button>
-                <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('预评估',this)">
+                <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('1',this)">
                   <i class="st-folder-settings"></i> 预评估
                 </button>
-                <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('后评估',this)">
+                <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('2',this)">
                   <i class="im-paste2"></i> 后评估
                 </button>
               </div>
@@ -372,7 +367,7 @@
               <table id="copyQJ">
                 <thead>
                 <th data-field="missionName">任务名称</th>
-                <th data-field="missionStatus">任务类型</th>
+                <th data-formatter="rwType">任务类型</th>
                 <th data-field="scenarinoName">情景名称</th>
                 </thead>
               </table>
@@ -380,8 +375,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
-          <button type="button" class="btn btn-default" >上一步</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="subCopyQJ()">确定</button>
+          <button type="button" class="btn btn-default" onclick="previous()">上一步</button>
         </div>
       </div>
     </div>

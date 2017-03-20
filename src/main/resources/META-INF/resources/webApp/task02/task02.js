@@ -157,12 +157,14 @@ initialize();
 
 
 var zTreeData;
+var allData1;//临时变量
 function initialize() {
 
   /**
    * 设置导航条菜单
    */
   $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">时段区域编辑</a>');
+  previous();
 
   var ls = window.localStorage;
   qjMsg = vipspa.getMessage('qjMessage').content;
@@ -199,25 +201,30 @@ function initialize() {
 
   scenarino.then(function (res) {
 
-    allData = res.data;
-    for (var i = 0; i < res.data.length; i++) {
-      allData[i].timeFrame = [];
-      var timeItems = res.data[i].timeItems;
-      var tLength = timeItems.length;
-      //$('.areaMsg').append(area);
-      for (var item = 0; item < tLength; item++) {
-
-        if (item > 0) {
-          var sD = timeItems[item].timeStartDate;
-          allData[i].timeFrame[item - 1] = moment(sD).format('YYYY-MM-DD HH');
-        }
-      }
-
+    if(res.data.isNew == 0){
+      $('#selectCreateQj').modal('show')
     }
+    $('#selectCreateQj').modal('show');
 
-
-    showTimeline(allData);
-    app2();
+    allData1 = res.data;
+    //for (var i = 0; i < res.data.length; i++) {
+    //  allData[i].timeFrame = [];
+    //  var timeItems = res.data[i].timeItems;
+    //  var tLength = timeItems.length;
+    //  //$('.areaMsg').append(area);
+    //  for (var item = 0; item < tLength; item++) {
+    //
+    //    if (item > 0) {
+    //      var sD = timeItems[item].timeStartDate;
+    //      allData[i].timeFrame[item - 1] = moment(sD).format('YYYY-MM-DD HH');
+    //    }
+    //  }
+    //
+    //}
+    //
+    //
+    //showTimeline(allData);
+    //app2();
   });
 
   initZTree()  //初始化zTree数据
@@ -1558,7 +1565,6 @@ function dingwei(tiaojian, type){
 
 
 var selectCopyQJ,statusRW='';
-initCoptTable();
 /*初始化复制情景table*/
 function initCoptTable(){
   $('#copyQJ').bootstrapTable({
@@ -1582,6 +1588,9 @@ function initCoptTable(){
     striped: true, // 使表格带有条纹
     sidePagination: "server",// 表格分页的位置 client||server
     rowStyle: function (row, index) {
+      if(index == 0){
+        return {classes:'info'}
+      }
       return {};
     },
     queryParams: function formPm(m) {
@@ -1643,4 +1652,79 @@ function search() {
     return params;
   };
   $('#copyQJ').bootstrapTable('refresh', params);
+}
+
+function rwType(v, row, i) {
+  var type;
+  switch(row.missionStatus){
+    case '1':
+      type = '预评估';
+      break;
+    case '2':
+      type = '后评估';
+      break;
+  }
+  return type
+}
+
+function selectCopy(t){
+  if(t){
+    initCoptTable();
+    $('#selectCreateQj .selectCQJbtn').addClass('disNone');
+    $('#selectCreateQj .selectCopyQj').removeClass('disNone');
+    $('#selectCreateQj .modal-footer').removeClass('disNone');
+  }else{
+    allData = allData1;
+    allData1 = null;
+    for (var i = 0; i < allData.length; i++) {
+      allData[i].timeFrame = [];
+      var timeItems = allData[i].timeItems;
+      var tLength = timeItems.length;
+      //$('.areaMsg').append(area);
+      for (var item = 0; item < tLength; item++) {
+
+        if (item > 0) {
+          var sD = timeItems[item].timeStartDate;
+          allData[i].timeFrame[item - 1] = moment(sD).format('YYYY-MM-DD HH');
+        }
+      }
+
+    }
+    showTimeline(allData);
+    app2();
+  }
+
+}
+
+function previous(){
+  $('#selectCreateQj .selectCQJbtn').removeClass('disNone');
+  $('#selectCreateQj .selectCopyQj').addClass('disNone');
+  $('#selectCreateQj .modal-footer').addClass('disNone');
+}
+
+function subCopyQJ(){
+  console.log(selectCopyQJ);
+
+  var url = '/area/get_areaAndTimeList';
+  ajaxPost(url, {
+    scenarinoId: qjMsg.qjId,
+    userId: userId
+  }).success(function(res){
+    allData = res.data;
+    for (var i = 0; i < allData.length; i++) {
+      allData[i].timeFrame = [];
+      var timeItems = allData[i].timeItems;
+      var tLength = timeItems.length;
+      //$('.areaMsg').append(area);
+      for (var item = 0; item < tLength; item++) {
+
+        if (item > 0) {
+          var sD = timeItems[item].timeStartDate;
+          allData[i].timeFrame[item - 1] = moment(sD).format('YYYY-MM-DD HH');
+        }
+      }
+    }
+    showTimeline(allData);
+    app2();
+  });
 }
