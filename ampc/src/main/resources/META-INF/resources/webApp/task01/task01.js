@@ -138,11 +138,12 @@ $(document).ready(function () {
 });
 
 function initialize() {
-
+  $('.qyCon').addClass('disNone');
   /**
    * 设置导航条菜单
    */
   $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>');
+
 
   initRwTable();
   getMnfw();
@@ -1101,7 +1102,7 @@ function createQj(type){
         params.basisTime = moment($('#jcdate1').val()).format('YYYY-MM-DD HH:mm:ss');
       }
     }else if(qjType == 3){
-    	params.scenarinoStartDate = moment($('#hStartDate').val()).format('YYYY-MM-DD HH:mm:ss');
+    	params.scenarinoStartDate = moment($('#hStartDate').val()).format('YYYY-MM-DD HH:mm:ss');j
         params.scenarinoEndDate = moment($('#hEndDate').val()).add(1,'d').subtract(1,'s').format('YYYY-MM-DD HH:mm:ss');
       params.spinUp = $('#spinup').val();
     }
@@ -1124,8 +1125,6 @@ function createQj(type){
   }).error(function(){
     swal('校验失败', '', 'error')
   })
-
-
 }
 
 /*获取模拟范围*/

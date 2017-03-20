@@ -364,6 +364,24 @@
 }
 /*清单样式 end*/
 
+.qyCon{
+  position: relative;
+  height: 98%;
+}
+.qyCon h3{
+  color: #3498da;
+}
+.jsBtn{
+  position: absolute;
+  bottom: 10px;
+}
+.qyCon span{
+  font-size: 14px;
+}
+.qyCon>div{
+  margin-bottom: 20px;
+}
+
 
 
 
