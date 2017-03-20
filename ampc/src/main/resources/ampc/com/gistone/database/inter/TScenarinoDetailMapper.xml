@@ -81,9 +81,6 @@
 										       		OR ES_COUPLING_NAME LIKE #{queryName,jdbcType=OTHER})
 										       		OR MISSION_STATUS LIKE #{queryName,jdbcType=OTHER})
 										       		OR SCENARINO_NAME LIKE #{queryName,jdbcType=OTHER})
-										       		OR to_char(SCENARINO_START_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER})
-										       		OR to_char(SCENARINO_END_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER})
-										       		OR to_char(SCENARINO_ADD_TIME,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER})
 										       		OR SCENARINO_STATU_NAME LIKE #{queryName,jdbcType=OTHER})
 										      	</if>
 											ORDER BY MISS.MISSION_ID DESC
