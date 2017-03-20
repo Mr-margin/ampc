@@ -4,9 +4,9 @@
 <!-- mysql -->
     <!-- <classPathEntry location="D:\work\201608\assa\WebRoot\WEB-INF\lib\mysql-connector-java-5.1.7-bin.jar" /> -->
     <!-- oracle -->
-    <!--  <classPathEntry location="D:\work\201608\gene\WebRoot\WEB-INF\lib\ojdbc14_g.jar" />-->
+     <classPathEntry location="D:\work\201608\gene\WebRoot\WEB-INF\lib\ojdbc14_g.jar" />
    <!--  <classPathEntry location="E:\Maven\MavenRepository\maven_jar\com\oracle\ojdbc6\11.2.0.1.0\ojdbc6-11.2.0.1.0.jar" /> -->
-    <classPathEntry location="E:\maven_jar\com\oracle\ojdbc6\11.2.0.1.0\ojdbc6-11.2.0.1.0.jar" />
+    <!-- <classPathEntry location="E:\maven_jar\com\oracle\ojdbc6\11.2.0.1.0\ojdbc6-11.2.0.1.0.jar" /> -->
     <context id="water_context" >
       <!-- 为了防止生成的代码中有很多注释，比较难看，加入下面的配置控制 -->
     <commentGenerator>
@@ -49,7 +49,8 @@
     <table tableName="T_MEASURE_TEMPLATE" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
   	-->
   	<!-- <table tableName="T_MEASURE_EXCEL" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>  -->
-  	<table tableName="T_UNGRIB" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> 
-  	<table tableName="T_PLAN_MEASURE" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> 
+  	<!-- <table tableName="T_UNGRIB" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> 
+  	<table tableName="T_PLAN_MEASURE" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> --> 
+  	<table tableName="T_EMISSION_DETAIL" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> 
   </context>
 </generatorConfiguration>
