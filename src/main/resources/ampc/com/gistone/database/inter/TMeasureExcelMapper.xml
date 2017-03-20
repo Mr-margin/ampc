@@ -8,15 +8,15 @@
     <result column="MEASURE_EXCEL_DEBUG" property="measureExcelDebug" jdbcType="DECIMAL" />
     <result column="MEASURE_EXCEL_DISPLAY" property="measureExcelDisplay" jdbcType="OTHER" />
     <result column="MEASURE_EXCEL_TYPE" property="measureExcelType" jdbcType="OTHER" />
-    <result column="MEASURE_EXCEL_LEVEL" property="measureExcelLevel" jdbcType="DECIMAL" />
+    <result column="MEASURE_EXCEL_LEVEL" property="measureExcelLevel" jdbcType="VARCHAR" />
     <result column="MEASURE_EXCEL_L4S" property="measureExcelL4s" jdbcType="VARCHAR" />
     <result column="MEASURE_EXCEL_OP" property="measureExcelOp" jdbcType="VARCHAR" />
-    <result column="MEASURE_EXCEL_A" property="measureExcelA" jdbcType="DECIMAL" />
-    <result column="MEASURE_EXCEL_A1" property="measureExcelA1" jdbcType="DECIMAL" />
-    <result column="MEASURE_EXCEL_INTENSITY" property="measureExcelIntensity" jdbcType="DECIMAL" />
-    <result column="MEASURE_EXCEL_INTENSITY1" property="measureExcelIntensity1" jdbcType="DECIMAL" />
-    <result column="MEASURE_EXCEL_ASH" property="measureExcelAsh" jdbcType="DECIMAL" />
-    <result column="MEASURE_EXCEL_SULFER" property="measureExcelSulfer" jdbcType="DECIMAL" />
+    <result column="MEASURE_EXCEL_A" property="measureExcelA" jdbcType="VARCHAR" />
+    <result column="MEASURE_EXCEL_A1" property="measureExcelA1" jdbcType="VARCHAR" />
+    <result column="MEASURE_EXCEL_INTENSITY" property="measureExcelIntensity" jdbcType="VARCHAR" />
+    <result column="MEASURE_EXCEL_INTENSITY1" property="measureExcelIntensity1" jdbcType="VARCHAR" />
+    <result column="MEASURE_EXCEL_ASH" property="measureExcelAsh" jdbcType="VARCHAR" />
+    <result column="MEASURE_EXCEL_SULFER" property="measureExcelSulfer" jdbcType="VARCHAR" />
     <result column="MEASURE_EXCEL_SV" property="measureExcelSv" jdbcType="VARCHAR" />
     <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
     <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
@@ -49,12 +49,7 @@
   </sql>
   
   
-  
-  
-  
-  
-  
-  <!--获取到所有的措施信息-->
+   <!--获取到所有的措施信息-->
   <select id="selectAll"  resultMap="BaseResultMap">
   	select <include refid="Base_Column_List" />
     from T_MEASURE_EXCEL 
@@ -76,6 +71,9 @@
         where USER_ID=#{_parameter,jdbcType=DECIMAL} 
       </if> 
   </update>
+  
+  
+  
   
   
   
@@ -116,10 +114,10 @@
       MEASURE_EXCEL_SVRANGE)
     values (#{measureExcelId,jdbcType=DECIMAL}, #{measureExcelVersion,jdbcType=OTHER}, 
       #{measureExcelName,jdbcType=VARCHAR}, #{measureExcelDebug,jdbcType=DECIMAL}, #{measureExcelDisplay,jdbcType=OTHER}, 
-      #{measureExcelType,jdbcType=OTHER}, #{measureExcelLevel,jdbcType=DECIMAL}, #{measureExcelL4s,jdbcType=VARCHAR}, 
-      #{measureExcelOp,jdbcType=VARCHAR}, #{measureExcelA,jdbcType=DECIMAL}, #{measureExcelA1,jdbcType=DECIMAL}, 
-      #{measureExcelIntensity,jdbcType=DECIMAL}, #{measureExcelIntensity1,jdbcType=DECIMAL}, 
-      #{measureExcelAsh,jdbcType=DECIMAL}, #{measureExcelSulfer,jdbcType=DECIMAL}, #{measureExcelSv,jdbcType=VARCHAR}, 
+      #{measureExcelType,jdbcType=OTHER}, #{measureExcelLevel,jdbcType=VARCHAR}, #{measureExcelL4s,jdbcType=VARCHAR}, 
+      #{measureExcelOp,jdbcType=VARCHAR}, #{measureExcelA,jdbcType=VARCHAR}, #{measureExcelA1,jdbcType=VARCHAR}, 
+      #{measureExcelIntensity,jdbcType=VARCHAR}, #{measureExcelIntensity1,jdbcType=VARCHAR}, 
+      #{measureExcelAsh,jdbcType=VARCHAR}, #{measureExcelSulfer,jdbcType=VARCHAR}, #{measureExcelSv,jdbcType=VARCHAR}, 
       #{userId,jdbcType=DECIMAL}, #{addTime,jdbcType=TIMESTAMP}, #{isEffective,jdbcType=VARCHAR}, 
       #{deleteTime,jdbcType=TIMESTAMP}, #{measureExcelAname,jdbcType=OTHER}, #{measureExcelA1name,jdbcType=OTHER}, 
       #{measureExcelIntensityname,jdbcType=OTHER}, #{measureExcelIntensity1name,jdbcType=OTHER}, 
@@ -255,7 +253,7 @@
         #{measureExcelType,jdbcType=OTHER},
       </if>
       <if test="measureExcelLevel != null" >
-        #{measureExcelLevel,jdbcType=DECIMAL},
+        #{measureExcelLevel,jdbcType=VARCHAR},
       </if>
       <if test="measureExcelL4s != null" >
         #{measureExcelL4s,jdbcType=VARCHAR},
@@ -264,22 +262,22 @@
         #{measureExcelOp,jdbcType=VARCHAR},
       </if>
       <if test="measureExcelA != null" >
-        #{measureExcelA,jdbcType=DECIMAL},
+        #{measureExcelA,jdbcType=VARCHAR},
       </if>
       <if test="measureExcelA1 != null" >
-        #{measureExcelA1,jdbcType=DECIMAL},
+        #{measureExcelA1,jdbcType=VARCHAR},
       </if>
       <if test="measureExcelIntensity != null" >
-        #{measureExcelIntensity,jdbcType=DECIMAL},
+        #{measureExcelIntensity,jdbcType=VARCHAR},
       </if>
       <if test="measureExcelIntensity1 != null" >
-        #{measureExcelIntensity1,jdbcType=DECIMAL},
+        #{measureExcelIntensity1,jdbcType=VARCHAR},
       </if>
       <if test="measureExcelAsh != null" >
-        #{measureExcelAsh,jdbcType=DECIMAL},
+        #{measureExcelAsh,jdbcType=VARCHAR},
       </if>
       <if test="measureExcelSulfer != null" >
-        #{measureExcelSulfer,jdbcType=DECIMAL},
+        #{measureExcelSulfer,jdbcType=VARCHAR},
       </if>
       <if test="measureExcelSv != null" >
         #{measureExcelSv,jdbcType=VARCHAR},
@@ -359,7 +357,7 @@
         MEASURE_EXCEL_TYPE = #{measureExcelType,jdbcType=OTHER},
       </if>
       <if test="measureExcelLevel != null" >
-        MEASURE_EXCEL_LEVEL = #{measureExcelLevel,jdbcType=DECIMAL},
+        MEASURE_EXCEL_LEVEL = #{measureExcelLevel,jdbcType=VARCHAR},
       </if>
       <if test="measureExcelL4s != null" >
         MEASURE_EXCEL_L4S = #{measureExcelL4s,jdbcType=VARCHAR},
@@ -368,22 +366,22 @@
         MEASURE_EXCEL_OP = #{measureExcelOp,jdbcType=VARCHAR},
       </if>
       <if test="measureExcelA != null" >
-        MEASURE_EXCEL_A = #{measureExcelA,jdbcType=DECIMAL},
+        MEASURE_EXCEL_A = #{measureExcelA,jdbcType=VARCHAR},
       </if>
       <if test="measureExcelA1 != null" >
-        MEASURE_EXCEL_A1 = #{measureExcelA1,jdbcType=DECIMAL},
+        MEASURE_EXCEL_A1 = #{measureExcelA1,jdbcType=VARCHAR},
       </if>
       <if test="measureExcelIntensity != null" >
-        MEASURE_EXCEL_INTENSITY = #{measureExcelIntensity,jdbcType=DECIMAL},
+        MEASURE_EXCEL_INTENSITY = #{measureExcelIntensity,jdbcType=VARCHAR},
       </if>
       <if test="measureExcelIntensity1 != null" >
-        MEASURE_EXCEL_INTENSITY1 = #{measureExcelIntensity1,jdbcType=DECIMAL},
+        MEASURE_EXCEL_INTENSITY1 = #{measureExcelIntensity1,jdbcType=VARCHAR},
       </if>
       <if test="measureExcelAsh != null" >
-        MEASURE_EXCEL_ASH = #{measureExcelAsh,jdbcType=DECIMAL},
+        MEASURE_EXCEL_ASH = #{measureExcelAsh,jdbcType=VARCHAR},
       </if>
       <if test="measureExcelSulfer != null" >
-        MEASURE_EXCEL_SULFER = #{measureExcelSulfer,jdbcType=DECIMAL},
+        MEASURE_EXCEL_SULFER = #{measureExcelSulfer,jdbcType=VARCHAR},
       </if>
       <if test="measureExcelSv != null" >
         MEASURE_EXCEL_SV = #{measureExcelSv,jdbcType=VARCHAR},
@@ -452,15 +450,15 @@
       MEASURE_EXCEL_DEBUG = #{measureExcelDebug,jdbcType=DECIMAL},
       MEASURE_EXCEL_DISPLAY = #{measureExcelDisplay,jdbcType=OTHER},
       MEASURE_EXCEL_TYPE = #{measureExcelType,jdbcType=OTHER},
-      MEASURE_EXCEL_LEVEL = #{measureExcelLevel,jdbcType=DECIMAL},
+      MEASURE_EXCEL_LEVEL = #{measureExcelLevel,jdbcType=VARCHAR},
       MEASURE_EXCEL_L4S = #{measureExcelL4s,jdbcType=VARCHAR},
       MEASURE_EXCEL_OP = #{measureExcelOp,jdbcType=VARCHAR},
-      MEASURE_EXCEL_A = #{measureExcelA,jdbcType=DECIMAL},
-      MEASURE_EXCEL_A1 = #{measureExcelA1,jdbcType=DECIMAL},
-      MEASURE_EXCEL_INTENSITY = #{measureExcelIntensity,jdbcType=DECIMAL},
-      MEASURE_EXCEL_INTENSITY1 = #{measureExcelIntensity1,jdbcType=DECIMAL},
-      MEASURE_EXCEL_ASH = #{measureExcelAsh,jdbcType=DECIMAL},
-      MEASURE_EXCEL_SULFER = #{measureExcelSulfer,jdbcType=DECIMAL},
+      MEASURE_EXCEL_A = #{measureExcelA,jdbcType=VARCHAR},
+      MEASURE_EXCEL_A1 = #{measureExcelA1,jdbcType=VARCHAR},
+      MEASURE_EXCEL_INTENSITY = #{measureExcelIntensity,jdbcType=VARCHAR},
+      MEASURE_EXCEL_INTENSITY1 = #{measureExcelIntensity1,jdbcType=VARCHAR},
+      MEASURE_EXCEL_ASH = #{measureExcelAsh,jdbcType=VARCHAR},
+      MEASURE_EXCEL_SULFER = #{measureExcelSulfer,jdbcType=VARCHAR},
       MEASURE_EXCEL_SV = #{measureExcelSv,jdbcType=VARCHAR},
       USER_ID = #{userId,jdbcType=DECIMAL},
       ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
