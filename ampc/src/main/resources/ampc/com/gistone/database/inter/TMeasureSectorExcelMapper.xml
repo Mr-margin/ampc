@@ -4,24 +4,24 @@
   <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TMeasureSectorExcel" >
     <id column="MS_EXCEL_ID" property="msExcelId" jdbcType="DECIMAL" />
     <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
-    <result column="MS_EXCEL_VERSION_ID" property="msExcelVersionId" jdbcType="DECIMAL" />
+    <result column="MS_EXCEL_VERSION_ID" property="msExcelVersionId" jdbcType="VARCHAR" />
     <result column="MID" property="mid" jdbcType="DECIMAL" />
     <result column="MS_EXCEL_NAME" property="msExcelName" jdbcType="OTHER" />
     <result column="MS_EXCEL_DESC" property="msExcelDesc" jdbcType="OTHER" />
     <result column="MS_EXCEL_OP" property="msExcelOp" jdbcType="OTHER" />
-    <result column="MS_EXCEL_INTENSITY" property="msExcelIntensity" jdbcType="DECIMAL" />
+    <result column="MS_EXCEL_INTENSITY" property="msExcelIntensity" jdbcType="VARCHAR" />
     <result column="SECTORSNAME" property="sectorsname" jdbcType="OTHER" />
     <result column="CONTENT" property="content" jdbcType="OTHER" />
     <result column="MS_EXCEL_DISPLAY" property="msExcelDisplay" jdbcType="OTHER" />
     <result column="DEBUG_MODEL" property="debugModel" jdbcType="DECIMAL" />
     <result column="MS_EXCEL_TYPE" property="msExcelType" jdbcType="OTHER" />
-    <result column="MS_EXCEL_LEVEL" property="msExcelLevel" jdbcType="DECIMAL" />
-    <result column="MS_EXCEL_A" property="msExcelA" jdbcType="DECIMAL" />
-    <result column="MS_EXCEL_A1" property="msExcelA1" jdbcType="DECIMAL" />
-    <result column="MS_EXCEL_INTENSITY1" property="msExcelIntensity1" jdbcType="DECIMAL" />
-    <result column="MS_EXCEL_ASH" property="msExcelAsh" jdbcType="DECIMAL" />
-    <result column="MS_EXCEL_SULFER" property="msExcelSulfer" jdbcType="DECIMAL" />
-    <result column="MS_EXCEL_SV" property="msExcelSv" jdbcType="OTHER" />
+    <result column="MS_EXCEL_LEVEL" property="msExcelLevel" jdbcType="VARCHAR" />
+    <result column="MS_EXCEL_A" property="msExcelA" jdbcType="VARCHAR" />
+    <result column="MS_EXCEL_A1" property="msExcelA1" jdbcType="VARCHAR" />
+    <result column="MS_EXCEL_INTENSITY1" property="msExcelIntensity1" jdbcType="VARCHAR" />
+    <result column="MS_EXCEL_ASH" property="msExcelAsh" jdbcType="VARCHAR" />
+    <result column="MS_EXCEL_SULFER" property="msExcelSulfer" jdbcType="VARCHAR" />
+    <result column="MS_EXCEL_SV" property="msExcelSv" jdbcType="VARCHAR" />
     <result column="SID" property="sid" jdbcType="DECIMAL" />
     <result column="COLORCODE" property="colorcode" jdbcType="VARCHAR" />
     <result column="COLORNAME" property="colorname" jdbcType="OTHER" />
@@ -121,6 +121,13 @@
  
  
  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -141,13 +148,13 @@
       MS_EXCEL_SULFER, MS_EXCEL_SV, SID, 
       COLORCODE, COLORNAME, ADD_TIME, 
       DELETE_TIME, IS_EFFECTIVE)
-    values (#{msExcelId,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{msExcelVersionId,jdbcType=DECIMAL}, 
+    values (#{msExcelId,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{msExcelVersionId,jdbcType=VARCHAR}, 
       #{mid,jdbcType=DECIMAL}, #{msExcelName,jdbcType=OTHER}, #{msExcelDesc,jdbcType=OTHER}, 
-      #{msExcelOp,jdbcType=OTHER}, #{msExcelIntensity,jdbcType=DECIMAL}, #{sectorsname,jdbcType=OTHER}, 
+      #{msExcelOp,jdbcType=OTHER}, #{msExcelIntensity,jdbcType=VARCHAR}, #{sectorsname,jdbcType=OTHER}, 
       #{content,jdbcType=OTHER}, #{msExcelDisplay,jdbcType=OTHER}, #{debugModel,jdbcType=DECIMAL}, 
-      #{msExcelType,jdbcType=OTHER}, #{msExcelLevel,jdbcType=DECIMAL}, #{msExcelA,jdbcType=DECIMAL}, 
-      #{msExcelA1,jdbcType=DECIMAL}, #{msExcelIntensity1,jdbcType=DECIMAL}, #{msExcelAsh,jdbcType=DECIMAL}, 
-      #{msExcelSulfer,jdbcType=DECIMAL}, #{msExcelSv,jdbcType=OTHER}, #{sid,jdbcType=DECIMAL}, 
+      #{msExcelType,jdbcType=OTHER}, #{msExcelLevel,jdbcType=VARCHAR}, #{msExcelA,jdbcType=VARCHAR}, 
+      #{msExcelA1,jdbcType=VARCHAR}, #{msExcelIntensity1,jdbcType=VARCHAR}, #{msExcelAsh,jdbcType=VARCHAR}, 
+      #{msExcelSulfer,jdbcType=VARCHAR}, #{msExcelSv,jdbcType=VARCHAR}, #{sid,jdbcType=DECIMAL}, 
       #{colorcode,jdbcType=VARCHAR}, #{colorname,jdbcType=OTHER}, #{addTime,jdbcType=TIMESTAMP}, 
       #{deleteTime,jdbcType=TIMESTAMP}, #{isEffective,jdbcType=VARCHAR})
   </insert>
@@ -241,7 +248,7 @@
         #{userId,jdbcType=DECIMAL},
       </if>
       <if test="msExcelVersionId != null" >
-        #{msExcelVersionId,jdbcType=DECIMAL},
+        #{msExcelVersionId,jdbcType=VARCHAR},
       </if>
       <if test="mid != null" >
         #{mid,jdbcType=DECIMAL},
@@ -256,7 +263,7 @@
         #{msExcelOp,jdbcType=OTHER},
       </if>
       <if test="msExcelIntensity != null" >
-        #{msExcelIntensity,jdbcType=DECIMAL},
+        #{msExcelIntensity,jdbcType=VARCHAR},
       </if>
       <if test="sectorsname != null" >
         #{sectorsname,jdbcType=OTHER},
@@ -274,25 +281,25 @@
         #{msExcelType,jdbcType=OTHER},
       </if>
       <if test="msExcelLevel != null" >
-        #{msExcelLevel,jdbcType=DECIMAL},
+        #{msExcelLevel,jdbcType=VARCHAR},
       </if>
       <if test="msExcelA != null" >
-        #{msExcelA,jdbcType=DECIMAL},
+        #{msExcelA,jdbcType=VARCHAR},
       </if>
       <if test="msExcelA1 != null" >
-        #{msExcelA1,jdbcType=DECIMAL},
+        #{msExcelA1,jdbcType=VARCHAR},
       </if>
       <if test="msExcelIntensity1 != null" >
-        #{msExcelIntensity1,jdbcType=DECIMAL},
+        #{msExcelIntensity1,jdbcType=VARCHAR},
       </if>
       <if test="msExcelAsh != null" >
-        #{msExcelAsh,jdbcType=DECIMAL},
+        #{msExcelAsh,jdbcType=VARCHAR},
       </if>
       <if test="msExcelSulfer != null" >
-        #{msExcelSulfer,jdbcType=DECIMAL},
+        #{msExcelSulfer,jdbcType=VARCHAR},
       </if>
       <if test="msExcelSv != null" >
-        #{msExcelSv,jdbcType=OTHER},
+        #{msExcelSv,jdbcType=VARCHAR},
       </if>
       <if test="sid != null" >
         #{sid,jdbcType=DECIMAL},
@@ -321,7 +328,7 @@
         USER_ID = #{userId,jdbcType=DECIMAL},
       </if>
       <if test="msExcelVersionId != null" >
-        MS_EXCEL_VERSION_ID = #{msExcelVersionId,jdbcType=DECIMAL},
+        MS_EXCEL_VERSION_ID = #{msExcelVersionId,jdbcType=VARCHAR},
       </if>
       <if test="mid != null" >
         MID = #{mid,jdbcType=DECIMAL},
@@ -336,7 +343,7 @@
         MS_EXCEL_OP = #{msExcelOp,jdbcType=OTHER},
       </if>
       <if test="msExcelIntensity != null" >
-        MS_EXCEL_INTENSITY = #{msExcelIntensity,jdbcType=DECIMAL},
+        MS_EXCEL_INTENSITY = #{msExcelIntensity,jdbcType=VARCHAR},
       </if>
       <if test="sectorsname != null" >
         SECTORSNAME = #{sectorsname,jdbcType=OTHER},
@@ -354,25 +361,25 @@
         MS_EXCEL_TYPE = #{msExcelType,jdbcType=OTHER},
       </if>
       <if test="msExcelLevel != null" >
-        MS_EXCEL_LEVEL = #{msExcelLevel,jdbcType=DECIMAL},
+        MS_EXCEL_LEVEL = #{msExcelLevel,jdbcType=VARCHAR},
       </if>
       <if test="msExcelA != null" >
-        MS_EXCEL_A = #{msExcelA,jdbcType=DECIMAL},
+        MS_EXCEL_A = #{msExcelA,jdbcType=VARCHAR},
       </if>
       <if test="msExcelA1 != null" >
-        MS_EXCEL_A1 = #{msExcelA1,jdbcType=DECIMAL},
+        MS_EXCEL_A1 = #{msExcelA1,jdbcType=VARCHAR},
       </if>
       <if test="msExcelIntensity1 != null" >
-        MS_EXCEL_INTENSITY1 = #{msExcelIntensity1,jdbcType=DECIMAL},
+        MS_EXCEL_INTENSITY1 = #{msExcelIntensity1,jdbcType=VARCHAR},
       </if>
       <if test="msExcelAsh != null" >
-        MS_EXCEL_ASH = #{msExcelAsh,jdbcType=DECIMAL},
+        MS_EXCEL_ASH = #{msExcelAsh,jdbcType=VARCHAR},
       </if>
       <if test="msExcelSulfer != null" >
-        MS_EXCEL_SULFER = #{msExcelSulfer,jdbcType=DECIMAL},
+        MS_EXCEL_SULFER = #{msExcelSulfer,jdbcType=VARCHAR},
       </if>
       <if test="msExcelSv != null" >
-        MS_EXCEL_SV = #{msExcelSv,jdbcType=OTHER},
+        MS_EXCEL_SV = #{msExcelSv,jdbcType=VARCHAR},
       </if>
       <if test="sid != null" >
         SID = #{sid,jdbcType=DECIMAL},
@@ -398,24 +405,24 @@
   <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TMeasureSectorExcel" >
     update T_MEASURE_SECTOR_EXCEL
     set USER_ID = #{userId,jdbcType=DECIMAL},
-      MS_EXCEL_VERSION_ID = #{msExcelVersionId,jdbcType=DECIMAL},
+      MS_EXCEL_VERSION_ID = #{msExcelVersionId,jdbcType=VARCHAR},
       MID = #{mid,jdbcType=DECIMAL},
       MS_EXCEL_NAME = #{msExcelName,jdbcType=OTHER},
       MS_EXCEL_DESC = #{msExcelDesc,jdbcType=OTHER},
       MS_EXCEL_OP = #{msExcelOp,jdbcType=OTHER},
-      MS_EXCEL_INTENSITY = #{msExcelIntensity,jdbcType=DECIMAL},
+      MS_EXCEL_INTENSITY = #{msExcelIntensity,jdbcType=VARCHAR},
       SECTORSNAME = #{sectorsname,jdbcType=OTHER},
       CONTENT = #{content,jdbcType=OTHER},
       MS_EXCEL_DISPLAY = #{msExcelDisplay,jdbcType=OTHER},
       DEBUG_MODEL = #{debugModel,jdbcType=DECIMAL},
       MS_EXCEL_TYPE = #{msExcelType,jdbcType=OTHER},
-      MS_EXCEL_LEVEL = #{msExcelLevel,jdbcType=DECIMAL},
-      MS_EXCEL_A = #{msExcelA,jdbcType=DECIMAL},
-      MS_EXCEL_A1 = #{msExcelA1,jdbcType=DECIMAL},
-      MS_EXCEL_INTENSITY1 = #{msExcelIntensity1,jdbcType=DECIMAL},
-      MS_EXCEL_ASH = #{msExcelAsh,jdbcType=DECIMAL},
-      MS_EXCEL_SULFER = #{msExcelSulfer,jdbcType=DECIMAL},
-      MS_EXCEL_SV = #{msExcelSv,jdbcType=OTHER},
+      MS_EXCEL_LEVEL = #{msExcelLevel,jdbcType=VARCHAR},
+      MS_EXCEL_A = #{msExcelA,jdbcType=VARCHAR},
+      MS_EXCEL_A1 = #{msExcelA1,jdbcType=VARCHAR},
+      MS_EXCEL_INTENSITY1 = #{msExcelIntensity1,jdbcType=VARCHAR},
+      MS_EXCEL_ASH = #{msExcelAsh,jdbcType=VARCHAR},
+      MS_EXCEL_SULFER = #{msExcelSulfer,jdbcType=VARCHAR},
+      MS_EXCEL_SV = #{msExcelSv,jdbcType=VARCHAR},
       SID = #{sid,jdbcType=DECIMAL},
       COLORCODE = #{colorcode,jdbcType=VARCHAR},
       COLORNAME = #{colorname,jdbcType=OTHER},
