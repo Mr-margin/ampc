@@ -1555,3 +1555,92 @@ function dingwei(tiaojian, type){
 		});
 	}
 }
+
+
+var selectCopyQJ,statusRW='';
+initCoptTable();
+/*初始化复制情景table*/
+function initCoptTable(){
+  $('#copyQJ').bootstrapTable({
+    method: 'POST',
+    //url: 'webApp/task01/rw.json',
+//      url : BackstageIP+'/mission/get_mission_list',
+    url: '/ampc/scenarino/get_CopyScenarinoList',
+    dataType: "json",
+    contentType: "application/json", // 请求远程数据的内容类型。
+    toobar: '#rwToolbar',
+    iconSize: "outline",
+    search: false,
+    searchAlign: 'right',
+    height:453,
+    maintainSelected: true,
+    clickToSelect: false,// 点击选中行
+    pagination: true, // 在表格底部显示分页工具栏
+    pageSize: 10, // 页面大小
+    pageNumber: 1, // 页数
+    pageList: [10],
+    striped: true, // 使表格带有条纹
+    sidePagination: "server",// 表格分页的位置 client||server
+    rowStyle: function (row, index) {
+      return {};
+    },
+    queryParams: function formPm(m) {
+      var json = {
+        "token": "",
+        "data": {
+          "queryName": m.searchText || '',
+          "missionStatus": statusRW,
+          "pageNum": m.pageNumber,
+          "pageSize": m.pageSize,
+          "sort": '',
+          "userId": 1
+        }
+      };
+
+      return JSON.stringify(json);
+    },
+    responseHandler: function (res) {
+      return res.data
+    },
+    queryParamsType: "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
+    silent: true, // 刷新事件必须设置
+    onClickRow: function (row, $element) {
+      $('.info').removeClass('info');
+      $($element).addClass('info');
+      selectCopyQJ = row;
+    },
+    onLoadSuccess: function (data) {
+      selectCopyQJ = data.rows[0];
+    }
+  });
+}
+
+/*筛选*/
+function statusRWfun(status, t) {
+  statusRW = status;
+  search('rw');
+}
+
+/*搜索事件*/
+function search() {
+  var params = $('#copyQJ').bootstrapTable('getOptions');
+  params.queryParams = function (params) {
+    var json;
+      json = {
+        "token": "",
+        "data": {
+          "queryName": params.searchText || '',
+          "pageNum": 1,
+          "pageSize": params.pageSize,
+          "missionStatus": statusRW,
+          "sort": '',
+          "userId": userId
+        }
+      };
+      json.data.queryName = $('.copyQjsearch').val();
+
+    params = JSON.stringify(json);
+    return params;
+  };
+  $('#copyQJ').bootstrapTable('refresh', params);
+}

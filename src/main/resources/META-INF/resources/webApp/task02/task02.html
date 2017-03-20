@@ -324,6 +324,69 @@
     </div>
   </div>
 
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#selectCreateQj">
+    Launch demo modal
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="selectCreateQj" tabindex="-1" role="dialog" aria-labelledby="selectCreateQjLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="selectCreateQjLabel">选择情景</h4>
+        </div>
+        <div class="modal-body">
+          <div class="selectCQJbtn text-center">
+            <div class="col-md-12">
+              <button class="btn btn-primary btn-lg mt20">编辑新情景</button>
+            </div>
+            <div class="col-md-12">
+              <button class="btn btn-primary btn-lg mt20">复制已有情景</button>
+            </div>
+          </div>
+          <div class="selectCopyQj">
+            <div id="rwToolbar" class="btn-group">
+              <div class="col-md-8 bigP">
+                <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('',this)">
+                  <i class="im-folder-open"></i> 全部
+                </button>
+                <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('预评估',this)">
+                  <i class="st-folder-settings"></i> 预评估
+                </button>
+                <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('后评估',this)">
+                  <i class="im-paste2"></i> 后评估
+                </button>
+              </div>
+              <div class="input-group col-md-4">
+                <input type="text" class="form-control copyQjsearch " placeholder="输入情景名称或字段">
+                <span class="input-group-btn">
+                  <button class="btn btn-default " type="button" onclick="search()"><i class="ec-search"></i>
+                  </button>
+                </span>
+              </div>
+              <!-- /input-group -->
+            </div>
+            <div>
+              <table id="copyQJ">
+                <thead>
+                <th data-field="missionName">任务名称</th>
+                <th data-field="missionStatus">任务类型</th>
+                <th data-field="scenarinoName">情景名称</th>
+                </thead>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+          <button type="button" class="btn btn-default" >上一步</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 
   <!--redio dom-->
