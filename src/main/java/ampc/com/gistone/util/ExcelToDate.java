@@ -25,6 +25,7 @@ import ampc.com.gistone.database.model.TSectordocExcel;
  * @date 2017年3月9日
  */
 public class ExcelToDate {
+	
 	/**  
 	 *行业描述Excel表
 	* 读取excel描述数据   读取行业描述Excel表
@@ -261,7 +262,7 @@ public class ExcelToDate {
                 measure.setMeasureExcelType(getCellValue(row.getCell(3)));
                 //获取措施等级信息
                 String level=getCellValue(row.getCell(4));
-                measure.setMeasureExcelLevel(Long.parseLong(level.substring(0,level.indexOf('.'))));
+                measure.setMeasureExcelLevel(level.substring(0,level.indexOf('.')));
                 //获取措施L4s过滤信息
                 measure.setMeasureExcelL4s(getCellValue(row.getCell(5)));
                 //获取措施OP信息
@@ -269,8 +270,7 @@ public class ExcelToDate {
                 //获取措施A信息
                 String a=getCellValue(row.getCell(7));
                 if(a!=null&&!a.equals("")){
-                	BigDecimal ba=new BigDecimal(a);
-                	measure.setMeasureExcelA(ba);
+                	measure.setMeasureExcelA(a);
                 	//获取措施A中文信息
                 	measure.setMeasureExcelAname(getCellValue(row.getCell(14)));
                 	//获取措施A的取值范围
@@ -279,8 +279,7 @@ public class ExcelToDate {
                 //获取措施A1信息
                 String a1=getCellValue(row.getCell(8));
                 if(a1!=null&&!a1.equals("")){
-                	BigDecimal ba1=new BigDecimal(a1);
-                	measure.setMeasureExcelA1(ba1);
+                	measure.setMeasureExcelA1(a1);
                 	//获取措施A1中文信息
                 	measure.setMeasureExcelA1name(getCellValue(row.getCell(15)));
                 	//获取措施A1的取值范围
@@ -289,8 +288,7 @@ public class ExcelToDate {
                 //获取措施Intensity信息
                 String Intensity=getCellValue(row.getCell(9));
                 if(Intensity!=null&&!Intensity.equals("")){
-                	BigDecimal bIntensity=new BigDecimal(Intensity);
-                	measure.setMeasureExcelIntensity(bIntensity);
+                	measure.setMeasureExcelIntensity(Intensity);
                 	//获取措施Intensity中文信息
                 	measure.setMeasureExcelIntensityname(getCellValue(row.getCell(16)));
                 	//获取措施Intensity的取值范围
@@ -299,8 +297,7 @@ public class ExcelToDate {
                 //获取措施Intensity1信息
                 String Intensity1=getCellValue(row.getCell(10));
                 if(Intensity1!=null&&!Intensity1.equals("")){
-                	BigDecimal bIntensity1=new BigDecimal(Intensity1);
-                	measure.setMeasureExcelIntensity(bIntensity1);
+                	measure.setMeasureExcelIntensity(Intensity1);
                 	//获取措施Intensity1中文信息
                 	measure.setMeasureExcelIntensity1name(getCellValue(row.getCell(17)));
                 	//获取措施Intensity1的取值范围
@@ -309,8 +306,7 @@ public class ExcelToDate {
                 //获取措施ash信息
                 String ash=getCellValue(row.getCell(11));
                 if(ash!=null&&!ash.equals("")){
-                	BigDecimal bash=new BigDecimal(ash);
-                	measure.setMeasureExcelAsh(bash);
+                	measure.setMeasureExcelAsh(ash);
                 	//获取措施ash中文信息
                 	measure.setMeasureExcelAshname(getCellValue(row.getCell(18)));
                 	//获取措施ash取值范围
@@ -319,8 +315,7 @@ public class ExcelToDate {
                 //获取措施sulfer信息
                 String sulfer=getCellValue(row.getCell(12));
                 if(sulfer!=null&&!sulfer.equals("")){
-                	BigDecimal bsulfer=new BigDecimal(sulfer);
-                	measure.setMeasureExcelSulfer(bsulfer);
+                	measure.setMeasureExcelSulfer(sulfer);
                 	//获取措施sulfer中文信息
                 	measure.setMeasureExcelSulfername(getCellValue(row.getCell(19)));
                 	//获取措施sulfer取值范围
