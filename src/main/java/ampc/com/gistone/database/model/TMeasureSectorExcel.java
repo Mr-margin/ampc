@@ -1,15 +1,13 @@
 package ampc.com.gistone.database.model;
 
-import java.math.BigDecimal;
 import java.util.Date;
-import java.util.UUID;
 
 public class TMeasureSectorExcel {
     private Long msExcelId;
 
     private Long userId;
 
-    private Long msExcelVersionId;
+    private String msExcelVersionId;
 
     private Long mid;
 
@@ -19,7 +17,7 @@ public class TMeasureSectorExcel {
 
     private Object msExcelOp;
 
-    private BigDecimal msExcelIntensity;
+    private String msExcelIntensity;
 
     private Object sectorsname;
 
@@ -31,19 +29,19 @@ public class TMeasureSectorExcel {
 
     private Object msExcelType;
 
-    private Long msExcelLevel;
+    private String msExcelLevel;
 
-    private BigDecimal msExcelA;
+    private String msExcelA;
 
-    private BigDecimal msExcelA1;
+    private String msExcelA1;
 
-    private BigDecimal msExcelIntensity1;
+    private String msExcelIntensity1;
 
-    private BigDecimal msExcelAsh;
+    private String msExcelAsh;
 
-    private BigDecimal msExcelSulfer;
+    private String msExcelSulfer;
 
-    private Object msExcelSv;
+    private String msExcelSv;
 
     private Long sid;
 
@@ -73,12 +71,12 @@ public class TMeasureSectorExcel {
         this.userId = userId;
     }
 
-    public Long getMsExcelVersionId() {
+    public String getMsExcelVersionId() {
         return msExcelVersionId;
     }
 
-    public void setMsExcelVersionId(Long msExcelVersionId) {
-        this.msExcelVersionId = msExcelVersionId;
+    public void setMsExcelVersionId(String msExcelVersionId) {
+        this.msExcelVersionId = msExcelVersionId == null ? null : msExcelVersionId.trim();
     }
 
     public Long getMid() {
@@ -113,12 +111,12 @@ public class TMeasureSectorExcel {
         this.msExcelOp = msExcelOp;
     }
 
-    public BigDecimal getMsExcelIntensity() {
+    public String getMsExcelIntensity() {
         return msExcelIntensity;
     }
 
-    public void setMsExcelIntensity(BigDecimal msExcelIntensity) {
-        this.msExcelIntensity = msExcelIntensity;
+    public void setMsExcelIntensity(String msExcelIntensity) {
+        this.msExcelIntensity = msExcelIntensity == null ? null : msExcelIntensity.trim();
     }
 
     public Object getSectorsname() {
@@ -161,60 +159,60 @@ public class TMeasureSectorExcel {
         this.msExcelType = msExcelType;
     }
 
-    public Long getMsExcelLevel() {
+    public String getMsExcelLevel() {
         return msExcelLevel;
     }
 
-    public void setMsExcelLevel(Long msExcelLevel) {
-        this.msExcelLevel = msExcelLevel;
+    public void setMsExcelLevel(String msExcelLevel) {
+        this.msExcelLevel = msExcelLevel == null ? null : msExcelLevel.trim();
     }
 
-    public BigDecimal getMsExcelA() {
+    public String getMsExcelA() {
         return msExcelA;
     }
 
-    public void setMsExcelA(BigDecimal msExcelA) {
-        this.msExcelA = msExcelA;
+    public void setMsExcelA(String msExcelA) {
+        this.msExcelA = msExcelA == null ? null : msExcelA.trim();
     }
 
-    public BigDecimal getMsExcelA1() {
+    public String getMsExcelA1() {
         return msExcelA1;
     }
 
-    public void setMsExcelA1(BigDecimal msExcelA1) {
-        this.msExcelA1 = msExcelA1;
+    public void setMsExcelA1(String msExcelA1) {
+        this.msExcelA1 = msExcelA1 == null ? null : msExcelA1.trim();
     }
 
-    public BigDecimal getMsExcelIntensity1() {
+    public String getMsExcelIntensity1() {
         return msExcelIntensity1;
     }
 
-    public void setMsExcelIntensity1(BigDecimal msExcelIntensity1) {
-        this.msExcelIntensity1 = msExcelIntensity1;
+    public void setMsExcelIntensity1(String msExcelIntensity1) {
+        this.msExcelIntensity1 = msExcelIntensity1 == null ? null : msExcelIntensity1.trim();
     }
 
-    public BigDecimal getMsExcelAsh() {
+    public String getMsExcelAsh() {
         return msExcelAsh;
     }
 
-    public void setMsExcelAsh(BigDecimal msExcelAsh) {
-        this.msExcelAsh = msExcelAsh;
+    public void setMsExcelAsh(String msExcelAsh) {
+        this.msExcelAsh = msExcelAsh == null ? null : msExcelAsh.trim();
     }
 
-    public BigDecimal getMsExcelSulfer() {
+    public String getMsExcelSulfer() {
         return msExcelSulfer;
     }
 
-    public void setMsExcelSulfer(BigDecimal msExcelSulfer) {
-        this.msExcelSulfer = msExcelSulfer;
+    public void setMsExcelSulfer(String msExcelSulfer) {
+        this.msExcelSulfer = msExcelSulfer == null ? null : msExcelSulfer.trim();
     }
 
-    public Object getMsExcelSv() {
+    public String getMsExcelSv() {
         return msExcelSv;
     }
 
-    public void setMsExcelSv(Object msExcelSv) {
-        this.msExcelSv = msExcelSv;
+    public void setMsExcelSv(String msExcelSv) {
+        this.msExcelSv = msExcelSv == null ? null : msExcelSv.trim();
     }
 
     public Long getSid() {
@@ -264,8 +262,6 @@ public class TMeasureSectorExcel {
     public void setIsEffective(String isEffective) {
         this.isEffective = isEffective == null ? null : isEffective.trim();
     }
-
-
     @Override
    	public boolean equals(Object obj) {
        	TMeasureSectorExcel s = (TMeasureSectorExcel) obj;
@@ -278,5 +274,4 @@ public class TMeasureSectorExcel {
    		String in = (msExcelName.toString() + sectorsname.toString());
    		return in.hashCode();
    	}
-
 }
