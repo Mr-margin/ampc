@@ -28,12 +28,14 @@ import ampc.com.gistone.database.inter.TPlanMapper;
 import ampc.com.gistone.database.inter.TPlanMeasureMapper;
 import ampc.com.gistone.database.inter.TScenarinoAreaMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
+import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.inter.TTimeMapper;
 import ampc.com.gistone.database.inter.TUserMapper;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TPlan;
 import ampc.com.gistone.database.model.TScenarinoAreaWithBLOBs;
 import ampc.com.gistone.database.model.TScenarinoDetail;
+import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.database.model.TTime;
 import ampc.com.gistone.database.model.TUser;
 import ampc.com.gistone.util.AmpcResult;
@@ -75,6 +77,11 @@ public class MissionAndScenarinoController {
 	
 	@Autowired
 	private TPlanMeasureMapper tPlanMeasureMapper;
+	
+	@Autowired
+	private TTasksStatusMapper tTasksStatusMapper;
+	
+	
 	/**
 	 * 任务查询方法
 	 * @param request 请求
@@ -936,6 +943,8 @@ public class MissionAndScenarinoController {
 			cal.add(Calendar.DATE, -1);
 			String addTimeDate =sdf.format(cal.getTime());
 			Date pathDate=sdf.parse(addTimeDate);
+			Date enddate=null;
+			Date startdate = null;
 			
 			Long sdid=0l;
 			int d=0;
@@ -965,6 +974,8 @@ public class MissionAndScenarinoController {
 				a=tScenarinoDetailMapper.insertSelective(tsd);
 				TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
 				sdid=tScenarinoDetail.getScenarinoId();
+				enddate=tScenarinoDetail.getScenarinoEndDate();
+				startdate=tScenarinoDetail.getScenarinoStartDate();
 				}
 				//预评估任务创建后评估情景
 			if(scenType.equals("2")){
@@ -991,6 +1002,8 @@ public class MissionAndScenarinoController {
 						a=tScenarinoDetailMapper.insertSelective(tsd);
 						TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
 						sdid=tScenarinoDetail.getScenarinoId();
+						enddate=tScenarinoDetail.getScenarinoEndDate();
+						startdate=tScenarinoDetail.getScenarinoStartDate();
 					}else{//对比情景
 						Long controstScenarinoId=Long.valueOf(data.get("controstScenarinoId").toString());//对比情景id
 						TScenarinoDetail tscent=tScenarinoDetailMapper.selectByPrimaryKey(controstScenarinoId);
@@ -1009,6 +1022,8 @@ public class MissionAndScenarinoController {
 						a=tScenarinoDetailMapper.insertSelective(tsd);
 						TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
 						sdid=tScenarinoDetail.getScenarinoId();
+						enddate=tScenarinoDetail.getScenarinoEndDate();
+						startdate=tScenarinoDetail.getScenarinoStartDate();
 					}
 					
 				}
@@ -1041,6 +1056,8 @@ public class MissionAndScenarinoController {
 						a=tScenarinoDetailMapper.insertSelective(tsd);
 						TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
 						sdid=tScenarinoDetail.getScenarinoId();
+						enddate=tScenarinoDetail.getScenarinoEndDate();
+						startdate=tScenarinoDetail.getScenarinoStartDate();
 					}else{//对比情景
 						Long controstScenarinoId=Long.valueOf(data.get("controstScenarinoId").toString());//对比情景id
 						TScenarinoDetail tscent=tScenarinoDetailMapper.selectByPrimaryKey(controstScenarinoId);
@@ -1059,6 +1076,8 @@ public class MissionAndScenarinoController {
 						a=tScenarinoDetailMapper.insertSelective(tsd);
 						TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
 						sdid=tScenarinoDetail.getScenarinoId();
+						enddate=tScenarinoDetail.getScenarinoEndDate();
+						startdate=tScenarinoDetail.getScenarinoStartDate();
 					}
 					
 				}
@@ -1081,9 +1100,25 @@ public class MissionAndScenarinoController {
 					a=tScenarinoDetailMapper.insertSelective(tsd);
 					TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
 					sdid=tScenarinoDetail.getScenarinoId();
+					enddate=tScenarinoDetail.getScenarinoEndDate();
+					startdate=tScenarinoDetail.getScenarinoStartDate();
 				}	
 			}
-			if(a!=0){//创建区域
+			if(a!=0){//创建区域和
+				TTasksStatus tasks=new TTasksStatus();
+				tasks.setTasksScenarinoId(sdid);	
+				  Calendar aCalendar = Calendar.getInstance();
+			       aCalendar.setTime(enddate);
+			       int day1 = aCalendar.get(Calendar.DAY_OF_YEAR);
+			       aCalendar.setTime(startdate);
+			       int day2 = aCalendar.get(Calendar.DAY_OF_YEAR);
+			     int days= day1-day2;
+				tasks.setRangeDay(Long.valueOf(days));
+				tasks.setScenarinoEndDate(enddate);
+				tasks.setScenarinoStartDate(startdate);
+				tTasksStatusMapper.insertSelective(tasks);
+
+	
 				List<String> areanamelist=new ArrayList();
 				areanamelist.add("第一区域");
 				areanamelist.add("第二区域");
