@@ -288,12 +288,17 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 	sc_val.filters = [];
 	sc_val.summary = {};
 	
+	var columns = [];
+	var b_data = [];
+	
 	ajaxPost('/measure/get_measureQuery',paramsName).success(function(res){
-		console.log(JSON.stringify(res));
+//		console.log(JSON.stringify(res));
 		$("#sc_conter").html("");
 		$("#val_zicuoshi").html("");
 		
 		if(res.status == 0){//返回状态正常
+			$("#createModal").modal();
+			
 			if(res.data.query.length>0){//返回筛选条件
 				query = jQuery.extend(true, {}, res.data.query);//保存一份返回的条件结果集
 				var sc_conter = '';//页面的标签
@@ -458,8 +463,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 				});
 			}
 			
-			
-			var columns = [];
+			//子措施列表的表头
 			columns.push({field: 'state', title: '', align: 'center', checkbox: true, formatter: function(value, row, index){
 				if (index === 0) {
 			        return {
@@ -476,74 +480,36 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 			$.each(res.data.measureList, function(i, col) {
 				columns.push({field: "psl_"+col.nameen, title: col.namech, align: 'center'});
 			});
+			
+			
 			var measureContent = {};
 			if (typeof res.data.measureContent != "undefined") {
-//				var re3 = new RegExp("\\\\","g");
-//				var new_data = JSON.parse(JSON.stringify(res.data.measureContent).replace(re3, ""));
 				measureContent = JSON.parse(res.data.measureContent);
-				
-				var b_data = [];
 				b_data.push(measureContent.table[0]);
-				$.each(measureContent.table1, function(i, col) {
-					b_data.push(col);
-				});
+//				$.each(measureContent.table1, function(i, col) {
+//					delete col.oopp;
+//					b_data.push(col);
+//				});
+				
+				for(var pl = measureContent.table1.length-1; pl>=0; pl--){
+					delete measureContent.table1[pl].oopp;
+					b_data.push(measureContent.table1[pl]);
+				}
+				
+				delete measureContent.table[1].oopp;
+				delete measureContent.table[2].oopp;
 				b_data.push(measureContent.table[1]);
 				b_data.push(measureContent.table[2]);
-				
-				$('#show_zicuoshi_table').bootstrapTable('destroy');
-				$('#show_zicuoshi_table').bootstrapTable({
-					columns : columns,
-					data : b_data,
-					height : $("#show_zicuoshi_table_div").height(),
-					clickToSelect : false,// 点击选中行
-					detailView : true,//显示详细页面模式
-					pagination : false, // 在表格底部显示分页工具栏
-					clickToSelect : true,//设置true 将在点击行时，自动选择rediobox 和 checkbox
-					singleSelect : true,//设置True 将禁止多选
-					striped : false, // 使表格带有条纹
-					silent : true, // 刷新事件必须设置
-					detailFormatter : function(index, row){
-						if(row.f1 == "汇总" || row.f1 == "剩余点源" || row.f1 == "面源"){
-							
-						}else{
-							return row.tiaojian;
-						}
-					},
-					onClickRow : function(row, $element) {
-						$('.success').removeClass('success');
-						$($element).addClass('success');
-						setTimeout(function(){
-							if(row.state == true){//如果被选中
-								if(row.f1 != "剩余点源" && row.f1 != "面源" ){
-									$("#zicuoshi_tools_de").show();
-									$("#zicuoshi_tools_up").show();
-								}else{
-									$("#zicuoshi_tools_de").hide();
-									$("#zicuoshi_tools_up").show();
-								}
-							}else{
-								$("#zicuoshi_tools_de").hide();
-								$("#zicuoshi_tools_up").hide();
-							}
-						},100);
-					},
-					onLoadSuccess : function(data){
-						
-					},
-					onLoadError : function(){
-						swal('连接错误', '', 'error');
-					}
-				});
-				
-				console.log(JSON.stringify(measureContent));
+//				console.log(JSON.stringify(b_data));
+				setTimeout(function(){
+					show_zicuoshi_table(columns, b_data);
+				},200);
 			}else{
 				//添加区域4的结果表格
 				ajaxPost_w(jianpaiUrl+'/search/summarySource',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName,"summary":sc_val.summary}).success(function(da){
 //					console.log(JSON.stringify(da));
 					if(da.status == 'success'){
-						var b_data = [];
 						var zz = {"f1": "汇总", "f2" : "0/"+da.data.P[0].count}, pp = {"f1": "剩余点源", "f2" : da.data.P[0].count}, ss = {"f1": "面源", "f2" : "0"};
-						
 						$.each(res.data.measureColumn, function(i, vol) {
 							zz[vol.sectordocEtitle] = "0/"+(Math.round(da.data.P[0][vol.sectordocEtitle])+Math.round(da.data.S[0][vol.sectordocEtitle]));
 							pp[vol.sectordocEtitle] = Math.round(da.data.P[0][vol.sectordocEtitle]);
@@ -557,59 +523,13 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 						b_data.push(zz);
 						b_data.push(pp);
 						b_data.push(ss);
-						
-						$('#show_zicuoshi_table').bootstrapTable('destroy');
-						$('#show_zicuoshi_table').bootstrapTable({
-							columns : columns,
-							data : b_data,
-							height : $("#show_zicuoshi_table_div").height(),
-							clickToSelect : false,// 点击选中行
-							detailView : true,//显示详细页面模式
-							pagination : false, // 在表格底部显示分页工具栏
-							clickToSelect : true,//设置true 将在点击行时，自动选择rediobox 和 checkbox
-							singleSelect : true,//设置True 将禁止多选
-							striped : false, // 使表格带有条纹
-							silent : true, // 刷新事件必须设置
-							detailFormatter : function(index, row){
-								if(row.f1 == "汇总" || row.f1 == "剩余点源" || row.f1 == "面源"){
-									
-								}else{
-									return row.tiaojian;
-								}
-							},
-							onClickRow : function(row, $element) {
-								$('.success').removeClass('success');
-								$($element).addClass('success');
-								setTimeout(function(){
-									if(row.state == true){//如果被选中
-										if(row.f1 != "剩余点源" && row.f1 != "面源" ){
-											$("#zicuoshi_tools_de").show();
-											$("#zicuoshi_tools_up").show();
-										}else{
-											$("#zicuoshi_tools_de").hide();
-											$("#zicuoshi_tools_up").show();
-										}
-									}else{
-										$("#zicuoshi_tools_de").hide();
-										$("#zicuoshi_tools_up").hide();
-									}
-								},100);
-							},
-							onLoadSuccess : function(data){
-								
-							},
-							onLoadError : function(){
-								swal('连接错误', '', 'error');
-							}
-						});
-						$('#show_zicuoshi_table').bootstrapTable('expandRow', 0);
-						$('#show_zicuoshi_table').bootstrapTable('expandRow', 1);
-						$('#show_zicuoshi_table').bootstrapTable('expandRow', 2);
-						
+						console.log(JSON.stringify(b_data));
+						setTimeout(function(){
+							show_zicuoshi_table(columns, b_data);
+						},200);
 					}else{
 						swal('连接错误search/summarySource', '', 'error');
 					}
-					
 				});
 			}
 			
@@ -623,7 +543,65 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 		swal('校验失败', '', 'error')
 	});
 	
-	$("#createModal").modal();
+	
+}
+
+/**
+ * 显示子措施表格的列表
+ */
+function show_zicuoshi_table(columns, b_data){
+//	alert($("#show_zicuoshi_table_div").height());
+	$('#show_zicuoshi_table').bootstrapTable('destroy');
+	$('#show_zicuoshi_table').bootstrapTable({
+		columns : columns,
+		data : b_data,
+		height : $("#show_zicuoshi_table_div").height(),
+		clickToSelect : false,// 点击选中行
+		detailView : true,//显示详细页面模式
+		pagination : false, // 在表格底部显示分页工具栏
+		clickToSelect : true,//设置true 将在点击行时，自动选择rediobox 和 checkbox
+		singleSelect : true,//设置True 将禁止多选
+		striped : false, // 使表格带有条纹
+		silent : true, // 刷新事件必须设置
+		detailFormatter : function(index, row){
+			if(row.f1 == "汇总" || row.f1 == "剩余点源" || row.f1 == "面源"){
+				
+			}else{
+				return row.tiaojian;
+			}
+		},
+		onClickRow : function(row, $element) {
+			$('.success').removeClass('success');
+			$($element).addClass('success');
+			setTimeout(function(){
+				if(row.state == true){//如果被选中
+					if(row.f1 != "剩余点源" && row.f1 != "面源" ){
+						$("#zicuoshi_tools_de").show();
+						$("#zicuoshi_tools_up").show();
+					}else{
+						$("#zicuoshi_tools_de").hide();
+						$("#zicuoshi_tools_up").show();
+					}
+				}else{
+					$("#zicuoshi_tools_de").hide();
+					$("#zicuoshi_tools_up").hide();
+				}
+			},100);
+		},
+		onLoadSuccess : function(data){
+			alert('b');
+		},
+		onLoadError : function(){
+			swal('连接错误', '', 'error');
+		}
+	});
+	$.each(b_data, function(i, vol) {
+		$('#show_zicuoshi_table').bootstrapTable('expandRow', i);
+	});
+	
+//	$('#show_zicuoshi_table').bootstrapTable('expandRow', 0);
+//	$('#show_zicuoshi_table').bootstrapTable('expandRow', 1);
+//	$('#show_zicuoshi_table').bootstrapTable('expandRow', 2);
 }
 
 
@@ -937,18 +915,15 @@ function xishu_save(){
 					var re2 = new RegExp("}","g");
 					var re3 = new RegExp("\"","g");
 					
-					var showjieguo = {};
 					var tablejieguo = "";
 					$.each(sc_val.filters[sc_val.filters.length-1], function(k, vol) {//循环最后一个条件，这个条件是要添加显示的条件
 						$.each(query, function(i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
 							if(col.queryEtitle == k){
-								showjieguo[col.queryName] = vol;
 								tablejieguo += col.queryName+"："+vol+",";
 							}
 						});
 					});
 					
-//					ttr.tiaojian = JSON.stringify(showjieguo).replace(re1, "").replace(re2, "").replace(re2, "");
 					ttr.tiaojian = tablejieguo.substring(0, tablejieguo.length-1);
 					ttr.f1 = measureame_temp;
 					ttr.f2 = res.data.count;
@@ -1207,12 +1182,17 @@ function restion_table(){
 	$('#show_zicuoshi_table').bootstrapTable('updateRow', {index: 0, row: row_0_temp});
 	$('#show_zicuoshi_table').bootstrapTable('updateRow', {index: row.length-2, row: row_2_temp});
 	
-	$.each(sc_val.filters, function(i, vol) {
+	
+	$.each(row, function(i, vol) {
 		$('#show_zicuoshi_table').bootstrapTable('expandRow', i);
 	});
-	$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length);
-	$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length+1);
-	$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length+2);
+	
+//	$.each(sc_val.filters, function(i, vol) {
+//		$('#show_zicuoshi_table').bootstrapTable('expandRow', i);
+//	});
+//	$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length);
+//	$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length+1);
+//	$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length+2);
 }
 
 
@@ -1322,9 +1302,15 @@ function create(){
 	
 	console.log(JSON.stringify(sc_v1));
 	ajaxPost('/measure/addOrUpdate_measure',paramsName).success(function(res){
-//		console.log(JSON.stringify(sc_v1));
+//		console.log(JSON.stringify(res));
+		if(res.status == 0){
+			hyc();
+			metTable_hj_info();
+			$("#zicuoshi_close").click();
+		}else{
+			swal('连接错误', '', 'error');
+		}
 	});
-	$("#zicuoshi_close").click();
 }
 
 
