@@ -5,7 +5,6 @@ import java.util.Map;
 
 import ampc.com.gistone.database.model.TMeasureSectorExcel;
 
-
 /**
  * 行业措施中间表
  * @author WangShanxi
@@ -47,8 +46,7 @@ public interface TMeasureSectorExcelMapper {
      * @return
      */
     int updateIsEffeByIds(Long userId);
-    
-	int deleteByPrimaryKey(Long msExcelId);
+    int deleteByPrimaryKey(Long msExcelId);
 
     int insert(TMeasureSectorExcel record);
 
