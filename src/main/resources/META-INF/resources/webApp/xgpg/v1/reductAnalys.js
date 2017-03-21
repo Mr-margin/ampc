@@ -6,11 +6,9 @@ $(function(){
 	pie();
 	//行业 措施联动
 	$("#tradeId").change(function(){
-		
 		pie();
 	});
 	$("#measureId").change(function(){
-		
 		pie();
 	});
 	/**
@@ -25,6 +23,7 @@ $(function(){
     	$("#listModal").hide();
     	
     })
+    //列表展示切换
     $("#listShow").change(function(){
     	$("#listModal").show();
     	$("#map_showId").hide();
@@ -39,6 +38,11 @@ $(function(){
     	pagination : false, // 在表格底部显示分页工具栏
     	singleSelect : true,//设置True 将禁止多选
     	striped : true, // 使表格带有条纹
+    	pagination: true, //是否启用分页
+    	sidePagination: "client",//分页方式：client客户端分页，server服务端分页（*）
+    	pageNumber:1,   //初始化加载第一页，默认第一页
+    	pageSize: 10,   //每页的记录行数
+    	pageList: [10, 25, 50, 100],//可供选择的每页的行数
     	silent : true, // 刷新事件必须设置
     	detailView: true,//是否显示父子表
         columns: [{
@@ -48,37 +52,49 @@ $(function(){
             
         }, {
             field: 'PM25name',
-            title: 'PM2.5'
+            title: 'PM2.5',
+            align: 'center'
         }, {
             field: 'PM10name',
-            title: 'PM10'
+            title: 'PM10',
+            align: 'center'
         }, {
             field: 'SO2name',
-            title: 'SO2'
+            title: 'SO2',
+            align: 'center'
         }, {
             field: 'NOXname',
-            title: 'NOX'
+            title: 'NOX',
+            align: 'center'
         }, {
             field: 'VOCname',
-            title: 'VOC'
+            title: 'VOC',
+            align: 'center'
+            	
         }, {
             field: 'COname',
-            title: 'CO'
+            title: 'CO',
+            align: 'center'
         }, {
             field: 'NH3name',
-            title: 'NH3'
+            title: 'NH3',
+            align: 'center'
         }, {
             field: 'BCname',
-            title: 'BC'
+            title: 'BC',
+            align: 'center'
         }, {
             field: 'OCname',
-            title: 'OC'
+            title: 'OC',
+            align: 'center'
         }, {
             field: 'PMFINEname',
-            title: 'PMFINE'
+            title: 'PMFINE',
+            align: 'center'
         }, {
             field: 'PMCname',
-            title: 'PMC'
+            title: 'PMC',
+            align: 'center'
         }],
         data:[{
         	xzArea: '杭州市',
@@ -135,16 +151,14 @@ $(function(){
         },],
       //注册加载子表的事件。注意下这里的三个参数！
         onExpandRow: function (index, row, $detail) {
-            oInit.InitSubTable(index, row, $detail);
+            InitSubTable(index, row, $detail);
         }
-    	
     });
     	
   	
 });
-
 //初始化子表格(无线循环)
-oInit.InitSubTable = function (index, row, $detail) {
+InitSubTable = function (index, row, $detail) {
     //var parentid = row.MENU_ID;
     var cur_table = $detail.html('<table></table>').find('table');
     $(cur_table).bootstrapTable({
@@ -153,47 +167,59 @@ oInit.InitSubTable = function (index, row, $detail) {
         //queryParams: { strParentID: parentid },
         //ajaxOptions: { strParentID: parentid },
         clickToSelect: true,
-        detailView: true,//父子表
+        detailView: false,//父子表
         //uniqueId: "MENU_ID",
         columns: [{
             field: 'xzArea',
-            title: '行政区',
+            title: '县',
+            align: 'center'
         }, {
             field: 'PM25name',
-            title: 'PM2.5'
+            title: 'PM2.5',
+            align: 'center'
         }, {
             field: 'PM10name',
-            title: 'PM10'
+            title: 'PM10',
+            align: 'center'
         }, {
             field: 'SO2name',
-            title: 'SO2'
+            title: 'SO2',
+            align: 'center'
         }, {
             field: 'NOXname',
-            title: 'NOX'
+            title: 'NOX',
+            align: 'center'
         }, {
             field: 'VOCname',
-            title: 'VOC'
+            title: 'VOC',
+            align: 'center'
         }, {
             field: 'COname',
-            title: 'CO'
+            title: 'CO',
+            align: 'center'
         }, {
             field: 'NH3name',
-            title: 'NH3'
+            title: 'NH3',
+            align: 'center'
         }, {
             field: 'BCname',
-            title: 'BC'
+            title: 'BC',
+            align: 'center'
         }, {
             field: 'OCname',
-            title: 'OC'
+            title: 'OC',
+            align: 'center'
         }, {
             field: 'PMFINEname',
-            title: 'PMFINE'
+            title: 'PMFINE',
+            align: 'center'
         }, {
             field: 'PMCname',
-            title: 'PMC'
+            title: 'PMC',
+            align: 'center'
         }],
         data:[{
-        	xzArea: '杭州市',
+        	xzArea: '上城区',
         	PM25name: '76',
         	PM10name: '80',
         	SO2name: '85',
@@ -205,7 +231,33 @@ oInit.InitSubTable = function (index, row, $detail) {
         	OCname: '71',
         	PMFINEname: '76',
         	PMCname: '73'
-        }],
+        },{
+        	xzArea: '下城区',
+        	PM25name: '76',
+        	PM10name: '80',
+        	SO2name: '85',
+        	NOXname: '78',
+        	VOCname: '77',
+        	COname: '75',
+        	NH3name: '76',
+        	BCname: '75',
+        	OCname: '71',
+        	PMFINEname: '76',
+        	PMCname: '73'
+        },{
+        	xzArea: '江干区',
+        	PM25name: '76',
+        	PM10name: '80',
+        	SO2name: '85',
+        	NOXname: '78',
+        	VOCname: '77',
+        	COname: '75',
+        	NH3name: '76',
+        	BCname: '75',
+        	OCname: '71',
+        	PMFINEname: '76',
+        	PMCname: '73'
+        },]
 
     });
 };
@@ -338,12 +390,9 @@ function bar () {
 		myPfChart.setOption(option);
 		//自适应屏幕大小变化
 		window.addEventListener("resize",function(){
-
 			 myPfChart.resize();
 
 		 });
-
-
 
 }
 
