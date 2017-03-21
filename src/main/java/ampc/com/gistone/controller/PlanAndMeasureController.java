@@ -754,8 +754,7 @@ public class PlanAndMeasureController {
 			// 写入子措施
 			tPlanMeasure.setMeasureContent(measureContent);
 			// 将子措施转换成JsonObject对象进行解析
-			JSONObject jsonobject = JSONObject.fromObject(data.get(
-					"measureContent").toString());
+			JSONObject jsonobject = JSONObject.fromObject(data.get("measureContent").toString());
 			// 设置内部值的转换类型
 			Map<String, Class> cmap = new HashMap<String, Class>();
 			cmap.put("filters", HashMap.class);
@@ -764,8 +763,7 @@ public class PlanAndMeasureController {
 			cmap.put("table1", HashMap.class);
 			cmap.put("oopp", HashMap.class);
 			// 将json对象转换成Java对象
-			MeasureContentUtil mcu = (MeasureContentUtil) JSONObject.toBean(
-					jsonobject, MeasureContentUtil.class, cmap);
+			MeasureContentUtil mcu = (MeasureContentUtil) JSONObject.toBean(jsonobject, MeasureContentUtil.class, cmap);
 			// 获取汇总的集合
 			List<Map> poolMap = mcu.getTable();
 			// 获取到总的点源范围
@@ -780,8 +778,7 @@ public class PlanAndMeasureController {
 			tPlanMeasure.setTableItem(JSONArray.fromObject(itemMap).toString());
 			if (data.get("planMeasureId").equals("null")) {
 				// 预案添加措施
-				int addstatus = tPlanMeasureMapper
-						.insertSelective(tPlanMeasure);
+				int addstatus = tPlanMeasureMapper.insertSelective(tPlanMeasure);
 				// 判断是否成功
 				if (addstatus != 0) {
 					return AmpcResult.ok("添加成功");
@@ -791,8 +788,7 @@ public class PlanAndMeasureController {
 			} else {
 				// 预案修改措施
 				tPlanMeasure.setPlanMeasureId(planMeasureId);
-				int updatestatus = tPlanMeasureMapper
-						.updateByPrimaryKeySelective(tPlanMeasure);
+				int updatestatus = tPlanMeasureMapper.updateByPrimaryKeySelective(tPlanMeasure);
 				// 判断是否成功
 				if (updatestatus != 0) {
 					return AmpcResult.ok("修改成功");
