@@ -537,6 +537,7 @@ public class AreaAndTimeController {
 			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());
 			//用户的id  确定当前用户
 			Long userId=Long.valueOf(data.get("userId").toString());
+			boolean isnew=true;
 			//添加信息到参数中
 			//新建返回结果的Map
 			List mapResult=new ArrayList();
@@ -547,36 +548,41 @@ public class AreaAndTimeController {
 		    for (TScenarinoAreaWithBLOBs area : areaAndName) {
 		    	AreaUtil areaUtil =new AreaUtil();
 				if(areaAndName.size()!=3){
-					areaUtil.setNew(true);			
+					isnew=false;	
+				}
+				if(!area.getAreaName().equals("第一区域")||!area.getAreaName().equals("第二区域")||area.getAreaName().equals("第三区域")){
+					isnew=false;
 				}
 		    	areaUtil.setAreaId(area.getScenarinoAreaId());
 		    	areaUtil.setAreaName(area.getAreaName());
 		    	if(area.getCityCodes()!=null){
 		    	JSONArray arr=JSONArray.fromObject(area.getCityCodes());
 		    		areaUtil.setCityCodes(arr);
+		    		isnew=false;
 		    	}else{
 		    		areaUtil.setCityCodes(new JSONArray());
-		    		areaUtil.setNew(true);
+		    		
 		    	}
 		    	
 		    	if(area.getProvinceCodes()!=null){
 		    		JSONArray arr1=JSONArray.fromObject(area.getProvinceCodes());
 		    		areaUtil.setProvinceCodes(arr1);
+		    		isnew=false;
 			    	}else{
 			    		areaUtil.setProvinceCodes(new JSONArray());
-			    		areaUtil.setNew(true);
+			    	
 			    	}
 		    	if(area.getCountyCodes()!=null){
 		    		JSONArray arr2=JSONArray.fromObject(area.getCountyCodes());
 		    		areaUtil.setCountyCodes(arr2);
+		    		isnew=false;
 			    	}else{
 			    		areaUtil.setCountyCodes(new JSONArray());
-			    		areaUtil.setNew(true);
+			    		
 			    	}
 		    	List<Map> timeplan=this.tTimeMapper.selectByAreaId(area.getScenarinoAreaId());
 		    	if(timeplan.size()!=3){
-		    		areaUtil.setNew(true);
-		    		
+		    		isnew=false;
 		    	}
 		    	for(Map tp:timeplan){
 		    		Long s=Long.valueOf(tp.get("planId").toString());
@@ -584,13 +590,16 @@ public class AreaAndTimeController {
 		    			tp.put("planId", -1);
 		    			tp.put("planName", "无");
 		    		}else{
-		    			areaUtil.setNew(true);
+		    			isnew=false;
 		    		}
 		    		
 		    	}
 		    	areaUtil.setTimeItems(timeplan);
 		    	mapResult.add(areaUtil);
 			}
+		    Map map=new HashMap();
+		    map.put("isnew", isnew);
+		    mapResult.add(map);
 		    //返回结果
 			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
