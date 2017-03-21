@@ -91,8 +91,10 @@ public class PlanAndMeasureController {
 
 	/**
 	 * 创建预案
-	 * 
 	 * @author WangShanxi
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
 	 */
 	@RequestMapping("/plan/add_plan")
 	public AmpcResult add_plan(@RequestBody Map<String, Object> requestDate,
@@ -153,8 +155,10 @@ public class PlanAndMeasureController {
 
 	/**
 	 * 复制预案
-	 * 
 	 * @author WangShanxi
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
 	 */
 	@RequestMapping("/plan/copy_plan")
 	public AmpcResult copy_plan(@RequestBody Map<String, Object> requestDate,
@@ -188,8 +192,10 @@ public class PlanAndMeasureController {
 
 	/**
 	 * 预案设置成可复制
-	 * 
 	 * @author WangShanxi
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
 	 */
 	@RequestMapping("/plan/iscopy_plan")
 	public AmpcResult iscopy_plan(@RequestBody Map<String, Object> requestDate,
@@ -221,8 +227,10 @@ public class PlanAndMeasureController {
 
 	/**
 	 * 预案编辑完成操作
-	 * 
 	 * @author WangShanxi
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
 	 */
 	@RequestMapping("/plan/finish_plan")
 	public AmpcResult finish_plan(@RequestBody Map<String, Object> requestDate,
@@ -262,8 +270,10 @@ public class PlanAndMeasureController {
 
 	/**
 	 * 查询可复制预案
-	 * 
 	 * @author WangShanxi
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
 	 */
 	@RequestMapping("/plan/copy_plan_list")
 	public AmpcResult copy_plan_list(
@@ -286,12 +296,9 @@ public class PlanAndMeasureController {
 
 	/**
 	 * 预案编辑方法
-	 * 
 	 * @author WangShanxi
-	 * @param request
-	 *            请求
-	 * @param response
-	 *            响应
+	 * @param request 请求
+	 * @param response 响应
 	 * @return 返回响应结果对象
 	 */
 	@RequestMapping("plan/get_planInfo")
@@ -440,9 +447,10 @@ public class PlanAndMeasureController {
 
 	/**
 	 * 措施汇总查询
-	 * 
 	 * @author WangShanxi
-	 * @throws UnsupportedEncodingException
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
 	 */
 	@RequestMapping("measure/get_measureList")
 	public AmpcResult get_MeasureList(
@@ -550,9 +558,10 @@ public class PlanAndMeasureController {
 
 	/**
 	 * 子措施条件查询
-	 * 
 	 * @author WangShanxi
-	 * @throws UnsupportedEncodingException
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
 	 */
 	@RequestMapping("/measure/get_measureQuery")
 	public AmpcResult get_MeasureQuery(
@@ -708,8 +717,10 @@ public class PlanAndMeasureController {
 
 	/**
 	 * 预案添加措施 或者修改
-	 * 
 	 * @author WangShanxi
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
 	 */
 	@RequestMapping("/measure/addOrUpdate_measure")
 	public AmpcResult addOrUpdate_measure(
@@ -797,8 +808,10 @@ public class PlanAndMeasureController {
 
 	/**
 	 * 删除预案中的措施
-	 * 
 	 * @author WangShanxi
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
 	 */
 	@RequestMapping("/measure/delete_measure")
 	public AmpcResult delete_measure(
@@ -843,12 +856,12 @@ public class PlanAndMeasureController {
 		}
 	}
 
-	
 	/**
-	 * 
 	 * 措施汇总中数据的减排计算
-	 * 
 	 * @author WangShanxi
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
 	 */
 	@RequestMapping("/jp/pmjp")
 	public AmpcResult pmjp(@RequestBody Map<String, Object> requestDate,
@@ -1088,9 +1101,10 @@ public class PlanAndMeasureController {
 
 	/**
 	 * 取值范围验证方法
-	 * 
-	 * @param str
-	 * @return
+	 * @author WangShanxi
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
 	 */
 	public static String[] CheckRange(String str) {
 		String[] temp = str.split("~");
