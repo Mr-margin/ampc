@@ -542,10 +542,13 @@ public class AreaAndTimeController {
 			List mapResult=new ArrayList();
 			//查询全部的区域ID和区域名称
 			List<TScenarinoAreaWithBLOBs> areaAndName = this.tScenarinoAreaMapper.selectAllAreaByScenarinoId(scenarinoId);
+
 			//循环结果  根据区域ID获取时段和预案信息
 		    for (TScenarinoAreaWithBLOBs area : areaAndName) {
 		    	AreaUtil areaUtil =new AreaUtil();
-		    	
+				if(areaAndName.size()!=3){
+					areaUtil.setNew(true);			
+				}
 		    	areaUtil.setAreaId(area.getScenarinoAreaId());
 		    	areaUtil.setAreaName(area.getAreaName());
 		    	if(area.getCityCodes()!=null){
@@ -553,6 +556,7 @@ public class AreaAndTimeController {
 		    		areaUtil.setCityCodes(arr);
 		    	}else{
 		    		areaUtil.setCityCodes(new JSONArray());
+		    		areaUtil.setNew(true);
 		    	}
 		    	
 		    	if(area.getProvinceCodes()!=null){
@@ -560,20 +564,27 @@ public class AreaAndTimeController {
 		    		areaUtil.setProvinceCodes(arr1);
 			    	}else{
 			    		areaUtil.setProvinceCodes(new JSONArray());
-			    		
+			    		areaUtil.setNew(true);
 			    	}
 		    	if(area.getCountyCodes()!=null){
 		    		JSONArray arr2=JSONArray.fromObject(area.getCountyCodes());
 		    		areaUtil.setCountyCodes(arr2);
 			    	}else{
 			    		areaUtil.setCountyCodes(new JSONArray());
+			    		areaUtil.setNew(true);
 			    	}
 		    	List<Map> timeplan=this.tTimeMapper.selectByAreaId(area.getScenarinoAreaId());
+		    	if(timeplan.size()!=3){
+		    		areaUtil.setNew(true);
+		    		
+		    	}
 		    	for(Map tp:timeplan){
 		    		Long s=Long.valueOf(tp.get("planId").toString());
 		    		if(tp.get("planId")==null||s==-1){
 		    			tp.put("planId", -1);
 		    			tp.put("planName", "无");
+		    		}else{
+		    			areaUtil.setNew(true);
 		    		}
 		    		
 		    	}
