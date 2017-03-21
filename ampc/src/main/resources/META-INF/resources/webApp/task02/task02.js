@@ -201,7 +201,7 @@ function initialize() {
 
   scenarino.then(function (res) {
 
-    if(res.data.isNew == 0){
+    if(res.data.isNew){
       $('#selectCreateQj').modal('show')
     }
     $('#selectCreateQj').modal('show');
