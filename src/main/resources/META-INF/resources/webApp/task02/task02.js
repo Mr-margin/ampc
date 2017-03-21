@@ -148,21 +148,6 @@ function clearAllArea() {
   updataCodeList();
 }
 
-/*test使用*/
-var parameterPar = {total: '', data: {}};
-function ajaxPost1(url, parameter) {
-  parameterPar.data = parameter;
-  var p = JSON.stringify(parameterPar);
-  //return $.ajax(BackstageIP + url, {
-  return $.ajax(url, {
-    contentType: "application/json",
-    type: "GET",
-    async: true,
-    dataType: 'JSON',
-    data: p
-  })
-}
-/*test使用 end*/
 
 initialize();
 
