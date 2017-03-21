@@ -1288,18 +1288,38 @@ function subCopyQJ(){
 
 /*显示所选code及地图展示*/
 function showAllCode(){
-  console.log(allData);
   updataCodeList();
   showMap();
 }
 
-/*计算设计省市区数量*/
-function getShowCodeNum(){
-  var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
-  var s = showCode;
-  var proNum,cityNum,countyNum;
+/*减排计算按钮*/
+function jpjsBtn(){
+  var url = '/jp/areajp';
+  var params = {
+    areaAndPlanIds:{},
+    userId:userId
+  }
+  for(var i=0;i<allData.length;i++){
+    var planArr = [];
+    var times = allData[i].timeItems;
+    for(var p=0;p<times.length;p++){
+      if(times[p].planId !=-1){
+        planArr.push(times[p].planId)
+      }
+    }
+    if(planArr.length>0){
+      params.areaAndPlanIds[allData[i].areaId] = planArr
+    }
+  }
 
+  if(Object.keys(params.areaAndPlanIds).length >0){
+    ajaxPost(url,params).success(function(res){
+      console.log(res)
+    })
+  }
 }
+
+
 
 
 
