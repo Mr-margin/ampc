@@ -263,4 +263,10 @@
       MISSION_STATUS = #{missionStatus,jdbcType=OTHER}
     where MISSION_ID = #{missionId,jdbcType=DECIMAL}
   </update>
+  <!--查找任务的domainId-->
+  <select id="selectDomainid" resultType="java.lang.Long" parameterType="java.lang.Long">
+  select MISSION_DOMAIN_ID from T_MISSION_DETAIL where MISSION_ID=#{missionId,jdbcType=DECIMAL}
+  </select>
+  
+  
 </mapper>
