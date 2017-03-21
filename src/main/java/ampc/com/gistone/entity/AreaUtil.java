@@ -24,13 +24,6 @@ public class AreaUtil {
     //区县区域代码数
     private JSONArray countyCodes;
 	
-    private boolean isNew;
-	public boolean isNew() {
-		return isNew;
-	}
-	public void setNew(boolean isNew) {
-		this.isNew = isNew;
-	}
 	public JSONArray getProvinceCodes() {
 		return provinceCodes;
 	}
