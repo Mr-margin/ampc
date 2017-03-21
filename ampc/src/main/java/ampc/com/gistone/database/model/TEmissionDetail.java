@@ -10,8 +10,19 @@ public class TEmissionDetail {
     private String code;
 
     private String emissionDetails;
+    
+    private String codeLevel;
 
-    public Long getEmissionId() {
+    
+	public String getCodeLevel() {
+		return codeLevel;
+	}
+
+	public void setCodeLevel(String codeLevel) {
+		this.codeLevel = codeLevel;
+	}
+
+	public Long getEmissionId() {
         return emissionId;
     }
 
