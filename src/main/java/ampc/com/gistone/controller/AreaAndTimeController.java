@@ -538,6 +538,7 @@ public class AreaAndTimeController {
 			//用户的id  确定当前用户
 			Long userId=Long.valueOf(data.get("userId").toString());
 			boolean isnew=true;
+			int timesize=0;
 			//添加信息到参数中
 			//新建返回结果的Map
 			List mapResult=new ArrayList();
@@ -550,7 +551,7 @@ public class AreaAndTimeController {
 				if(areaAndName.size()!=3){
 					isnew=false;	
 				}
-				if(!area.getAreaName().equals("第一区域")||!area.getAreaName().equals("第二区域")||area.getAreaName().equals("第三区域")){
+				if(!area.getAreaName().equals("第一区域")&&!area.getAreaName().equals("第二区域")&&!area.getAreaName().equals("第三区域")){
 					isnew=false;
 				}
 		    	areaUtil.setAreaId(area.getScenarinoAreaId());
@@ -581,10 +582,9 @@ public class AreaAndTimeController {
 			    		
 			    	}
 		    	List<Map> timeplan=this.tTimeMapper.selectByAreaId(area.getScenarinoAreaId());
-		    	if(timeplan.size()!=3){
-		    		isnew=false;
-		    	}
+		
 		    	for(Map tp:timeplan){
+		    		timesize+=1;
 		    		Long s=Long.valueOf(tp.get("planId").toString());
 		    		if(tp.get("planId")==null||s==-1){
 		    			tp.put("planId", -1);
@@ -594,9 +594,13 @@ public class AreaAndTimeController {
 		    		}
 		    		
 		    	}
+		    	
 		    	areaUtil.setTimeItems(timeplan);
 		    	mapResult.add(areaUtil);
 			}
+		    if(timesize!=3){
+	    		isnew=false;	
+	    	}
 		    Map map=new HashMap();
 		    map.put("isnew", isnew);
 		    mapResult.add(map);
