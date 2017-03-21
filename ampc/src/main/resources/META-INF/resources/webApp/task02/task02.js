@@ -59,7 +59,7 @@ var zTreeSetting = {
           delNode12(tr)
         }
       }
-      updataCodeList();
+      //updataCodeList();
     }
   }
 };
@@ -202,7 +202,7 @@ function initialize() {
   scenarino.then(function (res) {
 
     allData1 = res.data.slice(0,-1);
-    if(res.data[res.data.length-1].isNew){
+    if(res.data[res.data.length-1].isnew){
       $('#selectCreateQj').modal('show')
     }else{
       selectCopy(false);
@@ -253,10 +253,10 @@ function getAreaAndTime() {
   });
 
   scenarino.then(function (res) {
-    allData = res.data;
-    for (var i = 0; i < res.data.length; i++) {
+    allData = res.data.slice(0,-1);
+    for (var i = 0; i < allData.length; i++) {
       allData[i].timeFrame = [];
-      var timeItems = res.data[i].timeItems;
+      var timeItems = allData[i].timeItems;
       var tLength = timeItems.length;
       for (var item = 0; item < tLength; item++) {
         if (item > 0) {
@@ -412,7 +412,11 @@ function addTimes() {
     timeFrame.splice(index, 1);
     swal('添加失败！！！', '', 'error')
   });
+}
 
+/*添加时段按钮事件*/
+function openAddTimes(){
+  $('#qyTime').modal('show');
 }
 
 /*返回YYYY-MM-DD HH格式*/
@@ -470,11 +474,23 @@ function delTimes() {
 var selectedTimes;
 function ontTimes(data) {
   selectedTimes = data;
+  //if (data.planId != -1) {
+  //  $('.yacz').attr('disabled', true);
+  //} else {
+  //  $('.yacz').removeAttr('disabled');
+  //}
+
   if (data.planId != -1) {
-    $('.yacz').attr('disabled', true);
+    $('.addNewPlanBtn').attr('disabled', true);
+    $('.addCopyPlanBtn').attr('disabled', true);
+    $('.editPlanBtn').removeAttr('disabled');
+
   } else {
-    $('.yacz').removeAttr('disabled');
+    $('.addNewPlanBtn').removeAttr('disabled');
+    $('.addCopyPlanBtn').removeAttr('disabled');
+    $('.editPlanBtn').attr('disabled',true);
   }
+
   $('#editTime').modal('show')
 }
 
@@ -619,6 +635,9 @@ function copyPlan(e) {
 
 /*编辑预案*/
 function editPlan(t) {
+  if(!t){
+    t = selectedTimes;
+  }
   areaIndex = t.index;
   timeIndex = t.indexNum;
 
@@ -876,8 +895,11 @@ function setShowCode(data) {
 
 $('#qyTime').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget);
-  if (button.length == 0)return;
-  areaIndex = $('.areaTitle_con').index(button.parents('.areaTitle_con'));
+  if (button.length == 0){
+	  areaIndex = selectedTimes.index;
+	  return
+  };
+  areaIndex = $('.areaTitle_con').index(button.parents('.areaTitle_con'))||selectedTimes.index;
 });
 
 $('#addYA').on('show.bs.modal', function (event) {
@@ -1234,7 +1256,7 @@ function subCopyQJ(){
     scenarinoId: qjMsg.qjId,
     userId: userId
   }).success(function(res){
-    allData = res.data;
+    allData = res.data.slice(0,-1);
     for (var i = 0; i < allData.length; i++) {
       allData[i].timeFrame = [];
       var timeItems = allData[i].timeItems;
@@ -1251,6 +1273,13 @@ function subCopyQJ(){
     showTimeline(allData);
     app2();
   });
+}
+
+/*显示所选code及地图展示*/
+function showAllCode(){
+  console.log(allData);
+  updataCodeList();
+  showMap();
 }
 
 
