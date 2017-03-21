@@ -38,52 +38,179 @@ $(function(){
     	clickToSelect : true,// 点击选中行
     	pagination : false, // 在表格底部显示分页工具栏
     	singleSelect : true,//设置True 将禁止多选
-    	striped : false, // 使表格带有条纹
+    	striped : true, // 使表格带有条纹
     	silent : true, // 刷新事件必须设置
+    	detailView: true,//是否显示父子表
         columns: [{
-            checkbox: true
-        }, {
             field: 'xzArea',
-            title: '行政区'
+            title: '行政区',
+            align: 'center',
+            
         }, {
-            field: 'PM2.5',
+            field: 'PM25name',
             title: 'PM2.5'
         }, {
-            field: 'PM10',
+            field: 'PM10name',
             title: 'PM10'
         }, {
-            field: 'SO2',
+            field: 'SO2name',
             title: 'SO2'
         }, {
-            field: 'NOX',
+            field: 'NOXname',
             title: 'NOX'
         }, {
-            field: 'VOC',
+            field: 'VOCname',
             title: 'VOC'
         }, {
-            field: 'CO',
+            field: 'COname',
             title: 'CO'
         }, {
-            field: 'NH3',
+            field: 'NH3name',
             title: 'NH3'
         }, {
-            field: 'BC',
+            field: 'BCname',
             title: 'BC'
         }, {
-            field: 'OC',
+            field: 'OCname',
             title: 'OC'
         }, {
-            field: 'PMFINE',
+            field: 'PMFINEname',
             title: 'PMFINE'
         }, {
-            field: 'PMC',
+            field: 'PMCname',
             title: 'PMC'
-        }]
+        }],
+        data:[{
+        	xzArea: '杭州市',
+        	PM25name: '76',
+        	PM10name: '80',
+        	SO2name: '85',
+        	NOXname: '78',
+        	VOCname: '77',
+        	COname: '75',
+        	NH3name: '76',
+        	BCname: '75',
+        	OCname: '71',
+        	PMFINEname: '76',
+        	PMCname: '73'
+        },{
+        	xzArea: '嘉兴市',
+        	PM25name: '76',
+        	PM10name: '80',
+        	SO2name: '85',
+        	NOXname: '78',
+        	VOCname: '77',
+        	COname: '75',
+        	NH3name: '76',
+        	BCname: '75',
+        	OCname: '71',
+        	PMFINEname: '76',
+        	PMCname: '73'
+        },{
+        	xzArea: '湖州市',
+        	PM25name: '76',
+        	PM10name: '80',
+        	SO2name: '85',
+        	NOXname: '78',
+        	VOCname: '77',
+        	COname: '75',
+        	NH3name: '76',
+        	BCname: '75',
+        	OCname: '71',
+        	PMFINEname: '76',
+        	PMCname: '73'
+        },{
+        	xzArea: '宁波市',
+        	PM25name: '76',
+        	PM10name: '80',
+        	SO2name: '85',
+        	NOXname: '78',
+        	VOCname: '77',
+        	COname: '75',
+        	NH3name: '76',
+        	BCname: '75',
+        	OCname: '71',
+        	PMFINEname: '76',
+        	PMCname: '73'
+        },],
+      //注册加载子表的事件。注意下这里的三个参数！
+        onExpandRow: function (index, row, $detail) {
+            oInit.InitSubTable(index, row, $detail);
+        }
     	
-    })
+    });
     	
   	
 });
+
+//初始化子表格(无线循环)
+oInit.InitSubTable = function (index, row, $detail) {
+    //var parentid = row.MENU_ID;
+    var cur_table = $detail.html('<table></table>').find('table');
+    $(cur_table).bootstrapTable({
+        url: '',
+        method: 'get',
+        //queryParams: { strParentID: parentid },
+        //ajaxOptions: { strParentID: parentid },
+        clickToSelect: true,
+        detailView: true,//父子表
+        //uniqueId: "MENU_ID",
+        columns: [{
+            field: 'xzArea',
+            title: '行政区',
+        }, {
+            field: 'PM25name',
+            title: 'PM2.5'
+        }, {
+            field: 'PM10name',
+            title: 'PM10'
+        }, {
+            field: 'SO2name',
+            title: 'SO2'
+        }, {
+            field: 'NOXname',
+            title: 'NOX'
+        }, {
+            field: 'VOCname',
+            title: 'VOC'
+        }, {
+            field: 'COname',
+            title: 'CO'
+        }, {
+            field: 'NH3name',
+            title: 'NH3'
+        }, {
+            field: 'BCname',
+            title: 'BC'
+        }, {
+            field: 'OCname',
+            title: 'OC'
+        }, {
+            field: 'PMFINEname',
+            title: 'PMFINE'
+        }, {
+            field: 'PMCname',
+            title: 'PMC'
+        }],
+        data:[{
+        	xzArea: '杭州市',
+        	PM25name: '76',
+        	PM10name: '80',
+        	SO2name: '85',
+        	NOXname: '78',
+        	VOCname: '77',
+        	COname: '75',
+        	NH3name: '76',
+        	BCname: '75',
+        	OCname: '71',
+        	PMFINEname: '76',
+        	PMCname: '73'
+        }],
+
+    });
+};
+
+
 //下拉选框
 function selectQj(value){
 	if (value == 'j1' || value == 'j2') {
