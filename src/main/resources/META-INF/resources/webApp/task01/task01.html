@@ -15,22 +15,22 @@
           <div class="panel-body" style="padding:0px;border: none">
             <div id="rwToolbar" class="btn-group">
               <div class="col-md-4 cjsc">
-                <button type="button" class="btn btn-default" onclick="returnLeft('rw')" data-whatever="创建任务" data-type="rw" data-toggle="modal"
+                <button type="button" class="btn btn-primary" onclick="returnLeft('rw')" data-whatever="创建任务" data-type="rw" data-toggle="modal"
                         data-target="#createRwModal">
                   <i class="glyphicon glyphicon-plus"></i> 创建
                 </button>
-                <button disabled type="button" class="btn btn-default rwDel" onclick="deleteFun('rw')">
+                <button disabled type="button" class="btn btn-primary rwDel" onclick="deleteFun('rw')">
                   <i class="glyphicon glyphicon-trash"></i> 删除
                 </button>
               </div>
               <div class="col-md-5 text-right bigP">
-                <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('',this)">
+                <button type="button" class="btn btn-primary btn-danger statusRw" onclick="statusRWfun('',this)">
                   <i class="im-folder-open"></i> 全部
                 </button>
-                <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('1',this)">
+                <button type="button" class="btn btn-primary statusRw" onclick="statusRWfun('1',this)">
                   <i class="st-folder-settings"></i> 预评估
                 </button>
-                <button type="button" class="btn btn-default statusRw" onclick="statusRWfun('2',this)">
+                <button type="button" class="btn btn-primary statusRw" onclick="statusRWfun('2',this)">
                   <i class="im-paste2"></i> 后评估
                 </button>
               </div>
@@ -50,7 +50,7 @@
               <div class="input-group col-md-3 col-md-offset-9">
                 <input type="text" class="form-control rw " placeholder="输入任务名称或字段">
                 <span class="input-group-btn">
-                  <button class="btn btn-default " type="button" onclick="search('rw')"><i class="ec-search"></i>
+                  <button class="btn btn-primary " type="button" onclick="search('rw')"><i class="ec-search"></i>
                   </button>
                 </span>
               </div>
@@ -83,17 +83,17 @@
           <div class="panel-body" style="padding:0px;border: none; ">
             <div id="qjToolbar" class="btn-group">
               <div class="col-md-6">
-                <button type="button" class="btn btn-default" onclick="createQJselect()">
+                <button type="button" class="btn btn-primary" onclick="createQJselect()">
                   <i class="glyphicon glyphicon-plus"></i> 创建
                 </button>
-                <button disabled type="button" class="btn btn-default qjDel" onclick="deleteFun('qj')">
+                <button disabled type="button" class="btn btn-primary qjDel" onclick="deleteFun('qj')">
                   <i class="glyphicon glyphicon-trash"></i> 删除
                 </button>
               </div>
               <div class="input-group col-md-3 col-md-offset-9">
                 <input type="text" class="form-control qj " placeholder="输入情景名称或字段">
                 <span class="input-group-btn">
-                  <button class="btn btn-default " type="button" onclick="search('qj')"><i class="ec-search"></i>
+                  <button class="btn btn-primary " type="button" onclick="search('qj')"><i class="ec-search"></i>
                   </button>
                 </span>
               </div>
@@ -108,7 +108,7 @@
                   <th data-formatter="qjOrder">操作</th>
                   <th data-field="scenarinoStatuName">情景状态</th>
                   <th data-formatter="qjType">类型</th>
-                  <th data-formatter="qjEffectEvaluation"></th>
+<!--                   <th data-formatter="qjEffectEvaluation"></th> -->
                 </tr>
                 </thead>
               </table>
@@ -190,6 +190,7 @@
 
               <div class="col-md-10">
                 <input type="text" class="form-control" id="rwDate" name="rwStartDate" readonly placeholder="请选择日期···">
+                <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showRwDate()" style="cursor:pointer;position: absolute;font-size: 17px;right: 25px;top: 7px;"></i>
               </div>
               <div class="col-md-10 col-md-offset-2">
                 <span class="rwDateTip disNone" style="color: red;">预评估任务结束日期不应小于当前日期</span>
