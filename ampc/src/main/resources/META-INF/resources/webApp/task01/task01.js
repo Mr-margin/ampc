@@ -758,6 +758,7 @@ function selectQJtype(type) {
             var endDateArr = setSelectDate($('#yStartDate').val(), selectEndDate);
             $('#yEndDate').empty();
             for (var i = 0; i < endDateArr.length; i++) {
+              if (endDateArr[i] < moment().format('YYYY-MM-DD'))continue;
               $('#yEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
             }
           });
@@ -1011,6 +1012,7 @@ function changeJcqj(t) {
   var endDateArr = setSelectDate($('#yStartDate').val(), selectEndDate);
   $('#yEndDate').empty();
   for (var i = 0; i < endDateArr.length; i++) {
+    if (endDateArr[i] < moment().format('YYYY-MM-DD'))continue;
     $('#yEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
   }
 }
@@ -1023,6 +1025,7 @@ function changeJcDate(t) {
   var endDateArr = setSelectDate($('#yStartDate').val(), selectEndDate);
   $('#yEndDate').empty();
   for (var i = 0; i < endDateArr.length; i++) {
+    if (endDateArr[i] < moment().format('YYYY-MM-DD'))continue;
     $('#yEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
   }
 }
@@ -1219,16 +1222,3 @@ function getQD() {
   $('#qd').append($('<option value="1">jjj</option>'))
 }
 
-
-function ajaxPost1(url, parameter) {
-  parameterPar.data = parameter;
-  var p = JSON.stringify(parameterPar);
-  //return $.ajax(BackstageIP + url, {
-  return $.ajax('webApp/task01/' + url, {
-    contentType: "application/json",
-    type: "GET",
-    async: true,
-    dataType: 'JSON',
-    //data: p
-  })
-}
