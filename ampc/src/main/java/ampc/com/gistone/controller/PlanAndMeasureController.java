@@ -877,185 +877,10 @@ public class PlanAndMeasureController {
 			for (int i = 0; i < idss.length; i++) {
 				planMeasureIdss.add(Long.parseLong(idss[i]));
 			}
-			// 根据拆分后得到的id查询所有的预案措施对象
-			List<Map> pmList = tPlanMeasureMapper.getPmByIds(planMeasureIdss);
 			// 创建一个减排的结果集合
 			List<JPResult> jpList = new ArrayList<JPResult>();
-			// 循环每一个预案措施对象 拼接想要的数据放入JPResult帮助类集合中
-			for (int i=0;i<pmList.size();i++) {
-				// 创建JPResult帮助类;
-				JPResult result = new JPResult();
-				// 将子措施转换成JsonObject对象进行解析
-				Clob clob = (Clob) pmList.get(i).get("measureContent");
-				JSONObject jsonobject = JSONObject.fromObject(clob.getSubString(1, (int) clob.length()));
-				// 设置内部值的转换类型
-				Map<String, Class> cmap = new HashMap<String, Class>();
-				cmap.put("filters", HashMap.class);
-				cmap.put("summary", HashMap.class);
-				cmap.put("table", HashMap.class);
-				cmap.put("table1", HashMap.class);
-				cmap.put("oopp", HashMap.class);
-				// 将json对象转换成Java对象
-				MeasureContentUtil mcu = (MeasureContentUtil) JSONObject.toBean(jsonobject, MeasureContentUtil.class, cmap);
-				// 写入BigIndex
-				result.setBigIndex(mcu.getBigIndex());
-				// 写入SmallIndex
-				result.setSmallIndex(mcu.getSmallIndex());
-				// 写入行业名称
-				result.setGroupName(pmList.get(i).get("sectorName").toString());
-				// 写入预案开始时间
-				result.setStart(pmList.get(i).get("planStartTime").toString().substring(0,pmList.get(i).get("planStartTime").toString().indexOf(".")));
-				// 写入预案结束时间
-				result.setEnd(pmList.get(i).get("planEndTime").toString().substring(0,pmList.get(i).get("planEndTime").toString().indexOf(".")));
-				// 获取Json中的Filter
-				List<Map> lms = mcu.getFilters();
-				// 获取Json中的子措施集合
-				List<Map> table1 = mcu.getTable1();
-				// 创建要减排分析中的子项
-				List<Object> opList = new ArrayList<Object>();
-				// 循环Filter 因为Filter中的项 和 子措施汇总的是相同的 所以循环一个
-				for (int j = 0; j < lms.size(); j++) {
-					Map opresult = new HashMap();
-					// 获取对应Filter中的子措施
-					Map t1map = table1.get(j);
-					// 获取用户修改的OP
-					Map opmap = (Map) t1map.get("oopp");
-					opresult.put("filter", lms.get(j));
-					opresult.put("l4sFilter", pmList.get(i).get("l4sFilter"));
-					opresult.put("opLevel", pmList.get(i).get("level"));
-					opresult.put("opName", pmList.get(i).get("measureName")+"-"+pmList.get(i).get("planMeasureId"));
-					opresult.put("opType", pmList.get(i).get("op"));
-					for (Object obj : opmap.keySet()) {
-						if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")) continue;
-						opresult.put(obj,Double.parseDouble(opmap.get(obj).toString()));
-					}
-					opList.add(opresult);
-				}
-				// 获取Json中的汇总集合
-				List<Map> table = mcu.getTable();
-				// 循环汇总中的所有数据 包括 会总管
-				for (Map map : table) {
-					String f1 = map.get("f1").toString();
-					//如果是汇总就继续下一次循环 因为汇总不是用户可已更改的
-					if (f1.equals("汇总")) continue;
-					Map opresult = new HashMap();
-					// 获取用户修改的OP
-					Map opmap = (Map) map.get("oopp");
-					//判断如果为空就不添加
-					if(opmap==null) continue;
-					// 用来定义Filter
-					Map mf = new HashMap();
-					// 判断类型
-					if (f1.equals("剩余点源")) {
-						mf.put("unitType", "P");
-						opresult.put("filter", mf);
-						opresult.put("l4sFilter", pmList.get(i).get("l4sFilter"));
-						opresult.put("opLevel", pmList.get(i).get("level"));
-						opresult.put("opName", pmList.get(i).get("measureName")+"-"+pmList.get(i).get("planMeasureId"));
-						opresult.put("opType", pmList.get(i).get("op"));
-						for (Object obj : opmap.keySet()) {
-							if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")) continue;
-							opresult.put(obj, Double.parseDouble(opmap.get(obj).toString()));
-						}
-						opList.add(opresult);
-					} 
-					if (f1.equals("面源")) {
-						mf.put("unitType", "S");
-						opresult.put("filter", mf);
-						opresult.put("l4sFilter", pmList.get(i).get("l4sFilter"));
-						opresult.put("opLevel", pmList.get(i).get("level"));
-						opresult.put("opName", pmList.get(i).get("measureName")+"-"+pmList.get(i).get("planMeasureId"));
-						opresult.put("opType", pmList.get(i).get("op"));
-						for (Object obj : opmap.keySet()) {
-							if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")) continue;
-							opresult.put(obj, Double.parseDouble(opmap.get(obj).toString()));
-						}
-						opList.add(opresult);
-					}
-				}
-				// 循环每一个预案措施对象 拼接想要的数据放入JPResult帮助类集合中
-				for (int k=1;k<pmList.size();k++) {
-					if(pmList.get(k).get("sectorName").toString().equals(pmList.get(i).get("sectorName").toString())){
-						// 将子措施转换成JsonObject对象进行解析
-						Clob clob1 = (Clob) pmList.get(k).get("measureContent");
-						JSONObject jsonobject1 = JSONObject.fromObject(clob1.getSubString(1, (int) clob1.length()));
-						// 将json对象转换成Java对象
-						MeasureContentUtil mcu1 = (MeasureContentUtil) JSONObject.toBean(jsonobject1, MeasureContentUtil.class, cmap);
-						// 获取Json中的Filter
-						List<Map> lms1 = mcu1.getFilters();
-						// 获取Json中的子措施集合
-						List<Map> table11 = mcu1.getTable1();
-						// 循环Filter 因为Filter中的项 和 子措施汇总的是相同的 所以循环一个
-						for (int j = 0; j < lms1.size(); j++) {
-							Map opresult = new HashMap();
-							// 获取对应Filter中的子措施
-							Map t1map = table11.get(j);
-							// 获取用户修改的OP
-							Map opmap = (Map) t1map.get("oopp");
-							opresult.put("filter", lms1.get(j));
-							opresult.put("l4sFilter", pmList.get(k).get("l4sFilter"));
-							opresult.put("opLevel", pmList.get(k).get("level"));
-							opresult.put("opName", pmList.get(k).get("measureName")+"-"+pmList.get(k).get("planMeasureId"));
-							opresult.put("opType", pmList.get(k).get("op"));
-							for (Object obj : opmap.keySet()) {
-								if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")) continue;
-								opresult.put(obj, Double.parseDouble(opmap.get(obj).toString()));
-							}
-							opList.add(opresult);
-						}
-						// 获取Json中的汇总集合
-						List<Map> table22 = mcu1.getTable();
-						// 判断汇总中是否有对点源和面源的计算
-						// 循环汇总中的所有数据 包括 会总管
-						for (Map map : table22) {
-							String f1 = map.get("f1").toString();
-							if (f1.equals("汇总")) continue;
-							Map opresult = new HashMap();
-							// 获取用户修改的OP
-							Map opmap = (Map) map.get("oopp");
-							//判断如果为空就不添加
-							if(opmap==null) continue;
-							// 用来定义Filter
-							Map mf = new HashMap();
-							// 判断类型
-							if (f1.equals("剩余点源")) {
-								mf.put("unitType", "P");
-								opresult.put("filter", mf);
-								opresult.put("l4sFilter", pmList.get(k).get("l4sFilter"));
-								opresult.put("opLevel", pmList.get(k).get("level"));
-								opresult.put("opName", pmList.get(k).get("measureName")+"-"+pmList.get(k).get("planMeasureId"));
-								opresult.put("opType", pmList.get(k).get("op"));
-								for (Object obj : opmap.keySet()) {
-									if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")) continue;
-									opresult.put(obj, Double.parseDouble(opmap.get(obj).toString()));
-								}
-								opList.add(opresult);
-							} else if (f1.equals("面源")) {
-								mf.put("unitType", "S");
-								opresult.put("filter", mf);
-								opresult.put("l4sFilter", pmList.get(k).get("l4sFilter"));
-								opresult.put("opLevel", pmList.get(k).get("level"));
-								opresult.put("opName", pmList.get(k).get("measureName")+"-"+pmList.get(k).get("planMeasureId"));
-								opresult.put("opType", pmList.get(k).get("op"));
-								for (Object obj : opmap.keySet()) {
-									if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")) continue;
-									opresult.put(obj, Double.parseDouble(opmap.get(obj).toString()));
-								}
-								opList.add(opresult);
-							}
-						}
-					}else{
-						i=k;
-						break;
-					}
-					if((k+1)==pmList.size()){
-						i=k;
-					}
-				}
-				// 放入OPS
-				result.setOps(opList);
-				jpList.add(result);
-			}
+			// 根据拆分后得到的id查询所有的预案措施对象
+			tempCalc(planMeasureIdss,jpList);
 			// 将java对象转换为json对象
 			JSONArray json = JSONArray.fromObject(jpList);
 			String str = json.toString();
@@ -1144,8 +969,6 @@ public class PlanAndMeasureController {
 			// 将java对象转换为json对象
 			JSONArray json = JSONArray.fromObject(jpList);
 			String str = json.toString();
-			System.out.println(str);
-			/*
 			// 调用减排计算接口 并获取结果Json
 			String getResult = ClientUtil.doPost(JPJSURL, str);
 			// 创建Json处理对象
@@ -1176,8 +999,7 @@ public class PlanAndMeasureController {
 					}
 			    }
 			}
-			return AmpcResult.ok(getResult);*/
-			return AmpcResult.ok("");
+			return AmpcResult.ok(getResult);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误");
@@ -1364,7 +1186,6 @@ public class PlanAndMeasureController {
 			jpList.add(result);
 		}
 	}
-	
 	
 	/**
 	 * 取值范围验证方法
