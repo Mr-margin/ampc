@@ -28,7 +28,7 @@ var zTreeSetting = {
   check: {
     enable: true,
 //				autoCheckTrigger:true,
-    chkboxType: {"Y": "s", "N": "s"}, //子父级联动控制，仅子级联动
+    chkboxType: {"Y": "ps", "N": "ps"}, //子父级联动控制，仅子级联动
     chkDisabledInherit: true //是否沿用disabled
   },
   data: {
@@ -44,7 +44,7 @@ var zTreeSetting = {
   callback: {
     onCheck: function (e, t, tr) {
       var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
-      selectNode(tr);
+      //selectNode(tr);
       if (tr.checked) {
 //    	  setExtent(tr);
         if (tr.level == 0) {
@@ -72,6 +72,7 @@ function addP(adcode, name, level) {
   return $('<p class="col-md-3"><i class="im-close" style="cursor: pointer" onclick="delAdcode(' + adcode + ',' + level + ')"></i>&nbsp;&nbsp;' + name + ' </p>')
 }
 function updataCodeList() {
+  var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
   $('.adcodeList').empty();
   for (var i = 0; i < 3; i++) {
     for (var ad in showCode[i]) {
@@ -85,7 +86,7 @@ function updataCodeList() {
 
     }
   }
-  proNum = Object.keys(showCode[0]).length;
+/*  proNum = Object.keys(showCode[0]).length;
   cityNum = (function () {
     var n = 0;
     for (var ad in showCode[1]) {
@@ -99,7 +100,17 @@ function updataCodeList() {
       n += Object.keys(showCode[2][ad]).length;
     }
     return n;
-  })();
+  })();*/
+
+  proNum = treeObj.getNodesByFilter(function(node){
+    return (node.checked && (node.level==0))
+  }).length;
+  cityNum = treeObj.getNodesByFilter(function(node){
+    return (node.checked && (node.level==1))
+  }).length;
+  countyNum = treeObj.getNodesByFilter(function(node){
+    return (node.checked && (node.level==2))
+  }).length;
 
   $('.proNumber span').html(proNum);
   $('.cityNumber span').html(cityNum);
@@ -1282,6 +1293,13 @@ function showAllCode(){
   showMap();
 }
 
+/*计算设计省市区数量*/
+function getShowCodeNum(){
+  var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+  var s = showCode;
+  var proNum,cityNum,countyNum;
+
+}
 
 
 
