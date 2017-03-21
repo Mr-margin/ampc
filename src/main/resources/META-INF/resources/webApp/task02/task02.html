@@ -61,6 +61,9 @@
            <div class="sTime">
              <div class="sTimeOpType text-center">
                <div class="col-md-12">
+                 <button type="button" class="btn btn-primary btn-lg mt20 toolShow" data-dismiss="modal" onclick="openAddTimes()">添加时段</button>
+               </div>
+               <div class="col-md-12">
                  <button class="btn btn-primary btn-lg mt20 delTimeBtn" data-dismiss="modal" onclick="openDelTimes()">删除时段</button>
                </div>
                <div class="col-md-12">
@@ -159,12 +162,15 @@
         </div>
         <div class="modal-body">
           <div class="selectAdd">
+            <div class="text-center mt20 mb20">
+              <button type="button" class="btn btn-primary btn-lg editPlanBtn" data-dismiss="modal" onclick="editPlan()">编辑预案</button>
+            </div>
             <div class="text-center mt20">
-              <button type="button" class="btn btn-primary btn-lg" onclick="addNewPlan(this)">添加新预案</button>
+              <button type="button" class="btn btn-primary btn-lg addNewPlanBtn" onclick="addNewPlan(this)">添加新预案</button>
               <a href="#/csbj" id="addCSBJ" class="disNone"></a>
             </div>
             <div class="text-center mt20 mb20">
-              <button type="button" class="btn btn-primary btn-lg" onclick="copyPlan(this)">复制已有预案</button>
+              <button type="button" class="btn btn-primary btn-lg addCopyPlanBtn" onclick="copyPlan(this)">复制已有预案</button>
             </div>
           </div>
           <div class="addCopyPlan disNone">
@@ -228,19 +234,21 @@
             </div>
           </div>
           <div class="editAreaCon">
-            <div class="col-md-2 pl0">
+            <div class="col-md-2 pl0 pr0">
               <div class="codeTree">
                 <ul id="adcodeTree" class="ztree">
 
                 </ul>
               </div>
+              <div class="rightBtn">
+                <button class="btn btn-primary btn-lg" onclick="showAllCode()"><i class="fa-chevron-right"></i></button></div>
             </div>
-            <div class="col-md-10 pr0">
+            <div class="col-md-10 pr0 pl0">
               <div class="col-md-6 pl0 ">
                 <div class="showCode" style="border: 1px solid transparent;">
                   <div class="clearCode clearfix mt10 mr10">
-                    <button class="btn btn-primary" onclick="clearAllArea()" style="float: left;margin-left: 10px">清空</button>
-                    <button class="btn btn-primary" onclick="showMap()" style="float: right;">地图展示</button>
+                    <button class="btn btn-primary" onclick="clearAllArea()" style="float: right;margin-left: 10px">清空</button>
+                    <!--<button class="btn btn-primary" onclick="showMap()" style="float: right;">地图展示</button>-->
                   </div>
                   <div class="adcodeList mt20">
 

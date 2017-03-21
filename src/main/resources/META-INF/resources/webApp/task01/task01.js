@@ -1216,7 +1216,7 @@ function getQD() {
   }).error(function () {
     console.log('清单未获取到！！！！')
   })
-  $('#qd').append($('<option value="1">清单1</option>'))
+  $('#qd').append($('<option value="1">jjj</option>'))
 }
 
 
