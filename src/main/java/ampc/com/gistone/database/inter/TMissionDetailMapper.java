@@ -53,4 +53,15 @@ public interface TMissionDetailMapper {
     int updateByPrimaryKeySelective(TMissionDetail record);
 
     int updateByPrimaryKey(TMissionDetail record);
+    /**
+     * 
+     * @Description: TODO
+     * @param missionId
+     * @return   
+     * int  查询domainid
+     * @throws
+     * @author yanglei
+     * @date 2017年3月18日 下午5:55:44
+     */
+    Long selectDomainid(Long missionId);
 }
