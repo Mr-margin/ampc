@@ -293,8 +293,15 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 	
 	ajaxPost('/measure/get_measureQuery',paramsName).success(function(res){
 //		console.log(JSON.stringify(res));
-		$("#sc_conter").html("");
-		$("#val_zicuoshi").html("");
+		$("#sc_conter").html("");//按属性筛选条件
+		$("#qiye_name").val("");//按名称筛选条件
+		$("#xishuMO").html("");//控制系数div
+		$("#xishuMO").hide();//控制系数div
+		$("#xishuMOB").hide();//控制系数按钮
+		$("#mic").hide();//筛选结果div
+		$("#mic_name").hide();//按名称筛选结果div隐藏
+		boolean_delete_sc_name = false;//记录是否删除过按名称筛选的结果
+		poi_name_or_pub = null;//记录当前的筛选条件是按照属性来，还是按照名称来
 		
 		if(res.status == 0){//返回状态正常
 			$("#createModal").modal();
@@ -408,7 +415,24 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 				});
 				temp_val_v1 = jQuery.extend(true, {}, temp_val);//保留空白结构的备份，下一个条件还要继续使用
 //				console.log(JSON.stringify(temp_val));
+			//这是有属性条件的措施
+			}else{
+				//没有属性的措施，默认显示按名称查询，按属性查询关闭
+				$("#sc_conter").hide();//属性查询
+				$("#sc_conter_name").show();//条件查询
+				$("#chaxuntype").children().each(function(){
+					if($(this).attr("val_name") == "shuxing"){//按属性查
+						$(this).removeClass('active');
+					}else if($(this).attr("val_name") == "mingcheng"){//按名称查
+						$(this).addClass('active');
+					}
+				});
 			}
+			
+			//这里是名称条件的页面处理，默认显示按属性，这部分隐藏
+			
+			
+			
 			
 			//要显示的列
 			if(res.data.measureColumn.length>0){
@@ -486,10 +510,6 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 			if (typeof res.data.measureContent != "undefined") {
 				measureContent = JSON.parse(res.data.measureContent);
 				b_data.push(measureContent.table[0]);
-//				$.each(measureContent.table1, function(i, col) {
-//					delete col.oopp;
-//					b_data.push(col);
-//				});
 				
 				for(var pl = measureContent.table1.length-1; pl>=0; pl--){
 					delete measureContent.table1[pl].oopp;
@@ -500,7 +520,13 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 				delete measureContent.table[2].oopp;
 				b_data.push(measureContent.table[1]);
 				b_data.push(measureContent.table[2]);
-//				console.log(JSON.stringify(b_data));
+				console.log(JSON.stringify(measureContent));
+				
+				delete measureContent.table;
+				delete measureContent.table1;
+				//初始化的时候，固定条件将来自于数据库返回值，复制一份保存使用
+				sc_v1 = jQuery.extend(true, {}, measureContent);
+				
 				setTimeout(function(){
 					show_zicuoshi_table(columns, b_data);
 				},200);
@@ -531,10 +557,12 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 						swal('连接错误search/summarySource', '', 'error');
 					}
 				});
+				
+				//初始化的时候，将固定条件组织好，复制一份保存使用
+				sc_v1 = jQuery.extend(true, {}, sc_val);
 			}
 			
-			//初始化的时候，将固定条件组织好，复制一份保存使用
-			sc_v1 = jQuery.extend(true, {}, sc_val);
+			
 			
 		}else{
 			swal('连接错误get_measureQuery', '', 'error');
@@ -542,15 +570,67 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 	}).error(function(){
 		swal('校验失败', '', 'error')
 	});
-	
-	
+}
+
+/**
+ * 查询方式的改变，切换页面显示
+ */
+function chaxun_type_info(){
+	setTimeout(function(){
+		$("#chaxuntype").children().each(function(){
+			if($(this).is('.active')){
+				if($(this).attr("val_name") == "shuxing"){//按属性查
+					
+					$("#sc_conter").show();//属性查询
+					$("#sc_conter_name").hide();//条件查询
+					$("#mic_name").hide();//按名称筛选结果div隐藏
+					$("#mic_name").hide();//按名称筛选结果div
+					$("#metTable_name_tools").hide();//保存子措施按钮
+					
+					if(poi_name_or_pub == "pub"){//名称查询
+						var row = $('#metTable_point').bootstrapTable('getData');
+						if (typeof row != "undefined") {
+							if(row.length>0){
+								$("#mic").show();//筛选结果div显示
+								$("#metTable_tools").show();//保存子措施按钮
+							}else{
+								$("#mic").hide();//筛选结果div显示
+								$("#metTable_tools").hide();//保存子措施按钮
+							}
+						}
+					}
+					
+				}else if($(this).attr("val_name") == "mingcheng"){//按名称查
+					
+					$("#sc_conter").hide();//属性查询
+					$("#mic").hide();//筛选结果div显示
+					$("#sc_conter_name").show();//条件查询
+					$("#mic").hide();//筛选结果div显示
+					$("#metTable_tools").hide();//保存子措施按钮
+					
+					if(poi_name_or_pub == "name"){//属性查询
+						var row = $('#metTable_name_point').bootstrapTable('getData');
+						if (typeof row != "undefined") {
+							if(row.length>0){
+								$("#mic_name").show();//按名称筛选结果div
+								$("#metTable_name_tools").show();//保存子措施按钮
+							}else{
+								$("#mic_name").hide();//按名称筛选结果div
+								$("#metTable_name_tools").hide();//保存子措施按钮
+							}
+						}
+					}
+					
+				}
+			}
+		});
+	},100);
 }
 
 /**
  * 显示子措施表格的列表
  */
 function show_zicuoshi_table(columns, b_data){
-//	alert($("#show_zicuoshi_table_div").height());
 	$('#show_zicuoshi_table').bootstrapTable('destroy');
 	$('#show_zicuoshi_table').bootstrapTable({
 		columns : columns,
@@ -598,10 +678,6 @@ function show_zicuoshi_table(columns, b_data){
 	$.each(b_data, function(i, vol) {
 		$('#show_zicuoshi_table').bootstrapTable('expandRow', i);
 	});
-	
-//	$('#show_zicuoshi_table').bootstrapTable('expandRow', 0);
-//	$('#show_zicuoshi_table').bootstrapTable('expandRow', 1);
-//	$('#show_zicuoshi_table').bootstrapTable('expandRow', 2);
 }
 
 
@@ -820,12 +896,35 @@ function search_button(){
 	
 }
 
-//筛选点源列表
+/**
+ * 按企业名称的筛选
+ */
+function search_name_button(){
+	//先将备份的内容复制到查询条件中，只有保存子措施后，备份内容才添加
+	if($("#qiye_name").val() != ""){
+		sc_val = jQuery.extend(true, {}, sc_v1);
+		var ttqr = {};
+		ttqr.companyname = "%"+$("#qiye_name").val()+"%";
+		sc_val.filters.push(ttqr);
+		//根据筛选条件获取点源，准备填写空值系数
+		point_name_table();
+		
+		$("#qiye_name").removeClass("erroe_input");//删除红色边框
+	}else{
+		$("#qiye_name").addClass("erroe_input");//加红色边框
+	}
+}
+
+var poi_name_or_pub;//记录当前的筛选条件是按照属性来，还是按照名称来
+
+//筛选点源列表---按属性查询
 function point_table () {
+	poi_name_or_pub = "pub";//记录当前的筛选条件是按照属性来，还是按照名称来
 	$('#metTable_point').bootstrapTable('destroy');//销毁现有表格数据
-	$("#mic").show();
-	$("#xishuMO").hide();
-	$("#xishuMOB").hide();
+	$("#mic").show();//筛选结果div显示
+	$("#mic_name").hide();//按名称筛选结果div隐藏
+	$("#xishuMO").hide();//控制系数隐藏
+	$("#xishuMOB").hide();//控制系数按钮隐藏
 	$('#metTable_point').bootstrapTable({
 		method : 'POST',
 		url : jianpaiUrl+'/search/sourceList',
@@ -846,11 +945,73 @@ function point_table () {
 			temp_sc_val.pageHelper.pageNumber = params.offset;
 			return JSON.stringify(temp_sc_val);
 		},
+		responseHandler: function (res) {
+			
+			if(res.status == 'success'){
+				
+				return res.data;
+			}else if(res.status == ''){
+				
+				return "";
+			}
+		},
+		queryParamsType : "limit", // 参数格式,发送标准的RESTFul类型的参数请求
+		silent : true, // 刷新事件必须设置
+		contentType : "application/json", // 请求远程数据的内容类型。
+		onClickRow : function(row, $element) {
+			$('.success').removeClass('success');
+			$($element).addClass('success');
+		},
+		icons : {
+			refresh : "glyphicon-repeat",
+			toggle : "glyphicon-list-alt",
+			columns : "glyphicon-list"
+		},
+		onLoadSuccess : function(data){
+//			console.log(data);
+			data.total > 0 ? $("#metTable_tools").show() : $("#metTable_tools").hide();//保存子措施按钮
+		},
+		onLoadError : function(){
+			swal('连接错误', '', 'error');
+		}
+	});
+}
+
+//筛选点源列表---按名称查询
+function point_name_table () {
+	poi_name_or_pub = "name";//记录当前的筛选条件是按照属性来，还是按照名称来
+	$('#metTable_name_point').bootstrapTable('destroy');//销毁现有表格数据
+	$("#mic").hide();//筛选结果div隐藏
+	$("#mic_name").show();//按名称筛选结果div显示
+	$("#xishuMO").hide();//控制系数隐藏
+	$("#xishuMOB").hide();//控制系数按钮隐藏
+	$('#metTable_name_point').bootstrapTable({
+		method : 'POST',
+		url : jianpaiUrl+'/search/sourceList',
+		dataType : "json",
+		iconSize : "outline",
+		clickToSelect : true,// 点击选中行
+		pagination : false, // 在表格底部显示分页工具栏
+		striped : true, // 使表格带有条纹
+		queryParams : function(params) {
+			var temp_sc_val = jQuery.extend(true, {}, sc_val);
+			delete temp_sc_val.summary;
+			console.log(JSON.stringify(temp_sc_val));
+			return JSON.stringify(temp_sc_val);
+		},
 		queryParamsType : "limit", // 参数格式,发送标准的RESTFul类型的参数请求
 		silent : true, // 刷新事件必须设置
 		contentType : "application/json", // 请求远程数据的内容类型。
 		responseHandler: function (res) {
-			return res
+			if(res.status == 'success'){
+				$.each(res.data.rows, function(k, vol) {
+					vol.caozuo = '<a onClick="delete_sc_name(\''+vol.id+'\');">删除</a>';
+				});
+				return res.data.rows;
+			}else if(res.status == 'fail' && res.error == '查询数据超过50条'){//筛选结果大于50条
+				swal('查询结果超过50个设备，请精确输入企业名称', '', 'error');
+				return "";
+			}
 		},
 		onClickRow : function(row, $element) {
 			$('.success').removeClass('success');
@@ -863,7 +1024,7 @@ function point_table () {
 		},
 		onLoadSuccess : function(data){
 //			console.log(data);
-			data.total > 0 ? $("#metTable_tools").show() : $("#metTable_tools").hide();
+			data.length > 0 ? $("#metTable_name_tools").show() : $("#metTable_name_tools").hide();//保存子措施按钮
 		},
 		onLoadError : function(){
 			swal('连接错误', '', 'error');
@@ -872,15 +1033,57 @@ function point_table () {
 }
 
 
+var boolean_delete_sc_name = false;//记录是否删除过按名称筛选的结果
+/**
+ * 删除按名称筛选的结果
+ * vval:id的值
+ */
+function delete_sc_name(vval){
+//	var row = $('#metTable_name_point').bootstrapTable('getData');
+//	
+//	var rowq = $('#show_zicuoshi_table').bootstrapTable('getSelections');
+//	SKUNo = $.map(rowq, function (rowww) {  
+//        return rowww.state;  
+//    });
+	
+	$('#metTable_name_point').bootstrapTable('remove', {field: 'id',values: [vval]});
+	boolean_delete_sc_name = true;
+}
+
+
 /**
  * 保存子措施，打开控制系数页面
  */
 function xishuMo(){
-	
-	$("#mic").hide();
-	$("#metTable_tools").hide();
-	$("#xishuMO").show();
-	$("#xishuMOB").show();
+	$("#mic").hide();//筛选结果div隐藏
+	$("#mic_name").hide();//按名称筛选结果div隐藏
+	$("#metTable_tools").hide();//保存子措施按钮
+	$("#metTable_name_tools").hide();//保存子措施按钮
+	$("#xishuMO").show();//控制系数div显示
+	$("#xishuMOB").show();//控制系数按钮显示
+}
+
+/**
+ * 保存子措施，打开控制系数页面，记录id号，按企业名称查询专用
+ */
+function xishuMo_name(){
+	if(poi_name_or_pub == "name"){//记录当前的筛选条件是按照属性来，还是按照名称来
+		//先判断是否删除过筛选结果
+		if(boolean_delete_sc_name){
+			var row = $('#metTable_name_point').bootstrapTable('getData');//获取当前筛选结果剩余的值
+			if(row.length>0){
+				var ttdf = [];
+				//循环结果，获取所有记录的id
+				$.each(row, function(k, vol) {
+					ttdf.push(vol.id);
+				});
+				//替换缓存中的filters中的companyname
+				delete sc_val.filters[sc_val.filters.length-1].companyname;
+				sc_val.filters[sc_val.filters.length-1].id = ttdf;
+			}
+		}
+	}
+	xishuMo();
 }
 
 var zicuoshi_up_index;//修改或者删除的时候记录的子措施的行号
@@ -905,23 +1108,31 @@ function xishu_save(){
 	if(ttwr){
 		
 		if(zicuoshi_up_index == null){//添加新的子措施
+			console.log(JSON.stringify(sc_val));
 			ajaxPost_w(jianpaiUrl+'/search/summary',sc_val).success(function(res){
 //				console.log(JSON.stringify(res));
 				if(res.status == 'success'){
 					
 					var ttr = {};
 					
-					var re1 = new RegExp("{","g");
-					var re2 = new RegExp("}","g");
-					var re3 = new RegExp("\"","g");
+//					var re1 = new RegExp("{","g");
+//					var re2 = new RegExp("}","g");
+//					var re3 = new RegExp("\"","g");
 					
 					var tablejieguo = "";
 					$.each(sc_val.filters[sc_val.filters.length-1], function(k, vol) {//循环最后一个条件，这个条件是要添加显示的条件
-						$.each(query, function(i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
-							if(col.queryEtitle == k){
-								tablejieguo += col.queryName+"："+vol+",";
-							}
-						});
+						if(k == "companyname"){
+							var re4 = new RegExp("%","g");
+							tablejieguo += "企业名称包含："+vol.replace(re4,"")+",";
+						}else if(k == "id"){
+							tablejieguo += "企业编号："+vol+",";
+						}else{
+							$.each(query, function(i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
+								if(col.queryEtitle == k){
+									tablejieguo += col.queryName+"："+vol+",";
+								}
+							});
+						}
 					});
 					
 					ttr.tiaojian = tablejieguo.substring(0, tablejieguo.length-1);
@@ -947,9 +1158,13 @@ function xishu_save(){
 						$("#"+vol).removeClass("erroe_input");//删除红色边框
 						$("#"+vol).val(xishu_temp_v[i]);
 					});
+					$("#qiye_name").val("");//按名称筛选条件
 					$('#metTable_point').bootstrapTable('destroy');//销毁现有表格数据
+					$('#metTable_name_point').bootstrapTable('destroy');//销毁现有表格数据
 				}
 			});
+			
+			
 			
 		}else{//修改已有子措施
 			
@@ -968,10 +1183,15 @@ function xishu_save(){
 			
 		}
 		
-		$("#mic").hide();
-		$("#metTable_tools").hide();
-		$("#xishuMO").hide();
-		$("#xishuMOB").hide();
+		boolean_delete_sc_name = false;//记录是否删除过按名称筛选的结果
+		poi_name_or_pub = null;//记录当前的筛选条件是按照属性来，还是按照名称来
+		
+		$("#mic").hide();//筛选结果div
+		$("#mic_name").hide();//按名称筛选结果div隐藏
+		$("#metTable_tools").hide();//保存子措施按钮
+		$("#metTable_name_tools").hide();//保存子措施按钮
+		$("#xishuMO").hide();//控制系数div
+		$("#xishuMOB").hide();//控制系数按钮
 	}
 }
 
@@ -993,14 +1213,15 @@ function zicuoshi_up(){
 				}
 			});
 			//打开控制系数填写页面
-			$("#mic").hide();
-			$("#metTable_tools").hide();
-			$("#xishuMO").show();
-			$("#xishuMOB").show();
+			$("#mic").hide();//筛选结果div
+			$("#mic_name").hide();//按名称筛选结果div隐藏
+			$("#metTable_tools").hide();//保存子措施按钮
+			$("#metTable_name_tools").hide();//保存子措施按钮
+			$("#xishuMO").show();//控制系数div
+			$("#xishuMOB").show();//控制系数按钮
 			zicuoshi_up_index = i;//当前选中的行是要修改的子措施
 		}
 	});
-	
 }
 
 /**
@@ -1186,13 +1407,6 @@ function restion_table(){
 	$.each(row, function(i, vol) {
 		$('#show_zicuoshi_table').bootstrapTable('expandRow', i);
 	});
-	
-//	$.each(sc_val.filters, function(i, vol) {
-//		$('#show_zicuoshi_table').bootstrapTable('expandRow', i);
-//	});
-//	$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length);
-//	$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length+1);
-//	$('#show_zicuoshi_table').bootstrapTable('expandRow', sc_val.filters.length+2);
 }
 
 
@@ -1201,15 +1415,29 @@ function restion_table(){
  */
 function xishu_close(){
 	if(zicuoshi_up_index == null){
-		$("#mic").show();
-		$("#metTable_tools").show();
-		$("#xishuMO").hide();
-		$("#xishuMOB").hide();
+		if(poi_name_or_pub == "pub"){//记录当前的筛选条件是按照属性来，还是按照名称来
+			$("#mic").show();//筛选结果div
+			$("#metTable_tools").show();//保存子措施按钮
+			$("#mic_name").hide();//按名称筛选结果div隐藏
+		}else if(poi_name_or_pub == "name"){
+			$("#mic").hide();//筛选结果div
+			$("#metTable_name_tools").hide();//保存子措施按钮
+			$("#mic_name").show();//按名称筛选结果div隐藏
+		}
+		$("#xishuMO").hide();//控制系数div
+		$("#xishuMOB").hide();//控制系数按钮
 	}else{
-		$("#mic").hide();
-		$("#metTable_tools").hide();
-		$("#xishuMO").hide();
-		$("#xishuMOB").hide();
+		if(poi_name_or_pub == "pub"){//记录当前的筛选条件是按照属性来，还是按照名称来
+			$("#mic").hide();//筛选结果div
+			$("#metTable_tools").hide();//保存子措施按钮
+			$("#mic_name").hide();//按名称筛选结果div隐藏
+		}else if(poi_name_or_pub == "name"){
+			$("#mic").hide();//筛选结果div
+			$("#metTable_name_tools").hide();//保存子措施按钮
+			$("#mic_name").hide();//按名称筛选结果div隐藏
+		}
+		$("#xishuMO").hide();//控制系数div
+		$("#xishuMOB").hide();//控制系数按钮
 		zicuoshi_up_index = null;
 	}
 }
