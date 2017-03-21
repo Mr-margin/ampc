@@ -185,4 +185,13 @@
       GFS9_STATUS = #{gfs9Status,jdbcType=DECIMAL}
     where UNGRIB_ID = #{ungribId,jdbcType=DECIMAL}
   </update>
+  <!-- 查询最新的fnl  -->
+  <select id="getlastfnl" resultMap="BaseResultMap">
+ <!--  select FNL_STATUS,FNL_STATUS from T_UNGRIB where PATH_DATE=(select MAX(PATH_DATE) from T_UNGRIB) -->
+ 	select
+  <include refid="Base_Column_List" />
+    from T_UNGRIB
+    where where PATH_DATE=(select MAX(PATH_DATE) from T_UNGRIB)
+  </select>
+  
 </mapper>
