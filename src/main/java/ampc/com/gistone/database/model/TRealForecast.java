@@ -102,4 +102,16 @@ public class TRealForecast {
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
+
+	@Override
+	public String toString() {
+		return "TRealForecast [realForecastId=" + realForecastId + ", userId="
+				+ userId + ", createTime=" + createTime
+				+ ", forecastScenarinoType=" + forecastScenarinoType
+				+ ", rangeDay=" + rangeDay + ", updateTime=" + updateTime
+				+ ", forecastStatus=" + forecastStatus + ", spinup=" + spinup
+				+ ", baseScenarinoId=" + baseScenarinoId + ", startTime="
+				+ startTime + "]";
+	}
+    
 }
