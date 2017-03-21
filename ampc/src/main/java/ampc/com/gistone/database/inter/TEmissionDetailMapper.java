@@ -1,5 +1,7 @@
 package ampc.com.gistone.database.inter;
 
+import java.util.List;
+
 import ampc.com.gistone.database.model.TEmissionDetail;
 
 public interface TEmissionDetailMapper {
@@ -16,4 +18,6 @@ public interface TEmissionDetailMapper {
     int updateByPrimaryKeyWithBLOBs(TEmissionDetail record);
 
     int updateByPrimaryKey(TEmissionDetail record);
+    
+    List<TEmissionDetail> selectByEntity(TEmissionDetail record);
 }
