@@ -101,7 +101,7 @@ vipspa.start({
 
 
 
-var parameterPar = {total: '', data: {}};
+var parameterPar = {token: '', data: {}};
 var userId = 1;
 /*看名字*/
 function ajaxPost(url, parameter) {
