@@ -540,11 +540,11 @@ $(function() {
                     continue;
                 }
 
-                var a = '<a href="javascript:" onclick="editPlan(this)"></a>';
+                //var a = '<a href="javascript:" onclick="editPlan(this)"></a>';
                 item.element = $('<div class="swan-timeline-item"></div>')
                   .html($('<span>')
                     .attr('title', item.title)
-                    .html('&nbsp;&nbsp;<a href="javascript:" data-indexNum="'+ item.indexNum+'" data-index="'+item.index+'">'+item.title+'</a>'))
+                    .html('<h3>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:" data-indexNum="'+ item.indexNum+'" data-index="'+item.index+'">'+item.title+'</a></h3>'))
                   .appendTo(this._itemArea);
 
                 var leftAndWidth = this._getLeftAndWidth(item.startTime, item.endTime);

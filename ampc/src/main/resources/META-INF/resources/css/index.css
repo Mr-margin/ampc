@@ -299,8 +299,16 @@
 }
 .codeTree{
   float: left;
-  /*width: calc(100% - 45px);*/
-  width: 100%;
+  width: calc(100% - 45px);
+  /*width: 100%;*/
+}
+.rightBtn{
+  float: left;
+  width: 45px;
+  font-size: 25px;
+  position: absolute;
+  right: 1px;
+  top: 42%;
 }
 .editAreaTitle{
   background-color: #fff;
