@@ -10,13 +10,13 @@ public class TRealForecast {
 
     private Date createTime;
 
-    private Short forecastScenarinoType;
+    private Long forecastScenarinoType;
 
     private Long rangeDay;
 
     private Date updateTime;
 
-    private Short forecastStatus;
+    private Long forecastStatus;
 
     private Long spinup;
 
@@ -48,11 +48,11 @@ public class TRealForecast {
         this.createTime = createTime;
     }
 
-    public Short getForecastScenarinoType() {
+    public Long getForecastScenarinoType() {
         return forecastScenarinoType;
     }
 
-    public void setForecastScenarinoType(Short forecastScenarinoType) {
+    public void setForecastScenarinoType(Long forecastScenarinoType) {
         this.forecastScenarinoType = forecastScenarinoType;
     }
 
@@ -72,11 +72,11 @@ public class TRealForecast {
         this.updateTime = updateTime;
     }
 
-    public Short getForecastStatus() {
+    public Long getForecastStatus() {
         return forecastStatus;
     }
 
-    public void setForecastStatus(Short forecastStatus) {
+    public void setForecastStatus(Long forecastStatus) {
         this.forecastStatus = forecastStatus;
     }
 
