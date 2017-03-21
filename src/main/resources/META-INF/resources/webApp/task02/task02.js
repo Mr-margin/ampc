@@ -1086,21 +1086,24 @@ function setDisabled(data){
     for(var pro=0;pro<data[i].provinceCodes.length;pro++){
       var node = treeObj.getNodeByParam("adcode", Object.keys(data[i].provinceCodes[pro]), null);
       node.name += name;
-      node.chkDisabled = true;
+      //node.chkDisabled = true;
+      treeObj.setChkDisabled(node,true,false,true);
       treeObj.updateNode(node);
     }
 
     for(var ci=0;ci<data[i].cityCodes.length;ci++){
       var node = treeObj.getNodeByParam("adcode", Object.keys(data[i].cityCodes[ci]), null);
       node.name += name;
-      node.chkDisabled = true;
+      //node.chkDisabled = true;
+      treeObj.setChkDisabled(node,true,false,true);
       treeObj.updateNode(node);
     }
 
     for(var ct=0;ct<data[i].countyCodes.length;ct++){
       var node = treeObj.getNodeByParam("adcode", Object.keys(data[i].countyCodes[ct]), null);
       node.name += name;
-      node.chkDisabled = true;
+      //node.chkDisabled = true;
+      treeObj.setChkDisabled(node,true,false,true);
       treeObj.updateNode(node);
     }
   }
