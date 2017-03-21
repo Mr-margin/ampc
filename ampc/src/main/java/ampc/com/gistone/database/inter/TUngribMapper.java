@@ -12,7 +12,7 @@ public interface TUngribMapper {
 	 * @author yanglei
 	 * @date 2017年3月20日 上午11:35:42
 	 */
-	String getlastfnl();
+	TUngrib getlastfnl();
 	
     int deleteByPrimaryKey(Long ungribId);
 
