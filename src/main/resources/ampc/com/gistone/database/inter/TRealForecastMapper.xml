@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TRealForecastMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TRealForecast" >
+    <id column="REAL_FORECAST_ID" property="realForecastId" jdbcType="DECIMAL" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="FORECAST_SCENARINO_TYPE" property="forecastScenarinoType" jdbcType="DECIMAL" />
+    <result column="RANGE_DAY" property="rangeDay" jdbcType="DECIMAL" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="FORECAST_STATUS" property="forecastStatus" jdbcType="DECIMAL" />
+    <result column="SPINUP" property="spinup" jdbcType="DECIMAL" />
+    <result column="BASE_SCENARINO_ID" property="baseScenarinoId" jdbcType="DECIMAL" />
+    <result column="START_TIME" property="startTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    REAL_FORECAST_ID, USER_ID, CREATE_TIME, FORECAST_SCENARINO_TYPE, RANGE_DAY, UPDATE_TIME, 
+    FORECAST_STATUS, SPINUP, BASE_SCENARINO_ID, START_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_REAL_FORECAST
+    where REAL_FORECAST_ID = #{realForecastId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_REAL_FORECAST
+    where REAL_FORECAST_ID = #{realForecastId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TRealForecast" >
+    insert into T_REAL_FORECAST (REAL_FORECAST_ID, USER_ID, CREATE_TIME, 
+      FORECAST_SCENARINO_TYPE, RANGE_DAY, UPDATE_TIME, 
+      FORECAST_STATUS, SPINUP, BASE_SCENARINO_ID, 
+      START_TIME)
+    values (#{realForecastId,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{forecastScenarinoType,jdbcType=DECIMAL}, #{rangeDay,jdbcType=DECIMAL}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{forecastStatus,jdbcType=DECIMAL}, #{spinup,jdbcType=DECIMAL}, #{baseScenarinoId,jdbcType=DECIMAL}, 
+      #{startTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TRealForecast" >
+    insert into T_REAL_FORECAST
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="realForecastId != null" >
+        REAL_FORECAST_ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="forecastScenarinoType != null" >
+        FORECAST_SCENARINO_TYPE,
+      </if>
+      <if test="rangeDay != null" >
+        RANGE_DAY,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="forecastStatus != null" >
+        FORECAST_STATUS,
+      </if>
+      <if test="spinup != null" >
+        SPINUP,
+      </if>
+      <if test="baseScenarinoId != null" >
+        BASE_SCENARINO_ID,
+      </if>
+      <if test="startTime != null" >
+        START_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="realForecastId != null" >
+        #{realForecastId,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="forecastScenarinoType != null" >
+        #{forecastScenarinoType,jdbcType=DECIMAL},
+      </if>
+      <if test="rangeDay != null" >
+        #{rangeDay,jdbcType=DECIMAL},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="forecastStatus != null" >
+        #{forecastStatus,jdbcType=DECIMAL},
+      </if>
+      <if test="spinup != null" >
+        #{spinup,jdbcType=DECIMAL},
+      </if>
+      <if test="baseScenarinoId != null" >
+        #{baseScenarinoId,jdbcType=DECIMAL},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TRealForecast" >
+    update T_REAL_FORECAST
+    <set >
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="forecastScenarinoType != null" >
+        FORECAST_SCENARINO_TYPE = #{forecastScenarinoType,jdbcType=DECIMAL},
+      </if>
+      <if test="rangeDay != null" >
+        RANGE_DAY = #{rangeDay,jdbcType=DECIMAL},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="forecastStatus != null" >
+        FORECAST_STATUS = #{forecastStatus,jdbcType=DECIMAL},
+      </if>
+      <if test="spinup != null" >
+        SPINUP = #{spinup,jdbcType=DECIMAL},
+      </if>
+      <if test="baseScenarinoId != null" >
+        BASE_SCENARINO_ID = #{baseScenarinoId,jdbcType=DECIMAL},
+      </if>
+      <if test="startTime != null" >
+        START_TIME = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where REAL_FORECAST_ID = #{realForecastId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TRealForecast" >
+    update T_REAL_FORECAST
+    set USER_ID = #{userId,jdbcType=DECIMAL},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      FORECAST_SCENARINO_TYPE = #{forecastScenarinoType,jdbcType=DECIMAL},
+      RANGE_DAY = #{rangeDay,jdbcType=DECIMAL},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      FORECAST_STATUS = #{forecastStatus,jdbcType=DECIMAL},
+      SPINUP = #{spinup,jdbcType=DECIMAL},
+      BASE_SCENARINO_ID = #{baseScenarinoId,jdbcType=DECIMAL},
+      START_TIME = #{startTime,jdbcType=TIMESTAMP}
+    where REAL_FORECAST_ID = #{realForecastId,jdbcType=DECIMAL}
+  </update>
+</mapper>
