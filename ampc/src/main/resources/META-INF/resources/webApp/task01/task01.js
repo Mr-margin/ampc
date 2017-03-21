@@ -46,7 +46,6 @@ function formVerify() {
   $.validator.addMethod("dateV", function (value, element) {
     var startD = value.substring(0, value.indexOf('至'));
     var endD = value.substring(value.indexOf('至') + 1);
-    console.log(startD, endD);
 
     if(rwTypeV == 'y'){
       var s = moment(startD).isBefore(moment());
@@ -222,7 +221,7 @@ function initRwTable() {
     },
     onLoadSuccess: function (data) {
       selectRW = data.rows[0];
-      QJheight = data.rows.length * 57 + 98;
+      QJheight = data.rows.length * 69 + 98;
       $('.qjtableDiv').css('background-color', '#d9edf7');
       //QJheight = $('.rwtableDiv').height();
 
@@ -253,6 +252,8 @@ function initRwTable() {
 
 /*筛选*/
 function statusRWfun(status, t) {
+	$('.btn-primary.btn-danger').removeClass('btn-danger');
+  $(t).addClass('btn-danger');
   $('.seeName').html($(t).children('a').html());
   statusRW = status;
   search('rw');
@@ -392,7 +393,7 @@ function initQjTable() {
 
 /*format 函数*/
 function rwName(v, row, i) {
-  return '<a href="javascript:">' + row.missionName + '</a><br><a style="font-size:12px; color:#a1a1a1;">创建时间：' + moment(row.missionAddTime).format('YYYY-MM-DD HH') + '</a>'
+  return '<h3><a href="javascript:">' + row.missionName + '</a></h3><a style="font-size:12px; color:#a1a1a1;">创建时间：' + moment(row.missionAddTime).format('YYYY-MM-DD HH') + '</a>'
 }
 
 function rwType(v, row, i) {
@@ -413,7 +414,7 @@ function rwDomain(v, row, i) {
 }
 
 function qjName(v, row, i) {
-  return '<a href="#/yabj">' + row.scenarinoName + '</a><br>' +
+  return '<h3><a href="#/yabj">' + row.scenarinoName + '</a></h3>' +
     '<a style="font-size:12px; color:#a1a1a1;">创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH') + '</a><br/>' +
     '<a style="font-size:12px; color:#a1a1a1;">起止日期：' + moment(row.scenarinoStartDate).format('YYYY-MM-DD') + ' 至 ' + moment(row.scenarinoEndDate).format('YYYY-MM-DD') + '</a>'
 }
@@ -442,9 +443,9 @@ function qjOrder(v, row, i) {
     '<button class="btn btn-primary">暂停</button>'
 }
 
-function qjEffectEvaluation(v, row, i) {
-  return '<button class="btn btn-primary mb10 mr10">效果评估</button>'
-}
+//function qjEffectEvaluation(v, row, i) {
+//  return '<button class="btn btn-primary mb10 mr10">效果评估</button>'
+//}
 
 
 /*delete 函数*/
@@ -937,6 +938,15 @@ function initRwDate(s, e, end) {
     rwStartDate = start.format('YYYY-MM-DD');
     rwEndDate = end.format('YYYY-MM-DD');
   })
+  var d = $('#rwDate').data('daterangepicker');
+  d.element.off();
+}
+
+/*按钮打开日期*/
+//($('#rwDate').data('daterangepicker')).element.on('click.daterangepicker',function(){});
+function showRwDate(){
+  var d = $('#rwDate').data('daterangepicker');
+  d.toggle();
 }
 
 /*创建情景时选择模态框*/
@@ -970,12 +980,12 @@ function setSelectDate(qjS, qjE, pathD) {
   var dateArr = [];
   if (pathD) {
     var p = moment(pathD);
-    while (p.format('YYYY-MM-DD') > qjS) {
+    while (!(p.isBefore(moment(qjS),'d'))) {
       dateArr.push(p.subtract(1, 'd').format('YYYY-MM-DD'));
     }
   } else {
     var e = moment(qjE);
-    while (e.format('YYYY-MM-DD') > qjS) {
+    while (!(e.isBefore(moment(qjS),'d'))) {
       dateArr.push(e.format('YYYY-MM-DD'));
       e.subtract(1, 'd');
     }
