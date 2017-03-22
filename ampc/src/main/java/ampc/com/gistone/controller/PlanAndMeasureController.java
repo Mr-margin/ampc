@@ -1110,9 +1110,7 @@ public class PlanAndMeasureController {
 		}
 	}
 	
-	
 	/**
-	 * TODO
 	 * 数据的减排计算
 	 * @author WangShanxi
 	 * @param pmIds 预案措施Id集合
