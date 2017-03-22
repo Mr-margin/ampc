@@ -1174,4 +1174,20 @@ public class MissionAndScenarinoController {
 			return AmpcResult.build(1000, "参数错误",null);				
 		}
 	}
+	
+	@RequestMapping("scenarino/find_Scenarino_status")
+	public AmpcResult find_Scenarino_status(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());
+			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+			JSONObject obj=new JSONObject();
+			obj.put("scenarinoStatus", tScenarinoDetail.getScenarinoStatus());
+		  return AmpcResult.build(0, "success",obj);	
+		}catch(Exception e){
+			e.printStackTrace();
+			 return AmpcResult.build(1000, "参数错误",null);	
+		}
+	}
 }
