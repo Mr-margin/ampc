@@ -66,7 +66,8 @@ public class PlanAndMeasureController {
 	// 措施汇总调用减排分析时使用的接口Url
 	private static final String JPJSURL = "http://192.168.1.36:8089/calc/submit/subSector";
 	//区域调用减排分析时使用的接口Url
-	private String urlAreaJPURL="http://192.168.1.36:8089/calc/submit/analysis?jobId=";
+	private String AreaJPURL="http://192.168.1.36:8089/calc/submit/analysis?jobId=";
+	private String AreaStatusJPURL="http://192.168.1.36:8089/calc/status?jobId=";
 	// 情景映射
 	@Autowired
 	private TScenarinoDetailMapper tScenarinoDetailMapper;
@@ -486,7 +487,6 @@ public class PlanAndMeasureController {
 			} else {
 				map.put("sectorName", null);
 			}
-			ObjectMapper mapper = new ObjectMapper();
 			// 查询措施
 			List<Map> list = tPlanMeasureMapper.selectByQuery(map);
 			for (int i = 0; i < list.size(); i++) {
@@ -895,14 +895,12 @@ public class PlanAndMeasureController {
 			// 调用减排计算接口 并获取结果Json
 			String getResult = ClientUtil.doPost(JPJSURL, str);
 			System.out.println(getResult);
-			// 创建Json处理对象
-			ObjectMapper MAPPER = new ObjectMapper();
 			// 并根据减排分析得到的结果进行JsonTree的解析
-			JsonNode jsonNode = MAPPER.readTree(getResult);
+			JsonNode jsonNode = mapper.readTree(getResult);
 			// 获取到data中的Json数据
 			JsonNode dataNode = jsonNode.get("data");
 			// 讲数据转换成Map
-			Map dataMap = MAPPER.readValue(dataNode.toString(), Map.class);
+			Map dataMap = mapper.readValue(dataNode.toString(), Map.class);
 			// 每一个对象对应一个预案措施
 			for (Object obj : dataMap.keySet()) {
 				Map map=(Map) dataMap.get(obj);
@@ -980,15 +978,14 @@ public class PlanAndMeasureController {
 			String str = json.toString();
 			System.out.println(str);
 			// 调用减排计算接口 并获取结果Json
-			urlAreaJPURL+=scenarinoId;
-			String getResult = ClientUtil.doPost(urlAreaJPURL, str);
-			// 创建Json处理对象
-			ObjectMapper MAPPER = new ObjectMapper();
+			AreaJPURL+=scenarinoId;
+			String getResult = ClientUtil.doPost(AreaJPURL, str);
 			// 并根据减排分析得到的结果进行JsonTree的解析
-			Map map=MAPPER.readValue(getResult, Map.class);
+			Map map=mapper.readValue(getResult, Map.class);
 			if(map.get("status").toString().equals("success")){
 				TScenarinoDetail tsd=new TScenarinoDetail();
 				tsd.setScenarinoId(scenarinoId);
+				tsd.setRatioStartDate(new Date());
 				tsd.setScenarinoStatus(3l);
 				int update=tScenarinoDetailMapper.updateByPrimaryKeySelective(tsd);
 				if(update>0){
@@ -1004,6 +1001,93 @@ public class PlanAndMeasureController {
 		}
 	}
 
+	/**
+	 * 区域数据的减排状态查询
+	 * @author WangShanxi
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
+	 * TODO
+	 */
+	@RequestMapping("/jp/areaStatusJp")
+	public AmpcResult areaStatusJp(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		// 添加异常捕捉
+		try {
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//情景Id
+			long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());
+			// 调用减排计算状态接口 并获取结果Json
+			AreaStatusJPURL+=scenarinoId;
+			String getResult = ClientUtil.doPost(AreaStatusJPURL);
+			// 并根据减排分析得到的结果进行JsonTree的解析
+			Map mapResult=mapper.readValue(getResult, Map.class);
+			if(mapResult.get("status").toString().equals("success")){
+				/**
+				 * 处理给返回的结果返给前台
+				 */
+				
+				return AmpcResult.ok("");
+			}else{
+				// 用户id
+				Long userId = Long.parseLong(data.get("userId").toString());
+				//值键对
+				Object object=data.get("areaAndPlanIds");
+				Map apMap=(Map)object;
+				//定义条件Map
+				Map mapQuery=new HashMap();
+				mapQuery.put("userId", userId);
+				// 创建一个减排的结果集合
+				List<JPResult> jpList = new ArrayList<JPResult>();
+				//循环获取到的区域ID key   预案Id value
+				for(Object apStr:apMap.keySet()){
+					//区域ID 
+					Object ap=apMap.get(apStr);
+					//获取当前区域下的所有时段上有预案的预案Id
+					List aplist=mapper.readValue(ap.toString(), ArrayList.class);
+					//循环预案Id集合
+					for (Object apo : aplist) {
+						mapQuery.put("planId", apo);
+						//根据条件查询 当前预案下的所有预案措施Id
+						List<Long> pmIds=tPlanMeasureMapper.selectIdByMap(mapQuery);
+						//如果该预案下包含措施 则需要调用减排计算的接口
+						if(pmIds!=null&&pmIds.size()>0){
+							tempCalc(pmIds,jpList);
+						}
+					}
+				}
+				// 将java对象转换为json对象
+				JSONArray json = JSONArray.fromObject(jpList);
+				String str = json.toString();
+				// 调用减排计算接口 并获取结果Json
+				AreaJPURL+=scenarinoId;
+				getResult = ClientUtil.doPost(AreaJPURL, str);
+				// 并根据减排分析得到的结果进行JsonTree的解析
+				Map map=mapper.readValue(getResult, Map.class);
+				if(map.get("status").toString().equals("success")){
+					TScenarinoDetail tsd=new TScenarinoDetail();
+					tsd.setScenarinoId(scenarinoId);
+					tsd.setRatioStartDate(new Date());
+					tsd.setScenarinoStatus(3l);
+					int update=tScenarinoDetailMapper.updateByPrimaryKeySelective(tsd);
+					if(update>0){
+						return AmpcResult.ok("计算错误,正在重新计算中");
+					}else{
+						return AmpcResult.build(1000,"修改失败");
+					}
+				}else{
+					return AmpcResult.build(1000,"计算异常");
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return AmpcResult.build(1000, "参数错误");
+		}
+	}
+	
+	
 	/**
 	 * 数据的减排计算
 	 * @author WangShanxi
