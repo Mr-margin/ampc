@@ -1411,6 +1411,24 @@ function jqztckBtn(){
   if(Object.keys(params.areaAndPlanIds).length >0){
     ajaxPost(url,params).success(function(res){
 
+      if(res.status == 0){
+        if(res.data.type == 0){
+          var jsjd = res.data.percent * 100 + '%';
+          var yys = moment(res.data.time*1000).subtract(8, 'h').format('HH时mm分ss秒');
+          var sysj = moment((res.data.time/res.data.percent - res.data.time)*1000).subtract(8, 'h').format('HH时mm分ss秒');
+
+          $('.jsjd').empty().html(jsjd);
+          $('.yys').empty().html(yys);
+          $('.sysj').empty().html(sysj);
+        }else if(res.data.type == 1){
+          console.log('重新计算中！！！')
+        }else{
+          console.log('计算接口异常')
+        }
+      }else{
+        console.log('接口故障')
+      }
+
     })}
 }
 
