@@ -13,7 +13,16 @@ public class TEmissionDetail {
     
     private String codeLevel;
 
+    private String reduce;
     
+	public String getReduce() {
+		return reduce;
+	}
+
+	public void setReduce(String reduce) {
+		this.reduce = reduce;
+	}
+
 	public String getCodeLevel() {
 		return codeLevel;
 	}
