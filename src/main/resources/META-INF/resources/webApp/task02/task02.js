@@ -28,7 +28,7 @@ var zTreeSetting = {
   check: {
     enable: true,
 //				autoCheckTrigger:true,
-    chkboxType: {"Y": "ys", "N": "ys"}, //子父级联动控制，仅子级联动
+    chkboxType: {"Y": "ps", "N": "ps"}, //设置父子联动
     chkDisabledInherit: true //是否沿用disabled
   },
   data: {
@@ -44,7 +44,7 @@ var zTreeSetting = {
   callback: {
     onCheck: function (e, t, tr) {
       var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
-      selectNode(tr);
+      //selectNode(tr);
       if (tr.checked) {
 //    	  setExtent(tr);
         if (tr.level == 0) {
@@ -1290,6 +1290,7 @@ function showAllCode(){
 function jpjsBtn(){
   var url = '/jp/areajp';
   var params = {
+    scenarinoId:qjMsg.qjId,
     areaAndPlanIds:{},
     userId:userId
   }
