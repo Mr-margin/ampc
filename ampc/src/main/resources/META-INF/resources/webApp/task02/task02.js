@@ -28,7 +28,7 @@ var zTreeSetting = {
   check: {
     enable: true,
 //				autoCheckTrigger:true,
-    chkboxType: {"Y": "ps", "N": "ps"}, //子父级联动控制，仅子级联动
+    chkboxType: {"Y": "ys", "N": "ys"}, //子父级联动控制，仅子级联动
     chkDisabledInherit: true //是否沿用disabled
   },
   data: {
@@ -44,7 +44,7 @@ var zTreeSetting = {
   callback: {
     onCheck: function (e, t, tr) {
       var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
-      //selectNode(tr);
+      selectNode(tr);
       if (tr.checked) {
 //    	  setExtent(tr);
         if (tr.level == 0) {
@@ -644,6 +644,10 @@ function editPlan(t) {
   msg.content.timeStartDate = allData[areaIndex].timeItems[timeIndex].timeStartDate;
   msg.content.planId = allData[areaIndex].timeItems[timeIndex].planId;
   msg.content.planName = allData[areaIndex].timeItems[timeIndex].planName;
+  msg.content.cityCodes = allData[areaIndex].cityCodes;
+  msg.content.countyCodes = allData[areaIndex].countyCodes;
+  msg.content.provinceCodes = allData[areaIndex].provinceCodes;
+
   vipspa.setMessage(msg);
 
   if (msg.content.planId == -1)return;
@@ -915,6 +919,9 @@ $('#addYA').on('show.bs.modal', function (event) {
   msg.content.timeId = allData[areaIndex].timeItems[timeIndex].timeId;
   msg.content.timeEndDate = allData[areaIndex].timeItems[timeIndex].timeEndDate;
   msg.content.timeStartDate = allData[areaIndex].timeItems[timeIndex].timeStartDate;
+  msg.content.cityCodes = allData[areaIndex].cityCodes;
+  msg.content.countyCodes = allData[areaIndex].countyCodes;
+  msg.content.provinceCodes = allData[areaIndex].provinceCodes;
 });
 
 $('#delTime').on('show.bs.modal', function (event) {
@@ -997,7 +1004,6 @@ function level0(node) {
       }
     }
   }
-
 }
 
 function level12(node) {
