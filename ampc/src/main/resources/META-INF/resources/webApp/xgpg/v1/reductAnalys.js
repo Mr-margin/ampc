@@ -171,51 +171,39 @@ InitSubTable = function (index, row, $detail) {
         //uniqueId: "MENU_ID",
         columns: [{
             field: 'xzArea',
-            title: '县',
             align: 'center'
         }, {
             field: 'PM25name',
-            title: 'PM2.5',
             align: 'center'
         }, {
             field: 'PM10name',
-            title: 'PM10',
             align: 'center'
         }, {
             field: 'SO2name',
-            title: 'SO2',
             align: 'center'
         }, {
             field: 'NOXname',
-            title: 'NOX',
             align: 'center'
         }, {
             field: 'VOCname',
-            title: 'VOC',
             align: 'center'
         }, {
             field: 'COname',
-            title: 'CO',
             align: 'center'
         }, {
             field: 'NH3name',
-            title: 'NH3',
             align: 'center'
         }, {
             field: 'BCname',
-            title: 'BC',
             align: 'center'
         }, {
             field: 'OCname',
-            title: 'OC',
             align: 'center'
         }, {
             field: 'PMFINEname',
-            title: 'PMFINE',
             align: 'center'
         }, {
             field: 'PMCname',
-            title: 'PMC',
             align: 'center'
         }],
         data:[{
