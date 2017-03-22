@@ -20,4 +20,5 @@ public interface TEmissionDetailMapper {
     int updateByPrimaryKey(TEmissionDetail record);
     
     List<TEmissionDetail> selectByEntity(TEmissionDetail record);
+    TEmissionDetail selectBycodeAndDate(TEmissionDetail record);
 }
