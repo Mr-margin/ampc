@@ -1,6 +1,5 @@
 package ampc.com.gistone.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.sql.Clob;
 import java.sql.SQLException;
@@ -22,9 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationConfig;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMeasureExcelMapper;
@@ -50,7 +47,6 @@ import ampc.com.gistone.entity.SMUtil;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.DateUtil;
-import ampc.com.gistone.util.ExcelToDate;
 
 /**
  * 预案措施控制类
@@ -1003,7 +999,7 @@ public class PlanAndMeasureController {
 				//修改情景执行状态
 				int update=tScenarinoDetailMapper.updateByPrimaryKeySelective(tsd);
 				if(update>0){
-					return AmpcResult.ok("计算成功，等待结果中！");
+					return AmpcResult.ok(1);
 				}else{
 					return AmpcResult.build(1000,"修改失败");
 				}
