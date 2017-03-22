@@ -1415,7 +1415,7 @@ function jqztckBtn(){
 }
 
 $('#jqzt').on('show.bs.modal', function (event) {
-  
+  jqztckBtn();
 })
 
 
