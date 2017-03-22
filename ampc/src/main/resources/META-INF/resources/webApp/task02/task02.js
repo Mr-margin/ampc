@@ -151,6 +151,8 @@ function clearAllArea() {
 
 /*情景计算状态*/
 function scenarinoType(typeNum){
+  $('.toolShow').removeAttr('disabled');
+  $('.addNewArea').removeAttr('disabled');
   switch (typeNum){
     case 1:
       $('.jpjs').attr('disabled',true);
@@ -165,6 +167,8 @@ function scenarinoType(typeNum){
       $('.jpfx').attr('disabled',true);
       break;
     case 3:
+      $('.toolShow').attr('disabled',true);
+      $('.addNewArea').attr('disabled',true);
     case 4:
       $('.jpjs').addClass('disNone');
       $('.jpztck').removeClass('disNone');
@@ -1375,6 +1379,9 @@ function jpjsBtn(){
         if(res.data == 1){
           $('.jpjs').addClass('disNone');
           $('.jpztck.disNone').removeClass('disNone');
+
+          $('.toolShow').removeAttr('disabled');
+          $('.addNewArea').removeAttr('disabled');
         }else{
           console.log('计算异常')
         }
@@ -1420,6 +1427,22 @@ function jqztckBtn(){
           $('.jsjd').empty().html(jsjd);
           $('.yys').empty().html(yys);
           $('.sysj').empty().html(sysj);
+
+          if(res.data.percent == 1){
+            var url = '/scenarino/find_Scenarino_status';
+            ajaxPost(url,{
+              userId:userId,
+              scenarinoId:qjMsg.qjId
+            }).success(function(res){
+              qjMsg.scenarinoStatus = res.data.scenarinoStatus;
+              scenarinoType(qjMsg.scenarinoStatus);
+              if(qjMsg.scenarinoStatus == 2){
+                console.log('zheli haiyou panduan caozuo ')
+              }
+            })
+            $('.toolShow').removeAttr('disabled');
+            $('.addNewArea').removeAttr('disabled');
+          }
         }else if(res.data.type == 1){
           console.log('重新计算中！！！')
         }else{

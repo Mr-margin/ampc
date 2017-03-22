@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="addArea col-md-12 mt20">
-        <button class="btn btn-primary" data-new="true" data-toggle="modal" data-target="#editArea">添加区域</button>
+        <button class="btn btn-primary addNewArea" data-new="true" data-toggle="modal" data-target="#editArea">添加区域</button>
       </div>
     </div>
 
@@ -31,8 +31,8 @@
       </button>
       <button type="button" onclick="delArea(this)" class="btn btn-default btn-xs toolShow" title="删除区域"><i
           class="ec-trashcan"></i><span>删除区域</span></button>
-      <button type="button" class="btn btn-default btn-xs toolShow" title="添加时段" data-toggle="modal"
-              data-target="#qyTime"><i class="im-plus"></i><span>添加时段</span></button>
+      <!--<button type="button" class="btn btn-default btn-xs toolShow" title="添加时段" data-toggle="modal"-->
+              <!--data-target="#qyTime"><i class="im-plus"></i><span>添加时段</span></button>-->
     </div>
   </div>
   <!--模板代码 end-->
@@ -61,7 +61,7 @@
            <div class="sTime">
              <div class="sTimeOpType text-center">
                <div class="col-md-12">
-                 <button type="button" class="btn btn-primary btn-lg mt20 toolShow" data-dismiss="modal" onclick="openAddTimes()">添加时段</button>
+                 <button type="button" class="btn btn-primary btn-lg mt20" data-dismiss="modal" onclick="openAddTimes()">添加时段</button>
                </div>
                <div class="col-md-12">
                  <button class="btn btn-primary btn-lg mt20 delTimeBtn" data-dismiss="modal" onclick="openDelTimes()">删除时段</button>
