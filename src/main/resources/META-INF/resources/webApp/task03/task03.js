@@ -37,6 +37,7 @@ if(!qjMsg){
 }else{
   ls.setItem('yaMsg',JSON.stringify(qjMsg));
 }
+console.log(JSON.stringify(qjMsg));
 
 hyc();
 metTable_hj_info();
@@ -283,7 +284,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 	paramsName.planMeasureId = planMeasureId;
 	
 	sc_val = {};//初始化缓存
-	sc_val.bigIndex = "应急系统新_1描述文件.xlsx";
+	sc_val.bigIndex = qjMsg.esCouplingId;
 	sc_val.smallIndex = sectorsName;//记录行业
 	sc_val.filters = [];
 	sc_val.summary = {};
@@ -476,7 +477,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 			}
 			
 			if(res.data.query.length>0){//返回筛选条件，说明有点源可以筛选
-				ajaxPost_w(jianpaiUrl+'/search/companyCount',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName}).success(function(res){
+				ajaxPost_w(jianpaiUrl+'/search/companyCount',{"bigIndex":qjMsg.esCouplingId,"smallIndex":sectorsName}).success(function(res){
 //					console.log(JSON.stringify(res));
 					if(res.status == 'success'){
 						$("#dianyaunzushu").html("点源总数："+res.data.count);
@@ -532,7 +533,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 				},200);
 			}else{
 				//添加区域4的结果表格
-				ajaxPost_w(jianpaiUrl+'/search/summarySource',{"bigIndex":"应急系统新_1描述文件.xlsx","smallIndex":sectorsName,"summary":sc_val.summary}).success(function(da){
+				ajaxPost_w(jianpaiUrl+'/search/summarySource',{"bigIndex":qjMsg.esCouplingId,"smallIndex":sectorsName,"summary":sc_val.summary}).success(function(da){
 //					console.log(JSON.stringify(da));
 					if(da.status == 'success'){
 						var zz = {"f1": "汇总", "f2" : "0/"+da.data.P[0].count}, pp = {"f1": "剩余点源", "f2" : da.data.P[0].count}, ss = {"f1": "面源", "f2" : "0"};
@@ -1039,13 +1040,6 @@ var boolean_delete_sc_name = false;//记录是否删除过按名称筛选的结�
  * vval:id的值
  */
 function delete_sc_name(vval){
-//	var row = $('#metTable_name_point').bootstrapTable('getData');
-//	
-//	var rowq = $('#show_zicuoshi_table').bootstrapTable('getSelections');
-//	SKUNo = $.map(rowq, function (rowww) {  
-//        return rowww.state;  
-//    });
-	
 	$('#metTable_name_point').bootstrapTable('remove', {field: 'id',values: [vval]});
 	boolean_delete_sc_name = true;
 }
@@ -1068,22 +1062,33 @@ function xishuMo(){
  */
 function xishuMo_name(){
 	if(poi_name_or_pub == "name"){//记录当前的筛选条件是按照属性来，还是按照名称来
-		//先判断是否删除过筛选结果
-		if(boolean_delete_sc_name){
-			var row = $('#metTable_name_point').bootstrapTable('getData');//获取当前筛选结果剩余的值
-			if(row.length>0){
-				var ttdf = [];
-				//循环结果，获取所有记录的id
-				$.each(row, function(k, vol) {
+		var row = $('#metTable_name_point').bootstrapTable("getData");
+		if(row.length>0){
+			var ttdf = [];
+			var ttat = [];
+			var ttvt = "";
+			$.each(row, function(k, vol) {
+				//先判断是否删除过筛选结果
+				if(boolean_delete_sc_name){
 					ttdf.push(vol.id);
-				});
-				//替换缓存中的filters中的companyname
-				delete sc_val.filters[sc_val.filters.length-1].companyname;
-				sc_val.filters[sc_val.filters.length-1].id = ttdf;
+				}
+				if(ttvt != vol.companyname){//重复的企业名称排除
+					ttat.push(vol.companyname);//记录所有的企业名称
+					ttvt = vol.companyname;
+				}
+			});
+			if(ttat.length == 1){//只有一个企业的时候，才可以继续
+				if(boolean_delete_sc_name){//先判断是否删除过筛选结果
+					//替换缓存中的filters中的companyname
+					delete sc_val.filters[sc_val.filters.length-1].companyname;
+					sc_val.filters[sc_val.filters.length-1].id = ttdf;
+				}
+				xishuMo();
+			}else{
+				swal('只能对单个企业设置控制措施', '', 'error');
 			}
 		}
 	}
-	xishuMo();
 }
 
 var zicuoshi_up_index;//修改或者删除的时候记录的子措施的行号
@@ -1120,12 +1125,14 @@ function xishu_save(){
 //					var re3 = new RegExp("\"","g");
 					
 					var tablejieguo = "";
+					var row = $('#metTable_name_point').bootstrapTable("getData");
+					
 					$.each(sc_val.filters[sc_val.filters.length-1], function(k, vol) {//循环最后一个条件，这个条件是要添加显示的条件
 						if(k == "companyname"){
-							var re4 = new RegExp("%","g");
-							tablejieguo += "企业名称包含："+vol.replace(re4,"")+",";
+//							var re4 = new RegExp("%","g");
+							tablejieguo += "企业名称："+row[0].companyname+",";
 						}else if(k == "id"){
-							tablejieguo += "企业编号："+vol+",";
+							tablejieguo += "企业名称："+row[0].companyname+",";
 						}else{
 							$.each(query, function(i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
 								if(col.queryEtitle == k){
@@ -1741,7 +1748,7 @@ function optionclick(event) {
 		}
 	})
 	var ert = {};
-	ert.bigIndex = "应急系统新_1描述文件.xlsx";
+	ert.bigIndex = qjMsg.esCouplingId;
 	ert.smallIndex = sc_val.smallIndex;
 	ert.filters = [{"companyId":companyId}];
 	ert.summary = sc_val.summary;
