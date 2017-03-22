@@ -149,6 +149,45 @@ function clearAllArea() {
 }
 
 
+/*情景计算状态*/
+function scenarinoType(typeNum){
+  switch (typeNum){
+    case 1:
+      $('.jpjs').attr('disabled',true);
+      $('.jpjs').removeClass('disNone');
+      $('.jpztck').addClass('disNone');
+      $('.jpfx').attr('disabled',true);
+      break;
+    case 2:
+      $('.jpjs').removeAttr('disabled');
+      $('.jpjs').removeClass('disNone');
+      $('.jpztck').addClass('disNone');
+      $('.jpfx').attr('disabled',true);
+      break;
+    case 3:
+    case 4:
+      $('.jpjs').addClass('disNone');
+      $('.jpztck').removeClass('disNone');
+      $('.jpfx').attr('disabled',true);
+      break;
+    case 5:
+      $('.jpjs').removeAttr('disabled');
+      $('.jpjs').removeClass('disNone');
+      $('.jpztck').addClass('disNone');
+      $('.jpfx').removeAttr('disabled');
+      break;
+    case 6:
+    case 7:
+    case 8:
+      $('.jpjs').attr('disabled',true);
+      $('.jpjs').removeClass('disNone');
+      $('.jpztck').addClass('disNone');
+      $('.jpfx').removeAttr('disabled');
+      break;
+  }
+}
+
+
 initialize();
 
 
@@ -166,9 +205,21 @@ function initialize() {
   qjMsg = vipspa.getMessage('qjMessage').content;
 
   if (!qjMsg) {
+    var url = '/scenarino/find_Scenarino_status';
     qjMsg = JSON.parse(ls.getItem('qjMsg'));
+    ajaxPost(url,{
+      userId:userId,
+      scenarinoId:qjMsg.qjId
+    }).success(function(res){
+      qjMsg.scenarinoStatus = res.data.scenarinoStatus;
+      scenarinoType(qjMsg.scenarinoStatus);
+      if(qjMsg.scenarinoStatus == 2){
+        console.log('zheli haiyou panduan caozuo ')
+      }
+    })
   } else {
     ls.setItem('qjMsg', JSON.stringify(qjMsg));
+    scenarinoType(qjMsg.scenarinoStatus)
   }
 
   $('.qyCon .nowRw span').html(qjMsg.rwName);
@@ -1319,10 +1370,53 @@ function jpjsBtn(){
 
   if(Object.keys(params.areaAndPlanIds).length >0){
     ajaxPost(url,params).success(function(res){
-      console.log(res)
+      console.log(res);
+      if(res.status == 0){
+        if(res.data == 1){
+          $('.jpjs').addClass('disNone');
+          $('.jpztck.disNone').removeClass('disNone');
+        }else{
+          console.log('计算异常')
+        }
+
+        /*这里控制所有禁止操作*/
+
+      }else{
+        console.log('接口异常')
+      }
     })
   }
 }
+
+/*减排状态查看*/
+function jqztckBtn(){
+  var url = '/jp/areaStatusJp';
+  var params = {
+    scenarinoId:qjMsg.qjId,
+    areaAndPlanIds:{},
+    userId:userId
+  }
+  for(var i=0;i<allData.length;i++){
+    var planArr = [];
+    var times = allData[i].timeItems;
+    for(var p=0;p<times.length;p++){
+      if(times[p].planId !=-1){
+        planArr.push(times[p].planId)
+      }
+    }
+    if(planArr.length>0){
+      params.areaAndPlanIds[allData[i].areaId] = planArr
+    }
+  }
+  if(Object.keys(params.areaAndPlanIds).length >0){
+    ajaxPost(url,params).success(function(res){
+
+    })}
+}
+
+$('#jqzt').on('show.bs.modal', function (event) {
+  
+})
 
 
 

@@ -356,6 +356,8 @@ function initQjTable() {
       msg.content.qjEndDate = row.scenarinoEndDate;
       msg.content.esCouplingId = selectRW.esCouplingId;
       msg.content.esCouplingName = selectRW.esCouplingName;
+      msg.content.scenarinoStatus = row.scenarinoStatus;
+      msg.content.scenarinoStatuName = row.scenarinoStatuName;
       vipspa.setMessage(msg);
     },
     /*复选框设置*/
