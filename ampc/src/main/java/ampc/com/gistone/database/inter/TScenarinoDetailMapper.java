@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import ampc.com.gistone.database.model.TScenarinoDetail;
+
 /**
  * 情景映射
  * @author WangShanxi
@@ -63,7 +64,12 @@ public interface TScenarinoDetailMapper {
      * @return
      */
     int updateIsEffeByIds(List<Long> list);
-	
+    
+  List<TScenarinoDetail> selectAllByMissionId(Long missionId);
+    
+    Date selectMaxEndTime();
+    
+    TScenarinoDetail selectid(TScenarinoDetail tScenarinoDetail);
     int deleteByPrimaryKey(Long scenarinoId);
 
     int insert(TScenarinoDetail record);
@@ -75,10 +81,4 @@ public interface TScenarinoDetailMapper {
     int updateByPrimaryKeySelective(TScenarinoDetail record);
 
     int updateByPrimaryKey(TScenarinoDetail record);
-    
-    List<TScenarinoDetail> selectAllByMissionId(Long missionId);
-    
-    Date selectMaxEndTime();
-    
-    TScenarinoDetail selectid(TScenarinoDetail tScenarinoDetail);
 }
