@@ -996,7 +996,7 @@ function level0(node) {
       }
     }
   } else {
-    treeObj.checkNode(node, false, false, false);
+    //treeObj.checkNode(node, false, false, false);
     var child = node.children;
     for(var ch=0;ch<child.length;ch++){
       if (!child[ch].chkDisabled) {
@@ -1029,7 +1029,7 @@ function level12(node) {
     }
   } else {
 //    delete showCode[node.level][parNode.adcode];
-    treeObj.checkNode(node, false, false, false);
+//    treeObj.checkNode(node, false, false, false);
     var child = node.children;
     if (!showCode[node.level + 1][node.adcode]) {
       showCode[node.level + 1][node.adcode] = {};
@@ -1044,7 +1044,15 @@ function level12(node) {
 }
 
 function delNode0(node) {
-  delete showCode[node.level][node.adcode]
+  delete showCode[node.level][node.adcode];
+  delete showCode[node.level+1][node.adcode];
+  var ad = node.adcode.substr(0,2);
+  var show = showCode[2];
+  for(var i in show){
+    if(i.substr(0,2) == ad){
+      delete showCode[2][i];
+    }
+  }
 }
 
 function delNode12(node) {
@@ -1058,7 +1066,9 @@ function delNode12(node) {
     showCode[node.level][parNode.adcode] = {};
     var child = parNode.children;
     for (var n = 0; n < child.length; n++) {
-      showCode[node.level][parNode.adcode][child[n].adcode] = child[n].name;
+      if(!child[n].chkDisabled){
+        showCode[node.level][parNode.adcode][child[n].adcode] = child[n].name;
+      }
     }
   }
   delete showCode[node.level][parNode.adcode][node.adcode];
