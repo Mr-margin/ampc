@@ -13,14 +13,35 @@ public class TEmissionDetail {
     
     private String codeLevel;
 
-    private String reduce;
+    private String measureReduce;
     
-	public String getReduce() {
-		return reduce;
+    private String emissionType;
+    
+    private Long scenarunoId;
+
+
+	public String getMeasureReduce() {
+		return measureReduce;
 	}
 
-	public void setReduce(String reduce) {
-		this.reduce = reduce;
+	public void setMeasureReduce(String measureReduce) {
+		this.measureReduce = measureReduce;
+	}
+
+	public String getEmissionType() {
+		return emissionType;
+	}
+
+	public void setEmissionType(String emissionType) {
+		this.emissionType = emissionType;
+	}
+
+	public Long getScenarunoId() {
+		return scenarunoId;
+	}
+
+	public void setScenarunoId(Long scenarunoId) {
+		this.scenarunoId = scenarunoId;
 	}
 
 	public String getCodeLevel() {
