@@ -5,12 +5,13 @@
     <id column="EMISSION_ID" property="emissionId" jdbcType="DECIMAL" />
     <result column="EMISSION_DATE" property="emissionDate" jdbcType="DATE" />
     <result column="CODE" property="code" jdbcType="VARCHAR" />
+    <result column="CODELEVEL" property="codeLevel" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.database.model.TEmissionDetail" extends="BaseResultMap" >
     <result column="EMISSION_DETAILS" property="emissionDetails" jdbcType="CLOB" />
   </resultMap>
   <sql id="Base_Column_List" >
-    EMISSION_ID, EMISSION_DATE, CODE
+    EMISSION_ID, EMISSION_DATE, CODE, CODELEVEL
   </sql>
   <sql id="Blob_Column_List" >
     EMISSION_DETAILS
@@ -29,9 +30,9 @@
   </delete>
   <insert id="insert" parameterType="ampc.com.gistone.database.model.TEmissionDetail" >
     insert into T_EMISSION_DETAIL (EMISSION_ID, EMISSION_DATE, CODE, 
-      EMISSION_DETAILS)
+      EMISSION_DETAILS,CODELEVEL)
     values (#{emissionId,jdbcType=DECIMAL}, #{emissionDate,jdbcType=DATE}, #{code,jdbcType=VARCHAR}, 
-      #{emissionDetails,jdbcType=CLOB})
+      #{emissionDetails,jdbcType=CLOB}, #{codeLevel,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TEmissionDetail" >
     insert into T_EMISSION_DETAIL
@@ -48,6 +49,9 @@
       <if test="emissionDetails != null" >
         EMISSION_DETAILS,
       </if>
+      <if test="codeLevel != null" >
+        CODELEVEL,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="emissionId != null" >
@@ -61,6 +65,9 @@
       </if>
       <if test="emissionDetails != null" >
         #{emissionDetails,jdbcType=CLOB},
+      </if>
+      <if test="codeLevel != null" >
+        #{codeLevel,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -76,6 +83,9 @@
       <if test="emissionDetails != null" >
         EMISSION_DETAILS = #{emissionDetails,jdbcType=CLOB},
       </if>
+      <if test="codeLevel != null" >
+        CODELEVEL = #{codeLevel,jdbcType=VARCHAR},
+      </if>
     </set>
     where EMISSION_ID = #{emissionId,jdbcType=DECIMAL}
   </update>
@@ -83,13 +93,38 @@
     update T_EMISSION_DETAIL
     set EMISSION_DATE = #{emissionDate,jdbcType=DATE},
       CODE = #{code,jdbcType=VARCHAR},
+      CODELEVEL = #{codeLevel,jdbcType=VARCHAR},
       EMISSION_DETAILS = #{emissionDetails,jdbcType=CLOB}
-    where EMISSION_ID = #{emissionId,jdbcType=DECIMAL}
+  where EMISSION_ID = #{emissionId,jdbcType=DECIMAL}
   </update>
   <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TEmissionDetail" >
     update T_EMISSION_DETAIL
     set EMISSION_DATE = #{emissionDate,jdbcType=DATE},
+     CODELEVEL = #{codeLevel,jdbcType=VARCHAR},
       CODE = #{code,jdbcType=VARCHAR}
     where EMISSION_ID = #{emissionId,jdbcType=DECIMAL}
   </update>
+  <select id="selectByEntity" resultMap="ResultMapWithBLOBs" parameterType="ampc.com.gistone.database.model.TEmissionDetail" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from T_EMISSION_DETAIL
+    where 1=1
+     <if test="emissionDate != null" >
+       and EMISSION_DATE = #{emissionDate,jdbcType=DATE}
+      </if>
+      <if test="code != null" >
+       and CODE = #{code,jdbcType=VARCHAR}
+      </if>
+      <if test="emissionDetails != null" >
+       and EMISSION_DETAILS = #{emissionDetails,jdbcType=CLOB}
+      </if>
+      <if test="codeLevel != null" >
+       and CODELEVEL = #{codeLevel,jdbcType=VARCHAR}
+      </if>
+      <if test="emissionId != null" >
+      EMISSION_ID = #{emissionId,jdbcType=DECIMAL}
+       </if>
+  </select>
 </mapper>
