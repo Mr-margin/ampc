@@ -799,11 +799,21 @@ public class PlanAndMeasureController {
 				tPlanMeasure.setPlanMeasureId(planMeasureId);
 				int updatestatus = tPlanMeasureMapper.updateByPrimaryKeySelective(tPlanMeasure);
 				// 判断是否成功
-				if (updatestatus != 0) {
-					return AmpcResult.ok("修改成功");
-				} else {
-					return AmpcResult.build(1000, "修改失败");
-				}
+				if (updatestatus > 0) {
+					// 添加信息到参数中
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("planId", planId);
+					map.put("userId", userId);
+					map.put("sectorName", sectorName);
+					//查询所有的预案措施
+					List<Long> plist = tPlanMeasureMapper.selectIdByMap(map);
+					//因为进行删除了 则要把所有的减排结果进行刷新
+					int update_status = tPlanMeasureMapper.updateRatio(plist);
+					if (update_status >= 0) {
+						return AmpcResult.ok("修改成功");
+					}
+				} 
+				return AmpcResult.build(1000, "修改失败");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -848,7 +858,9 @@ public class PlanAndMeasureController {
 				map.put("planId", planId);
 				map.put("userId", userId);
 				map.put("sectorName", sectorName);
+				//查询所有的预案措施
 				List<Long> plist = tPlanMeasureMapper.selectIdByMap(map);
+				//因为进行删除了 则要把所有的减排结果进行刷新
 				int update_status = tPlanMeasureMapper.updateRatio(plist);
 				if (update_status >= 0) {
 					return AmpcResult.ok("删除成功");
@@ -894,13 +906,13 @@ public class PlanAndMeasureController {
 			System.out.println(str);
 			// 调用减排计算接口 并获取结果Json
 			String getResult = ClientUtil.doPost(JPJSURL, str);
-			System.out.println(getResult);
 			// 并根据减排分析得到的结果进行JsonTree的解析
-			JsonNode jsonNode = mapper.readTree(getResult);
-			// 获取到data中的Json数据
-			JsonNode dataNode = jsonNode.get("data");
+			Map mapResult=mapper.readValue(getResult, Map.class);
+			if(!mapResult.get("status").toString().equals("success")){
+				return AmpcResult.ok(-1);
+			}
 			// 讲数据转换成Map
-			Map dataMap = mapper.readValue(dataNode.toString(), Map.class);
+			Map dataMap = mapper.readValue(mapResult.get("data").toString(), Map.class);
 			// 每一个对象对应一个预案措施
 			for (Object obj : dataMap.keySet()) {
 				Map map=(Map) dataMap.get(obj);
@@ -976,17 +988,19 @@ public class PlanAndMeasureController {
 			// 将java对象转换为json对象
 			JSONArray json = JSONArray.fromObject(jpList);
 			String str = json.toString();
-			System.out.println(str);
 			// 调用减排计算接口 并获取结果Json
 			AreaJPURL+=scenarinoId;
 			String getResult = ClientUtil.doPost(AreaJPURL, str);
-			// 并根据减排分析得到的结果进行JsonTree的解析
+			// 并根据减排分析得到的结果进行Json的解析
 			Map map=mapper.readValue(getResult, Map.class);
+			//判断执行状态是否成功  如果成功就要修改情景的执行状态
 			if(map.get("status").toString().equals("success")){
 				TScenarinoDetail tsd=new TScenarinoDetail();
 				tsd.setScenarinoId(scenarinoId);
 				tsd.setRatioStartDate(new Date());
+				//3为计算减排中
 				tsd.setScenarinoStatus(3l);
+				//修改情景执行状态
 				int update=tScenarinoDetailMapper.updateByPrimaryKeySelective(tsd);
 				if(update>0){
 					return AmpcResult.ok("计算成功，等待结果中！");
@@ -994,7 +1008,8 @@ public class PlanAndMeasureController {
 					return AmpcResult.build(1000,"修改失败");
 				}
 			}
-			return AmpcResult.build(1000,"计算异常");
+			//-1代表计算接口出现异常
+			return AmpcResult.ok(-1);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误");
@@ -1007,7 +1022,6 @@ public class PlanAndMeasureController {
 	 * @param request 请求
 	 * @param response 响应
 	 * @return 返回响应结果对象
-	 * TODO
 	 */
 	@RequestMapping("/jp/areaStatusJp")
 	public AmpcResult areaStatusJp(@RequestBody Map<String, Object> requestDate,
@@ -1024,13 +1038,18 @@ public class PlanAndMeasureController {
 			String getResult = ClientUtil.doPost(AreaStatusJPURL);
 			// 并根据减排分析得到的结果进行JsonTree的解析
 			Map mapResult=mapper.readValue(getResult, Map.class);
+			Map resultMap=new HashMap();
+			//如果执行成功则返回前台对应信息
 			if(mapResult.get("status").toString().equals("success")){
-				/**
-				 * 处理给返回的结果返给前台
-				 */
-				
-				return AmpcResult.ok("");
+				Map map1=(Map)mapResult.get("data");
+				resultMap.put("type", 0);
+				//用了多少秒
+				resultMap.put("time", map1.get("time"));
+				//计算的百分比
+				resultMap.put("percent",map1.get("percent"));
+				return AmpcResult.ok(resultMap);
 			}else{
+				//重新进行计算
 				// 用户id
 				Long userId = Long.parseLong(data.get("userId").toString());
 				//值键对
@@ -1066,6 +1085,7 @@ public class PlanAndMeasureController {
 				getResult = ClientUtil.doPost(AreaJPURL, str);
 				// 并根据减排分析得到的结果进行JsonTree的解析
 				Map map=mapper.readValue(getResult, Map.class);
+				//判断执行状态是否成功  如果成功就要修改情景的执行状态
 				if(map.get("status").toString().equals("success")){
 					TScenarinoDetail tsd=new TScenarinoDetail();
 					tsd.setScenarinoId(scenarinoId);
@@ -1073,12 +1093,16 @@ public class PlanAndMeasureController {
 					tsd.setScenarinoStatus(3l);
 					int update=tScenarinoDetailMapper.updateByPrimaryKeySelective(tsd);
 					if(update>0){
-						return AmpcResult.ok("计算错误,正在重新计算中");
+						//正在进行重新计算减排中
+						resultMap.put("type", 1);
+						return AmpcResult.ok(resultMap);
 					}else{
 						return AmpcResult.build(1000,"修改失败");
 					}
 				}else{
-					return AmpcResult.build(1000,"计算异常");
+					//代表计算接口出现异常
+					resultMap.put("type", -1);
+					return AmpcResult.ok(resultMap);
 				}
 			}
 		} catch (Exception e) {
