@@ -6,16 +6,18 @@
     <result column="EMISSION_DATE" property="emissionDate" jdbcType="DATE" />
     <result column="CODE" property="code" jdbcType="VARCHAR" />
     <result column="CODELEVEL" property="codeLevel" jdbcType="VARCHAR" />
+    <result column="EMISSION_TYPE" property="emissionType" jdbcType="VARCHAR" />
+    <result column="SCENARINO_ID" property="scenarunoId" jdbcType="DECIMAL" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.database.model.TEmissionDetail" extends="BaseResultMap" >
     <result column="EMISSION_DETAILS" property="emissionDetails" jdbcType="CLOB" />
-    <result column="REDUCE" property="reduce" jdbcType="CLOB" />
+    <result column="MEASURE_REDUCE" property="measureReduce" jdbcType="CLOB" />
   </resultMap>
   <sql id="Base_Column_List" >
-    EMISSION_ID, EMISSION_DATE, CODE, CODELEVEL
+    EMISSION_ID, EMISSION_DATE, CODE, CODELEVEL, EMISSION_TYPE, SCENARINO_ID
   </sql>
   <sql id="Blob_Column_List" >
-    EMISSION_DETAILS, REDUCE
+    EMISSION_DETAILS, MEASURE_REDUCE
   </sql>
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
@@ -31,9 +33,11 @@
   </delete>
   <insert id="insert" parameterType="ampc.com.gistone.database.model.TEmissionDetail" >
     insert into T_EMISSION_DETAIL (EMISSION_ID, EMISSION_DATE, CODE, 
-      EMISSION_DETAILS,CODELEVEL,REDUCE)
+      EMISSION_DETAILS,CODELEVEL,MEASURE_REDUCE,EMISSION_TYPE, SCENARINO_ID)
     values (#{emissionId,jdbcType=DECIMAL}, #{emissionDate,jdbcType=DATE}, #{code,jdbcType=VARCHAR}, 
-      #{emissionDetails,jdbcType=CLOB}, #{codeLevel,jdbcType=VARCHAR},#{reduce,jdbcType=CLOB})
+      #{emissionDetails,jdbcType=CLOB}, #{codeLevel,jdbcType=VARCHAR},#{measureReduce,jdbcType=CLOB}, #{emissionType,jdbcType=VARCHAR},
+      #{scenarunoId,jdbcType=DECIMAL}
+      )
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TEmissionDetail" >
     insert into T_EMISSION_DETAIL
@@ -53,8 +57,14 @@
       <if test="codeLevel != null" >
         CODELEVEL,
       </if>
-      <if test="reduce != null" >
-        REDUCE,
+      <if test="measureReduce != null" >
+        MEASURE_REDUCE,
+      </if>
+      <if test="emissionType != null" >
+        EMISSION_TYPE,
+      </if>
+      <if test="scenarunoId != null" >
+        SCENARINO_ID,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -73,8 +83,14 @@
       <if test="codeLevel != null" >
         #{codeLevel,jdbcType=VARCHAR},
       </if>
-      <if test="reduce != null" >
-        #{reduce,jdbcType=CLOB},
+      <if test="measureReduce != null" >
+        #{measureReduce,jdbcType=CLOB},
+      </if>
+        <if test="emissionType != null" >
+        #{emissionType,jdbcType=VARCHAR},
+      </if>
+        <if test="scenarunoId != null" >
+        #{scenarunoId,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -93,8 +109,14 @@
       <if test="codeLevel != null" >
         CODELEVEL = #{codeLevel,jdbcType=VARCHAR},
       </if>
-      <if test="reduce != null" >
-        REDUCE = #{reduce,jdbcType=CLOB},
+      <if test="measureReduce != null" >
+        MEASURE_REDUCE = #{measureReduce,jdbcType=CLOB},
+      </if>
+      <if test="emissionType != null" >
+        EMISSION_TYPE = #{emissionType,jdbcType=VARCHAR},
+      </if>
+      <if test="scenarunoId != null" >
+        SCENARINO_ID = #{scenarunoId,jdbcType=DECIMAL},
       </if>
     </set>
     where EMISSION_ID = #{emissionId,jdbcType=DECIMAL}
@@ -105,14 +127,18 @@
       CODE = #{code,jdbcType=VARCHAR},
       CODELEVEL = #{codeLevel,jdbcType=VARCHAR},
       EMISSION_DETAILS = #{emissionDetails,jdbcType=CLOB},
-      REDUCE = #{reduce,jdbcType=CLOB}
+      MEASURE_REDUCE = #{measureReduce,jdbcType=CLOB},
+      EMISSION_TYPE = #{emissionType,jdbcType=VARCHAR},
+      SCENARINO_ID = #{scenarunoId,jdbcType=DECIMAL}
   where EMISSION_ID = #{emissionId,jdbcType=DECIMAL}
   </update>
   <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TEmissionDetail" >
     update T_EMISSION_DETAIL
     set EMISSION_DATE = #{emissionDate,jdbcType=DATE},
      CODELEVEL = #{codeLevel,jdbcType=VARCHAR},
-      CODE = #{code,jdbcType=VARCHAR}
+      CODE = #{code,jdbcType=VARCHAR},
+      EMISSION_TYPE = #{emissionType,jdbcType=VARCHAR},
+      SCENARINO_ID = #{scenarunoId,jdbcType=DECIMAL}
     where EMISSION_ID = #{emissionId,jdbcType=DECIMAL}
   </update>
   <select id="selectByEntity" resultMap="ResultMapWithBLOBs" parameterType="ampc.com.gistone.database.model.TEmissionDetail" >
@@ -135,10 +161,24 @@
        and CODELEVEL = #{codeLevel,jdbcType=VARCHAR}
       </if>
       <if test="emissionId != null" >
-      EMISSION_ID = #{emissionId,jdbcType=DECIMAL}
+       and EMISSION_ID = #{emissionId,jdbcType=DECIMAL}
        </if>
-       <if test="reduce != null" >
-       and REDUCE = #{reduce,jdbcType=CLOB}
+       <if test="measureReduce != null" >
+       and MEASURE_REDUCE = #{measureReduce,jdbcType=CLOB}
+      </if>
+      <if test="emissionType != null" >
+       and EMISSION_TYPE = #{emissionType,jdbcType=VARCHAR}
+      </if>
+      <if test="scenarunoId != null" >
+       and SCENARINO_ID = #{scenarunoId,jdbcType=DECIMAL}
       </if>
   </select>
+  <select id="selectBycodeAndDate" resultType="ampc.com.gistone.database.model.TEmissionDetail" parameterType="ampc.com.gistone.database.model.TEmissionDetail" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from T_EMISSION_DETAIL
+    where CODE = #{code,jdbcType=VARCHAR} and EMISSION_DATE = #{emissionDate,jdbcType=DATE}
+    </select>
 </mapper>
