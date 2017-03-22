@@ -909,8 +909,9 @@ public class PlanAndMeasureController {
 			if(!mapResult.get("status").toString().equals("success")){
 				return AmpcResult.ok(-1);
 			}
+			JSONObject jsonObject=JSONObject.fromObject(mapResult.get("data"));
 			// 讲数据转换成Map
-			Map dataMap = mapper.readValue(mapResult.get("data").toString(), Map.class);
+			Map dataMap = mapper.readValue(jsonObject.toString(), Map.class);
 			// 每一个对象对应一个预案措施
 			for (Object obj : dataMap.keySet()) {
 				Map map=(Map) dataMap.get(obj);
@@ -1033,6 +1034,7 @@ public class PlanAndMeasureController {
 			long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());
 			// 调用减排计算状态接口 并获取结果Json
 			AreaStatusJPURL+=scenarinoId;
+			System.out.println(AreaStatusJPURL);
 			String getResult = ClientUtil.doPost(AreaStatusJPURL);
 			// 并根据减排分析得到的结果进行JsonTree的解析
 			Map mapResult=mapper.readValue(getResult, Map.class);
