@@ -751,6 +751,7 @@ public class PlanAndMeasureController {
 			}
 			// 预案措施中的子措施Json串、
 			String measureContent = data.get("measureContent").toString();
+			System.out.println(measureContent);
 			TPlanMeasureWithBLOBs tPlanMeasure = new TPlanMeasureWithBLOBs();
 			tPlanMeasure.setMeasureId(measureId);
 			tPlanMeasure.setPlanId(planId);
@@ -767,6 +768,7 @@ public class PlanAndMeasureController {
 			cmap.put("table", HashMap.class);
 			cmap.put("table1", HashMap.class);
 			cmap.put("oopp", HashMap.class);
+			cmap.put("regionIds", ArrayList.class);
 			// 将json对象转换成Java对象
 			MeasureContentUtil mcu = (MeasureContentUtil) JSONObject.toBean(jsonobject, MeasureContentUtil.class, cmap);
 			// 获取汇总的集合
@@ -1109,6 +1111,7 @@ public class PlanAndMeasureController {
 	
 	
 	/**
+	 * TODO
 	 * 数据的减排计算
 	 * @author WangShanxi
 	 * @param pmIds 预案措施Id集合
@@ -1131,12 +1134,15 @@ public class PlanAndMeasureController {
 			cmap.put("table", HashMap.class);
 			cmap.put("table1", HashMap.class);
 			cmap.put("oopp", HashMap.class);
+			cmap.put("regionIds", ArrayList.class);
 			// 将json对象转换成Java对象
 			MeasureContentUtil mcu = (MeasureContentUtil) JSONObject.toBean(jsonobject, MeasureContentUtil.class, cmap);
 			// 写入BigIndex
 			result.setBigIndex(mcu.getBigIndex());
 			// 写入SmallIndex
 			result.setSmallIndex(mcu.getSmallIndex());
+			//写入行政区划代码
+			result.setRegionIds(mcu.getRegionIds());
 			// 写入行业名称
 			result.setGroupName(pmList.get(i).get("sectorName").toString());
 			// 写入预案开始时间
