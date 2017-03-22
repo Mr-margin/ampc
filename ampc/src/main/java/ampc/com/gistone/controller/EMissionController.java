@@ -41,7 +41,14 @@ public class EMissionController {
 	@Autowired
 	private TScenarinoDetailMapper tScenarinoDetailMapper;
 	
-	
+	/**
+	 * 保存减排计算结果
+	 * @param requestDate
+	 * @param JOBId
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping("save_emission")
 	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
 	public AmpcResult save_emission(@RequestBody Map<String,Object> requestDate,Long JOBId,HttpServletRequest request, HttpServletResponse response){
@@ -154,7 +161,7 @@ public class EMissionController {
 		}else{
 			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
 			tScenarinoDetail.setScenarinoId(scenarionId);
-			tScenarinoDetail.setScenarinoStatus(4l);
+			tScenarinoDetail.setScenarinoStatus(4l);//如参数状态为error修改情景的状态为4，执行失败
 			tScenarinoDetailMapper.updateByPrimaryKeySelective(tScenarinoDetail);
 			return AmpcResult.build(1000, "参数有误");	
 		}
