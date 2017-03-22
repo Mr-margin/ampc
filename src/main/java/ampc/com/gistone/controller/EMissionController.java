@@ -154,10 +154,11 @@ public class EMissionController {
 			tScenarinoDetail.setScenarinoStatus(8l);//如成功修改情景的状态为8，执行完毕
 			tScenarinoDetail.setRatioEndDate(thedate);
 			int s=tScenarinoDetailMapper.updateByPrimaryKeySelective(tScenarinoDetail);
+			if(scenarionId==null){
+				return AmpcResult.build(1000, "error","无情景id");
+			}
 			if(s!=0){
 			return AmpcResult.build(0, "success");
-			}else{
-				return AmpcResult.build(1000, "error","无情景id");
 			}
 		}
 		TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
