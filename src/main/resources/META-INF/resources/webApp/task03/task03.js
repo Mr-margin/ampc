@@ -994,7 +994,7 @@ function point_table () {
 		responseHandler: function (res) {
 			
 			if(res.status == 'success'){
-				add_point(res.data.company);
+//				add_point(res.data.company);
 				
 				
 				
