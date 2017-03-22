@@ -39,8 +39,40 @@ if(!qjMsg){
 }
 console.log(JSON.stringify(qjMsg));
 
+var Codes = [];
+$.each(qjMsg.cityCodes, function(i, col) {
+	$.each(col, function(k, vol) {
+		Codes.push(k);
+	});
+});
+$.each(qjMsg.countyCodes, function(k, col) {
+	$.each(col, function(k, vol) {
+		Codes.push(k);
+	});
+});
+$.each(qjMsg.provinceCodes, function(k, col) {
+	$.each(col, function(k, vol) {
+		Codes.push(k);
+	});
+});
+
+
+
 hyc();
 metTable_hj_info();
+
+/**
+ * 时间戳转成日期格式
+ * @param nS
+ * @returns
+ */
+function getLocalTime(nS) {     
+//    return new Date(parseInt(nS)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+//	return new Date(parseInt(nS) * 1000).toLocaleString().substr(0,17);
+//	return new Date(parseInt("/Date("+nS+")/".substr(6, 13))).toLocaleDateString()
+    return moment(nS).format('YYYY-MM-DD hh');
+}
+
 /**
  * 获取用户的行业与措施，页面初始化赋值
  */
@@ -51,6 +83,10 @@ function hyc(){
 	paramsName.timeId=qjMsg.timeId;
 	paramsName.timeStartTime=qjMsg.timeStartDate;
 	paramsName.timeEndTime=qjMsg.timeEndDate;
+	
+	$("#dangqianqingjing").html("当前情景："+qjMsg.qjName);
+	$("#dangqianquyu").html("当前区域："+qjMsg.areaName);
+	$("#dangqianshiduan").html("当前时段："+getLocalTime(qjMsg.timeStartDate)+" 时 至 "+getLocalTime(qjMsg.timeEndDate)+" 时");
 	
 	m_planId = qjMsg.planId;
 	$("#accordion").html("");
@@ -258,6 +294,7 @@ var xishu_temp_v = [];//需要填写的内容默认值
 var measureame_temp = "";//措施名称
 var measureame_temp_en = "";//措施名称英文
 var query = [];//返回的条件内容
+var zongdianyaun = [];//当前行业措施下的总的点源数据
 
 var m_mid,m_planId,m_sectorName,m_planMeasureId;
 
@@ -288,6 +325,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 	sc_val.smallIndex = sectorsName;//记录行业
 	sc_val.filters = [];
 	sc_val.summary = {};
+	sc_val.regionIds = Codes;
 	
 	var columns = [];
 	var b_data = [];
@@ -476,12 +514,16 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 				$("#xishuMO").html(xishuMO);
 			}
 			
+			zongdianyaun = [];
+			
 			if(res.data.query.length>0){//返回筛选条件，说明有点源可以筛选
-				ajaxPost_w(jianpaiUrl+'/search/companyCount',{"bigIndex":qjMsg.esCouplingId,"smallIndex":sectorsName}).success(function(res){
+				ajaxPost_w(jianpaiUrl+'/search/companyCount',{"bigIndex":qjMsg.esCouplingId,"smallIndex":sectorsName,"regionIds":Codes}).success(function(res){
 //					console.log(JSON.stringify(res));
 					if(res.status == 'success'){
 						$("#dianyaunzushu").html("点源总数："+res.data.count);
+						$("#xiangxizhibiao").html("点源排放占比:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SO<sub>2</sub>:"+res.data.rate.SO2+"%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO<sub>x</sub>:"+res.data.rate.NOx+"%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PM<sub>2.5</sub>:"+res.data.rate.PM25+"%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VOCs:"+res.data.rate.VOC+"%");
 						add_point(res.data.company);
+						zongdianyaun = res.data.company;//复制总点源数据以后备用
 					}else{
 						swal('连接错误search/companyCount', '', 'error');
 					}
@@ -521,7 +563,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 				delete measureContent.table[2].oopp;
 				b_data.push(measureContent.table[1]);
 				b_data.push(measureContent.table[2]);
-				console.log(JSON.stringify(measureContent));
+//				console.log(JSON.stringify(measureContent));
 				
 				delete measureContent.table;
 				delete measureContent.table1;
@@ -533,7 +575,8 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 				},200);
 			}else{
 				//添加区域4的结果表格
-				ajaxPost_w(jianpaiUrl+'/search/summarySource',{"bigIndex":qjMsg.esCouplingId,"smallIndex":sectorsName,"summary":sc_val.summary}).success(function(da){
+				console.log(JSON.stringify({"bigIndex":qjMsg.esCouplingId,"smallIndex":sectorsName,"summary":sc_val.summary,"regionIds":Codes}));
+				ajaxPost_w(jianpaiUrl+'/search/summarySource',{"bigIndex":qjMsg.esCouplingId,"smallIndex":sectorsName,"summary":sc_val.summary,"regionIds":Codes}).success(function(da){
 //					console.log(JSON.stringify(da));
 					if(da.status == 'success'){
 						var zz = {"f1": "汇总", "f2" : "0/"+da.data.P[0].count}, pp = {"f1": "剩余点源", "f2" : da.data.P[0].count}, ss = {"f1": "面源", "f2" : "0"};
@@ -550,7 +593,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 						b_data.push(zz);
 						b_data.push(pp);
 						b_data.push(ss);
-						console.log(JSON.stringify(b_data));
+//						console.log(JSON.stringify(b_data));
 						setTimeout(function(){
 							show_zicuoshi_table(columns, b_data);
 						},200);
@@ -939,8 +982,10 @@ function point_table () {
 		striped : true, // 使表格带有条纹
 		sidePagination : "server",// 表格分页的位置 client||server
 		queryParams : function(params) {
+			
 			var temp_sc_val = jQuery.extend(true, {}, sc_val);
 			delete temp_sc_val.summary;
+			temp_sc_val.regionIds = Codes;
 			temp_sc_val.pageHelper = {};
 			temp_sc_val.pageHelper.pageSize = params.limit;
 			temp_sc_val.pageHelper.pageNumber = params.offset;
@@ -949,6 +994,10 @@ function point_table () {
 		responseHandler: function (res) {
 			
 			if(res.status == 'success'){
+				add_point(res.data.company);
+				
+				
+				
 				
 				return res.data;
 			}else if(res.status == ''){
@@ -997,6 +1046,7 @@ function point_name_table () {
 		queryParams : function(params) {
 			var temp_sc_val = jQuery.extend(true, {}, sc_val);
 			delete temp_sc_val.summary;
+			temp_sc_val.regionIds = Codes;
 			console.log(JSON.stringify(temp_sc_val));
 			return JSON.stringify(temp_sc_val);
 		},
@@ -1005,9 +1055,17 @@ function point_name_table () {
 		contentType : "application/json", // 请求远程数据的内容类型。
 		responseHandler: function (res) {
 			if(res.status == 'success'){
+				console.log(JSON.stringify(res));
+				var ttyh = [];
+				var json = {};
 				$.each(res.data.rows, function(k, vol) {
 					vol.caozuo = '<a onClick="delete_sc_name(\''+vol.id+'\');">删除</a>';
+					if(!json[vol.companyname]){
+						ttyh.push({"lon":vol.lon,"lat":vol.lat,"companyId":vol.id});
+						json[vol.companyname] = 1;
+					}
 				});
+				add_point(ttyh);
 				return res.data.rows;
 			}else if(res.status == 'fail' && res.error == '查询数据超过50条'){//筛选结果大于50条
 				swal('查询结果超过50个设备，请精确输入企业名称', '', 'error');
@@ -1258,12 +1316,12 @@ function zicuoshi_de(){
 		
 		if(kk > 1){
 			
-			console.log(JSON.stringify(sc_v1));
+//			console.log(JSON.stringify(sc_v1));
 			sc_v1.filters.splice(sc_v1.filters.length-kk,1);
-			console.log(JSON.stringify(sc_v1));
+//			console.log(JSON.stringify(sc_v1));
 			
 			ajaxPost_w(jianpaiUrl+'/search/summaryLevel',sc_v1).success(function(res){
-				console.log(JSON.stringify(res));
+//				console.log(JSON.stringify(res));
 				if(res.status == 'success'){
 					
 					$.each(res.data, function(k, col) {//循环返回的数据
@@ -1279,10 +1337,10 @@ function zicuoshi_de(){
 			});
 			
 		}else{//删除的是第一条，不用重新计算，只要把条件的最后一条删除即可
-			console.log(JSON.stringify(sc_v1));
+//			console.log(JSON.stringify(sc_v1));
 //			sc_v1.filters.splice(sc_v1.filters.length,1);
 			sc_v1.filters.pop();
-			console.log(JSON.stringify(sc_v1));
+//			console.log(JSON.stringify(sc_v1));
 			restion_table();
 		}
 		$("#zicuoshi_tools_de").hide();
@@ -1535,7 +1593,7 @@ function create(){
 	paramsName.planMeasureId = m_planMeasureId;
 	paramsName.measureContent = JSON.stringify(sc_v1);
 	
-	console.log(JSON.stringify(sc_v1));
+//	console.log(JSON.stringify(sc_v1));
 	ajaxPost('/measure/addOrUpdate_measure',paramsName).success(function(res){
 //		console.log(JSON.stringify(res));
 		if(res.status == 0){
@@ -1681,14 +1739,17 @@ function add_point(col){
 //       });
 	clusterLayer = new dong.ClusterFeatureLayer({
 //		   'url': 'http://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/CT2010_pts/FeatureServer/0',
-		 "data": point_sz,
+		 "data": point_sz,//传入聚合图层的数据数组。每个数据必须包含x，y，attributes三个属性
          "distance": 100,
          "id": "clusters",
-         "labelColor": "#fff",
-         "labelOffset": 10,
-//         "resolution": map.extent.getWidth() / map.width,
+         "labelColor": "#fff",//标记上显示的文字颜色，默认为#FFF（白色）
+         "labelOffset": 10,//标记文字的垂直方向偏移量，请根据标记图标的大小来设置合适的值
+//         "resolution": map.extent.getWidth() / map.width,//分辨率，即屏幕像素和地图像素之间的比例关系，使用map.extent.getWidth() / map.width即可
          "singleColor": "#888",
-//         "singleTemplate": popupTemplate
+//         "singleTemplate": popupTemplate//聚合标记选中后，弹出的属性显示框中显示内容的显示模板
+         "showSingles": true,//当鼠标左键点击一个聚合后标记时，是否显示出聚合此标记的所有实际点
+//         "singleSymbol": true,//当鼠标左键点击一个聚合后标记时，显示出的聚合标记包含的所有实际点的显示样式
+//         "spatialReference": 3857//加入到ClusterLayer的点标记的空间坐标系统，默认是102100（web mercator）
       });
 	
 	
@@ -1704,38 +1765,44 @@ function add_point(col){
     clusterLayer.setRenderer(renderer);
     app.mapList[1].addLayer(clusterLayer);
     app.mapList[1].on('click', cleanUp());
-	app.mapList[1].on('key-down', function(e) {
-         if (e.keyCode === 27) {
-           cleanUp();
-         }
-       });
+    app.mapList[1].on('key-down', function(e) {
+    	if (e.keyCode === 27) {
+    		cleanUp();
+    	}
+    });
 //	console.log(point_sz)
 //	dojo.connect(app.pint, "onClick", optionclick);
+    
+    
+    
 	var extent = new dong.Extent(xmin,ymin,xmax,ymax, new dong.SpatialReference({ wkid:3857 }));
 	app.mapList[1].setExtent(extent);
 	/***********************************************************/
 }
 function cleanUp() {
 	app.mapList[1].infoWindow.hide();
-    //clusterLayer.clearSingles();
-  }
+	//clusterLayer.clearSingles();
+}
 function error(err) {
-    console.log('something failed: ', err);
-  }
+	console.log('something failed: ', err);
+}
 window.showExtents = function() {
-    var extents = map.getLayer('clusterExtents');
-    if ( extents ) {
-      map.removeLayer(extents);
-    }
-    extents = new GraphicsLayer({ id: 'clusterExtents' });
-    var sym = new SimpleFillSymbol().setColor(new Color([205, 193, 197, 0.5]));
+	var extents = map.getLayer('clusterExtents');
+	if ( extents ) {
+		map.removeLayer(extents);
+	}
+	extents = new GraphicsLayer({ id: 'clusterExtents' });
+	var sym = new SimpleFillSymbol().setColor(new Color([205, 193, 197, 0.5]));
+	arrayUtils.forEach(clusterLayer._clusters, function(c, idx) {
+		var e = c.attributes.extent;
+		extents.add(new Graphic(new Extent(e[0], e[1], e[2], e[3], map.spatialReference), sym));
+	}, this);
+	map.addLayer(extents, 0);
+}
 
-    arrayUtils.forEach(clusterLayer._clusters, function(c, idx) {
-      var e = c.attributes.extent;
-      extents.add(new Graphic(new Extent(e[0], e[1], e[2], e[3], map.spatialReference), sym));
-    }, this);
-    map.addLayer(extents, 0);
-  }
+
+
+
 
 //点击点的事件
 function optionclick(event) {
