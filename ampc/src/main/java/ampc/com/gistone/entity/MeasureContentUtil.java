@@ -24,6 +24,8 @@ public class MeasureContentUtil {
 	private List<Map> table=new ArrayList<Map>();
 	//放着 子措施 的数据
 	private List<Map> table1=new ArrayList<Map>();
+	//装的是行政区划代码  暂时先不传递
+	private List<String> regionIds;
 	public List<Map> getTable1() {
 		return table1;
 	}
@@ -41,6 +43,13 @@ public class MeasureContentUtil {
 	}
 	public void setSmallIndex(String smallIndex) {
 		this.smallIndex = smallIndex;
+	}
+	
+	public List<String> getRegionIds() {
+		return regionIds;
+	}
+	public void setRegionIds(List<String> regionIds) {
+		this.regionIds = regionIds;
 	}
 	public List<Map> getFilters() {
 		return filters;

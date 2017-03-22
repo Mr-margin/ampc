@@ -23,7 +23,7 @@ public class JPResult {
 	//预案的结束时间  分秒要59分59秒
 	private String end;
 	//装的是行政区划代码  暂时先不传递
-	private List<Map> regionIds;
+	private List<String> regionIds;
 	//每一个Object对象中都是一个Map集合 放着子措施拆分出来和过滤信息
 	private List<Object> ops;
 	public String getGroupName() {
@@ -57,10 +57,12 @@ public class JPResult {
 	public void setEnd(String end) {
 		this.end = end;
 	}
-	public List<Map> getRegionIds() {
+	
+	
+	public List<String> getRegionIds() {
 		return regionIds;
 	}
-	public void setRegionIds(List<Map> regionIds) {
+	public void setRegionIds(List<String> regionIds) {
 		this.regionIds = regionIds;
 	}
 	public List<Object> getOps() {
