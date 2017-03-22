@@ -1055,17 +1055,17 @@ function point_name_table () {
 		contentType : "application/json", // 请求远程数据的内容类型。
 		responseHandler: function (res) {
 			if(res.status == 'success'){
-				console.log(JSON.stringify(res));
-				var ttyh = [];
-				var json = {};
+//				console.log(JSON.stringify(res));
+//				var ttyh = [];
+//				var json = {};
 				$.each(res.data.rows, function(k, vol) {
 					vol.caozuo = '<a onClick="delete_sc_name(\''+vol.id+'\');">删除</a>';
-					if(!json[vol.companyname]){
-						ttyh.push({"lon":vol.lon,"lat":vol.lat,"companyId":vol.id});
-						json[vol.companyname] = 1;
-					}
+//					if(!json[vol.companyname]){
+//						ttyh.push({"lon":vol.lon,"lat":vol.lat,"companyId":vol.id});
+//						json[vol.companyname] = 1;
+//					}
 				});
-				add_point(ttyh);
+//				add_point(ttyh);
 				return res.data.rows;
 			}else if(res.status == 'fail' && res.error == '查询数据超过50条'){//筛选结果大于50条
 				swal('查询结果超过50个设备，请精确输入企业名称', '', 'error');
@@ -1633,13 +1633,16 @@ var dojoConfig = {
     packages: [{  
         name: 'tdlib',  
         location: "/js/tdlib"  
-    }]
+    }],
+    paths: {
+    	extras: location.pathname.replace(/\/[^/]+$/, '') + "/js/extras"  
+    }
 };
 require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol",  'esri/symbols/PictureMarkerSymbol',
          'esri/renderers/ClassBreaksRenderer',"esri/symbols/SimpleMarkerSymbol",'esri/dijit/PopupTemplate', "esri/geometry/Point", "esri/geometry/Extent", "esri/renderers/SimpleRenderer", "esri/graphic", 
-        "dojo/_base/Color", "dojo/dom-style",'dojo/query', "esri/tasks/FeatureSet", "esri/SpatialReference", 'extras/ClusterFeatureLayer',"tdlib/gaodeLayer", "dojo/domReady!"], 
+        "dojo/_base/Color", "dojo/dom-style",'dojo/query', "esri/tasks/FeatureSet", "esri/SpatialReference", 'extras/ClusterLayer',"tdlib/gaodeLayer", "dojo/domReady!"], 
 	function(Map, FeatureLayer,GraphicsLayer, SimpleFillSymbol, SimpleLineSymbol,PictureMarkerSymbol, ClassBreaksRenderer, SimpleMarkerSymbol,PopupTemplate, Point,Extent,SimpleRenderer, Graphic,
-	        Color, domStyle,query, FeatureSet, SpatialReference,ClusterFeatureLayer, gaodeLayer) {
+	        Color, domStyle,query, FeatureSet, SpatialReference,ClusterLayer, gaodeLayer) {
 		dong.gaodeLayer = gaodeLayer;
 		dong.Graphic = Graphic;
 		dong.Point = Point;
@@ -1650,7 +1653,7 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 		dong.SimpleLineSymbol =SimpleLineSymbol;
 		dong.Color = Color;
 		dong.PopupTemplate = PopupTemplate;
-		dong.ClusterFeatureLayer = ClusterFeatureLayer ;
+		dong.ClusterLayer = ClusterLayer ;
 		dong.PictureMarkerSymbol = PictureMarkerSymbol;
 		dong.ClassBreaksRenderer = ClassBreaksRenderer ;
 		dong.domStyle = domStyle ;
@@ -1679,31 +1682,33 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 		app.gLyr = new dong.GraphicsLayer({"id":"gLyr"});
 		app.mapList[0].addLayer(app.gLyr);
 		
-		app.pint = new dong.GraphicsLayer({"id":"pint"});
-		app.mapList[1].addLayer(app.pint);
+//		app.pint = new dong.GraphicsLayer({"id":"pint"});
+//		app.mapList[1].addLayer(app.pint);
 		
 		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/china_gd/MapServer");//创建动态地图
 		app.mapList[0].addLayer(app.layer);
 		
-		app.str = {
-	            'markerSymbol': new SimpleMarkerSymbol('circle', 20, null, new Color([0, 0, 0, 0.25])),
-	            'marginLeft': '20',
-	            'marginTop': '20'
-	          };
+//		app.str = {
+//	            'markerSymbol': new SimpleMarkerSymbol('circle', 20, null, new Color([0, 0, 0, 0.25])),
+//	            'marginLeft': '20',
+//	            'marginTop': '20'
+//	          };
 });
 
 var point_message = "";
 //地图加点
 function add_point(col){
-	dong.domStyle.set(dong.query('a.action.zoomTo')[0], 'display', 'none');
-	point_message = col;
+//	dong.domStyle.set(dong.query('a.action.zoomTo')[0], 'display', 'none');
+	
+	
+//	point_message = col;
+	var photoInfo = {};
+	
 	var point_sz = [];
 	var xmax = 0,xmin = 0,ymax = 0,ymin = 0;
 	$.each(col, function(i, vol) {
-		
 		var x = handle_x(vol.lon);
 		var y = handle_y(vol.lat);
-		
 		if(i == 0){
 			xmax = x;
 			xmin = x;
@@ -1715,14 +1720,19 @@ function add_point(col){
 			ymin = y < ymin ? y : ymin;
 			ymax = y > ymax ? y : ymax;
 		}
-		app.str = new dong.SimpleMarkerSymbol('circle', 30,
-                new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([148,0,211,0.25]), 15),
-                new dong.Color([148,0,211,0.5]));
+//		app.str = new dong.SimpleMarkerSymbol('circle', 30,
+//                new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([148,0,211,0.25]), 15),
+//                new dong.Color([148,0,211,0.5]));
 		
-		var point = new dong.Point(x, y, new dong.SpatialReference({ wkid: 3857 }));
+//		var point = new dong.Point(x, y, new dong.SpatialReference({ wkid: 3857 }));
 		
-		point_sz[i]= {"x":x,"y":y,"attributes":3857}
+		var attributes = {  
+			"companyId": "<a onClick=\"alert('"+vol.companyId+"');\">"+vol.companyId+"</a>"
+		};
+		point_sz[i]= {"x":x,"y":y,"attributes":attributes}
+		
 	});
+	photoInfo.data = point_sz;
 	
 	
 //	 var popupTemplate = dong.PopupTemplate({
@@ -1737,39 +1747,87 @@ function add_point(col){
 //           visible: true
 //         }]
 //       });
-	clusterLayer = new dong.ClusterFeatureLayer({
-//		   'url': 'http://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/CT2010_pts/FeatureServer/0',
-		 "data": point_sz,//传入聚合图层的数据数组。每个数据必须包含x，y，attributes三个属性
-         "distance": 100,
-         "id": "clusters",
-         "labelColor": "#fff",//标记上显示的文字颜色，默认为#FFF（白色）
-         "labelOffset": 10,//标记文字的垂直方向偏移量，请根据标记图标的大小来设置合适的值
-//         "resolution": map.extent.getWidth() / map.width,//分辨率，即屏幕像素和地图像素之间的比例关系，使用map.extent.getWidth() / map.width即可
-         "singleColor": "#888",
-//         "singleTemplate": popupTemplate//聚合标记选中后，弹出的属性显示框中显示内容的显示模板
-         "showSingles": true,//当鼠标左键点击一个聚合后标记时，是否显示出聚合此标记的所有实际点
-//         "singleSymbol": true,//当鼠标左键点击一个聚合后标记时，显示出的聚合标记包含的所有实际点的显示样式
-//         "spatialReference": 3857//加入到ClusterLayer的点标记的空间坐标系统，默认是102100（web mercator）
-      });
 	
 	
+//	clusterLayer = new dong.ClusterLayer({
+//		 "data": point_sz,//传入聚合图层的数据数组。每个数据必须包含x，y，attributes三个属性
+//         "distance": 100,
+////         "id": "clusters",
+//         "labelColor": "#fff",//标记上显示的文字颜色，默认为#FFF（白色）
+////         "labelOffset": 10,//标记文字的垂直方向偏移量，请根据标记图标的大小来设置合适的值
+////         "resolution": map.extent.getWidth() / map.width,//分辨率，即屏幕像素和地图像素之间的比例关系，使用map.extent.getWidth() / map.width即可
+////         "singleColor": "#888",
+////         "singleTemplate": popupTemplate//聚合标记选中后，弹出的属性显示框中显示内容的显示模板
+//         "showSingles": false,//当鼠标左键点击一个聚合后标记时，是否显示出聚合此标记的所有实际点
+////         "singleSymbol": true,//当鼠标左键点击一个聚合后标记时，显示出的聚合标记包含的所有实际点的显示样式
+////         "spatialReference": 3857//加入到ClusterLayer的点标记的空间坐标系统，默认是102100（web mercator）
+//      });
 	
-	 var picBaseUrl = 'http://static.arcgis.com/images/Symbols/Shapes/';
-     var defaultSym = new dong.PictureMarkerSymbol(picBaseUrl + 'BluePin1LargeB.png', 32, 32).setOffset(0, 15);
-     var renderer = new dong.ClassBreaksRenderer(defaultSym, 'clusterCount');
-     var small = new dong.SimpleMarkerSymbol('circle', 30,
-             new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([148,0,211,0.25]), 15),
-             new dong.Color([148,0,211,0.5]));
-    renderer.addBreak(0, Infinity, small);
+	
+	clusterLayer = new dong.ClusterLayer({  
+        "data": photoInfo.data,  
+        "distance": 150,  
+        "id": "clusters",  
+        "labelColor": "#fff",  
+        "labelOffset": -4,  
+        "resolution": app.mapList[1].extent.getWidth() / app.mapList[1].width,  
+        "singleColor": "#888",
+        "maxSingles":3000,
+        "showSingles":false
+          
+    });
+	
+	var defaultSym = new dong.SimpleMarkerSymbol().setSize(4);  
+    var renderer = new dong.ClassBreaksRenderer(defaultSym, "clusterCount");
+    var style1 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 10,  
+            new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,  
+                    new dong.Color([255,200,0]), 1),  
+            new dong.Color([255,200,0,0.8]));  
+    var style2 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 25,  
+            new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,  
+                    new dong.Color([255,125,3]), 1),  
+            new dong.Color([255,125,3,0.8]));  
+    var style3 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 30,  
+            new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,  
+                    new dong.Color([255,23,58]), 1),  
+            new dong.Color([255,23,58,0.8]));  
+    var style4 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 35,  
+            new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,  
+                    new dong.Color([204,0,184]), 1),  
+            new dong.Color([204,0,184,0.8]));  
+    var style5 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 40,  
+            new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,  
+                    new dong.Color([0,0,255]), 1),  
+            new dong.Color([0,0,255,0.8]));  
+    renderer.addBreak(0, 2, style1);  
+    renderer.addBreak(2, 100, style2);  
+    renderer.addBreak(100, 500, style3);  
+    renderer.addBreak(500, 1000, style4);  
+    renderer.addBreak(1000, 3001, style5); 
     
     clusterLayer.setRenderer(renderer);
     app.mapList[1].addLayer(clusterLayer);
-    app.mapList[1].on('click', cleanUp());
-    app.mapList[1].on('key-down', function(e) {
-    	if (e.keyCode === 27) {
-    		cleanUp();
-    	}
-    });
+	
+	
+//	 var picBaseUrl = 'http://static.arcgis.com/images/Symbols/Shapes/';
+//     var defaultSym = new dong.PictureMarkerSymbol(picBaseUrl + 'BluePin1LargeB.png', 32, 32).setOffset(0, 15);
+//     var renderer = new dong.ClassBreaksRenderer(defaultSym, 'clusterCount');
+//     
+//     var small = new dong.SimpleMarkerSymbol('circle', 30,
+//             new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([148,0,211,0.25]), 15),
+//             new dong.Color([148,0,211,0.5]));
+//     
+//    renderer.addBreak(0, Infinity, small);
+//    
+//    clusterLayer.setRenderer(renderer);
+//    
+//    app.mapList[1].addLayer(clusterLayer);
+//    app.mapList[1].on('click', cleanUp());
+//    app.mapList[1].on('key-down', function(e) {
+//    	if (e.keyCode === 27) {
+//    		cleanUp();
+//    	}
+//    });
 //	console.log(point_sz)
 //	dojo.connect(app.pint, "onClick", optionclick);
     
