@@ -1019,7 +1019,7 @@ public class MissionAndScenarinoController {
 						tsd.setScenarinoEndDate(scenarinoEndDate);
 						tsd.setScenarinoStartDate(scenarinoStartDate);
 						tsd.setUserId(userId);
-						tsd.setControstScenarinoId(controstScenarinoId);
+						tsd.setContrastScenarinoId(controstScenarinoId);
 						a=tScenarinoDetailMapper.insertSelective(tsd);
 						TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
 						sdid=tScenarinoDetail.getScenarinoId();
@@ -1071,7 +1071,7 @@ public class MissionAndScenarinoController {
 						tsd.setScenarinoEndDate(scenarinoEndDate);
 						tsd.setScenarinoStartDate(scenarinoStartDate);
 						tsd.setUserId(userId);
-						tsd.setControstScenarinoId(controstScenarinoId);
+						tsd.setContrastScenarinoId(controstScenarinoId);
 						a=tScenarinoDetailMapper.insertSelective(tsd);
 						TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
 						sdid=tScenarinoDetail.getScenarinoId();
@@ -1095,7 +1095,7 @@ public class MissionAndScenarinoController {
 					tsd.setScenType(scenType);
 					tsd.setMissionId(missionId);
 					tsd.setUserId(userId);
-					tsd.setSpinUp(spinUp);
+					tsd.setSpinup(spinUp);
 					a=tScenarinoDetailMapper.insertSelective(tsd);
 					TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
 					sdid=tScenarinoDetail.getScenarinoId();
