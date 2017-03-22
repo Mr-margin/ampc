@@ -116,6 +116,7 @@ public class EMissionController {
 				JSONObject obj=JSONObject.fromObject(detail);
 				Map<String,Object> details=(Map)obj;
 				if(emission.getCodeLevel().equals("2")){
+					//查看当前返回值是否包含此次遍历的code
 					if(!ctlist.contains(emission.getCode())){
 				if(emission.getCode().equals("522200")){
 					reobj.put("code", "520600");
