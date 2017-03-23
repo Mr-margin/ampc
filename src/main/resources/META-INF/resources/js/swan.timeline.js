@@ -589,6 +589,9 @@ $(function() {
                     $(this)
                       .on('click', function(event) {
                           //self._currentItem = self._findItem($(this));
+
+                          if(qjMsg.scenarinoStatus == 3)return;
+
                           if(event.toElement.tagName == 'A'){
                               editPlan(self._findItem($(this)))
                           }else{
@@ -611,7 +614,7 @@ $(function() {
                 var atc = $('.areaTitle_con.disNone').clone().removeClass('disNone');
                 if($('#'+item.areaId).length == 0){
                     atc.attr('id',item.areaId);
-                    atc.css('margin-top',item.index==0?51:15+'px');
+                    atc.css('margin-top',item.index==0?4:15+'px');
                     atc.find('b').html(item.areaName);
                     $('.areaTitle').append(atc);
                 }
