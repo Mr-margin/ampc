@@ -474,7 +474,7 @@ function initQdListTable() {
 	  $('#testTableId').bootstrapTable({
 	    method: 'GET',
 	      url: 'webApp/xgpg/v1/qjdata.json',
-	    //url: 'qd.json',
+	      //url:'webApp/yqd/qdList/qd.json',
 //	      url : BackstageIP+'/mission/get_mission_list',
 //	      url : '/ampc/mission/get_mission_list',
 	    dataType: "json",
@@ -482,14 +482,14 @@ function initQdListTable() {
 	    //toobar: '#',
 	    iconSize: "outline",
 	    search: false,
-	    searchAlign: 'right',
+	    //searchAlign: 'right',
 	    //height:llqHeight-200,
 	    maintainSelected: true,
 	    clickToSelect: false,
-	    pagination: true,
-	    pageSize: 20,
-	    pageNumber: 1,
-	    pageList: [20],
+	    //pagination: true,
+	   // pageSize: 20,
+	    //pageNumber: 1,
+	    //pageList: [20],
 	    striped: true,
 	    sidePagination: "server",
 	    rowStyle: function (row, index) {
@@ -503,11 +503,11 @@ function initQdListTable() {
 
 	          }
 	        };
-
 //	        return JSON.stringify(json);
 	        return '';
 	      },
 	    responseHandler: function (res) {
+	    	console.log(res)
 	      return res.data
 	    },
 	    queryParamsType: "undefined",
@@ -542,7 +542,7 @@ function initQdListTable() {
 	      $('.delQD').attr('disabled', true);
 	    },
 	    onLoadSuccess:function(data){
-
+	    	console.log(data)
 	    },
 	    
 	    contextMenu: '#RWcontext-menu',//右键菜单ID
