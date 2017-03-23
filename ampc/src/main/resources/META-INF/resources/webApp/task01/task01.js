@@ -252,7 +252,7 @@ function initRwTable() {
 
 /*筛选*/
 function statusRWfun(status, t) {
-	$('.btn-primary.btn-danger').removeClass('btn-danger');
+	$('.btn-success.btn-danger').removeClass('btn-danger');
   $(t).addClass('btn-danger');
   $('.seeName').html($(t).children('a').html());
   statusRW = status;
@@ -438,15 +438,15 @@ function qjType(v, row, i) {
 }
 
 function qjOrder(v, row, i) {
-  return '<button class="btn btn-primary mb10 mr10">启动</button>' +
-    '<button class="btn btn-primary mb10">终止</button>' +
+  return '<button class="btn btn-success mb10 mr10">启动</button>' +
+    '<button class="btn btn-success mb10">终止</button>' +
     '<br/>' +
-    '<button class="btn btn-primary mr10">续跑</button>' +
-    '<button class="btn btn-primary">暂停</button>'
+    '<button class="btn btn-success mr10">续跑</button>' +
+    '<button class="btn btn-success">暂停</button>'
 }
 
 //function qjEffectEvaluation(v, row, i) {
-//  return '<button class="btn btn-primary mb10 mr10">效果评估</button>'
+//  return '<button class="btn btn-success mb10 mr10">效果评估</button>'
 //}
 
 

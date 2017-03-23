@@ -440,6 +440,10 @@
 	 z-index:1500; 
 }
 
+button[disabled],.btn[disabled]{
+  cursor: no-drop;
+}
+
 
 
 
