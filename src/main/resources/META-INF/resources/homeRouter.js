@@ -170,3 +170,16 @@ $('#sidebar a').click(function (e) {
     a.attr('href',href);
     a[0].click();
 });
+
+
+/*当url改变的时候，左侧菜单栏中内容改变*/
+$(window).bind('hashchange', function(e) {
+	console.log('url改变了====' + e.target.location.hash);
+  if(e.target.location.hash == '#/yabj'){
+    $('.qyCon').removeClass('disNone');
+  }else{
+    $('.qyCon').addClass('disNone');
+  }
+});
+
+
