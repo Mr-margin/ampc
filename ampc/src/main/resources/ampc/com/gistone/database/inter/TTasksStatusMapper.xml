@@ -128,4 +128,8 @@
       TASKS_END_DATE = #{tasksEndDate,jdbcType=TIMESTAMP}
     where TASKS_ID = #{tasksId,jdbcType=DECIMAL}
   </update>
+  <!-- 通过情景ID查询tasksID -->
+  <select id="selectTasksId" resultType="java.lang.Long" parameterType="java.lang.Long">
+  	select TASKS_ID from T_TASKS_STATUS where TASKS_SCENARINO_ID=#{tasksScenarinoId,jdbcType=DECIMAL}
+  </select>
 </mapper>
