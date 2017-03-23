@@ -323,57 +323,15 @@ public class EMissionController {
 				String detail=emission.getEmissionDetails();
 				JSONObject obj=JSONObject.fromObject(detail);
 				Map<String,Object> details=(Map)obj;
-				if(emission.getCodeLevel().equals("2")){
+				
 					//查看当前返回值是否包含此次遍历的code
 					if(!ctlist.contains(emission.getCode())){
-				if(emission.getCode().equals("522200")){
-					reobj.put("code", "520600");
-					ctlist.add("520600");
-					ctlist.add("522200");
-				}else if(emission.getCode().equals("522400")){
-					reobj.put("code", "520500");
-					ctlist.add("520500");
-					ctlist.add("522400");
-				}else if(emission.getCode().equals("632100")){
-					reobj.put("code", "630200");	
-					ctlist.add("630200");
-					ctlist.add("632100");
-				}else{
 					reobj.put("code", emission.getCode());
 					ctlist.add(emission.getCode());
-				}
 					}else{
 						continue;
 					}
-				}else if(emission.getCodeLevel().equals("3")){
-					if(!coulist.contains(emission.getCode())){
-					if(emission.getCode().equals("310101")||emission.getCode().equals("310103")){
-						reobj.put("code", "310101");
-						coulist.add("310101");
-						coulist.add("310103");
-					}else if(emission.getCode().equals("310115")||emission.getCode().equals("310119")){
-						reobj.put("code", "310115");
-						coulist.add("310115");
-						coulist.add("310119");
-					}else if(emission.getCode().equals("341402")||emission.getCode().equals("341421")||
-							emission.getCode().equals("341422")||emission.getCode().equals("341423")||
-							emission.getCode().equals("341424")){
-						continue;
-					}else{
-						reobj.put("code", emission.getCode());
-						coulist.add(emission.getCode());	
-					}
-					}else{
-						continue;
-					}
-				}else{
-					if(!plist.contains(emission.getCode())){
-					reobj.put("code", emission.getCode());
-					plist.add(emission.getCode());
-					}else{
-						continue;	
-					}
-				}
+				
 				reobj.put("emissionDate", emissiondate.getTime());
 				JSONArray irarr=new JSONArray();
 				for(String industry:details.keySet()){
