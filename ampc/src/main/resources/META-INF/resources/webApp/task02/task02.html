@@ -4,14 +4,15 @@
     <div class="col-md-7">
       <div class="areaMsg col-md-12 clearfix">
         <div class="areaTitle" style="float: left; width: 20%;">
+          <button type="button" class="btn-1 btn-lg btn-1-salmon toolShow" title="添加区域" style="width: 100%;margin-left: 0px;margin-right: 0px;margin-top: 2px;" data-new="true" data-toggle="modal" data-target="#editArea">添加区域</button>
         </div>
         <div class="areaCon" style="float: left;width: 80%">
           <div id="timeline"></div>
         </div>
       </div>
-      <div class="addArea col-md-12 mt20">
-        <button class="btn btn-primary addNewArea" data-new="true" data-toggle="modal" data-target="#editArea">添加区域</button>
-      </div>
+      <!--<div class="addArea col-md-12 mt20">-->
+        <!--<button class="btn btn-primary addNewArea" data-new="true" data-toggle="modal" data-target="#editArea">添加区域</button>-->
+      <!--</div>-->
     </div>
 
     <div class="col-md-5 showMap text-center"
@@ -22,20 +23,48 @@
   </div>
 
   <!--模板代码 start-->
-  <div class="areaTitle_con disNone">
-    <i class='fa-th-list'></i> <b></b>
+  <!--<div class="areaTitle_con disNone">-->
+    <!--<i class='fa-th-list'></i> <b></b>-->
 
-    <div class="areaToolDiv text-center">
-      <button type="button" data-new="false" class="btn btn-default btn-xs toolShow"
-              title="区域编辑" data-toggle="modal" data-target="#editArea"><i class="ec-pencil"></i><span>区域编辑</span>
+    <!--<div class="areaToolDiv text-center">-->
+      <!--<button type="button" data-new="false" class="btn btn-default btn-xs toolShow"-->
+              <!--title="区域编辑" data-toggle="modal" data-target="#editArea"><i class="ec-pencil"></i><span>区域编辑</span>-->
+      <!--</button>-->
+      <!--<button type="button" onclick="delArea(this)" class="btn btn-default btn-xs toolShow" title="删除区域"><i-->
+          <!--class="ec-trashcan"></i><span>删除区域</span></button>-->
+      <!--&lt;!&ndash;<button type="button" class="btn btn-default btn-xs toolShow" title="添加时段" data-toggle="modal"&ndash;&gt;-->
+              <!--&lt;!&ndash;data-target="#qyTime"><i class="im-plus"></i><span>添加时段</span></button>&ndash;&gt;-->
+    <!--</div>-->
+  <!--</div>-->
+  <!--模板代码 end-->
+
+  <!--模板代码 NEW Start-->
+
+
+
+  <!--<button type="button" class="btn-1 btn-lg btn-1-salmon toolShow" title="添加区域" style="width: 100%;margin-left: 0px;margin-right: 0px;margin-top: 2px;" data-new="true" data-toggle="modal" data-target="#editArea">添加区域</button>-->
+
+
+
+
+
+  <div class="areaTitle_con disNone" style=" height:80px; border: 1px solid #4884E1; border-radius:4px;">
+    <div class="pricingTable">
+      <div class="price-value">
+        <span class="month" style=" letter-spacing:6px;"><b></b></span>
+      </div>
+    </div>
+    <div class="areaToolDiv text-center" style="text-align:center; ">
+      <!--<button type="button" class="btn-1 btn-small btn-1-blue toolShow">添加</button>-->
+      <button type="button" class="btn-1 btn-small btn-1-dark-blue toolShow" data-new="false"
+              title="区域编辑" data-toggle="modal" data-target="#editArea">编辑
       </button>
-      <button type="button" onclick="delArea(this)" class="btn btn-default btn-xs toolShow" title="删除区域"><i
-          class="ec-trashcan"></i><span>删除区域</span></button>
-      <!--<button type="button" class="btn btn-default btn-xs toolShow" title="添加时段" data-toggle="modal"-->
-              <!--data-target="#qyTime"><i class="im-plus"></i><span>添加时段</span></button>-->
+      <button type="button" class="btn-1 btn-small btn-1-salmon toolShow" onclick="delArea(this)" title="删除区域">删除
+      </button>
     </div>
   </div>
-  <!--模板代码 end-->
+
+  <!--模板代码 NEW End-->
 
   <!-- Modal 时段编辑 -->
   <div class="modal fade" id="editTime" tabindex="-1" role="dialog" aria-labelledby="editTimeLabel">
