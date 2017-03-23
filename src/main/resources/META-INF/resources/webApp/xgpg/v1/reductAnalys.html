@@ -4,7 +4,7 @@
 		<div class="ibox-title">
 			<h5>各地区减排比例</h5>
 			<div class="row">
-				<div class='col-md-2' style="margin-top: -10px;">
+				<div class='col-md-2 col-md-offset-2' style="margin-top: -10px;">
 					<div class="btn-group">
 						<button data-toggle="dropdown"
 							class="btn btn-default  dropdown-toggle"
@@ -19,7 +19,7 @@
 						</ul>
 					</div>
 				</div>
-				<div class='col-md-5 col-md-offset-2' style="margin-top: -10px;">
+				<div class='' style="margin-top: -10px;float:right;">
 					<div class="btn-group" data-toggle="buttons" id="#color">
 						<label class="btn btn-outline btn-success active"> <input type="radio" name="toggle" id="mapId">地图展示
 						</label> <label class="btn btn-outline btn-success"><input type="radio" name="toggle" id="listShow">列表展示
@@ -54,7 +54,7 @@
 		<div class="ibox-title">
 			<h5>行业/措施分担</h5>
 			<div class="row">
-					<div class='col-md-3 col-md-offset-6' style="margin-top: -8px;">
+					<div class='' style="margin-top: -8px;float:right;">
 						<div class="btn-group" data-toggle="buttons">
 							<label class="btn btn-outline btn-success"><input type="radio" name="option" id="tradeId">行业</label> 
 							<label class="btn btn-outline btn-success active"><input type="radio" name="option" id="measureId">措施</label>
@@ -84,7 +84,7 @@
 						<label for="mnfw" class="col-md-2 control-label lh29">任务名称</label>
 
 						<div class="col-md-10">
-							<select name="mnfw" class="form-control" onchange="selectQj(this.value)">
+							<select name="mnfw" class="form-control" id="rwName" onchange="selectQj(this.value)">
 								<option value="j0">- -</option>
 								<option value="j1">基准</option>
 								<option value="j2">长三角保障</option>
@@ -100,7 +100,7 @@
 								<thead>
 									  <th data-checkbox="true"></th>
 								      <th data-field="qjmc">情景名称</th>
-								      <th data-field="qjms">情景描述描述</th>
+								      <th data-field="qjms">情景描述</th>
 								      <th data-field="qjsj">时间</th>
 								</thead>
 							</table>
