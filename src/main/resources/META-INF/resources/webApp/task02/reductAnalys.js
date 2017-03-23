@@ -1,10 +1,33 @@
 var columns = [{"field":"xzArea","title":"行政区","align":"center"},{"field":"PM25name","title":"PM2.5","align":"center"},{"field":"PM10name","title":"PM10","align":"center"},{"field":"SO2name","title":"SO2","align":"center"},{"field":"NOXname","title":"NOX","align":"center"},{"field":"VOCname","title":"VOC","align":"center"},{"field":"COname","title":"CO","align":"center"},{"field":"NH3name","title":"NH3","align":"center"},{"field":"BCname","title":"BC","align":"center"},{"field":"OCname","title":"OC","align":"center"},{"field":"PMFINEname","title":"PMFINE","align":"center"},{"field":"PMCname","title":"PMC","align":"center"}];
 var data = [{"xzArea":"杭州市","PM25name":"76","PM10name":"80","SO2name":"85","NOXname":"78","VOCname":"77","COname":"75","NH3name":"76","BCname":"75","OCname":"71","PMFINEname":"76","PMCname":"73"},{"xzArea":"嘉兴市","PM25name":"76","PM10name":"80","SO2name":"85","NOXname":"78","VOCname":"77","COname":"75","NH3name":"76","BCname":"75","OCname":"71","PMFINEname":"76","PMCname":"73"},{"xzArea":"湖州市","PM25name":"76","PM10name":"80","SO2name":"85","NOXname":"78","VOCname":"77","COname":"75","NH3name":"76","BCname":"75","OCname":"71","PMFINEname":"76","PMCname":"73"},{"xzArea":"宁波市","PM25name":"76","PM10name":"80","SO2name":"85","NOXname":"78","VOCname":"77","COname":"75","NH3name":"76","BCname":"75","OCname":"71","PMFINEname":"76","PMCname":"73"}];
 
+
+var ls = window.localStorage;
+var qjMsg = vipspa.getMessage('yaMessage').content;
+
+if(!qjMsg){
+  qjMsg = JSON.parse(ls.getItem('yaMsg'));
+}else{
+  ls.setItem('yaMsg',JSON.stringify(qjMsg));
+}
+console.log(JSON.stringify(qjMsg));
+
+
+//渲染器样式
+//mod2.xrclass={
+//		linecolor:"#444",//边框颜色
+//		linewidth:1,//边框
+//		class1:[255, 255, 178, 0.75],
+//		class2:[254, 204, 92, 0.75],
+//		class3:[253, 141, 60, 0.75],
+//		class4:[227, 26, 28, 0.75],
+//};
+
+
 /**
  * 操作地图显示
  */
-var stat = {cPointx : 116, cPointy : 35}, app = {}, dong = {};
+var stat = {cPointx : 106, cPointy : 35}, app = {}, dong = {};
 var dojoConfig = {
 		async: true,
 	    parseOnLoad: true,  
@@ -36,30 +59,123 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 		dong.ClassBreaksRenderer = ClassBreaksRenderer ;
 		dong.domStyle = domStyle ;
 		dong.query = query;
+		dong.FeatureLayer = FeatureLayer;
+		
+//		esri.config.defaults.io.proxyUrl = "http://192.168.4.214:8091/Java/proxy.jsp";
+//    	esri.config.defaults.io.alwaysUseProxy = false;
 
 		app.map = new Map("map_showId", {
 			logo:false,
 	        center: [stat.cPointx, stat.cPointy],
 	        minZoom:3,
 	        maxZoom:13,
-	        zoom: 3
+	        zoom: 4
 		});
+		
 		
 		app.baselayerList = new dong.gaodeLayer();//默认加载矢量 new gaodeLayer({layertype:"road"});也可以
 		app.stlayerList = new dong.gaodeLayer({layertype: "st"});//加载卫星图
 		app.labellayerList = new dong.gaodeLayer({layertype: "label"});//加载标注图
 		
-		app.map.addLayer(app.baselayerList[i]);//添加高德地图到map容器
-		app.map.addLayers([app.baselayerList[i]]);//添加高德地图到map容器
+		app.map.on("load", shoe_data_start);//启动后立即执行获取数据
+		
+		app.map.addLayer(app.baselayerList);//添加高德地图到map容器
+		app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
 		
 		app.gLyr = new dong.GraphicsLayer({"id":"gLyr"});
 		app.map.addLayer(app.gLyr);
 		
-		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/china_gd/MapServer");//创建动态地图
-		app.map.addLayer(app.layer);
+		dojo.connect(app.map, "onZoomEnd", resizess);//缩放
+//		dojo.connect(app.map, "onload", resizess);//加载
 		
+		/****************************添加省*********************************************/
+//		app.sheng = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/2", {//添加省的图层
+//			mode: dong.FeatureLayer.MODE_ONDEMAND,
+//			outFields: ["*"]
+//		});
+//		app.map.addLayer(app.sheng);
+//		dojo.connect(app.sheng, "onClick", optionclick);//点击
+//		/*******************************添加市***************************************/
+//		app.shi = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/1", {//市的图层
+//			mode: dong.FeatureLayer.MODE_ONDEMAND,
+//			outFields: ["*"],
+//		});
+//		app.map.addLayer(app.shi);
+//		dojo.connect(app.shi, "onClick", optionclick);
+//		/*******************************添加县***************************************/
+//		app.xian = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/0", {//县的图层
+//			mode: dong.MODE_ONDEMAND,
+//			outFields: ["*"],
+//		});
+//		app.map.addLayer(app.xian);
+//		dojo.connect(app.xian, "onClick", optionclick);
+		
+		//定义专题图的默认样式
+//	    app.symbol = new dong.SimpleFillSymbol(
+//			dong.SimpleFillSymbol.STYLE_SOLID,
+//			new dong.SimpleLineSymbol(
+//				dong.SimpleLineSymbol.STYLE_SOLID, 
+//				new dong.Color([255, 255, 255, 0.35]), 1
+//			), 
+//			new dong.Color([163, 163, 163, 0.7])
+//		);
+	    
+	    
 });
 
+/**
+ * 启动后加载数据，
+ */
+function shoe_data_start(){
+	
+	var paramsName = {};
+	
+	ajaxPost('/plan/get_planInfo',paramsName).success(function(res){
+		
+		if(res.status == 0){
+			var data_id = "";
+			$.each(res.data, function(i, col) {
+				
+			});
+		}
+		
+		var query = new dong.Query();
+		query.where = "ADMINCODE in ('"+parent.dataBase.Message_map.REGION+"')";
+		
+		app.sheng = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/2", {outFields: ["*"]});//添加省的图层
+		app.sheng.queryFeatures(query, function(featureSet) {
+			for (var i = 0, il = featureSet.features.length; i < il; i++) {
+				var graphic = featureSet.features[i];
+				if(i == 0){
+					xmax = graphic.geometry.getExtent().xmax;
+					xmin = graphic.geometry.getExtent().xmin;
+					ymax = graphic.geometry.getExtent().ymax;
+					ymin = graphic.geometry.getExtent().ymin;
+				}else{
+					xmin = graphic.geometry.getExtent().xmin < xmin ? graphic.geometry.getExtent().xmin : xmin;
+					xmax = graphic.geometry.getExtent().xmax > xmax ? graphic.geometry.getExtent().xmax : xmax;
+					ymin = graphic.geometry.getExtent().ymin < ymin ? graphic.geometry.getExtent().ymin : ymin;
+					ymax = graphic.geometry.getExtent().ymax > ymax ? graphic.geometry.getExtent().ymax : ymax;
+				}
+			}
+			var extent = new dong.Extent(xmin,ymin,xmax,ymax, new dong.SpatialReference({ wkid:3857 }));
+			app.map.setExtent(extent.expand(1.5));
+		});
+		
+		
+	});
+	
+}
+
+function resizess(event){
+	alert('c');
+}
+
+function optionclick(event){
+	
+	
+	alert('b');
+}
 
 
 
@@ -86,6 +202,7 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 
 
 
+var jpfxMsg;
 var jpfxMsg;
 $(function(){
 	var ls = window.localStorage;
