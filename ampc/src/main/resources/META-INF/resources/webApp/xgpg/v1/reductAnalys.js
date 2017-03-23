@@ -15,8 +15,8 @@ $(function(){
 	 *设置导航条信息
 	 */
 	$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
-	//全选复选框
-    initTableCheckbox(); 
+	initQdListTable();
+	
     //地图展示切换
     $("#mapId").change(function(){
     	$("#map_showId").show();
@@ -436,48 +436,120 @@ function exchangeModal(){
 	$(".createRwModal").modal();
 	
 }
-//全选复选框
-function initTableCheckbox() {  
-    var $thr = $('table thead tr');  
-    var $checkAllTh = $('<th><input type="checkbox" id="checkAll" name="checkAll" /></th>');  
-    /*将全选/反选复选框添加到表头最前，即增加一列*/  
-    $thr.prepend($checkAllTh);  
-    /*“全选/反选”复选框*/  
-    var $checkAll = $thr.find('input');  
-    $checkAll.click(function(event){  
-        /*将所有行的选中状态设成全选框的选中状态*/  
-        $tbr.find('input').prop('checked',$(this).prop('checked'));  
-        /*并调整所有选中行的CSS样式*/  
-        if ($(this).prop('checked')) {  
-            $tbr.find('input').parent().parent().addClass('warning');  
-        } else{  
-            $tbr.find('input').parent().parent().removeClass('warning');  
-        }  
-        /*阻止向上冒泡，以防再次触发点击操作*/  
-        event.stopPropagation();  
-    });  
-    /*点击全选框所在单元格时也触发全选框的点击操作*/  
-    $checkAllTh.click(function(){  
-        $(this).find('input').click();  
-    });  
-    var $tbr = $('table tbody tr');  
-    var $checkItemTd = $('<td><input type="checkbox" name="checkItem" /></td>');  
-    /*每一行都在最前面插入一个选中复选框的单元格*/  
-    $tbr.prepend($checkItemTd);  
-    /*点击每一行的选中复选框时*/  
-    $tbr.find('input').click(function(event){  
-        /*调整选中行的CSS样式*/  
-        $(this).parent().parent().toggleClass('warning');  
-        /*如果已经被选中行的行数等于表格的数据行数，将全选框设为选中状态，否则设为未选中状态*/  
-        $checkAll.prop('checked',$tbr.find('input:checked').length == $tbr.length ? true : false);  
-        /*阻止向上冒泡，以防再次触发点击操作*/  
-        event.stopPropagation();  
-    });  
-    /*点击每一行时也触发该行的选中操作*/  
-    $tbr.click(function(){  
-        $(this).find('input').click();  
-    });  
-} 
+//模态框 内的表格 全选复选框 新版
+/*$("#testTableId").bootstrapTable({
+	method:'GET',
+	url:'webApp/xgpg/v1/qjdata.json',
+	dataType: "json",
+	contentType: "application/json",
+	cache: false,         //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性
+	clickToSelect : true,// 点击选中行
+	pagination : false, // 在表格底部显示分页工具栏
+	singleSelect : false,//设置True 将禁止多选
+	striped : true, // 使表格带有条纹
+	silent : true, // 刷新事件必须设置
+	sidePagination: "server",
+    rowStyle: function (row, index) {
+        return {};
+      },
+        queryParams: function formPm(m) {
+          console.log(m);
+          var json = {
+            "token": "",
+            "data": {
 
+            }
+          };
 
+//          return JSON.stringify(json);
+          return '';
+        },
+      responseHandler: function (res) {
+        return res.data
+      },
 
+});*/
+
+function initQdListTable() {
+	  $('#testTableId').bootstrapTable({
+	    method: 'GET',
+	      url: 'webApp/xgpg/v1/qjdata.json',
+	    //url: 'qd.json',
+//	      url : BackstageIP+'/mission/get_mission_list',
+//	      url : '/ampc/mission/get_mission_list',
+	    dataType: "json",
+	    contentType: "application/json",
+	    //toobar: '#',
+	    iconSize: "outline",
+	    search: false,
+	    searchAlign: 'right',
+	    //height:llqHeight-200,
+	    maintainSelected: true,
+	    clickToSelect: false,
+	    pagination: true,
+	    pageSize: 20,
+	    pageNumber: 1,
+	    pageList: [20],
+	    striped: true,
+	    sidePagination: "server",
+	    rowStyle: function (row, index) {
+	      return {};
+	    },
+	      queryParams: function formPm(m) {
+	        console.log(m);
+	        var json = {
+	          "token": "",
+	          "data": {
+
+	          }
+	        };
+
+//	        return JSON.stringify(json);
+	        return '';
+	      },
+	    responseHandler: function (res) {
+	      return res.data
+	    },
+	    queryParamsType: "undefined",
+	    silent: true,
+	    onClickRow: function (row, $element) {
+//	        $('.qj').val('');
+//	        selectRW = row;
+//	        $('#qjTable').bootstrapTable('destroy');
+//	        initQjTable();
+	      $('.info').removeClass('info');
+	      $($element).addClass('info');
+	    },
+
+	    onCheck: function (row) {
+	      $('.delQD').attr('disabled', false);
+	      delQDMap[row.qdId] = 'true';
+	    },
+	    onUncheck: function (row) {
+	      delete delQDMap[row.qdId];
+	      if ($.isEmptyObject(delQDMap)) {
+	        $('.delQD').attr('disabled', true)
+	      }
+	    },
+	    onCheckAll: function (rows) {
+	      $('.delQD').attr('disabled', false);
+	      for (var i = 0; i < rows.length; i++) {
+	        delQDMap[rows[i].qdId] = 'true';
+	      }
+	    },
+	    onUncheckAll: function (rows) {
+	      delQDMap = {};
+	      $('.delQD').attr('disabled', true);
+	    },
+	    onLoadSuccess:function(data){
+
+	    },
+	    
+	    contextMenu: '#RWcontext-menu',//右键菜单ID
+	    onContextMenuItem: function (row, $el) {
+//	        if ($el.data("item") == "rename") {
+//	          rename('rw', row.missionId);
+//	        }
+	    }
+	  });
+	}
