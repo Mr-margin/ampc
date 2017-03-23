@@ -23,12 +23,23 @@
     <result column="RATIO_START_DATE" property="ratioStartDate" jdbcType="TIMESTAMP" />
     <result column="RATIO_END_DATE" property="ratioEndDate" jdbcType="TIMESTAMP" />
     <result column="RANGE_DAY" property="rangeDay" jdbcType="DECIMAL" />
+    <result column="EXPAND1" property="expand1" jdbcType="VARCHAR" />
+    <result column="EXPAND2" property="expand2" jdbcType="VARCHAR" />
+    <result column="EXPAND3" property="expand3" jdbcType="VARCHAR" />
+    <result column="EXPAND4" property="expand4" jdbcType="VARCHAR" />
+    <result column="EXPAND5" property="expand5" jdbcType="VARCHAR" />
+    <result column="EXPAND6" property="expand6" jdbcType="VARCHAR" />
+    <result column="EXPAND7" property="expand7" jdbcType="VARCHAR" />
+    <result column="EXPAND8" property="expand8" jdbcType="VARCHAR" />
+    <result column="EXPAND9" property="expand9" jdbcType="VARCHAR" />
+    <result column="EXPAND10" property="expand10" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     SCENARINO_ID, SCENARINO_TYPE, SCENARINO_NAME, SCENARINO_START_DATE, SCENARINO_END_DATE, 
     SCENARINO_STATUS, MISSION_ID, SCENARINO_ADD_TIME, USER_ID, UPDATE_TIME, IS_EFFECTIVE, 
     DELETE_TIME, BASIS_SCENARINO_ID, BASIS_TIME, CONTRAST_SCENARINO_ID, SCEN_TYPE, PATH_DATE, 
-    SPINUP, RATIO_START_DATE, RATIO_END_DATE, RANGE_DAY
+    SPINUP, RATIO_START_DATE, RATIO_END_DATE, RANGE_DAY, EXPAND1, EXPAND2, EXPAND3, EXPAND4, EXPAND5,
+    EXPAND6, EXPAND7, EXPAND8, EXPAND9, EXPAND10
   </sql>
   
   <!-- 返回情景查询列表的数据 -->
@@ -247,6 +258,36 @@
       <if test="spinup != null" >
        and SPINUP = #{spinup,jdbcType=DECIMAL}
       </if>
+        <if test="expand1 != null" >
+       and EXPAND1 = #{expand1,jdbcType=VARCHAR}
+      </if>
+        <if test="expand2 != null" >
+       and EXPAND2 = #{expand2,jdbcType=VARCHAR}
+      </if> 
+        <if test="expand3 != null" >
+       and EXPAND3 = #{expand3,jdbcType=VARCHAR}
+      </if>
+        <if test="expand4 != null" >
+       and EXPAND4 = #{expand4,jdbcType=VARCHAR}
+      </if>   
+        <if test="expand5 != null" >
+       and EXPAND5 = #{expand5,jdbcType=VARCHAR}
+      </if>
+        <if test="expand6 != null" >
+       and EXPAND6 = #{expand6,jdbcType=VARCHAR}
+      </if>
+        <if test="expand7 != null" >
+       and EXPAND7 = #{expand7,jdbcType=VARCHAR}
+      </if>   
+        <if test="expand8 != null" >
+       and EXPAND8 = #{expand8,jdbcType=VARCHAR}
+      </if>      
+        <if test="expand9 != null" >
+       and EXPAND9 = #{expand9,jdbcType=VARCHAR}
+      </if>
+        <if test="expand10 != null" >
+       and EXPAND10 = #{expand10,jdbcType=VARCHAR}
+      </if>
   </select>
   
   
@@ -275,7 +316,8 @@
       DELETE_TIME, BASIS_SCENARINO_ID, BASIS_TIME, 
       CONTRAST_SCENARINO_ID, SCEN_TYPE, PATH_DATE, 
       SPINUP, RATIO_START_DATE, RATIO_END_DATE, 
-      RANGE_DAY)
+      RANGE_DAY, EXPAND1, EXPAND2, EXPAND3, EXPAND4, EXPAND5,
+    EXPAND6, EXPAND7, EXPAND8, EXPAND9, EXPAND10)
     values (#{scenarinoId,jdbcType=DECIMAL}, #{scenarinoType,jdbcType=DECIMAL}, #{scenarinoName,jdbcType=OTHER}, 
       #{scenarinoStartDate,jdbcType=TIMESTAMP}, #{scenarinoEndDate,jdbcType=TIMESTAMP}, 
       #{scenarinoStatus,jdbcType=DECIMAL}, #{missionId,jdbcType=DECIMAL}, #{scenarinoAddTime,jdbcType=TIMESTAMP}, 
@@ -283,7 +325,9 @@
       #{deleteTime,jdbcType=TIMESTAMP}, #{basisScenarinoId,jdbcType=DECIMAL}, #{basisTime,jdbcType=TIMESTAMP}, 
       #{contrastScenarinoId,jdbcType=DECIMAL}, #{scenType,jdbcType=VARCHAR}, #{pathDate,jdbcType=TIMESTAMP}, 
       #{spinup,jdbcType=DECIMAL}, #{ratioStartDate,jdbcType=TIMESTAMP}, #{ratioEndDate,jdbcType=TIMESTAMP}, 
-      #{rangeDay,jdbcType=DECIMAL})
+      #{rangeDay,jdbcType=DECIMAL}, #{expand1,jdbcType=VARCHAR}, #{expand2,jdbcType=VARCHAR}, #{expand3,jdbcType=VARCHAR},
+      #{expand4,jdbcType=VARCHAR}, #{expand5,jdbcType=VARCHAR}, #{expand6,jdbcType=VARCHAR}, #{expand7,jdbcType=VARCHAR},
+      #{expand8,jdbcType=VARCHAR}, #{expand9,jdbcType=VARCHAR}, #{expand10,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TScenarinoDetail" >
     insert into T_SCENARINO_DETAIL
@@ -351,6 +395,36 @@
       <if test="rangeDay != null" >
         RANGE_DAY,
       </if>
+      <if test="expand1 != null" >
+        EXPAND1,
+      </if>
+       <if test="expand2 != null" >
+        EXPAND2,
+      </if>
+       <if test="expand3 != null" >
+        EXPAND3,
+      </if>
+       <if test="expand4 != null" >
+        EXPAND4,
+      </if>
+       <if test="expand5 != null" >
+        EXPAND5,
+      </if>
+       <if test="expand6 != null" >
+        EXPAND6,
+      </if>
+       <if test="expand7 != null" >
+        EXPAND7,
+      </if>
+       <if test="expand8 != null" >
+        EXPAND8,
+      </if>
+       <if test="expand9 != null" >
+        EXPAND9,
+      </if>
+       <if test="expand10 != null" >
+        EXPAND10,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="scenarinoId != null" >
@@ -415,6 +489,36 @@
       </if>
       <if test="rangeDay != null" >
         #{rangeDay,jdbcType=DECIMAL},
+      </if>
+       <if test="expand1 != null" >
+        #{expand1,jdbcType=VARCHAR},
+      </if>
+      <if test="expand2 != null" >
+        #{expand2,jdbcType=VARCHAR},
+      </if>
+      <if test="expand3 != null" >
+        #{expand3,jdbcType=VARCHAR},
+      </if>
+      <if test="expand4 != null" >
+        #{expand4,jdbcType=VARCHAR},
+      </if>
+      <if test="expand5 != null" >
+        #{expand5,jdbcType=VARCHAR},
+      </if>
+      <if test="expand6 != null" >
+        #{expand6,jdbcType=VARCHAR},
+      </if>
+      <if test="expand7 != null" >
+        #{expand7,jdbcType=VARCHAR},
+      </if>
+      <if test="expand8 != null" >
+        #{expand8,jdbcType=VARCHAR},
+      </if>
+      <if test="expand9 != null" >
+        #{expand9,jdbcType=VARCHAR},
+      </if>
+      <if test="expand10 != null" >
+        #{expand10,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -481,6 +585,36 @@
       <if test="rangeDay != null" >
         RANGE_DAY = #{rangeDay,jdbcType=DECIMAL},
       </if>
+      <if test="expand1 != null" >
+       EXPAND1 = #{expand1,jdbcType=VARCHAR},
+      </if>
+        <if test="expand2 != null" >
+       EXPAND2 = #{expand2,jdbcType=VARCHAR},
+      </if> 
+        <if test="expand3 != null" >
+       EXPAND3 = #{expand3,jdbcType=VARCHAR},
+      </if>
+        <if test="expand4 != null" >
+       EXPAND4 = #{expand4,jdbcType=VARCHAR},
+      </if>   
+        <if test="expand5 != null" >
+       EXPAND5 = #{expand5,jdbcType=VARCHAR},
+      </if>
+        <if test="expand6 != null" >
+       EXPAND6 = #{expand6,jdbcType=VARCHAR},
+      </if>
+        <if test="expand7 != null" >
+       EXPAND7 = #{expand7,jdbcType=VARCHAR},
+      </if>   
+        <if test="expand8 != null" >
+       EXPAND8 = #{expand8,jdbcType=VARCHAR},
+      </if>      
+        <if test="expand9 != null" >
+       EXPAND9 = #{expand9,jdbcType=VARCHAR},
+      </if>
+        <if test="expand10 != null" >
+       EXPAND10 = #{expand10,jdbcType=VARCHAR},
+      </if>
     </set>
     where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
   </update>
@@ -505,7 +639,17 @@
       SPINUP = #{spinup,jdbcType=DECIMAL},
       RATIO_START_DATE = #{ratioStartDate,jdbcType=TIMESTAMP},
       RATIO_END_DATE = #{ratioEndDate,jdbcType=TIMESTAMP},
-      RANGE_DAY = #{rangeDay,jdbcType=DECIMAL}
+      RANGE_DAY = #{rangeDay,jdbcType=DECIMAL},
+      EXPAND1 = #{expand1,jdbcType=VARCHAR},
+      EXPAND2 = #{expand2,jdbcType=VARCHAR},
+      EXPAND3 = #{expand3,jdbcType=VARCHAR},
+      EXPAND4 = #{expand4,jdbcType=VARCHAR},
+      EXPAND5 = #{expand5,jdbcType=VARCHAR},
+      EXPAND6 = #{expand6,jdbcType=VARCHAR},
+      EXPAND7 = #{expand7,jdbcType=VARCHAR},
+      EXPAND8 = #{expand8,jdbcType=VARCHAR},
+      EXPAND9 = #{expand9,jdbcType=VARCHAR},
+      EXPAND10 = #{expand10,jdbcType=VARCHAR} 
     where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
   </update>
 </mapper>
