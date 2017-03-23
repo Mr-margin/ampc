@@ -1387,8 +1387,8 @@ function jpjsBtn(){
           $('.jpjs').addClass('disNone');
           $('.jpztck.disNone').removeClass('disNone');
 
-          $('.toolShow').removeAttr('disabled');
-          $('.addNewArea').removeAttr('disabled');
+          scenarinoType(3);
+          qjMsg.scenarinoStatus = 3;
         }else{
           console.log('计算异常')
         }
@@ -1443,12 +1443,7 @@ function jqztckBtn(){
             }).success(function(res){
               qjMsg.scenarinoStatus = res.data.scenarinoStatus;
               scenarinoType(qjMsg.scenarinoStatus);
-              if(qjMsg.scenarinoStatus == 2){
-                console.log('zheli haiyou panduan caozuo ')
-              }
             })
-            $('.toolShow').removeAttr('disabled');
-            $('.addNewArea').removeAttr('disabled');
           }
         }else if(res.data.type == 1){
           console.log('重新计算中！！！')

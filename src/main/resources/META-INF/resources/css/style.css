@@ -750,7 +750,7 @@ fieldset[disabled] .btn-primary.active {
 }
 
 .btn-success {
-    background-color: #1c84c6;
+    background-color: rgb(61, 163, 228);
     border-color: #1c84c6;
     color: #FFFFFF;
 }
