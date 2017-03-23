@@ -86,8 +86,20 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 
 
 
-
+var jpfxMsg;
 $(function(){
+	var ls = window.localStorage;
+	jpfxMsg = vipspa.getMessage('jpfxMessage').content;
+
+	/*附带过来信息rwName、rwId、qjName、qjId*/
+	if (!qjMsg) {
+		jpfxMsg = JSON.parse(ls.getItem('jpfxMsg'));
+	} else {
+		ls.setItem('jpfxMsg', JSON.stringify(jpfxMsg));
+	}
+
+
+
 	//初始化模态框显示
 	$(".createRwModal").modal();
 	

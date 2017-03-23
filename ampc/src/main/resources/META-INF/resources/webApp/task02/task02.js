@@ -217,9 +217,6 @@ function initialize() {
     }).success(function(res){
       qjMsg.scenarinoStatus = res.data.scenarinoStatus;
       scenarinoType(qjMsg.scenarinoStatus);
-      if(qjMsg.scenarinoStatus == 2){
-        console.log('zheli haiyou panduan caozuo ')
-      }
     })
   } else {
     ls.setItem('qjMsg', JSON.stringify(qjMsg));
@@ -253,6 +250,16 @@ function initialize() {
   scenarino.then(function (res) {
 
     allData1 = res.data.slice(0,-1);
+    if(qjMsg.scenarinoStatus == 2){
+      for(var i=0;i<allData1.length;i++){
+        for(var m=0;m<allData1[i].timeItems.length;m++){
+          if(allData1[i].timeItems[m].planId !=-1){
+            $('.jpjs').removeAttr('disabled');
+            break;
+          }
+        }
+      }
+    }
     if(res.data[res.data.length-1].isnew){
       $('#selectCreateQj').modal('show')
     }else{
@@ -1458,6 +1465,23 @@ function jqztckBtn(){
 $('#jqzt').on('show.bs.modal', function (event) {
   jqztckBtn();
 })
+
+/*减排分析按钮*/
+function jumpJpfx(){
+  var msg1 = {
+    'id': 'jpfxMessage',
+    'content': {}
+  };
+  msg1.content.rwId = qjMsg.rwId;
+  msg1.content.rwName = qjMsg.rwName;
+  msg1.content.qjId = qjMsg.qjId;
+  msg1.content.qjName = qjMsg.qjName;
+  vipspa.setMessage(msg);
+
+  var a = document.createElement('a');
+  a.href = '#/rwgl_reductAnalys';
+  a.click();
+}
 
 
 
