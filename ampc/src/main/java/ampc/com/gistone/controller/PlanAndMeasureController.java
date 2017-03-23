@@ -375,6 +375,10 @@ public class PlanAndMeasureController {
 									.getMeasureContent());
 							newtPlanMeasure.setReductionRatio(t
 									.getReductionRatio());
+							newtPlanMeasure.setRatio(t.getRatio());
+							newtPlanMeasure.setTableRatio(t.getTableRatio());
+							newtPlanMeasure.setTableItem(t.getTableItem());
+							newtPlanMeasure.setTablePool(t.getTablePool());
 							result = tPlanMeasureMapper
 									.insertSelective(newtPlanMeasure);
 							if (result < 0) {
