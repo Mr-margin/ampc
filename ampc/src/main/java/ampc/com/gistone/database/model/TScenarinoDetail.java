@@ -210,6 +210,10 @@ public class TScenarinoDetail {
         this.scenarinoAddTime = scenarinoAddTime;
     }
 
+
+	
+    
+  
     public Long getUserId() {
         return userId;
     }
