@@ -1,9 +1,100 @@
+var columns = [{"field":"xzArea","title":"行政区","align":"center"},{"field":"PM25name","title":"PM2.5","align":"center"},{"field":"PM10name","title":"PM10","align":"center"},{"field":"SO2name","title":"SO2","align":"center"},{"field":"NOXname","title":"NOX","align":"center"},{"field":"VOCname","title":"VOC","align":"center"},{"field":"COname","title":"CO","align":"center"},{"field":"NH3name","title":"NH3","align":"center"},{"field":"BCname","title":"BC","align":"center"},{"field":"OCname","title":"OC","align":"center"},{"field":"PMFINEname","title":"PMFINE","align":"center"},{"field":"PMCname","title":"PMC","align":"center"}];
+var data = [{"xzArea":"杭州市","PM25name":"76","PM10name":"80","SO2name":"85","NOXname":"78","VOCname":"77","COname":"75","NH3name":"76","BCname":"75","OCname":"71","PMFINEname":"76","PMCname":"73"},{"xzArea":"嘉兴市","PM25name":"76","PM10name":"80","SO2name":"85","NOXname":"78","VOCname":"77","COname":"75","NH3name":"76","BCname":"75","OCname":"71","PMFINEname":"76","PMCname":"73"},{"xzArea":"湖州市","PM25name":"76","PM10name":"80","SO2name":"85","NOXname":"78","VOCname":"77","COname":"75","NH3name":"76","BCname":"75","OCname":"71","PMFINEname":"76","PMCname":"73"},{"xzArea":"宁波市","PM25name":"76","PM10name":"80","SO2name":"85","NOXname":"78","VOCname":"77","COname":"75","NH3name":"76","BCname":"75","OCname":"71","PMFINEname":"76","PMCname":"73"}];
+
+/**
+ * 操作地图显示
+ */
+var stat = {cPointx : 116, cPointy : 35}, app = {}, dong = {};
+var dojoConfig = {
+		async: true,
+	    parseOnLoad: true,  
+	    packages: [{  
+	        name: 'tdlib',  
+	        location: "/js/tdlib"  
+	    }],
+	    paths: {
+	    	extras: location.pathname.replace(/\/[^/]+$/, '') + "/js/extras"  
+	    }
+	};
+require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol",  'esri/symbols/PictureMarkerSymbol',
+         'esri/renderers/ClassBreaksRenderer',"esri/symbols/SimpleMarkerSymbol",'esri/dijit/PopupTemplate', "esri/geometry/Point", "esri/geometry/Extent", "esri/renderers/SimpleRenderer", "esri/graphic", 
+        "dojo/_base/Color", "dojo/dom-style",'dojo/query', "esri/tasks/FeatureSet", "esri/SpatialReference", 'extras/ClusterLayer',"tdlib/gaodeLayer", "dojo/domReady!"], 
+	function(Map, FeatureLayer,GraphicsLayer, SimpleFillSymbol, SimpleLineSymbol,PictureMarkerSymbol, ClassBreaksRenderer, SimpleMarkerSymbol,PopupTemplate, Point,Extent,SimpleRenderer, Graphic,
+	        Color, domStyle,query, FeatureSet, SpatialReference,ClusterLayer, gaodeLayer) {
+		dong.gaodeLayer = gaodeLayer;
+		dong.Graphic = Graphic;
+		dong.Point = Point;
+		dong.GraphicsLayer = GraphicsLayer;
+		dong.SpatialReference = SpatialReference;
+		dong.SimpleMarkerSymbol = SimpleMarkerSymbol;
+		dong.Extent = Extent;
+		dong.SimpleLineSymbol =SimpleLineSymbol;
+		dong.Color = Color;
+		dong.PopupTemplate = PopupTemplate;
+		dong.ClusterLayer = ClusterLayer ;
+		dong.PictureMarkerSymbol = PictureMarkerSymbol;
+		dong.ClassBreaksRenderer = ClassBreaksRenderer ;
+		dong.domStyle = domStyle ;
+		dong.query = query;
+
+		app.map = new Map("map_showId", {
+			logo:false,
+	        center: [stat.cPointx, stat.cPointy],
+	        minZoom:3,
+	        maxZoom:13,
+	        zoom: 3
+		});
+		
+		app.baselayerList = new dong.gaodeLayer();//默认加载矢量 new gaodeLayer({layertype:"road"});也可以
+		app.stlayerList = new dong.gaodeLayer({layertype: "st"});//加载卫星图
+		app.labellayerList = new dong.gaodeLayer({layertype: "label"});//加载标注图
+		
+		app.map.addLayer(app.baselayerList[i]);//添加高德地图到map容器
+		app.map.addLayers([app.baselayerList[i]]);//添加高德地图到map容器
+		
+		app.gLyr = new dong.GraphicsLayer({"id":"gLyr"});
+		app.map.addLayer(app.gLyr);
+		
+		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/china_gd/MapServer");//创建动态地图
+		app.map.addLayer(app.layer);
+		
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 $(function(){
 	//初始化模态框显示
 	$(".createRwModal").modal();
+	
 	//柱状图
 	bar();
 	pie();
+	
 	//行业 措施联动
 	$("#tradeId").change(function(){
 		pie();
@@ -14,9 +105,10 @@ $(function(){
 	/**
 	 *设置导航条信息
 	 */
-	$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
-	//全选复选框
-    initTableCheckbox(); 
+//	$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
+	
+	$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景管理</a>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span>');
+
     //地图展示切换
     $("#mapId").change(function(){
     	$("#map_showId").show();
@@ -29,6 +121,9 @@ $(function(){
     	$("#map_showId").hide();
 
     })
+    
+    
+    
     //构建列表展示table  
     $("#table_listShow").bootstrapTable({
     	method:'POST',
@@ -45,117 +140,15 @@ $(function(){
     	pageList: [10, 25, 50, 100],//可供选择的每页的行数
     	silent : true, // 刷新事件必须设置
     	detailView: true,//是否显示父子表
-        columns: [{
-            field: 'xzArea',
-            title: '行政区',
-            align: 'center',
-            
-        }, {
-            field: 'PM25name',
-            title: 'PM2.5',
-            align: 'center'
-        }, {
-            field: 'PM10name',
-            title: 'PM10',
-            align: 'center'
-        }, {
-            field: 'SO2name',
-            title: 'SO2',
-            align: 'center'
-        }, {
-            field: 'NOXname',
-            title: 'NOX',
-            align: 'center'
-        }, {
-            field: 'VOCname',
-            title: 'VOC',
-            align: 'center'
-            	
-        }, {
-            field: 'COname',
-            title: 'CO',
-            align: 'center'
-        }, {
-            field: 'NH3name',
-            title: 'NH3',
-            align: 'center'
-        }, {
-            field: 'BCname',
-            title: 'BC',
-            align: 'center'
-        }, {
-            field: 'OCname',
-            title: 'OC',
-            align: 'center'
-        }, {
-            field: 'PMFINEname',
-            title: 'PMFINE',
-            align: 'center'
-        }, {
-            field: 'PMCname',
-            title: 'PMC',
-            align: 'center'
-        }],
-        data:[{
-        	xzArea: '杭州市',
-        	PM25name: '76',
-        	PM10name: '80',
-        	SO2name: '85',
-        	NOXname: '78',
-        	VOCname: '77',
-        	COname: '75',
-        	NH3name: '76',
-        	BCname: '75',
-        	OCname: '71',
-        	PMFINEname: '76',
-        	PMCname: '73'
-        },{
-        	xzArea: '嘉兴市',
-        	PM25name: '76',
-        	PM10name: '80',
-        	SO2name: '85',
-        	NOXname: '78',
-        	VOCname: '77',
-        	COname: '75',
-        	NH3name: '76',
-        	BCname: '75',
-        	OCname: '71',
-        	PMFINEname: '76',
-        	PMCname: '73'
-        },{
-        	xzArea: '湖州市',
-        	PM25name: '76',
-        	PM10name: '80',
-        	SO2name: '85',
-        	NOXname: '78',
-        	VOCname: '77',
-        	COname: '75',
-        	NH3name: '76',
-        	BCname: '75',
-        	OCname: '71',
-        	PMFINEname: '76',
-        	PMCname: '73'
-        },{
-        	xzArea: '宁波市',
-        	PM25name: '76',
-        	PM10name: '80',
-        	SO2name: '85',
-        	NOXname: '78',
-        	VOCname: '77',
-        	COname: '75',
-        	NH3name: '76',
-        	BCname: '75',
-        	OCname: '71',
-        	PMFINEname: '76',
-        	PMCname: '73'
-        },],
+        columns: columns,
+        data:data,
       //注册加载子表的事件。注意下这里的三个参数！
         onExpandRow: function (index, row, $detail) {
             InitSubTable(index, row, $detail);
         }
     });
-    	
-  	
+    
+    
 });
 //初始化子表格(无线循环)
 InitSubTable = function (index, row, $detail) {
@@ -431,53 +424,3 @@ function  pie () {
 			myhycsChart.setOption(option2);
 			window.onresize = myhycsChart.resize;	
 }
-//超链接显示 模态框
-function exchangeModal(){
-	$(".createRwModal").modal();
-	
-}
-//全选复选框
-function initTableCheckbox() {  
-    var $thr = $('table thead tr');  
-    var $checkAllTh = $('<th><input type="checkbox" id="checkAll" name="checkAll" /></th>');  
-    /*将全选/反选复选框添加到表头最前，即增加一列*/  
-    $thr.prepend($checkAllTh);  
-    /*“全选/反选”复选框*/  
-    var $checkAll = $thr.find('input');  
-    $checkAll.click(function(event){  
-        /*将所有行的选中状态设成全选框的选中状态*/  
-        $tbr.find('input').prop('checked',$(this).prop('checked'));  
-        /*并调整所有选中行的CSS样式*/  
-        if ($(this).prop('checked')) {  
-            $tbr.find('input').parent().parent().addClass('warning');  
-        } else{  
-            $tbr.find('input').parent().parent().removeClass('warning');  
-        }  
-        /*阻止向上冒泡，以防再次触发点击操作*/  
-        event.stopPropagation();  
-    });  
-    /*点击全选框所在单元格时也触发全选框的点击操作*/  
-    $checkAllTh.click(function(){  
-        $(this).find('input').click();  
-    });  
-    var $tbr = $('table tbody tr');  
-    var $checkItemTd = $('<td><input type="checkbox" name="checkItem" /></td>');  
-    /*每一行都在最前面插入一个选中复选框的单元格*/  
-    $tbr.prepend($checkItemTd);  
-    /*点击每一行的选中复选框时*/  
-    $tbr.find('input').click(function(event){  
-        /*调整选中行的CSS样式*/  
-        $(this).parent().parent().toggleClass('warning');  
-        /*如果已经被选中行的行数等于表格的数据行数，将全选框设为选中状态，否则设为未选中状态*/  
-        $checkAll.prop('checked',$tbr.find('input:checked').length == $tbr.length ? true : false);  
-        /*阻止向上冒泡，以防再次触发点击操作*/  
-        event.stopPropagation();  
-    });  
-    /*点击每一行时也触发该行的选中操作*/  
-    $tbr.click(function(){  
-        $(this).find('input').click();  
-    });  
-} 
-
-
-
