@@ -70,6 +70,7 @@ public interface TScenarinoDetailMapper {
     Date selectMaxEndTime();
     
     TScenarinoDetail selectid(TScenarinoDetail tScenarinoDetail);
+    
     int deleteByPrimaryKey(Long scenarinoId);
 
     int insert(TScenarinoDetail record);
