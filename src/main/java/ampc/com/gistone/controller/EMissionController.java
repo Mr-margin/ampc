@@ -153,6 +153,8 @@ public class EMissionController {
 			tScenarinoDetail.setScenarinoId(scenarionId);
 			tScenarinoDetail.setScenarinoStatus(8l);//如成功修改情景的状态为8，执行完毕
 			tScenarinoDetail.setRatioEndDate(thedate);
+			tScenarinoDetail.setExpand1("");
+			tScenarinoDetail.setExpand2("");
 			int s=tScenarinoDetailMapper.updateByPrimaryKeySelective(tScenarinoDetail);
 			if(scenarionId==null){
 				return AmpcResult.build(1000, "error","无情景id");
@@ -300,52 +302,89 @@ public class EMissionController {
 	
 	
 	
-	@RequestMapping("find_emission")
+	@RequestMapping("find_reduceEmission")
 	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
-	public AmpcResult find_emission(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+	public AmpcResult find_reduceEmission(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
 		try{
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			TEmissionDetail tEmission=new TEmissionDetail();
 			String pollutant=data.get("pollutant").toString();	
 			String emDate=data.get("emissionDate").toString();
+			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date emissiondate=sdf.parse(emDate);
 			tEmission.setCodeLevel(data.get("codeLevel").toString());
 			tEmission.setEmissionDate(emissiondate);
+			//tEmission.setEmissionId(scenarinoId);
+			tEmission.setEmissionType("2");
 			List<TEmissionDetail> tEmissions=tEmissionDetailMapper.selectByEntity(tEmission);
+			//TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+			//String industrys=tScenarinoDetail.getExpand1();//共有行业
+			//String reduce=tScenarinoDetail.getExpand2();//共有措施
+			//JSONArray industryarr=JSONArray.fromObject(industrys);
+			//JSONArray reducearr=JSONArray.fromObject(reduce);
+			//List<String> industrylist=JSONArray.toList(industryarr);
+			//List<String> reducelist=JSONArray.toList(reducearr);
 			JSONArray arr=new JSONArray();
 			List plist=new ArrayList();
 			List ctlist=new ArrayList();
 			List coulist=new ArrayList();
 			for(TEmissionDetail emission:tEmissions){
+				JSONObject codeobj=new JSONObject();
 				JSONObject reobj=new JSONObject();
 				String detail=emission.getEmissionDetails();
-				JSONObject obj=JSONObject.fromObject(detail);
+				JSONObject obj=JSONObject.fromObject(detail);//行业减排结果
 				Map<String,Object> details=(Map)obj;
-				
-					//查看当前返回值是否包含此次遍历的code
-					if(!ctlist.contains(emission.getCode())){
-					reobj.put("code", emission.getCode());
-					ctlist.add(emission.getCode());
-					}else{
-						continue;
-					}
-				
-				reobj.put("emissionDate", emissiondate.getTime());
+				String reduces=emission.getMeasureReduce();
+				JSONObject objr=JSONObject.fromObject(reduces);//措施减排结果
+				Map<String,Object> reducemap=(Map)objr;
 				JSONArray irarr=new JSONArray();
 				for(String industry:details.keySet()){
+					//if(industrylist.contains(industry)){
 					JSONObject irobj=new JSONObject();
+					JSONObject pollumap=new JSONObject();
 					Map<String,Object> em=(Map) details.get(industry);
 					BigDecimal reduction=new BigDecimal(em.get(pollutant).toString());
-					irobj.put("industry", industry);
-					irobj.put(pollutant, reduction);
+					pollumap.put(pollutant, reduction);
+					irobj.put(industry, pollumap);
 					irarr.add(irobj);
+					//}else{
+					//	continue;
+					//}
 				}
-				reobj.put("reduction", irarr);
-				arr.add(reobj);
+				JSONArray redarr=new JSONArray();
+				for(String red:reducemap.keySet()){
+					//if(reducelist.contains(red)){
+					JSONObject redobj=new JSONObject();
+					JSONObject redmap=new JSONObject();
+					Map<String,Object> em=(Map) reducemap.get(red);
+					BigDecimal reduction=new BigDecimal(em.get(pollutant).toString());
+				    redmap.put(pollutant, reduction);
+					redobj.put(red, redmap);
+					redarr.add(redobj);
+					}
+					//}else{
+					//	continue;
+					//}
+				
+			
+				reobj.put("industry", irarr);
+				reobj.put("measure", redarr);
+				//查看当前返回值是否包含此次遍历的code
+				if(!ctlist.contains(emission.getCode())){
+				codeobj.put( emission.getCode(),reobj);
+				ctlist.add(emission.getCode());
+				}else{
+					continue;
+				}
+				arr.add(codeobj);
 			}	
+			//if(!arr.isEmpty()){
 			return AmpcResult.build(0, "success",arr);
+			//}else{
+			//	return AmpcResult.build(1000, "error","无匹配查询条件的结果");	
+			//}
 		}catch(Exception e){
 			e.printStackTrace();
 			return AmpcResult.build(1000, "error",null);	
