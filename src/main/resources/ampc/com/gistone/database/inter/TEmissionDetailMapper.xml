@@ -19,6 +19,35 @@
   <sql id="Blob_Column_List" >
     EMISSION_DETAILS, MEASURE_REDUCE
   </sql>
+  
+  
+  
+  <select id="selectByMap" resultMap="ResultMapWithBLOBs" parameterType="hashMap" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from T_EMISSION_DETAIL
+    where EMission_Type=#{emtype,jdbcType=OTHER}  and Emission_Date BETWEEN #{startDate,jdbcType=OTHER}
+       and #{endDate,jdbcType=OTHER}
+       and code in 
+       <foreach collection="codes" index="index" item="item" separator="," open="(" close=")">
+     		 #{item,jdbcType=OTHER}
+  		</foreach>
+ 		<if test="scenarinoId != null" >
+          and SCENARINO_ID=#{scenarinoId,jdbcType=OTHER}
+       </if>
+       order by Emission_Date
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
