@@ -15,7 +15,10 @@ $(function(){
 	 *设置导航条信息
 	 */
 	$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
+	//初始化模态表
 	initQdListTable();
+	//获取任务name 有数据用
+	//getRwName();
 	
     //地图展示切换
     $("#mapId").change(function(){
@@ -246,7 +249,23 @@ InitSubTable = function (index, row, $detail) {
     });
 };
 
+//获取任务名称
+function getRwName() {
+	  var url = '';
+	  var params = {
+	    userId: userId
+	  };
+	  ajaxPost(url, params).success(function (res) {
 
+	    for (var i = 0; i < res.data; i++) {
+	      $('#rwName').append($('<option value=""></option>'))
+	    }
+
+	  }).error(function () {
+	    console.log('模拟范围未获取到！！！！')
+	  })
+	  $('#rwName').append($('<option value="1">范围1</option>'))
+	}
 //下拉选框
 function selectQj(value){
 	if (value == 'j1' || value == 'j2') {
@@ -258,6 +277,7 @@ function selectQj(value){
 }
 //柱状图
 function bar () {
+	
 	var myPfChart = echarts.init(document.getElementById('pfDiv1'));
 	var option = {
 		    title : {
@@ -304,7 +324,8 @@ function bar () {
 		        {
 		        	show: true, 
 		            type : 'category',
-		            data : ['2016-11-17','2016-11-22','2016-11-27','2016-12-02','2016-12-07','2016-11-10']
+		            //data : ['2016-11-17','2016-11-22','2016-11-27','2016-12-02','2016-12-07','2016-11-10']
+		            data:[]
 		        }
 		    ],
 		    yAxis : [
@@ -333,7 +354,8 @@ function bar () {
 		                    }
 		                }
 		            },
-		            data:[260, 200, 220, 120, 100, 80]
+		            //data:[260, 200, 220, 120, 100, 80]
+		            data:[]
 		        },
 		        {
 		            name:'减排量',
@@ -361,22 +383,55 @@ function bar () {
 		                    }
 		                }
 		            },
-		            data:[40, 80, 50, 80,80, 70]
+		            //data:[40, 80, 50, 80,80, 70]
+		            data:[]
 		        }
 		    ]
 		};
+	
+		$.ajax({
+			type:"post",
+			async:false,
+			url:"/scenarino/get_radioInfo",
+			data:{"scenarinoId":"136","code":130123,"addressLevle":3,"stainType":"NOx"},
+			dataType:"json",
+			success:function(result){
+				if (result) {
+					var jsonobj = eval(result);
+					console.log(jsonobj);
+
+					options.xAxis[0].data = result.timeData;
+					options.series[0].data = result.series[0].xjdata;
+					options.series[1].data = result.series[1].jpdata;
+					
+					//myCharts.hideLoading();
+					myCharts.setOption(options);
+				} 
+			},
+			error:function(){
+				alert("请求数据失败！！！");
+				myChart.hideloding();
+			}
+	
+		});
+		//点击联动
 		myPfChart.on('click', function (params) {
 		console.log(params);
 		pie();
 		
-	});
+		});
+		
 		//减排量echarts
 		myPfChart.setOption(option);
 		//自适应屏幕大小变化
 		window.addEventListener("resize",function(){
 			 myPfChart.resize();
-
 		 });
+
+}
+//柱状图请求
+function getChartData(){
+	var options = myChart.getOption();
 
 }
 //行业措施饼状图
@@ -437,39 +492,6 @@ function exchangeModal(){
 	
 }
 //模态框 内的表格 全选复选框 新版
-/*$("#testTableId").bootstrapTable({
-	method:'GET',
-	url:'webApp/xgpg/v1/qjdata.json',
-	dataType: "json",
-	contentType: "application/json",
-	cache: false,         //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性
-	clickToSelect : true,// 点击选中行
-	pagination : false, // 在表格底部显示分页工具栏
-	singleSelect : false,//设置True 将禁止多选
-	striped : true, // 使表格带有条纹
-	silent : true, // 刷新事件必须设置
-	sidePagination: "server",
-    rowStyle: function (row, index) {
-        return {};
-      },
-        queryParams: function formPm(m) {
-          console.log(m);
-          var json = {
-            "token": "",
-            "data": {
-
-            }
-          };
-
-//          return JSON.stringify(json);
-          return '';
-        },
-      responseHandler: function (res) {
-        return res.data
-      },
-
-});*/
-
 function initQdListTable() {
 	  $('#testTableId').bootstrapTable({
 	    method: 'GET',
@@ -507,21 +529,18 @@ function initQdListTable() {
 	        return '';
 	      },
 	    responseHandler: function (res) {
-	    	console.log(res)
+	    	console.log(res);
 	      return res.data
 	    },
 	    queryParamsType: "undefined",
 	    silent: true,
-	    onClickRow: function (row, $element) {
-//	        $('.qj').val('');
-//	        selectRW = row;
-//	        $('#qjTable').bootstrapTable('destroy');
-//	        initQjTable();
+	   /* onClickRow: function (row, $element) {
+
 	      $('.info').removeClass('info');
 	      $($element).addClass('info');
-	    },
+	    },*/
 
-	    onCheck: function (row) {
+	    /*onCheck: function (row) {
 	      $('.delQD').attr('disabled', false);
 	      delQDMap[row.qdId] = 'true';
 	    },
@@ -540,16 +559,13 @@ function initQdListTable() {
 	    onUncheckAll: function (rows) {
 	      delQDMap = {};
 	      $('.delQD').attr('disabled', true);
-	    },
+	    },*/
 	    onLoadSuccess:function(data){
 	    	console.log(data)
 	    },
 	    
-	    contextMenu: '#RWcontext-menu',//右键菜单ID
 	    onContextMenuItem: function (row, $el) {
-//	        if ($el.data("item") == "rename") {
-//	          rename('rw', row.missionId);
-//	        }
+
 	    }
 	  });
 	}
