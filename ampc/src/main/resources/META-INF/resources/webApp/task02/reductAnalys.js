@@ -12,6 +12,11 @@ if(!qjMsg){
 }
 console.log(JSON.stringify(qjMsg));
 
+/**
+ *设置导航条信息
+ */
+$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景管理</a>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span>');
+
 
 //渲染器样式
 //mod2.xrclass={
@@ -201,21 +206,7 @@ function optionclick(event){
 
 
 
-
-var jpfxMsg;
-var jpfxMsg;
 $(function(){
-	var ls = window.localStorage;
-	jpfxMsg = vipspa.getMessage('jpfxMessage').content;
-
-	/*附带过来信息rwName、rwId、qjName、qjId*/
-	if (!qjMsg) {
-		jpfxMsg = JSON.parse(ls.getItem('jpfxMsg'));
-	} else {
-		ls.setItem('jpfxMsg', JSON.stringify(jpfxMsg));
-	}
-
-
 
 	//初始化模态框显示
 	$(".createRwModal").modal();
@@ -231,13 +222,7 @@ $(function(){
 	$("#measureId").change(function(){
 		pie();
 	});
-	/**
-	 *设置导航条信息
-	 */
-//	$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
 	
-	$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景管理</a>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span>');
-
     //地图展示切换
     $("#mapId").change(function(){
     	$("#map_showId").show();
