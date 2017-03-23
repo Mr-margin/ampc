@@ -49,13 +49,13 @@ public class AcceptMessageQueue implements Runnable{
 		System.out.println(rpop);
 		toDataUngribUtil.updateDB(rpop);
 		//JSONArray array = JSONArray.fromObject(rpop);
-		try {
+		/*try {
 			JSONObject jsonObject = new JSONObject(rpop);
 			String id = (String) jsonObject.get("id");
 			String time = (String) jsonObject.get("time");
 			String type = (String) jsonObject.get("type");
-			/*String id = (String) jsonObject.get("id");
-			String id = (String) jsonObject.get("id");*/
+			String id = (String) jsonObject.get("id");
+			String id = (String) jsonObject.get("id");
 			System.out.println(id);
 			
 			
@@ -63,7 +63,7 @@ public class AcceptMessageQueue implements Runnable{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		*/
 		
 		/*while (true) {
 		//	String rpop = redisUtilServer.rpop("send_queue_name");
