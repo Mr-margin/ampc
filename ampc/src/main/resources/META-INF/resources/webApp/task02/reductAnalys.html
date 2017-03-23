@@ -1,4 +1,4 @@
-<!-- 效果评估 》 减排分析 -->
+<!-- 任务管理 >>区域时段>>减排分析 -->
 <div class='col-md-6' style="height:100%;padding-left: 0px;">
 	<div class="ibox float-e-margins" style="height:100%;">
 		<div class="ibox-title">
@@ -29,7 +29,7 @@
 			</div>
 		</div>
 		<div class="ibox-content" style="height:calc(100% - 48px);overflow-y: hide;border:1px solid #75B9E6;padding: 0px;">
-	        <div id="map_showId"><img alt=""  style="width:100%;height:100%;" src="img/map01.png"></div>
+	        <div id="map_showId"></div>
 	    	<!-- 列表展示modal -->
 	    	<div  id="listModal" style="display: none;">
 	    		<table class="table table-hover" id="table_listShow">
@@ -67,70 +67,3 @@
 	    </div>
 	</div>
 </div>
-
-<!-- 模态框 -->
-<div class="modal fade createRwModal" id="" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-				<h4 class="modal-title">创建情景</h4>
-			</div>
-			<div class="modal-body">
-				<div class="rwCon" >
-					<div class="form-group mt10 clearfix">
-						<label for="mnfw" class="col-md-2 control-label lh29">任务名称</label>
-
-						<div class="col-md-10">
-							<select name="mnfw" class="form-control" onchange="selectQj(this.value)">
-								<option value="j0">- -</option>
-								<option value="j1">基准</option>
-								<option value="j2">长三角保障</option>
-								<option value="j3">情景三</option>
-								<option value="j4">情景四</option>
-								<option value="j5">情景五</option>
-							</select>
-						</div>
-					</div>
-					<div class="form-group mt10 clearfix">
-						<div class="col-md-10 col-md-offset-2" id="tableId" style="display: none">
-							<table class="table table-striped table-bordered table-hover" id="testTableId" style="margin-top:5px;">
-								<thead>
-										<tr>
-											<th>情景名称</th>
-											<th>时间</th>
-										</tr>								
-								</thead>
-								<tbody>
-										<tr>
-											<th>情景一</th>
-											<th>2017-3-18</th>
-										</tr>
-										<tr>
-											<th>情景二</th>
-											<th>2017-3-19</th>
-										</tr>
-										<tr>
-											<th>情景三</th>
-											<th>2017-3-20</th>
-										</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer new-foot" >
-				<button type="button" class="btn btn-primary createRwBtn" onclick="">确定</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-
-
-
-
