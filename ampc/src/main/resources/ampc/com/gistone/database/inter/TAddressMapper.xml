@@ -14,6 +14,35 @@
     ADDRESS_ID, ADDRESS_NAME, ADDRESS_CODE, ADDRESS_LEVEL, PROVINCE_CODE, CITY_CODE, 
     COUNTY_CODE
   </sql>
+ 
+ 
+ 
+ 
+ 
+ <!-- 根据code查询所有的县级 -->
+ <select id="selectByCode" resultType="java.lang.Long" parameterType="java.lang.String" >
+    select ADDRESS_CODE from T_ADDRESS where ADDRESS_CODE like #{_parameter,jdbcType=VARCHAR} and ADDRESS_LEVEL=3
+  </select>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
