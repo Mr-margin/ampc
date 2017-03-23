@@ -235,17 +235,17 @@
        <if test="basisTime != null" >
        and BASIS_TIME = #{basisTime,jdbcType=TIMESTAMP}
       </if>
-       <if test="controstScenarinoId != null" >
-       and CONTRAST_SCENARINO_ID = #{controstScenarinoId,jdbcType=DECIMAL}
+       <if test="contrastScenarinoId != null and contrastScenarinoId!=''" >
+       and CONTRAST_SCENARINO_ID = #{contrastScenarinoId,jdbcType=DECIMAL}
       </if>
-       <if test="scenType != null" >
+       <if test="scenType != null and scenType !=''" >
        and SCEN_TYPE = #{scenType,jdbcType=VARCHAR}
       </if>
        <if test="pathDate != null" >
        and PATH_DATE = #{pathDate,jdbcType=TIMESTAMP}
       </if>
-      <if test="spinUp != null" >
-       and SPINUP = #{spinUp,jdbcType=DECIMAL}
+      <if test="spinup != null" >
+       and SPINUP = #{spinup,jdbcType=DECIMAL}
       </if>
   </select>
   
