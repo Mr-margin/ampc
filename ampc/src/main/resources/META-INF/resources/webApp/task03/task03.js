@@ -1626,7 +1626,7 @@ function Trim(str){
 /**
  * 操作地图显示
  */
-var stat = {cPointx : 116, cPointy : 35}, app = {}, dong = {};
+var stat = {cPointx : 106, cPointy : 35}, app = {}, dong = {};
 var dojoConfig = {
 	async: true,
     parseOnLoad: true,  
