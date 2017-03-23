@@ -191,7 +191,17 @@
  	select
   <include refid="Base_Column_List" />
     from T_UNGRIB
-    where where PATH_DATE=(select MAX(PATH_DATE) from T_UNGRIB)
+    where  PATH_DATE=(select MAX(PATH_DATE) from T_UNGRIB)
   </select>
-  
+  <!--出现中断的情况下 查询最新的fnl  -->
+  <!-- <sql id="Fnl_Column_List_interrupt" >
+    UNGRIB_ID, ADD_TIME, MAX(PATH_DATE), FNL_STATUS, GFS1_STATUS, GFS2_STATUS, GFS3_STATUS, 
+    GFS4_STATUS, GFS5_STATUS, GFS6_STATUS, GFS7_STATUS, GFS8_STATUS, GFS9_STATUS
+  </sql> -->
+  <select id="getinterruptlastFnl" resultType="java.util.Date" parameterType="java.lang.Integer">
+  select MAX(PATH_DATE)
+    from 
+    T_UNGRIB
+    where  FNL_STATUS = #{fnlStatus,jdbcType=DECIMAL}
+  </select>
 </mapper>
