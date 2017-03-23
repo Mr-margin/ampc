@@ -14,4 +14,15 @@ public interface TTasksStatusMapper {
     int updateByPrimaryKeySelective(TTasksStatus record);
 
     int updateByPrimaryKey(TTasksStatus record);
+
+	/**
+	 * @Description: TODO
+	 * @param scenarinoId
+	 * @return   
+	 * Long  查询tasksid 通过情景id
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月22日 下午3:46:23
+	 */
+	Long selectTasksId(Long tasksScenarinoId);
 }
