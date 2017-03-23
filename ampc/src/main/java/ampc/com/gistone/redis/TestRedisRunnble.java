@@ -55,14 +55,14 @@ public class TestRedisRunnble<V> implements Runnable{
 		System.out.println("------1-----");
 		//redisService.leftPush("task-queue", "12345678911");
 		UngribTest.setId(UUID.randomUUID().toString());
-		UngribTest.setTime(new SimpleDateFormat("YYYY-MM-DD hh:mm:ss").format(new Date()));
+		UngribTest.setTime(new SimpleDateFormat("YYYY-MM-dd hh:mm:ss").format(new Date()));
 		UngribTest.setType("ungrib.result");
 		Map<String,Object> map = new HashMap<String, Object>();
 		Map<String,Map<String, Object>> body = new HashMap<String, Map<String, Object>>();
-		map.put("pathdate", new SimpleDateFormat("YYYY-MM-DD").format(new Date()));
-		 int[] fnl ={0};
+		map.put("pathdate",  new Date());
+		 int[] fnl ={1};
  		map.put("fnl", fnl);
- 		int[] gfs = {0,0,0,0,0,0};
+ 		int[] gfs = {1,1,1,1,1,1};
  		map.put("gfs", gfs);
  		body.put("body", map);
 		UngribTest.setBody(body);
