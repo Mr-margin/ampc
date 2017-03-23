@@ -398,7 +398,7 @@ function bar () {
 			success:function(result){
 				if (result) {
 					var jsonobj = eval(result);
-					console.log(jsonobj);
+					//console.log(jsonobj);
 
 					options.xAxis[0].data = result.timeData;
 					options.series[0].data = result.series[0].xjdata;
@@ -408,10 +408,10 @@ function bar () {
 					myCharts.setOption(options);
 				} 
 			},
-			error:function(){
+			/*error:function(){
 				alert("请求数据失败！！！");
 				myChart.hideloding();
-			}
+			}*/
 	
 		});
 		//点击联动

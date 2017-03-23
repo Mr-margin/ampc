@@ -10,6 +10,7 @@ $(function(){
 	//全选复选框
 	initTableCheckbox();
 	
+	
 });
 //下拉选框
 function selectQj(value){
