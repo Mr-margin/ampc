@@ -57,6 +57,7 @@ import ampc.com.gistone.util.DateUtil;
 @RestController
 @RequestMapping
 public class PlanAndMeasureController {
+	//公用的Jackson解析对象
 	private ObjectMapper mapper=new ObjectMapper();
 	// 措施汇总调用减排计算的接口Url
 	private static final String JPJSURL = "http://192.168.2.247:8089/calc/submit/subSector";
