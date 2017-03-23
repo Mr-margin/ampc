@@ -157,9 +157,9 @@ function initRwTable() {
     maintainSelected: true,
     clickToSelect: false,// 点击选中行
     pagination: true, // 在表格底部显示分页工具栏
-    pageSize: 10, // 页面大小
+    pageSize: 9, // 页面大小
     pageNumber: 1, // 页数
-    pageList: [10],
+    pageList: [9],
     striped: true, // 使表格带有条纹
     sidePagination: "server",// 表格分页的位置 client||server
     rowStyle: function (row, index) {
@@ -317,9 +317,9 @@ function initQjTable() {
     clickToSelect: false,// 点击选中行
     pagination: false, // 在表格底部显示分页工具栏
     onlyInfoPagination: true,
-    pageSize: 10, // 页面大小
+    pageSize: 9, // 页面大小
     pageNumber: 1, // 页数
-    pageList: [10],
+    pageList: [9],
     striped: false, // 使表格带有条纹
     sidePagination: "server",// 表格分页的位置 client||server
     rowStyle: function (row, index) {
@@ -760,7 +760,7 @@ function selectQJtype(type) {
             var endDateArr = setSelectDate($('#yStartDate').val(), selectEndDate);
             $('#yEndDate').empty();
             for (var i = 0; i < endDateArr.length; i++) {
-              if (endDateArr[i] < moment().format('YYYY-MM-DD'))continue;
+              if (endDateArr[i] < moment(startD).format('YYYY-MM-DD'))continue;
               $('#yEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
             }
           });
@@ -1014,8 +1014,13 @@ function changeJcqj(t) {
   var endDateArr = setSelectDate($('#yStartDate').val(), selectEndDate);
   $('#yEndDate').empty();
   for (var i = 0; i < endDateArr.length; i++) {
-    if (endDateArr[i] < moment().format('YYYY-MM-DD'))continue;
-    $('#yEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
+    if(qjType == 1){
+      if (endDateArr[i] < moment().format('YYYY-MM-DD'))continue;
+      $('#yEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
+    }else if(qjType == 2){
+      if (endDateArr[i] < moment(startD).format('YYYY-MM-DD'))continue;
+      $('#yEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
+    }
   }
 }
 
@@ -1027,8 +1032,13 @@ function changeJcDate(t) {
   var endDateArr = setSelectDate($('#yStartDate').val(), selectEndDate);
   $('#yEndDate').empty();
   for (var i = 0; i < endDateArr.length; i++) {
-    if (endDateArr[i] < moment().format('YYYY-MM-DD'))continue;
-    $('#yEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
+    if(qjType == 1){
+      if (endDateArr[i] < moment().format('YYYY-MM-DD'))continue;
+      $('#yEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
+    }else if(qjType == 2){
+      if (endDateArr[i] < moment(startD).format('YYYY-MM-DD'))continue;
+      $('#yEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
+    }
   }
 }
 
@@ -1160,7 +1170,6 @@ function createQj(type) {
         }
       } else if (qjType == 3) {
         params.scenarinoStartDate = moment($('#hStartDate').val()).format('YYYY-MM-DD HH:mm:ss');
-        j
         params.scenarinoEndDate = moment($('#hEndDate').val()).add(1, 'd').subtract(1, 's').format('YYYY-MM-DD HH:mm:ss');
         params.spinUp = $('#spinup').val();
       }
