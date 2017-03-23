@@ -1403,7 +1403,7 @@ function jpjsBtn(){
 }
 
 /*减排状态查看*/
-function jqztckBtn(){
+function jpztckBtn(){
   var url = '/jp/areaStatusJp';
   var params = {
     scenarinoId:qjMsg.qjId,
@@ -1457,8 +1457,8 @@ function jqztckBtn(){
     })}
 }
 
-$('#jqzt').on('show.bs.modal', function (event) {
-  jqztckBtn();
+$('#jpzt').on('show.bs.modal', function (event) {
+  jpztckBtn();
 })
 
 /*减排分析按钮*/
