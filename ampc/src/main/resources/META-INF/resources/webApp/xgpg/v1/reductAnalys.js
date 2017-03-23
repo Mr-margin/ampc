@@ -159,16 +159,12 @@ $(function(){
 });
 //初始化子表格(无线循环)
 InitSubTable = function (index, row, $detail) {
-    //var parentid = row.MENU_ID;
     var cur_table = $detail.html('<table></table>').find('table');
     $(cur_table).bootstrapTable({
         url: '',
         method: 'get',
-        //queryParams: { strParentID: parentid },
-        //ajaxOptions: { strParentID: parentid },
         clickToSelect: true,
         detailView: false,//父子表
-        //uniqueId: "MENU_ID",
         columns: [{
             field: 'xzArea',
             align: 'center'
@@ -383,10 +379,8 @@ function bar () {
 		 });
 
 }
-
 //行业措施饼状图
 function  pie () {
-
 	var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
 	var option2 = {
 		    title : {
@@ -436,8 +430,6 @@ function  pie () {
 			//行业措施分担饼状图
 			myhycsChart.setOption(option2);
 			window.onresize = myhycsChart.resize;	
-
-
 }
 //超链接显示 模态框
 function exchangeModal(){
