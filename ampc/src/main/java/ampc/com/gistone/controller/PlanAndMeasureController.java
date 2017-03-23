@@ -59,10 +59,10 @@ import ampc.com.gistone.util.DateUtil;
 public class PlanAndMeasureController {
 	private ObjectMapper mapper=new ObjectMapper();
 	// 措施汇总调用减排分析时使用的接口Url
-	private static final String JPJSURL = "http://192.168.1.36:8089/calc/submit/subSector";
+	private static final String JPJSURL = "http://192.168.2.247:8089/calc/submit/subSector";
 	//区域调用减排分析时使用的接口Url
-	private String AreaJPURL="http://192.168.1.36:8089/calc/submit/analysis?jobId=";
-	private String AreaStatusJPURL="http://192.168.1.36:8089/calc/status";
+	private String AreaJPURL="http://192.168.2.247:8089/calc/submit/analysis?jobId=";
+	private String AreaStatusJPURL="http://192.168.2.247:8089/calc/status";
 	// 情景映射
 	@Autowired
 	private TScenarinoDetailMapper tScenarinoDetailMapper;
