@@ -1831,8 +1831,6 @@ function add_point(col){
 //	console.log(point_sz)
 //	dojo.connect(app.pint, "onClick", optionclick);
     
-    
-    
 	var extent = new dong.Extent(xmin,ymin,xmax,ymax, new dong.SpatialReference({ wkid:3857 }));
 	app.mapList[1].setExtent(extent);
 	/***********************************************************/
