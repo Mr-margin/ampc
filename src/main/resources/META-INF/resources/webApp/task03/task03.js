@@ -67,9 +67,6 @@ metTable_hj_info();
  * @returns
  */
 function getLocalTime(nS) {     
-//    return new Date(parseInt(nS)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
-//	return new Date(parseInt(nS) * 1000).toLocaleString().substr(0,17);
-//	return new Date(parseInt("/Date("+nS+")/".substr(6, 13))).toLocaleDateString()
     return moment(nS).format('YYYY-MM-DD hh');
 }
 

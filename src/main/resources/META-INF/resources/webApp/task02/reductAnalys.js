@@ -30,6 +30,16 @@ $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px
 
 
 /**
+ * 时间戳转成日期格式
+ * @param nS
+ * @returns
+ */
+function getLocalTime(nS) {     
+    return moment(nS).format('YYYY-MM-DD');
+}
+
+
+/**
  * 操作地图显示
  */
 var stat = {cPointx : 106, cPointy : 35}, app = {}, dong = {};
@@ -94,7 +104,7 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 //		dojo.connect(app.map, "onload", resizess);//加载
 		
 		/****************************添加省*********************************************/
-//		app.sheng = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/2", {//添加省的图层
+//		app.sheng = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/cms/MapServer/2", {//添加省的图层
 //			mode: dong.FeatureLayer.MODE_ONDEMAND,
 //			outFields: ["*"]
 //		});
@@ -132,10 +142,17 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
  * 启动后加载数据，
  */
 function shoe_data_start(){
-	
 	var paramsName = {};
+	paramsName.userId = userId;
+//	paramsName.emissionDate = getLocalTime(qjMsg.qjStartDate);//时间
+	paramsName.emissionDate = "2017-03-11";//时间
+	paramsName.pollutant = $('#hz_wrw').val();//物种
+	paramsName.codeLevel = 2;//省市区层级（1省，2市，3区）
+	paramsName.scenarinoId = qjMsg.qjId;//情景id
 	
-	ajaxPost('/plan/get_planInfo',paramsName).success(function(res){
+	console.log(JSON.stringify(paramsName));
+	ajaxPost('/find_reduceEmission',paramsName).success(function(res){
+		console.log(JSON.stringify(res));
 		
 		if(res.status == 0){
 			var data_id = "";
@@ -144,10 +161,10 @@ function shoe_data_start(){
 			});
 		}
 		
-		var query = new dong.Query();
+		var query = new dong.query();
 		query.where = "ADMINCODE in ('"+parent.dataBase.Message_map.REGION+"')";
 		
-		app.sheng = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/china_x/MapServer/2", {outFields: ["*"]});//添加省的图层
+		app.sheng = new dong.FeatureLayer(ArcGisServerUrl+"/arcgis/rest/services/cms/MapServer/2", {outFields: ["*"]});//添加省的图层
 		app.sheng.queryFeatures(query, function(featureSet) {
 			for (var i = 0, il = featureSet.features.length; i < il; i++) {
 				var graphic = featureSet.features[i];
@@ -473,7 +490,7 @@ function bar () {
 		    ]
 		};
 		myPfChart.on('click', function (params) {
-		console.log(params);
+//		console.log(params);
 		pie();
 		
 	});

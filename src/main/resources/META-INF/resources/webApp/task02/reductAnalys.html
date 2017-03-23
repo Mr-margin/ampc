@@ -3,7 +3,31 @@
 	<div class="ibox float-e-margins" style="height:100%;">
 		<div class="ibox-title">
 			<h5>各地区减排比例</h5>
-			<div class="row">
+			
+			<div class="ibox-tools">
+				<div class="btn-group" style="margin-bottom: 0px;margin-top: -10px;">
+					<div class="input-group m-b" style="margin-bottom: 0px;width:180px;">
+						<span class="input-group-addon" style="border: 1px solid #E5E6E7;">物种: </span>
+						<select name="hz_wrw" id="hz_wrw" class="form-control" onChange="">
+							<option value="SO2">SO2</option>
+							<option value="PM25">PM25</option>
+							<option value="PM10">PM10</option><!-- PM10=PM25+PMcoarse -->
+							<option value="NOx">NOx</option>
+							<option value="VOC">VOC</option>
+		              	</select>
+					</div>
+				</div>
+	        	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	        	<div class="btn-group btn-group-circle" id="hangyedetype" onClick="hangye_type_info();" data-toggle="buttons" style="margin-bottom: 0px;margin-top: -5px;">
+					<label class="btn btn-outline btn-success active" val_name="all"><input type="radio" class="toggle">地图展示</label> 
+					<label class="btn btn-outline btn-success" val_name="dq"><input type="radio" class="toggle">列表展示</label>
+				</div>
+	        </div>
+			
+			
+			
+			
+			<!-- <div class="row">
 				<div class='col-md-2' style="margin-top: -10px;">
 					<div class="btn-group">
 						<button data-toggle="dropdown"
@@ -26,7 +50,12 @@
 						</label>
 					</div>
 				</div>
-			</div>
+			</div> -->
+			
+			
+			
+			
+			
 		</div>
 		<div class="ibox-content" style="height:calc(100% - 48px);overflow-y: hide;border:1px solid #75B9E6;padding: 0px;">
 	        <div id="map_showId" style="height:100%;"></div>
