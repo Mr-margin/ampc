@@ -30,7 +30,12 @@ vipspa.start({
         templateUrl: 'webApp/task03/task03.html',
         controller: 'webApp/task03/task03.js'
     },
-      
+    '/rwgl_reductAnalys':{		//任务管理-减排分析
+        templateUrl: 'webApp/task02/reductAnalys.html',
+        controller: 'webApp/task02/reductAnalys.js'
+    },
+    
+    
       
     '/xgpg_v1': {      //效果评估-减排分析
         templateUrl: 'webApp/xgpg/v1/reductAnalys.html',
