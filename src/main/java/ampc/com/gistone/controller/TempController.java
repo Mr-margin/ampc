@@ -52,10 +52,15 @@ public class TempController {
 			String code = data.get("code").toString();;
 			// 行政区划等级
 			Long addressLevle=Long.parseLong(data.get("addressLevle").toString());
+			TScenarinoDetail tsd=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
 			if(addressLevle==1) code=code.substring(0,2)+"%";
 			if(addressLevle==2) code=code.substring(0,4)+"%";
-			
-			TScenarinoDetail tsd=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);		
+			if(addressLevle==3){
+				
+			}else{
+				
+			}
+					
 			
 			return AmpcResult.build(1000, "添加失败");
 		} catch (Exception e) {
