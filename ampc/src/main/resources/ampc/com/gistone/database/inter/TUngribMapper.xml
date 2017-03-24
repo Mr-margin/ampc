@@ -16,22 +16,15 @@
     <result column="GFS8_STATUS" property="gfs8Status" jdbcType="DECIMAL" />
     <result column="GFS9_STATUS" property="gfs9Status" jdbcType="DECIMAL" />
     <result column="ERROR_FNL_MSG" property="errorFnlMsg" jdbcType="VARCHAR" />
-    <result column="ERROR_GFS1_MSG" property="errorGfs1Msg" jdbcType="VARCHAR" />
-    <result column="ERROR_GFS2_MSG" property="errorGfs2Msg" jdbcType="VARCHAR" />
-    <result column="ERROR_GFS3_MSG" property="errorGfs3Msg" jdbcType="VARCHAR" />
-    <result column="ERROR_GFS4_MSG" property="errorGfs4Msg" jdbcType="VARCHAR" />
-    <result column="ERROR_GFS5_MSG" property="errorGfs5Msg" jdbcType="VARCHAR" />
-    <result column="ERROR_GFS6_MSG" property="errorGfs6Msg" jdbcType="VARCHAR" />
-    <result column="ERROR_GFS7_MSG" property="errorGfs7Msg" jdbcType="VARCHAR" />
-    <result column="ERROR_GFS8_MSG" property="errorGfs8Msg" jdbcType="VARCHAR" />
-    <result column="ERROR_GFS9_MSG" property="errorGfs9Msg" jdbcType="VARCHAR" />
+    <result column="ERROR_GFS_MSG" property="errorGfsMsg" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="BEIZHU" property="beizhu" jdbcType="VARCHAR" />
+    <result column="BEIZHU2" property="beizhu2" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     UNGRIB_ID, ADD_TIME, PATH_DATE, FNL_STATUS, GFS1_STATUS, GFS2_STATUS, GFS3_STATUS, 
     GFS4_STATUS, GFS5_STATUS, GFS6_STATUS, GFS7_STATUS, GFS8_STATUS, GFS9_STATUS, ERROR_FNL_MSG, 
-    ERROR_GFS1_MSG, ERROR_GFS2_MSG, ERROR_GFS3_MSG, ERROR_GFS4_MSG, ERROR_GFS5_MSG, ERROR_GFS6_MSG, 
-    ERROR_GFS7_MSG, ERROR_GFS8_MSG, ERROR_GFS9_MSG, BEIZHU
+    ERROR_GFS_MSG, UPDATE_TIME, BEIZHU, BEIZHU2
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -48,19 +41,15 @@
       FNL_STATUS, GFS1_STATUS, GFS2_STATUS, 
       GFS3_STATUS, GFS4_STATUS, GFS5_STATUS, 
       GFS6_STATUS, GFS7_STATUS, GFS8_STATUS, 
-      GFS9_STATUS, ERROR_FNL_MSG, ERROR_GFS1_MSG, 
-      ERROR_GFS2_MSG, ERROR_GFS3_MSG, ERROR_GFS4_MSG, 
-      ERROR_GFS5_MSG, ERROR_GFS6_MSG, ERROR_GFS7_MSG, 
-      ERROR_GFS8_MSG, ERROR_GFS9_MSG, BEIZHU
+      GFS9_STATUS, ERROR_FNL_MSG, ERROR_GFS_MSG, 
+      UPDATE_TIME, BEIZHU, BEIZHU2
       )
     values (#{ungribId,jdbcType=DECIMAL}, #{addTime,jdbcType=TIMESTAMP}, #{pathDate,jdbcType=TIMESTAMP}, 
       #{fnlStatus,jdbcType=DECIMAL}, #{gfs1Status,jdbcType=DECIMAL}, #{gfs2Status,jdbcType=DECIMAL}, 
       #{gfs3Status,jdbcType=DECIMAL}, #{gfs4Status,jdbcType=DECIMAL}, #{gfs5Status,jdbcType=DECIMAL}, 
       #{gfs6Status,jdbcType=DECIMAL}, #{gfs7Status,jdbcType=DECIMAL}, #{gfs8Status,jdbcType=DECIMAL}, 
-      #{gfs9Status,jdbcType=DECIMAL}, #{errorFnlMsg,jdbcType=VARCHAR}, #{errorGfs1Msg,jdbcType=VARCHAR}, 
-      #{errorGfs2Msg,jdbcType=VARCHAR}, #{errorGfs3Msg,jdbcType=VARCHAR}, #{errorGfs4Msg,jdbcType=VARCHAR}, 
-      #{errorGfs5Msg,jdbcType=VARCHAR}, #{errorGfs6Msg,jdbcType=VARCHAR}, #{errorGfs7Msg,jdbcType=VARCHAR}, 
-      #{errorGfs8Msg,jdbcType=VARCHAR}, #{errorGfs9Msg,jdbcType=VARCHAR}, #{beizhu,jdbcType=VARCHAR}
+      #{gfs9Status,jdbcType=DECIMAL}, #{errorFnlMsg,jdbcType=VARCHAR}, #{errorGfsMsg,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{beizhu,jdbcType=VARCHAR}, #{beizhu2,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TUngrib" >
@@ -108,35 +97,17 @@
       <if test="errorFnlMsg != null" >
         ERROR_FNL_MSG,
       </if>
-      <if test="errorGfs1Msg != null" >
-        ERROR_GFS1_MSG,
+      <if test="errorGfsMsg != null" >
+        ERROR_GFS_MSG,
       </if>
-      <if test="errorGfs2Msg != null" >
-        ERROR_GFS2_MSG,
-      </if>
-      <if test="errorGfs3Msg != null" >
-        ERROR_GFS3_MSG,
-      </if>
-      <if test="errorGfs4Msg != null" >
-        ERROR_GFS4_MSG,
-      </if>
-      <if test="errorGfs5Msg != null" >
-        ERROR_GFS5_MSG,
-      </if>
-      <if test="errorGfs6Msg != null" >
-        ERROR_GFS6_MSG,
-      </if>
-      <if test="errorGfs7Msg != null" >
-        ERROR_GFS7_MSG,
-      </if>
-      <if test="errorGfs8Msg != null" >
-        ERROR_GFS8_MSG,
-      </if>
-      <if test="errorGfs9Msg != null" >
-        ERROR_GFS9_MSG,
+      <if test="updateTime != null" >
+        UPDATE_TIME,
       </if>
       <if test="beizhu != null" >
         BEIZHU,
+      </if>
+      <if test="beizhu2 != null" >
+        BEIZHU2,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -182,35 +153,17 @@
       <if test="errorFnlMsg != null" >
         #{errorFnlMsg,jdbcType=VARCHAR},
       </if>
-      <if test="errorGfs1Msg != null" >
-        #{errorGfs1Msg,jdbcType=VARCHAR},
+      <if test="errorGfsMsg != null" >
+        #{errorGfsMsg,jdbcType=VARCHAR},
       </if>
-      <if test="errorGfs2Msg != null" >
-        #{errorGfs2Msg,jdbcType=VARCHAR},
-      </if>
-      <if test="errorGfs3Msg != null" >
-        #{errorGfs3Msg,jdbcType=VARCHAR},
-      </if>
-      <if test="errorGfs4Msg != null" >
-        #{errorGfs4Msg,jdbcType=VARCHAR},
-      </if>
-      <if test="errorGfs5Msg != null" >
-        #{errorGfs5Msg,jdbcType=VARCHAR},
-      </if>
-      <if test="errorGfs6Msg != null" >
-        #{errorGfs6Msg,jdbcType=VARCHAR},
-      </if>
-      <if test="errorGfs7Msg != null" >
-        #{errorGfs7Msg,jdbcType=VARCHAR},
-      </if>
-      <if test="errorGfs8Msg != null" >
-        #{errorGfs8Msg,jdbcType=VARCHAR},
-      </if>
-      <if test="errorGfs9Msg != null" >
-        #{errorGfs9Msg,jdbcType=VARCHAR},
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="beizhu != null" >
         #{beizhu,jdbcType=VARCHAR},
+      </if>
+      <if test="beizhu2 != null" >
+        #{beizhu2,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -256,35 +209,17 @@
       <if test="errorFnlMsg != null" >
         ERROR_FNL_MSG = #{errorFnlMsg,jdbcType=VARCHAR},
       </if>
-      <if test="errorGfs1Msg != null" >
-        ERROR_GFS1_MSG = #{errorGfs1Msg,jdbcType=VARCHAR},
+      <if test="errorGfsMsg != null" >
+        ERROR_GFS_MSG = #{errorGfsMsg,jdbcType=VARCHAR},
       </if>
-      <if test="errorGfs2Msg != null" >
-        ERROR_GFS2_MSG = #{errorGfs2Msg,jdbcType=VARCHAR},
-      </if>
-      <if test="errorGfs3Msg != null" >
-        ERROR_GFS3_MSG = #{errorGfs3Msg,jdbcType=VARCHAR},
-      </if>
-      <if test="errorGfs4Msg != null" >
-        ERROR_GFS4_MSG = #{errorGfs4Msg,jdbcType=VARCHAR},
-      </if>
-      <if test="errorGfs5Msg != null" >
-        ERROR_GFS5_MSG = #{errorGfs5Msg,jdbcType=VARCHAR},
-      </if>
-      <if test="errorGfs6Msg != null" >
-        ERROR_GFS6_MSG = #{errorGfs6Msg,jdbcType=VARCHAR},
-      </if>
-      <if test="errorGfs7Msg != null" >
-        ERROR_GFS7_MSG = #{errorGfs7Msg,jdbcType=VARCHAR},
-      </if>
-      <if test="errorGfs8Msg != null" >
-        ERROR_GFS8_MSG = #{errorGfs8Msg,jdbcType=VARCHAR},
-      </if>
-      <if test="errorGfs9Msg != null" >
-        ERROR_GFS9_MSG = #{errorGfs9Msg,jdbcType=VARCHAR},
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="beizhu != null" >
         BEIZHU = #{beizhu,jdbcType=VARCHAR},
+      </if>
+      <if test="beizhu2 != null" >
+        BEIZHU2 = #{beizhu2,jdbcType=VARCHAR},
       </if>
     </set>
     where UNGRIB_ID = #{ungribId,jdbcType=DECIMAL}
@@ -304,16 +239,10 @@
       GFS8_STATUS = #{gfs8Status,jdbcType=DECIMAL},
       GFS9_STATUS = #{gfs9Status,jdbcType=DECIMAL},
       ERROR_FNL_MSG = #{errorFnlMsg,jdbcType=VARCHAR},
-      ERROR_GFS1_MSG = #{errorGfs1Msg,jdbcType=VARCHAR},
-      ERROR_GFS2_MSG = #{errorGfs2Msg,jdbcType=VARCHAR},
-      ERROR_GFS3_MSG = #{errorGfs3Msg,jdbcType=VARCHAR},
-      ERROR_GFS4_MSG = #{errorGfs4Msg,jdbcType=VARCHAR},
-      ERROR_GFS5_MSG = #{errorGfs5Msg,jdbcType=VARCHAR},
-      ERROR_GFS6_MSG = #{errorGfs6Msg,jdbcType=VARCHAR},
-      ERROR_GFS7_MSG = #{errorGfs7Msg,jdbcType=VARCHAR},
-      ERROR_GFS8_MSG = #{errorGfs8Msg,jdbcType=VARCHAR},
-      ERROR_GFS9_MSG = #{errorGfs9Msg,jdbcType=VARCHAR},
-      BEIZHU = #{beizhu,jdbcType=VARCHAR}
+      ERROR_GFS_MSG = #{errorGfsMsg,jdbcType=VARCHAR},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      BEIZHU = #{beizhu,jdbcType=VARCHAR},
+      BEIZHU2 = #{beizhu2,jdbcType=VARCHAR}
     where UNGRIB_ID = #{ungribId,jdbcType=DECIMAL}
   </update>
    <!-- 查询最新的fnl  -->
@@ -330,5 +259,6 @@
     T_UNGRIB
     where  FNL_STATUS = #{fnlStatus,jdbcType=DECIMAL}
   </select>
+  
   
 </mapper>
