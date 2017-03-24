@@ -336,7 +336,9 @@ function delArea(e) {
   var params = {
     userId: userId,
     //areaIds: allData[indexPar].areaId.toString()
-    areaIds: $(e).parents('.areaTitle_con').attr('id')
+    areaIds: $(e).parents('.areaTitle_con').attr('id'),
+    scenarinoStatus:qjMsg.scenarinoStatus,
+    scenarinoId:qjMsg.qjId
   };
   swal({
       title: "确定要删除区域-" + allData[indexPar].areaName,
@@ -430,7 +432,9 @@ function sunEditTimeDate() {
     userId: userId,
     updateDate: date,
     beforeTimeId: before,
-    afterTimeId: after
+    afterTimeId: after,
+    scenarinoStatus:qjMsg.scenarinoStatus,
+    scenarinoId:qjMsg.qjId
   }).success(function (res) {
     if (res.status == 0) {
       if (editTimeDateObj.type == 'start') {
@@ -460,7 +464,8 @@ function addTimes() {
     userId: userId,
     areaId: allData[areaIndex].areaId,
     selectTimeId: allData[areaIndex].timeItems[index].timeId,
-    addTimeDate: timePoint
+    addTimeDate: timePoint,
+    scenarinoStatus:qjMsg.scenarinoStatus
   }).success(function (res) {
 
     getAreaAndTime();
@@ -512,7 +517,9 @@ function delTimes() {
     endDate: moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate)).format('YYYY-MM-DD HH:mm:ss'),
     mergeTimeId: mId,
     userId: userId,
-    status: ub
+    status: ub,
+    scenarinoStatus:qjMsg.scenarinoStatus,
+    scenarinoId:qjMsg.qjId
   }).success(function () {
     var index = allData[areaIndex].timeFrame.indexOf(delTime);
     if (ub == 'up') {
@@ -628,7 +635,8 @@ function addPlan() {
       areaId: msg.content.areaId,
       timeStartTime: moment(momentDate(msg.content.timeStartDate)).format('YYYY-MM-DD HH'),
       timeEndTime: moment(momentDate(msg.content.timeEndDate)).format('YYYY-MM-DD HH'),
-      planName: $('#yaName').val()
+      planName: $('#yaName').val(),
+      scenarinoStatus:qjMsg.scenarinoStatus,
     };
     ajaxPost(url, params).success(function (res) {
       msg.content.planId = res.data;
@@ -645,7 +653,9 @@ function addPlan() {
     ajaxPost(url, {
       userId: userId,
       planId: planId,
-      timeId: allData[areaIndex].timeItems[timeIndex].timeId
+      timeId: allData[areaIndex].timeItems[timeIndex].timeId,
+      scenarinoStatus:qjMsg.scenarinoStatus,
+      scenarinoId:qjMsg.qjId
     }).success(function () {
       allData[areaIndex].timeItems[timeIndex].planId = planId;
       allData[areaIndex].timeItems[timeIndex].planName = planName;
@@ -864,7 +874,8 @@ function createEditArea() {
     areaId: $('#areaName').attr('data-id') || '',
     provinceCodes: '',
     cityCodes: '',
-    countyCodes: ''
+    countyCodes: '',
+    scenarinoStatus:qjMsg.scenarinoStatus
   };
 
   var pArr = [];
