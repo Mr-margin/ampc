@@ -164,9 +164,9 @@ public class PlanAndMeasureController {
 					}else{
 						return AmpcResult.build(1000, "情景状态转换失败",null);
 					}
-					}else{
-						return AmpcResult.ok(id);
-					}	
+				}else{
+					return AmpcResult.ok(id);
+				}	
 			}
 			return AmpcResult.build(1000, "添加失败");
 		} catch (Exception e) {
@@ -195,7 +195,6 @@ public class PlanAndMeasureController {
 			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
 			//情景状态
 			Long scenarinoStatus = Long.parseLong(data.get("scenarinoStatus").toString());
-			
 			// 预案id
 			Long planId = Long.parseLong(data.get("planId").toString());
 			// 时段id
@@ -215,10 +214,9 @@ public class PlanAndMeasureController {
 					}else{
 						return AmpcResult.build(1000, "情景状态转换失败",null);
 					}
-					}else{
-						return AmpcResult.ok("复用成功");
-					}
-				
+				}else{
+					return AmpcResult.ok("复用成功");
+				}
 			}
 			return AmpcResult.build(1000, "复用失败");
 		} catch (Exception e) {
