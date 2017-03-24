@@ -32,7 +32,7 @@ $(function(){
     	$("#map_showId").hide();
 
     })
-    //构建列表展示table  
+/****************************************************构建列表展示table*************************************************************************/    
     $("#table_listShow").bootstrapTable({
     	method:'POST',
     	url:'',
@@ -157,8 +157,6 @@ $(function(){
             InitSubTable(index, row, $detail);
         }
     });
-    	
-  	
 });
 //初始化子表格(无线循环)
 InitSubTable = function (index, row, $detail) {
@@ -275,172 +273,147 @@ function selectQj(value){
 		$("#tableId").css('display','none');
 	}
 }
-//柱状图
+/****************************************************柱状图*************************************************************************/
 function bar () {
-	
-	var myPfChart = echarts.init(document.getElementById('pfDiv1'));
-	var option = {
-		    title : {
-		        text: '减排图表',
-		        //subtext: 'From ExcelHome',
-		        //sublink: 'http://e.weibo.com/1341556070/AizJXrAEa'
-		    },
-		    tooltip : {
-		        trigger: 'axis',
-		        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-		            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-		        },
-		        formatter: function (params){
-		            return params[0].name + '<br/>'
-		                   + params[0].seriesName + ' : ' + params[0].value + '<br/>'
-		                   + params[1].seriesName + ' : ' + (params[1].value + params[0].value);
-		        }
-		    },
-		    legend: {
-		    	//不触动
-		        selectedMode:true,
-		        data:['实际排放量', '减排量']
-		    },
-		    grid:{
-		    		show:true
-		    },
-            dataZoom:[
-                      {
-                    	  show:'true',
-                    	  realtime:'true',
-                    	  start:20,
-                    	  end:80
-                    	  
-                      },
-                      {
-                    	  type:'inside',
-                    	  realtime:'true',
-                    	  start:60,
-                    	  end:80
-                      }
-                      ],
-		    calculable : true,
-		    xAxis : [
-		        {
-		        	show: true, 
-		            type : 'category',
-		            //data : ['2016-11-17','2016-11-22','2016-11-27','2016-12-02','2016-12-07','2016-11-10']
-		            data:[]
-		        }
-		    ],
-		    yAxis : [
-		        {
-		            type : 'value',
-		            name : '吨',
-		            boundaryGap: [0, 0.1],
-		            splitArea : {show : true},
-		            show:true
-		        }
-		    ],
-		    series : [
-		        {
-		            name:'实际排放量',
-		            type:'bar',
-		            stack: 'sum',
-		            barCategoryGap: '50%',
-		            itemStyle: {
-		                normal: {
-		                    color: 'tomato',
-		                    barBorderColor: 'tomato',
-		                    barBorderWidth: 4,
-		                    barBorderRadius:0,
-		                    label : {
-		                        show: true, position: 'insideTop'
-		                    }
-		                }
-		            },
-		            //data:[260, 200, 220, 120, 100, 80]
-		            data:[]
-		        },
-		        {
-		            name:'减排量',
-		            type:'bar',
-		            stack: 'sum',
-		            itemStyle: {
-		                normal: {
-		                    color: '#fff',
-		                    barBorderColor: 'tomato',
-		                    barBorderWidth: 4,
-		                    barBorderRadius:0,
-		                    label : {
-		                        show: true, 
-		                        position: 'top',
-		                        formatter: function (params) {
-		                            for (var i = 0, l = option.xAxis[0].data.length; i < l; i++) {
-		                                if (option.xAxis[0].data[i] == params.name) {
-		                                    return option.series[0].data[i] + params.value;
-		                                }
-		                            }
-		                        },
-		                        textStyle: {
-		                            color: 'tomato'
-		                        }
-		                    }
-		                }
-		            },
-		            //data:[40, 80, 50, 80,80, 70]
-		            data:[]
-		        }
-		    ]
-		};
-	
-		$.ajax({
-			type:"post",
-			async:false,
-			url:"/scenarino/get_radioInfo",
-			data:{"scenarinoId":"136","code":130123,"addressLevle":3,"stainType":"NOx"},
-			dataType:"json",
-			success:function(result){
-				if (result) {
-					var jsonobj = eval(result);
-					//console.log(jsonobj);
-
-					options.xAxis[0].data = result.timeData;
-					options.series[0].data = result.series[0].xjdata;
-					options.series[1].data = result.series[1].jpdata;
-					
-					//myCharts.hideLoading();
-					myCharts.setOption(options);
-				} 
-			},
-			/*error:function(){
-				alert("请求数据失败！！！");
-				myChart.hideloding();
-			}*/
-	
-		});
-		//点击联动
-		myPfChart.on('click', function (params) {
-		console.log(params);
-		pie();
+	var paramsName = {"scenarinoId":"136","code":130123,"addressLevle":3,"stainType":"NOx"};
+		ajaxPost('/scenarino/get_radioInfo',paramsName).success(function(res){
 		
-		});
+		var myPfChart = echarts.init(document.getElementById('pfDiv1'));
 		
-		//减排量echarts
-		myPfChart.setOption(option);
-		//自适应屏幕大小变化
-		window.addEventListener("resize",function(){
-			 myPfChart.resize();
-		 });
+		var option = {
+			    title : {
+			        text: '减排图表',
+			    },
+			    tooltip : {
+			        trigger: 'axis',
+			        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+			            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+			        },
+			        formatter: function (params){
+			            return params[0].name + '<br/>'
+			                   + params[0].seriesName + ' : ' + params[0].value + '<br/>'
+			                   + params[1].seriesName + ' : ' +  params[1].value;       //把 + params[0].value 去掉了
+			        }
+			    },
+			    legend: {
+			    	//不触动
+			        selectedMode:false,
+			        data:['实际排放量', '减排量']
+			    },
+			    grid:{
+			    		show:true
+			    },
+	            dataZoom:[
+	                      {
+	                    	  show:'true',
+	                    	  realtime:'true',
+	                    	  start:20,
+	                    	  end:80
+	                    	  
+	                      },
+	                      {
+	                    	  type:'inside',
+	                    	  realtime:'true',
+	                    	  start:60,
+	                    	  end:80
+	                      }
+	                      ],
+			    calculable : true,
+			    xAxis : [
+			        {
+			        	show: true, 
+			            type : 'category',
+			            axisLabel : {
+			            	formatter: function(category)
+			            	{
+			            		return category.substring(0,10);          //截取字符串
+			            	}
+			            },
+			            data:res.data.dateResult
+			        }
+			    ],
+			    yAxis : [
+			        {
+			            type : 'value',
+			            name : '吨',
+			            boundaryGap: [0, 0.1],
+			            splitArea : {show : true},
+			            show:true
+			        }
+			    ],
+			    series : [
+			        {
+			            name:'实际排放量',
+			            type:'bar',
+			            stack: 'sum',
+			            barCategoryGap: '50%',
+			            itemStyle: {
+			                normal: {
+			                    color: 'tomato',
+			                    barBorderColor: 'tomato',
+			                    barBorderWidth: 4,
+			                    barBorderRadius:0,
+			                   /* label : {
+			                        show: true, position: 'insideTop'
+			                    }*/
+			                }
+			            },
+			            data:res.data.pflResult
+			        },
+			        {
+			            name:'减排量',
+			            type:'bar',
+			            stack: 'sum',
+			            itemStyle: {
+			                normal: {
+			                    color: '#fff',
+			                    barBorderColor: 'tomato',
+			                    barBorderWidth: 4,
+			                    barBorderRadius:0,
+			                    label : {
+			                        /*show: true, 
+			                        position: 'top',*/
+			                        formatter: function (params) {
+			                            for (var i = 0, l = option.xAxis[0].data.length; i < l; i++) {
+			                                if (option.xAxis[0].data[i] == params.name) {
+			                                    return option.series[0].data[i] + params.value;
+			                                }
+			                            }
+			                        },
+			                        textStyle: {
+			                            color: 'tomato'
+			                        }
+			                    }
+			                }
+			            },
+			            data:res.data.jplResult
+			        }
+			    ]
+			};
+			console.log(res);
+			//减排量echarts
+			myPfChart.setOption(option);
+		
+			//自适应屏幕大小变化
+			window.addEventListener("resize",function(){
+				 myPfChart.resize();
+			 });
+		
+			//点击联动饼图
+			myPfChart.on('datazoom', function (params){
+			console.log(params);
+			
+			pie();
+			});
 
+	});
 }
-//柱状图请求
-function getChartData(){
-	var options = myChart.getOption();
-
-}
-//行业措施饼状图
+/****************************************************行业措施饼状图*************************************************************************/
 function  pie () {
 	var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
-	var option2 = {
+	var optionPie = {
 		    title : {
 		        text: '行业措施饼状图',
-		        //subtext: '纯属虚构',
 		        x:'center'
 		    },
 		    tooltip : {
@@ -450,7 +423,7 @@ function  pie () {
 		    legend: {
 		        orient: 'vertical',
 		        left: 'left',
-		        data: ['钢铁','玻璃','水泥','独立焦化','其他工业企业','非道移动源','工业锅炉','储存运输','电力','废弃物处理源','其它','生物质燃烧源'],
+		        data: ['钢铁','玻璃','水泥','独立焦化','其他工业企业','非道移动源','工业锅炉','储存运输','电力','废弃物处理源','其它','生物质燃烧源','农业源','化工化纤','扬尘源','民用源','道路机动车','溶剂使用'],
 		    },
 		    series : [
 		        {
@@ -459,11 +432,11 @@ function  pie () {
 		            radius : '55%',
 		            center: ['50%', '60%'],
 		            data:[
-		                {value:335, name:'其他工业企业'},
-		                {value:310, name:'独立焦化'},
-		                {value:234, name:'水泥'},
+		                {value:1000.12, name:'钢铁'},
 		                {value:135, name:'玻璃'},
-		                {value:1203, name:'钢铁'},
+		                {value:234, name:'水泥'},
+		                {value:310, name:'独立焦化'},
+		                {value:335, name:'其他工业企业'},
 		                {value:90, name:'非道移动源'},
 		                {value:25, name:'工业锅炉'},
 		                {value:15, name:'储存运输'},
@@ -471,6 +444,12 @@ function  pie () {
 		                {value:68, name:'废弃物处理源'},
 		                {value:8, name:'其它'},
 		                {value:6, name:'生物质燃烧源'},
+		                {value:10, name:'农业源'},
+		                {value:10, name:'化工化纤'},
+		                {value:10, name:'扬尘源'},
+		                {value:10, name:'民用源'},
+		                {value:10, name:'道路机动车'},
+		                {value:10, name:'溶剂使用'},
 		            ],
 		            itemStyle: {
 		                emphasis: {
@@ -483,15 +462,18 @@ function  pie () {
 		    ]
 		};
 			//行业措施分担饼状图
-			myhycsChart.setOption(option2);
-			window.onresize = myhycsChart.resize;	
+			myhycsChart.setOption(optionPie);
+			//自适应屏幕大小变化
+			window.addEventListener("resize",function(){
+				myhycsChart.resize();
+			 });	
 }
 //超链接显示 模态框
 function exchangeModal(){
 	$(".createRwModal").modal();
 	
 }
-//模态框 内的表格 全选复选框 新版
+//初始化模态框 内的表格 全选复选框 新版
 function initQdListTable() {
 	  $('#testTableId').bootstrapTable({
 	    method: 'GET',
