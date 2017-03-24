@@ -335,7 +335,10 @@ $(function() {
                         title:timeItems[n].planName,
                         startTime:new Date(timeItems[n].timeStartDate),
                         endTime:new Date(timeItems[n].timeEndDate),
-                        timeId:timeItems[n].timeId
+                        timeId:timeItems[n].timeId,
+                        provinceCodes:opData[m].provinceCodes,
+                        cityCodes:opData[m].cityCodes,
+                        countyCodes:opData[m].countyCodes,
                     };
                     this._items.push(item);
                 }
@@ -617,6 +620,10 @@ $(function() {
                     atc.css('margin-top',item.index==0?4:15+'px');
                     atc.find('b').html(item.areaName);
                     $('.areaTitle').append(atc);
+
+                    if(item.provinceCodes.length == item.cityCodes.length == item.countyCodes == 0){
+                        atc.find('.toolShow').eq(0).addClass('btn-danger');
+                    }
                 }
 
 
