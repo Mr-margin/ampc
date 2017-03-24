@@ -1213,7 +1213,7 @@ public class MissionAndScenarinoController {
 		try{
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
-			Long userId=Long.parseLong(data.get("userId").toString());//情景id
+			Long userId=Long.parseLong(data.get("userId").toString());//用户id
 			Long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());//情景id
 			Long copyscenarinoId=Long.parseLong(data.get("copyscenarinoId").toString());//被复制情景id
 			//情景状态
