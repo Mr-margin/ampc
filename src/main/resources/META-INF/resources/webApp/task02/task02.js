@@ -620,7 +620,6 @@ function openAddYA() {
 }
 
 /*时段预案操作模态框选择 end*/
-
 var newPlan;
 /*添加预案*/
 function addPlan() {
@@ -903,6 +902,13 @@ function createEditArea() {
     }
   }
   obj.countyCodes = JSON.stringify(crArr);
+
+  if(pArr.length == ctArr.length == crArr.length == 0){
+    alert("请选择范围");
+    return;
+  }
+  $('#editArea').modal('hide');
+  $('#'+$('#areaName').attr('data-id')).find('.btn-falsh').removeClass('btn-falsh');
   ajaxPost(url, obj).success(function (res) {
 
     if (!$('#areaName').attr('data-id')) {
