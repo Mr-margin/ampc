@@ -369,6 +369,8 @@ public class AreaAndTimeController {
 		Long deleteTimeId=Long.parseLong(data.get("deleteTimeId").toString());//删除时段的时段Id
 		Long mergeTimeId=Long.parseLong(data.get("mergeTimeId").toString());//合并时段的时段Id
 		String endDate=data.get("endDate").toString();//删除时段的结束时间
+		Long scenarinoStatus=Long.parseLong(data.get("scenarinoStatus").toString());//情景状态
+		Long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());//情景id
 		String startDate=data.get("startDate").toString();//删除时段的开始时间
 		Long userId=Long.parseLong(data.get("userId").toString());//用户的id
 		String status=data.get("status").toString();//预案id
@@ -435,9 +437,29 @@ public class AreaAndTimeController {
 						//删除预案的措施
 						int del_status=tPlanMeasureMapper.deleteByPlanId(deltime.getPlanId());	
 						if(del_status!=0){
-							return AmpcResult.build(0, "delete_time success");
+							if(scenarinoStatus==1){
+								ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
+								int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
+								if(a!=0){ 
+									return AmpcResult.build(0, "delete_time success");
+								}else{
+									return AmpcResult.build(1000, "情景状态转换失败",null);
+								}
+								}else{
+									return AmpcResult.build(0, "delete_time success");
+								}	
 						}
-						return AmpcResult.build(0, "delete_time success");
+						if(scenarinoStatus==1){
+							ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
+							int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
+							if(a!=0){ 
+								return AmpcResult.build(0, "delete_time success");
+							}else{
+								return AmpcResult.build(1000, "情景状态转换失败",null);
+							}
+							}else{
+								return AmpcResult.build(0, "delete_time success");
+							}	
 					}
 				}
 				}else{
