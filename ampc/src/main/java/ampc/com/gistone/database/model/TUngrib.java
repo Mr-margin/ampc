@@ -31,25 +31,13 @@ public class TUngrib {
 
     private String errorFnlMsg;
 
-    private String errorGfs1Msg;
+    private String errorGfsMsg;
 
-    private String errorGfs2Msg;
-
-    private String errorGfs3Msg;
-
-    private String errorGfs4Msg;
-
-    private String errorGfs5Msg;
-
-    private String errorGfs6Msg;
-
-    private String errorGfs7Msg;
-
-    private String errorGfs8Msg;
-
-    private String errorGfs9Msg;
+    private Date updateTime;
 
     private String beizhu;
+
+    private String beizhu2;
 
     public Long getUngribId() {
         return ungribId;
@@ -163,76 +151,20 @@ public class TUngrib {
         this.errorFnlMsg = errorFnlMsg == null ? null : errorFnlMsg.trim();
     }
 
-    public String getErrorGfs1Msg() {
-        return errorGfs1Msg;
+    public String getErrorGfsMsg() {
+        return errorGfsMsg;
     }
 
-    public void setErrorGfs1Msg(String errorGfs1Msg) {
-        this.errorGfs1Msg = errorGfs1Msg == null ? null : errorGfs1Msg.trim();
+    public void setErrorGfsMsg(String errorGfsMsg) {
+        this.errorGfsMsg = errorGfsMsg == null ? null : errorGfsMsg.trim();
     }
 
-    public String getErrorGfs2Msg() {
-        return errorGfs2Msg;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-    public void setErrorGfs2Msg(String errorGfs2Msg) {
-        this.errorGfs2Msg = errorGfs2Msg == null ? null : errorGfs2Msg.trim();
-    }
-
-    public String getErrorGfs3Msg() {
-        return errorGfs3Msg;
-    }
-
-    public void setErrorGfs3Msg(String errorGfs3Msg) {
-        this.errorGfs3Msg = errorGfs3Msg == null ? null : errorGfs3Msg.trim();
-    }
-
-    public String getErrorGfs4Msg() {
-        return errorGfs4Msg;
-    }
-
-    public void setErrorGfs4Msg(String errorGfs4Msg) {
-        this.errorGfs4Msg = errorGfs4Msg == null ? null : errorGfs4Msg.trim();
-    }
-
-    public String getErrorGfs5Msg() {
-        return errorGfs5Msg;
-    }
-
-    public void setErrorGfs5Msg(String errorGfs5Msg) {
-        this.errorGfs5Msg = errorGfs5Msg == null ? null : errorGfs5Msg.trim();
-    }
-
-    public String getErrorGfs6Msg() {
-        return errorGfs6Msg;
-    }
-
-    public void setErrorGfs6Msg(String errorGfs6Msg) {
-        this.errorGfs6Msg = errorGfs6Msg == null ? null : errorGfs6Msg.trim();
-    }
-
-    public String getErrorGfs7Msg() {
-        return errorGfs7Msg;
-    }
-
-    public void setErrorGfs7Msg(String errorGfs7Msg) {
-        this.errorGfs7Msg = errorGfs7Msg == null ? null : errorGfs7Msg.trim();
-    }
-
-    public String getErrorGfs8Msg() {
-        return errorGfs8Msg;
-    }
-
-    public void setErrorGfs8Msg(String errorGfs8Msg) {
-        this.errorGfs8Msg = errorGfs8Msg == null ? null : errorGfs8Msg.trim();
-    }
-
-    public String getErrorGfs9Msg() {
-        return errorGfs9Msg;
-    }
-
-    public void setErrorGfs9Msg(String errorGfs9Msg) {
-        this.errorGfs9Msg = errorGfs9Msg == null ? null : errorGfs9Msg.trim();
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
     public String getBeizhu() {
@@ -241,5 +173,13 @@ public class TUngrib {
 
     public void setBeizhu(String beizhu) {
         this.beizhu = beizhu == null ? null : beizhu.trim();
+    }
+
+    public String getBeizhu2() {
+        return beizhu2;
+    }
+
+    public void setBeizhu2(String beizhu2) {
+        this.beizhu2 = beizhu2 == null ? null : beizhu2.trim();
     }
 }
