@@ -93,6 +93,8 @@ public class AreaAndTimeController {
 	@Autowired
 	private TAddressMapper tAddressMapper;
 	
+	@Autowired
+	private ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
 	/**
 	 * 在原有基础上添加时段
 	 * @param request
@@ -157,7 +159,6 @@ public class AreaAndTimeController {
 				if (update_start != 0) {
 					
 					if(scenarinoStatus==1){
-						ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
 						int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
 						if(a!=0){ 
 							obj.put("timeId", max);
@@ -231,7 +232,6 @@ public class AreaAndTimeController {
 			//判断修改是否成功，成功返回成功信息，失败返回失败信息
 			if(afterTimestatus!=0){
 				if(scenarinoStatus==1){
-					ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
 					int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
 					if(a!=0){ 
 						 return AmpcResult.build(0, "update_TIME success");
@@ -438,7 +438,6 @@ public class AreaAndTimeController {
 						int del_status=tPlanMeasureMapper.deleteByPlanId(deltime.getPlanId());	
 						if(del_status!=0){
 							if(scenarinoStatus==1){
-								ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
 								int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
 								if(a!=0){ 
 									return AmpcResult.build(0, "delete_time success");
@@ -450,7 +449,6 @@ public class AreaAndTimeController {
 								}	
 						}
 						if(scenarinoStatus==1){
-							ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
 							int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
 							if(a!=0){ 
 								return AmpcResult.build(0, "delete_time success");
@@ -756,7 +754,6 @@ public class AreaAndTimeController {
 				//判断修改是否成功
 				if(result>0){
 					  if(scenarinoStatus==1){
-							ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
 							int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
 							if(a!=0){ 
 								return AmpcResult.ok(result);
@@ -804,7 +801,7 @@ public class AreaAndTimeController {
 				  
 				  if(result>0){
 					  if(scenarinoStatus==1){
-							ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
+
 							int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
 							if(a!=0){ 
 								return AmpcResult.ok(obj);
@@ -896,7 +893,6 @@ public class AreaAndTimeController {
 			//判断执行结果返回对应数据
 			if(s==areaIdss.size()){
 				if(scenarinoStatus==1){
-				ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
 				int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
 				if(a!=0){ 
 				return AmpcResult.ok(s);
