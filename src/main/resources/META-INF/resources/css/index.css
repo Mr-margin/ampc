@@ -636,18 +636,18 @@ button[disabled],.btn[disabled]{
 }
 
 .btn-flash{
-  animation: flash1 0.4s linear infinite;
+  animation: flash1 0.7s linear infinite;
 }
 
 @keyframes flash1 {
   0%{
-    background-color: rgb(240, 110, 184);
+    background-color: #151617;
   }
   50%{
     background-color: rgb(0, 177, 241);
   }
   100%{
-    background-color: rgb(240, 110, 184);
+    background-color: #151617;
   }
 }
 
