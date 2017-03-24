@@ -28,9 +28,8 @@ import ampc.com.gistone.util.CastNumUtil;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.DateUtil;
 
-
 /**
- * 中间数据
+ * Echarts控制类
  * @author WangShanxi
  * @version v.0.1
  * @date 2017年3月23日
@@ -38,13 +37,18 @@ import ampc.com.gistone.util.DateUtil;
 @RestController
 @RequestMapping
 public class EchartsController {
+	//Jackson转换类
 	ObjectMapper mapper=new ObjectMapper();
+	//Echarts任务详情映射
 	@Autowired
 	private TEmissionDetailMapper tEmissionDetailMapper;
+	//情景的映射
 	@Autowired
 	private TScenarinoDetailMapper tScenarinoDetailMapper;
+	//区域的映射
 	@Autowired
 	private TAddressMapper tAddressMapper;
+	
 	/**
 	 * 查询情景的减排信息  柱状图
 	 * @author WangShanxi
@@ -285,7 +289,6 @@ public class EchartsController {
 					//添加所有行业在该污染物的减排量总和
 					jplResult.add(String.valueOf(CastNumUtil.significand(sumResult.doubleValue(), 4)));
 				}
-				
 			}
 			//创建返回的结果集合
 			Map map=new HashMap();
@@ -302,28 +305,6 @@ public class EchartsController {
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/**
 	 * 查询情景的减排信息  饼状图
@@ -348,7 +329,7 @@ public class EchartsController {
 			// 污染物类型
 			String stainType = data.get("stainType").toString();
 			//查询类型
-			Integer type=Integer.valueOf(data.get("stainType").toString());
+			Integer type=Integer.valueOf(data.get("type").toString());
 			//情景的开始时间
 			Date startDate=DateUtil.StrToDate1(data.get("startDate").toString());
 			//情景的结束时间
@@ -379,10 +360,11 @@ public class EchartsController {
 			}
 			//添加code条件
 			mapQuery.put("codes", codes);
-			//获取所有的基准情景减排结果
+			//获取所有的减排结果
 			List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByMap(mapQuery);
-			//循环所有基准情景的减排结果
+			//循环所有减排结果
 			for (int i=0;i<tdList.size();i++) {
+				//判断是行业还是措施的  并赋值对应的Json串
 				String edetail=null;
 				if(type==1){
 					//获取所有的基准情景减排结果
@@ -400,15 +382,19 @@ public class EchartsController {
 					Object result=ede.get(stainType);
 					//如果为空则继续循环
 					if(result==null) continue;
+					//循环结果集合
 					for(int j=0;j<puList.size();j++){
 						PieUtil pu=puList.get(j);
+						//判断结果集合中是否有该项记录 有则在基础上累计增加值
 						if(pu.getName().equals(obj.toString())){
 							double temp=Double.parseDouble(result.toString());
 							double value=pu.getValue();
 							pu.setValue(temp+value);
+							//继续循环外层循环
 							continue sector;
 						}
 					}
+					//上面没有该条行业记录  新建行业记录 添加到结果集中
 					PieUtil newPu=new PieUtil();
 					newPu.setName(obj.toString());
 					newPu.setValue(Double.parseDouble(result.toString()));
