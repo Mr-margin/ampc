@@ -50,4 +50,8 @@ public interface TTimeMapper {
     int updateByisEffective(Long timeId);
     List<TTime> selectEntityByAreaId(Long areaId);
     
+    List<TTime> selectByScenarinoId(Long ScenarinoId);
+    
+    List<TTime> selectByEntity(TTime record);
+    
 }
