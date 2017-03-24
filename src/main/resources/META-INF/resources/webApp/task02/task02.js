@@ -903,7 +903,7 @@ function createEditArea() {
   }
   obj.countyCodes = JSON.stringify(crArr);
 
-  if(pArr.length == ctArr.length == crArr.length == 0){
+  if(pArr.length == 0 && ctArr.length == 0 && crArr.length == 0){
     alert("请选择范围");
     return;
   }
