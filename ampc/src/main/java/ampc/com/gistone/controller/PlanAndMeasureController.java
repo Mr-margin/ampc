@@ -557,7 +557,7 @@ public class PlanAndMeasureController {
 											double dpool = Double.parseDouble(pool.get(stainType).toString().split("/")[1]);
 											BigDecimal br = new BigDecimal(dratio / dpool); 
 											String str1 = br.toPlainString();
-											list.get(i).put("reduct", str1);
+											list.get(i).put("ratio", str1);
 										}
 									} else { // 如果是PM10需要计算PMcoarse PM25
 										if (ratioMap.get("PMcoarse") != null&& ratioMap.get("PM25") != null&& pool.get(stainType) != null) {
@@ -566,7 +566,7 @@ public class PlanAndMeasureController {
 											double dpool = Double.parseDouble(pool.get(stainType).toString().split("/")[1]);
 											BigDecimal br = new BigDecimal((pMcoarse + pM25) / dpool); 
 											String str1 = br.toPlainString();
-											list.get(i).put("reduct", str1);
+											list.get(i).put("ratio", str1);
 										}
 									}
 								}
