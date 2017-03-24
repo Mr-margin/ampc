@@ -1,4 +1,19 @@
 <!-- 任务管理 >>区域时段>>减排分析 -->
+<style type="text/css">
+	.legendinfo {
+		width: 14.0625em;
+		background-color: rgb(242, 242, 242);
+		color: #000;
+		position: absolute;
+		bottom: 0;
+		padding-left: 10px;
+		padding-top: 10px;
+		font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+		border-top: 2px solid #ffffff;
+		border-right: 2px solid #ffffff;
+		border-top-right-radius: 20px;
+	}
+</style>
 <div class='col-md-6' style="height:100%;padding-left: 0px;">
 	<div class="ibox float-e-margins" style="height:100%;">
 		<div class="ibox-title">
@@ -8,7 +23,7 @@
 				<div class="btn-group" style="margin-bottom: 0px;margin-top: -10px;">
 					<div class="input-group m-b" style="margin-bottom: 0px;width:180px;">
 						<span class="input-group-addon" style="border: 1px solid #E5E6E7;">物种: </span>
-						<select name="hz_wrw" id="hz_wrw" class="form-control" onChange="">
+						<select name="hz_wrw" id="hz_wrw" class="form-control" onChange="gis_paifang_show();">
 							<option value="SO2">SO2</option>
 							<option value="PM25">PM25</option>
 							<option value="PM10">PM10</option><!-- PM10=PM25+PMcoarse -->
@@ -23,42 +38,11 @@
 					<label class="btn btn-outline btn-success" val_name="dq"><input type="radio" class="toggle">列表展示</label>
 				</div>
 	        </div>
-			
-			
-			
-			
-			<!-- <div class="row">
-				<div class='col-md-2' style="margin-top: -10px;">
-					<div class="btn-group">
-						<button data-toggle="dropdown"
-							class="btn btn-default  dropdown-toggle"
-							style="margin-bottom: 0px;padding-right:0px;">
-							物种 <span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" style="min-width: 80.83px;">
-							<li><a class="font-bold">SO<sub>2</sub></a></li>
-							<li><a class="font-bold">SO<sub>2</sub></a></li>
-							<li><a class="font-bold">SO<sub>2</sub></a></li>
-							<li><a class="font-bold">SO<sub>2</sub></a></li>
-						</ul>
-					</div>
-				</div>
-				<div class='col-md-5 col-md-offset-2' style="margin-top: -10px;">
-					<div class="btn-group" data-toggle="buttons" id="#color">
-						<label class="btn btn-outline btn-success active"> <input type="radio" name="toggle" id="mapId">地图展示
-						</label> <label class="btn btn-outline btn-success"><input type="radio" name="toggle" id="listShow">列表展示
-						</label>
-					</div>
-				</div>
-			</div> -->
-			
-			
-			
-			
-			
 		</div>
 		<div class="ibox-content" style="height:calc(100% - 48px);overflow-y: hide;border:1px solid #75B9E6;padding: 0px;">
 	        <div id="map_showId" style="height:100%;"></div>
+	        <div class="legendinfo"><div id="legendWrapper"></div></div>
+				
 	    	<!-- 列表展示modal -->
 	    	<div  id="listModal" style="display: none;">
 	    		<table class="table table-hover" id="table_listShow">
