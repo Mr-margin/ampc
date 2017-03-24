@@ -47,6 +47,7 @@ import ampc.com.gistone.entity.SMUtil;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.DateUtil;
+import ampc.com.gistone.util.ScenarinoStatusUtil;
 
 /**
  * 预案措施控制类
@@ -114,6 +115,10 @@ public class PlanAndMeasureController {
 			Long userId = Long.parseLong(data.get("userId").toString());
 			// 时段id
 			Long timeId = Long.parseLong(data.get("timeId").toString());
+			//情景状态
+			Long scenarinoStatus = Long.parseLong(data.get("scenarinoStatus").toString());
+			//情景id
+			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
 			// 预案名称
 			String planName = data.get("planName").toString();
 			// 行业id
@@ -151,7 +156,17 @@ public class PlanAndMeasureController {
 				t.setTimeId(timeId);
 				t.setPlanId(id);
 				tTimeMapper.updateByPrimaryKeySelective(t);
-				return AmpcResult.ok(id);
+				if(scenarinoStatus==1){
+					ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
+					int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
+					if(a!=0){ 
+						return AmpcResult.ok(id);
+					}else{
+						return AmpcResult.build(1000, "情景状态转换失败",null);
+					}
+					}else{
+						return AmpcResult.ok(id);
+					}	
 			}
 			return AmpcResult.build(1000, "添加失败");
 		} catch (Exception e) {
@@ -176,6 +191,11 @@ public class PlanAndMeasureController {
 			Map<String, Object> data = (Map) requestDate.get("data");
 			// 用户id
 			Long userId = Long.parseLong(data.get("userId").toString());
+			//情景id
+			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			//情景状态
+			Long scenarinoStatus = Long.parseLong(data.get("scenarinoStatus").toString());
+			
 			// 预案id
 			Long planId = Long.parseLong(data.get("planId").toString());
 			// 时段id
@@ -188,7 +208,18 @@ public class PlanAndMeasureController {
 			int copy_status = tTimeMapper.updateByPrimaryKeySelective(tTime);
 			// 判断是否成功
 			if (copy_status != 0) {
-				return AmpcResult.ok("复用成功");
+				if(scenarinoStatus==1){
+					ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
+					int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
+					if(a!=0){ 
+						return AmpcResult.ok("复用成功");
+					}else{
+						return AmpcResult.build(1000, "情景状态转换失败",null);
+					}
+					}else{
+						return AmpcResult.ok("复用成功");
+					}
+				
 			}
 			return AmpcResult.build(1000, "复用失败");
 		} catch (Exception e) {
