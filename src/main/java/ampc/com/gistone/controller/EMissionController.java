@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -310,81 +311,109 @@ public class EMissionController {
 			Map<String, Object> data = (Map) requestDate.get("data");
 			TEmissionDetail tEmission=new TEmissionDetail();
 			String pollutant=data.get("pollutant").toString();	
-			String emDate=data.get("emissionDate").toString();
 			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			Date emissiondate=sdf.parse(emDate);
-			tEmission.setCodeLevel(data.get("codeLevel").toString());
-			tEmission.setEmissionDate(emissiondate);
-			//tEmission.setEmissionId(scenarinoId);
+			String level=data.get("codeLevel").toString();	
+			tEmission.setScenarunoId(scenarinoId);
 			tEmission.setEmissionType("2");
 			List<TEmissionDetail> tEmissions=tEmissionDetailMapper.selectByEntity(tEmission);
-			//TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
-			//String industrys=tScenarinoDetail.getExpand1();//共有行业
-			//String reduce=tScenarinoDetail.getExpand2();//共有措施
-			//JSONArray industryarr=JSONArray.fromObject(industrys);
-			//JSONArray reducearr=JSONArray.fromObject(reduce);
-			//List<String> industrylist=JSONArray.toList(industryarr);
-			//List<String> reducelist=JSONArray.toList(reducearr);
-			JSONArray arr=new JSONArray();
-			List plist=new ArrayList();
-			List ctlist=new ArrayList();
-			List coulist=new ArrayList();
-			for(TEmissionDetail emission:tEmissions){
-				JSONObject codeobj=new JSONObject();
-				JSONObject reobj=new JSONObject();
-				String detail=emission.getEmissionDetails();
-				JSONObject obj=JSONObject.fromObject(detail);//行业减排结果
-				Map<String,Object> details=(Map)obj;
-				String reduces=emission.getMeasureReduce();
-				JSONObject objr=JSONObject.fromObject(reduces);//措施减排结果
-				Map<String,Object> reducemap=(Map)objr;
-				JSONArray irarr=new JSONArray();
-				for(String industry:details.keySet()){
-					//if(industrylist.contains(industry)){
-					JSONObject irobj=new JSONObject();
-					JSONObject pollumap=new JSONObject();
-					Map<String,Object> em=(Map) details.get(industry);
-					BigDecimal reduction=new BigDecimal(em.get(pollutant).toString());
-					pollumap.put(pollutant, reduction);
-					irobj.put(industry, pollumap);
-					irarr.add(irobj);
-					//}else{
-					//	continue;
-					//}
-				}
-				JSONArray redarr=new JSONArray();
-				for(String red:reducemap.keySet()){
-					//if(reducelist.contains(red)){
-					JSONObject redobj=new JSONObject();
-					JSONObject redmap=new JSONObject();
-					Map<String,Object> em=(Map) reducemap.get(red);
-					BigDecimal reduction=new BigDecimal(em.get(pollutant).toString());
-				    redmap.put(pollutant, reduction);
-					redobj.put(red, redmap);
-					redarr.add(redobj);
-					}
-					//}else{
-					//	continue;
-					//}
-				
+			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+			//JSONArray industryarr=JSONArray.fromObject(tScenarinoDetail.getExpand1());
 			
-				reobj.put("industry", irarr);
-				reobj.put("measure", redarr);
-				//查看当前返回值是否包含此次遍历的code
-				if(!ctlist.contains(emission.getCode())){
-				codeobj.put( emission.getCode(),reobj);
-				ctlist.add(emission.getCode());
+			List<Date> datelist=new ArrayList<Date>();
+			for(TEmissionDetail em:tEmissions){
+				if(!datelist.contains(em.getEmissionDate())){
+					datelist.add(em.getEmissionDate());
 				}else{
 					continue;
 				}
-				arr.add(codeobj);
-			}	
-			//if(!arr.isEmpty()){
-			return AmpcResult.build(0, "success",arr);
-			//}else{
-			//	return AmpcResult.build(1000, "error","无匹配查询条件的结果");	
-			//}
+				
+			}
+			Map<String,Object> objss=new HashMap();
+			for(Date dates:datelist){
+			String datss=dates.toString();
+			JSONArray arry=new JSONArray();
+			for(TEmissionDetail emission:tEmissions){
+				String emtime=emission.getEmissionDate().toString();
+				Map<String,BigDecimal> map=new HashMap();
+				
+				if(emtime.equals(datss)){
+			
+				String detail=emission.getEmissionDetails();
+				JSONObject obj=JSONObject.fromObject(detail);//行业减排结果
+				Map<String,Object> details=(Map)obj;
+				for(String industry:details.keySet()){
+					//if(industryarr.contains(industry)){
+					Map num=(Map) details.get(industry);
+					JSONObject jasonObject = JSONObject.fromObject(num);
+					Map<String,Object> nummap= (Map)jasonObject;
+				if(level.equals("1")){
+					String pcode=emission.getCode().substring(0, 2)+"0000";
+					if(map.keySet().contains(pcode)){
+						BigDecimal old=new BigDecimal(map.get(pcode).toString());
+						BigDecimal news=new BigDecimal(nummap.get(pollutant).toString());
+						BigDecimal yes=news.add(old);
+						map.put(pcode, yes);
+					}else{
+						map.put(pcode, new BigDecimal(nummap.get(pollutant).toString()));
+					}	
+				}
+				if(level.equals("2")){
+					String pcode=emission.getCode().substring(0, 4)+"00";
+					if(map.keySet().contains(pcode)){
+						BigDecimal old=new BigDecimal(map.get(pcode).toString());
+						BigDecimal news=new BigDecimal(nummap.get(pollutant).toString());
+						BigDecimal yes=news.add(old);
+						map.put(pcode,yes);
+					}else{
+						map.put(pcode, new BigDecimal(nummap.get(pollutant).toString()));
+					}	
+				}
+				if(level.equals("3")){
+					String pcode=emission.getCode();
+					if(map.keySet().contains(pcode)){
+						BigDecimal old=new BigDecimal(map.get(pcode).toString());
+						BigDecimal news=new BigDecimal(nummap.get(pollutant).toString());
+						BigDecimal yes=news.add(old);
+						map.put(pcode, yes);
+					}else{
+						map.put(pcode, new BigDecimal(nummap.get(pollutant).toString()));
+					}	
+				}
+					//}else{
+					//	continue;
+						
+					//}
+				}//行业循环
+				arry.add(map);	
+				}else{//判断时间是否一样
+					continue;
+				}
+			}	//集合循环
+			objss.put(datss, arry);
+			}//时间循环
+			Map<String,BigDecimal> refmap=new HashMap();
+			for(String datese:objss.keySet()){
+				//获取相对时间的数组
+				JSONArray num=JSONArray.fromObject(objss.get(datese).toString());
+
+				for(Object noes:num){
+					Map mapse=(Map)	noes;
+					JSONObject jasonObject = JSONObject.fromObject(mapse);
+					Map<String,Object> numma= (Map)jasonObject;
+					for(String nums:numma.keySet()){
+						if(refmap.keySet().contains(nums)){
+							BigDecimal old=new BigDecimal(refmap.get(nums).toString());
+							BigDecimal news=new BigDecimal(numma.get(nums).toString());
+							BigDecimal yes=news.add(old);
+							refmap.put(nums,yes);
+						}else{
+							refmap.put(nums,new BigDecimal(numma.get(nums).toString()));
+						}
+						}
+				}
+			
+			}
+			return AmpcResult.build(0, "success",refmap);
 		}catch(Exception e){
 			e.printStackTrace();
 			return AmpcResult.build(1000, "error",null);	
