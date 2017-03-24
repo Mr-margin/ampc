@@ -94,17 +94,30 @@ public class TempController {
 				mapQuery.put("codes", codes);
 				//获取所有的基准情景减排结果
 				List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByMap(mapQuery);
+				//循环所有基准情景的减排结果
 				for (TEmissionDetail tEmissionDetail : basisList) {
+					//添加每一个的减排日期
 					dateResult.add(DateUtil.DateToStr(tEmissionDetail.getEmissionDate()));
+					//临时变量用来记录污染物在所有行业的总和
 					BigDecimal sumResult=new BigDecimal(0);
+					//获取所有的基准情景减排结果
 					String edetail=tEmissionDetail.getEmissionDetails();
+					//解析json获取到所有行业的减排信息
 					Map edeMap=mapper.readValue(edetail, Map.class);
+					//循环所有行业用来得到所有行业的污染物减排总和
 					for(Object obj:edeMap.keySet()){
+						//获取行业
 						Map ede=(Map)edeMap.get(obj);
+						//获取行业中的减排污染物信息
 						Object result=ede.get(stainType);
+						//如果为空则继续循环
+						if(result==null) continue;
+						//进行转换
 						BigDecimal bigResult=new BigDecimal(result.toString());
+						//累计增加
 						sumResult=sumResult.add(bigResult);
 					}
+					//添加所有行业在该污染物的减排量总和
 					jplResult.add(sumResult.toString());
 				}
 				//查询情景的信息时为2
@@ -113,18 +126,28 @@ public class TempController {
 				mapQuery.put("scenarinoId", scenarinoId);
 				//获取所有的情景减排结果
 				List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByMap(mapQuery);
-				
+				//循环所有实际减排的减排结果
 				for (TEmissionDetail tEmissionDetail : tdList) {
-					dateResult.add(DateUtil.DateToStr(tEmissionDetail.getEmissionDate()));
+					//临时变量用来记录污染物在所有行业的总和
 					BigDecimal sumResult=new BigDecimal(0);
+					//获取所有实际减排结果
 					String edetail=tEmissionDetail.getEmissionDetails();
+					//解析json获取到所有行业的减排信息
 					Map edeMap=mapper.readValue(edetail, Map.class);
+					//循环所有行业用来得到所有行业的污染物减排总和
 					for(Object obj:edeMap.keySet()){
+						//获取行业
 						Map ede=(Map)edeMap.get(obj);
+						//获取行业中的减排污染物信息
 						Object result=ede.get(stainType);
+						//如果为空则继续循环
+						if(result==null) continue;
+						//进行转换
 						BigDecimal bigResult=new BigDecimal(result.toString());
+						//累计增加
 						sumResult=sumResult.add(bigResult);
 					}
+					//添加所有行业在该污染物的减排量总和
 					sjjpResult.add(sumResult.toString());
 				}
 			}else{
@@ -132,6 +155,34 @@ public class TempController {
 				List<Long> codes=tAddressMapper.selectByCode(code);
 				//添加code条件
 				mapQuery.put("codes", codes);
+				//获取所有的基准情景减排结果
+				List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByMap(mapQuery);
+				//循环所有基准情景的减排结果
+				for (int i=0;i<basisList.size();i++) {
+					//添加每一个的减排日期
+					dateResult.add(DateUtil.DateToStr(basisList.get(i).getEmissionDate()));
+					//临时变量用来记录污染物在所有行业的总和
+					BigDecimal sumResult=new BigDecimal(0);
+					//获取到基准的减排信息Json串
+					String edetail=basisList.get(i).getEmissionDetails();
+					//解析json获取到所有行业的减排信息
+					Map edeMap=mapper.readValue(edetail, Map.class);
+					//循环所有行业用来得到所有行业的污染物减排总和
+					for(Object obj:edeMap.keySet()){
+						//获取行业
+						Map ede=(Map)edeMap.get(obj);
+						//获取行业中的减排污染物信息
+						Object result=ede.get(stainType);
+						//如果为空则继续循环
+						if(result==null) continue;
+						//进行转换
+						BigDecimal bigResult=new BigDecimal(result.toString());
+						//累计增加
+						sumResult=sumResult.add(bigResult);
+					}
+					//添加所有行业在该污染物的减排量总和
+					jplResult.add(sumResult.toString());
+				}
 			}
 			
 			Map map=new HashMap();
