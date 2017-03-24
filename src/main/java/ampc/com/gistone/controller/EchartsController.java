@@ -367,48 +367,52 @@ public class EchartsController {
 			//判断发过来的code等级  并全部转换成3级编码
 			if(addressLevle==1) code=code.substring(0,2)+"%";
 			if(addressLevle==2) code=code.substring(0,4)+"%";
+			List<Long> codes=null;
 			//如果传过来的已经是3级则不许要转换
 			if(addressLevle==3){
 				//直接查询就可以了
-				List<Long> codes=new ArrayList<Long>();
+				codes=new ArrayList<Long>();
 				codes.add(Long.parseLong(code));
-				//添加code条件
-				mapQuery.put("codes", codes);
-				//获取所有的基准情景减排结果
-				List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByMap(mapQuery);
-				//循环所有基准情景的减排结果
-				for (int i=0;i<tdList.size();i++) {
-					String edetail=null;
-					if(type==1){
-						//获取所有的基准情景减排结果
-						edetail=tdList.get(i).getEmissionDetails();
-					}else{
-						edetail=tdList.get(i).getMeasureReduce();
-					}
-					//解析json获取到所有行业的减排信息
-					Map edeMap=mapper.readValue(edetail, Map.class);
-					//循环所有行业用来得到所有行业的污染物减排总和
-					sector:for(Object obj:edeMap.keySet()){
-						//获取行业
-						Map ede=(Map)edeMap.get(obj);
-						//获取行业中的减排污染物信息
-						Object result=ede.get(stainType);
-						//如果为空则继续循环
-						if(result==null) continue;
-						for(int j=0;j<puList.size();j++){
-							PieUtil pu=puList.get(j);
-							if(pu.getName().equals(obj.toString())){
-								double temp=Double.parseDouble(result.toString());
-								double value=pu.getValue();
-								pu.setValue(temp+value);
-								continue sector;
-							}
+			}else{
+				//需要查询对应的县级编码
+				codes=tAddressMapper.selectByCode(code);	
+			}
+			//添加code条件
+			mapQuery.put("codes", codes);
+			//获取所有的基准情景减排结果
+			List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByMap(mapQuery);
+			//循环所有基准情景的减排结果
+			for (int i=0;i<tdList.size();i++) {
+				String edetail=null;
+				if(type==1){
+					//获取所有的基准情景减排结果
+					edetail=tdList.get(i).getEmissionDetails();
+				}else{
+					edetail=tdList.get(i).getMeasureReduce();
+				}
+				//解析json获取到所有行业的减排信息
+				Map edeMap=mapper.readValue(edetail, Map.class);
+				//循环所有行业用来得到所有行业的污染物减排总和
+				sector:for(Object obj:edeMap.keySet()){
+					//获取行业
+					Map ede=(Map)edeMap.get(obj);
+					//获取行业中的减排污染物信息
+					Object result=ede.get(stainType);
+					//如果为空则继续循环
+					if(result==null) continue;
+					for(int j=0;j<puList.size();j++){
+						PieUtil pu=puList.get(j);
+						if(pu.getName().equals(obj.toString())){
+							double temp=Double.parseDouble(result.toString());
+							double value=pu.getValue();
+							pu.setValue(temp+value);
+							continue sector;
 						}
-						PieUtil newPu=new PieUtil();
-						newPu.setName(obj.toString());
-						newPu.setValue(Double.parseDouble(result.toString()));
-						puList.add(newPu);
 					}
+					PieUtil newPu=new PieUtil();
+					newPu.setName(obj.toString());
+					newPu.setValue(Double.parseDouble(result.toString()));
+					puList.add(newPu);
 				}
 			}
 			//返回结果
