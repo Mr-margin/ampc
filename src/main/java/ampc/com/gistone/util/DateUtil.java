@@ -139,4 +139,21 @@ public class DateUtil {
 		return date;
 	}
 
+	/**
+	 * 字符串转换成日期
+	 * 
+	 * @param str
+	 * @return date
+	 */
+	public static Date StrToDate1(String str) {
+
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = null;
+		try {
+			date = format.parse(str);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return date;
+	}
 }
