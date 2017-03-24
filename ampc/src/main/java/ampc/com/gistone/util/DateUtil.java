@@ -23,7 +23,29 @@ public class DateUtil {
 	 * @date 2017年3月21日 下午3:16:47
 	 */
 	public static Date StrtoDateYMD(String str) {
-		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = null;
+		try {
+			date = format.parse(str);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return date;
+	}
+	
+	 /**
+	  * 
+	  * @Description: TODO
+	  * @param str
+	  * @param pattern
+	  * @return   
+	  * Date  
+	  * @throws
+	  * @author yanglei
+	  * @date 2017年3月24日 下午3:57:35
+	  */
+	public static Date StrtoDateYMD(String str,String pattern) {
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
 		Date date = null;
 		try {
 			date = format.parse(str);
