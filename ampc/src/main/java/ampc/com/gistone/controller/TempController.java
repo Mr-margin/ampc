@@ -23,6 +23,7 @@ import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.model.TEmissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.util.AmpcResult;
+import ampc.com.gistone.util.CastNumUtil;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.DateUtil;
 
@@ -120,7 +121,7 @@ public class TempController {
 						sumResult=sumResult.add(bigResult);
 					}
 					//添加所有行业在该污染物的减排量总和
-					jplResult.add(sumResult.toString());
+					jplResult.add(String.valueOf(CastNumUtil.significand(sumResult.doubleValue(), 4)));
 				}
 				//查询情景的信息时为2
 				mapQuery.put("emtype", 2);
@@ -150,16 +151,11 @@ public class TempController {
 						sumResult=sumResult.add(bigResult);
 					}
 					//添加所有行业在该污染物的减排量总和
-					sjjpResult.add(sumResult.toString());
+					sjjpResult.add(String.valueOf(CastNumUtil.significand(sumResult.doubleValue(), 4)));
 				}
 			}else{
 				//转换行政区划code
-				//List<Long> codes=tAddressMapper.selectByCode(code);
-				
-				List<Long> codes=new ArrayList<Long>();
-				codes.add(130123l);
-				codes.add(131082l);
-				
+				List<Long> codes=tAddressMapper.selectByCode(code);
 				//添加code条件
 				mapQuery.put("codes", codes);
 				//获取所有的基准情景减排结果
@@ -222,7 +218,7 @@ public class TempController {
 						}
 					}
 					//添加所有行业在该污染物的减排量总和
-					jplResult.add(sumResult.toString());
+					jplResult.add(String.valueOf(CastNumUtil.significand(sumResult.doubleValue(), 4)));
 				}
 				//查询情景的信息时为2
 				mapQuery.put("emtype", 2);
@@ -286,7 +282,7 @@ public class TempController {
 						}
 					}
 					//添加所有行业在该污染物的减排量总和
-					sjjpResult.add(sumResult.toString());
+					sjjpResult.add(String.valueOf(CastNumUtil.significand(sumResult.doubleValue(), 4)));
 				}
 				
 			}
