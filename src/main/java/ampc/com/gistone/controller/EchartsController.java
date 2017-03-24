@@ -169,7 +169,6 @@ public class EchartsController {
 				int j=0;
 				//循环所有基准情景的减排结果
 				for (int i=0;i<basisList.size();i++) {
-					if(i-1+codes.size()>=basisList.size()) break;
 					//添加每一个的减排日期
 					dateResult.add(DateUtil.DateToStr(basisList.get(i).getEmissionDate()));
 					//临时变量用来记录污染物在所有行业的总和
@@ -235,8 +234,6 @@ public class EchartsController {
 				j=0;
 				//循环所有实际减排量的减排结果
 				for (int i=0;i<tdList.size();i++) {
-					if(i-1+codes.size()>=tdList.size()) break;
-					//临时变量用来记录污染物在所有行业的总和
 					BigDecimal sumResult=new BigDecimal(0);
 					//获取到实际减排量的的减排信息Json串
 					String edetail=tdList.get(i).getEmissionDetails();
@@ -357,6 +354,7 @@ public class EchartsController {
 			}else{
 				//需要查询对应的县级编码
 				codes=tAddressMapper.selectByCode(code);	
+				System.out.println(codes);
 			}
 			//添加code条件
 			mapQuery.put("codes", codes);
@@ -400,6 +398,12 @@ public class EchartsController {
 					newPu.setValue(Double.parseDouble(result.toString()));
 					puList.add(newPu);
 				}
+			}
+			//讲数据保留4位有效数字
+			for(int i=0;i<puList.size();i++){
+				double value=puList.get(i).getValue();
+				value=CastNumUtil.significand(value, 4);
+				puList.get(i).setValue(value);
 			}
 			//返回结果
 			return AmpcResult.ok(puList);
