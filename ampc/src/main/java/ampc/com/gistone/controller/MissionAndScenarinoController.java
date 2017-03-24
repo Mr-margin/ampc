@@ -40,6 +40,7 @@ import ampc.com.gistone.database.model.TTime;
 import ampc.com.gistone.database.model.TUser;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.ScenarinoStatusUtil;
 
 /**
  * 任务和情景一级页面控制类
@@ -80,6 +81,10 @@ public class MissionAndScenarinoController {
 	
 	@Autowired
 	private TTasksStatusMapper tTasksStatusMapper;
+	
+	@Autowired
+	private ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
+	
 	
 	
 	/**
@@ -520,7 +525,7 @@ public class MissionAndScenarinoController {
 	
 	
 	/**
-	 * 情景创建方法
+	 * 情景创建方法(作废)
 	 * @param request 请求
 	 * @param response 响应
 	 * @return 返回响应结果对象
@@ -1174,7 +1179,13 @@ public class MissionAndScenarinoController {
 			return AmpcResult.build(1000, "参数错误",null);				
 		}
 	}
-	
+	/**
+	 * 查询情景状态
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping("scenarino/find_Scenarino_status")
 	public AmpcResult find_Scenarino_status(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
 		try{
@@ -1190,4 +1201,134 @@ public class MissionAndScenarinoController {
 			 return AmpcResult.build(1000, "参数错误",null);	
 		}
 	}
+	/**
+	 * 
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("scenarino/copy_Scenarino")
+	public AmpcResult copy_Scenarino(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Long userId=Long.parseLong(data.get("userId").toString());//情景id
+			Long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());//情景id
+			Long copyscenarinoId=Long.parseLong(data.get("copyscenarinoId").toString());//被复制情景id
+			//情景状态
+			Long scenarinoStatus=Long.parseLong(data.get("scenarinoStatus").toString());
+			//被复制的情景
+			TScenarinoDetail copytScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(copyscenarinoId);
+			//情景
+			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+			//情景区域
+			TScenarinoAreaWithBLOBs tScenarinoArea =new TScenarinoAreaWithBLOBs();
+			tScenarinoArea.setScenarinoDetailId(copyscenarinoId);
+			tScenarinoArea.setIsEffective("1");
+			List<TScenarinoAreaWithBLOBs> arealist=tScenarinoAreaMapper.selectByEntity(tScenarinoArea);
+			for(TScenarinoAreaWithBLOBs area:arealist){
+				area.setIsEffective("0");
+				tScenarinoAreaMapper.updateByPrimaryKeySelective(area);
+			}
+			//情景时段
+			List<TTime> timelist=tTimeMapper.selectByScenarinoId(scenarinoId);
+			for(TTime times:timelist){
+				times.setIsEffective("0");
+				tTimeMapper.updateByPrimaryKeySelective(times);	
+			}
+			//被复制情景的区域集合
+			TScenarinoAreaWithBLOBs copytScenarinoArea =new TScenarinoAreaWithBLOBs();
+			copytScenarinoArea.setScenarinoDetailId(copyscenarinoId);
+			copytScenarinoArea.setIsEffective("1");
+			List<TScenarinoAreaWithBLOBs> copyarealist=tScenarinoAreaMapper.selectByEntity(copytScenarinoArea);
+			//被复制情景的开始结束时间
+			Date copyendtime=copytScenarinoDetail.getScenarinoEndDate();
+			Date copystarttime=copytScenarinoDetail.getScenarinoStartDate();
+			Long a=copyendtime.getTime()-copystarttime.getTime();
+			float ha=a/1000/60/60f;//小时数
+			//情景的开始结束时间
+			Date endtime=tScenarinoDetail.getScenarinoEndDate();
+			Date starttime=tScenarinoDetail.getScenarinoStartDate();
+			Long b=endtime.getTime()-starttime.getTime();
+			float hb=b/1000/60/60f;//小时数
+				
+			float s=hb%ha;
+			for(TScenarinoAreaWithBLOBs area:copyarealist){
+				TScenarinoAreaWithBLOBs newtScenarinoArea =new TScenarinoAreaWithBLOBs();
+				newtScenarinoArea.setScenarinoDetailId(scenarinoId);
+				newtScenarinoArea.setAreaName(area.getAreaName());
+				newtScenarinoArea.setCityCodes(area.getCityCodes());
+				newtScenarinoArea.setCountyCodes(area.getCountyCodes());
+				newtScenarinoArea.setIsEffective("1");
+				newtScenarinoArea.setProvinceCodes(area.getProvinceCodes());
+				newtScenarinoArea.setUserId(userId);		
+				int yes=tScenarinoAreaMapper.insertSelective(newtScenarinoArea);
+				List<TScenarinoAreaWithBLOBs> thetScenarinoArea=tScenarinoAreaMapper.selectByEntity(newtScenarinoArea);
+				TScenarinoAreaWithBLOBs theis=thetScenarinoArea.get(0);
+				if(yes!=0){
+					TTime times=new TTime();
+					times.setAreaId(area.getScenarinoAreaId());
+					times.setScenarinoId(area.getScenarinoDetailId());
+					List<TTime> timeslist=tTimeMapper.selectByEntity(times);
+					for(TTime timee:timeslist){
+						Date start=times.getTimeStartDate();
+						Date end=times.getTimeEndDate();
+						Long chas=end.getTime()-start.getTime();
+						float timehour=chas/1000/60/60f;
+						float newtimehour=timehour*s;
+						float thehour=Math.round(newtimehour);
+						
+						SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(start);
+						cal.add(Calendar.HOUR, (int)thehour);
+						String endTimeDate =sdf.format(cal.getTime());
+						Date endtimes=sdf.parse(endTimeDate);
+						TTime timeses=new TTime();
+						timeses.setTimeEndDate(endtimes);
+						timeses.setTimeStartDate(starttime);
+						timeses.setMissionId(tScenarinoDetail.getMissionId());
+						timeses.setAreaId(theis.getScenarinoAreaId());
+						timeses.setIsEffective("1");
+						timeses.setPlanId(timee.getPlanId());
+						timeses.setUserId(userId);
+						timeses.setScenarinoId(scenarinoId);
+						int whats=tTimeMapper.insertSelective(timeses);
+						List<TTime> whotime=tTimeMapper.selectByEntity(timeses);
+						TTime thstime=whotime.get(0);
+						if(whats!=0){
+							if(thstime.getPlanId()!=-1){
+							TPlan tplan=tPlanMapper.selectByPrimaryKey(thstime.getPlanId());
+							tplan.setCopyPlan("1");
+							int as=tPlanMapper.updateByPrimaryKeySelective(tplan);
+							if(as==0){
+								return AmpcResult.build(1000, "预案修改失败",null);
+							}
+							}
+						}else{
+							return AmpcResult.build(1000, "时段复制失败",null);
+						}
+					}
+					
+				}else{
+					
+					return AmpcResult.build(1000, "区域复制失败",null);
+				}					
+			}
+			int mis=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
+				if(mis!=0){ 
+					return AmpcResult.ok("复制成功");
+				}else{
+					return AmpcResult.build(1000, "情景状态转换失败",null);
+				}
+	
+		}catch(Exception e){
+			e.printStackTrace();
+			 return AmpcResult.build(1000, "参数错误",null);	
+		}
+	}
+	
+	
+	
 }
