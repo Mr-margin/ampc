@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -58,6 +59,7 @@ import ampc.com.gistone.entity.AreaUtil;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.JsonUtil;
+import ampc.com.gistone.util.ScenarinoStatusUtil;
 
 
 @RestController
@@ -104,6 +106,7 @@ public class AreaAndTimeController {
 		ClientUtil.SetCharsetAndHeader(request, response);
 		 Map<String,Object> data=(Map)requestDate.get("data");
 		Long areaId = Long.parseLong(data.get("areaId").toString());//区域ID
+		Long scenarinoStatus = Long.parseLong(data.get("scenarinoStatus").toString());//当前情景状态
 		Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());//情景id
 		Long missionId =Long.parseLong(data.get("missionId").toString());//任务id
 		Long userId =Long.parseLong(data.get("userId").toString());//用户id
@@ -152,14 +155,28 @@ public class AreaAndTimeController {
 				.updateByPrimaryKeySelective(update_tTime);
 		// 判断所有数据库操作是否成功，并添加对应数据
 				if (update_start != 0) {
-					obj.put("timeId", max);
-					start = 0;
-					msg = "save_time success";
+					
+					if(scenarinoStatus==1){
+						ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
+						int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
+						if(a!=0){ 
+							obj.put("timeId", max);
+							start = 0;
+							msg = "save_time success";
+						}else{
+							start = 1000;
+							msg = "情景状态转换失败";
+						}
+						}else{
+							obj.put("timeId", max);
+							start = 0;
+							msg = "save_time success";
+						}
 				} else {
 					start = 1;
 					msg = "save_time error";
 				}
-
+				
 				// 返回json数据
 				return AmpcResult.build(start, msg, obj);
 		}else{
@@ -183,9 +200,11 @@ public class AreaAndTimeController {
 	public AmpcResult update_TIME(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
 		ClientUtil.SetCharsetAndHeader(request, response);
 		 Map<String,Object> data=(Map)requestDate.get("data");
+		Long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());//情景id
 		Long beforeTimeId=Long.parseLong(data.get("beforeTimeId").toString());//修改时段前一个的时段Id
 		Long afterTimeId=Long.parseLong(data.get("afterTimeId").toString());//修改时段后一个的时段Id
 		Long userId=Long.parseLong(data.get("userId").toString());//用户id
+		Long scenarinoStatus=Long.valueOf(data.get("scenarinoStatus").toString());
 		String teDate=data.get("updateDate").toString();//时段的修改时间
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date updateDate=sdf.parse(teDate);
@@ -211,7 +230,17 @@ public class AreaAndTimeController {
 			int afterTimestatus=tTimeMapper.updateByPrimaryKeySelective(updatet_afterTimeId);
 			//判断修改是否成功，成功返回成功信息，失败返回失败信息
 			if(afterTimestatus!=0){
-				return AmpcResult.build(0, "update_TIME success");
+				if(scenarinoStatus==1){
+					ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
+					int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
+					if(a!=0){ 
+						 return AmpcResult.build(0, "update_TIME success");
+					}else{
+						return AmpcResult.build(1000, "情景状态转换失败",null);
+					}
+					}else{
+						 return AmpcResult.build(0, "update_TIME success");
+					}	
 			}else{
 				return AmpcResult.build(1, "update_TIME error");
 			}
@@ -682,6 +711,8 @@ public class AreaAndTimeController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			TScenarinoAreaWithBLOBs area=new TScenarinoAreaWithBLOBs();
+			Long scenarinoStatus=Long.valueOf(data.get("scenarinoStatus").toString());
+			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());
 			//区域ID
 			String areaId=data.get("areaId").toString();
 			//区域名称
@@ -701,7 +732,20 @@ public class AreaAndTimeController {
 				area.setScenarinoAreaId((Long.parseLong(areaId)));
 				int result=this.tScenarinoAreaMapper.updateByPrimaryKeySelective(area);
 				//判断修改是否成功
-			    return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "添加时段失败",null);
+				if(result>0){
+					  if(scenarinoStatus==1){
+							ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
+							int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
+							if(a!=0){ 
+								return AmpcResult.ok(result);
+							}else{
+								return AmpcResult.build(1000, "情景状态转换失败",null);
+							}
+							}else{
+								return AmpcResult.ok(result);
+							}	  
+				  }
+				    return AmpcResult.build(1000, "添加时段失败",null);
 			}else{ 
 				//情景ID
 				area.setScenarinoDetailId(Long.parseLong(data.get("scenarinoId").toString()));
@@ -735,7 +779,21 @@ public class AreaAndTimeController {
 				   TTime t=time.get(0);
 				  obj.put("timeId", t.getTimeId());
 				  obj.put("areaId", areId);
-				    return result>0?AmpcResult.ok(obj):AmpcResult.build(1000, "添加时段失败",null);
+				  
+				  if(result>0){
+					  if(scenarinoStatus==1){
+							ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
+							int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
+							if(a!=0){ 
+								return AmpcResult.ok(obj);
+							}else{
+								return AmpcResult.build(1000, "情景状态转换失败",null);
+							}
+							}else{
+								return AmpcResult.ok(obj);
+							}	  
+				  }
+				    return AmpcResult.build(1000, "添加时段失败",null);
 				}else{
 					//添加失败
 					return AmpcResult.build(1000, "添加区域失败",null);
@@ -768,6 +826,8 @@ public class AreaAndTimeController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//要删除的任务集合
 			String areaIds=data.get("areaIds").toString();
+			Long scenarinoStatus=Long.valueOf(data.get("scenarinoStatus").toString());
+			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());		
 			//用户的id  确定当前用户
 			Integer userId=Integer.valueOf(data.get("userId").toString());
 			//将得到的数据拆分 放入集合中
@@ -812,7 +872,21 @@ public class AreaAndTimeController {
 			}
 			//int result=tScenarinoAreaMapper.updateIsEffeByIds(areaIdss);
 			//判断执行结果返回对应数据
-			return s==areaIdss.size()?AmpcResult.ok(s):AmpcResult.build(1000, "区域删除失败",null);
+			if(s==areaIdss.size()){
+				if(scenarinoStatus==1){
+				ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
+				int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
+				if(a!=0){ 
+				return AmpcResult.ok(s);
+				}else{
+					return AmpcResult.build(1000, "情景状态转换失败",null);
+				}
+				}else{
+					return AmpcResult.ok(s);
+				}
+			}else{
+			return AmpcResult.build(1000, "区域删除失败",null);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			//返回错误信息
