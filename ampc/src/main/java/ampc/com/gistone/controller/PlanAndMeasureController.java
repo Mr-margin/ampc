@@ -120,11 +120,9 @@ public class PlanAndMeasureController {
 			Long timeId = Long.parseLong(data.get("timeId").toString());
 			//情景状态
 			Long scenarinoStatus = Long.parseLong(data.get("scenarinoStatus").toString());
-			//情景id
-			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
 			// 预案名称
 			String planName = data.get("planName").toString();
-			// 行业id
+			//情景id
 			Long scenarioId = Long.parseLong(data.get("scenarioId").toString());
 			// 所属任务id
 			Long missionId = Long.parseLong(data.get("missionId").toString());
@@ -160,7 +158,7 @@ public class PlanAndMeasureController {
 				t.setPlanId(id);
 				tTimeMapper.updateByPrimaryKeySelective(t);
 				if(scenarinoStatus==1){
-					int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
+					int a=scenarinoStatusUtil.updateScenarinoStatus(scenarioId);
 					if(a!=0){ 
 						return AmpcResult.ok(id);
 					}else{
