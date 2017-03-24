@@ -1155,6 +1155,8 @@ public class PlanAndMeasureController {
 		// 根据拆分后得到的id查询所有的预案措施对象
 		List<Map> pmList = tPlanMeasureMapper.getPmByIds(pmIds);
 		// 循环每一个预案措施对象 拼接想要的数据放入JPResult帮助类集合中
+		//定义临时变量K 用于内部循环
+		int k=0;
 		for (int i=0;i<pmList.size();i++) {
 			// 创建JPResult帮助类;
 			JPResult result = new JPResult();
@@ -1282,8 +1284,10 @@ public class PlanAndMeasureController {
 					}
 				}
 			}
+			//k的记录加1
+			k++;
 			// 循环每一个预案措施对象 拼接想要的数据放入JPResult帮助类集合中
-			for (int k=1;k<pmList.size();k++) {
+			for (;k<pmList.size();k++) {
 				if(pmList.get(k).get("sectorName").toString().equals(pmList.get(i).get("sectorName").toString())){
 					// 将子措施转换成JsonObject对象进行解析
 					Clob clob1 = (Clob) pmList.get(k).get("measureContent");
@@ -1388,9 +1392,11 @@ public class PlanAndMeasureController {
 						}
 					}
 				}else{
-					i=k;
+					//如果条件不满足更改第一层循环的值  因为到上面还要++所以-1
+					i=k-1;
 					break;
 				}
+				//判断是否还有数据了
 				if((k+1)==pmList.size()){
 					i=k;
 				}
