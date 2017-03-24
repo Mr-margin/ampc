@@ -96,6 +96,9 @@ public class PlanAndMeasureController {
 	// 行业措施中间表映射
 	@Autowired
 	public TMeasureSectorExcelMapper tMeasureSectorExcelMapper;
+	
+	@Autowired
+	private ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
 
 	/**
 	 * 创建预案
@@ -157,7 +160,6 @@ public class PlanAndMeasureController {
 				t.setPlanId(id);
 				tTimeMapper.updateByPrimaryKeySelective(t);
 				if(scenarinoStatus==1){
-					ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
 					int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
 					if(a!=0){ 
 						return AmpcResult.ok(id);
@@ -209,7 +211,6 @@ public class PlanAndMeasureController {
 			// 判断是否成功
 			if (copy_status != 0) {
 				if(scenarinoStatus==1){
-					ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
 					int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
 					if(a!=0){ 
 						return AmpcResult.ok("复用成功");
