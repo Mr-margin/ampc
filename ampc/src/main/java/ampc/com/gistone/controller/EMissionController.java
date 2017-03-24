@@ -303,6 +303,125 @@ public class EMissionController {
 	
 	
 	
+	@RequestMapping("find_baseEmission")
+	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
+	public AmpcResult find_baseEmission(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			TEmissionDetail tEmission=new TEmissionDetail();
+			String pollutant=data.get("pollutant").toString();	
+			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());
+			String level=data.get("codeLevel").toString();	
+			tEmission.setEmissionType("1");
+			List<TEmissionDetail> tEmissions=tEmissionDetailMapper.selectByEntity(tEmission);
+			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+			//JSONArray industryarr=JSONArray.fromObject(tScenarinoDetail.getExpand1());
+			
+			List<Date> datelist=new ArrayList<Date>();
+			for(TEmissionDetail em:tEmissions){
+				if(!datelist.contains(em.getEmissionDate())){
+					datelist.add(em.getEmissionDate());
+				}else{
+					continue;
+				}
+				
+			}
+			Map<String,Object> objss=new HashMap();
+			for(Date dates:datelist){
+			String datss=dates.toString();
+			JSONArray arry=new JSONArray();
+			for(TEmissionDetail emission:tEmissions){
+				String emtime=emission.getEmissionDate().toString();
+				Map<String,BigDecimal> map=new HashMap();
+				
+				if(emtime.equals(datss)){
+			
+				String detail=emission.getEmissionDetails();
+				JSONObject obj=JSONObject.fromObject(detail);//行业减排结果
+				Map<String,Object> details=(Map)obj;
+				for(String industry:details.keySet()){
+					//if(industryarr.contains(industry)){
+					Map num=(Map) details.get(industry);
+					JSONObject jasonObject = JSONObject.fromObject(num);
+					Map<String,Object> nummap= (Map)jasonObject;
+				if(level.equals("1")){
+					String pcode=emission.getCode().substring(0, 2)+"0000";
+					if(map.keySet().contains(pcode)){
+						BigDecimal old=new BigDecimal(map.get(pcode).toString());
+						BigDecimal news=new BigDecimal(nummap.get(pollutant).toString());
+						BigDecimal yes=news.add(old);
+						map.put(pcode, yes);
+					}else{
+						map.put(pcode, new BigDecimal(nummap.get(pollutant).toString()));
+					}	
+				}
+				if(level.equals("2")){
+					String pcode=emission.getCode().substring(0, 4)+"00";
+					if(map.keySet().contains(pcode)){
+						BigDecimal old=new BigDecimal(map.get(pcode).toString());
+						BigDecimal news=new BigDecimal(nummap.get(pollutant).toString());
+						BigDecimal yes=news.add(old);
+						map.put(pcode,yes);
+					}else{
+						map.put(pcode, new BigDecimal(nummap.get(pollutant).toString()));
+					}	
+				}
+				if(level.equals("3")){
+					String pcode=emission.getCode();
+					if(map.keySet().contains(pcode)){
+						BigDecimal old=new BigDecimal(map.get(pcode).toString());
+						BigDecimal news=new BigDecimal(nummap.get(pollutant).toString());
+						BigDecimal yes=news.add(old);
+						map.put(pcode, yes);
+					}else{
+						map.put(pcode, new BigDecimal(nummap.get(pollutant).toString()));
+					}	
+				}
+					//}else{
+					//	continue;
+						
+					//}
+				}//行业循环
+				arry.add(map);	
+				}else{//判断时间是否一样
+					continue;
+				}
+			}	//集合循环
+			objss.put(datss, arry);
+			}//时间循环
+			Map<String,BigDecimal> refmap=new HashMap();
+			for(String datese:objss.keySet()){
+				//获取相对时间的数组
+				JSONArray num=JSONArray.fromObject(objss.get(datese).toString());
+
+				for(Object noes:num){
+					Map mapse=(Map)	noes;
+					JSONObject jasonObject = JSONObject.fromObject(mapse);
+					Map<String,Object> numma= (Map)jasonObject;
+					for(String nums:numma.keySet()){
+						if(refmap.keySet().contains(nums)){
+							BigDecimal old=new BigDecimal(refmap.get(nums).toString());
+							BigDecimal news=new BigDecimal(numma.get(nums).toString());
+							BigDecimal yes=news.add(old);
+							refmap.put(nums,yes);
+						}else{
+							refmap.put(nums,new BigDecimal(numma.get(nums).toString()));
+						}
+						}
+				}
+			
+			}
+			return AmpcResult.build(0, "success",refmap);
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000, "error",null);	
+		}
+		
+		
+	}
+	
+	
 	@RequestMapping("find_reduceEmission")
 	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
 	public AmpcResult find_reduceEmission(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
@@ -421,7 +540,6 @@ public class EMissionController {
 		
 		
 	}
-	
 	
 	
 	
