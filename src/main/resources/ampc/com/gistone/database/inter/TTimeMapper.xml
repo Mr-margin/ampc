@@ -199,4 +199,41 @@
     from T_TIME 
     where AREA_ID = #{areaId,jdbcType=DECIMAL} AND IS_EFFECTIVE='1'
   </select>
+  <select id="selectByScenarinoId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select <include refid="Base_Column_List" />
+    from T_TIME 
+    where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}, AND IS_EFFECTIVE='1'
+  </select>
+   <select id="selectByEntity" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TTime" >
+    select <include refid="Base_Column_List" />
+    from T_TIME 
+    where IS_EFFECTIVE='1' 
+    <if test="timeStartDate != null" >
+        and TIME_START_DATE = #{timeStartDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="timeEndDate != null" >
+        and TIME_END_DATE = #{timeEndDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="areaId != null" >
+        and AREA_ID = #{areaId,jdbcType=DECIMAL}
+      </if>
+      <if test="missionId != null" >
+        and MISSION_ID = #{missionId,jdbcType=DECIMAL}
+      </if>
+      <if test="scenarinoId != null" >
+        and SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
+      </if>
+      <if test="planId != null" >
+        and PLAN_ID = #{planId,jdbcType=DECIMAL}
+      </if>
+      <if test="userId != null" >
+        and USER_ID = #{userId,jdbcType=DECIMAL}
+      </if>
+      <if test="timeId != null" >
+        and TIME_ID = #{timeId,jdbcType=DECIMAL}
+      </if>
+      <if test="deleteTime != null" >
+        and DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP}
+      </if>
+  </select>
 </mapper>
