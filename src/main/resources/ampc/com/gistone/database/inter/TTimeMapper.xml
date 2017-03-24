@@ -202,7 +202,7 @@
   <select id="selectByScenarinoId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select <include refid="Base_Column_List" />
     from T_TIME 
-    where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}, AND IS_EFFECTIVE='1'
+    where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL} AND IS_EFFECTIVE='1'
   </select>
    <select id="selectByEntity" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TTime" >
     select <include refid="Base_Column_List" />
