@@ -1216,15 +1216,13 @@ public class MissionAndScenarinoController {
 			Long userId=Long.parseLong(data.get("userId").toString());//用户id
 			Long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());//情景id
 			Long copyscenarinoId=Long.parseLong(data.get("copyscenarinoId").toString());//被复制情景id
-			//情景状态
-			Long scenarinoStatus=Long.parseLong(data.get("scenarinoStatus").toString());
 			//被复制的情景
 			TScenarinoDetail copytScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(copyscenarinoId);
 			//情景
 			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
 			//情景区域
 			TScenarinoAreaWithBLOBs tScenarinoArea =new TScenarinoAreaWithBLOBs();
-			tScenarinoArea.setScenarinoDetailId(copyscenarinoId);
+			tScenarinoArea.setScenarinoDetailId(scenarinoId);
 			tScenarinoArea.setIsEffective("1");
 			List<TScenarinoAreaWithBLOBs> arealist=tScenarinoAreaMapper.selectByEntity(tScenarinoArea);
 			for(TScenarinoAreaWithBLOBs area:arealist){
@@ -1253,15 +1251,14 @@ public class MissionAndScenarinoController {
 			Long b=endtime.getTime()-starttime.getTime();
 			float hb=b/1000/60/60f;//小时数
 				
-			float s=hb%ha;
+			float s=hb/ha;
 			for(TScenarinoAreaWithBLOBs area:copyarealist){
 				TScenarinoAreaWithBLOBs newtScenarinoArea =new TScenarinoAreaWithBLOBs();
 				newtScenarinoArea.setScenarinoDetailId(scenarinoId);
 				newtScenarinoArea.setAreaName(area.getAreaName());
-				newtScenarinoArea.setCityCodes(area.getCityCodes());
-				newtScenarinoArea.setCountyCodes(area.getCountyCodes());
-				newtScenarinoArea.setIsEffective("1");
-				newtScenarinoArea.setProvinceCodes(area.getProvinceCodes());
+				newtScenarinoArea.setCityCodes(area.getCityCodes().toString());
+				newtScenarinoArea.setCountyCodes(area.getCountyCodes().toString());
+				newtScenarinoArea.setProvinceCodes(area.getProvinceCodes().toString());
 				newtScenarinoArea.setUserId(userId);		
 				int yes=tScenarinoAreaMapper.insertSelective(newtScenarinoArea);
 				List<TScenarinoAreaWithBLOBs> thetScenarinoArea=tScenarinoAreaMapper.selectByEntity(newtScenarinoArea);
@@ -1272,8 +1269,8 @@ public class MissionAndScenarinoController {
 					times.setScenarinoId(area.getScenarinoDetailId());
 					List<TTime> timeslist=tTimeMapper.selectByEntity(times);
 					for(TTime timee:timeslist){
-						Date start=times.getTimeStartDate();
-						Date end=times.getTimeEndDate();
+						Date start=timee.getTimeStartDate();
+						Date end=timee.getTimeEndDate();
 						Long chas=end.getTime()-start.getTime();
 						float timehour=chas/1000/60/60f;
 						float newtimehour=timehour*s;
@@ -1281,8 +1278,9 @@ public class MissionAndScenarinoController {
 						
 						SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						Calendar cal = Calendar.getInstance();
-						cal.setTime(start);
+						cal.setTime(starttime);
 						cal.add(Calendar.HOUR, (int)thehour);
+						cal.add(Calendar.MINUTE, -1);
 						String endTimeDate =sdf.format(cal.getTime());
 						Date endtimes=sdf.parse(endTimeDate);
 						TTime timeses=new TTime();
@@ -1290,7 +1288,6 @@ public class MissionAndScenarinoController {
 						timeses.setTimeStartDate(starttime);
 						timeses.setMissionId(tScenarinoDetail.getMissionId());
 						timeses.setAreaId(theis.getScenarinoAreaId());
-						timeses.setIsEffective("1");
 						timeses.setPlanId(timee.getPlanId());
 						timeses.setUserId(userId);
 						timeses.setScenarinoId(scenarinoId);
