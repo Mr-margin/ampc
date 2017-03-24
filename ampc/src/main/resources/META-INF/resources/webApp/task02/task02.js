@@ -908,7 +908,7 @@ function createEditArea() {
     return;
   }
   $('#editArea').modal('hide');
-  $('#'+$('#areaName').attr('data-id')).find('.btn-falsh').removeClass('btn-falsh');
+  $('#'+$('#areaName').attr('data-id')).find('button.btn-flash').removeClass('btn-flash');
   ajaxPost(url, obj).success(function (res) {
 
     if (!$('#areaName').attr('data-id')) {
