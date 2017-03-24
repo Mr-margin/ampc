@@ -621,7 +621,7 @@ $(function() {
                     atc.find('b').html(item.areaName);
                     $('.areaTitle').append(atc);
                 }
-                if(item.provinceCodes.length == item.cityCodes.length == item.countyCodes == 0){
+                if(item.provinceCodes.length == 0 && item.cityCodes.length == 0 && item.countyCodes.length == 0){
                     atc.find('.toolShow').eq(0).addClass('btn-flash');
                 }else{
                     atc.find('.toolShow').eq(0).removeClass('btn-flash');

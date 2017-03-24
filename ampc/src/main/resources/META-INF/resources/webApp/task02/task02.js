@@ -161,7 +161,7 @@ function scenarinoType(typeNum){
       $('.jpfx').attr('disabled',true);
       break;
     case 2:
-      $('.jpjs').removeAttr('disabled');
+      $('.jpjs').attr('disabled',true);
       $('.jpjs').removeClass('disNone');
       $('.jpztck').addClass('disNone');
       $('.jpfx').attr('disabled',true);
@@ -861,6 +861,7 @@ function createEditArea() {
   var areaName = $('#areaName').val();
   if (!areaName) {
     alert('kong')
+    return;
   }
 
   var obj = {
@@ -923,6 +924,9 @@ function createEditArea() {
         timeEndDate: qjMsg.qjEndDate,
         timeStartDate: qjMsg.qjStartDate
       }];
+      obj.provinceCodes = pArr;
+      obj.cityCodes = ctArr;
+      obj.countyCodes = crArr;
       allData.push(obj);
       showTimeline(allData);
     }
@@ -1345,28 +1349,44 @@ function previous(){
 function subCopyQJ(){
   console.log(selectCopyQJ);
 
-  var url = '/area/get_areaAndTimeList';
-  ajaxPost(url, {
-    scenarinoId: qjMsg.qjId,
-    userId: userId
+  var copyUrl = '/scenarino/copy_Scenarino';
+  ajaxPost(copyUrl,{
+    scenarinoId:qjMsg.qjId,
+    userId:userId,
+    copyscenarinoId:selectCopyQJ.scenarinoId
   }).success(function(res){
-    allData = res.data.slice(0,-1);
-    for (var i = 0; i < allData.length; i++) {
-      allData[i].timeFrame = [];
-      var timeItems = allData[i].timeItems;
-      var tLength = timeItems.length;
-      //$('.areaMsg').append(area);
-      for (var item = 0; item < tLength; item++) {
+    if(res.status == 0){
+      var url = '/area/get_areaAndTimeList';
+      ajaxPost(url, {
+        scenarinoId: qjMsg.qjId,
+        userId: userId
+      }).success(function(res){
+        if(res.status == 0){
+          allData = res.data.slice(0,-1);
+          for (var i = 0; i < allData.length; i++) {
+            allData[i].timeFrame = [];
+            var timeItems = allData[i].timeItems;
+            var tLength = timeItems.length;
+            //$('.areaMsg').append(area);
+            for (var item = 0; item < tLength; item++) {
 
-        if (item > 0) {
-          var sD = timeItems[item].timeStartDate;
-          allData[i].timeFrame[item - 1] = moment(sD).format('YYYY-MM-DD HH');
+              if (item > 0) {
+                var sD = timeItems[item].timeStartDate;
+                allData[i].timeFrame[item - 1] = moment(sD).format('YYYY-MM-DD HH');
+              }
+            }
+          }
+          showTimeline(allData);
+          app2();
+        }else{
+          console.log('get_areaAndTimeList 接口异常')
         }
-      }
+
+      });
+    }else{
+      console.log('copy_Scenarino 接口异常')
     }
-    showTimeline(allData);
-    app2();
-  });
+  })
 }
 
 /*显示所选code及地图展示*/
@@ -1807,6 +1827,17 @@ function showTimeline(data) {
   //    timeline = $('#timeline').timeline(options);
   //});
 
+  $('.jpjs').attr('disabled',true);
+  if(qjMsg.scenarinoStatus == 2){
+    for(var i=0;i<data.length;i++){
+      for(var m=0;m<data[i].timeItems.length;m++){
+        if(data[i].timeItems[m].planId !=-1){
+          $('.jpjs').removeAttr('disabled');
+          break;
+        }
+      }
+    }
+  }
   var options = {};
   //options.startTime = $('#startTime').val();
   //options.endTime = $('#endTime').val();
