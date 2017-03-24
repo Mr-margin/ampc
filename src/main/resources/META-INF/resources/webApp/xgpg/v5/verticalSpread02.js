@@ -35,7 +35,7 @@ function czBar(){
 	var myChart7 = echarts.init(document.getElementById('main7'));
 	var myChart8 = echarts.init(document.getElementById('main8'));
     //指定图表的配置项和数据	
-	  var option = {
+	  /*var option = {
 			  	title: {
 			  		text :'PM2.5',
 			  		x:'center',
@@ -97,7 +97,7 @@ function czBar(){
 	                    symbolSize: 3,
 	                    hoverAnimation: false,
 	                    yAxis: 1, 
-	                    data:[212, 321, 342, 350, 400, 800, 862,950,1200,2322]
+	                    data:[212, 321, 400, 350, 400, 800, 862,950,1200,2322]
 	                },
 	                {
 	                    name:'长三角管控',
@@ -110,8 +110,80 @@ function czBar(){
 	                },
 	           
 	            ]
-	        };
-
+	        };*/
+	option = {
+		    legend: {
+		        data:['基准','长三角管控']
+		    },
+		    toolbox: {
+		        show : true,
+		        feature : {
+		            mark : {show: true},
+		            /*dataView : {show: true, readOnly: false},
+		            magicType : {show: true, type: ['line', 'bar']},
+		            restore : {show: true},
+		            saveAsImage : {show: true}*/
+		        }
+		    },
+		    calculable : true,
+		    tooltip : {
+		        trigger: 'axis',
+		        //formatter: "Temperature : <br/>{b}km : {c}°C"
+		    },
+		    xAxis : [
+		        {
+		            type : 'value',
+		            axisLabel : {
+		                formatter: '{value} °C'
+		            }
+		        },
+		        {
+		        	type : 'value',
+		        	xAxisIndex: 1
+		        }
+		    ],
+		    yAxis : [
+		        {
+		            type : 'category',
+		            axisLine : {onZero: false},
+		            axisTick:{inside:true},  //刻度朝内侧
+		            yAxis: 1, 
+		            axisLabel : {
+		                formatter: '{value}'
+		            },
+		            boundaryGap : false,
+		            data :['0','50','100','200','300','400','500','700','1000','1500','2000','3000']
+		        }
+		    ],
+		    series : [
+		        {
+		            name:'基准',
+		            type:'line',
+		            smooth:true,
+		            itemStyle: {
+		                normal: {
+		                    lineStyle: {
+		                        shadowColor : 'rgba(0,0,0,0.4)'
+		                    }
+		                }
+		            },
+		            data:[15, -50, -56.5, -46.5, -22.1, -2.5, -27.7, -55.7, -76.5,-15,-45,-58]
+		        },
+		        {
+		            name:'长三角管控',
+		            type:'line',
+		            smooth:true,
+		            itemStyle: {
+		                normal: {
+		                    lineStyle: {
+		                        shadowColor : 'rgba(0,0,0,0.4)'
+		                    }
+		                }
+		            },
+		            data:[20, -40, -54.5, -41.5, -27.1, -7.5, -20.7, -54.7, -76.5,-57,-55,-61]
+		        }
+		    ]
+		};
 	  myChart1.setOption(option);
 	  myChart2.setOption(option);
 	  myChart3.setOption(option);

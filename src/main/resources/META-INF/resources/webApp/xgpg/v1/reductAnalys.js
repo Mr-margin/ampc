@@ -276,7 +276,7 @@ function selectQj(value){
 /****************************************************柱状图*************************************************************************/
 function bar () {
 	var paramsName = {"scenarinoId":"136","code":130123,"addressLevle":3,"stainType":"NOx"};
-		ajaxPost('/scenarino/get_radioInfo',paramsName).success(function(res){
+		ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
 		
 		var myPfChart = echarts.init(document.getElementById('pfDiv1'));
 		
@@ -410,6 +410,19 @@ function bar () {
 }
 /****************************************************行业措施饼状图*************************************************************************/
 function  pie () {
+	var nameVal;
+	var valueVal ;
+	var nv_data=[];
+	var paramsName = {"scenarinoId":"136","code":130123,"addressLevle":2,"stainType":"NOx","startDate":"2017-03-04","endDate":"2017-03-09","type":1};
+	ajaxPost('/echarts/get_pieInfo',paramsName).success(function(result){
+		console.log(result)
+		for(i=0;i<result.data.length;i++){
+			nameVal = result.data[i].name;
+			valueVal = result.data[i].value;
+			nv_data.push(nameVal);
+			nv_data.push(valueVal);
+		}
+		console.log(nv_data);
 	var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
 	var optionPie = {
 		    title : {
@@ -423,7 +436,7 @@ function  pie () {
 		    legend: {
 		        orient: 'vertical',
 		        left: 'left',
-		        data: ['钢铁','玻璃','水泥','独立焦化','其他工业企业','非道移动源','工业锅炉','储存运输','电力','废弃物处理源','其它','生物质燃烧源','农业源','化工化纤','扬尘源','民用源','道路机动车','溶剂使用'],
+		        data:nv_data
 		    },
 		    series : [
 		        {
@@ -431,26 +444,7 @@ function  pie () {
 		            type: 'pie',
 		            radius : '55%',
 		            center: ['50%', '60%'],
-		            data:[
-		                {value:1000.12, name:'钢铁'},
-		                {value:135, name:'玻璃'},
-		                {value:234, name:'水泥'},
-		                {value:310, name:'独立焦化'},
-		                {value:335, name:'其他工业企业'},
-		                {value:90, name:'非道移动源'},
-		                {value:25, name:'工业锅炉'},
-		                {value:15, name:'储存运输'},
-		                {value:231, name:'电力'},
-		                {value:68, name:'废弃物处理源'},
-		                {value:8, name:'其它'},
-		                {value:6, name:'生物质燃烧源'},
-		                {value:10, name:'农业源'},
-		                {value:10, name:'化工化纤'},
-		                {value:10, name:'扬尘源'},
-		                {value:10, name:'民用源'},
-		                {value:10, name:'道路机动车'},
-		                {value:10, name:'溶剂使用'},
-		            ],
+		            data:nv_data,
 		            itemStyle: {
 		                emphasis: {
 		                    shadowBlur: 10,
@@ -466,7 +460,9 @@ function  pie () {
 			//自适应屏幕大小变化
 			window.addEventListener("resize",function(){
 				myhycsChart.resize();
-			 });	
+			 });
+	});		
+
 }
 //超链接显示 模态框
 function exchangeModal(){
