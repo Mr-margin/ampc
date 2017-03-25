@@ -1271,7 +1271,14 @@ public class MissionAndScenarinoController {
 					for(TTime timee:timeslist){
 						Date start=timee.getTimeStartDate();
 						Date end=timee.getTimeEndDate();
-						Long chas=end.getTime()-start.getTime();
+						Long chas=end.getTime()-start.getTime();//开始结束时间差
+						Long qt=start.getTime()-copystarttime.getTime();
+						float qthour=qt/1000/60/60f;
+						float qtcha=qthour*s;
+						
+						
+						
+						
 						float timehour=chas/1000/60/60f;
 						float newtimehour=timehour*s;
 						float thehour=Math.round(newtimehour);
@@ -1279,13 +1286,21 @@ public class MissionAndScenarinoController {
 						SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						Calendar cal = Calendar.getInstance();
 						cal.setTime(starttime);
+						cal.add(Calendar.HOUR, (int)qtcha);
+						String starDate =sdf.format(cal.getTime());
+						Date startDate=sdf.parse(starDate);
+						
+						
+						
+						Calendar qtcal = Calendar.getInstance();
+						cal.setTime(startDate);
 						cal.add(Calendar.HOUR, (int)thehour);
-						cal.add(Calendar.MINUTE, -1);
+						cal.add(Calendar.SECOND, -1);
 						String endTimeDate =sdf.format(cal.getTime());
 						Date endtimes=sdf.parse(endTimeDate);
 						TTime timeses=new TTime();
 						timeses.setTimeEndDate(endtimes);
-						timeses.setTimeStartDate(starttime);
+						timeses.setTimeStartDate(startDate);
 						timeses.setMissionId(tScenarinoDetail.getMissionId());
 						timeses.setAreaId(theis.getScenarinoAreaId());
 						timeses.setPlanId(timee.getPlanId());
