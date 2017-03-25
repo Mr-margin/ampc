@@ -113,6 +113,17 @@ function shoe_data_start(evn){
 //	gis_paramsName.scenarinoId = qjMsg.qjId;//情景id
 	gis_paramsName.scenarinoId = 3;//情景id
 	baizhu_jianpai(gis_paramsName);
+	
+	
+	//默认行政区域
+	var admincode1 = 130000;
+	var name1 = "河北省";
+	var wz1 = "NOx";
+	var level = "1";
+	//柱状图
+	bar(admincode1,name1,wz1,level);
+	pie(admincode1,name1,wz1,level,1);
+	
 }
 
 /**
@@ -304,7 +315,8 @@ function resizess(event){
 	}
 }
 
-var admincode = "";//当前统计图显示数据的行政区划
+var admincode = "130000";//当前统计图显示数据的行政区划
+var name = "河北省"
 /**
  * 点击地图事件，调用统计图方法
  * @param event
@@ -316,7 +328,7 @@ function optionclick(event){
 	//更新统计图
 	var wztype = $('#hz_wrw').val();
 	bar(admincode,name,wztype,gis_level);
-	pie(admincode,name,wztype,gis_level);
+	pie(admincode,name,wztype,gis_level,'1');
 	
 }
 
@@ -328,6 +340,7 @@ function gis_paifang_show(){
 	baizhu_jianpai(gis_paramsName);
 	//更新统计图
 //	admincode //已选择的行政区划，如果为空，则还未选择
+	//var wztype = $('#hz_wrw').val();
 	
 }
 
@@ -345,21 +358,17 @@ $(function(){
 
 	//初始化模态框显示
 	$(".createRwModal").modal();
-	//默认行政区域
-	var admincode1 = 130000;
-	var name1 = "河北省";
-	var wz1 = "NOx";
-	var level = "1";
-	//柱状图
-	bar(admincode1,name1,wz1,level);
-	pie(admincode1,name1,wz1,level);
-	
 	//行业 措施联动
 	$("#tradeId").change(function(){
-		
+		var pietype = '';
+		pietype = 1;
+		pie(admincode,name,$('#hz_wrw').val(),gis_level,pietype);
 		console.log(356)
 	});
 	$("#measureId").change(function(){
+		var pietype = '';
+		pietype = 2;
+		pie(admincode,name,$('#hz_wrw').val(),gis_level,pietype);
 		console.log(360)
 	});
 	
@@ -507,14 +516,15 @@ function selectQj(value){
 function bar (admincode,name,wztype,gis_level) {
 	/*var wztype;
 	nameArea = name;*/
-	var paramsName = {"scenarinoId":"136","code":admincode,"addressLevle":gis_level,"stainType":wztype};
+	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":admincode,"addressLevle":gis_level,"stainType":wztype};
 		ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
-		
+			console.log(res)
+			
 		var myPfChart = echarts.init(document.getElementById('pfDiv1'));
 		
 		var option = {
 			    title : {
-			        text: name + '的减排图表',
+			        text: name +'-'+wztype+'-'+'减排图表',
 			    },
 			    tooltip : {
 			        trigger: 'axis',
@@ -650,7 +660,7 @@ function bar (admincode,name,wztype,gis_level) {
 				oldX = [];
 				oldX = newX;
 				newX = [];
-				pie(admincode,name,wztype,gis_level);
+				pie(admincode,name,wztype,gis_level,1);
 			});
 
 	});
@@ -659,10 +669,10 @@ function bar (admincode,name,wztype,gis_level) {
 var newX=[],oldX=[];
 
 /****************************************************行业措施饼状图*************************************************************************/
-function  pie(admincode,name,wztype,gis_level){
+function  pie(admincode,name,wztype,gis_level,pietype){
 	var nameVal;
 	var valueVal ;
-	var paramsName = {"scenarinoId":"136","code":admincode,"addressLevle":gis_level,"stainType":wztype,"startDate":"2017-03-04","endDate":"2017-03-09","type":1};
+	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":admincode,"addressLevle":gis_level,"stainType":wztype,"startDate":"2017-03-04","endDate":"2017-03-09","type":pietype};
 	ajaxPost('/echarts/get_pieInfo',paramsName).success(function(result){
 		//console.log(result.data.length)
 			if(result.data.length != 0){
@@ -677,7 +687,7 @@ function  pie(admincode,name,wztype,gis_level){
 	var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
 	var optionPie = {
 		    title : {
-		        text: name+'的行业措施饼状图',
+		        text: name+'-'+wztype+'-'+'行业饼状图',
 		        x:'center'
 		    },
 		    tooltip : {
