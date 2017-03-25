@@ -27,7 +27,7 @@ public class UngribTest {
 	private String id;
 	private String time;
 	private String type;
-	private Map<String, Map<String, Object>> body;
+	private Map<String, Object> body;
 	@Override
 	public String toString() {
 		return "UngribTest [id=" + id + ", time=" + time + ", type=" + type
@@ -52,10 +52,10 @@ public class UngribTest {
 		this.type = type;
 	}
 	
-	public Map<String, Map<String, Object>> getBody() {
+	public Map<String, Object> getBody() {
 		return body;
 	}
-	public void setBody(Map<String, Map<String, Object>> body) {
+	public void setBody(Map<String, Object> body) {
 		this.body = body;
 	}
 	public UngribTest() {
