@@ -267,6 +267,39 @@
   <select id="selectDomainid" resultType="java.lang.Long" parameterType="java.lang.Long">
   select MISSION_DOMAIN_ID from T_MISSION_DETAIL where MISSION_ID=#{missionId,jdbcType=DECIMAL}
   </select>
-  
-  
+  <select id="selectByEntity" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TMissionDetail" >
+    select <include refid="Base_Column_List" />
+    from T_MISSION_DETAIL 
+    where IS_EFFECTIVE='1' 
+    <if test="missionName != null" >
+       and MISSION_NAME = #{missionName,jdbcType=OTHER}
+      </if>
+      <if test="missionDomainId != null" >
+        and MISSION_DOMAIN_ID = #{missionDomainId,jdbcType=DECIMAL}
+      </if>
+      <if test="esCouplingId != null" >
+        and ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL}
+      </if>
+      <if test="missionStartDate != null" >
+        and MISSION_START_DATE = #{missionStartDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="missionEndDate != null" >
+        and MISSION_END_DATE = #{missionEndDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="missionAddTime != null" >
+        and MISSION_ADD_TIME = #{missionAddTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="userId != null" >
+        and USER_ID = #{userId,jdbcType=DECIMAL}
+      </if>
+      <if test="missionId != null" >
+        and MISSION_ID = #{missionId,jdbcType=DECIMAL}
+      </if>
+      <if test="deleteTime != null" >
+        and DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="missionStatus != null" >
+        and MISSION_STATUS = #{missionStatus,jdbcType=OTHER}
+      </if>
+  </select>
 </mapper>
