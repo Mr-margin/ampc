@@ -39,6 +39,13 @@ if(!qjMsg){
 }
 console.log(JSON.stringify(qjMsg));
 
+$('.csCon').removeClass('disNone');
+$('.csCon .nowRw span').html(qjMsg.rwName);
+$('.csCon .nowQj span').html(qjMsg.qjName);
+$('.csCon .nowArea span').html(qjMsg.areaName);
+$('.csCon .nowTime span').html(qjMsg.planName);
+$('.csCon .seDate span').html(moment(qjMsg.timeStartDate).format('YYYY-MM-DD HH') + '<br>至<br>' + moment(qjMsg.timeEndDate).format('YYYY-MM-DD HH'));
+
 var Codes = [];
 $.each(qjMsg.cityCodes, function(i, col) {
 	$.each(col, function(k, vol) {
