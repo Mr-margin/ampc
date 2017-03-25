@@ -1,61 +1,26 @@
-var ip = "192.168.1.132";
-var url = "http://"+ip+":6080/arcgis/rest/services/china_ampc/MapServer";//基础底图
 var gp32 = "http://192.168.1.132:6080/arcgis/rest/services/FactorToResult/GPServer/FTR";
 var gp33 = "http://192.168.1.133:6080/arcgis/rest/services/ceshi/GPServer/ceshi1";
-//通用属性
-var stat = {};
-//地图范围
-stat.maxScale=36978595.474472;
-stat.minScale=72223.819286;
-//中心点坐标
-stat.cPointx=116;
-stat.cPointy=28;
 
 
-var app = {};
-var dong = {};
-
+var stat = {cPointx : 106, cPointy : 35}, app = {}, dong = {};
 var dojoConfig = {
 	async: true,
-    parseOnLoad: true,  
-    packages: [{  
-        name: 'tdlib',  
-        location: "/js/tdlib"  
-    }]
+	parseOnLoad: true,  
+	packages: [{  
+		name: 'tdlib',  
+		location: "/js/tdlib"  
+	}],
+	paths: {
+		extras: location.pathname.replace(/\/[^/]+$/, '') + "/js/extras"  
+	}
 };
 require(
 	[
-	 	"esri/map", 
-	 	"esri/tasks/Geoprocessor",
-	 	"esri/layers/ImageParameters",
-	 	"esri/layers/DynamicLayerInfo",
-	 	"esri/layers/RasterDataSource",
-	 	"esri/layers/TableDataSource",
-	 	"esri/layers/LayerDataSource",
-	 	"esri/layers/FeatureLayer",
-	 	"esri/layers/GraphicsLayer",
-	 	"esri/layers/LayerDrawingOptions",
-	 	"esri/symbols/SimpleFillSymbol", 
-	 	"esri/symbols/SimpleLineSymbol", 
-	 	"esri/symbols/SimpleMarkerSymbol", 
-	 	"esri/geometry/Multipoint", 
-	 	"esri/geometry/Point", 
-	 	"esri/geometry/Extent",
-        "esri/renderers/SimpleRenderer", 
-        "esri/graphic", 
-        "esri/lang",
-        "dojo/_base/Color", 
-        "dojo/_base/array", 
-        "dojo/number", 
-        "dojo/dom-style", 
-        "dijit/TooltipDialog", 
-        "dijit/popup", 
-        "dojox/widget/ColorPicker", 
-        "esri/layers/RasterLayer",
-        "tdlib/gaodeLayer",
-        "esri/tasks/FeatureSet",
-        "esri/SpatialReference",
-        "dojo/domReady!"
+	 	"esri/map", "esri/tasks/Geoprocessor", "esri/layers/ImageParameters", "esri/layers/DynamicLayerInfo", "esri/layers/RasterDataSource", "esri/layers/TableDataSource",
+	 	"esri/layers/LayerDataSource", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "esri/layers/LayerDrawingOptions", "esri/symbols/SimpleFillSymbol", 
+	 	"esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleMarkerSymbol", "esri/geometry/Multipoint", "esri/geometry/Point", "esri/geometry/Extent",
+        "esri/renderers/SimpleRenderer", "esri/graphic", "esri/lang", "dojo/_base/Color", "dojo/_base/array", "dojo/number", "dojo/dom-style", "dijit/TooltipDialog", 
+        "dijit/popup", "dojox/widget/ColorPicker", "esri/layers/RasterLayer", "tdlib/gaodeLayer", "esri/tasks/FeatureSet", "esri/SpatialReference", "dojo/domReady!"
 	], 
 	function(Map, Geoprocessor,ImageParameters,DynamicLayerInfo,RasterDataSource,TableDataSource
 			,LayerDataSource,FeatureLayer,GraphicsLayer,LayerDrawingOptions,SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Multipoint,Point,Extent,SimpleRenderer, Graphic, esriLang,
@@ -69,7 +34,7 @@ require(
 		dong.GraphicsLayer = GraphicsLayer;
 		dong.SpatialReference = SpatialReference;
 		
-		esri.config.defaults.io.proxyUrl = "http://192.168.1.147:8091/Java/proxy.jsp";
+		esri.config.defaults.io.proxyUrl = ArcGisUrl+"/Java/proxy.jsp";
     	esri.config.defaults.io.alwaysUseProxy = false;
 		
 		app.mapList = new Array();
@@ -92,8 +57,6 @@ require(
 		        center: [stat.cPointx, stat.cPointy],
 		        minZoom:4,
 		        maxZoom:13,
-//		        minScale:stat.minScale,
-//		        maxScale:stat.maxScale,
 		        zoom: 4
 			});
 //			map.setExtent(app.mapExtent);
@@ -166,7 +129,7 @@ function bianji(){
 	var features = [];
 	
 	
-	$.get('data.json', function (data) {
+	$.get('data2.json', function (data) {
 		$.each(data, function(i, col) {
 			var point = new dong.Point(col.x, col.y, new dong.SpatialReference({ wkid: 3857 }));
 			var attr = {};
