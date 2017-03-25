@@ -10,7 +10,7 @@ if(!qjMsg){
 }else{
   ls.setItem('yaMsg',JSON.stringify(qjMsg));
 }
-console.log(JSON.stringify(qjMsg));
+//console.log(JSON.stringify(qjMsg));
 
 /**
  *设置导航条信息

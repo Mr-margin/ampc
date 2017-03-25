@@ -27,27 +27,20 @@
 </style>
 
 <div class='col-md-12' style="height:100%;padding-left: 0px;padding-right: 0px;">
-	
 	<div class="ibox float-e-margins" style="height:100%;">
-	
 		<div class="ibox-content" style="height:100%;overflow-y: auto;padding: 0px;">
-		
 			<div class="row" style="margin-top: 12px;margin-left: 0px;margin-right: 0px;height:48px;">
 			
 				<div class="col-sm-3">
 					<div class="input-group m-b" style="margin-bottom: 0px">
 						<span class="input-group-addon" style="border: 1px solid #E5E6E7;">情景一: </span>
-						<select class="form-control m-b" id="taskId" name="taskId">
-							<option>基准</option>
-						</select>
+						<select class="form-control m-b" id="scene1" name="scene1"></select>
 					</div>
 				</div>
 				<div class="col-sm-3">
 					<div class="input-group m-b" style="margin-bottom: 0px">
 						<span class="input-group-addon" style="border: 1px solid #E5E6E7;">情景二: </span>
-						<select class="form-control m-b" id="taskId" name="taskId">
-							<option>长三角保障</option>
-						</select>
+						<select class="form-control m-b" id="scene2" name="scene2"></select>
 					</div>
 				</div>
 				<div class="col-sm-4">
@@ -65,25 +58,81 @@
 					<div class="input-group m-b" style="margin-bottom: 0px">
 						<span class="input-group-addon" style="border: 1px solid #E5E6E7;">物种: </span>
 						<select class="form-control m-b" id="taskId" name="taskId">
+							<option>PM25</option>
+							<option>PM10</option>
+							<option>O3</option>
 							<option>SO2</option>
+							<option>NO2</option>
+							<option>CO</option>
+							<option>SO4</option>
+							<option>NO3</option>
+							<option>NH4</option>
+							<option>BC</option>
+							<option>OM</option>
+							<option>PMFINE</option>
 						</select>
 					</div>
 				</div>
 				
 			</div>
 			
-			<div class="row" style="margin-left: 0px;margin-right: 0px;height:calc(100% - 48px);">
+			<div class="row" style="margin-left: 0px;margin-right: 0px;height:calc(100% - 60px);">
 				<div class='col-md-6' style="height:100%;padding-left: 0px;">
 					<div id="mapDiv0" style="height:100%;border:1px solid #75B9E6;"></div>
 				</div>
 				<div class='col-md-6' style="height:100%;padding-left: 0px;padding-right: 0px;">
 					<div id="mapDiv1" style="height:100%;border:1px solid #75B9E6;"></div>
 				</div>
-				<div id="info"></div>
+				<!-- <div id="info"></div> -->
 			</div>
 		</div>
 	</div>
-	
-	
-	
+</div>
+
+<!-- 模态框 -->
+<div class="modal fade createRwModal" id="Initialization" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title">创建情景</h4>
+			</div>
+			<div class="modal-body">
+				<div class="rwCon" >
+					<div class="form-group mt10 clearfix">
+						<label for="mnfw" class="col-md-2 control-label lh29">任务名称</label>
+
+						<div class="col-md-10">
+							<select class="form-control" id="task" name="task" onchange="sceneTable()">
+								<option value="j0">- -</option>
+								<option value="j1">基准</option>
+								<option value="j2">长三角保障</option>
+								<option value="j3">任务一</option>
+								<option value="j4">任务二</option>
+								<option value="j5">任务三</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group mt10 clearfix">
+						<div class="col-md-10 col-md-offset-2" id="tableId" style="display: none;">
+							<table class="table table-striped table-bordered table-hover" id="sceneTableId" style="margin-top:5px;">
+								<thead>
+									  <th data-checkbox="true"></th>
+								      <th data-field="qjmc">情景名称</th>
+								      <th data-field="qjms">情景描述</th>
+								      <th data-field="qjsj">时间</th>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer new-foot" >
+				<button type="button" class="btn btn-primary createRwBtn" onclick="">确定</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+			</div>
+		</div>
+	</div>
 </div>
