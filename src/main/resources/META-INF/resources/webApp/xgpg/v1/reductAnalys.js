@@ -463,7 +463,6 @@ function  pie () {
 //超链接显示 模态框
 function exchangeModal(){
 	$(".createRwModal").modal();
-	
 }
 //初始化模态框 内的表格 全选复选框 新版
 function initQdListTable() {

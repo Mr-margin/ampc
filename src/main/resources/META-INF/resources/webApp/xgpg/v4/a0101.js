@@ -2,6 +2,68 @@ var gp32 = "http://192.168.1.132:6080/arcgis/rest/services/FactorToResult/GPServ
 var gp33 = "http://192.168.1.133:6080/arcgis/rest/services/ceshi/GPServer/ceshi1";
 
 
+/**
+ *设置导航条信息
+ */
+$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">水平分布</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
+
+var ls = window.localStorage;
+var qjMsg = vipspa.getMessage('yaMessage').content;
+var sceneInitialization = vipspa.getMessage('sceneInitialization').content;//从路由中取到情景范围
+sceneInitialization();
+
+if(!qjMsg){
+  qjMsg = JSON.parse(ls.getItem('yaMsg'));
+}else{
+  ls.setItem('yaMsg',JSON.stringify(qjMsg));
+}
+
+
+/**
+ * 初始化模态框显示
+ */
+function sceneInitialization(){
+	if(!sceneInitialization){//判断路有种是否有情景范围
+		//路由中没有情景范围，从localStorage中获取，然后再次判断
+		sceneInitialization = JSON.parse(ls.getItem('SI'));
+		if(!sceneInitialization){
+			
+			var task = "";
+			
+			task += '<option value=""></option>';
+			
+			
+			$("#Initialization").modal();//初始化模态框显示
+		}
+	}else{
+		ls.setItem('SI',JSON.stringify(sceneInitialization));
+	}
+}
+
+/**
+ * 根据任务ID，获取情景列表用于选择情景范围
+ */
+function sceneTable(){
+	$("#task").val();//任务ID
+	
+	
+	
+	
+}
+
+
+
+//超链接显示 模态框
+function exchangeModal(){
+	if(sceneInitialization){//判断路有种是否有情景范围
+		//根据已经保存的情景范围，初始化摩太狂内容
+		
+	}
+	$("#Initialization").modal();
+	
+}
+
+
 var stat = {cPointx : 106, cPointy : 35}, app = {}, dong = {};
 var dojoConfig = {
 	async: true,
@@ -22,9 +84,9 @@ require(
         "esri/renderers/SimpleRenderer", "esri/graphic", "esri/lang", "dojo/_base/Color", "dojo/_base/array", "dojo/number", "dojo/dom-style", "dijit/TooltipDialog", 
         "dijit/popup", "dojox/widget/ColorPicker", "esri/layers/RasterLayer", "tdlib/gaodeLayer", "esri/tasks/FeatureSet", "esri/SpatialReference", "dojo/domReady!"
 	], 
-	function(Map, Geoprocessor,ImageParameters,DynamicLayerInfo,RasterDataSource,TableDataSource
-			,LayerDataSource,FeatureLayer,GraphicsLayer,LayerDrawingOptions,SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Multipoint,Point,Extent,SimpleRenderer, Graphic, esriLang,
-	        Color, array, number, domStyle, TooltipDialog, dijitPopup, ColorPicker, RasterLayer, gaodeLayer, FeatureSet, SpatialReference) {
+	function(Map, Geoprocessor,ImageParameters,DynamicLayerInfo,RasterDataSource,TableDataSource,LayerDataSource,FeatureLayer,GraphicsLayer,LayerDrawingOptions,
+			SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Multipoint,Point,Extent,SimpleRenderer, Graphic, esriLang,Color, array, number, domStyle, 
+			TooltipDialog, dijitPopup, ColorPicker, RasterLayer, gaodeLayer, FeatureSet, SpatialReference) {
 		
 		dong.gaodeLayer = gaodeLayer;
 		dong.Geoprocessor = Geoprocessor;
@@ -42,24 +104,14 @@ require(
 		app.stlayerList = new Array();//加载卫星图
 		app.labellayerList = new Array();//加载标注图
 		
-//		app.mapExtent = new esri.geometry.Extent({ 
-//	           "xmin":7184564.28421679, 
-//	           "ymin":-234108.71524707237, 
-//	           "xmax":16547794.50103525, 
-//	           "ymax":7964832.6867318945, 
-//	           "spatialReference":{"wkid":3857}
-//	         });
-		
 		for(var i = 0;i<2;i++){
 			var map = new Map("mapDiv"+i, {
-//				extent:app.mapExtent,
 				logo:false,
 		        center: [stat.cPointx, stat.cPointy],
 		        minZoom:4,
 		        maxZoom:13,
 		        zoom: 4
 			});
-//			map.setExtent(app.mapExtent);
 			
 			app.mapList.push(map);
 			app.baselayerList[i] = new dong.gaodeLayer();
@@ -116,7 +168,6 @@ require(
 		function showCoordinates(event) {
 //	        var mp = esri.geometry.webMercatorToGeographic(evt.mapPoint);
 	        dojo.byId("Point").innerHTML = event.mapPoint.x.toFixed(3) + ", " + event.mapPoint.y.toFixed(3);
-	    	
 	    	$("#scale").html("scale="+app.mapList[0].getScale());
 	    	$("#Zoom").html("Zoom="+app.mapList[0].getZoom());
 	    	$("#Level").html("Level="+app.mapList[0].getLevel());
