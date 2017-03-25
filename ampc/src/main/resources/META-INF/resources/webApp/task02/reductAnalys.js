@@ -341,7 +341,6 @@ function gis_paifang_show(){
 
 
 
-
 $(function(){
 
 	//初始化模态框显示
@@ -358,20 +357,10 @@ $(function(){
 	//行业 措施联动
 	$("#tradeId").change(function(){
 		
-		var paramsName = {"scenarinoId":"136","code":admincode,"addressLevle":gis_level,"stainType":wztype};
-		ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
-			
-			pie(admincode,name,wztype,gis_level);
-		})
-		
 		console.log(356)
-		pie(admincode,name,gis_level);
 	});
 	$("#measureId").change(function(){
-		/*admincode = event.graphic.attributes.ADMINCODE;
-		var name = event.graphic.attributes.NAME;
 		console.log(360)
-		pie(admincode,name,gis_level);*/
 	});
 	
     //地图展示切换
