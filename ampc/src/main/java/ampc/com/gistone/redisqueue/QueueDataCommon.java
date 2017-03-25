@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class QueueDataCommon {
 	//初始化 第一次的值 为true 其他均为false
-	private boolean firsttime;
+	private String firsttime;
 	//气象数据类型，fnl, gfs
 	private String datatype;
 	//模拟开始和结束时间
@@ -32,10 +32,11 @@ public class QueueDataCommon {
 	private String pathdate;
 	
 	
-	public boolean isFirsttime() {
+	
+	public String getFirsttime() {
 		return firsttime;
 	}
-	public void setFirsttime(boolean firsttime) {
+	public void setFirsttime(String firsttime) {
 		this.firsttime = firsttime;
 	}
 	public String getDatatype() {
@@ -61,17 +62,17 @@ public class QueueDataCommon {
 		return "QueueDataCommon [firsttime=" + firsttime + ", datatype="
 				+ datatype + ", time=" + time + ", pathdate=" + pathdate + "]";
 	}
-	public QueueDataCommon(boolean firsttime, String datatype,
+	public QueueDataCommon() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public QueueDataCommon(String firsttime, String datatype,
 			Map<String, Map<String, String>> time, String pathdate) {
 		super();
 		this.firsttime = firsttime;
 		this.datatype = datatype;
 		this.time = time;
 		this.pathdate = pathdate;
-	}
-	public QueueDataCommon() {
-		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	
