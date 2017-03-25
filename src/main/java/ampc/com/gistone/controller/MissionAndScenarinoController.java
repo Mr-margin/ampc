@@ -1283,18 +1283,12 @@ public class MissionAndScenarinoController {
 						float ends=endchar/1000/60/60f;
 						float endhour=ends*s;
 						
-						float timehour=chas/1000/60/60f;//开始结束时间差
-						float newtimehour=timehour*s;
-						
-						
 						SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						Calendar cal = Calendar.getInstance();
 						cal.setTime(starttime);
 						cal.add(Calendar.HOUR, (int)qtcha);
-						String starDate =sdf.format(cal.getTime());
+						String starDate =sdf.format(cal.getTime());//
 						Date startDate=sdf.parse(starDate);
-						
-						
 						
 						Calendar qtcal = Calendar.getInstance();
 						cal.setTime(endtime);
