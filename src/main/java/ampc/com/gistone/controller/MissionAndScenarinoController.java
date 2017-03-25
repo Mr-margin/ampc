@@ -1245,12 +1245,12 @@ public class MissionAndScenarinoController {
 			Date copyendtime=copytScenarinoDetail.getScenarinoEndDate();
 			Date copystarttime=copytScenarinoDetail.getScenarinoStartDate();
 			Long a=copyendtime.getTime()-copystarttime.getTime();
-			float ha=a/1000/60/60f;//小时数
+			float ha=a/1000f;//小时数
 			//情景的开始结束时间
 			Date endtime=tScenarinoDetail.getScenarinoEndDate();
 			Date starttime=tScenarinoDetail.getScenarinoStartDate();
 			Long b=endtime.getTime()-starttime.getTime();
-			float hb=b/1000/60/60f;//小时数
+			float hb=b/1000f;//小时数
 				
 			float s=hb/ha;
 			for(TScenarinoAreaWithBLOBs area:copyarealist){
@@ -1269,20 +1269,23 @@ public class MissionAndScenarinoController {
 					times.setAreaId(area.getScenarinoAreaId());
 					times.setScenarinoId(area.getScenarinoDetailId());
 					List<TTime> timeslist=tTimeMapper.selectByEntity(times);
-					for(TTime timee:timeslist){
+					for(int ss=0;ss<timeslist.size();ss++){
+						TTime timee=timeslist.get(ss);
 						Date start=timee.getTimeStartDate();
 						Date end=timee.getTimeEndDate();
 						Long chas=end.getTime()-start.getTime();//开始结束时间差
-						Long qt=start.getTime()-copystarttime.getTime();
-						float qthour=qt/1000/60/60f;
+						Long qt=start.getTime()-copystarttime.getTime();//开始与开始时间差
+						Long endchar=copyendtime.getTime()-end.getTime();
+						float qthour=qt/1000/60/60f;//开始与开始时间差
 						float qtcha=qthour*s;
 						
 						
+						float ends=endchar/1000/60/60f;
+						float endhour=ends*s;
 						
-						
-						float timehour=chas/1000/60/60f;
+						float timehour=chas/1000/60/60f;//开始结束时间差
 						float newtimehour=timehour*s;
-						float thehour=Math.round(newtimehour);
+						
 						
 						SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						Calendar cal = Calendar.getInstance();
@@ -1294,9 +1297,13 @@ public class MissionAndScenarinoController {
 						
 						
 						Calendar qtcal = Calendar.getInstance();
-						cal.setTime(startDate);
-						cal.add(Calendar.HOUR, (int)thehour);
-						cal.add(Calendar.SECOND, -1);
+						cal.setTime(endtime);
+				
+						cal.add(Calendar.HOUR, -(int)endhour);
+						if(copyendtime.getTime()-end.getTime()!=0 && hb<ha){
+							cal.add(Calendar.HOUR, -1);
+						}
+						
 						String endTimeDate =sdf.format(cal.getTime());
 						Date endtimes=sdf.parse(endTimeDate);
 						TTime timeses=new TTime();
