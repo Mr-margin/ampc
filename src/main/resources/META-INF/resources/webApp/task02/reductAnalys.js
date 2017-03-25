@@ -687,7 +687,7 @@ function  pie(admincode,name,wztype,gis_level,pietype){
 	var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
 	var optionPie = {
 		    title : {
-		        text: name+'-'+wztype+'-'+'行业饼状图',
+		        text: name+'-'+wztype+'-'+'饼状图',
 		        x:'center'
 		    },
 		    tooltip : {
