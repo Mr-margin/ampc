@@ -314,8 +314,9 @@ function optionclick(event){
 	var name = event.graphic.attributes.NAME;
 	
 	//更新统计图
-	//alert(admincode);
-	bar();
+	var wztype = $('#hz_wrw').val();
+	bar(admincode,name,wztype);
+	pie(admincode,name,wztype);
 	
 }
 
@@ -326,7 +327,6 @@ function optionclick(event){
 function gis_paifang_show(){
 	gis_paramsName.pollutant = $('#hz_wrw').val();//物种
 	baizhu_jianpai(gis_paramsName);
-	
 	//更新统计图
 //	admincode //已选择的行政区划，如果为空，则还未选择
 	
@@ -500,15 +500,17 @@ function selectQj(value){
 	}
 }
 /****************************************************柱状图*************************************************************************/
-function bar () {
-	var paramsName = {"scenarinoId":"136","code":130123,"addressLevle":3,"stainType":"NOx"};
+function bar (admincode,name,wztype) {
+	/*var wztype;
+	nameArea = name;*/
+	var paramsName = {"scenarinoId":"136","code":admincode,"addressLevle":3,"stainType":wztype};
 		ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
 		
 		var myPfChart = echarts.init(document.getElementById('pfDiv1'));
 		
 		var option = {
 			    title : {
-			        text: '减排图表',
+			        text: name + '的减排图表',
 			    },
 			    tooltip : {
 			        trigger: 'axis',
@@ -635,20 +637,25 @@ function bar () {
 	});
 }
 /****************************************************行业措施饼状图*************************************************************************/
-function  pie () {
+function  pie(admincode,name,wztype){
 	var nameVal;
 	var valueVal ;
-	var paramsName = {"scenarinoId":"136","code":130123,"addressLevle":2,"stainType":"NOx","startDate":"2017-03-04","endDate":"2017-03-09","type":1};
+	var paramsName = {"scenarinoId":"136","code":admincode,"addressLevle":2,"stainType":wztype,"startDate":"2017-03-04","endDate":"2017-03-09","type":1};
 	ajaxPost('/echarts/get_pieInfo',paramsName).success(function(result){
-		console.log(result)
-		for(i=0;i<result.data.length;i++){
-			nameVal = result.data[i].name;
-			valueVal = result.data[i].value;
-		}
+		console.log(result.length)
+			if(result == null){
+				for(i=0;i<result.data.length;i++){
+					nameVal = result.data[i].name;
+					valueVal = result.data[i].value;
+				}
+			}/*else{
+				swal('饼图暂无数据', '', 'error')
+			}*/
+			
 	var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
 	var optionPie = {
 		    title : {
-		        text: '行业措施饼状图',
+		        text: name+'的行业措施饼状图',
 		        x:'center'
 		    },
 		    tooltip : {
@@ -683,6 +690,8 @@ function  pie () {
 			window.addEventListener("resize",function(){
 				myhycsChart.resize();
 			 });
-	});		
+	}).error(function () {
+      swal('暂无数据', '', 'error')
+    })	
 
 }
