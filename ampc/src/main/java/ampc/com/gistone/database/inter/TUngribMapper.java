@@ -5,6 +5,7 @@ import java.util.Date;
 import ampc.com.gistone.database.model.TUngrib;
 
 public interface TUngribMapper {
+	
 	/**
 	 * @Description: TODO  
 	 * @param pathdateDate   
@@ -13,7 +14,7 @@ public interface TUngribMapper {
 	 * @author yanglei
 	 * @date 2017年3月23日 下午3:36:33
 	 */
-	Long selectUngrib(Date pathdateDate);
+	TUngrib selectUngrib(Date pathdateDate);
 	
 	/**
 	 * @param i 
@@ -33,7 +34,7 @@ public interface TUngribMapper {
 	 * @author yanglei
 	 * @date 2017年3月20日 上午11:35:42
 	 */
-	TUngrib getlastfnl();
+	TUngrib getlastungrib();
 	
     int deleteByPrimaryKey(Long ungribId);
 
