@@ -45,35 +45,32 @@ public class AcceptMessageQueue implements Runnable{
 	
 	@Override
 	public void run() {
-		String rpop = redisUtilServer.rpop("test_task-queue_ungrib");
+		String rpop = redisUtilServer.rpop("ungrib_test");
 		System.out.println(rpop);
 		toDataUngribUtil.updateDB(rpop);
 		//JSONArray array = JSONArray.fromObject(rpop);
-		/*try {
-			JSONObject jsonObject = new JSONObject(rpop);
+			/*JSONObject jsonObject = new JSONObject(rpop);
 			String id = (String) jsonObject.get("id");
 			String time = (String) jsonObject.get("time");
 			String type = (String) jsonObject.get("type");
 			String id = (String) jsonObject.get("id");
 			String id = (String) jsonObject.get("id");
-			System.out.println(id);
-			
-			
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
+			System.out.println(id);*/
+			/*String rpop = redisUtilServer.rpop("ungrib");
+			toDataUngribUtil.updateDB(rpop);*/
+		
 		
 		/*while (true) {
 		//	String rpop = redisUtilServer.rpop("send_queue_name");
 			//System.out.println(rpop);
 			
-			
+			String rpop = redisUtilServer.bRPopLPush(0,"send_queue_name","ungrib");
+			toDataUngribUtil.updateDB(rpop);
+			System.out.println(rpop);
 			
 		}
-*/		
 		
+		*/
 	}
 
 }
