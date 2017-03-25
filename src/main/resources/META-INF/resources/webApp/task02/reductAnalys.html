@@ -13,6 +13,27 @@
 		border-right: 2px solid #ffffff;
 		border-top-right-radius: 20px;
 	}
+	
+	.info {
+		padding: 5px;
+		z-index: 40;
+	}
+	.shadow {
+		/* background: #fff; */
+		background-color: rgb(242, 242, 242);
+		font-family: Helvetica, Arial, sans-serif;
+		-moz-box-shadow: 0 0 5px #888;
+		-webkit-box-shadow: 0 0 5px #888;
+		box-shadow: 0 0 5px #888;
+		border-radius: 5px;
+	}
+	#legendWrapper {
+		bottom: 15px;
+		height: 23.5em;
+		left: 15px;
+		position: absolute !important;
+		width: 14.0625em;
+	}
 </style>
 <div class='col-md-6' style="height:100%;padding-left: 0px;">
 	<div class="ibox float-e-margins" style="height:100%;">
@@ -41,7 +62,8 @@
 		</div>
 		<div class="ibox-content" style="height:calc(100% - 48px);overflow-y: hide;border:1px solid #75B9E6;padding: 0px;">
 	        <div id="map_showId" style="height:100%;"></div>
-	        <div class="legendinfo"><div id="legendWrapper"></div></div>
+	        <!-- <div class="legendinfo"></div> -->
+	        <div id="legendWrapper" class="shadow info"></div>
 				
 	    	<!-- 列表展示modal -->
 	    	<div  id="listModal" style="display: none;">
