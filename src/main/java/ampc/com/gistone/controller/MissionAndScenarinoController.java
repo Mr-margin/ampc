@@ -1404,6 +1404,8 @@ public class MissionAndScenarinoController {
 				obj.put("scenarinoId", Scenarino.getScenarinoId());
 				obj.put("scenarinoName", Scenarino.getScenarinoName());
 				obj.put("scenType", Scenarino.getScenType());
+				obj.put("scenarinoStartDate", Scenarino.getScenarinoStartDate().getTime());
+				obj.put("scenarinoEndDate", Scenarino.getScenarinoEndDate().getTime());
 				arr.add(obj);
 			}
 			}else{
