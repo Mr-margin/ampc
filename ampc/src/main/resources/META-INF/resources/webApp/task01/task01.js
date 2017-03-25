@@ -416,7 +416,9 @@ function rwDomain(v, row, i) {
 }
 
 function qjName(v, row, i) {
-  return '<h3><a href="#/yabj">' + row.scenarinoName + '</a></h3>' +
+  var name = row.SCEN_TYPE == 3? '<h3><a>' + row.scenarinoName + '</a></h3>':'<h3><a href="#/yabj">' + row.scenarinoName + '</a></h3>';
+
+  return  name+
     '<a style="font-size:12px; color:#a1a1a1;">创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH') + '</a><br/>' +
     '<a style="font-size:12px; color:#a1a1a1;">起止日期：' + moment(row.scenarinoStartDate).format('YYYY-MM-DD') + ' 至 ' + moment(row.scenarinoEndDate).format('YYYY-MM-DD') + '</a>'
 }
@@ -431,7 +433,7 @@ function qjType(v, row, i) {
       type = '后评估情景';
       break;
     case '3':
-      type = '基准情景';
+      type = '新基准情景';
       break;
   }
   return type
