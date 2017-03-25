@@ -353,9 +353,11 @@ $(function(){
 	
 	//行业 措施联动
 	$("#tradeId").change(function(){
+		console.log(356)
 		pie();
 	});
 	$("#measureId").change(function(){
+		console.log(360)
 		pie();
 	});
 	
@@ -554,6 +556,7 @@ function bar (admincode,name,wztype) {
 			            axisLabel : {
 			            	formatter: function(category)
 			            	{
+											newX.push(category.substring(0,10));
 			            		return category.substring(0,10);          //截取字符串
 			            	}
 			            },
@@ -629,13 +632,30 @@ function bar (admincode,name,wztype) {
 		
 			//点击联动饼图
 			myPfChart.on('datazoom', function (params){
-			console.log(params);
-			
-			pie();
+
+				if(newX.length == 0)return;
+				if(newX.length == oldX.length){
+					if(newX[0]==oldX[0]){
+						newX = [];
+						return;
+					}
+				}
+
+				console.log(myPfChart.getOption());
+				console.log(params);
+				console.log(633)
+
+				oldX = [];
+				oldX = newX;
+				newX = [];
+				pie();
 			});
 
 	});
 }
+
+var newX=[],oldX=[];
+
 /****************************************************行业措施饼状图*************************************************************************/
 function  pie(admincode,name,wztype){
 	var nameVal;
