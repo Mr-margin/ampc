@@ -55,20 +55,27 @@ public class TestRedisRunnble<V> implements Runnable{
 		System.out.println("------1-----");
 		//redisService.leftPush("task-queue", "12345678911");
 		UngribTest.setId(UUID.randomUUID().toString());
-		UngribTest.setTime(new SimpleDateFormat("YYYY-MM-dd hh:mm:ss").format(new Date()));
+		String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+		UngribTest.setTime(format);
 		UngribTest.setType("ungrib.result");
 		Map<String,Object> map = new HashMap<String, Object>();
-		Map<String,Map<String, Object>> body = new HashMap<String, Map<String, Object>>();
-		map.put("pathdate",  new Date());
+		//Map<String,Object> body = new HashMap<String,Object>();
+		String format2 = new SimpleDateFormat("yyyyMMdd").format(new Date());
+		map.put("pathdate",  format2);
 		 int[] fnl ={1};
  		map.put("fnl", fnl);
- 		int[] gfs = {1,1,1,1,1,1};
+ 		
+ 		int[] gfs = {1,1,1,1,1,1,1,1,1};
  		map.put("gfs", gfs);
- 		body.put("body", map);
-		UngribTest.setBody(body);
+ 		String[] fnlerror = {"fnlerror"}; 
+ 		map.put("fnlDesc", fnlerror);
+ 		String[] gfserror = {"","","","","","gfs6error"};
+ 		map.put("gfsDesc", gfserror);
+ 		UngribTest.setBody(map);
 		JSONObject jsonObject = JSONObject.fromObject(UngribTest);
 		String json = jsonObject.toString();
-		redisqueue.in("test_task-queue_ungrib", json);
+		redisqueue.in("ungrib_test", json);
 		
 		//stringredistemplate.opsForList().leftPush("task-queue", "1111111111");
 		/*while(true){
