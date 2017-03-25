@@ -1101,6 +1101,7 @@ public class MissionAndScenarinoController {
 					tsd.setMissionId(missionId);
 					tsd.setUserId(userId);
 					tsd.setSpinup(spinUp);
+					tsd.setScenarinoStatus(5l);
 					a=tScenarinoDetailMapper.insertSelective(tsd);
 					TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectid(tsd);
 					sdid=tScenarinoDetail.getScenarinoId();
@@ -1340,7 +1341,82 @@ public class MissionAndScenarinoController {
 			 return AmpcResult.build(1000, "参数错误",null);	
 		}
 	}
+	/**
+	 * 根据userid查询任务
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("mission/find_All_mission")
+	public AmpcResult find_All_mission(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Long userId=Long.parseLong(data.get("userId").toString());//用户id
+			TMissionDetail tMissionDetail=new TMissionDetail();
+			tMissionDetail.setUserId(userId);
+			List<TMissionDetail> missionlist=tMissionDetailMapper.selectByEntity(tMissionDetail);
+			JSONArray arr=new JSONArray();
+			if(!missionlist.isEmpty()){
+			for(TMissionDetail mission:missionlist){
+				JSONObject obj=new JSONObject();
+				obj.put("missionId", mission.getMissionId());
+				obj.put("missionName", mission.getMissionName());
+				arr.add(obj);
+			}
+			}else{
+				
+				return AmpcResult.build(1000, "该用户没有创建任务",null);
+			}
+		return AmpcResult.build(0, "success",arr);	
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000, "参数错误",null);	
+		}
+		
+		
+	}
 	
+	/**
+	 * 根据任务id以及userid查询情景
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	
+	@RequestMapping("scenarino/find_All_scenarino")
+	public AmpcResult find_All_scenarino(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Long userId=Long.parseLong(data.get("userId").toString());//用户id
+			Long missionId=Long.parseLong(data.get("missionId").toString());
+			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
+			tScenarinoDetail.setUserId(userId);;
+			tScenarinoDetail.setMissionId(missionId);
+			List<TScenarinoDetail> tScenarinoDetaillist=tScenarinoDetailMapper.selectByEntity(tScenarinoDetail);
+			JSONArray arr=new JSONArray();
+			if(!tScenarinoDetaillist.isEmpty()){
+			for(TScenarinoDetail Scenarino:tScenarinoDetaillist){
+				JSONObject obj=new JSONObject();
+				obj.put("scenarinoId", Scenarino.getScenarinoId());
+				obj.put("scenarinoName", Scenarino.getScenarinoName());
+				obj.put("scenType", Scenarino.getScenType());
+				arr.add(obj);
+			}
+			}else{
+				
+				return AmpcResult.build(1000, "该任务没有创建情景",null);
+			}
+		return AmpcResult.build(0, "success",arr);	
+		}catch(Exception e){
+			e.printStackTrace();
+			return AmpcResult.build(1000, "参数错误",null);	
+		}
+		
+		
+	}
 	
 }
