@@ -180,6 +180,12 @@ $(window).bind('hashchange', function(e) {
   }else{
     $('.qyCon').addClass('disNone');
   }
+
+  if(e.target.location.hash == '#/csbj'){
+    $('.csCon').removeClass('disNone');
+  }else{
+    $('.csCon').addClass('disNone');
+  }
 });
 
 
