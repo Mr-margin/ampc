@@ -33,15 +33,15 @@ function getLocalTime(nS) {
 var stat = {cPointx : 106, cPointy : 35}, app = {}, dong = {};
 var dojoConfig = {
 		async: true,
-	    parseOnLoad: true,  
-	    packages: [{  
-	        name: 'tdlib',  
-	        location: "/js/tdlib"  
-	    }],
-	    paths: {
-	    	extras: location.pathname.replace(/\/[^/]+$/, '') + "/js/extras"  
-	    }
-	};
+		parseOnLoad: true,  
+		packages: [{  
+			name: 'tdlib',  
+			location: "/js/tdlib"  
+		}],
+		paths: {
+			extras: location.pathname.replace(/\/[^/]+$/, '') + "/js/extras"  
+		}
+};
 require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol",  "esri/symbols/PictureMarkerSymbol",
          "esri/renderers/ClassBreaksRenderer","esri/symbols/SimpleMarkerSymbol","esri/dijit/PopupTemplate", "esri/geometry/Point", "esri/geometry/Extent", 
          "esri/renderers/SimpleRenderer", "esri/graphic", "dojo/_base/Color", "dojo/dom-style",'dojo/query', "esri/tasks/FeatureSet", "esri/SpatialReference", 
@@ -311,6 +311,7 @@ var admincode = "";//当前统计图显示数据的行政区划
  */
 function optionclick(event){
 	admincode = event.graphic.attributes.ADMINCODE;
+	var name = event.graphic.attributes.NAME;
 	
 	//更新统计图
 	//alert(admincode);
