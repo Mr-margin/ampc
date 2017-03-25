@@ -8,15 +8,21 @@
  */
 package ampc.com.gistone.redisqueue;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import oracle.net.aso.a;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import ampc.com.gistone.database.inter.TUngribMapper;
 import ampc.com.gistone.database.model.TUngrib;
@@ -45,58 +51,70 @@ public class ToDataUngribUtil {
 	 * @date 2017年3月23日 下午2:50:22
 	 */
 	public void updateDB(String rpop) {
-		JSONObject jsonObject;
 		TUngrib tUngrib = new TUngrib();
-		try {
-			jsonObject = new JSONObject(rpop);
-			String id = (String) jsonObject.get("id");//消息的id
-			String time = (String) jsonObject.get("time");//消息的时间
-			String type = (String) jsonObject.get("type");//消息的类型
-			String pathdate = (String) jsonObject.get("pathdate");//起报时间
-			Date pathdateDate = DateUtil.StrtoDateYMD(pathdate);
-			String[] fnlDesc = (String[]) jsonObject.get("fnlDesc");//fnl错误描述
-			String[] gfsDesc = (String[]) jsonObject.get("gfsDesc");//gfs错误描述
-			int[] fnlArrray = (int[]) jsonObject.get("fnl");//fnl消息数组
-			Integer fnl = fnlArrray[0];
-			int[] gfsArrray = (int[]) jsonObject.get("gfs");//gfs消息数组
-			int length = gfsArrray.length;
-			//找到执行成功的之前的gfs并放入gfs数组中
-			int index = 0;//gfs成功的天数
-			int[] gfs = new int[length];//gfs实际的记录
-			//fnl等于1表示成功
-			if (fnl==1) {
-				for (int i = 0; i < length; i++) {
-					int a = gfsArrray[i];
-					if (a==0) {
-						index = i;
-						gfs[i] = a;
-					}
-				}
-			}else {
-				tUngrib.setErrorFnlMsg(fnlDesc[0]);//添加fnl的错误信息描述
+		JSONObject fromObject = JSONObject.fromObject(rpop);
+		String id = (String) fromObject.get("id");//消息的id
+		String time = (String) fromObject.get("time");//消息的时间
+		String type = (String) fromObject.get("type");//消息的类型
+		Map<String,Object> body =(Map<String,Object>) fromObject.getJSONObject("body");
+		String pathdate = (String) body.get("pathdate");//起报时间
+		Date pathdateDate = DateUtil.StrtoDateYMD(pathdate,"yyyyMMdd");
+		JSONArray fnldata  = (JSONArray) body.get("fnl");//fnl消息数组
+		Object[] fnlArrray = fnldata.toArray();
+		Integer fnlstatus =Integer.parseInt(fnlArrray[0].toString());
+		JSONArray gfsdata  = (JSONArray)body.get("gfs");//gfs消息数组
+		StringBuffer buffer = new StringBuffer();
+		//把fnl到gfs的全部状态拼接到一起
+		buffer.append(fnlstatus.toString());
+		Object[] gfsobObjects = gfsdata.toArray();
+		for (int i = 0; i < gfsobObjects.length; i++) {
+			buffer.append(gfsobObjects[i]);
+		}
+		String status1 = buffer.toString();
+		String status;
+		if (status1.contains("0")) {
+			status =status1.substring(0, status1.indexOf("0"));
+			status =status+"0";
+		}else {
+			status=status1;
+		}
+		System.out.println(status+"zhege shi status");
+		JSONArray fnlDescdata  = (JSONArray) body.get("fnlDesc");//fnl错误描述
+		Object[] fnlDescArrray = fnlDescdata.toArray();
+		String fnlerror = fnlDescArrray[0].toString();
+		JSONArray gfsDescdata  = (JSONArray) body.get("gfsDesc");//gfs错误描述
+		Object[] gfsDescArrray = gfsDescdata.toArray();
+		String gfserror = null;
+		for (int i = 0; i < gfsDescArrray.length; i++) {
+			String gfsString = gfsDescArrray[i].toString();
+			if(!StringUtils.isEmpty(gfsString)) {
+				 gfserror = gfsDescArrray[i].toString();//gfs错误的信息
 			}
-			tUngrib.setFnlStatus(fnl);
-			Long UngribId = tUngribMapper.selectUngrib(pathdateDate);
-			//调用方法给每个gfs的状态赋值
-			tUngrib = ToDataUngribUtil.updateGFSstatus(tUngrib,index);
-			//如果存在则执行更新操作，不存在则执行添加操作
-			if (UngribId!=null) {
-				tUngrib.setUngribId(UngribId);
-				//备注表示修改时间
-				tUngrib.setBeizhu(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(new Date()).toString());
-				//添加到数据库
-				tUngribMapper.updateByPrimaryKey(tUngrib);
-			}else {
-				//执行添加操作
-				tUngrib.setAddTime(new Date());
-				tUngrib.setPathDate(pathdateDate);
-				//添加到数据库
-				int i = tUngribMapper.insert(tUngrib);
-			}
-			
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		}
+		//String gfserror = gfsBuffer.toString().trim();
+		//查询该条ungrib是否存在，存在则修改，否则添加
+		tUngrib.setErrorFnlMsg(fnlerror);
+		tUngrib.setErrorGfsMsg(gfserror);
+		TUngrib tUngrib2 = new TUngrib();
+		tUngrib2 = tUngribMapper.selectUngrib(pathdateDate);
+		//System.out.println(UngribId+"查询出来的id");
+		//调用方法给每个gfs的状态赋值
+		tUngrib = ToDataUngribUtil.updateGFSstatus(tUngrib,status);
+		//如果存在则执行更新操作，不存在则执行添加操作
+		if (tUngrib2!=null) {
+			tUngrib.setAddTime(tUngrib2.getAddTime());
+			tUngrib.setPathDate(pathdateDate);
+			tUngrib.setUngribId(tUngrib2.getUngribId());
+			//备注表示修改时间
+			tUngrib.setUpdateTime(new Date());
+			//添加到数据库
+			tUngribMapper.updateByPrimaryKey(tUngrib);
+		}else {
+			//执行添加操作
+			tUngrib.setAddTime(new Date());
+			tUngrib.setPathDate(pathdateDate);
+			//添加到数据库
+			int i = tUngribMapper.insert(tUngrib);
 		}
 		
 	}
@@ -111,78 +129,34 @@ public class ToDataUngribUtil {
 	 * @author yanglei
 	 * @date 2017年3月23日 下午5:24:35
 	 */
-	private static TUngrib updateGFSstatus(TUngrib tUngrib, int index) {
-		
-		switch (index) {
-		case 1:
-			tUngrib.setGfs1Status(1);
-			break;
-		case 2:
-			tUngrib.setGfs1Status(1);
-			tUngrib.setGfs2Status(1);
-			break;
-		case 3:
-			tUngrib.setGfs1Status(1);
-			tUngrib.setGfs2Status(1);
-			tUngrib.setGfs3Status(1);
-			break;
-		case 4:
-			tUngrib.setGfs1Status(1);
-			tUngrib.setGfs2Status(1);
-			tUngrib.setGfs3Status(1);
-			tUngrib.setGfs4Status(1);
-			break;
-		case 5:
-			tUngrib.setGfs1Status(1);
-			tUngrib.setGfs2Status(1);
-			tUngrib.setGfs3Status(1);
-			tUngrib.setGfs4Status(1);
-			tUngrib.setGfs5Status(1);
-			break;
-		case 6:
-			tUngrib.setGfs1Status(1);
-			tUngrib.setGfs2Status(1);
-			tUngrib.setGfs3Status(1);
-			tUngrib.setGfs4Status(1);
-			tUngrib.setGfs5Status(1);
-			tUngrib.setGfs6Status(1);
-			break;
-		case 7:
-			tUngrib.setGfs1Status(1);
-			tUngrib.setGfs2Status(1);
-			tUngrib.setGfs3Status(1);
-			tUngrib.setGfs4Status(1);
-			tUngrib.setGfs5Status(1);
-			tUngrib.setGfs6Status(1);
-			tUngrib.setGfs7Status(1);
-			break;
-		case 8:
-			tUngrib.setGfs1Status(1);
-			tUngrib.setGfs2Status(1);
-			tUngrib.setGfs3Status(1);
-			tUngrib.setGfs4Status(1);
-			tUngrib.setGfs5Status(1);
-			tUngrib.setGfs6Status(1);
-			tUngrib.setGfs7Status(1);
-			tUngrib.setGfs8Status(1);
-			break;
-		case 9:
-			tUngrib.setGfs1Status(1);
-			tUngrib.setGfs2Status(1);
-			tUngrib.setGfs3Status(1);
-			tUngrib.setGfs4Status(1);
-			tUngrib.setGfs5Status(1);
-			tUngrib.setGfs6Status(1);
-			tUngrib.setGfs7Status(1);
-			tUngrib.setGfs8Status(1);
-			tUngrib.setGfs9Status(1);
-			break;
-
-		default:
-			break;
+	private static TUngrib updateGFSstatus(TUngrib tUngrib, String status) {
+		String[] fileds = new String[]{"FnlStatus","Gfs1Status","Gfs2Status","Gfs3Status","Gfs4Status","Gfs5Status","Gfs6Status","Gfs7Status","Gfs8Status","Gfs9Status"};
+		for(int h = 0; h < status.length(); h++){
+			if (status.charAt(h) == '1') {
+				try {
+					String methodName = "set"+ fileds[h];
+					Method method = tUngrib.getClass().getMethod(methodName,new Class[]{Integer.class});
+					method.invoke(tUngrib, 1);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}else {
+				try {
+					if (status.charAt(h) == '0'&&h<10) {
+						String methodName2 = "set"+ fileds[h];
+						Method method = tUngrib.getClass().getMethod(methodName2,new Class[]{Integer.class});
+						method.invoke(tUngrib, 0);
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+			}
 		}
 		return tUngrib;
 	}
+	
 	
 
 }
