@@ -342,16 +342,6 @@ function gis_paifang_show(){
 
 
 
-
-
-
-
-
-
-
-
-
-
 $(function(){
 
 	//初始化模态框显示
@@ -644,10 +634,9 @@ function bar () {
 	});
 }
 /****************************************************行业措施饼状图*************************************************************************/
-/****************************************************行业措施饼状图*************************************************************************/
 function  pie () {
-	var nameVal = [];
-	var valueVal = [];
+	var nameVal;
+	var valueVal ;
 	var paramsName = {"scenarinoId":"136","code":130123,"addressLevle":2,"stainType":"NOx","startDate":"2017-03-04","endDate":"2017-03-09","type":1};
 	ajaxPost('/echarts/get_pieInfo',paramsName).success(function(result){
 		console.log(result)
@@ -655,7 +644,6 @@ function  pie () {
 			nameVal = result.data[i].name;
 			valueVal = result.data[i].value;
 		}
-		
 	var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
 	var optionPie = {
 		    title : {
@@ -663,20 +651,21 @@ function  pie () {
 		        x:'center'
 		    },
 		    tooltip : {
-		        trigger: 'item'
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c} ({d}%)"
 		    },
 		    legend: {
 		        orient: 'vertical',
 		        left: 'left',
-		        data:nameVal
+		        data:[{name:nameVal}]
 		    },
 		    series : [
 		        {
-		            name: '数据信息',
+		            name: '数据比例',
 		            type: 'pie',
 		            radius : '55%',
 		            center: ['50%', '60%'],
-		            data:[valueVal,nameVal],
+		            data:[{value:valueVal,name:nameVal}],
 		            itemStyle: {
 		                emphasis: {
 		                    shadowBlur: 10,

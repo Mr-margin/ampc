@@ -412,17 +412,13 @@ function bar () {
 function  pie () {
 	var nameVal;
 	var valueVal ;
-	var nv_data=[];
 	var paramsName = {"scenarinoId":"136","code":130123,"addressLevle":2,"stainType":"NOx","startDate":"2017-03-04","endDate":"2017-03-09","type":1};
 	ajaxPost('/echarts/get_pieInfo',paramsName).success(function(result){
 		console.log(result)
 		for(i=0;i<result.data.length;i++){
 			nameVal = result.data[i].name;
 			valueVal = result.data[i].value;
-			nv_data.push(nameVal);
-			nv_data.push(valueVal);
 		}
-		console.log(nv_data);
 	var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
 	var optionPie = {
 		    title : {
@@ -436,15 +432,15 @@ function  pie () {
 		    legend: {
 		        orient: 'vertical',
 		        left: 'left',
-		        data:nv_data
+		        data:[{name:nameVal}]
 		    },
 		    series : [
 		        {
-		            name: '访问来源',
+		            name: '数据比例',
 		            type: 'pie',
 		            radius : '55%',
 		            center: ['50%', '60%'],
-		            data:nv_data,
+		            data:[{value:valueVal,name:nameVal}],
 		            itemStyle: {
 		                emphasis: {
 		                    shadowBlur: 10,
