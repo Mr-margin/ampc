@@ -82,4 +82,5 @@ public interface TScenarinoDetailMapper {
     int updateByPrimaryKeySelective(TScenarinoDetail record);
 
     int updateByPrimaryKey(TScenarinoDetail record);
+    List<TScenarinoDetail> selectByEntity(TScenarinoDetail record);
 }
