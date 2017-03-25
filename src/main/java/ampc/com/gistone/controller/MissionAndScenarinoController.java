@@ -1417,8 +1417,6 @@ public class MissionAndScenarinoController {
 			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误",null);	
 		}
-		
-		
 	}
 	
 }
