@@ -346,13 +346,14 @@ $(function(){
 
 	//初始化模态框显示
 	$(".createRwModal").modal();
-	var admincode = "130000";
+	//默认行政区域
+	var admincode1 = 130000;
 	var name1 = "河北省";
-	var wz1 ="NOx";
+	var wz1 = "NOx";
+	var level = "1";
 	//柱状图
-	bar(admincode,name1,wz1);
-	pie(admincode,name1,wz1);
-	var daminName;
+	bar(admincode1,name1,wz1,level);
+	pie(admincode1,name1,wz1,level);
 	
 	//行业 措施联动
 	$("#tradeId").change(function(){
@@ -380,7 +381,7 @@ $(function(){
     
     
     //构建列表展示table  
-    $("#table_listShow").bootstrapTable({
+/*    $("#table_listShow").bootstrapTable({
     	method:'POST',
     	url:'',
     	dataType: "json",
@@ -401,12 +402,12 @@ $(function(){
         onExpandRow: function (index, row, $detail) {
             InitSubTable(index, row, $detail);
         }
-    });
+    });*/
     
     
 });
 //初始化子表格(无线循环)
-InitSubTable = function (index, row, $detail) {
+/*InitSubTable = function (index, row, $detail) {
     var cur_table = $detail.html('<table></table>').find('table');
     $(cur_table).bootstrapTable({
         url: '',
@@ -492,7 +493,7 @@ InitSubTable = function (index, row, $detail) {
         },]
 
     });
-};
+};*/
 
 
 //下拉选框
@@ -505,10 +506,10 @@ function selectQj(value){
 	}
 }
 /****************************************************柱状图*************************************************************************/
-function bar (admincode,name,wztype) {
+function bar (admincode,name,wztype,gis_level) {
 	/*var wztype;
 	nameArea = name;*/
-	var paramsName = {"scenarinoId":"136","code":admincode,"addressLevle":3,"stainType":wztype};
+	var paramsName = {"scenarinoId":"136","code":admincode,"addressLevle":gis_level,"stainType":wztype};
 		ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
 		
 		var myPfChart = echarts.init(document.getElementById('pfDiv1'));
@@ -660,13 +661,13 @@ function bar (admincode,name,wztype) {
 var newX=[],oldX=[];
 
 /****************************************************行业措施饼状图*************************************************************************/
-function  pie(admincode,name,wztype){
+function  pie(admincode,name,wztype,gis_level){
 	var nameVal;
 	var valueVal ;
-	var paramsName = {"scenarinoId":"136","code":admincode,"addressLevle":1,"stainType":wztype,"startDate":"2017-03-04","endDate":"2017-03-09","type":1};
+	var paramsName = {"scenarinoId":"136","code":admincode,"addressLevle":gis_level,"stainType":wztype,"startDate":"2017-03-04","endDate":"2017-03-09","type":1};
 	ajaxPost('/echarts/get_pieInfo',paramsName).success(function(result){
-		console.log(result.length)
-			if(result == null){
+		console.log(result.data.length)
+			if(result != null){
 				for(i=0;i<result.data.length;i++){
 					nameVal = result.data[i].name;
 					valueVal = result.data[i].value;
@@ -686,6 +687,8 @@ function  pie(admincode,name,wztype){
 		        formatter: "{a} <br/>{b} : {c} ({d}%)"
 		    },
 		    legend: {
+		    	//图标不触动
+		    	selectedMode:false,
 		        orient: 'vertical',
 		        left: 'left',
 		        data:[{name:nameVal}]
