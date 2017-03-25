@@ -17,7 +17,7 @@ if(!qjMsg){
  */
 $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景管理</a>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span>');
 var gis_paramsName = {};//地图请求的参数，第一次加载地图时初始化，每次更改地图比例尺时修改codeLevel
-
+var gis_level = 0;//地图当前显示的层级
 /**
  * 时间戳转成日期格式
  * @param nS
@@ -223,6 +223,7 @@ function createLegend(level) {
   	}else if(level == 3){
   		title = "各县 "+$('#hz_wrw').val()+" 减排量（吨）";
   	}
+  	gis_level = level;
   	app.legend = new dong.Legend({
     	map : app.map,
     	respectCurrentMapScale : false,//当真正的图例会更新每个规模变化和只显示层和子层中可见当前地图比例尺。当假的,图例不更新在每个规模变化和所有层和子层将显示出来。默认值是正确的。
@@ -314,8 +315,8 @@ function optionclick(event){
 	
 	//更新统计图
 	var wztype = $('#hz_wrw').val();
-	bar(admincode,name,wztype);
-	pie(admincode,name,wztype);
+	bar(admincode,name,wztype,gis_level);
+	pie(admincode,name,wztype,gis_level);
 	
 }
 
@@ -662,7 +663,7 @@ var newX=[],oldX=[];
 function  pie(admincode,name,wztype){
 	var nameVal;
 	var valueVal ;
-	var paramsName = {"scenarinoId":"136","code":admincode,"addressLevle":2,"stainType":wztype,"startDate":"2017-03-04","endDate":"2017-03-09","type":1};
+	var paramsName = {"scenarinoId":"136","code":admincode,"addressLevle":1,"stainType":wztype,"startDate":"2017-03-04","endDate":"2017-03-09","type":1};
 	ajaxPost('/echarts/get_pieInfo',paramsName).success(function(result){
 		console.log(result.length)
 			if(result == null){
