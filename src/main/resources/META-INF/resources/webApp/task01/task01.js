@@ -655,21 +655,25 @@ function selectType(type) {
   rwTypeV = type;
   var startDate;
   var endDate;
-  var end;
+  var start,end;
   if (type == 'y') {
-    startDate = moment().subtract(2, 'w').format('YYYY-MM-DD');
-    endDate = moment().add(1, 'y').format('YYYY-MM-DD');
-    end = moment().add(2, 'd').format('YYYY-MM-DD');
+    startDate = moment().subtract(14, 'd').format('YYYY-MM-DD');
+    endDate = moment().add(365, 'd').format('YYYY-MM-DD');
+    start = moment().subtract(2, 'd').format('YYYY-MM-DD');
+    end = moment().add(14, 'd').format('YYYY-MM-DD');
     rwSelectType = '1';
     $('.rwTitle').html('创建预评估任务');
     rwEndDate = moment().add(2, 'd').format('YYYY-MM-DD');
+    initRwDate(startDate, endDate,start, end);
   } else if (type == 'h') {
     startDate = '2007-01-01';
     endDate = moment().subtract(2, 'd').format('YYYY-MM-DD');
+    start = moment().subtract(32, 'd').format('YYYY-MM-DD');
     end = moment().subtract(2, 'd').format('YYYY-MM-DD');
     rwSelectType = '2';
     $('.rwTitle').html('创建后评估任务');
     rwEndDate = moment().subtract(2, 'd').format('YYYY-MM-DD');
+    initRwDate(startDate, endDate,start, end);
   }
 
   $('.rwType').css('display', 'none');
@@ -679,7 +683,7 @@ function selectType(type) {
   $('.return_S_rw').css('display', 'inline-block');
   rwStartDate = moment().subtract(2, 'w').format('YYYY-MM-DD');
 
-  initRwDate(startDate, endDate, end);
+
 }
 
 /*创建情景选择类型*/
@@ -915,7 +919,7 @@ function createRw() {
 }
 
 /*初始化日期插件*/
-function initRwDate(s, e, end) {
+function initRwDate(s, e,start, end) {
   $('#rwDate').daterangepicker({
     singleDatePicker: false,  //显示单个日历
     timePicker: false,  //允许选择时间
@@ -936,7 +940,7 @@ function initRwDate(s, e, end) {
       ],
       firstDay: 1
     },
-    "startDate": moment().subtract(2, 'w'),
+    "startDate": start,
     "endDate": end,
     "opens": "right"
   }, function (start, end, label) {

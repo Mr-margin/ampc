@@ -929,6 +929,8 @@ function createEditArea() {
       obj.countyCodes = crArr;
       allData.push(obj);
       showTimeline(allData);
+    }else{
+      $('#'+$('#areaName').attr('data-id')).find('b').html(areaName);
     }
   })
 }
