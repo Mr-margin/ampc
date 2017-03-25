@@ -64,4 +64,6 @@ public interface TMissionDetailMapper {
      * @date 2017年3月18日 下午5:55:44
      */
     Long selectDomainid(Long missionId);
+    
+    List<TMissionDetail> selectByEntity(TMissionDetail record);
 }
