@@ -45,9 +45,9 @@ var dojoConfig = {
 require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol",  "esri/symbols/PictureMarkerSymbol",
          "esri/renderers/ClassBreaksRenderer","esri/symbols/SimpleMarkerSymbol","esri/dijit/PopupTemplate", "esri/geometry/Point", "esri/geometry/Extent", 
          "esri/renderers/SimpleRenderer", "esri/graphic", "dojo/_base/Color", "dojo/dom-style",'dojo/query', "esri/tasks/FeatureSet", "esri/SpatialReference", 
-         'extras/ClusterLayer',"tdlib/gaodeLayer", "dojo/dom-construct", "esri/dijit/Legend", "dojo/dom", "dojo/domReady!"], 
+         'extras/ClusterLayer',"tdlib/gaodeLayer", "dojo/dom-construct", "esri/dijit/Legend", "dojo/dom", "extras/Tip", "dojo/domReady!"], 
 	function(Map, FeatureLayer,GraphicsLayer, SimpleFillSymbol, SimpleLineSymbol,PictureMarkerSymbol, ClassBreaksRenderer, SimpleMarkerSymbol,PopupTemplate, Point,Extent,SimpleRenderer, Graphic,
-	        Color, domStyle,query, FeatureSet, SpatialReference,ClusterLayer, gaodeLayer, domConstruct, Legend, dom) {
+	        Color, domStyle,query, FeatureSet, SpatialReference,ClusterLayer, gaodeLayer, domConstruct, Legend, dom, Tip) {
 		dong.gaodeLayer = gaodeLayer;
 		dong.Graphic = Graphic;
 		dong.Point = Point;
@@ -68,6 +68,7 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 		dong.domConstruct = domConstruct;
 		dong.Legend = Legend;
 		dong.dom = dom;
+		dong.Tip = Tip;
 
 		app.map = new Map("map_showId", {
 			logo:false,
@@ -87,11 +88,13 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 		app.map.addLayer(app.baselayerList);//添加高德地图到map容器
 		app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
 		
-//		app.gLyr = new dong.GraphicsLayer({"id":"gLyr"});
-//		app.map.addLayer(app.gLyr);
+		app.gLyr = new dong.GraphicsLayer({"id":"gLyr"});
+		app.map.addLayer(app.gLyr);
 		
 		dojo.connect(app.map, "onZoomEnd", resizess);//缩放
 		app.outline = new dong.SimpleLineSymbol("solid", new dong.Color("#444"), 1);
+		
+		var template = "<strong>${NAME}:  ${DATAVALU}</strong>";
 });
 
 /**
@@ -144,6 +147,12 @@ function baizhu_jianpai(gis_paramsName){
 				id: "paifang"
 			});
 			
+	        app.tip = new dong.Tip({
+	          "format": template,
+	          "node": "legend",
+	          "res": res.data
+	        });
+			
 			//渲染器，根据行政区划code获取外部获取的面对应的数据
 			var br = new dong.ClassBreaksRenderer(null, function(graphic){
 				var state = graphic.attributes.ADMINCODE;
@@ -167,6 +176,9 @@ function baizhu_jianpai(gis_paramsName){
 			createLegend(gis_paramsName.codeLevel);
 			
             dojo.connect(app.paifang, "onClick", optionclick);//点击
+            dojo.connect(app.paifang, "onMouseOver", app.tip.showInfo);
+            dojo.connect(app.paifang, "onMouseOut", app.tip.hideInfo);
+            
 			if(gis_paramsName.codeLevel == 1){
 	            var query = new dong.query();
 				query.where = "ADMINCODE in ("+data_id.substring(0, data_id.length-1)+")";
@@ -303,6 +315,7 @@ function optionclick(event){
 	//更新统计图
 	//alert(admincode);
 	bar();
+	
 }
 
 
