@@ -94,7 +94,6 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 		dojo.connect(app.map, "onZoomEnd", resizess);//缩放
 		app.outline = new dong.SimpleLineSymbol("solid", new dong.Color("#444"), 1);
 		
-		var template = "<strong>${NAME}:  ${DATAVALU}</strong>";
 });
 
 /**
@@ -147,6 +146,7 @@ function baizhu_jianpai(gis_paramsName){
 				id: "paifang"
 			});
 			
+			var template = "<strong>${NAME}:  ${DATAVALU}</strong>";
 	        app.tip = new dong.Tip({
 	          "format": template,
 	          "node": "legend",
