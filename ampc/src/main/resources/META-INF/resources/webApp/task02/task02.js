@@ -222,11 +222,10 @@ function initialize() {
     ls.setItem('qjMsg', JSON.stringify(qjMsg));
     scenarinoType(qjMsg.scenarinoStatus)
   }
-
+  $('.qyCon').removeClass('disNone');
   $('.qyCon .nowRw span').html(qjMsg.rwName);
   $('.qyCon .nowQj span').html(qjMsg.qjName);
   $('.qyCon .seDate span').html(moment(qjMsg.qjStartDate).format('YYYY-MM-DD') + '至' + moment(qjMsg.qjEndDate).format('YYYY-MM-DD'));
-  $('.qyCon.disNone').removeClass('disNone');
 
   msg.content.rwId = qjMsg.rwId;
   msg.content.rwName = qjMsg.rwName;
