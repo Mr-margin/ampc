@@ -357,12 +357,21 @@ $(function(){
 	
 	//行业 措施联动
 	$("#tradeId").change(function(){
+		
+		var paramsName = {"scenarinoId":"136","code":admincode,"addressLevle":gis_level,"stainType":wztype};
+		ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
+			
+			pie(admincode,name,wztype,gis_level);
+		})
+		
 		console.log(356)
-		pie();
+		pie(admincode,name,gis_level);
 	});
 	$("#measureId").change(function(){
+		/*admincode = event.graphic.attributes.ADMINCODE;
+		var name = event.graphic.attributes.NAME;
 		console.log(360)
-		pie();
+		pie(admincode,name,gis_level);*/
 	});
 	
     //地图展示切换
@@ -652,7 +661,7 @@ function bar (admincode,name,wztype,gis_level) {
 				oldX = [];
 				oldX = newX;
 				newX = [];
-				pie();
+				pie(admincode,name,wztype,gis_level);
 			});
 
 	});
@@ -666,15 +675,15 @@ function  pie(admincode,name,wztype,gis_level){
 	var valueVal ;
 	var paramsName = {"scenarinoId":"136","code":admincode,"addressLevle":gis_level,"stainType":wztype,"startDate":"2017-03-04","endDate":"2017-03-09","type":1};
 	ajaxPost('/echarts/get_pieInfo',paramsName).success(function(result){
-		console.log(result.data.length)
-			if(result != null){
+		//console.log(result.data.length)
+			if(result.data.length != 0){
 				for(i=0;i<result.data.length;i++){
 					nameVal = result.data[i].name;
 					valueVal = result.data[i].value;
 				}
-			}/*else{
+			}else{
 				swal('饼图暂无数据', '', 'error')
-			}*/
+			}
 			
 	var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
 	var optionPie = {
