@@ -304,7 +304,6 @@ function resizess(event){
 }
 
 var admincode = "";//当前统计图显示数据的行政区划
-
 /**
  * 点击地图事件，调用统计图方法
  * @param event
@@ -319,7 +318,6 @@ function optionclick(event){
 	pie(admincode,name,wztype);
 	
 }
-
 
 /**
  * 污染物选择，更新地图
@@ -347,9 +345,13 @@ $(function(){
 
 	//初始化模态框显示
 	$(".createRwModal").modal();
+	var admincode = "130000";
+	var name1 = "河北省";
+	var wz1 ="NOx";
 	//柱状图
-	bar();
-	pie();
+	bar(admincode,name1,wz1);
+	pie(admincode,name1,wz1);
+	var daminName;
 	
 	//行业 措施联动
 	$("#tradeId").change(function(){
