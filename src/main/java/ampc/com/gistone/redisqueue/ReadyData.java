@@ -157,6 +157,7 @@ public class ReadyData {
 			}
 		}*/
 		
+		
 	}
 	
 	/**
@@ -220,15 +221,15 @@ public class ReadyData {
 		String type = "model.start";//执行模式
 		queueData.setType(type);
 		//设置消息里面的的time和type的值
-		queueData = ReadyData.getHeadParameter();
+		queueData = getHeadParameter();
 		//设置消息里面body节点的主体消息
-		bodyData = ReadyData.getbodyDataHead(body);
+		bodyData = getbodyDataHead(body);
 		Integer scenarinoType =  (Integer) body.get("scenarinoType");//情景类型
 		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
 		Long missionId = (Long) body.get("missionId");//任务id
 		Long userId = (Long) body.get("userId");
 		//准备commom数据
-		Map<String, Object> map =ReadyData.getcommonMSG(scenarinoId,"fnl",null,scenarinoType,"true");
+		Map<String, Object> map = getcommonMSG(scenarinoId,"fnl",null,scenarinoType,"true");
 		//spinup
 		Long DBspinup = (Long) map.get("spinup");
 		//准备wrf数据
