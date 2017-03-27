@@ -118,7 +118,8 @@ function shoe_data_start(evn){
 	//默认行政区域
 	var admincode1 = 130000;
 	var name1 = "河北省";
-	var wz1 = "NOx";
+	var wz1 = "SO2";
+	//市区层级
 	var level = "1";
 	//柱状图
 	bar(admincode1,name1,wz1,level);
@@ -503,7 +504,7 @@ $(function(){
 
 /****************************************************柱状图*************************************************************************/
 function bar (admincode,name,wztype,gis_level) {
-	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":admincode,"addressLevle":gis_level,"stainType":wztype};
+	var paramsName = {"scenarinoId":233,"code":admincode,"addressLevle":gis_level,"stainType":wztype};
 		ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
 			console.log(res)
 			
@@ -511,7 +512,7 @@ function bar (admincode,name,wztype,gis_level) {
 		
 		var option = {
 			    title : {
-			        text: name +'-'+wztype+'-'+'减排图表',
+			        text: name +'-'+wztype+'-'+'减排图',
 			    },
 			    tooltip : {
 			        trigger: 'axis',
@@ -557,7 +558,7 @@ function bar (admincode,name,wztype,gis_level) {
 			            axisLabel : {
 			            	formatter: function(category)
 			            	{
-											newX.push(category.substring(0,10));
+								newX.push(category.substring(0,10));
 			            		return category.substring(0,10);          //截取字符串
 			            	}
 			            },
@@ -618,6 +619,11 @@ function bar (admincode,name,wztype,gis_level) {
 			                    }
 			                }
 			            },
+			            markLine : {
+                    		data : [
+                    		        {type : 'average', name: '平均值'}
+                    		]
+                    	},
 			            data:res.data.jplResult
 			        }
 			    ]
@@ -662,8 +668,8 @@ var newX=[],oldX=[];
 /****************************************************行业措施饼状图*************************************************************************/
 function  pie(admincode,name,wztype,gis_level,pietype){
 	var nameVal;
-	var valueVal ;
-	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":admincode,"addressLevle":gis_level,"stainType":wztype,"startDate":"2017-03-04","endDate":"2017-03-09","type":pietype};
+	var valueVal;
+	var paramsName = {"scenarinoId":233,"code":admincode,"addressLevle":gis_level,"stainType":wztype,"startDate":"2017-03-24","endDate":"2017-03-29","type":pietype};
 	ajaxPost('/echarts/get_pieInfo',paramsName).success(function(result){
 		//console.log(result.data.length)
 			if(result.data.length != 0){

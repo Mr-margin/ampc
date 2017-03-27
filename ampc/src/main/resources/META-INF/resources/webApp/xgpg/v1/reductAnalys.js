@@ -266,6 +266,11 @@ function getRwName() {
 	}
 //下拉选框
 function selectQj(value){
+	/*var paramsName = {"userId": 1};
+	ajaxPost('/mission/find_All_mission',paramsName).success(function(res){
+	console.log(res)
+	
+	})*/
 	if (value == 'j1' || value == 'j2') {
 		$("#tableId").css('display','block');
 		
@@ -275,7 +280,7 @@ function selectQj(value){
 }
 /****************************************************柱状图*************************************************************************/
 function bar () {
-	var paramsName = {"scenarinoId":"136","code":130123,"addressLevle":3,"stainType":"NOx"};
+	var paramsName = {"scenarinoId":233,"code":130123,"addressLevle":3,"stainType":"SO2"};
 		ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
 		
 		var myPfChart = echarts.init(document.getElementById('pfDiv1'));
@@ -411,8 +416,8 @@ function bar () {
 /****************************************************行业措施饼状图*************************************************************************/
 function  pie () {
 	var nameVal;
-	var valueVal ;
-	var paramsName = {"scenarinoId":"136","code":130123,"addressLevle":2,"stainType":"NOx","startDate":"2017-03-04","endDate":"2017-03-09","type":1};
+	var valueVal;
+	var paramsName = {"scenarinoId":233,"code":130000,"addressLevle":1,"stainType":"SO2","startDate":"2017-03-04","endDate":"2017-03-29","type":1};
 	ajaxPost('/echarts/get_pieInfo',paramsName).success(function(result){
 		console.log(result)
 		for(i=0;i<result.data.length;i++){
@@ -422,7 +427,7 @@ function  pie () {
 	var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
 	var optionPie = {
 		    title : {
-		        text: '行业措施饼状图',
+		        text: '饼状图',
 		        x:'center'
 		    },
 		    tooltip : {
@@ -468,23 +473,14 @@ function exchangeModal(){
 function initQdListTable() {
 	  $('#testTableId').bootstrapTable({
 	    method: 'GET',
-	      url: 'webApp/xgpg/v1/qjdata.json',
-	      //url:'webApp/yqd/qdList/qd.json',
-//	      url : BackstageIP+'/mission/get_mission_list',
-//	      url : '/ampc/mission/get_mission_list',
+	    //url：/mission/find_haveScenarino_mission,
+	    url: 'webApp/xgpg/v1/qjdata.json',
 	    dataType: "json",
 	    contentType: "application/json",
-	    //toobar: '#',
 	    iconSize: "outline",
 	    search: false,
-	    //searchAlign: 'right',
-	    //height:llqHeight-200,
 	    maintainSelected: true,
 	    clickToSelect: false,
-	    //pagination: true,
-	   // pageSize: 20,
-	    //pageNumber: 1,
-	    //pageList: [20],
 	    striped: true,
 	    sidePagination: "server",
 	    rowStyle: function (row, index) {

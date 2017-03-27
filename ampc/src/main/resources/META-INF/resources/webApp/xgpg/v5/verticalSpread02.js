@@ -152,6 +152,8 @@ function czBar(){
 		                formatter: '{value}'
 		            },
 		            boundaryGap : false,
+		            //min:50,
+		            //max:3000
 		            data :['0','50','100','200','300','400','500','700','1000','1500','2000','3000']
 		        }
 		    ],
