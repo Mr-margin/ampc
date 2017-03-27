@@ -21,7 +21,8 @@
  
  <!-- 根据code查询所有的县级 -->
  <select id="selectByCode" resultType="java.lang.Long" parameterType="java.lang.String" >
-    select ADDRESS_CODE from T_ADDRESS where ADDRESS_CODE like #{_parameter,jdbcType=VARCHAR} and ADDRESS_LEVEL=3
+    select ADDRESS_CODE from T_ADDRESS where ADDRESS_CODE like #{_parameter,jdbcType=VARCHAR} 
+      and (ADDRESS_LEVEL=3 or ADDRESS_LEVEL=2)
       Order by ADDRESS_CODE
   </select>
  
