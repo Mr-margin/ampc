@@ -37,7 +37,7 @@
  		<if test="scenarinoId != null" >
           and SCENARINO_ID=#{scenarinoId,jdbcType=OTHER}
        </if>
-       order by Emission_Date
+       order by Emission_Date,code
   </select>
   
   
