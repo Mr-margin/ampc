@@ -61,11 +61,11 @@ public class PlanAndMeasureController {
 	//公用的Jackson解析对象
 	private ObjectMapper mapper=new ObjectMapper();
 	// 措施汇总调用减排计算的接口Url
-	private static final String JPJSURL = "http://192.168.2.247:8089/calc/submit/subSector";
+	private static final String JPJSURL = "http://192.168.1.128:8089/calc/submit/subSector";
 	//区域调用减排计算的接口Url
-	private String AreaJPURL="http://192.168.2.247:8089/calc/submit/analysis?jobId=";
+	private String AreaJPURL="http://192.168.1.128:8089/calc/submit/analysis?jobId=";
 	//区域调用减排状态查看的接口Url
-	private String AreaStatusJPURL="http://192.168.2.247:8089/calc/status";
+	private String AreaStatusJPURL="http://192.168.1.128:8089/calc/status";
 	// 情景映射
 	@Autowired
 	private TScenarinoDetailMapper tScenarinoDetailMapper;
