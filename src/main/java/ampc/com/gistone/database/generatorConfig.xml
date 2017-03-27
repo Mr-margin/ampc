@@ -49,7 +49,7 @@
     <table tableName="T_MEASURE_TEMPLATE" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
   	-->
   	<!-- <table tableName="T_MEASURE_EXCEL" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>  -->
-  	<!-- <table tableName="T_UNGRIB" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> --> 
+  	 <table tableName="T_UNGRIB" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
   	<!-- <table tableName="T_TASKS_STATUS" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>  -->
   	<!-- <table tableName="T_REAL_FORECAST" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> --> 
   	<!-- <table tableName="T_PLAN_MEASURE" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>  -->
@@ -58,6 +58,6 @@
   	<!-- <table tableName="T_MEASURE_SECTOR_EXCEL" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> 
   	<table tableName="T_MEASURE_EXCEL" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>  -->
   	<!-- <table tableName="T_MEASURE_SECTOR_EXCEL" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> --> 
-  	<table tableName="T_SCENARINO_DETAIL" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> 
+  	<!-- <table tableName="T_SCENARINO_DETAIL" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>  -->
   </context>
 </generatorConfiguration>
