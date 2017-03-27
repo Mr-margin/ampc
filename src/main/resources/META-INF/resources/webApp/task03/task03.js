@@ -581,7 +581,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 				//添加区域4的结果表格
 				console.log(JSON.stringify({"bigIndex":qjMsg.esCouplingId,"smallIndex":sectorsName,"summary":sc_val.summary,"regionIds":Codes}));
 				ajaxPost_w(jianpaiUrl+'/search/summarySource',{"bigIndex":qjMsg.esCouplingId,"smallIndex":sectorsName,"summary":sc_val.summary,"regionIds":Codes}).success(function(da){
-//					console.log(JSON.stringify(da));
+					console.log(JSON.stringify(da));
 					if(da.status == 'success'){
 						var zz = {"f1": "汇总", "f2" : "0/"+da.data.P[0].count}, pp = {"f1": "剩余点源", "f2" : da.data.P[0].count}, ss = {"f1": "面源", "f2" : "0"};
 						$.each(res.data.measureColumn, function(i, vol) {
