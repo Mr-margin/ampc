@@ -13,6 +13,19 @@ import ampc.com.gistone.database.model.TScenarinoDetail;
  * @date 2017年2月25日
  */
 public interface TScenarinoDetailMapper {
+
+	/**
+	 * @Description: 根据起报时间 用户id 情景类型  查找该条情景记录 用来确定实时预报消息里面的firsttime的值
+	 * @param zoreDate
+	 * @param userId
+	 * @param scenarinoType
+	 * @return   
+	 * TScenarinoDetail  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月25日 下午4:53:34
+	 */
+	TScenarinoDetail selectFirstTime(Map map);
 	
 	 /**
      * 查询所有任务列表和情景列表 可根据条件名模糊查询
@@ -82,5 +95,7 @@ public interface TScenarinoDetailMapper {
     int updateByPrimaryKeySelective(TScenarinoDetail record);
 
     int updateByPrimaryKey(TScenarinoDetail record);
+
+
     List<TScenarinoDetail> selectByEntity(TScenarinoDetail record);
 }
