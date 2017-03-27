@@ -35,7 +35,7 @@ public class DateUtil {
 	
 	 /**
 	  * 
-	  * @Description: TODO
+	  * @Description: 字符串转化为时间 
 	  * @param str
 	  * @param pattern
 	  * @return   
@@ -65,8 +65,8 @@ public class DateUtil {
 	 * @author yanglei
 	 * @date 2017年3月20日 下午7:51:09
 	 */
-	public static String DATEtoString(Date date) {
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	public static String DATEtoString(Date date,String pattern) {
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
 		String str = format.format(date);
 		return str;
 	}
@@ -76,7 +76,7 @@ public class DateUtil {
 	 * @param oldlastfnlDate
 	 * @param todayDate
 	 * @return   
-	 * boolean  比较两个时间的大小，当第一个时间大于第二个时间的时候返回false 当第一个时间小于第二个时间的时候返回true 等于的时候返回0
+	 * boolean  比较两个时间的大小，当第一个时间大于第二个时间的时候返回false 当第一个时间小于第二个时间的时候返回true 等于的时候返回true
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年3月20日 下午4:52:12
@@ -85,12 +85,13 @@ public class DateUtil {
 		boolean flag ;
 		int i = oldlastfnlDate.compareTo(todayDate);
 		if (i<0) {
-			flag = false;
-		}else if(i==0){
-			
+			flag = true;
+		}else {
+		flag=false;
+		
 		}
 		
-		return false;
+		return flag;
 	}
 	
 	/**
@@ -98,16 +99,16 @@ public class DateUtil {
 	 * @Description: TODO
 	 * @param date
 	 * @return   
-	 * Date  当前日期减一天
+	 * Date  当前日期的变化增减 返回时间
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年3月20日 下午4:35:27
 	 */
 	
-	public static Date reduceOneDay(Date date) {
+	public static Date ChangeDay(Date date,int i) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
-		cal.add(Calendar.DATE, -1);
+		cal.add(Calendar.DATE, i);
 		return cal.getTime();
 	}
 	/**
@@ -115,17 +116,17 @@ public class DateUtil {
 	 * @Description: TODO
 	 * @param date
 	 * @return   
-	 * String  时间在现有的时间上减一天
+	 * String  时间在现有的时间上增减 返回字符串
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年3月20日 下午4:01:57
 	 */
 	
-	public static String reduceOnePathDate(Date date) {
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	public static String changeDate(Date date, String pattern,int i) {
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
-		cal.add(Calendar.DATE, -1);
+		cal.add(Calendar.DATE, i);
 		String newdate = format.format(cal.getTime());
 		return newdate;
 	}
@@ -177,5 +178,27 @@ public class DateUtil {
 			e.printStackTrace();
 		}
 		return date;
+	}
+
+	/**
+	 * @Description: 将时间格式化并返回时间
+	 * @param date
+	 * @param string
+	 * @return   
+	 * Date  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月25日 下午12:02:37
+	 */
+	public static Date DateToDate(Date date, String pattern) {
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		String str = format.format(date);
+		Date newdate = null;
+		try {
+			newdate = format.parse(str);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return newdate;
 	}
 }
