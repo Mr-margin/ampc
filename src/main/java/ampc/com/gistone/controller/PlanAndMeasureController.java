@@ -792,7 +792,6 @@ public class PlanAndMeasureController {
 			}
 			// 预案措施中的子措施Json串、
 			String measureContent = data.get("measureContent").toString();
-			System.out.println(measureContent);
 			TPlanMeasureWithBLOBs tPlanMeasure = new TPlanMeasureWithBLOBs();
 			tPlanMeasure.setMeasureId(measureId);
 			tPlanMeasure.setPlanId(planId);
