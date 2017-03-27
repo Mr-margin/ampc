@@ -353,8 +353,7 @@ public class EchartsController {
 				codes.add(Long.parseLong(code));
 			}else{
 				//需要查询对应的县级编码
-				codes=tAddressMapper.selectByCode(code);	
-				System.out.println(codes);
+				codes=tAddressMapper.selectByCode(code);
 			}
 			//添加code条件
 			mapQuery.put("codes", codes);
