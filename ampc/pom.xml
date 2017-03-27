@@ -201,17 +201,19 @@
 	<plugins>
 		<plugin>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-maven-plugin</artifactId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>1.2.2.RELEASE</version>
 			<configuration>
-				<fork>true</fork>
+		  		<fork>true</fork>
 			</configuration>
-			<dependencies>
+        	<dependencies>
 	            <dependency>
 	                <groupId>org.springframework</groupId>
 	                <artifactId>springloaded</artifactId>
+	                <version>1.2.3.RELEASE</version>
 	            </dependency>
         	</dependencies>
-		</plugin>
+	  	</plugin>
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-compiler-plugin</artifactId>
