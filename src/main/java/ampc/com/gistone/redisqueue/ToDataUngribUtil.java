@@ -97,7 +97,7 @@ public class ToDataUngribUtil {
 		tUngrib.setErrorFnlMsg(fnlerror);
 		tUngrib.setErrorGfsMsg(gfserror);
 		TUngrib tUngrib2 = new TUngrib();
-		System.out.println("我要通过时间去查询是否存在ungrib");
+		/*System.out.println("我要通过时间去查询是否存在ungrib");
 		tUngrib2 = tUngribMapper.selectUngrib(pathdateDate);
 		//System.out.println(UngribId+"查询出来的id");
 		System.out.println("我要给fnl和gfs赋值了");
@@ -120,7 +120,7 @@ public class ToDataUngribUtil {
 			tUngrib.setPathDate(pathdateDate);
 			//添加到数据库
 			int i = tUngribMapper.insert(tUngrib);
-		}
+		}*/
 		
 	}
 
