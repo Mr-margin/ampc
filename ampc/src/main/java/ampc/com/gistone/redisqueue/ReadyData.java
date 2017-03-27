@@ -40,8 +40,6 @@ import ampc.com.gistone.util.DateUtil;
  */
 @Component
 public class ReadyData {
-	@Autowired
-	private ReadyData ReadyData;
 	//任务详情映射
 	@Autowired
 	private TMissionDetailMapper tMissionDetailMapper;
@@ -172,15 +170,15 @@ public class ReadyData {
 		String type = "model.start";//执行模式
 		queueData.setType(type);
 		//设置消息里面的的time和type的值
-		queueData = ReadyData.getHeadParameter();
+		queueData = getHeadParameter();
 		//设置消息里面body节点的主体消息
-		bodyData = ReadyData.getbodyDataHead(body);
+		bodyData = getbodyDataHead(body);
 		Integer scenarinoType =  (Integer) body.get("scenarinoType");//情景类型
 		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
 		Long missionId = (Long) body.get("missionId");//任务id
 		Long userId = (Long) body.get("userId");
 		//准备commom数据
-		Map<String, Object> map =ReadyData.getcommonMSG(scenarinoId,datatype,time,scenarinoType,firsttime);
+		Map<String, Object> map = getcommonMSG(scenarinoId,datatype,time,scenarinoType,firsttime);
 		commonData = (QueueDataCommon) map.get("commonData");
 		//spinup
 		Long DBspinup = (Long) map.get("spinup");
@@ -299,7 +297,7 @@ public class ReadyData {
 		TMissionDetail mission = tMissionDetailMapper.selectByPrimaryKey(missionId);
 		String missiontype = mission.getMissionStatus().toString();
 		//准备modeltype数据
-		String modeltype = ReadyData.getmodelType(missiontype,scenarinoType);
+		String modeltype = getmodelType(missiontype,scenarinoType);
 		bodyData.setModelType(modeltype);
 		//获取domainId
 		Long domainId = mission.getMissionDomainId();
