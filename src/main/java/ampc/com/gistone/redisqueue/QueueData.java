@@ -52,6 +52,7 @@ public class QueueData {
 	public void setType(String type) {
 		this.type = type;
 	}
+	
 	public Map<String, Object> getBody() {
 		return body;
 	}

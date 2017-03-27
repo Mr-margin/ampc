@@ -45,8 +45,11 @@ public class AcceptMessageQueue implements Runnable{
 	
 	@Override
 	public void run() {
+		String queueKeys ;
+		
 		String rpop = redisUtilServer.rpop("ungrib_test");
 		System.out.println(rpop);
+		
 		toDataUngribUtil.updateDB(rpop);
 		//JSONArray array = JSONArray.fromObject(rpop);
 			/*JSONObject jsonObject = new JSONObject(rpop);
@@ -71,6 +74,7 @@ public class AcceptMessageQueue implements Runnable{
 		}
 		
 		*/
+		
 	}
 
 }

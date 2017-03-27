@@ -94,9 +94,9 @@ public class ReadyData {
 		//获取最新的ungrib 
 		//Date pathdate = tUngribMapper.getlastungrib();
 		Long ungribId = (long) 1;
-		tUngribMapper.deleteById(2l);
+		tUngribMapper.deleteByPrimaryKey(2l);
 		
-		TUngrib tUngrib = tUngribMapper.getlastungrib();
+		/*TUngrib tUngrib = tUngribMapper.getlastungrib();
 		System.out.println("aaaaaaa");
 		Date pathdate = tUngrib.getPathDate();
 		//最新的pathdate（年月日）
@@ -155,7 +155,7 @@ public class ReadyData {
 					sendQueueData.toJson(queueData);
 				}
 			}
-		}
+		}*/
 		
 	}
 	
@@ -200,11 +200,55 @@ public class ReadyData {
 		bodyData.setCommon(commonData);
 		bodyData.setWrf(wrfData);
 		bodyData.setCmaq(cmaqData);
-		queueData.setBody(body);
+		Map<String,Object> hashMap = new HashMap<String, Object>();
+		hashMap.put("body", bodyData);
+		queueData.setBody(hashMap);
+		//queueData.setBody(bodyData);
 		return queueData;
 		
 	}
-
+	/**
+	 * @Description: 接口调用该方法   准备基准情景的参数数据  
+	 * @param body   
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月27日 上午10:23:18
+	 */
+	public void readyBaseData(HashMap<String, Object> body) {
+		System.out.println("基准情景");
+		String type = "model.start";//执行模式
+		queueData.setType(type);
+		//设置消息里面的的time和type的值
+		queueData = ReadyData.getHeadParameter();
+		//设置消息里面body节点的主体消息
+		bodyData = ReadyData.getbodyDataHead(body);
+		Integer scenarinoType =  (Integer) body.get("scenarinoType");//情景类型
+		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
+		Long missionId = (Long) body.get("missionId");//任务id
+		Long userId = (Long) body.get("userId");
+		//准备commom数据
+		Map<String, Object> map =ReadyData.getcommonMSG(scenarinoId,"fnl",null,scenarinoType,"true");
+		//spinup
+		Long DBspinup = (Long) map.get("spinup");
+		//准备wrf数据
+		//设置wrf的spinup
+		Long spinup = DBspinup+5;
+		wrfData.setSpinup(spinup.toString());
+		//String lastungrib = tUngribMapper.getlastungrib();
+		
+		//wrfData.setLastungrib(lastungrib);
+		//设置cmaq的spinup
+		cmaqData.setSpinup(DBspinup.toString());
+		bodyData.setCommon(commonData);
+		bodyData.setWrf(wrfData);
+		bodyData.setCmaq(cmaqData);
+		Map<String,Object> hashMap = new HashMap<String, Object>();
+		hashMap.put("body", bodyData);
+		queueData.setBody(hashMap);
+		sendQueueData.toJson(queueData);
+		
+	}
 	/**
 	 * @Description: 获取ic的值
 	 * 实时预报的情况下 第一次的时候ic为空 其他情况来自基础情景
@@ -339,6 +383,8 @@ public class ReadyData {
 			Date pathDate = scenarinoDetailMSG.getPathDate();
 			//设置气象数据类型
 			commonData.setDatatype(datatype);
+			//设置firsttime
+			commonData.setFirsttime(firsttime);
 			String pathdate = DateUtil.DATEtoString(pathDate,"yyyyMMdd");
 			String starttime = DateUtil.DATEtoString(startDate,"yyyyMMdd");
 			String endtime = DateUtil.DATEtoString(endDate,"yyyyMMdd");
@@ -348,6 +394,8 @@ public class ReadyData {
 			map.put("end", endtime);
 			//设置时间
 			commonData.setTime(map);
+			hashmap.put("commonData", commonData);
+			hashmap.put("spinup", scenarinoDetailMSG.getSpinup());
 		}
 		
 		return hashmap;
@@ -469,6 +517,8 @@ public class ReadyData {
 		String getResult=ClientUtil.doPost(url,sourceid);
 		return null;
 	}
+
+	
 	
 
 }
