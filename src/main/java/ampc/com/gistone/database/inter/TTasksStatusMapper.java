@@ -25,4 +25,15 @@ public interface TTasksStatusMapper {
 	 * @date 2017年3月22日 下午3:46:23
 	 */
 	Long selectTasksId(Long tasksScenarinoId);
+
+	/**
+	 * @Description: 获取该情景的时间段
+	 * @param scenarinoId
+	 * @return   
+	 * Long  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月25日 上午10:57:29
+	 */
+	TTasksStatus getRangeTime(Long tasksScenarinoId);
 }
