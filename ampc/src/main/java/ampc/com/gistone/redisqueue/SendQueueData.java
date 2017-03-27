@@ -39,11 +39,10 @@ public class SendQueueData {
 	
 	
 	
-	public void sendData(HashMap<String, Object> body,Long scenarinoId) {
+	public void sendData(String json) {
 		System.out.println("1230000");
-		String id =queueDatabase.getId();
-		System.out.println(id);
-		redisqueue.leftPush("id",id);
+		redisqueue.leftPush("Base_Situation",json);
+		System.out.println("发送完毕");
 		
 	}
 	/**
@@ -57,7 +56,9 @@ public class SendQueueData {
 	public void toJson(QueueData queueData) {
 		JSONObject jsonObject = JSONObject.fromObject(queueData);
 		String json = jsonObject.toString();
-		System.out.println(json+"zhegeshi ceshi de jieguo ");
+		System.out.println(json+"这是发送的数据包 ");
+		sendData(json);
+		
 	}
 
 
