@@ -421,7 +421,13 @@ public class EMissionController {
 		
 	}
 	
-	
+	/**
+	 * 查询减排结果
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping("find_reduceEmission")
 	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
 	public AmpcResult find_reduceEmission(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
@@ -429,42 +435,49 @@ public class EMissionController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			TEmissionDetail tEmission=new TEmissionDetail();
-			String pollutant=data.get("pollutant").toString();	
-			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());
-			String level=data.get("codeLevel").toString();	
+			String pollutant=data.get("pollutant").toString();	//污染物
+			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());//情景id
+			String level=data.get("codeLevel").toString();	//code级别
 			tEmission.setScenarunoId(scenarinoId);
 			tEmission.setEmissionType("2");
+			//查询情景下的所有减排结果
 			List<TEmissionDetail> tEmissions=tEmissionDetailMapper.selectByEntity(tEmission);
+			//查询情景主要为了查询共有措施以及行业
 			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
 			//JSONArray industryarr=JSONArray.fromObject(tScenarinoDetail.getExpand1());
-			
+			//将所有日期不重复加入集合
 			List<Date> datelist=new ArrayList<Date>();
 			for(TEmissionDetail em:tEmissions){
 				if(!datelist.contains(em.getEmissionDate())){
 					datelist.add(em.getEmissionDate());
 				}else{
 					continue;
-				}
-				
+				}	
 			}
 			Map<String,Object> objss=new HashMap();
+			//遍历日期集合
 			for(Date dates:datelist){
+				//将当前日期转化为String
 			String datss=dates.toString();
 			JSONArray arry=new JSONArray();
+			//遍历查询的减排结果
 			for(TEmissionDetail emission:tEmissions){
 				String emtime=emission.getEmissionDate().toString();
 				Map<String,BigDecimal> map=new HashMap();
-				
+				//判断当前遍历的时间与所遍历的减排结果日期是否相同，相同的话继续执行不相同减排结果进行下一循环
 				if(emtime.equals(datss)){
 			
 				String detail=emission.getEmissionDetails();
 				JSONObject obj=JSONObject.fromObject(detail);//行业减排结果
 				Map<String,Object> details=(Map)obj;
+				//遍历减排结果所有的key也就是行业
 				for(String industry:details.keySet()){
 					//if(industryarr.contains(industry)){
+					//根据key行业得出各物质减排结果的map集合
 					Map num=(Map) details.get(industry);
 					JSONObject jasonObject = JSONObject.fromObject(num);
 					Map<String,Object> nummap= (Map)jasonObject;
+					//查看需求是什么级别（省？市？区？）根据级别保存对应级别数据
 				if(level.equals("1")){
 					String pcode=emission.getCode().substring(0, 2)+"0000";
 					if(map.keySet().contains(pcode)){
@@ -514,11 +527,13 @@ public class EMissionController {
 			for(String datese:objss.keySet()){
 				//获取相对时间的数组
 				JSONArray num=JSONArray.fromObject(objss.get(datese).toString());
-
+				//遍历数组将不同日期的相同污染物相加
 				for(Object noes:num){
+					//遍历每个日期的结果
 					Map mapse=(Map)	noes;
 					JSONObject jasonObject = JSONObject.fromObject(mapse);
 					Map<String,Object> numma= (Map)jasonObject;
+					//将每个日期的结果进行相加
 					for(String nums:numma.keySet()){
 						if(refmap.keySet().contains(nums)){
 							BigDecimal old=new BigDecimal(refmap.get(nums).toString());
