@@ -41,7 +41,14 @@
     SPINUP, RATIO_START_DATE, RATIO_END_DATE, RANGE_DAY, EXPAND1, EXPAND2, EXPAND3, EXPAND4, EXPAND5,
     EXPAND6, EXPAND7, EXPAND8, EXPAND9, EXPAND10
   </sql>
+  <!-- 根据起报时间 用户id 情景类型  查找该条情景记录 用来确定实时预报消息里面的firsttime的值  -->
+  <select id="selectFirstTime" resultMap="BaseResultMap" parameterType="hashMap">
+  select 
+  <include refid="Base_Column_List" />
+    from T_SCENARINO_DETAIL
+  	where USER_ID=#{userId,jdbcType=DECIMAL} and PATH_DATE=#{pathDate,jdbcType=TIMESTAMP} and SCEN_TYPE=#{scenType,jdbcType=VARCHAR}
   
+  </select>
   <!-- 返回情景查询列表的数据 -->
   <resultMap id="scenarinoListMap" type="hashMap" >
     <id column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
