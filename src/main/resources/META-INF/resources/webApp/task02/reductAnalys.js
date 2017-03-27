@@ -122,6 +122,7 @@ function shoe_data_start(evn){
 	var level = "1";
 	//柱状图
 	bar(admincode1,name1,wz1,level);
+	//饼图
 	pie(admincode1,name1,wz1,level,1);
 	
 }
@@ -360,15 +361,13 @@ $(function(){
 	$(".createRwModal").modal();
 	//行业 措施联动
 	$("#tradeId").change(function(){
-		var pietype = '';
-		pietype = 1;
-		pie(admincode,name,$('#hz_wrw').val(),gis_level,pietype);
+		var tradetype = $("input[name='option']:checked").val();
+		pie(admincode,name,$('#hz_wrw').val(),gis_level,tradetype);
 		console.log(356)
 	});
 	$("#measureId").change(function(){
-		var pietype = '';
-		pietype = 2;
-		pie(admincode,name,$('#hz_wrw').val(),gis_level,pietype);
+		var measuretype = $("input[name='option']:checked").val();
+		pie(admincode,name,$('#hz_wrw').val(),gis_level,measuretype);
 		console.log(360)
 	});
 	
@@ -502,20 +501,8 @@ $(function(){
     });
 };*/
 
-
-//下拉选框
-function selectQj(value){
-	if (value == 'j1' || value == 'j2') {
-		$("#tableId").css('display','block');
-		
-	} else {
-		$("#tableId").css('display','none');
-	}
-}
 /****************************************************柱状图*************************************************************************/
 function bar (admincode,name,wztype,gis_level) {
-	/*var wztype;
-	nameArea = name;*/
 	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":admincode,"addressLevle":gis_level,"stainType":wztype};
 		ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
 			console.log(res)
@@ -551,6 +538,7 @@ function bar (admincode,name,wztype,gis_level) {
 	                    	  realtime:'true',
 	                    	  start:20,
 	                    	  end:80
+	                    	  //startValue:
 	                    	  
 	                      },
 	                      {
@@ -558,6 +546,7 @@ function bar (admincode,name,wztype,gis_level) {
 	                    	  realtime:'true',
 	                    	  start:60,
 	                    	  end:80
+	                    	  //	startValue:
 	                      }
 	                      ],
 			    calculable : true,
@@ -644,7 +633,9 @@ function bar (admincode,name,wztype,gis_level) {
 		
 			//点击联动饼图
 			myPfChart.on('datazoom', function (params){
-
+				//alert(params.start + "||" + params.end + "||" + params.startValue + "||" + params.endValue);
+				//var aa = myPfChart.component.xAxis.option.xAxis[0].data;
+				console.log(params)
 				if(newX.length == 0)return;
 				if(newX.length == oldX.length){
 					if(newX[0]==oldX[0]){
@@ -687,7 +678,7 @@ function  pie(admincode,name,wztype,gis_level,pietype){
 	var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
 	var optionPie = {
 		    title : {
-		        text: name+'-'+wztype+'-'+'饼状图',
+		        text: name+'-'+wztype+'-'+'饼状图'+'-'+'减排量之和：',
 		        x:'center'
 		    },
 		    tooltip : {
