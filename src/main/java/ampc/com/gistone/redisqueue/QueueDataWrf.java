@@ -23,7 +23,7 @@ public class QueueDataWrf {
 	//来源于情景详情表  
 	private String spinup;
 	//来自于ungrib
-	private String lastfnl;
+	private String lastungrib;
 
 	public String getSpinup() {
 		return spinup;
@@ -31,20 +31,16 @@ public class QueueDataWrf {
 	public void setSpinup(String spinup) {
 		this.spinup = spinup;
 	}
-	public String getLastfnl() {
-		return lastfnl;
+	
+	public String getLastungrib() {
+		return lastungrib;
 	}
-	public void setLastfnl(String lastfnl) {
-		this.lastfnl = lastfnl;
+	public void setLastungrib(String lastungrib) {
+		this.lastungrib = lastungrib;
 	}
 	public QueueDataWrf() {
 		super();
 		// TODO Auto-generated constructor stub
-	}
-	public QueueDataWrf(String spinup, String lastfnl) {
-		super();
-		this.spinup = spinup;
-		this.lastfnl = lastfnl;
 	}
 	
 }

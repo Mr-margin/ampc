@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,8 +46,18 @@ public class SendQueueData {
 		redisqueue.leftPush("id",id);
 		
 	}
-	public void testpushqueue() {
-		
+	/**
+	 * @Description: TODO
+	 * @param queueData   
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月25日 下午4:05:24
+	 */
+	public void toJson(QueueData queueData) {
+		JSONObject jsonObject = JSONObject.fromObject(queueData);
+		String json = jsonObject.toString();
+		System.out.println(json+"zhegeshi ceshi de jieguo ");
 	}
 
 

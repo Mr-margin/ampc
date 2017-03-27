@@ -27,7 +27,7 @@ public class QueueDataCommon {
 	//气象数据类型，fnl, gfs
 	private String datatype;
 	//模拟开始和结束时间
-	private Map<String, Map<String, String>> time;
+	private  Map<String, String> time;
 	//起报时间
 	private String pathdate;
 	
@@ -45,10 +45,10 @@ public class QueueDataCommon {
 	public void setDatatype(String datatype) {
 		this.datatype = datatype;
 	}
-	public Map<String, Map<String, String>> getTime() {
+	public Map<String, String> getTime() {
 		return time;
 	}
-	public void setTime(Map<String, Map<String, String>> time) {
+	public void setTime(Map<String, String> time) {
 		this.time = time;
 	}
 	public String getPathdate() {
@@ -67,14 +67,13 @@ public class QueueDataCommon {
 		// TODO Auto-generated constructor stub
 	}
 	public QueueDataCommon(String firsttime, String datatype,
-			Map<String, Map<String, String>> time, String pathdate) {
+			Map<String, String> time, String pathdate) {
 		super();
 		this.firsttime = firsttime;
 		this.datatype = datatype;
 		this.time = time;
 		this.pathdate = pathdate;
 	}
-	
 	
 	
 	

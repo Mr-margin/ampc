@@ -91,13 +91,16 @@ public class ToDataUngribUtil {
 				 gfserror = gfsDescArrray[i].toString();//gfs错误的信息
 			}
 		}
+		System.out.println("我到这里了");
 		//String gfserror = gfsBuffer.toString().trim();
 		//查询该条ungrib是否存在，存在则修改，否则添加
 		tUngrib.setErrorFnlMsg(fnlerror);
 		tUngrib.setErrorGfsMsg(gfserror);
 		TUngrib tUngrib2 = new TUngrib();
+		System.out.println("我要通过时间去查询是否存在ungrib");
 		tUngrib2 = tUngribMapper.selectUngrib(pathdateDate);
 		//System.out.println(UngribId+"查询出来的id");
+		System.out.println("我要给fnl和gfs赋值了");
 		//调用方法给每个gfs的状态赋值
 		tUngrib = ToDataUngribUtil.updateGFSstatus(tUngrib,status);
 		//如果存在则执行更新操作，不存在则执行添加操作
@@ -107,8 +110,10 @@ public class ToDataUngribUtil {
 			tUngrib.setUngribId(tUngrib2.getUngribId());
 			//备注表示修改时间
 			tUngrib.setUpdateTime(new Date());
+			System.out.println("我马上要进行跟新数据库了");
 			//添加到数据库
 			tUngribMapper.updateByPrimaryKey(tUngrib);
+			System.out.println("我跟新玩数据库了");
 		}else {
 			//执行添加操作
 			tUngrib.setAddTime(new Date());
