@@ -52,12 +52,12 @@ public class EMissionController {
 	 */
 	@RequestMapping("save_emission")
 	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
-	public AmpcResult save_emission(@RequestBody Map<String,Object> requestDate,Long JOBId,HttpServletRequest request, HttpServletResponse response){
+	public AmpcResult save_emission(@RequestBody Map<String,Object> requestDate,Long jobId,HttpServletRequest request, HttpServletResponse response){
 	try{
 		ClientUtil.SetCharsetAndHeader(request, response);
 		Map<String, Map> data = (Map) requestDate.get("data");
 		String status=requestDate.get("status").toString();
-		Long scenarionId=JOBId;
+		Long scenarionId=jobId;
 		
 		int a=0;
 		int b=0;
@@ -136,12 +136,18 @@ public class EMissionController {
 			Map somemap=(Map) map.get(code);//获取emission的值	
 			JSONObject someobj = JSONObject.fromObject(somemap);
 			Map<String,Object> lastMap= (Map)someobj;//将emission的值	转化为Map集合
-			temission.setMeasureReduce(lastMap.get("op").toString());
-			temission.setEmissionDetails(lastMap.get("category").toString());
+			
 			
 			temission.setEmissionType("2");
 			temission.setScenarunoId(scenarionId);
+			List<TEmissionDetail> telist=tEmissionDetailMapper.selectByEntity(temission);
+			if(telist.isEmpty()){
+			temission.setMeasureReduce(lastMap.get("op").toString());
+			temission.setEmissionDetails(lastMap.get("category").toString());
 			a+=tEmissionDetailMapper.insertSelective(temission);//保存数据
+			}else{
+				return AmpcResult.build(1000, "error","该情景减排结果已存在");
+			}
 			b++;//计数器
 			}else{
 				continue;
@@ -154,8 +160,6 @@ public class EMissionController {
 			tScenarinoDetail.setScenarinoId(scenarionId);
 			tScenarinoDetail.setScenarinoStatus(8l);//如成功修改情景的状态为8，执行完毕
 			tScenarinoDetail.setRatioEndDate(thedate);
-			tScenarinoDetail.setExpand1("");
-			tScenarinoDetail.setExpand2("");
 			int s=tScenarinoDetailMapper.updateByPrimaryKeySelective(tScenarinoDetail);
 			if(scenarionId==null){
 				return AmpcResult.build(1000, "error","无情景id");
