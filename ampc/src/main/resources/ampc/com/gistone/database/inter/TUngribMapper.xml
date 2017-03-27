@@ -245,15 +245,13 @@
       BEIZHU2 = #{beizhu2,jdbcType=VARCHAR}
     where UNGRIB_ID = #{ungribId,jdbcType=DECIMAL}
   </update>
-  
-  
-   <!-- 查询最新的lastungrib  -->
-  <select id="getlastungrib" resultMap="BaseResultMap">
- 	select 
- 	 <include refid="Base_Column_List" />
-    from T_UNGRIB where PATH_DATE=(select MAX(PATH_DATE) from T_UNGRIB)
+   <!-- 查询最新的fnl  -->
+  <select id="getlastfnl" resultMap="BaseResultMap">
+ 	select
+  <include refid="Base_Column_List" />
+    from T_UNGRIB
+    where  PATH_DATE=(select MAX(PATH_DATE) from T_UNGRIB)
   </select>
-  
   <!--出现中断的情况下 查询最新的fnl  -->
   <select id="getinterruptlastFnl" resultType="java.util.Date" parameterType="java.lang.Integer">
   select MAX(PATH_DATE)
@@ -261,25 +259,6 @@
     T_UNGRIB
     where  FNL_STATUS = #{fnlStatus,jdbcType=DECIMAL}
   </select>
-  
-  
-   <!-- <resultMap id="idResultMap" type="ampc.com.gistone.database.model.TUngrib" >
-    <id column="UNGRIB_ID" property="ungribId" jdbcType="DECIMAL" />
-    <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
-    <result column="PATH_DATE" property="pathDate" jdbcType="TIMESTAMP" />
-  </resultMap>
-  <sql id="id_Column_List" >
-    UNGRIB_ID, ADD_TIME, PATH_DATE
-  </sql>
-  <select id="selectUngrib" resultMap="idResultMap" parameterType="java.util.Date">
-  	select 
-  	<include refid="id_Column_List" />
-  	from T_UNGRIB where PATH_DATE=#{pathDate,jdbcType=TIMESTAMP}
-  </select> -->
-  
-  
-  
-  
   
   
 </mapper>

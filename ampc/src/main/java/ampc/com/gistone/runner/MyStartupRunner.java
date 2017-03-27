@@ -7,6 +7,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import ampc.com.gistone.redis.TestRedisRunnble;
+import ampc.com.gistone.redis.TestRedisRunnbleConsumer;
+import ampc.com.gistone.redisqueue.AcceptMessageQueue;
+
 /**
  * 服务启动执行
  *
@@ -20,7 +24,16 @@ public class MyStartupRunner implements CommandLineRunner{
 	
 //	@Autowired
 //	private GetBySqlMapper getBySqlMapper;
+	@Autowired
+	private AcceptMessageQueue acceptMessageQueue;
 	
+	
+	@Autowired
+	private TestRedisRunnbleConsumer testRedisRunnbleConsumer;
+	
+	@Autowired 
+	private TestRedisRunnble testRedisRunnble;
+	/*private AcceptMessageQueue acceptMessageQueue;*/
 	@Override
     public void run(String... args) throws Exception {
     	
@@ -28,6 +41,16 @@ public class MyStartupRunner implements CommandLineRunner{
 		
 //		OverallSituation.Calculation_Template_p = this.questTemplate.getCalculation_Template();
 //		OverallSituation.Update_Template_p = this.questTemplate.getUpdate_Template();
+		
+		/*//启动一个生产者线程 模拟任务的产生
+				new Thread(testRedisRunnble).start();
+				//Thread.sleep(5000);
+				new Thread(acceptMessageQueue).start();*/
+			//	Thread.sleep(5000);
+				//启动一个线程者线程 模拟任务的处理
+				/*new Thread(testRedisRunnbleConsumer).start();
+				//主线程休眠
+				Thread.sleep(Long.MAX_VALUE);*/
 		
 		System.out.println("获取文件........，共用时 " + (new Date().getTime() - start1.getTime())/1000 + " m");
 		System.out.println("-------------Load Complete-----------");
