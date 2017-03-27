@@ -634,11 +634,18 @@ public class PlanAndMeasureController {
 			map.put("userId", userId);
 			// 查询条件
 			List<TQueryExcel> tqeList = tQueryExcelMapper.selectByMap(map);
-			// 获取所有和当前用户相关的行业描述 右下角1
+			// 获取所有和当前用户相关的行业描述 右下角1 
+			/**
+			 * TODO
+			 */
 			List<Map> sdMap = tSectordocExcelMapper.selectByUserId(map);
 			// 如果没有就给默认的行业描述
 			if (sdMap.size() == 0) {
 				map.put("userId", null);
+				sdMap = tSectordocExcelMapper.selectByUserId(map);
+			}
+			if(sdMap.size()==0){
+				map.put("sectorName", "面源");
 				sdMap = tSectordocExcelMapper.selectByUserId(map);
 			}
 			List<MeasureUtil> mlist = new ArrayList<MeasureUtil>();
