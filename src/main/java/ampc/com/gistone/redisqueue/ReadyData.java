@@ -24,6 +24,7 @@ import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.inter.TUngribMapper;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
+import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.database.model.TUngrib;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.DateUtil;
@@ -35,6 +36,7 @@ import ampc.com.gistone.util.DateUtil;
  * @author yanglei
  * @date 2017年3月17日 上午11:20:18
  * @version 1.0
+ * @param <V>
  */
 @Component
 public class ReadyData {
@@ -72,17 +74,100 @@ public class ReadyData {
 	private QueueDataWrf wrfData;
 	//消息体cmap数据
 	@Autowired 
-	private QueueDataCmap cmapData;
+	private QueueDataCmaq cmaqData;
+	
+	
+	/**
+	 * @Description: 获取最新的ungrib 通过ungrib来控制消息的条数和内容
+	 * @return   
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月20日 上午11:24:54
+	 */
+	public void getLastUngrib(HashMap<String, Object> body) {
+		System.out.println("进入ungrib的方法");
+		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
+		System.out.println("进入ungrib的方法2");
+		
+		String lastungrib;
+		//获取最新的ungrib 
+		//Date pathdate = tUngribMapper.getlastungrib();
+		Long ungribId = (long) 1;
+		tUngribMapper.deleteById(2l);
+		
+		TUngrib tUngrib = tUngribMapper.getlastungrib();
+		System.out.println("aaaaaaa");
+		Date pathdate = tUngrib.getPathDate();
+		//最新的pathdate（年月日）
+		Date pathDate = pathdate;
+		//将当前的的系统时间转化为于pathdate一样的时间格式（ 年月日形式）
+		Date todayDate = DateUtil.DateToDate(new Date(),"yyyyMMdd");
+		//比较最新的pathdate和当前系统时间
+		int i = pathDate.compareTo(todayDate);
+		//i=0表示时间一致 小于0表示 时间pathdate小于系统时间
+		System.out.println("bbbbbbb");
+		if (i==0) {
+			//时间一致的时候可以准备数据(1个fnl+n个gfs形式）
+			lastungrib = DateUtil.DATEtoString(pathDate, "yyyyMMdd");
+			//从tasksStatus表里获取情景的天数 开始时间和结束时间
+			TTasksStatus tTasksStatus = tTasksStatusMapper.getRangeTime(scenarinoId);
+			//情景开始时间
+			Date startDate = tTasksStatus.getScenarinoStartDate();
+			//情景结束时间
+			Date endDate = tTasksStatus.getScenarinoEndDate();
+			Long rangeday = tTasksStatus.getRangeDay();
+			for (int j = 0; j <rangeday; j++) {
+				//声明firsttime
+				String firsttime;
+				//从数据库里获取该情景下的所有信息
+				TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+				//准备firsttime 通过用户ID 情景类型 和pathdate来决定
+				Date zoreDate = DateUtil.ChangeDay(scenarinoDetailMSG.getPathDate(), -1);
+				Map<String,Object> map2 = new HashMap<String, Object>();
+				map2.put("pathDate", zoreDate);
+				map2.put("userId", scenarinoDetailMSG.getUserId());
+				map2.put("scenType", scenarinoDetailMSG.getScenType());
+				TScenarinoDetail scenarinoDetailMSG2 = tScenarinoDetailMapper.selectFirstTime(map2);
+				if (scenarinoDetailMSG2!=null) {
+					 firsttime = "false";
+				}else {
+					firsttime = "true";
+				}
+				//开始时间小于今天 datatype 为fnl 大于等于今天为gfs
+				if (j==0) {
+					//设置datatype
+					String datatype = "fnl";
+					//消息的time的内容
+					String time = DateUtil.DATEtoString(startDate, "yyyyMMdd");
+					String icdate = DateUtil.changeDate(startDate, "yyyyMMdd", -1);
+					queueData = readyRealMessageData(datatype,time,body,lastungrib,firsttime,icdate);
+					//队列消息准备成功,调用方法 将数据转为json数据,准备就绪等待发送
+					sendQueueData.toJson(queueData);
+				}else {
+					//消息的time的内容
+					String time = DateUtil.changeDate(startDate, "yyyyMMdd", i);
+					//设置datatype
+					String datatype = "gfs";
+					Date iCDate = DateUtil.StrtoDateYMD(time, "yyyyMMdd");
+					String icdate = DateUtil.changeDate(iCDate, "yyyyMMdd", -1);
+					queueData = readyRealMessageData(datatype,time,body,lastungrib,firsttime,icdate);
+					sendQueueData.toJson(queueData);
+				}
+			}
+		}
+		
+	}
 	
 	/**
 	 * @Description: TODO
 	 * @param body   
-	 * void  准备实时预报的数据
+	 * QueueData  准备实时预报的数据 
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年3月21日 上午10:40:32
 	 */
-	public void readyRealMessageData(HashMap<String, Object> body) {
+	public QueueData readyRealMessageData(String datatype,String time,HashMap<String, Object> body,String lastungrib,String firsttime,String icdate) {
 		String type = "model.start";//执行模式
 		queueData.setType(type);
 		//设置消息里面的的time和type的值
@@ -91,18 +176,59 @@ public class ReadyData {
 		bodyData = ReadyData.getbodyDataHead(body);
 		Integer scenarinoType =  (Integer) body.get("scenarinoType");//情景类型
 		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
-		//获取tasksid
-		Long tasksId = tTasksStatusMapper.selectTasksId(scenarinoId);
+		Long missionId = (Long) body.get("missionId");//任务id
+		Long userId = (Long) body.get("userId");
+		//准备commom数据
+		Map<String, Object> map =ReadyData.getcommonMSG(scenarinoId,datatype,time,scenarinoType,firsttime);
+		commonData = (QueueDataCommon) map.get("commonData");
+		//spinup
+		Long DBspinup = (Long) map.get("spinup");
+		//准备wrf数据
+		//设置wrf的spinup
+		Long spinup = DBspinup+5;
+		wrfData.setSpinup(spinup.toString());
+		wrfData.setLastungrib(lastungrib);
+	//	wrfData = ReadyData.getWrfData(scenarinoId,lastungrib);
+		//准备cmap数据
+	//	cmapData = ReadyData.getCmapData(scenarinoId,missionId);
+		//设置cmaq的spinup
+		cmaqData.setSpinup(DBspinup.toString());
+		//准备cmaq的ic
+		Map<String, Object> icMap =ReadyData.getIC(scenarinoId,missionId,firsttime,icdate); 
+		cmaqData.setIc(icMap);
+		//设置body的数据
+		bodyData.setCommon(commonData);
+		bodyData.setWrf(wrfData);
+		bodyData.setCmaq(cmaqData);
+		queueData.setBody(body);
+		return queueData;
 		
-		//准备最新的lastungrib 
-		Map<String, Object> map = ReadyData.getLastUngrib();
-		String lastfnl = (String) map.get("lastfnl");
-		//initial 初始化的时候是true 其他情况都是false
-		String initial =   (String) map.get("initial");
-		commonData.setFirsttime(initial);
-		//准备common的数据
-		commonData = getRealcommonMSG(scenarinoId,lastfnl,scenarinoType);
-		
+	}
+
+	/**
+	 * @Description: 获取ic的值
+	 * 实时预报的情况下 第一次的时候ic为空 其他情况来自基础情景
+	 * @param scenarinoId
+	 * @param missionId
+	 * @param firsttime
+	 * @return   
+	 * Map<String,Object>  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月25日 下午6:18:52
+	 */
+	private Map<String, Object> getIC(Long scenarinoId, Long missionId,
+			String firsttime,String icdate) {
+		Map<String,Object> map = new HashMap<String, Object>();
+		//当天的上一天为基础情景
+		if(firsttime.contains("true")){
+			map=null;
+		}else {
+			map.put("missionid", missionId);
+			map.put("scenarinoid", scenarinoId);
+			map.put("date", icdate);
+		}
+		return map;
 	}
 
 	/**
@@ -176,37 +302,71 @@ public class ReadyData {
 	 * @param scenarinoId
 	 * @param lastfnl
 	 * @param scenarinoType   
-	 * void  获取实时预报的common数据
+	 * QueueDataCommon  获取实时预报的common数据
 	 * @return 
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年3月21日 上午11:31:35
 	 */
-	private  QueueDataCommon getRealcommonMSG(Long scenarinoId, String lastfnl,
-			Integer scenarinoType) {
-		ArrayList<String> list = new ArrayList<String>();
+	private Map<String, Object> getcommonMSG(Long scenarinoId, String datatype,String time,
+			Integer scenarinoType,String firsttime) {
 		Map<String,String> map = new HashMap<String, String>();
-		System.out.println(scenarinoId);
-		//获取该情景下的所有信息
+		Map<String, Object> hashmap = new HashMap<String, Object>();
+		//从数据库里获取该情景下的所有信息
 		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
-		System.out.println(scenarinoDetailMSG);
-		//获取情景开始时间
-		Date startDate = scenarinoDetailMSG.getScenarinoStartDate();
-		//获取情景结束时间
-		Date endDate = scenarinoDetailMSG.getScenarinoEndDate();
-		//获取情景起报时间
-		Date pathDate = scenarinoDetailMSG.getPathDate();
+		//如果是实时预报的类型，开始的时间和结束的时间以及datatype都是来自上面传来的参数，其他类型则来自查询得到的开始和结束时间
+		if (scenarinoType==4) {
+			//设置类型
+			commonData.setDatatype(datatype);
+			//设置开始结束时间
+			map.put("start", time);
+			map.put("end", time);
+			commonData.setTime(map);
+			
+			//设置firsttime
+			commonData.setFirsttime(firsttime);
+			//设置起报日期
+			String pathdate = DateUtil.DATEtoString(new Date(), "yyyyMMdd");
+			commonData.setPathdate(pathdate);
+			hashmap.put("commonData", commonData);
+			hashmap.put("spinup", scenarinoDetailMSG.getSpinup());
+		}else {
+			//获取情景开始时间
+			Date startDate = scenarinoDetailMSG.getScenarinoStartDate();
+			//获取情景结束时间
+			Date endDate = scenarinoDetailMSG.getScenarinoEndDate();
+			//获取情景起报时间
+			Date pathDate = scenarinoDetailMSG.getPathDate();
+			//设置气象数据类型
+			commonData.setDatatype(datatype);
+			String pathdate = DateUtil.DATEtoString(pathDate,"yyyyMMdd");
+			String starttime = DateUtil.DATEtoString(startDate,"yyyyMMdd");
+			String endtime = DateUtil.DATEtoString(endDate,"yyyyMMdd");
+			//设置起报时间
+			commonData.setPathdate(pathdate);
+			map.put("start", starttime);
+			map.put("end", endtime);
+			//设置时间
+			commonData.setTime(map);
+		}
 		
-		String pathdate = DateUtil.DATEtoString(pathDate);
-		String starttime = DateUtil.DATEtoString(startDate);
-		String endtime = DateUtil.DATEtoString(endDate);
-		commonData.setPathdate(pathdate);
-		map.put("start", starttime);
-		map.put("end", endtime);
-		commonData.setTime(time);
-		return commonData;
+		return hashmap;
 		
 	}
+	/**
+	 * @Description: TODO
+	 * @param lastfnl
+	 * @return   
+	 * String  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月25日 上午10:33:47
+	 */
+	private String getDateType(String lastfnl) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 
 	/**
 	 * @Description: TODO
@@ -236,96 +396,30 @@ public class ReadyData {
 		//实时预报情景
 		if (scenarinoType==1) {
 			//准备wrf数据
-			Map<String, String> wrfMap = ReadyData.getWrfData(scenarinoType);
+			//Map<String, String> wrfMap = ReadyData.getWrfData(scenarinoType);
 			//准备cmap数据
-			Map<String, Map<String, String>> cmapMap = ReadyData.getCmapData(scenarinoType);
+		//	Map<String, Map<String, String>> cmapMap = ReadyData.getCmapData(scenarinoType);
 			
 		}
 		//判断tasks准备的时候 lastfnl 是否是小于today-1 如果小于 则lastfnl 则不发送数据包
 		//获取lastfnl ，initial
 		
-		Map<String, Object> map = ReadyData.getLastUngrib();
-		String lastfnl = (String) map.get("lastfnl");
+	//	Map<String, Object> map = ReadyData.getLastUngrib(scenarinoId);
+	//	String lastfnl = (String) map.get("lastfnl");
 		
-		System.out.println(scenarinoId);
+	//	System.out.println(scenarinoId);
 		//准备common数据
 		Map<String, Map<String, String>> common = new HashMap<String, Map<String, String>>();
-		ReadyData.getcommonMSG(scenarinoId,lastfnl,scenarinoType);
-		sendQueueData.sendData(body,scenarinoId);
+		/*ReadyData.getcommonMSG(scenarinoId,lastfnl,scenarinoType);
+		sendQueueData.sendData(body,scenarinoId);*/
 		
 		
 		
 		
 		
 	}
-	/**
-	 * @param scenarinoId 
-	 * @param lastfnl 
-	 * @param scenarinoType 
-	 * @Description: TODO   
-	 * void  
-	 * @throws
-	 * @author yanglei
-	 * @date 2017年3月20日 下午6:33:40
-	 */
-	private  Map<String, String> getcommonMSG(Long scenarinoId, String lastfnl, Integer scenarinoType) {
-		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
-		if (scenarinoType==4) {
-			
-			
-		}
-		Date startDate = scenarinoDetailMSG.getScenarinoStartDate();
-		Date endDate = scenarinoDetailMSG.getScenarinoEndDate();
-		Date pathDate = scenarinoDetailMSG.getPathDate();
-		String pathdate = DateUtil.DATEtoString(pathDate);
-		String starttime = DateUtil.DATEtoString(startDate);
-		String endtime = DateUtil.DATEtoString(endDate);
-		/*Long spinUpOriginal= scenarinoDetailMSG.getSpinUp();
-		Long spinup0 = spinUpOriginal+5;
-		String wrfspinup =spinup0.toString();
-		String cmapspinup = spinUpOriginal.toString();*/
-		return null;
-	}
-	/**
-	 * @Description: TODO
-	 * @return   
-	 * boolean  
-	 * @throws
-	 * @author yanglei
-	 * @date 2017年3月20日 上午11:24:54
-	 */
-	private  Map<String, Object> getLastUngrib() {
-		Map<String, Object> hashMap = new HashMap<String, Object>();
-		String initial = "false";
-		String oldlastungrib;
-		TUngrib tUngrib = tUngribMapper.getlastungrib();
-		System.out.println(tUngrib);
-		
-		if (tUngrib==null) {
-			initial = "true";
-			hashMap.put("initial", initial);
-			hashMap.put("lastfnl", null);
-		}else{
-			initial = "false";
-			hashMap.put("initial", initial);
-			Date pathDate = tUngrib.getPathDate();
-			if(tUngrib.getFnlStatus()==1){
-					// 出现中断的情况；fnl_status ：0表示成功，1   表示不成功。
-				//不成功的时候表示出现中断的状态 重新查新数据库，找最新的成功的lastfnl lastfnl的状态显示成功为0为条件
-				Date getinterruptlastFnl = tUngribMapper.getinterruptlastFnl(0);
-				 Date reduceOneDay = DateUtil.reduceOneDay(getinterruptlastFnl);
-				 String datEtoString = DateUtil.DATEtoString(reduceOneDay);
-				 System.out.println(datEtoString+"最新的fnl");
-				hashMap.put("lastfnl", datEtoString);	
-			}else if (tUngrib.getFnlStatus()==0) {
-				Date reduceOneDay = DateUtil.reduceOneDay(pathDate);
-				String lastfnl = DateUtil.DATEtoString(reduceOneDay);
-				hashMap.put("lastfnl", lastfnl);
-			}
-		}
-		
-		return hashMap;
-	}
+	
+	
 	/**
 	 * @Description: TODO
 	 * @param scenarinoType
@@ -340,17 +434,24 @@ public class ReadyData {
 		return null;
 	}
 	/**
-	 * @Description: TODO
-	 * @param scenarinoType
+	 * @Description:  通过情景ID获取wrf参数
+	 * @param scenarinoId
 	 * @return   
-	 * Map<String,String>  
+	 * wrfData 
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年3月18日 上午10:40:19
 	 */
-	private static Map<String, String> getWrfData(Integer scenarinoType) {
-		
-		return null;
+	private  QueueDataWrf  getWrfData(Long scenarinoId,String lastungrib) {
+		//从数据库里获取该情景下的所有信息
+		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+		//获取数据库的spinup值
+		Long DBspinup = scenarinoDetailMSG.getSpinup();
+		Long spinup = DBspinup+5;
+		//设置spinup
+		wrfData.setSpinup(spinup.toString());
+		wrfData.setLastungrib(lastungrib);
+		return wrfData;
 	}
 	/**
 	 * 
