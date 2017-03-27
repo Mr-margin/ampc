@@ -9,46 +9,127 @@ $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果�
 
 var ls = window.localStorage;
 var qjMsg = vipspa.getMessage('yaMessage').content;
-var sceneInitialization = vipspa.getMessage('sceneInitialization').content;//从路由中取到情景范围
-sceneInitialization();
-
 if(!qjMsg){
-  qjMsg = JSON.parse(ls.getItem('yaMsg'));
+	qjMsg = JSON.parse(ls.getItem('yaMsg'));
 }else{
-  ls.setItem('yaMsg',JSON.stringify(qjMsg));
+	ls.setItem('yaMsg',JSON.stringify(qjMsg));
 }
+
+var sceneInitialization = vipspa.getMessage('sceneInitialization').content;//从路由中取到情景范围
+if(!sceneInitialization){
+	sceneInitialization = JSON.parse(ls.getItem('SI'));
+}else{
+	ls.setItem('SI',JSON.stringify(sceneInitialization));
+}
+
+sceneInittion();
+
+
 
 
 /**
  * 初始化模态框显示
  */
-function sceneInitialization(){
-	if(!sceneInitialization){//判断路有种是否有情景范围
-		//路由中没有情景范围，从localStorage中获取，然后再次判断
-		sceneInitialization = JSON.parse(ls.getItem('SI'));
-		if(!sceneInitialization){
-			
-			var task = "";
-			
-			task += '<option value=""></option>';
-			
-			
+function sceneInittion(){
+	$("#task").html("");
+	
+	var paramsName = {};
+	paramsName.userId = userId;
+	ajaxPost('/mission/find_All_mission',paramsName).success(function(res){
+		console.log(JSON.stringify(res));
+		if(res.status == 0){
+			var task = '<option value="0">请选择</option>';
+			$.each(data, function(k, vol) {
+				if(sceneInitialization.taskID == vol.missionId){
+					task += '<option value="'+vol.missionId+'" selected="selected">'+vol.missionName+'</option>';
+				}else{
+					task += '<option value="'+vol.missionId+'">'+vol.missionName+'</option>';
+				}
+			});
+			$("#task").html(task);
 			$("#Initialization").modal();//初始化模态框显示
+			
+			if(sceneInitialization.data){
+				
+			}
+			
 		}
-	}else{
-		ls.setItem('SI',JSON.stringify(sceneInitialization));
-	}
+	});
 }
+
+
+function sdfs(){
+	$("#sceneTableId").bootstrapTable('destroy');//销毁现有表格数据
+	
+	$("#sceneTableId").bootstrapTable({
+		method : 'POST',
+		url : '/ampc/scenarino/find_All_scenarino',
+		dataType : "json",
+		iconSize : "outline",
+		clickToSelect : true,// 点击选中行
+		pagination : false, // 在表格底部显示分页工具栏
+		striped : true, // 使表格带有条纹
+		queryParams : function(params) {
+			var data = {};
+			data.userId = userId;
+			data.missionId = $("#task").val();
+			return JSON.stringify({"token": "","data": data});
+		},
+		queryParamsType : "limit", // 参数格式,发送标准的RESTFul类型的参数请求
+		silent : true, // 刷新事件必须设置
+		contentType : "application/json", // 请求远程数据的内容类型。
+		responseHandler: function (res) {
+			if(res.status == 'success'){
+				if(res.status.data.length>0){
+					return res.status.data;
+				}
+			}
+		},
+		onClickRow : function(row, $element) {
+			$('.success').removeClass('success');
+			$($element).addClass('success');
+		},
+		icons : {
+			refresh : "glyphicon-repeat",
+			toggle : "glyphicon-list-alt",
+			columns : "glyphicon-list"
+		},
+		onLoadSuccess : function(data){
+//			console.log(data);
+		},
+		onLoadError : function(){
+			swal('连接错误', '', 'error');
+		}
+	});
+}
+
+
 
 /**
  * 根据任务ID，获取情景列表用于选择情景范围
  */
 function sceneTable(){
-	$("#task").val();//任务ID
-	
-	
-	
-	
+//	;//任务ID
+	alert($("#task").val());
+	if(!sceneInitialization){//判断路有种是否有情景范围
+		//路由中没有情景范围，从localStorage中获取，然后再次判断
+		sceneInitialization = JSON.parse(ls.getItem('SI'));
+		if(!sceneInitialization){
+			//数据库获取任务列表
+			var paramsName = {};
+			paramsName.userId = userId;
+			ajaxPost('/mission/find_All_mission',paramsName).success(function(res){
+				console.log(JSON.stringify(res));
+				if(res.status == 0){
+					Is(res.data);
+					
+					vipspa.setMessage(msg);
+				}
+			});
+		}
+	}else{
+		ls.setItem('SI',JSON.stringify(sceneInitialization));
+	}
 }
 
 

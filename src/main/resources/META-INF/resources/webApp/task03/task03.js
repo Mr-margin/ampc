@@ -198,7 +198,7 @@ function metTable_hj_info(){
 				data.sectorName = hangye;
 			}
 			return JSON.stringify({"token": "","data": data});
-		}, 
+		},
 		queryParamsType: "limit", //参数格式,发送标准的RESTFul类型的参数请求
 		contentType : "application/json", // 请求远程数据的内容类型。
 		responseHandler: function (res) {
@@ -256,7 +256,7 @@ function hz_de(){
 		paramsName.sectorName = row[0].sectorName;
 		paramsName.planId = row[0].planId;
 		paramsName.userId = userId;
-		ajaxPost('/measure/ delete_measure',paramsName).success(function(res){
+		ajaxPost('/measure/delete_measure',paramsName).success(function(res){
 			metTable_hj_info();
 			hyc();
 		});
