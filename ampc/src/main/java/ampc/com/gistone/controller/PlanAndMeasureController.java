@@ -543,6 +543,7 @@ public class PlanAndMeasureController {
 							String f1 = pool.get("f1").toString();
 							// 判断如果是汇总则进入 其他继续循环
 							if (f1.equals("汇总")) {
+								if(pool.get(stainType)==null||pool.get(stainType).toString().equals("")) continue;
 								double d1 = Double.parseDouble(pool.get(stainType).toString().split("/")[0]);
 								double d2 = Double.parseDouble(pool.get(stainType).toString().split("/")[1]);
 								BigDecimal bd = new BigDecimal(d1 / d2); 
