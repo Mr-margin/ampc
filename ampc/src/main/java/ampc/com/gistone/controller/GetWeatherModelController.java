@@ -36,14 +36,14 @@ public class GetWeatherModelController {
 	@Autowired
 	private RedisUtilServer redisUtilServer;
 	//加载准备数据工具类
+	
 	@Autowired
 	private ReadyData readyData;
+	
 	//实时预报映射
 	@Autowired
 	private TRealForecastMapper tRealForecastMapper;
 	
-	
-
 	/**
 	 * 
 	 * @Description: TODO
