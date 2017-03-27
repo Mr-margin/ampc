@@ -40,7 +40,7 @@ public class QueueBodyData {
 	//wrf 数据
 	private Object wrf;
 	//cmap 数据
-	private Object cmap;
+	private Object cmaq;
 	
 	
 	public Long getUserId() {
@@ -97,31 +97,18 @@ public class QueueBodyData {
 	public void setWrf(Object wrf) {
 		this.wrf = wrf;
 	}
-	public Object getCmap() {
-		return cmap;
+	
+	public Object getCmaq() {
+		return cmaq;
 	}
-	public void setCmap(Object cmap) {
-		this.cmap = cmap;
+	public void setCmaq(Object cmaq) {
+		this.cmaq = cmaq;
 	}
 	public QueueBodyData() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public QueueBodyData(Long userId, Long domainId, Long missionId,
-			Long scenarinoId, Long cores, String modelType, Object common,
-			Object emis, Object wrf, Object cmap) {
-		super();
-		this.userId = userId;
-		this.domainId = domainId;
-		this.missionId = missionId;
-		this.scenarinoId = scenarinoId;
-		this.cores = cores;
-		this.modelType = modelType;
-		this.common = common;
-		this.emis = emis;
-		this.wrf = wrf;
-		this.cmap = cmap;
-	}
+	
 	
 	
 	
