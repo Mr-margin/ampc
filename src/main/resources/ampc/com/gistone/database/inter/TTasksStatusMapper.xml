@@ -132,22 +132,4 @@
   <select id="selectTasksId" resultType="java.lang.Long" parameterType="java.lang.Long">
   	select TASKS_ID from T_TASKS_STATUS where TASKS_SCENARINO_ID=#{tasksScenarinoId,jdbcType=DECIMAL}
   </select>
-  
-  
-  <!--通过情景ID查询时间段  -->
-  <resultMap id="rangeResultMap" type="ampc.com.gistone.database.model.TTasksStatus" >
-    <result column="TASKS_SCENARINO_ID" property="tasksScenarinoId" jdbcType="DECIMAL" />
-    <result column="SCENARINO_START_DATE" property="scenarinoStartDate" jdbcType="TIMESTAMP" />
-    <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="TIMESTAMP" />
-    <result column="RANGE_DAY" property="rangeDay" jdbcType="DECIMAL" />
-  </resultMap>
-  <sql id="range_Column_List" >
-     TASKS_SCENARINO_ID,SCENARINO_START_DATE, SCENARINO_END_DATE, 
-    RANGE_DAY
-  </sql>
-  <select id="getRangeTime" resultMap="rangeResultMap" parameterMap="java.lang.Long">
-   select 
-    <include refid="range_Column_List" />
-    from T_TASKS_STATUS where TASKS_SCENARINO_ID=#{tasksScenarinoId,jdbcType=DECIMAL}
-  </select>
 </mapper>
