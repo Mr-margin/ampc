@@ -193,7 +193,7 @@ public class ReadyData {
 		//设置cmaq的spinup
 		cmaqData.setSpinup(DBspinup.toString());
 		//准备cmaq的ic
-		Map<String, Object> icMap =ReadyData.getIC(scenarinoId,missionId,firsttime,icdate); 
+		Map<String, Object> icMap = getIC(scenarinoId,missionId,firsttime,icdate); 
 		cmaqData.setIc(icMap);
 		//设置body的数据
 		bodyData.setCommon(commonData);
@@ -284,6 +284,7 @@ public class ReadyData {
 	 * @date 2017年3月24日 下午6:21:55
 	 */
 	private QueueBodyData getbodyDataHead(HashMap<String, Object> body) {
+		System.out.println("消息体头部内容");
 		Integer scenarinoType =  (Integer) body.get("scenarinoType");//情景类型
 		Long userId = (Long) body.get("userId");
 		Long missionId = (Long) body.get("missionId");//任务id
@@ -293,6 +294,7 @@ public class ReadyData {
 		bodyData.setScenarinoId(scenarinoId);
 		bodyData.setMissionId(missionId);
 		bodyData.setCores(cores);
+		System.out.println("开始操作数据库");
 		//从任务表里面获取当条任务的详细内容
 		TMissionDetail mission = tMissionDetailMapper.selectByPrimaryKey(missionId);
 		String missiontype = mission.getMissionStatus().toString();
