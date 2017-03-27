@@ -40,7 +40,7 @@ public class SendQueueData {
 	
 	
 	public void sendData(String json) {
-		System.out.println("1230000");
+		System.out.println("开始发送");
 		redisqueue.leftPush("Base_Situation",json);
 		System.out.println("发送完毕");
 		
