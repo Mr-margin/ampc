@@ -270,9 +270,9 @@ public class EMissionController {
 			 Matcher matcher1 = pattern1.matcher(code);
 			 Matcher matcher2 = pattern2.matcher(code);
 			if(matcher1.find()){
-				temission.setCodeLevel("1");				
+				temission.setCodeLevel("1");
 			}else if(matcher2.find()){
-				temission.setCodeLevel("2");	
+				temission.setCodeLevel("2");
 			}else{
 				temission.setCodeLevel("3");
 			}
