@@ -255,7 +255,7 @@ public class PlanAndMeasureController {
 			}
 			return AmpcResult.build(1000, "修改失败");
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误", null);
 		}
 	}
@@ -750,7 +750,6 @@ public class PlanAndMeasureController {
 				TPlanMeasureWithBLOBs tPlanMeasure = tPlanMeasureMapper
 						.selectByPrimaryKey(planMeasureId);
 				String str = tPlanMeasure.getMeasureContent();
-				System.out.println(str);
 				resultMap.put("measureContent", str);
 			}
 			// 返回结果
@@ -941,7 +940,6 @@ public class PlanAndMeasureController {
 			// 将java对象转换为json对象
 			JSONArray json = JSONArray.fromObject(jpList);
 			String str = json.toString();
-			System.out.println(str);
 			// 调用减排计算接口 并获取结果Json
 			String getResult = ClientUtil.doPost(JPJSURL, str);
 			// 并根据减排分析得到的结果进行JsonTree的解析
