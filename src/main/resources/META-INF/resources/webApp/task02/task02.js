@@ -1750,17 +1750,17 @@ require(
 //添加服务
 function addLayer(data) {
   shuju_clear();
-  app.featureLayer1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/2", {
+  app.featureLayer1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/2", {
 //	 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
     mode: dong.FeatureLayer.MODE_ONDEMAND,
     outFields: ["NAME"]
   });
-  app.featureLayer2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/1", {
+  app.featureLayer2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/1", {
 //	 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
     mode: dong.FeatureLayer.MODE_ONDEMAND,
     outFields: ["NAME"]
   });
-  app.featureLayer3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/0", {
+  app.featureLayer3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/0", {
 //	 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
     mode: dong.FeatureLayer.MODE_ONDEMAND,
     outFields: ["NAME"]
@@ -1993,17 +1993,17 @@ function app2() {
     var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
     defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
 
-    app.fea1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/2", {//添加省的图层
+    app.fea1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/2", {//添加省的图层
 //			infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
       mode: dong.FeatureLayer.MODE_ONDEMAND,
       outFields: ["NAME"]
     });
-    app.fea2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/1", {//市的图层
+    app.fea2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/1", {//市的图层
 //			infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
       mode: dong.FeatureLayer.MODE_ONDEMAND,
       outFields: ["NAME"]
     });
-    app.fea3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/china_x/MapServer/0", {//区县的图层
+    app.fea3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/0", {//区县的图层
 //			infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
       mode: dong.FeatureLayer.MODE_ONDEMAND,
       outFields: ["NAME"]
@@ -2030,7 +2030,7 @@ function app2() {
       }
       if (item.cityCodes != "" && item.cityCodes != null && item.cityCodes != undefined) {//市
         if (item.cityCodes.length > 0) {
-          var renderer = new dong.UniqueValueRenderer(defaultSymbol, "CITYCODE");
+          var renderer = new dong.UniqueValueRenderer(defaultSymbol, "ADMINCODE");
           for (var i = 0; i < item.cityCodes.length; i++) {
             for (var prop in item.cityCodes[i]) {
               if (item.cityCodes[i].hasOwnProperty(prop)) {
@@ -2092,7 +2092,7 @@ function dingwei(tiaojian, type) {
       app.map1.setExtent(extent.expand(1.5));
     });
   } else if (type == "2") {
-    query.where = "CITYCODE IN (" + tiaojian.substring(0, tiaojian.length - 1) + ")";
+    query.where = "ADMINCODE IN (" + tiaojian.substring(0, tiaojian.length - 1) + ")";
     app.fea2.queryFeatures(query, function (featureSet) {
       for (var i = 0, il = featureSet.features.length; i < il; i++) {
         var graphic = featureSet.features[i];
