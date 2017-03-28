@@ -16,12 +16,7 @@
     <result column="ES_CODE_RANGE" property="esCodeRange" jdbcType="VARCHAR" />
     <result column="ES_VERSION" property="esVersion" jdbcType="VARCHAR" />
   </resultMap>
-  <!-- 根据用户Id查询所有清单 -->
-  <resultMap id="selectAllMap" type="hashMap" >
-    <id column="ES_NATIVE_ID" property="esNativeId" jdbcType="DECIMAL" />
-    <result column="ES_NATIVE_NAME" property="esNativeName" jdbcType="OTHER" />
-    <result column="ES_CODE_RANGE" property="esCodeRange" jdbcType="VARCHAR" />
-  </resultMap>
+ 
   <sql id="Base_Column_List" >
     ES_NATIVE_ID, ES_NATIVE_NAME, ES_NATIVE_YEAR, ES_UPLOAD_TIME, ES_COMMENT, ES_NATIVE_RELATION_ID, 
     ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME, ES_CODE_RANGE, ES_VERSION
