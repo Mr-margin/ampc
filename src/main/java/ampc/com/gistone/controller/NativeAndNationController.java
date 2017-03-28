@@ -28,7 +28,7 @@ public class NativeAndNationController {
 	@Autowired
 	public TEsNativeMapper tEsNativeMapper;
 	/**
-	 * 预案设置成可复制
+	 * 查询当前用户下的清单
 	 * @author WangShanxi
 	 * @param request 请求
 	 * @param response 响应
