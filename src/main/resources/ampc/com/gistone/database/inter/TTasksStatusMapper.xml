@@ -221,4 +221,25 @@
       BEIZHU3 = #{beizhu3,jdbcType=VARCHAR}
     where TASKS_ID = #{tasksId,jdbcType=DECIMAL}
   </update>
+  
+  
+  
+  
+  <!--添加执行模式执行的结果  -->
+  <update id="updateStatus" parameterType="ampc.com.gistone.database.model.TTasksStatus">
+  update T_TASKS_STATUS
+  set ERROR_STATUS = #{errorStatus,jdbcType=VARCHAR},
+  STEPINDEX = #{stepindex,jdbcType=DECIMAL},
+  TASKS_END_DATE = #{tasksEndDate,jdbcType=TIMESTAMP}
+  where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
+  </update>
+  
+  
+  <!--测试方法 通过情景ID查找结束时间  -->
+  <select id="selectByscenarinoId" resultType="java.util.Date" parameterType="java.lang.Long">
+  select SCENARINO_END_DATE
+  from T_TASKS_STATUS where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
+  
+  </select>
+  
 </mapper>
