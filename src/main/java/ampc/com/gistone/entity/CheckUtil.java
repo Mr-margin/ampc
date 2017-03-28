@@ -1,4 +1,4 @@
-package ampc.com.gistone.util;
+package ampc.com.gistone.entity;
 
 /**
  * 验证帮助类
