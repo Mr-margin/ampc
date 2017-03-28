@@ -44,6 +44,7 @@
   <select id="selectByMap" parameterType="hashMap"  resultMap="BaseResultMap" >
   	select <include refid="Base_Column_List" /> from T_QUERY_EXCEL 
   	   WHERE IS_EFFECTIVE='1' and SECTOR_NAME= #{sectorName,jdbcType=OTHER} 
+  	   ORDER BY QUERY_ID
   </select>
   
  
