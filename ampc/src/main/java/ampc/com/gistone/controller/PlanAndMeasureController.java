@@ -443,7 +443,7 @@ public class PlanAndMeasureController {
 			}
 			//创建中间集合
 			List<String> nameSet=new ArrayList<String>();
-			//如果包含了条件的有限加入
+			//如果包含了条件的优先加入
 			for(int i=0;i<queryList.size();i++){
 				for(String str:nameList){
 					if(str.equals(queryList.get(i))){
@@ -451,7 +451,7 @@ public class PlanAndMeasureController {
 					}
 				}
 			}
-			//加入其他
+			//加入其他的行业名称
 			sn:for(String str:nameList){
 				for(int i=0;i<nameSet.size();i++){
 					if(str.equals(nameSet.get(i))){
