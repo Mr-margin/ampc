@@ -17,7 +17,7 @@
     <result column="ES_VERSION" property="esVersion" jdbcType="VARCHAR" />
   </resultMap>
   <!-- 根据用户Id查询所有清单 -->
-  <resultMap id="selectAllMap" type="ampc.com.gistone.database.model.TEsNative" >
+  <resultMap id="selectAllMap" type="hashMap" >
     <id column="ES_NATIVE_ID" property="esNativeId" jdbcType="DECIMAL" />
     <result column="ES_NATIVE_NAME" property="esNativeName" jdbcType="OTHER" />
     <result column="ES_CODE_RANGE" property="esCodeRange" jdbcType="VARCHAR" />
