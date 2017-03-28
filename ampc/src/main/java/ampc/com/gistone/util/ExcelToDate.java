@@ -233,7 +233,7 @@ public class ExcelToDate {
 	* @param path  
 	*/
 	public static List<TMeasureExcel> ReadMeasure(String fileName,Object versionId,Long userId){  
-		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\03.措施设计\\measure_sets_demo_dispname_YQ4.xlsx";
+		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\03.措施设计\\measure_sets_ywjv5_YQ4.xlsx";
 		List<TMeasureExcel> measureList=new ArrayList<TMeasureExcel>();
         try {  
             Workbook wb  = null;  
@@ -262,7 +262,7 @@ public class ExcelToDate {
                 measure.setMeasureExcelType(getCellValue(row.getCell(3)));
                 //获取措施等级信息
                 String level=getCellValue(row.getCell(4));
-                measure.setMeasureExcelLevel(level.substring(0,level.indexOf('.')));
+                measure.setMeasureExcelLevel(level);
                 //获取措施L4s过滤信息
                 measure.setMeasureExcelL4s(getCellValue(row.getCell(5)));
                 //获取措施OP信息
