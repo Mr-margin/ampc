@@ -43,9 +43,6 @@ public class ReadyData {
 	//任务详情映射
 	@Autowired
 	private TMissionDetailMapper tMissionDetailMapper;
-	//引发送数据包队列类
-	@Autowired
-	private SendQueueData sendQueueData;
 	//ungrib映射
 	@Autowired
 	private  TUngribMapper tUngribMapper;
@@ -55,24 +52,9 @@ public class ReadyData {
 	//tasks映射
 	@Autowired
 	private TTasksStatusMapper tTasksStatusMapper;
-	//消息头类
+	//引入发送消息的工具类
 	@Autowired
-	private QueueData queueData;
-	//消息体类
-	@Autowired
-	private QueueBodyData bodyData;
-	//消息体 common 消息
-	@Autowired
-	private QueueDataCommon commonData;
-	//消息体 emis 数据
-	@Autowired
-	private QueueDataEmis emisData;
-	//消息体 wrf数据
-	@Autowired
-	private QueueDataWrf wrfData;
-	//消息体cmap数据
-	@Autowired 
-	private QueueDataCmaq cmaqData;
+	private SendQueueData sendQueueData;
 	
 	
 	/**
@@ -167,11 +149,15 @@ public class ReadyData {
 	 * @date 2017年3月21日 上午10:40:32
 	 */
 	public QueueData readyRealMessageData(String datatype,String time,HashMap<String, Object> body,String lastungrib,String firsttime,String icdate) {
+		//创建消息体对象
+		QueueData queueData = new QueueData();
 		String type = "model.start";//执行模式
 		queueData.setType(type);
 		//设置消息里面的的time和type的值
 		queueData = getHeadParameter();
 		//设置消息里面body节点的主体消息
+		//创建消息bady对象
+		QueueBodyData bodyData = new QueueBodyData();
 		bodyData = getbodyDataHead(body);
 		Integer scenarinoType =  (Integer) body.get("scenarinoType");//情景类型
 		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
@@ -179,17 +165,23 @@ public class ReadyData {
 		Long userId = (Long) body.get("userId");
 		//准备commom数据
 		Map<String, Object> map = getcommonMSG(scenarinoId,datatype,time,scenarinoType,firsttime);
+		//创建common消息对象
+		QueueDataCommon commonData = new QueueDataCommon();
 		commonData = (QueueDataCommon) map.get("commonData");
 		//spinup
 		Long DBspinup = (Long) map.get("spinup");
 		//准备wrf数据
 		//设置wrf的spinup
 		Long spinup = DBspinup+5;
+		//创建wrf对象
+		QueueDataWrf wrfData = new QueueDataWrf();
 		wrfData.setSpinup(spinup.toString());
 		wrfData.setLastungrib(lastungrib);
 	//	wrfData = ReadyData.getWrfData(scenarinoId,lastungrib);
 		//准备cmap数据
 	//	cmapData = ReadyData.getCmapData(scenarinoId,missionId);
+		//创建cmaq对象
+		QueueDataCmaq cmaqData = new QueueDataCmaq();
 		//设置cmaq的spinup
 		cmaqData.setSpinup(DBspinup.toString());
 		//准备cmaq的ic
@@ -215,11 +207,21 @@ public class ReadyData {
 	 * @date 2017年3月27日 上午10:23:18
 	 */
 	public void readyBaseData(HashMap<String, Object> body) {
+		//创建消息体对象
+		QueueData queueData = new QueueData();
+		//创建消息bady对象
+		QueueBodyData bodyData = new QueueBodyData();
+		//创建common消息对象
+		QueueDataCommon commonData = new QueueDataCommon();
+		//创建wrf对象
+		QueueDataWrf wrfData = new QueueDataWrf();
+		//创建cmaq对象
+		QueueDataCmaq cmaqData = new QueueDataCmaq();
+		//设置消息里面的的time和type的值
 		System.out.println("基准情景");
+		queueData = getHeadParameter();
 		String type = "model.start";//执行模式
 		queueData.setType(type);
-		//设置消息里面的的time和type的值
-		queueData = getHeadParameter();
 		//设置消息里面body节点的主体消息
 		bodyData = getbodyDataHead(body);
 		Integer scenarinoType =  (Integer) body.get("scenarinoType");//情景类型
@@ -228,23 +230,29 @@ public class ReadyData {
 		Long userId = (Long) body.get("userId");
 		//准备commom数据
 		Map<String, Object> map = getcommonMSG(scenarinoId,"fnl",null,scenarinoType,"true");
+		commonData = (QueueDataCommon) map.get("commonData");
 		//spinup
 		Long DBspinup = (Long) map.get("spinup");
+		System.out.println(DBspinup+"这个是Dbspinup");
 		//准备wrf数据
 		//设置wrf的spinup
 		Long spinup = DBspinup+5;
+		System.out.println(spinup+"这个是SPINUP");
 		wrfData.setSpinup(spinup.toString());
 		//String lastungrib = tUngribMapper.getlastungrib();
 		
 		//wrfData.setLastungrib(lastungrib);
 		//设置cmaq的spinup
 		cmaqData.setSpinup(DBspinup.toString());
+		
 		bodyData.setCommon(commonData);
 		bodyData.setWrf(wrfData);
 		bodyData.setCmaq(cmaqData);
+	/*	
 		Map<String,Object> hashMap = new HashMap<String, Object>();
-		hashMap.put("body", bodyData);
-		queueData.setBody(hashMap);
+		hashMap.put("body", bodyData);*/
+		queueData.setBody(bodyData);
+	//	SendQueueData sendQueueData = new SendQueueData();
 		sendQueueData.toJson(queueData);
 		
 	}
@@ -284,15 +292,17 @@ public class ReadyData {
 	 * @date 2017年3月24日 下午6:21:55
 	 */
 	private QueueBodyData getbodyDataHead(HashMap<String, Object> body) {
+		//创建消息bady对象
+		QueueBodyData bodyData = new QueueBodyData();
 		System.out.println("消息体头部内容");
 		Integer scenarinoType =  (Integer) body.get("scenarinoType");//情景类型
 		Long userId = (Long) body.get("userId");
 		Long missionId = (Long) body.get("missionId");//任务id
 		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
 		Long cores = (Long) body.get("cores");//计算核数
-		bodyData.setUserId(userId);
-		bodyData.setScenarinoId(scenarinoId);
-		bodyData.setMissionId(missionId);
+		bodyData.setUserid(userId);
+		bodyData.setScenarioid(scenarinoId);
+		bodyData.setMissionid(missionId);
 		bodyData.setCores(cores);
 		System.out.println("开始操作数据库");
 		//从任务表里面获取当条任务的详细内容
@@ -300,10 +310,10 @@ public class ReadyData {
 		String missiontype = mission.getMissionStatus().toString();
 		//准备modeltype数据
 		String modeltype = getmodelType(missiontype,scenarinoType);
-		bodyData.setModelType(modeltype);
+		bodyData.setModeltype(modeltype);
 		//获取domainId
 		Long domainId = mission.getMissionDomainId();
-		bodyData.setDomainId(domainId);//domainid
+		bodyData.setDomainid(domainId);//domainid
 		return bodyData;
 	}
 
@@ -316,6 +326,8 @@ public class ReadyData {
 	 * @date 2017年3月24日 下午6:15:49
 	 */
 	private QueueData getHeadParameter() {
+		//创建消息体对象
+		QueueData queueData = new QueueData();
 		//消息时间为当前的系统时间（北京时间 ）
 		String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 		queueData.setId(UUID.randomUUID().toString());//设置消息id
@@ -355,6 +367,8 @@ public class ReadyData {
 	 */
 	private Map<String, Object> getcommonMSG(Long scenarinoId, String datatype,String time,
 			Integer scenarinoType,String firsttime) {
+		//创建common消息对象
+		QueueDataCommon commonData = new QueueDataCommon();
 		Map<String,String> map = new HashMap<String, String>();
 		Map<String, Object> hashmap = new HashMap<String, Object>();
 		//从数据库里获取该情景下的所有信息
@@ -492,6 +506,8 @@ public class ReadyData {
 	 * @date 2017年3月18日 上午10:40:19
 	 */
 	private  QueueDataWrf  getWrfData(Long scenarinoId,String lastungrib) {
+		//创建wrf对象
+		QueueDataWrf wrfData = new QueueDataWrf();
 		//从数据库里获取该情景下的所有信息
 		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
 		//获取数据库的spinup值

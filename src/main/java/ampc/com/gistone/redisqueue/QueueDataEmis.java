@@ -18,32 +18,28 @@ import org.springframework.stereotype.Component;
  * @date 2017年3月17日 下午1:57:31
  * @version 1.0
  */
-@Component
 public class QueueDataEmis {
 	// "生成网格排放所需要的清单ID",
-	private String sourceId;
+	private String sourceid;
 	//计算方式 cache或者server
-	private String calcType;
+	private String calctype;
 	//"PS排放系数路径",
 	private String psal;
 	//"SS排放系数路径",
 	private String ssal;
 	//"/work/b/lixin_meic/hebei/meic-city.conf"
 	private String meiccityconfig;
-	
-	
-	
-	public String getSourceId() {
-		return sourceId;
+	public String getSourceid() {
+		return sourceid;
 	}
-	public void setSourceId(String sourceId) {
-		this.sourceId = sourceId;
+	public void setSourceid(String sourceid) {
+		this.sourceid = sourceid;
 	}
-	public String getCalcType() {
-		return calcType;
+	public String getCalctype() {
+		return calctype;
 	}
-	public void setCalcType(String calcType) {
-		this.calcType = calcType;
+	public void setCalctype(String calctype) {
+		this.calctype = calctype;
 	}
 	public String getPsal() {
 		return psal;
@@ -67,15 +63,9 @@ public class QueueDataEmis {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public QueueDataEmis(String sourceId, String calcType, String psal,
-			String ssal, String meiccityconfig) {
-		super();
-		this.sourceId = sourceId;
-		this.calcType = calcType;
-		this.psal = psal;
-		this.ssal = ssal;
-		this.meiccityconfig = meiccityconfig;
-	}
+	
+	
+	
 	
 	
 

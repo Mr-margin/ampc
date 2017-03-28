@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
  * @date 2017年3月17日 下午2:03:14
  * @version 1.0
  */
-@Component
 public class QueueDataCmaq {
 	
 	//来源于情景详情表  
