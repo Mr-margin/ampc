@@ -936,6 +936,17 @@ function selectEditPoint(t) {
 
 $('#editArea').on('show.bs.modal', function (event) {
   $.fn.zTree.init($("#adcodeTree"), zTreeSetting, zTreeData);
+  var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+  var nodes = treeObj.getNodesByParam("level", 1);
+  //var a = ['11','12','1301'];
+  var code = qjMsg.esCodeRange;
+  for(var i=0;i<nodes.length;i++){
+    var adcode = nodes[i].adcode;
+    if((code.indexOf(adcode.substr(0,2)) == -1) && (code.indexOf(adcode.substr(0,4)) == -1)){
+      treeObj.hideNodes(nodes[i].children);
+    }
+  }
+
   var button = $(event.relatedTarget);
   var create = button.data('new');
   var areaId, findUrl;

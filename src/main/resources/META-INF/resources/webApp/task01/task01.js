@@ -191,6 +191,7 @@ function initRwTable() {
     queryParamsType: "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
     silent: true, // 刷新事件必须设置
     onClickRow: function (row, $element) {
+      msg.esCodeRange = row.esCodeRange.split(',');//暂时没有
       $('.qj').val('');
       selectRW = row;
       $('#qjTable').bootstrapTable('destroy');
@@ -1223,14 +1224,13 @@ function getMnfw() {
 
 /*获取清单*/
 function getQD() {
-  var url = '/esnative/get_nativeInfo';
+  var url = '/escoupling/get_couplingInfo';
   var params = {
     userId: userId
   };
   ajaxPost(url, params).success(function (res) {
-
     for (var i = 0; i < res.data.length; i++) {
-      $('#qd').append($('<option value="'+ res.data[i].esNativeId +'">'+ res.data[i].esNativeName +'</option>'))
+      $('#qd').append($('<option value="'+ res.data[i].esCouplingId +'">'+ res.data[i].esCouplingName +'</option>'))
     }
 
   }).error(function () {
