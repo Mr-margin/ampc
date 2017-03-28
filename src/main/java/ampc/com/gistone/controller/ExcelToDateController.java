@@ -27,11 +27,11 @@ import ampc.com.gistone.database.model.TMeasureSectorExcel;
 import ampc.com.gistone.database.model.TQueryExcel;
 import ampc.com.gistone.database.model.TSectorExcel;
 import ampc.com.gistone.database.model.TSectordocExcel;
+import ampc.com.gistone.entity.CheckUtil;
+import ampc.com.gistone.entity.CheckUtil1;
+import ampc.com.gistone.entity.ColorUtil;
 import ampc.com.gistone.util.AmpcResult;
-import ampc.com.gistone.util.CheckUtil;
-import ampc.com.gistone.util.CheckUtil1;
 import ampc.com.gistone.util.ClientUtil;
-import ampc.com.gistone.util.ColorUtil;
 import ampc.com.gistone.util.ExcelToDate;
 
 /**
