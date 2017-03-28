@@ -107,23 +107,7 @@ function shoe_data_start(evn){
 		gis_paramsName.codeLevel = 3;//省市区层级（1省，2市，3区）
 	}
 	gis_paramsName.scenarinoId = qjMsg.qjId;//情景id
-//	gis_paramsName.scenarinoId = 3;//情景id
 	baizhu_jianpai(gis_paramsName);
-	
-	
-	//默认行政区域
-	var admincode1 = 130000;
-	
-	var name1 = "河北省";
-	
-	var wz1 = "SO2";
-	//市区层级
-	var level = "1";
-	//柱状图
-	bar(admincode1,name1,wz1,level);
-	//饼图
-	pie(admincode1,name1,wz1,level,1);
-	
 }
 
 /**
@@ -138,8 +122,10 @@ function baizhu_jianpai(gis_paramsName){
 //		console.log(JSON.stringify(res));
 		if(res.status == 0){
 			var data_id = "";
+			var ttdf = "";
 			$.each(res.data, function(k, col) {
 				data_id += "'"+k+"',";
+				ttdf = k;//获取最后一个行政区划
 			});
 			
 			var paifang_url = "";
@@ -206,6 +192,10 @@ function baizhu_jianpai(gis_paramsName){
 					app.map.setExtent(extent.expand(1.5));
 				});
 			}
+			
+			//柱状图
+			var ttgh = $("input[name='option']:checked").val();
+			bar(ttdf,ttdf,"SO2",gis_paramsName.codeLevel,ttgh);
 		}else{
 			swal('减排数据获取失败', '', 'error');
 		}
@@ -387,165 +377,183 @@ $(function(){
 });
 
 /****************************************************柱状图*************************************************************************/
-function bar (admincode,name,wztype,gis_level) {
+function bar (admincode,name,wztype,gis_level,picType) {
 	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":admincode,"addressLevle":gis_level,"stainType":wztype};
 		ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
-			console.log(res)
 			
-		var myPfChart = echarts.init(document.getElementById('pfDiv1'));
-		
-		var option = {
-			    title : {
-			        text: name +'-'+wztype+'-'+'减排图',
-			    },
-			    tooltip : {
-			        trigger: 'axis',
-			        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-			            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-			        },
-			        formatter: function (params){
-			            return params[0].name + '<br/>'
-			                   + params[0].seriesName + ' : ' + params[0].value + '<br/>'
-			                   + params[1].seriesName + ' : ' +  params[1].value;       //把 + params[0].value 去掉了
-			        }
-			    },
-			    legend: {
-			    	//不触动
-			        selectedMode:false,
-			        data:['实际排放量', '减排量']
-			    },
-			    grid:{
-			    		show:true
-			    },
-	            dataZoom:[
-	                      {
-	                    	  show:'true',
-	                    	  realtime:'true',
-	                    	  start:0,
-	                    	  end:50
-	                    	  //startValue:
-	                    	  
-	                      },
-	                      {
-	                    	  type:'inside',
-	                    	  realtime:'true',
-	                    	  start:60,
-	                    	  end:80
-	                    	  //	startValue:
-	                      }
-	                      ],
-			    calculable : true,
-			    xAxis : [
-			        {
-			        	show: true, 
-			            type : 'category',
-			            axisLabel : {
-			            	formatter: function(category)
-			            	{
-								newX.push(category.substring(0,10));
-			            		return category.substring(0,10);          //截取字符串
-			            	}
-			            },
-			            data:res.data.dateResult
-			        }
-			    ],
-			    yAxis : [
-			        {
-			            type : 'value',
-			            name : '吨',
-			            boundaryGap: [0, 0.1],
-			            splitArea : {show : true},
-			            show:true
-			        }
-			    ],
-			    series : [
-			        {
-			            name:'实际排放量',
-			            type:'bar',
-			            stack: 'sum',
-			            barCategoryGap: '50%',
-			            itemStyle: {
-			                normal: {
-			                    color: 'tomato',
-			                    barBorderColor: 'tomato',
-			                    barBorderWidth: 4,
-			                    barBorderRadius:0,
-			                   /* label : {
-			                        show: true, position: 'insideTop'
-			                    }*/
-			                }
-			            },
-			            //data:res.data.pflResult
-			            data:res.data.jplResult
-			        },
-			        {
-			            name:'减排量',
-			            type:'bar',
-			            stack: 'sum',
-			            itemStyle: {
-			                normal: {
-			                    color: '#fff',
-			                    barBorderColor: 'tomato',
-			                    barBorderWidth: 4,
-			                    barBorderRadius:0,
-			                    label : {
-			                        /*show: true, 
-			                        position: 'top',*/
-			                        formatter: function (params) {
-			                            for (var i = 0, l = option.xAxis[0].data.length; i < l; i++) {
-			                                if (option.xAxis[0].data[i] == params.name) {
-			                                    return option.series[0].data[i] + params.value;
-			                                }
-			                            }
-			                        },
-			                        textStyle: {
-			                            color: 'tomato'
-			                        }
-			                    }
-			                }
-			            },
-			            /*markLine : {
-                    		data : [
-                    		        {type : 'average', name: '平均值'}
-                    		]
-                    	},*/
-			            //data:res.data.jplResult
-                    	data:res.data.pflResult
-			        }
-			    ]
-			};
-			console.log(res);
-			//减排量echarts
-			myPfChart.setOption(option);
-		
-			//自适应屏幕大小变化
-			window.addEventListener("resize",function(){
-				 myPfChart.resize();
-			 });
-		
-			//点击联动饼图
-			myPfChart.on('datazoom', function (params){
-				//alert(params.start + "||" + params.end + "||" + params.startValue + "||" + params.endValue);
-				//var aa = myPfChart.component.xAxis.option.xAxis[0].data;
-				console.log(params)
-				if(newX.length == 0)return;
-				if(newX.length == oldX.length){
-					if(newX[0]==oldX[0]){
-						newX = [];
-						return;
+			
+			if(res.status == 0){//返回成功
+				if(res.data.dateResult.length > 0){//有返回时间，说明可以显示柱状图
+//					console.log(res);
+					
+					var new_arr=[];
+					for(var i=0;i<res.data.dateResult.length;i++) {
+						var items=res.data.dateResult[i];
+						new_arr.push(items.substring(0,10));
 					}
+					
+					//饼图
+					pie(admincode,name,wztype,gis_level,picType,new_arr);
+					
+					var myPfChart = echarts.init(document.getElementById('pfDiv1'));
+					
+					var option = {
+						    title : {
+						        text: name +'-'+wztype+'-'+'减排图',
+						    },
+						    tooltip : {
+						        trigger: 'axis',
+						        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+						            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+						        },
+						        formatter: function (params){
+						            return params[0].name + '<br/>'
+						                   + params[0].seriesName + ' : ' + params[0].value + '<br/>'
+						                   + params[1].seriesName + ' : ' +  params[1].value;       //把 + params[0].value 去掉了
+						        }
+						    },
+						    legend: {
+						    	//不触动
+						        selectedMode:false,
+						        data:['实际排放量', '减排量']
+						    },
+						    grid:{
+						    		show:true
+						    },
+				            dataZoom:[
+				                      {
+				                    	  show:'true',
+				                    	  realtime:'true',
+				                    	  start:0,
+				                    	  end:50
+				                    	  //startValue:
+				                    	  
+				                      },
+				                      {
+				                    	  type:'inside',
+				                    	  realtime:'true',
+				                    	  start:60,
+				                    	  end:80
+				                    	  //	startValue:
+				                      }
+				                      ],
+						    calculable : true,
+						    xAxis : [
+						        {
+						        	show: true, 
+						            type : 'category',
+						            axisLabel : {
+						            	formatter: function(category)
+						            	{
+											newX.push(category.substring(0,10));
+						            		return category.substring(0,10);          //截取字符串
+						            	}
+						            },
+						            data:res.data.dateResult
+						        }
+						    ],
+						    yAxis : [
+						        {
+						            type : 'value',
+						            name : '吨',
+						            boundaryGap: [0, 0.1],
+						            splitArea : {show : true},
+						            show:true
+						        }
+						    ],
+						    series : [
+						        {
+						            name:'实际排放量',
+						            type:'bar',
+						            stack: 'sum',
+						            barCategoryGap: '50%',
+						            itemStyle: {
+						                normal: {
+						                    color: 'tomato',
+						                    barBorderColor: 'tomato',
+						                    barBorderWidth: 4,
+						                    barBorderRadius:0,
+						                   /* label : {
+						                        show: true, position: 'insideTop'
+						                    }*/
+						                }
+						            },
+						            //data:res.data.pflResult
+						            data:res.data.jplResult
+						        },
+						        {
+						            name:'减排量',
+						            type:'bar',
+						            stack: 'sum',
+						            itemStyle: {
+						                normal: {
+						                    color: '#fff',
+						                    barBorderColor: 'tomato',
+						                    barBorderWidth: 4,
+						                    barBorderRadius:0,
+						                    label : {
+						                        /*show: true, 
+						                        position: 'top',*/
+						                        formatter: function (params) {
+						                            for (var i = 0, l = option.xAxis[0].data.length; i < l; i++) {
+						                                if (option.xAxis[0].data[i] == params.name) {
+						                                    return option.series[0].data[i] + params.value;
+						                                }
+						                            }
+						                        },
+						                        textStyle: {
+						                            color: 'tomato'
+						                        }
+						                    }
+						                }
+						            },
+						            /*markLine : {
+			                    		data : [
+			                    		        {type : 'average', name: '平均值'}
+			                    		]
+			                    	},*/
+						            //data:res.data.jplResult
+			                    	data:res.data.pflResult
+						        }
+						    ]
+						};
+						console.log(res);
+						//减排量echarts
+						myPfChart.setOption(option);
+					
+						//自适应屏幕大小变化
+						window.addEventListener("resize",function(){
+							 myPfChart.resize();
+						 });
+					
+						//点击联动饼图
+						myPfChart.on('datazoom', function (params){
+							//alert(params.start + "||" + params.end + "||" + params.startValue + "||" + params.endValue);
+							//var aa = myPfChart.component.xAxis.option.xAxis[0].data;
+							console.log(params)
+							if(newX.length == 0)return;
+							if(newX.length == oldX.length){
+								if(newX[0]==oldX[0]){
+									newX = [];
+									return;
+								}
+							}
+
+							console.log(myPfChart.getOption());
+							console.log(params);
+							console.log(633)
+
+							oldX = [];
+							oldX = newX;
+							newX = [];
+							pie(admincode,name,wztype,gis_level,1,oldX);
+						});
+				}else{
+					swal('情景没有时间', '', 'error');
 				}
-
-				console.log(myPfChart.getOption());
-				console.log(params);
-				console.log(633)
-
-				oldX = [];
-				oldX = newX;
-				newX = [];
-				pie(admincode,name,wztype,gis_level,1,oldX);
-			});
-
+			}else{
+				swal('/echarts/get_barInfo  连接错误', '', 'error');
+			}
 	});
 }
 
@@ -568,7 +576,11 @@ function  pie(admincode,name,wztype,gis_level,pietype,oldX){
 	var valueVal;
 	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":admincode,"addressLevle":gis_level,"stainType":wztype,"startDate":new_arr[0],"endDate":new_arr[new_arr.length-1],"type":pietype};
 	ajaxPost('/echarts/get_pieInfo',paramsName).success(function(result){
-		//console.log(result.data.length)
+		
+		
+		if(result.status == 0){
+			console.log(result);
+			
 			if(result.data.length != 0){
 				for(i=0;i<result.data.length;i++){
 					nameVal = result.data[i].name;
@@ -578,46 +590,51 @@ function  pie(admincode,name,wztype,gis_level,pietype,oldX){
 				swal('饼图暂无数据', '', 'error')
 			}
 			
-	var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
-	var optionPie = {
-		    title : {
-		        text: name+'-'+wztype+'-'+'饼状图',
-		        x:'center'
-		    },
-		    tooltip : {
-		        trigger: 'item',
-		        formatter: "{a} <br/>{b} : {c} ({d}%)"
-		    },
-		    legend: {
-		    	//图标不触动
-		    	selectedMode:false,
-		        orient: 'vertical',
-		        left: 'left',
-		        data:[{name:nameVal}]
-		    },
-		    series : [
-		        {
-		            name: '数据比例',
-		            type: 'pie',
-		            radius : '55%',
-		            center: ['50%', '60%'],
-		            data:[{value:valueVal,name:nameVal}],
-		            itemStyle: {
-		                emphasis: {
-		                    shadowBlur: 10,
-		                    shadowOffsetX: 0,
-		                    shadowColor: 'rgba(0, 0, 0, 0.5)'
-		                }
-		            }
-		        }
-		    ]
-		};
+			var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
+			var optionPie = {
+				    title : {
+				        text: name+'-'+wztype+'-'+'饼状图',
+				        x:'center'
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c} ({d}%)"
+				    },
+				    legend: {
+				    	//图标不触动
+				    	selectedMode:false,
+				        orient: 'vertical',
+				        left: 'left',
+				        data:[{name:nameVal}]
+				    },
+				    series : [
+				        {
+				            name: '数据比例',
+				            type: 'pie',
+				            radius : '55%',
+				            center: ['50%', '60%'],
+				            data:[{value:valueVal,name:nameVal}],
+				            itemStyle: {
+				                emphasis: {
+				                    shadowBlur: 10,
+				                    shadowOffsetX: 0,
+				                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+				                }
+				            }
+				        }
+				    ]
+				};
 			//行业措施分担饼状图
 			myhycsChart.setOption(optionPie);
 			//自适应屏幕大小变化
 			window.addEventListener("resize",function(){
 				myhycsChart.resize();
-			 });
+			});
+		}else{
+			console.log(result);
+			swal('/echarts/get_pieInfo  连接错误', '', 'error');
+		}
+			
 	}).error(function () {
       swal('暂无数据', '', 'error')
     })	
