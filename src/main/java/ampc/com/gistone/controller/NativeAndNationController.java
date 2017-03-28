@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ampc.com.gistone.database.inter.TEsCouplingMapper;
 import ampc.com.gistone.database.inter.TEsNativeMapper;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
@@ -26,7 +27,7 @@ import ampc.com.gistone.util.ClientUtil;
 public class NativeAndNationController {
 
 	@Autowired
-	public TEsNativeMapper tEsNativeMapper;
+	public TEsCouplingMapper tEsCouplingMapper;
 	/**
 	 * 查询当前用户下的清单
 	 * @author WangShanxi
@@ -34,7 +35,7 @@ public class NativeAndNationController {
 	 * @param response 响应
 	 * @return 返回响应结果对象
 	 */
-	@RequestMapping("/esnative/get_nativeInfo")
+	@RequestMapping("/escoupling/get_couplingInfo")
 	public AmpcResult get_nativeInfo(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -43,7 +44,7 @@ public class NativeAndNationController {
 			Map<String, Object> data = (Map) requestDate.get("data");
 			// 用户id
 			Long userId = Long.parseLong(data.get("userId").toString());
-			List<Map> list=tEsNativeMapper.selectAll(userId);
+			List<Map> list=tEsCouplingMapper.selectAll(userId);
 			return AmpcResult.ok(list);
 		} catch (Exception e) {
 			e.printStackTrace();
