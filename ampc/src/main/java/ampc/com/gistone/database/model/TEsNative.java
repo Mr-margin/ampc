@@ -9,7 +9,7 @@ public class TEsNative {
 
     private Short esNativeYear;
 
-    private Date uploadTime;
+    private Date esUploadTime;
 
     private Object esComment;
 
@@ -24,6 +24,10 @@ public class TEsNative {
     private String isEffective;
 
     private Date deleteTime;
+
+    private String esCodeRange;
+
+    private String esVersion;
 
     public Long getEsNativeId() {
         return esNativeId;
@@ -49,12 +53,12 @@ public class TEsNative {
         this.esNativeYear = esNativeYear;
     }
 
-    public Date getUploadTime() {
-        return uploadTime;
+    public Date getEsUploadTime() {
+        return esUploadTime;
     }
 
-    public void setUploadTime(Date uploadTime) {
-        this.uploadTime = uploadTime;
+    public void setEsUploadTime(Date esUploadTime) {
+        this.esUploadTime = esUploadTime;
     }
 
     public Object getEsComment() {
@@ -111,5 +115,21 @@ public class TEsNative {
 
     public void setDeleteTime(Date deleteTime) {
         this.deleteTime = deleteTime;
+    }
+
+    public String getEsCodeRange() {
+        return esCodeRange;
+    }
+
+    public void setEsCodeRange(String esCodeRange) {
+        this.esCodeRange = esCodeRange == null ? null : esCodeRange.trim();
+    }
+
+    public String getEsVersion() {
+        return esVersion;
+    }
+
+    public void setEsVersion(String esVersion) {
+        this.esVersion = esVersion == null ? null : esVersion.trim();
     }
 }
