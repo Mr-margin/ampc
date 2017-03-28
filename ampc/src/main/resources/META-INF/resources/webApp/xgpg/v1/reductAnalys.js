@@ -246,9 +246,11 @@ InitSubTable = function (index, row, $detail) {
 
     });
 };
-
+var missionId = '';
 //获取任务名称
-function selectQj() {
+function selectQj() {	
+	 missionId = $('#rwName option:selected').val();
+	alert(missionId)
 	  var missionName = [];
 	  var url = '/mission/find_All_mission';
 	  var params = {"userId":1};
@@ -260,15 +262,15 @@ function selectQj() {
 	  }).error(function () {
 	    console.log('任务未获取到！！！！')
 	  })
-	  //$('#rwName').append($('<option value="1">范围1</option>'))
-	  
+	  return missionId;
 	}
 
 //初始化模态框 内的表格 全选复选框 新版
 function initQdListTable() {
 	  $('#testTableId').bootstrapTable({
 	    method: 'POST',
-	    url:'/mission/find_haveScenarino_mission',
+	    //url:'/ampc/mission/find_haveScenarino_mission',
+	    url:'/ampc/scenarino/find_All_scenarino',
 	    //url: 'webApp/xgpg/v1/qjdata.json',
 	    dataType: "json",
 	    contentType: "application/json",
@@ -296,7 +298,6 @@ function initQdListTable() {
 	    responseHandler: function (res) {
 	    	
 	    	console.log(res);
-	    	alert(22)
 	      return res.data
 	    },
 	    queryParamsType: "undefined",
@@ -329,7 +330,6 @@ function initQdListTable() {
 	    },*/
 	    onLoadSuccess:function(data){
 	    	console.log(data)
-	    	alert(33)
 	    },
 	    
 	    onContextMenuItem: function (row, $el) {
