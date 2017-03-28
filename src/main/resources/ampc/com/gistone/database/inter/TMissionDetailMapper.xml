@@ -24,6 +24,7 @@
     <result column="V1" property="v1" jdbcType="VARCHAR" />
     <result column="ES_COUPLING_ID" property="esCouplingId" jdbcType="DECIMAL" />
     <result column="ES_COUPLING_NAME" property="esCouplingName" jdbcType="OTHER" />
+    <result column="ES_CODE_RANGE" property="esCodeRange" jdbcType="VARCHAR" />
     <result column="MISSION_START_DATE" property="missionStartDate" jdbcType="TIMESTAMP" />
     <result column="MISSION_END_DATE" property="missionEndDate" jdbcType="TIMESTAMP" />
     <result column="MISSION_ADD_TIME" property="missionAddTime" jdbcType="TIMESTAMP" />
