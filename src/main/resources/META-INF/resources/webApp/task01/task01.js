@@ -1223,19 +1223,19 @@ function getMnfw() {
 
 /*获取清单*/
 function getQD() {
-  var url = '';
+  var url = '/esnative/get_nativeInfo';
   var params = {
     userId: userId
   };
   ajaxPost(url, params).success(function (res) {
 
     for (var i = 0; i < res.data; i++) {
-      $('#qd').append($('<option value=""></option>'))
+      $('#qd').append($('<option value="'+ res.data[i].esNativeId +'">'+ res.data[i].esNativeName +'</option>'))
     }
 
   }).error(function () {
     console.log('清单未获取到！！！！')
   })
-  $('#qd').append($('<option value="1">jjj</option>'))
+  //$('#qd').append($('<option value="1">jjj</option>'))
 }
 
