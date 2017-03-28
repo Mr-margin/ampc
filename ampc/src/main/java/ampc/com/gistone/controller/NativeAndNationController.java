@@ -46,7 +46,7 @@ public class NativeAndNationController {
 			List<Map> list=tEsNativeMapper.selectAll(userId);
 			return AmpcResult.ok(list);
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误", null);
 		}
 	}
