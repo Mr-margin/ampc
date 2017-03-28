@@ -32,7 +32,7 @@ if(!qjMsg){
 }else{
 	ls.setItem('yaMsg',JSON.stringify(qjMsg));
 }
-console.log(JSON.stringify(qjMsg));
+//console.log(JSON.stringify(qjMsg));
 
 /**
  * 设置导航条菜单
@@ -213,6 +213,7 @@ function metTable_hj_info(pa_name){
 			
 			$.each(res.data.rows, function(i, col) {
 				res.data.rows[i].reduct = res.data.rows[i].reduct+"%";
+				res.data.rows[i].ratio = res.data.rows[i].ratio+"%";
 			});
 			
 			return res.data.rows;
@@ -289,6 +290,7 @@ function jianpaijisuan(){
 	$("#zhezhao").show();//计算中
 	$("#zhezhao_title").show();
 	ajaxPost('/jp/pmjp',{"planMeasureIds": planMeasureIds.substring(0,planMeasureIds.length-1)}).success(function(res){
+//		console.log(JSON.stringify(res));
 		metTable_hj_info();
 		$("#zhezhao").hide();//计算中
     	$("#zhezhao_title").hide();
@@ -405,9 +407,9 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 						}
 						sc_conter += '</div>';
 						sc_conter += '<form role="form" class="form-inline"><div class="form-group" style="padding-left:10px;">';
-						sc_conter += '<input type="name" id="'+col.queryEtitle+'_1" onchange="val_handle($(this),\''+col.queryEtitle+'\',\''+col.queryName+'\',\''+type+'\',\'onchange\');" class="form-control" style="width:50px;height: 30px;padding: 6px 3px;">';
+						sc_conter += '<input type="text" id="'+col.queryEtitle+'_1" onchange="val_handle($(this),\''+col.queryEtitle+'\',\''+col.queryName+'\',\''+type+'\',\'onchange\');" class="form-control" style="width:50px;height: 30px;padding: 6px 3px;">';
 						sc_conter += '</div>-<div class="form-group">';
-						sc_conter += '<input type="name" id="'+col.queryEtitle+'_2" onchange="val_handle($(this),\''+col.queryEtitle+'\',\''+col.queryName+'\',\''+type+'\',\'onchange\');" class="form-control" style="width:50px;height: 30px;padding: 6px 3px;">';
+						sc_conter += '<input type="text" id="'+col.queryEtitle+'_2" onchange="val_handle($(this),\''+col.queryEtitle+'\',\''+col.queryName+'\',\''+type+'\',\'onchange\');" class="form-control" style="width:50px;height: 30px;padding: 6px 3px;">';
 						sc_conter += '</div></form>';
 					}else{//单选或者复选项直接判断
 						sc_conter += '<label class="btn btn-d1 active" val_name="不限"><input type="'+type+'" class="toggle">不限</label>';
@@ -597,9 +599,9 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 				},200);
 			}else{
 				//添加区域4的结果表格
-				console.log(JSON.stringify({"bigIndex":qjMsg.esCouplingId,"smallIndex":sectorsName,"summary":sc_val.summary,"regionIds":Codes}));
+//				console.log(JSON.stringify({"bigIndex":qjMsg.esCouplingId,"smallIndex":sectorsName,"summary":sc_val.summary,"regionIds":Codes}));
 				ajaxPost_w(jianpaiUrl+'/search/summarySource',{"bigIndex":qjMsg.esCouplingId,"smallIndex":sectorsName,"summary":sc_val.summary,"regionIds":Codes}).success(function(da){
-					console.log(JSON.stringify(da));
+//					console.log(JSON.stringify(da));
 					if(da.status == 'success'){
 						var zz = {"f1": "汇总", "f2" : "0/"+da.data.P[0].count}, pp = {"f1": "剩余点源", "f2" : da.data.P[0].count}, ss = {"f1": "面源", "f2" : "0"};
 						$.each(res.data.measureColumn, function(i, vol) {
@@ -755,9 +757,9 @@ function show_zicuoshi_table(columns, b_data){
  * type: 点击的条件的类型，用于区分复选单选
  */
 function val_handle(e, queryEtitle, queryName, type, sourceType){
+	
 	var xuanze_val = "";//
 	setTimeout(function(){//等待1/10秒，待css改变后再获取选择的值
-		
 		var queryShowqueryen = e.parent().attr("sc_su");//前置条件的名称
 		var queryValue = e.parent().attr("sc_su_val");//前置条件的值
 		
@@ -891,75 +893,83 @@ function val_handle(e, queryEtitle, queryName, type, sourceType){
  * 筛选按钮
  */
 function search_button(){
-	//条件缓存中的空值删除
-	$.each(temp_val_v1, function(key, col) {
-		if(jQuery.isArray(col)){//判断值是否数组
-			
-			var ttp = [];//有效数组
-			var bool = false;//记录是否进行了处理
-			$.each(col, function(i, vol) {//循环数组
-				if((typeof vol=='string') && vol.constructor==String){//字符串不需处理
-					
-				}else{
-					bool = true;
-					$("#"+key).children().each(function(){//循环数组的页面，查看现有的元素是否选中
-						if($(this).attr("val_name") == vol[key]){//如果当前的标签的值与数组中唯一元素的值相同，同时数组中唯一元素的key与顶层key一致，说明找到标签
-							if($(this).is(".active")){//判断这个标签是否被选中，如果选中说明正常，未选中需要再数组中删除这个元素
-								ttp.push(vol);//删除操作就是将有效数组放入到新数组中，循环结束一次性覆盖
+	setTimeout(function(){
+		//条件缓存中的空值删除
+		$.each(temp_val_v1, function(key, col) {
+			if(jQuery.isArray(col)){//判断值是否数组
+				
+				var ttp = [];//有效数组
+				var bool = false;//记录是否进行了处理
+				$.each(col, function(i, vol) {//循环数组
+					if((typeof vol=='string') && vol.constructor==String){//字符串不需处理
+						
+					}else{
+						bool = true;
+						$("#"+key).children().each(function(){//循环数组的页面，查看现有的元素是否选中
+							if($(this).attr("val_name") == vol[key]){//如果当前的标签的值与数组中唯一元素的值相同，同时数组中唯一元素的key与顶层key一致，说明找到标签
+								if($(this).is(".active")){//判断这个标签是否被选中，如果选中说明正常，未选中需要再数组中删除这个元素
+									ttp.push(vol);//删除操作就是将有效数组放入到新数组中，循环结束一次性覆盖
+								}
 							}
-						}
-					});
+						});
+					}
+				});
+				
+				if(bool){
+					temp_val_v1[key] = ttp;
 				}
-			});
-			
-			if(bool){
-				temp_val_v1[key] = ttp;
+				
+			}else{
+				if(col == ""){//不是数组，同时为空值，删除
+					delete temp_val_v1[key];
+				}
 			}
-			
-		}else{
-			if(col == ""){//不是数组，同时为空值，删除
+		});
+		
+		//删除空数组
+		$.each(temp_val_v1, function(key, col) {
+			if(!col.length>0){
 				delete temp_val_v1[key];
 			}
-		}
-	});
+		});
 
-	
-	//先将备份的内容复制到查询条件中，只有保存子措施后，备份内容才添加
-	sc_val = jQuery.extend(true, {}, sc_v1);
-	
-	//将本次查询的缓存加入到总条件中
-	sc_val.filters.push(temp_val_v1);
-//	console.log(JSON.stringify(sc_val));
-	
-	temp_val_v1 = jQuery.extend(true, {}, temp_val);//赋值模板到操作缓存
-	
-	//根据筛选条件获取点源，准备填写空值系数
-	point_table();
-	
-	//所有查询条件初始化
-	$("#sc_conter").children().each(function(){//循环一级标签
-		if($(this).attr("sc_su")!="null"){//没有前置条件显示，有前置条件隐藏
-			$(this).hide();
-		}
-		$("#se_bu").show();//筛选按钮打开
 		
-		//循环下级的div标签，div内的子项为单选和复选，全部初始化为不限
-		$(this).children("div").each(function(){
-			$(this).children().each(function(){
-				$(this).removeClass("active");
-				if($(this).attr("val_name") == "不限"){
-					$(this).addClass("active");
-				}
+		//先将备份的内容复制到查询条件中，只有保存子措施后，备份内容才添加
+		sc_val = jQuery.extend(true, {}, sc_v1);
+		
+		//将本次查询的缓存加入到总条件中
+		sc_val.filters.push(temp_val_v1);
+//		console.log(JSON.stringify(sc_val));
+		
+		temp_val_v1 = jQuery.extend(true, {}, temp_val);//赋值模板到操作缓存
+		
+		//根据筛选条件获取点源，准备填写空值系数
+		point_table();
+		
+		//所有查询条件初始化
+		$("#sc_conter").children().each(function(){//循环一级标签
+			if($(this).attr("sc_su")!="null"){//没有前置条件显示，有前置条件隐藏
+				$(this).hide();
+			}
+			$("#se_bu").show();//筛选按钮打开
+			
+			//循环下级的div标签，div内的子项为单选和复选，全部初始化为不限
+			$(this).children("div").each(function(){
+				$(this).children().each(function(){
+					$(this).removeClass("active");
+					if($(this).attr("val_name") == "不限"){
+						$(this).addClass("active");
+					}
+				});
+			});
+			
+			//循环下级的文本框，文本框清空
+			$(this).find("input").each(function(){
+				$(this).val("");
 			});
 		});
-		
-		//循环下级的文本框，文本框清空
-		$(this).find("input").each(function(){
-			$(this).val("");
-		});
-	});
-	//获取点源相应的减排占比等内容，数据加入到表格显示，刷新显示区域
-	
+		//获取点源相应的减排占比等内容，数据加入到表格显示，刷新显示区域
+	},200);
 }
 
 /**
@@ -1082,7 +1092,7 @@ function point_name_table () {
 			var temp_sc_val = jQuery.extend(true, {}, sc_val);
 			delete temp_sc_val.summary;
 			temp_sc_val.regionIds = Codes;
-			console.log(JSON.stringify(temp_sc_val));
+//			console.log(JSON.stringify(temp_sc_val));
 			return JSON.stringify(temp_sc_val);
 		},
 		queryParamsType : "limit", // 参数格式,发送标准的RESTFul类型的参数请求
@@ -1312,7 +1322,15 @@ function zicuoshi_up(){
 			
 			$.each(col, function(k, vol) {
 				if(k.indexOf("psl_")==0){
-					$("#"+k.substring(4,k.length)).val(vol);
+					if(vol == ""){
+						$.each(xishu_temp, function(w, txt) {
+							if(txt == k.substring(4,k.length)){//找到要填写的内容的名称
+								$("#"+k.substring(4,k.length)).val(xishu_temp_v[w]);
+							}
+						});
+					}else{
+						$("#"+k.substring(4,k.length)).val(vol);
+					}
 				}
 			});
 			//打开控制系数填写页面
@@ -1553,6 +1571,13 @@ function create(){
 //	delete sc_v1.summary;
 	
 	var row = $('#show_zicuoshi_table').bootstrapTable('getData');
+	
+	//删除空数组
+//	$.each(sc_v1.filters, function(k, vol) {
+//		if(!vol.fuelType.length>0){
+//			delete sc_v1.filters[k].fuelType;
+//		}
+//	});
 	
 	sc_v1.table = [];
 	sc_v1.table.push(row[0]);
@@ -1904,7 +1929,7 @@ function optionclick(event) {
 	app.mapList[0].infoWindow.hide();
 	var companyId = "";
 	$.each(point_message,function(i,item){
-		console.log(event.graphic._extent.xmax);
+//		console.log(event.graphic._extent.xmax);
 		if(handle_x(item.lon) == event.graphic._extent.xmax && handle_y(item.lat) == event.graphic._extent.ymax){
 			companyId = item.companyId;
 		}
@@ -1916,7 +1941,7 @@ function optionclick(event) {
 	ert.summary = sc_val.summary;
 	
 	ajaxPost_w(jianpaiUrl+'/search/companyInfo',ert).success(function(res){
-		console.log(res);
+//		console.log(res);
 		if ( res.status == "success" ) {
 			
 		}
