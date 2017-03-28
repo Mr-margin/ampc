@@ -189,7 +189,7 @@
 }
 
 .disNone{
-  display: none;
+  display: none !important;
 }
 
 .period .showLine{
@@ -649,6 +649,13 @@ button[disabled],.btn[disabled]{
   100%{
     background-color: #151617;
   }
+}
+
+.theme-blue .scale span{
+  width: 60px;
+}
+.theme-blue .scale span ins{
+  background-color: #fff;
 }
 
 /* 区域时段样式 End*/
