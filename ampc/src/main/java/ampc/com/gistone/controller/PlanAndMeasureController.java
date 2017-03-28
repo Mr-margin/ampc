@@ -431,17 +431,36 @@ public class PlanAndMeasureController {
 				}
 			}
 			// 根据UserId查询所有的行业名称
-			List<Map> nameList = this.tMeasureSectorExcelMapper
-					.getSectorInfo(userId);
+			List<String> nameList = this.tMeasureSectorExcelMapper.getSectorInfo(userId);
 			if (nameList.size() == 0) {
 				nameList = this.tMeasureSectorExcelMapper.getSectorInfo(null);
 			}
-			// 过滤掉一些重复的名称
-			LinkedHashSet<String> nameSet = new LinkedHashSet<String>();
-			for (Map map : nameList) {
-				nameSet.add(map.get("sectorsname").toString());
+			// 根据UserId查询所有的带有条件的行业名称 因为要优先显示
+			List<String> queryList = this.tQueryExcelMapper.selectName(userId);
+			//如果为空就查询系统默认的
+			if (queryList.size() == 0) {
+				queryList = this.tQueryExcelMapper.selectName(null);
 			}
-			// 将结果同意放在一个帮助类中 用来返回结果
+			//创建中间集合
+			List<String> nameSet=new ArrayList<String>();
+			//如果包含了条件的有限加入
+			for(int i=0;i<queryList.size();i++){
+				for(String str:nameList){
+					if(str.equals(queryList.get(i))){
+						nameSet.add(str);
+					}
+				}
+			}
+			//加入其他
+			sn:for(String str:nameList){
+				for(int i=0;i<nameSet.size();i++){
+					if(str.equals(nameSet.get(i))){
+						continue sn;
+					}
+				}
+				nameSet.add(str);
+			}
+			// 将结果统一放在一个帮助类中 用来返回结果
 			List<SMUtil> result = new ArrayList<SMUtil>();
 			for (String name : nameSet) {
 				// 创建结果对象

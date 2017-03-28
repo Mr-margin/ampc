@@ -55,11 +55,6 @@
     <result column="COLORCODE" property="colorcode" jdbcType="VARCHAR" />
     <result column="COLORNAME" property="colorname" jdbcType="OTHER" />
   </resultMap>
-   <!-- 根据用户ID 获取所有的行业名称 -->
-  <resultMap id="mapGetName" type="hashMap" >
-    <result column="SID" property="sid" jdbcType="DECIMAL" />
-    <result column="SECTORSNAME" property="sectorsname" jdbcType="OTHER" />
-  </resultMap>
  
  
  <!--查询当前措施表中的最高版本号-->
@@ -80,12 +75,14 @@
   </select>
   
   <!--根据用户ID 获取所有的行业名称-->
-  <select id="getSectorInfo" parameterType="java.lang.Long" resultMap="mapGetName">
-  	select SECTORSNAME,SID from T_MEASURE_SECTOR_EXCEL   where IS_EFFECTIVE='1' 
+  <select id="getSectorInfo" parameterType="java.lang.Long" resultType="java.lang.String">
+    select SECTORSNAME from(  
+    select ss.*,row_number() over (partition by SECTORSNAME order by SID) rid from T_MEASURE_SECTOR_EXCEL ss  
+    where IS_EFFECTIVE='1' 
   	  <if test="_parameter != null" >
         and USER_ID=#{_parameter,jdbcType=DECIMAL} 
-      </if> GROUP BY SECTORSNAME,SID ORDER BY SID
-  	
+      </if> 
+	) a where rid=1  ORDER BY SID
   </select>
  
  <!--根据条件查询对应的措施-->
