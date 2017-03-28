@@ -478,9 +478,9 @@ function addTimes() {
 }
 
 /*添加时段按钮事件*/
-function openAddTimes() {
-  $('#qyTime').modal('show');
-}
+//function openAddTimes() {
+//  $('#qyTime').modal('show');
+//}
 
 /*返回YYYY-MM-DD HH格式*/
 function momentDate(d) {
@@ -493,9 +493,9 @@ function momentDate(d) {
 }
 
 /*打开删除时段模态框*/
-function openDelTimes() {
-  $('#delTime').modal('show');
-}
+//function openDelTimes() {
+//  $('#delTime').modal('show');
+//}
 
 /*删除时间段*/
 function delTimes() {
@@ -685,64 +685,64 @@ $('#timePlan').on('show.bs.modal', function (event) {
 });
 
 /*时段预案操作模态框选择 start*/
-function selectOperate(type) {
-  if (type == 'sTime') {
-    $('.btnSelect').css({
-      'right': '-100%',
-      'opacity': 0
-    });
-    $('.' + type).css({
-      left: 0,
-      'opacity': 1
-    })
+//function selectOperate(type) {
+//  if (type == 'sTime') {
+//    $('.btnSelect').css({
+//      'right': '-100%',
+//      'opacity': 0
+//    });
+//    $('.' + type).css({
+//      left: 0,
+//      'opacity': 1
+//    })
+//
+//    if (allData[selectedTimes.index].timeItems.length <= 1) {
+//      $('.delTimeBtn').attr('disabled', true);
+//      $('.editTimeBtn').attr('disabled', true);
+//    } else {
+//      $('.delTimeBtn').removeAttr('disabled');
+//      $('.editTimeBtn').removeAttr('disabled');
+//    }
+//
+//  } else {
+//    $('.btnSelect').css({
+//      'left': '-100%',
+//      'opacity': 0
+//    });
+//    $('.' + type).css({
+//      right: 0,
+//      'opacity': 1
+//    })
+//  }
+//}
 
-    if (allData[selectedTimes.index].timeItems.length <= 1) {
-      $('.delTimeBtn').attr('disabled', true);
-      $('.editTimeBtn').attr('disabled', true);
-    } else {
-      $('.delTimeBtn').removeAttr('disabled');
-      $('.editTimeBtn').removeAttr('disabled');
-    }
-
-  } else {
-    $('.btnSelect').css({
-      'left': '-100%',
-      'opacity': 0
-    });
-    $('.' + type).css({
-      right: 0,
-      'opacity': 1
-    })
-  }
-}
-
-$('#editTime').on('show.bs.modal', function (event) {
-  $('.btnSelect').css({
-    'right': 0,
-    'left': 0,
-    'opacity': 1
-  });
-  $('.sTime').css({
-    left: '-100%',
-    'opacity': 0
-  });
-  $('.sPlan').css({
-    right: '-100%',
-    'opacity': 0
-  })
-});
+//$('#editTime').on('show.bs.modal', function (event) {
+//  $('.btnSelect').css({
+//    'right': 0,
+//    'left': 0,
+//    'opacity': 1
+//  });
+//  $('.sTime').css({
+//    left: '-100%',
+//    'opacity': 0
+//  });
+//  $('.sPlan').css({
+//    right: '-100%',
+//    'opacity': 0
+//  })
+//});
 
 /*打开预案编辑*/
-function openAddYA() {
-  $('#addYA .selectAdd').removeClass('disNone');
-  $('#addYA .addCopyPlan').addClass('disNone');
-  $('#addYA .addNewPlan').addClass('disNone');
-  $('#addYA .modal-footer').addClass('disNone');
-
-  window.setTimeout(function () {
-    $('#addYA').modal('show')
-  }, 350)
-}
+//function openAddYA() {
+//  $('#addYA .selectAdd').removeClass('disNone');
+//  $('#addYA .addCopyPlan').addClass('disNone');
+//  $('#addYA .addNewPlan').addClass('disNone');
+//  $('#addYA .modal-footer').addClass('disNone');
+//
+//  window.setTimeout(function () {
+//    $('#addYA').modal('show')
+//  }, 350)
+//}
 
 /*时段预案操作模态框选择 end*/
 var newPlan;
@@ -796,13 +796,13 @@ function createNewPlan(e) {
 }
 
 /*添加新预案按钮*/
-function addNewPlan(e) {
-  $(e).parents('#addYA').find('.modal-footer').removeClass('disNone');
-  $(e).parents('#addYA').find('.addNewPlan').removeClass('disNone');
-  $(e).parents('#addYA').find('.addCopyPlan').addClass('disNone');
-  $(e).parents('.selectAdd').addClass('disNone');
-  newPlan = true;
-}
+//function addNewPlan(e) {
+//  $(e).parents('#addYA').find('.modal-footer').removeClass('disNone');
+//  $(e).parents('#addYA').find('.addNewPlan').removeClass('disNone');
+//  $(e).parents('#addYA').find('.addCopyPlan').addClass('disNone');
+//  $(e).parents('.selectAdd').addClass('disNone');
+//  newPlan = true;
+//}
 
 /*选择已有预案按钮*/
 function copyPlan() {
@@ -817,8 +817,10 @@ function copyPlan() {
 }
 
 /*编辑预案*/
-function editPlan() {
-  t = selectedTimes;
+function editPlan(t) {
+  if(!t){
+     t = selectedTimes;
+  }
   areaIndex = t.index;
   timeIndex = t.indexNum;
 
@@ -860,13 +862,13 @@ function clearTimeDate() {
   }
 }
 
-$('#editTimeDate').on('show.bs.modal', function (event) {
-  areaIndex = selectedTimes.index;
-  timeIndex = selectedTimes.indexNum;
-  clearTimeDate();
-  updatetimeSow();
-  editTimeDateObj.type = $('#selectEditPoint').val();
-});
+//$('#editTimeDate').on('show.bs.modal', function (event) {
+//  areaIndex = selectedTimes.index;
+//  timeIndex = selectedTimes.indexNum;
+//  clearTimeDate();
+//  updatetimeSow();
+//  editTimeDateObj.type = $('#selectEditPoint').val();
+//});
 
 /*编辑时段时间html*/
 function updatetimeSow() {
@@ -926,11 +928,11 @@ function selectEditPoint(t) {
   initEditTimeDate(s, e);
 }
 
-function editTimeDate() {
-  $('#editTimeDate').modal('show');
-  window.setTimeout(function () {
-  }, 350)
-}
+//function editTimeDate() {
+//  $('#editTimeDate').modal('show');
+//  window.setTimeout(function () {
+//  }, 350)
+//}
 
 $('#editArea').on('show.bs.modal', function (event) {
   $.fn.zTree.init($("#adcodeTree"), zTreeSetting, zTreeData);
