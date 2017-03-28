@@ -2,7 +2,7 @@ var columns = [{"field":"xzArea","title":"行政区","align":"center"},{"field":
 var data = [{"xzArea":"杭州市","PM25name":"76","PM10name":"80","SO2name":"85","NOXname":"78","VOCname":"77","COname":"75","NH3name":"76","BCname":"75","OCname":"71","PMFINEname":"76","PMCname":"73"},{"xzArea":"嘉兴市","PM25name":"76","PM10name":"80","SO2name":"85","NOXname":"78","VOCname":"77","COname":"75","NH3name":"76","BCname":"75","OCname":"71","PMFINEname":"76","PMCname":"73"},{"xzArea":"湖州市","PM25name":"76","PM10name":"80","SO2name":"85","NOXname":"78","VOCname":"77","COname":"75","NH3name":"76","BCname":"75","OCname":"71","PMFINEname":"76","PMCname":"73"},{"xzArea":"宁波市","PM25name":"76","PM10name":"80","SO2name":"85","NOXname":"78","VOCname":"77","COname":"75","NH3name":"76","BCname":"75","OCname":"71","PMFINEname":"76","PMCname":"73"}];
 
 
-var ls = window.localStorage;
+var ls = window.sessionStorage;
 var qjMsg = vipspa.getMessage('yaMessage').content;
 
 if(!qjMsg){
