@@ -21,6 +21,20 @@
     ES_COUPLING_NATIVE_ID, ES_COUPING_RELATION_ID, ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, 
     DELETE_TIME, HISTORY_COUPLING
   </sql>
+  
+  
+  
+  
+  <!-- 根据用户Id查询所有清单 -->
+  <select id="selectAll" resultMap="selectAllMap" parameterType="java.lang.Long" >
+    select 
+    ES_COUPLING_ID, ES_COUPLING_NAME
+    from T_ES_COUPLING
+    where USER_ID = #{userId,jdbcType=DECIMAL}
+  </select>
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
