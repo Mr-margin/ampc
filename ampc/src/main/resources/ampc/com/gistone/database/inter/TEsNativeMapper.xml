@@ -5,18 +5,20 @@
     <id column="ES_NATIVE_ID" property="esNativeId" jdbcType="DECIMAL" />
     <result column="ES_NATIVE_NAME" property="esNativeName" jdbcType="OTHER" />
     <result column="ES_NATIVE_YEAR" property="esNativeYear" jdbcType="DECIMAL" />
-    <result column="UPLOAD_TIME" property="uploadTime" jdbcType="DATE" />
+    <result column="ES_UPLOAD_TIME" property="esUploadTime" jdbcType="TIMESTAMP" />
     <result column="ES_COMMENT" property="esComment" jdbcType="OTHER" />
     <result column="ES_NATIVE_RELATION_ID" property="esNativeRelationId" jdbcType="DECIMAL" />
-    <result column="ADD_TIME" property="addTime" jdbcType="DATE" />
-    <result column="UPDATE_TIME" property="updateTime" jdbcType="DATE" />
+    <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
-    <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
+    <result column="ES_CODE_RANGE" property="esCodeRange" jdbcType="VARCHAR" />
+    <result column="ES_VERSION" property="esVersion" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    ES_NATIVE_ID, ES_NATIVE_NAME, ES_NATIVE_YEAR, UPLOAD_TIME, ES_COMMENT, ES_NATIVE_RELATION_ID, 
-    ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME
+    ES_NATIVE_ID, ES_NATIVE_NAME, ES_NATIVE_YEAR, ES_UPLOAD_TIME, ES_COMMENT, ES_NATIVE_RELATION_ID, 
+    ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME, ES_CODE_RANGE, ES_VERSION
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -30,13 +32,15 @@
   </delete>
   <insert id="insert" parameterType="ampc.com.gistone.database.model.TEsNative" >
     insert into T_ES_NATIVE (ES_NATIVE_ID, ES_NATIVE_NAME, ES_NATIVE_YEAR, 
-      UPLOAD_TIME, ES_COMMENT, ES_NATIVE_RELATION_ID, 
+      ES_UPLOAD_TIME, ES_COMMENT, ES_NATIVE_RELATION_ID, 
       ADD_TIME, UPDATE_TIME, USER_ID, 
-      IS_EFFECTIVE, DELETE_TIME)
+      IS_EFFECTIVE, DELETE_TIME, ES_CODE_RANGE, 
+      ES_VERSION)
     values (#{esNativeId,jdbcType=DECIMAL}, #{esNativeName,jdbcType=OTHER}, #{esNativeYear,jdbcType=DECIMAL}, 
-      #{uploadTime,jdbcType=DATE}, #{esComment,jdbcType=OTHER}, #{esNativeRelationId,jdbcType=DECIMAL}, 
-      #{addTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE}, #{userId,jdbcType=DECIMAL}, 
-      #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=DATE})
+      #{esUploadTime,jdbcType=TIMESTAMP}, #{esComment,jdbcType=OTHER}, #{esNativeRelationId,jdbcType=DECIMAL}, 
+      #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=DECIMAL}, 
+      #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=TIMESTAMP}, #{esCodeRange,jdbcType=VARCHAR}, 
+      #{esVersion,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TEsNative" >
     insert into T_ES_NATIVE
@@ -50,8 +54,8 @@
       <if test="esNativeYear != null" >
         ES_NATIVE_YEAR,
       </if>
-      <if test="uploadTime != null" >
-        UPLOAD_TIME,
+      <if test="esUploadTime != null" >
+        ES_UPLOAD_TIME,
       </if>
       <if test="esComment != null" >
         ES_COMMENT,
@@ -74,6 +78,12 @@
       <if test="deleteTime != null" >
         DELETE_TIME,
       </if>
+      <if test="esCodeRange != null" >
+        ES_CODE_RANGE,
+      </if>
+      <if test="esVersion != null" >
+        ES_VERSION,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="esNativeId != null" >
@@ -85,8 +95,8 @@
       <if test="esNativeYear != null" >
         #{esNativeYear,jdbcType=DECIMAL},
       </if>
-      <if test="uploadTime != null" >
-        #{uploadTime,jdbcType=DATE},
+      <if test="esUploadTime != null" >
+        #{esUploadTime,jdbcType=TIMESTAMP},
       </if>
       <if test="esComment != null" >
         #{esComment,jdbcType=OTHER},
@@ -95,10 +105,10 @@
         #{esNativeRelationId,jdbcType=DECIMAL},
       </if>
       <if test="addTime != null" >
-        #{addTime,jdbcType=DATE},
+        #{addTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updateTime != null" >
-        #{updateTime,jdbcType=DATE},
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="userId != null" >
         #{userId,jdbcType=DECIMAL},
@@ -107,7 +117,13 @@
         #{isEffective,jdbcType=VARCHAR},
       </if>
       <if test="deleteTime != null" >
-        #{deleteTime,jdbcType=DATE},
+        #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="esCodeRange != null" >
+        #{esCodeRange,jdbcType=VARCHAR},
+      </if>
+      <if test="esVersion != null" >
+        #{esVersion,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -120,8 +136,8 @@
       <if test="esNativeYear != null" >
         ES_NATIVE_YEAR = #{esNativeYear,jdbcType=DECIMAL},
       </if>
-      <if test="uploadTime != null" >
-        UPLOAD_TIME = #{uploadTime,jdbcType=DATE},
+      <if test="esUploadTime != null" >
+        ES_UPLOAD_TIME = #{esUploadTime,jdbcType=TIMESTAMP},
       </if>
       <if test="esComment != null" >
         ES_COMMENT = #{esComment,jdbcType=OTHER},
@@ -130,10 +146,10 @@
         ES_NATIVE_RELATION_ID = #{esNativeRelationId,jdbcType=DECIMAL},
       </if>
       <if test="addTime != null" >
-        ADD_TIME = #{addTime,jdbcType=DATE},
+        ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updateTime != null" >
-        UPDATE_TIME = #{updateTime,jdbcType=DATE},
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="userId != null" >
         USER_ID = #{userId,jdbcType=DECIMAL},
@@ -142,7 +158,13 @@
         IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
       </if>
       <if test="deleteTime != null" >
-        DELETE_TIME = #{deleteTime,jdbcType=DATE},
+        DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="esCodeRange != null" >
+        ES_CODE_RANGE = #{esCodeRange,jdbcType=VARCHAR},
+      </if>
+      <if test="esVersion != null" >
+        ES_VERSION = #{esVersion,jdbcType=VARCHAR},
       </if>
     </set>
     where ES_NATIVE_ID = #{esNativeId,jdbcType=DECIMAL}
@@ -151,14 +173,16 @@
     update T_ES_NATIVE
     set ES_NATIVE_NAME = #{esNativeName,jdbcType=OTHER},
       ES_NATIVE_YEAR = #{esNativeYear,jdbcType=DECIMAL},
-      UPLOAD_TIME = #{uploadTime,jdbcType=DATE},
+      ES_UPLOAD_TIME = #{esUploadTime,jdbcType=TIMESTAMP},
       ES_COMMENT = #{esComment,jdbcType=OTHER},
       ES_NATIVE_RELATION_ID = #{esNativeRelationId,jdbcType=DECIMAL},
-      ADD_TIME = #{addTime,jdbcType=DATE},
-      UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       USER_ID = #{userId,jdbcType=DECIMAL},
       IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
-      DELETE_TIME = #{deleteTime,jdbcType=DATE}
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      ES_CODE_RANGE = #{esCodeRange,jdbcType=VARCHAR},
+      ES_VERSION = #{esVersion,jdbcType=VARCHAR}
     where ES_NATIVE_ID = #{esNativeId,jdbcType=DECIMAL}
   </update>
 </mapper>
