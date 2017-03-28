@@ -1,4 +1,4 @@
-package ampc.com.gistone.util;
+package ampc.com.gistone.entity;
 
 import java.util.ArrayList;
 import java.util.List;
