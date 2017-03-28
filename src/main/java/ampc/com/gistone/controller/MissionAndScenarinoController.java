@@ -1399,6 +1399,7 @@ public class MissionAndScenarinoController {
 			tScenarinoDetail.setMissionId(missionId);
 			List<TScenarinoDetail> tScenarinoDetaillist=tScenarinoDetailMapper.selectByEntity(tScenarinoDetail);
 			JSONArray arr=new JSONArray();
+			JSONObject objsed=new JSONObject();
 			if(!tScenarinoDetaillist.isEmpty()){
 			for(TScenarinoDetail Scenarino:tScenarinoDetaillist){
 				JSONObject obj=new JSONObject();
@@ -1408,12 +1409,13 @@ public class MissionAndScenarinoController {
 				obj.put("scenarinoStartDate", Scenarino.getScenarinoStartDate().getTime());
 				obj.put("scenarinoEndDate", Scenarino.getScenarinoEndDate().getTime());
 				arr.add(obj);
+				objsed.put("rows", arr);
 			}
 			}else{
 				
 				return AmpcResult.build(1000, "该任务没有创建情景",null);
 			}
-		return AmpcResult.build(0, "success",arr);	
+		return AmpcResult.build(0, "success",objsed);	
 		}catch(Exception e){
 			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误",null);	
