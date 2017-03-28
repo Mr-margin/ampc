@@ -110,8 +110,8 @@ function shoe_data_start(evn){
 	}else if (evn.map.getZoom() >= 8){
 		gis_paramsName.codeLevel = 3;//省市区层级（1省，2市，3区）
 	}
-//	gis_paramsName.scenarinoId = qjMsg.qjId;//情景id
-	gis_paramsName.scenarinoId = 3;//情景id
+	gis_paramsName.scenarinoId = qjMsg.qjId;//情景id
+//	gis_paramsName.scenarinoId = 3;//情景id
 	baizhu_jianpai(gis_paramsName);
 	
 	
@@ -386,125 +386,11 @@ $(function(){
     })
     
     
-    
-    //构建列表展示table  
-/*    $("#table_listShow").bootstrapTable({
-    	method:'POST',
-    	url:'',
-    	dataType: "json",
-    	clickToSelect : true,// 点击选中行
-    	pagination : false, // 在表格底部显示分页工具栏
-    	singleSelect : true,//设置True 将禁止多选
-    	striped : true, // 使表格带有条纹
-    	pagination: true, //是否启用分页
-    	sidePagination: "client",//分页方式：client客户端分页，server服务端分页（*）
-    	pageNumber:1,   //初始化加载第一页，默认第一页
-    	pageSize: 10,   //每页的记录行数
-    	pageList: [10, 25, 50, 100],//可供选择的每页的行数
-    	silent : true, // 刷新事件必须设置
-    	detailView: true,//是否显示父子表
-        columns: columns,
-        data:data,
-      //注册加载子表的事件。注意下这里的三个参数！
-        onExpandRow: function (index, row, $detail) {
-            InitSubTable(index, row, $detail);
-        }
-    });*/
-    
-    
 });
-//初始化子表格(无线循环)
-/*InitSubTable = function (index, row, $detail) {
-    var cur_table = $detail.html('<table></table>').find('table');
-    $(cur_table).bootstrapTable({
-        url: '',
-        method: 'get',
-        clickToSelect: true,
-        detailView: false,//父子表
-        columns: [{
-            field: 'xzArea',
-            align: 'center'
-        }, {
-            field: 'PM25name',
-            align: 'center'
-        }, {
-            field: 'PM10name',
-            align: 'center'
-        }, {
-            field: 'SO2name',
-            align: 'center'
-        }, {
-            field: 'NOXname',
-            align: 'center'
-        }, {
-            field: 'VOCname',
-            align: 'center'
-        }, {
-            field: 'COname',
-            align: 'center'
-        }, {
-            field: 'NH3name',
-            align: 'center'
-        }, {
-            field: 'BCname',
-            align: 'center'
-        }, {
-            field: 'OCname',
-            align: 'center'
-        }, {
-            field: 'PMFINEname',
-            align: 'center'
-        }, {
-            field: 'PMCname',
-            align: 'center'
-        }],
-        data:[{
-        	xzArea: '上城区',
-        	PM25name: '76',
-        	PM10name: '80',
-        	SO2name: '85',
-        	NOXname: '78',
-        	VOCname: '77',
-        	COname: '75',
-        	NH3name: '76',
-        	BCname: '75',
-        	OCname: '71',
-        	PMFINEname: '76',
-        	PMCname: '73'
-        },{
-        	xzArea: '下城区',
-        	PM25name: '76',
-        	PM10name: '80',
-        	SO2name: '85',
-        	NOXname: '78',
-        	VOCname: '77',
-        	COname: '75',
-        	NH3name: '76',
-        	BCname: '75',
-        	OCname: '71',
-        	PMFINEname: '76',
-        	PMCname: '73'
-        },{
-        	xzArea: '江干区',
-        	PM25name: '76',
-        	PM10name: '80',
-        	SO2name: '85',
-        	NOXname: '78',
-        	VOCname: '77',
-        	COname: '75',
-        	NH3name: '76',
-        	BCname: '75',
-        	OCname: '71',
-        	PMFINEname: '76',
-        	PMCname: '73'
-        },]
-
-    });
-};*/
 
 /****************************************************柱状图*************************************************************************/
 function bar (admincode,name,wztype,gis_level) {
-	var paramsName = {"scenarinoId":233,"code":admincode,"addressLevle":gis_level,"stainType":wztype};
+	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":admincode,"addressLevle":gis_level,"stainType":wztype};
 		ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
 			console.log(res)
 			
@@ -537,8 +423,8 @@ function bar (admincode,name,wztype,gis_level) {
 	                      {
 	                    	  show:'true',
 	                    	  realtime:'true',
-	                    	  start:20,
-	                    	  end:80
+	                    	  start:0,
+	                    	  end:50
 	                    	  //startValue:
 	                    	  
 	                      },
@@ -659,7 +545,7 @@ function bar (admincode,name,wztype,gis_level) {
 				oldX = [];
 				oldX = newX;
 				newX = [];
-				pie(admincode,name,wztype,gis_level,1);
+				pie(admincode,name,wztype,gis_level,1,oldX);
 			});
 
 	});
@@ -668,10 +554,21 @@ function bar (admincode,name,wztype,gis_level) {
 var newX=[],oldX=[];
 
 /****************************************************行业措施饼状图*************************************************************************/
-function  pie(admincode,name,wztype,gis_level,pietype){
+function  pie(admincode,name,wztype,gis_level,pietype,oldX){
+	
+	//删除时间重复的数据
+	var new_arr=[];
+	for(var i=0;i<oldX.length;i++) {
+		var items=oldX[i];
+		//判断元素是否存在于new_arr中，如果不存在则插入到new_arr的最后
+		if($.inArray(items,new_arr)==-1) {
+			new_arr.push(items);
+		}
+	}
+	
 	var nameVal;
 	var valueVal;
-	var paramsName = {"scenarinoId":233,"code":admincode,"addressLevle":gis_level,"stainType":wztype,"startDate":"2017-03-24","endDate":"2017-03-29","type":pietype};
+	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":admincode,"addressLevle":gis_level,"stainType":wztype,"startDate":new_arr[0],"endDate":new_arr[new_arr.length-1],"type":pietype};
 	ajaxPost('/echarts/get_pieInfo',paramsName).success(function(result){
 		//console.log(result.data.length)
 			if(result.data.length != 0){
