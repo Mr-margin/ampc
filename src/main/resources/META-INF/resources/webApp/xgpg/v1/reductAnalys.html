@@ -84,24 +84,18 @@
 						<label for="mnfw" class="col-md-2 control-label lh29">任务名称</label>
 
 						<div class="col-md-10">
-							<select name="mnfw" class="form-control" id="rwName" onchange="selectQj(this.value)">
-								<option value="j0">- -</option>
-								<option value="j1">基准</option>
-								<option value="j2">长三角保障</option>
-								<option value="j3">任务一</option>
-								<option value="j4">任务二</option>
-								<option value="j5">任务三</option> 
+							<select name="mnfw" class="form-control" id="rwName" onchange="selectQj()">
 							</select>
 						</div>
 					</div>
 					<div class="form-group mt10 clearfix">
-						<div class="col-md-10 col-md-offset-2" id="tableId" style="display: none;">
+						<div class="col-md-10 col-md-offset-2" id="tableId" >
 							<table class="table table-striped table-bordered table-hover" id="testTableId" style="margin-top:5px;">
 								<thead>
 									  <th data-checkbox="true"></th>
-								      <th data-field="qjmc">情景名称</th>
-								      <th data-field="qjms">情景描述</th>
-								      <th data-field="qjsj">时间</th>
+								      <th data-field="scenarinoId">情景id</th>
+								      <th data-field="scenarinoName">情景名称</th>
+								      <th data-field="scenType">情景类型</th>
 								</thead>
 							</table>
 						</div>

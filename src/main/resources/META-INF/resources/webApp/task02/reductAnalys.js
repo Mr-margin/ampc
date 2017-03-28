@@ -591,7 +591,8 @@ function bar (admincode,name,wztype,gis_level) {
 			                    }*/
 			                }
 			            },
-			            data:res.data.pflResult
+			            //data:res.data.pflResult
+			            data:res.data.jplResult
 			        },
 			        {
 			            name:'减排量',
@@ -619,12 +620,13 @@ function bar (admincode,name,wztype,gis_level) {
 			                    }
 			                }
 			            },
-			            markLine : {
+			            /*markLine : {
                     		data : [
                     		        {type : 'average', name: '平均值'}
                     		]
-                    	},
-			            data:res.data.jplResult
+                    	},*/
+			            //data:res.data.jplResult
+                    	data:res.data.pflResult
 			        }
 			    ]
 			};
