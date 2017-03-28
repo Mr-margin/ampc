@@ -48,27 +48,21 @@ public class ExcelToDateController {
 	// 默认映射
 	@Autowired
 	private GetBySqlMapper getBySqlMapper;
-	
 	//行业Excel映射
 	@Autowired
 	private TSectorExcelMapper tSectorExcelMapper;
-
 	//措施Excel映射
 	@Autowired
 	private TMeasureExcelMapper tMeasureExcelMapper;
-	
 	//措施版本映射
 	@Autowired
 	public TMeasureSectorExcelMapper tMeasureSectorExcelMapper;
-	
 	//行业条件映射
 	@Autowired
 	public TQueryExcelMapper tQueryExcelMapper;
-		
 	//行业描述映射
 	@Autowired
 	public TSectordocExcelMapper tSectordocExcelMapper;
-	
 	//预案措施映射
 	@Autowired
 	public TPlanMeasureMapper tPlanMeasureMapper;
@@ -127,7 +121,6 @@ public class ExcelToDateController {
 			tMeasureSectorExcelMapper.insertSelective(tmse);
 				i++;
 			}
-			System.out.println(i);
 			return AmpcResult.ok("更新成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -182,9 +175,6 @@ public class ExcelToDateController {
 		}
 	}
 	
-	
-	
-	
 	/**
 	 * 筛选条件Excel
 	 * 根据Excel更改措施Excel表中数据
@@ -223,7 +213,6 @@ public class ExcelToDateController {
 					return AmpcResult.build(1000, "添加失败!", null);
 				}
 			}
-			System.out.println(tqe.size());
 			return AmpcResult.ok("更新成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -231,8 +220,6 @@ public class ExcelToDateController {
 			return AmpcResult.build(1000, "参数错误", null);
 		}
 	}
-	
-	
 	
 	/**
 	 * 措施Excel
@@ -315,7 +302,6 @@ public class ExcelToDateController {
 			return AmpcResult.build(1000, "参数错误", null);
 		}
 	}
-	
 	
 	/**
 	 * 用来进行类型装换
@@ -542,10 +528,8 @@ public class ExcelToDateController {
 			int id2=Integer.valueOf(ids[1]);
 			int id3=Integer.valueOf(ids[2]);
 			int id4=Integer.valueOf(ids[3]);
-			System.out.println(checkUtil1.size());
 			//循环所有的措施条件集合帮助类
 			for (CheckUtil1 cu11 : checkUtil1) {
-				System.out.println(cu11.gettMeasureExcel().getMeasureExcelL4s());
 				//获取第一个id[1]的条件集合
 				List<CheckUtil> check1 = cu11.getCheck1();
 				if(check1==null){
@@ -587,7 +571,6 @@ public class ExcelToDateController {
 					}
 				}
 			}
-			System.out.println(ms.size());
 		}
 		//返回结果集
 		return ms;
