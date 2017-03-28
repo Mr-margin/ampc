@@ -13,7 +13,12 @@ public interface TQueryExcelMapper {
 	 */
 	Long selectMaxVersion(Long userId);
 	
-	
+	/**
+	 * 去重查询所有的名称
+	 * @param userId
+	 * @return
+	 */
+	List<String> selectName(Long userId);
 	
 	/**
 	 * 获取到所有的行业信息

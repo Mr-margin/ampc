@@ -47,6 +47,17 @@
   	   ORDER BY QUERY_ID
   </select>
   
+ <!--获取所有-->
+  <select id="selectName" parameterType="java.lang.Long" resultType="java.lang.String" >
+  	select sector_name sectorname from(  
+    select ss.*,row_number() over (partition by sector_name order by query_id) rid from T_QUERY_EXCEL ss   
+	where IS_EFFECTIVE='1' 
+  	  <if test="_parameter != null" >
+        and USER_ID=#{_parameter,jdbcType=DECIMAL} 
+      </if> 
+	) a where rid=1  ORDER BY query_id
+  </select>
+ 
  
  <!-- 修改所有的行业状态 相当于删除 -->
   <update id="updateIsEffeByIds" parameterType="java.lang.Long">
