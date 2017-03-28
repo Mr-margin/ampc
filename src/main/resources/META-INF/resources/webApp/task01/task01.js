@@ -1229,7 +1229,7 @@ function getQD() {
   };
   ajaxPost(url, params).success(function (res) {
 
-    for (var i = 0; i < res.data; i++) {
+    for (var i = 0; i < res.data.length; i++) {
       $('#qd').append($('<option value="'+ res.data[i].esNativeId +'">'+ res.data[i].esNativeName +'</option>'))
     }
 

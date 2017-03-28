@@ -4,14 +4,17 @@
     <div class="col-md-7">
       <div class="areaMsg col-md-12 clearfix">
         <div class="areaTitle" style="float: left; width: 20%;">
-          <button type="button" class="btn-1 btn-lg btn-1-blue toolShow" title="添加区域" style="width: 100%;margin-left: 0px;margin-right: 0px;margin-top: 2px;" data-new="true" data-toggle="modal" data-target="#editArea">添加区域</button>
+          <button type="button" class="btn-1 btn-lg btn-1-blue toolShow" title="添加区域"
+                  style="width: 100%;margin-left: 0px;margin-right: 0px;margin-top: 2px;" data-new="true"
+                  data-toggle="modal" data-target="#editArea">添加区域
+          </button>
         </div>
         <div class="areaCon" style="float: left;width: 80%">
           <div id="timeline"></div>
         </div>
       </div>
       <!--<div class="addArea col-md-12 mt20">-->
-        <!--<button class="btn btn-success addNewArea" data-new="true" data-toggle="modal" data-target="#editArea">添加区域</button>-->
+      <!--<button class="btn btn-success addNewArea" data-new="true" data-toggle="modal" data-target="#editArea">添加区域</button>-->
       <!--</div>-->
     </div>
 
@@ -21,32 +24,6 @@
     </div>
 
   </div>
-
-  <!--模板代码 start-->
-  <!--<div class="areaTitle_con disNone">-->
-    <!--<i class='fa-th-list'></i> <b></b>-->
-
-    <!--<div class="areaToolDiv text-center">-->
-      <!--<button type="button" data-new="false" class="btn btn-default btn-xs toolShow"-->
-              <!--title="区域编辑" data-toggle="modal" data-target="#editArea"><i class="ec-pencil"></i><span>区域编辑</span>-->
-      <!--</button>-->
-      <!--<button type="button" onclick="delArea(this)" class="btn btn-default btn-xs toolShow" title="删除区域"><i-->
-          <!--class="ec-trashcan"></i><span>删除区域</span></button>-->
-      <!--&lt;!&ndash;<button type="button" class="btn btn-default btn-xs toolShow" title="添加时段" data-toggle="modal"&ndash;&gt;-->
-              <!--&lt;!&ndash;data-target="#qyTime"><i class="im-plus"></i><span>添加时段</span></button>&ndash;&gt;-->
-    <!--</div>-->
-  <!--</div>-->
-  <!--模板代码 end-->
-
-  <!--模板代码 NEW Start-->
-
-
-
-  <!--<button type="button" class="btn-1 btn-lg btn-1-salmon toolShow" title="添加区域" style="width: 100%;margin-left: 0px;margin-right: 0px;margin-top: 2px;" data-new="true" data-toggle="modal" data-target="#editArea">添加区域</button>-->
-
-
-
-
 
   <div class="areaTitle_con disNone" style=" height:80px; border: 1px solid #4884E1; border-radius:4px;">
     <div class="pricingTable">
@@ -77,84 +54,91 @@
         </div>
         <div class="modal-body">
 
-         <div class="selectOperate">
-           <div class="btnSelect text-center">
-             <div class="col-md-12">
-               <button class="btn btn-success btn-lg mt20 timeOpe" onclick="selectOperate('sTime')">时段操作</button>
-             </div>
-             <div class="col-md-12">
-               <!--<button class="btn btn-success btn-lg mt20" onclick="selectOperate('sPlan')" data-dismiss="modal">预案操作</button>-->
-               <button class="btn btn-success btn-lg mt20 yacz" data-dismiss="modal" onclick="openAddYA()">预案操作</button>
-             </div>
-           </div>
-           <div class="sTime">
-             <div class="sTimeOpType text-center">
-               <div class="col-md-12">
-                 <button type="button" class="btn btn-success btn-lg mt20" data-dismiss="modal" onclick="openAddTimes()">添加时段</button>
-               </div>
-               <div class="col-md-12">
-                 <button class="btn btn-success btn-lg mt20 delTimeBtn" data-dismiss="modal" onclick="openDelTimes()">删除时段</button>
-               </div>
-               <div class="col-md-12">
-                 <button class="btn btn-success btn-lg mt20 editTimeBtn" data-dismiss="modal" onclick="editTimeDate()">修改时段时间</button>
-               </div>
-             </div>
-           </div>
-           <div class="sPlan">
-             <div class="sPlanOpType text-center">
-               <div class="col-md-12">
-                 <button class="btn btn-success btn-lg mt20" data-dismiss="modal">添加新预案</button>
-               </div>
-               <div class="col-md-12">
-                 <button class="btn btn-success btn-lg mt20" data-dismiss="modal">复制已有预案</button>
-               </div>
-             </div>
-           </div>
-         </div>
-
-
-        </div>
-<!--         <div class="modal-footer"> -->
-<!--           <button type="button" class="btn btn-success" data-dismiss="modal">确定</button> -->
-<!--           <button type="button" class="btn btn-default" data-dismiss="modal">取消</button> -->
-<!--         </div> -->
-      </div>
-    </div>
-  </div>
-
-
-  <!-- Modal 添加时段-->
-  <div class="modal fade" id="qyTime" tabindex="-1" role="dialog" aria-labelledby="qyTimeLabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="qyTimeLabel">添加时段</h4>
-        </div>
-        <div class="modal-body">
-
-          <div class="form-group mt10 clearfix">
-            <label for="qyTimePoint" class="col-md-12 control-label lh29">请选择需要分割的时间点：</label>
-
-            <div class="col-md-12">
-              <input type="text" class="form-control" id="qyTimePoint" name="qyTimePoint" readonly
-                     placeholder="请选择时间点···">
+          <div class="selectOperate">
+            <div class="btnSelect text-center">
+              <div class="col-md-12">
+                <button class="btn btn-success btn-lg mt20 timeOpe" onclick="selectOperate('sTime')">时段操作</button>
+              </div>
+              <div class="col-md-12">
+                <!--<button class="btn btn-success btn-lg mt20" onclick="selectOperate('sPlan')" data-dismiss="modal">预案操作</button>-->
+                <button class="btn btn-success btn-lg mt20 yacz" data-dismiss="modal" onclick="openAddYA()">预案操作
+                </button>
+              </div>
+            </div>
+            <div class="sTime">
+              <div class="sTimeOpType text-center">
+                <div class="col-md-12">
+                  <button type="button" class="btn btn-success btn-lg mt20" data-dismiss="modal"
+                          onclick="openAddTimes()">添加时段
+                  </button>
+                </div>
+                <div class="col-md-12">
+                  <button class="btn btn-success btn-lg mt20 delTimeBtn" data-dismiss="modal" onclick="openDelTimes()">
+                    删除时段
+                  </button>
+                </div>
+                <div class="col-md-12">
+                  <button class="btn btn-success btn-lg mt20 editTimeBtn" data-dismiss="modal" onclick="editTimeDate()">
+                    修改时段时间
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="sPlan">
+              <div class="sPlanOpType text-center">
+                <div class="col-md-12">
+                  <button class="btn btn-success btn-lg mt20" data-dismiss="modal">添加新预案</button>
+                </div>
+                <div class="col-md-12">
+                  <button class="btn btn-success btn-lg mt20" data-dismiss="modal">复制已有预案</button>
+                </div>
+              </div>
             </div>
           </div>
 
+
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-          <button type="button" class="btn btn-success" data-dismiss="modal" onclick="addTimes()">确认添加</button>
-        </div>
+        <!--         <div class="modal-footer"> -->
+        <!--           <button type="button" class="btn btn-success" data-dismiss="modal">确定</button> -->
+        <!--           <button type="button" class="btn btn-default" data-dismiss="modal">取消</button> -->
+        <!--         </div> -->
       </div>
     </div>
   </div>
 
 
+  <!--&lt;!&ndash; Modal 添加时段&ndash;&gt;-->
+  <!--<div class="modal fade" id="qyTime" tabindex="-1" role="dialog" aria-labelledby="qyTimeLabel">-->
+  <!--<div class="modal-dialog" role="document">-->
+  <!--<div class="modal-content">-->
+  <!--<div class="modal-header">-->
+  <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span-->
+  <!--aria-hidden="true">&times;</span></button>-->
+  <!--<h4 class="modal-title" id="qyTimeLabel">添加时段</h4>-->
+  <!--</div>-->
+  <!--<div class="modal-body">-->
+
+  <!--<div class="form-group mt10 clearfix">-->
+  <!--<label for="qyTimePoint" class="col-md-12 control-label lh29">请选择需要分割的时间点：</label>-->
+
+  <!--<div class="col-md-12">-->
+  <!--<input type="text" class="form-control" id="qyTimePoint" name="qyTimePoint" readonly-->
+  <!--placeholder="请选择时间点···">-->
+  <!--</div>-->
+  <!--</div>-->
+
+  <!--</div>-->
+  <!--<div class="modal-footer">-->
+  <!--<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>-->
+  <!--<button type="button" class="btn btn-success" data-dismiss="modal" onclick="addTimes()">确认添加</button>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--</div>-->
+
+
   <!-- Modal 删除时段-->
-  <div class="modal fade" id="delTime" tabindex="-1" role="dialog" aria-labelledby="delTimeLabel">
+  <div class="modal fade" id="delTime1" tabindex="-1" role="dialog" aria-labelledby="delTimeLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -181,54 +165,58 @@
 
 
   <!-- Modal 添加预案  -->
-  <div class="modal fade" id="addYA" tabindex="-1" role="dialog" aria-labelledby="addYALabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="addYALabel">添加预案</h4>
-        </div>
-        <div class="modal-body">
-          <div class="selectAdd">
-            <div class="text-center mt20 mb20">
-              <button type="button" class="btn btn-success btn-lg editPlanBtn" data-dismiss="modal" onclick="editPlan()">编辑预案</button>
-            </div>
-            <div class="text-center mt20">
-              <button type="button" class="btn btn-success btn-lg addNewPlanBtn" onclick="addNewPlan(this)">添加新预案</button>
-              <a href="#/csbj" id="addCSBJ" class="disNone"></a>
-            </div>
-            <div class="text-center mt20 mb20">
-              <button type="button" class="btn btn-success btn-lg addCopyPlanBtn" onclick="copyPlan(this)">复制已有预案</button>
-            </div>
-          </div>
-          <div class="addCopyPlan disNone">
-            <div class="form-group" style="line-height: 30px;padding: 30px">
-              <label class="mb25" for="copyPlan">预案名称：</label>
-              <select class="form-control mb25" id="copyPlan">
-              </select>
-            </div>
-          </div>
-          <div class="addNewPlan disNone">
-            <div class="form-group mt10 clearfix">
-              <label for="yaName" class="col-md-2 control-label lh29">预案名称</label>
+  <!--<div class="modal fade" id="addYA" tabindex="-1" role="dialog" aria-labelledby="addYALabel">-->
+  <!--<div class="modal-dialog" role="document">-->
+  <!--<div class="modal-content">-->
+  <!--<div class="modal-header">-->
+  <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span-->
+  <!--aria-hidden="true">&times;</span></button>-->
+  <!--<h4 class="modal-title" id="addYALabel">添加预案</h4>-->
+  <!--</div>-->
+  <!--<div class="modal-body">-->
+  <!--<div class="selectAdd">-->
+  <!--<div class="text-center mt20 mb20">-->
+  <!--<button type="button" class="btn btn-success btn-lg editPlanBtn" data-dismiss="modal"-->
+  <!--onclick="editPlan()">编辑预案-->
+  <!--</button>-->
+  <!--</div>-->
+  <!--<div class="text-center mt20">-->
+  <!--<button type="button" class="btn btn-success btn-lg addNewPlanBtn" onclick="addNewPlan(this)">添加新预案-->
+  <!--</button>-->
+  <!--<a href="#/csbj" id="addCSBJ" class="disNone"></a>-->
+  <!--</div>-->
+  <!--<div class="text-center mt20 mb20">-->
+  <!--<button type="button" class="btn btn-success btn-lg addCopyPlanBtn" onclick="copyPlan(this)">复制已有预案-->
+  <!--</button>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--<div class="addCopyPlan disNone">-->
+  <!--<div class="form-group" style="line-height: 30px;padding: 30px">-->
+  <!--<label class="mb25" for="copyPlan">预案名称：</label>-->
+  <!--<select class="form-control mb25" id="copyPlan">-->
+  <!--</select>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--<div class="addNewPlan disNone">-->
+  <!--<div class="form-group mt10 clearfix">-->
+  <!--<label for="yaName" class="col-md-2 control-label lh29">预案名称</label>-->
 
-              <div class="col-md-10">
-                <input type="text" class="form-control" id="yaName" name="yaName" placeholder="预案名称">
-              </div>
-              <div class="col-md-10 col-md-offset-2">
-                <span>（限15字以内）</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer disNone">
-          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-          <button type="button" class="btn btn-success" data-dismiss="modal" onclick="addPlan()">确定添加</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!--<div class="col-md-10">-->
+  <!--<input type="text" class="form-control" id="yaName" name="yaName" placeholder="预案名称">-->
+  <!--</div>-->
+  <!--<div class="col-md-10 col-md-offset-2">-->
+  <!--<span>（限15字以内）</span>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--<div class="modal-footer disNone">-->
+  <!--<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>-->
+  <!--<button type="button" class="btn btn-success" data-dismiss="modal" onclick="addPlan()">确定添加</button>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--</div>-->
 
 
   <!-- Modal 区域编辑-->
@@ -270,13 +258,15 @@
                 </ul>
               </div>
               <div class="rightBtn">
-                <button class="btn btn-success btn-lg" onclick="showAllCode()"><i class="fa-chevron-right"></i></button></div>
+                <button class="btn btn-success btn-lg" onclick="showAllCode()"><i class="fa-chevron-right"></i></button>
+              </div>
             </div>
             <div class="col-md-10 pr0 pl0">
               <div class="col-md-6 pl0 ">
                 <div class="showCode" style="border: 1px solid transparent;">
                   <div class="clearCode clearfix mt10 mr10">
-                    <button class="btn btn-success" onclick="clearAllArea()" style="float: right;margin-left: 10px">清空</button>
+                    <button class="btn btn-success" onclick="clearAllArea()" style="float: right;margin-left: 10px">清空
+                    </button>
                     <!--<button class="btn btn-success" onclick="showMap()" style="float: right;">地图展示</button>-->
                   </div>
                   <div class="adcodeList mt20">
@@ -310,69 +300,77 @@
   </div>
 
   <!-- Modal 时段时间修改 -->
-  <div class="modal fade" id="editTimeDate" tabindex="-1" role="dialog" aria-labelledby="editTimeDateLabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="editTimeDateLabel">时段时间修改</h4>
-        </div>
-        <div class="modal-body">
-          <div class="showTimes text-center" style="height: 90px;">
-            <div class="col-md-4" style="border:1px solid #aaa;border-radius: 3px">
-              <h4>前一时段</h4>
-              <p></p>
-            </div>
-            <div class="col-md-4" style="border:1px solid #aaa;border-radius: 3px">
-              <h4>待编辑时段</h4>
-              <p></p>
+  <!--<div class="modal fade" id="editTimeDate" tabindex="-1" role="dialog" aria-labelledby="editTimeDateLabel">-->
+  <!--<div class="modal-dialog" role="document">-->
+  <!--<div class="modal-content">-->
+  <!--<div class="modal-header">-->
+  <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span-->
+  <!--aria-hidden="true">&times;</span></button>-->
+  <!--<h4 class="modal-title" id="editTimeDateLabel">时段时间修改</h4>-->
+  <!--</div>-->
+  <!--<div class="modal-body">-->
+  <!--<div class="showTimes text-center" style="height: 90px;">-->
+  <!--<div class="col-md-4" style="border:1px solid #aaa;border-radius: 3px">-->
+  <!--<h4>前一时段</h4>-->
 
-            </div>
-            <div class="col-md-4" style="border:1px solid #aaa;border-radius: 3px">
-              <h4>后一时段</h4>
-              <p></p>
-            </div>
-          </div>
-          <div class="selectEditPoint mt20">
-            <div class="form-group" style="line-height: 30px;padding: 30px">
-              <label class="col-md-3" for="selectEditPoint">修改时间点：</label>
-              <div class="col-md-9">
-                <select class="form-control mb25" id="selectEditPoint" onchange="selectEditPoint(this)">
+  <!--<p></p>-->
+  <!--</div>-->
+  <!--<div class="col-md-4" style="border:1px solid #aaa;border-radius: 3px">-->
+  <!--<h4>待编辑时段</h4>-->
 
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="inputEditPoint mt20">
-            <div class="form-group" style="line-height: 30px;padding: 30px">
-              <label class="col-md-3" for="editDate">输入时间：</label>
-              <div class="col-md-9">
-                <input type="text" class="form-control" id="editDate" name="editDate" readonly placeholder="请选择时间···">
-                <!--<input type="text" placeholder="YYYY-MM-DD HH" class="form-control mb25" id="inputEditPoint">-->
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success" data-dismiss="modal" onclick="sunEditTimeDate()">确定</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!--<p></p>-->
+
+  <!--</div>-->
+  <!--<div class="col-md-4" style="border:1px solid #aaa;border-radius: 3px">-->
+  <!--<h4>后一时段</h4>-->
+
+  <!--<p></p>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--<div class="selectEditPoint mt20">-->
+  <!--<div class="form-group" style="line-height: 30px;padding: 30px">-->
+  <!--<label class="col-md-3" for="selectEditPoint">修改时间点：</label>-->
+
+  <!--<div class="col-md-9">-->
+  <!--<select class="form-control mb25" id="selectEditPoint" onchange="selectEditPoint(this)">-->
+
+  <!--</select>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--<div class="inputEditPoint mt20">-->
+  <!--<div class="form-group" style="line-height: 30px;padding: 30px">-->
+  <!--<label class="col-md-3" for="editDate">输入时间：</label>-->
+
+  <!--<div class="col-md-9">-->
+  <!--<input type="text" class="form-control" id="editDate" name="editDate" readonly placeholder="请选择时间···">-->
+  <!--&lt;!&ndash;<input type="text" placeholder="YYYY-MM-DD HH" class="form-control mb25" id="inputEditPoint">&ndash;&gt;-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--<div class="modal-footer">-->
+  <!--<button type="button" class="btn btn-success" data-dismiss="modal" onclick="sunEditTimeDate()">确定</button>-->
+  <!--<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--</div>-->
+  <!--</div>-->
 
   <!-- Modal 情景复制-->
   <div class="modal fade" id="selectCreateQj" tabindex="-1" role="dialog" aria-labelledby="selectCreateQjLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
           <h4 class="modal-title" id="selectCreateQjLabel">选择情景</h4>
         </div>
         <div class="modal-body">
           <div class="selectCQJbtn text-center">
             <div class="col-md-12">
-              <button class="btn btn-success btn-lg mt20" data-dismiss="modal" onclick="selectCopy(false)">编辑新情景</button>
+              <button class="btn btn-success btn-lg mt20" data-dismiss="modal" onclick="selectCopy(false)">编辑新情景
+              </button>
             </div>
             <div class="col-md-12">
               <button class="btn btn-success btn-lg mt20" onclick="selectCopy(true)">复制已有情景</button>
@@ -420,13 +418,13 @@
   </div>
 
 
-
   <!-- Modal 减排状态查看 -->
   <div class="modal fade" id="jpzt" tabindex="-1" role="dialog" aria-labelledby="jpztLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
           <h4 class="modal-title" id="jpztLabel">减排计算状态</h4>
         </div>
         <div class="modal-body text-center">
@@ -468,5 +466,230 @@
       <span></span>
     </label>
   </div>
+  <a href="#/csbj" id="addCSBJ" class="disNone"></a>
+
+
+  <!-- Modal 时段预案模态框整合-->
+  <div class="modal fade" id="timePlan" tabindex="-1" role="dialog" aria-labelledby="timePlanLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content modal-lg">
+        <div class="modal-body">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                  style='position: absolute;right: 5px;top: 0px;'><span aria-hidden="true">&times;</span></button>
+          <div>
+            <div class="col-md-2">
+              <!-- 时段预案选择 -->
+              <ul class="nav nav-pills nav-justified" role="tablist">
+                <li role="presentation" class="btn-success btn-outline active" style='background-color:#fff;'><a
+                    href="#time" aria-controls="time" role="tab" data-toggle="tab">时段操作</a></li>
+                <br/>
+                <li role="presentation" class="btn-success btn-outline" style='background-color:#fff;'><a href="#plan"
+                                                                                                          aria-controls="plan"
+                                                                                                          role="tab"
+                                                                                                          data-toggle="tab">预案操作</a>
+                </li>
+              </ul>
+            </div>
+            <div class="tab-content col-md-10" style='border:none;'>
+              <!-- 时段操作 -->
+              <div role="tabpanel" class="tab-pane active" id="time">
+                <div>
+                  <!-- 时段操作选择 -->
+                  <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="addTimeLi"><a href="#addTime1" aria-controls="addTime1" role="tab"
+                                                                 data-toggle="tab">时段添加</a></li>
+                    <li role="presentation" class="delTimeLi"><a href="#delTime" aria-controls="delTime" role="tab"
+                                                                 data-toggle="tab">时段删除</a></li>
+                    <li role="presentation" class="editTimeLi"><a href="#editTime1" aria-controls="editTime1" role="tab"
+                                                                  data-toggle="tab">时段编辑</a></li>
+                  </ul>
+                  <!-- 时段操作内容 -->
+                  <div class="tab-content">
+                    <!--时段添加-->
+                    <div role="tabpanel" class="tab-pane addTimeDiv" id="addTime1">
+                      <!--<div class="addTimeHk" style='margin-bottom:40px;'>-->
+                      <!--<h3 style='margin-bottom:40px;'>编辑插入此时间段的时间点：</h3>-->
+                      <!--<input type="hidden" class="qyTimePoint" id="qyTimePoint" />-->
+                      <!--</div>-->
+
+
+                      <div class="form-group mt10 clearfix">
+                        <label for="qyTimePoint" class="col-md-12 control-label lh29">请选择插入此时间段的时间点：</label>
+
+                        <div class="col-md-12">
+                          <input type="text" class="form-control" id="qyTimePoint" name="qyTimePoint" readonly
+                                 placeholder="请选择时间点···">
+                        </div>
+                      </div>
+
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="addTimes()">确认添加
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                      </div>
+                    </div>
+                    <!--时段删除-->
+                    <div role="tabpanel" class="tab-pane delTimeDiv" id="delTime">
+
+                      <h3>请选择删除后需要合并的时段：</h3>
+                      <h4 style="color: #990000"> 注：删除时段会同时删除时段上预案，请谨慎选择删除的时段</h4>
+
+                      <div class="delSelect"></div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="delTimes()">确定删除
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                      </div>
+                    </div>
+                    <!--时段编辑-->
+                    <div role="tabpanel" class="tab-pane editTimeDiv" id="editTime1">
+
+
+                      <!--<div class="addTimeHk" style='margin-bottom:40px;'>-->
+                      <!--<h3>请编辑时段时长：</h3>-->
+                      <!--<h4 style='margin-bottom:40px;' style="color: #990000">  注：取消拖动时直接保存</h4>-->
+                      <!--<input type="hidden" class="editTimePoint" id="editTimePoint" value="25,50"/>-->
+                      <!--</div>-->
+
+                      <div class="showTimes text-center" style="height: 90px;">
+                        <div class="col-md-4" style="border:1px solid #aaa;border-radius: 3px">
+                          <h4>前一时段</h4>
+
+                          <p></p>
+                        </div>
+                        <div class="col-md-4" style="border:1px solid #aaa;border-radius: 3px">
+                          <h4>待编辑时段</h4>
+
+                          <p></p>
+
+                        </div>
+                        <div class="col-md-4" style="border:1px solid #aaa;border-radius: 3px">
+                          <h4>后一时段</h4>
+
+                          <p></p>
+                        </div>
+                      </div>
+                      <div class="selectEditPoint mt20">
+                        <div class="form-group" style="line-height: 30px;padding: 30px">
+                          <label class="col-md-3" for="selectEditPoint">修改时间点：</label>
+
+                          <div class="col-md-9">
+                            <select class="form-control mb25" id="selectEditPoint" onchange="selectEditPoint(this)">
+
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="inputEditPoint mt20">
+                        <div class="form-group" style="line-height: 30px;padding: 30px">
+                          <label class="col-md-3" for="editDate">输入时间：</label>
+
+                          <div class="col-md-9">
+                            <input type="text" class="form-control" id="editDate" name="editDate" readonly
+                                   placeholder="请选择时间···">
+                            <!--<input type="text" placeholder="YYYY-MM-DD HH" class="form-control mb25" id="inputEditPoint">-->
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="sunEditTimeDate()">
+                          确定
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- 预案操作 -->
+              <div role="tabpanel" class="tab-pane" id="plan">
+
+                <div>
+
+                  <!-- 预案操作选择 -->
+                  <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="addPlanLi"><a href="#newPlan" aria-controls="newPlan" role="tab"
+                                                                 data-toggle="tab">添加新预案</a></li>
+                    <li role="presentation" class="copyPlanLi"><a href="#oldPlan" aria-controls="oldPlan" role="tab"
+                                                                  data-toggle="tab">复制旧预案</a></li>
+                    <li role="presentation" class="editPlanLi"><a href="#editPlan" aria-controls="editPlan" role="tab"
+                                                                  data-toggle="tab">编辑现预案</a></li>
+                    <li role="presentation" class="delPlanLi"><a href="#delPlan" aria-controls="delPlan" role="tab"
+                                                                 data-toggle="tab">删除现预案</a></li>
+                  </ul>
+
+                  <!-- 源操作内容 -->
+                  <div class="tab-content">
+                    <!--添加新预案-->
+                    <div role="tabpanel" class="tab-pane addPlanDiv" id="newPlan">
+
+
+                      <div class="form-group mt10 clearfix" style="line-height: 30px;padding: 30px">
+                        <label for="yaName" class="col-md-3 control-label lh29">预案名称：</label>
+
+                        <div class="col-md-9">
+                        <input type="text" class="form-control" id="yaName" name="yaName" placeholder="预案名称">
+                        </div>
+                        <div class="col-md-9 col-md-offset-3">
+                          <span>（限15字以内）</span>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="addPlan(true)">
+                          确定添加
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                      </div>
+
+
+                    </div>
+                    <!--复制旧预案-->
+                    <div role="tabpanel" class="tab-pane copyPlanDiv" id="oldPlan">
+                      <div class="form-group mt10 clearfix" style="line-height: 30px;padding: 30px">
+                        <label for="yaName" class="col-md-3 control-label lh29">预案名称：</label>
+                        <div class="col-md-9">
+                          <select class="form-control" id="copyPlan"></select>
+                        </div>
+                      </div>
+
+
+
+
+                      <!--<div class="form-group mt10 clearfix" style="line-height: 30px;padding: 30px">-->
+                        <!--<label class="mb25" for="copyPlan">预案名称：</label>-->
+                        <!--<select class="form-control mb25" id="copyPlan">-->
+                        <!--</select>-->
+                      <!--</div>-->
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="addPlan(false)">
+                          确定添加
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                      </div>
+                    </div>
+                    <!--编辑现预案-->
+                    <div role="tabpanel" class="tab-pane editPlanDiv" id="editPlan">
+
+                      <div>
+                        <h3>点击进行预案编辑：</h3>
+                        <button class="btn btn-success btn-lg" onclick="editPlan()" data-dismiss="modal">编辑预案</button>
+                      </div>
+
+                    </div>
+                    <!--删除现预案-->
+                    <div role="tabpanel" class="tab-pane delPlanDiv" id="delPlan">删除现预案</div>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>
+
