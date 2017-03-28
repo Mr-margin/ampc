@@ -10,12 +10,16 @@ package ampc.com.gistone.redisqueue;
 
 
 
+import java.io.IOException;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ampc.com.gistone.database.inter.TUngribMapper;
+import ampc.com.gistone.redisqueue.result.Message;
+import ampc.com.gistone.util.JsonUtil;
 
 /**  
  * @Title: AcceptMessage.java
@@ -36,6 +40,9 @@ public class AcceptMessageQueue implements Runnable{
 	//加载持久ungrib数据的工具类
 	@Autowired
 	private ToDataUngribUtil toDataUngribUtil;
+	//加载持久tasksStatus数据的工具类
+	@Autowired
+	private ToDataTasksUtil toDataTasksUtil;
 
 	/* (非 Javadoc) 
 	* <p>Title: run</p> 
@@ -47,10 +54,26 @@ public class AcceptMessageQueue implements Runnable{
 	public void run() {
 		String queueKeys ;
 		
-		String rpop = redisUtilServer.rpop("ungrib_test");
+		/*String rpop = redisUtilServer.rpop("ungrib_test");
 		System.out.println(rpop);
 		
-		toDataUngribUtil.updateDB(rpop);
+		toDataUngribUtil.updateDB(rpop);*/
+		String result_Start_model = redisUtilServer.rpop("result_Start_model");
+		try {
+			Message message = JsonUtil.jsonToObj(result_Start_model, Message.class);
+			
+			if("model.start.result".equals(message.getType())){
+				System.out.println(result_Start_model+"接受到的结果");
+				toDataTasksUtil.updateDB(message);
+			}
+			
+		} catch (IOException e) {                                                                             
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		/*System.out.println(result_Start_model);
+		toDataTasksUtil.updateDB(result_Start_model);*/
+		
 		//JSONArray array = JSONArray.fromObject(rpop);
 			/*JSONObject jsonObject = new JSONObject(rpop);
 			String id = (String) jsonObject.get("id");

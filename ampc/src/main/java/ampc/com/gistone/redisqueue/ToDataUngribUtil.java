@@ -51,6 +51,7 @@ public class ToDataUngribUtil {
 	 * @date 2017年3月23日 下午2:50:22
 	 */
 	public void updateDB(String rpop) {
+		//创建ungrib对象
 		TUngrib tUngrib = new TUngrib();
 		JSONObject fromObject = JSONObject.fromObject(rpop);
 		String id = (String) fromObject.get("id");//消息的id

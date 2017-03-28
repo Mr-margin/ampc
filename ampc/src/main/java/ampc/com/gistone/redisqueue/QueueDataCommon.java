@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
  * @date 2017年3月17日 下午1:52:17
  * @version 1.0
  */
-@Component
 public class QueueDataCommon {
 	//初始化 第一次的值 为true 其他均为false
 	private String firsttime;

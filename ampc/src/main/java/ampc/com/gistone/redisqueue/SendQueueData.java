@@ -33,7 +33,7 @@ import ampc.com.gistone.redis.RedisTestService;
 @Component
 public class SendQueueData {
 	@Autowired
-	private QueueData queueDatabase;
+	private SendQueueData sendQueueData;
 	@Autowired
 	private RedisUtilServer redisqueue;
 	
@@ -57,8 +57,8 @@ public class SendQueueData {
 		JSONObject jsonObject = JSONObject.fromObject(queueData);
 		String json = jsonObject.toString();
 		System.out.println(json+"这是发送的数据包 ");
-		sendData(json);
-		
+		sendQueueData.sendData(json);
+		System.out.println("发送成功");
 	}
 
 

@@ -8,11 +8,6 @@
  */
 package ampc.com.gistone.redisqueue;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
-
 import org.springframework.stereotype.Component;
 
 /**  
@@ -23,7 +18,6 @@ import org.springframework.stereotype.Component;
  * @date 2017年3月17日 下午1:46:42
  * @version 1.0
  */
-@Component
 public class QueueData {
 	//id 每一条消息的id 保证唯一
 	private String id;
@@ -32,7 +26,7 @@ public class QueueData {
 	//情景启动的模式
 	private String type;
 	//消息体的具体内容
-	private Map<String, Object> body;
+	private Object body;
 	
 	public String getId() {
 		return id;
@@ -53,23 +47,16 @@ public class QueueData {
 		this.type = type;
 	}
 	
-	public Map<String, Object> getBody() {
+	
+	public Object getBody() {
 		return body;
 	}
-	public void setBody(Map<String, Object> body) {
+	public void setBody(Object body) {
 		this.body = body;
 	}
 	public QueueData() {
 		super();
 		// TODO Auto-generated constructor stub
-	}
-	public QueueData(String id, String time, String type,
-			Map<String, Object> body) {
-		super();
-		this.id = id;
-		this.time = time;
-		this.type = type;
-		this.body = body;
 	}
 	
 	

@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
  * @date 2017年3月17日 下午2:00:34
  * @version 1.0
  */
-@Component
 public class QueueDataWrf {
 	//来源于情景详情表  
 	private String spinup;
