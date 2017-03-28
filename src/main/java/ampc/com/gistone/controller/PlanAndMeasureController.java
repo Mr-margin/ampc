@@ -45,6 +45,7 @@ import ampc.com.gistone.entity.MeasureContentUtil;
 import ampc.com.gistone.entity.MeasureUtil;
 import ampc.com.gistone.entity.SMUtil;
 import ampc.com.gistone.util.AmpcResult;
+import ampc.com.gistone.util.CastNumUtil;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.ScenarinoStatusUtil;
@@ -565,9 +566,8 @@ public class PlanAndMeasureController {
 								if(pool.get(stainType)==null||pool.get(stainType).toString().equals("")) continue;
 								double d1 = Double.parseDouble(pool.get(stainType).toString().split("/")[0]);
 								double d2 = Double.parseDouble(pool.get(stainType).toString().split("/")[1]);
-								BigDecimal bd = new BigDecimal(d1 / d2); 
-								String str = bd.toPlainString();
-								list.get(i).put("reduct", str);
+								double d3=CastNumUtil.significand(d1/d2, 3)*100;
+								list.get(i).put("reduct", String.valueOf(d3));
 								// 如果子措施和汇总都有对应污染物 则计算涉及减排比
 								if (ratioMap != null) {
 									// 如果不是PM10
@@ -575,18 +575,22 @@ public class PlanAndMeasureController {
 										if (ratioMap.get(stainType) != null&& pool.get(stainType) != null) {
 											double dratio = Double.parseDouble(ratioMap.get(stainType).toString());
 											double dpool = Double.parseDouble(pool.get(stainType).toString().split("/")[1]);
-											BigDecimal br = new BigDecimal(dratio / dpool); 
-											String str1 = br.toPlainString();
-											list.get(i).put("ratio", str1);
+											double dr=CastNumUtil.significand(dratio / dpool, 3)*100;
+											list.get(i).put("ratio", String.valueOf(dr));
+//											BigDecimal br = new BigDecimal(dratio / dpool); 
+//											String str1 = br.toPlainString();
+//											list.get(i).put("ratio", str1);
 										}
 									} else { // 如果是PM10需要计算PMcoarse PM25
 										if (ratioMap.get("PMcoarse") != null&& ratioMap.get("PM25") != null&& pool.get(stainType) != null) {
 											double pMcoarse = Double.parseDouble(ratioMap.get("PMcoarse").toString());
 											double pM25 = Double.parseDouble(ratioMap.get("PM25").toString());
 											double dpool = Double.parseDouble(pool.get(stainType).toString().split("/")[1]);
-											BigDecimal br = new BigDecimal((pMcoarse + pM25) / dpool); 
-											String str1 = br.toPlainString();
-											list.get(i).put("ratio", str1);
+											double dr=CastNumUtil.significand((pMcoarse + pM25) / dpool, 3)*100;
+											list.get(i).put("ratio", String.valueOf(dr));
+//											BigDecimal br = new BigDecimal((pMcoarse + pM25) / dpool); 
+//											String str1 = br.toPlainString();
+//											list.get(i).put("ratio", str1);
 										}
 									}
 								}
@@ -916,11 +920,14 @@ public class PlanAndMeasureController {
 				map.put("sectorName", sectorName);
 				//查询所有的预案措施
 				List<Long> plist = tPlanMeasureMapper.selectIdByMap(map);
-				//因为进行删除了 则要把所有的减排结果进行刷新
-				int update_status = tPlanMeasureMapper.updateRatio(plist);
-				if (update_status >= 0) {
-					return AmpcResult.ok("删除成功");
+				if(plist.size()>0){
+					//因为进行删除了 则要把所有的减排结果进行刷新
+					int update_status = tPlanMeasureMapper.updateRatio(plist);
+					if (update_status >= 0) {
+						return AmpcResult.ok("删除成功");
+					}
 				}
+				return AmpcResult.ok("删除成功");
 			}
 			return AmpcResult.build(1000, "删除失败");
 		} catch (Exception e) {
