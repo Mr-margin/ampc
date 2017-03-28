@@ -32,6 +32,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class JsonUtil {
 
 	private static ObjectMapper MAPPER = new ObjectMapper();
+	
+	public final static ObjectMapper mapper = new ObjectMapper();
+	
+	public final static ObjectMapper mapper2 =mapper.enable(SerializationFeature.INDENT_OUTPUT, SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
 	/**
 	 * 将Clob转换成Object对象
 	 * @param clob
@@ -52,9 +56,7 @@ public class JsonUtil {
 		return MAPPER.readValue(str, clazz);
 	}
 	
-	public final static ObjectMapper mapper = new ObjectMapper();
-	  public final static ObjectMapper mapper2 =
-	    mapper.enable(SerializationFeature.INDENT_OUTPUT, SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
+	
 
 	  public static <T> T read(Path p, Class<T> clz) throws IOException {
 	    return mapper.readValue(Files.readAllBytes(p), clz);
