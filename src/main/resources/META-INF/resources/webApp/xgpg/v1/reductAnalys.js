@@ -292,6 +292,7 @@ $('#rwName').on('change',function(e){
 })
 //初始化模态框 内的表格 全选复选框
 function initQdListTable() {
+	 $('#testTableId').bootstrapTable('destroy');
 	  $('#testTableId').bootstrapTable({
 	    method: 'POST',
 	    url:'/ampc/scenarino/find_All_scenarino',
@@ -312,7 +313,7 @@ function initQdListTable() {
 	        var json = {
 	          "token": "",
 	          "data": {
-	        	  "missionId": $('#rwName').val(),     //有任务后  显示对应的情景内容
+	        	  "missionId": $('#rwName').val(),     //有初始化任务后  显示对应的情景内容
 	        	  "userId": 1
 	          }
 	        };
@@ -321,44 +322,22 @@ function initQdListTable() {
 	      },
 	    responseHandler: function (res) {
 	    	
-	    	console.log(res);
 	      return res.data
 	    },
 	    queryParamsType: "undefined",
 	    silent: true,
-	   /* onClickRow: function (row, $element) {
-
-	      $('.info').removeClass('info');
-	      $($element).addClass('info');
-	    },*/
-
-	    /*onCheck: function (row) {
-	      $('.delQD').attr('disabled', false);
-	      delQDMap[row.qdId] = 'true';
-	    },
-	    onUncheck: function (row) {
-	      delete delQDMap[row.qdId];
-	      if ($.isEmptyObject(delQDMap)) {
-	        $('.delQD').attr('disabled', true)
-	      }
-	    },
-	    onCheckAll: function (rows) {
-	      $('.delQD').attr('disabled', false);
-	      for (var i = 0; i < rows.length; i++) {
-	        delQDMap[rows[i].qdId] = 'true';
-	      }
-	    },
-	    onUncheckAll: function (rows) {
-	      delQDMap = {};
-	      $('.delQD').attr('disabled', true);
-	    },*/
+	
 	    onLoadSuccess:function(data){
 	    	console.log(data)
+	    	
 	    },
-	    
-	    onContextMenuItem: function (row, $el) {
-
-	    }
+	    formatNoMatches: function (res) {  //没有匹配的结果
+			
+	    	return '无符合条件的记录';
+		},
+		onLoadError: function (data) {
+			$('#testTableId').bootstrapTable('removeAll');
+		}
 	  });
 	}
 
