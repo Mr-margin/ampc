@@ -27,13 +27,7 @@
     ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME, ES_CODE_RANGE, ES_VERSION
   </sql>
   
-  <!-- 根据用户Id查询所有清单 -->
-  <select id="selectAll" resultMap="selectAllMap" parameterType="java.lang.Long" >
-    select 
-    ES_NATIVE_ID, ES_NATIVE_NAME,ES_CODE_RANGE
-    from T_ES_NATIVE
-    where USER_ID = #{userId,jdbcType=DECIMAL}
-  </select>
+  
   
   
   

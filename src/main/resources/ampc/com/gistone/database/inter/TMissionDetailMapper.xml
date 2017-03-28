@@ -32,7 +32,7 @@
   <!-- 返回任务查询列表的列 -->
   <sql id="mission_Column_List" >
   	MISSION_ID,MISSION_NAME,MISSION_DOMAIN_ID,V1,MISS.ES_COUPLING_ID,
-   ES_COUPLING_NAME,MISSION_ADD_TIME,MISSION_START_DATE,MISSION_END_DATE,MISSION_STATUS
+   ES_COUPLING_NAME,ES_CODE_RANGE,MISSION_ADD_TIME,MISSION_START_DATE,MISSION_END_DATE,MISSION_STATUS
   </sql>
   <!-- 查询所有记录分页 可根据名称模糊查询 -->
   <select id="selectAllOrByQueryName" parameterType="hashMap" resultMap="missionListMap" >
@@ -41,6 +41,7 @@
          SELECT <include refid="mission_Column_List"/> FROM T_MISSION_DETAIL  MISS 
 		   INNER JOIN T_ES_COUPLING  COUP ON MISS.ES_COUPLING_ID= COUP.ES_COUPLING_ID
            INNER JOIN T_DOMAIN_MISSION DOMA ON MISS.MISSION_DOMAIN_ID=DOMA.DOMAIN_ID
+           INNER JOIN T_ES_NATIVE NATI ON COUP.ES_COUPLING_NATIVE_ID=NATI.ES_NATIVE_ID
 			  WHERE MISS.IS_EFFECTIVE='1' AND MISS.USER_ID=#{userId,jdbcType=OTHER}  
 			  <if test="missionStatus != null" >
         		AND MISS.MISSION_STATUS= #{missionStatus,jdbcType=OTHER}
