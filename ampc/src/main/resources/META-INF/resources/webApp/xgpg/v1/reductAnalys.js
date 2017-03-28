@@ -17,8 +17,8 @@ $(function(){
 	$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
 	//初始化模态表
 	initQdListTable();
-	//获取任务name 有数据用
-	//getRwName();
+	//获取任务名称
+	selectQj();
 	
     //地图展示切换
     $("#mapId").change(function(){
@@ -248,36 +248,110 @@ InitSubTable = function (index, row, $detail) {
 };
 
 //获取任务名称
-function getRwName() {
-	  var url = '';
-	  var params = {
-	    userId: userId
-	  };
-	  ajaxPost(url, params).success(function (res) {
-
-	    for (var i = 0; i < res.data; i++) {
-	      $('#rwName').append($('<option value=""></option>'))
+function selectQj() {
+	  var missionName = [];
+	  var url = '/mission/find_All_mission';
+	  var params = {"userId":1};
+	  ajaxPost(url,params).success(function (result){
+		  console.log(result)
+	    for (var i = 0; i < result.data.length; i++) {
+	      $('#rwName').append($('<option value="' + result.data[i].missionId + '">'+ result.data[i].missionId + '-' + result.data[i].missionName+'</option>'))
 	    }
-
 	  }).error(function () {
-	    console.log('模拟范围未获取到！！！！')
+	    console.log('任务未获取到！！！！')
 	  })
-	  $('#rwName').append($('<option value="1">范围1</option>'))
+	  //$('#rwName').append($('<option value="1">范围1</option>'))
+	  
 	}
+
+//初始化模态框 内的表格 全选复选框 新版
+function initQdListTable() {
+	  $('#testTableId').bootstrapTable({
+	    method: 'POST',
+	    url:'/mission/find_haveScenarino_mission',
+	    //url: 'webApp/xgpg/v1/qjdata.json',
+	    dataType: "json",
+	    contentType: "application/json",
+	    iconSize: "outline",
+	    search: false,
+	    maintainSelected: true,
+	    clickToSelect: false,
+	    striped: true,
+	    sidePagination: "server",
+	    rowStyle: function (row, index) {
+	      return {};
+	    },
+	      queryParams: function formPm(m) {
+	        console.log(m);
+	        var json = {
+	          "token": "",
+	          "data": {
+	        	  "missionId": 158,
+	        	  "userId": 1
+	          }
+	        };
+	        return JSON.stringify(json);
+	        return '';
+	      },
+	    responseHandler: function (res) {
+	    	
+	    	console.log(res);
+	    	alert(22)
+	      return res.data
+	    },
+	    queryParamsType: "undefined",
+	    silent: true,
+	   /* onClickRow: function (row, $element) {
+
+	      $('.info').removeClass('info');
+	      $($element).addClass('info');
+	    },*/
+
+	    /*onCheck: function (row) {
+	      $('.delQD').attr('disabled', false);
+	      delQDMap[row.qdId] = 'true';
+	    },
+	    onUncheck: function (row) {
+	      delete delQDMap[row.qdId];
+	      if ($.isEmptyObject(delQDMap)) {
+	        $('.delQD').attr('disabled', true)
+	      }
+	    },
+	    onCheckAll: function (rows) {
+	      $('.delQD').attr('disabled', false);
+	      for (var i = 0; i < rows.length; i++) {
+	        delQDMap[rows[i].qdId] = 'true';
+	      }
+	    },
+	    onUncheckAll: function (rows) {
+	      delQDMap = {};
+	      $('.delQD').attr('disabled', true);
+	    },*/
+	    onLoadSuccess:function(data){
+	    	console.log(data)
+	    	alert(33)
+	    },
+	    
+	    onContextMenuItem: function (row, $el) {
+
+	    }
+	  });
+	}
+
 //下拉选框
-function selectQj(value){
-	/*var paramsName = {"userId": 1};
+/*function selectQj(value){
+	var paramsName = {"userId": 1};
 	ajaxPost('/mission/find_All_mission',paramsName).success(function(res){
 	console.log(res)
 	
-	})*/
+	})
 	if (value == 'j1' || value == 'j2') {
 		$("#tableId").css('display','block');
 		
 	} else {
 		$("#tableId").css('display','none');
 	}
-}
+}*/
 /****************************************************柱状图*************************************************************************/
 function bar () {
 	var paramsName = {"scenarinoId":233,"code":130123,"addressLevle":3,"stainType":"SO2"};
@@ -363,7 +437,8 @@ function bar () {
 			                    }*/
 			                }
 			            },
-			            data:res.data.pflResult
+			            //data:res.data.pflResult
+			            data:res.data.jplResult
 			        },
 			        {
 			            name:'减排量',
@@ -391,7 +466,8 @@ function bar () {
 			                    }
 			                }
 			            },
-			            data:res.data.jplResult
+			            //data:res.data.jplResult
+			            data:res.data.pflResult
 			        }
 			    ]
 			};
@@ -469,72 +545,3 @@ function  pie () {
 function exchangeModal(){
 	$(".createRwModal").modal();
 }
-//初始化模态框 内的表格 全选复选框 新版
-function initQdListTable() {
-	  $('#testTableId').bootstrapTable({
-	    method: 'GET',
-	    //url：/mission/find_haveScenarino_mission,
-	    url: 'webApp/xgpg/v1/qjdata.json',
-	    dataType: "json",
-	    contentType: "application/json",
-	    iconSize: "outline",
-	    search: false,
-	    maintainSelected: true,
-	    clickToSelect: false,
-	    striped: true,
-	    sidePagination: "server",
-	    rowStyle: function (row, index) {
-	      return {};
-	    },
-	      queryParams: function formPm(m) {
-	        console.log(m);
-	        var json = {
-	          "token": "",
-	          "data": {
-
-	          }
-	        };
-//	        return JSON.stringify(json);
-	        return '';
-	      },
-	    responseHandler: function (res) {
-	    	console.log(res);
-	      return res.data
-	    },
-	    queryParamsType: "undefined",
-	    silent: true,
-	   /* onClickRow: function (row, $element) {
-
-	      $('.info').removeClass('info');
-	      $($element).addClass('info');
-	    },*/
-
-	    /*onCheck: function (row) {
-	      $('.delQD').attr('disabled', false);
-	      delQDMap[row.qdId] = 'true';
-	    },
-	    onUncheck: function (row) {
-	      delete delQDMap[row.qdId];
-	      if ($.isEmptyObject(delQDMap)) {
-	        $('.delQD').attr('disabled', true)
-	      }
-	    },
-	    onCheckAll: function (rows) {
-	      $('.delQD').attr('disabled', false);
-	      for (var i = 0; i < rows.length; i++) {
-	        delQDMap[rows[i].qdId] = 'true';
-	      }
-	    },
-	    onUncheckAll: function (rows) {
-	      delQDMap = {};
-	      $('.delQD').attr('disabled', true);
-	    },*/
-	    onLoadSuccess:function(data){
-	    	console.log(data)
-	    },
-	    
-	    onContextMenuItem: function (row, $el) {
-
-	    }
-	  });
-	}
