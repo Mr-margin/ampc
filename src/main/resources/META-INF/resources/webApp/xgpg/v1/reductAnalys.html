@@ -84,7 +84,7 @@
 						<label for="mnfw" class="col-md-2 control-label lh29">任务名称</label>
 
 						<div class="col-md-10">
-							<select name="mnfw" class="form-control" id="rwName" onchange="selectQj()">
+							<select name="mnfw" class="form-control" id="rwName" onchange="selectQj(this)">
 							</select>
 						</div>
 					</div>
@@ -95,7 +95,9 @@
 									  <th data-checkbox="true"></th>
 								      <th data-field="scenarinoId">情景id</th>
 								      <th data-field="scenarinoName">情景名称</th>
-								      <th data-field="scenType">情景类型</th>
+								      <!-- <th data-field="scenType">情景类型</th> -->
+								      <th data-field="scenarinoStartDate">情景开始日期</th>
+								      <th data-field="scenarinoEndDate">情景结束日期</th>
 								</thead>
 							</table>
 						</div>
