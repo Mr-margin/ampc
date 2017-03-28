@@ -7,7 +7,7 @@ var gp33 = "http://192.168.1.133:6080/arcgis/rest/services/ceshi/GPServer/ceshi1
  */
 $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">水平分布</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
 
-var ls = window.localStorage;
+var ls = window.sessionStorage;
 var qjMsg = vipspa.getMessage('yaMessage').content;
 if(!qjMsg){
 	qjMsg = JSON.parse(ls.getItem('yaMsg'));
@@ -21,44 +21,48 @@ if(!sceneInitialization){
 }else{
 	ls.setItem('SI',JSON.stringify(sceneInitialization));
 }
+console.log(JSON.stringify(sceneInitialization));
 
-sceneInittion();
-
-
-
+if(!sceneInitialization){
+	sceneInittion();
+}else{
+	set_sce1_sce2();
+}
 
 /**
  * 初始化模态框显示
  */
 function sceneInittion(){
 	$("#task").html("");
-	
 	var paramsName = {};
 	paramsName.userId = userId;
 	ajaxPost('/mission/find_All_mission',paramsName).success(function(res){
 		console.log(JSON.stringify(res));
 		if(res.status == 0){
-			var task = '<option value="0">请选择</option>';
-			$.each(data, function(k, vol) {
-				if(sceneInitialization.taskID == vol.missionId){
-					task += '<option value="'+vol.missionId+'" selected="selected">'+vol.missionName+'</option>';
+			var task = "";
+			$.each(res.data, function(k, vol) {
+				
+				if(sceneInitialization){
+					if(sceneInitialization.taskID == vol.missionId){
+						task += '<option value="'+vol.missionId+'" selected="selected">'+vol.missionName+'</option>';
+					}else{
+						task += '<option value="'+vol.missionId+'">'+vol.missionName+'</option>';
+					}
 				}else{
 					task += '<option value="'+vol.missionId+'">'+vol.missionName+'</option>';
 				}
 			});
 			$("#task").html(task);
 			$("#Initialization").modal();//初始化模态框显示
-			
-			if(sceneInitialization.data){
-				
-			}
-			
+			sceneTable();
 		}
 	});
 }
 
-
-function sdfs(){
+/**
+ * 根据任务ID，获取情景列表用于选择情景范围
+ */
+function sceneTable(){
 	$("#sceneTableId").bootstrapTable('destroy');//销毁现有表格数据
 	
 	$("#sceneTableId").bootstrapTable({
@@ -79,10 +83,26 @@ function sdfs(){
 		silent : true, // 刷新事件必须设置
 		contentType : "application/json", // 请求远程数据的内容类型。
 		responseHandler: function (res) {
-			if(res.status == 'success'){
-				if(res.status.data.length>0){
-					return res.status.data;
+			if(res.status == 0){
+				if(res.data.length>0){
+					
+					if(sceneInitialization){
+						if(sceneInitialization.data.length>0){
+							
+							$.each(res.data, function(i, col) {
+								$.each(sceneInitialization.data, function(k, vol) {
+									if(col.scenarinoId == vol.scenarinoId){
+										res.data[i].state = true;
+									}
+								});
+							});
+						}
+					}
+					
+					return res.data;
 				}
+			}else if(res.status == 1000){
+				swal(res.msg, '', 'error');
 			}
 		},
 		onClickRow : function(row, $element) {
@@ -103,46 +123,61 @@ function sdfs(){
 	});
 }
 
+/**
+ * 保存选择的情景
+ */
+function save_scene(){
+	var row = $('#sceneTableId').bootstrapTable('getSelections');//获取所有选中的情景数据
+	if(row.length>0){
+		var mag = {};
+		mag.id = "sceneInitialization";
+		mag.taskID = $("#task").val();
+		var data = [];
+		$.each(row, function(i, col) {
+			data.push({"scenarinoId":col.scenarinoId,"scenarinoName":col.scenarinoName});
+		});
+		mag.data = data;
+		vipspa.setMessage(mag);
+		ls.setItem('SI',JSON.stringify(mag));
+//		console.log(JSON.stringify(mag));
+		sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
+		$("#close_scene").click();
+		set_sce1_sce2();
+	}
+}
+//超链接显示 模态框
+function exchangeModal(){
+	sceneInittion();
+	$("#Initialization").modal();
+}
+
+
+
 
 
 /**
- * 根据任务ID，获取情景列表用于选择情景范围
+ * 设置情景一和情景二的下拉框内容
  */
-function sceneTable(){
-//	;//任务ID
-	alert($("#task").val());
-	if(!sceneInitialization){//判断路有种是否有情景范围
-		//路由中没有情景范围，从localStorage中获取，然后再次判断
-		sceneInitialization = JSON.parse(ls.getItem('SI'));
-		if(!sceneInitialization){
-			//数据库获取任务列表
-			var paramsName = {};
-			paramsName.userId = userId;
-			ajaxPost('/mission/find_All_mission',paramsName).success(function(res){
-				console.log(JSON.stringify(res));
-				if(res.status == 0){
-					Is(res.data);
-					
-					vipspa.setMessage(msg);
-				}
-			});
-		}
-	}else{
-		ls.setItem('SI',JSON.stringify(sceneInitialization));
-	}
-}
-
-
-
-//超链接显示 模态框
-function exchangeModal(){
-	if(sceneInitialization){//判断路有种是否有情景范围
-		//根据已经保存的情景范围，初始化摩太狂内容
+function set_sce1_sce2(){
+	if(sceneInitialization){
+		$("#scene1").html("");
+		$("#scene2").html("");
 		
+		var scene = "";
+		$.each(sceneInitialization.data, function(i, col) {
+			scene += '<option value="'+col.scenarinoId+'">'+col.scenarinoName+'</option>';
+		});
+		$("#scene1").html(scene);
+		$("#scene2").html(scene);
 	}
-	$("#Initialization").modal();
-	
 }
+
+
+
+
+
+
+
 
 
 var stat = {cPointx : 106, cPointy : 35}, app = {}, dong = {};
@@ -248,10 +283,10 @@ require(
 		
 		function showCoordinates(event) {
 //	        var mp = esri.geometry.webMercatorToGeographic(evt.mapPoint);
-	        dojo.byId("Point").innerHTML = event.mapPoint.x.toFixed(3) + ", " + event.mapPoint.y.toFixed(3);
-	    	$("#scale").html("scale="+app.mapList[0].getScale());
-	    	$("#Zoom").html("Zoom="+app.mapList[0].getZoom());
-	    	$("#Level").html("Level="+app.mapList[0].getLevel());
+//	        dojo.byId("Point").innerHTML = event.mapPoint.x.toFixed(3) + ", " + event.mapPoint.y.toFixed(3);
+//	    	$("#scale").html("scale="+app.mapList[0].getScale());
+//	    	$("#Zoom").html("Zoom="+app.mapList[0].getZoom());
+//	    	$("#Level").html("Level="+app.mapList[0].getLevel());
 	    }
 });
 

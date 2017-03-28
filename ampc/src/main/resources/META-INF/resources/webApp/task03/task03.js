@@ -24,20 +24,21 @@ $("#show").click(function(){
 	}
 });
 
-/**
- * 设置导航条菜单
- */
-$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">添加预案</a>>><span style="padding-left: 15px;padding-right: 15px;">措施编辑</span>');
-
-var ls = window.localStorage;
+var ls = window.sessionStorage;
 var qjMsg = vipspa.getMessage('yaMessage').content;
 
 if(!qjMsg){
-  qjMsg = JSON.parse(ls.getItem('yaMsg'));
+	qjMsg = JSON.parse(ls.getItem('yaMsg'));
 }else{
-  ls.setItem('yaMsg',JSON.stringify(qjMsg));
+	ls.setItem('yaMsg',JSON.stringify(qjMsg));
 }
 console.log(JSON.stringify(qjMsg));
+
+/**
+ * 设置导航条菜单
+ */
+$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">预案管理</a>>><span style="padding-left: 15px;padding-right: 15px;">措施管理('+qjMsg.planName+')</span>');
+
 
 $('.csCon').removeClass('disNone');
 $('.csCon .nowRw span').html(qjMsg.rwName);
@@ -88,6 +89,7 @@ function hyc(){
 	paramsName.timeStartTime=qjMsg.timeStartDate;
 	paramsName.timeEndTime=qjMsg.timeEndDate;
 	
+	$("#dangqianrenwu").html("当前任务："+qjMsg.rwName);
 	$("#dangqianqingjing").html("当前情景："+qjMsg.qjName);
 	$("#dangqianquyu").html("当前区域："+qjMsg.areaName);
 	$("#dangqianshiduan").html("当前时段："+getLocalTime(qjMsg.timeStartDate)+" 时 至 "+getLocalTime(qjMsg.timeEndDate)+" 时");
@@ -102,7 +104,7 @@ function hyc(){
 				
 				var inn = i == 0 ? "in" : "";//第一个手风琴页签打开
 				accordion_html += '<div class="panel panel-default" val_name="'+col.sectorsName+'"><div class="panel-heading" style="background-color: #FFF;">';
-				accordion_html += '<a data-toggle="collapse" data-parent="#accordion" style="font-weight: 700;" href="#collapse'+i+'"><h5 class="panel-title">'+col.sectorsName+'';
+				accordion_html += '<a data-toggle="collapse" data-parent="#accordion" style="font-weight: 700;" href="#collapse'+i+'"><h5 onclick="metTable_hj_info(\''+col.sectorsName+'\');" class="panel-title">'+col.sectorsName+'';
 				if(col.count != "0"){
 					accordion_html += '<code class="pull-right">已使用&nbsp;'+col.count+'&nbsp;条措施</code>';
 				}
@@ -140,7 +142,8 @@ function hyc(){
 /**
  * 获取措施汇总
  */
-function metTable_hj_info(){
+function metTable_hj_info(pa_name){
+	
 	$('#metTable_hj').bootstrapTable('destroy');
 	
 	$("#hz_de").hide();
@@ -148,15 +151,20 @@ function metTable_hj_info(){
 	$("#jianpaijisuan").hide();
 	
 	var hangye = "";//手风琴当前打开的内容
-	//循环手风琴列表下所有的一级子节点，查找哪个正在打开
-	$("#accordion").children().each(function(){
-		var e = $(this);
-		e.children().each(function(){//再循环一次，这次下面有两个div，一个标题，一个内容
-			if($(this).is('.in')){
-				hangye = e.attr("val_name");
-			}
+	
+	if (typeof pa_name != "undefined") {
+		hangye = pa_name;
+	}else{
+		//循环手风琴列表下所有的一级子节点，查找哪个正在打开
+		$("#accordion").children().each(function(){
+			var e = $(this);
+			e.children().each(function(){//再循环一次，这次下面有两个div，一个标题，一个内容
+				if($(this).is('.in')){
+					hangye = e.attr("val_name");
+				}
+			});
 		});
-	});
+	}
 	
 	//行业的查询状态
 	var hangyede_type = "";
@@ -175,7 +183,7 @@ function metTable_hj_info(){
 		
 	    return value;
 	}});
-	columnsw.push({field: 'ratio', title: '减排占比', align: 'center', formatter: function(value, row, index){
+	columnsw.push({field: 'ratio', title: '减排比例', align: 'center', formatter: function(value, row, index){
 		
 	    return value;
 	}});
@@ -202,6 +210,11 @@ function metTable_hj_info(){
 		queryParamsType: "limit", //参数格式,发送标准的RESTFul类型的参数请求
 		contentType : "application/json", // 请求远程数据的内容类型。
 		responseHandler: function (res) {
+			
+			$.each(res.data.rows, function(i, col) {
+				res.data.rows[i].reduct = res.data.rows[i].reduct+"%";
+			});
+			
 			return res.data.rows;
 		},
 		onClickRow: function (row, $element) {
@@ -223,6 +236,7 @@ function metTable_hj_info(){
 			}
 		}
 	});
+	
 }
 
 /**
@@ -312,6 +326,10 @@ var m_mid,m_planId,m_sectorName,m_planMeasureId;
 function open_cs(sectorsName, measureame, mid, planMeasureId){
 	$("#measureame").html("措施："+measureame);//发开弹出窗，设置标题、行业、措施等内容
 	$("#sectorsName").html("行业："+sectorsName);
+	
+	$("#dianyaunzushu").html("");//清空点源与占比
+	$("#xiangxizhibiao").html("");
+	
 	measureame_temp = measureame;
 	m_mid = mid;
 	m_sectorName = sectorsName;
@@ -969,6 +987,8 @@ var poi_name_or_pub;//记录当前的筛选条件是按照属性来，还是按�
 function point_table () {
 	poi_name_or_pub = "pub";//记录当前的筛选条件是按照属性来，还是按照名称来
 	$('#metTable_point').bootstrapTable('destroy');//销毁现有表格数据
+	$("#shaixuan_num").html("");//筛选点源
+	$("#shaixuan_num").hide();
 	$("#mic").show();//筛选结果div显示
 	$("#mic_name").hide();//按名称筛选结果div隐藏
 	$("#xishuMO").hide();//控制系数隐藏
@@ -986,7 +1006,6 @@ function point_table () {
 		striped : true, // 使表格带有条纹
 		sidePagination : "server",// 表格分页的位置 client||server
 		queryParams : function(params) {
-			
 			var temp_sc_val = jQuery.extend(true, {}, sc_val);
 			delete temp_sc_val.summary;
 			temp_sc_val.regionIds = Codes;
@@ -999,9 +1018,19 @@ function point_table () {
 			
 			if(res.status == 'success'){
 //				add_point(res.data.company);
-				
-				
-				
+				if(res.data.rows.length>0){
+					$("#shaixuan_num").html("筛选点源："+res.data.append.sourceTotalCount);
+					$("#shaixuan_num").show();
+					var tablejieguo = "";
+					$.each(sc_val.filters[sc_val.filters.length-1], function(k, vol) {//循环最后一个条件，这个条件是要添加显示的条件
+						$.each(query, function(i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
+							if(col.queryEtitle == k){
+								tablejieguo += col.queryName+"："+vol+",";
+							}
+						});
+					});
+					$("#shaixuan_num").attr("title",tablejieguo.substring(0, tablejieguo.length-1));
+				}
 				
 				return res.data;
 			}else if(res.status == ''){
@@ -1035,6 +1064,8 @@ function point_table () {
 function point_name_table () {
 	poi_name_or_pub = "name";//记录当前的筛选条件是按照属性来，还是按照名称来
 	$('#metTable_name_point').bootstrapTable('destroy');//销毁现有表格数据
+	$("#shaixuan_num").html("");//筛选点源
+	$("#shaixuan_num").hide();
 	$("#mic").hide();//筛选结果div隐藏
 	$("#mic_name").show();//按名称筛选结果div显示
 	$("#xishuMO").hide();//控制系数隐藏
@@ -1117,6 +1148,7 @@ function xishuMo(){
 	$("#metTable_name_tools").hide();//保存子措施按钮
 	$("#xishuMO").show();//控制系数div显示
 	$("#xishuMOB").show();//控制系数按钮显示
+	$("#shaixuan_num").hide();
 }
 
 /**
@@ -1175,7 +1207,7 @@ function xishu_save(){
 	if(ttwr){
 		
 		if(zicuoshi_up_index == null){//添加新的子措施
-			console.log(JSON.stringify(sc_val));
+//			console.log(JSON.stringify(sc_val));
 			ajaxPost_w(jianpaiUrl+'/search/summary',sc_val).success(function(res){
 //				console.log(JSON.stringify(res));
 				if(res.status == 'success'){
@@ -1261,6 +1293,8 @@ function xishu_save(){
 		$("#metTable_name_tools").hide();//保存子措施按钮
 		$("#xishuMO").hide();//控制系数div
 		$("#xishuMOB").hide();//控制系数按钮
+		$("#shaixuan_num").html("");//筛选点源
+		$("#shaixuan_num").hide();
 	}
 }
 
@@ -1286,6 +1320,8 @@ function zicuoshi_up(){
 			$("#mic_name").hide();//按名称筛选结果div隐藏
 			$("#metTable_tools").hide();//保存子措施按钮
 			$("#metTable_name_tools").hide();//保存子措施按钮
+			$("#shaixuan_num").html("");//筛选点源
+			$("#shaixuan_num").hide();
 			$("#xishuMO").show();//控制系数div
 			$("#xishuMOB").show();//控制系数按钮
 			zicuoshi_up_index = i;//当前选中的行是要修改的子措施
@@ -1341,10 +1377,7 @@ function zicuoshi_de(){
 			});
 			
 		}else{//删除的是第一条，不用重新计算，只要把条件的最后一条删除即可
-//			console.log(JSON.stringify(sc_v1));
-//			sc_v1.filters.splice(sc_v1.filters.length,1);
 			sc_v1.filters.pop();
-//			console.log(JSON.stringify(sc_v1));
 			restion_table();
 		}
 		$("#zicuoshi_tools_de").hide();
@@ -1486,6 +1519,7 @@ function xishu_close(){
 	if(zicuoshi_up_index == null){
 		if(poi_name_or_pub == "pub"){//记录当前的筛选条件是按照属性来，还是按照名称来
 			$("#mic").show();//筛选结果div
+			$("#shaixuan_num").show();
 			$("#metTable_tools").show();//保存子措施按钮
 			$("#mic_name").hide();//按名称筛选结果div隐藏
 		}else if(poi_name_or_pub == "name"){
@@ -1498,6 +1532,7 @@ function xishu_close(){
 	}else{
 		if(poi_name_or_pub == "pub"){//记录当前的筛选条件是按照属性来，还是按照名称来
 			$("#mic").hide();//筛选结果div
+			$("#shaixuan_num").hide();
 			$("#metTable_tools").hide();//保存子措施按钮
 			$("#mic_name").hide();//按名称筛选结果div隐藏
 		}else if(poi_name_or_pub == "name"){
@@ -1689,7 +1724,7 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 //		app.pint = new dong.GraphicsLayer({"id":"pint"});
 //		app.mapList[1].addLayer(app.pint);
 		
-		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/china_gd/MapServer");//创建动态地图
+		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/cms/MapServer");//创建动态地图
 		app.mapList[0].addLayer(app.layer);
 		
 //		app.str = {

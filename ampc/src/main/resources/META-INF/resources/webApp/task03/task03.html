@@ -219,11 +219,11 @@
 			<div class="modal-body"  style="height:calc(100% - 95px);background-color: #E2F0D9;padding: 15px;">
 			
 				<div class='col-md-12' style="height:40px;padding-left: 0px;background-color: #FFF;margin-bottom: 15px;">
-					<div class='col-md-2' style="padding: 8px 10px 5px 25px;">
-						<h5 id="measureame"></h5>
-					</div>
 					<div class='col-md-2' style="padding: 8px 00px 5px 15px;">
 						<h5 id="sectorsName"></h5>
+					</div>
+					<div class='col-md-2' style="padding: 8px 10px 5px 25px;">
+						<h5 id="measureame"></h5>
 					</div>
 					<div class='col-md-2' style="padding: 8px 00px 5px 15px;">
 						<h5 id="dianyaunzushu"></h5>
@@ -265,7 +265,7 @@
 					
 					<div class="ibox float-e-margins" style="height:calc(50% - 15px);margin-bottom: 0px;">
 					    <div class="ibox-title">
-					        <h5>筛选点源列表</h5>
+					        <h5>筛选点源列表&nbsp;&nbsp;&nbsp;&nbsp;<code style="display:none;" id="shaixuan_num" title="这里是提示内容"></code></h5>
 					        <div class="ibox-tools" id="metTable_tools" style="display:none;">
                                 <button class="btn btn-success" style="margin-bottom: 0px;margin-top: -7px;" onclick="xishuMo();" type="button">
 									<i class="fa fa-save"></i>&nbsp;&nbsp;<span class="bold">保存子措施</span>
@@ -297,7 +297,7 @@
 		                                   	<th data-field="state" data-checkbox="true" formatter="stateFormatter"></th>
 		                                   	<th data-field="regionName" data-halign="center" data-align="center">所属</th>
 		                                   	<th data-field="companyname" data-halign="center" data-align="center">企业名称</th>
-		                                    <th data-field="equipname" data-halign="center" data-align="center">设备名称</th>
+		                                    <th data-field="equipname" data-halign="center" data-align="center">设备编号</th>
 		                                    <th data-field="caozuo" data-halign="center" data-align="center">操作</th>
 	                                    </tr>
 	                                  </thead>
@@ -350,10 +350,13 @@
 			</div>
 			<div class="modal-footer new-foot">
 				<div style="text-align: left;margin-left: 10px;width:calc(100% - 150px);float: left;padding: 8px 0px 5px 0px;">
-					<div class='col-md-3' style="padding: 0px 0px 0px 0px;">
+					<div class='col-md-2' style="padding: 0px 0px 0px 0px;">
+						<h5 id="dangqianrenwu"></h5>
+					</div>
+					<div class='col-md-2' style="padding: 0px 0px 0px 0px;">
 						<h5 id="dangqianqingjing"></h5>
 					</div>
-					<div class='col-md-3' style="padding: 0px 0px 0px 0px;">
+					<div class='col-md-2' style="padding: 0px 0px 0px 0px;">
 						<h5 id="dangqianquyu"></h5>
 					</div>
 					<div class='col-md-6' style="padding: 0px 0px 0px 0px;">
