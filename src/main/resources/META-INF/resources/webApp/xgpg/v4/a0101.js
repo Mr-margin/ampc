@@ -36,6 +36,7 @@ function sceneInittion(){
 	$("#task").html("");
 	var paramsName = {};
 	paramsName.userId = userId;
+	console.log(JSON.stringify(paramsName));
 	ajaxPost('/mission/find_All_mission',paramsName).success(function(res){
 		console.log(JSON.stringify(res));
 		if(res.status == 0){
@@ -84,22 +85,22 @@ function sceneTable(){
 		contentType : "application/json", // 请求远程数据的内容类型。
 		responseHandler: function (res) {
 			if(res.status == 0){
-				if(res.data.length>0){
+				if(res.data.rows.length>0){
 					
 					if(sceneInitialization){
 						if(sceneInitialization.data.length>0){
 							
-							$.each(res.data, function(i, col) {
+							$.each(res.data.rows, function(i, col) {
 								$.each(sceneInitialization.data, function(k, vol) {
 									if(col.scenarinoId == vol.scenarinoId){
-										res.data[i].state = true;
+										res.data.rows[i].state = true;
 									}
 								});
 							});
 						}
 					}
 					
-					return res.data;
+					return res.data.rows;
 				}
 			}else if(res.status == 1000){
 				swal(res.msg, '', 'error');
