@@ -1180,6 +1180,10 @@ public class PlanAndMeasureController {
 			result.setBigIndex(mcu.getBigIndex());
 			// 写入SmallIndex
 			result.setSmallIndex(mcu.getSmallIndex());
+			/**
+			 * TODO
+			 * 要进行Code的转换
+			 */
 			//写入行政区划代码
 			result.setRegionIds(mcu.getRegionIds());
 			// 写入行业名称
