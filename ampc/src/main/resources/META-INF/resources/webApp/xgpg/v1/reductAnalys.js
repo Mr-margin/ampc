@@ -15,9 +15,7 @@ $(function(){
 	 *设置导航条信息
 	 */
 	$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
-	//初始化模态表
-	initQdListTable();
-	//获取任务名称
+	//初始化获取任务
 	selectQj();
 	
     //地图展示切换
@@ -246,30 +244,56 @@ InitSubTable = function (index, row, $detail) {
 
     });
 };
-var missionId = '';
-//获取任务名称
-function selectQj() {	
-	 missionId = $('#rwName option:selected').val();
-	alert(missionId)
-	  var missionName = [];
-	  var url = '/mission/find_All_mission';
-	  var params = {"userId":1};
-	  ajaxPost(url,params).success(function (result){
-		  console.log(result)
-	    for (var i = 0; i < result.data.length; i++) {
-	      $('#rwName').append($('<option value="' + result.data[i].missionId + '">'+ result.data[i].missionId + '-' + result.data[i].missionName+'</option>'))
-	    }
-	  }).error(function () {
-	    console.log('任务未获取到！！！！')
-	  })
-	  return missionId;
-	}
 
-//初始化模态框 内的表格 全选复选框 新版
+//获取下拉任务名称
+function selectQj() {	
+	var missionId = $('#rwName option:selected').val();
+	var missionName = [];
+	var url = '/mission/find_All_mission';
+	var params = {"userId":1};
+	ajaxPost(url,params).success(function (result){
+		console.log(result)
+		if(result.status == 0){
+			if(result.data.length > 0){
+				for (var i = 0; i < result.data.length; i++) {
+					$('#rwName').append($('<option value="' + result.data[i].missionId + '">'+ result.data[i].missionId + '-' + result.data[i].missionName+'</option>'))
+				}
+				//确定获取有任务后  才有显示对应的情景内容
+				initQdListTable();
+			}
+		}
+	}).error(function () {
+		console.log('任务未获取到！！！！')
+	})
+	return missionId;
+}
+//选择任务事件
+$('#rwName').on('change',function(e){
+	//获得当前选择的任务id
+	console.log($(e.target).val());
+	//把任务id作为参数 去查询对应的情景
+	var params = $("#testTableId").bootstrapTable('getOptions');
+	params.queryParams = function (params){
+		var json = {
+		          "token": "",
+		          "data": {
+		        	  "missionId": '',
+		        	  "userId": 1
+		          }
+		        };
+		//获取选中后的任务id 并传递值
+		json.data.missionId = $(e.target).val();
+		params = JSON.stringify(json);
+		return params;
+	};
+	console.log(params)
+	//把赋值后的参数params给表格去查找对应的数据后刷新表格
+	$("#testTableId").bootstrapTable('refresh', params);
+})
+//初始化模态框 内的表格 全选复选框
 function initQdListTable() {
 	  $('#testTableId').bootstrapTable({
 	    method: 'POST',
-	    //url:'/ampc/mission/find_haveScenarino_mission',
 	    url:'/ampc/scenarino/find_All_scenarino',
 	    //url: 'webApp/xgpg/v1/qjdata.json',
 	    dataType: "json",
@@ -288,7 +312,7 @@ function initQdListTable() {
 	        var json = {
 	          "token": "",
 	          "data": {
-	        	  "missionId": 158,
+	        	  "missionId": $('#rwName').val(),     //有任务后  显示对应的情景内容
 	        	  "userId": 1
 	          }
 	        };
@@ -338,20 +362,6 @@ function initQdListTable() {
 	  });
 	}
 
-//下拉选框
-/*function selectQj(value){
-	var paramsName = {"userId": 1};
-	ajaxPost('/mission/find_All_mission',paramsName).success(function(res){
-	console.log(res)
-	
-	})
-	if (value == 'j1' || value == 'j2') {
-		$("#tableId").css('display','block');
-		
-	} else {
-		$("#tableId").css('display','none');
-	}
-}*/
 /****************************************************柱状图*************************************************************************/
 function bar () {
 	var paramsName = {"scenarinoId":233,"code":130123,"addressLevle":3,"stainType":"SO2"};
