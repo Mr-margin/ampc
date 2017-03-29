@@ -660,3 +660,34 @@ button[disabled],.btn[disabled]{
 
 /* 区域时段样式 End*/
 
+
+/*水平分布 start*/
+
+.showType{
+  position: absolute;
+  top: 20px;
+  right: 15px;
+}
+.showType label{
+  background-color:#fff;
+}
+.qjBtn{
+  position: absolute;
+  top: 65px;
+  right: 15px;
+}
+#qjBtn1.qjBtn{
+  right: 30px;
+}
+.bgw {
+	background-color:#fff;
+  border-radius: 3px !important;
+  width: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.qjBtn label.disabled{
+	color:#fff;
+}
+/*水平分布 end*/
