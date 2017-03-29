@@ -6,7 +6,7 @@ if(!qjMsg){
 }else{
   ls.setItem('yaMsg',JSON.stringify(qjMsg));
 }
-//console.log(JSON.stringify(qjMsg));
+console.log(JSON.stringify(qjMsg));
 
 /**
  *设置导航条信息
@@ -16,7 +16,8 @@ var gis_paramsName = {};//地图请求的参数，第一次加载地图时初始
 
 var tj_paramsName = {};//统计图用的参数
 tj_paramsName.wz = $('#hz_wrw').val();//默认的物种
-
+tj_paramsName.code = "0";//code默认为0
+tj_paramsName.name = qjMsg.qjName;//name默认为情景名称
 	
 /**
  * 时间戳转成日期格式
@@ -101,12 +102,13 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 		app.map.addLayer(app.baselayerList);//添加高德地图到map容器
 		app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
 		
-		app.gLyr = new dong.GraphicsLayer({"id":"gLyr"});
-		app.map.addLayer(app.gLyr);
+		app.map.graphics.clear();
+		
+		dojo.connect(app.map, "onClick", optionclick);//点击
 		
 		dojo.connect(app.map, "onZoomEnd", resizess);//缩放
 		app.outline = new dong.SimpleLineSymbol("solid", new dong.Color("#444"), 1);
-		
+		app.selectline = new dong.SimpleLineSymbol("solid", new dong.Color("#5D1F68"), 3);
 });
 
 /**
@@ -132,13 +134,13 @@ function shoe_data_start(evn){
 		tj_paramsName.codeLevel = 3;
 	}
 	gis_paramsName.scenarinoId = qjMsg.qjId;//情景id
-	baizhu_jianpai(gis_paramsName);
+	baizhu_jianpai(gis_paramsName,"1");
 }
 
 /**
  * 标注地图的减排计算
  */
-function baizhu_jianpai(gis_paramsName){
+function baizhu_jianpai(gis_paramsName, sh_type){
 //	console.log(JSON.stringify(gis_paramsName));
 	if (typeof app.paifang != "undefined") {
 		app.map.removeLayer(app.paifang);
@@ -149,7 +151,7 @@ function baizhu_jianpai(gis_paramsName){
 			var data_id = "";
 			$.each(res.data, function(k, col) {
 				data_id += "'"+k+"',";
-				tj_paramsName.code = k;//获取最后一个行政区划
+//				tj_paramsName.code = k;//获取最后一个行政区划
 			});
 			
 			var paifang_url = "";
@@ -196,7 +198,6 @@ function baizhu_jianpai(gis_paramsName){
 			app.map.addLayer(app.paifang);
 			createLegend(gis_paramsName.codeLevel);
 			
-            dojo.connect(app.paifang, "onClick", optionclick);//点击
             dojo.connect(app.paifang, "onMouseOver", app.tip.showInfo);
             dojo.connect(app.paifang, "onMouseOut", app.tip.hideInfo);
             
@@ -216,8 +217,9 @@ function baizhu_jianpai(gis_paramsName){
 					app.map.setExtent(extent.expand(1.5));
 				});
 			}
-			
-			bar();
+			if(sh_type == "1"){
+				bar();
+			}
 		}else{
 			swal('减排数据获取失败', '', 'error');
 		}
@@ -323,18 +325,31 @@ function resizess(event){
 	}
 	if(level != gis_paramsName.codeLevel){
 		gis_paramsName.codeLevel = level;
-		baizhu_jianpai(gis_paramsName);
+		baizhu_jianpai(gis_paramsName, "2");
+		app.map.graphics.clear();//清空图层
 	}
 }
 
 /**
- * 点击地图事件，调用统计图方法
+ * 点击地图事件，调用统计图方法.清空图层
  * @param event
  */
 function optionclick(event){
-	tj_paramsName.code = event.graphic.attributes.ADMINCODE;
-	tj_paramsName.name = event.graphic.attributes.NAME;
-	bar();
+	
+	if (typeof event.graphic != "undefined") {//点击选中了一个面对象
+		app.map.graphics.clear();
+		app.map.graphics.add(new dong.Graphic(event.graphic.geometry, app.selectline));//添加选中的图层
+		tj_paramsName.code = event.graphic.attributes.ADMINCODE;
+		tj_paramsName.name = event.graphic.attributes.NAME;
+		bar();
+	}else{
+		if(app.map.graphics.graphics.length > 0){//已经有选中的对象了
+			app.map.graphics.clear();
+			tj_paramsName.code = "0";
+			tj_paramsName.name = qjMsg.qjName;//name默认为情景名称
+			bar();
+		}
+	}
 }
 
 /**
@@ -344,7 +359,7 @@ function gis_paifang_show(){
 	gis_paramsName.pollutant = $('#hz_wrw').val();//物种
 	tj_paramsName.wz = $('#hz_wrw').val();//物种
 	
-	baizhu_jianpai(gis_paramsName);
+	baizhu_jianpai(gis_paramsName, "1");
 }
 
 /**
@@ -364,7 +379,6 @@ function bar() {
 		ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
 			if(res.status == 0){//返回成功
 				if(res.data.dateResult.length > 0){//有返回时间，说明可以显示柱状图
-//					console.log(res);
 					
 					tj_paramsName.new_arr=[];
 					for(var i=0;i<res.data.dateResult.length;i++) {
@@ -375,10 +389,16 @@ function bar() {
 					pie();
 					
 					var myPfChart = echarts.init(document.getElementById('pfDiv1'));
-					
+//					var ttitle = "";
+//					if(tj_paramsName.code == "0"){
+//						ttitle = tj_paramsName.name +"-"+tj_paramsName.wz+'-减排分析';
+//					}else{
+//						ttitle = tj_paramsName.name +'-';
+//					}
+//					
 					var option = {
 						    title : {
-						        text: tj_paramsName.name +'-'+tj_paramsName.wz+'-'+'减排图',
+						        text: tj_paramsName.name +"-"+tj_paramsName.wz+'-减排分析',
 						    },
 						    tooltip : {
 						        trigger: 'axis',
@@ -496,7 +516,6 @@ function bar() {
 						        }
 						    ]
 						};
-						console.log(res);
 						//减排量echarts
 						myPfChart.setOption(option);
 					
@@ -509,7 +528,6 @@ function bar() {
 						myPfChart.on('datazoom', function (params){
 							//alert(params.start + "||" + params.end + "||" + params.startValue + "||" + params.endValue);
 							//var aa = myPfChart.component.xAxis.option.xAxis[0].data;
-							console.log(params)
 							if(newX.length == 0)return;
 							if(newX.length == oldX.length){
 								if(newX[0]==oldX[0]){
@@ -517,11 +535,6 @@ function bar() {
 									return;
 								}
 							}
-
-							console.log(myPfChart.getOption());
-							console.log(params);
-							console.log(633)
-
 							oldX = [];
 							oldX = newX;
 							newX = [];
@@ -557,9 +570,7 @@ function  pie(){
 	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":tj_paramsName.code,"addressLevle":tj_paramsName.codeLevel,"stainType":tj_paramsName.wz,"startDate":tj_paramsName.new_arr[0],"endDate":tj_paramsName.new_arr[tj_paramsName.new_arr.length-1],"type":tj_paramsName.type};
 	ajaxPost('/echarts/get_pieInfo',paramsName).success(function(result){
 		
-		
 		if(result.status == 0){
-			console.log(result);
 			
 			if(result.data.length != 0){
 				for(i=0;i<result.data.length;i++){
@@ -570,10 +581,17 @@ function  pie(){
 				swal('饼图暂无数据', '', 'error')
 			}
 			
+//			var ttitle = "";
+//			if(tj_paramsName.code == "0"){
+//				ttitle = (tj_paramsName.type == "1" ? "分行业" : "分措施")+"-"+tj_paramsName.wz+'-减排分析';
+//			}else{
+//				ttitle = tj_paramsName.name +'-'+(tj_paramsName.type == "1" ? "分行业" : "分措施")+"-"+tj_paramsName.wz+'-减排分析';
+//			}
+			
 			var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
 			var optionPie = {
 				    title : {
-				        text: tj_paramsName.name+'-'+tj_paramsName.wz+'-'+'饼状图',
+				        text: tj_paramsName.name +'-'+(tj_paramsName.type == "1" ? "分行业" : "分措施")+"-"+tj_paramsName.wz+'-减排分析',
 				        x:'center'
 				    },
 				    tooltip : {
@@ -611,7 +629,6 @@ function  pie(){
 				myhycsChart.resize();
 			});
 		}else{
-			console.log(result);
 			swal('/echarts/get_pieInfo  连接错误', '', 'error');
 		}
 			
@@ -620,3 +637,88 @@ function  pie(){
     })	
 
 }
+
+
+
+
+/**
+ * 地图展示与列表展示切换
+ */
+function gis_switch_table(){
+	
+	$("#showtype").children().each(function(){
+		if($(this).is('.active')){
+			
+			if($(this).attr("val_name") == "gis"){
+				$("#listModal").hide();
+				$("#map_showId").show();
+				$("#legendWrapper").show();
+			}else if($(this).attr("val_name") == "table"){
+				$("#listModal").show();
+				$("#map_showId").hide();
+				$("#legendWrapper").hide();
+			}
+		}
+	});
+}
+
+
+/**
+ * 表格展示
+ */
+function table_show(query_code){
+	
+	$('#listModal_table').bootstrapTable('destroy');
+	$('#listModal_table').bootstrapTable({
+		height : $("#listModal").height(),
+		method : 'POST',
+		url : jianpaiUrl+'/search/sourceList',
+		dataType : "json",
+		iconSize : "outline",
+		clickToSelect : true,// 点击选中行
+		pagination : false, // 在表格底部显示分页工具栏
+		striped : true, // 使表格带有条纹
+		queryParams : function(params) {
+			
+			var temp_sc_val = jQuery.extend(true, {}, sc_val);
+			delete temp_sc_val.summary;
+			temp_sc_val.regionIds = Codes;
+			temp_sc_val.pageHelper = {};
+			temp_sc_val.pageHelper.pageSize = params.limit;
+			temp_sc_val.pageHelper.pageNumber = params.offset;
+			return JSON.stringify(temp_sc_val);
+			
+		},
+		responseHandler: function (res) {
+			
+			if(res.status == 'success'){
+				if(res.data.rows.length>0){
+
+				}
+				
+				return res.data;
+			}else if(res.status == ''){
+				return "";
+			}
+		},
+		queryParamsType : "limit", // 参数格式,发送标准的RESTFul类型的参数请求
+		silent : true, // 刷新事件必须设置
+		contentType : "application/json", // 请求远程数据的内容类型。
+		onClickRow : function(row, $element) {
+			$('.success').removeClass('success');
+			$($element).addClass('success');
+		},
+		icons : {
+			refresh : "glyphicon-repeat",
+			toggle : "glyphicon-list-alt",
+			columns : "glyphicon-list"
+		},
+		onLoadSuccess : function(data){
+//			console.log(data);
+		},
+		onLoadError : function(){
+			swal('连接错误', '', 'error');
+		}
+	});
+}
+
