@@ -588,6 +588,7 @@ $('#timePlan').on('show.bs.modal', function (event) {
 
   /*添加时段 start*/
   initDate(timeStart.add(1,'h'),timeEnd1);
+  editHtml('addTime1');
   /*滑块*/
   /*var timeArr = [];
    while (timeStart.isBefore(timeEnd1, 'h')) {
@@ -615,6 +616,7 @@ $('#timePlan').on('show.bs.modal', function (event) {
 
   /**************************************************************************************/
   /*删除时段 start*/
+  editHtml('delTime');
   if(allData[areaIndex].timeItems.length > 1){
     $('.delTimeLi').removeClass('disNone');
     $('.delTimeDiv').find('.delSelect').empty();
@@ -872,26 +874,26 @@ function clearTimeDate() {
 
 /*编辑时段时间html*/
 function updatetimeSow() {
-  $('.showTimes .col-md-4 p').eq(0).empty();
-  $('.showTimes .col-md-4 p').eq(1).empty();
-  $('.showTimes .col-md-4 p').eq(2).empty();
+  $('#editTime1 .showTimes .col-md-4 p').eq(0).empty();
+  $('#editTime1 .showTimes .col-md-4 p').eq(1).empty();
+  $('#editTime1 .showTimes .col-md-4 p').eq(2).empty();
   $('#selectEditPoint').empty();
   var s, e;
   s = editTimeDateObj.s;
   e = editTimeDateObj.e;
   if (timeIndex == 0) {
     e = editTimeDateObj.afterE;
-    $('.showTimes .col-md-4 p').eq(0)
+    $('#editTime1 .showTimes .col-md-4 p').eq(0)
       .html('<h4>无时段</h4>');
-    $('.showTimes .col-md-4 p').eq(2)
+    $('#editTime1 .showTimes .col-md-4 p').eq(2)
       .html(editTimeDateObj.afterS + '<br />至<br/>' + editTimeDateObj.afterE);
     $('#selectEditPoint').append($('<option value="end">结束时间</option>'))
     //editTimeDateObj.type = 'end'
   } else if (timeIndex == allData[areaIndex].timeItems.length - 1) {
     s = editTimeDateObj.beforeS;
-    $('.showTimes .col-md-4 p').eq(2)
+    $('#editTime1 .showTimes .col-md-4 p').eq(2)
       .html('<h4>无时段</h4>');
-    $('.showTimes .col-md-4 p').eq(0)
+    $('#editTime1 .showTimes .col-md-4 p').eq(0)
       .html(editTimeDateObj.beforeS + '<br />至<br/>' + editTimeDateObj.beforeE);
     $('#selectEditPoint').append($('<option value="start">开始时间</option>'))
     //editTimeDateObj.type = 'start'
@@ -899,15 +901,52 @@ function updatetimeSow() {
     s = editTimeDateObj.beforeS;
     $('#selectEditPoint').append($('<option value="start">开始时间</option>'));
     $('#selectEditPoint').append($('<option value="end">结束时间</option>'));
-    $('.showTimes .col-md-4 p').eq(0)
+    $('#editTime1 .showTimes .col-md-4 p').eq(0)
       .html(editTimeDateObj.beforeS + '<br />至<br/>' + editTimeDateObj.beforeE);
-    $('.showTimes .col-md-4 p').eq(2)
+    $('#editTime1 .showTimes .col-md-4 p').eq(2)
       .html(editTimeDateObj.afterS + '<br />至<br/>' + editTimeDateObj.afterE);
     //editTimeDateObj.type = 'start'
   }
-  $('.showTimes .col-md-4 p').eq(1).html(editTimeDateObj.s + '<br />至<br/>' + editTimeDateObj.e);
+  $('#editTime1 .showTimes .col-md-4 p').eq(1).html(editTimeDateObj.s + '<br />至<br/>' + editTimeDateObj.e);
+
   initEditTimeDate(s, e);
   initEditTimeDate(s, e);
+}
+
+function editHtml(id){
+  $('#'+ id +' .showTimes .col-md-4 p').eq(0).empty();
+  $('#'+ id +' .showTimes .col-md-4 p').eq(1).empty();
+  $('#'+ id +' .showTimes .col-md-4 p').eq(2).empty();
+  $('#selectEditPoint').empty();
+  if (timeIndex == 0) {
+    $('#'+ id +' .showTimes .col-md-4 p').eq(0)
+      .html('<h4>无时段</h4>');
+    if(allData[areaIndex].timeItems.length == 1){
+      $('#'+ id +' .showTimes .col-md-4 p').eq(2)
+        .html('<h4>无时段</h4>');
+    }else{
+      $('#'+ id +' .showTimes .col-md-4 p').eq(2)
+        .html(momentDate(allData[areaIndex].timeItems[timeIndex+1].timeStartDate) + '<br />至<br/>' + momentDate(allData[areaIndex].timeItems[timeIndex+1].timeEndDate));
+    }
+  } else if (timeIndex == allData[areaIndex].timeItems.length - 1) {
+    $('#'+ id +' .showTimes .col-md-4 p').eq(2)
+      .html('<h4>无时段</h4>');
+    if(allData[areaIndex].timeItems.length == 1){
+      $('#'+ id +' .showTimes .col-md-4 p').eq(0)
+        .html('<h4>无时段</h4>');
+    }else{
+      $('#'+ id +' .showTimes .col-md-4 p').eq(0)
+        .html(momentDate(allData[areaIndex].timeItems[timeIndex-1].timeStartDate) + '<br />至<br/>' + momentDate(allData[areaIndex].timeItems[timeIndex-1].timeEndDate));
+    }
+  } else {
+    $('#'+ id +' .showTimes .col-md-4 p').eq(0)
+      .html(momentDate(allData[areaIndex].timeItems[timeIndex-1].timeStartDate) + '<br />至<br/>' + momentDate(allData[areaIndex].timeItems[timeIndex-1].timeEndDate));
+    $('#'+ id +' .showTimes .col-md-4 p').eq(2)
+      .html(momentDate(allData[areaIndex].timeItems[timeIndex+1].timeStartDate) + '<br />至<br/>' + momentDate(allData[areaIndex].timeItems[timeIndex+1].timeEndDate));
+    //editTimeDateObj.type = 'start'
+  }
+  $('#'+ id +' .showTimes .col-md-4 p').eq(1)
+    .html(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate) + '<br />至<br/>' + momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate));
 }
 
 /*选择修改时段开始时间或结束时间*/
