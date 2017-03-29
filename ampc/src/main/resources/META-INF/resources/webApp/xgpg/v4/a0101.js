@@ -140,7 +140,8 @@ function save_scene(){
 		mag.data = data;
 		vipspa.setMessage(mag);
 		ls.setItem('SI',JSON.stringify(mag));
-//		console.log(JSON.stringify(mag));
+		console.log(data);
+		setQjSelectBtn(data);
 		sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
 		$("#close_scene").click();
 		set_sce1_sce2();
@@ -452,3 +453,83 @@ function bianji(){
 //	});
 }
 
+
+/*添加情景选择按钮*/
+function setQjSelectBtn(data){
+	$('#qjBtn1 .btn-group').empty();
+	$('#qjBtn2 .btn-group').empty();
+
+	for(var i=0;i<data.length;i++){
+		var btn1 = $('<label class="btn btn-outline btn-success bgw"><input type="radio" name="qjBtn1"><span></span></label><br/>');
+		var btn2 = $('<label class="btn btn-outline btn-success bgw"><input type="radio" name="qjBtn2"><span></span></label><br/>');
+		//$('#qjBtn1 .btn-group')
+		//	.append($('<label class="btn btn-outline btn-success bgw" title="'+ data[i].scenarinoName +'"><input type="radio" name="qjBtn1" value="'+ data[i].scenarinoId +'">'+  data[i].scenarinoName+'</label><br/>'));
+		//$('#qjBtn2 .btn-group')
+		//	.append($('<label class="btn btn-outline btn-success bgw" title="'+ data[i].scenarinoName +'"><input type="radio" name="qjBtn2" value="'+ data[i].scenarinoId +'">'+  data[i].scenarinoName+'</label><br/>'));
+
+		btn1.attr('title',data[i].scenarinoName).find('input').attr('value',data[i].scenarinoId);
+		btn1.find('span').html(data[i].scenarinoName);
+		btn2.attr('title',data[i].scenarinoName).find('input').attr('value',data[i].scenarinoId);
+		btn2.find('span').html(data[i].scenarinoName);
+		if(i==0){
+			btn1.addClass('active').find('input').attr('checked',true);
+			btn2.addClass('disabled');
+		}
+		if(i==1){
+			btn2.addClass('active').find('input').attr('checked',true);
+		}
+		$('#qjBtn1 .btn-group').append(btn1);
+		$('#qjBtn2 .btn-group').append(btn2);
+	}
+}
+
+/*顶部选择事件*/
+$('#species').on('change',function(e){
+	var species = $(e.target).val();
+	console.log(species);
+});
+
+$('input[name=domain]').on('change',function(e){
+	var domain = $(e.target).val();
+	console.log(domain);
+});
+
+$('input[name=rms]').on('change',function(e){
+	var domain = $(e.target).val();
+	console.log(domain);
+
+	if(domain == 'd'){
+		$('#sTime-h').addClass('disNone');
+		$('#eTimeP').addClass('disNone');
+	}else if(domain == 'h'){
+		$('#sTime-h').removeClass('disNone');
+		$('#eTimeP').addClass('disNone');
+	}else{
+		$('#sTime-h').addClass('disNone');
+		$('#eTimeP').removeClass('disNone');
+	}
+});
+
+$('input[name=showType]').on('change',function(e){
+	var type = $(e.target).val();
+	console.log(type);
+})
+
+$('#qjBtn1').on('change','input',function(e){
+	var qjId = $(e.target).val();
+	console.log(qjId)
+	var index = $('input[name=qjBtn1]').index($(e.target));
+	$('#qjBtn2 .disabled').removeClass('disabled');
+	$('#qjBtn2 .active').removeClass('active');
+	$('input[name=qjBtn2]').eq(index).parents('label').addClass('disabled');
+	if(index == 0){
+		$('#qjBtn2 label').eq(1).addClass('active').find('input').attr('checked',true)
+	}else{
+		$('#qjBtn2 label').eq(0).addClass('active').find('input').attr('checked',true)
+	}
+});
+
+$('#qjBtn2').on('change','input',function(e){
+	var qjId = $(e.target).val();
+	console.log(qjId)
+});
