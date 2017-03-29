@@ -13,6 +13,13 @@ public interface TEmissionDetailMapper {
 	 */
 	List<TEmissionDetail> selectByMap(Map map);
 	
+	/**
+	 * 根据条件查询对应的结果集  用于减排列表的显示
+	 * @param map
+	 * @return
+	 */
+	List<TEmissionDetail> selectByQuery(Map map);
+	
     int deleteByPrimaryKey(Long emissionId);
 
     int insert(TEmissionDetail record);
