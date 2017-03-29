@@ -30,34 +30,11 @@
 	<div class="ibox float-e-margins" style="height:100%;">
 		<div class="ibox-content" style="height:100%;overflow-y: auto;padding: 0px;">
 			<div class="row" style="margin-top: 12px;margin-left: 0px;margin-right: 0px;height:48px;">
-			
-				<div class="col-sm-3">
-					<div class="input-group m-b" style="margin-bottom: 0px">
-						<span class="input-group-addon" style="border: 1px solid #E5E6E7;">情景一: </span>
-						<select class="form-control m-b" id="scene1" name="scene1"></select>
-					</div>
-				</div>
-				<div class="col-sm-3">
-					<div class="input-group m-b" style="margin-bottom: 0px">
-						<span class="input-group-addon" style="border: 1px solid #E5E6E7;">情景二: </span>
-						<select class="form-control m-b" id="scene2" name="scene2"></select>
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<div class="input-group m-b" style="margin-bottom: 0px">
-						<span class="input-group-addon" style="border: 1px solid #E5E6E7;">日期和时间: </span>
-						<select class="form-control m-b" id="taskId" name="taskId" style="width:60%;">
-							<option>10月1日</option>
-						</select>
-						<select class="form-control m-b" id="taskId" name="taskId" style="width:40%;">
-							<option>平均</option>
-						</select>
-					</div>
-				</div>
-				<div class="col-sm-2">
+
+				<div class="col-md-2">
 					<div class="input-group m-b" style="margin-bottom: 0px">
 						<span class="input-group-addon" style="border: 1px solid #E5E6E7;">物种: </span>
-						<select class="form-control m-b" id="taskId" name="taskId">
+						<select class="form-control m-b" id="species" name="species">
 							<option>PM25</option>
 							<option>PM10</option>
 							<option>O3</option>
@@ -73,15 +50,100 @@
 						</select>
 					</div>
 				</div>
-				
+				<div class="col-md-2">
+					<div class="btn-group" data-toggle="buttons" style="margin-top: 3px">
+						<label class="btn btn-outline btn-success btn-sm active"><input checked type="radio" name="domain" value="1">3km</label>
+						<label class="btn btn-outline btn-success btn-sm"><input type="radio" name="domain" value="2">9km</label>
+						<label class="btn btn-outline btn-success btn-sm"><input type="radio" name="domain" value="3">29km</label>
+					</div>
+				</div>
+				<div class="col-md-2">
+					<div class="btn-group" data-toggle="buttons" style="margin-top: 3px">
+						<label class="btn btn-outline btn-success btn-sm active"><input checked type="radio" name="rms" value="d">日</label>
+						<label class="btn btn-outline btn-success btn-sm"><input type="radio" name="rms" value="h">时</label>
+						<label class="btn btn-outline btn-success btn-sm"><input type="radio" name="rms" value="p">平均</label>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="col-md-7">
+						<div class="input-group m-b" style="margin-bottom: 0px">
+							<span class="input-group-addon" style="border: 1px solid #E5E6E7;">日期和时间: </span>
+							<select class="form-control m-b" id="sTime-d" name="sTime" style="width: 70%">
+								<option>10月1日</option>
+							</select>
+							<select class="form-control m-b disNone" id="sTime-h" name="sTime" style="width: 30%">
+								<option>00</option>
+								<option>01</option>
+								<option>02</option>
+								<option>03</option>
+								<option>04</option>
+								<option>05</option>
+								<option>06</option>
+								<option>07</option>
+								<option>08</option>
+								<option>09</option>
+								<option>10</option>
+								<option>11</option>
+								<option>12</option>
+								<option>13</option>
+								<option>14</option>
+								<option>15</option>
+								<option>16</option>
+								<option>17</option>
+								<option>18</option>
+								<option>19</option>
+								<option>20</option>
+								<option>21</option>
+								<option>22</option>
+								<option>23</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="col-md-5">
+						<div class="input-group m-b disNone" id="eTimeP" style="margin-bottom: 0px">
+							<span class="input-group-addon" style="border: 1px solid #E5E6E7;">日期: </span>
+							<select class="form-control m-b" id="eTime" name="eTime">
+								<option>10月1日</option>
+							</select>
+						</div>
+					</div>
+				</div>
 			</div>
 			
 			<div class="row" style="margin-left: 0px;margin-right: 0px;height:calc(100% - 60px);">
 				<div class='col-md-6' style="height:100%;padding-left: 0px;">
 					<div id="mapDiv0" style="height:100%;border:1px solid #75B9E6;"></div>
+
+
+					<div class="qjBtn" id="qjBtn1">
+						<div class='' style="margin-top: -8px;float:right;">
+							<div class="btn-group" data-toggle="buttons"></div>
+						</div>
+					</div>
+
+
 				</div>
 				<div class='col-md-6' style="height:100%;padding-left: 0px;padding-right: 0px;">
 					<div id="mapDiv1" style="height:100%;border:1px solid #75B9E6;"></div>
+
+
+					<div class="qjBtn" id="qjBtn2">
+						<div class='' style="margin-top: -8px;float:right;">
+							<div class="btn-group" data-toggle="buttons"></div>
+						</div>
+					</div>
+
+					<div class="showType" id="showType">
+						<div class='' style="margin-top: -8px;float:right;">
+							<div class="btn-group" data-toggle="buttons">
+								<label class="btn btn-outline btn-success active"><input value="1" type="radio" name="showType" checked>当前情景</label>
+								<label class="btn btn-outline btn-success"><input value="2" type="radio" name="showType">绝对变化</label>
+								<label class="btn btn-outline btn-success"><input value="3" type="radio" name="showType">相对变化</label>
+							</div>
+						</div>
+					</div>
+
 				</div>
 				<!-- <div id="info"></div> -->
 			</div>
@@ -102,7 +164,7 @@
 			<div class="modal-body">
 				<div class="rwCon" >
 					<div class="form-group mt10 clearfix">
-						<label for="mnfw" class="col-md-2 control-label lh29">任务名称</label>
+						<label for="task" class="col-md-2 control-label lh29">任务名称</label>
 
 						<div class="col-md-10">
 							<select class="form-control" id="task" name="task" onchange="sceneTable()"></select>
@@ -147,7 +209,7 @@
 			<div class="modal-body">
 				<div class="rwCon" >
 					<div class="form-group mt10 clearfix">
-						<label for="mnfw" class="col-md-2 control-label lh29">任务名称</label>
+						<label for="task" class="col-md-2 control-label lh29">任务名称</label>
 
 						<div class="col-md-10">
 							<select class="form-control" id="task" name="task" onchange="sceneTable()"></select>
