@@ -13,7 +13,11 @@ if(!qjMsg){
  */
 $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景管理</a>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span>');
 var gis_paramsName = {};//地图请求的参数，第一次加载地图时初始化，每次更改地图比例尺时修改codeLevel
-var gis_level = 0;//地图当前显示的层级
+
+var tj_paramsName = {};//统计图用的参数
+tj_paramsName.wz = $('#hz_wrw').val();//默认的物种
+
+	
 /**
  * 时间戳转成日期格式
  * @param nS
@@ -22,6 +26,19 @@ var gis_level = 0;//地图当前显示的层级
 function getLocalTime(nS) {     
     return moment(nS).format('YYYY-MM-DD');
 }
+
+
+/**
+ * 获取当前选择的行业措施的内容
+ */
+function getchaxuntype(){
+	$("#chaxuntype").children().each(function(){
+		if($(this).is('.active')){
+			tj_paramsName.type = $(this).attr("val_name");
+		}
+	});
+}
+
 
 /**
  * 操作地图显示
@@ -100,11 +117,19 @@ function shoe_data_start(evn){
 	gis_paramsName.pollutant = $('#hz_wrw').val();//物种
 	//获取地图当前比例尺，决定数据请求省市县的哪一级
 	if (evn.map.getZoom() <= 6) {
+		
 		gis_paramsName.codeLevel = 1;//省市区层级（1省，2市，3区）
+		tj_paramsName.codeLevel = 1;
+		
 	}else if (evn.map.getZoom() == 7){
+		
 		gis_paramsName.codeLevel = 2;//省市区层级（1省，2市，3区）
+		tj_paramsName.codeLevel = 2;
+		
 	}else if (evn.map.getZoom() >= 8){
+		
 		gis_paramsName.codeLevel = 3;//省市区层级（1省，2市，3区）
+		tj_paramsName.codeLevel = 3;
 	}
 	gis_paramsName.scenarinoId = qjMsg.qjId;//情景id
 	baizhu_jianpai(gis_paramsName);
@@ -122,10 +147,9 @@ function baizhu_jianpai(gis_paramsName){
 //		console.log(JSON.stringify(res));
 		if(res.status == 0){
 			var data_id = "";
-			var ttdf = "";
 			$.each(res.data, function(k, col) {
 				data_id += "'"+k+"',";
-				ttdf = k;//获取最后一个行政区划
+				tj_paramsName.code = k;//获取最后一个行政区划
 			});
 			
 			var paifang_url = "";
@@ -193,9 +217,7 @@ function baizhu_jianpai(gis_paramsName){
 				});
 			}
 			
-			//柱状图
-			var ttgh = $("input[name='option']:checked").val();
-			bar(ttdf,ttdf,"SO2",gis_paramsName.codeLevel,ttgh);
+			bar();
 		}else{
 			swal('减排数据获取失败', '', 'error');
 		}
@@ -224,7 +246,7 @@ function createLegend(level) {
   	}else if(level == 3){
   		title = "各县 "+$('#hz_wrw').val()+" 减排量（吨）";
   	}
-  	gis_level = level;
+  	tj_paramsName.codeLevel = level;
   	app.legend = new dong.Legend({
     	map : app.map,
     	respectCurrentMapScale : false,//当真正的图例会更新每个规模变化和只显示层和子层中可见当前地图比例尺。当假的,图例不更新在每个规模变化和所有层和子层将显示出来。默认值是正确的。
@@ -305,21 +327,14 @@ function resizess(event){
 	}
 }
 
-var admincode = "130000";//当前统计图显示数据的行政区划
-var name = "河北省"
 /**
  * 点击地图事件，调用统计图方法
  * @param event
  */
 function optionclick(event){
-	admincode = event.graphic.attributes.ADMINCODE;
-	var name = event.graphic.attributes.NAME;
-	
-	//更新统计图
-	var wztype = $('#hz_wrw').val();
-	bar(admincode,name,wztype,gis_level);
-	pie(admincode,name,wztype,gis_level,'1');
-	
+	tj_paramsName.code = event.graphic.attributes.ADMINCODE;
+	tj_paramsName.name = event.graphic.attributes.NAME;
+	bar();
 }
 
 /**
@@ -327,79 +342,43 @@ function optionclick(event){
  */
 function gis_paifang_show(){
 	gis_paramsName.pollutant = $('#hz_wrw').val();//物种
-	baizhu_jianpai(gis_paramsName);
-	//更新统计图
-//	admincode //已选择的行政区划，如果为空，则还未选择
-	//var wztype = $('#hz_wrw').val();
+	tj_paramsName.wz = $('#hz_wrw').val();//物种
 	
+	baizhu_jianpai(gis_paramsName);
+}
+
+/**
+ * 行业措施切换
+ */
+function type_info(){
+	setTimeout(function(){
+		pie();
+	},100);
 }
 
 
-
-
-
-
-
-
-
-
-
-$(function(){
-
-	//初始化模态框显示
-	$(".createRwModal").modal();
-	//行业 措施联动
-	$("#tradeId").change(function(){
-		var tradetype = $("input[name='option']:checked").val();
-		pie(admincode,name,$('#hz_wrw').val(),gis_level,tradetype);
-		console.log(356)
-	});
-	$("#measureId").change(function(){
-		var measuretype = $("input[name='option']:checked").val();
-		pie(admincode,name,$('#hz_wrw').val(),gis_level,measuretype);
-		console.log(360)
-	});
-	
-    //地图展示切换
-    $("#mapId").change(function(){
-    	$("#map_showId").show();
-    	$("#listModal").hide();
-    	
-    })
-    //列表展示切换
-    $("#listShow").change(function(){
-    	$("#listModal").show();
-    	$("#map_showId").hide();
-
-    })
-    
-    
-});
-
 /****************************************************柱状图*************************************************************************/
-function bar (admincode,name,wztype,gis_level,picType) {
-	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":admincode,"addressLevle":gis_level,"stainType":wztype};
+function bar() {
+	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":tj_paramsName.code,"addressLevle":tj_paramsName.codeLevel,"stainType":tj_paramsName.wz};
+	
 		ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
-			
-			
 			if(res.status == 0){//返回成功
 				if(res.data.dateResult.length > 0){//有返回时间，说明可以显示柱状图
 //					console.log(res);
 					
-					var new_arr=[];
+					tj_paramsName.new_arr=[];
 					for(var i=0;i<res.data.dateResult.length;i++) {
 						var items=res.data.dateResult[i];
-						new_arr.push(items.substring(0,10));
+						tj_paramsName.new_arr.push(items.substring(0,10));
 					}
-					
 					//饼图
-					pie(admincode,name,wztype,gis_level,picType,new_arr);
+					pie();
 					
 					var myPfChart = echarts.init(document.getElementById('pfDiv1'));
 					
 					var option = {
 						    title : {
-						        text: name +'-'+wztype+'-'+'减排图',
+						        text: tj_paramsName.name +'-'+tj_paramsName.wz+'-'+'减排图',
 						    },
 						    tooltip : {
 						        trigger: 'axis',
@@ -408,14 +387,14 @@ function bar (admincode,name,wztype,gis_level,picType) {
 						        },
 						        formatter: function (params){
 						            return params[0].name + '<br/>'
-						                   + params[0].seriesName + ' : ' + params[0].value + '<br/>'
-						                   + params[1].seriesName + ' : ' +  params[1].value;       //把 + params[0].value 去掉了
+						                   + params[1].seriesName + ' : ' + params[1].value + '<br/>'
+						                   + params[0].seriesName + ' : ' +  params[0].value;       //把 + params[0].value 去掉了
 						        }
 						    },
 						    legend: {
 						    	//不触动
 						        selectedMode:false,
-						        data:['实际排放量', '减排量']
+						        data:['减排量', '实际排放量']
 						    },
 						    grid:{
 						    		show:true
@@ -479,7 +458,7 @@ function bar (admincode,name,wztype,gis_level,picType) {
 						                }
 						            },
 						            //data:res.data.pflResult
-						            data:res.data.jplResult
+						            data:res.data.pflResult
 						        },
 						        {
 						            name:'减排量',
@@ -513,7 +492,7 @@ function bar (admincode,name,wztype,gis_level,picType) {
 			                    		]
 			                    	},*/
 						            //data:res.data.jplResult
-			                    	data:res.data.pflResult
+			                    	data:res.data.jplResult
 						        }
 						    ]
 						};
@@ -546,7 +525,18 @@ function bar (admincode,name,wztype,gis_level,picType) {
 							oldX = [];
 							oldX = newX;
 							newX = [];
-							pie(admincode,name,wztype,gis_level,1,oldX);
+							
+							tj_paramsName.new_arr=[];
+							//删除时间重复的数据
+							var new_arr=[];
+							for(var i=0;i<oldX.length;i++) {
+								var items=oldX[i];
+								//判断元素是否存在于new_arr中，如果不存在则插入到new_arr的最后
+								if($.inArray(items,new_arr)==-1) {
+									tj_paramsName.new_arr.push(items);
+								}
+							}
+							pie();
 						});
 				}else{
 					swal('情景没有时间', '', 'error');
@@ -560,21 +550,11 @@ function bar (admincode,name,wztype,gis_level,picType) {
 var newX=[],oldX=[];
 
 /****************************************************行业措施饼状图*************************************************************************/
-function  pie(admincode,name,wztype,gis_level,pietype,oldX){
-	
-	//删除时间重复的数据
-	var new_arr=[];
-	for(var i=0;i<oldX.length;i++) {
-		var items=oldX[i];
-		//判断元素是否存在于new_arr中，如果不存在则插入到new_arr的最后
-		if($.inArray(items,new_arr)==-1) {
-			new_arr.push(items);
-		}
-	}
-	
+function  pie(){
 	var nameVal;
 	var valueVal;
-	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":admincode,"addressLevle":gis_level,"stainType":wztype,"startDate":new_arr[0],"endDate":new_arr[new_arr.length-1],"type":pietype};
+	getchaxuntype();
+	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":tj_paramsName.code,"addressLevle":tj_paramsName.codeLevel,"stainType":tj_paramsName.wz,"startDate":tj_paramsName.new_arr[0],"endDate":tj_paramsName.new_arr[tj_paramsName.new_arr.length-1],"type":tj_paramsName.type};
 	ajaxPost('/echarts/get_pieInfo',paramsName).success(function(result){
 		
 		
@@ -593,7 +573,7 @@ function  pie(admincode,name,wztype,gis_level,pietype,oldX){
 			var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
 			var optionPie = {
 				    title : {
-				        text: name+'-'+wztype+'-'+'饼状图',
+				        text: tj_paramsName.name+'-'+tj_paramsName.wz+'-'+'饼状图',
 				        x:'center'
 				    },
 				    tooltip : {
