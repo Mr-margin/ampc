@@ -135,7 +135,7 @@ function save_scene(){
 		mag.taskID = $("#task").val();
 		var data = [];
 		$.each(row, function(i, col) {
-			data.push({"scenarinoId":col.scenarinoId,"scenarinoName":col.scenarinoName});
+			data.push({"scenarinoId":col.scenarinoId,"scenarinoName":col.scenarinoName,"scenarinoStartDate":col.scenarinoStartDate,"scenarinoEndDate":col.scenarinoEndDate});
 		});
 		mag.data = data;
 		vipspa.setMessage(mag);
@@ -144,7 +144,7 @@ function save_scene(){
 		setQjSelectBtn(data);
 		sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
 		$("#close_scene").click();
-		set_sce1_sce2();
+		//set_sce1_sce2();
 	}
 }
 //超链接显示 模态框
@@ -469,30 +469,105 @@ for(var i=0;i<speciesArr.d.length;i++){
 
 /*添加情景选择按钮*/
 function setQjSelectBtn(data){
+	var s1,s2,e1,e2;
 	$('#qjBtn1 .btn-group').empty();
 	$('#qjBtn2 .btn-group').empty();
-
 	for(var i=0;i<data.length;i++){
 		var btn1 = $('<label class="btn btn-outline btn-success bgw"><input type="radio" name="qjBtn1"><span></span></label><br/>');
 		var btn2 = $('<label class="btn btn-outline btn-success bgw"><input type="radio" name="qjBtn2"><span></span></label><br/>');
-		//$('#qjBtn1 .btn-group')
-		//	.append($('<label class="btn btn-outline btn-success bgw" title="'+ data[i].scenarinoName +'"><input type="radio" name="qjBtn1" value="'+ data[i].scenarinoId +'">'+  data[i].scenarinoName+'</label><br/>'));
-		//$('#qjBtn2 .btn-group')
-		//	.append($('<label class="btn btn-outline btn-success bgw" title="'+ data[i].scenarinoName +'"><input type="radio" name="qjBtn2" value="'+ data[i].scenarinoId +'">'+  data[i].scenarinoName+'</label><br/>'));
-
-		btn1.attr('title',data[i].scenarinoName).find('input').attr('value',data[i].scenarinoId);
+		btn1.attr('title',data[i].scenarinoName).find('input').attr('value',data[i].scenarinoId).attr('data-sDate',data[i].scenarinoStartDate).attr('data-eDate',data[i].scenarinoEndDate);
 		btn1.find('span').html(data[i].scenarinoName);
-		btn2.attr('title',data[i].scenarinoName).find('input').attr('value',data[i].scenarinoId);
+		btn2.attr('title',data[i].scenarinoName).find('input').attr('value',data[i].scenarinoId).attr('data-sDate',data[i].scenarinoStartDate).attr('data-eDate',data[i].scenarinoEndDate);
 		btn2.find('span').html(data[i].scenarinoName);
 		if(i==0){
 			btn1.addClass('active').find('input').attr('checked',true);
 			btn2.addClass('disabled');
+			s1 = data[i].scenarinoStartDate;
+			e1 = data[i].scenarinoEndDate;
 		}
 		if(i==1){
 			btn2.addClass('active').find('input').attr('checked',true);
+			s2 = data[i].scenarinoStartDate;
+			e2 = data[i].scenarinoEndDate;
 		}
 		$('#qjBtn1 .btn-group').append(btn1);
 		$('#qjBtn2 .btn-group').append(btn2);
+	}
+	setDate(s1,e1,s2,e2,rmsType);
+}
+
+var rmsType = 'd';
+var startTime,endTime,nowTime;//存储moment对象
+/*设置日期下拉框*/
+/*传入毫秒数*/
+function setDate(s1,e1,s2,e2,type){
+	$('#sTime-d').empty();
+	$('#eTime').empty();
+	s1 = moment(s1-0);
+	s2 = moment(s2-0);
+	e1 = moment(e1-0);
+	e2 = moment(e2-0);
+	if(type == 'h'){
+		if(e1.isBefore(s2,'h')||e2.isBefore(s1,'h')){
+			return;
+		}
+
+		if(s1.isBefore(s2,'h')){
+			startTime = s2;
+		}else{
+			startTime = s1;
+		}
+
+		if(e1.isBefore(e2,'h')){
+			endTime = e1;
+		}else{
+			endTime = e2;
+		}
+		nowTime = moment(startTime);
+		var s = moment(startTime);
+		var e = moment(endTime);
+		while(true){
+			$('#sTime-d').append($('<option>' +s.format('YYYY-MM-DD')+ '</option>'));
+			console.log(s.format('YYYY-MM-DD'));
+			if(e.isBefore(s.add(1,'d'))){
+				return;
+			}
+		}
+		s = moment(startTime);
+		while(true){
+			$('#sTime-h').append($('<option>' +s.format('HH')+ '</option>'));
+			if('23' ==s.add(1,'h').format('HH')){
+				return;
+			}
+		}
+	}else{
+		if(e1.isBefore(s2,'d')||e2.isBefore(s1,'d')){
+			return;
+		}
+
+		if(s1.isBefore(s2,'d')){
+			startTime = s2;
+		}else{
+			startTime = s1;
+		}
+
+		if(e1.isBefore(e2,'d')){
+			endTime = e1;
+		}else{
+			endTime = e2;
+		}
+
+		nowTime = moment(startTime);
+		var s = moment(startTime);
+		var e = moment(endTime);
+		while(true){
+			$('#sTime-d').append($('<option>' +s.format('YYYY-MM-DD')+ '</option>'));
+			$('#eTime').append($('<option>' +s.format('YYYY-MM-DD')+ '</option>'));
+			console.log(s.format('YYYY-MM-DD'));
+			if(e.isBefore(s.add(1,'d'))){
+				return;
+			}
+		}
 	}
 }
 
@@ -508,16 +583,17 @@ $('input[name=domain]').on('change',function(e){ //domaon选择
 });
 
 $('input[name=rms]').on('change',function(e){ //时间分辨率选择
-	var domain = $(e.target).val();
-	console.log(domain);
+	var rms = $(e.target).val();
+	rmsType = rms;
+	console.log(rms);
 	$('#species').empty();
-	for(var i=0;i<speciesArr[domain].length;i++){
-		$('#species').append($('<option>'+ speciesArr[domain][i] +'</option>'))
+	for(var i=0;i<speciesArr[rms].length;i++){
+		$('#species').append($('<option>'+ speciesArr[rms][i] +'</option>'))
 	}
-	if(domain == 'd'){
+	if(rms == 'd'){
 		$('#sTime-h').addClass('disNone');
 		$('#eTimeP').addClass('disNone');
-	}else if(domain == 'h'){
+	}else if(rms == 'h'){
 		$('#sTime-h').removeClass('disNone');
 		$('#eTimeP').addClass('disNone');
 	}else{
@@ -543,16 +619,36 @@ $('#qjBtn1').on('change','input',function(e){//改变左侧情景
 	}else{
 		$('#qjBtn2 label').eq(0).addClass('active').find('input').attr('checked',true)
 	}
+
+	var s1 = $(e.target).attr('data-sDate');
+	var e1 = $(e.target).attr('data-eDate');
+
+	var s2 = $('#qjBtn2 input:checked').attr('data-sDate');
+	var e2 = $('#qjBtn2 input:checked').attr('data-eDate');
+
+
+
+	setDate(s1,e1,s2,e2,rmsType);
 });
 
 $('#qjBtn2').on('change','input',function(e){//改变右侧情景
 	var qjId = $(e.target).val();
 	console.log(qjId)
+
+	var s2 = $(e.target).attr('data-sDate');
+	var e2 = $(e.target).attr('data-eDate');
+
+	var s1 = $('#qjBtn1 input:checked').attr('data-sDate');
+	var e1 = $('#qjBtn1 input:checked').attr('data-eDate');
+
+
+
+	setDate(s1,e1,s2,e2,rmsType);
 });
 
 $('#sTime-d').on('change',function(e){//选择日期
 	var date = $(e.target).val();
-	console.log(date)
+	console.log(date);
 });
 
 $('#sTime-h').on('change',function(e){//选择时间
