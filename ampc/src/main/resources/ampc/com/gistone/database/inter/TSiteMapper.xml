@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TSiteMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TSite" >
+    <result column="SITE_ID" property="siteId" jdbcType="DECIMAL" />
+    <result column="SITE_CODE" property="siteCode" jdbcType="VARCHAR" />
+    <result column="STATION_ID" property="stationId" jdbcType="VARCHAR" />
+    <result column="STATION_NAME" property="stationName" jdbcType="VARCHAR" />
+    <result column="CITY_NAME" property="cityName" jdbcType="VARCHAR" />
+    <result column="LAT" property="lat" jdbcType="VARCHAR" />
+    <result column="LON" property="lon" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TSite" >
+    insert into T_SITE (SITE_ID, SITE_CODE, STATION_ID, 
+      STATION_NAME, CITY_NAME, LAT, 
+      LON)
+    values (#{siteId,jdbcType=DECIMAL}, #{siteCode,jdbcType=VARCHAR}, #{stationId,jdbcType=VARCHAR}, 
+      #{stationName,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{lat,jdbcType=VARCHAR}, 
+      #{lon,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TSite" >
+    insert into T_SITE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="siteId != null" >
+        SITE_ID,
+      </if>
+      <if test="siteCode != null" >
+        SITE_CODE,
+      </if>
+      <if test="stationId != null" >
+        STATION_ID,
+      </if>
+      <if test="stationName != null" >
+        STATION_NAME,
+      </if>
+      <if test="cityName != null" >
+        CITY_NAME,
+      </if>
+      <if test="lat != null" >
+        LAT,
+      </if>
+      <if test="lon != null" >
+        LON,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="siteId != null" >
+        #{siteId,jdbcType=DECIMAL},
+      </if>
+      <if test="siteCode != null" >
+        #{siteCode,jdbcType=VARCHAR},
+      </if>
+      <if test="stationId != null" >
+        #{stationId,jdbcType=VARCHAR},
+      </if>
+      <if test="stationName != null" >
+        #{stationName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityName != null" >
+        #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="lat != null" >
+        #{lat,jdbcType=VARCHAR},
+      </if>
+      <if test="lon != null" >
+        #{lon,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>
