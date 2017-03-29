@@ -47,10 +47,10 @@
 						<div class="" style="margin-top:5px;">
 								<div class="btn-group" data-toggle="buttons">
 									<label class="btn btn-outline btn-success">
-										<input type="radio" name="options" id="sjOption1" >逐小时
+										<input type="radio" name="options" id="zhuHour">逐小时
 									</label>
 									<label class="btn btn-outline btn-success active">
-										<input type="radio" name="options" id="sjOption2">逐日
+										<input type="radio" name="options" id="zhuDay">逐日
 									</label>
 								</div>
 						</div>
@@ -81,10 +81,10 @@
 						<div class="" style="margin-top:5px;">
 							<div class="btn-group" data-toggle="buttons">
 								<label class="btn btn-outline btn-success active">
-									<input type="radio" name="options" id="compareOption1">绝对量比较
+									<input type="radio" name="options" id="absoluChange">绝对量比较
 								</label>
 								<label class="btn btn-outline btn-success">
-									<input type="radio" name="options" id="changeOption2">相对变化
+									<input type="radio" name="options" id="relativeChange">相对变化
 								</label>
 							</div>
 						</div>
@@ -94,11 +94,11 @@
 					<div class="input-group m-b" style="margin-bottom: 0px">
 						<div class="" style="margin-bottom:0px;padding-left:7px;">
 							<div class="btn-group" data-toggle="buttons">
-								<label class="btn btn-outline btn-success">
-									<input type="radio" name="spread" id="spreadOption1">组分展开
-								</label>
 								<label class="btn btn-outline btn-success active">
-									<input type="radio" name="PmSpread" id="spreadOption2">PM2.5组分展开
+									<input type="radio" name="spread" id="zufenSpread">组分展开
+								</label>
+								<label class="btn btn-outline btn-success">
+									<input type="radio" name="spread" id="zufenUp">PM2.5组分收起
 								</label>
 							</div>
 						</div>
@@ -107,46 +107,49 @@
 			</div>
 			<div class="row" style="margin-left: 0px;margin-right: 0px;width:100%;height:calc(100% - 48px);">
 				<div class='col-md-12' style="height:100%;width:100%;padding-left: 0px;">
-					<div id="mapDiv1" style="height:350px;width:100%;border:1px solid #75B9E6;margin-top:5px;">
+					<div id="mapDivAQI" style="height:350px;width:100%;border:1px solid #75B9E6;margin-top:5px;">
 						<div class="" id="mainDiv1" style="height:300px;width:100%;padding-left:20px;padding-right:20px;margin-left:auto;margin-right:auto;"></div>
 					</div>
-					<div id="mapDiv2" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
+					<div id="mapDivPM25" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
 						<div class="" id="mainDiv2" style="height:300px;width:100%;padding-left:20px;padding-right:20px;margin-left:auto;margin-right:auto;"></div>
 					</div>
-					<div id="mapDiv3" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
+					<div id="mapDivPM10" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
 						<div class="" id="mainDiv3" style="height:300px;width:100%;padding-left:20px;padding-right:20px;margin-left:auto;margin-right:auto;"></div>
 					</div>
-					<div id="mapDiv4" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
+					<div id="mapDivO3" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
 						<div class="" id="mainDiv4" style="height:300px;width:100%;padding-left:20px;padding-right:20px;margin-left:auto;margin-right:auto;"></div>
 					</div>
-					<div id="mapDiv5" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
+					<div id="mapDivO38" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
 						<div class="" id="mainDiv5" style="height:300px;width:100%;padding-left:20px;padding-right:20px;margin-left:auto;margin-right:auto;"></div>
 					</div>
-					<div id="mapDiv6" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
+					<div id="mapDivO31" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
 						<div class="" id="mainDiv6" style="height:300px;width:100%;padding-left:20px;padding-right:20px;margin-left:auto;margin-right:auto;"></div>
 					</div>
-					<div id="mapDiv7" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
+					<div id="mapDivSO2" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
 						<div class="" id="mainDiv7" style="height:300px;width:100%;padding-left:20px;padding-right:20px;margin-left:auto;margin-right:auto;"></div>
 					</div>
-					<div id="mapDiv8" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
+					<div id="mapDivNO2" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
 						<div class="" id="mainDiv8" style="height:300px;width:100%;padding-left:20px;padding-right:20px;margin-left:auto;margin-right:auto;"></div>
 					</div>
-					<div id="mapDiv9" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
+					<div id="mapDivCO" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
 						<div class="" id="mainDiv9" style="height:300px;width:100%;padding-left:20px;padding-right:20px;margin-left:auto;margin-right:auto;"></div>
 					</div>
-					<div id="mapDiv10" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
+					<div id="mapDivSO4" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
 						<div class="" id="mainDiv10" style="height:300px;width:100%;padding-left:20px;padding-right:20px;margin-left:auto;margin-right:auto;"></div>
 					</div>
-					<div id="mapDiv11" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
+					<div id="mapDivNO3" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
 						<div class="" id="mainDiv11" style="height:300px;width:100%;padding-left:20px;padding-right:20px;margin-left:auto;margin-right:auto;"></div>
 					</div>
-					<div id="mapDiv12" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
+					<div id="mapDivNH4" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
 						<div class="" id="mainDiv12" style="height:300px;width:100%;padding-left:20px;padding-right:20px;margin-left:auto;margin-right:auto;"></div>
 					</div>
-					<div id="mapDiv13" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
+					<div id="mapDivBC" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
 						<div class="" id="mainDiv13" style="height:300px;width:100%;padding-left:20px;padding-right:20px;margin-left:auto;margin-right:auto;"></div>
 					</div>
-					<div id="mapDiv14" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
+					<div id="mapDivOM" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
+						<div class="" id="mainDiv14" style="height:300px;width:100%;padding-left:20px;padding-right:20px;margin-left:auto;margin-right:auto;"></div>
+					</div>
+					<div id="mapDivPMFINE" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
 						<div class="" id="mainDiv14" style="height:300px;width:100%;padding-left:20px;padding-right:20px;margin-left:auto;margin-right:auto;"></div>
 					</div>
 				</div>
@@ -154,7 +157,6 @@
 		</div>
 	</div>
 </div>
-
 <!-- 设置情景范围模态框 -->
 <div class="modal fade createRwModal" id="Initialization" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
