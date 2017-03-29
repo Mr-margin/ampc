@@ -188,6 +188,131 @@ $(function(){
 
     })
 });
+/****************************************************构建列表展示table*************************************************************************/    
+$("#table_listShow").bootstrapTable({
+	method:'POST',
+	url:'',
+	dataType: "json",
+	clickToSelect : true,// 点击选中行
+	pagination : false, // 在表格底部显示分页工具栏
+	singleSelect : true,//设置True 将禁止多选
+	striped : true, // 使表格带有条纹
+	pagination: true, //是否启用分页
+	sidePagination: "client",//分页方式：client客户端分页，server服务端分页（*）
+	pageNumber:1,   //初始化加载第一页，默认第一页
+	pageSize: 10,   //每页的记录行数
+	pageList: [10, 25, 50, 100],//可供选择的每页的行数
+	silent : true, // 刷新事件必须设置
+	detailView: false,//是否显示父子表
+    columns: [{
+        field: 'xzArea',
+        title: '行政区',
+        align: 'center',
+        
+    }, {
+        field: 'PM25name',
+        title: 'PM2.5',
+        align: 'center'
+    }, {
+        field: 'PM10name',
+        title: 'PM10',
+        align: 'center'
+    }, {
+        field: 'SO2name',
+        title: 'SO2',
+        align: 'center'
+    }, {
+        field: 'NOXname',
+        title: 'NOX',
+        align: 'center'
+    }, {
+        field: 'VOCname',
+        title: 'VOC',
+        align: 'center'
+        	
+    }, {
+        field: 'COname',
+        title: 'CO',
+        align: 'center'
+    }, {
+        field: 'NH3name',
+        title: 'NH3',
+        align: 'center'
+    }, {
+        field: 'BCname',
+        title: 'BC',
+        align: 'center'
+    }, {
+        field: 'OCname',
+        title: 'OC',
+        align: 'center'
+    }, {
+        field: 'PMFINEname',
+        title: 'PMFINE',
+        align: 'center'
+    }, {
+        field: 'PMCname',
+        title: 'PMC',
+        align: 'center'
+    }],
+    data:[{
+    	xzArea: '杭州市',
+    	PM25name: '76',
+    	PM10name: '80',
+    	SO2name: '85',
+    	NOXname: '78',
+    	VOCname: '77',
+    	COname: '75',
+    	NH3name: '76',
+    	BCname: '75',
+    	OCname: '71',
+    	PMFINEname: '76',
+    	PMCname: '73'
+    },{
+    	xzArea: '嘉兴市',
+    	PM25name: '76',
+    	PM10name: '80',
+    	SO2name: '85',
+    	NOXname: '78',
+    	VOCname: '77',
+    	COname: '75',
+    	NH3name: '76',
+    	BCname: '75',
+    	OCname: '71',
+    	PMFINEname: '76',
+    	PMCname: '73'
+    },{
+    	xzArea: '湖州市',
+    	PM25name: '76',
+    	PM10name: '80',
+    	SO2name: '85',
+    	NOXname: '78',
+    	VOCname: '77',
+    	COname: '75',
+    	NH3name: '76',
+    	BCname: '75',
+    	OCname: '71',
+    	PMFINEname: '76',
+    	PMCname: '73'
+    },{
+    	xzArea: '宁波市',
+    	PM25name: '76',
+    	PM10name: '80',
+    	SO2name: '85',
+    	NOXname: '78',
+    	VOCname: '77',
+    	COname: '75',
+    	NH3name: '76',
+    	BCname: '75',
+    	OCname: '71',
+    	PMFINEname: '76',
+    	PMCname: '73'
+    },],
+  //注册加载子表的事件。注意下这里的三个参数！
+    onExpandRow: function (index, row, $detail) {
+        InitSubTable(index, row, $detail);
+    }
+});
 
 /****************************************************柱状图*************************************************************************/
 function bar () {
