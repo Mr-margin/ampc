@@ -566,7 +566,13 @@ public class PlanAndMeasureController {
 								if(pool.get(stainType)==null||pool.get(stainType).toString().equals("")) continue;
 								double d1 = Double.parseDouble(pool.get(stainType).toString().split("/")[0]);
 								double d2 = Double.parseDouble(pool.get(stainType).toString().split("/")[1]);
-								double d3=CastNumUtil.significand(d1/d2, 3)*100;
+//								System.out.println(d1+"-"+d2);
+								double d3 = -9999.0;
+								if(d2 == 0.0){
+									
+								}else{
+									d3=CastNumUtil.significand(d1/d2, 3)*100;
+								}
 								list.get(i).put("reduct", String.valueOf(d3));
 								// 如果子措施和汇总都有对应污染物 则计算涉及减排比
 								if (ratioMap != null) {
@@ -575,7 +581,16 @@ public class PlanAndMeasureController {
 										if (ratioMap.get(stainType) != null&& pool.get(stainType) != null) {
 											double dratio = Double.parseDouble(ratioMap.get(stainType).toString());
 											double dpool = Double.parseDouble(pool.get(stainType).toString().split("/")[1]);
-											double dr=CastNumUtil.significand(dratio / dpool, 3)*100;
+//											System.out.println(dratio+"-"+dpool+"-"+pool.get(stainType).toString());
+											
+											double dr = -9999.0;
+											if(dpool == 0.0){
+												
+											}else{
+												dr=CastNumUtil.significand(dratio / dpool, 3)*100;
+											}
+											
+//											double dr=CastNumUtil.significand(dratio / dpool, 3)*100;
 											list.get(i).put("ratio", String.valueOf(dr));
 //											BigDecimal br = new BigDecimal(dratio / dpool); 
 //											String str1 = br.toPlainString();

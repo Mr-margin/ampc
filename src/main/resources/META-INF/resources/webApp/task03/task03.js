@@ -215,8 +215,30 @@ function metTable_hj_info(pa_name){
 			if(res.status == 0){
 				
 				$.each(res.data.rows, function(i, col) {
-					res.data.rows[i].reduct = res.data.rows[i].reduct+"%";
-					res.data.rows[i].ratio = res.data.rows[i].ratio+"%";
+					
+					if (typeof res.data.rows[i].reduct != "undefined") {
+						if(res.data.rows[i].reduct == "-9999.0"){
+							res.data.rows[i].reduct = "-";
+						}else{
+							res.data.rows[i].reduct = res.data.rows[i].reduct+"%";
+						}
+					}else{
+						res.data.rows[i].reduct = "-";
+					}
+					if (typeof res.data.rows[i].ratio != "undefined") {
+						
+						if(res.data.rows[i].ratio == "-9999.0"){
+							res.data.rows[i].ratio = "-";
+						}else{
+							res.data.rows[i].ratio = res.data.rows[i].ratio+"%";
+						}
+						
+					}else{
+						res.data.rows[i].ratio = "-";
+					}
+					
+					
+					
 				});
 				
 				return res.data.rows;
