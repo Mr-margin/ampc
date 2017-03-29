@@ -18,6 +18,25 @@ public interface TAddressMapper {
 	 */
 	List<Long> selectByCode(String code);
 	
+	/**
+	 * 根据省级code 查询对应的市级Code
+	 * @param code
+	 * @return
+	 */
+	List<Long> selectlevel2ByCode(String code);
+	
+	
+	
+	/**
+	 * 根据code 查询区域名称
+	 * @param code
+	 * @return
+	 */
+	String selectNameByCode(String code);
+	
+	
+	
+	
     int deleteByPrimaryKey(Integer addressId);
 
     int insert(TAddress record);
