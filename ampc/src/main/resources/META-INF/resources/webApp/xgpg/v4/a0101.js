@@ -454,6 +454,19 @@ function bianji(){
 }
 
 
+var speciesArr = {
+	d:['PM25','PM10','O3_8_max','O3_1_max','O3_avg','SO2','NO2','CO','SO4','NO3','NH4','BC','OM','PMFINE'],
+	p:['PM25','PM10','O3_8_max','O3_1_max','O3_avg','SO2','NO2','CO','SO4','NO3','NH4','BC','OM','PMFINE'],
+	h:['PM25','PM10','O3','SO2','NO2','CO','SO4','NO3','NH4','BC','OM','PMFINE']
+};
+
+
+/*这段代码需要在初始化中*/
+$('#species').empty();
+for(var i=0;i<speciesArr.d.length;i++){
+	$('#species').append($('<option>'+ speciesArr.d[i] +'</option>'))
+}
+
 /*添加情景选择按钮*/
 function setQjSelectBtn(data){
 	$('#qjBtn1 .btn-group').empty();
@@ -484,20 +497,23 @@ function setQjSelectBtn(data){
 }
 
 /*顶部选择事件*/
-$('#species').on('change',function(e){
+$('#species').on('change',function(e){  //物种选择
 	var species = $(e.target).val();
 	console.log(species);
 });
 
-$('input[name=domain]').on('change',function(e){
+$('input[name=domain]').on('change',function(e){ //domaon选择
 	var domain = $(e.target).val();
 	console.log(domain);
 });
 
-$('input[name=rms]').on('change',function(e){
+$('input[name=rms]').on('change',function(e){ //时间分辨率选择
 	var domain = $(e.target).val();
 	console.log(domain);
-
+	$('#species').empty();
+	for(var i=0;i<speciesArr[domain].length;i++){
+		$('#species').append($('<option>'+ speciesArr[domain][i] +'</option>'))
+	}
 	if(domain == 'd'){
 		$('#sTime-h').addClass('disNone');
 		$('#eTimeP').addClass('disNone');
@@ -510,12 +526,12 @@ $('input[name=rms]').on('change',function(e){
 	}
 });
 
-$('input[name=showType]').on('change',function(e){
+$('input[name=showType]').on('change',function(e){ //地图图片类型
 	var type = $(e.target).val();
 	console.log(type);
 })
 
-$('#qjBtn1').on('change','input',function(e){
+$('#qjBtn1').on('change','input',function(e){//改变左侧情景
 	var qjId = $(e.target).val();
 	console.log(qjId)
 	var index = $('input[name=qjBtn1]').index($(e.target));
@@ -529,7 +545,22 @@ $('#qjBtn1').on('change','input',function(e){
 	}
 });
 
-$('#qjBtn2').on('change','input',function(e){
+$('#qjBtn2').on('change','input',function(e){//改变右侧情景
 	var qjId = $(e.target).val();
 	console.log(qjId)
+});
+
+$('#sTime-d').on('change',function(e){//选择日期
+	var date = $(e.target).val();
+	console.log(date)
+});
+
+$('#sTime-h').on('change',function(e){//选择时间
+	var date = $(e.target).val();
+	console.log(date)
+});
+
+$('#eTime').on('change',function(e){//选择平均后的时间
+	var date = $(e.target).val();
+	console.log(date)
 });
