@@ -191,7 +191,6 @@ function initRwTable() {
     queryParamsType: "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
     silent: true, // 刷新事件必须设置
     onClickRow: function (row, $element) {
-      msg.esCodeRange = row.esCodeRange.split(',');//暂时没有
       $('.qj').val('');
       selectRW = row;
       $('#qjTable').bootstrapTable('destroy');
@@ -357,6 +356,7 @@ function initQjTable() {
       msg.content.qjEndDate = row.scenarinoEndDate;
       msg.content.esCouplingId = selectRW.esCouplingId;
       msg.content.esCouplingName = selectRW.esCouplingName;
+      msg.content.esCodeRange = selectRW.esCodeRange.split(',');
       msg.content.scenarinoStatus = row.scenarinoStatus;
       msg.content.scenarinoStatuName = row.scenarinoStatuName;
       vipspa.setMessage(msg);
