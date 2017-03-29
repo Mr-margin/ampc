@@ -215,9 +215,6 @@ $("#zufenUp").change(function(){
 	$("#mapDivPMFINE").hide();
 });
 
-/*myChart.on('click', function (param) {
-    alert('点击了我！');
-});*/
 
 
 //	创建ECharts图表
