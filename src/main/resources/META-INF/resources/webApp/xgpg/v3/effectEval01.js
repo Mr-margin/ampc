@@ -29,6 +29,7 @@ if(!sceneInitialization){
 	set_sce();
 }
 
+var allMission = {};
 /**
  * 初始化模态框显示
  */
@@ -42,7 +43,7 @@ function sceneInittion(){
 		if(res.status == 0){
 			var task = "";
 			$.each(res.data, function(k, vol) {
-				
+				allMission[vol.missionId] = vol;
 				if(sceneInitialization){
 					if(sceneInitialization.taskID == vol.missionId){
 						task += '<option value="'+vol.missionId+'" selected="selected">'+vol.missionName+'</option>';
@@ -133,6 +134,8 @@ function save_scene(){
 		var mag = {};
 		mag.id = "sceneInitialization";
 		mag.taskID = $("#task").val();
+		mag.s = allMission[mag.taskID].missionStartDate;
+		mag.e = allMission[mag.taskID].missionEndDate;
 		var data = [];
 		$.each(row, function(i, col) {
 			data.push({"scenarinoId":col.scenarinoId,"scenarinoName":col.scenarinoName});
