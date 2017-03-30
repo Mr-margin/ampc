@@ -164,8 +164,14 @@ public class EchartsController {
 			}else{
 				//转换行政区划code
 				List<Long> codes=tAddressMapper.selectByCode(code);
-				//添加code条件
-				mapQuery.put("codes", codes);
+				
+				//如果等于0，说明前台需要显示全部区域的数据
+				//只有大于0，才添加codes条件
+				if(addressLevle > 0){
+					//添加code条件
+					mapQuery.put("codes", codes);
+				}
+				
 				//获取所有的基准情景减排结果
 				List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByMap(mapQuery);
 				//内部循环初始值变量
@@ -358,8 +364,14 @@ public class EchartsController {
 				//需要查询对应的县级编码
 				codes=tAddressMapper.selectByCode(code);
 			}
-			//添加code条件
-			mapQuery.put("codes", codes);
+			
+			//如果等于0，说明前台需要显示全部区域的数据
+			//只有大于0，才添加codes条件
+			if(addressLevle > 0){
+				//添加code条件
+				mapQuery.put("codes", codes);
+			}
+			
 			//获取所有的减排结果
 			List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByMap(mapQuery);
 			//循环所有减排结果
