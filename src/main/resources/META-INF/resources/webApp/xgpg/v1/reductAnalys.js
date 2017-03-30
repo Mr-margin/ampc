@@ -1,13 +1,5 @@
 
 var ls = window.sessionStorage;
-var qjMsg = vipspa.getMessage('yaMessage').content;
-
-if(!qjMsg){
-  qjMsg = JSON.parse(ls.getItem('yaMsg'));
-}else{
-  ls.setItem('yaMsg',JSON.stringify(qjMsg));
-}
-console.log(JSON.stringify(qjMsg));
 
 var sceneInitialization = vipspa.getMessage('sceneInitialization').content;//从路由中取到情景范围
 if(!sceneInitialization){
@@ -20,7 +12,7 @@ console.log(JSON.stringify(sceneInitialization));
 if(!sceneInitialization){
 	sceneInittion();
 }else{
-//	set_sce1_sce2();
+	setQjSelectBtn(sceneInitialization.data);//加载地图上的情景按钮
 }
 var allMission = {};
 /**
@@ -137,10 +129,9 @@ function save_scene(){
 		vipspa.setMessage(mag);
 		ls.setItem('SI',JSON.stringify(mag));
 		console.log(data);
-//		setQjSelectBtn(data);
+		setQjSelectBtn(data);//添加情景选择按钮
 		sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
 		$("#close_scene").click();
-		//set_sce1_sce2();
 	}
 }
 //超链接显示 模态框
@@ -148,6 +139,31 @@ function exchangeModal(){
 	sceneInittion();
 	$("#Initialization").modal();
 }
+
+var qjid_dq;//当前的情景ID
+var qjname_dq;//当前情景的name
+
+/*添加情景选择按钮*/
+function setQjSelectBtn(data){
+	$('#qjBtn1 .btn-group').empty();
+	for(var i=0;i<data.length;i++){
+		var btn1 = $('<label class="btn btn-outline btn-success bgw"><input type="radio" name="qjBtn1"><span></span></label><br/>');
+		btn1.attr('title',data[i].scenarinoName).find('input').attr('value',data[i].scenarinoId).attr('data-sDate',data[i].scenarinoStartDate).attr('data-eDate',data[i].scenarinoEndDate);
+		btn1.find('span').html(data[i].scenarinoName);
+		if(i==0){
+			btn1.addClass('active').find('input').attr('checked',true);
+			qjid_dq = data[i].scenarinoId;
+			qjname_dq = data[i].scenarinoName;
+		}
+		$('#qjBtn1 .btn-group').append(btn1);
+	}
+	
+}
+
+
+
+
+
 
 /**
  *设置导航条信息
@@ -158,7 +174,7 @@ var gis_paramsName = {};//地图请求的参数，第一次加载地图时初始
 var tj_paramsName = {};//统计图用的参数
 tj_paramsName.wz = $('#hz_wrw').val();//默认的物种
 tj_paramsName.code = "0";//code默认为0
-tj_paramsName.name = qjMsg.qjName;//name默认为情景名称
+tj_paramsName.name = qjname_dq;//name默认为情景名称
 	
 /**
  * 时间戳转成日期格式
@@ -274,7 +290,7 @@ function shoe_data_start(evn){
 //		gis_paramsName.codeLevel = 3;//省市区层级（1省，2市，3区）
 //		tj_paramsName.codeLevel = 3;
 //	}
-	gis_paramsName.scenarinoId = qjMsg.qjId;//情景id
+	gis_paramsName.scenarinoId = qjid_dq;//情景id
 	baizhu_jianpai(gis_paramsName,"1");
 }
 
@@ -487,7 +503,7 @@ function optionclick(event){
 		if(app.map.graphics.graphics.length > 0){//已经有选中的对象了
 			app.map.graphics.clear();
 			tj_paramsName.code = "0";
-			tj_paramsName.name = qjMsg.qjName;//name默认为情景名称
+			tj_paramsName.name = qjname_dq;//name默认为情景名称
 			bar();
 		}
 	}
@@ -812,7 +828,7 @@ function table_show(query_code){
 			var data = {};
 			data.code = query_code;
 			data.addressLevle = tj_paramsName.codeLevel;
-			data.scenarinoId = qjMsg.qjId;//情景id
+			data.scenarinoId = qjid_dq;//情景id
 			console.log(JSON.stringify(data));
 			return JSON.stringify({"token": "","data": data});
 		},

@@ -26,7 +26,7 @@ console.log(JSON.stringify(sceneInitialization));
 if(!sceneInitialization){
 	sceneInittion();
 }else{
-	set_sce1_sce2();
+	setQjSelectBtn(sceneInitialization.data);
 }
 
 var allMission = {};
@@ -147,7 +147,6 @@ function save_scene(){
 		setQjSelectBtn(data);
 		sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
 		$("#close_scene").click();
-		//set_sce1_sce2();
 	}
 }
 //超链接显示 模态框
@@ -157,25 +156,6 @@ function exchangeModal(){
 }
 
 
-
-
-
-/**
- * 设置情景一和情景二的下拉框内容
- */
-function set_sce1_sce2(){
-	if(sceneInitialization){
-		$("#scene1").html("");
-		$("#scene2").html("");
-		
-		var scene = "";
-		$.each(sceneInitialization.data, function(i, col) {
-			scene += '<option value="'+col.scenarinoId+'">'+col.scenarinoName+'</option>';
-		});
-		$("#scene1").html(scene);
-		$("#scene2").html(scene);
-	}
-}
 
 
 
@@ -255,7 +235,7 @@ require(
 						app.mapList[i].setExtent(event.extent);
 					}
 				}
-				$("#info").html("xmax="+event.extent.xmax+"  xmin="+event.extent.xmin+"  ymax="+event.extent.ymax+"  ymin="+event.extent.ymin);
+				$("#Point").html("xmax="+event.extent.xmax+"  xmin="+event.extent.xmin+"  ymax="+event.extent.ymax+"  ymin="+event.extent.ymin);
 			}else{
 				source = -1;
 			}
@@ -293,7 +273,47 @@ require(
 //	    	$("#Zoom").html("Zoom="+app.mapList[0].getZoom());
 //	    	$("#Level").html("Level="+app.mapList[0].getLevel());
 	    }
+		
+		
+		
+		$.get('data3.json', function (data) {
+			var featuressss = [];
+			$.each(data, function(i, col) {
+				var point = new dong.Point(col.x, col.y, new dong.SpatialReference({ wkid: 3857 }));
+				var attr = {};
+		        attr["FID"] = i;
+		        if(Math.random()>0.5){
+		        	attr["dqvalue"] = 350;
+		        }else{
+		        	attr["dqvalue"] = 0;
+		        }
+		        
+//		        console.log(col.x+"---"+col.y);
+				var graphic = new dong.Graphic(point);
+				graphic.setAttributes(attr);
+				featuressss.push(graphic);
+			});
+			var featureset = new dong.FeatureSet();
+			featureset.fields = [{
+				"name": "dqvalue",
+				"type": "esriFieldTypeSingle",
+				"alias": "dqvalue"
+			},{
+				"name": "FID",
+				"type": "esriFieldTypeOID",
+				"alias": "FID"
+			}];
+			featureset.fieldAliases = {"dqvalue" : "dqvalue","FID":"FID"};
+			featureset.spatialReference =  new dong.SpatialReference({ wkid: 3857 });
+		    featureset.features = featuressss;
+		    
+		    
+		    console.log(JSON.stringify(featureset));
+		    
+		});
 });
+
+
 
 function bianji(){
 	var myDate = new Date();
