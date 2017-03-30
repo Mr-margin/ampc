@@ -630,21 +630,25 @@ function  pie(){
  * 地图展示与列表展示切换
  */
 function gis_switch_table(){
-	
-	$("#showtype").children().each(function(){
-		if($(this).is('.active')){
-			
-			if($(this).attr("val_name") == "gis"){
-				$("#listModal").hide();
-				$("#map_showId").show();
-				$("#legendWrapper").show();
-			}else if($(this).attr("val_name") == "table"){
-				$("#listModal").show();
-				$("#map_showId").hide();
-				$("#legendWrapper").hide();
+	setTimeout(function(){
+		$("#showtype").children().each(function(){
+			if($(this).is('.active')){
+				
+				if($(this).attr("val_name") == "gis"){
+					$("#listModal").hide();
+					$("#map_showId").show();
+					$("#legendWrapper").show();
+					$("#gis_table_title").html("各地区减排");
+				}else if($(this).attr("val_name") == "table"){
+					table_show(tj_paramsName.code);
+					$("#gis_table_title").html("各地区减排比例(%)");
+					$("#listModal").show();
+					$("#map_showId").hide();
+					$("#legendWrapper").hide();
+				}
 			}
-		}
-	});
+		});
+	},100);
 }
 
 
@@ -655,33 +659,28 @@ function table_show(query_code){
 	
 	$('#listModal_table').bootstrapTable('destroy');
 	$('#listModal_table').bootstrapTable({
-		height : $("#listModal").height(),
+		height : $("#listModal").height()-51,
 		method : 'POST',
-		url : jianpaiUrl+'/search/sourceList',
+		url : '/ampc/echarts/get_radioList',
 		dataType : "json",
 		iconSize : "outline",
 		clickToSelect : true,// 点击选中行
 		pagination : false, // 在表格底部显示分页工具栏
 		striped : true, // 使表格带有条纹
 		queryParams : function(params) {
-			
-			var temp_sc_val = jQuery.extend(true, {}, sc_val);
-			delete temp_sc_val.summary;
-			temp_sc_val.regionIds = Codes;
-			temp_sc_val.pageHelper = {};
-			temp_sc_val.pageHelper.pageSize = params.limit;
-			temp_sc_val.pageHelper.pageNumber = params.offset;
-			return JSON.stringify(temp_sc_val);
-			
+			var data = {};
+			data.code = query_code;
+			data.addressLevle = tj_paramsName.codeLevel;
+			data.scenarinoId = qjMsg.qjId;//情景id
+			console.log(JSON.stringify(data));
+			return JSON.stringify({"token": "","data": data});
 		},
 		responseHandler: function (res) {
-			
-			if(res.status == 'success'){
-				if(res.data.rows.length>0){
-
+			console.log(JSON.stringify(res));
+			if(res.status == 0){
+				if(res.data.length>0){
+					return res.data;
 				}
-				
-				return res.data;
 			}else if(res.status == ''){
 				return "";
 			}

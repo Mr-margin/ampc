@@ -1,41 +1,98 @@
-<!-- 效果评估 》 减排分析 -->
+<!-- 任务管理 >>区域时段>>减排分析 -->
+<style type="text/css">
+	.legendinfo {
+		width: 14.0625em;
+		background-color: rgb(242, 242, 242);
+		color: #000;
+		position: absolute;
+		bottom: 0;
+		padding-left: 10px;
+		padding-top: 10px;
+		font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+		border-top: 2px solid #ffffff;
+		border-right: 2px solid #ffffff;
+		border-top-right-radius: 20px;
+	}
+	
+	.info {
+		padding: 5px;
+		z-index: 40;
+	}
+	.shadow {
+		/* background: #fff; */
+		background-color: rgb(242, 242, 242);
+		font-family: Helvetica, Arial, sans-serif;
+		-moz-box-shadow: 0 0 5px #888;
+		-webkit-box-shadow: 0 0 5px #888;
+		box-shadow: 0 0 5px #888;
+		border-radius: 5px;
+	}
+	#legendWrapper {
+		bottom: 15px;
+		height: 23.5em;
+		left: 15px;
+		position: absolute !important;
+		width: 14.0625em;
+	}
+</style>
 <div class='col-md-6' style="height:100%;padding-left: 0px;">
 	<div class="ibox float-e-margins" style="height:100%;">
 		<div class="ibox-title">
-			<h5>各地区减排比例</h5>
-			<div class="row">
-				<div class='col-md-2 col-md-offset-2' style="margin-top: -10px;">
-					<div class="btn-group">
-						<button data-toggle="dropdown"
-							class="btn btn-default  dropdown-toggle"
-							style="margin-bottom: 0px;padding-right:0px;">
-							物种 <span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" style="min-width: 80.83px;">
-							<li><a class="font-bold">SO<sub>2</sub></a></li>
-							<li><a class="font-bold">SO<sub>2</sub></a></li>
-							<li><a class="font-bold">SO<sub>2</sub></a></li>
-							<li><a class="font-bold">SO<sub>2</sub></a></li>
-						</ul>
+			<h5 id="gis_table_title">各地区减排</h5>
+			<div class="ibox-tools">
+				<div class="btn-group" style="margin-bottom: 0px;margin-top: -10px;">
+					<div class="input-group m-b" style="margin-bottom: 0px;width:180px;">
+						<span class="input-group-addon" style="border: 1px solid #E5E6E7;">物种: </span>
+						<select name="hz_wrw" id="hz_wrw" class="form-control" onChange="gis_paifang_show();">
+							<option value="SO2">SO2</option>
+							<option value="PM25">PM25</option>
+							<option value="PM10">PM10</option><!-- PM10=PM25+PMcoarse -->
+							
+							<option value="NOx">NOx</option>
+							<option value="VOC">VOC</option>
+							<option value="CO">CO</option>
+							<option value="NH3">NH3</option>
+							<option value="BC">BC</option>
+							<option value="OC">OC</option>
+							<option value="PMFINE">PMFINE</option><!-- PMFINE=PM25-BC-OC -->
+							<option value="PMC">PMC</option>
+		              	</select>
 					</div>
 				</div>
-				<div class='' style="margin-top: -10px;float:right;">
-					<div class="btn-group" data-toggle="buttons" id="#color">
-						<label class="btn btn-outline btn-success active"> <input type="radio" name="toggle" id="mapId">地图展示
-						</label> <label class="btn btn-outline btn-success"><input type="radio" name="toggle" id="listShow">列表展示
-						</label>
-					</div>
+	        	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	        	<div class="btn-group btn-group-circle" id="showtype" onClick="gis_switch_table();" data-toggle="buttons" style="margin-bottom: 0px;margin-top: -5px;">
+					<label class="btn btn-outline btn-success active" val_name="gis"><input type="radio" class="toggle">地图展示</label> 
+					<label class="btn btn-outline btn-success" val_name="table"><input type="radio" class="toggle">列表展示</label>
 				</div>
-			</div>
+	        </div>
 		</div>
 		<div class="ibox-content" style="height:calc(100% - 48px);overflow-y: hide;border:1px solid #75B9E6;padding: 0px;">
-	        <div id="map_showId"><img alt=""  style="width:100%;height:100%;" src="img/map01.png"></div>
+	        <div id="map_showId" style="height:100%;"></div>
+	        <!-- <div class="legendinfo"></div> -->
+	        <div id="legendWrapper" class="shadow info"></div>
+				
 	    	<!-- 列表展示modal -->
-	    	<div  id="listModal" style="display: none;">
-	    		<table class="table table-hover" id="table_listShow">
-	    			
-	    		</table> 
-	    	</div>
+	    	<div  id="listModal" style="height:100%;display: none;">
+				<table id="listModal_table">
+					<thead>
+						<tr>
+							<th data-field="state" data-checkbox="true" formatter="stateFormatter"></th>
+							<th data-field="name" data-halign="center" data-align="center">行政区</th>
+							<th data-field="pm25" data-halign="center" data-align="center">PM<sub>2.5</sub></th>
+							<th data-field="pm10" data-halign="center" data-align="center">PM<sub>10</sub></th>
+							<th data-field="so2" data-halign="center" data-align="center">SO<sub>2</sub></th>
+							<th data-field="nox" data-halign="center" data-align="center">NO<sub>x</sub></th>
+							<th data-field="voc" data-halign="center" data-align="center">VOC</th>
+							<th data-field="co" data-halign="center" data-align="center">CO</th>
+							<th data-field="nh3" data-halign="center" data-align="center">NH<sub>3</sub></th>
+							<th data-field="bc" data-halign="center" data-align="center">BC</th>
+							<th data-field="oc" data-halign="center" data-align="center">OC</th>
+							<th data-field="pmfine" data-halign="center" data-align="center">PMFINE</th>
+							<th data-field="pmc" data-halign="center" data-align="center">PMC</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
 	    </div>
 	</div>
 </div>
@@ -53,11 +110,11 @@
 	<div class="ibox float-e-margins" style="height:calc(50% - 15px);margin-bottom: 0px;">
 		<div class="ibox-title">
 			<h5>行业/措施分担</h5>
-			<div class="row">
-					<div class='' style="margin-top: -8px;float:right;">
-						<div class="btn-group" data-toggle="buttons">
-							<label class="btn btn-outline btn-success"><input type="radio" name="option" id="tradeId">行业</label> 
-							<label class="btn btn-outline btn-success active"><input type="radio" name="option" id="measureId">措施</label>
+			<div class="" style="float:right;">
+					<div class='' style="margin-top: -8px;">
+						<div class="btn-group btn-group-circle" id="chaxuntype" onClick="type_info();" data-toggle="buttons" style="margin-bottom: 0px;">
+							<label class="btn btn-outline btn-success active" val_name="1"><input type="radio" class="toggle">行业</label> 
+							<label class="btn btn-outline btn-success" val_name="2"><input type="radio" class="toggle">措施</label>
 						</div>
 					</div>
 			</div>
@@ -70,7 +127,7 @@
 
 
 
-<!-- 设置情景范围模态框 -->
+<!-- 设置时间模态框 -->
 <div class="modal fade createRwModal" id="Initialization" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -83,7 +140,7 @@
 			<div class="modal-body">
 				<div class="rwCon" >
 					<div class="form-group mt10 clearfix">
-						<label for="mnfw" class="col-md-2 control-label lh29">任务名称</label>
+						<label for="task" class="col-md-2 control-label lh29">任务名称</label>
 
 						<div class="col-md-10">
 							<select class="form-control" id="task" name="task" onchange="sceneTable()"></select>
@@ -111,9 +168,3 @@
 		</div>
 	</div>
 </div>
-
-
-
-
-
-
