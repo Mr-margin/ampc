@@ -766,7 +766,7 @@ public class PlanAndMeasureController {
 					String svss = svs[i];
 					String[] svsss = svss.split("=");
 					mu = new MeasureUtil();
-					mu.setNamech(tme.getMeasureExcelSvname().toString());
+					mu.setNamech(tme.getMeasureExcelSvname().toString()+"("+svsss[0]+")");
 					mu.setNameen(svsss[0]);
 					mu.setValue(svsss[1]);
 					String[] svsv = CheckRange(tme.getMeasureExcelSvrange()
