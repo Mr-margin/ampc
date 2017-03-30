@@ -639,7 +639,7 @@ public class EchartsController {
 		}
 	}
 	
-	public void tempUtil(Map ede,RadioListUtil rlu){
+	public void tempUtil(Map ede,RadioListUtil rlu) throws Exception{
 		double so2=Double.parseDouble(ede.get("SO2").toString());
 		//判断这个污染物是否出现在了集合中 如果存在则累加 否则只添加
 		if(rlu.getSO2()>0){
@@ -699,6 +699,9 @@ public class EchartsController {
 			rlu.setPM10(rlu.getPM10()+pm25+pmc);
 		}else{
 			rlu.setPM10(pm25+pmc);
+		}
+		if((pm25-bc-oc)<0){
+			throw new Exception("出现负值");
 		}
 		if(rlu.getPMFINE()>0){
 			rlu.setPMFINE(rlu.getPM10()+pm25-bc-oc);
