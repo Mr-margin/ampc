@@ -1,5 +1,7 @@
 package ampc.com.gistone.controller;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,11 +28,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ampc.com.gistone.database.inter.TEmissionDetailMapper;
+import ampc.com.gistone.database.inter.TEsNativeMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.model.TEmissionDetail;
+import ampc.com.gistone.database.model.TEsNative;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.RequestRegionData;
+import ampc.com.gistone.util.codeTransformUtil;
 
 @RestController
 @RequestMapping
@@ -42,6 +48,12 @@ public class EMissionController {
 	@Autowired
 	private TScenarinoDetailMapper tScenarinoDetailMapper;
 	
+	@Autowired
+	private RequestRegionData rrd=new RequestRegionData();
+	
+	
+	@Autowired
+	private TEsNativeMapper tEsNativeMapper;
 	/**
 	 * 保存减排计算结果
 	 * @param requestDate
@@ -57,8 +69,10 @@ public class EMissionController {
 		ClientUtil.SetCharsetAndHeader(request, response);
 		Map<String, Map> data = (Map) requestDate.get("data");
 		String status=requestDate.get("status").toString();
-		Long scenarionId=jobId;
 		
+		Long scenarionId=245l;
+		TEsNative tEsNative =new TEsNative();
+		tEsNative.setEsCodeRange("11,12,13");
 		int a=0;
 		int b=0;
 		//编写正则表达式
@@ -83,44 +97,12 @@ public class EMissionController {
 		JSONObject jasonObject = JSONObject.fromObject(emission);
 		Map<String,Object> map= (Map)jasonObject;//将emission的值	转化为Map集合
 		List<String> codelist=new ArrayList<String>();
-		for(String code:map.keySet()){//根据key进行遍历
+		Map<String,Object> newmap=codeTransformUtil.codeTransformEmission(map, tEsNative);
+		for(String code:newmap.keySet()){//根据key进行遍历
 			if(!codelist.contains(code)){//去除重复省市重复存储
 			TEmissionDetail temission=new TEmissionDetail();
 			temission.setEmissionDate(emissiondate);
-			if(code.equals("310101")||code.equals("310103")){//code转换
-				code="310101";
-				codelist.add("310101");
-				codelist.add("310103");
-			}else if(code.equals("310115")||code.equals("310119")){	
-				code="310115";
-				codelist.add("310115");
-				codelist.add("310119");
-			}else if(code.equals("522200")){
-				code="520600";
-				codelist.add("520600");
-			}else if(code.equals("522400")){
-				code="520500";
-				codelist.add("520500");
-			}else if(code.equals("632100")){
-				code="630200";
-				codelist.add("630200");
-			}else if(code.equals("340100")||code.equals("341402")||code.equals("341421")){
-				code="340100";
-				codelist.add("340100");
-				codelist.add("341402");
-				codelist.add("341421");
-			}else if(code.equals("340200")||code.equals("341422")){	
-				code="340200";
-				codelist.add("340200");
-				codelist.add("341422");
-			}else if(code.equals("340500")||code.equals("341423")||code.equals("341424")){
-				code="340500";
-				codelist.add("340500");
-				codelist.add("341423");
-				codelist.add("341424");
-			}else{
 				codelist.add(code);
-			}
 			temission.setCode(code);
 			 String pcode=code.substring(0, 2);
 			 String ccode=code.substring(2,4);
@@ -133,7 +115,7 @@ public class EMissionController {
 			}else{
 				temission.setCodeLevel("3");
 			}
-			Map somemap=(Map) map.get(code);//获取emission的值	
+			Map somemap=(Map) newmap.get(code);//获取emission的值	
 			JSONObject someobj = JSONObject.fromObject(somemap);
 			Map<String,Object> lastMap= (Map)someobj;//将emission的值	转化为Map集合
 			
@@ -227,43 +209,10 @@ public class EMissionController {
 		Map<String,Object> map= (Map)jasonObject;//将emission的值	转化为Map集合
 		List<String> codelist=new ArrayList<String>();
 		for(String code:map.keySet()){//根据key进行遍历
-			if(!codelist.contains(code)){//去除重复省市重复存储
+			if(!codelist.contains(code)){
 			TEmissionDetail temission=new TEmissionDetail();
 			temission.setEmissionDate(emissiondate);
-			if(code.equals("310101")||code.equals("310103")){//code转换
-				code="310101";
-				codelist.add("310101");
-				codelist.add("310103");
-			}else if(code.equals("310115")||code.equals("310119")){	
-				code="310115";
-				codelist.add("310115");
-				codelist.add("310119");
-			}else if(code.equals("522200")){
-				code="520600";
-				codelist.add("520600");
-			}else if(code.equals("522400")){
-				code="520500";
-				codelist.add("520500");
-			}else if(code.equals("632100")){
-				code="630200";
-				codelist.add("630200");
-			}else if(code.equals("340100")||code.equals("341402")||code.equals("341421")){
-				code="340100";
-				codelist.add("340100");
-				codelist.add("341402");
-				codelist.add("341421");
-			}else if(code.equals("340200")||code.equals("341422")){	
-				code="340200";
-				codelist.add("340200");
-				codelist.add("341422");
-			}else if(code.equals("340500")||code.equals("341423")||code.equals("341424")){
-				code="340500";
-				codelist.add("340500");
-				codelist.add("341423");
-				codelist.add("341424");
-			}else{
 				codelist.add(code);
-			}
 			temission.setCode(code);
 			 String pcode=code.substring(0, 2);
 			 String ccode=code.substring(2,4);
@@ -314,9 +263,9 @@ public class EMissionController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			TEmissionDetail tEmission=new TEmissionDetail();
-			String pollutant=data.get("pollutant").toString();	
+			String pollutant=data.get("pollutant").toString();
 			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());
-			String level=data.get("codeLevel").toString();	
+			String level=data.get("codeLevel").toString();
 			tEmission.setEmissionType("1");
 			List<TEmissionDetail> tEmissions=tEmissionDetailMapper.selectByEntity(tEmission);
 			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
@@ -358,7 +307,7 @@ public class EMissionController {
 						map.put(pcode, yes);
 					}else{
 						map.put(pcode, new BigDecimal(nummap.get(pollutant).toString()));
-					}	
+					}
 				}
 				if(level.equals("2")){
 					String pcode=emission.getCode().substring(0, 4)+"00";
@@ -369,7 +318,7 @@ public class EMissionController {
 						map.put(pcode,yes);
 					}else{
 						map.put(pcode, new BigDecimal(nummap.get(pollutant).toString()));
-					}	
+					}
 				}
 				if(level.equals("3")){
 					String pcode=emission.getCode();
@@ -380,14 +329,14 @@ public class EMissionController {
 						map.put(pcode, yes);
 					}else{
 						map.put(pcode, new BigDecimal(nummap.get(pollutant).toString()));
-					}	
+					}
 				}
 					//}else{
 					//	continue;
 						
 					//}
 				}//行业循环
-				arry.add(map);	
+				arry.add(map);
 				}else{//判断时间是否一样
 					continue;
 				}
@@ -414,12 +363,11 @@ public class EMissionController {
 						}
 						}
 				}
-			
 			}
 			return AmpcResult.build(0, "success",refmap);
 		}catch(Exception e){
 			e.printStackTrace();
-			return AmpcResult.build(1000, "error",null);	
+			return AmpcResult.build(1000, "error",null);
 		}
 		
 		
@@ -560,6 +508,41 @@ public class EMissionController {
 		
 	}
 	
+	/**
+	 * 保存站点接口
+	 * @return
+	 */
+	@RequestMapping("find_sion")
+	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
+	public AmpcResult find_sion(){
+		try {
+			 rrd.request();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return AmpcResult.build(0, "success");
+	}
 	
+	@RequestMapping("/codenew")
+	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
+	public AmpcResult codenew(){
+		TEsNative tEsNative=new TEsNative();
+		tEsNative.setEsCodeRange("11,12,13");
+		List<Long> list=new ArrayList<Long>();
+		list.add(410200l);
+		list.add(130600l);
+		List<Long> newlist=codeTransformUtil.codeTransform(list, tEsNative);
+		return AmpcResult.build(0, "success",newlist);
+	}
 	
 }
