@@ -1364,6 +1364,8 @@ public class MissionAndScenarinoController {
 				JSONObject obj=new JSONObject();
 				obj.put("missionId", mission.getMissionId());
 				obj.put("missionName", mission.getMissionName());
+				obj.put("missionStartDate", mission.getMissionStartDate().getTime());
+				obj.put("missionEndDate", mission.getMissionEndDate().getTime());
 				arr.add(obj);
 			}
 			}else{
