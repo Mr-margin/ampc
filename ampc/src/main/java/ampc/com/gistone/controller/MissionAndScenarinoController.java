@@ -1361,12 +1361,23 @@ public class MissionAndScenarinoController {
 			JSONArray arr=new JSONArray();
 			if(!missionlist.isEmpty()){
 			for(TMissionDetail mission:missionlist){
+				List<TScenarinoDetail> tScenarinoDetaillist=tScenarinoDetailMapper.selectAllByMissionId(mission.getMissionId());
+				Long b=0l;
+				for(TScenarinoDetail tScenarinoDetail:tScenarinoDetaillist){
+				Long status=tScenarinoDetail.getScenarinoStatus();
+				if(status>=5){
+					b+=1;
+				}
+				
+			}
+				if(b!=0){
 				JSONObject obj=new JSONObject();
 				obj.put("missionId", mission.getMissionId());
 				obj.put("missionName", mission.getMissionName());
 				obj.put("missionStartDate", mission.getMissionStartDate().getTime());
 				obj.put("missionEndDate", mission.getMissionEndDate().getTime());
 				arr.add(obj);
+				}
 			}
 			}else{
 				
@@ -1404,6 +1415,7 @@ public class MissionAndScenarinoController {
 			JSONObject objsed=new JSONObject();
 			if(!tScenarinoDetaillist.isEmpty()){
 			for(TScenarinoDetail Scenarino:tScenarinoDetaillist){
+				if(Scenarino.getScenarinoStatus()>=5){
 				JSONObject obj=new JSONObject();
 				obj.put("scenarinoId", Scenarino.getScenarinoId());
 				obj.put("scenarinoName", Scenarino.getScenarinoName());
@@ -1412,6 +1424,7 @@ public class MissionAndScenarinoController {
 				obj.put("scenarinoEndDate", Scenarino.getScenarinoEndDate().getTime());
 				arr.add(obj);
 				objsed.put("rows", arr);
+				}
 			}
 			}else{
 				
