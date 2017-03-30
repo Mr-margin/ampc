@@ -1828,9 +1828,6 @@ function area(data) {
   for (var i = 0; i < 3; i++) {
     var t1 = "";
     var str = "ADMINCODE";
-    if (i == 1) {
-      str = "CITYCODE";
-    }
     var renderer = new dong.UniqueValueRenderer(defaultSymbol, str);
     if (i == 0) {
       for (var prop in data[i]) {
@@ -1896,7 +1893,7 @@ function dingwei1(tiaojian, type) {
       app.map.setExtent(extent.expand(1.5));
     });
   } else if (type == "2") {
-    query.where = "CITYCODE IN (" + tiaojian.substring(0, tiaojian.length - 1) + ")";
+    query.where = "ADMINCODE IN (" + tiaojian.substring(0, tiaojian.length - 1) + ")";
     app.featureLayer2.queryFeatures(query, function (featureSet) {
       for (var i = 0, il = featureSet.features.length; i < il; i++) {
         var graphic = featureSet.features[i];
