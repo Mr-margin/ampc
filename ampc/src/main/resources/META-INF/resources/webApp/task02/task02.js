@@ -205,7 +205,7 @@ function initialize() {
   $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景编辑</a>');
   previous();
 
-  var ls = window.localStorage;
+  var ls = window.sessionStorage;
   qjMsg = vipspa.getMessage('qjMessage').content;
 
   if (!qjMsg) {
