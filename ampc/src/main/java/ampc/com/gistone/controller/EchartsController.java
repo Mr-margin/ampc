@@ -570,9 +570,26 @@ public class EchartsController {
 			 * 获取所有的排放总量 用来计算
 			 */
 			if(code.equals("0")){
-				
+				mapQuery.put("code", null);
 			}else{
-				
+				mapQuery.put("code", code);
+			}
+			//获取到对应的减排信息
+			List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
+			//定义结果对象
+			RadioListUtil basisrlu=new RadioListUtil();
+			for(TEmissionDetail ted:basisList){
+				//判断是行业还是措施的  并赋值对应的Json串
+				String edetail=ted.getEmissionDetails();
+				//解析json获取到所有行业的减排信息
+				Map edeMap=mapper.readValue(edetail, Map.class);
+				//循环所有行业用来得到所有行业的污染物减排总和
+				for(Object obj:edeMap.keySet()){
+					//获取行业
+					Map ede=(Map)edeMap.get(obj);
+					//获取行业中的减排污染物信息
+					tempUtil(ede,basisrlu);
+				}
 			}
 			
 			
@@ -641,6 +658,7 @@ public class EchartsController {
 							//获取行业中的减排污染物信息
 							tempUtil(ede,rlu);
 						}
+						resultUtil(basisrlu,rlu);
 						resultList.add(rlu);
 					}else{
 						//添加类型有市级
@@ -659,6 +677,7 @@ public class EchartsController {
 								tempUtil(ede,rlu);
 							}
 						}
+						resultUtil(basisrlu,rlu);
 						resultList.add(rlu);
 					}
 				} // end 循环省级code
@@ -707,6 +726,7 @@ public class EchartsController {
 								//获取行业中的减排污染物信息
 								tempUtil(ede,rlu);
 							}
+							resultUtil(basisrlu,rlu);
 							resultList.add(rlu);
 						}else{
 							//添加类型有县级
@@ -725,6 +745,7 @@ public class EchartsController {
 									tempUtil(ede,rlu);
 								}
 							}
+							resultUtil(basisrlu,rlu);
 							resultList.add(rlu);
 						}
 					} // end 循环省级code
@@ -762,6 +783,7 @@ public class EchartsController {
 								tempUtil(ede,rlu);
 							}
 						}
+						resultUtil(basisrlu,rlu);
 						resultList.add(rlu);
 					}
 				}
@@ -771,6 +793,119 @@ public class EchartsController {
 			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误");
 		}
+	}
+	
+	public void resultUtil(RadioListUtil basisrlu,RadioListUtil rlu) throws Exception{
+		if(basisrlu.getSO2()>0){
+			double temp=CastNumUtil.significand(rlu.getSO2()/basisrlu.getSO2() , 3)*100;
+			temp=CastNumUtil.decimal(temp, 1);
+			rlu.setSO2(temp);
+		}else if(basisrlu.getSO2()==0){
+			rlu.setSO2(-9999);
+		}else{
+			throw new Exception("排放量为负数");
+		}
+		
+		if(basisrlu.getNOx()>0){
+			double temp=CastNumUtil.significand(rlu.getNOx()/basisrlu.getNOx() , 3)*100;
+			temp=CastNumUtil.decimal(temp, 1);
+			rlu.setNOx(temp);
+		}else if(basisrlu.getNOx()==0){
+			rlu.setNOx(-9999);
+		}else{
+			throw new Exception("排放量为负数");
+		}
+		
+		if(basisrlu.getPM25()>0){
+			double temp=CastNumUtil.significand(rlu.getPM25()/basisrlu.getPM25() , 3)*100;
+			temp=CastNumUtil.decimal(temp, 1);
+			rlu.setPM25(temp);
+		}else if(basisrlu.getPM25()==0){
+			rlu.setPM25(-9999);
+		}else{
+			throw new Exception("排放量为负数");
+		}
+		
+		if(basisrlu.getVOC()>0){
+			double temp=CastNumUtil.significand(rlu.getVOC()/basisrlu.getVOC() , 3)*100;
+			temp=CastNumUtil.decimal(temp, 1);
+			rlu.setVOC(temp);
+		}else if(basisrlu.getVOC()==0){
+			rlu.setVOC(-9999);
+		}else{
+			throw new Exception("排放量为负数");
+		}
+		
+		if(basisrlu.getNH3()>0){
+			double temp=CastNumUtil.significand(rlu.getNH3()/basisrlu.getNH3() , 3)*100;
+			temp=CastNumUtil.decimal(temp, 1);
+			rlu.setNH3(temp);
+		}else if(basisrlu.getNH3()==0){
+			rlu.setNH3(-9999);
+		}else{
+			throw new Exception("排放量为负数");
+		}
+		
+		if(basisrlu.getPMC()>0){
+			double temp=CastNumUtil.significand(rlu.getPMC()/basisrlu.getPMC() , 3)*100;
+			temp=CastNumUtil.decimal(temp, 1);
+			rlu.setPMC(temp);
+		}else if(basisrlu.getPMC()==0){
+			rlu.setPMC(-9999);
+		}else{
+			throw new Exception("排放量为负数");
+		}
+		
+		if(basisrlu.getBC()>0){
+			double temp=CastNumUtil.significand(rlu.getBC()/basisrlu.getBC() , 3)*100;
+			temp=CastNumUtil.decimal(temp, 1);
+			rlu.setBC(temp);
+		}else if(basisrlu.getBC()==0){
+			rlu.setBC(-9999);
+		}else{
+			throw new Exception("排放量为负数");
+		}
+	
+		if(basisrlu.getOC()>0){
+			double temp=CastNumUtil.significand(rlu.getOC()/basisrlu.getOC() , 3)*100;
+			temp=CastNumUtil.decimal(temp, 1);
+			rlu.setOC(temp);
+		}else if(basisrlu.getOC()==0){
+			rlu.setOC(-9999);
+		}else{
+			throw new Exception("排放量为负数");
+		}
+		
+		if(basisrlu.getCO()>0){
+			double temp=CastNumUtil.significand(rlu.getCO()/basisrlu.getCO() , 3)*100;
+			temp=CastNumUtil.decimal(temp, 1);
+			rlu.setCO(temp);
+		}else if(basisrlu.getCO()==0){
+			rlu.setCO(-9999);
+		}else{
+			throw new Exception("排放量为负数");
+		}
+		
+		if(basisrlu.getPM10()>0){
+			double temp=CastNumUtil.significand(rlu.getPM10()/basisrlu.getPM10() , 3)*100;
+			temp=CastNumUtil.decimal(temp, 1);
+			rlu.setPM10(temp);
+		}else if(basisrlu.getPM10()==0){
+			rlu.setPM10(-9999);
+		}else{
+			throw new Exception("排放量为负数");
+		}
+		
+		if(basisrlu.getPMFINE()>0){
+			double temp=CastNumUtil.significand(rlu.getPMFINE()/basisrlu.getPMFINE() , 3)*100;
+			temp=CastNumUtil.decimal(temp, 1);
+			rlu.setPMFINE(temp);
+		}else if(basisrlu.getPMFINE()==0){
+			rlu.setPMFINE(-9999);
+		}else{
+			throw new Exception("排放量为负数");
+		}
+		
 	}
 	
 	/**
