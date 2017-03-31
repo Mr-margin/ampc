@@ -593,6 +593,7 @@ $(function() {
                       .on('click', function(event) {
                           //self._currentItem = self._findItem($(this));
 
+                          if($('.areaTitle_con').eq(self._findItem($(this)).index).find('.btn-flash').length!=0)return;
                           if(qjMsg.scenarinoStatus == 3)return;
 
                           if(event.toElement.tagName == 'A'){
