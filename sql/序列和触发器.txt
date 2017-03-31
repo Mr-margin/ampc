@@ -1,0 +1,406 @@
+------T_ADDRESS表 区域表----
+CREATE SEQUENCE T_ADDRESS_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_ADDRESS_REP before insert on T_ADDRESS
+FOR EACH ROW
+when (new.ADDRESS_ID is null)
+begin
+select T_ADDRESS_SEQ.nextval into :new.ADDRESS_ID from dual;
+end;
+
+
+
+------T_DOMAIN_MISSION表 模拟范围表----
+CREATE SEQUENCE T_DOMAIN_MISSION_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_DOMAIN_MISSION_REP before insert on T_DOMAIN_MISSION
+FOR EACH ROW
+when (new.DOMAIN_ID is null)
+begin
+select T_DOMAIN_MISSION_SEQ.nextval into :new.DOMAIN_ID from dual;
+end;
+
+
+------T_EMISSION_DETAIL表 减排结果表----
+CREATE SEQUENCE T_EMISSION_DETAIL_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_EMISSION_DETAIL_REP before insert on T_EMISSION_DETAIL
+FOR EACH ROW
+when (new.EMISSION_ID is null)
+begin
+select T_EMISSION_DETAIL_SEQ.nextval into :new.EMISSION_ID from dual;
+end;
+
+
+
+------T_ES_COUPLING表 耦合后的清单表----
+CREATE SEQUENCE T_ES_COUPLING_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_ES_COUPLING_REP before insert on T_ES_COUPLING
+FOR EACH ROW
+when (new.ES_COUPLING_ID is null)
+begin
+select T_ES_COUPLING_SEQ.nextval into :new.ES_COUPLING_ID from dual;
+end;
+
+
+------T_ES_NATION表 全国清单表----
+CREATE SEQUENCE T_ES_NATION_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_ES_NATION_REP before insert on T_ES_NATION
+FOR EACH ROW
+when (new.ES_NATION_ID is null)
+begin
+select T_ES_NATION_SEQ.nextval into :new.ES_NATION_ID from dual;
+end;
+
+
+------T_ES_NATIVE表 本地清单表----
+CREATE SEQUENCE T_ES_NATIVE_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_ES_NATIVE_REP before insert on T_ES_NATIVE
+FOR EACH ROW
+when (new.ES_NATIVE_ID is null)
+begin
+select T_ES_NATIVE_SEQ.nextval into :new.ES_NATIVE_ID from dual;
+end;
+
+
+------T_MEASURE_EXCEL表 措施Excel表----
+CREATE SEQUENCE T_MEASURE_EXCEL_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_MEASURE_EXCEL_REP before insert on T_MEASURE_EXCEL
+FOR EACH ROW
+when (new.MEASURE_EXCEL_ID is null)
+begin
+select T_MEASURE_EXCEL_SEQ.nextval into :new.MEASURE_EXCEL_ID from dual;
+end;
+
+
+------T_MEASURE_SECTOR_EXCEL表 措施和行业匹配中间表----
+CREATE SEQUENCE T_MEASURE_SECTOR_EXCEL_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_MEASURE_SECTOR_EXCEL_REP before insert on T_MEASURE_SECTOR_EXCEL
+FOR EACH ROW
+when (new.MS_EXCEL_ID is null)
+begin
+select T_MEASURE_SECTOR_EXCEL_SEQ.nextval into :new.MS_EXCEL_ID from dual;
+end;
+
+
+------T_MISSION_DETAIL表 任务详情表----
+CREATE SEQUENCE T_MISSION_DETAIL_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_MISSION_DETAIL_REP before insert on T_MISSION_DETAIL
+FOR EACH ROW
+when (new.MISSION_ID is null)
+begin
+select T_MISSION_DETAIL_SEQ.nextval into :new.MISSION_ID from dual;
+end;
+
+
+------T_PLAN表 预案表----
+CREATE SEQUENCE T_PLAN_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_PLAN_REP before insert on T_PLAN
+FOR EACH ROW
+when (new.PLAN_ID is null)
+begin
+select T_PLAN_SEQ.nextval into :new.PLAN_ID from dual;
+end;
+
+------T_PLAN_MEASURE表 预案措施表----
+CREATE SEQUENCE T_PLAN_MEASURE_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_PLAN_MEASURE_REP before insert on T_PLAN_MEASURE
+FOR EACH ROW
+when (new.PLAN_MEASURE_ID is null)
+begin
+select T_PLAN_MEASURE_SEQ.nextval into :new.PLAN_MEASURE_ID from dual;
+end;
+
+
+------T_PLAN_MEASURE_REUSE表 可复用预案措施表----
+CREATE SEQUENCE T_PLAN_MEASURE_REUSE_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_PLAN_MEASURE_REUSE_REP before insert on T_PLAN_MEASURE_REUSE
+FOR EACH ROW
+when (new.PLAN_MEASURE_REUSE_ID is null)
+begin
+select T_PLAN_MEASURE_REUSE_SEQ.nextval into :new.PLAN_MEASURE_REUSE_ID from dual;
+end;
+
+
+
+------T_PLAN_REUSE表 可复用预案表----
+CREATE SEQUENCE T_PLAN_REUSE_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_PLAN_REUSE_REP before insert on T_PLAN_REUSE
+FOR EACH ROW
+when (new.PLAN_REUSE_ID is null)
+begin
+select T_PLAN_REUSE_SEQ.nextval into :new.PLAN_REUSE_ID from dual;
+end;
+
+
+------T_QUERY_EXCEL表 筛选条件Excel表----
+CREATE SEQUENCE T_QUERY_EXCEL_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_QUERY_EXCEL_REP before insert on T_QUERY_EXCEL
+FOR EACH ROW
+when (new.QUERY_ID is null)
+begin
+select T_QUERY_EXCEL_SEQ.nextval into :new.QUERY_ID from dual;
+end;
+
+
+------T_SCENARINO_AREA表 情景区域表----
+CREATE SEQUENCE T_SCENARINO_AREA_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_SCENARINO_AREA_REP before insert on T_SCENARINO_AREA
+FOR EACH ROW
+when (new.SCENARINO_AREA_ID is null)
+begin
+select T_SCENARINO_AREA_SEQ.nextval into :new.SCENARINO_AREA_ID from dual;
+end;
+
+
+------T_SCENARINO_DETAIL表 情景详情表----
+CREATE SEQUENCE T_SCENARINO_DETAIL_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_SCENARINO_DETAIL_REP before insert on T_SCENARINO_DETAIL
+FOR EACH ROW
+when (new.SCENARINO_ID is null)
+begin
+select T_SCENARINO_DETAIL_SEQ.nextval into :new.SCENARINO_ID from dual;
+end;
+
+
+
+------T_SCENARINO_STATUS表 情景执行状态表----
+CREATE SEQUENCE T_SCENARINO_STATUS_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_SCENARINO_STATUS_REP before insert on T_SCENARINO_STATUS
+FOR EACH ROW
+when (new.SCENARINO_STATU_ID is null)
+begin
+select T_SCENARINO_STATUS_SEQ.nextval into :new.SCENARINO_STATU_ID from dual;
+end;
+
+
+------T_SECTOR_EXCEL表 行业Excel表----
+CREATE SEQUENCE T_SECTOR_EXCEL_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_SECTOR_EXCEL_REP before insert on T_SECTOR_EXCEL
+FOR EACH ROW
+when (new.SECTOR_EXCEL_ID is null)
+begin
+select T_SECTOR_EXCEL_SEQ.nextval into :new.SECTOR_EXCEL_ID from dual;
+end;
+
+
+
+------T_SECTORDOC_EXCEL表 行业描述详情表----
+CREATE SEQUENCE T_SECTORDOC_EXCEL_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_SECTORDOC_EXCEL_REP before insert on T_SECTORDOC_EXCEL
+FOR EACH ROW
+when (new.SECTORDOC_ID is null)
+begin
+select T_SECTORDOC_EXCEL_SEQ.nextval into :new.SECTORDOC_ID from dual;
+end;
+
+
+------T_TIME表 时段表----
+CREATE SEQUENCE T_TIME_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_TIME_REP before insert on T_TIME
+FOR EACH ROW
+when (new.TIME_ID is null)
+begin
+select T_TIME_SEQ.nextval into :new.TIME_ID from dual;
+end;
+
+
+------T_USER表 用户表----
+CREATE SEQUENCE T_USER_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_USER_REP before insert on T_USER
+FOR EACH ROW
+when (new.USER_ID is null)
+begin
+select T_USER_SEQ.nextval into :new.USER_ID from dual;
+end;
+
+
+
+
+
+------T_UNGRIB表----
+CREATE SEQUENCE T_UNGRIB_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_UNGRIB_REP before insert on T_UNGRIB
+FOR EACH ROW
+when (new.UNGRIB_ID is null)
+begin
+select T_UNGRIB_SEQ.nextval into :new.UNGRIB_ID from dual;
+end;
+
+
+------T_TASKS_STATUS表 ----
+CREATE SEQUENCE T_TASKS_STATUS_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_TASKS_STATUS_REP before insert on T_TASKS_STATUS
+FOR EACH ROW
+when (new.TASKS_ID is null)
+begin
+select T_TASKS_STATUS_SEQ.nextval into :new.TASKS_ID from dual;
+end;
+
+
+
+------T_SITE表 ----
+CREATE SEQUENCE T_SITE_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_SITE_REP before insert on T_SITE
+FOR EACH ROW
+when (new.SITE_ID is null)
+begin
+select T_SITE_SEQ.nextval into :new.SITE_ID from dual;
+end;
+
+
+------T_REAL_FORECAST表 ----
+CREATE SEQUENCE T_REAL_FORECAST_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_REAL_FORECAST_REP before insert on T_REAL_FORECAST
+FOR EACH ROW
+when (new.REAL_FORECAST_ID is null)
+begin
+select T_REAL_FORECAST_SEQ.nextval into :new.REAL_FORECAST_ID from dual;
+end;
