@@ -576,20 +576,7 @@ public class PlanAndMeasureController {
 								// 如果子措施和汇总都有对应污染物 则计算涉及减排比
 								if (ratioMap != null) {
 									// 如果不是PM10
-									if (!stainType.equals("PM10")) {
-										if (ratioMap.get(stainType) != null&& pool.get(stainType) != null) {
-											double dratio = Double.parseDouble(ratioMap.get(stainType).toString());
-											double dpool = Double.parseDouble(pool.get(stainType).toString().split("/")[1]);
-											double dr = -9999.0;
-											if(dpool == 0.0){
-												
-											}else{
-												dr=CastNumUtil.significand(dratio / dpool, 3)*100;
-												dr=CastNumUtil.decimal(dr, 1);
-											}
-											list.get(i).put("ratio", String.valueOf(dr));
-										}
-									} else { // 如果是PM10需要计算PMcoarse PM25
+									if (stainType.equals("PM10")) {
 										if (ratioMap.get("PMcoarse") != null&& ratioMap.get("PM25") != null&& pool.get(stainType) != null) {
 											double pMcoarse = Double.parseDouble(ratioMap.get("PMcoarse").toString());
 											double pM25 = Double.parseDouble(ratioMap.get("PM25").toString());
@@ -600,6 +587,51 @@ public class PlanAndMeasureController {
 											}else{
 												 dr=CastNumUtil.significand((pMcoarse + pM25) / dpool, 3)*100;
 												 dr=CastNumUtil.decimal(dr, 1);
+											}
+											list.get(i).put("ratio", String.valueOf(dr));
+										}
+									}else if(stainType.equals("PMC")){
+										if (ratioMap.get("PMcoarse") != null&& pool.get(stainType) != null) {
+											double pMcoarse = Double.parseDouble(ratioMap.get("PMcoarse").toString());
+											double dpool = Double.parseDouble(pool.get(stainType).toString().split("/")[1]);
+											double dr = -9999.0;
+											if(dpool == 0.0){
+												
+											}else{
+												 dr=CastNumUtil.significand(pMcoarse/ dpool, 3)*100;
+												 dr=CastNumUtil.decimal(dr, 1);
+											}
+											list.get(i).put("ratio", String.valueOf(dr));
+										}
+									}else if(stainType.equals("PMFINE")){
+										if (ratioMap.get("PM25") != null&&ratioMap.get("BC") != null&&ratioMap.get("OC") != null&& pool.get(stainType) != null) {
+											double pM25 = Double.parseDouble(ratioMap.get("PM25").toString());
+											double bc = Double.parseDouble(ratioMap.get("BC").toString());
+											double oc = Double.parseDouble(ratioMap.get("OC").toString());
+											double dpool = Double.parseDouble(pool.get(stainType).toString().split("/")[1]);
+											double dr = -9999.0;
+											if(dpool == 0.0){
+												
+											}else{
+												double d=pM25-bc-oc;
+												if(d<0){
+													throw new Exception("减排结果出现负数");
+												}
+												dr=CastNumUtil.significand((pM25-bc-oc)/ dpool, 3)*100;
+												dr=CastNumUtil.decimal(dr, 1);
+											}
+											list.get(i).put("ratio", String.valueOf(dr));
+										}
+									}else{ 
+										if (ratioMap.get(stainType) != null&& pool.get(stainType) != null) {
+											double dratio = Double.parseDouble(ratioMap.get(stainType).toString());
+											double dpool = Double.parseDouble(pool.get(stainType).toString().split("/")[1]);
+											double dr = -9999.0;
+											if(dpool == 0.0){
+												
+											}else{
+												dr=CastNumUtil.significand(dratio / dpool, 3)*100;
+												dr=CastNumUtil.decimal(dr, 1);
 											}
 											list.get(i).put("ratio", String.valueOf(dr));
 										}

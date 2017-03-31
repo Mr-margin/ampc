@@ -120,7 +120,24 @@ public class EchartsController {
 						//获取行业
 						Map ede=(Map)edeMap.get(obj);
 						//获取行业中的减排污染物信息
-						Object result=ede.get(stainType);
+						Object result=null;
+						if(stainType.equals("PMC")){
+							result=ede.get("PMcoarse");
+						}else if(stainType.equals("PM10")){
+							if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+								result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+							}
+						}else if(stainType.equals("PMFINE")){
+							if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+								double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+								if(d<0){
+									throw new Exception("减排结果出现负数");
+								}
+								result=d;
+							}
+						}else{
+							result=ede.get(stainType);
+						}
 						//如果为空则继续循环
 						if(result==null) continue;
 						//进行转换
@@ -150,7 +167,24 @@ public class EchartsController {
 						//获取行业
 						Map ede=(Map)edeMap.get(obj);
 						//获取行业中的减排污染物信息
-						Object result=ede.get(stainType);
+						Object result=null;
+						if(stainType.equals("PMC")){
+							result=ede.get("PMcoarse");
+						}else if(stainType.equals("PM10")){
+							if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+								result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+							}
+						}else if(stainType.equals("PMFINE")){
+							if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+								double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+								if(d<0){
+									throw new Exception("减排结果出现负数");
+								}
+								result=d;
+							}
+						}else{
+							result=ede.get(stainType);
+						}
 						//如果为空则继续循环
 						if(result==null) continue;
 						//进行转换
@@ -191,7 +225,24 @@ public class EchartsController {
 						//获取行业
 						Map ede=(Map)edeMap.get(obj);
 						//获取行业中的减排污染物信息
-						Object result=ede.get(stainType);
+						Object result=null;
+						if(stainType.equals("PMC")){
+							result=ede.get("PMcoarse");
+						}else if(stainType.equals("PM10")){
+							if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+								result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+							}
+						}else if(stainType.equals("PMFINE")){
+							if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+								double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+								if(d<0){
+									throw new Exception("减排结果出现负数");
+								}
+								result=d;
+							}
+						}else{
+							result=ede.get(stainType);
+						}
 						//如果为空则继续循环
 						if(result==null) continue;
 						//进行转换
@@ -212,7 +263,24 @@ public class EchartsController {
 								//获取行业
 								Map ede=(Map)edeMap1.get(obj);
 								//获取行业中的减排污染物信息
-								Object result=ede.get(stainType);
+								Object result=null;
+								if(stainType.equals("PMC")){
+									result=ede.get("PMcoarse");
+								}else if(stainType.equals("PM10")){
+									if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+										result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+									}
+								}else if(stainType.equals("PMFINE")){
+									if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+										double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+										if(d<0){
+											throw new Exception("减排结果出现负数");
+										}
+										result=d;
+									}
+								}else{
+									result=ede.get(stainType);
+								}
 								//如果为空则继续循环
 								if(result==null) continue;
 								//进行转换
@@ -253,7 +321,24 @@ public class EchartsController {
 						//获取行业
 						Map ede=(Map)edeMap.get(obj);
 						//获取行业中的减排污染物信息
-						Object result=ede.get(stainType);
+						Object result=null;
+						if(stainType.equals("PMC")){
+							result=ede.get("PMcoarse");
+						}else if(stainType.equals("PM10")){
+							if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+								result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+							}
+						}else if(stainType.equals("PMFINE")){
+							if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+								double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+								if(d<0){
+									throw new Exception("减排结果出现负数");
+								}
+								result=d;
+							}
+						}else{
+							result=ede.get(stainType);
+						}
 						//如果为空则继续循环
 						if(result==null) continue;
 						//进行转换
@@ -274,7 +359,24 @@ public class EchartsController {
 								//获取行业
 								Map ede=(Map)edeMap1.get(obj);
 								//获取行业中的减排污染物信息
-								Object result=ede.get(stainType);
+								Object result=null;
+								if(stainType.equals("PMC")){
+									result=ede.get("PMcoarse");
+								}else if(stainType.equals("PM10")){
+									if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+										result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+									}
+								}else if(stainType.equals("PMFINE")){
+									if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+										double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+										if(d<0){
+											throw new Exception("减排结果出现负数");
+										}
+										result=d;
+									}
+								}else{
+									result=ede.get(stainType);
+								}
 								//如果为空则继续循环
 								if(result==null) continue;
 								//进行转换
@@ -391,7 +493,24 @@ public class EchartsController {
 					//获取行业
 					Map ede=(Map)edeMap.get(obj);
 					//获取行业中的减排污染物信息
-					Object result=ede.get(stainType);
+					Object result=null;
+					if(stainType.equals("PMC")){
+						result=ede.get("PMcoarse");
+					}else if(stainType.equals("PM10")){
+						if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+							result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+						}
+					}else if(stainType.equals("PMFINE")){
+						if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+							double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+							if(d<0){
+								throw new Exception("减排结果出现负数");
+							}
+							result=d;
+						}
+					}else{
+						result=ede.get(stainType);
+					}
 					//如果为空则继续循环
 					if(result==null) continue;
 					//循环结果集合
@@ -458,6 +577,13 @@ public class EchartsController {
 			//添加条件
 			mapQuery.put("startDate", startDate);
 			mapQuery.put("endDate", endDate);
+			//查询情景的基准类型为1
+			mapQuery.put("emtype", 1);
+			if(code.equals("0")){
+				
+			}else{
+				
+			}
 			//查询情景的减排信息类型为2
 			mapQuery.put("emtype", 2);
 			//查询减排信息类型的情景Id
