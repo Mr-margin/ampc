@@ -7,11 +7,11 @@ import ampc.com.gistone.database.model.TEmissionDetail;
 
 public interface TEmissionDetailMapper {
 	/**
-	 * 根据条件查询对应的结果集
+	 * 根据条件查询对应市级Code
 	 * @param map
 	 * @return
 	 */
-	List<TEmissionDetail> selectByMap(Map map);
+	List<String> selectCityCode(Map map);
 	
 	/**
 	 * 根据条件查询对应的结果集  用于减排列表的显示

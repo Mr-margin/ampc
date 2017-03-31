@@ -11,21 +11,6 @@ import ampc.com.gistone.database.model.TAddress;
  * @date 2017年3月23日
  */
 public interface TAddressMapper {
-	/**
-	 * 根据code 查询对应的信息
-	 * @param code
-	 * @return
-	 */
-	List<Long> selectByCode(String code);
-	
-	/**
-	 * 根据省级code 查询对应的市级Code
-	 * @param code
-	 * @return
-	 */
-	List<Long> selectlevel2ByCode(String code);
-	
-	
 	
 	/**
 	 * 根据code 查询区域名称
@@ -33,9 +18,6 @@ public interface TAddressMapper {
 	 * @return
 	 */
 	String selectNameByCode(String code);
-	
-	
-	
 	
     int deleteByPrimaryKey(Integer addressId);
 

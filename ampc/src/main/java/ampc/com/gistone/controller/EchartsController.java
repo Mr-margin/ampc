@@ -98,13 +98,10 @@ public class EchartsController {
 			if(addressLevle==2) code=code.substring(0,4)+"%";
 			//如果传过来的已经是3级则不许要转换
 			if(addressLevle==3){
-				//直接查询就可以了
-				List<Long> codes=new ArrayList<Long>();
-				codes.add(Long.parseLong(code));
 				//添加code条件
-				mapQuery.put("codes", codes);
+				mapQuery.put("code", code);
 				//获取所有的基准情景减排结果
-				List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByMap(mapQuery);
+				List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
 				//循环所有基准情景的减排结果
 				for (TEmissionDetail tEmissionDetail : basisList) {
 					//添加每一个的减排日期
@@ -153,7 +150,7 @@ public class EchartsController {
 				//查询情景的信息时给情景Id
 				mapQuery.put("scenarinoId", scenarinoId);
 				//获取所有的情景减排结果
-				List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByMap(mapQuery);
+				List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
 				//循环所有实际减排的减排结果
 				for (TEmissionDetail tEmissionDetail : tdList) {
 					//临时变量用来记录污染物在所有行业的总和
@@ -196,18 +193,15 @@ public class EchartsController {
 					jplResult.add(String.valueOf(CastNumUtil.significand(sumResult.doubleValue(), 4)));
 				}
 			}else{
-				//转换行政区划code
-				List<Long> codes=tAddressMapper.selectByCode(code);
-				
 				//如果等于0，说明前台需要显示全部区域的数据
-				//只有大于0，才添加codes条件
-				if(addressLevle > 0){
+				if(code .equals("0")){
 					//添加code条件
-					mapQuery.put("codes", codes);
+					mapQuery.put("code", null);
+				}else{
+					mapQuery.put("code", code);
 				}
-				
 				//获取所有的基准情景减排结果
-				List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByMap(mapQuery);
+				List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
 				//内部循环初始值变量
 				int j=0;
 				//循环所有基准情景的减排结果
@@ -306,7 +300,7 @@ public class EchartsController {
 				//查询情景的信息时给情景Id
 				mapQuery.put("scenarinoId", scenarinoId);
 				//获取所有的实际减排量的减排结果
-				List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByMap(mapQuery);
+				List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
 				//内部循环初始值变量
 				j=0;
 				//循环所有实际减排量的减排结果
@@ -456,26 +450,16 @@ public class EchartsController {
 			//判断发过来的code等级  并全部转换成3级编码
 			if(addressLevle==1) code=code.substring(0,2)+"%";
 			if(addressLevle==2) code=code.substring(0,4)+"%";
-			List<Long> codes=null;
-			//如果传过来的已经是3级则不许要转换
-			if(addressLevle==3){
-				//直接查询就可以了
-				codes=new ArrayList<Long>();
-				codes.add(Long.parseLong(code));
-			}else{
-				//需要查询对应的县级编码
-				codes=tAddressMapper.selectByCode(code);
-			}
-			
 			//如果等于0，说明前台需要显示全部区域的数据
-			//只有大于0，才添加codes条件
-			if(addressLevle > 0){
+			if(code.equals("0")){
 				//添加code条件
-				mapQuery.put("codes", codes);
+				mapQuery.put("code", null);
+			}else{
+				//添加code条件
+				mapQuery.put("code", code);
 			}
-			
 			//获取所有的减排结果
-			List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByMap(mapQuery);
+			List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
 			//循环所有减排结果
 			for (int i=0;i<tdList.size();i++) {
 				//判断是行业还是措施的  并赋值对应的Json串
@@ -579,11 +563,19 @@ public class EchartsController {
 			mapQuery.put("endDate", endDate);
 			//查询情景的基准类型为1
 			mapQuery.put("emtype", 1);
+			//判断发过来的code等级
+			if(addressLevle==1) code=code.substring(0,2)+"%";
+			if(addressLevle==2) code=code.substring(0,4)+"%";
+			/**
+			 * 获取所有的排放总量 用来计算
+			 */
 			if(code.equals("0")){
 				
 			}else{
 				
 			}
+			
+			
 			//查询情景的减排信息类型为2
 			mapQuery.put("emtype", 2);
 			//查询减排信息类型的情景Id
@@ -595,7 +587,7 @@ public class EchartsController {
 				//所有的省级Code集合
 				Set<String> codeList=new HashSet<String>();
 				//获取到所有的减排信息
-				List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByMap(mapQuery);
+				List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
 				//获取所有的减排结果的前两位省级Code
 				String tempCode="";
 				for(int i=0;i<tdList.size();i++){
@@ -673,10 +665,10 @@ public class EchartsController {
 			}else{
 				//如果不为0 则按照给的code进行查询
 				if(addressLevle==1){
-					List<Long> l2codes=tAddressMapper.selectlevel2ByCode(code.substring(0,2)+"%");
+					List<String> l2codes=tEmissionDetailMapper.selectCityCode(mapQuery);
 					//循环所有的省级编码集合
-					for(Long strcod:l2codes){
-						String str=strcod.toString();
+					for(String strcod:l2codes){
+						String str=strcod;
 						str=str.substring(0,4);
 						//添加条件 
 						mapQuery.put("code", str+"%");
@@ -691,13 +683,13 @@ public class EchartsController {
 						//添加区域名称
 						rlu.setName(addressName);
 						//添加区域Code
-						rlu.setCode(strcod.toString());
+						rlu.setCode(strcod);
 						//如果只有一条记录 
 						if(ttdd.size()==1){
 							//定义临时减排对象
 							TEmissionDetail td=ttdd.get(0);
 							//判断这条记录是否是市级  如果是咋返回结果类型为没有县级
-							if(td.getCode().equals(strcod.toString())){
+							if(td.getCode().equals(strcod)){
 								//添加类型没有县级
 								rlu.setType(0);
 							}else{
