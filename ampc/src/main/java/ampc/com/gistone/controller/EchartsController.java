@@ -143,7 +143,7 @@ public class EchartsController {
 						sumResult=sumResult.add(bigResult);
 					}
 					//添加所有行业在该污染物的减排量总和
-					pflResult.add(String.valueOf(CastNumUtil.significand(sumResult.doubleValue(), 4)));
+					pflResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(sumResult.doubleValue(), 4), 2)));
 				}
 				//查询情景的信息时为2
 				mapQuery.put("emtype", 2);
@@ -190,7 +190,7 @@ public class EchartsController {
 						sumResult=sumResult.add(bigResult);
 					}
 					//添加所有行业在该污染物的减排量总和
-					jplResult.add(String.valueOf(CastNumUtil.significand(sumResult.doubleValue(), 4)));
+					jplResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(sumResult.doubleValue(), 4), 2)));
 				}
 			}else{
 				//如果等于0，说明前台需要显示全部区域的数据
@@ -389,7 +389,7 @@ public class EchartsController {
 						}
 					}
 					//添加所有行业在该污染物的减排量总和
-					jplResult.add(String.valueOf(CastNumUtil.significand(sumResult.doubleValue(), 4)));
+					jplResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(sumResult.doubleValue(), 4), 2)));
 				}
 			}
 			//创建返回的结果集合
@@ -520,6 +520,7 @@ public class EchartsController {
 			for(int i=0;i<puList.size();i++){
 				double value=puList.get(i).getValue();
 				value=CastNumUtil.significand(value, 4);
+				value=CastNumUtil.decimal(value, 2);
 				puList.get(i).setValue(value);
 			}
 			//返回结果
@@ -684,7 +685,8 @@ public class EchartsController {
 			}else{
 				//如果不为0 则按照给的code进行查询
 				if(addressLevle==1){
-					List<String> cityCodes=tEmissionDetailMapper.selectCityCode(mapQuery);
+					//List<String> cityCodes=tEmissionDetailMapper.selectCityCode(mapQuery);
+					List<String> cityCodes=tAddressMapper.selectCityCode(code);
 					//循环所有的省级编码集合
 					for(String strcod:cityCodes){
 						String str=strcod;
