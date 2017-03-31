@@ -112,7 +112,6 @@ var userId = 1;
 function ajaxPost(url, parameter) {
     parameterPar.data = parameter;
     var p = JSON.stringify(parameterPar);
-    //return $.ajax(BackstageIP + url, {
     return $.ajax('/ampc' + url, {
         contentType: "application/json",
         type: "POST",
@@ -123,9 +122,6 @@ function ajaxPost(url, parameter) {
 }
 
 function ajaxPost_w(url, parameter) {
-    //parameterPar.data = parameter;
-    //var p = JSON.stringify(parameterPar);
-    //return $.ajax(BackstageIP + url, {
     return $.ajax(url, {
         contentType: "application/json",
         type: "POST",

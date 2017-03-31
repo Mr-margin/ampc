@@ -1,8 +1,11 @@
-var BackstageIP = "http://192.168.1.57:8082/ampc";
 var ArcGisUrl = "http://192.168.1.132:8080";//ArcGis服务器javascript API地址
-//var ArcGisUrl = "http://localhost:8091";//ArcGis服务器javascript API地址
 var ArcGisServerUrl = "http://192.168.1.132:6080";//ArcGis地图服务器地址
 var jianpaiUrl = "http://192.168.1.128:8089";//减排计算的地址
+
+//服务器配置
+//var ArcGisUrl = "http://http://166.111.42.46:18080";//ArcGis服务器javascript API地址
+//var ArcGisServerUrl = "http://166.111.42.46:16080";//ArcGis地图服务器地址
+//var jianpaiUrl = "http://166.111.42.84:8090";//减排计算的地址
 
 (function() {
     var isWinRT = (typeof Windows === "undefined") ? false : true;

@@ -144,8 +144,6 @@ var QJheight;
 function initRwTable() {
   $('#rwTable').bootstrapTable({
     method: 'POST',
-    //url: 'webApp/task01/rw.json',
-//      url : BackstageIP+'/mission/get_mission_list',
     url: '/ampc/mission/get_mission_list',
     dataType: "json",
     contentType: "application/json", // 请求远程数据的内容类型。
@@ -303,8 +301,6 @@ function search(type) {
 function initQjTable() {
   $('#qjTable').bootstrapTable({
     method: 'POST',
-    //url: 'webApp/task01/qy.json',
-//      url : BackstageIP+'/scenarino/scenarinoListBymissionId',
     url: '/ampc/scenarino/get_scenarinoListBymissionId',
     dataType: "json",
     contentType: "application/json", // 请求远程数据的内容类型。
