@@ -19,6 +19,13 @@ public interface TAddressMapper {
 	 */
 	String selectNameByCode(String code);
 	
+	/**
+	 * 根据省级Code查询所有的市级Code
+	 * @param code
+	 * @return
+	 */
+	List<String> selectCityCode(String code);
+	
     int deleteByPrimaryKey(Integer addressId);
 
     int insert(TAddress record);
