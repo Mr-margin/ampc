@@ -52,9 +52,9 @@ public class CastNumUtil {
         //return b.divide(one, scale, BigDecimal.ROUND_FLOOR).doubleValue();  
         if(oldDouble>0){  
             //此处的scale表示的是，小数点之后的精度。  
-            return b.divide(one, scale, BigDecimal.ROUND_DOWN).doubleValue();  
+            return b.divide(one, scale, BigDecimal.ROUND_HALF_UP).doubleValue();  
         }else{  
-            return b.divide(one, scale, BigDecimal.ROUND_UP).doubleValue();  
+            return b.divide(one, scale, BigDecimal.ROUND_HALF_UP).doubleValue();  
         }  
     } 
 }
