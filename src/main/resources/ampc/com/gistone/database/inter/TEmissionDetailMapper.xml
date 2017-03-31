@@ -41,7 +41,7 @@
   <select id="selectCityCode" resultType="java.lang.String" parameterType="hashMap" >
     select code from T_EMISSION_DETAIL
     	where EMission_Type=#{emtype,jdbcType=OTHER}  
-      	and Emission_Date BETWEEN #{startDate,jdbcType=OTHER} and #{endDate,jdbcType=OTHER} and CODELEVEL=2
+      	and Emission_Date BETWEEN #{startDate,jdbcType=OTHER} and #{endDate,jdbcType=OTHER} 
  		<if test="code!=null">
 	       and code like #{code,jdbcType=OTHER}
   		</if>
