@@ -377,6 +377,8 @@ function bar() {
 	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":tj_paramsName.code,"addressLevle":tj_paramsName.codeLevel,"stainType":tj_paramsName.wz};
 	
 	ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
+		console.log(JSON.stringify(res));
+		
 		if(res.status == 0){//返回成功
 			if(res.data.dateResult.length > 0){//有返回时间，说明可以显示柱状图
 				
