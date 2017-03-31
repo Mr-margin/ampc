@@ -395,6 +395,10 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 		$("#xishuMOB").hide();//控制系数按钮
 		$("#mic").hide();//筛选结果div
 		$("#mic_name").hide();//按名称筛选结果div隐藏
+		
+		$("#shaixuan_num").html("");//筛选点源
+		$("#shaixuan_num").hide();
+		
 		boolean_delete_sc_name = false;//记录是否删除过按名称筛选的结果
 		poi_name_or_pub = null;//记录当前的筛选条件是按照属性来，还是按照名称来
 		
@@ -933,18 +937,26 @@ function search_button(){
 				var ttp = [];//有效数组
 				var bool = false;//记录是否进行了处理
 				$.each(col, function(i, vol) {//循环数组
-					if((typeof vol=='string') && vol.constructor==String){//字符串不需处理
-						
-					}else{
-						bool = true;
-						$("#"+key).children().each(function(){//循环数组的页面，查看现有的元素是否选中
-							if($(this).attr("val_name") == vol[key]){//如果当前的标签的值与数组中唯一元素的值相同，同时数组中唯一元素的key与顶层key一致，说明找到标签
-								if($(this).is(".active")){//判断这个标签是否被选中，如果选中说明正常，未选中需要再数组中删除这个元素
-									ttp.push(vol);//删除操作就是将有效数组放入到新数组中，循环结束一次性覆盖
-								}
+//					if((typeof vol=='string') && vol.constructor==String){//字符串不需处理
+//						
+//					}else{
+//						bool = true;
+//						$("#"+key).children().each(function(){//循环数组的页面，查看现有的元素是否选中
+//							if($(this).attr("val_name") == vol[key]){//如果当前的标签的值与数组中唯一元素的值相同，同时数组中唯一元素的key与顶层key一致，说明找到标签
+//								if($(this).is(".active")){//判断这个标签是否被选中，如果选中说明正常，未选中需要再数组中删除这个元素
+//									ttp.push(vol);//删除操作就是将有效数组放入到新数组中，循环结束一次性覆盖
+//								}
+//							}
+//						});
+//					}
+					bool = true;
+					$("#"+key).children().each(function(){//循环数组的页面，查看现有的元素是否选中
+						if($(this).attr("val_name") == vol[key]){//如果当前的标签的值与数组中唯一元素的值相同，同时数组中唯一元素的key与顶层key一致，说明找到标签
+							if($(this).is(".active")){//判断这个标签是否被选中，如果选中说明正常，未选中需要再数组中删除这个元素
+								ttp.push(vol);//删除操作就是将有效数组放入到新数组中，循环结束一次性覆盖
 							}
-						});
-					}
+						}
+					});
 				});
 				
 				if(bool){
@@ -970,7 +982,13 @@ function search_button(){
 		sc_val = jQuery.extend(true, {}, sc_v1);
 		
 		//将本次查询的缓存加入到总条件中
-		sc_val.filters.push(temp_val_v1);
+//		console.log(JSON.stringify(temp_val_v1));
+		if(JSON.stringify(temp_val_v1) == "{}"){
+			//没有条件，就不加了
+		}else{
+			sc_val.filters.push(temp_val_v1);
+		}
+		
 //		console.log(JSON.stringify(sc_val));
 		
 		temp_val_v1 = jQuery.extend(true, {}, temp_val);//赋值模板到操作缓存
