@@ -20,9 +20,6 @@
     EMISSION_DETAILS, MEASURE_REDUCE
   </sql>
   
-  
-  
-  
   <!-- 根据条件查询对应数据 -->
   <select id="selectByQuery" resultMap="ResultMapWithBLOBs" parameterType="hashMap" >
     select 
@@ -40,22 +37,19 @@
        </if>
        order by Emission_Date,code
   </select>
-  
   <!-- 根据条件查询所有的市级code -->
   <select id="selectCityCode" resultType="java.lang.String" parameterType="hashMap" >
     select code from T_EMISSION_DETAIL
     	where EMission_Type=#{emtype,jdbcType=OTHER}  
       	and Emission_Date BETWEEN #{startDate,jdbcType=OTHER} and #{endDate,jdbcType=OTHER} and CODELEVEL=2
+ 		<if test="code!=null">
+	       and code like #{code,jdbcType=OTHER}
+  		</if>
  		<if test="scenarinoId != null" >
           and SCENARINO_ID=#{scenarinoId,jdbcType=OTHER}
         </if>
         group by code
   </select>
-  
-  
-  
-  
-  
   
   
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
