@@ -1400,8 +1400,6 @@ var selectCopyQJ, statusRW = '';
 function initCoptTable() {
   $('#copyQJ').bootstrapTable({
     method: 'POST',
-    //url: 'webApp/task01/rw.json',
-//      url : BackstageIP+'/mission/get_mission_list',
     url: '/ampc/scenarino/get_CopyScenarinoList',
     dataType: "json",
     contentType: "application/json", // 请求远程数据的内容类型。

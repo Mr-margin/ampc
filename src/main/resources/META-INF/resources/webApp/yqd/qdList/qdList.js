@@ -15,9 +15,6 @@ function initQdListTable() {
   $('#qdList').bootstrapTable({
     method: 'GET',
       url: 'webApp/yqd/qdList/qd.json',
-    //url: 'qd.json',
-//      url : BackstageIP+'/mission/get_mission_list',
-//      url : '/ampc/mission/get_mission_list',
     dataType: "json",
     contentType: "application/json",
     toobar: '#qdToolbar',

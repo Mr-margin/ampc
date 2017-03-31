@@ -5,9 +5,6 @@ function initQgqdListTable() {
   $('#qgqdList').bootstrapTable({
     method: 'GET',
       url: 'webApp/yqd/createQD/qgqd.json',
-    //url: 'qgqd.json',
-//      url : BackstageIP+'/mission/get_mission_list',
-//      url : '/ampc/mission/get_mission_list',
     dataType: "json",
     contentType: "application/json",
     toobar: '#qgqdToolbar',
@@ -66,9 +63,6 @@ function initBdqdListTable() {
   $('#bdqdList').bootstrapTable({
     method: 'GET',
       url: 'webApp/yqd/createQD/bdqd.json',
-    //url: 'bdqd.json',
-//      url : BackstageIP+'/mission/get_mission_list',
-//      url : '/ampc/mission/get_mission_list',
     dataType: "json",
     contentType: "application/json",
     toobar: '#bdqdToolbar',
