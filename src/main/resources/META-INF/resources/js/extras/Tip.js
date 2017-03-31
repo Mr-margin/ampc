@@ -29,7 +29,7 @@ define([ "dojo/_base/declare", "dojo/_base/connect", "dojo/_base/lang", "dojo/do
 
         this.clearTimer();
         var atts = e.graphic.attributes;
-        atts.DATAVALU = this.res[e.graphic.attributes.ADMINCODE];
+        atts.DATAVALU = this.res[e.graphic.attributes.ADMINCODE].toFixed(1);
  		
         var tipContent = string.substitute(this.format, atts);
 

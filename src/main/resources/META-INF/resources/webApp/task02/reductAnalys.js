@@ -419,7 +419,7 @@ function bar() {
 			                    	  show:'true',
 			                    	  realtime:'true',
 			                    	  start:0,
-			                    	  end:50
+			                    	  end:100
 			                    	  //startValue:
 			                    	  
 			                      },
