@@ -11,13 +11,13 @@ console.log(JSON.stringify(qjMsg));
 /**
  *设置导航条信息
  */
-$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景管理</a>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span>');
+$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景管理</a>>><span style="padding-left: 15px;padding-right: 15px;">减排分析（'+qjMsg.qjName+'）</span>');
 var gis_paramsName = {};//地图请求的参数，第一次加载地图时初始化，每次更改地图比例尺时修改codeLevel
 
 var tj_paramsName = {};//统计图用的参数
 tj_paramsName.wz = $('#hz_wrw').val();//默认的物种
 tj_paramsName.code = "0";//code默认为0
-tj_paramsName.name = qjMsg.qjName;//name默认为情景名称
+tj_paramsName.name = "全部区域";//name默认为情景名称
 	
 /**
  * 时间戳转成日期格式
@@ -346,7 +346,7 @@ function optionclick(event){
 		if(app.map.graphics.graphics.length > 0){//已经有选中的对象了
 			app.map.graphics.clear();
 			tj_paramsName.code = "0";
-			tj_paramsName.name = qjMsg.qjName;//name默认为情景名称
+			tj_paramsName.name = "全部区域";//name默认为情景名称
 			bar();
 		}
 	}
@@ -409,6 +409,7 @@ function bar() {
 					    legend: {
 					    	//不触动
 					        selectedMode:false,
+					        left: 'right',
 					        data:['减排量', '实际排放量']
 					    },
 					    grid:{
@@ -568,59 +569,63 @@ function  pie(){
 		if(result.status == 0){
 			
 			if(result.data.length != 0){
+				var sum_value = 0;
 				for(i=0;i<result.data.length;i++){
 					nameVal = result.data[i].name;
 					valueVal = result.data[i].value;
+					sum_value += valueVal;
 				}
+				
+				var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
+				var optionPie = {
+					    title : {
+					        text: tj_paramsName.name +'-'+(tj_paramsName.type == "1" ? "分行业" : "分措施")+"-"+tj_paramsName.wz+'-减排分析',
+					        subtext: '全部行业合计减排：'+sum_value,
+					    },
+					    tooltip : {
+					        trigger: 'item',
+					        formatter: "{a} <br/>{b} : {c} ({d}%)"
+					    },
+					    legend: {
+					    	//图标不触动
+					    	selectedMode:false,
+					        orient: 'vertical',
+					        left: 'right',
+					        data:[{name:nameVal}]
+					    },
+					    series : [
+					        {
+					            name: '数据比例',
+					            type: 'pie',
+					            radius : '55%',
+					            center: ['50%', '60%'],
+					            data:[{value:valueVal,name:nameVal}],
+					            itemStyle: {
+					                emphasis: {
+					                    shadowBlur: 10,
+					                    shadowOffsetX: 0,
+					                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+					                }
+					            }
+					        }
+					    ]
+					};
+				//行业措施分担饼状图
+				myhycsChart.setOption(optionPie);
+				//自适应屏幕大小变化
+				window.addEventListener("resize",function(){
+					myhycsChart.resize();
+				});
+				
 			}else{
 				swal('饼图暂无数据', '', 'error')
 			}
-			var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
-			var optionPie = {
-				    title : {
-				        text: tj_paramsName.name +'-'+(tj_paramsName.type == "1" ? "分行业" : "分措施")+"-"+tj_paramsName.wz+'-减排分析',
-				        x:'center'
-				    },
-				    tooltip : {
-				        trigger: 'item',
-				        formatter: "{a} <br/>{b} : {c} ({d}%)"
-				    },
-				    legend: {
-				    	//图标不触动
-				    	selectedMode:false,
-				        orient: 'vertical',
-				        left: 'left',
-				        data:[{name:nameVal}]
-				    },
-				    series : [
-				        {
-				            name: '数据比例',
-				            type: 'pie',
-				            radius : '55%',
-				            center: ['50%', '60%'],
-				            data:[{value:valueVal,name:nameVal}],
-				            itemStyle: {
-				                emphasis: {
-				                    shadowBlur: 10,
-				                    shadowOffsetX: 0,
-				                    shadowColor: 'rgba(0, 0, 0, 0.5)'
-				                }
-				            }
-				        }
-				    ]
-				};
-			//行业措施分担饼状图
-			myhycsChart.setOption(optionPie);
-			//自适应屏幕大小变化
-			window.addEventListener("resize",function(){
-				myhycsChart.resize();
-			});
 		}else{
-			swal('/echarts/get_pieInfo  连接错误', '', 'error');
+			swal('/echarts/get_pieInfo  参数错误', '', 'error');
 		}
 			
 	}).error(function () {
-      swal('暂无数据', '', 'error')
+      swal('/echarts/get_pieInfo  连接错误', '', 'error')
     })	
 
 }
