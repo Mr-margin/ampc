@@ -1,0 +1,8 @@
+{
+  "url": [
+    {"province": "http://makenv.ddns.net:8287/api/list/getProvince"},
+    {"city": "http://makenv.ddns.net:8287/api/list/getCity"},
+    {"county":"http://makenv.ddns.net:8287/api/list/getCounty"},
+    {"station":"http://makenv.ddns.net:8287/api/list/getStation"}
+  ]
+}
