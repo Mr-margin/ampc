@@ -665,9 +665,9 @@ public class EchartsController {
 			}else{
 				//如果不为0 则按照给的code进行查询
 				if(addressLevle==1){
-					List<String> l2codes=tEmissionDetailMapper.selectCityCode(mapQuery);
+					List<String> cityCodes=tEmissionDetailMapper.selectCityCode(mapQuery);
 					//循环所有的省级编码集合
-					for(String strcod:l2codes){
+					for(String strcod:cityCodes){
 						String str=strcod;
 						str=str.substring(0,4);
 						//添加条件 
@@ -679,7 +679,7 @@ public class EchartsController {
 						//定义结果对象
 						RadioListUtil rlu=new RadioListUtil();
 						//查询区域名称
-						String addressName=tAddressMapper.selectNameByCode(strcod.toString());
+						String addressName=tAddressMapper.selectNameByCode(strcod);
 						//添加区域名称
 						rlu.setName(addressName);
 						//添加区域Code
@@ -729,34 +729,38 @@ public class EchartsController {
 						}
 					} // end 循环省级code
 				}else{
-					String str="";
-					str=code.substring(0,4);
-					//添加条件 
-					mapQuery.put("code", str+"%");
-					//模糊查询当前这个省级下的所有减排记录
-					List<TEmissionDetail> ttdd=tEmissionDetailMapper.selectByQuery(mapQuery);
-					//如果没有数据代表没有该市的信息  直接判断下一条记录
-					for(TEmissionDetail td:ttdd){
+					List<String> cityCodes=tEmissionDetailMapper.selectCityCode(mapQuery);
+					//循环所有的省级编码集合
+					for(String strcod:cityCodes){
+						//添加条件 
+						mapQuery.put("code", strcod);
+						//模糊查询当前这个省级下的所有减排记录
+						List<TEmissionDetail> ttdd=tEmissionDetailMapper.selectByQuery(mapQuery);
+						//如果没有数据代表没有该市的信息  直接判断下一条记录
+						if(ttdd.size()==0) continue;
 						//定义结果对象
 						RadioListUtil rlu=new RadioListUtil();
 						//查询区域名称
-						String addressName=tAddressMapper.selectNameByCode(td.getCode());
+						String addressName=tAddressMapper.selectNameByCode(strcod);
 						//添加区域名称
 						rlu.setName(addressName);
 						//添加区域Code
-						rlu.setCode(td.getCode());
+						rlu.setCode(strcod);
 						//添加类型没有县级
 						rlu.setType(0);
-						//判断是行业还是措施的  并赋值对应的Json串
-						String edetail=td.getEmissionDetails();
-						//解析json获取到所有行业的减排信息
-						Map edeMap=mapper.readValue(edetail, Map.class);
-						//循环所有行业用来得到所有行业的污染物减排总和
-						for(Object obj:edeMap.keySet()){
-							//获取行业
-							Map ede=(Map)edeMap.get(obj);
-							//获取行业中的减排污染物信息
-							tempUtil(ede,rlu);
+						//如果没有数据代表没有该市的信息  直接判断下一条记录
+						for(TEmissionDetail td:ttdd){
+							//判断是行业还是措施的  并赋值对应的Json串
+							String edetail=td.getEmissionDetails();
+							//解析json获取到所有行业的减排信息
+							Map edeMap=mapper.readValue(edetail, Map.class);
+							//循环所有行业用来得到所有行业的污染物减排总和
+							for(Object obj:edeMap.keySet()){
+								//获取行业
+								Map ede=(Map)edeMap.get(obj);
+								//获取行业中的减排污染物信息
+								tempUtil(ede,rlu);
+							}
 						}
 						resultList.add(rlu);
 					}
@@ -769,6 +773,12 @@ public class EchartsController {
 		}
 	}
 	
+	/**
+	 * 减排列表中间转换计算
+	 * @param ede
+	 * @param rlu
+	 * @throws Exception
+	 */
 	public void tempUtil(Map ede,RadioListUtil rlu) throws Exception{
 		double so2=Double.parseDouble(ede.get("SO2").toString());
 		//判断这个污染物是否出现在了集合中 如果存在则累加 否则只添加
