@@ -795,7 +795,14 @@ public class EchartsController {
 		}
 	}
 	
+	/**
+	 * 减排分析列表结果格式化
+	 * @param basisrlu
+	 * @param rlu
+	 * @throws Exception
+	 */
 	public void resultUtil(RadioListUtil basisrlu,RadioListUtil rlu) throws Exception{
+		//如果基准的数字为0则设置-9999  负数抛异常 正数计算格式化
 		if(basisrlu.getSO2()>0){
 			double temp=CastNumUtil.significand(rlu.getSO2()/basisrlu.getSO2() , 3)*100;
 			temp=CastNumUtil.decimal(temp, 1);
