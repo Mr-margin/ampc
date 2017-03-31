@@ -1781,8 +1781,8 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 //		app.pint = new dong.GraphicsLayer({"id":"pint"});
 //		app.mapList[1].addLayer(app.pint);
 		
-		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/cms/MapServer");//创建动态地图
-		app.mapList[0].addLayer(app.layer);
+//		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/cms/MapServer");//创建动态地图
+//		app.mapList[0].addLayer(app.layer);
 		
 //		app.str = {
 //	            'markerSymbol': new SimpleMarkerSymbol('circle', 20, null, new Color([0, 0, 0, 0.25])),
