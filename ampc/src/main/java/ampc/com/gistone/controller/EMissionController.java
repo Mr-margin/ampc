@@ -70,7 +70,8 @@ public class EMissionController {
 		Map<String, Map> data = (Map) requestDate.get("data");
 		String status=requestDate.get("status").toString();
 		
-		Long scenarionId=245l;
+		Long scenarionId=jobId;
+		System.out.println(scenarionId);
 		TEsNative tEsNative =new TEsNative();
 		tEsNative.setEsCodeRange("11,12,13");
 		int a=0;
