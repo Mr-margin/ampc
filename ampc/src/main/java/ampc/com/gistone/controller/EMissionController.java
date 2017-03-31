@@ -141,7 +141,7 @@ public class EMissionController {
 		if(a==b){//查看计数器的数值是否与保存成功的数据相同，相同为成功，不同则失败
 			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
 			tScenarinoDetail.setScenarinoId(scenarionId);
-			tScenarinoDetail.setScenarinoStatus(8l);//如成功修改情景的状态为8，执行完毕
+			tScenarinoDetail.setScenarinoStatus(5l);//如成功修改情景的状态为8，执行完毕
 			tScenarinoDetail.setRatioEndDate(thedate);
 			int s=tScenarinoDetailMapper.updateByPrimaryKeySelective(tScenarinoDetail);
 			if(scenarionId==null){
