@@ -5,7 +5,6 @@ stat.cPointx=108;
 stat.cPointy=35;
 var app = {};
 var dong = {};
-var sss ;
 require(
 	[
 	 	"esri/map",
@@ -94,7 +93,7 @@ require(
 		app.gLyr = new dong.GraphicsLayer({"id":"gLyr"});
 		app.map.addLayer(app.gLyr);
 	    /*************************动态服务**********************************/
-	    app.dynamicData = new dong.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/workspace/MapServer");
+	    app.dynamicData = new dong.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/rs/MapServer");
 		app.map.addLayer(app.dynamicData);
 	    app.dynamicData.hide();
 	    
@@ -115,6 +114,7 @@ require(
 });
 
 function shape () {
+	
 	if ($('input[name="shape"]:checked').val() == "1") {
 		
 	} else if ($('input[name="shape"]:checked').val() == "2") {
@@ -130,16 +130,16 @@ function grid(){
 	var dynamicLayerInfos=app.dynamicData.createDynamicLayerInfosFromLayerInfos();
 	var dynamicLayerInfo = new dong.DynamicLayerInfo();
 	dynamicLayerInfo.id = 996;
+	dynamicLayerInfo.defaultVisibility = false;
+	dynamicLayerInfo.name = "reuslt";
 	var dataSource = new dong.RasterDataSource();
-	dataSource.workspaceId = "workspace";
+	dataSource.workspaceId = "MyRasterWorkspaceID";
 	dataSource.dataSourceName = "reuslt.tiff";
 	var layerSource = new dong.LayerDataSource();
 	layerSource.dataSource = dataSource;
 	dynamicLayerInfo.source = layerSource;
 	dynamicLayerInfos.push(dynamicLayerInfo);
 	app.dynamicData.setDynamicLayerInfos(dynamicLayerInfos);
+	app.dynamicData.setVisibleLayers([996]);
 }
-
-
-
 
