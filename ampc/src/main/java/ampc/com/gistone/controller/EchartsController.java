@@ -93,6 +93,7 @@ public class EchartsController {
 			List<String> dateResult=new ArrayList<String>();
 			List<String> pflResult=new ArrayList<String>();
 			List<String> jplResult=new ArrayList<String>();
+			List<String> sjpflResult=new ArrayList<String>();
 			//判断发过来的code等级  并全部转换成3级编码
 			if(addressLevle==1) code=code.substring(0,2)+"%";
 			if(addressLevle==2) code=code.substring(0,4)+"%";
@@ -394,10 +395,13 @@ public class EchartsController {
 			}
 			//创建返回的结果集合
 			Map map=new HashMap();
+			for(int i=0;i<pflResult.size();i++){
+				sjpflResult.add(String.valueOf(Double.parseDouble(pflResult.get(i))-Double.parseDouble(jplResult.get(i))));
+			}
 			//写入日期结果集合
 			map.put("dateResult", dateResult);
 			//写入实际减排结果集合
-			map.put("pflResult", pflResult);
+			map.put("sjpflResult", sjpflResult);
 			//写入减排量结果集合
 			map.put("jplResult", jplResult);
 			//返回结果
