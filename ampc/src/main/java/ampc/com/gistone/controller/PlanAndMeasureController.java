@@ -569,7 +569,8 @@ public class PlanAndMeasureController {
 								if(d2 == 0.0){
 									
 								}else{
-									d3=CastNumUtil.significand(d1/d2, 3)*100;
+									//d3=CastNumUtil.significand(d1/d2, 3)*100;
+									d3=d1/d2*100;
 									d3=CastNumUtil.decimal(d3, 1);
 								}
 								list.get(i).put("reduct", String.valueOf(d3));
@@ -585,7 +586,8 @@ public class PlanAndMeasureController {
 											if(dpool == 0.0){
 												
 											}else{
-												 dr=CastNumUtil.significand((pMcoarse + pM25) / dpool, 3)*100;
+												 //dr=CastNumUtil.significand((pMcoarse + pM25) / dpool, 3)*100;
+												 dr=(pMcoarse + pM25) / dpool*100;
 												 dr=CastNumUtil.decimal(dr, 1);
 											}
 											list.get(i).put("ratio", String.valueOf(dr));
@@ -598,7 +600,8 @@ public class PlanAndMeasureController {
 											if(dpool == 0.0){
 												
 											}else{
-												 dr=CastNumUtil.significand(pMcoarse/ dpool, 3)*100;
+												// dr=CastNumUtil.significand(pMcoarse/ dpool, 3)*100;
+												 dr=pMcoarse/ dpool*100;
 												 dr=CastNumUtil.decimal(dr, 1);
 											}
 											list.get(i).put("ratio", String.valueOf(dr));
@@ -617,7 +620,8 @@ public class PlanAndMeasureController {
 												if(d<0){
 													throw new Exception("减排结果出现负数");
 												}
-												dr=CastNumUtil.significand((pM25-bc-oc)/ dpool, 3)*100;
+												//dr=CastNumUtil.significand((pM25-bc-oc)/ dpool, 3)*100;
+												dr=(pM25-bc-oc)/ dpool*100;
 												dr=CastNumUtil.decimal(dr, 1);
 											}
 											list.get(i).put("ratio", String.valueOf(dr));
@@ -630,7 +634,8 @@ public class PlanAndMeasureController {
 											if(dpool == 0.0){
 												
 											}else{
-												dr=CastNumUtil.significand(dratio / dpool, 3)*100;
+												//dr=CastNumUtil.significand(dratio / dpool, 3)*100;
+												dr=dratio / dpool*100;
 												dr=CastNumUtil.decimal(dr, 1);
 											}
 											list.get(i).put("ratio", String.valueOf(dr));
