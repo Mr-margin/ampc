@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TPreProcessMapper" >
+
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.preprocess.concn.ScenarinoEntity" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="SID" property="sId" jdbcType="DECIMAL" />
+    <result column="MODE" property="mode" jdbcType="VARCHAR" />
+    <result column="CITY_STATION" property="city_station" jdbcType="VARCHAR" />
+    <result column="DOMAINID" property="domainId" jdbcType="DECIMAL" />
+    <result column="DOMAIN" property="domain" jdbcType="DECIMAL" />
+    <result column="ADD_TIME" property="addTime" jdbcType="DATE" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="DATE" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.preprocess.concn.ScenarinoEntity" extends="BaseResultMap" >
+    <result column="CONTENT" property="content" jdbcType="CLOB" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    "ID", "SID", "MODE", "CITY_STATION", "DOMAINID", "DOMAIN"
+  </sql>
+  <sql id="Blob_Column_List" >
+    "CONTENT"
+  </sql>
+  
+ <select id="checkScenarinoResTable" statementType="CALLABLE" parameterType="ampc.com.gistone.preprocess.concn.CheckTableParams">  
+     {call AMPC.CHECK_RES_TABLE(#{user_id,mode=IN,jdbcType=DECIMAL},#{years,mode=IN,jdbcType=VARCHAR},#{time_point,mode=IN,jdbcType=VARCHAR},#{tName,mode=OUT,jdbcType=VARCHAR})}  
+ </select> 
+ 
+ <select id="insert" parameterType="ampc.com.gistone.preprocess.concn.ScenarinoEntity">
+ 	<!-- MERGE INTO ${tableName} T1 USING (
+		SELECT
+			#{sId,jdbcType=DECIMAL} AS "SID",
+			#{mode,jdbcType=VARCHAR} AS "MODE",
+			#{city_station,jdbcType=VARCHAR} AS "CITY_STATION",
+			#{domainId,jdbcType=DECIMAL} AS "DOMAINID",
+			#{domain,jdbcType=DECIMAL} AS "DOMAIN"
+		FROM
+			dual
+	) T2 ON (
+		T1."SID" = T2."SID"
+		AND T1."MODE" = T2."MODE"
+		AND T1."CITY_STATION" = T2."CITY_STATION"
+		AND T1."DOMAINID" = T2."DOMAINID"
+		AND T1."DOMAIN" = T2."DOMAIN"
+	)
+	WHEN MATCHED THEN
+		UPDATE 
+	SET T1."CONTENT" = #{content,jdbcType=CLOB}, T1.UPDATE_TIME=sysdate
+	WHEN NOT MATCHED THEN
+		INSERT (
+			T1."ID",
+			T1."SID",
+			T1."MODE",
+			T1."CITY_STATION",
+			T1."DOMAINID",
+			T1."DOMAIN",
+			T1."CONTENT",
+			T1."ADD_TIME",
+			T1."UPDATE_TIME",
+			T1."USER_ID"
+		)
+	VALUES
+		(
+			#{id,jdbcType=VARCHAR},
+			#{sId,jdbcType=DECIMAL},
+			#{mode,jdbcType=VARCHAR},
+			#{city_station,jdbcType=VARCHAR},
+			#{domainId,jdbcType=DECIMAL},
+			#{domain,jdbcType=DECIMAL},
+			#{content,jdbcType=CLOB},
+			sysdate,
+			sysdate,
+			#{userId,jdbcType=DECIMAL}
+		) -->
+ 
+ 	insert into ${tableName} ("ID", "SID", "MODE", 
+      "CITY_STATION", "DOMAINID", "DOMAIN", "CONTENT", "ADD_TIME", "UPDATE_TIME", "USER_ID")
+
+      values (#{id,jdbcType=VARCHAR}, #{sId,jdbcType=DECIMAL}, #{mode,jdbcType=VARCHAR}, 
+      #{city_station,jdbcType=VARCHAR}, #{domainId,jdbcType=DECIMAL}, #{domain,jdbcType=DECIMAL}, #{content,jdbcType=CLOB}, 
+      sysdate, sysdate, #{userId,jdbcType=DECIMAL})
+ </select>
+ 
+ <select id="update" parameterType="ampc.com.gistone.preprocess.concn.ScenarinoEntity">
+ 	UPDATE ${tableName}
+	SET "CONTENT" = #{content,jdbcType=CLOB}, "UPDATE_TIME"=sysdate WHERE "SID"=#{sId,jdbcType=DECIMAL} AND "MODE"=#{mode,jdbcType=VARCHAR} AND "CITY_STATION"=#{city_station,jdbcType=VARCHAR} 
+	AND "DOMAINID"=#{domainId,jdbcType=DECIMAL} AND "DOMAIN"=#{domain,jdbcType=DECIMAL}
+ </select>
+ 
+ <select id="selectByUniqueKey" parameterType="hashMap" resultMap="ResultMapWithBLOBs">
+ 	select 
+	 	<include refid="Base_Column_List" />
+	    ,
+	    <include refid="Blob_Column_List" />
+	    , "ADD_TIME", "UPDATE_TIME", "USER_ID"
+	    from ${tableName} where "SID"=#{sId,jdbcType=DECIMAL} AND "MODE"=#{mode,jdbcType=VARCHAR} AND "CITY_STATION" IN 
+	      <foreach collection="city_station" item="cityOrStation" index="index" open="(" close=")" separator=",">
+	      	#{cityOrStation,jdbcType=VARCHAR}
+	      </foreach>
+	    
+	    AND "DOMAINID"=#{domainId,jdbcType=DECIMAL} AND "DOMAIN"=#{domain,jdbcType=DECIMAL}
+ </select>
+ 
+ <select id="checkForcastFnlTable" statementType="CALLABLE" parameterType="ampc.com.gistone.preprocess.concn.CheckTableParams">  
+     {call AMPC.CHECK_FNL_TABLE(#{user_id,mode=IN,jdbcType=DECIMAL},#{years,mode=IN,jdbcType=VARCHAR},#{time_point,mode=IN,jdbcType=VARCHAR},#{tName,mode=OUT,jdbcType=VARCHAR})}  
+ </select> 
+ 
+ <select id="insertFnl" parameterType="ampc.com.gistone.preprocess.concn.ScenarinoEntity">
+
+	INSERT INTO ${tableName} (
+		"ID",
+		"SID",
+		"DAY",
+		"MODE",
+		"CITY_STATION",
+		"DOMAINID",
+		"DOMAIN",
+		"CONTENT",
+		"ADD_TIME",
+		"UPDATE_TIME",
+		"USER_ID"
+	)
+	VALUES
+		(
+			#{id,jdbcType=VARCHAR}, 
+			#{sId,jdbcType=DECIMAL}, 
+			#{day,jdbcType=DATE},
+			#{mode,jdbcType=VARCHAR}, 
+		    #{city_station,jdbcType=VARCHAR}, 
+		    #{domainId,jdbcType=DECIMAL}, 
+		    #{domain,jdbcType=DECIMAL}, 
+		    #{content,jdbcType=CLOB}, 
+		    sysdate, 
+		    sysdate, 
+		    #{userId,jdbcType=DECIMAL}
+		)
+	
+ </select>
+ 
+ <select id="updateFnl" parameterType="ampc.com.gistone.preprocess.concn.ScenarinoEntity">
+
+		UPDATE ${tableName}
+			SET "CONTENT" = #{content,jdbcType=CLOB},
+			"UPDATE_TIME" = SYSDATE
+		WHERE
+			"SID" = #{sId,jdbcType=DECIMAL}
+			AND "DAY" = #{day,jdbcType=DATE}
+			AND "MODE" = #{mode,jdbcType=VARCHAR}
+			AND "CITY_STATION" = #{city_station,jdbcType=VARCHAR}
+			AND "DOMAINID" = #{domainId,jdbcType=DECIMAL}
+			AND "DOMAIN" = #{domain,jdbcType=DECIMAL}
+	
+ </select>
+ 
+ <select id="selectByUniqueKeyForfnl" parameterType="hashMap" resultMap="ResultMapWithBLOBs">
+ 	select 
+	 	"ID",
+		"SID",
+		"DAY",
+		"MODE",
+		"CITY_STATION",
+		"DOMAINID",
+		"DOMAIN",
+		"CONTENT",
+		"ADD_TIME",
+		"UPDATE_TIME",
+		"USER_ID"
+	    from ${tableName} where "SID"=#{sId,jdbcType=DECIMAL} AND "DAY"=#{day,jdbcType=DATE} AND "MODE"=#{mode,jdbcType=VARCHAR} AND "CITY_STATION"=#{city_station,jdbcType=VARCHAR}  
+	    AND "DOMAINID"=#{domainId,jdbcType=DECIMAL} AND "DOMAIN"=#{domain,jdbcType=DECIMAL}
+ </select>
+ 
+</mapper>
