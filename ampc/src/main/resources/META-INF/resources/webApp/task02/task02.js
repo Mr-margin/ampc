@@ -1024,6 +1024,7 @@ $('#editArea').on('show.bs.modal', function (event) {
 /*创建/编辑区域*/
 function createEditArea() {
   var url = '/area/saveorupdate_area';
+  var checkUrl = '/area/check_areaname';
   var areaName = $('#areaName').val();
   if (!areaName) {
     alert('kong')
@@ -1074,31 +1075,47 @@ function createEditArea() {
     alert("请选择范围");
     return;
   }
-  $('#editArea').modal('hide');
-  $('#' + $('#areaName').attr('data-id')).find('button.btn-flash').removeClass('btn-flash');
-  ajaxPost(url, obj).success(function (res) {
 
-    if (!$('#areaName').attr('data-id')) {
-      var obj = {};
-      obj.areaId = res.data.areaId;
-      obj.areaName = areaName;
-      obj.timeFrame = [];
-      obj.timeItems = [{
-        planId: -1,
-        planName: '无',
-        timeId: res.data.timeId,
-        timeEndDate: qjMsg.qjEndDate,
-        timeStartDate: qjMsg.qjStartDate
-      }];
-      obj.provinceCodes = pArr;
-      obj.cityCodes = ctArr;
-      obj.countyCodes = crArr;
-      allData.push(obj);
-      showTimeline(allData);
-    } else {
-      $('#' + $('#areaName').attr('data-id')).find('b').html(areaName);
-    }
-  })
+  ajaxPost(checkUrl,{
+    userId:userId,
+    scenarinoId:qjMsg.qjId,
+    areaName: areaName,
+  }).success(function(res){
+      if(!res.data){
+        swal('名称重复', '', 'error')
+      }else{
+        $('#editArea').modal('hide');
+        $('#' + $('#areaName').attr('data-id')).find('button.btn-flash').removeClass('btn-flash');
+        ajaxPost(url, obj).success(function (res) {
+
+          if (!$('#areaName').attr('data-id')) {
+            var obj = {};
+            obj.areaId = res.data.areaId;
+            obj.areaName = areaName;
+            obj.timeFrame = [];
+            obj.timeItems = [{
+              planId: -1,
+              planName: '无',
+              timeId: res.data.timeId,
+              timeEndDate: qjMsg.qjEndDate,
+              timeStartDate: qjMsg.qjStartDate
+            }];
+            obj.provinceCodes = pArr;
+            obj.cityCodes = ctArr;
+            obj.countyCodes = crArr;
+            allData.push(obj);
+            showTimeline(allData);
+          } else {
+            $('#' + $('#areaName').attr('data-id')).find('b').html(areaName);
+          }
+        })
+      }
+  }).error(function () {
+    swal('名称校验失败', '', 'error')
+  });
+
+
+
 }
 
 /*显示已选择code,并进行checked*/
@@ -1107,6 +1124,9 @@ function setShowCode(data) {
   proNum = data.provinceCodes.length;
   cityNum = data.cityCodes.length;
   countyNum = data.countyCodes.length;
+  showCode[0] = {};
+  showCode[1] = {};
+  showCode[2] = {};
 
   if (proNum == 0) {
     showCode[0] = {};
