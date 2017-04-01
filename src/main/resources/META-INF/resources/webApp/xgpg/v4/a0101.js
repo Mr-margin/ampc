@@ -552,6 +552,9 @@ function setDate(s1,e1,s2,e2,type){
 		while(true){
 			$('#sTime-d').append($('<option>' +s.format('YYYY-MM-DD')+ '</option>'));
 			console.log(s.format('YYYY-MM-DD'));
+			if(e.format('YYYY-MM-DD')=='Invalid date'){
+				return;
+			}
 			if(e.isBefore(s.add(1,'d'))){
 				return;
 			}
@@ -559,6 +562,9 @@ function setDate(s1,e1,s2,e2,type){
 		s = moment(startTime);
 		while(true){
 			$('#sTime-h').append($('<option>' +s.format('HH')+ '</option>'));
+			if(s.format('YYYY-MM-DD')=='Invalid date'){
+				return;
+			}
 			if('23' ==s.add(1,'h').format('HH')){
 				return;
 			}
@@ -587,6 +593,9 @@ function setDate(s1,e1,s2,e2,type){
 			$('#sTime-d').append($('<option>' +s.format('YYYY-MM-DD')+ '</option>'));
 			$('#eTime').append($('<option>' +s.format('YYYY-MM-DD')+ '</option>'));
 			console.log(s.format('YYYY-MM-DD'));
+			if(s.format('YYYY-MM-DD')=='Invalid date'){
+				return;
+			}
 			if(e.isBefore(s.add(1,'d'))){
 				return;
 			}
