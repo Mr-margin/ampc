@@ -402,8 +402,10 @@ function bar() {
 					        },
 					        formatter: function (params){
 					            return params[0].name + '<br/>'
+					            	   + '基准排放量 : ' + (parseFloat(params[1].value)+parseFloat(params[0].value)) + '<br/>'
 					                   + params[1].seriesName + ' : ' + params[1].value + '<br/>'
 					                   + params[0].seriesName + ' : ' +  params[0].value;       //把 + params[0].value 去掉了
+					            		//有可能搞错了，应该是减法
 					        }
 					    },
 					    legend: {
@@ -429,7 +431,7 @@ function bar() {
 			                    	  realtime:'true',
 			                    	  start:60,
 			                    	  end:80
-			                    	  //	startValue:
+			                    	  //startValue:
 			                      }
 			                      ],
 					    calculable : true,
