@@ -48,7 +48,7 @@ function formVerify() {
     var endD = value.substring(value.indexOf('至') + 1);
 
     if(rwTypeV == 'y'){
-      var s = moment(startD).isBefore(moment());
+      var s = moment(startD).isBefore(moment().add(-1,'d'));
       var e = moment(endD).isAfter(moment());
       return s && e;
     }else{
