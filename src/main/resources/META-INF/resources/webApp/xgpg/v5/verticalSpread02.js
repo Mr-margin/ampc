@@ -174,17 +174,17 @@ function setTime(s, e) {
 
 
 function initEcharts() {
-  //var data = czData;
-  var data = {
-    '191': {
-      CO: [[12, 0], [20, 50], [25, 100],[15,200],[43,300]],
-      CO2: [[12, 0], [20, 50], [25, 100]]
-    },
-    '192': {
-      CO: [[12, 0], [20, 50], [25, 100]],
-      CO2: [[12, 0], [20, 50], [25, 100]]
-    }
-  };
+  var data = czData;
+  //var data = {
+  //  '191': {
+  //    CO: [[12, 0], [20, 50], [25, 100],[15,200],[43,300]],
+  //    CO2: [[12, 0], [20, 50], [25, 100]]
+  //  },
+  //  '192': {
+  //    CO: [[12, 0], [20, 50], [25, 100]],
+  //    CO2: [[12, 0], [20, 50], [25, 100]]
+  //  }
+  //};
   $('#initEcharts').empty();
   var species = speciesArr[changeMsg.rms];
   for (var i = 0; i < species.length; i++) {
@@ -195,39 +195,39 @@ function initEcharts() {
     $('#initEcharts').append(div);
     var option = $.extend(true, {}, optionAll);
     option.title.text = species[i];
-    //option.legend.data = (function () {
-    //  var arr = [];
-    //  for (var a = 0; a < sceneInitialization.data.length; a++) {
-    //    arr.push(sceneInitialization.data[a].scenarinoName)
-    //  }
-    //  return arr;
-    //})();
     option.legend.data = (function () {
       var arr = [];
-      for (var a = 0; a < 5; a++) {
-        arr.push('aaaaaaaaaa'+a)
+      for (var a = 0; a < sceneInitialization.data.length; a++) {
+        arr.push(sceneInitialization.data[a].scenarinoName)
       }
       return arr;
     })();
+    //option.legend.data = (function () {
+    //  var arr = [];
+    //  for (var a = 0; a < 5; a++) {
+    //    arr.push('aaaaaaaaaa'+a)
+    //  }
+    //  return arr;
+    //})();
     if (species[i] != 'CO') {
       option.xAxis.name = '/μg/m³';
     } else {
       option.xAxis.name = '/mg/m³';
     }
     option.series = [];
-    //for (var sp = 0; sp < sceneInitialization.data.length; sp++) {
-    for (var sp = 0; sp < 5; sp++) {
-      //var id = sceneInitialization.data[sp].scenarinoId;
-      //var name = sceneInitialization.data[sp].scenarinoName;
+    for (var sp = 0; sp < sceneInitialization.data.length; sp++) {
+    //for (var sp = 0; sp < 5; sp++) {
+      var id = sceneInitialization.data[sp].scenarinoId;
+      var name = sceneInitialization.data[sp].scenarinoName;
 
       option.series.push({
-        //name: name, //可变，存储情景名称
-        name: 'aaaaaaaaaa'+sp, //可变，存储情景名称
+        name: name, //可变，存储情景名称
+        //name: 'aaaaaaaaaa'+sp, //可变，存储情景名称
         type: 'line',
         smooth: true,
         symbolSize: 5,
-        //data: data[id][species[i]].slice(0, $('#height').val())  //可变，存储情景数据
-        data: data['191']['CO']  //可变，存储情景数据
+        data: data[id][species[i]].slice(0, $('#height').val())  //可变，存储情景数据
+        //data: data['191']['CO']  //可变，存储情景数据
       })
     }
     var es = echarts.init(document.getElementById(species[i]));
@@ -454,7 +454,7 @@ function updata() {
 
   $.when(echartsData).then(function(res){
     if(res.status == 0){
-      czData = res.data
+      czData = res.data;
       initEcharts();
     }else{
       console.log(res.msg)
