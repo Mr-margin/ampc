@@ -691,3 +691,14 @@ button[disabled],.btn[disabled]{
 	color:#fff;
 }
 /*水平分布 end*/
+
+/*垂直分布 start*/
+.echartsCZ{
+  height: 500px;
+  margin-left:0px;
+  margin-right:auto;
+  margin-top:10px
+}
+
+
+/*垂直分布 end*/
