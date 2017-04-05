@@ -428,8 +428,8 @@ public class AppraisalController {
 								arr.add(litarr);
 							}
 						}
-						hourcmap.put(spr, arr);
-						scmap.put(scid, hourcmap);
+						spcmap.put(spr, arr);
+						scmap.put(scid, spcmap);
 							}
 					}
 					}
@@ -487,8 +487,8 @@ public class AppraisalController {
 							
 							
 							arr.add(litarr);
-							hourcmap.put(spr, arr);
-							scmap.put(scid, hourcmap);
+							spcmap.put(spr, arr);
+							scmap.put(scid, spcmap);
 								}
 						}
 						}
