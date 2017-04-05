@@ -20,17 +20,18 @@ import org.springframework.stereotype.Component;
  */
 public class QueueDataWrf {
 	//来源于情景详情表  
-	private String spinup;
+	private Long spinup;
 	//来自于ungrib
 	private String lastungrib;
 
-	public String getSpinup() {
+	
+	
+	public Long getSpinup() {
 		return spinup;
 	}
-	public void setSpinup(String spinup) {
+	public void setSpinup(Long spinup) {
 		this.spinup = spinup;
 	}
-	
 	public String getLastungrib() {
 		return lastungrib;
 	}
