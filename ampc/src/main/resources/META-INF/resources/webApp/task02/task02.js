@@ -1816,16 +1816,6 @@ function showTimeline(data) {
 	timeline = $('#timeline').timeline(options);
 }
 
-
-
-
-
-
-
-
-
-
-
 //通用属性
 var stat = {};
 //中心点坐标
@@ -1835,22 +1825,7 @@ var app = {};
 var dong = {};
 
 //颜色数组
-var sz_corlor = [
-                 [140, 0, 255, 0.65], 
-                 [54, 94, 255, 0.65], 
-                 [28, 255, 232, 0.65], 
-                 [25, 255, 48, 0.65], 
-                 [191, 255, 0, 0.65], 
-                 [255, 200, 0, 0.65], 
-                 [227, 102, 0, 0.65], 
-                 [128, 0, 0, 0.65], 
-                 [255, 252, 255, 0.65], 
-                 [189, 189, 189, 0.65], 
-                 [255, 255, 115, 0.65], 
-                 [255, 190, 190, 0.65], 
-                 [190, 255, 232, 0.65]];
-
-
+var sz_corlor = [[140, 0, 255, 0.65], [54, 94, 255, 0.65], [28, 255, 232, 0.65], [25, 255, 48, 0.65], [191, 255, 0, 0.65], [255, 200, 0, 0.65], [227, 102, 0, 0.65], [128, 0, 0, 0.65], [255, 252, 255, 0.65], [189, 189, 189, 0.65], [255, 255, 115, 0.65], [255, 190, 190, 0.65], [190, 255, 232, 0.65]];
 var dojoConfig = {
   async: true,
   parseOnLoad: true,
@@ -1905,7 +1880,6 @@ require(
 
 			app.outline = new dong.SimpleLineSymbol("solid", new dong.Color("#444"), 1);
 			app.symbol = new dong.SimpleFillSymbol("solid", app.outline, new dong.Color([221, 160, 221, 0.65]));
-			
 			app.featureLayer1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/2", {//添加省的图层
 				mode: dong.FeatureLayer.MODE_ONDEMAND
 			});
@@ -1915,7 +1889,6 @@ require(
 			app.featureLayer3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/0", {//区县的图层
 				mode: dong.FeatureLayer.MODE_ONDEMAND
 			});
-			
 
 			/*********************本底外面的**************************/
 			app.map1 = new Map("mapDiv1", {
@@ -1934,7 +1907,6 @@ require(
 			app.map1.addLayer(app.gLyr1);
 			app.map1.on("loaded", app2())
 
-
 			/**********************************模态窗口地图部分*****************************************************/
 			app.map = new Map("mapDiv", {
 				logo: false,
@@ -1950,9 +1922,6 @@ require(
 			app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
 			app.gLyr = new dong.GraphicsLayer({"id": "gLyr"});
 			app.map.addLayer(app.gLyr);
-			
-			
-			
 });
 var extent_n;
 var tthg_n;
@@ -1960,7 +1929,7 @@ var tthg_n;
  * 模态窗行政区划渲染
  */
 function addLayer(data) {
-	app.gLyr.clear()
+	app.gLyr.clear();
 	extent_n = new dong.Extent();
 	tthg_n = true;
 	var query = new dong.Query();
@@ -1980,21 +1949,21 @@ function addLayer(data) {
 		if(t1 != ""){
 			query.where = "ADMINCODE IN (" + t1.substring(0, t1.length - 1) + ")";
 			if (i == "0") {
-				app.featureLayer1.queryFeatures(query, jieguo);
+				app.featureLayer1.queryFeatures(query, modal_Result);
 			} else if (i == "1") {
-				app.featureLayer2.queryFeatures(query, jieguo);
+				app.featureLayer2.queryFeatures(query, modal_Result);
 			} else if (i == "2") {
-				app.featureLayer3.queryFeatures(query, jieguo);
+				app.featureLayer3.queryFeatures(query, modal_Result);
 			}
 		}
 	}
 }
 
 /**
- * 添加图层并定位
+ * 模态窗口添加图层并定位
  * @param featureSet：返回的形状
  */
-function jieguo(featureSet){
+function modal_Result(featureSet){
 	for (var i = 0, il = featureSet.features.length; i < il; i++) {
 		var graphic = featureSet.features[i];
 		if(tthg_n){
@@ -2015,15 +1984,15 @@ function app2() {
 	if (app.map1 == "" || app.map1 == null || app.map1 == undefined) {
 		return;
 	}
-	
 	if (allData != "" && allData != null && allData != undefined) {
+		app.gLyr1.clear();
 		var extent = new dong.Extent();
+		var tthg = true;
+		
 		var query = new dong.Query();
 		$.each(allData, function (k, item) {
 			var symbol = new dong.SimpleFillSymbol("solid", app.outline, new dong.Color(sz_corlor[k]));
 			var t1 = "", t2 = "", t3 = "";
-			var tthg = true;
-			
 			if (item.provinceCodes != "" && item.provinceCodes != null && item.provinceCodes != undefined) {
 				if (item.provinceCodes.length > 0) {//省
 					$.each(item.provinceCodes, function (i, vol) {
@@ -2033,7 +2002,6 @@ function app2() {
 					});
 				}
 			}
-			
 			if (item.cityCodes != "" && item.cityCodes != null && item.cityCodes != undefined) {//市
 				if (item.cityCodes.length > 0) {
 					$.each(item.cityCodes, function (i, vol) {
@@ -2043,7 +2011,6 @@ function app2() {
 					});
 				}
 			}
-			
 			if (item.countyCodes != "" && item.countyCodes != null && item.countyCodes != undefined) {//区县
 				if (item.countyCodes.length > 0) {
 					$.each(item.countyCodes, function (i, vol) {
@@ -2053,7 +2020,6 @@ function app2() {
 					});
 				}
 			}
-			
 			if(t1 != ""){
 				query.where = "ADMINCODE IN (" + t1.substring(0, t1.length - 1) + ")";
 				app.featureLayer1.queryFeatures(query, function (featureSet) {
