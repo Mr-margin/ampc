@@ -13,6 +13,40 @@ import ampc.com.gistone.database.model.TScenarinoDetail;
  * @date 2017年2月25日
  */
 public interface TScenarinoDetailMapper {
+	
+	
+	/**
+	 * @Description: TODO
+	 * @param tasksScenarinoId
+	 * @return   
+	 * TScenarinoDetail  查找开始结束时间和情景类型
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月31日 上午11:54:53
+	 */
+	TScenarinoDetail selecttypetime(Long scenarinoId);
+
+	
+	/**
+	 * @Description: TODO
+	 * @param tasksScenarinoId
+	 * @return   
+	 * String  通过情景ID查找情景类型
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月30日 下午6:57:58
+	 */
+	String selectscentype(Long scenarinoId);
+	
+	/**
+	 * @Description: TODO
+	 * @param tScenarinoDetail   
+	 * void  更新cores
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月29日 下午6:22:06
+	 */
+	int updateCores(TScenarinoDetail tScenarinoDetail);
 
 	/**
 	 * @Description: 根据起报时间 用户id 情景类型  查找该条情景记录 用来确定实时预报消息里面的firsttime的值
@@ -98,4 +132,9 @@ public interface TScenarinoDetailMapper {
 
 
     List<TScenarinoDetail> selectByEntity(TScenarinoDetail record);
+
+	
+	
+
+	
 }

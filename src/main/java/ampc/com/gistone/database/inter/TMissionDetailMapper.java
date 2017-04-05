@@ -66,4 +66,16 @@ public interface TMissionDetailMapper {
     Long selectDomainid(Long missionId);
     
     List<TMissionDetail> selectByEntity(TMissionDetail record);
+
+
+	/**
+	 * @Description: TODO
+	 * @param missionId
+	 * @return   
+	 * Long   通过情景ID获取清单ID
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月28日 下午6:51:51
+	 */
+	Long getsourceid(Long missionId);
 }
