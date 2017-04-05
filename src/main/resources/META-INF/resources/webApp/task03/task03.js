@@ -459,7 +459,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 					
 					sc_conter += '</div>';
 				});
-				sc_conter += '<div id="se_bu" style="text-align: right;padding-right: 20px;">';
+				sc_conter += '<div id="se_bu" style="position: absolute;right: 20px; bottom: 20px;">';//padding-right: 20px;text-align: right;
 				sc_conter += '<button class="btn btn-success" onclick="search_button();" type="button">';
 				sc_conter += '<i class="fa fa-search"></i>&nbsp;&nbsp;<span class="bold">筛选</span>';
 				sc_conter += '</button></div>';
@@ -951,7 +951,7 @@ function search_button(){
 //					}
 					bool = true;
 					$("#"+key).children().each(function(){//循环数组的页面，查看现有的元素是否选中
-						if($(this).attr("val_name") == vol[key]){//如果当前的标签的值与数组中唯一元素的值相同，同时数组中唯一元素的key与顶层key一致，说明找到标签
+						if($(this).attr("val_name") == vol){//如果当前的标签的值与数组中唯一元素的值相同，同时数组中唯一元素的key与顶层key一致，说明找到标签
 							if($(this).is(".active")){//判断这个标签是否被选中，如果选中说明正常，未选中需要再数组中删除这个元素
 								ttp.push(vol);//删除操作就是将有效数组放入到新数组中，循环结束一次性覆盖
 							}
@@ -989,7 +989,7 @@ function search_button(){
 			sc_val.filters.push(temp_val_v1);
 		}
 		
-//		console.log(JSON.stringify(sc_val));
+		console.log(JSON.stringify(sc_val));
 		
 		temp_val_v1 = jQuery.extend(true, {}, temp_val);//赋值模板到操作缓存
 		
@@ -1082,13 +1082,20 @@ function point_table () {
 					$("#shaixuan_num").html("筛选点源："+res.data.append.sourceTotalCount);
 					$("#shaixuan_num").show();
 					var tablejieguo = "";
-					$.each(sc_val.filters[sc_val.filters.length-1], function(k, vol) {//循环最后一个条件，这个条件是要添加显示的条件
-						$.each(query, function(i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
-							if(col.queryEtitle == k){
-								tablejieguo += col.queryName+"："+vol+",";
-							}
+					
+					if(sc_val.filters.length == 0){
+						//没有条件，直接筛选
+						tablejieguo = "全部,";
+					}else{
+						$.each(sc_val.filters[sc_val.filters.length-1], function(k, vol) {//循环最后一个条件，这个条件是要添加显示的条件
+							$.each(query, function(i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
+								if(col.queryEtitle == k){
+									tablejieguo += col.queryName+"："+vol+",";
+								}
+							});
 						});
-					});
+					}
+					
 					$("#shaixuan_num").attr("title",tablejieguo.substring(0, tablejieguo.length-1));
 				}
 				
@@ -1802,81 +1809,51 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 //		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/cms/MapServer");//创建动态地图
 //		app.mapList[0].addLayer(app.layer);
 		
-//		app.str = {
-//	            'markerSymbol': new SimpleMarkerSymbol('circle', 20, null, new Color([0, 0, 0, 0.25])),
-//	            'marginLeft': '20',
-//	            'marginTop': '20'
-//	          };
 });
 
 var point_message = "";
+var clusterLayer_ttft = "";
 //地图加点
 function add_point(col){
-//	dong.domStyle.set(dong.query('a.action.zoomTo')[0], 'display', 'none');
+	console.log(JSON.stringify(col));
 	
+	if(clusterLayer_ttft != ""){
+		app.mapList[1].removeLayer(clusterLayer_ttft);//清空已有的点位信息
+	}
 	
-//	point_message = col;
 	var photoInfo = {};
-	
 	var point_sz = [];
 	var xmax = 0,xmin = 0,ymax = 0,ymin = 0;
 	$.each(col, function(i, vol) {
-		var x = handle_x(vol.lon);
-		var y = handle_y(vol.lat);
-		if(i == 0){
-			xmax = x;
-			xmin = x;
-			ymax = y;
-			ymin = y;
-		}else{
-			xmin = x < xmin ? x : xmin;
-			xmax = x > xmax ? x : xmax;
-			ymin = y < ymin ? y : ymin;
-			ymax = y > ymax ? y : ymax;
+		
+		if(typeof vol.lon != "undefined" && vol.lon != ""){
+			if(typeof vol.lat != "undefined" && vol.lat != ""){
+				
+				//中国范围内
+				if(parseFloat(vol.lon)>70 && parseFloat(vol.lon)<135 && parseFloat(vol.lat)>15 && parseFloat(vol.lat)<55){
+					var x = handle_x(vol.lon);
+					var y = handle_y(vol.lat);
+					if(i == 0){
+						xmax = x;
+						xmin = x;
+						ymax = y;
+						ymin = y;
+					}else{
+						xmin = x < xmin ? x : xmin;
+						xmax = x > xmax ? x : xmax;
+						ymin = y < ymin ? y : ymin;
+						ymax = y > ymax ? y : ymax;
+					}
+					var attributes = {  
+						"companyId": "<a onClick=\"alert('"+vol.companyId+"');\">"+vol.companyId+"</a>"
+					};
+					point_sz[i]= {"x":x,"y":y,"attributes":attributes}
+				}
+				
+			}
 		}
-//		app.str = new dong.SimpleMarkerSymbol('circle', 30,
-//                new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([148,0,211,0.25]), 15),
-//                new dong.Color([148,0,211,0.5]));
-		
-//		var point = new dong.Point(x, y, new dong.SpatialReference({ wkid: 3857 }));
-		
-		var attributes = {  
-			"companyId": "<a onClick=\"alert('"+vol.companyId+"');\">"+vol.companyId+"</a>"
-		};
-		point_sz[i]= {"x":x,"y":y,"attributes":attributes}
-		
 	});
 	photoInfo.data = point_sz;
-	
-	
-//	 var popupTemplate = dong.PopupTemplate({
-//         'title': '',
-//         'fieldInfos': [{
-//           'fieldName': 'ADMINCODE',
-//           'label': 'Tract: ',
-//           visible: true
-//         }, {
-//           'fieldName': 'NAME',
-//           'label': 'Name: ',
-//           visible: true
-//         }]
-//       });
-	
-	
-//	clusterLayer = new dong.ClusterLayer({
-//		 "data": point_sz,//传入聚合图层的数据数组。每个数据必须包含x，y，attributes三个属性
-//         "distance": 100,
-////         "id": "clusters",
-//         "labelColor": "#fff",//标记上显示的文字颜色，默认为#FFF（白色）
-////         "labelOffset": 10,//标记文字的垂直方向偏移量，请根据标记图标的大小来设置合适的值
-////         "resolution": map.extent.getWidth() / map.width,//分辨率，即屏幕像素和地图像素之间的比例关系，使用map.extent.getWidth() / map.width即可
-////         "singleColor": "#888",
-////         "singleTemplate": popupTemplate//聚合标记选中后，弹出的属性显示框中显示内容的显示模板
-//         "showSingles": false,//当鼠标左键点击一个聚合后标记时，是否显示出聚合此标记的所有实际点
-////         "singleSymbol": true,//当鼠标左键点击一个聚合后标记时，显示出的聚合标记包含的所有实际点的显示样式
-////         "spatialReference": 3857//加入到ClusterLayer的点标记的空间坐标系统，默认是102100（web mercator）
-//      });
-	
 	
 	clusterLayer = new dong.ClusterLayer({  
         "data": photoInfo.data,  
@@ -1893,26 +1870,12 @@ function add_point(col){
 	
 	var defaultSym = new dong.SimpleMarkerSymbol().setSize(4);  
     var renderer = new dong.ClassBreaksRenderer(defaultSym, "clusterCount");
-    var style1 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 10,  
-            new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,  
-                    new dong.Color([255,200,0]), 1),  
-            new dong.Color([255,200,0,0.8]));  
-    var style2 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 25,  
-            new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,  
-                    new dong.Color([255,125,3]), 1),  
-            new dong.Color([255,125,3,0.8]));  
-    var style3 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 30,  
-            new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,  
-                    new dong.Color([255,23,58]), 1),  
-            new dong.Color([255,23,58,0.8]));  
-    var style4 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 35,  
-            new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,  
-                    new dong.Color([204,0,184]), 1),  
-            new dong.Color([204,0,184,0.8]));  
-    var style5 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 40,  
-            new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,  
-                    new dong.Color([0,0,255]), 1),  
-            new dong.Color([0,0,255,0.8]));  
+    var style1 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([72, 165, 251]), 1),new dong.Color([72, 165, 251,0.8]));
+    var style2 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([122, 251, 159]), 1),new dong.Color([122, 251, 159,0.8]));  
+    var style3 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([229, 251, 72]), 1),new dong.Color([229, 251, 72,0.8]));  
+    var style4 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([251, 171, 72]), 1),new dong.Color([251, 171, 72,0.8]));  
+    var style5 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([251, 100, 72]), 1),new dong.Color([251, 100, 72,0.8]));
+    
     renderer.addBreak(0, 2, style1);  
     renderer.addBreak(2, 100, style2);  
     renderer.addBreak(100, 500, style3);  
@@ -1921,57 +1884,27 @@ function add_point(col){
     
     clusterLayer.setRenderer(renderer);
     app.mapList[1].addLayer(clusterLayer);
+    clusterLayer_ttft = clusterLayer;
 	
-	
-//	 var picBaseUrl = 'http://static.arcgis.com/images/Symbols/Shapes/';
-//     var defaultSym = new dong.PictureMarkerSymbol(picBaseUrl + 'BluePin1LargeB.png', 32, 32).setOffset(0, 15);
-//     var renderer = new dong.ClassBreaksRenderer(defaultSym, 'clusterCount');
-//     
-//     var small = new dong.SimpleMarkerSymbol('circle', 30,
-//             new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([148,0,211,0.25]), 15),
-//             new dong.Color([148,0,211,0.5]));
-//     
-//    renderer.addBreak(0, Infinity, small);
-//    
-//    clusterLayer.setRenderer(renderer);
-//    
-//    app.mapList[1].addLayer(clusterLayer);
-//    app.mapList[1].on('click', cleanUp());
-//    app.mapList[1].on('key-down', function(e) {
-//    	if (e.keyCode === 27) {
-//    		cleanUp();
-//    	}
-//    });
-//	console.log(point_sz)
-//	dojo.connect(app.pint, "onClick", optionclick);
+    setTimeout(function(){
+    	var extent = new dong.Extent(xmin,ymin,xmax,ymax, new dong.SpatialReference({ wkid:3857 }));
+    	app.mapList[1].setExtent(extent.expand(1.5));
+    },100);
     
-	var extent = new dong.Extent(xmin,ymin,xmax,ymax, new dong.SpatialReference({ wkid:3857 }));
-	app.mapList[1].setExtent(extent);
-	/***********************************************************/
 }
+
+
+
+
+
+
+
+
+
 function cleanUp() {
 	app.mapList[1].infoWindow.hide();
 	//clusterLayer.clearSingles();
 }
-function error(err) {
-	console.log('something failed: ', err);
-}
-window.showExtents = function() {
-	var extents = map.getLayer('clusterExtents');
-	if ( extents ) {
-		map.removeLayer(extents);
-	}
-	extents = new GraphicsLayer({ id: 'clusterExtents' });
-	var sym = new SimpleFillSymbol().setColor(new Color([205, 193, 197, 0.5]));
-	arrayUtils.forEach(clusterLayer._clusters, function(c, idx) {
-		var e = c.attributes.extent;
-		extents.add(new Graphic(new Extent(e[0], e[1], e[2], e[3], map.spatialReference), sym));
-	}, this);
-	map.addLayer(extents, 0);
-}
-
-
-
 
 
 //点击点的事件
