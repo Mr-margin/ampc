@@ -1820,20 +1820,19 @@ function add_point(col){
 	if(clusterLayer_ttft != ""){
 		app.mapList[1].removeLayer(clusterLayer_ttft);//清空已有的点位信息
 	}
-	
 	var photoInfo = {};
 	var point_sz = [];
 	var xmax = 0,xmin = 0,ymax = 0,ymin = 0;
+	
+	var k = 0;
 	$.each(col, function(i, vol) {
-		
 		if(typeof vol.lon != "undefined" && vol.lon != ""){
 			if(typeof vol.lat != "undefined" && vol.lat != ""){
-				
 				//中国范围内
 				if(parseFloat(vol.lon)>70 && parseFloat(vol.lon)<135 && parseFloat(vol.lat)>15 && parseFloat(vol.lat)<55){
 					var x = handle_x(vol.lon);
 					var y = handle_y(vol.lat);
-					if(i == 0){
+					if(k == 0){
 						xmax = x;
 						xmin = x;
 						ymax = y;
@@ -1847,55 +1846,52 @@ function add_point(col){
 					var attributes = {  
 						"companyId": "<a onClick=\"alert('"+vol.companyId+"');\">"+vol.companyId+"</a>"
 					};
-					point_sz[i]= {"x":x,"y":y,"attributes":attributes}
+					point_sz[k]= {"x":x,"y":y,"attributes":attributes};
+					k++;
 				}
-				
 			}
 		}
 	});
-	photoInfo.data = point_sz;
 	
-	clusterLayer = new dong.ClusterLayer({  
-        "data": photoInfo.data,  
-        "distance": 150,  
-        "id": "clusters",  
-        "labelColor": "#fff",  
-        "labelOffset": -4,  
-        "resolution": app.mapList[1].extent.getWidth() / app.mapList[1].width,  
-        "singleColor": "#888",
-        "maxSingles":3000,
-        "showSingles":false
-          
-    });
-	
-	var defaultSym = new dong.SimpleMarkerSymbol().setSize(4);  
-    var renderer = new dong.ClassBreaksRenderer(defaultSym, "clusterCount");
-    var style1 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([72, 165, 251]), 1),new dong.Color([72, 165, 251,0.8]));
-    var style2 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([122, 251, 159]), 1),new dong.Color([122, 251, 159,0.8]));  
-    var style3 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([229, 251, 72]), 1),new dong.Color([229, 251, 72,0.8]));  
-    var style4 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([251, 171, 72]), 1),new dong.Color([251, 171, 72,0.8]));  
-    var style5 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([251, 100, 72]), 1),new dong.Color([251, 100, 72,0.8]));
-    
-    renderer.addBreak(0, 2, style1);  
-    renderer.addBreak(2, 100, style2);  
-    renderer.addBreak(100, 500, style3);  
-    renderer.addBreak(500, 1000, style4);  
-    renderer.addBreak(1000, 3001, style5); 
-    
-    clusterLayer.setRenderer(renderer);
-    app.mapList[1].addLayer(clusterLayer);
-    clusterLayer_ttft = clusterLayer;
-	
-    setTimeout(function(){
-    	var extent = new dong.Extent(xmin,ymin,xmax,ymax, new dong.SpatialReference({ wkid:3857 }));
-    	app.mapList[1].setExtent(extent.expand(1.5));
-    },100);
-    
+	if(point_sz.length > 0){
+		photoInfo.data = point_sz;
+		clusterLayer = new dong.ClusterLayer({  
+	        "data": photoInfo.data,  
+	        "distance": 150,  
+	        "id": "clusters",  
+	        "labelColor": "#fff",  
+	        "labelOffset": -4,  
+	        "resolution": app.mapList[1].extent.getWidth() / app.mapList[1].width,  
+	        "singleColor": "#888",
+	        "maxSingles":3000,
+	        "showSingles":false
+	          
+	    });
+		
+		var defaultSym = new dong.SimpleMarkerSymbol().setSize(4);  
+	    var renderer = new dong.ClassBreaksRenderer(defaultSym, "clusterCount");
+	    var style1 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([72, 165, 251]), 1),new dong.Color([72, 165, 251,0.8]));
+	    var style2 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([122, 251, 159]), 1),new dong.Color([122, 251, 159,0.8]));  
+	    var style3 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([229, 251, 72]), 1),new dong.Color([229, 251, 72,0.8]));  
+	    var style4 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([251, 171, 72]), 1),new dong.Color([251, 171, 72,0.8]));  
+	    var style5 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([251, 100, 72]), 1),new dong.Color([251, 100, 72,0.8]));
+	    
+	    renderer.addBreak(0, 2, style1);  
+	    renderer.addBreak(2, 100, style2);  
+	    renderer.addBreak(100, 500, style3);  
+	    renderer.addBreak(500, 1000, style4);  
+	    renderer.addBreak(1000, 3001, style5); 
+	    
+	    clusterLayer.setRenderer(renderer);
+	    app.mapList[1].addLayer(clusterLayer);
+	    clusterLayer_ttft = clusterLayer;
+		
+	    setTimeout(function(){
+	    	var extent = new dong.Extent(xmin,ymin,xmax,ymax, new dong.SpatialReference({ wkid:3857 }));
+	    	app.mapList[1].setExtent(extent.expand(1.5));
+	    },100);
+	}
 }
-
-
-
-
 
 
 
