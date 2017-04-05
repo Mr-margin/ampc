@@ -29,7 +29,7 @@ import ampc.com.gistone.util.DateUtil;
 /**  
  * @Title: ModelExecuteStutas.java
  * @Package ampc.com.gistone.controller
- * @Description: 模式执行的状态的controller
+ * @Description: 模式执行的状态的controller  返回给前端的tasks任务运行状态的接口
  * @author yanglei
  * @date 2017年3月28日 上午9:46:23
  * @version 1.0
