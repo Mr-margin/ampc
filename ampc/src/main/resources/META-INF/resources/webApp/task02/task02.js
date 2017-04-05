@@ -1745,7 +1745,87 @@ function jumpJpfx() {
 }
 
 
-/**********************************模态窗口地图部分*****************************************************/
+var timeline;
+$().ready(function () {
+	$('#autoAdjustTime').on('change', function (event) {
+		var value = $(this).val();
+		$('#startTime').attr('disabled', value === 'both' || value === 'start');
+		$('#endTime').attr('disabled', value === 'both' || value === 'end');
+	});
+
+	$('#guides').on('change', function (event) {
+		$('#showGuidesLabel').attr('disabled', $(this).val() === 'none');
+	});
+
+	$('#zoom').on('change', function (event) {
+		if (timeline) {
+			timeline.timeline('zoom', $(this).val());
+		}
+	});
+
+	$('#refresh')
+	.on('click', showTimeline);
+
+});
+
+function showTimeline(data) {
+//	var testData = $('#testData').val();
+//	var testData = '2';
+	//$.getJSON(testData, function (data) {
+	//    var options = {};
+	//    options.startTime = $('#startTime').val();
+	//    options.endTime = $('#endTime').val();
+	//    options.showArrow = $('#showArrow')[0].checked;
+	//    options.timeScalePosition = $('#timeScalePosition').val();
+	//    options.autoAdjustTime = $('#autoAdjustTime').val();
+	//    options.smoothScroll = $('#smoothScroll').val();
+	//    options.guides = $('#guides').val();
+	//    options.showGuidesLabel = $('#showGuidesLabel')[0].checked;
+	//    options.showSlider = $('#showSlider')[0].checked;
+	//    options.zoom = $('#zoom').val();
+	//    options.data = data;
+	//    timeline = $('#timeline').timeline(options);
+	//});
+
+	$('.jpjs').attr('disabled', true);
+	if (qjMsg.scenarinoStatus == 2) {
+		for (var i = 0; i < data.length; i++) {
+			for (var m = 0; m < data[i].timeItems.length; m++) {
+				if (data[i].timeItems[m].planId != -1) {
+					$('.jpjs').removeAttr('disabled');
+					break;
+				}
+			}
+		}
+	}
+	var options = {};
+	//options.startTime = $('#startTime').val();
+	//options.endTime = $('#endTime').val();
+	options.startTime = qjMsg.qjStartDate;
+	options.endTime = qjMsg.qjEndDate;
+//	options.showArrow = $('#showArrow')[0].checked;
+//	options.timeScalePosition = $('#timeScalePosition').val();
+//	options.autoAdjustTime = $('#autoAdjustTime').val();
+//	options.smoothScroll = $('#smoothScroll').val();
+//	options.guides = $('#guides').val();
+//	options.showGuidesLabel = $('#showGuidesLabel')[0].checked;
+//	options.showSlider = $('#showSlider')[0].checked;
+//	options.zoom = $('#zoom').val();
+	//options.data = testData === '1' ? testdata1 : testData === '2' ? testdata2 : testdata3;
+	options.data = data;
+	timeline = $('#timeline').timeline(options);
+}
+
+
+
+
+
+
+
+
+
+
+
 //通用属性
 var stat = {};
 //中心点坐标
@@ -1805,7 +1885,12 @@ require(
     dong.InfoTemplate = InfoTemplate;
     dong.Query = query;
     dong.Extent = Extent;
-    /*****************************************************/
+    
+    app.outline = new dong.SimpleLineSymbol("solid", new dong.Color("#444"), 1);
+    
+    
+    
+    /*********************本底外面的**************************/
     app.map1 = new Map("mapDiv1", {
       logo: false,
       center: [stat.cPointx, stat.cPointy],
@@ -1821,7 +1906,11 @@ require(
     app.gLyr1 = new dong.GraphicsLayer({"id": "gLyr1"});
     app.map1.addLayer(app.gLyr1);
     app.map1.on("loaded", app2())
-    /*************************************************************************/
+    
+    
+    
+    
+    /**********************************模态窗口地图部分*****************************************************/
     app.map = new Map("mapDiv", {
       logo: false,
       center: [stat.cPointx, stat.cPointy],
@@ -1836,392 +1925,352 @@ require(
     app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
     app.gLyr = new dong.GraphicsLayer({"id": "gLyr"});
     app.map.addLayer(app.gLyr);
-    /******************************************/
   });
-//添加服务
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * 模态窗添加服务
+ */
 function addLayer(data) {
-  shuju_clear();
-  app.featureLayer1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/2", {
-//	 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-    mode: dong.FeatureLayer.MODE_ONDEMAND,
-    outFields: ["NAME"]
-  });
-  app.featureLayer2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/1", {
-//	 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-    mode: dong.FeatureLayer.MODE_ONDEMAND,
-    outFields: ["NAME"]
-  });
-  app.featureLayer3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/0", {
-//	 infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-    mode: dong.FeatureLayer.MODE_ONDEMAND,
-    outFields: ["NAME"]
-  });
-  app.map.addLayer(app.featureLayer1);
-  app.map.addLayer(app.featureLayer2);
-  app.map.addLayer(app.featureLayer3);
+	shuju_clear();
+	app.featureLayer1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/2", {
+//		infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+		mode: dong.FeatureLayer.MODE_ONDEMAND,
+		outFields: ["NAME"]
+	});
+	app.featureLayer2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/1", {
+//		infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+		mode: dong.FeatureLayer.MODE_ONDEMAND,
+		outFields: ["NAME"]
+	});
+	app.featureLayer3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/0", {
+//		infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
+		mode: dong.FeatureLayer.MODE_ONDEMAND,
+		outFields: ["NAME"]
+	});
+	app.map.addLayer(app.featureLayer1);
+	app.map.addLayer(app.featureLayer2);
+	app.map.addLayer(app.featureLayer3);
 
-  area(data);
+	area(data);
 }
-//行政区划渲染
-function area(data) {
-  var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
-  defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
-  for (var i = 0; i < 3; i++) {
-    var t1 = "";
-    var str = "ADMINCODE";
-    var renderer = new dong.UniqueValueRenderer(defaultSymbol, str);
-    if (i == 0) {
-      for (var prop in data[i]) {
-        if (data[i].hasOwnProperty(prop)) {
-          renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color([221, 160, 221, 0.5])));
-          t1 += "'" + prop + "',";
-        }
-      }
 
-    } else {
-      for (var prop in data[i]) {
-        if (data[i].hasOwnProperty(prop)) {
-          for (var prop1 in data[i][prop]) {
-            renderer.addValue(prop1, new dong.SimpleFillSymbol().setColor(new dong.Color([221, 160, 221, 0.5])));
-            t1 += "'" + prop + "',";
-          }
-        }
-      }
-    }
-    if (i == "0") {
-      app.featureLayer1.setRenderer(renderer);
-      app.map.addLayer(app.featureLayer1);
-      dingwei1(t1, "1");
-    } else if (i == "1") {
-      app.featureLayer2.setRenderer(renderer);
-      app.map.addLayer(app.featureLayer2);
-      dingwei1(t1, "2");
-    } else if (i == "2") {
-      app.featureLayer3.setRenderer(renderer);
-      app.map.addLayer(app.featureLayer3);
-      dingwei1(t1, "3");
-    }
-  }
+
+/**
+ * 模态窗行政区划渲染
+ */
+function area(data) {
+	var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
+	defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
+	for (var i = 0; i < 3; i++) {
+		var t1 = "";
+		var str = "ADMINCODE";
+		var renderer = new dong.UniqueValueRenderer(defaultSymbol, str);
+		if (i == 0) {
+			for (var prop in data[i]) {
+				if (data[i].hasOwnProperty(prop)) {
+					renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color([221, 160, 221, 0.5])));
+					t1 += "'" + prop + "',";
+				}
+			}
+
+		} else {
+			for (var prop in data[i]) {
+				if (data[i].hasOwnProperty(prop)) {
+					for (var prop1 in data[i][prop]) {
+						renderer.addValue(prop1, new dong.SimpleFillSymbol().setColor(new dong.Color([221, 160, 221, 0.5])));
+						t1 += "'" + prop + "',";
+					}
+				}
+			}
+		}
+		if (i == "0") {
+			app.featureLayer1.setRenderer(renderer);
+			app.map.addLayer(app.featureLayer1);
+			dingwei1(t1, "1");
+		} else if (i == "1") {
+			app.featureLayer2.setRenderer(renderer);
+			app.map.addLayer(app.featureLayer2);
+			dingwei1(t1, "2");
+		} else if (i == "2") {
+			app.featureLayer3.setRenderer(renderer);
+			app.map.addLayer(app.featureLayer3);
+			dingwei1(t1, "3");
+		}
+	}
 }
 
 var xmax1 = 0, xmin1 = 0, ymax1 = 0, ymin1 = 0;
-var jj = 0;
-//模态框中地图定位
+var jj = 0;//初始化地图的边界
+/**
+ * 模态框中地图定位
+ */
 function dingwei1(tiaojian, type) {
-  if (tiaojian == "" || tiaojian == null || tiaojian == undefined) {
-    return;
-  }
-  var query = new dong.Query();
-  if (type == "1") {
-    query.where = "ADMINCODE IN (" + tiaojian.substring(0, tiaojian.length - 1) + ")";
-    app.featureLayer1.queryFeatures(query, function (featureSet) {
-      for (var i = 0, il = featureSet.features.length; i < il; i++) {
-        var graphic = featureSet.features[i];
-        if (jj == 0) {
-          xmax1 = graphic.geometry.getExtent().xmax;
-          xmin1 = graphic.geometry.getExtent().xmin;
-          ymax1 = graphic.geometry.getExtent().ymax;
-          ymin1 = graphic.geometry.getExtent().ymin;
-          jj++;
-        } else {
-          xmin1 = graphic.geometry.getExtent().xmin < xmin1 ? graphic.geometry.getExtent().xmin : xmin1;
-          xmax1 = graphic.geometry.getExtent().xmax > xmax1 ? graphic.geometry.getExtent().xmax : xmax1;
-          ymin1 = graphic.geometry.getExtent().ymin < ymin1 ? graphic.geometry.getExtent().ymin : ymin1;
-          ymax1 = graphic.geometry.getExtent().ymax > ymax1 ? graphic.geometry.getExtent().ymax : ymax1;
-        }
-      }
-      var extent = new dong.Extent(xmin1, ymin1, xmax1, ymax1, new dong.SpatialReference({wkid: 3857}));
-      app.map.setExtent(extent.expand(1.5));
-    });
-  } else if (type == "2") {
-    query.where = "ADMINCODE IN (" + tiaojian.substring(0, tiaojian.length - 1) + ")";
-    app.featureLayer2.queryFeatures(query, function (featureSet) {
-      for (var i = 0, il = featureSet.features.length; i < il; i++) {
-        var graphic = featureSet.features[i];
-        if (jj == 0) {
-          xmax1 = graphic.geometry.getExtent().xmax;
-          xmin1 = graphic.geometry.getExtent().xmin;
-          ymax1 = graphic.geometry.getExtent().ymax;
-          ymin1 = graphic.geometry.getExtent().ymin;
-          jj++;
-        } else {
-          xmin1 = graphic.geometry.getExtent().xmin < xmin1 ? graphic.geometry.getExtent().xmin : xmin1;
-          xmax1 = graphic.geometry.getExtent().xmax > xmax1 ? graphic.geometry.getExtent().xmax : xmax1;
-          ymin1 = graphic.geometry.getExtent().ymin < ymin1 ? graphic.geometry.getExtent().ymin : ymin1;
-          ymax1 = graphic.geometry.getExtent().ymax > ymax1 ? graphic.geometry.getExtent().ymax : ymax1;
-        }
-      }
-      var extent = new dong.Extent(xmin1, ymin1, xmax1, ymax1, new dong.SpatialReference({wkid: 3857}));
-      app.map.setExtent(extent.expand(1.5));
-    });
-  } else if (type == "3") {
-    query.where = "ADMINCODE IN (" + tiaojian.substring(0, tiaojian.length - 1) + ")";
-    app.featureLayer3.queryFeatures(query, function (featureSet) {
-      for (var i = 0, il = featureSet.features.length; i < il; i++) {
-        var graphic = featureSet.features[i];
-        if (jj == 0) {
-          xmax1 = graphic.geometry.getExtent().xmax;
-          xmin1 = graphic.geometry.getExtent().xmin;
-          ymax1 = graphic.geometry.getExtent().ymax;
-          ymin1 = graphic.geometry.getExtent().ymin;
-          jj++;
-        } else {
-          xmin1 = graphic.geometry.getExtent().xmin < xmin1 ? graphic.geometry.getExtent().xmin : xmin1;
-          xmax1 = graphic.geometry.getExtent().xmax > xmax1 ? graphic.geometry.getExtent().xmax : xmax1;
-          ymin1 = graphic.geometry.getExtent().ymin < ymin1 ? graphic.geometry.getExtent().ymin : ymin1;
-          ymax1 = graphic.geometry.getExtent().ymax > ymax1 ? graphic.geometry.getExtent().ymax : ymax1;
-        }
-      }
-      var extent = new dong.Extent(xmin1, ymin1, xmax1, ymax1, new dong.SpatialReference({wkid: 3857}));
-      app.map.setExtent(extent.expand(1.5));
-    });
-  }
+	if (tiaojian == "" || tiaojian == null || tiaojian == undefined) {
+		return;
+	}
+	var query = new dong.Query();
+	if (type == "1") {
+		query.where = "ADMINCODE IN (" + tiaojian.substring(0, tiaojian.length - 1) + ")";
+		app.featureLayer1.queryFeatures(query, function (featureSet) {
+			for (var i = 0, il = featureSet.features.length; i < il; i++) {
+				var graphic = featureSet.features[i];
+				if (jj == 0) {
+					xmax1 = graphic.geometry.getExtent().xmax;
+					xmin1 = graphic.geometry.getExtent().xmin;
+					ymax1 = graphic.geometry.getExtent().ymax;
+					ymin1 = graphic.geometry.getExtent().ymin;
+					jj++;
+				} else {
+					xmin1 = graphic.geometry.getExtent().xmin < xmin1 ? graphic.geometry.getExtent().xmin : xmin1;
+					xmax1 = graphic.geometry.getExtent().xmax > xmax1 ? graphic.geometry.getExtent().xmax : xmax1;
+					ymin1 = graphic.geometry.getExtent().ymin < ymin1 ? graphic.geometry.getExtent().ymin : ymin1;
+					ymax1 = graphic.geometry.getExtent().ymax > ymax1 ? graphic.geometry.getExtent().ymax : ymax1;
+				}
+			}
+			var extent = new dong.Extent(xmin1, ymin1, xmax1, ymax1, new dong.SpatialReference({wkid: 3857}));
+			app.map.setExtent(extent.expand(1.5));
+		});
+	} else if (type == "2") {
+		query.where = "ADMINCODE IN (" + tiaojian.substring(0, tiaojian.length - 1) + ")";
+		app.featureLayer2.queryFeatures(query, function (featureSet) {
+			for (var i = 0, il = featureSet.features.length; i < il; i++) {
+				var graphic = featureSet.features[i];
+				if (jj == 0) {
+					xmax1 = graphic.geometry.getExtent().xmax;
+					xmin1 = graphic.geometry.getExtent().xmin;
+					ymax1 = graphic.geometry.getExtent().ymax;
+					ymin1 = graphic.geometry.getExtent().ymin;
+					jj++;
+				} else {
+					xmin1 = graphic.geometry.getExtent().xmin < xmin1 ? graphic.geometry.getExtent().xmin : xmin1;
+					xmax1 = graphic.geometry.getExtent().xmax > xmax1 ? graphic.geometry.getExtent().xmax : xmax1;
+					ymin1 = graphic.geometry.getExtent().ymin < ymin1 ? graphic.geometry.getExtent().ymin : ymin1;
+					ymax1 = graphic.geometry.getExtent().ymax > ymax1 ? graphic.geometry.getExtent().ymax : ymax1;
+				}
+			}
+			var extent = new dong.Extent(xmin1, ymin1, xmax1, ymax1, new dong.SpatialReference({wkid: 3857}));
+			app.map.setExtent(extent.expand(1.5));
+		});
+	} else if (type == "3") {
+		query.where = "ADMINCODE IN (" + tiaojian.substring(0, tiaojian.length - 1) + ")";
+		app.featureLayer3.queryFeatures(query, function (featureSet) {
+			for (var i = 0, il = featureSet.features.length; i < il; i++) {
+				var graphic = featureSet.features[i];
+				if (jj == 0) {
+					xmax1 = graphic.geometry.getExtent().xmax;
+					xmin1 = graphic.geometry.getExtent().xmin;
+					ymax1 = graphic.geometry.getExtent().ymax;
+					ymin1 = graphic.geometry.getExtent().ymin;
+					jj++;
+				} else {
+					xmin1 = graphic.geometry.getExtent().xmin < xmin1 ? graphic.geometry.getExtent().xmin : xmin1;
+					xmax1 = graphic.geometry.getExtent().xmax > xmax1 ? graphic.geometry.getExtent().xmax : xmax1;
+					ymin1 = graphic.geometry.getExtent().ymin < ymin1 ? graphic.geometry.getExtent().ymin : ymin1;
+					ymax1 = graphic.geometry.getExtent().ymax > ymax1 ? graphic.geometry.getExtent().ymax : ymax1;
+				}
+			}
+			var extent = new dong.Extent(xmin1, ymin1, xmax1, ymax1, new dong.SpatialReference({wkid: 3857}));
+			app.map.setExtent(extent.expand(1.5));
+		});
+	}
 }
 
 
-//清空地图
+/**
+ * 模态窗清空地图
+ */
 function shuju_clear() {
-
-  if (app.featureLayer1 != undefined && app.featureLayer1 != null && app.featureLayer1 != "") {
-    app.map.removeLayer(app.featureLayer1);
-// app.featureLayer1.clear();
-  }
-  if (app.featureLayer2 != undefined && app.featureLayer2 != null && app.featureLayer2 != "") {
-    app.map.removeLayer(app.featureLayer2)
-// app.featureLayer2.clear();
-  }
-  if (app.featureLayer3 != undefined && app.featureLayer3 != null && app.featureLayer3 != "") {
-    //		app.featureLayer2.clear();
-    app.map.removeLayer(app.featureLayer3)
-// app.featureLayer3.clear();
-  }
+	if (app.featureLayer1 != undefined && app.featureLayer1 != null && app.featureLayer1 != "") {
+		app.map.removeLayer(app.featureLayer1);
+	}
+	if (app.featureLayer2 != undefined && app.featureLayer2 != null && app.featureLayer2 != "") {
+		app.map.removeLayer(app.featureLayer2)
+	}
+	if (app.featureLayer3 != undefined && app.featureLayer3 != null && app.featureLayer3 != "") {
+		app.map.removeLayer(app.featureLayer3)
+	}
 }
+
+
 //颜色数组
-var sz_corlor = ["#000080", "#6495ED", "#00FFFF", "#CD5C5C", "#FF00FF", "#9370DB", "#8B8682", "#EED5B7", "#FFF0F5", "	#9F79EE", "#A2B5CD", "#FFE1FF", "#B23AEE"];
+var sz_corlor = [
+                 [140, 0, 255, 0.65], 
+                 [54, 94, 255, 0.65], 
+                 [28, 255, 232, 0.65], 
+                 [25, 255, 48, 0.65], 
+                 [191, 255, 0, 0.65], 
+                 [255, 200, 0, 0.65], 
+                 [227, 102, 0, 0.65], 
+                 [128, 0, 0, 0.65], 
+                 [255, 252, 255, 0.65], 
+                 [189, 189, 189, 0.65], 
+                 [255, 255, 115, 0.65], 
+                 [255, 190, 190, 0.65], 
+                 [190, 255, 232, 0.65]];
+
+
 /**********************************任务管理进来地图*****************************************************/
-var timeline;
-
-$().ready(function () {
-
-  $('#autoAdjustTime').on('change', function (event) {
-    var value = $(this).val();
-    $('#startTime').attr('disabled', value === 'both' || value === 'start');
-    $('#endTime').attr('disabled', value === 'both' || value === 'end');
-  });
-
-  $('#guides').on('change', function (event) {
-    $('#showGuidesLabel').attr('disabled', $(this).val() === 'none');
-  });
-
-  $('#zoom').on('change', function (event) {
-    if (timeline) {
-      timeline.timeline('zoom', $(this).val());
-    }
-  });
-
-  $('#refresh')
-    .on('click', showTimeline);
-
-
-});
-
-function showTimeline(data) {
-//            var testData = $('#testData').val();
-//  var testData = '2';
-  //$.getJSON(testData, function (data) {
-  //    var options = {};
-  //    options.startTime = $('#startTime').val();
-  //    options.endTime = $('#endTime').val();
-  //    options.showArrow = $('#showArrow')[0].checked;
-  //    options.timeScalePosition = $('#timeScalePosition').val();
-  //    options.autoAdjustTime = $('#autoAdjustTime').val();
-  //    options.smoothScroll = $('#smoothScroll').val();
-  //    options.guides = $('#guides').val();
-  //    options.showGuidesLabel = $('#showGuidesLabel')[0].checked;
-  //    options.showSlider = $('#showSlider')[0].checked;
-  //    options.zoom = $('#zoom').val();
-  //    options.data = data;
-  //    timeline = $('#timeline').timeline(options);
-  //});
-
-  $('.jpjs').attr('disabled', true);
-  if (qjMsg.scenarinoStatus == 2) {
-    for (var i = 0; i < data.length; i++) {
-      for (var m = 0; m < data[i].timeItems.length; m++) {
-        if (data[i].timeItems[m].planId != -1) {
-          $('.jpjs').removeAttr('disabled');
-          break;
-        }
-      }
-    }
-  }
-  var options = {};
-  //options.startTime = $('#startTime').val();
-  //options.endTime = $('#endTime').val();
-  options.startTime = qjMsg.qjStartDate;
-  options.endTime = qjMsg.qjEndDate;
-//  options.showArrow = $('#showArrow')[0].checked;
-//  options.timeScalePosition = $('#timeScalePosition').val();
-//  options.autoAdjustTime = $('#autoAdjustTime').val();
-//  options.smoothScroll = $('#smoothScroll').val();
-//  options.guides = $('#guides').val();
-//  options.showGuidesLabel = $('#showGuidesLabel')[0].checked;
-//  options.showSlider = $('#showSlider')[0].checked;
-//  options.zoom = $('#zoom').val();
-  //options.data = testData === '1' ? testdata1 : testData === '2' ? testdata2 : testdata3;
-  options.data = data;
-  timeline = $('#timeline').timeline(options);
-}
 //根据区域在地图上显示
 function app2() {
-  if (app.map1 == "" || app.map1 == null || app.map1 == undefined) {
-    return;
-  }
-  if (allData != "" && allData != null && allData != undefined) {
-    var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
-    defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
+	if (app.map1 == "" || app.map1 == null || app.map1 == undefined) {
+		return;
+	}
+	if (allData != "" && allData != null && allData != undefined) {
+		var defaultSymbol = new dong.SimpleFillSymbol().setStyle(dong.SimpleFillSymbol.STYLE_NULL);
+		defaultSymbol.outline.setStyle(dong.SimpleLineSymbol.STYLE_NULL);
 
-    app.fea1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/2", {//添加省的图层
+		app.fea1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/2", {//添加省的图层
 //			infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-      mode: dong.FeatureLayer.MODE_ONDEMAND,
-      outFields: ["NAME"]
-    });
-    app.fea2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/1", {//市的图层
+			mode: dong.FeatureLayer.MODE_ONDEMAND,
+			outFields: ["NAME"]
+		});
+		app.fea2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/1", {//市的图层
 //			infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-      mode: dong.FeatureLayer.MODE_ONDEMAND,
-      outFields: ["NAME"]
-    });
-    app.fea3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/0", {//区县的图层
+			mode: dong.FeatureLayer.MODE_ONDEMAND,
+			outFields: ["NAME"]
+		});
+		app.fea3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/0", {//区县的图层
 //			infoTemplate: new dong.InfoTemplate("&nbsp;", "${NAME}"),
-      mode: dong.FeatureLayer.MODE_ONDEMAND,
-      outFields: ["NAME"]
-    });
-    var t1 = "", t2 = "", t3 = "";
+			mode: dong.FeatureLayer.MODE_ONDEMAND,
+			outFields: ["NAME"]
+		});
+		var t1 = "", t2 = "", t3 = "";
 
-    $.each(allData, function (k, item) {
-      var str = sz_corlor[k];
-      if (item.provinceCodes != "" && item.provinceCodes != null && item.provinceCodes != undefined) {
-        if (item.provinceCodes.length > 0) {//市
-          var renderer = new dong.UniqueValueRenderer(defaultSymbol, "ADMINCODE");
-          for (var i = 0; i < item.provinceCodes.length; i++) {//省
-            for (var prop in item.provinceCodes[i]) {
-              if (item.provinceCodes[i].hasOwnProperty(prop)) {
-                renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
-                t1 += "'" + prop + "',";
-              }
-            }
-            app.fea1.setRenderer(renderer);
-            app.map1.addLayer(app.fea1);
-          }
-          dingwei(t1, "1");
-        }
-      }
-      if (item.cityCodes != "" && item.cityCodes != null && item.cityCodes != undefined) {//市
-        if (item.cityCodes.length > 0) {
-          var renderer = new dong.UniqueValueRenderer(defaultSymbol, "ADMINCODE");
-          for (var i = 0; i < item.cityCodes.length; i++) {
-            for (var prop in item.cityCodes[i]) {
-              if (item.cityCodes[i].hasOwnProperty(prop)) {
-                renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
-                t2 += "'" + prop + "',";
-              }
-            }
-            app.fea2.setRenderer(renderer);
-            app.map1.addLayer(app.fea2);
-          }
-          dingwei(t2, "2");
-        }
-      }
-      if (item.countyCodes != "" && item.countyCodes != null && item.countyCodes != undefined) {//区县
-        var tiaojian = "";
-        if (item.countyCodes.length > 0) {
-          var renderer = new dong.UniqueValueRenderer(defaultSymbol, "ADMINCODE");
-          for (var i = 0; i < item.countyCodes.length; i++) {
-            for (var prop in item.countyCodes[i]) {
-              if (item.countyCodes[i].hasOwnProperty(prop)) {
-                renderer.addValue(prop, new dong.SimpleFillSymbol().setColor(new dong.Color(str)));
-                t3 += "'" + prop + "',";
-              }
-            }
-            app.fea3.setRenderer(renderer);
-            app.map1.addLayer(app.fea3);
-          }
-          dingwei(t3, "3");
-        }
-      }
-    });
-  }
+		$.each(allData, function (k, item) {
+			var str = sz_corlor[k];
+			if (item.provinceCodes != "" && item.provinceCodes != null && item.provinceCodes != undefined) {
+				if (item.provinceCodes.length > 0) {//市
+					var renderer = new dong.UniqueValueRenderer(defaultSymbol, "ADMINCODE");
+					for (var i = 0; i < item.provinceCodes.length; i++) {//省
+						for (var prop in item.provinceCodes[i]) {
+							if (item.provinceCodes[i].hasOwnProperty(prop)) {
+								renderer.addValue(prop, new dong.SimpleFillSymbol("solid", app.outline, new dong.Color(str)));
+								t1 += "'" + prop + "',";
+							}
+						}
+						app.fea1.setRenderer(renderer);
+						app.map1.addLayer(app.fea1);
+					}
+					dingwei(t1, "1");
+				}
+			}
+			if (item.cityCodes != "" && item.cityCodes != null && item.cityCodes != undefined) {//市
+				if (item.cityCodes.length > 0) {
+					var renderer = new dong.UniqueValueRenderer(defaultSymbol, "ADMINCODE");
+					for (var i = 0; i < item.cityCodes.length; i++) {
+						for (var prop in item.cityCodes[i]) {
+							if (item.cityCodes[i].hasOwnProperty(prop)) {
+								renderer.addValue(prop, new dong.SimpleFillSymbol("solid", app.outline, new dong.Color(str)));
+								t2 += "'" + prop + "',";
+							}
+						}
+						app.fea2.setRenderer(renderer);
+						app.map1.addLayer(app.fea2);
+					}
+					dingwei(t2, "2");
+				}
+			}
+			if (item.countyCodes != "" && item.countyCodes != null && item.countyCodes != undefined) {//区县
+				var tiaojian = "";
+				if (item.countyCodes.length > 0) {
+					var renderer = new dong.UniqueValueRenderer(defaultSymbol, "ADMINCODE");
+					for (var i = 0; i < item.countyCodes.length; i++) {
+						for (var prop in item.countyCodes[i]) {
+							if (item.countyCodes[i].hasOwnProperty(prop)) {
+								renderer.addValue(prop, new dong.SimpleFillSymbol("solid", app.outline, new dong.Color(str)));
+								t3 += "'" + prop + "',";
+							}
+						}
+						app.fea3.setRenderer(renderer);
+						app.map1.addLayer(app.fea3);
+					}
+					dingwei(t3, "3");
+				}
+			}
+		});
+	}
 }
 var xmax = 0, xmin = 0, ymax = 0, ymin = 0;
 var kk = 0;
 function dingwei(tiaojian, type) {
-  kk = 0;
-  var query = new dong.Query();
-  if (type == "1") {
-    query.where = "ADMINCODE IN (" + tiaojian.substring(0, tiaojian.length - 1) + ")";
+	kk = 0;
+	var query = new dong.Query();
+	if (type == "1") {
+		query.where = "ADMINCODE IN (" + tiaojian.substring(0, tiaojian.length - 1) + ")";
 
-    app.fea1.queryFeatures(query, function (featureSet) {
-      for (var i = 0, il = featureSet.features.length; i < il; i++) {
-        var graphic = featureSet.features[i];
-        if (kk == 0) {
-          xmax = graphic.geometry.getExtent().xmax;
-          xmin = graphic.geometry.getExtent().xmin;
-          ymax = graphic.geometry.getExtent().ymax;
-          ymin = graphic.geometry.getExtent().ymin;
-          kk++;
-        } else {
-          xmin = graphic.geometry.getExtent().xmin < xmin ? graphic.geometry.getExtent().xmin : xmin;
-          xmax = graphic.geometry.getExtent().xmax > xmax ? graphic.geometry.getExtent().xmax : xmax;
-          ymin = graphic.geometry.getExtent().ymin < ymin ? graphic.geometry.getExtent().ymin : ymin;
-          ymax = graphic.geometry.getExtent().ymax > ymax ? graphic.geometry.getExtent().ymax : ymax;
-        }
-      }
-      var extent = new dong.Extent(xmin, ymin, xmax, ymax, new dong.SpatialReference({wkid: 3857}));
-      app.map1.setExtent(extent.expand(1.5));
-    });
-  } else if (type == "2") {
-    query.where = "ADMINCODE IN (" + tiaojian.substring(0, tiaojian.length - 1) + ")";
-    app.fea2.queryFeatures(query, function (featureSet) {
-      for (var i = 0, il = featureSet.features.length; i < il; i++) {
-        var graphic = featureSet.features[i];
-        if (kk == 0) {
-          xmax = graphic.geometry.getExtent().xmax;
-          xmin = graphic.geometry.getExtent().xmin;
-          ymax = graphic.geometry.getExtent().ymax;
-          ymin = graphic.geometry.getExtent().ymin;
-          kk++;
-        } else {
-          xmin = graphic.geometry.getExtent().xmin < xmin ? graphic.geometry.getExtent().xmin : xmin;
-          xmax = graphic.geometry.getExtent().xmax > xmax ? graphic.geometry.getExtent().xmax : xmax;
-          ymin = graphic.geometry.getExtent().ymin < ymin ? graphic.geometry.getExtent().ymin : ymin;
-          ymax = graphic.geometry.getExtent().ymax > ymax ? graphic.geometry.getExtent().ymax : ymax;
-        }
-      }
-      var extent = new dong.Extent(xmin, ymin, xmax, ymax, new dong.SpatialReference({wkid: 3857}));
-      app.map1.setExtent(extent.expand(1.5));
-    });
-  } else if (type == "3") {
-    query.where = "ADMINCODE IN (" + tiaojian.substring(0, tiaojian.length - 1) + ")";
-    app.fea3.queryFeatures(query, function (featureSet) {
-      for (var i = 0, il = featureSet.features.length; i < il; i++) {
-        var graphic = featureSet.features[i];
-        if (kk == 0) {
-          xmax = graphic.geometry.getExtent().xmax;
-          xmin = graphic.geometry.getExtent().xmin;
-          ymax = graphic.geometry.getExtent().ymax;
-          ymin = graphic.geometry.getExtent().ymin;
-          kk++;
-        } else {
-          xmin = graphic.geometry.getExtent().xmin < xmin ? graphic.geometry.getExtent().xmin : xmin;
-          xmax = graphic.geometry.getExtent().xmax > xmax ? graphic.geometry.getExtent().xmax : xmax;
-          ymin = graphic.geometry.getExtent().ymin < ymin ? graphic.geometry.getExtent().ymin : ymin;
-          ymax = graphic.geometry.getExtent().ymax > ymax ? graphic.geometry.getExtent().ymax : ymax;
-        }
-      }
-      var extent = new dong.Extent(xmin, ymin, xmax, ymax, new dong.SpatialReference({wkid: 3857}));
-      app.map1.setExtent(extent.expand(1.5));
-    });
-  }
+		app.fea1.queryFeatures(query, function (featureSet) {
+			for (var i = 0, il = featureSet.features.length; i < il; i++) {
+				var graphic = featureSet.features[i];
+				if (kk == 0) {
+					xmax = graphic.geometry.getExtent().xmax;
+					xmin = graphic.geometry.getExtent().xmin;
+					ymax = graphic.geometry.getExtent().ymax;
+					ymin = graphic.geometry.getExtent().ymin;
+					kk++;
+				} else {
+					xmin = graphic.geometry.getExtent().xmin < xmin ? graphic.geometry.getExtent().xmin : xmin;
+					xmax = graphic.geometry.getExtent().xmax > xmax ? graphic.geometry.getExtent().xmax : xmax;
+					ymin = graphic.geometry.getExtent().ymin < ymin ? graphic.geometry.getExtent().ymin : ymin;
+					ymax = graphic.geometry.getExtent().ymax > ymax ? graphic.geometry.getExtent().ymax : ymax;
+				}
+			}
+			var extent = new dong.Extent(xmin, ymin, xmax, ymax, new dong.SpatialReference({wkid: 3857}));
+			app.map1.setExtent(extent.expand(1.5));
+		});
+	} else if (type == "2") {
+		query.where = "ADMINCODE IN (" + tiaojian.substring(0, tiaojian.length - 1) + ")";
+		app.fea2.queryFeatures(query, function (featureSet) {
+			for (var i = 0, il = featureSet.features.length; i < il; i++) {
+				var graphic = featureSet.features[i];
+				if (kk == 0) {
+					xmax = graphic.geometry.getExtent().xmax;
+					xmin = graphic.geometry.getExtent().xmin;
+					ymax = graphic.geometry.getExtent().ymax;
+					ymin = graphic.geometry.getExtent().ymin;
+					kk++;
+				} else {
+					xmin = graphic.geometry.getExtent().xmin < xmin ? graphic.geometry.getExtent().xmin : xmin;
+					xmax = graphic.geometry.getExtent().xmax > xmax ? graphic.geometry.getExtent().xmax : xmax;
+					ymin = graphic.geometry.getExtent().ymin < ymin ? graphic.geometry.getExtent().ymin : ymin;
+					ymax = graphic.geometry.getExtent().ymax > ymax ? graphic.geometry.getExtent().ymax : ymax;
+				}
+			}
+			var extent = new dong.Extent(xmin, ymin, xmax, ymax, new dong.SpatialReference({wkid: 3857}));
+			app.map1.setExtent(extent.expand(1.5));
+		});
+	} else if (type == "3") {
+		query.where = "ADMINCODE IN (" + tiaojian.substring(0, tiaojian.length - 1) + ")";
+		app.fea3.queryFeatures(query, function (featureSet) {
+			for (var i = 0, il = featureSet.features.length; i < il; i++) {
+				var graphic = featureSet.features[i];
+				if (kk == 0) {
+					xmax = graphic.geometry.getExtent().xmax;
+					xmin = graphic.geometry.getExtent().xmin;
+					ymax = graphic.geometry.getExtent().ymax;
+					ymin = graphic.geometry.getExtent().ymin;
+					kk++;
+				} else {
+					xmin = graphic.geometry.getExtent().xmin < xmin ? graphic.geometry.getExtent().xmin : xmin;
+					xmax = graphic.geometry.getExtent().xmax > xmax ? graphic.geometry.getExtent().xmax : xmax;
+					ymin = graphic.geometry.getExtent().ymin < ymin ? graphic.geometry.getExtent().ymin : ymin;
+					ymax = graphic.geometry.getExtent().ymax > ymax ? graphic.geometry.getExtent().ymax : ymax;
+				}
+			}
+			var extent = new dong.Extent(xmin, ymin, xmax, ymax, new dong.SpatialReference({wkid: 3857}));
+			app.map1.setExtent(extent.expand(1.5));
+		});
+	}
 }
 
 
