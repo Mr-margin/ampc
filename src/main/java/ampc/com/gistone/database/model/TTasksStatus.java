@@ -162,4 +162,18 @@ public class TTasksStatus {
     public void setBeizhu3(String beizhu3) {
         this.beizhu3 = beizhu3 == null ? null : beizhu3.trim();
     }
+
+	@Override
+	public String toString() {
+		return "TTasksStatus [tasksId=" + tasksId + ", tasksScenarinoId="
+				+ tasksScenarinoId + ", errorStatus=" + errorStatus
+				+ ", scenarinoStartDate=" + scenarinoStartDate
+				+ ", scenarinoEndDate=" + scenarinoEndDate + ", rangeDay="
+				+ rangeDay + ", stepindex=" + stepindex + ", tasksEndDate="
+				+ tasksEndDate + ", sourceid=" + sourceid + ", calctype="
+				+ calctype + ", psal=" + psal + ", ssal=" + ssal
+				+ ", meiccityconfig=" + meiccityconfig + ", beizhu=" + beizhu
+				+ ", beizhu2=" + beizhu2 + ", beizhu3=" + beizhu3 + "]";
+	}
+    
 }

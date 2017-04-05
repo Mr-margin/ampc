@@ -129,4 +129,6 @@ public class TMissionDetail {
     public void setMissionStatus(Object missionStatus) {
         this.missionStatus = missionStatus;
     }
+
+    
 }
