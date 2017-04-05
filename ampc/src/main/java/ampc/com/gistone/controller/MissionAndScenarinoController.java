@@ -1203,7 +1203,7 @@ public class MissionAndScenarinoController {
 		}
 	}
 	/**
-	 * 
+	 * 情景复制
 	 * @param requestDate
 	 * @param request
 	 * @param response
