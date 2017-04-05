@@ -32,20 +32,18 @@ require(
         "dojo/dom", 
         "esri/dijit/Legend", 
         "esri/dijit/OverviewMap", 
-        "esri/layers/TableDataSource",
+        
+        "esri/layers/DynamicLayerInfo",
         "esri/layers/LayerDataSource",
         "esri/layers/RasterDataSource",
-        "esri/layers/DynamicLayerInfo",
-        
-        "esri/layers/LayerDrawingOptions",
         
         "esri/renderers/UniqueValueRenderer",
         "dojo/domReady!"
 
 	],
 	function(Map,FeatureLayer,GraphicsLayer,ArcGISDynamicMapServiceLayer,SimpleFillSymbol,SimpleLineSymbol,SimpleMarkerSymbol,ClassBreaksRenderer,Point,Extent,SimpleRenderer,
-			Graphic,Color,style,FeatureSet,SpatialReference,gaodeLayer,InfoTemplate,query,number,arr,domConstruct,dom,Legend,OverviewMap,TableDataSource,LayerDataSource,
-			DynamicLayerInfo,LayerDrawingOptions,RasterDataSource,UniqueValueRenderer) {
+			Graphic,Color,style,FeatureSet,SpatialReference,gaodeLayer,InfoTemplate,query,number,arr,domConstruct,dom,Legend,OverviewMap,DynamicLayerInfo,
+			LayerDataSource,RasterDataSource,UniqueValueRenderer) {
 		dong.gaodeLayer = gaodeLayer;
 		dong.Graphic = Graphic;
 		dong.Point = Point;
@@ -69,11 +67,9 @@ require(
 		dong.Legend = Legend;
 		dong.SimpleMarkerSymbol = SimpleMarkerSymbol;
 		dong.OverviewMap = OverviewMap;
-		dong.TableDataSource = TableDataSource;
 		dong.LayerDataSource = LayerDataSource;
 		dong.RasterDataSource = RasterDataSource;
 		dong.DynamicLayerInfo = DynamicLayerInfo;
-		dong.LayerDrawingOptions = LayerDrawingOptions;
 		/*****************************************************/
 		app.map = new Map("mapDiv", {
 			logo:false,
@@ -93,24 +89,10 @@ require(
 		app.gLyr = new dong.GraphicsLayer({"id":"gLyr"});
 		app.map.addLayer(app.gLyr);
 	    /*************************动态服务**********************************/
-	    app.dynamicData = new dong.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/rs/MapServer");
+	    app.dynamicData = new dong.ArcGISDynamicMapServiceLayer("http://192.168.1.7:6080/arcgis/rest/services/test/1/MapServer");
 		app.map.addLayer(app.dynamicData);
-	    app.dynamicData.hide();
-	    
-	    // 添加鹰眼 
-        var overviewMapDijit = new esri.dijit.OverviewMap({  
-          map: app.map,   // 必要的  
-          visible: true,  // 初始化可见，默认为false  
-          baseLayer:new esri.layers.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/cms/MapServer"),
-          attachTo: "top-left",   // 默认右上角  
-          width: 150, // 默认值是地图高度的 1/4th  
-          height: 150, // 默认值是地图高度的 1/4th   
-          opacity: .40,    // 透明度 默认0.5  
-          maximizeButton: true,   // 最大化,最小化按钮，默认false  
-          expandFactor: 3,    //概览地图和总览图上显示的程度矩形的大小之间的比例。默认值是2，这意味着概览地图将至少是两倍的大小的程度矩形。  
-          color: "red"    // 默认颜色为#000000  
-        });  
-        overviewMapDijit.startup();   // 开启
+		
+		app.dynamicData.on("load",grid)
 });
 
 function shape () {
@@ -133,7 +115,7 @@ function grid(){
 	dynamicLayerInfo.defaultVisibility = false;
 	dynamicLayerInfo.name = "reuslt";
 	var dataSource = new dong.RasterDataSource();
-	dataSource.workspaceId = "MyRasterWorkspaceID";
+	dataSource.workspaceId = "myworkspace";
 	dataSource.dataSourceName = "reuslt.tiff";
 	var layerSource = new dong.LayerDataSource();
 	layerSource.dataSource = dataSource;
