@@ -23,14 +23,15 @@ import org.springframework.stereotype.Component;
 public class QueueDataCmaq {
 	
 	//来源于情景详情表  
-	private String spinup;
+	private Long spinup;
 	//来自于基础情景
 	private Map<String, Object> ic;
 	
-	public String getSpinup() {
+	
+	public Long getSpinup() {
 		return spinup;
 	}
-	public void setSpinup(String spinup) {
+	public void setSpinup(Long spinup) {
 		this.spinup = spinup;
 	}
 	public Map<String, Object> getIc() {
