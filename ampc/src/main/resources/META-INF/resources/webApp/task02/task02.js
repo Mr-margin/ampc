@@ -1076,11 +1076,12 @@ function createEditArea() {
     return;
   }
 
-  ajaxPost(checkUrl,{
-    userId:userId,
-    scenarinoId:qjMsg.qjId,
-    areaName: areaName,
-  }).success(function(res){
+  if(!$('#areaName').attr('data-id')){
+    ajaxPost(checkUrl,{
+      userId:userId,
+      scenarinoId:qjMsg.qjId,
+      areaName: areaName,
+    }).success(function(res){
       if(!res.data){
         swal('名称重复', '', 'error')
       }else{
@@ -1110,12 +1111,34 @@ function createEditArea() {
           }
         })
       }
-  }).error(function () {
-    swal('名称校验失败', '', 'error')
-  });
+    }).error(function () {
+      swal('名称校验失败', '', 'error')
+    });
+  }else{
+    ajaxPost(url, obj).success(function (res) {
 
-
-
+      if (!$('#areaName').attr('data-id')) {
+        var obj = {};
+        obj.areaId = res.data.areaId;
+        obj.areaName = areaName;
+        obj.timeFrame = [];
+        obj.timeItems = [{
+          planId: -1,
+          planName: '无',
+          timeId: res.data.timeId,
+          timeEndDate: qjMsg.qjEndDate,
+          timeStartDate: qjMsg.qjStartDate
+        }];
+        obj.provinceCodes = pArr;
+        obj.cityCodes = ctArr;
+        obj.countyCodes = crArr;
+        allData.push(obj);
+        showTimeline(allData);
+      } else {
+        $('#' + $('#areaName').attr('data-id')).find('b').html(areaName);
+      }
+    })
+  }
 }
 
 /*显示已选择code,并进行checked*/
