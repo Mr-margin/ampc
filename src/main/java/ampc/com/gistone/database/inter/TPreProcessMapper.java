@@ -23,5 +23,5 @@ public interface TPreProcessMapper {
 	void updateFnl(ScenarinoEntity fnlEntity);
 
 	void insertFnl(ScenarinoEntity fnlEntity);
-
+	List<ScenarinoEntity> selectBysome(ScenarinoEntity fnlEntity);
 }
