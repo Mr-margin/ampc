@@ -1,6 +1,7 @@
 package ampc.com.gistone.database.inter;
 
 import java.util.Date;
+import java.util.Map;
 
 import ampc.com.gistone.database.model.TTasksStatus;
 
@@ -37,4 +38,36 @@ public interface TTasksStatusMapper {
 	 * @date 2017年3月28日 上午10:11:36
 	 */
 	Date selectByscenarinoId(Long scenarinoId);
+
+	/**
+	 * @Description: TODO
+	 * @param scenarinoId
+	 * @return   
+	 * TTasksStatus  查询时间段 开始时间 结束时间等
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月28日 上午11:32:45
+	 */
+	TTasksStatus getRangeTime(Long tasksScenarinoId);
+
+	/**
+	 * @param pathdate 
+	 * @Description: TODO
+	 * @return   
+	 * TTasksStatus   查询数据库中tasks的状态
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月28日 下午7:31:13
+	 */
+	TTasksStatus selectStatus(Long tasksScenarinoId);
+
+	/**
+	 * @Description: TODO
+	 * @param hashMap   
+	 * void   跟新数据库的情景运行了之后的可用状态
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月5日 上午11:45:01
+	 */
+	void updateRunstatus(Map hashMap);
 }
