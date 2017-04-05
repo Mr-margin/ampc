@@ -52,24 +52,43 @@ public class AcceptMessageQueue implements Runnable{
 	
 	@Override
 	public void run() {
-		String queueKeys ;
 		
 		/*String rpop = redisUtilServer.rpop("ungrib_test");
 		System.out.println(rpop);
 		
 		toDataUngribUtil.updateDB(rpop);*/
-		String result_Start_model = redisUtilServer.rpop("result_Start_model");
-		try {
-			Message message = JsonUtil.jsonToObj(result_Start_model, Message.class);
-			
-			if("model.start.result".equals(message.getType())){
-				System.out.println(result_Start_model+"接受到的结果");
-				toDataTasksUtil.updateDB(message);
+	
+		
+		while (true) {
+			try {
+		//	String send_queue_name = redisUtilServer.rpop("send_queue_name");//result_Start_model
+			System.out.println("队列接受数据");
+			String rpop = redisUtilServer.brpop("send_queue_name");//result_Start_model
+			System.out.println(rpop+"刚取出来的");
+		//	String rpop2 = redisUtilServer.rpop("send_queue_name");//result_Start_model
+				Message message = JsonUtil.jsonToObj(rpop, Message.class);
+				
+				String key = message.getType();
+				switch (key) {
+				case "model.start.result":
+					System.out.println("start tasks----------");
+					toDataTasksUtil.updateDB(message);
+					System.out.println("end tasks----------");
+					break;
+				case "ungrib.result":
+					toDataUngribUtil.updateDB(rpop);
+					System.out.println("ungrib---------------");
+					break;
+
+				default:
+					break;
+				}
+				
+				
+			} catch (IOException e) {                                                                             
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			
-		} catch (IOException e) {                                                                             
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		/*System.out.println(result_Start_model);
 		toDataTasksUtil.updateDB(result_Start_model);*/
