@@ -25,6 +25,14 @@ public interface TPlanMapper {
 	 * @return
 	 */
 	List<Map> selectCopyList(Long userId);
+	
+	/**
+	 * 根据条件查询ID
+	 * @param map
+	 * @return
+	 */
+	List<Long> selectByAreaId(Map map);
+	
 
     int deleteByPrimaryKey(Long planId);
 
