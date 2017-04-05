@@ -252,9 +252,6 @@ public class AppraisalController {
 				scenarinoEntity.setsId(scenarinoId);
 				scenarinoEntity.setTableName(tables);
 				sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
-//				Long jzid=jztScenarino.getScenarinoId();
-//				String jzsql = "SELECT * FROM '"+tables+"'WHERE SID='"+jzid+"' AND MODE='"+mode+"' AND CITY_STATION='"+cityStation+"' AND DOMAINID="+domainId+" AND DOMAIN='"+3+"'";
-//				List<Map> jzsclist=getBySqlMapper.findRecords(jzsql);
 				}else{//逐小时
 					String tables="T_SCENARINO_HOURLY_";
 					Date tims=tMissionDetail.getMissionStartDate();
@@ -271,9 +268,6 @@ public class AppraisalController {
 					scenarinoEntity.setsId(scenarinoId);
 					scenarinoEntity.setTableName(tables);
 					sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
-//					Long jzid=jztScenarino.getScenarinoId();
-//					String jzsql = "SELECT * FROM '"+tables+"'WHERE SID='"+jzid+"' AND MODE='"+mode+"' AND CITY_STATION='"+cityStation+"' AND DOMAINID="+domainId+" AND DOMAIN='"+3+"'";
-//					List<Map> jzsclist=getBySqlMapper.findRecords(jzsql);	
 				}//时间分布判断
 					
 				}//任务开始时间与系统开始时间对比	
@@ -295,9 +289,6 @@ public class AppraisalController {
 					scenarinoEntity.setsId(scenarinoId);
 					scenarinoEntity.setTableName(tables);
 					sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
-//					Long jzid=jztScenarino.getScenarinoId();
-//					String jzsql = "SELECT * FROM '"+tables+"'WHERE SID='"+jzid+"' AND MODE='"+mode+"' AND CITY_STATION='"+cityStation+"' AND DOMAINID="+domainId+" AND DOMAIN='"+3+"'";
-//					List<Map> jzsclist=getBySqlMapper.findRecords(jzsql);
 					}else{//逐小时
 						String tables="T_SCENARINO_HOURLY_";
 						Date tims=tMissionDetail.getMissionStartDate();
@@ -314,9 +305,6 @@ public class AppraisalController {
 						scenarinoEntity.setsId(scenarinoId);
 						scenarinoEntity.setTableName(tables);
 						sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
-//						Long jzid=jztScenarino.getScenarinoId();
-//						String jzsql = "SELECT * FROM '"+tables+"'WHERE SID='"+jzid+"' AND MODE='"+mode+"' AND CITY_STATION='"+cityStation+"' AND DOMAINID="+domainId+" AND DOMAIN='"+3+"'";
-//						List<Map> jzsclist=getBySqlMapper.findRecords(jzsql);	
 					}//时间分布判断
 			}//任务类型
 			
