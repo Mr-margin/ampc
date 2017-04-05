@@ -71,10 +71,10 @@ public class ReadyData {
 	 * @date 2017年3月30日 下午3:34:19
 	 */
 	public void readypost_PostEvaluationSituationData(
-			HashMap<String, Object> body) {
+			Long scenarinoId,Long cores) {
 		//创建消息体对象
 		QueueData queueData = new QueueData();
-		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
+	//	Long scenarinoId = (Long) body.get("scenarinoId");//情景id
 		//获取lastungrib
 		String lastungrib = "";
 		//确定firsttime
@@ -84,7 +84,7 @@ public class ReadyData {
 		//从数据库里获取该情景下的所有信息
 		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
 		//创建消息bady对象   并获取 bodydata的数据
-		QueueBodyData bodyData = getbodyDataHead(scenarinoDetailMSG);
+		QueueBodyData bodyData = getbodyDataHead(scenarinoDetailMSG,cores);
 		//创建common消息对象
 		QueueDataCommon commonData = new QueueDataCommon();
 		//创建wrf对象
@@ -134,8 +134,8 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年3月30日 上午11:34:48
 	 */
-	public void readyPrePostEvaluationSituationData(HashMap<String, Object> body) {
-		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
+	public void readyPrePostEvaluationSituationData(Long scenarinoId,Long cores) {
+		//Long scenarinoId = (Long) body.get("scenarinoId");//情景id
 		//获取lastungrib
 		String lastungrib = "";
 		//确定firsttime
@@ -147,7 +147,7 @@ public class ReadyData {
 		//创建消息体对象
 		QueueData queueData = new QueueData();
 		//创建消息bady对象   并获取 bodydata的数据
-		QueueBodyData bodyData = getbodyDataHead(scenarinoDetailMSG);
+		QueueBodyData bodyData = getbodyDataHead(scenarinoDetailMSG,cores);
 		//创建common消息对象
 		QueueDataCommon commonData = new QueueDataCommon();
 		//创建wrf对象
@@ -195,8 +195,8 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年3月29日 下午4:32:34
 	 */
-	public void readyRealMessageDataFirst(HashMap<String, Object> body) {
-		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
+	public void readyRealMessageDataFirst(Long scenarinoId,Long cores) {
+		//Long scenarinoId = (Long) body.get("scenarinoId");//情景id
 		//获取lastungrib
 		String lastungrib = readyLastUngrib();
 		//确定firsttime
@@ -209,7 +209,7 @@ public class ReadyData {
 		//第一条预报数据的时间
 		String time =DateUtil.DATEtoString(startDate , "yyyyMMdd");
 		String icdate = DateUtil.changeDate(startDate, "yyyyMMdd", -1);
-		QueueData queueData = readyRealMessageData(datatype, time, scenarinoId, lastungrib, firsttime, icdate);
+		QueueData queueData = readyRealMessageData(datatype, time, scenarinoId, lastungrib, firsttime, icdate,cores);
 		sendQueueData.toJson(queueData, scenarinoId);
 	}
 	
@@ -270,7 +270,7 @@ public class ReadyData {
 	    Long scenarinoId = tasksScenarinoId;
 		//	QueueData queueData = readyRealMessageData(datatype,time,body,lastungrib,firsttime,iCDate);
 		//准备实时预报的参数
-		QueueData queueData = readyRealMessageData(datatype, time, scenarinoId, lastungrib, firsttime, icdate);
+		QueueData queueData = readyRealMessageData(datatype, time, scenarinoId, lastungrib, firsttime, icdate,null);
 		sendQueueData.toJson(queueData, scenarinoId);
 	}
 	/**
@@ -325,7 +325,7 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年3月21日 上午10:40:32
 	 */
-	public QueueData readyRealMessageData(String datatype,String time,Long scenarinoId,String lastungrib,Boolean firsttime,String icdate) {
+	public QueueData readyRealMessageData(String datatype,String time,Long scenarinoId,String lastungrib,Boolean firsttime,String icdate,Long cores) {
 		//创建消息体对象
 		QueueData queueData = new QueueData();
 		//设置消息里面的的time和type的值
@@ -337,7 +337,7 @@ public class ReadyData {
 		//设置消息里面body节点的主体消息
 		//创建消息bady对象
 		QueueBodyData bodyData = new QueueBodyData();
-		bodyData = getbodyDataHead(scenarinoDetailMSG);
+		bodyData = getbodyDataHead(scenarinoDetailMSG,cores);
 		
 		String scenarinoType = scenarinoDetailMSG.getScenType();
 		System.out.println(scenarinoType);
@@ -392,7 +392,7 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年3月27日 上午10:23:18
 	 */
-	public void readyBaseData(HashMap<String, Object> body) {
+	public void readyBaseData(Long scenarinoId,Long cores) {
 		//创建消息体对象
 		QueueData queueData = new QueueData();
 		//创建消息bady对象
@@ -408,14 +408,15 @@ public class ReadyData {
 		queueData = getHeadParameter();
 		String type = "model.start";//执行模式
 		queueData.setType(type);
-		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
+		//Long scenarinoId = (Long) body.get("scenarinoId");//情景id
 		//查找数据库的情景详情的消息通过情景ID
 		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
 		//设置消息里面body节点的主体消息
-		bodyData = getbodyDataHead(scenarinoDetailMSG);
-		Integer scenarinoType =  (Integer) body.get("scenarinoType");//情景类型
-		Long missionId = (Long) body.get("missionId");//任务id
-		Long userId = (Long) body.get("userId");
+		bodyData = getbodyDataHead(scenarinoDetailMSG,cores);
+	//	Integer scenarinoType =  (Integer) body.get("scenarinoType");
+		//情景类型
+		Integer scenarinoType = Integer.parseInt(scenarinoDetailMSG.getScenType());
+		Long missionId = scenarinoDetailMSG.getMissionId();//任务id
 		//准备commom数据
 		Map<String, Object> map = getcommonMSG(scenarinoId,"fnl",null,scenarinoType.toString(),true,scenarinoDetailMSG);
 		commonData = (QueueDataCommon) map.get("commonData");
@@ -452,9 +453,9 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年3月28日 下午5:37:48
 	 */
-	public void readyPreEvaluationSituationDataFirst(HashMap<String, Object> body) {
+	public void readyPreEvaluationSituationDataFirst(Long scenarinoId,Long cores) {
 		//本方法准备第一条数据
-		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
+		//Long scenarinoId = (Long) body.get("scenarinoId");//情景id
 		//查找数据库的情景详情的消息通过情景ID
 		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
 		Date startDate = scenarinoDetailMSG.getScenarinoStartDate();
@@ -555,7 +556,7 @@ public class ReadyData {
 		//查找数据库的情景详情的消息通过情景ID
 		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
 		//创建消息bady对象 设置消息里面body节点的主体消息
-		QueueBodyData bodyDate = getbodyDataHead(scenarinoDetailMSG);
+		QueueBodyData bodyDate = getbodyDataHead(scenarinoDetailMSG,null);
 		String scenarinoType = scenarinoDetailMSG.getScenType();
 		//设置firsttime
 		boolean firsttime = false;
@@ -625,26 +626,23 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年3月24日 下午6:21:55
 	 */
-	private QueueBodyData getbodyDataHead(TScenarinoDetail scenarinoDetailMSG) {
+	private QueueBodyData getbodyDataHead(TScenarinoDetail scenarinoDetailMSG,Long cores) {
 		//创建消息bady对象
 		QueueBodyData bodyData = new QueueBodyData();
 		//调试模式的内容
 		bodyData.setFlag(1);
-		System.out.println("消息体头部内容");
-		//Integer scenarinoType =  (Integer) body.get("scenarinoType");//情景类型
 		Integer scenarinoType = Integer.parseInt(scenarinoDetailMSG.getScenType());//情景类型
-		//Long userId = (Long) body.get("userId");
 		Long userId = scenarinoDetailMSG.getUserId();
-		//Long missionId = (Long) body.get("missionId");//任务id
 		Long missionId = scenarinoDetailMSG.getMissionId();//任务id
-		//Long scenarinoId = (Long) body.get("scenarinoId");//情景id
 		Long scenarinoId = scenarinoDetailMSG.getScenarinoId();//情景id
-	//	Long cores = (Long) body.get("cores");//计算核数
-		Long cores =Long.parseLong(scenarinoDetailMSG.getExpand3());//计算核数
+		if (cores==null) {
+			cores =Long.parseLong(scenarinoDetailMSG.getExpand3());//计算核数
+		}else {
+			bodyData.setCores(cores);
+		}
 		bodyData.setUserid(userId.toString());
 		bodyData.setScenarioid(scenarinoId.toString());
 		bodyData.setMissionid(missionId.toString());
-		bodyData.setCores(cores);
 		//从任务表里面获取当条任务的详细内容
 		TMissionDetail mission = tMissionDetailMapper.selectByPrimaryKey(missionId);
 		String missiontype = mission.getMissionStatus().toString();
