@@ -12,8 +12,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import oracle.net.aso.q;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -57,27 +60,236 @@ public class ReadyData {
 	private SendQueueData sendQueueData;
 	
 	
+	
 	/**
-	 * @Description: 获取最新的ungrib 通过ungrib来控制消息的条数和内容
-	 * @return   
+	 * @Description: TODO
+	 * @param body   
+	 * void   准备后评估任务的后评估情景的数据
+	 * 
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月30日 下午3:34:19
+	 */
+	public void readypost_PostEvaluationSituationData(
+			HashMap<String, Object> body) {
+		//创建消息体对象
+		QueueData queueData = new QueueData();
+		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
+		//获取lastungrib
+		String lastungrib = "";
+		//确定firsttime
+		boolean firsttime = false;
+		//设置datatype
+		String datatype = "fnl";
+		//从数据库里获取该情景下的所有信息
+		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+		//创建消息bady对象   并获取 bodydata的数据
+		QueueBodyData bodyData = getbodyDataHead(scenarinoDetailMSG);
+		//创建common消息对象
+		QueueDataCommon commonData = new QueueDataCommon();
+		//创建wrf对象
+		QueueDataWrf wrfData = new QueueDataWrf();
+		//创建cmaq对象
+		QueueDataCmaq cmaqData = new QueueDataCmaq();
+		//设置消息里面的的time和type的值
+		queueData = getHeadParameter();
+		String type = "model.start";//执行模式
+		queueData.setType(type);
+		//准备commom数据
+		Map<String, Object> map = getcommonMSG(scenarinoId, datatype, null, scenarinoDetailMSG.getScenType(), firsttime, scenarinoDetailMSG);
+		commonData = (QueueDataCommon) map.get("commonData");
+		//准备wrf数据
+		//设置wrf的spinup
+		wrfData.setSpinup((long)0);
+		//于ungrib无关 用空值代替
+		wrfData.setLastungrib(lastungrib);
+		//设置cmaq的spinup
+		cmaqData.setSpinup((long)0);
+		Long missionId = scenarinoDetailMSG.getMissionId();
+		//基础情景的时间  基础时间
+		Date icDate = scenarinoDetailMSG.getBasisTime();
+		//
+		String icdate = DateUtil.DATEtoString(icDate, "yyyyMMdd");
+		//准备ic
+		Map<String, Object> icMap = getIC(scenarinoId,missionId ,firsttime,icdate);
+		cmaqData.setIc(icMap);
+		//创建emis对象   调用方法获取emis数据
+		QueueDataEmis DataEmis = getDataEmis(missionId);
+		//设置body的数据
+		bodyData.setCommon(commonData);
+		bodyData.setWrf(wrfData);
+		bodyData.setCmaq(cmaqData);
+		bodyData.setEmis(DataEmis);
+		queueData.setBody(bodyData);
+		//发送消息到队列
+		sendQueueData.toJson(queueData, scenarinoId);
+	}
+	
+	
+	/**
+	 * @Description: TODO
+	 * @param body   预评估任务的后评估情景的数据
 	 * void  
 	 * @throws
 	 * @author yanglei
-	 * @date 2017年3月20日 上午11:24:54
+	 * @date 2017年3月30日 上午11:34:48
 	 */
-	public void getLastUngrib(HashMap<String, Object> body) {
-		System.out.println("进入ungrib的方法");
+	public void readyPrePostEvaluationSituationData(HashMap<String, Object> body) {
 		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
-		System.out.println("进入ungrib的方法2");
+		//获取lastungrib
+		String lastungrib = "";
+		//确定firsttime
+		boolean firsttime = false;
+		//设置datatype
+		String datatype = "fnl";
+		//从数据库里获取该情景下的所有信息
+		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+		//创建消息体对象
+		QueueData queueData = new QueueData();
+		//创建消息bady对象   并获取 bodydata的数据
+		QueueBodyData bodyData = getbodyDataHead(scenarinoDetailMSG);
+		//创建common消息对象
+		QueueDataCommon commonData = new QueueDataCommon();
+		//创建wrf对象
+		QueueDataWrf wrfData = new QueueDataWrf();
+		//创建cmaq对象
+		QueueDataCmaq cmaqData = new QueueDataCmaq();
+		//设置消息里面的的time和type的值
+		queueData = getHeadParameter();
+		String type = "model.start";//执行模式
+		queueData.setType(type);
+		//准备commom数据
+		Map<String, Object> map = getcommonMSG(scenarinoId,datatype,null,scenarinoDetailMSG.getScenType() ,firsttime,scenarinoDetailMSG);
+		commonData = (QueueDataCommon) map.get("commonData");
+		//准备wrf数据
+		//设置wrf的spinup
+		wrfData.setSpinup((long)0);
+		wrfData.setLastungrib(lastungrib);
+		//设置cmaq的spinup
+		cmaqData.setSpinup((long)0);
+		Long missionId = scenarinoDetailMSG.getMissionId();
+		//基础情景的时间  基础时间
+		Date icDate = scenarinoDetailMSG.getBasisTime();
+		//
+		String icdate = DateUtil.DATEtoString(icDate, "yyyyMMdd");
+		//准备ic
+		Map<String, Object> icMap = getIC(scenarinoId,missionId ,firsttime,icdate);
+		cmaqData.setIc(icMap);
+		//创建emis对象   调用方法获取emis数据
+		QueueDataEmis DataEmis = getDataEmis(missionId);
+		//设置body的数据
+		bodyData.setCommon(commonData);
+		bodyData.setWrf(wrfData);
+		bodyData.setCmaq(cmaqData);
+		bodyData.setEmis(DataEmis);
+		queueData.setBody(bodyData);
+		sendQueueData.toJson(queueData, scenarinoId);
+	}
+	
+	
+	/**
+	 * @Description: TODO
+	 * @param body   
+	 * void  实时预报的参数准备
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月29日 下午4:32:34
+	 */
+	public void readyRealMessageDataFirst(HashMap<String, Object> body) {
+		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
+		//获取lastungrib
+		String lastungrib = readyLastUngrib();
+		//确定firsttime
+		boolean firsttime = getfirsttime(scenarinoId);
 		
-		String lastungrib;
+		String datatype = "fnl";
+		//从数据库里获取该情景下的所有信息
+		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+		Date startDate = scenarinoDetailMSG.getScenarinoStartDate();
+		//第一条预报数据的时间
+		String time =DateUtil.DATEtoString(startDate , "yyyyMMdd");
+		String icdate = DateUtil.changeDate(startDate, "yyyyMMdd", -1);
+		QueueData queueData = readyRealMessageData(datatype, time, scenarinoId, lastungrib, firsttime, icdate);
+		sendQueueData.toJson(queueData, scenarinoId);
+	}
+	
+	
+	
+	/**
+	 * @Description: TODO
+	 * @param scenarinoId
+	 * @return   
+	 * String  获取firsttime
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月29日 下午5:44:21
+	 */
+	private Boolean getfirsttime(Long scenarinoId) {
+		//从数据库里获取该情景下的所有信息
+		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+		//准备firsttime 通过用户ID 情景类型 和pathdate来决定
+		Date zoreDate = DateUtil.ChangeDay(scenarinoDetailMSG.getPathDate(), -1);
+		Map<String,Object> map2 = new HashMap<String, Object>();
+		map2.put("pathDate", zoreDate);
+		map2.put("userId", scenarinoDetailMSG.getUserId());
+		map2.put("scenType", scenarinoDetailMSG.getScenType());
+		TScenarinoDetail scenarinoDetailMSG2 = tScenarinoDetailMapper.selectFirstTime(map2);
+		boolean firsttime;
+		if (scenarinoDetailMSG2!=null) {
+			 firsttime = false;
+		}else {
+			firsttime = true;
+		}
+		return firsttime;
+	}
+
+	/**
+	 * @Description: TODO
+	 * @param tasksEndDate   
+	 * void  实时预报总的准备数据接口 由tasksStatus状态跟新成功之后触发执行
+	 * @param scenarinoId 
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月29日 下午3:49:58
+	 */
+	public void sendqueueRealData(Date tasksEndDate, Long tasksScenarinoId) {
+		System.out.println("发第二条数据");
+		//firsttime为faslse
+		boolean firsttime = false;
+		//消息的time的内容
+		String time = DateUtil.changeDate(tasksEndDate, "yyyyMMdd", 1);
+		System.out.println(time+"该条消息的时间");
+		//lastungrib
+		String lastungrib = readyLastUngrib();
+		
+		//设置datatype
+		
+		String datatype = "gfs";
+		Date iCDate = tasksEndDate;
+		String icdate = DateUtil.DATEtoString(iCDate, "yyyyMMdd");
+	    Long scenarinoId = tasksScenarinoId;
+		//	QueueData queueData = readyRealMessageData(datatype,time,body,lastungrib,firsttime,iCDate);
+		//准备实时预报的参数
+		QueueData queueData = readyRealMessageData(datatype, time, scenarinoId, lastungrib, firsttime, icdate);
+		sendQueueData.toJson(queueData, scenarinoId);
+	}
+	/**
+	 * @Description: TODO
+	 * @return   
+	 * String   准备lastungrib的方法
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月29日 下午4:23:17
+	 */
+	private String readyLastUngrib() {
+		String lastungrib = null;
 		//获取最新的ungrib 
-		//Date pathdate = tUngribMapper.getlastungrib();
-		Long ungribId = (long) 1;
-		tUngribMapper.deleteByPrimaryKey(2l);
-		
-		/*TUngrib tUngrib = tUngribMapper.getlastungrib();
-		System.out.println("aaaaaaa");
+		TUngrib tUngrib = tUngribMapper.getlastungrib();
+		//fnl的状态
+		Integer fnlStatus = tUngrib.getFnlStatus();
+		//gfs的状态   如果出现断层的情况 gfs 状态为空
+		Integer gfs1Status = tUngrib.getGfs1Status();
+		//获取最新pathdate
 		Date pathdate = tUngrib.getPathDate();
 		//最新的pathdate（年月日）
 		Date pathDate = pathdate;
@@ -86,60 +298,25 @@ public class ReadyData {
 		//比较最新的pathdate和当前系统时间
 		int i = pathDate.compareTo(todayDate);
 		//i=0表示时间一致 小于0表示 时间pathdate小于系统时间
-		System.out.println("bbbbbbb");
-		if (i==0) {
-			//时间一致的时候可以准备数据(1个fnl+n个gfs形式）
+		
+		if(i==0){
 			lastungrib = DateUtil.DATEtoString(pathDate, "yyyyMMdd");
-			//从tasksStatus表里获取情景的天数 开始时间和结束时间
-			TTasksStatus tTasksStatus = tTasksStatusMapper.getRangeTime(scenarinoId);
-			//情景开始时间
-			Date startDate = tTasksStatus.getScenarinoStartDate();
-			//情景结束时间
-			Date endDate = tTasksStatus.getScenarinoEndDate();
-			Long rangeday = tTasksStatus.getRangeDay();
-			for (int j = 0; j <rangeday; j++) {
-				//声明firsttime
-				String firsttime;
-				//从数据库里获取该情景下的所有信息
-				TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
-				//准备firsttime 通过用户ID 情景类型 和pathdate来决定
-				Date zoreDate = DateUtil.ChangeDay(scenarinoDetailMSG.getPathDate(), -1);
-				Map<String,Object> map2 = new HashMap<String, Object>();
-				map2.put("pathDate", zoreDate);
-				map2.put("userId", scenarinoDetailMSG.getUserId());
-				map2.put("scenType", scenarinoDetailMSG.getScenType());
-				TScenarinoDetail scenarinoDetailMSG2 = tScenarinoDetailMapper.selectFirstTime(map2);
-				if (scenarinoDetailMSG2!=null) {
-					 firsttime = "false";
-				}else {
-					firsttime = "true";
-				}
-				//开始时间小于今天 datatype 为fnl 大于等于今天为gfs
-				if (j==0) {
-					//设置datatype
-					String datatype = "fnl";
-					//消息的time的内容
-					String time = DateUtil.DATEtoString(startDate, "yyyyMMdd");
-					String icdate = DateUtil.changeDate(startDate, "yyyyMMdd", -1);
-					queueData = readyRealMessageData(datatype,time,body,lastungrib,firsttime,icdate);
-					//队列消息准备成功,调用方法 将数据转为json数据,准备就绪等待发送
-					sendQueueData.toJson(queueData);
-				}else {
-					//消息的time的内容
-					String time = DateUtil.changeDate(startDate, "yyyyMMdd", i);
-					//设置datatype
-					String datatype = "gfs";
-					Date iCDate = DateUtil.StrtoDateYMD(time, "yyyyMMdd");
-					String icdate = DateUtil.changeDate(iCDate, "yyyyMMdd", -1);
-					queueData = readyRealMessageData(datatype,time,body,lastungrib,firsttime,icdate);
-					sendQueueData.toJson(queueData);
-				}
-			}
-		}*/
-		
-		
+		}else if (i==-1) {
+			//最新的ungrib小于今天  只是今天未更新的情况    不发送 等待状态  
+			// 当 当天的ungrib跟新之后 开始实施实时预报
+			
+			
+			
+		}else if (i<-1) {
+			//出现断层的情况
+			//出现断层跑了几个fnl的情况下（n个fnl+0个gfs情况）
+			//出现断层  n个fnl+n个gfs情况
+			
+			
+		}
+		return lastungrib;
 	}
-	
+
 	/**
 	 * @Description: TODO
 	 * @param body   
@@ -148,56 +325,65 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年3月21日 上午10:40:32
 	 */
-	public QueueData readyRealMessageData(String datatype,String time,HashMap<String, Object> body,String lastungrib,String firsttime,String icdate) {
+	public QueueData readyRealMessageData(String datatype,String time,Long scenarinoId,String lastungrib,Boolean firsttime,String icdate) {
 		//创建消息体对象
 		QueueData queueData = new QueueData();
-		String type = "model.start";//执行模式
-		queueData.setType(type);
 		//设置消息里面的的time和type的值
 		queueData = getHeadParameter();
+		String type = "model.start";//执行模式
+		queueData.setType(type);
+		//查找数据库的情景详情的消息通过情景ID
+		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
 		//设置消息里面body节点的主体消息
 		//创建消息bady对象
 		QueueBodyData bodyData = new QueueBodyData();
-		bodyData = getbodyDataHead(body);
-		Integer scenarinoType =  (Integer) body.get("scenarinoType");//情景类型
-		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
-		Long missionId = (Long) body.get("missionId");//任务id
-		Long userId = (Long) body.get("userId");
+		bodyData = getbodyDataHead(scenarinoDetailMSG);
+		
+		String scenarinoType = scenarinoDetailMSG.getScenType();
+		System.out.println(scenarinoType);
 		//准备commom数据
-		Map<String, Object> map = getcommonMSG(scenarinoId,datatype,time,scenarinoType,firsttime);
+		Map<String, Object> map = getcommonMSG(scenarinoId,datatype,time,scenarinoType ,firsttime,scenarinoDetailMSG);
 		//创建common消息对象
 		QueueDataCommon commonData = new QueueDataCommon();
 		commonData = (QueueDataCommon) map.get("commonData");
-		//spinup
-		Long DBspinup = (Long) map.get("spinup");
 		//准备wrf数据
-		//设置wrf的spinup
-		Long spinup = DBspinup+5;
 		//创建wrf对象
 		QueueDataWrf wrfData = new QueueDataWrf();
-		wrfData.setSpinup(spinup.toString());
-		wrfData.setLastungrib(lastungrib);
-	//	wrfData = ReadyData.getWrfData(scenarinoId,lastungrib);
-		//准备cmap数据
-	//	cmapData = ReadyData.getCmapData(scenarinoId,missionId);
 		//创建cmaq对象
 		QueueDataCmaq cmaqData = new QueueDataCmaq();
+		if (firsttime.equals(true)) {
+			//spinup
+			Long DBspinup = (Long) map.get("spinup");
+			//设置wrf的spinup
+			Long spinup = DBspinup+5;
+			wrfData.setSpinup(spinup);
+			cmaqData.setSpinup(DBspinup);
+		}else {
+			wrfData.setSpinup((long)0);
+			cmaqData.setSpinup((long)0);
+		}
+		
+		
+		wrfData.setLastungrib(lastungrib);
 		//设置cmaq的spinup
-		cmaqData.setSpinup(DBspinup.toString());
+		
+		Long missionId = scenarinoDetailMSG.getMissionId();
 		//准备cmaq的ic
-		Map<String, Object> icMap = getIC(scenarinoId,missionId,firsttime,icdate); 
+		Map<String, Object> icMap = getIC(scenarinoId,missionId ,firsttime,icdate); 
 		cmaqData.setIc(icMap);
+		//创建emis对象   调用方法获取emis数据
+		QueueDataEmis DataEmis = getDataEmis(missionId);
 		//设置body的数据
 		bodyData.setCommon(commonData);
 		bodyData.setWrf(wrfData);
 		bodyData.setCmaq(cmaqData);
-		Map<String,Object> hashMap = new HashMap<String, Object>();
-		hashMap.put("body", bodyData);
-		queueData.setBody(hashMap);
-		//queueData.setBody(bodyData);
+		bodyData.setEmis(DataEmis);
+		queueData.setBody(bodyData);
 		return queueData;
 		
 	}
+	
+
 	/**
 	 * @Description: 接口调用该方法   准备基准情景的参数数据  
 	 * @param body   
@@ -222,14 +408,16 @@ public class ReadyData {
 		queueData = getHeadParameter();
 		String type = "model.start";//执行模式
 		queueData.setType(type);
-		//设置消息里面body节点的主体消息
-		bodyData = getbodyDataHead(body);
-		Integer scenarinoType =  (Integer) body.get("scenarinoType");//情景类型
 		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
+		//查找数据库的情景详情的消息通过情景ID
+		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+		//设置消息里面body节点的主体消息
+		bodyData = getbodyDataHead(scenarinoDetailMSG);
+		Integer scenarinoType =  (Integer) body.get("scenarinoType");//情景类型
 		Long missionId = (Long) body.get("missionId");//任务id
 		Long userId = (Long) body.get("userId");
 		//准备commom数据
-		Map<String, Object> map = getcommonMSG(scenarinoId,"fnl",null,scenarinoType,"true");
+		Map<String, Object> map = getcommonMSG(scenarinoId,"fnl",null,scenarinoType.toString(),true,scenarinoDetailMSG);
 		commonData = (QueueDataCommon) map.get("commonData");
 		//spinup
 		Long DBspinup = (Long) map.get("spinup");
@@ -238,24 +426,168 @@ public class ReadyData {
 		//设置wrf的spinup
 		Long spinup = DBspinup+5;
 		System.out.println(spinup+"这个是SPINUP");
-		wrfData.setSpinup(spinup.toString());
-		//String lastungrib = tUngribMapper.getlastungrib();
+		wrfData.setSpinup(spinup);
 		
-		//wrfData.setLastungrib(lastungrib);
 		//设置cmaq的spinup
-		cmaqData.setSpinup(DBspinup.toString());
+		cmaqData.setSpinup(DBspinup);
 		
+		//创建emis对象   调用方法获取emis数据
+		QueueDataEmis DataEmis = getDataEmis(missionId);
 		bodyData.setCommon(commonData);
 		bodyData.setWrf(wrfData);
 		bodyData.setCmaq(cmaqData);
-	/*	
-		Map<String,Object> hashMap = new HashMap<String, Object>();
-		hashMap.put("body", bodyData);*/
+		bodyData.setEmis(DataEmis);
 		queueData.setBody(bodyData);
-	//	SendQueueData sendQueueData = new SendQueueData();
-		sendQueueData.toJson(queueData);
+		sendQueueData.toJson(queueData,null);
 		
 	}
+	
+	
+	/**
+	 * @Description: 预评估任务的预评估情景
+	 * @param body   
+	 * void   这个是总的准备数据 当启动的时候，该方法发送第一条数据进行，而后通过result的结果准备后面的数据
+	 * 
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月28日 下午5:37:48
+	 */
+	public void readyPreEvaluationSituationDataFirst(HashMap<String, Object> body) {
+		//本方法准备第一条数据
+		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
+		//查找数据库的情景详情的消息通过情景ID
+		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+		Date startDate = scenarinoDetailMSG.getScenarinoStartDate();
+		Date today = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+		//比较时间 确定datetype
+		int i = startDate.compareTo(today);
+		String datatype = null;
+		if (i<0) {
+			 datatype = "fnl";
+		}
+		String time = DateUtil.DATEtoString(startDate, "yyyyMMdd");
+		QueueData queueData = readypreEvaSituMessageData(scenarinoId,datatype,time);
+		//判断是否能发该条消息
+		Map<String, String> map = cantopreEvaluation(null, null, 1);
+		String maxusetime = map.get("useable");
+		Date maxdate = DateUtil.StrtoDateYMD(maxusetime, "yyyyMMdd");
+		int compareTo = maxdate.compareTo(startDate);
+		if (compareTo>=0) {
+			sendQueueData.toJson(queueData, null);
+		}
+	}
+	
+	/**
+	 * @Description: TODO
+	 * @param tasksEndDate
+	 * @param tasksScenarinoId   
+	 * void   预评估任务的预评估情景的第二条数据及后面的参数数据准备
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月31日 下午6:38:15
+	 */
+	public void sendDataEvaluationSituationThen(Date tasksEndDate,
+			Long tasksScenarinoId) {
+		System.out.println("发第二条数据");
+		//消息的time的内容
+		String time = DateUtil.changeDate(tasksEndDate, "yyyyMMdd", 1);
+		Long scenarinoId = tasksScenarinoId;
+		Date today = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+		//比较时间 确定datetype
+		int i = tasksEndDate.compareTo(today);
+		String datatype = null;
+		if (i<0) {
+			datatype = "fnl";
+		}else if(i>=0){
+			datatype = "gfs";
+		}
+		QueueData queueData = readypreEvaSituMessageData(scenarinoId , datatype, time);
+		//判断是否能发该条消息 获取实时预报的最新完成的时间
+		Map<String, String> map = cantopreEvaluation(null, null, 1);
+		String maxusetime = map.get("useable");
+		Date maxdate = DateUtil.StrtoDateYMD(maxusetime, "yyyyMMdd");
+		Date mesdate = DateUtil.StrtoDateYMD(time, "yyyyMMdd");
+		//时间做比较 当当条消息的时间小于等于实时预报的的最大完成时间的时候 可以做预评估
+		int compareTo = maxdate.compareTo(mesdate);
+		if (compareTo>=0) {
+			sendQueueData.toJson(queueData, null);
+		}
+	}
+	/**
+	 * @Description: TODO
+	 * @param tasksEndDate
+	 * @param tasksScenarinoId   
+	 * void  可以进行预评估的条件 当天的当天的fnl或者gfs是否可用
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月1日 上午9:55:11
+	 */
+	public static Map<String, String> cantopreEvaluation(Date tasksEndDate, Long tasksScenarinoId,Integer i) {
+		HashMap<String, String> hashMap = new HashMap<String, String>();
+		String useabledate = DateUtil.DATEtoString(tasksEndDate, "yyyyMMdd");
+		if (i==null) {
+			hashMap=null;
+		}if (i==1) {
+			hashMap.put("useable", useabledate);
+		}
+		return hashMap;
+	}
+	
+	/**
+	 * @Description: TODO
+	 * @return   
+	 * QueueData   准备预评估任务 预评估情景的具体数据
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月30日 下午4:45:39
+	 */
+	private QueueData readypreEvaSituMessageData(Long scenarinoId,String datatype,String time) {
+		//创建消息体对象
+		QueueData queueData = new QueueData();
+		//创建wrf对象
+		QueueDataWrf wrfData = new QueueDataWrf();
+		//创建cmaq对象
+		QueueDataCmaq cmaqData = new QueueDataCmaq();
+		//设置消息里面的的time和type的值
+		queueData = getHeadParameter();
+		String type = "model.start";//执行模式
+		queueData.setType(type);
+		//查找数据库的情景详情的消息通过情景ID
+		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+		//创建消息bady对象 设置消息里面body节点的主体消息
+		QueueBodyData bodyDate = getbodyDataHead(scenarinoDetailMSG);
+		String scenarinoType = scenarinoDetailMSG.getScenType();
+		//设置firsttime
+		boolean firsttime = false;
+		//准备commom数据
+		Map<String, Object> map = getcommonMSG(scenarinoId,datatype,time,scenarinoType,firsttime,scenarinoDetailMSG);
+		//创建common消息对象
+		QueueDataCommon commonData = (QueueDataCommon) map.get("commonData");
+		//设置spinup
+		wrfData.setSpinup((long)0);
+		cmaqData.setSpinup((long)0);
+		//设置lastungrib
+		wrfData.setLastungrib("");
+		Long missionId = scenarinoDetailMSG.getMissionId();
+		//基础情景的时间  基础时间
+		Date icDate = scenarinoDetailMSG.getBasisTime();
+		//
+		String icdate = DateUtil.DATEtoString(icDate, "yyyyMMdd");
+		//准备cmaq的ic
+		Map<String, Object> icMap = getIC(scenarinoId,missionId ,false,icdate); 
+		cmaqData.setIc(icMap);
+		//创建emis对象   调用方法获取emis数据
+		QueueDataEmis DataEmis = getDataEmis(missionId);
+		//设置body的数据
+		bodyDate.setCommon(commonData);
+		bodyDate.setWrf(wrfData);
+		bodyDate.setCmaq(cmaqData);
+		bodyDate.setEmis(DataEmis);
+		queueData.setBody(bodyDate);
+		return queueData;
+	}
+
+
 	/**
 	 * @Description: 获取ic的值
 	 * 实时预报的情况下 第一次的时候ic为空 其他情况来自基础情景
@@ -269,14 +601,16 @@ public class ReadyData {
 	 * @date 2017年3月25日 下午6:18:52
 	 */
 	private Map<String, Object> getIC(Long scenarinoId, Long missionId,
-			String firsttime,String icdate) {
+			Boolean firsttime,String icdate) {
 		Map<String,Object> map = new HashMap<String, Object>();
 		//当天的上一天为基础情景
-		if(firsttime.contains("true")){
-			map=null;
+		if(firsttime==true){
+			map.put("missionid", "");
+			map.put("scenarioid", "");
+			map.put("date", "");
 		}else {
 			map.put("missionid", missionId);
-			map.put("scenarinoid", scenarinoId);
+			map.put("scenarioid", scenarinoId);
 			map.put("date", icdate);
 		}
 		return map;
@@ -291,20 +625,26 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年3月24日 下午6:21:55
 	 */
-	private QueueBodyData getbodyDataHead(HashMap<String, Object> body) {
+	private QueueBodyData getbodyDataHead(TScenarinoDetail scenarinoDetailMSG) {
 		//创建消息bady对象
 		QueueBodyData bodyData = new QueueBodyData();
+		//调试模式的内容
+		bodyData.setFlag(1);
 		System.out.println("消息体头部内容");
-		Integer scenarinoType =  (Integer) body.get("scenarinoType");//情景类型
-		Long userId = (Long) body.get("userId");
-		Long missionId = (Long) body.get("missionId");//任务id
-		Long scenarinoId = (Long) body.get("scenarinoId");//情景id
-		Long cores = (Long) body.get("cores");//计算核数
-		bodyData.setUserid(userId);
-		bodyData.setScenarioid(scenarinoId);
-		bodyData.setMissionid(missionId);
+		//Integer scenarinoType =  (Integer) body.get("scenarinoType");//情景类型
+		Integer scenarinoType = Integer.parseInt(scenarinoDetailMSG.getScenType());//情景类型
+		//Long userId = (Long) body.get("userId");
+		Long userId = scenarinoDetailMSG.getUserId();
+		//Long missionId = (Long) body.get("missionId");//任务id
+		Long missionId = scenarinoDetailMSG.getMissionId();//任务id
+		//Long scenarinoId = (Long) body.get("scenarinoId");//情景id
+		Long scenarinoId = scenarinoDetailMSG.getScenarinoId();//情景id
+	//	Long cores = (Long) body.get("cores");//计算核数
+		Long cores =Long.parseLong(scenarinoDetailMSG.getExpand3());//计算核数
+		bodyData.setUserid(userId.toString());
+		bodyData.setScenarioid(scenarinoId.toString());
+		bodyData.setMissionid(missionId.toString());
 		bodyData.setCores(cores);
-		System.out.println("开始操作数据库");
 		//从任务表里面获取当条任务的详细内容
 		TMissionDetail mission = tMissionDetailMapper.selectByPrimaryKey(missionId);
 		String missiontype = mission.getMissionStatus().toString();
@@ -313,7 +653,7 @@ public class ReadyData {
 		bodyData.setModeltype(modeltype);
 		//获取domainId
 		Long domainId = mission.getMissionDomainId();
-		bodyData.setDomainid(domainId);//domainid
+		bodyData.setDomainid(domainId.toString());//domainid
 		return bodyData;
 	}
 
@@ -360,28 +700,30 @@ public class ReadyData {
 	 * @param lastfnl
 	 * @param scenarinoType   
 	 * QueueDataCommon  获取实时预报的common数据
+	 * @param scenarinoDetailMSG2 
 	 * @return 
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年3月21日 上午11:31:35
 	 */
 	private Map<String, Object> getcommonMSG(Long scenarinoId, String datatype,String time,
-			Integer scenarinoType,String firsttime) {
+			String scenarinoType,Boolean firsttime, TScenarinoDetail scenarinoDetailMSG) {
 		//创建common消息对象
 		QueueDataCommon commonData = new QueueDataCommon();
 		Map<String,String> map = new HashMap<String, String>();
 		Map<String, Object> hashmap = new HashMap<String, Object>();
-		//从数据库里获取该情景下的所有信息
-		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+		Integer scenType = Integer.parseInt(scenarinoType);
+		/*//从数据库里获取该情景下的所有信息
+		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);*/
 		//如果是实时预报的类型，开始的时间和结束的时间以及datatype都是来自上面传来的参数，其他类型则来自查询得到的开始和结束时间
-		if (scenarinoType==4) {
+		if (scenType==4||scenType==1) {
 			//设置类型
 			commonData.setDatatype(datatype);
 			//设置开始结束时间
 			map.put("start", time);
 			map.put("end", time);
 			commonData.setTime(map);
-			
+			System.out.println(time);
 			//设置firsttime
 			commonData.setFirsttime(firsttime);
 			//设置起报日期
@@ -417,86 +759,6 @@ public class ReadyData {
 		
 	}
 	/**
-	 * @Description: TODO
-	 * @param lastfnl
-	 * @return   
-	 * String  
-	 * @throws
-	 * @author yanglei
-	 * @date 2017年3月25日 上午10:33:47
-	 */
-	private String getDateType(String lastfnl) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-
-	/**
-	 * @Description: TODO
-	 * @param body   
-	 * void  准备body的数据
-	 * @throws
-	 * @author yanglei
-	 * @date 2017年3月17日 上午11:26:23
-	 */
-	public void sendMessageData(HashMap<String, Object> body) {
-		StringBuffer buffer = new StringBuffer();
-		Integer scenarinoType =  (Integer) body.get("scenarinoType");
-		Long missionId =  (Long) body.get("missionId");
-		Long scenarinoId = (Long) body.get("scenarinoId");
-		//准备modeltype
-		//准备domainid
-		//Long domainId = qgetDataMapper.selectDomainid(missionId);
-		TMissionDetail mission = tMissionDetailMapper.selectByPrimaryKey(missionId);
-		Integer missionStatus = (Integer) mission.getMissionStatus();
-		buffer.append(mission.getMissionStatus());
-		buffer.append("_");
-		buffer.append(scenarinoType);
-		String modeltype = buffer.toString();
-		System.out.println(mission.getMissionDomainId()+"数据库查出来的domainid");
-		//定时开启，查询数据fnl等
-		
-		//实时预报情景
-		if (scenarinoType==1) {
-			//准备wrf数据
-			//Map<String, String> wrfMap = ReadyData.getWrfData(scenarinoType);
-			//准备cmap数据
-		//	Map<String, Map<String, String>> cmapMap = ReadyData.getCmapData(scenarinoType);
-			
-		}
-		//判断tasks准备的时候 lastfnl 是否是小于today-1 如果小于 则lastfnl 则不发送数据包
-		//获取lastfnl ，initial
-		
-	//	Map<String, Object> map = ReadyData.getLastUngrib(scenarinoId);
-	//	String lastfnl = (String) map.get("lastfnl");
-		
-	//	System.out.println(scenarinoId);
-		//准备common数据
-		Map<String, Map<String, String>> common = new HashMap<String, Map<String, String>>();
-		/*ReadyData.getcommonMSG(scenarinoId,lastfnl,scenarinoType);
-		sendQueueData.sendData(body,scenarinoId);*/
-		
-		
-		
-		
-		
-	}
-	
-	
-	/**
-	 * @Description: TODO
-	 * @param scenarinoType
-	 * @return   
-	 * Map<String,String>  
-	 * @throws
-	 * @author yanglei
-	 * @date 2017年3月18日 上午11:05:13
-	 */
-	private static Map<String,Map<String, String>> getCmapData(Integer scenarinoType) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	/**
 	 * @Description:  通过情景ID获取wrf参数
 	 * @param scenarinoId
 	 * @return   
@@ -514,10 +776,13 @@ public class ReadyData {
 		Long DBspinup = scenarinoDetailMSG.getSpinup();
 		Long spinup = DBspinup+5;
 		//设置spinup
-		wrfData.setSpinup(spinup.toString());
+		wrfData.setSpinup(spinup);
 		wrfData.setLastungrib(lastungrib);
 		return wrfData;
 	}
+	
+	
+	
 	/**
 	 * 
 	 * @Description: TODO
@@ -529,11 +794,56 @@ public class ReadyData {
 	 * @date 2017年3月17日 下午2:19:53
 	 */
 	public Map<String, Object> getEmis(String sourceid) {
-		Map<String, Map<String, String>> map = new HashMap<String, Map<String, String>>();
+		/*Map<String, Map<String, String>> map = new HashMap<String, Map<String, String>>();
 		String url="http://192.168.1.10:8082/ampc/app";
-		String getResult=ClientUtil.doPost(url,sourceid);
+		String getResult=ClientUtil.doPost(url,sourceid);*/
+		
+		
+		
+		
 		return null;
 	}
+
+	/**
+	 * @Description: TODO
+	 * @param missionId
+	 * @return   
+	 * QueueDataEmis  设置emis数据的方法
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月28日 下午6:50:19
+	 */
+	private QueueDataEmis getDataEmis(Long missionId) {
+		//通过情景ID获取清单ID
+		Long sourceid = tMissionDetailMapper.getsourceid(missionId);
+		//创建对象
+		QueueDataEmis  DataEmis = new QueueDataEmis();
+		//设置sourceid
+		DataEmis.setSourceid(sourceid.toString());
+		//设置Calctype 计算方式
+		DataEmis.setCalctype("server");//cache
+		//
+		DataEmis.setPsal("");
+		//
+		DataEmis.setSsal("");
+		//
+		DataEmis.setMeiccityconfig("/work/modelcloud/meic_tool/meic-city.conf");
+		return DataEmis;
+	}
+
+
+	
+	
+
+	
+
+	
+
+	
+
+	
+
+	
 
 	
 	
