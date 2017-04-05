@@ -69,17 +69,19 @@ public class ToDataUngribUtil {
 		buffer.append(fnlstatus.toString());
 		Object[] gfsobObjects = gfsdata.toArray();
 		for (int i = 0; i < gfsobObjects.length; i++) {
-			buffer.append(gfsobObjects[i]);
+			buffer.append(gfsobObjects[i].toString().trim());
 		}
+		//接受到的整个fnl到gfs的状态
 		String status1 = buffer.toString();
+		//需要更新的fnl到gfs的状态
 		String status;
+		//去正常运行的结果  当出现错误的时候  （0）则后面的不会跟新数据库  
 		if (status1.contains("0")) {
 			status =status1.substring(0, status1.indexOf("0"));
 			status =status+"0";
 		}else {
 			status=status1;
 		}
-		System.out.println(status+"zhege shi status");
 		JSONArray fnlDescdata  = (JSONArray) body.get("fnlDesc");//fnl错误描述
 		Object[] fnlDescArrray = fnlDescdata.toArray();
 		String fnlerror = fnlDescArrray[0].toString();
@@ -92,13 +94,13 @@ public class ToDataUngribUtil {
 				 gfserror = gfsDescArrray[i].toString();//gfs错误的信息
 			}
 		}
-		System.out.println("我到这里了");
 		//String gfserror = gfsBuffer.toString().trim();
 		//查询该条ungrib是否存在，存在则修改，否则添加
 		tUngrib.setErrorFnlMsg(fnlerror);
 		tUngrib.setErrorGfsMsg(gfserror);
+		//创建对象
 		TUngrib tUngrib2 = new TUngrib();
-		/*System.out.println("我要通过时间去查询是否存在ungrib");
+		System.out.println("我要通过时间去查询是否存在ungrib");
 		tUngrib2 = tUngribMapper.selectUngrib(pathdateDate);
 		//System.out.println(UngribId+"查询出来的id");
 		System.out.println("我要给fnl和gfs赋值了");
@@ -113,7 +115,12 @@ public class ToDataUngribUtil {
 			tUngrib.setUpdateTime(new Date());
 			System.out.println("我马上要进行跟新数据库了");
 			//添加到数据库
-			tUngribMapper.updateByPrimaryKey(tUngrib);
+			int i = tUngribMapper.updateByPrimaryKey(tUngrib);
+			
+			/*if (i>0) {
+				//监听器监听更新操作
+				
+			}*/
 			System.out.println("我跟新玩数据库了");
 		}else {
 			//执行添加操作
@@ -121,7 +128,10 @@ public class ToDataUngribUtil {
 			tUngrib.setPathDate(pathdateDate);
 			//添加到数据库
 			int i = tUngribMapper.insert(tUngrib);
-		}*/
+			/*if (i>0) {
+				//监听器监听添加操作
+			}*/
+		}
 		
 	}
 
