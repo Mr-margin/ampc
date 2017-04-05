@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ampc.com.gistone.database.inter.TRealForecastMapper;
+import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.model.TRealForecast;
+import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.redisqueue.ReadyData;
 import ampc.com.gistone.redisqueue.RedisUtilServer;
 import ampc.com.gistone.util.AmpcResult;
@@ -40,9 +42,9 @@ public class GetWeatherModelController {
 	@Autowired
 	private ReadyData readyData;
 	
-	//实时预报映射
+	//情景详情映射
 	@Autowired
-	private TRealForecastMapper tRealForecastMapper;
+	private TScenarinoDetailMapper tScenarinoDetailMapper;
 	
 	/**
 	 * 
@@ -60,27 +62,20 @@ public class GetWeatherModelController {
 	public AmpcResult getStartPAM(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
 		String token = (String) requestDate.get("token");
 		try {
-			System.out.println(1);
 			//获取数据包
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
-			System.out.println(2);
 			
 			//用户id
 			Long userId = Long.parseLong(data.get("userId").toString());
-			System.out.println(userId);
 			//任务ID
 			Long missionId = Long.parseLong(data.get("missionId").toString());
-			System.out.println(missionId);
 			//情景ID
 			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
-			System.out.println(scenarinoId);
 			//情景类型
 			Integer scenarinoType = Integer.parseInt(data.get("scenarinoType").toString());
-			System.out.println(scenarinoType);
 			//计算核数
 			Long cores = Long.parseLong(data.get("cores").toString());
-			System.out.println(cores);
 			
 			HashMap<String, Object> body = new HashMap<String,Object>();
 			
@@ -89,12 +84,16 @@ public class GetWeatherModelController {
 			body.put("scenarinoId", scenarinoId);
 			body.put("scenarinoType", scenarinoType);
 			body.put("cores", cores);
+			//持久化cores
+			TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
+			tScenarinoDetail.setExpand3(cores.toString());
+			tScenarinoDetail.setScenarinoId(scenarinoId);
+			int updateCores = tScenarinoDetailMapper.updateCores(tScenarinoDetail);
 			//准备实时预报的数据
-		//	readyData.readyRealMessageData(body);
-			readyData.getLastUngrib(body);
+			readyData.readyRealMessageDataFirst(body);
+		//	readyData.getLastUngrib(body);
+			
 			return AmpcResult.build(0, "ok");
-			
-			
 			
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
@@ -102,69 +101,7 @@ public class GetWeatherModelController {
 			return AmpcResult.build(1000, "添加失败");
 		}
 	}
-	/**
-	 * 
-	 * @Description: （不用）
-	 * @param request
-	 * @param response
-	 * @return   
-	 * String  创建实时预报类型 跟新实时预报表格 
-	 * @throws
-	 * @author yanglei
-	 * @date 2017年3月21日 下午2:19:05
-	 */
-	@RequestMapping("/CreateRealForecast")
-	public AmpcResult getData(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
-		String token = (String) requestDate.get("token");
-		System.out.println(token);
-		try {
-			System.out.println(1);
-			//获取数据包
-			ClientUtil.SetCharsetAndHeader(request, response);
-			System.out.println(2);
-			Map<String,Object> data=(Map)requestDate.get("data");
-			System.out.println(3);
-			//用户id
-			Long userId = Long.parseLong(data.get("userId").toString());
-			System.out.println(userId);
-			//创建时间
-			Date createTime = new Date();
-			System.out.println(createTime);
-			//实时预报类型 约定为4
-			Long forecastScenarinoType = (long) 4;
-			//预报范围
-			Long rangeDay = Long.parseLong(data.get("rangeDay").toString());
-			System.out.println(rangeDay);
-			//预报状态 (1 表示执行 0 表示未执行） 更新开始就直接插入为1
-			Long forecastStatus = (long) 1;
-			//spinup
-			Long spinup =Long.parseLong(data.get("spinup").toString());
-			System.out.println(spinup);
-			//预报开始时间（年月日形式）
-			String starttimeString = (String) (data.get("startTime").toString());
-			Date startTime = DateUtil.StrtoDateYMD(starttimeString);
-			System.out.println("2"+new Date());
-			TRealForecast tRealForecast = new TRealForecast();
-			tRealForecast.setUserId(userId);
-			tRealForecast.setCreateTime(createTime);
-			tRealForecast.setForecastScenarinoType(forecastScenarinoType);
-			tRealForecast.setRangeDay(rangeDay);
-			tRealForecast.setForecastStatus(forecastStatus);
-			tRealForecast.setSpinup(spinup);
-			tRealForecast.setStartTime(startTime);
-			System.out.println(tRealForecast+"0000000");
-			//添加到数据库
-			int i = tRealForecastMapper.insertSelective(tRealForecast);
-			if (i>0) {
-		    	return	AmpcResult.ok(i);
-			}
-			return AmpcResult.build(1000, "添加失败",null);
-		} catch (Exception e) {
-			// TODO: handle exception
-			return AmpcResult.build(1000, "参数错误",null);
-		}
-		//return AmpcResult.build(0, "ok");
-	}
+	
 	
 	
 	/**
@@ -186,6 +123,54 @@ public class GetWeatherModelController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//用户id
 			Long userId = Long.parseLong(data.get("userId").toString());
+			//任务ID
+			Long missionId = Long.parseLong(data.get("missionId").toString());
+			//情景ID
+			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			//情景类型
+			Integer scenarinoType = Integer.parseInt(data.get("scenarinoType").toString());
+			//计算核数
+			Long cores = Long.parseLong(data.get("cores").toString());
+			
+			HashMap<String, Object> body = new HashMap<String,Object>();
+			
+			body.put("userId", userId);
+			body.put("missionId", missionId);
+			body.put("scenarinoId", scenarinoId);
+			body.put("scenarinoType", scenarinoType);
+			body.put("cores", cores);
+			
+			readyData.readyBaseData(body);
+			return AmpcResult.build(0, "ok");
+			
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return AmpcResult.build(1000, "添加失败");
+		}
+	}
+	
+	/**
+	 * 
+	 * @Description: 预评估任务的预评估情景
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return   
+	 * AmpcResult  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月28日 下午5:35:42
+	 */
+	
+	@RequestMapping("/preevaluation/pre_evaluation_Situation")
+	public AmpcResult preEvaluation(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
+		String token = (String) requestDate.get("token");
+		try {
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//用户id
+			Long userId = Long.parseLong(data.get("userId").toString());
 			System.out.println(userId);
 			//任务ID
 			Long missionId = Long.parseLong(data.get("missionId").toString());
@@ -207,19 +192,123 @@ public class GetWeatherModelController {
 			body.put("scenarinoId", scenarinoId);
 			body.put("scenarinoType", scenarinoType);
 			body.put("cores", cores);
-			
-			readyData.readyBaseData(body);
+			//持久化cores
+			TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
+			tScenarinoDetail.setExpand3(cores.toString());
+			tScenarinoDetail.setScenarinoId(scenarinoId);
+			int updateCores = tScenarinoDetailMapper.updateCores(tScenarinoDetail);
+			readyData.readyPreEvaluationSituationDataFirst(body);
 			return AmpcResult.build(0, "ok");
-			
-			
-			
-			
-			
 			
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return AmpcResult.build(1000, "添加失败");
+		}
+	}
+	
+	/**
+	 * 
+	 * @Description: TODO
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return     预评估任务的后评估情景
+	 * AmpcResult  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月30日 上午11:33:13
+	 */
+	@RequestMapping("/preevaluation/post_evaluation_Situation")
+	public AmpcResult prePostEvaluation(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
+		String token = (String) requestDate.get("token");
+		try {
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//用户id
+			Long userId = Long.parseLong(data.get("userId").toString());
+			//任务ID
+			Long missionId = Long.parseLong(data.get("missionId").toString());
+			//情景ID
+			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			//情景类型
+			Integer scenarinoType = Integer.parseInt(data.get("scenarinoType").toString());
+			//计算核数
+			Long cores = Long.parseLong(data.get("cores").toString());
+			
+			HashMap<String, Object> body = new HashMap<String,Object>();
+			
+			body.put("userId", userId);
+			body.put("missionId", missionId);
+			body.put("scenarinoId", scenarinoId);
+			body.put("scenarinoType", scenarinoType);
+			body.put("cores", cores);
+			//持久化cores
+			TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
+			tScenarinoDetail.setExpand3(cores.toString());
+			tScenarinoDetail.setScenarinoId(scenarinoId);
+			int updateCores = tScenarinoDetailMapper.updateCores(tScenarinoDetail);
+			readyData.readyPrePostEvaluationSituationData(body);
+			return AmpcResult.build(0, "ok");
+			
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return AmpcResult.build(1000, "添加失败");
+		}
+	}
+	
+	/**
+	 * 
+	 * @Description: TODO
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return   后评估任务的后评估情景
+	 * AmpcResult  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月30日 下午3:31:05
+	 */
+	@RequestMapping("/postevaluation/post_evaluation_Situation")
+	public AmpcResult postPostEvaluation(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
+		String token = (String) requestDate.get("token");
+		try {
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//用户id
+			Long userId = Long.parseLong(data.get("userId").toString());
+			//任务ID
+			Long missionId = Long.parseLong(data.get("missionId").toString());
+			//情景ID
+			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			//情景类型
+			Integer scenarinoType = Integer.parseInt(data.get("scenarinoType").toString());
+			//计算核数
+			Long cores = Long.parseLong(data.get("cores").toString());
+			
+			HashMap<String, Object> body = new HashMap<String,Object>();
+			
+			body.put("userId", userId);
+			body.put("missionId", missionId);
+			body.put("scenarinoId", scenarinoId);
+			body.put("scenarinoType", scenarinoType);
+			body.put("cores", cores);
+			//持久化cores
+			TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
+			tScenarinoDetail.setExpand3(cores.toString());
+			tScenarinoDetail.setScenarinoId(scenarinoId);
+			int updateCores = tScenarinoDetailMapper.updateCores(tScenarinoDetail);
+			readyData.readypost_PostEvaluationSituationData(body);
+			if (updateCores>0) {
+				return AmpcResult.build(0, "ok");
+			}else {
+				return AmpcResult.build(1000, "启动失败");
+			}
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return AmpcResult.build(1000, "启动失败");
 		}
 	}
 	
