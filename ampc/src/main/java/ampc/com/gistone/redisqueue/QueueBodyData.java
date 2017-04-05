@@ -21,13 +21,13 @@ import org.springframework.stereotype.Component;
  */
 public class QueueBodyData {
 	//用户id
-	private Long userid;
+	private String userid;
 	//domainid 根据任务从任务详情表（TMissionDetail）中获取对应的domainid
-	private Long domainid;
+	private String domainid;
 	//任务ID
-	private Long missionid;
+	private String missionid;
 	//情景ID
-	private Long scenarioid;
+	private String scenarioid;
 	//计算核数  
 	private Long cores;
 	//模式类型  共五种模式类型
@@ -40,23 +40,31 @@ public class QueueBodyData {
 	private Object wrf;
 	//cmap 数据
 	private Object cmaq;
-	public Long getUserid() {
+	//flag 调试模式
+	private Integer flag;
+	public String getUserid() {
 		return userid;
 	}
-	public void setUserid(Long userid) {
+	public void setUserid(String userid) {
 		this.userid = userid;
 	}
-	public Long getDomainid() {
+	public String getDomainid() {
 		return domainid;
 	}
-	public void setDomainid(Long domainid) {
+	public void setDomainid(String domainid) {
 		this.domainid = domainid;
 	}
-	public Long getMissionid() {
+	public String getMissionid() {
 		return missionid;
 	}
-	public void setMissionid(Long missionid) {
+	public void setMissionid(String missionid) {
 		this.missionid = missionid;
+	}
+	public String getScenarioid() {
+		return scenarioid;
+	}
+	public void setScenarioid(String scenarioid) {
+		this.scenarioid = scenarioid;
 	}
 	public Long getCores() {
 		return cores;
@@ -94,14 +102,13 @@ public class QueueBodyData {
 	public void setCmaq(Object cmaq) {
 		this.cmaq = cmaq;
 	}
-	public QueueBodyData() {
-		super();
-		// TODO Auto-generated constructor stub
+	public Integer getFlag() {
+		return flag;
 	}
-	public Long getScenarioid() {
-		return scenarioid;
+	public void setFlag(Integer flag) {
+		this.flag = flag;
 	}
-	public void setScenarioid(Long scenarioid) {
-		this.scenarioid = scenarioid;
-	}
+	
+	
+	
 }
