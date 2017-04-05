@@ -102,7 +102,11 @@
         	AND MISSION_NAME = #{missionName,jdbcType=OTHER}
       </if>
   </select>
-  
+  <!--通过情景ID查询清单ID -->
+  <select id="getsourceid" resultType="java.lang.Long" parameterType="java.lang.Long">
+  select ES_COUPLING_ID from T_MISSION_DETAIL 
+  where MISSION_ID = #{missionId,jdbcType=DECIMAL}
+  </select>
   
   
   

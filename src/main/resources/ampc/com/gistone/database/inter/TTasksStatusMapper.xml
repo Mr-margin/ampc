@@ -239,7 +239,41 @@
   <select id="selectByscenarinoId" resultType="java.util.Date" parameterType="java.lang.Long">
   select SCENARINO_END_DATE
   from T_TASKS_STATUS where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
-  
   </select>
+  
+  <!-- 从tasksStatus表里获取情景的天数 开始时间和结束时间 -->
+  <resultMap id="rangeResultMap" type="ampc.com.gistone.database.model.TTasksStatus" >
+    <id column="TASKS_ID" property="tasksId" jdbcType="DECIMAL" />
+    <result column="TASKS_SCENARINO_ID" property="tasksScenarinoId" jdbcType="DECIMAL" />
+    <result column="ERROR_STATUS" property="errorStatus" jdbcType="VARCHAR" />
+    <result column="SCENARINO_START_DATE" property="scenarinoStartDate" jdbcType="TIMESTAMP" />
+    <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="TIMESTAMP" />
+    <result column="RANGE_DAY" property="rangeDay" jdbcType="DECIMAL" />
+    <result column="STEPINDEX" property="stepindex" jdbcType="DECIMAL" />
+    <result column="TASKS_END_DATE" property="tasksEndDate" jdbcType="TIMESTAMP" />
+    </resultMap>
+  <sql id="range_Column_List" >
+     TASKS_ID,TASKS_SCENARINO_ID,ERROR_STATUS,SCENARINO_START_DATE, SCENARINO_END_DATE, 
+    RANGE_DAY,STEPINDEX,TASKS_END_DATE
+  </sql>
+  <select id="getRangeTime" resultMap="rangeResultMap" parameterType="java.lang.Long" >
+  select
+  <include refid="range_Column_List"/>
+  from T_TASKS_STATUS
+  where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
+  </select>
+  <!-- 查找tasks状态 -->
+  <select id="selectStatus" resultMap="BaseResultMap" parameterType="java.lang.Long">
+  select
+  <include refid="Base_Column_List" />
+  from T_TASKS_STATUS
+  where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
+  </select>
+  <!--跟新tasks的可用状态  -->
+  <update id="updateRunstatus" parameterType="hashMap">
+  update T_TASKS_STATUS
+  set BEIZHU = #{beizhu,jdbcType=VARCHAR}
+  where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
+  </update>
   
 </mapper>

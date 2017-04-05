@@ -41,6 +41,25 @@
     SPINUP, RATIO_START_DATE, RATIO_END_DATE, RANGE_DAY, EXPAND1, EXPAND2, EXPAND3, EXPAND4, EXPAND5,
     EXPAND6, EXPAND7, EXPAND8, EXPAND9, EXPAND10
   </sql>
+  <!-- 根据ID查找开始时间结束时间和情景类型 -->
+  <select id="selecttypetime" resultMap="BaseResultMap" parameterType="java.lang.Long">
+  select SCENARINO_START_DATE, SCENARINO_END_DATE,SCEN_TYPE
+  from T_SCENARINO_DETAIL where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
+  
+  </select>
+  <!-- 查找情景类型 -->
+  <select id="selectscentype" resultType="java.lang.String" parameterType="java.lang.Long">
+  select SCEN_TYPE
+  from T_SCENARINO_DETAIL where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
+  
+  </select>
+  <!-- 更新cores -->
+  <update id="updateCores" parameterType="ampc.com.gistone.database.model.TScenarinoDetail">
+  update T_SCENARINO_DETAIL
+  set EXPAND3 = #{expand3,jdbcType=VARCHAR}
+  where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
+  
+  </update>
   <!-- 根据起报时间 用户id 情景类型  查找该条情景记录 用来确定实时预报消息里面的firsttime的值  -->
   <select id="selectFirstTime" resultMap="BaseResultMap" parameterType="hashMap">
   select 

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TCoresTimesMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TCoresTimes" >
+    <id column="CORES_TIME_ID" property="coresTimeId" jdbcType="DECIMAL" />
+    <result column="CORES_DOMAIN_ID" property="coresDomainId" jdbcType="DECIMAL" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="CORES_MISSION_TYPE" property="coresMissionType" jdbcType="DECIMAL" />
+    <result column="CORES_SCENARINO_TYPE" property="coresScenarinoType" jdbcType="DECIMAL" />
+    <result column="CORES" property="cores" jdbcType="DECIMAL" />
+    <result column="SEND_TIME" property="sendTime" jdbcType="TIMESTAMP" />
+    <result column="RETURN_TIME" property="returnTime" jdbcType="TIMESTAMP" />
+    <result column="AVG_TIME" property="avgTime" jdbcType="FLOAT" />
+    <result column="BEUZHU1" property="beuzhu1" jdbcType="VARCHAR" />
+    <result column="BEUZHU2" property="beuzhu2" jdbcType="DECIMAL" />
+    <result column="BEIZHU3" property="beizhu3" jdbcType="TIMESTAMP" />
+    <result column="BEIZHU4" property="beizhu4" jdbcType="DECIMAL" />
+    <result column="BEIZHU5" property="beizhu5" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CORES_TIME_ID, CORES_DOMAIN_ID, USER_ID, CORES_MISSION_TYPE, CORES_SCENARINO_TYPE, 
+    CORES, SEND_TIME, RETURN_TIME, AVG_TIME, BEUZHU1, BEUZHU2, BEIZHU3, BEIZHU4, BEIZHU5
+  </sql>
+  
+  <resultMap type="ampc.com.gistone.database.model.TCoresTimes" id="coresMap">
+ 	 <result column="CORES" property="cores" jdbcType="DECIMAL" />
+ 	 <result column="AVG_TIME" property="avgTime" jdbcType="FLOAT" />
+  </resultMap>
+   <sql id="core_Column_List" >
+    CORES, AVG_TIME
+  </sql>
+  <!-- 获取情景对应的计算核数的耗时 -->
+  <select id="getCoreList" parameterType="hashMap" resultMap="coresMap">
+  select
+  <include refid="core_Column_List" />
+  from T_CORES_TIMES
+  where USER_ID = #{userId,jdbcType=DECIMAL} and
+  	CORES_DOMAIN_ID = #{coresDomainId,jdbcType=DECIMAL} and
+  	CORES_MISSION_TYPE = #{coresMissionType,jdbcType=DECIMAL} and
+    CORES_SCENARINO_TYPE = #{coresScenarinoType,jdbcType=DECIMAL}
+  </select>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_CORES_TIMES
+    where CORES_TIME_ID = #{coresTimeId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_CORES_TIMES
+    where CORES_TIME_ID = #{coresTimeId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TCoresTimes" >
+    insert into T_CORES_TIMES (CORES_TIME_ID, CORES_DOMAIN_ID, USER_ID, 
+      CORES_MISSION_TYPE, CORES_SCENARINO_TYPE, CORES, 
+      SEND_TIME, RETURN_TIME, AVG_TIME, 
+      BEUZHU1, BEUZHU2, BEIZHU3, 
+      BEIZHU4, BEIZHU5)
+    values (#{coresTimeId,jdbcType=DECIMAL}, #{coresDomainId,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, 
+      #{coresMissionType,jdbcType=DECIMAL}, #{coresScenarinoType,jdbcType=DECIMAL}, #{cores,jdbcType=DECIMAL}, 
+      #{sendTime,jdbcType=TIMESTAMP}, #{returnTime,jdbcType=TIMESTAMP}, #{avgTime,jdbcType=FLOAT}, 
+      #{beuzhu1,jdbcType=VARCHAR}, #{beuzhu2,jdbcType=DECIMAL}, #{beizhu3,jdbcType=TIMESTAMP}, 
+      #{beizhu4,jdbcType=DECIMAL}, #{beizhu5,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TCoresTimes" >
+    insert into T_CORES_TIMES
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="coresTimeId != null" >
+        CORES_TIME_ID,
+      </if>
+      <if test="coresDomainId != null" >
+        CORES_DOMAIN_ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="coresMissionType != null" >
+        CORES_MISSION_TYPE,
+      </if>
+      <if test="coresScenarinoType != null" >
+        CORES_SCENARINO_TYPE,
+      </if>
+      <if test="cores != null" >
+        CORES,
+      </if>
+      <if test="sendTime != null" >
+        SEND_TIME,
+      </if>
+      <if test="returnTime != null" >
+        RETURN_TIME,
+      </if>
+      <if test="avgTime != null" >
+        AVG_TIME,
+      </if>
+      <if test="beuzhu1 != null" >
+        BEUZHU1,
+      </if>
+      <if test="beuzhu2 != null" >
+        BEUZHU2,
+      </if>
+      <if test="beizhu3 != null" >
+        BEIZHU3,
+      </if>
+      <if test="beizhu4 != null" >
+        BEIZHU4,
+      </if>
+      <if test="beizhu5 != null" >
+        BEIZHU5,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="coresTimeId != null" >
+        #{coresTimeId,jdbcType=DECIMAL},
+      </if>
+      <if test="coresDomainId != null" >
+        #{coresDomainId,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="coresMissionType != null" >
+        #{coresMissionType,jdbcType=DECIMAL},
+      </if>
+      <if test="coresScenarinoType != null" >
+        #{coresScenarinoType,jdbcType=DECIMAL},
+      </if>
+      <if test="cores != null" >
+        #{cores,jdbcType=DECIMAL},
+      </if>
+      <if test="sendTime != null" >
+        #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnTime != null" >
+        #{returnTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="avgTime != null" >
+        #{avgTime,jdbcType=FLOAT},
+      </if>
+      <if test="beuzhu1 != null" >
+        #{beuzhu1,jdbcType=VARCHAR},
+      </if>
+      <if test="beuzhu2 != null" >
+        #{beuzhu2,jdbcType=DECIMAL},
+      </if>
+      <if test="beizhu3 != null" >
+        #{beizhu3,jdbcType=TIMESTAMP},
+      </if>
+      <if test="beizhu4 != null" >
+        #{beizhu4,jdbcType=DECIMAL},
+      </if>
+      <if test="beizhu5 != null" >
+        #{beizhu5,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TCoresTimes" >
+    update T_CORES_TIMES
+    <set >
+      <if test="coresDomainId != null" >
+        CORES_DOMAIN_ID = #{coresDomainId,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="coresMissionType != null" >
+        CORES_MISSION_TYPE = #{coresMissionType,jdbcType=DECIMAL},
+      </if>
+      <if test="coresScenarinoType != null" >
+        CORES_SCENARINO_TYPE = #{coresScenarinoType,jdbcType=DECIMAL},
+      </if>
+      <if test="cores != null" >
+        CORES = #{cores,jdbcType=DECIMAL},
+      </if>
+      <if test="sendTime != null" >
+        SEND_TIME = #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnTime != null" >
+        RETURN_TIME = #{returnTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="avgTime != null" >
+        AVG_TIME = #{avgTime,jdbcType=FLOAT},
+      </if>
+      <if test="beuzhu1 != null" >
+        BEUZHU1 = #{beuzhu1,jdbcType=VARCHAR},
+      </if>
+      <if test="beuzhu2 != null" >
+        BEUZHU2 = #{beuzhu2,jdbcType=DECIMAL},
+      </if>
+      <if test="beizhu3 != null" >
+        BEIZHU3 = #{beizhu3,jdbcType=TIMESTAMP},
+      </if>
+      <if test="beizhu4 != null" >
+        BEIZHU4 = #{beizhu4,jdbcType=DECIMAL},
+      </if>
+      <if test="beizhu5 != null" >
+        BEIZHU5 = #{beizhu5,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where CORES_TIME_ID = #{coresTimeId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TCoresTimes" >
+    update T_CORES_TIMES
+    set CORES_DOMAIN_ID = #{coresDomainId,jdbcType=DECIMAL},
+      USER_ID = #{userId,jdbcType=DECIMAL},
+      CORES_MISSION_TYPE = #{coresMissionType,jdbcType=DECIMAL},
+      CORES_SCENARINO_TYPE = #{coresScenarinoType,jdbcType=DECIMAL},
+      CORES = #{cores,jdbcType=DECIMAL},
+      SEND_TIME = #{sendTime,jdbcType=TIMESTAMP},
+      RETURN_TIME = #{returnTime,jdbcType=TIMESTAMP},
+      AVG_TIME = #{avgTime,jdbcType=FLOAT},
+      BEUZHU1 = #{beuzhu1,jdbcType=VARCHAR},
+      BEUZHU2 = #{beuzhu2,jdbcType=DECIMAL},
+      BEIZHU3 = #{beizhu3,jdbcType=TIMESTAMP},
+      BEIZHU4 = #{beizhu4,jdbcType=DECIMAL},
+      BEIZHU5 = #{beizhu5,jdbcType=VARCHAR}
+    where CORES_TIME_ID = #{coresTimeId,jdbcType=DECIMAL}
+  </update>
+</mapper>

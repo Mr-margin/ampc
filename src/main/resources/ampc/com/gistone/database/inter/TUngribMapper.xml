@@ -263,7 +263,8 @@
   </select>
   
   
-   <!-- <resultMap id="idResultMap" type="ampc.com.gistone.database.model.TUngrib" >
+<!--查询是否存在当前的pathdate的记录  -->  
+<resultMap id="idResultMap" type="ampc.com.gistone.database.model.TUngrib" >
     <id column="UNGRIB_ID" property="ungribId" jdbcType="DECIMAL" />
     <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
     <result column="PATH_DATE" property="pathDate" jdbcType="TIMESTAMP" />
@@ -275,11 +276,5 @@
   	select 
   	<include refid="id_Column_List" />
   	from T_UNGRIB where PATH_DATE=#{pathDate,jdbcType=TIMESTAMP}
-  </select> -->
-  
-  
-  
-  
-  
-  
+  </select>
 </mapper>
