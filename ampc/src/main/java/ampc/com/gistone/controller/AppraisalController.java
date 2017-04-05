@@ -66,14 +66,18 @@ public class AppraisalController {
 			Long missionId=Long.valueOf(data.get("missionId").toString());
 			String mode=data.get("mode").toString();
 			String cityStation=data.get("cityStation").toString();
-			List<Long> list=(ArrayList<Long>) data.get("scenarinoId");
+			JSONArray lists = JSONArray.fromObject(data.get("scenarinoId"));
+			List<Integer> list=new ArrayList<Integer>();
+			for(Object scid:lists){
+				list.add(Integer.valueOf(scid.toString()));	
+			}
 			String datetype=data.get("datetype").toString();
 			String spacetype=data.get("spacetype").toString();
 			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);
-			Long domainId=tMissionDetail.getMissionDomainId();
-			List<Map> sclist=new ArrayList();
-			for(Long scenarinoId:list){
-			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+			Integer domainId=Integer.valueOf(tMissionDetail.getMissionDomainId().toString());
+			List<ScenarinoEntity> sclist=new ArrayList();
+			for(Integer scenarinoId:list){
+			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(Long.valueOf(scenarinoId.toString()));
 			TScenarinoDetail tScenarino=new TScenarinoDetail();
 			tScenarino.setMissionId(missionId);
 			tScenarino.setScenType("3");
@@ -84,22 +88,36 @@ public class AppraisalController {
 				if(4<5){//任务开始时间与系统开始时间对比
 					if(datetype.equals("day")){//逐天
 				String tables="T_SCENARINO_DAILY_";
-				tables+=tMissionDetail.getMissionStartDate().getYear()+"_";
+				Date tims=tMissionDetail.getMissionStartDate();
+				 DateFormat df = new SimpleDateFormat("yyyy");
+				String nowTime= df.format(tims);
+				System.out.println(nowTime);
+				tables+=nowTime+"_";
 				tables+=userId;
-				String sql = "SELECT * FROM '"+tables+"'WHERE SID='"+scenarinoId+"' AND MODE='"+mode+"' AND CITY_STATION='"+cityStation+"' AND DOMAINID="+domainId+" AND DOMAIN='"+3+"'";
-				sclist=getBySqlMapper.findRecords(sql);
-				Long jzid=jztScenarino.getScenarinoId();
-				String jzsql = "SELECT * FROM '"+tables+"'WHERE SID='"+jzid+"' AND MODE='"+mode+"' AND CITY_STATION='"+cityStation+"' AND DOMAINID="+domainId+" AND DOMAIN='"+3+"'";
-				List<Map> jzsclist=getBySqlMapper.findRecords(jzsql);
+				ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+				scenarinoEntity.setCity_station(cityStation);
+				scenarinoEntity.setDomain(3);
+				scenarinoEntity.setDomainId(domainId);
+				scenarinoEntity.setMode(mode);
+				scenarinoEntity.setsId(scenarinoId);
+				scenarinoEntity.setTableName(tables);
+				sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 				}else{//逐小时
 					String tables="T_SCENARINO_HOURLY_";
-					tables+=tMissionDetail.getMissionStartDate().getYear()+"_";
+					Date tims=tMissionDetail.getMissionStartDate();
+					 DateFormat df = new SimpleDateFormat("yyyy");
+					String nowTime= df.format(tims);
+					System.out.println(nowTime);
+					tables+=nowTime+"_";
 					tables+=userId;
-					String sql = "SELECT * FROM '"+tables+"'WHERE SID='"+scenarinoId+"' AND MODE='"+mode+"' AND CITY_STATION='"+cityStation+"' AND DOMAINID="+domainId+" AND DOMAIN='"+3+"'";
-					sclist=getBySqlMapper.findRecords(sql);
-					Long jzid=jztScenarino.getScenarinoId();
-					String jzsql = "SELECT * FROM '"+tables+"'WHERE SID='"+jzid+"' AND MODE='"+mode+"' AND CITY_STATION='"+cityStation+"' AND DOMAINID="+domainId+" AND DOMAIN='"+3+"'";
-					List<Map> jzsclist=getBySqlMapper.findRecords(jzsql);	
+					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+					scenarinoEntity.setCity_station(cityStation);
+					scenarinoEntity.setDomain(3);
+					scenarinoEntity.setDomainId(domainId);
+					scenarinoEntity.setMode(mode);
+					scenarinoEntity.setsId(scenarinoId);
+					scenarinoEntity.setTableName(tables);
+					sclist=tPreProcessMapper.selectBysome(scenarinoEntity);	
 				}//时间分布判断
 					
 				}//任务开始时间与系统开始时间对比	
@@ -107,29 +125,44 @@ public class AppraisalController {
 			}else{
 				if(datetype.equals("day")){//逐天
 					String tables="T_SCENARINO_DAILY_";
-					tables+=tMissionDetail.getMissionStartDate().getYear()+"_";
+					Date tims=tMissionDetail.getMissionStartDate();
+					 DateFormat df = new SimpleDateFormat("yyyy");
+					String nowTime= df.format(tims);
+					System.out.println(nowTime);
+					tables+=nowTime+"_";
 					tables+=userId;
-					String sql = "SELECT * FROM '"+tables+"'WHERE SID='"+scenarinoId+"' AND MODE='"+mode+"' AND CITY_STATION='"+cityStation+"' AND DOMAINID="+domainId+" AND DOMAIN='"+3+"'";
-					sclist=getBySqlMapper.findRecords(sql);
-					Long jzid=jztScenarino.getScenarinoId();
-					String jzsql = "SELECT * FROM '"+tables+"'WHERE SID='"+jzid+"' AND MODE='"+mode+"' AND CITY_STATION='"+cityStation+"' AND DOMAINID="+domainId+" AND DOMAIN='"+3+"'";
-					List<Map> jzsclist=getBySqlMapper.findRecords(jzsql);
+					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+					scenarinoEntity.setCity_station(cityStation);
+					scenarinoEntity.setDomain(3);
+					scenarinoEntity.setDomainId(domainId);
+					scenarinoEntity.setMode(mode);
+					scenarinoEntity.setsId(scenarinoId);
+					scenarinoEntity.setTableName(tables);
+					sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 					}else{//逐小时
 						String tables="T_SCENARINO_HOURLY_";
-						tables+=tMissionDetail.getMissionStartDate().getYear()+"_";
+						Date tims=tMissionDetail.getMissionStartDate();
+						 DateFormat df = new SimpleDateFormat("yyyy");
+						String nowTime= df.format(tims);
+						System.out.println(nowTime);
+						tables+=nowTime+"_";
 						tables+=userId;
-						String sql = "SELECT * FROM '"+tables+"'WHERE SID='"+scenarinoId+"' AND MODE='"+mode+"' AND CITY_STATION='"+cityStation+"' AND DOMAINID="+domainId+" AND DOMAIN='"+3+"'";
-						sclist=getBySqlMapper.findRecords(sql);
-						Long jzid=jztScenarino.getScenarinoId();
-						String jzsql = "SELECT * FROM '"+tables+"'WHERE SID='"+jzid+"' AND MODE='"+mode+"' AND CITY_STATION='"+cityStation+"' AND DOMAINID="+domainId+" AND DOMAIN='"+3+"'";
-						List<Map> jzsclist=getBySqlMapper.findRecords(jzsql);	
+						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+						scenarinoEntity.setCity_station(cityStation);
+						scenarinoEntity.setDomain(3);
+						scenarinoEntity.setDomainId(domainId);
+						scenarinoEntity.setMode(mode);
+						scenarinoEntity.setsId(scenarinoId);
+						scenarinoEntity.setTableName(tables);
+						sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+
 					}//时间分布判断
 			}//任务类型
 			Map<String,Object> scmap=new HashMap();
 			if(datetype.equals("hour")){
-			for(Map sc:sclist){
-				String scid=sc.get("SID").toString();
-				String content=sc.get("CONTENT").toString();
+				for(ScenarinoEntity sc:sclist){
+					String scid=String.valueOf(sc.getsId());
+					String content=sc.getContent().toString();
 				JSONObject obj=JSONObject.fromObject(content);//行业减排结果
 				Map<String,Object> detamap=(Map)obj;
 				Map<String,Object> datemap=new HashMap();
@@ -162,9 +195,9 @@ public class AppraisalController {
 				}
 			}
 			}else{
-				for(Map sc:sclist){
-					String scid=sc.get("SID").toString();
-					String content=sc.get("CONTENT").toString();
+				for(ScenarinoEntity sc:sclist){
+					String scid=String.valueOf(sc.getsId());
+					String content=sc.getContent().toString();
 					JSONObject obj=JSONObject.fromObject(content);//行业减排结果
 					Map<String,Object> detamap=(Map)obj;
 					Map<String,Object> datemap=new HashMap();
