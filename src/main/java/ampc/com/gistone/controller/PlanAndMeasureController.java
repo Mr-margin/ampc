@@ -30,6 +30,7 @@ import ampc.com.gistone.database.inter.TMeasureSectorExcelMapper;
 import ampc.com.gistone.database.inter.TPlanMapper;
 import ampc.com.gistone.database.inter.TPlanMeasureMapper;
 import ampc.com.gistone.database.inter.TQueryExcelMapper;
+import ampc.com.gistone.database.inter.TScenarinoAreaMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TSectorExcelMapper;
 import ampc.com.gistone.database.inter.TSectordocExcelMapper;
@@ -69,6 +70,9 @@ public class PlanAndMeasureController {
 	// 情景映射
 	@Autowired
 	private TScenarinoDetailMapper tScenarinoDetailMapper;
+	// 情景映射
+	@Autowired
+	private TScenarinoAreaMapper tScenarinoAreaMapper;
 	// 预案措施映射
 	@Autowired
 	private TPlanMeasureMapper tPlanMeasureMapper;
@@ -1165,26 +1169,46 @@ public class PlanAndMeasureController {
 				Long userId = Long.parseLong(data.get("userId").toString());
 				//值键对
 				Object object=data.get("areaAndPlanIds");
-				Map apMap=(Map)object;
-				//定义条件Map
-				Map mapQuery=new HashMap();
-				mapQuery.put("userId", userId);
 				// 创建一个减排的结果集合
 				List<JPResult> jpList = new ArrayList<JPResult>();
-				//循环获取到的区域ID key   预案Id value
-				for(Object apStr:apMap.keySet()){
-					//区域ID 
-					Object ap=apMap.get(apStr);
-					//获取当前区域下的所有时段上有预案的预案Id
-					List aplist=mapper.readValue(ap.toString(), ArrayList.class);
-					//循环预案Id集合
-					for (Object apo : aplist) {
-						mapQuery.put("planId", apo);
-						//根据条件查询 当前预案下的所有预案措施Id
-						List<Long> pmIds=tPlanMeasureMapper.selectIdByMap(mapQuery);
-						//如果该预案下包含措施 则需要调用减排计算的接口
-						if(pmIds!=null&&pmIds.size()>0){
-							tempCalc(pmIds,jpList);
+				if(object.toString().equals("")){
+					Map map=new HashMap();
+					map.put("userId",userId);
+					map.put("scenarinoId",scenarinoId);
+					List<Long> areaList=tScenarinoAreaMapper.selectBySid(map);
+					for(Long areaId:areaList){
+						map.put("areaId", areaId);
+						List<Long> planList=tPlanMapper.selectByAreaId(map);
+						for(Long planId:planList){
+							map.put("planId", planId);
+							//根据条件查询 当前预案下的所有预案措施Id
+							List<Long> pmIds=tPlanMeasureMapper.selectIdByMap(map);
+							//如果该预案下包含措施 则需要调用减排计算的接口
+							if(pmIds!=null&&pmIds.size()>0){
+								tempCalc(pmIds,jpList);
+							}
+						}
+					}
+				}else{
+					Map apMap=(Map)object;
+					//定义条件Map
+					Map mapQuery=new HashMap();
+					mapQuery.put("userId", userId);
+					//循环获取到的区域ID key   预案Id value
+					for(Object apStr:apMap.keySet()){
+						//区域ID 
+						Object ap=apMap.get(apStr);
+						//获取当前区域下的所有时段上有预案的预案Id
+						List aplist=mapper.readValue(ap.toString(), ArrayList.class);
+						//循环预案Id集合
+						for (Object apo : aplist) {
+							mapQuery.put("planId", apo);
+							//根据条件查询 当前预案下的所有预案措施Id
+							List<Long> pmIds=tPlanMeasureMapper.selectIdByMap(mapQuery);
+							//如果该预案下包含措施 则需要调用减排计算的接口
+							if(pmIds!=null&&pmIds.size()>0){
+								tempCalc(pmIds,jpList);
+							}
 						}
 					}
 				}
