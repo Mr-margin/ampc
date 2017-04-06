@@ -387,7 +387,7 @@ public class PlanAndMeasureController {
 					map.put("planName", newtplan.getPlanName());
 					Long newPlanId = tPlanMapper.getIdByQuery(map);
 					// 根据可复制预案id查询预案中的措施
-					TPlanMeasure tPlanMeasure = new TPlanMeasure();
+					TPlanMeasureWithBLOBs tPlanMeasure = new TPlanMeasureWithBLOBs();
 					tPlanMeasure.setPlanId(planId);
 					tPlanMeasure.setUserId(userId);
 					// 根据预案措施对象的条件查询所有的预案措施满足条件的信息
