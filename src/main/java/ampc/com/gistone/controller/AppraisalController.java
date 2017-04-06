@@ -92,7 +92,6 @@ public class AppraisalController {
 				Date tims=tMissionDetail.getMissionStartDate();
 				 DateFormat df = new SimpleDateFormat("yyyy");
 				String nowTime= df.format(tims);
-				System.out.println(nowTime);
 				tables+=nowTime+"_";
 				tables+=userId;
 				ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
