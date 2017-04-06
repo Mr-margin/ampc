@@ -21,9 +21,25 @@ var changeMsg = {
   scenarinoName: [],//选择的情景名称数组
 };
 var speciesArr = {
-  day: ['PM25', 'PM10', 'O3_8_max', 'O3_1_max', 'O3_avg', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE'],
-  hour: ['PM25', 'PM10', 'O3', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE']
+  day: ['PM₂₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE'],
+  hour: ['PM₂₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE']
 };
+var speciesObj = {
+  'PM₂₅':'PM25',
+  'PM₁₀':'PM10',
+  'O₃_8_max':'O3_8_MAX',
+  'O₃_1_max':'O3_1_MAX',
+  'O₃_avg':'O3_AVG',
+  'SO₂':'SO2',
+  'NO₂':'NO2',
+  'CO':'CO',
+  'SO₄':'SO4',
+  'NO₃':'NO3',
+  'NH₄':'NH4',
+  'BC':'BC',
+  'OM':'OM',
+  'PMFINE':'PMFINE'
+}
 /*echarts 配置*/
 var optionAll = {
   title: {
@@ -107,8 +123,8 @@ function initialize() {
   changeMsg.scenarinoId = [];
   changeMsg.scenarinoName = [];
   for (var i = 0; i < sceneInitialization.data.length; i++) {
-    changeMsg.scenarinoId.push(sceneInitialization.data.scenarinoId);
-    changeMsg.scenarinoName.push(sceneInitialization.data.scenarinoName);
+    changeMsg.scenarinoId.push(sceneInitialization.data[i].scenarinoId);
+    changeMsg.scenarinoName.push(sceneInitialization.data[i].scenarinoName);
   }
 
   setStation(sceneInitialization.taskID);
@@ -116,6 +132,7 @@ function initialize() {
   $.when(dps_station).then(function () {
     updata();
   });
+  updata();
   //initEcharts();
 
 }
@@ -216,7 +233,7 @@ function initEcharts() {
         type: 'line',
         smooth: true,
         symbolSize: 5,
-        data: data[id][species[i]].slice(0, $('#height').val())  //可变，存储情景数据
+        data: data[id][speciesObj[species[i]]].slice(0, $('#height').val())  //可变，存储情景数据
         //data: data['191']['CO']  //可变，存储情景数据
       })
     }
@@ -437,13 +454,23 @@ var czData;
 function updata() {
   var url = '/Appraisal/find_vertical';
   var echartsData = ajaxPost(url, {
-    userId: userId,
-    missionId:sceneInitialization.taskID,
-    mode:changeMsg.station=='avg'?'city':'point',
-    time:changeMsg.time,
-    cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
-    scenarinoId:changeMsg.scenarinoId,
-    datetype:changeMsg.rms
+    //userId: userId,
+    //missionId:sceneInitialization.taskID,
+    //mode:changeMsg.station=='avg'?'city':'point',
+    //time:changeMsg.time,
+    //cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
+    //scenarinoId:changeMsg.scenarinoId,
+    //datetype:changeMsg.rms
+
+
+    "missionId":"300",
+    "mode":"point",
+    "time":"2016-11-27 13",
+    "userId":"1",
+    "cityStation":"1002A",
+    "scenarinoId":changeMsg.scenarinoId,
+    "datetype":"day"
+
   });
 
   $.when(echartsData).then(function (res) {
