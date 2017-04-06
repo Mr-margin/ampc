@@ -68,11 +68,12 @@ public class AppraisalController {
 			String cityStation=data.get("cityStation").toString();
 			JSONArray lists = JSONArray.fromObject(data.get("scenarinoId"));
 			List<Integer> list=new ArrayList<Integer>();
+			Map<String,Object> scmap=new HashMap();
 			for(Object scid:lists){
 				list.add(Integer.valueOf(scid.toString()));	
 			}
 			String datetype=data.get("datetype").toString();
-			String spacetype=data.get("spacetype").toString();
+
 			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);
 			Integer domainId=Integer.valueOf(tMissionDetail.getMissionDomainId().toString());
 			List<ScenarinoEntity> sclist=new ArrayList();
@@ -158,7 +159,7 @@ public class AppraisalController {
 
 					}//时间分布判断
 			}//任务类型
-			Map<String,Object> scmap=new HashMap();
+			
 			if(datetype.equals("hour")){
 				for(ScenarinoEntity sc:sclist){
 					String scid=String.valueOf(sc.getsId());
@@ -167,16 +168,17 @@ public class AppraisalController {
 				Map<String,Object> detamap=(Map)obj;
 				Map<String,Object> datemap=new HashMap();
 				for(String datetime:detamap.keySet()){
-					String sp=detamap.get("datetime").toString();
+					String sp=detamap.get(datetime).toString();
 					JSONObject spobj=JSONObject.fromObject(sp);//行业减排结果
 					Map<String,Object> spmap=(Map)spobj;
 					Map<String,Object> spcmap=new HashMap();
 					for(String spr:spmap.keySet()){
-						String height=spmap.get("spr").toString();
+						String height=spmap.get(spr).toString();
 						JSONObject heightobj=JSONObject.fromObject(height);//行业减排结果
 						Map<String,Object> heightmap=(Map)heightobj;
-						Object hour=heightmap.get("0");
-						List<Object> hourlist = (ArrayList<Object>) hour;
+						String hour=heightmap.get("0").toString();
+						JSONArray hourlist= JSONArray.fromObject(hour);
+						
 						Map<String,Object> hourcmap=new HashMap();
 						if(hourlist.size()==24){
 						for(int a=0;a<=23;a++){
@@ -202,12 +204,12 @@ public class AppraisalController {
 					Map<String,Object> detamap=(Map)obj;
 					Map<String,Object> datemap=new HashMap();
 					for(String datetime:detamap.keySet()){
-						String sp=detamap.get("datetime").toString();
+						String sp=detamap.get(datetime).toString();
 						JSONObject spobj=JSONObject.fromObject(sp);//行业减排结果
 						Map<String,Object> spmap=(Map)spobj;
 						Map<String,Object> spcmap=new HashMap();
 						for(String spr:spmap.keySet()){
-							String height=spmap.get("spr").toString();
+							String height=spmap.get(spr).toString();
 							JSONObject heightobj=JSONObject.fromObject(height);//行业减排结果
 							Map<String,Object> heightmap=(Map)heightobj;
 							Map<String,Object> hourcmap=new HashMap();
@@ -225,10 +227,10 @@ public class AppraisalController {
 			
 
 			}
-			return	AmpcResult.ok();
+			return	AmpcResult.build(0, "success",scmap);
 		}catch(Exception e){
 			e.printStackTrace();
-			return	AmpcResult.ok();
+			return AmpcResult.build(0, "error");
 		}
 	}
 	
@@ -363,12 +365,18 @@ public class AppraisalController {
 							if(!heights.equals("12")){
 							JSONArray litarr=new JSONArray();
 							Object hour=heightmap.get(heights);
-						List<Object> hourlist = (ArrayList<Object>) hour;
+							JSONArray hourlist = JSONArray.fromObject(hour);
 						Map<String,Object> hourcmap=new HashMap();
 						if(hourlist.size()==24){
 						for(int a=0;a<=23;a++){
 							if(hournum-1==a){
-								litarr.add(new BigDecimal(heightmap.get(heights).toString()));
+								if(spr.equals("CO")){
+									BigDecimal bd=new BigDecimal(hourlist.getString(0));
+									litarr.add(bd.setScale(2, BigDecimal.ROUND_HALF_UP));
+									}else{
+										BigDecimal bd=new BigDecimal(hourlist.getString(0));
+										litarr.add(bd.setScale(1, BigDecimal.ROUND_HALF_UP));
+									}
 								if(heights.equals("0")){
 									litarr.add(0);
 								}else if(heights.equals("1")){
@@ -399,7 +407,13 @@ public class AppraisalController {
 							}
 						}else{
 							for(int a=0;a<=23;a++){
-								litarr.add(new BigDecimal(heightmap.get(heights).toString()));
+								if(spr.equals("CO")){
+									BigDecimal bd=new BigDecimal(hourlist.getString(0));
+									litarr.add(bd.setScale(2, BigDecimal.ROUND_HALF_UP));
+									}else{
+										BigDecimal bd=new BigDecimal(hourlist.getString(0));
+										litarr.add(bd.setScale(1, BigDecimal.ROUND_HALF_UP));
+									}
 								if(heights.equals("0")){
 									litarr.add(0);
 								}else if(heights.equals("1")){
@@ -458,7 +472,11 @@ public class AppraisalController {
 								if(!heights.equals("12")){
 							Map<String,Object> hourcmap=new HashMap();
 							JSONArray litarr=new JSONArray();
-							litarr.add(new BigDecimal(heightmap.get(heights).toString()));
+							if(spr.equals("CO")){
+								litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(2, BigDecimal.ROUND_HALF_UP));
+								}else{
+								litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));
+								}
 							if(heights.equals("0")){
 								litarr.add(0);
 							}else if(heights.equals("1")){
