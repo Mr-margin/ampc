@@ -92,7 +92,7 @@
  
  <!--添加区域对名称重复判断-->
   <select id="check_AreaName" parameterType="hashMap" resultType="int">
-  	 SELECT COUNT(*) FROM T_SCENARINO_AREA WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+  	 SELECT COUNT(*) FROM T_SCENARINO_AREA WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} AND SCENARINO_DETAIL_ID=#{scenarinoId,jdbcType=OTHER}
   	  <if test="areaName != null" >
         	AND AREA_NAME = #{areaName,jdbcType=OTHER}
       </if>
