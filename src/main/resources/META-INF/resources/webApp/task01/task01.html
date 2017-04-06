@@ -1,4 +1,3 @@
-
 <body>
 
 <div class="content rwContent">
@@ -15,7 +14,8 @@
           <div class="panel-body" style="padding:0px;border: none">
             <div id="rwToolbar" class="btn-group">
               <div class="col-md-4 cjsc">
-                <button type="button" class="btn btn-success" onclick="returnLeft('rw')" data-whatever="创建任务" data-type="rw" data-toggle="modal"
+                <button type="button" class="btn btn-success" onclick="returnLeft('rw')" data-whatever="创建任务"
+                        data-type="rw" data-toggle="modal"
                         data-target="#createRwModal">
                   <i class="glyphicon glyphicon-plus"></i> 创建
                 </button>
@@ -36,7 +36,8 @@
               </div>
               <div class="smallP col-md-2" style="display: none;">
                 <div class="dropdown">
-                  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <span class="seeName">全部</span>
                     <span class="caret"></span>
                   </button>
@@ -106,9 +107,10 @@
                   <th data-checkbox="true"></th>
                   <th data-formatter="qjName">情景名称</th>
                   <th data-formatter="qjOrder">操作</th>
-                  <th data-field="scenarinoStatuName">情景状态</th>
+                  <!--<th data-field="scenarinoStatuName">情景状态</th>-->
+                  <th data-formatter="qjStatus">情景状态</th>
                   <th data-formatter="qjType">类型</th>
-<!--                   <th data-formatter="qjEffectEvaluation"></th> -->
+                  <!--                   <th data-formatter="qjEffectEvaluation"></th> -->
                 </tr>
                 </thead>
               </table>
@@ -190,7 +192,8 @@
 
               <div class="col-md-10">
                 <input type="text" class="form-control" id="rwDate" name="rwStartDate" readonly placeholder="请选择日期···">
-                <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showRwDate()" style="cursor:pointer;position: absolute;font-size: 17px;right: 25px;top: 7px;"></i>
+                <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showRwDate()"
+                   style="cursor:pointer;position: absolute;font-size: 17px;right: 25px;top: 7px;"></i>
               </div>
               <div class="col-md-10 col-md-offset-2">
                 <span class="rwDateTip disNone" style="color: red;">预评估任务结束日期不应小于当前日期</span>
@@ -203,7 +206,9 @@
 
       </div>
       <div class="modal-footer new-foot">
-        <button type="button" class="btn btn-success return_S_rw" style="display: none" onclick="returnLeft('rw')">返回上一步</button>
+        <button type="button" class="btn btn-success return_S_rw" style="display: none" onclick="returnLeft('rw')">
+          返回上一步
+        </button>
         <button type="button" class="btn btn-success createRwBtn" style="display: none" onclick="createRw()">创建</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
       </div>
@@ -249,7 +254,8 @@
             </div>
             <div class="form-group mt10 clearfix dbqj">
               <label for="dbqj" class="col-md-2 control-label lh29">
-                <input style="position: absolute;left: -5px;top: 4px;" type="checkbox" class="chengeDB" onchange="checkedDB(this)"/>
+                <input style="position: absolute;left: -5px;top: 4px;" type="checkbox" class="chengeDB"
+                       onchange="checkedDB(this)"/>
                 对比情景
               </label>
 
@@ -303,8 +309,11 @@
 
       </div>
       <div class="modal-footer new-foot">
-        <button type="button" class="btn btn-success return_S_qj" style="display: none" onclick="returnLeft('yqj')">返回上一步</button>
-        <button type="button" class="btn btn-success createQjBtn" style="display: none" onclick="createQj('ypg')">创建</button>
+        <button type="button" class="btn btn-success return_S_qj" style="display: none" onclick="returnLeft('yqj')">
+          返回上一步
+        </button>
+        <button type="button" class="btn btn-success createQjBtn" style="display: none" onclick="createQj('ypg')">创建
+        </button>
         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
       </div>
     </div>
@@ -364,7 +373,8 @@
             <div class="diffNo">
               <div class="form-group mt10 clearfix dbqj1">
                 <label for="dbqj1" class="col-md-2 control-label lh29">
-                  <input style="position: absolute;left: -5px;top: 4px;" type="checkbox" class="chengeDB" onchange="checkedDB(this)"/>
+                  <input style="position: absolute;left: -5px;top: 4px;" type="checkbox" class="chengeDB"
+                         onchange="checkedDB(this)"/>
                   对比情景
                 </label>
 
@@ -387,7 +397,7 @@
                 <label for="jcdate1" class="col-md-2 control-label lh29">基础日期</label>
 
                 <div class="col-md-10">
-                  <select name="jcdate1" id="jcdate1" class="form-control jcdate"  onchange="changeJcDate1(this)">
+                  <select name="jcdate1" id="jcdate1" class="form-control jcdate" onchange="changeJcDate1(this)">
                     <option value="1">1</option>
                   </select>
                 </div>
@@ -414,14 +424,103 @@
           </form>
 
 
-
         </div>
 
       </div>
       <div class="modal-footer new-foot">
-        <button type="button" class="btn btn-success return_S_qj" style="display: none" onclick="returnLeft('hqj')">返回上一步</button>
-        <button type="button" class="btn btn-success createQjBtn" style="display: none" onclick="createQj('hpg')">创建</button>
+        <button type="button" class="btn btn-success return_S_qj" style="display: none" onclick="returnLeft('hqj')">
+          返回上一步
+        </button>
+        <button type="button" class="btn btn-success createQjBtn" style="display: none" onclick="createQj('hpg')">创建
+        </button>
         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#startUp">
+  启动按钮
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="startUp" tabindex="-1" role="dialog" aria-labelledby="startUpLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="startUpLabel">启动模式</h4>
+      </div>
+      <div class="modal-body">
+        <div class="header">
+          <div class="w25h50">计算资源（CPU）</div>
+          <div class="w25h50">描述</div>
+          <div class="w25h50">耗时预期（h）</div>
+          <div class="w25h50">机时预期（cpu·h）</div>
+        </div>
+        <div class="body">
+          <div class="w25h50 cpu"><input type="radio" name="cpuNum" value="16"/> <span>16</span></div>
+          <div class="w25h50">正常速度</div>
+          <div class="w25h50 baseTime">6h</div>
+          <div class="w25h50 allTime">96</div>
+          <div class="w25h50 cpu"><input type="radio" name="cpuNum" value="32" checked/> <span>32</span></div>
+          <div class="w25h50">较快</div>
+          <div class="w25h50 baseTime">4h</div>
+          <div class="w25h50 allTime">128</div>
+          <div class="w25h50 cpu"><input type="radio" name="cpuNum"  value="48"/> <span>48</span></div>
+          <div class="w25h50">高速</div>
+          <div class="w25h50 baseTime">3h</div>
+          <div class="w25h50 allTime">144</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" onclick="subStartUp()">提交</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal 减排状态查看 -->
+<div class="modal fade" id="jpzt" tabindex="-1" role="dialog" aria-labelledby="jpztLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="jpztLabel">减排计算状态</h4>
+      </div>
+      <div class="modal-body text-center">
+        <div class="row  mt20 mb20">
+          <div class="col-md-3">计算进度</div>
+          <div class="col-md-3">已用时</div>
+          <div class="col-md-3">剩余时间预计</div>
+          <div class="col-md-3">计算速度</div>
+        </div>
+        <div style="width: 100%;height: 3px;background-color: #909090"></div>
+        <div class="row  mt20 mb20">
+          <div class="col-md-3 jsjd"></div>
+          <div class="col-md-3 yys"></div>
+          <div class="col-md-3 sysj"></div>
+          <div class="col-md-3 jssd"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="footerShow"
+             style="text-align: left;margin-left: 10px;width:calc(100% - 150px);float: left;padding: 8px 0px 5px 0px;">
+          <div class='col-md-6 rw' style="padding: 0px 0px 0px 0px;">
+            <h5>当前任务：<span></span></h5>
+          </div>
+          <div class='col-md-5 col-md-offset-1 qj' style="padding: 0px 0px 0px 0px;">
+            <h5>当前情景：<span></span></h5>
+          </div>
+        </div>
+        <button type="button" class="btn btn-success" onclick="jpztckBtn()">刷新</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
       </div>
     </div>
   </div>

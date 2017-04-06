@@ -1137,6 +1137,7 @@ function createEditArea() {
       } else {
         $('#' + $('#areaName').attr('data-id')).find('b').html(areaName);
       }
+      $('#editArea').modal('hide');
     })
   }
 }
@@ -1352,23 +1353,45 @@ function delNode0(node) {
 
 function delNode12(node) {
   var parNode = node.getParentNode();
+  var parTrue;
   if (!showCode[node.level][parNode.adcode]) {
     if (node.level == 1) {
+      if($.isEmptyObject(showCode[node.level-1])){
+        parTrue = true;
+      }else{
+        parTrue = false;
+      }
       delNode0(parNode);
     } else {
       delNode12(parNode);
     }
-    showCode[node.level][parNode.adcode] = {};
-    var child = parNode.children;
-    for (var n = 0; n < child.length; n++) {
-      if (!child[n].chkDisabled) {
-        showCode[node.level][parNode.adcode][child[n].adcode] = child[n].name;
+    if(node.level == 1){
+      if(!parTrue){
+        showCode[node.level][parNode.adcode] = {};
+        var child = parNode.children;
+        for (var n = 0; n < child.length; n++) {
+          if (!child[n].chkDisabled) {
+            showCode[node.level][parNode.adcode][child[n].adcode] = child[n].name;
+          }
+        }
+      }
+    }else{
+      showCode[node.level][parNode.adcode] = {};
+      var child = parNode.children;
+      for (var n = 0; n < child.length; n++) {
+        if (!child[n].chkDisabled) {
+          showCode[node.level][parNode.adcode][child[n].adcode] = child[n].name;
+        }
       }
     }
+
   }
   delete showCode[node.level][parNode.adcode][node.adcode];
   if ($.isEmptyObject(showCode[node.level][parNode.adcode])) {
     delete showCode[node.level][parNode.adcode];
+  }
+  if(node.level == 1){
+    delete showCode[node.level+1][node.adcode];
   }
 }
 
