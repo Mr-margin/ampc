@@ -1138,6 +1138,7 @@ function createEditArea() {
         $('#' + $('#areaName').attr('data-id')).find('b').html(areaName);
       }
       $('#editArea').modal('hide');
+      $('#' + $('#areaName').attr('data-id')).find('button.btn-flash').removeClass('btn-flash');
     })
   }
 }
