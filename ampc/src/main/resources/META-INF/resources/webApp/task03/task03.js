@@ -37,7 +37,7 @@ if(!qjMsg){
 /**
  * 设置导航条菜单
  */
-$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">预案管理</a>>><span style="padding-left: 15px;padding-right: 15px;">措施管理('+qjMsg.planName+')</span>');
+$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景编辑</a>>><span style="padding-left: 15px;padding-right: 15px;">措施编辑('+qjMsg.planName+')</span>');
 
 
 $('.csCon').removeClass('disNone');
