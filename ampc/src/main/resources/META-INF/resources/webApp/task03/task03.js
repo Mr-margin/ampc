@@ -348,8 +348,11 @@ var measureame_temp_en = "";//措施名称英文
 var query = [];//返回的条件内容
 var zongdianyaun = [];//当前行业措施下的总的点源数据
 
-var m_mid,m_planId,m_sectorName,m_planMeasureId;
+var columns = [];//模态框内表格显示的表头
+var point_z = [];//点源总数
 
+var m_mid,m_planId,m_sectorName,m_planMeasureId;
+var stname;//当前选择的行业
 /**
  * 打开措施的窗口，数据初始化
  * sectorsName:行业名称
@@ -360,7 +363,7 @@ var m_mid,m_planId,m_sectorName,m_planMeasureId;
 function open_cs(sectorsName, measureame, mid, planMeasureId){
 	$("#measureame").html("措施："+measureame);//发开弹出窗，设置标题、行业、措施等内容
 	$("#sectorsName").html("行业："+sectorsName);
-	
+	stname = sectorsName;
 	$("#dianyaunzushu").html("");//清空点源与占比
 	$("#xiangxizhibiao").html("");
 	
@@ -383,7 +386,9 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 	sc_val.summary = {};
 	sc_val.regionIds = Codes;
 	
-	var columns = [];
+	columns = [];
+	point_z = [];//点源总数
+	
 	var b_data = [];
 	
 	ajaxPost('/measure/get_measureQuery',paramsName).success(function(res){
@@ -576,19 +581,22 @@ function open_cs(sectorsName, measureame, mid, planMeasureId){
 			
 			zongdianyaun = [];
 			
-			if(res.data.query.length>0){//返回筛选条件，说明有点源可以筛选
+			//if(res.data.query.length>0){//返回筛选条件，说明有点源可以筛选
 				ajaxPost_w(jianpaiUrl+'/search/companyCount',{"bigIndex":qjMsg.esCouplingId,"smallIndex":sectorsName,"regionIds":Codes}).success(function(res){
 //					console.log(JSON.stringify(res));
 					if(res.status == 'success'){
 						$("#dianyaunzushu").html("点源总数："+res.data.count);
 						$("#xiangxizhibiao").html("点源排放占比:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SO<sub>2</sub>:"+res.data.rate.SO2+"%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO<sub>x</sub>:"+res.data.rate.NOx+"%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PM<sub>2.5</sub>:"+res.data.rate.PM25+"%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VOCs:"+res.data.rate.VOC+"%");
 						add_point(res.data.company);
+						
+						point_z = res.data.company;//记录点源总数
+						
 						zongdianyaun = res.data.company;//复制总点源数据以后备用
 					}else{
 						swal('连接错误search/companyCount', '', 'error');
 					}
 				});
-			}
+			//}
 			
 			//子措施列表的表头
 			columns.push({field: 'state', title: '', align: 'center', checkbox: true, formatter: function(value, row, index){
@@ -1815,10 +1823,11 @@ var point_message = "";
 var clusterLayer_ttft = "";
 //地图加点
 function add_point(col){
-	console.log(JSON.stringify(col));
+//	console.log(JSON.stringify(col));
 	
 	if(clusterLayer_ttft != ""){
 		app.mapList[1].removeLayer(clusterLayer_ttft);//清空已有的点位信息
+		app.mapList[1].infoWindow.hide();
 	}
 	var photoInfo = {};
 	var point_sz = [];
@@ -1844,7 +1853,7 @@ function add_point(col){
 						ymax = y > ymax ? y : ymax;
 					}
 					var attributes = {  
-						"companyId": "<a onClick=\"alert('"+vol.companyId+"');\">"+vol.companyId+"</a>"
+						"企业名称": "<a id=\"companyId_h\" onClick=\"companyInfo('"+vol.companyId+"');\">"+vol.companyname+"</a>"
 					};
 					point_sz[k]= {"x":x,"y":y,"attributes":attributes};
 					k++;
@@ -1893,6 +1902,69 @@ function add_point(col){
 	}
 }
 
+/**
+ * 点击make点事件，显示企业排放信息
+ * @param companyId
+ */
+function companyInfo(companyId){
+	
+	if(typeof companyId != "undefined" && companyId != ""){
+//		console.log(JSON.stringify(sc_val.summary));
+		ajaxPost_w(jianpaiUrl+'/search/companyInfo',{"bigIndex":qjMsg.esCouplingId,"smallIndex":stname,"regionIds":Codes,"summary":sc_val.summary,"append":{"companyId":companyId}}).success(function(res){
+//			console.log(JSON.stringify(res));
+			if(res.status == 'success'){
+				
+				var info_html = '<table class="table table-bordered table-striped"><thead><tr><td>指标项</td><td>排放量</td><td>控制量</td></tr></thead><tbody>';
+				
+				$.each(res.data.total, function(i, vol) {
+					info_html += "<tr>";
+					
+					$.each(columns, function(k, col) {
+						if(col.field == i && i != "count"){
+							info_html += '<td>'+col.title+'</td>';
+							
+							info_html += '<td>'+liangtoFixed(vol)+'</td>';
+							
+							info_html += '<td></td>';
+						}
+					});
+					info_html += "</tr>";
+				});
+				info_html += '</tbody></table>';
+				
+				var ys = $(info_html);
+				$("#companyId_h").parent().after(ys);
+				
+			}else{
+				swal('连接错误search/companyCount', '', 'error');
+			}
+		});
+		
+		
+	}
+	
+}
+
+/**
+ * 保留两位有效数字
+ * @param jk
+ * @returns
+ */
+function liangtoFixed(jk){
+	if(jk >= 1 || jk == 0){
+		return jk.toFixed(2);
+	}else{
+		
+		var k = 2;//默认小数点保留两位
+		var tted;
+		do{
+			tted = jk.toFixed(k);
+			k++;
+		}while(tted.substring(tted.length-2,tted.length-1) == "0" || tted.substring(tted.length-1,tted.length) == "0");
+		return tted;
+	}
+	
+}
 
 
 
