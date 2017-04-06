@@ -14,11 +14,11 @@ var changeMsg = {
   pro: '',//站点选择
   city: '',
   station: '',
-  height:9,//高度选择
+  height: 9,//高度选择
   rms: 'day',//时间分辨率
   time: '',//时间选择
-  scenarinoId : [],//选择的情景Id数组
-  scenarinoName : [],//选择的情景名称数组
+  scenarinoId: [],//选择的情景Id数组
+  scenarinoName: [],//选择的情景名称数组
 };
 var speciesArr = {
   day: ['PM25', 'PM10', 'O3_8_max', 'O3_1_max', 'O3_avg', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE'],
@@ -27,8 +27,8 @@ var speciesArr = {
 /*echarts 配置*/
 var optionAll = {
   title: {
-	bottom:10,
-	left:"40%",
+    bottom: 10,
+    left: "40%",
     text: ''  //可变，存储每个污染物
   },
   legend: {
@@ -51,11 +51,11 @@ var optionAll = {
     formatter: function (params, ticket, callback) {
 
       var hm = params[0].axisValue + 'm<br />';
-      for(var i=0;i<params.length;i++){
-        if(i == params.length-1){
-          hm = hm+'<i style="width:10px;height:10px;display:inline-block;border-radius:100%;background-color: ' + params[i].color + ';"></i> ' + params[i].seriesName + ' : ' + params[i].data[0]
-        }else{
-          hm = hm+'<i style="width:10px;height:10px;display:inline-block;border-radius:100%;background-color: ' + params[i].color + ';"></i> ' + params[i].seriesName + ' : ' + params[i].data[0] + '<br />'
+      for (var i = 0; i < params.length; i++) {
+        if (i == params.length - 1) {
+          hm = hm + '<i style="width:10px;height:10px;display:inline-block;border-radius:100%;background-color: ' + params[i].color + ';"></i> ' + params[i].seriesName + ' : ' + params[i].data[0]
+        } else {
+          hm = hm + '<i style="width:10px;height:10px;display:inline-block;border-radius:100%;background-color: ' + params[i].color + ';"></i> ' + params[i].seriesName + ' : ' + params[i].data[0] + '<br />'
         }
       }
 
@@ -70,7 +70,7 @@ var optionAll = {
   },
   yAxis: {
     name: '/m',
-    nameGap:5,
+    nameGap: 5,
     type: 'value',
     interval: 500,
     axisLine: {onZero: false},
@@ -106,14 +106,14 @@ function initialize() {
 
   changeMsg.scenarinoId = [];
   changeMsg.scenarinoName = [];
-  for(var i=0;i<sceneInitialization.data.length;i++){
+  for (var i = 0; i < sceneInitialization.data.length; i++) {
     changeMsg.scenarinoId.push(sceneInitialization.data.scenarinoId);
     changeMsg.scenarinoName.push(sceneInitialization.data.scenarinoName);
   }
 
   setStation(sceneInitialization.taskID);
   setTime(sceneInitialization.s, sceneInitialization.e);
-  $.when(dps_station).then(function(){
+  $.when(dps_station).then(function () {
     updata();
   });
   //initEcharts();
@@ -131,7 +131,7 @@ function setStation(id) {
     userId: userId,
     missionId: id
   }).success(function (res) {
-    if(res.status == 0){
+    if (res.status == 0) {
       allStation = res.data;
       for (var pro in allStation) {
         $('#proStation').append($('<option value="' + allStation[pro].code + '">' + allStation[pro].name + '</option>'))
@@ -148,7 +148,7 @@ function setStation(id) {
       changeMsg.pro = $('#proStation').val();
       changeMsg.city = $('#cityStation').val();
       changeMsg.station = $('#station').val();
-    }else{
+    } else {
       console.log('站点请求故障！！！')
     }
   })
@@ -160,31 +160,21 @@ function setTime(s, e) {
   s = moment(s - 0);
   e = moment(e - 0);
   $('#sTime-d').empty();
-  while(true) {
+  while (true) {
     $('#sTime-d').append($('<option>' + s.format('YYYY-MM-DD') + '</option>'));
-    if(e.format('YYYY-MM-DD')=='Invalid date'){
-      return;
+    if (e.format('YYYY-MM-DD') == 'Invalid date') {
+      break;
     }
     if (e.isBefore(s.add(1, 'd'))) {
-      return;
+      break;
     }
   }
-  changeMsg.time = $('#sTime-d').val()+' 00'
+  changeMsg.time = $('#sTime-d').val() + ' 00'
 }
 
 
 function initEcharts() {
   var data = czData;
-  //var data = {
-  //  '191': {
-  //    CO: [[12, 0], [20, 50], [25, 100],[15,200],[43,300]],
-  //    CO2: [[12, 0], [20, 50], [25, 100]]
-  //  },
-  //  '192': {
-  //    CO: [[12, 0], [20, 50], [25, 100]],
-  //    CO2: [[12, 0], [20, 50], [25, 100]]
-  //  }
-  //};
   $('#initEcharts').empty();
   var species = speciesArr[changeMsg.rms];
   for (var i = 0; i < species.length; i++) {
@@ -216,7 +206,7 @@ function initEcharts() {
     }
     option.series = [];
     for (var sp = 0; sp < sceneInitialization.data.length; sp++) {
-    //for (var sp = 0; sp < 5; sp++) {
+      //for (var sp = 0; sp < 5; sp++) {
       var id = sceneInitialization.data[sp].scenarinoId;
       var name = sceneInitialization.data[sp].scenarinoName;
 
@@ -366,8 +356,6 @@ function save_scene() {
 }
 
 
-
-
 $('input[name=rms]').on('change', function (e) { //时间分辨率选择
   var rms = $(e.target).val();
   changeMsg.rms = rms;
@@ -395,7 +383,7 @@ $('#proStation').on('change', function (e) {
   }
   changeMsg.city = $('#cityStation').val();
   var station = cityStation[changeMsg.city].station;
-  for(var s in station){
+  for (var s in station) {
     $('#station').append($('<option value="' + station[s].code + '">' + station[s].name + '</option>'))
   }
   changeMsg.station = $('#station').val();
@@ -447,19 +435,25 @@ $('#height').on('change', function (e) {
 var czData;
 /*设置echarts图表*/
 function updata() {
-  var url = '';
-  var echartsData = ajaxPost(url,{
-    userId:userId,
+  var url = '/Appraisal/find_vertical';
+  var echartsData = ajaxPost(url, {
+    userId: userId,
+    missionId:sceneInitialization.taskID,
+    mode:changeMsg.station=='avg'?'city':'point',
+    time:changeMsg.time,
+    cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
+    scenarinoId:changeMsg.scenarinoId,
+    datetype:changeMsg.rms
   });
 
-  $.when(echartsData).then(function(res){
-    if(res.status == 0){
+  $.when(echartsData).then(function (res) {
+    if (res.status == 0) {
       czData = res.data;
       initEcharts();
-    }else{
+    } else {
       console.log(res.msg)
     }
-  },function(){
+  }, function () {
     console.log('接口故障！！！')
   })
 }

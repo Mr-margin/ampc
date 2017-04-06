@@ -346,6 +346,7 @@ function initQjTable() {
     onClickRow: function (row, $element) {
       msg.content.rwId = selectRW.missionId;
       msg.content.rwName = selectRW.missionName;
+      msg.content.rwType = selectRW.missionStatus;
       msg.content.qjName = row.scenarinoName;
       msg.content.qjId = row.scenarinoId;
       msg.content.qjStartDate = row.scenarinoStartDate;
@@ -355,7 +356,9 @@ function initQjTable() {
       msg.content.esCodeRange = selectRW.esCodeRange.split(',');
       msg.content.scenarinoStatus = row.scenarinoStatus;
       msg.content.scenarinoStatuName = row.scenarinoStatuName;
+      msg.content.SCEN_TYPE = row.SCEN_TYPE;
       vipspa.setMessage(msg);
+      console.log(row)
     },
     /*复选框设置*/
     onCheck: function (row) {
@@ -436,8 +439,16 @@ function qjType(v, row, i) {
   return type
 }
 
+function qjStatus(v, row, i){
+  if(row.scenarinoStatus == 3 || row.scenarinoStatus == 6){
+    return '<a href="javascript:" class="statusType">'+ row.scenarinoStatuName +'</a>'
+  }else{
+    return row.scenarinoStatuName
+  }
+}
+
 function qjOrder(v, row, i) {
-  return '<button class="btn btn-success mb10 mr10">启动</button>' +
+  return '<button class="btn btn-success mb10 mr10" data-toggle="modal" data-target="#startUp">启动</button>' +
     '<button class="btn btn-success mb10">终止</button>' +
     '<br/>' +
     '<button class="btn btn-success mr10">续跑</button>' +
@@ -1199,6 +1210,110 @@ function createQj(type) {
   }
 
 }
+
+$('body').on('click','.statusType',function(){
+  if(msg.content.scenarinoStatus == 3){
+    $('#jpzt').modal('show');
+  }else if(msg.content.scenarinoStatus == 6){
+    switch(msg.content.SCEN_TYPE){
+      case '1':
+        return
+      case '2':
+        return
+      case '3':
+        return
+    }
+  }
+})
+
+$('#startUp').on('show.bs.modal', function (event) {
+  var num = Math.round((msg.content.qjEndDate - msg.content.qjStartDate)/1000/60/60/24);
+  var url = '/getCores/spentTimes';
+  ajaxPost(url,{
+    userId:userId,
+    missionId:msg.content.rwId,
+    missionType:msg.content.rwType,
+    scenarinoType:msg.content.SCEN_TYPE
+  }).success(function(res){
+    if(res.status==0){
+      $('.cpu span').empty();
+      $('.baseTime').empty();
+      $('.allTime').empty();
+      for(var i=0;i<res.data.length;i++){
+        $('.cpu span').eq(i).html(res.data[i].cores);
+        $('.cpu input').eq(i).val(res.data[i].cores);
+        $('.baseTime').eq(i).html((res.data[i].avgTime-0)*num + 'h');
+        $('.allTime').eq(i).html((res.data[i].avgTime-0)*num*(res.data[i].cores-0));
+      }
+    }else{
+      console.log('接口故障！！！')
+    }
+  }).error(function(){
+    console.log('接口未成功发送')
+  })
+})
+
+function subStartUp(){
+  var url = 'aaaaaaaaaaaaaaaaaaa';
+  ajaxPost(url,{
+    userId:userId,
+    scenarinoId:msg.content.qjId,
+    missionId:msg.content.rwId,
+    scenarinoType:msg.content.SCEN_TYPE,
+    cores:$('input[name=cpuNum]:checked').val()
+  }).success(function(res){
+
+  })
+}
+
+
+/*减排状态查看*/
+function jpztckBtn() {
+  var url = '/jp/areaStatusJp';
+  var params = {
+    scenarinoId: msg.content.qjId,
+    areaAndPlanIds: '',
+    userId: userId
+  };
+  ajaxPost(url, params).success(function (res) {
+
+    if (res.status == 0) {
+      if (res.data.type == 0) {
+        var jsjd = res.data.percent * 100 + '%';
+        var yys = moment(res.data.time * 1000).subtract(8, 'h').format('HH时mm分ss秒');
+        var sysj = moment((res.data.time / res.data.percent - res.data.time) * 1000).subtract(8, 'h').format('HH时mm分ss秒');
+
+        $('.jsjd').empty().html(jsjd);
+        $('.yys').empty().html(yys);
+        $('.sysj').empty().html(sysj);
+
+        if (res.data.percent == 1) {
+          var url = '/scenarino/find_Scenarino_status';
+          ajaxPost(url, {
+            userId: userId,
+            scenarinoId: qjMsg.qjId
+          }).success(function (res) {
+            qjMsg.scenarinoStatus = res.data.scenarinoStatus;
+            scenarinoType(qjMsg.scenarinoStatus);
+          })
+        }
+      } else if (res.data.type == 1) {
+        console.log('重新计算中！！！')
+      } else {
+        console.log('计算接口异常')
+      }
+    } else {
+      console.log('接口故障')
+    }
+
+  })
+}
+
+$('#jpzt').on('show.bs.modal', function (event) {
+  $('#jpzt .rw span').empty().html(selectRW.missionName);
+  $('#jpzt .qj span').empty().html(msg.content.qjName);
+  jpztckBtn();
+})
 
 /*获取模拟范围*/
 function getMnfw() {
