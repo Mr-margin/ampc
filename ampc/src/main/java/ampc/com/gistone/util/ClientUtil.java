@@ -36,7 +36,7 @@ public class ClientUtil {
 	
 	
 	/**
-	 * 执行Post请求
+	 * 执行Post请求 带参数
 	 * @param url
 	 * @param param
 	 * @return
@@ -68,6 +68,11 @@ public class ClientUtil {
 		return resultString;
 	}
 
+	/**
+	 * 执行Post请求 不带参数
+	 * @param url
+	 * @return
+	 */
 	public static String doPost(String url) {
 		return doPost(url, null);
 	}
