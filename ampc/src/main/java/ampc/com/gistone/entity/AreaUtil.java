@@ -21,7 +21,7 @@ public class AreaUtil {
     private JSONArray provinceCodes;
     //市级区域代码数
     private JSONArray cityCodes;
-    //区县区域代码数
+    //区县区域代码数 
     private JSONArray countyCodes;
 	
 	public JSONArray getProvinceCodes() {
