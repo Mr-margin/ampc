@@ -5,9 +5,9 @@ import java.util.Date;
 public class TPlanMeasureReuse {
     private Long planMeasureReuseId;
 
-    private Long planId;
+    private Long planReuseId;
 
-    private Long sectorId;
+    private Object sectorName;
 
     private Long measureId;
 
@@ -17,7 +17,13 @@ public class TPlanMeasureReuse {
 
     private Date deleteTime;
 
-    private String measureContent;
+    private String implementationScope;
+
+    private String reductionRatio;
+
+    private String ratio;
+
+    private Long userId;
 
     public Long getPlanMeasureReuseId() {
         return planMeasureReuseId;
@@ -27,20 +33,20 @@ public class TPlanMeasureReuse {
         this.planMeasureReuseId = planMeasureReuseId;
     }
 
-    public Long getPlanId() {
-        return planId;
+    public Long getPlanReuseId() {
+        return planReuseId;
     }
 
-    public void setPlanId(Long planId) {
-        this.planId = planId;
+    public void setPlanReuseId(Long planReuseId) {
+        this.planReuseId = planReuseId;
     }
 
-    public Long getSectorId() {
-        return sectorId;
+    public Object getSectorName() {
+        return sectorName;
     }
 
-    public void setSectorId(Long sectorId) {
-        this.sectorId = sectorId;
+    public void setSectorName(Object sectorName) {
+        this.sectorName = sectorName;
     }
 
     public Long getMeasureId() {
@@ -75,11 +81,35 @@ public class TPlanMeasureReuse {
         this.deleteTime = deleteTime;
     }
 
-    public String getMeasureContent() {
-        return measureContent;
+    public String getImplementationScope() {
+        return implementationScope;
     }
 
-    public void setMeasureContent(String measureContent) {
-        this.measureContent = measureContent == null ? null : measureContent.trim();
+    public void setImplementationScope(String implementationScope) {
+        this.implementationScope = implementationScope == null ? null : implementationScope.trim();
+    }
+
+    public String getReductionRatio() {
+        return reductionRatio;
+    }
+
+    public void setReductionRatio(String reductionRatio) {
+        this.reductionRatio = reductionRatio == null ? null : reductionRatio.trim();
+    }
+
+    public String getRatio() {
+        return ratio;
+    }
+
+    public void setRatio(String ratio) {
+        this.ratio = ratio == null ? null : ratio.trim();
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }
