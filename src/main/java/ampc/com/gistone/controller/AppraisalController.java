@@ -19,20 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TPreProcessMapper;
@@ -56,7 +42,13 @@ public class AppraisalController {
 	
 	@Autowired
 	private TPreProcessMapper tPreProcessMapper;
-	
+	/**
+	 * 时间序列查询
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping("Appraisal/find_appraisal")
 	public AmpcResult find_appraisal(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){ 
 		try{
@@ -117,11 +109,11 @@ public class AppraisalController {
 					scenarinoEntity.setMode(mode);
 					scenarinoEntity.setsId(scenarinoId);
 					scenarinoEntity.setTableName(tables);
-					sclist=tPreProcessMapper.selectBysome(scenarinoEntity);	
+					sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 				}//时间分布判断
 					
-				}//任务开始时间与系统开始时间对比	
-				//任务类型		
+				}//任务开始时间与系统开始时间对比
+				//任务类型
 			}else{
 				if(datetype.equals("day")){//逐天
 					String tables="T_SCENARINO_DAILY_";
@@ -233,7 +225,13 @@ public class AppraisalController {
 		}
 	}
 	
-	
+	/**
+	 * 垂直分布查询
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping("Appraisal/find_vertical")
 	public AmpcResult find_vertical(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
 		try{
