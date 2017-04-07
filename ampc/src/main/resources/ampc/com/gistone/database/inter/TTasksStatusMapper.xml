@@ -225,7 +225,7 @@
   
   
   
-  <!--添加执行模式执行的结果  -->
+  <!--添加执行模式执行的结果  BEIZHU = #{beizhu,jdbcType=VARCHAR}-->
   <update id="updateStatus" parameterType="ampc.com.gistone.database.model.TTasksStatus">
   update T_TASKS_STATUS
   set ERROR_STATUS = #{errorStatus,jdbcType=VARCHAR},
@@ -270,10 +270,15 @@
   where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </select>
   <!--跟新tasks的可用状态  -->
-  <update id="updateRunstatus" parameterType="hashMap">
+  <update id="updateRunstatus" parameterType="ampc.com.gistone.database.model.TTasksStatus">
   update T_TASKS_STATUS
   set BEIZHU = #{beizhu,jdbcType=VARCHAR}
   where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </update>
-  
+  <!--获取最新的实时预报的运行过得状态  -->
+  <select id="getlastrunstatus" resultType="java.util.Date">
+ SELECT MIN(PATH_DATE) 
+ FROM T_SCENARINO_DETAIL A LEFT JOIN T_TASKS_STATUS B ON A.SCENARINO_ID=B.TASKS_SCENARINO_ID
+ WHERE A.SCENARINO_TYPE='4' AND B.BEIZHU='0'
+  </select>
 </mapper>
