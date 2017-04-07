@@ -1904,13 +1904,13 @@ require(
 
 			app.outline = new dong.SimpleLineSymbol("solid", new dong.Color("#444"), 1);
 			app.symbol = new dong.SimpleFillSymbol("solid", app.outline, new dong.Color([221, 160, 221, 0.65]));
-			app.featureLayer1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/2", {//添加省的图层
+			app.featureLayer1 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/ampc/cms/MapServer/2", {//添加省的图层
 				mode: dong.FeatureLayer.MODE_ONDEMAND
 			});
-			app.featureLayer2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/1", {//市的图层
+			app.featureLayer2 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/ampc/cms/MapServer/1", {//市的图层
 				mode: dong.FeatureLayer.MODE_ONDEMAND
 			});
-			app.featureLayer3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/0", {//区县的图层
+			app.featureLayer3 = new dong.FeatureLayer(ArcGisServerUrl + "/arcgis/rest/services/ampc/cms/MapServer/0", {//区县的图层
 				mode: dong.FeatureLayer.MODE_ONDEMAND
 			});
 
