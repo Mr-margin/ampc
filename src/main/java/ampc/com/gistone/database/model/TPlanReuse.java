@@ -11,23 +11,21 @@ public class TPlanReuse {
 
     private Date addTime;
 
-    private Long timeId;
+    private Date timeStartTime;
 
     private Date deleteTime;
 
     private String isEffective;
 
-    private Long scenarioId;
+    private Object scenarioName;
 
-    private Long missionId;
+    private Object missionName;
 
-    private Date planReuseStartTime;
-
-    private Date planReuseEndTime;
-
-    private Long areaId;
+    private Object areaName;
 
     private Long oldPlanId;
+
+    private Date timeEndTime;
 
     public Long getPlanReuseId() {
         return planReuseId;
@@ -61,12 +59,12 @@ public class TPlanReuse {
         this.addTime = addTime;
     }
 
-    public Long getTimeId() {
-        return timeId;
+    public Date getTimeStartTime() {
+        return timeStartTime;
     }
 
-    public void setTimeId(Long timeId) {
-        this.timeId = timeId;
+    public void setTimeStartTime(Date timeStartTime) {
+        this.timeStartTime = timeStartTime;
     }
 
     public Date getDeleteTime() {
@@ -85,44 +83,28 @@ public class TPlanReuse {
         this.isEffective = isEffective == null ? null : isEffective.trim();
     }
 
-    public Long getScenarioId() {
-        return scenarioId;
+    public Object getScenarioName() {
+        return scenarioName;
     }
 
-    public void setScenarioId(Long scenarioId) {
-        this.scenarioId = scenarioId;
+    public void setScenarioName(Object scenarioName) {
+        this.scenarioName = scenarioName;
     }
 
-    public Long getMissionId() {
-        return missionId;
+    public Object getMissionName() {
+        return missionName;
     }
 
-    public void setMissionId(Long missionId) {
-        this.missionId = missionId;
+    public void setMissionName(Object missionName) {
+        this.missionName = missionName;
     }
 
-    public Date getPlanReuseStartTime() {
-        return planReuseStartTime;
+    public Object getAreaName() {
+        return areaName;
     }
 
-    public void setPlanReuseStartTime(Date planReuseStartTime) {
-        this.planReuseStartTime = planReuseStartTime;
-    }
-
-    public Date getPlanReuseEndTime() {
-        return planReuseEndTime;
-    }
-
-    public void setPlanReuseEndTime(Date planReuseEndTime) {
-        this.planReuseEndTime = planReuseEndTime;
-    }
-
-    public Long getAreaId() {
-        return areaId;
-    }
-
-    public void setAreaId(Long areaId) {
-        this.areaId = areaId;
+    public void setAreaName(Object areaName) {
+        this.areaName = areaName;
     }
 
     public Long getOldPlanId() {
@@ -131,5 +113,13 @@ public class TPlanReuse {
 
     public void setOldPlanId(Long oldPlanId) {
         this.oldPlanId = oldPlanId;
+    }
+
+    public Date getTimeEndTime() {
+        return timeEndTime;
+    }
+
+    public void setTimeEndTime(Date timeEndTime) {
+        this.timeEndTime = timeEndTime;
     }
 }

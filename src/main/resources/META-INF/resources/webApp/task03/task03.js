@@ -1117,6 +1117,7 @@ function search_name_button(){
 		var ttqr = {};
 		ttqr.companyname = "%"+$("#qiye_name").val()+"%";
 		sc_val.filters.push(ttqr);
+		point_name_info = [];
 		//根据筛选条件获取点源，准备填写空值系数
 		point_name_table();
 		
@@ -1213,6 +1214,8 @@ function point_table () {
 	});
 }
 
+var point_name_info = [];//按名称查询时候的坐标
+
 //筛选点源列表---按名称查询
 function point_name_table () {
 	poi_name_or_pub = "name";//记录当前的筛选条件是按照属性来，还是按照名称来
@@ -1246,9 +1249,10 @@ function point_name_table () {
 //				console.log(JSON.stringify(res));
 				if(res.data.append.total.length>0){//加地图坐标
 					add_point(res.data.append.total);
+					point_name_info = res.data.append.total;
 				}
 				$.each(res.data.rows, function(k, vol) {
-					vol.caozuo = '<a onClick="delete_sc_name(\''+vol.id+'\');">删除</a>';
+					vol.caozuo = '<a onClick="delete_sc_name(\''+vol.id+'\',\''+vol.companyId+'\');">删除</a>';
 				});
 				return res.data.rows;
 			}else if(res.status == 'fail' && res.error == '查询数据超过50条'){//筛选结果大于50条
@@ -1281,8 +1285,28 @@ var boolean_delete_sc_name = false;//记录是否删除过按名称筛选的结�
  * 删除按名称筛选的结果
  * vval:id的值
  */
-function delete_sc_name(vval){
+function delete_sc_name(vval, cid){
 	$('#metTable_name_point').bootstrapTable('remove', {field: 'id',values: [vval]});
+	
+	var row = $('#metTable_name_point').bootstrapTable('getData')
+	var ttgu = true;
+	$.each(row, function(i, col) {//循环表格现有的数据，判断删除的企业是否还在表格内存在，多个设备的问题
+		if(col.companyId == cid){
+			ttgu = false;//同一个企业还要没删除干净的
+		}
+	});
+	
+	if(ttgu){//同一个企业全部都删除完了
+		var xin = [];
+		$.each(point_name_info, function(i, col) {//在保存的店坐标中，将没有出现的企业保存为新的记录
+			if(col.companyId != cid){
+				xin.push(col);
+			}
+		});
+		add_point(xin);
+		point_name_info = xin;
+	}
+	
 	boolean_delete_sc_name = true;
 }
 
@@ -1686,15 +1710,15 @@ function xishu_close(){
 			$("#mic_name").hide();//按名称筛选结果div隐藏
 		}else if(poi_name_or_pub == "name"){
 			$("#mic").hide();//筛选结果div
-			$("#metTable_name_tools").hide();//保存子措施按钮
+			$("#metTable_name_tools").show();//保存子措施按钮
 			$("#mic_name").show();//按名称筛选结果div隐藏
 		}
 		$("#xishuMO").hide();//控制系数div
 		$("#xishuMOB").hide();//控制系数按钮
 		
-		if(point_z.length > 0){
-			add_point(point_z);//地图初始化
-		}
+//		if(point_z.length > 0){
+//			add_point(point_z);//地图初始化
+//		}
 	}else{
 		if(poi_name_or_pub == "pub"){//记录当前的筛选条件是按照属性来，还是按照名称来
 			$("#mic").hide();//筛选结果div
