@@ -19,7 +19,12 @@ public interface TPlanMapper {
 	 */
 	Long getIdByQuery(Map map);
 	
-	
+	/**
+	 * 根据条件查询ID
+	 * @param map
+	 * @return
+	 */
+	Map getInfoByQuery(Map map);
 	
 	/**
 	 * 根据条件查询ID

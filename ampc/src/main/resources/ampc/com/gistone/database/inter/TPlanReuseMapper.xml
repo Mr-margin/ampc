@@ -20,6 +20,20 @@
     <result column="CITY_CODES" property="cityCodes" jdbcType="CLOB" />
     <result column="COUNTY_CODES" property="countyCodes" jdbcType="CLOB" />
   </resultMap>
+  
+  
+   <!--  查询当前用户下的所有可复制情景  -->
+  <resultMap id="copyListMap" type="hashMap" >
+    <id column="PLAN_REUSE_ID" property="planReuseId" jdbcType="DECIMAL" />
+    <result column="PLAN_REUSE_NAME" property="planReuseName" jdbcType="OTHER" />
+    <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="TIME_START_TIME" property="timeStartTime" jdbcType="TIMESTAMP" />
+    <result column="SCENARIO_NAME" property="scenarioName" jdbcType="OTHER" />
+    <result column="MISSION_NAME" property="missionName" jdbcType="OTHER" />
+    <result column="AREA_NAME" property="areaName" jdbcType="OTHER" />
+    <result column="TIME_END_TIME" property="timeEndTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
   <sql id="Base_Column_List" >
     PLAN_REUSE_ID, USER_ID, PLAN_REUSE_NAME, ADD_TIME, TIME_START_TIME, DELETE_TIME, 
     IS_EFFECTIVE, SCENARIO_NAME, MISSION_NAME, AREA_NAME, OLD_PLAN_ID, TIME_END_TIME
@@ -27,6 +41,31 @@
   <sql id="Blob_Column_List" >
     PROVINCE_CODES, CITY_CODES, COUNTY_CODES
   </sql>
+  
+   <!-- 根据条件查询ID -->
+  <select id="getIdByQuery" resultType="java.lang.Long" parameterType="hashMap" >
+   select PLAN_REUSE_ID from
+       (
+		select PLAN_REUSE_ID from T_PLAN_REUSE 
+			where USER_ID = #{userId,jdbcType=OTHER} and PLAN_REUSE_NAME=#{planName,jdbcType=OTHER}
+			 and IS_EFFECTIVE='1' and SCENARIO_ID=#{scenarioId,jdbcType=OTHER}
+   				order by ADD_TIME desc
+   		)
+   		 WHERE ROWNUM=1
+  </select>
+  
+  
+  <!--  查询当前用户下的所有可复制情景  -->
+  <select id="selectCopyList" resultMap="copyListMap" parameterType="java.lang.Long" >
+    select 
+    PLAN_REUSE_ID,PLAN_REUSE_NAME,ADD_TIME,TIME_START_TIME,SCENARIO_NAME,MISSION_NAME,AREA_NAME,TIME_END_TIME
+     from T_PLAN_REUSE
+    where USER_ID = #{userId,jdbcType=OTHER}  and IS_EFFECTIVE='1'
+  </select>
+  
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

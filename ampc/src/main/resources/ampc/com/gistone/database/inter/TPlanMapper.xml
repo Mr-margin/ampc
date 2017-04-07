@@ -39,7 +39,31 @@
    		 WHERE ROWNUM=1
   </select>
   
+  <resultMap id="getInfoByQueryMap" type="hashMap" >
+    <result column="PLAN_NAME" property="planName" jdbcType="OTHER" />
+    <result column="SCENARINO_NAME" property="scenarinoName" jdbcType="OTHER" />
+    <result column="SCENARIO_ID" property="scenarinoId" jdbcType="DECIMAL" />
+    <result column="MISSION_NAME" property="missionName" jdbcType="OTHER" />
+    <result column="TIME_START_DATE" property="timeStartDate" jdbcType="TIMESTAMP" />
+    <result column="TIME_END_DATE" property="timeEndDate" jdbcType="TIMESTAMP" />
+    <result column="AREA_NAME" property="areaName" jdbcType="OTHER" />
+    <result column="PROVINCE_CODES" property="provinceCodes" jdbcType="CLOB" />
+    <result column="CITY_CODES" property="cityCodes" jdbcType="CLOB" />
+    <result column="COUNTY_CODES" property="countyCodes" jdbcType="CLOB" />
+  </resultMap>
   
+  <!-- 根据条件查询复制情景的信息 -->
+  <select id="getInfoByQuery" resultMap="getInfoByQueryMap" parameterType="hashMap" >
+   select 
+     PLAN_NAME,TIME_START_DATE,TIME_END_DATE,SCENARIO_ID,SCENARINO_NAME,MISSION_NAME,AREA_NAME,PROVINCE_CODES,CITY_CODES,COUNTY_CODES 
+        from T_PLAN  P
+     		inner join T_MISSION_DETAIL M on  P.MISSION_ID=M.MISSION_ID
+	 		inner join T_SCENARINO_DETAIL S on P.SCENARIO_ID=S.SCENARINO_ID
+     		inner join T_SCENARINO_AREA A on P.AREA_ID=A.SCENARINO_AREA_ID
+     		INNER JOIN T_TIME T on P.PLAN_ID=T.PLAN_ID 
+       		   where P.PLAN_ID=#{planId,jdbcType=DECIMAL}
+           			AND USER_ID=#{userId,jdbcType=DECIMAL} AND P.IS_EFFECTIVE='1'
+  </select>
   
   
   
