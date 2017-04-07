@@ -168,12 +168,17 @@ public class MissionAndScenarinoController {
 			mission.setMissionDomainId(Long.parseLong(data.get("missionDomainId").toString()));
 			//全国清单id
 			mission.setEsCouplingId(Long.parseLong(data.get("esCouplingId").toString()));
+			
 			//任务的开始时间
 			String startDate=data.get("missionStartDate").toString();
 			String endDate=data.get("missionEndDate").toString();
+			Date adddate=new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date missionStartDate=sdf.parse(startDate);
 			Date missionEndDate=sdf.parse(endDate);
+			String adddates=sdf.format(adddate);
+			Date add_date=sdf.parse(adddates);
+			mission.setMissionAddTime(add_date);
 			mission.setMissionStartDate(missionStartDate);
 			//任务的结束时间
 			mission.setMissionEndDate(missionEndDate);
