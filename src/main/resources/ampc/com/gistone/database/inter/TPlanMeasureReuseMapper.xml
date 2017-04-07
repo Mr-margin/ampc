@@ -3,21 +3,29 @@
 <mapper namespace="ampc.com.gistone.database.inter.TPlanMeasureReuseMapper" >
   <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TPlanMeasureReuse" >
     <id column="PLAN_MEASURE_REUSE_ID" property="planMeasureReuseId" jdbcType="DECIMAL" />
-    <result column="PLAN_ID" property="planId" jdbcType="DECIMAL" />
-    <result column="SECTOR_ID" property="sectorId" jdbcType="DECIMAL" />
+    <result column="PLAN_REUSE_ID" property="planReuseId" jdbcType="DECIMAL" />
+    <result column="SECTOR_NAME" property="sectorName" jdbcType="OTHER" />
     <result column="MEASURE_ID" property="measureId" jdbcType="DECIMAL" />
-    <result column="ADD_TIME" property="addTime" jdbcType="DATE" />
+    <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
-    <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
+    <result column="IMPLEMENTATION_SCOPE" property="implementationScope" jdbcType="VARCHAR" />
+    <result column="REDUCTION_RATIO" property="reductionRatio" jdbcType="VARCHAR" />
+    <result column="RATIO" property="ratio" jdbcType="VARCHAR" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.database.model.TPlanMeasureReuse" extends="BaseResultMap" >
+  <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.database.model.TPlanMeasureReuseWithBLOBs" extends="BaseResultMap" >
     <result column="MEASURE_CONTENT" property="measureContent" jdbcType="CLOB" />
+    <result column="TABLE_POOL" property="tablePool" jdbcType="CLOB" />
+    <result column="TABLE_ITEM" property="tableItem" jdbcType="CLOB" />
+    <result column="TABLE_RATIO" property="tableRatio" jdbcType="CLOB" />
   </resultMap>
   <sql id="Base_Column_List" >
-    PLAN_MEASURE_REUSE_ID, PLAN_ID, SECTOR_ID, MEASURE_ID, ADD_TIME, IS_EFFECTIVE, DELETE_TIME
+    PLAN_MEASURE_REUSE_ID, PLAN_REUSE_ID, SECTOR_NAME, MEASURE_ID, ADD_TIME, IS_EFFECTIVE, 
+    DELETE_TIME, IMPLEMENTATION_SCOPE, REDUCTION_RATIO, RATIO, USER_ID
   </sql>
   <sql id="Blob_Column_List" >
-    MEASURE_CONTENT
+    MEASURE_CONTENT, TABLE_POOL, TABLE_ITEM, TABLE_RATIO
   </sql>
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
@@ -31,25 +39,31 @@
     delete from T_PLAN_MEASURE_REUSE
     where PLAN_MEASURE_REUSE_ID = #{planMeasureReuseId,jdbcType=DECIMAL}
   </delete>
-  <insert id="insert" parameterType="ampc.com.gistone.database.model.TPlanMeasureReuse" >
-    insert into T_PLAN_MEASURE_REUSE (PLAN_MEASURE_REUSE_ID, PLAN_ID, SECTOR_ID, 
-      MEASURE_ID, ADD_TIME, IS_EFFECTIVE, 
-      DELETE_TIME, MEASURE_CONTENT)
-    values (#{planMeasureReuseId,jdbcType=DECIMAL}, #{planId,jdbcType=DECIMAL}, #{sectorId,jdbcType=DECIMAL}, 
-      #{measureId,jdbcType=DECIMAL}, #{addTime,jdbcType=DATE}, #{isEffective,jdbcType=VARCHAR}, 
-      #{deleteTime,jdbcType=DATE}, #{measureContent,jdbcType=CLOB})
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TPlanMeasureReuseWithBLOBs" >
+    insert into T_PLAN_MEASURE_REUSE (PLAN_MEASURE_REUSE_ID, PLAN_REUSE_ID, 
+      SECTOR_NAME, MEASURE_ID, ADD_TIME, 
+      IS_EFFECTIVE, DELETE_TIME, IMPLEMENTATION_SCOPE, 
+      REDUCTION_RATIO, RATIO, USER_ID, 
+      MEASURE_CONTENT, TABLE_POOL, TABLE_ITEM, 
+      TABLE_RATIO)
+    values (#{planMeasureReuseId,jdbcType=DECIMAL}, #{planReuseId,jdbcType=DECIMAL}, 
+      #{sectorName,jdbcType=OTHER}, #{measureId,jdbcType=DECIMAL}, #{addTime,jdbcType=TIMESTAMP}, 
+      #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=TIMESTAMP}, #{implementationScope,jdbcType=VARCHAR}, 
+      #{reductionRatio,jdbcType=VARCHAR}, #{ratio,jdbcType=VARCHAR}, #{userId,jdbcType=DECIMAL}, 
+      #{measureContent,jdbcType=CLOB}, #{tablePool,jdbcType=CLOB}, #{tableItem,jdbcType=CLOB}, 
+      #{tableRatio,jdbcType=CLOB})
   </insert>
-  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TPlanMeasureReuse" >
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TPlanMeasureReuseWithBLOBs" >
     insert into T_PLAN_MEASURE_REUSE
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="planMeasureReuseId != null" >
         PLAN_MEASURE_REUSE_ID,
       </if>
-      <if test="planId != null" >
-        PLAN_ID,
+      <if test="planReuseId != null" >
+        PLAN_REUSE_ID,
       </if>
-      <if test="sectorId != null" >
-        SECTOR_ID,
+      <if test="sectorName != null" >
+        SECTOR_NAME,
       </if>
       <if test="measureId != null" >
         MEASURE_ID,
@@ -63,83 +77,157 @@
       <if test="deleteTime != null" >
         DELETE_TIME,
       </if>
+      <if test="implementationScope != null" >
+        IMPLEMENTATION_SCOPE,
+      </if>
+      <if test="reductionRatio != null" >
+        REDUCTION_RATIO,
+      </if>
+      <if test="ratio != null" >
+        RATIO,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
       <if test="measureContent != null" >
         MEASURE_CONTENT,
+      </if>
+      <if test="tablePool != null" >
+        TABLE_POOL,
+      </if>
+      <if test="tableItem != null" >
+        TABLE_ITEM,
+      </if>
+      <if test="tableRatio != null" >
+        TABLE_RATIO,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="planMeasureReuseId != null" >
         #{planMeasureReuseId,jdbcType=DECIMAL},
       </if>
-      <if test="planId != null" >
-        #{planId,jdbcType=DECIMAL},
+      <if test="planReuseId != null" >
+        #{planReuseId,jdbcType=DECIMAL},
       </if>
-      <if test="sectorId != null" >
-        #{sectorId,jdbcType=DECIMAL},
+      <if test="sectorName != null" >
+        #{sectorName,jdbcType=OTHER},
       </if>
       <if test="measureId != null" >
         #{measureId,jdbcType=DECIMAL},
       </if>
       <if test="addTime != null" >
-        #{addTime,jdbcType=DATE},
+        #{addTime,jdbcType=TIMESTAMP},
       </if>
       <if test="isEffective != null" >
         #{isEffective,jdbcType=VARCHAR},
       </if>
       <if test="deleteTime != null" >
-        #{deleteTime,jdbcType=DATE},
+        #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="implementationScope != null" >
+        #{implementationScope,jdbcType=VARCHAR},
+      </if>
+      <if test="reductionRatio != null" >
+        #{reductionRatio,jdbcType=VARCHAR},
+      </if>
+      <if test="ratio != null" >
+        #{ratio,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
       </if>
       <if test="measureContent != null" >
         #{measureContent,jdbcType=CLOB},
       </if>
+      <if test="tablePool != null" >
+        #{tablePool,jdbcType=CLOB},
+      </if>
+      <if test="tableItem != null" >
+        #{tableItem,jdbcType=CLOB},
+      </if>
+      <if test="tableRatio != null" >
+        #{tableRatio,jdbcType=CLOB},
+      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TPlanMeasureReuse" >
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TPlanMeasureReuseWithBLOBs" >
     update T_PLAN_MEASURE_REUSE
     <set >
-      <if test="planId != null" >
-        PLAN_ID = #{planId,jdbcType=DECIMAL},
+      <if test="planReuseId != null" >
+        PLAN_REUSE_ID = #{planReuseId,jdbcType=DECIMAL},
       </if>
-      <if test="sectorId != null" >
-        SECTOR_ID = #{sectorId,jdbcType=DECIMAL},
+      <if test="sectorName != null" >
+        SECTOR_NAME = #{sectorName,jdbcType=OTHER},
       </if>
       <if test="measureId != null" >
         MEASURE_ID = #{measureId,jdbcType=DECIMAL},
       </if>
       <if test="addTime != null" >
-        ADD_TIME = #{addTime,jdbcType=DATE},
+        ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
       </if>
       <if test="isEffective != null" >
         IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
       </if>
       <if test="deleteTime != null" >
-        DELETE_TIME = #{deleteTime,jdbcType=DATE},
+        DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="implementationScope != null" >
+        IMPLEMENTATION_SCOPE = #{implementationScope,jdbcType=VARCHAR},
+      </if>
+      <if test="reductionRatio != null" >
+        REDUCTION_RATIO = #{reductionRatio,jdbcType=VARCHAR},
+      </if>
+      <if test="ratio != null" >
+        RATIO = #{ratio,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=DECIMAL},
       </if>
       <if test="measureContent != null" >
         MEASURE_CONTENT = #{measureContent,jdbcType=CLOB},
       </if>
+      <if test="tablePool != null" >
+        TABLE_POOL = #{tablePool,jdbcType=CLOB},
+      </if>
+      <if test="tableItem != null" >
+        TABLE_ITEM = #{tableItem,jdbcType=CLOB},
+      </if>
+      <if test="tableRatio != null" >
+        TABLE_RATIO = #{tableRatio,jdbcType=CLOB},
+      </if>
     </set>
     where PLAN_MEASURE_REUSE_ID = #{planMeasureReuseId,jdbcType=DECIMAL}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="ampc.com.gistone.database.model.TPlanMeasureReuse" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="ampc.com.gistone.database.model.TPlanMeasureReuseWithBLOBs" >
     update T_PLAN_MEASURE_REUSE
-    set PLAN_ID = #{planId,jdbcType=DECIMAL},
-      SECTOR_ID = #{sectorId,jdbcType=DECIMAL},
+    set PLAN_REUSE_ID = #{planReuseId,jdbcType=DECIMAL},
+      SECTOR_NAME = #{sectorName,jdbcType=OTHER},
       MEASURE_ID = #{measureId,jdbcType=DECIMAL},
-      ADD_TIME = #{addTime,jdbcType=DATE},
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
       IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
-      DELETE_TIME = #{deleteTime,jdbcType=DATE},
-      MEASURE_CONTENT = #{measureContent,jdbcType=CLOB}
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      IMPLEMENTATION_SCOPE = #{implementationScope,jdbcType=VARCHAR},
+      REDUCTION_RATIO = #{reductionRatio,jdbcType=VARCHAR},
+      RATIO = #{ratio,jdbcType=VARCHAR},
+      USER_ID = #{userId,jdbcType=DECIMAL},
+      MEASURE_CONTENT = #{measureContent,jdbcType=CLOB},
+      TABLE_POOL = #{tablePool,jdbcType=CLOB},
+      TABLE_ITEM = #{tableItem,jdbcType=CLOB},
+      TABLE_RATIO = #{tableRatio,jdbcType=CLOB}
     where PLAN_MEASURE_REUSE_ID = #{planMeasureReuseId,jdbcType=DECIMAL}
   </update>
   <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TPlanMeasureReuse" >
     update T_PLAN_MEASURE_REUSE
-    set PLAN_ID = #{planId,jdbcType=DECIMAL},
-      SECTOR_ID = #{sectorId,jdbcType=DECIMAL},
+    set PLAN_REUSE_ID = #{planReuseId,jdbcType=DECIMAL},
+      SECTOR_NAME = #{sectorName,jdbcType=OTHER},
       MEASURE_ID = #{measureId,jdbcType=DECIMAL},
-      ADD_TIME = #{addTime,jdbcType=DATE},
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
       IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
-      DELETE_TIME = #{deleteTime,jdbcType=DATE}
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      IMPLEMENTATION_SCOPE = #{implementationScope,jdbcType=VARCHAR},
+      REDUCTION_RATIO = #{reductionRatio,jdbcType=VARCHAR},
+      RATIO = #{ratio,jdbcType=VARCHAR},
+      USER_ID = #{userId,jdbcType=DECIMAL}
     where PLAN_MEASURE_REUSE_ID = #{planMeasureReuseId,jdbcType=DECIMAL}
   </update>
 </mapper>

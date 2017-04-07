@@ -858,7 +858,7 @@ function show_zicuoshi_table(columns, b_data){
 			},100);
 		},
 		onLoadSuccess : function(data){
-			alert('b');
+//			alert('b');
 		},
 		onLoadError : function(){
 			swal('连接错误', '', 'error');
@@ -1164,14 +1164,11 @@ function point_table () {
 			if(res.status == 'success'){
 				if(res.data.rows.length>0){
 					$("#shaixuan_num").html("筛选点源："+res.data.append.sourceTotalCount);
-					
-					if(res.data.append.total.length>0){
+					if(res.data.append.total.length>0){//加地图坐标
 						add_point(res.data.append.total);
 					}
-					
 					$("#shaixuan_num").show();
 					var tablejieguo = "";
-					
 					if(sc_val.filters.length == 0){
 						//没有条件，直接筛选
 						tablejieguo = "全部,";
@@ -1247,16 +1244,12 @@ function point_name_table () {
 		responseHandler: function (res) {
 			if(res.status == 'success'){
 //				console.log(JSON.stringify(res));
-//				var ttyh = [];
-//				var json = {};
+				if(res.data.append.total.length>0){//加地图坐标
+					add_point(res.data.append.total);
+				}
 				$.each(res.data.rows, function(k, vol) {
 					vol.caozuo = '<a onClick="delete_sc_name(\''+vol.id+'\');">删除</a>';
-//					if(!json[vol.companyname]){
-//						ttyh.push({"lon":vol.lon,"lat":vol.lat,"companyId":vol.id});
-//						json[vol.companyname] = 1;
-//					}
 				});
-//				add_point(ttyh);
 				return res.data.rows;
 			}else if(res.status == 'fail' && res.error == '查询数据超过50条'){//筛选结果大于50条
 				swal('查询结果超过50个设备，请精确输入企业名称', '', 'error');
@@ -1422,11 +1415,12 @@ function xishu_save(){
 					$("#qiye_name").val("");//按名称筛选条件
 					$('#metTable_point').bootstrapTable('destroy');//销毁现有表格数据
 					$('#metTable_name_point').bootstrapTable('destroy');//销毁现有表格数据
+					
+					if(point_z.length > 0){
+						add_point(point_z);//地图初始化
+					}
 				}
 			});
-			
-			
-			
 		}else{//修改已有子措施
 			
 			var up_row = {};
@@ -1697,6 +1691,10 @@ function xishu_close(){
 		}
 		$("#xishuMO").hide();//控制系数div
 		$("#xishuMOB").hide();//控制系数按钮
+		
+		if(point_z.length > 0){
+			add_point(point_z);//地图初始化
+		}
 	}else{
 		if(poi_name_or_pub == "pub"){//记录当前的筛选条件是按照属性来，还是按照名称来
 			$("#mic").hide();//筛选结果div

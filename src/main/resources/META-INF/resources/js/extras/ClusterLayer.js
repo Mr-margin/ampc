@@ -230,7 +230,7 @@ define([
         p.attributes = {};  
       }  
       // give the graphic a cluster id  
-//      p.attributes.clusterId = cluster.attributes.clusterId;  
+    //  p.attributes.clusterId = cluster.attributes.clusterId;  
     },  
   
     // point passed to clusterCreate isn't within the   
@@ -243,14 +243,14 @@ define([
       if ( ! p.attributes ) {  
         p.attributes = {};  
       }  
-//      p.attributes.clusterId = clusterId;  
+      //p.attributes.clusterId = clusterId;  
       // create the cluster  
       var cluster = {   
         "x": p.x,  
         "y": p.y,  
         "attributes" : {  
           "clusterCount": 1,  
-//          "clusterId": clusterId,  
+        //  "clusterId": clusterId,  
           "extent": [ p.x, p.y, p.x, p.y ]  
         }  
       };  
