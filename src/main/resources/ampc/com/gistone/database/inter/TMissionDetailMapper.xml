@@ -60,7 +60,7 @@
 	      ) T WHERE ROWNUM &lt;=#{endNum,jdbcType=OTHER}
 	   ) 
 	  WHERE RN > #{startNum,jdbcType=OTHER}
-	  ORDER BY MISSION_ID DESC
+	  ORDER BY MISSION_ADD_TIME DESC
   </select>
   
   <!--查询全部任务总条数  可根据名称模糊查询-->
