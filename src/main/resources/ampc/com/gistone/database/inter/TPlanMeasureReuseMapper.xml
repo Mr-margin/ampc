@@ -27,6 +27,17 @@
   <sql id="Blob_Column_List" >
     MEASURE_CONTENT, TABLE_POOL, TABLE_ITEM, TABLE_RATIO
   </sql>
+  
+  <!-- 根据条件查询所有的复制预案措施 -->
+  <select id="selectByQuery" resultMap="ResultMapWithBLOBs" parameterMap="hashMap" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from T_PLAN_MEASURE_REUSE
+    where USER_ID = #{userId,jdbcType=DECIMAL} AND PLAN_REUSE_ID=#{copyPlanId,jdbcType=DECIMAL}
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
