@@ -1,19 +1,20 @@
 package ampc.com.gistone.database.inter;
 
 import ampc.com.gistone.database.model.TPlanMeasureReuse;
+import ampc.com.gistone.database.model.TPlanMeasureReuseWithBLOBs;
 
 public interface TPlanMeasureReuseMapper {
     int deleteByPrimaryKey(Long planMeasureReuseId);
 
-    int insert(TPlanMeasureReuse record);
+    int insert(TPlanMeasureReuseWithBLOBs record);
 
-    int insertSelective(TPlanMeasureReuse record);
+    int insertSelective(TPlanMeasureReuseWithBLOBs record);
 
-    TPlanMeasureReuse selectByPrimaryKey(Long planMeasureReuseId);
+    TPlanMeasureReuseWithBLOBs selectByPrimaryKey(Long planMeasureReuseId);
 
-    int updateByPrimaryKeySelective(TPlanMeasureReuse record);
+    int updateByPrimaryKeySelective(TPlanMeasureReuseWithBLOBs record);
 
-    int updateByPrimaryKeyWithBLOBs(TPlanMeasureReuse record);
+    int updateByPrimaryKeyWithBLOBs(TPlanMeasureReuseWithBLOBs record);
 
     int updateByPrimaryKey(TPlanMeasureReuse record);
 }
