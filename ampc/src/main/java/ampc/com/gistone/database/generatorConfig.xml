@@ -5,6 +5,9 @@
     <!-- <classPathEntry location="D:\work\201608\assa\WebRoot\WEB-INF\lib\mysql-connector-java-5.1.7-bin.jar" /> -->
     <!-- oracle -->
     <!-- <classPathEntry location="D:\work\201608\gene\WebRoot\WEB-INF\lib\ojdbc14_g.jar" /> --> 
+   <!-- <classPathEntry location="E:\Maven\MavenRepository\maven_jar\com\oracle\ojdbc6\11.2.0.1.0\ojdbc6-11.2.0.1.0.jar" />  -->
+   <classPathEntry location="E:\maven_jar\com\oracle\ojdbc6\11.2.0.1.0\ojdbc6-11.2.0.1.0.jar" />
+  <!--  <classPathEntry location="D:\Maven\MavenRepository\maven_jar\com\oracle\ojdbc6\11.2.0.1.0\ojdbc6-11.2.0.1.0.jar" /> -->
       <classPathEntry location="E:\Maven\MavenRepository\maven_jar\com\oracle\ojdbc6\11.2.0.1.0\ojdbc6-11.2.0.1.0.jar" /> 
     <!--  <classPathEntry location="E:\maven_jar\com\oracle\ojdbc6\11.2.0.1.0\ojdbc6-11.2.0.1.0.jar" />-->
     <context id="water_context" >
@@ -60,6 +63,8 @@
   	<!-- <table tableName="T_MEASURE_SECTOR_EXCEL" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> --> 
   	<!-- <table tableName="T_SCENARINO_DETAIL" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>  -->
  	<!-- <table tableName="T_ES_NATIVE" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> --> 
+ 	<!-- <table tableName="T_SITE" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>  -->
+ 	<table tableName="T_CORES_TIMES" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> 
  	<table tableName="T_PLAN_REUSE" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> 
  	<!-- <table tableName="T_PLAN_MEASURE_REUSE" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> --> 
   </context>

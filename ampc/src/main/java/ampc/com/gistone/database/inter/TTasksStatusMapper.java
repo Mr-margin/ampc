@@ -63,11 +63,21 @@ public interface TTasksStatusMapper {
 
 	/**
 	 * @Description: TODO
-	 * @param hashMap   
+	 * @param tasksStatus   
 	 * void   跟新数据库的情景运行了之后的可用状态
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年4月5日 上午11:45:01
 	 */
-	void updateRunstatus(Map hashMap);
+	void updateRunstatus(TTasksStatus tasksStatus);
+
+	/**
+	 * @Description: 获取运行最新的状态的实时预报情景
+	 * @return   
+	 * Date  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月5日 下午8:50:21
+	 */
+	Date getlastrunstatus();
 }
