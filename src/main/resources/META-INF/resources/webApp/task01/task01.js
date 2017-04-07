@@ -395,7 +395,7 @@ function initQjTable() {
 
 /*format 函数*/
 function rwName(v, row, i) {
-  return '<h3><a href="javascript:">' + row.missionName + '</a></h3><a style="font-size:12px; color:#a1a1a1;">创建时间：' + moment(row.missionAddTime).format('YYYY-MM-DD HH') + '</a>'
+  return '<h3><a href="javascript:">' + row.missionName + '</a></h3><a style="font-size:12px; color:#a1a1a1;">创建时间：' + moment(row.missionAddTime).format('YYYY-MM-DD HH:mm:ss') + '</a>'
 }
 
 function rwType(v, row, i) {
@@ -419,7 +419,7 @@ function qjName(v, row, i) {
   var name = row.SCEN_TYPE == 3? '<h3><a>' + row.scenarinoName + '</a></h3>':'<h3><a href="#/yabj">' + row.scenarinoName + '</a></h3>';
 
   return  name+
-    '<a style="font-size:12px; color:#a1a1a1;">创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH') + '</a><br/>' +
+    '<a style="font-size:12px; color:#a1a1a1;">创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '</a><br/>' +
     '<a style="font-size:12px; color:#a1a1a1;">起止日期：' + moment(row.scenarinoStartDate).format('YYYY-MM-DD') + ' 至 ' + moment(row.scenarinoEndDate).format('YYYY-MM-DD') + '</a>'
 }
 
