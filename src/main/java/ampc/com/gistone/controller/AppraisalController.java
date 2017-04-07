@@ -181,7 +181,15 @@ public class AppraisalController {
 							}
 						}
 						spcmap.put(datetime, hourcmap);
-						datemap.put(spr, spcmap);
+						if(datemap.get(spr)!=null){
+							Object maps=datemap.get(spr);
+							JSONObject mapsbj=JSONObject.fromObject(maps);//行业减排结果
+							Map<String,Object> des=(Map)mapsbj;
+							des.put(datetime, hourcmap);
+							datemap.put(spr, des);
+							}else{
+							datemap.put(spr, spcmap);
+							}
 						scmap.put(scid, datemap);
 					}
 					
@@ -198,15 +206,24 @@ public class AppraisalController {
 						String sp=detamap.get(datetime).toString();
 						JSONObject spobj=JSONObject.fromObject(sp);//行业减排结果
 						Map<String,Object> spmap=(Map)spobj;
-						Map<String,Object> spcmap=new HashMap();
+						
 						for(String spr:spmap.keySet()){
+							Map<String,Object> spcmap=new HashMap();
 							String height=spmap.get(spr).toString();
 							JSONObject heightobj=JSONObject.fromObject(height);//行业减排结果
 							Map<String,Object> heightmap=(Map)heightobj;
 							Map<String,Object> hourcmap=new HashMap();
 							BigDecimal bd=new BigDecimal(heightmap.get("0").toString());
 							spcmap.put(datetime, bd);
+							if(datemap.get(spr)!=null){
+							Object maps=datemap.get(spr);
+							JSONObject mapsbj=JSONObject.fromObject(maps);//行业减排结果
+							Map<String,Object> des=(Map)mapsbj;
+							des.put(datetime, bd);
+							datemap.put(spr, des);
+							}else{
 							datemap.put(spr, spcmap);
+							}
 							scmap.put(scid, datemap);
 						}
 						
