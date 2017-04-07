@@ -41,9 +41,20 @@
     SPINUP, RATIO_START_DATE, RATIO_END_DATE, RANGE_DAY, EXPAND1, EXPAND2, EXPAND3, EXPAND4, EXPAND5,
     EXPAND6, EXPAND7, EXPAND8, EXPAND9, EXPAND10
   </sql>
+  <!--通过pathdate查询实时预报ID和cores  -->
+  <select id="getidAndcores" resultMap="BaseResultMap" parameterType="java.util.Date">
+  select SCENARINO_ID,EXPAND3 from T_SCENARINO_DETAIL where PATH_DATE = #{pathDate,jdbcType=TIMESTAMP} and SCEN_TYPE = '4'
+  </select>
+  <!-- 查询补发实时预报情景的全部内容 -->
+  <select id="getbufaScenID" resultMap="BaseResultMap" parameterType="java.util.Date">
+  select 
+   <include refid="Base_Column_List" />
+   from T_SCENARINO_DETAIL
+   where PATH_DATE = #{pathDate,jdbcType=TIMESTAMP} and SCEN_TYPE = '4'
+  </select>
   <!-- 根据ID查找开始时间结束时间和情景类型 -->
   <select id="selecttypetime" resultMap="BaseResultMap" parameterType="java.lang.Long">
-  select SCENARINO_START_DATE, SCENARINO_END_DATE,SCEN_TYPE
+  select SCENARINO_START_DATE, SCENARINO_END_DATE,SCEN_TYPE,PATH_DATE
   from T_SCENARINO_DETAIL where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
   
   </select>
