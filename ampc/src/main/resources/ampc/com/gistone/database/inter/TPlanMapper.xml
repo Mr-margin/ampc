@@ -16,11 +16,7 @@
     <result column="AREA_ID" property="areaId" jdbcType="DECIMAL" />
     <result column="COPY_PLAN" property="copyPlan" jdbcType="VARCHAR" />
   </resultMap>
-  <!--  查询当前用户下的所有可复制情景  -->
-  <resultMap id="copyListMap" type="hashMap" >
-    <id column="PLAN_ID" property="planId" jdbcType="DECIMAL" />
-    <result column="PLAN_NAME" property="planName" jdbcType="OTHER" />
-  </resultMap>
+ 
   
   
   <sql id="Base_Column_List" >
@@ -44,12 +40,7 @@
   </select>
   
   
-  <!--  查询当前用户下的所有可复制情景  -->
-  <select id="selectCopyList" resultMap="copyListMap" parameterType="java.lang.Long" >
-    select PLAN_ID,PLAN_NAME from T_PLAN
-    where USER_ID = #{userId,jdbcType=OTHER}  and IS_EFFECTIVE='1'
-     and COPY_PLAN=1
-  </select>
+  
   
   
   <!-- 根据区域ID 查询预案ID -->
