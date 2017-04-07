@@ -29,6 +29,8 @@ import ampc.com.gistone.database.inter.TMeasureExcelMapper;
 import ampc.com.gistone.database.inter.TMeasureSectorExcelMapper;
 import ampc.com.gistone.database.inter.TPlanMapper;
 import ampc.com.gistone.database.inter.TPlanMeasureMapper;
+import ampc.com.gistone.database.inter.TPlanMeasureReuseMapper;
+import ampc.com.gistone.database.inter.TPlanReuseMapper;
 import ampc.com.gistone.database.inter.TQueryExcelMapper;
 import ampc.com.gistone.database.inter.TScenarinoAreaMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
@@ -38,7 +40,10 @@ import ampc.com.gistone.database.inter.TTimeMapper;
 import ampc.com.gistone.database.model.TMeasureExcel;
 import ampc.com.gistone.database.model.TPlan;
 import ampc.com.gistone.database.model.TPlanMeasure;
+import ampc.com.gistone.database.model.TPlanMeasureReuseWithBLOBs;
 import ampc.com.gistone.database.model.TPlanMeasureWithBLOBs;
+import ampc.com.gistone.database.model.TPlanReuse;
+import ampc.com.gistone.database.model.TPlanReuseWithBLOBs;
 import ampc.com.gistone.database.model.TQueryExcel;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTime;
@@ -70,12 +75,18 @@ public class PlanAndMeasureController {
 	// 情景映射
 	@Autowired
 	private TScenarinoDetailMapper tScenarinoDetailMapper;
-	// 情景映射
+	// 情景区域映射
 	@Autowired
 	private TScenarinoAreaMapper tScenarinoAreaMapper;
+	// 预案库映射
+	@Autowired
+	private TPlanReuseMapper tPlanReuseMapper;
 	// 预案措施映射
 	@Autowired
 	private TPlanMeasureMapper tPlanMeasureMapper;
+	// 预案措施库映射
+	@Autowired
+	private TPlanMeasureReuseMapper tPlanMeasureReuseMapper;
 	// 行业映射
 	@Autowired
 	private TSectorExcelMapper tSectorExcelMapper;
@@ -195,34 +206,92 @@ public class PlanAndMeasureController {
 			Map<String, Object> data = (Map) requestDate.get("data");
 			// 用户id
 			Long userId = Long.parseLong(data.get("userId").toString());
-			//情景id
-			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
-			//情景状态
-			Long scenarinoStatus = Long.parseLong(data.get("scenarinoStatus").toString());
-			// 预案id
-			Long planId = Long.parseLong(data.get("planId").toString());
 			// 时段id
 			Long timeId = Long.parseLong(data.get("timeId").toString());
-			// 将被复制的预案id存入要复制到的时段里
-			TTime tTime = new TTime();
-			tTime.setPlanId(planId);
-			tTime.setTimeId(timeId);
-			tTime.setUserId(userId);
-			int copy_status = tTimeMapper.updateByPrimaryKeySelective(tTime);
-			// 判断是否成功
-			if (copy_status != 0) {
-				if(scenarinoStatus==1){
-					int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
-					if(a!=0){ 
-						return AmpcResult.ok("复用成功");
-					}else{
-						return AmpcResult.build(1000, "情景状态转换失败",null);
+			//情景状态
+			Long scenarinoStatus = Long.parseLong(data.get("scenarinoStatus").toString());
+			//情景id
+			Long scenarioId = Long.parseLong(data.get("scenarioId").toString());
+			// 所属任务id
+			Long missionId = Long.parseLong(data.get("missionId").toString());
+			// 区域id
+			Long areaId = Long.parseLong(data.get("areaId").toString());
+			// 预案开始时间
+			Date startDate = DateUtil.StrToDate(data.get("timeStartTime").toString());
+			// 预案结束时间
+			Date endDate = DateUtil.StrToDate(data.get("timeEndTime").toString());
+			// 要复制的预案id
+			Long copyPlanId = Long.parseLong(data.get("copyPlanId").toString());
+			//查询要复制预案的对象
+			TPlanReuseWithBLOBs tb=tPlanReuseMapper.selectByPrimaryKey(copyPlanId);
+			// 创建预案对象
+			TPlan tPlan = new TPlan();
+			tPlan.setAreaId(areaId);
+			tPlan.setMissionId(missionId);
+			tPlan.setScenarioId(scenarioId);
+			tPlan.setUserId(userId);
+			tPlan.setPlanName(tb.getPlanReuseName());
+			tPlan.setPlanStartTime(startDate);
+			tPlan.setPlanEndTime(endDate);
+			// 添加预案
+			int result = tPlanMapper.insertSelective(tPlan);
+			// 判断是否添加成功，根据结果返回值
+			if (result != 0) {
+				Map map = new HashMap();
+				map.put("userId", userId);
+				map.put("scenarioId", scenarioId);
+				map.put("planName", tb.getPlanReuseName());
+				Long newPlanId = tPlanMapper.getIdByQuery(map);
+				map.put("copyPlanId", copyPlanId);
+				// 根据预案措施对象的条件查询所有的预案措施满足条件的信息
+				List<TPlanMeasureReuseWithBLOBs> planMeasureReuseList = tPlanMeasureReuseMapper.selectByQuery(map);
+				if (planMeasureReuseList.size() > 0) {
+					// 循环结果 并复制信息 新建
+					for (TPlanMeasureReuseWithBLOBs t : planMeasureReuseList) {
+						TPlanMeasureWithBLOBs newtPlanMeasure = new TPlanMeasureWithBLOBs();
+						newtPlanMeasure.setMeasureId(t.getMeasureId());
+						newtPlanMeasure.setPlanId(newPlanId);
+						newtPlanMeasure.setSectorName(t.getSectorName());
+						newtPlanMeasure.setUserId(userId);
+						newtPlanMeasure.setImplementationScope(t
+								.getImplementationScope());
+						newtPlanMeasure.setMeasureContent(t
+								.getMeasureContent());
+						newtPlanMeasure.setReductionRatio(t
+								.getReductionRatio());
+						newtPlanMeasure.setRatio(t.getRatio());
+						newtPlanMeasure.setTableRatio(t.getTableRatio());
+						newtPlanMeasure.setTableItem(t.getTableItem());
+						newtPlanMeasure.setTablePool(t.getTablePool());
+						result = tPlanMeasureMapper.insertSelective(newtPlanMeasure);
+						if (result < 0) {
+							return AmpcResult.build(1000, "应用预案措施时出错");
+						}
 					}
-				}else{
-					return AmpcResult.ok("复用成功");
 				}
+				// 将被复制的预案id存入要复制到的时段里
+				TTime tTime = new TTime();
+				tTime.setPlanId(newPlanId);
+				tTime.setTimeId(timeId);
+				tTime.setUserId(userId);
+				int copy_status = tTimeMapper.updateByPrimaryKeySelective(tTime);
+				// 判断是否成功
+				if (copy_status != 0) {
+					if(scenarinoStatus==1){
+						int a=scenarinoStatusUtil.updateScenarinoStatus(scenarioId);
+						if(a!=0){ 
+							return AmpcResult.ok("复用成功");
+						}else{
+							return AmpcResult.build(1000, "情景状态转换失败",null);
+						}
+					}else{
+						return AmpcResult.ok("复用成功");
+					}
+				}
+				return AmpcResult.build(1000, "复用失败");
+				
 			}
-			return AmpcResult.build(1000, "复用失败");
+			return AmpcResult.build(1000, "应用预案失败");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误");
@@ -230,7 +299,7 @@ public class PlanAndMeasureController {
 	}
 
 	/**
-	 * 预案设置成可复制
+	 * 预案存入预案库
 	 * @author WangShanxi
 	 * @param request 请求
 	 * @param response 响应
@@ -247,17 +316,69 @@ public class PlanAndMeasureController {
 			Long userId = Long.parseLong(data.get("userId").toString());
 			// 预案id
 			Long planId = Long.parseLong(data.get("planId").toString());
-			// 将预案的是否可以复制状态改为可复制
-			TPlan tPlan = new TPlan();
-			tPlan.setPlanId(planId);
-			tPlan.setCopyPlan("1");
-			tPlan.setUserId(userId);
-			int status = tPlanMapper.updateByPrimaryKeySelective(tPlan);
-			// 查看修改是否成功
-			if (status != 0) {
-				return AmpcResult.ok("修改成功");
+			Map mapQuery=new HashMap();
+			mapQuery.put("userId", userId);
+			mapQuery.put("planId", planId);
+			//根据主键Id查询要存入预案库的预案
+			Map resultMap = tPlanMapper.getInfoByQuery(mapQuery);
+			// 新建预案库对象
+			TPlanReuseWithBLOBs pr=new TPlanReuseWithBLOBs();
+			pr.setUserId(userId);
+			pr.setPlanReuseName(resultMap.get("planName"));
+			pr.setAreaName(resultMap.get("areaName"));
+			pr.setMissionName(resultMap.get("missionName"));
+			pr.setScenarioName(resultMap.get("scenarinoName"));
+			pr.setTimeStartTime(DateUtil.StrToDate1(resultMap.get("timeStartDate").toString()));
+			pr.setTimeEndTime(DateUtil.StrToDate1(resultMap.get("timeEndDate").toString()));
+			pr.setOldPlanId(planId);
+			pr.setProvinceCodes(resultMap.get("provinceCodes").toString());
+			pr.setCityCodes(resultMap.get("cityCodes").toString());
+			pr.setCountyCodes(resultMap.get("countyCodes").toString());
+			// 根据可复制预案信息新建预案数据
+			int result = tPlanReuseMapper.insertSelective(pr);
+			if (result > 0) {
+				// 创建条件查询新添加的预案的Id
+				Map map = new HashMap();
+				map.put("userId", userId);
+				map.put("scenarioId", resultMap.get("scenarinoId"));
+				map.put("planName", pr.getPlanReuseName());
+				Long newPlanReuseId = tPlanReuseMapper.getIdByQuery(map);
+				// 根据可复制预案id查询预案中的措施
+				TPlanMeasureWithBLOBs tPlanMeasure = new TPlanMeasureWithBLOBs();
+				tPlanMeasure.setPlanId(planId);
+				tPlanMeasure.setUserId(userId);
+				// 根据预案措施对象的条件查询所有的预案措施满足条件的信息
+				List<TPlanMeasureWithBLOBs> planMeasureList = tPlanMeasureMapper
+						.selectByEntity(tPlanMeasure);
+				if (planMeasureList.size() > 0) {
+					// 循环结果 并复制信息 新建
+					for (TPlanMeasureWithBLOBs t : planMeasureList) {
+						TPlanMeasureReuseWithBLOBs newtPlanMeasure = new TPlanMeasureReuseWithBLOBs();
+						newtPlanMeasure.setMeasureId(t.getMeasureId());
+						newtPlanMeasure.setPlanReuseId(newPlanReuseId);
+						newtPlanMeasure.setSectorName(t.getSectorName());
+						newtPlanMeasure.setUserId(userId);
+						newtPlanMeasure.setImplementationScope(t
+								.getImplementationScope());
+						newtPlanMeasure.setMeasureContent(t
+								.getMeasureContent());
+						newtPlanMeasure.setReductionRatio(t
+								.getReductionRatio());
+						newtPlanMeasure.setRatio(t.getRatio());
+						newtPlanMeasure.setTableRatio(t.getTableRatio());
+						newtPlanMeasure.setTableItem(t.getTableItem());
+						newtPlanMeasure.setTablePool(t.getTablePool());
+						result = tPlanMeasureReuseMapper
+								.insertSelective(newtPlanMeasure);
+						if (result < 0) {
+							return AmpcResult.build(1000, "复制预案措施时出错");
+						}
+					}
+				}
+			} else {
+				return AmpcResult.build(1000, "复制预案信息时出错");
 			}
-			return AmpcResult.build(1000, "修改失败");
+			return AmpcResult.ok("复制预案措施成功");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误", null);
@@ -325,7 +446,31 @@ public class PlanAndMeasureController {
 			// 用户Id
 			Long userId = Long.parseLong(data.get("userId").toString());
 			// 根据是否为可复制预案和是否有效字段查询
-			List<Map> list = tPlanMapper.selectCopyList(userId);
+			List<Map> list = tPlanReuseMapper.selectCopyList(userId);
+//			if(area.getCityCodes()!=null){
+//	    	JSONArray arr=JSONArray.fromObject(area.getCityCodes());
+//	    		areaUtil.setCityCodes(arr);
+//	    		isnew=false;
+//	    	}else{
+//	    		areaUtil.setCityCodes(new JSONArray());
+//	    		
+//	    	}
+//	    	if(area.getProvinceCodes()!=null){
+//	    		JSONArray arr1=JSONArray.fromObject(area.getProvinceCodes());
+//	    		areaUtil.setProvinceCodes(arr1);
+//	    		isnew=false;
+//	    	}else{
+//	    		areaUtil.setProvinceCodes(new JSONArray());
+//	    	
+//	    	}
+//	    	if(area.getCountyCodes()!=null){
+//	    		JSONArray arr2=JSONArray.fromObject(area.getCountyCodes());
+//	    		areaUtil.setCountyCodes(arr2);
+//	    		isnew=false;
+//	    	}else{
+//	    		areaUtil.setCountyCodes(new JSONArray());
+//	    		
+//	    	}
 			return AmpcResult.ok(list);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -363,76 +508,6 @@ public class PlanAndMeasureController {
 			Long userId = null;
 			if (data.get("userId") != null) {
 				userId = Long.parseLong(data.get("userId").toString());
-			}
-
-			TPlan tplan = tPlanMapper.selectByPrimaryKey(planId);
-			// 判断是否是可复制预案
-			if (tplan.getCopyPlan().equals("1")) {
-				// 新建预案
-				TPlan newtplan = new TPlan();
-				newtplan.setUserId(userId);
-				newtplan.setPlanName(tplan.getPlanName());
-				newtplan.setAreaId(tplan.getAreaId());
-				newtplan.setMissionId(tplan.getMissionId());
-				newtplan.setScenarioId(tplan.getScenarioId());
-				newtplan.setPlanStartTime(startDate);
-				newtplan.setPlanEndTime(endDate);
-				// 根据可复制预案信息新建预案数据
-				int result = tPlanMapper.insertSelective(newtplan);
-				if (result > 0) {
-					// 创建条件查询新添加的预案的Id
-					Map map = new HashMap();
-					map.put("userId", userId);
-					map.put("scenarioId", newtplan.getScenarioId());
-					map.put("planName", newtplan.getPlanName());
-					Long newPlanId = tPlanMapper.getIdByQuery(map);
-					// 根据可复制预案id查询预案中的措施
-					TPlanMeasureWithBLOBs tPlanMeasure = new TPlanMeasureWithBLOBs();
-					tPlanMeasure.setPlanId(planId);
-					tPlanMeasure.setUserId(userId);
-					// 根据预案措施对象的条件查询所有的预案措施满足条件的信息
-					List<TPlanMeasureWithBLOBs> planMeasureList = tPlanMeasureMapper
-							.selectByEntity(tPlanMeasure);
-					if (planMeasureList.size() > 0) {
-						// 循环结果 并复制信息 新建
-						for (TPlanMeasureWithBLOBs t : planMeasureList) {
-							TPlanMeasureWithBLOBs newtPlanMeasure = new TPlanMeasureWithBLOBs();
-							newtPlanMeasure.setMeasureId(t.getMeasureId());
-							newtPlanMeasure.setPlanId(newPlanId);
-							newtPlanMeasure.setSectorName(t.getSectorName());
-							newtPlanMeasure.setUserId(userId);
-							newtPlanMeasure.setImplementationScope(t
-									.getImplementationScope());
-							newtPlanMeasure.setMeasureContent(t
-									.getMeasureContent());
-							newtPlanMeasure.setReductionRatio(t
-									.getReductionRatio());
-							newtPlanMeasure.setRatio(t.getRatio());
-							newtPlanMeasure.setTableRatio(t.getTableRatio());
-							newtPlanMeasure.setTableItem(t.getTableItem());
-							newtPlanMeasure.setTablePool(t.getTablePool());
-							result = tPlanMeasureMapper
-									.insertSelective(newtPlanMeasure);
-							if (result < 0) {
-								return AmpcResult.build(1000, "复制预案措施时出错");
-							}
-						}
-					}
-					// 将时段中的预案ID修改成已经新建的预案Id
-					TTime tTime = new TTime();
-					tTime.setPlanId(newPlanId);
-					tTime.setTimeId(timeId);
-					tTime.setUserId(userId);
-					result = tTimeMapper.updateByPrimaryKeySelective(tTime);
-					// 判断是否成功
-					if (result < 0) {
-						return AmpcResult.build(1000, "修改时段信息时出错");
-					}
-					// 将复制后的情景Id 保存
-					planId = newPlanId;
-				} else {
-					return AmpcResult.build(1000, "复制预案信息时出错");
-				}
 			}
 			// 根据UserId查询所有的行业名称
 			List<String> nameList = this.tMeasureSectorExcelMapper.getSectorInfo(userId);
