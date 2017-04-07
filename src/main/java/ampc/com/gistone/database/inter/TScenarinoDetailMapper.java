@@ -14,6 +14,17 @@ import ampc.com.gistone.database.model.TScenarinoDetail;
  */
 public interface TScenarinoDetailMapper {
 	
+	/**
+	 * @Description: TODO
+	 * @param lastpathdate
+	 * @return   通过起报时间查询实时预报情景的全部情景
+	 * TScenarinoDetail  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月6日 上午11:06:00
+	 */
+	TScenarinoDetail getbufaScenID(Date lastpathdate);
+	
 	
 	/**
 	 * @Description: TODO
@@ -132,6 +143,21 @@ public interface TScenarinoDetailMapper {
 
 
     List<TScenarinoDetail> selectByEntity(TScenarinoDetail record);
+
+
+	/**
+	 * @Description: 通过pathdate获取情景ID和cores
+	 * @param today
+	 * @return   
+	 * TScenarinoDetail  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月6日 下午4:55:47
+	 */
+	TScenarinoDetail getidAndcores(Date today);
+
+
+	
 
 	
 	
