@@ -106,8 +106,11 @@ public class ToDataTasksUtil {
 	    tasksStatus.setTasksEndDate(tasksEndDate);
 	    System.out.println("开始更新tasksstatus数据库了");
 	    
+	  /*  //只要跑完一天的任务 该天的数据就可以使用
+	    if (("0".equals(code)&&stepindex==8)||("0".equals(code)&&stepindex==4)) {
+	    	tasksStatus.setBeizhu("1");
+		}*/
 	    int i = tasksStatusMapper.updateStatus(tasksStatus);
-	    boolean a = true;
 	    System.out.println(tasksStatus+"tasksstatus");
 	    if(i>0){
 	    	System.out.println("跟新tasksstatus成功");
@@ -115,6 +118,11 @@ public class ToDataTasksUtil {
 	    	//通过情景的ID查找该情景的开始时间结束时间和情景类型
 	    //	String scentype = tScenarinoDetailMapper.selectscentype(tasksScenarinoId);
 	    	TScenarinoDetail selectByPrimaryKey = tScenarinoDetailMapper.selecttypetime(tasksScenarinoId);
+	    	//获取当前情景pathdate 用于确定该条记录是不是补发的
+	    	Date pathDate = selectByPrimaryKey.getPathDate();
+	    	Date today = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+	    	
+	    	int pathcompare = pathDate.compareTo(today);
 	    	
 	    	String scentype = selectByPrimaryKey.getScenType();
 	    	//获取情景任务的开始时间和结束时间
@@ -126,20 +134,55 @@ public class ToDataTasksUtil {
 	    	int StartCompare = startDate.compareTo(tasksEndDate);
 			//根据情景类型确定stepindex的数量
 	    	Integer index = surestepindex(scentype );
-	    	//code为0的时候是成功的  同时是实时预报类型的情况下 stepindex==8才会发下一条 同时时间小于该任务的结束时间
+	    	//修改该情景的状态  为1 表示该条情景模式运行过 
+	    	if ("0".equals(code)&&"4".equals(scentype)&&stepindex==8&&StartCompare==0) {
+				//实时预报第一天的跑完或者补跑的fnl跑完状态变为1可用
+	    		TTasksStatus tasksStatus2 = new TTasksStatus();
+	    		tasksStatus2.setBeizhu("1");
+	    		tasksStatus2.setTasksScenarinoId(tasksScenarinoId);
+	    		tasksStatusMapper.updateRunstatus(tasksStatus2);
+	    		System.out.println("跟新"+tasksScenarinoId+"的状态了");
+			}else {
+				if("0".equals(code)&&compareTo>0){
+					//其他情况需要跑完整个情景模式状态才变为2 没跑完为1 出错为0
+		    		TTasksStatus tasksStatus2 = new TTasksStatus();
+		    		tasksStatus2.setBeizhu("1");
+		    		tasksStatus2.setTasksScenarinoId(tasksScenarinoId);
+		    		tasksStatusMapper.updateRunstatus(tasksStatus2);
+				}else if (("0".equals(code)&&compareTo==0&&index==stepindex)) {
+					//模式运行完毕就会变成2
+					TTasksStatus tasksStatus2 = new TTasksStatus();
+		    		tasksStatus2.setBeizhu("2"); 
+		    		tasksStatus2.setTasksScenarinoId(tasksScenarinoId);
+		    		tasksStatusMapper.updateRunstatus(tasksStatus2);
+		    		System.out.println("不是事实预报"+scentype+index+":"+stepindex);
+				}
+			}
+	    	//code为0的时候是成功的  同时是实时预报类型的情况下 stepindex==8才会发下一条 同时时间小于该任务的结束时间  同时该条情景对应的pathdate是当天才能走这个方法
 	    	if (code.equals("0")&&"4".equals(scentype)&&stepindex==index&&compareTo>0) {
+	    		if (pathcompare<0) {
+					//pathdate 比系统当天的时间小 表示是补发之前遗漏的 继续触发今天的实时预报
+	    			TScenarinoDetail idandcore = tScenarinoDetailMapper.getidAndcores(today);
+	    			Long scenarinoId = idandcore.getScenarinoId();
+	    			Long cores =Long.parseLong(idandcore.getExpand3());
+	    			readyData.readyRealMessageDataFirst(scenarinoId, cores);
+				}
+	    		if (pathcompare==0) {
+	    			//当时间到当天的时候发当天的实时预报
+	    			readyData.sendqueueRealData(tasksEndDate,tasksScenarinoId);
+				}
 	    		System.out.println(tasksEndDate+"tasks的结束时间");
-	    		readyData.sendqueueRealData(tasksEndDate,tasksScenarinoId);
 			}if (stepindex==-1) {
 				//发生错误的时候重新组织上一条的参数发送
-				Date changeDay = DateUtil.ChangeDay(tasksEndDate, -1);
-				readyData.sendqueueRealData(changeDay,tasksScenarinoId);
+				//Date changeDay = DateUtil.ChangeDay(tasksEndDate, -1);
+				ErrorStatus.Errortips(tasksScenarinoId);
+				//readyData.sendqueueRealData(changeDay,tasksScenarinoId);
 			}
 			//如果是实时预报的类型  跟新完一个时间的时候标志着当天的fnl或者gfs可以为预评估所用
 			if("0".equals(code)&&"4".equals(scentype)){
 				try {
-					//readyData.cantopreEvaluation(tasksEndDate,tasksScenarinoId,null);
 				Map<String, String> cantopreEvaluation = readyData.cantopreEvaluation(tasksEndDate, tasksScenarinoId, null);
+				
 				} catch (Exception e) {
 					// TODO: handle exception
 				}
@@ -148,14 +191,7 @@ public class ToDataTasksUtil {
 	    	if("0".equals(code)&&"1".equals(scentype)&&index==stepindex&&compareTo>0){
 	    		readyData.sendDataEvaluationSituationThen(tasksEndDate,tasksScenarinoId);
 	    	}
-	    	//修改该情景的状态  为1 表示该条情景模式运行过 并且可以用当天的数据做fnl
-	    	if ("0".equals(code)&&StartCompare<-1) {
-	    		Map hashMap = new HashMap();
-	    		Integer status = 1;
-	    		hashMap.put("tasksScenarinoId", tasksScenarinoId);
-	    		hashMap.put("beizhu", status);
-				tasksStatusMapper.updateRunstatus(hashMap);
-			}
+	    	
 	    	
 	    }else {
 			System.out.println("更新tasksstatus失败");
