@@ -6,52 +6,32 @@
     <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
     <result column="PLAN_REUSE_NAME" property="planReuseName" jdbcType="OTHER" />
     <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
-    <result column="TIME_ID" property="timeId" jdbcType="DECIMAL" />
+    <result column="TIME_START_TIME" property="timeStartTime" jdbcType="TIMESTAMP" />
     <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
-    <result column="SCENARIO_ID" property="scenarioId" jdbcType="DECIMAL" />
-    <result column="MISSION_ID" property="missionId" jdbcType="DECIMAL" />
-    <result column="PLAN_REUSE_START_TIME" property="planReuseStartTime" jdbcType="TIMESTAMP" />
-    <result column="PLAN_REUSE_END_TIME" property="planReuseEndTime" jdbcType="TIMESTAMP" />
-    <result column="AREA_ID" property="areaId" jdbcType="DECIMAL" />
+    <result column="SCENARIO_NAME" property="scenarioName" jdbcType="OTHER" />
+    <result column="MISSION_NAME" property="missionName" jdbcType="OTHER" />
+    <result column="AREA_NAME" property="areaName" jdbcType="OTHER" />
     <result column="OLD_PLAN_ID" property="oldPlanId" jdbcType="DECIMAL" />
+    <result column="TIME_END_TIME" property="timeEndTime" jdbcType="TIMESTAMP" />
   </resultMap>
-   <!--  查询当前用户下的所有可复制情景  -->
-  <resultMap id="copyListMap" type="hashMap" >
-    <id column="PLAN_REUSE_ID" property="planReuseId" jdbcType="DECIMAL" />
-    <result column="PLAN_REUSE_NAME" property="planReuseName" jdbcType="OTHER" />
+  <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.database.model.TPlanReuseWithBLOBs" extends="BaseResultMap" >
+    <result column="PROVINCE_CODES" property="provinceCodes" jdbcType="CLOB" />
+    <result column="CITY_CODES" property="cityCodes" jdbcType="CLOB" />
+    <result column="COUNTY_CODES" property="countyCodes" jdbcType="CLOB" />
   </resultMap>
-  
   <sql id="Base_Column_List" >
-    PLAN_REUSE_ID, USER_ID, PLAN_REUSE_NAME, ADD_TIME, TIME_ID, DELETE_TIME, IS_EFFECTIVE, 
-    SCENARIO_ID, MISSION_ID, PLAN_REUSE_START_TIME, PLAN_REUSE_END_TIME, AREA_ID, OLD_PLAN_ID
+    PLAN_REUSE_ID, USER_ID, PLAN_REUSE_NAME, ADD_TIME, TIME_START_TIME, DELETE_TIME, 
+    IS_EFFECTIVE, SCENARIO_NAME, MISSION_NAME, AREA_NAME, OLD_PLAN_ID, TIME_END_TIME
   </sql>
-  
-  
-  
-   <!-- 根据条件查询ID -->
-  <select id="getIdByQuery" resultType="java.lang.Long" parameterType="hashMap" >
-   select PLAN_REUSE_ID from
-       (
-		select PLAN_REUSE_ID from T_PLAN_REUSE 
-			where USER_ID = #{userId,jdbcType=OTHER} and PLAN_REUSE_NAME=#{planName,jdbcType=OTHER}
-			 and IS_EFFECTIVE='1' and SCENARIO_ID=#{scenarioId,jdbcType=OTHER}
-   				order by ADD_TIME desc
-   		)
-   		 WHERE ROWNUM=1
-  </select>
-  
-  
-  <!--  查询当前用户下的所有可复制情景  -->
-  <select id="selectCopyList" resultMap="copyListMap" parameterType="java.lang.Long" >
-    select PLAN_REUSE_ID,PLAN_REUSE_NAME from T_PLAN_REUSE
-    where USER_ID = #{userId,jdbcType=OTHER}  and IS_EFFECTIVE='1'
-  </select>
-  
-  
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <sql id="Blob_Column_List" >
+    PROVINCE_CODES, CITY_CODES, COUNTY_CODES
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
     from T_PLAN_REUSE
     where PLAN_REUSE_ID = #{planReuseId,jdbcType=DECIMAL}
   </select>
@@ -59,19 +39,21 @@
     delete from T_PLAN_REUSE
     where PLAN_REUSE_ID = #{planReuseId,jdbcType=DECIMAL}
   </delete>
-  <insert id="insert" parameterType="ampc.com.gistone.database.model.TPlanReuse" >
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TPlanReuseWithBLOBs" >
     insert into T_PLAN_REUSE (PLAN_REUSE_ID, USER_ID, PLAN_REUSE_NAME, 
-      ADD_TIME, TIME_ID, DELETE_TIME, 
-      IS_EFFECTIVE, SCENARIO_ID, MISSION_ID, 
-      PLAN_REUSE_START_TIME, PLAN_REUSE_END_TIME, 
-      AREA_ID, OLD_PLAN_ID)
+      ADD_TIME, TIME_START_TIME, DELETE_TIME, 
+      IS_EFFECTIVE, SCENARIO_NAME, MISSION_NAME, 
+      AREA_NAME, OLD_PLAN_ID, TIME_END_TIME, 
+      PROVINCE_CODES, CITY_CODES, COUNTY_CODES
+      )
     values (#{planReuseId,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{planReuseName,jdbcType=OTHER}, 
-      #{addTime,jdbcType=TIMESTAMP}, #{timeId,jdbcType=DECIMAL}, #{deleteTime,jdbcType=TIMESTAMP}, 
-      #{isEffective,jdbcType=VARCHAR}, #{scenarioId,jdbcType=DECIMAL}, #{missionId,jdbcType=DECIMAL}, 
-      #{planReuseStartTime,jdbcType=TIMESTAMP}, #{planReuseEndTime,jdbcType=TIMESTAMP}, 
-      #{areaId,jdbcType=DECIMAL}, #{oldPlanId,jdbcType=DECIMAL})
+      #{addTime,jdbcType=TIMESTAMP}, #{timeStartTime,jdbcType=TIMESTAMP}, #{deleteTime,jdbcType=TIMESTAMP}, 
+      #{isEffective,jdbcType=VARCHAR}, #{scenarioName,jdbcType=OTHER}, #{missionName,jdbcType=OTHER}, 
+      #{areaName,jdbcType=OTHER}, #{oldPlanId,jdbcType=DECIMAL}, #{timeEndTime,jdbcType=TIMESTAMP}, 
+      #{provinceCodes,jdbcType=CLOB}, #{cityCodes,jdbcType=CLOB}, #{countyCodes,jdbcType=CLOB}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TPlanReuse" >
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TPlanReuseWithBLOBs" >
     insert into T_PLAN_REUSE
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="planReuseId != null" >
@@ -86,8 +68,8 @@
       <if test="addTime != null" >
         ADD_TIME,
       </if>
-      <if test="timeId != null" >
-        TIME_ID,
+      <if test="timeStartTime != null" >
+        TIME_START_TIME,
       </if>
       <if test="deleteTime != null" >
         DELETE_TIME,
@@ -95,23 +77,29 @@
       <if test="isEffective != null" >
         IS_EFFECTIVE,
       </if>
-      <if test="scenarioId != null" >
-        SCENARIO_ID,
+      <if test="scenarioName != null" >
+        SCENARIO_NAME,
       </if>
-      <if test="missionId != null" >
-        MISSION_ID,
+      <if test="missionName != null" >
+        MISSION_NAME,
       </if>
-      <if test="planReuseStartTime != null" >
-        PLAN_REUSE_START_TIME,
-      </if>
-      <if test="planReuseEndTime != null" >
-        PLAN_REUSE_END_TIME,
-      </if>
-      <if test="areaId != null" >
-        AREA_ID,
+      <if test="areaName != null" >
+        AREA_NAME,
       </if>
       <if test="oldPlanId != null" >
         OLD_PLAN_ID,
+      </if>
+      <if test="timeEndTime != null" >
+        TIME_END_TIME,
+      </if>
+      <if test="provinceCodes != null" >
+        PROVINCE_CODES,
+      </if>
+      <if test="cityCodes != null" >
+        CITY_CODES,
+      </if>
+      <if test="countyCodes != null" >
+        COUNTY_CODES,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -127,8 +115,8 @@
       <if test="addTime != null" >
         #{addTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="timeId != null" >
-        #{timeId,jdbcType=DECIMAL},
+      <if test="timeStartTime != null" >
+        #{timeStartTime,jdbcType=TIMESTAMP},
       </if>
       <if test="deleteTime != null" >
         #{deleteTime,jdbcType=TIMESTAMP},
@@ -136,27 +124,33 @@
       <if test="isEffective != null" >
         #{isEffective,jdbcType=VARCHAR},
       </if>
-      <if test="scenarioId != null" >
-        #{scenarioId,jdbcType=DECIMAL},
+      <if test="scenarioName != null" >
+        #{scenarioName,jdbcType=OTHER},
       </if>
-      <if test="missionId != null" >
-        #{missionId,jdbcType=DECIMAL},
+      <if test="missionName != null" >
+        #{missionName,jdbcType=OTHER},
       </if>
-      <if test="planReuseStartTime != null" >
-        #{planReuseStartTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="planReuseEndTime != null" >
-        #{planReuseEndTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="areaId != null" >
-        #{areaId,jdbcType=DECIMAL},
+      <if test="areaName != null" >
+        #{areaName,jdbcType=OTHER},
       </if>
       <if test="oldPlanId != null" >
         #{oldPlanId,jdbcType=DECIMAL},
       </if>
+      <if test="timeEndTime != null" >
+        #{timeEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="provinceCodes != null" >
+        #{provinceCodes,jdbcType=CLOB},
+      </if>
+      <if test="cityCodes != null" >
+        #{cityCodes,jdbcType=CLOB},
+      </if>
+      <if test="countyCodes != null" >
+        #{countyCodes,jdbcType=CLOB},
+      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TPlanReuse" >
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TPlanReuseWithBLOBs" >
     update T_PLAN_REUSE
     <set >
       <if test="userId != null" >
@@ -168,8 +162,8 @@
       <if test="addTime != null" >
         ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="timeId != null" >
-        TIME_ID = #{timeId,jdbcType=DECIMAL},
+      <if test="timeStartTime != null" >
+        TIME_START_TIME = #{timeStartTime,jdbcType=TIMESTAMP},
       </if>
       <if test="deleteTime != null" >
         DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
@@ -177,25 +171,49 @@
       <if test="isEffective != null" >
         IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
       </if>
-      <if test="scenarioId != null" >
-        SCENARIO_ID = #{scenarioId,jdbcType=DECIMAL},
+      <if test="scenarioName != null" >
+        SCENARIO_NAME = #{scenarioName,jdbcType=OTHER},
       </if>
-      <if test="missionId != null" >
-        MISSION_ID = #{missionId,jdbcType=DECIMAL},
+      <if test="missionName != null" >
+        MISSION_NAME = #{missionName,jdbcType=OTHER},
       </if>
-      <if test="planReuseStartTime != null" >
-        PLAN_REUSE_START_TIME = #{planReuseStartTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="planReuseEndTime != null" >
-        PLAN_REUSE_END_TIME = #{planReuseEndTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="areaId != null" >
-        AREA_ID = #{areaId,jdbcType=DECIMAL},
+      <if test="areaName != null" >
+        AREA_NAME = #{areaName,jdbcType=OTHER},
       </if>
       <if test="oldPlanId != null" >
         OLD_PLAN_ID = #{oldPlanId,jdbcType=DECIMAL},
       </if>
+      <if test="timeEndTime != null" >
+        TIME_END_TIME = #{timeEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="provinceCodes != null" >
+        PROVINCE_CODES = #{provinceCodes,jdbcType=CLOB},
+      </if>
+      <if test="cityCodes != null" >
+        CITY_CODES = #{cityCodes,jdbcType=CLOB},
+      </if>
+      <if test="countyCodes != null" >
+        COUNTY_CODES = #{countyCodes,jdbcType=CLOB},
+      </if>
     </set>
+    where PLAN_REUSE_ID = #{planReuseId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="ampc.com.gistone.database.model.TPlanReuseWithBLOBs" >
+    update T_PLAN_REUSE
+    set USER_ID = #{userId,jdbcType=DECIMAL},
+      PLAN_REUSE_NAME = #{planReuseName,jdbcType=OTHER},
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      TIME_START_TIME = #{timeStartTime,jdbcType=TIMESTAMP},
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      SCENARIO_NAME = #{scenarioName,jdbcType=OTHER},
+      MISSION_NAME = #{missionName,jdbcType=OTHER},
+      AREA_NAME = #{areaName,jdbcType=OTHER},
+      OLD_PLAN_ID = #{oldPlanId,jdbcType=DECIMAL},
+      TIME_END_TIME = #{timeEndTime,jdbcType=TIMESTAMP},
+      PROVINCE_CODES = #{provinceCodes,jdbcType=CLOB},
+      CITY_CODES = #{cityCodes,jdbcType=CLOB},
+      COUNTY_CODES = #{countyCodes,jdbcType=CLOB}
     where PLAN_REUSE_ID = #{planReuseId,jdbcType=DECIMAL}
   </update>
   <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TPlanReuse" >
@@ -203,15 +221,14 @@
     set USER_ID = #{userId,jdbcType=DECIMAL},
       PLAN_REUSE_NAME = #{planReuseName,jdbcType=OTHER},
       ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
-      TIME_ID = #{timeId,jdbcType=DECIMAL},
+      TIME_START_TIME = #{timeStartTime,jdbcType=TIMESTAMP},
       DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
-      SCENARIO_ID = #{scenarioId,jdbcType=DECIMAL},
-      MISSION_ID = #{missionId,jdbcType=DECIMAL},
-      PLAN_REUSE_START_TIME = #{planReuseStartTime,jdbcType=TIMESTAMP},
-      PLAN_REUSE_END_TIME = #{planReuseEndTime,jdbcType=TIMESTAMP},
-      AREA_ID = #{areaId,jdbcType=DECIMAL},
-      OLD_PLAN_ID = #{oldPlanId,jdbcType=DECIMAL}
+      SCENARIO_NAME = #{scenarioName,jdbcType=OTHER},
+      MISSION_NAME = #{missionName,jdbcType=OTHER},
+      AREA_NAME = #{areaName,jdbcType=OTHER},
+      OLD_PLAN_ID = #{oldPlanId,jdbcType=DECIMAL},
+      TIME_END_TIME = #{timeEndTime,jdbcType=TIMESTAMP}
     where PLAN_REUSE_ID = #{planReuseId,jdbcType=DECIMAL}
   </update>
 </mapper>
