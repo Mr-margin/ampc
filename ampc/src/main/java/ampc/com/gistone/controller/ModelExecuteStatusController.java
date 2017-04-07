@@ -71,6 +71,9 @@ public class ModelExecuteStatusController {
 			Date endDate  = tasksStatusMapper.selectByscenarinoId(scenarinoId);
 			String endtime = DateUtil.DATEtoString(endDate, "yyyyMMdd");
 			System.out.println(endtime+"..........");
+			//确定是逐日执行还是逐模块执行
+			//查找stepindex和taskendtime
+			//
 			
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block

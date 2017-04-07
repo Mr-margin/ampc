@@ -69,36 +69,11 @@ public class GetWeatherModelController {
 			tScenarinoDetail.setScenarinoId(scenarinoId);
 			int updateCores = tScenarinoDetailMapper.updateCores(tScenarinoDetail);
 			if (updateCores>0) {
-				if (scenarinoType==4&&missionType==1) {
-					//准备实时预报的数据
-					readyData.readyRealMessageDataFirst(scenarinoId,cores);
-				}
-				if (scenarinoType==3&&missionType==3) {
-					//基准情景
-					readyData.readyBaseData(scenarinoId,cores);
-					return AmpcResult.build(0, "ok");
-				}
-				if (scenarinoType==1&&missionType==2) {
-					//预评估任务的预评估情景
-					readyData.readyPreEvaluationSituationDataFirst(scenarinoId,cores);
-					return AmpcResult.build(0, "ok");
-				}
-				if (scenarinoType==2&&missionType==2) {
-					//预评估任务的后评估情景
-					readyData.readyPrePostEvaluationSituationData(scenarinoId,cores);
-					return AmpcResult.build(0, "ok");
-				}
-				if (scenarinoType==2&&missionType==3) {
-					//后评估任务后评估情景
-					readyData.readypost_PostEvaluationSituationData(scenarinoId,cores);
-					return AmpcResult.build(0, "ok");
-				}else {
-					return AmpcResult.build(1000, "启动失败");
-				}
+				 readyData.branchPredict(scenarinoId, cores, scenarinoType, missionType);
+				 return AmpcResult.build(0, "ok");
 			}else {
 				return AmpcResult.build(1000, "启动失败");
 			}
-			
 			
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
