@@ -36,4 +36,6 @@ public interface TEmissionDetailMapper {
     
     List<TEmissionDetail> selectByEntity(TEmissionDetail record);
     TEmissionDetail selectBycodeAndDate(TEmissionDetail record);
+    
+    int deleteByScenarunoId(Long scenarunoId);
 }
