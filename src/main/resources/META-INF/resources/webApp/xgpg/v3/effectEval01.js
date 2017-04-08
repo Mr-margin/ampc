@@ -7,9 +7,6 @@ $(function(){
 	 */
 	$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">时间序列</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
 
-	//柱状图
-	//timeBar();
-
 });
 
 /**
@@ -22,25 +19,42 @@ var changeMsg = {
 		city: '',
 		station: '',
 		rms: 'day',//时间分辨率
-		time: '',//时间选择
 		scenarinoId : [],//选择的情景Id数组
 		scenarinoName : [],//选择的情景名称数组
 };
-//逐小时显示 AQI PM25 PM10 O3 SO2 NO2 CO SO4 NO3 NH4 BC OM PMFINE
-//逐日显示 AQI PM25 PM10 O3_8_max O3_1_max SO2 NO2 CO SO4 NO3 NH4 BC OM PMFINE
+//逐小时显示 AQI PM25 ,SO4 NO3 NH4 BC OM PMFINE, PM10 O3 SO2 NO2 CO 
+//逐日显示 AQI PM25 ,SO4 NO3 NH4 BC OM PMFINE, PM10 O3_8_max O3_1_max SO2 NO2 CO 
 //物种选择
 var speciesArr = {
-		day: ['AQI', 'PM25', 'PM10', 'O3_8_max', 'O3_1_max', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE'],
-		hour: [ 'AQI', 'PM25', 'PM10', 'O3', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE']
+		day: ['AQI', 'PM25','SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3_8_MAX', 'O3_1_MAX','SO2','NO2', 'CO',],
+		hour: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE','PM10','O3', 'SO2', 'NO2', 'CO' ]
 };
+var speciesObj = {
+		'AQI':'AQI',
+		'PM₂₅':'PM25',
+		'PM₁₀':'PM10',
+		'O₃_8_max':'O3_8_MAX',
+		'O₃_1_max':'O3_1_MAX',
+		'O₃_avg':'O3_AVG',
+		'SO₂':'SO2',
+		'NO₂':'NO2',
+		'CO':'CO',
+		'SO₄':'SO4',
+		'NO₃':'NO3',
+		'NH₄':'NH4',
+		'BC':'BC',
+		'OM':'OM',
+		'OC':'OC',
+		'PMFINE':'PMFINE'		
+}
+
 
 /**
- * 设置图表 模板
+ * 设置柱状图 模板
  */
 var optionAll = {  
-
 		title: {  
-			text: 'AQI指数数据图',  //改变量放污染物
+			text: '',  //改变量 放污染物
 			x: 'left',  
 			y: 'top'  
 		},  
@@ -52,14 +66,14 @@ var optionAll = {
 			x: 'center',  
 			y: 'top',  
 			//legend的data: 用于设置图例，data内的字符串数组需要与sereis数组内每一个series的name值对应  
-			data: ['观测数据','1073基数','1068杭州管控','1069长三角管控'],     //改变量 存储所选情景name
+			data: [],     //改变量 存储所选情景name
 
 		},
 		grid: {
 			show: true,
 			left: '3%',
 			right: '3%',
-			bottom: '20%',
+			bottom: '15%',
 		},
 		dataZoom:[
 		          {
@@ -75,97 +89,22 @@ var optionAll = {
 		                  {  
 		                	  show: true,  
 		                	  type: 'category',  
-		                	  data: ['2017-02-01','2016-02-03','2016-02-05','2016-02-07','2016-02-09','2016-02-11','2016-02-13','2016-02-15','2016-02-17','2016-02-19','2016-02-21','2016-02-23']  //改变量
+		                	  data: []  //改变量
 		                  }
 		                  ],  
-		                  yAxis: [  
-		                          {  
-		                        	  name:'AQI',  //改变量  污染物name
-		                        	  nameLocation:'end',
-		                        	  show: true,  
-		                        	  type: 'value',  
-		                        	  splitArea: {show: true}
-		                          }
-		                          ],
-		                          //颜色色卡
-		                          color:["#c12e34","#e6b600", "#0098d9", "#2b821d","#005eaa","#339ca8","#cda819","#32a487"],
-		                          //sereis的数据: 用于设置图表数据之用。series是一个对象嵌套的结构；对象内包含对象  
-		                          series: [    //改变量  观测数据单独写一个接口  其它的放在一起
-		                                       {  
-		                                    	   name: '观测数据',  //改变量
-		                                    	   //图表类型，动态参数，必要参数！如为空或不支持类型，则该系列数据不被显示。  
-		                                    	   type: show_type,  
-		                                    	   data: [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3],  //改变量
-		                                    	   symbol:'none',
-		                                    	   smooth:true,
-		                                    	   //系列中的数据标线内容  
-		                                    	   markLine: {  
-		                                    		   data: [  
-		                                    		          {
-		                                    		        	  yAxis: 50, 
-		                                    		        	  name: '基准线',
-		                                    		        	  lineStyle:{
-		                                    		        		  normal:{
-		                                    		        			  color:'#00CD00'
-		                                    		        		  }
-		                                    		        	  }
-		                                    		          },  
-		                                    		          {
-		                                    		        	  yAxis: 100, 
-		                                    		        	  name: '基准线',
-		                                    		        	  lineStyle:{
-		                                    		        		  normal:{
-		                                    		        			  color:'#FFFF00'
-		                                    		        		  }
-		                                    		        	  }
-		                                    		          },
-		                                    		          {
-		                                    		        	  yAxis: 150, 
-		                                    		        	  name: '基准线',
-		                                    		        	  lineStyle:{
-		                                    		        		  normal:{
-		                                    		        			  color:'#FF8C00'
-		                                    		        		  }
-		                                    		        	  }
-		                                    		          },
-		                                    		          {
-		                                    		        	  yAxis: 200, 
-		                                    		        	  name: '基准线',
-		                                    		        	  lineStyle:{
-		                                    		        		  normal:{
-		                                    		        			  color:'#FF0000'
-		                                    		        		  }
-		                                    		        	  }
-		                                    		          },
-		                                    		          {
-		                                    		        	  yAxis: 400, 
-		                                    		        	  name: '基准线',
-		                                    		        	  lineStyle:{
-		                                    		        		  normal:{
-		                                    		        			  color:'#800080'
-		                                    		        		  }
-		                                    		        	  }
-		                                    		          },
-		                                    		          {
-		                                    		        	  yAxis: 500, 
-		                                    		        	  name: '基准线',
-		                                    		        	  lineStyle:{
-		                                    		        		  normal:{
-		                                    		        			  color:'#8B4513' //褐红8E236B 重褐色8B4513
-		                                    		        		  }
-		                                    		        	  }
-		                                    		          }
-		                                    		          ]  
-		                                    	   }
-		                                       },  
-		                                       {  
-		                                    	   name: '1073基数',  //改变量
-		                                    	   type: show_type,  
-		                                    	   data: [6, 11, 12, 26.4, 28.7, 80.7, 175.6, 546.2, 148.7,78.8, 66.0, 66],  //改变量
-		                                    	   smooth:true,
-
-		                                       }
-		                                       ]  
+		          yAxis: [  
+		                  {  
+		                   name:'',  //改变量  污染物name
+		                   nameLocation:'end',
+		                   show: true,  
+		                   type: 'value',  
+		                   splitArea: {show: true}
+		                   }
+		                    ],
+		            //颜色色卡
+		          color:["#c12e34","#e6b600", "#0098d9", "#2b821d","#005eaa","#339ca8","#cda819","#32a487"],
+		           //sereis的数据: 用于设置图表数据之用。series是一个对象嵌套的结构；对象内包含对象  
+		          series:[]   //改变量  观测数据单独写一个接口  其它的放在一起
 }; 
 
 
@@ -201,10 +140,10 @@ function initNowSession(){
 	changeMsg.scenarinoId = [];
 	changeMsg.scenarinoName = [];
 	for(var i = 0;i< sceneInitialization.data.length; i++){
-		changeMsg.scenarinoId.push(sceneInitialization.data.scenarinoId);
-		changeMsg.scenarinoName.push(sceneInitialization.data.scenarinoName);
+		changeMsg.scenarinoId.push(sceneInitialization.data[i].scenarinoId);
+		changeMsg.scenarinoName.push(sceneInitialization.data[i].scenarinoName);
 	}
-	
+	getdata();
 }
 //放置站点信息
 var allStation = {};
@@ -212,6 +151,9 @@ var allStation = {};
  * 设置站点信息
  */
 function stationInfo(){
+	$("#proStation").empty();
+	$("#cityStation").empty();
+	$("#station").empty();
 	
 	var paramsName = {};
 	url = '';
@@ -235,13 +177,160 @@ function stationInfo(){
 			
 			//存入全局变量
 			changeMsg.pro=$('#proStation').val();
-			changeMsg.city=$('#proStation').val();
-			changeMsg.station=$('#proStation').val();
+			changeMsg.city=$('#cityStation').val();
+			changeMsg.station=$('#station').val();
 		}else{
 			console.log("站点请求失败！")
 		}
 	});
 }
+
+
+/**
+ * 动态添加div 填数据
+ */
+function initEcharts(){
+	var datas = echartsData;
+	var dd = {};
+	var ds = {};
+	var tname = []; //污染物name
+//	for (var prop in datas) {  
+//		if (datas.hasOwnProperty(prop)) {   
+//			for ( var pr in datas[prop] ) {
+//				tname.push(pr);
+//			}
+//		}  
+//	} 
+	var species = speciesArr[changeMsg.rms];
+	for(var s = 0;s<species.length;s++){
+		
+		tname.push(species[s]);
+	}
+	
+//	var resultArr = []; speciesArr
+//	for(var i = 0;i<tname.length;i++){
+//		if(resultArr.indexOf(tname[i]) == -1)
+//		resultArr.push(tname[i])
+//	}
+	
+	console.log(tname)
+	$("#initEcharts").empty();
+	for(var i = 0;i < tname.length;i++){
+		var div = $('<div></div>');
+		div.attr("id",tname[i]);
+		div.addClass('echartsCZ');
+		$("#initEcharts").append(div);
+		var option = $.extend(true,{},optionAll); //复制echarts模板
+		if(tname[i] == 'AQI'){
+			option.title.text = tname[i];         //加不同单位
+		}else if(tname[i] != 'CO'){
+			option.title.text = tname[i]+('(μg/m³)');
+		}else{
+			option.title.text = tname[i]+('(mg/m³)');
+		}	
+		option.legend.data = (function(){
+		var lenArr = [];
+		for(var i = 0;i<sceneInitialization.data.length;i++){
+		lenArr.push(sceneInitialization.data[i].scenarinoName);
+		}
+		return lenArr;
+		})();
+		option.series = [];
+		for(var j = 0;j< sceneInitialization.data.length; j++){
+			var id = sceneInitialization.data[j].scenarinoId;
+			var name = sceneInitialization.data[j].scenarinoName;
+			var ttime = [];   //x轴数据
+			var ydata = [];	 //y数据	
+			if(changeMsg.rms == 'day'){
+				for (var prop in datas) {  
+					if (datas.hasOwnProperty(prop)) {   
+						if(prop == id){ //循环不同的情景id
+							for ( var pr in datas[prop] ) {
+								if (datas[prop].hasOwnProperty(pr)) {
+									if(pr == tname[i]){
+										var ss = datas[prop][pr];
+										for( var s in ss ) {
+											if(ss.hasOwnProperty(s)){  //循环数据 放数据
+												dd[s] = ss[s];
+												ttime.push(s);	
+												ydata.push(dd[s]);
+											}
+										}
+									}
+								}
+							}	
+						}
+					}  
+				}
+			}else{
+				for (var prop in datas) {  
+					if (datas.hasOwnProperty(prop)) {   
+						if(prop == id){ //循环不同的情景id
+							for ( var pr in datas[prop] ) {
+								if (datas[prop].hasOwnProperty(pr)) {
+									if(pr == tname[i]){
+										var ss = datas[prop][pr];
+										for(var h in ss){
+											if(ss.hasOwnProperty(h)){
+												for(var y in ss[h]){
+													if(ss[h].hasOwnProperty(y)){
+														var tt = [];
+														tt = ss[h][y];
+														ttime.push(h+' '+y);
+														ydata.push(ss[h][y]);
+													}
+												}
+											}
+										}
+									}
+								}
+							}	
+						}
+					}  
+				}
+			}
+			option.series.push({
+				name : name, 				//情景名称  对应图例 exceptsjz
+				type : show_type, 				//图表类型   已设全局变量 show_type
+				smooth : true,
+				data : ydata     			//可变情景数据  
+
+			});
+		}
+		option.xAxis = [];
+		option.xAxis.push({				   //x轴情景时间
+			data:ttime
+		});
+		var es = echarts.init(document.getElementById(tname[i]));
+		es.setOption(option);
+	}
+}
+
+var echartsData;
+/**
+ * 接收/更新数据
+ */
+function getdata(){
+	
+	var url = '/Appraisal/find_appraisal';
+	var paramsName = {"userId":"1","missionId":"300","mode":"point","time":"2016-11-27 13","cityStation":"1002A","scenarinoId":changeMsg.scenarinoId,"datetype":changeMsg.rms};
+	ajaxPost(url,paramsName).success(function(res){
+		if(res.status == 0){
+			echartsData = res.data;
+			console.log(echartsData)
+			if(JSON.stringify(echartsData) == '{}'){	
+				swal('暂无数据', '', 'error')
+			}else{
+			
+			}
+			initEcharts();
+		}else{
+			swal(res.msg, '' , 'error')
+		}
+		
+	});
+}
+
 
 
 
@@ -359,7 +448,7 @@ function save_scene(){
 		mag.data = data;
 		vipspa.setMessage(mag);
 		ls.setItem('SI',JSON.stringify(mag));
-		console.log(JSON.stringify(mag));
+		console.log(data)
 		sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
 		var arrId = [];//放入已选的情景id 传传
 		for(i=0; i<mag.data.length;i++){
@@ -368,6 +457,7 @@ function save_scene(){
 		console.log(JSON.stringify(arrId))
 		$("#close_scene").click();
 		set_sce();
+		initNowSession();
 	}
 }
 //超链接显示 模态框
@@ -381,66 +471,68 @@ function exchangeModal(){
  */
 function set_sce(){
 	changeMsg.scenarinoId = [];
-	changeMsg.scenarinoId
+	//changeMsg.scenarinoId
 }
 
 
 
 
 
+/**
+ * 站点 点击事件 省- 市- 站点
+ */
+$("#proStation").on('change',function(e){
+	var pro = $(e.target).val();
+	changeMsg.pro = pro;
+	var cityStation = allStation[pro].station;
+	for(var city in cityStation){
+		$("#cityStation").append('<option value="'+ cityStation[city].code +'">'+ cityStation[city].name +'</option>')
+	}
+	changeMsg.city = $("#cityStation").val(); //放入全局变量
+	var station = cityStation[changeMsg.city].station;
+	for(var st in station){
+		$("#station").append('<option value="'+ station[st].code +'">'+ station[st].name +'</option>')
+	}
+	changeMsg.station = $("#station").val();
 
+	getdata();
+});
+$("#cityStation").on('change',function(e){
+	var city = $(e.target).val();
+	changeMsg.city = city;
+	var station=  allStation[changeMsg.pro].station[city].station;
+	for(var sta in station){
+		$("#station").append('<option value="'+ station[sta].code +'">'+ station[sta].name +'</option>')
+	}
+	changeMsg.station = $("#station").val();
+	
+	getdata();
+});
+$("#station").on('change',function(e){
+	var station = $(e.target).val();
+	changeMsg.station = station;
+	
+	getdata();
+});
 
-
-
-
-
-
-
-
-
-
+/**
+ * 逐日
+ */
 //逐小时显示 AQI PM25 PM10 O3 SO2 NO2 CO SO4 NO3 NH4 BC OM PMFINE
 //逐日显示 AQI PM25 PM10 O3_8_max O3_1_max SO2 NO2 CO SO4 NO3 NH4 BC OM PMFINE
-$('input[name=zhuTime]').on('change',function(e){
-	var zhuType = $(e.target).val();
-	console.log(zhuType);
-	
-	if(zhuType == 'd'){
-		show_type = "bar";
-		$("#divAQI").show();
-		$("#divPM25").show();
-		$("#divPM10").show();
-		$("#divO38").show();
-		$("#divO31").show();
-		$("#divSO2").show();
-		$("#divNO2").show();
-		$("#divCO").show();
-		$("#divSO4").show();
-		$("#divNO3").show();
-		$("#divNH4").show();
-		$("#divBC").show();
-		$("#divOM").show();
-		$("#divPMFINE").show();
-		$("#divO3").hide();
-	}else{
+$('input[name=rms]').on('change',function(e){
+	var rms = $(e.target).val();
+	changeMsg.rms= rms
+	console.log(rms);
+	if(rms == 'hour'){//"userId":"1","missionId":"300","mode":"point","time":"2016-11-27 13","cityStation":"1002A","scenarinoId":changeMsg.scenarinoId,"datetype":"hour"
 		show_type = "line";
-		$("#mapDivAQI").show();
-		$("#mapDivPM25").show();
-		$("#mapDivPM10").show();
-		$("#mapDivO3").show();
-		$("#mapDivSO2").show();
-		$("#mapDivNO2").show();
-		$("#mapDivCO").show();
-		$("#mapDivSO4").show();
-		$("#mapDivNO3").show();
-		$("#mapDivNH4").show();
-		$("#mapDivBC").show();
-		$("#mapDivOM").show();
-		$("#mapDivPMFINE").show();
-		$("#mapDivO38").hide();
-		$("#mapDivO31").hide();
+		getdata();
+		
+	}else{
+		show_type = "bar";
+		getdata();
 	}
-	timeBar();	
+	
 	
 });
 
@@ -449,35 +541,30 @@ $('input[name=changes]').on('change',function(e){
 	var changeType = $(e.target).val();
 	console.log(changeType)
 	if(changeType == '1'){
-		timeBar();
+		
 	}else{
-		timeBar();
+		
 	}
 });
-
+//逐日显示 AQI PM25 ,< SO4 NO3 NH4 BC OM PMFINE >, PM10 O3_8_max O3_1_max SO2 NO2 CO 
 //组分展开收起
 $('input[name=spread]').on('change',function(e){
 	var spType = $(e.target).val();
-	if(spType == 'open'){
-		$("#divAQI").show();
-		$("#divPM25").show();
-		$("#divPM10").show();
-		$("#divO3").show();
+	console.log(spType)
+	if(spType == 'close'){
+		$("#SO4").hide();
+		$("#NO3").hide();
+		$("#NH4").hide();
+		$("#BC").hide();
+		$("#OM").hide();
+		$("#PMFINE").hide();
 	}else{
-		$("#divPM25").show();
-		$("#divPM10").show();
-		$("#divO3").hide();
-		$("#divO38").hide();
-		$("#divO31").hide();
-		$("#divSO2").hide();
-		$("#divNO2").hide();
-		$("#divCO").hide();
-		$("#divSO4").hide();
-		$("#divNO3").hide();
-		$("#divNH4").hide();
-		$("#divBC").hide();
-		$("#divOM").hide();
-		$("#divPMFINE").hide();
+		$("#SO4").show();
+		$("#NO3").show();
+		$("#NH4").show();
+		$("#BC").show();
+		$("#OM").show();
+		$("#PMFINE").show();
 	}
 	
 });
@@ -487,275 +574,6 @@ $('input[name=domain]').on('change',function(e){
 	var domain = $(e.target).val();
 	console.log(domain);
 });
-
-
-
-//	创建ECharts图表
-function timeBar(){
-	var paramsName = {};
-//	$.get('webApp/v3/echarts.json',paramsName).success(function(res){});
-	
-	var myChart1 = echarts.init(document.getElementById('divAQI'));
-	var myChart2 = echarts.init(document.getElementById('divPM25'));
-	var myChart3 = echarts.init(document.getElementById('divPM10'));
-	var myChart4 = echarts.init(document.getElementById('divO3'));
-	var myChart5 = echarts.init(document.getElementById('divO38'));
-	var myChart6 = echarts.init(document.getElementById('divO31'));
-	var myChart7 = echarts.init(document.getElementById('divSO2'));
-	var myChart8 = echarts.init(document.getElementById('divNO2'));
-	var myChart9 = echarts.init(document.getElementById('divCO'));
-	var myChart10 = echarts.init(document.getElementById('divSO4'));
-	var myChart11 = echarts.init(document.getElementById('divNO3'));
-	var myChart12 = echarts.init(document.getElementById('divNH4'));
-	var myChart13 = echarts.init(document.getElementById('divBC'));
-	var myChart14 = echarts.init(document.getElementById('divOM'));
-	var myChart15 = echarts.init(document.getElementById('divPMFINE'));
-	
-	//指定图表的配置项和数据	
-    var option = {  
-            
-            title: {  
-                text: 'AQI指数数据图',  //改变量
-                x: 'left',  
-                y: 'top'  
-            },  
-            tooltip: {  
-                //触发类型，默认（'item'）数据触发，可选为：'item' | 'axis'  
-                trigger: 'axis'  
-            },  
-            legend: {  
-                //显示策略，可选为：true（显示） | false（隐藏），默认值为true  
-                show: true,  
-                x: 'center',  
-                y: 'top',  
-                //legend的data: 用于设置图例，data内的字符串数组需要与sereis数组内每一个series的name值对应  
-                data: ['观测数据','1073基数','1068杭州管控','1069长三角管控'],//改变量
-                /*selected:{
-                	'1073基数' : false
-                	
-                }*/
-               
-            },
-            grid: {
-            	//直角坐标系网格
-            	show: true,
-                left: '3%',
-                right: '3%',
-                bottom: '20%',
-            },
-            dataZoom:[
-                      {
-                    	  show:'true',
-                    	  realtime:'true',
-                    	  start:0,
-                    	  end:100
-                    	  
-                      }
-                      ],
-            //是否启用拖拽重计算特性，默认关闭(即值为false)  
-            calculable: false,  
-            //直角坐标系中横轴数组，数组中每一项代表一条横轴坐标轴，仅有一条时可省略数值  
-            //横轴通常为类目型，但条形图时则横轴为数值型，散点图时则横纵均为数值型  
-            xAxis: [  
-                {  
-                    show: true,  
-                    type: 'category',  
-                    //类目型坐标轴文本标签数组，指定label内容。 数组项通常为文本，'\n'指定换行  
-                    data: ['2017-02-01','2016-02-03','2016-02-05','2016-02-07','2016-02-09','2016-02-11','2016-02-13','2016-02-15','2016-02-17','2016-02-19','2016-02-21','2016-02-23']  //改变量
-                }
-            ],  
-            //直角坐标系中纵轴数组，数组中每一项代表一条纵轴坐标轴，仅有一条时可省略数值  
-            //纵轴通常为数值型，但条形图时则纵轴为类目型  
-            yAxis: [  
-                {  
-                	name:'AQI',//改变量
-                	nameLocation:'end',
-                    show: true,  
-                    type: 'value',  
-                    //分隔区域，默认不显示  
-                    splitArea: {show: true}
-                }
-            ],
-            //颜色色卡
-            color:["#c12e34","#e6b600", "#0098d9", "#2b821d","#005eaa","#339ca8","#cda819","#32a487"],
-            //sereis的数据: 用于设置图表数据之用。series是一个对象嵌套的结构；对象内包含对象  
-            series: [  //改变量
-                {  
-                    //系列名称，如果启用legend，该值将被legend.data索引相关  
-                    name: '观测数据',  //改变量
-                    //图表类型，动态参数，必要参数！如为空或不支持类型，则该系列数据不被显示。  
-                    type: show_type,  
-                    //系列中的数据内容数组，折线图以及柱状图时数组长度等于所使用类目轴文本标签数组axis.data的长度，并且他们间是一一对应的。数组项通常为数值  
-                    data: [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3],  //改变量
-                    symbol:'none',
-                    //设置成曲线
-                    smooth:true,
-                    //系列中的数据标线内容  
-                    markLine: {  
-                        data: [  
-                            {
-                            yAxis: 50, 
-                            name: '基准线',
-                            lineStyle:{
-                            	normal:{
-                                	color:'#00CD00'
-                                }
-                            }
-                            },  
-                            {
-                                yAxis: 100, 
-                                name: '基准线',
-                                lineStyle:{
-                                	normal:{
-                                    	color:'#FFFF00'
-                                    }
-                                }
-                             },
-                             {
-                                 yAxis: 150, 
-                                 name: '基准线',
-                                 lineStyle:{
-                                 	normal:{
-                                     	color:'#FF8C00'
-                                     }
-                                 }
-                              },
-                              {
-                                  yAxis: 200, 
-                                  name: '基准线',
-                                  lineStyle:{
-                                  	normal:{
-                                      	color:'#FF0000'
-                                      }
-                                  }
-                              },
-                              {
-                                  yAxis: 400, 
-                                  name: '基准线',
-                                  lineStyle:{
-                                  	normal:{
-                                      	color:'#800080'
-                                      }
-                                  }
-                              },
-                              {
-                                  yAxis: 500, 
-                                  name: '基准线',
-                                  lineStyle:{
-                                  	normal:{
-                                      	color:'#8B4513' //褐红8E236B 重褐色8B4513
-                                      }
-                                  }
-                              }
-                        ]  
-                    }
-                },  
-                {  
-                    name: '1073基数',  //改变量
-                    type: show_type,  
-                    data: [6, 11, 12, 26.4, 28.7, 80.7, 175.6, 546.2, 148.7,78.8, 66.0, 66],  //改变量
-                    smooth:true,
-                      
-                },
-                {  
-                    name: '1068杭州管控',  
-                    type: show_type, 
-                    smooth:true,
-                    data: [6, 9, 24, 26.4, 28.7, 70.7, 188, 222, 333, 144, 55, 33],  
-                  
-                }, 
-                {  
-                    name: '1069长三角管控',  
-                    type: show_type,
-                    smooth:true,
-                    data: [5, 9, 24, 26, 28, 70, 175, 626, 48, 33.8, 22, 8],  
-                }
-            ]  
-        }; 
-    
-
-
-    myChart1.setOption(option);
-    myChart2.setOption(option);
-    myChart3.setOption(option);
-    myChart4.setOption(option);
-    myChart5.setOption(option);
-    myChart6.setOption(option);
-    myChart7.setOption(option);
-    myChart8.setOption(option);
-    myChart9.setOption(option);
-    myChart10.setOption(option);
-    myChart11.setOption(option);
-    myChart12.setOption(option);
-    myChart13.setOption(option);
-    myChart14.setOption(option);
-    myChart15.setOption(option);
-    
-    //图标改成自适应大小
-    window.addEventListener("resize",function(){
-    	
-    	myChart1.resize();
-    	myChart2.resize();
-    	myChart3.resize();
-    	myChart4.resize();
-    	myChart5.resize();
-    	myChart6.resize();
-    	myChart7.resize();
-    	myChart8.resize();
-    	myChart9.resize();
-    	myChart10.resize();
-    	myChart11.resize();
-    	myChart12.resize();
-    	myChart13.resize();
-    	myChart14.resize();
-    	myChart15.resize();
-    	
-    });
-    //图表联动
-	echarts.connect([myChart1,myChart2,myChart3,myChart4,myChart5,myChart6,myChart7,myChart8,myChart9,myChart10,myChart11,myChart12,myChart13,myChart14,myChart15]);
-
-}
-
-
-
-
-
-//echarts 请求数据  还没写
-/*function getChartData(){
-	var options = myChart.getOption();
-	$.ajax({
-		type:"post",
-		async:false,
-		url:"xxxx.do",
-		data:{},
-		dataType:"json",
-		success:function(result){
-			if (result) {
-				//legend categrop data0 data1 data2 data3 后台定义的属性
-				options.legend.data = result.legend;
-				options.xAxis[0].data = result.timeData;
-				options.series[0].data = result.series[0].data0;
-				options.series[1].data = result.series[1].data1;
-				options.series[2].data = result.series[2].data2;
-				options.series[3].data = result.series[3].data3;
-				
-				myCharts.hideLoading();
-				myCharts.setOption(options);
-				
-			} 
-		},
-		error:function(){
-			alert("请求数据失败！！！");
-		}
-
-	});
-}*/
-
-
-
-
-
-
 
 
 
