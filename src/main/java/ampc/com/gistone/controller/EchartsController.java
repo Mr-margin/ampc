@@ -294,7 +294,7 @@ public class EchartsController {
 						}
 					}
 					//添加所有行业在该污染物的减排量总和
-					pflResult.add(String.valueOf(CastNumUtil.significand(sumResult.doubleValue(), 4)));
+					pflResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(sumResult.doubleValue(), 4), 2)));
 				}
 				//查询情景的信息时为2
 				mapQuery.put("emtype", 2);

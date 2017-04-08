@@ -1369,7 +1369,7 @@ public class PlanAndMeasureController {
 			// 创建要减排分析中的子项
 			List<Object> opList = new ArrayList<Object>();
 			// 循环Filter 因为Filter中的项 和 子措施汇总的是相同的 所以循环一个
-			for (int j = 0; j < lms.size(); j++) {
+			for (int j = 0; j < table1.size(); j++) {
 				Map opresult = new HashMap();
 				// 获取对应Filter中的子措施
 				Map t1map = table1.get(j);
@@ -1476,7 +1476,7 @@ public class PlanAndMeasureController {
 					// 获取Json中的子措施集合
 					List<Map> table11 = mcu1.getTable1();
 					// 循环Filter 因为Filter中的项 和 子措施汇总的是相同的 所以循环一个
-					for (int j = 0; j < lms1.size(); j++) {
+					for (int j = 0; j < table11.size(); j++) {
 						Map opresult = new HashMap();
 						// 获取对应Filter中的子措施
 						Map t1map = table11.get(j);
