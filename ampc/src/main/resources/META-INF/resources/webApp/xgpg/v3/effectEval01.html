@@ -47,10 +47,10 @@
 						<div class="" style="margin-top:5px;">
 								<div class="btn-group" data-toggle="buttons">
 									<label class="btn btn-outline btn-success">
-										<input type="radio" name="zhuTime" id="zhuHour" value="h">逐小时
+										<input type="radio" name="rms" value="hour">逐小时
 									</label>
 									<label class="btn btn-outline btn-success active">
-										<input type="radio" name="zhuTime" id="zhuDay" value="d">逐日
+										<input checked type="radio" name="rms" value="day">逐日
 									</label>
 								</div>
 						</div>
@@ -95,10 +95,10 @@
 						<div class="" style="margin-bottom:0px;padding-left:7px;">
 							<div class="btn-group" data-toggle="buttons">
 								<label class="btn btn-outline btn-success active">
-									<input type="radio" name="spread" id="zufenSpread" value="open">组分展开
+									<input checked type="radio" name="spread" value="open">组分展开
 								</label>
 								<label class="btn btn-outline btn-success">
-									<input type="radio" name="spread" id="zufenUp" value="close">PM2.5组分收起
+									<input type="radio" name="spread" value="close">PM2.5组分收起
 								</label>
 							</div>
 						</div>
@@ -106,8 +106,12 @@
 				</div>
 			</div>
 			<div class="row" style="margin-left: 0px;margin-right: 0px;width:100%;height:calc(100% - 48px);">
-				<div class='col-md-12' style="height:100%;width:100%;padding-left: 0px;">
-					<div id="divAQI" style="height:350px;width:100%;border:1px solid #75B9E6;margin-top:5px;">
+				<div class='col-md-12' id="initEcharts" style="height:100%;padding-left: 0px;">
+	
+	        	</div>
+				<!--<div class='col-md-12' style="height:100%;width:100%;padding-left: 0px;">
+					
+					 <div id="divAQI" style="height:350px;width:100%;border:1px solid #75B9E6;margin-top:5px;">
 						<div class="" id="mainDiv1" style="height:300px;width:100%;padding-left:20px;padding-right:20px;margin-left:auto;margin-right:auto;"></div>
 					</div>
 					<div id="divPM25" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
@@ -151,8 +155,8 @@
 					</div>
 					<div id="divPMFINE" style="height:350px;border:1px solid #75B9E6;margin-top:5px;">
 						<div class="" id="mainDiv14" style="height:300px;width:100%;padding-left:20px;padding-right:20px;margin-left:auto;margin-right:auto;"></div>
-					</div>
-				</div>
+					</div> 
+				</div>-->
 			</div>
 		</div>
 	</div>
