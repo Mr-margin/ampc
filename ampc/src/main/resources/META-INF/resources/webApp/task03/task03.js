@@ -108,7 +108,7 @@ function m_gis_q(){
 /**
  * 设置导航条菜单
  */
-$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景编辑</a>>><span style="padding-left: 15px;padding-right: 15px;">措施编辑  (  '+qjMsg.areaName+' —— '+qjMsg.planName+'  )</span>');
+$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景编辑</a>>><span style="padding-left: 15px;padding-right: 15px;">措施编辑</span>');
 
 
 $('.csCon').removeClass('disNone');
@@ -1165,8 +1165,10 @@ function point_table () {
 			if(res.status == 'success'){
 				if(res.data.rows.length>0){
 					$("#shaixuan_num").html("筛选点源："+res.data.append.sourceTotalCount);
-					if(res.data.append.total.length>0){//加地图坐标
-						add_point(res.data.append.total);
+					if(typeof res.data.append.total != "undefined"){
+						if(res.data.append.total.length>0){//加地图坐标
+							add_point(res.data.append.total);
+						}
 					}
 					$("#shaixuan_num").show();
 					var tablejieguo = "";
@@ -1247,9 +1249,11 @@ function point_name_table () {
 		responseHandler: function (res) {
 			if(res.status == 'success'){
 //				console.log(JSON.stringify(res));
-				if(res.data.append.total.length>0){//加地图坐标
-					add_point(res.data.append.total);
-					point_name_info = res.data.append.total;
+				if(typeof res.data.append.total != "undefined"){
+					if(res.data.append.total.length>0){//加地图坐标
+						add_point(res.data.append.total);
+						point_name_info = res.data.append.total;
+					}
 				}
 				$.each(res.data.rows, function(k, vol) {
 					vol.caozuo = '<a onClick="delete_sc_name(\''+vol.id+'\',\''+vol.companyId+'\');">删除</a>';
@@ -1936,9 +1940,38 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 		
 });
 
+
+//**************************************************************************************************************************************
+/**
+ * 主窗口地图显示,加点专题图
+ */
+function main_gis_point(){
+	
+	//获取所有行业控制的点源坐标
+	ajaxPost_w(jianpaiUrl+'/search/',{"bigIndex":qjMsg.esCouplingId,"planId":qjMsg.planId}).success(function(res){
+//		console.log(JSON.stringify(res));
+		if(res.status == 'success'){
+
+		}else{
+			swal('连接错误search/', '', 'error');
+		}
+	});
+	
+}
+
+
+
+
+
+
+
+
+//**************************************************************************************************************************************
 var point_message = "";
 var clusterLayer_ttft = "";
-//地图加点
+/**
+ * 模态窗口地图加点
+ */
 function add_point(col){
 //	console.log(JSON.stringify(col));
 	
@@ -1996,17 +2029,17 @@ function add_point(col){
 		
 		var defaultSym = new dong.SimpleMarkerSymbol().setSize(4);  
 	    var renderer = new dong.ClassBreaksRenderer(defaultSym, "clusterCount");
-	    var style1 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([72, 165, 251]), 1),new dong.Color([72, 165, 251,0.8]));
-	    var style2 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([122, 251, 159]), 1),new dong.Color([122, 251, 159,0.8]));  
-	    var style3 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([229, 251, 72]), 1),new dong.Color([229, 251, 72,0.8]));  
-	    var style4 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([251, 171, 72]), 1),new dong.Color([251, 171, 72,0.8]));  
-	    var style5 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([251, 100, 72]), 1),new dong.Color([251, 100, 72,0.8]));
+	    var style1 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([72, 165, 251]), 1),new dong.Color([218 ,83 ,25 ,0.9]));
+	    var style2 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([122, 251, 159]), 1),new dong.Color([218 ,83 ,25 ,0.9]));  
+	    var style3 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 25,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([229, 251, 72]), 1),new dong.Color([218 ,83 ,25 ,0.9]));  
+	    var style4 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 30,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([251, 171, 72]), 1),new dong.Color([218 ,83 ,25 ,0.9]));  
+	    var style5 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 35,new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID,new dong.Color([251, 100, 72]), 1),new dong.Color([218 ,83 ,25 ,0.9]));
 	    
-	    renderer.addBreak(0, 2, style1);  
-	    renderer.addBreak(2, 100, style2);  
-	    renderer.addBreak(100, 500, style3);  
-	    renderer.addBreak(500, 1000, style4);  
-	    renderer.addBreak(1000, 3001, style5); 
+	    renderer.addBreak(0, 10, style1);  
+	    renderer.addBreak(10, 100, style2);  
+	    renderer.addBreak(100, 1000, style3);  
+	    renderer.addBreak(1000, 10000, style4);  
+	    renderer.addBreak(10000, 99999999, style5); 
 	    
 	    clusterLayer.setRenderer(renderer);
 	    app.mapList[1].addLayer(clusterLayer);
@@ -2062,6 +2095,8 @@ function companyInfo(companyId){
 	
 }
 
+
+
 /**
  * 保留两位有效数字
  * @param jk
@@ -2071,7 +2106,6 @@ function liangtoFixed(jk){
 	if(jk >= 1 || jk == 0){
 		return jk.toFixed(2);
 	}else{
-		
 		var k = 2;//默认小数点保留两位
 		var tted;
 		do{
@@ -2080,8 +2114,22 @@ function liangtoFixed(jk){
 		}while(tted.substring(tted.length-2,tted.length-1) == "0" || tted.substring(tted.length-1,tted.length) == "0");
 		return tted;
 	}
-	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

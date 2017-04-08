@@ -392,7 +392,7 @@
   color: #3498da;
 }
 .jsBtn{
-  position: absolute;
+  /* position: absolute; */
   bottom: 10px;
 }
 .qyCon span,.csCon span{
