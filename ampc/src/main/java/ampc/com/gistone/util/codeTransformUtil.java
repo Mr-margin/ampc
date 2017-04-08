@@ -19,7 +19,12 @@ import ampc.com.gistone.database.model.TEsNative;
 @RequestMapping
 
 public class codeTransformUtil {
-	
+	/**
+	 * code转换
+	 * @param codelist
+	 * @param tEsNative
+	 * @return
+	 */
 	public static List<Long> codeTransform(List<Long> codelist,TEsNative tEsNative){
 		List<Long> list=new ArrayList<Long>();
 		List<Long> havelist=new ArrayList<Long>();
