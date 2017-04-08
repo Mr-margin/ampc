@@ -64,111 +64,118 @@ public class EMissionController {
 	 */
 	@RequestMapping("save_emission")
 	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
-	public AmpcResult save_emission(@RequestBody Map<String,Object> requestDate,Long jobId,HttpServletRequest request, HttpServletResponse response){
-	try{
-		ClientUtil.SetCharsetAndHeader(request, response);
-		Map<String, Map> data = (Map) requestDate.get("data");
-		String status=requestDate.get("status").toString();
-		
-		Long scenarionId=jobId;
-		System.out.println(scenarionId);
-		TEsNative tEsNative =new TEsNative();
-		tEsNative.setEsCodeRange("11,12,13");
-		int a=0;
-		int b=0;
-		//编写正则表达式
-	    String reg="0000$";
-		String reg2="00$";
-		//编译正则表达式
-		Pattern pattern1 = Pattern.compile(reg);
-		Pattern pattern2 = Pattern.compile(reg2);
-		//获取当前时间
-		Date date=new Date();
-		SimpleDateFormat hms = new SimpleDateFormat("yyyy-MM-dd");
-		String newdat=hms.format(date);
-		Date thedate=hms.parse(newdat);
-		//判断参数是否正常，正常继续执行程序，不正常返回error
-		if(status.equals("success")){
-		//循环data的value
-		for(Map<String,Object> datas:data.values()){
-		String emdate=datas.get("date").toString();//获取date值
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");	
-		Date emissiondate=sdf.parse(emdate);
-		Map emission=(Map) datas.get("emission");//获取emission的值	
-		JSONObject jasonObject = JSONObject.fromObject(emission);
-		Map<String,Object> map= (Map)jasonObject;//将emission的值	转化为Map集合
-		List<String> codelist=new ArrayList<String>();
-		Map<String,Object> newmap=codeTransformUtil.codeTransformEmission(map, tEsNative);
-		for(String code:newmap.keySet()){//根据key进行遍历
-			if(!codelist.contains(code)){//去除重复省市重复存储
-			TEmissionDetail temission=new TEmissionDetail();
-			temission.setEmissionDate(emissiondate);
-				codelist.add(code);
-			temission.setCode(code);
-			 String pcode=code.substring(0, 2);
-			 String ccode=code.substring(2,4);
-			 Matcher matcher1 = pattern1.matcher(code);
-			 Matcher matcher2 = pattern2.matcher(code);
-			if(matcher1.find()){
-				temission.setCodeLevel("1");				
-			}else if(matcher2.find()){
-				temission.setCodeLevel("2");	
-			}else{
-				temission.setCodeLevel("3");
+	public AmpcResult save_emission(
+			@RequestBody Map<String, Object> requestDate, Long jobId,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Map> data = (Map) requestDate.get("data");
+			String status = requestDate.get("status").toString();
+
+			Long scenarionId = jobId;
+			System.out.println(scenarionId);
+			TEsNative tEsNative = new TEsNative();
+			tEsNative.setEsCodeRange("11,12,13");
+			int a = 0;
+			int b = 0;
+			// 编写正则表达式
+			String reg = "0000$";
+			String reg2 = "00$";
+			// 编译正则表达式
+			Pattern pattern1 = Pattern.compile(reg);
+			Pattern pattern2 = Pattern.compile(reg2);
+			// 获取当前时间
+			Date date = new Date();
+			SimpleDateFormat hms = new SimpleDateFormat("yyyy-MM-dd");
+			String newdat = hms.format(date);
+			Date thedate = hms.parse(newdat);
+			// 判断参数是否正常，正常继续执行程序，不正常返回error
+			if (status.equals("success")) {
+				//删除原有本情景的减排结果
+				 tEmissionDetailMapper.deleteByScenarunoId(scenarionId);
+				// 循环data的value
+				for (Map<String, Object> datas : data.values()) {
+					String emdate = datas.get("date").toString();// 获取date值
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					Date emissiondate = sdf.parse(emdate);
+					Map emission = (Map) datas.get("emission");// 获取emission的值
+					JSONObject jasonObject = JSONObject.fromObject(emission);
+					Map<String, Object> map = (Map) jasonObject;// 将emission的值
+																// 转化为Map集合
+					List<String> codelist = new ArrayList<String>();
+					Map<String, Object> newmap = codeTransformUtil
+							.codeTransformEmission(map, tEsNative);
+					for (String code : newmap.keySet()) {// 根据key进行遍历
+						if (!codelist.contains(code)) {// 去除重复省市重复存储
+							TEmissionDetail temission = new TEmissionDetail();
+							temission.setEmissionDate(emissiondate);
+							codelist.add(code);
+							temission.setCode(code);
+							String pcode = code.substring(0, 2);
+							String ccode = code.substring(2, 4);
+							Matcher matcher1 = pattern1.matcher(code);
+							Matcher matcher2 = pattern2.matcher(code);
+							if (matcher1.find()) {
+								temission.setCodeLevel("1");
+							} else if (matcher2.find()) {
+								temission.setCodeLevel("2");
+							} else {
+								temission.setCodeLevel("3");
+							}
+							Map somemap = (Map) newmap.get(code);// 获取emission的值
+							JSONObject someobj = JSONObject.fromObject(somemap);
+							Map<String, Object> lastMap = (Map) someobj;// 将emission的值
+																		// 转化为Map集合
+
+							temission.setEmissionType("2");
+							temission.setScenarunoId(scenarionId);
+
+								temission.setMeasureReduce(lastMap.get("op")
+										.toString());
+								temission.setEmissionDetails(lastMap.get(
+										"category").toString());
+								a += tEmissionDetailMapper
+										.insertSelective(temission);// 保存数据
+							b++;// 计数器
+						} else {
+							continue;
+						}
+					}
+				}
+
+				if (a == b) {// 查看计数器的数值是否与保存成功的数据相同，相同为成功，不同则失败
+					TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
+					tScenarinoDetail.setScenarinoId(scenarionId);
+					tScenarinoDetail.setScenarinoStatus(5l);// 如成功修改情景的状态为8，执行完毕
+					tScenarinoDetail.setRatioEndDate(thedate);
+					int s = tScenarinoDetailMapper
+							.updateByPrimaryKeySelective(tScenarinoDetail);
+					if (scenarionId == null) {
+						return AmpcResult.build(1000, "error", "无情景id");
+					}
+					if (s != 0) {
+						return AmpcResult.build(0, "success");
+					}
+				}
+				TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
+				tScenarinoDetail.setScenarinoId(scenarionId);
+				tScenarinoDetail.setScenarinoStatus(4l);// 如失败修改情景的状态为4，执行失败
+				tScenarinoDetailMapper
+						.updateByPrimaryKeySelective(tScenarinoDetail);
+				return AmpcResult.build(1000, "error", "保存数量错误");
+			} else {
+				TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
+				tScenarinoDetail.setScenarinoId(scenarionId);
+				tScenarinoDetail.setScenarinoStatus(4l);// 如参数状态为error修改情景的状态为4，执行失败
+				tScenarinoDetailMapper
+						.updateByPrimaryKeySelective(tScenarinoDetail);
+				return AmpcResult.build(1000, "参数有误");
 			}
-			Map somemap=(Map) newmap.get(code);//获取emission的值	
-			JSONObject someobj = JSONObject.fromObject(somemap);
-			Map<String,Object> lastMap= (Map)someobj;//将emission的值	转化为Map集合
-			
-			
-			temission.setEmissionType("2");
-			temission.setScenarunoId(scenarionId);
-			List<TEmissionDetail> telist=tEmissionDetailMapper.selectByEntity(temission);
-			if(telist.isEmpty()){
-			temission.setMeasureReduce(lastMap.get("op").toString());
-			temission.setEmissionDetails(lastMap.get("category").toString());
-			a+=tEmissionDetailMapper.insertSelective(temission);//保存数据
-			}else{
-				return AmpcResult.build(1000, "error","该情景减排结果已存在");
-			}
-			b++;//计数器
-			}else{
-				continue;
-			}
-		}
-		}
-		
-		if(a==b){//查看计数器的数值是否与保存成功的数据相同，相同为成功，不同则失败
-			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
-			tScenarinoDetail.setScenarinoId(scenarionId);
-			tScenarinoDetail.setScenarinoStatus(5l);//如成功修改情景的状态为8，执行完毕
-			tScenarinoDetail.setRatioEndDate(thedate);
-			int s=tScenarinoDetailMapper.updateByPrimaryKeySelective(tScenarinoDetail);
-			if(scenarionId==null){
-				return AmpcResult.build(1000, "error","无情景id");
-			}
-			if(s!=0){
-			return AmpcResult.build(0, "success");
-			}
-		}
-		TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
-		tScenarinoDetail.setScenarinoId(scenarionId);
-		tScenarinoDetail.setScenarinoStatus(4l);//如失败修改情景的状态为4，执行失败
-		tScenarinoDetailMapper.updateByPrimaryKeySelective(tScenarinoDetail);
-		return AmpcResult.build(1000, "error","保存数量错误");
-		}else{
-			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
-			tScenarinoDetail.setScenarinoId(scenarionId);
-			tScenarinoDetail.setScenarinoStatus(4l);//如参数状态为error修改情景的状态为4，执行失败
-			tScenarinoDetailMapper.updateByPrimaryKeySelective(tScenarinoDetail);
-			return AmpcResult.build(1000, "参数有误");	
-		}
-	}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-			return AmpcResult.build(1000, "error");	
+			return AmpcResult.build(1000, "error");
 		}
 	}
-	
 	
 	
 	
@@ -440,7 +447,7 @@ public class EMissionController {
 						map.put(pcode, yes);
 					}else{
 						map.put(pcode, new BigDecimal(nummap.get(pollutant).toString()));
-					}	
+					}
 				}
 				if(level.equals("2")){
 					String pcode=emission.getCode().substring(0, 4)+"00";
@@ -451,7 +458,7 @@ public class EMissionController {
 						map.put(pcode,yes);
 					}else{
 						map.put(pcode, new BigDecimal(nummap.get(pollutant).toString()));
-					}	
+					}
 				}
 				if(level.equals("3")){
 					String pcode=emission.getCode();
@@ -462,7 +469,7 @@ public class EMissionController {
 						map.put(pcode, yes);
 					}else{
 						map.put(pcode, new BigDecimal(nummap.get(pollutant).toString()));
-					}	
+					}
 				}
 					//}else{
 					//	continue;
