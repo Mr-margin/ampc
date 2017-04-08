@@ -1,12 +1,13 @@
 package ampc.com.gistone.preprocess.concn;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,13 +21,14 @@ import net.sf.json.JSONObject;
 @RequestMapping(value = "/concn")
 public class ConcnController {
 	
+	private static final Logger logger  = LoggerFactory.getLogger(ConcnController.class);
+	
 	@Autowired
 	private ConcnService concnService;
 
 	@RequestMapping(value = "/processData", method = RequestMethod.POST)
 	public AmpcResult processData(@RequestBody Map<String, Object> requestData,
 			HttpServletRequest request, HttpServletResponse response) {
-		System.out.println(requestData.get("userId"));
 		Map data = (Map) requestData.get("data");
 		int userId = Integer.valueOf(String.valueOf(data.get("userId")));
 		int domainId = Integer.valueOf(String.valueOf(data.get("domainId")));
@@ -42,7 +44,7 @@ public class ConcnController {
 			JSONObject res = (JSONObject) concnService.requestConcnData(requestParams);
 			return AmpcResult.ok(res);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("requestConcnData error", e);
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}

@@ -33,7 +33,7 @@ public class ConcnService {
 	
 	private final static Logger logger = LoggerFactory.getLogger(ConcnService.class);
 
-	private final static String COCN_URL = "http://localhost:8288/cmaq/result";
+	private final static String CONCN_URL = "http://localhost:8288/cmaq/result";
 	@Autowired
 	private TPreProcessMapper tPreProcessMapper;
 	@Autowired
@@ -68,7 +68,7 @@ public class ConcnService {
 		List<ScenarinoEntity> entites = tPreProcessMapper.selectByUniqueKey(requestParams);
 		
 		String paramStr = JsonUtil.objToJson(params);
-		String resStr = ClientUtil.doPost(COCN_URL, paramStr);
+		String resStr = ClientUtil.doPost(CONCN_URL, paramStr);
 		
 		Map<String, Object> resMap = objectMapper.readValue(resStr, Map.class);
 		JSONObject jsonObject = JSONObject.fromObject(resMap.get("data"));
@@ -120,7 +120,7 @@ public class ConcnService {
 		TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(sId);
 		int year = getScenarinoYear(tScenarinoDetail);
 		Long type = tScenarinoDetail.getScenarinoType();
-//		if(type == 4) {
+		if(type == 4) {
 			TreeMap dbMap = JsonUtil.jsonToObj(scenarinoEntity.getContent(), TreeMap.class); 
 			Set<String> keySet = dbMap.keySet();
 			String firstKey = "";
@@ -169,11 +169,11 @@ public class ConcnService {
 				}
 				
 			} else {
-				logger.error("this forcast scenarino ");
+				logger.error("this forcast scenarino no result");
 			}
 			
 			
-//		}
+		}
 	}
 	
 	
