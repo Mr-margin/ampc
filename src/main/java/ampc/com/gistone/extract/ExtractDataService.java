@@ -27,7 +27,7 @@ public class ExtractDataService {
 
 	public List<Map<String, Object>> buildData(ExtractRequestParams params) throws IOException, TransformException, FactoryException, InvalidRangeException {
 		
-		checkParams(params);
+		if(!checkParams(params)) return null;
 		
 		List<PointBean> pointBeanList = buildPointList(params);
 		

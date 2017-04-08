@@ -71,7 +71,7 @@ public class ExtractDataController {
 			params.setRows(rows);
 			params.setCols(cols);
 			res  = extractDataService.buildData(params);
-			if(res == null) AmpcResult.build(1000, "参数错误");
+			if(res == null) AmpcResult.build(1000, "buildData error");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误");
