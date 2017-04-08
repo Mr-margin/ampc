@@ -214,4 +214,8 @@
     from T_EMISSION_DETAIL
     where CODE = #{code,jdbcType=VARCHAR} and EMISSION_DATE = #{emissionDate,jdbcType=DATE}
     </select>
+    <delete id="deleteByScenarunoId" parameterType="java.lang.Long" >
+    delete from T_EMISSION_DETAIL
+    where SCENARINO_ID = #{scenarunoId,jdbcType=DECIMAL} and EMISSION_TYPE ='2'
+  </delete>
 </mapper>
