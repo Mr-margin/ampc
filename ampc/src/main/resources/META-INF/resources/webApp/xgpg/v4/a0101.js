@@ -348,7 +348,7 @@ function bianji(){
 	    featureset.features = features;
 	    featureset.exceededTransferLimit = false;
 	    
-		app.gp = new esri.tasks.Geoprocessor(gp33);
+		app.gp = new esri.tasks.Geoprocessor("http://192.168.1.133:6080/arcgis/rest/services/ceshi/GPServer/ceshi1");
 		var parms = {
 				"p1" : featureset,
 				"p2" : "dqvalue",
