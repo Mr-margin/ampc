@@ -253,12 +253,9 @@ public class PlanAndMeasureController {
 						newtPlanMeasure.setPlanId(newPlanId);
 						newtPlanMeasure.setSectorName(t.getSectorName());
 						newtPlanMeasure.setUserId(userId);
-						newtPlanMeasure.setImplementationScope(t
-								.getImplementationScope());
-						newtPlanMeasure.setMeasureContent(t
-								.getMeasureContent());
-						newtPlanMeasure.setReductionRatio(t
-								.getReductionRatio());
+						newtPlanMeasure.setImplementationScope(t.getImplementationScope());
+						newtPlanMeasure.setMeasureContent(t.getMeasureContent());
+						newtPlanMeasure.setReductionRatio(t.getReductionRatio());
 						newtPlanMeasure.setRatio(t.getRatio());
 						newtPlanMeasure.setTableRatio(t.getTableRatio());
 						newtPlanMeasure.setTableItem(t.getTableItem());
