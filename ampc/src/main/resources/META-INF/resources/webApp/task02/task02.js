@@ -1086,6 +1086,7 @@ function createEditArea() {
         swal('名称重复', '', 'error')
       }else{
         $('#editArea').modal('hide');
+        
         $('#' + $('#areaName').attr('data-id')).find('button.btn-flash').removeClass('btn-flash');
         ajaxPost(url, obj).success(function (res) {
 
@@ -1106,6 +1107,8 @@ function createEditArea() {
             obj.countyCodes = crArr;
             allData.push(obj);
             showTimeline(allData);
+            app2();
+            
           } else {
             $('#' + $('#areaName').attr('data-id')).find('b').html(areaName);
           }
@@ -1134,10 +1137,12 @@ function createEditArea() {
         obj.countyCodes = crArr;
         allData.push(obj);
         showTimeline(allData);
+        
       } else {
         $('#' + $('#areaName').attr('data-id')).find('b').html(areaName);
       }
       $('#editArea').modal('hide');
+      app2();
       $('#' + $('#areaName').attr('data-id')).find('button.btn-flash').removeClass('btn-flash');
     })
   }
@@ -1849,7 +1854,7 @@ var app = {};
 var dong = {};
 
 //颜色数组
-var sz_corlor = [[140, 0, 255, 0.65], [54, 94, 255, 0.65], [28, 255, 232, 0.65], [25, 255, 48, 0.65], [191, 255, 0, 0.65], [255, 200, 0, 0.65], [227, 102, 0, 0.65], [128, 0, 0, 0.65], [255, 252, 255, 0.65], [189, 189, 189, 0.65], [255, 255, 115, 0.65], [255, 190, 190, 0.65], [190, 255, 232, 0.65]];
+var sz_corlor = [[0 ,114 ,190 , 0.65], [218 ,83 ,25 , 0.65], [238 ,178 ,51 , 0.65], [126 ,47 ,142 , 0.65], [119 ,173 ,48 , 0.65], [77 ,191 ,239 , 0.65], [163 ,20 ,47 , 0.65], [64 ,90 ,90 , 0.65], [78 ,0 ,205 , 0.65], [1 ,123 ,26 , 0.65]];
 var dojoConfig = {
   async: true,
   parseOnLoad: true,
