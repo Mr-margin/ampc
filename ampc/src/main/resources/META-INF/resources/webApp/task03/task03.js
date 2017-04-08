@@ -1839,7 +1839,7 @@ function create(){
 		
 		
 		
-//		console.log(JSON.stringify(paramsName));
+		console.log(JSON.stringify(paramsName));
 		ajaxPost('/measure/addOrUpdate_measure',paramsName).success(function(res){
 //			console.log(JSON.stringify(res));
 			if(res.status == 0){
@@ -2109,8 +2109,12 @@ function liangtoFixed(jk){
 		var k = 2;//默认小数点保留两位
 		var tted;
 		do{
-			tted = jk.toFixed(k);
-			k++;
+			if(k<jk.length-2){
+				tted = jk.toFixed(k);
+				k++;
+			}else{
+				return tted;
+			}
 		}while(tted.substring(tted.length-2,tted.length-1) == "0" || tted.substring(tted.length-1,tted.length) == "0");
 		return tted;
 	}
