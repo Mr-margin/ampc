@@ -20,6 +20,13 @@
     GLOBAL_SETTING_ID, USERID, RANGEDAY, SPINUP, CORES, DOMAIN_ID, ES_COUPLING_ID, ADD_DATE, 
     UPDATE_DATE, BEIZHU1, BEIZHU2, BEIZHU3, BEIZHU4
   </sql>
+  
+  <!-- 查找所有用户的全局设置 -->
+  <select id="selectAll" resultMap="BaseResultMap">
+  select 
+  <include refid="Base_Column_List" />
+   from T_GLOBAL_SETTING 
+  </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
