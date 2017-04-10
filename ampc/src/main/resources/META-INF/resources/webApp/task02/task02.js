@@ -829,8 +829,10 @@ function editPlan(t) {
   msg.content.areaId = allData[areaIndex].areaId;
   msg.content.areaName = allData[areaIndex].areaName;
   msg.content.timeId = allData[areaIndex].timeItems[timeIndex].timeId;
-  msg.content.timeEndDate = allData[areaIndex].timeItems[timeIndex].timeEndDate;
-  msg.content.timeStartDate = allData[areaIndex].timeItems[timeIndex].timeStartDate;
+  //msg.content.timeEndDate = allData[areaIndex].timeItems[timeIndex].timeEndDate;
+  msg.content.timeEndDate = t.endTime.getTime();
+  //msg.content.timeStartDate = allData[areaIndex].timeItems[timeIndex].timeStartDate;
+  msg.content.timeStartDate = t.startTime.getTime();
   msg.content.planId = allData[areaIndex].timeItems[timeIndex].planId;
   msg.content.planName = allData[areaIndex].timeItems[timeIndex].planName;
   msg.content.cityCodes = allData[areaIndex].cityCodes;
