@@ -23,6 +23,8 @@ import java.util.UUID;
 
 
 
+
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -568,7 +570,9 @@ public class ReadyData {
 		Long spinup = DBspinup+5;
 		System.out.println(spinup+"这个是SPINUP");
 		wrfData.setSpinup(spinup);
-		
+		//准备lastungrib 无关就设置为空
+		//String lastungrib = readyLastUngrib();
+		wrfData.setLastungrib("");
 		//设置cmaq的spinup
 		cmaqData.setSpinup(DBspinup);
 		//准备ic
@@ -782,7 +786,8 @@ public class ReadyData {
 		//创建消息bady对象
 		QueueBodyData bodyData = new QueueBodyData();
 		//调试模式的内容
-		bodyData.setFlag(1);
+		//bodyData.setFlag(1);
+		bodyData.setFlag(0);
 		Integer scenarinoType = Integer.parseInt(scenarinoDetailMSG.getScenType());//情景类型
 		Long userId = scenarinoDetailMSG.getUserId();
 		Long missionId = scenarinoDetailMSG.getMissionId();//任务id
@@ -889,11 +894,17 @@ public class ReadyData {
 			Date endDate = scenarinoDetailMSG.getScenarinoEndDate();
 			//获取情景起报时间
 			Date pathDate = scenarinoDetailMSG.getPathDate();
+			//pathdate 只有实时预报和预评估是有值的其他都是没值的
+			String pathdate = null;
+			if (null==pathDate) {
+				pathdate = "99999999";
+			}
 			//设置气象数据类型
 			commonData.setDatatype(datatype);
 			//设置firsttime
 			commonData.setFirsttime(firsttime);
-			String pathdate = DateUtil.DATEtoString(pathDate,"yyyyMMdd");
+			
+		  //  pathdate = DateUtil.DATEtoString(pathDate,"yyyyMMdd");
 			String starttime = DateUtil.DATEtoString(startDate,"yyyyMMdd");
 			String endtime = DateUtil.DATEtoString(endDate,"yyyyMMdd");
 			//设置起报时间
