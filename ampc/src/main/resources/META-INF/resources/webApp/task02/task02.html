@@ -428,6 +428,9 @@
           <h4 class="modal-title" id="jpztLabel">减排计算状态</h4>
         </div>
         <div class="modal-body text-center">
+          <div class="clearfix">
+            <button type="button" class="btn btn-success" style="float: right" onclick="initJPJS()">初始化减排计算</button>
+          </div>
           <div class="row  mt20 mb20">
             <div class="col-md-3">计算进度</div>
             <div class="col-md-3">已用时</div>
@@ -452,7 +455,8 @@
               <h5>当前情景：<span></span></h5>
             </div>
           </div>
-          <button type="button" class="btn btn-success" onclick="jpztckBtn()">刷新</button>
+
+          <button type="button" class="btn btn-success" id="refreshJPJS" onclick="jpztckBtn()">刷新</button>
           <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
         </div>
       </div>

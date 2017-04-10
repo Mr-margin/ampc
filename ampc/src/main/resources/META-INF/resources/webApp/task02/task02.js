@@ -1681,7 +1681,7 @@ function jpjsBtn() {
       if (res.status == 0) {
         if (res.data == 1) {
           $('.jpjs').addClass('disNone');
-          $('.jpztck.disNone').removeClass('disNone');
+          $('.jpztck.disNone').removeClass('disNone').click();
 
           scenarinoType(3);
           qjMsg.scenarinoStatus = 3;
@@ -1696,6 +1696,23 @@ function jpjsBtn() {
       }
     })
   }
+}
+
+/*重置减排计算*/
+function initJPJS(){
+  var url = '/plan/update_Status';
+  ajaxPost(url,{
+    userId:userId,
+    scenarinoId:qjMsg.qjId
+  }).success(function(res){
+    if(res.status == 0){
+      jpztckBtn();
+    }else{
+      console.log(url+'故障')
+    }
+  }).error(function(){
+    console.log(url+'错误')
+  })
 }
 
 /*减排状态查看*/
