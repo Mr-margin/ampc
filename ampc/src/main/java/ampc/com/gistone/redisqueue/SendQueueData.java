@@ -9,22 +9,13 @@
 package ampc.com.gistone.redisqueue;
 
 
-import java.awt.font.NumericShaper.Range;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.sf.json.JSONObject;
-import oracle.net.aso.e;
-
-import org.apache.tomcat.jni.Thread;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.sun.tools.classfile.Annotation.element_value;
 
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.model.TTasksStatus;
