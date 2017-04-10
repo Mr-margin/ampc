@@ -76,7 +76,7 @@ public class GetCoresTimesController {
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return AmpcResult.build(1000, "添加失败");
+			return AmpcResult.build(1000, "获取失败");
 		}
 	}
 
