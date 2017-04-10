@@ -154,7 +154,7 @@ public class SchedulerTimer {
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年4月8日 上午10:19:16
-	 */
+	 *//*
 	@Scheduled(fixedRate = 5000)
 	public String  test1() {
 		System.out.println("开始定时任务");
@@ -162,7 +162,7 @@ public class SchedulerTimer {
 		//System.out.println(name+"定时的name");
 		System.out.println("这个时间是"+DateUtil.DATEtoString(new Date(), "yyyy-MM-dd HH:mm:ss"));
 		return name;
-	}
+	}*/
 	
 
 }
