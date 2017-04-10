@@ -179,7 +179,7 @@
   		FROM T_SCENARINO_DETAIL  SCEN 
   		INNER JOIN T_SCENARINO_STATUS STAT  ON SCEN.SCENARINO_STATUS=STAT.SCENARINO_STATU_ID
 			  WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
-			  AND MISSION_ID=#{missionId,jdbcType=OTHER}
+			  AND MISSION_ID=#{missionId,jdbcType=OTHER} AND SCEN_TYPE!='4'
 			  <if test="queryName != null" >
         		AND (SCENARINO_NAME LIKE #{queryName,jdbcType=OTHER}
         		OR to_char(SCENARINO_START_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
