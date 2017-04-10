@@ -472,13 +472,13 @@ function updata() {
     "scenarinoId":changeMsg.scenarinoId,
     "datetype":"day"
   });
-  var echartsJZData = ajaxPost(url, {
+  var echartsJZData = ajaxPost(urlJZ, {
     //userId: userId,
     //missionId:sceneInitialization.taskID,
     //mode:changeMsg.station=='avg'?'city':'point',
     //time:changeMsg.time,
     //cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
-    //scenarinoId:changeMsg.scenarinoId,
+    ////scenarinoId:changeMsg.scenarinoId,
     //datetype:changeMsg.rms
 
 
@@ -487,7 +487,7 @@ function updata() {
     "time":"2016-11-27 13",
     "userId":"1",
     "cityStation":"1002A",
-    "scenarinoId":changeMsg.scenarinoId,
+    //"scenarinoId":changeMsg.scenarinoId,
     "datetype":"day"
   });
 
