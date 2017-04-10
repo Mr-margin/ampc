@@ -697,10 +697,13 @@
                       <div>
                         <table id="copyPlanTable">
                           <thead>
-                          <th data-checkbox="true"></th>
+                          <th data-radio="true"></th>
+                          <th data-field="planReuseName">预案名称</th>
                           <th data-field="missionName">任务名称</th>
-                          <th data-formatter="rwType">任务类型</th>
-                          <th data-field="scenarinoName">情景名称</th>
+                          <th data-field="scenarioName">情景名称</th>
+                          <th data-field="areaName">区域名称</th>
+                          <th data-formatter="copyPlanAddTime">添加时间</th>
+                          <!--<th data-field="scenarinoName">情景名称</th>-->
                           </thead>
                         </table>
                       </div>
@@ -712,7 +715,7 @@
                         <!--<select class="form-control mb25" id="copyPlan">-->
                         <!--</select>-->
                       <!--</div>-->
-                      <div class="modal-footer">
+                      <div class="modal-footer" style="padding-top: 35px;">
                         <button type="button" class="btn btn-success" data-dismiss="modal" onclick="addPlan(false)">
                           确定添加
                         </button>
