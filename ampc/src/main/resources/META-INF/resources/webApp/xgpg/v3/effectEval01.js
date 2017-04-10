@@ -29,25 +29,6 @@ var speciesArr = {
 		day: ['AQI', 'PM25','SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3_8_MAX', 'O3_1_MAX','SO2','NO2', 'CO',],
 		hour: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE','PM10','O3', 'SO2', 'NO2', 'CO' ]
 };
-var speciesObj = {
-		'AQI':'AQI',
-		'PM₂₅':'PM25',
-		'PM₁₀':'PM10',
-		'O₃_8_max':'O3_8_MAX',
-		'O₃_1_max':'O3_1_MAX',
-		'O₃_avg':'O3_AVG',
-		'SO₂':'SO2',
-		'NO₂':'NO2',
-		'CO':'CO',
-		'SO₄':'SO4',
-		'NO₃':'NO3',
-		'NH₄':'NH4',
-		'BC':'BC',
-		'OM':'OM',
-		'OC':'OC',
-		'PMFINE':'PMFINE'		
-}
-
 
 /**
  * 设置柱状图 模板
@@ -185,7 +166,6 @@ function stationInfo(){
 	});
 }
 
-
 /**
  * 动态添加div 填数据
  */
@@ -194,26 +174,11 @@ function initEcharts(){
 	var dd = {};
 	var ds = {};
 	var tname = []; //污染物name
-//	for (var prop in datas) {  
-//		if (datas.hasOwnProperty(prop)) {   
-//			for ( var pr in datas[prop] ) {
-//				tname.push(pr);
-//			}
-//		}  
-//	} 
+
 	var species = speciesArr[changeMsg.rms];
 	for(var s = 0;s<species.length;s++){
-		
 		tname.push(species[s]);
 	}
-	
-//	var resultArr = []; speciesArr
-//	for(var i = 0;i<tname.length;i++){
-//		if(resultArr.indexOf(tname[i]) == -1)
-//		resultArr.push(tname[i])
-//	}
-	
-	console.log(tname)
 	$("#initEcharts").empty();
 	for(var i = 0;i < tname.length;i++){
 		var div = $('<div></div>');
@@ -291,14 +256,14 @@ function initEcharts(){
 			}
 			option.series.push({
 				name : name, 				//情景名称  对应图例 exceptsjz
-				type : show_type, 				//图表类型   已设全局变量 show_type
+				type : show_type, 			//图表类型   已设全局变量 show_type
 				smooth : true,
 				data : ydata     			//可变情景数据  
 
 			});
 		}
 		option.xAxis = [];
-		option.xAxis.push({				   //x轴情景时间
+		option.xAxis.push({				    //x轴情景时间
 			data:ttime
 		});
 		var es = echarts.init(document.getElementById(tname[i]));
@@ -405,7 +370,6 @@ function sceneTable(){
 							});
 						}
 					}
-					
 					return res.data.rows;
 				}
 			}else if(res.status == 1000){
@@ -511,7 +475,6 @@ $("#cityStation").on('change',function(e){
 $("#station").on('change',function(e){
 	var station = $(e.target).val();
 	changeMsg.station = station;
-	
 	getdata();
 });
 
@@ -524,7 +487,7 @@ $('input[name=rms]').on('change',function(e){
 	var rms = $(e.target).val();
 	changeMsg.rms= rms
 	console.log(rms);
-	if(rms == 'hour'){//"userId":"1","missionId":"300","mode":"point","time":"2016-11-27 13","cityStation":"1002A","scenarinoId":changeMsg.scenarinoId,"datetype":"hour"
+	if(rms == 'hour'){
 		show_type = "line";
 		getdata();
 		
