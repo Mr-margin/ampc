@@ -15,6 +15,39 @@ import ampc.com.gistone.database.model.TScenarinoDetail;
 public interface TScenarinoDetailMapper {
 	
 	/**
+	 * @Description: 通过pathdate获取情景ID和cores
+	 * @param today
+	 * @return   
+	 * TScenarinoDetail  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月6日 下午4:55:47
+	 */
+	TScenarinoDetail getidAndcores(Date today);
+
+
+	/**
+	 * @Description:获取可执行所有的的预评估情景
+	 * @return   
+	 * TScenarinoDetail  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月8日 下午5:47:07
+	 */
+	List<TScenarinoDetail> getscenidAndcores();
+
+
+	/**
+	 * @Description: 获取最大的可执行预评估的时间
+	 * @return   
+	 * Date  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月8日 下午6:07:16
+	 */
+	Date getmaxtime();
+	
+	/**
 	 * @Description: TODO
 	 * @param lastpathdate
 	 * @return   通过起报时间查询实时预报情景的全部情景
@@ -145,16 +178,7 @@ public interface TScenarinoDetailMapper {
     List<TScenarinoDetail> selectByEntity(TScenarinoDetail record);
 
 
-	/**
-	 * @Description: 通过pathdate获取情景ID和cores
-	 * @param today
-	 * @return   
-	 * TScenarinoDetail  
-	 * @throws
-	 * @author yanglei
-	 * @date 2017年4月6日 下午4:55:47
-	 */
-	TScenarinoDetail getidAndcores(Date today);
+	
 
 
 	
