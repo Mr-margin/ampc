@@ -80,4 +80,27 @@ public interface TTasksStatusMapper {
 	 * @date 2017年4月5日 下午8:50:21
 	 */
 	Date getlastrunstatus();
+
+	
+
+	/**
+	 * @Description: 查找该条情景的执行情况的最后一天
+	 * @param scenarinoId
+	 * @return   
+	 * TTasksStatus  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月8日 下午6:42:50
+	 */
+	TTasksStatus gettaskEnddate(Long scenarinoId);
+
+	/**
+	 * @Description: 跟新已经发送的预评估时间
+	 * @param tTasksStatus   
+	 * int  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月8日 下午7:46:26
+	 */
+	int updatemessageStatus(TTasksStatus tTasksStatus);
 }
