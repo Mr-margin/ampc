@@ -26,7 +26,8 @@ var tj_paramsName = {};//统计图用的参数
 tj_paramsName.wz = $('#hz_wrw').val();//默认的物种
 tj_paramsName.code = "0";//code默认为0
 tj_paramsName.name = "全部区域";//name默认为情景名称
-	
+tj_paramsName.codeLevel = 0;
+
 /**
  * 时间戳转成日期格式
  * @param nS
@@ -129,7 +130,6 @@ function shoe_data_start(evn){
 //	if (evn.map.getZoom() <= 6) {
 		
 		gis_paramsName.codeLevel = 1;//省市区层级（1省，2市，3区）
-		tj_paramsName.codeLevel = 0;
 		
 //	}else if (evn.map.getZoom() == 7){
 //		
@@ -354,6 +354,7 @@ function optionclick(event){
 		if(app.map.graphics.graphics.length > 0){//已经有选中的对象了
 			app.map.graphics.clear();
 			tj_paramsName.code = "0";
+			tj_paramsName.codeLevel = 0;
 			tj_paramsName.name = "全部区域";//name默认为情景名称
 			bar();
 		}
@@ -382,10 +383,17 @@ function type_info(){
 
 /****************************************************柱状图*************************************************************************/
 function bar() {
-	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":tj_paramsName.code,"addressLevle":tj_paramsName.codeLevel,"stainType":tj_paramsName.wz};
 	
+	if(tj_paramsName.code == '0'){
+		tj_paramsName.codeLevel = 0;
+	}else{
+		tj_paramsName.codeLevel = gis_paramsName.codeLevel;
+	}
+	
+	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":tj_paramsName.code,"addressLevle":tj_paramsName.codeLevel,"stainType":tj_paramsName.wz};
+//	console.log(JSON.stringify(paramsName));
 	ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
-		console.log(JSON.stringify(res));
+//		console.log(JSON.stringify(res));
 		
 		if(res.status == 0){//返回成功
 			if(res.data.dateResult.length > 0){//有返回时间，说明可以显示柱状图
@@ -477,10 +485,7 @@ function bar() {
 					                    color: 'tomato',
 					                    barBorderColor: 'tomato',
 					                    barBorderWidth: 4,
-					                    barBorderRadius:0,
-					                   /* label : {
-					                        show: true, position: 'insideTop'
-					                    }*/
+					                    barBorderRadius:0
 					                }
 					            },
 					            //data:res.data.pflResult
@@ -558,7 +563,7 @@ function bar() {
 						pie();
 					});
 			}else{
-				swal('情景没有时间', '', 'error');
+				swal(tj_paramsName.name+'('+tj_paramsName.code+')缺少基准排放，无法计算', '', 'error');
 			}
 		}else{
 			swal('/echarts/get_barInfo  连接错误', '', 'error');
@@ -573,6 +578,13 @@ function  pie(){
 	var nameVal;
 	var valueVal;
 	getchaxuntype();
+	
+	if(tj_paramsName.code == '0'){
+		tj_paramsName.codeLevel = 0;
+	}else{
+		tj_paramsName.codeLevel = gis_paramsName.codeLevel;
+	}
+	
 	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":tj_paramsName.code,"addressLevle":tj_paramsName.codeLevel,"stainType":tj_paramsName.wz,"startDate":tj_paramsName.new_arr[0],"endDate":tj_paramsName.new_arr[tj_paramsName.new_arr.length-1],"type":tj_paramsName.type};
 	ajaxPost('/echarts/get_pieInfo',paramsName).success(function(result){
 		
@@ -590,7 +602,7 @@ function  pie(){
 				var optionPie = {
 					    title : {
 					        text: tj_paramsName.name +'-'+(tj_paramsName.type == "1" ? "分行业" : "分措施")+"-"+tj_paramsName.wz+'-减排分析',
-					        subtext: '全部行业合计减排：'+sum_value,
+					        subtext: '全部'+(tj_paramsName.type == "1" ? "行业" : "措施")+'合计减排：'+sum_value,
 					    },
 					    tooltip : {
 					        trigger: 'item',
@@ -631,7 +643,7 @@ function  pie(){
 				swal('饼图暂无数据', '', 'error')
 			}
 		}else{
-			swal('/echarts/get_pieInfo  参数错误', '', 'error');
+			swal('/echarts/get_pieInfo  参数错误'+console.log(JSON.stringify(paramsName)), '', 'error');
 		}
 			
 	}).error(function () {
@@ -642,6 +654,11 @@ function  pie(){
 
 
 
+var query_code = "";
+var query_Level = "";
+
+var d_code = "";
+var d_Level = "";
 
 /**
  * 地图展示与列表展示切换
@@ -652,27 +669,60 @@ function gis_switch_table(){
 			if($(this).is('.active')){
 				
 				if($(this).attr("val_name") == "gis"){
+					
 					$("#listModal").hide();
 					$("#map_showId").show();
 					$("#legendWrapper").show();
 					$("#gis_table_title").html("各地区减排");
+					
 				}else if($(this).attr("val_name") == "table"){
-					table_show(tj_paramsName.code);
+					
+					query_code = tj_paramsName.code;
+					query_Level = tj_paramsName.codeLevel;
+					
+					table_show(tj_paramsName.code, tj_paramsName.codeLevel);
+					
 					$("#gis_table_title").html("各地区减排比例(%)");
 					$("#listModal").show();
 					$("#map_showId").hide();
 					$("#legendWrapper").hide();
+					
 				}
 			}
 		});
 	},100);
 }
 
+/**
+ * 返回上级
+ */
+$("#returnSuperior").click(function(){
+	if(parseInt(d_Level)>0){
+		
+		if(d_Level == "1"){//当前是市，返回上级是全部省
+			table_show("0", parseInt(d_Level)-1);
+		}else{//当前是县，返回上一级是市
+			table_show(d_code.substring(0, 2)+"0000", parseInt(d_Level)-1);
+		}
+		
+	}
+});
+
+/**
+ * 刷新
+ */
+$("#Refresh").click(function(){
+	table_show(query_code, query_Level);
+});
+
 
 /**
  * 表格展示
  */
-function table_show(query_code){
+function table_show(cod1, level1){
+	
+	d_code = cod1;
+	d_Level = level1;
 	
 	$('#listModal_table').bootstrapTable('destroy');
 	$('#listModal_table').bootstrapTable({
@@ -686,21 +736,26 @@ function table_show(query_code){
 		striped : true, // 使表格带有条纹
 		queryParams : function(params) {
 			var data = {};
-			data.code = query_code;
-			data.addressLevle = tj_paramsName.codeLevel;
+			
+			data.code = cod1;
+			data.addressLevle = level1;
 			data.scenarinoId = qjMsg.qjId;//情景id
+			
 			console.log(JSON.stringify(data));
 			return JSON.stringify({"token": "","data": data});
 		},
 		responseHandler: function (res) {
 			console.log(JSON.stringify(res));
+			
 			if(res.status == 0){
 				if(res.data.length>0){
+					
 					return res.data;
 				}
 			}else if(res.status == ''){
 				return "";
 			}
+			
 		},
 		queryParamsType : "limit", // 参数格式,发送标准的RESTFul类型的参数请求
 		silent : true, // 刷新事件必须设置

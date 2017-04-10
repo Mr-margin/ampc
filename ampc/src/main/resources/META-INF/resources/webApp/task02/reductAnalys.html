@@ -72,11 +72,18 @@
 	        <div id="legendWrapper" class="shadow info"></div>
 				
 	    	<!-- 列表展示modal -->
-	    	<div  id="listModal" style="height:100%;display: none;">
+	    	<div  id="listModal" style="height:calc(100% - 44px);display: none;">
+	    		<div class="btn-group hidden-xs" id="exampleTableEventsToolbar" role="group">
+                    <button type="button" class="btn btn-outline btn-default" style="margin-top: 5px;margin-left: 5px;" id="returnSuperior">
+                        <i class="glyphicon glyphicon-arrow-left" aria-hidden="true" title="返回上级"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline btn-default" style="margin-top: 5px;margin-left: 5px;" id="Refresh">
+                        <i class="glyphicon glyphicon-refresh" aria-hidden="true"  title="刷新"></i>
+                    </button>
+                </div>
 				<table id="listModal_table">
 					<thead>
 						<tr>
-							<th data-field="state" data-checkbox="true" formatter="stateFormatter"></th>
 							<th data-field="name" data-halign="center" data-align="center">行政区</th>
 							<th data-field="pm25" data-halign="center" data-align="center">PM<sub>2.5</sub></th>
 							<th data-field="pm10" data-halign="center" data-align="center">PM<sub>10</sub></th>
