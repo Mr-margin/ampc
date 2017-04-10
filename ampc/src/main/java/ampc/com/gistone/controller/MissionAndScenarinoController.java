@@ -847,7 +847,8 @@ public class MissionAndScenarinoController {
 			//根据任务id查询所有情景
 			List<TScenarinoDetail> scenarlist=tScenarinoDetailMapper.selectAllByMissionId(missionId);
 			//查询基准情景最大结束时间
-			Date scenar=tScenarinoDetailMapper.selectMaxEndTime();
+			TScenarinoDetail tsdate=tScenarinoDetailMapper.selectMaxEndTime();
+			Date scenar=tsdate.getScenarinoEndDate();
 			//转换类型
 			Date mission=tMission.getMissionStartDate();
 			
@@ -883,8 +884,8 @@ public class MissionAndScenarinoController {
 			}
 			//为基准情景保存数据
 			JSONObject lastobj=new JSONObject();
-			lastobj.put("scenarinoId", -1);
-			lastobj.put("scenarinoName", "基准情景");
+			lastobj.put("scenarinoId",tsdate.getScenarinoId());
+			lastobj.put("scenarinoName", tsdate.getScenarinoName());
 			lastobj.put("scenarinoStartDate", missiondate);
 			lastobj.put("scenarinoEndDate", times);
 			arr.add(lastobj);
