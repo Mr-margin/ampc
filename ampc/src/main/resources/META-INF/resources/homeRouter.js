@@ -182,6 +182,13 @@ $(window).bind('hashchange', function(e) {
   }else{
     $('.csCon').addClass('disNone');
   }
+
+  if(e.target.location.hash == '#/rwgl_reductAnalys'){
+    $('.jpfxCon').removeClass('disNone');
+  }else{
+    $('.jpfxCon').addClass('disNone');
+  }
+
 });
 
 
