@@ -453,6 +453,7 @@ var czData;
 /*设置echarts图表*/
 function updata() {
   var url = '/Appraisal/find_vertical';
+  var urlJZ = '/Appraisal/find_vertical';
   var echartsData = ajaxPost(url, {
     //userId: userId,
     //missionId:sceneInitialization.taskID,
@@ -470,10 +471,27 @@ function updata() {
     "cityStation":"1002A",
     "scenarinoId":changeMsg.scenarinoId,
     "datetype":"day"
+  });
+  var echartsJZData = ajaxPost(url, {
+    //userId: userId,
+    //missionId:sceneInitialization.taskID,
+    //mode:changeMsg.station=='avg'?'city':'point',
+    //time:changeMsg.time,
+    //cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
+    //scenarinoId:changeMsg.scenarinoId,
+    //datetype:changeMsg.rms
 
+
+    "missionId":"300",
+    "mode":"point",
+    "time":"2016-11-27 13",
+    "userId":"1",
+    "cityStation":"1002A",
+    "scenarinoId":changeMsg.scenarinoId,
+    "datetype":"day"
   });
 
-  $.when(echartsData).then(function (res) {
+  $.when(echartsData,echartsJZData).then(function (res,resJZ) {
     if (res.status == 0) {
       czData = res.data;
       initEcharts();
