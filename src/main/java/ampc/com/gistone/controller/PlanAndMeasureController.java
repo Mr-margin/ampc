@@ -111,10 +111,37 @@ public class PlanAndMeasureController {
 	// 行业措施中间表映射
 	@Autowired
 	public TMeasureSectorExcelMapper tMeasureSectorExcelMapper;
-	
+	//情景状态更新帮助类
 	@Autowired
 	private ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
 
+	
+	/**
+	 * 重置情景状态
+	 * @author WangShanxi
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
+	 */
+	@RequestMapping("/plan/update_Status")
+	public AmpcResult update_Status(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//情景id
+			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			if(scenarinoStatusUtil.updateScenarinoStatus(scenarinoId)>0){
+				return AmpcResult.ok("更改情景状态成功");
+			}
+			return AmpcResult.build(1000, "更改情景状态失败");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return AmpcResult.build(1000, "参数错误");
+		}
+	}
+	
 	/**
 	 * 创建预案
 	 * @author WangShanxi
@@ -328,16 +355,31 @@ public class PlanAndMeasureController {
 			pr.setTimeStartTime(DateUtil.StrToDate1(resultMap.get("timeStartDate").toString()));
 			pr.setTimeEndTime(DateUtil.StrToDate1(resultMap.get("timeEndDate").toString()));
 			pr.setOldPlanId(planId);
-			pr.setProvinceCodes(resultMap.get("provinceCodes").toString());
-			pr.setCityCodes(resultMap.get("cityCodes").toString());
-			pr.setCountyCodes(resultMap.get("countyCodes").toString());
+			//因为存入的是CLOB对象 所以要进行转换
+			Clob clob = null;
+			String codes="";
+			if(resultMap.get("provinceCodes")!=null){
+				clob = (Clob) resultMap.get("provinceCodes");
+				codes=clob.getSubString(1, (int) clob.length());
+				pr.setProvinceCodes(codes);
+			}
+			if(resultMap.get("cityCodes")!=null){
+				clob = (Clob) resultMap.get("cityCodes");
+				codes=clob.getSubString(1, (int) clob.length());
+				pr.setCityCodes(codes);
+			}
+			if(resultMap.get("countyCodes")!=null){
+				clob = (Clob) resultMap.get("countyCodes");
+				codes=clob.getSubString(1, (int) clob.length());
+				pr.setCountyCodes(codes);
+			}
 			// 根据可复制预案信息新建预案数据
 			int result = tPlanReuseMapper.insertSelective(pr);
 			if (result > 0) {
 				// 创建条件查询新添加的预案的Id
 				Map map = new HashMap();
 				map.put("userId", userId);
-				map.put("scenarioId", resultMap.get("scenarinoId"));
+				map.put("oldPlanId", planId);
 				map.put("planName", pr.getPlanReuseName());
 				Long newPlanReuseId = tPlanReuseMapper.getIdByQuery(map);
 				// 根据可复制预案id查询预案中的措施
@@ -444,30 +486,26 @@ public class PlanAndMeasureController {
 			Long userId = Long.parseLong(data.get("userId").toString());
 			// 根据是否为可复制预案和是否有效字段查询
 			List<Map> list = tPlanReuseMapper.selectCopyList(userId);
-//			if(area.getCityCodes()!=null){
-//	    	JSONArray arr=JSONArray.fromObject(area.getCityCodes());
-//	    		areaUtil.setCityCodes(arr);
-//	    		isnew=false;
-//	    	}else{
-//	    		areaUtil.setCityCodes(new JSONArray());
-//	    		
-//	    	}
-//	    	if(area.getProvinceCodes()!=null){
-//	    		JSONArray arr1=JSONArray.fromObject(area.getProvinceCodes());
-//	    		areaUtil.setProvinceCodes(arr1);
-//	    		isnew=false;
-//	    	}else{
-//	    		areaUtil.setProvinceCodes(new JSONArray());
-//	    	
-//	    	}
-//	    	if(area.getCountyCodes()!=null){
-//	    		JSONArray arr2=JSONArray.fromObject(area.getCountyCodes());
-//	    		areaUtil.setCountyCodes(arr2);
-//	    		isnew=false;
-//	    	}else{
-//	    		areaUtil.setCountyCodes(new JSONArray());
-//	    		
-//	    	}
+			Clob clob = null;
+			String codes="";
+			//因为存入的是CLOB对象 所以要进行转换
+			for(Map map:list){
+				if(map.get("provinceCodes")!=null){
+					clob = (Clob) map.get("provinceCodes");
+					codes=clob.getSubString(1, (int) clob.length());
+					map.put("provinceCodes", codes);
+				}
+				if(map.get("cityCodes")!=null){
+					clob = (Clob) map.get("cityCodes");
+					codes=clob.getSubString(1, (int) clob.length());
+					map.put("cityCodes", codes);				
+				}
+				if(map.get("countyCodes")!=null){
+					clob = (Clob) map.get("countyCodes");
+					codes=clob.getSubString(1, (int) clob.length());
+					map.put("countyCodes", codes);
+				}
+			}
 			return AmpcResult.ok(list);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -645,7 +683,6 @@ public class PlanAndMeasureController {
 								if(d2 == 0.0){
 									
 								}else{
-									//d3=CastNumUtil.significand(d1/d2, 3)*100;
 									d3=d1/d2*100;
 									d3=CastNumUtil.decimal(d3, 1);
 								}
@@ -662,7 +699,6 @@ public class PlanAndMeasureController {
 											if(dpool == 0.0){
 												
 											}else{
-												 //dr=CastNumUtil.significand((pMcoarse + pM25) / dpool, 3)*100;
 												 dr=(pMcoarse + pM25) / dpool*100;
 												 dr=CastNumUtil.decimal(dr, 1);
 											}
@@ -676,7 +712,6 @@ public class PlanAndMeasureController {
 											if(dpool == 0.0){
 												
 											}else{
-												// dr=CastNumUtil.significand(pMcoarse/ dpool, 3)*100;
 												 dr=pMcoarse/ dpool*100;
 												 dr=CastNumUtil.decimal(dr, 1);
 											}
@@ -696,7 +731,6 @@ public class PlanAndMeasureController {
 												if(d<0){
 													throw new Exception("减排结果出现负数");
 												}
-												//dr=CastNumUtil.significand((pM25-bc-oc)/ dpool, 3)*100;
 												dr=(pM25-bc-oc)/ dpool*100;
 												dr=CastNumUtil.decimal(dr, 1);
 											}
@@ -710,7 +744,6 @@ public class PlanAndMeasureController {
 											if(dpool == 0.0){
 												
 											}else{
-												//dr=CastNumUtil.significand(dratio / dpool, 3)*100;
 												dr=dratio / dpool*100;
 												dr=CastNumUtil.decimal(dr, 1);
 											}
@@ -783,9 +816,6 @@ public class PlanAndMeasureController {
 			// 查询条件
 			List<TQueryExcel> tqeList = tQueryExcelMapper.selectByMap(map);
 			// 获取所有和当前用户相关的行业描述 右下角1 
-			/**
-			 * TODO
-			 */
 			List<Map> sdMap = tSectordocExcelMapper.selectByUserId(map);
 			// 如果没有就给默认的行业描述
 			if (sdMap.size() == 0) {
@@ -936,8 +966,14 @@ public class PlanAndMeasureController {
 				planMeasureId = Long.parseLong(data.get("planMeasureId")
 						.toString());
 			}
+			//情景id
+			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
 			// 预案措施中的子措施Json串、
 			String measureContent = data.get("measureContent").toString();
+			//修改情景的状态为可编辑
+			if(!(scenarinoStatusUtil.updateScenarinoStatus(scenarinoId)>0)){
+				return AmpcResult.build(1000, "更改情景状态失败");
+			}
 			TPlanMeasureWithBLOBs tPlanMeasure = new TPlanMeasureWithBLOBs();
 			tPlanMeasure.setMeasureId(measureId);
 			tPlanMeasure.setPlanId(planId);
@@ -1032,6 +1068,12 @@ public class PlanAndMeasureController {
 			// 查看行业名称是否为空，不为空添加，为空不加
 			if (data.get("sectorName") != null) {
 				sectorName = data.get("sectorName").toString();
+			}
+			//情景id
+			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			//修改情景的状态为可编辑
+			if(!(scenarinoStatusUtil.updateScenarinoStatus(scenarinoId)>0)){
+				return AmpcResult.build(1000, "更改情景状态失败");
 			}
 			// 删除预案中的措施
 			int delete_status = tPlanMeasureMapper
@@ -1350,10 +1392,6 @@ public class PlanAndMeasureController {
 			result.setBigIndex(mcu.getBigIndex());
 			// 写入SmallIndex
 			result.setSmallIndex(mcu.getSmallIndex());
-			/**
-			 * TODO
-			 * 要进行Code的转换
-			 */
 			//写入行政区划代码
 			result.setRegionIds(mcu.getRegionIds());
 			// 写入行业名称

@@ -32,6 +32,9 @@
     <result column="MISSION_NAME" property="missionName" jdbcType="OTHER" />
     <result column="AREA_NAME" property="areaName" jdbcType="OTHER" />
     <result column="TIME_END_TIME" property="timeEndTime" jdbcType="TIMESTAMP" />
+    <result column="PROVINCE_CODES" property="provinceCodes" jdbcType="CLOB" />
+    <result column="CITY_CODES" property="cityCodes" jdbcType="CLOB" />
+    <result column="COUNTY_CODES" property="countyCodes" jdbcType="CLOB" />
   </resultMap>
   
   <sql id="Base_Column_List" >
@@ -48,7 +51,7 @@
        (
 		select PLAN_REUSE_ID from T_PLAN_REUSE 
 			where USER_ID = #{userId,jdbcType=OTHER} and PLAN_REUSE_NAME=#{planName,jdbcType=OTHER}
-			 and IS_EFFECTIVE='1' and SCENARIO_ID=#{scenarioId,jdbcType=OTHER}
+			 and IS_EFFECTIVE='1' and OLD_PLAN_ID=#{oldPlanId,jdbcType=OTHER}
    				order by ADD_TIME desc
    		)
    		 WHERE ROWNUM=1
@@ -58,7 +61,7 @@
   <!--  查询当前用户下的所有可复制情景  -->
   <select id="selectCopyList" resultMap="copyListMap" parameterType="java.lang.Long" >
     select 
-    PLAN_REUSE_ID,PLAN_REUSE_NAME,ADD_TIME,TIME_START_TIME,SCENARIO_NAME,MISSION_NAME,AREA_NAME,TIME_END_TIME
+    PLAN_REUSE_ID,PLAN_REUSE_NAME,ADD_TIME,TIME_START_TIME,SCENARIO_NAME,MISSION_NAME,AREA_NAME,TIME_END_TIME,PROVINCE_CODES, CITY_CODES, COUNTY_CODES
      from T_PLAN_REUSE
     where USER_ID = #{userId,jdbcType=OTHER}  and IS_EFFECTIVE='1'
   </select>

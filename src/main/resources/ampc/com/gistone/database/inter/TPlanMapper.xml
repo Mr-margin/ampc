@@ -55,14 +55,14 @@
   <!-- 根据条件查询复制情景的信息 -->
   <select id="getInfoByQuery" resultMap="getInfoByQueryMap" parameterType="hashMap" >
    select 
-     PLAN_NAME,TIME_START_DATE,TIME_END_DATE,SCENARIO_ID,SCENARINO_NAME,MISSION_NAME,AREA_NAME,PROVINCE_CODES,CITY_CODES,COUNTY_CODES 
+     PLAN_NAME,T.TIME_START_DATE,T.TIME_END_DATE,SCENARIO_ID,SCENARINO_NAME,MISSION_NAME,AREA_NAME,A.PROVINCE_CODES,A.CITY_CODES,A.COUNTY_CODES 
         from T_PLAN  P
      		inner join T_MISSION_DETAIL M on  P.MISSION_ID=M.MISSION_ID
 	 		inner join T_SCENARINO_DETAIL S on P.SCENARIO_ID=S.SCENARINO_ID
      		inner join T_SCENARINO_AREA A on P.AREA_ID=A.SCENARINO_AREA_ID
      		INNER JOIN T_TIME T on P.PLAN_ID=T.PLAN_ID 
        		   where P.PLAN_ID=#{planId,jdbcType=DECIMAL}
-           			AND USER_ID=#{userId,jdbcType=DECIMAL} AND P.IS_EFFECTIVE='1'
+           			AND P.USER_ID=#{userId,jdbcType=DECIMAL} AND P.IS_EFFECTIVE='1'
   </select>
   
   
