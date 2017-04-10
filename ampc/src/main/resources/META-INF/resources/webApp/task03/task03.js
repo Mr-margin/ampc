@@ -374,6 +374,8 @@ function hz_de(){
 		paramsName.sectorName = row[0].sectorName;
 		paramsName.planId = row[0].planId;
 		paramsName.userId = userId;
+		paramsName.scenarinoId = qjMsg.qjId;
+		
 		ajaxPost('/measure/delete_measure',paramsName).success(function(res){
 			metTable_hj_info();
 			hyc();
@@ -1885,8 +1887,7 @@ function create(){
 		paramsName.planId = m_planId;
 		paramsName.planMeasureId = m_planMeasureId;
 		paramsName.measureContent = JSON.stringify(sc_v1);
-		
-		
+		paramsName.scenarinoId = qjMsg.qjId;
 		
 		console.log(JSON.stringify(sc_v1));
 		ajaxPost('/measure/addOrUpdate_measure',paramsName).success(function(res){
