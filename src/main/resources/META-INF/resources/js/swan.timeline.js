@@ -410,7 +410,7 @@ $(function() {
                                 this._timeScaleItems.push(timeScaleItem11);
                             }
                         }else if(i == endMonth){
-                            for(var j=1;j<endDay;j++){
+                            for(var j=1;j<=endDay;j++){
                                 var timeScaleItem11 = {};
                                 timeScaleItem11.date = new Date(startYear, i, j);
                                 this._timeScaleItems.push(timeScaleItem11);
