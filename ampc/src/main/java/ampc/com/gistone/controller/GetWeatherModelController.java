@@ -20,6 +20,7 @@ import ampc.com.gistone.database.model.TRealForecast;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.redisqueue.ReadyData;
 import ampc.com.gistone.redisqueue.RedisUtilServer;
+import ampc.com.gistone.redisqueue.timer.SchedulerTimer;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.DateUtil;
@@ -46,6 +47,11 @@ public class GetWeatherModelController {
 	@Autowired
 	private TScenarinoDetailMapper tScenarinoDetailMapper;
 	
+	
+	
+	@Autowired
+	private SchedulerTimer timer;
+	
 	@RequestMapping("/ModelType/startModel")
 	public AmpcResult getRunModel(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
 		String token = (String) requestDate.get("token");
@@ -63,10 +69,11 @@ public class GetWeatherModelController {
 			Integer scenarinoType = Integer.parseInt(data.get("scenarinoType").toString());
 			//计算核数
 			Long cores = Long.parseLong(data.get("cores").toString());
-			//持久化cores
+			//持久化cores 并更新状态变为模式执行中
 			TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
 			tScenarinoDetail.setExpand3(cores.toString());
 			tScenarinoDetail.setScenarinoId(scenarinoId);
+			tScenarinoDetail.setScenarinoStatus((long)6);
 			int updateCores = tScenarinoDetailMapper.updateCores(tScenarinoDetail);
 			if (updateCores>0) {
 				 readyData.branchPredict(scenarinoId, cores, scenarinoType, missionType);
@@ -349,6 +356,15 @@ public class GetWeatherModelController {
 		}
 	}
 	
-	
+	@RequestMapping("/test2")
+	public void name(HttpServletRequest request,HttpServletResponse response) {
+		/*String time = request.getParameter("time");
+		
+		String string = Test.tset(name);
+		System.out.println(string);
+		readyData.name(time);
+		String string = timer.test1();
+		System.out.println(string+"----------");*/
+	}
 
 }
