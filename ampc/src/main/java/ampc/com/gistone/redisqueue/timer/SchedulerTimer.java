@@ -9,7 +9,9 @@
 package ampc.com.gistone.redisqueue.timer;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import ampc.com.gistone.database.inter.TGlobalSettingMapper;
+import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
+import ampc.com.gistone.database.model.TGlobalSetting;
+import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.redisqueue.ReadyData;
@@ -34,12 +40,14 @@ import ampc.com.gistone.util.DateUtil;
  * @version 1.0
  */
 @Component
-
 public class SchedulerTimer {
 	
 	//加载准备数据工具类
 	@Autowired
 	private ReadyData readyData;
+	//加载任务详情映射
+	@Autowired
+	private TMissionDetailMapper tMissionDetailMapper;
 	
 	//情景详情映射
 	@Autowired
@@ -47,6 +55,10 @@ public class SchedulerTimer {
 	//tasks映射
 	@Autowired
 	private TTasksStatusMapper tTasksStatusMapper;
+	
+	//加载globalsetting映射
+	@Autowired
+	private TGlobalSettingMapper tGlobalSettingMapper;
 	
 	protected Logger logger = Logger.getLogger(this.getClass());
 
@@ -69,9 +81,59 @@ public class SchedulerTimer {
 	public void realForTimer() {
 		//Date date = new Date();
 		System.out.println("我每天中午12点开始执行");
-		//创建实时预报情景
-		TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
-		//tScenarinoDetail.setMissionId(missionId);
+		
+		//查找实时时预报任务并修改任务为最新的时间状态
+		List<TGlobalSetting>  list = tGlobalSettingMapper.selectAll();
+		for (TGlobalSetting tGlobalSetting : list) {
+			Long userId = tGlobalSetting.getUserid();
+			Integer spinup = tGlobalSetting.getSpinup();
+			Integer cores = tGlobalSetting.getCores();
+			Integer rangeday = tGlobalSetting.getRangeday();
+			Long domainId = tGlobalSetting.getDomainId();
+			//创建任务对象
+			TMissionDetail MissionDetail = new TMissionDetail();
+			MissionDetail.setEsCouplingId(tGlobalSetting.getEsCouplingId());
+			MissionDetail.setUserId(userId);
+			MissionDetail.setMissionAddTime(new Date());
+			MissionDetail.setMissionDomainId(domainId);
+			MissionDetail.setMissionName("实时预报任务");
+			MissionDetail.setIsEffective("1");
+			MissionDetail.setMissionStatus("1");
+			/*Map<String,Long> map = new HashMap<String, Long>();
+			map.put("userId", userId);
+			map.put("missionDomainId", domainId);*/
+			//第一次需要创建任务 后面的则是修改
+			List<TMissionDetail> missionlist = tMissionDetailMapper.selectMissionDetail(userId);
+			Long missionId ;
+			
+			if (missionlist.isEmpty()) {
+				//没有则创建实时预报任务 没有时间段
+				int insertSelective = tMissionDetailMapper.insertSelective(MissionDetail);
+				missionId = tMissionDetailMapper.getmissionid(userId);
+			}else {
+				//如果不为空 表示至少有一个实时预报任务
+				for (TMissionDetail tMissionDetail : missionlist) {
+					Long missionDomainId = tMissionDetail.getMissionDomainId();
+					if (domainId!=missionDomainId) {
+						//用户更改了domainid 需要新建一个新的实时预报任务
+						int insertSelective = tMissionDetailMapper.insertSelective(MissionDetail);
+					}else {
+						//没有跟换domainid的情况下 修改任务
+						int update = tMissionDetailMapper.updateByPrimaryKeySelective(MissionDetail);
+					}
+				}
+				
+			}
+			
+			//创建实时预报情景
+			TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
+			tScenarinoDetail.setScenarinoAddTime(new Date());
+			tScenarinoDetail.setScenarinoName("实时预报情景");
+			
+		}
+		//根据情景调动实时预报接口开始实时预报
+		
+		
 		
 		
 	}
