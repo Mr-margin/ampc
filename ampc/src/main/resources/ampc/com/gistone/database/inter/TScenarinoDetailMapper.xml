@@ -248,10 +248,18 @@
 			 WHERE MISSION_ID=#{missionId,jdbcType=DECIMAL} AND IS_EFFECTIVE='1'
 		ORDER BY SCENARINO_END_DATE DESC
   </select>
-  <select id="selectMaxEndTime" resultType="java.util.Date" >
-   	 SELECT  max(SCENARINO_END_DATE)
-  		FROM T_SCENARINO_DETAIL  
-			 WHERE SCEN_TYPE='3' AND IS_EFFECTIVE='1'
+  <select id="selectMaxEndTime" resultMap="BaseResultMap" >
+  SELECT
+	*
+FROM
+	T_SCENARINO_DETAIL S
+WHERE
+	S.SCENARINO_END_DATE = (SELECT MAX (SCENARINO_END_DATE)
+FROM
+	T_SCENARINO_DETAIL
+WHERE
+	SCEN_TYPE = '4'
+AND IS_EFFECTIVE = '1')
   </select>
   <select id="selectid" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TScenarinoDetail" >
    	 SELECT 
