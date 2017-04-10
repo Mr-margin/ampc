@@ -6,7 +6,7 @@ if(!qjMsg){
 }else{
   ls.setItem('yaMsg',JSON.stringify(qjMsg));
 }
-console.log(JSON.stringify(qjMsg));
+//console.log(JSON.stringify(qjMsg));
 
 $('.jpfxCon').removeClass('disNone');
 $('.jpfxCon .nowRw span').html(qjMsg.rwName);
@@ -265,6 +265,7 @@ function createLegend(level) {
       		title : title
     	}]
   	}, legendDiv);
+  	
   	app.legend.startup();
 }
 
@@ -643,7 +644,7 @@ function  pie(){
 				swal('饼图暂无数据', '', 'error')
 			}
 		}else{
-			swal('/echarts/get_pieInfo  参数错误'+console.log(JSON.stringify(paramsName)), '', 'error');
+			swal('/echarts/get_pieInfo  参数错误'+JSON.stringify(paramsName), '', 'error');
 		}
 			
 	}).error(function () {
@@ -741,18 +742,20 @@ function table_show(cod1, level1){
 			data.addressLevle = level1;
 			data.scenarinoId = qjMsg.qjId;//情景id
 			
-			console.log(JSON.stringify(data));
+//			console.log(JSON.stringify(data));
 			return JSON.stringify({"token": "","data": data});
 		},
 		responseHandler: function (res) {
-			console.log(JSON.stringify(res));
+//			console.log(JSON.stringify(res));
 			
 			if(res.status == 0){
 				if(res.data.length>0){
 					
-					$.each(res.data, function(i, col) {
-						res.data[i].name = "<a >";
-					});
+					if(level1<2){
+						$.each(res.data, function(i, col) {
+							res.data[i].name = '<a onClick="table_show(\''+col.code+'\',\''+(parseInt(d_Level)+1)+'\');">'+col.name+'</a>';
+						});
+					}
 					
 					return res.data;
 				}
