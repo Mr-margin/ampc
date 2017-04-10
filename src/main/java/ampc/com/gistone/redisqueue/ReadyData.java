@@ -22,6 +22,7 @@ import java.util.UUID;
 
 
 
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -141,8 +142,10 @@ public class ReadyData {
 		queueData = getHeadParameter();
 		String type = "model.start";//执行模式
 		queueData.setType(type);
+		//情景类型
+		String scenarinoType = scenarinoDetailMSG.getScenType();
 		//准备commom数据
-		Map<String, Object> map = getcommonMSG(scenarinoId, datatype, null, scenarinoDetailMSG.getScenType(), firsttime, scenarinoDetailMSG);
+		Map<String, Object> map = getcommonMSG(scenarinoId, datatype, null, scenarinoType, firsttime, scenarinoDetailMSG);
 		commonData = (QueueDataCommon) map.get("commonData");
 		//准备wrf数据
 		//设置wrf的spinup
@@ -160,7 +163,7 @@ public class ReadyData {
 		Map<String, Object> icMap = getIC(scenarinoId,missionId ,firsttime,icdate);
 		cmaqData.setIc(icMap);
 		//创建emis对象   调用方法获取emis数据
-		QueueDataEmis DataEmis = getDataEmis(missionId);
+		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType);
 		//设置body的数据
 		bodyData.setCommon(commonData);
 		bodyData.setWrf(wrfData);
@@ -205,7 +208,9 @@ public class ReadyData {
 		String type = "model.start";//执行模式
 		queueData.setType(type);
 		//准备commom数据
-		Map<String, Object> map = getcommonMSG(scenarinoId,datatype,null,scenarinoDetailMSG.getScenType() ,firsttime,scenarinoDetailMSG);
+		//情景类型
+		String scenarinoType = scenarinoDetailMSG.getScenType();
+		Map<String, Object> map = getcommonMSG(scenarinoId,datatype,null,scenarinoType,firsttime,scenarinoDetailMSG);
 		commonData = (QueueDataCommon) map.get("commonData");
 		//准备wrf数据
 		//设置wrf的spinup
@@ -222,7 +227,7 @@ public class ReadyData {
 		Map<String, Object> icMap = getIC(scenarinoId,missionId ,firsttime,icdate);
 		cmaqData.setIc(icMap);
 		//创建emis对象   调用方法获取emis数据
-		QueueDataEmis DataEmis = getDataEmis(missionId);
+		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType);
 		//设置body的数据
 		bodyData.setCommon(commonData);
 		bodyData.setWrf(wrfData);
@@ -420,7 +425,9 @@ public class ReadyData {
 		Date startDate = scenarinoDetailMSG.getScenarinoStartDate();
 		String time = DateUtil.DATEtoString(startDate, "yyyyMMdd");
 		//准备commom数据
-		Map<String, Object> map = getcommonMSG(scenarinoDetailMSG.getScenarinoId(),datatype,time,scenarinoDetailMSG.getScenType() ,firsttime,scenarinoDetailMSG);
+		//情景类型
+		String scenarinoType = scenarinoDetailMSG.getScenType();
+		Map<String, Object> map = getcommonMSG(scenarinoDetailMSG.getScenarinoId(),datatype,time,scenarinoType ,firsttime,scenarinoDetailMSG);
 		commonData = (QueueDataCommon) map.get("commonData");
 		//准备wrf数据
 		wrfData.setSpinup((long)0);
@@ -437,7 +444,7 @@ public class ReadyData {
 		cmaqData.setIc(icMap);
 		//设置emis
 		//创建emis对象   调用方法获取emis数据
-		QueueDataEmis DataEmis = getDataEmis(missionId);
+		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType);
 		
 		//设置body的数据
 		bodyData.setCommon(commonData);
@@ -505,7 +512,7 @@ public class ReadyData {
 		Map<String, Object> icMap = getIC(scenarinoId,missionId ,firsttime,icdate); 
 		cmaqData.setIc(icMap);
 		//创建emis对象   调用方法获取emis数据
-		QueueDataEmis DataEmis = getDataEmis(missionId);
+		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType);
 		//设置body的数据
 		bodyData.setCommon(commonData);
 		bodyData.setWrf(wrfData);
@@ -548,10 +555,10 @@ public class ReadyData {
 		bodyData = getbodyDataHead(scenarinoDetailMSG,cores);
 	//	Integer scenarinoType =  (Integer) body.get("scenarinoType");
 		//情景类型
-		Integer scenarinoType = Integer.parseInt(scenarinoDetailMSG.getScenType());
+		String scenarinoType = scenarinoDetailMSG.getScenType();
 		Long missionId = scenarinoDetailMSG.getMissionId();//任务id
 		//准备commom数据
-		Map<String, Object> map = getcommonMSG(scenarinoId,"fnl",null,scenarinoType.toString(),true,scenarinoDetailMSG);
+		Map<String, Object> map = getcommonMSG(scenarinoId,"fnl",null,scenarinoType,true,scenarinoDetailMSG);
 		commonData = (QueueDataCommon) map.get("commonData");
 		//spinup
 		Long DBspinup = (Long) map.get("spinup");
@@ -564,9 +571,11 @@ public class ReadyData {
 		
 		//设置cmaq的spinup
 		cmaqData.setSpinup(DBspinup);
-		
+		//准备ic
+		Map<String, Object> icMap = getIC(scenarinoId,missionId ,true,null);
+		cmaqData.setIc(icMap);
 		//创建emis对象   调用方法获取emis数据
-		QueueDataEmis DataEmis = getDataEmis(missionId);
+		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType);
 		bodyData.setCommon(commonData);
 		bodyData.setWrf(wrfData);
 		bodyData.setCmaq(cmaqData);
@@ -721,7 +730,7 @@ public class ReadyData {
 		Map<String, Object> icMap = getIC(scenarinoId,missionId ,false,icdate); 
 		cmaqData.setIc(icMap);
 		//创建emis对象   调用方法获取emis数据
-		QueueDataEmis DataEmis = getDataEmis(missionId);
+		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType);
 		//设置body的数据
 		bodyDate.setCommon(commonData);
 		bodyDate.setWrf(wrfData);
@@ -935,10 +944,10 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年3月17日 下午2:19:53
 	 */
-	public Map<String, Object> getEmis(String sourceid) {
-		/*Map<String, Map<String, String>> map = new HashMap<String, Map<String, String>>();
-		String url="http://192.168.1.10:8082/ampc/app";
-		String getResult=ClientUtil.doPost(url,sourceid);*/
+	public Map<String, String> getEmis(Long sourceid) {
+		/*Map<String,String> map = new HashMap<String,String>();
+		String url="http://192.168.1.128:8082/ampc/app";
+		String getResult=ClientUtil.doPost(url,sourceid.toString());*/
 		
 		
 		
@@ -955,19 +964,31 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年3月28日 下午6:50:19
 	 */
-	private QueueDataEmis getDataEmis(Long missionId) {
+	private QueueDataEmis getDataEmis(Long missionId,String scenarinoType) {
 		//通过情景ID获取清单ID
 		Long sourceid = tMissionDetailMapper.getsourceid(missionId);
+		//获取减排清单
+		Map<String, String> emis = getEmis(sourceid);
 		//创建对象
 		QueueDataEmis  DataEmis = new QueueDataEmis();
 		//设置sourceid
 		DataEmis.setSourceid(sourceid.toString());
 		//设置Calctype 计算方式
 		DataEmis.setCalctype("server");//cache
-		//
-		DataEmis.setPsal("");
-		//
-		DataEmis.setSsal("");
+		//实时预报和基准情景不需要取减排系数 设置为空
+		if ("3".equals(scenarinoType.trim())||"4".equals(scenarinoType.trim())) {
+			//
+			DataEmis.setPsal("");
+			//
+			DataEmis.setSsal("");
+		}else {
+			//其他情景需要设置减排系数
+			//
+			DataEmis.setPsal("");
+			//
+			DataEmis.setSsal("");
+		}
+		
 		//
 		DataEmis.setMeiccityconfig("/work/modelcloud/meic_tool/meic-city.conf");
 		return DataEmis;
