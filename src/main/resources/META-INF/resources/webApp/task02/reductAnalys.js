@@ -750,6 +750,10 @@ function table_show(cod1, level1){
 			if(res.status == 0){
 				if(res.data.length>0){
 					
+					$.each(res.data, function(i, col) {
+						res.data[i].name = "<a >";
+					});
+					
 					return res.data;
 				}
 			}else if(res.status == ''){
