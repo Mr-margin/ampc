@@ -178,15 +178,6 @@ public class ToDataTasksUtil {
 				ErrorStatus.Errortips(tasksScenarinoId);
 				//readyData.sendqueueRealData(changeDay,tasksScenarinoId);
 			}
-			//如果是实时预报的类型  跟新完一个时间的时候标志着当天的fnl或者gfs可以为预评估所用
-			if("0".equals(code)&&"4".equals(scentype)){
-				try {
-				Map<String, String> cantopreEvaluation = readyData.cantopreEvaluation(tasksEndDate, tasksScenarinoId, null);
-				
-				} catch (Exception e) {
-					// TODO: handle exception
-				}
-			}
 			//预评估任务的预评估情景 准备下一条数据
 	    	if("0".equals(code)&&"1".equals(scentype)&&index==stepindex&&compareTo>0){
 	    		readyData.sendDataEvaluationSituationThen(tasksEndDate,tasksScenarinoId);
