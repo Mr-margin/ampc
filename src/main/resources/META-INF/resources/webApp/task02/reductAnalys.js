@@ -174,7 +174,7 @@ function baizhu_jianpai(gis_paramsName, sh_type){
 			app.paifang = new dong.FeatureLayer(paifang_url, {
 				mode: dong.FeatureLayer.MODE_ONDEMAND,
 				outFields: ["*"],
-				id: "paifang"
+//				id: "paifang"
 			});
 			
 			var template = "<strong>${NAME}:  ${DATAVALU}</strong>";
@@ -228,6 +228,7 @@ function baizhu_jianpai(gis_paramsName, sh_type){
 			if(sh_type == "1"){
 				bar();
 			}
+			return true;
 		}else{
 			swal('减排数据获取失败', '', 'error');
 		}
@@ -245,9 +246,8 @@ function createLegend(level) {
   	}
   	//创建一个新的div图例
   	var legendDiv = dong.domConstruct.create("div", {
-  		id: "legend"
+  		id: parseInt(Math.random(1000) * 1000 + 1)
   	}, dong.dom.byId("legendWrapper"));
-
   	var title = "";
   	if(level == 1){
   		title = "各省 "+$('#hz_wrw').val()+" 减排量（吨）";
@@ -256,7 +256,6 @@ function createLegend(level) {
   	}else if(level == 3){
   		title = "各县 "+$('#hz_wrw').val()+" 减排量（吨）";
   	}
-//  	tj_paramsName.codeLevel = level;
   	app.legend = new dong.Legend({
     	map : app.map,
     	respectCurrentMapScale : false,//当真正的图例会更新每个规模变化和只显示层和子层中可见当前地图比例尺。当假的,图例不更新在每个规模变化和所有层和子层将显示出来。默认值是正确的。
