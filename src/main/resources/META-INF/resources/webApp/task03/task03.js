@@ -32,7 +32,7 @@ if(!qjMsg){
 }else{
 	ls.setItem('yaMsg',JSON.stringify(qjMsg));
 }
-//console.log(JSON.stringify(qjMsg));
+console.log(JSON.stringify(qjMsg));
 
 /**
  * 完成按钮
@@ -146,7 +146,7 @@ metTable_hj_info();
  * @returns
  */
 function getLocalTime(nS) {     
-    return moment(nS).format('YYYY-MM-DD hh');
+    return moment(nS).format('YYYY-MM-DD HH');
 }
 
 /**
@@ -250,11 +250,11 @@ function metTable_hj_info(pa_name){
 	columnsw.push({field: 'sectorName', title: '行业', align: 'center'});
 	columnsw.push({field: 'measureName', title: '措施', align: 'center'});
 	columnsw.push({field: 'implementationScope', title: '点源实际范围', align: 'center'});
-	columnsw.push({field: 'reduct', title: '涉及排放占比', align: 'center', formatter: function(value, row, index){
+	columnsw.push({field: 'reduct', title: '涉及年化排放占比', align: 'center', formatter: function(value, row, index){
 		
 	    return value;
 	}});
-	columnsw.push({field: 'ratio', title: '减排比例', align: 'center', formatter: function(value, row, index){
+	columnsw.push({field: 'ratio', title: '年化减排比例', align: 'center', formatter: function(value, row, index){
 		
 	    return value;
 	}});
@@ -1014,6 +1014,30 @@ function val_handle(e, queryEtitle, queryName, type, sourceType){
  * 筛选按钮
  */
 function search_button(){
+	
+	var ttlk = true;//点源的编辑状态
+	var row = $('#show_zicuoshi_table').bootstrapTable('getData');//已有子措施的所有的记录
+	$.each(row, function(i, col) {
+		if(col.f1 == '剩余点源'){
+			$.each(col, function(k, vol) {//循环剩余点源的所有列
+				if(k.indexOf("psl_")==0){
+					if(typeof vol != "undefined" && vol != ""){
+						if(parseFloat(vol) > 0){
+							ttlk = false;
+						}
+					}
+				}
+			});
+		}
+	});
+	
+	
+	
+	
+	
+	
+	
+	
 	setTimeout(function(){
 		//条件缓存中的空值删除
 		$.each(temp_val_v1, function(key, col) {
@@ -1070,16 +1094,30 @@ function search_button(){
 //		console.log(JSON.stringify(temp_val_v1));
 		if(JSON.stringify(temp_val_v1) == "{}"){
 			//没有条件，就不加了
+			swal({
+				  title: "请选择筛选条件",
+				  text: "筛选条件至少选择一项，全部点源请对剩余点源进行操作.",
+				  timer: 2000,
+				  showConfirmButton: false
+				});
 		}else{
-			sc_val.filters.push(temp_val_v1);
+			if(ttlk){
+				sc_val.filters.push(temp_val_v1);
+				console.log(JSON.stringify(sc_val));
+				temp_val_v1 = jQuery.extend(true, {}, temp_val);//赋值模板到操作缓存
+				//根据筛选条件获取点源，准备填写空值系数
+				point_table();
+			}else{
+				swal({
+					  title: "剩余点源已设置，无法进行筛选",
+					  text: "筛选条件至少选择一项，全部点源请对剩余点源进行操作.",
+					  timer: 2000,
+					  showConfirmButton: false
+					});
+			}
 		}
 		
-		console.log(JSON.stringify(sc_val));
 		
-		temp_val_v1 = jQuery.extend(true, {}, temp_val);//赋值模板到操作缓存
-		
-		//根据筛选条件获取点源，准备填写空值系数
-		point_table();
 		
 		//所有查询条件初始化
 		$("#sc_conter").children().each(function(){//循环一级标签
@@ -1587,8 +1625,10 @@ function restion_table(){
 	
 	if(row.length>3){
 		$.each(row, function(i, col) {//循环所有记录
-			var ttwre = false;//是否计算
+			
+			var ttwre = false;//是否计算，用于区分是否是汇总行、还是计算行
 			var ttfg = true;//剩余点源和面源不需要做减法改变行内的值
+			
 			if(col.f1 == "汇总"){
 				//汇总行不需要计算
 				ttwre = false;
@@ -1619,7 +1659,7 @@ function restion_table(){
 							if(vol.toString().indexOf("/") >= 0){
 								var yuyu = vol.split("/");//汇总行的数据
 								row_0_temp[k] = "0/"+yuyu[1];
-								row_2_temp[k] = parseInt(yuyu[1])-parseInt(row_1_temp[k]);
+								row_2_temp[k] = parseInt(yuyu[1])-parseInt(row_1_temp[k]);//剩余点源等于汇总减去面源（面源是不操作的，所以用面源做计算）
 							}
 						}
 					});
@@ -1631,15 +1671,20 @@ function restion_table(){
 					}else{
 						if(vol.toString().indexOf("/") >= 0){
 							var yuyu = vol.split("/");//汇总行的数据
+							var ttemp = parseInt(yuyu[0]);//汇总行的当前值
+							
 							if(col.f1 == "剩余点源"){
 								row_0_temp[k] = (parseInt(yuyu[0])+parseInt(row_2_temp[k]))+"/"+yuyu[1];
 							}else{
 								row_0_temp[k] = (parseInt(yuyu[0])+parseInt(col[k]))+"/"+yuyu[1];
 							}
+							
 							if(ttfg){//只有普通的子措施时剩余点源才参与计算，剩余点源自己和面源参加到子措施时不能减少剩余点源的值
 								var ttui = row_2_temp[k];//剩余点源的数据
 								row_2_temp[k] = parseInt(ttui)-parseInt(col[k]);
 							}
+							
+							
 						}
 					}
 				});
@@ -1648,8 +1693,8 @@ function restion_table(){
 		});
 	}else{//就剩三行了，回复初始化
 		
-		var ttwre = false;//是否计算
-		var ttqwe = false;//是否计算
+		var ttshengyud = false;//剩余点源是否计算
+		var ttmiany = false;//面源是否计算
 		
 		$.each(row_0_temp, function(k, vol) {//循环汇总行
 			if(k.indexOf("psl_")==0 && k == "tiaojian" && k == "f1" && k == "state"){//第一个字母是下划线开头,中文条件字段，措施字段均不需要计算
@@ -1657,17 +1702,18 @@ function restion_table(){
 			}else{
 				if(vol.toString().indexOf("/") >= 0){
 					var yuyu = vol.split("/");//汇总行的数据
+					
 					row_0_temp[k] = "0/"+yuyu[1];
-					row_2_temp[k] = parseInt(yuyu[1])-parseInt(row_1_temp[k]);
+					row_2_temp[k] = parseInt(yuyu[1])-parseInt(row_1_temp[k]);//剩余点源等于汇总减去面源（面源是不操作的，所以用面源做计算）
 				}
 			}
 			
 			if(k.indexOf("psl_")==0){
-				if(row_2_temp[k] != ""){//只要有一个控制措施有值，就进入计算
-					ttwre = true;
+				if(row_2_temp[k] != ""){//剩余点源只要有一个控制措施有值，就进入计算
+					ttshengyud = true;
 				}
-				if(row_1_temp[k] != ""){//只要有一个控制措施有值，就进入计算
-					ttqwe = true;
+				if(row_1_temp[k] != ""){//面源只要有一个控制措施有值，就进入计算
+					ttmiany = true;
 				}
 			}
 			
@@ -1679,13 +1725,16 @@ function restion_table(){
 			}else{
 				if(vol.toString().indexOf("/") >= 0){
 					var yuyu = vol.split("/");//汇总行的数据
-					
-					if(ttwre){
-						row_0_temp[k] = (parseInt(yuyu[0])+parseInt(row_2_temp[k]))+"/"+yuyu[1];
+					var ttemp = parseInt(yuyu[0]);//汇总行的当前值
+					if(ttshengyud){
+						//如果剩余点源有计算，将剩余点源的数值加到汇总行
+						ttemp += parseInt(row_2_temp[k]);
 					}
-					if(ttqwe){
-						row_0_temp[k] = (parseInt(yuyu[0])+parseInt(row_1_temp[k]))+"/"+yuyu[1];
+					if(ttmiany){
+						//如果面源有计算，将面源数值加到会总行
+						ttemp += parseInt(row_1_temp[k]);
 					}
+					row_0_temp[k] = ttemp+"/"+yuyu[1];
 				}
 			}
 		});
@@ -1839,7 +1888,7 @@ function create(){
 		
 		
 		
-		console.log(JSON.stringify(paramsName));
+		console.log(JSON.stringify(sc_v1));
 		ajaxPost('/measure/addOrUpdate_measure',paramsName).success(function(res){
 //			console.log(JSON.stringify(res));
 			if(res.status == 0){
