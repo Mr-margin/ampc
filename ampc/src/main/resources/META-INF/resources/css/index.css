@@ -384,21 +384,21 @@
 }
 /*清单样式 end*/
 
-.qyCon,.csCon{
+.qyCon,.csCon,.jpfxCon{
   position: relative;
   height: 98%;
 }
-.qyCon h3,.csCon h3{
+.qyCon h3,.csCon h3,.jpfxCon h3{
   color: #3498da;
 }
 .jsBtn{
   /* position: absolute; */
   bottom: 10px;
 }
-.qyCon span,.csCon span{
+.qyCon span,.csCon span,.jpfxCon span{
   font-size: 14px;
 }
-.qyCon>div,.csCon>div{
+.qyCon>div,.csCon>div,.jpfxCon>div{
   margin-bottom: 20px;
 }
 
