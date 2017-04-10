@@ -20,6 +20,8 @@ import java.util.UUID;
 
 
 
+
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,6 +34,7 @@ import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.database.model.TUngrib;
+import ampc.com.gistone.redisqueue.timer.SchedulerTimer;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.DateUtil;
@@ -63,6 +66,10 @@ public class ReadyData {
 	//引入发送消息的工具类
 	@Autowired
 	private SendQueueData sendQueueData;
+	//加载定时器
+	@Autowired
+	private SchedulerTimer schedulerTimer;
+	
 	
 	/**
 	 * 
@@ -88,7 +95,7 @@ public class ReadyData {
 		}
 		if (scenarinoType==1&&missionType==2) {
 			//预评估任务的预评估情景
-			readyPreEvaluationSituationDataFirst(scenarinoId,cores);
+			//readyPreEvaluationSituationDataFirst(scenarinoId,cores);
 		}
 		if (scenarinoType==2&&missionType==2) {
 			//预评估任务的后评估情景
@@ -594,15 +601,7 @@ public class ReadyData {
 		}
 		String time = DateUtil.DATEtoString(startDate, "yyyyMMdd");
 		QueueData queueData = readypreEvaSituMessageData(scenarinoId,datatype,time);
-		//判断是否能发该条消息
-		Map<String, String> map = cantopreEvaluation(null, null, 1);
-		//获取最大的可预评估的时间
-		String maxusetime = map.get("useable");
-		Date maxdate = DateUtil.StrtoDateYMD(maxusetime, "yyyyMMdd");
-		int compareTo = maxdate.compareTo(startDate);
-		if (compareTo>=0) {
-			sendQueueData.toJson(queueData, null);
-		}
+		sendQueueData.toJson(queueData, null);
 		
 	}
 	
@@ -632,15 +631,30 @@ public class ReadyData {
 		}
 		QueueData queueData = readypreEvaSituMessageData(scenarinoId , datatype, time);
 		//判断是否能发该条消息 获取实时预报的最新完成的时间
-		Map<String, String> map = cantopreEvaluation(null, null, 1);
-		String maxusetime = map.get("useable");
-		Date maxdate = DateUtil.StrtoDateYMD(maxusetime, "yyyyMMdd");
-		Date mesdate = DateUtil.StrtoDateYMD(time, "yyyyMMdd");
-		//时间做比较 当当条消息的时间小于等于实时预报的的最大完成时间的时候 可以做预评估
-		int compareTo = maxdate.compareTo(mesdate);
-		if (compareTo>=0) {
-			sendQueueData.toJson(queueData, null);
-		}
+	//	Date maxtime = schedulerTimer.getMaxTime();
+	//	Map<String, String> map = cantopreEvaluation(null, null, 1);
+	//	String maxusetime = map.get("useable");
+	//	Date maxdate = DateUtil.StrtoDateYMD(maxusetime, "yyyyMMdd");
+//		Date mesdate = DateUtil.StrtoDateYMD(time, "yyyyMMdd");
+//		//时间做比较 当当条消息的时间小于等于实时预报的的最大完成时间的时候 可以做预评估
+//		int compareTo = maxtime.compareTo(mesdate);
+//		if (compareTo>=0) {
+//			sendQueueData.toJson(queueData, null);
+//		}
+		/*while (true) {
+			//判断是否能发该条消息 获取实时预报的最新完成的时间
+			Date maxtime = schedulerTimer.getMaxTime();
+			Date mesdate = DateUtil.StrtoDateYMD(time, "yyyyMMdd");
+			//时间做比较 当当条消息的时间小于等于实时预报的的最大完成时间的时候 可以做预评估
+			int compareTo = maxtime.compareTo(mesdate);
+			if (compareTo>=0) {
+				//sendQueueData.toJson(queueData, null);
+				System.out.println("ssssss----ssss");
+				break;
+			}
+			
+		}*/
+		
 	}
 	/**
 	 * @Description: TODO
