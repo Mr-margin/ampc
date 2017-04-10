@@ -671,7 +671,7 @@ function selectType(type) {
     end = moment().add(14, 'd').format('YYYY-MM-DD');
     rwSelectType = '1';
     $('.rwTitle').html('创建预评估任务');
-    rwEndDate = moment().add(2, 'd').format('YYYY-MM-DD');
+    //rwEndDate = moment().add(2, 'd').format('YYYY-MM-DD');
     initRwDate(startDate, endDate,start, end);
   } else if (type == 'h') {
     startDate = '2007-01-01';
@@ -680,7 +680,7 @@ function selectType(type) {
     end = moment().subtract(2, 'd').format('YYYY-MM-DD');
     rwSelectType = '2';
     $('.rwTitle').html('创建后评估任务');
-    rwEndDate = moment().subtract(2, 'd').format('YYYY-MM-DD');
+    //rwEndDate = moment().subtract(2, 'd').format('YYYY-MM-DD');
     initRwDate(startDate, endDate,start, end);
   }
 
@@ -689,8 +689,9 @@ function selectType(type) {
 
   $('.createRwBtn').css('display', 'inline-block');
   $('.return_S_rw').css('display', 'inline-block');
-  rwStartDate = moment().subtract(2, 'w').format('YYYY-MM-DD');
-
+  //rwStartDate = moment().subtract(2, 'w').format('YYYY-MM-DD');
+  rwStartDate = start;
+  rwEndDate = end;
 
 }
 
