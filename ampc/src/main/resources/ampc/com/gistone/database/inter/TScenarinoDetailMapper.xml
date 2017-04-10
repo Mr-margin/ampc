@@ -41,6 +41,19 @@
     SPINUP, RATIO_START_DATE, RATIO_END_DATE, RANGE_DAY, EXPAND1, EXPAND2, EXPAND3, EXPAND4, EXPAND5,
     EXPAND6, EXPAND7, EXPAND8, EXPAND9, EXPAND10
   </sql>
+  
+  <!--查找最大的可执行预评估任务预评估情景的时间  -->
+  <select id="getmaxtime" resultType="java.util.Date">
+  SELECT MAX(TASKS_END_DATE) 
+  FROM T_TASKS_STATUS C LEFT JOIN T_SCENARINO_DETAIL D ON C.TASKS_SCENARINO_ID=D.SCENARINO_ID WHERE D.SCEN_TYPE='4' AND C.STEPINDEX='8'
+  </select>
+  
+  <!--查询所有的执行状态中的预评估情景  6表示模式执行中 1表示预评估情景 -->
+  <select id="getscenidAndcores" resultType="ampc.com.gistone.database.model.TScenarinoDetail">
+  select
+  <include refid="Base_Column_List" />
+  form T_SCENARINO_DETAIL where SCENARINO_STATUS ='6' and SCEN_TYPE ='1'
+  </select>
   <!--通过pathdate查询实时预报ID和cores  -->
   <select id="getidAndcores" resultMap="BaseResultMap" parameterType="java.util.Date">
   select SCENARINO_ID,EXPAND3 from T_SCENARINO_DETAIL where PATH_DATE = #{pathDate,jdbcType=TIMESTAMP} and SCEN_TYPE = '4'
@@ -67,7 +80,8 @@
   <!-- 更新cores -->
   <update id="updateCores" parameterType="ampc.com.gistone.database.model.TScenarinoDetail">
   update T_SCENARINO_DETAIL
-  set EXPAND3 = #{expand3,jdbcType=VARCHAR}
+  set EXPAND3 = #{expand3,jdbcType=VARCHAR},
+  SCENARINO_STATUS = #{scenarinoStatus,jdbcType=DECIMAL}
   where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
   
   </update>
