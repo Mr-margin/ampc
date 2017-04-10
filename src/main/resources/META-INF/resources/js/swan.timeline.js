@@ -595,6 +595,11 @@ $(function() {
 
                           if($('.areaTitle_con').eq(self._findItem($(this)).index).find('.btn-flash').length!=0)return;
                           if(qjMsg.scenarinoStatus == 3)return;
+                          if(qjMsg.scenarinoStatus == 4)return;
+                          if(qjMsg.scenarinoStatus == 6)return;
+                          if(qjMsg.scenarinoStatus == 7)return;
+                          if(qjMsg.scenarinoStatus == 8)return;
+                          if(qjMsg.scenarinoStatus == 9)return;
 
                           if(event.toElement.tagName == 'A'){
                               editPlan(self._findItem($(this)))
