@@ -1370,6 +1370,7 @@ function subStartUp(){
     cores:$('input[name=cpuNum]:checked').val()
   }).success(function(res){
     if(res.status == 0){
+      $('#qjTable').bootstrapTable('destroy');
       initQjTable();
       $('#startUp').modal('hide');
       swal({
