@@ -962,7 +962,7 @@ public class MissionAndScenarinoController {
 			int d=0;
 			int a=0;
 			//预评估任务创建情景
-			if(missionType.equals("1")){
+			if(missionType.equals("2")){
 				//预评估任务创建预评估情景
 				if(scenType.equals("1")){
 					String startDate =data.get("scenarinoStartDate").toString();//开始时间
@@ -1040,7 +1040,7 @@ public class MissionAndScenarinoController {
 				}		
 			}
 			//后评估任务创建情景
-			if(missionType.equals("2")){
+			if(missionType.equals("3")){
 				//创建后评估情景
 				if(scenType.equals("2")){
 					//基础情景
