@@ -78,4 +78,28 @@ public interface TMissionDetailMapper {
 	 * @date 2017年3月28日 下午6:51:51
 	 */
 	Long getsourceid(Long missionId);
+
+
+	/**
+	 * @Description: 通过用户ID获取missionid
+	 * @param userId
+	 * @return   
+	 * Long  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月10日 下午7:32:34
+	 */
+	Long getmissionid(Long userId);
+
+
+	/**
+	 * @Description: 通过用户ID确定实时预报任务
+	 * @param userIds
+	 * @return   
+	 * List<TMissionDetail>  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月10日 下午8:24:03
+	 */
+	List<TMissionDetail> selectMissionDetail(Object userId);
 }

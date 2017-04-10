@@ -1,5 +1,7 @@
 package ampc.com.gistone.database.inter;
 
+import java.util.List;
+
 import ampc.com.gistone.database.model.TGlobalSetting;
 
 public interface TGlobalSettingMapper {
@@ -14,5 +16,15 @@ public interface TGlobalSettingMapper {
 	int updateByPrimaryKeySelective(TGlobalSetting record);
 
 	int updateByPrimaryKey(TGlobalSetting record);
+
+	/**
+	 * @Description: 查找所有用户的全局设置
+	 * @return   
+	 * TGlobalSetting  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月10日 下午5:44:41
+	 */
+	List<TGlobalSetting> selectAll();
 	
 }
