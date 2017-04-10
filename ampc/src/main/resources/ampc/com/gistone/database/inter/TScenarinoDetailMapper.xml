@@ -52,7 +52,7 @@
   <select id="getscenidAndcores" resultType="ampc.com.gistone.database.model.TScenarinoDetail">
   select
   <include refid="Base_Column_List" />
-  form T_SCENARINO_DETAIL where SCENARINO_STATUS ='6' and SCEN_TYPE ='1'
+  from T_SCENARINO_DETAIL where SCENARINO_STATUS ='6' and SCEN_TYPE ='1'
   </select>
   <!--通过pathdate查询实时预报ID和cores  -->
   <select id="getidAndcores" resultMap="BaseResultMap" parameterType="java.util.Date">
