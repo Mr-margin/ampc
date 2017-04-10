@@ -401,10 +401,10 @@ function rwName(v, row, i) {
 function rwType(v, row, i) {
   var type;
   switch(row.missionStatus){
-    case '1':
+    case '2':
       type = '预评估';
       break;
-    case '2':
+    case '3':
       type = '后评估';
       break;
   }
@@ -448,11 +448,21 @@ function qjStatus(v, row, i){
 }
 
 function qjOrder(v, row, i) {
-  return '<button class="btn btn-success mb10 mr10" data-toggle="modal" data-target="#startUp">启动</button>' +
-    '<button class="btn btn-success mb10">终止</button>' +
+  var s='disabled="disabled"',e='disabled="disabled"',ss='disabled="disabled"',ee='disabled="disabled"';
+  if(row.scenarinoStatus == 5){
+    s = '';
+  }else if(row.scenarinoStatus == 6){
+    e='';
+    ee='';
+  }else if(row.scenarinoStatus == 7){
+    s = '';
+    ss = '';
+  }
+  return '<button class="btn btn-success mb10 mr10" data-toggle="modal" data-target="#startUp" '+ s +'>启动</button>' +
+    '<button class="btn btn-success mb10" '+ e +'>终止</button>' +
     '<br/>' +
-    '<button class="btn btn-success mr10">续跑</button>' +
-    '<button class="btn btn-success">暂停</button>'
+    '<button class="btn btn-success mr10" '+ ss +'>续跑</button>' +
+    '<button class="btn btn-success" '+ ee +'>暂停</button>'
 }
 
 //function qjEffectEvaluation(v, row, i) {
@@ -709,7 +719,7 @@ function selectType(type) {
     endDate = moment().add(365, 'd').format('YYYY-MM-DD');
     start = moment().subtract(2, 'd').format('YYYY-MM-DD');
     end = moment().add(14, 'd').format('YYYY-MM-DD');
-    rwSelectType = '1';
+    rwSelectType = '2';
     $('.rwTitle').html('创建预评估任务');
     //rwEndDate = moment().add(2, 'd').format('YYYY-MM-DD');
     initRwDate(startDate, endDate,start, end);
@@ -718,7 +728,7 @@ function selectType(type) {
     endDate = moment().subtract(2, 'd').format('YYYY-MM-DD');
     start = moment().subtract(32, 'd').format('YYYY-MM-DD');
     end = moment().subtract(2, 'd').format('YYYY-MM-DD');
-    rwSelectType = '2';
+    rwSelectType = '3';
     $('.rwTitle').html('创建后评估任务');
     //rwEndDate = moment().subtract(2, 'd').format('YYYY-MM-DD');
     initRwDate(startDate, endDate,start, end);
@@ -933,7 +943,7 @@ function createRw() {
     params.userId = paramsName.userId = userId;
     params.missionStauts = rwSelectType;
 
-    if (rwSelectType == '1') {
+    if (rwSelectType == '2') {
       if (rwEndDate < moment().format('YYYY-MM-DD')) {
         $('.rwDateTip').removeClass('disNone');
         return;
@@ -1044,7 +1054,7 @@ function createQJselect() {
   __dsp['jcqj' + selectRW.missionId] = ajaxPost(oldQJUrl, oldQJparams);
   //}
 
-  if (selectRW.missionStatus == "1") {
+  if (selectRW.missionStatus == "2") {
     if (moment(selectRW.missionEndDate).isBefore(moment(), 'day')) {
       $('.disYQJ').attr('disabled', true);
     } else {
@@ -1052,7 +1062,7 @@ function createQJselect() {
     }
     $('#createYpQjModal').modal('show');
     returnLeft('yqj');
-  } else if (selectRW.missionStatus == "2") {
+  } else if (selectRW.missionStatus == "3") {
     $('#createHpQjModal').modal('show');
     returnLeft('hqj');
   }
