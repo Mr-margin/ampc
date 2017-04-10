@@ -502,12 +502,24 @@ function deleteFun(type) {
             $('#qjTable').bootstrapTable('destroy');
             initQjTable();
           }
-          swal("已删除!", "", "success");
+          swal({
+            title:'已删除!',
+            type:'success',
+            timer:1500
+          });
         } else {
-          swal("删除失败!", "", "error");
+          swal({
+            title:'删除失败!',
+            type:'error',
+            timer:1500
+          });
         }
       }).error(function () {
-        swal("删除失败!", "", "error");
+        swal({
+          title:'删除失败!',
+          type:'error',
+          timer:1500
+        });
       })
 
     });
@@ -617,18 +629,46 @@ function rename(type, id) {
               $('#qjTable').bootstrapTable('destroy');
               initQjTable();
             }
-            swal("已修改!", "修改名称为：" + inputValue, "success");
+
+            swal({
+              title:'已修改!',
+              text:"修改名称为：" + inputValue,
+              type:'success',
+              timer:1500
+            });
+            //swal("已修改!", "修改名称为：" + inputValue, "success");
           }).error(function () {
-            swal("修改失败!", "名称未修改为：" + inputValue, "error");
+            swal({
+              title:'修改失败!',
+              text:"修改名称为：" + inputValue,
+              type:'error',
+              timer:1500
+            });
+            //swal("修改失败!", "名称未修改为：" + inputValue, "error");
           }).error(function () {
             $('#createModal').modal('hide');
-            swal('添加失败', '', 'error')
+            swal({
+              title:'添加失败!',
+              type:'error',
+              timer:1500
+            });
+            //swal('添加失败', '', 'error')
           })
         } else {
-          swal('名称重复', '', 'error')
+          swal({
+            title:'名称重复!',
+            type:'error',
+            timer:1500
+          });
+          //swal('名称重复', '', 'error')
         }
       }).error(function () {
-        swal('校验失败', '', 'error')
+        swal({
+          title:'校验失败!',
+          type:'error',
+          timer:1500
+        });
+        //swal('校验失败', '', 'error')
       })
     });
 
@@ -908,20 +948,45 @@ function createRw() {
             initRwTable();
             $('#createRwModal').modal('hide');
             $('#rwName').val('');
-            swal('添加成功', '', 'success')
+            swal({
+              title:'添加成功!',
+              type:'success',
+              timer:1500
+            });
+            //swal('添加成功', '', 'success')
           } else {
             $('#createRwModal').modal('hide');
-            swal('添加失败', '', 'error')
+            swal({
+              title:'添加失败!',
+              type:'error',
+              timer:1500
+            });
+            //swal('添加失败', '', 'error')
           }
         }).error(function () {
           $('#createRwModal').modal('hide');
-          swal('添加失败', '', 'error')
+          swal({
+            title:'添加失败!',
+            type:'error',
+            timer:1500
+          });
+          //swal('添加失败', '', 'error')
         })
       } else {
-        swal('名称重复', '', 'error')
+        swal({
+          title:'名称重复!',
+          type:'error',
+          timer:1500
+        });
+        //swal('名称重复', '', 'error')
       }
     }).error(function () {
-      swal('校验失败', '', 'error')
+      swal({
+        title:'校验失败!',
+        type:'error',
+        timer:1500
+      });
+      //swal('校验失败', '', 'error')
     })
   }
 
@@ -1145,15 +1210,35 @@ function createQj(type) {
             initQjTable();
             $('#createHpQjModal').modal('hide');
             $('#createYpQjModal').modal('hide');
-            swal('添加成功', '', 'success')
+            swal({
+              title:'添加成功!',
+              type:'success',
+              timer:1500
+            });
+            //swal('添加成功', '', 'success')
           }).error(function () {
-            swal('添加失败', '', 'error')
+            swal({
+              title:'添加失败!',
+              type:'error',
+              timer:1500
+            });
+            //swal('添加失败', '', 'error')
           })
         } else {
-          swal('名称重复', '', 'error')
+          swal({
+            title:'名称重复!',
+            type:'error',
+            timer:1500
+          });
+          //swal('名称重复', '', 'error')
         }
       }).error(function () {
-        swal('校验失败', '', 'error')
+        swal({
+          title:'校验失败!',
+          type:'error',
+          timer:1500
+        });
+        //swal('校验失败', '', 'error')
       })
     }
 
@@ -1196,15 +1281,35 @@ function createQj(type) {
             initQjTable();
             $('#createHpQjModal').modal('hide');
             $('#createYpQjModal').modal('hide');
-            swal('添加成功', '', 'success')
+            swal({
+              title:'添加成功!',
+              type:'success',
+              timer:1500
+            });
+            //swal('添加成功', '', 'success')
           }).error(function () {
-            swal('添加失败', '', 'error')
+            swal({
+              title:'添加失败!',
+              type:'error',
+              timer:1500
+            });
+            //swal('添加失败', '', 'error')
           })
         } else {
-          swal('名称重复', '', 'error')
+          swal({
+            title:'名称重复!',
+            type:'error',
+            timer:1500
+          });
+          //swal('名称重复', '', 'error')
         }
       }).error(function () {
-        swal('校验失败', '', 'error')
+        swal({
+          title:'校验失败!',
+          type:'error',
+          timer:1500
+        });
+        //swal('校验失败', '', 'error')
       })
     }
 
@@ -1255,15 +1360,37 @@ $('#startUp').on('show.bs.modal', function (event) {
 })
 
 function subStartUp(){
-  var url = 'aaaaaaaaaaaaaaaaaaa';
+  var url = '/ModelType/startModel';
   ajaxPost(url,{
     userId:userId,
     scenarinoId:msg.content.qjId,
-    missionId:msg.content.rwId,
+    //missionId:msg.content.rwId,
+    missionType:msg.content.rwType,
     scenarinoType:msg.content.SCEN_TYPE,
     cores:$('input[name=cpuNum]:checked').val()
   }).success(function(res){
+    if(res.status == 0){
+      initQjTable();
+      $('#startUp').modal('hide');
+      swal({
+        title:'启动成功!',
+        type:'success',
+        timer:1500
+      });
+    }else{
+      swal({
+        title:'启动失败!',
+        type:'error',
+        timer:1500
+      });
+    }
 
+  }).error(function(){
+    swal({
+      title:'启动失败!',
+      type:'error',
+      timer:1500
+    });
   })
 }
 
