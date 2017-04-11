@@ -11,7 +11,9 @@ package ampc.com.gistone.redisqueue;
 
 
 import java.io.IOException;
+import java.util.Date;
 
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ import ampc.com.gistone.util.JsonUtil;
  */
 @Component
 public class AcceptMessageQueue implements Runnable{
+	
+	
+	private Logger logger = Logger.getLogger(this.getClass());
 	//加载redis工具类
 	@Autowired
 	private RedisUtilServer redisUtilServer;
@@ -67,11 +72,12 @@ public class AcceptMessageQueue implements Runnable{
 				String key = message.getType();
 				switch (key) {
 				case "model.start.result":
-					System.out.println("start tasks----------");
+					logger.info("start tasks"+new Date());
 					toDataTasksUtil.updateDB(message);
-					System.out.println("end tasks----------");
+					logger.info("end tasks"+new Date());
 					break;
 				case "ungrib.result":
+					logger.info("接受ungrib数据"+new Date());
 					toDataUngribUtil.updateDB(rpop);
 					System.out.println("ungrib---------------");
 					break;
