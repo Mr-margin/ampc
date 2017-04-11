@@ -10,6 +10,7 @@ $(function () {
 });
 /*存储全局改变量*/
 var dps_station;
+var ooo = [['-',0],['-',50],['-',100],['-',200],['-',300],['-',400],['-',500],['-',700],['-',1000],['-',1500],['-',2000],['-',3000]]
 var changeMsg = {
   pro: '',//站点选择
   city: '',
@@ -38,7 +39,9 @@ var speciesObj = {
   'NH₄':'NH4',
   'BC':'BC',
   'OM':'OM',
-  'PMFINE':'PMFINE'
+  'PMFINE':'PMFINE',
+  //'O₃':'O3'
+  'O₃':'O3_1_MAX'
 }
 /*echarts 配置*/
 var optionAll = {
@@ -126,6 +129,8 @@ function initialize() {
     changeMsg.scenarinoId.push(sceneInitialization.data[i].scenarinoId);
     changeMsg.scenarinoName.push(sceneInitialization.data[i].scenarinoName);
   }
+  //changeMsg.scenarinoId.unshift('-1');
+  //changeMsg.scenarinoName.unshift('基准情景');
 
   setStation(sceneInitialization.taskID);
   setTime(sceneInitialization.s, sceneInitialization.e);
@@ -206,7 +211,8 @@ function initEcharts() {
       var arr = [];
       for (var a = 0; a < sceneInitialization.data.length; a++) {
         arr.push(sceneInitialization.data[a].scenarinoName)
-      }
+      };
+      arr.unshift('基准情景');
       return arr;
     })();
     //option.legend.data = (function () {
@@ -237,6 +243,15 @@ function initEcharts() {
         //data: data['191']['CO']  //可变，存储情景数据
       })
     }
+    option.series.unshift({
+      name: '基准情景', //可变，存储情景名称
+      //name: 'aaaaaaaaaa'+sp, //可变，存储情景名称
+      type: 'line',
+      smooth: true,
+      symbolSize: 5,
+      data: data['-1'][speciesObj[species[i]]].slice(0, $('#height').val())  //可变，存储情景数据
+      //data: data['191']['CO']  //可变，存储情景数据
+    });
     var es = echarts.init(document.getElementById(species[i]));
     es.setOption(option);
   }
@@ -388,6 +403,8 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
     $('#sTime-h').removeClass('disNone');
     $('#eTimeP').addClass('disNone');
   }
+
+  updata();
 });
 
 /*站点改变事件*/
@@ -446,14 +463,15 @@ $('#sTime-h').on('change', function (e) {
 $('#height').on('change', function (e) {
   var height = $(e.target).val();
   changeMsg.height = height;
-  updata();
+  initEcharts();
+  //updata();
 });
 
 var czData;
 /*设置echarts图表*/
 function updata() {
   var url = '/Appraisal/find_vertical';
-  var urlJZ = '/Appraisal/find_vertical';
+  var urlJZ = '/Appraisal/find_basevertical';
   var echartsData = ajaxPost(url, {
     //userId: userId,
     //missionId:sceneInitialization.taskID,
@@ -482,7 +500,7 @@ function updata() {
     //datetype:changeMsg.rms
 
 
-    "missionId":"300",
+    "missionId":"177",
     "mode":"point",
     "time":"2016-11-27 13",
     "userId":"1",
@@ -492,8 +510,16 @@ function updata() {
   });
 
   $.when(echartsData,echartsJZData).then(function (res,resJZ) {
-    if (res.status == 0) {
-      czData = res.data;
+    if ((res[0].status == 0)&&(resJZ[0].status == 0)) {
+      if($.isEmptyObject(resJZ[0].data)){
+        resJZ[0].data['-1'] = {};
+        for(var i in speciesObj){
+          resJZ[0].data['-1'][speciesObj[i]] = ooo;
+        }
+      }
+      var obj = {};
+      $.extend(obj , resJZ[0].data, res[0].data);
+      czData =  obj;
       initEcharts();
     } else {
       console.log(res.msg)
