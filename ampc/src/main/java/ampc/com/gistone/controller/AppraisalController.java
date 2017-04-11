@@ -81,7 +81,7 @@ public class AppraisalController {
 				if(4<5){//任务开始时间与系统开始时间对比
 					if(datetype.equals("day")){//逐天
 				String tables="T_SCENARINO_DAILY_";
-				Date tims=tMissionDetail.getMissionStartDate();
+				Date tims=tScenarinoDetail.getScenarinoAddTime();
 				 DateFormat df = new SimpleDateFormat("yyyy");
 				String nowTime= df.format(tims);
 				tables+=nowTime+"_";
@@ -96,7 +96,7 @@ public class AppraisalController {
 				sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 				}else{//逐小时
 					String tables="T_SCENARINO_HOURLY_";
-					Date tims=tMissionDetail.getMissionStartDate();
+					Date tims=tScenarinoDetail.getScenarinoAddTime();
 					 DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(tims);
 					System.out.println(nowTime);
@@ -117,7 +117,7 @@ public class AppraisalController {
 			}else{
 				if(datetype.equals("day")){//逐天
 					String tables="T_SCENARINO_DAILY_";
-					Date tims=tMissionDetail.getMissionStartDate();
+					Date tims=tScenarinoDetail.getScenarinoAddTime();
 					 DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(tims);
 					System.out.println(nowTime);
@@ -133,7 +133,7 @@ public class AppraisalController {
 					sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 					}else{//逐小时
 						String tables="T_SCENARINO_HOURLY_";
-						Date tims=tMissionDetail.getMissionStartDate();
+						Date tims=tScenarinoDetail.getScenarinoAddTime();
 						 DateFormat df = new SimpleDateFormat("yyyy");
 						String nowTime= df.format(tims);
 						System.out.println(nowTime);
@@ -305,7 +305,7 @@ public class AppraisalController {
 				if(4<5){//任务开始时间与系统开始时间对比
 					if(datetype.equals("day")){//逐天
 				String tables="T_SCENARINO_DAILY_";
-				Date tims=tMissionDetail.getMissionStartDate();
+				Date tims=tScenarinoDetail.getScenarinoAddTime();
 				 DateFormat df = new SimpleDateFormat("yyyy");
 				String nowTime= df.format(tims);
 				System.out.println(nowTime);
@@ -321,7 +321,7 @@ public class AppraisalController {
 				sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 				}else{//逐小时
 					String tables="T_SCENARINO_HOURLY_";
-					Date tims=tMissionDetail.getMissionStartDate();
+					Date tims=tScenarinoDetail.getScenarinoAddTime();
 					 DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(tims);
 					System.out.println(nowTime);
@@ -342,7 +342,7 @@ public class AppraisalController {
 			}else{
 				if(datetype.equals("day")){//逐天
 					String tables="T_SCENARINO_DAILY_";
-					Date tims=tMissionDetail.getMissionStartDate();
+					Date tims=tScenarinoDetail.getScenarinoAddTime();
 					 DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(tims);
 					System.out.println(nowTime);
@@ -358,7 +358,7 @@ public class AppraisalController {
 					sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 					}else{//逐小时
 						String tables="T_SCENARINO_HOURLY_";
-						Date tims=tMissionDetail.getMissionStartDate();
+						Date tims=tScenarinoDetail.getScenarinoAddTime();
 						 DateFormat df = new SimpleDateFormat("yyyy");
 						String nowTime= df.format(tims);
 						System.out.println(nowTime);
@@ -593,12 +593,12 @@ public class AppraisalController {
 			for(TScenarinoDetail ScenarinoDetail:tslist){
 				Date startdate=ScenarinoDetail.getScenarinoStartDate();
 				String start=daysdf.format(startdate);
+				Date adddate=ScenarinoDetail.getScenarinoAddTime();
 				if(start.equals(daytime)){
 					if(datetype.equals("day")){//逐天
 						String tables="T_SCENARINO_FNL_DAILY_";
-						Date tims=tMissionDetail.getMissionStartDate();
 						 DateFormat df = new SimpleDateFormat("yyyy");
-						String nowTime= df.format(tims);
+						String nowTime= df.format(adddate);
 						System.out.println(nowTime);
 						tables+=nowTime+"_";
 						tables+=userId;
@@ -613,9 +613,8 @@ public class AppraisalController {
 						sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 						}else{//逐小时
 							String tables="T_SCENARINO_FNL_HOURLY_";
-							Date tims=tMissionDetail.getMissionStartDate();
 							 DateFormat df = new SimpleDateFormat("yyyy");
-							String nowTime= df.format(tims);
+							String nowTime= df.format(adddate);
 							System.out.println(nowTime);
 							tables+=nowTime+"_";
 							tables+=userId.toString();
@@ -629,6 +628,8 @@ public class AppraisalController {
 							scenarinoEntity.setTableName(tables);
 							sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 						}//时间分布判断
+				}else{
+					continue;
 				}	
 			}
 			if(datetype.equals("hour")){
@@ -638,14 +639,10 @@ public class AppraisalController {
 					JSONObject obj=JSONObject.fromObject(content);
 					Map<String,Object> detamap=(Map)obj;
 					Map<String,Object> datemap=new HashMap();
-					for(String datetime:detamap.keySet()){
-						if(datetime.equals(daytime)){
-						String sp=detamap.get(datetime).toString();
-						JSONObject spobj=JSONObject.fromObject(sp);
-						Map<String,Object> spmap=(Map)spobj;
+
 						Map<String,Object> spcmap=new HashMap();
-						for(String spr:spmap.keySet()){
-							String height=spmap.get(spr).toString();
+						for(String spr:detamap.keySet()){
+							String height=detamap.get(spr).toString();
 							JSONObject heightobj=JSONObject.fromObject(height);
 							Map<String,Object> heightmap=(Map)heightobj;
 							JSONArray arr=new JSONArray();
@@ -731,12 +728,11 @@ public class AppraisalController {
 								}
 							}
 							spcmap.put(spr, arr);
-							scmap.put(scid, spcmap);
+							scmap.put("-1", spcmap);
 								}
 						}
 						}
-					}
-					}
+
 				}
 				}else{
 					for(ScenarinoEntity sc:sclist){
@@ -745,14 +741,9 @@ public class AppraisalController {
 						JSONObject obj = JSONObject.fromObject(content);
 						Map<String,Object> detamap=(Map)obj;
 						Map<String,Object> datemap=new HashMap();
-						for(String datetime:detamap.keySet()){
-							if(datetime.equals(daytime)){
-							String sp=detamap.get(datetime).toString();
-							JSONObject spobj=JSONObject.fromObject(sp);
-							Map<String,Object> spmap=(Map)spobj;
 							Map<String,Object> spcmap=new HashMap();
-							for(String spr:spmap.keySet()){
-								String height=spmap.get(spr).toString();
+							for(String spr:detamap.keySet()){
+								String height=detamap.get(spr).toString();
 								JSONObject heightobj=JSONObject.fromObject(height);
 								Map<String,Object> heightmap=(Map)heightobj;
 								JSONArray arr=new JSONArray();
@@ -794,13 +785,13 @@ public class AppraisalController {
 								
 								arr.add(litarr);
 								spcmap.put(spr, arr);
-								scmap.put(scid, spcmap);
+								scmap.put("-1", spcmap);
 									}
 							}
 							}
 							
-						}
-						}
+						
+						
 					}
 				}
 			return	AmpcResult.build(0, "success",scmap);
