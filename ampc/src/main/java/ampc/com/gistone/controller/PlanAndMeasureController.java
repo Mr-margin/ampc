@@ -306,16 +306,16 @@ public class PlanAndMeasureController {
 						if(a!=0){ 
 							return AmpcResult.ok(newPlanId);
 						}else{
-							return AmpcResult.build(1000, "情景状态转换失败",null);
+							return AmpcResult.build(1000, "情景状态转换失败",-1);
 						}
 					}else{
-						return AmpcResult.ok("复用成功");
+						return AmpcResult.ok(newPlanId);
 					}
 				}
-				return AmpcResult.build(1000, "复用失败");
+				return AmpcResult.build(1000, "复用失败",-1);
 				
 			}
-			return AmpcResult.build(1000, "应用预案失败");
+			return AmpcResult.build(1000, "应用预案失败",-1);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误");
