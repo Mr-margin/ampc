@@ -564,8 +564,8 @@ public class AppraisalController {
 	
 	
 	
-	@RequestMapping("Appraisal/find_base")
-	public AmpcResult find_base(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+	@RequestMapping("Appraisal/find_basevertical")
+	public AmpcResult find_basevertical(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
 		try{
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
