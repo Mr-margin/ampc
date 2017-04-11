@@ -784,8 +784,8 @@ function addPlan(e) {
       timeStartTime:moment(allData[areaIndex].timeItems[timeIndex].timeStartDate).format('YYYY-MM-DD HH'),
       timeEndTime:moment(allData[areaIndex].timeItems[timeIndex].timeEndDate).format('YYYY-MM-DD HH'),
       copyPlanId:selectCopyPlan.planReuseId
-    }).success(function () {
-      allData[areaIndex].timeItems[timeIndex].planId = selectCopyPlan.planReuseId;
+    }).success(function (res) {
+      allData[areaIndex].timeItems[timeIndex].planId = res.data;
       allData[areaIndex].timeItems[timeIndex].planName = selectCopyPlan.planReuseName;
       showTimeline(allData);
     })
