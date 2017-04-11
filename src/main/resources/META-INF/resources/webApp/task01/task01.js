@@ -770,7 +770,7 @@ function selectQJtype(type) {
           params.scenType = qjType;
 
           setOption('#jcqj', basisArr);
-          var dateArr = setSelectDate(basisArr[0].scenarinoStartDate, basisArr[0].scenarinoEndDate, !(basisArr[0].pathDate)?moment():basisArr[0].pathDate);
+          var dateArr = setSelectDate(basisArr[0].scenarinoStartDate, basisArr[0].scenarinoEndDate, !(basisArr[0].pathDate)?moment().add(-1,'d'):basisArr[0].pathDate);
           $('#jcdate').empty();
           for (var i = 0; i < dateArr.length; i++) {
             $('#jcdate').append($('<option value="' + dateArr[i] + '">' + dateArr[i] + '</option>'))
