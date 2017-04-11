@@ -1,9 +1,12 @@
 package ampc.com.gistone.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import net.sf.json.JSONObject;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.ss.usermodel.Cell;
@@ -11,9 +14,15 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.xml.internal.xsom.impl.scd.Iterators.Map;
+
 import ampc.com.gistone.database.model.TMeasureExcel;
+import ampc.com.gistone.util.JsonUtil;
 
 public class TestController {
 
@@ -63,4 +72,13 @@ public class TestController {
 	            return "";
 		}
 	}
+	
+	public static Object sssss() throws IOException{
+		String path="C:\\Users\\Administrator\\Desktop\\result.json";
+		ObjectMapper mapper=new ObjectMapper();
+		JsonNode js=mapper.readTree(new File(path));
+		
+		return js;
+	}
+	
 }
