@@ -7,8 +7,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import ampc.com.gistone.redis.TestRedisRunnble;
-import ampc.com.gistone.redis.TestRedisRunnbleConsumer;
 import ampc.com.gistone.redisqueue.AcceptMessageQueue;
 
 /**
@@ -28,11 +26,7 @@ public class MyStartupRunner implements CommandLineRunner{
 	private AcceptMessageQueue acceptMessageQueue;
 	
 	
-	@Autowired
-	private TestRedisRunnbleConsumer testRedisRunnbleConsumer;
 	
-	@Autowired 
-	private TestRedisRunnble testRedisRunnble;
 	/*private AcceptMessageQueue acceptMessageQueue;*/
 	@Override
     public void run(String... args) throws Exception {
