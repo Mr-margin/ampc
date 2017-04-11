@@ -257,6 +257,16 @@ function statusRWfun(status, t) {
   search('rw');
 }
 
+//回车绑定
+$("input.rw").keydown(function(event){
+  if(event.which == "13")
+    search('rw');
+});
+$("input.qj").keydown(function(event){
+  if(event.which == "13")
+    search('qj');
+});
+
 /*搜索事件*/
 function search(type) {
   var params = $('#' + type + 'Table').bootstrapTable('getOptions');
@@ -775,11 +785,16 @@ function selectQJtype(type) {
           for (var i = 0; i < dateArr.length; i++) {
             $('#jcdate').append($('<option value="' + dateArr[i] + '">' + dateArr[i] + '</option>'))
           }
-          var startD = moment(moment(dateArr[0])).add(1, 'd').format('YYYY-MM-DD');
+          var startD = dateArr[0]?moment(moment(dateArr[0])).add(1, 'd').format('YYYY-MM-DD'):'';
           $('#yStartDate').empty().append($('<option value="' + startD + '">' + startD + '</option>'));
+
           ajaxPost(url, params).success(function (res) {
             selectEndDate = res.data.endTime;
             selectEndDate = moment(selectRW.missionEndDate).add(1, 'd').isBefore(selectEndDate) ? moment(selectRW.missionEndDate).format('YYYY-MM-DD') : selectEndDate;
+            if($('#yStartDate').val() == ''){
+              $('#yEndDate').empty();
+              return;
+            }
             var endDateArr = setSelectDate($('#yStartDate').val(), selectEndDate);
             $('#yEndDate').empty();
             for (var i = 0; i < endDateArr.length; i++) {
@@ -1100,9 +1115,13 @@ function changeJcqj(t) {
   for (var i = 0; i < dateArr.length; i++) {
     $('#jcdate').append($('<option value="' + dateArr[i] + '">' + dateArr[i] + '</option>'))
   }
-  var startD = moment(moment(dateArr[0])).add(1, 'd').format('YYYY-MM-DD');
+  var startD = dateArr[0]?moment(moment(dateArr[0])).add(1, 'd').format('YYYY-MM-DD'):'';
   $('#yStartDate').empty().append($('<option value="' + startD + '">' + startD + '</option>'));
 
+  if($('#yStartDate').val() == ''){
+    $('#yEndDate').empty();
+    return;
+  }
   var endDateArr = setSelectDate($('#yStartDate').val(), selectEndDate);
   $('#yEndDate').empty();
   for (var i = 0; i < endDateArr.length; i++) {
