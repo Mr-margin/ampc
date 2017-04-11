@@ -173,7 +173,13 @@ public class AppraisalController {
 						Map<String,Object> hourcmap=new HashMap();
 						if(hourlist.size()==24){
 						for(int a=0;a<=23;a++){
-								hourcmap.put(String.valueOf(a),new BigDecimal(hourlist.get(a).toString()));
+							if(spr.equals("CO")){
+								BigDecimal bd=(new BigDecimal(heightmap.get(a).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+								hourcmap.put(String.valueOf(a),bd);
+								}else{
+								BigDecimal bd=(new BigDecimal(heightmap.get(a).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+								hourcmap.put(String.valueOf(a),bd);
+								}	
 						}
 						}else{
 							for(int a=0;a<=23;a++){
@@ -213,13 +219,25 @@ public class AppraisalController {
 							JSONObject heightobj=JSONObject.fromObject(height);//行业减排结果
 							Map<String,Object> heightmap=(Map)heightobj;
 							Map<String,Object> hourcmap=new HashMap();
-							BigDecimal bd=new BigDecimal(heightmap.get("0").toString());
-							spcmap.put(datetime, bd);
+							if(spr.equals("CO")){
+								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+								spcmap.put(datetime, bd);
+								}else{
+								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+								spcmap.put(datetime, bd);
+								}	
 							if(datemap.get(spr)!=null){
 							Object maps=datemap.get(spr);
 							JSONObject mapsbj=JSONObject.fromObject(maps);//行业减排结果
 							Map<String,Object> des=(Map)mapsbj;
-							des.put(datetime, bd);
+							if(spr.equals("CO")){
+								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+								des.put(datetime, bd);
+								}else{
+								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+								des.put(datetime, bd);
+								}	
+							
 							datemap.put(spr, des);
 							}else{
 							datemap.put(spr, spcmap);
@@ -540,4 +558,272 @@ public class AppraisalController {
 			return	AmpcResult.build(0, "error");
 		}
 	}
+	
+	
+	
+	
+	
+	
+	@RequestMapping("Appraisal/find_base")
+	public AmpcResult find_base(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Long userId=Long.valueOf(data.get("userId").toString());
+			Long missionId=Long.valueOf(data.get("missionId").toString());
+			String mode=data.get("mode").toString();
+			String time=data.get("time").toString();
+			String cityStation=data.get("cityStation").toString();
+
+			String datetype=data.get("datetype").toString();
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH");
+			SimpleDateFormat daysdf=new SimpleDateFormat("yyyy-MM-dd");
+			List<ScenarinoEntity> sclist=new ArrayList();
+			Date times=sdf.parse(time);
+			int hournum=times.getHours();
+			Date daytimes=daysdf.parse(time);
+			String daytime=daysdf.format(daytimes);
+			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);
+			Integer domainId=Integer.valueOf(tMissionDetail.getMissionDomainId().toString());
+			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
+			tScenarinoDetail.setMissionId(missionId);
+			tScenarinoDetail.setScenType("4");
+			List<TScenarinoDetail> tslist=tScenarinoDetailMapper.selectByEntity(tScenarinoDetail);
+			Map<String,Object> scmap=new HashMap();
+			for(TScenarinoDetail ScenarinoDetail:tslist){
+				Date startdate=ScenarinoDetail.getScenarinoStartDate();
+				String start=daysdf.format(startdate);
+				if(start.equals(daytime)){
+					if(datetype.equals("day")){//逐天
+						String tables="T_SCENARINO_FNL_DAILY_";
+						Date tims=tMissionDetail.getMissionStartDate();
+						 DateFormat df = new SimpleDateFormat("yyyy");
+						String nowTime= df.format(tims);
+						System.out.println(nowTime);
+						tables+=nowTime+"_";
+						tables+=userId;
+						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+						scenarinoEntity.setCity_station(cityStation);
+						scenarinoEntity.setDomain(3);
+						scenarinoEntity.setDay(ScenarinoDetail.getScenarinoStartDate());
+						scenarinoEntity.setDomainId(domainId);
+						scenarinoEntity.setMode(mode);
+						scenarinoEntity.setsId(Integer.valueOf(ScenarinoDetail.getScenarinoId().toString()));
+						scenarinoEntity.setTableName(tables);
+						sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+						}else{//逐小时
+							String tables="T_SCENARINO_FNL_HOURLY_";
+							Date tims=tMissionDetail.getMissionStartDate();
+							 DateFormat df = new SimpleDateFormat("yyyy");
+							String nowTime= df.format(tims);
+							System.out.println(nowTime);
+							tables+=nowTime+"_";
+							tables+=userId.toString();
+							ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+							scenarinoEntity.setCity_station(cityStation);
+							scenarinoEntity.setDomain(3);
+							scenarinoEntity.setDomainId(domainId);
+							scenarinoEntity.setDay(ScenarinoDetail.getScenarinoStartDate());
+							scenarinoEntity.setMode(mode);
+							scenarinoEntity.setsId(Integer.valueOf(ScenarinoDetail.getScenarinoId().toString()));
+							scenarinoEntity.setTableName(tables);
+							sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+						}//时间分布判断
+				}	
+			}
+			if(datetype.equals("hour")){
+				for(ScenarinoEntity sc:sclist){
+					String scid=String.valueOf(sc.getsId());
+					String content=sc.getContent().toString();
+					JSONObject obj=JSONObject.fromObject(content);
+					Map<String,Object> detamap=(Map)obj;
+					Map<String,Object> datemap=new HashMap();
+					for(String datetime:detamap.keySet()){
+						if(datetime.equals(daytime)){
+						String sp=detamap.get(datetime).toString();
+						JSONObject spobj=JSONObject.fromObject(sp);
+						Map<String,Object> spmap=(Map)spobj;
+						Map<String,Object> spcmap=new HashMap();
+						for(String spr:spmap.keySet()){
+							String height=spmap.get(spr).toString();
+							JSONObject heightobj=JSONObject.fromObject(height);
+							Map<String,Object> heightmap=(Map)heightobj;
+							JSONArray arr=new JSONArray();
+							for(String heights:heightmap.keySet()){
+								if(!heights.equals("12")){
+								JSONArray litarr=new JSONArray();
+								Object hour=heightmap.get(heights);
+								JSONArray hourlist = JSONArray.fromObject(hour);
+							Map<String,Object> hourcmap=new HashMap();
+							if(hourlist.size()==24){
+							for(int a=0;a<=23;a++){
+								if(hournum-1==a){
+									if(spr.equals("CO")){
+										BigDecimal bd=new BigDecimal(hourlist.getString(0));
+										litarr.add(bd.setScale(2, BigDecimal.ROUND_HALF_UP));
+										}else{
+											BigDecimal bd=new BigDecimal(hourlist.getString(0));
+											litarr.add(bd.setScale(1, BigDecimal.ROUND_HALF_UP));
+										}
+									if(heights.equals("0")){
+										litarr.add(0);
+									}else if(heights.equals("1")){
+										litarr.add(50);
+									}else if(heights.equals("2")){
+										litarr.add(100);
+									}else if(heights.equals("3")){
+										litarr.add(200);
+									}else if(heights.equals("4")){
+										litarr.add(300);
+									}else if(heights.equals("5")){
+										litarr.add(400);
+									}else if(heights.equals("6")){
+										litarr.add(500);
+									}else if(heights.equals("7")){
+										litarr.add(700);
+									}else if(heights.equals("8")){
+										litarr.add(1000);
+									}else if(heights.equals("9")){
+										litarr.add(1500);
+									}else if(heights.equals("10")){
+										litarr.add(2000);
+									}else if(heights.equals("11")){
+										litarr.add(3000);
+									}
+									arr.add(litarr);
+								}
+								}
+							}else{
+								for(int a=0;a<=23;a++){
+									if(spr.equals("CO")){
+										BigDecimal bd=new BigDecimal(hourlist.getString(0));
+										litarr.add(bd.setScale(2, BigDecimal.ROUND_HALF_UP));
+										}else{
+											BigDecimal bd=new BigDecimal(hourlist.getString(0));
+											litarr.add(bd.setScale(1, BigDecimal.ROUND_HALF_UP));
+										}
+									if(heights.equals("0")){
+										litarr.add(0);
+									}else if(heights.equals("1")){
+										litarr.add(50);
+									}else if(heights.equals("2")){
+										litarr.add(100);
+									}else if(heights.equals("3")){
+										litarr.add(200);
+									}else if(heights.equals("4")){
+										litarr.add(300);
+									}else if(heights.equals("5")){
+										litarr.add(400);
+									}else if(heights.equals("6")){
+										litarr.add(500);
+									}else if(heights.equals("7")){
+										litarr.add(700);
+									}else if(heights.equals("8")){
+										litarr.add(1000);
+									}else if(heights.equals("9")){
+										litarr.add(1500);
+									}else if(heights.equals("10")){
+										litarr.add(2000);
+									}else if(heights.equals("11")){
+										litarr.add(3000);
+									}
+									arr.add(litarr);
+								}
+							}
+							spcmap.put(spr, arr);
+							scmap.put(scid, spcmap);
+								}
+						}
+						}
+					}
+					}
+				}
+				}else{
+					for(ScenarinoEntity sc:sclist){
+						String scid=String.valueOf(sc.getsId());
+						String content=sc.getContent().toString();
+						JSONObject obj = JSONObject.fromObject(content);
+						Map<String,Object> detamap=(Map)obj;
+						Map<String,Object> datemap=new HashMap();
+						for(String datetime:detamap.keySet()){
+							if(datetime.equals(daytime)){
+							String sp=detamap.get(datetime).toString();
+							JSONObject spobj=JSONObject.fromObject(sp);
+							Map<String,Object> spmap=(Map)spobj;
+							Map<String,Object> spcmap=new HashMap();
+							for(String spr:spmap.keySet()){
+								String height=spmap.get(spr).toString();
+								JSONObject heightobj=JSONObject.fromObject(height);
+								Map<String,Object> heightmap=(Map)heightobj;
+								JSONArray arr=new JSONArray();
+								for(String heights:heightmap.keySet()){
+									if(!heights.equals("12")){
+								Map<String,Object> hourcmap=new HashMap();
+								JSONArray litarr=new JSONArray();
+								if(spr.equals("CO")){
+									litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(2, BigDecimal.ROUND_HALF_UP));
+									}else{
+									litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));
+									}
+								if(heights.equals("0")){
+									litarr.add(0);
+								}else if(heights.equals("1")){
+									litarr.add(50);
+								}else if(heights.equals("2")){
+									litarr.add(100);
+								}else if(heights.equals("3")){
+									litarr.add(200);
+								}else if(heights.equals("4")){
+									litarr.add(300);
+								}else if(heights.equals("5")){
+									litarr.add(400);
+								}else if(heights.equals("6")){
+									litarr.add(500);
+								}else if(heights.equals("7")){
+									litarr.add(700);
+								}else if(heights.equals("8")){
+									litarr.add(1000);
+								}else if(heights.equals("9")){
+									litarr.add(1500);
+								}else if(heights.equals("10")){
+									litarr.add(2000);
+								}else if(heights.equals("11")){
+									litarr.add(3000);
+								}
+								
+								
+								arr.add(litarr);
+								spcmap.put(spr, arr);
+								scmap.put(scid, spcmap);
+									}
+							}
+							}
+							
+						}
+						}
+					}
+				}
+			return	AmpcResult.build(0, "success",scmap);
+		}catch(Exception e){
+		e.printStackTrace();
+		
+		return	AmpcResult.build(0, "error");	
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
