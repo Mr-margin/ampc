@@ -404,3 +404,41 @@ when (new.REAL_FORECAST_ID is null)
 begin
 select T_REAL_FORECAST_SEQ.nextval into :new.REAL_FORECAST_ID from dual;
 end;
+
+
+------T_CORES_TIMES 计算核数时间表 ----
+CREATE SEQUENCE T_CORES_TIMES_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_CORES_TIMES_REP before insert on T_CORES_TIMES
+FOR EACH ROW
+when (new.CORES_TIME_ID is null)
+begin
+select T_CORES_TIMES_SEQ.nextval into :new.CORES_TIME_ID from dual;
+end;
+
+
+
+------T_GLOBAL_SETTING 用户全局设置表 ----
+CREATE SEQUENCE T_GLOBAL_SETTING_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_GLOBAL_SETTING_REP before insert on T_GLOBAL_SETTING
+FOR EACH ROW
+when (new.GLOBAL_SETTING_ID is null)
+begin
+select T_GLOBAL_SETTING_SEQ.nextval into :new.GLOBAL_SETTING_ID from dual;
+end;
+
+
+
+
+
