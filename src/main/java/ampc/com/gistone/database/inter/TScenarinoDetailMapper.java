@@ -15,6 +15,27 @@ import ampc.com.gistone.database.model.TScenarinoDetail;
 public interface TScenarinoDetailMapper {
 	
 	/**
+	 * @Description: 通过刚创建的实时预报情景的到该情景的ID
+	 * @param tScenarinoDetail
+	 * @return   
+	 * Long  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月11日 上午11:51:47
+	 */
+	Long selectforecastid(TScenarinoDetail tScenarinoDetail);
+	/**
+	 * @Description: 通过pathdate查询实时预报的ID
+	 * @param basisTime
+	 * @return   
+	 * Long  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月11日 上午11:21:39
+	 */
+	Long selectBasisId(Date basisTime);
+	
+	/**
 	 * @Description: 通过pathdate获取情景ID和cores
 	 * @param today
 	 * @return   
@@ -176,6 +197,11 @@ public interface TScenarinoDetailMapper {
 
 
     List<TScenarinoDetail> selectByEntity(TScenarinoDetail record);
+
+	
+
+
+	
 
 
 	

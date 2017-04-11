@@ -102,4 +102,28 @@ public interface TMissionDetailMapper {
 	 * @date 2017年4月10日 下午8:24:03
 	 */
 	List<TMissionDetail> selectMissionDetail(Object userId);
+
+
+	/**
+	 * @Description: 修改实时预报任务
+	 * @param updateOlDetail
+	 * @return   
+	 * int  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月11日 上午10:01:47
+	 */
+	int updateOldMissionDetail(TMissionDetail updateOlDetail);
+
+
+	/**
+	 * @Description: 根据新插入的任务 查找对应的ID
+	 * @param missionDetail
+	 * @return   
+	 * Long  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月11日 上午10:12:33
+	 */
+	Long getmissionidbyMission(TMissionDetail missionDetail);
 }
