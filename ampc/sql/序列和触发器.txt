@@ -1,4 +1,4 @@
-------T_ADDRESS±Ì «¯”Ú±Ì----
+------T_ADDRESS Âå∫ÂüüË°®----
 CREATE SEQUENCE T_ADDRESS_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -15,7 +15,7 @@ end;
 
 
 
-------T_DOMAIN_MISSION±Ì ƒ£ƒ‚∑∂Œß±Ì----
+------T_DOMAIN_MISSION Ê®°ÊãüËåÉÂõ¥Ë°®----
 CREATE SEQUENCE T_DOMAIN_MISSION_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -31,7 +31,7 @@ select T_DOMAIN_MISSION_SEQ.nextval into :new.DOMAIN_ID from dual;
 end;
 
 
-------T_EMISSION_DETAIL±Ì ºı≈≈Ω·π˚±Ì----
+------T_EMISSION_DETAIL  ÂáèÊéíÁªìÊûúË°®----
 CREATE SEQUENCE T_EMISSION_DETAIL_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -48,7 +48,7 @@ end;
 
 
 
-------T_ES_COUPLING±Ì ÒÓ∫œ∫Ûµƒ«Âµ•±Ì----
+------T_ES_COUPLING  ËÄ¶ÂêàÂêéÁöÑÊ∏ÖÂçïË°®----
 CREATE SEQUENCE T_ES_COUPLING_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -64,7 +64,7 @@ select T_ES_COUPLING_SEQ.nextval into :new.ES_COUPLING_ID from dual;
 end;
 
 
-------T_ES_NATION±Ì »´π˙«Âµ•±Ì----
+------T_ES_NATION  ÂÖ®ÂõΩÊ∏ÖÂçïË°®----
 CREATE SEQUENCE T_ES_NATION_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -80,7 +80,7 @@ select T_ES_NATION_SEQ.nextval into :new.ES_NATION_ID from dual;
 end;
 
 
-------T_ES_NATIVE±Ì ±æµÿ«Âµ•±Ì----
+------T_ES_NATIVE Êú¨Âú∞Ê∏ÖÂçïË°®----
 CREATE SEQUENCE T_ES_NATIVE_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -96,7 +96,7 @@ select T_ES_NATIVE_SEQ.nextval into :new.ES_NATIVE_ID from dual;
 end;
 
 
-------T_MEASURE_EXCEL±Ì ¥Î ©Excel±Ì----
+------T_MEASURE_EXCEL  Êé™ÊñΩExcelË°®----
 CREATE SEQUENCE T_MEASURE_EXCEL_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -112,7 +112,7 @@ select T_MEASURE_EXCEL_SEQ.nextval into :new.MEASURE_EXCEL_ID from dual;
 end;
 
 
-------T_MEASURE_SECTOR_EXCEL±Ì ¥Î ©∫Õ––“µ∆•≈‰÷–º‰±Ì----
+------T_MEASURE_SECTOR_EXCEL  Êé™ÊñΩÂíåË°å‰∏öÂåπÈÖç‰∏≠Èó¥Ë°®----
 CREATE SEQUENCE T_MEASURE_SECTOR_EXCEL_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -128,7 +128,7 @@ select T_MEASURE_SECTOR_EXCEL_SEQ.nextval into :new.MS_EXCEL_ID from dual;
 end;
 
 
-------T_MISSION_DETAIL±Ì »ŒŒÒœÍ«È±Ì----
+------T_MISSION_DETAIL ‰ªªÂä°ËØ¶ÊÉÖË°®----
 CREATE SEQUENCE T_MISSION_DETAIL_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -144,7 +144,7 @@ select T_MISSION_DETAIL_SEQ.nextval into :new.MISSION_ID from dual;
 end;
 
 
-------T_PLAN±Ì ‘§∞∏±Ì----
+------T_PLAN  È¢ÑÊ°àË°®----
 CREATE SEQUENCE T_PLAN_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -159,7 +159,7 @@ begin
 select T_PLAN_SEQ.nextval into :new.PLAN_ID from dual;
 end;
 
-------T_PLAN_MEASURE±Ì ‘§∞∏¥Î ©±Ì----
+------T_PLAN_MEASURE  È¢ÑÊ°àÊé™ÊñΩË°®----
 CREATE SEQUENCE T_PLAN_MEASURE_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -175,7 +175,7 @@ select T_PLAN_MEASURE_SEQ.nextval into :new.PLAN_MEASURE_ID from dual;
 end;
 
 
-------T_PLAN_MEASURE_REUSE±Ì ø…∏¥”√‘§∞∏¥Î ©±Ì----
+------T_PLAN_MEASURE_REUSE ÂèØÂ§çÁî®È¢ÑÊ°àÊé™ÊñΩË°®----
 CREATE SEQUENCE T_PLAN_MEASURE_REUSE_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -192,7 +192,7 @@ end;
 
 
 
-------T_PLAN_REUSE±Ì ø…∏¥”√‘§∞∏±Ì----
+------T_PLAN_REUSE  ÂèØÂ§çÁî®È¢ÑÊ°àË°®----
 CREATE SEQUENCE T_PLAN_REUSE_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -208,7 +208,7 @@ select T_PLAN_REUSE_SEQ.nextval into :new.PLAN_REUSE_ID from dual;
 end;
 
 
-------T_QUERY_EXCEL±Ì …∏—°Ãıº˛Excel±Ì----
+------T_QUERY_EXCEL  Á≠õÈÄâÊù°‰ª∂ExcelË°®----
 CREATE SEQUENCE T_QUERY_EXCEL_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -224,7 +224,7 @@ select T_QUERY_EXCEL_SEQ.nextval into :new.QUERY_ID from dual;
 end;
 
 
-------T_SCENARINO_AREA±Ì «Èæ∞«¯”Ú±Ì----
+------T_SCENARINO_AREA  ÊÉÖÊôØÂå∫ÂüüË°®----
 CREATE SEQUENCE T_SCENARINO_AREA_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -240,7 +240,7 @@ select T_SCENARINO_AREA_SEQ.nextval into :new.SCENARINO_AREA_ID from dual;
 end;
 
 
-------T_SCENARINO_DETAIL±Ì «Èæ∞œÍ«È±Ì----
+------T_SCENARINO_DETAIL  ÊÉÖÊôØËØ¶ÊÉÖË°®----
 CREATE SEQUENCE T_SCENARINO_DETAIL_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -257,7 +257,7 @@ end;
 
 
 
-------T_SCENARINO_STATUS±Ì «Èæ∞÷¥––◊¥Ã¨±Ì----
+------T_SCENARINO_STATUS  ÊÉÖÊôØÊâßË°åÁä∂ÊÄÅË°®---
 CREATE SEQUENCE T_SCENARINO_STATUS_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -273,7 +273,7 @@ select T_SCENARINO_STATUS_SEQ.nextval into :new.SCENARINO_STATU_ID from dual;
 end;
 
 
-------T_SECTOR_EXCEL±Ì ––“µExcel±Ì----
+------T_SECTOR_EXCEL  Ë°å‰∏öExcelË°®----
 CREATE SEQUENCE T_SECTOR_EXCEL_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -290,7 +290,7 @@ end;
 
 
 
-------T_SECTORDOC_EXCEL±Ì ––“µ√Ë ˆœÍ«È±Ì----
+------T_SECTORDOC_EXCEL  Ë°å‰∏öÊèèËø∞ËØ¶ÊÉÖË°®----
 CREATE SEQUENCE T_SECTORDOC_EXCEL_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -306,7 +306,7 @@ select T_SECTORDOC_EXCEL_SEQ.nextval into :new.SECTORDOC_ID from dual;
 end;
 
 
-------T_TIME±Ì  ±∂Œ±Ì----
+------T_TIME  Êó∂ÊÆµË°®----
 CREATE SEQUENCE T_TIME_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -322,7 +322,7 @@ select T_TIME_SEQ.nextval into :new.TIME_ID from dual;
 end;
 
 
-------T_USER±Ì ”√ªß±Ì----
+------T_USER  Áî®Êà∑Ë°®----
 CREATE SEQUENCE T_USER_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -341,7 +341,7 @@ end;
 
 
 
-------T_UNGRIB±Ì----
+------T_UNGRIB----
 CREATE SEQUENCE T_UNGRIB_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -357,7 +357,7 @@ select T_UNGRIB_SEQ.nextval into :new.UNGRIB_ID from dual;
 end;
 
 
-------T_TASKS_STATUS±Ì ----
+------T_TASKS_STATUS ----
 CREATE SEQUENCE T_TASKS_STATUS_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -374,7 +374,7 @@ end;
 
 
 
-------T_SITE±Ì ----
+------T_SITE ----
 CREATE SEQUENCE T_SITE_SEQ  
 INCREMENT BY 1   
 START WITH 1      
@@ -390,7 +390,7 @@ select T_SITE_SEQ.nextval into :new.SITE_ID from dual;
 end;
 
 
-------T_REAL_FORECAST±Ì ----
+------T_REAL_FORECAST ----
 CREATE SEQUENCE T_REAL_FORECAST_SEQ  
 INCREMENT BY 1   
 START WITH 1      
