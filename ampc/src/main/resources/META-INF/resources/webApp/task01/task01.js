@@ -184,6 +184,11 @@ function initRwTable() {
       return JSON.stringify(json);
     },
     responseHandler: function (res) {
+      if(res.data.rows.length == 0){
+        $('.qjtableDiv').addClass('disNone')
+      }else{
+        $('.qjtableDiv').removeClass('disNone')
+      }
       return res.data
     },
     queryParamsType: "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
