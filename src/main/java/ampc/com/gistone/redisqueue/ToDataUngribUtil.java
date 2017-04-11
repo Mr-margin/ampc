@@ -20,6 +20,7 @@ import java.util.Map;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -38,6 +39,7 @@ import ampc.com.gistone.util.DateUtil;
  */
 @Component
 public class ToDataUngribUtil {
+	private Logger logger = Logger.getLogger(this.getClass());
 	//加载ungribMapper映射
 	@Autowired
 	private TUngribMapper tUngribMapper;
@@ -100,10 +102,9 @@ public class ToDataUngribUtil {
 		tUngrib.setErrorGfsMsg(gfserror);
 		//创建对象
 		TUngrib tUngrib2 = new TUngrib();
-		System.out.println("我要通过时间去查询是否存在ungrib");
 		tUngrib2 = tUngribMapper.selectUngrib(pathdateDate);
 		//System.out.println(UngribId+"查询出来的id");
-		System.out.println("我要给fnl和gfs赋值了");
+		logger.info("我要给fnl和gfs赋值了");
 		//调用方法给每个gfs的状态赋值
 		tUngrib = ToDataUngribUtil.updateGFSstatus(tUngrib,status);
 		//如果存在则执行更新操作，不存在则执行添加操作
@@ -113,24 +114,16 @@ public class ToDataUngribUtil {
 			tUngrib.setUngribId(tUngrib2.getUngribId());
 			//备注表示修改时间
 			tUngrib.setUpdateTime(new Date());
-			System.out.println("我马上要进行跟新数据库了");
 			//添加到数据库
 			int i = tUngribMapper.updateByPrimaryKey(tUngrib);
-			
-			/*if (i>0) {
-				//监听器监听更新操作
-				
-			}*/
 			System.out.println("我跟新玩数据库了");
+			logger.info("跟新ungrib"+new Date());
 		}else {
 			//执行添加操作
 			tUngrib.setAddTime(new Date());
 			tUngrib.setPathDate(pathdateDate);
 			//添加到数据库
 			int i = tUngribMapper.insert(tUngrib);
-			/*if (i>0) {
-				//监听器监听添加操作
-			}*/
 		}
 		
 	}
