@@ -19,8 +19,6 @@ import org.springframework.stereotype.Component;
 
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.model.TTasksStatus;
-import ampc.com.gistone.redis.RedisTestService;
-import ampc.com.gistone.redis.TestRedisRunnble;
 
 
 /**  
@@ -41,9 +39,6 @@ public class SendQueueData {
 	//加载tasksstatus映射
 	@Autowired
 	private TTasksStatusMapper tTasksStatusMapper;
-	//加载线程
-	@Autowired 
-	private TestRedisRunnble testRedisRunnble;
 	
 	
 	public void sendData(String json,TTasksStatus tasksStatus) {
