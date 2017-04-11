@@ -766,7 +766,19 @@ function selectQJtype(type) {
 
   __dsp['jcqj' + selectRW.missionId].then(function (res) {
     basisArr = res.data;
-    if (basisArr)
+    if((type == 'hj')&&!basisArr){
+      $('.hpgQJType').css('display', 'none');
+      $('.hpgQJCon').css('display', 'block');
+      $('.createQjBtn').css('display', 'inline-block');
+      $('.return_S_qj').css('display', 'inline-block');
+      $('.diffNo').css('display', 'none');
+      $('.spinup').css('display', 'block');
+      $('#hEndDate').attr('disabled', true);
+      qjType = 3;
+      $('#hStartDate').empty().append($('<option value="' + moment(selectRW.missionStartDate).format('YYYY-MM-DD') + '">' + moment(selectRW.missionStartDate).format('YYYY-MM-DD') + '</option>'));
+      $('#hEndDate').empty().append($('<option value="' + moment(selectRW.missionEndDate).format('YYYY-MM-DD') + '">' + moment(selectRW.missionEndDate).format('YYYY-MM-DD') + '</option>'));
+    }
+    if (basisArr){
 
     //reverse  倒序
       switch (type) {
@@ -780,18 +792,18 @@ function selectQJtype(type) {
           params.scenType = qjType;
 
           setOption('#jcqj', basisArr);
-          var dateArr = setSelectDate(basisArr[0].scenarinoStartDate, basisArr[0].scenarinoEndDate, !(basisArr[0].pathDate)?moment().add(-1,'d'):basisArr[0].pathDate);
+          var dateArr = setSelectDate(basisArr[0].scenarinoStartDate, basisArr[0].scenarinoEndDate, !(basisArr[0].pathDate) ? moment().add(-1, 'd') : basisArr[0].pathDate);
           $('#jcdate').empty();
           for (var i = 0; i < dateArr.length; i++) {
             $('#jcdate').append($('<option value="' + dateArr[i] + '">' + dateArr[i] + '</option>'))
           }
-          var startD = dateArr[0]?moment(moment(dateArr[0])).add(1, 'd').format('YYYY-MM-DD'):'';
+          var startD = dateArr[0] ? moment(moment(dateArr[0])).add(1, 'd').format('YYYY-MM-DD') : '';
           $('#yStartDate').empty().append($('<option value="' + startD + '">' + startD + '</option>'));
 
           ajaxPost(url, params).success(function (res) {
             selectEndDate = res.data.endTime;
             selectEndDate = moment(selectRW.missionEndDate).add(1, 'd').isBefore(selectEndDate) ? moment(selectRW.missionEndDate).format('YYYY-MM-DD') : selectEndDate;
-            if($('#yStartDate').val() == ''){
+            if ($('#yStartDate').val() == '') {
               $('#yEndDate').empty();
               return;
             }
@@ -884,21 +896,9 @@ function selectQJtype(type) {
           }
           break;
         case 'hj':
-          $('.hpgQJType').css('display', 'none');
-          $('.hpgQJCon').css('display', 'block');
-          $('.createQjBtn').css('display', 'inline-block');
-          $('.return_S_qj').css('display', 'inline-block');
-          $('.diffNo').css('display', 'none');
-          $('.spinup').css('display', 'block');
-          $('#hEndDate').attr('disabled', true);
-          qjType = 3;
-          $('#hStartDate').empty().append($('<option value="' + moment(selectRW.missionStartDate).format('YYYY-MM-DD') + '">' + moment(selectRW.missionStartDate).format('YYYY-MM-DD') + '</option>'));
-          $('#hEndDate').empty().append($('<option value="' + moment(selectRW.missionEndDate).format('YYYY-MM-DD') + '">' + moment(selectRW.missionEndDate).format('YYYY-MM-DD') + '</option>'));
-
-
           break;
       }
-
+  }
   }, function () {
     console.log('基础情景获取失败！！！！！');
     if (type == 'hj') {
