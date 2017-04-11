@@ -1421,7 +1421,7 @@ public class MissionAndScenarinoController {
 			JSONObject objsed=new JSONObject();
 			if(!tScenarinoDetaillist.isEmpty()){
 			for(TScenarinoDetail Scenarino:tScenarinoDetaillist){
-				if(Scenarino.getScenarinoStatus()>=5){
+				if(Scenarino.getScenarinoStatus()>=5 && !Scenarino.getScenType().equals("4")){
 				JSONObject obj=new JSONObject();
 				obj.put("scenarinoId", Scenarino.getScenarinoId());
 				obj.put("scenarinoName", Scenarino.getScenarinoName());
