@@ -103,12 +103,31 @@
         	AND MISSION_NAME = #{missionName,jdbcType=OTHER}
       </if>
   </select>
+  
   <!--通过情景ID查询清单ID -->
   <select id="getsourceid" resultType="java.lang.Long" parameterType="java.lang.Long">
   select ES_COUPLING_ID from T_MISSION_DETAIL 
   where MISSION_ID = #{missionId,jdbcType=DECIMAL}
   </select>
-  <!--通过用户ID查找实时预报的任务ID  -->
+  <!-- 修改任务的结束时间 -->
+  <update id="updateOldMissionDetail" parameterType="ampc.com.gistone.database.model.TMissionDetail">
+  update T_MISSION_DETAIL 
+  <set>
+      <if test="missionEndDate != null" >
+        MISSION_END_DATE = #{missionEndDate,jdbcType=TIMESTAMP},
+      </if>
+        UPDATE_TIME = (select sysdate from dual),
+    </set>
+    where MISSION_ID = #{missionId,jdbcType=DECIMAL}
+  </update>
+  <!--根据新插入的类查询任务ID  -->
+  <select id="getmissionidbyMission" parameterType="ampc.com.gistone.database.model.TMissionDetail" resultType="java.lang.Long">
+  select MISSION_ID from T_MISSION_DETAIL
+   where USER_ID = #{userId,jdbcType=DECIMAL} and MISSION_STATUS='1'
+   and MISSION_START_DATE = #{missionStartDate,jdbcType=TIMESTAMP}
+   and MISSION_DOMAIN_ID = #{missionDomainId,jdbcType=DECIMAL}
+  </select>
+  <!--通过用户ID查找实时预报的任务ID (能确定只有一个ID) -->
  <select id="getmissionid">
   select MISSION_ID from T_MISSION_DETAIL where USER_ID = #{userId,jdbcType=DECIMAL} and MISSION_STATUS='1'
   </select> 
