@@ -2,7 +2,6 @@ package ampc.com.gistone.controller;
 
 
 import java.io.UnsupportedEncodingException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,16 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ampc.com.gistone.database.inter.TRealForecastMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
-import ampc.com.gistone.database.model.TRealForecast;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.redisqueue.ReadyData;
 import ampc.com.gistone.redisqueue.RedisUtilServer;
 import ampc.com.gistone.redisqueue.timer.SchedulerTimer;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
-import ampc.com.gistone.util.DateUtil;
 
 /**  
  * @Title: GetQueue.java
