@@ -52,7 +52,7 @@ public class SchedulerTimer {
 	//情景详情映射
 	@Autowired
 	private  TScenarinoDetailMapper tScenarinoDetailMapper;
-	//tasks映射
+	//tasksstatus映射
 	@Autowired
 	private TTasksStatusMapper tTasksStatusMapper;
 	
@@ -60,7 +60,7 @@ public class SchedulerTimer {
 	@Autowired
 	private TGlobalSettingMapper tGlobalSettingMapper;
 	
-	protected Logger logger = Logger.getLogger(this.getClass());
+	private Logger logger = Logger.getLogger(this.getClass());
 
 	
 	public SchedulerTimer() {
@@ -81,13 +81,17 @@ public class SchedulerTimer {
 	public void realForTimer() {
 		//Date date = new Date();
 		System.out.println("我每天中午12点开始执行");
-		
+		logger.info("我每天中午12点开始执行");
+		Long scenarinoId = null;
+		Long cores = null;
+		int  i = 0;
+		int insertSelective = 0;
 		//查找实时时预报任务并修改任务为最新的时间状态
 		List<TGlobalSetting>  list = tGlobalSettingMapper.selectAll();
 		for (TGlobalSetting tGlobalSetting : list) {
 			Long userId = tGlobalSetting.getUserid();
 			Integer spinup = tGlobalSetting.getSpinup();
-			Integer cores = tGlobalSetting.getCores();
+			cores = Long.parseLong(tGlobalSetting.getCores().toString());
 			Integer rangeday = tGlobalSetting.getRangeday();
 			Long domainId = tGlobalSetting.getDomainId();
 			//创建任务对象
@@ -99,16 +103,23 @@ public class SchedulerTimer {
 			MissionDetail.setMissionName("实时预报任务");
 			MissionDetail.setIsEffective("1");
 			MissionDetail.setMissionStatus("1");
+			
 			/*Map<String,Long> map = new HashMap<String, Long>();
 			map.put("userId", userId);
 			map.put("missionDomainId", domainId);*/
 			//第一次需要创建任务 后面的则是修改
 			List<TMissionDetail> missionlist = tMissionDetailMapper.selectMissionDetail(userId);
-			Long missionId ;
+			Long missionId = null ;
 			
 			if (missionlist.isEmpty()) {
 				//没有则创建实时预报任务 没有时间段
-				int insertSelective = tMissionDetailMapper.insertSelective(MissionDetail);
+				//设置任务开始时间
+				Date missionStartDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+				//设置开始时间
+				MissionDetail.setMissionStartDate(missionStartDate);
+				//添加一个新的任务
+				int insert = tMissionDetailMapper.insertSelective(MissionDetail);
+				//得到相应的任务ID
 				missionId = tMissionDetailMapper.getmissionid(userId);
 			}else {
 				//如果不为空 表示至少有一个实时预报任务
@@ -116,24 +127,83 @@ public class SchedulerTimer {
 					Long missionDomainId = tMissionDetail.getMissionDomainId();
 					if (domainId!=missionDomainId) {
 						//用户更改了domainid 需要新建一个新的实时预报任务
-						int insertSelective = tMissionDetailMapper.insertSelective(MissionDetail);
+						Date missionDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+						//添加旧任务的结束时间
+						TMissionDetail updateOlDetail = new TMissionDetail();
+						updateOlDetail.setMissionEndDate(missionDate);
+						updateOlDetail.setMissionId(tMissionDetail.getMissionId());
+						//修改旧任务
+						int update = tMissionDetailMapper.updateOldMissionDetail(updateOlDetail);
+						//设置开始时间
+						MissionDetail.setMissionStartDate(missionDate);
+						//添加新任务
+						int insertSelec = tMissionDetailMapper.insertSelective(MissionDetail);
+						//获取新任务的任务ID
+						missionId = tMissionDetailMapper.getmissionidbyMission(MissionDetail);
 					}else {
-						//没有跟换domainid的情况下 修改任务
+						//没有跟换domainid的情况下 修改任务或者覆盖一次
+						//设置任务的修改时间
+						Date updateDate = new Date();
+						MissionDetail.setUpdateTime(updateDate);
 						int update = tMissionDetailMapper.updateByPrimaryKeySelective(MissionDetail);
+						//得到相应的任务ID
+						missionId = tMissionDetail.getMissionId();
 					}
 				}
-				
 			}
 			
 			//创建实时预报情景
 			TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
 			tScenarinoDetail.setScenarinoAddTime(new Date());
-			tScenarinoDetail.setScenarinoName("实时预报情景");
+			tScenarinoDetail.setScenarinoName("实时预报情景"+DateUtil.DATEtoString(new Date(), "yyyyMMdd"));
+			//系统的头一天为情景开始时间
+			Date scenarinoStartDate = DateUtil.DateToDate(DateUtil.ChangeDay(new Date(), -1), "yyyyMMdd"); 
+			tScenarinoDetail.setScenarinoStartDate(scenarinoStartDate);
+			//系统加上rangeday-2为情景结束时间
+			int rang = rangeday-2;
+			Date scenarinoEndDate = DateUtil.DateToDate( DateUtil.ChangeDay(new Date(), rang),"yyyyMMdd");
+			tScenarinoDetail.setScenarinoEndDate(scenarinoEndDate);
+			//设置pathdate
+			Date pathDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+			tScenarinoDetail.setPathDate(pathDate);
+			tScenarinoDetail.setScenarinoType((long)4);
+			//设置状态 5 表示可执行
+			tScenarinoDetail.setScenarinoStatus((long)5);
+			tScenarinoDetail.setMissionId(missionId);
+			tScenarinoDetail.setUserId(userId);
+			tScenarinoDetail.setIsEffective("1");
+			//基础日期
+			Date basisTime = DateUtil.ChangeDay(pathDate, -1);
+			tScenarinoDetail.setBasisTime(basisTime);
+			//查询上一天的实时预报情景ID 作为当天的实时预报基础情景
+			Long basisScenarinoId = tScenarinoDetailMapper.selectBasisId(basisTime);
+			tScenarinoDetail.setBasisScenarinoId(basisScenarinoId);
+			tScenarinoDetail.setScenType("4");
+			tScenarinoDetail.setSpinup((long)spinup);
+			tScenarinoDetail.setRangeDay((long)rangeday);
+			tScenarinoDetail.setExpand3(cores.toString());
+			//创建新的情景
+			insertSelective = tScenarinoDetailMapper.insertSelective(tScenarinoDetail);
+			if (insertSelective>0) {
+				System.out.println("创建了新的实时预报");
+				logger.info("创建了新的实时预报");
+			}
+			//得到刚新建的情景ID
+			scenarinoId = tScenarinoDetailMapper.selectforecastid(tScenarinoDetail);
+			//创建情景对应的tasksstatus
+			TTasksStatus tTasksStatus = new TTasksStatus();
+			tTasksStatus.setTasksScenarinoId(scenarinoId);
+			tTasksStatus.setScenarinoStartDate(scenarinoStartDate);
+			tTasksStatus.setScenarinoEndDate(scenarinoEndDate);
+			tTasksStatus.setRangeDay((long)rangeday);
+			//添加该情景到tasksstatus表
+			i = tTasksStatusMapper.insertSelective(tTasksStatus);
 			
 		}
-		//根据情景调动实时预报接口开始实时预报
-		
-		
+		if (i>0) {
+			//根据情景调动实时预报接口开始实时预报
+			readyData.readyRealMessageDataFirst(scenarinoId,cores);
+		}
 		
 		
 	}
