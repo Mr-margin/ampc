@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,7 +36,9 @@ import ampc.com.gistone.database.model.TEmissionDetail;
 import ampc.com.gistone.database.model.TEsNative;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.util.AmpcResult;
+import ampc.com.gistone.util.BaseSaveUtil;
 import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.JSONreadUtil;
 import ampc.com.gistone.util.RequestRegionData;
 import ampc.com.gistone.util.codeTransformUtil;
 
@@ -50,7 +54,8 @@ public class EMissionController {
 	
 	@Autowired
 	private RequestRegionData rrd=new RequestRegionData();
-	
+	@Autowired
+	private BaseSaveUtil baseSaveUtil;
 	
 	@Autowired
 	private TEsNativeMapper tEsNativeMapper;
@@ -185,13 +190,11 @@ public class EMissionController {
 	
 	
 	
-	@RequestMapping("save_baseemission")
-	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
-	public AmpcResult save_baseemission(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+	
+	public AmpcResult save_baseemission(Map mapses){
 	try{
-		ClientUtil.SetCharsetAndHeader(request, response);
-		Map<String, Map> data = (Map) requestDate.get("data");
-		String status=requestDate.get("status").toString();
+		TEsNative tEsNative = new TEsNative();
+		tEsNative.setEsCodeRange("-1,-2");
 		int a=0;
 		int b=0;
 		//编写正则表达式
@@ -205,18 +208,20 @@ public class EMissionController {
 		SimpleDateFormat hms = new SimpleDateFormat("yyyy-MM-dd");
 		String newdat=hms.format(date);
 		Date thedate=hms.parse(newdat);
-		//判断参数是否正常，正常继续执行程序，不正常返回error
-		if(status.equals("success")){
 		//循环data的value
-		for(Map<String,Object> datas:data.values()){
-		String emdate=datas.get("date").toString();//获取date值
+		for(Object datess: mapses.keySet()){
+			String sdes=datess.toString();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");	
-		Date emissiondate=sdf.parse(emdate);
-		Map emission=(Map) datas.get("emission");//获取emission的值	
+		Date emissiondate=sdf.parse(sdes);
+		Map emission=(Map) mapses.get(datess);//获取emission的值	
 		JSONObject jasonObject = JSONObject.fromObject(emission);
 		Map<String,Object> map= (Map)jasonObject;//将emission的值	转化为Map集合
+		
+		Map<String, Object> newmap = codeTransformUtil
+				.codeTransformEmission(map, tEsNative);
+		
 		List<String> codelist=new ArrayList<String>();
-		for(String code:map.keySet()){//根据key进行遍历
+		for(String code:newmap.keySet()){//根据key进行遍历
 			if(!codelist.contains(code)){
 			TEmissionDetail temission=new TEmissionDetail();
 			temission.setEmissionDate(emissiondate);
@@ -247,9 +252,7 @@ public class EMissionController {
 			return AmpcResult.build(0, "success","123");
 		}
 		return AmpcResult.build(1000, "error","345");
-		}else{
-			return AmpcResult.build(1000, "参数有误","567");	
-		}
+		
 	}catch(Exception e){
 			e.printStackTrace();
 			return AmpcResult.build(1000, "error");	
@@ -541,6 +544,7 @@ public class EMissionController {
 		return AmpcResult.build(0, "success");
 	}
 	
+	
 	@RequestMapping("/codenew")
 	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
 	public AmpcResult codenew(){
@@ -552,5 +556,16 @@ public class EMissionController {
 		List<Long> newlist=codeTransformUtil.codeTransform(list, tEsNative);
 		return AmpcResult.build(0, "success",newlist);
 	}
-	
+	@RequestMapping("/base")
+	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
+	public String base() throws IOException{
+		Object mapses=TestController.sssss();
+//		Map<String,Object> heightmap=(Map)mapses;
+//		String obj=heightmap.get("data").toString();
+//		JSONObject objs=JSONObject.fromObject(obj);
+//		Map<Object,Object> sss=(Map)objs;
+//		String s=baseSaveUtil.save_baseemission(sss);
+//		return s;
+		return "";
+	}
 }
