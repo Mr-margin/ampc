@@ -304,7 +304,7 @@ public class PlanAndMeasureController {
 					if(scenarinoStatus==1){
 						int a=scenarinoStatusUtil.updateScenarinoStatus(scenarioId);
 						if(a!=0){ 
-							return AmpcResult.ok("复用成功");
+							return AmpcResult.ok(newPlanId);
 						}else{
 							return AmpcResult.build(1000, "情景状态转换失败",null);
 						}
