@@ -9,10 +9,8 @@
 package ampc.com.gistone.redisqueue;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -35,11 +33,8 @@ import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.inter.TUngribMapper;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
-import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.database.model.TUngrib;
 import ampc.com.gistone.redisqueue.timer.SchedulerTimer;
-import ampc.com.gistone.util.AmpcResult;
-import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.DateUtil;
 
 /**  
