@@ -848,7 +848,13 @@ public class MissionAndScenarinoController {
 			List<TScenarinoDetail> scenarlist=tScenarinoDetailMapper.selectAllByMissionId(missionId);
 			//查询基准情景最大结束时间
 			TScenarinoDetail tsdate=tScenarinoDetailMapper.selectMaxEndTime();
-			Date scenar=tsdate.getScenarinoEndDate();
+			Date scenar=null;
+			if(tsdate!=null){
+			scenar=tsdate.getScenarinoEndDate();
+			}else{
+			System.out.println("无基准情景");	
+			return AmpcResult.build(1000, "无基准情景",null);
+			}
 			//转换类型
 			Date mission=tMission.getMissionStartDate();
 			
