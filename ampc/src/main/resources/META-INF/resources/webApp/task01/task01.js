@@ -479,6 +479,16 @@ function qjOrder(v, row, i) {
     '<button class="btn btn-success" ' + ee + '>暂停</button>'
 }
 
+function checkedDis(v, row, i){
+  if(row.SCEN_TYPE == '3'){
+    return{
+      disabled: true
+    }
+  }else{
+    return v
+  }
+}
+
 //function qjEffectEvaluation(v, row, i) {
 //  return '<button class="btn btn-success mb10 mr10">效果评估</button>'
 //}
@@ -1119,6 +1129,23 @@ function createQJselect() {
     $('#createYpQjModal').modal('show');
     returnLeft('yqj');
   } else if (selectRW.missionStatus == "3") {
+    __dsp['jcqj' + selectRW.missionId].success(function(res){
+      if(res.status == 0){
+        if(res.data.length == 0){
+          $('.cjhpgqj').eq(0).attr('disabled',true);
+          $('.cjxjzqj').eq(0).removeAttr('disabled');
+        }else if(res.data[0].ScenType == '3'){
+          $('.cjxjzqj').eq(0).attr('disabled',true);
+          $('.cjhpgqj').eq(0).removeAttr('disabled');
+        }else{
+          $('.cjhpgqj').eq(0).removeAttr('disabled');
+          $('.cjxjzqj').eq(0).removeAttr('disabled');
+        }
+      }else{
+        $('.cjhpgqj').eq(0).attr('disabled',true);
+        $('.cjxjzqj').eq(0).removeAttr('disabled');
+      }
+    })
     $('#createHpQjModal').modal('show');
     returnLeft('hqj');
   }
