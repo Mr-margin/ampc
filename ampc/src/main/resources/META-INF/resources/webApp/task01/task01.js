@@ -909,6 +909,16 @@ function selectQJtype(type) {
           }
           break;
         case 'hj':
+          $('.hpgQJType').css('display', 'none');
+          $('.hpgQJCon').css('display', 'block');
+          $('.createQjBtn').css('display', 'inline-block');
+          $('.return_S_qj').css('display', 'inline-block');
+          $('.diffNo').css('display', 'none');
+          $('.spinup').css('display', 'block');
+          $('#hEndDate').attr('disabled', true);
+          qjType = 3;
+          $('#hStartDate').empty().append($('<option value="' + moment(selectRW.missionStartDate).format('YYYY-MM-DD') + '">' + moment(selectRW.missionStartDate).format('YYYY-MM-DD') + '</option>'));
+          $('#hEndDate').empty().append($('<option value="' + moment(selectRW.missionEndDate).format('YYYY-MM-DD') + '">' + moment(selectRW.missionEndDate).format('YYYY-MM-DD') + '</option>'));
           break;
       }
     } else {
