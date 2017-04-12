@@ -846,21 +846,61 @@ public class MissionAndScenarinoController {
 			TMissionDetail tMission=tMissionDetailMapper.selectByPrimaryKey(missionId);
 			//根据任务id查询所有情景
 			List<TScenarinoDetail> scenarlist=tScenarinoDetailMapper.selectAllByMissionId(missionId);
+			if(scenarlist.isEmpty()){
+				System.out.println("任务下无情景");	
+				return AmpcResult.build(1000, "任务下无情景",null);
+			}
+			
 			//查询基准情景最大结束时间
-			TScenarinoDetail tsdate=tScenarinoDetailMapper.selectMaxEndTime();
+			TScenarinoDetail tsdate=new TScenarinoDetail();
+			TScenarinoDetail frtscen=new TScenarinoDetail();
+			if(tMission.getMissionStatus().equals("3")){	
+				if(null!=tScenarinoDetailMapper.selectMaxEndTime()){
+					tsdate=tScenarinoDetailMapper.selectMaxEndTime();
+				}else{
+					System.out.println("无基准情景");	
+					return AmpcResult.build(1000, "无基准情景",null);
+					}
+			
+			}
+			if(tMission.getMissionStatus().equals("2")){
+				if(null!=tScenarinoDetailMapper.selectMaxEndTime4()){
+					frtscen=tScenarinoDetailMapper.selectMaxEndTime4();
+				}else{
+					System.out.println("无实时预报情景");	
+					return AmpcResult.build(1000, "无实时预报情景",null);
+					}
+					
+			}else if(tMission.getMissionStatus().equals("3")&&null!=tScenarinoDetailMapper.selectMaxEndTime4()){
+				if(null!=tScenarinoDetailMapper.selectMaxEndTime4()){
+					frtscen=tScenarinoDetailMapper.selectMaxEndTime4();
+				}else{
+					System.out.println("无实时预报情景");	
+					return AmpcResult.build(1000, "无实时预报情景",null);
+					}	
+			}
 			Date scenar=null;
-			if(tsdate!=null){
+			Date frtdate=null;
+			
+			if(null!=tScenarinoDetailMapper.selectMaxEndTime()){
 			scenar=tsdate.getScenarinoEndDate();
-			}else{
-			System.out.println("无基准情景");	
-			return AmpcResult.build(1000, "无基准情景",null);
+			}
+			if(null!=tScenarinoDetailMapper.selectMaxEndTime4()){
+			frtdate=frtscen.getScenarinoEndDate();
 			}
 			//转换类型
 			Date mission=tMission.getMissionStartDate();
 			
 			SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String times=formatter.format(scenar);
+			String times="";
+			String frdate="";
+			if(null!=tScenarinoDetailMapper.selectMaxEndTime()){
+			times=formatter.format(scenar);
+			}
 			String missiondate=formatter.format(mission);
+			if(null!=tScenarinoDetailMapper.selectMaxEndTime4()){
+			frdate=formatter.format(frtdate);
+			}
 			JSONArray arr=new JSONArray();
 			for(TScenarinoDetail tscenar:scenarlist){
 				JSONObject obj=new JSONObject();
@@ -888,13 +928,36 @@ public class MissionAndScenarinoController {
 					arr.add(obj);
 				}	
 			}
+			if(tMission.getMissionStatus().equals("3")){
+				JSONObject lastobj=new JSONObject();
+				lastobj.put("scenarinoId",tsdate.getScenarinoId());
+				lastobj.put("scenarinoName", tsdate.getScenarinoName());
+				lastobj.put("scenarinoStartDate", missiondate);
+				lastobj.put("scenarinoEndDate", times);
+				arr.add(lastobj);	
+			}else if(tMission.getMissionStatus().equals("3")&&null!=tScenarinoDetailMapper.selectMaxEndTime4()){
+				JSONObject lastobj=new JSONObject();
+				lastobj.put("scenarinoId",tsdate.getScenarinoId());
+				lastobj.put("scenarinoName", tsdate.getScenarinoName());
+				lastobj.put("scenarinoStartDate", missiondate);
+				lastobj.put("scenarinoEndDate", times);
+				arr.add(lastobj);	
+				JSONObject forobj=new JSONObject();
+				forobj.put("scenarinoId",frtscen.getScenarinoId());
+				forobj.put("scenarinoName", frtscen.getScenarinoName());
+				forobj.put("scenarinoStartDate", missiondate);
+				forobj.put("scenarinoEndDate", frdate);
+				arr.add(forobj);	
+			}else{
+				JSONObject forobj=new JSONObject();
+				forobj.put("scenarinoId",frtscen.getScenarinoId());
+				forobj.put("scenarinoName", frtscen.getScenarinoName());
+				forobj.put("scenarinoStartDate", missiondate);
+				forobj.put("scenarinoEndDate", frdate);
+				arr.add(forobj);		
+			}
 			//为基准情景保存数据
-			JSONObject lastobj=new JSONObject();
-			lastobj.put("scenarinoId",tsdate.getScenarinoId());
-			lastobj.put("scenarinoName", tsdate.getScenarinoName());
-			lastobj.put("scenarinoStartDate", missiondate);
-			lastobj.put("scenarinoEndDate", times);
-			arr.add(lastobj);
+			
 			return AmpcResult.build(0, "find_scenarino_time success",arr);
 		}catch(Exception e){
 			e.printStackTrace();
