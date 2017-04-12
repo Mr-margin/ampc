@@ -27,11 +27,11 @@ import com.sun.xml.internal.xsom.impl.scd.Iterators.Map;
 import ampc.com.gistone.database.model.TMeasureExcel;
 import ampc.com.gistone.extract.ExtractDataService;
 import ampc.com.gistone.util.JsonUtil;
+import ampc.com.gistone.util.LogUtil;
 @RestController
 @RequestMapping
 public class TestController {
-	//定义日志类
-	private final static Logger logger = LoggerFactory.getLogger(ExtractDataService.class);
+	
 	
 	@RequestMapping("log/log4jTest")
 	public static void log4jTest(){
@@ -40,9 +40,9 @@ public class TestController {
 		 */
 		try{
 			//执行成功是用该方法记录
-			logger.info("执行成功");
+			LogUtil.getLogger().info("执行成功");
 		}catch(Exception e){
-			logger.error("异常了",e);
+			LogUtil.getLogger().error("异常了",e);
 		}
 		/**
 		 * 警告的实例
@@ -50,11 +50,11 @@ public class TestController {
 		 */
 		try{
 			int i=1,j=2;
-			if((i+j)==2)logger.info("执行成功");
+			if((i+j)==2)LogUtil.getLogger().info("执行成功");
 			throw new Exception("计算错误");
 		}catch(Exception e){
 			//出现警告进行记录   在不影响程序的继续进行时使用该方法记录
-			logger.warn("警告",e);
+			LogUtil.getLogger().warn("警告",e);
 		}
 		/**
 		 * 异常的实例
@@ -63,10 +63,10 @@ public class TestController {
 		try{
 			String[] a=null;
 			System.out.println(a[1]);
-			logger.info("执行成功");
+			LogUtil.getLogger().info("执行成功");
 		}catch(Exception e){
 			//出现异常进行记录  在影响了结果的显示时使用该方法记录
-			logger.error("异常了",e);
+			LogUtil.getLogger().error("异常了",e);
 		}
 	}
 	
