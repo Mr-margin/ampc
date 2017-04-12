@@ -42,7 +42,7 @@ public class ConcnController {
 		RequestParams requestParams = new RequestParams(userId, domainId, missionId, scenarioId, domain, date, timePoint, mode, filter);
 		try {
 			JSONObject res = (JSONObject) concnService.requestConcnData(requestParams);
-			return AmpcResult.ok(res);
+			return AmpcResult.ok("success");
 		} catch (Exception e) {
 			logger.error("requestConcnData error", e);
 			return AmpcResult.build(1000, "参数错误");

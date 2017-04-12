@@ -104,7 +104,7 @@ public class ConcnService {
 			checkAndAddFnlData(scenarinoEntity, params);
 		}
 		
-		logger.info(jsonObject.toString());
+//		logger.info(jsonObject.toString());
 		return jsonObject;
 	}
 
