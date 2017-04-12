@@ -92,12 +92,12 @@ var optionAll = {
 
 
 var ls = window.sessionStorage;
-var qjMsg = vipspa.getMessage('yaMessage').content;
-if(!qjMsg){
-	qjMsg = JSON.parse(ls.getItem('yaMsg'));
-}else{
-	ls.setItem('yaMsg',JSON.stringify(qjMsg));
-}
+//var qjMsg = vipspa.getMessage('yaMessage').content;
+//if(!qjMsg){
+//	qjMsg = JSON.parse(ls.getItem('yaMsg'));
+//}else{
+//	ls.setItem('yaMsg',JSON.stringify(qjMsg));
+//}
 
 var sceneInitialization = vipspa.getMessage('sceneInitialization').content;//从路由中取到情景范围
 if(!sceneInitialization){
