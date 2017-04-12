@@ -255,7 +255,7 @@
 			 WHERE MISSION_ID=#{missionId,jdbcType=DECIMAL} AND IS_EFFECTIVE='1'
 		ORDER BY SCENARINO_END_DATE DESC
   </select>
-  <select id="selectMaxEndTime" resultMap="BaseResultMap" >
+  <select id="selectMaxEndTime" resultMap="BaseResultMap" parameterType="java.lang.Long">
   SELECT
 	*
 FROM
@@ -266,8 +266,8 @@ FROM
 	T_SCENARINO_DETAIL
 WHERE
 	SCEN_TYPE = '3'
-AND IS_EFFECTIVE = '1')
-AND IS_EFFECTIVE = '1'
+AND IS_EFFECTIVE = '1' AND MISSION_ID=#{missionId,jdbcType=DECIMAL})
+AND S.IS_EFFECTIVE = '1' AND S.MISSION_ID=#{missionId,jdbcType=DECIMAL} AND SCEN_TYPE = '3'
   </select>
   
   <select id="selectMaxEndTime4" resultMap="BaseResultMap" >
