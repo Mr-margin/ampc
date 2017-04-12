@@ -1,43 +1,226 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="ampc.com.gistone.database.inter.TGlobalSettingMapper" >
-  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TGlobalSetting" >
-    <id column="GLOBAL_SETTING_ID" property="globalSettingId" jdbcType="DECIMAL" />
-    <result column="USERID" property="userid" jdbcType="DECIMAL" />
-    <result column="RANGEDAY" property="rangeday" jdbcType="DECIMAL" />
-    <result column="SPINUP" property="spinup" jdbcType="DECIMAL" />
-    <result column="CORES" property="cores" jdbcType="DECIMAL" />
-    <result column="DOMAIN_ID" property="domainId" jdbcType="DECIMAL" />
-    <result column="ES_COUPLING_ID" property="esCouplingId" jdbcType="DECIMAL" />
-    <result column="ADD_DATE" property="addDate" jdbcType="TIMESTAMP" />
-    <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" />
-    <result column="BEIZHU1" property="beizhu1" jdbcType="VARCHAR" />
-    <result column="BEIZHU2" property="beizhu2" jdbcType="DECIMAL" />
-    <result column="BEIZHU3" property="beizhu3" jdbcType="TIMESTAMP" />
-    <result column="BEIZHU4" property="beizhu4" jdbcType="VARCHAR" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ampc.com.gistone.database.inter.TGlobalSettingMapper">
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TGlobalSetting">
+    <id column="GLOBAL_SETTING_ID" jdbcType="DECIMAL" property="globalSettingId" />
+    <result column="USER_ID" jdbcType="DECIMAL" property="userId" />
+    <result column="RANGEDAY" jdbcType="DECIMAL" property="rangeday" />
+    <result column="SPINUP" jdbcType="DECIMAL" property="spinup" />
+    <result column="CORES" jdbcType="DECIMAL" property="cores" />
+    <result column="DOMAIN_ID" jdbcType="DECIMAL" property="domainId" />
+    <result column="ES_COUPLING_ID" jdbcType="DECIMAL" property="esCouplingId" />
+    <result column="ADD_DATE" jdbcType="TIMESTAMP" property="addDate" />
+    <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="BEIZHU1" jdbcType="VARCHAR" property="beizhu1" />
+    <result column="BEIZHU2" jdbcType="DECIMAL" property="beizhu2" />
+    <result column="BEIZHU3" jdbcType="TIMESTAMP" property="beizhu3" />
+    <result column="BEIZHU4" jdbcType="VARCHAR" property="beizhu4" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    GLOBAL_SETTING_ID, USERID, RANGEDAY, SPINUP, CORES, DOMAIN_ID, ES_COUPLING_ID, ADD_DATE, 
+  <sql id="Base_Column_List">
+    GLOBAL_SETTING_ID, USER_ID, RANGEDAY, SPINUP, CORES, DOMAIN_ID, ES_COUPLING_ID, ADD_DATE, 
     UPDATE_DATE, BEIZHU1, BEIZHU2, BEIZHU3, BEIZHU4
   </sql>
-  
-  <!-- 查找所有用户的全局设置 -->
-  <select id="selectAll" resultMap="BaseResultMap">
+  <!--查找全部用户的全局设置  -->
+  <select id="selectAll" resultType="ampc.com.gistone.database.model.TGlobalSetting">
   select 
   <include refid="Base_Column_List" />
-   from T_GLOBAL_SETTING 
+  from T_GLOBAL_SETTING
   </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from T_GLOBAL_SETTING
     where GLOBAL_SETTING_ID = #{globalSettingId,jdbcType=DECIMAL}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from T_GLOBAL_SETTING
     where GLOBAL_SETTING_ID = #{globalSettingId,jdbcType=DECIMAL}
   </delete>
-  <insert id="insert" parameterType="ampc.com.gistone.database.model.TGlobalSetting" >
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TGlobalSetting">
+    insert into T_GLOBAL_SETTING (GLOBAL_SETTING_ID, USER_ID, RANGEDAY, 
+      SPINUP, CORES, DOMAIN_ID, 
+      ES_COUPLING_ID, ADD_DATE, UPDATE_DATE, 
+      BEIZHU1, BEIZHU2, BEIZHU3, 
+      BEIZHU4)
+    values (#{globalSettingId,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{rangeday,jdbcType=DECIMAL}, 
+      #{spinup,jdbcType=DECIMAL}, #{cores,jdbcType=DECIMAL}, #{domainId,jdbcType=DECIMAL}, 
+      #{esCouplingId,jdbcType=DECIMAL}, #{addDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{beizhu1,jdbcType=VARCHAR}, #{beizhu2,jdbcType=DECIMAL}, #{beizhu3,jdbcType=TIMESTAMP}, 
+      #{beizhu4,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TGlobalSetting">
+    insert into T_GLOBAL_SETTING
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="globalSettingId != null">
+        GLOBAL_SETTING_ID,
+      </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="rangeday != null">
+        RANGEDAY,
+      </if>
+      <if test="spinup != null">
+        SPINUP,
+      </if>
+      <if test="cores != null">
+        CORES,
+      </if>
+      <if test="domainId != null">
+        DOMAIN_ID,
+      </if>
+      <if test="esCouplingId != null">
+        ES_COUPLING_ID,
+      </if>
+      <if test="addDate != null">
+        ADD_DATE,
+      </if>
+      <if test="updateDate != null">
+        UPDATE_DATE,
+      </if>
+      <if test="beizhu1 != null">
+        BEIZHU1,
+      </if>
+      <if test="beizhu2 != null">
+        BEIZHU2,
+      </if>
+      <if test="beizhu3 != null">
+        BEIZHU3,
+      </if>
+      <if test="beizhu4 != null">
+        BEIZHU4,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="globalSettingId != null">
+        #{globalSettingId,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="rangeday != null">
+        #{rangeday,jdbcType=DECIMAL},
+      </if>
+      <if test="spinup != null">
+        #{spinup,jdbcType=DECIMAL},
+      </if>
+      <if test="cores != null">
+        #{cores,jdbcType=DECIMAL},
+      </if>
+      <if test="domainId != null">
+        #{domainId,jdbcType=DECIMAL},
+      </if>
+      <if test="esCouplingId != null">
+        #{esCouplingId,jdbcType=DECIMAL},
+      </if>
+      <if test="addDate != null">
+        #{addDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="beizhu1 != null">
+        #{beizhu1,jdbcType=VARCHAR},
+      </if>
+      <if test="beizhu2 != null">
+        #{beizhu2,jdbcType=DECIMAL},
+      </if>
+      <if test="beizhu3 != null">
+        #{beizhu3,jdbcType=TIMESTAMP},
+      </if>
+      <if test="beizhu4 != null">
+        #{beizhu4,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TGlobalSetting">
+    update T_GLOBAL_SETTING
+    <set>
+      <if test="userId != null">
+        USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="rangeday != null">
+        RANGEDAY = #{rangeday,jdbcType=DECIMAL},
+      </if>
+      <if test="spinup != null">
+        SPINUP = #{spinup,jdbcType=DECIMAL},
+      </if>
+      <if test="cores != null">
+        CORES = #{cores,jdbcType=DECIMAL},
+      </if>
+      <if test="domainId != null">
+        DOMAIN_ID = #{domainId,jdbcType=DECIMAL},
+      </if>
+      <if test="esCouplingId != null">
+        ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL},
+      </if>
+      <if test="addDate != null">
+        ADD_DATE = #{addDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="beizhu1 != null">
+        BEIZHU1 = #{beizhu1,jdbcType=VARCHAR},
+      </if>
+      <if test="beizhu2 != null">
+        BEIZHU2 = #{beizhu2,jdbcType=DECIMAL},
+      </if>
+      <if test="beizhu3 != null">
+        BEIZHU3 = #{beizhu3,jdbcType=TIMESTAMP},
+      </if>
+      <if test="beizhu4 != null">
+        BEIZHU4 = #{beizhu4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where GLOBAL_SETTING_ID = #{globalSettingId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TGlobalSetting">
+    update T_GLOBAL_SETTING
+    set USER_ID = #{userId,jdbcType=DECIMAL},
+      RANGEDAY = #{rangeday,jdbcType=DECIMAL},
+      SPINUP = #{spinup,jdbcType=DECIMAL},
+      CORES = #{cores,jdbcType=DECIMAL},
+      DOMAIN_ID = #{domainId,jdbcType=DECIMAL},
+      ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL},
+      ADD_DATE = #{addDate,jdbcType=TIMESTAMP},
+      UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
+      BEIZHU1 = #{beizhu1,jdbcType=VARCHAR},
+      BEIZHU2 = #{beizhu2,jdbcType=DECIMAL},
+      BEIZHU3 = #{beizhu3,jdbcType=TIMESTAMP},
+      BEIZHU4 = #{beizhu4,jdbcType=VARCHAR}
+    where GLOBAL_SETTING_ID = #{globalSettingId,jdbcType=DECIMAL}
+  </update>
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TGlobalSetting">
+    <id column="GLOBAL_SETTING_ID" jdbcType="DECIMAL" property="globalSettingId" />
+    <result column="USERID" jdbcType="DECIMAL" property="userid" />
+    <result column="RANGEDAY" jdbcType="DECIMAL" property="rangeday" />
+    <result column="SPINUP" jdbcType="DECIMAL" property="spinup" />
+    <result column="CORES" jdbcType="DECIMAL" property="cores" />
+    <result column="DOMAIN_ID" jdbcType="DECIMAL" property="domainId" />
+    <result column="ES_COUPLING_ID" jdbcType="DECIMAL" property="esCouplingId" />
+    <result column="ADD_DATE" jdbcType="TIMESTAMP" property="addDate" />
+    <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="BEIZHU1" jdbcType="VARCHAR" property="beizhu1" />
+    <result column="BEIZHU2" jdbcType="DECIMAL" property="beizhu2" />
+    <result column="BEIZHU3" jdbcType="TIMESTAMP" property="beizhu3" />
+    <result column="BEIZHU4" jdbcType="VARCHAR" property="beizhu4" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    GLOBAL_SETTING_ID, USERID, RANGEDAY, SPINUP, CORES, DOMAIN_ID, ES_COUPLING_ID, ADD_DATE, 
+    UPDATE_DATE, BEIZHU1, BEIZHU2, BEIZHU3, BEIZHU4
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from T_GLOBAL_SETTING
+    where GLOBAL_SETTING_ID = #{globalSettingId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from T_GLOBAL_SETTING
+    where GLOBAL_SETTING_ID = #{globalSettingId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TGlobalSetting">
     insert into T_GLOBAL_SETTING (GLOBAL_SETTING_ID, USERID, RANGEDAY, 
       SPINUP, CORES, DOMAIN_ID, 
       ES_COUPLING_ID, ADD_DATE, UPDATE_DATE, 
@@ -49,134 +232,134 @@
       #{beizhu1,jdbcType=VARCHAR}, #{beizhu2,jdbcType=DECIMAL}, #{beizhu3,jdbcType=TIMESTAMP}, 
       #{beizhu4,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TGlobalSetting" >
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TGlobalSetting">
     insert into T_GLOBAL_SETTING
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="globalSettingId != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="globalSettingId != null">
         GLOBAL_SETTING_ID,
       </if>
-      <if test="userid != null" >
+      <if test="userid != null">
         USERID,
       </if>
-      <if test="rangeday != null" >
+      <if test="rangeday != null">
         RANGEDAY,
       </if>
-      <if test="spinup != null" >
+      <if test="spinup != null">
         SPINUP,
       </if>
-      <if test="cores != null" >
+      <if test="cores != null">
         CORES,
       </if>
-      <if test="domainId != null" >
+      <if test="domainId != null">
         DOMAIN_ID,
       </if>
-      <if test="esCouplingId != null" >
+      <if test="esCouplingId != null">
         ES_COUPLING_ID,
       </if>
-      <if test="addDate != null" >
+      <if test="addDate != null">
         ADD_DATE,
       </if>
-      <if test="updateDate != null" >
+      <if test="updateDate != null">
         UPDATE_DATE,
       </if>
-      <if test="beizhu1 != null" >
+      <if test="beizhu1 != null">
         BEIZHU1,
       </if>
-      <if test="beizhu2 != null" >
+      <if test="beizhu2 != null">
         BEIZHU2,
       </if>
-      <if test="beizhu3 != null" >
+      <if test="beizhu3 != null">
         BEIZHU3,
       </if>
-      <if test="beizhu4 != null" >
+      <if test="beizhu4 != null">
         BEIZHU4,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="globalSettingId != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="globalSettingId != null">
         #{globalSettingId,jdbcType=DECIMAL},
       </if>
-      <if test="userid != null" >
+      <if test="userid != null">
         #{userid,jdbcType=DECIMAL},
       </if>
-      <if test="rangeday != null" >
+      <if test="rangeday != null">
         #{rangeday,jdbcType=DECIMAL},
       </if>
-      <if test="spinup != null" >
+      <if test="spinup != null">
         #{spinup,jdbcType=DECIMAL},
       </if>
-      <if test="cores != null" >
+      <if test="cores != null">
         #{cores,jdbcType=DECIMAL},
       </if>
-      <if test="domainId != null" >
+      <if test="domainId != null">
         #{domainId,jdbcType=DECIMAL},
       </if>
-      <if test="esCouplingId != null" >
+      <if test="esCouplingId != null">
         #{esCouplingId,jdbcType=DECIMAL},
       </if>
-      <if test="addDate != null" >
+      <if test="addDate != null">
         #{addDate,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateDate != null" >
+      <if test="updateDate != null">
         #{updateDate,jdbcType=TIMESTAMP},
       </if>
-      <if test="beizhu1 != null" >
+      <if test="beizhu1 != null">
         #{beizhu1,jdbcType=VARCHAR},
       </if>
-      <if test="beizhu2 != null" >
+      <if test="beizhu2 != null">
         #{beizhu2,jdbcType=DECIMAL},
       </if>
-      <if test="beizhu3 != null" >
+      <if test="beizhu3 != null">
         #{beizhu3,jdbcType=TIMESTAMP},
       </if>
-      <if test="beizhu4 != null" >
+      <if test="beizhu4 != null">
         #{beizhu4,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TGlobalSetting" >
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TGlobalSetting">
     update T_GLOBAL_SETTING
-    <set >
-      <if test="userid != null" >
+    <set>
+      <if test="userid != null">
         USERID = #{userid,jdbcType=DECIMAL},
       </if>
-      <if test="rangeday != null" >
+      <if test="rangeday != null">
         RANGEDAY = #{rangeday,jdbcType=DECIMAL},
       </if>
-      <if test="spinup != null" >
+      <if test="spinup != null">
         SPINUP = #{spinup,jdbcType=DECIMAL},
       </if>
-      <if test="cores != null" >
+      <if test="cores != null">
         CORES = #{cores,jdbcType=DECIMAL},
       </if>
-      <if test="domainId != null" >
+      <if test="domainId != null">
         DOMAIN_ID = #{domainId,jdbcType=DECIMAL},
       </if>
-      <if test="esCouplingId != null" >
+      <if test="esCouplingId != null">
         ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL},
       </if>
-      <if test="addDate != null" >
+      <if test="addDate != null">
         ADD_DATE = #{addDate,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateDate != null" >
+      <if test="updateDate != null">
         UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP},
       </if>
-      <if test="beizhu1 != null" >
+      <if test="beizhu1 != null">
         BEIZHU1 = #{beizhu1,jdbcType=VARCHAR},
       </if>
-      <if test="beizhu2 != null" >
+      <if test="beizhu2 != null">
         BEIZHU2 = #{beizhu2,jdbcType=DECIMAL},
       </if>
-      <if test="beizhu3 != null" >
+      <if test="beizhu3 != null">
         BEIZHU3 = #{beizhu3,jdbcType=TIMESTAMP},
       </if>
-      <if test="beizhu4 != null" >
+      <if test="beizhu4 != null">
         BEIZHU4 = #{beizhu4,jdbcType=VARCHAR},
       </if>
     </set>
     where GLOBAL_SETTING_ID = #{globalSettingId,jdbcType=DECIMAL}
   </update>
-  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TGlobalSetting" >
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TGlobalSetting">
     update T_GLOBAL_SETTING
     set USERID = #{userid,jdbcType=DECIMAL},
       RANGEDAY = #{rangeday,jdbcType=DECIMAL},
