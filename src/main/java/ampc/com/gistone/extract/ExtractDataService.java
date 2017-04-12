@@ -52,16 +52,27 @@ public class ExtractDataService {
 		
 		String showType = params.getShowType();
 		String calcType = params.getCalcType();
+		String timePoint = params.getTimePoint();
 		String filePath1 = "";
-		if(params.getScenarioId1() == 251) {
-			filePath1 = "E:\\hebei\\concn\\423-1189\\ConcnDaily3D.interpolation.2016322";
-		} 
-		if(params.getScenarioId1() == 252) {
-			filePath1 = "demo-data\\hebei\\concn\\423-1189\\ConcnDaily3D.interpolation.2016322";
-		} 
-		if(params.getScenarioId1() == 253) {
-			filePath1 = "demo-data\\hebei\\concn\\423-1189\\ConcnDaily3D.interpolation.2016322";
-		} 
+		if("concn".equals(showType)) {
+			if("d".equals(timePoint)) {
+				filePath1 = "E:\\hebei\\concn\\ConcnHourly3D.Combine.3D.2016322";
+			} else {
+				filePath1 = "E:\\hebei\\concn\\ConcnDaily3D.interpolation.2016322";
+			}
+		} else if("emis".equals(showType)) {
+			if("d".equals(timePoint)) {
+				filePath1 = "E:\\hebei\\emis\\423-1189\\EmisDaily.Combine.total.2016322";
+			} else {
+				filePath1 = "E:\\hebei\\emis\\423-1189\\EmisHourly.Combine.total.2016322";
+			}
+		} else if("wind".equals(showType)) {
+			if("d".equals(timePoint)) {
+				filePath1 = "E:\\hebei\\wind\\MeteorDaily3D.interpolation.2016322";
+			} else {
+				filePath1 = "E:\\hebei\\wind\\MeteorHourly3D.interpolation.2016322";
+			}
+		}
 		
 		long openNcTimes = System.currentTimeMillis();
 		NetcdfFile ncFile1 = null;
@@ -74,17 +85,27 @@ public class ExtractDataService {
 		    
 		    String filePath2 = "";
 		    if(calcType.equals("diff") || calcType.equals("ratio")) {
-		    	if(params.getScenarioId2() == 251) {
-					filePath2 = "demo-data\\hebei\\concn\\423-1189\\ConcnDaily3D.interpolation.2016322";
-				} 
-				if(params.getScenarioId2() == 252) {
-					filePath2 = "demo-data\\hebei\\concn\\423-1189\\ConcnDaily3D.interpolation.2016322";
-				} 
-				if(params.getScenarioId2() == 253) {
-					filePath2 = "demo-data\\hebei\\concn\\423-1189\\ConcnDaily3D.interpolation.2016322";
-				} 
-		      ncFile2 = NetcdfFile.open(filePath2);
-		      variable2 = ncFile2.findVariable(null, params.getSpecies());
+		    	if("concn".equals(showType)) {
+					if("d".equals(timePoint)) {
+						filePath2 = "E:\\hebei\\concn\\424-1190\\ConcnDaily3D.interpolation.2016322";
+					} else {
+						filePath2 = "E:\\hebei\\concn\\424-1190\\ConcnHourly3D.interpolation.2016322";
+					}
+				} else if("emis".equals(showType)) {
+					if("d".equals(timePoint)) {
+						filePath2 = "E:\\hebei\\emis\\424-1190\\EmisDaily.Combine.total.2016322";
+					} else {
+						filePath2 = "E:\\hebei\\emis\\424-1190\\EmisHourly.Combine.total.2016322";
+					}
+				} else if("wind".equals(showType)) {
+					if("d".equals(timePoint)) {
+						filePath2 = "E:\\hebei\\wind\\424-1190\\MeteorDaily3D.interpolation.2016322";
+					} else {
+						filePath2 = "E:\\hebei\\wind\\424-1190\\MeteorHourly3D.interpolation.2016322";
+					}
+				}
+		        ncFile2 = NetcdfFile.open(filePath2);
+		        variable2 = ncFile2.findVariable(null, params.getSpecies());
 		    }
 		} catch (IOException e) {
 			logger.error("open nc file error!", e);
@@ -157,7 +178,7 @@ public class ExtractDataService {
 		      Map<String, Object> map = new HashMap<>();
 		      map.put("x", nf.format(pb.getX()));
 		      map.put("y", nf.format(pb.getY()));
-		      map.put("v", pb.getValue());
+		      map.put("v", String.valueOf(pb.getValue()));
 		      res.add(map);
 		    }
 			logger.info("transform project and get value, times = " + (System.currentTimeMillis() - tranTimes) + "ms");
