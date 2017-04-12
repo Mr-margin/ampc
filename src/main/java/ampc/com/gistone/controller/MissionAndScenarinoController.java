@@ -909,6 +909,7 @@ public class MissionAndScenarinoController {
 				lastobj.put("scenarinoId",tsdate.getScenarinoId());
 				lastobj.put("scenarinoName", tsdate.getScenarinoName());
 				lastobj.put("scenarinoStartDate", missiondate);
+				lastobj.put("ScenType", tsdate.getScenType());
 				lastobj.put("scenarinoEndDate", times);
 				arr.add(lastobj);	
 			}else if(tMission.getMissionStatus().equals("3")&&null!=tScenarinoDetailMapper.selectMaxEndTime4()){
@@ -916,12 +917,14 @@ public class MissionAndScenarinoController {
 				lastobj.put("scenarinoId",tsdate.getScenarinoId());
 				lastobj.put("scenarinoName", tsdate.getScenarinoName());
 				lastobj.put("scenarinoStartDate", missiondate);
+				lastobj.put("ScenType", tsdate.getScenType());
 				lastobj.put("scenarinoEndDate", times);
 				arr.add(lastobj);	
 				JSONObject forobj=new JSONObject();
 				forobj.put("scenarinoId",frtscen.getScenarinoId());
 				forobj.put("scenarinoName", frtscen.getScenarinoName());
 				forobj.put("scenarinoStartDate", missiondate);
+				forobj.put("ScenType", frtscen.getScenType());
 				forobj.put("scenarinoEndDate", frdate);
 				arr.add(forobj);	
 			}else{
@@ -929,6 +932,7 @@ public class MissionAndScenarinoController {
 				forobj.put("scenarinoId",frtscen.getScenarinoId());
 				forobj.put("scenarinoName", frtscen.getScenarinoName());
 				forobj.put("scenarinoStartDate", missiondate);
+				forobj.put("ScenType", frtscen.getScenType());
 				forobj.put("scenarinoEndDate", frdate);
 				arr.add(forobj);		
 			}
@@ -942,6 +946,7 @@ public class MissionAndScenarinoController {
 					String endtime=formatter.format(tscenar.getScenarinoEndDate());
 					String padate=formatter.format(tscenar.getPathDate());
 					obj.put("scenarinoStartDate",starttime);
+					obj.put("ScenType", tscenar.getScenType());
 					obj.put("scenarinoEndDate", endtime);
 					obj.put("pathDate", padate);
 					arr.add(obj);
@@ -954,6 +959,7 @@ public class MissionAndScenarinoController {
 					String endtime=formatter.format(tscenar.getScenarinoEndDate());
 				 
 					obj.put("scenarinoStartDate",starttime);
+					obj.put("ScenType", tscenar.getScenType());
 					obj.put("scenarinoEndDate", endtime);
 					arr.add(obj);
 				}	
