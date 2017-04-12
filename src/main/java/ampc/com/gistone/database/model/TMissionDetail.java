@@ -130,5 +130,17 @@ public class TMissionDetail {
         this.missionStatus = missionStatus;
     }
 
+	@Override
+	public String toString() {
+		return "TMissionDetail [missionId=" + missionId + ", missionName="
+				+ missionName + ", missionDomainId=" + missionDomainId
+				+ ", esCouplingId=" + esCouplingId + ", missionStartDate="
+				+ missionStartDate + ", missionEndDate=" + missionEndDate
+				+ ", missionAddTime=" + missionAddTime + ", updateTime="
+				+ updateTime + ", userId=" + userId + ", isEffective="
+				+ isEffective + ", deleteTime=" + deleteTime
+				+ ", missionStatus=" + missionStatus + "]";
+	}
+
     
 }
