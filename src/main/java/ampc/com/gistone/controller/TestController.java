@@ -14,18 +14,23 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.xml.internal.xsom.impl.scd.Iterators.Map;
 
 import ampc.com.gistone.database.model.TMeasureExcel;
+import ampc.com.gistone.extract.ExtractDataService;
 import ampc.com.gistone.util.JsonUtil;
-
+@RestController
+@RequestMapping
 public class TestController {
-
+	private final static Logger logger = LoggerFactory.getLogger(ExtractDataService.class);
 	@RequestMapping("ex/ex")
 	public static void ReadMeasure(){  
 		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\123.xlsx";
@@ -81,4 +86,29 @@ public class TestController {
 		return js;
 	}
 	
+	@RequestMapping("log/log4jTest")
+	public static void log4jTest(){
+		System.out.println("\n\n\n");
+		try{
+			logger.info("执行成功");
+		}catch(Exception e){
+			logger.error("异常了",e);
+		}
+		System.out.println("\n\n\n");
+		try{
+			int i=1,j=2;
+			if((i+j)==2)logger.info("执行成功");
+			throw new Exception("计算错误");
+		}catch(Exception e){
+			logger.warn("警告",e);
+		}
+		System.out.println("\n\n\n");
+		try{
+			String[] a=null;
+			System.out.println(a[1]);
+			logger.info("执行成功");
+		}catch(Exception e){
+			logger.error("异常了",e);
+		}
+	}
 }
