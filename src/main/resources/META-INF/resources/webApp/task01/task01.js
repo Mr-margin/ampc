@@ -47,16 +47,14 @@ function formVerify() {
     var startD = value.substring(0, value.indexOf('至'));
     var endD = value.substring(value.indexOf('至') + 1);
 
-    if(rwTypeV == 'y'){
-      var s = moment(startD).isBefore(moment().add(-1,'d'));
+    if (rwTypeV == 'y') {
+      var s = moment(startD).isBefore(moment().add(-1, 'd'));
       var e = moment(endD).isAfter(moment());
       return s && e;
-    }else{
+    } else {
       return true
     }
   }, "请输入正确日期范围");
-
-
 
 
   $("#rwForm").validate({
@@ -184,9 +182,9 @@ function initRwTable() {
       return JSON.stringify(json);
     },
     responseHandler: function (res) {
-      if(res.data.rows.length == 0){
+      if (res.data.rows.length == 0) {
         $('.qjtableDiv').addClass('disNone')
-      }else{
+      } else {
         $('.qjtableDiv').removeClass('disNone')
       }
       return res.data
@@ -255,7 +253,7 @@ function initRwTable() {
 
 /*筛选*/
 function statusRWfun(status, t) {
-	$('.btn-success.btn-danger').removeClass('btn-danger');
+  $('.btn-success.btn-danger').removeClass('btn-danger');
   $(t).addClass('btn-danger');
   $('.seeName').html($(t).children('a').html());
   statusRW = status;
@@ -263,12 +261,12 @@ function statusRWfun(status, t) {
 }
 
 //回车绑定
-$("input.rw").keydown(function(event){
-  if(event.which == "13")
+$("input.rw").keydown(function (event) {
+  if (event.which == "13")
     search('rw');
 });
-$("input.qj").keydown(function(event){
-  if(event.which == "13")
+$("input.qj").keydown(function (event) {
+  if (event.which == "13")
     search('qj');
 });
 
@@ -415,7 +413,7 @@ function rwName(v, row, i) {
 
 function rwType(v, row, i) {
   var type;
-  switch(row.missionStatus){
+  switch (row.missionStatus) {
     case '2':
       type = '预评估';
       break;
@@ -431,16 +429,16 @@ function rwDomain(v, row, i) {
 }
 
 function qjName(v, row, i) {
-  var name = row.SCEN_TYPE == 3? '<h3><a>' + row.scenarinoName + '</a></h3>':'<h3><a href="#/yabj">' + row.scenarinoName + '</a></h3>';
+  var name = row.SCEN_TYPE == 3 ? '<h3><a>' + row.scenarinoName + '</a></h3>' : '<h3><a href="#/yabj">' + row.scenarinoName + '</a></h3>';
 
-  return  name+
+  return name +
     '<a style="font-size:12px; color:#a1a1a1;">创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '</a><br/>' +
     '<a style="font-size:12px; color:#a1a1a1;">起止日期：' + moment(row.scenarinoStartDate).format('YYYY-MM-DD') + ' 至 ' + moment(row.scenarinoEndDate).format('YYYY-MM-DD') + '</a>'
 }
 
 function qjType(v, row, i) {
   var type;
-  switch(row.SCEN_TYPE){
+  switch (row.SCEN_TYPE) {
     case '1':
       type = '预评估情景';
       break;
@@ -454,30 +452,30 @@ function qjType(v, row, i) {
   return type
 }
 
-function qjStatus(v, row, i){
-  if(row.scenarinoStatus == 3 || row.scenarinoStatus == 6){
-    return '<a href="javascript:" class="statusType">'+ row.scenarinoStatuName +'</a>'
-  }else{
+function qjStatus(v, row, i) {
+  if (row.scenarinoStatus == 3 || row.scenarinoStatus == 6) {
+    return '<a href="javascript:" class="statusType">' + row.scenarinoStatuName + '</a>'
+  } else {
     return row.scenarinoStatuName
   }
 }
 
 function qjOrder(v, row, i) {
-  var s='disabled="disabled"',e='disabled="disabled"',ss='disabled="disabled"',ee='disabled="disabled"';
-  if(row.scenarinoStatus == 5){
+  var s = 'disabled="disabled"', e = 'disabled="disabled"', ss = 'disabled="disabled"', ee = 'disabled="disabled"';
+  if (row.scenarinoStatus == 5) {
     s = '';
-  }else if(row.scenarinoStatus == 6){
-    e='';
-    ee='';
-  }else if(row.scenarinoStatus == 7){
+  } else if (row.scenarinoStatus == 6) {
+    e = '';
+    ee = '';
+  } else if (row.scenarinoStatus == 7) {
     s = '';
     ss = '';
   }
-  return '<button class="btn btn-success mb10 mr10" data-toggle="modal" data-target="#startUp" '+ s +'>启动</button>' +
-    '<button class="btn btn-success mb10" '+ e +'>终止</button>' +
+  return '<button class="btn btn-success mb10 mr10" data-toggle="modal" data-target="#startUp" ' + s + '>启动</button>' +
+    '<button class="btn btn-success mb10" ' + e + '>终止</button>' +
     '<br/>' +
-    '<button class="btn btn-success mr10" '+ ss +'>续跑</button>' +
-    '<button class="btn btn-success" '+ ee +'>暂停</button>'
+    '<button class="btn btn-success mr10" ' + ss + '>续跑</button>' +
+    '<button class="btn btn-success" ' + ee + '>暂停</button>'
 }
 
 //function qjEffectEvaluation(v, row, i) {
@@ -528,22 +526,22 @@ function deleteFun(type) {
             initQjTable();
           }
           swal({
-            title:'已删除!',
-            type:'success',
-            timer:1500
+            title: '已删除!',
+            type: 'success',
+            timer: 1500
           });
         } else {
           swal({
-            title:'删除失败!',
-            type:'error',
-            timer:1500
+            title: '删除失败!',
+            type: 'error',
+            timer: 1500
           });
         }
       }).error(function () {
         swal({
-          title:'删除失败!',
-          type:'error',
-          timer:1500
+          title: '删除失败!',
+          type: 'error',
+          timer: 1500
         });
       })
 
@@ -656,42 +654,42 @@ function rename(type, id) {
             }
 
             swal({
-              title:'已修改!',
-              text:"修改名称为：" + inputValue,
-              type:'success',
-              timer:1500
+              title: '已修改!',
+              text: "修改名称为：" + inputValue,
+              type: 'success',
+              timer: 1500
             });
             //swal("已修改!", "修改名称为：" + inputValue, "success");
           }).error(function () {
             swal({
-              title:'修改失败!',
-              text:"修改名称为：" + inputValue,
-              type:'error',
-              timer:1500
+              title: '修改失败!',
+              text: "修改名称为：" + inputValue,
+              type: 'error',
+              timer: 1500
             });
             //swal("修改失败!", "名称未修改为：" + inputValue, "error");
           }).error(function () {
             $('#createModal').modal('hide');
             swal({
-              title:'添加失败!',
-              type:'error',
-              timer:1500
+              title: '添加失败!',
+              type: 'error',
+              timer: 1500
             });
             //swal('添加失败', '', 'error')
           })
         } else {
           swal({
-            title:'名称重复!',
-            type:'error',
-            timer:1500
+            title: '名称重复!',
+            type: 'error',
+            timer: 1500
           });
           //swal('名称重复', '', 'error')
         }
       }).error(function () {
         swal({
-          title:'校验失败!',
-          type:'error',
-          timer:1500
+          title: '校验失败!',
+          type: 'error',
+          timer: 1500
         });
         //swal('校验失败', '', 'error')
       })
@@ -728,7 +726,7 @@ function selectType(type) {
   rwTypeV = type;
   var startDate;
   var endDate;
-  var start,end;
+  var start, end;
   if (type == 'y') {
     startDate = moment().subtract(14, 'd').format('YYYY-MM-DD');
     endDate = moment().add(365, 'd').format('YYYY-MM-DD');
@@ -737,7 +735,7 @@ function selectType(type) {
     rwSelectType = '2';
     $('.rwTitle').html('创建预评估任务');
     //rwEndDate = moment().add(2, 'd').format('YYYY-MM-DD');
-    initRwDate(startDate, endDate,start, end);
+    initRwDate(startDate, endDate, start, end);
   } else if (type == 'h') {
     startDate = '2007-01-01';
     endDate = moment().subtract(2, 'd').format('YYYY-MM-DD');
@@ -746,7 +744,7 @@ function selectType(type) {
     rwSelectType = '3';
     $('.rwTitle').html('创建后评估任务');
     //rwEndDate = moment().subtract(2, 'd').format('YYYY-MM-DD');
-    initRwDate(startDate, endDate,start, end);
+    initRwDate(startDate, endDate, start, end);
   }
 
   $('.rwType').css('display', 'none');
@@ -771,7 +769,7 @@ function selectQJtype(type) {
 
   __dsp['jcqj' + selectRW.missionId].then(function (res) {
     basisArr = res.data;
-    if((type == 'hj')&&!basisArr){
+    if ((type == 'hj') && !basisArr) {
       $('.hpgQJType').css('display', 'none');
       $('.hpgQJCon').css('display', 'block');
       $('.createQjBtn').css('display', 'inline-block');
@@ -783,9 +781,9 @@ function selectQJtype(type) {
       $('#hStartDate').empty().append($('<option value="' + moment(selectRW.missionStartDate).format('YYYY-MM-DD') + '">' + moment(selectRW.missionStartDate).format('YYYY-MM-DD') + '</option>'));
       $('#hEndDate').empty().append($('<option value="' + moment(selectRW.missionEndDate).format('YYYY-MM-DD') + '">' + moment(selectRW.missionEndDate).format('YYYY-MM-DD') + '</option>'));
     }
-    if (basisArr){
+    if (basisArr) {
 
-    //reverse  倒序
+      //reverse  倒序
       switch (type) {
         case 'yy':
           $('.ypgQJType').css('display', 'none');
@@ -903,7 +901,15 @@ function selectQJtype(type) {
         case 'hj':
           break;
       }
-  }
+    } else {
+      if(type != 'hj'){
+        swal({
+          title: res.msg,
+          type: 'error',
+          timer: 1500
+        });
+      }
+    }
   }, function () {
     console.log('基础情景获取失败！！！！！');
     if (type == 'hj') {
@@ -950,7 +956,7 @@ function checkedDB(t) {
 
 /*新改任务创建*/
 function createRw() {
-  if($('#rwForm').valid()){
+  if ($('#rwForm').valid()) {
     var url = '/mission/save_mission';
     var urlName = '/mission/check_missioname';
     var params = {};
@@ -979,42 +985,42 @@ function createRw() {
             $('#createRwModal').modal('hide');
             $('#rwName').val('');
             swal({
-              title:'添加成功!',
-              type:'success',
-              timer:1500
+              title: '添加成功!',
+              type: 'success',
+              timer: 1500
             });
             //swal('添加成功', '', 'success')
           } else {
             $('#createRwModal').modal('hide');
             swal({
-              title:'添加失败!',
-              type:'error',
-              timer:1500
+              title: '添加失败!',
+              type: 'error',
+              timer: 1500
             });
             //swal('添加失败', '', 'error')
           }
         }).error(function () {
           $('#createRwModal').modal('hide');
           swal({
-            title:'添加失败!',
-            type:'error',
-            timer:1500
+            title: '添加失败!',
+            type: 'error',
+            timer: 1500
           });
           //swal('添加失败', '', 'error')
         })
       } else {
         swal({
-          title:'名称重复!',
-          type:'error',
-          timer:1500
+          title: '名称重复!',
+          type: 'error',
+          timer: 1500
         });
         //swal('名称重复', '', 'error')
       }
     }).error(function () {
       swal({
-        title:'校验失败!',
-        type:'error',
-        timer:1500
+        title: '校验失败!',
+        type: 'error',
+        timer: 1500
       });
       //swal('校验失败', '', 'error')
     })
@@ -1023,7 +1029,7 @@ function createRw() {
 }
 
 /*初始化日期插件*/
-function initRwDate(s, e,start, end) {
+function initRwDate(s, e, start, end) {
   $('#rwDate').daterangepicker({
     singleDatePicker: false,  //显示单个日历
     timePicker: false,  //允许选择时间
@@ -1057,7 +1063,7 @@ function initRwDate(s, e,start, end) {
 
 /*按钮打开日期*/
 //($('#rwDate').data('daterangepicker')).element.on('click.daterangepicker',function(){});
-function showRwDate(){
+function showRwDate() {
   var d = $('#rwDate').data('daterangepicker');
   d.toggle();
 }
@@ -1094,12 +1100,12 @@ function setSelectDate(qjS, qjE, pathD) {
   if (pathD) {
     var p = moment(pathD);
     //while (!(p.isBefore(moment(qjS),'d'))) {
-    while (p.isAfter(moment(qjS),'d')) {
+    while (p.isAfter(moment(qjS), 'd')) {
       dateArr.push(p.subtract(1, 'd').format('YYYY-MM-DD'));
     }
   } else {
     var e = moment(qjE);
-    while (!(e.isBefore(moment(qjS),'d'))) {
+    while (!(e.isBefore(moment(qjS), 'd'))) {
       dateArr.push(e.format('YYYY-MM-DD'));
       e.subtract(1, 'd');
     }
@@ -1111,7 +1117,7 @@ function setSelectDate(qjS, qjE, pathD) {
 function changeJcqj(t) {
   var index = $(t).val();
   var selectJcqj = basisArr[index];
-  var pt = qjType == 1?(selectJcqj.pathDate?selectJcqj.pathDate:moment().add(-1,'d')):selectJcqj.pathDate;
+  var pt = qjType == 1 ? (selectJcqj.pathDate ? selectJcqj.pathDate : moment().add(-1, 'd')) : selectJcqj.pathDate;
   var dateArr = setSelectDate(selectJcqj.scenarinoStartDate, selectJcqj.scenarinoEndDate, pt);
   if (qjType == 2) {
     dateArr = dateArr.reverse();
@@ -1120,20 +1126,20 @@ function changeJcqj(t) {
   for (var i = 0; i < dateArr.length; i++) {
     $('#jcdate').append($('<option value="' + dateArr[i] + '">' + dateArr[i] + '</option>'))
   }
-  var startD = dateArr[0]?moment(moment(dateArr[0])).add(1, 'd').format('YYYY-MM-DD'):'';
+  var startD = dateArr[0] ? moment(moment(dateArr[0])).add(1, 'd').format('YYYY-MM-DD') : '';
   $('#yStartDate').empty().append($('<option value="' + startD + '">' + startD + '</option>'));
 
-  if($('#yStartDate').val() == ''){
+  if ($('#yStartDate').val() == '') {
     $('#yEndDate').empty();
     return;
   }
   var endDateArr = setSelectDate($('#yStartDate').val(), selectEndDate);
   $('#yEndDate').empty();
   for (var i = 0; i < endDateArr.length; i++) {
-    if(qjType == 1){
+    if (qjType == 1) {
       if (endDateArr[i] < moment().format('YYYY-MM-DD'))continue;
       $('#yEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
-    }else if(qjType == 2){
+    } else if (qjType == 2) {
       if (endDateArr[i] < moment(startD).format('YYYY-MM-DD'))continue;
       $('#yEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
     }
@@ -1148,10 +1154,10 @@ function changeJcDate(t) {
   var endDateArr = setSelectDate($('#yStartDate').val(), selectEndDate);
   $('#yEndDate').empty();
   for (var i = 0; i < endDateArr.length; i++) {
-    if(qjType == 1){
+    if (qjType == 1) {
       if (endDateArr[i] < moment().format('YYYY-MM-DD'))continue;
       $('#yEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
-    }else if(qjType == 2){
+    } else if (qjType == 2) {
       if (endDateArr[i] < moment(startD).format('YYYY-MM-DD'))continue;
       $('#yEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
     }
@@ -1208,7 +1214,7 @@ function createQj(type) {
   urlName = '/scenarino/check_scenarinoname';
   if (type == 'ypg') {
 
-    if($('#yqjForm').valid()){
+    if ($('#yqjForm').valid()) {
       params = {};
       paramsName = {};
       params.scenarinoName = paramsName.scenarinoName = $('#yName').val();
@@ -1247,32 +1253,32 @@ function createQj(type) {
             $('#createHpQjModal').modal('hide');
             $('#createYpQjModal').modal('hide');
             swal({
-              title:'添加成功!',
-              type:'success',
-              timer:1500
+              title: '添加成功!',
+              type: 'success',
+              timer: 1500
             });
             //swal('添加成功', '', 'success')
           }).error(function () {
             swal({
-              title:'添加失败!',
-              type:'error',
-              timer:1500
+              title: '添加失败!',
+              type: 'error',
+              timer: 1500
             });
             //swal('添加失败', '', 'error')
           })
         } else {
           swal({
-            title:'名称重复!',
-            type:'error',
-            timer:1500
+            title: '名称重复!',
+            type: 'error',
+            timer: 1500
           });
           //swal('名称重复', '', 'error')
         }
       }).error(function () {
         swal({
-          title:'校验失败!',
-          type:'error',
-          timer:1500
+          title: '校验失败!',
+          type: 'error',
+          timer: 1500
         });
         //swal('校验失败', '', 'error')
       })
@@ -1281,7 +1287,7 @@ function createQj(type) {
 
   } else {
 
-    if($('#hqjForm').valid()){
+    if ($('#hqjForm').valid()) {
       params = {};
       paramsName = {};
       params.scenarinoName = paramsName.scenarinoName = $('#hName').val();
@@ -1318,32 +1324,32 @@ function createQj(type) {
             $('#createHpQjModal').modal('hide');
             $('#createYpQjModal').modal('hide');
             swal({
-              title:'添加成功!',
-              type:'success',
-              timer:1500
+              title: '添加成功!',
+              type: 'success',
+              timer: 1500
             });
             //swal('添加成功', '', 'success')
           }).error(function () {
             swal({
-              title:'添加失败!',
-              type:'error',
-              timer:1500
+              title: '添加失败!',
+              type: 'error',
+              timer: 1500
             });
             //swal('添加失败', '', 'error')
           })
         } else {
           swal({
-            title:'名称重复!',
-            type:'error',
-            timer:1500
+            title: '名称重复!',
+            type: 'error',
+            timer: 1500
           });
           //swal('名称重复', '', 'error')
         }
       }).error(function () {
         swal({
-          title:'校验失败!',
-          type:'error',
-          timer:1500
+          title: '校验失败!',
+          type: 'error',
+          timer: 1500
         });
         //swal('校验失败', '', 'error')
       })
@@ -1353,11 +1359,11 @@ function createQj(type) {
 
 }
 
-$('body').on('click','.statusType',function(){
-  if(msg.content.scenarinoStatus == 3){
+$('body').on('click', '.statusType', function () {
+  if (msg.content.scenarinoStatus == 3) {
     $('#jpzt').modal('show');
-  }else if(msg.content.scenarinoStatus == 6){
-    switch(msg.content.SCEN_TYPE){
+  } else if (msg.content.scenarinoStatus == 6) {
+    switch (msg.content.SCEN_TYPE) {
       case '1':
         return
       case '2':
@@ -1369,82 +1375,82 @@ $('body').on('click','.statusType',function(){
 })
 
 $('#startUp').on('show.bs.modal', function (event) {
-  var num = Math.round((msg.content.qjEndDate - msg.content.qjStartDate)/1000/60/60/24);
+  var num = Math.round((msg.content.qjEndDate - msg.content.qjStartDate) / 1000 / 60 / 60 / 24);
   var url = '/getCores/spentTimes';
-  ajaxPost(url,{
-    userId:userId,
-    missionId:msg.content.rwId,
-    missionType:msg.content.rwType,
-    scenarinoType:msg.content.SCEN_TYPE
-  }).success(function(res){
-    if(res.status==0){
+  ajaxPost(url, {
+    userId: userId,
+    missionId: msg.content.rwId,
+    missionType: msg.content.rwType,
+    scenarinoType: msg.content.SCEN_TYPE
+  }).success(function (res) {
+    if (res.status == 0) {
       $('.cpu span').empty();
       $('.baseTime').empty();
       $('.allTime').empty();
-      for(var i=0;i<res.data.length;i++){
+      for (var i = 0; i < res.data.length; i++) {
         $('.cpu span').eq(i).html(res.data[i].cores);
         $('.cpu input').eq(i).val(res.data[i].cores);
-        $('.baseTime').eq(i).html((res.data[i].avgTime-0)*num + 'h');
-        $('.allTime').eq(i).html((res.data[i].avgTime-0)*num*(res.data[i].cores-0));
+        $('.baseTime').eq(i).html((res.data[i].avgTime - 0) * num + 'h');
+        $('.allTime').eq(i).html((res.data[i].avgTime - 0) * num * (res.data[i].cores - 0));
       }
-    }else{
+    } else {
       console.log('接口故障！！！')
     }
-  }).error(function(){
+  }).error(function () {
     console.log('接口未成功发送')
   })
 })
 
-function subStartUp(){
+function subStartUp() {
   var url = '/ModelType/startModel';
-  ajaxPost(url,{
-    userId:userId,
-    scenarinoId:msg.content.qjId,
+  ajaxPost(url, {
+    userId: userId,
+    scenarinoId: msg.content.qjId,
     //missionId:msg.content.rwId,
-    missionType:msg.content.rwType,
-    scenarinoType:msg.content.SCEN_TYPE,
-    cores:$('input[name=cpuNum]:checked').val()
-  }).success(function(res){
-    if(res.status == 0){
+    missionType: msg.content.rwType,
+    scenarinoType: msg.content.SCEN_TYPE,
+    cores: $('input[name=cpuNum]:checked').val()
+  }).success(function (res) {
+    if (res.status == 0) {
       $('#qjTable').bootstrapTable('destroy');
       initQjTable();
       $('#startUp').modal('hide');
       swal({
-        title:'启动成功!',
-        type:'success',
-        timer:1500
+        title: '启动成功!',
+        type: 'success',
+        timer: 1500
       });
-    }else{
+    } else {
       swal({
-        title:'启动失败!',
-        type:'error',
-        timer:1500
+        title: '启动失败!',
+        type: 'error',
+        timer: 1500
       });
     }
 
-  }).error(function(){
+  }).error(function () {
     swal({
-      title:'启动失败!',
-      type:'error',
-      timer:1500
+      title: '启动失败!',
+      type: 'error',
+      timer: 1500
     });
   })
 }
 
 /*重置减排计算*/
-function initJPJS(){
+function initJPJS() {
   var url = '/plan/update_Status';
-  ajaxPost(url,{
-    userId:userId,
-    scenarinoId:qjMsg.qjId
-  }).success(function(res){
-    if(res.status == 0){
+  ajaxPost(url, {
+    userId: userId,
+    scenarinoId: qjMsg.qjId
+  }).success(function (res) {
+    if (res.status == 0) {
       jpztckBtn();
-    }else{
-      console.log(url+'故障')
+    } else {
+      console.log(url + '故障')
     }
-  }).error(function(){
-    console.log(url+'错误')
+  }).error(function () {
+    console.log(url + '错误')
   })
 }
 
@@ -1522,7 +1528,7 @@ function getQD() {
   };
   ajaxPost(url, params).success(function (res) {
     for (var i = 0; i < res.data.length; i++) {
-      $('#qd').append($('<option value="'+ res.data[i].esCouplingId +'">'+ res.data[i].esCouplingName +'</option>'))
+      $('#qd').append($('<option value="' + res.data[i].esCouplingId + '">' + res.data[i].esCouplingName + '</option>'))
     }
 
   }).error(function () {
