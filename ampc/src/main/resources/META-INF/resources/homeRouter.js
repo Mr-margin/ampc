@@ -42,8 +42,8 @@ vipspa.start({
         controller: 'webApp/xgpg/v1/reductAnalys.js'
     },
     '/xgpg_v2': {      //效果评估-网格化排放
-    	templateUrl: '',
-    	controller: ''
+    	templateUrl: 'webApp/xgpg/v2/Gridemission.html',
+    	controller: 'webApp/xgpg/v2/Gridemission.js'
     },
     '/xgpg_v3': {      //效果评估-时间序列
     	templateUrl: 'webApp/xgpg/v3/effectEval01.html',
