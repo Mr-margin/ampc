@@ -54,7 +54,7 @@ public class ModelExecuteStatusController {
 	 * @author yanglei
 	 * @date 2017年3月28日 上午9:49:03
 	 */
-	@RequestMapping("/test")
+	@RequestMapping("/ModelExecuteStatus")
 	public AmpcResult getModelexecuteStatus(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
 		
 		String token = (String) requestDate.get("token");

@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
+import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.model.TScenarinoDetail;
+import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.redisqueue.ReadyData;
 import ampc.com.gistone.redisqueue.RedisUtilServer;
 import ampc.com.gistone.redisqueue.timer.SchedulerTimer;
@@ -43,7 +45,8 @@ public class GetWeatherModelController {
 	@Autowired
 	private TScenarinoDetailMapper tScenarinoDetailMapper;
 	
-	
+	@Autowired
+	private TTasksStatusMapper tTasksStatusMapper;
 	
 	@Autowired
 	private SchedulerTimer timer;
@@ -352,15 +355,29 @@ public class GetWeatherModelController {
 		}
 	}
 	
-	@RequestMapping("/test2")
-	public void name(HttpServletRequest request,HttpServletResponse response) {
-		/*String time = request.getParameter("time");
+	@RequestMapping("/saveEmis")
+	public AmpcResult saveEmisData(HttpServletRequest request,HttpServletResponse response) {
+		String sourceid = request.getParameter("sourceid");
+		String calctype = request.getParameter("calctype");
+		String psal = request.getParameter("psal");
+		String ssal = request.getParameter("ssal");
+		String meiccityconfig = request.getParameter("meiccityconfig");
+		Long scenarioid =Long.parseLong(request.getParameter("scenarioid"));
+		TTasksStatus tTasksStatus = new TTasksStatus();
+		tTasksStatus.setSourceid(sourceid);
+		tTasksStatus.setCalctype(calctype);
+		tTasksStatus.setPsal(psal);
+		tTasksStatus.setSsal(ssal);
+		tTasksStatus.setMeiccityconfig(meiccityconfig);
+		tTasksStatus.setTasksScenarinoId(scenarioid);
+		//添加到对应的情景下面去
+		int i = tTasksStatusMapper.updateEmisData(tTasksStatus);
+		if (i>0) {
+			return AmpcResult.build(0, "ok");
+		}else {
+			return AmpcResult.build(1000, "失败");
+		}
 		
-		String string = Test.tset(name);
-		System.out.println(string);
-		readyData.name(time);
-		String string = timer.test1();
-		System.out.println(string+"----------");*/
 	}
 
 }
