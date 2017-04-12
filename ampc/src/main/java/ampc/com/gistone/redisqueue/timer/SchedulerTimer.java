@@ -39,7 +39,8 @@ import ampc.com.gistone.util.DateUtil;
  * @date 2017年3月31日 下午3:12:38
  * @version 1.0
  */
-@Component
+//@EnableScheduling
+//@Component
 public class SchedulerTimer {
 	
 	//加载准备数据工具类
@@ -77,7 +78,8 @@ public class SchedulerTimer {
 	 * @author yanglei
 	 * @date 2017年4月7日 上午9:53:09
 	 */
-	@Scheduled(cron="0 0 12 * * ?")
+//	@Scheduled(cron="0 0 20 * * ?")
+	@Scheduled(fixedRate = 5000)
 	public void realForTimer() {
 		//Date date = new Date();
 		System.out.println("我每天中午12点开始执行");
@@ -86,42 +88,46 @@ public class SchedulerTimer {
 		Long cores = null;
 		int  i = 0;
 		int insertSelective = 0;
-		//查找实时时预报任务并修改任务为最新的时间状态
+		//查找实时时预报任务并修改任务为最新的时间状态 
 		List<TGlobalSetting>  list = tGlobalSettingMapper.selectAll();
 		for (TGlobalSetting tGlobalSetting : list) {
-			Long userId = tGlobalSetting.getUserid();
+			System.out.println(tGlobalSetting);
+			Long userId = tGlobalSetting.getUserId();
 			Integer spinup = tGlobalSetting.getSpinup();
 			cores = Long.parseLong(tGlobalSetting.getCores().toString());
 			Integer rangeday = tGlobalSetting.getRangeday();
 			Long domainId = tGlobalSetting.getDomainId();
 			//创建任务对象
 			TMissionDetail MissionDetail = new TMissionDetail();
+			MissionDetail.setMissionName("实时预报任务");
+			MissionDetail.setMissionDomainId(domainId);
 			MissionDetail.setEsCouplingId(tGlobalSetting.getEsCouplingId());
 			MissionDetail.setUserId(userId);
-			MissionDetail.setMissionAddTime(new Date());
-			MissionDetail.setMissionDomainId(domainId);
-			MissionDetail.setMissionName("实时预报任务");
-			MissionDetail.setIsEffective("1");
+			MissionDetail.setMissionAddTime(DateUtil.DateToDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+		//	MissionDetail.setIsEffective("1");
 			MissionDetail.setMissionStatus("1");
-			
+			System.out.println(MissionDetail);
 			/*Map<String,Long> map = new HashMap<String, Long>();
 			map.put("userId", userId);
 			map.put("missionDomainId", domainId);*/
 			//第一次需要创建任务 后面的则是修改
-			List<TMissionDetail> missionlist = tMissionDetailMapper.selectMissionDetail(userId);
+				List<TMissionDetail> missionlist = tMissionDetailMapper.selectMissionDetail(userId);
 			Long missionId = null ;
 			
 			if (missionlist.isEmpty()) {
 				//没有则创建实时预报任务 没有时间段
 				//设置任务开始时间
-				Date missionStartDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+				Date missionStartDate = DateUtil.DateToDate(new Date(), "yyyy-MM-dd HH:mm:ss");
 				//设置开始时间
 				MissionDetail.setMissionStartDate(missionStartDate);
 				//添加一个新的任务
 				int insert = tMissionDetailMapper.insertSelective(MissionDetail);
 				//得到相应的任务ID
 				missionId = tMissionDetailMapper.getmissionid(userId);
-			}else {
+				logger.info("创建了一个新的实时预报任务");
+				System.out.println("创建了一个新的实时预报任务");
+			}
+			/*else {
 				//如果不为空 表示至少有一个实时预报任务
 				for (TMissionDetail tMissionDetail : missionlist) {
 					Long missionDomainId = tMissionDetail.getMissionDomainId();
@@ -203,6 +209,7 @@ public class SchedulerTimer {
 		if (i>0) {
 			//根据情景调动实时预报接口开始实时预报
 			readyData.readyRealMessageDataFirst(scenarinoId,cores);
+			}*/
 		}
 		
 		
