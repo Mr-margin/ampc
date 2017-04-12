@@ -36,6 +36,9 @@ public class TestController {
 	@RequestMapping("log/log4jTest")
 	public static void log4jTest(){
 		/**
+		 * 所有logger中的内容信息 都根据实际情况填写  如：添加任务成功 、添加任务失败、添加任务异常 等
+ 		 */
+		/**
 		 * 成功的实例
 		 */
 		try{
