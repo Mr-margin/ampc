@@ -906,7 +906,7 @@ function selectQJtype(type) {
           }
           setOption('#dbqj1', basisArr);
           setOption('#jcqj1', basisArr);
-          var dateArr = setSelectDate(basisArr[0].scenarinoStartDate, moment(selectRW.missionEndDate).subtract(2, 'd').format('YYYY-MM-DD'));
+          var dateArr = setSelectDate(basisArr[0].scenarinoStartDate, moment(selectRW.missionEndDate).subtract(1, 'd').format('YYYY-MM-DD'));
           dateArr = dateArr.reverse();
           $('#jcdate1').empty();
           for (var i = 0; i < dateArr.length; i++) {
