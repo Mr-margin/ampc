@@ -37,8 +37,8 @@ import ampc.com.gistone.util.DateUtil;
  * @date 2017年3月31日 下午3:12:38
  * @version 1.0
  */
-//@EnableScheduling
-//@Component
+@EnableScheduling
+@Component
 public class SchedulerTimer {
 	
 	//加载准备数据工具类
@@ -223,7 +223,7 @@ public class SchedulerTimer {
 	 * @author yanglei
 	 * @date 2017年4月7日 下午8:46:00
 	 */
-	@Scheduled(cron="0 0/10 * * * ?")
+/*	@Scheduled(cron="0 0/10 * * * ?")
 	public void getMaxTime() {
 		System.out.println("我没隔10分钟执行一次");
 		//根据情景的状态和情景的类型确定准备参数
@@ -283,7 +283,7 @@ public class SchedulerTimer {
 			}
 		}
 		
-	}
+	}*/
 	/**
 	 * 
 	 * @Description: 测试定时器 每隔5秒开始一次   
