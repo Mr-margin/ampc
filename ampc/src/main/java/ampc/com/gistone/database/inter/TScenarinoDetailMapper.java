@@ -199,7 +199,7 @@ public interface TScenarinoDetailMapper {
     List<TScenarinoDetail> selectByEntity(TScenarinoDetail record);
 
 	
-
+    TScenarinoDetail selectMaxEndTime4();
 
 	
 
