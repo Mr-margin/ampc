@@ -5,7 +5,7 @@ import java.util.Date;
 public class TGlobalSetting {
     private Long globalSettingId;
 
-	private Long userid;
+	private Long userId;
 
 	private Integer rangeday;
 
@@ -37,12 +37,12 @@ public class TGlobalSetting {
 		this.globalSettingId = globalSettingId;
 	}
 
-	public Long getUserid() {
-		return userid;
+	public Long getUserId() {
+		return userId;
 	}
 
-	public void setUserid(Long userid) {
-		this.userid = userid;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	public Integer getRangeday() {
@@ -132,5 +132,17 @@ public class TGlobalSetting {
 	public void setBeizhu4(String beizhu4) {
 		this.beizhu4 = beizhu4 == null ? null : beizhu4.trim();
 	}
+
+	@Override
+	public String toString() {
+		return "TGlobalSetting [globalSettingId=" + globalSettingId
+				+ ", userId=" + userId + ", rangeday=" + rangeday + ", spinup="
+				+ spinup + ", cores=" + cores + ", domainId=" + domainId
+				+ ", esCouplingId=" + esCouplingId + ", addDate=" + addDate
+				+ ", updateDate=" + updateDate + ", beizhu1=" + beizhu1
+				+ ", beizhu2=" + beizhu2 + ", beizhu3=" + beizhu3
+				+ ", beizhu4=" + beizhu4 + "]";
+	}
+	
 
 }

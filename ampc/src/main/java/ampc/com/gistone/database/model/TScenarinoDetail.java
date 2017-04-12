@@ -317,4 +317,27 @@ public class TScenarinoDetail {
     public void setRangeDay(Long rangeDay) {
         this.rangeDay = rangeDay;
     }
+
+	@Override
+	public String toString() {
+		return "TScenarinoDetail [scenarinoId=" + scenarinoId
+				+ ", scenarinoType=" + scenarinoType + ", scenarinoName="
+				+ scenarinoName + ", scenarinoStartDate=" + scenarinoStartDate
+				+ ", scenarinoEndDate=" + scenarinoEndDate
+				+ ", scenarinoStatus=" + scenarinoStatus + ", missionId="
+				+ missionId + ", scenarinoAddTime=" + scenarinoAddTime
+				+ ", userId=" + userId + ", updateTime=" + updateTime
+				+ ", isEffective=" + isEffective + ", deleteTime=" + deleteTime
+				+ ", basisScenarinoId=" + basisScenarinoId + ", basisTime="
+				+ basisTime + ", contrastScenarinoId=" + contrastScenarinoId
+				+ ", scenType=" + scenType + ", pathDate=" + pathDate
+				+ ", spinup=" + spinup + ", ratioStartDate=" + ratioStartDate
+				+ ", ratioEndDate=" + ratioEndDate + ", rangeDay=" + rangeDay
+				+ ", expand1=" + expand1 + ", expand2=" + expand2
+				+ ", expand3=" + expand3 + ", expand4=" + expand4
+				+ ", expand5=" + expand5 + ", expand6=" + expand6
+				+ ", expand7=" + expand7 + ", expand8=" + expand8
+				+ ", expand9=" + expand9 + ", expand10=" + expand10 + "]";
+	}
+    
 }
