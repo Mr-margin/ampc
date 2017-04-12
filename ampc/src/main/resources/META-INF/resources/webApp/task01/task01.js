@@ -528,20 +528,25 @@ function deleteFun(type) {
           swal({
             title: '已删除!',
             type: 'success',
-            timer: 1500
+            timer: 1000,
+            showConfirmButton: false
           });
+          delRWid = {};
+          $('.rwDel').attr('disabled', true);
         } else {
           swal({
             title: '删除失败!',
             type: 'error',
-            timer: 1500
+            timer: 1000,
+            showConfirmButton: false
           });
         }
       }).error(function () {
         swal({
           title: '删除失败!',
           type: 'error',
-          timer: 1500
+          timer: 1000,
+          showConfirmButton: false
         });
       })
 
@@ -657,7 +662,8 @@ function rename(type, id) {
               title: '已修改!',
               text: "修改名称为：" + inputValue,
               type: 'success',
-              timer: 1500
+              timer: 1000,
+              showConfirmButton: false
             });
             //swal("已修改!", "修改名称为：" + inputValue, "success");
           }).error(function () {
@@ -665,7 +671,8 @@ function rename(type, id) {
               title: '修改失败!',
               text: "修改名称为：" + inputValue,
               type: 'error',
-              timer: 1500
+              timer: 1000,
+              showConfirmButton: false
             });
             //swal("修改失败!", "名称未修改为：" + inputValue, "error");
           }).error(function () {
@@ -673,7 +680,8 @@ function rename(type, id) {
             swal({
               title: '添加失败!',
               type: 'error',
-              timer: 1500
+              timer: 1000,
+              showConfirmButton: false
             });
             //swal('添加失败', '', 'error')
           })
@@ -681,7 +689,8 @@ function rename(type, id) {
           swal({
             title: '名称重复!',
             type: 'error',
-            timer: 1500
+            timer: 1000,
+            showConfirmButton: false
           });
           //swal('名称重复', '', 'error')
         }
@@ -689,7 +698,8 @@ function rename(type, id) {
         swal({
           title: '校验失败!',
           type: 'error',
-          timer: 1500
+          timer: 1000,
+          showConfirmButton: false
         });
         //swal('校验失败', '', 'error')
       })
@@ -906,7 +916,8 @@ function selectQJtype(type) {
         swal({
           title: res.msg,
           type: 'error',
-          timer: 1500
+          timer: 1000,
+          showConfirmButton: false
         });
       }
     }
@@ -987,7 +998,8 @@ function createRw() {
             swal({
               title: '添加成功!',
               type: 'success',
-              timer: 1500
+              timer: 1000,
+              showConfirmButton: false
             });
             //swal('添加成功', '', 'success')
           } else {
@@ -995,7 +1007,8 @@ function createRw() {
             swal({
               title: '添加失败!',
               type: 'error',
-              timer: 1500
+              timer: 1000,
+              showConfirmButton: false
             });
             //swal('添加失败', '', 'error')
           }
@@ -1004,7 +1017,8 @@ function createRw() {
           swal({
             title: '添加失败!',
             type: 'error',
-            timer: 1500
+            timer: 1000,
+            showConfirmButton: false
           });
           //swal('添加失败', '', 'error')
         })
@@ -1012,7 +1026,8 @@ function createRw() {
         swal({
           title: '名称重复!',
           type: 'error',
-          timer: 1500
+          timer: 1000,
+          showConfirmButton: false
         });
         //swal('名称重复', '', 'error')
       }
@@ -1020,7 +1035,8 @@ function createRw() {
       swal({
         title: '校验失败!',
         type: 'error',
-        timer: 1500
+        timer: 1000,
+        showConfirmButton: false
       });
       //swal('校验失败', '', 'error')
     })
@@ -1255,14 +1271,16 @@ function createQj(type) {
             swal({
               title: '添加成功!',
               type: 'success',
-              timer: 1500
+              timer: 1000,
+              showConfirmButton: false
             });
             //swal('添加成功', '', 'success')
           }).error(function () {
             swal({
               title: '添加失败!',
               type: 'error',
-              timer: 1500
+              timer: 1000,
+              showConfirmButton: false
             });
             //swal('添加失败', '', 'error')
           })
@@ -1270,7 +1288,8 @@ function createQj(type) {
           swal({
             title: '名称重复!',
             type: 'error',
-            timer: 1500
+            timer: 1000,
+            showConfirmButton: false
           });
           //swal('名称重复', '', 'error')
         }
@@ -1278,7 +1297,8 @@ function createQj(type) {
         swal({
           title: '校验失败!',
           type: 'error',
-          timer: 1500
+          timer: 1000,
+          showConfirmButton: false
         });
         //swal('校验失败', '', 'error')
       })
@@ -1326,14 +1346,16 @@ function createQj(type) {
             swal({
               title: '添加成功!',
               type: 'success',
-              timer: 1500
+              timer: 1000,
+              showConfirmButton: false
             });
             //swal('添加成功', '', 'success')
           }).error(function () {
             swal({
               title: '添加失败!',
               type: 'error',
-              timer: 1500
+              timer: 1000,
+              showConfirmButton: false
             });
             //swal('添加失败', '', 'error')
           })
@@ -1341,7 +1363,8 @@ function createQj(type) {
           swal({
             title: '名称重复!',
             type: 'error',
-            timer: 1500
+            timer: 1000,
+            showConfirmButton: false
           });
           //swal('名称重复', '', 'error')
         }
@@ -1349,7 +1372,8 @@ function createQj(type) {
         swal({
           title: '校验失败!',
           type: 'error',
-          timer: 1500
+          timer: 1000,
+          showConfirmButton: false
         });
         //swal('校验失败', '', 'error')
       })
@@ -1418,13 +1442,15 @@ function subStartUp() {
       swal({
         title: '启动成功!',
         type: 'success',
-        timer: 1500
+        timer: 1000,
+        showConfirmButton: false
       });
     } else {
       swal({
         title: '启动失败!',
         type: 'error',
-        timer: 1500
+        timer: 1000,
+        showConfirmButton: false
       });
     }
 
@@ -1432,7 +1458,8 @@ function subStartUp() {
     swal({
       title: '启动失败!',
       type: 'error',
-      timer: 1500
+      timer: 1000,
+      showConfirmButton: false
     });
   })
 }

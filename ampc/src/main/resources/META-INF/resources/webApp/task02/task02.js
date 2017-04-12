@@ -355,12 +355,27 @@ function delArea(e) {
           $('.areaTitle_con').eq(areaIndex).remove();
           showTimeline(allData);
           //$('.areaTitle_con').eq(areaIndex).remove();
-          swal("已删除!", "", "success");
+          swal({
+            title: '已删除!',
+            type: 'success',
+            timer: 1000,
+            showConfirmButton: false
+          });
         } else {
-          swal("删除失败!", "", "error");
+          swal({
+            title: '删除失败!',
+            type: 'error',
+            timer: 1000,
+            showConfirmButton: false
+          });
         }
       }).error(function () {
-        swal("删除失败!", "", "error");
+        swal({
+          title: '删除失败!',
+          type: 'error',
+          timer: 1000,
+          showConfirmButton: false
+        });
       })
 
     });
@@ -473,7 +488,12 @@ function addTimes() {
 
   }).error(function () {
     timeFrame.splice(index, 1);
-    swal('添加失败！！！', '', 'error')
+    swal({
+      title: '添加失败!',
+      type: 'error',
+      timer: 1000,
+      showConfirmButton: false
+    });
   });
 }
 
@@ -1088,7 +1108,12 @@ function createEditArea() {
       areaName: areaName,
     }).success(function (res) {
       if (!res.data) {
-        swal('名称重复', '', 'error')
+        swal({
+          title: '名称重复!',
+          type: 'error',
+          timer: 1000,
+          showConfirmButton: false
+        });
       } else {
         $('#editArea').modal('hide');
 
@@ -1120,7 +1145,12 @@ function createEditArea() {
         })
       }
     }).error(function () {
-      swal('名称校验失败', '', 'error')
+      swal({
+        title: '名称校验失败!',
+        type: 'error',
+        timer: 1000,
+        showConfirmButton: false
+      });
     });
   } else {
     ajaxPost(url, obj).success(function (res) {
