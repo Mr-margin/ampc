@@ -27,6 +27,7 @@ var msg = {
     esCouplingName: ''
   }
 };
+var subBtn = true;
 
 $(window).resize(function (e) {
   if ($(window).width() < 1370) {
@@ -222,7 +223,7 @@ function initRwTable() {
     },
     onLoadSuccess: function (data) {
       selectRW = data.rows[0];
-      QJheight = data.rows.length * 69 + 98;
+      QJheight = data.rows.length * 75 + 98;
       $('.qjtableDiv').css('background-color', '#d9edf7');
       //QJheight = $('.rwtableDiv').height();
 
@@ -533,6 +534,7 @@ function deleteFun(type) {
           });
           delRWid = {};
           $('.rwDel').attr('disabled', true);
+
         } else {
           swal({
             title: '删除失败!',
@@ -978,6 +980,8 @@ function checkedDB(t) {
 /*新改任务创建*/
 function createRw() {
   if ($('#rwForm').valid()) {
+    if(!subBtn)return;
+    subBtn = false;
     var url = '/mission/save_mission';
     var urlName = '/mission/check_missioname';
     var params = {};
@@ -1234,6 +1238,8 @@ function setOption(ele, res) {
 
 /*新改情景创建*/
 function createQj(type) {
+  if(!subBtn)return;
+  subBtn = false;
   var url, urlName;
   var params, paramsName;
   url = '/scenarino/save_scenarino';
@@ -1436,6 +1442,8 @@ $('#startUp').on('show.bs.modal', function (event) {
 })
 
 function subStartUp() {
+  if(!subBtn)return;
+  subBtn = false;
   var url = '/ModelType/startModel';
   ajaxPost(url, {
     userId: userId,
@@ -1573,4 +1581,21 @@ function getQD() {
   })
   //$('#qd').append($('<option value="1">jjj</option>'))
 }
+
+/*模态框关闭后事件*/
+$('#createRwModal').on('hidden.bs.modal',function(){
+  subBtn = true;
+});
+
+$('#createYpQjModal').on('hidden.bs.modal',function(){
+  subBtn = true;
+});
+
+$('#createHpQjModal').on('hidden.bs.modal',function(){
+  subBtn = true;
+});
+
+$('#startUp').on('hidden.bs.modal',function(){
+  subBtn = true;
+});
 
