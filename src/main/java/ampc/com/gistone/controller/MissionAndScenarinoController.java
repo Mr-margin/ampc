@@ -902,32 +902,8 @@ public class MissionAndScenarinoController {
 			frdate=formatter.format(frtdate);
 			}
 			JSONArray arr=new JSONArray();
-			for(TScenarinoDetail tscenar:scenarlist){
-				JSONObject obj=new JSONObject();
-				//为预评估情景时保存数据
-				if(tscenar.getScenType().equals("1")){
-					obj.put("scenarinoId", tscenar.getScenarinoId());
-					obj.put("scenarinoName", tscenar.getScenarinoName());
-					String starttime=formatter.format(tscenar.getScenarinoStartDate());
-					String endtime=formatter.format(tscenar.getScenarinoEndDate());
-					String padate=formatter.format(tscenar.getPathDate());
-					obj.put("scenarinoStartDate",starttime);
-					obj.put("scenarinoEndDate", endtime);
-					obj.put("pathDate", padate);
-					arr.add(obj);
-				}
-				//为后处理情景时保存数据
-				if(tscenar.getScenType().equals("2")){
-					obj.put("scenarinoId", tscenar.getScenarinoId());
-					obj.put("scenarinoName", tscenar.getScenarinoName());
-					String starttime=formatter.format(tscenar.getScenarinoStartDate());  
-					String endtime=formatter.format(tscenar.getScenarinoEndDate());
-				 
-					obj.put("scenarinoStartDate",starttime);
-					obj.put("scenarinoEndDate", endtime);
-					arr.add(obj);
-				}	
-			}
+			
+			
 			if(tMission.getMissionStatus().equals("3")){
 				JSONObject lastobj=new JSONObject();
 				lastobj.put("scenarinoId",tsdate.getScenarinoId());
@@ -956,6 +932,33 @@ public class MissionAndScenarinoController {
 				forobj.put("scenarinoEndDate", frdate);
 				arr.add(forobj);		
 			}
+			for(TScenarinoDetail tscenar:scenarlist){
+				JSONObject obj=new JSONObject();
+				//为预评估情景时保存数据
+				if(tscenar.getScenType().equals("1")){
+					obj.put("scenarinoId", tscenar.getScenarinoId());
+					obj.put("scenarinoName", tscenar.getScenarinoName());
+					String starttime=formatter.format(tscenar.getScenarinoStartDate());
+					String endtime=formatter.format(tscenar.getScenarinoEndDate());
+					String padate=formatter.format(tscenar.getPathDate());
+					obj.put("scenarinoStartDate",starttime);
+					obj.put("scenarinoEndDate", endtime);
+					obj.put("pathDate", padate);
+					arr.add(obj);
+				}
+				//为后处理情景时保存数据
+				if(tscenar.getScenType().equals("2")){
+					obj.put("scenarinoId", tscenar.getScenarinoId());
+					obj.put("scenarinoName", tscenar.getScenarinoName());
+					String starttime=formatter.format(tscenar.getScenarinoStartDate());  
+					String endtime=formatter.format(tscenar.getScenarinoEndDate());
+				 
+					obj.put("scenarinoStartDate",starttime);
+					obj.put("scenarinoEndDate", endtime);
+					arr.add(obj);
+				}	
+			}
+			
 			
 			return AmpcResult.build(0, "find_scenarino_time success",arr);
 		}catch(Exception e){
