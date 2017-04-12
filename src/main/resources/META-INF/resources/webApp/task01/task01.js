@@ -705,6 +705,7 @@ function rename(type, id) {
             showConfirmButton: false
           });
           //swal('名称重复', '', 'error')
+          subBtn = true;
         }
       }).error(function () {
         swal({
@@ -714,6 +715,7 @@ function rename(type, id) {
           showConfirmButton: false
         });
         //swal('校验失败', '', 'error')
+        subBtn = true;
       })
     });
 
@@ -1054,6 +1056,7 @@ function createRw() {
           showConfirmButton: false
         });
         //swal('名称重复', '', 'error')
+        subBtn = true;
       }
     }).error(function () {
       swal({
@@ -1063,6 +1066,7 @@ function createRw() {
         showConfirmButton: false
       });
       //swal('校验失败', '', 'error')
+      subBtn = true;
     })
   }
 
@@ -1335,6 +1339,7 @@ function createQj(type) {
             showConfirmButton: false
           });
           //swal('名称重复', '', 'error')
+          subBtn = true;
         }
       }).error(function () {
         swal({
@@ -1344,6 +1349,7 @@ function createQj(type) {
           showConfirmButton: false
         });
         //swal('校验失败', '', 'error')
+        subBtn = true;
       })
     }
 
@@ -1410,6 +1416,7 @@ function createQj(type) {
             showConfirmButton: false
           });
           //swal('名称重复', '', 'error')
+          subBtn = true;
         }
       }).error(function () {
         swal({
@@ -1419,6 +1426,7 @@ function createQj(type) {
           showConfirmButton: false
         });
         //swal('校验失败', '', 'error')
+        subBtn = true;
       })
     }
 
