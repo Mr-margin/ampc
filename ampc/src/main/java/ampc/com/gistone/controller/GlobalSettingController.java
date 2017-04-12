@@ -19,8 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import ampc.com.gistone.database.inter.TGlobalSettingMapper;
-import ampc.com.gistone.database.model.TGlobalSetting;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 
@@ -35,7 +33,7 @@ import ampc.com.gistone.util.ClientUtil;
 public class GlobalSettingController {
 	
 	//加载全局参数的映射
-	@Autowired
+	/*@Autowired
 	private TGlobalSettingMapper tGlobalSettingMapper;
 	
 	
@@ -90,5 +88,5 @@ public class GlobalSettingController {
 				return AmpcResult.build(1000, "参数失败");
 			}
 	}
-
+*/
 }
