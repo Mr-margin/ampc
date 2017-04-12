@@ -855,8 +855,8 @@ public class MissionAndScenarinoController {
 			TScenarinoDetail tsdate=new TScenarinoDetail();
 			TScenarinoDetail frtscen=new TScenarinoDetail();
 			if(tMission.getMissionStatus().equals("3")){	
-				if(null!=tScenarinoDetailMapper.selectMaxEndTime()){
-					tsdate=tScenarinoDetailMapper.selectMaxEndTime();
+				if(null!=tScenarinoDetailMapper.selectMaxEndTime(missionId)){
+					tsdate=tScenarinoDetailMapper.selectMaxEndTime(missionId);
 				}else{
 					System.out.println("无基准情景");	
 					return AmpcResult.build(1000, "无基准情景",null);
@@ -882,7 +882,7 @@ public class MissionAndScenarinoController {
 			Date scenar=null;
 			Date frtdate=null;
 			
-			if(null!=tScenarinoDetailMapper.selectMaxEndTime()){
+			if(null!=tScenarinoDetailMapper.selectMaxEndTime(missionId)){
 			scenar=tsdate.getScenarinoEndDate();
 			}
 			if(null!=tScenarinoDetailMapper.selectMaxEndTime4()){
@@ -894,7 +894,7 @@ public class MissionAndScenarinoController {
 			SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String times="";
 			String frdate="";
-			if(null!=tScenarinoDetailMapper.selectMaxEndTime()){
+			if(null!=tScenarinoDetailMapper.selectMaxEndTime(missionId)){
 			times=formatter.format(scenar);
 			}
 			String missiondate=formatter.format(mission);
