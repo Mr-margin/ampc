@@ -20,11 +20,12 @@ public interface TGlobalSettingMapper {
 	/**
 	 * @Description: 查找所有用户的全局设置
 	 * @return   
-	 * TGlobalSetting  
+	 * List<TGlobalSetting>  
 	 * @throws
 	 * @author yanglei
-	 * @date 2017年4月10日 下午5:44:41
+	 * @date 2017年4月12日 上午11:29:36
 	 */
 	List<TGlobalSetting> selectAll();
 	
+
 }

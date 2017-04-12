@@ -103,4 +103,15 @@ public interface TTasksStatusMapper {
 	 * @date 2017年4月8日 下午7:46:26
 	 */
 	int updatemessageStatus(TTasksStatus tTasksStatus);
+
+	/**
+	 * @Description: 添加对应情景的减排系数
+	 * @param tTasksStatus
+	 * @return   
+	 * int  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月12日 上午9:25:10
+	 */
+	int updateEmisData(TTasksStatus tTasksStatus);
 }
