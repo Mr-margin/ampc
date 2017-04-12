@@ -64,9 +64,6 @@ public class ReadyData {
 	//引入发送消息的工具类
 	@Autowired
 	private SendQueueData sendQueueData;
-	//加载定时器
-	@Autowired
-	private SchedulerTimer schedulerTimer;
 	
 	
 	/**
