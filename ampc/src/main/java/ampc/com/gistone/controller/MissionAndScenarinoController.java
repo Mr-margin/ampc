@@ -956,7 +956,6 @@ public class MissionAndScenarinoController {
 				forobj.put("scenarinoEndDate", frdate);
 				arr.add(forobj);		
 			}
-			//为基准情景保存数据
 			
 			return AmpcResult.build(0, "find_scenarino_time success",arr);
 		}catch(Exception e){
