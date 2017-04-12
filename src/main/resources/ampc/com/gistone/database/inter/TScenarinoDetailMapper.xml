@@ -267,6 +267,7 @@ FROM
 WHERE
 	SCEN_TYPE = '3'
 AND IS_EFFECTIVE = '1')
+AND IS_EFFECTIVE = '1'
   </select>
   
   <select id="selectMaxEndTime4" resultMap="BaseResultMap" >
@@ -281,6 +282,7 @@ FROM
 WHERE
 	SCEN_TYPE = '4'
 AND IS_EFFECTIVE = '1')
+AND IS_EFFECTIVE = '1'
   </select>
   <select id="selectid" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TScenarinoDetail" >
    	 SELECT 
