@@ -516,8 +516,8 @@ public class MissionAndScenarinoController {
 				map.put("missionStatus",null);
 			}
 			//查询全部 写入结果集 返回
-			List<Map> list = this.tScenarinoDetailMapper.selectAllOrByQueryName(map);
-			mapResult.put("total", this.tScenarinoDetailMapper.selectCountOrByQueryName(map));
+			List<Map> list = this.tScenarinoDetailMapper.selectAllOrByQueryName2(map);
+			mapResult.put("total", this.tScenarinoDetailMapper.selectCountOrByQueryName2(map));
 			mapResult.put("rows",list);
 			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
