@@ -295,6 +295,7 @@
             <if test="scenarinoDetailId != null">
                 and SCENARINO_DETAIL_ID = #{scenarinoDetailId,jdbcType=DECIMAL}
             </if>
+            order by ORDER BY ADD_TIME
     </select>
     
     <select id="selectAllAreaByScenarinoId" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
