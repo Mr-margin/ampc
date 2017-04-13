@@ -321,6 +321,7 @@ public class SchedulerTimer {
 		System.out.println("我没隔10分钟执行一次");
 		LogUtil.getLogger().info("每隔10分钟执行一次");
 		//根据情景的状态和情景的类型确定准备参数
+		//找到每一条预评估情景
 		List<TScenarinoDetail> list = tScenarinoDetailMapper.getscenidAndcores();
 		//查找可执行的时间
 		Date maxtime = tScenarinoDetailMapper.getmaxtime();

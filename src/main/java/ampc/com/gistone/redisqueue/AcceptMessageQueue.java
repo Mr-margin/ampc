@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,6 @@ public class AcceptMessageQueue implements Runnable{
 	* @see java.lang.Runnable#run() 
 	*/ 
 	
-	@Override
 	public void run() {
 		
 	
@@ -70,7 +70,8 @@ public class AcceptMessageQueue implements Runnable{
 		//	String rpop2 = redisUtilServer.rpop("send_queue_name");//result_Start_model
 			if (null==rpop) {
 				LogUtil.getLogger().info("队列里面没有数据了！");
-			}
+			}else {
+			
 				Message message = JsonUtil.jsonToObj(rpop, Message.class);
 				
 				String key = message.getType();
@@ -89,7 +90,7 @@ public class AcceptMessageQueue implements Runnable{
 				default:
 					break;
 				}
-				
+			}
 				
 			} catch (IOException e) {                                                                             
 				// TODO Auto-generated catch block

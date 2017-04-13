@@ -95,14 +95,6 @@ public class SendQueueData {
 		JSONObject jsonObject = JSONObject.fromObject(queueData);
 		String json = jsonObject.toString();
 		System.out.println(json+"这是发送的数据包 ");
-	//	List<String> list = new ArrayList<String>();
-		//获取tasksstatus的rangeday
-	//	TTasksStatus tasksStatus = tTasksStatusMapper.selectStatus(tasksScenarinoId);
-	//	Long rangeDay = tasksStatus.getRangeDay();
-	//	for (int i = 0; i < rangeDay; i++) {
-	//		list.add(json);
-	//	}
-	//	sendQueueData.sendData(list,tasksStatus);
 		sendQueueData.sendData(json);
 		System.out.println("发送成功");
 	}

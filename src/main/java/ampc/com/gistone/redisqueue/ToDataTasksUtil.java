@@ -118,10 +118,12 @@ public class ToDataTasksUtil {
 	    	//获取当前情景pathdate 用于确定该条记录是不是补发的
 	    	Date pathDate = selectByPrimaryKey.getPathDate();
 	    	Date today = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+	    	String scentype = selectByPrimaryKey.getScenType();
+	    	//根据情景类型确定stepindex的数量
+	    	Integer index = surestepindex(scentype);
 	    	if (null!=pathDate) {
 	    		int pathcompare = pathDate.compareTo(today);
 		    	
-		    	String scentype = selectByPrimaryKey.getScenType();
 		    	//获取情景任务的开始时间和结束时间
 		    	Date startDate = selectByPrimaryKey.getScenarinoStartDate();
 		    	Date endDate = selectByPrimaryKey.getScenarinoEndDate();
@@ -129,8 +131,7 @@ public class ToDataTasksUtil {
 		    	int compareTo = endDate.compareTo(tasksEndDate);
 		    	//比较开始时间和任务完成结束的时间
 		    	int StartCompare = startDate.compareTo(tasksEndDate);
-				//根据情景类型确定stepindex的数量
-		    	Integer index = surestepindex(scentype );
+				
 		    	//修改该情景的状态  为1 表示该条情景模式运行过 
 		    	if ("0".equals(code)&&"4".equals(scentype)&&stepindex==8&&StartCompare==0) {
 					//实时预报第一天的跑完或者补跑的fnl跑完状态变为1可用
@@ -175,13 +176,26 @@ public class ToDataTasksUtil {
 				}
 			}else {
 				//针对其他三种情景（ 预评估的后评估情景 后评估任务的两种情景）不存在pathdate 当接受到消息时候 给每个tasksstatus一个状态
-				
+				if ("0".equals(code)&&"2".endsWith(scentype)&&index.equals(stepindex)) {
+					//后评估情景更新状态
+					TTasksStatus tasksStatus2 = new TTasksStatus();
+		    		tasksStatus2.setBeizhu("2"); 
+		    		tasksStatus2.setTasksScenarinoId(tasksScenarinoId);
+		    		tasksStatusMapper.updateRunstatus(tasksStatus2);
+				}
+				if ("0".equals(code)&&"3".endsWith(scentype)&&index.equals(stepindex)) {
+					//基准情景更新状态
+					TTasksStatus tasksStatus2 = new TTasksStatus();
+		    		tasksStatus2.setBeizhu("2"); 
+		    		tasksStatus2.setTasksScenarinoId(tasksScenarinoId);
+		    		tasksStatusMapper.updateRunstatus(tasksStatus2);
+				}
 				
 			}
 	    	
 	    }else {
 			System.out.println("更新tasksstatus失败");
-			LogUtil.getLogger().info(tasksScenarinoId+"该情景状态未更新成功");
+			LogUtil.getLogger().info(tasksScenarinoId+"该情景状态未更新失败");
 		}
 	    
 	}
