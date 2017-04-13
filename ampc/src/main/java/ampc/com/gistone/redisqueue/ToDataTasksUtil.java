@@ -73,7 +73,7 @@ public class ToDataTasksUtil {
 	 * @date 2017年3月27日 下午2:05:42
 	 */
 	public void updateDB(Message message) {
-		System.out.println("这个是启动模式的返回结果");
+		LogUtil.getLogger().info("模式启动的返回结果");
 		//创建tasksstatus对象
 		TTasksStatus tasksStatus = new TTasksStatus();
 	    Object object = message.getBody();
@@ -86,20 +86,17 @@ public class ToDataTasksUtil {
 	   if (endtime==null||"".equals(endtime)) {
 		System.out.println("该条消息出错误！！");
 	}
-	   System.out.println(endtime+"---------");
 	   String endtimeString = endtime+" "+"23:59:59";
 	   
 	    Date tasksEndDate = DateUtil.StrtoDateYMD(endtimeString, "yyyyMMdd HH:mm:ss");
 	   Object step = map.get("index");
 	   Integer stepindex = Integer.parseInt(step.toString());
 	   String errorStatus = (String) map.get("desc");
-	    System.out.println("---------");
 	    
 	    System.out.println(tasksEndDate);
 	    System.out.println(stepindex);
 	    System.out.println(errorStatus);
 	    
-	    System.out.println("---------");
 	    tasksStatus.setErrorStatus(errorStatus);
 	   // tasksStatus.setTasksScenarinoId((long)scenarinoId);
 	    tasksStatus.setTasksScenarinoId(tasksScenarinoId);
@@ -117,12 +114,11 @@ public class ToDataTasksUtil {
 	    	System.out.println("跟新tasksstatus成功");
 	    	//当tasksstatus更新成功 并且执行成功  发送下一条消息
 	    	//通过情景的ID查找该情景的开始时间结束时间和情景类型
-	    //	String scentype = tScenarinoDetailMapper.selectscentype(tasksScenarinoId);
 	    	TScenarinoDetail selectByPrimaryKey = tScenarinoDetailMapper.selecttypetime(tasksScenarinoId);
 	    	//获取当前情景pathdate 用于确定该条记录是不是补发的
 	    	Date pathDate = selectByPrimaryKey.getPathDate();
 	    	Date today = DateUtil.DateToDate(new Date(), "yyyyMMdd");
-	    	if (pathDate!=null) {
+	    	if (null!=pathDate) {
 	    		int pathcompare = pathDate.compareTo(today);
 		    	
 		    	String scentype = selectByPrimaryKey.getScenType();
@@ -175,14 +171,12 @@ public class ToDataTasksUtil {
 		    		System.out.println(tasksEndDate+"tasks的结束时间");
 				}if (stepindex==-1) {
 					//发生错误的时候重新组织上一条的参数发送
-					//Date changeDay = DateUtil.ChangeDay(tasksEndDate, -1);
 					ErrorStatus.Errortips(tasksScenarinoId);
-					//readyData.sendqueueRealData(changeDay,tasksScenarinoId);
 				}
-				//预评估任务的预评估情景 准备下一条数据
-		    	if("0".equals(code)&&"1".equals(scentype)&&index==stepindex&&compareTo>0){
-		    		readyData.sendDataEvaluationSituationThen(tasksEndDate,tasksScenarinoId);
-		    	}
+			}else {
+				//针对其他三种情景（ 预评估的后评估情景 后评估任务的两种情景）不存在pathdate 当接受到消息时候 给每个tasksstatus一个状态
+				
+				
 			}
 	    	
 	    }else {

@@ -79,12 +79,11 @@ public class SchedulerTimer {
 	 * @author yanglei
 	 * @date 2017年4月7日 上午9:53:09
 	 */
-	@Scheduled(cron="0 0 12 * * ?")
+	@Scheduled(cron="0 0 20 * * ?")
 //	@Scheduled(fixedRate = 5000)
 	public void realForTimer() {
 		//Date date = new Date();
-		System.out.println("我每天中午12点开始执行");
-		LogUtil.getLogger().info("我每天中午12点开始执行");
+		LogUtil.getLogger().info("实时预报任务开始");
 	//	logger.info("我每天中午12点开始执行");
 		Long scenarinoId = null;
 		Long cores = null;
@@ -110,7 +109,6 @@ public class SchedulerTimer {
 			//MissionDetail.setMissionAddTime(DateUtil.DateToDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
 		//	MissionDetail.setIsEffective("1");
 			MissionDetail.setMissionStatus("1");
-			System.out.println(MissionDetail);
 			//第一次需要创建任务 后面的则是修改 
 			List<TMissionDetail> missionlist = tMissionDetailMapper.selectMissionDetail(userId);
 			Long missionId = null ;
@@ -127,8 +125,6 @@ public class SchedulerTimer {
 				 List<TMissionDetail> selectByEntity = tMissionDetailMapper.selectByEntity(MissionDetail);
 				 missionId = selectByEntity.get(0).getMissionId();
 				 LogUtil.getLogger().info("创建了一个新的实时预报任务"+missionId);
-//				logger.info("创建了一个新的实时预报任务"+missionId);
-				 LogUtil.getLogger().info("创建了一个新的实时预报任务");
 			}
 			
 			else {
@@ -188,6 +184,7 @@ public class SchedulerTimer {
 					int insertSelec = tMissionDetailMapper.insertSelective(MissionDetail);
 					//获取新任务的任务ID
 					missionId = tMissionDetailMapper.getmissionidbyMission(MissionDetail);
+					LogUtil.getLogger().info("创建了一个新的实时预报任务"+missionId);
 				}
 				
 				if (flag==false) {
@@ -203,13 +200,26 @@ public class SchedulerTimer {
 					updateOlDetail.setMissionId(oldMissionid);
 					updateOlDetail.setIsEffective("0");
 					//修改旧任务 相当于删除
-					int update = tMissionDetailMapper.updateByPrimaryKeySelective(updateOlDetail);
+					try {
+						int update = tMissionDetailMapper.updateByPrimaryKeySelective(updateOlDetail);
+					} catch (Exception e) {
+						// TODO: handle exception
+						LogUtil.getLogger().error("修改实时预报任务出现异常！该任务的ID是"+oldMissionid);
+					}
 					Date missionDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
 					MissionDetail.setMissionStartDate(missionDate);
 					//添加新任务
-					int insertSelec = tMissionDetailMapper.insertSelective(MissionDetail);
+					try {
+						int insertSelec = tMissionDetailMapper.insertSelective(MissionDetail);
+						missionId = tMissionDetailMapper.getmissionidbyMission(MissionDetail);
+						if (insertSelec>0) {
+							LogUtil.getLogger().info("创建了一个新的实时预报任务"+missionId);
+						}
+					} catch (Exception e) {
+						// TODO: handle exception
+						LogUtil.getLogger().error("创建新的实时预报任务出现异常！");
+					}
 					//获取新任务的任务ID
-					missionId = tMissionDetailMapper.getmissionidbyMission(MissionDetail);
 				}
 			}
 			
@@ -258,8 +268,8 @@ public class SchedulerTimer {
 			//创建新的情景
 			insertSelective = tScenarinoDetailMapper.insertSelective(tScenarinoDetail);
 			if (insertSelective>0) {
-				System.out.println("创建了新的实时预报");
-//				logger.info("创建了新的实时预报");
+				//System.out.println("创建了新的实时预报");
+				LogUtil.getLogger().info("创建了新的实时预报");
 			}
 			//创建情景对应的tasksstatus
 			TTasksStatus tTasksStatus = new TTasksStatus();
@@ -281,12 +291,17 @@ public class SchedulerTimer {
 		if (i>0) {
 			//根据情景调动实时预报接口开始实时预报
 			readyData.readyRealMessageDataFirst(scenarinoId,cores);
+			}else {
+				LogUtil.getLogger().info("该情景创建tasks状态表失败");
 			}
 		//修改情景状态为执行模式
 		Map map = new HashMap();
 		map.put("scenarinoStatus", (long)6);
 		map.put("scenarinoId", scenarinoId);
 		int updateScenType = tScenarinoDetailMapper.updateScenType(map);
+		if(updateScenType>0){
+			LogUtil.getLogger().info("实时预报模式启动");
+		}
 		
 	}
 	
@@ -300,9 +315,11 @@ public class SchedulerTimer {
 	 * @author yanglei
 	 * @date 2017年4月7日 下午8:46:00
 	 */
-/*	@Scheduled(cron="0 0/10 * * * ?")
+//	@Scheduled(cron="0 0/10 * * * ?")
+//	@Scheduled(fixedRate = 5000)
 	public void getMaxTime() {
 		System.out.println("我没隔10分钟执行一次");
+		LogUtil.getLogger().info("每隔10分钟执行一次");
 		//根据情景的状态和情景的类型确定准备参数
 		List<TScenarinoDetail> list = tScenarinoDetailMapper.getscenidAndcores();
 		//查找可执行的时间
@@ -360,7 +377,7 @@ public class SchedulerTimer {
 			}
 		}
 		
-	}*/
+	}
 	/**
 	 * 
 	 * @Description: 测试定时器 每隔5秒开始一次   

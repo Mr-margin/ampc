@@ -24,6 +24,12 @@ import java.util.UUID;
 
 
 
+
+
+
+
+
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,6 +41,12 @@ import ampc.com.gistone.database.inter.TUngribMapper;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TUngrib;
+import ampc.com.gistone.redisqueue.entity.QueueBodyData;
+import ampc.com.gistone.redisqueue.entity.QueueData;
+import ampc.com.gistone.redisqueue.entity.QueueDataCmaq;
+import ampc.com.gistone.redisqueue.entity.QueueDataCommon;
+import ampc.com.gistone.redisqueue.entity.QueueDataEmis;
+import ampc.com.gistone.redisqueue.entity.QueueDataWrf;
 import ampc.com.gistone.redisqueue.timer.SchedulerTimer;
 import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.LogUtil;
@@ -84,7 +96,7 @@ public class ReadyData {
 	public void branchPredict(Long scenarinoId,Long cores,Integer scenarinoType,Integer missionType) {
 		if (scenarinoType==4&&missionType==1) {
 			//准备实时预报的数据
-			readyRealMessageDataFirst(scenarinoId,cores);
+		//	readyRealMessageDataFirst(scenarinoId,cores);
 		}
 		if (scenarinoType==3&&missionType==3) {
 			//基准情景
@@ -93,6 +105,7 @@ public class ReadyData {
 		if (scenarinoType==1&&missionType==2) {
 			//预评估任务的预评估情景
 			//readyPreEvaluationSituationDataFirst(scenarinoId,cores);
+			LogUtil.getLogger().info("预评估任务的预评估情景开始！");
 		}
 		if (scenarinoType==2&&missionType==2) {
 			//预评估任务的后评估情景
@@ -636,30 +649,6 @@ public class ReadyData {
 			datatype = "gfs";
 		}
 		QueueData queueData = readypreEvaSituMessageData(scenarinoId , datatype, time);
-		//判断是否能发该条消息 获取实时预报的最新完成的时间
-	//	Date maxtime = schedulerTimer.getMaxTime();
-	//	Map<String, String> map = cantopreEvaluation(null, null, 1);
-	//	String maxusetime = map.get("useable");
-	//	Date maxdate = DateUtil.StrtoDateYMD(maxusetime, "yyyyMMdd");
-//		Date mesdate = DateUtil.StrtoDateYMD(time, "yyyyMMdd");
-//		//时间做比较 当当条消息的时间小于等于实时预报的的最大完成时间的时候 可以做预评估
-//		int compareTo = maxtime.compareTo(mesdate);
-//		if (compareTo>=0) {
-//			sendQueueData.toJson(queueData, null);
-//		}
-		/*while (true) {
-			//判断是否能发该条消息 获取实时预报的最新完成的时间
-			Date maxtime = schedulerTimer.getMaxTime();
-			Date mesdate = DateUtil.StrtoDateYMD(time, "yyyyMMdd");
-			//时间做比较 当当条消息的时间小于等于实时预报的的最大完成时间的时候 可以做预评估
-			int compareTo = maxtime.compareTo(mesdate);
-			if (compareTo>=0) {
-				//sendQueueData.toJson(queueData, null);
-				System.out.println("ssssss----ssss");
-				break;
-			}
-			
-		}*/
 		
 	}
 	/**
@@ -671,7 +660,7 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年4月1日 上午9:55:11
 	 */
-	public static Map<String, String> cantopreEvaluation(Date tasksEndDate, Long tasksScenarinoId,Integer i) {
+	/*public static Map<String, String> cantopreEvaluation(Date tasksEndDate, Long tasksScenarinoId,Integer i) {
 		HashMap<String, String> hashMap = new HashMap<String, String>();
 		String useabledate = DateUtil.DATEtoString(tasksEndDate, "yyyyMMdd");
 		if (i==null) {
@@ -682,7 +671,7 @@ public class ReadyData {
 		}
 		return hashMap;
 	}
-	
+	*/
 	/**
 	 * @Description: TODO
 	 * @return   
@@ -779,8 +768,8 @@ public class ReadyData {
 		//创建消息bady对象
 		QueueBodyData bodyData = new QueueBodyData();
 		//调试模式的内容
-		bodyData.setFlag(1);
-		//bodyData.setFlag(0);
+		//bodyData.setFlag(1);
+		bodyData.setFlag(0);
 		Integer scenarinoType = Integer.parseInt(scenarinoDetailMSG.getScenType());//情景类型
 		Long userId = scenarinoDetailMSG.getUserId();
 		Long missionId = scenarinoDetailMSG.getMissionId();//任务id

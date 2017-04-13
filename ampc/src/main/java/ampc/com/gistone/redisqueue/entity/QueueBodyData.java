@@ -6,10 +6,8 @@
  * @date 2017年3月21日 上午9:44:34
  * @version 
  */
-package ampc.com.gistone.redisqueue;
+package ampc.com.gistone.redisqueue.entity;
 
-
-import org.springframework.stereotype.Component;
 
 /**  
  * @Title: QueueBodyData.java

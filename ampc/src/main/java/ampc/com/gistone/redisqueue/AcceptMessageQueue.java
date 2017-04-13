@@ -36,7 +36,6 @@ import ampc.com.gistone.util.LogUtil;
 public class AcceptMessageQueue implements Runnable{
 	
 	
-	private Logger logger = Logger.getLogger(this.getClass());
 	//加载redis工具类
 	@Autowired
 	private RedisUtilServer redisUtilServer;
@@ -69,19 +68,22 @@ public class AcceptMessageQueue implements Runnable{
 			String rpop = redisUtilServer.brpop("send_queue_name");//result_Start_model
 			System.out.println(rpop+"刚取出来的");
 		//	String rpop2 = redisUtilServer.rpop("send_queue_name");//result_Start_model
+			if (null==rpop) {
+				LogUtil.getLogger().info("队列里面没有数据了！");
+			}
 				Message message = JsonUtil.jsonToObj(rpop, Message.class);
 				
 				String key = message.getType();
 				switch (key) {
 				case "model.start.result":
-					logger.info("start tasks"+new Date());
+					LogUtil.getLogger().info("start tasks"+new Date());
 					toDataTasksUtil.updateDB(message);
-					logger.info("end tasks"+new Date());
+					LogUtil.getLogger().info("end tasks"+new Date());
 					break;
 				case "ungrib.result":
-					logger.info("接受ungrib数据"+new Date());
+					LogUtil.getLogger().info("接受ungrib数据："+new Date());
 					toDataUngribUtil.updateDB(rpop);
-					System.out.println("ungrib---------------");
+					LogUtil.getLogger().info("ungrib处理完毕："+new Date());
 					break;
 
 				default:
