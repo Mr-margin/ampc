@@ -520,7 +520,7 @@ public class MissionAndScenarinoController {
 			List<Map> list = this.tScenarinoDetailMapper.selectAllOrByQueryName2(map);
 			List<Map> newlist=new ArrayList<Map>();
 			for(Map s:list){
-				Long id=Long.valueOf(s.get("SCENARINO_ID").toString());
+				Long id=Long.valueOf(s.get("scenarinoId").toString());
 				if(scenarinoId==id){
 					newlist.add(s);
 					
