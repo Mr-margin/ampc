@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import ampc.com.gistone.database.inter.TUngribMapper;
 import ampc.com.gistone.redisqueue.result.Message;
 import ampc.com.gistone.util.JsonUtil;
+import ampc.com.gistone.util.LogUtil;
 
 /**  
  * @Title: AcceptMessage.java
@@ -60,7 +61,8 @@ public class AcceptMessageQueue implements Runnable{
 		
 	
 		
-		while (true) {
+		while (!Thread.interrupted()) {
+			
 			try {
 		//	String send_queue_name = redisUtilServer.rpop("send_queue_name");//result_Start_model
 			System.out.println("队列接受数据");
@@ -88,6 +90,13 @@ public class AcceptMessageQueue implements Runnable{
 				
 				
 			} catch (IOException e) {                                                                             
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				LogUtil.getLogger().error("线程出现异常了");
+			}
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
