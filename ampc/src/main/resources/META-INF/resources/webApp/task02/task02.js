@@ -1012,7 +1012,8 @@ $('#editArea').on('show.bs.modal', function (event) {
   }
 
   var button = $(event.relatedTarget);
-  var create = button.data('new');
+  //var create = button.data('new');
+  var create = cnArea;
   var areaId, findUrl;
   var allUrl = '/area/find_areaAll';
   $('.adcodeList.mt20').empty();
@@ -1035,6 +1036,7 @@ $('#editArea').on('show.bs.modal', function (event) {
     });
     $('#areaName').val(button.parents('.areaTitle_con').find('b').html()).attr('data-id', areaId);
   }
+  cnArea = false;
 
   ajaxPost(allUrl, {
     scenarinoId: qjMsg.qjId,
@@ -1182,6 +1184,24 @@ function createEditArea() {
     })
   }
 }
+
+var cnArea = false;
+/*检测是否超过最大区域数量*/
+function createNewAreaBtn(){
+  if(allData.length>=10){
+    swal({
+      title: '已达最大区域数量!',
+      type: 'warning',
+      timer: 1000,
+      showConfirmButton: false
+    });
+    cnArea = false;
+  }else{
+    $('#editArea').modal('show');
+    cnArea = true;
+  }
+}
+
 
 /*显示已选择code,并进行checked*/
 function setShowCode(data) {
