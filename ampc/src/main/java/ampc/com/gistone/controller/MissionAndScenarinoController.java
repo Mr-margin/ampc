@@ -1380,7 +1380,8 @@ public class MissionAndScenarinoController {
 				newtScenarinoArea.setCityCodes(area.getCityCodes().toString());
 				newtScenarinoArea.setCountyCodes(area.getCountyCodes().toString());
 				newtScenarinoArea.setProvinceCodes(area.getProvinceCodes().toString());
-				newtScenarinoArea.setUserId(userId);		
+				newtScenarinoArea.setUserId(userId);	
+				newtScenarinoArea.setAddTime(area.getAddTime());
 				int yes=tScenarinoAreaMapper.insertSelective(newtScenarinoArea);
 				List<TScenarinoAreaWithBLOBs> thetScenarinoArea=tScenarinoAreaMapper.selectByEntity(newtScenarinoArea);
 				TScenarinoAreaWithBLOBs theis=thetScenarinoArea.get(0);
