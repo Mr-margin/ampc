@@ -792,6 +792,15 @@ function addPlan(e) {
       $('#yaName').val('');
     });
   } else {
+    if(!selectCopyPlan){
+      swal({
+        title: '无预案!',
+        type: 'error',
+        timer: 1000,
+        showConfirmButton: false
+      });
+      return
+    };
     var url = '/plan/copy_plan';
 
     ajaxPost(url, {
@@ -845,6 +854,8 @@ function copyPlan() {
 function editPlan(t) {
   if (!t) {
     t = selectedTimes;
+  }else{
+    selectedTimes = t;
   }
   areaIndex = t.index;
   timeIndex = t.indexNum;
@@ -864,7 +875,12 @@ function editPlan(t) {
 
   vipspa.setMessage(msg);
 
-  if (msg.content.planId == -1)return;
+  if (msg.content.planId == -1){
+    $('#timePlan').modal('show');
+    $('a[href="#plan"]').eq(0).click();
+
+    return
+  };
 
   createNewPlan();
 }
@@ -1901,7 +1917,9 @@ function initCopyPlanTable() {
     onLoadSuccess: function (data) {
       selectCopyPlan = data.rows[0];
       console.log(data);
-      $('#copyPlanTable').bootstrapTable('check', 0)
+      if(selectCopyPlan){
+        $('#copyPlanTable').bootstrapTable('check', 0)
+      }
     }
   });
 }
