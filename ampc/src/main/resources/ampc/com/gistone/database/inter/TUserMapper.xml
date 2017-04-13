@@ -10,9 +10,37 @@
     <result column="COUNTY_CODE" property="countyCode" jdbcType="DECIMAL" />
     <result column="PREDICTION_TIME" property="predictionTime" jdbcType="DECIMAL" />
   </resultMap>
+  <!-- 根据所有的用户信息Map -->
+  <resultMap id="userListMap" type="hashMap" >
+    <id column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="USER_NAME" property="userName" jdbcType="OTHER" />
+    <result column="PROVINCE_CODE" property="provinceCode" jdbcType="DECIMAL" />
+    <result column="CITY_CODE" property="cityCode" jdbcType="DECIMAL" />
+    <result column="COUNTY_CODE" property="countyCode" jdbcType="DECIMAL" />
+    <result column="PREDICTION_TIME" property="predictionTime" jdbcType="DECIMAL" />
+  </resultMap>
   <sql id="Base_Column_List" >
     USER_ID, USER_NAME, PASSWORD, PROVINCE_CODE, CITY_CODE, COUNTY_CODE, PREDICTION_TIME
   </sql>
+  
+  
+    <!-- 根据所有的用户信息列表 -->
+   <select id="selectUserList" resultMap="userListMap">
+		SELECT USER_ID,USER_NAME, PROVINCE_CODE, CITY_CODE, COUNTY_CODE, PREDICTION_TIME
+			FROM T_USER 
+				WHERE  IS_EFFECTIVE='1' 
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
