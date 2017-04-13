@@ -1337,8 +1337,7 @@ public class PlanAndMeasureController {
 					if(update>0){
 						//正在进行重新计算减排中
 						resultMap.put("type", 1);
-						LogUtil.getLogger().info("PlanAndMeasureController   区域的减排状态查询失败！正在重新计算！");
-						LogUtil.getLogger().warn("PlanAndMeasureController   区域的减排状态查询失败！正在重新计算！");
+						LogUtil.getLogger().warn("PlanAndMeasureController  警告: 区域的减排状态查询失败！正在重新计算！");
 						return AmpcResult.ok(resultMap);
 					}else{
 						LogUtil.getLogger().error("PlanAndMeasureController   区域的减排状态查询失败,数据库在修改情景状态时失败。");
