@@ -133,13 +133,13 @@ public interface TScenarinoDetailMapper {
      */
     List<Map> selectAllOrByQueryName(Map map);
     
-    
+    List<Map> selectAllOrByQueryName2(Map map);
     /**
      * 不分页查询所有有效的条数 可根据条件名模糊查询
      * @return 总条数
      */
     int selectCountOrByQueryName(Map map);
-	
+    int selectCountOrByQueryName2(Map map);
 	 /**
      * 根据任务Id查询情景列表 并可根据条件名模糊查询
      * @param map 参数
