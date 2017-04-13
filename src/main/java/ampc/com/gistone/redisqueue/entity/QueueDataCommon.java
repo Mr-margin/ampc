@@ -6,7 +6,8 @@
  * @date 2017年3月17日 下午1:52:17
  * @version 
  */
-package ampc.com.gistone.redisqueue;
+package ampc.com.gistone.redisqueue.entity;
+
 
 import java.util.Map;
 
