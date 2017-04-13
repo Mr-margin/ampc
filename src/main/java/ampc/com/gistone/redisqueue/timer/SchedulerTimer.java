@@ -79,8 +79,8 @@ public class SchedulerTimer {
 	 * @author yanglei
 	 * @date 2017年4月7日 上午9:53:09
 	 */
-//	@Scheduled(cron="0 0 12 * * ?")
-	@Scheduled(fixedRate = 5000)
+	@Scheduled(cron="0 0 12 * * ?")
+//	@Scheduled(fixedRate = 5000)
 	public void realForTimer() {
 		//Date date = new Date();
 		System.out.println("我每天中午12点开始执行");
