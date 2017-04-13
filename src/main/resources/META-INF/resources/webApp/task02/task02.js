@@ -286,18 +286,18 @@ function initialize() {
     //app2();
   });
 
-  initZTree();  //初始化zTree数据
+  //initZTree();  //初始化zTree数据
 }
 
-/*初始化zTree数据*/
-function initZTree() {
-  var url = '/area/find_areas_new';
-  ajaxPost(url, {
-    userId: userId
-  }).success(function (res) {
-    zTreeData = res.data;
-  });
-}
+///*初始化zTree数据*/
+//function initZTree() {
+//  var url = '/area/find_areas_new';
+//  ajaxPost(url, {
+//    userId: userId
+//  }).success(function (res) {
+//    zTreeData = res.data;
+//  });
+//}
 
 
 var scenarino;
