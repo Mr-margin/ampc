@@ -39,6 +39,8 @@ import ampc.com.gistone.util.ClientUtil;
 @RestController
 @RequestMapping
 public class GetWeatherModelController {
+	
+	
 	@Autowired
 	private RedisUtilServer redisUtilServer;
 	//加载准备数据工具类
@@ -52,6 +54,20 @@ public class GetWeatherModelController {
 	
 	@Autowired
 	private TTasksStatusMapper tTasksStatusMapper;
+	
+	
+	/**
+	 * 
+	 * @Description: 模式启动接口
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return   
+	 * AmpcResult  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月13日 下午4:23:53
+	 */
 	
 	@RequestMapping("/ModelType/startModel")
 	public AmpcResult getRunModel(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
@@ -90,8 +106,20 @@ public class GetWeatherModelController {
 		}
 		
 	}
+	/**
+	 * 
+	 * @Description: 取减排系数的接口
+	 * @param request
+	 * @param response
+	 * @return   
+	 * AmpcResult  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月13日 下午4:22:55
+	 */
 	@RequestMapping("/saveEmis")
 	public AmpcResult saveEmisData(HttpServletRequest request,HttpServletResponse response) {
+		try {
 		String sourceid = request.getParameter("sourceid");
 		String calctype = request.getParameter("calctype");
 		String psal = request.getParameter("psal");
@@ -106,12 +134,17 @@ public class GetWeatherModelController {
 		tTasksStatus.setMeiccityconfig(meiccityconfig);
 		tTasksStatus.setTasksScenarinoId(scenarioid);
 		//添加到对应的情景下面去
-		int i = tTasksStatusMapper.updateEmisData(tTasksStatus);
-		if (i>0) {
-			return AmpcResult.build(0, "ok");
-		}else {
-			return AmpcResult.build(1000, "失败");
+			int i = tTasksStatusMapper.updateEmisData(tTasksStatus);
+			if (i>0) {
+				return AmpcResult.build(0, "ok");
+			}else {
+				return AmpcResult.build(1000, "失败");
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			return AmpcResult.build(1000, "参数错误");
 		}
+		
 		
 	}
 	
