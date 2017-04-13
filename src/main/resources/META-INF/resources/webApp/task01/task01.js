@@ -545,6 +545,14 @@ function deleteFun(type) {
           delRWid = {};
           $('.rwDel').attr('disabled', true);
 
+        }else if(res.status == 9999){
+          swal({
+            title: '删除失败!',
+            text:"此情景为其他情景的基础情景",
+            type: 'error',
+            timer: 1500,
+            showConfirmButton: false
+          });
         } else {
           swal({
             title: '删除失败!',
