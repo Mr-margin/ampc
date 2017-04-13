@@ -41,6 +41,7 @@ import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.redisqueue.result.Message;
 import ampc.com.gistone.util.DateUtil;
+import ampc.com.gistone.util.LogUtil;
 
 /**  
  * @Title: ToDataTasksUtil.java
@@ -186,6 +187,7 @@ public class ToDataTasksUtil {
 	    	
 	    }else {
 			System.out.println("更新tasksstatus失败");
+			LogUtil.getLogger().info(tasksScenarinoId+"该情景状态未更新成功");
 		}
 	    
 	}
