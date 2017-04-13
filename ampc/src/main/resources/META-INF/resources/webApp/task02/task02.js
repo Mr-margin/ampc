@@ -1204,7 +1204,7 @@ function createEditArea() {
 var cnArea = false;
 /*检测是否超过最大区域数量*/
 function createNewAreaBtn(){
-  if(allData.length>=10){
+  if(allData.length>=maxAreaNum){
     swal({
       title: '已达最大区域数量!',
       type: 'warning',
@@ -1629,10 +1629,10 @@ function search() {
 function rwType(v, row, i) {
   var type;
   switch (row.missionStatus) {
-    case '1':
+    case '2':
       type = '预评估';
       break;
-    case '2':
+    case '3':
       type = '后评估';
       break;
   }
