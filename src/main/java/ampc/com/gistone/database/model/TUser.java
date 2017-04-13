@@ -1,18 +1,25 @@
 package ampc.com.gistone.database.model;
 
+/**
+ * 用户实体类
+ * @author WangShanxi
+ * @version v.0.1
+ * @date 2017年4月13日
+ */
 public class TUser {
+	//用户ID	
     private Long userId;
-
+    //用户昵称
     private Object userName;
-
+    //用户密码
     private Object password;
-
+    //用户所在的省级code
     private Integer provinceCode;
-
+    //用户所在的市级code
     private Integer cityCode;
-    
+    //用户所在的县级code    
     private Integer countyCode;
-    
+    //极限预报天数    
     private Integer predictionTime;
 
 
