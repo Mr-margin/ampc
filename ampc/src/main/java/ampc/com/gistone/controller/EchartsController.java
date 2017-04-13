@@ -30,6 +30,7 @@ import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.CastNumUtil;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.DateUtil;
+import ampc.com.gistone.util.LogUtil;
 
 /**
  * Echarts控制类
@@ -405,9 +406,10 @@ public class EchartsController {
 			//写入减排量结果集合
 			map.put("jplResult", jplResult);
 			//返回结果
+			LogUtil.getLogger().info("EchartsController 情景减排柱状图数据查询成功!");
 			return AmpcResult.ok(map);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("EchartsController 情景减排柱状图数据查询异常!",e);
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
@@ -528,9 +530,10 @@ public class EchartsController {
 				puList.get(i).setValue(value);
 			}
 			//返回结果
+			LogUtil.getLogger().info("EchartsController 情景减排饼状图数据查询成功!");
 			return AmpcResult.ok(puList);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("EchartsController 情景减排饼状图数据查询异常!",e);
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
@@ -794,9 +797,10 @@ public class EchartsController {
 					}
 				}
 			}
+			LogUtil.getLogger().info("EchartsController 情景减排列表数据查询成功!");
 			return AmpcResult.ok(resultList);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("EchartsController 情景减排列表数据查询异常!",e);
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}

@@ -33,6 +33,7 @@ import ampc.com.gistone.entity.ColorUtil;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.ExcelToDate;
+import ampc.com.gistone.util.LogUtil;
 
 /**
  * 行业和措施的控制类
@@ -121,9 +122,10 @@ public class ExcelToDateController {
 			tMeasureSectorExcelMapper.insertSelective(tmse);
 				i++;
 			}
+			LogUtil.getLogger().info("ExcelToDateController 保存行业措施中间表成功!");
 			return AmpcResult.ok("更新成功");
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("ExcelToDateController 保存行业措施中间表异常!",e);
 			// 返回错误信息
 			return AmpcResult.build(1000, "参数错误", null);
 		}
@@ -164,12 +166,14 @@ public class ExcelToDateController {
 			for (TSectordocExcel tsd : tse) {
 				int result=tSectordocExcelMapper.insertSelective(tsd);
 				if(result<1){
+					LogUtil.getLogger().error("ExcelToDateController 保存行业描述信息失败,数据库添加失败。");
 					return AmpcResult.build(1000, "添加失败!", null);
 				}
 			}
+			LogUtil.getLogger().info("ExcelToDateController 保存行业描述信息成功!");
 			return AmpcResult.ok("更新成功");
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("ExcelToDateController 保存行业描述信息异常!",e);
 			// 返回错误信息
 			return AmpcResult.build(1000, "参数错误", null);
 		}
@@ -210,12 +214,14 @@ public class ExcelToDateController {
 			for (TQueryExcel t : tqe) {
 				int result=tQueryExcelMapper.insertSelective(t);
 				if(result<1){
+					LogUtil.getLogger().error("ExcelToDateController 保存行业筛选条件失败!数据库添加失败");
 					return AmpcResult.build(1000, "添加失败!", null);
 				}
 			}
+			LogUtil.getLogger().info("ExcelToDateController 保存行业筛选条件成功!");
 			return AmpcResult.ok("更新成功");
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("ExcelToDateController 保存行业筛选条件异常!",e);
 			// 返回错误信息
 			return AmpcResult.build(1000, "参数错误", null);
 		}
@@ -251,12 +257,14 @@ public class ExcelToDateController {
 			for (TMeasureExcel tMeasure : readTMeasure) {
 				int result=tMeasureExcelMapper.insertSelective(tMeasure);
 				if(result<1){
+					LogUtil.getLogger().error("ExcelToDateController 保存措施信息失败,数据库添加失败。");
 					return AmpcResult.build(1000, "添加失败!", null);
 				}
 			}
+			LogUtil.getLogger().info("ExcelToDateController 保存措施信息成功!");
 			return AmpcResult.ok("更新成功");
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("ExcelToDateController 保存措施信息异常!",e);
 			// 返回错误信息
 			return AmpcResult.build(1000, "参数错误", null);
 		}
@@ -292,12 +300,14 @@ public class ExcelToDateController {
 			for (TSectorExcel tSector : readSector) {
 				int result=tSectorExcelMapper.insertSelective(tSector);
 				if(result<1){
+					LogUtil.getLogger().error("ExcelToDateController 保存行业信息失败，数据库添加失败。");
 					return AmpcResult.build(1000, "添加失败!", null);
 				}
 			}
+			LogUtil.getLogger().info("ExcelToDateController 保存行业信息成功!");
 			return AmpcResult.ok("更新成功");
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("ExcelToDateController 保存行业信息异常!",e);
 			// 返回错误信息
 			return AmpcResult.build(1000, "参数错误", null);
 		}
@@ -573,9 +583,10 @@ public class ExcelToDateController {
 			}
 		}
 		//返回结果集
+		LogUtil.getLogger().info("ExcelToDateController 验证L4sFilter成功!");
 		return ms;
 		}catch(Exception e){
-			e.printStackTrace();
+			LogUtil.getLogger().error("ExcelToDateController 验证L4sFilter异常",e);
 			return null;
 		}
 	}
