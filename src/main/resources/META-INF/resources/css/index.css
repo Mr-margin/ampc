@@ -1,3 +1,30 @@
+.ypgRwBtn,.hpgRwBtn,.yQJbtn,.hQJbtn,.jzBtn,.newQJbtn,.copyQJbtn{
+  width: 200px;height: 100px;
+  background-color: transparent;
+}
+.ypgRwBtn{
+  background-image: url('../img/ypg.png')
+}
+.hpgRwBtn{
+  background-image: url('../img/hpg.png')
+}
+.yQJbtn{
+  background-image: url('../img/ypg.png')
+}
+.hQJbtn{
+  background-image: url('../img/hpg.png')
+}
+.jzBtn{
+  background-image: url('../img/jz.png')
+}
+.newQJbtn{
+  background-image: url('../img/newQJ.png')
+}
+.copyQJbtn{
+  background-image: url('../img/copyQJ.png')
+}
+
+
 #rwToolbar, #qjToolbar ,#qdToolbar{
   margin: 10px;
 }
