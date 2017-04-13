@@ -23,6 +23,7 @@ import java.util.UUID;
 
 
 
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,6 +37,7 @@ import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TUngrib;
 import ampc.com.gistone.redisqueue.timer.SchedulerTimer;
 import ampc.com.gistone.util.DateUtil;
+import ampc.com.gistone.util.LogUtil;
 
 /**  
  * @Title: ReadyData.java
@@ -351,8 +353,7 @@ public class ReadyData {
 		
 		//查找是否是连续的   最早的实时预报pathdate
 		Date lastpathdate = tTasksStatusMapper.getlastrunstatus();
-		
-		System.out.println(lastpathdate+"从我这天开始断了");
+		LogUtil.getLogger().info("我从"+DateUtil.DATEtoString(lastpathdate, "yyyy-MM-dd")+"开始断了");
 		if (lastpathdate!=null) {
 			//比较大小
 			int compareTo = lastpathdate.compareTo(todayDate);
