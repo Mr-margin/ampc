@@ -56,6 +56,7 @@ import ampc.com.gistone.util.CastNumUtil;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.DateUtil;
+import ampc.com.gistone.util.LogUtil;
 import ampc.com.gistone.util.ScenarinoStatusUtil;
 
 /**
@@ -133,11 +134,13 @@ public class PlanAndMeasureController {
 			//情景id
 			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
 			if(scenarinoStatusUtil.updateScenarinoStatus(scenarinoId)>0){
+				LogUtil.getLogger().info("PlanAndMeasureController 重置情景状态成功!");
 				return AmpcResult.ok("更改情景状态成功");
 			}
+			LogUtil.getLogger().error("PlanAndMeasureController 重置情景状态失败,数据库更改失败。");
 			return AmpcResult.build(1000, "更改情景状态失败");
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("PlanAndMeasureController 重置情景异常!",e);
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
@@ -202,17 +205,21 @@ public class PlanAndMeasureController {
 				if(scenarinoStatus==1){
 					int a=scenarinoStatusUtil.updateScenarinoStatus(scenarioId);
 					if(a!=0){ 
+						LogUtil.getLogger().info("PlanAndMeasureController 创建预案成功!");
 						return AmpcResult.ok(id);
 					}else{
+						LogUtil.getLogger().error("PlanAndMeasureController 创建预案是,情景状态转换失败,数据库修改状态失败。");
 						return AmpcResult.build(1000, "情景状态转换失败",null);
 					}
 				}else{
+					LogUtil.getLogger().info("PlanAndMeasureController 创建预案成功!");
 					return AmpcResult.ok(id);
 				}	
 			}
+			LogUtil.getLogger().error("PlanAndMeasureController 创建预案失败,数据库添加失败。");
 			return AmpcResult.build(1000, "添加失败");
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("PlanAndMeasureController 创建预案异常！",e);
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
@@ -289,6 +296,7 @@ public class PlanAndMeasureController {
 						newtPlanMeasure.setTablePool(t.getTablePool());
 						result = tPlanMeasureMapper.insertSelective(newtPlanMeasure);
 						if (result < 0) {
+							LogUtil.getLogger().error("PlanAndMeasureController 复制预案失败,数据库添加预案措施时失败。");
 							return AmpcResult.build(1000, "应用预案措施时出错");
 						}
 					}
@@ -304,20 +312,25 @@ public class PlanAndMeasureController {
 					if(scenarinoStatus==1){
 						int a=scenarinoStatusUtil.updateScenarinoStatus(scenarioId);
 						if(a!=0){ 
+							LogUtil.getLogger().info("PlanAndMeasureController 复用预案成功。");
 							return AmpcResult.ok(newPlanId);
 						}else{
+							LogUtil.getLogger().error("PlanAndMeasureController 复用预案失败,数据库更改情景状态失败。");
 							return AmpcResult.build(1000, "情景状态转换失败",-1);
 						}
 					}else{
+						LogUtil.getLogger().info("PlanAndMeasureController 复用预案成功。");
 						return AmpcResult.ok(newPlanId);
 					}
 				}
+				LogUtil.getLogger().error("PlanAndMeasureController 复用预案失败,数据库更改时段中预案指向失败。");
 				return AmpcResult.build(1000, "复用失败",-1);
 				
 			}
+			LogUtil.getLogger().error("PlanAndMeasureController 复用预案失败,数据库添加新预案失败。");
 			return AmpcResult.build(1000, "应用预案失败",-1);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("PlanAndMeasureController 复用预案异常。",e);
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
@@ -410,59 +423,19 @@ public class PlanAndMeasureController {
 						result = tPlanMeasureReuseMapper
 								.insertSelective(newtPlanMeasure);
 						if (result < 0) {
+							LogUtil.getLogger().error("PlanAndMeasureController 预案存入预案库失败,数据库添加预案措施库数据失败。");
 							return AmpcResult.build(1000, "复制预案措施时出错");
 						}
 					}
 				}
 			} else {
+				LogUtil.getLogger().error("PlanAndMeasureController  预案存入预案库失败,数据库添加预案库数据失败。");
 				return AmpcResult.build(1000, "复制预案信息时出错");
 			}
+			LogUtil.getLogger().info("PlanAndMeasureController  预案存入预案库成功！");
 			return AmpcResult.ok("复制预案措施成功");
 		} catch (Exception e) {
-			e.printStackTrace();
-			return AmpcResult.build(1000, "参数错误", null);
-		}
-	}
-
-	/**
-	 * 预案编辑完成操作
-	 * @author WangShanxi
-	 * @param request 请求
-	 * @param response 响应
-	 * @return 返回响应结果对象
-	 */
-	@RequestMapping("/plan/finish_plan")
-	public AmpcResult finish_plan(@RequestBody Map<String, Object> requestDate,
-			HttpServletRequest request, HttpServletResponse response) {
-		try {
-			// 设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String, Object> data = (Map) requestDate.get("data");
-			// 预案id
-			Long planId = Long.parseLong(data.get("planId").toString());
-			// 用户id
-			Long userId = Long.parseLong(data.get("userId").toString());
-			// 创建条件进行查询所有预案措施
-			TPlanMeasure tPlanMeasure = new TPlanMeasure();
-			tPlanMeasure.setPlanId(planId);
-			tPlanMeasure.setUserId(userId);
-			List<TPlanMeasureWithBLOBs> tlist = tPlanMeasureMapper
-					.selectByEntity(tPlanMeasure);
-			for (TPlanMeasureWithBLOBs t : tlist) {
-				// 如果预案措施中的子措施为空 则删除掉该条预案措施
-				if (t.getMeasureContent().equals("-1")
-						|| t.getMeasureContent() == null) {
-					int status = tPlanMeasureMapper.deleteByPrimaryKey(t
-							.getPlanMeasureId());
-					// 如果删除后的返回值小于0 则删除失败
-					if (status < 0) {
-						return AmpcResult.build(1000, "删除失败", null);
-					}
-				}
-			}
-			return AmpcResult.ok("删除成功");
-		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("PlanAndMeasureController  预案存入预案库异常!",e);
 			return AmpcResult.build(1000, "参数错误", null);
 		}
 	}
@@ -506,9 +479,10 @@ public class PlanAndMeasureController {
 					map.put("countyCodes", codes);
 				}
 			}
+			LogUtil.getLogger().info("PlanAndMeasureController  查询可复用预案成功。");
 			return AmpcResult.ok(list);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("PlanAndMeasureController  查询可复用预案异常。",e);
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
@@ -608,10 +582,11 @@ public class PlanAndMeasureController {
 				// 将结果放入结果集中！
 				result.add(sm);
 			}
+			LogUtil.getLogger().info("PlanAndMeasureController  预案编辑成功!");
 			// 返回结果
 			return AmpcResult.ok(result);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("PlanAndMeasureController   预案编辑异常",e);
 			// 返回错误信息
 			return AmpcResult.build(1000, "参数错误", null);
 		}
@@ -767,10 +742,11 @@ public class PlanAndMeasureController {
 			Map resultMap = new HashMap();
 			resultMap.put("total", list.size());
 			resultMap.put("rows", list);
+			LogUtil.getLogger().info("PlanAndMeasureController   措施汇总查询成功！");
 			// 返回结果
 			return AmpcResult.ok(resultMap);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("PlanAndMeasureController   措施汇总查询异常！",e);
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
@@ -929,10 +905,11 @@ public class PlanAndMeasureController {
 				String str = tPlanMeasure.getMeasureContent();
 				resultMap.put("measureContent", str);
 			}
+			LogUtil.getLogger().info("PlanAndMeasureController   子措施条件查询成功!");
 			// 返回结果
 			return AmpcResult.ok(resultMap);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("PlanAndMeasureController   子措施条件查询异常！",e);
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
@@ -972,6 +949,7 @@ public class PlanAndMeasureController {
 			String measureContent = data.get("measureContent").toString();
 			//修改情景的状态为可编辑
 			if(!(scenarinoStatusUtil.updateScenarinoStatus(scenarinoId)>0)){
+				LogUtil.getLogger().error("PlanAndMeasureController   预案措施的添加或修改失败,数据库修改情景状态失败！");
 				return AmpcResult.build(1000, "更改情景状态失败");
 			}
 			TPlanMeasureWithBLOBs tPlanMeasure = new TPlanMeasureWithBLOBs();
@@ -1010,8 +988,10 @@ public class PlanAndMeasureController {
 				int addstatus = tPlanMeasureMapper.insertSelective(tPlanMeasure);
 				// 判断是否成功
 				if (addstatus != 0) {
+					LogUtil.getLogger().info("PlanAndMeasureController   预案添加措施成功！");
 					return AmpcResult.ok("添加成功");
 				} else {
+					LogUtil.getLogger().error("PlanAndMeasureController   预案添加措施失败，数据库添加措施失败！");
 					return AmpcResult.build(1000, "添加失败");
 				}
 			} else {
@@ -1030,13 +1010,15 @@ public class PlanAndMeasureController {
 					//因为进行删除了 则要把所有的减排结果进行刷新
 					int update_status = tPlanMeasureMapper.updateRatio(plist);
 					if (update_status >= 0) {
+						LogUtil.getLogger().info("PlanAndMeasureController   预案修改措施成功！");
 						return AmpcResult.ok("修改成功");
 					}
 				} 
+				LogUtil.getLogger().error("PlanAndMeasureController   预案修改措施失败！");
 				return AmpcResult.build(1000, "修改失败");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("PlanAndMeasureController   预案添加或修改措施异常！",e);
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
@@ -1073,6 +1055,7 @@ public class PlanAndMeasureController {
 			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
 			//修改情景的状态为可编辑
 			if(!(scenarinoStatusUtil.updateScenarinoStatus(scenarinoId)>0)){
+				LogUtil.getLogger().error("PlanAndMeasureController   预案删除措施失败，数据库修改情景状态失败。");
 				return AmpcResult.build(1000, "更改情景状态失败");
 			}
 			// 删除预案中的措施
@@ -1090,20 +1073,23 @@ public class PlanAndMeasureController {
 					//因为进行删除了 则要把所有的减排结果进行刷新
 					int update_status = tPlanMeasureMapper.updateRatio(plist);
 					if (update_status >= 0) {
+						LogUtil.getLogger().info("PlanAndMeasureController   预案删除措施成功!");
 						return AmpcResult.ok("删除成功");
 					}
 				}
+				LogUtil.getLogger().info("PlanAndMeasureController   预案删除措施成功!");
 				return AmpcResult.ok("删除成功");
 			}
+			LogUtil.getLogger().error("PlanAndMeasureController   预案删除措施失败!");
 			return AmpcResult.build(1000, "删除失败");
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("PlanAndMeasureController   预案删除措施异常！",e);
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
 
 	/**
-	 * 措施汇总中数据的减排计算
+	 * 措施汇总中的减排计算
 	 * @author WangShanxi
 	 * @param request 请求
 	 * @param response 响应
@@ -1137,7 +1123,8 @@ public class PlanAndMeasureController {
 			// 并根据减排分析得到的结果进行JsonTree的解析
 			Map mapResult=mapper.readValue(getResult, Map.class);
 			if(!mapResult.get("status").toString().equals("success")){
-				return AmpcResult.ok(-1);
+				LogUtil.getLogger().error("PlanAndMeasureController   措施汇总中的减排计算接口出现异常。");
+				return AmpcResult.build(1000, "减排计算接口出现异常",-1);
 			}
 			JSONObject jsonObject=JSONObject.fromObject(mapResult.get("data"));
 			// 讲数据转换成Map
@@ -1158,13 +1145,15 @@ public class PlanAndMeasureController {
 					int updatestatus = tPlanMeasureMapper.updateByPrimaryKeySelective(tPlanMeasure);
 					// 判断是否成功
 					if (updatestatus < 0) {
-						AmpcResult.build(1000, "修改失败");
+						LogUtil.getLogger().error("PlanAndMeasureController   措施汇总中的减排计算失败,数据库中添加减排结果信息时失败。");
+						return AmpcResult.build(1000, "修改失败");
 					}
 			    }
 			}
+			LogUtil.getLogger().info("PlanAndMeasureController   措施汇总中的减排计算成功");
 			return AmpcResult.ok(getResult);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("PlanAndMeasureController   措施汇总中的减排计算异常！",e);
 			return AmpcResult.build(1000, "参数错误");
 		}
 
@@ -1232,15 +1221,18 @@ public class PlanAndMeasureController {
 				//修改情景执行状态
 				int update=tScenarinoDetailMapper.updateByPrimaryKeySelective(tsd);
 				if(update>0){
+					LogUtil.getLogger().info("PlanAndMeasureController   区域的减排计算成功");
 					return AmpcResult.ok(1);
 				}else{
+					LogUtil.getLogger().error("PlanAndMeasureController   区域的减排计算失败，数据库在修改情景的状态时失败。");
 					return AmpcResult.build(1000,"修改失败");
 				}
 			}
+			LogUtil.getLogger().error("PlanAndMeasureController   区域的减排计算接口出现异常");
 			//-1代表计算接口出现异常
-			return AmpcResult.ok(-1);
+			return AmpcResult.build(1000,"计算接口出现异常",-1);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("PlanAndMeasureController   区域的减排计算异常！",e);
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}
@@ -1276,6 +1268,7 @@ public class PlanAndMeasureController {
 				resultMap.put("time", map1.get("time"));
 				//计算的百分比
 				resultMap.put("percent",map1.get("percent"));
+				LogUtil.getLogger().info("PlanAndMeasureController   区域的减排状态查询成功！");
 				return AmpcResult.ok(resultMap);
 			}else{
 				//重新进行计算
@@ -1344,18 +1337,22 @@ public class PlanAndMeasureController {
 					if(update>0){
 						//正在进行重新计算减排中
 						resultMap.put("type", 1);
+						LogUtil.getLogger().info("PlanAndMeasureController   区域的减排状态查询失败！正在重新计算！");
+						LogUtil.getLogger().warn("PlanAndMeasureController   区域的减排状态查询失败！正在重新计算！");
 						return AmpcResult.ok(resultMap);
 					}else{
+						LogUtil.getLogger().error("PlanAndMeasureController   区域的减排状态查询失败,数据库在修改情景状态时失败。");
 						return AmpcResult.build(1000,"修改失败");
 					}
 				}else{
 					//代表计算接口出现异常
 					resultMap.put("type", -1);
-					return AmpcResult.ok(resultMap);
+					LogUtil.getLogger().error("PlanAndMeasureController   区域的减排状态查询  外部接口异常！");
+					return AmpcResult.build(1000,"外部接口查询异常",resultMap);
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("PlanAndMeasureController   区域的减排状态查询异常！",e);
 			return AmpcResult.build(1000, "参数错误");
 		}
 	}

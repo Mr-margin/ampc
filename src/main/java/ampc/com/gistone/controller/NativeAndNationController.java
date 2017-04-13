@@ -15,6 +15,7 @@ import ampc.com.gistone.database.inter.TEsCouplingMapper;
 import ampc.com.gistone.database.inter.TEsNativeMapper;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.LogUtil;
 
 /**
  * 清单控制类
@@ -45,9 +46,10 @@ public class NativeAndNationController {
 			// 用户id
 			Long userId = Long.parseLong(data.get("userId").toString());
 			List<Map> list=tEsCouplingMapper.selectAll(userId);
+			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的耦合清单信息成功!");
 			return AmpcResult.ok(list);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("NativeAndNationController 查询当前用户下的耦合清单信息异常!",e);
 			return AmpcResult.build(1000, "参数错误", null);
 		}
 	}
