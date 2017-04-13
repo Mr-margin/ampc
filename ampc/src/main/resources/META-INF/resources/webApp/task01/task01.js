@@ -437,7 +437,7 @@ function qjName(v, row, i) {
     '<a style="font-size:12px; color:#a1a1a1;">起止日期：' + moment(row.scenarinoStartDate).format('YYYY-MM-DD') + ' 至 ' + moment(row.scenarinoEndDate).format('YYYY-MM-DD') + '</a>'
 }
 
-function qjType001(v, row, i) {
+function qjTypeSCEN_TYPE(v, row, i) {
   var type;
   switch (row.SCEN_TYPE) {
     case '1':
