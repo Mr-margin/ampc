@@ -742,6 +742,22 @@ public class MissionAndScenarinoController {
 			for(int i=0;i<idss.length;i++){
 				scenarinoIdss.add(Long.parseLong(idss[i]));
 			}
+			int sure=0;
+			for(String scenarinoId:idss){
+			TScenarinoDetail tSDetail=tScenarinoDetailMapper.selectByPrimaryKey(Long.valueOf(scenarinoId));
+			List<TScenarinoDetail> tslist=tScenarinoDetailMapper.selectAllByMissionId(tSDetail.getMissionId());
+			for(TScenarinoDetail ts:tslist){
+				String bsid=ts.getBasisScenarinoId().toString();
+				if(scenarinoId.equals(bsid)){
+					sure+=1;
+				}
+			}	
+			}
+			if(sure!=0){
+				return AmpcResult.build(9999, "error");
+			}
+			
+			
 			/**
 			 * TODO 用事务更能保证一致性
 			 */
