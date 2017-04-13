@@ -1035,6 +1035,7 @@ function createRw() {
               timer: 1000,
               showConfirmButton: false
             });
+            $('#rwName').val('')
             //swal('添加成功', '', 'success')
           } else {
             $('#createRwModal').modal('hide');
@@ -1329,6 +1330,7 @@ function createQj(type) {
               timer: 1000,
               showConfirmButton: false
             });
+            $('#yName').val('');
             //swal('添加成功', '', 'success')
           }).error(function () {
             swal({
@@ -1407,6 +1409,7 @@ function createQj(type) {
               showConfirmButton: false
             });
             //swal('添加成功', '', 'success')
+            $('#hName').val('')
           }).error(function () {
             swal({
               title: '添加失败!',
