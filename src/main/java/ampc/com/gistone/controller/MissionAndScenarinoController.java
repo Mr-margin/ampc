@@ -747,7 +747,10 @@ public class MissionAndScenarinoController {
 			TScenarinoDetail tSDetail=tScenarinoDetailMapper.selectByPrimaryKey(Long.valueOf(scenarinoId));
 			List<TScenarinoDetail> tslist=tScenarinoDetailMapper.selectAllByMissionId(tSDetail.getMissionId());
 			for(TScenarinoDetail ts:tslist){
-				String bsid=ts.getBasisScenarinoId().toString();
+				String bsid="";
+				if(null!=ts.getBasisScenarinoId()){
+				bsid=ts.getBasisScenarinoId().toString();
+				}
 				if(scenarinoId.equals(bsid)){
 					sure+=1;
 				}
