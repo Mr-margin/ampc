@@ -489,6 +489,7 @@ public class MissionAndScenarinoController {
 			Integer pageNum=Integer.valueOf(data.get("pageNum").toString());
 			//每页展示的条数
 			Integer pageSize=Integer.valueOf(data.get("pageSize").toString());
+			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());
 			//列表排序  暂时内定按照任务ID逆序排序
 			//String sort=data.get("sort").toString();
 			//用户的id  确定当前用户
@@ -517,8 +518,16 @@ public class MissionAndScenarinoController {
 			}
 			//查询全部 写入结果集 返回
 			List<Map> list = this.tScenarinoDetailMapper.selectAllOrByQueryName2(map);
+			List<Map> newlist=new ArrayList<Map>();
+			for(Map s:list){
+				Long id=Long.valueOf(s.get("SCENARINO_ID").toString());
+				if(scenarinoId==id){
+					newlist.add(s);
+					
+				}
+			}
 			mapResult.put("total", this.tScenarinoDetailMapper.selectCountOrByQueryName2(map));
-			mapResult.put("rows",list);
+			mapResult.put("rows",newlist);
 			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
 			e.printStackTrace();
