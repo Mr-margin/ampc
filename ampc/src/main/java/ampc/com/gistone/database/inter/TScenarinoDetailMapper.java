@@ -200,6 +200,16 @@ public interface TScenarinoDetailMapper {
 
 	
     TScenarinoDetail selectMaxEndTime4();
+	/**
+	 * @Description: 修改情景类型
+	 * @param map
+	 * @return   
+	 * int  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月12日 下午7:28:47
+	 */
+	int updateScenType(Map map);
 
 	
 

@@ -101,7 +101,7 @@ public interface TMissionDetailMapper {
 	 * @author yanglei
 	 * @date 2017年4月10日 下午8:24:03
 	 */
-	List<TMissionDetail> selectMissionDetail(Object userId);
+	List<TMissionDetail> selectMissionDetail(Long userId);
 
 
 	/**
