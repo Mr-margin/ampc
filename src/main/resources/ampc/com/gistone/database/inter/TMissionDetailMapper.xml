@@ -126,16 +126,17 @@
    where USER_ID = #{userId,jdbcType=DECIMAL} and MISSION_STATUS='1'
    and MISSION_START_DATE = #{missionStartDate,jdbcType=TIMESTAMP}
    and MISSION_DOMAIN_ID = #{missionDomainId,jdbcType=DECIMAL}
+   and ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL}
   </select>
   <!--通过用户ID查找实时预报的任务ID (能确定只有一个ID) -->
  <select id="getmissionid">
   select MISSION_ID from T_MISSION_DETAIL where USER_ID = #{userId,jdbcType=DECIMAL} and MISSION_STATUS='1'
   </select> 
   <!-- 通过用户ID查找实时预报情景 -->
- <select id="selectMissionDetail" resultType="ampc.com.gistone.database.model.TMissionDetail" parameterType="java.lang.Long">
+ <select id="selectMissionDetail" resultMap="BaseResultMap" parameterType="java.lang.Long">
   select
   <include refid="Base_Column_List" />
-  from T_MISSION_DETAIL where USER_ID = #{userId,jdbcType=DECIMAL} and MISSION_STATUS='1'
+  from T_MISSION_DETAIL where USER_ID = #{userId,jdbcType=DECIMAL} and MISSION_STATUS='1' and IS_EFFECTIVE='1'
   </select> 
 
   <sql id="Base_Column_List" >
