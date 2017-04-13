@@ -1569,6 +1569,7 @@ function initCoptTable() {
       var json = {
         "token": "",
         "data": {
+          "scenarinoId":qjMsg.qjId,
           "queryName": m.searchText || '',
           "missionStatus": statusRW,
           "pageNum": m.pageNumber,
@@ -1610,6 +1611,7 @@ function search() {
     json = {
       "token": "",
       "data": {
+        "scenarinoId":qjMsg.qjId,
         "queryName": params.searchText || '',
         "pageNum": 1,
         "pageSize": params.pageSize,
