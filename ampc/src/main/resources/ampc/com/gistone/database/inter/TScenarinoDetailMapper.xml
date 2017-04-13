@@ -41,6 +41,12 @@
     SPINUP, RATIO_START_DATE, RATIO_END_DATE, RANGE_DAY, EXPAND1, EXPAND2, EXPAND3, EXPAND4, EXPAND5,
     EXPAND6, EXPAND7, EXPAND8, EXPAND9, EXPAND10
   </sql>
+  <!--修改情景状态  -->
+  <update id="updateScenType" parameterType="hashMap" >
+  update T_SCENARINO_DETAIL
+  set SCENARINO_STATUS = #{scenarinoStatus,jdbcType=DECIMAL}
+  where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
+  </update>
   <!--通过刚创建的实时预报的情景得到该情景的ID  -->
   <select id="selectforecastid" parameterType="ampc.com.gistone.database.model.TScenarinoDetail" resultType="java.lang.Long">
   select SCENARINO_ID from T_SCENARINO_DETAIL where PATH_DATE = #{pathDate,jdbcType=TIMESTAMP} and SCEN_TYPE = '4'
