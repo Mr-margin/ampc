@@ -120,14 +120,14 @@ public class GetWeatherModelController {
 	@RequestMapping("/saveEmis")
 	public AmpcResult saveEmisData(HttpServletRequest request,HttpServletResponse response) {
 		try {
-		String sourceid = request.getParameter("sourceid");
+		//String sourceid = request.getParameter("sourceid");
 		String calctype = request.getParameter("calctype");
 		String psal = request.getParameter("psal");
 		String ssal = request.getParameter("ssal");
 		String meiccityconfig = request.getParameter("meiccityconfig");
 		Long scenarioid =Long.parseLong(request.getParameter("scenarioid"));
 		TTasksStatus tTasksStatus = new TTasksStatus();
-		tTasksStatus.setSourceid(sourceid);
+		//tTasksStatus.setSourceid(sourceid);
 		tTasksStatus.setCalctype(calctype);
 		tTasksStatus.setPsal(psal);
 		tTasksStatus.setSsal(ssal);
