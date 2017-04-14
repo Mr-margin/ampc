@@ -32,12 +32,12 @@ public interface TTasksStatusMapper {
 	 * @Description: TODO
 	 * @param scenarinoId
 	 * @return   
-	 * TTasksStatus  测试方法 通过情景ID查询情景结束时间
+	 * TTasksStatus  测试方法 通过情景ID查询情景的模式执行情况
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年3月28日 上午10:11:36
 	 */
-	Date selectByscenarinoId(Long scenarinoId);
+	TTasksStatus selectendByscenarinoId(Long tasksScenarinoId);
 
 	/**
 	 * @Description: TODO
