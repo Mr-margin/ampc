@@ -233,7 +233,12 @@
   TASKS_END_DATE = #{tasksEndDate,jdbcType=TIMESTAMP}
   where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </update>
-  
+   <!--修改存在状态  BEIZHU = #{beizhu,jdbcType=VARCHAR}-->
+   <update id="updateinf" parameterType="java.lang.Long">
+  update T_TASKS_STATUS
+  set BEIZHU3 = '0'
+  where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
+  </update>
   
   <!--测试方法 通过情景ID查找结束时间  -->
   <select id="selectByscenarinoId" resultType="java.util.Date" parameterType="java.lang.Long">
