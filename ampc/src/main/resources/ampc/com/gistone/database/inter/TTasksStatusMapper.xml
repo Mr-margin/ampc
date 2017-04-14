@@ -222,9 +222,24 @@
     where TASKS_ID = #{tasksId,jdbcType=DECIMAL}
   </update>
   
+  <!--通过情景ID获取该情景的减排系数  -->
+  <select id="selectentityByScenId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  select 
+    <include refid="Base_Column_List" />
+    from T_TASKS_STATUS
+    where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
+  </select>
   
-  
-  
+  <!--添加减排系数  -->
+  <update id="updateEmisData" parameterType="ampc.com.gistone.database.model.TTasksStatus" >
+  update T_TASKS_STATUS
+  set SOURCEID = #{sourceid,jdbcType=VARCHAR},
+  CALCTYPE = #{calctype,jdbcType=VARCHAR},
+  PSAL = #{psal,jdbcType=VARCHAR},
+  SSAL = #{ssal,jdbcType=VARCHAR},
+  MEICCITYCONFIG = #{meiccityconfig,jdbcType=VARCHAR}
+  where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
+  </update>
   <!--添加执行模式执行的结果  BEIZHU = #{beizhu,jdbcType=VARCHAR}-->
   <update id="updateStatus" parameterType="ampc.com.gistone.database.model.TTasksStatus">
   update T_TASKS_STATUS
