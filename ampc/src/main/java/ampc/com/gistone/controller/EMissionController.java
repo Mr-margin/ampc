@@ -578,7 +578,7 @@ public class EMissionController {
 		s.put("emission", ss);
 		s.put("date", "2017-01-01");
 		es.put("2017-01-01", s);
-	   List<TEmissionDetail> sse=BaseSaveUtil.save_baseemission(es);
+	     List sse= BaseSaveUtil.save_baseemission(es);
 		return sse;
 	}
 }
