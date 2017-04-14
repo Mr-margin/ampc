@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
@@ -30,6 +31,8 @@ import ampc.com.gistone.util.ClientUtil;
  * @date 2017年4月10日 下午3:54:10
  * @version 1.0
  */
+@RestController
+@RequestMapping
 public class GlobalSettingController {
 	
 	//加载全局参数的映射
