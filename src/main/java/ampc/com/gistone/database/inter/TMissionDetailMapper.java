@@ -66,7 +66,7 @@ public interface TMissionDetailMapper {
     Long selectDomainid(Long missionId);
     
     List<TMissionDetail> selectByEntity(TMissionDetail record);
-
+    List<TMissionDetail> selectByEntity2(TMissionDetail record);
 
 	/**
 	 * @Description: TODO
