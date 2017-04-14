@@ -200,7 +200,7 @@
 											ORDER BY MISS.MISSION_ID DESC
 	                                     ) T WHERE ROWNUM &lt;=#{endNum,jdbcType=OTHER}
 	                               ) 
- 	                               WHERE RN > #{startNum,jdbcType=OTHER} AND SCEN_TYPE!='4'
+ 	                               WHERE RN > #{startNum,jdbcType=OTHER} AND SCEN_TYPE!='4' AND SCEN_TYPE!='3'
    	
   </select>
   <!--不分页查询所有有效的条数 可根据条件名模糊查询-->
@@ -233,7 +233,7 @@
 					INNER JOIN T_SCENARINO_DETAIL SCEN ON MISS.MISSION_ID=SCEN.MISSION_ID
 					INNER JOIN T_SCENARINO_STATUS STAT  ON SCEN.SCENARINO_STATUS=STAT.SCENARINO_STATU_ID
   		 WHERE MISS.IS_EFFECTIVE='1' AND MISS.USER_ID=#{userId,jdbcType=OTHER}  AND
-			SCEN.IS_EFFECTIVE='1' AND SCEN.USER_ID=#{userId,jdbcType=OTHER} AND SCEN_TYPE!='4'
+			SCEN.IS_EFFECTIVE='1' AND SCEN.USER_ID=#{userId,jdbcType=OTHER} AND SCEN_TYPE!='4' AND SCEN_TYPE!='3'
   	    <if test="missionStatus != null" >
         	AND MISSION_STATUS= #{missionStatus,jdbcType=OTHER}
       	</if>
