@@ -533,8 +533,8 @@ function delTimes() {
 
   ajaxPost(url, {
     deleteTimeId: allData[areaIndex].timeItems[timeIndex].timeId,
-    startDate: moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate)).format('YYYY-MM-DD HH:mm:ss'),
-    endDate: moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate)).format('YYYY-MM-DD HH:mm:ss'),
+    startDate: moment(allData[areaIndex].timeItems[timeIndex].timeStartDate).format('YYYY-MM-DD HH:mm:ss'),
+    endDate: moment(allData[areaIndex].timeItems[timeIndex].timeEndDate).format('YYYY-MM-DD HH:mm:ss'),
     mergeTimeId: mId,
     userId: userId,
     status: ub,
@@ -779,8 +779,8 @@ function addPlan(e) {
       missionId: msg.content.rwId,
       scenarioId: msg.content.qjId,
       areaId: msg.content.areaId,
-      timeStartTime: moment(momentDate(msg.content.timeStartDate)).format('YYYY-MM-DD HH'),
-      timeEndTime: moment(momentDate(msg.content.timeEndDate)).format('YYYY-MM-DD HH'),
+      timeStartTime: moment(msg.content.timeStartDate).format('YYYY-MM-DD HH'),
+      timeEndTime: moment(msg.content.timeEndDate).format('YYYY-MM-DD HH'),
       planName: $('#yaName').val(),
       scenarinoStatus: qjMsg.scenarinoStatus,
     };
@@ -1015,6 +1015,7 @@ function selectEditPoint(t) {
 //}
 
 $('#editArea').on('show.bs.modal', function (event) {
+  console.log(cnArea)
   $.fn.zTree.init($("#adcodeTree"), zTreeSetting, zTreeData);
   var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
   var nodes = treeObj.getNodesByParam("level", 1);
@@ -1079,8 +1080,8 @@ function createEditArea() {
     scenarinoId: qjMsg.qjId,
     areaName: areaName,
     userId: userId,
-    scenarinoStartDate: moment(momentDate(qjMsg.qjStartDate)).format('YYYY-MM-DD HH:mm:ss'),
-    scenarinoEndDate: moment(momentDate(qjMsg.qjEndDate)).add(1,'h').add(-1,'s').format('YYYY-MM-DD HH:mm:ss'),
+    scenarinoStartDate: moment(qjMsg.qjStartDate).format('YYYY-MM-DD HH:mm:ss'),
+    scenarinoEndDate: moment(qjMsg.qjEndDate).format('YYYY-MM-DD HH:mm:ss'),
     areaId: $('#areaName').attr('data-id') || '',
     provinceCodes: '',
     cityCodes: '',
@@ -1205,16 +1206,16 @@ var cnArea = false;
 /*检测是否超过最大区域数量*/
 function createNewAreaBtn(){
   if(allData.length>=maxAreaNum){
+    cnArea = false;
     swal({
       title: '已达最大区域数量!',
       type: 'warning',
       timer: 1000,
       showConfirmButton: false
     });
-    cnArea = false;
   }else{
-    $('#editArea').modal('show');
     cnArea = true;
+    $('#editArea').modal('show');
   }
 }
 
