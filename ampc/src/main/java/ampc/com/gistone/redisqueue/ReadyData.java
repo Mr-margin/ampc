@@ -30,6 +30,7 @@ import java.util.UUID;
 
 
 
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,6 +41,7 @@ import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.inter.TUngribMapper;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
+import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.database.model.TUngrib;
 import ampc.com.gistone.redisqueue.entity.QueueBodyData;
 import ampc.com.gistone.redisqueue.entity.QueueData;
@@ -62,7 +64,6 @@ import ampc.com.gistone.util.LogUtil;
  */
 @Component
 public class ReadyData {
-    private Logger logger  = Logger.getLogger(ReadyData.class);
 	//任务详情映射
 	@Autowired
 	private TMissionDetailMapper tMissionDetailMapper;
@@ -172,7 +173,7 @@ public class ReadyData {
 		Map<String, Object> icMap = getIC(scenarinoId,missionId ,firsttime,icdate);
 		cmaqData.setIc(icMap);
 		//创建emis对象   调用方法获取emis数据
-		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType);
+		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType,scenarinoId);
 		//设置body的数据
 		bodyData.setCommon(commonData);
 		bodyData.setWrf(wrfData);
@@ -236,7 +237,7 @@ public class ReadyData {
 		Map<String, Object> icMap = getIC(scenarinoId,missionId ,firsttime,icdate);
 		cmaqData.setIc(icMap);
 		//创建emis对象   调用方法获取emis数据
-		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType);
+		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType,scenarinoId);
 		//设置body的数据
 		bodyData.setCommon(commonData);
 		bodyData.setWrf(wrfData);
@@ -257,6 +258,7 @@ public class ReadyData {
 	 */
 	public void readyRealMessageDataFirst(Long scenarinoId,Long cores) {
 		System.out.println("开始准备第一次的fnl预报数据");
+		LogUtil.getLogger().info("开始准备第一次的fnl预报数据");
 		//Long scenarinoId = (Long) body.get("scenarinoId");//情景id
 		//获取lastungrib
 	   String lastungrib = readyLastUngrib();
@@ -351,6 +353,9 @@ public class ReadyData {
 		//获取最新的ungrib 
 		TUngrib tUngrib = tUngribMapper.getlastungrib();
 		//fnl的状态
+		if (null==tUngrib) {
+			LogUtil.getLogger().info("没有ungrib数据");
+		}else {
 		Integer fnlStatus = tUngrib.getFnlStatus();
 		//gfs的状态   如果出现断层的情况 gfs 状态为空
 		Integer gfs1Status = tUngrib.getGfs1Status();
@@ -366,8 +371,8 @@ public class ReadyData {
 		
 		//查找是否是连续的   最早的实时预报pathdate
 		Date lastpathdate = tTasksStatusMapper.getlastrunstatus();
-		LogUtil.getLogger().info("我从"+DateUtil.DATEtoString(lastpathdate, "yyyy-MM-dd")+"开始断了");
 		if (lastpathdate!=null) {
+			LogUtil.getLogger().info("我从"+DateUtil.DATEtoString(lastpathdate, "yyyy-MM-dd")+"开始断了");
 			//比较大小
 			int compareTo = lastpathdate.compareTo(todayDate);
 			//比较最新的ungrib的pathdate和最早没运行的情景的pathdate
@@ -398,6 +403,7 @@ public class ReadyData {
 			}
 		}else {
 			lastungrib = DateUtil.DATEtoString(pathdate, "yyyyMMdd");
+		}
 		}
 		return lastungrib;
 	}
@@ -452,7 +458,7 @@ public class ReadyData {
 		cmaqData.setIc(icMap);
 		//设置emis
 		//创建emis对象   调用方法获取emis数据
-		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType);
+		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType,scenarinoId);
 		
 		//设置body的数据
 		bodyData.setCommon(commonData);
@@ -520,7 +526,7 @@ public class ReadyData {
 		Map<String, Object> icMap = getIC(scenarinoId,missionId ,firsttime,icdate); 
 		cmaqData.setIc(icMap);
 		//创建emis对象   调用方法获取emis数据
-		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType);
+		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType,scenarinoId);
 		//设置body的数据
 		bodyData.setCommon(commonData);
 		bodyData.setWrf(wrfData);
@@ -585,7 +591,7 @@ public class ReadyData {
 		Map<String, Object> icMap = getIC(scenarinoId,missionId ,true,null);
 		cmaqData.setIc(icMap);
 		//创建emis对象   调用方法获取emis数据
-		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType);
+		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType,scenarinoId);
 		bodyData.setCommon(commonData);
 		bodyData.setWrf(wrfData);
 		bodyData.setCmaq(cmaqData);
@@ -716,7 +722,7 @@ public class ReadyData {
 		Map<String, Object> icMap = getIC(scenarinoId,missionId ,false,icdate); 
 		cmaqData.setIc(icMap);
 		//创建emis对象   调用方法获取emis数据
-		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType);
+		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType,scenarinoId);
 		//设置body的数据
 		bodyDate.setCommon(commonData);
 		bodyDate.setWrf(wrfData);
@@ -943,8 +949,6 @@ public class ReadyData {
 		String getResult=ClientUtil.doPost(url,sourceid.toString());*/
 		
 		
-		
-		
 		return null;
 	}
 
@@ -957,9 +961,14 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年3月28日 下午6:50:19
 	 */
-	private QueueDataEmis getDataEmis(Long missionId,String scenarinoType) {
+	private QueueDataEmis getDataEmis(Long missionId,String scenarinoType,Long scenarinoId) {
 		//通过情景ID获取清单ID
 		Long sourceid = tMissionDetailMapper.getsourceid(missionId);
+		//通过情景ID获取对应的减排系数
+		TTasksStatus tasksStatus = tTasksStatusMapper.selectentityByScenId(scenarinoId);
+		if (null==tasksStatus) {
+			LogUtil.getLogger().info("没有收到减排系数");
+		}
 		//获取减排清单
 		Map<String, String> emis = getEmis(sourceid);
 		//创建对象
@@ -976,13 +985,13 @@ public class ReadyData {
 			DataEmis.setSsal("");
 		}else {
 			//其他情景需要设置减排系数
-			//
+			//DataEmis.setPsal(tasksStatus.getPsal());
 			DataEmis.setPsal("");
-			//
+			//DataEmis.setSsal(tasksStatus.getSsal());
 			DataEmis.setSsal("");
 		}
-		
-		//
+	
+		//	DataEmis.setMeiccityconfig(tasksStatus.getMeiccityconfig());
 		DataEmis.setMeiccityconfig("/work/modelcloud/meic_tool/meic-city.conf");
 		return DataEmis;
 	}
