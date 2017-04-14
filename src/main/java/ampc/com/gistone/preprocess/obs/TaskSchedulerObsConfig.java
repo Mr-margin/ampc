@@ -128,7 +128,7 @@ public class TaskSchedulerObsConfig {
 
         triggerList.add(obsDateCronTrigger().getObject());
 
-//        triggerList.add(obsHourCronTrigger().getObject());
+        triggerList.add(obsHourCronTrigger().getObject());
 
         schedulerFactoryBean.setTriggers(triggerList.toArray(new Trigger[0]));
 
