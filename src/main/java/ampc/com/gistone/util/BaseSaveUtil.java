@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,14 +18,13 @@ import ampc.com.gistone.database.inter.TEmissionDetailMapper;
 import ampc.com.gistone.database.inter.TEsNativeMapper;
 import ampc.com.gistone.database.model.TEmissionDetail;
 import ampc.com.gistone.database.model.TEsNative;
-@RestController
-@RequestMapping
+
 public class BaseSaveUtil {
-	@Autowired
-	private TEmissionDetailMapper tEmissionDetailMapper;
-	
-	public String save_baseemission(Map mapses){
+
+	@Bean
+	public static List save_baseemission(Map mapses){
 		try{
+			List<TEmissionDetail> list=new ArrayList<TEmissionDetail>();
 			TEsNative tEsNative = new TEsNative();
 			tEsNative.setEsCodeRange("-1,-2");
 			int a=0;
@@ -72,23 +72,18 @@ public class BaseSaveUtil {
 					temission.setCodeLevel("3");
 				}
 				temission.setEmissionDetails(map.get(code).toString());//通过key获取需要的值
-				
-				a+=tEmissionDetailMapper.insertSelective(temission);//保存数据
-				b++;//计数器
+				list.add(temission);
 				}else{
 					continue;
 				}
 			}
 			}
 			
-			if(a==b&&a!=0){//查看计数器的数值是否与保存成功的数据相同，相同为成功，不同则失败
-				return "ok";
-			}
-			return "no";
+			return list;
 			
 		}catch(Exception e){
 				e.printStackTrace();
-				return "no";	
+				return null;
 			}
 		}
 }
