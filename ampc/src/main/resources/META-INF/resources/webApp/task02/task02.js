@@ -1038,6 +1038,7 @@ $('#editArea').on('show.bs.modal', function (event) {
     $('#areaName').val('').removeAttr('data-id');
     showCode = [{}, {}, {}];
     $('.adcodeList.mt20').empty();
+    app.gLyr.clear();
   } else {
     findUrl = '/area/get_areaList';
     areaId = button.parents('.areaTitle_con').attr('id');
