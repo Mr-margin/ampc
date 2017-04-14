@@ -1498,7 +1498,7 @@ public class MissionAndScenarinoController {
 			Long userId=Long.parseLong(data.get("userId").toString());//用户id
 			TMissionDetail tMissionDetail=new TMissionDetail();
 			tMissionDetail.setUserId(userId);
-			List<TMissionDetail> missionlist=tMissionDetailMapper.selectByEntity(tMissionDetail);
+			List<TMissionDetail> missionlist=tMissionDetailMapper.selectByEntity2(tMissionDetail);
 			JSONArray arr=new JSONArray();
 			if(!missionlist.isEmpty()){
 			for(TMissionDetail mission:missionlist){
