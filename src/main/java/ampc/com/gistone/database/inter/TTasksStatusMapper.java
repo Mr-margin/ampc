@@ -114,4 +114,6 @@ public interface TTasksStatusMapper {
 	 * @date 2017年4月12日 上午9:25:10
 	 */
 	int updateEmisData(TTasksStatus tTasksStatus);
+	
+	int updateinf(Long scenarinoId);
 }
