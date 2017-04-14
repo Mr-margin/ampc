@@ -382,80 +382,140 @@ var startTime,endTime,nowTime;//存储moment对象
 /*设置日期下拉框*/
 /*传入毫秒数*/
 function setDate(s1,e1,s2,e2,type){
+
 	$('#sTime-d').empty();
 	$('#eTime').empty();
-	s1 = moment(s1-0);
-	s2 = moment(s2-0);
-	e1 = moment(e1-0);
-	e2 = moment(e2-0);
-	if(type == 'h'){
-		if(e1.isBefore(s2,'h')||e2.isBefore(s1,'h')){
-			return;
-		}
+	if(!s2 || !e2){
+		s1 = moment(s1-0);
+		e1 = moment(e1-0);
 
-		if(s1.isBefore(s2,'h')){
-			startTime = s2;
-		}else{
+
+		if(type == 'h'){
+			if(e1.isBefore(s1,'h')){
+				return;
+			}
 			startTime = s1;
+			endTime = e1;
+			nowTime = moment(startTime);
+			var s = moment(startTime);
+			var e = moment(endTime);
+			while(true){
+				$('#sTime-d').append($('<option>' +s.format('YYYY-MM-DD')+ '</option>'));
+				console.log(s.format('YYYY-MM-DD'));
+				if(e.format('YYYY-MM-DD')=='Invalid date'){
+					return;
+				}
+				if(e.isBefore(s.add(1,'d'))){
+					return;
+				}
+			}
+			s = moment(startTime);
+			while(true){
+				$('#sTime-h').append($('<option>' +s.format('HH')+ '</option>'));
+				if(s.format('YYYY-MM-DD')=='Invalid date'){
+					return;
+				}
+				if('23' ==s.add(1,'h').format('HH')){
+					return;
+				}
+			}
+
+		}else{
+			if(e1.isBefore(s1,'d')){
+				return;
+			}
+			startTime = s1;
+			endTime = e1;
+			nowTime = moment(startTime);
+			var s = moment(startTime);
+			var e = moment(endTime);
+			while(true){
+				$('#sTime-d').append($('<option>' +s.format('YYYY-MM-DD')+ '</option>'));
+				$('#eTime').append($('<option>' +s.format('YYYY-MM-DD')+ '</option>'));
+				console.log(s.format('YYYY-MM-DD'));
+				if(s.format('YYYY-MM-DD')=='Invalid date'){
+					return;
+				}
+				if(e.isBefore(s.add(1,'d'))){
+					return;
+				}
+			}
 		}
 
-		if(e1.isBefore(e2,'h')){
-			endTime = e1;
-		}else{
-			endTime = e2;
-		}
-		nowTime = moment(startTime);
-		var s = moment(startTime);
-		var e = moment(endTime);
-		while(true){
-			$('#sTime-d').append($('<option>' +s.format('YYYY-MM-DD')+ '</option>'));
-			console.log(s.format('YYYY-MM-DD'));
-			if(e.format('YYYY-MM-DD')=='Invalid date'){
-				return;
-			}
-			if(e.isBefore(s.add(1,'d'))){
-				return;
-			}
-		}
-		s = moment(startTime);
-		while(true){
-			$('#sTime-h').append($('<option>' +s.format('HH')+ '</option>'));
-			if(s.format('YYYY-MM-DD')=='Invalid date'){
-				return;
-			}
-			if('23' ==s.add(1,'h').format('HH')){
-				return;
-			}
-		}
 	}else{
-		if(e1.isBefore(s2,'d')||e2.isBefore(s1,'d')){
-			return;
-		}
-
-		if(s1.isBefore(s2,'d')){
-			startTime = s2;
-		}else{
-			startTime = s1;
-		}
-
-		if(e1.isBefore(e2,'d')){
-			endTime = e1;
-		}else{
-			endTime = e2;
-		}
-
-		nowTime = moment(startTime);
-		var s = moment(startTime);
-		var e = moment(endTime);
-		while(true){
-			$('#sTime-d').append($('<option>' +s.format('YYYY-MM-DD')+ '</option>'));
-			$('#eTime').append($('<option>' +s.format('YYYY-MM-DD')+ '</option>'));
-			console.log(s.format('YYYY-MM-DD'));
-			if(s.format('YYYY-MM-DD')=='Invalid date'){
+		s1 = moment(s1-0);
+		s2 = moment(s2-0);
+		e1 = moment(e1-0);
+		e2 = moment(e2-0);
+		if(type == 'h'){
+			if(e1.isBefore(s2,'h')||e2.isBefore(s1,'h')){
 				return;
 			}
-			if(e.isBefore(s.add(1,'d'))){
+
+			if(s1.isBefore(s2,'h')){
+				startTime = s2;
+			}else{
+				startTime = s1;
+			}
+
+			if(e1.isBefore(e2,'h')){
+				endTime = e1;
+			}else{
+				endTime = e2;
+			}
+			nowTime = moment(startTime);
+			var s = moment(startTime);
+			var e = moment(endTime);
+			while(true){
+				$('#sTime-d').append($('<option>' +s.format('YYYY-MM-DD')+ '</option>'));
+				console.log(s.format('YYYY-MM-DD'));
+				if(e.format('YYYY-MM-DD')=='Invalid date'){
+					return;
+				}
+				if(e.isBefore(s.add(1,'d'))){
+					return;
+				}
+			}
+			s = moment(startTime);
+			while(true){
+				$('#sTime-h').append($('<option>' +s.format('HH')+ '</option>'));
+				if(s.format('YYYY-MM-DD')=='Invalid date'){
+					return;
+				}
+				if('23' ==s.add(1,'h').format('HH')){
+					return;
+				}
+			}
+		}else{
+			if(e1.isBefore(s2,'d')||e2.isBefore(s1,'d')){
 				return;
+			}
+
+			if(s1.isBefore(s2,'d')){
+				startTime = s2;
+			}else{
+				startTime = s1;
+			}
+
+			if(e1.isBefore(e2,'d')){
+				endTime = e1;
+			}else{
+				endTime = e2;
+			}
+
+			nowTime = moment(startTime);
+			var s = moment(startTime);
+			var e = moment(endTime);
+			while(true){
+				$('#sTime-d').append($('<option>' +s.format('YYYY-MM-DD')+ '</option>'));
+				$('#eTime').append($('<option>' +s.format('YYYY-MM-DD')+ '</option>'));
+				console.log(s.format('YYYY-MM-DD'));
+				if(s.format('YYYY-MM-DD')=='Invalid date'){
+					return;
+				}
+				if(e.isBefore(s.add(1,'d'))){
+					return;
+				}
 			}
 		}
 	}
