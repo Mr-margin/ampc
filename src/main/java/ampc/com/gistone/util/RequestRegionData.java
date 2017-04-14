@@ -103,8 +103,8 @@ public class RequestRegionData {
                     List<HashMap<String, String>>  hashMapList= (List<HashMap<String, String>>) method2.invoke(regionConfig,null);
                     method1.invoke(this.regionConfig,hashMapList);
                     System.out.println(regionConfig);
-                    List<HashMap<String, String>> list= this.regionConfig.getStation();
-                    for(HashMap<String, String> theone:list){
+
+                    for(HashMap<String, String> theone:hashMapList){
                     TSite tsite=new TSite();
                     tsite.setCityName(theone.get("cityName"));
                     tsite.setLat(theone.get("lat"));
