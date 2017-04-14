@@ -1080,7 +1080,7 @@ function createEditArea() {
     areaName: areaName,
     userId: userId,
     scenarinoStartDate: moment(momentDate(qjMsg.qjStartDate)).format('YYYY-MM-DD HH:mm:ss'),
-    scenarinoEndDate: moment(momentDate(qjMsg.qjEndDate)).format('YYYY-MM-DD HH:mm:ss'),
+    scenarinoEndDate: moment(momentDate(qjMsg.qjEndDate)).add(1,'h').add(-1,'s').format('YYYY-MM-DD HH:mm:ss'),
     areaId: $('#areaName').attr('data-id') || '',
     provinceCodes: '',
     cityCodes: '',
