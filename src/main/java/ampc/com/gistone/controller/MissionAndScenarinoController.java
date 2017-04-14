@@ -1416,26 +1416,26 @@ public class MissionAndScenarinoController {
 						Long chas=end.getTime()-start.getTime();//开始结束时间差
 						Long qt=start.getTime()-copystarttime.getTime();//开始与开始时间差
 						Long endchar=copyendtime.getTime()-end.getTime();
-						float qthour=qt/1000/60/60f;//开始与开始时间差
+						float qthour=qt/1000f;//开始与开始时间差
 						float qtcha=qthour*s;
 						
 						
-						float ends=endchar/1000/60/60f;
+						float ends=endchar/1000f;
 						float endhour=ends*s;
 						
 						SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						Calendar cal = Calendar.getInstance();
 						cal.setTime(starttime);
-						cal.add(Calendar.HOUR, (int)qtcha);
+						cal.add(Calendar.SECOND, (int)qtcha);
 						String starDate =sdf.format(cal.getTime());//
 						Date startDate=sdf.parse(starDate);
 						
 						Calendar qtcal = Calendar.getInstance();
 						cal.setTime(endtime);
 				
-						cal.add(Calendar.HOUR, -(int)endhour);
+						cal.add(Calendar.SECOND, -(int)endhour);
 						if(copyendtime.getTime()-end.getTime()!=0 && hb<ha){
-							cal.add(Calendar.HOUR, -1);
+							cal.add(Calendar.SECOND, -1);
 						}
 						
 						String endTimeDate =sdf.format(cal.getTime());
