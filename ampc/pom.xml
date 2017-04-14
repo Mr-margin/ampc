@@ -180,7 +180,11 @@
 	    <artifactId>httpclient</artifactId>
 	    <version>4.4.1</version>
 	</dependency>
-	
+	<dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>fluent-hc</artifactId>
+      <version>4.4.1</version>
+    </dependency>
 	<dependency>
 	    <groupId>edu.ucar</groupId>
 	    <artifactId>cdm</artifactId>
