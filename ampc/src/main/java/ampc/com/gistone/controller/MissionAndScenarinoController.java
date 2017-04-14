@@ -813,7 +813,7 @@ public class MissionAndScenarinoController {
 					if(result>0){
 						for(Long scenarinoId:scenarinoIdss){
 						result=tTasksStatusMapper.updateinf(scenarinoId);
-						if(result<0){
+						if(result==0){
 							return AmpcResult.build(1000, "情景状态删除失败",null);
 						}
 						}
