@@ -54,11 +54,10 @@ public class EMissionController {
 	
 	@Autowired
 	private RequestRegionData rrd=new RequestRegionData();
-	@Autowired
-	private BaseSaveUtil baseSaveUtil;
 	
 	@Autowired
 	private TEsNativeMapper tEsNativeMapper;
+	
 	/**
 	 * 保存减排计算结果
 	 * @param requestDate
@@ -513,7 +512,7 @@ public class EMissionController {
 			return AmpcResult.build(0, "success",refmap);
 		}catch(Exception e){
 			e.printStackTrace();
-			return AmpcResult.build(1000, "error",null);	
+			return AmpcResult.build(1000, "error",null);
 		}
 		
 		
@@ -558,14 +557,28 @@ public class EMissionController {
 	}
 	@RequestMapping("/base")
 	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
-	public String base() throws IOException{
-		Object mapses=TestController.sssss();
+	public List base() throws IOException{
+		
 //		Map<String,Object> heightmap=(Map)mapses;
 //		String obj=heightmap.get("data").toString();
 //		JSONObject objs=JSONObject.fromObject(obj);
 //		Map<Object,Object> sss=(Map)objs;
-//		String s=baseSaveUtil.save_baseemission(sss);
-//		return s;
-		return "";
+		Map sss=new HashMap();
+		Map ss=new HashMap();
+		Map s=new HashMap();
+		Map es=new HashMap();
+		Map ssss=new HashMap();
+		ssss.put("SO2", 5.315618189666302);
+		ssss.put("NOx", 1.9456769363219177);
+		ssss.put("PM25", 1.3098388729838357);
+		ssss.put("VOC", 0.4799933927147945);
+		ssss.put("CO2", 1112.4350450824195);
+		sss.put("工业锅炉", ssss);
+		ss.put("130100", sss);
+		s.put("emission", ss);
+		s.put("date", "2017-01-01");
+		es.put("2017-01-01", s);
+	   List<TEmissionDetail> sse=BaseSaveUtil.save_baseemission(es);
+		return sse;
 	}
 }
