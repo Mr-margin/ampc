@@ -68,9 +68,11 @@ public class ModelExecuteStatusController {
 			//情景ID
 			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
 			System.out.println(scenarinoId);
-			Date endDate  = tasksStatusMapper.selectByscenarinoId(scenarinoId);
-			String endtime = DateUtil.DATEtoString(endDate, "yyyyMMdd");
-			System.out.println(endtime+"..........");
+			//通过情景ID查找整个情景的tasks的完成状态
+			TTasksStatus tTasksStatus   = tasksStatusMapper.selectendByscenarinoId(scenarinoId);//selectendByscenarinoId 
+			
+			//String endtime = DateUtil.DATEtoString(endDate, "yyyyMMdd");
+			//System.out.println(endtime+"..........");
 			//确定是逐日执行还是逐模块执行
 			//查找stepindex和taskendtime
 			//
