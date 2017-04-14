@@ -215,4 +215,10 @@ public class JsonUtil {
 	    byte[] encoded = Files.readAllBytes(Paths.get(path));
 	    return new String(encoded, encoding);
 	  }
+	  
+	  public static <T> T jsonToObj2(String json, Class clazz) throws IOException {
+		  mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+	     T t = (T) mapper.readValue(json, clazz);
+	     return t;
+	  }
 }

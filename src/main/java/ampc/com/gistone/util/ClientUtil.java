@@ -2,16 +2,23 @@ package ampc.com.gistone.util;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.fluent.Content;
+import org.apache.http.client.fluent.Request;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * Client帮助类
  * @author WangShanxi
@@ -20,6 +27,10 @@ import org.apache.http.util.EntityUtils;
  */
 public class ClientUtil {
 
+	private final static Logger logger = LoggerFactory.getLogger(ClientUtil.class);
+	
+	private static ContentType contentType = ContentType.APPLICATION_JSON;
+	private int timeout;
 	
 	/**
 	 * 设置编码和跨域
@@ -77,4 +88,59 @@ public class ClientUtil {
 		return doPost(url, null);
 	}
 	
+	public AmpcResult doGet(String params, String url, int timeout) {
+		this.timeout = timeout;
+		url = params == null ? url : (url + "?" + params);
+	    return doRequestData(null, Request.Get(url));
+	  }
+	
+	public AmpcResult doRequestData(String params, Request request) {
+		long start = System.currentTimeMillis();
+		Content content = null;
+	    Exception exception = null;
+	    try {
+	      if (params != null) {
+	        request = request.bodyString(params, contentType);
+	      }
+	      content = request
+	          .socketTimeout(timeout)
+	          .connectTimeout(timeout)
+	          .execute()
+	          .returnContent();
+	    } catch (Exception e) {
+	      exception = e;
+	    }
+	    long cost = System.currentTimeMillis() - start;
+	    if (exception == null) {
+            logger.info(formatLog("request info", cost, timeout, params, request));
+        } else {
+            logger.error(formatLog("request failed", cost, timeout, request), exception);
+        }
+	    AmpcResult ampcResult = new AmpcResult();
+		try {
+			Map map = JsonUtil.jsonToObj(content.asString(), Map.class);
+			ampcResult.setData(map.get("data"));
+			ampcResult.setMsg((String) map.get("result"));
+			String code = (String) map.get("code");
+			int c = StringUtils.isEmpty(code.trim()) ? 0 : Integer.valueOf(code);
+			ampcResult.setStatus(c);
+			return ampcResult;
+		} catch (IOException e) {
+			logger.error("request response convert ampcResult error", e);
+			return null;
+		}
+	}
+	
+	public static String formatLog(String desc, Object... params) {
+	    StringBuilder sb = new StringBuilder();
+	    sb.append(desc);
+	    sb.append(" - [");
+	    int i = 0;
+	    for (Object obj : params) {
+	      if (i++ > 0) sb.append(",");
+	      sb.append(obj);
+	    }
+	    sb.append("]");
+	    return sb.toString();
+	  }
 }

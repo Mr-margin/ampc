@@ -1,8 +1,19 @@
 package ampc.com.gistone.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ampc.com.gistone.preprocess.obs.ObsPreprocessController;
 
 /**
  * 日期转换帮助类
@@ -12,6 +23,9 @@ import java.util.Date;
  * @date 2017年3月11日
  */
 public class DateUtil {
+	
+	public final static String DATE_FORMAT = "yyyy-MM-dd";
+	private final static Logger logger = LoggerFactory.getLogger(DateUtil.class);
 	/**
 	 * 
 	 * @Description: TODO
@@ -200,5 +214,27 @@ public class DateUtil {
 			e.printStackTrace();
 		}
 		return newdate;
+	}
+	
+	public static LocalDate convertStringToLocalDate(String value) {
+	    return LocalDate.parse(value);
+	}
+	
+	public static LocalDateTime convertStringToLocalDatetime(String dateStr) {
+		if(StringUtils.isNotEmpty(dateStr)) {
+		    Date d = phraseDate(dateStr);
+	        return LocalDateTime.ofInstant(Instant.ofEpochMilli(d.getTime()), ZoneId.systemDefault());
+	    }
+		return null;
+	}
+	
+	public static Date phraseDate(String dateString) {
+	    SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+	    try {
+			return sdf.parse(dateString);
+		} catch (ParseException e) {
+			logger.error("ParseException", e);
+			return null;
+		}
 	}
 }
