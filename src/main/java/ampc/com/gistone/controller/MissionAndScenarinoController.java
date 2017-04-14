@@ -810,6 +810,15 @@ public class MissionAndScenarinoController {
 				if(result>0){
 					//执行情景删除方法
 					result=this.tScenarinoDetailMapper.updateIsEffeByIds(scenarinoIdss);
+					if(result>0){
+						for(Long scenarinoId:scenarinoIdss){
+						result=tTasksStatusMapper.updateinf(scenarinoId);
+						if(result<0){
+							return AmpcResult.build(1000, "情景状态删除失败",null);
+						}
+						}
+					
+					}
 					return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "情景修改失败",null);
 				}else{
 					return AmpcResult.build(1000, "区域修改失败",null);
@@ -1372,14 +1381,14 @@ public class MissionAndScenarinoController {
 			copytScenarinoArea.setIsEffective("1");
 			List<TScenarinoAreaWithBLOBs> copyarealist=tScenarinoAreaMapper.selectByEntity(copytScenarinoArea);
 			//被复制情景的开始结束时间
-			Date copyendtime=copytScenarinoDetail.getScenarinoEndDate();
-			Date copystarttime=copytScenarinoDetail.getScenarinoStartDate();
+			Date copyendtime=copytScenarinoDetail.getScenarinoEndDate();//结束时间
+			Date copystarttime=copytScenarinoDetail.getScenarinoStartDate();//开始时间
 			Long a=copyendtime.getTime()-copystarttime.getTime();
 			float ha=a/1000f;//小时数
 			//情景的开始结束时间
 			Date endtime=tScenarinoDetail.getScenarinoEndDate();
-			Date starttime=tScenarinoDetail.getScenarinoStartDate();
-			Long b=endtime.getTime()-starttime.getTime();
+			Date starttime=tScenarinoDetail.getScenarinoStartDate();//开始时间
+			Long b=endtime.getTime()-starttime.getTime();//结束时间
 			float hb=b/1000f;//小时数
 				
 			float s=hb/ha;
