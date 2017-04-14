@@ -1568,13 +1568,12 @@ public class MissionAndScenarinoController {
 				}
 			}
 			}else{
-				
 				return AmpcResult.build(1000, "该任务没有创建情景",null);
 			}
-		return AmpcResult.build(0, "success",objsed);	
+		return AmpcResult.build(0, "success",objsed);
 		}catch(Exception e){
 			e.printStackTrace();
-			return AmpcResult.build(1000, "参数错误",null);	
+			return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
 	
