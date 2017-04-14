@@ -112,6 +112,7 @@ if (!sceneInitialization) {
 } else {
   ls.setItem('SI', JSON.stringify(sceneInitialization));
 }
+
 console.log(JSON.stringify(sceneInitialization));
 if (!sceneInitialization) {
   sceneInittion();
@@ -209,9 +210,14 @@ function initEcharts() {
     option.title.text = species[i];
     option.legend.data = (function () {
       var arr = [];
-      for (var a = 0; a < sceneInitialization.data.length; a++) {
-        arr.push(sceneInitialization.data[a].scenarinoName)
+      //for (var a = 0; a < sceneInitialization.data.length; a++) {
+      //  arr.push(sceneInitialization.data[a].scenarinoName)
+      //};
+
+      for (var a = 0; a < 3; a++) {
+        arr.push('a'+a+1)
       };
+
       arr.unshift('基准情景');
       return arr;
     })();
@@ -228,10 +234,18 @@ function initEcharts() {
       option.xAxis.name = '/mg/m³';
     }
     option.series = [];
-    for (var sp = 0; sp < sceneInitialization.data.length; sp++) {
+    var arrrr = [466,458,456]
+    for (var sp = 0; sp < 3; sp++) {
       //for (var sp = 0; sp < 5; sp++) {
-      var id = sceneInitialization.data[sp].scenarinoId;
-      var name = sceneInitialization.data[sp].scenarinoName;
+      var id = arrrr[sp];
+      var name = 'a'+sp+1;
+
+
+    //for (var sp = 0; sp < sceneInitialization.data.length; sp++) {
+    //  //for (var sp = 0; sp < 5; sp++) {
+    //  var id = sceneInitialization.data[sp].scenarinoId;
+    //  var name = sceneInitialization.data[sp].scenarinoName;
+
 
       option.series.push({
         name: name, //可变，存储情景名称
@@ -482,12 +496,13 @@ function updata() {
     //datetype:changeMsg.rms
 
 
-    "missionId":"300",
+    "missionId":"393",
     "mode":"point",
     "time":"2016-11-27 13",
     "userId":"1",
     "cityStation":"1002A",
-    "scenarinoId":changeMsg.scenarinoId,
+    //"scenarinoId":changeMsg.scenarinoId,
+    "scenarinoId":[466,458,456],
     "datetype":"day"
   });
   var echartsJZData = ajaxPost(urlJZ, {
@@ -500,7 +515,7 @@ function updata() {
     //datetype:changeMsg.rms
 
 
-    "missionId":"177",
+    "missionId":"393",
     "mode":"point",
     "time":"2016-11-27 13",
     "userId":"1",
