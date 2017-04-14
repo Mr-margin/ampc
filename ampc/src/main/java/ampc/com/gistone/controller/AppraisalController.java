@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TPreProcessMapper;
@@ -403,11 +405,16 @@ public class AppraisalController {
 						for(int a=0;a<=23;a++){
 							if(hournum-1==a){
 								if(spr.equals("CO")){
-									BigDecimal bd=new BigDecimal(hourlist.getString(0));
-									litarr.add(bd.setScale(2, BigDecimal.ROUND_HALF_UP));
+									if(heightmap.get(heights)!=null){
+									litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(2, BigDecimal.ROUND_HALF_UP));
 									}else{
-										BigDecimal bd=new BigDecimal(hourlist.getString(0));
-										litarr.add(bd.setScale(1, BigDecimal.ROUND_HALF_UP));
+										litarr.add("-");
+									}
+									}else{
+										if(heightmap.get(heights)!=null){
+											litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											}else{
+												litarr.add("-");
+											}
 									}
 								if(heights.equals("0")){
 									litarr.add(0);
@@ -440,11 +447,16 @@ public class AppraisalController {
 						}else{
 							for(int a=0;a<=23;a++){
 								if(spr.equals("CO")){
-									BigDecimal bd=new BigDecimal(hourlist.getString(0));
-									litarr.add(bd.setScale(2, BigDecimal.ROUND_HALF_UP));
+									if(heightmap.get(heights)!=null){
+									litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(2, BigDecimal.ROUND_HALF_UP));
 									}else{
-										BigDecimal bd=new BigDecimal(hourlist.getString(0));
-										litarr.add(bd.setScale(1, BigDecimal.ROUND_HALF_UP));
+										litarr.add("-");
+									}
+									}else{
+										if(heightmap.get(heights)!=null){
+											litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											}else{
+												litarr.add("-");
+											}
 									}
 								if(heights.equals("0")){
 									litarr.add(0);
@@ -505,9 +517,16 @@ public class AppraisalController {
 							Map<String,Object> hourcmap=new HashMap();
 							JSONArray litarr=new JSONArray();
 							if(spr.equals("CO")){
+								if(heightmap.get(heights)!=null){
 								litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(2, BigDecimal.ROUND_HALF_UP));
 								}else{
-								litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));
+									litarr.add("-");
+								}
+								}else{
+									if(heightmap.get(heights)!=null){
+										litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											}else{
+											litarr.add("-");
+										}
 								}
 							if(heights.equals("0")){
 								litarr.add(0);
@@ -562,7 +581,13 @@ public class AppraisalController {
 	
 	
 	
-	
+	/**
+	 * 垂直分布基准查询
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	
 	@RequestMapping("Appraisal/find_basevertical")
 	public AmpcResult find_basevertical(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
@@ -656,13 +681,17 @@ public class AppraisalController {
 							for(int a=0;a<=23;a++){
 								if(hournum-1==a){
 									if(spr.equals("CO")){
-										BigDecimal bd=new BigDecimal(hourlist.getString(0));
-										litarr.add(bd.setScale(2, BigDecimal.ROUND_HALF_UP));
+										if(heightmap.get(heights)!=null){
+										litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(2, BigDecimal.ROUND_HALF_UP));
 										}else{
-											BigDecimal bd=new BigDecimal(hourlist.getString(0));
-											litarr.add(bd.setScale(1, BigDecimal.ROUND_HALF_UP));
+											litarr.add("-");
 										}
-									if(heights.equals("0")){
+										}else{
+											if(heightmap.get(heights)!=null){
+												litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											}else{
+													litarr.add("-");
+												}
+										}									if(heights.equals("0")){
 										litarr.add(0);
 									}else if(heights.equals("1")){
 										litarr.add(50);
@@ -693,11 +722,16 @@ public class AppraisalController {
 							}else{
 								for(int a=0;a<=23;a++){
 									if(spr.equals("CO")){
-										BigDecimal bd=new BigDecimal(hourlist.getString(0));
-										litarr.add(bd.setScale(2, BigDecimal.ROUND_HALF_UP));
+										if(heightmap.get(heights)!=null){
+										litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(2, BigDecimal.ROUND_HALF_UP));
 										}else{
-											BigDecimal bd=new BigDecimal(hourlist.getString(0));
-											litarr.add(bd.setScale(1, BigDecimal.ROUND_HALF_UP));
+											litarr.add("-");
+										}
+										}else{
+											if(heightmap.get(heights)!=null){
+												litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											}else{
+													litarr.add("-");
+												}
 										}
 									if(heights.equals("0")){
 										litarr.add(0);
@@ -752,9 +786,16 @@ public class AppraisalController {
 								Map<String,Object> hourcmap=new HashMap();
 								JSONArray litarr=new JSONArray();
 								if(spr.equals("CO")){
+									if(heightmap.get(heights)!=null){
 									litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(2, BigDecimal.ROUND_HALF_UP));
 									}else{
-									litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));
+										litarr.add("-");
+									}
+									}else{
+										if(heightmap.get(heights)!=null){
+											litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											}else{
+												litarr.add("-");
+											}
 									}
 								if(heights.equals("0")){
 									litarr.add(0);
@@ -794,6 +835,7 @@ public class AppraisalController {
 						
 					}
 				}
+			
 			return	AmpcResult.build(0, "success",scmap);
 		}catch(Exception e){
 		e.printStackTrace();
@@ -806,15 +848,157 @@ public class AppraisalController {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	@RequestMapping("Appraisal/find_baseappraisal")
+	public AmpcResult find_find_baseappraisal(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){ 
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Integer userId=Integer.valueOf(data.get("userId").toString());
+			Long missionId=Long.valueOf(data.get("missionId").toString());
+			String mode=data.get("mode").toString();
+			String cityStation=data.get("cityStation").toString();
+			Date today=new Date();
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH");
+			String todays=sdf.format(today);
+			Date todayd=sdf.parse(todays);
+			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);
+			String status=tMissionDetail.getMissionStatus().toString();
+			String datetype=data.get("datetype").toString();
+			//计算任务开始时间结束时间差
+			Date strdate=tMissionDetail.getMissionStartDate();
+			Date endate=tMissionDetail.getMissionEndDate();
+			SimpleDateFormat sdft=new SimpleDateFormat("yyyy-MM-dd");
+			String strdates=sdft.format(endate);
+			String endates=sdft.format(endate);
+			String todaystr=sdft.format(todayd);
+			Date todayda=sdft.parse(todaystr);
+			Date startdate=sdft.parse(strdates);
+			Date enddate=sdft.parse(endates);
+			Long start=startdate.getTime();
+			Long end=enddate.getTime();
+			Long todayl=todayda.getTime();
+			Long day=(start-end)/(24*60*60*1000);
+			Long tday=(todayl-end)/(24*60*60*1000)-1;//任务开始结束时间差
+			Long chaday=day-tday;
+			
+			Integer domainId=Integer.valueOf(tMissionDetail.getMissionDomainId().toString());
+			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
+			tScenarinoDetail.setMissionId(missionId);
+			tScenarinoDetail.setScenType("4");
+			List<TScenarinoDetail> tslist=tScenarinoDetailMapper.selectByEntity(tScenarinoDetail);
+			List<Map<String,TScenarinoDetail>> datelist=new ArrayList();
+			List<ScenarinoEntity> scelist=new ArrayList();
+			if(status.equals("2")){
+				for(int a=1;a<=tday;a++){
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(startdate);
+					cal.add(Calendar.DATE, a);
+					String addTimeDate =sdf.format(cal.getTime());
+					for(TScenarinoDetail tsd:tslist){
+						Date sstart=tsd.getScenarinoStartDate();
+						String sstrats=sdft.format(sstart);
+						if(addTimeDate.equals(sstrats)){
+							Map<String,TScenarinoDetail> map=new HashMap();
+							map.put(addTimeDate, tsd);
+							datelist.add(map);
+						}else{
+							continue;
+						}
+					}
+				}
+			}else{
+				for(int a=1;a<=day;a++){
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(startdate);
+					cal.add(Calendar.DATE, a);
+					String addTimeDate =sdf.format(cal.getTime());
+					for(TScenarinoDetail tsd:tslist){
+						Date sstart=tsd.getScenarinoStartDate();
+						String sstrats=sdft.format(sstart);
+						if(addTimeDate.equals(sstrats)){
+							Map<String,TScenarinoDetail> map=new HashMap();
+							map.put(addTimeDate, tsd);
+							datelist.add(map);
+						}else{
+							continue;
+						}
+					}
+				}
+			}
+			if(status.equals("2")){
+				for(Map<String,TScenarinoDetail> dates:datelist){
+					String date="";
+					for(String datethe:dates.keySet()){
+						date=datethe;
+					}
+					TScenarinoDetail tsc=dates.get(date);
+					List<ScenarinoEntity> sclist=new ArrayList();
+					if(datetype.equals("day")){//逐天
+						String tables="T_SCENARINO_FNL_DAILY_";
+						Date tims=tScenarinoDetail.getScenarinoAddTime();
+						 DateFormat df = new SimpleDateFormat("yyyy");
+						String nowTime= df.format(tims);
+						tables+=nowTime+"_";
+						tables+=userId;
+						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+						scenarinoEntity.setCity_station(cityStation);
+						scenarinoEntity.setDomain(3);
+						scenarinoEntity.setDomainId(domainId);
+						scenarinoEntity.setMode(mode);
+						scenarinoEntity.setsId(Integer.valueOf(tsc.getScenarinoId().toString()));
+						scenarinoEntity.setTableName(tables);
+						scenarinoEntity.setDay(tsc.getScenarinoStartDate());
+						sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+						scelist.add(sclist.get(0));
+						}else{//逐小时
+							String tables="T_SCENARINO_FNL_HOURLY_";
+							Date tims=tScenarinoDetail.getScenarinoAddTime();
+							 DateFormat df = new SimpleDateFormat("yyyy");
+							String nowTime= df.format(tims);
+							System.out.println(nowTime);
+							tables+=nowTime+"_";
+							tables+=userId;
+							ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+							scenarinoEntity.setCity_station(cityStation);
+							scenarinoEntity.setDomain(3);
+							scenarinoEntity.setDomainId(domainId);
+							scenarinoEntity.setMode(mode);
+							scenarinoEntity.setsId(Integer.valueOf(tsc.getScenarinoId().toString()));
+							scenarinoEntity.setTableName(tables);
+							scenarinoEntity.setDay(tsc.getScenarinoStartDate());
+							sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+							scelist.add(sclist.get(0));
+						}//时间分布判断	
+					
+					
+						for(int a=1;a<=chaday;a++){
+							Map<String,TScenarinoDetail> damap=datelist.get(datelist.size()-1);
+							String dated="";
+							for(String datethe:damap.keySet()){
+								date=datethe;
+							}
+							
+							
+						}
+					
+					
+					
+				}
+				
+				
+				
+			}else{
+				
+				
+				
+				
+				
+			}
+			return	AmpcResult.build(0, "success");
+		}catch(Exception e){
+			e.printStackTrace();
+			return	AmpcResult.build(0, "error");	
+		}
+		}
+
 }
