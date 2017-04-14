@@ -114,6 +114,17 @@ public interface TTasksStatusMapper {
 	 * @date 2017年4月12日 上午9:25:10
 	 */
 	int updateEmisData(TTasksStatus tTasksStatus);
+
+	/**
+	 * @Description: 通过情景ID获取该情景的减排系数
+	 * @param scenarinoId
+	 * @return   
+	 * TTasksStatus  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月13日 下午7:44:27
+	 */
+	TTasksStatus selectentityByScenId(Long tasksScenarinoId);
 	
 	int updateinf(Long scenarinoId);
 }
