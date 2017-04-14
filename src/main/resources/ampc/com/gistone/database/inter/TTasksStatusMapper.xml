@@ -256,8 +256,9 @@
   </update>
   
   <!--测试方法 通过情景ID查找结束时间  -->
-  <select id="selectByscenarinoId" resultType="java.util.Date" parameterType="java.lang.Long">
-  select SCENARINO_END_DATE
+  <select id="selectendByscenarinoId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+  select 
+  <include refid="Base_Column_List" />
   from T_TASKS_STATUS where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </select>
   
