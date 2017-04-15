@@ -601,7 +601,7 @@ $(function() {
                           if(qjMsg.scenarinoStatus == 8)return;
                           if(qjMsg.scenarinoStatus == 9)return;
 
-                          if(event.toElement.tagName == 'A'){
+                          if(event.target.nodeName == 'A'){
                               editPlan(self._findItem($(this)))
                           }else{
                               ontTimes(self._findItem($(this)));
