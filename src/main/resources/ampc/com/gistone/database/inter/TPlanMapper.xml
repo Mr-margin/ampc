@@ -70,7 +70,7 @@
   <!-- 根据区域ID 查询预案ID -->
  <select id="selectByAreaId" parameterType="hashMap" resultType="java.lang.Long">
     SELECT PLAN_ID FROM T_PLAN WHERE IS_EFFECTIVE='1' 
-      AND USER_ID=#{userId,jdbcType=DECIMAL} AND SCENARINO_DETAIL_ID=#{scenarinoId,jdbcType=DECIMAL}
+      AND USER_ID=#{userId,jdbcType=DECIMAL} AND SCENARIO_ID=#{scenarinoId,jdbcType=DECIMAL}
       AND AREA_ID=#{areaId,jdbcType=DECIMAL}
  </select>
   
