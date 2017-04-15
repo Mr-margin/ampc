@@ -2,14 +2,14 @@ $(function () {
   /**
    *设置导航条信息
    */
-  $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
+  $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">垂直廓线</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
   //全选复选框
   //initTableCheckbox();
 
 
 });
 /*存储全局改变量*/
-var dps_station;
+var dps_codeStation,dps_station;
 var ooo = [['-',0],['-',50],['-',100],['-',200],['-',300],['-',400],['-',500],['-',700],['-',1000],['-',1500],['-',2000],['-',3000]]
 var changeMsg = {
   pro: '',//站点选择
@@ -42,7 +42,7 @@ var speciesObj = {
   'PMFINE':'PMFINE',
   //'O₃':'O3'
   'O₃':'O3_1_MAX'
-}
+};
 /*echarts 配置*/
 var optionAll = {
   title: {
@@ -97,15 +97,9 @@ var optionAll = {
   series: [  //可变，存储所有情景数据
 
   ]
-}
+};
 
 var ls = window.sessionStorage;
-var qjMsg = vipspa.getMessage('yaMessage').content;
-if (!qjMsg) {
-  qjMsg = JSON.parse(ls.getItem('yaMsg'));
-} else {
-  ls.setItem('yaMsg', JSON.stringify(qjMsg));
-}
 var sceneInitialization = vipspa.getMessage('sceneInitialization').content;//从路由中取到情景范围
 if (!sceneInitialization) {
   sceneInitialization = JSON.parse(ls.getItem('SI'));
@@ -121,6 +115,7 @@ if (!sceneInitialization) {
   initialize();
 }
 
+
 /*初始化页面数据,在缓存中有数据的情况下*/
 function initialize() {
 
@@ -135,45 +130,61 @@ function initialize() {
 
   setStation(sceneInitialization.taskID);
   setTime(sceneInitialization.s, sceneInitialization.e);
-  $.when(dps_station).then(function () {
+  $.when(dps_codeStation,dps_station).then(function () {
     updata();
   });
-  updata();
+  //updata();
   //initEcharts();
 
 }
 
-var allStation = {};//用于存储所有的站点信息
+var allCode = {};//用于存储所有的站点信息
 /*设置站点*/
 function setStation(id) {
   $('#proStation').empty();
   $('#cityStation').empty();
   $('#station').empty();
-  var url = '';
-  dps_station = ajaxPost(url, {
+  var url = '/Site/find_code';
+  dps_codeStation = ajaxPost(url, {
     userId: userId,
-    missionId: id
+    //missionId: id
   }).success(function (res) {
     if (res.status == 0) {
-      allStation = res.data;
-      for (var pro in allStation) {
-        $('#proStation').append($('<option value="' + allStation[pro].code + '">' + allStation[pro].name + '</option>'))
+      allCode = res.data;
+      for (var pro in allCode) {
+        $('#proStation').append($('<option value="' + allCode[pro].code + '">' + allCode[pro].name + '</option>'))
       }
-      var cityStation = allStation[$('#proStation').val()].station;
+      var cityStation = allCode[$('#proStation').val()].station;
       for (var city in cityStation) {
         $('#cityStation').append($('<option value="' + cityStation[city].code + '">' + cityStation[city].name + '</option>'))
       }
-      var station = cityStation[$('#cityStation').val()].station;
-      for (var s in station) {
-        $('#station').append($('<option value="' + station[s].code + '">' + station[s].name + '</option>'))
-      }
+
+      //var station = cityStation[$('#cityStation').val()].station;
+      //for (var s in station) {
+      //  $('#station').append($('<option value="' + station[s].code + '">' + station[s].name + '</option>'))
+      //}
 
       changeMsg.pro = $('#proStation').val();
       changeMsg.city = $('#cityStation').val();
-      changeMsg.station = $('#station').val();
+      findStation(changeMsg.city);
+      //changeMsg.station = $('#station').val();
     } else {
       console.log('站点请求故障！！！')
     }
+  })
+}
+/*查询站点*/
+function findStation(code){
+  dps_station = ajaxPost('/Site/find_Site',{
+    userId:userId,
+    siteCode:code
+  }).success(function(res){
+    $('#station').empty();
+    $('#station').append($('<option value="avg">平均</option>'));
+    for(var i=0;i<res.data.length;i++){
+      $('#station').append($('<option value="' + res.data[i].stationId + '">' + res.data[i].stationName + '</option>'))
+    }
+    changeMsg.station = $('#station').val();
   })
 }
 
@@ -289,6 +300,21 @@ function sceneInittion() {
     console.log(JSON.stringify(res));
     if (res.status == 0) {
       var task = "";
+
+
+      /*测试数据*/
+      res.data = [
+        {
+          missionEndDate: 1480258800000,
+          missionId: 393,
+          missionName: "测试任务",
+          missionStartDate: 1479571200000,
+        }
+      ]
+      /*测试数据 end*/
+
+
+
       $.each(res.data, function (k, vol) {
         allMission[vol.missionId] = vol;
         if (sceneInitialization) {
@@ -332,31 +358,60 @@ function sceneTable() {
     silent: true, // 刷新事件必须设置
     contentType: "application/json", // 请求远程数据的内容类型。
     responseHandler: function (res) {
-      if (res.status == 0&&res.data.length>0) {
-        if (res.data.rows.length > 0) {
+      //if (res.status == 0) {
+      //  if(!res.data.rows){
+      //    res.data.rows = [];
+      //  }else if (res.data.rows.length > 0) {
+      //    if (sceneInitialization) {
+      //      if (sceneInitialization.data.length > 0) {
+      //
+      //        $.each(res.data.rows, function (i, col) {
+      //          $.each(sceneInitialization.data, function (k, vol) {
+      //            if (col.scenarinoId == vol.scenarinoId) {
+      //              res.data.rows[i].state = true;
+      //            }
+      //          });
+      //        });
+      //      }
+      //    }
+      //  }
+      //  return res.data.rows;
+      //} else if (res.status == 1000) {
+      //  swal(res.msg, '', 'error');
+      //}
 
-          if (sceneInitialization) {
-            if (sceneInitialization.data.length > 0) {
 
-              $.each(res.data.rows, function (i, col) {
-                $.each(sceneInitialization.data, function (k, vol) {
-                  if (col.scenarinoId == vol.scenarinoId) {
-                    res.data.rows[i].state = true;
-                  }
-                });
-              });
-            }
-          }
 
-          return res.data.rows;
-        }else{
-        	return res;
-        }
-      } else if (res.status == 1000) {
-        swal(res.msg, '', 'error');
-      }else{
-    	  return res;
+      /*测试使用 start*/
+      var data = {
+        rows:[]
       }
+      data.rows = [
+        {
+          "scenarinoId": 456,
+          "scenarinoName": "情景1",
+          "scenType": "1",
+          "scenarinoStartDate": 1479571200000,
+          "scenarinoEndDate": 1480258800000
+        },
+        {
+          "scenarinoId": 458,
+          "scenarinoName": "情景2",
+          "scenType": "1",
+          "scenarinoStartDate": 1479571200000,
+          "scenarinoEndDate": 1480258800000
+        },
+        {
+          "scenarinoId": 466,
+          "scenarinoName": "情景3",
+          "scenType": "1",
+          "scenarinoStartDate": 1479571200000,
+          "scenarinoEndDate": 1480258800000
+        },
+      ];
+      return data.rows
+
+      /*测试使用 end*/
     },
     onClickRow: function (row, $element) {
       $('.success').removeClass('success');
@@ -433,16 +488,18 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
 $('#proStation').on('change', function (e) {
   var pro = $(e.target).val();
   changeMsg.pro = pro;
-  var cityStation = allStation[pro].station;
+  $('#cityStation').empty()
+  var cityStation = allCode[pro].station;
   for (var city in cityStation) {
     $('#cityStation').append($('<option value="' + cityStation[city].code + '">' + cityStation[city].name + '</option>'))
   }
   changeMsg.city = $('#cityStation').val();
-  var station = cityStation[changeMsg.city].station;
-  for (var s in station) {
-    $('#station').append($('<option value="' + station[s].code + '">' + station[s].name + '</option>'))
-  }
-  changeMsg.station = $('#station').val();
+  findStation(changeMsg.city);
+  //var station = cityStation[changeMsg.city].station;
+  //for (var s in station) {
+  //  $('#station').append($('<option value="' + station[s].code + '">' + station[s].name + '</option>'))
+  //}
+  //changeMsg.station = $('#station').val();
 
   updata();
 });
@@ -450,11 +507,12 @@ $('#proStation').on('change', function (e) {
 $('#cityStation').on('change', function (e) {
   var city = $(e.target).val();
   changeMsg.city = city;
-  var station = allStation[changeMsg.pro].station[city].station;
-  for (var s in station) {
-    $('#station').append($('<option value="' + station[s].code + '">' + station[s].name + '</option>'))
-  }
-  changeMsg.station = $('#station').val();
+  findStation(changeMsg.city);
+  //var station = allCode[changeMsg.pro].station[city].station;
+  //for (var s in station) {
+  //  $('#station').append($('<option value="' + station[s].code + '">' + station[s].name + '</option>'))
+  //}
+  //changeMsg.station = $('#station').val();
 
   updata();
 });
@@ -492,64 +550,66 @@ $('#height').on('change', function (e) {
 var czData;
 /*设置echarts图表*/
 function updata() {
-  var url = '/Appraisal/find_vertical';
-  var urlJZ = '/Appraisal/find_basevertical';
-  var echartsData = ajaxPost(url, {
-    //userId: userId,
-    //missionId:sceneInitialization.taskID,
-    //mode:changeMsg.station=='avg'?'city':'point',
-    //time:changeMsg.time,
-    //cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
-    //scenarinoId:changeMsg.scenarinoId,
-    //datetype:changeMsg.rms
+  $.when(dps_station).then(function () {
+    var url = '/Appraisal/find_vertical';
+    var urlJZ = '/Appraisal/find_basevertical';
+    var echartsData = ajaxPost(url, {
+      //userId: userId,
+      //missionId:sceneInitialization.taskID,
+      //mode:changeMsg.station=='avg'?'city':'point',
+      //time:changeMsg.time,
+      //cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
+      //scenarinoId:changeMsg.scenarinoId,
+      //datetype:changeMsg.rms
 
 
-    "missionId":"393",
-    "mode":"point",
-    "time":"2016-11-27 13",
-    "userId":"1",
-    "cityStation":"1002A",
-    //"scenarinoId":changeMsg.scenarinoId,
-    "scenarinoId":[466,458,456],
-    "datetype":"day"
-  });
-  var echartsJZData = ajaxPost(urlJZ, {
-    //userId: userId,
-    //missionId:sceneInitialization.taskID,
-    //mode:changeMsg.station=='avg'?'city':'point',
-    //time:changeMsg.time,
-    //cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
-    ////scenarinoId:changeMsg.scenarinoId,
-    //datetype:changeMsg.rms
+      missionId:sceneInitialization.taskID,
+      mode:changeMsg.station=='avg'?'city':'point',
+      time:changeMsg.time,
+      "userId":"1",
+      cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
+      "scenarinoId":changeMsg.scenarinoId,
+      //"scenarinoId":[466,458,456],
+      datetype:changeMsg.rms
+    });
+    var echartsJZData = ajaxPost(urlJZ, {
+      //userId: userId,
+      //missionId:sceneInitialization.taskID,
+      //mode:changeMsg.station=='avg'?'city':'point',
+      //time:changeMsg.time,
+      //cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
+      ////scenarinoId:changeMsg.scenarinoId,
+      //datetype:changeMsg.rms
 
 
-    "missionId":"393",
-    "mode":"point",
-    "time":"2016-11-27 13",
-    "userId":"1",
-    "cityStation":"1002A",
-    //"scenarinoId":changeMsg.scenarinoId,
-    "datetype":"day"
-  });
+      missionId:sceneInitialization.taskID,
+      mode:changeMsg.station=='avg'?'city':'point',
+      time:changeMsg.time,
+      "userId":"1",
+      cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
+      //"scenarinoId":changeMsg.scenarinoId,
+      datetype:changeMsg.rms
+    });
 
-  $.when(echartsData,echartsJZData).then(function (res,resJZ) {
-    if ((res[0].status == 0)&&(resJZ[0].status == 0)) {
-      if($.isEmptyObject(resJZ[0].data)){
-        resJZ[0].data['-1'] = {};
-        for(var i in speciesObj){
-          resJZ[0].data['-1'][speciesObj[i]] = ooo;
+    $.when(echartsData,echartsJZData).then(function (res,resJZ) {
+      if ((res[0].status == 0)&&(resJZ[0].status == 0)) {
+        if($.isEmptyObject(resJZ[0].data)){
+          resJZ[0].data['-1'] = {};
+          for(var i in speciesObj){
+            resJZ[0].data['-1'][speciesObj[i]] = ooo;
+          }
         }
+        var obj = {};
+        $.extend(obj , resJZ[0].data, res[0].data);
+        czData =  obj;
+        initEcharts();
+      } else {
+        console.log(res.msg)
       }
-      var obj = {};
-      $.extend(obj , resJZ[0].data, res[0].data);
-      czData =  obj;
-      initEcharts();
-    } else {
-      console.log(res.msg)
-    }
-  }, function () {
-    console.log('接口故障！！！')
-  })
+    }, function () {
+      console.log('接口故障！！！')
+    })
+  });
 }
 
 
