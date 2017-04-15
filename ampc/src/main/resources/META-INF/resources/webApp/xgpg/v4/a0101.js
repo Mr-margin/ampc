@@ -195,7 +195,8 @@ require(
 		dong.GraphicsLayer = GraphicsLayer;
 		dong.SpatialReference = SpatialReference;
 		
-		esri.config.defaults.io.proxyUrl = ArcGisUrl+"/Java/proxy.jsp";
+//		esri.config.defaults.io.proxyUrl = ArcGisUrl+"/Java/proxy.jsp";
+		esri.config.defaults.io.proxyUrl = "http://192.168.4.215:8082/ampc/proxy.jsp";
     	esri.config.defaults.io.alwaysUseProxy = false;
 		
 		app.mapList = new Array();
@@ -264,7 +265,12 @@ require(
 function bianji(type, g_num){
 	var v1 = new Date().getTime();
 	
-	var GPserver_url = ArcGisServerUrl+"/arcgis/rest/services/ampc/co_daily/GPServer/co_daily";
+	var GPserver_type = "co_daily";
+	
+	GPserver_type = "PM25";
+	
+	
+	var GPserver_url = ArcGisServerUrl+"/arcgis/rest/services/ampc/"+GPserver_type+"/GPServer/"+GPserver_type;
 	
 	
 	

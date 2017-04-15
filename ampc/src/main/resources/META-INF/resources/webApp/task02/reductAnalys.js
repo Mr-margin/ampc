@@ -180,7 +180,7 @@ function baizhu_jianpai(gis_paramsName, sh_type){
 			var template = "<strong>${NAME}:  ${DATAVALU}</strong>";
 	        app.tip = new dong.Tip({
 	          "format": template,
-	          "node": "legend",
+	          "node": "legendWrapper",
 	          "res": res.data
 	        });
 			
@@ -591,29 +591,33 @@ function  pie(){
 		if(result.status == 0){
 			
 			if(result.data.length != 0){
+				var data_value = [];//数据
+				var legend_name = [];
 				var sum_value = 0;
 				for(i=0;i<result.data.length;i++){
-					nameVal = result.data[i].name;
-					valueVal = result.data[i].value;
-					sum_value += valueVal;
+					var ttgk = {};
+					ttgk.name = result.data[i].name;
+					legend_name.push(result.data[i].name);
+					ttgk.value = result.data[i].value;
+					sum_value += result.data[i].value;
+					data_value.push(ttgk);
 				}
 				
 				var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
 				var optionPie = {
 					    title : {
 					        text: tj_paramsName.name +'-'+(tj_paramsName.type == "1" ? "分行业" : "分措施")+"-"+tj_paramsName.wz+'-减排分析',
-					        subtext: '全部'+(tj_paramsName.type == "1" ? "行业" : "措施")+'合计减排：'+sum_value,
+					        subtext: '全部'+(tj_paramsName.type == "1" ? "行业" : "措施")+'合计减排：'+sum_value.toFixed(2),
 					    },
 					    tooltip : {
 					        trigger: 'item',
 					        formatter: "{a} <br/>{b} : {c} ({d}%)"
 					    },
 					    legend: {
-					    	//图标不触动
-					    	selectedMode:false,
+					    	selectedMode:false,//图标不触动
 					        orient: 'vertical',
 					        left: 'right',
-					        data:[{name:nameVal}]
+					        data: legend_name
 					    },
 					    series : [
 					        {
@@ -621,7 +625,7 @@ function  pie(){
 					            type: 'pie',
 					            radius : '55%',
 					            center: ['50%', '60%'],
-					            data:[{value:valueVal,name:nameVal}],
+					            data : data_value,
 					            itemStyle: {
 					                emphasis: {
 					                    shadowBlur: 10,
