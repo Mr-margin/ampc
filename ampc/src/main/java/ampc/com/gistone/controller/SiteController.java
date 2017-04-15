@@ -118,7 +118,7 @@ public class SiteController {
 		}catch(Exception e){
 			e.printStackTrace();
 			return AmpcResult.build(0, "执行失败");
-		}	
+		}
 	}
 	
 	
