@@ -264,6 +264,7 @@ function bianji(type, g_num){
 	var GPserver_type = "co_daily";
 	
 	GPserver_type = "PM25";
+	console.log($("#species").val());
 	
 	
 	var GPserver_url = ArcGisServerUrl+"/arcgis/rest/services/ampc/"+GPserver_type+"/GPServer/"+GPserver_type;
