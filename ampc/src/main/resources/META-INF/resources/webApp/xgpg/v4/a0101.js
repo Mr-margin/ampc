@@ -158,11 +158,6 @@ function exchangeModal(){
 
 
 
-
-
-
-
-
 var stat = {cPointx : 106, cPointy : 35}, app = {}, dong = {};
 var dojoConfig = {
 	async: true,
@@ -195,8 +190,9 @@ require(
 		dong.GraphicsLayer = GraphicsLayer;
 		dong.SpatialReference = SpatialReference;
 		
-//		esri.config.defaults.io.proxyUrl = ArcGisUrl+"/Java/proxy.jsp";
-		esri.config.defaults.io.proxyUrl = "http://192.168.4.215:8082/ampc/proxy.jsp";
+		esri.config.defaults.io.proxyUrl = ArcGisUrl+"/Java/proxy.jsp";
+//		esri.config.defaults.io.proxyUrl = "webApp/xgpg/v4/proxy.jsp";
+//		esri.config.defaults.io.proxyUrl = "proxy.jsp";
     	esri.config.defaults.io.alwaysUseProxy = false;
 		
 		app.mapList = new Array();
@@ -271,9 +267,6 @@ function bianji(type, g_num){
 	
 	
 	var GPserver_url = ArcGisServerUrl+"/arcgis/rest/services/ampc/"+GPserver_type+"/GPServer/"+GPserver_type;
-	
-	
-	
 	$.get('data-d01.json', function (data) {
 		
 		var features = [];
@@ -301,6 +294,8 @@ function bianji(type, g_num){
 		featureset.spatialReference =  new dong.SpatialReference({ wkid: 3857 });
 	    featureset.features = features;
 	    featureset.exceededTransferLimit = false;
+	    
+	    console.log((new Date().getTime()-v1)+"生成数据");
 	    
 		app.gp = new esri.tasks.Geoprocessor(GPserver_url);
 		var parms = {
