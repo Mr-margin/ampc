@@ -103,12 +103,12 @@ var sceneInitialization = vipspa.getMessage('sceneInitialization').content;//从
 if(!sceneInitialization){
 	sceneInitialization = JSON.parse(ls.getItem('SI'));
 }else{
-	ls.setItem('SI',JSON.stringify(sceneInitialization));
+	ls.setItem('SI',JSON.stringify(sceneInitialization));//不为空往session中存入一份数据
 }
 console.log(JSON.stringify(sceneInitialization));
 
-if(!sceneInitialization){
-	sceneInittion();
+if(!sceneInitialization){//为空时
+	sceneInittion();//调用弹出模态框方法
 }else{
 	set_sce();
 	initNowSession()
@@ -324,7 +324,8 @@ function sceneInittion(){
 				}
 			});
 			$("#task").html(task);
-			$("#Initialization").modal();//初始化模态框显示
+//			$("#Initialization").modal();//初始化模态框显示
+			$("#Initialization").modal({backdrop: 'static',keyboard: false});
 			sceneTable();
 		}
 	});
@@ -427,7 +428,8 @@ function save_scene(){
 		set_sce();
 		initNowSession();
 	}else{
-		swal('暂无数据', '', 'error')
+		swal('暂无数据', '', 'error');
+//		$("#close_scene").click();
 	}
 }
 //超链接显示 模态框
