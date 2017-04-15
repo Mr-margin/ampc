@@ -106,8 +106,6 @@ public class EchartsController {
 				List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
 				//循环所有基准情景的减排结果
 				for (TEmissionDetail tEmissionDetail : basisList) {
-					//添加每一个的减排日期
-					dateResult.add(DateUtil.DateToStr(tEmissionDetail.getEmissionDate()));
 					//临时变量用来记录污染物在所有行业的总和
 					BigDecimal sumResult=new BigDecimal(0);
 					//获取所有的基准情景减排结果
@@ -155,6 +153,8 @@ public class EchartsController {
 				List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
 				//循环所有实际减排的减排结果
 				for (TEmissionDetail tEmissionDetail : tdList) {
+					//添加每一个的减排日期
+					dateResult.add(DateUtil.DateToStr(tEmissionDetail.getEmissionDate()));
 					//临时变量用来记录污染物在所有行业的总和
 					BigDecimal sumResult=new BigDecimal(0);
 					//获取所有实际减排结果
@@ -208,8 +208,6 @@ public class EchartsController {
 				int j=0;
 				//循环所有基准情景的减排结果
 				for (int i=0;i<basisList.size();i++) {
-					//添加每一个的减排日期
-					dateResult.add(DateUtil.DateToStr(basisList.get(i).getEmissionDate()));
 					//临时变量用来记录污染物在所有行业的总和
 					BigDecimal sumResult=new BigDecimal(0);
 					//获取到基准的减排信息Json串
@@ -307,6 +305,8 @@ public class EchartsController {
 				j=0;
 				//循环所有实际减排量的减排结果
 				for (int i=0;i<tdList.size();i++) {
+					//添加每一个的减排日期
+					dateResult.add(DateUtil.DateToStr(tdList.get(i).getEmissionDate()));
 					BigDecimal sumResult=new BigDecimal(0);
 					//获取到实际减排量的的减排信息Json串
 					String edetail=tdList.get(i).getEmissionDetails();
@@ -392,6 +392,12 @@ public class EchartsController {
 					}
 					//添加所有行业在该污染物的减排量总和
 					jplResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(sumResult.doubleValue(), 4), 2)));
+				}
+			}
+			//如果没有基准的排放量信息  则默认给0
+			if(pflResult==null||pflResult.size()==0){
+				for(int i=0;i<jplResult.size();i++){
+					pflResult.add("0");
 				}
 			}
 			//创建返回的结果集合
@@ -585,7 +591,7 @@ public class EchartsController {
 			//获取到对应的减排信息
 			List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
 			//定义结果对象
-			RadioListUtil basisrlu=new RadioListUtil();
+			RadioListUtil basisrlu=null;
 			for(TEmissionDetail ted:basisList){
 				//判断是行业还是措施的  并赋值对应的Json串
 				String edetail=ted.getEmissionDetails();
@@ -599,8 +605,21 @@ public class EchartsController {
 					tempUtil(ede,basisrlu);
 				}
 			}
-			
-			
+			//如果基准为空则赋值为0
+			if(basisrlu==null){
+				basisrlu=new RadioListUtil();
+				basisrlu.setPM25(0);
+				basisrlu.setPM10(0);
+				basisrlu.setSO2(0);
+				basisrlu.setNOx(0);
+				basisrlu.setVOC(0);
+				basisrlu.setCO(0);
+				basisrlu.setNH3(0);
+				basisrlu.setBC(0);
+				basisrlu.setOC(0);
+				basisrlu.setPMFINE(0);
+				basisrlu.setPMC(0);
+			}
 			//查询情景的减排信息类型为2
 			mapQuery.put("emtype", 2);
 			//查询减排信息类型的情景Id
@@ -932,6 +951,10 @@ public class EchartsController {
 	 * @throws Exception
 	 */
 	public void tempUtil(Map ede,RadioListUtil rlu) throws Exception{
+		//判断结果对象是非为空 如果为空则新建
+		if(rlu==null){
+			rlu=new RadioListUtil();
+		}
 		double so2=Double.parseDouble(ede.get("SO2").toString());
 		//判断这个污染物是否出现在了集合中 如果存在则累加 否则只添加
 		if(rlu.getSO2()>0){
