@@ -302,7 +302,8 @@ function sceneInittion() {
         }
       });
       $("#task").html(task);
-      $("#Initialization").modal();//初始化模态框显示
+//      $("#Initialization").modal();//初始化模态框显示
+      $("#Initialization").modal({backdrop: 'static',keyboard: false});
       sceneTable();
     }
   });
@@ -331,7 +332,7 @@ function sceneTable() {
     silent: true, // 刷新事件必须设置
     contentType: "application/json", // 请求远程数据的内容类型。
     responseHandler: function (res) {
-      if (res.status == 0) {
+      if (res.status == 0&&res.data.length>0) {
         if (res.data.rows.length > 0) {
 
           if (sceneInitialization) {
@@ -348,9 +349,13 @@ function sceneTable() {
           }
 
           return res.data.rows;
+        }else{
+        	return res;
         }
       } else if (res.status == 1000) {
         swal(res.msg, '', 'error');
+      }else{
+    	  return res;
       }
     },
     onClickRow: function (row, $element) {
@@ -398,6 +403,9 @@ function save_scene() {
     $("#close_scene").click();
     /*数据准备完毕，进行初始化页面*/
     initialize();
+  }else{
+	  swal('暂无数据', '', 'error');
+	  $("#close_scene").click();
   }
 }
 
