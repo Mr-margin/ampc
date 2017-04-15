@@ -278,12 +278,14 @@ var echartsData;
 function getdata(){
 	
 	var url = '/Appraisal/find_appraisal';
-	var paramsName = {"userId":"1","missionId":"300","mode":"point","time":"2016-11-27 13","cityStation":"1002A","scenarinoId":changeMsg.scenarinoId,"datetype":changeMsg.rms};
+//	var paramsName = {"userId":"1","missionId":"393","mode":"point","time":"2016-11-27 13","cityStation":"1002A","scenarinoId":changeMsg.scenarinoId,"datetype":changeMsg.rms};
+	var paramsName = {"userId":"1","missionId":"393","mode":"point","time":"2016-11-27 13","cityStation":"1002A","scenarinoId":[466,458,456],"datetype":"day"};
+	
 	ajaxPost(url,paramsName).success(function(res){
 		if(res.status == 0){
 			echartsData = res.data;
 			console.log(echartsData)
-			if(JSON.stringify(echartsData) == '{}'){	
+			if(JSON.stringify(echartsData) == '{}'||echartsData==null){	
 				swal('暂无数据', '', 'error')
 			}else{
 			
@@ -295,9 +297,6 @@ function getdata(){
 		
 	});
 }
-
-
-
 
 var allMission = {};
 /**
@@ -355,7 +354,8 @@ function sceneTable(){
 		silent : true, // 刷新事件必须设置
 		contentType : "application/json", // 请求远程数据的内容类型。
 		responseHandler: function (res) {
-			if(res.status == 0){
+			console.log(res.data);
+			if(res.status == 0&&res.data.length>0){
 				if(res.data.rows.length>0){
 					
 					if(sceneInitialization){
@@ -374,6 +374,10 @@ function sceneTable(){
 				}
 			}else if(res.status == 1000){
 				swal(res.msg, '', 'error');
+			}
+			else{
+				return res;
+//				swal(res.msg, '未找到匹配数据', '');
 			}
 		},
 		onClickRow : function(row, $element) {
@@ -422,6 +426,8 @@ function save_scene(){
 		$("#close_scene").click();
 		set_sce();
 		initNowSession();
+	}else{
+		swal('暂无数据', '', 'error')
 	}
 }
 //超链接显示 模态框
