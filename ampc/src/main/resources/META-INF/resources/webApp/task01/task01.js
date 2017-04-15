@@ -1494,7 +1494,7 @@ function subStartUp() {
   ajaxPost(url, {
     userId: userId,
     scenarinoId: msg.content.qjId,
-    //missionId:msg.content.rwId,
+    missionId:msg.content.rwId,
     missionType: msg.content.rwType,
     scenarinoType: msg.content.SCEN_TYPE,
     cores: $('input[name=cpuNum]:checked').val()
