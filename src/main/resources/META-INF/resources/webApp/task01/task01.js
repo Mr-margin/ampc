@@ -499,9 +499,6 @@ function qjOrder(v, row, i) {
   }
 }
 
-function startBtn(){
-  $("#startUp").modal('show');
-}
 
 /*终止按钮的状态判断函数
  * scenarinoStatus为6、7时可以进行终止
@@ -1667,6 +1664,14 @@ function getQD() {
     console.log('清单未获取到！！！！')
   })
   //$('#qd').append($('<option value="1">jjj</option>'))
+}
+
+/*打开模式启动模态框*/
+function startBtn(){
+  window.setTimeout(function(){
+    $("#startUp").modal('show');
+  },50)
+
 }
 
 /*模态框关闭后事件*/
