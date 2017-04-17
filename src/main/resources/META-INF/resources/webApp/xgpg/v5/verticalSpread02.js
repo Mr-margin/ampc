@@ -347,10 +347,13 @@ function sceneInittion() {
         $("#Initialization").modal({backdrop: 'static',keyboard: false});
         sceneTable();
       }else{
-        
+        swal('无可用任务','','error')
       }
-
+    }else{
+      swal('接口故障','','error')
     }
+  }).error(function(){
+    swal('服务未连接','','error')
   });
 }
 /**
