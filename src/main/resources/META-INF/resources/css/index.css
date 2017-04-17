@@ -739,3 +739,32 @@ button[disabled],.btn[disabled]{
 
 
 /*垂直分布 end*/
+
+/*为task1页面添加的样式，研究下路由的功能将下面的代码再单独出来
+------------------------------------------------------------------------------------------
+*/
+#rwTable>tbody>tr.info>td{
+  background-color: #d1f0ff;
+}
+#rwTable>tbody>tr.info>td:last-child{position: relative}
+#rwTable>tbody>tr.info>td:last-child:after{
+  content: "";
+  display: block;
+  height: 100%;
+  width: 5px;
+  background: #D1F0FF;
+  position: absolute;
+  right: -4px;
+  top:0px;
+}
+.qjtableDiv table>thead,.qjtableDiv table>tbody>tr>td:first-child{
+  background-color: #D1F0FF;
+}
+#qjTable{
+  height: 100%;
+}
+#qjTable>tbody>tr>td{
+  border: none;
+  border-top: 1px solid #D1F0FF;
+}
+/*-----------------------------------------------------------------------------*/

@@ -195,6 +195,7 @@ function initRwTable() {
     onClickRow: function (row, $element) {
       $('.qj').val('');
       selectRW = row;
+      console.log(selectRW);
       $('#qjTable').bootstrapTable('destroy');
       initQjTable();
       $('.info').removeClass('info');
@@ -224,7 +225,6 @@ function initRwTable() {
     onLoadSuccess: function (data) {
       selectRW = data.rows[0];
       QJheight = data.rows.length * 75 + 98;
-      $('.qjtableDiv').css('background-color', '#d9edf7');
       //QJheight = $('.rwtableDiv').height();
 
       if (QJheight < 600) {
@@ -314,7 +314,18 @@ function search(type) {
 
 function initQjTable() {
   $('#qjTable').bootstrapTable({
+    columns: [
+      {checkbox: true, formatter: checkedDis},
+      {title: '情&nbsp;景&nbsp;名&nbsp;称', formatter: qjName},
+      {title: '操&nbsp;作 ', formatter: qjOrder},
+      {title: '情&nbsp;景&nbsp;状&nbsp;态', formatter: qjStatus},
+      {title: '管 理', formatter: qjEndFormat},
+      {title: '起 始 日 期', formatter: qjStartTime},
+      {title: '终 止 日 期', formatter: qjDeadTime},
+      {title: '类&nbsp;&nbsp;型', formatter: qjTypeSCEN_TYPE}
+    ],
     method: 'POST',
+    classes: "table",
     url: '/ampc/scenarino/get_scenarinoListBymissionId',
     dataType: "json",
     contentType: "application/json", // 请求远程数据的内容类型。
@@ -322,7 +333,7 @@ function initQjTable() {
     iconSize: "outline",
     search: false,
     searchAlign: 'right',
-    height: QJheight - 57,
+    height: QJheight,
     maintainSelected: true,
     clickToSelect: false,// 点击选中行
     pagination: false, // 在表格底部显示分页工具栏
@@ -332,11 +343,11 @@ function initQjTable() {
     pageList: [9],
     striped: false, // 使表格带有条纹
     sidePagination: "server",// 表格分页的位置 client||server
-    rowStyle: function (row, index) {
-      return {
-        classes: 'info'
-      };
-    },
+    // rowStyle: function (row, index) {
+    //   return {
+    //     classes: 'info'
+    //   };
+    // },
     queryParams: function formPm(m) {
       var json = {
         "token": "",
@@ -353,7 +364,7 @@ function initQjTable() {
       return JSON.stringify(json);
     },
     responseHandler: function (res) {
-      return res.data
+      return res.data;
     },
     queryParamsType: "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
     silent: true, // 刷新事件必须设置
@@ -395,6 +406,9 @@ function initQjTable() {
       delQJid = {};
       $('.qjDel').attr('disabled', true);
     },
+    onPostBody: function () {
+      $("#qjTable>tbody").append("<tr style='height: 100%'><td></td><td colspan='7'></td></tr>")
+    },
 
 
     /*右键菜单*/
@@ -430,11 +444,9 @@ function rwDomain(v, row, i) {
 }
 
 function qjName(v, row, i) {
-  var name = row.SCEN_TYPE == 3 ? '<h3><a>' + row.scenarinoName + '</a></h3>' : '<h3><a href="#/yabj">' + row.scenarinoName + '</a></h3>';
+  var name = row.SCEN_TYPE == 3 ? '<h3 title="创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '"><a>' + row.scenarinoName + '</a></h3>' : '<h3  title="' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '"><a href="#/yabj" style="text-decoration: underline">' + row.scenarinoName + '</a></h3>';
 
-  return name +
-    '<a style="font-size:12px; color:#a1a1a1;">创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '</a><br/>' +
-    '<a style="font-size:12px; color:#a1a1a1;">起止日期：' + moment(row.scenarinoStartDate).format('YYYY-MM-DD') + ' 至 ' + moment(row.scenarinoEndDate).format('YYYY-MM-DD') + '</a>'
+  return name;
 }
 
 function qjTypeSCEN_TYPE(v, row, i) {
@@ -453,6 +465,14 @@ function qjTypeSCEN_TYPE(v, row, i) {
   return type
 }
 
+function qjStartTime(v, row, j) {
+  return moment(row.scenarinoStartDate).format('YYYY-MM-DD');
+}
+
+function qjDeadTime(v, row, j) {
+  return moment(row.scenarinoEndDate).format('YYYY-MM-DD');
+}
+
 function qjStatus(v, row, i) {
   if (row.scenarinoStatus == 3 || row.scenarinoStatus == 6) {
     return '<a href="javascript:" class="statusType">' + row.scenarinoStatuName + '</a>'
@@ -460,31 +480,38 @@ function qjStatus(v, row, i) {
     return row.scenarinoStatuName
   }
 }
-
+/*操作按钮的判断函数
+ * 当scenarinoStatus为5时，显示为启动
+ * 当scenarinoStatus为6时，显示为暂停
+ * 当scenarinoStatus为7时，显示为续跑*/
 function qjOrder(v, row, i) {
-  var s = 'disabled="disabled"', e = 'disabled="disabled"', ss = 'disabled="disabled"', ee = 'disabled="disabled"';
   if (row.scenarinoStatus == 5) {
-    s = '';
+    return "<a href='javascript:$(\"#startUp\").modal()' style='color: #FF9A00'><i class='im-play2'> 启动</i></a>";
   } else if (row.scenarinoStatus == 6) {
-    e = '';
-    ee = '';
+    return "<a href='javascript:' style='color: #FF9A00'><i class='im-pause'> 暂停</i></a>";
   } else if (row.scenarinoStatus == 7) {
-    s = '';
-    ss = '';
+    return "<a href='javascript:' style='color: #FF9A00'><i class='im-play2'> 续跑</i></a>";
+    c
   }
-  return '<button class="btn btn-success mb10 mr10" data-toggle="modal" data-target="#startUp" ' + s + '>启动</button>' +
-    '<button class="btn btn-success mb10" ' + e + '>终止</button>' +
-    '<br/>' +
-    '<button class="btn btn-success mr10" ' + ss + '>续跑</button>' +
-    '<button class="btn btn-success" ' + ee + '>暂停</button>'
 }
 
-function checkedDis(v, row, i){
-  if(row.SCEN_TYPE == '3'){
-    return{
+/*终止按钮的状态判断函数
+ * scenarinoStatus为6、7时可以进行终止
+ * 只要情景启动就允许终止*/
+function qjEndFormat(v, row, i) {
+  if (row.scenarinoStatus == 6 || row.scenarinoStatus == 7) {
+    return "<a href='javascript:' style='color: #FF9A00'><i class='im-stop'> 终止</i></a>"
+  } else {
+    return "<i class='im-stop'style='color: #ccc'> 终止</i>";
+  }
+}
+
+function checkedDis(v, row, i) {
+  if (row.SCEN_TYPE == '3') {
+    return {
       disabled: true
     }
-  }else{
+  } else {
     return v
   }
 }
@@ -545,10 +572,10 @@ function deleteFun(type) {
           delRWid = {};
           $('.rwDel').attr('disabled', true);
 
-        }else if(res.status == 9999){
+        } else if (res.status == 9999) {
           swal({
             title: '删除失败!',
-            text:"此情景为其他情景的基础情景",
+            text: "此情景为其他情景的基础情景",
             type: 'error',
             timer: 1500,
             showConfirmButton: false
@@ -944,7 +971,7 @@ function selectQJtype(type) {
           break;
       }
     } else {
-      if(type != 'hj'){
+      if (type != 'hj') {
         swal({
           title: res.msg,
           type: 'error',
@@ -1000,7 +1027,7 @@ function checkedDB(t) {
 /*新改任务创建*/
 function createRw() {
   if ($('#rwForm').valid()) {
-    if(!subBtn)return;
+    if (!subBtn)return;
     subBtn = false;
     var url = '/mission/save_mission';
     var urlName = '/mission/check_missioname';
@@ -1142,20 +1169,20 @@ function createQJselect() {
     $('#createYpQjModal').modal('show');
     returnLeft('yqj');
   } else if (selectRW.missionStatus == "3") {
-    __dsp['jcqj' + selectRW.missionId].success(function(res){
-      if(res.status == 0){
-        if(res.data.length == 0){
-          $('.cjhpgqj').eq(0).attr('disabled',true);
+    __dsp['jcqj' + selectRW.missionId].success(function (res) {
+      if (res.status == 0) {
+        if (res.data.length == 0) {
+          $('.cjhpgqj').eq(0).attr('disabled', true);
           $('.cjxjzqj').eq(0).removeAttr('disabled');
-        }else if(res.data[0].ScenType == '3'){
-          $('.cjxjzqj').eq(0).attr('disabled',true);
+        } else if (res.data[0].ScenType == '3') {
+          $('.cjxjzqj').eq(0).attr('disabled', true);
           $('.cjhpgqj').eq(0).removeAttr('disabled');
-        }else{
+        } else {
           $('.cjhpgqj').eq(0).removeAttr('disabled');
           $('.cjxjzqj').eq(0).removeAttr('disabled');
         }
-      }else{
-        $('.cjhpgqj').eq(0).attr('disabled',true);
+      } else {
+        $('.cjhpgqj').eq(0).attr('disabled', true);
         $('.cjxjzqj').eq(0).removeAttr('disabled');
       }
     })
@@ -1278,7 +1305,7 @@ function setOption(ele, res) {
 
 /*新改情景创建*/
 function createQj(type) {
-  if(!subBtn)return;
+  if (!subBtn)return;
   subBtn = false;
   var url, urlName;
   var params, paramsName;
@@ -1463,6 +1490,12 @@ $('body').on('click', '.statusType', function () {
 $('#startUp').on('show.bs.modal', function (event) {
   var num = Math.round((msg.content.qjEndDate - msg.content.qjStartDate) / 1000 / 60 / 60 / 24);
   var url = '/getCores/spentTimes';
+  console.log({
+    userId: userId,
+    missionId: msg.content.rwId,
+    missionType: msg.content.rwType,
+    scenarinoType: msg.content.SCEN_TYPE
+  });
   ajaxPost(url, {
     userId: userId,
     missionId: msg.content.rwId,
@@ -1488,7 +1521,7 @@ $('#startUp').on('show.bs.modal', function (event) {
 })
 
 function subStartUp() {
-  if(!subBtn)return;
+  if (!subBtn)return;
   subBtn = false;
   var url = '/ModelType/startModel';
   ajaxPost(url, {
@@ -1629,19 +1662,19 @@ function getQD() {
 }
 
 /*模态框关闭后事件*/
-$('#createRwModal').on('hidden.bs.modal',function(){
+$('#createRwModal').on('hidden.bs.modal', function () {
   subBtn = true;
 });
 
-$('#createYpQjModal').on('hidden.bs.modal',function(){
+$('#createYpQjModal').on('hidden.bs.modal', function () {
   subBtn = true;
 });
 
-$('#createHpQjModal').on('hidden.bs.modal',function(){
+$('#createHpQjModal').on('hidden.bs.modal', function () {
   subBtn = true;
 });
 
-$('#startUp').on('hidden.bs.modal',function(){
+$('#startUp').on('hidden.bs.modal', function () {
   subBtn = true;
 });
 
