@@ -1,11 +1,10 @@
 package ampc.com.gistone.extract;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.TransformException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +16,8 @@ import ampc.com.gistone.util.AmpcResult;
 @RequestMapping(value = "/extract")
 public class ExtractDataController {
 	
+	private final static Logger logger = LoggerFactory.getLogger(ExtractDataController.class);
+			
 	@Autowired
 	private ExtractDataService extractDataService;
 
@@ -39,16 +40,21 @@ public class ExtractDataController {
 			params.setScenarioId1(scenarioId1);
 			if(!"show".equals(calcType)) {
 				int scenarioId2 = Integer.valueOf(String.valueOf(data.get("scenarioId2")));
-				params.setScenarioId1(scenarioId2);
+				params.setScenarioId2(scenarioId2);
 			}
 			if("d".equals(timePoint)) {
 				String day = String.valueOf(data.get("day"));
 				params.setDay(day);
+				params.setHour(0);
 			}
 			if("h".equals(timePoint)) {
 				String day = String.valueOf(data.get("day"));
-				int hour = Integer.valueOf(String.valueOf(data.get("hour")));
 				params.setDay(day);
+				int hour = Integer.valueOf(String.valueOf(data.get("hour")));
+				if(hour < 0 || hour > 24) {
+			        logger.error("the hour params is wrong, the value should be between in 0 and 23");
+			        return AmpcResult.build(1000, "参数hour的值错误， 范围应该在[0,23]");
+			    }
 				params.setHour(hour);
 			}
 			if("a".equals(timePoint)) {
@@ -73,7 +79,6 @@ public class ExtractDataController {
 			res  = extractDataService.buildData(params);
 			if(res == null) AmpcResult.build(1000, "buildData error");
 		} catch (Exception e) {
-			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误");
 		}
 		return AmpcResult.ok(res);
