@@ -142,7 +142,7 @@ public class MissionAndScenarinoController {
 			//返回结果
 			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 任务查询方法异常",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -209,7 +209,7 @@ public class MissionAndScenarinoController {
 			//添加失败
 			return AmpcResult.build(1000, "添加失败",null);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 任务创建方法异常",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -242,7 +242,7 @@ public class MissionAndScenarinoController {
 			//判断执行结果返回对应数据
 			return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "任务修改失败",null);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 任务修改方法异常",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -381,7 +381,7 @@ public class MissionAndScenarinoController {
 				
 			}
 		} catch (Exception e) {
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 任务删除方法异常",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -416,7 +416,7 @@ public class MissionAndScenarinoController {
 			//返回true 表示可用  返回false 已存在
 			return result==0?AmpcResult.ok(true):AmpcResult.build(1000, "名称已存在",false);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 添加任务对名称重复判断异常",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -462,7 +462,7 @@ public class MissionAndScenarinoController {
 			mapResult.put("rows",list);
 			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 情景列表查询方法异常",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -533,7 +533,7 @@ public class MissionAndScenarinoController {
 			mapResult.put("rows",newlist);
 			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 情景复制查询方法异常",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -675,7 +675,7 @@ public class MissionAndScenarinoController {
 				return AmpcResult.build(1000, "参数错误",null);
 			}
 		} catch (Exception e) {
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -724,7 +724,7 @@ public class MissionAndScenarinoController {
 			}
 			
 		} catch (Exception e) {
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 情景修改方法异常",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -832,7 +832,7 @@ public class MissionAndScenarinoController {
 			}
 			
 		} catch (Exception e) {
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 情景删除方法异常",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -868,12 +868,19 @@ public class MissionAndScenarinoController {
 			//返回true 表示可用  返回false 已存在
 			return result==0?AmpcResult.ok(true):AmpcResult.build(1000, "名称已存在",false);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 添加情景对名称重复判断异常",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
-	
+	/**
+	 * 
+	 * 查询情景与时间
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping("scenarino/find_scenarino_time")
 	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
 	public AmpcResult find_scenarino_time(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
@@ -1008,7 +1015,7 @@ public class MissionAndScenarinoController {
 			
 			return AmpcResult.build(0, "find_scenarino_time success",arr);
 		}catch(Exception e){
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 查询情景与时间异常",e);
 		return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
@@ -1043,7 +1050,7 @@ public class MissionAndScenarinoController {
 			} 
     	   return AmpcResult.build(0, "find_endTime success",obj);
        }catch(Exception e){
-    	   LogUtil.getLogger().error("异常了",e);
+    	   LogUtil.getLogger().error("MissionAndScenarinoController 查询结束日期异常",e);
 		return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
@@ -1317,7 +1324,7 @@ public class MissionAndScenarinoController {
 
 			 return AmpcResult.build(1000, "参数错误",null);
 		}catch(Exception e){
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 情景创建方法异常",e);
 			return AmpcResult.build(1000, "参数错误",null);				
 		}
 	}
@@ -1339,7 +1346,7 @@ public class MissionAndScenarinoController {
 			obj.put("scenarinoStatus", tScenarinoDetail.getScenarinoStatus());
 		  return AmpcResult.build(0, "success",obj);	
 		}catch(Exception e){
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 查询情景状态异常",e);
 			 return AmpcResult.build(1000, "参数错误",null);	
 		}
 	}
@@ -1480,7 +1487,7 @@ public class MissionAndScenarinoController {
 				}
 	
 		}catch(Exception e){
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 情景复制异常",e);
 			 return AmpcResult.build(1000, "参数错误",null);	
 		}
 	}
@@ -1527,7 +1534,7 @@ public class MissionAndScenarinoController {
 			}
 		return AmpcResult.build(0, "success",arr);	
 		}catch(Exception e){
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 根据userid查询任务有异常",e);
 			return AmpcResult.build(1000, "参数错误",null);	
 		}
 		
@@ -1573,13 +1580,13 @@ public class MissionAndScenarinoController {
 			}
 		return AmpcResult.build(0, "success",objsed);
 		}catch(Exception e){
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 根据任务id以及userid查询情景有异常",e);
 			return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
 	
 	/**
-	 * 根据userid查询任务
+	 * 根据userid查询有情景的任务
 	 * @param requestDate
 	 * @param request
 	 * @param response
@@ -1615,7 +1622,7 @@ public class MissionAndScenarinoController {
 			}
 		return AmpcResult.build(0, "success",arr);	
 		}catch(Exception e){
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 根据userid查询有情景的任务有异常",e);
 			return AmpcResult.build(1000, "参数错误",null);	
 		}
 		
