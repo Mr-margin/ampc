@@ -91,7 +91,7 @@ var optionAll = {
     name: '/m',
     nameGap: 5,
     type: 'value',
-    interval: 500,
+//    interval: 100,
     axisLine: {onZero: false},
   },
   series: [  //可变，存储所有情景数据
