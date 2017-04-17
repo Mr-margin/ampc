@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -59,6 +60,7 @@ import ampc.com.gistone.entity.AreaUtil;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.JsonUtil;
+import ampc.com.gistone.util.LogUtil;
 import ampc.com.gistone.util.ScenarinoStatusUtil;
 
 
@@ -289,7 +291,7 @@ public class AreaAndTimeController {
 			return AmpcResult.build(1, "find_TIME error");
 		}
 		}catch(Exception e){
-			System.out.println(e);
+			LogUtil.getLogger().error("AreaAndTimeController 获取时段信息异常！",e);
 			return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
@@ -470,7 +472,7 @@ public class AreaAndTimeController {
 		
 		return AmpcResult.build(1, "delete_time error");
 		}catch(Exception e){
-			e.printStackTrace();
+			LogUtil.getLogger().error("AreaAndTimeController 删除当前用户选择的时段节点异常！",e);
 			return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
@@ -507,7 +509,7 @@ public class AreaAndTimeController {
 		return AmpcResult.build(1, "delete_plan error");
 		}
 		}catch(Exception e){
-			System.out.println(e);
+			LogUtil.getLogger().error("AreaAndTimeController 删除当前时段的预案异常！",e);
 			return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
@@ -556,7 +558,7 @@ public class AreaAndTimeController {
 	
 	
 	}catch(Exception e){
-		e.printStackTrace();
+		LogUtil.getLogger().error("AreaAndTimeController  删除时段异常！",e);
 		Map map=new HashMap();
 		map.put("result", "-1");
 		map.put("msg", "失败");
@@ -656,7 +658,7 @@ public class AreaAndTimeController {
 		    //返回结果
 			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("AreaAndTimeController 区域查询方法异常！",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -707,7 +709,7 @@ public class AreaAndTimeController {
 			//返回结果
 			return AmpcResult.build(0,"get_areaList success",obj);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("AreaAndTimeController 区域查询接口异常！",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -820,7 +822,7 @@ public class AreaAndTimeController {
 			
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("AreaAndTimeController 区域创建或修改方法异常！",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -906,7 +908,7 @@ public class AreaAndTimeController {
 			return AmpcResult.build(1000, "区域删除失败",null);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("AreaAndTimeController 区域删除方法异常！",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -946,7 +948,7 @@ public class AreaAndTimeController {
 			//返回true 表示可用  返回false 已存在
 			return result==0?AmpcResult.ok(true):AmpcResult.build(1000, "名称已存在",false);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("AreaAndTimeController 添加区域对名称重复判断异常！",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -954,7 +956,7 @@ public class AreaAndTimeController {
 	
 
 
-@RequestMapping("area/find_areas")
+@RequestMapping("area/find_areas")//不用
 @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
 public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
 	try{
@@ -1200,7 +1202,7 @@ public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpSer
 	}
 	return AmpcResult.build(0, "find_areas success",arr);	
 	}catch(Exception e){
-		e.printStackTrace();
+		LogUtil.getLogger().error("AreaAndTimeController 创建预案异常！",e);
 		return AmpcResult.build(1, "find_areas error");	
 	}
 }
@@ -1262,7 +1264,7 @@ public AmpcResult find_areas_new (@RequestBody Map<String,Object> requestDate,Ht
     }
     return AmpcResult.build(0, "find_areas success",arr);	
 	}catch(Exception e){
-		e.printStackTrace();
+		LogUtil.getLogger().error("AreaAndTimeController 查询所有省市区code异常！",e);
 		return AmpcResult.build(1000, "find_areas erorr");	
 	}
 }
@@ -1329,7 +1331,7 @@ public AmpcResult find_areaAll (@RequestBody Map<String,Object> requestDate,Http
 
 	return AmpcResult.build(0, "find_areas success",arr);
 	}catch(Exception e){
-		e.printStackTrace();
+		LogUtil.getLogger().error("AreaAndTimeController 查询某个区域以外区域的省市区code异常！",e);
 		return AmpcResult.build(1000, "find_areas erorr");	
 	}
 }
