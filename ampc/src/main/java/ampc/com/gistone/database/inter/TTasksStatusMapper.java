@@ -127,4 +127,17 @@ public interface TTasksStatusMapper {
 	TTasksStatus selectentityByScenId(Long tasksScenarinoId);
 	
 	int updateinf(Long scenarinoId);
+
+	/**
+	 * @Description: 通过pathdate和情景类型获取该情景的模式执行状态
+	 * @param map
+	 * @return   
+	 * TTasksStatus  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月15日 下午6:05:27
+	 */
+	TTasksStatus selectTasksstatusByPathdate(Map map);
+
+	
 }

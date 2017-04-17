@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import ampc.com.gistone.database.model.TScenarinoDetail;
+import ampc.com.gistone.database.model.TTasksStatus;
 
 /**
  * 情景映射
@@ -13,6 +14,37 @@ import ampc.com.gistone.database.model.TScenarinoDetail;
  * @date 2017年2月25日
  */
 public interface TScenarinoDetailMapper {
+	
+	/**
+	 * @Description: 修改情景类型
+	 * @param map
+	 * @return   
+	 * int  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月12日 下午7:28:47
+	 */
+	int updateScenType(Map map);
+	/**
+	 * @Description: 根据起报日期查询当条记录的实时预报的fnl是否跑完
+	 * @param map
+	 * @return   
+	 * TTasksStatus  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月14日 下午4:27:24
+	 */
+	TTasksStatus selectTasksstatusByPathdate(Map map);
+	/**
+	 * @param scenarinoId 
+	 * @Description: 通过情景ID获取任务ID
+	 * @return   
+	 * Long  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月14日 下午7:15:32
+	 */
+	Long selectMissionidByID(Long scenarinoId);
 	
 	/**
 	 * @Description: 通过刚创建的实时预报情景的到该情景的ID
@@ -200,16 +232,7 @@ public interface TScenarinoDetailMapper {
 
 	
     TScenarinoDetail selectMaxEndTime4();
-	/**
-	 * @Description: 修改情景类型
-	 * @param map
-	 * @return   
-	 * int  
-	 * @throws
-	 * @author yanglei
-	 * @date 2017年4月12日 下午7:28:47
-	 */
-	int updateScenType(Map map);
+	
 
 	
 
