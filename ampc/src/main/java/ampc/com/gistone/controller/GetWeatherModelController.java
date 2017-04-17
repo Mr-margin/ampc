@@ -82,6 +82,8 @@ public class GetWeatherModelController {
 			Integer missionType = Integer.parseInt(data.get("missionType").toString());
 			//情景ID
 			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			//任务ID
+			Long missionId = Long.parseLong(data.get("missionId").toString());
 			//情景类型
 			Integer scenarinoType = Integer.parseInt(data.get("scenarinoType").toString());
 			//计算核数
@@ -92,8 +94,21 @@ public class GetWeatherModelController {
 			tScenarinoDetail.setScenarinoId(scenarinoId);
 			tScenarinoDetail.setScenarinoStatus((long)6);
 			int updateCores = tScenarinoDetailMapper.updateCores(tScenarinoDetail);
+			//获取减排参数
+		//	Map<String, String> emis = readyData.getEmis(missionId,scenarinoId,userId,scenarinoType);
+			
+			/*//创建taskstatus对象
+			TTasksStatus tTasksStatus = new TTasksStatus();
+			tTasksStatus.setSourceid(sourceid);
+			tTasksStatus.setCalctype(calctype);
+			tTasksStatus.setPsal(psal);
+			tTasksStatus.setSsal(ssal);
+			tTasksStatus.setMeiccityconfig(meiccityconfig);
+			tTasksStatus.setTasksScenarinoId(scenarioid);*/
 			if (updateCores>0) {
-				 readyData.branchPredict(scenarinoId, cores, scenarinoType, missionType);
+				
+				 readyData.branchPredict(scenarinoId, cores, scenarinoType, missionType,missionId,userId);
+				 
 				 return AmpcResult.build(0, "ok");
 			}else {
 				return AmpcResult.build(1000, "启动失败");
@@ -120,14 +135,14 @@ public class GetWeatherModelController {
 	@RequestMapping("/saveEmis")
 	public AmpcResult saveEmisData(HttpServletRequest request,HttpServletResponse response) {
 		try {
-		//String sourceid = request.getParameter("sourceid");
+		String sourceid = request.getParameter("sourceid");
 		String calctype = request.getParameter("calctype");
 		String psal = request.getParameter("psal");
 		String ssal = request.getParameter("ssal");
 		String meiccityconfig = request.getParameter("meiccityconfig");
 		Long scenarioid =Long.parseLong(request.getParameter("scenarioid"));
 		TTasksStatus tTasksStatus = new TTasksStatus();
-		//tTasksStatus.setSourceid(sourceid);
+		tTasksStatus.setSourceid(sourceid);
 		tTasksStatus.setCalctype(calctype);
 		tTasksStatus.setPsal(psal);
 		tTasksStatus.setSsal(ssal);
@@ -136,6 +151,9 @@ public class GetWeatherModelController {
 		//添加到对应的情景下面去
 			int i = tTasksStatusMapper.updateEmisData(tTasksStatus);
 			if (i>0) {
+				//后评估任务后评估情景
+				readyData.readypost_PostEvaluationSituationData(scenarioid);
+				readyData.needJIANPAIsituation(scenarioid);
 				return AmpcResult.build(0, "ok");
 			}else {
 				return AmpcResult.build(1000, "失败");
@@ -145,7 +163,85 @@ public class GetWeatherModelController {
 			return AmpcResult.build(1000, "参数错误");
 		}
 		
+	}
+	/**
+	 * 
+	 * @Description: 停止模式的
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return   
+	 * AmpcResult  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月14日 下午5:16:58
+	 */
+	@RequestMapping("/ModelType/stopModel")
+	public AmpcResult stopModel(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
+		String token = (String) requestDate.get("token");
+		try {
+			//获取数据包
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//用户id
+			Long userId = Long.parseLong(data.get("userId").toString());
+			//任务类型
+			Integer missionType = Integer.parseInt(data.get("missionType").toString());
+			//情景ID
+			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			//任务ID
+			Long missionId = Long.parseLong(data.get("missionId").toString());
+			//情景类型
+			Integer scenarinoType = Integer.parseInt(data.get("scenarinoType").toString());
+			//计算核数
+			//Long cores = Long.parseLong(data.get("cores").toString());
+			TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
+		//	设置状态 改为停止模式
+			tScenarinoDetail.setScenarinoId(scenarinoId);
+			tScenarinoDetail.setScenarinoStatus((long)6);
+			int updateCores = tScenarinoDetailMapper.updateCores(tScenarinoDetail);
+			//获取减排参数
+			//	Map<String, String> emis = readyData.getEmis(missionId,scenarinoId,userId,scenarinoType);
+			
+			/*//创建taskstatus对象
+			TTasksStatus tTasksStatus = new TTasksStatus();
+			tTasksStatus.setSourceid(sourceid);
+			tTasksStatus.setCalctype(calctype);
+			tTasksStatus.setPsal(psal);
+			tTasksStatus.setSsal(ssal);
+			tTasksStatus.setMeiccityconfig(meiccityconfig);
+			tTasksStatus.setTasksScenarinoId(scenarioid);*/
+			if (updateCores>0) {
+				
+			//	readyData.branchPredict(scenarinoId, cores, scenarinoType, missionType,missionId,userId);
+				
+				return AmpcResult.build(0, "ok");
+			}else {
+				return AmpcResult.build(1000, "启动失败");
+			}
+			
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return AmpcResult.build(1000, "启动失败");
+		}
+		
 		
 	}
-	
+	/**
+	 * 
+	 * @Description: 请求减排计算
+	 * @param sourceid
+	 * @return   
+	 * Map<String,Object>  获取emis的数据
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年3月17日 下午2:19:53
+	 */
+	public Map<String, String> getEmis(Long sourceid) {
+		/*Map<String,String> map = new HashMap<String,String>();
+		String url="http://192.168.1.128:8082/ampc/app";
+		String getResult=ClientUtil.doPost(url,sourceid.toString());*/
+		return null;
+	}
 }
