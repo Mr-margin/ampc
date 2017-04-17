@@ -84,11 +84,11 @@ var optionAll = {
   xAxis: {
     type: 'value',
     name: '/μg/m³',  //可变，CO为mg/m³其他的为'μg/m³
-    nameGap: -3,
+    nameGap: 0	,
     boundaryGap: ['0%', '8%'],
   },
   yAxis: {
-    name: '/m',
+    name: 'm',
     nameGap: 5,
     type: 'value',
 //    interval: 100,
@@ -96,7 +96,8 @@ var optionAll = {
   },
   series: [  //可变，存储所有情景数据
 
-  ]
+  ],
+  animation:false
 };
 
 var ls = window.sessionStorage;
@@ -221,13 +222,13 @@ function initEcharts() {
     option.title.text = species[i];
     option.legend.data = (function () {
       var arr = [];
-      //for (var a = 0; a < sceneInitialization.data.length; a++) {
-      //  arr.push(sceneInitialization.data[a].scenarinoName)
-      //};
-
-      for (var a = 0; a < 3; a++) {
-        arr.push('a'+a+1)
+      for (var a = 0; a < sceneInitialization.data.length; a++) {
+        arr.push(sceneInitialization.data[a].scenarinoName)
       };
+
+      //for (var a = 0; a < 3; a++) {
+      //  arr.push('a'+a+1)
+      //};
 
       arr.unshift('基准情景');
       return arr;
@@ -240,22 +241,22 @@ function initEcharts() {
     //  return arr;
     //})();
     if (species[i] != 'CO') {
-      option.xAxis.name = '/μg/m³';
+      option.xAxis.name = 'μg/m³';
     } else {
-      option.xAxis.name = '/mg/m³';
+      option.xAxis.name = 'mg/m³';
     }
     option.series = [];
-    var arrrr = [466,458,456]
-    for (var sp = 0; sp < 3; sp++) {
-      //for (var sp = 0; sp < 5; sp++) {
-      var id = arrrr[sp];
-      var name = 'a'+sp+1;
-
-
-    //for (var sp = 0; sp < sceneInitialization.data.length; sp++) {
+    //var arrrr = [466,458,456];
+    //for (var sp = 0; sp < 3; sp++) {
     //  //for (var sp = 0; sp < 5; sp++) {
-    //  var id = sceneInitialization.data[sp].scenarinoId;
-    //  var name = sceneInitialization.data[sp].scenarinoName;
+    //  var id = arrrr[sp];
+    //  var name = 'a'+sp+1;
+
+
+    for (var sp = 0; sp < sceneInitialization.data.length; sp++) {
+      //for (var sp = 0; sp < 5; sp++) {
+      var id = sceneInitialization.data[sp].scenarinoId;
+      var name = sceneInitialization.data[sp].scenarinoName;
 
 
       option.series.push({
