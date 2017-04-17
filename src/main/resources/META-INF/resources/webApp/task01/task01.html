@@ -1,19 +1,19 @@
 <body>
 
-<div class="content rwContent clear">
-  <div class="col-md-12">
+<div class="content rwContent clearfloat" style="overflow-x:auto">
+  <div class="col-md-12" style="min-width:1195px">
     <div class="row">
-      <div class="col-md-6 pr0">
+      <div class="col-xs-6 pr0">
         <div class="panel panel-default plain ">
           <!-- Start .panel -->
           <div class="panel-heading white-bg" style="border: none">
-            <div class="col-md-6">
+            <div class="col-xs-6">
               <h4 class="panel-title">任务列表<i class="im-file3"></i></h4>
             </div>
           </div>
           <div class="panel-body" style="padding:0px;border: none">
             <div id="rwToolbar" class="btn-group">
-              <div class="col-md-4 cjsc">
+              <div class="col-xs-4 cjsc">
                 <button type="button" class="btn btn-success" onclick="returnLeft('rw')" data-whatever="创建任务"
                         data-type="rw" data-toggle="modal"
                         data-target="#createRwModal">
@@ -23,7 +23,8 @@
                   <i class="glyphicon glyphicon-trash"></i> 删除
                 </button>
               </div>
-              <div class="col-md-5 text-right bigP">
+              <!-- 将原来的任务类型选择改为下拉选择 -->
+              <!-- <div class="col-md-5 text-right bigP">
                 <button type="button" class="btn btn-success btn-danger statusRw" onclick="statusRWfun('',this)">
                   <i class="im-folder-open"></i> 全部
                 </button>
@@ -47,8 +48,24 @@
                     <li onclick="statusRWfun('3',this)"><a href="javascript:">后评估</a></li>
                   </ul>
                 </div>
+              </div> -->
+              <div class="col-xs-5 text-right">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-info" id="selectType">全部</button>
+                  <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                          aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a href="javascript:" onclick="statusRWfun('',this)">全部</a></li>
+                    <li><a href="javascript:" onclick="statusRWfun('2',this)">预评估</a></li>
+                    <li><a href="javascript:" onclick="statusRWfun('3',this)">后评估</a></li>
+                  </ul>
+                </div>
               </div>
-              <div class="input-group col-md-3 col-md-offset-9">
+
+              <div class="input-group col-xs-3 col-xs-offset-9">
                 <input type="text" class="form-control rw " placeholder="输入任务名称">
                 <span class="input-group-btn">
                   <button class="btn btn-success " type="button" onclick="search('rw')"><i class="ec-search"></i>
@@ -74,17 +91,17 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6 pl0 qjTableP">
+      <div class="col-xs-6 pl0 qjTableP">
         <div class="panel panel-default plain ">
           <!-- Start .panel -->
           <div class="panel-heading white-bg" style="border: none">
-            <div class="col-md-6">
+            <div class="col-xs-6">
               <h4 class="panel-title">情景列表<i class="im-file3"></i></h4>
             </div>
           </div>
           <div class="panel-body" style="padding:0px;border: none; ">
             <div id="qjToolbar" class="btn-group">
-              <div class="col-md-6">
+              <div class="col-xs-6">
                 <button type="button" class="btn btn-success" onclick="createQJselect()">
                   <i class="glyphicon glyphicon-plus"></i> 创建
                 </button>
@@ -92,7 +109,7 @@
                   <i class="glyphicon glyphicon-trash"></i> 删除
                 </button>
               </div>
-              <div class="input-group col-md-3 col-md-offset-9">
+              <div class="input-group col-xs-3 col-xs-offset-9">
                 <input type="text" class="form-control qj " placeholder="输入情景名称">
                 <span class="input-group-btn">
                   <button class="btn btn-success " type="button" onclick="search('qj')"><i class="ec-search"></i>
@@ -457,7 +474,7 @@
           <div class="w25h50">较快</div>
           <div class="w25h50 baseTime">4h</div>
           <div class="w25h50 allTime">128</div>
-          <div class="w25h50 cpu"><input type="radio" name="cpuNum"  value="48"/> <span>48</span></div>
+          <div class="w25h50 cpu"><input type="radio" name="cpuNum" value="48"/> <span>48</span></div>
           <div class="w25h50">高速</div>
           <div class="w25h50 baseTime">3h</div>
           <div class="w25h50 allTime">144</div>
