@@ -593,6 +593,14 @@ function updata() {
 
     $.when(echartsData,echartsJZData).then(function (res,resJZ) {
       if ((res[0].status == 0)&&(resJZ[0].status == 0)) {
+        for(var i=0;i<changeMsg.scenarinoId.length;i++){
+          if(!res[0].data[changeMsg.scenarinoId[i]]){
+            res[0].data[changeMsg.scenarinoId[i]] = {};
+            for(var y in speciesObj){
+              res[0].data[changeMsg.scenarinoId[i]][speciesObj[y]] = ooo;
+            }
+          }
+        }
         if($.isEmptyObject(resJZ[0].data)){
           resJZ[0].data['-1'] = {};
           for(var i in speciesObj){
