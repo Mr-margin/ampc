@@ -39,22 +39,25 @@ function sceneInittion(){
 	ajaxPost('/mission/find_All_mission',paramsName).success(function(res){
 		console.log(JSON.stringify(res));
 		if(res.status == 0){
-			var task = "";
-			$.each(res.data, function(k, vol) {
-				allMission[vol.missionId] = vol;
-				if(sceneInitialization){
-					if(sceneInitialization.taskID == vol.missionId){
-						task += '<option value="'+vol.missionId+'" selected="selected">'+vol.missionName+'</option>';
+			if(res.data || res.data.length>0){
+				var task = "";
+				$.each(res.data, function(k, vol) {
+					allMission[vol.missionId] = vol;
+					if(sceneInitialization){
+						if(sceneInitialization.taskID == vol.missionId){
+							task += '<option value="'+vol.missionId+'" selected="selected">'+vol.missionName+'</option>';
+						}else{
+							task += '<option value="'+vol.missionId+'">'+vol.missionName+'</option>';
+						}
 					}else{
 						task += '<option value="'+vol.missionId+'">'+vol.missionName+'</option>';
 					}
-				}else{
-					task += '<option value="'+vol.missionId+'">'+vol.missionName+'</option>';
-				}
-			});
-			$("#task").html(task);
-			$("#Initialization").modal();//初始化模态框显示
-			sceneTable();
+				});
+				$("#task").html(task);
+				$("#Initialization").modal();//初始化模态框显示
+				sceneTable();
+			}else{}
+
 		}
 	});
 }
@@ -83,25 +86,25 @@ function sceneTable(){
 		silent : true, // 刷新事件必须设置
 		contentType : "application/json", // 请求远程数据的内容类型。
 		responseHandler: function (res) {
-			if(res.status == 0){
-				if(res.data.rows.length>0){
-					
-					if(sceneInitialization){
-						if(sceneInitialization.data.length>0){
-							
-							$.each(res.data.rows, function(i, col) {
-								$.each(sceneInitialization.data, function(k, vol) {
-									if(col.scenarinoId == vol.scenarinoId){
+			if (res.status == 0) {
+				if(!res.data.rows){
+					res.data.rows = [];
+				}else if (res.data.rows.length > 0) {
+					if (sceneInitialization) {
+						if (sceneInitialization.data.length > 0) {
+
+							$.each(res.data.rows, function (i, col) {
+								$.each(sceneInitialization.data, function (k, vol) {
+									if (col.scenarinoId == vol.scenarinoId) {
 										res.data.rows[i].state = true;
 									}
 								});
 							});
 						}
 					}
-					
-					return res.data.rows;
 				}
-			}else if(res.status == 1000){
+				return res.data.rows;
+			} else if (res.status == 1000) {
 				swal(res.msg, '', 'error');
 			}
 		},
