@@ -1635,5 +1635,299 @@ public class PlanAndMeasureController {
 		}
 		return temp;
 	}
+	
+	
+	/**
+	 * 减排对外接口
+	 * @param scenarinoId   情景Id
+	 * @param userId		用户ID
+	 * @param startDate		开始时间
+	 * @param endDate		结束时间
+	 * @return	减排的Json串
+	 */
+	public String JPUtil(String scenarinoId,String userId,String startDate,String endDate){
+		// 添加异常捕捉
+		try {
+			// 创建一个减排的结果集合
+			List<JPResult> jpList = new ArrayList<JPResult>();
+			Map mapQusery=new HashMap();
+			mapQusery.put("userId",userId);
+			mapQusery.put("scenarinoId",scenarinoId);
+			List<Long> areaList=tScenarinoAreaMapper.selectBySid(mapQusery);
+			for(Long areaId:areaList){
+				mapQusery.put("areaId", areaId);
+				List<Long> planList=tPlanMapper.selectByAreaId(mapQusery);
+				for(Long planId:planList){
+					mapQusery.put("planId", planId);
+					//根据条件查询 当前预案下的所有预案措施Id
+					List<Long> pmIds=tPlanMeasureMapper.selectIdByMap(mapQusery);
+					//如果该预案下包含措施 则需要调用减排计算的接口
+					if(pmIds!=null&&pmIds.size()>0){
+						// 根据拆分后得到的id查询所有的预案措施对象
+						List<Map> pmList = tPlanMeasureMapper.getPmByIds(pmIds);
+						// 循环每一个预案措施对象 拼接想要的数据放入JPResult帮助类集合中
+						//定义临时变量K 用于内部循环
+						int k=0;
+						for (int i=0;i<pmList.size();i++) {
+							// 创建JPResult帮助类;
+							JPResult result = new JPResult();
+							// 将子措施转换成JsonObject对象进行解析
+							Clob clob = (Clob) pmList.get(i).get("measureContent");
+							JSONObject jsonobject = JSONObject.fromObject(clob.getSubString(1, (int) clob.length()));
+							// 设置内部值的转换类型
+							Map<String, Class> cmap = new HashMap<String, Class>();
+							cmap.put("filters", HashMap.class);
+							cmap.put("summary", HashMap.class);
+							cmap.put("table", HashMap.class);
+							cmap.put("table1", HashMap.class);
+							cmap.put("oopp", HashMap.class);
+							cmap.put("regionIds", ArrayList.class);
+							// 将json对象转换成Java对象
+							MeasureContentUtil mcu = (MeasureContentUtil) JSONObject.toBean(jsonobject, MeasureContentUtil.class, cmap);
+							// 写入BigIndex
+							result.setBigIndex(mcu.getBigIndex());
+							// 写入SmallIndex
+							result.setSmallIndex(mcu.getSmallIndex());
+							//写入行政区划代码
+							result.setRegionIds(mcu.getRegionIds());
+							// 写入行业名称
+							result.setGroupName(pmList.get(i).get("sectorName").toString());
+							// 写入预案开始时间
+							result.setStart(startDate);
+							// 写入预案结束时间
+							result.setEnd(endDate);
+							// 获取Json中的Filter
+							List<Map> lms = mcu.getFilters();
+							// 获取Json中的子措施集合
+							List<Map> table1 = mcu.getTable1();
+							// 创建要减排分析中的子项
+							List<Object> opList = new ArrayList<Object>();
+							// 循环Filter 因为Filter中的项 和 子措施汇总的是相同的 所以循环一个
+							for (int j = 0; j < table1.size(); j++) {
+								Map opresult = new HashMap();
+								// 获取对应Filter中的子措施
+								Map t1map = table1.get(j);
+								// 获取用户修改的OP
+								Map opmap = (Map) t1map.get("oopp");
+								opresult.put("filter", lms.get(j));
+								opresult.put("l4sFilter", pmList.get(i).get("l4sFilter"));
+								opresult.put("opLevel", pmList.get(i).get("level"));
+								opresult.put("opName", pmList.get(i).get("measureName")+"-"+pmList.get(i).get("planMeasureId"));
+								opresult.put("opType", pmList.get(i).get("op"));
+								//定义临时变量 用来判断op中的项是否有值 如果没有就为false 则不需要添加该条记录
+								boolean isTrue=true;
+								for (Object obj : opmap.keySet()) {
+									//判断Op中是否有值
+									if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")){
+										//更改为false  不添加循环
+										isTrue=false;
+										//有一条没用则不要了这条记录
+										break;
+									} 
+									opresult.put(obj,Double.parseDouble(opmap.get(obj).toString()));
+								}
+								//判断是否要该条记录
+								if(isTrue){
+									opList.add(opresult);
+								}
+							}
+							// 获取Json中的汇总集合
+							List<Map> table = mcu.getTable();
+							// 循环汇总中的所有数据 包括 会总管
+							for (Map map : table) {
+								String f1 = map.get("f1").toString();
+								//如果是汇总就继续下一次循环 因为汇总不是用户可已更改的
+								if (f1.equals("汇总")) continue;
+								Map opresult = new HashMap();
+								// 获取用户修改的OP
+								Map opmap = (Map) map.get("oopp");
+								//判断如果为空就不添加
+								if(opmap==null) continue;
+								// 用来定义Filter
+								Map mf = new HashMap();
+								// 判断类型
+								if (f1.equals("剩余点源")) {
+									mf.put("unitType", "P");
+									opresult.put("filter", mf);
+									opresult.put("l4sFilter", pmList.get(i).get("l4sFilter"));
+									opresult.put("opLevel", pmList.get(i).get("level"));
+									opresult.put("opName", pmList.get(i).get("measureName")+"-"+pmList.get(i).get("planMeasureId"));
+									opresult.put("opType", pmList.get(i).get("op"));
+									//定义临时变量 用来判断op中的项是否有值 如果没有就为false 则不需要添加该条记录
+									boolean isTrue=true;
+									for (Object obj : opmap.keySet()) {
+										//判断Op中是否有值
+										if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")){
+											//更改为false  不添加循环
+											isTrue=false;
+											//有一条没用则不要了这条记录
+											break;
+										} 
+										opresult.put(obj,Double.parseDouble(opmap.get(obj).toString()));
+									}
+									//判断是否要该条记录
+									if(isTrue){
+										opList.add(opresult);
+									}
+								} 
+								if (f1.equals("面源")) {
+									mf.put("unitType", "S");
+									opresult.put("filter", mf);
+									opresult.put("l4sFilter", pmList.get(i).get("l4sFilter"));
+									opresult.put("opLevel", pmList.get(i).get("level"));
+									opresult.put("opName", pmList.get(i).get("measureName")+"-"+pmList.get(i).get("planMeasureId"));
+									opresult.put("opType", pmList.get(i).get("op"));
+									//定义临时变量 用来判断op中的项是否有值 如果没有就为false 则不需要添加该条记录
+									boolean isTrue=true;
+									for (Object obj : opmap.keySet()) {
+										//判断Op中是否有值
+										if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")){
+											//更改为false  不添加循环
+											isTrue=false;
+											//有一条没用则不要了这条记录
+											break;
+										} 
+										opresult.put(obj,Double.parseDouble(opmap.get(obj).toString()));
+									}
+									//判断是否要该条记录
+									if(isTrue){
+										opList.add(opresult);
+									}
+								}
+							}
+							//k的记录加1
+							k++;
+							// 循环每一个预案措施对象 拼接想要的数据放入JPResult帮助类集合中
+							for (;k<pmList.size();k++) {
+								if(pmList.get(k).get("sectorName").toString().equals(pmList.get(i).get("sectorName").toString())){
+									// 将子措施转换成JsonObject对象进行解析
+									Clob clob1 = (Clob) pmList.get(k).get("measureContent");
+									JSONObject jsonobject1 = JSONObject.fromObject(clob1.getSubString(1, (int) clob1.length()));
+									// 将json对象转换成Java对象
+									MeasureContentUtil mcu1 = (MeasureContentUtil) JSONObject.toBean(jsonobject1, MeasureContentUtil.class, cmap);
+									// 获取Json中的Filter
+									List<Map> lms1 = mcu1.getFilters();
+									// 获取Json中的子措施集合
+									List<Map> table11 = mcu1.getTable1();
+									// 循环Filter 因为Filter中的项 和 子措施汇总的是相同的 所以循环一个
+									for (int j = 0; j < table11.size(); j++) {
+										Map opresult = new HashMap();
+										// 获取对应Filter中的子措施
+										Map t1map = table11.get(j);
+										// 获取用户修改的OP
+										Map opmap = (Map) t1map.get("oopp");
+										opresult.put("filter", lms1.get(j));
+										opresult.put("l4sFilter", pmList.get(k).get("l4sFilter"));
+										opresult.put("opLevel", pmList.get(k).get("level"));
+										opresult.put("opName", pmList.get(k).get("measureName")+"-"+pmList.get(k).get("planMeasureId"));
+										opresult.put("opType", pmList.get(k).get("op"));
+										//定义临时变量 用来判断op中的项是否有值 如果没有就为false 则不需要添加该条记录
+										boolean isTrue=true;
+										for (Object obj : opmap.keySet()) {
+											//判断Op中是否有值
+											if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")){
+												//更改为false  不添加循环
+												isTrue=false;
+												//有一条没用则不要了这条记录
+												break;
+											} 
+											opresult.put(obj,Double.parseDouble(opmap.get(obj).toString()));
+										}
+										//判断是否要该条记录
+										if(isTrue){
+											opList.add(opresult);
+										}
+									}
+									// 获取Json中的汇总集合
+									List<Map> table22 = mcu1.getTable();
+									// 判断汇总中是否有对点源和面源的计算
+									// 循环汇总中的所有数据 包括 会总管
+									for (Map map : table22) {
+										String f1 = map.get("f1").toString();
+										if (f1.equals("汇总")) continue;
+										Map opresult = new HashMap();
+										// 获取用户修改的OP
+										Map opmap = (Map) map.get("oopp");
+										//判断如果为空就不添加
+										if(opmap==null) continue;
+										// 用来定义Filter
+										Map mf = new HashMap();
+										// 判断类型
+										if (f1.equals("剩余点源")) {
+											mf.put("unitType", "P");
+											opresult.put("filter", mf);
+											opresult.put("l4sFilter", pmList.get(k).get("l4sFilter"));
+											opresult.put("opLevel", pmList.get(k).get("level"));
+											opresult.put("opName", pmList.get(k).get("measureName")+"-"+pmList.get(k).get("planMeasureId"));
+											opresult.put("opType", pmList.get(k).get("op"));
+											//定义临时变量 用来判断op中的项是否有值 如果没有就为false 则不需要添加该条记录
+											boolean isTrue=true;
+											for (Object obj : opmap.keySet()) {
+												//判断Op中是否有值
+												if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")){
+													//更改为false  不添加循环
+													isTrue=false;
+													//有一条没用则不要了这条记录
+													break;
+												} 
+												opresult.put(obj,Double.parseDouble(opmap.get(obj).toString()));
+											}
+											//判断是否要该条记录
+											if(isTrue){
+												opList.add(opresult);
+											}
+										} 
+										if (f1.equals("面源")) {
+											mf.put("unitType", "S");
+											opresult.put("filter", mf);
+											opresult.put("l4sFilter", pmList.get(k).get("l4sFilter"));
+											opresult.put("opLevel", pmList.get(k).get("level"));
+											opresult.put("opName", pmList.get(k).get("measureName")+"-"+pmList.get(k).get("planMeasureId"));
+											opresult.put("opType", pmList.get(k).get("op"));
+											//定义临时变量 用来判断op中的项是否有值 如果没有就为false 则不需要添加该条记录
+											boolean isTrue=true;
+											for (Object obj : opmap.keySet()) {
+												//判断Op中是否有值
+												if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")){
+													//更改为false  不添加循环
+													isTrue=false;
+													//有一条没用则不要了这条记录
+													break;
+												} 
+												opresult.put(obj,Double.parseDouble(opmap.get(obj).toString()));
+											}
+											//判断是否要该条记录
+											if(isTrue){
+												opList.add(opresult);
+											}
+										}
+									}
+								}else{
+									//如果条件不满足更改第一层循环的值  因为到上面还要++所以-1
+									i=k-1;
+									break;
+								}
+								//判断是否还有数据了
+								if((k+1)==pmList.size()){
+									i=k;
+								}
+							}
+							// 放入OPS
+							result.setOps(opList);
+							jpList.add(result);
+						}
+					}
+				}
+			}
+			// 将java对象转换为json对象
+			JSONArray json = JSONArray.fromObject(jpList);
+			String str = json.toString();
+			LogUtil.getLogger().info("PlanAndMeasureController   提供对外的计算接口成功！");
+			return str;
+		} catch (Exception e) {
+			LogUtil.getLogger().error("PlanAndMeasureController   提供对外的计算接口异常！",e);
+			return null;
+		}
+	}
 
 }
