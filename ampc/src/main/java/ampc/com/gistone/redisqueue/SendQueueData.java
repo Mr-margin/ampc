@@ -19,9 +19,11 @@ import org.springframework.stereotype.Component;
 
 
 
+
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.redisqueue.entity.QueueData;
+import ampc.com.gistone.util.LogUtil;
 
 
 /**  
@@ -178,6 +180,7 @@ public class SendQueueData {
 	 * @date 2017年3月29日 上午11:51:50
 	 */
 	private void sendData(String json) {
+		LogUtil.getLogger().info(json+new Date());
 		System.out.println("开始发送");
 		redisqueue.leftPush("receive_queue_name",json);//receive_queue_name
 	//	redisqueue.leftPush("queue_test",json);//receive_queue_name

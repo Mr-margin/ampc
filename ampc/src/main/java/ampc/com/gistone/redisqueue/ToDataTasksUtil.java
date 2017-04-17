@@ -76,6 +76,8 @@ public class ToDataTasksUtil {
 		LogUtil.getLogger().info("模式启动的返回结果");
 		//创建tasksstatus对象
 		TTasksStatus tasksStatus = new TTasksStatus();
+		Date time = message.getTime();
+		
 	    Object object = message.getBody();
 	    Map map = (Map) object;
 	    Object code = map.get("code");
@@ -83,6 +85,8 @@ public class ToDataTasksUtil {
 	  // Integer scenarinoId = (Integer) map.get("scenarioid");
 	 //   Long tasksScenarinoId = Long.parseLong(string);
 	   String endtime = map.get("date").toString();
+	   //结束时间的年与日形式 用于比较
+	   Date endtimeDate = DateUtil.StrtoDateYMD(endtime, "yyyyMMdd");
 	   if (endtime==null||"".equals(endtime)) {
 		System.out.println("该条消息出错误！！");
 	}
@@ -92,7 +96,7 @@ public class ToDataTasksUtil {
 	   Object step = map.get("index");
 	   Integer stepindex = Integer.parseInt(step.toString());
 	   String errorStatus = (String) map.get("desc");
-	    
+	   LogUtil.getLogger().info("time:"+time+"index:"+step+"taskendDate:"+tasksEndDate);
 	    System.out.println(tasksEndDate);
 	    System.out.println(stepindex);
 	    System.out.println(errorStatus);
@@ -122,6 +126,7 @@ public class ToDataTasksUtil {
 	    	//根据情景类型确定stepindex的数量
 	    	Integer index = surestepindex(scentype);
 	    	if (null!=pathDate) {
+	    		//比较今天的和当前发送的情景的pathdate
 	    		int pathcompare = pathDate.compareTo(today);
 		    	
 		    	//获取情景任务的开始时间和结束时间
@@ -130,7 +135,7 @@ public class ToDataTasksUtil {
 		    	//当条情景的结束时间和当条情景的任务完成状态结束时间 比较
 		    	int compareTo = endDate.compareTo(tasksEndDate);
 		    	//比较开始时间和任务完成结束的时间
-		    	int StartCompare = startDate.compareTo(tasksEndDate);
+		    	int StartCompare = startDate.compareTo(endtimeDate);
 				
 		    	//修改该情景的状态  为1 表示该条情景模式运行过 
 		    	if ("0".equals(code)&&"4".equals(scentype)&&stepindex==8&&StartCompare==0) {
@@ -139,9 +144,9 @@ public class ToDataTasksUtil {
 		    		tasksStatus2.setBeizhu("1");
 		    		tasksStatus2.setTasksScenarinoId(tasksScenarinoId);
 		    		tasksStatusMapper.updateRunstatus(tasksStatus2);
-		    		System.out.println("跟新"+tasksScenarinoId+"的状态了");
+		    		System.out.println("跟新"+tasksScenarinoId+"的状态为1了"+":"+scentype+",stepindex:"+stepindex);
 				}else {
-					if("0".equals(code)&&compareTo>0){
+					if("0".equals(code)&&compareTo>0&&!scentype.equals("4")){
 						//其他情况需要跑完整个情景模式状态才变为2 没跑完为1 出错为0
 			    		TTasksStatus tasksStatus2 = new TTasksStatus();
 			    		tasksStatus2.setBeizhu("1");
@@ -176,14 +181,14 @@ public class ToDataTasksUtil {
 				}
 			}else {
 				//针对其他三种情景（ 预评估的后评估情景 后评估任务的两种情景）不存在pathdate 当接受到消息时候 给每个tasksstatus一个状态
-				if ("0".equals(code)&&"2".endsWith(scentype)&&index.equals(stepindex)) {
+				if ("0".equals(code)&&"2".equals(scentype)&&index.equals(stepindex)) {
 					//后评估情景更新状态
 					TTasksStatus tasksStatus2 = new TTasksStatus();
 		    		tasksStatus2.setBeizhu("2"); 
 		    		tasksStatus2.setTasksScenarinoId(tasksScenarinoId);
 		    		tasksStatusMapper.updateRunstatus(tasksStatus2);
 				}
-				if ("0".equals(code)&&"3".endsWith(scentype)&&index.equals(stepindex)) {
+				if ("0".equals(code)&&"3".equals(scentype)&&index.equals(stepindex)) {
 					//基准情景更新状态
 					TTasksStatus tasksStatus2 = new TTasksStatus();
 		    		tasksStatus2.setBeizhu("2"); 
