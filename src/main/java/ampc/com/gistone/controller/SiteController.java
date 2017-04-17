@@ -21,6 +21,7 @@ import ampc.com.gistone.database.model.TAddress;
 import ampc.com.gistone.database.model.TSite;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.LogUtil;
 
 @RestController
 @RequestMapping
@@ -61,7 +62,7 @@ public class SiteController {
 			}
 			return AmpcResult.build(0, "success",arr);
 		}catch(Exception e){
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			return AmpcResult.build(1000, "执行失败");
 		}
 	}
@@ -116,14 +117,35 @@ public class SiteController {
 			
 			return AmpcResult.build(0, "success",sarr);
 		}catch(Exception e){
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			return AmpcResult.build(0, "执行失败");
 		}
 	}
 	
 	
 	
-	
-	
+	@RequestMapping("/Site/find_codes")
+	public AmpcResult find_codes(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			
+			
+			
+			
+			
+			
+			
+			return AmpcResult.build(0, "success");
+		}catch(Exception e){
+			LogUtil.getLogger().error("异常了",e);
+			return AmpcResult.build(0, "执行失败");
+		}
 	}
+
+	
+	
+	
+}
 
