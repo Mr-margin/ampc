@@ -24,10 +24,10 @@
   background-image: url('../img/copyQJ.png')
 }
 
-
-#rwToolbar, #qjToolbar ,#qdToolbar{
-  margin: 10px;
-}
+/*将toolbar放入bootstrap-table之后此样式就不需要了*/
+/*#rwToolbar, #qjToolbar ,#qdToolbar{*/
+  /*margin: 10px;*/
+/*}*/
 .rwtableDiv>.clearfix{
   border:1px solid #e7eaec;
 }
@@ -767,4 +767,11 @@ button[disabled],.btn[disabled]{
   border: none;
   border-top: 1px solid #D1F0FF;
 }
+/*bootstrap-table标题行错行的全权之策*/
+/*.qjtableDiv .fixed-table-header,.rwtableDiv .fixed-table-header{*/
+  /*display: none !important;*/
+/*}*/
+/*#qjTable,#rwTable{*/
+  /*margin-top: 0px !important;*/
+/*}*/
 /*-----------------------------------------------------------------------------*/
