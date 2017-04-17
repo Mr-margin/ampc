@@ -66,9 +66,9 @@ public class AcceptMessageQueue implements Runnable{
 		//	String send_queue_name = redisUtilServer.rpop("send_queue_name");//result_Start_model
 			System.out.println("队列接受数据");
 			String rpop = redisUtilServer.brpop("send_queue_name");//result_Start_model
-			System.out.println(rpop+"刚取出来的");
 		//	String rpop2 = redisUtilServer.rpop("send_queue_name");//result_Start_model
 			if (null==rpop) {
+				System.out.println(rpop+"刚取出来的");
 				LogUtil.getLogger().info("队列里面没有数据了！");
 			}else {
 			
@@ -78,6 +78,7 @@ public class AcceptMessageQueue implements Runnable{
 				switch (key) {
 				case "model.start.result":
 					LogUtil.getLogger().info("start tasks"+new Date());
+					LogUtil.getLogger().info(rpop);
 					toDataTasksUtil.updateDB(message);
 					LogUtil.getLogger().info("end tasks"+new Date());
 					break;

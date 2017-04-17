@@ -8,11 +8,29 @@
  */
 package ampc.com.gistone.redisqueue;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -35,7 +53,14 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ampc.com.gistone.controller.PlanAndMeasureController;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
+import ampc.com.gistone.database.inter.TPlanMapper;
+import ampc.com.gistone.database.inter.TPlanMeasureMapper;
+import ampc.com.gistone.database.inter.TPlanMeasureReuseMapper;
+import ampc.com.gistone.database.inter.TScenarinoAreaMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.inter.TUngribMapper;
@@ -43,6 +68,7 @@ import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.database.model.TUngrib;
+import ampc.com.gistone.entity.JPResult;
 import ampc.com.gistone.redisqueue.entity.QueueBodyData;
 import ampc.com.gistone.redisqueue.entity.QueueData;
 import ampc.com.gistone.redisqueue.entity.QueueDataCmaq;
@@ -50,6 +76,7 @@ import ampc.com.gistone.redisqueue.entity.QueueDataCommon;
 import ampc.com.gistone.redisqueue.entity.QueueDataEmis;
 import ampc.com.gistone.redisqueue.entity.QueueDataWrf;
 import ampc.com.gistone.redisqueue.timer.SchedulerTimer;
+import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.LogUtil;
 
@@ -64,6 +91,8 @@ import ampc.com.gistone.util.LogUtil;
  */
 @Component
 public class ReadyData {
+	//公用的Jackson解析对象
+	private ObjectMapper mapper=new ObjectMapper();
 	//任务详情映射
 	@Autowired
 	private TMissionDetailMapper tMissionDetailMapper;
@@ -76,11 +105,36 @@ public class ReadyData {
 	//tasks映射
 	@Autowired
 	private TTasksStatusMapper tTasksStatusMapper;
+	
+	@Autowired
+	private TScenarinoAreaMapper tScenarinoAreaMapper;
+	
+	// 预案映射
+	@Autowired
+	private TPlanMapper tPlanMapper;
+	// 预案措施库映射
+	@Autowired
+	private TPlanMeasureReuseMapper tPlanMeasureReuseMapper;
+	
+	// 预案措施映射
+	@Autowired
+	private TPlanMeasureMapper tPlanMeasureMapper;
 	//引入发送消息的工具类
 	@Autowired
 	private SendQueueData sendQueueData;
 	
-	
+	/**
+	 * @Description: 需要计算减排的情况  根据情景ID区分并且准备数据
+	 * @param scenarioid   
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月17日 上午9:19:32
+	 */
+	public void needJIANPAIsituation(Long scenarioid) {
+		// TODO Auto-generated method stub
+		
+	}
 	/**
 	 * 
 	 * @Description: 根据情景和任务类型分类准备数据 当这几种情况都不存在的时候返回参数1
@@ -94,10 +148,10 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年4月6日 下午2:37:25
 	 */
-	public void branchPredict(Long scenarinoId,Long cores,Integer scenarinoType,Integer missionType) {
+	public void branchPredict(Long scenarinoId,Long cores,Integer scenarinoType,Integer missionType,Long missionId,Long userId) {
 		if (scenarinoType==4&&missionType==1) {
 			//准备实时预报的数据
-		//	readyRealMessageDataFirst(scenarinoId,cores);
+			readyRealMessageDataFirst(scenarinoId,cores);
 		}
 		if (scenarinoType==3&&missionType==3) {
 			//基准情景
@@ -114,7 +168,9 @@ public class ReadyData {
 		}
 		if (scenarinoType==2&&missionType==3) {
 			//后评估任务后评估情景
-			readypost_PostEvaluationSituationData(scenarinoId,cores);
+			LogUtil.getLogger().info("后评估任务的后评估情景开始！");
+			//getEmis(missionId, scenarinoId, userId, scenarinoType);
+			readypost_PostEvaluationSituationData(scenarinoId);
 		}
 	}
 	
@@ -128,7 +184,7 @@ public class ReadyData {
 	 * @date 2017年3月30日 下午3:34:19
 	 */
 	public void readypost_PostEvaluationSituationData(
-			Long scenarinoId,Long cores) {
+			Long scenarinoId) {
 		//创建消息体对象
 		QueueData queueData = new QueueData();
 	//	Long scenarinoId = (Long) body.get("scenarinoId");//情景id
@@ -141,7 +197,7 @@ public class ReadyData {
 		//从数据库里获取该情景下的所有信息
 		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
 		//创建消息bady对象   并获取 bodydata的数据
-		QueueBodyData bodyData = getbodyDataHead(scenarinoDetailMSG,cores);
+		QueueBodyData bodyData = getbodyDataHead(scenarinoDetailMSG,null);
 		//创建common消息对象
 		QueueDataCommon commonData = new QueueDataCommon();
 		//创建wrf对象
@@ -169,9 +225,15 @@ public class ReadyData {
 		Date icDate = scenarinoDetailMSG.getBasisTime();
 		//
 		String icdate = DateUtil.DATEtoString(icDate, "yyyyMMdd");
-		//准备ic
-		Map<String, Object> icMap = getIC(scenarinoId,missionId ,firsttime,icdate);
+		
+		//ic的情景ID
+		Long basisScenarinoId = scenarinoDetailMSG.getBasisScenarinoId();
+		//ic的任务ID
+		Long basismissionid = tScenarinoDetailMapper.selectMissionidByID(basisScenarinoId);
+		//准备cmaq的ic
+		Map<String, Object> icMap = getIC(basisScenarinoId,basismissionid ,firsttime,icdate); 
 		cmaqData.setIc(icMap);
+		
 		//创建emis对象   调用方法获取emis数据
 		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType,scenarinoId);
 		//设置body的数据
@@ -233,10 +295,17 @@ public class ReadyData {
 		Date icDate = scenarinoDetailMSG.getBasisTime();
 		//
 		String icdate = DateUtil.DATEtoString(icDate, "yyyyMMdd");
-		//准备ic
-		Map<String, Object> icMap = getIC(scenarinoId,missionId ,firsttime,icdate);
+		
+		//ic的情景ID
+		Long basisScenarinoId = scenarinoDetailMSG.getBasisScenarinoId();
+		//ic的任务ID
+		Long basismissionid = tScenarinoDetailMapper.selectMissionidByID(basisScenarinoId);
+		//准备cmaq的ic
+		Map<String, Object> icMap = getIC(basisScenarinoId,basismissionid ,firsttime,icdate); 
 		cmaqData.setIc(icMap);
+		
 		//创建emis对象   调用方法获取emis数据
+		//QueueDataEmis dataEmisData = getEmis(missionId);
 		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType,scenarinoId);
 		//设置body的数据
 		bodyData.setCommon(commonData);
@@ -270,10 +339,13 @@ public class ReadyData {
 			String datatype = "fnl";
 			//从数据库里获取该情景下的所有信息
 			TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+			
 			Date startDate = scenarinoDetailMSG.getScenarinoStartDate();
 			//第一条预报数据的时间
 			String time =DateUtil.DATEtoString(startDate , "yyyyMMdd");
-			String icdate = DateUtil.changeDate(startDate, "yyyyMMdd", -1);
+			Date basisTime = scenarinoDetailMSG.getBasisTime();
+			String icdate = DateUtil.DATEtoString(basisTime, "yyyyMMdd");
+			//String icdate = DateUtil.changeDate(startDate, "yyyyMMdd", -1);
 			QueueData queueData = readyRealMessageData(datatype, time, scenarinoId, lastungrib, firsttime, icdate,cores);
 			sendQueueData.toJson(queueData, scenarinoId);
 		}
@@ -453,9 +525,19 @@ public class ReadyData {
 		Long missionId = scenarinoDetailMSG.getMissionId();
 		Long scenarinoId = scenarinoDetailMSG.getScenarinoId();
 		//设置ic
+		/*//基础情景的时间  基础时间
+		Date icDate = scenarinoDetailMSG.getBasisTime();
+		//
+		String icdate = DateUtil.DATEtoString(icDate, "yyyyMMdd");*/
 		String icdate = DateUtil.changeDate(startDate, "yyyyMMdd", -1);
-		Map<String, Object> icMap = getIC(scenarinoId,missionId ,firsttime,icdate); 
+		//ic的情景ID
+		Long basisScenarinoId = scenarinoDetailMSG.getBasisScenarinoId();
+		//ic的任务ID
+		Long basismissionid = tScenarinoDetailMapper.selectMissionidByID(basisScenarinoId);
+		//准备cmaq的ic
+		Map<String, Object> icMap = getIC(basisScenarinoId,basismissionid ,firsttime,icdate); 
 		cmaqData.setIc(icMap);
+		
 		//设置emis
 		//创建emis对象   调用方法获取emis数据
 		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType,scenarinoId);
@@ -522,9 +604,19 @@ public class ReadyData {
 		//设置cmaq的spinup
 		
 		Long missionId = scenarinoDetailMSG.getMissionId();
-		//准备cmaq的ic
-		Map<String, Object> icMap = getIC(scenarinoId,missionId ,firsttime,icdate); 
-		cmaqData.setIc(icMap);
+		if (datatype.equals("fnl")) {
+			//ic的情景ID
+			Long basisScenarinoId = scenarinoDetailMSG.getBasisScenarinoId();
+			//ic的任务ID
+			Long basismissionid = tScenarinoDetailMapper.selectMissionidByID(basisScenarinoId);
+			//准备cmaq的ic
+			Map<String, Object> icMap = getIC(basisScenarinoId,basismissionid ,firsttime,icdate); 
+			cmaqData.setIc(icMap);
+		}else if (datatype.equals("gfs")) {
+			Map<String, Object> icMap = getIC(scenarinoId,missionId ,firsttime,icdate); 
+			//准备cmaq的ic
+			cmaqData.setIc(icMap);
+		}
 		//创建emis对象   调用方法获取emis数据
 		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType,scenarinoId);
 		//设置body的数据
@@ -624,8 +716,9 @@ public class ReadyData {
 		if (i<0) {
 			 datatype = "fnl";
 		}
+		boolean first= true;
 		String time = DateUtil.DATEtoString(startDate, "yyyyMMdd");
-		QueueData queueData = readypreEvaSituMessageData(scenarinoId,datatype,time);
+		QueueData queueData = readypreEvaSituMessageData(scenarinoId,datatype,time,first);
 		sendQueueData.toJson(queueData, null);
 		
 	}
@@ -654,7 +747,8 @@ public class ReadyData {
 		}else if(i>=0){
 			datatype = "gfs";
 		}
-		QueueData queueData = readypreEvaSituMessageData(scenarinoId , datatype, time);
+		boolean first=false;
+		QueueData queueData = readypreEvaSituMessageData(scenarinoId , datatype, time,first);
 		
 	}
 	/**
@@ -686,7 +780,7 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年3月30日 下午4:45:39
 	 */
-	private QueueData readypreEvaSituMessageData(Long scenarinoId,String datatype,String time) {
+	private QueueData readypreEvaSituMessageData(Long scenarinoId,String datatype,String time,boolean first) {
 		//创建消息体对象
 		QueueData queueData = new QueueData();
 		//创建wrf对象
@@ -714,13 +808,26 @@ public class ReadyData {
 		//设置lastungrib
 		wrfData.setLastungrib("");
 		Long missionId = scenarinoDetailMSG.getMissionId();
-		//基础情景的时间  基础时间
-		Date icDate = scenarinoDetailMSG.getBasisTime();
-		//
-		String icdate = DateUtil.DATEtoString(icDate, "yyyyMMdd");
-		//准备cmaq的ic
-		Map<String, Object> icMap = getIC(scenarinoId,missionId ,false,icdate); 
-		cmaqData.setIc(icMap);
+		if (first==true) {
+			//基础情景的时间  基础时间
+			Date icDate = scenarinoDetailMSG.getBasisTime();
+			//
+			String icdate = DateUtil.DATEtoString(icDate, "yyyyMMdd");
+			//ic的情景ID
+			Long basisScenarinoId = scenarinoDetailMSG.getBasisScenarinoId();
+			//ic的任务ID
+			Long basismissionid = tScenarinoDetailMapper.selectMissionidByID(basisScenarinoId);
+			//准备cmaq的ic
+			Map<String, Object> icMap = getIC(basisScenarinoId,basismissionid ,firsttime,icdate); 
+			cmaqData.setIc(icMap);
+		}else if(first==false){
+			Date timedate = DateUtil.StrtoDateYMD(time, "yyyyMMdd");
+			String icdate = DateUtil.changeDate(timedate, "yyyyMMdd",-1);
+			//准备cmaq的ic
+			Map<String, Object> icMap = getIC(scenarinoId,missionId ,false,icdate); 
+			cmaqData.setIc(icMap);
+		}
+		
 		//创建emis对象   调用方法获取emis数据
 		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType,scenarinoId);
 		//设置body的数据
@@ -748,6 +855,7 @@ public class ReadyData {
 	private Map<String, Object> getIC(Long scenarinoId, Long missionId,
 			Boolean firsttime,String icdate) {
 		Map<String,Object> map = new HashMap<String, Object>();
+		
 		//当天的上一天为基础情景
 		if(firsttime==true){
 			map.put("missionid", "");
@@ -943,11 +1051,49 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年3月17日 下午2:19:53
 	 */
-	public Map<String, String> getEmis(Long sourceid) {
-		/*Map<String,String> map = new HashMap<String,String>();
+	public Map<String, String> getEmis(Long missionId,Long scenarinoId,Long userId,Integer scenarinoType) {
+		LogUtil.getLogger().info("开始计算减排");
+		//通过情景ID获取清单ID
+		Long sourceid = tMissionDetailMapper.getsourceid(missionId);
+		/*Map<String,Long> map = new HashMap<String,Long>();
+		map.put("sourceid", sourceid);
+		map.put("scenarinoId", scenarinoId);*/
+		if (scenarinoType.equals(2)) {
+			//情景类型为后评估情景类型 需要减排系数
+			//获取减排计算的json数据
+			
+			//发送数据
+			
+		}
+		Map map=new HashMap();
+		map.put("userId",userId);
+		map.put("scenarinoId",scenarinoId);
+		// 创建一个减排的结果集合
+		List<JPResult> jpList = new ArrayList<JPResult>();
+		List<Long> areaList=tScenarinoAreaMapper.selectBySid(map);
+		for(Long areaId:areaList){
+			map.put("areaId", areaId);
+			List<Long> planList=tPlanMapper.selectByAreaId(map);
+			for(Long planId:planList){
+				map.put("planId", planId);
+				//根据条件查询 当前预案下的所有预案措施Id
+				List<Long> pmIds=tPlanMeasureMapper.selectIdByMap(map);
+				//如果该预案下包含措施 则需要调用减排计算的接口
+				if(pmIds!=null&&pmIds.size()>0){
+					PlanAndMeasureController planAndMeasureController = new PlanAndMeasureController();
+					try {
+						planAndMeasureController.tempCalc(pmIds,jpList);
+						
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		/*String strResult="jobId="+scenarinoId;
 		String url="http://192.168.1.128:8082/ampc/app";
-		String getResult=ClientUtil.doPost(url,sourceid.toString());*/
-		
+		String getResult=ClientUtil.doPost(url,map.toString());*/
 		
 		return null;
 	}
@@ -969,8 +1115,9 @@ public class ReadyData {
 		if (null==tasksStatus) {
 			LogUtil.getLogger().info("没有收到减排系数");
 		}
-		//获取减排清单
-		Map<String, String> emis = getEmis(sourceid);
+		//获取减排清单 从数据库里面取
+		
+	//	Map<String, String> emis = getEmis(sourceid);
 		//创建对象
 		QueueDataEmis  DataEmis = new QueueDataEmis();
 		//设置sourceid
@@ -995,6 +1142,8 @@ public class ReadyData {
 		DataEmis.setMeiccityconfig("/work/modelcloud/meic_tool/meic-city.conf");
 		return DataEmis;
 	}
+
+	
 
 
 	
