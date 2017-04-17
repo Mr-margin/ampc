@@ -177,7 +177,7 @@ public class EMissionController {
 				return AmpcResult.build(1000, "参数有误");
 			}
 		} catch (Exception e) {
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("EMissionController 保存减排计算结果异常了",e);
 			return AmpcResult.build(1000, "error");
 		}
 	}
@@ -254,7 +254,7 @@ public class EMissionController {
 		return AmpcResult.build(1000, "error","345");
 		
 	}catch(Exception e){
-		    LogUtil.getLogger().error("异常了",e);
+		    LogUtil.getLogger().error("EMissionController 异常了",e);
 			return AmpcResult.build(1000, "error");	
 		}
 	}
@@ -266,7 +266,14 @@ public class EMissionController {
 	
 	
 	
-	
+	/**
+	 * 
+	 * 基准排放查询
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping("find_baseEmission")
 	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
 	public AmpcResult find_baseEmission(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
@@ -377,7 +384,7 @@ public class EMissionController {
 			}
 			return AmpcResult.build(0, "success",refmap);
 		}catch(Exception e){
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("EMissionController 基准排放查询异常了",e);
 			return AmpcResult.build(1000, "error",null);
 		}
 		
@@ -620,7 +627,7 @@ public class EMissionController {
 			}
 			return AmpcResult.ok(refmap);
 		}catch(Exception e){
-			LogUtil.getLogger().error("异常了",e);
+			LogUtil.getLogger().error("EMissionController 查询减排结果出错",e);
 			return AmpcResult.build(1000, "error",null);
 		}
 		
