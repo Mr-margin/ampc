@@ -29,6 +29,8 @@ import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.redisqueue.ReadyData;
+import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.LogUtil;
 
@@ -62,6 +64,10 @@ public class SchedulerTimer {
 	@Autowired
 	private TGlobalSettingMapper tGlobalSettingMapper;
 	
+	//读取路径的帮助类
+	@Autowired
+	private ConfigUtil configUtil;
+	
 //	private Logger logger = Logger.getLogger(this.getClass());
 
 	
@@ -79,7 +85,7 @@ public class SchedulerTimer {
 	 * @author yanglei
 	 * @date 2017年4月7日 上午9:53:09
 	 */
-	@Scheduled(cron="0 0 20 * * ?")
+	@Scheduled(cron="0 0 12 * * ?")
 //	@Scheduled(fixedRate = 5000)
 	public void realForTimer() {
 		//Date date = new Date();
@@ -133,6 +139,7 @@ public class SchedulerTimer {
 				Long oldMissionid = null;
 				boolean escouplingflag = false; 
 				Date oldmissionDate = null;
+				//清单不一样的时候的旧的任务的ID
 				Long oldMissionid_ecgouplingId = null ;
 				for (TMissionDetail tMissionDetail : missionlist) {
 					//得到所有的该用户下的domain创建的实时预报的任务
@@ -247,8 +254,15 @@ public class SchedulerTimer {
 			tScenarinoDetail.setUserId(userId);
 			tScenarinoDetail.setIsEffective("1");
 			//基础日期9
-			Date basisTime = DateUtil.ChangeDay(pathDate, -1);
+			Date basisTime = DateUtil.ChangeDay(pathDate, -2);
 			tScenarinoDetail.setBasisTime(basisTime);
+			
+			//查询当天的情景是否被创建（测试时候定时器时间间隔比较小测试用）
+			TScenarinoDetail scen_detail = tScenarinoDetailMapper.getbufaScenID(pathDate);
+			if (null!=scen_detail) {
+				LogUtil.getLogger().info("实时预报情景已经建立了");
+				break;
+			}
 			//查询上一天的实时预报情景ID 作为当天的实时预报基础情景
 			Long basisScenarinoId = tScenarinoDetailMapper.selectBasisId(basisTime);
 			if (null==basisScenarinoId) {
@@ -259,12 +273,7 @@ public class SchedulerTimer {
 			tScenarinoDetail.setSpinup((long)spinup);
 			tScenarinoDetail.setRangeDay((long)rangeday);
 			tScenarinoDetail.setExpand3(cores.toString());
-			//查询当天的情景是否被创建（测试时候定时器时间间隔比较小测试用）
-			TScenarinoDetail scen_detail = tScenarinoDetailMapper.getbufaScenID(pathDate);
-			if (null!=scen_detail) {
-				LogUtil.getLogger().info("的实时预报情景已经建立了");
-				break;
-			}
+			
 			//创建新的情景
 			insertSelective = tScenarinoDetailMapper.insertSelective(tScenarinoDetail);
 			if (insertSelective>0) {
@@ -283,17 +292,40 @@ public class SchedulerTimer {
 			} catch (Exception e) {
 				LogUtil.getLogger().error("系统错误！同一天的实时预报存在多条数据！");
 			}
+			//调用方法获取meiccityconfig
+			int flag = 1;
+			Map<String, String> emis = getEmisData(esCouplingId,scenarinoId,flag);
 			
+			tTasksStatus.setSourceid(esCouplingId.toString());
+			//设置calctype是系统设置 目前定义为server
+			tTasksStatus.setCalctype("server");
+			tTasksStatus.setPsal("");
+			tTasksStatus.setSsal("");
+			//目前的死数据
+			tTasksStatus.setMeiccityconfig("/work/modelcloud/meic_tool/meic-city.conf");
 			//添加该情景到tasksstatus表
 			i = tTasksStatusMapper.insertSelective(tTasksStatus);
 			
 		}
 		if (i>0) {
-			//根据情景调动实时预报接口开始实时预报
-			readyData.readyRealMessageDataFirst(scenarinoId,cores);
-			}else {
-				LogUtil.getLogger().info("该情景创建tasks状态表失败");
+			//检查上一天的fnl是否执行完毕
+			/*Date pathdateDate =DateUtil.StrtoDateYMD(DateUtil.changeDate(new Date(), "yyyyMMdd", -1),  "yyyyMMdd") ;
+			Map map = new HashMap();
+			map.put("pathDate", pathdateDate);
+			map.put("scenType", "4");
+			TTasksStatus status =tScenarinoDetailMapper.selectTasksstatusByPathdate(map);*/
+			
+			//System.out.println(status+"上一天的实时预报情景的状态");
+			//String tasksstatus = status.getBeizhu();
+		//	if ("1".equals(tasksstatus)) {
+				//根据情景调动实时预报接口开始实时预报
+				readyData.readyRealMessageDataFirst(scenarinoId,cores);
+				LogUtil.getLogger().info("实时预报模式启动！");
+			//	}else {
+				//	LogUtil.getLogger().info("该情景创建tasks状态表失败");
+			//	}
 			}
+			
 		//修改情景状态为执行模式
 		Map map = new HashMap();
 		map.put("scenarinoStatus", (long)6);
@@ -318,7 +350,7 @@ public class SchedulerTimer {
 //	@Scheduled(cron="0 0/10 * * * ?")
 //	@Scheduled(fixedRate = 5000)
 	public void getMaxTime() {
-		System.out.println("我没隔10分钟执行一次");
+		System.out.println("我每隔10分钟执行一次");
 		LogUtil.getLogger().info("每隔10分钟执行一次");
 		//根据情景的状态和情景的类型确定准备参数
 		//找到每一条预评估情景
@@ -395,6 +427,34 @@ public class SchedulerTimer {
 		System.out.println("这个时间是"+DateUtil.DATEtoString(new Date(), "yyyy-MM-dd HH:mm:ss"));
 		return name;
 	}*/
+	public Map<String, String> getEmisData(Long sourceid,Long scenarinoId,int flag) {
+		
+		/*Map<String,String> map = new HashMap<String,String>();
+		String url="http://192.168.1.128:8082/ampc/app";
+		String getResult=ClientUtil.doPost(url,sourceid.toString());*/
+		return null;
+	}
 	
+	/**
+	 * 
+	 * @Description: 模式继续的定时器   
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月17日 上午10:23:32
+	 */
+	
+//	@Scheduled(fixedRate = 5000)
+	public void continueRealModel() {
+	/*	//查找当天的实时预报的运行状态
+		Date pathdateDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+		String scenType = "4";
+		Map map = new HashMap();
+		map.put("pathdate", pathdateDate);
+		map.put("type", scenType);
+		//TTasksStatus status =tScenarinoDetailMapper.selectTasksstatusByPathdate(pathdateDate);
+		TTasksStatus status =tTasksStatusMapper.selectTasksstatusByPathdate(map);
+		*/
+	}
 
 }
