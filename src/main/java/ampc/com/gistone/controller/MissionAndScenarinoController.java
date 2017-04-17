@@ -40,6 +40,7 @@ import ampc.com.gistone.database.model.TTime;
 import ampc.com.gistone.database.model.TUser;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.LogUtil;
 import ampc.com.gistone.util.ScenarinoStatusUtil;
 
 /**
@@ -141,7 +142,7 @@ public class MissionAndScenarinoController {
 			//返回结果
 			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -208,7 +209,7 @@ public class MissionAndScenarinoController {
 			//添加失败
 			return AmpcResult.build(1000, "添加失败",null);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -241,7 +242,7 @@ public class MissionAndScenarinoController {
 			//判断执行结果返回对应数据
 			return result>0?AmpcResult.ok(result):AmpcResult.build(1000, "任务修改失败",null);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -380,7 +381,7 @@ public class MissionAndScenarinoController {
 				
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -415,7 +416,7 @@ public class MissionAndScenarinoController {
 			//返回true 表示可用  返回false 已存在
 			return result==0?AmpcResult.ok(true):AmpcResult.build(1000, "名称已存在",false);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -461,7 +462,7 @@ public class MissionAndScenarinoController {
 			mapResult.put("rows",list);
 			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -532,7 +533,7 @@ public class MissionAndScenarinoController {
 			mapResult.put("rows",newlist);
 			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -674,7 +675,7 @@ public class MissionAndScenarinoController {
 				return AmpcResult.build(1000, "参数错误",null);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -723,7 +724,7 @@ public class MissionAndScenarinoController {
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -831,7 +832,7 @@ public class MissionAndScenarinoController {
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -867,7 +868,7 @@ public class MissionAndScenarinoController {
 			//返回true 表示可用  返回false 已存在
 			return result==0?AmpcResult.ok(true):AmpcResult.build(1000, "名称已存在",false);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -1007,7 +1008,7 @@ public class MissionAndScenarinoController {
 			
 			return AmpcResult.build(0, "find_scenarino_time success",arr);
 		}catch(Exception e){
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 		return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
@@ -1042,7 +1043,7 @@ public class MissionAndScenarinoController {
 			} 
     	   return AmpcResult.build(0, "find_endTime success",obj);
        }catch(Exception e){
-			e.printStackTrace();
+    	   LogUtil.getLogger().error("异常了",e);
 		return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
@@ -1316,7 +1317,7 @@ public class MissionAndScenarinoController {
 
 			 return AmpcResult.build(1000, "参数错误",null);
 		}catch(Exception e){
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			return AmpcResult.build(1000, "参数错误",null);				
 		}
 	}
@@ -1338,7 +1339,7 @@ public class MissionAndScenarinoController {
 			obj.put("scenarinoStatus", tScenarinoDetail.getScenarinoStatus());
 		  return AmpcResult.build(0, "success",obj);	
 		}catch(Exception e){
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			 return AmpcResult.build(1000, "参数错误",null);	
 		}
 	}
@@ -1479,7 +1480,7 @@ public class MissionAndScenarinoController {
 				}
 	
 		}catch(Exception e){
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			 return AmpcResult.build(1000, "参数错误",null);	
 		}
 	}
@@ -1526,7 +1527,7 @@ public class MissionAndScenarinoController {
 			}
 		return AmpcResult.build(0, "success",arr);	
 		}catch(Exception e){
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			return AmpcResult.build(1000, "参数错误",null);	
 		}
 		
@@ -1572,7 +1573,7 @@ public class MissionAndScenarinoController {
 			}
 		return AmpcResult.build(0, "success",objsed);
 		}catch(Exception e){
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
@@ -1614,7 +1615,7 @@ public class MissionAndScenarinoController {
 			}
 		return AmpcResult.build(0, "success",arr);	
 		}catch(Exception e){
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			return AmpcResult.build(1000, "参数错误",null);	
 		}
 		
