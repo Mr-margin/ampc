@@ -599,6 +599,12 @@ function updata() {
             for(var y in speciesObj){
               res[0].data[changeMsg.scenarinoId[i]][speciesObj[y]] = ooo;
             }
+          }else{
+            for(var y in speciesObj){
+              if((!res[0].data[changeMsg.scenarinoId[i]][speciesObj[y]])||(res[0].data[changeMsg.scenarinoId[i]][speciesObj[y]].length == 0)){
+                res[0].data[changeMsg.scenarinoId[i]][speciesObj[y]] = ooo;
+              }
+            }
           }
         }
         if($.isEmptyObject(resJZ[0].data)){
