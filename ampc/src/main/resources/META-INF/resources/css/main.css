@@ -4293,7 +4293,7 @@ pre {
 */
 /*
 清除页面中的浮动*/
-.clear:after {
+.clearfloat:after {
     content: "";
     display: table;
     clear: both;
@@ -4305,4 +4305,6 @@ pre {
 .toggle-flag i{
     transform: rotate(-180deg);
 }
-
+.rwtableDiv .fixed-table-body{
+    overflow-x: hidden;
+}
