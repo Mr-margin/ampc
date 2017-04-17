@@ -30,6 +30,7 @@ import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.preprocess.concn.ScenarinoEntity;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.LogUtil;
 
 @RestController
 @RequestMapping
@@ -152,7 +153,9 @@ public class AppraisalController {
 
 					}//时间分布判断
 			}//任务类型
-			
+			if(sclist.isEmpty()){
+				return	AmpcResult.build(0, "success",scmap);
+			}
 			if(datetype.equals("hour")){
 				for(ScenarinoEntity sc:sclist){
 					String scid=String.valueOf(sc.getsId());
@@ -227,7 +230,7 @@ public class AppraisalController {
 								}else{
 								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
 								spcmap.put(datetime, bd);
-								}	
+								}
 							if(datemap.get(spr)!=null){
 							Object maps=datemap.get(spr);
 							JSONObject mapsbj=JSONObject.fromObject(maps);//行业减排结果
@@ -238,7 +241,7 @@ public class AppraisalController {
 								}else{
 								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
 								des.put(datetime, bd);
-								}	
+								}
 							
 							datemap.put(spr, des);
 							}else{
@@ -257,7 +260,7 @@ public class AppraisalController {
 			}
 			return	AmpcResult.build(0, "success",scmap);
 		}catch(Exception e){
-			e.printStackTrace();
+			LogUtil.getLogger().error("AppraisalController 时间序列查询异常！",e);
 			return AmpcResult.build(0, "error");
 		}
 	}
@@ -573,7 +576,7 @@ public class AppraisalController {
 			}
 			return	AmpcResult.build(0, "success",scmap);
 		}catch(Exception e){
-			e.printStackTrace();
+			LogUtil.getLogger().error("AppraisalController 垂直分布查询异常！",e);
 			return	AmpcResult.build(0, "error");
 		}
 	}
@@ -830,17 +833,14 @@ public class AppraisalController {
 									}
 							}
 							}
-							
-						
-						
 					}
 				}
 			
 			return	AmpcResult.build(0, "success",scmap);
 		}catch(Exception e){
-		e.printStackTrace();
+		LogUtil.getLogger().error("AppraisalController 垂直分布基准查询异常！",e);
 		
-		return	AmpcResult.build(0, "error");	
+		return	AmpcResult.build(0, "error","0000");	
 		}
 	}
 	
@@ -996,7 +996,7 @@ public class AppraisalController {
 			}
 			return	AmpcResult.build(0, "success");
 		}catch(Exception e){
-			e.printStackTrace();
+			LogUtil.getLogger().error("AppraisalController 创建预案异常！",e);
 			return	AmpcResult.build(0, "error");	
 		}
 		}
