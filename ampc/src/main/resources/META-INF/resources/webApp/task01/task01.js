@@ -29,18 +29,19 @@ var msg = {
 };
 var subBtn = true;
 
-$(window).resize(function (e) {
-  if ($(window).width() < 1370) {
-    $('.cjsc').removeClass('col-md-4').addClass('col-md-6');
-    $('.smallP').css('display', 'block');
-    $('.bigP').css('display', 'none');
-  } else {
-    $('.smallP').css('display', 'none');
-    $('.bigP').css('display', 'block');
-    $('.cjsc').removeClass('col-md-6').addClass('col-md-4')
-
-  }
-});
+//把情景状态使用下拉列表，将原来的响应式取消掉
+//$(window).resize(function (e) {
+//  if ($(window).width() < 1370) {
+//    $('.cjsc').removeClass('col-md-4').addClass('col-md-6');
+//    $('.smallP').css('display', 'block');
+//    $('.bigP').css('display', 'none');
+//  } else {
+//    $('.smallP').css('display', 'none');
+//    $('.bigP').css('display', 'block');
+//    $('.cjsc').removeClass('col-md-6').addClass('col-md-4')
+//
+//  }
+//});
 
 function formVerify() {
 
@@ -254,9 +255,12 @@ function initRwTable() {
 
 /*筛选*/
 function statusRWfun(status, t) {
-  $('.btn-success.btn-danger').removeClass('btn-danger');
-  $(t).addClass('btn-danger');
-  $('.seeName').html($(t).children('a').html());
+  // $('.btn-success.btn-danger').removeClass('btn-danger');
+  // $(t).addClass('btn-danger');
+  // $('.seeName').html($(t).children('a').html());
+  console.log($(t).text());
+  console.log($("#selectType"));
+  $("#selectType").html($(t).html());
   statusRW = status;
   search('rw');
 }
@@ -1527,7 +1531,7 @@ function subStartUp() {
   ajaxPost(url, {
     userId: userId,
     scenarinoId: msg.content.qjId,
-    missionId:msg.content.rwId,
+    missionId: msg.content.rwId,
     missionType: msg.content.rwType,
     scenarinoType: msg.content.SCEN_TYPE,
     cores: $('input[name=cpuNum]:checked').val()
