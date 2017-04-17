@@ -39,6 +39,7 @@ import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.BaseSaveUtil;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.JSONreadUtil;
+import ampc.com.gistone.util.LogUtil;
 import ampc.com.gistone.util.RequestRegionData;
 import ampc.com.gistone.util.codeTransformUtil;
 
@@ -176,7 +177,7 @@ public class EMissionController {
 				return AmpcResult.build(1000, "参数有误");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			return AmpcResult.build(1000, "error");
 		}
 	}
@@ -253,7 +254,7 @@ public class EMissionController {
 		return AmpcResult.build(1000, "error","345");
 		
 	}catch(Exception e){
-			e.printStackTrace();
+		    LogUtil.getLogger().error("异常了",e);
 			return AmpcResult.build(1000, "error");	
 		}
 	}
@@ -376,7 +377,7 @@ public class EMissionController {
 			}
 			return AmpcResult.build(0, "success",refmap);
 		}catch(Exception e){
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			return AmpcResult.build(1000, "error",null);
 		}
 		
@@ -619,7 +620,7 @@ public class EMissionController {
 			}
 			return AmpcResult.ok(refmap);
 		}catch(Exception e){
-			e.printStackTrace();
+			LogUtil.getLogger().error("异常了",e);
 			return AmpcResult.build(1000, "error",null);
 		}
 		
