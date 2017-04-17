@@ -27,6 +27,17 @@ public class ExtractRequestParams {
 	private int rows;
 	private int cols;
 	
+	private double xorig;
+	private double yorig;
+	private double xcell;
+	private double ycell;
+	private String lat_1;
+	private String lat_2;
+	private String lat_0;
+	private String lon_0;
+	private int row;      //domain的行
+	private int col;      //domain的列
+	
 	public ExtractRequestParams(String calcType, String showType, int userId, int domainId, int missionId, int domain, String species, String timePoint) {
 		this.calcType = calcType;
 		this.showType = showType;
@@ -169,6 +180,86 @@ public class ExtractRequestParams {
 
 	public void setCols(int cols) {
 		this.cols = cols;
+	}
+
+	public double getXorig() {
+		return xorig;
+	}
+
+	public void setXorig(double xorig) {
+		this.xorig = xorig;
+	}
+
+	public double getYorig() {
+		return yorig;
+	}
+
+	public void setYorig(double yorig) {
+		this.yorig = yorig;
+	}
+
+	public double getXcell() {
+		return xcell;
+	}
+
+	public void setXcell(double xcell) {
+		this.xcell = xcell;
+	}
+
+	public double getYcell() {
+		return ycell;
+	}
+
+	public void setYcell(double ycell) {
+		this.ycell = ycell;
+	}
+
+	public String getLat_1() {
+		return lat_1;
+	}
+
+	public void setLat_1(String lat_1) {
+		this.lat_1 = lat_1;
+	}
+
+	public String getLat_2() {
+		return lat_2;
+	}
+
+	public void setLat_2(String lat_2) {
+		this.lat_2 = lat_2;
+	}
+
+	public String getLat_0() {
+		return lat_0;
+	}
+
+	public void setLat_0(String lat_0) {
+		this.lat_0 = lat_0;
+	}
+
+	public String getLon_0() {
+		return lon_0;
+	}
+
+	public void setLon_0(String lon_0) {
+		this.lon_0 = lon_0;
+	}
+
+	public int getRow() {
+		return row;
+	}
+
+	public void setRow(int row) {
+		this.row = row;
+	}
+
+	public int getCol() {
+		return col;
+	}
+
+	public void setCol(int col) {
+		this.col = col;
 	}
 	
 	
