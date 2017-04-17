@@ -278,7 +278,18 @@
 			 WHERE MISSION_ID=#{missionId,jdbcType=OTHER} AND IS_EFFECTIVE='1'
 			 	AND SCENARINO_NAME=#{scenarinoName,jdbcType=OTHER}
   </select>
-  
+  <!--通过情景ID查询任务ID  -->
+  <select id="selectMissionidByID" parameterType="java.lang.Long" resultType="java.lang.Long">
+  select MISSION_ID from T_SCENARINO_DETAIL where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
+  </select>
+   
+   <!-- 根据起报日期查询当条记录的实时预报的fnl是否跑完  -->
+  <select id="selectTasksstatusByPathdate" parameterType="hashMap" resultType="ampc.com.gistone.database.model.TTasksStatus">
+  select
+  TASKS_ID, TASKS_SCENARINO_ID, ERROR_STATUS, SCENARINO_START_DATE, SCENARINO_END_DATE,
+ RANGE_DAY, STEPINDEX, TASKS_END_DATE, SOURCEID, CALCTYPE, PSAL, SSAL, MEICCITYCONFIG,BEIZHU, BEIZHU2, BEIZHU3
+  from T_TASKS_STATUS A LEFT JOIN T_SCENARINO_DETAIL B ON A.TASKS_SCENARINO_ID=B.SCENARINO_ID WHERE B.PATH_DATE = #{pathDate,jdbcType=TIMESTAMP} AND B.SCEN_TYPE=#{scenType,jdbcType=VARCHAR} 
+  </select>
   
    <!--添加情景对名称重复判断-->
   <select id="check_ScenarinoName" parameterType="hashMap" resultType="int">

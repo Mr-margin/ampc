@@ -254,7 +254,7 @@
   set BEIZHU3 = '0'
   where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </update>
-  
+ 
   <!--测试方法 通过情景ID查找结束时间  -->
   <select id="selectendByscenarinoId" resultMap="BaseResultMap" parameterType="java.lang.Long">
   select 
@@ -315,4 +315,14 @@
   <update id="updatemessageStatus" parameterType="ampc.com.gistone.database.model.TTasksStatus">
   update T_TASKS_STATUS set BEIZHU2 = #{beizhu2,jdbcType=VARCHAR} where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </update>
+  
+  <!-- 通过情景类型和起报时间查找情景的运行状态 -->
+ <!--  <select id="selectTasksstatusByPathdate" parameterType="hashMap" resultType="ampc.com.gistone.database.model.TTasksStatus">
+  select
+  TASKS_ID, TASKS_SCENARINO_ID, ERROR_STATUS, SCENARINO_START_DATE, SCENARINO_END_DATE, 
+  RANGE_DAY, STEPINDEX, TASKS_END_DATE, SOURCEID, CALCTYPE, PSAL, SSAL, MEICCITYCONFIG,BEIZHU, BEIZHU2, BEIZHU3
+  from T_TASKS_STATUS A LEFT JOIN T_SCENARINO_DETAIL B ON A.TASKS_SCENARINO_ID=B.SCENARINO_ID
+  WHERE B.PATH_DATE = #{pathdate} AND B.SCEN_TYPE=#{type}
+  
+  </select> -->
 </mapper>
