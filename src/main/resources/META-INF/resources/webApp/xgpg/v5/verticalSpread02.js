@@ -21,6 +21,8 @@ var changeMsg = {
   scenarinoId: [],//选择的情景Id数组
   scenarinoName: [],//选择的情景名称数组
 };
+$('.day').css('display','block');
+$('.hour').css('display','none');
 var speciesArr = {
   day: ['PM₂₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE'],
   hour: ['PM₂₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE']
@@ -41,7 +43,7 @@ var speciesObj = {
   'OM':'OM',
   'PMFINE':'PMFINE',
   //'O₃':'O3'
-  'O₃':'O3_1_MAX'
+  'O₃':'O3'
 };
 /*echarts 配置*/
 var optionAll = {
@@ -209,15 +211,25 @@ function setTime(s, e) {
 
 
 function initEcharts() {
+  if(changeMsg.rms == 'day'){
+    $('.hour').css('display','none');
+    $('.day').css('display','block');
+  }else{
+    $('.day').css('display','none');
+    $('.hour').css('display','block');
+  }
   var data = czData;
-  $('#initEcharts').empty();
+  //$('#initEcharts').empty();
   var species = speciesArr[changeMsg.rms];
   for (var i = 0; i < species.length; i++) {
-    var div = $('<div></div>');
-    div.attr('id', species[i]);
-    div.addClass('echartsCZ');
-    div.addClass('col-md-3');
-    $('#initEcharts').append(div);
+    echarts.dispose(document.getElementById(species[i]));
+    var es = echarts.init(document.getElementById(species[i]));
+    //es.clear();
+    //var div = $('<div></div>');
+    //div.attr('id', species[i]);
+    //div.addClass('echartsCZ');
+    //div.addClass('col-md-3');
+    //$('#initEcharts').append(div);
     var option = $.extend(true, {}, optionAll);
     option.title.text = species[i];
     option.legend.data = (function () {
@@ -278,7 +290,7 @@ function initEcharts() {
       data: data['-1'][speciesObj[species[i]]].slice(0, $('#height').val())  //可变，存储情景数据
       //data: data['191']['CO']  //可变，存储情景数据
     });
-    var es = echarts.init(document.getElementById(species[i]));
+    //$('#'+species)
     es.setOption(option);
   }
 }
@@ -300,38 +312,44 @@ function sceneInittion() {
   ajaxPost('/mission/find_All_mission', paramsName).success(function (res) {
     console.log(JSON.stringify(res));
     if (res.status == 0) {
-      var task = "";
+      if(res.data || res.data.length>0){
+    	  //if(false){
+        var task = "";
 
 
-      /*测试数据*/
-      res.data = [
-        {
-          missionEndDate: 1480258800000,
-          missionId: 393,
-          missionName: "测试任务",
-          missionStartDate: 1479571200000,
-        }
-      ]
-      /*测试数据 end*/
+        /*测试数据*/
+        //res.data = [
+        //  {
+        //    missionEndDate: 1480258800000,
+        //    missionId: 393,
+        //    missionName: "测试任务",
+        //    missionStartDate: 1479571200000,
+        //  }
+        //]
+        /*测试数据 end*/
 
 
 
-      $.each(res.data, function (k, vol) {
-        allMission[vol.missionId] = vol;
-        if (sceneInitialization) {
-          if (sceneInitialization.taskID == vol.missionId) {
-            task += '<option value="' + vol.missionId + '" selected="selected">' + vol.missionName + '</option>';
+        $.each(res.data, function (k, vol) {
+          allMission[vol.missionId] = vol;
+          if (sceneInitialization) {
+            if (sceneInitialization.taskID == vol.missionId) {
+              task += '<option value="' + vol.missionId + '" selected="selected">' + vol.missionName + '</option>';
+            } else {
+              task += '<option value="' + vol.missionId + '">' + vol.missionName + '</option>';
+            }
           } else {
             task += '<option value="' + vol.missionId + '">' + vol.missionName + '</option>';
           }
-        } else {
-          task += '<option value="' + vol.missionId + '">' + vol.missionName + '</option>';
-        }
-      });
-      $("#task").html(task);
+        });
+        $("#task").html(task);
 //      $("#Initialization").modal();//初始化模态框显示
-      $("#Initialization").modal({backdrop: 'static',keyboard: false});
-      sceneTable();
+        $("#Initialization").modal({backdrop: 'static',keyboard: false});
+        sceneTable();
+      }else{
+        
+      }
+
     }
   });
 }
@@ -359,58 +377,58 @@ function sceneTable() {
     silent: true, // 刷新事件必须设置
     contentType: "application/json", // 请求远程数据的内容类型。
     responseHandler: function (res) {
-      //if (res.status == 0) {
-      //  if(!res.data.rows){
-      //    res.data.rows = [];
-      //  }else if (res.data.rows.length > 0) {
-      //    if (sceneInitialization) {
-      //      if (sceneInitialization.data.length > 0) {
-      //
-      //        $.each(res.data.rows, function (i, col) {
-      //          $.each(sceneInitialization.data, function (k, vol) {
-      //            if (col.scenarinoId == vol.scenarinoId) {
-      //              res.data.rows[i].state = true;
-      //            }
-      //          });
-      //        });
-      //      }
-      //    }
-      //  }
-      //  return res.data.rows;
-      //} else if (res.status == 1000) {
-      //  swal(res.msg, '', 'error');
-      //}
+      if (res.status == 0) {
+        if(!res.data.rows){
+          res.data.rows = [];
+        }else if (res.data.rows.length > 0) {
+          if (sceneInitialization) {
+            if (sceneInitialization.data.length > 0) {
+
+              $.each(res.data.rows, function (i, col) {
+                $.each(sceneInitialization.data, function (k, vol) {
+                  if (col.scenarinoId == vol.scenarinoId) {
+                    res.data.rows[i].state = true;
+                  }
+                });
+              });
+            }
+          }
+        }
+        return res.data.rows;
+      } else if (res.status == 1000) {
+        swal(res.msg, '', 'error');
+      }
 
 
 
       /*测试使用 start*/
-      var data = {
-        rows:[]
-      }
-      data.rows = [
-        {
-          "scenarinoId": 456,
-          "scenarinoName": "情景1",
-          "scenType": "1",
-          "scenarinoStartDate": 1479571200000,
-          "scenarinoEndDate": 1480258800000
-        },
-        {
-          "scenarinoId": 458,
-          "scenarinoName": "情景2",
-          "scenType": "1",
-          "scenarinoStartDate": 1479571200000,
-          "scenarinoEndDate": 1480258800000
-        },
-        {
-          "scenarinoId": 466,
-          "scenarinoName": "情景3",
-          "scenType": "1",
-          "scenarinoStartDate": 1479571200000,
-          "scenarinoEndDate": 1480258800000
-        },
-      ];
-      return data.rows
+      //var data = {
+      //  rows:[]
+      //}
+      //data.rows = [
+      //  {
+      //    "scenarinoId": 456,
+      //    "scenarinoName": "情景1",
+      //    "scenType": "1",
+      //    "scenarinoStartDate": 1479571200000,
+      //    "scenarinoEndDate": 1480258800000
+      //  },
+      //  {
+      //    "scenarinoId": 458,
+      //    "scenarinoName": "情景2",
+      //    "scenType": "1",
+      //    "scenarinoStartDate": 1479571200000,
+      //    "scenarinoEndDate": 1480258800000
+      //  },
+      //  {
+      //    "scenarinoId": 466,
+      //    "scenarinoName": "情景3",
+      //    "scenType": "1",
+      //    "scenarinoStartDate": 1479571200000,
+      //    "scenarinoEndDate": 1480258800000
+      //  },
+      //];
+      //return data.rows
 
       /*测试使用 end*/
     },
@@ -555,41 +573,41 @@ function updata() {
     var url = '/Appraisal/find_vertical';
     var urlJZ = '/Appraisal/find_basevertical';
     var echartsData = ajaxPost(url, {
-      //userId: userId,
-      //missionId:sceneInitialization.taskID,
-      //mode:changeMsg.station=='avg'?'city':'point',
-      //time:changeMsg.time,
-      //cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
-      //scenarinoId:changeMsg.scenarinoId,
-      //datetype:changeMsg.rms
-
-
+      userId: userId,
       missionId:sceneInitialization.taskID,
       mode:changeMsg.station=='avg'?'city':'point',
       time:changeMsg.time,
-      "userId":"1",
       cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
-      "scenarinoId":changeMsg.scenarinoId,
-      //"scenarinoId":[466,458,456],
+      scenarinoId:changeMsg.scenarinoId,
       datetype:changeMsg.rms
+
+
+      //missionId:sceneInitialization.taskID,
+      //mode:changeMsg.station=='avg'?'city':'point',
+      //time:changeMsg.time,
+      //"userId":"1",
+      //cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
+      //"scenarinoId":changeMsg.scenarinoId,
+      ////"scenarinoId":[466,458,456],
+      //datetype:changeMsg.rms
     });
     var echartsJZData = ajaxPost(urlJZ, {
-      //userId: userId,
-      //missionId:sceneInitialization.taskID,
-      //mode:changeMsg.station=='avg'?'city':'point',
-      //time:changeMsg.time,
-      //cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
-      ////scenarinoId:changeMsg.scenarinoId,
-      //datetype:changeMsg.rms
-
-
+      userId: userId,
       missionId:sceneInitialization.taskID,
       mode:changeMsg.station=='avg'?'city':'point',
       time:changeMsg.time,
-      "userId":"1",
       cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
-      //"scenarinoId":changeMsg.scenarinoId,
+      //scenarinoId:changeMsg.scenarinoId,
       datetype:changeMsg.rms
+
+
+      //missionId:sceneInitialization.taskID,
+      //mode:changeMsg.station=='avg'?'city':'point',
+      //time:changeMsg.time,
+      //"userId":"1",
+      //cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
+      ////"scenarinoId":changeMsg.scenarinoId,
+      //datetype:changeMsg.rms
     });
 
     $.when(echartsData,echartsJZData).then(function (res,resJZ) {
