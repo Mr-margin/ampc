@@ -490,13 +490,17 @@ function qjStatus(v, row, i) {
  * 当scenarinoStatus为7时，显示为续跑*/
 function qjOrder(v, row, i) {
   if (row.scenarinoStatus == 5) {
-    return "<a href='javascript:$(\"#startUp\").modal()' style='color: #FF9A00'><i class='im-play2'> 启动</i></a>";
+    return "<a href='javascript:' onclick='startBtn()' style='color: #FF9A00'><i class='im-play2'> 启动</i></a>";
   } else if (row.scenarinoStatus == 6) {
     return "<a href='javascript:' style='color: #FF9A00'><i class='im-pause'> 暂停</i></a>";
   } else if (row.scenarinoStatus == 7) {
     return "<a href='javascript:' style='color: #FF9A00'><i class='im-play2'> 续跑</i></a>";
     c
   }
+}
+
+function startBtn(){
+  $("#startUp").modal('show');
 }
 
 /*终止按钮的状态判断函数
