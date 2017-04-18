@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TAdminRoleMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TAdminRole" >
+    <id column="ADMIN_ROLE_ID" property="adminRoleId" jdbcType="DECIMAL" />
+    <result column="ADMIN_ID" property="adminId" jdbcType="DECIMAL" />
+    <result column="ROLE_ID" property="roleId" jdbcType="DECIMAL" />
+    <result column="ADMIN_ROLE_DOC" property="adminRoleDoc" jdbcType="OTHER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ADMIN_ROLE_ID, ADMIN_ID, ROLE_ID, ADMIN_ROLE_DOC
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_ADMIN_ROLE
+    where ADMIN_ROLE_ID = #{adminRoleId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_ADMIN_ROLE
+    where ADMIN_ROLE_ID = #{adminRoleId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TAdminRole" >
+    insert into T_ADMIN_ROLE (ADMIN_ROLE_ID, ADMIN_ID, ROLE_ID, 
+      ADMIN_ROLE_DOC)
+    values (#{adminRoleId,jdbcType=DECIMAL}, #{adminId,jdbcType=DECIMAL}, #{roleId,jdbcType=DECIMAL}, 
+      #{adminRoleDoc,jdbcType=OTHER})
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TAdminRole" >
+    insert into T_ADMIN_ROLE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="adminRoleId != null" >
+        ADMIN_ROLE_ID,
+      </if>
+      <if test="adminId != null" >
+        ADMIN_ID,
+      </if>
+      <if test="roleId != null" >
+        ROLE_ID,
+      </if>
+      <if test="adminRoleDoc != null" >
+        ADMIN_ROLE_DOC,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="adminRoleId != null" >
+        #{adminRoleId,jdbcType=DECIMAL},
+      </if>
+      <if test="adminId != null" >
+        #{adminId,jdbcType=DECIMAL},
+      </if>
+      <if test="roleId != null" >
+        #{roleId,jdbcType=DECIMAL},
+      </if>
+      <if test="adminRoleDoc != null" >
+        #{adminRoleDoc,jdbcType=OTHER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TAdminRole" >
+    update T_ADMIN_ROLE
+    <set >
+      <if test="adminId != null" >
+        ADMIN_ID = #{adminId,jdbcType=DECIMAL},
+      </if>
+      <if test="roleId != null" >
+        ROLE_ID = #{roleId,jdbcType=DECIMAL},
+      </if>
+      <if test="adminRoleDoc != null" >
+        ADMIN_ROLE_DOC = #{adminRoleDoc,jdbcType=OTHER},
+      </if>
+    </set>
+    where ADMIN_ROLE_ID = #{adminRoleId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TAdminRole" >
+    update T_ADMIN_ROLE
+    set ADMIN_ID = #{adminId,jdbcType=DECIMAL},
+      ROLE_ID = #{roleId,jdbcType=DECIMAL},
+      ADMIN_ROLE_DOC = #{adminRoleDoc,jdbcType=OTHER}
+    where ADMIN_ROLE_ID = #{adminRoleId,jdbcType=DECIMAL}
+  </update>
+</mapper>
