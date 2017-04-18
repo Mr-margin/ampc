@@ -7,6 +7,32 @@ $('#captchaImage').click(function(){
 });
 
 $("#button").click(function () {
+  loadIngFun();
+});
+
+//回车绑定
+$("#name").keydown(function (event) {
+  if (event.which == "13"){
+    loadIngFun();
+  }
+});
+$("#passwordIndex").keydown(function (event) {
+  if (event.which == "13"){
+    loadIngFun();
+  }
+});
+$("#verify").keydown(function (event) {
+  if (event.which == "13"){
+    loadIngFun();
+  }
+});
+$("#button").keydown(function (event) {
+  if (event.which == "13"){
+    loadIngFun();
+  }
+});
+
+function loadIngFun(){
   var name = $('#name').val();
   if(!name){
     console.log('请填写用户名');
@@ -48,7 +74,7 @@ $("#button").click(function () {
         passWord:pas
       }).success(function(res){
         if(res.status == 0){
-          var ls = window.localStorage;
+          var ls = window.sessionStorage;
           ls.setItem('userId', 1);
           ls.setItem('domain', 3);
 
@@ -76,10 +102,7 @@ $("#button").click(function () {
       });
     }
   });
-
-});
-
-
+}
 
 
 
