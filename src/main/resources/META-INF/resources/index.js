@@ -3,7 +3,7 @@
  */
 
 $('#captchaImage').click(function(){
-  $('#captchaImage').attr("src", "img.do?timestamp=" + (new Date()).valueOf());
+  $('#captchaImage').attr("src", "user/yzmimg?timestamp=" + (new Date()).valueOf());
 });
 
 $("#button").click(function () {
@@ -67,23 +67,20 @@ function loadIngFun(){
     return;
   }
   //window.location.href="home.html";
-  ajaxPost("/yzm.do",{zhi:verify}).success(function(res){
-    if(res == 1){
+  ajaxPost("/user/checkyzm",{zhi:verify}).success(function(res){
+    if(res.data == 1){
       ajaxPost("/user/login",{
         userId:name,
         passWord:pas
       }).success(function(res){
-        if(res.status == 0){
-          var ls = window.sessionStorage;
-          ls.setItem('userId', 1);
-          ls.setItem('domain', 3);
+        if(res.data == 1){
 
           $('#name').val('');
           $('#passwordIndex').val('');
           $('#verify').val('');
           window.location.href="home.html"
         }else{
-          console.log(res.msg)
+          console.log(res.msg);
           swal({
             title: res.msg+'!',
             type: 'error',
@@ -95,7 +92,7 @@ function loadIngFun(){
     }else{
       console.log('验证码错误');
       swal({
-        title: '验证码错误!',
+        title: res.msg+'!',
         type: 'error',
         timer: 1000,
         showConfirmButton: false
