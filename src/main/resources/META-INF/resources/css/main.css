@@ -32,7 +32,7 @@ h6 small,
     line-height: 1;
     color: #999999;
 }
-
+p{padding: 0;margin: 0}
 /* -----------------------------------------
    Template helpers
 ----------------------------------------- */
@@ -1256,7 +1256,7 @@ body.full-screen #header {
 /* -----------------------------------------
    Sidebar styles
 ----------------------------------------- */
-#sidebar {
+#sidebarlt {
     width: 210px;
     height: auto;
     position: fixed;
@@ -4308,3 +4308,111 @@ pre {
 .rwtableDiv .fixed-table-body{
     overflow-x: hidden;
 }
+/*bootstrap-table标题行错行的全权之策*/
+/*.qjtableDiv .fixed-table-header,.rwtableDiv .fixed-table-header{*/
+    /*display: none !important;*/
+/*}*/
+/*#qjTable,#rwTable{*/
+    /*margin-top: 0px !important;*/
+/*}*/
+
+/*新功能栏的样式*/
+#sidebarlt i,#sidebarlt  p{
+    font-size: 14px;
+}
+#sidebarlt>ul{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100%;
+}
+#sidebarlt>ul>li.active{
+    flex-grow: 1;
+}
+#sidebarlt>ul>li{
+    transition: flex-grow 0.4s;
+    background-color: #ffffff;
+    position: relative;
+}
+#sidebarlt>ul>li>a{
+    display: block;
+    width: 100%;
+    height:42px;
+    line-height: 42px;
+    background-color: #E4E9EB;
+    color: #768399;
+    border-right:1px solid #d0d0ca;
+    padding-left: 15px;
+}
+#sidebarlt>ul>li>a:hover{
+    color: #768399;
+    background-color: #d8dddf;
+}
+#sidebarlt>ul>li.active>a{
+    background-color: #F3F3F4;
+    border-right:1px solid transparent;
+    border-top: 1px solid #d0d0ca;
+    border-bottom: 1px solid #d0d0ca;
+
+}
+#sidebarlt>ul>li.active>a>i{
+    font-weight: bold;
+}
+#sidebarlt>ul>li.candrop>a:after{
+    font-family: 'entypo';
+    content:'\e6b3';
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    width: 14px;
+    height: 15px;
+    line-height: 15px;
+    transition: transform 0.4s;
+}
+#sidebarlt>ul>li.candrop.active>a{
+    background-color: #E4E9EB;
+    border-right: 1px solid #d0d0ca;
+    border-top: 1px solid transparent;
+}
+#sidebarlt>ul>li.candrop.active>a>i{
+    font-weight: normal;
+}
+#sidebarlt>ul>li.candrop.active>a:after{
+    transform: rotate(-180deg);
+}
+#sidebarlt .dropmenu,#sidebarlt .borderbox{
+    display: none;
+    border-right: 1px solid #d0d0ca;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    top: 42px;
+    right: 0;
+}
+#sidebarlt .dropmenu>p>a{
+    display: block;
+    height: 36px;
+    line-height: 36px;
+    padding-left: 32px;
+    color:#768399;
+}
+#sidebarlt .dropmenu>p>a:hover{
+    color:#768399;
+    background-color: #E4E9EB;
+}
+#sidebarlt .dropmenu>p.active{
+    border-top: 1px solid #d0d0ca;
+    border-bottom: 1px solid #d0d0ca;
+}
+#sidebarlt .dropmenu>p.active>a{
+    background-color: #F3F3F4;
+    margin-right: -1px;
+}
+#sidebarlt>ul>li.candrop.active>.dropmenu,#sidebarlt>ul>li.active>.borderbox{
+    display: block;
+}
+#sidebarlt .dropmenu>p.active>a{
+    background-color: #F3F3F4;
+    border-right: 1px solid #F3F3F4;
+}
+/*-----------------------------------------------------------------------------*/
