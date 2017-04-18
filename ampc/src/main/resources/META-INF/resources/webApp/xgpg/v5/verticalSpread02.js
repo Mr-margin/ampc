@@ -130,7 +130,7 @@ function initialize() {
     changeMsg.scenarinoName.push(sceneInitialization.data[i].scenarinoName);
   }
   //changeMsg.scenarinoId.unshift('-1');
-  //changeMsg.scenarinoName.unshift('基准情景');
+  //changeMsg.scenarinoName.unshift('基准');
 
   setStation(sceneInitialization.taskID);
   setTime(sceneInitialization.s, sceneInitialization.e);
@@ -243,7 +243,7 @@ function initEcharts() {
       //  arr.push('a'+a+1)
       //};
 
-      arr.unshift('基准情景');
+      arr.unshift('基准');
       return arr;
     })();
     //option.legend.data = (function () {
@@ -283,7 +283,7 @@ function initEcharts() {
       })
     }
     option.series.unshift({
-      name: '基准情景', //可变，存储情景名称
+      name: '基准', //可变，存储情景名称
       //name: 'aaaaaaaaaa'+sp, //可变，存储情景名称
       type: 'line',
       smooth: true,
