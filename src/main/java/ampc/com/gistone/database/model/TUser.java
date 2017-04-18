@@ -1,83 +1,83 @@
 package ampc.com.gistone.database.model;
 
-/**
- * 用户实体类
- * @author WangShanxi
- * @version v.0.1
- * @date 2017年4月13日
- */
 public class TUser {
-	//用户ID	
     private Long userId;
-    //用户昵称
-    private Object userName;
-    //用户密码
-    private Object password;
-    //用户所在的省级code
-    private Integer provinceCode;
-    //用户所在的市级code
-    private Integer cityCode;
-    //用户所在的县级code    
-    private Integer countyCode;
-    //极限预报天数    
-    private Integer predictionTime;
 
+	private Object userName;
 
-	public Integer getPredictionTime() {
-		return predictionTime;
-	}
+	private Object password;
 
-	public void setPredictionTime(Integer predictionTime) {
-		this.predictionTime = predictionTime;
-	}
+	private Long provinceCode;
 
-	public Integer getCountyCode() {
-		return countyCode;
-	}
+	private Long cityCode;
 
-	public void setCountyCode(Integer countyCode) {
-		this.countyCode = countyCode;
-	}
+	private Long countyCode;
+
+	private String userEmail;
+
+	private Object companyName;
 
 	public Long getUserId() {
-        return userId;
-    }
+		return userId;
+	}
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
 
-    public Object getUserName() {
-        return userName;
-    }
+	public Object getUserName() {
+		return userName;
+	}
 
-    public void setUserName(Object userName) {
-        this.userName = userName;
-    }
+	public void setUserName(Object userName) {
+		this.userName = userName;
+	}
 
-    public Object getPassword() {
-        return password;
-    }
+	public Object getPassword() {
+		return password;
+	}
 
-    public void setPassword(Object password) {
-        this.password = password;
-    }
+	public void setPassword(Object password) {
+		this.password = password;
+	}
 
-	public Integer getProvinceCode() {
+	public Long getProvinceCode() {
 		return provinceCode;
 	}
 
-	public void setProvinceCode(Integer provinceCode) {
+	public void setProvinceCode(Long provinceCode) {
 		this.provinceCode = provinceCode;
 	}
 
-	public Integer getCityCode() {
+	public Long getCityCode() {
 		return cityCode;
 	}
 
-	public void setCityCode(Integer cityCode) {
+	public void setCityCode(Long cityCode) {
 		this.cityCode = cityCode;
 	}
 
+	public Long getCountyCode() {
+		return countyCode;
+	}
 
+	public void setCountyCode(Long countyCode) {
+		this.countyCode = countyCode;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail == null ? null : userEmail.trim();
+	}
+
+	public Object getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(Object companyName) {
+		this.companyName = companyName;
+	}
 }
