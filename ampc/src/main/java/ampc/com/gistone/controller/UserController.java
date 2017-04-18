@@ -1,5 +1,6 @@
 package ampc.com.gistone.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +44,7 @@ public class UserController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
+			
 			//查询所有的用户基本信息
 			List<Map> list=tUserMapper.selectUserList();
 			LogUtil.getLogger().info("UserController  查询用户列表信息成功!");
@@ -50,6 +52,40 @@ public class UserController {
 		} catch (Exception e) {
 			LogUtil.getLogger().info("UserController 查询用户列表信息异常!",e);
 			return AmpcResult.build(1000,"查询用户列表信息异常!");
+		}
+	}
+	
+	/**
+	 * 用户列表查询
+	 * @author WangShanxi
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
+	 */
+	@RequestMapping("/user/login")
+	public AmpcResult login(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//用户Id
+			long userId=Long.parseLong(data.get("userId").toString());
+			//密码
+			String passWord=data.get("passWord").toString();
+			Map map=new HashMap();
+			map.put("userId", userId);
+			map.put("passWord", passWord);
+			//查询所有的用户基本信息
+			Integer count=tUserMapper.login(map);
+			if(count>0){
+				return AmpcResult.ok();
+			}else{
+				return AmpcResult.build(1000, "用户不存在");
+			}
+		} catch (Exception e) {
+			LogUtil.getLogger().info("UserController 用户登录异常！",e);
+			return AmpcResult.build(1000,"用户登录异常！");
 		}
 	}
 }
