@@ -21,8 +21,8 @@
 	<!-- mysql -->
     <!-- <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/assa?useUnicode=true&amp;characterEncoding=utf-8" userId="root" password="root" /> -->
    <!--  oracle -->
-    <!-- <jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver" connectionURL="jdbc:oracle:thin:@166.111.42.46:11521:ampc" userId="ampc_duv" password="makeampc" /> -->
-    <jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver" connectionURL="jdbc:oracle:thin:@192.168.4.215:1521:ORCL" userId="ampc" password="orcl" />
+    <jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver" connectionURL="jdbc:oracle:thin:@166.111.42.46:11521:ampc" userId="ampc_duv" password="makeampc" /> 
+    <!-- <jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver" connectionURL="jdbc:oracle:thin:@192.168.4.215:1521:ORCL" userId="ampc" password="orcl" /> -->
     <javaModelGenerator targetPackage="ampc.com.gistone.database.model" targetProject="ampc">  
         <property name="trimStrings" value="true"/>  <!-- 是否对数据库查询结果进行trim操作 -->
     </javaModelGenerator>
@@ -67,6 +67,6 @@
  	<!-- <table tableName="T_CORES_TIMES" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> 
  	<table tableName="T_PLAN_REUSE" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>  -->
  	<!-- <table tableName="T_PLAN_MEASURE_REUSE" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> --> 
- 	<table tableName="T_GLOBAL_SETTING" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+ 	<table tableName="T_USER" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
   </context>
 </generatorConfiguration>
