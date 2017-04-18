@@ -90,7 +90,7 @@ public class UserController {
 						HttpSession session = request.getSession();
 						session.setAttribute("user", userMap);
 						LogUtil.getLogger().info("UserController  登录成功！");
-						return AmpcResult.ok("用户登录成功!");
+						return AmpcResult.ok(1);
 					}else{
 						LogUtil.getLogger().error("UserController  用户和密码不匹配!");
 						return AmpcResult.build(1000, "用户和密码不匹配!");
