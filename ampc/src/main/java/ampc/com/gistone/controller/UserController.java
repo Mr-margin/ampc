@@ -101,8 +101,12 @@ public class UserController {
     }  
 	
 	@RequestMapping("yzm.do")
-	public void yzm(HttpServletRequest request , HttpServletResponse response) throws Exception {  
-		String zhi= request.getParameter("zhi");
+	public void yzm(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request , HttpServletResponse response) throws Exception {  
+		// 设置跨域
+		ClientUtil.SetCharsetAndHeader(request, response);
+		Map<String, Object> data = (Map) requestDate.get("data");
+		String zhi= data.get("zhi").toString();
 		HttpSession session = request.getSession();//取session
 		String randomString=session.getAttribute("randomString").toString();
 		zhi = zhi.toUpperCase();
