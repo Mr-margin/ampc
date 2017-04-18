@@ -69,11 +69,11 @@ public class AppraisalController {
 			}
 			String datetype=data.get("datetype").toString();
 
-			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);
+			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);//该任务下的所有数据
 			Integer domainId=Integer.valueOf(tMissionDetail.getMissionDomainId().toString());
 			List<ScenarinoEntity> sclist=new ArrayList();
 			for(Integer scenarinoId:list){
-			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(Long.valueOf(scenarinoId.toString()));
+			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(Long.valueOf(scenarinoId.toString()));//查询该任务中该情景下的所有数据
 			TScenarinoDetail tScenarino=new TScenarinoDetail();
 			tScenarino.setMissionId(missionId);
 			tScenarino.setScenType("3");
@@ -121,7 +121,7 @@ public class AppraisalController {
 				if(datetype.equals("day")){//逐天
 					String tables="T_SCENARINO_DAILY_";
 					Date tims=tScenarinoDetail.getScenarinoAddTime();
-					 DateFormat df = new SimpleDateFormat("yyyy");
+					DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(tims);
 					System.out.println(nowTime);
 					tables+=nowTime+"_";
