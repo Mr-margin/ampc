@@ -19,7 +19,23 @@ public interface TUserMapper {
 	 */
 	List<Map> selectUserList();
 	
-	Integer login(Map map);
+	Map login(Map map);
+	
+	/**
+	 * 判断用户名是否存在
+	 * @param userId
+	 * @return
+	 */
+	Integer checkUserId(Long userId);
+	
+	
+	/**
+	 * 判断用户名是否可用
+	 * @param userId
+	 * @return
+	 */
+	Integer checkUserIsON(Long userId);
+	
     int deleteByPrimaryKey(Long userId);
 
     int insert(TUser record);
