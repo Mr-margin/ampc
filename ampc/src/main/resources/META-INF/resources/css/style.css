@@ -32,6 +32,11 @@ h5 {
     margin-top: 5px;
     font-weight: 600;
 }
+ul,li{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
 
 a:focus {
     outline: none;
