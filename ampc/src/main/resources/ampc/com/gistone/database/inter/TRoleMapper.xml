@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TRoleMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TRole" >
+    <id column="ROLE_ID" property="roleId" jdbcType="DECIMAL" />
+    <result column="ROLE_NAME" property="roleName" jdbcType="OTHER" />
+    <result column="ROLE_DOC" property="roleDoc" jdbcType="OTHER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ROLE_ID, ROLE_NAME, ROLE_DOC
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_ROLE
+    where ROLE_ID = #{roleId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_ROLE
+    where ROLE_ID = #{roleId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TRole" >
+    insert into T_ROLE (ROLE_ID, ROLE_NAME, ROLE_DOC
+      )
+    values (#{roleId,jdbcType=DECIMAL}, #{roleName,jdbcType=OTHER}, #{roleDoc,jdbcType=OTHER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TRole" >
+    insert into T_ROLE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="roleId != null" >
+        ROLE_ID,
+      </if>
+      <if test="roleName != null" >
+        ROLE_NAME,
+      </if>
+      <if test="roleDoc != null" >
+        ROLE_DOC,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="roleId != null" >
+        #{roleId,jdbcType=DECIMAL},
+      </if>
+      <if test="roleName != null" >
+        #{roleName,jdbcType=OTHER},
+      </if>
+      <if test="roleDoc != null" >
+        #{roleDoc,jdbcType=OTHER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TRole" >
+    update T_ROLE
+    <set >
+      <if test="roleName != null" >
+        ROLE_NAME = #{roleName,jdbcType=OTHER},
+      </if>
+      <if test="roleDoc != null" >
+        ROLE_DOC = #{roleDoc,jdbcType=OTHER},
+      </if>
+    </set>
+    where ROLE_ID = #{roleId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TRole" >
+    update T_ROLE
+    set ROLE_NAME = #{roleName,jdbcType=OTHER},
+      ROLE_DOC = #{roleDoc,jdbcType=OTHER}
+    where ROLE_ID = #{roleId,jdbcType=DECIMAL}
+  </update>
+</mapper>
