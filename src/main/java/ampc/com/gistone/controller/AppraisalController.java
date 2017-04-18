@@ -415,7 +415,8 @@ public class AppraisalController {
 									}
 									}else{
 										if(heightmap.get(heights)!=null){
-											litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											}else{
+											litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											
+											}else{
 												litarr.add("-");
 											}
 									}
@@ -457,7 +458,8 @@ public class AppraisalController {
 									}
 									}else{
 										if(heightmap.get(heights)!=null){
-											litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											}else{
+											litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											
+											}else{
 												litarr.add("-");
 											}
 									}
@@ -527,7 +529,8 @@ public class AppraisalController {
 								}
 								}else{
 									if(heightmap.get(heights)!=null){
-										litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											}else{
+										litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											
+										}else{
 											litarr.add("-");
 										}
 								}
@@ -691,10 +694,12 @@ public class AppraisalController {
 										}
 										}else{
 											if(heightmap.get(heights)!=null){
-												litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											}else{
+												litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											
+												}else{
 													litarr.add("-");
 												}
-										}									if(heights.equals("0")){
+										}									
+									if(heights.equals("0")){
 										litarr.add(0);
 									}else if(heights.equals("1")){
 										litarr.add(50);
@@ -732,7 +737,8 @@ public class AppraisalController {
 										}
 										}else{
 											if(heightmap.get(heights)!=null){
-												litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											}else{
+												litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											
+												}else{
 													litarr.add("-");
 												}
 										}
@@ -796,7 +802,8 @@ public class AppraisalController {
 									}
 									}else{
 										if(heightmap.get(heights)!=null){
-											litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											}else{
+											litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											
+											}else{
 												litarr.add("-");
 											}
 									}
