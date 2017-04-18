@@ -6,14 +6,17 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ampc.com.gistone.database.inter.TUserMapper;
 import ampc.com.gistone.util.AmpcResult;
+import ampc.com.gistone.util.CaptchaUtil;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.LogUtil;
 
@@ -88,4 +91,26 @@ public class UserController {
 			return AmpcResult.build(1000,"用户登录异常！");
 		}
 	}
+	
+	
+	//获取验证码的方法
+	@RequestMapping("img.do")
+	@ResponseBody
+	public void execute(HttpServletRequest request , HttpServletResponse response) throws Exception {  
+		CaptchaUtil.outputCaptcha(request, response);
+    }  
+	
+	@RequestMapping("yzm.do")
+	public void yzm(HttpServletRequest request , HttpServletResponse response) throws Exception {  
+		String zhi= request.getParameter("zhi");
+		HttpSession session = request.getSession();//取session
+		String randomString=session.getAttribute("randomString").toString();
+		zhi = zhi.toUpperCase();
+//			System.out.println(zhi+"----"+randomString);
+		if(zhi.equals(randomString)){
+			response.getWriter().write("1");
+		}else{
+			response.getWriter().write("0");
+		}
+    }  
 }
