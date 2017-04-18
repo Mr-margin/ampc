@@ -5,30 +5,30 @@ $(function () {
   /**
    *设置导航条信息
    */
-  $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">时间序列</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
+	$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">时间序列</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
 
 });
 
 /**
  * 全局变量
  */
-var dps_codeStation,dps_station;
+var	dps_codeStation,dps_station;
 //默认显示柱状图
 var show_type = "bar";
 var changeMsg = {
-  pro: '',//站点选择
-  city: '',
-  station: '',
-  rms: 'day',//时间分辨率
-  scenarinoId: [],//选择的情景Id数组
-  scenarinoName: [],//选择的情景名称数组
+		pro: '',//站点选择
+		city: '',
+		station: '',
+		rms: 'day',//时间分辨率
+		scenarinoId: [],//选择的情景Id数组
+		scenarinoName: [],//选择的情景名称数组
 };
 //逐小时显示 AQI PM25 ,SO4 NO3 NH4 BC OM PMFINE, PM10 O3 SO2 NO2 CO 
 //逐日显示 AQI PM25 ,SO4 NO3 NH4 BC OM PMFINE, PM10 O3_8_max O3_1_max SO2 NO2 CO 
 //物种选择
 var speciesArr = {
-  day: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'SO2', 'NO2', 'CO',],
-  hour: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3', 'SO2', 'NO2', 'CO']
+		day: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'SO2', 'NO2', 'CO',],
+		hour: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3', 'SO2', 'NO2', 'CO']
 };
 
 /**
@@ -99,17 +99,17 @@ var ls = window.sessionStorage;
 
 var sceneInitialization = vipspa.getMessage('sceneInitialization').content;//从路由中取到情景范围
 if (!sceneInitialization) {
-  sceneInitialization = JSON.parse(ls.getItem('SI'));
+	sceneInitialization = JSON.parse(ls.getItem('SI'));
 } else {
-  ls.setItem('SI', JSON.stringify(sceneInitialization));//不为空往session中存入一份数据
+	ls.setItem('SI', JSON.stringify(sceneInitialization));//不为空往session中存入一份数据
 }
 console.log(JSON.stringify(sceneInitialization));
 
 if (!sceneInitialization) {//为空时
-  sceneInittion();//调用弹出模态框方法
+	sceneInittion();//调用弹出模态框方法
 } else {
-  set_sce();
-  initNowSession();
+	set_sce();
+	initNowSession();
 }
 
 /**
@@ -184,40 +184,6 @@ function findStation(code){
     changeMsg.station = $('#station').val();
   })
 }
-//function stationInfo() {
-//  $("#proStation").empty();
-//  $("#cityStation").empty();
-//  $("#station").empty();
-//
-//  var paramsName = {};
-//  url = '';
-//  ajaxPost(url, paramsName).success(function (res) {
-//    if (res.status == 0) {
-//
-//      allStation = res.data;
-//      for (var pro in allStation) {
-//        $('#proStation').append($('<option value="' + allStation[pro].code + '">' + allStation[pro].name + '</option>'))
-//      }
-//
-//      var cityStation = allStation[$('#proStation').val()].station;
-//      for (var c in cityStation) {
-//        $('#cityStation').append($('<option value="' + allStation[c].code + '">' + allStation[c].name + '</option>'))
-//      }
-//
-//      var station = allStation[$('#cityStation').val()].station;
-//      for (var s in allStation) {
-//        $('#station').append($('<option value="' + allStation[s].code + '">' + allStation[s].name + '</option>'))
-//      }
-//
-//      //存入全局变量
-//      changeMsg.pro = $('#proStation').val();
-//      changeMsg.city = $('#cityStation').val();
-//      changeMsg.station = $('#station').val();
-//    } else {
-//      console.log("站点请求失败！")
-//    }
-//  });
-//}
 
 /*设置时间*/
 /*只限输入毫秒数*/
@@ -668,64 +634,19 @@ $('#proStation').on('change', function (e) {
 	  }
 	  changeMsg.city = $('#cityStation').val();
 	  findStation(changeMsg.city);
-	  //var station = cityStation[changeMsg.city].station;
-	  //for (var s in station) {
-	  //  $('#station').append($('<option value="' + station[s].code + '">' + station[s].name + '</option>'))
-	  //}
-	  //changeMsg.station = $('#station').val();
-	  
-//$("#proStation").on('change', function (e) {
-//  var pro = $(e.target).val();
-//  changeMsg.pro = pro;
-//  var cityStation = allStation[pro].station;
-//  for (var city in cityStation) {
-//    $("#cityStation").append('<option value="' + cityStation[city].code + '">' + cityStation[city].name + '</option>')
-//  }
-//  changeMsg.city = $("#cityStation").val(); //放入全局变量
-//  var station = cityStation[changeMsg.city].station;
-//  for (var st in station) {
-//    $("#station").append('<option value="' + station[st].code + '">' + station[st].name + '</option>')
-//  }
-//  changeMsg.station = $("#station").val();
-//
-//	  getdata();
-//	});
-  getdata();
+	  getdata();
 });
-//$("#cityStation").on('change', function (e) {
-//  var city = $(e.target).val();
-//  changeMsg.city = city;
-//  var station = allStation[changeMsg.pro].station[city].station;
-//  for (var sta in station) {
-//    $("#station").append('<option value="' + station[sta].code + '">' + station[sta].name + '</option>')
-//  }
-//  changeMsg.station = $("#station").val();
-//
-//  getdata();
-//});
-//$("#station").on('change', function (e) {
-//  var station = $(e.target).val();
-//  changeMsg.station = station;
-//  getdata();
-//});
 
 	$('#cityStation').on('change', function (e) {
 	  var city = $(e.target).val();
 	  changeMsg.city = city;
 	  findStation(changeMsg.city);
-	  //var station = allCode[changeMsg.pro].station[city].station;
-	  //for (var s in station) {
-	  //  $('#station').append($('<option value="' + station[s].code + '">' + station[s].name + '</option>'))
-	  //}
-	  //changeMsg.station = $('#station').val();
-
 	  getdata();
 	});
 
 	$('#station').on('change', function (e) {
 	  var station = $(e.target).val();
 	  changeMsg.station = station;
-
 	  getdata();
 	});
 
@@ -734,57 +655,37 @@ $('#proStation').on('change', function (e) {
  */
 //逐小时显示 AQI PM25 PM10 O3 SO2 NO2 CO SO4 NO3 NH4 BC OM PMFINE
 //逐日显示 AQI PM25 PM10 O3_8_max O3_1_max SO2 NO2 CO SO4 NO3 NH4 BC OM PMFINE
-//$('input[name=rms]').on('change',function(e){
-//	var rms = $(e.target).val();
-//	changeMsg.rms= rms
-//	console.log(rms);
-//	if(rms == 'hour'){
-//		show_type = "line";
-//		getdata();
-//		
-//	}else{
-//		show_type = "bar";
-//		getdata();
-//	}
-//	
-//	
-//});
 
-$('input[name=rms]').on('change', function (e) { //时间分辨率选择
-	  var rms = $(e.target).val();
-	  changeMsg.rms = rms;
-	  console.log(rms);
-	  $('#species').empty();
-	  for (var i = 0; i < speciesArr[rms].length; i++) {
-	    $('#species').append($('<option>' + speciesArr[rms][i] + '</option>'))
-	  }
-	  if (rms == 'day') {
-	    $('#sTime-h').addClass('disNone');
-	    $('#eTimeP').addClass('disNone');
-	  } else if (rms == 'hour') {
-	    $('#sTime-h').removeClass('disNone');
-	    $('#eTimeP').addClass('disNone');
-	  }
-
-	  getdata();
-	});
+$('input[name=rms]').on('change',function(e){
+		var rms = $(e.target).val();
+		changeMsg.rms= rms
+		console.log(rms);
+		if(rms == 'hour'){
+			show_type = "line";
+			getdata();
+		}else{
+			show_type = "bar";
+			getdata();
+		}
+		
+});
 
 
-//绝对量比较 绝对变化
+//绝对量比较==1 相对变化==2
 $('input[name=changes]').on('change', function (e) {
 	var changeType = $(e.target).val();
-	console.log(changeType)
+	console.log(changeType);
 	if (changeType == '1') {
 	
-	} else {
+	} else if(changeType == '2'){
 	
 	}
 });
 //逐日显示 AQI PM25 ,< SO4 NO3 NH4 BC OM PMFINE >, PM10 O3_8_max O3_1_max SO2 NO2 CO 
-//组分展开收起
+//组分展开==open  收起==close
 $('input[name=spread]').on('change', function (e) {
   var spType = $(e.target).val();
-  console.log(spType)
+  console.log(spType);
   if (spType == 'close') {
     $("#SO4").hide();
     $("#NO3").hide();
