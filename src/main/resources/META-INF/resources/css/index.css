@@ -767,11 +767,3 @@ button[disabled],.btn[disabled]{
   border: none;
   border-top: 1px solid #D1F0FF;
 }
-/*bootstrap-table标题行错行的全权之策*/
-/*.qjtableDiv .fixed-table-header,.rwtableDiv .fixed-table-header{*/
-  /*display: none !important;*/
-/*}*/
-/*#qjTable,#rwTable{*/
-  /*margin-top: 0px !important;*/
-/*}*/
-/*-----------------------------------------------------------------------------*/
