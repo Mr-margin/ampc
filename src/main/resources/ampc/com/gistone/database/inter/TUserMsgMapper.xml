@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TUserMsgMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TUserMsg" >
+    <id column="USER_MSG_ID" property="userMsgId" jdbcType="DECIMAL" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="MSG_SENDER" property="msgSender" jdbcType="OTHER" />
+    <result column="MSG_CONTENT" property="msgContent" jdbcType="OTHER" />
+    <result column="MSG_TITLE" property="msgTitle" jdbcType="OTHER" />
+    <result column="MSG_TIME" property="msgTime" jdbcType="TIMESTAMP" />
+    <result column="MSG_TYPE" property="msgType" jdbcType="DECIMAL" />
+    <result column="IS_READ" property="isRead" jdbcType="DECIMAL" />
+    <result column="SENDER_ID" property="senderId" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    USER_MSG_ID, USER_ID, MSG_SENDER, MSG_CONTENT, MSG_TITLE, MSG_TIME, MSG_TYPE, IS_READ, 
+    SENDER_ID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_USER_MSG
+    where USER_MSG_ID = #{userMsgId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_USER_MSG
+    where USER_MSG_ID = #{userMsgId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TUserMsg" >
+    insert into T_USER_MSG (USER_MSG_ID, USER_ID, MSG_SENDER, 
+      MSG_CONTENT, MSG_TITLE, MSG_TIME, 
+      MSG_TYPE, IS_READ, SENDER_ID
+      )
+    values (#{userMsgId,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{msgSender,jdbcType=OTHER}, 
+      #{msgContent,jdbcType=OTHER}, #{msgTitle,jdbcType=OTHER}, #{msgTime,jdbcType=TIMESTAMP}, 
+      #{msgType,jdbcType=DECIMAL}, #{isRead,jdbcType=DECIMAL}, #{senderId,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TUserMsg" >
+    insert into T_USER_MSG
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userMsgId != null" >
+        USER_MSG_ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="msgSender != null" >
+        MSG_SENDER,
+      </if>
+      <if test="msgContent != null" >
+        MSG_CONTENT,
+      </if>
+      <if test="msgTitle != null" >
+        MSG_TITLE,
+      </if>
+      <if test="msgTime != null" >
+        MSG_TIME,
+      </if>
+      <if test="msgType != null" >
+        MSG_TYPE,
+      </if>
+      <if test="isRead != null" >
+        IS_READ,
+      </if>
+      <if test="senderId != null" >
+        SENDER_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userMsgId != null" >
+        #{userMsgId,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="msgSender != null" >
+        #{msgSender,jdbcType=OTHER},
+      </if>
+      <if test="msgContent != null" >
+        #{msgContent,jdbcType=OTHER},
+      </if>
+      <if test="msgTitle != null" >
+        #{msgTitle,jdbcType=OTHER},
+      </if>
+      <if test="msgTime != null" >
+        #{msgTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="msgType != null" >
+        #{msgType,jdbcType=DECIMAL},
+      </if>
+      <if test="isRead != null" >
+        #{isRead,jdbcType=DECIMAL},
+      </if>
+      <if test="senderId != null" >
+        #{senderId,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TUserMsg" >
+    update T_USER_MSG
+    <set >
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="msgSender != null" >
+        MSG_SENDER = #{msgSender,jdbcType=OTHER},
+      </if>
+      <if test="msgContent != null" >
+        MSG_CONTENT = #{msgContent,jdbcType=OTHER},
+      </if>
+      <if test="msgTitle != null" >
+        MSG_TITLE = #{msgTitle,jdbcType=OTHER},
+      </if>
+      <if test="msgTime != null" >
+        MSG_TIME = #{msgTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="msgType != null" >
+        MSG_TYPE = #{msgType,jdbcType=DECIMAL},
+      </if>
+      <if test="isRead != null" >
+        IS_READ = #{isRead,jdbcType=DECIMAL},
+      </if>
+      <if test="senderId != null" >
+        SENDER_ID = #{senderId,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where USER_MSG_ID = #{userMsgId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TUserMsg" >
+    update T_USER_MSG
+    set USER_ID = #{userId,jdbcType=DECIMAL},
+      MSG_SENDER = #{msgSender,jdbcType=OTHER},
+      MSG_CONTENT = #{msgContent,jdbcType=OTHER},
+      MSG_TITLE = #{msgTitle,jdbcType=OTHER},
+      MSG_TIME = #{msgTime,jdbcType=TIMESTAMP},
+      MSG_TYPE = #{msgType,jdbcType=DECIMAL},
+      IS_READ = #{isRead,jdbcType=DECIMAL},
+      SENDER_ID = #{senderId,jdbcType=DECIMAL}
+    where USER_MSG_ID = #{userMsgId,jdbcType=DECIMAL}
+  </update>
+</mapper>

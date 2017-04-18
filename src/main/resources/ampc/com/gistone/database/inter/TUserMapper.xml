@@ -1,21 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="ampc.com.gistone.database.inter.TUserMapper">
-  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TUser">
-    <id column="USER_ID" jdbcType="DECIMAL" property="userId" />
-    <result column="USER_NAME" jdbcType="OTHER" property="userName" />
-    <result column="PASSWORD" jdbcType="OTHER" property="password" />
-    <result column="PROVINCE_CODE" jdbcType="DECIMAL" property="provinceCode" />
-    <result column="CITY_CODE" jdbcType="DECIMAL" property="cityCode" />
-    <result column="COUNTY_CODE" jdbcType="DECIMAL" property="countyCode" />
-    <result column="USER_EMAIL" jdbcType="VARCHAR" property="userEmail" />
-    <result column="COMPANY_NAME" jdbcType="OTHER" property="companyName" />
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TUserMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TUser" >
+    <id column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="USER_NAME" property="userName" jdbcType="OTHER" />
+    <result column="PASSWORD" property="password" jdbcType="OTHER" />
+    <result column="PROVINCE_CODE" property="provinceCode" jdbcType="DECIMAL" />
+    <result column="CITY_CODE" property="cityCode" jdbcType="DECIMAL" />
+    <result column="COUNTY_CODE" property="countyCode" jdbcType="DECIMAL" />
+    <result column="COMPANY_NAME" property="companyName" jdbcType="OTHER" />
+    <result column="USER_EMAIL" property="userEmail" jdbcType="VARCHAR" />
+    <result column="USER_PHONE" property="userPhone" jdbcType="DECIMAL" />
+    <result column="USER_VALIDITY" property="userValidity" jdbcType="TIMESTAMP" />
+    <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
   </resultMap>
-  <sql id="Base_Column_List">
-    USER_ID, USER_NAME, PASSWORD, PROVINCE_CODE, CITY_CODE, COUNTY_CODE, USER_EMAIL, 
-    COMPANY_NAME
+  <sql id="Base_Column_List" >
+    USER_ID, USER_NAME, PASSWORD, PROVINCE_CODE, CITY_CODE, COUNTY_CODE, COMPANY_NAME, 
+    USER_EMAIL, USER_PHONE, USER_VALIDITY, ADD_TIME
   </sql>
-  <resultMap id="userListMap" type="hashMap">
+  
+   <resultMap id="userListMap" type="hashMap">
     <id column="USER_ID" jdbcType="DECIMAL" property="userId" />
     <result column="USER_NAME" jdbcType="OTHER" property="userName" />
     <result column="PROVINCE_CODE" jdbcType="DECIMAL" property="provinceCode" />
@@ -49,117 +53,147 @@ PROVINCE_CODE, CITY_CODE, COUNTY_CODE
   
   
   
-  
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from T_USER
     where USER_ID = #{userId,jdbcType=DECIMAL}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from T_USER
     where USER_ID = #{userId,jdbcType=DECIMAL}
   </delete>
-  <insert id="insert" parameterType="ampc.com.gistone.database.model.TUser">
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TUser" >
     insert into T_USER (USER_ID, USER_NAME, PASSWORD, 
       PROVINCE_CODE, CITY_CODE, COUNTY_CODE, 
-      USER_EMAIL, COMPANY_NAME)
+      COMPANY_NAME, USER_EMAIL, USER_PHONE, 
+      USER_VALIDITY, ADD_TIME)
     values (#{userId,jdbcType=DECIMAL}, #{userName,jdbcType=OTHER}, #{password,jdbcType=OTHER}, 
       #{provinceCode,jdbcType=DECIMAL}, #{cityCode,jdbcType=DECIMAL}, #{countyCode,jdbcType=DECIMAL}, 
-      #{userEmail,jdbcType=VARCHAR}, #{companyName,jdbcType=OTHER})
+      #{companyName,jdbcType=OTHER}, #{userEmail,jdbcType=VARCHAR}, #{userPhone,jdbcType=DECIMAL}, 
+      #{userValidity,jdbcType=TIMESTAMP}, #{addTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TUser">
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TUser" >
     insert into T_USER
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="userId != null">
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
         USER_ID,
       </if>
-      <if test="userName != null">
+      <if test="userName != null" >
         USER_NAME,
       </if>
-      <if test="password != null">
+      <if test="password != null" >
         PASSWORD,
       </if>
-      <if test="provinceCode != null">
+      <if test="provinceCode != null" >
         PROVINCE_CODE,
       </if>
-      <if test="cityCode != null">
+      <if test="cityCode != null" >
         CITY_CODE,
       </if>
-      <if test="countyCode != null">
+      <if test="countyCode != null" >
         COUNTY_CODE,
       </if>
-      <if test="userEmail != null">
-        USER_EMAIL,
-      </if>
-      <if test="companyName != null">
+      <if test="companyName != null" >
         COMPANY_NAME,
       </if>
+      <if test="userEmail != null" >
+        USER_EMAIL,
+      </if>
+      <if test="userPhone != null" >
+        USER_PHONE,
+      </if>
+      <if test="userValidity != null" >
+        USER_VALIDITY,
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME,
+      </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="userId != null">
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
         #{userId,jdbcType=DECIMAL},
       </if>
-      <if test="userName != null">
+      <if test="userName != null" >
         #{userName,jdbcType=OTHER},
       </if>
-      <if test="password != null">
+      <if test="password != null" >
         #{password,jdbcType=OTHER},
       </if>
-      <if test="provinceCode != null">
+      <if test="provinceCode != null" >
         #{provinceCode,jdbcType=DECIMAL},
       </if>
-      <if test="cityCode != null">
+      <if test="cityCode != null" >
         #{cityCode,jdbcType=DECIMAL},
       </if>
-      <if test="countyCode != null">
+      <if test="countyCode != null" >
         #{countyCode,jdbcType=DECIMAL},
       </if>
-      <if test="userEmail != null">
+      <if test="companyName != null" >
+        #{companyName,jdbcType=OTHER},
+      </if>
+      <if test="userEmail != null" >
         #{userEmail,jdbcType=VARCHAR},
       </if>
-      <if test="companyName != null">
-        #{companyName,jdbcType=OTHER},
+      <if test="userPhone != null" >
+        #{userPhone,jdbcType=DECIMAL},
+      </if>
+      <if test="userValidity != null" >
+        #{userValidity,jdbcType=TIMESTAMP},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TUser">
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TUser" >
     update T_USER
-    <set>
-      <if test="userName != null">
+    <set >
+      <if test="userName != null" >
         USER_NAME = #{userName,jdbcType=OTHER},
       </if>
-      <if test="password != null">
+      <if test="password != null" >
         PASSWORD = #{password,jdbcType=OTHER},
       </if>
-      <if test="provinceCode != null">
+      <if test="provinceCode != null" >
         PROVINCE_CODE = #{provinceCode,jdbcType=DECIMAL},
       </if>
-      <if test="cityCode != null">
+      <if test="cityCode != null" >
         CITY_CODE = #{cityCode,jdbcType=DECIMAL},
       </if>
-      <if test="countyCode != null">
+      <if test="countyCode != null" >
         COUNTY_CODE = #{countyCode,jdbcType=DECIMAL},
       </if>
-      <if test="userEmail != null">
+      <if test="companyName != null" >
+        COMPANY_NAME = #{companyName,jdbcType=OTHER},
+      </if>
+      <if test="userEmail != null" >
         USER_EMAIL = #{userEmail,jdbcType=VARCHAR},
       </if>
-      <if test="companyName != null">
-        COMPANY_NAME = #{companyName,jdbcType=OTHER},
+      <if test="userPhone != null" >
+        USER_PHONE = #{userPhone,jdbcType=DECIMAL},
+      </if>
+      <if test="userValidity != null" >
+        USER_VALIDITY = #{userValidity,jdbcType=TIMESTAMP},
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where USER_ID = #{userId,jdbcType=DECIMAL}
   </update>
-  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TUser">
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TUser" >
     update T_USER
     set USER_NAME = #{userName,jdbcType=OTHER},
       PASSWORD = #{password,jdbcType=OTHER},
       PROVINCE_CODE = #{provinceCode,jdbcType=DECIMAL},
       CITY_CODE = #{cityCode,jdbcType=DECIMAL},
       COUNTY_CODE = #{countyCode,jdbcType=DECIMAL},
+      COMPANY_NAME = #{companyName,jdbcType=OTHER},
       USER_EMAIL = #{userEmail,jdbcType=VARCHAR},
-      COMPANY_NAME = #{companyName,jdbcType=OTHER}
+      USER_PHONE = #{userPhone,jdbcType=DECIMAL},
+      USER_VALIDITY = #{userValidity,jdbcType=TIMESTAMP},
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP}
     where USER_ID = #{userId,jdbcType=DECIMAL}
   </update>
-  
 </mapper>

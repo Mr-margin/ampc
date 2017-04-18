@@ -22,15 +22,13 @@ public interface TUserMapper {
 	Integer login(Map map);
     int deleteByPrimaryKey(Long userId);
 
-	int insert(TUser record);
+    int insert(TUser record);
 
-	int insertSelective(TUser record);
+    int insertSelective(TUser record);
 
-	TUser selectByPrimaryKey(Long userId);
+    TUser selectByPrimaryKey(Long userId);
 
-	int updateByPrimaryKeySelective(TUser record);
+    int updateByPrimaryKeySelective(TUser record);
 
-	int updateByPrimaryKey(TUser record);
-
-	
+    int updateByPrimaryKey(TUser record);
 }
