@@ -1,83 +1,115 @@
 package ampc.com.gistone.database.model;
 
+import java.util.Date;
+
 public class TUser {
     private Long userId;
 
-	private Object userName;
+    private Object userName;
 
-	private Object password;
+    private Object password;
 
-	private Long provinceCode;
+    private Long provinceCode;
 
-	private Long cityCode;
+    private Long cityCode;
 
-	private Long countyCode;
+    private Long countyCode;
 
-	private String userEmail;
+    private Object companyName;
 
-	private Object companyName;
+    private String userEmail;
 
-	public Long getUserId() {
-		return userId;
-	}
+    private Long userPhone;
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+    private Date userValidity;
 
-	public Object getUserName() {
-		return userName;
-	}
+    private Date addTime;
 
-	public void setUserName(Object userName) {
-		this.userName = userName;
-	}
+    public Long getUserId() {
+        return userId;
+    }
 
-	public Object getPassword() {
-		return password;
-	}
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
-	public void setPassword(Object password) {
-		this.password = password;
-	}
+    public Object getUserName() {
+        return userName;
+    }
 
-	public Long getProvinceCode() {
-		return provinceCode;
-	}
+    public void setUserName(Object userName) {
+        this.userName = userName;
+    }
 
-	public void setProvinceCode(Long provinceCode) {
-		this.provinceCode = provinceCode;
-	}
+    public Object getPassword() {
+        return password;
+    }
 
-	public Long getCityCode() {
-		return cityCode;
-	}
+    public void setPassword(Object password) {
+        this.password = password;
+    }
 
-	public void setCityCode(Long cityCode) {
-		this.cityCode = cityCode;
-	}
+    public Long getProvinceCode() {
+        return provinceCode;
+    }
 
-	public Long getCountyCode() {
-		return countyCode;
-	}
+    public void setProvinceCode(Long provinceCode) {
+        this.provinceCode = provinceCode;
+    }
 
-	public void setCountyCode(Long countyCode) {
-		this.countyCode = countyCode;
-	}
+    public Long getCityCode() {
+        return cityCode;
+    }
 
-	public String getUserEmail() {
-		return userEmail;
-	}
+    public void setCityCode(Long cityCode) {
+        this.cityCode = cityCode;
+    }
 
-	public void setUserEmail(String userEmail) {
-		this.userEmail = userEmail == null ? null : userEmail.trim();
-	}
+    public Long getCountyCode() {
+        return countyCode;
+    }
 
-	public Object getCompanyName() {
-		return companyName;
-	}
+    public void setCountyCode(Long countyCode) {
+        this.countyCode = countyCode;
+    }
 
-	public void setCompanyName(Object companyName) {
-		this.companyName = companyName;
-	}
+    public Object getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(Object companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail == null ? null : userEmail.trim();
+    }
+
+    public Long getUserPhone() {
+        return userPhone;
+    }
+
+    public void setUserPhone(Long userPhone) {
+        this.userPhone = userPhone;
+    }
+
+    public Date getUserValidity() {
+        return userValidity;
+    }
+
+    public void setUserValidity(Date userValidity) {
+        this.userValidity = userValidity;
+    }
+
+    public Date getAddTime() {
+        return addTime;
+    }
+
+    public void setAddTime(Date addTime) {
+        this.addTime = addTime;
+    }
 }
