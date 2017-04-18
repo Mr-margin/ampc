@@ -428,11 +428,11 @@ function getdata(){
 	var paramsName = {
 			"userId":"1",
 //			"missionId":"393",
-			"missionId":sceneInitialization.taskID,
+			"missionId":sceneInitialization.taskID,		//任务ID
 //			"mode":"point",
-			"mode":changeMsg.station=='avg'?'city':'point',
+			"mode":changeMsg.station=='avg'?'city':'point',		//检测站点
 //			"time":"2016-11-27 13",
-			"time":changeMsg.time,
+//			"time":changeMsg.time,
 //			"cityStation":"1002A",
 			"cityStation":changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
 //			"scenarinoId":[466,458,456],
@@ -513,20 +513,20 @@ function sceneTable(){
 	        rows:[]
 	      }
 	      data.rows = [
-//			{
-//		    "scenarinoId": 456,
-//		    "scenarinoName": "观测数据",
-//		    "scenType": "1",
-//		    "scenarinoStartDate": 1479571200000,
-//		    "scenarinoEndDate": 1480258800000
-//			  },
-//			{
-//			    "scenarinoId": 456,
-//				"scenarinoName": "基准情景",
-//				"scenType": "1",
-//				"scenarinoStartDate": 1479571200000,
-//				"scenarinoEndDate": 1480258800000
-//			  }, 
+			{
+		    "scenarinoId": 456,						//情景ID
+		    "scenarinoName": "观测数据",				//情景名称
+		    "scenType": "1",						//情景描述
+		    "scenarinoStartDate": 1479571200000,	//开始时间
+		    "scenarinoEndDate": 1480258800000		//结束时间
+			  },
+			{
+			    "scenarinoId": 456,
+				"scenarinoName": "基准情景",
+				"scenType": "1",
+				"scenarinoStartDate": 1479571200000,
+				"scenarinoEndDate": 1480258800000
+			  }, 
 	        {
 	          "scenarinoId": 456,
 	          "scenarinoName": "情景1",
