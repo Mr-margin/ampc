@@ -15,14 +15,20 @@
     USER_ID, USER_NAME, PASSWORD, PROVINCE_CODE, CITY_CODE, COUNTY_CODE, USER_EMAIL, 
     COMPANY_NAME
   </sql>
-  
+  <resultMap id="userListMap" type="hashMap">
+    <id column="USER_ID" jdbcType="DECIMAL" property="userId" />
+    <result column="USER_NAME" jdbcType="OTHER" property="userName" />
+    <result column="PROVINCE_CODE" jdbcType="DECIMAL" property="provinceCode" />
+    <result column="CITY_CODE" jdbcType="DECIMAL" property="cityCode" />
+    <result column="COUNTY_CODE" jdbcType="DECIMAL" property="countyCode" />
+  </resultMap>
   
   
    <!-- 根据所有的用户信息列表 -->
    <select id="selectUserList" resultMap="userListMap">
 		SELECT USER_ID,USER_NAME, 
 
-PROVINCE_CODE, CITY_CODE, COUNTY_CODE, PREDICTION_TIME
+PROVINCE_CODE, CITY_CODE, COUNTY_CODE
 			FROM T_USER 
 				WHERE  IS_EFFECTIVE='1' 
   </select>
