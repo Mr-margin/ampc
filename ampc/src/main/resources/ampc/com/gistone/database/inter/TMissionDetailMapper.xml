@@ -21,7 +21,7 @@
     <id column="MISSION_ID" property="missionId" jdbcType="DECIMAL" />
     <result column="MISSION_NAME" property="missionName" jdbcType="OTHER" />
     <result column="MISSION_DOMAIN_ID" property="missionDomainId" jdbcType="DECIMAL" />
-    <result column="V1" property="v1" jdbcType="VARCHAR" />
+    
     <result column="ES_COUPLING_ID" property="esCouplingId" jdbcType="DECIMAL" />
     <result column="ES_COUPLING_NAME" property="esCouplingName" jdbcType="OTHER" />
     <result column="ES_CODE_RANGE" property="esCodeRange" jdbcType="VARCHAR" />
@@ -32,7 +32,7 @@
   </resultMap>
   <!-- 返回任务查询列表的列 -->
   <sql id="mission_Column_List" >
-  	MISSION_ID,MISSION_NAME,MISSION_DOMAIN_ID,V1,MISS.ES_COUPLING_ID,
+  	MISSION_ID,MISSION_NAME,MISSION_DOMAIN_ID,MISS.ES_COUPLING_ID,
    ES_COUPLING_NAME,ES_CODE_RANGE,MISSION_ADD_TIME,MISSION_START_DATE,MISSION_END_DATE,MISSION_STATUS
   </sql>
   <!-- 查询所有记录分页 可根据名称模糊查询 -->
@@ -49,7 +49,7 @@
       		 </if>
 			  <if test="queryName != null" >
         		AND (MISSION_NAME LIKE #{queryName,jdbcType=OTHER}
-        		OR V1 LIKE #{queryName,jdbcType=OTHER}
+        	
         		OR ES_COUPLING_NAME LIKE #{queryName,jdbcType=OTHER}
         		OR to_char(MISSION_ADD_TIME,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
         		OR to_char(MISSION_START_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
@@ -74,7 +74,7 @@
         </if>
   	    <if test="queryName != null" >
        		AND (MISSION_NAME LIKE #{queryName,jdbcType=OTHER}
-       		OR V1 LIKE #{queryName,jdbcType=OTHER}
+       		
        		OR ES_COUPLING_NAME LIKE #{queryName,jdbcType=OTHER}
        		OR to_char(MISSION_ADD_TIME,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
        		OR to_char(MISSION_START_DATE,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
