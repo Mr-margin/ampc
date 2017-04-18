@@ -1,82 +1,224 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<meta charset="utf-8">
-		<meta http-equiv="Expires" content="0">
-		<meta http-equiv="Pragma" content="no-cache">
-		<meta http-equiv="Cache-Control" CONTENT="no-cache, must-revalidate"> 
-		<meta http-equiv="Cache-Control" content="no-siteapp" />
-		<meta http-equiv="Cache" content="no-cache">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="renderer" content="webkit">
-		<title>大气污染物排放清单编制与分析系统</title>
-		<link href="index.css" rel="stylesheet" type="text/css" />
-		<link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
-		</head>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="Author" contect="http://www.webqin.net">
+  <title>系统首页</title>
+  <link type="text/css" href="css/css.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/jquery.fullPage.css">
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/plugins/sweetalert/sweetalert.css"/>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+  <script type="text/javascript" src="js/js.js"></script>
+  <script src="js/jquery.fullPage.min.js"></script>
+
+  <script>
+    $(function(){
+      $('#dowebok').fullpage({
+        anchors: ['page1', 'page2', 'page3', 'page4','page5','page6','page7','page8','page9'],
+        menu: '#menu',
+        /*'navigation': true,
+         'navigationPosition': 'right',*/
+        //小点导航颜色
+        afterLoad: function(anchorLink, index){
+          if(index == 1){
+            $("#fp-nav li a span").css("background","#B0B0B0");
+            $("#fp-nav li a").removeClass("active")
+            $("#fp-nav li:eq(0) a").addClass("active");
+            $("#fp-nav li a.active span").css("background","#7BF1FE");
+            $(".navFixed .nav li strong").css("color","#fff")
+            $(".navFixed .navClick").css("background-color","inherit")
+          }
+          if(index == 2){
+            $("#fp-nav li a span").css("background","#B0B0B0");
+            $("#fp-nav li a").removeClass("active")
+            $("#fp-nav li:eq(1) a").addClass("active");
+            $("#fp-nav li a.active span").css("background","#E82B2B");
+            $(".navFixed .nav li strong").css("color","#fff")
+            $(".navFixed .navClick").css("background-color","#E82B2B")
+          }
+          if(index == 3){
+            $("#fp-nav li a span").css("background","#B0B0B0");
+            $("#fp-nav li a").removeClass("active")
+            $("#fp-nav li:eq(2) a").addClass("active");
+            $("#fp-nav li a.active span").css("background","#ED6E47");
+            $(".navFixed .nav li strong").css("color","#000")
+            $(".navFixed .navClick").css("background-color","#ED6E47")
+          }
+          if(index == 4){
+            $("#fp-nav li a span").css("background","#B0B0B0");
+            $("#fp-nav li a").removeClass("active")
+            $("#fp-nav li:eq(3) a").addClass("active");
+            $("#fp-nav li a.active span").css("background","#019CE3");
+            $(".navFixed .nav li strong").css("color","#fff")
+            $(".navFixed .navClick").css("background-color","#019CE3")
+          }
+          if(index == 5){
+            $("#fp-nav li a span").css("background","#B0B0B0");
+            $("#fp-nav li a").removeClass("active")
+            $("#fp-nav li:eq(4) a").addClass("active");
+            $("#fp-nav li a.active span").css("background","#089C4A");
+            $(".navFixed .nav li strong").css("color","#000")
+            $(".navFixed .navClick").css("background-color","#089C4A")
+          }
+          if(index == 6){
+            $("#fp-nav li a span").css("background","#B0B0B0");
+            $("#fp-nav li a").removeClass("active")
+            $("#fp-nav li:eq(5) a").addClass("active");
+            $("#fp-nav li a.active span").css("background","#E2BB0A");
+            $(".navFixed .nav li strong").css("color","#fff")
+            $(".navFixed .navClick").css("background-color","#E2BB0A")
+          }
+          if(index == 7){
+            $("#fp-nav li a span").css("background","#B0B0B0");
+            $("#fp-nav li a").removeClass("active")
+            $("#fp-nav li:eq(6) a").addClass("active");
+            $("#fp-nav li a.active span").css("background","#641F89");
+            $(".navFixed .nav li strong").css("color","#fff")
+            $(".navFixed .navClick").css("background-color","#641F89")
+          }
+          if(index == 8){
+            $("#fp-nav li a span").css("background","#B0B0B0");
+            $("#fp-nav li a").removeClass("active")
+            $("#fp-nav li:eq(7) a").addClass("active");
+            $("#fp-nav li a.active span").css("background","#E52424");
+            $(".navFixed .nav li strong").css("color","#fff")
+            $(".navFixed .navClick").css("background-color","#E52424")
+          }
+          if(index == 9){
+            $("#fp-nav li a span").css("background","#B0B0B0");
+            $("#fp-nav li a").removeClass("active")
+            $("#fp-nav li:eq(8) a").addClass("active");
+            $("#fp-nav li a.active span").css("background","#E82B2B");
+            $(".navFixed .nav li strong").css("color","#fff")
+            $(".navFixed .navClick").css("background-color","inherit")
+          }
+
+        }
+
+      });
+    });
+  </script>
+
+</head>
 
 <body>
-<div class="top">
-  <ul>
-    <li><a href="#none" class="hover">系统主页</a></li>
-    <li><a href="#none">常见问题</a></li>
-    <li><a href="#none">版本更新</a></li>
-    <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
-  </ul>
-</div>
+<div class="navFixed">
+  <div class="navClick"></div>
+  <div class="nav">
+    <ul>
+      <li data-menuanchor="page2"><a href="#page2"><span><i class="fa fa-book fa-lg"></i></span><strong>功能介绍</strong></a></li>
+      <li data-menuanchor="page3"><a href="#page3"><span><i class="fa fa-taxi fa-lg"></i></span><strong>评估流程</strong></a></a></li>
+      <li data-menuanchor="page4"><a href="#page4"><span><i class="fa fa-window-maximize fa-lg"></i></span><strong>模式框架</strong></a></a></li>
+      <li data-menuanchor="page5"><a href="#page5"><span><i class="fa fa-newspaper-o fa-lg"></i></span><strong>典型案例</strong></a></a></li>
+      <li data-menuanchor="page6"><a href="#page6"><span><i class="fa fa-user-circle-o fa-lg"></i></span><strong>用户登录</strong></a></a></li>
+      <div class="clears"></div>
+    </ul>
+  </div><!--nav/-->
+</div><!--navFixed/-->
+<div id="dowebok">
+  <div class="section">
+    <div class="headerbg">
+      <div class="widths">
+        <h1 class="logo"><a href="index.html"><img src="imagesIndex/logo.png" width="215" height="80" /></a></h1>
+        <div class="clears"></div>
+      </div><!--widths/-->
 
-<div class="main">
-  <div class="denglu">
-   
-    <div class="dlk">
-      <table width="292" border="0" align="center" cellpadding="0" cellspacing="0">
-        <tr>
-          <td height="76" colspan="3"></td>
-        </tr>
-        <tr>
-          <td width="65" style="font-size:14px;">登录账号</td>
-          <td colspan="2"><input id="user_name" name="textfield" type="text" class="dlinput" /></td>
-        </tr>
-        <tr>
-          <td height="16" colspan="3"></td>
-        </tr>
-        <tr>
-          <td>登录密码</td>
-          <td colspan="2"><input id="password" name="textfield" type="password" class="dlinput" /></td>
-        </tr>
-        <tr>
-          <td height="16" colspan="3"></td>
-        </tr>
-<!--         <tr> -->
-<!--           <td>验证码</td> -->
-<!--           <td width="100"><input id="yzm" name="textfield" type="text" class="dlinput" style="width:90px;" maxlength="4" /></td> -->
-<!--           <td width="127"><img id="captchaImage" src="img.do" width="98" height="27" /></td> -->
-<!--         </tr> -->
-        <tr>
-          <td height="16" colspan="3"></td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td colspan="2"><input type="submit" value="登 录" class="loginbtn" onclick="denglu()" /></td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td colspan="2"><table width="224" border="0" cellspacing="0" cellpadding="0">
-            <tr>
-            </tr>
-          </table></td>
-        </tr>
-      </table>
+      <div class="headText">
+        <div class="hdtx1">环境空气质量管理评估系统</div>
+        <div class="hdtx2">Research on Ambient Air Quality Evaluation System</div>
+        <div class="hdtx3"><a href="#page6">进入系统</a></div>
+      </div><!--headText/-->
+    </div><!--headerbg/-->
+  </div><!--页面1结束/-->
+  <div class="section newbg">
+    <div class="title"><img src="imagesIndex/title-new.png" width="975" height="72" /></div>
+    <div class="time-axis">
+
+      <div class="newMore"> </div>
     </div>
+    <a href="#page1" class="backTop"><img src="imagesIndex/backtop4.png" width="42" height="42" /></a>
+  </div><!--页面2结束/-->
+  <div class="section">
+    <div class="title"><img src="imagesIndex/title-system.png" width="975" height="64" /></div>
+    <div class="time-axis1">
+
+      <div class="newMore"> </div>
+    </div><!--time-axis/-->
+
+    <a href="#page1" class="backTop"><img src="imagesIndex/backtop5.png" width="42" height="42" /></a>
+  </div><!--页面3结束/-->
+  <div class="section aboutBg">
+    <div class="title"><img src="imagesIndex/title-media.png" width="975" height="64" /></div>
+    <div class="time-axis2">
+
+      <div class="newMore"> </div>
+    </div><!--time-axis/-->
+
+    <a href="#page1" class="backTop"><img src="imagesIndex/backtop1.png" width="42" height="42" /></a>
+  </div><!--页面4结束/-->
+
+  <div class="section">
+    <div class="title"><img src="imagesIndex/title-plan.png" width="975" height="64" /></div>
+    <div class="time-axis3">
+
+      <div class="newMore"> </div>
+    </div><!--time-axis/-->
+
+    <a href="#page1" class="backTop"><img src="imagesIndex/backtop6.png" width="42" height="42" /></a>
+  </div><!--页面5结束/-->
+
+  <div class="section contactBg">
+    <div class="title"><img src="imagesIndex/title-contact.png" width="975" height="72" /></div>
+    <div class="contact">
+
+      <div class="messages fr">
+        <div class="login form">
+          <div class="group">
+            <div class="group-ipt email">
+              <input type="text" name="name" id="name" class="ipt" placeholder="用户名" required>
+            </div>
+            <div class="group-ipt email">
+              <input type="text" name="passwordIndex" id="passwordIndex" class="ipt" placeholder="登录密码" required>
+            </div>
+            <div class="group-ipt verify">
+              <input type="text" name="verify" id="verify" class="ipt" placeholder="输入验证码" required>
+              <img src="img.do" class="imgcode" id="captchaImage">
+            </div>
+          </div>
+        </div>
+        <div class="button">
+          <button type="submit" class="login-btn register-btn" id="button">登录</button>
+        </div>
+
+      </div><!--messages/-->
+      <div class="clears"></div>
+    </div><!--contact/-->
+    <div style="height:80px;"></div>
+    <div class="footer">
+      Copyrights (c) 版权所有信息
+    </div><!--footer/-->
+    <a href="#page1" class="backTop"><img src="imagesIndex/backtop7.png" width="42" height="42" /></a>
   </div>
+
 </div>
 
-<div class="footer">Copyright@ 2010 CNEMC 京ICP 备05007617号    <a href="http://www.cnemc.cn/" target="_blank">中国环境监测总站</a> 电话/传真：010-84949045</div>
-<script src="js/jquery.min.js"></script>
-<script src="js/ajax.js"></script>
 
-<script src="js/plugins/toastr/toastr.min.js"></script>
-<script src="http://pv.sohu.com/cityjson"></script>
- <script src="index.js"></script>
+
+
+<tr>
+  <td>验证码</td>
+  <td width="100"><input id="yzm" name="yzm" type="text" class="dlinput" style="width:90px;" maxlength="4" /></td>
+  <td width="127"><img id="captchaImage" src="img.do" width="98" height="27" /></td>
+</tr>
+
+
+
+
+
+<div id="fp-nav" style="color: rgb(0, 0, 0); margin-top: -83.5px;" class="right"><ul><li><a href="#page1" class="active"><span></span></a></li><li><a href="#page2"><span></span></a></li><li><a href="#page3"><span></span></a></li><li><a href="#page4"><span></span></a></li><li><a href="#page5"><span></span></a></li><li><a href="#page6"><span></span></a></li></ul></div>
+
 </body>
 </html>
+<script src="index.js"></script>
