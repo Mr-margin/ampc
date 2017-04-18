@@ -69,4 +69,4 @@
  	<!-- <table tableName="T_PLAN_MEASURE_REUSE" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> --> 
  	<table tableName="T_DOMAIN_MISSION" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
   </context>
-</generatorConfiguration>
+</generatorConfiguration> 
