@@ -116,7 +116,7 @@ public class UserController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping("user/get_sessionInfo")
+	@RequestMapping("/user/get_sessionInfo")
 	public AmpcResult get_sessionInfo(HttpServletRequest request,HttpServletResponse response) throws Exception{
 		try{
 			// 设置跨域
@@ -145,7 +145,7 @@ public class UserController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping("user/loginOut")
+	@RequestMapping("/user/loginOut")
 	public AmpcResult loginOut(HttpServletRequest request,HttpServletResponse response) throws Exception{
 		HttpSession session = request.getSession();
 		try{
@@ -168,7 +168,7 @@ public class UserController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping("user/yzmimg")
+	@RequestMapping("/user/yzmimg")
 	@ResponseBody
 	public void execute(HttpServletRequest request , HttpServletResponse response) throws Exception {  
 		try {
@@ -189,7 +189,7 @@ public class UserController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping("user/checkyzm")
+	@RequestMapping("/user/checkyzm")
 	public AmpcResult checkyzm(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request , HttpServletResponse response) throws Exception {  
 		try {
