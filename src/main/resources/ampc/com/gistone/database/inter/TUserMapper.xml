@@ -20,29 +20,49 @@
   </sql>
   
    <resultMap id="userListMap" type="hashMap">
-    <id column="USER_ID" jdbcType="DECIMAL" property="userId" />
-    <result column="USER_NAME" jdbcType="OTHER" property="userName" />
-    <result column="PROVINCE_CODE" jdbcType="DECIMAL" property="provinceCode" />
-    <result column="CITY_CODE" jdbcType="DECIMAL" property="cityCode" />
-    <result column="COUNTY_CODE" jdbcType="DECIMAL" property="countyCode" />
+    <id column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="USER_NAME" property="userName" jdbcType="OTHER" />
+    <result column="PROVINCE_CODE" property="provinceCode" jdbcType="DECIMAL" />
+    <result column="CITY_CODE" property="cityCode" jdbcType="DECIMAL" />
+    <result column="COUNTY_CODE" property="countyCode" jdbcType="DECIMAL" />
+    <result column="COMPANY_NAME" property="companyName" jdbcType="OTHER" />
+    <result column="USER_EMAIL" property="userEmail" jdbcType="VARCHAR" />
+    <result column="USER_PHONE" property="userPhone" jdbcType="DECIMAL" />
+    <result column="USER_VALIDITY" property="userValidity" jdbcType="TIMESTAMP" />
   </resultMap>
   
   
    <!-- 根据所有的用户信息列表 -->
    <select id="selectUserList" resultMap="userListMap">
-		SELECT USER_ID,USER_NAME, 
-
-PROVINCE_CODE, CITY_CODE, COUNTY_CODE
+		SELECT USER_ID, USER_NAME, PROVINCE_CODE, CITY_CODE, COUNTY_CODE, COMPANY_NAME, 
+    USER_EMAIL, USER_PHONE, USER_VALIDITY
 			FROM T_USER 
 				WHERE  IS_EFFECTIVE='1' 
   </select>
   
   
   <!-- 用户登录 -->
-  <select id="login" parameterType="hashMap" resultType="java.lang.Integer">
-		SELECT count(*)
+  <select id="login" parameterType="hashMap" resultMap="userListMap">
+		SELECT USER_ID, USER_NAME, PROVINCE_CODE, CITY_CODE, COUNTY_CODE, COMPANY_NAME, 
+    USER_EMAIL, USER_PHONE, USER_VALIDITY
 			FROM T_USER 
 				WHERE  USER_ID=#{userId,jdbcType=OTHER} AND  PASSWORD=#{passWord,jdbcType=OTHER}
+  </select>
+  
+  
+  <!-- 判断用户名是否存在 -->
+  <select id="checkUserId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+			FROM T_USER 
+				WHERE  USER_ID=#{_parameter,jdbcType=DECIMAL}
+  </select>
+  
+  
+   <!-- 判断用户名是否可用 -->
+  <select id="checkUserIsON" parameterType="java.lang.Long" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+			FROM T_USER 
+				WHERE  USER_ID=#{_parameter,jdbcType=DECIMAL} AND USER_VALIDITY>sysdate
   </select>
   
   
