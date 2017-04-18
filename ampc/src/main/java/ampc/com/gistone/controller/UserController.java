@@ -120,11 +120,12 @@ public class UserController {
 	public AmpcResult get_sessionInfo(HttpServletRequest request,HttpServletResponse response) throws Exception{
 		try{
 			// 设置跨域
+
 			ClientUtil.SetCharsetAndHeader(request, response);
 			HttpSession session = request.getSession();
 			//验证session不为空
-			if(session.getAttribute("userInfo")!=null){
-				Map<String,String> userInfo = (Map)session.getAttribute("Login_map");//用户信息，包括角色
+			if(session.getAttribute("user")!=null){
+				Map<String,String> userInfo = (Map)session.getAttribute("user");//用户信息，包括角色
 				LogUtil.getLogger().info("UserController  获取Session成功！");
 				return AmpcResult.ok(userInfo);
 			}else{
