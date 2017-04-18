@@ -151,7 +151,7 @@ $.when(dps_um).then(function(){
 
 /*退出登录*/
 function dengluOut() {
-  var url = '';
+  var url = '/user/loginOut';
   ajaxPost(url, {}).success(function () {
     window.location.href="index.html";
   })
