@@ -1,6 +1,7 @@
 package ampc.com.gistone.database.model;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class TUserSetting {
     private Long userSettingId;
@@ -22,6 +23,8 @@ public class TUserSetting {
     private Long operationTime;
 
     private Long basicAutoOn;
+
+    private Date addTime;
 
     public Long getUserSettingId() {
         return userSettingId;
@@ -101,5 +104,13 @@ public class TUserSetting {
 
     public void setBasicAutoOn(Long basicAutoOn) {
         this.basicAutoOn = basicAutoOn;
+    }
+
+    public Date getAddTime() {
+        return addTime;
+    }
+
+    public void setAddTime(Date addTime) {
+        this.addTime = addTime;
     }
 }

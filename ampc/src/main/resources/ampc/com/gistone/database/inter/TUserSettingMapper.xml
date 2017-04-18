@@ -12,10 +12,11 @@
     <result column="MISSION_CAP" property="missionCap" jdbcType="DECIMAL" />
     <result column="OPERATION_TIME" property="operationTime" jdbcType="DECIMAL" />
     <result column="BASIC_AUTO_ON" property="basicAutoOn" jdbcType="DECIMAL" />
+    <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     USER_SETTING_ID, USER_ID, BASIC_SPINUP, BASIC_SPINNAME, PREDICTION_TIME, STORAGE_CAP, 
-    CALCULATION_CAP, MISSION_CAP, OPERATION_TIME, BASIC_AUTO_ON
+    CALCULATION_CAP, MISSION_CAP, OPERATION_TIME, BASIC_AUTO_ON, ADD_TIME
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -31,11 +32,11 @@
     insert into T_USER_SETTING (USER_SETTING_ID, USER_ID, BASIC_SPINUP, 
       BASIC_SPINNAME, PREDICTION_TIME, STORAGE_CAP, 
       CALCULATION_CAP, MISSION_CAP, OPERATION_TIME, 
-      BASIC_AUTO_ON)
+      BASIC_AUTO_ON, ADD_TIME)
     values (#{userSettingId,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{basicSpinup,jdbcType=DECIMAL}, 
       #{basicSpinname,jdbcType=OTHER}, #{predictionTime,jdbcType=DECIMAL}, #{storageCap,jdbcType=DECIMAL}, 
       #{calculationCap,jdbcType=DECIMAL}, #{missionCap,jdbcType=DECIMAL}, #{operationTime,jdbcType=DECIMAL}, 
-      #{basicAutoOn,jdbcType=DECIMAL})
+      #{basicAutoOn,jdbcType=DECIMAL}, #{addTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TUserSetting" >
     insert into T_USER_SETTING
@@ -70,6 +71,9 @@
       <if test="basicAutoOn != null" >
         BASIC_AUTO_ON,
       </if>
+      <if test="addTime != null" >
+        ADD_TIME,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="userSettingId != null" >
@@ -101,6 +105,9 @@
       </if>
       <if test="basicAutoOn != null" >
         #{basicAutoOn,jdbcType=DECIMAL},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -134,6 +141,9 @@
       <if test="basicAutoOn != null" >
         BASIC_AUTO_ON = #{basicAutoOn,jdbcType=DECIMAL},
       </if>
+      <if test="addTime != null" >
+        ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where USER_SETTING_ID = #{userSettingId,jdbcType=DECIMAL}
   </update>
@@ -147,7 +157,8 @@
       CALCULATION_CAP = #{calculationCap,jdbcType=DECIMAL},
       MISSION_CAP = #{missionCap,jdbcType=DECIMAL},
       OPERATION_TIME = #{operationTime,jdbcType=DECIMAL},
-      BASIC_AUTO_ON = #{basicAutoOn,jdbcType=DECIMAL}
+      BASIC_AUTO_ON = #{basicAutoOn,jdbcType=DECIMAL},
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP}
     where USER_SETTING_ID = #{userSettingId,jdbcType=DECIMAL}
   </update>
 </mapper>
