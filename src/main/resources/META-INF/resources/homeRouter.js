@@ -95,10 +95,10 @@ if(!userId){
         templateUrl: 'a.html',
         controller: ''
       },
-      '/hsz': {        //首页回收站
-        templateUrl: '',
-        controller: ''
-      },
+      // '/hsz': {        //首页回收站
+      //   templateUrl: '',
+      //   controller: ''
+      // },
       '/test': {
         templateUrl: 'a.html',
         controller: ''
@@ -113,7 +113,7 @@ if(!userId){
 
 
   var parameterPar = {token: '', data: {}};
-
+  var userId = 1;
   /*看名字*/
   function ajaxPost(url, parameter) {
     parameterPar.data = parameter;
@@ -156,11 +156,27 @@ if(!userId){
 
   }
 
+// 当我修改完新的功能栏的时候，可以对此处修改
   var llqHeight = document.documentElement.clientHeight;
   var cssStyle = '.qjbjDiv,.qdCreate,.qdListBox{height:'+ (llqHeight-138) +'px;}#sidebar .panel-body{overflow:auto;border-top:0;border-bottom:0;padding:0;height: '+ (llqHeight-441) +'px;} ';
   $('head').append($('<style></style>').html(cssStyle));
   $("#Route_conter").css("height",llqHeight-150+"px");
   $(".qdCreate").css("height",llqHeight-138+"px");
+//重写的全局绑定事件
+  $(function(){
+    var auri=window.location.hash;
+    console.log($("[href='"+auri+"']").parent().addClass("active").siblings().removeClass("active"));
+    $("[href='"+auri+"']").parent().addClass("active").siblings().removeClass("active").end().parent().parent(".candrop").addClass("active").siblings().removeClass("active").find(".candrop>p.active").removeClass();
+    //功能栏一级菜单的点击事件
+    $("#sidebarlt>ul").on("click","li",function () {
+      $(this).siblings().removeClass("active").end().addClass("active");
+    });
+    //功能栏二级菜单的点击事件
+    $('#sidebarlt>ul').on("click","p",function () {
+      $(this).siblings().removeClass("active").end().addClass("active").parent().parent().siblings().find("p").removeClass("active");
+    })
+  });
+
 
 
   $('#sidebar a').click(function (e) {
@@ -197,10 +213,9 @@ if(!userId){
 
   });
 
-  initZTree();
+  initZTree()
   /*初始化zTree数据*/
   function initZTree() {
-    console.log('initZTree  userId:'+userId);
     var url = '/area/find_areas_new';
     ajaxPost(url, {
       userId: userId
@@ -212,12 +227,12 @@ if(!userId){
 // 左侧菜单栏隐藏展开功能
   $("#toggle-sidebar").on("click",function(e){
     if($(this).hasClass("toggle-flag")){
-      $("#sidebar").show();
+      $("#sidebarlt").show();
       $("#content-title").css({'left':'210px'});
       $("#content").css({'margin-left':'210px'});
       $(this).removeClass("toggle-flag");
     }else{
-      $("#sidebar").hide();
+      $("#sidebarlt").hide();
       $("#content-title").css({'left':'0px'});
       $("#content").css({'margin-left':'0px'});
       $(this).addClass("toggle-flag");
