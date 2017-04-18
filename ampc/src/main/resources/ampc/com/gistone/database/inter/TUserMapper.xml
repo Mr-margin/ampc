@@ -15,6 +15,35 @@
     USER_ID, USER_NAME, PASSWORD, PROVINCE_CODE, CITY_CODE, COUNTY_CODE, USER_EMAIL, 
     COMPANY_NAME
   </sql>
+  
+  
+  
+   <!-- 根据所有的用户信息列表 -->
+   <select id="selectUserList" resultMap="userListMap">
+		SELECT USER_ID,USER_NAME, 
+
+PROVINCE_CODE, CITY_CODE, COUNTY_CODE, PREDICTION_TIME
+			FROM T_USER 
+				WHERE  IS_EFFECTIVE='1' 
+  </select>
+  
+  
+  <!-- 用户登录 -->
+  <select id="login" parameterType="hashMap" resultType="java.lang.Integer">
+		SELECT count(*)
+			FROM T_USER 
+				WHERE  USER_ID=#{userId,jdbcType=OTHER} AND  PASSWORD=#{passWord,jdbcType=OTHER}
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
