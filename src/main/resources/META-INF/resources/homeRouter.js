@@ -10,6 +10,10 @@ var userId;
 var dps_um = getSessionMsg();
 
 $.when(dps_um).then(function(){
+  if(!userMsg){
+    window.location.href="index.html";
+    return;
+  }
   userId = userMsg.userId;
   if(!userId){
     window.location.href="index.html";
