@@ -12,6 +12,7 @@ $(function () {
 /**
  * 全局变量
  */
+var dps_codeStation,dps_station;
 //默认显示柱状图
 var show_type = "bar";
 var changeMsg = {
@@ -49,6 +50,21 @@ var optionAll = {
     //legend的data: 用于设置图例，data内的字符串数组需要与sereis数组内每一个series的name值对应
     data: [],     //改变量 存储所选情景name
 
+<<<<<<< .mine
+		},
+		grid: {
+			show: true,
+			left: '3%',
+			right: '3%',
+			bottom: '15%',
+		},
+		dataZoom:[
+		          {
+	        	  show:'true',
+	        	  realtime:'true',
+	        	  start:0,
+	        	  end:100
+=======
   },
   grid: {
     show: true,
@@ -62,7 +78,34 @@ var optionAll = {
       realtime: 'true',
       start: 0,
       end: 100
+>>>>>>> .r1466
 
+<<<<<<< .mine
+		          }
+		          ],
+      calculable: false,  
+      xAxis: [  
+              {  
+        	  show: true,  
+        	  type: 'category',  
+        	  data: []  //改变量
+              }
+              ],  
+      yAxis: [  
+              {  
+               name:'',  //改变量  污染物name
+               nameLocation:'end',
+               show: true,  
+               type: 'value',  
+               splitArea: {show: true}
+               }
+                ],
+	   //颜色色卡
+      color:["#c12e34","#e6b600", "#0098d9", "#2b821d","#005eaa","#339ca8","#cda819","#32a487"],
+       //sereis的数据: 用于设置图表数据之用。series是一个对象嵌套的结构；对象内包含对象  
+      series:[]   //改变量  观测数据单独写一个接口  其它的放在一起
+}; 
+=======
     }
   ],
   calculable: false,
@@ -87,6 +130,7 @@ var optionAll = {
   //sereis的数据: 用于设置图表数据之用。series是一个对象嵌套的结构；对象内包含对象
   series: []   //改变量  观测数据单独写一个接口  其它的放在一起
 };
+>>>>>>> .r1466
 
 
 var ls = window.sessionStorage;
@@ -105,16 +149,43 @@ if (!sceneInitialization) {
 }
 console.log(JSON.stringify(sceneInitialization));
 
+<<<<<<< .mine
+if(!sceneInitialization){//为空时
+	sceneInittion();//调用弹出模态框方法
+//	getdata();
+}else{
+	set_sce();
+	initNowSession()
+=======
 if (!sceneInitialization) {//为空时
   sceneInittion();//调用弹出模态框方法
 } else {
   set_sce();
   initNowSession()
+>>>>>>> .r1466
 }
 
 /**
  * 初始化获取页面数据
  */
+<<<<<<< .mine
+function initNowSession(){
+	changeMsg.scenarinoId = [];
+	changeMsg.scenarinoName = [];
+	for(var i = 0;i< sceneInitialization.data.length; i++){
+		changeMsg.scenarinoId.push(sceneInitialization.data[i].scenarinoId);
+		changeMsg.scenarinoName.push(sceneInitialization.data[i].scenarinoName);
+	}
+	
+	setStation(sceneInitialization.taskID);
+	setTime(sceneInitialization.s, sceneInitialization.e);
+	$.when(dps_codeStation,dps_station).then(function () {
+		getdata();
+	});
+	
+	
+//	getdata();
+=======
 function initNowSession() {
   changeMsg.scenarinoId = [];
   changeMsg.scenarinoName = [];
@@ -123,12 +194,96 @@ function initNowSession() {
     changeMsg.scenarinoName.push(sceneInitialization.data[i].scenarinoName);
   }
   getdata();
+>>>>>>> .r1466
 }
 //放置站点信息
 var allStation = {};
 /**
  * 设置站点信息
  */
+<<<<<<< .mine
+function setStation(id) {
+	  $('#proStation').empty();
+	  $('#cityStation').empty();
+	  $('#station').empty();
+	  var url = '/Site/find_code';
+	  dps_codeStation = ajaxPost(url, {
+	    userId: userId,
+	    //missionId: id
+	  }).success(function (res) {
+	    if (res.status == 0) {
+	    	allStation = res.data;
+	      for (var pro in allStation) {
+	        $('#proStation').append($('<option value="' + allStation[pro].code + '">' + allStation[pro].name + '</option>'))
+	      }
+	      var cityStation = allStation[$('#proStation').val()].station;
+	      for (var city in cityStation) {
+	        $('#cityStation').append($('<option value="' + cityStation[city].code + '">' + cityStation[city].name + '</option>'))
+	      }
+
+	      //var station = cityStation[$('#cityStation').val()].station;
+	      //for (var s in station) {
+	      //  $('#station').append($('<option value="' + station[s].code + '">' + station[s].name + '</option>'))
+	      //}
+
+	      changeMsg.pro = $('#proStation').val();
+	      changeMsg.city = $('#cityStation').val();
+	      findStation(changeMsg.city);
+	      //changeMsg.station = $('#station').val();
+	    } else {
+	      console.log('站点请求故障！！！')
+	    }
+	  })
+	}
+//function stationInfo(){
+//	$("#proStation").empty();
+//	$("#cityStation").empty();
+//	$("#station").empty();
+//	
+//	var paramsName = {};
+//	url = '';
+//	ajaxPost(url,paramsName).success(function(res){
+//		if(res.status == 0){
+//			
+//			allStation = res.data;
+//			for(var pro in allStation){
+//				$('#proStation').append($('<option value="' + allStation[pro].code + '">' + allStation[pro].name + '</option>'))
+//			}
+//			
+//			var cityStation = allStation[$('#proStation').val()].station;
+//			for(var c in cityStation){
+//				$('#cityStation').append($('<option value="' + allStation[c].code + '">' + allStation[c].name + '</option>'))
+//			}
+//			
+//			var station = allStation[$('#cityStation').val()].station;
+//			for(var s in allStation){
+//				$('#station').append($('<option value="' + allStation[s].code + '">' + allStation[s].name + '</option>'))
+//			}
+//			
+//			//存入全局变量
+//			changeMsg.pro=$('#proStation').val();
+//			changeMsg.city=$('#cityStation').val();
+//			changeMsg.station=$('#station').val();
+//		}else{
+//			console.log("站点请求失败！")
+//		}
+//	});
+//}
+
+/*查询站点*/
+function findStation(code){
+  dps_station = ajaxPost('/Site/find_Site',{
+    userId:userId,
+    siteCode:code
+  }).success(function(res){
+    $('#station').empty();
+    $('#station').append($('<option value="avg">平均</option>'));
+    for(var i=0;i<res.data.length;i++){
+      $('#station').append($('<option value="' + res.data[i].stationId + '">' + res.data[i].stationName + '</option>'))
+    }
+    changeMsg.station = $('#station').val();
+  })
+=======
 function stationInfo() {
   $("#proStation").empty();
   $("#cityStation").empty();
@@ -162,7 +317,28 @@ function stationInfo() {
       console.log("站点请求失败！")
     }
   });
+>>>>>>> .r1466
 }
+
+/*设置时间*/
+/*只限输入毫秒数*/
+function setTime(s, e) {
+  s = moment(s - 0);
+  e = moment(e - 0);
+  $('#sTime-d').empty();
+  while (true) {
+    $('#sTime-d').append($('<option>' + s.format('YYYY-MM-DD') + '</option>'));
+    if (e.format('YYYY-MM-DD') == 'Invalid date') {
+      break;
+    }
+    if (e.isBefore(s.add(1, 'd'))) {
+      break;
+    }
+  }
+  changeMsg.time = $('#sTime-d').val() + ' 00'
+}
+
+
 
 /**
  * 动态添加div 填数据
@@ -173,6 +349,108 @@ function initEcharts() {
   var ds = {};
   var tname = []; //污染物name
 
+<<<<<<< .mine
+	var species = speciesArr[changeMsg.rms];
+	for(var s = 0;s<species.length;s++){
+		tname.push(species[s]);
+	}
+	$("#initEcharts").empty();
+	
+	for(var i = 0;i < tname.length;i++){
+		var div = $('<div></div>');
+		div.attr("id",tname[i]);
+		div.addClass('echartsCZ');
+		$("#initEcharts").append(div);
+		var option = $.extend(true,{},optionAll); //复制echarts模板
+		if(tname[i] == 'AQI'){
+			option.title.text = tname[i];         //加不同单位
+		}else if(tname[i] != 'CO'){
+			option.title.text = tname[i]+('(μg/m³)');
+		}else{
+			option.title.text = tname[i]+('(mg/m³)');
+		}	
+		option.legend.data = (function(){
+		var lenArr = [];
+		for(var i = 0;i<sceneInitialization.data.length;i++){
+		lenArr.push(sceneInitialization.data[i].scenarinoName);
+		}
+		return lenArr;
+		})();
+		option.series = [];
+		for(var j = 0;j< sceneInitialization.data.length; j++){
+			var id = sceneInitialization.data[j].scenarinoId;
+			var name = sceneInitialization.data[j].scenarinoName;
+			var ttime = [];   //x轴数据
+			var ydata = [];	 //y数据	
+			var keys = [];
+			var vals = [];
+			if(changeMsg.rms == 'day'){
+				for (var prop in datas) {  
+					if (datas.hasOwnProperty(prop)) {   
+						if(prop == id){ //循环不同的情景id
+							for ( var pr in datas[prop] ) {
+								if (datas[prop].hasOwnProperty(pr)) {
+									if(pr == tname[i]){
+										var ss = datas[prop][pr];
+										for( var s in ss ) {
+											keys.push(s);
+											vals.push(ss[s]);
+//											if(ss.hasOwnProperty(s)){  //循环数据 放数据
+//												dd[s] = ss[s];	//值
+//												ttime.push(s);	//键
+//												ydata.push(dd[s]);	//值的集合
+//											}
+										}
+										keys = keys.sort();
+										console.log(keys);
+										for(var m=0; m<keys.length; m++){
+											ttime.push(keys[m]);
+											ydata.push(ss[keys[m]]);
+										}
+										console.log(ttime);
+										console.log(ydata);
+									}
+									
+									
+									
+								}
+							}	
+						}
+					}  
+				}
+			}else{
+				for (var prop in datas) {  
+					if (datas.hasOwnProperty(prop)) {   
+						if(prop == id){ //循环不同的情景id
+							for ( var pr in datas[prop] ) {
+								if (datas[prop].hasOwnProperty(pr)) {
+									if(pr == tname[i]){
+										var ss = datas[prop][pr];
+										for(var h in ss){
+											if(ss.hasOwnProperty(h)){
+												for(var y in ss[h]){
+													if(ss[h].hasOwnProperty(y)){
+														var tt = [];
+														tt = ss[h][y];
+														ttime.push(h+' '+y);
+														ydata.push(ss[h][y]);
+													}
+												}
+											}
+										}
+									}
+								}
+							}	
+						}
+					}  
+				}
+			}
+			option.series.push({
+				name : name, 				//情景名称  对应图例 exceptsjz
+				type : show_type, 			//图表类型   已设全局变量 show_type
+				smooth : true,
+				data : ydata     			//可变情景数据  
+=======
   var species = speciesArr[changeMsg.rms];
   for (var s = 0; s < species.length; s++) {
     tname.push(species[s]);
@@ -257,7 +535,20 @@ function initEcharts() {
         type: show_type, 			//图表类型   已设全局变量 show_type
         smooth: true,
         data: ydata     			//可变情景数据
+>>>>>>> .r1466
 
+<<<<<<< .mine
+			});
+		}
+		console.log(ydata);
+		option.xAxis = [];
+		option.xAxis.push({				    //x轴情景时间
+			data:ttime
+		});
+		var es = echarts.init(document.getElementById(tname[i]));
+		es.setOption(option);
+	}
+=======
       });
     }
     option.xAxis = [];
@@ -267,8 +558,15 @@ function initEcharts() {
     var es = echarts.init(document.getElementById(tname[i]));
     es.setOption(option);
   }
+>>>>>>> .r1466
 }
 
+<<<<<<< .mine
+//超链接显示 模态框
+function exchangeModal(){
+	sceneInittion();
+	$("#Initialization").modal();
+=======
 var echartsData;
 /**
  * 接收/更新数据
@@ -302,12 +600,50 @@ function getdata() {
     }
 
   });
+>>>>>>> .r1466
 }
 
 var allMission = {};
 /**
  * 初始化模态框显示
  */
+<<<<<<< .mine
+function sceneInittion(){
+	$("#task").html("");
+	var paramsName = {};
+	paramsName.userId = userId;
+	console.log(JSON.stringify(paramsName));
+	ajaxPost('/mission/find_All_mission',paramsName).success(function(res){
+		console.log(JSON.stringify(res));
+		if(res.status == 0){
+			var task = "";
+			
+			/*测试数据*/
+		      res.data = [
+		        {
+		          missionEndDate: 1480258800000,
+		          missionId: 393,
+		          missionName: "测试任务",
+		          missionStartDate: 1479571200000,
+		        }
+		      ]
+		      /*测试数据 end*/
+			
+			
+			$.each(res.data, function(k, vol) {
+				allMission[vol.missionId] = vol;
+				if(sceneInitialization){
+					if(sceneInitialization.taskID == vol.missionId){
+						task += '<option value="'+vol.missionId+'" selected="selected">'+vol.missionName+'</option>';
+					}else{
+						task += '<option value="'+vol.missionId+'">'+vol.missionName+'</option>';
+					}
+				}else{
+					task += '<option value="'+vol.missionId+'">'+vol.missionName+'</option>';
+				}
+			});
+			$("#task").html(task);
+=======
 function sceneInittion() {
   $("#task").html("");
   var paramsName = {};
@@ -331,6 +667,7 @@ function sceneInittion() {
           }
         });
         $("#task").html(task);
+>>>>>>> .r1466
 //			$("#Initialization").modal();//初始化模态框显示
         $("#Initialization").modal({backdrop: 'static', keyboard: false});
         sceneTable();
@@ -345,9 +682,158 @@ function sceneInittion() {
   });
 }
 
+var echartsData;
+/**
+ * 接收/更新数据
+ */
+function getdata(){
+	
+	var url = '/Appraisal/find_appraisal';
+//	var paramsName = {"userId":"1","missionId":"393","mode":"point","time":"2016-11-27 13","cityStation":"1002A","scenarinoId":changeMsg.scenarinoId,"datetype":changeMsg.rms};
+	
+	console.log(changeMsg);
+	console.log(changeMsg.station);
+	var paramsName = {
+			"userId":"1",
+//			"missionId":"393",
+			"missionId":sceneInitialization.taskID,
+//			"mode":"point",
+			"mode":changeMsg.station=='avg'?'city':'point',
+//			"time":"2016-11-27 13",
+			"time":changeMsg.time,
+//			"cityStation":"1002A",
+			"cityStation":changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
+//			"scenarinoId":[466,458,456],
+			"scenarinoId":changeMsg.scenarinoId,
+//			"datetype":"day"
+			"datetype":changeMsg.rms
+				};
+	
+	ajaxPost(url,paramsName).success(function(res){
+		if(res.status == 0){
+			echartsData = res.data;
+			console.log(echartsData)
+			if(JSON.stringify(echartsData) == '{}'||echartsData==null){	
+//				swal('暂无数据', '', 'error')
+			}else{
+			
+			}
+			initEcharts();
+		}else{
+			swal(res.msg, '' , 'error')
+		}
+		
+	});
+}
+
+
+
 /**
  * 根据任务ID，获取情景列表用于选择情景范围
  */
+<<<<<<< .mine
+function sceneTable(){
+	$("#sceneTableId").bootstrapTable('destroy');//销毁现有表格数据
+	
+	$("#sceneTableId").bootstrapTable({
+		method : 'POST',
+		url : '/ampc/scenarino/find_All_scenarino',
+		dataType : "json",
+		iconSize : "outline",
+		clickToSelect : true,// 点击选中行
+		pagination : false, // 在表格底部显示分页工具栏
+		striped : true, // 使表格带有条纹
+		queryParams : function(params) {
+			var data = {};
+			data.userId = userId;
+			data.missionId = $("#task").val();
+			return JSON.stringify({"token": "","data": data});
+		},
+		queryParamsType : "limit", // 参数格式,发送标准的RESTFul类型的参数请求
+		silent : true, // 刷新事件必须设置
+		contentType : "application/json", // 请求远程数据的内容类型。
+		responseHandler: function (res) {
+//			console.log(res.data);
+//			if(res.status == 0&&res.data.length>0){
+//				if(res.data.rows.length>0){
+//					
+//					if(sceneInitialization){
+//						if(sceneInitialization.data.length>0){
+//							
+//							$.each(res.data.rows, function(i, col) {
+//								$.each(sceneInitialization.data, function(k, vol) {
+//									if(col.scenarinoId == vol.scenarinoId){
+//										res.data.rows[i].state = true;
+//									}
+//								});
+//							});
+//						}
+//					}
+//					return res.data.rows;
+//				}
+//			}else if(res.status == 1000){
+//				swal(res.msg, '', 'error');
+//			}
+//			else{
+//				return res;
+//			}
+			/*测试使用 start*/
+	      var data = {
+	        rows:[]
+	      }
+	      data.rows = [
+			{
+		    "scenarinoId": 456,
+		    "scenarinoName": "观测数据",
+		    "scenType": "1",
+		    "scenarinoStartDate": 1479571200000,
+		    "scenarinoEndDate": 1480258800000
+			  },
+			{
+			    "scenarinoId": 456,
+				"scenarinoName": "基准情景",
+				"scenType": "1",
+				"scenarinoStartDate": 1479571200000,
+				"scenarinoEndDate": 1480258800000
+			  }, 
+	        {
+	          "scenarinoId": 456,
+	          "scenarinoName": "情景1",
+	          "scenType": "1",
+	          "scenarinoStartDate": 1479571200000,
+	          "scenarinoEndDate": 1480258800000
+	        },
+	        {
+	          "scenarinoId": 458,
+	          "scenarinoName": "情景2",
+	          "scenType": "1",
+	          "scenarinoStartDate": 1479571200000,
+	          "scenarinoEndDate": 1480258800000
+	        },
+	        {
+	          "scenarinoId": 466,
+	          "scenarinoName": "情景3",
+	          "scenType": "1",
+	          "scenarinoStartDate": 1479571200000,
+	          "scenarinoEndDate": 1480258800000
+	        },
+	      ];
+	      return data.rows
+
+	      /*测试使用 end*/
+			
+		},
+		onClickRow : function(row, $element) {
+			$('.success').removeClass('success');
+			$($element).addClass('success');
+		},
+		icons : {
+			refresh : "glyphicon-repeat",
+			toggle : "glyphicon-list-alt",
+			columns : "glyphicon-list"
+		},
+		onLoadSuccess : function(data){
+=======
 function sceneTable() {
   $("#sceneTableId").bootstrapTable('destroy');//销毁现有表格数据
 
@@ -402,6 +888,7 @@ function sceneTable() {
       columns: "glyphicon-list"
     },
     onLoadSuccess: function (data) {
+>>>>>>> .r1466
 //			console.log(data);
     },
     onLoadError: function () {
@@ -443,11 +930,15 @@ function save_scene() {
 //		$("#close_scene").click();
   }
 }
+<<<<<<< .mine
+=======
 //超链接显示 模态框
 function exchangeModal() {
   sceneInittion();
   $("#Initialization").modal();
 }
+>>>>>>> .r1466
+
 
 /**
  * 设置情景下拉框的内容
@@ -461,6 +952,23 @@ function set_sce() {
 /**
  * 站点 点击事件 省- 市- 站点
  */
+<<<<<<< .mine
+$('#proStation').on('change', function (e) {
+	  var pro = $(e.target).val();
+	  changeMsg.pro = pro;
+	  $('#cityStation').empty()
+	  var cityStation = allStation[pro].station;
+	  for (var city in cityStation) {
+	    $('#cityStation').append($('<option value="' + cityStation[city].code + '">' + cityStation[city].name + '</option>'))
+	  }
+	  changeMsg.city = $('#cityStation').val();
+	  findStation(changeMsg.city);
+	  //var station = cityStation[changeMsg.city].station;
+	  //for (var s in station) {
+	  //  $('#station').append($('<option value="' + station[s].code + '">' + station[s].name + '</option>'))
+	  //}
+	  //changeMsg.station = $('#station').val();
+=======
 $("#proStation").on('change', function (e) {
   var pro = $(e.target).val();
   changeMsg.pro = pro;
@@ -474,7 +982,12 @@ $("#proStation").on('change', function (e) {
     $("#station").append('<option value="' + station[st].code + '">' + station[st].name + '</option>')
   }
   changeMsg.station = $("#station").val();
+>>>>>>> .r1466
 
+<<<<<<< .mine
+	  getdata();
+	});
+=======
   getdata();
 });
 $("#cityStation").on('change', function (e) {
@@ -493,12 +1006,50 @@ $("#station").on('change', function (e) {
   changeMsg.station = station;
   getdata();
 });
+>>>>>>> .r1466
+
+	$('#cityStation').on('change', function (e) {
+	  var city = $(e.target).val();
+	  changeMsg.city = city;
+	  findStation(changeMsg.city);
+	  //var station = allCode[changeMsg.pro].station[city].station;
+	  //for (var s in station) {
+	  //  $('#station').append($('<option value="' + station[s].code + '">' + station[s].name + '</option>'))
+	  //}
+	  //changeMsg.station = $('#station').val();
+
+	  getdata();
+	});
+
+	$('#station').on('change', function (e) {
+	  var station = $(e.target).val();
+	  changeMsg.station = station;
+
+	  getdata();
+	});
 
 /**
  * 逐日
  */
 //逐小时显示 AQI PM25 PM10 O3 SO2 NO2 CO SO4 NO3 NH4 BC OM PMFINE
 //逐日显示 AQI PM25 PM10 O3_8_max O3_1_max SO2 NO2 CO SO4 NO3 NH4 BC OM PMFINE
+<<<<<<< .mine
+//$('input[name=rms]').on('change',function(e){
+//	var rms = $(e.target).val();
+//	changeMsg.rms= rms
+//	console.log(rms);
+//	if(rms == 'hour'){
+//		show_type = "line";
+//		getdata();
+//		
+//	}else{
+//		show_type = "bar";
+//		getdata();
+//	}
+//	
+//	
+//});
+=======
 $('input[name=rms]').on('change', function (e) {
   var rms = $(e.target).val();
   changeMsg.rms = rms
@@ -514,6 +1065,27 @@ $('input[name=rms]').on('change', function (e) {
 
 
 });
+>>>>>>> .r1466
+
+$('input[name=rms]').on('change', function (e) { //时间分辨率选择
+	  var rms = $(e.target).val();
+	  changeMsg.rms = rms;
+	  console.log(rms);
+	  $('#species').empty();
+	  for (var i = 0; i < speciesArr[rms].length; i++) {
+	    $('#species').append($('<option>' + speciesArr[rms][i] + '</option>'))
+	  }
+	  if (rms == 'day') {
+	    $('#sTime-h').addClass('disNone');
+	    $('#eTimeP').addClass('disNone');
+	  } else if (rms == 'hour') {
+	    $('#sTime-h').removeClass('disNone');
+	    $('#eTimeP').addClass('disNone');
+	  }
+
+	  getdata();
+	});
+
 
 //绝对量比较 绝对变化
 $('input[name=changes]').on('change', function (e) {
