@@ -628,9 +628,14 @@ public class AppraisalController {
 				Date startdate=ScenarinoDetail.getScenarinoStartDate();
 				String start=daysdf.format(startdate);
 				Date adddate=ScenarinoDetail.getScenarinoAddTime();
-				if(start.equals(daytime)){
+				if(ScenarinoDetail.getScenType().equals("3")){
 					if(datetype.equals("day")){//逐天
-						String tables="T_SCENARINO_FNL_DAILY_";
+						String tables="";
+						if(tMissionDetail.getMissionStatus().equals("3")){
+							tables="T_SCENARINO_DAILY_";
+						}else{
+						tables="T_SCENARINO_FNL_DAILY_";
+						}
 						 DateFormat df = new SimpleDateFormat("yyyy");
 						String nowTime= df.format(adddate);
 						System.out.println(nowTime);
@@ -646,7 +651,57 @@ public class AppraisalController {
 						scenarinoEntity.setTableName(tables);
 						sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 						}else{//逐小时
-							String tables="T_SCENARINO_FNL_HOURLY_";
+							String tables="";
+							if(tMissionDetail.getMissionStatus().equals("3")){
+								tables="T_SCENARINO_HOURLY_";
+							}else{
+							tables="T_SCENARINO_FNL_HOURLY_";
+							}
+							 DateFormat df = new SimpleDateFormat("yyyy");
+							String nowTime= df.format(adddate);
+							System.out.println(nowTime);
+							tables+=nowTime+"_";
+							tables+=userId.toString();
+							ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+							scenarinoEntity.setCity_station(cityStation);
+							scenarinoEntity.setDomain(3);
+							scenarinoEntity.setDomainId(domainId);
+							scenarinoEntity.setDay(ScenarinoDetail.getScenarinoStartDate());
+							scenarinoEntity.setMode(mode);
+							scenarinoEntity.setsId(Integer.valueOf(ScenarinoDetail.getScenarinoId().toString()));
+							scenarinoEntity.setTableName(tables);
+							sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+						}//时间分布判断
+			}else{
+				if(start.equals(daytime)){
+					if(datetype.equals("day")){//逐天
+						String tables="";
+						if(tMissionDetail.getMissionStatus().equals("3")){
+							tables="T_SCENARINO_DAILY_";
+						}else{
+						tables="T_SCENARINO_FNL_DAILY_";
+						}
+						 DateFormat df = new SimpleDateFormat("yyyy");
+						String nowTime= df.format(adddate);
+						System.out.println(nowTime);
+						tables+=nowTime+"_";
+						tables+=userId;
+						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+						scenarinoEntity.setCity_station(cityStation);
+						scenarinoEntity.setDomain(3);
+						scenarinoEntity.setDay(ScenarinoDetail.getScenarinoStartDate());
+						scenarinoEntity.setDomainId(domainId);
+						scenarinoEntity.setMode(mode);
+						scenarinoEntity.setsId(Integer.valueOf(ScenarinoDetail.getScenarinoId().toString()));
+						scenarinoEntity.setTableName(tables);
+						sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+						}else{//逐小时
+							String tables="";
+							if(tMissionDetail.getMissionStatus().equals("3")){
+								tables="T_SCENARINO_HOURLY_";
+							}else{
+							tables="T_SCENARINO_FNL_HOURLY_";
+							}
 							 DateFormat df = new SimpleDateFormat("yyyy");
 							String nowTime= df.format(adddate);
 							System.out.println(nowTime);
@@ -666,14 +721,20 @@ public class AppraisalController {
 					continue;
 				}	
 			}
+			}
 			if(datetype.equals("hour")){
 				for(ScenarinoEntity sc:sclist){
 					String scid=String.valueOf(sc.getsId());
 					String content=sc.getContent().toString();
 					JSONObject obj=JSONObject.fromObject(content);
-					Map<String,Object> detamap=(Map)obj;
+					Map<String,Object> detamap=new HashMap();
+					if(tMissionDetail.getMissionStatus().equals("3")){
+						Map<String,Object> demap=(Map)obj;
+						detamap=(Map<String,Object>)demap.get(daytime);
+					}else{
+						detamap=(Map)obj;
+					}
 					Map<String,Object> datemap=new HashMap();
-
 						Map<String,Object> spcmap=new HashMap();
 						for(String spr:detamap.keySet()){
 							String height=detamap.get(spr).toString();
@@ -688,16 +749,16 @@ public class AppraisalController {
 							Map<String,Object> hourcmap=new HashMap();
 							if(hourlist.size()==24){
 							for(int a=0;a<=23;a++){
-								if(hournum-1==a){
+								if(hournum==a){
 									if(spr.equals("CO")){
-										if(heightmap.get(heights)!=null){
-										litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(2, BigDecimal.ROUND_HALF_UP));
+										if(hourlist.get(hournum)!=null){
+										litarr.add((new BigDecimal(hourlist.get(hournum).toString())).setScale(2, BigDecimal.ROUND_HALF_UP));
 										}else{
 											litarr.add("-");
 										}
 										}else{
-											if(heightmap.get(heights)!=null){
-												litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											
+											if(hourlist.get(hournum)!=null){
+												litarr.add((new BigDecimal(hourlist.get(hournum).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											
 												}else{
 													litarr.add("-");
 												}
@@ -733,14 +794,14 @@ public class AppraisalController {
 							}else{
 								for(int a=0;a<=23;a++){
 									if(spr.equals("CO")){
-										if(heightmap.get(heights)!=null){
-										litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(2, BigDecimal.ROUND_HALF_UP));
+										if(hourlist.get(hournum)!=null){
+										litarr.add((new BigDecimal(hourlist.get(hournum).toString())).setScale(2, BigDecimal.ROUND_HALF_UP));
 										}else{
 											litarr.add("-");
 										}
 										}else{
-											if(heightmap.get(heights)!=null){
-												litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											
+											if(hourlist.get(hournum)!=null){
+												litarr.add((new BigDecimal(hourlist.get(hournum).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											
 												}else{
 													litarr.add("-");
 												}
@@ -785,9 +846,17 @@ public class AppraisalController {
 						String scid=String.valueOf(sc.getsId());
 						String content=sc.getContent().toString();
 						JSONObject obj = JSONObject.fromObject(content);
-						Map<String,Object> detamap=(Map)obj;
+						Map<String,Object> detamap=new HashMap();
+						if(tMissionDetail.getMissionStatus().equals("3")){
+							Map<String,Object> demap=(Map)obj;
+							detamap=(Map<String,Object>)demap.get(daytime);
+						}else{
+							detamap=(Map)obj;
+						}
+						
 						Map<String,Object> datemap=new HashMap();
 							Map<String,Object> spcmap=new HashMap();
+							
 							for(String spr:detamap.keySet()){
 								String height=detamap.get(spr).toString();
 								JSONObject heightobj=JSONObject.fromObject(height);
