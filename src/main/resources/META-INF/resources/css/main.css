@@ -4478,4 +4478,10 @@ pre {
     border-right: 1px solid #d0d0ca;
     flex-grow:1
 }
+.btn-group>.btn-success[disabled]{
+    opacity: .65;
+    cursor:not-allowed;
+    background-color: white;
+    color: #1c84c6;
+}
 /*-----------------------------------------------------------------------------*/
