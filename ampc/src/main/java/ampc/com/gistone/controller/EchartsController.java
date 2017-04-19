@@ -70,7 +70,7 @@ public class EchartsController {
 			// 情景id
 			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
 			// 行政区划代码
-			String code = data.get("code").toString();;
+			String codes = data.get("code").toString();;
 			// 行政区划等级
 			Long addressLevle=Long.parseLong(data.get("addressLevle").toString());
 			// 污染物类型
@@ -95,167 +95,447 @@ public class EchartsController {
 			List<String> pflResult=new ArrayList<String>();
 			List<String> jplResult=new ArrayList<String>();
 			List<String> sjpflResult=new ArrayList<String>();
-			//判断发过来的code等级  并全部转换成3级编码
-			if(addressLevle==1) code=code.substring(0,2)+"%";
-			if(addressLevle==2) code=code.substring(0,4)+"%";
-			//如果传过来的已经是3级则不许要转换
-			if(addressLevle==3){
-				//添加code条件
-				mapQuery.put("code", code);
-				//获取所有的基准情景减排结果
-				List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
-				//循环所有基准情景的减排结果
-				for (TEmissionDetail tEmissionDetail : basisList) {
-					//临时变量用来记录污染物在所有行业的总和
-					BigDecimal sumResult=new BigDecimal(0);
-					//获取所有的基准情景减排结果
-					String edetail=tEmissionDetail.getEmissionDetails();
-					//解析json获取到所有行业的减排信息
-					Map edeMap=mapper.readValue(edetail, Map.class);
-					//循环所有行业用来得到所有行业的污染物减排总和
-					for(Object obj:edeMap.keySet()){
-						//获取行业
-						Map ede=(Map)edeMap.get(obj);
-						//获取行业中的减排污染物信息
-						Object result=null;
-						if(stainType.equals("PMC")){
-							result=ede.get("PMcoarse");
-						}else if(stainType.equals("PM10")){
-							if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
-								result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
-							}
-						}else if(stainType.equals("PMFINE")){
-							if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
-								double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
-								if(d<0){
-									throw new Exception("减排结果出现负数");
-								}
-								result=d;
-							}
-						}else{
-							result=ede.get(stainType);
-						}
-						//如果为空则继续循环
-						if(result==null) continue;
-						//进行转换
-						BigDecimal bigResult=new BigDecimal(result.toString());
-						//累计增加
-						sumResult=sumResult.add(bigResult);
-					}
-					//添加所有行业在该污染物的减排量总和
-					pflResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(sumResult.doubleValue(), 4), 2)));
-				}
-				//查询情景的信息时为2
-				mapQuery.put("emtype", 2);
-				//查询情景的信息时给情景Id
-				mapQuery.put("scenarinoId", scenarinoId);
-				//获取所有的情景减排结果
-				List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
-				//循环所有实际减排的减排结果
-				for (TEmissionDetail tEmissionDetail : tdList) {
-					//添加每一个的减排日期
-					dateResult.add(DateUtil.DateToStr(tEmissionDetail.getEmissionDate()));
-					//临时变量用来记录污染物在所有行业的总和
-					BigDecimal sumResult=new BigDecimal(0);
-					//获取所有实际减排结果
-					String edetail=tEmissionDetail.getEmissionDetails();
-					//解析json获取到所有行业的减排信息
-					Map edeMap=mapper.readValue(edetail, Map.class);
-					//循环所有行业用来得到所有行业的污染物减排总和
-					for(Object obj:edeMap.keySet()){
-						//获取行业
-						Map ede=(Map)edeMap.get(obj);
-						//获取行业中的减排污染物信息
-						Object result=null;
-						if(stainType.equals("PMC")){
-							result=ede.get("PMcoarse");
-						}else if(stainType.equals("PM10")){
-							if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
-								result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
-							}
-						}else if(stainType.equals("PMFINE")){
-							if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
-								double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
-								if(d<0){
-									throw new Exception("减排结果出现负数");
-								}
-								result=d;
-							}
-						}else{
-							result=ede.get(stainType);
-						}
-						//如果为空则继续循环
-						if(result==null) continue;
-						//进行转换
-						BigDecimal bigResult=new BigDecimal(result.toString());
-						//累计增加
-						sumResult=sumResult.add(bigResult);
-					}
-					//添加所有行业在该污染物的减排量总和
-					jplResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(sumResult.doubleValue(), 4), 2)));
-				}
-			}else{
-				//如果等于0，说明前台需要显示全部区域的数据
-				if(code .equals("0")){
+			String[] codesSplit=codes.split(",");
+			if(codesSplit.length==1){
+				String code=codesSplit[0];
+				//判断发过来的code等级  并全部转换成3级编码
+				if(addressLevle==1) code=code.substring(0,2)+"%";
+				if(addressLevle==2) code=code.substring(0,4)+"%";
+				//如果传过来的已经是3级则不许要转换
+				if(addressLevle==3){
 					//添加code条件
-					mapQuery.put("code", null);
+					mapQuery.put("code", code);
+					//获取所有的基准情景减排结果
+					List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
+					//循环所有基准情景的减排结果
+					for (TEmissionDetail tEmissionDetail : basisList) {
+						//临时变量用来记录污染物在所有行业的总和
+						BigDecimal sumResult=new BigDecimal(0);
+						//获取所有的基准情景减排结果
+						String edetail=tEmissionDetail.getEmissionDetails();
+						//解析json获取到所有行业的减排信息
+						Map edeMap=mapper.readValue(edetail, Map.class);
+						//循环所有行业用来得到所有行业的污染物减排总和
+						for(Object obj:edeMap.keySet()){
+							//获取行业
+							Map ede=(Map)edeMap.get(obj);
+							//获取行业中的减排污染物信息
+							Object result=null;
+							if(stainType.equals("PMC")){
+								result=ede.get("PMcoarse");
+							}else if(stainType.equals("PM10")){
+								if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+									result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+								}
+							}else if(stainType.equals("PMFINE")){
+								if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+									double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+									if(d<0){
+										throw new Exception("减排结果出现负数");
+									}
+									result=d;
+								}
+							}else{
+								result=ede.get(stainType);
+							}
+							//如果为空则继续循环
+							if(result==null) continue;
+							//进行转换
+							BigDecimal bigResult=new BigDecimal(result.toString());
+							//累计增加
+							sumResult=sumResult.add(bigResult);
+						}
+						//添加所有行业在该污染物的减排量总和
+						pflResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(sumResult.doubleValue(), 4), 2)));
+					}
+					//查询情景的信息时为2
+					mapQuery.put("emtype", 2);
+					//查询情景的信息时给情景Id
+					mapQuery.put("scenarinoId", scenarinoId);
+					//获取所有的情景减排结果
+					List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
+					//循环所有实际减排的减排结果
+					for (TEmissionDetail tEmissionDetail : tdList) {
+						//添加每一个的减排日期
+						dateResult.add(DateUtil.DateToStr(tEmissionDetail.getEmissionDate()));
+						//临时变量用来记录污染物在所有行业的总和
+						BigDecimal sumResult=new BigDecimal(0);
+						//获取所有实际减排结果
+						String edetail=tEmissionDetail.getEmissionDetails();
+						//解析json获取到所有行业的减排信息
+						Map edeMap=mapper.readValue(edetail, Map.class);
+						//循环所有行业用来得到所有行业的污染物减排总和
+						for(Object obj:edeMap.keySet()){
+							//获取行业
+							Map ede=(Map)edeMap.get(obj);
+							//获取行业中的减排污染物信息
+							Object result=null;
+							if(stainType.equals("PMC")){
+								result=ede.get("PMcoarse");
+							}else if(stainType.equals("PM10")){
+								if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+									result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+								}
+							}else if(stainType.equals("PMFINE")){
+								if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+									double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+									if(d<0){
+										throw new Exception("减排结果出现负数");
+									}
+									result=d;
+								}
+							}else{
+								result=ede.get(stainType);
+							}
+							//如果为空则继续循环
+							if(result==null) continue;
+							//进行转换
+							BigDecimal bigResult=new BigDecimal(result.toString());
+							//累计增加
+							sumResult=sumResult.add(bigResult);
+						}
+						//添加所有行业在该污染物的减排量总和
+						jplResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(sumResult.doubleValue(), 4), 2)));
+					}
 				}else{
 					mapQuery.put("code", code);
-				}
-				//获取所有的基准情景减排结果
-				List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
-				//内部循环初始值变量
-				int j=0;
-				//循环所有基准情景的减排结果
-				for (int i=0;i<basisList.size();i++) {
-					//临时变量用来记录污染物在所有行业的总和
-					BigDecimal sumResult=new BigDecimal(0);
-					//获取到基准的减排信息Json串
-					String edetail=basisList.get(i).getEmissionDetails();
-					//解析json获取到所有行业的减排信息
-					Map edeMap=mapper.readValue(edetail, Map.class);
-					//循环所有行业用来得到所有行业的污染物减排总和
-					for(Object obj:edeMap.keySet()){
-						//获取行业
-						Map ede=(Map)edeMap.get(obj);
-						//获取行业中的减排污染物信息
-						Object result=null;
-						if(stainType.equals("PMC")){
-							result=ede.get("PMcoarse");
-						}else if(stainType.equals("PM10")){
-							if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
-								result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
-							}
-						}else if(stainType.equals("PMFINE")){
-							if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
-								double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
-								if(d<0){
-									throw new Exception("减排结果出现负数");
+					//获取所有的基准情景减排结果
+					List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
+					//内部循环初始值变量
+					int j=0;
+					//循环所有基准情景的减排结果
+					for (int i=0;i<basisList.size();i++) {
+						//临时变量用来记录污染物在所有行业的总和
+						BigDecimal sumResult=new BigDecimal(0);
+						//获取到基准的减排信息Json串
+						String edetail=basisList.get(i).getEmissionDetails();
+						//解析json获取到所有行业的减排信息
+						Map edeMap=mapper.readValue(edetail, Map.class);
+						//循环所有行业用来得到所有行业的污染物减排总和
+						for(Object obj:edeMap.keySet()){
+							//获取行业
+							Map ede=(Map)edeMap.get(obj);
+							//获取行业中的减排污染物信息
+							Object result=null;
+							if(stainType.equals("PMC")){
+								result=ede.get("PMcoarse");
+							}else if(stainType.equals("PM10")){
+								if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+									result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
 								}
-								result=d;
+							}else if(stainType.equals("PMFINE")){
+								if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+									double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+									if(d<0){
+										throw new Exception("减排结果出现负数");
+									}
+									result=d;
+								}
+							}else{
+								result=ede.get(stainType);
 							}
-						}else{
-							result=ede.get(stainType);
+							//如果为空则继续循环
+							if(result==null) continue;
+							//进行转换
+							BigDecimal bigResult=new BigDecimal(result.toString());
+							//累计增加
+							sumResult=sumResult.add(bigResult);
 						}
-						//如果为空则继续循环
-						if(result==null) continue;
-						//进行转换
-						BigDecimal bigResult=new BigDecimal(result.toString());
-						//累计增加
-						sumResult=sumResult.add(bigResult);
+						//临时变量+1
+						j++;
+						for(;j<basisList.size();j++){
+							if(!basisList.get(i).getCode().equals(basisList.get(j).getCode())){
+								//获取到基准的减排信息Json串
+								String edetail1=basisList.get(j).getEmissionDetails();
+								//解析json获取到所有行业的减排信息
+								Map edeMap1=mapper.readValue(edetail1, Map.class);
+								//循环所有行业用来得到所有行业的污染物减排总和
+								for(Object obj:edeMap1.keySet()){
+									//获取行业
+									Map ede=(Map)edeMap1.get(obj);
+									//获取行业中的减排污染物信息
+									Object result=null;
+									if(stainType.equals("PMC")){
+										result=ede.get("PMcoarse");
+									}else if(stainType.equals("PM10")){
+										if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+											result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+										}
+									}else if(stainType.equals("PMFINE")){
+										if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+											double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+											if(d<0){
+												throw new Exception("减排结果出现负数");
+											}
+											result=d;
+										}
+									}else{
+										result=ede.get(stainType);
+									}
+									//如果为空则继续循环
+									if(result==null) continue;
+									//进行转换
+									BigDecimal bigResult=new BigDecimal(result.toString());
+									//累计增加
+									sumResult=sumResult.add(bigResult);
+								}
+							}else{
+								//如果条件不满足更改第一层循环的值  因为到上面还要++所以-1
+								i=j-1;
+								break;
+							}
+							//判断是否还有数据了
+							if((j+1)==basisList.size()){
+								i=j;
+							}
+						}
+						//添加所有行业在该污染物的减排量总和
+						pflResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(sumResult.doubleValue(), 4), 2)));
 					}
-					//临时变量+1
-					j++;
-					for(;j<basisList.size();j++){
-						if(!basisList.get(i).getCode().equals(basisList.get(j).getCode())){
+					//查询情景的信息时为2
+					mapQuery.put("emtype", 2);
+					//查询情景的信息时给情景Id
+					mapQuery.put("scenarinoId", scenarinoId);
+					//获取所有的实际减排量的减排结果
+					List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
+					//内部循环初始值变量
+					j=0;
+					//循环所有实际减排量的减排结果
+					for (int i=0;i<tdList.size();i++) {
+						//添加每一个的减排日期
+						dateResult.add(DateUtil.DateToStr(tdList.get(i).getEmissionDate()));
+						BigDecimal sumResult=new BigDecimal(0);
+						//获取到实际减排量的的减排信息Json串
+						String edetail=tdList.get(i).getEmissionDetails();
+						//解析json获取到所有行业的减排信息
+						Map edeMap=mapper.readValue(edetail, Map.class);
+						//循环所有行业用来得到所有行业的污染物减排总和
+						for(Object obj:edeMap.keySet()){
+							//获取行业
+							Map ede=(Map)edeMap.get(obj);
+							//获取行业中的减排污染物信息
+							Object result=null;
+							if(stainType.equals("PMC")){
+								result=ede.get("PMcoarse");
+							}else if(stainType.equals("PM10")){
+								if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+									result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+								}
+							}else if(stainType.equals("PMFINE")){
+								if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+									double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+									if(d<0){
+										throw new Exception("减排结果出现负数");
+									}
+									result=d;
+								}
+							}else{
+								result=ede.get(stainType);
+							}
+							//如果为空则继续循环
+							if(result==null) continue;
+							//进行转换
+							BigDecimal bigResult=new BigDecimal(result.toString());
+							//累计增加
+							sumResult=sumResult.add(bigResult);
+						}
+						//临时变量+1
+						j++;
+						for(;j<tdList.size();j++){
+							if(!tdList.get(i).getCode().equals(tdList.get(j).getCode())){
+								//获取到实际减排量的减排信息Json串
+								String edetail1=tdList.get(j).getEmissionDetails();
+								//解析json获取到所有行业的减排信息
+								Map edeMap1=mapper.readValue(edetail1, Map.class);
+								//循环所有行业用来得到所有行业的污染物减排总和
+								for(Object obj:edeMap1.keySet()){
+									//获取行业
+									Map ede=(Map)edeMap1.get(obj);
+									//获取行业中的减排污染物信息
+									Object result=null;
+									if(stainType.equals("PMC")){
+										result=ede.get("PMcoarse");
+									}else if(stainType.equals("PM10")){
+										if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+											result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+										}
+									}else if(stainType.equals("PMFINE")){
+										if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+											double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+											if(d<0){
+												throw new Exception("减排结果出现负数");
+											}
+											result=d;
+										}
+									}else{
+										result=ede.get(stainType);
+									}
+									//如果为空则继续循环
+									if(result==null) continue;
+									//进行转换
+									BigDecimal bigResult=new BigDecimal(result.toString());
+									//累计增加
+									sumResult=sumResult.add(bigResult);
+								}
+							}else{
+								//如果条件不满足更改第一层循环的值  因为到上面还要++所以-1
+								i=j-1;
+								break;
+							}
+							//判断是否还有数据了
+							if((j+1)==tdList.size()){
+								i=j;
+							}
+						}
+						//添加所有行业在该污染物的减排量总和
+						jplResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(sumResult.doubleValue(), 4), 2)));
+					}
+				}
+				//如果没有基准的排放量信息  则默认给0
+				if(pflResult==null||pflResult.size()==0){
+					for(int i=0;i<jplResult.size();i++){
+						pflResult.add("0");
+					}
+				}
+				//创建返回的结果集合
+				Map map=new HashMap();
+				for(int i=0;i<pflResult.size();i++){
+					sjpflResult.add(String.valueOf(Double.parseDouble(pflResult.get(i))-Double.parseDouble(jplResult.get(i))));
+				}
+				//写入日期结果集合
+				map.put("dateResult", dateResult);
+				//写入实际减排结果集合
+				map.put("sjpflResult", sjpflResult);
+				//写入减排量结果集合
+				map.put("jplResult", jplResult);
+				//返回结果
+				LogUtil.getLogger().info("EchartsController 情景减排柱状图数据查询成功!");
+				return AmpcResult.ok(map);
+			}else{
+				for(int q=0;q<codesSplit.length;q++){
+					String code=codesSplit[q];
+					//创建三个结果集合
+					List<String> tempdateResult=new ArrayList<String>();
+					List<String> temppflResult=new ArrayList<String>();
+					List<String> tempjplResult=new ArrayList<String>();
+					List<String> tempsjpflResult=new ArrayList<String>();
+					//判断发过来的code等级  并全部转换成3级编码
+					if(addressLevle==1) code=code.substring(0,2)+"%";
+					if(addressLevle==2) code=code.substring(0,4)+"%";
+					//如果传过来的已经是3级则不许要转换
+					if(addressLevle==3){
+						//添加code条件
+						mapQuery.put("code", code);
+						//获取所有的基准情景减排结果
+						List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
+						//循环所有基准情景的减排结果
+						for (TEmissionDetail tEmissionDetail : basisList) {
+							//临时变量用来记录污染物在所有行业的总和
+							BigDecimal sumResult=new BigDecimal(0);
+							//获取所有的基准情景减排结果
+							String edetail=tEmissionDetail.getEmissionDetails();
+							//解析json获取到所有行业的减排信息
+							Map edeMap=mapper.readValue(edetail, Map.class);
+							//循环所有行业用来得到所有行业的污染物减排总和
+							for(Object obj:edeMap.keySet()){
+								//获取行业
+								Map ede=(Map)edeMap.get(obj);
+								//获取行业中的减排污染物信息
+								Object result=null;
+								if(stainType.equals("PMC")){
+									result=ede.get("PMcoarse");
+								}else if(stainType.equals("PM10")){
+									if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+										result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+									}
+								}else if(stainType.equals("PMFINE")){
+									if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+										double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+										if(d<0){
+											throw new Exception("减排结果出现负数");
+										}
+										result=d;
+									}
+								}else{
+									result=ede.get(stainType);
+								}
+								//如果为空则继续循环
+								if(result==null) continue;
+								//进行转换
+								BigDecimal bigResult=new BigDecimal(result.toString());
+								//累计增加
+								sumResult=sumResult.add(bigResult);
+							}
+							//添加所有行业在该污染物的减排量总和
+							temppflResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(sumResult.doubleValue(), 4), 2)));
+						}
+						//查询情景的信息时为2
+						mapQuery.put("emtype", 2);
+						//查询情景的信息时给情景Id
+						mapQuery.put("scenarinoId", scenarinoId);
+						//获取所有的情景减排结果
+						List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
+						//循环所有实际减排的减排结果
+						for (TEmissionDetail tEmissionDetail : tdList) {
+							//添加每一个的减排日期
+							tempdateResult.add(DateUtil.DateToStr(tEmissionDetail.getEmissionDate()));
+							//临时变量用来记录污染物在所有行业的总和
+							BigDecimal sumResult=new BigDecimal(0);
+							//获取所有实际减排结果
+							String edetail=tEmissionDetail.getEmissionDetails();
+							//解析json获取到所有行业的减排信息
+							Map edeMap=mapper.readValue(edetail, Map.class);
+							//循环所有行业用来得到所有行业的污染物减排总和
+							for(Object obj:edeMap.keySet()){
+								//获取行业
+								Map ede=(Map)edeMap.get(obj);
+								//获取行业中的减排污染物信息
+								Object result=null;
+								if(stainType.equals("PMC")){
+									result=ede.get("PMcoarse");
+								}else if(stainType.equals("PM10")){
+									if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+										result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+									}
+								}else if(stainType.equals("PMFINE")){
+									if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+										double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+										if(d<0){
+											throw new Exception("减排结果出现负数");
+										}
+										result=d;
+									}
+								}else{
+									result=ede.get(stainType);
+								}
+								//如果为空则继续循环
+								if(result==null) continue;
+								//进行转换
+								BigDecimal bigResult=new BigDecimal(result.toString());
+								//累计增加
+								sumResult=sumResult.add(bigResult);
+							}
+							//添加所有行业在该污染物的减排量总和
+							tempjplResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(sumResult.doubleValue(), 4), 2)));
+						}
+					}else{
+						mapQuery.put("code", code);
+						//获取所有的基准情景减排结果
+						List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
+						//内部循环初始值变量
+						int j=0;
+						//循环所有基准情景的减排结果
+						for (int i=0;i<basisList.size();i++) {
+							//临时变量用来记录污染物在所有行业的总和
+							BigDecimal sumResult=new BigDecimal(0);
 							//获取到基准的减排信息Json串
-							String edetail1=basisList.get(j).getEmissionDetails();
+							String edetail=basisList.get(i).getEmissionDetails();
 							//解析json获取到所有行业的减排信息
-							Map edeMap1=mapper.readValue(edetail1, Map.class);
+							Map edeMap=mapper.readValue(edetail, Map.class);
 							//循环所有行业用来得到所有行业的污染物减排总和
-							for(Object obj:edeMap1.keySet()){
+							for(Object obj:edeMap.keySet()){
 								//获取行业
-								Map ede=(Map)edeMap1.get(obj);
+								Map ede=(Map)edeMap.get(obj);
 								//获取行业中的减排污染物信息
 								Object result=null;
 								if(stainType.equals("PMC")){
@@ -282,78 +562,78 @@ public class EchartsController {
 								//累计增加
 								sumResult=sumResult.add(bigResult);
 							}
-						}else{
-							//如果条件不满足更改第一层循环的值  因为到上面还要++所以-1
-							i=j-1;
-							break;
-						}
-						//判断是否还有数据了
-						if((j+1)==basisList.size()){
-							i=j;
-						}
-					}
-					//添加所有行业在该污染物的减排量总和
-					pflResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(sumResult.doubleValue(), 4), 2)));
-				}
-				//查询情景的信息时为2
-				mapQuery.put("emtype", 2);
-				//查询情景的信息时给情景Id
-				mapQuery.put("scenarinoId", scenarinoId);
-				//获取所有的实际减排量的减排结果
-				List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
-				//内部循环初始值变量
-				j=0;
-				//循环所有实际减排量的减排结果
-				for (int i=0;i<tdList.size();i++) {
-					//添加每一个的减排日期
-					dateResult.add(DateUtil.DateToStr(tdList.get(i).getEmissionDate()));
-					BigDecimal sumResult=new BigDecimal(0);
-					//获取到实际减排量的的减排信息Json串
-					String edetail=tdList.get(i).getEmissionDetails();
-					//解析json获取到所有行业的减排信息
-					Map edeMap=mapper.readValue(edetail, Map.class);
-					//循环所有行业用来得到所有行业的污染物减排总和
-					for(Object obj:edeMap.keySet()){
-						//获取行业
-						Map ede=(Map)edeMap.get(obj);
-						//获取行业中的减排污染物信息
-						Object result=null;
-						if(stainType.equals("PMC")){
-							result=ede.get("PMcoarse");
-						}else if(stainType.equals("PM10")){
-							if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
-								result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
-							}
-						}else if(stainType.equals("PMFINE")){
-							if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
-								double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
-								if(d<0){
-									throw new Exception("减排结果出现负数");
+							//临时变量+1
+							j++;
+							for(;j<basisList.size();j++){
+								if(!basisList.get(i).getCode().equals(basisList.get(j).getCode())){
+									//获取到基准的减排信息Json串
+									String edetail1=basisList.get(j).getEmissionDetails();
+									//解析json获取到所有行业的减排信息
+									Map edeMap1=mapper.readValue(edetail1, Map.class);
+									//循环所有行业用来得到所有行业的污染物减排总和
+									for(Object obj:edeMap1.keySet()){
+										//获取行业
+										Map ede=(Map)edeMap1.get(obj);
+										//获取行业中的减排污染物信息
+										Object result=null;
+										if(stainType.equals("PMC")){
+											result=ede.get("PMcoarse");
+										}else if(stainType.equals("PM10")){
+											if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+												result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+											}
+										}else if(stainType.equals("PMFINE")){
+											if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+												double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+												if(d<0){
+													throw new Exception("减排结果出现负数");
+												}
+												result=d;
+											}
+										}else{
+											result=ede.get(stainType);
+										}
+										//如果为空则继续循环
+										if(result==null) continue;
+										//进行转换
+										BigDecimal bigResult=new BigDecimal(result.toString());
+										//累计增加
+										sumResult=sumResult.add(bigResult);
+									}
+								}else{
+									//如果条件不满足更改第一层循环的值  因为到上面还要++所以-1
+									i=j-1;
+									break;
 								}
-								result=d;
+								//判断是否还有数据了
+								if((j+1)==basisList.size()){
+									i=j;
+								}
 							}
-						}else{
-							result=ede.get(stainType);
+							//添加所有行业在该污染物的减排量总和
+							temppflResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(sumResult.doubleValue(), 4), 2)));
 						}
-						//如果为空则继续循环
-						if(result==null) continue;
-						//进行转换
-						BigDecimal bigResult=new BigDecimal(result.toString());
-						//累计增加
-						sumResult=sumResult.add(bigResult);
-					}
-					//临时变量+1
-					j++;
-					for(;j<tdList.size();j++){
-						if(!tdList.get(i).getCode().equals(tdList.get(j).getCode())){
-							//获取到实际减排量的减排信息Json串
-							String edetail1=tdList.get(j).getEmissionDetails();
+						//查询情景的信息时为2
+						mapQuery.put("emtype", 2);
+						//查询情景的信息时给情景Id
+						mapQuery.put("scenarinoId", scenarinoId);
+						//获取所有的实际减排量的减排结果
+						List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
+						//内部循环初始值变量
+						j=0;
+						//循环所有实际减排量的减排结果
+						for (int i=0;i<tdList.size();i++) {
+							//添加每一个的减排日期
+							tempdateResult.add(DateUtil.DateToStr(tdList.get(i).getEmissionDate()));
+							BigDecimal sumResult=new BigDecimal(0);
+							//获取到实际减排量的的减排信息Json串
+							String edetail=tdList.get(i).getEmissionDetails();
 							//解析json获取到所有行业的减排信息
-							Map edeMap1=mapper.readValue(edetail1, Map.class);
+							Map edeMap=mapper.readValue(edetail, Map.class);
 							//循环所有行业用来得到所有行业的污染物减排总和
-							for(Object obj:edeMap1.keySet()){
+							for(Object obj:edeMap.keySet()){
 								//获取行业
-								Map ede=(Map)edeMap1.get(obj);
+								Map ede=(Map)edeMap.get(obj);
 								//获取行业中的减排污染物信息
 								Object result=null;
 								if(stainType.equals("PMC")){
@@ -380,40 +660,90 @@ public class EchartsController {
 								//累计增加
 								sumResult=sumResult.add(bigResult);
 							}
-						}else{
-							//如果条件不满足更改第一层循环的值  因为到上面还要++所以-1
-							i=j-1;
-							break;
-						}
-						//判断是否还有数据了
-						if((j+1)==tdList.size()){
-							i=j;
+							//临时变量+1
+							j++;
+							for(;j<tdList.size();j++){
+								if(!tdList.get(i).getCode().equals(tdList.get(j).getCode())){
+									//获取到实际减排量的减排信息Json串
+									String edetail1=tdList.get(j).getEmissionDetails();
+									//解析json获取到所有行业的减排信息
+									Map edeMap1=mapper.readValue(edetail1, Map.class);
+									//循环所有行业用来得到所有行业的污染物减排总和
+									for(Object obj:edeMap1.keySet()){
+										//获取行业
+										Map ede=(Map)edeMap1.get(obj);
+										//获取行业中的减排污染物信息
+										Object result=null;
+										if(stainType.equals("PMC")){
+											result=ede.get("PMcoarse");
+										}else if(stainType.equals("PM10")){
+											if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+												result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+											}
+										}else if(stainType.equals("PMFINE")){
+											if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+												double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+												if(d<0){
+													throw new Exception("减排结果出现负数");
+												}
+												result=d;
+											}
+										}else{
+											result=ede.get(stainType);
+										}
+										//如果为空则继续循环
+										if(result==null) continue;
+										//进行转换
+										BigDecimal bigResult=new BigDecimal(result.toString());
+										//累计增加
+										sumResult=sumResult.add(bigResult);
+									}
+								}else{
+									//如果条件不满足更改第一层循环的值  因为到上面还要++所以-1
+									i=j-1;
+									break;
+								}
+								//判断是否还有数据了
+								if((j+1)==tdList.size()){
+									i=j;
+								}
+							}
+							//添加所有行业在该污染物的减排量总和
+							tempjplResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(sumResult.doubleValue(), 4), 2)));
 						}
 					}
-					//添加所有行业在该污染物的减排量总和
-					jplResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(sumResult.doubleValue(), 4), 2)));
+					//如果没有基准的排放量信息  则默认给0
+					if(temppflResult==null||temppflResult.size()==0){
+						for(int i=0;i<tempjplResult.size();i++){
+							temppflResult.add("0");
+						}
+					}
+					//创建返回的结果集合
+					Map map=new HashMap();
+					for(int i=0;i<temppflResult.size();i++){
+						tempsjpflResult.add(String.valueOf(Double.parseDouble(temppflResult.get(i))-Double.parseDouble(tempjplResult.get(i))));
+						if(q==0){
+							dateResult.add("1");
+							dateResult.set(i,tempdateResult.get(i));
+						}
+						sjpflResult.add("1");
+						jplResult.add("2");
+						sjpflResult.set(i,String.valueOf(Double.parseDouble(sjpflResult.get(i))+Double.parseDouble(tempsjpflResult.get(i))));
+						jplResult.set(i, String.valueOf(Double.parseDouble(jplResult.get(i))+Double.parseDouble(tempjplResult.get(i))));
+					}
 				}
+				//创建返回的结果集合
+				Map map=new HashMap();
+				//写入日期结果集合
+				map.put("dateResult", dateResult);
+				//写入实际减排结果集合
+				map.put("sjpflResult", sjpflResult);
+				//写入减排量结果集合
+				map.put("jplResult", jplResult);
+				//返回结果
+				LogUtil.getLogger().info("EchartsController 情景减排柱状图数据查询成功!");
+				return AmpcResult.ok(map);
 			}
-			//如果没有基准的排放量信息  则默认给0
-			if(pflResult==null||pflResult.size()==0){
-				for(int i=0;i<jplResult.size();i++){
-					pflResult.add("0");
-				}
-			}
-			//创建返回的结果集合
-			Map map=new HashMap();
-			for(int i=0;i<pflResult.size();i++){
-				sjpflResult.add(String.valueOf(Double.parseDouble(pflResult.get(i))-Double.parseDouble(jplResult.get(i))));
-			}
-			//写入日期结果集合
-			map.put("dateResult", dateResult);
-			//写入实际减排结果集合
-			map.put("sjpflResult", sjpflResult);
-			//写入减排量结果集合
-			map.put("jplResult", jplResult);
-			//返回结果
-			LogUtil.getLogger().info("EchartsController 情景减排柱状图数据查询成功!");
-			return AmpcResult.ok(map);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("EchartsController 情景减排柱状图数据查询异常!",e);
 			return AmpcResult.build(1000, "参数错误");
@@ -437,7 +767,7 @@ public class EchartsController {
 			// 情景id
 			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
 			// 行政区划代码
-			String code = data.get("code").toString();;
+			String codes = data.get("code").toString();;
 			// 行政区划等级
 			Long addressLevle=Long.parseLong(data.get("addressLevle").toString());
 			// 污染物类型
@@ -459,85 +789,160 @@ public class EchartsController {
 			mapQuery.put("scenarinoId", scenarinoId);
 			//创建结果集合
 			List<PieUtil> puList=new ArrayList<PieUtil>();
-			//判断发过来的code等级  并全部转换成3级编码
-			if(addressLevle==1) code=code.substring(0,2)+"%";
-			if(addressLevle==2) code=code.substring(0,4)+"%";
-			//如果等于0，说明前台需要显示全部区域的数据
-			if(code.equals("0")){
+			String[] codesSplit=codes.split(",");
+			if(codesSplit.length==1){
+				String code=codesSplit[0];
+				//判断发过来的code等级  并全部转换成3级编码
+				if(addressLevle==1) code=code.substring(0,2)+"%";
+				if(addressLevle==2) code=code.substring(0,4)+"%";
 				//添加code条件
 				mapQuery.put("code", null);
-			}else{
-				//添加code条件
-				mapQuery.put("code", code);
-			}
-			//获取所有的减排结果
-			List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
-			//循环所有减排结果
-			for (int i=0;i<tdList.size();i++) {
-				//判断是行业还是措施的  并赋值对应的Json串
-				String edetail=null;
-				if(type==1){
-					//获取所有的基准情景减排结果
-					edetail=tdList.get(i).getEmissionDetails();
-				}else{
-					edetail=tdList.get(i).getMeasureReduce();
-				}
-				//解析json获取到所有行业的减排信息
-				Map edeMap=mapper.readValue(edetail, Map.class);
-				//循环所有行业用来得到所有行业的污染物减排总和
-				sector:for(Object obj:edeMap.keySet()){
-					//获取行业
-					Map ede=(Map)edeMap.get(obj);
-					//获取行业中的减排污染物信息
-					Object result=null;
-					if(stainType.equals("PMC")){
-						result=ede.get("PMcoarse");
-					}else if(stainType.equals("PM10")){
-						if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
-							result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
-						}
-					}else if(stainType.equals("PMFINE")){
-						if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
-							double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
-							if(d<0){
-								throw new Exception("减排结果出现负数");
-							}
-							result=d;
-						}
+				//获取所有的减排结果
+				List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
+				//循环所有减排结果
+				for (int i=0;i<tdList.size();i++) {
+					//判断是行业还是措施的  并赋值对应的Json串
+					String edetail=null;
+					if(type==1){
+						//获取所有的基准情景减排结果
+						edetail=tdList.get(i).getEmissionDetails();
 					}else{
-						result=ede.get(stainType);
+						edetail=tdList.get(i).getMeasureReduce();
 					}
-					//如果为空则继续循环
-					if(result==null) continue;
-					//循环结果集合
-					for(int j=0;j<puList.size();j++){
-						PieUtil pu=puList.get(j);
-						//判断结果集合中是否有该项记录 有则在基础上累计增加值
-						if(pu.getName().equals(obj.toString())){
-							double temp=Double.parseDouble(result.toString());
-							double value=pu.getValue();
-							pu.setValue(temp+value);
-							//继续循环外层循环
-							continue sector;
+					//解析json获取到所有行业的减排信息
+					Map edeMap=mapper.readValue(edetail, Map.class);
+					//循环所有行业用来得到所有行业的污染物减排总和
+					sector:for(Object obj:edeMap.keySet()){
+						//获取行业
+						Map ede=(Map)edeMap.get(obj);
+						//获取行业中的减排污染物信息
+						Object result=null;
+						if(stainType.equals("PMC")){
+							result=ede.get("PMcoarse");
+						}else if(stainType.equals("PM10")){
+							if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+								result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+							}
+						}else if(stainType.equals("PMFINE")){
+							if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+								double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+								if(d<0){
+									throw new Exception("减排结果出现负数");
+								}
+								result=d;
+							}
+						}else{
+							result=ede.get(stainType);
+						}
+						//如果为空则继续循环
+						if(result==null) continue;
+						//循环结果集合
+						for(int j=0;j<puList.size();j++){
+							PieUtil pu=puList.get(j);
+							//判断结果集合中是否有该项记录 有则在基础上累计增加值
+							if(pu.getName().equals(obj.toString())){
+								double temp=Double.parseDouble(result.toString());
+								double value=pu.getValue();
+								pu.setValue(temp+value);
+								//继续循环外层循环
+								continue sector;
+							}
+						}
+						//上面没有该条行业记录  新建行业记录 添加到结果集中
+						PieUtil newPu=new PieUtil();
+						newPu.setName(obj.toString());
+						newPu.setValue(Double.parseDouble(result.toString()));
+						puList.add(newPu);
+					}
+				}
+				//讲数据保留4位有效数字
+				for(int i=0;i<puList.size();i++){
+					double value=puList.get(i).getValue();
+					value=CastNumUtil.significand(value, 4);
+					value=CastNumUtil.decimal(value, 2);
+					puList.get(i).setValue(value);
+				}
+				//返回结果
+				LogUtil.getLogger().info("EchartsController 情景减排饼状图数据查询成功!");
+				return AmpcResult.ok(puList);
+			}else{
+				for(int q=0;q<codesSplit.length;q++){
+					String code=codesSplit[q];
+					//判断发过来的code等级  并全部转换成3级编码
+					if(addressLevle==1) code=code.substring(0,2)+"%";
+					if(addressLevle==2) code=code.substring(0,4)+"%";
+					//添加code条件
+					mapQuery.put("code", code);
+					//获取所有的减排结果
+					List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
+					//循环所有减排结果
+					for (int i=0;i<tdList.size();i++) {
+						//判断是行业还是措施的  并赋值对应的Json串
+						String edetail=null;
+						if(type==1){
+							//获取所有的基准情景减排结果
+							edetail=tdList.get(i).getEmissionDetails();
+						}else{
+							edetail=tdList.get(i).getMeasureReduce();
+						}
+						//解析json获取到所有行业的减排信息
+						Map edeMap=mapper.readValue(edetail, Map.class);
+						//循环所有行业用来得到所有行业的污染物减排总和
+						sector:for(Object obj:edeMap.keySet()){
+							//获取行业
+							Map ede=(Map)edeMap.get(obj);
+							//获取行业中的减排污染物信息
+							Object result=null;
+							if(stainType.equals("PMC")){
+								result=ede.get("PMcoarse");
+							}else if(stainType.equals("PM10")){
+								if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
+									result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
+								}
+							}else if(stainType.equals("PMFINE")){
+								if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
+									double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
+									if(d<0){
+										throw new Exception("减排结果出现负数");
+									}
+									result=d;
+								}
+							}else{
+								result=ede.get(stainType);
+							}
+							//如果为空则继续循环
+							if(result==null) continue;
+							//循环结果集合
+							for(int j=0;j<puList.size();j++){
+								PieUtil pu=puList.get(j);
+								//判断结果集合中是否有该项记录 有则在基础上累计增加值
+								if(pu.getName().equals(obj.toString())){
+									double temp=Double.parseDouble(result.toString());
+									double value=pu.getValue();
+									pu.setValue(temp+value);
+									//继续循环外层循环
+									continue sector;
+								}
+							}
+							//上面没有该条行业记录  新建行业记录 添加到结果集中
+							PieUtil newPu=new PieUtil();
+							newPu.setName(obj.toString());
+							newPu.setValue(Double.parseDouble(result.toString()));
+							puList.add(newPu);
 						}
 					}
-					//上面没有该条行业记录  新建行业记录 添加到结果集中
-					PieUtil newPu=new PieUtil();
-					newPu.setName(obj.toString());
-					newPu.setValue(Double.parseDouble(result.toString()));
-					puList.add(newPu);
 				}
+				//讲数据保留4位有效数字
+				for(int i=0;i<puList.size();i++){
+					double value=puList.get(i).getValue();
+					value=CastNumUtil.significand(value, 4);
+					value=CastNumUtil.decimal(value, 2);
+					puList.get(i).setValue(value);
+				}
+				//返回结果
+				LogUtil.getLogger().info("EchartsController 情景减排饼状图数据查询成功!");
+				return AmpcResult.ok(puList);
 			}
-			//讲数据保留4位有效数字
-			for(int i=0;i<puList.size();i++){
-				double value=puList.get(i).getValue();
-				value=CastNumUtil.significand(value, 4);
-				value=CastNumUtil.decimal(value, 2);
-				puList.get(i).setValue(value);
-			}
-			//返回结果
-			LogUtil.getLogger().info("EchartsController 情景减排饼状图数据查询成功!");
-			return AmpcResult.ok(puList);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("EchartsController 情景减排饼状图数据查询异常!",e);
 			return AmpcResult.build(1000, "参数错误");
@@ -555,6 +960,7 @@ public class EchartsController {
 	public AmpcResult get_radioList(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
+			System.out.println(DateUtil.DATEtoString(new Date(), "yyyy-MM-dd HH-mm:ss"));
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
@@ -567,7 +973,7 @@ public class EchartsController {
 			//情景的结束时间
 			Date endDate=tsd.getScenarinoEndDate();
 			// 行政区划代码
-			String code = data.get("code").toString();;
+			String codes = data.get("code").toString();;
 			// 行政区划等级
 			Long addressLevle=Long.parseLong(data.get("addressLevle").toString());
 			//定义条件Map
@@ -577,139 +983,51 @@ public class EchartsController {
 			mapQuery.put("endDate", endDate);
 			//查询情景的基准类型为1
 			mapQuery.put("emtype", 1);
-			//判断发过来的code等级
-			if(addressLevle==1) code=code.substring(0,2)+"%";
-			if(addressLevle==2) code=code.substring(0,4)+"%";
-			/**
-			 * 获取所有的排放总量 用来计算
-			 */
-			if(code.equals("0")){
-				mapQuery.put("code", null);
-			}else{
-				mapQuery.put("code", code);
-			}
-			//获取到对应的减排信息
-			List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
-			//定义结果对象
-			RadioListUtil basisrlu=null;
-			for(TEmissionDetail ted:basisList){
-				//判断是行业还是措施的  并赋值对应的Json串
-				String edetail=ted.getEmissionDetails();
-				//解析json获取到所有行业的减排信息
-				Map edeMap=mapper.readValue(edetail, Map.class);
-				//循环所有行业用来得到所有行业的污染物减排总和
-				for(Object obj:edeMap.keySet()){
-					//获取行业
-					Map ede=(Map)edeMap.get(obj);
-					//获取行业中的减排污染物信息
-					tempUtil(ede,basisrlu);
-				}
-			}
-			//如果基准为空则赋值为0
-			if(basisrlu==null){
-				basisrlu=new RadioListUtil();
-				basisrlu.setPM25(0);
-				basisrlu.setPM10(0);
-				basisrlu.setSO2(0);
-				basisrlu.setNOx(0);
-				basisrlu.setVOC(0);
-				basisrlu.setCO(0);
-				basisrlu.setNH3(0);
-				basisrlu.setBC(0);
-				basisrlu.setOC(0);
-				basisrlu.setPMFINE(0);
-				basisrlu.setPMC(0);
-			}
-			//查询情景的减排信息类型为2
-			mapQuery.put("emtype", 2);
-			//查询减排信息类型的情景Id
-			mapQuery.put("scenarinoId", scenarinoId);
 			//定义返回结果集合
 			List<RadioListUtil> resultList=new ArrayList<RadioListUtil>();
-			//如果为0则是查询全部的省级信息
-			if(code.equals("0")){
-				//所有的省级Code集合
-				Set<String> codeList=new HashSet<String>();
-				//获取到所有的减排信息
-				List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
-				//获取所有的减排结果的前两位省级Code
-				String tempCode="";
-				for(int i=0;i<tdList.size();i++){
-					//第一次直接添加
-					if(codeList.size()==0){
-						codeList.add(tdList.get(i).getCode().substring(0,2));
-						tempCode=tdList.get(i).getCode();
-						continue;
+			String[] codesSplit=codes.split(",");
+			if(codesSplit.length==1){
+				String code=codesSplit[0];
+				//判断发过来的code等级
+				if(addressLevle==1) code=code.substring(0,2)+"%";
+				if(addressLevle==2) code=code.substring(0,4)+"%";
+				mapQuery.put("code", null);
+				//获取到对应的减排信息
+				List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
+				//定义结果对象
+				RadioListUtil basisrlu=null;
+				for(TEmissionDetail ted:basisList){
+					//判断是行业还是措施的  并赋值对应的Json串
+					String edetail=ted.getEmissionDetails();
+					//解析json获取到所有行业的减排信息
+					Map edeMap=mapper.readValue(edetail, Map.class);
+					//循环所有行业用来得到所有行业的污染物减排总和
+					for(Object obj:edeMap.keySet()){
+						//获取行业
+						Map ede=(Map)edeMap.get(obj);
+						//获取行业中的减排污染物信息
+						tempUtil(ede,basisrlu);
 					}
-					//数据重复 直接退出
-					if(tempCode.equals(tdList.get(i).getCode())){
-						break;
-					}
-					//累计添加
-					codeList.add(tdList.get(i).getCode().substring(0,2));
 				}
-				//循环所有的省级编码集合
-				for(String str:codeList){
-					//定义结果对象
-					RadioListUtil rlu=new RadioListUtil();
-					//添加条件 
-					mapQuery.put("code", str+"%");
-					//模糊查询当前这个省级下的所有减排记录
-					List<TEmissionDetail> ttdd=tEmissionDetailMapper.selectByQuery(mapQuery);
-					//查询区域名称
-					String addressName=tAddressMapper.selectNameByCode(str+"0000");
-					//添加区域名称
-					rlu.setName(addressName);
-					//添加区域Code
-					rlu.setCode(str+"0000");
-					//如果只有一条记录 
-					if(ttdd.size()==1){
-						//定义临时减排对象
-						TEmissionDetail td=ttdd.get(0);
-						//判断这条记录是否是省级  如果是咋返回结果类型为没有市级
-						if(td.getCode().equals(str+"0000")){
-							//添加类型没有市级
-							rlu.setType(0);
-						}else{
-							//添加类型有市级
-							rlu.setType(1);
-						}
-						//判断是行业还是措施的  并赋值对应的Json串
-						String edetail=td.getEmissionDetails();
-						//解析json获取到所有行业的减排信息
-						Map edeMap=mapper.readValue(edetail, Map.class);
-						//循环所有行业用来得到所有行业的污染物减排总和
-						for(Object obj:edeMap.keySet()){
-							//获取行业
-							Map ede=(Map)edeMap.get(obj);
-							//获取行业中的减排污染物信息
-							tempUtil(ede,rlu);
-						}
-						resultUtil(basisrlu,rlu);
-						resultList.add(rlu);
-					}else{
-						//添加类型有市级
-						rlu.setType(1);
-						//结果不只一条
-						for(TEmissionDetail ted:ttdd){
-							//判断是行业还是措施的  并赋值对应的Json串
-							String edetail=ted.getEmissionDetails();
-							//解析json获取到所有行业的减排信息
-							Map edeMap=mapper.readValue(edetail, Map.class);
-							//循环所有行业用来得到所有行业的污染物减排总和
-							for(Object obj:edeMap.keySet()){
-								//获取行业
-								Map ede=(Map)edeMap.get(obj);
-								//获取行业中的减排污染物信息
-								tempUtil(ede,rlu);
-							}
-						}
-						resultUtil(basisrlu,rlu);
-						resultList.add(rlu);
-					}
-				} // end 循环省级code
-			}else{
-				//如果不为0 则按照给的code进行查询
+				//如果基准为空则赋值为0
+				if(basisrlu==null){
+					basisrlu=new RadioListUtil();
+					basisrlu.setPM25(0);
+					basisrlu.setPM10(0);
+					basisrlu.setSO2(0);
+					basisrlu.setNOx(0);
+					basisrlu.setVOC(0);
+					basisrlu.setCO(0);
+					basisrlu.setNH3(0);
+					basisrlu.setBC(0);
+					basisrlu.setOC(0);
+					basisrlu.setPMFINE(0);
+					basisrlu.setPMC(0);
+				}
+				//查询情景的减排信息类型为2
+				mapQuery.put("emtype", 2);
+				//查询减排信息类型的情景Id
+				mapQuery.put("scenarinoId", scenarinoId);
 				if(addressLevle==1){
 					//List<String> cityCodes=tEmissionDetailMapper.selectCityCode(mapQuery);
 					List<String> cityCodes=tAddressMapper.selectCityCode(code);
@@ -814,10 +1132,164 @@ public class EchartsController {
 						resultUtil(basisrlu,rlu);
 						resultList.add(rlu);
 					}
+					
 				}
+				LogUtil.getLogger().info("EchartsController 情景减排列表数据查询成功!");
+				System.out.println(DateUtil.DATEtoString(new Date(), "yyyy-MM-dd HH-mm:ss"));
+				return AmpcResult.ok(resultList);
+			}else{
+				for(int q=0;q<codesSplit.length;q++){
+					String code=codesSplit[q];
+					//判断发过来的code等级
+					if(addressLevle==1) code=code.substring(0,2)+"%";
+					if(addressLevle==2) code=code.substring(0,4)+"%";
+					mapQuery.put("code", null);
+					//获取到对应的减排信息
+					List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
+					//定义结果对象
+					RadioListUtil basisrlu=null;
+					for(TEmissionDetail ted:basisList){
+						//判断是行业还是措施的  并赋值对应的Json串
+						String edetail=ted.getEmissionDetails();
+						//解析json获取到所有行业的减排信息
+						Map edeMap=mapper.readValue(edetail, Map.class);
+						//循环所有行业用来得到所有行业的污染物减排总和
+						for(Object obj:edeMap.keySet()){
+							//获取行业
+							Map ede=(Map)edeMap.get(obj);
+							//获取行业中的减排污染物信息
+							tempUtil(ede,basisrlu);
+						}
+					}
+					//如果基准为空则赋值为0
+					if(basisrlu==null){
+						basisrlu=new RadioListUtil();
+						basisrlu.setPM25(0);
+						basisrlu.setPM10(0);
+						basisrlu.setSO2(0);
+						basisrlu.setNOx(0);
+						basisrlu.setVOC(0);
+						basisrlu.setCO(0);
+						basisrlu.setNH3(0);
+						basisrlu.setBC(0);
+						basisrlu.setOC(0);
+						basisrlu.setPMFINE(0);
+						basisrlu.setPMC(0);
+					}
+					//查询情景的减排信息类型为2
+					mapQuery.put("emtype", 2);
+					//查询减排信息类型的情景Id
+					mapQuery.put("scenarinoId", scenarinoId);
+					if(addressLevle==1){
+						//List<String> cityCodes=tEmissionDetailMapper.selectCityCode(mapQuery);
+						List<String> cityCodes=tAddressMapper.selectCityCode(code);
+						//循环所有的省级编码集合
+						for(String strcod:cityCodes){
+							String str=strcod;
+							str=str.substring(0,4);
+							//添加条件 
+							mapQuery.put("code", str+"%");
+							//模糊查询当前这个省级下的所有减排记录
+							List<TEmissionDetail> ttdd=tEmissionDetailMapper.selectByQuery(mapQuery);
+							//如果没有数据代表没有该市的信息  直接判断下一条记录
+							if(ttdd.size()==0) continue;
+							//定义结果对象
+							RadioListUtil rlu=new RadioListUtil();
+							//查询区域名称
+							String addressName=tAddressMapper.selectNameByCode(strcod);
+							//添加区域名称
+							rlu.setName(addressName);
+							//添加区域Code
+							rlu.setCode(strcod);
+							//如果只有一条记录 
+							if(ttdd.size()==1){
+								//定义临时减排对象
+								TEmissionDetail td=ttdd.get(0);
+								//判断这条记录是否是市级  如果是咋返回结果类型为没有县级
+								if(td.getCode().equals(strcod)){
+									//添加类型没有县级
+									rlu.setType(0);
+								}else{
+									//添加类型县市级
+									rlu.setType(1);
+								}
+								//判断是行业还是措施的  并赋值对应的Json串
+								String edetail=td.getEmissionDetails();
+								//解析json获取到所有行业的减排信息
+								Map edeMap=mapper.readValue(edetail, Map.class);
+								//循环所有行业用来得到所有行业的污染物减排总和
+								for(Object obj:edeMap.keySet()){
+									//获取行业
+									Map ede=(Map)edeMap.get(obj);
+									//获取行业中的减排污染物信息
+									tempUtil(ede,rlu);
+								}
+								resultUtil(basisrlu,rlu);
+								resultList.add(rlu);
+							}else{
+								//添加类型有县级
+								rlu.setType(1);
+								//结果不只一条
+								for(TEmissionDetail ted:ttdd){
+									//判断是行业还是措施的  并赋值对应的Json串
+									String edetail=ted.getEmissionDetails();
+									//解析json获取到所有行业的减排信息
+									Map edeMap=mapper.readValue(edetail, Map.class);
+									//循环所有行业用来得到所有行业的污染物减排总和
+									for(Object obj:edeMap.keySet()){
+										//获取行业
+										Map ede=(Map)edeMap.get(obj);
+										//获取行业中的减排污染物信息
+										tempUtil(ede,rlu);
+									}
+								}
+								resultUtil(basisrlu,rlu);
+								resultList.add(rlu);
+							}
+						} // end 循环省级code
+					}else{
+						List<String> cityCodes=tEmissionDetailMapper.selectCityCode(mapQuery);
+						//循环所有的省级编码集合
+						for(String strcod:cityCodes){
+							//添加条件 
+							mapQuery.put("code", strcod);
+							//模糊查询当前这个省级下的所有减排记录
+							List<TEmissionDetail> ttdd=tEmissionDetailMapper.selectByQuery(mapQuery);
+							//如果没有数据代表没有该市的信息  直接判断下一条记录
+							if(ttdd.size()==0) continue;
+							//定义结果对象
+							RadioListUtil rlu=new RadioListUtil();
+							//查询区域名称
+							String addressName=tAddressMapper.selectNameByCode(strcod);
+							//添加区域名称
+							rlu.setName(addressName);
+							//添加区域Code
+							rlu.setCode(strcod);
+							//添加类型没有县级
+							rlu.setType(0);
+							//如果没有数据代表没有该市的信息  直接判断下一条记录
+							for(TEmissionDetail td:ttdd){
+								//判断是行业还是措施的  并赋值对应的Json串
+								String edetail=td.getEmissionDetails();
+								//解析json获取到所有行业的减排信息
+								Map edeMap=mapper.readValue(edetail, Map.class);
+								//循环所有行业用来得到所有行业的污染物减排总和
+								for(Object obj:edeMap.keySet()){
+									//获取行业
+									Map ede=(Map)edeMap.get(obj);
+									//获取行业中的减排污染物信息
+									tempUtil(ede,rlu);
+								}
+							}
+							resultUtil(basisrlu,rlu);
+							resultList.add(rlu);
+						}
+						
+					}
+				}
+				LogUtil.getLogger().info("EchartsController 情景减排列表数据查询成功!");
+				return AmpcResult.ok(resultList);
 			}
-			LogUtil.getLogger().info("EchartsController 情景减排列表数据查询成功!");
-			return AmpcResult.ok(resultList);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("EchartsController 情景减排列表数据查询异常!",e);
 			return AmpcResult.build(1000, "参数错误");
