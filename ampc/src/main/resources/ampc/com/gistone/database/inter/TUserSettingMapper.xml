@@ -161,4 +161,10 @@
       ADD_TIME = #{addTime,jdbcType=TIMESTAMP}
     where USER_SETTING_ID = #{userSettingId,jdbcType=DECIMAL}
   </update>
+    <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_USER_SETTING
+    where USER_ID = #{userId,jdbcType=DECIMAL}
+  </select>
 </mapper>
