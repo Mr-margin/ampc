@@ -16,6 +16,27 @@ import ampc.com.gistone.database.model.TTasksStatus;
 public interface TScenarinoDetailMapper {
 	
 	/**
+	 * @Description: 修改情景的模式执行状态
+	 * @param map
+	 * @return   
+	 * int  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月18日 下午4:08:24
+	 */
+	int updateStatus(Map map);
+	/**
+	 * @Description: 获取情景的开始和结束时间
+	 * @param scenarinoId
+	 * @return   
+	 * TScenarinoDetail  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月17日 下午2:08:15
+	 */
+	TScenarinoDetail selectStartAndEndDate(Long scenarinoId);
+	
+	/**
 	 * @Description: 修改情景类型
 	 * @param map
 	 * @return   
@@ -136,9 +157,9 @@ public interface TScenarinoDetailMapper {
 	String selectscentype(Long scenarinoId);
 	
 	/**
-	 * @Description: TODO
+	 * @Description: 更新cores
 	 * @param tScenarinoDetail   
-	 * void  更新cores
+	 * void  
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年3月29日 下午6:22:06
@@ -233,6 +254,9 @@ public interface TScenarinoDetailMapper {
     List<TScenarinoDetail> selectByEntity2(TScenarinoDetail record);
     
     TScenarinoDetail selectMaxEndTime4();
+
+
+	
 	
 
 	

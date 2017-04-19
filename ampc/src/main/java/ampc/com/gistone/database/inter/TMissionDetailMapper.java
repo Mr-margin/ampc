@@ -126,4 +126,16 @@ public interface TMissionDetailMapper {
 	 * @date 2017年4月11日 上午10:12:33
 	 */
 	Long getmissionidbyMission(TMissionDetail missionDetail);
+
+
+	/**
+	 * @Description: 通过任务ID查找任务类型
+	 * @param missionId
+	 * @return   
+	 * Long  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月17日 下午2:56:35
+	 */
+	Long selectMissionType(Long missionId);
 }
