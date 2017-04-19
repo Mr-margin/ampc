@@ -444,7 +444,7 @@ function rwType(v, row, i) {
 }
 
 function rwDomain(v, row, i) {
-  return row.v1 + '<br><a style="font-size:12px; color:#a1a1a1;">起止日期：' + moment(row.missionStartDate).format('YYYY-MM-DD') + ' - ' + moment(row.missionEndDate).format('YYYY-MM-DD') + '</a>'
+  return row.domainName + '<br><a style="font-size:12px; color:#a1a1a1;">起止日期：' + moment(row.missionStartDate).format('YYYY-MM-DD') + ' - ' + moment(row.missionEndDate).format('YYYY-MM-DD') + '</a>'
 }
 
 function qjName(v, row, i) {
