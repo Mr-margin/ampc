@@ -700,10 +700,18 @@ button[disabled],.btn[disabled]{
 
 /*水平分布 start*/
 
-.showType{
+.calcType{
   position: absolute;
   top: 20px;
   right: 15px;
+}
+.calcType label{
+  background-color:#fff;
+}
+.showType{
+  position: absolute;
+  top: 20px;
+  right: 30px;
 }
 .showType label{
   background-color:#fff;
