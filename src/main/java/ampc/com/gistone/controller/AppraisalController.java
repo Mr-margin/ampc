@@ -402,16 +402,16 @@ public class AppraisalController {
 						Map<String,Object> hourcmap=new HashMap();
 						if(hourlist.size()==24){
 						for(int a=0;a<=23;a++){
-							if(hournum-1==a){
+							if(hournum==a){
 								if(spr.equals("CO")){
-									if(heightmap.get(heights)!=null){
-									litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(2, BigDecimal.ROUND_HALF_UP));
+									if(hourlist.get(hournum)!=null){
+									litarr.add((new BigDecimal(hourlist.get(hournum).toString())).setScale(2, BigDecimal.ROUND_HALF_UP));
 									}else{
 										litarr.add("-");
 									}
 									}else{
-										if(heightmap.get(heights)!=null){
-											litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											
+										if(hourlist.get(hournum)!=null){
+											litarr.add((new BigDecimal(hourlist.get(hournum).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											
 											}else{
 												litarr.add("-");
 											}
@@ -447,14 +447,14 @@ public class AppraisalController {
 						}else{
 							for(int a=0;a<=23;a++){
 								if(spr.equals("CO")){
-									if(heightmap.get(heights)!=null){
-									litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(2, BigDecimal.ROUND_HALF_UP));
+									if(hourlist.get(hournum)!=null){
+									litarr.add((new BigDecimal(hourlist.get(hournum).toString())).setScale(2, BigDecimal.ROUND_HALF_UP));
 									}else{
 										litarr.add("-");
 									}
 									}else{
-										if(heightmap.get(heights)!=null){
-											litarr.add((new BigDecimal(heightmap.get(heights).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											
+										if(hourlist.get(hournum)!=null){
+											litarr.add((new BigDecimal(hourlist.get(hournum).toString())).setScale(1, BigDecimal.ROUND_HALF_UP));											
 											}else{
 												litarr.add("-");
 											}
