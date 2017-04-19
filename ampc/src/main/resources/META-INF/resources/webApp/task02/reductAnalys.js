@@ -26,7 +26,7 @@ var tj_paramsName = {};//统计图用的参数
 tj_paramsName.wz = $('#hz_wrw').val();//默认的物种
 tj_paramsName.code = "0";//code默认为0
 tj_paramsName.name = "全部区域";//name默认为情景名称
-tj_paramsName.codeLevel = 0;
+tj_paramsName.codeLevel = 1;
 
 /**
  * 时间戳转成日期格式
@@ -145,6 +145,8 @@ function shoe_data_start(evn){
 	baizhu_jianpai(gis_paramsName,"1");
 }
 
+var gghjl = "";
+
 /**
  * 标注地图的减排计算
  */
@@ -157,10 +159,18 @@ function baizhu_jianpai(gis_paramsName, sh_type){
 //		console.log(JSON.stringify(res));
 		if(res.status == 0){
 			var data_id = "";
+			var tegd = "";
+			
 			$.each(res.data, function(k, col) {
 				data_id += "'"+k+"',";
+				tegd += k+",";
 //				tj_paramsName.code = k;//获取最后一个行政区划
 			});
+			
+			if(tj_paramsName.code == "0" && sh_type == "1"){//第一次打开页面，记录省级或者最高级的行政区划
+				tj_paramsName.code = tegd.substring(0, tegd.length-1);
+				gghjl = tegd.substring(0, tegd.length-1);
+			}
 			
 			var paifang_url = "";
 			if(gis_paramsName.codeLevel == 1){
@@ -353,8 +363,8 @@ function optionclick(event){
 	}else{
 		if(app.map.graphics.graphics.length > 0){//已经有选中的对象了
 			app.map.graphics.clear();
-			tj_paramsName.code = "0";
-			tj_paramsName.codeLevel = 0;
+			tj_paramsName.code = gghjl;
+			tj_paramsName.codeLevel = 1;
 			tj_paramsName.name = "全部区域";//name默认为情景名称
 			bar();
 		}
@@ -384,11 +394,11 @@ function type_info(){
 /****************************************************柱状图*************************************************************************/
 function bar() {
 	
-	if(tj_paramsName.code == '0'){
-		tj_paramsName.codeLevel = 0;
-	}else{
-		tj_paramsName.codeLevel = gis_paramsName.codeLevel;
-	}
+//	if(tj_paramsName.code == '0'){
+//		tj_paramsName.codeLevel = 0;
+//	}else{
+//		tj_paramsName.codeLevel = gis_paramsName.codeLevel;
+//	}
 	
 	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":tj_paramsName.code,"addressLevle":tj_paramsName.codeLevel,"stainType":tj_paramsName.wz};
 //	console.log(JSON.stringify(paramsName));
@@ -579,11 +589,11 @@ function  pie(){
 	var valueVal;
 	getchaxuntype();
 	
-	if(tj_paramsName.code == '0'){
-		tj_paramsName.codeLevel = 0;
-	}else{
-		tj_paramsName.codeLevel = gis_paramsName.codeLevel;
-	}
+//	if(tj_paramsName.code == '0'){
+//		tj_paramsName.codeLevel = 0;
+//	}else{
+//		tj_paramsName.codeLevel = gis_paramsName.codeLevel;
+//	}
 	
 	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":tj_paramsName.code,"addressLevle":tj_paramsName.codeLevel,"stainType":tj_paramsName.wz,"startDate":tj_paramsName.new_arr[0],"endDate":tj_paramsName.new_arr[tj_paramsName.new_arr.length-1],"type":tj_paramsName.type};
 	ajaxPost('/echarts/get_pieInfo',paramsName).success(function(result){

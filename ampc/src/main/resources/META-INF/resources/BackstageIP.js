@@ -51,4 +51,5 @@ var maxAreaNum = 5;//定义最大区域数量
 		inputScript(ArcGisUrl+"/arcgis_js_api/library/3.19/3.19/init.js");
     }
     loadSMLibs();
+
 })();
