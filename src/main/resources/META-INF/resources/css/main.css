@@ -4399,12 +4399,14 @@ pre {
 }
 #sidebarlt .dropmenu,#sidebarlt .borderbox{
     display: none;
-    border-right: 1px solid #d0d0ca;
     position: absolute;
     bottom: 0;
     left: 0;
     top: 42px;
     right: 0;
+}
+#sidebarlt .borderbox{
+    border-right: 1px solid #d0d0ca;
 }
 #sidebarlt .dropmenu>div p>a{
     display: block;
@@ -4412,6 +4414,7 @@ pre {
     line-height: 36px;
     padding-left: 32px;
     color:#768399;
+    border-right: 1px solid #d0d0ca;
 }
 #sidebarlt .dropmenu>div p>a:hover{
     color:#768399;
@@ -4463,5 +4466,16 @@ pre {
 }
 .loading-message-boxed>img{
     vertical-align: middle;
+}
+#sidebarlt .dropmenu>.slimScrollDiv>div:first-child{
+    display: flex;
+    justify-content: space-between;
+    flex-direction:column;
+}
+#sidebarlt .dropmenu>.slimScrollDiv>div:first-child:after{
+    content: '';
+    display: block;
+    border-right: 1px solid #d0d0ca;
+    flex-grow:1
 }
 /*-----------------------------------------------------------------------------*/
