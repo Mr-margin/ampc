@@ -389,14 +389,10 @@ public class AppraisalController {
 				Map<String,Object> datemap=new HashMap();
 				for(String datetime:detamap.keySet()){
 					if(datetime.equals(daytime)){
-					String sp=detamap.get(datetime).toString();
-					JSONObject spobj=JSONObject.fromObject(sp);
-					Map<String,Object> spmap=(Map)spobj;
+					Map<String,Object> spmap=(Map)detamap.get(datetime);
 					Map<String,Object> spcmap=new HashMap();
 					for(String spr:spmap.keySet()){
-						String height=spmap.get(spr).toString();
-						JSONObject heightobj=JSONObject.fromObject(height);
-						Map<String,Object> heightmap=(Map)heightobj;
+						Map<String,Object> heightmap=(Map) spmap.get(spr);
 						JSONArray arr=new JSONArray();
 						for(String heights:heightmap.keySet()){
 							if(!heights.equals("12")){
@@ -618,8 +614,15 @@ public class AppraisalController {
 			Integer domainId=Integer.valueOf(tMissionDetail.getMissionDomainId().toString());
 			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
 			tScenarinoDetail.setMissionId(missionId);
-			tScenarinoDetail.setScenType("4");
-			List<TScenarinoDetail> tslist=tScenarinoDetailMapper.selectByEntity(tScenarinoDetail);
+			List<TScenarinoDetail> tslist=new ArrayList<TScenarinoDetail>();
+			
+			tScenarinoDetail.setScenType("3");
+			if(tScenarinoDetailMapper.selectByEntity(tScenarinoDetail).isEmpty()){
+				tScenarinoDetail.setScenType("4");
+			tslist=tScenarinoDetailMapper.selectByEntity(tScenarinoDetail);
+			}else{
+				tslist=tScenarinoDetailMapper.selectByEntity(tScenarinoDetail);
+			}
 			Map<String,Object> scmap=new HashMap();
 			for(TScenarinoDetail ScenarinoDetail:tslist){
 				Date startdate=ScenarinoDetail.getScenarinoStartDate();
@@ -943,7 +946,7 @@ public class AppraisalController {
 					if(datetype.equals("day")){//逐天
 						String tables="T_SCENARINO_FNL_DAILY_";
 						Date tims=tScenarinoDetail.getScenarinoAddTime();
-						 DateFormat df = new SimpleDateFormat("yyyy");
+						DateFormat df = new SimpleDateFormat("yyyy");
 						String nowTime= df.format(tims);
 						tables+=nowTime+"_";
 						tables+=userId;
@@ -1004,7 +1007,7 @@ public class AppraisalController {
 			return	AmpcResult.build(0, "success");
 		}catch(Exception e){
 			LogUtil.getLogger().error("AppraisalController 创建预案异常！",e);
-			return	AmpcResult.build(0, "error");	
+			return	AmpcResult.build(0, "error");
 		}
 		}
 
