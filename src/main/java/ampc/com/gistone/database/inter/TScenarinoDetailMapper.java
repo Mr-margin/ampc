@@ -230,7 +230,8 @@ public interface TScenarinoDetailMapper {
 
     List<TScenarinoDetail> selectByEntity(TScenarinoDetail record);
 
-	
+    List<TScenarinoDetail> selectByEntity2(TScenarinoDetail record);
+    
     TScenarinoDetail selectMaxEndTime4();
 	
 
