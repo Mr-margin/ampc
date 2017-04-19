@@ -12,10 +12,11 @@
     <result column="COUNTY_CODE" property="countyCode" jdbcType="VARCHAR" />
     <result column="ADMIN_PHONE" property="adminPhone" jdbcType="DECIMAL" />
     <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="ADMIN_ACCOUNT" property="adminAccount" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ADMIN_ID, PASSWORD, ADMIN_EMAIL, ADMIN_NAME, COMPANY_NAME, PROVINCE_CODE, CITY_CODE, 
-    COUNTY_CODE, ADMIN_PHONE, ADD_TIME
+    COUNTY_CODE, ADMIN_PHONE, ADD_TIME, ADMIN_ACCOUNT
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -31,11 +32,11 @@
     insert into T_ADMIN (ADMIN_ID, PASSWORD, ADMIN_EMAIL, 
       ADMIN_NAME, COMPANY_NAME, PROVINCE_CODE, 
       CITY_CODE, COUNTY_CODE, ADMIN_PHONE, 
-      ADD_TIME)
+      ADD_TIME, ADMIN_ACCOUNT)
     values (#{adminId,jdbcType=DECIMAL}, #{password,jdbcType=VARCHAR}, #{adminEmail,jdbcType=VARCHAR}, 
       #{adminName,jdbcType=OTHER}, #{companyName,jdbcType=OTHER}, #{provinceCode,jdbcType=VARCHAR}, 
       #{cityCode,jdbcType=VARCHAR}, #{countyCode,jdbcType=VARCHAR}, #{adminPhone,jdbcType=DECIMAL}, 
-      #{addTime,jdbcType=TIMESTAMP})
+      #{addTime,jdbcType=TIMESTAMP}, #{adminAccount,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TAdmin" >
     insert into T_ADMIN
@@ -70,6 +71,9 @@
       <if test="addTime != null" >
         ADD_TIME,
       </if>
+      <if test="adminAccount != null" >
+        ADMIN_ACCOUNT,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="adminId != null" >
@@ -101,6 +105,9 @@
       </if>
       <if test="addTime != null" >
         #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="adminAccount != null" >
+        #{adminAccount,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -134,6 +141,9 @@
       <if test="addTime != null" >
         ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="adminAccount != null" >
+        ADMIN_ACCOUNT = #{adminAccount,jdbcType=VARCHAR},
+      </if>
     </set>
     where ADMIN_ID = #{adminId,jdbcType=DECIMAL}
   </update>
@@ -147,7 +157,8 @@
       CITY_CODE = #{cityCode,jdbcType=VARCHAR},
       COUNTY_CODE = #{countyCode,jdbcType=VARCHAR},
       ADMIN_PHONE = #{adminPhone,jdbcType=DECIMAL},
-      ADD_TIME = #{addTime,jdbcType=TIMESTAMP}
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      ADMIN_ACCOUNT = #{adminAccount,jdbcType=VARCHAR}
     where ADMIN_ID = #{adminId,jdbcType=DECIMAL}
   </update>
 </mapper>
