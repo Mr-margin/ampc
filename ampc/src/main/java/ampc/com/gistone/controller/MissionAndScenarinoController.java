@@ -31,6 +31,7 @@ import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.inter.TTimeMapper;
 import ampc.com.gistone.database.inter.TUserMapper;
+import ampc.com.gistone.database.inter.TUserSettingMapper;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TPlan;
 import ampc.com.gistone.database.model.TScenarinoAreaWithBLOBs;
@@ -38,6 +39,7 @@ import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.database.model.TTime;
 import ampc.com.gistone.database.model.TUser;
+import ampc.com.gistone.database.model.TUserSetting;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.LogUtil;
@@ -86,7 +88,8 @@ public class MissionAndScenarinoController {
 	@Autowired
 	private ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
 	
-	
+	@Autowired
+	private TUserSettingMapper tUserSettingMapper;
 	
 	/**
 	 * 任务查询方法
@@ -1029,8 +1032,8 @@ public class MissionAndScenarinoController {
 			String scenType=data.get("scenType").toString();//任务id
 			Long userId=Long.parseLong(data.get("userId").toString());//情景id
 			//查询用户信息
-			TUser tUser=tUserMapper.selectByPrimaryKey(userId);
-			Integer predictionTime=tUser.getPredictionTime();
+			TUserSetting tUser=tUserSettingMapper.selectByUserId(userId);
+			Integer predictionTime=Integer.valueOf(tUser.getPredictionTime().toString());
 			//获取当前时间
 			Date date=new Date();
 			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -1559,7 +1562,7 @@ public class MissionAndScenarinoController {
 			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
 			tScenarinoDetail.setUserId(userId);
 			tScenarinoDetail.setMissionId(missionId);
-			List<TScenarinoDetail> tScenarinoDetaillist=tScenarinoDetailMapper.selectByEntity(tScenarinoDetail);
+			List<TScenarinoDetail> tScenarinoDetaillist=tScenarinoDetailMapper.selectByEntity2(tScenarinoDetail);
 			JSONArray arr=new JSONArray();
 			JSONObject objsed=new JSONObject();
 			if(!tScenarinoDetaillist.isEmpty()){
