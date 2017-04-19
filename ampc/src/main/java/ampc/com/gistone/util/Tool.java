@@ -51,7 +51,6 @@ public class Tool {
 	 *@返回类型:String
 	 *@参数：@param inStr
 	 *@参数：@return
-	 *@创建人：zhoushilin
 	 *@修改时间:2013-1-14 下午03:12:30
 	 *@方法描述:加密后解密
 	*/
@@ -64,14 +63,16 @@ public class Tool {
 	  return k;
 	 }
 
-	/*c62d929e7b7e7b6165923a5dfc60cb56
-	 * public static void main(String agrs[]) throws NoSuchAlgorithmException, UnsupportedEncodingException{
-		String pwd ="q1w2e3r4";
-		String md5str = Tool.md5(pwd);
-		System.out.println("加密:"+md5str);
-		String jmstr=Tool.JM(md5str);
-		System.out.println("解密："+jmstr);
-	}*/
+	
+//	public static void main(String agrs[]) throws NoSuchAlgorithmException, UnsupportedEncodingException{
+//		String pwd ="q1w2e3r4";
+//		String md5str = Tool.md5(pwd);
+//		System.out.println(md5str);
+//		md5str=convertMD5(md5str);
+//		System.out.println("加密:"+md5str);
+//		String jmstr=Tool.JM(md5str);
+//		System.out.println("解密："+jmstr);
+//	}
 
 	
 
