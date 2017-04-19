@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import ampc.com.gistone.database.inter.TGlobalSettingMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
+import ampc.com.gistone.database.inter.TScenarinoAreaMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.model.TGlobalSetting;
@@ -69,7 +70,9 @@ public class SchedulerTimer {
 	private ConfigUtil configUtil;
 	
 //	private Logger logger = Logger.getLogger(this.getClass());
-
+	// 情景区域映射(测试，后面删除）
+		@Autowired
+		private TScenarinoAreaMapper tScenarinoAreaMapper;
 	
 	public SchedulerTimer() {
 		super();
@@ -85,8 +88,8 @@ public class SchedulerTimer {
 	 * @author yanglei
 	 * @date 2017年4月7日 上午9:53:09
 	 */
-	@Scheduled(cron="0 0 12 * * ?")
-//	@Scheduled(fixedRate = 5000)
+//	@Scheduled(cron="0 0 11 * * ?")
+//	@Scheduled(fixedRate = 50000)
 	public void realForTimer() {
 		//Date date = new Date();
 		LogUtil.getLogger().info("实时预报任务开始");
@@ -261,10 +264,12 @@ public class SchedulerTimer {
 			TScenarinoDetail scen_detail = tScenarinoDetailMapper.getbufaScenID(pathDate);
 			if (null!=scen_detail) {
 				LogUtil.getLogger().info("实时预报情景已经建立了");
+				
 				break;
 			}
 			//查询上一天的实时预报情景ID 作为当天的实时预报基础情景
-			Long basisScenarinoId = tScenarinoDetailMapper.selectBasisId(basisTime);
+			Date yesDate = DateUtil.ChangeDay(pathDate, -1);
+			Long basisScenarinoId = tScenarinoDetailMapper.selectBasisId(yesDate);
 			if (null==basisScenarinoId) {
 				LogUtil.getLogger().info("系统第一次创建实时预报情景");
 			}
@@ -293,7 +298,7 @@ public class SchedulerTimer {
 				LogUtil.getLogger().error("系统错误！同一天的实时预报存在多条数据！");
 			}
 			//调用方法获取meiccityconfig
-			int flag = 1;
+			int flag = 1;//表示不需要减排系数
 			Map<String, String> emis = getEmisData(esCouplingId,scenarinoId,flag);
 			
 			tTasksStatus.setSourceid(esCouplingId.toString());
@@ -306,33 +311,20 @@ public class SchedulerTimer {
 			//添加该情景到tasksstatus表
 			i = tTasksStatusMapper.insertSelective(tTasksStatus);
 			
-		}
-		if (i>0) {
-			//检查上一天的fnl是否执行完毕
-			/*Date pathdateDate =DateUtil.StrtoDateYMD(DateUtil.changeDate(new Date(), "yyyyMMdd", -1),  "yyyyMMdd") ;
-			Map map = new HashMap();
-			map.put("pathDate", pathdateDate);
-			map.put("scenType", "4");
-			TTasksStatus status =tScenarinoDetailMapper.selectTasksstatusByPathdate(map);*/
-			
-			//System.out.println(status+"上一天的实时预报情景的状态");
-			//String tasksstatus = status.getBeizhu();
-		//	if ("1".equals(tasksstatus)) {
+			if (i>0) {
 				//根据情景调动实时预报接口开始实时预报
 				readyData.readyRealMessageDataFirst(scenarinoId,cores);
 				LogUtil.getLogger().info("实时预报模式启动！");
-			//	}else {
-				//	LogUtil.getLogger().info("该情景创建tasks状态表失败");
-			//	}
 			}
 			
-		//修改情景状态为执行模式
-		Map map = new HashMap();
-		map.put("scenarinoStatus", (long)6);
-		map.put("scenarinoId", scenarinoId);
-		int updateScenType = tScenarinoDetailMapper.updateScenType(map);
-		if(updateScenType>0){
-			LogUtil.getLogger().info("实时预报模式启动");
+			//修改情景状态为执行模式
+			Map map = new HashMap();
+			map.put("scenarinoStatus", (long)6);
+			map.put("scenarinoId", scenarinoId);
+			int updateScenType = tScenarinoDetailMapper.updateScenType(map);
+			if(updateScenType>0){
+				LogUtil.getLogger().info("实时预报修改执行状态");
+			}
 		}
 		
 	}
@@ -354,7 +346,7 @@ public class SchedulerTimer {
 		LogUtil.getLogger().info("每隔10分钟执行一次");
 		//根据情景的状态和情景的类型确定准备参数
 		//找到每一条预评估情景
-		List<TScenarinoDetail> list = tScenarinoDetailMapper.getscenidAndcores();
+		List<TScenarinoDetail> list = tScenarinoDetailMapper.getscenidAndcores();//存在问题
 		//查找可执行的时间
 		Date maxtime = tScenarinoDetailMapper.getmaxtime();
 		
@@ -363,51 +355,66 @@ public class SchedulerTimer {
 			Date startDate = tScenarinoDetail.getScenarinoStartDate();
 			Long scenarinoId = tScenarinoDetail.getScenarinoId();
 			Long cores = Long.parseLong(tScenarinoDetail.getExpand3());
-			//查询该预评估情景执行到哪一步了
+			//查询该预评估情景执行到哪一步了 
 			TTasksStatus tasksStatus = tTasksStatusMapper.gettaskEnddate(scenarinoId);
-			//当前情景执行到的日期
-			Date nowDate = tasksStatus.getTasksEndDate();
-			//当前情景已经发送过得日期
-			String completetime = tasksStatus.getBeizhu2();
-			Date ctime = DateUtil.StrtoDateYMD(completetime, "yyyyMMdd");
-			//当前情景在当前执行日期下执行到哪一步
-			Long stepindex = tasksStatus.getStepindex();
-			//当前情景的结束时间
-			Date EndDate = tScenarinoDetail.getScenarinoEndDate();
-			//nowDate和任务的坐标以及已经发送过得状态都为空表示第一次发送 该情景模式没跑过
-			if (null==nowDate&&null==stepindex&&null==completetime) {
-				//第一次发送
-				nowDate = startDate;
-				//准备数据发送消息
-				readyData.readyPreEvaluationSituationDataFirst(scenarinoId, cores);
-				//跟新该情景下的startdate时间已经发送完毕
-				String time = DateUtil.DATEtoString(nowDate, "yyyyMMdd");
-				TTasksStatus tTasksStatus = new TTasksStatus();
-				tTasksStatus.setTasksScenarinoId(scenarinoId);
-				tTasksStatus.setBeizhu2(time);
-				tTasksStatusMapper.updatemessageStatus(tTasksStatus);
+			if (null!=tasksStatus) {
+				//当前情景执行到的日期
+				Date nowDate = tasksStatus.getTasksEndDate();
+				//当前情景已经发送过得日期
+				String completetime = tasksStatus.getBeizhu2();
+				Date ctime = DateUtil.StrtoDateYMD(completetime, "yyyyMMdd");
+				//当前情景在当前执行日期下执行到哪一步
+				Long stepindex = tasksStatus.getStepindex();
+				//当前情景的结束时间
+				Date EndDate = tScenarinoDetail.getScenarinoEndDate();
+				//当前任务的错误状态
+				String errorStatus = tasksStatus.getErrorStatus();
+				
+				//nowDate和任务的坐标以及已经发送过得状态都为空表示第一次发送 该情景模式没跑过
+				if (null==nowDate&&null==stepindex&&null==completetime&&null==errorStatus) {
+					//第一次发送
+					nowDate = startDate;
+					//请求减排系数 
+					 
+					
+					/*//准备数据发送消息
+					readyData.readyPreEvaluationSituationDataFirst(scenarinoId, cores);*/
+					//跟新该情景下的startdate时间已经发送完毕
+					String time = DateUtil.DATEtoString(nowDate, "yyyyMMdd");
+					TTasksStatus tTasksStatus = new TTasksStatus();
+					tTasksStatus.setTasksScenarinoId(scenarinoId);
+					tTasksStatus.setBeizhu2(time);
+					tTasksStatusMapper.updatemessageStatus(tTasksStatus);
+				}
+				if(null==errorStatus){
+
+					//比较当前情景的时间和情景的结束时间大小
+					int compareTo = EndDate.compareTo(nowDate);
+					//比较当前情景的时间和情景是否可发送的最大时间
+					int compareTo2 = nowDate.compareTo(maxtime);
+					//比较当前时间和已经发送的时间大小 理论上应该是一样大
+					int compareTo3 = nowDate.compareTo(ctime);
+					//compareTo大于0表示时间在开始时间到结束时间之间 还要继续发送消息  
+					//compareTo2小于0表示最新的时间大于该情景正在执行的时间 
+					//compareTo3小于等于0表示已经发送过了当条消息
+					 if(compareTo2<0&&compareTo>0&&compareTo3<=0){
+						//如果不为空表示当前情景已经发送过了，该时间已经完成了任务  准备下一条数据的时间是当时的时间加一天
+					//	timedate= DateUtil.ChangeDay(nowDate, 1);
+						//准备数据发送消息
+						readyData.sendDataEvaluationSituationThen(nowDate, scenarinoId);
+						//跟新该情景下的startdate时间已经发送完毕
+						String time = DateUtil.DATEtoString(nowDate, "yyyyMMdd");
+						TTasksStatus tTasksStatus = new TTasksStatus();
+						tTasksStatus.setTasksScenarinoId(scenarinoId);
+						tTasksStatus.setBeizhu2(time);
+						tTasksStatusMapper.updatemessageStatus(tTasksStatus);
+					}
+					
+				}
+			}else {
+				LogUtil.getLogger().info("该情景尚未创建对应的状态表，程序出错了！");
 			}
-			//比较当前情景的时间和情景的结束时间大小
-			int compareTo = EndDate.compareTo(nowDate);
-			//比较当前情景的时间和情景是否可发送的最大时间
-			int compareTo2 = nowDate.compareTo(maxtime);
-			//比较当前时间和已经发送的时间大小 理论上应该是一样大
-			int compareTo3 = nowDate.compareTo(ctime);
-			//compareTo大于0表示时间在开始时间到结束时间之间 还要继续发送消息  
-			//compareTo2小于0表示最新的时间大于该情景正在执行的时间 
-			//compareTo3小于等于0表示已经发送过了当条消息
-			 if(compareTo2<0&&compareTo>0&&compareTo3<=0){
-				//如果不为空表示当前情景已经发送过了，该时间已经完成了任务  准备下一条数据的时间是当时的时间加一天
-			//	timedate= DateUtil.ChangeDay(nowDate, 1);
-				//准备数据发送消息
-				readyData.sendDataEvaluationSituationThen(nowDate, scenarinoId);
-				//跟新该情景下的startdate时间已经发送完毕
-				String time = DateUtil.DATEtoString(nowDate, "yyyyMMdd");
-				TTasksStatus tTasksStatus = new TTasksStatus();
-				tTasksStatus.setTasksScenarinoId(scenarinoId);
-				tTasksStatus.setBeizhu2(time);
-				tTasksStatusMapper.updatemessageStatus(tTasksStatus);
-			}
+			
 		}
 		
 	}
@@ -455,6 +462,15 @@ public class SchedulerTimer {
 		//TTasksStatus status =tScenarinoDetailMapper.selectTasksstatusByPathdate(pathdateDate);
 		TTasksStatus status =tTasksStatusMapper.selectTasksstatusByPathdate(map);
 		*/
+		/*Long missionType = tMissionDetailMapper.selectMissionType((long)367);
+		System.out.println(missionType+"---test:任务类型");*/
+	/*	Map mapQusery=new HashMap();
+		mapQusery.put("userId",1);
+		mapQusery.put("scenarinoId",483);
+		List<Long> areaList=tScenarinoAreaMapper.selectBySid(mapQusery);
+		System.out.println(areaList+".............");*/
+		
+		
 	}
 
 }
