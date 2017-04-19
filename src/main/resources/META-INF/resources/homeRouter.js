@@ -23,7 +23,7 @@ $.when(dps_um).then(function(){
     var llqHeight = document.documentElement.clientHeight;
     var cssStyle = '.qjbjDiv,.qdCreate,.qdListBox{height:'+ (llqHeight-138) +'px;}#sidebar .panel-body{overflow:auto;border-top:0;border-bottom:0;padding:0;height: '+ (llqHeight-441) +'px;} ';
     $('head').append($('<style></style>').html(cssStyle));
-    $("#Route_conter").css("height",llqHeight-150+"px");
+    // $("#Route_conter").css("height",llqHeight-150+"px");
     $(".qdCreate").css("height",llqHeight-138+"px");
 //重写的全局绑定事件
     $(function(){
