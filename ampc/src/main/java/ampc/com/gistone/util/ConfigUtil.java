@@ -22,6 +22,18 @@ public class ConfigUtil {
 	//区域状态的减排url
 	@Value("${jp.areaStatusURL}")
     private String areaStatusURL;
+	
+	//减排计算获取actionlist的url
+	@Value("${jp.actionlistURL}")
+	private String actionlistURL;
+	
+	
+	
+	
+
+	public String getActionlistURL() {
+		return actionlistURL;
+	}
 
 	public String getCsjpURL() {
 		return csjpURL;
