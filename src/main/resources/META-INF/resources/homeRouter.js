@@ -259,7 +259,8 @@ function zmblockUI(selector, method) {
   if (method === "start") {
     $(selector).block({
       message: '<div class="loading-message-boxed"><img src="images/loading-spinner-blue.gif"><span>&nbsp;&nbsp;努力加载中…</span></div>',
-      css:{border:0,backgroundColor:'transparent'}
+      css:{border:0,backgroundColor:'transparent'},
+      overlayCSS:{opacity:0.4}
     });
   }else if(method==='end'){
     $(selector).unblock();
