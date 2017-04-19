@@ -23,6 +23,8 @@ public class TAdmin {
 
     private Date addTime;
 
+    private String adminAccount;
+
     public Long getAdminId() {
         return adminId;
     }
@@ -101,5 +103,13 @@ public class TAdmin {
 
     public void setAddTime(Date addTime) {
         this.addTime = addTime;
+    }
+
+    public String getAdminAccount() {
+        return adminAccount;
+    }
+
+    public void setAdminAccount(String adminAccount) {
+        this.adminAccount = adminAccount == null ? null : adminAccount.trim();
     }
 }
