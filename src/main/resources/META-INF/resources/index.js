@@ -67,7 +67,7 @@ function loadIngFun(){
     return;
   }
   //window.location.href="home.html";
-  ajaxPost("/user/checkyzm",{zhi:verify}).success(function(res){
+  ajaxPost("/user/checkyzm",{yzm:verify}).success(function(res){
     if(res.data == 1){
       ajaxPost("/user/login",{
     	userAccount:name,
