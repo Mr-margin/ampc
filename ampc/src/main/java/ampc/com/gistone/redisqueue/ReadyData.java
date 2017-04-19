@@ -8,6 +8,7 @@
  */
 package ampc.com.gistone.redisqueue;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,6 +17,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -77,6 +88,7 @@ import ampc.com.gistone.redisqueue.entity.QueueDataEmis;
 import ampc.com.gistone.redisqueue.entity.QueueDataWrf;
 import ampc.com.gistone.redisqueue.timer.SchedulerTimer;
 import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.LogUtil;
 
@@ -93,6 +105,9 @@ import ampc.com.gistone.util.LogUtil;
 public class ReadyData {
 	//公用的Jackson解析对象
 	private ObjectMapper mapper=new ObjectMapper();
+	//读取路径的帮助类
+	@Autowired
+	private ConfigUtil configUtil;
 	//任务详情映射
 	@Autowired
 	private TMissionDetailMapper tMissionDetailMapper;
@@ -116,6 +131,9 @@ public class ReadyData {
 	@Autowired
 	private TPlanMeasureReuseMapper tPlanMeasureReuseMapper;
 	
+	@Autowired
+	private PlanAndMeasureController planAndMeasureController = new PlanAndMeasureController();
+	
 	// 预案措施映射
 	@Autowired
 	private TPlanMeasureMapper tPlanMeasureMapper;
@@ -131,9 +149,19 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年4月17日 上午9:19:32
 	 */
-	public void needJIANPAIsituation(Long scenarioid) {
-		// TODO Auto-generated method stub
-		
+	public void needJPsituation(Long scenarinoId) {
+		//获取任务ID
+		Long missionId = tScenarinoDetailMapper.selectMissionidByID(scenarinoId);
+		//获取情景类型和任务类型
+		Long scenarinoType = Long.parseLong(tScenarinoDetailMapper.selectscentype(scenarinoId));
+		Long missionType = tMissionDetailMapper.selectMissionType(missionId);
+		if (scenarinoType==2&&missionType==3) {
+			readypost_PostEvaluationSituationData(scenarinoId);
+		}
+		if (scenarinoType==2&&missionType==2) {
+			//预评估的后评估任务
+			//readyPrePostEvaluationSituationData(scenarinoId,cores);
+		}
 	}
 	/**
 	 * 
@@ -148,30 +176,92 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年4月6日 下午2:37:25
 	 */
-	public void branchPredict(Long scenarinoId,Long cores,Integer scenarinoType,Integer missionType,Long missionId,Long userId) {
+	public String branchPredict(Long scenarinoId,Long cores,Integer scenarinoType,Integer missionType,Long missionId,Long userId) {
+		String str = null;
 		if (scenarinoType==4&&missionType==1) {
 			//准备实时预报的数据
 			readyRealMessageDataFirst(scenarinoId,cores);
+			str="ok";
 		}
 		if (scenarinoType==3&&missionType==3) {
 			//基准情景
 			readyBaseData(scenarinoId,cores);
+			str="ok";
 		}
 		if (scenarinoType==1&&missionType==2) {
 			//预评估任务的预评估情景
 			//readyPreEvaluationSituationDataFirst(scenarinoId,cores);
 			LogUtil.getLogger().info("预评估任务的预评估情景开始！");
+			str="ok";
 		}
 		if (scenarinoType==2&&missionType==2) {
 			//预评估任务的后评估情景
 			readyPrePostEvaluationSituationData(scenarinoId,cores);
+			str="ok";
 		}
 		if (scenarinoType==2&&missionType==3) {
-			//后评估任务后评估情景
-			LogUtil.getLogger().info("后评估任务的后评估情景开始！");
-			//getEmis(missionId, scenarinoId, userId, scenarinoType);
-			readypost_PostEvaluationSituationData(scenarinoId);
+			try {
+				//后评估任务后评估情景
+				//获取能够执行的条件
+				//获取该情景的基础的情景ID和时间
+				TScenarinoDetail scenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+				//对应的基准的ID
+				Long basisScenarinoId = scenarinoDetail.getBasisScenarinoId();
+				//对应的基础时间
+				Date basisTime = scenarinoDetail.getBasisTime();
+				TTasksStatus tasksStatus = tTasksStatusMapper.selectendByscenarinoId(basisScenarinoId);
+				Long stepindex = tasksStatus.getStepindex();
+				Date tasksEndDate = tasksStatus.getTasksEndDate();
+				Date scenarinoEndDate = tasksStatus.getScenarinoEndDate();
+				Date scenarinoStartDate = tasksStatus.getScenarinoStartDate();
+				//int compareTo = scenarinoEndDate.compareTo(tasksEndDate);
+				int compareTo = basisTime.compareTo(tasksEndDate);
+				tasksEndDate = tasksEndDate == null ? scenarinoStartDate:tasksEndDate;
+				stepindex = stepindex == null? 0:stepindex;
+				if (stepindex>=4&&compareTo<=0) {
+					LogUtil.getLogger().info("后评估任务的后评估情景开始！");
+					//请求actionlist
+					LogUtil.getLogger().info("请求actionlist，获取减排系数");
+					
+					//获取情景的开始时间和结束时间
+					TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectStartAndEndDate(scenarinoId);
+					Date start = tScenarinoDetail.getScenarinoStartDate();
+					System.out.println(start);
+					//System.out.println(start.toString().substring(0,start.toString().indexOf(".")));
+					String startDate = DateUtil.DATEtoString(start, "yyyy-MM-dd HH:mm:ss");
+					Date end = tScenarinoDetail.getScenarinoEndDate();
+					String endDate = DateUtil.DATEtoString(end, "yyyy-MM-dd HH:mm:ss");
+					//获取减排的json串
+					String jpjson = planAndMeasureController.JPUtil(scenarinoId, userId, startDate, endDate);
+					 // planAndMeasureController.JPUtil(scenarinoId, userId, startDate, endDate);
+					if (null!=jpjson) {
+						System.out.println(jpjson);
+						//发送actionlist请求
+						String getResult=ClientUtil.doPost(configUtil.getActionlistURL(),jpjson);
+						System.out.println(getResult+"jp action list -------------");
+							Map mapResult=mapper.readValue(getResult, Map.class);
+							System.out.println(mapResult+"返回值——————————————————");
+							if(mapResult.get("status").toString().equals("success")){
+								str="ok";
+							}else {
+								str="error";
+							}
+					}
+				}else {
+					str = "false";
+					LogUtil.getLogger().info("基准情景尚未运行完毕");
+				}
+				
+				//getEmis(missionId, scenarinoId, userId, scenarinoType);
+			//	readypost_PostEvaluationSituationData(scenarinoId);
+			
+			} catch (IOException e) {
+				e.printStackTrace();
+				str = "exception";
+			}
 		}
+		return str;
+			
 	}
 	
 	/**
@@ -620,6 +710,7 @@ public class ReadyData {
 		//创建emis对象   调用方法获取emis数据
 		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType,scenarinoId);
 		//设置body的数据
+		
 		bodyData.setCommon(commonData);
 		bodyData.setWrf(wrfData);
 		bodyData.setCmaq(cmaqData);
@@ -716,6 +807,7 @@ public class ReadyData {
 		if (i<0) {
 			 datatype = "fnl";
 		}
+		//第一次发送数据 ic是基础情景 后面的户数ic是本条情景ID和任务ID
 		boolean first= true;
 		String time = DateUtil.DATEtoString(startDate, "yyyyMMdd");
 		QueueData queueData = readypreEvaSituMessageData(scenarinoId,datatype,time,first);
@@ -824,7 +916,7 @@ public class ReadyData {
 			Date timedate = DateUtil.StrtoDateYMD(time, "yyyyMMdd");
 			String icdate = DateUtil.changeDate(timedate, "yyyyMMdd",-1);
 			//准备cmaq的ic
-			Map<String, Object> icMap = getIC(scenarinoId,missionId ,false,icdate); 
+			Map<String, Object> icMap = getIC(scenarinoId,missionId ,firsttime,icdate); 
 			cmaqData.setIc(icMap);
 		}
 		
@@ -1102,7 +1194,7 @@ public class ReadyData {
 	 * @Description: TODO
 	 * @param missionId
 	 * @return   
-	 * QueueDataEmis  设置emis数据的方法
+	 * QueueDataEmis  设置emis数据的方法 从数据库里面取
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年3月28日 下午6:50:19
