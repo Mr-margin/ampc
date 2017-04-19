@@ -188,12 +188,12 @@ $("#toggle-sidebar").on("click",function(e){
   if($(this).hasClass("toggle-flag")){
     $("#sidebarlt").show();
     $("#content-title").css({'left':'210px'});
-    $("#content").css({'margin-left':'210px'});
+    $("#content").css({'left':'210px'});
     $(this).removeClass("toggle-flag");
   }else{
     $("#sidebarlt").hide();
     $("#content-title").css({'left':'0px'});
-    $("#content").css({'margin-left':'0px'});
+    $("#content").css({'left':'0px'});
     $(this).addClass("toggle-flag");
   }
 });
