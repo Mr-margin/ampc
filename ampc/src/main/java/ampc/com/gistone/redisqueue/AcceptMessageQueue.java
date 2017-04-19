@@ -60,31 +60,31 @@ public class AcceptMessageQueue implements Runnable{
 		
 	
 		
-		while (!Thread.interrupted()) {
+	/*	while (!Thread.interrupted()) {
 			
 			try {
 		//	String send_queue_name = redisUtilServer.rpop("send_queue_name");//result_Start_model
 			System.out.println("队列接受数据");
-			String rpop = redisUtilServer.brpop("send_queue_name");//result_Start_model
-		//	String rpop2 = redisUtilServer.rpop("send_queue_name");//result_Start_model
-			if (null==rpop) {
-				System.out.println(rpop+"刚取出来的");
+		//	String rpop = redisUtilServer.brpop("send_queue_name");//result_Start_model
+			String rpop2 = redisUtilServer.rpop("test");//result_Start_model
+			if (null==rpop2) {
+				System.out.println(rpop2+"刚取出来的");
 				LogUtil.getLogger().info("队列里面没有数据了！");
 			}else {
 			
-				Message message = JsonUtil.jsonToObj(rpop, Message.class);
+				Message message = JsonUtil.jsonToObj(rpop2, Message.class);
 				
 				String key = message.getType();
 				switch (key) {
 				case "model.start.result":
 					LogUtil.getLogger().info("start tasks"+new Date());
-					LogUtil.getLogger().info(rpop);
+					LogUtil.getLogger().info(rpop2);
 					toDataTasksUtil.updateDB(message);
 					LogUtil.getLogger().info("end tasks"+new Date());
 					break;
 				case "ungrib.result":
-					LogUtil.getLogger().info("接受ungrib数据："+new Date());
-					toDataUngribUtil.updateDB(rpop);
+					LogUtil.getLogger().info("接受ungrib数据："+new Date()+":"+rpop2);
+					toDataUngribUtil.updateDB(rpop2);
 					LogUtil.getLogger().info("ungrib处理完毕："+new Date());
 					break;
 
@@ -92,6 +92,52 @@ public class AcceptMessageQueue implements Runnable{
 					break;
 				}
 			}
+				
+			} catch (IOException e) {                                                                             
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				LogUtil.getLogger().error("线程出现异常了");
+			}
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}*/
+		
+	while (!Thread.interrupted()) {
+			
+			try {
+				//	String send_queue_name = redisUtilServer.rpop("send_queue_name");//result_Start_model
+				System.out.println("队列接受数据");
+				String rpop = redisUtilServer.brpop("send_queue_name");//result_Start_model
+				//	String rpop2 = redisUtilServer.rpop("test");//result_Start_model
+				if (null==rpop) {
+					System.out.println(rpop+"刚取出来的");
+					LogUtil.getLogger().info("队列里面没有数据了！");
+				}else {
+					
+					Message message = JsonUtil.jsonToObj(rpop, Message.class);
+					
+					String key = message.getType();
+					switch (key) {
+					case "model.start.result":
+						LogUtil.getLogger().info("start tasks"+new Date());
+						LogUtil.getLogger().info(rpop);
+						toDataTasksUtil.updateDB(message);
+						LogUtil.getLogger().info("end tasks"+new Date());
+						break;
+					case "ungrib.result":
+						LogUtil.getLogger().info("接受ungrib数据："+new Date()+":"+rpop);
+						toDataUngribUtil.updateDB(rpop);
+						LogUtil.getLogger().info("ungrib处理完毕："+new Date());
+						break;
+						
+					default:
+						break;
+					}
+				}
 				
 			} catch (IOException e) {                                                                             
 				// TODO Auto-generated catch block
