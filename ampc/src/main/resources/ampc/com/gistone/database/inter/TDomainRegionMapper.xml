@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TDomainRegionMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TDomainRegion" >
+    <result column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="REGIONID" property="regionid" jdbcType="VARCHAR" />
+    <result column="REGIONNAME" property="regionname" jdbcType="VARCHAR" />
+    <result column="LAT" property="lat" jdbcType="VARCHAR" />
+    <result column="LON" property="lon" jdbcType="VARCHAR" />
+    <result column="ADDTIME" property="addtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TDomainRegion" >
+    insert into T_DOMAIN_REGION (ID, REGIONID, REGIONNAME, 
+      LAT, LON, ADDTIME
+      )
+    values (#{id,jdbcType=DECIMAL}, #{regionid,jdbcType=VARCHAR}, #{regionname,jdbcType=VARCHAR}, 
+      #{lat,jdbcType=VARCHAR}, #{lon,jdbcType=VARCHAR}, #{addtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TDomainRegion" >
+    insert into T_DOMAIN_REGION
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="regionid != null" >
+        REGIONID,
+      </if>
+      <if test="regionname != null" >
+        REGIONNAME,
+      </if>
+      <if test="lat != null" >
+        LAT,
+      </if>
+      <if test="lon != null" >
+        LON,
+      </if>
+      <if test="addtime != null" >
+        ADDTIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="regionid != null" >
+        #{regionid,jdbcType=VARCHAR},
+      </if>
+      <if test="regionname != null" >
+        #{regionname,jdbcType=VARCHAR},
+      </if>
+      <if test="lat != null" >
+        #{lat,jdbcType=VARCHAR},
+      </if>
+      <if test="lon != null" >
+        #{lon,jdbcType=VARCHAR},
+      </if>
+      <if test="addtime != null" >
+        #{addtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+</mapper>
