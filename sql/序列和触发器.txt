@@ -547,3 +547,18 @@ when (new.ADMIN_ROLE_ID is null)
 begin
 select T_ADMIN_ROLE_SEQ.nextval into :new.ADMIN_ROLE_ID from dual;
 end;
+
+------T_DOMAIN_REGION ----
+CREATE SEQUENCE T_DOMAIN_REGION_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_DOMAIN_REGION_REP before insert on T_DOMAIN_REGION
+FOR EACH ROW
+when (new.ID is null)
+begin
+select T_DOMAIN_REGION_SEQ.nextval into :new.ID from dual;
+end;
