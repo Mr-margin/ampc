@@ -1558,10 +1558,11 @@ body.full-screen #header {
    Content
 ----------------------------------------- */
 #content {
-    position:absolute;
+    position:fixed;
     left: 210px;
     top:130px;
     right: 0px;
+    bottom: 0;
     background-color: #f3f3f4; /* 背景色改为灰色 */
 }
 
@@ -1583,14 +1584,28 @@ body.full-screen #header {
 }
 
 #content .content-wrapper {
-    height: auto;
-    float: left;
+    height: 100%;
     width: 100%;
     position: relative;
 }
 
 #content .content-wrapper .outlet {
+    height: 100%;
     position: relative;
+}
+
+#content .content-wrapper .outlet>div{
+    height: 100%;
+    position: relative;
+}
+
+#Route_conter{
+    position: absolute;
+    top: 0;
+    left: 15px;
+    right: 15px;
+    bottom: 10px;
+    overflow-y: auto;
 }
 
 #content .heading:before,
