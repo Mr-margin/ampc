@@ -24,15 +24,15 @@ var changeMsg = {
 $('.day').css('display','block');
 $('.hour').css('display','none');
 var speciesArr = {
-  day: ['PM₂₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE'],
+  day: ['PM₂₅', 'PM₁₀', 'O₃_8_MAX', 'O₃_1_MAX', 'O₃_AVG', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE'],
   hour: ['PM₂₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE']
 };
 var speciesObj = {
   'PM₂₅':'PM25',
   'PM₁₀':'PM10',
-  'O₃_8_max':'O3_8_MAX',
-  'O₃_1_max':'O3_1_MAX',
-  'O₃_avg':'O3_AVG',
+  'O₃_8_MAX':'O3_8_MAX',
+  'O₃_1_MAX':'O3_1_MAX',
+  'O₃_AVG':'O3_AVG',
   'SO₂':'SO2',
   'NO₂':'NO2',
   'CO':'CO',
@@ -581,7 +581,7 @@ function updata() {
       missionId:sceneInitialization.taskID,
       mode:changeMsg.station=='avg'?'city':'point',
       time:changeMsg.time,
-      cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
+      cityStation:changeMsg.station=='avg'?changeMsg.city.substr(0,4):changeMsg.station,
       scenarinoId:changeMsg.scenarinoId,
       datetype:changeMsg.rms
 
@@ -600,7 +600,7 @@ function updata() {
       missionId:sceneInitialization.taskID,
       mode:changeMsg.station=='avg'?'city':'point',
       time:changeMsg.time,
-      cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
+      cityStation:changeMsg.station=='avg'?changeMsg.city.substr(0,4):changeMsg.station,
       //scenarinoId:changeMsg.scenarinoId,
       datetype:changeMsg.rms
 
