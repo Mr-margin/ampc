@@ -72,16 +72,16 @@ public class UserController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			//用户Id
-			long userId=Long.parseLong(data.get("userId").toString());
+			//用户账号
+			long userAccount=Long.parseLong(data.get("userAccount").toString());
 			//密码
 			String passWord=data.get("passWord").toString();
-			Integer isExist=tUserMapper.checkUserId(userId);
+			Integer isExist=tUserMapper.checkUserId(userAccount);
 			if(isExist>0){
-				Integer isOn=tUserMapper.checkUserIsON(userId);
+				Integer isOn=tUserMapper.checkUserIsON(userAccount);
 				if(isOn>0){
 					Map map=new HashMap();
-					map.put("userId", userId);
+					map.put("userAccount", userAccount);
 					map.put("passWord", passWord);
 					//查询所有的用户基本信息
 					Map userMap=tUserMapper.login(map);
