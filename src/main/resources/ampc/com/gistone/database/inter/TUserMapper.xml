@@ -13,66 +13,12 @@
     <result column="USER_PHONE" property="userPhone" jdbcType="DECIMAL" />
     <result column="USER_VALIDITY" property="userValidity" jdbcType="TIMESTAMP" />
     <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="USER_ACCOUNT" property="userAccount" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     USER_ID, USER_NAME, PASSWORD, PROVINCE_CODE, CITY_CODE, COUNTY_CODE, COMPANY_NAME, 
-    USER_EMAIL, USER_PHONE, USER_VALIDITY, ADD_TIME
+    USER_EMAIL, USER_PHONE, USER_VALIDITY, ADD_TIME, USER_ACCOUNT
   </sql>
-  
-   <resultMap id="userListMap" type="hashMap">
-    <id column="USER_ID" property="userId" jdbcType="DECIMAL" />
-    <result column="USER_NAME" property="userName" jdbcType="OTHER" />
-    <result column="PROVINCE_CODE" property="provinceCode" jdbcType="DECIMAL" />
-    <result column="CITY_CODE" property="cityCode" jdbcType="DECIMAL" />
-    <result column="COUNTY_CODE" property="countyCode" jdbcType="DECIMAL" />
-    <result column="COMPANY_NAME" property="companyName" jdbcType="OTHER" />
-    <result column="USER_EMAIL" property="userEmail" jdbcType="VARCHAR" />
-    <result column="USER_PHONE" property="userPhone" jdbcType="DECIMAL" />
-    <result column="USER_VALIDITY" property="userValidity" jdbcType="TIMESTAMP" />
-  </resultMap>
-  
-  
-   <!-- 根据所有的用户信息列表 -->
-   <select id="selectUserList" resultMap="userListMap">
-		SELECT USER_ID, USER_NAME, PROVINCE_CODE, CITY_CODE, COUNTY_CODE, COMPANY_NAME, 
-    USER_EMAIL, USER_PHONE, USER_VALIDITY
-			FROM T_USER 
-				WHERE  IS_EFFECTIVE='1' 
-  </select>
-  
-  
-  <!-- 用户登录 -->
-  <select id="login" parameterType="hashMap" resultMap="userListMap">
-		SELECT USER_ID, USER_NAME, PROVINCE_CODE, CITY_CODE, COUNTY_CODE, COMPANY_NAME, 
-    USER_EMAIL, USER_PHONE, USER_VALIDITY
-			FROM T_USER 
-				WHERE  USER_ID=#{userId,jdbcType=OTHER} AND  PASSWORD=#{passWord,jdbcType=OTHER}
-  </select>
-  
-  
-  <!-- 判断用户名是否存在 -->
-  <select id="checkUserId" parameterType="java.lang.Long" resultType="java.lang.Integer">
-		SELECT COUNT(*)
-			FROM T_USER 
-				WHERE  USER_ID=#{_parameter,jdbcType=DECIMAL}
-  </select>
-  
-  
-   <!-- 判断用户名是否可用 -->
-  <select id="checkUserIsON" parameterType="java.lang.Long" resultType="java.lang.Integer">
-		SELECT COUNT(*)
-			FROM T_USER 
-				WHERE  USER_ID=#{_parameter,jdbcType=DECIMAL} AND USER_VALIDITY>sysdate
-  </select>
-  
-  
-  
-  
-  
-  
-  
-  
-  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -87,11 +33,13 @@
     insert into T_USER (USER_ID, USER_NAME, PASSWORD, 
       PROVINCE_CODE, CITY_CODE, COUNTY_CODE, 
       COMPANY_NAME, USER_EMAIL, USER_PHONE, 
-      USER_VALIDITY, ADD_TIME)
+      USER_VALIDITY, ADD_TIME, USER_ACCOUNT
+      )
     values (#{userId,jdbcType=DECIMAL}, #{userName,jdbcType=OTHER}, #{password,jdbcType=OTHER}, 
       #{provinceCode,jdbcType=DECIMAL}, #{cityCode,jdbcType=DECIMAL}, #{countyCode,jdbcType=DECIMAL}, 
       #{companyName,jdbcType=OTHER}, #{userEmail,jdbcType=VARCHAR}, #{userPhone,jdbcType=DECIMAL}, 
-      #{userValidity,jdbcType=TIMESTAMP}, #{addTime,jdbcType=TIMESTAMP})
+      #{userValidity,jdbcType=TIMESTAMP}, #{addTime,jdbcType=TIMESTAMP}, #{userAccount,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TUser" >
     insert into T_USER
@@ -129,6 +77,9 @@
       <if test="addTime != null" >
         ADD_TIME,
       </if>
+      <if test="userAccount != null" >
+        USER_ACCOUNT,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="userId != null" >
@@ -163,6 +114,9 @@
       </if>
       <if test="addTime != null" >
         #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userAccount != null" >
+        #{userAccount,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -199,6 +153,9 @@
       <if test="addTime != null" >
         ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="userAccount != null" >
+        USER_ACCOUNT = #{userAccount,jdbcType=VARCHAR},
+      </if>
     </set>
     where USER_ID = #{userId,jdbcType=DECIMAL}
   </update>
@@ -213,7 +170,8 @@
       USER_EMAIL = #{userEmail,jdbcType=VARCHAR},
       USER_PHONE = #{userPhone,jdbcType=DECIMAL},
       USER_VALIDITY = #{userValidity,jdbcType=TIMESTAMP},
-      ADD_TIME = #{addTime,jdbcType=TIMESTAMP}
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      USER_ACCOUNT = #{userAccount,jdbcType=VARCHAR}
     where USER_ID = #{userId,jdbcType=DECIMAL}
   </update>
 </mapper>
