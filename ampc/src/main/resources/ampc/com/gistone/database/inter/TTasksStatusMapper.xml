@@ -303,12 +303,12 @@
  WHERE A.SCENARINO_TYPE='4' AND B.BEIZHU='0'
   </select>
   
-  <!--c查找预评估任务情景的task任务执行情况的全部情景  -->
+  <!--查找预评估任务情景的task任务执行情况的全部情景  步数是个未知数-->
   
   <select id="gettaskEnddate" resultMap="BaseResultMap" parameterType="java.lang.Long">
   select 
   <include refid="Base_Column_List" />
-  from T_TASKS_STATUS where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL} and STEPINDEX ='4' 
+  from T_TASKS_STATUS where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </select>
   
   <!--跟新已经发送消息的当天的记录  -->

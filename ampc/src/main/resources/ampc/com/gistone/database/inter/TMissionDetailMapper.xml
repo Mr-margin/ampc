@@ -104,10 +104,14 @@
       </if>
   </select>
   
-  <!--通过情景ID查询清单ID -->
+  <!--通过任务ID查询清单ID -->
   <select id="getsourceid" resultType="java.lang.Long" parameterType="java.lang.Long">
   select ES_COUPLING_ID from T_MISSION_DETAIL 
   where MISSION_ID = #{missionId,jdbcType=DECIMAL}
+  </select>
+  <!--通过任务ID查询任务类型  -->
+  <select id="selectMissionType" parameterType="java.lang.Long" resultType="java.lang.Long">
+  select MISSION_STATUS from T_MISSION_DETAIL where MISSION_ID = #{missionId,jdbcType=DECIMAL}
   </select>
   <!-- 修改任务的结束时间 -->
   <update id="updateOldMissionDetail" parameterType="ampc.com.gistone.database.model.TMissionDetail">
