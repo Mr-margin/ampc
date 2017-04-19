@@ -241,6 +241,30 @@ function handle_y(y) {
   var tmp = Math.PI / 4.0 + y / 2.0;
   return 20037508.34 * Math.log(Math.tan(tmp)) / Math.PI;
 }
+/*封装一个遮罩层载入效果
+ * 使用插件为blockUI
+ * parameter：selector，method
+ * selector：string，为css选择器，按照jquery中$的选择器
+ * state：string，'start'or'end','start'表示启动载入效果，'end'表示关闭载入效果
+ * */
+function zmblockUI(selector, method) {
+  if ($(selector).length == 0) {
+    console.info(selector + "没有匹配dom元素,无法执行加载动画");
+    return
+  }
+  if (typeof method === undefined || ["start", "end"].toString().indexOf(method) == -1) {
+    console.info(selector + "的加载动画的method参数有误！");
+    return
+  }
+  if (method === "start") {
+    $(selector).block({
+      message: '<div class="loading-message-boxed"><img src="images/loading-spinner-blue.gif"><span>&nbsp;&nbsp;努力加载中…</span></div>',
+      css:{border:0,backgroundColor:'transparent'}
+    });
+  }else if(method==='end'){
+    $(selector).unblock();
+  }
+}
 
 /*看名字*/
 function ajaxPost(url, parameter) {
