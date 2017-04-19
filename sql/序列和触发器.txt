@@ -439,6 +439,111 @@ select T_GLOBAL_SETTING_SEQ.nextval into :new.GLOBAL_SETTING_ID from dual;
 end;
 
 
+-----T_USER_MSG  用户信息表----
+CREATE SEQUENCE T_USER_MSG_SEQ  
+INCREMENT BY 1  
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+
+CREATE OR REPLACE TRIGGER T_USER_MSG_REP before insert on T_USER_MSG
+FOR EACH ROW
+when (new.USER_MSG_ID is null)
+begin
+select T_USER_MSG_SEQ.nextval into :new.USER_MSG_ID from dual;
+end;
 
 
 
+---T_USER_SETTING  用户配置表----
+CREATE SEQUENCE T_USER_SETTING_SEQ 
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE          
+CACHE 20;
+
+
+
+CREATE OR REPLACE TRIGGER T_USER_SETTING_REP before insert on T_USER_SETTING
+FOR EACH ROW
+when (new.USER_SETTING_ID is null)
+begin
+select T_USER_SETTING_SEQ.nextval into :new.USER_SETTING_ID from dual;
+end;
+
+
+---T_ADMIN  管理员表----
+CREATE SEQUENCE T_ADMIN_SEQ 
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE          
+CACHE 20;
+
+
+CREATE OR REPLACE TRIGGER T_ADMIN_REP before insert on T_ADMIN
+FOR EACH ROW
+when (new.ADMIN_ID is null)
+begin
+select T_ADMIN_SEQ.nextval into :new.ADMIN_ID from dual;
+end;
+
+
+
+---T_SYSTEM_ADMIN  系统管理员表----
+CREATE SEQUENCE T_SYSTEM_ADMIN_SEQ 
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE          
+CACHE 20;
+
+
+
+CREATE OR REPLACE TRIGGER T_SYSTEM_ADMIN_REP before insert on T_SYSTEM_ADMIN
+FOR EACH ROW
+when (new.SYSTEM_ADMIN_ID is null)
+begin
+select T_SYSTEM_ADMIN_SEQ.nextval into :new.SYSTEM_ADMIN_ID from dual;
+end;
+
+
+
+---T_ROLE  角色表----
+CREATE SEQUENCE T_ROLE_SEQ 
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE          
+CACHE 20;
+
+
+
+CREATE OR REPLACE TRIGGER T_ROLE_REP before insert on T_ROLE
+FOR EACH ROW
+when (new.ROLE_ID is null)
+begin
+select T_ROLE_SEQ.nextval into :new.ROLE_ID from dual;
+end;
+
+
+
+---T_ADMIN_ROLE  管理员角色表----
+CREATE SEQUENCE T_ADMIN_ROLE_SEQ 
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE          
+CACHE 20;
+
+
+
+CREATE OR REPLACE TRIGGER T_ADMIN_ROLE_REP before insert on T_ADMIN_ROLE
+FOR EACH ROW
+when (new.ADMIN_ROLE_ID is null)
+begin
+select T_ADMIN_ROLE_SEQ.nextval into :new.ADMIN_ROLE_ID from dual;
+end;
