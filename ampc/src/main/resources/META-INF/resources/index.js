@@ -70,7 +70,7 @@ function loadIngFun(){
   ajaxPost("/user/checkyzm",{zhi:verify}).success(function(res){
     if(res.data == 1){
       ajaxPost("/user/login",{
-        userId:name,
+    	userAccount:name,
         passWord:pas
       }).success(function(res){
         if(res.data == 1){
