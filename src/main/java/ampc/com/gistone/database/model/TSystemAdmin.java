@@ -23,6 +23,8 @@ public class TSystemAdmin {
 
     private Date addTime;
 
+    private String systemAdminAccount;
+
     public Long getSystemAdminId() {
         return systemAdminId;
     }
@@ -101,5 +103,13 @@ public class TSystemAdmin {
 
     public void setAddTime(Date addTime) {
         this.addTime = addTime;
+    }
+
+    public String getSystemAdminAccount() {
+        return systemAdminAccount;
+    }
+
+    public void setSystemAdminAccount(String systemAdminAccount) {
+        this.systemAdminAccount = systemAdminAccount == null ? null : systemAdminAccount.trim();
     }
 }

@@ -25,6 +25,8 @@ public class TUser {
 
     private Date addTime;
 
+    private String userAccount;
+
     public Long getUserId() {
         return userId;
     }
@@ -111,5 +113,13 @@ public class TUser {
 
     public void setAddTime(Date addTime) {
         this.addTime = addTime;
+    }
+
+    public String getUserAccount() {
+        return userAccount;
+    }
+
+    public void setUserAccount(String userAccount) {
+        this.userAccount = userAccount == null ? null : userAccount.trim();
     }
 }
