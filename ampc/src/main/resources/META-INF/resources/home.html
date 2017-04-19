@@ -46,7 +46,7 @@
   <link rel="stylesheet" href="css/index.css"/>
   <meta name="msapplication-TileColor" content="#3399cc"/>
 </head>
-<body>
+<body style="height: 100%;position: relative">
 
 <div class="zhezhao" id="zhezhao" style="display:none;"></div>
 <div class="zhezhao_title" id="zhezhao_title" style="display:none;">
@@ -456,100 +456,104 @@
     <li class="candrop">
       <a href="javascript:"><i class="im-paste2"> 效果评估</i></a>
       <div class="dropmenu">
-        <p><a href="#/xgpg_v1">减排分析</a></p>
-        <p><a href="#/xgpg_v2">网格排放</a></p>
-        <p><a href="#/xgpg_v3">时间序列</a></p>
-        <p><a href="#/xgpg_v4">水平分布</a></p>
-        <p><a href="#/xgpg_v5">垂直廓线</a></p>
-        <p><a href="#/xgpg_v6">评估报告</a></p>
+        <div>
+          <p><a href="#/xgpg_v1">减排分析</a></p>
+          <p><a href="#/xgpg_v2">网格排放</a></p>
+          <p><a href="#/xgpg_v3">时间序列</a></p>
+          <p><a href="#/xgpg_v4">水平分布</a></p>
+          <p><a href="#/xgpg_v5">垂直廓线</a></p>
+          <p><a href="#/xgpg_v6">评估报告</a></p>
+        </div>
       </div>
     </li>
     <li class="candrop">
       <a href="javascript:"><i class="me-cloudy"> 空气质量预报</i></a>
       <div class="dropmenu">
-        <p><a href="#/kqzlyb_v1">预报检验</a></p>
-        <p><a href="#/kqzlyb_v2">时间序列</a></p>
-        <p><a href="#/kqzlyb_v3">水平分布</a></p>
-        <p><a href="#/kqzlyb_v4">垂直廓线</a></p>
-        <div style="padding-right:5px;" id="timeArrayCondi">
-          <div class="input-group">
-            <span class="input-group-addon"><small>开始日期：</small></span>
+        <div>
+          <p><a href="#/kqzlyb_v1">预报检验</a></p>
+          <p><a href="#/kqzlyb_v2">时间序列</a></p>
+          <p><a href="#/kqzlyb_v3">水平分布</a></p>
+          <p><a href="#/kqzlyb_v4">垂直廓线</a></p>
+          <div style="padding-right:5px;" id="timeArrayCondi">
+            <div class="input-group">
+              <span class="input-group-addon"><small>开始日期：</small></span>
 
-            <div class="chaxundiv_2 selectDiv" id="data_1">
-              <div class="input-group date" id="datetimeStart" style="width: 100%;">
-                <span class="input-group-addon"><i class="fa-calendar"></i></span>
-                <input type="text" style="width: 100%;height: 33px;" readonly="true"/>
-              </div>
-            </div>
-          </div>
-          <div class="input-group" style="margin-top:5px;">
-            <span class="input-group-addon"><small>结束日期：</small></span>
-
-            <div class="chaxundiv_3 selectDiv" id="data_2">
-              <div class="input-group date" id="datetimeEnd" style="width: 100%;">
-                <span class="input-group-addon"><i class="fa-calendar"></i></span>
-                <input type="text" style="width: 100%;height: 33px;" readonly="true"/>
-              </div>
-            </div>
-          </div>
-
-          <!-- 检测站点 -->
-          <div class="ibox-content" style="width:210px;height:66px;padding: 0px 0px 0px 0px;margin-top:5px;">
-            <div class="col-md-2"  style="width:203px;height:66px;border:1px solid #75B9E6;padding: 0px;">
-              <div class="ibox-tools" style="padding-right: 0px;">
-                <div class="jczd"
-                     style="background-color: #EDF7FF;width:200px;height: 25px;margin-left:0px;padding-top:2px;padding-left:0px;margin-top:0px;">
-                  <h5>检测站点</h5>
+              <div class="chaxundiv_2 selectDiv" id="data_1">
+                <div class="input-group date" id="datetimeStart" style="width: 100%;">
+                  <span class="input-group-addon"><i class="fa-calendar"></i></span>
+                  <input type="text" style="width: 100%;height: 33px;" readonly="true"/>
                 </div>
-                <div class="row col-sm-12" style="padding-right:0px;margin-top:5px; width:204px;">
-                  <div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
-                    <div class="input-group group-select" style="margin-left:0px;">
-                      <select class="form-control m-b" style="width:72px;">
-                        <option>浙江省</option>
-                        <option>--</option>
-                      </select>
+              </div>
+            </div>
+            <div class="input-group" style="margin-top:5px;">
+              <span class="input-group-addon"><small>结束日期：</small></span>
+
+              <div class="chaxundiv_3 selectDiv" id="data_2">
+                <div class="input-group date" id="datetimeEnd" style="width: 100%;">
+                  <span class="input-group-addon"><i class="fa-calendar"></i></span>
+                  <input type="text" style="width: 100%;height: 33px;" readonly="true"/>
+                </div>
+              </div>
+            </div>
+
+            <!-- 检测站点 -->
+            <div class="ibox-content" style="width:210px;height:66px;padding: 0px 0px 0px 0px;margin-top:5px;">
+              <div class="col-md-2"  style="width:203px;height:66px;border:1px solid #75B9E6;padding: 0px;">
+                <div class="ibox-tools" style="padding-right: 0px;">
+                  <div class="jczd"
+                       style="background-color: #EDF7FF;width:200px;height: 25px;margin-left:0px;padding-top:2px;padding-left:0px;margin-top:0px;">
+                    <h5>检测站点</h5>
+                  </div>
+                  <div class="row col-sm-12" style="padding-right:0px;margin-top:5px; width:204px;">
+                    <div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
+                      <div class="input-group group-select" style="margin-left:0px;">
+                        <select class="form-control m-b" style="width:72px;">
+                          <option>浙江省</option>
+                          <option>--</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
+                      <div class="input-group group-select" style="margin-right:0px;">
+                        <select class="form-control m-b" style="width:73px;">
+                          <option>杭州市</option>
+                          <option>--</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
+                      <div class="input-group group-select"
+                           style="padding-right:0px;">
+                        <select class="form-control m-b" style="width:72px;">
+                          <option>平均</option>
+                          <option>--</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
-                  <div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
-                    <div class="input-group group-select" style="margin-right:0px;">
-                      <select class="form-control m-b" style="width:73px;">
-                        <option>杭州市</option>
-                        <option>--</option>
-                      </select>
-                    </div>
+                </div>
+              </div>
+            </div>
+            <div class="ibox-content" style="width:210px;height:66px;padding: 0px 0px 0px 0px;margin-top:5px;">
+              <div class="col-md-2" id="" style="width:203px;height:66px;border:1px solid #75B9E6;padding: 0px;">
+                <div class="ibox-tools" style="padding-right: 0px;">
+                  <div class="jczd"
+                       style="background-color: #EDF7FF;width:200px;height: 25px;margin-left:0px;padding-top:2px;padding-left:0px;margin-top:0px;">
+                    <h5>时间分辩率</h5>
                   </div>
-                  <div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
-                    <div class="input-group group-select"
-                         style="padding-right:0px;">
-                      <select class="form-control m-b" style="width:72px;">
-                        <option>平均</option>
-                        <option>--</option>
-                      </select>
+                  <div class="row" style="margin-top:10px;">
+                    <div class="col-md-4 col-md-offset-2">
+                      <button type="button" class="btn btn-outline btn-success btn-xs">逐小时</button>
+                    </div>
+                    <div class="col-md-4">
+                      <button type="button" class="btn btn-outline btn-success btn-xs">逐日</button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            <!-- 时间分辨率结束 -->
           </div>
-          <div class="ibox-content" style="width:210px;height:66px;padding: 0px 0px 0px 0px;margin-top:5px;">
-            <div class="col-md-2" id="" style="width:203px;height:66px;border:1px solid #75B9E6;padding: 0px;">
-              <div class="ibox-tools" style="padding-right: 0px;">
-                <div class="jczd"
-                     style="background-color: #EDF7FF;width:200px;height: 25px;margin-left:0px;padding-top:2px;padding-left:0px;margin-top:0px;">
-                  <h5>时间分辩率</h5>
-                </div>
-                <div class="row" style="margin-top:10px;">
-                  <div class="col-md-4 col-md-offset-2">
-                    <button type="button" class="btn btn-outline btn-success btn-xs">逐小时</button>
-                  </div>
-                  <div class="col-md-4">
-                    <button type="button" class="btn btn-outline btn-success btn-xs">逐日</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- 时间分辨率结束 -->
         </div>
       </div>
     </li>
@@ -568,7 +572,7 @@
   </ul>
 </div>
 
-<div class="container-fluid" id="content-title" style="position:fixed;top:50px;left:210px;right:0;background-color:#F3F3F4;z-index:100">
+<div class="container-fluid" id="content-title" style="position:absolute;top:50px;left:210px;right:0;background-color:#F3F3F4;z-index:100">
 	<div class="row" >
       <div class="col-xs-12 heading">
         <h1 class="page-header"></h1>

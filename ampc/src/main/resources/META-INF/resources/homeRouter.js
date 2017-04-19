@@ -25,18 +25,26 @@ $.when(dps_um).then(function(){
     $('head').append($('<style></style>').html(cssStyle));
     // $("#Route_conter").css("height",llqHeight-150+"px");
     $(".qdCreate").css("height",llqHeight-138+"px");
-//重写的全局绑定事件
+
     $(function(){
+      //文档加载完成后需要执行的代码
       var auri=window.location.hash;
       console.log($("[href='"+auri+"']").parent().addClass("active").siblings().removeClass("active"));
-      $("[href='"+auri+"']").parent().addClass("active").siblings().removeClass("active").end().parent().parent(".candrop").addClass("active").siblings().removeClass("active").find(".candrop>p.active").removeClass();
+      $("[href='"+auri+"']").parent().addClass("active").siblings().removeClass("active").end().parentsUntil('#sidebarlt>ul>li').last().parent(".candrop").addClass("active").siblings().removeClass("active").find(".candrop>p.active").removeClass();
       //功能栏一级菜单的点击事件
       $("#sidebarlt>ul").on("click","li",function () {
-        $(this).siblings().removeClass("active").end().addClass("active");
+        $(this).siblings().removeClass("active").end().addClass("active").siblings().find(".dropmenu>div p.active").removeClass('active');
       });
       //功能栏二级菜单的点击事件
       $('#sidebarlt>ul').on("click","p",function () {
-        $(this).siblings().removeClass("active").end().addClass("active").parent().parent().siblings().find("p").removeClass("active");
+        $(this).siblings().removeClass("active").end().addClass("active").parentsUntil("#sidebarlt>ul>li").last().parent().siblings().find("p.active").removeClass("active");
+      })
+
+      /*为功能栏增加滚动条
+       * 功能栏下所有展开框都需要滚动条
+       * 要求：高度自适应*/
+      $("#sidebarlt>ul>li>.dropmenu>div").slimScroll({
+        height:'100%'
       })
     });
 

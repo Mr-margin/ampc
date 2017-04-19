@@ -863,7 +863,7 @@ body.full-screen #header {
     height: 50px;
     background: #75b9e6;
     z-index: 999;
-    position: fixed;
+    position: absolute;
     width: 100%;
     top: 0;
 }
@@ -1259,7 +1259,7 @@ body.full-screen #header {
 #sidebarlt {
     width: 210px;
     height: auto;
-    position: fixed;
+    position: absolute;
     left: 0;
     bottom: 0;
     top: 50px;
@@ -1558,7 +1558,7 @@ body.full-screen #header {
    Content
 ----------------------------------------- */
 #content {
-    position:fixed;
+    position:absolute;
     left: 210px;
     top:130px;
     right: 0px;
@@ -4406,29 +4406,32 @@ pre {
     top: 42px;
     right: 0;
 }
-#sidebarlt .dropmenu>p>a{
+#sidebarlt .dropmenu>div p>a{
     display: block;
     height: 36px;
     line-height: 36px;
     padding-left: 32px;
     color:#768399;
 }
-#sidebarlt .dropmenu>p>a:hover{
+#sidebarlt .dropmenu>div p>a:hover{
     color:#768399;
     background-color: #E4E9EB;
 }
-#sidebarlt .dropmenu>p.active{
+#sidebarlt .dropmenu>div p.active{
     border-top: 1px solid #d0d0ca;
     border-bottom: 1px solid #d0d0ca;
 }
-#sidebarlt .dropmenu>p.active>a{
+#sidebarlt .dropmenu>div p.active:after{
+    content:""
+}
+#sidebarlt .dropmenu>div p.active>a{
     background-color: #F3F3F4;
     margin-right: -1px;
 }
 #sidebarlt>ul>li.candrop.active>.dropmenu,#sidebarlt>ul>li.active>.borderbox{
     display: block;
 }
-#sidebarlt .dropmenu>p.active>a{
+#sidebarlt .dropmenu>div p.active>a{
     background-color: #F3F3F4;
     border-right: 1px solid #F3F3F4;
 }
