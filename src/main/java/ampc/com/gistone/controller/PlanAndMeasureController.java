@@ -1645,7 +1645,7 @@ public class PlanAndMeasureController {
 	 * @param endDate		结束时间
 	 * @return	减排的Json串
 	 */
-	public String JPUtil(String scenarinoId,String userId,String startDate,String endDate){
+	public String JPUtil(Long scenarinoId,Long userId,String startDate,String endDate){
 		// 添加异常捕捉
 		try {
 			// 创建一个减排的结果集合

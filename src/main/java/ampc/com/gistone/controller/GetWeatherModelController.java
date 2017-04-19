@@ -9,6 +9,7 @@
 package ampc.com.gistone.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -92,25 +93,43 @@ public class GetWeatherModelController {
 			TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
 			tScenarinoDetail.setExpand3(cores.toString());
 			tScenarinoDetail.setScenarinoId(scenarinoId);
-			tScenarinoDetail.setScenarinoStatus((long)6);
 			int updateCores = tScenarinoDetailMapper.updateCores(tScenarinoDetail);
 			//获取减排参数
 		//	Map<String, String> emis = readyData.getEmis(missionId,scenarinoId,userId,scenarinoType);
 			
-			/*//创建taskstatus对象
+			//清空taskstatus中的index和tasksenddate 以及情景运行完成状态beizhu为0
 			TTasksStatus tTasksStatus = new TTasksStatus();
-			tTasksStatus.setSourceid(sourceid);
-			tTasksStatus.setCalctype(calctype);
-			tTasksStatus.setPsal(psal);
-			tTasksStatus.setSsal(ssal);
-			tTasksStatus.setMeiccityconfig(meiccityconfig);
-			tTasksStatus.setTasksScenarinoId(scenarioid);*/
-			if (updateCores>0) {
+			tTasksStatus.setStepindex(null);
+			tTasksStatus.setTasksEndDate(null);
+			tTasksStatus.setBeizhu("0");
+			tTasksStatus.setTasksScenarinoId(scenarinoId);
+			//清空模式运行状态
+			int updateByPrimaryKey = tTasksStatusMapper.updateByPrimaryKeySelective(tTasksStatus);
+			
+			String conditionString =  readyData.branchPredict(scenarinoId, cores, scenarinoType, missionType,missionId,userId);
+			if (updateCores>0&&conditionString.equals("ok")) {
+				//更新状态
+				Map map = new HashMap();
+				map.put("scenarinoId", scenarinoId);
+				Long status = (long)6;
+				map.put("scenarinoStatus", status);
+				int a = tScenarinoDetailMapper.updateStatus(map);
+				if (a>0) {
+					 return AmpcResult.build(0, "ok");
+				}else {
+					return AmpcResult.build(1000, "启动失败");
+				}
+			}
+			if(updateCores>0&&conditionString.equals("false")){
 				
-				 readyData.branchPredict(scenarinoId, cores, scenarinoType, missionType,missionId,userId);
-				 
-				 return AmpcResult.build(0, "ok");
-			}else {
+				return AmpcResult.build(1000, "基准情景模式未完成！");
+				
+			}
+			if (updateCores>0&&conditionString.equals("error")) {
+				return AmpcResult.build(1000, "减排计算失败");
+			}
+			
+			else {
 				return AmpcResult.build(1000, "启动失败");
 			}
 			
@@ -140,20 +159,23 @@ public class GetWeatherModelController {
 		String psal = request.getParameter("psal");
 		String ssal = request.getParameter("ssal");
 		String meiccityconfig = request.getParameter("meiccityconfig");
-		Long scenarioid =Long.parseLong(request.getParameter("scenarioid"));
+		Long scenarinoId =Long.parseLong(request.getParameter("scenarioid"));
 		TTasksStatus tTasksStatus = new TTasksStatus();
 		tTasksStatus.setSourceid(sourceid);
 		tTasksStatus.setCalctype(calctype);
 		tTasksStatus.setPsal(psal);
 		tTasksStatus.setSsal(ssal);
 		tTasksStatus.setMeiccityconfig(meiccityconfig);
-		tTasksStatus.setTasksScenarinoId(scenarioid);
+		tTasksStatus.setTasksScenarinoId(scenarinoId);
 		//添加到对应的情景下面去
 			int i = tTasksStatusMapper.updateEmisData(tTasksStatus);
 			if (i>0) {
 				//后评估任务后评估情景
-				readyData.readypost_PostEvaluationSituationData(scenarioid);
-				readyData.needJIANPAIsituation(scenarioid);
+				//readyData.readypost_PostEvaluationSituationData(scenarinoid);
+				//准备对应的队列参数数据
+				readyData.needJPsituation(scenarinoId);
+				//预评估任务的预评估情景
+	//			readyData.readyPreEvaluationSituationDataFirst(scenarioid);
 				return AmpcResult.build(0, "ok");
 			}else {
 				return AmpcResult.build(1000, "失败");
@@ -200,30 +222,19 @@ public class GetWeatherModelController {
 			tScenarinoDetail.setScenarinoId(scenarinoId);
 			tScenarinoDetail.setScenarinoStatus((long)6);
 			int updateCores = tScenarinoDetailMapper.updateCores(tScenarinoDetail);
-			//获取减排参数
-			//	Map<String, String> emis = readyData.getEmis(missionId,scenarinoId,userId,scenarinoType);
-			
-			/*//创建taskstatus对象
-			TTasksStatus tTasksStatus = new TTasksStatus();
-			tTasksStatus.setSourceid(sourceid);
-			tTasksStatus.setCalctype(calctype);
-			tTasksStatus.setPsal(psal);
-			tTasksStatus.setSsal(ssal);
-			tTasksStatus.setMeiccityconfig(meiccityconfig);
-			tTasksStatus.setTasksScenarinoId(scenarioid);*/
 			if (updateCores>0) {
 				
 			//	readyData.branchPredict(scenarinoId, cores, scenarinoType, missionType,missionId,userId);
 				
 				return AmpcResult.build(0, "ok");
 			}else {
-				return AmpcResult.build(1000, "启动失败");
+				return AmpcResult.build(1000, "停止失败");
 			}
 			
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return AmpcResult.build(1000, "启动失败");
+			return AmpcResult.build(1000, "系统错误");
 		}
 		
 		
