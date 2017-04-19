@@ -1528,6 +1528,7 @@ public class MissionAndScenarinoController {
 				obj.put("missionName", mission.getMissionName());
 				obj.put("missionStartDate", mission.getMissionStartDate().getTime());
 				obj.put("missionEndDate", mission.getMissionEndDate().getTime());
+				obj.put("domainId", mission.getMissionDomainId());
 				arr.add(obj);
 				}
 			}
