@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
+import ampc.com.gistone.database.inter.TDomainMissionMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TPlanMapper;
 import ampc.com.gistone.database.inter.TPlanMeasureMapper;
@@ -32,6 +33,7 @@ import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.inter.TTimeMapper;
 import ampc.com.gistone.database.inter.TUserMapper;
 import ampc.com.gistone.database.inter.TUserSettingMapper;
+import ampc.com.gistone.database.model.TDomainMission;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TPlan;
 import ampc.com.gistone.database.model.TScenarinoAreaWithBLOBs;
@@ -91,6 +93,8 @@ public class MissionAndScenarinoController {
 	@Autowired
 	private TUserSettingMapper tUserSettingMapper;
 	
+	@Autowired
+	private TDomainMissionMapper tDomainMissionMapper;
 	/**
 	 * 任务查询方法
 	 * @param request 请求
@@ -140,6 +144,11 @@ public class MissionAndScenarinoController {
 			}
 			//查询全部写入返回结果集
 			List<Map> list = this.tMissionDetailMapper.selectAllOrByQueryName(map);
+			for(Map ss:list){
+				Long missionDomainId=Long.valueOf(ss.get("missionDomainId").toString());
+				TDomainMission tDomainMission=tDomainMissionMapper.selectByPrimaryKey(missionDomainId);
+				ss.put("domainName", tDomainMission.getDomainName());
+			}
 			mapResult.put("total", this.tMissionDetailMapper.selectCountOrByQueryName(map));
 			mapResult.put("rows",list);
 			//返回结果
