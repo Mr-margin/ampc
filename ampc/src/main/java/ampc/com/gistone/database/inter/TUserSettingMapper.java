@@ -14,4 +14,5 @@ public interface TUserSettingMapper {
     int updateByPrimaryKeySelective(TUserSetting record);
 
     int updateByPrimaryKey(TUserSetting record);
+    TUserSetting selectByUserId(Long userId);
 }
