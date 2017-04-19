@@ -54,7 +54,7 @@ public class UserController {
 			return AmpcResult.ok(list);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("UserController 查询用户列表信息异常!",e);
-			return AmpcResult.build(1000,"查询用户列表信息异常!");
+			return AmpcResult.build(1001,"查询用户列表信息异常!");
 		}
 	}
 	
@@ -92,19 +92,19 @@ public class UserController {
 						return AmpcResult.ok(1);
 					}else{
 						LogUtil.getLogger().error("UserController  用户和密码不匹配!");
-						return AmpcResult.build(1000, "用户和密码不匹配!");
+						return AmpcResult.build(1002, "用户和密码不匹配!");
 					}
 				}else{
 					LogUtil.getLogger().error("UserController 该用户已失效！");
-					return AmpcResult.build(1000, "该用户已失效！");
+					return AmpcResult.build(1002, "该用户已失效！");
 				}
 			}else{
 				LogUtil.getLogger().error("UserController 用户名不存在！");
-				return AmpcResult.build(1000, "用户名不存在！");
+				return AmpcResult.build(1002, "用户名不存在！");
 			}
 		} catch (Exception e) {
 			LogUtil.getLogger().error("UserController 用户登录异常！",e);
-			return AmpcResult.build(1000,"用户登录异常！");
+			return AmpcResult.build(1001,"用户登录异常！");
 		}
 	}
 	
@@ -129,11 +129,11 @@ public class UserController {
 				return AmpcResult.ok(userInfo);
 			}else{
 				LogUtil.getLogger().error("UserController  没有Session信息!");
-				return AmpcResult.build(1000,"没有Session信息!");
+				return AmpcResult.build(1002,"没有Session信息!");
 			}
 		}catch(Exception e){
 			LogUtil.getLogger().error("UserController 获取Session异常！",e);
-			return AmpcResult.build(1000,"获取Session异常!");
+			return AmpcResult.build(1001,"获取Session异常!");
 		}
 		
 	}
@@ -156,7 +156,7 @@ public class UserController {
 			return AmpcResult.ok(1);
 		}catch (Exception e){
 			LogUtil.getLogger().error("UserController 用户退出异常！",e);
-			return AmpcResult.build(1000,"UserController 用户退出异常！");
+			return AmpcResult.build(1001,"UserController 用户退出异常！");
 		}
 	}
 	
@@ -196,20 +196,20 @@ public class UserController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			String zhi= data.get("zhi").toString();
+			String yzm= data.get("yzm").toString();
 			HttpSession session = request.getSession();//取session
 			String randomString=session.getAttribute("randomString").toString();
-			zhi = zhi.toUpperCase();
-			if(zhi.equals(randomString)){
+			yzm = yzm.toUpperCase();
+			if(yzm.equals(randomString)){
 				LogUtil.getLogger().info("UserController  验证码验证成功！");
 				return AmpcResult.ok(1);
 			}else{
 				LogUtil.getLogger().error("UserController  验证码验证失败！");
-				return AmpcResult.build(1000,"验证码验证失败！",0);
+				return AmpcResult.build(1002,"验证码验证失败！",0);
 			}
 		} catch (Exception e) {
 			LogUtil.getLogger().error("UserController 验证码验证异常！",e);
-			return AmpcResult.build(1000,"验证码验证异常！");
+			return AmpcResult.build(1001,"验证码验证异常！");
 		}
 		
     }  
