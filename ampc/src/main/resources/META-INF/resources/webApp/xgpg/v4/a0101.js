@@ -389,14 +389,38 @@ function bianji(type,g_num,p) {
   var GPserver_type = par.GPserver_type;
 
   //GPserver_type = "PM25";
-  console.log($("#species").val());
+  //console.log($("#species").val());
 
 
   var GPserver_url = ArcGisServerUrl + "/arcgis/rest/services/ampc/" + GPserver_type + "/GPServer/" + GPserver_type;
   //$.get('data-d01.json', function (data) {
   ajaxPost('/extract/data',par).success(function (data) {
+
+    if(data.data.length == 0){
+      console.log("length-null");
+      return;
+    }
+
+    if(data.data.length > 961){
+      console.log("length-> 96");
+      return;
+    }
+
+
+
     var features = [];
     $.each(data.data, function (i, col) {
+
+      if(typeof col.x == "undefined"){
+        console.log("x-null");
+        return;
+      }
+      if(typeof col.y == "undefined"){
+        console.log("y-null");
+        return;
+      }
+
+
       var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
       var attr = {};
       attr["FID"] = i;
@@ -421,7 +445,7 @@ function bianji(type,g_num,p) {
     featureset.features = features;
     featureset.exceededTransferLimit = false;
 
-    console.log((new Date().getTime() - v1) + "生成数据");
+    //console.log((new Date().getTime() - v1) + "生成数据");
 
     app.gp = new esri.tasks.Geoprocessor(GPserver_url);
     var parms = {
@@ -431,28 +455,30 @@ function bianji(type,g_num,p) {
     app.gp.submitJob(parms, function (jobInfo) {
       var gpResultLayer = app.gp.getResultImageLayer(jobInfo.jobId, "out");//这里的名字是跟着返回图层的变量名走的，不一样的话是不出图的
       //需要判断一下是否已经添加过图层，先移除，再添加
+      gpResultLayer.id = "out_raster_layer";
       var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
       if (out_raster_layer) {
         app.mapList[g_num].removeLayer(out_raster_layer);
       }
+
       gpResultLayer.setOpacity(opacity);
       app.mapList[g_num].addLayer(gpResultLayer);
 
-      console.log(new Date().getTime() - v1);
+      //console.log(new Date().getTime() - v1);
     }, function (jobinfo) {
       var jobstatus = '';
       switch (jobinfo.jobStatus) {
         case 'esriJobSubmitted':
-          jobstatus = type + '正在提交...';
+          //jobstatus = type + '正在提交...';
           break;
         case 'esriJobExecuting':
-          jobstatus = type + '处理中...';
+          //jobstatus = type + '处理中...';
           break;
         case 'esriJobSucceeded':
-          jobstatus = type + '处理完成...';
+          jobstatus = '--'+ type + '--处理完成...';
+          console.log((new Date().getTime() - v1) + jobstatus);
           break;
       }
-      console.log((new Date().getTime() - v1) + jobstatus);
     }, function (error) {
       console.log(error);
     });
@@ -862,7 +888,7 @@ function updata(t){
       for(var x=0;x<changeMsg.showType.length;x++){
         p2.calcType = changeMsg.calcType;
         p2.showType = changeMsg.showType[x];
-        console.log('p2',$.extend({},p2),p2.showType);
+        //console.log('p2',$.extend({},p2),p2.showType);
 
         /*执行方法，进行右图添加*/
         bianji("1",1,p2);
@@ -874,7 +900,7 @@ function updata(t){
       p2.scenarioId2 = changeMsg.qj2Id;
       p2.calcType = changeMsg.calcType;
       p2.showType = 'concn';
-      console.log('p2',$.extend({},p2),p2.showType);
+      //console.log('p2',$.extend({},p2),p2.showType);
 
       /*执行方法，进行右图添加*/
       bianji("1",1,p2);
@@ -885,7 +911,7 @@ function updata(t){
   }else{
     for(var i=0;i<changeMsg.showType.length;i++){
       p1.showType = changeMsg.showType[i];
-      console.log('p1',$.extend({},p1),p1.showType);
+      //console.log('p1',$.extend({},p1),p1.showType);
 
       /*执行方法，进行左图添加*/
       bianji("1",0,p1);
@@ -894,7 +920,7 @@ function updata(t){
       if(changeMsg.calcType == 'show'){
         p2.calcType = changeMsg.calcType;
         p2.showType = changeMsg.showType[i];
-        console.log('p2',$.extend({},p2),p2.showType);
+        //console.log('p2',$.extend({},p2),p2.showType);
 
         /*执行方法，进行右图添加*/
         bianji("1",1,p2);
@@ -908,7 +934,7 @@ function updata(t){
       p2.scenarioId2 = changeMsg.qj2Id;
       p2.calcType = changeMsg.calcType;
       p2.showType = 'concn';
-      console.log('p2',$.extend({},p2),p2.showType);
+      //console.log('p2',$.extend({},p2),p2.showType);
 
       /*执行方法，进行右图添加*/
       bianji("1",1,p2);
