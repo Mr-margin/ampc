@@ -74,7 +74,7 @@ public class AppraisalController {
 			List<ScenarinoEntity> sclist=new ArrayList();
 			for(Integer scenarinoId:list){
 			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(Long.valueOf(scenarinoId.toString()));//查询该任务中该情景下的所有数据
-			TScenarinoDetail tScenarino=new TScenarinoDetail();
+			TScenarinoDetail tScenarino=new TScenarinoDetail(); 
 			tScenarino.setMissionId(missionId);
 			tScenarino.setScenType("3");
 			List<TScenarinoDetail> jztScenarinoDetail=tScenarinoDetailMapper.selectByEntity(tScenarino);
