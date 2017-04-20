@@ -324,8 +324,8 @@ function initQjTable() {
       {title: '操&nbsp;作 ', formatter: qjOrder},
       {title: '情&nbsp;景&nbsp;状&nbsp;态', formatter: qjStatus},
       {title: '管 理', formatter: qjEndFormat},
-      {title: '起 始 日 期', formatter: qjStartTime},
-      {title: '终 止 日 期', formatter: qjDeadTime},
+      {title: '开 始 日 期', formatter: qjStartTime},
+      {title: '结 束 日 期', formatter: qjDeadTime},
       {title: '类&nbsp;&nbsp;型', formatter: qjTypeSCEN_TYPE}
     ],
     method: 'POST',
