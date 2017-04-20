@@ -402,7 +402,7 @@ function bianji(type,g_num,p) {
     }
 
     if(data.data.length > 961){
-      console.log("length-> 96");
+      console.log("length-> "+ data.data.length);
       return;
     }
 
