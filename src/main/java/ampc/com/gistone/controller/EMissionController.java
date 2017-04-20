@@ -22,6 +22,7 @@ import net.sf.json.JSONObject;
 import oracle.sql.DATE;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.session.SessionProperties.Jdbc;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,12 +34,15 @@ import ampc.com.gistone.database.inter.TEmissionDetailMapper;
 import ampc.com.gistone.database.inter.TEsNativeMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.model.TEmissionDetail;
+import ampc.com.gistone.database.model.TEmissionDetailWithBLOBs;
 import ampc.com.gistone.database.model.TEsNative;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.BaseSaveUtil;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.JSONreadUtil;
+import ampc.com.gistone.util.JdbcInsert;
+import ampc.com.gistone.util.JsonUtil;
 import ampc.com.gistone.util.LogUtil;
 import ampc.com.gistone.util.RequestRegionData;
 import ampc.com.gistone.util.codeTransformUtil;
@@ -112,7 +116,7 @@ public class EMissionController {
 							.codeTransformEmission(map, tEsNative);
 					for (String code : newmap.keySet()) {// 根据key进行遍历
 						if (!codelist.contains(code)) {// 去除重复省市重复存储
-							TEmissionDetail temission = new TEmissionDetail();
+							TEmissionDetailWithBLOBs temission = new TEmissionDetailWithBLOBs();
 							temission.setEmissionDate(emissiondate);
 							codelist.add(code);
 							temission.setCode(code);
@@ -121,11 +125,11 @@ public class EMissionController {
 							Matcher matcher1 = pattern1.matcher(code);
 							Matcher matcher2 = pattern2.matcher(code);
 							if (matcher1.find()) {
-								temission.setCodeLevel("1");
+								temission.setCodelevel("1");
 							} else if (matcher2.find()) {
-								temission.setCodeLevel("2");
+								temission.setCodelevel("2");
 							} else {
-								temission.setCodeLevel("3");
+								temission.setCodelevel("3");
 							}
 							Map somemap = (Map) newmap.get(code);// 获取emission的值
 							JSONObject someobj = JSONObject.fromObject(somemap);
@@ -133,7 +137,7 @@ public class EMissionController {
 																		// 转化为Map集合
 
 							temission.setEmissionType("2");
-							temission.setScenarunoId(scenarionId);
+							temission.setScenarinoId(scenarionId);
 
 								temission.setMeasureReduce(lastMap.get("op")
 										.toString());
@@ -223,7 +227,7 @@ public class EMissionController {
 		List<String> codelist=new ArrayList<String>();
 		for(String code:newmap.keySet()){//根据key进行遍历
 			if(!codelist.contains(code)){
-			TEmissionDetail temission=new TEmissionDetail();
+			TEmissionDetailWithBLOBs temission=new TEmissionDetailWithBLOBs();
 			temission.setEmissionDate(emissiondate);
 				codelist.add(code);
 			temission.setCode(code);
@@ -232,11 +236,11 @@ public class EMissionController {
 			 Matcher matcher1 = pattern1.matcher(code);
 			 Matcher matcher2 = pattern2.matcher(code);
 			if(matcher1.find()){
-				temission.setCodeLevel("1");
+				temission.setCodelevel("1");
 			}else if(matcher2.find()){
-				temission.setCodeLevel("2");
+				temission.setCodelevel("2");
 			}else{
-				temission.setCodeLevel("3");
+				temission.setCodelevel("3");
 			}
 			temission.setEmissionDetails(map.get(code).toString());//通过key获取需要的值
 			
@@ -285,12 +289,12 @@ public class EMissionController {
 			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());
 			String level=data.get("codeLevel").toString();
 			tEmission.setEmissionType("1");
-			List<TEmissionDetail> tEmissions=tEmissionDetailMapper.selectByEntity(tEmission);
+			List<TEmissionDetailWithBLOBs> tEmissions=tEmissionDetailMapper.selectByEntity(tEmission);
 			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
 			//JSONArray industryarr=JSONArray.fromObject(tScenarinoDetail.getExpand1());
 			
 			List<Date> datelist=new ArrayList<Date>();
-			for(TEmissionDetail em:tEmissions){
+			for(TEmissionDetailWithBLOBs em:tEmissions){
 				if(!datelist.contains(em.getEmissionDate())){
 					datelist.add(em.getEmissionDate());
 				}else{
@@ -302,7 +306,7 @@ public class EMissionController {
 			for(Date dates:datelist){
 			String datss=dates.toString();
 			JSONArray arry=new JSONArray();
-			for(TEmissionDetail emission:tEmissions){
+			for(TEmissionDetailWithBLOBs emission:tEmissions){
 				String emtime=emission.getEmissionDate().toString();
 				Map<String,BigDecimal> map=new HashMap();
 				
@@ -404,20 +408,20 @@ public class EMissionController {
 		try{
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			TEmissionDetail tEmission=new TEmissionDetail();
+			TEmissionDetailWithBLOBs tEmission=new TEmissionDetailWithBLOBs();
 			String pollutant=data.get("pollutant").toString();	//污染物
 			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());//情景id
 			String level=data.get("codeLevel").toString();	//code级别
-			tEmission.setScenarunoId(scenarinoId);
+			tEmission.setScenarinoId(scenarinoId);
 			tEmission.setEmissionType("2");
 			//查询情景下的所有减排结果
-			List<TEmissionDetail> tEmissions=tEmissionDetailMapper.selectByEntity(tEmission);
+			List<TEmissionDetailWithBLOBs> tEmissions=tEmissionDetailMapper.selectByEntity(tEmission);
 			//查询情景主要为了查询共有措施以及行业
 			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
 			//JSONArray industryarr=JSONArray.fromObject(tScenarinoDetail.getExpand1());
 			//将所有日期不重复加入集合
 			List<Date> datelist=new ArrayList<Date>();
-			for(TEmissionDetail em:tEmissions){
+			for(TEmissionDetailWithBLOBs em:tEmissions){
 				if(!datelist.contains(em.getEmissionDate())){
 					datelist.add(em.getEmissionDate());
 				}else{
@@ -431,7 +435,7 @@ public class EMissionController {
 			String datss=dates.toString();
 			JSONArray arry=new JSONArray();
 			//遍历查询的减排结果
-			for(TEmissionDetail emission:tEmissions){
+			for(TEmissionDetailWithBLOBs emission:tEmissions){
 				String emtime=emission.getEmissionDate().toString();
 				Map<String,BigDecimal> map=new HashMap();
 				//判断当前遍历的时间与所遍历的减排结果日期是否相同，相同的话继续执行不相同减排结果进行下一循环
@@ -671,30 +675,33 @@ public class EMissionController {
 		List<Long> newlist=codeTransformUtil.codeTransform(list, tEsNative);
 		return AmpcResult.build(0, "success",newlist);
 	}
+	
+	
 	@RequestMapping("/base")
 	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
-	public List base() throws IOException{
+	public String base() throws IOException{
 		
-//		Map<String,Object> heightmap=(Map)mapses;
-//		String obj=heightmap.get("data").toString();
-//		JSONObject objs=JSONObject.fromObject(obj);
-//		Map<Object,Object> sss=(Map)objs;
-		Map sss=new HashMap();
-		Map ss=new HashMap();
-		Map s=new HashMap();
-		Map es=new HashMap();
-		Map ssss=new HashMap();
-		ssss.put("SO2", 5.315618189666302);
-		ssss.put("NOx", 1.9456769363219177);
-		ssss.put("PM25", 1.3098388729838357);
-		ssss.put("VOC", 0.4799933927147945);
-		ssss.put("CO2", 1112.4350450824195);
-		sss.put("工业锅炉", ssss);
-		ss.put("130100", sss);
-		s.put("emission", ss);
-		s.put("date", "2017-01-01");
-		es.put("2017-01-01", s);
-	     List sse= BaseSaveUtil.save_baseemission(es);
-		return sse;
+//		Map sss=new HashMap();
+//		Map ss=new HashMap();
+//		Map s=new HashMap();
+//		Map es=new HashMap();
+//		Map ssss=new HashMap();
+//		ssss.put("SO2", 5.315618189666302);
+//		ssss.put("NOx", 1.9456769363219177);
+//		ssss.put("PM25", 1.3098388729838357);
+//		ssss.put("VOC", 0.4799933927147945);
+//		ssss.put("CO2", 1112.4350450824195);
+//		sss.put("工业锅炉", ssss);
+//		ss.put("130100", sss);
+//		s.put("emission", ss);
+//		s.put("date", "2017-01-01");
+//		es.put("2017-01-01", s);
+		Map obj=JsonUtil.read("C:\\Users\\Administrator\\Desktop\\result.json", Map.class);
+		LogUtil.getLogger().error("完成数据读取"+new Date());
+		Map map=(Map) obj.get("data");
+	     List sse= BaseSaveUtil.save_baseemission(map);
+	     System.out.println(sse);
+	     LogUtil.getLogger().error("数据添加完成时间"+new Date());
+		return "ok";
 	}
 }
