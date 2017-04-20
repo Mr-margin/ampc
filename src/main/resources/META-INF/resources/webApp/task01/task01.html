@@ -1,129 +1,132 @@
 <body>
 
-<div class="content rwContent clearfloat" style="overflow-x:auto">
-  <div class="col-md-12" style="min-width:1195px">
-    <div class="row">
-      <div class="col-xs-6 pr0">
-        <div class="panel panel-default plain ">
-          <!-- Start .panel -->
-          <div class="panel-heading white-bg" style="border: none">
-            <h4 class="panel-title">任务列表<i class="im-file3"></i></h4>
-          </div>
-          <div class="panel-body" style="padding:0px;border: none">
-            <div id="rwToolbar" class="btn-group">
-              <div class="col-xs-4 cjsc">
-                <button type="button" class="btn btn-success" onclick="returnLeft('rw')" data-whatever="创建任务"
-                        data-type="rw" data-toggle="modal"
-                        data-target="#createRwModal">
-                  <i class="glyphicon glyphicon-plus"></i> 创建
-                </button>
-                <button disabled type="button" class="btn btn-success rwDel" onclick="deleteFun('rw')">
-                  <i class="glyphicon glyphicon-trash"></i> 删除
-                </button>
-              </div>
-              <!-- 将原来的任务类型选择改为下拉选择 -->
-              <!-- <div class="col-md-5 text-right bigP">
-                <button type="button" class="btn btn-success btn-danger statusRw" onclick="statusRWfun('',this)">
-                  <i class="im-folder-open"></i> 全部
-                </button>
-                <button type="button" class="btn btn-success statusRw" onclick="statusRWfun('2',this)">
-                  <i class="st-folder-settings"></i> 预评估
-                </button>
-                <button type="button" class="btn btn-success statusRw" onclick="statusRWfun('3',this)">
-                  <i class="im-paste2"></i> 后评估
-                </button>
-              </div>
-              <div class="smallP col-md-2" style="display: none;">
-                <div class="dropdown">
-                  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
-                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    <span class="seeName">全部</span>
-                    <span class="caret"></span>
+<div class="content rwContent container-fluid" style="overflow-x:auto">
+  <div class="row">
+    <div class="col-md-12" style="min-width:1195px">
+      <div class="row">
+        <div class="col-xs-6 pr0">
+          <div class="panel panel-default plain ">
+            <!-- Start .panel -->
+            <div class="panel-heading white-bg" style="border: none">
+              <h4 class="panel-title">任务列表<i class="im-file3"></i></h4>
+            </div>
+            <div class="panel-body" style="padding:0px;border: none">
+              <div id="rwToolbar" class="btn-group">
+                <div class="col-xs-4 cjsc">
+                  <button type="button" class="btn btn-success" onclick="returnLeft('rw')" data-whatever="创建任务"
+                          data-type="rw" data-toggle="modal"
+                          data-target="#createRwModal">
+                    <i class="glyphicon glyphicon-plus"></i> 创建
                   </button>
-                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li onclick="statusRWfun('',this)"><a href="javascript:">全部</a></li>
-                    <li onclick="statusRWfun('2',this)"><a href="javascript:">预评估</a></li>
-                    <li onclick="statusRWfun('3',this)"><a href="javascript:">后评估</a></li>
-                  </ul>
-                </div>
-              </div> -->
-              <div class="col-xs-5 text-right">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-info" id="selectType">全部</button>
-                  <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                          aria-expanded="false">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
+                  <button disabled type="button" class="btn btn-success rwDel" onclick="deleteFun('rw')">
+                    <i class="glyphicon glyphicon-trash"></i> 删除
                   </button>
-                  <ul class="dropdown-menu">
-                    <li><a href="javascript:" onclick="statusRWfun('',this)">全部</a></li>
-                    <li><a href="javascript:" onclick="statusRWfun('2',this)">预评估</a></li>
-                    <li><a href="javascript:" onclick="statusRWfun('3',this)">后评估</a></li>
-                  </ul>
                 </div>
-              </div>
+                <!-- 将原来的任务类型选择改为下拉选择 -->
+                <!-- <div class="col-md-5 text-right bigP">
+                  <button type="button" class="btn btn-success btn-danger statusRw" onclick="statusRWfun('',this)">
+                    <i class="im-folder-open"></i> 全部
+                  </button>
+                  <button type="button" class="btn btn-success statusRw" onclick="statusRWfun('2',this)">
+                    <i class="st-folder-settings"></i> 预评估
+                  </button>
+                  <button type="button" class="btn btn-success statusRw" onclick="statusRWfun('3',this)">
+                    <i class="im-paste2"></i> 后评估
+                  </button>
+                </div>
+                <div class="smallP col-md-2" style="display: none;">
+                  <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                      <span class="seeName">全部</span>
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                      <li onclick="statusRWfun('',this)"><a href="javascript:">全部</a></li>
+                      <li onclick="statusRWfun('2',this)"><a href="javascript:">预评估</a></li>
+                      <li onclick="statusRWfun('3',this)"><a href="javascript:">后评估</a></li>
+                    </ul>
+                  </div>
+                </div> -->
+                <div class="col-xs-5 text-right">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-info" id="selectType">全部</button>
+                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                      <span class="caret"></span>
+                      <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href="javascript:" onclick="statusRWfun('',this)">全部</a></li>
+                      <li><a href="javascript:" onclick="statusRWfun('2',this)">预评估</a></li>
+                      <li><a href="javascript:" onclick="statusRWfun('3',this)">后评估</a></li>
+                    </ul>
+                  </div>
+                </div>
 
-              <div class="input-group col-xs-3 col-xs-offset-9">
-                <input type="text" class="form-control rw " placeholder="输入任务名称">
-                <span class="input-group-btn">
+                <div class="input-group col-xs-3 col-xs-offset-9">
+                  <input type="text" class="form-control rw " placeholder="输入任务名称">
+                  <span class="input-group-btn">
                   <button class="btn btn-success " type="button" onclick="search('rw')"><i class="ec-search"></i>
                   </button>
                 </span>
+                </div>
+                <!-- /input-group -->
               </div>
-              <!-- /input-group -->
-            </div>
-            <div class="rwtableDiv">
-              <table id="rwTable">
-                <thead>
-                <tr class="info">
-                  <th data-checkbox="true"></th>
-                  <th data-field="missionId">ID</th>
-                  <th data-formatter="rwName">任&nbsp;务&nbsp;名&nbsp;称</th>
-                  <th data-formatter="rwDomain">模&nbsp;拟&nbsp;范&nbsp;围</th>
-                  <th data-field="esCouplingName">清&nbsp;&nbsp;单&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                  <th data-formatter="rwType">类&nbsp;&nbsp;型&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                </tr>
-                </thead>
-              </table>
+              <div class="rwtableDiv">
+                <table id="rwTable">
+                  <thead>
+                  <tr class="info">
+                    <th data-checkbox="true"></th>
+                    <th data-field="missionId">ID</th>
+                    <th data-formatter="rwName">任&nbsp;务&nbsp;名&nbsp;称</th>
+                    <th data-formatter="rwDomain">模&nbsp;拟&nbsp;范&nbsp;围</th>
+                    <th data-field="esCouplingName">清&nbsp;&nbsp;单&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                    <th data-formatter="rwType">类&nbsp;&nbsp;型&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                  </tr>
+                  </thead>
+                </table>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="col-xs-6 pl0 qjTableP">
-        <div class="panel panel-default plain ">
-          <!-- Start .panel -->
-          <div class="panel-heading white-bg" style="border: none">
-            <h4 class="panel-title">情景列表<i class="im-file3"></i></h4>
-          </div>
-          <div class="panel-body" style="padding:0px;border: none; ">
-            <div id="qjToolbar" class="btn-group">
-              <div class="col-xs-6">
-                <button type="button" class="btn btn-success" onclick="createQJselect()">
-                  <i class="glyphicon glyphicon-plus"></i> 创建
-                </button>
-                <button disabled type="button" class="btn btn-success qjDel" onclick="deleteFun('qj')">
-                  <i class="glyphicon glyphicon-trash"></i> 删除
-                </button>
-              </div>
-              <div class="input-group col-xs-3 col-xs-offset-9">
-                <input type="text" class="form-control qj " placeholder="输入情景名称">
-                <span class="input-group-btn">
+        <div class="col-xs-6 pl0 qjTableP">
+          <div class="panel panel-default plain ">
+            <!-- Start .panel -->
+            <div class="panel-heading white-bg" style="border: none">
+              <h4 class="panel-title">情景列表<i class="im-file3"></i></h4>
+            </div>
+            <div class="panel-body" style="padding:0px;border: none; ">
+              <div id="qjToolbar" class="btn-group">
+                <div class="col-xs-6">
+                  <button type="button" class="btn btn-success" onclick="createQJselect()">
+                    <i class="glyphicon glyphicon-plus"></i> 创建
+                  </button>
+                  <button disabled type="button" class="btn btn-success qjDel" onclick="deleteFun('qj')">
+                    <i class="glyphicon glyphicon-trash"></i> 删除
+                  </button>
+                </div>
+                <div class="input-group col-xs-3 col-xs-offset-9">
+                  <input type="text" class="form-control qj " placeholder="输入情景名称">
+                  <span class="input-group-btn">
                   <button class="btn btn-success " type="button" onclick="search('qj')"><i class="ec-search"></i>
                   </button>
                 </span>
+                </div>
+                <!-- /input-group -->
               </div>
-              <!-- /input-group -->
-            </div>
-            <div class="qjtableDiv">
-              <table id="qjTable">
+              <div class="qjtableDiv">
+                <table id="qjTable">
 
-              </table>
+                </table>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
 </div>
 <ul id="RWcontext-menu" class="dropdown-menu">
   <li data-item="rename"><a href="javascript:">修改名称</a></li>
