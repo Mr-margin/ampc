@@ -74,4 +74,13 @@
     from T_SITE
     where SITE_CODE = #{siteCode,jdbcType=VARCHAR}
   </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="String" >
+    select SITE_ID, SITE_CODE, STATION_ID, 
+      STATION_NAME, CITY_NAME, LAT, 
+      LON
+    from T_SITE
+    where SITE_CODE IS NOT NULL AND STATION_ID IS NOT NULL AND STATION_NAME IS NOT NULL AND LAT IS NOT NULL AND LON IS NOT NULL
+  </select>
+  
 </mapper>
