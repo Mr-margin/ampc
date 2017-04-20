@@ -411,6 +411,7 @@ function bianji(type,g_num,p) {
       return;
     }
 
+    console.log(g_num+'~~~'+data.data.length);
 
 
     var features = [];
