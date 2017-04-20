@@ -2,7 +2,9 @@ package ampc.com.gistone.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import ampc.com.gistone.database.inter.TDomainRegionMapper;
 import ampc.com.gistone.database.inter.TSiteMapper;
+import ampc.com.gistone.database.model.TDomainRegion;
 import ampc.com.gistone.database.model.TSite;
 import ampc.com.gistone.util.RegionConfig;
 import ampc.com.gistone.util.Jsons;
@@ -38,6 +40,8 @@ import java.util.regex.Pattern;
 public class RequestRegionData {
 	@Autowired
 	private TSiteMapper tSiteMapper;
+	@Autowired
+	private TDomainRegionMapper tDomainRegionMapper;
 
     @Autowired
     RegionConfig regionConfig = new RegionConfig();
@@ -114,15 +118,32 @@ public class RequestRegionData {
                     tsite.setStationName(theone.get("stationName"));
                     tSiteMapper.insertSelective(tsite);
                     }
+                    
                 } else {
                     logger.debug("请求异常：status =" + Integer.valueOf(status));
                 }
             }
 
         }
+        saveRegion();
     }
 
-    public static class ConfigFile {
+    private void saveRegion() {
+    	List<HashMap<String, String>> province = regionConfig.getProvince();
+    	List<HashMap<String, String>> city = regionConfig.getCity();
+    	province.addAll(city);
+    	for(HashMap<String, String> map : province) {
+    		TDomainRegion tDomainRegion = new TDomainRegion();
+    		tDomainRegion.setAddtime(new Date());
+    		tDomainRegion.setRegionid(map.get("regionId"));
+    		tDomainRegion.setRegionname(map.get("regionName"));
+    		tDomainRegion.setLat(map.get("lat"));
+    		tDomainRegion.setLon(map.get("lon"));
+    		tDomainRegionMapper.insertSelective(tDomainRegion);
+    	}
+	}
+
+	public static class ConfigFile {
         public List<TreeMap<String,String>> url;
     }
 

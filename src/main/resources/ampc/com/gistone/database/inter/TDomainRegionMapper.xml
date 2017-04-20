@@ -60,4 +60,12 @@
       </if>
     </trim>
   </insert>
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="String" >
+    select ID, REGIONID, REGIONNAME, 
+      LAT, 
+      LON,
+      ADDTIME
+    from T_DOMAIN_REGION
+    where REGIONID IS NOT NULL
+  </select>
 </mapper>
