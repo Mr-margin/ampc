@@ -179,10 +179,10 @@ public class AppraisalController {
 						if(hourlist.size()==24){
 						for(int a=0;a<=23;a++){
 							if(spr.equals("CO")){
-								BigDecimal bd=(new BigDecimal(heightmap.get(a).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+								BigDecimal bd=(new BigDecimal(hourlist.get(a).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
 								hourcmap.put(String.valueOf(a),bd);
 								}else{
-								BigDecimal bd=(new BigDecimal(heightmap.get(a).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+								BigDecimal bd=(new BigDecimal(hourlist.get(a).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
 								hourcmap.put(String.valueOf(a),bd);
 								}	
 						}
