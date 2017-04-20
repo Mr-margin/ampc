@@ -12,7 +12,7 @@ $(function () {
 /**
  * 全局变量
  */
-var	dps_codeStation,dps_station;
+var	dps_codeStation,dps_station,standarddata;;
 //默认显示柱状图
 var show_type = "bar";
 var changeMsg = {
@@ -330,35 +330,64 @@ var echartsData;
  * 接收/更新数据
  */
 function getdata() {
-
-  var url = '/Appraisal/find_appraisal';
-//	var paramsName = {"userId":"1","missionId":"393","mode":"point","time":"2016-11-27 13","cityStation":"1002A","scenarinoId":changeMsg.scenarinoId,"datetype":changeMsg.rms};
-  var paramsName = {
+	var url = '/Appraisal/find_appraisal';
+	var paramsName = {
     "userId": "1",
-    "missionId": "393",
-    "mode": "point",
-    "time": "2016-11-27 13",
-    "cityStation": "1002A",
-    "scenarinoId": [466, 458, 456],
-    "datetype": "day"
+    "missionId": sceneInitialization.taskID,
+    "mode": changeMsg.station=='avg'?'city':'point',
+    "cityStation": changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
+    "scenarinoId": changeMsg.scenarinoId,
+    "datetype": changeMsg.rms
   };
 
-  ajaxPost(url, paramsName).success(function (res) {
+	ajaxPost(url, paramsName).success(function (res) {
     if (res.status == 0) {
-      echartsData = res.data;
-      console.log(echartsData)
-      if (JSON.stringify(echartsData) == '{}' || echartsData == null) {
-        swal('暂无数据', '', 'error')
-      } else {
+    	echartsData = res.data;
+    	console.log(echartsData)
+    	if (JSON.stringify(echartsData) == '{}' || echartsData == null) {
+    		swal('暂无数据', '', 'error')
+    	} else {
 
-      }
-      initEcharts();
+    	}
+    	initEcharts();
     } else {
       swal(res.msg, '', 'error')
     }
 
   });
 }
+
+
+/**
+ * 查询基准
+ * */
+function find_standard(){
+	var missionId=$("#task").val();
+	var url='/Appraisal/find_standard';
+	var paramsName = {
+			"userId": "1",
+			"missionId":sceneInitialization.taskID,				//任务ID
+			"mode":changeMsg.station=='avg'?'city':'point',		//检测站点
+			"cityStation":changeMsg.station=='avg'?changeMsg.city:changeMsg.station,	//检测站点具体值
+			"datetype":changeMsg.rms
+		  };
+	ajaxPost(url, paramsName).success(function (res) {
+	    if (res.status == 0) {
+	    	standardData = res.data;
+	    	console.log(standardData);
+	      if (JSON.stringify(echartsData) == '{}' || echartsData == null) {
+//	        swal('暂无数据', '', 'error')
+	      } else {
+
+	      }
+	      initEcharts();
+	    } else {
+	      swal(res.msg, '', 'error')
+	    }
+
+	  });
+}
+
 
 var allMission = {};
 /**
@@ -374,17 +403,16 @@ function sceneInittion(){
 		if(res.status == 0){
 			var task = "";
 			
-			/*测试数据*/
-		      res.data = [
-		        {
-		          missionEndDate: 1480258800000,
-		          missionId: 393,
-		          missionName: "测试任务",
-		          missionStartDate: 1479571200000,
-		        }
-		      ]
-		      /*测试数据 end*/
-			
+//			/*测试数据*/
+//		      res.data = [
+//		        {
+//		          missionEndDate: 1480258800000,
+//		          missionId: 393,
+//		          missionName: "测试任务",
+//		          missionStartDate: 1479571200000,
+//		        }
+//		      ]
+//		      /*测试数据 end*/
 			
 			$.each(res.data, function(k, vol) {
 				allMission[vol.missionId] = vol;
@@ -484,74 +512,65 @@ function sceneTable(){
 		silent : true, // 刷新事件必须设置
 		contentType : "application/json", // 请求远程数据的内容类型。
 		responseHandler: function (res) {
-//			console.log(res.data);
-//			if(res.status == 0&&res.data.length>0){
-//				if(res.data.rows.length>0){
-//					
-//					if(sceneInitialization){
-//						if(sceneInitialization.data.length>0){
-//							
-//							$.each(res.data.rows, function(i, col) {
-//								$.each(sceneInitialization.data, function(k, vol) {
-//									if(col.scenarinoId == vol.scenarinoId){
-//										res.data.rows[i].state = true;
-//									}
-//								});
-//							});
-//						}
-//					}
-//					return res.data.rows;
-//				}
-//			}else if(res.status == 1000){
-//				swal(res.msg, '', 'error');
-//			}
-//			else{
-//				return res;
-//			}
-			/*测试使用 start*/
-	      var data = {
-	        rows:[]
-	      }
-	      data.rows = [
-			{
-		    "scenarinoId": 456,						//情景ID
-		    "scenarinoName": "观测数据",				//情景名称
-		    "scenType": "1",						//情景描述
-		    "scenarinoStartDate": 1479571200000,	//开始时间
-		    "scenarinoEndDate": 1480258800000		//结束时间
-			  },
-			{
-			    "scenarinoId": 456,
-				"scenarinoName": "基准情景",
-				"scenType": "1",
-				"scenarinoStartDate": 1479571200000,
-				"scenarinoEndDate": 1480258800000
-			  }, 
-	        {
-	          "scenarinoId": 456,
-	          "scenarinoName": "情景1",
-	          "scenType": "1",
-	          "scenarinoStartDate": 1479571200000,
-	          "scenarinoEndDate": 1480258800000
-	        },
-	        {
-	          "scenarinoId": 458,
-	          "scenarinoName": "情景2",
-	          "scenType": "1",
-	          "scenarinoStartDate": 1479571200000,
-	          "scenarinoEndDate": 1480258800000
-	        },
-	        {
-	          "scenarinoId": 466,
-	          "scenarinoName": "情景3",
-	          "scenType": "1",
-	          "scenarinoStartDate": 1479571200000,
-	          "scenarinoEndDate": 1480258800000
-	        },
-	      ];
-	      return data.rows
-
-	      /*测试使用 end*/
+			console.log(res.data);
+			if(res.status == 0&&res.data!=null&&res.data!=''&&res.data!=undefined){
+				if(res.data.hasOwnProperty('rows')){
+					if(res.data.rows.length>0){
+						if(sceneInitialization){
+							if(sceneInitialization.data.length>0){
+								$.each(res.data.rows, function(i, col) {
+									$.each(sceneInitialization.data, function(k, vol) {
+										if(col.scenarinoId == vol.scenarinoId){
+											res.data.rows[i].state = true;
+										}
+									});
+								});
+							}
+						}
+						return res.data.rows;
+					}else{
+						return res;
+					}
+				}else{
+					return res;
+				}
+			}else if(res.status == 1000){
+				swal(res.msg, '', 'error');
+			}
+			else{
+				return res;
+			}
+			
+//			/*测试使用 start*/
+//	      var data = {
+//	        rows:[]
+//	      }
+//	      data.rows = [
+//	        {
+//	          "scenarinoId": 456,					//情景ID
+//	          "scenarinoName": "情景1",				//情景名称
+//	          "scenType": "1",						//情景描述
+//	          "scenarinoStartDate": 1479571200000,	//开始时间
+//	          "scenarinoEndDate": 1480258800000		//结束时间
+//	        },
+//	        {
+//	          "scenarinoId": 458,
+//	          "scenarinoName": "情景2",
+//	          "scenType": "1",
+//	          "scenarinoStartDate": 1479571200000,
+//	          "scenarinoEndDate": 1480258800000
+//	        },
+//	        {
+//	          "scenarinoId": 466,
+//	          "scenarinoName": "情景3",
+//	          "scenType": "1",
+//	          "scenarinoStartDate": 1479571200000,
+//	          "scenarinoEndDate": 1480258800000
+//	        },
+//	      ];
+//	      return data.rows
+//
+//	      /*测试使用 end*/
 			
 		},
 		onClickRow : function(row, $element) {
@@ -564,7 +583,7 @@ function sceneTable(){
 			columns : "glyphicon-list"
 		},
 		onLoadSuccess : function(data){
-//			console.log(data);
+			console.log(data);
     },
     onLoadError: function () {
       swal('连接错误', '', 'error');
@@ -599,6 +618,7 @@ function save_scene() {
     console.log(JSON.stringify(arrId))
     $("#close_scene").click();
     set_sce();
+//    find_standard();
     initNowSession();
   } else {
     swal('暂无数据', '', 'error');
@@ -647,6 +667,7 @@ $('#proStation').on('change', function (e) {
 	$('#station').on('change', function (e) {
 	  var station = $(e.target).val();
 	  changeMsg.station = station;
+	  find_standard();
 	  getdata();
 	});
 
