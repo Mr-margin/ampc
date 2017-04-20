@@ -60,7 +60,7 @@ public class ExtractDataService {
 	private NumberFormat nf;
 	private List<PointBean> pointBeanList;
 	private Interpolation interpolation;
-	private List<Map<String, Object>> res = new ArrayList<Map<String,Object>>();
+	private List<Map<String, Object>> res;
 	
 	private StringBuffer sbcsv_latlon = new StringBuffer();
 	private StringBuffer sbcsv_lcc = new StringBuffer();
@@ -104,7 +104,7 @@ public class ExtractDataService {
 	}
 
 	public List<Map<String, Object>> buildData(ExtractRequestParams params) throws IOException, TransformException, FactoryException, InvalidRangeException {
-		
+		res = new ArrayList<Map<String,Object>>();
 		getNcFile(params);
 		
 		projection = buildProject(params);
@@ -114,7 +114,7 @@ public class ExtractDataService {
 	    nf.setGroupingUsed(false);
 	    nf.setMaximumFractionDigits(10);
 		
-		pointBeanList = buildPointList(params);
+		pointBeanList = buildPointList(params, res);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		if(SHOW_TYPE_CONCN.equals(params.getShowType())) {
@@ -277,7 +277,7 @@ public class ExtractDataService {
 	    }
 	  }
 	
-	public List<PointBean> buildPointList(ExtractRequestParams params) throws IOException, InvalidRangeException {
+	public List<PointBean> buildPointList(ExtractRequestParams params, List<Map<String, Object>> res) throws IOException, InvalidRangeException {
 	    List<PointBean> pointBeanList = new ArrayList<>();
 	    int cols = params.getCols();
 	    int rows = params.getRows();
