@@ -103,7 +103,7 @@ public class ExtractDataService {
 		}
 	}
 
-	public List<Map<String, Object>> buildData(ExtractRequestParams params) throws IOException, TransformException, FactoryException, InvalidRangeException {
+	public synchronized List<Map<String, Object>> buildData(ExtractRequestParams params) throws IOException, TransformException, FactoryException, InvalidRangeException {
 		res = new ArrayList<Map<String,Object>>();
 		getNcFile(params);
 		
