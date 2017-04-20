@@ -8,17 +8,17 @@
     <result column="CODELEVEL" property="codelevel" jdbcType="VARCHAR" />
     <result column="EMISSION_TYPE" property="emissionType" jdbcType="VARCHAR" />
     <result column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
-    <result column="PM25" property="pm25" jdbcType="VARCHAR" />
-    <result column="PM10" property="pm10" jdbcType="VARCHAR" />
-    <result column="SO2" property="so2" jdbcType="VARCHAR" />
-    <result column="NOx" property="nox" jdbcType="VARCHAR" />
-    <result column="VOC" property="voc" jdbcType="VARCHAR" />
-    <result column="CO" property="co" jdbcType="VARCHAR" />
-    <result column="NH3" property="nh3" jdbcType="VARCHAR" />
-    <result column="BC" property="bc" jdbcType="VARCHAR" />
-    <result column="OC" property="oc" jdbcType="VARCHAR" />
-    <result column="PMFINE" property="pmfine" jdbcType="VARCHAR" />
-    <result column="PMC" property="pmc" jdbcType="VARCHAR" />
+    <result column="PM25" property="pm25" jdbcType="DECIMAL" />
+    <result column="PM10" property="pm10" jdbcType="DECIMAL" />
+    <result column="SO2" property="so2" jdbcType="DECIMAL" />
+    <result column="NOx" property="nox" jdbcType="DECIMAL" />
+    <result column="VOC" property="voc" jdbcType="DECIMAL" />
+    <result column="CO" property="co" jdbcType="DECIMAL" />
+    <result column="NH3" property="nh3" jdbcType="DECIMAL" />
+    <result column="BC" property="bc" jdbcType="DECIMAL" />
+    <result column="OC" property="oc" jdbcType="DECIMAL" />
+    <result column="PMFINE" property="pmfine" jdbcType="DECIMAL" />
+    <result column="PMC" property="pmc" jdbcType="DECIMAL" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.database.model.TEmissionDetailWithBLOBs" extends="BaseResultMap" >
     <result column="EMISSION_DETAILS" property="emissionDetails" jdbcType="CLOB" />
@@ -31,115 +31,6 @@
   <sql id="Blob_Column_List" >
     EMISSION_DETAILS, MEASURE_REDUCE
   </sql>
-  
-  
-  
-  
-  
-  
-  <!-- 根据条件查询对应数据 -->
-  <select id="selectByQuery" resultMap="ResultMapWithBLOBs" parameterType="hashMap" >
-    select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from T_EMISSION_DETAIL
-    where EMission_Type=#{emtype,jdbcType=OTHER}  and Emission_Date BETWEEN #{startDate,jdbcType=OTHER}
-       and #{endDate,jdbcType=OTHER}
-       <if test="code!=null">
-	       and code like #{code,jdbcType=OTHER}
-  		</if>
- 		<if test="scenarinoId != null" >
-          and SCENARINO_ID=#{scenarinoId,jdbcType=OTHER}
-       </if>
-       order by Emission_Date,code
-  </select>
-  <!-- 根据条件查询所有的市级code -->
-  <select id="selectCityCode" resultType="java.lang.String" parameterType="hashMap" >
-    select code from T_EMISSION_DETAIL
-    	where EMission_Type=#{emtype,jdbcType=OTHER}  
-      	and Emission_Date BETWEEN #{startDate,jdbcType=OTHER} and #{endDate,jdbcType=OTHER} 
- 		<if test="code!=null">
-	       and code like #{code,jdbcType=OTHER}
-  		</if>
- 		<if test="scenarinoId != null" >
-          and SCENARINO_ID=#{scenarinoId,jdbcType=OTHER}
-        </if>
-        group by code
-  </select>
-
-<select id="selectByEntity" resultMap="ResultMapWithBLOBs" parameterType="ampc.com.gistone.database.model.TEmissionDetail" >
-    select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from T_EMISSION_DETAIL
-    where 1=1
-     <if test="emissionDate != null" >
-       and EMISSION_DATE = #{emissionDate,jdbcType=DATE}
-      </if>
-      <if test="code != null" >
-       and CODE = #{code,jdbcType=VARCHAR}
-      </if>
-      <if test="emissionDetails != null" >
-       and EMISSION_DETAILS = #{emissionDetails,jdbcType=CLOB}
-      </if>
-      <if test="codeLevel != null" >
-       and CODELEVEL = #{codeLevel,jdbcType=VARCHAR}
-      </if>
-      <if test="emissionId != null" >
-       and EMISSION_ID = #{emissionId,jdbcType=DECIMAL}
-       </if>
-       <if test="measureReduce != null" >
-       and MEASURE_REDUCE = #{measureReduce,jdbcType=CLOB}
-      </if>
-      <if test="emissionType != null" >
-       and EMISSION_TYPE = #{emissionType,jdbcType=VARCHAR}
-      </if>
-      <if test="scenarunoId != null" >
-       and SCENARINO_ID = #{scenarunoId,jdbcType=DECIMAL}
-      </if>
-  </select>
-  <select id="selectBycodeAndDate" resultType="ampc.com.gistone.database.model.TEmissionDetail" parameterType="ampc.com.gistone.database.model.TEmissionDetail" >
-    select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from T_EMISSION_DETAIL
-    where CODE = #{code,jdbcType=VARCHAR} and EMISSION_DATE = #{emissionDate,jdbcType=DATE}
-    </select>
-    <delete id="deleteByScenarunoId" parameterType="java.lang.Long" >
-    delete from T_EMISSION_DETAIL
-    where SCENARINO_ID = #{scenarunoId,jdbcType=DECIMAL} and EMISSION_TYPE ='2'
-  </delete>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -161,9 +52,9 @@
       MEASURE_REDUCE)
     values (#{emissionId,jdbcType=DECIMAL}, #{emissionDate,jdbcType=TIMESTAMP}, #{code,jdbcType=VARCHAR}, 
       #{codelevel,jdbcType=VARCHAR}, #{emissionType,jdbcType=VARCHAR}, #{scenarinoId,jdbcType=DECIMAL}, 
-      #{pm25,jdbcType=VARCHAR}, #{pm10,jdbcType=VARCHAR}, #{so2,jdbcType=VARCHAR}, #{nox,jdbcType=VARCHAR}, 
-      #{voc,jdbcType=VARCHAR}, #{co,jdbcType=VARCHAR}, #{nh3,jdbcType=VARCHAR}, #{bc,jdbcType=VARCHAR}, 
-      #{oc,jdbcType=VARCHAR}, #{pmfine,jdbcType=VARCHAR}, #{pmc,jdbcType=VARCHAR}, #{emissionDetails,jdbcType=CLOB}, 
+      #{pm25,jdbcType=DECIMAL}, #{pm10,jdbcType=DECIMAL}, #{so2,jdbcType=DECIMAL}, #{nox,jdbcType=DECIMAL}, 
+      #{voc,jdbcType=DECIMAL}, #{co,jdbcType=DECIMAL}, #{nh3,jdbcType=DECIMAL}, #{bc,jdbcType=DECIMAL}, 
+      #{oc,jdbcType=DECIMAL}, #{pmfine,jdbcType=DECIMAL}, #{pmc,jdbcType=DECIMAL}, #{emissionDetails,jdbcType=CLOB}, 
       #{measureReduce,jdbcType=CLOB})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TEmissionDetailWithBLOBs" >
@@ -247,37 +138,37 @@
         #{scenarinoId,jdbcType=DECIMAL},
       </if>
       <if test="pm25 != null" >
-        #{pm25,jdbcType=VARCHAR},
+        #{pm25,jdbcType=DECIMAL},
       </if>
       <if test="pm10 != null" >
-        #{pm10,jdbcType=VARCHAR},
+        #{pm10,jdbcType=DECIMAL},
       </if>
       <if test="so2 != null" >
-        #{so2,jdbcType=VARCHAR},
+        #{so2,jdbcType=DECIMAL},
       </if>
       <if test="nox != null" >
-        #{nox,jdbcType=VARCHAR},
+        #{nox,jdbcType=DECIMAL},
       </if>
       <if test="voc != null" >
-        #{voc,jdbcType=VARCHAR},
+        #{voc,jdbcType=DECIMAL},
       </if>
       <if test="co != null" >
-        #{co,jdbcType=VARCHAR},
+        #{co,jdbcType=DECIMAL},
       </if>
       <if test="nh3 != null" >
-        #{nh3,jdbcType=VARCHAR},
+        #{nh3,jdbcType=DECIMAL},
       </if>
       <if test="bc != null" >
-        #{bc,jdbcType=VARCHAR},
+        #{bc,jdbcType=DECIMAL},
       </if>
       <if test="oc != null" >
-        #{oc,jdbcType=VARCHAR},
+        #{oc,jdbcType=DECIMAL},
       </if>
       <if test="pmfine != null" >
-        #{pmfine,jdbcType=VARCHAR},
+        #{pmfine,jdbcType=DECIMAL},
       </if>
       <if test="pmc != null" >
-        #{pmc,jdbcType=VARCHAR},
+        #{pmc,jdbcType=DECIMAL},
       </if>
       <if test="emissionDetails != null" >
         #{emissionDetails,jdbcType=CLOB},
@@ -306,37 +197,37 @@
         SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL},
       </if>
       <if test="pm25 != null" >
-        PM25 = #{pm25,jdbcType=VARCHAR},
+        PM25 = #{pm25,jdbcType=DECIMAL},
       </if>
       <if test="pm10 != null" >
-        PM10 = #{pm10,jdbcType=VARCHAR},
+        PM10 = #{pm10,jdbcType=DECIMAL},
       </if>
       <if test="so2 != null" >
-        SO2 = #{so2,jdbcType=VARCHAR},
+        SO2 = #{so2,jdbcType=DECIMAL},
       </if>
       <if test="nox != null" >
-        NOx = #{nox,jdbcType=VARCHAR},
+        NOx = #{nox,jdbcType=DECIMAL},
       </if>
       <if test="voc != null" >
-        VOC = #{voc,jdbcType=VARCHAR},
+        VOC = #{voc,jdbcType=DECIMAL},
       </if>
       <if test="co != null" >
-        CO = #{co,jdbcType=VARCHAR},
+        CO = #{co,jdbcType=DECIMAL},
       </if>
       <if test="nh3 != null" >
-        NH3 = #{nh3,jdbcType=VARCHAR},
+        NH3 = #{nh3,jdbcType=DECIMAL},
       </if>
       <if test="bc != null" >
-        BC = #{bc,jdbcType=VARCHAR},
+        BC = #{bc,jdbcType=DECIMAL},
       </if>
       <if test="oc != null" >
-        OC = #{oc,jdbcType=VARCHAR},
+        OC = #{oc,jdbcType=DECIMAL},
       </if>
       <if test="pmfine != null" >
-        PMFINE = #{pmfine,jdbcType=VARCHAR},
+        PMFINE = #{pmfine,jdbcType=DECIMAL},
       </if>
       <if test="pmc != null" >
-        PMC = #{pmc,jdbcType=VARCHAR},
+        PMC = #{pmc,jdbcType=DECIMAL},
       </if>
       <if test="emissionDetails != null" >
         EMISSION_DETAILS = #{emissionDetails,jdbcType=CLOB},
@@ -354,17 +245,17 @@
       CODELEVEL = #{codelevel,jdbcType=VARCHAR},
       EMISSION_TYPE = #{emissionType,jdbcType=VARCHAR},
       SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL},
-      PM25 = #{pm25,jdbcType=VARCHAR},
-      PM10 = #{pm10,jdbcType=VARCHAR},
-      SO2 = #{so2,jdbcType=VARCHAR},
-      NOx = #{nox,jdbcType=VARCHAR},
-      VOC = #{voc,jdbcType=VARCHAR},
-      CO = #{co,jdbcType=VARCHAR},
-      NH3 = #{nh3,jdbcType=VARCHAR},
-      BC = #{bc,jdbcType=VARCHAR},
-      OC = #{oc,jdbcType=VARCHAR},
-      PMFINE = #{pmfine,jdbcType=VARCHAR},
-      PMC = #{pmc,jdbcType=VARCHAR},
+      PM25 = #{pm25,jdbcType=DECIMAL},
+      PM10 = #{pm10,jdbcType=DECIMAL},
+      SO2 = #{so2,jdbcType=DECIMAL},
+      NOx = #{nox,jdbcType=DECIMAL},
+      VOC = #{voc,jdbcType=DECIMAL},
+      CO = #{co,jdbcType=DECIMAL},
+      NH3 = #{nh3,jdbcType=DECIMAL},
+      BC = #{bc,jdbcType=DECIMAL},
+      OC = #{oc,jdbcType=DECIMAL},
+      PMFINE = #{pmfine,jdbcType=DECIMAL},
+      PMC = #{pmc,jdbcType=DECIMAL},
       EMISSION_DETAILS = #{emissionDetails,jdbcType=CLOB},
       MEASURE_REDUCE = #{measureReduce,jdbcType=CLOB}
     where EMISSION_ID = #{emissionId,jdbcType=DECIMAL}
@@ -376,17 +267,17 @@
       CODELEVEL = #{codelevel,jdbcType=VARCHAR},
       EMISSION_TYPE = #{emissionType,jdbcType=VARCHAR},
       SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL},
-      PM25 = #{pm25,jdbcType=VARCHAR},
-      PM10 = #{pm10,jdbcType=VARCHAR},
-      SO2 = #{so2,jdbcType=VARCHAR},
-      NOx = #{nox,jdbcType=VARCHAR},
-      VOC = #{voc,jdbcType=VARCHAR},
-      CO = #{co,jdbcType=VARCHAR},
-      NH3 = #{nh3,jdbcType=VARCHAR},
-      BC = #{bc,jdbcType=VARCHAR},
-      OC = #{oc,jdbcType=VARCHAR},
-      PMFINE = #{pmfine,jdbcType=VARCHAR},
-      PMC = #{pmc,jdbcType=VARCHAR}
+      PM25 = #{pm25,jdbcType=DECIMAL},
+      PM10 = #{pm10,jdbcType=DECIMAL},
+      SO2 = #{so2,jdbcType=DECIMAL},
+      NOx = #{nox,jdbcType=DECIMAL},
+      VOC = #{voc,jdbcType=DECIMAL},
+      CO = #{co,jdbcType=DECIMAL},
+      NH3 = #{nh3,jdbcType=DECIMAL},
+      BC = #{bc,jdbcType=DECIMAL},
+      OC = #{oc,jdbcType=DECIMAL},
+      PMFINE = #{pmfine,jdbcType=DECIMAL},
+      PMC = #{pmc,jdbcType=DECIMAL}
     where EMISSION_ID = #{emissionId,jdbcType=DECIMAL}
   </update>
 </mapper>

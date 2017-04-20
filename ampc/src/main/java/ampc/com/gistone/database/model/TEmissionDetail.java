@@ -1,5 +1,6 @@
 package ampc.com.gistone.database.model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class TEmissionDetail {
@@ -15,27 +16,27 @@ public class TEmissionDetail {
 
     private Long scenarinoId;
 
-    private String pm25;
+    private BigDecimal pm25;
 
-    private String pm10;
+    private BigDecimal pm10;
 
-    private String so2;
+    private BigDecimal so2;
 
-    private String nox;
+    private BigDecimal nox;
 
-    private String voc;
+    private BigDecimal voc;
 
-    private String co;
+    private BigDecimal co;
 
-    private String nh3;
+    private BigDecimal nh3;
 
-    private String bc;
+    private BigDecimal bc;
 
-    private String oc;
+    private BigDecimal oc;
 
-    private String pmfine;
+    private BigDecimal pmfine;
 
-    private String pmc;
+    private BigDecimal pmc;
 
     public Long getEmissionId() {
         return emissionId;
@@ -85,91 +86,91 @@ public class TEmissionDetail {
         this.scenarinoId = scenarinoId;
     }
 
-    public String getPm25() {
+    public BigDecimal getPm25() {
         return pm25;
     }
 
-    public void setPm25(String pm25) {
-        this.pm25 = pm25 == null ? null : pm25.trim();
+    public void setPm25(BigDecimal pm25) {
+        this.pm25 = pm25;
     }
 
-    public String getPm10() {
+    public BigDecimal getPm10() {
         return pm10;
     }
 
-    public void setPm10(String pm10) {
-        this.pm10 = pm10 == null ? null : pm10.trim();
+    public void setPm10(BigDecimal pm10) {
+        this.pm10 = pm10;
     }
 
-    public String getSo2() {
+    public BigDecimal getSo2() {
         return so2;
     }
 
-    public void setSo2(String so2) {
-        this.so2 = so2 == null ? null : so2.trim();
+    public void setSo2(BigDecimal so2) {
+        this.so2 = so2;
     }
 
-    public String getNox() {
+    public BigDecimal getNox() {
         return nox;
     }
 
-    public void setNox(String nox) {
-        this.nox = nox == null ? null : nox.trim();
+    public void setNox(BigDecimal nox) {
+        this.nox = nox;
     }
 
-    public String getVoc() {
+    public BigDecimal getVoc() {
         return voc;
     }
 
-    public void setVoc(String voc) {
-        this.voc = voc == null ? null : voc.trim();
+    public void setVoc(BigDecimal voc) {
+        this.voc = voc;
     }
 
-    public String getCo() {
+    public BigDecimal getCo() {
         return co;
     }
 
-    public void setCo(String co) {
-        this.co = co == null ? null : co.trim();
+    public void setCo(BigDecimal co) {
+        this.co = co;
     }
 
-    public String getNh3() {
+    public BigDecimal getNh3() {
         return nh3;
     }
 
-    public void setNh3(String nh3) {
-        this.nh3 = nh3 == null ? null : nh3.trim();
+    public void setNh3(BigDecimal nh3) {
+        this.nh3 = nh3;
     }
 
-    public String getBc() {
+    public BigDecimal getBc() {
         return bc;
     }
 
-    public void setBc(String bc) {
-        this.bc = bc == null ? null : bc.trim();
+    public void setBc(BigDecimal bc) {
+        this.bc = bc;
     }
 
-    public String getOc() {
+    public BigDecimal getOc() {
         return oc;
     }
 
-    public void setOc(String oc) {
-        this.oc = oc == null ? null : oc.trim();
+    public void setOc(BigDecimal oc) {
+        this.oc = oc;
     }
 
-    public String getPmfine() {
+    public BigDecimal getPmfine() {
         return pmfine;
     }
 
-    public void setPmfine(String pmfine) {
-        this.pmfine = pmfine == null ? null : pmfine.trim();
+    public void setPmfine(BigDecimal pmfine) {
+        this.pmfine = pmfine;
     }
 
-    public String getPmc() {
+    public BigDecimal getPmc() {
         return pmc;
     }
 
-    public void setPmc(String pmc) {
-        this.pmc = pmc == null ? null : pmc.trim();
+    public void setPmc(BigDecimal pmc) {
+        this.pmc = pmc;
     }
 }
