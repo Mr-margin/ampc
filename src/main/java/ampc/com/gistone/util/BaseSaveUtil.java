@@ -1,10 +1,15 @@
 package ampc.com.gistone.util;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +22,7 @@ import net.sf.json.JSONObject;
 import ampc.com.gistone.database.inter.TEmissionDetailMapper;
 import ampc.com.gistone.database.inter.TEsNativeMapper;
 import ampc.com.gistone.database.model.TEmissionDetail;
+import ampc.com.gistone.database.model.TEmissionDetailWithBLOBs;
 import ampc.com.gistone.database.model.TEsNative;
 
 public class BaseSaveUtil {
@@ -24,7 +30,8 @@ public class BaseSaveUtil {
 	@Bean
 	public static List save_baseemission(Map mapses){
 		try{
-			List<TEmissionDetail> list=new ArrayList<TEmissionDetail>();
+			List<TEmissionDetailWithBLOBs> list=new ArrayList<TEmissionDetailWithBLOBs>();
+			Map<String,String> newcodemap=CodeUtil.codearray();
 			TEsNative tEsNative = new TEsNative();
 			tEsNative.setEsCodeRange("-1,-2");
 			int a=0;
@@ -41,22 +48,27 @@ public class BaseSaveUtil {
 			String newdat=hms.format(date);
 			Date thedate=hms.parse(newdat);
 			//循环data的value
-			for(Object datess: mapses.keySet()){
+			int ax=0;
+			Date ds=new Date();
+			LogUtil.getLogger().error("开始进行解析"+ds+"------"+mapses.size());
+			for(Object datess: mapses.keySet()){//日期
+			
+				LogUtil.getLogger().error("数据条数"+ax);
+				ax++;
 				String sdes=datess.toString();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");	
 			Date emissiondate=sdf.parse(sdes);
 			Map noemission=(Map) mapses.get(datess);//获取emission的值	
-			Map emission=(Map) noemission.get("emission");
-			JSONObject jasonObject = JSONObject.fromObject(emission);
-			Map<String,Object> map= (Map)jasonObject;//将emission的值	转化为Map集合
+			Map<String,Object> map=(Map<String,Object>) noemission.get("emission");
+
 			
-			Map<String, Object> newmap = codeTransformUtil
-					.codeEmission(map, tEsNative);
+//			Map<String, Object> newmap = codeTransformUtil
+//					.codeEmission(map, tEsNative);
 			
 			List<String> codelist=new ArrayList<String>();
-			for(String code:newmap.keySet()){//根据key进行遍历
+			for(String code:map.keySet()){//根据key进行遍历emission
 				if(!codelist.contains(code)){
-				TEmissionDetail temission=new TEmissionDetail();
+					TEmissionDetailWithBLOBs temission=new TEmissionDetailWithBLOBs();
 				temission.setEmissionDate(emissiondate);
 					codelist.add(code);
 				temission.setCode(code);
@@ -65,11 +77,11 @@ public class BaseSaveUtil {
 				 Matcher matcher1 = pattern1.matcher(code);
 				 Matcher matcher2 = pattern2.matcher(code);
 				if(matcher1.find()){
-					temission.setCodeLevel("1");
+					temission.setCodelevel("1");
 				}else if(matcher2.find()){
-					temission.setCodeLevel("2");
+					temission.setCodelevel("2");
 				}else{
-					temission.setCodeLevel("3");
+					temission.setCodelevel("3");
 				}
 				temission.setEmissionDetails(map.get(code).toString());//通过key获取需要的值
 				list.add(temission);
@@ -79,6 +91,103 @@ public class BaseSaveUtil {
 			}
 			}
 			
+			
+			
+			Iterator<TEmissionDetailWithBLOBs> it = list.iterator();
+			LogUtil.getLogger().error("数据数量1:"+list.size());
+			LogUtil.getLogger().error("数据转换开始"+new Date());
+			Map<String,TEmissionDetailWithBLOBs> zcode=new HashMap();
+			 while(it.hasNext()){
+				 TEmissionDetailWithBLOBs te= it.next();
+				 String col=newcodemap.values().toString();
+				String codes= te.getCode().toString();
+				if(col.contains(codes)){
+				Iterator<Entry<String, String>> iter=newcodemap.entrySet().iterator(); 
+				while(iter.hasNext()){
+					Entry<String, String> codeset=iter.next();
+					String codehave=codeset.getValue();
+					 if(codehave.contains(te.getCode())){
+						 if(!zcode.keySet().contains(codeset.getKey())){//判断map中是否含有该code
+						 te.setCode(codeset.getKey());
+						 zcode.put(codeset.getKey(), te);
+						 it.remove();
+						 }else{
+							 TEmissionDetailWithBLOBs tec= zcode.get(codeset.getKey());//获取已存在的改code的对象
+							 JSONObject jso=JSONObject.fromObject(tec.getEmissionDetails());
+							 Map<String,Object> lastMap= (Map<String, Object>)jso;
+							 
+							 //获取要合并数据的对象
+							 JSONObject jsod=JSONObject.fromObject(te.getEmissionDetails());
+							 Map<String,Map<String,Object>> addmap= (Map<String, Map<String,Object>>)jsod;
+							 Map los =new HashMap();
+							 Iterator<Entry<String, Object>> iters=lastMap.entrySet().iterator(); 
+							 Map<String, Object> spcse=new HashMap();
+							 while(iters.hasNext()){
+								 Entry<String, Object> la= iters.next();
+								 String industry=la.getKey();
+								 
+								 Map<String,Object>  speciesmap=new HashMap<String, Object>();
+								 Map<String,Object> spemap= (Map<String,Object>)la.getValue();
+								 Iterator<Entry<String, Object>> iterss=spemap.entrySet().iterator(); 
+								 while(iterss.hasNext()){
+									 
+									 Entry<String, Object> spec=iterss.next();
+									 String species=spec.getKey();
+									 if(!spcse.keySet().contains(species)){
+										 spcse.put(species, spec.getValue());	 
+									 }else{
+										 BigDecimal olds=new BigDecimal(spcse.get(species).toString()); 
+										 BigDecimal newds=new BigDecimal(spec.getValue().toString());
+										 BigDecimal yesds=newds.add(olds);
+										 spcse.put(species, yesds);
+									 }
+									 
+									 BigDecimal old=new BigDecimal(spec.getValue().toString());
+
+									 BigDecimal news=new BigDecimal("0");
+									 BigDecimal yes=new BigDecimal("0");
+									 if(addmap.get(industry)!=null&&addmap.get(industry).get(species)!=null){
+									 news=new BigDecimal(addmap.get(industry).get(species).toString());
+										}
+										yes=news.add(old);
+										
+										speciesmap.put(species, yes);
+										los.put(industry, speciesmap);
+										
+								 }
+							 }
+							JSONObject ss=JSONObject.fromObject(los);
+							
+							//添加物种吧
+							
+							
+							
+							
+							
+							
+							tec.setEmissionDetails(ss.toString());
+							Matcher matcher3 = pattern1.matcher(codeset.getKey());
+							Matcher matcher4 = pattern2.matcher(codeset.getKey());
+							if(matcher3.find()){
+								tec.setCodelevel("1");
+							}else if(matcher4.find()){
+								tec.setCodelevel("2");
+							}else{
+								tec.setCodelevel("3");
+							}
+							 zcode.put(codeset.getKey(), tec);
+								it.remove();
+						 }
+					 }
+					 
+				 }
+			 }
+				
+				  }
+			 for(String sss:zcode.keySet()){
+				 list.add(zcode.get(sss));
+			 }
+			 LogUtil.getLogger().error("数据转换结束"+new Date());
 			return list;
 			
 		}catch(Exception e){
