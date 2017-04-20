@@ -23,6 +23,7 @@ import ampc.com.gistone.database.inter.TAddressMapper;
 import ampc.com.gistone.database.inter.TEmissionDetailMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.model.TEmissionDetail;
+import ampc.com.gistone.database.model.TEmissionDetailWithBLOBs;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.entity.PieUtil;
 import ampc.com.gistone.entity.RadioListUtil;
@@ -106,9 +107,9 @@ public class EchartsController {
 					//添加code条件
 					mapQuery.put("code", code);
 					//获取所有的基准情景减排结果
-					List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
+					List<TEmissionDetailWithBLOBs> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
 					//循环所有基准情景的减排结果
-					for (TEmissionDetail tEmissionDetail : basisList) {
+					for (TEmissionDetailWithBLOBs tEmissionDetail : basisList) {
 						//临时变量用来记录污染物在所有行业的总和
 						BigDecimal sumResult=new BigDecimal(0);
 						//获取所有的基准情景减排结果
@@ -153,9 +154,9 @@ public class EchartsController {
 					//查询情景的信息时给情景Id
 					mapQuery.put("scenarinoId", scenarinoId);
 					//获取所有的情景减排结果
-					List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
+					List<TEmissionDetailWithBLOBs> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
 					//循环所有实际减排的减排结果
-					for (TEmissionDetail tEmissionDetail : tdList) {
+					for (TEmissionDetailWithBLOBs tEmissionDetail : tdList) {
 						//添加每一个的减排日期
 						dateResult.add(DateUtil.DateToStr(tEmissionDetail.getEmissionDate()));
 						//临时变量用来记录污染物在所有行业的总和
@@ -200,7 +201,7 @@ public class EchartsController {
 				}else{
 					mapQuery.put("code", code);
 					//获取所有的基准情景减排结果
-					List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
+					List<TEmissionDetailWithBLOBs> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
 					//内部循环初始值变量
 					int j=0;
 					//循环所有基准情景的减排结果
@@ -297,7 +298,7 @@ public class EchartsController {
 					//查询情景的信息时给情景Id
 					mapQuery.put("scenarinoId", scenarinoId);
 					//获取所有的实际减排量的减排结果
-					List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
+					List<TEmissionDetailWithBLOBs> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
 					//内部循环初始值变量
 					j=0;
 					//循环所有实际减排量的减排结果
@@ -427,9 +428,9 @@ public class EchartsController {
 						//添加code条件
 						mapQuery.put("code", code);
 						//获取所有的基准情景减排结果
-						List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
+						List<TEmissionDetailWithBLOBs> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
 						//循环所有基准情景的减排结果
-						for (TEmissionDetail tEmissionDetail : basisList) {
+						for (TEmissionDetailWithBLOBs tEmissionDetail : basisList) {
 							//临时变量用来记录污染物在所有行业的总和
 							BigDecimal sumResult=new BigDecimal(0);
 							//获取所有的基准情景减排结果
@@ -474,9 +475,9 @@ public class EchartsController {
 						//查询情景的信息时给情景Id
 						mapQuery.put("scenarinoId", scenarinoId);
 						//获取所有的情景减排结果
-						List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
+						List<TEmissionDetailWithBLOBs> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
 						//循环所有实际减排的减排结果
-						for (TEmissionDetail tEmissionDetail : tdList) {
+						for (TEmissionDetailWithBLOBs tEmissionDetail : tdList) {
 							//添加每一个的减排日期
 							tempdateResult.add(DateUtil.DateToStr(tEmissionDetail.getEmissionDate()));
 							//临时变量用来记录污染物在所有行业的总和
@@ -521,7 +522,7 @@ public class EchartsController {
 					}else{
 						mapQuery.put("code", code);
 						//获取所有的基准情景减排结果
-						List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
+						List<TEmissionDetailWithBLOBs> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
 						//内部循环初始值变量
 						int j=0;
 						//循环所有基准情景的减排结果
@@ -618,7 +619,7 @@ public class EchartsController {
 						//查询情景的信息时给情景Id
 						mapQuery.put("scenarinoId", scenarinoId);
 						//获取所有的实际减排量的减排结果
-						List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
+						List<TEmissionDetailWithBLOBs> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
 						//内部循环初始值变量
 						j=0;
 						//循环所有实际减排量的减排结果
@@ -798,7 +799,7 @@ public class EchartsController {
 				//添加code条件
 				mapQuery.put("code", null);
 				//获取所有的减排结果
-				List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
+				List<TEmissionDetailWithBLOBs> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
 				//循环所有减排结果
 				for (int i=0;i<tdList.size();i++) {
 					//判断是行业还是措施的  并赋值对应的Json串
@@ -874,7 +875,7 @@ public class EchartsController {
 					//添加code条件
 					mapQuery.put("code", code);
 					//获取所有的减排结果
-					List<TEmissionDetail> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
+					List<TEmissionDetailWithBLOBs> tdList=tEmissionDetailMapper.selectByQuery(mapQuery);
 					//循环所有减排结果
 					for (int i=0;i<tdList.size();i++) {
 						//判断是行业还是措施的  并赋值对应的Json串
@@ -993,10 +994,10 @@ public class EchartsController {
 				if(addressLevle==2) code=code.substring(0,4)+"%";
 				mapQuery.put("code", null);
 				//获取到对应的减排信息
-				List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
+				List<TEmissionDetailWithBLOBs> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
 				//定义结果对象
 				RadioListUtil basisrlu=null;
-				for(TEmissionDetail ted:basisList){
+				for(TEmissionDetailWithBLOBs ted:basisList){
 					//判断是行业还是措施的  并赋值对应的Json串
 					String edetail=ted.getEmissionDetails();
 					//解析json获取到所有行业的减排信息
@@ -1038,7 +1039,7 @@ public class EchartsController {
 						//添加条件 
 						mapQuery.put("code", str+"%");
 						//模糊查询当前这个省级下的所有减排记录
-						List<TEmissionDetail> ttdd=tEmissionDetailMapper.selectByQuery(mapQuery);
+						List<TEmissionDetailWithBLOBs> ttdd=tEmissionDetailMapper.selectByQuery(mapQuery);
 						//如果没有数据代表没有该市的信息  直接判断下一条记录
 						if(ttdd.size()==0) continue;
 						//定义结果对象
@@ -1052,7 +1053,7 @@ public class EchartsController {
 						//如果只有一条记录 
 						if(ttdd.size()==1){
 							//定义临时减排对象
-							TEmissionDetail td=ttdd.get(0);
+							TEmissionDetailWithBLOBs td=ttdd.get(0);
 							//判断这条记录是否是市级  如果是咋返回结果类型为没有县级
 							if(td.getCode().equals(strcod)){
 								//添加类型没有县级
@@ -1078,7 +1079,7 @@ public class EchartsController {
 							//添加类型有县级
 							rlu.setType(1);
 							//结果不只一条
-							for(TEmissionDetail ted:ttdd){
+							for(TEmissionDetailWithBLOBs ted:ttdd){
 								//判断是行业还是措施的  并赋值对应的Json串
 								String edetail=ted.getEmissionDetails();
 								//解析json获取到所有行业的减排信息
@@ -1102,7 +1103,7 @@ public class EchartsController {
 						//添加条件 
 						mapQuery.put("code", strcod);
 						//模糊查询当前这个省级下的所有减排记录
-						List<TEmissionDetail> ttdd=tEmissionDetailMapper.selectByQuery(mapQuery);
+						List<TEmissionDetailWithBLOBs> ttdd=tEmissionDetailMapper.selectByQuery(mapQuery);
 						//如果没有数据代表没有该市的信息  直接判断下一条记录
 						if(ttdd.size()==0) continue;
 						//定义结果对象
@@ -1116,7 +1117,7 @@ public class EchartsController {
 						//添加类型没有县级
 						rlu.setType(0);
 						//如果没有数据代表没有该市的信息  直接判断下一条记录
-						for(TEmissionDetail td:ttdd){
+						for(TEmissionDetailWithBLOBs td:ttdd){
 							//判断是行业还是措施的  并赋值对应的Json串
 							String edetail=td.getEmissionDetails();
 							//解析json获取到所有行业的减排信息
@@ -1145,10 +1146,10 @@ public class EchartsController {
 					if(addressLevle==2) code=code.substring(0,4)+"%";
 					mapQuery.put("code", null);
 					//获取到对应的减排信息
-					List<TEmissionDetail> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
+					List<TEmissionDetailWithBLOBs> basisList=tEmissionDetailMapper.selectByQuery(mapQuery);
 					//定义结果对象
 					RadioListUtil basisrlu=null;
-					for(TEmissionDetail ted:basisList){
+					for(TEmissionDetailWithBLOBs ted:basisList){
 						//判断是行业还是措施的  并赋值对应的Json串
 						String edetail=ted.getEmissionDetails();
 						//解析json获取到所有行业的减排信息
@@ -1190,7 +1191,7 @@ public class EchartsController {
 							//添加条件 
 							mapQuery.put("code", str+"%");
 							//模糊查询当前这个省级下的所有减排记录
-							List<TEmissionDetail> ttdd=tEmissionDetailMapper.selectByQuery(mapQuery);
+							List<TEmissionDetailWithBLOBs> ttdd=tEmissionDetailMapper.selectByQuery(mapQuery);
 							//如果没有数据代表没有该市的信息  直接判断下一条记录
 							if(ttdd.size()==0) continue;
 							//定义结果对象
@@ -1204,7 +1205,7 @@ public class EchartsController {
 							//如果只有一条记录 
 							if(ttdd.size()==1){
 								//定义临时减排对象
-								TEmissionDetail td=ttdd.get(0);
+								TEmissionDetailWithBLOBs td=ttdd.get(0);
 								//判断这条记录是否是市级  如果是咋返回结果类型为没有县级
 								if(td.getCode().equals(strcod)){
 									//添加类型没有县级
@@ -1230,7 +1231,7 @@ public class EchartsController {
 								//添加类型有县级
 								rlu.setType(1);
 								//结果不只一条
-								for(TEmissionDetail ted:ttdd){
+								for(TEmissionDetailWithBLOBs ted:ttdd){
 									//判断是行业还是措施的  并赋值对应的Json串
 									String edetail=ted.getEmissionDetails();
 									//解析json获取到所有行业的减排信息
@@ -1254,7 +1255,7 @@ public class EchartsController {
 							//添加条件 
 							mapQuery.put("code", strcod);
 							//模糊查询当前这个省级下的所有减排记录
-							List<TEmissionDetail> ttdd=tEmissionDetailMapper.selectByQuery(mapQuery);
+							List<TEmissionDetailWithBLOBs> ttdd=tEmissionDetailMapper.selectByQuery(mapQuery);
 							//如果没有数据代表没有该市的信息  直接判断下一条记录
 							if(ttdd.size()==0) continue;
 							//定义结果对象
@@ -1268,7 +1269,7 @@ public class EchartsController {
 							//添加类型没有县级
 							rlu.setType(0);
 							//如果没有数据代表没有该市的信息  直接判断下一条记录
-							for(TEmissionDetail td:ttdd){
+							for(TEmissionDetailWithBLOBs td:ttdd){
 								//判断是行业还是措施的  并赋值对应的Json串
 								String edetail=td.getEmissionDetails();
 								//解析json获取到所有行业的减排信息
