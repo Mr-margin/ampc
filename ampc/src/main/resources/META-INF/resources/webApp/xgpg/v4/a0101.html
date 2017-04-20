@@ -28,7 +28,7 @@
 					<div class="btn-group" data-toggle="buttons" style="margin-top: 3px">
 						<label class="btn btn-outline btn-success btn-sm active"><input checked type="radio" name="rms" value="d">日</label>
 						<label class="btn btn-outline btn-success btn-sm"><input type="radio" name="rms" value="h">时</label>
-						<label class="btn btn-outline btn-success btn-sm"><input type="radio" name="rms" value="p">平均</label>
+						<label class="btn btn-outline btn-success btn-sm"><input class="p" type="radio" name="rms" value="a">平均</label>
 					</div>
 				</div>
 				<div class="col-md-6">
@@ -86,6 +86,15 @@
 							<div class="btn-group" data-toggle="buttons"></div>
 						</div>
 					</div>
+					<div class="showType" id="showType">
+						<div class='' style="margin-top: -8px;float:right;">
+							<div class="btn-group" data-toggle="buttons">
+								<label class="showTypeL btn btn-outline btn-success active"><input value="concn" type="checkbox" name="showType" checked>浓度</label>
+								<label class="showTypeL btn btn-outline btn-success"><input value="wind" type="checkbox" name="showType">风场</label>
+								<label class="showTypeL btn btn-outline btn-success"><input value="emis" type="checkbox" name="showType">排放</label>
+							</div>
+						</div>
+					</div>
 					<div id="Point"></div>
 
 
@@ -100,12 +109,12 @@
 						</div>
 					</div>
 
-					<div class="showType" id="showType">
+					<div class="calcType" id="calcType">
 						<div class='' style="margin-top: -8px;float:right;">
 							<div class="btn-group" data-toggle="buttons">
-								<label class="btn btn-outline btn-success active"><input value="1" type="radio" name="showType" checked>当前情景</label>
-								<label class="btn btn-outline btn-success"><input value="2" type="radio" name="showType">绝对变化</label>
-								<label class="btn btn-outline btn-success"><input value="3" type="radio" name="showType">相对变化</label>
+								<label class="btn btn-outline btn-success active"><input value="show" type="radio" name="calcType" checked>当前情景</label>
+								<label class="btn btn-outline btn-success"><input value="diff" type="radio" name="calcType">绝对变化</label>
+								<label class="btn btn-outline btn-success"><input value="ratio" type="radio" name="calcType">相对变化</label>
 							</div>
 						</div>
 					</div>
