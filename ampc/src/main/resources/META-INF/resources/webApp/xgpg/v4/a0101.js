@@ -396,6 +396,11 @@ function bianji(type,g_num,p) {
   //$.get('data-d01.json', function (data) {
   ajaxPost('/extract/data',par).success(function (data) {
 
+    if(!data.data){
+      console.log("data.data-null");
+      return;
+    }
+
     if(data.data.length == 0){
       console.log("length-null");
       return;
