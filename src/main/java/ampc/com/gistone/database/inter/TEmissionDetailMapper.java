@@ -1,41 +1,20 @@
 package ampc.com.gistone.database.inter;
 
-import java.util.List;
-import java.util.Map;
-
 import ampc.com.gistone.database.model.TEmissionDetail;
+import ampc.com.gistone.database.model.TEmissionDetailWithBLOBs;
 
 public interface TEmissionDetailMapper {
-	/**
-	 * 根据条件查询对应市级Code
-	 * @param map
-	 * @return
-	 */
-	List<String> selectCityCode(Map map);
-	
-	/**
-	 * 根据条件查询对应的结果集  用于减排列表的显示
-	 * @param map
-	 * @return
-	 */
-	List<TEmissionDetail> selectByQuery(Map map);
-	
     int deleteByPrimaryKey(Long emissionId);
 
-    int insert(TEmissionDetail record);
+    int insert(TEmissionDetailWithBLOBs record);
 
-    int insertSelective(TEmissionDetail record);
+    int insertSelective(TEmissionDetailWithBLOBs record);
 
-    TEmissionDetail selectByPrimaryKey(Long emissionId);
+    TEmissionDetailWithBLOBs selectByPrimaryKey(Long emissionId);
 
-    int updateByPrimaryKeySelective(TEmissionDetail record);
+    int updateByPrimaryKeySelective(TEmissionDetailWithBLOBs record);
 
-    int updateByPrimaryKeyWithBLOBs(TEmissionDetail record);
+    int updateByPrimaryKeyWithBLOBs(TEmissionDetailWithBLOBs record);
 
     int updateByPrimaryKey(TEmissionDetail record);
-    
-    List<TEmissionDetail> selectByEntity(TEmissionDetail record);
-    TEmissionDetail selectBycodeAndDate(TEmissionDetail record);
-    
-    int deleteByScenarunoId(Long scenarunoId);
 }
