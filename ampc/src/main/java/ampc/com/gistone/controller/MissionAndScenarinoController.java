@@ -1526,7 +1526,7 @@ public class MissionAndScenarinoController {
 				Long b=0l;
 				for(TScenarinoDetail tScenarinoDetail:tScenarinoDetaillist){
 				Long status=tScenarinoDetail.getScenarinoStatus();
-				if(status>=5){
+				if(status==8&&!tScenarinoDetail.getScenType().equals("3")&&!tScenarinoDetail.getScenType().equals("4")){
 					b+=1;
 				}
 				
