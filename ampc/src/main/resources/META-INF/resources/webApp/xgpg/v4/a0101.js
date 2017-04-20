@@ -143,6 +143,10 @@ require(
       if (source == -1) {
         source = 0;
         app.mapList[1].setExtent(event.extent);
+
+        //0
+        updata();
+
       } else {
         source = -1;
       }
@@ -152,6 +156,10 @@ require(
       if (source == -1) {
         source = 0;
         app.mapList[0].setExtent(event.extent);
+
+        //1
+        updata();
+
       } else {
         source = -1;
       }
