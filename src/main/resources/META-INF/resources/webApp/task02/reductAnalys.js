@@ -170,6 +170,9 @@ function baizhu_jianpai(gis_paramsName, sh_type){
 			if(tj_paramsName.code == "0" && sh_type == "1"){//第一次打开页面，记录省级或者最高级的行政区划
 				tj_paramsName.code = tegd.substring(0, tegd.length-1);
 				gghjl = tegd.substring(0, tegd.length-1);
+				if(sh_type == "1"){
+					bar();
+				}
 			}
 			
 			var paifang_url = "";
@@ -235,9 +238,7 @@ function baizhu_jianpai(gis_paramsName, sh_type){
 					app.map.setExtent(extent.expand(1.5));
 				});
 			}
-			if(sh_type == "1"){
-				bar();
-			}
+			
 			return true;
 		}else{
 			swal('减排数据获取失败', '', 'error');
@@ -355,18 +356,20 @@ function resizess(event){
 function optionclick(event){
 	
 	if (typeof event.graphic != "undefined") {//点击选中了一个面对象
+		bar();
 		app.map.graphics.clear();
 		app.map.graphics.add(new dong.Graphic(event.graphic.geometry, app.selectline));//添加选中的图层
 		tj_paramsName.code = event.graphic.attributes.ADMINCODE;
 		tj_paramsName.name = event.graphic.attributes.NAME;
-		bar();
+		
 	}else{
 		if(app.map.graphics.graphics.length > 0){//已经有选中的对象了
+			bar();
 			app.map.graphics.clear();
 			tj_paramsName.code = gghjl;
 			tj_paramsName.codeLevel = 1;
 			tj_paramsName.name = "全部区域";//name默认为情景名称
-			bar();
+			
 		}
 	}
 }
@@ -401,7 +404,7 @@ function bar() {
 //	}
 	
 	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":tj_paramsName.code,"addressLevle":tj_paramsName.codeLevel,"stainType":tj_paramsName.wz};
-//	console.log(JSON.stringify(paramsName));
+	console.log(JSON.stringify(paramsName));
 	ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
 //		console.log(JSON.stringify(res));
 		
