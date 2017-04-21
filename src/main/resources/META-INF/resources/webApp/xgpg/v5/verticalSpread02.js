@@ -462,6 +462,7 @@ function save_scene() {
     var mag = {};
     mag.id = "sceneInitialization";
     mag.taskID = $("#task").val();
+    mag.domainId = allMission[mag.taskID].domainId;
     mag.s = allMission[mag.taskID].missionStartDate;
     mag.e = allMission[mag.taskID].missionEndDate;
     var data = [];
