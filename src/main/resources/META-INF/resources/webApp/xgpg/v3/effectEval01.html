@@ -9,12 +9,12 @@
 	<div class="ibox float-e-margins" style="height:100%;width:100%;">
 		<div class="ibox-content" style="height:100%;width:100%;overflow-y: auto;overflow-x: hidden;padding: 0px;">
 			<div class="row" style="margin-top: 12px;margin-left: 0px;margin-right: 0px;height:48px;">
-				<div class="col-sm-4" style="padding-left:0px;">
+				<div class="col-sm-3" style="padding-left:0px;">
 						<div class="input-group m-b" style="margin-bottom: 0px">
 							<span class="input-group-addon" style="border: 0px solid #E5E6E7;"> 检测站点：</span>
 							<div class="" style="margin-bottom:0px;padding-left:0px;">
 								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
-									<div class="input-group group-select">
+									<div class="input-group group-select" style="width:100%;">
 										<select class="form-control m-b" id="proStation" style="border-color: #1c84c6;">
 											<option>浙江省</option>
 											<option>--</option>
@@ -22,7 +22,7 @@
 									</div>
 								</div>
 								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
-									<div class="input-group group-select">
+									<div class="input-group group-select" style="width:100%;">
 										<select class="form-control m-b" id="cityStation" style="border-color: #1c84c6;">
 											<option>杭州市</option>
 											<option>--</option>
@@ -30,7 +30,7 @@
 									</div>
 								</div>
 								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
-									<div class="input-group group-select">
+									<div class="input-group group-select" style="width:100%;">
 										<select class="form-control m-b" id="station" style="border-color: #1c84c6;">
 											<option>平均</option>
 											<option>--</option>
@@ -40,7 +40,7 @@
 							</div>
 						</div>
 				</div>
-				<div class="col-sm-4" style="margin-top: 0px;padding-right: 20px;margin-right: 0px;">
+				<div class="col-sm-3" style="margin-top: 0px;padding-right: 20px;margin-right: 0px;">
 					<div class="input-group m-b" style="margin-bottom: 0px">
 						<span class="input-group-addon" style="border: 0px solid #E5E6E7;">时间分辩率：</span> 
 						
@@ -56,7 +56,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-sm-4">
+				<div class="col-sm-3">
 					<div class="input-group m-b" style="margin-bottom: 0px">
 						 	<span class="input-group-addon" style="border: 0px solid #E5E6E7;">空间分辩率：</span> 
 						<div class="" style="margin-top:5px;">
@@ -74,14 +74,12 @@
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="row"  style="padding-left:15px;">
-				<div class="col-sm-4" style="padding-left:13px;">
+				<div class="col-sm-3" style="padding-left:13px;">
 					<div class="input-group m-b" style="margin-bottom: 0px">
 						<div class="" style="margin-top:5px;">
 							<div class="btn-group" data-toggle="buttons">
 								<label class="btn btn-outline btn-success active">
-									<input type="radio" name="changes" id="absoluChange" value="1">绝对量比较
+									<input type="radio" name="changes" id="absoluChange" value="1" checked>绝对量比较
 								</label>
 								<label class="btn btn-outline btn-success">
 									<input type="radio" name="changes" id="relativeChange" value="2">相对变化
@@ -90,6 +88,25 @@
 						</div>
 					</div>
 				</div>
+				
+				
+				
+			</div>
+			<div class="row"  style="padding-left:15px;">
+<!-- 				<div class="col-sm-4" style="padding-left:13px;"> -->
+<!-- 					<div class="input-group m-b" style="margin-bottom: 0px"> -->
+<!-- 						<div class="" style="margin-top:5px;"> -->
+<!-- 							<div class="btn-group" data-toggle="buttons"> -->
+<!-- 								<label class="btn btn-outline btn-success active"> -->
+<!-- 									<input type="radio" name="changes" id="absoluChange" value="1">绝对量比较 -->
+<!-- 								</label> -->
+<!-- 								<label class="btn btn-outline btn-success"> -->
+<!-- 									<input type="radio" name="changes" id="relativeChange" value="2">相对变化 -->
+<!-- 								</label> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
 				<div class="col-sm-4">
 					<div class="input-group m-b" style="margin-bottom: 0px">
 						<div class="" style="margin-bottom:0px;padding-left:7px;">
@@ -98,7 +115,7 @@
 									<input checked type="radio" name="spread" value="open">组分展开
 								</label>
 								<label class="btn btn-outline btn-success">
-									<input type="radio" name="spread" value="close">PM2.5组分收起
+									<input type="radio" name="spread" value="close">组分收起
 								</label>
 							</div>
 						</div>
