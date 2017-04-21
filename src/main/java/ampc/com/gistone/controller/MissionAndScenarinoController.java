@@ -906,10 +906,11 @@ public class MissionAndScenarinoController {
 			//根据任务id查询所有情景
 			List<TScenarinoDetail> scenarlist=tScenarinoDetailMapper.selectAllByMissionId(missionId);
 			if(tMission.getMissionStatus().equals("3")){
+			if(scenarlist.isEmpty()){
 				System.out.println("任务下无情景");	
 				return AmpcResult.build(1000, "任务下无情景",null);
 			}
-
+			}
 			
 			//查询基准情景最大结束时间
 			TScenarinoDetail tsdate=new TScenarinoDetail();
@@ -1032,7 +1033,6 @@ public class MissionAndScenarinoController {
 		return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
-	
 	//查询结束日期
 	@RequestMapping("scenarino/find_endTime")
 	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
