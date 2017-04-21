@@ -117,7 +117,7 @@ if (!sceneInitialization) {
 } else {
 	ls.setItem('SI', JSON.stringify(sceneInitialization));//不为空往session中存入一份数据
 }
-console.log(JSON.stringify(sceneInitialization));
+//console.log(JSON.stringify(sceneInitialization));
 
 if (!sceneInitialization) {//为空时
 	sceneInittion();//调用弹出模态框方法
@@ -222,16 +222,14 @@ function setTime(s, e) {
 /**
  * 动态添加div 填数据
  */
-//var es;
-//var sceneInitialization_arr;
-//var standardDatas;
 function initEcharts() {
-//	optionAll.series=[];
-//	var datas = echartsData;
 	var echartsDatas = echartsData;
 	var standardDatas=standardData;
-	var datas= $.extend(echartsDatas,standardDatas);
-	console.log(datas);
+	if(standardDatas==undefined){	
+		return;
+	}
+	var datas= $.extend(echartsDatas,standardDatas);//合并json对象
+//	console.log(datas);
 	var dd = {};
 	var ds = {};
 	var tname = []; //污染物name
@@ -248,7 +246,7 @@ function initEcharts() {
 				break;
 			}else{
 				sceneInitialization_arr.unshift(scenarino);
-				console.log(sceneInitialization_arr);
+//				console.log(sceneInitialization_arr);
 				break;
 			}
 		}
@@ -300,13 +298,13 @@ function initEcharts() {
 //											}
 										}
 										keys = keys.sort();
-										console.log(keys);
+//										console.log(keys);
 										for(var m=0; m<keys.length; m++){
 											ttime.push(keys[m]);
 											ydata.push(ss[keys[m]]);
 										}
-										console.log(ttime);
-										console.log(ydata);
+//										console.log(ttime);
+//										console.log(ydata);
 									}
 								}
 							}	
@@ -364,29 +362,27 @@ function getdata() {
 	find_standard();
 	var url = '/Appraisal/find_appraisal';
 	var paramsName = {
-    "userId": "1",
-    "missionId": sceneInitialization.taskID,
-    "mode": changeMsg.station=='avg'?'city':'point',
-    "cityStation": changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
-    "scenarinoId": changeMsg.scenarinoId,
-    "datetype": changeMsg.rms
-  };
-
+	    "userId": "1",
+	    "missionId": sceneInitialization.taskID,
+	    "mode": changeMsg.station=='avg'?'city':'point',
+	    "cityStation": changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
+	    "scenarinoId": changeMsg.scenarinoId,
+	    "datetype": changeMsg.rms
+	  };
 	ajaxPost(url, paramsName).success(function (res) {
-    if (res.status == 0) {
-    	echartsData = res.data;
-//    	console.log(echartsData);
-    	if (JSON.stringify(echartsData) == '{}' || echartsData == null) {
-    		swal('暂无数据', '', 'error')
-    	} else {
+	    if (res.status == 0) {
+	    	echartsData = res.data;
+	    	if (JSON.stringify(echartsData) == '{}' || echartsData == null) {
+	    		swal('暂无数据', '', 'error')
+	    	} else {
+	
+	    	}
+	    	initEcharts();
+	    } else {
+	      swal(res.msg, '', 'error')
+	    }
 
-    	}
-    	initEcharts();
-    } else {
-      swal(res.msg, '', 'error')
-    }
-
-  });
+	});
 }
 
 function ajaxPost_sy(url, parameter) {
@@ -395,11 +391,12 @@ function ajaxPost_sy(url, parameter) {
 	  return $.ajax('/ampc' + url, {
 	    contentType: "application/json",
 	    type: "POST",
+	    cache : true,
 	    async: false,
 	    dataType: 'JSON',
 	    data: p
-	  })
-	}
+	  });
+}
 
 
 /**
@@ -409,7 +406,6 @@ function find_standard(){
 	var missionId=$("#task").val();
 	var url='/Appraisal/find_standard';
 	var paramsName = {
-			async: false,
 			"userId": "1",
 			"missionId":sceneInitialization.taskID,				//任务ID
 			"mode":changeMsg.station=='avg'?'city':'point',		//检测站点
@@ -423,14 +419,13 @@ function find_standard(){
 	    	standardData = res.data.data;
 	    	scenarino.scenarinoId=res.data.scenarinoId;
 	    	scenarino.scenarinoName=res.data.scenarinoName;
-	      if (JSON.stringify(standardData) == '{}' || standardData == null||standardData==undefined||standardData=='') {
-	        swal('暂无基准匹配数据', '', 'error')
-	      } else {
-	    	  initEcharts();
-	      }
-	      
+	    	if (JSON.stringify(standardData) == '{}' || standardData == null||standardData==undefined||standardData=='') {
+	    	  swal('暂无基准匹配数据', '', 'error')
+	    	} else {
+	    	  
+	    	}
 	    } else {
-	      swal(res.msg, '', 'error')
+	    	swal(res.msg, '', 'error')
 	    }
 
 	  });
@@ -445,9 +440,7 @@ function sceneInittion(){
 	$("#task").html("");
 	var paramsName = {};
 	paramsName.userId = userId;
-//	console.log(JSON.stringify(paramsName));
 	ajaxPost('/mission/find_All_mission',paramsName).success(function(res){
-//		console.log(JSON.stringify(res));
 		if(res.status == 0){
 			var task = "";
 			
@@ -598,36 +591,39 @@ function sceneTable(){
  * 保存选择的情景
  */
 function save_scene() {
-  var row = $('#sceneTableId').bootstrapTable('getSelections');//获取所有选中的情景数据
-  if (row.length > 0) {
-    var mag = {};
-    mag.id = "sceneInitialization";
-    mag.taskID = $("#task").val();
+	standardData = '';		//清空基准数据
+	scenarino.scenarinoId='';
+	scenarino.scenarinoName='';
+	var row = $('#sceneTableId').bootstrapTable('getSelections');//获取所有选中的情景数据
+	if (row.length > 0) {
+		var mag = {};
+		mag.id = "sceneInitialization";
+		mag.taskID = $("#task").val();
 		mag.domainId = allMission[mag.taskID].domainId;
-    mag.s = allMission[mag.taskID].missionStartDate;
-    mag.e = allMission[mag.taskID].missionEndDate;
-    var data = [];
-    $.each(row, function (i, col) {
-      data.push({"scenarinoId": col.scenarinoId, "scenarinoName": col.scenarinoName});
-    });
-    mag.data = data;
-    vipspa.setMessage(mag);
-    ls.setItem('SI', JSON.stringify(mag));
-//    console.log(data);
-    sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
-    var arrId = [];//放入已选的情景id 传传
-    for (i = 0; i < mag.data.length; i++) {
-      arrId.push({"id": mag.data[i].scenarinoId});
-    }
-//    console.log(JSON.stringify(arrId));
-    $("#close_scene").click();
-    set_sce();
-//    find_standard();
-    initNowSession();
-  } else {
-    swal('暂无数据', '', 'error');
+		mag.s = allMission[mag.taskID].missionStartDate;
+		mag.e = allMission[mag.taskID].missionEndDate;
+		var data = [];
+		$.each(row, function (i, col) {
+			data.push({"scenarinoId": col.scenarinoId, "scenarinoName": col.scenarinoName});
+		});
+		mag.data = data;
+		vipspa.setMessage(mag);
+		ls.setItem('SI', JSON.stringify(mag));
+//    	console.log(data);
+		sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
+		var arrId = [];//放入已选的情景id 传传
+		for (i = 0; i < mag.data.length; i++) {
+			arrId.push({"id": mag.data[i].scenarinoId});
+		}
+//    	console.log(JSON.stringify(arrId));
+		$("#close_scene").click();
+		set_sce();
+//    	find_standard();
+		initNowSession();
+	} else {
+		swal('暂无数据', '', 'error');
 //		$("#close_scene").click();
-  }
+	}
 }
 //超链接显示 模态框
 function exchangeModal() {
@@ -709,23 +705,27 @@ $('input[name=changes]').on('change', function (e) {
 //逐日显示 AQI PM25 ,< SO4 NO3 NH4 BC OM PMFINE >, PM10 O3_8_max O3_1_max SO2 NO2 CO 
 //组分展开==open  收起==close
 $('input[name=spread]').on('change', function (e) {
-  var spType = $(e.target).val();
+	var spType = $(e.target).val();
 //  console.log(spType);
-  if (spType == 'close') {
-    $("#SO4").hide();
-    $("#NO3").hide();
-    $("#NH4").hide();
-    $("#BC").hide();
-    $("#OM").hide();
-    $("#PMFINE").hide();
-  } else {
-    $("#SO4").show();
-    $("#NO3").show();
-    $("#NH4").show();
-    $("#BC").show();
-    $("#OM").show();
-    $("#PMFINE").show();
-  }
+	if (spType == 'close') {
+		$("#SO4").hide();
+		$("#NO3").hide();
+		$("#NH4").hide();
+		$("#BC").hide();
+		$("#OM").hide();
+		$("#PMFINE").hide();
+		$(e.target.parentNode).text("组分展开");
+		$(e.target).val('open');
+	} else {
+		$("#SO4").show();
+		$("#NO3").show();
+		$("#NH4").show();
+		$("#BC").show();
+		$("#OM").show();
+		$("#PMFINE").show();
+		$(e.target.parentNode).text("组分收起");
+		$(e.target).val('close');
+	}
 
 });
 
@@ -733,7 +733,7 @@ $('input[name=spread]').on('change', function (e) {
 var domain;
 $('input[name=domain]').on('change', function (e) {
 	domain = $(e.target).val();
-	console.log(domain);
+//	console.log(domain);
 });
 
 
