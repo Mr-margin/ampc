@@ -40,6 +40,7 @@ import ucar.nc2.Variable;
 public class ExtractDataService {
 	
 	private final static Logger logger = LoggerFactory.getLogger(ExtractDataService.class);
+	private final static double OVERBORDER = -9999;
 	private final static String SHOW_TYPE_CONCN = "concn";
 	private final static String SHOW_TYPE_EMIS = "emis";
 	private final static String TIMEPOINT_A = "a";
@@ -305,17 +306,33 @@ public class ExtractDataService {
 	        pointBeanArray[i][j] = pb;
 
 	        double v = getValue(pb, params);
-	        pb.setValue(v);
-
-	        Map map = new HashMap<>();
-	        map.put("x", nf.format(pb.getX()));
-	        map.put("y", nf.format(pb.getY()));
-//	      map.put("lat", pb.getLat());
-//	      map.put("lon", pb.getLon());
-//	      map.put("xlcc", p.getX());
-//	      map.put("ylcc", p.getY());
-	        map.put("v", pb.getValue());
-	        res.add(map);
+	       
+	        if(v == OVERBORDER) {
+	        	if(params.getBorderType() == 1) {
+	        		pb.setValue(0);
+	     	        Map map = new HashMap<>();
+	     	        map.put("x", nf.format(pb.getX()));
+	     	        map.put("y", nf.format(pb.getY()));
+//	     	        map.put("lat", pb.getLat());
+//	     	        map.put("lon", pb.getLon());
+//	     	        map.put("xlcc", p.getX());
+//	     	        map.put("ylcc", p.getY());
+	     	        map.put("v", pb.getValue());
+	     	        res.add(map);
+	        	}
+	        } else {
+	        	pb.setValue(v);
+     	        Map map = new HashMap<>();
+     	        map.put("x", nf.format(pb.getX()));
+     	        map.put("y", nf.format(pb.getY()));
+//     	        map.put("lat", pb.getLat());
+//     	        map.put("lon", pb.getLon());
+//     	        map.put("xlcc", p.getX());
+//     	        map.put("ylcc", p.getY());
+     	        map.put("v", pb.getValue());
+     	        res.add(map);
+	        }
+	        
 
 	        //保存经纬度、兰伯特数据
 	        buildDataFile(pb);
@@ -342,10 +359,13 @@ public class ExtractDataService {
 	      if(TIMEPOINT_A.equals(params.getTimePoint())) {
 	        int size = variableList1.size();
 	        for(int i = 0; i < size; i++) {
-	          value += interpolation.interpolation(variableList1.get(i), p) / size;
+	          double vv = interpolation.interpolation(variableList1.get(i), p);
+	          if(vv == OVERBORDER) return OVERBORDER;
+	          value += vv / size;
 	        }
 	      } else {
 	        value = interpolation.interpolation(variable1, p);
+	        if(value == OVERBORDER) return OVERBORDER;
 	      }
 	    } else if("diff".equals(params.getCalcType())) {
 	      if(TIMEPOINT_A.equals(params.getTimePoint())) {
@@ -354,15 +374,21 @@ public class ExtractDataService {
 	        int size1 = variableList1.size();
 	        int size2 = variableList2.size();
 	        for(int i = 0; i < size1; i++) {
-	          value1 += interpolation.interpolation(variableList1.get(i), p) / size1;
+	          double vv = interpolation.interpolation(variableList1.get(i), p);
+	          if(vv == OVERBORDER) return OVERBORDER;
+	          value1 += vv / size1;
 	        }
 	        for(int i = 0; i < size2; i++) {
-	          value2 += interpolation.interpolation(variableList2.get(i), p) / size2;
+	          double vv = interpolation.interpolation(variableList2.get(i), p);
+	          if(vv == OVERBORDER) return OVERBORDER;
+	          value2 += vv / size2;
 	        }
 	        value = value2 - value1;
 	      } else {
 	        double value1 = interpolation.interpolation(variable1, p);
+	        if(value1 == OVERBORDER) return OVERBORDER;
 	        double value2 = interpolation.interpolation(variable2, p);
+	        if(value2 == OVERBORDER) return OVERBORDER;
 	        value = value2 - value1;
 	      }
 	    } else if("ratio".equals(params.getCalcType())) {
@@ -372,16 +398,22 @@ public class ExtractDataService {
 	        int size1 = variableList1.size();
 	        int size2 = variableList2.size();
 	        for(int i = 0; i < size1; i++) {
-	          value1 += interpolation.interpolation(variableList1.get(i), p) / size1;
+	          double vv = interpolation.interpolation(variableList1.get(i), p);
+	          if(vv == OVERBORDER) return OVERBORDER;
+	          value1 += vv / size1;
 	        }
 	        for(int i = 0; i < size2; i++) {
-	          value2 += interpolation.interpolation(variableList2.get(i), p) / size2;
+	          double vv = interpolation.interpolation(variableList2.get(i), p);
+	          if(vv == OVERBORDER) return OVERBORDER;
+	          value2 += vv / size2;
 	        }
 	        if(value1 == 0.0) value1 = MINIMUM;
 	        value = (value2 - value1) / value1;
 	      } else {
 	        double value1 = interpolation.interpolation(variable1, p);
+	        if(value1 == OVERBORDER) return OVERBORDER;
 	        double value2 = interpolation.interpolation(variable2, p);
+	        if(value2 == OVERBORDER) return OVERBORDER;
 	        if(value1 == 0.0) value1 = MINIMUM;
 	        value = (value2 - value1) / value1;
 	      }

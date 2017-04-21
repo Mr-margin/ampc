@@ -6,6 +6,7 @@ public class ExtractRequestParams {
 
 	private String calcType;  // show diff ratio
 	private String showType;  // emis concn wind
+	private int borderType;   // 0 don't show over point , 1 show all point
 	private int userId;
 	private int domainId;
 	private int missionId;
@@ -260,6 +261,14 @@ public class ExtractRequestParams {
 
 	public void setCol(int col) {
 		this.col = col;
+	}
+
+	public int getBorderType() {
+		return borderType;
+	}
+
+	public void setBorderType(int borderType) {
+		this.borderType = borderType;
 	}
 	
 	
