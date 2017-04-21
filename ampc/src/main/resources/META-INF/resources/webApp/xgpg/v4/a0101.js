@@ -611,8 +611,8 @@ function setDate(s1, e1, s2, e2, type) {
         }
       }
     }
-    changeMsg.sTimeD = moment($('#sTime-d').val()).format('YYYYMMDD');
-    changeMsg.eTime = moment($('#eTime').val()).format('YYYYMMDD');
+    changeMsg.sTimeD = moment($('#sTime-d').val()).format('YYYYDDD');
+    changeMsg.eTime = moment($('#eTime').val()).format('YYYYDDD');
   } else {
     //$('input[name=rms].p').parent().removeAttr('disabled');
     s1 = moment(s1 - 0);
@@ -690,8 +690,8 @@ function setDate(s1, e1, s2, e2, type) {
         }
       }
     }
-    changeMsg.sTimeD = moment($('#sTime-d').val()).format('YYYYMMDD');
-    changeMsg.eTime = moment($('#eTime').val()).format('YYYYMMDD');
+    changeMsg.sTimeD = moment($('#sTime-d').val()).format('YYYYDDD');
+    changeMsg.eTime = moment($('#eTime').val()).format('YYYYDDD');
   }
 }
 
@@ -733,7 +733,7 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
     var s = moment($('#sTime-d').val());
     var e = moment($('#eTime').val());
     while(true){
-      changeMsg.dates.push(s.format('YYYYMMDD'));
+      changeMsg.dates.push(s.format('YYYYDDD'));
       if(s.add(1,'d').isAfter(e)){
         break;
       }
@@ -818,13 +818,13 @@ $('#qjBtn2').on('change', 'input', function (e) {//改变右侧情景
 
 $('#sTime-d').on('change', function (e) {//选择日期
   var date = $(e.target).val();
-  changeMsg.sTimeD = moment(date).format('YYYYMMDD');
+  changeMsg.sTimeD = moment(date).format('YYYYDDD');
   if(changeMsg.rms == 'a'){
     changeMsg.dates = []
     var s = moment($('#sTime-d').val());
     var e = moment($('#eTime').val());
     while(true){
-      changeMsg.dates.push(s.format('YYYYMMDD'));
+      changeMsg.dates.push(s.format('YYYYDDD'));
       if(s.add(1,'d').isAfter(e)){
         break;
       }
@@ -843,13 +843,13 @@ $('#sTime-h').on('change', function (e) {//选择时间
 
 $('#eTime').on('change', function (e) {//选择平均后的时间
   var date = $(e.target).val();
-  changeMsg.eTime = moment(date).format('YYYYMMDD');
+  changeMsg.eTime = moment(date).format('YYYYDDD');
   if(changeMsg.rms == 'a'){
     changeMsg.dates = [];
     var s = moment($('#sTime-d').val());
     var e = moment($('#eTime').val());
     while(true){
-      changeMsg.dates.push(s.format('YYYYMMDD'));
+      changeMsg.dates.push(s.format('YYYYDDD'));
       if(s.add(1,'d').isAfter(e)){
         break;
       }
@@ -884,11 +884,11 @@ function updata(t){
   },parameter);
 
   if(changeMsg.rms == 'd'){
-    //p1.day = changeMsg.sTimeD;
-    //p2.day = changeMsg.sTimeD;
+    p1.day = changeMsg.sTimeD;
+    p2.day = changeMsg.sTimeD;
 
-    p1.day = '2016322';
-    p2.day = '2016322';
+    //p1.day = '2016322';
+    //p2.day = '2016322';
   }else if(changeMsg.rms == 'h'){
     p1.day = changeMsg.sTimeD;
     p2.day = changeMsg.sTimeD;
