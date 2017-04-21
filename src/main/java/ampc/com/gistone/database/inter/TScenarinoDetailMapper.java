@@ -254,7 +254,11 @@ public interface TScenarinoDetailMapper {
     List<TScenarinoDetail> selectByEntity2(TScenarinoDetail record);
     
     TScenarinoDetail selectMaxEndTime4();
-
+    
+    /**
+	 * 查询基准情景 
+	 * */
+    List<TScenarinoDetail> selectBystandard(TScenarinoDetail record);
 
 	
 	
