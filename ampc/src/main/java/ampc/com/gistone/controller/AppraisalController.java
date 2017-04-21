@@ -1079,5 +1079,202 @@ public class AppraisalController {
 			return	AmpcResult.build(0, "error");
 		}
 		}
+	
+	/**
+	 * 根据任务id以及userid查询基准情景
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("Appraisal/find_standard")
+	public AmpcResult find_All_scenarino(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Long userId=Long.parseLong(data.get("userId").toString());			//用户id
+			Long missionId=Long.parseLong(data.get("missionId").toString());	//任务ID
+			String mode=data.get("mode").toString();							//检测站点
+			String cityStation=data.get("cityStation").toString();				//检测站点具体值
+			String datetype=data.get("datetype").toString();					//时间分辨率
+			int domain=Integer.valueOf((String) data.get("domain"));						//空间分辨率
+			String changeType=data.get("changeType").toString();				//变化状态
+			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
+			tScenarinoDetail.setUserId(userId);
+			tScenarinoDetail.setMissionId(missionId);
+			
+			List<TScenarinoDetail> tScenarinoDetaillist=tScenarinoDetailMapper.selectBystandard(tScenarinoDetail);
+//			tScenarinoDetaillist.get(0).getScenarinoStartDate();
+//			tScenarinoDetaillist.get(0).getScenarinoEndDate();
+			DateFormat dfs = new SimpleDateFormat("yyyy-MM-dd");
+			String startDate= dfs.format(tScenarinoDetaillist.get(0).getScenarinoStartDate());
+			String endDate= dfs.format(tScenarinoDetaillist.get(0).getScenarinoEndDate());
+			
+			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);//该任务下的所有数据
+			Integer domainId=Integer.valueOf(tMissionDetail.getMissionDomainId().toString());
+			TScenarinoDetail tScenarinoDetaillists=tScenarinoDetaillist.get(0);
+			JSONArray arr=new JSONArray();
+			JSONObject objsed=new JSONObject();
+			if(!tScenarinoDetaillist.isEmpty()){
+
+				if(datetype.equals("day")){	//时间分辨率---逐日
+					String tables="T_SCENARINO_DAILY_";
+					Date tims=tScenarinoDetaillists.getScenarinoAddTime();
+					DateFormat df = new SimpleDateFormat("yyyy");
+					String nowTime= df.format(tims);
+					System.out.println(nowTime);
+					tables+=nowTime+"_";
+					tables+=userId;
+					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+					scenarinoEntity.setCity_station(cityStation);
+					scenarinoEntity.setDomain(3);	//数据库中目前只有为3的数据
+					scenarinoEntity.setMode(mode);
+					scenarinoEntity.setDomainId(domainId);
+					scenarinoEntity.setsId(Integer.valueOf(tScenarinoDetaillists.getScenarinoId().toString()));
+					scenarinoEntity.setTableName(tables);
+					List<ScenarinoEntity> Lsclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+					if(!Lsclist.isEmpty()){
+							String content=Lsclist.get(0).getContent().toString();
+							JSONObject obj=JSONObject.fromObject(content);
+							Map<String,Object> standard=(Map)obj;				//总数据
+							
+//							for(String  key : standard.keySet()){					//key--年份
+//								String species=standard.get(key).toString();				
+//								JSONObject speciesobj=JSONObject.fromObject(species);		
+//								Map<String,Object> spcmap= (Map)speciesobj;			//该年份中所有物种的对象
+//								
+//								for(String  spcmapkey : spcmap.keySet()){	//物种名称
+//									String speciesData=spcmap.get(spcmapkey).toString();
+//									JSONObject species_obj=JSONObject.fromObject(speciesData);
+//									Map<String,Object> species_map=(Map)species_obj;
+//									String speciesval=species_map.get("0").toString();
+//								}
+//							}
+							
+							
+//							for(String standardTime:standard.keySet()){
+//								
+//								String species=standard.get(standardTime).toString();				
+//								JSONObject speciesobj=JSONObject.fromObject(species);	
+//								Map<String,Object> speciesmap= (Map)speciesobj;
+//								for(String species_key:speciesmap.keySet()){
+//									String speciesData=speciesmap.get(species_key).toString();
+//									JSONObject speciesDataobj=JSONObject.fromObject(speciesData);	
+//									Map<String,Object> speciesDataobjmap= (Map)speciesDataobj;
+//									
+////									System.out.println(speciesDataobjmap);
+//								}
+//							}
+							JSONObject spcmapobj=new JSONObject();
+//							JSONArray  spcmaparr=new JSONArray();
+							JSONObject standardobj=new JSONObject();
+							JSONObject standardData=new JSONObject();
+							for(String  key : standard.keySet()){							
+								String species=standard.get(key).toString();				//值
+								JSONObject speciesobj=JSONObject.fromObject(species);		
+								Map<String,Object> spcmap= (Map)speciesobj;
+								
+								for(String  spcmapkey : spcmap.keySet()){ 			//物种名称开始
+									String spcmapkeyw=(String)spcmapkey;
+									for(String standard_Time:standard.keySet()){		//键为年份
+										
+										String standard_Times=standard.get(standard_Time).toString();				
+										JSONObject speciesobjs=JSONObject.fromObject(standard_Times);	
+										Map<String,Object> speciesmap= (Map)speciesobjs;
+										for(String speciesmap_key:speciesmap.keySet()){
+											String speciesmap_keyn=(String)speciesmap_key;
+											if(speciesmap_keyn.equals(spcmapkeyw)){	
+												
+												String speciesmap_keyval=speciesmap.get(speciesmap_key).toString();				
+												JSONObject speciesobjsval=JSONObject.fromObject(speciesmap_keyval);	
+												Map<String,Object> speciesmapval= (Map)speciesobjsval;
+												
+												standardobj.put((String)standard_Time, speciesmapval.get("0"));
+											}
+										}
+										
+									} 
+									spcmapobj.put((String)spcmapkey, standardobj);
+								}//物种名称结束
+							}
+							standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);
+							objsed.put("data", standardData);
+							objsed.put("scenarinoId",tScenarinoDetaillist.get(0).getScenarinoId());
+							objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
+					}
+				}else{	//时间分辨率---逐小时开始
+					
+					String tables="T_SCENARINO_HOURLY_";
+					Date tims=tScenarinoDetaillists.getScenarinoAddTime();
+					DateFormat df = new SimpleDateFormat("yyyy");
+					String nowTime= df.format(tims);
+					System.out.println(nowTime);
+					tables+=nowTime+"_";
+					tables+=userId;
+					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+					scenarinoEntity.setCity_station(cityStation);
+					scenarinoEntity.setDomain(3);
+					scenarinoEntity.setMode(mode);
+					scenarinoEntity.setDomainId(domainId);
+					scenarinoEntity.setsId(Integer.valueOf(tScenarinoDetaillists.getScenarinoId().toString()));
+					scenarinoEntity.setTableName(tables);
+					List<ScenarinoEntity> Lsclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+					if(!Lsclist.isEmpty()){
+							String content=Lsclist.get(0).getContent().toString();
+							JSONObject obj=JSONObject.fromObject(content);
+							Map<String,Object> standard=(Map)obj;				//总数据
+							
+							JSONObject spcmapobj=new JSONObject();
+							JSONObject standardobj=new JSONObject();
+							JSONObject standardData=new JSONObject();
+							for(String  key : standard.keySet()){							
+								String species=standard.get(key).toString();				//值
+								JSONObject speciesobj=JSONObject.fromObject(species);		
+								Map<String,Object> spcmap= (Map)speciesobj;
+								
+								for(String  spcmapkey : spcmap.keySet()){ 			//物种名称开始
+									String spcmapkeyw=(String)spcmapkey;
+									for(String standard_Time:standard.keySet()){		//键为年份
+										
+										String standard_Times=standard.get(standard_Time).toString();				
+										JSONObject speciesobjs=JSONObject.fromObject(standard_Times);	
+										Map<String,Object> speciesmap= (Map)speciesobjs;
+										for(String speciesmap_key:speciesmap.keySet()){
+											String speciesmap_keyn=(String)speciesmap_key;
+											if(speciesmap_keyn.equals(spcmapkeyw)){	
+												
+												String speciesmap_keyval=speciesmap.get(speciesmap_key).toString();				
+												JSONObject speciesobjsval=JSONObject.fromObject(speciesmap_keyval);	
+												Map<String,Object> speciesmapval= (Map)speciesobjsval;
+												
+												standardobj.put((String)standard_Time, speciesmapval.get("0"));
+											}
+										}
+										
+									} 
+									spcmapobj.put((String)spcmapkey, standardobj);
+								}//物种名称结束
+							}
+							standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);
+							objsed.put("data", standardData);
+							objsed.put("scenarinoId",tScenarinoDetaillist.get(0).getScenarinoId());
+							objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
+					}
+					
+					
+					
+				}//时间分辨率---逐小时结束
+				
+			}else{
+				return AmpcResult.build(1000, "该任务没有创建情景",null);
+			}
+			return AmpcResult.build(0, "success",objsed);
+		}catch(Exception e){
+			LogUtil.getLogger().error("MissionAndScenarinoController 根据任务id以及userid查询情景有异常",e);
+			return AmpcResult.build(1000, "参数错误",null);
+		}
+	}
+	
+	
 
 }
