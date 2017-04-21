@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TPreProcessMapper;
@@ -1090,6 +1092,10 @@ public class AppraisalController {
 	@RequestMapping("Appraisal/find_standard")
 	public AmpcResult find_All_scenarino(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
 		try{
+//			Date dt0=new Date();
+//			DateFormat df0 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//			System.out.println("执行方法开始时间---"+df0.format(dt0));
+			
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			Long userId=Long.parseLong(data.get("userId").toString());			//用户id
@@ -1104,8 +1110,6 @@ public class AppraisalController {
 			tScenarinoDetail.setMissionId(missionId);
 			
 			List<TScenarinoDetail> tScenarinoDetaillist=tScenarinoDetailMapper.selectBystandard(tScenarinoDetail);
-//			tScenarinoDetaillist.get(0).getScenarinoStartDate();
-//			tScenarinoDetaillist.get(0).getScenarinoEndDate();
 			DateFormat dfs = new SimpleDateFormat("yyyy-MM-dd");
 			String startDate= dfs.format(tScenarinoDetaillist.get(0).getScenarinoStartDate());
 			String endDate= dfs.format(tScenarinoDetaillist.get(0).getScenarinoEndDate());
@@ -1133,40 +1137,15 @@ public class AppraisalController {
 					scenarinoEntity.setsId(Integer.valueOf(tScenarinoDetaillists.getScenarinoId().toString()));
 					scenarinoEntity.setTableName(tables);
 					List<ScenarinoEntity> Lsclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+//					ObjectMapper objmapp=new ObjectMapper();
+					
 					if(!Lsclist.isEmpty()){
 							String content=Lsclist.get(0).getContent().toString();
 							JSONObject obj=JSONObject.fromObject(content);
+//							ObjectMapper qwe=objmapp.readValue(obj, HashMap.class);
 							Map<String,Object> standard=(Map)obj;				//总数据
 							
-//							for(String  key : standard.keySet()){					//key--年份
-//								String species=standard.get(key).toString();				
-//								JSONObject speciesobj=JSONObject.fromObject(species);		
-//								Map<String,Object> spcmap= (Map)speciesobj;			//该年份中所有物种的对象
-//								
-//								for(String  spcmapkey : spcmap.keySet()){	//物种名称
-//									String speciesData=spcmap.get(spcmapkey).toString();
-//									JSONObject species_obj=JSONObject.fromObject(speciesData);
-//									Map<String,Object> species_map=(Map)species_obj;
-//									String speciesval=species_map.get("0").toString();
-//								}
-//							}
-							
-							
-//							for(String standardTime:standard.keySet()){
-//								
-//								String species=standard.get(standardTime).toString();				
-//								JSONObject speciesobj=JSONObject.fromObject(species);	
-//								Map<String,Object> speciesmap= (Map)speciesobj;
-//								for(String species_key:speciesmap.keySet()){
-//									String speciesData=speciesmap.get(species_key).toString();
-//									JSONObject speciesDataobj=JSONObject.fromObject(speciesData);	
-//									Map<String,Object> speciesDataobjmap= (Map)speciesDataobj;
-//									
-////									System.out.println(speciesDataobjmap);
-//								}
-//							}
 							JSONObject spcmapobj=new JSONObject();
-//							JSONArray  spcmaparr=new JSONArray();
 							JSONObject standardobj=new JSONObject();
 							JSONObject standardData=new JSONObject();
 							for(String  key : standard.keySet()){							
@@ -1203,6 +1182,10 @@ public class AppraisalController {
 							objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
 					}
 				}else{	//时间分辨率---逐小时开始
+					
+//					Date dt1=new Date();
+//					DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//					System.out.println(df1.format(dt1));
 					
 					String tables="T_SCENARINO_HOURLY_";
 					Date tims=tScenarinoDetaillists.getScenarinoAddTime();
@@ -1259,6 +1242,10 @@ public class AppraisalController {
 							objsed.put("data", standardData);
 							objsed.put("scenarinoId",tScenarinoDetaillist.get(0).getScenarinoId());
 							objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
+							
+//							Date dt3=new Date();
+//							long interval2 = (dt3.getTime() - dt1.getTime())/1000;
+//							System.out.println("逐小时两个时间相差"+interval2+"秒");
 					}
 					
 					
@@ -1268,6 +1255,12 @@ public class AppraisalController {
 			}else{
 				return AmpcResult.build(1000, "该任务没有创建情景",null);
 			}
+//			Date dt2=new Date();
+//			DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//			System.out.println("方法调用结束---"+df2.format(dt2));
+//			long interval = (dt2.getTime() - dt0.getTime())/1000;
+//			System.out.println("逐日两个时间相差"+interval+"秒");
+			
 			return AmpcResult.build(0, "success",objsed);
 		}catch(Exception e){
 			LogUtil.getLogger().error("MissionAndScenarinoController 根据任务id以及userid查询情景有异常",e);
