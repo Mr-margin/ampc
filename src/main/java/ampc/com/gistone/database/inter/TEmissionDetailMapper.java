@@ -19,9 +19,9 @@ public interface TEmissionDetailMapper {
 	 * @param map
 	 * @return
 	 */
-	List<TEmissionDetail> selectByQuery(Map map);
+	List<TEmissionDetailWithBLOBs> selectByQuery(Map map);
 
- List<TEmissionDetail> selectByEntity(TEmissionDetail record);
+ List<TEmissionDetailWithBLOBs> selectByEntity(TEmissionDetail record);
     TEmissionDetail selectBycodeAndDate(TEmissionDetail record);
     
     int deleteByScenarunoId(Long scenarunoId);
