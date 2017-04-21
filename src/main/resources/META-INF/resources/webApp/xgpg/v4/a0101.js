@@ -400,7 +400,7 @@ function bianji(type,g_num,p) {
   //console.log($("#species").val());
 
 
-  var GPserver_url = ArcGisServerUrl + "/arcgis/rest/services/ampc/" + GPserver_type + "/GPServer/" + GPserver_type;
+  var GPserver_url = ArcGisServerUrl + "/arcgis/rest/services/ampc_zrly/" + GPserver_type + "/GPServer/" + GPserver_type;
   //$.get('data-d01.json', function (data) {
   ajaxPost('/extract/data',par).success(function (data) {
 
@@ -872,7 +872,8 @@ function updata(t){
     domain:changeMsg.domain,
     missionId:changeMsg.missionId,
     species:changeMsg.species,
-    timePoint:changeMsg.rms
+    timePoint:changeMsg.rms,
+    borderType:"0"
   };
   var p1 = $.extend({
     scenarioId1:changeMsg.qj1Id,
