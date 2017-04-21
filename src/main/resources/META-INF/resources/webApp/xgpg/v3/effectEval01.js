@@ -12,7 +12,7 @@ $(function () {
 /**
  * 全局变量
  */
-var	dps_codeStation,dps_station,standarddata;;
+var	dps_codeStation,dps_station,echartsData,standardData;
 //默认显示柱状图
 var show_type = "bar";
 var changeMsg = {
@@ -30,6 +30,20 @@ var speciesArr = {
 		day: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'SO2', 'NO2', 'CO',],
 		hour: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3', 'SO2', 'NO2', 'CO']
 };
+var scenarino={
+	scenarinoId:'',
+	scenarinoName:''
+};
+//window.onresize=function () { //浏览器调整大小后，自动对所有的图进行调整
+//	try{
+//		if(es){
+//			 es.resize();
+//		}
+//		
+//		}catch(e){
+//	}
+//};
+
 
 /**
  * 设置柱状图 模板
@@ -55,7 +69,7 @@ var optionAll = {
 			show: true,
 			left: '3%',
 			right: '3%',
-			bottom: '15%',
+			bottom: '30%',
 		},
 		dataZoom:[
 		          {
@@ -165,7 +179,7 @@ function setStation(id) {
 	      findStation(changeMsg.city);
 	      //changeMsg.station = $('#station').val();
 	    } else {
-	      console.log('站点请求故障！！！')
+//	      console.log('站点请求故障！！！')
 	    }
 	  });
 	}
@@ -208,20 +222,39 @@ function setTime(s, e) {
 /**
  * 动态添加div 填数据
  */
+//var es;
+//var sceneInitialization_arr;
+//var standardDatas;
 function initEcharts() {
-  var datas = echartsData;
-  var dd = {};
-  var ds = {};
-  var tname = []; //污染物name
+//	optionAll.series=[];
+//	var datas = echartsData;
+	var echartsDatas = echartsData;
+	var standardDatas=standardData;
+	var datas= $.extend(echartsDatas,standardDatas);
+	console.log(datas);
+	var dd = {};
+	var ds = {};
+	var tname = []; //污染物name
 
 	var species = speciesArr[changeMsg.rms];
 	for(var s = 0;s<species.length;s++){
 		tname.push(species[s]);
 	}
 	$("#initEcharts").empty();
-	
+	var sceneInitialization_arr=sceneInitialization.data;
+	if(standardDatas!=undefined&&standardDatas!=null&&standardDatas!=''){
+		for(var i=0;i<sceneInitialization_arr.length;i++){
+			if(sceneInitialization_arr[i].scenarinoId==scenarino.scenarinoId){
+				break;
+			}else{
+				sceneInitialization_arr.unshift(scenarino);
+				console.log(sceneInitialization_arr);
+				break;
+			}
+		}
+	}
 	for(var i = 0;i < tname.length;i++){
-		var div = $('<div></div>');
+		var div = $('<div style="height:300px;"></div>');
 		div.attr("id",tname[i]);
 		div.addClass('echartsCZ');
 		$("#initEcharts").append(div);
@@ -235,15 +268,16 @@ function initEcharts() {
 		}	
 		option.legend.data = (function(){
 		var lenArr = [];
-		for(var i = 0;i<sceneInitialization.data.length;i++){
-		lenArr.push(sceneInitialization.data[i].scenarinoName);
+		for(var i = 0;i<sceneInitialization_arr.length;i++){
+		lenArr.push(sceneInitialization_arr[i].scenarinoName);
 		}
 		return lenArr;
 		})();
 		option.series = [];
-		for(var j = 0;j< sceneInitialization.data.length; j++){
-			var id = sceneInitialization.data[j].scenarinoId;
-			var name = sceneInitialization.data[j].scenarinoName;
+			
+		for(var j = 0;j< sceneInitialization_arr.length; j++){
+			var id = sceneInitialization_arr[j].scenarinoId;
+			var name = sceneInitialization_arr[j].scenarinoName;
 			var ttime = [];   //x轴数据
 			var ydata = [];	 //y数据	
 			var keys = [];
@@ -274,9 +308,6 @@ function initEcharts() {
 										console.log(ttime);
 										console.log(ydata);
 									}
-									
-									
-									
 								}
 							}	
 						}
@@ -309,27 +340,28 @@ function initEcharts() {
 					}  
 				}
 			}
-			option.series.push({
-				name : name, 				//情景名称  对应图例 exceptsjz
-				type : show_type, 			//图表类型   已设全局变量 show_type
-				smooth : true,
-				data : ydata     			//可变情景数据 
-			});
-		}
+		option.series.push({
+			name : name, 				//情景名称  对应图例 exceptsjz
+			type : show_type, 			//图表类型   已设全局变量 show_type
+			smooth : true,
+			data : ydata     			//可变情景数据 
+		});
+	}
     option.xAxis = [];
     option.xAxis.push({				    //x轴情景时间
       data: ttime
     });
     var es = echarts.init(document.getElementById(tname[i]));
     es.setOption(option);
+    $(window).resize(es.resize);
   }
 }
 
-var echartsData;
 /**
  * 接收/更新数据
  */
 function getdata() {
+	find_standard();
 	var url = '/Appraisal/find_appraisal';
 	var paramsName = {
     "userId": "1",
@@ -343,7 +375,7 @@ function getdata() {
 	ajaxPost(url, paramsName).success(function (res) {
     if (res.status == 0) {
     	echartsData = res.data;
-    	console.log(echartsData)
+//    	console.log(echartsData);
     	if (JSON.stringify(echartsData) == '{}' || echartsData == null) {
     		swal('暂无数据', '', 'error')
     	} else {
@@ -357,6 +389,18 @@ function getdata() {
   });
 }
 
+function ajaxPost_sy(url, parameter) {
+	  parameterPar.data = parameter;
+	  var p = JSON.stringify(parameterPar);
+	  return $.ajax('/ampc' + url, {
+	    contentType: "application/json",
+	    type: "POST",
+	    async: false,
+	    dataType: 'JSON',
+	    data: p
+	  })
+	}
+
 
 /**
  * 查询基准
@@ -365,22 +409,26 @@ function find_standard(){
 	var missionId=$("#task").val();
 	var url='/Appraisal/find_standard';
 	var paramsName = {
+			async: false,
 			"userId": "1",
 			"missionId":sceneInitialization.taskID,				//任务ID
 			"mode":changeMsg.station=='avg'?'city':'point',		//检测站点
 			"cityStation":changeMsg.station=='avg'?changeMsg.city:changeMsg.station,	//检测站点具体值
-			"datetype":changeMsg.rms
+		    "domain":$('input[name=domain]:checked').val(),		
+		    "changeType":$('input[name=changes]:checked').val(),			//变化状态
+			"datetype":changeMsg.rms			//时间分辨率
 		  };
 	ajaxPost(url, paramsName).success(function (res) {
 	    if (res.status == 0) {
-	    	standardData = res.data;
-	    	console.log(standardData);
-	      if (JSON.stringify(echartsData) == '{}' || echartsData == null) {
-//	        swal('暂无数据', '', 'error')
+	    	standardData = res.data.data;
+	    	scenarino.scenarinoId=res.data.scenarinoId;
+	    	scenarino.scenarinoName=res.data.scenarinoName;
+	      if (JSON.stringify(standardData) == '{}' || standardData == null||standardData==undefined||standardData=='') {
+	        swal('暂无基准匹配数据', '', 'error')
 	      } else {
-
+	    	  initEcharts();
 	      }
-	      initEcharts();
+	      
 	    } else {
 	      swal(res.msg, '', 'error')
 	    }
@@ -397,9 +445,9 @@ function sceneInittion(){
 	$("#task").html("");
 	var paramsName = {};
 	paramsName.userId = userId;
-	console.log(JSON.stringify(paramsName));
+//	console.log(JSON.stringify(paramsName));
 	ajaxPost('/mission/find_All_mission',paramsName).success(function(res){
-		console.log(JSON.stringify(res));
+//		console.log(JSON.stringify(res));
 		if(res.status == 0){
 			var task = "";
 			
@@ -442,51 +490,6 @@ function sceneInittion(){
   });
 }
 
-var echartsData;
-/**
- * 接收/更新数据
- */
-function getdata(){
-	
-	var url = '/Appraisal/find_appraisal';
-//	var paramsName = {"userId":"1","missionId":"393","mode":"point","time":"2016-11-27 13","cityStation":"1002A","scenarinoId":changeMsg.scenarinoId,"datetype":changeMsg.rms};
-	
-	console.log(changeMsg);
-	console.log(changeMsg.station);
-	var paramsName = {
-			"userId":"1",
-//			"missionId":"393",
-			"missionId":sceneInitialization.taskID,		//任务ID
-//			"mode":"point",
-			"mode":changeMsg.station=='avg'?'city':'point',		//检测站点
-//			"time":"2016-11-27 13",
-//			"time":changeMsg.time,
-//			"cityStation":"1002A",
-			"cityStation":changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
-//			"scenarinoId":[466,458,456],
-			"scenarinoId":changeMsg.scenarinoId,
-//			"datetype":"day"
-			"datetype":changeMsg.rms
-				};
-	
-	ajaxPost(url,paramsName).success(function(res){
-		if(res.status == 0){
-			echartsData = res.data;
-			console.log(echartsData)
-			if(JSON.stringify(echartsData) == '{}'||echartsData==null){	
-//				swal('暂无数据', '', 'error')
-			}else{
-			
-			}
-			initEcharts();
-		}else{
-			swal(res.msg, '' , 'error')
-		}
-		
-	});
-}
-
-
 
 /**
  * 根据任务ID，获取情景列表用于选择情景范围
@@ -512,7 +515,7 @@ function sceneTable(){
 		silent : true, // 刷新事件必须设置
 		contentType : "application/json", // 请求远程数据的内容类型。
 		responseHandler: function (res) {
-			console.log(res.data);
+//			console.log(res.data);
 			if(res.status == 0&&res.data!=null&&res.data!=''&&res.data!=undefined){
 				if(res.data.hasOwnProperty('rows')){
 					if(res.data.rows.length>0){
@@ -583,7 +586,7 @@ function sceneTable(){
 			columns : "glyphicon-list"
 		},
 		onLoadSuccess : function(data){
-			console.log(data);
+//			console.log(data);
     },
     onLoadError: function () {
       swal('连接错误', '', 'error');
@@ -610,13 +613,13 @@ function save_scene() {
     mag.data = data;
     vipspa.setMessage(mag);
     ls.setItem('SI', JSON.stringify(mag));
-    console.log(data)
+//    console.log(data);
     sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
     var arrId = [];//放入已选的情景id 传传
     for (i = 0; i < mag.data.length; i++) {
       arrId.push({"id": mag.data[i].scenarinoId});
     }
-    console.log(JSON.stringify(arrId))
+//    console.log(JSON.stringify(arrId));
     $("#close_scene").click();
     set_sce();
 //    find_standard();
@@ -668,7 +671,6 @@ $('#proStation').on('change', function (e) {
 	$('#station').on('change', function (e) {
 	  var station = $(e.target).val();
 	  changeMsg.station = station;
-	  find_standard();
 	  getdata();
 	});
 
@@ -681,7 +683,7 @@ $('#proStation').on('change', function (e) {
 $('input[name=rms]').on('change',function(e){
 		var rms = $(e.target).val();
 		changeMsg.rms= rms
-		console.log(rms);
+//		console.log(rms);
 		if(rms == 'hour'){
 			show_type = "line";
 			getdata();
@@ -694,9 +696,10 @@ $('input[name=rms]').on('change',function(e){
 
 
 //绝对量比较==1 相对变化==2
+var changeType;
 $('input[name=changes]').on('change', function (e) {
-	var changeType = $(e.target).val();
-	console.log(changeType);
+	changeType = $(e.target).val();
+//	console.log(changeType);
 	if (changeType == '1') {
 	
 	} else if(changeType == '2'){
@@ -707,7 +710,7 @@ $('input[name=changes]').on('change', function (e) {
 //组分展开==open  收起==close
 $('input[name=spread]').on('change', function (e) {
   var spType = $(e.target).val();
-  console.log(spType);
+//  console.log(spType);
   if (spType == 'close') {
     $("#SO4").hide();
     $("#NO3").hide();
@@ -727,9 +730,10 @@ $('input[name=spread]').on('change', function (e) {
 });
 
 //空间分布率
+var domain;
 $('input[name=domain]').on('change', function (e) {
-  var domain = $(e.target).val();
-  console.log(domain);
+	domain = $(e.target).val();
+	console.log(domain);
 });
 
 
