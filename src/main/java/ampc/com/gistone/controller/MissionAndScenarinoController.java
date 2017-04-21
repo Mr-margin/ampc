@@ -905,10 +905,11 @@ public class MissionAndScenarinoController {
 			TMissionDetail tMission=tMissionDetailMapper.selectByPrimaryKey(missionId);
 			//根据任务id查询所有情景
 			List<TScenarinoDetail> scenarlist=tScenarinoDetailMapper.selectAllByMissionId(missionId);
-			if(scenarlist.isEmpty()){
+			if(tMission.getMissionStatus().equals("3")){
 				System.out.println("任务下无情景");	
 				return AmpcResult.build(1000, "任务下无情景",null);
 			}
+
 			
 			//查询基准情景最大结束时间
 			TScenarinoDetail tsdate=new TScenarinoDetail();
@@ -1031,6 +1032,7 @@ public class MissionAndScenarinoController {
 		return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
+	
 	//查询结束日期
 	@RequestMapping("scenarino/find_endTime")
 	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
@@ -1633,10 +1635,10 @@ public class MissionAndScenarinoController {
 				
 				return AmpcResult.build(1000, "该用户没有创建任务",null);
 			}
-		return AmpcResult.build(0, "success",arr);	
+		return AmpcResult.build(0, "success",arr);
 		}catch(Exception e){
 			LogUtil.getLogger().error("MissionAndScenarinoController 根据userid查询有情景的任务有异常",e);
-			return AmpcResult.build(1000, "参数错误",null);	
+			return AmpcResult.build(1000, "参数错误",null);
 		}
 		
 		
