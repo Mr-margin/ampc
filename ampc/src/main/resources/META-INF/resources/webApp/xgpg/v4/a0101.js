@@ -16,8 +16,8 @@ var changeMsg = {
   GPserver_type:'',//
   dates:[],
   layer:1,
-  rows:30,
-  cols:30
+  rows:40,
+  cols:40
 };
 var speciesArr = {
   d: ['PM25', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'O3_AVG', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE'],
@@ -366,7 +366,17 @@ function exchangeModal() {
 }
 
 
-
+function ajaxPost_tthg(url, parameter) {
+	  parameterPar.data = parameter;
+	  var p = JSON.stringify(parameterPar);
+	  return $.ajax('http://192.168.7.25:8083/ampc' + url, {
+	    contentType: "application/json",
+	    type: "POST",
+	    async: true,
+	    dataType: 'JSON',
+	    data: p
+	  })
+	}
 
 
 function bianji(type,g_num,p) {
@@ -414,10 +424,10 @@ function bianji(type,g_num,p) {
       return;
     }
 
-    if(data.data.length > 961){
-      console.log("length-> "+ data.data.length);
-      return;
-    }
+//    if(data.data.length > 961){
+//      console.log("length-> "+ data.data.length);
+//      return;
+//    }
 
     console.log(g_num+'~~~'+data.data.length);
 
@@ -459,7 +469,7 @@ function bianji(type,g_num,p) {
     featureset.features = features;
     featureset.exceededTransferLimit = false;
     
-    console.log(JSON.stringify(featureset));
+//    console.log(JSON.stringify(featureset));
 
     //console.log((new Date().getTime() - v1) + "生成数据");
 
