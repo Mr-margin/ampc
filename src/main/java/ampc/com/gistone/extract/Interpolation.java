@@ -62,7 +62,7 @@ public class Interpolation {
 	    }
 	
 	    if(subx < 0 || subx > col - 1 || suby < 0 || suby > row - 1 || x2 < 0 || x2 > col - 1 || y2 < 0 || y2 > row - 1) {
-	      return 0;
+	      return -9999;
 	
 	    } else {
 	

@@ -28,6 +28,7 @@ public class ExtractDataController {
 		try {
 			String calcType = String.valueOf(data.get("calcType"));
 			String showType = String.valueOf(data.get("showType"));
+			int borderType = Integer.valueOf(String.valueOf(data.get("borderType")));
 			int userId = Integer.valueOf(String.valueOf(data.get("userId")));
 			int domainId = Integer.valueOf(String.valueOf(data.get("domainId")));
 			int missionId = Integer.valueOf(String.valueOf(data.get("missionId")));
@@ -36,6 +37,7 @@ public class ExtractDataController {
 			String timePoint = String.valueOf(data.get("timePoint"));
 			
 			ExtractRequestParams params = new ExtractRequestParams(calcType, showType, userId, domainId, missionId, domain, species, timePoint);
+			params.setBorderType(borderType);
 			int scenarioId1 = Integer.valueOf(String.valueOf(data.get("scenarioId1")));
 			params.setScenarioId1(scenarioId1);
 			if(!"show".equals(calcType)) {
