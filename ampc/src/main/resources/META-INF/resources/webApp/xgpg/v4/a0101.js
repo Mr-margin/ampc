@@ -137,13 +137,15 @@ require(
     app.gLyr = new dong.GraphicsLayer({"id": "gLyr"});
     app.mapList[0].addLayer(app.gLyr);
 
+    app.shengx = 0;
+    
     //多个地图互相联动效果
     var source = -1;
     app.mapList[0].on("extent-change", function (event) {
       if (source == -1) {
         source = 0;
         app.mapList[1].setExtent(event.extent);
-
+        app.shengx = 0;//当前生效的地图位置
         //0
         updata();
 
@@ -156,7 +158,7 @@ require(
       if (source == -1) {
         source = 0;
         app.mapList[0].setExtent(event.extent);
-
+        app.shengx = 1;//当前生效的地图位置
         //1
         updata();
 
@@ -371,18 +373,24 @@ function bianji(type,g_num,p) {
   var par = p;
   var v1 = new Date().getTime();
 
-  if(g_num == 0){
-    par.xmax = app.mapList[0].extent.xmax;
-    par.xmin = app.mapList[0].extent.xmin;
-    par.ymax = app.mapList[0].extent.ymax;
-    par.ymin = app.mapList[0].extent.ymin;
-  }else{
-
-    par.xmax = app.mapList[1].extent.xmax;
-    par.xmin = app.mapList[1].extent.xmin;
-    par.ymax = app.mapList[1].extent.ymax;
-    par.ymin = app.mapList[1].extent.ymin;
-  }
+//  if(g_num == 0){
+//    par.xmax = app.mapList[0].extent.xmax;
+//    par.xmin = app.mapList[0].extent.xmin;
+//    par.ymax = app.mapList[0].extent.ymax;
+//    par.ymin = app.mapList[0].extent.ymin;
+//  }else{
+//
+//    par.xmax = app.mapList[1].extent.xmax;
+//    par.xmin = app.mapList[1].extent.xmin;
+//    par.ymax = app.mapList[1].extent.ymax;
+//    par.ymin = app.mapList[1].extent.ymin;
+//  }
+  
+  
+	par.xmax = app.mapList[app.shengx].extent.xmax;
+	par.xmin = app.mapList[app.shengx].extent.xmin;
+	par.ymax = app.mapList[app.shengx].extent.ymax;
+	par.ymin = app.mapList[app.shengx].extent.ymin;
 
   //return;
   //var GPserver_type = "co_daily";
@@ -450,6 +458,8 @@ function bianji(type,g_num,p) {
     featureset.spatialReference = new dong.SpatialReference({wkid: 3857});
     featureset.features = features;
     featureset.exceededTransferLimit = false;
+    
+    console.log(JSON.stringify(featureset));
 
     //console.log((new Date().getTime() - v1) + "生成数据");
 
@@ -481,8 +491,10 @@ function bianji(type,g_num,p) {
           //jobstatus = type + '处理中...';
           break;
         case 'esriJobSucceeded':
-          jobstatus = '--'+ type + '--处理完成...';
+          jobstatus = '--'+ g_num + '--处理完成...';
           console.log((new Date().getTime() - v1) + jobstatus);
+      	zmblockUI("#mapDiv0", "end");
+    	zmblockUI("#mapDiv1", "end");
           break;
       }
     }, function (error) {
@@ -849,6 +861,8 @@ $('#eTime').on('change', function (e) {//选择平均后的时间
 
 /*数据更新*/
 function updata(t){
+	zmblockUI("#mapDiv0", "start");
+	zmblockUI("#mapDiv1", "start");
   var parameter = {
     userId:userId,
     layer:changeMsg.layer,
