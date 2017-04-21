@@ -21,7 +21,7 @@ import ampc.com.gistone.database.model.TEsNative;
 
 public class codeTransformUtil {
 	/**
-	 * code转换
+	 * code转换14转99
 	 * @param codelist
 	 * @param tEsNative
 	 * @return
@@ -48,8 +48,8 @@ public class codeTransformUtil {
 			if(codestr.equals(codee)){
 				String newcode=codemap.get(codee);
 				String[] newcodeArray=null;
-				strArray=newcode.split(",");
-				for(String onecode:strArray){
+				newcodeArray=newcode.split(",");
+				for(String onecode:newcodeArray){
 					list.add(Long.valueOf(onecode.toString()));
 					havelist.add(Long.valueOf(onecode.toString()));
 					havelist.add(code);
