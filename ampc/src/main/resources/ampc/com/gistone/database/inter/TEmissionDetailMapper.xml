@@ -51,7 +51,7 @@
  		<if test="scenarinoId != null" >
           and SCENARINO_ID=#{scenarinoId,jdbcType=OTHER}
        </if>
-       order by Emission_Date,code
+       order by Emission_Date,CODE
   </select>
   <!-- 根据条件查询所有的市级code -->
   <select id="selectCityCode" resultType="java.lang.String" parameterType="hashMap" >
