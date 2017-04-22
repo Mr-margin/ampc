@@ -52,8 +52,8 @@ parameterType="ampc.com.gistone.database.model.TEmissionDetail" >
       <if test="emissionDetails != null" >
        and EMISSION_DETAILS = #{emissionDetails,jdbcType=CLOB}
       </if>
-      <if test="codeLevel != null" >
-       and CODELEVEL = #{codeLevel,jdbcType=VARCHAR}
+      <if test="codelevel != null" >
+       and CODELEVEL = #{codelevel,jdbcType=VARCHAR}
       </if>
       <if test="emissionId != null" >
        and EMISSION_ID = #{emissionId,jdbcType=DECIMAL}
@@ -64,8 +64,8 @@ parameterType="ampc.com.gistone.database.model.TEmissionDetail" >
       <if test="emissionType != null" >
        and EMISSION_TYPE = #{emissionType,jdbcType=VARCHAR}
       </if>
-      <if test="scenarunoId != null" >
-       and SCENARINO_ID = #{scenarunoId,jdbcType=DECIMAL}
+      <if test="scenarinoId != null" >
+       and SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
       </if>
   </select>
   <select id="selectBycodeAndDate" 
