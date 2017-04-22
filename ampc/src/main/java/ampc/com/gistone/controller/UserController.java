@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.CaptchaUtil;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.LogUtil;
+import ampc.com.gistone.util.RegUtil;
 
 /**
  * 用户控制类
@@ -73,22 +75,35 @@ public class UserController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			//用户账号
-			long userAccount=Long.parseLong(data.get("userAccount").toString());
+			String userAccount=data.get("userAccount").toString();
+			if(!RegUtil.CheckAccount(userAccount)){
+				LogUtil.getLogger().error("UserController  账号出现非法字符!");
+				return AmpcResult.build(1002, "账号出现非法字符!");
+			}
 			//密码
 			String passWord=data.get("passWord").toString();
+			//查看当前账号是否存在
 			Integer isExist=tUserMapper.checkUserId(userAccount);
+			//判断如果存在
 			if(isExist>0){
+				//判断当前用户是否有效
 				Integer isOn=tUserMapper.checkUserIsON(userAccount);
+				//判断用户是否有效
 				if(isOn>0){
+					//添加条件 
 					Map map=new HashMap();
 					map.put("userAccount", userAccount);
 					map.put("passWord", passWord);
 					//查询所有的用户基本信息
 					Map userMap=tUserMapper.login(map);
+					//如果用户账号和密码匹配
 					if(userMap!=null){
+						//将用户的一些基本信息 放到session
 						HttpSession session = request.getSession();
 						session.setAttribute("user", userMap);
+						//添加Log
 						LogUtil.getLogger().info("UserController  登录成功！");
+						//返回结果
 						return AmpcResult.ok(1);
 					}else{
 						LogUtil.getLogger().error("UserController  用户和密码不匹配!");
@@ -119,7 +134,6 @@ public class UserController {
 	public AmpcResult get_sessionInfo(HttpServletRequest request,HttpServletResponse response) throws Exception{
 		try{
 			// 设置跨域
-
 			ClientUtil.SetCharsetAndHeader(request, response);
 			HttpSession session = request.getSession();
 			//验证session不为空
