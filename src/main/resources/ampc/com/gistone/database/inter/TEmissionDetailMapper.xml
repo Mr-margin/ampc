@@ -31,6 +31,67 @@
   <sql id="Blob_Column_List" >
     EMISSION_DETAILS, MEASURE_REDUCE
   </sql>
+  
+  
+  
+  <select id="selectByEntity" resultMap="ResultMapWithBLOBs" 
+
+parameterType="ampc.com.gistone.database.model.TEmissionDetail" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from T_EMISSION_DETAIL
+    where 1=1
+     <if test="emissionDate != null" >
+       and EMISSION_DATE = #{emissionDate,jdbcType=DATE}
+      </if>
+      <if test="code != null" >
+       and CODE = #{code,jdbcType=VARCHAR}
+      </if>
+      <if test="emissionDetails != null" >
+       and EMISSION_DETAILS = #{emissionDetails,jdbcType=CLOB}
+      </if>
+      <if test="codeLevel != null" >
+       and CODELEVEL = #{codeLevel,jdbcType=VARCHAR}
+      </if>
+      <if test="emissionId != null" >
+       and EMISSION_ID = #{emissionId,jdbcType=DECIMAL}
+       </if>
+       <if test="measureReduce != null" >
+       and MEASURE_REDUCE = #{measureReduce,jdbcType=CLOB}
+      </if>
+      <if test="emissionType != null" >
+       and EMISSION_TYPE = #{emissionType,jdbcType=VARCHAR}
+      </if>
+      <if test="scenarunoId != null" >
+       and SCENARINO_ID = #{scenarunoId,jdbcType=DECIMAL}
+      </if>
+  </select>
+  <select id="selectBycodeAndDate" 
+
+resultType="ampc.com.gistone.database.model.TEmissionDetail" 
+
+parameterType="ampc.com.gistone.database.model.TEmissionDetail" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from T_EMISSION_DETAIL
+    where CODE = #{code,jdbcType=VARCHAR} and EMISSION_DATE = #
+
+{emissionDate,jdbcType=DATE}
+    </select>
+    <delete id="deleteByScenarunoId" parameterType="java.lang.Long" >
+    delete from T_EMISSION_DETAIL
+    where SCENARINO_ID = #{scenarunoId,jdbcType=DECIMAL} and EMISSION_TYPE ='2'
+  </delete>
+  
+  
+  
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
