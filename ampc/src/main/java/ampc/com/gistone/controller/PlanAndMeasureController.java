@@ -1386,9 +1386,9 @@ public class PlanAndMeasureController {
 			// 将json对象转换成Java对象
 			MeasureContentUtil mcu = (MeasureContentUtil) JSONObject.toBean(jsonobject, MeasureContentUtil.class, cmap);
 			//写入IP
-			 InetAddress ia=null;
-			 ia=ia.getLocalHost();
-	         String localip=ia.getHostAddress();
+			InetAddress ia=null;
+			ia=ia.getLocalHost();
+	        String localip=ia.getHostAddress();
 			result.setServerPath(localip+":8082/ampc");
 			// 写入BigIndex
 			result.setBigIndex(mcu.getBigIndex());
@@ -1691,9 +1691,9 @@ public class PlanAndMeasureController {
 							// 将json对象转换成Java对象
 							MeasureContentUtil mcu = (MeasureContentUtil) JSONObject.toBean(jsonobject, MeasureContentUtil.class, cmap);
 							//写入IP
-							 InetAddress ia=null;
-							 ia=ia.getLocalHost();
-					         String localip=ia.getHostAddress();
+							InetAddress ia=null;
+							ia=ia.getLocalHost();
+					        String localip=ia.getHostAddress();
 							result.setServerPath(localip+":8082/ampc");
 							// 写入BigIndex
 							result.setBigIndex(mcu.getBigIndex());
