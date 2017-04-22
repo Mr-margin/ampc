@@ -193,7 +193,7 @@ function setStation(id) {
 function findStation(code){
 	dps_station = ajaxPost_sy('/Site/find_Site',{
     userId:userId,
-    siteCode:code
+    siteCode:code.substr(0, 4)
   }).success(function(res){
     $('#station').empty();
     $('#station').append($('<option value="avg">平均</option>'));
@@ -221,7 +221,6 @@ function setTime(s, e) {
   }
   changeMsg.time = $('#sTime-d').val() + ' 00'
 }
-
 
 
 /**
