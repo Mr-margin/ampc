@@ -60,7 +60,7 @@ public class BaseSaveUtil {
 			Date emissiondate=sdf.parse(sdes);
 			Map noemission=(Map) mapses.get(datess);//获取emission的值	
 			Map<String,Object> map=(Map<String,Object>) noemission.get("emission");
-
+			
 			
 //			Map<String, Object> newmap = codeTransformUtil
 //					.codeEmission(map, tEsNative);
@@ -185,14 +185,105 @@ public class BaseSaveUtil {
 				
 				  }
 			 for(String sss:zcode.keySet()){
+		 TEmissionDetailWithBLOBs t= zcode.get(sss);
+		 	String ssss=t.getMeasureReduce();
 				 list.add(zcode.get(sss));
 			 }
+			
+			
+			 
+			 
+			 List<TEmissionDetailWithBLOBs> lastlist=new ArrayList<TEmissionDetailWithBLOBs>();
+			 Iterator<TEmissionDetailWithBLOBs> itl = list.iterator();
+			 while(itl.hasNext()){
+				 TEmissionDetailWithBLOBs tem= itl.next();
+				 JSONObject jsod=JSONObject.fromObject(tem.getEmissionDetails());
+				 Map<String,Map<String,Object>> addmaps= (Map<String, Map<String,Object>>)jsod;
+				 Iterator<Entry<String,Map<String,Object>>> iters=addmaps.entrySet().iterator(); 
+				 Map<String, Object> spcse=new HashMap();
+				 Map<String,Map<String,Object>> Lastmaps= new HashMap();
+				 BigDecimal BC=new BigDecimal(0);
+				 BigDecimal CO=new BigDecimal(0);
+				 BigDecimal NH3=new BigDecimal(0);
+				 BigDecimal NOx=new BigDecimal(0);
+				 BigDecimal SO2=new BigDecimal(0);
+				 BigDecimal PM10=new BigDecimal(0);
+				 BigDecimal VOC=new BigDecimal(0);
+				 BigDecimal PMC=new BigDecimal(0);
+				 BigDecimal PMFINE=new BigDecimal(0);
+				 BigDecimal PM25=new BigDecimal(0);
+				 BigDecimal OC=new BigDecimal(0);
+ 
+				 while(iters.hasNext()){
+					 Entry<String,Map<String,Object>> sp= iters.next();
+					 Map<String,Object> spl= sp.getValue();
+					 Map<String,Object> newmap=ADDSpc(spl);
+					 Lastmaps.put(sp.getKey(), newmap);	
+					    BC=BC.add(new BigDecimal(newmap.get("BC").toString()));
+					    CO=CO.add(new BigDecimal(newmap.get("CO").toString()));
+					    NH3=NH3.add(new BigDecimal(newmap.get("NH3").toString()));
+					    NOx=NOx.add(new BigDecimal(newmap.get("NOx").toString()));
+					    SO2=SO2.add(new BigDecimal(newmap.get("SO2").toString()));
+					    PM10=PM10.add(new BigDecimal(newmap.get("PM10").toString()));
+					    VOC=VOC.add(new BigDecimal(newmap.get("VOC").toString()));
+					    PMC=PMC.add(new BigDecimal(newmap.get("PMC").toString()));
+					    PMFINE=PMFINE.add(new BigDecimal(newmap.get("PMFINE").toString()));
+					    PM25=PM25.add(new BigDecimal(newmap.get("PM25").toString()));
+					    OC=OC.add(new BigDecimal(newmap.get("OC").toString()));
+						
+				 }
+				    tem.setBc(BC);
+					tem.setCo(CO);
+					tem.setNh3(NH3);
+					tem.setNox(NOx);
+					tem.setSo2(SO2);
+					tem.setPm10(PM10);
+					tem.setVoc(VOC);
+					tem.setPmc(PMC);
+					tem.setPmfine(PMFINE);
+					tem.setPm25(PM25);
+					tem.setOc(OC);
+				 JSONObject ssds=JSONObject.fromObject(Lastmaps);
+					tem.setEmissionDetails(ssds.toString());
+				 lastlist.add(tem);
+			 }
 			 LogUtil.getLogger().error("数据转换结束"+new Date());
-			return list;
+			return lastlist;
 			
 		}catch(Exception e){
 				e.printStackTrace();
 				return null;
 			}
+		}
+		
+		public static Map<String,Object> ADDSpc(Map spcse){
+			if(!spcse.keySet().contains("PM10")&&!spcse.keySet().contains("PMFINE")&&!spcse.keySet().contains("PMC")){
+			Map<String,Object> admap=new HashMap<String, Object>();
+			BigDecimal CO=new BigDecimal(spcse.get("CO").toString());
+			BigDecimal NH3=new BigDecimal(spcse.get("NH3").toString());
+			BigDecimal NOx=new BigDecimal(spcse.get("NOx").toString());
+			BigDecimal SO2=new BigDecimal(spcse.get("SO2").toString());
+			BigDecimal PM10more=new BigDecimal(spcse.get("PM10more").toString());
+			BigDecimal VOC=new BigDecimal(spcse.get("VOC").toString());
+			BigDecimal CO2=new BigDecimal(spcse.get("CO2").toString());
+			BigDecimal PM25=new BigDecimal(spcse.get("PM25").toString()); 
+			BigDecimal PMcoarse=new BigDecimal(spcse.get("PMcoarse").toString()); 
+			BigDecimal BC=new BigDecimal(spcse.get("BC").toString()); 
+			BigDecimal OC=new BigDecimal(spcse.get("OC").toString());
+			admap.put("CO", CO);
+			admap.put("NH3", NH3);
+			admap.put("NOx", NOx);
+			admap.put("SO2", SO2);
+			admap.put("VOC", VOC);
+			admap.put("PM25", PM25);
+			admap.put("BC", BC);
+			admap.put("OC", OC);
+			admap.put("PM10", PM25.add(PMcoarse));		 
+			admap.put("PMFINE", (PM25.subtract(BC)).subtract(OC));
+			admap.put("PMC", PMcoarse);
+			
+			return admap;
+			}
+			return spcse;
 		}
 }
