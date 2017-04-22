@@ -363,7 +363,6 @@ public class EchartsController {
 			//讲数据保留4位有效数字
 			for(int i=0;i<puList.size();i++){
 				double value=puList.get(i).getValue();
-				value=CastNumUtil.significand(value, 4);
 				value=CastNumUtil.decimal(value, 4);
 				puList.get(i).setValue(value);
 			}
