@@ -138,4 +138,6 @@ public interface TMissionDetailMapper {
 	 * @date 2017年4月17日 下午2:56:35
 	 */
 	Long selectMissionType(Long missionId);
+	
+	TMissionDetail selectMaxMission();
 }
