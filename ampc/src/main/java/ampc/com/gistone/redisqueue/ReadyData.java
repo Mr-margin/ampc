@@ -9,6 +9,7 @@
 package ampc.com.gistone.redisqueue;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 
 
 
@@ -1139,11 +1141,12 @@ public class ReadyData {
 	 * @param sourceid
 	 * @return   
 	 * Map<String,Object>  获取emis的数据
+	 * @throws UnknownHostException 
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年3月17日 下午2:19:53
 	 */
-	public Map<String, String> getEmis(Long missionId,Long scenarinoId,Long userId,Integer scenarinoType) {
+	public Map<String, String> getEmis(Long missionId,Long scenarinoId,Long userId,Integer scenarinoType) throws UnknownHostException {
 		LogUtil.getLogger().info("开始计算减排");
 		//通过情景ID获取清单ID
 		Long sourceid = tMissionDetailMapper.getsourceid(missionId);
