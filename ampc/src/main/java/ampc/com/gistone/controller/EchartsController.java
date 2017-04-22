@@ -82,9 +82,13 @@ public class EchartsController {
 			//根据情景Id获取到情景对象
 			TScenarinoDetail tsd=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
 			//情景的开始时间
-			Date startDate=tsd.getScenarinoStartDate();
+			Date sDate=tsd.getScenarinoStartDate();
 			//情景的结束时间
-			Date endDate=tsd.getScenarinoEndDate();
+			Date eDate=tsd.getScenarinoEndDate();
+			//进行日期的转换
+			String startDate=DateUtil.DATEtoString(sDate, "yyyy-MM-dd");
+			//进行日期的转换
+			String endDate=DateUtil.DATEtoString(eDate, "yyyy-MM-dd");
 			//创建日期结果集合
 			List<String> dateResult=new ArrayList<String>();
 			//创建基准结果集合
@@ -110,7 +114,7 @@ public class EchartsController {
 				basisSql="SELECT EMISSION_DATE,SUM("+stainType+") STAINTYPESUM"
 						+ " FROM T_EMISSION_DETAIL"
 						+ " WHERE EMISSION_TYPE=1"
-						+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+						+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 						+ " AND CODE LIKE '"+code+"'"
 						+ " GROUP BY EMISSION_DATE"
 						+ " ORDER BY EMISSION_DATE";
@@ -119,7 +123,7 @@ public class EchartsController {
 				jplSql="SELECT EMISSION_DATE,SUM("+stainType+") STAINTYPESUM"
 						+ " FROM T_EMISSION_DETAIL"
 						+ " WHERE EMISSION_TYPE=2"
-						+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+						+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 						+ " AND CODE LIKE '"+code+"'"
 						+ " AND SCENARINO_ID="+scenarinoId+""
 						+ " GROUP BY EMISSION_DATE"
@@ -129,7 +133,7 @@ public class EchartsController {
 				StringBuffer basisSb=new StringBuffer("SELECT EMISSION_DATE,SUM("+stainType+") STAINTYPESUM"
 						+ " FROM T_EMISSION_DETAIL"
 						+ " WHERE EMISSION_TYPE=1"
-						+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+						+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 						+ " AND (");
 				//循环所有的行政区划 进行sql拼接
 				for(int i=0;i<codesSplit.length;i++){
@@ -149,7 +153,7 @@ public class EchartsController {
 				StringBuffer jplSb=new StringBuffer("SELECT EMISSION_DATE,SUM("+stainType+") STAINTYPESUM"
 						+ " FROM T_EMISSION_DETAIL"
 						+ " WHERE EMISSION_TYPE=2"
-						+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+						+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 						+ " AND (");
 				//循环所有的行政区划 进行sql拼接
 				for(int i=0;i<codesSplit.length;i++){
@@ -258,7 +262,7 @@ public class EchartsController {
 //				basisSql="SELECT EMISSION_DATE,CODE,"+stainType+""
 //						+ " FROM T_EMISSION_DETAIL"
 //						+ " WHERE EMISSION_TYPE=1"
-//						+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+//						+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 //						+ " AND CODE LIKE '"+code+"'"
 //						+ " ORDER BY EMISSION_DATE,CODE";
 //				
@@ -266,7 +270,7 @@ public class EchartsController {
 //				jplSql="SELECT EMISSION_DATE,CODE,"+stainType+""
 //						+ " FROM T_EMISSION_DETAIL"
 //						+ " WHERE EMISSION_TYPE=2"
-//						+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+//						+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 //						+ " AND CODE LIKE '"+code+"'"
 //						+ " AND SCENARINO_ID="+scenarinoId+""
 //						+ " ORDER BY EMISSION_DATE,CODE";
@@ -275,7 +279,7 @@ public class EchartsController {
 //				StringBuffer basisSb=new StringBuffer("SELECT EMISSION_DATE,CODE,"+stainType+""
 //						+ " FROM T_EMISSION_DETAIL"
 //						+ " WHERE EMISSION_TYPE=1"
-//						+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+//						+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 //						+ " AND (");
 //				//循环所有的行政区划 进行sql拼接
 //				for(int i=0;i<codesSplit.length;i++){
@@ -295,7 +299,7 @@ public class EchartsController {
 //				StringBuffer jplSb=new StringBuffer("SELECT EMISSION_DATE,CODE,"+stainType+""
 //						+ " FROM T_EMISSION_DETAIL"
 //						+ " WHERE EMISSION_TYPE=2"
-//						+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+//						+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 //						+ " AND (");
 //				//循环所有的行政区划 进行sql拼接
 //				for(int i=0;i<codesSplit.length;i++){
@@ -464,9 +468,9 @@ public class EchartsController {
 			//查询类型
 			Integer type=Integer.valueOf(data.get("type").toString());
 			//情景的开始时间
-			Date startDate=DateUtil.StrToDate1(data.get("startDate").toString());
+			String startDate=data.get("startDate").toString();
 			//情景的结束时间
-			Date endDate=DateUtil.StrToDate1(data.get("endDate").toString());
+			String endDate=data.get("endDate").toString();
 			//创建结果集合
 			List<PieUtil> puList=new ArrayList<PieUtil>();
 			//对传入的code进行拆分 
@@ -484,7 +488,7 @@ public class EchartsController {
 				jplSql="SELECT EMISSION_DETAILS,MEASURE_REDUCE"
 						+ " FROM T_EMISSION_DETAIL"
 						+ " WHERE EMISSION_TYPE=2"
-						+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+						+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 						+ " AND CODE LIKE '"+code+"'"
 						+ " AND SCENARINO_ID="+scenarinoId+""
 						+ " ORDER BY EMISSION_DATE,CODE";
@@ -493,7 +497,7 @@ public class EchartsController {
 				StringBuffer jplSb=new StringBuffer("SELECT EMISSION_DETAILS,MEASURE_REDUCE"
 						+ " FROM T_EMISSION_DETAIL"
 						+ " WHERE EMISSION_TYPE=2"
-						+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+						+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 						+ " AND (");
 				//循环所有的行政区划 进行sql拼接
 				for(int i=0;i<codesSplit.length;i++){
@@ -605,9 +609,13 @@ public class EchartsController {
 			//根据情景Id获取到情景对象
 			TScenarinoDetail tsd=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
 			//情景的开始时间
-			Date startDate=tsd.getScenarinoStartDate();
+			Date sDate=tsd.getScenarinoStartDate();
 			//情景的结束时间
-			Date endDate=tsd.getScenarinoEndDate();
+			Date eDate=tsd.getScenarinoEndDate();
+			//进行日期的转换
+			String startDate=DateUtil.DATEtoString(sDate, "yyyy-MM-dd");
+			//进行日期的转换
+			String endDate=DateUtil.DATEtoString(eDate, "yyyy-MM-dd");
 			// 行政区划代码
 			String codes = data.get("code").toString();;
 			// 行政区划等级
@@ -642,7 +650,7 @@ public class EchartsController {
 					codeSql="SELECT CODE"
 							+ " FROM T_EMISSION_DETAIL"
 							+ " WHERE EMISSION_TYPE=2"
-							+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+							+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 							+ " AND CODE LIKE '"+code+"'"
 							+ " AND SCENARINO_ID="+scenarinoId+""
 							+ " GROUP BY CODE"
@@ -653,7 +661,7 @@ public class EchartsController {
 					codeSql="SELECT CODE"
 							+ " FROM T_EMISSION_DETAIL"
 							+ " WHERE EMISSION_TYPE=2"
-							+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+							+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 							+ " AND CODE LIKE '"+code+"'"
 							+ " AND SCENARINO_ID="+scenarinoId+""
 							+ " AND CODELEVEL=3"
@@ -665,7 +673,7 @@ public class EchartsController {
 						+ " VOC,SUM(CO) CO,SUM(NH3) NH3,SUM(BC) BC,SUM(OC) OC,SUM(PMFINE) PMFINE,SUM(PMC) PMC"
 						+ " FROM T_EMISSION_DETAIL"
 						+ " WHERE EMISSION_TYPE=1"
-						+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+						+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 						+ " AND CODE LIKE '"+code+"'"
 						+ " GROUP BY CODE"
 						+ " ORDER BY CODE";
@@ -675,7 +683,7 @@ public class EchartsController {
 						+ " VOC,SUM(CO) CO,SUM(NH3) NH3,SUM(BC) BC,SUM(OC) OC,SUM(PMFINE) PMFINE,SUM(PMC) PMC"
 						+ " FROM T_EMISSION_DETAIL"
 						+ " WHERE EMISSION_TYPE=2"
-						+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+						+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 						+ " AND CODE LIKE '"+code+"'"
 						+ " AND SCENARINO_ID="+scenarinoId+""
 						+ " GROUP BY CODE"
@@ -686,7 +694,7 @@ public class EchartsController {
 						+ " VOC,SUM(CO) CO,SUM(NH3) NH3,SUM(BC) BC,SUM(OC) OC,SUM(PMFINE) PMFINE,SUM(PMC) PMC"
 						+ " FROM T_EMISSION_DETAIL"
 						+ " WHERE EMISSION_TYPE=1"
-						+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+						+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 						+ " AND (");
 				//循环所有的行政区划 进行sql拼接
 				for(int i=0;i<codesSplit.length;i++){
@@ -707,7 +715,7 @@ public class EchartsController {
 						+ " VOC,SUM(CO) CO,SUM(NH3) NH3,SUM(BC) BC,SUM(OC) OC,SUM(PMFINE) PMFINE,SUM(PMC) PMC"
 						+ " FROM T_EMISSION_DETAIL"
 						+ " WHERE EMISSION_TYPE=2"
-						+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+						+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 						+ " AND (");
 				//循环所有的行政区划 进行sql拼接
 				for(int i=0;i<codesSplit.length;i++){
@@ -731,7 +739,7 @@ public class EchartsController {
 					StringBuffer codeSb=new StringBuffer("SELECT CODE"
 							+ " FROM T_EMISSION_DETAIL"
 							+ " WHERE EMISSION_TYPE=2"
-							+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+							+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 							+ " AND (");
 					//循环所有的行政区划 进行sql拼接
 					for(int i=0;i<codesSplit.length;i++){
@@ -754,7 +762,7 @@ public class EchartsController {
 					StringBuffer codeSb=new StringBuffer("SELECT CODE"
 							+ " FROM T_EMISSION_DETAIL"
 							+ " WHERE EMISSION_TYPE=2"
-							+ " AND EMISSION_DATE BETWEEN "+startDate+" AND "+endDate+""
+							+ " AND EMISSION_DATE BETWEEN TO_DATE('"+startDate+"','yyyy-MM-dd') AND TO_DATE('"+endDate+"','yyyy-MM-dd')"
 							+ " AND (");
 					//循环所有的行政区划 进行sql拼接
 					for(int i=0;i<codesSplit.length;i++){
