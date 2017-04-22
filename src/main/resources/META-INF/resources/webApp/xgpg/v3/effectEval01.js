@@ -12,16 +12,20 @@ $(function () {
 /**
  * 全局变量
  */
-var	dps_codeStation,dps_station,echartsData,standardData;
+var	dps_codeStation,	//设置站点信息
+	dps_station,		//查询站点
+	echartsData,		//接受更新echarts数据
+	standardData,		//基准数据
+	allMission;			//放置站点信息
 //默认显示柱状图
 var show_type = "bar";
 var changeMsg = {
-		pro: '',//站点选择
+		pro: '',			//站点选择
 		city: '',
 		station: '',
-		rms: 'day',//时间分辨率
-		scenarinoId: [],//选择的情景Id数组
-		scenarinoName: [],//选择的情景名称数组
+		rms: 'day',			//时间分辨率
+		scenarinoId: [],	//选择的情景Id数组
+		scenarinoName: [],	//选择的情景名称数组
 };
 //逐小时显示 AQI PM25 ,SO4 NO3 NH4 BC OM PMFINE, PM10 O3 SO2 NO2 CO 
 //逐日显示 AQI PM25 ,SO4 NO3 NH4 BC OM PMFINE, PM10 O3_8_max O3_1_max SO2 NO2 CO 
@@ -140,13 +144,14 @@ function initNowSession(){
 	setStation(sceneInitialization.taskID);
 	setTime(sceneInitialization.s, sceneInitialization.e);
 	$.when(dps_codeStation,dps_station).then(function () {
+		console.log(changeMsg.station);
 		getdata();
 	});
 	
 }
 
 //放置站点信息
-var allStation = {};
+//var allStation = {};
 /**
  * 设置站点信息
  */
@@ -155,7 +160,7 @@ function setStation(id) {
 	  $('#cityStation').empty();
 	  $('#station').empty();
 	  var url = '/Site/find_code';
-	  dps_codeStation = ajaxPost(url, {
+	  dps_codeStation = ajaxPost_sy(url, {
 	    userId: userId,
 	    //missionId: id
 	  }).success(function (res) {
@@ -184,9 +189,9 @@ function setStation(id) {
 	  });
 	}
 
-/*查询站点*/
+/**查询站点*/
 function findStation(code){
-  dps_station = ajaxPost('/Site/find_Site',{
+	dps_station = ajaxPost_sy('/Site/find_Site',{
     userId:userId,
     siteCode:code
   }).success(function(res){
@@ -199,8 +204,8 @@ function findStation(code){
   })
 }
 
-/*设置时间*/
-/*只限输入毫秒数*/
+/**设置时间*/
+/**只限输入毫秒数*/
 function setTime(s, e) {
   s = moment(s - 0);
   e = moment(e - 0);
@@ -223,22 +228,23 @@ function setTime(s, e) {
  * 动态添加div 填数据
  */
 function initEcharts() {
+	$("#initEcharts").empty();
 	var echartsDatas = echartsData;
 	var standardDatas=standardData;
 	if(standardDatas==undefined){	
-		return;
+		standardDatas='';
+		var datas= $.extend(echartsDatas,standardDatas);
+	}else{
+		var datas= $.extend(echartsDatas,standardDatas);//合并json对象
 	}
-	var datas= $.extend(echartsDatas,standardDatas);//合并json对象
-//	console.log(datas);
 	var dd = {};
 	var ds = {};
-	var tname = []; //污染物name
+	var tname = []; 	//污染物name
 
 	var species = speciesArr[changeMsg.rms];
 	for(var s = 0;s<species.length;s++){
 		tname.push(species[s]);
 	}
-	$("#initEcharts").empty();
 	var sceneInitialization_arr=sceneInitialization.data;
 	if(standardDatas!=undefined&&standardDatas!=null&&standardDatas!=''){
 		for(var i=0;i<sceneInitialization_arr.length;i++){
@@ -246,7 +252,6 @@ function initEcharts() {
 				break;
 			}else{
 				sceneInitialization_arr.unshift(scenarino);
-//				console.log(sceneInitialization_arr);
 				break;
 			}
 		}
@@ -276,17 +281,17 @@ function initEcharts() {
 		for(var j = 0;j< sceneInitialization_arr.length; j++){
 			var id = sceneInitialization_arr[j].scenarinoId;
 			var name = sceneInitialization_arr[j].scenarinoName;
-			var ttime = [];   //x轴数据
-			var ydata = [];	 //y数据	
+			var ttime = [];		//x轴数据
+			var ydata = [];		//y轴数据	
 			var keys = [];
 			var vals = [];
 			if(changeMsg.rms == 'day'){
-				for (var prop in datas) {  
+				for (var prop in datas) {  		//prop--情景id-507     datas--json对象
 					if (datas.hasOwnProperty(prop)) {   
-						if(prop == id){ //循环不同的情景id
-							for ( var pr in datas[prop] ) {
+						if(prop == id){ 		//循环不同的情景id
+							for ( var pr in datas[prop] ) {		//无规律循环该ID下的pr--物种
 								if (datas[prop].hasOwnProperty(pr)) {
-									if(pr == tname[i]){
+									if(pr == tname[i]){			//判断是否含有该物种
 										var ss = datas[prop][pr];
 										for( var s in ss ) {
 											keys.push(s);
@@ -297,14 +302,11 @@ function initEcharts() {
 //												ydata.push(dd[s]);	//值的集合
 //											}
 										}
-										keys = keys.sort();
-//										console.log(keys);
-										for(var m=0; m<keys.length; m++){
+										keys = keys.sort();		//.sort()函数重新排序
+										for(var m=0; m<keys.length; m++){	//根据键取值
 											ttime.push(keys[m]);
 											ydata.push(ss[keys[m]]);
 										}
-//										console.log(ttime);
-//										console.log(ydata);
 									}
 								}
 							}	
@@ -312,15 +314,20 @@ function initEcharts() {
 					}  
 				}
 			}else{
+				var arr = Object.keys(datas);
+				console.log(arr.length);
 				for (var prop in datas) {  
 					if (datas.hasOwnProperty(prop)) {   
-						if(prop == id){ //循环不同的情景id
+						if(prop == id){ 	//循环不同的情景id
 							for ( var pr in datas[prop] ) {
 								if (datas[prop].hasOwnProperty(pr)) {
-									if(pr == tname[i]){
+									if(pr == tname[i]){		//一个物种开始
 										var ss = datas[prop][pr];
 										for(var h in ss){
 											if(ss.hasOwnProperty(h)){
+												keys.push(h);	//拼接X轴数据
+//											}
+//										}
 												for(var y in ss[h]){
 													if(ss[h].hasOwnProperty(y)){
 														var tt = [];
@@ -331,7 +338,16 @@ function initEcharts() {
 												}
 											}
 										}
-									}
+												keys = keys.sort();
+												for(var m=0; m<keys.length; m++){
+													var arr = Object.keys(ss[keys[m]]);
+													console.log(arr.length);
+													for(var z=0;z<arr.length;z++){
+														ydata.push(ss[keys[m]][z]);
+													}
+												}
+											
+									}//一个物种结束
 								}
 							}	
 						}
@@ -347,7 +363,7 @@ function initEcharts() {
 	}
     option.xAxis = [];
     option.xAxis.push({				    //x轴情景时间
-      data: ttime
+    	data: ttime.sort()				//修改数据排序
     });
     var es = echarts.init(document.getElementById(tname[i]));
     es.setOption(option);
@@ -391,18 +407,18 @@ function ajaxPost_sy(url, parameter) {
 	  return $.ajax('/ampc' + url, {
 	    contentType: "application/json",
 	    type: "POST",
-	    cache : true,
-	    async: false,
+//	    cache : true,		//缓存读取数据较慢
+	    async: false,		//同步
 	    dataType: 'JSON',
 	    data: p
 	  });
 }
 
-
 /**
  * 查询基准
  * */
 function find_standard(){
+	console.log($('#station').val());
 	var missionId=$("#task").val();
 	var url='/Appraisal/find_standard';
 	var paramsName = {
@@ -443,18 +459,6 @@ function sceneInittion(){
 	ajaxPost('/mission/find_All_mission',paramsName).success(function(res){
 		if(res.status == 0){
 			var task = "";
-			
-//			/*测试数据*/
-//		      res.data = [
-//		        {
-//		          missionEndDate: 1480258800000,
-//		          missionId: 393,
-//		          missionName: "测试任务",
-//		          missionStartDate: 1479571200000,
-//		        }
-//		      ]
-//		      /*测试数据 end*/
-			
 			$.each(res.data, function(k, vol) {
 				allMission[vol.missionId] = vol;
 				if(sceneInitialization){
@@ -468,8 +472,7 @@ function sceneInittion(){
 				}
 			});
 			$("#task").html(task);
-//			$("#Initialization").modal();//初始化模态框显示
-        $("#Initialization").modal({backdrop: 'static', keyboard: false});
+			$("#Initialization").modal({backdrop: 'static', keyboard: false});	//初始化模态框显示
         sceneTable();
       } 
 //		else {
@@ -488,27 +491,26 @@ function sceneInittion(){
  * 根据任务ID，获取情景列表用于选择情景范围
  */
 function sceneTable(){
-	$("#sceneTableId").bootstrapTable('destroy');//销毁现有表格数据
+	$("#sceneTableId").bootstrapTable('destroy');	//销毁现有表格数据
 	
 	$("#sceneTableId").bootstrapTable({
 		method : 'POST',
 		url : '/ampc/scenarino/find_All_scenarino',
 		dataType : "json",
 		iconSize : "outline",
-		clickToSelect : true,// 点击选中行
-		pagination : false, // 在表格底部显示分页工具栏
-		striped : true, // 使表格带有条纹
+		clickToSelect : true,	// 点击选中行
+		pagination : false, 	// 在表格底部显示分页工具栏
+		striped : true, 		// 使表格带有条纹
 		queryParams : function(params) {
 			var data = {};
 			data.userId = userId;
 			data.missionId = $("#task").val();
 			return JSON.stringify({"token": "","data": data});
 		},
-		queryParamsType : "limit", // 参数格式,发送标准的RESTFul类型的参数请求
-		silent : true, // 刷新事件必须设置
-		contentType : "application/json", // 请求远程数据的内容类型。
+		queryParamsType : "limit", 			// 参数格式,发送标准的RESTFul类型的参数请求
+		silent : true, 						// 刷新事件必须设置
+		contentType : "application/json", 	// 请求远程数据的内容类型。
 		responseHandler: function (res) {
-//			console.log(res.data);
 			if(res.status == 0&&res.data!=null&&res.data!=''&&res.data!=undefined){
 				if(res.data.hasOwnProperty('rows')){
 					if(res.data.rows.length>0){
@@ -536,38 +538,6 @@ function sceneTable(){
 			else{
 				return res;
 			}
-			
-//			/*测试使用 start*/
-//	      var data = {
-//	        rows:[]
-//	      }
-//	      data.rows = [
-//	        {
-//	          "scenarinoId": 456,					//情景ID
-//	          "scenarinoName": "情景1",				//情景名称
-//	          "scenType": "1",						//情景描述
-//	          "scenarinoStartDate": 1479571200000,	//开始时间
-//	          "scenarinoEndDate": 1480258800000		//结束时间
-//	        },
-//	        {
-//	          "scenarinoId": 458,
-//	          "scenarinoName": "情景2",
-//	          "scenType": "1",
-//	          "scenarinoStartDate": 1479571200000,
-//	          "scenarinoEndDate": 1480258800000
-//	        },
-//	        {
-//	          "scenarinoId": 466,
-//	          "scenarinoName": "情景3",
-//	          "scenType": "1",
-//	          "scenarinoStartDate": 1479571200000,
-//	          "scenarinoEndDate": 1480258800000
-//	        },
-//	      ];
-//	      return data.rows
-//
-//	      /*测试使用 end*/
-			
 		},
 		onClickRow : function(row, $element) {
 			$('.success').removeClass('success');
@@ -579,7 +549,7 @@ function sceneTable(){
 			columns : "glyphicon-list"
 		},
 		onLoadSuccess : function(data){
-//			console.log(data);
+			
     },
     onLoadError: function () {
       swal('连接错误', '', 'error');
@@ -594,7 +564,7 @@ function save_scene() {
 	standardData = '';		//清空基准数据
 	scenarino.scenarinoId='';
 	scenarino.scenarinoName='';
-	var row = $('#sceneTableId').bootstrapTable('getSelections');//获取所有选中的情景数据
+	var row = $('#sceneTableId').bootstrapTable('getSelections');	//获取所有选中的情景数据
 	if (row.length > 0) {
 		var mag = {};
 		mag.id = "sceneInitialization";
@@ -609,9 +579,8 @@ function save_scene() {
 		mag.data = data;
 		vipspa.setMessage(mag);
 		ls.setItem('SI', JSON.stringify(mag));
-//    	console.log(data);
-		sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
-		var arrId = [];//放入已选的情景id 传传
+		sceneInitialization = jQuery.extend(true, {}, mag);		//复制数据
+		var arrId = [];		//放入已选的情景id 传传
 		for (i = 0; i < mag.data.length; i++) {
 			arrId.push({"id": mag.data[i].scenarinoId});
 		}
@@ -714,8 +683,8 @@ $('input[name=spread]').on('change', function (e) {
 		$("#BC").hide();
 		$("#OM").hide();
 		$("#PMFINE").hide();
-		$(e.target.parentNode).text("组分展开");
-		$(e.target).val('open');
+//		$(e.target.parentNode).text("组分展开");
+//		$(e.target).val('open');
 	} else {
 		$("#SO4").show();
 		$("#NO3").show();
@@ -723,8 +692,8 @@ $('input[name=spread]').on('change', function (e) {
 		$("#BC").show();
 		$("#OM").show();
 		$("#PMFINE").show();
-		$(e.target.parentNode).text("组分收起");
-		$(e.target).val('close');
+//		$(e.target.parentNode).text("组分收起");
+//		$(e.target).val('close');
 	}
 
 });
