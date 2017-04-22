@@ -294,8 +294,10 @@ function initEcharts() {
 									if(pr == tname[i]){			//判断是否含有该物种
 										var ss = datas[prop][pr];
 										for( var s in ss ) {
-											keys.push(s);
-											vals.push(ss[s]);
+											if(ss.hasOwnProperty(s)){
+												keys.push(s);
+//												vals.push(ss[s]);
+											}
 //											if(ss.hasOwnProperty(s)){  //循环数据 放数据
 //												dd[s] = ss[s];	//值
 //												ttime.push(s);	//键
@@ -323,30 +325,19 @@ function initEcharts() {
 								if (datas[prop].hasOwnProperty(pr)) {
 									if(pr == tname[i]){		//一个物种开始
 										var ss = datas[prop][pr];
-										for(var h in ss){
+										for(var h in ss){		//一个物种中的所有数据开始
 											if(ss.hasOwnProperty(h)){
 												keys.push(h);	//拼接X轴数据
-//											}
-//										}
-												for(var y in ss[h]){
-													if(ss[h].hasOwnProperty(y)){
-														var tt = [];
-														tt = ss[h][y];
-														ttime.push(h+' '+y);
-														ydata.push(ss[h][y]);
-													}
-												}
+											}
+										}	//一个物种中的所有数据结束
+										keys = keys.sort();
+										for(var m=0; m<keys.length; m++){		//得到所有年份
+											var arr = Object.keys(ss[keys[m]]);	//得到所有年份的键
+											for(var z=0;z<arr.length;z++){
+												ttime.push(keys[m]+' '+z);		//名称
+												ydata.push(ss[keys[m]][z]);		//数据
 											}
 										}
-												keys = keys.sort();
-												for(var m=0; m<keys.length; m++){
-													var arr = Object.keys(ss[keys[m]]);
-													console.log(arr.length);
-													for(var z=0;z<arr.length;z++){
-														ydata.push(ss[keys[m]][z]);
-													}
-												}
-											
 									}//一个物种结束
 								}
 							}	
@@ -363,7 +354,7 @@ function initEcharts() {
 	}
     option.xAxis = [];
     option.xAxis.push({				    //x轴情景时间
-    	data: ttime.sort()				//修改数据排序
+    	data: ttime						//修改数据排序
     });
     var es = echarts.init(document.getElementById(tname[i]));
     es.setOption(option);
