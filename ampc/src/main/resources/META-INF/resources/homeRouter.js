@@ -111,8 +111,8 @@ $.when(dps_um).then(function(){
 
 
         '/kqzlyb_v1': {      //空气质量预报-预报检验
-          templateUrl: 'a.html',
-          controller: ''
+          templateUrl: 'webApp/kqzlyb/v1/forecastTest.html',
+          controller: 'webApp/kqzlyb/v1/forecastTest.js'
         },
         '/kqzlyb_v2': {      //空气质量预报-时间序列
           templateUrl: 'webApp/kqzlyb/v2/timeArray.html',
@@ -123,9 +123,11 @@ $.when(dps_um).then(function(){
           controller: ''
         },
         '/kqzlyb_v4': {      //空气质量预报-垂直分布
-          templateUrl: 'a.html',
-          controller: ''
+          templateUrl: 'webApp/kqzlyb/v4/verticalSpread02.html',
+          controller: 'webApp/kqzlyb/v4/verticalSpread02.js'
         },
+
+
 
 
         '/userSZ':{//用户设置
