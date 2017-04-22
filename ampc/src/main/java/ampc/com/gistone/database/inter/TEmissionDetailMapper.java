@@ -1,10 +1,20 @@
 package ampc.com.gistone.database.inter;
 
+import java.util.List;
+import java.util.Map;
+
 import ampc.com.gistone.database.model.TEmissionDetail;
 import ampc.com.gistone.database.model.TEmissionDetailWithBLOBs;
 
 public interface TEmissionDetailMapper {
-    int deleteByPrimaryKey(Long emissionId);
+	
+
+	List<TEmissionDetailWithBLOBs> selectByEntity(TEmissionDetail record);
+    
+	TEmissionDetail selectBycodeAndDate(TEmissionDetail record);
+    
+    int deleteByScenarunoId(Long scenarunoId);
+	int deleteByPrimaryKey(Long emissionId);
 
     int insert(TEmissionDetailWithBLOBs record);
 
