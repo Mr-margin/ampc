@@ -1600,6 +1600,7 @@ body.full-screen #header {
 }
 
 #Route_conter{
+    background-color: #fff;
     position: absolute;
     top: 0;
     left: 15px;
