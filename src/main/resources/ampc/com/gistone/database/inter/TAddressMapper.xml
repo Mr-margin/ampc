@@ -22,12 +22,7 @@
     select ADDRESS_NAME from T_ADDRESS where ADDRESS_CODE=#{_parameter,jdbcType=VARCHAR}
   </select>
 
- <!-- 根据省级Code查询所有的市级Code -->
- <select id="selectCityCode" resultType="java.lang.String" parameterType="java.lang.String" >
-    select ADDRESS_CODE from T_ADDRESS 
-    	where ADDRESS_CODE like #{_parameter,jdbcType=VARCHAR}
-    	and ADDRESS_LEVEL=2
-  </select>
+
 
 
 
