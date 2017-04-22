@@ -18,7 +18,7 @@ public class RegUtil {
 	 */
 	public static boolean CheckAccount(String account){
 	    //账号验证 必须为数字和字母还有下划线
-	    String regEx = "/^[a-zA-Z0-9_]{6,15}$/";
+	    String regEx = "^[a-zA-Z0-9_]{6,15}$";
 	    // 编译正则表达式
 	    Pattern pattern = Pattern.compile(regEx);
 	    // 忽略大小写的写法
