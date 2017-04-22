@@ -148,19 +148,19 @@ function setStation(id) {
   $('#proStation').empty();
   $('#cityStation').empty();
   $('#station').empty();
-  var url = '/Site/find_code';
+  var url = '/Site/find_codes';
   dps_codeStation = ajaxPost(url, {
     userId: userId,
-    //missionId: id
+    MissionId: id
   }).success(function (res) {
     if (res.status == 0) {
       allCode = res.data;
       for (var pro in allCode) {
-        $('#proStation').append($('<option value="' + allCode[pro].code + '">' + allCode[pro].name + '</option>'))
+        $('#proStation').append($('<option value="' + pro + '">' + allCode[pro].name + '</option>'))
       }
-      var cityStation = allCode[$('#proStation').val()].station;
+      var cityStation = allCode[$('#proStation').val()].city;
       for (var city in cityStation) {
-        $('#cityStation').append($('<option value="' + cityStation[city].code + '">' + cityStation[city].name + '</option>'))
+        $('#cityStation').append($('<option value="' + city + '">' + cityStation[city] + '</option>'))
       }
 
       //var station = cityStation[$('#cityStation').val()].station;
@@ -314,7 +314,7 @@ function sceneInittion() {
     console.log(JSON.stringify(res));
     if (res.status == 0) {
       if(res.data || res.data.length>0){
-    	  //if(false){
+        //if(false){
         var task = "";
 
 
@@ -483,8 +483,8 @@ function save_scene() {
     /*数据准备完毕，进行初始化页面*/
     initialize();
   }else{
-	  swal('暂无数据', '', 'error');
-	  $("#close_scene").click();
+    swal('暂无数据', '', 'error');
+    $("#close_scene").click();
   }
 }
 
@@ -512,10 +512,10 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
 $('#proStation').on('change', function (e) {
   var pro = $(e.target).val();
   changeMsg.pro = pro;
-  $('#cityStation').empty()
-  var cityStation = allCode[pro].station;
+  $('#cityStation').empty();
+  var cityStation = allCode[pro].city;
   for (var city in cityStation) {
-    $('#cityStation').append($('<option value="' + cityStation[city].code + '">' + cityStation[city].name + '</option>'))
+    $('#cityStation').append($('<option value="' + city + '">' + cityStation[city] + '</option>'))
   }
   changeMsg.city = $('#cityStation').val();
   findStation(changeMsg.city);
@@ -649,7 +649,6 @@ function updata() {
     })
   });
 }
-
 
 
 
