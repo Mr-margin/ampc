@@ -9,8 +9,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,10 +74,10 @@ public class EMissionController {
 	 * @return
 	 */
 	@RequestMapping("save_emission")
-	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
+	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED)
 	public AmpcResult save_emission(
 			@RequestBody Map<String, Object> requestDate, Long jobId,
-			HttpServletRequest request, HttpServletResponse response) {
+			HttpServletRequest request, HttpServletResponse response){
 		try {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Map> data = (Map) requestDate.get("data");
@@ -103,7 +105,7 @@ public class EMissionController {
 				//删除原有本情景的减排结果
 				 tEmissionDetailMapper.deleteByScenarunoId(scenarionId);
 				// 循环data的value
-				for (Map<String, Object> datas : data.values()) {
+				for (Map<String, Object> datas : data.values()){
 					String emdate = datas.get("date").toString();// 获取date值
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					Date emissiondate = sdf.parse(emdate);
@@ -113,7 +115,8 @@ public class EMissionController {
 																// 转化为Map集合
 					List<String> codelist = new ArrayList<String>();
 					Map<String, Object> newmap = codeTransformUtil
-							.codeTransformEmission(map, tEsNative);
+							.codeTransformEmission(map, tEsNative);//99转14
+					
 					for (String code : newmap.keySet()) {// 根据key进行遍历
 						if (!codelist.contains(code)) {// 去除重复省市重复存储
 							TEmissionDetailWithBLOBs temission = new TEmissionDetailWithBLOBs();
@@ -131,18 +134,77 @@ public class EMissionController {
 							} else {
 								temission.setCodelevel("3");
 							}
-							Map somemap = (Map) newmap.get(code);// 获取emission的值
-							JSONObject someobj = JSONObject.fromObject(somemap);
-							Map<String, Object> lastMap = (Map) someobj;// 将emission的值
-																		// 转化为Map集合
-
+							Map<String, Object> lastMap = (Map) newmap.get(code);// 获取emission的值
 							temission.setEmissionType("2");
 							temission.setScenarinoId(scenarionId);
+							
+							
+							JSONObject jsod=JSONObject.fromObject(lastMap.get("category").toString());
+							 Map<String,Map<String,Object>> addmaps= (Map<String, Map<String,Object>>)jsod;
+							 Iterator<Entry<String,Map<String,Object>>> iters=addmaps.entrySet().iterator(); 
+							 Map<String, Object> spcse=new HashMap();
+							 Map<String,Map<String,Object>> Lastmaps= new HashMap();
+							 BigDecimal BC=new BigDecimal(0);
+							 BigDecimal CO=new BigDecimal(0);
+							 BigDecimal NH3=new BigDecimal(0);
+							 BigDecimal NOx=new BigDecimal(0);
+							 BigDecimal SO2=new BigDecimal(0);
+							 BigDecimal PM10=new BigDecimal(0);
+							 BigDecimal VOC=new BigDecimal(0);
+							 BigDecimal PMC=new BigDecimal(0);
+							 BigDecimal PMFINE=new BigDecimal(0);
+							 BigDecimal PM25=new BigDecimal(0);
+							 BigDecimal OC=new BigDecimal(0); 
+			 
+							 while(iters.hasNext()){
+								 Entry<String,Map<String,Object>> sp= iters.next();
+								 Map<String,Object> spl= sp.getValue();
+								 Map<String,Object> newmapss=BaseSaveUtil.ADDSpc(spl);
+								 Lastmaps.put(sp.getKey(), newmapss);
+								    BC=BC.add(new BigDecimal(newmapss.get("BC").toString()));
+								    CO=CO.add(new BigDecimal(newmapss.get("CO").toString()));
+								    NH3=NH3.add(new BigDecimal(newmapss.get("NH3").toString()));
+								    NOx=NOx.add(new BigDecimal(newmapss.get("NOx").toString()));
+								    SO2=SO2.add(new BigDecimal(newmapss.get("SO2").toString()));
+								    PM10=PM10.add(new BigDecimal(newmapss.get("PM10").toString()));
+								    VOC=VOC.add(new BigDecimal(newmapss.get("VOC").toString()));
+								    PMC=PMC.add(new BigDecimal(newmapss.get("PMC").toString()));
+								    PMFINE=PMFINE.add(new BigDecimal(newmapss.get("PMFINE").toString()));
+								    PM25=PM25.add(new BigDecimal(newmapss.get("PM25").toString()));
+								    OC=OC.add(new BigDecimal(newmapss.get("OC").toString()));
+										
+							 }
+							 
+							 temission.setBc(BC);
+							 temission.setCo(CO);
+							 temission.setNh3(NH3);
+							 temission.setNox(NOx);
+							 temission.setSo2(SO2);
+							 temission.setPm10(PM10);
+							 temission.setVoc(VOC);
+							 temission.setPmc(PMC);
+							 temission.setPmfine(PMFINE);
+							 temission.setPm25(PM25);
+							 temission.setOc(OC);
+							 
+							 JSONObject ssds=JSONObject.fromObject(Lastmaps);
+							 temission.setEmissionDetails(ssds.toString());
 
-								temission.setMeasureReduce(lastMap.get("op")
-										.toString());
-								temission.setEmissionDetails(lastMap.get(
-										"category").toString());
+							 JSONObject ops=JSONObject.fromObject(lastMap.get("op").toString());
+							 Map<String,Map<String,Object>>opmapss= (Map<String, Map<String,Object>>)ops;
+							 Iterator<Entry<String,Map<String,Object>>> opitr=opmapss.entrySet().iterator(); 
+							 Map<String,Map<String,Object>> Lastmapss= new HashMap();
+							 while(opitr.hasNext()){
+								 Entry<String,Map<String,Object>> opsp= opitr.next();
+								 Map<String,Object> opspl= opsp.getValue();
+								 Map<String,Object> newmapss=BaseSaveUtil.ADDSpc(opspl);
+								 Lastmapss.put(opsp.getKey(), newmapss);	
+										
+							 }
+							 JSONObject ssdss=JSONObject.fromObject(Lastmapss);
+							 temission.setMeasureReduce(ssdss.toString());
+						
+								
 								a += tEmissionDetailMapper
 										.insertSelective(temission);// 保存数据
 							b++;// 计数器
@@ -679,7 +741,7 @@ public class EMissionController {
 	
 	@RequestMapping("/base")
 	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
-	public String base() throws IOException{
+	public List base() throws IOException{
 		
 //		Map sss=new HashMap();
 //		Map ss=new HashMap();
@@ -700,8 +762,8 @@ public class EMissionController {
 		LogUtil.getLogger().error("完成数据读取"+new Date());
 		Map map=(Map) obj.get("data");
 	     List sse= BaseSaveUtil.save_baseemission(map);
-	     System.out.println(sse);
+	     JdbcInsert.main(sse);
 	     LogUtil.getLogger().error("数据添加完成时间"+new Date());
-		return "ok";
+		return sse;
 	}
 }
