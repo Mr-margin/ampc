@@ -775,3 +775,39 @@ button[disabled],.btn[disabled]{
   border: none;
   border-top: 1px solid #D1F0FF;
 }
+
+
+/*空气质量预报 预报检验 start*/
+.mnDataShow table tbody tr:nth-child(2n+1) td{
+  background-color : #d2deef;
+}
+
+.mnDataShow table tbody tr:nth-child(2n) td{
+  background-color : #eaeff7;
+}
+
+.mnDataShow table{
+  width: 100%;
+  text-align: center;
+  line-height: 35px;
+  border-collapse: initial;
+  border-spacing: 2px;
+}
+.mnDataShow table th{
+  text-align: center;
+}
+.mnDataShow table th{
+  min-width: 100px;
+  color: #fff;
+  background-color: #5b9bd5;
+}
+.mnDataShow{
+  width: 50%;
+}
+.mnDataShow .mnName{
+  min-width: 418px;
+  text-align: center;
+  line-height: 30px;
+  font-size: 17px;
+}
+/*空气质量预报 预报检验 end*/
