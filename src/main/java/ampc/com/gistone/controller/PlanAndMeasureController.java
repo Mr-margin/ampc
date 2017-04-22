@@ -1,5 +1,7 @@
 package ampc.com.gistone.controller;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -1359,8 +1361,9 @@ public class PlanAndMeasureController {
 	 * @author WangShanxi
 	 * @param pmIds 预案措施Id集合
 	 * @param jpList 结果集合
+	 * @throws UnknownHostException 
 	 */
-	public void tempCalc(List<Long> pmIds ,List<JPResult> jpList) throws SQLException{
+	public void tempCalc(List<Long> pmIds ,List<JPResult> jpList) throws SQLException, UnknownHostException{
 		// 根据拆分后得到的id查询所有的预案措施对象
 		List<Map> pmList = tPlanMeasureMapper.getPmByIds(pmIds);
 		// 循环每一个预案措施对象 拼接想要的数据放入JPResult帮助类集合中
@@ -1382,6 +1385,11 @@ public class PlanAndMeasureController {
 			cmap.put("regionIds", ArrayList.class);
 			// 将json对象转换成Java对象
 			MeasureContentUtil mcu = (MeasureContentUtil) JSONObject.toBean(jsonobject, MeasureContentUtil.class, cmap);
+			//写入IP
+			 InetAddress ia=null;
+			 ia=ia.getLocalHost();
+	         String localip=ia.getHostAddress();
+			result.setServerPath(localip+":8082/ampc");
 			// 写入BigIndex
 			result.setBigIndex(mcu.getBigIndex());
 			// 写入SmallIndex
