@@ -12,6 +12,14 @@ import java.util.Map;
  * @date 2017年3月7日
  */
 public class JPResult {
+	//IP
+	private String serverPath;
+	public String getServerPath() {
+		return serverPath;
+	}
+	public void setServerPath(String serverPath) {
+		this.serverPath = serverPath;
+	}
 	//预案措施Id+预案名称 用来作为唯一表示
 	private String groupName;
 	//行业名称
