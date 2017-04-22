@@ -27,10 +27,9 @@ tj_paramsName.wz = $('#hz_wrw').val();//默认的物种
 tj_paramsName.code = "0";//code默认为0
 tj_paramsName.name = "全部区域";//name默认为情景名称
 tj_paramsName.codeLevel = 1;
-
 /**
  * 时间戳转成日期格式
- * @param nS
+ * @param n
  * @returns
  */
 function getLocalTime(nS) {     
@@ -158,6 +157,22 @@ function baizhu_jianpai(gis_paramsName, sh_type){
 	ajaxPost('/find_reduceEmission',gis_paramsName).success(function(res){
 //		console.log(JSON.stringify(res));
 		if(res.status == 0){
+			
+			var valMax = 0;//数据中的最大值
+			$.each(res.data, function(k, col) {
+				if(col > valMax){
+					valMax = col;
+				}
+			});
+			if(parseInt(valMax)<=0){//如果最大值小于等于0，地图不显示
+				if ( app.hasOwnProperty("legend") ) {
+			    	app.legend.destroy();
+			    	dong.domConstruct.destroy(dojo.byId("legend"));
+			    	$("#legendWrapper").hide();
+			  	}
+				return;
+			}
+			
 			var data_id = "";
 			var tegd = "";
 			
@@ -254,7 +269,10 @@ function createLegend(level) {
   	if ( app.hasOwnProperty("legend") ) {
     	app.legend.destroy();
     	dong.domConstruct.destroy(dojo.byId("legend"));
+    	$("#legendWrapper").hide();
   	}
+  	$("#legendWrapper").show();//预备可能第一次就没有图例。或者已经被隐藏，每次显示
+  	$("#legendWrapper").children(".tip").remove();//清空标题，否则会存留到下一个图例中
   	//创建一个新的div图例
   	var legendDiv = dong.domConstruct.create("div", {
   		id: parseInt(Math.random(1000) * 1000 + 1)
@@ -291,40 +309,146 @@ function calcBreaks(data){
 			valMax = col;
 		}
 	});
-	var i = 1;
-	while(true){
-		var ttrt = valMax/i;//最大值按比例减少，第一次不变，以后每次减一个零
-		if(ttrt < 640){//最大值除以i，如果结果小于640，可以进入循环
-			switch (true) {
-				case ttrt < 80 :
-					breaks = [0,(10*i),(20*i),(30*i),(40*i),(50*i),(60*i),(70*i),(80*i)];
-					break;
-				case ttrt < 96 :
-					breaks = [0,(12*i),(24*i),(36*i),(48*i),(60*i),(72*i),(84*i),(96*i)];
-					break;
-				case ttrt < 120 :
-					breaks = [0,(15*i),(30*i),(45*i),(60*i),(75*i),(90*i),(105*i),(120*i)];
-					break;
-				case ttrt < 160 :
-					breaks = [0,(20*i),(40*i),(60*i),(80*i),(100*i),(120*i),(140*i),(160*i)];
-					break;
-				case ttrt < 240 :
-					breaks = [0,(30*i),(60*i),(90*i),(120*i),(150*i),(180*i),(210*i),(240*i)];
-					break;
-				case ttrt < 320 :
-					breaks = [0,(40*i),(80*i),(120*i),(160*i),(200*i),(240*i),(280*i),(320*i)];
-					break;
-				case ttrt < 400 :
-					breaks = [0,(50*i),(100*i),(150*i),(200*i),(250*i),(300*i),(350*i),(400*i)];
-					break;
-				default :
-					breaks = [0,(80*i),(160*i),(240*i),(320*i),(400*i),(480*i),(560*i),(640*i)];
-			}
-			break;
-		}else{
-			i = i*10;
+	
+	
+	if(valMax > 64 && valMax <= 640){
+		switch (true) {
+			case valMax < 80 :
+				breaks = [0,10,20,30,40,50,60,70,80];
+				break;
+			case valMax < 96 :
+				breaks = [0,12,24,36,48,60,72,84,96];
+				break;
+			case valMax < 120 :
+				breaks = [0,15,30,45,60,75,90,105,120];
+				break;
+			case valMax < 160 :
+				breaks = [0,20,40,60,80,100,120,140,160];
+				break;
+			case valMax < 240 :
+				breaks = [0,30,60,90,120,150,180,210,240];
+				break;
+			case valMax < 320 :
+				breaks = [0,40,80,120,160,200,240,280,320];
+				break;
+			case valMax < 400 :
+				breaks = [0,50,100,150,200,250,300,350,400];
+				break;
+			default :
+				breaks = [0,80,160,240,320,400,480,560,640];
 		}
+	}else if(valMax <= 64){
+		
+		var i = 10;
+		while(true){
+			var ttrt = valMax*i;//最大值按比例减少，第一次不变，以后每次减一个零
+			if(ttrt > 64){
+				switch (true) {
+					case ttrt < 80 :
+						breaks = [0,(10/i),(20/i),(30/i),(40/i),(50/i),(60/i),(70/i),(80/i)];
+						break;
+					case ttrt < 96 :
+						breaks = [0,(12/i),(24/i),(36/i),(48/i),(60/i),(72/i),(84/i),(96/i)];
+						break;
+					case ttrt < 120 :
+						breaks = [0,(15/i),(30/i),(45/i),(60/i),(75/i),(90/i),(105/i),(120/i)];
+						break;
+					case ttrt < 160 :
+						breaks = [0,(20/i),(40/i),(60/i),(80/i),(100/i),(120/i),(140/i),(160/i)];
+						break;
+					case ttrt < 240 :
+						breaks = [0,(30/i),(60/i),(90/i),(120/i),(150/i),(180/i),(210/i),(240/i)];
+						break;
+					case ttrt < 320 :
+						breaks = [0,(40/i),(80/i),(120/i),(160/i),(200/i),(240/i),(280/i),(320/i)];
+						break;
+					case ttrt < 400 :
+						breaks = [0,(50/i),(100/i),(150/i),(200/i),(250/i),(300/i),(350/i),(400/i)];
+						break;
+					default :
+						breaks = [0,(80/i),(160/i),(240/i),(320/i),(400/i),(480/i),(560/i),(640/i)];
+				}
+				break;
+			}else{
+				i = i*10;
+			}
+			
+		}
+		
+	}else if(valMax > 640){
+		
+		var i = 10;
+		while(true){
+			var ttrt = valMax/i;
+			if(ttrt <= 640){
+				switch (true) {
+					case ttrt < 80 :
+						breaks = [0,(10*i),(20*i),(30*i),(40*i),(50*i),(60*i),(70*i),(80*i)];
+						break;
+					case ttrt < 96 :
+						breaks = [0,(12*i),(24*i),(36*i),(48*i),(60*i),(72*i),(84*i),(96*i)];
+						break;
+					case ttrt < 120 :
+						breaks = [0,(15*i),(30*i),(45*i),(60*i),(75*i),(90*i),(105*i),(120*i)];
+						break;
+					case ttrt < 160 :
+						breaks = [0,(20*i),(40*i),(60*i),(80*i),(100*i),(120*i),(140*i),(160*i)];
+						break;
+					case ttrt < 240 :
+						breaks = [0,(30*i),(60*i),(90*i),(120*i),(150*i),(180*i),(210*i),(240*i)];
+						break;
+					case ttrt < 320 :
+						breaks = [0,(40*i),(80*i),(120*i),(160*i),(200*i),(240*i),(280*i),(320*i)];
+						break;
+					case ttrt < 400 :
+						breaks = [0,(50*i),(100*i),(150*i),(200*i),(250*i),(300*i),(350*i),(400*i)];
+						break;
+					default :
+						breaks = [0,(80*i),(160*i),(240*i),(320*i),(400*i),(480*i),(560*i),(640*i)];
+				}
+				break;
+			}else{
+				i = i*10;
+			}
+		}
+		
 	}
+	
+//	var i = 1;
+//	while(true){
+//		var ttrt = valMax/i;//最大值按比例减少，第一次不变，以后每次减一个零
+//		if(ttrt < 640){//最大值除以i，如果结果小于640，可以进入循环
+//			switch (true) {
+//				case ttrt < 80 :
+//					breaks = [0,(10*i),(20*i),(30*i),(40*i),(50*i),(60*i),(70*i),(80*i)];
+//					break;
+//				case ttrt < 96 :
+//					breaks = [0,(12*i),(24*i),(36*i),(48*i),(60*i),(72*i),(84*i),(96*i)];
+//					break;
+//				case ttrt < 120 :
+//					breaks = [0,(15*i),(30*i),(45*i),(60*i),(75*i),(90*i),(105*i),(120*i)];
+//					break;
+//				case ttrt < 160 :
+//					breaks = [0,(20*i),(40*i),(60*i),(80*i),(100*i),(120*i),(140*i),(160*i)];
+//					break;
+//				case ttrt < 240 :
+//					breaks = [0,(30*i),(60*i),(90*i),(120*i),(150*i),(180*i),(210*i),(240*i)];
+//					break;
+//				case ttrt < 320 :
+//					breaks = [0,(40*i),(80*i),(120*i),(160*i),(200*i),(240*i),(280*i),(320*i)];
+//					break;
+//				case ttrt < 400 :
+//					breaks = [0,(50*i),(100*i),(150*i),(200*i),(250*i),(300*i),(350*i),(400*i)];
+//					break;
+//				default :
+//					breaks = [0,(80*i),(160*i),(240*i),(320*i),(400*i),(480*i),(560*i),(640*i)];
+//			}
+//			break;
+//		}else{
+//			i = i*10;
+//		}
+//		
+//	}
 	return breaks;
 }
 
@@ -356,20 +480,19 @@ function resizess(event){
 function optionclick(event){
 	
 	if (typeof event.graphic != "undefined") {//点击选中了一个面对象
+		tj_paramsName.code = event.graphic.attributes.ADMINCODE;
+		tj_paramsName.name = event.graphic.attributes.NAME;
+		tj_paramsName.codeLevel = gis_paramsName.codeLevel;
 		bar();
 		app.map.graphics.clear();
 		app.map.graphics.add(new dong.Graphic(event.graphic.geometry, app.selectline));//添加选中的图层
-		tj_paramsName.code = event.graphic.attributes.ADMINCODE;
-		tj_paramsName.name = event.graphic.attributes.NAME;
-		
 	}else{
 		if(app.map.graphics.graphics.length > 0){//已经有选中的对象了
-			bar();
-			app.map.graphics.clear();
 			tj_paramsName.code = gghjl;
 			tj_paramsName.codeLevel = 1;
 			tj_paramsName.name = "全部区域";//name默认为情景名称
-			
+			bar();
+			app.map.graphics.clear();
 		}
 	}
 }
@@ -382,6 +505,7 @@ function gis_paifang_show(){
 	tj_paramsName.wz = $('#hz_wrw').val();//物种
 	
 	baizhu_jianpai(gis_paramsName, "1");
+	bar();
 }
 
 /**
@@ -717,7 +841,7 @@ $("#returnSuperior").click(function(){
 	if(parseInt(d_Level)>0){
 		
 		if(d_Level == "1"){//当前是市，返回上级是全部省
-			table_show("0", parseInt(d_Level)-1);
+			table_show(gghjl, parseInt(d_Level));
 		}else{//当前是县，返回上一级是市
 			table_show(d_code.substring(0, 2)+"0000", parseInt(d_Level)-1);
 		}
@@ -767,12 +891,18 @@ function table_show(cod1, level1){
 			if(res.status == 0){
 				if(res.data.length>0){
 					
-					if(level1<2){
-						$.each(res.data, function(i, col) {
-							res.data[i].name = '<a onClick="table_show(\''+col.code+'\',\''+(parseInt(d_Level)+1)+'\');">'+col.name+'</a>';
+					$.each(res.data, function(i, col) {
+						$.each(col, function(k, vol) {
+							if(vol == '-9999'){
+								res.data[i][k] = "-";
+							}
 						});
-					}
-					
+						
+						if(col.type == "1"){
+							res.data[i].name = '<a onClick="table_show(\''+col.code+'\',\''+(parseInt(d_Level)+1)+'\');">'+col.name+'</a>';
+						}
+						
+					});
 					return res.data;
 				}
 			}else if(res.status == ''){
