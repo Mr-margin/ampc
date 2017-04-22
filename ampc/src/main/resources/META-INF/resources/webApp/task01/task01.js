@@ -320,6 +320,7 @@ function initQjTable() {
   $('#qjTable').bootstrapTable({
     columns: [
       {checkbox: true, formatter: checkedDis},
+      {title: 'ID&nbsp;', field: "scenarinoId"},
       {title: '情&nbsp;景&nbsp;名&nbsp;称', formatter: qjName},
       {title: '操&nbsp;作 ', formatter: qjOrder},
       {title: '情&nbsp;景&nbsp;状&nbsp;态', formatter: qjStatus},
@@ -448,6 +449,7 @@ function rwDomain(v, row, i) {
 }
 
 function qjName(v, row, i) {
+	console.log(arguments)
   var name = row.SCEN_TYPE == 3 ? '<h3 title="创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '">' + row.scenarinoName + '</h3>' : '<h3  title="' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '"><a href="#/yabj" style="text-decoration: underline">' + row.scenarinoName + '</a></h3>';
 
   return name;
