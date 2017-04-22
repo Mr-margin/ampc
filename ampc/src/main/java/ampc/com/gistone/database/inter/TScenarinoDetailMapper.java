@@ -260,9 +260,9 @@ public interface TScenarinoDetailMapper {
 	 * */
     List<TScenarinoDetail> selectBystandard(TScenarinoDetail record);
 
+    TScenarinoDetail selectByrealmin(Long missionId);
 	
-	
-
+    TScenarinoDetail selectByrealmax(Long missionId);
 	
 
 
