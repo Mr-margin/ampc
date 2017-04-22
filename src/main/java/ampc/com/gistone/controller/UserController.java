@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ import ampc.com.gistone.util.CaptchaUtil;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.LogUtil;
 import ampc.com.gistone.util.RegUtil;
+import ampc.com.gistone.util.Tool;
 
 /**
  * 用户控制类
@@ -76,10 +78,11 @@ public class UserController {
 			Map<String, Object> data = (Map) requestDate.get("data");
 			//用户账号
 			String userAccount=data.get("userAccount").toString();
-			if(!RegUtil.CheckAccount(userAccount)){
-				LogUtil.getLogger().error("UserController  账号出现非法字符!");
-				return AmpcResult.build(1002, "账号出现非法字符!");
-			}
+			//判断用户是否合法
+//			if(!RegUtil.CheckAccount(userAccount)){
+//				LogUtil.getLogger().error("UserController  账号出现非法字符!");
+//				return AmpcResult.build(1002, "账号出现非法字符!");
+//			}
 			//密码
 			String passWord=data.get("passWord").toString();
 			//查看当前账号是否存在
@@ -93,6 +96,9 @@ public class UserController {
 					//添加条件 
 					Map map=new HashMap();
 					map.put("userAccount", userAccount);
+					//进行MD5加密
+					passWord = Tool.md5(passWord);
+					passWord=Tool.convertMD5(passWord);
 					map.put("passWord", passWord);
 					//查询所有的用户基本信息
 					Map userMap=tUserMapper.login(map);
@@ -138,8 +144,10 @@ public class UserController {
 			HttpSession session = request.getSession();
 			//验证session不为空
 			if(session.getAttribute("user")!=null){
-				Map<String,String> userInfo = (Map)session.getAttribute("user");//用户信息，包括角色
+				//取出用户信息
+				Map<String,String> userInfo = (Map)session.getAttribute("user");
 				LogUtil.getLogger().info("UserController  获取Session成功！");
+				//将信息添加到结果集
 				return AmpcResult.ok(userInfo);
 			}else{
 				LogUtil.getLogger().error("UserController  没有Session信息!");
@@ -165,6 +173,7 @@ public class UserController {
 		try{
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
+			//销毁Session中的信息
 			session.invalidate();
 			LogUtil.getLogger().info("UserController 用户退出成功！");
 			return AmpcResult.ok(1);
@@ -210,10 +219,15 @@ public class UserController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
+			//用户输入的验证码
 			String yzm= data.get("yzm").toString();
-			HttpSession session = request.getSession();//取session
+			//取session
+			HttpSession session = request.getSession();
+			//获取生成的验证码
 			String randomString=session.getAttribute("randomString").toString();
+			//将验证码转成大些
 			yzm = yzm.toUpperCase();
+			//进行判断当前验证码是否匹配
 			if(yzm.equals(randomString)){
 				LogUtil.getLogger().info("UserController  验证码验证成功！");
 				return AmpcResult.ok(1);
