@@ -374,4 +374,20 @@
         and MISSION_STATUS !='1'
 
   </select>
+  
+  
+  <select id="selectMaxMission" resultMap="BaseResultMap" >
+  SELECT
+	*
+FROM
+	T_MISSION_DETAIL M
+WHERE
+	M.MISSION_ADD_TIME = (SELECT MAX (MISSION_ADD_TIME)
+FROM
+	T_MISSION_DETAIL
+WHERE
+	MISSION_STATUS = '1'
+AND IS_EFFECTIVE = '1')
+AND M.IS_EFFECTIVE = '1' AND M.MISSION_STATUS = '1'
+  </select>
 </mapper>
