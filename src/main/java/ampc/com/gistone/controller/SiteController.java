@@ -16,8 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ampc.com.gistone.database.inter.TAddressMapper;
+import ampc.com.gistone.database.inter.TDomainMissionMapper;
+import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TSiteMapper;
 import ampc.com.gistone.database.model.TAddress;
+import ampc.com.gistone.database.model.TDomainMission;
+import ampc.com.gistone.database.model.TDomainMissionWithBLOBs;
+import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TSite;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
@@ -33,6 +38,14 @@ public class SiteController {
 	
 	@Autowired
 	private TAddressMapper tAddressMapper;
+	
+	
+	@Autowired
+	private TMissionDetailMapper tMissionDetailMapper;
+	
+	
+	@Autowired
+	private TDomainMissionMapper tDomainMissionMapper;
 	/**
 	 * 站点查询
 	 * @param requestDate
@@ -47,7 +60,7 @@ public class SiteController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			String siteCode =data.get("siteCode").toString();
-			List<TSite> siteList=tSiteMapper.selectSiteCode(siteCode);
+			List<TSite> siteList=tSiteMapper.selectSiteCode(siteCode+"00");
 			JSONArray arr=new JSONArray();
 			for(TSite site:siteList){
 				if(site.getCityName()!=null&&site.getStationName()!=null&&site.getLat()!=null&&site.getLon()!=null&&site.getStationId()!=null){
@@ -123,21 +136,44 @@ public class SiteController {
 	}
 	
 	
-	
+	/**
+	 * code查询
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping("/Site/find_codes")
 	public AmpcResult find_codes(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try{
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			
-			
-			
-			
-			
-			
-			
-			return AmpcResult.build(0, "success");
+			if(null!=data.get("MissionId")&&data.get("MissionId")!=""){
+				Long MissionId=Long.valueOf(data.get("MissionId").toString());
+				TMissionDetail tMissionDetail=new TMissionDetail();
+				tMissionDetail.setMissionId(MissionId);
+				List<TMissionDetail>  tmlist=tMissionDetailMapper.selectByEntity(tMissionDetail);
+				TMissionDetail tm=tmlist.get(0);
+				
+				TDomainMissionWithBLOBs tDomainMission=tDomainMissionMapper.selectByPrimaryKey(tm.getMissionDomainId());
+				String str=tDomainMission.getDomainCode();
+				JSONObject obj=JSONObject.fromObject(str);
+				LogUtil.getLogger().error("站点查询成功");
+				return AmpcResult.build(0, "success",obj);
+			}else{
+				if(null==tMissionDetailMapper.selectMaxMission()){
+					LogUtil.getLogger().error("站点查询失败");
+					return AmpcResult.build(0, "无可用实时预报任务");
+					
+				}
+				TMissionDetail tm=tMissionDetailMapper.selectMaxMission();
+				TDomainMissionWithBLOBs tDomainMission=tDomainMissionMapper.selectByPrimaryKey(tm.getMissionDomainId());
+				String str=tDomainMission.getDomainCode();
+				JSONObject obj=JSONObject.fromObject(str);
+				LogUtil.getLogger().error("站点查询成功");
+				return AmpcResult.build(0, "success",obj);
+			}
 		}catch(Exception e){
 			LogUtil.getLogger().error("异常了",e);
 			return AmpcResult.build(0, "执行失败");
