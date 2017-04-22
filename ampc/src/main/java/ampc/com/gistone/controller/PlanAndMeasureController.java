@@ -1255,8 +1255,8 @@ public class PlanAndMeasureController {
 			//情景Id
 			long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());
 			// 调用减排计算状态接口 并获取结果Json
-			String strResult="jobId="+scenarinoId;
-			String getResult = ClientUtil.doPost(configUtil.getAreaStatusURL(),strResult);
+			//String strResult="
+			String getResult = ClientUtil.doPost(configUtil.getAreaStatusURL()+"?jobId="+scenarinoId,"");
 			// 并根据减排分析得到的结果进行JsonTree的解析
 			Map mapResult=mapper.readValue(getResult, Map.class);
 			Map resultMap=new HashMap();
