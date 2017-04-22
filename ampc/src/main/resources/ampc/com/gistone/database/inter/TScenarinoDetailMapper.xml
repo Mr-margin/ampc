@@ -1062,4 +1062,24 @@ AND IS_EFFECTIVE = '1'
        and EXPAND10 = #{expand10,jdbcType=VARCHAR}
       </if>
   </select>
+   <select id="selectByrealmax" parameterType="java.lang.Long" resultMap="BaseResultMap" >
+     SELECT * FROM T_SCENARINO_DETAIL S 
+		WHERE S.PATH_DATE=(SELECT MAX (PATH_DATE)
+FROM
+	T_SCENARINO_DETAIL
+WHERE 
+	SCEN_TYPE = '4'
+AND IS_EFFECTIVE = '1') AND S.MISSION_ID=#{missionId,jdbcType=DECIMAL}
+AND S.IS_EFFECTIVE ='1'
+  </select>
+   <select id="selectByrealmin" parameterType="java.lang.Long" resultMap="BaseResultMap" >
+     SELECT * FROM T_SCENARINO_DETAIL S 
+		WHERE S.PATH_DATE=(SELECT MIN (PATH_DATE)
+FROM
+	T_SCENARINO_DETAIL
+WHERE 
+	SCEN_TYPE = '4'
+AND IS_EFFECTIVE = '1') AND S.MISSION_ID=#{missionId,jdbcType=DECIMAL}
+AND S.IS_EFFECTIVE ='1'
+  </select>
 </mapper>
