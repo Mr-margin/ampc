@@ -1,10 +1,7 @@
 package ampc.com.gistone.entity;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
+
 import java.util.List;
-import java.util.Map;
 /**
  * 减排计算最后结果类   用来调用减排计算接口 传值的帮助类
  * @author WangShanxi
@@ -14,12 +11,6 @@ import java.util.Map;
 public class JPResult {
 	//IP
 	private String serverPath;
-	public String getServerPath() {
-		return serverPath;
-	}
-	public void setServerPath(String serverPath) {
-		this.serverPath = serverPath;
-	}
 	//预案措施Id+预案名称 用来作为唯一表示
 	private String groupName;
 	//行业名称
@@ -65,8 +56,12 @@ public class JPResult {
 	public void setEnd(String end) {
 		this.end = end;
 	}
-	
-	
+	public String getServerPath() {
+		return serverPath;
+	}
+	public void setServerPath(String serverPath) {
+		this.serverPath = serverPath;
+	}
 	public List<String> getRegionIds() {
 		return regionIds;
 	}
