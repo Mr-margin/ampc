@@ -79,10 +79,10 @@ public class UserController {
 			//用户账号
 			String userAccount=data.get("userAccount").toString();
 			//判断用户是否合法
-//			if(!RegUtil.CheckAccount(userAccount)){
-//				LogUtil.getLogger().error("UserController  账号出现非法字符!");
-//				return AmpcResult.build(1002, "账号出现非法字符!");
-//			}
+			if(!RegUtil.CheckAccount(userAccount)){
+				LogUtil.getLogger().error("UserController  账号出现非法字符!");
+				return AmpcResult.build(1002, "账号出现非法字符!");
+			}
 			//密码
 			String passWord=data.get("passWord").toString();
 			//查看当前账号是否存在
