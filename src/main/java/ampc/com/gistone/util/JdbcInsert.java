@@ -31,19 +31,19 @@ public class JdbcInsert {
         String driver = "oracle.jdbc.OracleDriver";    //驱动标识符
         String url = "jdbc:oracle:thin:@192.168.4.215:1521:ORCL"; //链接字符串
         // url ="jdbc:oracle:thin:@10.0.30.64:1521:orcl";  // 连接远程的数据库可以这么写
-        String user = "ampc";         //数据库的用户名
-        String password = "orcl";     //数据库的密码
+        String user = "ampc";//数据库的用户名
+        String password = "orcl";  //数据库的密码
         Connection connection  = null;
-        Statement sta = null ; 
-        try {  
+        Statement sta = null ;
+        try {
             //正式加载驱动  
-            Class.forName(driver);  
+            Class.forName(driver);
             //开始连接  
-            connection = DriverManager.getConnection(url, user, password);  
-            System.out.println("Connection Success !");  
+            connection = DriverManager.getConnection(url, user, password);
+            System.out.println("Connection Success !");
               
             //向数据库中执行SQL语句  
-            String sql = "insert into T_EMISSION_DETAIL (EMISSION_DATE, CODE, EMISSION_DETAILS,CODELEVEL)values (?,?,?,?)";
+            String sql = "insert into T_EMISSION_DETAIL (EMISSION_DATE, CODE, EMISSION_DETAILS,CODELEVEL,PM25,PM10,SO2,\"NOx\",VOC,CO,NH3,BC,OC,PMFINE,PMC)values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             
             PreparedStatement ps = connection.prepareStatement(sql);
             final int batchSize = 5000;
@@ -53,17 +53,26 @@ public class JdbcInsert {
                 ps.setString(2, tEmissionDetail.getCode());
                 ps.setString(3, tEmissionDetail.getEmissionDetails());
                 ps.setString(4, tEmissionDetail.getCodelevel());
-              
+                ps.setBigDecimal(5,tEmissionDetail.getPm25());
+                ps.setBigDecimal(6,tEmissionDetail.getPm10());
+                ps.setBigDecimal(7,tEmissionDetail.getSo2());
+                ps.setBigDecimal(8,tEmissionDetail.getNox());
+                ps.setBigDecimal(9,tEmissionDetail.getVoc());
+                ps.setBigDecimal(10,tEmissionDetail.getCo());
+                ps.setBigDecimal(11,tEmissionDetail.getNh3());
+                ps.setBigDecimal(12,tEmissionDetail.getBc());
+                ps.setBigDecimal(13,tEmissionDetail.getOc());
+                ps.setBigDecimal(14,tEmissionDetail.getPmfine());
+                ps.setBigDecimal(15,tEmissionDetail.getPmc());
                 ps.addBatch();
-                if(++count % batchSize == 0||count==TElist.size()) {
+                if(++count % batchSize == 0||count==TElist.size()){
                     ps.executeBatch();
                 }
-            } 
-        } catch (Exception e) {  
-              
-            System.out.println("Connection Fail !");  
-            e.printStackTrace() ;  
-        }  
+            }
+        }catch (Exception e){
+            System.out.println("Connection Fail !");
+            e.printStackTrace(); 
+        }
           
         /** 
          * 关闭数据库 
