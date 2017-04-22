@@ -136,7 +136,6 @@
   <!-- 返回情景复制列表的数据 -->
   <resultMap id="copyScenarinoListMap" type="hashMap" >
     <result column="MISSION_NAME" property="missionName" jdbcType="OTHER" />
-    <result column="V1" property="v1" jdbcType="VARCHAR" />
     <result column="ES_COUPLING_NAME" property="esCouplingName" jdbcType="OTHER" />
     <result column="MISSION_STATUS" property="missionStatus" jdbcType="OTHER" />
     <result column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
@@ -149,7 +148,7 @@
   
   <!-- 返回情景复制列表的列 -->
   <sql id="copyScenarino_Column_List" >
-  	  MISSION_NAME,V1,ES_COUPLING_NAME,MISSION_STATUS,
+  	  MISSION_NAME,ES_COUPLING_NAME,MISSION_STATUS,
 	  SCENARINO_ID,SCENARINO_NAME,SCENARINO_START_DATE,SCENARINO_END_DATE,
       SCENARINO_STATU_NAME,SCENARINO_ADD_TIME,BASIS_SCENARINO_ID,BASIS_TIME,CONTRAST_SCENARINO_ID,SCEN_TYPE,
    PATH_DATE,SPINUP
@@ -172,7 +171,7 @@
       		 									</if>
 										         <if test="queryName != null" >
 										       		AND (MISSION_NAME LIKE #{queryName,jdbcType=OTHER}
-										       		OR V1 LIKE #{queryName,jdbcType=OTHER}
+										    
 										       		OR ES_COUPLING_NAME LIKE #{queryName,jdbcType=OTHER}
 										       		OR MISSION_STATUS LIKE #{queryName,jdbcType=OTHER}
 										       		OR SCENARINO_NAME LIKE #{queryName,jdbcType=OTHER}
@@ -201,7 +200,7 @@
       		 									</if>
 										         <if test="queryName != null" >
 										       		AND (MISSION_NAME LIKE #{queryName,jdbcType=OTHER}
-										       		OR V1 LIKE #{queryName,jdbcType=OTHER}
+										       		
 										       		OR ES_COUPLING_NAME LIKE #{queryName,jdbcType=OTHER}
 										       		OR MISSION_STATUS LIKE #{queryName,jdbcType=OTHER}
 										       		OR SCENARINO_NAME LIKE #{queryName,jdbcType=OTHER}
@@ -227,7 +226,7 @@
       	</if>
   	    <if test="queryName != null" >
        		AND (MISSION_NAME LIKE #{queryName,jdbcType=OTHER}
-       		OR V1 LIKE #{queryName,jdbcType=OTHER}
+       	
        		OR ES_COUPLING_NAME LIKE #{queryName,jdbcType=OTHER}
        		OR MISSION_STATUS LIKE #{queryName,jdbcType=OTHER}
        		OR SCENARINO_NAME LIKE #{queryName,jdbcType=OTHER}
@@ -249,7 +248,7 @@
       	</if>
   	    <if test="queryName != null" >
        		AND (MISSION_NAME LIKE #{queryName,jdbcType=OTHER}
-       		OR V1 LIKE #{queryName,jdbcType=OTHER}
+       	
        		OR ES_COUPLING_NAME LIKE #{queryName,jdbcType=OTHER}
        		OR MISSION_STATUS LIKE #{queryName,jdbcType=OTHER}
        		OR SCENARINO_NAME LIKE #{queryName,jdbcType=OTHER}
