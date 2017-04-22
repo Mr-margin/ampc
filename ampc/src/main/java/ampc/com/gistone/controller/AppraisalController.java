@@ -62,7 +62,12 @@ public class AppraisalController {
 			Integer userId=Integer.valueOf(data.get("userId").toString());
 			Long missionId=Long.valueOf(data.get("missionId").toString());
 			String mode=data.get("mode").toString();
-			String cityStation=data.get("cityStation").toString();
+			String cityStation;
+			if("city".equals(mode)){
+				cityStation=data.get("cityStation").toString().substring(0, 4);	//检测站点具体值
+			}else{
+				cityStation=data.get("cityStation").toString();					//检测站点具体值
+			}
 			JSONArray lists = JSONArray.fromObject(data.get("scenarinoId"));
 			List<Integer> list=new ArrayList<Integer>();
 			Map<String,Object> scmap=new HashMap();
@@ -70,7 +75,6 @@ public class AppraisalController {
 				list.add(Integer.valueOf(scid.toString()));	
 			}
 			String datetype=data.get("datetype").toString();
-
 			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);//该任务下的所有数据
 			Integer domainId=Integer.valueOf(tMissionDetail.getMissionDomainId().toString());
 			List<ScenarinoEntity> sclist=new ArrayList();
@@ -93,7 +97,7 @@ public class AppraisalController {
 				tables+=userId;
 				ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 				scenarinoEntity.setCity_station(cityStation);
-				scenarinoEntity.setDomain(3);
+				scenarinoEntity.setDomain(3);		//空间分辨率--需要时替换即可
 				scenarinoEntity.setDomainId(domainId);
 				scenarinoEntity.setMode(mode);
 				scenarinoEntity.setsId(scenarinoId);
@@ -109,7 +113,7 @@ public class AppraisalController {
 					tables+=userId;
 					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 					scenarinoEntity.setCity_station(cityStation);
-					scenarinoEntity.setDomain(3);
+					scenarinoEntity.setDomain(3);	//空间分辨率--需要时替换即可
 					scenarinoEntity.setDomainId(domainId);
 					scenarinoEntity.setMode(mode);
 					scenarinoEntity.setsId(scenarinoId);
@@ -152,7 +156,6 @@ public class AppraisalController {
 						scenarinoEntity.setsId(scenarinoId);
 						scenarinoEntity.setTableName(tables);
 						sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
-
 					}//时间分布判断
 			}//任务类型
 			if(sclist.isEmpty()){
@@ -161,87 +164,86 @@ public class AppraisalController {
 			if(datetype.equals("hour")){
 				for(ScenarinoEntity sc:sclist){
 					String scid=String.valueOf(sc.getsId());
-					String content=sc.getContent().toString();
-				JSONObject obj=JSONObject.fromObject(content);//行业减排结果
-				Map<String,Object> detamap=(Map)obj;
-				Map<String,Object> datemap=new HashMap();
-				for(String datetime:detamap.keySet()){
-					String sp=detamap.get(datetime).toString();
-					JSONObject spobj=JSONObject.fromObject(sp);//行业减排结果
-					Map<String,Object> spmap=(Map)spobj;
-					Map<String,Object> spcmap=new HashMap();
-					for(String spr:spmap.keySet()){
-						String height=spmap.get(spr).toString();
-						JSONObject heightobj=JSONObject.fromObject(height);//行业减排结果
-						Map<String,Object> heightmap=(Map)heightobj;
-						String hour=heightmap.get("0").toString();
-						JSONArray hourlist= JSONArray.fromObject(hour);
-						
-						Map<String,Object> hourcmap=new HashMap();
-						if(hourlist.size()==24){
-						for(int a=0;a<=23;a++){
-							if(spr.equals("CO")){
-								BigDecimal bd=(new BigDecimal(hourlist.get(a).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
-								hourcmap.put(String.valueOf(a),bd);
-								}else{
-								BigDecimal bd=(new BigDecimal(hourlist.get(a).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
-								hourcmap.put(String.valueOf(a),bd);
-								}	
-						}
-						}else{
-							for(int a=0;a<=23;a++){
-								hourcmap.put(String.valueOf(a),"-");
+					Object content=sc.getContent();
+					JSONObject obj=JSONObject.fromObject(content);//行业减排结果	--影响转化效率
+					Map<String,Object> detamap=(Map)obj;
+					Map<String,Object> datemap=new HashMap();
+					for(String datetime:detamap.keySet()){
+						Object sp=detamap.get(datetime);
+//						JSONObject spobj=JSONObject.fromObject(sp);//行业减排结果
+						Map<String,Object> spmap=(Map)sp;
+						Map<String,Object> spcmap=new HashMap();	//存放数据
+						for(String spr:spmap.keySet()){
+							Object height=spmap.get(spr);
+//							JSONObject heightobj=JSONObject.fromObject(height);//行业减排结果
+							Map<String,Object> heightmap=(Map)height;
+							Object hour=heightmap.get("0");
+							JSONArray hourlist= JSONArray.fromObject(hour);
+							
+							Map<String,Object> hourcmap=new HashMap();	//用于存放数据
+							if(hourlist.size()==24){
+								for(int a=0;a<=23;a++){
+									if(spr.equals("CO")){
+										BigDecimal bd=(new BigDecimal(hourlist.get(a).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+										hourcmap.put(String.valueOf(a),bd);
+										}else{
+										BigDecimal bd=(new BigDecimal(hourlist.get(a).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+										hourcmap.put(String.valueOf(a),bd);
+										}	
+								}
+							}else{
+								for(int a=0;a<=23;a++){
+									hourcmap.put(String.valueOf(a),"-");
+								}
 							}
-						}
-						spcmap.put(datetime, hourcmap);
-						if(datemap.get(spr)!=null){
-							Object maps=datemap.get(spr);
-							JSONObject mapsbj=JSONObject.fromObject(maps);//行业减排结果
-							Map<String,Object> des=(Map)mapsbj;
-							des.put(datetime, hourcmap);
-							datemap.put(spr, des);
+							spcmap.put(datetime, hourcmap);
+							if(datemap.get(spr)!=null){
+								Object maps=datemap.get(spr);
+//								JSONObject mapsbj=JSONObject.fromObject(maps);//行业减排结果
+								Map<String,Object> des=(Map)maps;
+								des.put(datetime, hourcmap);
+								datemap.put(spr, des);
 							}else{
 							datemap.put(spr, spcmap);
 							}
-						scmap.put(scid, datemap);
+							scmap.put(scid, datemap);
+						}
+						
 					}
-					
 				}
-			}
 			}else{
 				for(ScenarinoEntity sc:sclist){
 					String scid=String.valueOf(sc.getsId());
-					String content=sc.getContent().toString();
+					Object content=sc.getContent();
 					JSONObject obj=JSONObject.fromObject(content);//行业减排结果
 					Map<String,Object> detamap=(Map)obj;
 					Map<String,Object> datemap=new HashMap();
 					for(String datetime:detamap.keySet()){
-						String sp=detamap.get(datetime).toString();
-						JSONObject spobj=JSONObject.fromObject(sp);//行业减排结果
-						Map<String,Object> spmap=(Map)spobj;
-						
+						Object sp=detamap.get(datetime);
+//						JSONObject spobj=JSONObject.fromObject(sp);//行业减排结果
+						Map<String,Object> spmap=(Map)sp;
 						for(String spr:spmap.keySet()){
 							Map<String,Object> spcmap=new HashMap();
-							String height=spmap.get(spr).toString();
-							JSONObject heightobj=JSONObject.fromObject(height);//行业减排结果
-							Map<String,Object> heightmap=(Map)heightobj;
+							Object height=spmap.get(spr);
+//							JSONObject heightobj=JSONObject.fromObject(height);//行业减排结果
+							Map<String,Object> heightmap=(Map)height;
 							Map<String,Object> hourcmap=new HashMap();
 							if(spr.equals("CO")){
-								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
 								spcmap.put(datetime, bd);
 								}else{
-								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
 								spcmap.put(datetime, bd);
 								}
 							if(datemap.get(spr)!=null){
 							Object maps=datemap.get(spr);
-							JSONObject mapsbj=JSONObject.fromObject(maps);//行业减排结果
-							Map<String,Object> des=(Map)mapsbj;
+//							JSONObject mapsbj=JSONObject.fromObject(maps);//行业减排结果
+							Map<String,Object> des=(Map)maps;
 							if(spr.equals("CO")){
-								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
 								des.put(datetime, bd);
 								}else{
-								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
 								des.put(datetime, bd);
 								}
 							
@@ -1092,36 +1094,37 @@ public class AppraisalController {
 	@RequestMapping("Appraisal/find_standard")
 	public AmpcResult find_All_scenarino(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
 		try{
-//			Date dt0=new Date();
-//			DateFormat df0 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//			System.out.println("执行方法开始时间---"+df0.format(dt0));
-			
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			Long userId=Long.parseLong(data.get("userId").toString());			//用户id
 			Long missionId=Long.parseLong(data.get("missionId").toString());	//任务ID
 			String mode=data.get("mode").toString();							//检测站点
-			String cityStation=data.get("cityStation").toString();				//检测站点具体值
+			String cityStation;
+			if("city".equals(mode)){
+				 cityStation=data.get("cityStation").toString().substring(0, 4);	//检测站点具体值
+			}else{
+				 cityStation=data.get("cityStation").toString();					//检测站点具体值
+			}
 			String datetype=data.get("datetype").toString();					//时间分辨率
-			int domain=Integer.valueOf((String) data.get("domain"));						//空间分辨率
+			int domain=Integer.valueOf((String) data.get("domain"));			//空间分辨率
 			String changeType=data.get("changeType").toString();				//变化状态
+			
 			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
 			tScenarinoDetail.setUserId(userId);
 			tScenarinoDetail.setMissionId(missionId);
-			
 			List<TScenarinoDetail> tScenarinoDetaillist=tScenarinoDetailMapper.selectBystandard(tScenarinoDetail);
 			DateFormat dfs = new SimpleDateFormat("yyyy-MM-dd");
 			String startDate= dfs.format(tScenarinoDetaillist.get(0).getScenarinoStartDate());
 			String endDate= dfs.format(tScenarinoDetaillist.get(0).getScenarinoEndDate());
 			
-			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);//该任务下的所有数据
+			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);	//该任务下的所有数据
 			Integer domainId=Integer.valueOf(tMissionDetail.getMissionDomainId().toString());
 			TScenarinoDetail tScenarinoDetaillists=tScenarinoDetaillist.get(0);
 			JSONArray arr=new JSONArray();
 			JSONObject objsed=new JSONObject();
 			if(!tScenarinoDetaillist.isEmpty()){
 
-				if(datetype.equals("day")){	//时间分辨率---逐日
+				if(datetype.equals("day")){			//时间分辨率---逐日
 					String tables="T_SCENARINO_DAILY_";
 					Date tims=tScenarinoDetaillists.getScenarinoAddTime();
 					DateFormat df = new SimpleDateFormat("yyyy");
@@ -1131,47 +1134,41 @@ public class AppraisalController {
 					tables+=userId;
 					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 					scenarinoEntity.setCity_station(cityStation);
-					scenarinoEntity.setDomain(3);	//数据库中目前只有为3的数据
+					scenarinoEntity.setDomain(3);		//空间分辨率--需要时替换即可,数据库中目前只有为3的数据
 					scenarinoEntity.setMode(mode);
 					scenarinoEntity.setDomainId(domainId);
 					scenarinoEntity.setsId(Integer.valueOf(tScenarinoDetaillists.getScenarinoId().toString()));
 					scenarinoEntity.setTableName(tables);
 					List<ScenarinoEntity> Lsclist=tPreProcessMapper.selectBysome(scenarinoEntity);
-//					ObjectMapper objmapp=new ObjectMapper();
-					
 					if(!Lsclist.isEmpty()){
 							String content=Lsclist.get(0).getContent().toString();
-							JSONObject obj=JSONObject.fromObject(content);
-//							ObjectMapper qwe=objmapp.readValue(obj, HashMap.class);
+							JSONObject obj=JSONObject.fromObject(content);	//该行代码需优化,转化效率太低，耗时1S以上
 							Map<String,Object> standard=(Map)obj;				//总数据
 							
 							JSONObject spcmapobj=new JSONObject();
 							JSONObject standardobj=new JSONObject();
 							JSONObject standardData=new JSONObject();
 							for(String  key : standard.keySet()){							
-								String species=standard.get(key).toString();				//值
-								JSONObject speciesobj=JSONObject.fromObject(species);		
-								Map<String,Object> spcmap= (Map)speciesobj;
+								Object species=standard.get(key);				//值
+								Map<String,Object> spcmap= (Map)species;
 								
 								for(String  spcmapkey : spcmap.keySet()){ 			//物种名称开始
 									String spcmapkeyw=(String)spcmapkey;
-									for(String standard_Time:standard.keySet()){		//键为年份
+									for(String standard_Time:standard.keySet()){	//键为年份
 										
-										String standard_Times=standard.get(standard_Time).toString();				
-										JSONObject speciesobjs=JSONObject.fromObject(standard_Times);	
-										Map<String,Object> speciesmap= (Map)speciesobjs;
+										Object standard_Times=standard.get(standard_Time);				
+										Map<String,Object> speciesmap= (Map)standard_Times;
+										
 										for(String speciesmap_key:speciesmap.keySet()){
 											String speciesmap_keyn=(String)speciesmap_key;
 											if(speciesmap_keyn.equals(spcmapkeyw)){	
 												
-												String speciesmap_keyval=speciesmap.get(speciesmap_key).toString();				
-												JSONObject speciesobjsval=JSONObject.fromObject(speciesmap_keyval);	
-												Map<String,Object> speciesmapval= (Map)speciesobjsval;
+												Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
+												Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
 												
 												standardobj.put((String)standard_Time, speciesmapval.get("0"));
 											}
 										}
-										
 									} 
 									spcmapobj.put((String)spcmapkey, standardobj);
 								}//物种名称结束
@@ -1182,11 +1179,6 @@ public class AppraisalController {
 							objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
 					}
 				}else{	//时间分辨率---逐小时开始
-					
-//					Date dt1=new Date();
-//					DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//					System.out.println(df1.format(dt1));
-					
 					String tables="T_SCENARINO_HOURLY_";
 					Date tims=tScenarinoDetaillists.getScenarinoAddTime();
 					DateFormat df = new SimpleDateFormat("yyyy");
@@ -1196,7 +1188,7 @@ public class AppraisalController {
 					tables+=userId;
 					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 					scenarinoEntity.setCity_station(cityStation);
-					scenarinoEntity.setDomain(3);
+					scenarinoEntity.setDomain(3);		//空间分辨率--需要时替换即可,数据库中目前只有为3的数据
 					scenarinoEntity.setMode(mode);
 					scenarinoEntity.setDomainId(domainId);
 					scenarinoEntity.setsId(Integer.valueOf(tScenarinoDetaillists.getScenarinoId().toString()));
@@ -1210,57 +1202,41 @@ public class AppraisalController {
 							JSONObject spcmapobj=new JSONObject();
 							JSONObject standardobj=new JSONObject();
 							JSONObject standardData=new JSONObject();
+							JSONObject standardobjdata=new JSONObject();
 							for(String  key : standard.keySet()){							
-								String species=standard.get(key).toString();				//值
-								JSONObject speciesobj=JSONObject.fromObject(species);		
-								Map<String,Object> spcmap= (Map)speciesobj;
-								
+								Object species=standard.get(key);		//值
+								Map<String,Object> spcmap= (Map)species;							
 								for(String  spcmapkey : spcmap.keySet()){ 			//物种名称开始
 									String spcmapkeyw=(String)spcmapkey;
-									for(String standard_Time:standard.keySet()){		//键为年份
-										
-										String standard_Times=standard.get(standard_Time).toString();				
-										JSONObject speciesobjs=JSONObject.fromObject(standard_Times);	
-										Map<String,Object> speciesmap= (Map)speciesobjs;
+									for(String standard_Time:standard.keySet()){	//键为年份										
+										Object standard_Times=standard.get(standard_Time);				
+										Map<String,Object> speciesmap= (Map)standard_Times;
 										for(String speciesmap_key:speciesmap.keySet()){
 											String speciesmap_keyn=(String)speciesmap_key;
-											if(speciesmap_keyn.equals(spcmapkeyw)){	
-												
-												String speciesmap_keyval=speciesmap.get(speciesmap_key).toString();				
-												JSONObject speciesobjsval=JSONObject.fromObject(speciesmap_keyval);	
-												Map<String,Object> speciesmapval= (Map)speciesobjsval;
-												
-												standardobj.put((String)standard_Time, speciesmapval.get("0"));
+											if(speciesmap_keyn.equals(spcmapkeyw)){													
+												Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
+												Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
+												List qq= (List) speciesmapval.get("0");
+												for(int i=0;i<qq.size();i++){
+													standardobjdata.put(i,qq.get(i));
+												}					
+												standardobj.put((String)standard_Time, standardobjdata);
 											}
 										}
-										
 									} 
 									spcmapobj.put((String)spcmapkey, standardobj);
-								}//物种名称结束
+								}	//物种名称结束
 							}
 							standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);
 							objsed.put("data", standardData);
 							objsed.put("scenarinoId",tScenarinoDetaillist.get(0).getScenarinoId());
 							objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
-							
-//							Date dt3=new Date();
-//							long interval2 = (dt3.getTime() - dt1.getTime())/1000;
-//							System.out.println("逐小时两个时间相差"+interval2+"秒");
 					}
 					
-					
-					
 				}//时间分辨率---逐小时结束
-				
 			}else{
 				return AmpcResult.build(1000, "该任务没有创建情景",null);
 			}
-//			Date dt2=new Date();
-//			DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//			System.out.println("方法调用结束---"+df2.format(dt2));
-//			long interval = (dt2.getTime() - dt0.getTime())/1000;
-//			System.out.println("逐日两个时间相差"+interval+"秒");
-			
 			return AmpcResult.build(0, "success",objsed);
 		}catch(Exception e){
 			LogUtil.getLogger().error("MissionAndScenarinoController 根据任务id以及userid查询情景有异常",e);
@@ -1268,6 +1244,4 @@ public class AppraisalController {
 		}
 	}
 	
-	
-
 }
