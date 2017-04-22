@@ -1,6 +1,7 @@
 package ampc.com.gistone.controller;
 
 import java.math.BigDecimal;
+import java.sql.Clob;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -522,11 +523,15 @@ public class EchartsController {
 				//判断是行业还是措施的  并赋值对应的Json串
 				String edetail=null;
 				if(type==1){
-					//获取所有的行业的减排结果
-					edetail=selectjplMap.get(i).get("EMISSION_DETAILS").toString();
+					Clob clob = (Clob) selectjplMap.get(i).get("EMISSION_DETAILS");
+					if (clob != null) {
+						edetail = clob.getSubString(1, (int) clob.length());
+					}
 				}else{
-					//获取所有的措施的减排结果
-					edetail=selectjplMap.get(i).get("MEASURE_REDUCE").toString();
+					Clob clob = (Clob) selectjplMap.get(i).get("MEASURE_REDUCE");
+					if (clob != null) {
+						edetail = clob.getSubString(1, (int) clob.length());
+					}
 				}
 				//解析json获取到所有行业的减排信息
 				Map edeMap=mapper.readValue(edetail, Map.class);
@@ -550,6 +555,8 @@ public class EchartsController {
 							}
 							result=d;
 						}
+					}else if(stainType.equals("NOX")){
+						result=ede.get("NOx");
 					}else{
 						result=ede.get(stainType);
 					}
