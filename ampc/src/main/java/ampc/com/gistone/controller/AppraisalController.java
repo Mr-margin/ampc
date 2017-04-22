@@ -124,7 +124,7 @@ public class AppraisalController {
 				}//任务开始时间与系统开始时间对比
 				//任务类型
 			}else{
-				if(datetype.equals("day")){//逐天
+				if(datetype.equals("day")){		//逐天
 					String tables="T_SCENARINO_DAILY_";
 					Date tims=tScenarinoDetail.getScenarinoAddTime();
 					DateFormat df = new SimpleDateFormat("yyyy");
