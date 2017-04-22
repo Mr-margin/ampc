@@ -812,7 +812,7 @@ public class EchartsController {
 						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
 						if(basisMap.get("CODE").toString().startsWith(checkCode)){
 							//获取行业中的减排污染物信息
-							tempUtil(basisMap,basisrlu);
+							basisrlu=tempUtil(basisMap,basisrlu);
 							//添加Code
 							basisrlu.setCode(code);
 							//根据Code查询对应的中文名称
@@ -828,7 +828,7 @@ public class EchartsController {
 								//如果是同一个区域下的进行累积增加
 								if(basisMap.get("CODE").toString().startsWith(checkCode)){
 									//获取行业中的减排污染物信息
-									tempUtil(basisMap,basisrlu);
+									basisrlu=tempUtil(basisMap,basisrlu);
 									//包含子集
 									isTrue=true;
 								}else{
@@ -884,7 +884,7 @@ public class EchartsController {
 						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
 						if(jplMap.get("CODE").toString().startsWith(checkCode)){
 							//获取行业中的减排污染物信息
-							tempUtil(jplMap,jplrlu);
+							jplrlu=tempUtil(jplMap,jplrlu);
 							//添加Code
 							jplrlu.setCode(code);
 							//根据Code查询对应的中文名称
@@ -898,7 +898,7 @@ public class EchartsController {
 								jplMap=selectjplMap.get(j);
 								if(jplMap.get("CODE").toString().startsWith(checkCode)){
 									//获取行业中的减排污染物信息
-									tempUtil(jplMap,jplrlu);
+									jplrlu=tempUtil(jplMap,jplrlu);
 									//包含子集
 									isTrue=true;
 								}else{
@@ -927,9 +927,9 @@ public class EchartsController {
 			}else if(addressLevle==2){
 				//执行SQL返回Code的结果集
 				List<Map> selectcodeMap = this.getBySqlMapper.findRecords(codeSql);
-				for(Map cityCode :selectcodeMap){
+				for(int o=0;o<selectcodeMap.size();o++){
 					//取Code
-					String code=cityCode.get("CODE").toString();
+					String code=selectcodeMap.get(o).get("CODE").toString();
 					//根据Code级别进行条件调整
 					String checkCode=code.substring(0,4);
 					//定义中间变量
@@ -943,7 +943,7 @@ public class EchartsController {
 						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
 						if(basisMap.get("CODE").toString().startsWith(checkCode)){
 							//获取行业中的减排污染物信息
-							tempUtil(basisMap,basisrlu);
+							basisrlu=tempUtil(basisMap,basisrlu);
 							//添加Code
 							basisrlu.setCode(checkCode+"00");
 							//根据Code查询对应的中文名称
@@ -957,7 +957,7 @@ public class EchartsController {
 								basisMap=selectBisisMap.get(j);
 								if(basisMap.get("CODE").toString().startsWith(checkCode)){
 									//获取行业中的减排污染物信息
-									tempUtil(basisMap,basisrlu);
+									basisrlu=tempUtil(basisMap,basisrlu);
 									//包含子集
 									isTrue=true;
 								}else{
@@ -1013,7 +1013,7 @@ public class EchartsController {
 						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
 						if(jplMap.get("CODE").toString().startsWith(checkCode)){
 							//获取行业中的减排污染物信息
-							tempUtil(jplMap,jplrlu);
+							jplrlu=tempUtil(jplMap,jplrlu);
 							//添加Code
 							jplrlu.setCode(checkCode+"00");
 							//根据Code查询对应的中文名称
@@ -1027,7 +1027,7 @@ public class EchartsController {
 								jplMap=selectjplMap.get(j);
 								if(jplMap.get("CODE").toString().startsWith(checkCode)){
 									//获取行业中的减排污染物信息
-									tempUtil(jplMap,jplrlu);
+									jplrlu=tempUtil(jplMap,jplrlu);
 									//包含子集
 									isTrue=true;
 								}else{
@@ -1050,15 +1050,16 @@ public class EchartsController {
 							continue;
 						}
 					}
+					o=j-1;
 					resultUtil(basisrlu,jplrlu);
 					resultList.add(jplrlu);
 				}
 			}else{
 				//执行SQL返回Code的结果集
 				List<Map> selectcodeMap = this.getBySqlMapper.findRecords(codeSql);
-				for(Map cityCode :selectcodeMap){
+				for(int o=0;o<selectcodeMap.size();o++){
 					//取Code
-					String code=cityCode.get("CODE").toString();
+					String code=selectcodeMap.get(o).get("CODE").toString();
 					//定义基准结果对象
 					RadioListUtil basisrlu=null;
 					//循环所有基准情景的减排结果
@@ -1068,7 +1069,7 @@ public class EchartsController {
 						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
 						if(basisMap.get("CODE").toString().equals(code)){
 							//获取行业中的减排污染物信息
-							tempUtil(basisMap,basisrlu);
+							basisrlu=tempUtil(basisMap,basisrlu);
 							//添加Code
 							basisrlu.setCode(code);
 							//根据Code查询对应的中文名称
@@ -1112,7 +1113,7 @@ public class EchartsController {
 						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
 						if(jplMap.get("CODE").toString().equals(code)){
 							//获取行业中的减排污染物信息
-							tempUtil(jplMap,jplrlu);
+							jplrlu=tempUtil(jplMap,jplrlu);
 							//添加Code
 							jplrlu.setCode(code);
 							//根据Code查询对应的中文名称
@@ -1541,7 +1542,7 @@ public class EchartsController {
 	 * @param rlu
 	 * @throws Exception
 	 */
-	public void tempUtil(Map ede,RadioListUtil rlu) throws Exception{
+	public RadioListUtil tempUtil(Map ede,RadioListUtil rlu) throws Exception{
 		//判断结果对象是非为空 如果为空则新建
 		if(rlu==null){
 			rlu=new RadioListUtil();
@@ -1613,5 +1614,6 @@ public class EchartsController {
 		}else{
 			rlu.setPMFINE(pmfine);
 		}
+		return rlu;
 	}
 }
