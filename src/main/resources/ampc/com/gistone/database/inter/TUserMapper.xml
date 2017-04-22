@@ -52,18 +52,18 @@
   
   
   <!-- 判断用户名是否存在 -->
-  <select id="checkUserId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+  <select id="checkUserId" parameterType="java.lang.String" resultType="java.lang.Integer">
 		SELECT COUNT(*)
 			FROM T_USER 
-				WHERE  USER_ACCOUNT=#{_parameter,jdbcType=DECIMAL}
+				WHERE  USER_ACCOUNT=#{_parameter,jdbcType=VARCHAR}
   </select>
   
   
    <!-- 判断用户名是否可用 -->
-  <select id="checkUserIsON" parameterType="java.lang.Long" resultType="java.lang.Integer">
+  <select id="checkUserIsON" parameterType="java.lang.String" resultType="java.lang.Integer">
 		SELECT COUNT(*)
 			FROM T_USER 
-				WHERE  USER_ACCOUNT=#{_parameter,jdbcType=DECIMAL} AND USER_VALIDITY>sysdate
+				WHERE  USER_ACCOUNT=#{_parameter,jdbcType=VARCHAR} AND USER_VALIDITY>sysdate
   </select>
   
   

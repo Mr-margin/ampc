@@ -31,7 +31,7 @@ public interface TUserMapper {
 	 * @param userId
 	 * @return
 	 */
-	Integer checkUserId(Long userId);
+	Integer checkUserId(String account);
 	
 	
 	/**
@@ -39,7 +39,7 @@ public interface TUserMapper {
 	 * @param userId
 	 * @return
 	 */
-	Integer checkUserIsON(Long userId);
+	Integer checkUserIsON(String account);
     int deleteByPrimaryKey(Long userId);
 
     int insert(TUser record);
