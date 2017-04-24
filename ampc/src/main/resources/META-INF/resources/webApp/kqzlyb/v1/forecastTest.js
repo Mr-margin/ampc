@@ -52,7 +52,7 @@ function initialize(){
   dps_Date = requestDate();
 
   $.when(dps_Date,dps_City).then(function(){
-    console.log('initialize  updata')
+    console.log('initialize  updata');
     updata();
   })
 }
@@ -200,16 +200,25 @@ function requestRegion(){
 
 /*请求可选日期范围*/
 function requestDate(){
-  var url = '';
+  var url = '/Air/get_time';
   return ajaxPost(url,{
     userId:userId
   }).success(function(res){
 
-    /*这里要初始化时间*/
-    changeMsg.startD = '';
-    changeMsg.endD = '';
-    initWrwDate();
-    initQxysDate();
+    if(res.status == 0){
+      /*这里要初始化时间*/
+
+      if(!(moment(res.data.maxtime).add(-7,'d').isBefore(moment(res.data.mintime)))){
+        changeMsg.startD = moment(res.data.maxtime).add(-7,'d').format('YYYY-MM-DD')
+      }else{
+        changeMsg.startD = moment(res.data.mintime).format('YYYY-MM-DD')
+      }
+
+      changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
+      initWrwDate(moment(res.data.mintime).format('YYYY-MM-DD'),moment(res.data.maxtime).format('YYYY-MM-DD'),changeMsg.startD,changeMsg.endD);
+      initQxysDate(moment(res.data.mintime).format('YYYY-MM-DD'),moment(res.data.maxtime).format('YYYY-MM-DD'),changeMsg.startD,changeMsg.endD);
+    }
+
   })
 }
 
