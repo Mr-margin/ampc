@@ -1263,6 +1263,11 @@ public class PlanAndMeasureController {
 			//如果执行成功则返回前台对应信息
 			if(mapResult.get("status").toString().equals("success")){
 				Map map1=(Map)mapResult.get("data");
+				if(map1.get("status").toString().equals("Queue")){
+					resultMap.put("type", 2);
+					LogUtil.getLogger().info("PlanAndMeasureController   区域的减排状态排队中！");
+					return AmpcResult.build(0,"计算排队中!",resultMap);
+				}
 				resultMap.put("type", 0);
 				//用了多少秒
 				resultMap.put("time", map1.get("time"));
