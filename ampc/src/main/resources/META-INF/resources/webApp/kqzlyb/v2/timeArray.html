@@ -1,20 +1,193 @@
 <!-- 空气质量预报 》》 时间序列 -->
-<div class="kqBtn">
-	<div class="btn-group">
-		<button class="btn btn-outline btn-success" type="button">污染物</button>
-		<button class="btn btn-outline btn-success" type="button">气象要素</button>
-	</div>
+<style type="text/css">
+  .form-control:hover, .form-control:focus, .form-control:active, .form-control.active, .open .dropdown-toggle.form-control {
+    border: 1px solid #4f9de0;
+  }
+</style>
+<!-- <div class="kqBtn"> -->
+<!-- 	<div class="btn-group"> -->
+<!-- 		<button class="btn btn-outline btn-success" type="button">污染物</button> -->
+<!-- 		<button class="btn btn-outline btn-success" type="button">气象要素</button> -->
+<!-- 	</div> -->
+<!-- </div> -->
+<!-- <div class="ibox-content"style="width:100%;height:100%;padding: 0px 0px 0px 0px;"> -->
+<!-- 	<div class="col-md-12" id="mapNum"style="width:100%;height:100%;border:0px solid #75B9E6;padding: 0px;"> -->
+<!-- 		<div class="" id="main"style="height:300px;width:95%;margin-left:auto;margin-right:auto;margin-top:20px"></div> -->
+<!-- 		<div class="col-md-9 col-md-offset-10" style="margin-top:30px"> -->
+<!-- 			<button type="button" class="btn btn-outline btn-success"> -->
+<!-- 				<lable>组分收起</lable> -->
+<!-- 			</button> -->
+<!-- 		</div> -->
+<!-- 		<div class="" id="mainTwo"style="height: 300px;width:95%;margin-left:auto;margin-right:auto;margin-top:10px"></div> -->
+<!-- 	</div> -->
+<!-- </div> -->
+
+
+<div class='col-md-12' style="padding-left: 0px;padding-right: 0px;">
+  <div class="ibox float-e-margins" style="height:100%;">
+    <div class="ibox-content" style="height:100%;overflow-y: auto;padding: 0px;">
+
+
+      <div class="row" style="margin-top: 12px;margin-left: 0px;margin-right: 0px;height:48px;">
+
+        <div class="col-sm-5" style="padding-left:0px;">
+          <div class="input-group m-b" style="margin-bottom: 0px">
+            <span class="input-group-addon" style="border: 0px solid #E5E6E7;">检测站点:</span>
+
+            <div class="" style="margin-bottom:0px;padding-left:0px;">
+              <div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
+                <div class="input-group group-select">
+                  <select class="form-control m-b" id="proStation" style="border-color: #1c84c6;">
+                   
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
+                <div class="input-group group-select">
+                  <select class="form-control m-b" id="cityStation" style="border-color: #1c84c6;">
+                    
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
+                <div class="input-group group-select">
+                  <select class="form-control m-b" id="station" style="border-color: #1c84c6;">
+                   
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="btn-group col-md-3" data-toggle="buttons" style="margin-top: 3px;padding: 0;">
+            <label class="btn btn-outline btn-success "><input type="radio" name="rms" value="hour">逐小时</label>
+            <label class="btn btn-outline btn-success  active"><input checked type="radio" name="rms" value="day">逐日</label>
+          </div>
+          <div class="col-md-9" style="padding: 0;">
+            <div class="input-group m-b" style="margin-bottom: 0px">
+              <span class="input-group-addon" style="border: 1px solid #E5E6E7;">日期和时间: </span>
+              <select class="form-control m-b" id="sTime-d" name="sTime" style="width: 70%">
+              </select>
+              <select class="form-control m-b disNone" id="sTime-h" name="sTime" style="width: 30%">
+                <option>00</option>
+                <option>01</option>
+                <option>02</option>
+                <option>03</option>
+                <option>04</option>
+                <option>05</option>
+                <option>06</option>
+                <option>07</option>
+                <option>08</option>
+                <option>09</option>
+                <option>10</option>
+                <option>11</option>
+                <option>12</option>
+                <option>13</option>
+                <option>14</option>
+                <option>15</option>
+                <option>16</option>
+                <option>17</option>
+                <option>18</option>
+                <option>19</option>
+                <option>20</option>
+                <option>21</option>
+                <option>22</option>
+                <option>23</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-2" style="padding-left:0px;">
+          <div class="input-group m-b" style="margin-bottom: 0px">
+            <span class="input-group-addon" style="border: 0px solid #E5E6E7;">高度:</span>
+
+            <div class="" style="margin-bottom:0px;padding-left:0px;">
+              <div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
+                <div class="input-group group-select">
+                  <select class="form-control m-b" id="height" style="padding-left:6px;border-color: #1c84c6;">
+                    <option value="5">300m</option>
+                    <option value="6">400m</option>
+                    <option value="7">500m</option>
+                    <option value="8">700m</option>
+                    <option value="9" selected="selected">1000m</option>
+                    <option value="10">1500m</option>
+                    <option value="11">2000m</option>
+                    <option value="12">3000m</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row"
+           style="margin-left: 0px;margin-right: 0px;height:calc(100% - 48px);">
+        <div class='col-md-12' id="initEcharts" style="height:100%;padding-left: 0px;">
+          <div class="echartsCZ col-md-3 day hour" id="PM₂₅"></div>
+          <div class="echartsCZ col-md-3 day hour" id="PM₁₀"></div>
+          <div class="echartsCZ col-md-3 hour" id="O₃"></div>
+          <div class="echartsCZ col-md-3 day" id="O₃_8_MAX"></div>
+          <div class="echartsCZ col-md-3 day" id="O₃_1_MAX"></div>
+          <div class="echartsCZ col-md-3 day" id="O₃_AVG"></div>
+          <div class="echartsCZ col-md-3 day hour" id="SO₂"></div>
+          <div class="echartsCZ col-md-3 day hour" id="NO₂"></div>
+          <div class="echartsCZ col-md-3 day hour" id="CO"></div>
+          <div class="echartsCZ col-md-3 day hour" id="SO₄"></div>
+          <div class="echartsCZ col-md-3 day hour" id="NO₃"></div>
+          <div class="echartsCZ col-md-3 day hour" id="NH₄"></div>
+          <div class="echartsCZ col-md-3 day hour" id="BC"></div>
+          <div class="echartsCZ col-md-3 day hour" id="OM"></div>
+          <div class="echartsCZ col-md-3 day hour" id="PMFINE"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<div class="ibox-content"style="width:100%;height:100%;padding: 0px 0px 0px 0px;">
-	<div class="col-md-12" id="mapNum"style="width:100%;height:100%;border:0px solid #75B9E6;padding: 0px;">
-		<div class="" id="main"style="height:300px;width:95%;margin-left:auto;margin-right:auto;margin-top:20px"></div>
-		<div class="col-md-9 col-md-offset-10" style="margin-top:30px">
-			<button type="button" class="btn btn-outline btn-success">
-				<lable>组分收起</lable>
-			</button>
-		</div>
-		<div class="" id="mainTwo"style="height: 300px;width:95%;margin-left:auto;margin-right:auto;margin-top:10px"></div>
-	</div>
+
+
+<!-- 设置情景范围模态框 -->
+<div class="modal fade createRwModal" id="Initialization" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">创建情景</h4>
+      </div>
+      <div class="modal-body">
+        <div class="rwCon" >
+          <div class="form-group mt10 clearfix">
+            <label for="task" class="col-md-2 control-label lh29">任务名称</label>
+
+            <div class="col-md-10">
+              <select class="form-control" id="task" name="task" onchange="sceneTable()"></select>
+            </div>
+          </div>
+          <div class="form-group mt10 clearfix"><!-- id="tableId" style="display: none;" -->
+            <div class="col-md-10 col-md-offset-2">
+              <table class="table table-striped table-bordered table-hover" id="sceneTableId" style="margin-top:5px;">
+                <thead>
+                <th data-checkbox="true" data-field="state"></th>
+                <th data-field="scenarinoName">情景名称</th>
+                <th data-field="scenType">情景描述</th>
+                <th data-field="scenarinoStartDate">时间</th>
+                <th data-field="scenarinoEndDate">时间</th>
+                </thead>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer new-foot" >
+        <button type="button" class="btn btn-primary createRwBtn" onclick="save_scene();">确定</button>
+        <button type="button" class="btn btn-default" id="close_scene" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 
