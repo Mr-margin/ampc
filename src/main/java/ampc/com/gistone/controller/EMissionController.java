@@ -484,6 +484,9 @@ public class EMissionController {
 			//JSONArray industryarr=JSONArray.fromObject(tScenarinoDetail.getExpand1());
 			//将所有日期不重复加入集合
 			List<Date> datelist=new ArrayList<Date>();
+			if(pollutant.equals("NOX")){
+			pollutant="NOx";
+			}
 			for(TEmissionDetailWithBLOBs em:tEmissions){
 				if(!datelist.contains(em.getEmissionDate())){
 					datelist.add(em.getEmissionDate());
