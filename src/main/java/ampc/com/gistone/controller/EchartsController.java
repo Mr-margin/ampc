@@ -245,6 +245,9 @@ public class EchartsController {
 			Long addressLevle=Long.parseLong(data.get("addressLevle").toString());
 			// 污染物类型
 			String stainType = data.get("stainType").toString();
+			if(stainType.equals("NOX")){
+				stainType="NOx";
+			}
 			//查询类型
 			Integer type=Integer.valueOf(data.get("type").toString());
 			//情景的开始时间
