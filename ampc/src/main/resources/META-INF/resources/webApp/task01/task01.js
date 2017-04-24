@@ -412,7 +412,7 @@ function initQjTable() {
       $('.qjDel').attr('disabled', true);
     },
     onPostBody: function () {
-      $("#qjTable>tbody").append("<tr style='height: 100%'><td></td><td colspan='7'></td></tr>")
+      $("#qjTable>tbody").append("<tr style='height: 100%'><td></td><td colspan='8'></td></tr>")
     },
 
 
