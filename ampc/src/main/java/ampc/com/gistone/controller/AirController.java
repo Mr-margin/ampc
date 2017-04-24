@@ -101,8 +101,8 @@ public class AirController {
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(times);
 			cal.add(Calendar.DATE, 1);
-			String addTimeDate =sdf.format(cal.getTime());
-			Date pathDate=sdf.parse(addTimeDate);
+			String addTimeDate =daysdf.format(cal.getTime());
+			Date pathDate=daysdf.parse(addTimeDate);
 			int hournum=times.getHours();
 			Date daytimes=daysdf.parse(time);
 			String daytime=daysdf.format(daytimes);
