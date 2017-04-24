@@ -2,14 +2,14 @@ $(function () {
   /**
    *设置导航条信息
    */
-  $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">垂直廓线</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
+  $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">空气质量预报</span>>><span style="padding-left: 15px;padding-right: 15px;">垂直廓线</span>');
   //全选复选框
   //initTableCheckbox();
 
 
 });
 /*存储全局改变量*/
-var dps_codeStation,dps_station;
+var dps_codeStation,dps_station,dps_Date;
 var ooo = [['-',0],['-',50],['-',100],['-',200],['-',300],['-',400],['-',500],['-',700],['-',1000],['-',1500],['-',2000],['-',3000]]
 var changeMsg = {
   pro: '',//站点选择
@@ -47,10 +47,13 @@ var speciesObj = {
 };
 /*echarts 配置*/
 var optionAll = {
+  grid:{
+    x:50
+  },
   title: {
     bottom: 10,
-    left: "40%",
-    text: ''  //可变，存储每个污染物
+    left: 'center',
+    text: '模拟数据'  //可变，存储每个污染物
   },
   legend: {
     data: [] //可变，存储所有已选情景
@@ -85,14 +88,17 @@ var optionAll = {
   },
   xAxis: {
     type: 'value',
-    name: '/μg/m³',  //可变，CO为mg/m³其他的为'μg/m³
+    //name: '/μg/m³',  //可变，CO为mg/m³其他的为'μg/m³
     nameGap: 0	,
     boundaryGap: ['0%', '8%'],
   },
   yAxis: {
-    name: 'm',
+    //name: 'm',
     nameGap: 5,
     type: 'value',
+    axisLabel : {
+      formatter: '{value}m'
+    },
 //    interval: 100,
     axisLine: {onZero: false},
   },
@@ -110,8 +116,8 @@ var optionAll = {
 function initialize() {
 
   setStation();
-  setTime(sceneInitialization.s, sceneInitialization.e);
-  $.when(dps_codeStation,dps_station).then(function () {
+  setTime();
+  $.when(dps_Date,dps_station,dps_codeStation).then(function () {
     updata();
   });
 
@@ -169,20 +175,39 @@ function findStation(code){
 
 /*设置时间*/
 /*只限输入毫秒数*/
-function setTime(s, e) {
-  s = moment(s - 0);
-  e = moment(e - 0);
-  $('#sTime-d').empty();
-  while (true) {
-    $('#sTime-d').append($('<option>' + s.format('YYYY-MM-DD') + '</option>'));
-    if (e.format('YYYY-MM-DD') == 'Invalid date') {
-      break;
+function setTime() {
+  var url = '/Air/get_time';
+  dps_Date = ajaxPost(url,{
+    userId:userId
+  }).success(function(res){
+
+    if(res.status == 0){
+      /*这里要初始化时间*/
+
+      changeMsg.minDate = res.data.mintime;
+      changeMsg.maxDate = res.data.maxtime;
+
+      if(!(moment(res.data.maxtime).add(-7,'d').isBefore(moment(res.data.mintime)))){
+        changeMsg.startD = moment(res.data.maxtime).add(-7,'d').format('YYYY-MM-DD')
+      }else{
+        changeMsg.startD = moment(res.data.mintime).format('YYYY-MM-DD')
+      }
+      changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
+      changeMsg.time = moment(changeMsg.startD).format('YYYY-MM-DD HH');
+
+
+      /*测试使用*/
+      changeMsg.minDate = '2017-04-14';
+      changeMsg.maxDate = '2017-04-16';
+      changeMsg.startD = '2017-04-14';
+      changeMsg.endD = '2017-04-16';
+      changeMsg.time = moment(changeMsg.startD).format('YYYY-MM-DD HH');
+      /*测试使用 end*/
+      //initCZDate(moment(res.data.mintime).format('YYYY-MM-DD'),moment(res.data.maxtime).format('YYYY-MM-DD'),changeMsg.startD,changeMsg.endD);
+      initCZDate(changeMsg.startD,changeMsg.endD,changeMsg.startD,changeMsg.endD);
     }
-    if (e.isBefore(s.add(1, 'd'))) {
-      break;
-    }
-  }
-  changeMsg.time = $('#sTime-d').val() + ' 00'
+
+  })
 }
 
 
@@ -200,47 +225,83 @@ function initEcharts() {
     echarts.dispose(document.getElementById(species[i]));
     var es = echarts.init(document.getElementById(species[i]));
     var option = $.extend(true, {}, optionAll);
-    option.title.text = species[i];
-    option.legend.data = (function () {
-      var arr = [];
-      for (var a = 0; a < sceneInitialization.data.length; a++) {
-        arr.push(sceneInitialization.data[a].scenarinoName)
-      };
 
-
-      arr.unshift('基准');
-      return arr;
-    })();
+    //option.legend.data = ['模拟数据'];
     if (species[i] != 'CO') {
-      option.xAxis.name = 'μg/m³';
+      //option.xAxis.name = 'μg/m³';
+      option.title.text = species[i]+'（μg/m³）';
     } else {
-      option.xAxis.name = 'mg/m³';
+      //option.xAxis.name = 'mg/m³';
+      option.title.text = species[i]+'（mg/m³）';
     }
     option.series = [];
 
 
-    for (var sp = 0; sp < sceneInitialization.data.length; sp++) {
-      var id = sceneInitialization.data[sp].scenarinoId;
-      var name = sceneInitialization.data[sp].scenarinoName;
-
 
       option.series.push({
-        name: name, //可变，存储情景名称
+        name: '模拟数据', //可变，存储情景名称
         type: 'line',
         smooth: true,
         symbolSize: 5,
-        data: data[id][speciesObj[species[i]]].slice(0, $('#height').val())  //可变，存储情景数据
+        data: data[speciesObj[species[i]]].slice(0, $('#height').val())  //可变，存储情景数据
       })
-    }
-    option.series.unshift({
-      name: '基准', //可变，存储情景名称
-      type: 'line',
-      smooth: true,
-      symbolSize: 5,
-      data: data['-1'][speciesObj[species[i]]].slice(0, $('#height').val())  //可变，存储情景数据
-    });
     es.setOption(option);
   }
+}
+
+/**
+ * 初始化时间范围
+ * @param s 最大开始时间
+ * @param e 最大结束时间
+ * @param start 默认开始时间
+ * @param end 默认结束时间
+ */
+function initCZDate(s, e, start, end) {
+  $('#CZDate').daterangepicker({
+    singleDatePicker: true,  //显示单个日历
+    timePicker: changeMsg.rms == 'day'?false:true,  //允许选择时间
+    timePicker24Hour: true, //时间24小时制
+    minDate: s,//最早可选日期
+    maxDate: e,//最大可选日期
+    locale: {
+      format: "YYYY-MM-DD",
+      separator: " 至 ",
+      applyLabel: "确定", //按钮文字
+      cancelLabel: "取消",//按钮文字
+      weekLabel: "W",
+      daysOfWeek: [
+        "日", "一", "二", "三", "四", "五", "六"
+      ],
+      monthNames: [
+        "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"
+      ],
+      firstDay: 1
+    },
+    "startDate": start,
+    "endDate": end,
+    "opens": "right"
+  }, function (start, end, label) {
+
+    changeMsg.time = start.format('YYYY-MM-DD HH');
+    updata(true);
+  })
+  var d = $('#CZDate').data('daterangepicker');
+  d.element.off();
+}
+
+/*按钮打开日期*/
+function showDate(type) {
+  var d = $('#CZDate').data('daterangepicker');
+  if(!d){
+    swal({
+      title: '无可选日期!',
+      type: 'error',
+      timer: 1000,
+      showConfirmButton: false
+    });
+    return
+  }
+  d.toggle();
 }
 
 
@@ -252,13 +313,8 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
   for (var i = 0; i < speciesArr[rms].length; i++) {
     $('#species').append($('<option>' + speciesArr[rms][i] + '</option>'))
   }
-  if (rms == 'day') {
-    $('#sTime-h').addClass('disNone');
-    $('#eTimeP').addClass('disNone');
-  } else if (rms == 'hour') {
-    $('#sTime-h').removeClass('disNone');
-    $('#eTimeP').addClass('disNone');
-  }
+
+  initCZDate(changeMsg.minDate,changeMsg.maxDate,changeMsg.startD,changeMsg.endD);
 
   updata();
 });
@@ -320,7 +376,7 @@ var czData;
 /*设置echarts图表*/
 function updata() {
   $.when(dps_station).then(function () {
-    var url = '/Appraisal/find_vertical';
+    var url = '/Air/find_vertical';
     ajaxPost(url, {
       userId: userId,
       mode:changeMsg.station=='avg'?'city':'point',
@@ -353,7 +409,6 @@ function updata() {
     })
   });
 }
-
 
 
 
