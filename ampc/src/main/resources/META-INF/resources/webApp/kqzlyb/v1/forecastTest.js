@@ -160,13 +160,13 @@ function setStation(regionId,type){
   var url = '/Site/find_Site';
   return ajaxPost(url,{
     userId:userId,
-    siteCode:regionId
+    siteCode:regionId.substr(0,4)
   });
 }
 
 /*请求省市区code*/
 function requestRegion(){
-  var url = '/Site/find_code';
+  var url = '/Site/find_codes';
   return ajaxPost(url,{
     userId:userId
   }).success(function(res){
@@ -177,11 +177,11 @@ function requestRegion(){
     if (res.status == 0) {
       allCode = res.data;
       for (var pro in allCode) {
-        $('.proStation').append($('<option value="' + allCode[pro].code + '">' + allCode[pro].name + '</option>'))
+        $('.proStation').append($('<option value="' + pro + '">' + allCode[pro].name + '</option>'))
       }
-      var cityStation = allCode[$('.proStation').eq(0).val()].station;
+      var cityStation = allCode[$('.proStation').val()].city;
       for (var city in cityStation) {
-        $('.cityStation').append($('<option value="' + cityStation[city].code + '">' + cityStation[city].name + '</option>'))
+        $('.cityStation').append($('<option value="' + city + '">' + cityStation[city] + '</option>'))
       }
 
       changeMsg.pro = $('.proStation').val();
@@ -193,7 +193,6 @@ function requestRegion(){
     } else {
       console.log('站点请求故障！！！')
     }
-
 
   })
 }
@@ -294,9 +293,9 @@ $('.proStation').on('change',function(e){
   $('.proStation').val(pro);
   changeMsg.pro = pro;
   $('.cityStation').empty();
-  var cityStation = allCode[pro].station;
+  var cityStation = allCode[pro].city;
   for (var city in cityStation) {
-    $('.cityStation').append($('<option value="' + cityStation[city].code + '">' + cityStation[city].name + '</option>'))
+    $('.cityStation').append($('<option value="' + city + '">' + cityStation[city] + '</option>'))
   }
   changeMsg.city = $('.cityStation').val();
   if(!dps_Station[changeMsg.city+changeMsg.type]){
