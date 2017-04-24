@@ -606,7 +606,7 @@ function set_sce() {
 $('#proStation').on('change', function (e) {
 	  var pro = $(e.target).val();
 	  changeMsg.pro = pro;
-	  $('#cityStation').empty()
+	  $('#cityStation').empty();
 	  var cityStation = allStation[pro].station;
 	  for (var city in cityStation) {
 	    $('#cityStation').append($('<option value="' + cityStation[city].code + '">' + cityStation[city].name + '</option>'))
