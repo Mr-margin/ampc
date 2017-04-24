@@ -47,9 +47,12 @@ var speciesObj = {
 };
 /*echarts 配置*/
 var optionAll = {
+  grid:{
+    x:50
+  },
   title: {
     bottom: 10,
-    left: "40%",
+    left: "center",
     text: ''  //可变，存储每个污染物
   },
   legend: {
@@ -85,14 +88,17 @@ var optionAll = {
   },
   xAxis: {
     type: 'value',
-    name: '/μg/m³',  //可变，CO为mg/m³其他的为'μg/m³
+    //name: '/μg/m³',  //可变，CO为mg/m³其他的为'μg/m³
     nameGap: 0	,
     boundaryGap: ['0%', '8%'],
   },
   yAxis: {
-    name: 'm',
+    //name: 'm',
     nameGap: 5,
     type: 'value',
+    axisLabel : {
+      formatter: '{value}m'
+    },
 //    interval: 100,
     axisLine: {onZero: false},
   },
@@ -232,7 +238,7 @@ function initEcharts() {
     //div.addClass('col-md-3');
     //$('#initEcharts').append(div);
     var option = $.extend(true, {}, optionAll);
-    option.title.text = species[i];
+
     option.legend.data = (function () {
       var arr = [];
       for (var a = 0; a < sceneInitialization.data.length; a++) {
@@ -254,9 +260,9 @@ function initEcharts() {
     //  return arr;
     //})();
     if (species[i] != 'CO') {
-      option.xAxis.name = 'μg/m³';
+      option.title.text = species[i]+"(μg/m³)";
     } else {
-      option.xAxis.name = 'mg/m³';
+      option.title.text = species[i]+"(mg/m³)";
     }
     option.series = [];
     //var arrrr = [466,458,456];
