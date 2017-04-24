@@ -1568,6 +1568,7 @@ function subStartUp() {
   })
 }
 
+var jpztSetTimeOut;
 /*重置减排计算*/
 function initJPJS() {
   var url = '/plan/update_Status';
@@ -1576,7 +1577,8 @@ function initJPJS() {
     scenarinoId: qjMsg.qjId
   }).success(function (res) {
     if (res.status == 0) {
-      jpztckBtn();
+      window.clearTimeout(jpztSetTimeOut);
+      jpztckBtn(3000);
     } else {
       console.log(url + '故障')
     }
@@ -1586,7 +1588,7 @@ function initJPJS() {
 }
 
 /*减排状态查看*/
-function jpztckBtn() {
+function jpztckBtn(t) {
   var url = '/jp/areaStatusJp';
   var params = {
     scenarinoId: msg.content.qjId,
@@ -1597,7 +1599,7 @@ function jpztckBtn() {
 
     if (res.status == 0) {
       if (res.data.type == 0) {
-        var jsjd = res.data.percent * 100 + '%';
+        var jsjd = (Math.round(res.data.percent * 10000))/100 + '%';
         var yys = moment(res.data.time * 1000).subtract(8, 'h').format('HH时mm分ss秒');
         var sysj = moment((res.data.time / res.data.percent - res.data.time) * 1000).subtract(8, 'h').format('HH时mm分ss秒');
 
@@ -1605,15 +1607,13 @@ function jpztckBtn() {
         $('.yys').empty().html(yys);
         $('.sysj').empty().html(sysj);
 
+
         if (res.data.percent == 1) {
-          var url = '/scenarino/find_Scenarino_status';
-          ajaxPost(url, {
-            userId: userId,
-            scenarinoId: qjMsg.qjId
-          }).success(function (res) {
-            qjMsg.scenarinoStatus = res.data.scenarinoStatus;
-            scenarinoType(qjMsg.scenarinoStatus);
-          })
+          findQJstatus();
+        } else {
+          jpztSetTimeOut = window.setTimeout(function () {
+            jpztckBtn(t)
+          }, t)
         }
       } else if (res.data.type == 1) {
         console.log('重新计算中！！！')
@@ -1627,11 +1627,27 @@ function jpztckBtn() {
   })
 }
 
+function findQJstatus(){
+  var url = '/scenarino/find_Scenarino_status';
+  ajaxPost(url, {
+    userId: userId,
+    scenarinoId: qjMsg.qjId
+  }).success(function (res) {
+    qjMsg.scenarinoStatus = res.data.scenarinoStatus;
+    if(qjMsg.scenarinoStatus!=5){
+      findQJstatus();
+    }else{
+      scenarinoType(qjMsg.scenarinoStatus);
+    }
+  })
+}
+
 $('#jpzt').on('show.bs.modal', function (event) {
   $('#jpzt .rw span').empty().html(selectRW.missionName);
   $('#jpzt .qj span').empty().html(msg.content.qjName);
-  jpztckBtn();
-})
+  window.clearTimeout(jpztSetTimeOut);
+  jpztckBtn(3000);
+});
 
 /*获取模拟范围*/
 function getMnfw() {
