@@ -52,5 +52,5 @@ public class AirController {
 			LogUtil.getLogger().error("异常了",e);
 			return AmpcResult.build(0, "执行失败");
 		}
-	}	
+	}
 }
