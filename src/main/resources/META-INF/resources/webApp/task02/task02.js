@@ -354,6 +354,22 @@ function delArea(e) {
           allData.splice(areaIndex, 1);
           $('.areaTitle_con').eq(areaIndex).remove();
           showTimeline(allData);
+
+          for (var i = 0; i < allData.length; i++) {
+            for (var ii = 0; ii < allData[i].timeItems.length; ii++) {
+              if (allData[i].timeItems[ii].planId == -1) {
+                $('.jpjs').removeClass('disNone');
+                $('.jpjs').attr('disabled', true);
+                $('.jpztck').addClass('disNone');
+              } else {
+                $('.jpjs').removeAttr('disNone');
+                $('.jpjs').removeClass('disNone');
+                $('.jpztck').addClass('disNone');
+                return;
+              }
+            }
+          }
+
           //$('.areaTitle_con').eq(areaIndex).remove();
           swal({
             title: '已删除!',
@@ -551,6 +567,20 @@ function delTimes() {
     allData[areaIndex].timeFrame.splice(index, 1);
     allData[areaIndex].timeItems.splice(timeIndex, 1);
     showTimeline(allData);
+    for (var i = 0; i < allData.length; i++) {
+      for (var ii = 0; ii < allData[i].timeItems.length; ii++) {
+        if (allData[i].timeItems[ii].planId == -1) {
+          $('.jpjs').removeClass('disNone');
+          $('.jpjs').attr('disabled', true);
+          $('.jpztck').addClass('disNone');
+        } else {
+          $('.jpjs').removeAttr('disNone');
+          $('.jpjs').removeClass('disNone');
+          $('.jpztck').addClass('disNone');
+          return;
+        }
+      }
+    }
   })
 
 }
@@ -792,7 +822,7 @@ function addPlan(e) {
       $('#yaName').val('');
     });
   } else {
-    if(!selectCopyPlan){
+    if (!selectCopyPlan) {
       swal({
         title: '无预案!',
         type: 'error',
@@ -800,7 +830,8 @@ function addPlan(e) {
         showConfirmButton: false
       });
       return
-    };
+    }
+    ;
     var url = '/plan/copy_plan';
 
     ajaxPost(url, {
@@ -808,12 +839,15 @@ function addPlan(e) {
       timeId: allData[areaIndex].timeItems[timeIndex].timeId,
       scenarinoStatus: qjMsg.scenarinoStatus,
       scenarioId: qjMsg.qjId,
-      missionId:qjMsg.rwId,
-      areaId:allData[areaIndex].areaId,
-      timeStartTime:moment(allData[areaIndex].timeItems[timeIndex].timeStartDate).format('YYYY-MM-DD HH'),
-      timeEndTime:moment(allData[areaIndex].timeItems[timeIndex].timeEndDate).format('YYYY-MM-DD HH'),
-      copyPlanId:selectCopyPlan.planReuseId
+      missionId: qjMsg.rwId,
+      areaId: allData[areaIndex].areaId,
+      timeStartTime: moment(allData[areaIndex].timeItems[timeIndex].timeStartDate).format('YYYY-MM-DD HH'),
+      timeEndTime: moment(allData[areaIndex].timeItems[timeIndex].timeEndDate).format('YYYY-MM-DD HH'),
+      copyPlanId: selectCopyPlan.planReuseId
     }).success(function (res) {
+      $('.jpjs.disNone').removeClass('disNone');
+      $('.jpjs').removeAttr('disabled');
+      $('.jpztck').addClass('disNone');
       allData[areaIndex].timeItems[timeIndex].planId = res.data;
       allData[areaIndex].timeItems[timeIndex].planName = selectCopyPlan.planReuseName;
       showTimeline(allData);
@@ -854,7 +888,7 @@ function copyPlan() {
 function editPlan(t) {
   if (!t) {
     t = selectedTimes;
-  }else{
+  } else {
     selectedTimes = t;
   }
   areaIndex = t.index;
@@ -875,12 +909,13 @@ function editPlan(t) {
 
   vipspa.setMessage(msg);
 
-  if (msg.content.planId == -1){
+  if (msg.content.planId == -1) {
     $('#timePlan').modal('show');
     $('a[href="#plan"]').eq(0).click();
 
     return
-  };
+  }
+  ;
 
   createNewPlan();
 }
@@ -1205,8 +1240,8 @@ function createEditArea() {
 
 var cnArea = false;
 /*检测是否超过最大区域数量*/
-function createNewAreaBtn(){
-  if(allData.length>=maxAreaNum){
+function createNewAreaBtn() {
+  if (allData.length >= maxAreaNum) {
     cnArea = false;
     swal({
       title: '已达最大区域数量!',
@@ -1214,7 +1249,7 @@ function createNewAreaBtn(){
       timer: 1000,
       showConfirmButton: false
     });
-  }else{
+  } else {
     cnArea = true;
     $('#editArea').modal('show');
   }
@@ -1571,7 +1606,7 @@ function initCoptTable() {
       var json = {
         "token": "",
         "data": {
-          "scenarinoId":qjMsg.qjId,
+          "scenarinoId": qjMsg.qjId,
           "queryName": m.searchText || '',
           "missionStatus": statusRW,
           "pageNum": m.pageNumber,
@@ -1613,7 +1648,7 @@ function search() {
     json = {
       "token": "",
       "data": {
-        "scenarinoId":qjMsg.qjId,
+        "scenarinoId": qjMsg.qjId,
         "queryName": params.searchText || '',
         "pageNum": 1,
         "pageSize": params.pageSize,
@@ -1758,6 +1793,8 @@ function jpjsBtn() {
 
           scenarinoType(3);
           qjMsg.scenarinoStatus = 3;
+          window.clearTimeout(jpztSetTimeOut);
+          //jpztckBtn(60000);
         } else {
           console.log('计算异常')
         }
@@ -1779,7 +1816,8 @@ function initJPJS() {
     scenarinoId: qjMsg.qjId
   }).success(function (res) {
     if (res.status == 0) {
-      jpztckBtn();
+      window.clearTimeout(jpztSetTimeOut);
+      jpztckBtn(3000);
     } else {
       console.log(url + '故障')
     }
@@ -1788,32 +1826,21 @@ function initJPJS() {
   })
 }
 
+var jpztSetTimeOut;
+
 /*减排状态查看*/
-function jpztckBtn() {
+function jpztckBtn(t) {
   var url = '/jp/areaStatusJp';
   var params = {
     scenarinoId: qjMsg.qjId,
-    areaAndPlanIds: {},
-    userId: userId
+    userId: userId,
+    areaAndPlanIds:''
   }
-  for (var i = 0; i < allData.length; i++) {
-    var planArr = [];
-    var times = allData[i].timeItems;
-    for (var p = 0; p < times.length; p++) {
-      if (times[p].planId != -1) {
-        planArr.push(times[p].planId)
-      }
-    }
-    if (planArr.length > 0) {
-      params.areaAndPlanIds[allData[i].areaId] = planArr
-    }
-  }
-  if (Object.keys(params.areaAndPlanIds).length > 0) {
     ajaxPost(url, params).success(function (res) {
 
       if (res.status == 0) {
         if (res.data.type == 0) {
-          var jsjd = res.data.percent * 100 + '%';
+          var jsjd = (Math.round(res.data.percent * 10000))/100 + '%';
           var yys = moment(res.data.time * 1000).subtract(8, 'h').format('HH时mm分ss秒');
           var sysj = moment((res.data.time / res.data.percent - res.data.time) * 1000).subtract(8, 'h').format('HH时mm分ss秒');
 
@@ -1821,19 +1848,28 @@ function jpztckBtn() {
           $('.yys').empty().html(yys);
           $('.sysj').empty().html(sysj);
 
+
           if (res.data.percent == 1) {
-            var url = '/scenarino/find_Scenarino_status';
-            ajaxPost(url, {
-              userId: userId,
-              scenarinoId: qjMsg.qjId
-            }).success(function (res) {
-              qjMsg.scenarinoStatus = res.data.scenarinoStatus;
-              scenarinoType(qjMsg.scenarinoStatus);
-            })
+            findQJstatus();
+          } else {
+            jpztSetTimeOut = window.setTimeout(function () {
+              jpztckBtn(t)
+            }, t)
           }
         } else if (res.data.type == 1) {
           console.log('重新计算中！！！')
-        } else {
+        } else if (res.data.type == 2){
+          $('#jpzt').modal('hide');
+          console.log('计算排队中');
+          window.setTimeout(function(){
+            swal({
+              title: '计算排队中!',
+              type: 'error',
+              timer: 1000,
+              showConfirmButton: false
+            });
+          },50)
+        }else{
           console.log('计算接口异常')
         }
       } else {
@@ -1841,12 +1877,34 @@ function jpztckBtn() {
       }
 
     })
-  }
+  //}
 }
 
+function findQJstatus(){
+  var url = '/scenarino/find_Scenarino_status';
+  ajaxPost(url, {
+    userId: userId,
+    scenarinoId: qjMsg.qjId
+  }).success(function (res) {
+    qjMsg.scenarinoStatus = res.data.scenarinoStatus;
+    if(qjMsg.scenarinoStatus!=5){
+      findQJstatus();
+    }else{
+      scenarinoType(qjMsg.scenarinoStatus);
+    }
+  })
+}
+
+var jpztSetInterval;
 $('#jpzt').on('show.bs.modal', function (event) {
-  jpztckBtn();
-})
+  window.clearTimeout(jpztSetTimeOut);
+  jpztckBtn(3000);
+});
+
+$('#jpzt').on('hidden.bs.modal', function () {
+  window.clearTimeout(jpztSetTimeOut);
+  jpztckBtn(60000);
+});
 
 /*减排分析按钮*/
 function jumpJpfx() {
@@ -1921,7 +1979,7 @@ function initCopyPlanTable() {
     onLoadSuccess: function (data) {
       selectCopyPlan = data.rows[0];
       console.log(data);
-      if(selectCopyPlan){
+      if (selectCopyPlan) {
         $('#copyPlanTable').bootstrapTable('check', 0)
       }
     }
@@ -1975,7 +2033,7 @@ function showTimeline(data) {
   //});
 
   $('.jpjs').attr('disabled', true);
-  if (qjMsg.scenarinoStatus == 2) {
+  if ((qjMsg.scenarinoStatus == 1)||(qjMsg.scenarinoStatus == 2)||(qjMsg.scenarinoStatus == 5)) {
     for (var i = 0; i < data.length; i++) {
       for (var m = 0; m < data[i].timeItems.length; m++) {
         if (data[i].timeItems[m].planId != -1) {
