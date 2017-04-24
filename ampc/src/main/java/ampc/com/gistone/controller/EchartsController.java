@@ -205,7 +205,7 @@ public class EchartsController {
 			//创建返回的结果集合
 			Map map=new HashMap();
 			for(int i=0;i<pflResult.size();i++){
-				sjpflResult.add(String.valueOf(Double.parseDouble(pflResult.get(i))-Double.parseDouble(jplResult.get(i))));
+				sjpflResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand((Double.parseDouble(pflResult.get(i))-Double.parseDouble(jplResult.get(i))), 4), 2)));
 			}
 			//写入日期结果集合
 			map.put("dateResult", dateResult);
