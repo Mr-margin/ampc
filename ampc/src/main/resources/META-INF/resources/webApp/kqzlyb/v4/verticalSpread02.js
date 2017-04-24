@@ -264,7 +264,7 @@ function initCZDate(s, e, start, end) {
     minDate: s,//最早可选日期
     maxDate: e,//最大可选日期
     locale: {
-      format: "YYYY-MM-DD",
+      format: changeMsg.rms == 'day'?"YYYY-MM-DD":"YYYY-MM-DD HH",
       separator: " 至 ",
       applyLabel: "确定", //按钮文字
       cancelLabel: "取消",//按钮文字
