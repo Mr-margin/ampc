@@ -320,25 +320,6 @@ public class EchartsController {
 					Map ede=(Map)edeMap.get(obj);
 					//获取行业中的减排污染物信息
 					Object result=null;
-//					if(stainType.equals("PMC")){
-//						result=ede.get("PMcoarse");
-//					}else if(stainType.equals("PM10")){
-//						if(ede.get("PMcoarse") != null&& ede.get("PM25") != null){
-//							result=Double.parseDouble(ede.get("PMcoarse").toString())+Double.parseDouble(ede.get("PM25").toString());
-//						}
-//					}else if(stainType.equals("PMFINE")){
-//						if(ede.get("PM25") != null&&ede.get("BC") != null&&ede.get("OC") != null){
-//							double d=Double.parseDouble(ede.get("PM25").toString())-Double.parseDouble(ede.get("BC").toString())-Double.parseDouble(ede.get("OC").toString());
-//							if(d<0){
-//								throw new Exception("减排结果出现负数");
-//							}
-//							result=d;
-//						}
-//					}else if(stainType.equals("NOX")){
-//						result=ede.get("NOx");
-//					}else{
-//						result=ede.get(stainType);
-//					}
 					result=ede.get(stainType);
 					//如果为空则继续循环
 					if(result==null) continue;
