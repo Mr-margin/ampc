@@ -477,9 +477,6 @@ public class EMissionController {
 			String level=data.get("codeLevel").toString();	//code级别
 			tEmission.setScenarinoId(scenarinoId);
 			tEmission.setEmissionType("2");
-			if(pollutant.equals("NOx")){
-			pollutant="\"NOx\"";
-			}
 			//查询情景下的所有减排结果
 			List<TEmissionDetailWithBLOBs> tEmissions=tEmissionDetailMapper.selectByEntity(tEmission);
 			//查询情景主要为了查询共有措施以及行业
