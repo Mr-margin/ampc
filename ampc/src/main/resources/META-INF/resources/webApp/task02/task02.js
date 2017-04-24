@@ -1064,6 +1064,7 @@ $('#editArea').on('show.bs.modal', function (event) {
   }
 
   var button = $(event.relatedTarget);
+  areaIndex = $('.areaTitle_con').index($(button).parents('.areaTitle_con'));
   //var create = button.data('new');
   var create = cnArea;
   var areaId, findUrl;
@@ -1229,6 +1230,9 @@ function createEditArea() {
         showTimeline(allData);
 
       } else {
+        allData[areaIndex].provinceCodes = pArr;
+        allData[areaIndex].cityCodes = ctArr;
+        allData[areaIndex].countyCodes = crArr;
         $('#' + $('#areaName').attr('data-id')).find('b').html(areaName);
       }
       $('#editArea').modal('hide');
