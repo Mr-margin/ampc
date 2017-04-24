@@ -156,14 +156,14 @@ public class AirController {
 					
 						
 			
-			
+				Map<String,Object> spcmap=new HashMap();
 			if(datetype.equals("hour")){
 			for(ScenarinoEntity sc:sclist){
 				String scid=String.valueOf(sc.getsId());
 				String content=sc.getContent().toString();
 				JSONObject obj=JSONObject.fromObject(content);
 				Map<String,Object> spmap=(Map)obj;
-					Map<String,Object> spcmap=new HashMap();
+				
 					for(String spr:spmap.keySet()){
 						Map<String,Object> heightmap=(Map) spmap.get(spr);
 						JSONArray arr=new JSONArray();
@@ -274,7 +274,7 @@ public class AirController {
 					String content=sc.getContent().toString();
 					JSONObject obj = JSONObject.fromObject(content);
 					Map<String,Object> spmap=(Map)obj;
-						Map<String,Object> spcmap=new HashMap();
+						
 						for(String spr:spmap.keySet()){
 							String height=spmap.get(spr).toString();
 							JSONObject heightobj=JSONObject.fromObject(height);
@@ -326,7 +326,7 @@ public class AirController {
 							
 							arr.add(litarr);
 							spcmap.put(spr, arr);
-							scmap.put(scid, spcmap);
+						
 								}
 						}
 						}
@@ -340,7 +340,7 @@ public class AirController {
 			
 
 			
-			return	AmpcResult.build(0, "success",scmap);
+			return	AmpcResult.build(0, "success",spcmap);
 		}catch(Exception e){
 			LogUtil.getLogger().error("AppraisalController 垂直分布查询异常！",e);
 			return	AmpcResult.build(0, "error");
