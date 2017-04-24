@@ -130,10 +130,7 @@ public class AreaAndTimeController {
 		TTime tTime = new TTime();
 		// 查询添加时段处的结束时间
 		tTime = tTimeMapper.selectByPrimaryKey(selectTimeId);
-		// 查询时段表当前最大id，并且+1当做所添加时段的id
-//		String maxid = "select max(TIME_ID) from T_TIME";
-//		Long max = (long) this.getBySqlMapper.findrows(maxid);
-//		max += 1;
+
 		// 添加一个新的时段
 		TTime add_tTime = new TTime();
 		add_tTime.setAreaId(areaId);
