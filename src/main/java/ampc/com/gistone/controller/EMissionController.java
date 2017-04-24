@@ -225,6 +225,7 @@ public class EMissionController {
 						return AmpcResult.build(1000, "error", "无情景id");
 					}
 					if (s != 0) {
+						
 						return AmpcResult.build(0, "success");
 					}
 				}
@@ -518,94 +519,23 @@ public class EMissionController {
 					String pcode=emission.getCode().substring(0, 2)+"0000";
 					if(map.keySet().contains(pcode)){
 						BigDecimal old=new BigDecimal(map.get(pcode).toString());
-						
-						
-						
-						BigDecimal news=null;
-						if(pollutant.equals("PM10")){
-							double pm25=Double.parseDouble(nummap.get("PM25").toString());
-							double pmc=Double.parseDouble(nummap.get("PMcoarse").toString());
-							news=new BigDecimal(String.valueOf((pm25+pmc)));
-						}else if(pollutant.equals("PMFINE")){
-							double pm25=Double.parseDouble(nummap.get("PM25").toString());
-							double bc=Double.parseDouble(nummap.get("BC").toString());
-							double oc=Double.parseDouble(nummap.get("OC").toString());
-							news=new BigDecimal(String.valueOf((pm25-bc-oc)));
-						}else if(pollutant.equals("PMC")){
-							double pmc=Double.parseDouble(nummap.get("PMcoarse").toString());
-							news=new BigDecimal(String.valueOf(pmc));
-						}else{
-							news=new BigDecimal(nummap.get(pollutant).toString());
-						}
-						
-						
+						BigDecimal news=new BigDecimal(nummap.get(pollutant).toString());
 						BigDecimal yes=news.add(old);
 						map.put(pcode, yes);
 					}else{
-						BigDecimal news=null;
-						if(pollutant.equals("PM10")){
-							double pm25=Double.parseDouble(nummap.get("PM25").toString());
-							double pmc=Double.parseDouble(nummap.get("PMcoarse").toString());
-							news=new BigDecimal(String.valueOf((pm25+pmc)));
-						}else if(pollutant.equals("PMFINE")){
-							double pm25=Double.parseDouble(nummap.get("PM25").toString());
-							double bc=Double.parseDouble(nummap.get("BC").toString());
-							double oc=Double.parseDouble(nummap.get("OC").toString());
-							news=new BigDecimal(String.valueOf((pm25-bc-oc)));
-						}else if(pollutant.equals("PMC")){
-							double pmc=Double.parseDouble(nummap.get("PMcoarse").toString());
-							news=new BigDecimal(String.valueOf(pmc));
-						}else{
-							news=new BigDecimal(nummap.get(pollutant).toString());
-						}
+						BigDecimal news=new BigDecimal(nummap.get(pollutant).toString());
 						map.put(pcode, news);
 					}
 				}
 				if(level.equals("2")){
 					String pcode=emission.getCode().substring(0, 4)+"00";
 					if(map.keySet().contains(pcode)){
-						BigDecimal old=new BigDecimal(map.get(pcode).toString());
-						
-						BigDecimal news=null;
-						if(pollutant.equals("PM10")){
-							double pm25=Double.parseDouble(nummap.get("PM25").toString());
-							double pmc=Double.parseDouble(nummap.get("PMcoarse").toString());
-							news=new BigDecimal(String.valueOf((pm25+pmc)));
-						}else if(pollutant.equals("PMFINE")){
-							double pm25=Double.parseDouble(nummap.get("PM25").toString());
-							double bc=Double.parseDouble(nummap.get("BC").toString());
-							double oc=Double.parseDouble(nummap.get("OC").toString());
-							news=new BigDecimal(String.valueOf((pm25-bc-oc)));
-						}else if(pollutant.equals("PMC")){
-							double pmc=Double.parseDouble(nummap.get("PMcoarse").toString());
-							news=new BigDecimal(String.valueOf(pmc));
-						}else{
-							news=new BigDecimal(nummap.get(pollutant).toString());
-						}
-						
-						
-						
+						BigDecimal old=new BigDecimal(map.get(pcode).toString());	
+						BigDecimal news=new BigDecimal(nummap.get(pollutant).toString());
 						BigDecimal yes=news.add(old);
 						map.put(pcode,yes);
 					}else{
-						
-						BigDecimal news=null;
-						if(pollutant.equals("PM10")){
-							double pm25=Double.parseDouble(nummap.get("PM25").toString());
-							double pmc=Double.parseDouble(nummap.get("PMcoarse").toString());
-							news=new BigDecimal(String.valueOf((pm25+pmc)));
-						}else if(pollutant.equals("PMFINE")){
-							double pm25=Double.parseDouble(nummap.get("PM25").toString());
-							double bc=Double.parseDouble(nummap.get("BC").toString());
-							double oc=Double.parseDouble(nummap.get("OC").toString());
-							news=new BigDecimal(String.valueOf((pm25-bc-oc)));
-						}else if(pollutant.equals("PMC")){
-							double pmc=Double.parseDouble(nummap.get("PMcoarse").toString());
-							news=new BigDecimal(String.valueOf(pmc));
-						}else{
-							news=new BigDecimal(nummap.get(pollutant).toString());
-						}
-						
+						BigDecimal news=new BigDecimal(nummap.get(pollutant).toString());
 						map.put(pcode, news);
 					}
 				}
@@ -613,45 +543,11 @@ public class EMissionController {
 					String pcode=emission.getCode();
 					if(map.keySet().contains(pcode)){
 						BigDecimal old=new BigDecimal(map.get(pcode).toString());
-						
-						BigDecimal news=null;
-						if(pollutant.equals("PM10")){
-							double pm25=Double.parseDouble(nummap.get("PM25").toString());
-							double pmc=Double.parseDouble(nummap.get("PMcoarse").toString());
-							news=new BigDecimal(String.valueOf((pm25+pmc)));
-						}else if(pollutant.equals("PMFINE")){
-							double pm25=Double.parseDouble(nummap.get("PM25").toString());
-							double bc=Double.parseDouble(nummap.get("BC").toString());
-							double oc=Double.parseDouble(nummap.get("OC").toString());
-							news=new BigDecimal(String.valueOf((pm25-bc-oc)));
-						}else if(pollutant.equals("PMC")){
-							double pmc=Double.parseDouble(nummap.get("PMcoarse").toString());
-							news=new BigDecimal(String.valueOf(pmc));
-						}else{
-							news=new BigDecimal(nummap.get(pollutant).toString());
-						}
-						
-						
+						BigDecimal news=new BigDecimal(nummap.get(pollutant).toString());
 						BigDecimal yes=news.add(old);
 						map.put(pcode, yes);
 					}else{
-						
-						BigDecimal news=null;
-						if(pollutant.equals("PM10")){
-							double pm25=Double.parseDouble(nummap.get("PM25").toString());
-							double pmc=Double.parseDouble(nummap.get("PMcoarse").toString());
-							news=new BigDecimal(String.valueOf((pm25+pmc)));
-						}else if(pollutant.equals("PMFINE")){
-							double pm25=Double.parseDouble(nummap.get("PM25").toString());
-							double bc=Double.parseDouble(nummap.get("BC").toString());
-							double oc=Double.parseDouble(nummap.get("OC").toString());
-							news=new BigDecimal(String.valueOf((pm25-bc-oc)));
-						}else if(pollutant.equals("PMC")){
-							double pmc=Double.parseDouble(nummap.get("PMcoarse").toString());
-							news=new BigDecimal(String.valueOf(pmc));
-						}else{
-							news=new BigDecimal(nummap.get(pollutant).toString());
-						}
+						BigDecimal news=new BigDecimal(nummap.get(pollutant).toString());
 						map.put(pcode, news);
 					}
 				}
