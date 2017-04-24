@@ -46,6 +46,7 @@ public class AirController {
 			JSONObject obj=new JSONObject();
 			obj.put("mintime", mintm.getPathDate().getTime());
 			obj.put("maxtime", maxtm.getPathDate().getTime());
+			LogUtil.getLogger().error("空气质量预报时间查询成功");
 			return AmpcResult.build(0, "success",obj);
 		}catch(Exception e){
 			LogUtil.getLogger().error("异常了",e);
