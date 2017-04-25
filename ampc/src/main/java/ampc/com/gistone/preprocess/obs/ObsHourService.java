@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import ampc.com.gistone.database.inter.TObsMapper;
+import ampc.com.gistone.extract.Constants;
 import ampc.com.gistone.preprocess.obs.entity.ObsBean;
 import ampc.com.gistone.preprocess.obs.entity.ObsHourlyBean;
 import ampc.com.gistone.util.AmpcResult;
@@ -52,8 +53,8 @@ public class ObsHourService extends ObsService {
 				ObsParams params = new ObsParams();
 				params.setStartDate(dayTimeFormatter.format(startDateTime));
 				params.setEndDate(dayTimeFormatter.format(endDateTime));
-				params.setArea(AREA_CITY);
-				params.setRes(RESOLUTION_HOUR.toLowerCase());
+				params.setArea(Constants.AREA_CITY);
+				params.setRes(Constants.RESOLUTION_HOUR.toLowerCase());
 				params.setAreaId(city);
 				preCollectHourData(params, startDateTime, endDateTime);
 
@@ -71,7 +72,7 @@ public class ObsHourService extends ObsService {
 		// 转换格式
 		Collection<ObsHourlyBean> obsHourlyBeanList = transformType(interfaceMap, params, startTime, endTime);
 		// 将数据放到数据库中
-		commonPutInDataBase(obsHourlyBeanList, RESOLUTION_HOUR);
+		commonPutInDataBase(obsHourlyBeanList, Constants.RESOLUTION_HOUR);
 
 	}
 
@@ -254,8 +255,8 @@ public class ObsHourService extends ObsService {
 		ObsParams params = new ObsParams();
 		params.setStartDate(dayTimeFormatter.format(startDateTime));
 		params.setEndDate(dayTimeFormatter.format(endTime));
-		params.setArea(AREA_POINT);
-		params.setRes(RESOLUTION_HOUR.toLowerCase());
+		params.setArea(Constants.AREA_POINT);
+		params.setRes(Constants.RESOLUTION_HOUR.toLowerCase());
 		params.setAreaId(stationId);
 		preCollectHourData(params, startDateTime, endTime);
 
