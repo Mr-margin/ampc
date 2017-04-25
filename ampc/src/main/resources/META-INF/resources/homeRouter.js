@@ -2,7 +2,7 @@
  * Created by lvcheng on 2017/2/24.
  */
 
-var userMsg;
+var userMsg,llqHeight;
 var ls = window.sessionStorage;
 var parameterPar = {token: '', data: {}};
 var userId;
@@ -20,7 +20,7 @@ $.when(dps_um).then(function(){
   }else{
 
 // 当我修改完新的功能栏的时候，可以对此处修改
-    var llqHeight = document.documentElement.clientHeight;
+    llqHeight = document.documentElement.clientHeight;
     var cssStyle = '.qjbjDiv,.qdCreate,.qdListBox{height:'+ (llqHeight-138) +'px;}#sidebar .panel-body{overflow:auto;border-top:0;border-bottom:0;padding:0;height: '+ (llqHeight-441) +'px;} ';
     $('head').append($('<style></style>').html(cssStyle));
     // $("#Route_conter").css("height",llqHeight-150+"px");
@@ -119,8 +119,8 @@ $.when(dps_um).then(function(){
           controller: 'webApp/kqzlyb/v2/timeArray.js'
         },
         '/kqzlyb_v3': {      //空气质量预报-水平分布
-          templateUrl: 'a.html',
-          controller: ''
+          templateUrl: 'webApp/kqzlyb/v3/distributed.html',
+          controller: 'webApp/kqzlyb/v3/distributed.js'
         },
         '/kqzlyb_v4': {      //空气质量预报-垂直分布
           templateUrl: 'webApp/kqzlyb/v4/verticalSpread02.html',

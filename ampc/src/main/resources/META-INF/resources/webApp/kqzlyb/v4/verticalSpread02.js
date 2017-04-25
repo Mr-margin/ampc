@@ -3,10 +3,6 @@ $(function () {
    *设置导航条信息
    */
   $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">空气质量预报</span>>><span style="padding-left: 15px;padding-right: 15px;">垂直廓线</span>');
-  //全选复选框
-  //initTableCheckbox();
-
-
 });
 /*存储全局改变量*/
 var dps_codeStation,dps_station,dps_Date;
@@ -203,8 +199,7 @@ function setTime() {
       changeMsg.endD = '2017-04-16';
       changeMsg.time = moment(changeMsg.startD).format('YYYY-MM-DD HH');
       /*测试使用 end*/
-      //initCZDate(moment(res.data.mintime).format('YYYY-MM-DD'),moment(res.data.maxtime).format('YYYY-MM-DD'),changeMsg.startD,changeMsg.endD);
-      initCZDate(changeMsg.startD,changeMsg.endD,changeMsg.startD,changeMsg.endD);
+      initSPDate(changeMsg.minDate,changeMsg.maxDate,changeMsg.startD,changeMsg.endD);
     }
 
   })
