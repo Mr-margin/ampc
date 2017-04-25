@@ -679,6 +679,7 @@ public class EchartsController {
 				for(int o=0;o<selectcodeMap.size();){
 					//取Code
 					String code=selectcodeMap.get(o).get("CODE").toString();
+					System.out.println(code);
 					//根据Code级别进行条件调整
 					String checkCode=code.substring(0,4);
 					//定义基准结果对象
@@ -780,10 +781,6 @@ public class EchartsController {
 						}else{
 							break;
 						}
-					}
-					//判断是否还有数据了
-					if(selectcodeMap.size()==0){
-						break;
 					}
 					if(basisrlu!=null&&jplrlu!=null){
 						resultUtil(basisrlu,jplrlu);
