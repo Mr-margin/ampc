@@ -504,8 +504,40 @@ function gis_paifang_show(){
 	gis_paramsName.pollutant = $('#hz_wrw').val();//物种
 	tj_paramsName.wz = $('#hz_wrw').val();//物种
 	
-	baizhu_jianpai(gis_paramsName, "1");
-	bar();
+	
+	$("#showtype").children().each(function(){
+		if($(this).is('.active')){
+			
+			if($(this).attr("val_name") == "gis"){
+				
+//				$("#listModal").hide();
+//				$("#map_showId").show();
+//				$("#legendWrapper").show();
+//				$("#gis_table_title").html("各地区减排");
+				
+				baizhu_jianpai(gis_paramsName, "1");
+				bar();
+				
+			}else if($(this).attr("val_name") == "table"){
+				
+				bar();
+				
+//				query_code = tj_paramsName.code;
+//				query_Level = tj_paramsName.codeLevel;
+//				
+//				table_show(tj_paramsName.code, tj_paramsName.codeLevel);
+//				
+//				$("#gis_table_title").html("各地区减排比例(%)");
+//				$("#listModal").show();
+//				$("#map_showId").hide();
+//				$("#legendWrapper").hide();
+				
+			}
+		}
+	});
+	
+	
+	
 }
 
 /**
@@ -815,6 +847,9 @@ function gis_switch_table(){
 					$("#map_showId").show();
 					$("#legendWrapper").show();
 					$("#gis_table_title").html("各地区减排");
+					
+					baizhu_jianpai(gis_paramsName, "1");
+					bar();
 					
 				}else if($(this).attr("val_name") == "table"){
 					
