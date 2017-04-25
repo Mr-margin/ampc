@@ -8,7 +8,7 @@ public interface TObsMapper {
 
 	void checkObsTable(Map<String, Object> params);
 
-	ObsBean queryUnionResult(Map<String, String> params);
+	ObsBean queryUnionResult(Map<String, Object> params);
 
 	void update(ObsBean newObsBean);
 

@@ -1,6 +1,5 @@
 package ampc.com.gistone.preprocess.obs;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -30,197 +29,199 @@ import ampc.com.gistone.preprocess.obs.entity.ObsBean;
 import ampc.com.gistone.preprocess.obs.entity.ObsHourlyBean;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.DateUtil;
 
 @Service
 @Transactional
 public class ObsHourService extends ObsService {
-	
+
 	private Logger logger = LoggerFactory.getLogger(ObsHourService.class);
 
 	private final DateTimeFormatter hourTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH");
-    private final DateTimeFormatter dayTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    @Autowired
-    private TObsMapper obsMapper;
-    
-    public void preCollectHourDataInCitys(LocalDateTime startDateTime, LocalDateTime endDateTime,List<String> cityList) {
+	private final DateTimeFormatter dayTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	@Autowired
+	private TObsMapper obsMapper;
 
-        if(cityList != null && cityList.size() != 0) {
+	public void preCollectHourDataInCitys(LocalDateTime startDateTime, LocalDateTime endDateTime,
+			List<String> cityList) {
 
-            for(String city:cityList) {
+		if (cityList != null && cityList.size() != 0) {
 
-                ObsParams params = new ObsParams();
-                params.setStartDate(dayTimeFormatter.format(startDateTime));
-                params.setEndDate(dayTimeFormatter.format(endDateTime));
-                params.setArea(AREA_CITY);
-                params.setRes(RESOLUTION_HOUR.toLowerCase());
-                params.setAreaId(city);
-                preCollectHourData(params,startDateTime,endDateTime);
+			for (String city : cityList) {
 
-            }
-        }
-    }
-    
-    private void preCollectHourData(ObsParams params,LocalDateTime startTime,LocalDateTime endTime) {
-    	
-    	//请求obs接口
+				ObsParams params = new ObsParams();
+				params.setStartDate(dayTimeFormatter.format(startDateTime));
+				params.setEndDate(dayTimeFormatter.format(endDateTime));
+				params.setArea(AREA_CITY);
+				params.setRes(RESOLUTION_HOUR.toLowerCase());
+				params.setAreaId(city);
+				preCollectHourData(params, startDateTime, endDateTime);
+
+			}
+		}
+	}
+
+	private void preCollectHourData(ObsParams params, LocalDateTime startTime, LocalDateTime endTime) {
+
+		// 请求obs接口
 		ClientUtil clientUtil = new ClientUtil();
-		AmpcResult ampcResult = clientUtil.doGet(params.toParams(), TaskSchedulerObsConfig.OBS_URL, TaskSchedulerObsConfig.timeout);
+		AmpcResult ampcResult = clientUtil.doGet(params.toParams(), TaskSchedulerObsConfig.OBS_URL,
+				TaskSchedulerObsConfig.timeout);
 		Map interfaceMap = (Map) ampcResult.getData();
-        //转换格式
-        Collection<ObsHourlyBean> obsHourlyBeanList = transformType(interfaceMap,params,startTime,endTime);
-        //将数据放到数据库中
-        commonPutInDataBase(obsHourlyBeanList, RESOLUTION_HOUR);
+		// 转换格式
+		Collection<ObsHourlyBean> obsHourlyBeanList = transformType(interfaceMap, params, startTime, endTime);
+		// 将数据放到数据库中
+		commonPutInDataBase(obsHourlyBeanList, RESOLUTION_HOUR);
 
-    }
-    
-    public Collection<ObsHourlyBean> transformType(Map interfaceMap, ObsParams params,LocalDateTime startDateTime, LocalDateTime endDateTime) {
+	}
 
-        Map<String,ObsHourlyBean> dateMap = new HashMap();
+	public Collection<ObsHourlyBean> transformType(Map interfaceMap, ObsParams params, LocalDateTime startDateTime,
+			LocalDateTime endDateTime) {
 
-        long days = ChronoUnit.DAYS.between(startDateTime,endDateTime);
+		Map<String, ObsHourlyBean> dateMap = new HashMap();
 
-        for(int currday = 0; currday <= days; currday++) {
+		long days = ChronoUnit.DAYS.between(startDateTime, endDateTime);
 
-            String date = dayTimeFormatter.format(startDateTime.plus(currday,ChronoUnit.DAYS));
+		for (int currday = 0; currday <= days; currday++) {
 
-            ObsHourlyBean obsHourlyBean = new ObsHourlyBean();
+			String date = dayTimeFormatter.format(startDateTime.plus(currday, ChronoUnit.DAYS));
 
-            obsHourlyBean.setCity_station(params.getAreaId());
+			ObsHourlyBean obsHourlyBean = new ObsHourlyBean();
 
-            obsHourlyBean.setDate(date);
+			obsHourlyBean.setCity_station(params.getAreaId());
 
-            obsHourlyBean.setMode(params.getArea());
+			obsHourlyBean.setDate(DateUtil.StrToDate1(date));
 
-            dateMap.put(date,obsHourlyBean);
+			obsHourlyBean.setMode(params.getArea());
 
-        }
+			dateMap.put(date, obsHourlyBean);
 
-        Iterator<Map.Entry>  iterator = interfaceMap.entrySet().iterator();
+		}
 
-        while(iterator.hasNext()) {
+		Iterator<Map.Entry> iterator = interfaceMap.entrySet().iterator();
 
-            //species->{}
-            Map.Entry entry = iterator.next();
+		while (iterator.hasNext()) {
 
-            //specie
-            String specie = entry.getKey().toString();
+			// species->{}
+			Map.Entry entry = iterator.next();
 
-            Map dateHourMaps  = (Map)entry.getValue();
+			// specie
+			String specie = entry.getKey().toString();
 
-            List<Map.Entry> list = new ArrayList<Map.Entry>();
+			Map dateHourMaps = (Map) entry.getValue();
 
-            list.addAll(dateHourMaps.entrySet());
-            //etc. 2016-12-12 : {}
-            Map<String,List<Map.Entry>> dayEntrys = list.stream().collect(Collectors.groupingBy(evertEntry -> {
+			List<Map.Entry> list = new ArrayList<Map.Entry>();
 
-                //按日分组
-                String pattern = evertEntry.getKey().toString();
+			list.addAll(dateHourMaps.entrySet());
+			// etc. 2016-12-12 : {}
+			Map<String, List<Map.Entry>> dayEntrys = list.stream().collect(Collectors.groupingBy(evertEntry -> {
 
-                return pattern.substring(0,pattern.indexOf(" "));
+				// 按日分组
+				String pattern = evertEntry.getKey().toString();
 
+				return pattern.substring(0, pattern.indexOf(" "));
 
-            }));
+			}));
 
-            Iterator<Map.Entry<String, List<Map.Entry>>> dayEntryIterator = dayEntrys.entrySet().iterator();
+			Iterator<Map.Entry<String, List<Map.Entry>>> dayEntryIterator = dayEntrys.entrySet().iterator();
 
-            while(dayEntryIterator.hasNext()) {
+			while (dayEntryIterator.hasNext()) {
 
-                Map.Entry<String,List<Map.Entry>> dayEntry = dayEntryIterator.next();
+				Map.Entry<String, List<Map.Entry>> dayEntry = dayEntryIterator.next();
 
-                String timePoint = dayEntry.getKey();
+				String timePoint = dayEntry.getKey();
 
-                LocalDate localDate = LocalDate.parse(timePoint,DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+				LocalDate localDate = LocalDate.parse(timePoint, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-                if(dateMap.containsKey(timePoint)) {
+				if (dateMap.containsKey(timePoint)) {
 
-                    ObsHourlyBean obshourlyBean = dateMap.get(timePoint);
+					ObsHourlyBean obshourlyBean = dateMap.get(timePoint);
 
-                    Map<String,List<String>> contentMap = obshourlyBean.getContentMap();
+					Map<String, List<String>> contentMap = obshourlyBean.getContentMap();
 
-                    List<String> speciesTo24Hours = null;
+					List<String> speciesTo24Hours = null;
 
-                    if(contentMap.containsKey(specie)) {
+					if (contentMap.containsKey(specie)) {
 
-                        speciesTo24Hours =  contentMap.get(specie);
-                    }
+						speciesTo24Hours = contentMap.get(specie);
+					}
 
-                    else {
+					else {
 
-                        speciesTo24Hours = new ArrayList<String>();
+						speciesTo24Hours = new ArrayList<String>();
 
-                        for(int currHour = 0;currHour < 24;currHour++) {
+						for (int currHour = 0; currHour < 24; currHour++) {
 
-                            speciesTo24Hours.add("-");
-                        }
-                    }
+							speciesTo24Hours.add("-");
+						}
+					}
 
+					for (int currHour = 0; currHour < 24; currHour++) {
 
-                    for(int currHour = 0;currHour < 24;currHour++) {
+						LocalTime localTime = LocalTime.of(currHour, 0);
 
-                        LocalTime localTime = LocalTime.of(currHour,0);
+						LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
 
-                        LocalDateTime localDateTime = LocalDateTime.of(localDate,localTime);
+						// 获取小时字段
+						String hourTimePoint = hourTimeFormatter.format(localDateTime);
 
-                        //获取小时字段
-                        String hourTimePoint = hourTimeFormatter.format(localDateTime);
+						if (dateHourMaps.containsKey(hourTimePoint)) {
 
-                        if(dateHourMaps.containsKey(hourTimePoint)) {
-                        	
-                        	Object v = dateHourMaps.get(hourTimePoint);
-                        	if(v != null) {
-                        		
-	                            String speToValue = v.toString();
-//	                            if("-".equals(speciesTo24Hours.get(currHour))) {
-	                                speciesTo24Hours.set(currHour,speToValue);
-//	                            }
-                        	}
+							Object v = dateHourMaps.get(hourTimePoint);
+							if (v != null) {
 
-                        }
-                    }
+								String speToValue = v.toString();
+								// if("-".equals(speciesTo24Hours.get(currHour)))
+								// {
+								speciesTo24Hours.set(currHour, speToValue);
+								// }
+							}
 
-                    contentMap.put(specie,speciesTo24Hours);
-                }
-            }
-        }
+						}
+					}
 
-        Collection<ObsHourlyBean> obsHourlyBeanList = dateMap.values();
+					contentMap.put(specie, speciesTo24Hours);
+				}
+			}
+		}
 
-        obsHourlyBeanList = obsHourlyBeanList.stream().filter(ObsHourlyBean->{
+		Collection<ObsHourlyBean> obsHourlyBeanList = dateMap.values();
 
-            return Objects.nonNull(ObsHourlyBean) && !StringUtils.isEmpty(ObsHourlyBean.getDate());
+		obsHourlyBeanList = obsHourlyBeanList.stream().filter(ObsHourlyBean -> {
 
-        }).collect(Collectors.toList());
+			return Objects.nonNull(ObsHourlyBean) && ObsHourlyBean.getDate() != null;
 
+		}).collect(Collectors.toList());
 
-        return obsHourlyBeanList;
-    }
+		return obsHourlyBeanList;
+	}
 
-    public void commonPutInDataBase(Collection<ObsHourlyBean> obsHourlyBeanList, String timePoint) {
+	public void commonPutInDataBase(Collection<ObsHourlyBean> obsHourlyBeanList, String timePoint) {
 
-        Iterator<ObsHourlyBean> iteratorList = obsHourlyBeanList.iterator();
+		Iterator<ObsHourlyBean> iteratorList = obsHourlyBeanList.iterator();
 
-        while(iteratorList.hasNext()) {
-        	
-        	ObsHourlyBean newObsHourlyBean = iteratorList.next();
-            
-            String tName = checkAndAddTable(newObsHourlyBean, timePoint);
-            newObsHourlyBean.setTableName(tName);
-            
-            Map<String, String> params = new HashMap<String, String>();
-            params.put("tableName", tName);
-            params.put("date", newObsHourlyBean.getDate());
-            params.put("mode", newObsHourlyBean.getMode());
-            params.put("city_station", newObsHourlyBean.getCity_station());
+		while (iteratorList.hasNext()) {
 
-            ObsBean oldObsHourlyBean = obsMapper.queryUnionResult(params);
-            
-            try {
-				if(null != oldObsHourlyBean) {
-				    //将oldObsHourlyBean的Id赋值给新的newObsHourlyBean
+			ObsHourlyBean newObsHourlyBean = iteratorList.next();
+
+			String tName = checkAndAddTable(newObsHourlyBean, timePoint);
+			newObsHourlyBean.setTableName(tName);
+
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("tableName", tName);
+			params.put("date", newObsHourlyBean.getDate());
+			params.put("mode", newObsHourlyBean.getMode());
+			params.put("city_station", newObsHourlyBean.getCity_station());
+
+			ObsBean oldObsHourlyBean = obsMapper.queryUnionResult(params);
+
+			try {
+				if (null != oldObsHourlyBean) {
+					// 将oldObsHourlyBean的Id赋值给新的newObsHourlyBean
 					newObsHourlyBean.setId(oldObsHourlyBean.getId());
 					newObsHourlyBean.setContent(mapper.writeValueAsString(newObsHourlyBean.getContentMap()));
-				    obsMapper.update(newObsHourlyBean);
-				    
+					obsMapper.update(newObsHourlyBean);
+
 				} else {
 					String id = UUID.randomUUID().toString();
 					newObsHourlyBean.setId(id);
@@ -228,33 +229,35 @@ public class ObsHourService extends ObsService {
 					obsMapper.insert(newObsHourlyBean);
 				}
 			} catch (JsonProcessingException e) {
-				logger.error("JsonProcessingException | ObsHourlyService: convert Map to String error!", e);;
+				logger.error("JsonProcessingException | ObsHourlyService: convert Map to String error!", e);
+				;
 			}
-        }
+		}
 
-    }
-    
-    public void preCollectHourDataInStations(LocalDateTime startDateTime, LocalDateTime endTime, List<String> regionList) {
+	}
 
-        if(regionList!= null && regionList.size() != 0) {
-            for(String stationId : regionList) {
-                if(!StringUtils.isEmpty(stationId)) {
-                    preCollectHourDataInStation(startDateTime,endTime,stationId);
+	public void preCollectHourDataInStations(LocalDateTime startDateTime, LocalDateTime endTime,
+			List<String> regionList) {
 
-                }
-            }
-        }
-    }
-    
-    private void preCollectHourDataInStation(LocalDateTime startDateTime, LocalDateTime endTime, String stationId) {
+		if (regionList != null && regionList.size() != 0) {
+			for (String stationId : regionList) {
+				if (!StringUtils.isEmpty(stationId)) {
+					preCollectHourDataInStation(startDateTime, endTime, stationId);
 
-        ObsParams params = new ObsParams();
-        params.setStartDate(dayTimeFormatter.format(startDateTime));
-        params.setEndDate(dayTimeFormatter.format(endTime));
-        params.setArea(AREA_POINT);
-        params.setRes(RESOLUTION_HOUR.toLowerCase());
-        params.setAreaId(stationId);
-        preCollectHourData(params,startDateTime,endTime);
+				}
+			}
+		}
+	}
 
-    }
+	private void preCollectHourDataInStation(LocalDateTime startDateTime, LocalDateTime endTime, String stationId) {
+
+		ObsParams params = new ObsParams();
+		params.setStartDate(dayTimeFormatter.format(startDateTime));
+		params.setEndDate(dayTimeFormatter.format(endTime));
+		params.setArea(AREA_POINT);
+		params.setRes(RESOLUTION_HOUR.toLowerCase());
+		params.setAreaId(stationId);
+		preCollectHourData(params, startDateTime, endTime);
+
+	}
 }

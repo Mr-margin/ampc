@@ -13,8 +13,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ampc.com.gistone.preprocess.obs.ObsPreprocessController;
-
 /**
  * 日期转换帮助类
  * 
@@ -23,17 +21,17 @@ import ampc.com.gistone.preprocess.obs.ObsPreprocessController;
  * @date 2017年3月11日
  */
 public class DateUtil {
-	
+
 	public final static String DATE_FORMAT = "yyyy-MM-dd";
 	private final static Logger logger = LoggerFactory.getLogger(DateUtil.class);
+
 	/**
 	 * 
 	 * @Description: TODO
 	 * @param str
-	 * @return   字符串转化成日期 年月日形式
-	 * Date  
-	 * @throws
-	 * @author yanglei
+	 * @return 字符串转化成日期 年月日形式 Date
+	 * @throws @author
+	 *             yanglei
 	 * @date 2017年3月21日 下午3:16:47
 	 */
 	public static Date StrtoDateYMD(String str) {
@@ -46,19 +44,18 @@ public class DateUtil {
 		}
 		return date;
 	}
-	
-	 /**
-	  * 
-	  * @Description: 字符串转化为时间 
-	  * @param str
-	  * @param pattern
-	  * @return   
-	  * Date  
-	  * @throws
-	  * @author yanglei
-	  * @date 2017年3月24日 下午3:57:35
-	  */
-	public static Date StrtoDateYMD(String str,String pattern) {
+
+	/**
+	 * 
+	 * @Description: 字符串转化为时间
+	 * @param str
+	 * @param pattern
+	 * @return Date
+	 * @throws @author
+	 *             yanglei
+	 * @date 2017年3月24日 下午3:57:35
+	 */
+	public static Date StrtoDateYMD(String str, String pattern) {
 		SimpleDateFormat format = new SimpleDateFormat(pattern);
 		Date date = null;
 		try {
@@ -68,75 +65,73 @@ public class DateUtil {
 		}
 		return date;
 	}
-	
+
 	/**
 	 * 
 	 * @Description: TODO
 	 * @param date
-	 * @return   
-	 * String  时间的转化 年月日
-	 * @throws
-	 * @author yanglei
+	 * @return String 时间的转化 年月日
+	 * @throws @author
+	 *             yanglei
 	 * @date 2017年3月20日 下午7:51:09
 	 */
-	public static String DATEtoString(Date date,String pattern) {
+	public static String DATEtoString(Date date, String pattern) {
 		SimpleDateFormat format = new SimpleDateFormat(pattern);
 		String str = format.format(date);
 		return str;
 	}
-	
+
 	/**
 	 * @Description: TODO
 	 * @param oldlastfnlDate
 	 * @param todayDate
-	 * @return   
-	 * boolean  比较两个时间的大小，当第一个时间大于第二个时间的时候返回false 当第一个时间小于第二个时间的时候返回true 等于的时候返回true
-	 * @throws
-	 * @author yanglei
+	 * @return boolean 比较两个时间的大小，当第一个时间大于第二个时间的时候返回false 当第一个时间小于第二个时间的时候返回true
+	 *         等于的时候返回true
+	 * @throws @author
+	 *             yanglei
 	 * @date 2017年3月20日 下午4:52:12
 	 */
 	public static boolean compare(Date oldlastfnlDate, Date todayDate) {
-		boolean flag ;
+		boolean flag;
 		int i = oldlastfnlDate.compareTo(todayDate);
-		if (i<0) {
+		if (i < 0) {
 			flag = true;
-		}else {
-		flag=false;
-		
+		} else {
+			flag = false;
+
 		}
-		
+
 		return flag;
 	}
-	
+
 	/**
 	 * 
 	 * @Description: TODO
 	 * @param date
-	 * @return   
-	 * Date  当前日期的变化增减 返回时间
-	 * @throws
-	 * @author yanglei
+	 * @return Date 当前日期的变化增减 返回时间
+	 * @throws @author
+	 *             yanglei
 	 * @date 2017年3月20日 下午4:35:27
 	 */
-	
-	public static Date ChangeDay(Date date,int i) {
+
+	public static Date ChangeDay(Date date, int i) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		cal.add(Calendar.DATE, i);
 		return cal.getTime();
 	}
+
 	/**
 	 * 
 	 * @Description: TODO
 	 * @param date
-	 * @return   
-	 * String  时间在现有的时间上增减 返回字符串
-	 * @throws
-	 * @author yanglei
+	 * @return String 时间在现有的时间上增减 返回字符串
+	 * @throws @author
+	 *             yanglei
 	 * @date 2017年3月20日 下午4:01:57
 	 */
-	
-	public static String changeDate(Date date, String pattern,int i) {
+
+	public static String changeDate(Date date, String pattern, int i) {
 		SimpleDateFormat format = new SimpleDateFormat(pattern);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
@@ -198,10 +193,9 @@ public class DateUtil {
 	 * @Description: 将时间格式化并返回时间
 	 * @param date
 	 * @param string
-	 * @return   
-	 * Date  
-	 * @throws
-	 * @author yanglei
+	 * @return Date
+	 * @throws @author
+	 *             yanglei
 	 * @date 2017年3月25日 下午12:02:37
 	 */
 	public static Date DateToDate(Date date, String pattern) {
@@ -215,26 +209,33 @@ public class DateUtil {
 		}
 		return newdate;
 	}
-	
+
 	public static LocalDate convertStringToLocalDate(String value) {
-	    return LocalDate.parse(value);
+		return LocalDate.parse(value);
 	}
-	
+
 	public static LocalDateTime convertStringToLocalDatetime(String dateStr) {
-		if(StringUtils.isNotEmpty(dateStr)) {
-		    Date d = phraseDate(dateStr);
-	        return LocalDateTime.ofInstant(Instant.ofEpochMilli(d.getTime()), ZoneId.systemDefault());
-	    }
+		if (StringUtils.isNotEmpty(dateStr)) {
+			Date d = phraseDate(dateStr);
+			return LocalDateTime.ofInstant(Instant.ofEpochMilli(d.getTime()), ZoneId.systemDefault());
+		}
 		return null;
 	}
-	
+
 	public static Date phraseDate(String dateString) {
-	    SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-	    try {
+		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+		try {
 			return sdf.parse(dateString);
 		} catch (ParseException e) {
 			logger.error("ParseException", e);
 			return null;
 		}
+	}
+
+	public static String timeToDays(String time) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(sdf.parse(time));
+		return String.format("%s%03d", calendar.get(Calendar.YEAR), calendar.get(Calendar.DAY_OF_YEAR));
 	}
 }
