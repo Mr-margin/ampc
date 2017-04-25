@@ -668,8 +668,10 @@ public class EchartsController {
 							break;
 						}
 					}
-					resultUtil(basisrlu,jplrlu);
-					resultList.add(jplrlu);
+					if(basisrlu!=null&&jplrlu!=null){
+						resultUtil(basisrlu,jplrlu);
+						resultList.add(jplrlu);
+					}
 				}
 			}else if(addressLevle==2){
 				//执行SQL返回Code的结果集
@@ -682,7 +684,7 @@ public class EchartsController {
 					//定义基准结果对象
 					RadioListUtil basisrlu=null;
 					//循环所有基准情景的减排结果
-					s:for (int i=0;i<selectBisisMap.size();) {
+					for (int i=0;i<selectBisisMap.size();) {
 						//获取基准Map
 						Map basisMap=selectBisisMap.get(i);
 						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
@@ -742,7 +744,7 @@ public class EchartsController {
 					RadioListUtil jplrlu=null;
 					//根据Code查询对应的减排
 					//循环所有基准情景的减排结果
-					d:for (int i=0;i<selectjplMap.size();) {
+					for (int i=0;i<selectjplMap.size();) {
 						//获取基准Map
 						Map jplMap=selectjplMap.get(i);
 						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
