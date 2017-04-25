@@ -1837,14 +1837,23 @@ function jpztckBtn(t) {
             }, t)
           }
         } else if (res.data.type == 1) {
-          console.log('重新计算中！！！')
+          $('#jpzt').modal('hide');
+          console.log('重新计算中！！！');
+          window.setTimeout(function(){
+            swal({
+              title: '重新计算中!',
+              type: 'warning',
+              timer: 1000,
+              showConfirmButton: false
+            });
+          },50)
         } else if (res.data.type == 2){
           $('#jpzt').modal('hide');
           console.log('计算排队中');
           window.setTimeout(function(){
             swal({
               title: '计算排队中!',
-              type: 'error',
+              type: 'warning',
               timer: 1000,
               showConfirmButton: false
             });
