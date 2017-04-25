@@ -49,5 +49,13 @@
 	SET "CONTENT" = #{content,jdbcType=CLOB}, "UPDATE_TIME"=sysdate WHERE "DATE"=#{date,jdbcType=DATE} AND "MODE"=#{mode,jdbcType=VARCHAR} 
 	AND "CITY_STATION"=#{city_station,jdbcType=VARCHAR}
  </select>
-  
+   <!-- sql--查询观测数据 -->
+  <select id="queryObservationResult" parameterType="hashMap" resultMap="ResultMapWithBLOBs">
+ 	select 
+	 	<include refid="Base_Column_List" />
+	    ,
+	    <include refid="Blob_Column_List" />
+	    , "ADD_TIME", "UPDATE_TIME"
+	    from ${tableName} where "DATE"=#{date,jdbcType=VARCHAR} AND "MODE"=#{mode,jdbcType=VARCHAR} AND "CITY_STATION"=#{city_station,jdbcType=VARCHAR} 
+ </select> 
 </mapper>
