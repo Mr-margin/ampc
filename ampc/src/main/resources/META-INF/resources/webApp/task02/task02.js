@@ -365,7 +365,7 @@ function delArea(e) {
                 $('.jpjs').removeAttr('disNone');
                 $('.jpjs').removeClass('disNone');
                 $('.jpztck').addClass('disNone');
-                return;
+                break;
               }
             }
           }
