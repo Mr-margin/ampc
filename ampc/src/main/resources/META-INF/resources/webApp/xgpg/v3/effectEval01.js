@@ -14,7 +14,7 @@ $(function () {
  */
 var	dps_codeStation,	//设置站点信息
 	dps_station,		//查询站点
-	echartsData,		//接受更新echarts数据
+	echartsData,		//该任务下所选情景的所有数据
 	standardData,		//基准数据
 	allMission;			//放置站点信息
 //默认显示柱状图
@@ -316,7 +316,7 @@ function initEcharts() {
 				}
 			}else{
 				var arr = Object.keys(datas);
-				console.log(arr.length);
+//				console.log(arr.length);
 				for (var prop in datas) {  
 					if (datas.hasOwnProperty(prop)) {   
 						if(prop == id){ 	//循环不同的情景id
@@ -344,6 +344,8 @@ function initEcharts() {
 					}  
 				}
 			}
+			console.log(ttime);
+			console.log(ydata);
 		option.series.push({
 			name : name, 				//情景名称  对应图例 exceptsjz
 			type : show_type, 			//图表类型   已设全局变量 show_type
@@ -408,7 +410,6 @@ function ajaxPost_sy(url, parameter) {
  * 查询基准
  * */
 function find_standard(){
-	console.log($('#station').val());
 	var missionId=$("#task").val();
 	var url='/Appraisal/find_standard';
 	var paramsName = {
@@ -422,7 +423,7 @@ function find_standard(){
 		  };
 	ajaxPost(url, paramsName).success(function (res) {
 	    if (res.status == 0) {
-	    	standardData = res.data.data;
+	    	standardData = res.data.data;	//放置基准数据
 	    	scenarino.scenarinoId=res.data.scenarinoId;
 	    	scenarino.scenarinoName=res.data.scenarinoName;
 	    	if (JSON.stringify(standardData) == '{}' || standardData == null||standardData==undefined||standardData=='') {
@@ -658,14 +659,23 @@ $('input[name=changes]').on('change', function (e) {
 	if (changeType == '1') {
 	
 	} else if(changeType == '2'){
-	
+		$.ecath()
 	}
 });
+
+
+//空间分布率
+var domain;
+$('input[name=domain]').on('change', function (e) {
+	domain = $(e.target).val();
+//	console.log(domain);
+});
+
 //逐日显示 AQI PM25 ,< SO4 NO3 NH4 BC OM PMFINE >, PM10 O3_8_max O3_1_max SO2 NO2 CO 
 //组分展开==open  收起==close
 $('input[name=spread]').on('change', function (e) {
 	var spType = $(e.target).val();
-//  console.log(spType);
+//console.log(spType);
 	if (spType == 'close') {
 		$("#SO4").hide();
 		$("#NO3").hide();
@@ -686,13 +696,6 @@ $('input[name=spread]').on('change', function (e) {
 //		$(e.target).val('close');
 	}
 
-});
-
-//空间分布率
-var domain;
-$('input[name=domain]').on('change', function (e) {
-	domain = $(e.target).val();
-//	console.log(domain);
 });
 
 
