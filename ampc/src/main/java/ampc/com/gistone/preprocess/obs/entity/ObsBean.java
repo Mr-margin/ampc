@@ -3,72 +3,69 @@ package ampc.com.gistone.preprocess.obs.entity;
 import java.util.Calendar;
 import java.util.Date;
 
-import ampc.com.gistone.util.DateUtil;
-
 public class ObsBean {
 
-	//主键
-    private String id;
-    //添加时间
-    private Date addTime;
-    //城市平均还是站点
-    private String mode;
-    //城市code或者站点code
-    private String city_station;
-    //请求内容
-    private String content;
-    //具体的时间
-    private String date;
-    //更新时间
-    private Date updateTime;
-    //所属年份
-    private int years;
-    
-    private String tableName;
+	// 主键
+	private String id;
+	// 添加时间
+	private Date addTime;
+	// 城市平均还是站点
+	private String mode;
+	// 城市code或者站点code
+	private String city_station;
+	// 请求内容
+	private String content;
+	// 具体的时间
+	private Date date;
+	// 更新时间
+	private Date updateTime;
+	// 所属年份
+	private int years;
 
-    public Date getUpdateTime() {
-        return updateTime;
-    }
+	private String tableName;
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
+	public Date getUpdateTime() {
+		return updateTime;
+	}
 
-    public String getMode() {
-        return mode;
-    }
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
 
-    public void setMode(String mode) {
-        this.mode = mode;
-    }
+	public String getMode() {
+		return mode;
+	}
 
-    public String getDate() {
-        return date;
-    }
-    
-    public void setDate(String date) {
-        this.date = date;
-        Date dd = DateUtil.StrtoDateYMD(date, "yyyy-MM-dd");
-        Calendar c = Calendar.getInstance(); 
-		c.setTime(dd);
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
 		this.years = c.get(Calendar.YEAR);
-    }
+	}
 
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public Date getAddTime() {
-        return addTime;
-    }
+	public Date getAddTime() {
+		return addTime;
+	}
 
-    public void setAddTime(Date addTime) {
-        this.addTime = addTime;
-    }
+	public void setAddTime(Date addTime) {
+		this.addTime = addTime;
+	}
 
 	public String getCity_station() {
 		return city_station;
