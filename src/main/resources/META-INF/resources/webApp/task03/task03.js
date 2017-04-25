@@ -172,7 +172,12 @@ function hyc() {
     if (res.status == 0) {
       $.each(res.data, function (i, col) {
 
-        var inn = i == 0 ? "in" : "";//第一个手风琴页签打开
+//      var inn = i == 0 ? "in" : "";//第一个手风琴页签打开
+    	var inn = "";
+    	if(stname){
+    		inn = stname == col.sectorsName ? "in" : "";
+    	}
+    	
         accordion_html += '<div class="panel panel-default" val_name="' + col.sectorsName + '"><div class="panel-heading" style="background-color: #FFF;">';
         accordion_html += '<a data-toggle="collapse" data-parent="#accordion" style="font-weight: 700;" href="#collapse' + i + '"><h5 onclick="metTable_hj_info(\'' + col.sectorsName + '\');" class="panel-title">' + col.sectorsName + '';
         if (col.count != "0") {
