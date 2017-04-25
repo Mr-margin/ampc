@@ -563,246 +563,114 @@ public class EchartsController {
 			//根据Code级别进行条件调整
 			if(addressLevle==1){
 				//循环所有的Code
-//				for(int k=0;k<codesSplit.length;k++){
-//					//取Code
-//					String code=codesSplit[k];
-//					//根据Code级别进行条件调整
-//					String checkCode=code.substring(0,2);
-//					//定义中间变量
-//					int j=0;
-//					//定义基准结果对象
-//					RadioListUtil basisrlu=null;
-//					//循环所有基准情景的减排结果
-//					for (int i=0;i<selectBisisMap.size();i++) {
-//						//获取基准Map
-//						Map basisMap=selectBisisMap.get(i);
-//						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
-//						if(basisMap.get("CODE").toString().startsWith(checkCode)){
-//							//获取行业中的减排污染物信息
-//							basisrlu=tempUtil(basisMap,basisrlu);
-//							//添加Code
-//							basisrlu.setCode(code);
-//							//根据Code查询对应的中文名称
-//							String name=tAddressMapper.selectNameByCode(code);
-//							basisrlu.setName(name);
-//							//定义判断是否包含子集 默认没有子集
-//							boolean isTrue=false;
-//							//临时变量+1
-//							j++;
-//							//进行内部嵌套循环
-//							for(;j<selectBisisMap.size();j++){
-//								basisMap=selectBisisMap.get(j);
-//								//如果是同一个区域下的进行累积增加
-//								if(basisMap.get("CODE").toString().startsWith(checkCode)){
-//									//获取行业中的减排污染物信息
-//									basisrlu=tempUtil(basisMap,basisrlu);
-//									//包含子集
-//									isTrue=true;
-//								}else{
-//									//如果条件不满足更改第一层循环的值  因为到上面还要++所以-1
-//									i=j-1;
-//									break;
-//								}
-//								//判断是否还有数据了
-//								if((j+1)==selectBisisMap.size()){
-//									i=j;
-//								}
-//							}
-//							//判断是否包含子集 如果包含则赋值
-//							if(isTrue){
-//								basisrlu.setType(1);
-//							}else{
-//								basisrlu.setType(0);
-//							}
-//						}else{
-//							continue;
-//						}
-//					}
-//					//如果基准为空则赋值为0
-//					if(basisrlu==null){
-//						basisrlu=new RadioListUtil();
-//						//添加Code
-//						basisrlu.setCode(code);
-//						//根据Code查询对应的中文名称
-//						String name=tAddressMapper.selectNameByCode(code);
-//						basisrlu.setType(0);
-//						basisrlu.setName(name);
-//						basisrlu.setPM25(0);
-//						basisrlu.setPM10(0);
-//						basisrlu.setSO2(0);
-//						basisrlu.setNOx(0);
-//						basisrlu.setVOC(0);
-//						basisrlu.setCO(0);
-//						basisrlu.setNH3(0);
-//						basisrlu.setBC(0);
-//						basisrlu.setOC(0);
-//						basisrlu.setPMFINE(0);
-//						basisrlu.setPMC(0);
-//					}
-//					//初始化临时变量
-//					j=0;
-//					//定义基准结果对象
-//					RadioListUtil jplrlu=null;
-//					//根据Code查询对应的减排
-//					//循环所有基准情景的减排结果
-//					for (int i=0;i<selectjplMap.size();i++) {
-//						//获取基准Map
-//						Map jplMap=selectjplMap.get(i);
-//						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
-//						if(jplMap.get("CODE").toString().startsWith(checkCode)){
-//							//获取行业中的减排污染物信息
-//							jplrlu=tempUtil(jplMap,jplrlu);
-//							//添加Code
-//							jplrlu.setCode(code);
-//							//根据Code查询对应的中文名称
-//							String name=tAddressMapper.selectNameByCode(code);
-//							jplrlu.setName(name);
-//							//定义判断是否包含子集 默认没有子集
-//							boolean isTrue=false;
-//							//临时变量+1
-//							j++;
-//							for(;j<selectjplMap.size();j++){
-//								jplMap=selectjplMap.get(j);
-//								if(jplMap.get("CODE").toString().startsWith(checkCode)){
-//									//获取行业中的减排污染物信息
-//									jplrlu=tempUtil(jplMap,jplrlu);
-//									//包含子集
-//									isTrue=true;
-//								}else{
-//									//如果条件不满足更改第一层循环的值  因为到上面还要++所以-1
-//									i=j-1;
-//									break;
-//								}
-//								//判断是否还有数据了
-//								if((j+1)==selectjplMap.size()){
-//									i=j;
-//								}
-//							}
-//							//判断是否包含子集 如果包含则赋值
-//							if(isTrue){
-//								jplrlu.setType(1);
-//							}else{
-//								jplrlu.setType(0);
-//							}
-//						}else{
-//							continue;
-//						}
-//					}
-//					resultUtil(basisrlu,jplrlu);
-//					resultList.add(jplrlu);
-//				}
-				
-				
-				
 				for(int k=0;k<codesSplit.length;k++){
-				//取Code
-				String code=codesSplit[k];
-				//根据Code级别进行条件调整
-				String checkCode=code.substring(0,2);
-				//定义基准结果对象
-				RadioListUtil basisrlu=null;
-				//循环所有基准情景的减排结果
-				for (int i=0;i<selectBisisMap.size();) {
-					//获取基准Map
-					Map basisMap=selectBisisMap.get(i);
-					//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
-					if(basisMap.get("CODE").toString().startsWith(checkCode)){
-						//获取行业中的减排污染物信息
-						basisrlu=tempUtil(basisMap,basisrlu);
-						//定义判断是否包含子集 默认没有子集
-						boolean isTrue=false;
-						selectBisisMap.remove(i);
-						//进行内部嵌套循环
-						for(int j=0;j<selectBisisMap.size();){
-							basisMap=selectBisisMap.get(j);
-							//如果是同一个区域下的进行累积增加
-							if(basisMap.get("CODE").toString().startsWith(checkCode)){
-								//获取行业中的减排污染物信息
-								basisrlu=tempUtil(basisMap,basisrlu);
-								//包含子集
-								isTrue=true;
-								selectBisisMap.remove(j);
-							}else{
-								break;
+					//取Code
+					String code=codesSplit[k];
+					//根据Code级别进行条件调整
+					String checkCode=code.substring(0,2);
+					//定义基准结果对象
+					RadioListUtil basisrlu=null;
+					//循环所有基准情景的减排结果
+					for (int i=0;i<selectBisisMap.size();) {
+						//获取基准Map
+						Map basisMap=selectBisisMap.get(i);
+						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
+						if(basisMap.get("CODE").toString().startsWith(checkCode)){
+							//获取行业中的减排污染物信息
+							basisrlu=tempUtil(basisMap,basisrlu);
+							//定义判断是否包含子集 默认没有子集
+							boolean isTrue=false;
+							selectBisisMap.remove(i);
+							//进行内部嵌套循环
+							for(int j=0;j<selectBisisMap.size();){
+								basisMap=selectBisisMap.get(j);
+								//如果是同一个区域下的进行累积增加
+								if(basisMap.get("CODE").toString().startsWith(checkCode)){
+									//获取行业中的减排污染物信息
+									basisrlu=tempUtil(basisMap,basisrlu);
+									//包含子集
+									isTrue=true;
+									selectBisisMap.remove(j);
+								}else{
+									break;
+								}
+								
 							}
-							
-						}
-						//判断是否包含子集 如果包含则赋值
-						if(isTrue){
-							basisrlu.setType(1);
+							//判断是否包含子集 如果包含则赋值
+							if(isTrue){
+								basisrlu.setType(1);
+							}else{
+								basisrlu.setType(0);
+							}
 						}else{
-							basisrlu.setType(0);
+							break;
 						}
-					}else{
-						break;
 					}
-				}
-				//如果基准为空则赋值为0
-				if(basisrlu==null){
-					basisrlu=new RadioListUtil();
-					//添加Code
-					basisrlu.setCode(code);
-					//根据Code查询对应的中文名称
-					String name=tAddressMapper.selectNameByCode(code);
-					basisrlu.setType(0);
-					basisrlu.setName(name);
-					basisrlu.setPM25(0);
-					basisrlu.setPM10(0);
-					basisrlu.setSO2(0);
-					basisrlu.setNOx(0);
-					basisrlu.setVOC(0);
-					basisrlu.setCO(0);
-					basisrlu.setNH3(0);
-					basisrlu.setBC(0);
-					basisrlu.setOC(0);
-					basisrlu.setPMFINE(0);
-					basisrlu.setPMC(0);
-				}
-				//定义基准结果对象
-				RadioListUtil jplrlu=null;
-				//根据Code查询对应的减排
-				//循环所有基准情景的减排结果
-				for (int i=0;i<selectjplMap.size();) {
-					//获取基准Map
-					Map jplMap=selectjplMap.get(i);
-					//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
-					if(jplMap.get("CODE").toString().startsWith(checkCode)){
-						//获取行业中的减排污染物信息
-						jplrlu=tempUtil(jplMap,jplrlu);
+					//如果基准为空则赋值为0
+					if(basisrlu==null){
+						basisrlu=new RadioListUtil();
 						//添加Code
-						jplrlu.setCode(code);
+						basisrlu.setCode(code);
 						//根据Code查询对应的中文名称
 						String name=tAddressMapper.selectNameByCode(code);
-						jplrlu.setName(name);
-						//定义判断是否包含子集 默认没有子集
-						boolean isTrue=false;
-						selectjplMap.remove(i);
-						for(int j=0;j<selectjplMap.size();){
-							jplMap=selectjplMap.get(j);
-							if(jplMap.get("CODE").toString().startsWith(checkCode)){
-								//获取行业中的减排污染物信息
-								jplrlu=tempUtil(jplMap,jplrlu);
-								//包含子集
-								isTrue=true;
-								selectjplMap.remove(j);
-							}else{
-								break;
-							}
-						}
-						//判断是否包含子集 如果包含则赋值
-						if(isTrue){
-							jplrlu.setType(1);
-						}else{
-							jplrlu.setType(0);
-						}
-					}else{
-						break;
+						basisrlu.setType(0);
+						basisrlu.setName(name);
+						basisrlu.setPM25(0);
+						basisrlu.setPM10(0);
+						basisrlu.setSO2(0);
+						basisrlu.setNOx(0);
+						basisrlu.setVOC(0);
+						basisrlu.setCO(0);
+						basisrlu.setNH3(0);
+						basisrlu.setBC(0);
+						basisrlu.setOC(0);
+						basisrlu.setPMFINE(0);
+						basisrlu.setPMC(0);
 					}
+					//定义基准结果对象
+					RadioListUtil jplrlu=null;
+					//根据Code查询对应的减排
+					//循环所有基准情景的减排结果
+					for (int i=0;i<selectjplMap.size();) {
+						//获取基准Map
+						Map jplMap=selectjplMap.get(i);
+						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
+						if(jplMap.get("CODE").toString().startsWith(checkCode)){
+							//获取行业中的减排污染物信息
+							jplrlu=tempUtil(jplMap,jplrlu);
+							//添加Code
+							jplrlu.setCode(code);
+							//根据Code查询对应的中文名称
+							String name=tAddressMapper.selectNameByCode(code);
+							jplrlu.setName(name);
+							//定义判断是否包含子集 默认没有子集
+							boolean isTrue=false;
+							selectjplMap.remove(i);
+							for(int j=0;j<selectjplMap.size();){
+								jplMap=selectjplMap.get(j);
+								if(jplMap.get("CODE").toString().startsWith(checkCode)){
+									//获取行业中的减排污染物信息
+									jplrlu=tempUtil(jplMap,jplrlu);
+									//包含子集
+									isTrue=true;
+									selectjplMap.remove(j);
+								}else{
+									break;
+								}
+							}
+							//判断是否包含子集 如果包含则赋值
+							if(isTrue){
+								jplrlu.setType(1);
+							}else{
+								jplrlu.setType(0);
+							}
+						}else{
+							break;
+						}
+					}
+					resultUtil(basisrlu,jplrlu);
+					resultList.add(jplrlu);
 				}
-				resultUtil(basisrlu,jplrlu);
-				resultList.add(jplrlu);
-			}
-				
 			}else if(addressLevle==2){
 				//执行SQL返回Code的结果集
 				List<Map> selectcodeMap = this.getBySqlMapper.findRecords(codeSql);
@@ -920,133 +788,6 @@ public class EchartsController {
 						resultList.add(jplrlu);
 					}
 				}
-//				for(int o=0;o<selectcodeMap.size();o++){
-//					//取Code
-//					String code=selectcodeMap.get(o).get("CODE").toString();
-//					//根据Code级别进行条件调整
-//					String checkCode=code.substring(0,4);
-//					//定义中间变量
-//					int j=0;
-//					//定义基准结果对象
-//					RadioListUtil basisrlu=null;
-//					//循环所有基准情景的减排结果
-//					for (int i=0;i<selectBisisMap.size();i++) {
-//						//获取基准Map
-//						Map basisMap=selectBisisMap.get(i);
-//						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
-//						if(basisMap.get("CODE").toString().startsWith(checkCode)){
-//							//获取行业中的减排污染物信息
-//							basisrlu=tempUtil(basisMap,basisrlu);
-//							//添加Code
-//							basisrlu.setCode(checkCode+"00");
-//							//根据Code查询对应的中文名称
-//							String name=tAddressMapper.selectNameByCode(checkCode+"00");
-//							basisrlu.setName(name);
-//							//定义判断是否包含子集 默认没有子集
-//							boolean isTrue=false;
-//							//临时变量+1
-//							j++;
-//							for(;j<selectBisisMap.size();j++){
-//								basisMap=selectBisisMap.get(j);
-//								if(basisMap.get("CODE").toString().startsWith(checkCode)){
-//									//获取行业中的减排污染物信息
-//									basisrlu=tempUtil(basisMap,basisrlu);
-//									//包含子集
-//									isTrue=true;
-//								}else{
-//									//如果条件不满足更改第一层循环的值  因为到上面还要++所以-1
-//									i=j-1;
-//									break;
-//								}
-//								//判断是否还有数据了
-//								if((j+1)==selectBisisMap.size()){
-//									i=j;
-//								}
-//							}
-//							//判断是否包含子集 如果包含则赋值
-//							if(isTrue){
-//								basisrlu.setType(1);
-//							}else{
-//								basisrlu.setType(0);
-//							}
-//						}else{
-//							continue;
-//						}
-//					}
-//					//如果基准为空则赋值为0
-//					if(basisrlu==null){
-//						basisrlu=new RadioListUtil();
-//						//添加Code
-//						basisrlu.setCode(code);
-//						//根据Code查询对应的中文名称
-//						String name=tAddressMapper.selectNameByCode(code);
-//						basisrlu.setType(0);
-//						basisrlu.setName(name);
-//						basisrlu.setPM25(0);
-//						basisrlu.setPM10(0);
-//						basisrlu.setSO2(0);
-//						basisrlu.setNOx(0);
-//						basisrlu.setVOC(0);
-//						basisrlu.setCO(0);
-//						basisrlu.setNH3(0);
-//						basisrlu.setBC(0);
-//						basisrlu.setOC(0);
-//						basisrlu.setPMFINE(0);
-//						basisrlu.setPMC(0);
-//					}
-//					//初始化临时变量
-//					j=0;
-//					//定义基准结果对象
-//					RadioListUtil jplrlu=null;
-//					//根据Code查询对应的减排
-//					//循环所有基准情景的减排结果
-//					for (int i=0;i<selectjplMap.size();i++) {
-//						//获取基准Map
-//						Map jplMap=selectjplMap.get(i);
-//						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
-//						if(jplMap.get("CODE").toString().startsWith(checkCode)){
-//							//获取行业中的减排污染物信息
-//							jplrlu=tempUtil(jplMap,jplrlu);
-//							//添加Code
-//							jplrlu.setCode(checkCode+"00");
-//							//根据Code查询对应的中文名称
-//							String name=tAddressMapper.selectNameByCode(checkCode+"00");
-//							jplrlu.setName(name);
-//							//定义判断是否包含子集 默认没有子集
-//							boolean isTrue=false;
-//							//临时变量+1
-//							j++;
-//							for(;j<selectjplMap.size();j++){
-//								jplMap=selectjplMap.get(j);
-//								if(jplMap.get("CODE").toString().startsWith(checkCode)){
-//									//获取行业中的减排污染物信息
-//									jplrlu=tempUtil(jplMap,jplrlu);
-//									//包含子集
-//									isTrue=true;
-//								}else{
-//									//如果条件不满足更改第一层循环的值  因为到上面还要++所以-1
-//									i=j-1;
-//									break;
-//								}
-//								//判断是否还有数据了
-//								if((j+1)==selectjplMap.size()){
-//									i=j;
-//								}
-//							}
-//							//判断是否包含子集 如果包含则赋值
-//							if(isTrue){
-//								jplrlu.setType(1);
-//							}else{
-//								jplrlu.setType(0);
-//							}
-//						}else{
-//							continue;
-//						}
-//					}
-//					o=j-1;
-//					resultUtil(basisrlu,jplrlu);
-//					resultList.add(jplrlu);
-//				}
 			}else{
 				//执行SQL返回Code的结果集
 				List<Map> selectcodeMap = this.getBySqlMapper.findRecords(codeSql);
@@ -1119,78 +860,6 @@ public class EchartsController {
 						resultList.add(jplrlu);
 					}
 				}
-//				for(int o=0;o<selectcodeMap.size();o++){
-//					//取Code
-//					String code=selectcodeMap.get(o).get("CODE").toString();
-//					//定义基准结果对象
-//					RadioListUtil basisrlu=null;
-//					//循环所有基准情景的减排结果
-//					for (int i=0;i<selectBisisMap.size();i++) {
-//						//获取基准Map
-//						Map basisMap=selectBisisMap.get(i);
-//						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
-//						if(basisMap.get("CODE").toString().equals(code)){
-//							//获取行业中的减排污染物信息
-//							basisrlu=tempUtil(basisMap,basisrlu);
-//							//添加Code
-//							basisrlu.setCode(code);
-//							//根据Code查询对应的中文名称
-//							String name=tAddressMapper.selectNameByCode(code);
-//							basisrlu.setName(name);
-//							basisrlu.setType(0);
-//							selectBisisMap.remove(i);
-//							break;
-//						}else{
-//							continue;
-//						}
-//					}
-//					//如果基准为空则赋值为0
-//					if(basisrlu==null){
-//						basisrlu=new RadioListUtil();
-//						//添加Code
-//						basisrlu.setCode(code);
-//						//根据Code查询对应的中文名称
-//						String name=tAddressMapper.selectNameByCode(code);
-//						basisrlu.setType(0);
-//						basisrlu.setName(name);
-//						basisrlu.setPM25(0);
-//						basisrlu.setPM10(0);
-//						basisrlu.setSO2(0);
-//						basisrlu.setNOx(0);
-//						basisrlu.setVOC(0);
-//						basisrlu.setCO(0);
-//						basisrlu.setNH3(0);
-//						basisrlu.setBC(0);
-//						basisrlu.setOC(0);
-//						basisrlu.setPMFINE(0);
-//						basisrlu.setPMC(0);
-//					}
-//					//定义基准结果对象
-//					RadioListUtil jplrlu=null;
-//					//根据Code查询对应的减排
-//					//循环所有基准情景的减排结果
-//					for (int i=0;i<selectjplMap.size();i++) {
-//						//获取基准Map
-//						Map jplMap=selectjplMap.get(i);
-//						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
-//						if(jplMap.get("CODE").toString().equals(code)){
-//							//获取行业中的减排污染物信息
-//							jplrlu=tempUtil(jplMap,jplrlu);
-//							//添加Code
-//							jplrlu.setCode(code);
-//							//根据Code查询对应的中文名称
-//							String name=tAddressMapper.selectNameByCode(code);
-//							jplrlu.setName(name);
-//							jplrlu.setType(0);
-//							selectjplMap.remove(i);
-//							break;
-//						}else{
-//							continue;
-//						}
-//					}
-//					resultUtil(basisrlu,jplrlu);
-//					resultList.add(jplrlu);
-//				}
 			}
 			LogUtil.getLogger().info("EchartsController 情景减排列表数据查询成功!");
 			return AmpcResult.ok(resultList);
