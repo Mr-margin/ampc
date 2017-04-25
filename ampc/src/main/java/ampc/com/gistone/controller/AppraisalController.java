@@ -25,11 +25,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
+//import ampc.com.gistone.database.inter.TObsMapper;
 import ampc.com.gistone.database.inter.TPreProcessMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.preprocess.concn.ScenarinoEntity;
+//import ampc.com.gistone.preprocess.obs.entity.ObsBean;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.LogUtil;
@@ -47,6 +49,9 @@ public class AppraisalController {
 	
 	@Autowired
 	private TPreProcessMapper tPreProcessMapper;
+	
+//	@Autowired
+//	private TObsMapper tObsMapper;
 	/**
 	 * 时间序列查询
 	 * @param requestDate
@@ -1114,12 +1119,25 @@ public class AppraisalController {
 			tScenarinoDetail.setMissionId(missionId);
 			List<TScenarinoDetail> tScenarinoDetaillist=tScenarinoDetailMapper.selectBystandard(tScenarinoDetail);
 			DateFormat dfs = new SimpleDateFormat("yyyy-MM-dd");
-			String startDate= dfs.format(tScenarinoDetaillist.get(0).getScenarinoStartDate());
-			String endDate= dfs.format(tScenarinoDetaillist.get(0).getScenarinoEndDate());
+			String startDate= dfs.format(tScenarinoDetaillist.get(0).getScenarinoStartDate());	//任务开始时间
+			String endDate= dfs.format(tScenarinoDetaillist.get(0).getScenarinoEndDate());		//任务结束时间
 			
 			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);	//该任务下的所有数据
 			Integer domainId=Integer.valueOf(tMissionDetail.getMissionDomainId().toString());
 			TScenarinoDetail tScenarinoDetaillists=tScenarinoDetaillist.get(0);
+			
+//			ObsBean obsBean=new ObsBean();		//查询观测数据实例
+//			obsBean.setCity_station(cityStation);
+//			obsBean.setDate(startDate);
+//			obsBean.setMode(mode);
+//			String tables_obs="T_OBS_DAILY_";
+//			Date tims_obs=tScenarinoDetaillists.getScenarinoAddTime();
+//			DateFormat df_obs = new SimpleDateFormat("yyyy");
+//			String nowTime_obs= df_obs.format(tims_obs);
+//			tables_obs+=nowTime_obs;
+//			obsBean.setTableName(tables_obs);
+//			ObsBean ObsBeans=tObsMapper.queryUnionResult((Map<String, String>) obsBean);	//查询观测数据
+			
 			JSONArray arr=new JSONArray();
 			JSONObject objsed=new JSONObject();
 			if(!tScenarinoDetaillist.isEmpty()){
@@ -1161,12 +1179,17 @@ public class AppraisalController {
 										
 										for(String speciesmap_key:speciesmap.keySet()){
 											String speciesmap_keyn=(String)speciesmap_key;
-											if(speciesmap_keyn.equals(spcmapkeyw)){	
+											if(speciesmap_keyn.equals(spcmapkeyw)&&"CO".equals(spcmapkeyw)){	
 												
 												Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
 												Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
-												
-												standardobj.put((String)standard_Time, speciesmapval.get("0"));
+												BigDecimal bd=(new BigDecimal(speciesmapval.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+												standardobj.put((String)standard_Time, bd);
+											}else if(speciesmap_keyn.equals(spcmapkeyw)&&!"CO".equals(spcmapkeyw)){
+												Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
+												Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
+												BigDecimal bd=(new BigDecimal(speciesmapval.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+												standardobj.put((String)standard_Time, bd);
 											}
 										}
 									} 
@@ -1213,12 +1236,25 @@ public class AppraisalController {
 										Map<String,Object> speciesmap= (Map)standard_Times;
 										for(String speciesmap_key:speciesmap.keySet()){
 											String speciesmap_keyn=(String)speciesmap_key;
-											if(speciesmap_keyn.equals(spcmapkeyw)){													
+											if(speciesmap_keyn.equals(spcmapkeyw)&&"CO".equals(spcmapkeyw)){													
 												Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
 												Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
 												List qq= (List) speciesmapval.get("0");
 												for(int i=0;i<qq.size();i++){
-													standardobjdata.put(i,qq.get(i));
+													BigDecimal bd=(new BigDecimal(qq.get(i).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+													standardobjdata.put(i,bd);
+//													standardobjdata.put(i,qq.get(i));
+												}					
+												standardobj.put((String)standard_Time, standardobjdata);
+											}
+											else if(speciesmap_keyn.equals(spcmapkeyw)&&!"CO".equals(spcmapkeyw)){
+												Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
+												Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
+												List qq= (List) speciesmapval.get("0");
+												for(int i=0;i<qq.size();i++){
+													BigDecimal bd=(new BigDecimal(qq.get(i).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+													standardobjdata.put(i,bd);
+//													standardobjdata.put(i,qq.get(i));
 												}					
 												standardobj.put((String)standard_Time, standardobjdata);
 											}
