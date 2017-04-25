@@ -13,5 +13,11 @@ public interface TObsMapper {
 	void update(ObsBean newObsBean);
 
 	void insert(ObsBean newObsBean);
+	/**
+	 * 查询观测数据
+	 * @param params
+	 * @return
+	 */
+	ObsBean queryObservationResult(Map<String, Object> params);
 
 }
