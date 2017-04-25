@@ -983,7 +983,7 @@ public class MissionAndScenarinoController {
 				arr.add(lastobj);	
 				JSONObject forobj=new JSONObject();
 				forobj.put("scenarinoId",frtscen.getScenarinoId());
-				forobj.put("scenarinoName", frtscen.getScenarinoName());
+				forobj.put("scenarinoName", "实时预报情景");
 				forobj.put("scenarinoStartDate", missiondate);
 				forobj.put("ScenType", frtscen.getScenType());
 				forobj.put("scenarinoEndDate", frdate);
@@ -991,7 +991,7 @@ public class MissionAndScenarinoController {
 			}else{
 				JSONObject forobj=new JSONObject();
 				forobj.put("scenarinoId",frtscen.getScenarinoId());
-				forobj.put("scenarinoName", frtscen.getScenarinoName());
+				forobj.put("scenarinoName", "实时预报情景");
 				forobj.put("scenarinoStartDate", missiondate);
 				forobj.put("ScenType", frtscen.getScenType());
 				forobj.put("scenarinoEndDate", frdate);
