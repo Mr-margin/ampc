@@ -1,15 +1,12 @@
 package ampc.com.gistone.util;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.hamcrest.core.IsInstanceOf;
 
 /**
  * 正则验证帮助类
