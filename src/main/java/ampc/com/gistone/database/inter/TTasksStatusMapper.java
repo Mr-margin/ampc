@@ -1,6 +1,5 @@
 package ampc.com.gistone.database.inter;
 
-import java.util.Date;
 import java.util.Map;
 
 import ampc.com.gistone.database.model.TTasksStatus;
@@ -17,8 +16,9 @@ public interface TTasksStatusMapper {
     int updateByPrimaryKeySelective(TTasksStatus record);
 
     int updateByPrimaryKey(TTasksStatus record);
-
-	/**
+    
+    
+    /**
 	 * @Description: TODO
 	 * @param tasksStatus   
 	 * void   得到模式执行的结果，并更新数据库
@@ -62,24 +62,16 @@ public interface TTasksStatusMapper {
 	TTasksStatus selectStatus(Long tasksScenarinoId);
 
 	/**
-	 * @Description: TODO
+	 * @Description: 跟新数据库的情景运行了之后的可用状态
 	 * @param tasksStatus   
-	 * void   跟新数据库的情景运行了之后的可用状态
+	 * void   
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年4月5日 上午11:45:01
 	 */
 	void updateRunstatus(TTasksStatus tasksStatus);
 
-	/**
-	 * @Description: 获取运行最新的状态的实时预报情景
-	 * @return   
-	 * Date  
-	 * @throws
-	 * @author yanglei
-	 * @date 2017年4月5日 下午8:50:21
-	 */
-	Date getlastrunstatus();
+
 
 	
 
@@ -139,5 +131,14 @@ public interface TTasksStatusMapper {
 	 */
 	TTasksStatus selectTasksstatusByPathdate(Map map);
 
-	
+	/**
+	 * @Description: 修改模式停止的状态
+	 * @param tTasksStatus
+	 * @return   
+	 * int  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月26日 下午5:59:37
+	 */
+	int updatestopstatus(TTasksStatus tTasksStatus);
 }

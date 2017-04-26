@@ -47,7 +47,7 @@ public interface TScenarinoDetailMapper {
 	 */
 	int updateScenType(Map map);
 	/**
-	 * @Description: 根据起报日期查询当条记录的实时预报的fnl是否跑完
+	 * @Description: 查询实时预报数据
 	 * @param map
 	 * @return   
 	 * TTasksStatus  
@@ -55,7 +55,7 @@ public interface TScenarinoDetailMapper {
 	 * @author yanglei
 	 * @date 2017年4月14日 下午4:27:24
 	 */
-	TTasksStatus selectTasksstatusByPathdate(Map map);
+	TScenarinoDetail selectScenarinoDetail(Map map);
 	/**
 	 * @param scenarinoId 
 	 * @Description: 通过情景ID获取任务ID
@@ -89,15 +89,15 @@ public interface TScenarinoDetailMapper {
 	Long selectBasisId(Date basisTime);
 	
 	/**
-	 * @Description: 通过pathdate获取情景ID和cores
-	 * @param today
+	 * @Description:用户 通过pathdate获取情景ID和cores
+	 * @param map
 	 * @return   
 	 * TScenarinoDetail  
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年4月6日 下午4:55:47
 	 */
-	TScenarinoDetail getidAndcores(Date today);
+	TScenarinoDetail getidByuserIdAndpathdate(Map map);
 
 
 	/**
@@ -123,14 +123,14 @@ public interface TScenarinoDetailMapper {
 	
 	/**
 	 * @Description: TODO
-	 * @param lastpathdate
-	 * @return   通过起报时间查询实时预报情景的全部情景
+	 * @param parmap
+	 * @return   通过起报时间查询用户的实时预报情景的全部情景
 	 * TScenarinoDetail  
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年4月6日 上午11:06:00
 	 */
-	TScenarinoDetail getbufaScenID(Date lastpathdate);
+	TScenarinoDetail getForecastScenID(Map parmap);
 	
 	
 	/**
@@ -259,6 +259,26 @@ public interface TScenarinoDetailMapper {
 	 * 查询基准情景 
 	 * */
     List<TScenarinoDetail> selectBystandard(TScenarinoDetail record);
+	/**
+	 * @Description: 获取运行最新的状态的实时预报情景
+	 * @param userId
+	 * @return   
+	 * Date  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月24日 下午5:42:52
+	 */
+	Date getlastrunstatus(Long userId);
+	/**
+	 * @Description: 通过情景类型和pathdate查询所有的情景
+	 * @param map
+	 * @return   
+	 * List<TScenarinoDetail>  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月25日 上午10:23:55
+	 */
+	List<TScenarinoDetail> selectAllByPathdateAndtype(Map map);
 
     TScenarinoDetail selectByrealmin(Long missionId);
 	
