@@ -277,7 +277,7 @@ public class ToDataTasksUtil {
 		    tTasksStatus.setStopStatus(code.toString());
 		    tTasksStatus.setStopModelResult(rpop);
 		    try {
-		    	int i = tasksStatusMapper.updateByPrimaryKeySelective(tTasksStatus);
+		    	int i = tasksStatusMapper.updatestopstatus(tTasksStatus);
 			} catch (Exception e) {
 				// TODO: handle exception
 				LogUtil.getLogger().error("停止模式的消息更新数据库失败！");
