@@ -93,6 +93,7 @@ public class SendQueueData {
 		TTasksStatus tTasksStatus = new TTasksStatus();
 		tTasksStatus.setTasksScenarinoId(scenarinoId);
 		tTasksStatus.setStopStatus("2");
+		tTasksStatus.setStopModelResult(null);
 		int i = tTasksStatusMapper.updatestopstatus(tTasksStatus);
 		if (i>0) {
 			LogUtil.getLogger().info("更新发送停止模式的状态成功！");
