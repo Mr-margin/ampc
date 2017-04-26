@@ -467,7 +467,8 @@
   <!-- 修改模式停止的状态 -->
   <update id="updatestopstatus" parameterType="ampc.com.gistone.database.model.TTasksStatus">
    update T_TASKS_STATUS
-    set STOP_STATUS = #{stopStatus,jdbcType=VARCHAR}
+    set STOP_STATUS = #{stopStatus,jdbcType=VARCHAR},
+    STOP_MODEL_RESULT = #{stopModelResult,jdbcType=VARCHAR}
   	where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </update>
   <!-- 通过情景类型和起报时间查找情景的运行状态 -->
