@@ -141,4 +141,16 @@ public interface TTasksStatusMapper {
 	 * @date 2017年4月26日 下午5:59:37
 	 */
 	int updatestopstatus(TTasksStatus tTasksStatus);
+
+	/**
+	 * @Description: 修改模式终止返回的状态
+	 * @param tTasksStatus
+	 * @return   
+	 * int  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月26日 下午9:28:59
+	 */
+	int updatestopModelresult(TTasksStatus tTasksStatus);
+
 }
