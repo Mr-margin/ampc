@@ -154,7 +154,7 @@ public class AmpcResult {
      */
 	public AmpcResult(Object data) {
 		this.status = 0; //默认返回正常
-		this.msg = "OK";
+		this.msg = "success";
 		this.data = data;
 	}
 	
