@@ -10,6 +10,8 @@ package ampc.com.gistone.redisqueue;
 
 import org.springframework.stereotype.Component;
 
+import ampc.com.gistone.util.LogUtil;
+
 /**  
  * @Title: ErrorStatus.java
  * @Package ampc.com.gistone.redisqueue
@@ -30,7 +32,7 @@ public class ErrorStatus {
 	 * @date 2017年4月6日 下午3:00:39
 	 */
 	public static void Errortips(Long tasksScenarinoId) {
-		System.out.println("该条情景参数组织错误");
+		LogUtil.getLogger().info("该条情景参数组织错误");
 	}
 
 }
