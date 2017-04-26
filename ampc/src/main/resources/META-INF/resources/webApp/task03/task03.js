@@ -329,22 +329,28 @@ function metTable_hj_info(pa_name) {
 
     },
     onClickRow: function (row, $element) {
-      $('.success').removeClass('success');
-      $($element).addClass('success');
-      setTimeout(function () {
-        if (row.state == true) {//如果被选中
-          $("#hz_de").show();
-          $("#hz_up").show();
-        } else {
-          $("#hz_de").hide();
-          $("#hz_up").hide();
-        }
-      }, 100);
+//      $('.success').removeClass('success');
+//      $($element).addClass('success');
+    	if (row.state == true) {//如果被选中
+            $("#hz_de").show();
+            $("#hz_up").show();
+          } else {
+            $("#hz_de").hide();
+            $("#hz_up").hide();
+          }
     },
     onLoadSuccess: function (data) {
       if (data.length > 0) {
         $("#jianpaijisuan").show();
       }
+    },
+    onCheck: function (row){
+    	$("#hz_de").show();
+        $("#hz_up").show();
+    },
+    onUncheck: function (row){
+    	$("#hz_de").hide();
+        $("#hz_up").hide();
     }
   });
 
@@ -857,22 +863,33 @@ function show_zicuoshi_table(columns, b_data) {
       }
     },
     onClickRow: function (row, $element) {
-      $('.success').removeClass('success');
-      $($element).addClass('success');
-      setTimeout(function () {
-        if (row.state == true) {//如果被选中
-          if (row.f1 != "剩余点源" && row.f1 != "面源") {
-            $("#zicuoshi_tools_de").show();
-            $("#zicuoshi_tools_up").show();
-          } else {
-            $("#zicuoshi_tools_de").hide();
-            $("#zicuoshi_tools_up").show();
-          }
-        } else {
-          $("#zicuoshi_tools_de").hide();
-          $("#zicuoshi_tools_up").hide();
-        }
-      }, 100);
+//      $('.success').removeClass('success');
+//      $($element).addClass('success');
+    	if (row.state == true) {//如果被选中
+    		if (row.f1 != "剩余点源" && row.f1 != "面源") {
+    			$("#zicuoshi_tools_de").show();
+    			$("#zicuoshi_tools_up").show();
+    		} else {
+    			$("#zicuoshi_tools_de").hide();
+    			$("#zicuoshi_tools_up").show();
+    		}
+    	} else {
+    		$("#zicuoshi_tools_de").hide();
+    		$("#zicuoshi_tools_up").hide();
+    	}
+    },
+    onCheck: function (row){
+    	if (row.f1 != "剩余点源" && row.f1 != "面源") {
+			$("#zicuoshi_tools_de").show();
+			$("#zicuoshi_tools_up").show();
+		} else {
+			$("#zicuoshi_tools_de").hide();
+			$("#zicuoshi_tools_up").show();
+		}
+    },
+    onUncheck: function (row){
+    	$("#zicuoshi_tools_de").hide();
+		$("#zicuoshi_tools_up").hide();
     },
     onLoadSuccess: function (data) {
 //			alert('b');
