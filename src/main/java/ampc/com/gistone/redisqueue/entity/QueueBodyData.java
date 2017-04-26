@@ -30,6 +30,10 @@ public class QueueBodyData {
 	private Long cores;
 	//模式类型  共五种模式类型
 	private String modeltype;
+	//tasksindex 
+	private Integer cIndex;
+	//tasksenddate
+	private String cDate;
 	//common数据
 	private Object common;
 	//emis 数据
@@ -105,6 +109,18 @@ public class QueueBodyData {
 	}
 	public void setFlag(Integer flag) {
 		this.flag = flag;
+	}
+	public Integer getcIndex() {
+		return cIndex;
+	}
+	public void setcIndex(Integer cIndex) {
+		this.cIndex = cIndex;
+	}
+	public String getcDate() {
+		return cDate;
+	}
+	public void setcDate(String cDate) {
+		this.cDate = cDate;
 	}
 	
 	
