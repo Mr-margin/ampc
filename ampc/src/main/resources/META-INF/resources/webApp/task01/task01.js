@@ -852,6 +852,7 @@ function selectQJtype(type) {
       //reverse  倒序
       switch (type) {
         case 'yy':
+          $('#createYpQjModal h4.modal-title').html('创建情景(预评估情景)');
           $('.ypgQJType').css('display', 'none');
           $('.ypgQJCon').css('display', 'block');
           $('.dbqj').css('display', 'none');
@@ -886,6 +887,7 @@ function selectQJtype(type) {
 
           break;
         case 'yh':
+          $('#createYpQjModal h4.modal-title').html('创建情景（后评估情景）');
           $('.ypgQJType').css('display', 'none');
           $('.ypgQJCon').css('display', 'block');
           $('.dbqj').css('display', 'block');
@@ -929,6 +931,7 @@ function selectQJtype(type) {
 
           break;
         case 'hh':
+          $('#createHpQjModal h4.modal-title').html('创建情景（后评估情景）');
           $('.hpgQJType').css('display', 'none');
           $('.hpgQJCon').css('display', 'block');
           $('.createQjBtn').css('display', 'inline-block');
@@ -965,6 +968,7 @@ function selectQJtype(type) {
           }
           break;
         case 'hj':
+          $('#createHpQjModal h4.modal-title').html('创建情景（新基准情景）');
           $('.hpgQJType').css('display', 'none');
           $('.hpgQJCon').css('display', 'block');
           $('.createQjBtn').css('display', 'inline-block');
@@ -1168,6 +1172,7 @@ function createQJselect() {
   //}
 
   if (selectRW.missionStatus == "2") {
+    $('#createYpQjModal h4.modal-title').html('创建情景');
     if (moment(selectRW.missionEndDate).isBefore(moment(), 'day')) {
       $('.disYQJ').attr('disabled', true);
     } else {
@@ -1176,6 +1181,7 @@ function createQJselect() {
     $('#createYpQjModal').modal('show');
     returnLeft('yqj');
   } else if (selectRW.missionStatus == "3") {
+    $('#createHpQjModal h4.modal-title').html('创建情景');
     __dsp['jcqj' + selectRW.missionId].success(function (res) {
       if (res.status == 0) {
         if (res.data.length == 0) {
@@ -1204,7 +1210,7 @@ function setSelectDate(qjS, qjE, pathD) {
   if (pathD) {
     var p = moment(pathD);
     //while (!(p.isBefore(moment(qjS),'d'))) {
-    while (p.isAfter(moment(qjS), 'd')) {
+    while (!p.isBefore(moment(qjS), 'd')) {
       dateArr.push(p.subtract(1, 'd').format('YYYY-MM-DD'));
     }
   } else {
