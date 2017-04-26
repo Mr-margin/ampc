@@ -20,9 +20,12 @@ import org.springframework.stereotype.Component;
 
 
 
+
+
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.redisqueue.entity.QueueData;
+import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.LogUtil;
 
 
@@ -46,13 +49,6 @@ public class SendQueueData {
 	private TTasksStatusMapper tTasksStatusMapper;
 	
 	
-	/*public void sendData(String json,TTasksStatus tasksStatus) {
-		System.out.println("开始发送");
-	//	if (null==TasksendDate&&null == stepindex) {
-			redisqueue.leftPush("test",json);//receive_queue_name
-		System.out.println("发送完毕");
-		
-	}*/
 	/**
 	 * @Description: TODO
 	 * @param queueData   
@@ -61,14 +57,51 @@ public class SendQueueData {
 	 * @author yanglei
 	 * @date 2017年3月25日 下午4:05:24
 	 */
-	public void toJson(QueueData queueData,Long tasksScenarinoId) {
+	public void toJson(QueueData queueData,Long tasksScenarinoId,String time) {
 		JSONObject jsonObject = JSONObject.fromObject(queueData);
 		String json = jsonObject.toString();
-		System.out.println(json+"这是发送的数据包 ");
+		LogUtil.getLogger().info("这是发送的数据包:"+json);
 		sendQueueData.sendData(json);
-		System.out.println("发送成功");
+		TTasksStatus tTasksStatus = new TTasksStatus();
+		tTasksStatus.setTasksScenarinoId(tasksScenarinoId);
+		tTasksStatus.setBeizhu2(time);
+		tTasksStatusMapper.updatemessageStatus(tTasksStatus);
+		//String pathdate = DateUtil.changeDate(DateUtil.StrtoDateYMD(time, "yyyyMMdd"), "yyyyMMdd", 1);
+		LogUtil.getLogger().info("情景ID为："+tasksScenarinoId+",time:"+time+"当天的数据发送了");
+		LogUtil.getLogger().info("发送成功");
 	}
 	
+	
+	
+
+	/**
+	 * @Description: 停止模式的消息
+	 * @param queueData
+	 * @param object
+	 * @param object2   
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月26日 下午3:56:36
+	 */
+	public boolean stoptoJson(QueueData queueData,Long scenarinoId) {
+		JSONObject jsonObject = JSONObject.fromObject(queueData);
+		String json = jsonObject.toString();
+		LogUtil.getLogger().info("发送了停止的指令:"+json);
+		//boolean flag = sendQueueData.sendData(json);
+		//修改状态表示发送了停止的消息
+		TTasksStatus tTasksStatus = new TTasksStatus();
+		tTasksStatus.setTasksScenarinoId(scenarinoId);
+		tTasksStatus.setStopStatus("2");
+		int i = tTasksStatusMapper.updatestopstatus(tTasksStatus);
+		if (i>0) {
+			LogUtil.getLogger().info("更新发送停止模式的状态成功！");
+		}else {
+			LogUtil.getLogger().info("更新发送停止模式的状态失败！");
+		}
+		
+		return false;
+	}
 	
 	/**
 	 * @Description: TODO
@@ -78,27 +111,19 @@ public class SendQueueData {
 	 * @author yanglei
 	 * @date 2017年3月29日 上午11:51:50
 	 */
-	private void sendData(String json) {
-		LogUtil.getLogger().info(json+new Date());
-		System.out.println("开始发送");
-		redisqueue.leftPush("receive_queue_name",json);//receive_queue_name
-	//	redisqueue.leftPush("queue_test",json);//receive_queue_name
-		System.out.println("发送结束");
-		
+	private boolean sendData(String json) {
+		LogUtil.getLogger().info("开始发送");
+		boolean flag;
+		long leftPush = redisqueue.leftPush("receive_queue_name",json);//receive_queue_name
+		if (leftPush>0) {
+			flag = true;
+		}else {
+			flag = false;
+		}
+//		redisqueue.leftPush("bm",json);//receive_queue_name
+		LogUtil.getLogger().info("发送结束");
+		return flag;
 	}
-	/**
-	 * @param tasksEndDate 
-	 * @Description: TODO   
-	 * void  实时预报发送消息到队列的方法
-	 * @throws
-	 * @author yanglei
-	 * @date 2017年3月29日 下午3:42:48
-	 */
-	public void sendqueueData(Date tasksEndDate) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 
 
 
