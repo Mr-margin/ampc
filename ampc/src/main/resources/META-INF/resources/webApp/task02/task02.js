@@ -289,16 +289,6 @@ function initialize() {
   //initZTree();  //初始化zTree数据
 }
 
-///*初始化zTree数据*/
-//function initZTree() {
-//  var url = '/area/find_areas_new';
-//  ajaxPost(url, {
-//    userId: userId
-//  }).success(function (res) {
-//    zTreeData = res.data;
-//  });
-//}
-
 
 var scenarino;
 /*请求区域及时段*/
@@ -637,7 +627,7 @@ $('#timePlan').on('show.bs.modal', function (event) {
   msg.content.provinceCodes = allData[areaIndex].provinceCodes;
 
   /*添加时段 start*/
-  initDate(timeStart.add(1, 'h'), timeEnd1);
+  initDate(timeStart.add(2, 'h'), timeEnd1);
   editHtml('addTime1');
   /*滑块*/
   /*var timeArr = [];
@@ -736,54 +726,6 @@ $('#timePlan').on('show.bs.modal', function (event) {
 
 });
 
-/*时段预案操作模态框选择 start*/
-//function selectOperate(type) {
-//  if (type == 'sTime') {
-//    $('.btnSelect').css({
-//      'right': '-100%',
-//      'opacity': 0
-//    });
-//    $('.' + type).css({
-//      left: 0,
-//      'opacity': 1
-//    })
-//
-//    if (allData[selectedTimes.index].timeItems.length <= 1) {
-//      $('.delTimeBtn').attr('disabled', true);
-//      $('.editTimeBtn').attr('disabled', true);
-//    } else {
-//      $('.delTimeBtn').removeAttr('disabled');
-//      $('.editTimeBtn').removeAttr('disabled');
-//    }
-//
-//  } else {
-//    $('.btnSelect').css({
-//      'left': '-100%',
-//      'opacity': 0
-//    });
-//    $('.' + type).css({
-//      right: 0,
-//      'opacity': 1
-//    })
-//  }
-//}
-
-//$('#editTime').on('show.bs.modal', function (event) {
-//  $('.btnSelect').css({
-//    'right': 0,
-//    'left': 0,
-//    'opacity': 1
-//  });
-//  $('.sTime').css({
-//    left: '-100%',
-//    'opacity': 0
-//  });
-//  $('.sPlan').css({
-//    right: '-100%',
-//    'opacity': 0
-//  })
-//});
-
 /*打开预案编辑*/
 //function openAddYA() {
 //  $('#addYA .selectAdd').removeClass('disNone');
@@ -862,15 +804,6 @@ function createNewPlan(e) {
   }, 500)
 }
 
-/*添加新预案按钮*/
-//function addNewPlan(e) {
-//  $(e).parents('#addYA').find('.modal-footer').removeClass('disNone');
-//  $(e).parents('#addYA').find('.addNewPlan').removeClass('disNone');
-//  $(e).parents('#addYA').find('.addCopyPlan').addClass('disNone');
-//  $(e).parents('.selectAdd').addClass('disNone');
-//  newPlan = true;
-//}
-
 /*选择已有预案按钮*/
 function copyPlan() {
   initCopyPlanTable();
@@ -939,14 +872,6 @@ function clearTimeDate() {
     editTimeDateObj.beforeE = moment(allData[areaIndex].timeItems[timeIndex - 1].timeEndDate).format('YYYY-MM-DD HH');
   }
 }
-
-//$('#editTimeDate').on('show.bs.modal', function (event) {
-//  areaIndex = selectedTimes.index;
-//  timeIndex = selectedTimes.indexNum;
-//  clearTimeDate();
-//  updatetimeSow();
-//  editTimeDateObj.type = $('#selectEditPoint').val();
-//});
 
 /*编辑时段时间html*/
 function updatetimeSow() {
@@ -1043,11 +968,6 @@ function selectEditPoint(t) {
   initEditTimeDate(s, e);
 }
 
-//function editTimeDate() {
-//  $('#editTimeDate').modal('show');
-//  window.setTimeout(function () {
-//  }, 350)
-//}
 
 $('#editArea').on('show.bs.modal', function (event) {
   console.log(cnArea)
