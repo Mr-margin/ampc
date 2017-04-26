@@ -24,7 +24,7 @@ public class StopModelBean {
 	//任务ID
 	private String missionid;
 	//情景ID
-	private String secnarioid;
+	private String scenarioid;
 	
 	
 
@@ -52,15 +52,17 @@ public class StopModelBean {
 		this.missionid = missionid;
 	}
 
-	public String getSecnarioid() {
-		return secnarioid;
-	}
-
-	public void setSecnarioid(String secnarioid) {
-		this.secnarioid = secnarioid;
-	}
+	
 
 	
+	public String getScenarioid() {
+		return scenarioid;
+	}
+
+	public void setScenarioid(String scenarioid) {
+		this.scenarioid = scenarioid;
+	}
+
 	public StopModelBean() {
 		super();
 		// TODO Auto-generated constructor stub
