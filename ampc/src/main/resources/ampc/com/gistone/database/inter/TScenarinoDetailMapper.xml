@@ -73,16 +73,18 @@
   <include refid="Base_Column_List" />
   from T_SCENARINO_DETAIL where SCENARINO_STATUS ='6' and SCEN_TYPE ='1'
   </select>
-  <!--通过pathdate查询实时预报ID和cores  -->
-  <select id="getidAndcores" resultMap="BaseResultMap" parameterType="java.util.Date">
-  select SCENARINO_ID,EXPAND3 from T_SCENARINO_DETAIL where PATH_DATE = #{pathDate,jdbcType=TIMESTAMP} and SCEN_TYPE = '4'
+  <!--通过pathdate查询实时预报情景  -->
+  <select id="getidByuserIdAndpathdate" resultMap="BaseResultMap" parameterType="hashMap">
+  select 
+  <include refid="Base_Column_List" />
+  from T_SCENARINO_DETAIL where PATH_DATE = #{pathDate,jdbcType=TIMESTAMP} and SCEN_TYPE = '4' and USER_ID = #{userId,jdbcType=DECIMAL}
   </select>
-  <!-- 查询补发实时预报情景的全部内容 -->
-  <select id="getbufaScenID" resultMap="BaseResultMap" parameterType="java.util.Date">
+  <!-- 查询补发实时预报情景的全部内容 根据用户-->
+  <select id="getForecastScenID" resultMap="BaseResultMap" parameterType="hashMap">
   select 
    <include refid="Base_Column_List" />
    from T_SCENARINO_DETAIL
-   where PATH_DATE = #{pathDate,jdbcType=TIMESTAMP} and SCEN_TYPE = '4'
+   where PATH_DATE = #{pathDate,jdbcType=TIMESTAMP} and USER_ID = #{userId,jdbcType=DECIMAL} and SCEN_TYPE = '4'
   </select>
   <!-- 根据ID查找开始时间结束时间和情景类型 -->
   <select id="selecttypetime" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -95,6 +97,12 @@
   select SCEN_TYPE
   from T_SCENARINO_DETAIL where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
   
+  </select>
+ <!--获取最新的未运行实时预报  -->
+  <select id="getlastrunstatus" resultType="java.util.Date" parameterType="java.lang.Long">
+  SELECT MIN(PATH_DATE) 
+  FROM T_SCENARINO_DETAIL A LEFT JOIN T_TASKS_STATUS B ON A.SCENARINO_ID=B.TASKS_SCENARINO_ID
+  WHERE A.SCENARINO_TYPE='4' AND B.BEIZHU='0' AND A.USER_ID=#{userId,jdbcType=DECIMAL} AND B.BEIZHU2='0'
   </select>
   <!-- 更新cores -->
   <update id="updateCores" parameterType="ampc.com.gistone.database.model.TScenarinoDetail">
@@ -293,13 +301,20 @@
   </select>
    
    <!-- 根据起报日期查询当条记录的实时预报的fnl是否跑完  -->
-  <select id="selectTasksstatusByPathdate" parameterType="hashMap" resultType="ampc.com.gistone.database.model.TTasksStatus">
+ <!--  <select id="selectTasksstatusByPathdate" parameterType="hashMap" resultType="ampc.com.gistone.database.model.TTasksStatus">
   select
-  TASKS_ID, TASKS_SCENARINO_ID, ERROR_STATUS, SCENARINO_START_DATE, SCENARINO_END_DATE,
- RANGE_DAY, STEPINDEX, TASKS_END_DATE, SOURCEID, CALCTYPE, PSAL, SSAL, MEICCITYCONFIG,BEIZHU, BEIZHU2, BEIZHU3
-  from T_TASKS_STATUS A LEFT JOIN T_SCENARINO_DETAIL B ON A.TASKS_SCENARINO_ID=B.SCENARINO_ID WHERE B.PATH_DATE = #{pathDate,jdbcType=TIMESTAMP} AND B.SCEN_TYPE=#{scenType,jdbcType=VARCHAR} 
+   TASKS_ID, TASKS_SCENARINO_ID, ERROR_STATUS, A.SCENARINO_START_DATE,A.SCENARINO_END_DATE, A.RANGE_DAY, STEPINDEX, TASKS_END_DATE, SOURCEID, CALCTYPE, PSAL, SSAL, MEICCITYCONFIG,
+      BEIZHU, BEIZHU2, BEIZHU3
+  from T_TASKS_STATUS A LEFT JOIN T_SCENARINO_DETAIL B ON A.TASKS_SCENARINO_ID=B.SCENARINO_ID
+   WHERE B.PATH_DATE = #{pathDate,jdbcType=TIMESTAMP} AND B.SCEN_TYPE=#{scenType,jdbcType=VARCHAR} AND B.USER_ID = #{userId,jdbcType=DECIMAL}
+  </select> -->
+  <!--查询所有的情景 根据类型和起报时间  -->
+  <select id="selectAllByPathdateAndtype" parameterType="hashMap" resultMap="BaseResultMap">
+  SELECT 
+		<include refid="Base_Column_List" />
+  		FROM T_SCENARINO_DETAIL  
+  		WHERE PATH_DATE = #{pathDate,jdbcType=TIMESTAMP} AND SCEN_TYPE=#{scenType,jdbcType=VARCHAR}
   </select>
-  
    <!--添加情景对名称重复判断-->
   <select id="check_ScenarinoName" parameterType="hashMap" resultType="int">
   	 SELECT COUNT(*) FROM T_SCENARINO_DETAIL WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 

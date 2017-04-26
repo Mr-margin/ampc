@@ -272,9 +272,9 @@
   <sql id="id_Column_List" >
     UNGRIB_ID, ADD_TIME, PATH_DATE
   </sql>
-  <select id="selectUngrib" resultMap="idResultMap" parameterType="java.util.Date">
+  <select id="selectUngrib" resultMap="BaseResultMap" parameterType="java.util.Date">
   	select 
-  	<include refid="id_Column_List" />
+  	<include refid="Base_Column_List" />
   	from T_UNGRIB where PATH_DATE=#{pathDate,jdbcType=TIMESTAMP}
   </select>
 </mapper>
