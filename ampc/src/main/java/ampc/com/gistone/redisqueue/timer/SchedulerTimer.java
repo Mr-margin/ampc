@@ -8,10 +8,13 @@
  */
 package ampc.com.gistone.redisqueue.timer;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +28,14 @@ import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TScenarinoAreaMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
+import ampc.com.gistone.database.inter.TUngribMapper;
 import ampc.com.gistone.database.model.TGlobalSetting;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTasksStatus;
+import ampc.com.gistone.database.model.TUngrib;
 import ampc.com.gistone.redisqueue.ReadyData;
+import ampc.com.gistone.redisqueue.ToDataUngribUtil;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.DateUtil;
@@ -65,11 +71,17 @@ public class SchedulerTimer {
 	@Autowired
 	private TGlobalSettingMapper tGlobalSettingMapper;
 	
+	@Autowired
+	private TUngribMapper tUngribMapper;
+	
 	//读取路径的帮助类
 	@Autowired
 	private ConfigUtil configUtil;
+	//加载dataungributil
+	@Autowired
+	private ToDataUngribUtil toDataUngribUtil;
 	
-//	private Logger logger = Logger.getLogger(this.getClass());
+	
 	// 情景区域映射(测试，后面删除）
 		@Autowired
 		private TScenarinoAreaMapper tScenarinoAreaMapper;
@@ -89,6 +101,7 @@ public class SchedulerTimer {
 	 * @date 2017年4月7日 上午9:53:09
 	 */
 //	@Scheduled(cron="0 0 11 * * ?")
+//	@Scheduled(cron="0 30 10 * * ?")
 //	@Scheduled(fixedRate = 50000)
 	public void realForTimer() {
 		//Date date = new Date();
@@ -259,12 +272,15 @@ public class SchedulerTimer {
 			//基础日期9
 			Date basisTime = DateUtil.ChangeDay(pathDate, -2);
 			tScenarinoDetail.setBasisTime(basisTime);
-			
+			Map Parmap = new HashMap();
+			Parmap.put("userId", userId);
+			Parmap.put("pathDate", pathDate);
 			//查询当天的情景是否被创建（测试时候定时器时间间隔比较小测试用）
-			TScenarinoDetail scen_detail = tScenarinoDetailMapper.getbufaScenID(pathDate);
+			TScenarinoDetail scen_detail = tScenarinoDetailMapper.getForecastScenID(Parmap);
 			if (null!=scen_detail) {
 				LogUtil.getLogger().info("实时预报情景已经建立了");
-				
+				//检查该情景的运行状态，如果运行fnl出错，则重新运行，如果gfs运行出错，和运行正常，则跳出循环
+				//chackRunningStatus(scen_detail);
 				break;
 			}
 			//查询上一天的实时预报情景ID 作为当天的实时预报基础情景
@@ -311,9 +327,9 @@ public class SchedulerTimer {
 			//添加该情景到tasksstatus表
 			i = tTasksStatusMapper.insertSelective(tTasksStatus);
 			
-			if (i>0) {
+	/*		if (i>0) {
 				//根据情景调动实时预报接口开始实时预报
-				readyData.readyRealMessageDataFirst(scenarinoId,cores);
+				readyData.readyRealMessageDataFirst(scenarinoId,cores,userId);
 				LogUtil.getLogger().info("实时预报模式启动！");
 			}
 			
@@ -324,12 +340,87 @@ public class SchedulerTimer {
 			int updateScenType = tScenarinoDetailMapper.updateScenType(map);
 			if(updateScenType>0){
 				LogUtil.getLogger().info("实时预报修改执行状态");
-			}
+			}*/
 		}
 		
 	}
+	/**
+	 * 
+	 * @Description: 发送实时预报的定时器 由ungrib的成与否来触发当天的数据 每天十点之后 没隔十分钟触发一次 
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月21日 下午7:39:01
+	 */
+//	@Scheduled(cron="0 0/10  * * ?")
+//	@Scheduled(fixedRate = 5000)
+	public void  sendMessageOnRealprediction() {
+		 LogUtil.getLogger().info("开始检测ungrib的数据");
+		//获取最新的ungrib 
+		TUngrib tUngrib = tUngribMapper.getlastungrib();
+		if (null==tUngrib) {
+			LogUtil.getLogger().info("没有ungrib数据,系统第一次启动预报！");
+		}else {
+			//最新的pathdate（年月日）
+			Date pathdate = tUngrib.getPathDate();
+			 //当天时间
+			Date pathdatetoday = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+			int length = toDataUngribUtil.UpdateORNo(tUngrib);
+			//查找当天所有的用户的实时预报的状态
+			Map map = new HashMap();
+			String scenType = "4";
+			map.put("pathDate", pathdatetoday);
+			map.put("scenType", scenType);
+			List<TScenarinoDetail>  list = tScenarinoDetailMapper.selectAllByPathdateAndtype(map);
+			for (TScenarinoDetail tScenarinoDetail : list) {
+					Long userId = tScenarinoDetail.getUserId();
+					Long rangeDay = tScenarinoDetail.getRangeDay();
+					if (length>=rangeDay) {
+						//查找中断的预报时间
+						Date lastpathdate = tScenarinoDetailMapper.getlastrunstatus(userId);
+						String lastungrib = readyData.pivot(userId, lastpathdate, pathdate);
+						if (null!=lastungrib) {
+							readyData.readyRealMessageDataFirst(tScenarinoDetail, lastungrib);
+						}else {
+							LogUtil.getLogger().info("当天的实时预报已经发送过了！");
+						}
+					}
+				}
+		}
+	}
 	
-	
+	/**
+	 * @Description: 检查该情景的运行状态
+	 
+	 * @param scen_detail   
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月20日 上午11:02:42
+	 */
+	public void chackRunningStatus(TScenarinoDetail scen_detail) {
+		Long scenarinoId = scen_detail.getScenarinoId();
+		TTasksStatus tTasksStatus = tTasksStatusMapper.selectendByscenarinoId(scenarinoId);
+		String errorStatus = tTasksStatus.getErrorStatus();
+		if (null!=errorStatus) {
+			//出错了的情况
+			Date tasksEndDate = DateUtil.DateToDate(tTasksStatus.getTasksEndDate(), "yyyyMMdd");
+			Date scenarinoStartDate = DateUtil.DateToDate(tTasksStatus.getScenarinoStartDate(), "yyyyMMdd");
+			String goingtime = tTasksStatus.getBeizhu2();
+			Long userId = scen_detail.getUserId();
+			Calendar cal = Calendar.getInstance();
+			long day = (tasksEndDate.getTime()-scenarinoStartDate.getTime())/(24*60*60*1000);
+			if (day==0) {
+				//表示fnl出错  需要重新启动模式
+				//readyData.readyRealMessageDataFirst(scenarinoId,null,userId);
+				
+			}
+			
+		}
+		
+	}
+
+
 	/**
 	 * 
 	 * @Description: TODO
@@ -425,15 +516,23 @@ public class SchedulerTimer {
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年4月8日 上午10:19:16
-	 *//*
-	@Scheduled(fixedRate = 5000)
-	public String  test1() {
-		System.out.println("开始定时任务");
-		String name = "zhangsan";
-		//System.out.println(name+"定时的name");
-		System.out.println("这个时间是"+DateUtil.DATEtoString(new Date(), "yyyy-MM-dd HH:mm:ss"));
-		return name;
-	}*/
+	 */
+//	@Scheduled(fixedRate = 5000)
+	public void  test1() {
+		String url="http://192.168.1.10:8082/ampc/saveEmis";
+		HashMap<String,String> hashMap = new HashMap<String, String>();
+		hashMap.put("sourceid", "sourceid");
+		hashMap.put("psal", "psal-----");
+		hashMap.put("meiccityconfig", "meiccityconfig-----");
+		hashMap.put("scenarioid", "10000");
+		hashMap.put("calctype", "10000");
+		hashMap.put("ssal", "10000---");
+		JSONObject jsonObject = JSONObject.fromObject(hashMap);
+		String getResult=ClientUtil.doPost(url,jsonObject.toString());
+		System.out.println(getResult);
+	}
+
+
 	public Map<String, String> getEmisData(Long sourceid,Long scenarinoId,int flag) {
 		
 		/*Map<String,String> map = new HashMap<String,String>();
@@ -451,24 +550,20 @@ public class SchedulerTimer {
 	 * @date 2017年4月17日 上午10:23:32
 	 */
 	
-//	@Scheduled(fixedRate = 5000)
-	public void continueRealModel() {
-	/*	//查找当天的实时预报的运行状态
+	//@Scheduled(fixedRate = 5000)
+	public void continueRealModelprediction() {
+		//查找当天的实时预报的运行状态
 		Date pathdateDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
 		String scenType = "4";
 		Map map = new HashMap();
 		map.put("pathdate", pathdateDate);
 		map.put("type", scenType);
+		map.put("userId", 1);
 		//TTasksStatus status =tScenarinoDetailMapper.selectTasksstatusByPathdate(pathdateDate);
 		TTasksStatus status =tTasksStatusMapper.selectTasksstatusByPathdate(map);
-		*/
+		System.out.println(status+"今天的实时预报情景");
 		/*Long missionType = tMissionDetailMapper.selectMissionType((long)367);
 		System.out.println(missionType+"---test:任务类型");*/
-	/*	Map mapQusery=new HashMap();
-		mapQusery.put("userId",1);
-		mapQusery.put("scenarinoId",483);
-		List<Long> areaList=tScenarinoAreaMapper.selectBySid(mapQusery);
-		System.out.println(areaList+".............");*/
 		
 		
 	}
