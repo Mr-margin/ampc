@@ -93,7 +93,6 @@ public class SendQueueData {
 		TTasksStatus tTasksStatus = new TTasksStatus();
 		tTasksStatus.setTasksScenarinoId(scenarinoId);
 		tTasksStatus.setStopStatus("2");
-		tTasksStatus.setStopModelResult(null);
 		int i = tTasksStatusMapper.updatestopstatus(tTasksStatus);
 		if (i>0) {
 			LogUtil.getLogger().info("更新发送停止模式的状态成功！");
@@ -114,15 +113,22 @@ public class SendQueueData {
 	 */
 	private boolean sendData(String json) {
 		LogUtil.getLogger().info("开始发送");
-		boolean flag;
-		long leftPush = redisqueue.leftPush("receive_queue_name",json);//receive_queue_name
-		if (leftPush>0) {
-			flag = true;
-		}else {
-			flag = false;
-		}
+		boolean flag = false;
+		try {
+			long leftPush = redisqueue.leftPush("receive_queue_name",json);//receive_queue_name
 //		redisqueue.leftPush("bm",json);//receive_queue_name
+			if (leftPush>0) {
+				flag = true;
+			}else {
+				flag = false;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			LogUtil.getLogger().info("发送消息到消息队列出现异常！");
+		}
 		LogUtil.getLogger().info("发送结束");
+		
 		return flag;
 	}
 
