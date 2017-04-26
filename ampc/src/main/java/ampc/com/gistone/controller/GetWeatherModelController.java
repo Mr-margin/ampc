@@ -26,8 +26,10 @@ import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.redisqueue.ReadyData;
 import ampc.com.gistone.redisqueue.RedisUtilServer;
+import ampc.com.gistone.redisqueue.StopModelData;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.LogUtil;
 
 /**  
  * @Title: GetWeatherModelController.java
@@ -41,9 +43,6 @@ import ampc.com.gistone.util.ClientUtil;
 @RequestMapping
 public class GetWeatherModelController {
 	
-	
-	@Autowired
-	private RedisUtilServer redisUtilServer;
 	//加载准备数据工具类
 	
 	@Autowired
@@ -56,7 +55,8 @@ public class GetWeatherModelController {
 	@Autowired
 	private TTasksStatusMapper tTasksStatusMapper;
 	
-	
+	@Autowired
+	private StopModelData stopModelData;
 	/**
 	 * 
 	 * @Description: 模式启动接口
@@ -105,7 +105,12 @@ public class GetWeatherModelController {
 			tTasksStatus.setTasksScenarinoId(scenarinoId);
 			//清空模式运行状态
 			int updateByPrimaryKey = tTasksStatusMapper.updateByPrimaryKeySelective(tTasksStatus);
-			
+			System.out.println(updateByPrimaryKey+"清空模式运行状态");
+			if (updateByPrimaryKey>0) {
+				LogUtil.getLogger().info("情况模式的运行状态");
+			}else {
+				LogUtil.getLogger().info("清空运行状态失败！");
+			}
 			String conditionString =  readyData.branchPredict(scenarinoId, cores, scenarinoType, missionType,missionId,userId);
 			if (updateCores>0&&conditionString.equals("ok")) {
 				//更新状态
@@ -152,24 +157,27 @@ public class GetWeatherModelController {
 	 * @date 2017年4月13日 下午4:22:55
 	 */
 	@RequestMapping("/saveEmis")
-	public AmpcResult saveEmisData(HttpServletRequest request,HttpServletResponse response) {
+	public AmpcResult saveEmisData(@RequestBody Map<String, Object> requestDate, Long jobId,HttpServletRequest request,HttpServletResponse response) {
 		try {
-		String sourceid = request.getParameter("sourceid");
-		String calctype = request.getParameter("calctype");
-		String psal = request.getParameter("psal");
-		String ssal = request.getParameter("ssal");
-		String meiccityconfig = request.getParameter("meiccityconfig");
-		Long scenarinoId =Long.parseLong(request.getParameter("scenarioid"));
-		TTasksStatus tTasksStatus = new TTasksStatus();
-		tTasksStatus.setSourceid(sourceid);
-		tTasksStatus.setCalctype(calctype);
-		tTasksStatus.setPsal(psal);
-		tTasksStatus.setSsal(ssal);
-		tTasksStatus.setMeiccityconfig(meiccityconfig);
-		tTasksStatus.setTasksScenarinoId(scenarinoId);
+			ClientUtil.SetCharsetAndHeader(request, response);
+			String sourceid = requestDate.get("sourceid").toString();
+			String psal = requestDate.get("psal").toString();
+			String ssal = requestDate.get("ssal").toString();
+			String meiccityconfig = requestDate.get("meiccityconfig").toString();
+			Long scenarinoId = Long.parseLong( requestDate.get("scenarioid").toString());
+			TTasksStatus tTasksStatus = new TTasksStatus();
+			tTasksStatus.setSourceid("1");
+			tTasksStatus.setCalctype("server");
+			tTasksStatus.setPsal(psal);
+			tTasksStatus.setSsal(ssal);
+			tTasksStatus.setMeiccityconfig(meiccityconfig);
+			tTasksStatus.setTasksScenarinoId(scenarinoId);
+			System.out.println(tTasksStatus.toString());
 		//添加到对应的情景下面去
 			int i = tTasksStatusMapper.updateEmisData(tTasksStatus);
+		//	int i = tTasksStatusMapper.updateByPrimaryKeySelective(tTasksStatus);
 			if (i>0) {
+				LogUtil.getLogger().info("获取减排系数成功！并更新了数据库！");
 				//后评估任务后评估情景
 				//readyData.readypost_PostEvaluationSituationData(scenarinoid);
 				//准备对应的队列参数数据
@@ -182,13 +190,14 @@ public class GetWeatherModelController {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 			return AmpcResult.build(1000, "参数错误");
 		}
 		
 	}
 	/**
 	 * 
-	 * @Description: 停止模式的
+	 * @Description: 停止模式
 	 * @param requestDate
 	 * @param request
 	 * @param response
@@ -198,45 +207,101 @@ public class GetWeatherModelController {
 	 * @author yanglei
 	 * @date 2017年4月14日 下午5:16:58
 	 */
-	@RequestMapping("/ModelType/stopModel")
+	@RequestMapping("/ModelType/sendstopModel")
 	public AmpcResult stopModel(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
 		String token = (String) requestDate.get("token");
+		Long userId;
+		Long domainId;
+		Long scenarinoId;
+		Long missionId;
 		try {
 			//获取数据包
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
-			//用户id
-			Long userId = Long.parseLong(data.get("userId").toString());
-			//任务类型
-			Integer missionType = Integer.parseInt(data.get("missionType").toString());
-			//情景ID
-			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
-			//任务ID
-			Long missionId = Long.parseLong(data.get("missionId").toString());
-			//情景类型
-			Integer scenarinoType = Integer.parseInt(data.get("scenarinoType").toString());
-			//计算核数
-			//Long cores = Long.parseLong(data.get("cores").toString());
-			TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
-		//	设置状态 改为停止模式
-			tScenarinoDetail.setScenarinoId(scenarinoId);
-			tScenarinoDetail.setScenarinoStatus((long)6);
-			int updateCores = tScenarinoDetailMapper.updateCores(tScenarinoDetail);
-			if (updateCores>0) {
-				
-			//	readyData.branchPredict(scenarinoId, cores, scenarinoType, missionType,missionId,userId);
-				
-				return AmpcResult.build(0, "ok");
-			}else {
-				return AmpcResult.build(1000, "停止失败");
+			try {
+				//用户id
+				userId = Long.parseLong(data.get("userId").toString());
+			} catch (Exception e) {
+				// TODO: handle exception
+				return AmpcResult.build(1003, "userId参数错误");
+			}
+			try {
+				//doaminid
+				domainId = Long.parseLong(data.get("domainId").toString());
+			} catch (Exception e) {
+				// TODO: handle exception
+				return AmpcResult.build(1003, "domainId参数错误");
+			}
+			try {
+				//情景ID
+				scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			} catch (Exception e) {
+				// TODO: handle exception
+				return AmpcResult.build(1003, "scenarinoId参数错误");
+			}
+			try {
+				//任务ID
+				missionId = Long.parseLong(data.get("missionId").toString());
+			} catch (Exception e) {
+				// TODO: handle exception
+				return AmpcResult.build(1003, "missionId参数错误");
 			}
 			
+			boolean branchModel = stopModelData.branchModel(scenarinoId,domainId,missionId,userId);
+				if (branchModel) {
+					return AmpcResult.build(0, "停止请求发送成功！");
+				}else {
+					return AmpcResult.build(1004, "停止请求发送失败！");
+				}
+				
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return AmpcResult.build(1000, "系统错误");
 		}
 		
+		
+	}
+	@RequestMapping("/ModelType/successStopModel")
+	public AmpcResult stopModelsuccess(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
+		String token = (String) requestDate.get("token");
+		Long userId;
+		Long scenarinoId;
+		try {
+			//获取数据包
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			try {
+				//用户id
+				userId = Long.parseLong(data.get("userId").toString());
+			} catch (Exception e) {
+				// TODO: handle exception
+				return AmpcResult.build(1003, "userId参数错误");
+			}
+			try {
+				//情景ID
+				scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			} catch (Exception e) {
+				// TODO: handle exception
+				return AmpcResult.build(1003, "scenarinoId参数错误");
+			}
+			TTasksStatus status = tTasksStatusMapper.selectStatus(scenarinoId);
+			String stopStatus = status.getStopStatus();
+			if ("0".equals(stopStatus.trim())) {
+				return AmpcResult.build(0, "模式终止成功！");
+			}
+			else if ("1".equals(stopStatus.trim())){
+				return AmpcResult.build(0, "模式终止失败！");
+			}else if("2".equals(stopStatus.trim())){
+				 return AmpcResult.build(0, "模式终止过程中！");
+			}else {
+				return AmpcResult.build(1000, "系统错误");
+			}
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return AmpcResult.build(1000, "系统错误");
+		}
 		
 	}
 	/**
