@@ -467,10 +467,20 @@
   <!-- 修改模式停止的状态 -->
   <update id="updatestopstatus" parameterType="ampc.com.gistone.database.model.TTasksStatus">
    update T_TASKS_STATUS
-    set STOP_STATUS = #{stopStatus,jdbcType=VARCHAR},
-    STOP_MODEL_RESULT = #{stopModelResult,jdbcType=VARCHAR}
+    set STOP_STATUS = #{stopStatus,jdbcType=VARCHAR}
   	where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </update>
+  
+  <!-- 修改模式终止返回的状态 -->
+<update id="updatestopModelresult" parameterType="ampc.com.gistone.database.model.TTasksStatus">
+update T_TASKS_STATUS
+    set STOP_STATUS = #{stopStatus,jdbcType=VARCHAR},
+     BEIZHU2 = #{beizhu2,jdbcType=VARCHAR},
+     STEPINDEX = #{stepindex,jdbcType=DECIMAL},
+     TASKS_END_DATE = #{tasksEndDate,jdbcType=TIMESTAMP},
+      STOP_MODEL_RESULT = #{stopModelResult,jdbcType=VARCHAR}
+  	where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
+</update>  
   <!-- 通过情景类型和起报时间查找情景的运行状态 -->
   <select id="selectTasksstatusByPathdate" parameterType="hashMap" resultMap="BaseResultMap">
   select 
