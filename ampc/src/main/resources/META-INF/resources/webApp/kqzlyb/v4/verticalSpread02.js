@@ -199,7 +199,7 @@ function setTime() {
       changeMsg.endD = '2017-04-16';
       changeMsg.time = moment(changeMsg.startD).format('YYYY-MM-DD HH');
       /*测试使用 end*/
-      initSPDate(changeMsg.minDate,changeMsg.maxDate,changeMsg.startD,changeMsg.endD);
+      initCZDate(changeMsg.minDate,changeMsg.maxDate,changeMsg.startD,changeMsg.endD);
     }
 
   })
