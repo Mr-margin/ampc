@@ -120,7 +120,38 @@ public class DateUtil {
 		cal.add(Calendar.DATE, i);
 		return cal.getTime();
 	}
+	
 
+	/**
+	 * @Description: 时间	去掉当前的时分秒增减小时之后返回一个新的时间
+	 * @param initDate
+	 * @param pattern
+	 * @param i
+	 * @return   
+	 * Date  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月21日 上午10:20:19
+	 */
+	public static Date changedateByHour(Date initDate, int i) {
+		/*SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
+		String  newDatestr = new SimpleDateFormat("yyyyMMdd").format(initDate);
+		String newString = newDatestr+" "+"00:00:00";
+		Date newDate = null;
+		//	Date handleinitDate = format.parse(newString);
+			Calendar cal = Calendar.getInstance();
+		//	cal.setTime(handleinitDate);
+			cal.setTime(initDate);
+			cal.add(Calendar.HOUR_OF_DAY, i);
+			newDate = cal.getTime();*/
+			//上面那个是针对传进来的参数没有格式化处理而写的
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(initDate);
+			cal.add(Calendar.HOUR_OF_DAY, i);
+			Date newDate = cal.getTime();
+		return newDate;
+	}
+	
 	/**
 	 * 
 	 * @Description: TODO
@@ -231,6 +262,8 @@ public class DateUtil {
 			return null;
 		}
 	}
+
+	
 
 	public static String timeToDays(String time) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
