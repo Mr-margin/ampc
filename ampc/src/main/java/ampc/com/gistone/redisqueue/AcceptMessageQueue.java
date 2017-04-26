@@ -59,14 +59,14 @@ public class AcceptMessageQueue implements Runnable{
 	public void run() {
 		
 	
-		
-	/*	while (!Thread.interrupted()) {
+	/*
+		while (!Thread.interrupted()) {
 			
 			try {
 		//	String send_queue_name = redisUtilServer.rpop("send_queue_name");//result_Start_model
 			System.out.println("队列接受数据");
 		//	String rpop = redisUtilServer.brpop("send_queue_name");//result_Start_model
-			String rpop2 = redisUtilServer.rpop("test");//result_Start_model
+			String rpop2 = redisUtilServer.rpop("mb");//result_Start_model
 			if (null==rpop2) {
 				System.out.println(rpop2+"刚取出来的");
 				LogUtil.getLogger().info("队列里面没有数据了！");
@@ -109,7 +109,6 @@ public class AcceptMessageQueue implements Runnable{
 	while (!Thread.interrupted()) {
 			
 			try {
-				//	String send_queue_name = redisUtilServer.rpop("send_queue_name");//result_Start_model
 				System.out.println("队列接受数据");
 				String rpop = redisUtilServer.brpop("send_queue_name");//result_Start_model
 				//	String rpop2 = redisUtilServer.rpop("test");//result_Start_model
@@ -132,6 +131,11 @@ public class AcceptMessageQueue implements Runnable{
 						LogUtil.getLogger().info("接受ungrib数据："+new Date()+":"+rpop);
 						toDataUngribUtil.updateDB(rpop);
 						LogUtil.getLogger().info("ungrib处理完毕："+new Date());
+						break;
+					case "model.stop.result":
+						LogUtil.getLogger().info("停止模式处理开始："+new Date()+":"+rpop);
+						toDataTasksUtil.stopModelresult(rpop);
+						LogUtil.getLogger().info("停止模式处理完毕："+new Date());
 						break;
 						
 					default:
