@@ -1607,6 +1607,7 @@ body.full-screen #header {
     right: 15px;
     bottom: 10px;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #content .heading:before,
