@@ -52,9 +52,10 @@ import ampc.com.gistone.util.LogUtil;
  * @author yanglei
  * @date 2017年3月27日 下午2:03:17
  * @version 1.0
+ * @param <V>
  */
 @Component
-public class ToDataTasksUtil {
+public class ToDataTasksUtil<V> {
 	//加载ttasksstatus表映射
 	@Autowired
 	private TTasksStatusMapper tasksStatusMapper;
@@ -271,18 +272,43 @@ public class ToDataTasksUtil {
 		    Map map = (Map) object;
 		    Object code = map.get("code");
 		    Long tasksScenarinoId = Long.parseLong(map.get("scenarioid").toString());
-		    String desc = (String) map.get("desc");
 		    TTasksStatus tTasksStatus = new TTasksStatus();
 		    tTasksStatus.setTasksScenarinoId(tasksScenarinoId);
 		    tTasksStatus.setStopStatus(code.toString());
 		    tTasksStatus.setStopModelResult(rpop);
+		    tTasksStatus.setBeizhu2("0");
+//		    tTasksStatus.setStepindex(null);
+//		    tTasksStatus.setTasksEndDate(null);
 		    try {
-		    	int i = tasksStatusMapper.updatestopstatus(tTasksStatus);
+		    	//更新tasks状态
+		    	int i = tasksStatusMapper.updatestopModelresult(tTasksStatus);
+		    	if (i>0) {
+		    		LogUtil.getLogger().info("停止模式的消息更新数据库成功！");
+				}else {
+					LogUtil.getLogger().error("停止模式的消息更新数据库失败！");
+				}
+		    	
 			} catch (Exception e) {
 				// TODO: handle exception
-				LogUtil.getLogger().error("停止模式的消息更新数据库失败！");
+				e.printStackTrace();
+				LogUtil.getLogger().error("停止模式的消息更新数据出现异常！");
 			}
-		    
+		    try {
+		    	//更新情景状态
+		    	Map hashMap = new HashMap();
+		    	hashMap.put("scenarinoId", tasksScenarinoId);
+		    	hashMap.put("scenarinoStatus", 5);
+		    	int updateStatus = tScenarinoDetailMapper.updateStatus(hashMap);
+		    	if (updateStatus>0) {
+		    		LogUtil.getLogger().info("id为"+tasksScenarinoId+"的情景终止后更新状态成功！");
+				}else {
+					LogUtil.getLogger().info("id为"+tasksScenarinoId+"的情景终止后更新状态失败！");
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+				LogUtil.getLogger().error("停止模式的消息更新情景状态出现异常！");
+			}
 		    if (code.equals(0)) {
 				LogUtil.getLogger().info("情景："+tasksScenarinoId+"停止成功！");
 			}else {
