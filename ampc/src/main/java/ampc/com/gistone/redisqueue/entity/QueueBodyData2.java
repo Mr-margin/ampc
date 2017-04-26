@@ -10,9 +10,9 @@ package ampc.com.gistone.redisqueue.entity;
 
 
 /**  
- * @Title: QueueBodyData.java
+ * @Title: QueueBodyData2.java
  * @Package ampc.com.gistone.redisqueue
- * @Description: TODO 消息队列的body内的消息
+ * @Description: TODO 消息队列的body内的消息 续跑的类
  * @author yanglei
  * @date 2017年3月21日 上午9:44:34
  * @version 1.0
