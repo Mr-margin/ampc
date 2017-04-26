@@ -46,7 +46,9 @@ public class RegUtil {
 	 * @return
 	 */
 	public static boolean CheckParameter(Object param,String clazz,String regEx,boolean isIgnore){
+		//判断是否为空
 		if(param==null) return false;
+		//是否是指定的目标类型
 		if(clazz.equals("Integer")){
 			if (!(param instanceof Integer)) {
 			    return false;
@@ -92,8 +94,10 @@ public class RegUtil {
 			    return false;
 			} 
 		}
+		//是否包含正则表达式
 		if(regEx!=null){
 			Pattern pattern=null;
+			//是否忽略大小写
 			if(isIgnore){
 				pattern = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE);
 			}else{
