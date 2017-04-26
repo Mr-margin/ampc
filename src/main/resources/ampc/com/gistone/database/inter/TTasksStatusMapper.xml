@@ -18,11 +18,25 @@
     <result column="BEIZHU" property="beizhu" jdbcType="VARCHAR" />
     <result column="BEIZHU2" property="beizhu2" jdbcType="VARCHAR" />
     <result column="BEIZHU3" property="beizhu3" jdbcType="VARCHAR" />
+    <result column="STOP_STATUS" property="stopStatus" jdbcType="VARCHAR" />
+    <result column="SEND_TIME" property="sendTime" jdbcType="TIMESTAMP" />
+    <result column="END_TIME" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="START_MODEL_RESULT" property="startModelResult" jdbcType="VARCHAR" />
+    <result column="STOP_MODEL_RESULT" property="stopModelResult" jdbcType="VARCHAR" />
+    <result column="CONTUNUE_STATUS" property="contunueStatus" jdbcType="VARCHAR" />
+    <result column="PAUSE_STATUS" property="pauseStatus" jdbcType="VARCHAR" />
+    <result column="EXPAND1" property="expand1" jdbcType="DECIMAL" />
+    <result column="EXPAND2" property="expand2" jdbcType="TIMESTAMP" />
+    <result column="EXPAND3" property="expand3" jdbcType="VARCHAR" />
+    <result column="EXPAND4" property="expand4" jdbcType="VARCHAR" />
+    <result column="EXPAND5" property="expand5" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     TASKS_ID, TASKS_SCENARINO_ID, ERROR_STATUS, SCENARINO_START_DATE, SCENARINO_END_DATE, 
     RANGE_DAY, STEPINDEX, TASKS_END_DATE, SOURCEID, CALCTYPE, PSAL, SSAL, MEICCITYCONFIG, 
-    BEIZHU, BEIZHU2, BEIZHU3
+    BEIZHU, BEIZHU2, BEIZHU3, STOP_STATUS, SEND_TIME, END_TIME, START_MODEL_RESULT, STOP_MODEL_RESULT, 
+    CONTUNUE_STATUS, PAUSE_STATUS, EXPAND1, EXPAND2, EXPAND3, EXPAND4, EXPAND5, UPDATE_TIME
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -40,13 +54,23 @@
       RANGE_DAY, STEPINDEX, TASKS_END_DATE, 
       SOURCEID, CALCTYPE, PSAL, 
       SSAL, MEICCITYCONFIG, BEIZHU, 
-      BEIZHU2, BEIZHU3)
+      BEIZHU2, BEIZHU3, STOP_STATUS, 
+      SEND_TIME, END_TIME, START_MODEL_RESULT, 
+      STOP_MODEL_RESULT, CONTUNUE_STATUS, PAUSE_STATUS, 
+      EXPAND1, EXPAND2, EXPAND3, 
+      EXPAND4, EXPAND5, UPDATE_TIME
+      )
     values (#{tasksId,jdbcType=DECIMAL}, #{tasksScenarinoId,jdbcType=DECIMAL}, #{errorStatus,jdbcType=VARCHAR}, 
       #{scenarinoStartDate,jdbcType=TIMESTAMP}, #{scenarinoEndDate,jdbcType=TIMESTAMP}, 
       #{rangeDay,jdbcType=DECIMAL}, #{stepindex,jdbcType=DECIMAL}, #{tasksEndDate,jdbcType=TIMESTAMP}, 
       #{sourceid,jdbcType=VARCHAR}, #{calctype,jdbcType=VARCHAR}, #{psal,jdbcType=VARCHAR}, 
       #{ssal,jdbcType=VARCHAR}, #{meiccityconfig,jdbcType=VARCHAR}, #{beizhu,jdbcType=VARCHAR}, 
-      #{beizhu2,jdbcType=VARCHAR}, #{beizhu3,jdbcType=VARCHAR})
+      #{beizhu2,jdbcType=VARCHAR}, #{beizhu3,jdbcType=VARCHAR}, #{stopStatus,jdbcType=VARCHAR}, 
+      #{sendTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{startModelResult,jdbcType=VARCHAR}, 
+      #{stopModelResult,jdbcType=VARCHAR}, #{contunueStatus,jdbcType=VARCHAR}, #{pauseStatus,jdbcType=VARCHAR}, 
+      #{expand1,jdbcType=DECIMAL}, #{expand2,jdbcType=TIMESTAMP}, #{expand3,jdbcType=VARCHAR}, 
+      #{expand4,jdbcType=VARCHAR}, #{expand5,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TTasksStatus" >
     insert into T_TASKS_STATUS
@@ -99,6 +123,45 @@
       <if test="beizhu3 != null" >
         BEIZHU3,
       </if>
+      <if test="stopStatus != null" >
+        STOP_STATUS,
+      </if>
+      <if test="sendTime != null" >
+        SEND_TIME,
+      </if>
+      <if test="endTime != null" >
+        END_TIME,
+      </if>
+      <if test="startModelResult != null" >
+        START_MODEL_RESULT,
+      </if>
+      <if test="stopModelResult != null" >
+        STOP_MODEL_RESULT,
+      </if>
+      <if test="contunueStatus != null" >
+        CONTUNUE_STATUS,
+      </if>
+      <if test="pauseStatus != null" >
+        PAUSE_STATUS,
+      </if>
+      <if test="expand1 != null" >
+        EXPAND1,
+      </if>
+      <if test="expand2 != null" >
+        EXPAND2,
+      </if>
+      <if test="expand3 != null" >
+        EXPAND3,
+      </if>
+      <if test="expand4 != null" >
+        EXPAND4,
+      </if>
+      <if test="expand5 != null" >
+        EXPAND5,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="tasksId != null" >
@@ -148,6 +211,45 @@
       </if>
       <if test="beizhu3 != null" >
         #{beizhu3,jdbcType=VARCHAR},
+      </if>
+      <if test="stopStatus != null" >
+        #{stopStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTime != null" >
+        #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startModelResult != null" >
+        #{startModelResult,jdbcType=VARCHAR},
+      </if>
+      <if test="stopModelResult != null" >
+        #{stopModelResult,jdbcType=VARCHAR},
+      </if>
+      <if test="contunueStatus != null" >
+        #{contunueStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="pauseStatus != null" >
+        #{pauseStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="expand1 != null" >
+        #{expand1,jdbcType=DECIMAL},
+      </if>
+      <if test="expand2 != null" >
+        #{expand2,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expand3 != null" >
+        #{expand3,jdbcType=VARCHAR},
+      </if>
+      <if test="expand4 != null" >
+        #{expand4,jdbcType=VARCHAR},
+      </if>
+      <if test="expand5 != null" >
+        #{expand5,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -199,6 +301,45 @@
       <if test="beizhu3 != null" >
         BEIZHU3 = #{beizhu3,jdbcType=VARCHAR},
       </if>
+      <if test="stopStatus != null" >
+        STOP_STATUS = #{stopStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTime != null" >
+        SEND_TIME = #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        END_TIME = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startModelResult != null" >
+        START_MODEL_RESULT = #{startModelResult,jdbcType=VARCHAR},
+      </if>
+      <if test="stopModelResult != null" >
+        STOP_MODEL_RESULT = #{stopModelResult,jdbcType=VARCHAR},
+      </if>
+      <if test="contunueStatus != null" >
+        CONTUNUE_STATUS = #{contunueStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="pauseStatus != null" >
+        PAUSE_STATUS = #{pauseStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="expand1 != null" >
+        EXPAND1 = #{expand1,jdbcType=DECIMAL},
+      </if>
+      <if test="expand2 != null" >
+        EXPAND2 = #{expand2,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expand3 != null" >
+        EXPAND3 = #{expand3,jdbcType=VARCHAR},
+      </if>
+      <if test="expand4 != null" >
+        EXPAND4 = #{expand4,jdbcType=VARCHAR},
+      </if>
+      <if test="expand5 != null" >
+        EXPAND5 = #{expand5,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where TASKS_ID = #{tasksId,jdbcType=DECIMAL}
   </update>
@@ -218,11 +359,24 @@
       MEICCITYCONFIG = #{meiccityconfig,jdbcType=VARCHAR},
       BEIZHU = #{beizhu,jdbcType=VARCHAR},
       BEIZHU2 = #{beizhu2,jdbcType=VARCHAR},
-      BEIZHU3 = #{beizhu3,jdbcType=VARCHAR}
+      BEIZHU3 = #{beizhu3,jdbcType=VARCHAR},
+      STOP_STATUS = #{stopStatus,jdbcType=VARCHAR},
+      SEND_TIME = #{sendTime,jdbcType=TIMESTAMP},
+      END_TIME = #{endTime,jdbcType=TIMESTAMP},
+      START_MODEL_RESULT = #{startModelResult,jdbcType=VARCHAR},
+      STOP_MODEL_RESULT = #{stopModelResult,jdbcType=VARCHAR},
+      CONTUNUE_STATUS = #{contunueStatus,jdbcType=VARCHAR},
+      PAUSE_STATUS = #{pauseStatus,jdbcType=VARCHAR},
+      EXPAND1 = #{expand1,jdbcType=DECIMAL},
+      EXPAND2 = #{expand2,jdbcType=TIMESTAMP},
+      EXPAND3 = #{expand3,jdbcType=VARCHAR},
+      EXPAND4 = #{expand4,jdbcType=VARCHAR},
+      EXPAND5 = #{expand5,jdbcType=VARCHAR},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
     where TASKS_ID = #{tasksId,jdbcType=DECIMAL}
   </update>
   
-  <!--通过情景ID获取该情景的减排系数  -->
+   <!--通过情景ID获取该情景的减排系数  -->
   <select id="selectentityByScenId" parameterType="java.lang.Long" resultMap="BaseResultMap">
   select 
     <include refid="Base_Column_List" />
@@ -255,7 +409,7 @@
   where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </update>
  
-  <!--测试方法 通过情景ID查找结束时间  -->
+  <!--测试方法 通过情景ID查找运行状态 -->
   <select id="selectendByscenarinoId" resultMap="BaseResultMap" parameterType="java.lang.Long">
   select 
   <include refid="Base_Column_List" />
@@ -296,12 +450,7 @@
   set BEIZHU = #{beizhu,jdbcType=VARCHAR}
   where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </update>
-  <!--获取最新的实时预报的运行过得状态  -->
-  <select id="getlastrunstatus" resultType="java.util.Date">
- SELECT MIN(PATH_DATE) 
- FROM T_SCENARINO_DETAIL A LEFT JOIN T_TASKS_STATUS B ON A.SCENARINO_ID=B.TASKS_SCENARINO_ID
- WHERE A.SCENARINO_TYPE='4' AND B.BEIZHU='0'
-  </select>
+
   
   <!--查找预评估任务情景的task任务执行情况的全部情景  步数是个未知数-->
   
@@ -315,14 +464,19 @@
   <update id="updatemessageStatus" parameterType="ampc.com.gistone.database.model.TTasksStatus">
   update T_TASKS_STATUS set BEIZHU2 = #{beizhu2,jdbcType=VARCHAR} where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </update>
-  
+  <!-- 修改模式停止的状态 -->
+  <update id="updatestopstatus" parameterType="ampc.com.gistone.database.model.TTasksStatus">
+   update T_TASKS_STATUS
+    set STOP_STATUS = #{stopStatus,jdbcType=VARCHAR}
+  	where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
+  </update>
   <!-- 通过情景类型和起报时间查找情景的运行状态 -->
- <!--  <select id="selectTasksstatusByPathdate" parameterType="hashMap" resultType="ampc.com.gistone.database.model.TTasksStatus">
-  select
-  TASKS_ID, TASKS_SCENARINO_ID, ERROR_STATUS, SCENARINO_START_DATE, SCENARINO_END_DATE, 
-  RANGE_DAY, STEPINDEX, TASKS_END_DATE, SOURCEID, CALCTYPE, PSAL, SSAL, MEICCITYCONFIG,BEIZHU, BEIZHU2, BEIZHU3
+  <select id="selectTasksstatusByPathdate" parameterType="hashMap" resultMap="BaseResultMap">
+  select 
+  TASKS_ID, TASKS_SCENARINO_ID, ERROR_STATUS, A.SCENARINO_START_DATE,A.SCENARINO_END_DATE, A.RANGE_DAY, STEPINDEX, TASKS_END_DATE, SOURCEID, CALCTYPE, PSAL, SSAL, MEICCITYCONFIG,
+      BEIZHU, BEIZHU2, BEIZHU3
   from T_TASKS_STATUS A LEFT JOIN T_SCENARINO_DETAIL B ON A.TASKS_SCENARINO_ID=B.SCENARINO_ID
-  WHERE B.PATH_DATE = #{pathdate} AND B.SCEN_TYPE=#{type}
+  WHERE B.PATH_DATE = #{pathdate} AND B.SCEN_TYPE=#{type} AND B.USER_ID=#{userId}
+  </select> 
   
-  </select> -->
 </mapper>
