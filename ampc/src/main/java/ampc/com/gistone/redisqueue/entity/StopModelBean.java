@@ -17,17 +17,16 @@ package ampc.com.gistone.redisqueue.entity;
  * @version 1.0
  */
 public class StopModelBean {
+	//用户ID
 	private String userid ;
-	
+	//domainID
 	private String domainid;
-	
+	//任务ID
 	private String missionid;
-	
+	//情景ID
 	private String secnarioid;
 	
-	private String start;
 	
-	private String end;
 
 	public String getUserid() {
 		return userid;
@@ -61,22 +60,7 @@ public class StopModelBean {
 		this.secnarioid = secnarioid;
 	}
 
-	public String getStart() {
-		return start;
-	}
-
-	public void setStart(String start) {
-		this.start = start;
-	}
-
-	public String getEnd() {
-		return end;
-	}
-
-	public void setEnd(String end) {
-		this.end = end;
-	}
-
+	
 	public StopModelBean() {
 		super();
 		// TODO Auto-generated constructor stub
