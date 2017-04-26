@@ -88,7 +88,7 @@ public class SendQueueData {
 		JSONObject jsonObject = JSONObject.fromObject(queueData);
 		String json = jsonObject.toString();
 		LogUtil.getLogger().info("发送了停止的指令:"+json);
-		//boolean flag = sendQueueData.sendData(json);
+		boolean flag = sendQueueData.sendData(json);
 		//修改状态表示发送了停止的消息
 		TTasksStatus tTasksStatus = new TTasksStatus();
 		tTasksStatus.setTasksScenarinoId(scenarinoId);
@@ -100,7 +100,7 @@ public class SendQueueData {
 			LogUtil.getLogger().info("更新发送停止模式的状态失败！");
 		}
 		
-		return false;
+		return flag;
 	}
 	
 	/**
