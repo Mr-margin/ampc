@@ -1,5 +1,6 @@
 package ampc.com.gistone.controller;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,6 +46,7 @@ import ampc.com.gistone.database.model.TUserSetting;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.LogUtil;
+import ampc.com.gistone.util.RegUtil;
 import ampc.com.gistone.util.ScenarinoStatusUtil;
 
 /**
@@ -108,6 +110,7 @@ public class MissionAndScenarinoController {
 			//设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
+			
 			//条件名称
 			String queryName=data.get("queryName").toString();
 			//任务状态
@@ -156,7 +159,7 @@ public class MissionAndScenarinoController {
 		} catch (Exception e) {
 			LogUtil.getLogger().error("MissionAndScenarinoController 任务查询方法异常",e);
 			//返回错误信息
-			return AmpcResult.build(1000, "参数错误",null);
+			return AmpcResult.build(1001, "系统异常",null);
 		}
 	}
 	
@@ -177,14 +180,33 @@ public class MissionAndScenarinoController {
 			TMissionDetail mission=new TMissionDetail();
 			//任务名称
 			mission.setMissionName(data.get("missionName").toString());
+			if(!RegUtil.CheckParameter(data.get("missionName").toString(), "String", null, false)){
+				LogUtil.getLogger().error("save_mission  任务名称为空!");
+				return AmpcResult.build(1003, "任务名称为空!");
+			}
 			//模拟范围id
 			mission.setMissionDomainId(Long.parseLong(data.get("missionDomainId").toString()));
+			if(!RegUtil.CheckParameter(Long.parseLong(data.get("missionDomainId").toString()), "Long", null, false)){
+				LogUtil.getLogger().error("save_mission  模拟范围id为空!");
+				return AmpcResult.build(1003, "模拟范围id为空!");
+			}
 			//全国清单id
 			mission.setEsCouplingId(Long.parseLong(data.get("esCouplingId").toString()));
-			
+			if(!RegUtil.CheckParameter(Long.parseLong(data.get("esCouplingId").toString()), "Long", null, false)){
+				LogUtil.getLogger().error("save_mission  全国清单id为空!");
+				return AmpcResult.build(1003, "全国清单id为空!");
+			}
 			//任务的开始时间
 			String startDate=data.get("missionStartDate").toString();
+			if(!RegUtil.CheckParameter(startDate, "String", null, false)){
+				LogUtil.getLogger().error("save_mission  任务的开始时间为空!");
+				return AmpcResult.build(1003, "任务的开始时间为空!");
+			}
 			String endDate=data.get("missionEndDate").toString();
+			if(!RegUtil.CheckParameter(endDate, "String", null, false)){
+				LogUtil.getLogger().error("save_mission  任务的结束时间为空!");
+				return AmpcResult.build(1003, "任务的结束时间为空!");
+			}
 			Date adddate=new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date missionStartDate=sdf.parse(startDate);
@@ -219,11 +241,12 @@ public class MissionAndScenarinoController {
 				//}
 			}
 			//添加失败
-			return AmpcResult.build(1000, "添加失败",null);
+			LogUtil.getLogger().info("save_mission 任务创建成功");
+			return AmpcResult.build(1000, "保存数据失败",null);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("MissionAndScenarinoController 任务创建方法异常",e);
+			LogUtil.getLogger().error("save_mission 任务创建方法异常",e);
 			//返回错误信息
-			return AmpcResult.build(1000, "参数错误",null);
+			return AmpcResult.build(1001, "系统异常",null);
 		}
 	}
 	
@@ -245,10 +268,22 @@ public class MissionAndScenarinoController {
 			TMissionDetail mission=new TMissionDetail();
 			//任务名称
 			mission.setMissionName(data.get("missionName").toString());
+			if(!RegUtil.CheckParameter(data.get("missionName").toString(), "String", null, false)){
+				LogUtil.getLogger().error("update_mission  任务名称为空!");
+				return AmpcResult.build(1003, "任务名称为空!");
+			}
 			//用户的id  确定当前用户
 			mission.setUserId(Long.parseLong(data.get("userId").toString()));
+			if(!RegUtil.CheckParameter(Long.parseLong(data.get("userId").toString()), "Long", null, false)){
+				LogUtil.getLogger().error("update_mission  用户的id为空!");
+				return AmpcResult.build(1003, "用户的id为空!");
+			}
 			//任务ID 
 			mission.setMissionId(Long.parseLong(data.get("missionId").toString()));
+			if(!RegUtil.CheckParameter(Long.parseLong(data.get("missionId").toString()), "Long", null, false)){
+				LogUtil.getLogger().error("update_mission  任务ID为空!");
+				return AmpcResult.build(1003, "任务ID为空!");
+			}
 			//执行修改操作
 			int result=this.tMissionDetailMapper.updateByPrimaryKeySelective(mission);
 			//判断执行结果返回对应数据
@@ -256,7 +291,7 @@ public class MissionAndScenarinoController {
 		} catch (Exception e) {
 			LogUtil.getLogger().error("MissionAndScenarinoController 任务修改方法异常",e);
 			//返回错误信息
-			return AmpcResult.build(1000, "参数错误",null);
+			return AmpcResult.build(1001, "系统异常",null);
 		}
 	}
 	
@@ -276,8 +311,16 @@ public class MissionAndScenarinoController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//要删除的任务集合
 			String missionIds=data.get("missionIds").toString();
+			if(!RegUtil.CheckParameter(missionIds, "String", null, false)){
+				LogUtil.getLogger().error("delete_mission  要删除的任务集合为空!");
+				return AmpcResult.build(1003, "要删除的任务集合为空!");
+			}
 			//用户的id  确定当前用户
 			Integer userId=Integer.valueOf(data.get("userId").toString());
+			if(!RegUtil.CheckParameter(userId, "Integer", null, false)){
+				LogUtil.getLogger().error("delete_mission  用户的id为空!");
+				return AmpcResult.build(1003, "用户的id为空!");
+			}
 			//将得到的数据拆分 放入集合中
 			String[] idss=missionIds.split(",");
 			List<Integer> list=new ArrayList<Integer>();
@@ -289,6 +332,7 @@ public class MissionAndScenarinoController {
 			 */
 			//统计情景的所有ID
 			List<Long> scenarinoIdss=new ArrayList<Long>();
+			
 			//统计区域的所有ID
 			List<Long> areaIdss=new ArrayList<Long>();
 			//统计时段的所有ID
@@ -395,7 +439,7 @@ public class MissionAndScenarinoController {
 		} catch (Exception e) {
 			LogUtil.getLogger().error("MissionAndScenarinoController 任务删除方法异常",e);
 			//返回错误信息
-			return AmpcResult.build(1000, "参数错误",null);
+			return AmpcResult.build(1001, "任务删除异常",null);
 		}
 	}
 	
@@ -417,8 +461,16 @@ public class MissionAndScenarinoController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//要添加的任务名称
 			String missionName=data.get("missionName").toString();
+			if(!RegUtil.CheckParameter(missionName, "String", null, false)){
+				LogUtil.getLogger().error("check_missioname  要添加的任务名称为空!");
+				return AmpcResult.build(1003, "要添加的任务名称为空!");
+			}
 			//用户的id  确定当前用户
 			Integer userId=Integer.valueOf(data.get("userId").toString());
+			if(!RegUtil.CheckParameter(userId, "Integer", null, false)){
+				LogUtil.getLogger().error("check_missioname  用户的id为空!");
+				return AmpcResult.build(1003, "用户的id为空!");
+			}
 			//添加信息到参数中
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("missionName", missionName);
@@ -426,11 +478,11 @@ public class MissionAndScenarinoController {
 			//执行判断操作
 			int result=this.tMissionDetailMapper.check_MissioName(map);
 			//返回true 表示可用  返回false 已存在
-			return result==0?AmpcResult.ok(true):AmpcResult.build(1000, "名称已存在",false);
+			return result==0?AmpcResult.ok(true):AmpcResult.build(1003, "名称已存在",false);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("MissionAndScenarinoController 添加任务对名称重复判断异常",e);
 			//返回错误信息
-			return AmpcResult.build(1000, "参数错误",null);
+			return AmpcResult.build(1001, "任务对名称重复判断错误",null);
 		}
 	}
 	
@@ -449,13 +501,22 @@ public class MissionAndScenarinoController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//任务Id
-			long missionId=Long.parseLong(data.get("missionId").toString());
+			Long missionId=Long.parseLong(data.get("missionId").toString());
+			if(!RegUtil.CheckParameter(missionId, "Long", null, false)){
+				LogUtil.getLogger().error("get_scenarinoListBymissionId  任务Id为空!");
+				return AmpcResult.build(1003, "任务Id为空!");
+			}
 			//条件名称
 			String queryName=data.get("queryName").toString();
+			
 			//列表排序  暂时内定按照任务ID逆序排序
 			//String sort=data.get("sort").toString();
 			//用户的id  确定当前用户
 			Integer userId=Integer.valueOf(data.get("userId").toString());
+			if(!RegUtil.CheckParameter(userId, "Integer", null, false)){
+				LogUtil.getLogger().error("get_scenarinoListBymissionId  用户的id为空!");
+				return AmpcResult.build(1003, "用户的id为空!");
+			}
 			//添加信息到参数中
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("missionId",missionId);
@@ -476,7 +537,7 @@ public class MissionAndScenarinoController {
 		} catch (Exception e) {
 			LogUtil.getLogger().error("MissionAndScenarinoController 情景列表查询方法异常",e);
 			//返回错误信息
-			return AmpcResult.build(1000, "参数错误",null);
+			return AmpcResult.build(1001, "情景列表查询方法异常",null);
 		}
 	}
 	
@@ -499,6 +560,7 @@ public class MissionAndScenarinoController {
 			String queryName=data.get("queryName").toString();
 			//任务状态
 			String missionStatus=data.get("missionStatus").toString();
+			
 			//当前页码
 			Integer pageNum=Integer.valueOf(data.get("pageNum").toString());
 			//每页展示的条数
@@ -545,9 +607,9 @@ public class MissionAndScenarinoController {
 			mapResult.put("rows",newlist);
 			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("MissionAndScenarinoController 情景复制查询方法异常",e);
+			LogUtil.getLogger().error("get_CopyScenarinoList 情景复制查询方法异常",e);
 			//返回错误信息
-			return AmpcResult.build(1000, "参数错误",null);
+			return AmpcResult.build(1001, "情景复制查询方法异常");
 		}
 	}
 	
@@ -711,12 +773,28 @@ public class MissionAndScenarinoController {
 			TScenarinoDetail scenarino=new TScenarinoDetail();
 			//情景名称
 			scenarino.setScenarinoName(data.get("scenarinoName").toString());
+			if(!RegUtil.CheckParameter(data.get("scenarinoName").toString(), "String", null, false)){
+				LogUtil.getLogger().error("updat_scenarino  情景名称为空!");
+				return AmpcResult.build(1003, "情景名称为空!");
+			}
 			//用户的id  确定当前用户
 			scenarino.setUserId(Long.parseLong(data.get("userId").toString()));
+			if(!RegUtil.CheckParameter(Long.parseLong(data.get("userId").toString()), "Long", null, false)){
+				LogUtil.getLogger().error("updat_scenarino  用户的id为空!");
+				return AmpcResult.build(1003, "用户的id为空!");
+			}
 			//情景ID 
 			scenarino.setScenarinoId(Long.parseLong(data.get("scenarinoId").toString()));
+			if(!RegUtil.CheckParameter(Long.parseLong(data.get("scenarinoId").toString()), "Long", null, false)){
+				LogUtil.getLogger().error("updat_scenarino  情景ID为空!");
+				return AmpcResult.build(1003, "情景ID为空!");
+			}
 			//执行状态 
-			long state=Long.parseLong(data.get("state").toString());
+			Long state=Long.parseLong(data.get("state").toString());
+			if(!RegUtil.CheckParameter(state, "Long", null, false)){
+				LogUtil.getLogger().error("updat_scenarino  执行状态 为空!");
+				return AmpcResult.build(1003, "执行状态 为空!");
+			}
 			//判断执行状态 -1为只修改名称
 			if(state==-1){
 				//执行修改操作
@@ -732,13 +810,13 @@ public class MissionAndScenarinoController {
 				
 				
 				
-				return AmpcResult.build(1000, "等待计算接口的实现",null);
+				return AmpcResult.build(1004, "等待计算接口的实现",null);
 			}
 			
 		} catch (Exception e) {
 			LogUtil.getLogger().error("MissionAndScenarinoController 情景修改方法异常",e);
 			//返回错误信息
-			return AmpcResult.build(1000, "参数错误",null);
+			return AmpcResult.build(1001, "情景修改方法异常",null);
 		}
 	}
 	
@@ -758,8 +836,16 @@ public class MissionAndScenarinoController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//要删除的任务集合
 			String scenarinoIds=data.get("scenarinoIds").toString();
+			if(!RegUtil.CheckParameter(scenarinoIds, "String", null, false)){
+				LogUtil.getLogger().error("delete_scenarino  要删除的任务为空!");
+				return AmpcResult.build(1003, "要删除的任务为空!");
+			}
 			//用户的id  确定当前用户
 			Integer userId=Integer.valueOf(data.get("userId").toString());
+			if(!RegUtil.CheckParameter(userId, "Integer", null, false)){
+				LogUtil.getLogger().error("delete_scenarino  用户的id为空!");
+				return AmpcResult.build(1003, "用户的id为空!");
+			}
 			//将得到的数据拆分 放入集合中
 			String[] idss=scenarinoIds.split(",");
 			List<Long> scenarinoIdss=new ArrayList<Long>();
@@ -844,9 +930,9 @@ public class MissionAndScenarinoController {
 			}
 			
 		} catch (Exception e) {
-			LogUtil.getLogger().error("MissionAndScenarinoController 情景删除方法异常",e);
+			LogUtil.getLogger().error("delete_scenarino 情景删除方法异常",e);
 			//返回错误信息
-			return AmpcResult.build(1000, "参数错误",null);
+			return AmpcResult.build(1001, "情景删除方法异常",null);
 		}
 	}
 	
@@ -866,10 +952,22 @@ public class MissionAndScenarinoController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//要添加的任务名称
 			String scenarinoName=data.get("scenarinoName").toString();
+			if(!RegUtil.CheckParameter(scenarinoName, "String", null, false)){
+				LogUtil.getLogger().error("check_scenarinoname  任务名称为空!");
+				return AmpcResult.build(1003, "任务名称为空!");
+			}
 			//用户的id  确定当前用户
 			Integer userId=Integer.valueOf(data.get("userId").toString());
+			if(!RegUtil.CheckParameter(userId, "Integer", null, false)){
+				LogUtil.getLogger().error("check_scenarinoname  用户的id为空!");
+				return AmpcResult.build(1003, "用户的id为空!");
+			}
 			//任务Id
-			long missionId=Long.parseLong(data.get("missionId").toString());
+			Long missionId=Long.parseLong(data.get("missionId").toString());
+			if(!RegUtil.CheckParameter(missionId, "Long", null, false)){
+				LogUtil.getLogger().error("check_scenarinoname  任务Id为空!");
+				return AmpcResult.build(1003, "任务Id为空!");
+			}
 			//讲信息写入参数中
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("missionId", missionId);
@@ -880,9 +978,9 @@ public class MissionAndScenarinoController {
 			//返回true 表示可用  返回false 已存在
 			return result==0?AmpcResult.ok(true):AmpcResult.build(1000, "名称已存在",false);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("MissionAndScenarinoController 添加情景对名称重复判断异常",e);
+			LogUtil.getLogger().error("check_scenarinoname 添加情景对名称重复判断异常",e);
 			//返回错误信息
-			return AmpcResult.build(1000, "参数错误",null);
+			return AmpcResult.build(1001, "添加情景对名称重复判断异常",null);
 		}
 	}
 	/**
@@ -900,9 +998,21 @@ public class MissionAndScenarinoController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			Long missionId=Long.parseLong(data.get("missionId").toString());//任务id
+			if(!RegUtil.CheckParameter(missionId, "Long", null, false)){
+				LogUtil.getLogger().error("find_scenarino_time  任务id为空!");
+				return AmpcResult.build(1003, "任务id为空!");
+			}
 			Long userId=Long.parseLong(data.get("userId").toString());//情景id
+			if(!RegUtil.CheckParameter(userId, "Long", null, false)){
+				LogUtil.getLogger().error("find_scenarino_time  情景id为空!");
+				return AmpcResult.build(1003, "情景id为空!");
+			}
 			//根据id查询任务
 			TMissionDetail tMission=tMissionDetailMapper.selectByPrimaryKey(missionId);
+			if(tMission!=null||tMission.equals("")){
+				return AmpcResult.build(1000, "未查询到任务");
+			}	
+			
 			//根据任务id查询所有情景
 			List<TScenarinoDetail> scenarlist=tScenarinoDetailMapper.selectAllByMissionId(missionId);
 			if(tMission.getMissionStatus().equals("3")){
@@ -938,7 +1048,7 @@ public class MissionAndScenarinoController {
 				}else{
 					System.out.println("无实时预报情景");	
 					return AmpcResult.build(1000, "无实时预报情景",null);
-					}	
+					}
 			}
 			Date scenar=null;
 			Date frtdate=null;
@@ -1030,7 +1140,7 @@ public class MissionAndScenarinoController {
 			return AmpcResult.build(0, "find_scenarino_time success",arr);
 		}catch(Exception e){
 			LogUtil.getLogger().error("MissionAndScenarinoController 查询情景与时间异常",e);
-		return AmpcResult.build(1000, "参数错误",null);
+		return AmpcResult.build(1001, "查询情景与时间异常",null);
 		}
 	}
 	//查询结束日期
@@ -1041,9 +1151,20 @@ public class MissionAndScenarinoController {
     	   ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			String scenType=data.get("scenType").toString();//任务id
+			if(!RegUtil.CheckParameter(scenType, "String", null, false)){
+				LogUtil.getLogger().error("find_endTime  情景类型为空!");
+				return AmpcResult.build(1003, "情景类型为空!");
+			}
 			Long userId=Long.parseLong(data.get("userId").toString());//情景id
+			if(!RegUtil.CheckParameter(userId, "Long", null, false)){
+				LogUtil.getLogger().error("find_endTime  用户id为空!");
+				return AmpcResult.build(1003, "用户id为空!");
+			}
 			//查询用户信息
 			TUserSetting tUser=tUserSettingMapper.selectByUserId(userId);
+			if(tUser==null||tUser.equals("")){
+				return AmpcResult.build(1000, "未查询到用户");	
+			}
 			Integer predictionTime=Integer.valueOf(tUser.getPredictionTime().toString());
 			//获取当前时间
 			Date date=new Date();
@@ -1065,7 +1186,7 @@ public class MissionAndScenarinoController {
     	   return AmpcResult.build(0, "find_endTime success",obj);
        }catch(Exception e){
     	   LogUtil.getLogger().error("MissionAndScenarinoController 查询结束日期异常",e);
-		return AmpcResult.build(1000, "参数错误",null);
+		   return AmpcResult.build(1001, "查询结束日期异常",null);
 		}
 	}
 	
@@ -1083,10 +1204,30 @@ public class MissionAndScenarinoController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Long missionId=Long.valueOf(data.get("missionId").toString());//任务id
+			if(!RegUtil.CheckParameter(missionId, "Long", null, false)){
+				LogUtil.getLogger().error("save_scenarino  任务id为空!");
+				return AmpcResult.build(1003, "任务id为空!");
+			}
 			Long userId=Long.valueOf(data.get("userId").toString());//用户id
+			if(!RegUtil.CheckParameter(missionId, "Long", null, false)){
+				LogUtil.getLogger().error("save_scenarino  任务id为空!");
+				return AmpcResult.build(1003, "任务id为空!");
+			}
 			String missionType=data.get("missionType").toString();//任务类型
+			if(!RegUtil.CheckParameter(missionType, "String", null, false)){
+				LogUtil.getLogger().error("save_scenarino  任务类型为空!");
+				return AmpcResult.build(1003, "任务类型为空!");
+			}
 			String scenarinoName=data.get("scenarinoName").toString();//情景名称
+			if(!RegUtil.CheckParameter(scenarinoName, "String", null, false)){
+				LogUtil.getLogger().error("save_scenarino  情景名称为空!");
+				return AmpcResult.build(1003, "情景名称为空!");
+			}
 			String scenType=data.get("scenType").toString();//情景类型
+			if(!RegUtil.CheckParameter(scenType, "String", null, false)){
+				LogUtil.getLogger().error("save_scenarino  情景类型为空!");
+				return AmpcResult.build(1003, "情景类型为空!");
+			}
 			Date date=new Date();
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(date);
@@ -1325,21 +1466,27 @@ public class MissionAndScenarinoController {
 					times.setUserId(userId);
 					times.setScenarinoId(sdid);
 					d=tTimeMapper.insertSelective(times);
+				}else{
+					LogUtil.getLogger().error("save_scenarino  区域创建异常!");
+					return AmpcResult.build(1000, "区域创建异常",null);
 				}
 				}
 				
 				
+			}else{
+				LogUtil.getLogger().error("save_scenarino  情景创建异常!");
+				return AmpcResult.build(1000, "情景创建异常",null);
 			}
 			if(d!=0){
 				JSONObject obj=new JSONObject();
 				obj.put("scenarinoId", sdid);
-				return AmpcResult.build(0, "ok",obj);
+				return AmpcResult.ok(obj);
 			}
-
-			 return AmpcResult.build(1000, "参数错误",null);
+			 LogUtil.getLogger().error("save_scenarino  时段创建异常!");
+			 return AmpcResult.build(1000, "时段创建异常",null);
 		}catch(Exception e){
 			LogUtil.getLogger().error("MissionAndScenarinoController 情景创建方法异常",e);
-			return AmpcResult.build(1000, "参数错误",null);				
+			return AmpcResult.build(1001, "情景创建方法异常",null);				
 		}
 	}
 	/**
@@ -1355,13 +1502,21 @@ public class MissionAndScenarinoController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			Long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());
+			if(!RegUtil.CheckParameter(scenarinoId, "Long", null, false)){
+				LogUtil.getLogger().error("find_Scenarino_status  情景id为空!");
+				return AmpcResult.build(1003, "情景id为空!");
+			}
 			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+			if(tScenarinoDetail==null||tScenarinoDetail.equals("")){
+				LogUtil.getLogger().error("find_Scenarino_status  情景查询异常!");
+				return AmpcResult.build(1000, "情景查询异常",null);
+			}
 			JSONObject obj=new JSONObject();
 			obj.put("scenarinoStatus", tScenarinoDetail.getScenarinoStatus());
-		  return AmpcResult.build(0, "success",obj);	
+		  return AmpcResult.ok(obj);	
 		}catch(Exception e){
 			LogUtil.getLogger().error("MissionAndScenarinoController 查询情景状态异常",e);
-			 return AmpcResult.build(1000, "参数错误",null);	
+			 return AmpcResult.build(1001, "查询情景状态异常",null);	
 		}
 	}
 	/**
@@ -1377,12 +1532,32 @@ public class MissionAndScenarinoController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			Long userId=Long.parseLong(data.get("userId").toString());//用户id
+			if(!RegUtil.CheckParameter(userId, "Long", null, false)){
+				LogUtil.getLogger().error("copy_Scenarino  用户id为空!");
+				return AmpcResult.build(1003, "用户id为空!");
+			}
 			Long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());//情景id
+			if(!RegUtil.CheckParameter(scenarinoId, "Long", null, false)){
+				LogUtil.getLogger().error("copy_Scenarino  情景id为空!");
+				return AmpcResult.build(1003, "情景id为空!");
+			}
 			Long copyscenarinoId=Long.parseLong(data.get("copyscenarinoId").toString());//被复制情景id
+			if(!RegUtil.CheckParameter(copyscenarinoId, "Long", null, false)){
+				LogUtil.getLogger().error("copy_Scenarino  被复制情景id为空!");
+				return AmpcResult.build(1003, "被复制情景id为空!");
+			}
 			//被复制的情景
 			TScenarinoDetail copytScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(copyscenarinoId);
+			if(copytScenarinoDetail==null||copytScenarinoDetail.equals("")){
+				LogUtil.getLogger().error("copy_Scenarino  未查到被复制情景!");
+				return AmpcResult.build(1003, "未查到被复制情景!");
+			}
 			//情景
 			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+			if(tScenarinoDetail==null||tScenarinoDetail.equals("")){
+				LogUtil.getLogger().error("copy_Scenarino  未查到当前情景!");
+				return AmpcResult.build(1003, "未查当前情景!");
+			}
 			//情景区域
 			TScenarinoAreaWithBLOBs tScenarinoArea =new TScenarinoAreaWithBLOBs();
 			tScenarinoArea.setScenarinoDetailId(scenarinoId);
@@ -1518,6 +1693,10 @@ public class MissionAndScenarinoController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			Long userId=Long.parseLong(data.get("userId").toString());//用户id
+			if(!RegUtil.CheckParameter(userId, "Long", null, false)){
+				LogUtil.getLogger().error("find_All_mission  用户id为空!");
+				return AmpcResult.build(1003, "用户id为空!");
+			}
 			TMissionDetail tMissionDetail=new TMissionDetail();
 			tMissionDetail.setUserId(userId);
 			List<TMissionDetail> missionlist=tMissionDetailMapper.selectByEntity2(tMissionDetail);
@@ -1544,13 +1723,13 @@ public class MissionAndScenarinoController {
 				}
 			}
 			}else{
-				
-				return AmpcResult.build(1000, "该用户没有创建任务",null);
+				LogUtil.getLogger().error("find_All_mission 该用户没有创建任务");
+				return AmpcResult.build(1004, "该用户没有创建任务",null);
 			}
-		return AmpcResult.build(0, "success",arr);	
+		return AmpcResult.ok(arr);	
 		}catch(Exception e){
-			LogUtil.getLogger().error("MissionAndScenarinoController 根据userid查询任务有异常",e);
-			return AmpcResult.build(1000, "参数错误",null);	
+			LogUtil.getLogger().error("find_All_mission 根据userid查询任务有异常",e);
+			return AmpcResult.build(1001, "根据userid查询任务有异常",null);	
 		}
 		
 		
@@ -1570,7 +1749,15 @@ public class MissionAndScenarinoController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			Long userId=Long.parseLong(data.get("userId").toString());//用户id
+			if(!RegUtil.CheckParameter(userId, "Long", null, false)){
+				LogUtil.getLogger().error("find_All_scenarino  用户id为空!");
+				return AmpcResult.build(1003, "用户id为空!");
+			}
 			Long missionId=Long.parseLong(data.get("missionId").toString());
+			if(!RegUtil.CheckParameter(missionId, "Long", null, false)){
+				LogUtil.getLogger().error("find_All_scenarino  任务id为空!");
+				return AmpcResult.build(1003, "任务id为空!");
+			}
 			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
 			tScenarinoDetail.setUserId(userId);
 			tScenarinoDetail.setMissionId(missionId);
@@ -1591,12 +1778,13 @@ public class MissionAndScenarinoController {
 				}
 			}
 			}else{
-				return AmpcResult.build(1000, "该任务没有创建情景",null);
+				LogUtil.getLogger().error("find_All_scenarino 该任务没有创建情景");
+				return AmpcResult.build(1004, "该任务没有创建情景",null);
 			}
-		return AmpcResult.build(0, "success",objsed);
+		return AmpcResult.ok(objsed);
 		}catch(Exception e){
-			LogUtil.getLogger().error("MissionAndScenarinoController 根据任务id以及userid查询情景有异常",e);
-			return AmpcResult.build(1000, "参数错误",null);
+			LogUtil.getLogger().error("find_All_scenarino 根据任务id以及userid查询情景有异常",e);
+			return AmpcResult.build(1001, "根据任务id以及userid查询情景有异常",null);
 		}
 	}
 	
@@ -1613,6 +1801,10 @@ public class MissionAndScenarinoController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			Long userId=Long.parseLong(data.get("userId").toString());//用户id
+			if(!RegUtil.CheckParameter(userId, "Long", null, false)){
+				LogUtil.getLogger().error("find_haveScenarino_mission  用户id为空!");
+				return AmpcResult.build(1003, "用户id为空!");
+			}
 			TMissionDetail tMissionDetail=new TMissionDetail();
 			tMissionDetail.setUserId(userId);
 			List<TMissionDetail> missionlist=tMissionDetailMapper.selectByEntity(tMissionDetail);
@@ -1632,13 +1824,13 @@ public class MissionAndScenarinoController {
 				}
 			}
 			}else{
-				
-				return AmpcResult.build(1000, "该用户没有创建任务",null);
+				LogUtil.getLogger().error("find_haveScenarino_mission 该用户没有创建任务");
+				return AmpcResult.build(1004, "该用户没有创建任务",null);
 			}
-		return AmpcResult.build(0, "success",arr);
+		return AmpcResult.ok(arr);
 		}catch(Exception e){
 			LogUtil.getLogger().error("MissionAndScenarinoController 根据userid查询有情景的任务有异常",e);
-			return AmpcResult.build(1000, "参数错误",null);
+			return AmpcResult.build(1001, "根据userid查询有情景的任务有异常",null);
 		}
 		
 		
