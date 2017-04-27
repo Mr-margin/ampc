@@ -52,7 +52,6 @@ var observation={		//存放观测数据
 //	}
 //};
 
-
 /**
  * 设置柱状图 模板
  */
@@ -70,7 +69,7 @@ var optionAll = {
 		    x: 'center',
 		    y: 'top',
 		    //legend的data: 用于设置图例，data内的字符串数组需要与sereis数组内每一个series的name值对应
-		    data: [],     //改变量 存储所选情景name
+		    data: [],     	//改变量 存储所选情景name
 	
 	  	},
 		grid: {
@@ -92,12 +91,12 @@ var optionAll = {
               	{  
 	        	  show: true,  
 	        	  type: 'category',  
-	        	  data: []  //改变量
+	        	  data: []  	//改变量
               	}
               ],  
       yAxis: [  
 	            {  
-	               name:'',  //改变量  污染物name
+	               name:'',  	//改变量  污染物name
 	               nameLocation:'end',
 	               show: true,  
 	               type: 'value',  
@@ -119,16 +118,16 @@ var ls = window.sessionStorage;
 //	ls.setItem('yaMsg',JSON.stringify(qjMsg));
 //}
 
-var sceneInitialization = vipspa.getMessage('sceneInitialization').content;//从路由中取到情景范围
+var sceneInitialization = vipspa.getMessage('sceneInitialization').content;	//从路由中取到情景范围
 if (!sceneInitialization) {
 	sceneInitialization = JSON.parse(ls.getItem('SI'));
 } else {
-	ls.setItem('SI', JSON.stringify(sceneInitialization));//不为空往session中存入一份数据
+	ls.setItem('SI', JSON.stringify(sceneInitialization));	//不为空往session中存入一份数据
 }
 //console.log(JSON.stringify(sceneInitialization));
 
-if (!sceneInitialization) {//为空时
-	sceneInittion();//调用弹出模态框方法
+if (!sceneInitialization) {	//为空时
+	sceneInittion();		//调用弹出模态框方法
 } else {
 	set_sce();
 	initNowSession();
@@ -148,7 +147,7 @@ function initNowSession(){
 	setStation(sceneInitialization.taskID);
 	setTime(sceneInitialization.s, sceneInitialization.e);
 	$.when(dps_codeStation,dps_station).then(function () {
-		console.log(changeMsg.station);
+//		console.log(changeMsg.station);
 		getdata();
 	});
 	
@@ -231,7 +230,6 @@ function setTime(s, e) {
  * 动态添加div 填数据
  */
 function initEcharts() {
-	console.log(sceneInitialization.data);
 	$("#initEcharts").empty();
 	var echartsDatas = echartsData;
 	var standardDatas=standardData;
@@ -239,7 +237,7 @@ function initEcharts() {
 		standardDatas='';
 		var datas= $.extend(echartsDatas,standardDatas);
 	}else{
-		var datas= $.extend(echartsDatas,standardDatas);//合并json对象
+		var datas= $.extend(echartsDatas,standardDatas);	//合并json对象
 	}
 	var dd = {};
 	var ds = {};
@@ -249,33 +247,11 @@ function initEcharts() {
 	for(var s = 0;s<species.length;s++){
 		tname.push(species[s]);
 	}
-	var sceneInitialization_arr=sceneInitialization.data;
+	var sceneInitialization_arr	= [];
+	sceneInitialization_arr=$.extend(true,[],sceneInitialization.data); 
 	sceneInitialization_arr.unshift(scenarino);
 	sceneInitialization_arr.unshift(observation);
 	
-//	if(standardDatas!=undefined&&standardDatas!=null&&standardDatas!=''){
-//		for(var i=0;i<sceneInitialization_arr.length;i++){
-//			if(sceneInitialization_arr[i].scenarinoId==scenarino.scenarinoId){
-//				break;
-//			}else{
-//				sceneInitialization_arr.unshift(scenarino);
-//				continue;
-//			}
-//		}
-//	}
-	
-//	if(standardDatas!=undefined&&standardDatas!=null&&standardDatas!=''){
-//		for(var i=0;i<sceneInitialization_arr.length;i++){
-//			if(sceneInitialization_arr[i].scenarinoId==observation.scenarinoId){
-//				break;
-//			}else{
-//				if(i==sceneInitialization_arr.length){
-//					sceneInitialization_arr.unshift(observation);
-//				break;
-//				}
-//			}
-//		}
-//	}
 	for(var i = 0;i < tname.length;i++){
 		var div = $('<div style="height:300px;"></div>');
 		div.attr("id",tname[i]);
@@ -291,26 +267,13 @@ function initEcharts() {
 		}	
 		option.legend.data = (function(){	//图例名称
 		var lenArr = [];
-//		lenArr.push("直接访问");
 		for(var i = 0;i<sceneInitialization_arr.length;i++){
 		lenArr.push(sceneInitialization_arr[i].scenarinoName);
 		}
-		console.log(lenArr);
 		return lenArr;
 		})();
 		option.series = [];
 		
-//		option.series.push({
-//			name : "直接访问", 				//情景名称  对应图例 exceptsjz
-//			type : show_type, 			//图表类型   已设全局变量 show_type
-//			smooth : true,
-//			data : ['-','-',10,10,10,10,10,10,10,10,10,10]     			//可变情景数据 
-//		});
-//		option.xAxis = [];
-//	    option.xAxis.push({				   //x轴情景时间
-//	    	data: [2016-11-17,2016-11-18,2016-11-19,2016-11-20,2016-11-21,2016-11-22,2016-11-23,2016-11-24,2016-11-25,2016-11-26,2016-11-27,]						//修改数据排序
-//	    });
-			
 		for(var j = 0;j< sceneInitialization_arr.length; j++){
 			var id = sceneInitialization_arr[j].scenarinoId;
 			var name = sceneInitialization_arr[j].scenarinoName;
@@ -350,7 +313,6 @@ function initEcharts() {
 				}
 			}else{
 				var arr = Object.keys(datas);
-//				console.log(arr.length);
 				for (var prop in datas) {  
 					if (datas.hasOwnProperty(prop)) {   
 						if(prop == id){ 	//循环不同的情景id
@@ -611,11 +573,10 @@ function save_scene() {
 		vipspa.setMessage(mag);
 		ls.setItem('SI', JSON.stringify(mag));
 		sceneInitialization = jQuery.extend(true, {}, mag);		//复制数据
-		var arrId = [];		//放入已选的情景id 传传
+		var arrId = [];		//放入已选的情景id 
 		for (i = 0; i < mag.data.length; i++) {
 			arrId.push({"id": mag.data[i].scenarinoId});
 		}
-//    	console.log(JSON.stringify(arrId));
 		$("#close_scene").click();
 		set_sce();
 //    	find_standard();
@@ -708,6 +669,7 @@ $('input[name=changes]').on('change', function (e) {
 var domain;
 $('input[name=domain]').on('change', function (e) {
 	domain = $(e.target).val();
+	getdata();
 //	console.log(domain);
 });
 
@@ -737,6 +699,3 @@ $('input[name=spread]').on('change', function (e) {
 	}
 
 });
-
-
-
