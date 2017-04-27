@@ -111,12 +111,10 @@ public class UserController {
 			}else{
 				throw new SQLException("UserController 用户名不存在");
 			}
+		}catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
 		} catch (Exception e) {
-			//判断异常是否是数据库异常 判断
-			if(e instanceof SQLException){
-				LogUtil.getLogger().error(e.getMessage(),e);
-				return AmpcResult.build(1000,e.getMessage());
-			}
 			LogUtil.getLogger().error("UserController 用户登录异常！",e);
 			return AmpcResult.build(1001,"用户登录异常！");
 		}
