@@ -25,13 +25,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
-//import ampc.com.gistone.database.inter.TObsMapper;
+import ampc.com.gistone.database.inter.TObsMapper;
 import ampc.com.gistone.database.inter.TPreProcessMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.preprocess.concn.ScenarinoEntity;
-//import ampc.com.gistone.preprocess.obs.entity.ObsBean;
+import ampc.com.gistone.preprocess.obs.entity.ObsBean;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.LogUtil;
@@ -50,8 +50,9 @@ public class AppraisalController {
 	@Autowired
 	private TPreProcessMapper tPreProcessMapper;
 	
-//	@Autowired
-//	private TObsMapper tObsMapper;
+	@Autowired
+	private TObsMapper tObsMapper;
+	
 	/**
 	 * 时间序列查询
 	 * @param requestDate
@@ -1119,35 +1120,32 @@ public class AppraisalController {
 			tScenarinoDetail.setMissionId(missionId);
 			List<TScenarinoDetail> tScenarinoDetaillist=tScenarinoDetailMapper.selectBystandard(tScenarinoDetail);
 			DateFormat dfs = new SimpleDateFormat("yyyy-MM-dd");
-			String startDate= dfs.format(tScenarinoDetaillist.get(0).getScenarinoStartDate());	//任务开始时间
-			String endDate= dfs.format(tScenarinoDetaillist.get(0).getScenarinoEndDate());		//任务结束时间
+			String startDate= dfs.format(tScenarinoDetaillist.get(0).getScenarinoStartDate());	
+			String endDate= dfs.format(tScenarinoDetaillist.get(0).getScenarinoEndDate());		
 			
 			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);	//该任务下的所有数据
 			Integer domainId=Integer.valueOf(tMissionDetail.getMissionDomainId().toString());
-			TScenarinoDetail tScenarinoDetaillists=tScenarinoDetaillist.get(0);
+			DateFormat dfsg = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			
-//			ObsBean obsBean=new ObsBean();		//查询观测数据实例
-//			obsBean.setCity_station(cityStation);
-//			obsBean.setDate(startDate);
-//			obsBean.setMode(mode);
-//			String tables_obs="T_OBS_DAILY_";
-//			Date tims_obs=tScenarinoDetaillists.getScenarinoAddTime();
-//			DateFormat df_obs = new SimpleDateFormat("yyyy");
-//			String nowTime_obs= df_obs.format(tims_obs);
-//			tables_obs+=nowTime_obs;
-//			obsBean.setTableName(tables_obs);
-//			ObsBean ObsBeans=tObsMapper.queryUnionResult((Map<String, String>) obsBean);	//查询观测数据
+			Date missionStartDate=tMissionDetail.getMissionStartDate();		//任务开始时间
+			String missionStartDatestr=dfsg.format(missionStartDate);
+			Date missionEndDate=tMissionDetail.getMissionEndDate();			//任务结束时间
+			String missionEndDatestr=dfsg.format(missionEndDate);
+			TScenarinoDetail tScenarinoDetaillists=tScenarinoDetaillist.get(0);
 			
 			JSONArray arr=new JSONArray();
 			JSONObject objsed=new JSONObject();
 			if(!tScenarinoDetaillist.isEmpty()){
 
-				if(datetype.equals("day")){			//时间分辨率---逐日
+				if(datetype.equals("day")){			//时间分辨率--逐日开始
+					JSONObject spcmapobj=new JSONObject();
+					JSONObject standardobj=new JSONObject();
+					JSONObject standardData=new JSONObject();
+					/**查询基准数据开始*/
 					String tables="T_SCENARINO_DAILY_";
 					Date tims=tScenarinoDetaillists.getScenarinoAddTime();
 					DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(tims);
-					System.out.println(nowTime);
 					tables+=nowTime+"_";
 					tables+=userId;
 					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -1163,9 +1161,6 @@ public class AppraisalController {
 							JSONObject obj=JSONObject.fromObject(content);	//该行代码需优化,转化效率太低，耗时1S以上
 							Map<String,Object> standard=(Map)obj;				//总数据
 							
-							JSONObject spcmapobj=new JSONObject();
-							JSONObject standardobj=new JSONObject();
-							JSONObject standardData=new JSONObject();
 							for(String  key : standard.keySet()){							
 								Object species=standard.get(key);				//值
 								Map<String,Object> spcmap= (Map)species;
@@ -1196,17 +1191,79 @@ public class AppraisalController {
 									spcmapobj.put((String)spcmapkey, standardobj);
 								}//物种名称结束
 							}
-							standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);
-							objsed.put("data", standardData);
-							objsed.put("scenarinoId",tScenarinoDetaillist.get(0).getScenarinoId());
-							objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
+//							standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);
+							
+					}	/**查询基准数据结束*/	
+					HashMap<String, Object> obsBeanobj=new HashMap<String, Object>();	//查询观测数据开始
+					obsBeanobj.put("city_station",cityStation);
+					obsBeanobj.put("startDate", missionStartDatestr);	//所选任务的开始时间
+					obsBeanobj.put("endDate", missionEndDatestr);		//所选任务的结束时间
+					String modes;										//用于存放新的mode
+					if("point".equals(mode)){
+						 modes="station";
+					}else{
+						 modes=mode;
 					}
+					obsBeanobj.put("mode",modes);
+					String tables_obs="T_OBS_DAILY_";
+					DateFormat df_obs = new SimpleDateFormat("yyyy");
+					
+					String nowTime_obs= df_obs.format(missionStartDate);	//截取该任务的开始时间来改变查询的表格
+					tables_obs+=nowTime_obs;
+					obsBeanobj.put("tableName",tables_obs);					//查询的表格
+					List<ObsBean> obsBeans=tObsMapper.queryObservationResult(obsBeanobj);	//查询观测数据
+					String contentstr=obsBeans.get(0).getContent();
+					JSONObject content_obj=JSONObject.fromObject(contentstr);
+					Map<String,Object> contentmap= (Map)content_obj;
+					JSONObject contentobjs=new JSONObject();		//存放所有观测数据
+					JSONObject contentobj=new JSONObject();			//存放所有的物种
+					JSONObject contentobj_on=new JSONObject();			//
+					for(String contentmapkey:contentmap.keySet()){		//循环所有的物种key
+						
+						for(int i=0;i<obsBeans.size();i++){
+							String contentobj_on_time=dfs.format(obsBeans.get(i).getDate());
+							String contentobj_on_str=obsBeans.get(i).getContent();
+							JSONObject contentobj_on_str_obj=JSONObject.fromObject(contentobj_on_str);
+							Map<String,Object> contentobj_on_map= (Map)contentobj_on_str_obj;
+							for(String contentobj_on_key:contentobj_on_map.keySet()){
+								if(contentmapkey.equals(contentobj_on_key)){
+									contentobj_on.put(contentobj_on_time, contentobj_on_map.get(contentobj_on_key));
+									break;
+								}
+								
+							}
+						}
+						String contentmapkey_new;
+						if("PM2_5".equals(contentmapkey)){
+							contentmapkey_new="PM25";
+							contentobj.put(contentmapkey_new, contentobj_on);
+						}else if("O3".equals(contentmapkey)){
+							contentmapkey_new="O3_AVG";
+							contentobj.put(contentmapkey_new, contentobj_on);
+						}else if("O3_8h".equals(contentmapkey)){
+							contentmapkey_new="O3_8_MAX";
+							contentobj.put(contentmapkey_new, contentobj_on);
+						}else{
+							contentobj.put(contentmapkey, contentobj_on);
+						}
+							
+					}
+					standardData.put("观测数据", contentobj);	//观测数据
+					standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);		//基准数据
+					objsed.put("data", standardData);
+					objsed.put("scenarinoId",tScenarinoDetaillist.get(0).getScenarinoId());
+					objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
+					objsed.put("observationId","观测数据");
+					objsed.put("observationName","观测数据");
+					//时间分辨率--逐日结束
 				}else{	//时间分辨率---逐小时开始
+					JSONObject spcmapobj=new JSONObject();
+					JSONObject standardobj=new JSONObject();
+					JSONObject standardData=new JSONObject();
 					String tables="T_SCENARINO_HOURLY_";
 					Date tims=tScenarinoDetaillists.getScenarinoAddTime();
 					DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(tims);
-					System.out.println(nowTime);
 					tables+=nowTime+"_";
 					tables+=userId;
 					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -1222,9 +1279,6 @@ public class AppraisalController {
 							JSONObject obj=JSONObject.fromObject(content);
 							Map<String,Object> standard=(Map)obj;				//总数据
 							
-							JSONObject spcmapobj=new JSONObject();
-							JSONObject standardobj=new JSONObject();
-							JSONObject standardData=new JSONObject();
 							JSONObject standardobjdata=new JSONObject();
 							for(String  key : standard.keySet()){							
 								Object species=standard.get(key);		//值
@@ -1265,9 +1319,71 @@ public class AppraisalController {
 							}
 							standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);
 							objsed.put("data", standardData);
-							objsed.put("scenarinoId",tScenarinoDetaillist.get(0).getScenarinoId());
-							objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
+//							objsed.put("scenarinoId",tScenarinoDetaillist.get(0).getScenarinoId());
+//							objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
 					}
+					
+//					HashMap<String, Object> obsBeanobj=new HashMap<String, Object>();	//查询观测数据开始
+//					obsBeanobj.put("city_station",cityStation);
+//					obsBeanobj.put("startDate", missionStartDatestr);	//所选任务的开始时间
+//					obsBeanobj.put("endDate", missionEndDatestr);		//所选任务的结束时间
+//					String modes;										//用于存放新的mode
+//					if("point".equals(mode)){
+//						 modes="station";
+//					}else{
+//						 modes=mode;
+//					}
+//					obsBeanobj.put("mode",modes);
+//					String tables_obs="T_OBS_HOURLY";
+//					DateFormat df_obs = new SimpleDateFormat("yyyy");
+//					
+//					String nowTime_obs= df_obs.format(missionStartDate);	//截取该任务的开始时间来改变查询的表格
+//					tables_obs+=nowTime_obs;
+//					obsBeanobj.put("tableName",tables_obs);					//查询的表格
+//					List<ObsBean> obsBeans=tObsMapper.queryObservationResult(obsBeanobj);	//查询观测数据
+//					String contentstr=obsBeans.get(0).getContent();
+//					JSONObject content_obj=JSONObject.fromObject(contentstr);
+//					Map<String,Object> contentmap= (Map)content_obj;
+//					JSONObject contentobjs=new JSONObject();		//存放所有观测数据
+//					JSONObject contentobj=new JSONObject();			//存放所有的物种
+//					JSONObject contentobj_on=new JSONObject();			//
+//					for(String contentmapkey:contentmap.keySet()){		//循环所有的物种key
+//						
+//						for(int i=0;i<obsBeans.size();i++){
+//							String contentobj_on_time=dfs.format(obsBeans.get(i).getDate());
+//							String contentobj_on_str=obsBeans.get(i).getContent();
+//							JSONObject contentobj_on_str_obj=JSONObject.fromObject(contentobj_on_str);
+//							Map<String,Object> contentobj_on_map= (Map)contentobj_on_str_obj;
+//							for(String contentobj_on_key:contentobj_on_map.keySet()){
+//								if(contentmapkey.equals(contentobj_on_key)){
+//									contentobj_on.put(contentobj_on_time, contentobj_on_map.get(contentobj_on_key));
+//									break;
+//								}
+//								
+//							}
+//						}
+//						String contentmapkey_new;
+//						if("PM2_5".equals(contentmapkey)){
+//							contentmapkey_new="PM25";
+//							contentobj.put(contentmapkey_new, contentobj_on);
+//						}else if("O3".equals(contentmapkey)){
+//							contentmapkey_new="O3_AVG";
+//							contentobj.put(contentmapkey_new, contentobj_on);
+//						}else if("O3_8h".equals(contentmapkey)){
+//							contentmapkey_new="O3_8_MAX";
+//							contentobj.put(contentmapkey_new, contentobj_on);
+//						}else{
+//							contentobj.put(contentmapkey, contentobj_on);
+//						}
+//							
+//					}
+//					standardData.put("观测数据", contentobj);	//观测数据
+//					standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);		//基准数据
+//					objsed.put("data", standardData);
+//					objsed.put("scenarinoId",tScenarinoDetaillist.get(0).getScenarinoId());
+//					objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
+//					objsed.put("observationId","观测数据");
+//					objsed.put("observationName","观测数据");
 					
 				}//时间分辨率---逐小时结束
 			}else{
