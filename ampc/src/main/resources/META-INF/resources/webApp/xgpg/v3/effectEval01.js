@@ -34,9 +34,13 @@ var speciesArr = {
 		day: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'SO2', 'NO2', 'CO',],
 		hour: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3', 'SO2', 'NO2', 'CO']
 };
-var scenarino={
-	scenarinoId:'',
-	scenarinoName:''
+var scenarino={			//存放基准数据
+		scenarinoId:'',
+		scenarinoName:'',
+};
+var observation={		//存放观测数据
+		scenarinoId:'',
+		scenarinoName:''
 };
 //window.onresize=function () { //浏览器调整大小后，自动对所有的图进行调整
 //	try{
@@ -227,6 +231,7 @@ function setTime(s, e) {
  * 动态添加div 填数据
  */
 function initEcharts() {
+	console.log(sceneInitialization.data);
 	$("#initEcharts").empty();
 	var echartsDatas = echartsData;
 	var standardDatas=standardData;
@@ -245,16 +250,32 @@ function initEcharts() {
 		tname.push(species[s]);
 	}
 	var sceneInitialization_arr=sceneInitialization.data;
-	if(standardDatas!=undefined&&standardDatas!=null&&standardDatas!=''){
-		for(var i=0;i<sceneInitialization_arr.length;i++){
-			if(sceneInitialization_arr[i].scenarinoId==scenarino.scenarinoId){
-				break;
-			}else{
-				sceneInitialization_arr.unshift(scenarino);
-				break;
-			}
-		}
-	}
+	sceneInitialization_arr.unshift(scenarino);
+	sceneInitialization_arr.unshift(observation);
+	
+//	if(standardDatas!=undefined&&standardDatas!=null&&standardDatas!=''){
+//		for(var i=0;i<sceneInitialization_arr.length;i++){
+//			if(sceneInitialization_arr[i].scenarinoId==scenarino.scenarinoId){
+//				break;
+//			}else{
+//				sceneInitialization_arr.unshift(scenarino);
+//				continue;
+//			}
+//		}
+//	}
+	
+//	if(standardDatas!=undefined&&standardDatas!=null&&standardDatas!=''){
+//		for(var i=0;i<sceneInitialization_arr.length;i++){
+//			if(sceneInitialization_arr[i].scenarinoId==observation.scenarinoId){
+//				break;
+//			}else{
+//				if(i==sceneInitialization_arr.length){
+//					sceneInitialization_arr.unshift(observation);
+//				break;
+//				}
+//			}
+//		}
+//	}
 	for(var i = 0;i < tname.length;i++){
 		var div = $('<div style="height:300px;"></div>');
 		div.attr("id",tname[i]);
@@ -268,14 +289,27 @@ function initEcharts() {
 		}else{
 			option.title.text = tname[i]+('(mg/m³)');
 		}	
-		option.legend.data = (function(){
+		option.legend.data = (function(){	//图例名称
 		var lenArr = [];
+//		lenArr.push("直接访问");
 		for(var i = 0;i<sceneInitialization_arr.length;i++){
 		lenArr.push(sceneInitialization_arr[i].scenarinoName);
 		}
+		console.log(lenArr);
 		return lenArr;
 		})();
 		option.series = [];
+		
+//		option.series.push({
+//			name : "直接访问", 				//情景名称  对应图例 exceptsjz
+//			type : show_type, 			//图表类型   已设全局变量 show_type
+//			smooth : true,
+//			data : ['-','-',10,10,10,10,10,10,10,10,10,10]     			//可变情景数据 
+//		});
+//		option.xAxis = [];
+//	    option.xAxis.push({				   //x轴情景时间
+//	    	data: [2016-11-17,2016-11-18,2016-11-19,2016-11-20,2016-11-21,2016-11-22,2016-11-23,2016-11-24,2016-11-25,2016-11-26,2016-11-27,]						//修改数据排序
+//	    });
 			
 		for(var j = 0;j< sceneInitialization_arr.length; j++){
 			var id = sceneInitialization_arr[j].scenarinoId;
@@ -344,8 +378,8 @@ function initEcharts() {
 					}  
 				}
 			}
-			console.log(ttime);
-			console.log(ydata);
+//			console.log(ttime);
+//			console.log(ydata);
 		option.series.push({
 			name : name, 				//情景名称  对应图例 exceptsjz
 			type : show_type, 			//图表类型   已设全局变量 show_type
@@ -411,6 +445,10 @@ function ajaxPost_sy(url, parameter) {
  * */
 function find_standard(){
 	var missionId=$("#task").val();
+	scenarino.scenarinoId='';
+	scenarino.scenarinoName='';
+	observation.scenarinoId='';
+	observation.scenarinoName='';
 	var url='/Appraisal/find_standard';
 	var paramsName = {
 			"userId": "1",
@@ -426,6 +464,8 @@ function find_standard(){
 	    	standardData = res.data.data;	//放置基准数据
 	    	scenarino.scenarinoId=res.data.scenarinoId;
 	    	scenarino.scenarinoName=res.data.scenarinoName;
+	    	observation.scenarinoId=res.data.observationId;
+	    	observation.scenarinoName=res.data.observationName;
 	    	if (JSON.stringify(standardData) == '{}' || standardData == null||standardData==undefined||standardData=='') {
 	    	  swal('暂无基准匹配数据', '', 'error')
 	    	} else {
