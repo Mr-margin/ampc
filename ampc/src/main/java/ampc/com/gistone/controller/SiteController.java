@@ -27,6 +27,7 @@ import ampc.com.gistone.database.model.TSite;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.LogUtil;
+import ampc.com.gistone.util.RegUtil;
 
 @RestController
 @RequestMapping
@@ -60,6 +61,10 @@ public class SiteController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			String siteCode =data.get("siteCode").toString();
+			if(!RegUtil.CheckParameter(siteCode, "String", null, false)){
+				LogUtil.getLogger().error("find_Site  省市code为空!");
+				return AmpcResult.build(1003, "省市code为空!");
+			}
 			List<TSite> siteList=tSiteMapper.selectSiteCode(siteCode+"00");
 			JSONArray arr=new JSONArray();
 			for(TSite site:siteList){
@@ -73,10 +78,10 @@ public class SiteController {
 				arr.add(obj);
 				}
 			}
-			return AmpcResult.build(0, "success",arr);
+			return AmpcResult.ok(arr);
 		}catch(Exception e){
-			LogUtil.getLogger().error("异常了",e);
-			return AmpcResult.build(1000, "执行失败");
+			LogUtil.getLogger().error("站点查询失败",e);
+			return AmpcResult.build(1001, "站点查询失败");
 		}
 	}
 	
@@ -131,7 +136,7 @@ public class SiteController {
 			return AmpcResult.build(0, "success",sarr);
 		}catch(Exception e){
 			LogUtil.getLogger().error("异常了",e);
-			return AmpcResult.build(0, "执行失败");
+			return AmpcResult.build(1001, "执行失败");
 		}
 	}
 	
@@ -159,24 +164,29 @@ public class SiteController {
 				TDomainMissionWithBLOBs tDomainMission=tDomainMissionMapper.selectByPrimaryKey(tm.getMissionDomainId());
 				String str=tDomainMission.getDomainCode();
 				JSONObject obj=JSONObject.fromObject(str);
-				LogUtil.getLogger().error("站点查询成功");
-				return AmpcResult.build(0, "success",obj);
+				LogUtil.getLogger().info("站点查询成功");
+				return AmpcResult.ok(obj);
 			}else{
 				if(null==tMissionDetailMapper.selectMaxMission()){
 					LogUtil.getLogger().error("站点查询失败");
-					return AmpcResult.build(0, "无可用实时预报任务");
+					return AmpcResult.build(1004, "无可用实时预报任务");
 					
 				}
 				TMissionDetail tm=tMissionDetailMapper.selectMaxMission();
 				TDomainMissionWithBLOBs tDomainMission=tDomainMissionMapper.selectByPrimaryKey(tm.getMissionDomainId());
+				if(tDomainMission==null||tDomainMission.equals("")){
+					LogUtil.getLogger().error("find_codes  domain未查询到!");
+					return AmpcResult.build(1003, "domain未查询到!");
+					
+				}
 				String str=tDomainMission.getDomainCode();
 				JSONObject obj=JSONObject.fromObject(str);
-				LogUtil.getLogger().error("站点查询成功");
-				return AmpcResult.build(0, "success",obj);
+				LogUtil.getLogger().info("站点查询成功");
+				return AmpcResult.ok(obj);
 			}
 		}catch(Exception e){
-			LogUtil.getLogger().error("异常了",e);
-			return AmpcResult.build(0, "执行失败");
+			LogUtil.getLogger().error("省市code查询失败",e);
+			return AmpcResult.build(0, "省市code查询失败");
 		}
 	}
 
