@@ -1,5 +1,6 @@
 package ampc.com.gistone.controller;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 
 
 
@@ -38,29 +40,6 @@ public class UserController {
 	@Autowired
 	public TUserMapper tUserMapper;
 	
-	/**
-	 * 用户列表查询
-	 * @author WangShanxi
-	 * @param request 请求
-	 * @param response 响应
-	 * @return 返回响应结果对象
-	 */
-	@RequestMapping("/user/get_userList")
-	public AmpcResult get_userList(@RequestBody Map<String, Object> requestDate,
-			HttpServletRequest request, HttpServletResponse response) {
-		try {
-			// 设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String, Object> data = (Map) requestDate.get("data");
-			//查询所有的用户基本信息
-			List<Map> list=tUserMapper.selectUserList();
-			LogUtil.getLogger().info("UserController  查询用户列表信息成功!");
-			return AmpcResult.ok(list);
-		} catch (Exception e) {
-			LogUtil.getLogger().error("UserController 查询用户列表信息异常!",e);
-			return AmpcResult.build(1001,"查询用户列表信息异常!");
-		}
-	}
 	
 	/**
 	 * 用户登录
@@ -76,15 +55,26 @@ public class UserController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
+			//定义账号的正则表达式
+			String regEx = "^[a-zA-Z]+[a-zA-Z0-9_]{5,14}$";
+			//获取账号参数
+			Object param=data.get("userAccount");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", regEx, false)){
+				LogUtil.getLogger().error("UserController  账号为空或出现非法字符!");
+				return AmpcResult.build(1003, "账号为空或出现非法字符!");
+			}
 			//用户账号
-			String userAccount=data.get("userAccount").toString();
-			//判断用户是否合法
-			if(!RegUtil.CheckAccount(userAccount)){
-				LogUtil.getLogger().error("UserController  账号出现非法字符!");
-				return AmpcResult.build(1002, "账号出现非法字符!");
+			String userAccount=param.toString();
+			//获取密码参数
+			param=data.get("passWord");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("UserController  密码为空或出现非法字符!");
+				return AmpcResult.build(1003, "密码为空或出现非法字符!");
 			}
 			//密码
-			String passWord=data.get("passWord").toString();
+			String passWord=param.toString();
 			//查看当前账号是否存在
 			Integer isExist=tUserMapper.checkUserId(userAccount);
 			//判断如果存在
@@ -124,6 +114,10 @@ public class UserController {
 				return AmpcResult.build(1002, "用户名不存在！");
 			}
 		} catch (Exception e) {
+			if(e instanceof SQLException){
+				LogUtil.getLogger().error("UserController 数据库访问异常！",e);
+				return AmpcResult.build(1000,"UserController 数据库访问异常！");
+			}
 			LogUtil.getLogger().error("UserController 用户登录异常！",e);
 			return AmpcResult.build(1001,"用户登录异常！");
 		}
@@ -239,6 +233,29 @@ public class UserController {
 			LogUtil.getLogger().error("UserController 验证码验证异常！",e);
 			return AmpcResult.build(1001,"验证码验证异常！");
 		}
-		
     }  
+	
+	/**
+	 * 用户列表查询
+	 * @author WangShanxi
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
+	 */
+	@RequestMapping("/user/get_userList")
+	public AmpcResult get_userList(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//查询所有的用户基本信息
+			List<Map> list=tUserMapper.selectUserList();
+			LogUtil.getLogger().info("UserController  查询用户列表信息成功!");
+			return AmpcResult.ok(list);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("UserController 查询用户列表信息异常!",e);
+			return AmpcResult.build(1001,"查询用户列表信息异常!");
+		}
+	}
 }
