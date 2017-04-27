@@ -253,6 +253,7 @@ function initEcharts() {
  */
 function initCZDate(s, e, start, end) {
   $('#CZDate').daterangepicker({
+    "parentEl": ".toolAll",
     singleDatePicker: true,  //显示单个日历
     timePicker: changeMsg.rms == 'day'?false:true,  //允许选择时间
     timePicker24Hour: true, //时间24小时制

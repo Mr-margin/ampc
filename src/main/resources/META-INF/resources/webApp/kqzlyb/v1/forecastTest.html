@@ -1,4 +1,215 @@
-<div  style="min-width: 1120px">
+<style>
+  .toolAll{
+    /*width: 310px;*/
+    width: 60px;
+    height: inherit;
+    position: fixed;
+    /*right: -250px;*/
+    right: 21px;
+    overflow: hidden;
+    /*border: 1px solid #eaeaea;*/
+    transition: all 0.2s linear;
+    box-sizing: border-box;
+    background-color: rgba(255,255,255,1);
+    z-index: 999;
+  }
+  .toolAll:hover{
+    /*right: 0;*/
+    height:100%;
+    width: 310px;
+    background-color: rgba(255,255,255,0);
+    /*transition: all 0.2s linear;*/
+  }
+  .toolAll:hover .selectTool{
+    text-align: center;
+    border: 1px solid #555;
+  }
+  .toolAll:hover .selectTool h5{
+    padding: 0;
+  }
+  .toolAll:hover .selectTool .selectTool_con{
+    /*display: block;*/
+    opacity: 1;
+  }
+  .selectTool{
+    transition: all 0.2s linear;
+    width: 300px;
+    height: 80px;
+    margin: 5px auto;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background-color: #fff;
+    text-align: left;
+    box-sizing: border-box;
+  }
+  .selectTool>h5{
+    margin: 0 auto;
+    line-height: 40px;
+    background-color: #1a7bb9;
+    color: #fff;
+    padding: 0 15px;
+  }
+  .selectTool .selectTool_con{
+    transition: all 0.2s linear;
+    /*display: none;*/
+    opacity: 0;
+    box-sizing: border-box;
+    text-align: center;
+  }
+</style>
+
+<div class="toolAll wrwTool" id="wrw">
+  <div class="selectTool">
+    <h5>日期</h5>
+    <div class="selectTool_con">
+      <div class="" style="padding-right: 0px;margin: 2px auto;position: relative">
+        <input style="min-width: 210px" type="text" class="form-control" id="wrwDate" name="wrwDate" readonly placeholder="请选择日期···">
+        <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showDate('wrw')"
+           style="cursor:pointer;position: absolute;font-size: 17px;right: 10px;top: 9px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="selectTool">
+    <h5>站点</h5>
+    <div class="selectTool_con">
+      <div class="row" style="margin:2px 0;padding-left:0px;">
+        <div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
+          <div class="input-group group-select">
+            <select class="form-control m-b proStation" id="proStation" style="border-color: #1c84c6;">
+
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
+          <div class="input-group group-select">
+            <select class="form-control m-b cityStation" id="cityStation" style="border-color: #1c84c6;">
+
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
+          <div class="input-group group-select">
+            <select class="form-control m-b station" id="station" style="border-color: #1c84c6;">
+
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="selectTool">
+    <h5>时间</h5>
+    <div class="selectTool_con">
+      <div class="btn-group" data-toggle="buttons" style="margin: 2px auto;padding: 0;">
+        <label class="btn btn-outline btn-success "><input type="radio" name="rmsWrw" value="hour">逐小时</label>
+        <label class="btn btn-outline btn-success  active"><input checked type="radio" name="rmsWrw" value="day">逐日</label>
+      </div>
+    </div>
+  </div>
+
+
+  <!--<div class="selectTool">-->
+    <!--<h5>高度</h5>-->
+    <!--<div class="selectTool_con">-->
+      <!--<div class="" style="margin-bottom:0px;padding-left:0px;">-->
+        <!--<div class="" style="margin: 2px auto;padding-left:0px;padding-right:0px;width:90px;">-->
+          <!--<div class="input-group group-select">-->
+            <!--<select class="form-control m-b" id="height" style="padding-left:6px;border-color: #1c84c6;">-->
+              <!--<option value="12">3000m</option>-->
+              <!--<option value="11">2000m</option>-->
+              <!--<option value="10">1500m</option>-->
+              <!--<option value="9" selected="selected">1000m</option>-->
+              <!--<option value="8">700m</option>-->
+              <!--<option value="7">500m</option>-->
+              <!--<option value="6">400m</option>-->
+              <!--<option value="5">300m</option>-->
+            <!--</select>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
+</div>
+
+<div class="toolAll qxysTool disNone" id="qxys">
+  <div class="selectTool">
+    <h5>日期</h5>
+    <div class="selectTool_con">
+      <div class="" style="padding-right: 0px;margin: 2px auto;position: relative">
+        <input style="min-width: 210px" type="text" class="form-control" id="qxysDate" name="qxysDate" readonly placeholder="请选择日期···">
+        <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showDate('qxys')"
+           style="cursor:pointer;position: absolute;font-size: 17px;right: 10px;top: 9px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="selectTool">
+    <h5>站点</h5>
+    <div class="selectTool_con">
+      <div class="row" style="margin:2px 0;padding-left:0px;">
+        <div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
+          <div class="input-group group-select">
+            <select class="form-control m-b proStation" id="proStation" style="border-color: #1c84c6;">
+
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
+          <div class="input-group group-select">
+            <select class="form-control m-b cityStation" id="cityStation" style="border-color: #1c84c6;">
+
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
+          <div class="input-group group-select">
+            <select class="form-control m-b station" id="station" style="border-color: #1c84c6;">
+
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="selectTool">
+    <h5>时间</h5>
+    <div class="selectTool_con">
+      <div class="btn-group" data-toggle="buttons" style="margin: 2px auto;padding: 0;">
+        <label class="btn btn-outline btn-success "><input type="radio" name="rmsQxys" value="hour">逐小时</label>
+        <label class="btn btn-outline btn-success  active"><input checked type="radio" name="rmsQxys" value="day">逐日</label>
+      </div>
+    </div>
+  </div>
+
+
+  <!--<div class="selectTool">-->
+    <!--<h5>高度</h5>-->
+    <!--<div class="selectTool_con">-->
+      <!--<div class="" style="margin-bottom:0px;padding-left:0px;">-->
+        <!--<div class="" style="margin: 2px auto;padding-left:0px;padding-right:0px;width:90px;">-->
+          <!--<div class="input-group group-select">-->
+            <!--<select class="form-control m-b" id="height" style="padding-left:6px;border-color: #1c84c6;">-->
+              <!--<option value="12">3000m</option>-->
+              <!--<option value="11">2000m</option>-->
+              <!--<option value="10">1500m</option>-->
+              <!--<option value="9" selected="selected">1000m</option>-->
+              <!--<option value="8">700m</option>-->
+              <!--<option value="7">500m</option>-->
+              <!--<option value="6">400m</option>-->
+              <!--<option value="5">300m</option>-->
+            <!--</select>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
+</div>
+
+
+<div  style="width: calc(100% - 50px);">
 
   <div>
 
@@ -12,7 +223,7 @@
 
     <!-- Tab panes -->
     <div class="tab-content">
-      <div role="tabpanel" class="tab-pane active" id="wrw">
+      <div role="tabpanel" class="tab-pane disNone active" id="wrw">
         <div class="row" style="margin-top: 12px;margin-left: 0px;margin-right: 0px;height:48px;">
           <div class="col-sm-5" style="padding-left:0px;">
             <div class="input-group m-b" style="margin-bottom: 0px">
@@ -22,21 +233,18 @@
                 <div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
                   <div class="input-group group-select">
                     <select class="form-control m-b proStation" style="border-color: #1c84c6;">
-                      <option>北京市</option>
                     </select>
                   </div>
                 </div>
                 <div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
                   <div class="input-group group-select">
                     <select class="form-control m-b cityStation" style="border-color: #1c84c6;">
-                      <option>北京市</option>
                     </select>
                   </div>
                 </div>
                 <div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
                   <div class="input-group group-select">
                     <select class="form-control m-b station" style="border-color: #1c84c6;">
-                      <option>北京市北京市</option>
                     </select>
                   </div>
                 </div>
@@ -64,7 +272,7 @@
 
         </div>
       </div>
-      <div role="tabpanel" class="tab-pane" id="qxys">
+      <div role="tabpanel" class="tab-pane disNone" id="qxys">
         <div class="row" style="margin-top: 12px;margin-left: 0px;margin-right: 0px;height:48px;">
           <div class="col-sm-5" style="padding-left:0px;">
             <div class="input-group m-b" style="margin-bottom: 0px">
