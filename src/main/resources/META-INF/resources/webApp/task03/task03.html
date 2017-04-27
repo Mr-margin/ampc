@@ -155,7 +155,7 @@
 	        <h5>地图展示</h5>
 	        <div class="ibox-tools">
 				<div class="btn-group" style="margin-bottom: 0px;margin-top: -10px;">
-					<div class="input-group m-b" style="margin-bottom: 0px;width:180px;">
+					<div class="input-group m-b" style="margin-bottom: 0px;width:200px;">
 						<span class="input-group-addon" style="border: 1px solid #E5E6E7;">污染物: </span>
 						<select name="hz_wrw" id="hz_wrw" class="form-control" onChange="metTable_hj_info();">
 							<option value="PM25">PM25</option>
@@ -168,7 +168,7 @@
 							<option value="BC">BC</option>
 							<option value="OC">OC</option>
 							<option value="PMFINE">PMFINE</option><!-- PMFINE=PM25-BC-OC -->
-							<option value="PMC">PMC</option>
+							<option value="PMcoarse">PMcoarse</option>
 		              	</select>
 					</div>
 				</div>
@@ -248,14 +248,14 @@
 					    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;padding: 10px;display:none;" id="sc_conter_name">
 					    	<div class="col-md-2" style="margin-top: 10px;">
 					    	</div>
-					    	<div class="col-md-6" style="margin-top: 10px;">
+					    	<div class="col-md-6" style="margin-top: 10px;" id="se_name">
 					    		<div class="input-group m-b" style="margin-bottom: 0px">
 					    			<span class="input-group-addon" style="border: 1px solid #E5E6E7;">企业名称:</span>
 					    			<input type="text" class="form-control" id="qiye_name" name="qiye_name">
 					    		</div>
 					    	</div>
 					    	<br><br><br>
-					    	<div id="se_bu" style="text-align: right;padding-right: 20px;">
+					    	<div id="se_bu_na" style="text-align: right;padding-right: 20px;">
 								<button class="btn btn-success" onclick="search_name_button();" type="button">
 									<i class="fa fa-search"></i>&nbsp;&nbsp;<span class="bold">筛选</span>
 								</button>
