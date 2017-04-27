@@ -63,6 +63,7 @@ public class AppraisalController {
 	@RequestMapping("Appraisal/find_appraisal")
 	public AmpcResult find_appraisal(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){ 
 		try{
+//			System.out.println("-------------------------------------------------------------------------------------------------------------");
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			Integer userId=Integer.valueOf(data.get("userId").toString());
@@ -114,7 +115,6 @@ public class AppraisalController {
 					Date tims=tScenarinoDetail.getScenarinoAddTime();
 					 DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(tims);
-					System.out.println(nowTime);
 					tables+=nowTime+"_";
 					tables+=userId;
 					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -135,7 +135,6 @@ public class AppraisalController {
 					Date tims=tScenarinoDetail.getScenarinoAddTime();
 					DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(tims);
-					System.out.println(nowTime);
 					tables+=nowTime+"_";
 					tables+=userId;
 					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -151,7 +150,6 @@ public class AppraisalController {
 						Date tims=tScenarinoDetail.getScenarinoAddTime();
 						 DateFormat df = new SimpleDateFormat("yyyy");
 						String nowTime= df.format(tims);
-						System.out.println(nowTime);
 						tables+=nowTime+"_";
 						tables+=userId;
 						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -192,9 +190,11 @@ public class AppraisalController {
 									if(spr.equals("CO")){
 										BigDecimal bd=(new BigDecimal(hourlist.get(a).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
 										hourcmap.put(String.valueOf(a),bd);
+//										System.out.println(bd+"--"+datetime+"--"+spr+"--"+a+"\n");
 										}else{
 										BigDecimal bd=(new BigDecimal(hourlist.get(a).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
 										hourcmap.put(String.valueOf(a),bd);
+//										System.out.println(bd+"--"+datetime+"--"+spr+"--"+a+"\n");
 										}	
 								}
 							}else{
@@ -242,20 +242,20 @@ public class AppraisalController {
 								spcmap.put(datetime, bd);
 								}
 							if(datemap.get(spr)!=null){
-							Object maps=datemap.get(spr);
-//							JSONObject mapsbj=JSONObject.fromObject(maps);//行业减排结果
-							Map<String,Object> des=(Map)maps;
-							if(spr.equals("CO")){
-								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
-								des.put(datetime, bd);
-								}else{
-								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
-								des.put(datetime, bd);
-								}
-							
-							datemap.put(spr, des);
+								Object maps=datemap.get(spr);
+	//							JSONObject mapsbj=JSONObject.fromObject(maps);//行业减排结果
+								Map<String,Object> des=(Map)maps;
+								if(spr.equals("CO")){
+									BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+									des.put(datetime, bd);
+									}else{
+									BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+									des.put(datetime, bd);
+									}
+								
+								datemap.put(spr, des);
 							}else{
-							datemap.put(spr, spcmap);
+								datemap.put(spr, spcmap);
 							}
 							scmap.put(scid, datemap);
 						}
@@ -323,7 +323,6 @@ public class AppraisalController {
 				Date tims=tScenarinoDetail.getScenarinoAddTime();
 				 DateFormat df = new SimpleDateFormat("yyyy");
 				String nowTime= df.format(tims);
-				System.out.println(nowTime);
 				tables+=nowTime+"_";
 				tables+=userId;
 				ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -339,7 +338,6 @@ public class AppraisalController {
 					Date tims=tScenarinoDetail.getScenarinoAddTime();
 					 DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(tims);
-					System.out.println(nowTime);
 					tables+=nowTime+"_";
 					tables+=userId.toString();
 					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -360,7 +358,6 @@ public class AppraisalController {
 					Date tims=tScenarinoDetail.getScenarinoAddTime();
 					 DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(tims);
-					System.out.println(nowTime);
 					tables+=nowTime+"_";
 					tables+=userId;
 					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -376,7 +373,6 @@ public class AppraisalController {
 						Date tims=tScenarinoDetail.getScenarinoAddTime();
 						 DateFormat df = new SimpleDateFormat("yyyy");
 						String nowTime= df.format(tims);
-						System.out.println(nowTime);
 						tables+=nowTime+"_";
 						tables+=userId;
 						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -648,7 +644,6 @@ public class AppraisalController {
 						}
 						 DateFormat df = new SimpleDateFormat("yyyy");
 						String nowTime= df.format(adddate);
-						System.out.println(nowTime);
 						tables+=nowTime+"_";
 						tables+=userId;
 						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -669,7 +664,6 @@ public class AppraisalController {
 							}
 							 DateFormat df = new SimpleDateFormat("yyyy");
 							String nowTime= df.format(adddate);
-							System.out.println(nowTime);
 							tables+=nowTime+"_";
 							tables+=userId.toString();
 							ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -693,7 +687,6 @@ public class AppraisalController {
 						}
 						 DateFormat df = new SimpleDateFormat("yyyy");
 						String nowTime= df.format(adddate);
-						System.out.println(nowTime);
 						tables+=nowTime+"_";
 						tables+=userId;
 						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -714,7 +707,6 @@ public class AppraisalController {
 							}
 							 DateFormat df = new SimpleDateFormat("yyyy");
 							String nowTime= df.format(adddate);
-							System.out.println(nowTime);
 							tables+=nowTime+"_";
 							tables+=userId.toString();
 							ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -1044,7 +1036,6 @@ public class AppraisalController {
 							Date tims=tScenarinoDetail.getScenarinoAddTime();
 							 DateFormat df = new SimpleDateFormat("yyyy");
 							String nowTime= df.format(tims);
-							System.out.println(nowTime);
 							tables+=nowTime+"_";
 							tables+=userId;
 							ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -1150,7 +1141,7 @@ public class AppraisalController {
 					tables+=userId;
 					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 					scenarinoEntity.setCity_station(cityStation);
-					scenarinoEntity.setDomain(3);		//空间分辨率--需要时替换即可,数据库中目前只有为3的数据
+					scenarinoEntity.setDomain(domain);		//空间分辨率--需要时替换即可,数据库中目前只有为3的数据
 					scenarinoEntity.setMode(mode);
 					scenarinoEntity.setDomainId(domainId);
 					scenarinoEntity.setsId(Integer.valueOf(tScenarinoDetaillists.getScenarinoId().toString()));
@@ -1227,8 +1218,18 @@ public class AppraisalController {
 							Map<String,Object> contentobj_on_map= (Map)contentobj_on_str_obj;
 							for(String contentobj_on_key:contentobj_on_map.keySet()){
 								if(contentmapkey.equals(contentobj_on_key)){
-									contentobj_on.put(contentobj_on_time, contentobj_on_map.get(contentobj_on_key));
-									break;
+									if("CO".equals(contentmapkey)){
+										BigDecimal bd=(new BigDecimal(contentobj_on_map.get(contentobj_on_key).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+										contentobj_on.put(contentobj_on_time,bd);
+										break;
+									}else{
+										BigDecimal bd=(new BigDecimal(contentobj_on_map.get(contentobj_on_key).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+										contentobj_on.put(contentobj_on_time,bd);
+										break;
+									}
+//									BigDecimal bd=(new BigDecimal(contentobj_on_map.get(contentobj_on_key).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+//									contentobj_on.put(contentobj_on_time,bd);
+//									break;
 								}
 								
 							}
@@ -1268,7 +1269,7 @@ public class AppraisalController {
 					tables+=userId;
 					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 					scenarinoEntity.setCity_station(cityStation);
-					scenarinoEntity.setDomain(3);		//空间分辨率--需要时替换即可,数据库中目前只有为3的数据
+					scenarinoEntity.setDomain(domain);		//空间分辨率--需要时替换即可,数据库中目前只有为3的数据
 					scenarinoEntity.setMode(mode);
 					scenarinoEntity.setDomainId(domainId);
 					scenarinoEntity.setsId(Integer.valueOf(tScenarinoDetaillists.getScenarinoId().toString()));
@@ -1297,6 +1298,7 @@ public class AppraisalController {
 												for(int i=0;i<qq.size();i++){
 													BigDecimal bd=(new BigDecimal(qq.get(i).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
 													standardobjdata.put(i,bd);
+//													System.out.println(bd+"--"+standard_Time+"--"+spcmapkey+"--"+i+"\n");
 //													standardobjdata.put(i,qq.get(i));
 												}					
 												standardobj.put((String)standard_Time, standardobjdata);
@@ -1308,6 +1310,7 @@ public class AppraisalController {
 												for(int i=0;i<qq.size();i++){
 													BigDecimal bd=(new BigDecimal(qq.get(i).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
 													standardobjdata.put(i,bd);
+//													System.out.println(bd+"--"+standard_Time+"--"+spcmapkey+"--"+i+"\n");
 //													standardobjdata.put(i,qq.get(i));
 												}					
 												standardobj.put((String)standard_Time, standardobjdata);
@@ -1317,73 +1320,105 @@ public class AppraisalController {
 									spcmapobj.put((String)spcmapkey, standardobj);
 								}	//物种名称结束
 							}
-							standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);
-							objsed.put("data", standardData);
+//							standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);
+//							objsed.put("data", standardData);
 //							objsed.put("scenarinoId",tScenarinoDetaillist.get(0).getScenarinoId());
 //							objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
 					}
 					
-//					HashMap<String, Object> obsBeanobj=new HashMap<String, Object>();	//查询观测数据开始
-//					obsBeanobj.put("city_station",cityStation);
-//					obsBeanobj.put("startDate", missionStartDatestr);	//所选任务的开始时间
-//					obsBeanobj.put("endDate", missionEndDatestr);		//所选任务的结束时间
-//					String modes;										//用于存放新的mode
-//					if("point".equals(mode)){
-//						 modes="station";
-//					}else{
-//						 modes=mode;
-//					}
-//					obsBeanobj.put("mode",modes);
-//					String tables_obs="T_OBS_HOURLY";
-//					DateFormat df_obs = new SimpleDateFormat("yyyy");
-//					
-//					String nowTime_obs= df_obs.format(missionStartDate);	//截取该任务的开始时间来改变查询的表格
-//					tables_obs+=nowTime_obs;
-//					obsBeanobj.put("tableName",tables_obs);					//查询的表格
-//					List<ObsBean> obsBeans=tObsMapper.queryObservationResult(obsBeanobj);	//查询观测数据
-//					String contentstr=obsBeans.get(0).getContent();
-//					JSONObject content_obj=JSONObject.fromObject(contentstr);
-//					Map<String,Object> contentmap= (Map)content_obj;
-//					JSONObject contentobjs=new JSONObject();		//存放所有观测数据
-//					JSONObject contentobj=new JSONObject();			//存放所有的物种
-//					JSONObject contentobj_on=new JSONObject();			//
-//					for(String contentmapkey:contentmap.keySet()){		//循环所有的物种key
-//						
-//						for(int i=0;i<obsBeans.size();i++){
-//							String contentobj_on_time=dfs.format(obsBeans.get(i).getDate());
-//							String contentobj_on_str=obsBeans.get(i).getContent();
-//							JSONObject contentobj_on_str_obj=JSONObject.fromObject(contentobj_on_str);
-//							Map<String,Object> contentobj_on_map= (Map)contentobj_on_str_obj;
-//							for(String contentobj_on_key:contentobj_on_map.keySet()){
-//								if(contentmapkey.equals(contentobj_on_key)){
-//									contentobj_on.put(contentobj_on_time, contentobj_on_map.get(contentobj_on_key));
-//									break;
-//								}
-//								
-//							}
-//						}
-//						String contentmapkey_new;
-//						if("PM2_5".equals(contentmapkey)){
-//							contentmapkey_new="PM25";
-//							contentobj.put(contentmapkey_new, contentobj_on);
-//						}else if("O3".equals(contentmapkey)){
-//							contentmapkey_new="O3_AVG";
-//							contentobj.put(contentmapkey_new, contentobj_on);
-//						}else if("O3_8h".equals(contentmapkey)){
-//							contentmapkey_new="O3_8_MAX";
-//							contentobj.put(contentmapkey_new, contentobj_on);
-//						}else{
-//							contentobj.put(contentmapkey, contentobj_on);
-//						}
-//							
-//					}
-//					standardData.put("观测数据", contentobj);	//观测数据
-//					standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);		//基准数据
-//					objsed.put("data", standardData);
-//					objsed.put("scenarinoId",tScenarinoDetaillist.get(0).getScenarinoId());
-//					objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
-//					objsed.put("observationId","观测数据");
-//					objsed.put("observationName","观测数据");
+					JSONObject contentobj_on_key_val=new JSONObject();
+					HashMap<String, Object> obsBeanobj=new HashMap<String, Object>();	//查询观测数据开始
+					obsBeanobj.put("city_station",cityStation);
+					obsBeanobj.put("startDate", missionStartDatestr);	//所选任务的开始时间
+					obsBeanobj.put("endDate", missionEndDatestr);		//所选任务的结束时间
+					String modes;										//用于存放新的mode
+					if("point".equals(mode)){
+						 modes="station";
+					}else{
+						 modes=mode;
+					}
+					obsBeanobj.put("mode",modes);
+					String tables_obs="T_OBS_HOURLY_";
+					DateFormat df_obs = new SimpleDateFormat("yyyy");
+					
+					String nowTime_obs= df_obs.format(missionStartDate);	//截取该任务的开始时间来改变查询的表格
+					tables_obs+=nowTime_obs;
+					obsBeanobj.put("tableName",tables_obs);					//查询的表格
+					List<ObsBean> obsBeans=tObsMapper.queryObservationResult(obsBeanobj);	//查询观测数据
+					String contentstr=obsBeans.get(0).getContent();
+					JSONObject content_obj=JSONObject.fromObject(contentstr);
+					Map<String,Object> contentmap= (Map)content_obj;
+					JSONObject contentobjs=new JSONObject();		//存放所有观测数据
+					JSONObject contentobj=new JSONObject();			//存放所有的物种
+					JSONObject contentobj_on=new JSONObject();		//
+					for(String contentmapkey:contentmap.keySet()){	//循环所有的物种key开始
+						if(!"O3_8h".equals(contentmapkey)){			//去除O3_8h的数据
+						
+							for(int i=0;i<obsBeans.size();i++){
+								String contentobj_on_time=dfs.format(obsBeans.get(i).getDate());
+								String contentobj_on_str=obsBeans.get(i).getContent();
+								JSONObject contentobj_on_str_obj=JSONObject.fromObject(contentobj_on_str);
+								Map<String,Object> contentobj_on_map= (Map)contentobj_on_str_obj;
+								for(String contentobj_on_key:contentobj_on_map.keySet()){
+									if(contentmapkey.equals(contentobj_on_key)){
+										if("CO".equals(contentmapkey)){
+											JSONArray contentobj_on_key_arrco=(JSONArray) contentobj_on_map.get(contentobj_on_key);
+											for(int m=0;m<contentobj_on_key_arrco.size();m++){				//循环添加值
+												if("-".equals(contentobj_on_key_arrco.get(m).toString())){	//判断某个值为-时，不进行保留位数操作
+													contentobj_on_key_val.put(m, "-");
+												}else{
+													BigDecimal bd=(new BigDecimal(contentobj_on_key_arrco.get(m).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+													contentobj_on_key_val.put(m, bd);
+												}
+											}
+											contentobj_on.put(contentobj_on_time,contentobj_on_key_val);
+											break;
+//											BigDecimal bd=(new BigDecimal(contentobj_on_map.get(contentobj_on_key).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+//											contentobj_on.put(contentobj_on_time,bd);
+//											break;
+										}else{
+											JSONArray contentobj_on_key_arr=(JSONArray) contentobj_on_map.get(contentobj_on_key);
+											for(int m=0;m<contentobj_on_key_arr.size();m++){
+												if("-".equals(contentobj_on_key_arr.get(m).toString())){
+													contentobj_on_key_val.put(m, "-");
+												}else{
+//													System.out.println(contentobj_on_key_arr.get(m)+"--"+m+contentobj_on_time+contentmapkey+"\r");
+													BigDecimal bd=(new BigDecimal(contentobj_on_key_arr.get(m).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+													contentobj_on_key_val.put(m, bd);
+												}
+												
+											}
+											contentobj_on.put(contentobj_on_time,contentobj_on_key_val);
+											break;
+										}
+//										contentobj_on.put(contentobj_on_time, contentobj_on_map.get(contentobj_on_key));
+//										break;
+									}
+									
+								}
+							}
+							String contentmapkey_new;
+							if("PM2_5".equals(contentmapkey)){
+								contentmapkey_new="PM25";
+								contentobj.put(contentmapkey_new, contentobj_on);
+							}else if("O3".equals(contentmapkey)){
+								contentmapkey_new="O3_AVG";
+								contentobj.put(contentmapkey_new, contentobj_on);
+							}else if("O3_8h".equals(contentmapkey)){
+								contentmapkey_new="O3_8_MAX";
+								contentobj.put(contentmapkey_new, contentobj_on);
+							}else{
+								contentobj.put(contentmapkey, contentobj_on);
+							}
+						}	
+					}	//循环所有物种的key结束
+					standardData.put("观测数据", contentobj);	//观测数据
+					standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);		//基准数据
+					objsed.put("data", standardData);
+					objsed.put("scenarinoId",tScenarinoDetaillist.get(0).getScenarinoId());
+					objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
+					objsed.put("observationId","观测数据");
+					objsed.put("observationName","观测数据");
 					
 				}//时间分辨率---逐小时结束
 			}else{
