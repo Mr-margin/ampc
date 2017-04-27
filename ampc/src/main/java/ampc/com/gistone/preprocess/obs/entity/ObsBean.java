@@ -17,27 +17,6 @@ public class ObsBean {
 	private String content;
 	// 具体的时间
 	private Date date;
-
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	public Date getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
-
-	// 开始的具体的时间
-	private Date startDate;
-	// 结束的具体的时间
-	private Date endDate;
 	// 更新时间
 	private Date updateTime;
 	// 所属年份
