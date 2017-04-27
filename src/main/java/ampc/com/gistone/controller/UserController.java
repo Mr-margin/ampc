@@ -209,8 +209,15 @@ public class UserController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取账号参数
+			Object param=data.get("yzm");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("UserController  验证码为空或出现非法字符!");
+				return AmpcResult.build(1003, "验证码为空或出现非法字符!");
+			}
 			//用户输入的验证码
-			String yzm= data.get("yzm").toString();
+			String yzm= param.toString();
 			//取session
 			HttpSession session = request.getSession();
 			//获取生成的验证码
@@ -223,14 +230,13 @@ public class UserController {
 				return AmpcResult.ok(1);
 			}else{
 				LogUtil.getLogger().error("UserController  验证码验证失败！");
-				return AmpcResult.build(1002,"验证码验证失败！",0);
+				return AmpcResult.build(1003,"验证码验证失败！",0);
 			}
 		} catch (Exception e) {
 			LogUtil.getLogger().error("UserController 验证码验证异常！",e);
 			return AmpcResult.build(1001,"验证码验证异常！");
 		}
     }  
-	
 	
 	/**
 	 * 用户列表查询  管理员功能暂时不需要
