@@ -248,7 +248,7 @@ function initEcharts() {
 		tname.push(species[s]);
 	}
 	var sceneInitialization_arr	= [];
-	sceneInitialization_arr=$.extend(true,[],sceneInitialization.data); 
+	sceneInitialization_arr=$.extend(true,[],sceneInitialization.data); //拷贝数据
 	sceneInitialization_arr.unshift(scenarino);
 	sceneInitialization_arr.unshift(observation);
 	
@@ -261,10 +261,29 @@ function initEcharts() {
 		if(tname[i] == 'AQI'){
 			option.title.text = tname[i];         //加不同单位
 		}else if(tname[i] != 'CO'){
-			option.title.text = tname[i]+('(μg/m³)');
+			if("PM25"==tname[i]){
+				option.title.text = "PM₂₅"+('(μg/m³)');
+			}else if("SO4"==tname[i]){
+				option.title.text = "SO₄"+('(μg/m³)');
+			}else if("NO3"==tname[i]){
+				option.title.text = "NO₃"+('(μg/m³)');
+			}else if("NH4"==tname[i]){
+				option.title.text = "NH₄"+('(μg/m³)');
+			}else if("PM10"==tname[i]){
+				option.title.text = "PM₁₀"+('(μg/m³)');
+			}else if("O3_8_MAX"==tname[i]){
+				option.title.text = "O₃_8_max"+('(μg/m³)');
+			}else if("O3_1_MAX"==tname[i]){
+				option.title.text = "O₃_1_max"+('(μg/m³)');
+			}else if("SO2"==tname[i]){
+				option.title.text = "SO₂"+('(μg/m³)');
+			}else if("NO2"==tname[i]){
+				option.title.text = "NO₂"+('(μg/m³)');
+			}
 		}else{
 			option.title.text = tname[i]+('(mg/m³)');
 		}	
+		console.log(option);
 		option.legend.data = (function(){	//图例名称
 		var lenArr = [];
 		for(var i = 0;i<sceneInitialization_arr.length;i++){
@@ -301,11 +320,30 @@ function initEcharts() {
 //											}
 										}
 										keys = keys.sort();		//.sort()函数重新排序
+										console.log(keys);
 										for(var m=0; m<keys.length; m++){	//根据键取值
 											ttime.push(keys[m]);
 											ydata.push(ss[keys[m]]);
 										}
 									}
+//									else{		//没有该物种开始
+//										var notData=[];
+//										var notDataobj='';
+//										tname[i]  //没有的物种名称
+//										for ( var pr in datas[prop] ) {		//循环该ID下的pr--物种
+//											if (datas[prop].hasOwnProperty(pr)) {
+//												for(var prkey in datas[prop][pr]){
+//													notData.push(prkey);
+//													break;
+//												}
+//											}
+//										}
+//										notData=notData.sort();		//重新排序数据
+//										for(var n=0; n<notData.length; n++){
+//											notDataobj(notData[n],"-");
+//										}
+//										datas[prop][tname[i]]=notDataobj;
+//									}	//没有该物种结束
 								}
 							}	
 						}
