@@ -1235,7 +1235,7 @@ public class AppraisalController {
 							}
 						}
 						String contentmapkey_new;
-						if("PM2_5".equals(contentmapkey)){
+						if("PM2_5".equals(contentmapkey)){	//修改名称
 							contentmapkey_new="PM25";
 							contentobj.put(contentmapkey_new, contentobj_on);
 						}else if("O3".equals(contentmapkey)){
