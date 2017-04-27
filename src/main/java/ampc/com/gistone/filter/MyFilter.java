@@ -23,70 +23,101 @@ import javax.servlet.http.HttpSession;
  */
 @WebFilter(filterName="myFilter",urlPatterns="/*")
 public class MyFilter implements Filter {
-	
-	@Override
-	public void destroy() {
-//        System.out.println("过滤器销毁");
-    }
-	
-	
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        
-        HttpServletRequest hrequest = (HttpServletRequest) request;
-        HttpServletResponse hresponse = (HttpServletResponse) response;
-        
-        String url = hrequest.getServletPath();
-//        // 表明它允许"http://xxx"发起跨域请求
-//        hresponse.setHeader("Access-Control-Allow-Origin","*");
-//        // 表明在xxx秒内，不需要再发送预检验请求，可以缓存该结果
-//        hresponse.setHeader("Access-Control-Allow-Methods","POST, GET, DELETE, PUT");
-//        // 表明它允许xxx的外域请求
-//        hresponse.setHeader("Access-Control-Max-Age","3628800");
-//        // 表明它允许跨域请求包含xxx头
-//        hresponse.setHeader("Access-Control-Allow-Headers","x-requested-with");
-        chain.doFilter(request, response);
-//        Map special  = new HashMap();
-//        special.put("getLogin_massage.do", "getLogin_massage.do");//session获取用户登陆信息
-//        special.put("loginin.do", "loginin.do");//登录验证
-//        
-//        
-//        if(!url.endsWith(OverallSituation.index)){//排除登录界面
-//        	if(url.endsWith(OverallSituation.page)||url.endsWith(OverallSituation.servlet)){//只有页面和后台需要处理
-//        		
-//        		System.out.println(hrequest.getServletPath());
-//        		
-//        		for (Object key : special.keySet()) {//循环所有的特例
-//        			if(!url.endsWith(special.get(key).toString())){//是否是特例需要处理
-//        				
-//        				HttpSession session = hrequest.getSession();
-//        				if(session.getAttribute("Login_map")!=null){//验证session不为空
-//        					System.out.println("登录，通过");
-//        					chain.doFilter(request, response);
-//        				}else{
-//        					System.out.println("未登录，过滤");
-//        					hresponse.sendRedirect("/"+OverallSituation.index);
-//        				}
-//        				
-//        			}else{
-//        				System.out.println("特例，通过");
-//        				chain.doFilter(request, response);
-//        			}
-//        		}
-//        		
-//        	}else{
-//        		chain.doFilter(request, response);
-//        	}
-//        }else{
-//        	chain.doFilter(request, response);
-//        }
-        
-    }
+  
 
-    @Override
-    public void init(FilterConfig config) throws ServletException {
-//        System.out.println("过滤器初始化");
-    }
+  @Override
+  public void init(FilterConfig filterConfig) throws ServletException {
+      System.out.println("initFilter");
+      
+  }
+
+  @Override
+  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+      HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+      HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+      //这里填写你允许进行跨域的主机ip
+      httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+      //允许的访问方法
+      httpServletResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE, PATCH");
+      //Access-Control-Max-Age 用于 CORS 相关配置的缓存
+      httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
+      httpServletResponse.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+      
+      
+      
+      
+      chain.doFilter(request, response);
+
+  }
+
+  
+
+  @Override
+  public void destroy() {
+      System.out.println("destroy method");
+  }
+	
+//	@Override
+//	public void destroy() {
+////        System.out.println("过滤器销毁");
+//    }
+//	
+//	
+//
+//    @Override
+//    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+//        
+//        HttpServletRequest hrequest = (HttpServletRequest) request;
+//        HttpServletResponse hresponse = (HttpServletResponse) response;
+//        
+//        String url = hrequest.getServletPath();
+//		  response.setHeader("Access-Control-Allow-Origin",reqs.getHeader("Origin"));  
+//		  response.setHeader("Access-Control-Allow-Credentials", "true");  
+//		  response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");  
+//		  response.setHeader("Access-Control-Max-Age", "3600");  
+//		  response.setHeader("Access-Control-Allow-Headers", "x-requested-with"); 
+//        chain.doFilter(request, response);
+////        Map special  = new HashMap();
+////        special.put("getLogin_massage.do", "getLogin_massage.do");//session获取用户登陆信息
+////        special.put("loginin.do", "loginin.do");//登录验证
+////        
+////        
+////        if(!url.endsWith(OverallSituation.index)){//排除登录界面
+////        	if(url.endsWith(OverallSituation.page)||url.endsWith(OverallSituation.servlet)){//只有页面和后台需要处理
+////        		
+////        		System.out.println(hrequest.getServletPath());
+////        		
+////        		for (Object key : special.keySet()) {//循环所有的特例
+////        			if(!url.endsWith(special.get(key).toString())){//是否是特例需要处理
+////        				
+////        				HttpSession session = hrequest.getSession();
+////        				if(session.getAttribute("Login_map")!=null){//验证session不为空
+////        					System.out.println("登录，通过");
+////        					chain.doFilter(request, response);
+////        				}else{
+////        					System.out.println("未登录，过滤");
+////        					hresponse.sendRedirect("/"+OverallSituation.index);
+////        				}
+////        				
+////        			}else{
+////        				System.out.println("特例，通过");
+////        				chain.doFilter(request, response);
+////        			}
+////        		}
+////        		
+////        	}else{
+////        		chain.doFilter(request, response);
+////        	}
+////        }else{
+////        	chain.doFilter(request, response);
+////        }
+//        
+//    }
+//
+//    @Override
+//    public void init(FilterConfig config) throws ServletException {
+////        System.out.println("过滤器初始化");
+//    }
     
 }
