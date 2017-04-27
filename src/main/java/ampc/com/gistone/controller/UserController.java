@@ -61,7 +61,7 @@ public class UserController {
 			//获取账号参数
 			Object param=data.get("userAccount");
 			//进行参数判断
-			if(!RegUtil.CheckParameter(param, "String", regEx, false)){
+			if(!RegUtil.CheckParameter(param,null, regEx, false)){
 				LogUtil.getLogger().error("UserController  账号为空或出现非法字符!");
 				return AmpcResult.build(1003, "账号为空或出现非法字符!");
 			}
@@ -70,7 +70,7 @@ public class UserController {
 			//获取密码参数
 			param=data.get("passWord");
 			//进行参数判断
-			if(!RegUtil.CheckParameter(param, "String", null, false)){
+			if(!RegUtil.CheckParameter(param, null, null, false)){
 				LogUtil.getLogger().error("UserController  密码为空或出现非法字符!");
 				return AmpcResult.build(1003, "密码为空或出现非法字符!");
 			}
@@ -212,7 +212,7 @@ public class UserController {
 			//获取账号参数
 			Object param=data.get("yzm");
 			//进行参数判断
-			if(!RegUtil.CheckParameter(param, "String", null, false)){
+			if(!RegUtil.CheckParameter(param, null, null, false)){
 				LogUtil.getLogger().error("UserController  验证码为空或出现非法字符!");
 				return AmpcResult.build(1003, "验证码为空或出现非法字符!");
 			}
