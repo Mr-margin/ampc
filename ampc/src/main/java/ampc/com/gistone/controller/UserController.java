@@ -50,6 +50,7 @@ public class UserController {
 	 * @return 返回响应结果对象
 	 */
 	@RequestMapping("/user/login")
+	@ResponseBody
 	public AmpcResult login(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -246,6 +247,7 @@ public class UserController {
 	 * @return 返回响应结果对象
 	 */
 	@RequestMapping("/user/get_userList")
+	
 	public AmpcResult get_userList(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
