@@ -562,3 +562,18 @@ when (new.ID is null)
 begin
 select T_DOMAIN_REGION_SEQ.nextval into :new.ID from dual;
 end;
+
+------T_MESSAGE_LOG 消息日志表----
+CREATE SEQUENCE T_MESSAGE_LOG_SEQ  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_MESSAGE_LOG_REP before insert on T_MESSAGE_LOG
+FOR EACH ROW
+when (new.MESSAGE_LOG_ID is null)
+begin
+select T_MESSAGE_LOG_SEQ.nextval into :new.MESSAGE_LOG_ID from dual;
+end;
