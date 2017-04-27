@@ -682,6 +682,15 @@ function open_cs(sectorsName, measureame, mid, planMeasureId) {
 //					console.log(JSON.stringify(res));
         if (res.status == 'success') {
           $("#dianyaunzushu").html("点源总数：" + res.data.count);
+          if(res.data.count == 0){
+        	  $("#se_bu").hide();//筛选按钮关闭
+        	  $("#se_bu_na").hide();//筛选按钮关闭
+        	  $("#se_name").hide();//企业名称输入关闭
+          }else{
+        	  $("#se_bu").show();
+        	  $("#se_bu_na").show();
+        	  $("#se_name").show();
+          }
           $("#xiangxizhibiao").html("点源排放占比:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SO<sub>2</sub>:" + res.data.rate.SO2 + "%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO<sub>x</sub>:" + res.data.rate.NOx + "%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PM<sub>2.5</sub>:" + res.data.rate.PM25 + "%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VOCs:" + res.data.rate.VOC + "%");
           add_point(res.data.company);
 
