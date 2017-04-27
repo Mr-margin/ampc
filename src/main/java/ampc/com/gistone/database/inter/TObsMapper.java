@@ -1,5 +1,6 @@
 package ampc.com.gistone.database.inter;
 
+import java.util.List;
 import java.util.Map;
 
 import ampc.com.gistone.preprocess.obs.entity.ObsBean;
@@ -18,6 +19,6 @@ public interface TObsMapper {
 	 * @param params
 	 * @return
 	 */
-	ObsBean queryObservationResult(Map<String, Object> params);
+	List<ObsBean> queryObservationResult(Map<String, Object> params);
 
 }
