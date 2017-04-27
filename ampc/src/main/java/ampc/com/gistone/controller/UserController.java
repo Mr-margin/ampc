@@ -76,47 +76,47 @@ public class UserController {
 			}
 			//密码
 			String passWord=param.toString();
-			try{
-				//查看当前账号是否存在
-				Integer isExist=tUserMapper.checkUserId(userAccount);
-				//判断如果存在
-				if(isExist>0){
-					//判断当前用户是否有效
-					Integer isOn=tUserMapper.checkUserIsON(userAccount);
-					//判断用户是否有效
-					if(isOn>0){
-						//添加条件 
-						Map map=new HashMap();
-						map.put("userAccount", userAccount);
-						//进行MD5加密
-						passWord = Tool.md5(passWord);
-						passWord=Tool.convertMD5(passWord);
-						map.put("passWord", passWord);
-						//查询所有的用户基本信息
-						Map userMap=tUserMapper.login(map);
-						//如果用户账号和密码匹配
-						if(userMap!=null){
-							//将用户的一些基本信息 放到session
-							HttpSession session = request.getSession();
-							session.setAttribute("user", userMap);
-							//添加Log
-							LogUtil.getLogger().info("UserController  登录成功！");
-							//返回结果
-							return AmpcResult.ok(1);
-						}else{
-							throw new SQLException("UserController  用户和密码不匹配!");
-						}
+			//查看当前账号是否存在
+			Integer isExist=tUserMapper.checkUserId(userAccount);
+			//判断如果存在
+			if(isExist>0){
+				//判断当前用户是否有效
+				Integer isOn=tUserMapper.checkUserIsON(userAccount);
+				//判断用户是否有效
+				if(isOn>0){
+					//添加条件 
+					Map map=new HashMap();
+					map.put("userAccount", userAccount);
+					//进行MD5加密
+					passWord = Tool.md5(passWord);
+					passWord=Tool.convertMD5(passWord);
+					map.put("passWord", passWord);
+					//查询所有的用户基本信息
+					Map userMap=tUserMapper.login(map);
+					//如果用户账号和密码匹配
+					if(userMap!=null){
+						//将用户的一些基本信息 放到session
+						HttpSession session = request.getSession();
+						session.setAttribute("user", userMap);
+						//添加Log
+						LogUtil.getLogger().info("UserController  登录成功！");
+						//返回结果
+						return AmpcResult.ok(1);
 					}else{
-						throw new SQLException("UserController 该用户已失效！");
+						throw new SQLException("UserController  用户和密码不匹配!");
 					}
 				}else{
-					throw new SQLException("UserController 用户名不存在");
+					throw new SQLException("UserController 该用户已失效！");
 				}
-			}catch(SQLException e){
-				LogUtil.getLogger().error(e.getMessage(),e);
-				return AmpcResult.build(1000, e.getMessage());
+			}else{
+				throw new SQLException("UserController 用户名不存在");
 			}
 		} catch (Exception e) {
+			//判断异常是否是数据库异常 判断
+			if(e instanceof SQLException){
+				LogUtil.getLogger().error(e.getMessage(),e);
+				return AmpcResult.build(1000,e.getMessage());
+			}
 			LogUtil.getLogger().error("UserController 用户登录异常！",e);
 			return AmpcResult.build(1001,"用户登录异常！");
 		}
