@@ -16,23 +16,6 @@ import java.util.regex.Pattern;
  */
 public class RegUtil {
 	
-	/**
-	 * 账号验证
-	 * @param account
-	 * @return
-	 */
-	public static boolean CheckAccount(String account){
-	    //账号验证 必须为数字和字母还有下划线
-	    String regEx = "^[a-zA-Z]+[a-zA-Z0-9_]{5,14}$";
-	    // 编译正则表达式
-	    Pattern pattern = Pattern.compile(regEx);
-	    // 忽略大小写的写法
-	    // Pattern pat = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE);
-	    Matcher matcher = pattern.matcher(account);
-	    // 字符串是否与正则表达式相匹配
-	    boolean rs = matcher.matches();
-	    return rs;
-	}
 	
 	/**
 	 * 参数验证
