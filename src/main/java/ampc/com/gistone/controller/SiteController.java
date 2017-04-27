@@ -186,7 +186,7 @@ public class SiteController {
 			}
 		}catch(Exception e){
 			LogUtil.getLogger().error("省市code查询失败",e);
-			return AmpcResult.build(0, "省市code查询失败");
+			return AmpcResult.build(1001, "省市code查询失败");
 		}
 	}
 
