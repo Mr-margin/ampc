@@ -114,6 +114,7 @@ public class UserController {
 				return AmpcResult.build(1002, "用户名不存在！");
 			}
 		} catch (Exception e) {
+			//判断异常是否是数据库异常
 			if(e instanceof SQLException){
 				LogUtil.getLogger().error("UserController 数据库访问异常！",e);
 				return AmpcResult.build(1000,"UserController 数据库访问异常！");
