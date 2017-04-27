@@ -38,7 +38,14 @@ public class MyFilter implements Filter {
         HttpServletResponse hresponse = (HttpServletResponse) response;
         
         String url = hrequest.getServletPath();
-        
+     // 表明它允许"http://xxx"发起跨域请求
+        hresponse.setHeader("Access-Control-Allow-Origin","*");
+        // 表明在xxx秒内，不需要再发送预检验请求，可以缓存该结果
+        hresponse.setHeader("Access-Control-Allow-Methods","POST, GET, DELETE, PUT");
+        // 表明它允许xxx的外域请求
+        hresponse.setHeader("Access-Control-Max-Age","3628800");
+        // 表明它允许跨域请求包含xxx头
+        hresponse.setHeader("Access-Control-Allow-Headers","x-requested-with");
         chain.doFilter(request, response);
 //        Map special  = new HashMap();
 //        special.put("getLogin_massage.do", "getLogin_massage.do");//session获取用户登陆信息
