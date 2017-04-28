@@ -1082,7 +1082,7 @@ public class AppraisalController {
 		}
 	
 	/**
-	 * 根据任务id以及userid查询基准情景
+	 * 查询基准数据和观测数据
 	 * @param requestDate
 	 * @param request
 	 * @param response
