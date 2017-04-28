@@ -1,5 +1,6 @@
 package ampc.com.gistone.controller;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -34,6 +35,7 @@ import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.ExcelToDate;
 import ampc.com.gistone.util.LogUtil;
+import ampc.com.gistone.util.RegUtil;
 
 /**
  * 行业和措施的控制类
@@ -100,10 +102,18 @@ public class ExcelToDateController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			// 用户的id 确定当前用户 如果为空代表是系统默认
-			Long userId=null;
-			if(data.get("userId")!=null){
-				userId = Long.parseLong(data.get("userId").toString());
+			// 用户的id 确定当前用户
+			Long userId = null;
+			if (data.get("userId") != null) {
+				//获取用户ID
+				Object param=data.get("userId");
+				//进行参数判断
+				if(!RegUtil.CheckParameter(param, "Long", null, false)){
+					LogUtil.getLogger().error("ExcelToDateController 用户ID为空或出现非法字符!");
+					return AmpcResult.build(1003, "ExcelToDateController 用户ID为空或出现非法字符!");
+				}
+				// 用户id
+				userId = Long.parseLong(param.toString());
 			}
 			Long time=new Date().getTime();
 			String versionId="中间表"+time;
@@ -119,15 +129,21 @@ public class ExcelToDateController {
 //				}
 //				tmse.setColorcode(colorUtil.get(i).getColorCode());    暂时不添加颜色
 //				tmse.setColorname(colorUtil.get(i).getColorName());
-			tMeasureSectorExcelMapper.insertSelective(tmse);
+				int result=tMeasureSectorExcelMapper.insertSelective(tmse);
+				if(result<1){
+					throw new SQLException("ExcelToDateController 保存行业措施中间表失败");
+				}
 				i++;
 			}
 			LogUtil.getLogger().info("ExcelToDateController 保存行业措施中间表成功!");
 			return AmpcResult.ok("更新成功");
-		} catch (Exception e) {
+		} catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
+		}catch (Exception e) {
 			LogUtil.getLogger().error("ExcelToDateController 保存行业措施中间表异常!",e);
 			// 返回错误信息
-			return AmpcResult.build(1000, "参数错误", null);
+			return AmpcResult.build(1001, "ExcelToDateController 保存行业措施中间表异常!");
 		}
 	}
 	
@@ -146,10 +162,18 @@ public class ExcelToDateController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			// 用户的id 确定当前用户 如果为空代表是系统默认
-			Long userId=null;
-			if(data.get("userId")!=null){
-				userId = Long.parseLong(data.get("userId").toString());
+			// 用户的id 确定当前用户
+			Long userId = null;
+			if (data.get("userId") != null) {
+				//获取用户ID
+				Object param=data.get("userId");
+				//进行参数判断
+				if(!RegUtil.CheckParameter(param, "Long", null, false)){
+					LogUtil.getLogger().error("ExcelToDateController 用户ID为空或出现非法字符!");
+					return AmpcResult.build(1003, "ExcelToDateController 用户ID为空或出现非法字符!");
+				}
+				// 用户id
+				userId = Long.parseLong(param.toString());
 			}
 			/**
 			 * 根据request获取excel地址
@@ -166,16 +190,18 @@ public class ExcelToDateController {
 			for (TSectordocExcel tsd : tse) {
 				int result=tSectordocExcelMapper.insertSelective(tsd);
 				if(result<1){
-					LogUtil.getLogger().error("ExcelToDateController 保存行业描述信息失败,数据库添加失败。");
-					return AmpcResult.build(1000, "添加失败!", null);
+					throw new SQLException("ExcelToDateController 保存行业描述信息失败,数据库添加失败。");
 				}
 			}
 			LogUtil.getLogger().info("ExcelToDateController 保存行业描述信息成功!");
 			return AmpcResult.ok("更新成功");
+		}catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
 		} catch (Exception e) {
 			LogUtil.getLogger().error("ExcelToDateController 保存行业描述信息异常!",e);
 			// 返回错误信息
-			return AmpcResult.build(1000, "参数错误", null);
+			return AmpcResult.build(1001, "ExcelToDateController 保存行业描述信息异常!");
 		}
 	}
 	
@@ -195,9 +221,17 @@ public class ExcelToDateController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			// 用户的id 确定当前用户 如果为空代表是系统默认
-			Long userId=null;
-			if(data.get("userId")!=null){
-				userId = Long.parseLong(data.get("userId").toString());
+			Long userId = null;
+			if (data.get("userId") != null) {
+				//获取用户ID
+				Object param=data.get("userId");
+				//进行参数判断
+				if(!RegUtil.CheckParameter(param, "Long", null, false)){
+					LogUtil.getLogger().error("ExcelToDateController 用户ID为空或出现非法字符!");
+					return AmpcResult.build(1003, "ExcelToDateController 用户ID为空或出现非法字符!");
+				}
+				// 用户id
+				userId = Long.parseLong(param.toString());
 			}
 			/**
 			 * 根据request获取excel地址
@@ -214,16 +248,18 @@ public class ExcelToDateController {
 			for (TQueryExcel t : tqe) {
 				int result=tQueryExcelMapper.insertSelective(t);
 				if(result<1){
-					LogUtil.getLogger().error("ExcelToDateController 保存行业筛选条件失败!数据库添加失败");
-					return AmpcResult.build(1000, "添加失败!", null);
+					throw new SQLException("ExcelToDateController 保存行业筛选条件失败,数据库添加失败。");
 				}
 			}
 			LogUtil.getLogger().info("ExcelToDateController 保存行业筛选条件成功!");
 			return AmpcResult.ok("更新成功");
+		}catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
 		} catch (Exception e) {
 			LogUtil.getLogger().error("ExcelToDateController 保存行业筛选条件异常!",e);
 			// 返回错误信息
-			return AmpcResult.build(1000, "参数错误", null);
+			return AmpcResult.build(1001, "参数错误", null);
 		}
 	}
 	
@@ -242,9 +278,17 @@ public class ExcelToDateController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			// 用户的id 确定当前用户 如果为空代表是系统默认
-			Long userId=null;
-			if(data.get("userId")!=null){
-				userId = Long.parseLong(data.get("userId").toString());
+			Long userId = null;
+			if (data.get("userId") != null) {
+				//获取用户ID
+				Object param=data.get("userId");
+				//进行参数判断
+				if(!RegUtil.CheckParameter(param, "Long", null, false)){
+					LogUtil.getLogger().error("ExcelToDateController 用户ID为空或出现非法字符!");
+					return AmpcResult.build(1003, "ExcelToDateController 用户ID为空或出现非法字符!");
+				}
+				// 用户id
+				userId = Long.parseLong(param.toString());
 			}
 			/**
 			 * 根据request获取excel地址
@@ -257,12 +301,14 @@ public class ExcelToDateController {
 			for (TMeasureExcel tMeasure : readTMeasure) {
 				int result=tMeasureExcelMapper.insertSelective(tMeasure);
 				if(result<1){
-					LogUtil.getLogger().error("ExcelToDateController 保存措施信息失败,数据库添加失败。");
-					return AmpcResult.build(1000, "添加失败!", null);
+					throw new SQLException("ExcelToDateController 保存措施信息失败,数据库添加失败。");
 				}
 			}
 			LogUtil.getLogger().info("ExcelToDateController 保存措施信息成功!");
 			return AmpcResult.ok("更新成功");
+		} catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
 		} catch (Exception e) {
 			LogUtil.getLogger().error("ExcelToDateController 保存措施信息异常!",e);
 			// 返回错误信息
@@ -285,9 +331,17 @@ public class ExcelToDateController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			// 用户的id 确定当前用户 如果为空代表是系统默认
-			Long userId=null;
-			if(data.get("userId")!=null){
-				userId = Long.parseLong(data.get("userId").toString());
+			Long userId = null;
+			if (data.get("userId") != null) {
+				//获取用户ID
+				Object param=data.get("userId");
+				//进行参数判断
+				if(!RegUtil.CheckParameter(param, "Long", null, false)){
+					LogUtil.getLogger().error("ExcelToDateController 用户ID为空或出现非法字符!");
+					return AmpcResult.build(1003, "ExcelToDateController 用户ID为空或出现非法字符!");
+				}
+				// 用户id
+				userId = Long.parseLong(param.toString());
 			}
 			/**
 			 * 根据request获取excel地址
@@ -300,12 +354,14 @@ public class ExcelToDateController {
 			for (TSectorExcel tSector : readSector) {
 				int result=tSectorExcelMapper.insertSelective(tSector);
 				if(result<1){
-					LogUtil.getLogger().error("ExcelToDateController 保存行业信息失败，数据库添加失败。");
-					return AmpcResult.build(1000, "添加失败!", null);
+					throw new SQLException("ExcelToDateController 保存行业信息失败,数据库添加失败。");
 				}
 			}
 			LogUtil.getLogger().info("ExcelToDateController 保存行业信息成功!");
 			return AmpcResult.ok("更新成功");
+		} catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
 		} catch (Exception e) {
 			LogUtil.getLogger().error("ExcelToDateController 保存行业信息异常!",e);
 			// 返回错误信息

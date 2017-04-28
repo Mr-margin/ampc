@@ -16,6 +16,7 @@ import ampc.com.gistone.database.inter.TEsNativeMapper;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.LogUtil;
+import ampc.com.gistone.util.RegUtil;
 
 /**
  * 清单控制类
@@ -43,14 +44,21 @@ public class NativeAndNationController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
 			// 用户id
-			Long userId = Long.parseLong(data.get("userId").toString());
+			Long userId = Long.parseLong(param.toString());
 			List<Map> list=tEsCouplingMapper.selectAll(userId);
 			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的耦合清单信息成功!");
 			return AmpcResult.ok(list);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("NativeAndNationController 查询当前用户下的耦合清单信息异常!",e);
-			return AmpcResult.build(1000, "参数错误", null);
+			return AmpcResult.build(1001, "NativeAndNationController 查询当前用户下的耦合清单信息异常!");
 		}
 	}
 }

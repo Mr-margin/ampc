@@ -2,6 +2,7 @@ package ampc.com.gistone.controller;
 
 import java.math.BigDecimal;
 import java.sql.Clob;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import ampc.com.gistone.util.CastNumUtil;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.LogUtil;
+import ampc.com.gistone.util.RegUtil;
 
 /**
  * Echarts控制类
@@ -72,16 +74,51 @@ public class EchartsController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			// 情景id
-			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			//获取情景id
+			Object param=data.get("scenarinoId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("EchartsController 情景id为空或出现非法字符!");
+				return AmpcResult.build(1003, "情景id为空或出现非法字符!");
+			}
+			//情景id
+			Long scenarinoId = Long.parseLong(param.toString());
+		
+			//获取行政区划代码
+			param=data.get("code");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("EchartsController 行政区划代码为空或出现非法字符!");
+				return AmpcResult.build(1003, "行政区划代码为空或出现非法字符!");
+			}
 			// 行政区划代码
-			String codes = data.get("code").toString();;
+			String codes = param.toString();
+			
 			// 行政区划等级
-			Long addressLevle=Long.parseLong(data.get("addressLevle").toString());
+			param=data.get("addressLevle");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("EchartsController 行政区划等级为空或出现非法字符!");
+				return AmpcResult.build(1003, "行政区划等级为空或出现非法字符!");
+			}
+			// 行政区划等级
+			Long addressLevle=Long.parseLong(param.toString());
+			
+			
+			//污染物类型
+			param=data.get("stainType");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("EchartsController 污染物类型为空或出现非法字符!");
+				return AmpcResult.build(1003, "污染物类型为空或出现非法字符!");
+			}
 			// 污染物类型
-			String stainType = data.get("stainType").toString();
+			String stainType = param.toString();
 			//根据情景Id获取到情景对象
 			TScenarinoDetail tsd=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+			if(tsd==null){
+				throw new SQLException("EchartsController  查询情景的减排信息柱状图失败，数据库没有该条情景。");
+			}
 			//情景的开始时间
 			Date sDate=tsd.getScenarinoStartDate();
 			//情景的结束时间
@@ -220,9 +257,12 @@ public class EchartsController {
 			//返回结果 添加日志
 			LogUtil.getLogger().info("EchartsController 情景减排柱状图数据查询成功!");
 			return AmpcResult.ok(map);
+		} catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
 		} catch (Exception e) {
 			LogUtil.getLogger().error("EchartsController 情景减排柱状图数据查询异常!",e);
-			return AmpcResult.build(1000, "参数错误");
+			return AmpcResult.build(1001, "EchartsController 情景减排柱状图数据查询异常!");
 		}
 	}
 	
@@ -241,23 +281,79 @@ public class EchartsController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			// 情景id
-			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			//获取情景id
+			Object param=data.get("scenarinoId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("EchartsController 情景id为空或出现非法字符!");
+				return AmpcResult.build(1003, "情景id为空或出现非法字符!");
+			}
+			//情景id
+			Long scenarinoId = Long.parseLong(param.toString());
+		
+			//获取行政区划代码
+			param=data.get("code");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("EchartsController 行政区划代码为空或出现非法字符!");
+				return AmpcResult.build(1003, "行政区划代码为空或出现非法字符!");
+			}
 			// 行政区划代码
-			String codes = data.get("code").toString();;
+			String codes = param.toString();
+			
 			// 行政区划等级
-			Long addressLevle=Long.parseLong(data.get("addressLevle").toString());
+			param=data.get("addressLevle");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("EchartsController 行政区划等级为空或出现非法字符!");
+				return AmpcResult.build(1003, "行政区划等级为空或出现非法字符!");
+			}
+			// 行政区划等级
+			Long addressLevle=Long.parseLong(param.toString());
+			
+			
+			//污染物类型
+			param=data.get("stainType");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("EchartsController 污染物类型为空或出现非法字符!");
+				return AmpcResult.build(1003, "污染物类型为空或出现非法字符!");
+			}
 			// 污染物类型
-			String stainType = data.get("stainType").toString();
+			String stainType = param.toString();
 			if(stainType.equals("NOX")){
 				stainType="NOx";
 			}
+			
 			//查询类型
-			Integer type=Integer.valueOf(data.get("type").toString());
+			param=data.get("type");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Integer", null, false)){
+				LogUtil.getLogger().error("EchartsController 查询类型为空或出现非法字符!");
+				return AmpcResult.build(1003, "查询类型为空或出现非法字符!");
+			}
+			//查询类型
+			Integer type=Integer.valueOf(param.toString());
+			
 			//情景的开始时间
-			String startDate=data.get("startDate").toString();
+			param=data.get("startDate");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("EchartsController 情景的开始时间为空或出现非法字符!");
+				return AmpcResult.build(1003, "情景的开始时间为空或出现非法字符!");
+			}
+			//情景的开始时间
+			String startDate=param.toString();
+		
+			//获取情景结束时间
+			param=data.get("endDate");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("EchartsController 情景的结束时间为空或出现非法字符!");
+				return AmpcResult.build(1003, "情景的结束时间为空或出现非法字符!");
+			}
 			//情景的结束时间
-			String endDate=data.get("endDate").toString();
+			String endDate=param.toString();
 			//创建结果集合
 			List<PieUtil> puList=new ArrayList<PieUtil>();
 			//对传入的code进行拆分 
@@ -358,9 +454,12 @@ public class EchartsController {
 			//返回结果
 			LogUtil.getLogger().info("EchartsController 情景减排饼状图数据查询成功!");
 			return AmpcResult.ok(puList);
+		} catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
 		} catch (Exception e) {
 			LogUtil.getLogger().error("EchartsController 情景减排饼状图数据查询异常!",e);
-			return AmpcResult.build(1000, "参数错误");
+			return AmpcResult.build(1001, "EchartsController 情景减排饼状图数据查询异常!");
 		}
 	}
 	
@@ -378,10 +477,20 @@ public class EchartsController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			// 情景id
-			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			//获取情景id
+			Object param=data.get("scenarinoId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("EchartsController 情景id为空或出现非法字符!");
+				return AmpcResult.build(1003, "情景id为空或出现非法字符!");
+			}
+			//情景id
+			Long scenarinoId = Long.parseLong(param.toString());
 			//根据情景Id获取到情景对象
 			TScenarinoDetail tsd=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+			if(tsd==null){
+				throw new SQLException("EchartsController  查询情景的减排信息列表失败，数据库没有该条情景。");
+			}
 			//情景的开始时间
 			Date sDate=tsd.getScenarinoStartDate();
 			//情景的结束时间
@@ -390,10 +499,25 @@ public class EchartsController {
 			String startDate=DateUtil.DATEtoString(sDate, "yyyy-MM-dd");
 			//进行日期的转换
 			String endDate=DateUtil.DATEtoString(eDate, "yyyy-MM-dd");
+			//获取行政区划代码
+			param=data.get("code");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("EchartsController 行政区划代码为空或出现非法字符!");
+				return AmpcResult.build(1003, "行政区划代码为空或出现非法字符!");
+			}
 			// 行政区划代码
-			String codes = data.get("code").toString();;
+			String codes = param.toString();
+			
 			// 行政区划等级
-			Long addressLevle=Long.parseLong(data.get("addressLevle").toString());
+			param=data.get("addressLevle");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("EchartsController 行政区划等级为空或出现非法字符!");
+				return AmpcResult.build(1003, "行政区划等级为空或出现非法字符!");
+			}
+			// 行政区划等级
+			Long addressLevle=Long.parseLong(param.toString());
 			//定义条件Map
 			Map mapQuery=new HashMap();
 			//添加条件
@@ -609,12 +733,6 @@ public class EchartsController {
 					//如果基准为空则赋值为0
 					if(basisrlu==null){
 						basisrlu=new RadioListUtil();
-						//添加Code
-						basisrlu.setCode(code);
-						//根据Code查询对应的中文名称
-						String name=tAddressMapper.selectNameByCode(code);
-						basisrlu.setType(0);
-						basisrlu.setName(name);
 						basisrlu.setPM25(0);
 						basisrlu.setPM10(0);
 						basisrlu.setSO2(0);
@@ -642,6 +760,9 @@ public class EchartsController {
 							jplrlu.setCode(code);
 							//根据Code查询对应的中文名称
 							String name=tAddressMapper.selectNameByCode(code);
+							if(name==null){
+								throw new SQLException("EchartsController 减排列表，根据Code没有查找到对应的行政信息。");
+							}
 							jplrlu.setName(name);
 							//定义判断是否包含子集 默认没有子集
 							boolean isTrue=false;
@@ -679,7 +800,6 @@ public class EchartsController {
 				for(int o=0;o<selectcodeMap.size();){
 					//取Code
 					String code=selectcodeMap.get(o).get("CODE").toString();
-					System.out.println(code);
 					//根据Code级别进行条件调整
 					String checkCode=code.substring(0,4);
 					//定义基准结果对象
@@ -722,12 +842,6 @@ public class EchartsController {
 					//如果基准为空则赋值为0
 					if(basisrlu==null){
 						basisrlu=new RadioListUtil();
-						//添加Code
-						basisrlu.setCode(code);
-						//根据Code查询对应的中文名称
-						String name=tAddressMapper.selectNameByCode(code);
-						basisrlu.setType(0);
-						basisrlu.setName(name);
 						basisrlu.setPM25(0);
 						basisrlu.setPM10(0);
 						basisrlu.setSO2(0);
@@ -756,6 +870,9 @@ public class EchartsController {
 							jplrlu.setCode(checkCode+"00");
 							//根据Code查询对应的中文名称
 							String name=tAddressMapper.selectNameByCode(checkCode+"00");
+							if(name==null){
+								throw new SQLException("EchartsController 减排列表，根据Code没有查找到对应的行政信息。");
+							}
 							jplrlu.setName(name);
 							//定义判断是否包含子集 默认没有子集
 							boolean isTrue=false;
@@ -803,7 +920,6 @@ public class EchartsController {
 						if(basisMap.get("CODE").toString().equals(code)){
 							//获取行业中的减排污染物信息
 							basisrlu=tempUtil(basisMap,basisrlu);
-							basisrlu.setType(0);
 							selectBisisMap.remove(i);
 							selectcodeMap.remove(i);
 						}else{
@@ -813,12 +929,6 @@ public class EchartsController {
 					//如果基准为空则赋值为0
 					if(basisrlu==null){
 						basisrlu=new RadioListUtil();
-						//添加Code
-						basisrlu.setCode(code);
-						//根据Code查询对应的中文名称
-						String name=tAddressMapper.selectNameByCode(code);
-						basisrlu.setType(0);
-						basisrlu.setName(name);
 						basisrlu.setPM25(0);
 						basisrlu.setPM10(0);
 						basisrlu.setSO2(0);
@@ -847,6 +957,9 @@ public class EchartsController {
 							jplrlu.setCode(code);
 							//根据Code查询对应的中文名称
 							String name=tAddressMapper.selectNameByCode(code);
+							if(name==null){
+								throw new SQLException("EchartsController 减排列表，根据Code没有查找到对应的行政信息。");
+							}
 							jplrlu.setName(name);
 							jplrlu.setType(0);
 							selectjplMap.remove(i);
@@ -862,9 +975,12 @@ public class EchartsController {
 			}
 			LogUtil.getLogger().info("EchartsController 情景减排列表数据查询成功!");
 			return AmpcResult.ok(resultList);
+		} catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
 		} catch (Exception e) {
 			LogUtil.getLogger().error("EchartsController 情景减排列表数据查询异常!",e);
-			return AmpcResult.build(1000, "参数错误");
+			return AmpcResult.build(1001, "EchartsController 情景减排列表数据查询异常!");
 		}
 	}
 	
