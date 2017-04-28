@@ -25,8 +25,8 @@ var changeMsg = {
 };
 var speciesAll = {
     wrw: {
-        day: ['PM₂₅', 'PM₁₀', 'O₃_8_MAX', 'SO₂', 'NO₂', 'CO'],
-        hour: ['PM₂₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO']
+        day: ['PM₂.₅', 'PM₁₀', 'O₃_8_max', 'SO₂', 'NO₂', 'CO'],
+        hour: ['PM₂.₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO']
     },
     qxys: {
         day: [],
@@ -34,10 +34,10 @@ var speciesAll = {
     }
 };
 var speciesObj = {
-    'PM₂₅': 'PM25',
+    'PM₂.₅': 'PM25',
     'PM₁₀': 'PM10',
-    'O₃_8_MAX': 'O3_8_MAX',
-    'O₃_1_MAX': 'O3_1_MAX',
+    'O₃_8_max': 'O3_8_MAX',
+    'O₃_1_max': 'O3_1_MAX',
     'O₃_AVG': 'O3_AVG',
     'SO₂': 'SO2',
     'NO₂': 'NO2',

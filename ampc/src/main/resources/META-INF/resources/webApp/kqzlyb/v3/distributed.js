@@ -23,22 +23,22 @@ var changeMsg = {
 }
 
 var speciesArr = {
-  day: ['PM₂₅', 'PM₁₀', 'O₃_8_MAX', 'O₃_1_MAX', 'O₃_AVG', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE'],
-  hour: ['PM₂₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE']
+  day: ['PM₂.₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NO₂', 'CO', 'SO₄²¯', 'NO₃¯', 'NH₄⁺', 'BC', 'OM', 'PMFINE'],
+  hour: ['PM₂.₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE']
 };
 
 var speciesObj = {
-  'PM₂₅':'PM25',
+  'PM₂.₅':'PM25',
   'PM₁₀':'PM10',
-  'O₃_8_MAX':'O3_8_MAX',
-  'O₃_1_MAX':'O3_1_MAX',
-  'O₃_AVG':'O3_AVG',
+  'O₃_8_max':'O3_8_MAX',
+  'O₃_1_max':'O3_1_MAX',
+  'O₃_avg':'O3_AVG',
   'SO₂':'SO2',
   'NO₂':'NO2',
   'CO':'CO',
-  'SO₄':'SO4',
-  'NO₃':'NO3',
-  'NH₄':'NH4',
+  'SO₄²¯':'SO4',
+  'NO₃¯':'NO3',
+  'NH₄⁺':'NH4',
   'BC':'BC',
   'OM':'OM',
   'PMFINE':'PMFINE',
