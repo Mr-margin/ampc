@@ -72,7 +72,24 @@ var mappingSpecies = {
         'OM': 'PM25',
         'PMFINE': 'PM25'
     }
+};
 
+var mappingSpeciesBig = {
+    'PM₂.₅': 'PM25',
+    'PM₁₀': 'PM10',
+    'O₃_8_max': 'O3_8_MAX',
+    'O₃_1_max': 'O3_1_MAX',
+    'O₃_avg': 'O3_AVG',
+    'O₃':'O3',
+    'SO₂': 'SO2',
+    'NO₂': 'NO2',
+    'CO': 'CO',
+    'SO₄²¯': 'SO4',
+    'NO₃¯': 'NO3',
+    'NH₄⁺': 'NH4',
+    'BC': 'BC',
+    'OM': 'OM',
+    'PMFINE': 'PMFINE'
 };
 
 var stat = {cPointx: 106, cPointy: 35}, app = {}, dong = {};
@@ -879,7 +896,7 @@ function updata(t) {
         domainId: changeMsg.domainId,
         domain: changeMsg.domain,
         missionId: changeMsg.missionId,
-        species: changeMsg.species,
+        species: mappingSpeciesBig[changeMsg.species],
         timePoint: changeMsg.rms,
         borderType: "0"
     };
