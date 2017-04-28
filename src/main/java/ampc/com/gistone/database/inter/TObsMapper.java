@@ -15,7 +15,7 @@ public interface TObsMapper {
 
 	void insert(ObsBean newObsBean);
 	/**
-	 * 查询观测数据
+	 * 查询观测数据统一接口
 	 * @param params
 	 * @return
 	 */
