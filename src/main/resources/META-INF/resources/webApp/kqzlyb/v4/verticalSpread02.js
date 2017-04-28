@@ -20,15 +20,15 @@ var changeMsg = {
 $('.day').css('display','block');
 $('.hour').css('display','none');
 var speciesArr = {
-  day: ['PM₂₅', 'PM₁₀', 'O₃_8_MAX', 'O₃_1_MAX', 'O₃_AVG', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE'],
-  hour: ['PM₂₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE']
+  day: ['PM₂.₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE'],
+  hour: ['PM₂.₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE']
 };
 var speciesObj = {
-  'PM₂₅':'PM25',
+  'PM₂.₅':'PM25',
   'PM₁₀':'PM10',
-  'O₃_8_MAX':'O3_8_MAX',
-  'O₃_1_MAX':'O3_1_MAX',
-  'O₃_AVG':'O3_AVG',
+  'O₃_8_max':'O3_8_MAX',
+  'O₃_1_max':'O3_1_MAX',
+  'O₃_avg':'O3_AVG',
   'SO₂':'SO2',
   'NO₂':'NO2',
   'CO':'CO',
@@ -223,8 +223,21 @@ function initEcharts() {
 
     //option.legend.data = ['模拟数据'];
     if (species[i] != 'CO') {
-      //option.xAxis.name = 'μg/m³';
-      option.title.text = species[i]+'（μg/m³）';
+
+        switch(species[i]){
+            case 'SO₄':
+                option.title.text = species[i]+"²¯ (μg/m³)";
+                break;
+            case 'NO₃':
+                option.title.text = species[i]+"¯ (μg/m³)";
+                break;
+            case 'NH₄':
+                option.title.text = species[i]+"⁺ (μg/m³)";
+                break;
+            default:
+                option.title.text = species[i]+" (μg/m³)";
+        }
+
     } else {
       //option.xAxis.name = 'mg/m³';
       option.title.text = species[i]+'（mg/m³）';
