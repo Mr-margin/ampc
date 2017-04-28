@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -61,6 +62,7 @@ import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.JsonUtil;
 import ampc.com.gistone.util.LogUtil;
+import ampc.com.gistone.util.RegUtil;
 import ampc.com.gistone.util.ScenarinoStatusUtil;
 
 
@@ -110,12 +112,40 @@ public class AreaAndTimeController {
 		ClientUtil.SetCharsetAndHeader(request, response);
 		 Map<String,Object> data=(Map)requestDate.get("data");
 		Long areaId = Long.parseLong(data.get("areaId").toString());//区域ID
+		if(!RegUtil.CheckParameter(areaId, "Long", null, false)){
+			LogUtil.getLogger().error("save_time  区域ID为空!");
+			return AmpcResult.build(1003, "区域ID为空!");
+		}
 		Long scenarinoStatus = Long.parseLong(data.get("scenarinoStatus").toString());//当前情景状态
+		if(!RegUtil.CheckParameter(scenarinoStatus, "Long", null, false)){
+			LogUtil.getLogger().error("save_time  情景状态为空!");
+			return AmpcResult.build(1003, "情景状态为空!");
+		}
 		Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());//情景id
+		if(!RegUtil.CheckParameter(scenarinoId, "Long", null, false)){
+			LogUtil.getLogger().error("save_time  情景id为空!");
+			return AmpcResult.build(1003, "情景id为空!");
+		}
 		Long missionId =Long.parseLong(data.get("missionId").toString());//任务id
+		if(!RegUtil.CheckParameter(missionId, "Long", null, false)){
+			LogUtil.getLogger().error("save_time  任务id为空!");
+			return AmpcResult.build(1003, "任务id为空!");
+		}
 		Long userId =Long.parseLong(data.get("userId").toString());//用户id
+		if(!RegUtil.CheckParameter(userId, "Long", null, false)){
+			LogUtil.getLogger().error("save_time  用户id为空!");
+			return AmpcResult.build(1003, "用户id为空!");
+		}
 		Long selectTimeId = Long.parseLong(data.get("selectTimeId").toString());//添加时段处在的时段id
+		if(!RegUtil.CheckParameter(selectTimeId, "Long", null, false)){
+			LogUtil.getLogger().error("save_time  添加时段处在的时段id为空!");
+			return AmpcResult.build(1003, "添加时段处在的时段id为空!");
+		}
 		String imeDate = data.get("addTimeDate").toString();//新增时段时间
+		if(!RegUtil.CheckParameter(imeDate, "String", null, false)){
+			LogUtil.getLogger().error("save_time  新增时段时间为空!");
+			return AmpcResult.build(1003, "新增时段时间为空!");
+		}
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date timeDate=sdf.parse(imeDate);
 		// 时间操作，结束时间与开始时间的数据有一位数间隔，需要时间计算
@@ -202,11 +232,27 @@ public class AreaAndTimeController {
 		ClientUtil.SetCharsetAndHeader(request, response);
 		 Map<String,Object> data=(Map)requestDate.get("data");
 		Long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());//情景id
+		if(!RegUtil.CheckParameter(scenarinoId, "Long", null, false)){
+			LogUtil.getLogger().error("save_time  情景id为空!");
+			return AmpcResult.build(1003, "情景id为空!");
+		}
 		Long beforeTimeId=Long.parseLong(data.get("beforeTimeId").toString());//修改时段前一个的时段Id
 		Long afterTimeId=Long.parseLong(data.get("afterTimeId").toString());//修改时段后一个的时段Id
 		Long userId=Long.parseLong(data.get("userId").toString());//用户id
+		if(!RegUtil.CheckParameter(userId, "Long", null, false)){
+			LogUtil.getLogger().error("save_time  用户id为空!");
+			return AmpcResult.build(1003, "用户id为空!");
+		}
 		Long scenarinoStatus=Long.valueOf(data.get("scenarinoStatus").toString());
+		if(!RegUtil.CheckParameter(scenarinoStatus, "Long", null, false)){
+			LogUtil.getLogger().error("save_time  情景状态为空!");
+			return AmpcResult.build(1003, "情景状态为空!");
+		}
 		String teDate=data.get("updateDate").toString();//时段的修改时间
+		if(!RegUtil.CheckParameter(teDate, "String", null, false)){
+			LogUtil.getLogger().error("save_time  时段的修改时间为空!");
+			return AmpcResult.build(1003, "时段的修改时间为空!");
+		}
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date updateDate=sdf.parse(teDate);
 		//修改时间减一个小时作为前一个时段的结束时间
@@ -234,18 +280,22 @@ public class AreaAndTimeController {
 				if(scenarinoStatus==1){
 					int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
 					if(a!=0){ 
-						 return AmpcResult.build(0, "update_TIME success");
+						 return AmpcResult.ok();
 					}else{
+						LogUtil.getLogger().error("update_TIME 情景状态转换失败！");
 						return AmpcResult.build(1000, "情景状态转换失败",null);
 					}
 					}else{
-						 return AmpcResult.build(0, "update_TIME success");
+						LogUtil.getLogger().error("update_TIME 情景状态修改失败！");
+						 return AmpcResult.build(1000, "情景状态修改失败");
 					}	
 			}else{
-				return AmpcResult.build(1, "update_TIME error");
+				LogUtil.getLogger().error("update_TIME 后一个时段的开始时间修改失败！");
+				return AmpcResult.build(1000, "后一个时段的开始时间修改失败");
 			}
 		}else{
-		return AmpcResult.build(1, "update_TIME error");
+			LogUtil.getLogger().error("update_TIME 时段结束时间修改失败！");
+		return AmpcResult.build(1000, "时段结束时间修改失败");
 		}
 	}
 	
@@ -258,7 +308,15 @@ public class AreaAndTimeController {
 		ClientUtil.SetCharsetAndHeader(request, response);
 		Map<String,Object> data=(Map)requestDate.get("data");
 		Long areaId=Long.parseLong(data.get("areaId").toString());//区域id
+		if(!RegUtil.CheckParameter(areaId, "Long", null, false)){
+			LogUtil.getLogger().error("time_list  区域id为空!");
+			return AmpcResult.build(1003, "区域id为空!");
+		}
 		Long userId=Long.parseLong(data.get("userId").toString());//用户的id
+		if(!RegUtil.CheckParameter(userId, "Long", null, false)){
+			LogUtil.getLogger().error("time_list  用户的id为空!");
+			return AmpcResult.build(1003, "用户的id为空!");
+		}
 		String isEffective="1"; //Long.parseLong(data.get("isEffective").toString());//是否有效
 		//查询时段信息
 		TTime find_time = new TTime();
@@ -283,76 +341,77 @@ public class AreaAndTimeController {
 			}
 			JSONObject obj=new JSONObject();
 			obj.put("timeItem", objlist);
-			System.out.println(obj);
-			return AmpcResult.build(0, "find_TIME success",obj);
+			
+			return AmpcResult.ok(obj);
 		}else{
-			return AmpcResult.build(1, "find_TIME error");
+			return AmpcResult.build(1000, "未查询到时段信息");
 		}
 		}catch(Exception e){
-			LogUtil.getLogger().error("AreaAndTimeController 获取时段信息异常！",e);
-			return AmpcResult.build(1000, "参数错误",null);
+			LogUtil.getLogger().error("time_list 获取时段信息异常！",e);
+			return AmpcResult.build(1001, "获取时段信息异常!",null);
 		}
 	}
 	
-	/**
-	 * 删除当前用户选择的时段节点(暂时没用)
-	 */
-	@RequestMapping("/time/deleteno_time")
-	public AmpcResult deleteno_TIME(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
-		ClientUtil.SetCharsetAndHeader(request, response);
-		 Map<String,Object> data=(Map)requestDate.get("data");
-		Long beforeTimeId=Long.parseLong(data.get("beforeTimeId").toString());//上一个时段的时段Id
-		Long afterTimeId=Long.parseLong(data.get("beforeTimeId").toString());//下一个时段的时段Id
-		String endDate=data.get("beforeTimeId").toString();//删除时段的结束时间
-		//Long userId=Long.parseLong(data.get("userId").toString());//用户的id
-		Long planId=Long.parseLong(data.get("planId").toString());//预案id
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		Date timeEndDate=sdf.parse(endDate);
-		//修改要删除时段的状态
-		TTime delete_time = new TTime();
-		delete_time.setTimeId(afterTimeId);
-		delete_time.setIsEffective("0");
-		int delete_timestatus=tTimeMapper.updateByPrimaryKeySelective(delete_time);
-		TTime times=tTimeMapper.selectByPrimaryKey(afterTimeId);
-		//判断要删除时段的状态是否修改成功,如果成功修改上一时段的结束时间以及预案
-		if(delete_timestatus!=0){
-			TTime update_time = new TTime();	
-			update_time.setTimeEndDate(timeEndDate);
-			update_time.setTimeId(beforeTimeId);
-			update_time.setPlanId(planId);
-			int update_timestatus=tTimeMapper.updateByPrimaryKeySelective(update_time);
-			//判断上一个时段的结束时间是否修改成功
-			if(update_timestatus!=0){
-				TTime update_pland = new TTime();
-				update_pland.setTimeId(afterTimeId);
-				int update_status=tTimeMapper.updateByPrimaryKeySelective(update_pland);
-				//判断修改是否成功
-				if(update_status!=0){
-				TPlan tPlan=tPlanMapper.selectByPrimaryKey(times.getPlanId());
-				//查看预案是否为可复制预案
-				if(tPlan.getCopyPlan().equals("0")){
-					//为零则将预案设置为无效
-					tPlan.setIsEffective("0");
-					int up_status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
-					if(up_status!=0){
-						//删除预案的措施
-						int del_status=tPlanMeasureMapper.deleteByPlanId(times.getPlanId());	
-						if(del_status!=0){
-							return AmpcResult.build(0, "delete_time success");
-						}
-						return AmpcResult.build(1, "delete_time error");
-					}
-				}
-				return AmpcResult.build(0, "delete_time success");
-				}
-				return AmpcResult.build(1, "delete_time error");
-			}else{
-				return AmpcResult.build(1, "delete_time error");	
-			}
-		}else{
-		  return AmpcResult.build(1, "delete_time error");
-		}
-	}
+//	/**
+//	 * 删除当前用户选择的时段节点(暂时没用)
+//	 */
+//	@RequestMapping("/time/deleteno_time")
+//	public AmpcResult deleteno_TIME(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException{
+//		ClientUtil.SetCharsetAndHeader(request, response);
+//		 Map<String,Object> data=(Map)requestDate.get("data");
+//		Long beforeTimeId=Long.parseLong(data.get("beforeTimeId").toString());//上一个时段的时段Id
+//		Long afterTimeId=Long.parseLong(data.get("beforeTimeId").toString());//下一个时段的时段Id
+//		String endDate=data.get("beforeTimeId").toString();//删除时段的结束时间
+//		//Long userId=Long.parseLong(data.get("userId").toString());//用户的id
+//		Long planId=Long.parseLong(data.get("planId").toString());//预案id
+//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+//		Date timeEndDate=sdf.parse(endDate);
+//		//修改要删除时段的状态
+//		TTime delete_time = new TTime();
+//		delete_time.setTimeId(afterTimeId);
+//		delete_time.setIsEffective("0");
+//		int delete_timestatus=tTimeMapper.updateByPrimaryKeySelective(delete_time);
+//		TTime times=tTimeMapper.selectByPrimaryKey(afterTimeId);
+//		//判断要删除时段的状态是否修改成功,如果成功修改上一时段的结束时间以及预案
+//		if(delete_timestatus!=0){
+//			TTime update_time = new TTime();	
+//			update_time.setTimeEndDate(timeEndDate);
+//			update_time.setTimeId(beforeTimeId);
+//			update_time.setPlanId(planId);
+//			int update_timestatus=tTimeMapper.updateByPrimaryKeySelective(update_time);
+//			//判断上一个时段的结束时间是否修改成功
+//			if(update_timestatus!=0){
+//				TTime update_pland = new TTime();
+//				update_pland.setTimeId(afterTimeId);
+//				int update_status=tTimeMapper.updateByPrimaryKeySelective(update_pland);
+//				//判断修改是否成功
+//				if(update_status!=0){
+//				TPlan tPlan=tPlanMapper.selectByPrimaryKey(times.getPlanId());
+//				//查看预案是否为可复制预案
+//				if(tPlan.getCopyPlan().equals("0")){
+//					//为零则将预案设置为无效
+//					tPlan.setIsEffective("0");
+//					int up_status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
+//					if(up_status!=0){
+//						//删除预案的措施
+//						int del_status=tPlanMeasureMapper.deleteByPlanId(times.getPlanId());	
+//						if(del_status!=0){
+//							return AmpcResult.build(0, "delete_time success");
+//						}
+//						return AmpcResult.build(1, "delete_time error");
+//					}
+//				}
+//				return AmpcResult.build(0, "delete_time success");
+//				}
+//				return AmpcResult.build(1, "delete_time error");
+//			}else{
+//				return AmpcResult.build(1, "delete_time error");	
+//			}
+//		}else{
+//			LogUtil.getLogger().error("delete_time 获取时段信息异常！",e);
+//		  return AmpcResult.build(1, "delete_time error");
+//		}
+//	}
 	/**
 	 * 删除当前用户选择的时段节点
 	 * 
@@ -367,13 +426,39 @@ public class AreaAndTimeController {
 		ClientUtil.SetCharsetAndHeader(request, response);
 		 Map<String,Object> data=(Map)requestDate.get("data");
 		Long deleteTimeId=Long.parseLong(data.get("deleteTimeId").toString());//删除时段的时段Id
+		if(!RegUtil.CheckParameter(deleteTimeId, "Long", null, false)){
+			LogUtil.getLogger().error("delete_time 删除时段的时段Id为空!");
+			return AmpcResult.build(1003, "删除时段的时段Id为空!");
+		}
 		Long mergeTimeId=Long.parseLong(data.get("mergeTimeId").toString());//合并时段的时段Id
+		if(!RegUtil.CheckParameter(mergeTimeId, "Long", null, false)){
+			LogUtil.getLogger().error("delete_time 合并时段的时段Id为空!");
+			return AmpcResult.build(1003, "合并时段的时段Id为空!");
+		}
 		String endDate=data.get("endDate").toString();//删除时段的结束时间
+		
 		Long scenarinoStatus=Long.parseLong(data.get("scenarinoStatus").toString());//情景状态
+		if(!RegUtil.CheckParameter(scenarinoStatus, "Long", null, false)){
+			LogUtil.getLogger().error("delete_time 情景状态为空!");
+			return AmpcResult.build(1003, "情景状态为空!");
+		}
 		Long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());//情景id
+		if(!RegUtil.CheckParameter(scenarinoId, "Long", null, false)){
+			LogUtil.getLogger().error("delete_time 情景id为空!");
+			return AmpcResult.build(1003, "情景id为空!");
+		}
 		String startDate=data.get("startDate").toString();//删除时段的开始时间
+	
 		Long userId=Long.parseLong(data.get("userId").toString());//用户的id
+		if(!RegUtil.CheckParameter(userId, "Long", null, false)){
+			LogUtil.getLogger().error("delete_time 用户的id为空!");
+			return AmpcResult.build(1003, "用户的id为空!");
+		}
 		String status=data.get("status").toString();//预案id
+		if(!RegUtil.CheckParameter(status, "String", null, false)){
+			LogUtil.getLogger().error("delete_time 预案id为空!");
+			return AmpcResult.build(1003, "预案id为空!");
+		}
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date timeEndDate=sdf.parse(endDate);
 		Date timeStartDate=sdf.parse(startDate);
@@ -442,6 +527,7 @@ public class AreaAndTimeController {
 								if(a!=0){ 
 									return AmpcResult.build(0, "delete_time success");
 								}else{
+									LogUtil.getLogger().error("delete_time 情景状态转换失败！");
 									return AmpcResult.build(1000, "情景状态转换失败",null);
 								}
 								}else{
@@ -453,6 +539,7 @@ public class AreaAndTimeController {
 							if(a!=0){ 
 								return AmpcResult.build(0, "delete_time success");
 							}else{
+								LogUtil.getLogger().error("delete_time 情景状态转换失败！");
 								return AmpcResult.build(1000, "情景状态转换失败",null);
 							}
 							}else{
@@ -467,10 +554,10 @@ public class AreaAndTimeController {
 				}
 		}
 		//查看修改时段状态是否成功
-		
-		return AmpcResult.build(1, "delete_time error");
+		LogUtil.getLogger().error("delete_time 修改时段状态异常！");
+		return AmpcResult.build(1000, "修改时段状态异常!");
 		}catch(Exception e){
-			LogUtil.getLogger().error("AreaAndTimeController 删除当前用户选择的时段节点异常！",e);
+			LogUtil.getLogger().error("delete_time 删除当前用户选择的时段节点异常！",e);
 			return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
@@ -484,8 +571,20 @@ public class AreaAndTimeController {
 		ClientUtil.SetCharsetAndHeader(request, response);
 		Map<String,Object> data=(Map)requestDate.get("data");
 		Long timeId=Long.parseLong(data.get("timeId").toString());
+		if(!RegUtil.CheckParameter(timeId, "Long", null, false)){
+			LogUtil.getLogger().error("delete_plan 时段id为空!");
+			return AmpcResult.build(1003, "时段id为空!");
+		}
 		Long planId=Long.parseLong(data.get("planId").toString());
+		if(!RegUtil.CheckParameter(planId, "Long", null, false)){
+			LogUtil.getLogger().error("delete_plan 预案id为空!");
+			return AmpcResult.build(1003, "预案id为空!");
+		}
 		Long userId=Long.parseLong(data.get("userId").toString());//用户的id
+		if(!RegUtil.CheckParameter(userId, "Long", null, false)){
+			LogUtil.getLogger().error("delete_plan 用户的id为空!");
+			return AmpcResult.build(1003, "用户的id为空!");
+		}
 		//修改时段中的预案
 		TTime update_pland = new TTime();
 		update_pland.setTimeId(timeId);
@@ -502,13 +601,14 @@ public class AreaAndTimeController {
 				int del_status=tPlanMeasureMapper.deleteByPlanId(planId);
 			}
 		}
-		return AmpcResult.build(0, "delete_plan success");
+		return AmpcResult.ok();
 		}else{
-		return AmpcResult.build(1, "delete_plan error");
+		LogUtil.getLogger().error("delete_plan 数据库删除预案异常！");
+		return AmpcResult.build(1000, "数据库删除预案异常！");
 		}
 		}catch(Exception e){
-			LogUtil.getLogger().error("AreaAndTimeController 删除当前时段的预案异常！",e);
-			return AmpcResult.build(1000, "参数错误",null);
+			LogUtil.getLogger().error("delete_plan 删除当前时段的预案异常！",e);
+			return AmpcResult.build(1001, "删除当前时段的预案异常",null);
 		}
 	}
 	
@@ -584,8 +684,16 @@ public class AreaAndTimeController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//情景Id
 			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());
+			if(!RegUtil.CheckParameter(scenarinoId, "Long", null, false)){
+				LogUtil.getLogger().error("get_areaAndTimeList 情景id为空!");
+				return AmpcResult.build(1003, "情景id为空!");
+			}
 			//用户的id  确定当前用户
 			Long userId=Long.valueOf(data.get("userId").toString());
+			if(!RegUtil.CheckParameter(userId, "Long", null, false)){
+				LogUtil.getLogger().error("get_areaAndTimeList 用户id为空!");
+				return AmpcResult.build(1003, "情景id为空!");
+			}
 			boolean isnew=true;
 			int timesize=0;
 			//添加信息到参数中
@@ -656,9 +764,9 @@ public class AreaAndTimeController {
 		    //返回结果
 			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("AreaAndTimeController 区域查询方法异常！",e);
+			LogUtil.getLogger().error("get_areaAndTimeList 区域查询方法异常！",e);
 			//返回错误信息
-			return AmpcResult.build(1000, "参数错误",null);
+			return AmpcResult.build(1001, "区域查询方法异常！",null);
 		}
 	}
 	
@@ -679,8 +787,16 @@ public class AreaAndTimeController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//区域Id
 			Long areaId=Long.valueOf(data.get("areaId").toString());
+			if(!RegUtil.CheckParameter(areaId, "Long", null, false)){
+				LogUtil.getLogger().error("get_areaList 区域id为空!");
+				return AmpcResult.build(1003, "区域id为空!");
+			}
 			//用户的id  确定当前用户
 			Long userId=Long.valueOf(data.get("userId").toString());
+			if(!RegUtil.CheckParameter(userId, "Long", null, false)){
+				LogUtil.getLogger().error("get_areaList 用户id为空!");
+				return AmpcResult.build(1003, "用户id为空!");
+			}
 			//添加信息到参数中
 			//查询全部的区域ID和区域名称
 			JSONObject obj=new JSONObject();
@@ -705,9 +821,9 @@ public class AreaAndTimeController {
 			obj.put("cityCodes", arr1);
 			obj.put("countyCodes", arr2);
 			//返回结果
-			return AmpcResult.build(0,"get_areaList success",obj);
+			return AmpcResult.ok(obj);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("AreaAndTimeController 区域查询接口异常！",e);
+			LogUtil.getLogger().error("get_areaList 区域查询接口异常！",e);
 			//返回错误信息
 			return AmpcResult.build(1000, "参数错误",null);
 		}
@@ -732,11 +848,27 @@ public class AreaAndTimeController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			TScenarinoAreaWithBLOBs area=new TScenarinoAreaWithBLOBs();
 			Long scenarinoStatus=Long.valueOf(data.get("scenarinoStatus").toString());
+			if(!RegUtil.CheckParameter(scenarinoStatus, "Long", null, false)){
+				LogUtil.getLogger().error("saveorupdate_area 情景状态为空!");
+				return AmpcResult.build(1003, "情景状态为空!");
+			}
 			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());
+			if(!RegUtil.CheckParameter(scenarinoId, "Long", null, false)){
+				LogUtil.getLogger().error("saveorupdate_area 情景id为空!");
+				return AmpcResult.build(1003, "情景id为空!");
+			}
 			//区域ID
 			String areaId=data.get("areaId").toString();
+			if(!RegUtil.CheckParameter(areaId, "String", null, false)){
+				LogUtil.getLogger().error("saveorupdate_area 区域id为空!");
+				return AmpcResult.build(1003, "区域id为空!");
+			}
 			//区域名称
 			area.setAreaName(data.get("areaName").toString());
+			if(!RegUtil.CheckParameter(data.get("areaName").toString(), "String", null, false)){
+				LogUtil.getLogger().error("saveorupdate_area 区域名称为空!");
+				return AmpcResult.build(1003, "区域名称为空!");
+			}
 			//用户的id  确定当前用户
 			area.setUserId(Long.parseLong(data.get("userId").toString()));
 			//省级区域代码数组
@@ -758,12 +890,14 @@ public class AreaAndTimeController {
 							if(a!=0){ 
 								return AmpcResult.ok(result);
 							}else{
+								LogUtil.getLogger().error("saveorupdate_area 情景状态转换失败！");
 								return AmpcResult.build(1000, "情景状态转换失败",null);
 							}
 							}else{
 								return AmpcResult.ok(result);
 							}	  
 				  }
+				LogUtil.getLogger().error("saveorupdate_area 添加时段失败！");
 				    return AmpcResult.build(1000, "添加时段失败",null);
 			}else{ 
 				//情景ID
@@ -806,15 +940,18 @@ public class AreaAndTimeController {
 							if(a!=0){ 
 								return AmpcResult.ok(obj);
 							}else{
+								 LogUtil.getLogger().error("saveorupdate_area 情景状态转换失败！");
 								return AmpcResult.build(1000, "情景状态转换失败",null);
 							}
 							}else{
 								return AmpcResult.ok(obj);
 							}	  
 				  }
+				  LogUtil.getLogger().error("saveorupdate_area 添加时段失败！");
 				    return AmpcResult.build(1000, "添加时段失败",null);
 				}else{
 					//添加失败
+					LogUtil.getLogger().error("saveorupdate_area 添加区域失败！");
 					return AmpcResult.build(1000, "添加区域失败",null);
 				}
 			
@@ -845,10 +982,26 @@ public class AreaAndTimeController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//要删除的任务集合
 			String areaIds=data.get("areaIds").toString();
+			if(!RegUtil.CheckParameter(areaIds, "String", null, false)){
+				LogUtil.getLogger().error("delete_area 任务集合为空!");
+				return AmpcResult.build(1003, "任务集合为空!");
+			}
 			Long scenarinoStatus=Long.valueOf(data.get("scenarinoStatus").toString());
+			if(!RegUtil.CheckParameter(scenarinoStatus, "Long", null, false)){
+				LogUtil.getLogger().error("delete_area 情景状态为空!");
+				return AmpcResult.build(1003, "情景状态为空!");
+			}
 			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());		
+			if(!RegUtil.CheckParameter(scenarinoId, "Long", null, false)){
+				LogUtil.getLogger().error("delete_area 情景id为空!");
+				return AmpcResult.build(1003, "情景id为空!");
+			}
 			//用户的id  确定当前用户
 			Integer userId=Integer.valueOf(data.get("userId").toString());
+			if(!RegUtil.CheckParameter(userId, "Integer", null, false)){
+				LogUtil.getLogger().error("delete_area 用户id为空!");
+				return AmpcResult.build(1003, "用户id为空!");
+			}
 			//将得到的数据拆分 放入集合中
 			List<Long> areaIdss=new ArrayList<Long>();
 			if(areaIds.indexOf(",")!=-1){
@@ -897,18 +1050,20 @@ public class AreaAndTimeController {
 				if(a!=0){ 
 				return AmpcResult.ok(s);
 				}else{
+					LogUtil.getLogger().error("delete_area 情景状态转换失败！");
 					return AmpcResult.build(1000, "情景状态转换失败",null);
 				}
 				}else{
 					return AmpcResult.ok(s);
 				}
 			}else{
+				LogUtil.getLogger().error("delete_area 区域删除失败！");
 			return AmpcResult.build(1000, "区域删除失败",null);
 			}
 		} catch (Exception e) {
-			LogUtil.getLogger().error("AreaAndTimeController 区域删除方法异常！",e);
+			LogUtil.getLogger().error("delete_area 区域删除方法异常！",e);
 			//返回错误信息
-			return AmpcResult.build(1000, "参数错误",null);
+			return AmpcResult.build(1001, "参数错误",null);
 		}
 	}
 	
@@ -934,10 +1089,22 @@ public class AreaAndTimeController {
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//要添加的区域名称
 			String areaName=data.get("areaName").toString();
+			if(!RegUtil.CheckParameter(areaName, "String", null, false)){
+				LogUtil.getLogger().error("check_areaname 区域名称为空!");
+				return AmpcResult.build(1003, "区域名称为空!");
+			}
 			//用户的id  确定当前用户
 			Integer userId=Integer.valueOf(data.get("userId").toString());
+			if(!RegUtil.CheckParameter(userId, "Integer", null, false)){
+				LogUtil.getLogger().error("check_areaname 用户id为空!");
+				return AmpcResult.build(1003, "用户id为空!");
+			}
 			//情景Id
-			long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());
+			Long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());
+			if(!RegUtil.CheckParameter(scenarinoId, "scenarinoId", null, false)){
+				LogUtil.getLogger().error("check_areaname 情景Id为空!");
+				return AmpcResult.build(1003, "情景Id为空!");
+			}
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("scenarinoId", scenarinoId);
 			map.put("areaName", areaName);
@@ -946,264 +1113,268 @@ public class AreaAndTimeController {
 			//返回true 表示可用  返回false 已存在
 			return result==0?AmpcResult.ok(true):AmpcResult.build(1000, "名称已存在",false);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("AreaAndTimeController 添加区域对名称重复判断异常！",e);
+			LogUtil.getLogger().error("check_areaname 添加区域对名称重复判断异常！",e);
 			//返回错误信息
-			return AmpcResult.build(1000, "参数错误",null);
+			return AmpcResult.build(1001, "添加区域对名称重复判断异常",null);
 		}
 	}
 	
 
 
-@RequestMapping("area/find_areas")//不用
-@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
-public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
-	try{
-	ClientUtil.SetCharsetAndHeader(request, response);
-	Map<String,Object> data=(Map)requestDate.get("data");
-	Long userId=Long.parseLong(data.get("userId").toString());//用户id
-	TUser user=tUserMapper.selectByPrimaryKey(userId);
-	
-	//根据情景id查询所有的区域
-	Long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());//情景id
-	TScenarinoAreaWithBLOBs tScenarinoArea=new TScenarinoAreaWithBLOBs();
-	tScenarinoArea.setScenarinoDetailId(scenarinoId);
-	List<TScenarinoAreaWithBLOBs> arealist=tScenarinoAreaMapper.selectByEntity(tScenarinoArea);
-	
-	//查询所有省市区
-	TAddress tAddress=new TAddress();
-	List<TAddress> prolist=tAddressMapper.selectBLevel(tAddress);
-	JSONArray arr=new JSONArray();
-	TScenarinoAreaWithBLOBs tsa=new TScenarinoAreaWithBLOBs();
-	if(data.get("areaId")!=null && data.get("areaId")!=""){
-		Long areaId =Long.parseLong(data.get("areaId").toString());//用户id
-		TScenarinoAreaWithBLOBs areas=tScenarinoAreaMapper.selectByPrimaryKey(areaId);
-		
-		 Iterator<TScenarinoAreaWithBLOBs> areaIter = arealist.iterator();  
-		while(areaIter.hasNext()){
-			TScenarinoAreaWithBLOBs area=areaIter.next();
-			if(area.getScenarinoAreaId().equals(areas.getScenarinoAreaId())){
-				areaIter.remove();
-			}
-		}
-		
-		
-		
-	for(TAddress address:prolist){
-		
-		JSONObject obj=new JSONObject();
-		
-		//省
-		if(address.getAddressLevel().equals("1")){
-			obj.put("adcode", (address.getProvinceCode()+"0000"));
-			obj.put("name",  address.getAddressName());
-			obj.put("code", address.getAddressCode());
-			for(TScenarinoAreaWithBLOBs area:arealist){
-				if(area.getProvinceCodes()!=null&area.getProvinceCodes()!=""){
-				JSONArray Province=JSONArray.fromObject(area.getProvinceCodes());
-				for (int i = 0; i < Province.size(); i++) {
-					JSONObject ob  = (JSONObject) Province.get(i);
-					String obs=ob.toString();
-					if(obs.indexOf(address.getProvinceCode().toString()+"0000")!=-1){
-						String couname="("+(String) area.getAreaName()+")";
-						obj.put("name",(address.getAddressName())+couname);
-						obj.put("chkDisabled", true);
-					}
-					}
-				}
-			}
-			obj.put("level", address.getAddressLevel());
-			if(user.getProvinceCode().equals(address.getAddressCode())){
-				obj.put("open",true);
-			}
-			if(areas.getProvinceCodes()!=null&areas.getProvinceCodes()!=""){
-			JSONArray Province=JSONArray.fromObject(areas.getProvinceCodes());
-			for (int i = 0; i < Province.size(); i++) {
-				JSONObject ob  = (JSONObject) Province.get(i);
-				String obs=ob.toString();
-			if(obs.indexOf(address.getProvinceCode().toString()+"0000")!=-1){	
-				obj.put("checked", true);
-			}
-			}
-			}
-		}//省
-		
-		//市
-		if(address.getAddressLevel().equals("2")){
-			obj.put("adcode", (address.getProvinceCode()+address.getCityCode()+"00"));
-			obj.put("padcode", (address.getProvinceCode()+"0000"));
-			obj.put("name",address.getAddressName());
-			obj.put("code", address.getAddressCode());
-			for(TScenarinoAreaWithBLOBs area:arealist){
-				if(area.getCityCodes()!=null&&area.getCityCodes()!=""){
-			JSONArray Province=JSONArray.fromObject(area.getCityCodes());
-			for (int i = 0; i < Province.size(); i++) {
-				JSONObject ob  = (JSONObject) Province.get(i);
-				String obs=ob.toString();
-				String code=address.getProvinceCode().toString()+address.getCityCode().toString();
-				code+="00";
-				if(obs.indexOf(code)!=-1){
-					String couname="("+(String) area.getAreaName()+")";
-					obj.put("name",(address.getAddressName())+couname);
-					obj.put("chkDisabled", true);
-				}
-				}
-				}
-			}
-			obj.put("level", address.getAddressLevel());
-			if(user.getCityCode().equals(address.getAddressCode())){
-				obj.put("open",true);
-			}
-			if(areas.getCityCodes()!=null&&areas.getCityCodes()!=""){
-			JSONArray Province=JSONArray.fromObject(areas.getCityCodes());
-			for (int i = 0; i < Province.size(); i++) {
-				JSONObject ob  = (JSONObject) Province.get(i);
-				String obs=ob.toString();
-				String code=address.getProvinceCode().toString()+address.getCityCode().toString();
-				code+="00";
-			if(obs.indexOf(code)!=-1){	
-				obj.put("checked", true);
-			}
-			}
-			}
-		}//市
-		
-		if(address.getAddressLevel().equals("3")){
-			obj.put("adcode", address.getProvinceCode()+address.getCityCode()+address.getCountyCode());
-			obj.put("padcode", (address.getProvinceCode()+address.getCityCode()+"00"));
-			obj.put("name", address.getAddressName());
-			obj.put("code", address.getAddressCode());
-			for(TScenarinoAreaWithBLOBs area:arealist){
-			if(area.getCountyCodes()!=null&&area.getCountyCodes()!=""){
-				JSONArray Province=JSONArray.fromObject(area.getCountyCodes());
-			for (int i = 0; i < Province.size(); i++) {
-				JSONObject ob  = (JSONObject) Province.get(i);
-				String obs=ob.toString();
-				String code=address.getProvinceCode().toString()+address.getCityCode().toString()+address.getCountyCode().toString();
-				if(obs.indexOf(code)!=-1){
-					String couname="("+(String) area.getAreaName()+")";
-					obj.put("name",(address.getAddressName())+couname);
-					obj.put("chkDisabled", true);
-
-				}
-				}
-			}
-			}
-			
-			obj.put("level", address.getAddressLevel());
-			if(areas.getCountyCodes()!=null&&areas.getCountyCodes()!=""){
-			JSONArray Province=JSONArray.fromObject(areas.getCountyCodes());
-			for (int i = 0; i < Province.size(); i++) {
-				JSONObject ob  = (JSONObject) Province.get(i);
-				String obs=ob.toString();
-				String code=address.getProvinceCode().toString()+address.getCityCode().toString()+address.getCountyCode().toString();
-			if(obs.indexOf(code)!=-1){	
-				obj.put("checked", true);
-			}
-			}
-			}
-		}
-		arr.add(obj);
-	}
-	
-	//如果没有区域id
-	}else{
-		for(TAddress address:prolist){
-			
-			JSONObject obj=new JSONObject();
-			
-			//省
-			if(address.getAddressLevel().equals("1")){
-				obj.put("adcode", (address.getProvinceCode()+"0000"));
-				obj.put("name",  address.getAddressName());
-				obj.put("code", address.getAddressCode());
-				for(TScenarinoAreaWithBLOBs area:arealist){
-					if(area.getProvinceCodes()!=null&area.getProvinceCodes()!=""){
-					JSONArray Province=JSONArray.fromObject(area.getProvinceCodes());
-					for (int i = 0; i < Province.size(); i++) {
-						JSONObject ob  = (JSONObject) Province.get(i);
-						String obs=ob.toString();
-						if(obs.indexOf(address.getProvinceCode().toString()+"0000")!=-1){
-							String couname="("+(String) area.getAreaName()+")";
-							obj.put("name",(address.getAddressName())+couname);
-							obj.put("chkDisabled", true);
-						}
-						}
-					}
-				}
-				obj.put("level", address.getAddressLevel());
-				if(user.getProvinceCode().equals(address.getAddressCode())){
-					obj.put("open",true);
-				}
-				
-			
-			}//省
-			
-			//市
-			if(address.getAddressLevel().equals("2")){
-				obj.put("adcode", (address.getProvinceCode()+address.getCityCode()+"00"));
-				obj.put("padcode", (address.getProvinceCode()+"0000"));
-				obj.put("name",address.getAddressName());
-				obj.put("code", address.getAddressCode());
-				for(TScenarinoAreaWithBLOBs area:arealist){
-					if(area.getCityCodes()!=null&&area.getCityCodes()!=""){
-				JSONArray Province=JSONArray.fromObject(area.getCityCodes());
-				for (int i = 0; i < Province.size(); i++) {
-					JSONObject ob  = (JSONObject) Province.get(i);
-					String obs=ob.toString();
-					String code=address.getProvinceCode().toString()+address.getCityCode().toString();
-					code+="00";
-					if(obs.indexOf(code)!=-1){
-						String couname="("+(String) area.getAreaName()+")";
-						obj.put("name",(address.getAddressName())+couname);
-						obj.put("chkDisabled", true);
-					}
-					}
-					}
-				}
-				obj.put("level", address.getAddressLevel());
-				if(user.getCityCode().equals(address.getAddressCode())){
-					obj.put("open",true);
-				}
-			}//市
-			
-			if(address.getAddressLevel().equals("3")){
-				obj.put("adcode", address.getProvinceCode()+address.getCityCode()+address.getCountyCode());
-				obj.put("padcode", (address.getProvinceCode()+address.getCityCode()+"00"));
-				obj.put("name", address.getAddressName());
-				obj.put("code", address.getAddressCode());
-				for(TScenarinoAreaWithBLOBs area:arealist){
-				if(area.getCountyCodes()!=null&&area.getCountyCodes()!=""){
-					JSONArray Province=JSONArray.fromObject(area.getCountyCodes());
-				for (int i = 0; i < Province.size(); i++) {
-					JSONObject ob  = (JSONObject) Province.get(i);
-					String obs=ob.toString();
-					String code=address.getProvinceCode().toString()+address.getCityCode().toString()+address.getCountyCode().toString();
-					if(obs.indexOf(code)!=-1){
-						String couname="("+(String) area.getAreaName()+")";
-						obj.put("name",(address.getAddressName())+couname);
-						obj.put("chkDisabled", true);
-
-					}
-					}
-				}
-				}
-				obj.put("level", address.getAddressLevel());
-				
-			}
-			arr.add(obj);
-
-			
-		}
-		
-		
-		
-	}
-	return AmpcResult.build(0, "find_areas success",arr);	
-	}catch(Exception e){
-		LogUtil.getLogger().error("AreaAndTimeController 创建预案异常！",e);
-		return AmpcResult.build(1, "find_areas error");	
-	}
-}
+//@RequestMapping("area/find_areas")//不用
+//@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED) 
+//public AmpcResult find_areas(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+//	try{
+//	ClientUtil.SetCharsetAndHeader(request, response);
+//	Map<String,Object> data=(Map)requestDate.get("data");
+//	Long userId=Long.parseLong(data.get("userId").toString());//用户id
+//	if(!RegUtil.CheckParameter(userId, "Long", null, false)){
+//		LogUtil.getLogger().error("check_areaname 用户id为空!");
+//		return AmpcResult.build(1003, "用户id为空!");
+//	}
+//	TUser user=tUserMapper.selectByPrimaryKey(userId);
+//	
+//	//根据情景id查询所有的区域
+//	Long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());//情景id
+//	TScenarinoAreaWithBLOBs tScenarinoArea=new TScenarinoAreaWithBLOBs();
+//	tScenarinoArea.setScenarinoDetailId(scenarinoId);
+//	List<TScenarinoAreaWithBLOBs> arealist=tScenarinoAreaMapper.selectByEntity(tScenarinoArea);
+//	
+//	//查询所有省市区
+//	TAddress tAddress=new TAddress();
+//	List<TAddress> prolist=tAddressMapper.selectBLevel(tAddress);
+//	JSONArray arr=new JSONArray();
+//	TScenarinoAreaWithBLOBs tsa=new TScenarinoAreaWithBLOBs();
+//	if(data.get("areaId")!=null && data.get("areaId")!=""){
+//		Long areaId =Long.parseLong(data.get("areaId").toString());//用户id
+//		TScenarinoAreaWithBLOBs areas=tScenarinoAreaMapper.selectByPrimaryKey(areaId);
+//		
+//		 Iterator<TScenarinoAreaWithBLOBs> areaIter = arealist.iterator();  
+//		while(areaIter.hasNext()){
+//			TScenarinoAreaWithBLOBs area=areaIter.next();
+//			if(area.getScenarinoAreaId().equals(areas.getScenarinoAreaId())){
+//				areaIter.remove();
+//			}
+//		}
+//		
+//		
+//		
+//	for(TAddress address:prolist){
+//		
+//		JSONObject obj=new JSONObject();
+//		
+//		//省
+//		if(address.getAddressLevel().equals("1")){
+//			obj.put("adcode", (address.getProvinceCode()+"0000"));
+//			obj.put("name",  address.getAddressName());
+//			obj.put("code", address.getAddressCode());
+//			for(TScenarinoAreaWithBLOBs area:arealist){
+//				if(area.getProvinceCodes()!=null&area.getProvinceCodes()!=""){
+//				JSONArray Province=JSONArray.fromObject(area.getProvinceCodes());
+//				for (int i = 0; i < Province.size(); i++) {
+//					JSONObject ob  = (JSONObject) Province.get(i);
+//					String obs=ob.toString();
+//					if(obs.indexOf(address.getProvinceCode().toString()+"0000")!=-1){
+//						String couname="("+(String) area.getAreaName()+")";
+//						obj.put("name",(address.getAddressName())+couname);
+//						obj.put("chkDisabled", true);
+//					}
+//					}
+//				}
+//			}
+//			obj.put("level", address.getAddressLevel());
+//			if(user.getProvinceCode().equals(address.getAddressCode())){
+//				obj.put("open",true);
+//			}
+//			if(areas.getProvinceCodes()!=null&areas.getProvinceCodes()!=""){
+//			JSONArray Province=JSONArray.fromObject(areas.getProvinceCodes());
+//			for (int i = 0; i < Province.size(); i++) {
+//				JSONObject ob  = (JSONObject) Province.get(i);
+//				String obs=ob.toString();
+//			if(obs.indexOf(address.getProvinceCode().toString()+"0000")!=-1){	
+//				obj.put("checked", true);
+//			}
+//			}
+//			}
+//		}//省
+//		
+//		//市
+//		if(address.getAddressLevel().equals("2")){
+//			obj.put("adcode", (address.getProvinceCode()+address.getCityCode()+"00"));
+//			obj.put("padcode", (address.getProvinceCode()+"0000"));
+//			obj.put("name",address.getAddressName());
+//			obj.put("code", address.getAddressCode());
+//			for(TScenarinoAreaWithBLOBs area:arealist){
+//				if(area.getCityCodes()!=null&&area.getCityCodes()!=""){
+//			JSONArray Province=JSONArray.fromObject(area.getCityCodes());
+//			for (int i = 0; i < Province.size(); i++) {
+//				JSONObject ob  = (JSONObject) Province.get(i);
+//				String obs=ob.toString();
+//				String code=address.getProvinceCode().toString()+address.getCityCode().toString();
+//				code+="00";
+//				if(obs.indexOf(code)!=-1){
+//					String couname="("+(String) area.getAreaName()+")";
+//					obj.put("name",(address.getAddressName())+couname);
+//					obj.put("chkDisabled", true);
+//				}
+//				}
+//				}
+//			}
+//			obj.put("level", address.getAddressLevel());
+//			if(user.getCityCode().equals(address.getAddressCode())){
+//				obj.put("open",true);
+//			}
+//			if(areas.getCityCodes()!=null&&areas.getCityCodes()!=""){
+//			JSONArray Province=JSONArray.fromObject(areas.getCityCodes());
+//			for (int i = 0; i < Province.size(); i++) {
+//				JSONObject ob  = (JSONObject) Province.get(i);
+//				String obs=ob.toString();
+//				String code=address.getProvinceCode().toString()+address.getCityCode().toString();
+//				code+="00";
+//			if(obs.indexOf(code)!=-1){	
+//				obj.put("checked", true);
+//			}
+//			}
+//			}
+//		}//市
+//		
+//		if(address.getAddressLevel().equals("3")){
+//			obj.put("adcode", address.getProvinceCode()+address.getCityCode()+address.getCountyCode());
+//			obj.put("padcode", (address.getProvinceCode()+address.getCityCode()+"00"));
+//			obj.put("name", address.getAddressName());
+//			obj.put("code", address.getAddressCode());
+//			for(TScenarinoAreaWithBLOBs area:arealist){
+//			if(area.getCountyCodes()!=null&&area.getCountyCodes()!=""){
+//				JSONArray Province=JSONArray.fromObject(area.getCountyCodes());
+//			for (int i = 0; i < Province.size(); i++) {
+//				JSONObject ob  = (JSONObject) Province.get(i);
+//				String obs=ob.toString();
+//				String code=address.getProvinceCode().toString()+address.getCityCode().toString()+address.getCountyCode().toString();
+//				if(obs.indexOf(code)!=-1){
+//					String couname="("+(String) area.getAreaName()+")";
+//					obj.put("name",(address.getAddressName())+couname);
+//					obj.put("chkDisabled", true);
+//
+//				}
+//				}
+//			}
+//			}
+//			
+//			obj.put("level", address.getAddressLevel());
+//			if(areas.getCountyCodes()!=null&&areas.getCountyCodes()!=""){
+//			JSONArray Province=JSONArray.fromObject(areas.getCountyCodes());
+//			for (int i = 0; i < Province.size(); i++) {
+//				JSONObject ob  = (JSONObject) Province.get(i);
+//				String obs=ob.toString();
+//				String code=address.getProvinceCode().toString()+address.getCityCode().toString()+address.getCountyCode().toString();
+//			if(obs.indexOf(code)!=-1){	
+//				obj.put("checked", true);
+//			}
+//			}
+//			}
+//		}
+//		arr.add(obj);
+//	}
+//	
+//	//如果没有区域id
+//	}else{
+//		for(TAddress address:prolist){
+//			
+//			JSONObject obj=new JSONObject();
+//			
+//			//省
+//			if(address.getAddressLevel().equals("1")){
+//				obj.put("adcode", (address.getProvinceCode()+"0000"));
+//				obj.put("name",  address.getAddressName());
+//				obj.put("code", address.getAddressCode());
+//				for(TScenarinoAreaWithBLOBs area:arealist){
+//					if(area.getProvinceCodes()!=null&area.getProvinceCodes()!=""){
+//					JSONArray Province=JSONArray.fromObject(area.getProvinceCodes());
+//					for (int i = 0; i < Province.size(); i++) {
+//						JSONObject ob  = (JSONObject) Province.get(i);
+//						String obs=ob.toString();
+//						if(obs.indexOf(address.getProvinceCode().toString()+"0000")!=-1){
+//							String couname="("+(String) area.getAreaName()+")";
+//							obj.put("name",(address.getAddressName())+couname);
+//							obj.put("chkDisabled", true);
+//						}
+//						}
+//					}
+//				}
+//				obj.put("level", address.getAddressLevel());
+//				if(user.getProvinceCode().equals(address.getAddressCode())){
+//					obj.put("open",true);
+//				}
+//				
+//			
+//			}//省
+//			
+//			//市
+//			if(address.getAddressLevel().equals("2")){
+//				obj.put("adcode", (address.getProvinceCode()+address.getCityCode()+"00"));
+//				obj.put("padcode", (address.getProvinceCode()+"0000"));
+//				obj.put("name",address.getAddressName());
+//				obj.put("code", address.getAddressCode());
+//				for(TScenarinoAreaWithBLOBs area:arealist){
+//					if(area.getCityCodes()!=null&&area.getCityCodes()!=""){
+//				JSONArray Province=JSONArray.fromObject(area.getCityCodes());
+//				for (int i = 0; i < Province.size(); i++) {
+//					JSONObject ob  = (JSONObject) Province.get(i);
+//					String obs=ob.toString();
+//					String code=address.getProvinceCode().toString()+address.getCityCode().toString();
+//					code+="00";
+//					if(obs.indexOf(code)!=-1){
+//						String couname="("+(String) area.getAreaName()+")";
+//						obj.put("name",(address.getAddressName())+couname);
+//						obj.put("chkDisabled", true);
+//					}
+//					}
+//					}
+//				}
+//				obj.put("level", address.getAddressLevel());
+//				if(user.getCityCode().equals(address.getAddressCode())){
+//					obj.put("open",true);
+//				}
+//			}//市
+//			
+//			if(address.getAddressLevel().equals("3")){
+//				obj.put("adcode", address.getProvinceCode()+address.getCityCode()+address.getCountyCode());
+//				obj.put("padcode", (address.getProvinceCode()+address.getCityCode()+"00"));
+//				obj.put("name", address.getAddressName());
+//				obj.put("code", address.getAddressCode());
+//				for(TScenarinoAreaWithBLOBs area:arealist){
+//				if(area.getCountyCodes()!=null&&area.getCountyCodes()!=""){
+//					JSONArray Province=JSONArray.fromObject(area.getCountyCodes());
+//				for (int i = 0; i < Province.size(); i++) {
+//					JSONObject ob  = (JSONObject) Province.get(i);
+//					String obs=ob.toString();
+//					String code=address.getProvinceCode().toString()+address.getCityCode().toString()+address.getCountyCode().toString();
+//					if(obs.indexOf(code)!=-1){
+//						String couname="("+(String) area.getAreaName()+")";
+//						obj.put("name",(address.getAddressName())+couname);
+//						obj.put("chkDisabled", true);
+//
+//					}
+//					}
+//				}
+//				}
+//				obj.put("level", address.getAddressLevel());
+//				
+//			}
+//			arr.add(obj);
+//
+//			
+//		}
+//		
+//		
+//		
+//	}
+//	return AmpcResult.build(0, "find_areas success",arr);	
+//	}catch(Exception e){
+//		LogUtil.getLogger().error("AreaAndTimeController 创建预案异常！",e);
+//		return AmpcResult.build(1, "find_areas error");	
+//	}
+//}
 
 
 /**
@@ -1260,10 +1431,10 @@ public AmpcResult find_areas_new (@RequestBody Map<String,Object> requestDate,Ht
         }
         arr.add(obj);
     }
-    return AmpcResult.build(0, "find_areas success",arr);	
+    return AmpcResult.ok(arr);	
 	}catch(Exception e){
-		LogUtil.getLogger().error("AreaAndTimeController 查询所有省市区code异常！",e);
-		return AmpcResult.build(1000, "find_areas erorr");	
+		LogUtil.getLogger().error("find_areas_new 查询所有省市区code异常！",e);
+		return AmpcResult.build(1001, "查询所有省市区code异常！");	
 	}
 }
 /**
@@ -1329,8 +1500,8 @@ public AmpcResult find_areaAll (@RequestBody Map<String,Object> requestDate,Http
 
 	return AmpcResult.build(0, "find_areas success",arr);
 	}catch(Exception e){
-		LogUtil.getLogger().error("AreaAndTimeController 查询某个区域以外区域的省市区code异常！",e);
-		return AmpcResult.build(1000, "find_areas erorr");	
+		LogUtil.getLogger().error("find_areaAll 查询某个区域以外区域的省市区code异常！",e);
+		return AmpcResult.build(1001, "查询某个区域以外区域的省市区code异常！");	
 	}
 }
 
