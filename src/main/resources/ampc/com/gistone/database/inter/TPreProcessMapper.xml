@@ -12,6 +12,7 @@
     <result column="ADD_TIME" property="addTime" jdbcType="DATE" />
     <result column="UPDATE_TIME" property="updateTime" jdbcType="DATE" />
     <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="DATE" property="date" jdbcType="DATE" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.preprocess.concn.ScenarinoEntity" extends="BaseResultMap" >
     <result column="CONTENT" property="content" jdbcType="CLOB" />
@@ -181,9 +182,15 @@
 		"CONTENT",
 		"ADD_TIME",
 		"UPDATE_TIME",
-		"USER_ID"
+		"USER_ID",
 	    from ${tableName} where "SID"=#{sId,jdbcType=DECIMAL} AND "MODE"=#{mode,jdbcType=VARCHAR} AND "CITY_STATION"=#{city_station,jdbcType=VARCHAR}  
 	    AND "DOMAINID"=#{domainId,jdbcType=DECIMAL} AND "DOMAIN"=#{domain,jdbcType=DECIMAL}
+	  <if test="date != null" >
+       AND "DATE" = #{date,jdbcType=DATE}
+      </if>
+         <if test="day != null" >
+       AND "DAY"=#{day,jdbcType=DATE}
+      </if>
  </select>
  <select id="selectBystandard" parameterType="hashMap" resultMap="ResultMapWithBLOBs">
  	select 
@@ -199,5 +206,20 @@
 		"USER_ID"
 	    from ${tableName} where "SID"=#{sId,jdbcType=DECIMAL} AND "MODE"=#{mode,jdbcType=VARCHAR} AND "CITY_STATION"=#{city_station,jdbcType=VARCHAR}  
 	    AND "DOMAINID"=#{domainId,jdbcType=DECIMAL} AND "DOMAIN"=#{domain,jdbcType=DECIMAL}
+ </select>
+ 
+  <select id="selectBysome2" parameterType="hashMap" resultMap="ResultMapWithBLOBs">
+ 	select 
+	 	"ID",
+		"MODE",
+		"CITY_STATION",
+		"CONTENT",
+		"ADD_TIME",
+		"UPDATE_TIME",
+		"DATE"
+	    from ${tableName} where "MODE"=#{mode,jdbcType=VARCHAR} AND "CITY_STATION"=#{city_station,jdbcType=VARCHAR}  
+	  <if test="date != null" >
+       AND "DATE" = #{date,jdbcType=DATE}
+      </if>
  </select>
 </mapper>
