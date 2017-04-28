@@ -10,26 +10,31 @@ import org.springframework.stereotype.Component;
 @PropertySource(value = "classpath:/config.properties")
 /**
  * 路径帮助类
+ * 
  * @author WangShanxi
  */
 public class ConfigUtil {
-	//措施的减排分析Url
+	// 措施的减排分析Url
 	@Value("${jp.csjpURL}")
-    private String csjpURL;
-	//区域的减排分析Url
+	private String csjpURL;
+	// 区域的减排分析Url
 	@Value("${jp.areaURL}")
-    private String areaURL;
-	//区域状态的减排url
+	private String areaURL;
+	// 区域状态的减排url
 	@Value("${jp.areaStatusURL}")
-    private String areaStatusURL;
-	
-	//减排计算获取actionlist的url
+	private String areaStatusURL;
+
+	// 减排计算获取actionlist的url
 	@Value("${jp.actionlistURL}")
 	private String actionlistURL;
-	
-	
-	
-	
+
+	// 是否调用外部的预处理接口
+	@Value("${jp.preproEnable}")
+	private boolean preproEnable;
+
+	// 调用外部的预处理接口时使用的URL
+	@Value("${jp.preproURL}")
+	private String preproURL;
 
 	public String getActionlistURL() {
 		return actionlistURL;
@@ -47,6 +52,12 @@ public class ConfigUtil {
 		return areaStatusURL;
 	}
 
-	
-    
+	public boolean isPreproEnable() {
+		return preproEnable;
+	}
+
+	public String getPreproURL() {
+		return preproURL;
+	}
+
 }

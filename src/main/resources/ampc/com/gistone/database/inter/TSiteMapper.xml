@@ -83,4 +83,14 @@
     where SITE_CODE IS NOT NULL AND STATION_ID IS NOT NULL AND STATION_NAME IS NOT NULL AND LAT IS NOT NULL AND LON IS NOT NULL
   </select>
   
+  <select id="selectBySiteCodeList" resultType="String" parameterType="hashMap" >
+    select STATION_ID
+    from T_SITE
+    where SITE_CODE IS NOT NULL AND STATION_ID IS NOT NULL AND STATION_NAME IS NOT NULL AND LAT IS NOT NULL AND LON IS NOT NULL AND 
+   	  <foreach collection="siteCodeList" item="siteCode" index="index" open="(" close=")" separator=" OR ">
+      	INSTR(SITE_CODE, #{siteCode,jdbcType=VARCHAR}) = 1 
+      </foreach>
+    
+  </select>
+  
 </mapper>

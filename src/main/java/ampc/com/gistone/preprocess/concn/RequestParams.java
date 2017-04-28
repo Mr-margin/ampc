@@ -10,7 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import ampc.com.gistone.util.JsonUtil;
 
 public class RequestParams {
-	
+
 	private final static Logger logger = LoggerFactory.getLogger(RequestParams.class);
 
 	private int userId;
@@ -18,15 +18,18 @@ public class RequestParams {
 	private int missionId;
 	private int scenarioId;
 	private int domain;
-	private List date;
+	private List<String> date;
 	private String timePoint;
 	private String mode;
 	private List filter;
-	
-	public RequestParams() {}
-	
-	public RequestParams(int userId, int domainId, int missionId, int scenarioId, int domain, 
-			List date, String timePoint, String mode, List filter) {
+	private int year;
+	private boolean type; // true代表基准情景 false代表非基准
+
+	public RequestParams() {
+	}
+
+	public RequestParams(int userId, int domainId, int missionId, int scenarioId, int domain, List date,
+			String timePoint) {
 		this.userId = userId;
 		this.domainId = domainId;
 		this.missionId = missionId;
@@ -34,10 +37,8 @@ public class RequestParams {
 		this.domain = domain;
 		this.date = date;
 		this.timePoint = timePoint;
-		this.mode = mode;
-		this.filter = filter;
 	}
-	
+
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		try {
@@ -96,11 +97,11 @@ public class RequestParams {
 		this.domain = domain;
 	}
 
-	public List getDate() {
+	public List<String> getDate() {
 		return date;
 	}
 
-	public void setDate(List date) {
+	public void setDate(List<String> date) {
 		this.date = date;
 	}
 
@@ -132,6 +133,20 @@ public class RequestParams {
 		return logger;
 	}
 
-	
-	
+	public int getYear() {
+		return year;
+	}
+
+	public void setYear(int year) {
+		this.year = year;
+	}
+
+	public boolean isType() {
+		return type;
+	}
+
+	public void setType(boolean type) {
+		this.type = type;
+	}
+
 }
