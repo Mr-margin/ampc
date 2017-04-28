@@ -35,6 +35,7 @@ import ampc.com.gistone.preprocess.obs.entity.ObsBean;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.LogUtil;
+import ampc.com.gistone.util.RegUtil;
 
 @RestController
 @RequestMapping
@@ -67,8 +68,20 @@ public class AppraisalController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			Integer userId=Integer.valueOf(data.get("userId").toString());
+			if(!RegUtil.CheckParameter(userId, "Integer", null, false)){
+				LogUtil.getLogger().error("find_appraisal  用户名为空!");
+				return AmpcResult.build(1003, "用户名为空!");
+			}
 			Long missionId=Long.valueOf(data.get("missionId").toString());
+			if(!RegUtil.CheckParameter(missionId, "Long", null, false)){
+				LogUtil.getLogger().error("find_appraisal  任务id为空!");
+				return AmpcResult.build(1003, "任务id为空!");
+			}
 			String mode=data.get("mode").toString();
+			if(!RegUtil.CheckParameter(mode, "String", null, false)){
+				LogUtil.getLogger().error("find_appraisal  站点类型为空!");
+				return AmpcResult.build(1003, "站点类型为空!");
+			}
 			String cityStation;
 			if("city".equals(mode)){
 				cityStation=data.get("cityStation").toString().substring(0, 4);	//检测站点具体值
@@ -288,16 +301,40 @@ public class AppraisalController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			Long userId=Long.valueOf(data.get("userId").toString());
+			if(!RegUtil.CheckParameter(userId, "Long", null, false)){
+				LogUtil.getLogger().error("find_vertical  用户id为空!");
+				return AmpcResult.build(1003, "用户id为空!");
+			}
 			Long missionId=Long.valueOf(data.get("missionId").toString());
+			if(!RegUtil.CheckParameter(missionId, "Long", null, false)){
+				LogUtil.getLogger().error("find_vertical  任务id为空!");
+				return AmpcResult.build(1003, "任务id为空!");
+			}
 			String mode=data.get("mode").toString();
+			if(!RegUtil.CheckParameter(mode, "String", null, false)){
+				LogUtil.getLogger().error("find_vertical  站点类型为空!");
+				return AmpcResult.build(1003, "站点类型为空!");
+			}
 			String time=data.get("time").toString();
+			if(!RegUtil.CheckParameter(time, "String", null, false)){
+				LogUtil.getLogger().error("find_vertical  时间为空!");
+				return AmpcResult.build(1003, "时间为空!");
+			}
 			String cityStation=data.get("cityStation").toString();
+			if(!RegUtil.CheckParameter(cityStation, "String", null, false)){
+				LogUtil.getLogger().error("find_vertical  站点code为空!");
+				return AmpcResult.build(1003, "站点code为空!");
+			}
 			JSONArray lists = JSONArray.fromObject(data.get("scenarinoId"));
 			List<Integer> list=new ArrayList<Integer>();
 			for(Object scid:lists){
 				list.add(Integer.valueOf(scid.toString()));	
 			}
 			String datetype=data.get("datetype").toString();
+			if(!RegUtil.CheckParameter(datetype, "String", null, false)){
+				LogUtil.getLogger().error("find_vertical  时间分辨率为空!");
+				return AmpcResult.build(1003, "时间分辨率为空!");
+			}
 			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH");
 			SimpleDateFormat daysdf=new SimpleDateFormat("yyyy-MM-dd");
 			Date times=sdf.parse(time);
@@ -579,10 +616,10 @@ public class AppraisalController {
 			
 
 			}
-			return	AmpcResult.build(0, "success",scmap);
+			return	AmpcResult.ok(scmap);
 		}catch(Exception e){
-			LogUtil.getLogger().error("AppraisalController 垂直分布查询异常！",e);
-			return	AmpcResult.build(0, "error");
+			LogUtil.getLogger().error("find_vertical 垂直分布查询异常！",e);
+			return	AmpcResult.build(1001, "垂直分布查询异常！");
 		}
 	}
 	
