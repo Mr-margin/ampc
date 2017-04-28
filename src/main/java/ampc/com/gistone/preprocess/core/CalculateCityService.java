@@ -55,15 +55,22 @@ public class CalculateCityService {
 
 		Map<String, Object> res = buildResult(xorig, yorig, xcell, ycell, nrows, ncols);
 
-		buildStations();
+		List<String> cities = buildCities(res);
+		List<String> stations = buildStations(cities);
 
 		ObjectMapper mapper = new ObjectMapper();
 
 		return mapper.writeValueAsString(res);
 	}
 
-	private void buildStations() {
+	private List<String> buildCities(Map<String, Object> res) {
 
+		return null;
+	}
+
+	private List<String> buildStations(List<String> cities) {
+
+		return null;
 	}
 
 	private TDomainRegion getRegionEntity(String code, List<TDomainRegion> list) {

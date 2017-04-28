@@ -22,7 +22,6 @@ import ampc.com.gistone.extract.ExtractConfig;
 import ampc.com.gistone.extract.ProjectUtil;
 import ampc.com.gistone.extract.ResultPathUtil;
 import ampc.com.gistone.extract.netcdf.Netcdf;
-import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.Jsons;
 import ucar.ma2.Array;
 
@@ -85,8 +84,9 @@ public class CityWorkerV2 {
 		switch (timePoint.toLowerCase()) {
 		case "d":
 			for (String date : dates) {
-				String day = DateUtil.timeToDays(date);
-				String ncPath = base + day;
+				// String day = DateUtil.timeToDays(date);
+				// String ncPath = base + day;
+				String ncPath = base + date;
 				if (!Constants.checkHourlyFile(ncPath))
 					continue;
 				logger.info("Loading File " + ncPath);
@@ -194,8 +194,9 @@ public class CityWorkerV2 {
 
 		case "h":
 			for (String date : dates) {
-				String day = DateUtil.timeToDays(date);
-				String ncPath = base + day;
+				// String day = DateUtil.timeToDays(date);
+				// String ncPath = base + day;
+				String ncPath = base + date;
 				if (!Constants.checkHourlyFile(ncPath))
 					continue;
 				logger.info("Loading File " + ncPath);
