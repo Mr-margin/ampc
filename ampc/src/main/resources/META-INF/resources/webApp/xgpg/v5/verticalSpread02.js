@@ -517,10 +517,12 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
   for (var i = 0; i < speciesArr[rms].length; i++) {
     $('#species').append($('<option>' + speciesArr[rms][i] + '</option>'))
   }
+    $('#sTime-d').css('width','100%');
   if (rms == 'day') {
     $('#sTime-h').addClass('disNone');
     $('#eTimeP').addClass('disNone');
   } else if (rms == 'hour') {
+      $('#sTime-d').css('width','70%');
     $('#sTime-h').removeClass('disNone');
     $('#eTimeP').addClass('disNone');
   }
