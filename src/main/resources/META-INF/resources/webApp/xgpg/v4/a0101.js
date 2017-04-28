@@ -3,7 +3,7 @@ var ls, sceneInitialization, qjMsg;
 var changeMsg = {
     showType: ['concn'],//"emis"代表排放、"concn"代表浓度、"wind"代表风场
     calcType: 'show',//"show"当前情景，"diff"差值，"ratio"比例
-    species: 'PM25',//物种
+    species: 'PM₂.₅',//物种
     missionId: '',//任务ID
     domain: 1,//模拟范围
     domainId: '',//模拟范围ID
@@ -20,57 +20,57 @@ var changeMsg = {
     cols: 40
 };
 var speciesArr = {
-    d: ['PM25', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'O3_AVG', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE'],
-    a: ['PM25', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'O3_AVG', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE'],
-    h: ['PM25', 'PM10', 'O3', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE']
+    d: ['PM₂.₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NO₂', 'CO', 'SO₄²¯', 'NO₃¯', 'NH₄⁺', 'BC', 'OM', 'PMFINE'],
+    a: ['PM₂.₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NO₂', 'CO', 'SO₄²¯', 'NO₃¯', 'NH₄⁺', 'BC', 'OM', 'PMFINE'],
+    h: ['PM₂.₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄²¯', 'NO₃¯', 'NH₄⁺', 'BC', 'OM', 'PMFINE']
 };
 
 var mappingSpecies = {
     d: {
-        PM25: 'PM25',
-        PM10: 'PM10',
-        O3_8_MAX: 'o3_8_max',
-        O3_1_MAX: 'o3_1_max',
-        O3_AVG: 'o3_avg',
-        SO2: 'so2_daily',
-        NO2: 'no2_daily',
-        CO: 'co_daily',
-        SO4: 'PM25',
-        NO3: 'PM25',
-        NH4: 'PM25',
-        BC: 'PM25',
-        OM: 'PM25',
-        PMFINE: 'PM25'
+        'PM₂.₅': 'PM25',
+        'PM₁₀': 'PM10',
+        'O₃_8_max': 'o3_8_max',
+        'O₃_1_max': 'o3_1_max',
+        'O₃_avg': 'o3_avg',
+        'SO₂': 'so2_daily',
+        'NO₂': 'no2_daily',
+        'CO': 'co_daily',
+        'SO₄²¯': 'PM25',
+        'NO₃¯': 'PM25',
+        'NH₄⁺': 'PM25',
+        'BC': 'PM25',
+        'OM': 'PM25',
+        'PMFINE': 'PM25'
     },
     a: {
-        PM25: 'PM25',
-        PM10: 'PM10',
-        O3_8_MAX: 'o3_8_max',
-        O3_1_MAX: 'o3_1_max',
-        O3_AVG: 'o3_avg',
-        SO2: 'so2_daily',
-        NO2: 'no2_daily',
-        CO: 'co_daily',
-        SO4: 'PM25',
-        NO3: 'PM25',
-        NH4: 'PM25',
-        BC: 'PM25',
-        OM: 'PM25',
-        PMFINE: 'PM25'
+        'PM₂.₅': 'PM25',
+        'PM₁₀': 'PM10',
+        'O₃_8_max': 'o3_8_max',
+        'O₃_1_max': 'o3_1_max',
+        'O₃_avg': 'o3_avg',
+        'SO₂': 'so2_daily',
+        'NO₂': 'no2_daily',
+        'CO': 'co_daily',
+        'SO₄²¯': 'PM25',
+        'NO₃¯': 'PM25',
+        'NH₄⁺': 'PM25',
+        'BC': 'PM25',
+        'OM': 'PM25',
+        'PMFINE': 'PM25'
     },
     h: {
-        PM25: 'PM25',
-        PM10: 'PM10',
-        O3: 'o3_hourly',
-        SO2: 'so2_hourly',
-        NO2: 'no2_hourly',
-        CO: 'co_hourly',
-        SO4: 'PM25',
-        NO3: 'PM25',
-        NH4: 'PM25',
-        BC: 'PM25',
-        OM: 'PM25',
-        PMFINE: 'PM25'
+        'PM₂.₅': 'PM25',
+        'PM₁₀': 'PM10',
+        'O₃': 'o3_hourly',
+        'SO2': 'so2_hourly',
+        'NO2': 'no2_hourly',
+        'CO': 'co_hourly',
+        'SO₄²¯': 'PM25',
+        'NO₃¯': 'PM25',
+        'NH₄⁺': 'PM25',
+        'BC': 'PM25',
+        'OM': 'PM25',
+        'PMFINE': 'PM25'
     }
 
 };
