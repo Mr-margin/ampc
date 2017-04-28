@@ -262,13 +262,13 @@ function initEcharts() {
 			option.title.text = tname[i];         //加不同单位
 		}else if(tname[i] != 'CO'){
 			if("PM25"==tname[i]){
-				option.title.text = "PM₂₅"+('(μg/m³)');
+				option.title.text = "PM₂.₅"+('(μg/m³)');
 			}else if("SO4"==tname[i]){
-				option.title.text = "SO₄"+('(μg/m³)');
+				option.title.text = "SO₄²¯"+('(μg/m³)');
 			}else if("NO3"==tname[i]){
-				option.title.text = "NO₃"+('(μg/m³)');
+				option.title.text = "NO₃¯"+('(μg/m³)');
 			}else if("NH4"==tname[i]){
-				option.title.text = "NH₄"+('(μg/m³)');
+				option.title.text = "NH₄⁺"+('(μg/m³)');
 			}else if("PM10"==tname[i]){
 				option.title.text = "PM₁₀"+('(μg/m³)');
 			}else if("O3_8_MAX"==tname[i]){
@@ -283,7 +283,6 @@ function initEcharts() {
 		}else{
 			option.title.text = tname[i]+('(mg/m³)');
 		}	
-		console.log(option);
 		option.legend.data = (function(){	//图例名称
 		var lenArr = [];
 		for(var i = 0;i<sceneInitialization_arr.length;i++){
@@ -320,7 +319,7 @@ function initEcharts() {
 //											}
 										}
 										keys = keys.sort();		//.sort()函数重新排序
-										console.log(keys);
+//										console.log(keys);
 										for(var m=0; m<keys.length; m++){	//根据键取值
 											ttime.push(keys[m]);
 											ydata.push(ss[keys[m]]);
