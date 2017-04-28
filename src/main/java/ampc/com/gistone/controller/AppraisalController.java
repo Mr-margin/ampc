@@ -686,7 +686,9 @@ public class AppraisalController {
 						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 						scenarinoEntity.setCity_station(cityStation);
 						scenarinoEntity.setDomain(3);
+						if(!tables.contains("T_SCENARINO_DAILY_")){
 						scenarinoEntity.setDay(ScenarinoDetail.getScenarinoStartDate());
+						}
 						scenarinoEntity.setDomainId(domainId);
 						scenarinoEntity.setMode(mode);
 						scenarinoEntity.setsId(Integer.valueOf(ScenarinoDetail.getScenarinoId().toString()));
@@ -707,7 +709,9 @@ public class AppraisalController {
 							scenarinoEntity.setCity_station(cityStation);
 							scenarinoEntity.setDomain(3);
 							scenarinoEntity.setDomainId(domainId);
-							scenarinoEntity.setDay(ScenarinoDetail.getScenarinoStartDate());
+							if(!tables.contains("T_SCENARINO_HOURLY_")){
+								scenarinoEntity.setDay(ScenarinoDetail.getScenarinoStartDate());
+								}
 							scenarinoEntity.setMode(mode);
 							scenarinoEntity.setsId(Integer.valueOf(ScenarinoDetail.getScenarinoId().toString()));
 							scenarinoEntity.setTableName(tables);
