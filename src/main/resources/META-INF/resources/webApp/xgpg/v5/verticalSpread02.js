@@ -102,7 +102,7 @@ var optionAll = {
 //    interval: 100,
     axisLine: {onZero: false},
   },
-  color:["#c12e34","#e6b600", "#0098d9", "#2b821d","#005eaa","#339ca8","#cda819","#32a487"],
+  color:["#e6b600", "#0098d9", "#2b821d","#005eaa","#339ca8","#cda819","#32a487"],
   series: [  //可变，存储所有情景数据
 
   ],
