@@ -57,6 +57,7 @@ import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.LogUtil;
+import ampc.com.gistone.util.RegUtil;
 import ampc.com.gistone.util.ScenarinoStatusUtil;
 
 /**
@@ -131,17 +132,27 @@ public class PlanAndMeasureController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取情景ID
+			Object param=data.get("scenarinoId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 情景ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "情景ID为空或出现非法字符!");
+			}
 			//情景id
-			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			Long scenarinoId = Long.parseLong(param.toString());
 			if(scenarinoStatusUtil.updateScenarinoStatus(scenarinoId)>0){
 				LogUtil.getLogger().info("PlanAndMeasureController 重置情景状态成功!");
 				return AmpcResult.ok("更改情景状态成功");
+			}else{
+				throw new SQLException("PlanAndMeasureController 重置情景状态失败,数据库更改失败。");
 			}
-			LogUtil.getLogger().error("PlanAndMeasureController 重置情景状态失败,数据库更改失败。");
-			return AmpcResult.build(1000, "更改情景状态失败");
-		} catch (Exception e) {
+		}catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
+		}  catch (Exception e) {
 			LogUtil.getLogger().error("PlanAndMeasureController 重置情景异常!",e);
-			return AmpcResult.build(1000, "参数错误");
+			return AmpcResult.build(1001, "PlanAndMeasureController 重置情景异常!");
 		}
 	}
 	
@@ -159,26 +170,97 @@ public class PlanAndMeasureController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
 			// 用户id
-			Long userId = Long.parseLong(data.get("userId").toString());
+			Long userId = Long.parseLong(param.toString());
+			
+			//获取时段Id
+			param=data.get("timeId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 时段ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "时段ID为空或出现非法字符!");
+			}
 			// 时段id
-			Long timeId = Long.parseLong(data.get("timeId").toString());
+			Long timeId = Long.parseLong(param.toString());
+			
+			//获取情景状态
+			param=data.get("scenarinoStatus");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 情景状态为空或出现非法字符!");
+				return AmpcResult.build(1003, "情景状态为空或出现非法字符!");
+			}
 			//情景状态
-			Long scenarinoStatus = Long.parseLong(data.get("scenarinoStatus").toString());
+			Long scenarinoStatus = Long.parseLong(param.toString());
+			
+			//获取预案名称
+			param=data.get("planName");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 预案名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "预案名称为空或出现非法字符!");
+			}
 			// 预案名称
-			String planName = data.get("planName").toString();
+			String planName = param.toString();
+			
+			//获取情景id
+			param=data.get("scenarioId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 情景id为空或出现非法字符!");
+				return AmpcResult.build(1003, "情景id为空或出现非法字符!");
+			}
 			//情景id
-			Long scenarioId = Long.parseLong(data.get("scenarioId").toString());
+			Long scenarioId = Long.parseLong(param.toString());
+			
+			//获取所属任务id
+			param=data.get("missionId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 所属任务id为空或出现非法字符!");
+				return AmpcResult.build(1003, "所属任务id为空或出现非法字符!");
+			}
 			// 所属任务id
-			Long missionId = Long.parseLong(data.get("missionId").toString());
+			Long missionId = Long.parseLong(param.toString());
+			
+			//获取区域id
+			param=data.get("areaId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 区域id为空或出现非法字符!");
+				return AmpcResult.build(1003, "区域id为空或出现非法字符!");
+			}
 			// 区域id
-			Long areaId = Long.parseLong(data.get("areaId").toString());
+			Long areaId = Long.parseLong(param.toString());
+			
+			//获取预案开始时间
+			param=data.get("timeStartTime");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Date", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 预案开始时间为空或出现非法字符!");
+				return AmpcResult.build(1003, "预案开始时间为空或出现非法字符!");
+			}
 			// 预案开始时间
-			Date startDate = DateUtil.StrToDate(data.get("timeStartTime")
-					.toString());
+			Date startDate = DateUtil.StrToDate(param.toString());
+		
+			
+			//获取预案结束时间
+			param=data.get("timeEndTime");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Date", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 预案结束时间为空或出现非法字符!");
+				return AmpcResult.build(1003, "预案结束时间为空或出现非法字符!");
+			}
 			// 预案结束时间
-			Date endDate = DateUtil.StrToDate(data.get("timeEndTime")
-					.toString());
+			Date endDate = DateUtil.StrToDate(param.toString());
+			
 			// 创建预案对象
 			TPlan tPlan = new TPlan();
 			tPlan.setAreaId(areaId);
@@ -208,19 +290,21 @@ public class PlanAndMeasureController {
 						LogUtil.getLogger().info("PlanAndMeasureController 创建预案成功!");
 						return AmpcResult.ok(id);
 					}else{
-						LogUtil.getLogger().error("PlanAndMeasureController 创建预案是,情景状态转换失败,数据库修改状态失败。");
-						return AmpcResult.build(1000, "情景状态转换失败",null);
+						throw new SQLException("PlanAndMeasureController 创建预案是,情景状态转换失败,数据库修改状态失败。");
 					}
 				}else{
 					LogUtil.getLogger().info("PlanAndMeasureController 创建预案成功!");
 					return AmpcResult.ok(id);
 				}	
+			}else{
+				throw new SQLException("PlanAndMeasureController 创建预案失败,数据库添加失败。");
 			}
-			LogUtil.getLogger().error("PlanAndMeasureController 创建预案失败,数据库添加失败。");
-			return AmpcResult.build(1000, "添加失败");
-		} catch (Exception e) {
+		}catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
+		}  catch (Exception e) {
 			LogUtil.getLogger().error("PlanAndMeasureController 创建预案异常！",e);
-			return AmpcResult.build(1000, "参数错误");
+			return AmpcResult.build(1001, "PlanAndMeasureController 创建预案异常！");
 		}
 	}
 
@@ -238,26 +322,112 @@ public class PlanAndMeasureController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
 			// 用户id
-			Long userId = Long.parseLong(data.get("userId").toString());
+			Long userId = Long.parseLong(param.toString());
+			
+			//获取时段Id
+			param=data.get("timeId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 时段ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "时段ID为空或出现非法字符!");
+			}
 			// 时段id
-			Long timeId = Long.parseLong(data.get("timeId").toString());
+			Long timeId = Long.parseLong(param.toString());
+			
+			//获取情景状态
+			param=data.get("scenarinoStatus");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 情景状态为空或出现非法字符!");
+				return AmpcResult.build(1003, "情景状态为空或出现非法字符!");
+			}
 			//情景状态
-			Long scenarinoStatus = Long.parseLong(data.get("scenarinoStatus").toString());
+			Long scenarinoStatus = Long.parseLong(param.toString());
+			
+			//获取预案名称
+			param=data.get("planName");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 预案名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "预案名称为空或出现非法字符!");
+			}
+			// 预案名称
+			String planName = param.toString();
+			
+			//获取情景id
+			param=data.get("scenarioId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 情景id为空或出现非法字符!");
+				return AmpcResult.build(1003, "情景id为空或出现非法字符!");
+			}
 			//情景id
-			Long scenarioId = Long.parseLong(data.get("scenarioId").toString());
+			Long scenarioId = Long.parseLong(param.toString());
+			
+			//获取所属任务id
+			param=data.get("missionId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 所属任务id为空或出现非法字符!");
+				return AmpcResult.build(1003, "所属任务id为空或出现非法字符!");
+			}
 			// 所属任务id
-			Long missionId = Long.parseLong(data.get("missionId").toString());
+			Long missionId = Long.parseLong(param.toString());
+			
+			//获取区域id
+			param=data.get("areaId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 区域id为空或出现非法字符!");
+				return AmpcResult.build(1003, "区域id为空或出现非法字符!");
+			}
 			// 区域id
-			Long areaId = Long.parseLong(data.get("areaId").toString());
+			Long areaId = Long.parseLong(param.toString());
+			
+			//获取预案开始时间
+			param=data.get("timeStartTime");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Date", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 预案开始时间为空或出现非法字符!");
+				return AmpcResult.build(1003, "预案开始时间为空或出现非法字符!");
+			}
 			// 预案开始时间
-			Date startDate = DateUtil.StrToDate(data.get("timeStartTime").toString());
+			Date startDate = DateUtil.StrToDate(param.toString());
+		
+			
+			//获取预案结束时间
+			param=data.get("timeEndTime");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Date", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 预案结束时间为空或出现非法字符!");
+				return AmpcResult.build(1003, "预案结束时间为空或出现非法字符!");
+			}
 			// 预案结束时间
-			Date endDate = DateUtil.StrToDate(data.get("timeEndTime").toString());
+			Date endDate = DateUtil.StrToDate(param.toString());
+			
+			//获取要复制的预案id
+			param=data.get("copyPlanId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 要复制的预案id为空或出现非法字符!");
+				return AmpcResult.build(1003, "要复制的预案id为空或出现非法字符!");
+			}
 			// 要复制的预案id
-			Long copyPlanId = Long.parseLong(data.get("copyPlanId").toString());
+			Long copyPlanId = Long.parseLong(param.toString());
+			
 			//查询要复制预案的对象
 			TPlanReuseWithBLOBs tb=tPlanReuseMapper.selectByPrimaryKey(copyPlanId);
+			if(tb==null){
+				throw new SQLException("PlanAndMeasureController 要复制预案不存,数据库查询失败。");
+			}
 			// 创建预案对象
 			TPlan tPlan = new TPlan();
 			tPlan.setAreaId(areaId);
@@ -296,8 +466,7 @@ public class PlanAndMeasureController {
 						newtPlanMeasure.setTablePool(t.getTablePool());
 						result = tPlanMeasureMapper.insertSelective(newtPlanMeasure);
 						if (result < 0) {
-							LogUtil.getLogger().error("PlanAndMeasureController 复制预案失败,数据库添加预案措施时失败。");
-							return AmpcResult.build(1000, "应用预案措施时出错");
+							throw new SQLException("PlanAndMeasureController 复制预案失败,数据库添加预案措施时失败。");
 						}
 					}
 				}
@@ -315,23 +484,24 @@ public class PlanAndMeasureController {
 							LogUtil.getLogger().info("PlanAndMeasureController 复用预案成功。");
 							return AmpcResult.ok(newPlanId);
 						}else{
-							LogUtil.getLogger().error("PlanAndMeasureController 复用预案失败,数据库更改情景状态失败。");
-							return AmpcResult.build(1000, "情景状态转换失败",-1);
+							throw new SQLException("PlanAndMeasureController 复用预案失败,数据库更改情景状态失败。");
 						}
 					}else{
 						LogUtil.getLogger().info("PlanAndMeasureController 复用预案成功。");
 						return AmpcResult.ok(newPlanId);
 					}
+				}else{
+					throw new SQLException("PlanAndMeasureController 复用预案失败,数据库更改时段中预案指向失败。");
 				}
-				LogUtil.getLogger().error("PlanAndMeasureController 复用预案失败,数据库更改时段中预案指向失败。");
-				return AmpcResult.build(1000, "复用失败",-1);
-				
+			}else{
+				throw new SQLException("PlanAndMeasureController 复用预案失败,数据库添加新预案失败。");
 			}
-			LogUtil.getLogger().error("PlanAndMeasureController 复用预案失败,数据库添加新预案失败。");
-			return AmpcResult.build(1000, "应用预案失败",-1);
+		} catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage(),-1);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("PlanAndMeasureController 复用预案异常。",e);
-			return AmpcResult.build(1000, "参数错误");
+			return AmpcResult.build(1001, "PlanAndMeasureController 复用预案异常。");
 		}
 	}
 
@@ -349,15 +519,33 @@ public class PlanAndMeasureController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
 			// 用户id
-			Long userId = Long.parseLong(data.get("userId").toString());
+			Long userId = Long.parseLong(param.toString());
+			
+			//获取预案id
+			param=data.get("planId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 预案id为空或出现非法字符!");
+				return AmpcResult.build(1003, "预案id为空或出现非法字符!");
+			}
 			// 预案id
-			Long planId = Long.parseLong(data.get("planId").toString());
+			Long planId = Long.parseLong(param.toString());
 			Map mapQuery=new HashMap();
 			mapQuery.put("userId", userId);
 			mapQuery.put("planId", planId);
 			//根据主键Id查询要存入预案库的预案
 			Map resultMap = tPlanMapper.getInfoByQuery(mapQuery);
+			if(resultMap==null){
+				throw new SQLException("PlanAndMeasureController 预案存入预案库失败,查询不到要存入预案库的预案。");
+			}
 			// 新建预案库对象
 			TPlanReuseWithBLOBs pr=new TPlanReuseWithBLOBs();
 			pr.setUserId(userId);
@@ -423,20 +611,21 @@ public class PlanAndMeasureController {
 						result = tPlanMeasureReuseMapper
 								.insertSelective(newtPlanMeasure);
 						if (result < 0) {
-							LogUtil.getLogger().error("PlanAndMeasureController 预案存入预案库失败,数据库添加预案措施库数据失败。");
-							return AmpcResult.build(1000, "复制预案措施时出错");
+							throw new SQLException("PlanAndMeasureController  预案存入预案库失败,数据库添加预案措施库数据失败。");
 						}
 					}
 				}
 			} else {
-				LogUtil.getLogger().error("PlanAndMeasureController  预案存入预案库失败,数据库添加预案库数据失败。");
-				return AmpcResult.build(1000, "复制预案信息时出错");
+				throw new SQLException("PlanAndMeasureController  预案存入预案库失败,数据库添加预案库数据失败。");
 			}
 			LogUtil.getLogger().info("PlanAndMeasureController  预案存入预案库成功！");
 			return AmpcResult.ok("复制预案措施成功");
-		} catch (Exception e) {
+		}catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
+		}  catch (Exception e) {
 			LogUtil.getLogger().error("PlanAndMeasureController  预案存入预案库异常!",e);
-			return AmpcResult.build(1000, "参数错误", null);
+			return AmpcResult.build(1001, "PlanAndMeasureController  预案存入预案库异常!", null);
 		}
 	}
 
@@ -455,8 +644,15 @@ public class PlanAndMeasureController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			// 用户Id
-			Long userId = Long.parseLong(data.get("userId").toString());
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			Long userId = Long.parseLong(param.toString());
 			// 根据是否为可复制预案和是否有效字段查询
 			List<Map> list = tPlanReuseMapper.selectCopyList(userId);
 			Clob clob = null;
@@ -481,9 +677,12 @@ public class PlanAndMeasureController {
 			}
 			LogUtil.getLogger().info("PlanAndMeasureController  查询可复用预案成功。");
 			return AmpcResult.ok(list);
+		} catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
 		} catch (Exception e) {
 			LogUtil.getLogger().error("PlanAndMeasureController  查询可复用预案异常。",e);
-			return AmpcResult.build(1000, "参数错误");
+			return AmpcResult.build(1001, "PlanAndMeasureController  查询可复用预案异常。");
 		}
 	}
 
@@ -503,20 +702,59 @@ public class PlanAndMeasureController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取预案id
+			Object param=data.get("planId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 预案id为空或出现非法字符!");
+				return AmpcResult.build(1003, "预案id为空或出现非法字符!");
+			}
 			// 预案id
-			Long planId = Long.parseLong(data.get("planId").toString());
+			Long planId = Long.parseLong(param.toString());
+			
+			//获取时段Id
+			param=data.get("timeId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 时段ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "时段ID为空或出现非法字符!");
+			}
 			// 时段id
-			Long timeId = Long.parseLong(data.get("timeId").toString());
+			Long timeId = Long.parseLong(param.toString());
+			
+			//获取预案开始时间
+			param=data.get("timeStartTime");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Date", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 预案开始时间为空或出现非法字符!");
+				return AmpcResult.build(1003, "预案开始时间为空或出现非法字符!");
+			}
 			// 预案开始时间
-			Date startDate = new Date(Long.parseLong(data.get("timeStartTime")
-					.toString()));
+			Date startDate = DateUtil.StrToDate(param.toString());
+		
+			
+			//获取预案结束时间
+			param=data.get("timeEndTime");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Date", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 预案结束时间为空或出现非法字符!");
+				return AmpcResult.build(1003, "预案结束时间为空或出现非法字符!");
+			}
 			// 预案结束时间
-			Date endDate = new Date(Long.parseLong(data.get("timeEndTime")
-					.toString()));
+			Date endDate = DateUtil.StrToDate(param.toString());
+			
 			// 用户的id 确定当前用户
 			Long userId = null;
 			if (data.get("userId") != null) {
-				userId = Long.parseLong(data.get("userId").toString());
+				//获取用户ID
+				param=data.get("userId");
+				//进行参数判断
+				if(!RegUtil.CheckParameter(param, "Long", null, false)){
+					LogUtil.getLogger().error("PlanAndMeasureController 用户ID为空或出现非法字符!");
+					return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+				}
+				// 用户id
+				userId = Long.parseLong(param.toString());
 			}
 			// 根据UserId查询所有的行业名称
 			List<String> nameList = this.tMeasureSectorExcelMapper.getSectorInfo(userId);
@@ -559,8 +797,7 @@ public class PlanAndMeasureController {
 				map.put("userId", userId);
 				sm.setSectorsName(name);
 				// 查询当前名称下有几个措施
-				List<Map> list = this.tMeasureSectorExcelMapper
-						.getMeasureInfo(map);
+				List<Map> list = this.tMeasureSectorExcelMapper.getMeasureInfo(map);
 				if (list.size() == 0) {
 					map.put("userId", null);
 					list = this.tMeasureSectorExcelMapper.getMeasureInfo(map);
@@ -586,9 +823,13 @@ public class PlanAndMeasureController {
 			// 返回结果
 			return AmpcResult.ok(result);
 		} catch (Exception e) {
+			if(e instanceof SQLException){
+				LogUtil.getLogger().error(e.getMessage(),e);
+				return AmpcResult.build(1000,e.getMessage());
+			}
 			LogUtil.getLogger().error("PlanAndMeasureController   预案编辑异常",e);
 			// 返回错误信息
-			return AmpcResult.build(1000, "参数错误", null);
+			return AmpcResult.build(1001,"PlanAndMeasureController   预案编辑异常");
 		}
 	}
 
@@ -608,12 +849,35 @@ public class PlanAndMeasureController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取预案id
+			Object param=data.get("planId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 预案id为空或出现非法字符!");
+				return AmpcResult.build(1003, "预案id为空或出现非法字符!");
+			}
 			// 预案id
-			Long planId = Long.parseLong(data.get("planId").toString());
+			Long planId = Long.parseLong(param.toString());
+			
+			//获取用户ID
+			param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
 			// 用户id
-			Long userId = Long.parseLong(data.get("userId").toString());
+			Long userId = Long.parseLong(param.toString());
+			
+			//获取污染物类型
+			param=data.get("stainType");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 污染物类型为空或出现非法字符!");
+				return AmpcResult.build(1003, "污染物类型为空或出现非法字符!");
+			}
 			// 污染物类型
-			String stainType = data.get("stainType").toString();
+			String stainType = param.toString();
 			// 添加信息到参数中
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("planId", planId);
@@ -745,9 +1009,12 @@ public class PlanAndMeasureController {
 			LogUtil.getLogger().info("PlanAndMeasureController   措施汇总查询成功！");
 			// 返回结果
 			return AmpcResult.ok(resultMap);
-		} catch (Exception e) {
+		}catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
+		}  catch (Exception e) {
 			LogUtil.getLogger().error("PlanAndMeasureController   措施汇总查询异常！",e);
-			return AmpcResult.build(1000, "参数错误");
+			return AmpcResult.build(1001, "PlanAndMeasureController   措施汇总查询异常！");
 		}
 	}
 
@@ -767,12 +1034,36 @@ public class PlanAndMeasureController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取预案id
+			Object param=data.get("planId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 预案id为空或出现非法字符!");
+				return AmpcResult.build(1003, "预案id为空或出现非法字符!");
+			}
 			// 预案id
-			Long planId = Long.parseLong(data.get("planId").toString());
+			Long planId = Long.parseLong(param.toString());
+			
+			//获取措施id
+			param=data.get("measureId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 措施id为空或出现非法字符!");
+				return AmpcResult.build(1003, "措施id为空或出现非法字符!");
+			}
 			// 措施id
-			Long measureId = Long.parseLong(data.get("measureId").toString());
+			Long measureId = Long.parseLong(param.toString());
+			
+			//获取行业名称
+			param=data.get("sectorName");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 行业名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "行业名称为空或出现非法字符!");
+			}
 			// 行业名称
-			String sectorName = data.get("sectorName").toString();
+			String sectorName = param.toString();
+			
 			// 用户id
 			Long userId = null;
 			// 预案措施id
@@ -782,7 +1073,15 @@ public class PlanAndMeasureController {
 						.toString());
 			}
 			if (data.get("userId") != null) {
-				userId = Long.parseLong(data.get("userId").toString());
+				//获取用户ID
+				param=data.get("userId");
+				//进行参数判断
+				if(!RegUtil.CheckParameter(param, "Long", null, false)){
+					LogUtil.getLogger().error("PlanAndMeasureController 用户ID为空或出现非法字符!");
+					return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+				}
+				// 用户id
+				userId = Long.parseLong(param.toString());
 			}
 			// 添加信息到参数中
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -807,6 +1106,9 @@ public class PlanAndMeasureController {
 			// 查询措施的内容
 			TMeasureExcel tme = tMeasureExcelMapper
 					.selectByPrimaryKey(measureId);
+			if(tme==null){
+				throw new SQLException("PlanAndMeasureController  子措施条件查询,数据库没有查找到对应措施。");
+			}
 			// 这个里面主要是子措施的列 右下角2
 			if (tme.getMeasureExcelA() != null) {
 				mu = new MeasureUtil();
@@ -902,15 +1204,21 @@ public class PlanAndMeasureController {
 			if (planMeasureId != null) {
 				TPlanMeasureWithBLOBs tPlanMeasure = tPlanMeasureMapper
 						.selectByPrimaryKey(planMeasureId);
+				if(tPlanMeasure==null){
+					throw new SQLException("PlanAndMeasureController  子措施条件查询,数据库没有查找到对应预案措施。");
+				}
 				String str = tPlanMeasure.getMeasureContent();
 				resultMap.put("measureContent", str);
 			}
 			LogUtil.getLogger().info("PlanAndMeasureController   子措施条件查询成功!");
 			// 返回结果
 			return AmpcResult.ok(resultMap);
+		} catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
 		} catch (Exception e) {
 			LogUtil.getLogger().error("PlanAndMeasureController   子措施条件查询异常！",e);
-			return AmpcResult.build(1000, "参数错误");
+			return AmpcResult.build(1001, "PlanAndMeasureController   子措施条件查询异常！");
 		}
 	}
 
@@ -929,28 +1237,75 @@ public class PlanAndMeasureController {
 			// 添加跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			// 行业名称
-			String sectorName = data.get("sectorName").toString();
-			// 措施id
-			Long measureId = Long.parseLong(data.get("measureId").toString());
-			// 用户id
-			Long userId = Long.parseLong(data.get("userId").toString());
+			//获取预案id
+			Object param=data.get("planId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 预案id为空或出现非法字符!");
+				return AmpcResult.build(1003, "预案id为空或出现非法字符!");
+			}
 			// 预案id
-			Long planId = Long.parseLong(data.get("planId").toString());
+			Long planId = Long.parseLong(param.toString());
+			
+			//获取措施id
+			param=data.get("measureId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 措施id为空或出现非法字符!");
+				return AmpcResult.build(1003, "措施id为空或出现非法字符!");
+			}
+			// 措施id
+			Long measureId = Long.parseLong(param.toString());
+			
+			//获取用户ID
+			param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			Long userId = Long.parseLong(param.toString());
+			
+			//获取行业名称
+			param=data.get("sectorName");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 行业名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "行业名称为空或出现非法字符!");
+			}
+			// 行业名称
+			String sectorName = param.toString();
+			
+			//获取情景id
+			param=data.get("scenarinoId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 情景id为空或出现非法字符!");
+				return AmpcResult.build(1003, "情景id为空或出现非法字符!");
+			}
+			//情景id
+			Long scenarinoId = Long.parseLong(param.toString());
+			
 			// 预案措施id
 			Long planMeasureId = null;
 			if (!data.get("planMeasureId").equals("null")) {
 				planMeasureId = Long.parseLong(data.get("planMeasureId")
 						.toString());
 			}
-			//情景id
-			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
-			// 预案措施中的子措施Json串、
-			String measureContent = data.get("measureContent").toString();
+			
+			//获取预案措施中的子措施Json串
+			param=data.get("measureContent");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 预案措施中的子措施Json串为空或出现非法字符!");
+				return AmpcResult.build(1003, "预案措施中的子措施Json串为空或出现非法字符!");
+			}
+			// 预案措施中的子措施Json串
+			String measureContent = param.toString();
 			//修改情景的状态为可编辑
 			if(!(scenarinoStatusUtil.updateScenarinoStatus(scenarinoId)>0)){
-				LogUtil.getLogger().error("PlanAndMeasureController   预案措施的添加或修改失败,数据库修改情景状态失败！");
-				return AmpcResult.build(1000, "更改情景状态失败");
+				throw new SQLException("PlanAndMeasureController   预案措施的添加或修改失败,数据库修改情景状态失败！");
 			}
 			TPlanMeasureWithBLOBs tPlanMeasure = new TPlanMeasureWithBLOBs();
 			tPlanMeasure.setMeasureId(measureId);
@@ -991,8 +1346,7 @@ public class PlanAndMeasureController {
 					LogUtil.getLogger().info("PlanAndMeasureController   预案添加措施成功！");
 					return AmpcResult.ok("添加成功");
 				} else {
-					LogUtil.getLogger().error("PlanAndMeasureController   预案添加措施失败，数据库添加措施失败！");
-					return AmpcResult.build(1000, "添加失败");
+					throw new SQLException("PlanAndMeasureController   预案措施的添加或修改失败,数据库添加措施失败！");
 				}
 			} else {
 				// 预案修改措施
@@ -1014,12 +1368,14 @@ public class PlanAndMeasureController {
 						return AmpcResult.ok("修改成功");
 					}
 				} 
-				LogUtil.getLogger().error("PlanAndMeasureController   预案修改措施失败！");
-				return AmpcResult.build(1000, "修改失败");
+				throw new SQLException("PlanAndMeasureController   预案措施的添加或修改失败,数据库修改措施失败！");
 			}
+		} catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
 		} catch (Exception e) {
 			LogUtil.getLogger().error("PlanAndMeasureController   预案添加或修改措施异常！",e);
-			return AmpcResult.build(1000, "参数错误");
+			return AmpcResult.build(1001, "PlanAndMeasureController   预案添加或修改措施异常！");
 		}
 	}
 
@@ -1038,25 +1394,61 @@ public class PlanAndMeasureController {
 			// 添加跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			// 预案措施表集合
-			Long planMeasureId = Long.parseLong(data.get("planMeasureId")
-					.toString());
-			// 用户id
-			Long userId = Long.parseLong(data.get("userId").toString());
+			//获取预案id
+			Object param=data.get("planId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 预案id为空或出现非法字符!");
+				return AmpcResult.build(1003, "预案id为空或出现非法字符!");
+			}
 			// 预案id
-			Long planId = Long.parseLong(data.get("planId").toString());
+			Long planId = Long.parseLong(param.toString());
+			
+			//获取用户ID
+			param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			Long userId = Long.parseLong(param.toString());
+			
+			//获取预案措施Id
+			param=data.get("planMeasureId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 预案措施Id为空或出现非法字符!");
+				return AmpcResult.build(1003, "预案措施Id为空或出现非法字符!");
+			}
+			// 预案措施Id
+			Long planMeasureId = Long.parseLong(param.toString());
+			
 			// 行业名称
 			String sectorName = null;
 			// 查看行业名称是否为空，不为空添加，为空不加
 			if (data.get("sectorName") != null) {
-				sectorName = data.get("sectorName").toString();
+				//进行参数判断
+				if(!RegUtil.CheckParameter(param, "String", null, false)){
+					LogUtil.getLogger().error("PlanAndMeasureController 行业名称为空或出现非法字符!");
+					return AmpcResult.build(1003, "行业名称为空或出现非法字符!");
+				}
+				// 行业名称
+				sectorName = param.toString();
+			}
+			//获取情景id
+			param=data.get("scenarinoId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 情景id为空或出现非法字符!");
+				return AmpcResult.build(1003, "情景id为空或出现非法字符!");
 			}
 			//情景id
-			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			Long scenarinoId = Long.parseLong(param.toString());
+			
 			//修改情景的状态为可编辑
 			if(!(scenarinoStatusUtil.updateScenarinoStatus(scenarinoId)>0)){
-				LogUtil.getLogger().error("PlanAndMeasureController   预案删除措施失败，数据库修改情景状态失败。");
-				return AmpcResult.build(1000, "更改情景状态失败");
+				throw new SQLException("PlanAndMeasureController  预案删除措施失败，数据库修改情景状态失败。");
 			}
 			// 删除预案中的措施
 			int delete_status = tPlanMeasureMapper
@@ -1075,16 +1467,20 @@ public class PlanAndMeasureController {
 					if (update_status >= 0) {
 						LogUtil.getLogger().info("PlanAndMeasureController   预案删除措施成功!");
 						return AmpcResult.ok("删除成功");
+					}else{
+						throw new SQLException("PlanAndMeasureController  预案删除措施失败，数据库清空其他减排信息失败。");
 					}
 				}
 				LogUtil.getLogger().info("PlanAndMeasureController   预案删除措施成功!");
 				return AmpcResult.ok("删除成功");
 			}
-			LogUtil.getLogger().error("PlanAndMeasureController   预案删除措施失败!");
-			return AmpcResult.build(1000, "删除失败");
+			throw new SQLException("PlanAndMeasureController  预案删除措施失败，数据库删除措施失败。");
+		} catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
 		} catch (Exception e) {
 			LogUtil.getLogger().error("PlanAndMeasureController   预案删除措施异常！",e);
-			return AmpcResult.build(1000, "参数错误");
+			return AmpcResult.build(1001, "PlanAndMeasureController   预案删除措施异常！");
 		}
 	}
 
@@ -1103,8 +1499,15 @@ public class PlanAndMeasureController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
+			//预案id
+			Object param=data.get("planMeasureIds");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 预案id为空或出现非法字符!");
+				return AmpcResult.build(1003, "预案id为空或出现非法字符!");
+			}
 			// 预案id
-			String planMeasureIds = data.get("planMeasureIds").toString();
+			String planMeasureIds = param.toString();
 			// 将得到的数据拆分 放入集合中
 			String[] idss = planMeasureIds.split(",");
 			List<Long> planMeasureIdss = new ArrayList<Long>();
@@ -1145,16 +1548,18 @@ public class PlanAndMeasureController {
 					int updatestatus = tPlanMeasureMapper.updateByPrimaryKeySelective(tPlanMeasure);
 					// 判断是否成功
 					if (updatestatus < 0) {
-						LogUtil.getLogger().error("PlanAndMeasureController   措施汇总中的减排计算失败,数据库中添加减排结果信息时失败。");
-						return AmpcResult.build(1000, "修改失败");
+						throw new SQLException("PlanAndMeasureController  措施汇总中的减排计算失败,数据库中添加减排结果信息时失败。");
 					}
 			    }
 			}
 			LogUtil.getLogger().info("PlanAndMeasureController   措施汇总中的减排计算成功");
 			return AmpcResult.ok(getResult);
+		} catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
 		} catch (Exception e) {
 			LogUtil.getLogger().error("PlanAndMeasureController   措施汇总中的减排计算异常！",e);
-			return AmpcResult.build(1000, "参数错误");
+			return AmpcResult.build(1001, "PlanAndMeasureController   措施汇总中的减排计算异常！");
 		}
 
 	}
@@ -1174,13 +1579,34 @@ public class PlanAndMeasureController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
 			// 用户id
-			Long userId = Long.parseLong(data.get("userId").toString());
-			//情景Id
-			long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());
+			Long userId = Long.parseLong(param.toString());
+			
+			//获取情景id
+			param=data.get("scenarinoId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 情景id为空或出现非法字符!");
+				return AmpcResult.build(1003, "情景id为空或出现非法字符!");
+			}
+			//情景id
+			Long scenarinoId = Long.parseLong(param.toString());
+			
 			//值键对
-			Object object=data.get("areaAndPlanIds");
-			Map apMap=(Map)object;
+			param=data.get("areaAndPlanIds");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Map", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 减排值键对为空或出现非法字符!");
+				return AmpcResult.build(1003, "减排值键对为空或出现非法字符!");
+			}
+			Map apMap=(Map)param;
 			//定义条件Map
 			Map mapQuery=new HashMap();
 			mapQuery.put("userId", userId);
@@ -1224,16 +1650,18 @@ public class PlanAndMeasureController {
 					LogUtil.getLogger().info("PlanAndMeasureController   区域的减排计算成功");
 					return AmpcResult.ok(1);
 				}else{
-					LogUtil.getLogger().error("PlanAndMeasureController   区域的减排计算失败，数据库在修改情景的状态时失败。");
-					return AmpcResult.build(1000,"修改失败");
+					throw new SQLException("PlanAndMeasureController  区域的减排计算失败，数据库在修改情景的状态时失败。");
 				}
 			}
 			LogUtil.getLogger().error("PlanAndMeasureController   区域的减排计算接口出现异常");
 			//-1代表计算接口出现异常
-			return AmpcResult.build(1000,"计算接口出现异常",-1);
+			return AmpcResult.build(1001,"计算接口出现异常",-1);
+		} catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
 		} catch (Exception e) {
 			LogUtil.getLogger().error("PlanAndMeasureController   区域的减排计算异常！",e);
-			return AmpcResult.build(1000, "参数错误");
+			return AmpcResult.build(1001, "PlanAndMeasureController   区域的减排计算异常！");
 		}
 	}
 
@@ -1252,10 +1680,16 @@ public class PlanAndMeasureController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			//情景Id
-			long scenarinoId=Long.parseLong(data.get("scenarinoId").toString());
+			//获取情景id
+			Object param=data.get("scenarinoId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 情景id为空或出现非法字符!");
+				return AmpcResult.build(1003, "情景id为空或出现非法字符!");
+			}
+			//情景id
+			Long scenarinoId = Long.parseLong(param.toString());
 			// 调用减排计算状态接口 并获取结果Json
-			//String strResult="
 			String getResult = ClientUtil.doPost(configUtil.getAreaStatusURL()+"?jobId="+scenarinoId,"");
 			// 并根据减排分析得到的结果进行JsonTree的解析
 			Map mapResult=mapper.readValue(getResult, Map.class);
@@ -1278,8 +1712,15 @@ public class PlanAndMeasureController {
 				return AmpcResult.ok(resultMap);
 			}else{
 				//重新进行计算
+				//获取用户ID
+				param=data.get("userId");
+				//进行参数判断
+				if(!RegUtil.CheckParameter(param, "Long", null, false)){
+					LogUtil.getLogger().error("PlanAndMeasureController 用户ID为空或出现非法字符!");
+					return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+				}
 				// 用户id
-				Long userId = Long.parseLong(data.get("userId").toString());
+				Long userId = Long.parseLong(param.toString());
 				//值键对
 				Object object=data.get("areaAndPlanIds");
 				// 创建一个减排的结果集合
@@ -1346,19 +1787,21 @@ public class PlanAndMeasureController {
 						LogUtil.getLogger().warn("PlanAndMeasureController  警告: 区域的减排状态查询失败！正在重新计算！");
 						return AmpcResult.ok(resultMap);
 					}else{
-						LogUtil.getLogger().error("PlanAndMeasureController   区域的减排状态查询失败,数据库在修改情景状态时失败。");
-						return AmpcResult.build(1000,"修改失败");
+						throw new SQLException("PlanAndMeasureController 区域的减排状态查询失败,数据库在修改情景状态时失败。");
 					}
 				}else{
 					//代表计算接口出现异常
 					resultMap.put("type", -1);
 					LogUtil.getLogger().error("PlanAndMeasureController   区域的减排状态查询  外部接口异常！");
-					return AmpcResult.build(1000,"外部接口查询异常",resultMap);
+					return AmpcResult.build(1001,"外部接口查询异常",resultMap);
 				}
 			}
-		} catch (Exception e) {
+		}catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
+		}  catch (Exception e) {
 			LogUtil.getLogger().error("PlanAndMeasureController   区域的减排状态查询异常！",e);
-			return AmpcResult.build(1000, "参数错误");
+			return AmpcResult.build(1001, "PlanAndMeasureController   区域的减排状态查询异常！");
 		}
 	}
 	
