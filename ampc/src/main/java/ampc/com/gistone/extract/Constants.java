@@ -25,6 +25,7 @@ public class Constants {
 	public final static String AREA_CITY = "city";
 	public final static String AREA_PROVINCE = "province";
 	public final static String AREA_POINT = "station";
+	public final static String AREA_POINT2 = "point";
 
 	public static final String[] HOURLYSPECIES = { "PM25", "PM10", "O3", "SO2", "NO2", "CO", "SO4", "NO3", "NH4", "BC",
 			"OM", "PMFINE" };
