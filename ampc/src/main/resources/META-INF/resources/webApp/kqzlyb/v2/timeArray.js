@@ -3,7 +3,8 @@ $(function(){
 *设置导航条信息
 **/
 	$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">空气质量预报</span>>><span style="padding-left: 15px;padding-right: 15px;">时间序列</span>');
-
+	
+	initialize();
 
 //格式化日期插件	
 //	$("#datetimeStart").datetimepicker({
@@ -940,7 +941,7 @@ var changeMsg = {
     city: ''
 };
 
-initialize();
+//initialize();
 
 /*初始化函数*/
 function initialize() {
