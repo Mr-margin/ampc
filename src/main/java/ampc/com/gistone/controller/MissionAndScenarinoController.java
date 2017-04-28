@@ -1009,9 +1009,7 @@ public class MissionAndScenarinoController {
 			}
 			//根据id查询任务
 			TMissionDetail tMission=tMissionDetailMapper.selectByPrimaryKey(missionId);
-			if(tMission!=null||tMission.equals("")){
-				return AmpcResult.build(1000, "未查询到任务");
-			}	
+			
 			
 			//根据任务id查询所有情景
 			List<TScenarinoDetail> scenarlist=tScenarinoDetailMapper.selectAllByMissionId(missionId);
