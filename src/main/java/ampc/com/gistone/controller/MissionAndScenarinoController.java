@@ -1552,10 +1552,7 @@ public class MissionAndScenarinoController {
 			}
 			//情景
 			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
-			if(tScenarinoDetail==null||tScenarinoDetail.equals("")){
-				LogUtil.getLogger().error("copy_Scenarino  未查到当前情景!");
-				return AmpcResult.build(1003, "未查当前情景!");
-			}
+			
 			//情景区域
 			TScenarinoAreaWithBLOBs tScenarinoArea =new TScenarinoAreaWithBLOBs();
 			tScenarinoArea.setScenarinoDetailId(scenarinoId);
