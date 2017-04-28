@@ -15,7 +15,7 @@ $(function () {
 var	dps_codeStation,	//设置站点信息
 	dps_station,		//查询站点
 	echartsData,		//该任务下所选情景的所有数据
-	standardData,		//基准数据
+	standardData,		//基准和观测的所有数据
 	allMission;			//放置站点信息
 //默认显示柱状图
 var show_type = "bar";
@@ -34,11 +34,11 @@ var speciesArr = {
 		day: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'SO2', 'NO2', 'CO',],
 		hour: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3', 'SO2', 'NO2', 'CO']
 };
-var scenarino={			//存放基准数据
+var scenarino={			//存放基准数据id和Name
 		scenarinoId:'',
 		scenarinoName:'',
 };
-var observation={		//存放观测数据
+var observation={		//存放观测数据id和Name
 		scenarinoId:'',
 		scenarinoName:''
 };
@@ -693,12 +693,15 @@ $('input[name=rms]').on('change',function(e){
 //绝对量比较==1 相对变化==2
 var changeType;
 $('input[name=changes]').on('change', function (e) {
-	changeType = $(e.target).val();
-//	console.log(changeType);
-	if (changeType == '1') {
+	changeType = $(e.target).val();		//获取到被选中的值
+	if (changeType == '1') {	//绝对量变化
 	
-	} else if(changeType == '2'){
-		$.ecath()
+	} else if(changeType == '2'){	//相对变化
+		var echartsData_rt='';
+		var standardData_rt='';
+		echartsData_rt=$.extend(true,{},echartsData);		//该任务下所选情景的所有数据
+		standardData_rt=$.extend(true,{},standardData);		//基准和观测的所有数据
+				
 	}
 });
 
