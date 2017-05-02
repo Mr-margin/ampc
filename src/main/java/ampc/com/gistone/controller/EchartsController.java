@@ -3,7 +3,9 @@ package ampc.com.gistone.controller;
 import java.math.BigDecimal;
 import java.sql.Clob;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -213,35 +215,78 @@ public class EchartsController {
 			List<Map> selectBisisMap = this.getBySqlMapper.findRecords(basisSql);
 			//执行SQL返回减排量的结果集
 			List<Map> selectjplMap = this.getBySqlMapper.findRecords(jplSql);
-			//循环当前区域下和基准情景时间的排放量总和结果
-			for (Map tempMap : selectBisisMap) {
-				//获取当前污染物在所有行业当天当前CODE的排放量总和
-				BigDecimal result=(BigDecimal)tempMap.get("STAINTYPESUM");
-				//如果为空则继续循环
-				if(result==null) continue;
-				//添加所有行业在该污染物的排放量总和
-				pflResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(result.doubleValue(), 4), 2)));
-			}
-			//循环减排量结果集
-			for (Map tempMap : selectjplMap) {
-				//添加每一个的减排日期 和基准匹配 所以只添加一个
-				dateResult.add(tempMap.get("EMISSION_DATE").toString());
-				//获取当前污染物在所有行业当天当前CODE的减排量总和
-				BigDecimal result=(BigDecimal)tempMap.get("STAINTYPESUM");
-				//如果为空则继续循环
-				if(result==null) continue;
-				//添加所有行业在该污染物的减排量总和
-				jplResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(result.doubleValue(), 4), 2)));
-			}
-			//如果没有基准的排放量信息  则默认给0
-			if(pflResult==null||pflResult.size()==0){
-				for(int i=0;i<jplResult.size();i++){
-					pflResult.add("0");
+			//定义中间时间变量
+			Date tempDate;
+			//定义日历类用来时间增加
+			Calendar cal = Calendar.getInstance();
+			//将情景的开始时间设置为默认时间
+			cal.setTime(sDate);
+			//给中间时间变量复制
+			tempDate = cal.getTime();
+			//开始循环
+			while(true){
+				//如果中间变量的日期大于了情景的结束时间就跳出循环
+				if(tempDate.getTime()>eDate.getTime()) break;
+				//定义临时变量用来接收数值
+				BigDecimal result=null;
+				//定义临时变量用来确定是否结果中包含这个时间
+				boolean isFind=false;
+				//写入日期结果信息
+				dateResult.add(DateUtil.DATEtoString(tempDate, "yyyy-MM-dd"));
+				//循环当前区域下和基准情景时间的排放量总和结果
+				for (Map tempMap : selectBisisMap) {
+					//判断如果当前结果就是中间变量的时间则代表找到了结果
+					if(DateUtil.StrToDate1(tempMap.get("EMISSION_DATE").toString()).getTime()==tempDate.getTime()){
+						//获取当前污染物在所有行业当天当前CODE的排放量总和
+						result=(BigDecimal)tempMap.get("STAINTYPESUM");
+						//如果为空赋值0
+						if(result==null){
+							result=new BigDecimal(0);
+						} 
+						//代表找到了 跳出
+						isFind=true;
+						break;
+					}
 				}
-			}
-			if(pflResult.size()!=jplResult.size()){
-				LogUtil.getLogger().error("EchartsController 情景减排柱状图数据减排结果集不匹配!");
-				return AmpcResult.build(1000, "减排结果集不匹配!");
+				//判断是否找到 
+				if(!isFind){
+					//没有找到个结果集中赋值0
+					pflResult.add("0");
+				}else{
+					//添加所有行业在该污染物的排放量总和
+					pflResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(result.doubleValue(), 4), 2)));
+				}
+				//初始化中间变量
+				result=null;
+				//初始化中间变量
+				isFind=false;
+				//循环减排量结果集
+				for (Map tempMap : selectjplMap) {
+					//判断如果当前结果就是中间变量的时间则代表找到了结果
+					if(DateUtil.StrToDate1(tempMap.get("EMISSION_DATE").toString()).getTime()==tempDate.getTime()){
+						//获取当前污染物在所有行业当天当前CODE的减排量总和
+						result=(BigDecimal)tempMap.get("STAINTYPESUM");
+						//如果为空赋值0
+						if(result==null){
+							result=new BigDecimal(0);
+						} 
+						//代表找到了 跳出
+						isFind=true;
+						break;
+					}
+				}
+				//判断是否找到 
+				if(!isFind){
+					//没有找到个结果集中复制0
+					jplResult.add("0");
+				}else{
+					//添加所有行业在该污染物的排放量总和
+					jplResult.add(String.valueOf(CastNumUtil.decimal(CastNumUtil.significand(result.doubleValue(), 4), 2)));
+				}
+				//日期增加一天
+				cal.add(Calendar.DATE, 1);
+				//更改中间时间的值
+				tempDate = cal.getTime();
 			}
 			//创建返回的结果集合
 			Map map=new HashMap();
