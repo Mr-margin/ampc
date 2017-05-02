@@ -1518,6 +1518,10 @@ public class PlanAndMeasureController {
 			if(!mapResult.get("status").toString().equals("success")){
 				LogUtil.getLogger().error("PlanAndMeasureController   措施汇总中的减排计算接口出现异常。");
 				return AmpcResult.build(1000, "减排计算接口出现异常",-1);
+			}else if(mapResult.get("status").toString().equals("fail")){
+				LogUtil.getLogger().error("PlanAndMeasureController   措施汇总中的减排计算预案措施为空或没有管控设置。");
+				//-1代表计算接口出现异常
+				return AmpcResult.build(1001,"措施汇总中的减排计算预案措施为空或没有管控设置。",-1);
 			}
 			JSONObject jsonObject=JSONObject.fromObject(mapResult.get("data"));
 			// 讲数据转换成Map
@@ -1642,6 +1646,10 @@ public class PlanAndMeasureController {
 				}else{
 					throw new SQLException("PlanAndMeasureController  区域的减排计算失败，数据库在修改情景的状态时失败。");
 				}
+			}else if(map.get("status").toString().equals("fail")){
+				LogUtil.getLogger().error("PlanAndMeasureController   区域的减排计算预案措施为空或没有管控设置。");
+				//-1代表计算接口出现异常
+				return AmpcResult.build(1001,"区域的减排计算预案措施为空或没有管控设置。",-1);
 			}
 			LogUtil.getLogger().error("PlanAndMeasureController   区域的减排计算接口出现异常");
 			//-1代表计算接口出现异常
