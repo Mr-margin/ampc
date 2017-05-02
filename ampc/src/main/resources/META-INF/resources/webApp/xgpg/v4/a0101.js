@@ -492,8 +492,8 @@ function bianji(type, g_num, p , wind) {
 	}else if(wind == 1){//↑风场
 		
 	}else if(wind == 2){//F风场
-		zmblockUI("#mapDiv0", "start");
-	    zmblockUI("#mapDiv1", "start");
+//		zmblockUI("#mapDiv0", "start");
+//	    zmblockUI("#mapDiv1", "start");
 	    
 		$.get('data7.json', function (data) {
 //		ajaxPost('/extract/data', par).success(function (data) {
@@ -579,16 +579,14 @@ function bianji(type, g_num, p , wind) {
 	            var graphic = new dong.Graphic(point, symbol);
 	            if(g_num == 0){
 	            	app.gLyr1.add(graphic);
-	            	zmblockUI("#mapDiv0", "end");
-                    zmblockUI("#mapDiv1", "end");
 	            }else if(g_num == 1){
 	            	app.gLyr2.add(graphic);
-	            	zmblockUI("#mapDiv0", "end");
-                    zmblockUI("#mapDiv1", "end");
 	            }
 	            
 	            
 	        });
+	        zmblockUI("#mapDiv0", "end");
+            zmblockUI("#mapDiv1", "end");
 	        console.log((new Date().getTime() - v1) + "num:" +g_num);
 		});
 		
@@ -865,7 +863,9 @@ $('input[name=showWind]').on('change', function (e) { //地图风场类型
     if (type == -1) {
 
         /*这里清除风场图层*/
-
+    	app.gLyr1.clear();
+        app.gLyr2.clear();
+        return;
         /*这里清除风场图层 end*/
 
     } else {
