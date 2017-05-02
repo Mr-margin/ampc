@@ -5,15 +5,15 @@ import java.util.Date;
 public class ScenarinoEntity {
 
 	private String id;
-	private int sId;
+	private Long sId;
 	private String mode;
 	private String city_station;
-	private int domainId;
+	private Long domainId;
 	private int domain;
 	private String content;
 	private Date addTime;
 	private Date updateTime;
-	private int userId;
+	private Long userId;
 	private Date day;
 	private String tableName;
 	private Date date;
@@ -29,12 +29,7 @@ public class ScenarinoEntity {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public int getsId() {
-		return sId;
-	}
-	public void setsId(int sId) {
-		this.sId = sId;
-	}
+	
 	public String getMode() {
 		return mode;
 	}
@@ -47,12 +42,7 @@ public class ScenarinoEntity {
 	public void setCity_station(String city_station) {
 		this.city_station = city_station;
 	}
-	public int getDomainId() {
-		return domainId;
-	}
-	public void setDomainId(int domainId) {
-		this.domainId = domainId;
-	}
+	
 	public int getDomain() {
 		return domain;
 	}
@@ -77,12 +67,7 @@ public class ScenarinoEntity {
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
-	public int getUserId() {
-		return userId;
-	}
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
+	
 	public Date getDay() {
 		return day;
 	}
@@ -94,6 +79,24 @@ public class ScenarinoEntity {
 	}
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
+	}
+	public Long getsId() {
+		return sId;
+	}
+	public void setsId(Long sId) {
+		this.sId = sId;
+	}
+	public Long getDomainId() {
+		return domainId;
+	}
+	public void setDomainId(Long domainId) {
+		this.domainId = domainId;
+	}
+	public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 	
 	

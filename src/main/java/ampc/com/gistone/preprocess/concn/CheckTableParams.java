@@ -2,15 +2,16 @@ package ampc.com.gistone.preprocess.concn;
 
 public class CheckTableParams {
 
-	private int user_id;
+	private Long user_id;
 	private String years;
 	private String time_point;
 	private String tName;
 	
-	public int getUser_id() {
+	
+	public Long getUser_id() {
 		return user_id;
 	}
-	public void setUser_id(int user_id) {
+	public void setUser_id(Long user_id) {
 		this.user_id = user_id;
 	}
 	public String getYears() {
