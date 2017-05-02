@@ -10,6 +10,8 @@ package ampc.com.gistone.redisqueue.result;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**  
  * @Title: ResultStartModel.java
  * @Package ampc.com.gistone.redisqueue.result
@@ -21,7 +23,7 @@ import java.util.Date;
 public class Message {
 	
     private String id;
-	
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
 	private Date time;
 	
 	private String type;
