@@ -53,7 +53,7 @@ public class StopModelData {
 	 * @author yanglei
 	 * @date 2017年4月20日 下午4:30:33
 	 */
-	public boolean branchModel(Long scenarinoId, Long domainId, Long missionId, Long userId) {
+	public boolean StopModel(Long scenarinoId, Long domainId, Long missionId, Long userId) {
 		QueueData queueData = getHeadParameter("model.stop");
 		StopModelBean stopModelBean = new StopModelBean();
 		stopModelBean.setDomainid(domainId.toString());
@@ -85,6 +85,32 @@ public class StopModelData {
 		queueData.setTime(time);//设置消息时间
 		queueData.setType(type);
 		return queueData;
+	}
+
+	/**
+	 * @Description: 暂停
+	 * @param scenarinoId
+	 * @param domainId
+	 * @param missionId
+	 * @param userId
+	 * @return   
+	 * boolean  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月28日 上午10:05:10
+	 */
+	public boolean pauseModel(Long scenarinoId, Long domainId, Long missionId,
+			Long userId) {
+		QueueData queueData = getHeadParameter("model.stop");
+		StopModelBean stopModelBean = new StopModelBean();
+		stopModelBean.setDomainid(domainId.toString());
+		stopModelBean.setMissionid(missionId.toString());
+		stopModelBean.setUserid(userId.toString());
+		stopModelBean.setScenarioid(scenarinoId.toString());
+		queueData.setBody(stopModelBean);
+		LogUtil.getLogger().info("开始发送暂停模式的消息，该情景id是："+scenarinoId);
+		boolean pausetoJson = sendQueueData.pausetoJson(queueData,scenarinoId);
+		return pausetoJson;
 	}
 
 }
