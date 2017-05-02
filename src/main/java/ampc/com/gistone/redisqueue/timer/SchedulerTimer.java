@@ -40,6 +40,7 @@ import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.LogUtil;
+import ampc.com.gistone.util.RegUtil;
 
 /**  
  * @Title: RealForecastTimer.java
@@ -101,7 +102,7 @@ public class SchedulerTimer {
 	 * @date 2017年4月7日 上午9:53:09
 	 */
 //	@Scheduled(cron="0 0 11 * * ?")
-//	@Scheduled(cron="0 30 10 * * ?")
+	@Scheduled(cron="0 30 09 * * ?")
 //	@Scheduled(fixedRate = 50000)
 	public void realForTimer() {
 		//Date date = new Date();
@@ -186,7 +187,6 @@ public class SchedulerTimer {
 						//domainID不一致的时候 记录当条任务ID  domainid 不一样是时候 会让判断清单ID的flag为true 
 						escouplingflag = true;
 						oldMissionid = tMissionDetail.getMissionId();
-						
 					}
 				}
 				//清单不一致的时候穿件新的任务
@@ -352,8 +352,8 @@ public class SchedulerTimer {
 	 * @author yanglei
 	 * @date 2017年4月21日 下午7:39:01
 	 */
-//	@Scheduled(cron="0 0/10  * * ?")
 //	@Scheduled(fixedRate = 5000)
+//	@Scheduled(cron="0 0/10  * * * ?")
 	public void  sendMessageOnRealprediction() {
 		 LogUtil.getLogger().info("开始检测ungrib的数据");
 		//获取最新的ungrib 
@@ -380,9 +380,11 @@ public class SchedulerTimer {
 						Date lastpathdate = tScenarinoDetailMapper.getlastrunstatus(userId);
 						String lastungrib = readyData.pivot(userId, lastpathdate, pathdate);
 						if (null!=lastungrib) {
-							readyData.readyRealMessageDataFirst(tScenarinoDetail, lastungrib);
+							readyData.readyRealMessageDataFirst(tScenarinoDetail, lastungrib,false);
+							//修改状态为执行中
+							readyData.updateScenStatusUtil(6l, tScenarinoDetail.getScenarinoId());
 						}else {
-							LogUtil.getLogger().info("当天的实时预报已经发送过了！");
+							LogUtil.getLogger().info("lastungrib对应的实时预报已经发送过了或者当天的ungrib还未更新！");
 						}
 					}
 				}
@@ -421,18 +423,19 @@ public class SchedulerTimer {
 	}
 
 
+	
 	/**
 	 * 
-	 * @Description: TODO
+	 * @Description: 启动预评估任务--预评估情景的定时器
 	 * @return   
-	 * Date  获取预评估是否能发送的条件
+	 * Date  
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年4月7日 下午8:46:00
 	 */
 //	@Scheduled(cron="0 0/10 * * * ?")
 //	@Scheduled(fixedRate = 5000)
-	public void getMaxTime() {
+	public void getMaxTimeforpreEvalution() {
 		System.out.println("我每隔10分钟执行一次");
 		LogUtil.getLogger().info("每隔10分钟执行一次");
 		//根据情景的状态和情景的类型确定准备参数
@@ -440,8 +443,6 @@ public class SchedulerTimer {
 		List<TScenarinoDetail> list = tScenarinoDetailMapper.getscenidAndcores();//存在问题
 		//查找可执行的时间
 		Date maxtime = tScenarinoDetailMapper.getmaxtime();
-		
-		
 		for (TScenarinoDetail tScenarinoDetail : list) {
 			Date startDate = tScenarinoDetail.getScenarinoStartDate();
 			Long scenarinoId = tScenarinoDetail.getScenarinoId();
@@ -453,6 +454,9 @@ public class SchedulerTimer {
 				Date nowDate = tasksStatus.getTasksEndDate();
 				//当前情景已经发送过得日期
 				String completetime = tasksStatus.getBeizhu2();
+				if (completetime.equals("0")) {
+					LogUtil.getLogger().info("该情景尚未运行开始发送参数");
+				}
 				Date ctime = DateUtil.StrtoDateYMD(completetime, "yyyyMMdd");
 				//当前情景在当前执行日期下执行到哪一步
 				Long stepindex = tasksStatus.getStepindex();
@@ -466,7 +470,6 @@ public class SchedulerTimer {
 					//第一次发送
 					nowDate = startDate;
 					//请求减排系数 
-					 
 					
 					/*//准备数据发送消息
 					readyData.readyPreEvaluationSituationDataFirst(scenarinoId, cores);*/
@@ -519,7 +522,7 @@ public class SchedulerTimer {
 	 */
 //	@Scheduled(fixedRate = 5000)
 	public void  test1() {
-		String url="http://192.168.1.10:8082/ampc/saveEmis";
+		/*String url="http://192.168.1.10:8082/ampc/saveEmis";
 		HashMap<String,String> hashMap = new HashMap<String, String>();
 		hashMap.put("sourceid", "sourceid");
 		hashMap.put("psal", "psal-----");
@@ -529,7 +532,8 @@ public class SchedulerTimer {
 		hashMap.put("ssal", "10000---");
 		JSONObject jsonObject = JSONObject.fromObject(hashMap);
 		String getResult=ClientUtil.doPost(url,jsonObject.toString());
-		System.out.println(getResult);
+		System.out.println(getResult);*/
+		System.out.println("aaaaaaaa--------");
 	}
 
 
@@ -564,6 +568,7 @@ public class SchedulerTimer {
 		System.out.println(status+"今天的实时预报情景");
 		/*Long missionType = tMissionDetailMapper.selectMissionType((long)367);
 		System.out.println(missionType+"---test:任务类型");*/
+		
 		
 		
 	}
