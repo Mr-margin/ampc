@@ -49,6 +49,9 @@ public class AcceptMessageQueue implements Runnable{
 	//加载持久tasksStatus数据的工具类
 	@Autowired
 	private ToDataTasksUtil toDataTasksUtil;
+	
+	@Autowired
+	private MessageLog messageLog;
 
 	/* (非 Javadoc) 
 	* <p>Title: run</p> 
@@ -122,18 +125,21 @@ public class AcceptMessageQueue implements Runnable{
 					String key = message.getType();
 					switch (key) {
 					case "model.start.result":
-						LogUtil.getLogger().info("start tasks"+new Date());
-						LogUtil.getLogger().info(rpop);
-						toDataTasksUtil.updateDB(message);
+						LogUtil.getLogger().info("start tasks"+new Date()+":"+rpop);
+//						messageLog.saveStartMessagelog(rpop);
+						toDataTasksUtil.updateDB(rpop);
 						LogUtil.getLogger().info("end tasks"+new Date());
 						break;
 					case "ungrib.result":
 						LogUtil.getLogger().info("接受ungrib数据："+new Date()+":"+rpop);
-						toDataUngribUtil.updateDB(rpop);
+//						messageLog.saveUngribMessagelog(rpop);
+//						toDataUngribUtil.updateDB(rpop);
+						toDataUngribUtil.updateUngrib(rpop);
 						LogUtil.getLogger().info("ungrib处理完毕："+new Date());
 						break;
 					case "model.stop.result":
 						LogUtil.getLogger().info("停止模式处理开始："+new Date()+":"+rpop);
+						messageLog.savestopMessagelog(rpop);
 						toDataTasksUtil.stopModelresult(rpop);
 						LogUtil.getLogger().info("停止模式处理完毕："+new Date());
 						break;
