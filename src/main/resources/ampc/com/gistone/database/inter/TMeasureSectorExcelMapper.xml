@@ -92,6 +92,7 @@
   	<if test="userId != null" >
         and USER_ID=#{userId,jdbcType=DECIMAL} 
       </if>
+      order by MID
   </select>
  
  
