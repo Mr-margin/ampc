@@ -166,10 +166,11 @@ public class AirController {
 				ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 				scenarinoEntity.setCity_station(cityStation);
 				scenarinoEntity.setDomain(3);
-				scenarinoEntity.setDomainId(domainId);
+				scenarinoEntity.setDomainId((long)domainId);
+				
 				scenarinoEntity.setMode(mode);
 				scenarinoEntity.setDay(daytimes);
-				scenarinoEntity.setsId(Integer.valueOf(jztScenarino.getScenarinoId().toString()));
+				scenarinoEntity.setsId(Long.parseLong((jztScenarino.getScenarinoId().toString())));
 				scenarinoEntity.setTableName(tables);
 				sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 			}else{//逐小时
@@ -183,10 +184,10 @@ public class AirController {
 				ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 				scenarinoEntity.setCity_station(cityStation);
 				scenarinoEntity.setDomain(3);
-				scenarinoEntity.setDomainId(domainId);
+				scenarinoEntity.setDomainId(Long.valueOf(domainId));
 				scenarinoEntity.setMode(mode);
 				scenarinoEntity.setDay(daytimes);
-				scenarinoEntity.setsId(Integer.valueOf(jztScenarino.getScenarinoId().toString()));
+				scenarinoEntity.setsId(Long.valueOf(jztScenarino.getScenarinoId().toString()));
 				scenarinoEntity.setTableName(tables);
 				sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 			}//时间分布判断
@@ -540,10 +541,10 @@ public class AirController {
 								ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 								scenarinoEntity.setCity_station(cityStation);
 								scenarinoEntity.setDomain(3);
-								scenarinoEntity.setDomainId(domainId);
+								scenarinoEntity.setDomainId(Long.valueOf(domainId).longValue());
 								scenarinoEntity.setMode(mode);
 								scenarinoEntity.setDay(thedate);
-								scenarinoEntity.setsId(Integer.valueOf(jztScenarino.getScenarinoId().toString()));
+								scenarinoEntity.setsId(Long.valueOf(jztScenarino.getScenarinoId().toString()));
 								scenarinoEntity.setTableName(tables);
 								ssslist=tPreProcessMapper.selectBysome(scenarinoEntity);
 								ssslist.get(0);
@@ -643,10 +644,10 @@ public class AirController {
 								ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 								scenarinoEntity.setCity_station(cityStation);
 								scenarinoEntity.setDomain(3);
-								scenarinoEntity.setDomainId(domainId);
+								scenarinoEntity.setDomainId(Long.valueOf(domainId));
 								scenarinoEntity.setMode(mode);
 								scenarinoEntity.setDay(thedate);
-								scenarinoEntity.setsId(Integer.valueOf(jztScenarino.getScenarinoId().toString()));
+								scenarinoEntity.setsId(Long.valueOf(jztScenarino.getScenarinoId().toString()));
 								scenarinoEntity.setTableName(tables);
 								ssslist=tPreProcessMapper.selectBysome(scenarinoEntity);
 
