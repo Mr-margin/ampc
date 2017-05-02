@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TMessageLogMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TMessageLog" >
+    <id column="MESSAGE_LOG_ID" property="messageLogId" jdbcType="DECIMAL" />
+    <result column="MESSAGE_UUID" property="messageUuid" jdbcType="VARCHAR" />
+    <result column="MESSAGE_TIME" property="messageTime" jdbcType="TIMESTAMP" />
+    <result column="MESSAGE_TYPE" property="messageType" jdbcType="VARCHAR" />
+    <result column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
+    <result column="MESSAGE_INDEX" property="messageIndex" jdbcType="DECIMAL" />
+    <result column="TASKS_END_DATE" property="tasksEndDate" jdbcType="VARCHAR" />
+    <result column="RESULT_DESC" property="resultDesc" jdbcType="VARCHAR" />
+    <result column="RESULT_CODE" property="resultCode" jdbcType="VARCHAR" />
+    <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="DOMAIN_ID" property="domainId" jdbcType="DECIMAL" />
+    <result column="UNGRIB_PATH_DATE" property="ungribPathDate" jdbcType="VARCHAR" />
+    <result column="UNGRIB_FNL" property="ungribFnl" jdbcType="VARCHAR" />
+    <result column="UNGRIB_GFS" property="ungribGfs" jdbcType="VARCHAR" />
+    <result column="FNL_DESC" property="fnlDesc" jdbcType="VARCHAR" />
+    <result column="GFS_DESC" property="gfsDesc" jdbcType="VARCHAR" />
+    <result column="EXPAND1" property="expand1" jdbcType="VARCHAR" />
+    <result column="EXPAND2" property="expand2" jdbcType="VARCHAR" />
+    <result column="EXPAND3" property="expand3" jdbcType="VARCHAR" />
+    <result column="EXPAND4" property="expand4" jdbcType="VARCHAR" />
+    <result column="EXPAND5" property="expand5" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    MESSAGE_LOG_ID, MESSAGE_UUID, MESSAGE_TIME, MESSAGE_TYPE, SCENARINO_ID, MESSAGE_INDEX, 
+    TASKS_END_DATE, RESULT_DESC, RESULT_CODE, ADD_TIME, USER_ID, DOMAIN_ID, UNGRIB_PATH_DATE, 
+    UNGRIB_FNL, UNGRIB_GFS, FNL_DESC, GFS_DESC, EXPAND1, EXPAND2, EXPAND3, EXPAND4, EXPAND5
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_MESSAGE_LOG
+    where MESSAGE_LOG_ID = #{messageLogId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_MESSAGE_LOG
+    where MESSAGE_LOG_ID = #{messageLogId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TMessageLog" >
+    insert into T_MESSAGE_LOG (MESSAGE_LOG_ID, MESSAGE_UUID, MESSAGE_TIME, 
+      MESSAGE_TYPE, SCENARINO_ID, MESSAGE_INDEX, 
+      TASKS_END_DATE, RESULT_DESC, RESULT_CODE, 
+      ADD_TIME, USER_ID, DOMAIN_ID, 
+      UNGRIB_PATH_DATE, UNGRIB_FNL, UNGRIB_GFS, 
+      FNL_DESC, GFS_DESC, EXPAND1, 
+      EXPAND2, EXPAND3, EXPAND4, 
+      EXPAND5)
+    values (#{messageLogId,jdbcType=DECIMAL}, #{messageUuid,jdbcType=VARCHAR}, #{messageTime,jdbcType=TIMESTAMP}, 
+      #{messageType,jdbcType=VARCHAR}, #{scenarinoId,jdbcType=DECIMAL}, #{messageIndex,jdbcType=DECIMAL}, 
+      #{tasksEndDate,jdbcType=VARCHAR}, #{resultDesc,jdbcType=VARCHAR}, #{resultCode,jdbcType=VARCHAR}, 
+      #{addTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=DECIMAL}, #{domainId,jdbcType=DECIMAL}, 
+      #{ungribPathDate,jdbcType=VARCHAR}, #{ungribFnl,jdbcType=VARCHAR}, #{ungribGfs,jdbcType=VARCHAR}, 
+      #{fnlDesc,jdbcType=VARCHAR}, #{gfsDesc,jdbcType=VARCHAR}, #{expand1,jdbcType=VARCHAR}, 
+      #{expand2,jdbcType=VARCHAR}, #{expand3,jdbcType=VARCHAR}, #{expand4,jdbcType=VARCHAR}, 
+      #{expand5,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TMessageLog" >
+    insert into T_MESSAGE_LOG
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="messageLogId != null" >
+        MESSAGE_LOG_ID,
+      </if>
+      <if test="messageUuid != null" >
+        MESSAGE_UUID,
+      </if>
+      <if test="messageTime != null" >
+        MESSAGE_TIME,
+      </if>
+      <if test="messageType != null" >
+        MESSAGE_TYPE,
+      </if>
+      <if test="scenarinoId != null" >
+        SCENARINO_ID,
+      </if>
+      <if test="messageIndex != null" >
+        MESSAGE_INDEX,
+      </if>
+      <if test="tasksEndDate != null" >
+        TASKS_END_DATE,
+      </if>
+      <if test="resultDesc != null" >
+        RESULT_DESC,
+      </if>
+      <if test="resultCode != null" >
+        RESULT_CODE,
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="domainId != null" >
+        DOMAIN_ID,
+      </if>
+      <if test="ungribPathDate != null" >
+        UNGRIB_PATH_DATE,
+      </if>
+      <if test="ungribFnl != null" >
+        UNGRIB_FNL,
+      </if>
+      <if test="ungribGfs != null" >
+        UNGRIB_GFS,
+      </if>
+      <if test="fnlDesc != null" >
+        FNL_DESC,
+      </if>
+      <if test="gfsDesc != null" >
+        GFS_DESC,
+      </if>
+      <if test="expand1 != null" >
+        EXPAND1,
+      </if>
+      <if test="expand2 != null" >
+        EXPAND2,
+      </if>
+      <if test="expand3 != null" >
+        EXPAND3,
+      </if>
+      <if test="expand4 != null" >
+        EXPAND4,
+      </if>
+      <if test="expand5 != null" >
+        EXPAND5,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="messageLogId != null" >
+        #{messageLogId,jdbcType=DECIMAL},
+      </if>
+      <if test="messageUuid != null" >
+        #{messageUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="messageTime != null" >
+        #{messageTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="messageType != null" >
+        #{messageType,jdbcType=VARCHAR},
+      </if>
+      <if test="scenarinoId != null" >
+        #{scenarinoId,jdbcType=DECIMAL},
+      </if>
+      <if test="messageIndex != null" >
+        #{messageIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="tasksEndDate != null" >
+        #{tasksEndDate,jdbcType=VARCHAR},
+      </if>
+      <if test="resultDesc != null" >
+        #{resultDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="resultCode != null" >
+        #{resultCode,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="domainId != null" >
+        #{domainId,jdbcType=DECIMAL},
+      </if>
+      <if test="ungribPathDate != null" >
+        #{ungribPathDate,jdbcType=VARCHAR},
+      </if>
+      <if test="ungribFnl != null" >
+        #{ungribFnl,jdbcType=VARCHAR},
+      </if>
+      <if test="ungribGfs != null" >
+        #{ungribGfs,jdbcType=VARCHAR},
+      </if>
+      <if test="fnlDesc != null" >
+        #{fnlDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="gfsDesc != null" >
+        #{gfsDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="expand1 != null" >
+        #{expand1,jdbcType=VARCHAR},
+      </if>
+      <if test="expand2 != null" >
+        #{expand2,jdbcType=VARCHAR},
+      </if>
+      <if test="expand3 != null" >
+        #{expand3,jdbcType=VARCHAR},
+      </if>
+      <if test="expand4 != null" >
+        #{expand4,jdbcType=VARCHAR},
+      </if>
+      <if test="expand5 != null" >
+        #{expand5,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TMessageLog" >
+    update T_MESSAGE_LOG
+    <set >
+      <if test="messageUuid != null" >
+        MESSAGE_UUID = #{messageUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="messageTime != null" >
+        MESSAGE_TIME = #{messageTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="messageType != null" >
+        MESSAGE_TYPE = #{messageType,jdbcType=VARCHAR},
+      </if>
+      <if test="scenarinoId != null" >
+        SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL},
+      </if>
+      <if test="messageIndex != null" >
+        MESSAGE_INDEX = #{messageIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="tasksEndDate != null" >
+        TASKS_END_DATE = #{tasksEndDate,jdbcType=VARCHAR},
+      </if>
+      <if test="resultDesc != null" >
+        RESULT_DESC = #{resultDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="resultCode != null" >
+        RESULT_CODE = #{resultCode,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="domainId != null" >
+        DOMAIN_ID = #{domainId,jdbcType=DECIMAL},
+      </if>
+      <if test="ungribPathDate != null" >
+        UNGRIB_PATH_DATE = #{ungribPathDate,jdbcType=VARCHAR},
+      </if>
+      <if test="ungribFnl != null" >
+        UNGRIB_FNL = #{ungribFnl,jdbcType=VARCHAR},
+      </if>
+      <if test="ungribGfs != null" >
+        UNGRIB_GFS = #{ungribGfs,jdbcType=VARCHAR},
+      </if>
+      <if test="fnlDesc != null" >
+        FNL_DESC = #{fnlDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="gfsDesc != null" >
+        GFS_DESC = #{gfsDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="expand1 != null" >
+        EXPAND1 = #{expand1,jdbcType=VARCHAR},
+      </if>
+      <if test="expand2 != null" >
+        EXPAND2 = #{expand2,jdbcType=VARCHAR},
+      </if>
+      <if test="expand3 != null" >
+        EXPAND3 = #{expand3,jdbcType=VARCHAR},
+      </if>
+      <if test="expand4 != null" >
+        EXPAND4 = #{expand4,jdbcType=VARCHAR},
+      </if>
+      <if test="expand5 != null" >
+        EXPAND5 = #{expand5,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where MESSAGE_LOG_ID = #{messageLogId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TMessageLog" >
+    update T_MESSAGE_LOG
+    set MESSAGE_UUID = #{messageUuid,jdbcType=VARCHAR},
+      MESSAGE_TIME = #{messageTime,jdbcType=TIMESTAMP},
+      MESSAGE_TYPE = #{messageType,jdbcType=VARCHAR},
+      SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL},
+      MESSAGE_INDEX = #{messageIndex,jdbcType=DECIMAL},
+      TASKS_END_DATE = #{tasksEndDate,jdbcType=VARCHAR},
+      RESULT_DESC = #{resultDesc,jdbcType=VARCHAR},
+      RESULT_CODE = #{resultCode,jdbcType=VARCHAR},
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      USER_ID = #{userId,jdbcType=DECIMAL},
+      DOMAIN_ID = #{domainId,jdbcType=DECIMAL},
+      UNGRIB_PATH_DATE = #{ungribPathDate,jdbcType=VARCHAR},
+      UNGRIB_FNL = #{ungribFnl,jdbcType=VARCHAR},
+      UNGRIB_GFS = #{ungribGfs,jdbcType=VARCHAR},
+      FNL_DESC = #{fnlDesc,jdbcType=VARCHAR},
+      GFS_DESC = #{gfsDesc,jdbcType=VARCHAR},
+      EXPAND1 = #{expand1,jdbcType=VARCHAR},
+      EXPAND2 = #{expand2,jdbcType=VARCHAR},
+      EXPAND3 = #{expand3,jdbcType=VARCHAR},
+      EXPAND4 = #{expand4,jdbcType=VARCHAR},
+      EXPAND5 = #{expand5,jdbcType=VARCHAR}
+    where MESSAGE_LOG_ID = #{messageLogId,jdbcType=DECIMAL}
+  </update>
+</mapper>
