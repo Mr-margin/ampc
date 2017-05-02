@@ -153,4 +153,26 @@ public interface TTasksStatusMapper {
 	 */
 	int updatestopModelresult(TTasksStatus tTasksStatus);
 
+	/**
+	 * @Description: 查询模式执行返回的结果
+	 * @param tasksScenarinoId
+	 * @return   
+	 * String  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月27日 上午11:54:13
+	 */
+	String selectStartModelresult(Long tasksScenarinoId);
+
+	/**
+	 * @Description:修改模式暂停返回
+	 * @param tTasksStatus
+	 * @return   
+	 * int  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月28日 上午10:27:15
+	 */
+	int updatepausestatus(TTasksStatus tTasksStatus);
+
 }
