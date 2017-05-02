@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.model.TScenarinoDetail;
@@ -30,6 +31,7 @@ import ampc.com.gistone.redisqueue.StopModelData;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.LogUtil;
+import ampc.com.gistone.util.RegUtil;
 
 /**  
  * @Title: GetWeatherModelController.java
@@ -47,6 +49,10 @@ public class GetWeatherModelController {
 	
 	@Autowired
 	private ReadyData readyData;
+	
+	//任务详情映射
+	@Autowired
+	private TMissionDetailMapper tMissionDetailMapper;
 	
 	//情景详情映射
 	@Autowired
@@ -141,10 +147,58 @@ public class GetWeatherModelController {
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return AmpcResult.build(1000, "启动失败");
+			return AmpcResult.build(1000, "模式启动异常！");
 		}
 		
 	}
+	/*@RequestMapping("/ModelType/continueModel")
+	public AmpcResult continueModel(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
+		String token = (String) requestDate.get("token");
+		try {
+			//获取数据包
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//用户id
+			Long userId = Long.parseLong(data.get("userId").toString());
+			//任务类型
+			Integer missionType = Integer.parseInt(data.get("missionType").toString());
+			//情景ID
+			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			//任务ID
+			Long missionId = Long.parseLong(data.get("missionId").toString());
+			//情景类型
+			Integer scenarinoType = Integer.parseInt(data.get("scenarinoType").toString());
+			String conditionString =  readyData.continuePredict(scenarinoId, scenarinoType, missionType,missionId,userId);
+			if (conditionString.equals("ok")) {
+				//更新状态
+				Map map = new HashMap();
+				map.put("scenarinoId", scenarinoId);
+				Long status = (long)6;
+				map.put("scenarinoStatus", status);
+				int a = tScenarinoDetailMapper.updateStatus(map);
+				if (a>0) {
+					 return AmpcResult.build(0, "ok");
+				}else {
+					return AmpcResult.build(1000, "启动失败");
+				}
+			}
+			if(conditionString.equals("false")){
+				
+				return AmpcResult.build(1000, "基准情景模式未完成！");
+				
+			}
+			
+			else {
+				return AmpcResult.build(1000, "继续失败");
+			}
+			
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return AmpcResult.build(1000, "模式继续异常！");
+		}
+		
+	}*/
 	/**
 	 * 
 	 * @Description: 取减排系数的接口
@@ -161,6 +215,8 @@ public class GetWeatherModelController {
 		try {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			String sourceid = requestDate.get("sourceid").toString();
+			//通过情景ID获取清单ID
+		//	Long sourceid = tMissionDetailMapper.getsourceid(missionId);
 			String psal = requestDate.get("psal").toString();
 			String ssal = requestDate.get("ssal").toString();
 			String meiccityconfig = requestDate.get("meiccityconfig").toString();
@@ -210,49 +266,66 @@ public class GetWeatherModelController {
 	@RequestMapping("/ModelType/sendstopModel")
 	public AmpcResult stopModel(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
 		String token = (String) requestDate.get("token");
-		Long userId;
-		Long domainId;
-		Long scenarinoId;
-		Long missionId;
 		try {
 			//获取数据包
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
-			try {
-				//用户id
-				userId = Long.parseLong(data.get("userId").toString());
-			} catch (Exception e) {
-				// TODO: handle exception
-				return AmpcResult.build(1003, "userId参数错误");
+			//用户id
+			Object param = data.get("userId");
+			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController userId为空或出现非法字符!");
+				return AmpcResult.build(1003, "userId为空或出现非法字符!");
 			}
-			try {
-				//doaminid
-				domainId = Long.parseLong(data.get("domainId").toString());
-			} catch (Exception e) {
-				// TODO: handle exception
-				return AmpcResult.build(1003, "domainId参数错误");
+			Long userId =Long.parseLong(param.toString());
+			param = data.get("domainId");
+			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController domainId为空或出现非法字符!");
+				return AmpcResult.build(1003, "domainId为空或出现非法字符!");
 			}
-			try {
-				//情景ID
-				scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
-			} catch (Exception e) {
-				// TODO: handle exception
-				return AmpcResult.build(1003, "scenarinoId参数错误");
+			//doaminid
+			Long domainId = Long.parseLong(param.toString());
+			//情景ID
+			param = data.get("scenarinoId");
+			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController scenarinoId为空或出现非法字符!");
+				return AmpcResult.build(1003, "scenarinoId为空或出现非法字符!");
 			}
-			try {
-				//任务ID
-				missionId = Long.parseLong(data.get("missionId").toString());
-			} catch (Exception e) {
-				// TODO: handle exception
-				return AmpcResult.build(1003, "missionId参数错误");
+			Long scenarinoId = Long.parseLong(param.toString());
+			
+			param = data.get("missionId");
+			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController missionId为空或出现非法字符!");
+				return AmpcResult.build(1003, "missionId为空或出现非法字符!");
+			}
+			//任务ID
+			Long missionId = Long.parseLong(param.toString());
+			param = data.get("flag");
+			if (!RegUtil.CheckParameter(param, "Integer", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController flag为空或出现非法字符!");
+				return AmpcResult.build(1003, "flag为空或出现非法字符!");
+			}
+			Integer flag = Integer.parseInt(param.toString());
+			if (flag==0) {
+				//0表示终止
+				boolean branchModel = stopModelData.StopModel(scenarinoId,domainId,missionId,userId);
+				if (branchModel) {
+					return AmpcResult.build(0, "停止成功！");
+				}else {
+					return AmpcResult.build(1004, "停止失败！");
+				}
+			}
+			else if (flag==1) {
+				//1表示暂停
+				boolean branchModel = stopModelData.pauseModel(scenarinoId,domainId,missionId,userId);
+				if (branchModel) {
+					return AmpcResult.build(0, "暂停成功！");
+				}else {
+					return AmpcResult.build(1004, "暂停失败！");
+				}
+			}else {
+				return AmpcResult.build(1003, "flag参数错误！");
 			}
 			
-			boolean branchModel = stopModelData.branchModel(scenarinoId,domainId,missionId,userId);
-				if (branchModel) {
-					return AmpcResult.build(0, "停止请求发送成功！");
-				}else {
-					return AmpcResult.build(1004, "停止请求发送失败！");
-				}
 				
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
@@ -262,46 +335,72 @@ public class GetWeatherModelController {
 		
 		
 	}
-	@RequestMapping("/ModelType/successStopModel")
-	public AmpcResult stopModelsuccess(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
+	/**
+	 * 
+	 * @Description: 续跑的接口
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return   
+	 * AmpcResult  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年5月2日 下午4:38:35
+	 */
+	@RequestMapping("/ModelType/continueModel")
+	public AmpcResult continueModel(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
 		String token = (String) requestDate.get("token");
-		Long userId;
-		Long scenarinoId;
 		try {
 			//获取数据包
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
-			try {
-				//用户id
-				userId = Long.parseLong(data.get("userId").toString());
-			} catch (Exception e) {
-				// TODO: handle exception
-				return AmpcResult.build(1003, "userId参数错误");
+			//用户id
+			Object param = data.get("userId");
+			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController userId为空或出现非法字符!");
+				return AmpcResult.build(1003, "userId为空或出现非法字符!");
 			}
-			try {
-				//情景ID
-				scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
-			} catch (Exception e) {
-				// TODO: handle exception
-				return AmpcResult.build(1003, "scenarinoId参数错误");
+			Long userId =Long.parseLong(param.toString());
+			//情景ID
+			param = data.get("scenarinoId");
+			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController scenarinoId为空或出现非法字符!");
+				return AmpcResult.build(1003, "scenarinoId为空或出现非法字符!");
 			}
-			TTasksStatus status = tTasksStatusMapper.selectStatus(scenarinoId);
-			String stopStatus = status.getStopStatus();
-			if ("0".equals(stopStatus.trim())) {
-				return AmpcResult.build(0, "模式终止成功！");
+			Long scenarinoId = Long.parseLong(param.toString());
+			
+			param = data.get("missionId");
+			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController missionId为空或出现非法字符!");
+				return AmpcResult.build(1003, "missionId为空或出现非法字符!");
 			}
-			else if ("1".equals(stopStatus.trim())){
-				return AmpcResult.build(0, "模式终止失败！");
-			}else if("2".equals(stopStatus.trim())){
-				 return AmpcResult.build(0, "模式终止过程中！");
-			}else {
-				return AmpcResult.build(1000, "系统错误");
+			//任务ID
+			Long missionId = Long.parseLong(param.toString());
+			
+			param = data.get("scenarinoType");
+			if (!RegUtil.CheckParameter(param, "Integer", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController scenarinoType为空或出现非法字符!");
+				return AmpcResult.build(1003, "scenarinoType为空或出现非法字符!");
 			}
+			//情景类型
+			Integer scenarinoType = Integer.parseInt(param.toString());
+			
+			param = data.get("missionType");
+			if (!RegUtil.CheckParameter(param, "Integer", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController missionType为空或出现非法字符!");
+				return AmpcResult.build(1003, "missionType为空或出现非法字符!");
+			}
+			//任务类型
+			Integer missionType = Integer.parseInt(param.toString());
+			
+			String continuePredict = readyData.continuePredict(scenarinoId, scenarinoType, missionType, missionId, userId);
+			
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return AmpcResult.build(1000, "系统错误");
 		}
+		return null;
 		
 	}
 	/**
