@@ -12,11 +12,11 @@ import ampc.com.gistone.util.JsonUtil;
 public class RequestParams {
 
 	private final static Logger logger = LoggerFactory.getLogger(RequestParams.class);
-
-	private int userId;
-	private int domainId;
-	private int missionId;
-	private int scenarioId;
+	private String showType;
+	private Long userId;
+	private Long domainId;
+	private Long missionId;
+	private Long scenarioId;
 	private int domain;
 	private List<String> date;
 	private String timePoint;
@@ -28,8 +28,11 @@ public class RequestParams {
 	public RequestParams() {
 	}
 
-	public RequestParams(int userId, int domainId, int missionId, int scenarioId, int domain, List date,
-			String timePoint) {
+	
+
+	public RequestParams(Long userId, Long domainId, Long missionId,
+			Long scenarioId, int domain, List<String> date, String timePoint) {
+		super();
 		this.userId = userId;
 		this.domainId = domainId;
 		this.missionId = missionId;
@@ -39,6 +42,8 @@ public class RequestParams {
 		this.timePoint = timePoint;
 	}
 
+
+	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		try {
@@ -57,37 +62,55 @@ public class RequestParams {
 		return sb.toString();
 	}
 
-	public int getUserId() {
+	
+
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId) {
+
+
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
-	public int getDomainId() {
+
+
+	public Long getDomainId() {
 		return domainId;
 	}
 
-	public void setDomainId(int domainId) {
+
+
+	public void setDomainId(Long domainId) {
 		this.domainId = domainId;
 	}
 
-	public int getMissionId() {
+
+
+	public Long getMissionId() {
 		return missionId;
 	}
 
-	public void setMissionId(int missionId) {
+
+
+	public void setMissionId(Long missionId) {
 		this.missionId = missionId;
 	}
 
-	public int getScenarioId() {
+
+
+	public Long getScenarioId() {
 		return scenarioId;
 	}
 
-	public void setScenarioId(int scenarioId) {
+
+
+	public void setScenarioId(Long scenarioId) {
 		this.scenarioId = scenarioId;
 	}
+
+
 
 	public int getDomain() {
 		return domain;
@@ -149,4 +172,17 @@ public class RequestParams {
 		this.type = type;
 	}
 
+
+
+	public String getShowType() {
+		return showType;
+	}
+
+
+
+	public void setShowType(String showType) {
+		this.showType = showType;
+	}
+
+	
 }

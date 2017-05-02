@@ -71,7 +71,7 @@ public class CityWorkerV2 {
 		}
 	}
 
-	public void exe(int userId, int domainId, int missionId, int scenarioId, int domain, List<String> dates,
+	public void exe(Long userId, Long domainId, Long missionId, Long scenarioId, int domain, List<String> dates,
 			String timePoint, String mode, List<String> filter)
 					throws IOException, TransformException, FactoryException, ParseException {
 		stationMap = calculateCityService.getStations();
