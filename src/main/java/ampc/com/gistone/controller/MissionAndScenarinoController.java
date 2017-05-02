@@ -1708,7 +1708,14 @@ public class MissionAndScenarinoController {
 				
 			}
 				if(b!=0){
+					
 				JSONObject obj=new JSONObject();
+				for(TScenarinoDetail ts:tScenarinoDetaillist){
+					if(ts.getScenType().equals("3")){
+						obj.put("jzqjid",ts.getScenarinoId());	
+					}
+					
+				}
 				obj.put("missionId", mission.getMissionId());
 				obj.put("missionName", mission.getMissionName());
 				obj.put("missionStartDate", mission.getMissionStartDate().getTime());
