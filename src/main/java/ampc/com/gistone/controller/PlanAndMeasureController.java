@@ -353,14 +353,14 @@ public class PlanAndMeasureController {
 			Long scenarinoStatus = Long.parseLong(param.toString());
 			
 			//获取预案名称
-			param=data.get("planName");
-			//进行参数判断
-			if(!RegUtil.CheckParameter(param, "String", null, false)){
-				LogUtil.getLogger().error("PlanAndMeasureController 预案名称为空或出现非法字符!");
-				return AmpcResult.build(1003, "预案名称为空或出现非法字符!");
-			}
-			// 预案名称
-			String planName = param.toString();
+//			param=data.get("planName");
+//			//进行参数判断
+//			if(!RegUtil.CheckParameter(param, "String", null, false)){
+//				LogUtil.getLogger().error("PlanAndMeasureController 预案名称为空或出现非法字符!");
+//				return AmpcResult.build(1003, "预案名称为空或出现非法字符!");
+//			}
+//			// 预案名称
+//			String planName = param.toString();
 			
 			//获取情景id
 			param=data.get("scenarioId");
