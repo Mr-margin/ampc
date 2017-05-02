@@ -47,7 +47,9 @@ public interface TMissionDetailMapper {
     int insert(TMissionDetail record);
 
     int insertSelective(TMissionDetail record);
-
+    /**
+     * 该任务下的所有数据
+     * */
     TMissionDetail selectByPrimaryKey(Long missionId);
 
     int updateByPrimaryKeySelective(TMissionDetail record);
