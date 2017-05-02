@@ -1602,7 +1602,7 @@ public class PlanAndMeasureController {
 			//值键对
 			param=data.get("areaAndPlanIds");
 			//进行参数判断
-			if(!RegUtil.CheckParameter(param, "Map", null, false)){
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
 				LogUtil.getLogger().error("PlanAndMeasureController 减排值键对为空或出现非法字符!");
 				return AmpcResult.build(1003, "减排值键对为空或出现非法字符!");
 			}
