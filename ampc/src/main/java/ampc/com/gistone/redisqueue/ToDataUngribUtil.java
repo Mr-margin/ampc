@@ -8,9 +8,11 @@
  */
 package ampc.com.gistone.redisqueue;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONArray;
@@ -25,7 +27,9 @@ import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.inter.TUngribMapper;
 import ampc.com.gistone.database.model.TUngrib;
+import ampc.com.gistone.redisqueue.result.Message;
 import ampc.com.gistone.util.DateUtil;
+import ampc.com.gistone.util.JsonUtil;
 import ampc.com.gistone.util.LogUtil;
 
 /**  
@@ -158,7 +162,7 @@ public class ToDataUngribUtil {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			LogUtil.getLogger().error("ungrib参数出错！");
+			LogUtil.getLogger().error("ungrib参数出错！",e);
 		}
 		
 	}
@@ -201,6 +205,8 @@ public class ToDataUngribUtil {
 		int length;
 		if (len.contains("0")) {
 			 length = len.substring(0, len.indexOf("0")).length();
+		}else if(len.contains("null")){
+			length = len.substring(0, len.indexOf("null")).length();
 		}else {
 			 length = len.length();
 		}
@@ -251,7 +257,127 @@ public class ToDataUngribUtil {
 		}
 		return tUngrib;
 	}
-	 
-	
+	 /**
+	  * 解析ungrib数据 并更新数据库
+	  */
+	public void  updateUngrib(String rpop) {
+		LogUtil.getLogger().info("开始解析ungrib数据");
+		//创建ungrib对象
+		TUngrib tUngrib = new TUngrib();
+		try {
+			Message message = JsonUtil.jsonToObj(rpop, Message.class);
+			try {
+				Date time = message.getTime();
+				Object object = message.getBody();
+				Map ungribmap = (Map) object;
+				String pathdate = (String) ungribmap.get("pathdate");//起报时间
+				if (null!=pathdate&&!StringUtils.isEmpty(pathdate)) {
+					try {
+						Date pathdateDate = DateUtil.StrtoDateYMD(pathdate,"yyyyMMdd");
+						StringBuffer buffer = new StringBuffer();
+						List fnlList  = (List) ungribmap.get("fnl");
+						Integer fnl = Integer.parseInt(fnlList.get(0).toString());
+						buffer.append(fnl.toString());
+						List gfsList = (List) ungribmap.get("gfs");
+						for (int i = 0; i < gfsList.size(); i++) {
+							buffer.append(gfsList.get(i));
+						}
+						//接受到的整个fnl到gfs的状态
+						String status1 = buffer.toString();
+						//需要更新的fnl到gfs的状态
+						String status;
+						//去正常运行的结果  当出现错误的时候  （0）则后面的不会跟新数据库  
+						if (status1.contains("0")) {
+							status =status1.substring(0, status1.indexOf("0"));
+							status =status+"0";
+						}else {
+							status=status1;
+						}
+						List fnlDescList = (List) ungribmap.get("fnlDesc");
+						String fnlerror = fnlDescList.get(0).toString();  //fnl错误描述
+						List gfsDescList = (List) ungribmap.get("gfsDesc");
+						String gfserror = null;  
+						for (int i = 0; i < gfsDescList.size(); i++) {
+							String gfsString = gfsDescList.get(i).toString();
+							if(!StringUtils.isEmpty(gfsString)) {
+								gfserror = gfsString;//gfs错误的信息
+							}
+						}
+						//查询该条ungrib是否存在，存在则修改，否则添加
+						tUngrib.setErrorFnlMsg(fnlerror);
+						tUngrib.setErrorGfsMsg(gfserror);
+						LogUtil.getLogger().info("我要给fnl和gfs赋值了");
+						//调用方法给每个gfs的状态赋值
+						tUngrib = ToDataUngribUtil.updateGFSstatus(tUngrib,status);
+						//判断上一天的ungrib是否成功
+						Date yestdate = DateUtil.ChangeDay(pathdateDate, -1);
+						try {
+							TUngrib yesTUngrib = tUngribMapper.selectUngrib(yestdate);
+							if (null!=yesTUngrib) {
+								//创建对象
+								try {
+									TUngrib tUngrib2 = tUngribMapper.selectUngrib(pathdateDate);
+									//如果存在则执行更新操作，不存在则执行添加操作
+									if (tUngrib2!=null) {
+										//判断跟新还是不跟新ungrib
+										int updateORNo = UpdateORNo(tUngrib2);
+										if (updateORNo<10) {
+											tUngrib.setAddTime(tUngrib2.getAddTime());
+											tUngrib.setPathDate(pathdateDate);
+											tUngrib.setUngribId(tUngrib2.getUngribId());
+											//备注表示修改时间
+											tUngrib.setUpdateTime(new Date());
+											//更新到数据库
+											try {
+												int i = tUngribMapper.updateByPrimaryKey(tUngrib);
+												if (i>0) {
+													LogUtil.getLogger().info("跟新ungrib"+new Date());
+												}else {
+													LogUtil.getLogger().info("跟新ungrib失败！时间："+new Date());
+												}
+											} catch (Exception e) {
+												LogUtil.getLogger().error("跟新ungrib出异常！"+e.getMessage());
+											}
+										}else {
+											LogUtil.getLogger().info("ungrib已经全部更新完毕l！不需要更新了！");
+										}
+									}else {
+										//执行添加操作
+										tUngrib.setAddTime(new Date());
+										tUngrib.setPathDate(pathdateDate);
+										//添加到数据库
+										try {
+											int i = tUngribMapper.insert(tUngrib);
+											if (i>0) {
+												LogUtil.getLogger().info("添加了最新的ungrib数据！");
+											}else {
+												LogUtil.getLogger().info("添加最新的ungrib数据失败！");
+											}
+										} catch (Exception e) {
+											LogUtil.getLogger().error("添加了最新的ungrib数据出异常了"+e.getMessage());
+										}
+									}
+								} catch (Exception e) {
+									LogUtil.getLogger().error("查找当前pathdate的ungrib出错！"+e.getMessage());
+								}
+							}else {
+								LogUtil.getLogger().info("上一天："+yestdate+"的ungrib没有更新！不允许跳跃跟新ungrib！");
+							}
+						} catch (Exception e) {
+							LogUtil.getLogger().error("查找上一天的ungrib出错！"+e.getMessage());
+						}
+					} catch (Exception e) {
+						LogUtil.getLogger().error("ungrib的pathdate格式不对！"+e.getMessage());
+					}
+				}else {
+					LogUtil.getLogger().info("ungrib的pathdate参数为空！");
+				}
+			} catch (Exception e) {
+				LogUtil.getLogger().error("ungrib的更新出错！"+e.getMessage());
+			}
+		} catch (IOException e1) {
+			LogUtil.getLogger().error("ungrib转换异常！",e1);
+		}
+	}
 
 }
