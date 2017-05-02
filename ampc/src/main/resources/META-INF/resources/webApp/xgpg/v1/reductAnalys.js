@@ -161,8 +161,8 @@ var qjname_dq;//当前情景的name
 function setQjSelectBtn(data) {
     $('#qjBtn1 .btn-group').empty();
     for (var i = 0; i < data.length; i++) {
-        var btn1 = $('<label class="btn btn-outline btn-success bgw"><input type="radio" name="qjBtn1"><span></span></label><br/>');
-        btn1.attr('title', data[i].scenarinoName).find('input').attr('value', data[i].scenarinoId).attr('data-sDate', data[i].scenarinoStartDate).attr('data-eDate', data[i].scenarinoEndDate);
+        var btn1 = $('<label class="btn btn-outline btn-success bgw" style="z-index: 2"><input type="radio" name="qjBtn1"><span></span></label><br/>');
+        btn1.attr('title', data[i].scenarinoName).find('input').attr('value', data[i].scenarinoId);
         btn1.find('span').html(data[i].scenarinoName);
         if (i == 0) {
             btn1.addClass('active').find('input').attr('checked', true);
@@ -810,13 +810,14 @@ function gis_switch_table() {
     setTimeout(function () {
         $("#showtype").children().each(function () {
             if ($(this).is('.active')) {
-
+                $('#qjBtn1').removeClass('disNone');
                 if ($(this).attr("val_name") == "gis") {
                     $("#listModal").hide();
                     $("#map_showId").show();
                     $("#legendWrapper").show();
                     $("#gis_table_title").html("各地区减排");
                 } else if ($(this).attr("val_name") == "table") {
+                    $('#qjBtn1').addClass('disNone');
                     table_show(tj_paramsName.code);
                     $("#gis_table_title").html("各地区减排比例(%)");
                     $("#listModal").show();
@@ -883,3 +884,9 @@ function table_show(query_code) {
     });
 }
 
+
+$('#qjBtn1').on('change','input',function (e) {
+    console.log($(e.target).val());
+    qjid_dq = $(e.target).val();
+    shoe_data_start()
+})
