@@ -382,8 +382,11 @@ function exchangeModal() {
 
 
 
-function bianji(type, g_num, p) {
-	
+function bianji(type, g_num, p , wind) {
+
+    if(!wind){
+        wind = -1
+    }
 	var par = p;
     var v1 = new Date().getTime();
     par.xmax = app.mapList[app.shengx].extent.xmax;
@@ -391,7 +394,7 @@ function bianji(type, g_num, p) {
     par.ymax = app.mapList[app.shengx].extent.ymax;
     par.ymin = app.mapList[app.shengx].extent.ymin;
 	
-	if(changeMsg.showWind == -1){//无风场
+	if(wind == -1){//无风场
 
 	    var GPserver_type = par.GPserver_type;
 	    var GPserver_url = ArcGisServerUrl + "/arcgis/rest/services/ampc_zrly/" + GPserver_type + "/GPServer/" + GPserver_type;
@@ -486,9 +489,9 @@ function bianji(type, g_num, p) {
 //		zmblockUI("#mapDiv0", "end");
 //        zmblockUI("#mapDiv1", "end");
 	    
-	}else if(changeMsg.showWind == 1){//↑风场
+	}else if(wind == 1){//↑风场
 		
-	}else if(changeMsg.showWind == 2){//F风场
+	}else if(wind == 2){//F风场
 		zmblockUI("#mapDiv0", "start");
 	    zmblockUI("#mapDiv1", "start");
 	    
@@ -870,7 +873,7 @@ $('input[name=showWind]').on('change', function (e) { //地图风场类型
     }
 
     console.log(type);
-    updata();
+    updata('wind');
 });
 
 $('#qjBtn1').on('change', 'input', function (e) {//改变左侧情景
@@ -1003,7 +1006,21 @@ function updata(t) {
     p2.GPserver_type = mappingSpecies[changeMsg.rms][changeMsg.species];
 
 
-    if (t) {
+    if(t == 'wind'){
+        p1.showType = t;
+
+        /*执行方法，进行左图添加*/
+        bianji("1", 0, p1,changeMsg.showWind);
+        /*执行方法，进行左图添加 end*/
+
+        p2.calcType = changeMsg.calcType;
+        p2.showType = t;
+        //console.log('p2',$.extend({},p2),p2.showType);
+
+        /*执行方法，进行右图添加*/
+        bianji("1", 1, p2,changeMsg.showWind);
+        /*执行方法，进行右图添加 end*/
+    }else if (t) {
         for (var x = 0; x < changeMsg.showType.length; x++) {
             p2.calcType = changeMsg.calcType;
             p2.showType = changeMsg.showType[x];
@@ -1018,17 +1035,31 @@ function updata(t) {
         for (var i = 0; i < changeMsg.showType.length; i++) {
             p1.showType = changeMsg.showType[i];
 
-            /*执行方法，进行左图添加*/
-            bianji("1", 0, p1);
-            /*执行方法，进行左图添加 end*/
+
 
             p2.calcType = changeMsg.calcType;
             p2.showType = changeMsg.showType[i];
             //console.log('p2',$.extend({},p2),p2.showType);
 
-            /*执行方法，进行右图添加*/
-            bianji("1", 1, p2);
-            /*执行方法，进行右图添加 end*/
+
+
+            if(i==0){
+                /*执行方法，进行左图添加*/
+                bianji("1", 0, p1);
+                /*执行方法，进行左图添加 end*/
+
+                /*执行方法，进行右图添加*/
+                bianji("1", 1, p2);
+                /*执行方法，进行右图添加 end*/
+            }else{
+                /*执行方法，进行左图添加*/
+                bianji("1", 0, p1,changeMsg.showWind);
+                /*执行方法，进行左图添加 end*/
+
+                /*执行方法，进行右图添加*/
+                bianji("1", 1, p2,changeMsg.showWind);
+                /*执行方法，进行右图添加 end*/
+            }
         }
     }
 
