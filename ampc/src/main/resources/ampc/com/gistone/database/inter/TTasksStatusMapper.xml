@@ -450,7 +450,10 @@
   set BEIZHU = #{beizhu,jdbcType=VARCHAR}
   where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </update>
-
+<!--查找返回模式执行的结果  -->
+<select id="selectStartModelresult"  parameterType="java.lang.Long" resultType="java.lang.String">
+select START_MODEL_RESULT from T_TASKS_STATUS where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
+</select>
   
   <!--查找预评估任务情景的task任务执行情况的全部情景  步数是个未知数-->
   
@@ -470,7 +473,12 @@
     set STOP_STATUS = #{stopStatus,jdbcType=VARCHAR}
   	where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </update>
-  
+  <!--  -->
+  <update id="updatepausestatus" parameterType="ampc.com.gistone.database.model.TTasksStatus">
+   update T_TASKS_STATUS
+    set PAUSE_STATUS = #{pauseStatus,jdbcType=VARCHAR}
+  	where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
+  </update>
   <!-- 修改模式终止返回的状态 -->
 <update id="updatestopModelresult" parameterType="ampc.com.gistone.database.model.TTasksStatus">
 update T_TASKS_STATUS
