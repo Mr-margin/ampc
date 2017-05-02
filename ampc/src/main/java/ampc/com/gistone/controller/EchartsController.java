@@ -223,10 +223,8 @@ public class EchartsController {
 			cal.setTime(sDate);
 			//给中间时间变量复制
 			tempDate = cal.getTime();
-			//开始循环
-			while(true){
-				//如果中间变量的日期大于了情景的结束时间就跳出循环
-				if(tempDate.getTime()>eDate.getTime()) break;
+			//开始循环  如果中间变量的日期大于了情景的结束时间就跳出循环
+			while(!(tempDate.getTime()>eDate.getTime())){
 				//定义临时变量用来接收数值
 				BigDecimal result=null;
 				//定义临时变量用来确定是否结果中包含这个时间
