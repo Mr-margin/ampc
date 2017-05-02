@@ -111,11 +111,12 @@ require(
         "esri/layers/LayerDataSource", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "esri/layers/LayerDrawingOptions", "esri/symbols/SimpleFillSymbol",
         "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleMarkerSymbol", "esri/geometry/Multipoint", "esri/geometry/Point", "esri/geometry/Extent",
         "esri/renderers/SimpleRenderer", "esri/graphic", "esri/lang", "dojo/_base/Color", "dojo/_base/array", "dojo/number", "dojo/dom-style", "dijit/TooltipDialog",
-        "dijit/popup", "dojox/widget/ColorPicker", "esri/layers/RasterLayer", "tdlib/gaodeLayer", "esri/tasks/FeatureSet", "esri/SpatialReference", "dojo/domReady!"
+        "dijit/popup", "dojox/widget/ColorPicker", "esri/layers/RasterLayer", "tdlib/gaodeLayer", "esri/tasks/FeatureSet", "esri/SpatialReference", "esri/symbols/PictureMarkerSymbol",
+        "dojo/domReady!"
     ],
     function (Map, Geoprocessor, ImageParameters, DynamicLayerInfo, RasterDataSource, TableDataSource, LayerDataSource, FeatureLayer, GraphicsLayer, LayerDrawingOptions,
               SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Multipoint, Point, Extent, SimpleRenderer, Graphic, esriLang, Color, array, number, domStyle,
-              TooltipDialog, dijitPopup, ColorPicker, RasterLayer, gaodeLayer, FeatureSet, SpatialReference) {
+              TooltipDialog, dijitPopup, ColorPicker, RasterLayer, gaodeLayer, FeatureSet, SpatialReference, PictureMarkerSymbol) {
 
         dong.gaodeLayer = gaodeLayer;
         dong.Geoprocessor = Geoprocessor;
@@ -124,6 +125,7 @@ require(
         dong.FeatureSet = FeatureSet;
         dong.GraphicsLayer = GraphicsLayer;
         dong.SpatialReference = SpatialReference;
+        dong.PictureMarkerSymbol = PictureMarkerSymbol;
 
         esri.config.defaults.io.proxyUrl = ArcGisUrl + "/Java/proxy.jsp";
 //		esri.config.defaults.io.proxyUrl = "webApp/xgpg/v4/proxy.jsp";
@@ -152,8 +154,11 @@ require(
             app.mapList[i].addLayers([app.baselayerList[i]]);//添加高德地图到map容器
         }
 
-        app.gLyr = new dong.GraphicsLayer({"id": "gLyr"});
-        app.mapList[0].addLayer(app.gLyr);
+        app.gLyr1 = new dong.GraphicsLayer({"id": "gLyr1"});
+        app.mapList[0].addLayer(app.gLyr1);
+        
+        app.gLyr2 = new dong.GraphicsLayer({"id": "gLyr2"});
+        app.mapList[1].addLayer(app.gLyr2);
 
         app.shengx = 0;
 
@@ -376,152 +381,219 @@ function exchangeModal() {
 }
 
 
-function ajaxPost_tthg(url, parameter) {
-    parameterPar.data = parameter;
-    var p = JSON.stringify(parameterPar);
-    return $.ajax('http://192.168.7.25:8083/ampc' + url, {
-        contentType: "application/json",
-        type: "POST",
-        async: true,
-        dataType: 'JSON',
-        data: p
-    })
-}
-
 
 function bianji(type, g_num, p) {
-    var par = p;
+	
+	var par = p;
     var v1 = new Date().getTime();
-
-//  if(g_num == 0){
-//    par.xmax = app.mapList[0].extent.xmax;
-//    par.xmin = app.mapList[0].extent.xmin;
-//    par.ymax = app.mapList[0].extent.ymax;
-//    par.ymin = app.mapList[0].extent.ymin;
-//  }else{
-//
-//    par.xmax = app.mapList[1].extent.xmax;
-//    par.xmin = app.mapList[1].extent.xmin;
-//    par.ymax = app.mapList[1].extent.ymax;
-//    par.ymin = app.mapList[1].extent.ymin;
-//  }
-
-
     par.xmax = app.mapList[app.shengx].extent.xmax;
     par.xmin = app.mapList[app.shengx].extent.xmin;
     par.ymax = app.mapList[app.shengx].extent.ymax;
     par.ymin = app.mapList[app.shengx].extent.ymin;
+	
+	if(changeMsg.showWind == -1){//无风场
 
-    //return;
-    //var GPserver_type = "co_daily";
-    var GPserver_type = par.GPserver_type;
+	    var GPserver_type = par.GPserver_type;
+	    var GPserver_url = ArcGisServerUrl + "/arcgis/rest/services/ampc_zrly/" + GPserver_type + "/GPServer/" + GPserver_type;
+//	    $.get('data6.json', function (data) {
+//	    console.log(par);
+	    ajaxPost('/extract/data', par).success(function (data) {
 
-    //GPserver_type = "PM25";
-    //console.log($("#species").val());
+	        if (!data.data) {
+	            console.log("data.data-null");
+	            return;
+	        }
+	        if (data.data.length == 0) {
+	            console.log("length-null");
+	            return;
+	        }
+	        console.log(g_num + '~~~' + data.data.length);
+	        var features = [];
+	        $.each(data.data, function (i, col) {
 
+	            if (typeof col.x == "undefined") {
+	                console.log("x-null");
+	                return;
+	            }
+	            if (typeof col.y == "undefined") {
+	                console.log("y-null");
+	                return;
+	            }
+	            var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
+	            var attr = {};
+	            attr["FID"] = i;
+	            attr["dqvalue"] = col.v;
+	            var graphic = new dong.Graphic(point);
+	            graphic.setAttributes(attr);
+	            features.push(graphic);
+	        });
 
-    var GPserver_url = ArcGisServerUrl + "/arcgis/rest/services/ampc_zrly/" + GPserver_type + "/GPServer/" + GPserver_type;
-    //$.get('data-d01.json', function (data) {
-    ajaxPost('/extract/data', par).success(function (data) {
+	        var featureset = new dong.FeatureSet();
+	        featureset.fields = [{
+	            "name": "dqvalue",
+	            "type": "esriFieldTypeSingle",
+	            "alias": "dqvalue"
+	        }, {
+	            "name": "FID",
+	            "type": "esriFieldTypeOID",
+	            "alias": "FID"
+	        }];
+	        featureset.fieldAliases = {"dqvalue": "dqvalue", "FID": "FID"};
+	        featureset.spatialReference = new dong.SpatialReference({wkid: 3857});
+	        featureset.features = features;
+	        featureset.exceededTransferLimit = false;
 
-        if (!data.data) {
-            console.log("data.data-null");
-            return;
-        }
+//	        console.log(JSON.stringify(featureset));
+//	        console.log((new Date().getTime() - v1) + "生成数据");
+	        app.gp = new esri.tasks.Geoprocessor(GPserver_url);
+	        var parms = {
+	            "imp": featureset,
+	            "out": "out_raster_layer"
+	        };
+	        app.gp.submitJob(parms, function (jobInfo) {
+	            var gpResultLayer = app.gp.getResultImageLayer(jobInfo.jobId, "out");//这里的名字是跟着返回图层的变量名走的，不一样的话是不出图的
+	            //需要判断一下是否已经添加过图层，先移除，再添加
+	            gpResultLayer.id = "out_raster_layer";
+	            var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
+	            if (out_raster_layer) {
+	                app.mapList[g_num].removeLayer(out_raster_layer);
+	            }
 
-        if (data.data.length == 0) {
-            console.log("length-null");
-            return;
-        }
+	            gpResultLayer.setOpacity(opacity);
+	            app.mapList[g_num].addLayer(gpResultLayer);
+	            //console.log(new Date().getTime() - v1);
+	        }, function (jobinfo) {
+	            var jobstatus = '';
+	            switch (jobinfo.jobStatus) {
+	                case 'esriJobSubmitted':
+	                    //jobstatus = type + '正在提交...';
+	                    break;
+	                case 'esriJobExecuting':
+	                    //jobstatus = type + '处理中...';
+	                    break;
+	                case 'esriJobSucceeded':
+	                    jobstatus = '--' + g_num + '--处理完成...';
+	                    console.log((new Date().getTime() - v1) + jobstatus);
+	                    zmblockUI("#mapDiv0", "end");
+	                    zmblockUI("#mapDiv1", "end");
+	                    break;
+	            }
+	        }, function (error) {
+	            console.log(error);
+	        });
 
-//    if(data.data.length > 961){
-//      console.log("length-> "+ data.data.length);
-//      return;
-//    }
+	    });
+//		zmblockUI("#mapDiv0", "end");
+//        zmblockUI("#mapDiv1", "end");
+	    
+	}else if(changeMsg.showWind == 1){//↑风场
+		
+	}else if(changeMsg.showWind == 2){//F风场
+		zmblockUI("#mapDiv0", "start");
+	    zmblockUI("#mapDiv1", "start");
+	    
+		$.get('data7.json', function (data) {
+//		ajaxPost('/extract/data', par).success(function (data) {
+//			if (!data.data) {
+//	            console.log("data.data-null");
+//	            return;
+//	        }
+//	        if (data.data.length == 0) {
+//	            console.log("length-null");
+//	            return;
+//	        }
+	        
+	        $.each(data, function (i, col) {
 
-        console.log(g_num + '~~~' + data.data.length);
-
-
-        var features = [];
-        $.each(data.data, function (i, col) {
-
-            if (typeof col.x == "undefined") {
-                console.log("x-null");
-                return;
-            }
-            if (typeof col.y == "undefined") {
-                console.log("y-null");
-                return;
-            }
-
-
-            var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
-            var attr = {};
-            attr["FID"] = i;
-            attr["dqvalue"] = col.v;
-            var graphic = new dong.Graphic(point);
-            graphic.setAttributes(attr);
-            features.push(graphic);
-        });
-
-        var featureset = new dong.FeatureSet();
-        featureset.fields = [{
-            "name": "dqvalue",
-            "type": "esriFieldTypeSingle",
-            "alias": "dqvalue"
-        }, {
-            "name": "FID",
-            "type": "esriFieldTypeOID",
-            "alias": "FID"
-        }];
-        featureset.fieldAliases = {"dqvalue": "dqvalue", "FID": "FID"};
-        featureset.spatialReference = new dong.SpatialReference({wkid: 3857});
-        featureset.features = features;
-        featureset.exceededTransferLimit = false;
-
-//    console.log(JSON.stringify(featureset));
-
-        //console.log((new Date().getTime() - v1) + "生成数据");
-
-        app.gp = new esri.tasks.Geoprocessor(GPserver_url);
-        var parms = {
-            "imp": featureset,
-            "out": "out_raster_layer"
-        };
-        app.gp.submitJob(parms, function (jobInfo) {
-            var gpResultLayer = app.gp.getResultImageLayer(jobInfo.jobId, "out");//这里的名字是跟着返回图层的变量名走的，不一样的话是不出图的
-            //需要判断一下是否已经添加过图层，先移除，再添加
-            gpResultLayer.id = "out_raster_layer";
-            var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
-            if (out_raster_layer) {
-                app.mapList[g_num].removeLayer(out_raster_layer);
-            }
-
-            gpResultLayer.setOpacity(opacity);
-            app.mapList[g_num].addLayer(gpResultLayer);
-
-            //console.log(new Date().getTime() - v1);
-        }, function (jobinfo) {
-            var jobstatus = '';
-            switch (jobinfo.jobStatus) {
-                case 'esriJobSubmitted':
-                    //jobstatus = type + '正在提交...';
-                    break;
-                case 'esriJobExecuting':
-                    //jobstatus = type + '处理中...';
-                    break;
-                case 'esriJobSucceeded':
-                    jobstatus = '--' + g_num + '--处理完成...';
-                    console.log((new Date().getTime() - v1) + jobstatus);
-                    zmblockUI("#mapDiv0", "end");
+	            if (typeof col.x == "undefined") {
+	                console.log("x-null");
+	                return;
+	            }
+	            if (typeof col.y == "undefined") {
+	                console.log("y-null");
+	                return;
+	            }
+	            
+	            var p_url = "img/fx/"+col.v1+".png";
+	            var angle = 0;
+	            switch (col.v2) {
+					case "N" :
+						angle = 0;
+						break;
+					case "NNE" :
+						angle = 22.5;
+						break;
+					case "NE" :
+						angle = 45;
+						break;
+					case "ENE" :
+						angle = 67.5;
+						break;
+					case "E" :
+						angle = 90;
+						break;
+					case "ESE" :
+						angle = 112.5;
+						break;
+					case "SE" :
+						angle = 135;
+						break;
+					case "SSE" :
+						angle = 157.5;
+						break;
+					case "S" :
+						angle = 180;
+						break;
+					case "SSW" :
+						angle = 202.5;
+						break;
+					case "SW" :
+						angle = 225;
+						break;
+					case "WSW" :
+						angle = 247.5;
+						break;
+					case "W" :
+						angle = 270;
+						break;
+					case "WNW" :
+						angle = 292.5;
+						break;
+					case "NW" :
+						angle = 315;
+						break;
+					case "NNW" :
+						angle = 337.5;
+						break;
+					default :
+						angle = 0;
+				}
+	            
+	            var symbol = new dong.PictureMarkerSymbol(p_url,12,12);
+	            symbol.setOffset(-10,18);
+	            symbol.setAngle(angle);
+	            var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
+	            var graphic = new dong.Graphic(point, symbol);
+	            if(g_num == 0){
+	            	app.gLyr1.add(graphic);
+	            	zmblockUI("#mapDiv0", "end");
                     zmblockUI("#mapDiv1", "end");
-                    break;
-            }
-        }, function (error) {
-            console.log(error);
-        });
-
-    });
+	            }else if(g_num == 1){
+	            	app.gLyr2.add(graphic);
+	            	zmblockUI("#mapDiv0", "end");
+                    zmblockUI("#mapDiv1", "end");
+	            }
+	            
+	            
+	        });
+	        console.log((new Date().getTime() - v1) + "num:" +g_num);
+		});
+		
+	}
+	
+	
+	
+    
 
 }
 
