@@ -1097,4 +1097,11 @@ WHERE
 AND IS_EFFECTIVE = '1') AND S.MISSION_ID=#{missionId,jdbcType=DECIMAL}
 AND S.IS_EFFECTIVE ='1'
   </select>
+  
+  <select id="selectBytype4" parameterType="hashMap" resultMap="BaseResultMap">
+  SELECT 
+		<include refid="Base_Column_List" />
+  		FROM T_SCENARINO_DETAIL  
+  		WHERE #{startDate,jdbcType=TIMESTAMP} &lt;= PATH_DATE AND PATH_DATE &lt;= #{endDate,jdbcType=TIMESTAMP} AND SCEN_TYPE = '4'
+  </select>
 </mapper>
