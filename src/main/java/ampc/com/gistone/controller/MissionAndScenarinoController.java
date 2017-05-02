@@ -1009,14 +1009,22 @@ public class MissionAndScenarinoController {
 			}
 			//根据id查询任务
 			TMissionDetail tMission=tMissionDetailMapper.selectByPrimaryKey(missionId);
-			
+			List<TScenarinoDetail> sslist=new ArrayList();
 			
 			//根据任务id查询所有情景
 			List<TScenarinoDetail> scenarlist=tScenarinoDetailMapper.selectAllByMissionId(missionId);
 			if(tMission.getMissionStatus().equals("3")){
 			if(scenarlist.isEmpty()){
+				if(false){
+				Map<String,Date> map=new HashMap();
+				map.put("startDate", tMission.getMissionStartDate());
+				map.put("endDate", tMission.getMissionEndDate());
+				sslist=tScenarinoDetailMapper.selectBytype4(map);
+				}
+				if(sslist.isEmpty()){
 				System.out.println("任务下无情景");	
 				return AmpcResult.build(1000, "任务下无情景",null);
+				}
 			}
 			}
 			
@@ -1027,8 +1035,10 @@ public class MissionAndScenarinoController {
 				if(null!=tScenarinoDetailMapper.selectMaxEndTime(missionId)){
 					tsdate=tScenarinoDetailMapper.selectMaxEndTime(missionId);
 				}else{
-					System.out.println("无基准情景");	
-					return AmpcResult.build(1000, "无基准情景",null);
+					if(sslist.isEmpty()){
+					System.out.println("无基准情景与预报情景");	
+					return AmpcResult.build(1000, "无基准情景与预报情景",null);
+					}
 					}
 			
 			}
@@ -1044,8 +1054,11 @@ public class MissionAndScenarinoController {
 				if(null!=tScenarinoDetailMapper.selectMaxEndTime4()){
 					frtscen=tScenarinoDetailMapper.selectMaxEndTime4();
 				}else{
-					System.out.println("无实时预报情景");	
-					return AmpcResult.build(1000, "无实时预报情景",null);
+					if(sslist.isEmpty()){
+						System.out.println("无实时预报情景");	
+						return AmpcResult.build(1000, "无实时预报情景",null);
+						}
+					
 					}
 			}
 			Date scenar=null;
@@ -1072,30 +1085,25 @@ public class MissionAndScenarinoController {
 			}
 			JSONArray arr=new JSONArray();
 			
-			
-			if(tMission.getMissionStatus().equals("3")){
-				JSONObject lastobj=new JSONObject();
-				lastobj.put("scenarinoId",tsdate.getScenarinoId());
-				lastobj.put("scenarinoName", tsdate.getScenarinoName());
-				lastobj.put("scenarinoStartDate", missiondate);
-				lastobj.put("ScenType", tsdate.getScenType());
-				lastobj.put("scenarinoEndDate", times);
-				arr.add(lastobj);	
-			}else if(tMission.getMissionStatus().equals("3")&&null!=tScenarinoDetailMapper.selectMaxEndTime4()){
-				JSONObject lastobj=new JSONObject();
-				lastobj.put("scenarinoId",tsdate.getScenarinoId());
-				lastobj.put("scenarinoName", tsdate.getScenarinoName());
-				lastobj.put("scenarinoStartDate", missiondate);
-				lastobj.put("ScenType", tsdate.getScenType());
-				lastobj.put("scenarinoEndDate", times);
-				arr.add(lastobj);	
+			if(tMission.getMissionStatus().equals("3")&&!sslist.isEmpty()){
+				
+				for(TScenarinoDetail tsc:sslist){
 				JSONObject forobj=new JSONObject();
-				forobj.put("scenarinoId",frtscen.getScenarinoId());
-				forobj.put("scenarinoName", "实时预报情景");
-				forobj.put("scenarinoStartDate", missiondate);
-				forobj.put("ScenType", frtscen.getScenType());
-				forobj.put("scenarinoEndDate", frdate);
+				forobj.put("scenarinoId",tsc.getScenarinoId());
+				forobj.put("scenarinoName", tsc.getScenarinoName());
+				forobj.put("scenarinoStartDate", formatter.format(tsc.getScenarinoStartDate()));
+				forobj.put("ScenType", tsc.getScenType());
+				forobj.put("scenarinoEndDate", formatter.format(tsc.getScenarinoEndDate()));
 				arr.add(forobj);	
+				}
+			}else if(tMission.getMissionStatus().equals("3")){
+				JSONObject lastobj=new JSONObject();
+				lastobj.put("scenarinoId",tsdate.getScenarinoId());
+				lastobj.put("scenarinoName", tsdate.getScenarinoName());
+				lastobj.put("scenarinoStartDate", missiondate);
+				lastobj.put("ScenType", tsdate.getScenType());
+				lastobj.put("scenarinoEndDate", times);
+				arr.add(lastobj);	
 			}else{
 				JSONObject forobj=new JSONObject();
 				forobj.put("scenarinoId",frtscen.getScenarinoId());
