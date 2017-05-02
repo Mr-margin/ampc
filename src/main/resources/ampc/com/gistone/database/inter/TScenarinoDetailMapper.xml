@@ -68,7 +68,7 @@
   </select>
   
   <!--查询所有的执行状态中的预评估情景  6表示模式执行中 1表示预评估情景 -->
-  <select id="getscenidAndcores" resultType="ampc.com.gistone.database.model.TScenarinoDetail">
+  <select id="getscenidAndcores" resultMap="BaseResultMap">
   select
   <include refid="Base_Column_List" />
   from T_SCENARINO_DETAIL where SCENARINO_STATUS ='6' and SCEN_TYPE ='1'
