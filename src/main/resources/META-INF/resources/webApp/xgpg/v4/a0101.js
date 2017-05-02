@@ -1,6 +1,7 @@
 var opacity = 0.8;//默认的图层透明度
 var ls, sceneInitialization, qjMsg;
 var changeMsg = {
+    showWind:'-1',
     showType: ['concn'],//"emis"代表排放、"concn"代表浓度、"wind"代表风场
     calcType: 'show',//"show"当前情景，"diff"差值，"ratio"比例
     species: 'PM₂.₅',//物种
@@ -80,7 +81,7 @@ var mappingSpeciesBig = {
     'O₃_8_max': 'O3_8_MAX',
     'O₃_1_max': 'O3_1_MAX',
     'O₃_avg': 'O3_AVG',
-    'O₃':'O3',
+    'O₃': 'O3',
     'SO₂': 'SO2',
     'NO₂': 'NO2',
     'CO': 'CO',
@@ -231,12 +232,6 @@ require(
  *设置导航条信息
  */
 $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">水平分布</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
-
-
-/*临时设置*/
-$('#showType label').attr('disabled', true);
-$('#showType input[value=concn]').prop('checked', true).parent().addClass('active').removeAttr('disabled');
-
 
 var allMission = {};
 /**
@@ -741,7 +736,6 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
     for (var i = 0; i < speciesArr[rms].length; i++) {
         $('#species').append($('<option>' + speciesArr[rms][i] + '</option>'))
     }
-    //$('#showType label').removeAttr('disabled');
     $('#sTime-d').css('width', '100%');
     if (rms == 'd') {
         $('#sTime-h').addClass('disNone');
@@ -763,11 +757,11 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
             }
         }
 
-        $('#showType .active input').prop('checked', false);
-        $('#showType .active').removeClass('active');
-        $('#showType label').attr('disabled', true);
-        $('#showType input[value=concn]').prop('checked', true).parent().addClass('active').removeAttr('disabled');
-        changeMsg.showType = ['concn'];
+        // $('#showType .active input').prop('checked', false);
+        // $('#showType .active').removeClass('active');
+        // $('#showType label').attr('disabled', true);
+        // $('#showType input[value=concn]').prop('checked', true).parent().addClass('active').removeAttr('disabled');
+        // changeMsg.showType = ['concn'];
     }
     changeMsg.rms = rms;
     updata();
@@ -780,20 +774,21 @@ $('input[name=calcType]').on('change', function (e) { //地图图片类型
     updata(true);
 });
 
-$('input[name=showType]').on('change', function (e) { //地图图片类型
+$('input[name=showWind]').on('change', function (e) { //地图风场类型
     var type = $(e.target).val();
-    if (changeMsg.showType.indexOf(type) == -1) {
-        changeMsg.showType.push(type)
+    changeMsg.showType = ['concn'];
+    changeMsg.showWind = type;
+
+    if (type == -1) {
+
+        /*这里清除风场图层*/
+
+        /*这里清除风场图层 end*/
+
     } else {
-        if (changeMsg.showType.length <= 1) {
-            $(e.target).parent().addClass('active');
-            e.target.checked = true;
-            return;
-        } else {
-            changeMsg.showType.splice(changeMsg.showType.indexOf(type), 1);
-        }
+        changeMsg.showType.push('wind');
     }
-    ;
+
     console.log(type);
     updata();
 });
@@ -929,23 +924,9 @@ function updata(t) {
 
 
     if (t) {
-
-        if (changeMsg.calcType == 'show') {
-            for (var x = 0; x < changeMsg.showType.length; x++) {
-                p2.calcType = changeMsg.calcType;
-                p2.showType = changeMsg.showType[x];
-                //console.log('p2',$.extend({},p2),p2.showType);
-
-                /*执行方法，进行右图添加*/
-                bianji("1", 1, p2);
-                /*执行方法，进行右图添加 end*/
-
-            }
-        } else {
-            p2.scenarioId1 = changeMsg.qj1Id;
-            p2.scenarioId2 = changeMsg.qj2Id;
+        for (var x = 0; x < changeMsg.showType.length; x++) {
             p2.calcType = changeMsg.calcType;
-            p2.showType = 'concn';
+            p2.showType = changeMsg.showType[x];
             //console.log('p2',$.extend({},p2),p2.showType);
 
             /*执行方法，进行右图添加*/
@@ -953,41 +934,22 @@ function updata(t) {
             /*执行方法，进行右图添加 end*/
 
         }
-
     } else {
         for (var i = 0; i < changeMsg.showType.length; i++) {
             p1.showType = changeMsg.showType[i];
-            //console.log('p1',$.extend({},p1),p1.showType);
 
             /*执行方法，进行左图添加*/
             bianji("1", 0, p1);
             /*执行方法，进行左图添加 end*/
 
-            if (changeMsg.calcType == 'show') {
-                p2.calcType = changeMsg.calcType;
-                p2.showType = changeMsg.showType[i];
-                //console.log('p2',$.extend({},p2),p2.showType);
-
-                /*执行方法，进行右图添加*/
-                bianji("1", 1, p2);
-                /*执行方法，进行右图添加 end*/
-
-            }
-        }
-
-        if (changeMsg.calcType != 'show') {
-            p2.scenarioId1 = changeMsg.qj1Id;
-            p2.scenarioId2 = changeMsg.qj2Id;
             p2.calcType = changeMsg.calcType;
-            p2.showType = 'concn';
+            p2.showType = changeMsg.showType[i];
             //console.log('p2',$.extend({},p2),p2.showType);
 
             /*执行方法，进行右图添加*/
             bianji("1", 1, p2);
             /*执行方法，进行右图添加 end*/
-
         }
-
     }
 
 }
