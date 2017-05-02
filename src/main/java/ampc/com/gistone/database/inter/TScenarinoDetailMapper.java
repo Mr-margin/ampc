@@ -286,7 +286,7 @@ public interface TScenarinoDetailMapper {
 	
 
 
-	
+    List<TScenarinoDetail> selectBytype4(Map map);
 
 
 	
