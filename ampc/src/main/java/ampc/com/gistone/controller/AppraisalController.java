@@ -1184,8 +1184,8 @@ public class AppraisalController {
 					scenarinoEntity.setCity_station(cityStation);
 					scenarinoEntity.setDomain(domain);		//空间分辨率--需要时替换即可,数据库中目前只有为3的数据
 					scenarinoEntity.setMode(mode);
-					scenarinoEntity.setDomainId(domainId);
-					scenarinoEntity.setsId(Integer.valueOf(tScenarinoDetaillists.getScenarinoId().toString()));
+					scenarinoEntity.setDomainId(Long.valueOf(domainId).longValue());
+					scenarinoEntity.setsId(Long.valueOf(tScenarinoDetaillists.getScenarinoId().toString()).longValue());
 					scenarinoEntity.setTableName(tables);
 					List<ScenarinoEntity> Lsclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 					if(!Lsclist.isEmpty()){
