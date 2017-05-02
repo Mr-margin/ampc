@@ -20,5 +20,5 @@ public interface TObsMapper {
 	 * @return
 	 */
 	List<ObsBean> queryObservationResult(Map<String, Object> params);
-
+	
 }

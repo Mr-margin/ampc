@@ -47,7 +47,7 @@
 	SET "CONTENT" = #{content,jdbcType=CLOB}, "UPDATE_TIME"=sysdate WHERE "DATE"=#{date,jdbcType=DATE} AND "MODE"=#{mode,jdbcType=VARCHAR} 
 	AND "CITY_STATION"=#{city_station,jdbcType=VARCHAR}
  </select>
-   <!-- sql查询观测数据 -->
+   <!-- sql查询观测数据集合 -->
   <select id="queryObservationResult" parameterType="hashMap" resultMap="ResultMapWithBLOBs">
  	select 
 	 	<include refid="Base_Column_List" />
