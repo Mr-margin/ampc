@@ -32,7 +32,7 @@ if (!qjMsg) {
 } else {
   ls.setItem('yaMsg', JSON.stringify(qjMsg));
 }
-console.log(JSON.stringify(qjMsg));
+//console.log(JSON.stringify(qjMsg));
 
 /**
  * 完成按钮
@@ -61,7 +61,7 @@ function Deposit_Reserve_plan() {
   paramsName.planId = qjMsg.planId;
 
   ajaxPost('/plan/iscopy_plan', paramsName).success(function (res) {//设置可复用预案
-    console.log(JSON.stringify(res));
+//    console.log(JSON.stringify(res));
     if (res.status == 0) {
       swal({
         title: "存入预案库成功",
@@ -83,7 +83,7 @@ function Deposit_Reserve_plan() {
       });
 
     } else {
-      swal('连接错误/plan/get_planInfo' + JSON.stringify(res), '', 'error');
+      swal('连接错误/plan/iscopy_plan' + JSON.stringify(res), '', 'error');
     }
   });
 }
@@ -156,8 +156,8 @@ function hyc() {
   paramsName.userId = userId;
   paramsName.planId = qjMsg.planId;
   paramsName.timeId = qjMsg.timeId;
-  paramsName.timeStartTime = qjMsg.timeStartDate;
-  paramsName.timeEndTime = qjMsg.timeEndDate;
+  paramsName.timeStartTime = moment(qjMsg.timeStartDate).format('YYYY-MM-DD HH:ss');
+  paramsName.timeEndTime = moment(qjMsg.timeEndDate).format('YYYY-MM-DD HH:ss');
 
   $("#dangqianrenwu").html("当前任务：" + qjMsg.rwName);
   $("#dangqianqingjing").html("当前情景：" + qjMsg.qjName);
@@ -166,6 +166,7 @@ function hyc() {
 
   m_planId = qjMsg.planId;
   $("#accordion").html("");
+  console.log(JSON.stringify(paramsName));
   ajaxPost('/plan/get_planInfo', paramsName).success(function (res) {
 //		console.log(JSON.stringify(res));
     var accordion_html = "";
@@ -284,7 +285,7 @@ function metTable_hj_info(pa_name) {
       if (hangyede_type == "dq") {
         data.sectorName = hangye;
       }
-      console.log(JSON.stringify({"token": "", "data": data}));
+//      console.log(JSON.stringify({"token": "", "data": data}));
       return JSON.stringify({"token": "", "data": data});
     },
     queryParamsType: "limit", //参数格式,发送标准的RESTFul类型的参数请求
@@ -406,7 +407,7 @@ function jianpaijisuan() {
     planMeasureIds += col.planMeasureId + ",";
   });
   zmblockUI("#jianpaijisuanbox", 'start');
-  console.log(1);
+//  console.log(1);
   // $("#zhezhao").show();//计算中
   // $("#zhezhao_title").show();
   ajaxPost('/jp/pmjp', {"planMeasureIds": planMeasureIds.substring(0, planMeasureIds.length - 1)}).success(function (res) {
@@ -1140,7 +1141,7 @@ function search_button() {
     } else {
       if (ttlk) {
         sc_val.filters.push(temp_val_v1);
-        console.log(JSON.stringify(sc_val));
+//        console.log(JSON.stringify(sc_val));
         temp_val_v1 = jQuery.extend(true, {}, temp_val);//赋值模板到操作缓存
         //根据筛选条件获取点源，准备填写空值系数
         point_table();
@@ -1922,7 +1923,7 @@ function create() {
     paramsName.measureContent = JSON.stringify(sc_v1);
     paramsName.scenarinoId = qjMsg.qjId;
 
-    console.log(JSON.stringify(sc_v1));
+//    console.log(JSON.stringify(sc_v1));
     ajaxPost('/measure/addOrUpdate_measure', paramsName).success(function (res) {
 //			console.log(JSON.stringify(res));
       if (res.status == 0) {
