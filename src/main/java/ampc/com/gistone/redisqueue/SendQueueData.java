@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 
 
+
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.redisqueue.entity.QueueData;
@@ -47,7 +48,8 @@ public class SendQueueData {
 	//加载tasksstatus映射
 	@Autowired
 	private TTasksStatusMapper tTasksStatusMapper;
-	
+	@Autowired
+	private ReadyData readyData;
 	
 	/**
 	 * @Description: TODO
@@ -89,17 +91,20 @@ public class SendQueueData {
 		String json = jsonObject.toString();
 		LogUtil.getLogger().info("发送了停止的指令:"+json);
 		boolean flag = sendQueueData.sendData(json);
-		//修改状态表示发送了停止的消息
-		TTasksStatus tTasksStatus = new TTasksStatus();
-		tTasksStatus.setTasksScenarinoId(scenarinoId);
-		tTasksStatus.setStopStatus("2");
-		int i = tTasksStatusMapper.updatestopstatus(tTasksStatus);
-		if (i>0) {
-			LogUtil.getLogger().info("更新发送停止模式的状态成功！");
-		}else {
-			LogUtil.getLogger().info("更新发送停止模式的状态失败！");
+		if (flag) {
+			//修改状态表示发送了停止的消息
+			/*TTasksStatus tTasksStatus = new TTasksStatus();
+			tTasksStatus.setTasksScenarinoId(scenarinoId);
+			tTasksStatus.setStopStatus("2");
+			int i = tTasksStatusMapper.updatestopstatus(tTasksStatus);
+			if (i>0) {
+				LogUtil.getLogger().info("更新发送停止模式的状态成功！");
+			}else {
+				LogUtil.getLogger().info("更新发送停止模式的状态失败！");
+			}*/
+			//修改情景状态为可执行
+			readyData.updateScenStatusUtil(5l, scenarinoId);
 		}
-		
 		return flag;
 	}
 	
@@ -118,6 +123,7 @@ public class SendQueueData {
 			long leftPush = redisqueue.leftPush("receive_queue_name",json);//receive_queue_name
 //		redisqueue.leftPush("bm",json);//receive_queue_name
 			if (leftPush>0) {
+				System.out.println("leftPush"+leftPush);
 				flag = true;
 			}else {
 				flag = false;
@@ -129,6 +135,41 @@ public class SendQueueData {
 		}
 		LogUtil.getLogger().info("发送结束");
 		
+		return flag;
+	}
+
+
+
+
+	/**
+	 * @Description: 模式暂停
+	 * @param queueData
+	 * @param scenarinoId
+	 * @return   
+	 * boolean  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年4月28日 上午10:18:55
+	 */
+	public boolean pausetoJson(QueueData queueData, Long scenarinoId) {
+		JSONObject jsonObject = JSONObject.fromObject(queueData);
+		String json = jsonObject.toString();
+		LogUtil.getLogger().info("发送了暂停的指令:"+json);
+		boolean flag = sendQueueData.sendData(json);
+		if (flag) {
+			/*//修改状态表示发送了暂停的消息
+			TTasksStatus tTasksStatus = new TTasksStatus();
+			tTasksStatus.setTasksScenarinoId(scenarinoId);
+			tTasksStatus.setStopStatus("2");
+			int i = tTasksStatusMapper.updatepausestatus(tTasksStatus);
+			if (i>0) {
+				LogUtil.getLogger().info("更新发送暂停模式的状态成功！");
+			}else {
+				LogUtil.getLogger().info("更新发送暂停模式的状态失败！");
+			}*/
+			//暂停状态
+			readyData.updateScenStatusUtil(7l, scenarinoId);
+		}
 		return flag;
 	}
 
