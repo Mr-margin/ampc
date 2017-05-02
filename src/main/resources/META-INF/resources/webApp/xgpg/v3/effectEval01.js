@@ -602,6 +602,7 @@ function save_scene() {
 		mag.domainId = allMission[mag.taskID].domainId;
 		mag.s = allMission[mag.taskID].missionStartDate;
 		mag.e = allMission[mag.taskID].missionEndDate;
+        mag.jzID = allMission[mag.taskID].jzqjid;
 		var data = [];
 		$.each(row, function (i, col) {
 			data.push({"scenarinoId": col.scenarinoId, "scenarinoName": col.scenarinoName});

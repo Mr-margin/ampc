@@ -1,7 +1,7 @@
 var opacity = 0.8;//默认的图层透明度
 var ls, sceneInitialization, qjMsg;
 var changeMsg = {
-    showWind:'-1',
+    showWind: '-1',
     showType: ['concn'],//"emis"代表排放、"concn"代表浓度、"wind"代表风场
     calcType: 'show',//"show"当前情景，"diff"差值，"ratio"比例
     species: 'PM₂.₅',//物种
@@ -349,6 +349,7 @@ function save_scene() {
         mag.domainId = allMission[mag.taskID].domainId;
         mag.s = allMission[mag.taskID].missionStartDate;
         mag.e = allMission[mag.taskID].missionEndDate;
+        mag.jzID = allMission[mag.taskID].jzqjid;
         var data = [];
         $.each(row, function (i, col) {
             data.push({
@@ -529,32 +530,39 @@ function bianji(type, g_num, p) {
 function setQjSelectBtn(data) {
     changeMsg.missionId = sceneInitialization.taskID;
     changeMsg.domainId = sceneInitialization.domainId;
-    changeMsg.qj1Id = data[0].scenarinoId;
-    if (data.length > 1) {
-        changeMsg.qj2Id = data[1].scenarinoId;
+    changeMsg.qj1Id = sceneInitialization.jzID;
+    if (data.length > 0) {
+        changeMsg.qj2Id = data[0].scenarinoId;
     } else {
         changeMsg.qj2Id = '';
     }
     var s1, s2, e1, e2;
     $('#qjBtn1 .btn-group').empty();
     $('#qjBtn2 .btn-group').empty();
-    for (var i = 0; i < data.length; i++) {
+    for (var i = 0; i <= data.length; i++) {
         var btn1 = $('<label class="btn btn-outline btn-success bgw"><input type="radio" name="qjBtn1"><span></span></label><br/>');
         var btn2 = $('<label class="btn btn-outline btn-success bgw"><input type="radio" name="qjBtn2"><span></span></label><br/>');
-        btn1.attr('title', data[i].scenarinoName).find('input').attr('value', data[i].scenarinoId).attr('data-sDate', data[i].scenarinoStartDate).attr('data-eDate', data[i].scenarinoEndDate);
-        btn1.find('span').html(data[i].scenarinoName);
-        btn2.attr('title', data[i].scenarinoName).find('input').attr('value', data[i].scenarinoId).attr('data-sDate', data[i].scenarinoStartDate).attr('data-eDate', data[i].scenarinoEndDate);
-        btn2.find('span').html(data[i].scenarinoName);
-        if (i == 0) {
+        if(i==0){
+            btn1.attr('title', '基准').find('input').attr('value', sceneInitialization.jzID).attr('data-sDate', sceneInitialization.s).attr('data-eDate', sceneInitialization.e);
+            btn1.find('span').html('基准');
+            btn2.attr('title', '基准').find('input').attr('value', sceneInitialization.jzID).attr('data-sDate', sceneInitialization.s).attr('data-eDate', sceneInitialization.e);
+            btn2.find('span').html('基准');
             btn1.addClass('active').find('input').attr('checked', true);
             btn2.addClass('disabled');
-            s1 = data[i].scenarinoStartDate;
-            e1 = data[i].scenarinoEndDate;
+            s1 = sceneInitialization.s;
+            e1 = sceneInitialization.e;
+
+        }else{
+            btn1.attr('title', data[i-1].scenarinoName).find('input').attr('value', data[i-1].scenarinoId).attr('data-sDate', data[i-1].scenarinoStartDate).attr('data-eDate', data[i-1].scenarinoEndDate);
+            btn1.find('span').html(data[i-1].scenarinoName);
+            btn2.attr('title', data[i-1].scenarinoName).find('input').attr('value', data[i-1].scenarinoId).attr('data-sDate', data[i-1].scenarinoStartDate).attr('data-eDate', data[i-1].scenarinoEndDate);
+            btn2.find('span').html(data[i-1].scenarinoName);
         }
+
         if (i == 1) {
             btn2.addClass('active').find('input').attr('checked', true);
-            s2 = data[i].scenarinoStartDate;
-            e2 = data[i].scenarinoEndDate;
+            s2 = data[i-1].scenarinoStartDate;
+            e2 = data[i-1].scenarinoEndDate;
         }
         $('#qjBtn1 .btn-group').append(btn1);
         $('#qjBtn2 .btn-group').append(btn2);
