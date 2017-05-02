@@ -709,12 +709,12 @@ button[disabled],.btn[disabled]{
 .calcType label{
   background-color:#fff;
 }
-.showType{
+.showWind{
   position: absolute;
   top: 20px;
   right: 30px;
 }
-.showType label{
+.showWind label{
   background-color:#fff;
 }
 .qjBtn{
