@@ -971,14 +971,14 @@ public class AirController {
 							if("".equals(speciesOneVal)||speciesOneVal==null){		//判断是否有值
 								speciesData.put(dayKey,"-");
 							}else{
-								BigDecimal bd=(new BigDecimal(speciesOneMap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+								BigDecimal bd=(new BigDecimal(speciesOneMap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
 								speciesData.put(dayKey,bd);
 							}
 						}else{
 							if("".equals(speciesOneVal)||speciesOneVal==null){		//判断是否有值
 								speciesData.put(dayKey,"-");
 							}else{
-								BigDecimal bd=(new BigDecimal(speciesOneMap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+								BigDecimal bd=(new BigDecimal(speciesOneMap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
 								speciesData.put(dayKey,bd);
 							}
 						}
@@ -1046,10 +1046,10 @@ public class AirController {
 									try {
 										String speciesval=obsContentMap.get(speciesArr[k]).toString();	//键为空出现异常时，赋值"-"
 										if("CO".equals(speciesArr[k])){									//值不为空，保留位数判断
-											BigDecimal bd=(new BigDecimal(speciesval)).setScale(1, BigDecimal.ROUND_HALF_UP);
+											BigDecimal bd=(new BigDecimal(speciesval)).setScale(2, BigDecimal.ROUND_HALF_UP);
 											obsSpeciesData.put(sdfNow.format(calDate_now), bd);
 										}else{
-											BigDecimal bd=(new BigDecimal(speciesval)).setScale(2, BigDecimal.ROUND_HALF_UP);
+											BigDecimal bd=(new BigDecimal(speciesval)).setScale(1, BigDecimal.ROUND_HALF_UP);
 											obsSpeciesData.put(sdfNow.format(calDate_now), bd);
 										}
 										
