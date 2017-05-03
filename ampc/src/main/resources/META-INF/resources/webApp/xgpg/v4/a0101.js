@@ -1,6 +1,7 @@
 var opacity = 0.8;//默认的图层透明度
 var ls, sceneInitialization, qjMsg;
 var changeMsg = {
+    borderType:1,
     showWind: '-1',
     showType: ['concn'],//"emis"代表排放、"concn"代表浓度、"wind"代表风场
     calcType: 'show',//"show"当前情景，"diff"差值，"ratio"比例
@@ -92,7 +93,6 @@ var mappingSpeciesBig = {
     'OM': 'OM',
     'PMFINE': 'PMFINE'
 };
-
 var stat = {cPointx: 106, cPointy: 35}, app = {}, dong = {};
 var dojoConfig = {
     async: true,
@@ -170,6 +170,10 @@ require(
                 app.mapList[1].setExtent(event.extent);
                 app.shengx = 0;//当前生效的地图位置
                 //0
+                /*这里清除风场图层*/
+                app.gLyr1.clear();
+                app.gLyr2.clear();
+                /*这里清除风场图层 end*/
                 updata();
 
             } else {
@@ -183,6 +187,10 @@ require(
                 app.mapList[0].setExtent(event.extent);
                 app.shengx = 1;//当前生效的地图位置
                 //1
+                /*这里清除风场图层*/
+                app.gLyr1.clear();
+                app.gLyr2.clear();
+                /*这里清除风场图层 end*/
                 updata();
 
             } else {
