@@ -325,13 +325,13 @@ function baizhu_jianpai(gis_paramsName, sh_type) {
             });
 
             var paifang_url = "";
-            if (gis_paramsName.codeLevel == 1) {
-                paifang_url = ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/2";
-            } else if (gis_paramsName.codeLevel == 2) {
-                paifang_url = ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/1";
-            } else if (gis_paramsName.codeLevel == 3) {
-                paifang_url = ArcGisServerUrl + "/arcgis/rest/services/cms/MapServer/0";
-            }
+            if(gis_paramsName.codeLevel == 1){
+				paifang_url = ArcGisServerUrl+"/arcgis/rest/services/ampc/cms/MapServer/2";
+			}else if(gis_paramsName.codeLevel == 2){
+				paifang_url = ArcGisServerUrl+"/arcgis/rest/services/ampc/cms/MapServer/1";
+			}else if(gis_paramsName.codeLevel == 3){
+				paifang_url = ArcGisServerUrl+"/arcgis/rest/services/ampc/cms/MapServer/0";
+			}
 
             app.paifang = new dong.FeatureLayer(paifang_url, {
                 mode: dong.FeatureLayer.MODE_ONDEMAND,
