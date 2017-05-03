@@ -322,7 +322,7 @@ public class ExtractDataService {
 							map.put(specie, resStr);
 						} else if (specie.equals("WSPD")) {
 							float vv = Constants.binarySearchKeySpd(value);
-							resStr = String.valueOf(vv);
+							resStr = String.valueOf((int) vv);
 							map.put(specie, resStr);
 						} else {
 							resStr = nf.format(value);
