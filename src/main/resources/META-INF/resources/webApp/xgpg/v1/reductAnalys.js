@@ -1,21 +1,4 @@
 var ls = window.sessionStorage;
-var gis_paramsName = {};//地图请求的参数，第一次加载地图时初始化，每次更改地图比例尺时修改codeLevel
-var tj_paramsName = {};//统计图用的参数
-/**
- * 操作地图显示
- */
-var stat = {cPointx: 106, cPointy: 35}, app = {}, dong = {};
-var dojoConfig = {
-    async: true,
-    parseOnLoad: true,
-    packages: [{
-        name: 'tdlib',
-        location: "/js/tdlib"
-    }],
-    paths: {
-        extras: location.pathname.replace(/\/[^/]+$/, '') + "/js/extras"
-    }
-};
 var qjid_dq;//当前的情景ID
 var qjname_dq;//当前情景的name
 
@@ -175,7 +158,6 @@ function exchangeModal() {
 }
 
 
-
 /*添加情景选择按钮*/
 function setQjSelectBtn(data) {
     $('#qjBtn1 .btn-group').empty();
@@ -190,18 +172,31 @@ function setQjSelectBtn(data) {
         }
         $('#qjBtn1 .btn-group').append(btn1);
     }
-    shoe_data_start();
+    // shoe_data_start();
 }
+
+/*切换情景事件*/
+$('#qjBtn1').on('change', 'input', function (e) {
+    console.log($(e.target).val());
+    qjid_dq = $(e.target).val();
+    shoe_data_start()
+})
 
 
 /**
  *设置导航条信息
  */
 $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
+var gis_paramsName = {};//地图请求的参数，第一次加载地图时初始化，每次更改地图比例尺时修改codeLevel
 
+var tj_paramsName = {};//统计图用的参数
 tj_paramsName.wz = $('#hz_wrw').val();//默认的物种
 tj_paramsName.code = "0";//code默认为0
-tj_paramsName.name = qjname_dq;//name默认为情景名称
+// tj_paramsName.name = qjname_dq;//name默认为情景名称
+tj_paramsName.name = "全部区域";//name默认为情景名称
+tj_paramsName.codeLevel = 1;
+
+
 
 /**
  * 时间戳转成日期格式
@@ -225,7 +220,21 @@ function getchaxuntype() {
 }
 
 
-
+/**
+ * 操作地图显示
+ */
+var stat = {cPointx: 106, cPointy: 35}, app = {}, dong = {};
+var dojoConfig = {
+    async: true,
+    parseOnLoad: true,
+    packages: [{
+        name: 'tdlib',
+        location: "/js/tdlib"
+    }],
+    paths: {
+        extras: location.pathname.replace(/\/[^/]+$/, '') + "/js/extras"
+    }
+};
 require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/symbols/PictureMarkerSymbol",
         "esri/renderers/ClassBreaksRenderer", "esri/symbols/SimpleMarkerSymbol", "esri/dijit/PopupTemplate", "esri/geometry/Point", "esri/geometry/Extent",
         "esri/renderers/SimpleRenderer", "esri/graphic", "dojo/_base/Color", "dojo/dom-style", 'dojo/query', "esri/tasks/FeatureSet", "esri/SpatialReference",
@@ -307,6 +316,8 @@ function shoe_data_start(evn) {
     baizhu_jianpai(gis_paramsName, "1");
 }
 
+var gghjl = "";
+
 /**
  * 标注地图的减排计算
  */
@@ -318,20 +329,47 @@ function baizhu_jianpai(gis_paramsName, sh_type) {
     ajaxPost('/find_reduceEmission', gis_paramsName).success(function (res) {
 //		console.log(JSON.stringify(res));
         if (res.status == 0) {
+
+            var valMax = 0;//数据中的最大值
+            $.each(res.data, function (k, col) {
+                if (col > valMax) {
+                    valMax = col;
+                }
+            });
+            if (parseInt(valMax) <= 0) {//如果最大值小于等于0，地图不显示
+                if (app.hasOwnProperty("legend")) {
+                    app.legend.destroy();
+                    dong.domConstruct.destroy(dojo.byId("legend"));
+                    $("#legendWrapper").hide();
+                }
+                return;
+            }
+
             var data_id = "";
+            var tegd = "";
+
             $.each(res.data, function (k, col) {
                 data_id += "'" + k + "',";
+                tegd += k + ",";
 //				tj_paramsName.code = k;//获取最后一个行政区划
             });
 
+            if (tj_paramsName.code == "0" && sh_type == "1") {//第一次打开页面，记录省级或者最高级的行政区划
+                tj_paramsName.code = tegd.substring(0, tegd.length - 1);
+                gghjl = tegd.substring(0, tegd.length - 1);
+                if (sh_type == "1") {
+                    bar();
+                }
+            }
+
             var paifang_url = "";
-            if(gis_paramsName.codeLevel == 1){
-				paifang_url = ArcGisServerUrl+"/arcgis/rest/services/ampc/cms/MapServer/2";
-			}else if(gis_paramsName.codeLevel == 2){
-				paifang_url = ArcGisServerUrl+"/arcgis/rest/services/ampc/cms/MapServer/1";
-			}else if(gis_paramsName.codeLevel == 3){
-				paifang_url = ArcGisServerUrl+"/arcgis/rest/services/ampc/cms/MapServer/0";
-			}
+            if (gis_paramsName.codeLevel == 1) {
+                paifang_url = ArcGisServerUrl + "/arcgis/rest/services/ampc/cms/MapServer/2";
+            } else if (gis_paramsName.codeLevel == 2) {
+                paifang_url = ArcGisServerUrl + "/arcgis/rest/services/ampc/cms/MapServer/1";
+            } else if (gis_paramsName.codeLevel == 3) {
+                paifang_url = ArcGisServerUrl + "/arcgis/rest/services/ampc/cms/MapServer/0";
+            }
 
             app.paifang = new dong.FeatureLayer(paifang_url, {
                 mode: dong.FeatureLayer.MODE_ONDEMAND,
@@ -404,7 +442,10 @@ function createLegend(level) {
     if (app.hasOwnProperty("legend")) {
         app.legend.destroy();
         dong.domConstruct.destroy(dojo.byId("legend"));
+        $("#legendWrapper").hide();
     }
+    $("#legendWrapper").show();//预备可能第一次就没有图例。或者已经被隐藏，每次显示
+    $("#legendWrapper").children(".tip").remove();//清空标题，否则会存留到下一个图例中
     //创建一个新的div图例
     var legendDiv = dong.domConstruct.create("div", {
         id: "legend"
@@ -418,7 +459,7 @@ function createLegend(level) {
     } else if (level == 3) {
         title = "各县 " + $('#hz_wrw').val() + " 减排量（吨）";
     }
- 	// tj_paramsName.codeLevel = level;
+    // tj_paramsName.codeLevel = level;
     app.legend = new dong.Legend({
         map: app.map,
         respectCurrentMapScale: false,//当真正的图例会更新每个规模变化和只显示层和子层中可见当前地图比例尺。当假的,图例不更新在每个规模变化和所有层和子层将显示出来。默认值是正确的。
@@ -442,38 +483,107 @@ function calcBreaks(data) {
             valMax = col;
         }
     });
-    var i = 1;
-    while (true) {
-        var ttrt = valMax / i;//最大值按比例减少，第一次不变，以后每次减一个零
-        if (ttrt < 640) {//最大值除以i，如果结果小于640，可以进入循环
-            switch (true) {
-                case ttrt < 80 :
-                    breaks = [0, (10 * i), (20 * i), (30 * i), (40 * i), (50 * i), (60 * i), (70 * i), (80 * i)];
-                    break;
-                case ttrt < 96 :
-                    breaks = [0, (12 * i), (24 * i), (36 * i), (48 * i), (60 * i), (72 * i), (84 * i), (96 * i)];
-                    break;
-                case ttrt < 120 :
-                    breaks = [0, (15 * i), (30 * i), (45 * i), (60 * i), (75 * i), (90 * i), (105 * i), (120 * i)];
-                    break;
-                case ttrt < 160 :
-                    breaks = [0, (20 * i), (40 * i), (60 * i), (80 * i), (100 * i), (120 * i), (140 * i), (160 * i)];
-                    break;
-                case ttrt < 240 :
-                    breaks = [0, (30 * i), (60 * i), (90 * i), (120 * i), (150 * i), (180 * i), (210 * i), (240 * i)];
-                    break;
-                case ttrt < 320 :
-                    breaks = [0, (40 * i), (80 * i), (120 * i), (160 * i), (200 * i), (240 * i), (280 * i), (320 * i)];
-                    break;
-                case ttrt < 400 :
-                    breaks = [0, (50 * i), (100 * i), (150 * i), (200 * i), (250 * i), (300 * i), (350 * i), (400 * i)];
-                    break;
-                default :
-                    breaks = [0, (80 * i), (160 * i), (240 * i), (320 * i), (400 * i), (480 * i), (560 * i), (640 * i)];
+
+
+    if (valMax > 64 && valMax <= 640) {
+        switch (true) {
+            case valMax < 80 :
+                breaks = [0, 10, 20, 30, 40, 50, 60, 70, 80];
+                break;
+            case valMax < 96 :
+                breaks = [0, 12, 24, 36, 48, 60, 72, 84, 96];
+                break;
+            case valMax < 120 :
+                breaks = [0, 15, 30, 45, 60, 75, 90, 105, 120];
+                break;
+            case valMax < 160 :
+                breaks = [0, 20, 40, 60, 80, 100, 120, 140, 160];
+                break;
+            case valMax < 240 :
+                breaks = [0, 30, 60, 90, 120, 150, 180, 210, 240];
+                break;
+            case valMax < 320 :
+                breaks = [0, 40, 80, 120, 160, 200, 240, 280, 320];
+                break;
+            case valMax < 400 :
+                breaks = [0, 50, 100, 150, 200, 250, 300, 350, 400];
+                break;
+            default :
+                breaks = [0, 80, 160, 240, 320, 400, 480, 560, 640];
+        }
+    } else if (valMax <= 64) {
+
+        var i = 10;
+        while (true) {
+            var ttrt = valMax * i;//最大值按比例减少，第一次不变，以后每次减一个零
+            if (ttrt > 64) {
+                switch (true) {
+                    case ttrt < 80 :
+                        breaks = [0, (10 / i), (20 / i), (30 / i), (40 / i), (50 / i), (60 / i), (70 / i), (80 / i)];
+                        break;
+                    case ttrt < 96 :
+                        breaks = [0, (12 / i), (24 / i), (36 / i), (48 / i), (60 / i), (72 / i), (84 / i), (96 / i)];
+                        break;
+                    case ttrt < 120 :
+                        breaks = [0, (15 / i), (30 / i), (45 / i), (60 / i), (75 / i), (90 / i), (105 / i), (120 / i)];
+                        break;
+                    case ttrt < 160 :
+                        breaks = [0, (20 / i), (40 / i), (60 / i), (80 / i), (100 / i), (120 / i), (140 / i), (160 / i)];
+                        break;
+                    case ttrt < 240 :
+                        breaks = [0, (30 / i), (60 / i), (90 / i), (120 / i), (150 / i), (180 / i), (210 / i), (240 / i)];
+                        break;
+                    case ttrt < 320 :
+                        breaks = [0, (40 / i), (80 / i), (120 / i), (160 / i), (200 / i), (240 / i), (280 / i), (320 / i)];
+                        break;
+                    case ttrt < 400 :
+                        breaks = [0, (50 / i), (100 / i), (150 / i), (200 / i), (250 / i), (300 / i), (350 / i), (400 / i)];
+                        break;
+                    default :
+                        breaks = [0, (80 / i), (160 / i), (240 / i), (320 / i), (400 / i), (480 / i), (560 / i), (640 / i)];
+                }
+                break;
+            } else {
+                i = i * 10;
             }
-            break;
-        } else {
-            i = i * 10;
+
+        }
+
+    } else if (valMax > 640) {
+
+        var i = 10;
+        while (true) {
+            var ttrt = valMax / i;
+            if (ttrt <= 640) {
+                switch (true) {
+                    case ttrt < 80 :
+                        breaks = [0, (10 * i), (20 * i), (30 * i), (40 * i), (50 * i), (60 * i), (70 * i), (80 * i)];
+                        break;
+                    case ttrt < 96 :
+                        breaks = [0, (12 * i), (24 * i), (36 * i), (48 * i), (60 * i), (72 * i), (84 * i), (96 * i)];
+                        break;
+                    case ttrt < 120 :
+                        breaks = [0, (15 * i), (30 * i), (45 * i), (60 * i), (75 * i), (90 * i), (105 * i), (120 * i)];
+                        break;
+                    case ttrt < 160 :
+                        breaks = [0, (20 * i), (40 * i), (60 * i), (80 * i), (100 * i), (120 * i), (140 * i), (160 * i)];
+                        break;
+                    case ttrt < 240 :
+                        breaks = [0, (30 * i), (60 * i), (90 * i), (120 * i), (150 * i), (180 * i), (210 * i), (240 * i)];
+                        break;
+                    case ttrt < 320 :
+                        breaks = [0, (40 * i), (80 * i), (120 * i), (160 * i), (200 * i), (240 * i), (280 * i), (320 * i)];
+                        break;
+                    case ttrt < 400 :
+                        breaks = [0, (50 * i), (100 * i), (150 * i), (200 * i), (250 * i), (300 * i), (350 * i), (400 * i)];
+                        break;
+                    default :
+                        breaks = [0, (80 * i), (160 * i), (240 * i), (320 * i), (400 * i), (480 * i), (560 * i), (640 * i)];
+                }
+                break;
+            } else {
+                i = i * 10;
+            }
         }
     }
     return breaks;
@@ -507,18 +617,19 @@ function resizess(event) {
 function optionclick(event) {
 
     if (typeof event.graphic != "undefined") {//点击选中了一个面对象
-        app.map.graphics.clear();
-        app.map.graphics.add(new dong.Graphic(event.graphic.geometry, app.selectline));//添加选中的图层
         tj_paramsName.code = event.graphic.attributes.ADMINCODE;
         tj_paramsName.name = event.graphic.attributes.NAME;
         tj_paramsName.codeLevel = gis_paramsName.codeLevel;
         bar();
+        app.map.graphics.clear();
+        app.map.graphics.add(new dong.Graphic(event.graphic.geometry, app.selectline));//添加选中的图层
     } else {
         if (app.map.graphics.graphics.length > 0) {//已经有选中的对象了
-            app.map.graphics.clear();
-            tj_paramsName.code = "0";
-            tj_paramsName.name = qjname_dq;//name默认为情景名称
+            tj_paramsName.code = gghjl;
+            tj_paramsName.codeLevel = 1;
+            tj_paramsName.name = "全部区域";//name默认为情景名称
             bar();
+            app.map.graphics.clear();
         }
     }
 }
@@ -530,7 +641,19 @@ function gis_paifang_show() {
     gis_paramsName.pollutant = $('#hz_wrw').val();//物种
     tj_paramsName.wz = $('#hz_wrw').val();//物种
 
-    baizhu_jianpai(gis_paramsName, "1");
+
+    $("#showtype").children().each(function () {
+        if ($(this).is('.active')) {
+
+            if ($(this).attr("val_name") == "gis") {
+                baizhu_jianpai(gis_paramsName, "1");
+                bar();
+
+            } else if ($(this).attr("val_name") == "table") {
+                bar();
+            }
+        }
+    });
 }
 
 /**
@@ -575,6 +698,7 @@ function bar() {
                         },
                         formatter: function (params) {
                             return params[0].name + '<br/>'
+                                + '基准排放量 : ' + (parseFloat(params[1].value) + parseFloat(params[0].value)).toFixed(2) + '<br/>'
                                 + params[1].seriesName + ' : ' + params[1].value + '<br/>'
                                 + params[0].seriesName + ' : ' + params[0].value;       //把 + params[0].value 去掉了
                         }
@@ -582,6 +706,7 @@ function bar() {
                     legend: {
                         //不触动
                         selectedMode: false,
+                        left: 'right',
                         data: ['减排量', '实际排放量']
                     },
                     grid: {
@@ -638,14 +763,11 @@ function bar() {
                                     color: 'tomato',
                                     barBorderColor: 'tomato',
                                     barBorderWidth: 4,
-                                    barBorderRadius: 0,
-                                    /* label : {
-                                     show: true, position: 'insideTop'
-                                     }*/
+                                    barBorderRadius: 0
                                 }
                             },
                             //data:res.data.pflResult
-                            data: res.data.pflResult
+                            data: res.data.sjpflResult
                         },
                         {
                             name: '减排量',
@@ -719,7 +841,7 @@ function bar() {
                     pie();
                 });
             } else {
-                swal('情景没有时间', '', 'error');
+                swal(tj_paramsName.name + '(' + tj_paramsName.code + ')缺少基准排放，无法计算', '', 'error');
             }
         } else {
             swal('/echarts/get_barInfo  连接错误', '', 'error');
@@ -734,6 +856,13 @@ function pie() {
     var nameVal;
     var valueVal;
     getchaxuntype();
+
+//	if(tj_paramsName.code == '0'){
+//		tj_paramsName.codeLevel = 0;
+//	}else{
+//		tj_paramsName.codeLevel = gis_paramsName.codeLevel;
+//	}
+
     var paramsName = {
         "scenarinoId": gis_paramsName.scenarinoId,
         "code": tj_paramsName.code,
@@ -748,63 +877,77 @@ function pie() {
         if (result.status == 0) {
 
             if (result.data.length != 0) {
+                var data_value = [];//数据
+                var legend_name = [];
+                var sum_value = 0;
                 for (i = 0; i < result.data.length; i++) {
-                    nameVal = result.data[i].name;
-                    valueVal = result.data[i].value;
+                    var ttgk = {};
+                    ttgk.name = result.data[i].name;
+                    legend_name.push(result.data[i].name);
+                    ttgk.value = result.data[i].value;
+                    sum_value += result.data[i].value;
+                    data_value.push(ttgk);
                 }
+
+                var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
+                var optionPie = {
+                    title: {
+                        text: tj_paramsName.name + '-' + (tj_paramsName.type == "1" ? "分行业" : "分措施") + "-" + tj_paramsName.wz + '-减排分析',
+                        subtext: '全部' + (tj_paramsName.type == "1" ? "行业" : "措施") + '合计减排：' + sum_value.toFixed(2),
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                    },
+                    legend: {
+                        selectedMode: false,//图标不触动
+                        orient: 'vertical',
+                        left: 'right',
+                        data: legend_name
+                    },
+                    series: [
+                        {
+                            name: '数据比例',
+                            type: 'pie',
+                            radius: '55%',
+                            center: ['50%', '60%'],
+                            data: data_value,
+                            itemStyle: {
+                                emphasis: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                };
+                //行业措施分担饼状图
+                myhycsChart.setOption(optionPie);
+                //自适应屏幕大小变化
+                window.addEventListener("resize", function () {
+                    myhycsChart.resize();
+                });
+
             } else {
                 swal('饼图暂无数据', '', 'error')
             }
-            var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
-            var optionPie = {
-                title: {
-                    text: tj_paramsName.name + '-' + (tj_paramsName.type == "1" ? "分行业" : "分措施") + "-" + tj_paramsName.wz + '-减排分析',
-                    x: 'center'
-                },
-                tooltip: {
-                    trigger: 'item',
-                    formatter: "{a} <br/>{b} : {c} ({d}%)"
-                },
-                legend: {
-                    //图标不触动
-                    selectedMode: false,
-                    orient: 'vertical',
-                    left: 'left',
-                    data: [{name: nameVal}]
-                },
-                series: [
-                    {
-                        name: '数据比例',
-                        type: 'pie',
-                        radius: '55%',
-                        center: ['50%', '60%'],
-                        data: [{value: valueVal, name: nameVal}],
-                        itemStyle: {
-                            emphasis: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
-                            }
-                        }
-                    }
-                ]
-            };
-            //行业措施分担饼状图
-            myhycsChart.setOption(optionPie);
-            //自适应屏幕大小变化
-            window.addEventListener("resize", function () {
-                myhycsChart.resize();
-            });
         } else {
-            swal('/echarts/get_pieInfo  连接错误', '', 'error');
+            swal('/echarts/get_pieInfo  参数错误' + JSON.stringify(paramsName), '', 'error');
         }
 
     }).error(function () {
-        swal('暂无数据', '', 'error')
+        swal('/echarts/get_pieInfo  连接错误', '', 'error')
     })
 
 }
 
+
+var query_code = "";
+var query_Level = "";
+
+var d_code = "";
+var d_Level = "";
 
 /**
  * 地图展示与列表展示切换
@@ -813,30 +956,65 @@ function gis_switch_table() {
     setTimeout(function () {
         $("#showtype").children().each(function () {
             if ($(this).is('.active')) {
-                $('#qjBtn1').removeClass('disNone');
+
                 if ($(this).attr("val_name") == "gis") {
+
                     $("#listModal").hide();
                     $("#map_showId").show();
                     $("#legendWrapper").show();
                     $("#gis_table_title").html("各地区减排");
+
+                    baizhu_jianpai(gis_paramsName, "1");
+                    bar();
+
                 } else if ($(this).attr("val_name") == "table") {
-                    $('#qjBtn1').addClass('disNone');
-                    table_show(tj_paramsName.code);
+
+                    query_code = tj_paramsName.code;
+                    query_Level = tj_paramsName.codeLevel;
+
+                    table_show(tj_paramsName.code, tj_paramsName.codeLevel);
+
                     $("#gis_table_title").html("各地区减排比例(%)");
                     $("#listModal").show();
                     $("#map_showId").hide();
                     $("#legendWrapper").hide();
+
                 }
             }
         });
     }, 100);
 }
 
+/**
+ * 返回上级
+ */
+$("#returnSuperior").click(function () {
+    if (parseInt(d_Level) > 0) {
+
+        if (d_Level == "1") {//当前是市，返回上级是全部省
+            table_show(gghjl, parseInt(d_Level));
+        } else {//当前是县，返回上一级是市
+            table_show(d_code.substring(0, 2) + "0000", parseInt(d_Level) - 1);
+        }
+
+    }
+});
+
+/**
+ * 刷新
+ */
+$("#Refresh").click(function () {
+    table_show(query_code, query_Level);
+});
+
 
 /**
  * 表格展示
  */
-function table_show(query_code) {
+function table_show(cod1, level1) {
+
+    d_code = cod1;
+    d_Level = level1;
 
     $('#listModal_table').bootstrapTable('destroy');
     $('#listModal_table').bootstrapTable({
@@ -850,21 +1028,38 @@ function table_show(query_code) {
         striped: true, // 使表格带有条纹
         queryParams: function (params) {
             var data = {};
-            data.code = query_code;
-            data.addressLevle = tj_paramsName.codeLevel;
+
+            data.code = cod1;
+            data.addressLevle = level1;
             data.scenarinoId = qjid_dq;//情景id
-            console.log(JSON.stringify(data));
+
+//			console.log(JSON.stringify(data));
             return JSON.stringify({"token": "", "data": data});
         },
         responseHandler: function (res) {
-            console.log(JSON.stringify(res));
+//			console.log(JSON.stringify(res));
+
             if (res.status == 0) {
                 if (res.data.length > 0) {
+
+                    $.each(res.data, function (i, col) {
+                        $.each(col, function (k, vol) {
+                            if (vol == '-9999') {
+                                res.data[i][k] = "-";
+                            }
+                        });
+
+                        if (col.type == "1") {
+                            res.data[i].name = '<a onClick="table_show(\'' + col.code + '\',\'' + (parseInt(d_Level) + 1) + '\');">' + col.name + '</a>';
+                        }
+
+                    });
                     return res.data;
                 }
             } else if (res.status == '') {
                 return "";
             }
+
         },
         queryParamsType: "limit", // 参数格式,发送标准的RESTFul类型的参数请求
         silent: true, // 刷新事件必须设置
@@ -886,10 +1081,3 @@ function table_show(query_code) {
         }
     });
 }
-
-
-$('#qjBtn1').on('change','input',function (e) {
-    console.log($(e.target).val());
-    qjid_dq = $(e.target).val();
-    shoe_data_start()
-})
