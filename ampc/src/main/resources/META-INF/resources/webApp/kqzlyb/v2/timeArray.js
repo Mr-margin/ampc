@@ -910,6 +910,7 @@ function changeRms(rms) {
  * 数据更新使用
  * @param opt
  */
+var ecatherData='';
 function updata(opt) {
 //	console.log(dps_Station[changeMsg.city + changeMsg.type]);
     $.when(dps_Station[changeMsg.city + changeMsg.type]).done(function (res) {
@@ -935,7 +936,8 @@ function updata(opt) {
             datetype:changeMsg.rms,			//时间分辨率
             domain:$('input[name=domain]:checked').val(),	//空间分辨率
         }).success(function(res){
-        	
+        	ecatherData='';
+        	ecatherData=res;
         	initEcharts();
         },function(){
         	console.log('接口故障！！！');
@@ -945,7 +947,6 @@ function updata(opt) {
     
 }
 
-var czData;
 function initEcharts() {
 	  if(changeMsg.rms == 'day'){
 	    $('.hour').css('display','none');
@@ -954,7 +955,8 @@ function initEcharts() {
 	    $('.day').css('display','none');
 	    $('.hour').css('display','block');
 	  }
-	  var data = czData;
+	  var data = ecatherData;
+//	  console.log();
 	  var species = speciesArr[changeMsg.rms];
 	  for (var i = 0; i < species.length; i++) {
 	    echarts.dispose(document.getElementById(species[i]));
