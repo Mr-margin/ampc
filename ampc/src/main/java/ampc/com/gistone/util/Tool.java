@@ -64,7 +64,7 @@ public class Tool {
 	 }
 
 	
-	public static void main(String agrs[]) throws NoSuchAlgorithmException, UnsupportedEncodingException{
+/*	public static void main(String agrs[]) throws NoSuchAlgorithmException, UnsupportedEncodingException{
 		String pwd ="1";
 		String md5str = Tool.md5(pwd);
 		System.out.println(md5str);
@@ -73,7 +73,7 @@ public class Tool {
 		String jmstr=Tool.JM(md5str);
 		System.out.println("解密："+jmstr);
 	}
-
+*/
 	
 
 }
