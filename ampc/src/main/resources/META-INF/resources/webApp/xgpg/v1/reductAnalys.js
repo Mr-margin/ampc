@@ -149,6 +149,7 @@ function save_scene() {
         setQjSelectBtn(data);//添加情景选择按钮
         sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
         $("#close_scene").click();
+        shoe_data_start();
     }
 }
 //超链接显示 模态框
