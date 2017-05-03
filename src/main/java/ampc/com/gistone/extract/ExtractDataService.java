@@ -62,10 +62,13 @@ public class ExtractDataService {
 	public synchronized List<Map<String, Object>> buildData(ExtractRequestParams extractRequestParams)
 			throws IOException, TransformException, FactoryException, InvalidRangeException {
 		try {
+			long startTimes = System.currentTimeMillis();
 			extractConfig = resultPathUtil.getExtractConfig();
 			params = extractRequestParams;
 			res = new ArrayList<Map<String, Object>>();
-			getNcFilePath();
+			boolean bool = getNcFilePath();
+			if (!bool)
+				return null;
 			getVariables();
 
 			projection = buildProject(params);
@@ -86,20 +89,18 @@ public class ExtractDataService {
 			} else if (Constants.SHOW_TYPE_WIND.equals(params.getShowType())) {
 				pathOut = extractConfig.getWindFilePath();
 			}
-			pathOut = pathOut.replace("$userid", String.valueOf(params.getUserId()))
-					.replace("$domainid", String.valueOf(params.getDomainId()))
-					.replace("$missionid", String.valueOf(params.getMissionId()))
-					.replace("$scenarioid", String.valueOf(params.getScenarioId1()))
-					.replace("$domain", String.valueOf(params.getDomain()));
+			pathOut = resultPathUtil.getRealPath(pathOut, params.getUserId(), params.getDomainId(),
+					params.getMissionId(), params.getScenarioId1(), params.getDomain());
 			pathOut = pathOut + "/" + params.getCalcType() + "-" + params.getTimePoint();
 			saveFile(pathOut, "/data.json", mapper.writeValueAsString(res));
 			saveFile(pathOut, "/extract-data-lonlat.csv", sbcsv_latlon.toString());
 			saveFile(pathOut, "/extract-data-lcc.csv", sbcsv_lcc.toString());
 			exportExcel(pointBeanArray, pathOut);
 
+			logger.info("buildData use time : " + (System.currentTimeMillis() - startTimes) + "ms");
 			return res;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("ExtractDataService | buildData error");
 			return null;
 		}
 
@@ -119,7 +120,7 @@ public class ExtractDataService {
 			try {
 				attributes = Netcdf.getAttributes(filePath1 + list.get(0));
 			} catch (IOException e) {
-				logger.error("getAttributes IOException");
+				logger.error("ExtractDataService | getVariables() : getAttributes IOException");
 				return;
 			}
 		} else if (Constants.TIMEPOINT_D.equals(timePoint) || Constants.TIMEPOINT_H.equals(timePoint)) {
@@ -128,87 +129,94 @@ public class ExtractDataService {
 			try {
 				attributes = Netcdf.getAttributes(filePath1 + params.getDay());
 			} catch (IOException e) {
-				logger.error("getAttributes IOException");
+				logger.error("ExtractDataService | getVariables() : getAttributes IOException");
 				return;
 			}
 		}
 	}
 
 	private void buildVariables(String day) {
-		String p1 = filePath1 + day;
-		long openNcTimes = System.currentTimeMillis();
-		NetcdfFile nc1;
 		try {
-			nc1 = NetcdfFile.open(p1);
-		} catch (IOException e) {
-			logger.error("open file " + p1 + " error");
-			return;
-		}
-		if (nc1 == null)
-			return;
-		ncFile1 = nc1;
-		logger.info("open nc file" + p1 + ", times = " + (System.currentTimeMillis() - openNcTimes) + "ms");
-
-		for (String specie : params.getSpecies()) {
-			Variable variable1 = nc1.findVariable(null, specie);
-			List<Variable> variableList1;
-			if (variableMap1.containsKey(specie)) {
-				variableList1 = variableMap1.get(specie);
-			} else {
-				variableList1 = new ArrayList<Variable>();
-				variableMap1.put(specie, variableList1);
+			String p1 = filePath1 + day;
+			long openNcTimes = System.currentTimeMillis();
+			NetcdfFile nc1;
+			try {
+				nc1 = NetcdfFile.open(p1);
+				logger.info("open nc file " + p1 + ", times = " + (System.currentTimeMillis() - openNcTimes) + "ms");
+			} catch (IOException e) {
+				logger.error("open file " + p1 + " error");
+				return;
 			}
-			variableList1.add(variable1);
+			if (nc1 == null)
+				return;
+			ncFile1 = nc1;
 
-			if (!Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
-				String p2 = filePath2 + day;
-				NetcdfFile nc2;
-				try {
-					nc2 = NetcdfFile.open(p2);
-				} catch (IOException e) {
-					logger.error("open file " + p2 + " error");
-					return;
-				}
-				Variable variable2 = nc2.findVariable(null, specie);
-
-				List<Variable> variableList2;
-				if (variableMap2.containsKey(specie)) {
-					variableList2 = variableMap2.get(specie);
+			for (String specie : params.getSpecies()) {
+				Variable variable1 = nc1.findVariable(null, specie);
+				List<Variable> variableList1;
+				if (variableMap1.containsKey(specie)) {
+					variableList1 = variableMap1.get(specie);
 				} else {
-					variableList2 = new ArrayList<Variable>();
-					variableMap2.put(specie, variableList2);
+					variableList1 = new ArrayList<Variable>();
+					variableMap1.put(specie, variableList1);
 				}
-				variableList2.add(variable2);
+				variableList1.add(variable1);
+
+				if (!Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
+					String p2 = filePath2 + day;
+					NetcdfFile nc2;
+					try {
+						nc2 = NetcdfFile.open(p2);
+					} catch (IOException e) {
+						logger.error("open file " + p2 + " error");
+						return;
+					}
+					Variable variable2 = nc2.findVariable(null, specie);
+
+					List<Variable> variableList2;
+					if (variableMap2.containsKey(specie)) {
+						variableList2 = variableMap2.get(specie);
+					} else {
+						variableList2 = new ArrayList<Variable>();
+						variableMap2.put(specie, variableList2);
+					}
+					variableList2.add(variable2);
+				}
 			}
+		} catch (Exception e) {
+			logger.error("ExtractDataService | buildVariables() error");
 		}
 	}
 
-	private void getNcFilePath() {
-		String showType = params.getShowType();
-		if (Constants.SHOW_TYPE_CONCN.equals(showType)) {
-			filePath1 = extractConfig.getConcnFilePath() + "/" + (Constants.TIMEPOINT_H.equals(params.getTimePoint())
-					? extractConfig.getConcnHourlyPrefix() : extractConfig.getConcnDailyPrefix());
-		} else if (Constants.SHOW_TYPE_EMIS.equals(showType)) {
-			filePath1 = extractConfig.getEmisFilePath() + "/" + (Constants.TIMEPOINT_D.equals(params.getTimePoint())
-					? extractConfig.getEmisDailyPrefix() : extractConfig.getEmisHourlyPrefix());
-		} else if (Constants.SHOW_TYPE_WIND.equals(showType)) {
-			filePath1 = extractConfig.getWindFilePath() + "/" + (Constants.TIMEPOINT_D.equals(params.getTimePoint())
-					? extractConfig.getMeteorDailyWindPrefix() : extractConfig.getMeteorHourlyWindPrefix());
-		}
-		filePath2 = filePath1;
+	private boolean getNcFilePath() {
+		try {
+			String showType = params.getShowType();
+			if (Constants.SHOW_TYPE_CONCN.equals(showType)) {
+				filePath1 = extractConfig.getConcnFilePath() + "/"
+						+ (Constants.TIMEPOINT_H.equals(params.getTimePoint()) ? extractConfig.getConcnHourlyPrefix()
+								: extractConfig.getConcnDailyPrefix());
+			} else if (Constants.SHOW_TYPE_EMIS.equals(showType)) {
+				filePath1 = extractConfig.getEmisFilePath() + "/" + (Constants.TIMEPOINT_D.equals(params.getTimePoint())
+						? extractConfig.getEmisDailyPrefix() : extractConfig.getEmisHourlyPrefix());
+			} else if (Constants.SHOW_TYPE_WIND.equals(showType)) {
+				filePath1 = extractConfig.getWindFilePath() + "/" + (Constants.TIMEPOINT_D.equals(params.getTimePoint())
+						? extractConfig.getMeteorDailyWindPrefix() : extractConfig.getMeteorHourlyWindPrefix());
+			} else {
+				return false;
+			}
+			filePath2 = filePath1;
 
-		filePath1 = filePath1.replace("$userid", String.valueOf(params.getUserId()))
-				.replace("$domainid", String.valueOf(params.getDomainId()))
-				.replace("$missionid", String.valueOf(params.getMissionId()))
-				.replace("$scenarioid", String.valueOf(params.getScenarioId1()))
-				.replace("$domain", String.valueOf(params.getDomain()));
+			filePath1 = resultPathUtil.getRealPath(filePath1, params.getUserId(), params.getDomainId(),
+					params.getMissionId(), params.getScenarioId1(), params.getDomain());
 
-		if (!Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
-			filePath2 = filePath2.replace("$userid", String.valueOf(params.getUserId()))
-					.replace("$domainid", String.valueOf(params.getDomainId()))
-					.replace("$missionid", String.valueOf(params.getMissionId()))
-					.replace("$scenarioid", String.valueOf(params.getScenarioId2()))
-					.replace("$domain", String.valueOf(params.getDomain()));
+			if (!Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
+				filePath2 = resultPathUtil.getRealPath(filePath2, params.getUserId(), params.getDomainId(),
+						params.getMissionId(), params.getScenarioId2(), params.getDomain());
+			}
+			return true;
+		} catch (Exception e) {
+			logger.error("ExtractDataService | getNcFilePath error");
+			return false;
 		}
 
 	}
@@ -299,7 +307,6 @@ public class ExtractDataService {
 						}
 
 						res.add(map);
-						str.substring(0, str.lastIndexOf("/") - 1);
 						pb.setValue(str);
 					}
 				} else {
@@ -333,7 +340,6 @@ public class ExtractDataService {
 					}
 
 					res.add(map);
-					str.substring(0, str.lastIndexOf("/") - 1);
 					pb.setValue(str);
 				}
 
@@ -405,6 +411,9 @@ public class ExtractDataService {
 					if ("diff".equals(params.getCalcType())) {
 						value = value2 - value1;
 					} else {
+						if (value1 == 0) {
+							value1 = Constants.MINIMUM;
+						}
 						value = (value2 - value1) / value1;
 					}
 					resMap.put(specie, value);
@@ -414,6 +423,7 @@ public class ExtractDataService {
 			return resMap;
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("ExtractDataService | getValue error");
 			return null;
 		}
 	}

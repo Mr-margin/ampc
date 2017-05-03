@@ -7,14 +7,14 @@ public class ExtractRequestParams {
 	private String calcType; // show diff ratio
 	private String showType; // emis concn wind
 	private int borderType; // 0 don't show over point , 1 show all point
-	private int userId;
-	private int domainId;
-	private int missionId;
+	private Long userId;
+	private Long domainId;
+	private Long missionId;
 	private int domain;
 	private List<String> species;
 	private String timePoint; // d h a
-	private int scenarioId1;
-	private int scenarioId2;
+	private Long scenarioId1;
+	private Long scenarioId2;
 	private int layer;
 	private String day;
 	private int hour;
@@ -39,8 +39,8 @@ public class ExtractRequestParams {
 	private int row; // domain的行
 	private int col; // domain的列
 
-	public ExtractRequestParams(String calcType, String showType, int userId, int domainId, int missionId, int domain,
-			List<String> species, String timePoint) {
+	public ExtractRequestParams(String calcType, String showType, Long userId, Long domainId, Long missionId,
+			int domain, List<String> species, String timePoint) {
 		this.calcType = calcType;
 		this.showType = showType;
 		this.userId = userId;
@@ -67,27 +67,27 @@ public class ExtractRequestParams {
 		this.showType = showType;
 	}
 
-	public int getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
-	public int getDomainId() {
+	public Long getDomainId() {
 		return domainId;
 	}
 
-	public void setDomainId(int domainId) {
+	public void setDomainId(Long domainId) {
 		this.domainId = domainId;
 	}
 
-	public int getMissionId() {
+	public Long getMissionId() {
 		return missionId;
 	}
 
-	public void setMissionId(int missionId) {
+	public void setMissionId(Long missionId) {
 		this.missionId = missionId;
 	}
 
@@ -115,19 +115,19 @@ public class ExtractRequestParams {
 		this.timePoint = timePoint;
 	}
 
-	public int getScenarioId1() {
+	public Long getScenarioId1() {
 		return scenarioId1;
 	}
 
-	public void setScenarioId1(int scenarioId1) {
+	public void setScenarioId1(Long scenarioId1) {
 		this.scenarioId1 = scenarioId1;
 	}
 
-	public int getScenarioId2() {
+	public Long getScenarioId2() {
 		return scenarioId2;
 	}
 
-	public void setScenarioId2(int scenarioId2) {
+	public void setScenarioId2(Long scenarioId2) {
 		this.scenarioId2 = scenarioId2;
 	}
 
