@@ -4,7 +4,7 @@ var changeMsg = {
     showWind: '-1',
     showType: ['concn'],//"emis"代表排放、"concn"代表浓度、"wind"代表风场
     calcType: 'show',//"show"当前情景，"diff"差值，"ratio"比例
-    species: 'PM₂.₅',//物种
+    species: ['PM₂.₅'],//物种
     missionId: '',//任务ID
     domain: 1,//模拟范围
     domainId: '',//模拟范围ID
@@ -14,7 +14,7 @@ var changeMsg = {
     sTimeD: '',//开始日期
     sTimeH: 0,//开始时间
     eTime: '',//结束日期
-    GPserver_type: '',//
+    GPserver_type: [],//
     dates: [],
     layer: 1,
     rows: 40,
@@ -384,29 +384,126 @@ function exchangeModal() {
 
 function bianji(type, g_num, p , wind) {
 
-    if(!wind){
-        wind = -1
-    }
-	var par = p;
-    var v1 = new Date().getTime();
-    par.xmax = app.mapList[app.shengx].extent.xmax;
-    par.xmin = app.mapList[app.shengx].extent.xmin;
-    par.ymax = app.mapList[app.shengx].extent.ymax;
-    par.ymin = app.mapList[app.shengx].extent.ymin;
-	
-	if(wind == -1){//无风场
+    for(var sp=0;sp<changeMsg.species.length;sp++){
 
-	    var GPserver_type = par.GPserver_type;
-	    var GPserver_url = ArcGisServerUrl + "/arcgis/rest/services/ampc_zrly/" + GPserver_type + "/GPServer/" + GPserver_type;
+
+        if(!wind){
+            wind = -1
+        }
+        var par = p;
+        var v1 = new Date().getTime();
+        par.xmax = app.mapList[app.shengx].extent.xmax;
+        par.xmin = app.mapList[app.shengx].extent.xmin;
+        par.ymax = app.mapList[app.shengx].extent.ymax;
+        par.ymin = app.mapList[app.shengx].extent.ymin;
+
+        if(wind == -1){//无风场
+
+            var GPserver_type = par.GPserver_type[sp];
+            var GPserver_url = ArcGisServerUrl + "/arcgis/rest/services/ampc_zrly/" + GPserver_type + "/GPServer/" + GPserver_type;
 //	    $.get('data6.json', function (data) {
 //	    console.log(par);
-	    
-	    var pftype = "";
-	    if(par.)
-	    
-	    ajaxPost('/extract/data', par).success(function (data) {
 
-	        if (!data.data) {
+            var pftype = par.species[sp];
+
+                ajaxPost('/extract/data', par).success(function (data) {
+
+                    if (!data.data) {
+                        console.log("data.data-null");
+                        return;
+                    }
+                    if (data.data.length == 0) {
+                        console.log("length-null");
+                        return;
+                    }
+                    console.log(g_num + '~~~' + data.data.length);
+                    var features = [];
+                    $.each(data.data, function (i, col) {
+
+                        if (typeof col.x == "undefined") {
+                            console.log("x-null");
+                            return;
+                        }
+                        if (typeof col.y == "undefined") {
+                            console.log("y-null");
+                            return;
+                        }
+                        var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
+                        var attr = {};
+                        attr["FID"] = i;
+                        attr["dqvalue"] = col[pftype];
+                        var graphic = new dong.Graphic(point);
+                        graphic.setAttributes(attr);
+                        features.push(graphic);
+                    });
+
+                    var featureset = new dong.FeatureSet();
+                    featureset.fields = [{
+                        "name": "dqvalue",
+                        "type": "esriFieldTypeSingle",
+                        "alias": "dqvalue"
+                    }, {
+                        "name": "FID",
+                        "type": "esriFieldTypeOID",
+                        "alias": "FID"
+                    }];
+                    featureset.fieldAliases = {"dqvalue": "dqvalue", "FID": "FID"};
+                    featureset.spatialReference = new dong.SpatialReference({wkid: 3857});
+                    featureset.features = features;
+                    featureset.exceededTransferLimit = false;
+
+//	        console.log(JSON.stringify(featureset));
+//	        console.log((new Date().getTime() - v1) + "生成数据");
+                    app.gp = new esri.tasks.Geoprocessor(GPserver_url);
+                    var parms = {
+                        "imp": featureset,
+                        "out": "out_raster_layer"
+                    };
+                    app.gp.submitJob(parms, function (jobInfo) {
+                        var gpResultLayer = app.gp.getResultImageLayer(jobInfo.jobId, "out");//这里的名字是跟着返回图层的变量名走的，不一样的话是不出图的
+                        //需要判断一下是否已经添加过图层，先移除，再添加
+                        gpResultLayer.id = "out_raster_layer";
+                        var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
+                        if (out_raster_layer) {
+                            app.mapList[g_num].removeLayer(out_raster_layer);
+                        }
+
+                        gpResultLayer.setOpacity(opacity);
+                        app.mapList[g_num].addLayer(gpResultLayer);
+                        //console.log(new Date().getTime() - v1);
+                    }, function (jobinfo) {
+                        var jobstatus = '';
+                        switch (jobinfo.jobStatus) {
+                            case 'esriJobSubmitted':
+                                //jobstatus = type + '正在提交...';
+                                break;
+                            case 'esriJobExecuting':
+                                //jobstatus = type + '处理中...';
+                                break;
+                            case 'esriJobSucceeded':
+                                jobstatus = '--' + g_num + '--处理完成...';
+                                console.log((new Date().getTime() - v1) + jobstatus);
+                                zmblockUI("#mapDiv0", "end");
+                                zmblockUI("#mapDiv1", "end");
+                                break;
+                        }
+                    }, function (error) {
+                        console.log(error);
+                    });
+
+                });
+//		zmblockUI("#mapDiv0", "end");
+//        zmblockUI("#mapDiv1", "end");
+
+        }else if(wind == 1){//↑风场
+            par.species = ['WSPDCONVERT','WDIR'];
+        }else if(wind == 2){//F风场
+//		zmblockUI("#mapDiv0", "start");
+//	    zmblockUI("#mapDiv1", "start");
+            par.species = ['WSPDCONVERT','WDIR'];
+            // $.get('data7.json', function (data) {
+		ajaxPost('/extract/data', par).success(function (data) {
+			if (!data.data) {
 	            console.log("data.data-null");
 	            return;
 	        }
@@ -414,187 +511,98 @@ function bianji(type, g_num, p , wind) {
 	            console.log("length-null");
 	            return;
 	        }
-	        console.log(g_num + '~~~' + data.data.length);
-	        var features = [];
-	        $.each(data.data, function (i, col) {
 
-	            if (typeof col.x == "undefined") {
-	                console.log("x-null");
-	                return;
-	            }
-	            if (typeof col.y == "undefined") {
-	                console.log("y-null");
-	                return;
-	            }
-	            var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
-	            var attr = {};
-	            attr["FID"] = i;
-	            attr["dqvalue"] = col[pftype[0]];
-	            var graphic = new dong.Graphic(point);
-	            graphic.setAttributes(attr);
-	            features.push(graphic);
-	        });
+                $.each(data.data, function (i, col) {
 
-	        var featureset = new dong.FeatureSet();
-	        featureset.fields = [{
-	            "name": "dqvalue",
-	            "type": "esriFieldTypeSingle",
-	            "alias": "dqvalue"
-	        }, {
-	            "name": "FID",
-	            "type": "esriFieldTypeOID",
-	            "alias": "FID"
-	        }];
-	        featureset.fieldAliases = {"dqvalue": "dqvalue", "FID": "FID"};
-	        featureset.spatialReference = new dong.SpatialReference({wkid: 3857});
-	        featureset.features = features;
-	        featureset.exceededTransferLimit = false;
+                    if (typeof col.x == "undefined") {
+                        console.log("x-null");
+                        return;
+                    }
+                    if (typeof col.y == "undefined") {
+                        console.log("y-null");
+                        return;
+                    }
 
-//	        console.log(JSON.stringify(featureset));
-//	        console.log((new Date().getTime() - v1) + "生成数据");
-	        app.gp = new esri.tasks.Geoprocessor(GPserver_url);
-	        var parms = {
-	            "imp": featureset,
-	            "out": "out_raster_layer"
-	        };
-	        app.gp.submitJob(parms, function (jobInfo) {
-	            var gpResultLayer = app.gp.getResultImageLayer(jobInfo.jobId, "out");//这里的名字是跟着返回图层的变量名走的，不一样的话是不出图的
-	            //需要判断一下是否已经添加过图层，先移除，再添加
-	            gpResultLayer.id = "out_raster_layer";
-	            var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
-	            if (out_raster_layer) {
-	                app.mapList[g_num].removeLayer(out_raster_layer);
-	            }
+                    var p_url = "img/fx/"+col.WSPDCONVERT+".png";
+                    var angle = 0;
+                    switch (col.WDIR) {
+                        case "N" :
+                            angle = 0;
+                            break;
+                        case "NNE" :
+                            angle = 22.5;
+                            break;
+                        case "NE" :
+                            angle = 45;
+                            break;
+                        case "ENE" :
+                            angle = 67.5;
+                            break;
+                        case "E" :
+                            angle = 90;
+                            break;
+                        case "ESE" :
+                            angle = 112.5;
+                            break;
+                        case "SE" :
+                            angle = 135;
+                            break;
+                        case "SSE" :
+                            angle = 157.5;
+                            break;
+                        case "S" :
+                            angle = 180;
+                            break;
+                        case "SSW" :
+                            angle = 202.5;
+                            break;
+                        case "SW" :
+                            angle = 225;
+                            break;
+                        case "WSW" :
+                            angle = 247.5;
+                            break;
+                        case "W" :
+                            angle = 270;
+                            break;
+                        case "WNW" :
+                            angle = 292.5;
+                            break;
+                        case "NW" :
+                            angle = 315;
+                            break;
+                        case "NNW" :
+                            angle = 337.5;
+                            break;
+                        default :
+                            angle = 0;
+                    }
 
-	            gpResultLayer.setOpacity(opacity);
-	            app.mapList[g_num].addLayer(gpResultLayer);
-	            //console.log(new Date().getTime() - v1);
-	        }, function (jobinfo) {
-	            var jobstatus = '';
-	            switch (jobinfo.jobStatus) {
-	                case 'esriJobSubmitted':
-	                    //jobstatus = type + '正在提交...';
-	                    break;
-	                case 'esriJobExecuting':
-	                    //jobstatus = type + '处理中...';
-	                    break;
-	                case 'esriJobSucceeded':
-	                    jobstatus = '--' + g_num + '--处理完成...';
-	                    console.log((new Date().getTime() - v1) + jobstatus);
-	                    zmblockUI("#mapDiv0", "end");
-	                    zmblockUI("#mapDiv1", "end");
-	                    break;
-	            }
-	        }, function (error) {
-	            console.log(error);
-	        });
+                    var symbol = new dong.PictureMarkerSymbol(p_url,12,12);
+                    symbol.setOffset(-10,18);
+                    symbol.setAngle(angle);
+                    var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
+                    var graphic = new dong.Graphic(point, symbol);
+                    if(g_num == 0){
+                        app.gLyr1.add(graphic);
+                    }else if(g_num == 1){
+                        app.gLyr2.add(graphic);
+                    }
 
-	    });
-//		zmblockUI("#mapDiv0", "end");
-//        zmblockUI("#mapDiv1", "end");
-	    
-	}else if(wind == 1){//↑风场
-		
-	}else if(wind == 2){//F风场
-//		zmblockUI("#mapDiv0", "start");
-//	    zmblockUI("#mapDiv1", "start");
-	    
-		$.get('data7.json', function (data) {
-//		ajaxPost('/extract/data', par).success(function (data) {
-//			if (!data.data) {
-//	            console.log("data.data-null");
-//	            return;
-//	        }
-//	        if (data.data.length == 0) {
-//	            console.log("length-null");
-//	            return;
-//	        }
-	        
-	        $.each(data, function (i, col) {
 
-	            if (typeof col.x == "undefined") {
-	                console.log("x-null");
-	                return;
-	            }
-	            if (typeof col.y == "undefined") {
-	                console.log("y-null");
-	                return;
-	            }
-	            
-	            var p_url = "img/fx/"+col.v1+".png";
-	            var angle = 0;
-	            switch (col.v2) {
-					case "N" :
-						angle = 0;
-						break;
-					case "NNE" :
-						angle = 22.5;
-						break;
-					case "NE" :
-						angle = 45;
-						break;
-					case "ENE" :
-						angle = 67.5;
-						break;
-					case "E" :
-						angle = 90;
-						break;
-					case "ESE" :
-						angle = 112.5;
-						break;
-					case "SE" :
-						angle = 135;
-						break;
-					case "SSE" :
-						angle = 157.5;
-						break;
-					case "S" :
-						angle = 180;
-						break;
-					case "SSW" :
-						angle = 202.5;
-						break;
-					case "SW" :
-						angle = 225;
-						break;
-					case "WSW" :
-						angle = 247.5;
-						break;
-					case "W" :
-						angle = 270;
-						break;
-					case "WNW" :
-						angle = 292.5;
-						break;
-					case "NW" :
-						angle = 315;
-						break;
-					case "NNW" :
-						angle = 337.5;
-						break;
-					default :
-						angle = 0;
-				}
-	            
-	            var symbol = new dong.PictureMarkerSymbol(p_url,12,12);
-	            symbol.setOffset(-10,18);
-	            symbol.setAngle(angle);
-	            var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
-	            var graphic = new dong.Graphic(point, symbol);
-	            if(g_num == 0){
-	            	app.gLyr1.add(graphic);
-	            }else if(g_num == 1){
-	            	app.gLyr2.add(graphic);
-	            }
-	            
-	            
-	        });
-	        zmblockUI("#mapDiv0", "end");
-            zmblockUI("#mapDiv1", "end");
-	        console.log((new Date().getTime() - v1) + "num:" +g_num);
-		});
-		
-	}
+                });
+                zmblockUI("#mapDiv0", "end");
+                zmblockUI("#mapDiv1", "end");
+                console.log((new Date().getTime() - v1) + "num:" +g_num);
+            });
+
+        }
+
+
+    }
+
+
+
 	
 	
 	
@@ -800,7 +808,8 @@ function setDate(s1, e1, s2, e2, type) {
 /*顶部选择事件*/
 $('#species').on('change', function (e) {  //物种选择
     var species = $(e.target).val();
-    changeMsg.species = species;
+    changeMsg.species = [];
+    changeMsg.species.push(species);
     console.log(species);
     updata();
 });
@@ -978,7 +987,13 @@ function updata(t) {
         domainId: changeMsg.domainId,
         domain: changeMsg.domain,
         missionId: changeMsg.missionId,
-        species: mappingSpeciesBig[changeMsg.species],
+        species: (function() {
+            var arr = [];
+            for(var i=0;i<changeMsg.species.length;i++){
+                arr.push(mappingSpeciesBig[changeMsg.species[i]])
+            }
+            return arr;
+        })(),
         timePoint: changeMsg.rms,
         borderType: "0"
     };
@@ -1006,8 +1021,14 @@ function updata(t) {
         p1.dates = changeMsg.dates;
         p2.dates = changeMsg.dates;
     }
-    p1.GPserver_type = mappingSpecies[changeMsg.rms][changeMsg.species];
-    p2.GPserver_type = mappingSpecies[changeMsg.rms][changeMsg.species];
+    p1.GPserver_type = [];
+    p2.GPserver_type = [];
+    for(var i=0;i<changeMsg.species.length;i++){
+        p1.GPserver_type.push(mappingSpecies[changeMsg.rms][changeMsg.species[i]]);
+        p2.GPserver_type.push(mappingSpecies[changeMsg.rms][changeMsg.species[i]]);
+    }
+
+
 
 
     if(t == 'wind'){
