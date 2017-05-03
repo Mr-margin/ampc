@@ -178,52 +178,101 @@ public class AppraisalController {
 				return	AmpcResult.build(0, "success",scmap);
 			}
 			if(datetype.equals("hour")){
+				Object[] speciesArr={"BC","O3","PM25","CO","NO2","NO3","OC","PMFINE","SO2","PM10","SO4","AQI","NH4","OM"};
+				
+				Map<String,Object> speciesMap=new HashMap();
+				
 				for(ScenarinoEntity sc:sclist){
 					String scid=String.valueOf(sc.getsId());
 					Object content=sc.getContent();
-					JSONObject obj=JSONObject.fromObject(content);//行业减排结果	--影响转化效率
+					JSONObject obj=JSONObject.fromObject(content);	//行业减排结果	--影响转化效率
 					Map<String,Object> detamap=(Map)obj;
-					Map<String,Object> datemap=new HashMap();
-					for(String datetime:detamap.keySet()){
-						Object sp=detamap.get(datetime);
-						Map<String,Object> spmap=(Map)sp;
-						Map<String,Object> spcmap=new HashMap();	//存放数据
-						for(String spr:spmap.keySet()){
-							Object height=spmap.get(spr);
-							Map<String,Object> heightmap=(Map)height;
-							Object hour=heightmap.get("0");
-							JSONArray hourlist= JSONArray.fromObject(hour);
-							
-							Map<String,Object> hourcmap=new HashMap();	//用于存放数据
-							if(hourlist.size()==24){
-								for(int a=0;a<=23;a++){
-									if(spr.equals("CO")){
-										BigDecimal bd=(new BigDecimal(hourlist.get(a).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
-										hourcmap.put(String.valueOf(a),bd);
-										}else{
-										BigDecimal bd=(new BigDecimal(hourlist.get(a).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
-										hourcmap.put(String.valueOf(a),bd);
-										}	
-								}
-							}else{
-								for(int a=0;a<=23;a++){
-									hourcmap.put(String.valueOf(a),"-");
-								}
-							}
-							spcmap.put(datetime, hourcmap);
-							if(datemap.get(spr)!=null){
-								Object maps=datemap.get(spr);
-								Map<String,Object> des=(Map)maps;
-								des.put(datetime, hourcmap);
-								datemap.put(spr, des);
-							}else{
-							datemap.put(spr, spcmap);
-							}
-							scmap.put(scid, datemap);
-						}
+					
+					for(int i=0;i<speciesArr.length;i++){	
 						
+						Map<String,Object> datemap=new HashMap();
+						
+						for(String datetime:detamap.keySet()){			//content全部数据	key--日期
+							Object sp=detamap.get(datetime);
+							Map<String,Object> spmap=(Map)sp;
+							
+							Map<String,Object> spcmap=new HashMap();	//存放数据
+							
+							for(String spr:spmap.keySet()){				//单个日期中全部物种数据
+								if(speciesArr[i].equals(spr)){
+									if("CO".equals(spr)){
+										Object height=spmap.get(spr);
+										Map<String,Object> heightmap=(Map)height;
+										Object hour=heightmap.get("0");
+										JSONArray hourlist= JSONArray.fromObject(hour);
+										for(int j=0;j<hourlist.size();j++){
+											BigDecimal bd=(new BigDecimal(hourlist.get(j).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+											spcmap.put(""+j+"",bd);
+										}
+									}else{
+										Object height=spmap.get(spr);
+										Map<String,Object> heightmap=(Map)height;
+										Object hour=heightmap.get("0");
+										JSONArray hourlist= JSONArray.fromObject(hour);
+										for(int j=0;j<hourlist.size();j++){
+											BigDecimal bd=(new BigDecimal(hourlist.get(j).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+											spcmap.put(""+j+"",bd);
+										}
+									}
+								}
+							}	
+							datemap.put(datetime, spcmap);
+						}
+						speciesMap.put(""+speciesArr[i]+"", datemap);
 					}
+					scmap.put(scid, speciesMap);
 				}
+//				for(ScenarinoEntity sc:sclist){
+//					String scid=String.valueOf(sc.getsId());
+//					Object content=sc.getContent();
+//					JSONObject obj=JSONObject.fromObject(content);//行业减排结果	--影响转化效率
+//					Map<String,Object> detamap=(Map)obj;
+//					Map<String,Object> datemap=new HashMap();
+//					for(String datetime:detamap.keySet()){		//content全部数据	key--日期
+//						Object sp=detamap.get(datetime);
+//						Map<String,Object> spmap=(Map)sp;
+//						Map<String,Object> spcmap=new HashMap();	//存放数据
+//						for(String spr:spmap.keySet()){
+//							Object height=spmap.get(spr);
+//							Map<String,Object> heightmap=(Map)height;
+//							Object hour=heightmap.get("0");
+//							JSONArray hourlist= JSONArray.fromObject(hour);
+//							
+//							Map<String,Object> hourcmap=new HashMap();	//用于存放数据
+//							if(hourlist.size()==24){
+//								for(int a=0;a<=23;a++){
+//									if(spr.equals("CO")){
+//										BigDecimal bd=(new BigDecimal(hourlist.get(a).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+//										hourcmap.put(String.valueOf(a),bd);
+//										}else{
+//										BigDecimal bd=(new BigDecimal(hourlist.get(a).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+//										hourcmap.put(String.valueOf(a),bd);
+//										}	
+//								}
+//							}else{
+//								for(int a=0;a<=23;a++){
+//									hourcmap.put(String.valueOf(a),"-");
+//								}
+//							}
+//							spcmap.put(datetime, hourcmap);
+//							if(datemap.get(spr)!=null){
+//								Object maps=datemap.get(spr);
+//								Map<String,Object> des=(Map)maps;
+//								des.put(datetime, hourcmap);
+//								datemap.put(spr, des);
+//							}else{
+//							datemap.put(spr, spcmap);
+//							}
+//							scmap.put(scid, datemap);
+//						}
+//						
+//					}
+//				}
 			}else{
 				for(ScenarinoEntity sc:sclist){
 					String scid=String.valueOf(sc.getsId());
