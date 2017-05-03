@@ -1,0 +1,309 @@
+<style>
+  /*属性重置*/
+  ul,li{ list-style: none;}
+  dl,dd{margin:0;border: none;padding:0;}
+  .row{margin:0;}
+  /**/
+  .indexBg{position: absolute;left:0;top:0;right:0;bottom:0;background:#f3f3f4;min-width: 1200px;}
+  .indexDiv{width:100%;height:100%;box-sizing: border-box;border:1px solid #75b9e6;border-radius:0px; overflow: hidden;background:white;position: relative;}
+  .indexTitle{height:30px;background:#f3f3f4;border-bottom:1px solid #75b9e6;line-height: 30px;padding-left: 10px;color:white; }
+  .indexContent{position: absolute;left: 0px;top:30px;right:0;bottom:0; overflow:auto;}
+  .more{float: right;margin-right: 10px;line-height: 30px;color:white;}
+  /*任务*/
+  .renwu{width: 100%;}
+  /*分块*/
+  .indexDivRw{border:1px solid #97d3c5;}
+  .indexTitleRw{background:#97d3c5;border-bottom:1px solid #97d3c5;}
+  .indexDivYqd{border:1px solid #75b9e6;}
+  .indexTitleYqd{background:#75b9e6;border-bottom:1px solid #75b9e6;}
+  .indexDivRb{border:1px solid #f68484;}
+  .indexTitleRb{background:#f68484;border-bottom:1px solid #f68484;}
+  .rbTop{height:60%;background:#f68484;color: white;display: flex;justify-content:center;align-items:Center;font-size:4em}
+  .rbBottom{height:40%;}
+  .rbBottom ul{overflow: hidden;display: block;width: 100%;height: 100%;}
+  .rbBottom ul li{float: left;width: 25%;height:100%;display: flex;justify-content:center;align-items:Center;font-size:16px;}
+  .rbBottom ul li a{text-align: center;}
+  .indexDivTime{border:1px solid #f4b162;}
+  .indexTitleTime{background:#f4b162;border-bottom:1px solid #f4b162;}
+  /*时间进度*/
+  .proTimeTop{height:60%;width: 100%;padding-top:10%;}
+  .proTimeBottom{height:40%;width: 100%;background:#f4b162;}
+  .proTimeBottom ul{overflow:hidden;width:100%;height: 100%;}
+  .proTimeBottom ul li{float: left;width: 33.3%;height:100%;display: flex;justify-content:center;align-items:Center;}
+  .proTimeBottom ul li span{display: block;width: 80%;height:80%;margin: auto;cursor: pointer;color: white;font-size: 20px;text-align: center;overflow: hidden;}
+  .proTimeBottom ul li span:hover{background: #f19932;border-radius: 5px;}
+  .proTimeBottom ul li span .time1{font-size: 14px;margin-top: 10%;}
+  .proTimeBottom ul li span .time2{font-size: 20px;}
+  /*公告*/
+  .noticeSearch{width: 100%;height: 60px;}
+  .noticeSearch input[type="search"]{float: left;width: 300px;height: 30px;margin-left:20px;margin-top:15px;border:1px solid #d0d0ca;border-right: none;}
+  .noticeSearch button[type="button"]{float: left;width: 30px;height: 30px;margin-top:15px;display: flex;justify-content:center;align-items:Center;border-radius:0;background: #75b9e6;color:white;}
+  .noticeCon{padding-left:20px;padding-right: 20px;}
+  .noticeCon dd{overflow: hidden;height: 30px;line-height: 30px;border-bottom: 1px dotted #d0d0ca;}
+  .noticeCon dd a{float: left;}
+  .noticeCon dd span{float: right;}
+  /*基本设置*/
+  .indexDivSet{border:1px solid #75b9e6;}
+  .indexTitleSet{background:#75b9e6;border-bottom:1px solid #75b9e6;}
+  .indexContentSet{background:#75b9e6;}
+  .indexContentSet dl{overflow: hidden;width: 100%;height: 100%;}
+  .indexContentSet dl dd{float: left;width: 50%;height: 100%;display: flex;justify-content:center;align-items:Center;}
+  .indexContentSet dl dd a{display: block;width: 50%;color: white;text-align:center;}
+  .indexContentSet dl dd a i{font-size: 4em;}
+  .indexContentSet dl dd a div{margin-top: 10px;}
+</style>
+<div class="indexBg">
+  <!--第一行-->
+  <div class="row" style="height: 60%">
+    <!---正在进行任务-->
+    <div class="col-xs-8" style="height: 100%;">
+      <div class="indexDiv indexDivRw">
+        <div class="indexTitle indexTitleRw">
+          <i class="st-folder-settings"> 进行任务</i>
+          <a href="#" class="more">
+            <spam>更多</spam>
+            <i class="fa-double-angle-right"></i>
+          </a>
+        </div>
+        <div class="indexContent">
+            <table id="renwu" class="renwu"></table>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-4" style="height: 100%;">
+      <div class="row" style="height: 50%">
+        <!--源清单-->
+        <div class="col-xs-12" style="height: 100%;padding-left:0;">
+          <div class="indexDiv indexDivYqd">
+            <div class="indexTitle indexTitleYqd"><i class="st-align-justify"> 源清单</i>
+              <a href="#" class="more">
+                <spam>更多</spam>
+                <i class="fa-double-angle-right"></i>
+              </a>
+            </div>
+            <div class="indexContent">
+              <table id="qingdan" class="qingdan"></table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="height: 50%">
+        <!--回收站-->
+        <div class="col-xs-12"  style="height: 100%;padding-top:10px;padding-left:0;">
+          <div class="indexDiv indexDivRb">
+            <div class="indexTitle indexTitleRb">回收站</div>
+            <div class="indexContent">
+              <div class="rbTop"><i class="ec-trashcan"></i></div>
+              <div class="rbBottom">
+                <ul>
+                  <li>
+                    <a href="#">
+                      <i class="im-earth"></i>
+                      <div>模拟范围</div>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <i class="st-align-justify"></i>
+                      <div>源清单</div>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <i class="im-books"></i>
+                      <div>可复用预案</div>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <i class="st-folder-settings"></i>
+                      <div>任务/情景</div>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--第二行-->
+  <div class="row" style="height: 40%">
+    <div class="col-xs-4" style="height: 100%;padding-top:10px;">
+      <!--计算时间-->
+        <div class="indexDiv indexDivTime">
+          <div class="indexTitle indexTitleTime"><i class="im-clock"> 计算时间</i></div>
+          <div class="indexContent">
+            <div style="width: 100%;height:100%;">
+              <div class="proTimeTop">
+                <div class="progress progress-striped"  style="width: 90%;margin:auto;border-radius:20px;">
+                  <div id="prog" class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width:0%;">
+                  </div>
+                </div>
+              </div>
+              <div class="proTimeBottom">
+                <ul>
+                  <li><span>
+                    <div class="time1">剩余</div>
+                    <div class="time2">1000小时</div>
+                  </span></li>
+                  <li><span>
+                    <div class="time1">已用</div>
+                    <div class="time2">0小时</div>
+                  </span></li>
+                  <li><span>
+                    <div class="time1">共计</div>
+                    <div class="time2">1000小时</div>
+                  </span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!--公告-->
+    <div class="col-xs-4" style="height: 100%;padding-top:10px;">
+      <div class="indexDiv indexDivYqd">
+        <div class="indexTitle indexTitleYqd"><i class="im-bullhorn"> 最新公告</i>
+          <a href="#" class="more">
+            <span>更多</span>
+            <i class="fa-double-angle-right"></i>
+          </a>
+        </div>
+        <div class="indexContent">
+          <div class="noticeSearch">
+            <input type="search" />
+            <button type="button" class="btn"><i class="im-search"></i></button>
+          </div>
+          <div class="noticeCon">
+            <dl>
+              <dd>
+                <a href="#">全国清单进行更新</a>
+                <span>2017-4-26</span>
+              </dd>
+              <dd>
+                <a href="#">全国清单进行更新</a>
+                <span>2017-4-26</span>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-4" style="height: 100%;">
+      <!--基本设置-->
+      <div class="col-xs-12"  style="height: 100%;padding-top:10px;padding-left:0;">
+        <div class="indexDiv indexDivSet">
+          <div class="indexTitle indexTitleSet"><i class="ec-trashcan"> 用户系统</i></div>
+          <div class="indexContent indexContentSet">
+            <dl>
+              <dd>
+                <a href="#">
+                  <i class="im-user"></i>
+                  <div>用户系统</div>
+                </a>
+              </dd>
+              <dd>
+                <a href="#">
+                  <i class="br-cog"></i>
+                  <div>系统设置</div>
+                </a>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  //任务
+$("#renwu").bootstrapTable({
+    columns: [ {
+        field: 'missionId',
+        title: 'ID'
+    }, {
+        formatter: 'rwName',
+        title: '任务名称'
+    }, {
+        formatter: 'rwDomain',
+        title: '模拟范围'
+    }, {
+        field: 'esCouplingName',
+        title: '清单'
+    }, {
+        formatter: 'rwType',
+        title: '类型'
+    }],
+    method: 'POST',
+    url: '/ampc/mission/get_mission_list',
+    dataType: "json",
+    contentType: "application/json"  // 请求远程数据的内容类型。
+
+})
+  //清单
+  $("#qingdan").bootstrapTable({
+      columns: [ {
+          field: 'missionId',
+          title: 'ID'
+      }, {
+          formatter: 'rwName',
+          title: '任务名称'
+      }, {
+          formatter: 'rwDomain',
+          title: '模拟范围'
+      }, {
+          field: 'esCouplingName',
+          title: '清单'
+      }, {
+          formatter: 'rwType',
+          title: '类型'
+      }],
+      method: 'POST',
+      url: '/ampc/mission/get_mission_list',
+      dataType: "json",
+      contentType: "application/json"  // 请求远程数据的内容类型。
+
+  })
+
+  $(document).ready(function(){
+      var value = 0;
+      var time = 50;
+      //进度条复位函数
+      function reset( ) {
+          value = 0
+          $("#prog").removeClass("progress-bar-success").css("width","0%").text("等待启动");
+          //setTimeout(increment,5000);
+      }
+      //百分数增加，0-30时为红色，30-60为黄色，60-90为蓝色，>90为绿色
+      function increment( ) {
+          value += 1;
+          $("#prog").css("width",value + "%").text(value + "%");
+          if (value>=0 && value<=30) {
+              $("#prog").addClass("progress-bar-danger");
+          }
+          else if (value>=30 && value <=60) {
+              $("#prog").removeClass("progress-bar-danger");
+              $("#prog").addClass("progress-bar-warning");
+          }
+          else if (value>=60 && value <=90) {
+              $("#prog").removeClass("progress-bar-warning");
+              $("#prog").addClass("progress-bar-info");
+          }
+          else if(value >= 90 && value<100) {
+              $("#prog").removeClass("progress-bar-info");
+              $("#prog").addClass("progress-bar-success");
+          }
+          else{
+              //setTimeout(reset,3000);
+              return;
+
+          }
+
+          st = setTimeout(increment,time);
+      }
+      increment();
+
+  });
+</script>
