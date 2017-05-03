@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import ampc.com.gistone.extract.Constants;
 import ampc.com.gistone.util.AmpcResult;
 
 /**
@@ -39,7 +40,8 @@ public class CMAQV2 {
 			List filter = (List) data.get("filter");
 			long startTimes = System.currentTimeMillis();
 			if ("city".equals(mode)) {
-				cityWorkerV2.exe(userId, domainId, missionId, scenarioId, domain, dates, timePoint, mode, filter);
+				cityWorkerV2.exe(userId, domainId, missionId, scenarioId, domain, dates, timePoint, mode, filter,
+						Constants.SHOW_TYPE_CONCN);
 				logger.info((System.currentTimeMillis() - startTimes) + "ms");
 				return AmpcResult.ok(cityWorkerV2.getResult());
 			} else {

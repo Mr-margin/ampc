@@ -26,7 +26,7 @@
   </sql>
   
  <select id="checkScenarinoResTable" statementType="CALLABLE" parameterType="ampc.com.gistone.preprocess.concn.CheckTableParams">  
-     {call AMPC.CHECK_RES_TABLE(#{user_id,mode=IN,jdbcType=DECIMAL},#{years,mode=IN,jdbcType=VARCHAR},#{time_point,mode=IN,jdbcType=VARCHAR},#{tName,mode=OUT,jdbcType=VARCHAR})}  
+     {call AMPC.CHECK_RES_TABLE(#{user_id,mode=IN,jdbcType=DECIMAL},#{years,mode=IN,jdbcType=VARCHAR},#{time_point,mode=IN,jdbcType=VARCHAR},#{resType,mode=IN,jdbcType=VARCHAR},#{tName,mode=OUT,jdbcType=VARCHAR})}  
  </select> 
  
  <select id="insert" parameterType="ampc.com.gistone.preprocess.concn.ScenarinoEntity">
@@ -105,7 +105,7 @@
  </select>
  
  <select id="checkForcastFnlTable" statementType="CALLABLE" parameterType="ampc.com.gistone.preprocess.concn.CheckTableParams">  
-     {call AMPC.CHECK_FNL_TABLE(#{user_id,mode=IN,jdbcType=DECIMAL},#{years,mode=IN,jdbcType=VARCHAR},#{time_point,mode=IN,jdbcType=VARCHAR},#{tName,mode=OUT,jdbcType=VARCHAR})}  
+     {call AMPC.CHECK_FNL_TABLE(#{user_id,mode=IN,jdbcType=DECIMAL},#{years,mode=IN,jdbcType=VARCHAR},#{time_point,mode=IN,jdbcType=VARCHAR},#{resType,mode=IN,jdbcType=VARCHAR},#{tName,mode=OUT,jdbcType=VARCHAR})}  
  </select> 
  
  <select id="insertFnl" parameterType="ampc.com.gistone.preprocess.concn.ScenarinoEntity">
@@ -243,4 +243,5 @@
        AND "DATE" = #{date,jdbcType=DATE}
       </if>
  </select>
+
 </mapper>
