@@ -147,7 +147,7 @@ $.when(dps_um).then(function(){
           controller: ''
         },
 
-        'defaults': '/rwgl'     //默认显示页面
+        'defaults': '/sy'     //默认显示页面
       },
       errorTemplateId: '#error'//错误显示页面
     });
