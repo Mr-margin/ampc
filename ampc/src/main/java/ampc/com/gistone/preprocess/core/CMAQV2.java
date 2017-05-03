@@ -28,10 +28,10 @@ public class CMAQV2 {
 	public AmpcResult getResult(@RequestBody Map<String, Object> requestData) {
 		try {
 			Map data = (Map) requestData.get("data");
-			int userId = Integer.valueOf(String.valueOf(data.get("userId")));
-			int domainId = Integer.valueOf(String.valueOf(data.get("domainId")));
-			int missionId = Integer.valueOf(String.valueOf(data.get("missionId")));
-			int scenarioId = Integer.valueOf(String.valueOf(data.get("scenarioId")));
+			Long userId = Long.valueOf(String.valueOf(data.get("userId")));
+			Long domainId = Long.valueOf(String.valueOf(data.get("domainId")));
+			Long missionId = Long.valueOf(String.valueOf(data.get("missionId")));
+			Long scenarioId = Long.valueOf(String.valueOf(data.get("scenarioId")));
 			int domain = Integer.valueOf(String.valueOf(data.get("domain")));
 			List<String> dates = (List<String>) data.get("date");
 			String timePoint = String.valueOf(data.get("timePoint"));
