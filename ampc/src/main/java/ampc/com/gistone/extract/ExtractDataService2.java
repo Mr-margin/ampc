@@ -25,17 +25,16 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ampc.com.gistone.extract.netcdf.Netcdf;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
 @Service
-public class ExtractDataService {
+public class ExtractDataService2 {
 
 	@Autowired
 	private ResultPathUtil resultPathUtil;
-	private final static Logger logger = LoggerFactory.getLogger(ExtractDataService.class);
+	private final static Logger logger = LoggerFactory.getLogger(ExtractDataService2.class);
 	private final static String FLAG = "flag";
 
 	private ExtractConfig extractConfig;
@@ -61,48 +60,52 @@ public class ExtractDataService {
 
 	public synchronized List<Map<String, Object>> buildData(ExtractRequestParams extractRequestParams)
 			throws IOException, TransformException, FactoryException, InvalidRangeException {
+		extractConfig = resultPathUtil.getExtractConfig();
+		params = extractRequestParams;
+		res = new ArrayList<Map<String, Object>>();
+		getNcFilePath();
+		getVariables();
+		getAttribute();
+
+		projection = buildProject(params);
+		if (projection == null)
+			return null;
+
+		nf = NumberFormat.getInstance();
+		nf.setGroupingUsed(false);
+		nf.setMaximumFractionDigits(10);
+
+		pointBeanList = buildPointList(res);
+
+		ObjectMapper mapper = new ObjectMapper();
+		if (Constants.SHOW_TYPE_CONCN.equals(params.getShowType())) {
+			pathOut = extractConfig.getConcnFilePath();
+		} else if (Constants.SHOW_TYPE_EMIS.equals(params.getShowType())) {
+			pathOut = extractConfig.getEmisFilePath();
+		} else if (Constants.SHOW_TYPE_WIND.equals(params.getShowType())) {
+			pathOut = extractConfig.getWindFilePath();
+		}
+		pathOut = pathOut.replace("$userid", String.valueOf(params.getUserId()))
+				.replace("$domainid", String.valueOf(params.getDomainId()))
+				.replace("$missionid", String.valueOf(params.getMissionId()))
+				.replace("$scenarioid", String.valueOf(params.getScenarioId1()))
+				.replace("$domain", String.valueOf(params.getDomain()));
+		pathOut = pathOut + "/" + params.getCalcType() + "-" + params.getTimePoint();
+		saveFile(pathOut, "/data.json", mapper.writeValueAsString(res));
+		saveFile(pathOut, "/extract-data-lonlat.csv", sbcsv_latlon.toString());
+		saveFile(pathOut, "/extract-data-lcc.csv", sbcsv_lcc.toString());
+		exportExcel(pointBeanArray, pathOut);
+
+		return res;
+
+	}
+
+	private void getAttribute() {
 		try {
-			extractConfig = resultPathUtil.getExtractConfig();
-			params = extractRequestParams;
-			res = new ArrayList<Map<String, Object>>();
-			getNcFilePath();
-			getVariables();
-
-			projection = buildProject(params);
-			if (projection == null)
-				return null;
-
-			nf = NumberFormat.getInstance();
-			nf.setGroupingUsed(false);
-			nf.setMaximumFractionDigits(10);
-
-			pointBeanList = buildPointList(res);
-
-			ObjectMapper mapper = new ObjectMapper();
-			if (Constants.SHOW_TYPE_CONCN.equals(params.getShowType())) {
-				pathOut = extractConfig.getConcnFilePath();
-			} else if (Constants.SHOW_TYPE_EMIS.equals(params.getShowType())) {
-				pathOut = extractConfig.getEmisFilePath();
-			} else if (Constants.SHOW_TYPE_WIND.equals(params.getShowType())) {
-				pathOut = extractConfig.getWindFilePath();
-			}
-			pathOut = pathOut.replace("$userid", String.valueOf(params.getUserId()))
-					.replace("$domainid", String.valueOf(params.getDomainId()))
-					.replace("$missionid", String.valueOf(params.getMissionId()))
-					.replace("$scenarioid", String.valueOf(params.getScenarioId1()))
-					.replace("$domain", String.valueOf(params.getDomain()));
-			pathOut = pathOut + "/" + params.getCalcType() + "-" + params.getTimePoint();
-			saveFile(pathOut, "/data.json", mapper.writeValueAsString(res));
-			saveFile(pathOut, "/extract-data-lonlat.csv", sbcsv_latlon.toString());
-			saveFile(pathOut, "/extract-data-lcc.csv", sbcsv_lcc.toString());
-			exportExcel(pointBeanArray, pathOut);
-
-			return res;
+			attributes = (Map) ncFile1.getGlobalAttributes();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
 		}
-
 	}
 
 	private void getVariables() {
@@ -116,21 +119,21 @@ public class ExtractDataService {
 				String day = list.get(i);
 				buildVariables(day);
 			}
-			try {
-				attributes = Netcdf.getAttributes(filePath1 + list.get(0));
-			} catch (IOException e) {
-				logger.error("getAttributes IOException");
-				return;
-			}
+			// try {
+			// attributes = Netcdf.getAttributes(filePath1 + list.get(0));
+			// } catch (IOException e) {
+			// logger.error("getAttributes IOException");
+			// return;
+			// }
 		} else if (Constants.TIMEPOINT_D.equals(timePoint) || Constants.TIMEPOINT_H.equals(timePoint)) {
 			buildVariables(params.getDay());
 
-			try {
-				attributes = Netcdf.getAttributes(filePath1 + params.getDay());
-			} catch (IOException e) {
-				logger.error("getAttributes IOException");
-				return;
-			}
+			// try {
+			// attributes = Netcdf.getAttributes(filePath1);
+			// } catch (IOException e) {
+			// logger.error("getAttributes IOException");
+			// return;
+			// }
 		}
 	}
 
@@ -226,7 +229,8 @@ public class ExtractDataService {
 		String lat_2 = attributes.get("P_BET").toString();
 		String lat_0 = attributes.get("YCENT").toString();
 		String lon_0 = attributes.get("XCENT").toString();
-		int totalLayer = ncFile1.findDimension("LAY").getLength();
+		int totalLayer = ncFile1.findDimension("LAY").getLength(); // note need
+																	// sub 1
 		int row = Integer.valueOf(String.valueOf(attributes.get("NROWS")));
 		int col = Integer.valueOf(String.valueOf(attributes.get("NCOLS")));
 		params.setXorig(xorig);
@@ -280,7 +284,7 @@ public class ExtractDataService {
 				pointBeanArray[i][j] = pb;
 
 				Map<String, Double> resMap = getValue(pb);
-				if (resMap.containsKey(FLAG) && resMap.get(FLAG) == Constants.OVERBORDER) {
+				if (resMap.get(FLAG) == Constants.OVERBORDER) {
 					if (params.getBorderType() == 1) {
 						Map map = new HashMap<>();
 						map.put("x", nf.format(pb.getX()));
@@ -290,31 +294,24 @@ public class ExtractDataService {
 						// map.put("xlcc", p.getX());
 						// map.put("ylcc", p.getY());
 						String str = "";
-						List<String> species = params.getSpecies();
-						Double value = 0D;
-						for (String specie : species) {
-							map.put(specie, value.toString());
-							str += value.toString();
+						for (Map.Entry entry : resMap.entrySet()) {
+							String specie = (String) entry.getKey();
+							Double value = 0D;
+							String resStr = "";
+							if (specie.equals(FLAG)) {
+								continue;
+							} else if (specie.equals("WDIRCONVERT")) {
+								resStr = Constants.WINDDIRMAP.get(value);
+								map.put(specie, resStr);
+							} else {
+								resStr = value.toString();
+								map.put(specie, resStr);
+							}
+							str += resStr;
 							str += "/";
 						}
-						// for (Map.Entry entry : resMap.entrySet()) {
-						// String specie = (String) entry.getKey();
-						// Double value = 0D;
-						// String resStr = "";
-						// if (specie.equals(FLAG)) {
-						// continue;
-						// } else if (specie.equals("WDIRCONVERT")) {
-						// resStr = Constants.WINDDIRMAP.get(value);
-						// map.put(specie, resStr);
-						// } else {
-						// resStr = value.toString();
-						// map.put(specie, resStr);
-						// }
-						// str += resStr;
-						// str += "/";
-						// }
 						res.add(map);
-						str.substring(0, str.lastIndexOf("/") - 1);
+						str.substring(0, str.lastIndexOf("/"));
 						pb.setValue(str);
 					}
 				} else {
@@ -327,11 +324,13 @@ public class ExtractDataService {
 					// map.put("xlcc", p.getX());
 					// map.put("ylcc", p.getY());
 					String str = "";
-					List<String> species = params.getSpecies();
-					for (String specie : species) {
+					for (Map.Entry entry : resMap.entrySet()) {
+						String specie = (String) entry.getKey();
+						Double value = (Double) entry.getValue();
 						String resStr = "";
-						Double value = (Double) resMap.get(specie);
-						if (specie.equals("WDIRCONVERT")) {
+						if (specie.equals(FLAG)) {
+							continue;
+						} else if (specie.equals("WDIRCONVERT")) {
 							resStr = Constants.WINDDIRMAP.get(value);
 							map.put(specie, resStr);
 						} else {
@@ -341,24 +340,8 @@ public class ExtractDataService {
 						str += resStr;
 						str += "/";
 					}
-					// for (Map.Entry entry : resMap.entrySet()) {
-					// String specie = (String) entry.getKey();
-					// Double value = (Double) entry.getValue();
-					// String resStr = "";
-					// if (specie.equals(FLAG)) {
-					// continue;
-					// } else if (specie.equals("WDIRCONVERT")) {
-					// resStr = Constants.WINDDIRMAP.get(value);
-					// map.put(specie, resStr);
-					// } else {
-					// resStr = nf.format(value);
-					// map.put(specie, resStr);
-					// }
-					// str += resStr;
-					// str += "/";
-					// }
 					res.add(map);
-					str.substring(0, str.lastIndexOf("/") - 1);
+					str.substring(0, str.lastIndexOf("/"));
 					pb.setValue(str);
 				}
 
@@ -381,66 +364,61 @@ public class ExtractDataService {
 	}
 
 	private Map<String, Double> getValue(PointBean pb) throws IOException, InvalidRangeException {
-		try {
-			Point2D p = projection.transform(pb.getLon(), pb.getLat());
-			pb.setXlcc(p.getX());
-			pb.setYlcc(p.getY());
-			Map<String, Double> resMap = new HashMap<String, Double>();
-			double value = 0;
+		Point2D p = projection.transform(pb.getLon(), pb.getLat());
+		pb.setXlcc(p.getX());
+		pb.setYlcc(p.getY());
+		Map<String, Double> resMap = new HashMap<String, Double>();
+		double value = 0;
 
-			if (Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
+		if (Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
 
-				for (Map.Entry entry : variableMap1.entrySet()) {
-					String specie = (String) entry.getKey();
-					List<Variable> variableList1 = (List<Variable>) entry.getValue();
-					for (Variable variable : variableList1) {
-						double vv = interpolation.interpolation(variable, p);
-						if (vv == Constants.OVERBORDER) {
-							resMap.put(FLAG, Constants.OVERBORDER);
-							return resMap;
-						}
-						value += vv / variableList1.size();
-						resMap.put(specie, value);
+			for (Map.Entry entry : variableMap1.entrySet()) {
+				String specie = (String) entry.getKey();
+				List<Variable> variableList1 = (List<Variable>) entry.getValue();
+				for (Variable variable : variableList1) {
+					double vv = interpolation.interpolation(variable, p);
+					if (vv == Constants.OVERBORDER) {
+						resMap.put(FLAG, Constants.OVERBORDER);
+						return resMap;
 					}
-				}
-
-			} else if ("diff".equals(params.getCalcType()) || "ratio".equals(params.getCalcType())) {
-				double value1 = 0;
-				double value2 = 0;
-				for (Map.Entry entry : variableMap1.entrySet()) {
-					String specie = (String) entry.getKey();
-					List<Variable> variableList1 = (List<Variable>) entry.getValue();
-					for (Variable variable : variableList1) {
-						double vv = interpolation.interpolation(variable, p);
-						if (vv == Constants.OVERBORDER) {
-							resMap.put(FLAG, Constants.OVERBORDER);
-							return resMap;
-						}
-						value1 += vv / variableList1.size();
-					}
-					List<Variable> variableList2 = variableMap2.get(specie);
-					for (Variable variable : variableList2) {
-						double vv = interpolation.interpolation(variable, p);
-						if (vv == Constants.OVERBORDER) {
-							resMap.put(FLAG, Constants.OVERBORDER);
-							return resMap;
-						}
-						value2 += vv / variableList2.size();
-					}
-					if ("diff".equals(params.getCalcType())) {
-						value = value2 - value1;
-					} else {
-						value = (value2 - value1) / value1;
-					}
+					value += vv / variableList1.size();
 					resMap.put(specie, value);
 				}
-
 			}
-			return resMap;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+
+		} else if ("diff".equals(params.getCalcType()) || "ratio".equals(params.getCalcType())) {
+			double value1 = 0;
+			double value2 = 0;
+			for (Map.Entry entry : variableMap1.entrySet()) {
+				String specie = (String) entry.getKey();
+				List<Variable> variableList1 = (List<Variable>) entry.getValue();
+				for (Variable variable : variableList1) {
+					double vv = interpolation.interpolation(variable, p);
+					if (vv == Constants.OVERBORDER) {
+						resMap.put(FLAG, Constants.OVERBORDER);
+						return resMap;
+					}
+					value1 += vv / variableList1.size();
+				}
+				List<Variable> variableList2 = variableMap2.get(specie);
+				for (Variable variable : variableList2) {
+					double vv = interpolation.interpolation(variable, p);
+					if (vv == Constants.OVERBORDER) {
+						resMap.put(FLAG, Constants.OVERBORDER);
+						return resMap;
+					}
+					value2 += vv / variableList2.size();
+				}
+				if ("diff".equals(params.getCalcType())) {
+					value = value2 - value1;
+				} else {
+					value = (value2 - value1) / value1;
+				}
+				resMap.put(specie, value);
+			}
+
 		}
+		return resMap;
 	}
 
 	public void exportExcel(PointBean[][] pointBeanArray, String pathOut)
