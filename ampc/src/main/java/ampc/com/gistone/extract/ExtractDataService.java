@@ -331,8 +331,9 @@ public class ExtractDataService {
 					for (String specie : species) {
 						String resStr = "";
 						Double value = (Double) resMap.get(specie);
-						if (specie.equals("WDIRCONVERT")) {
-							resStr = Constants.WINDDIRMAP.get(value);
+						if (specie.equals("WDIR")) {
+							float vv = Constants.binarySearchKeyDir(value);
+							resStr = Constants.WINDDIRMAP.get(vv);
 							map.put(specie, resStr);
 						} else {
 							resStr = nf.format(value);
