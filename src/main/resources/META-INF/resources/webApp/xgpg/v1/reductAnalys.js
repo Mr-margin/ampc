@@ -1,4 +1,24 @@
 var ls = window.sessionStorage;
+var gis_paramsName = {};//地图请求的参数，第一次加载地图时初始化，每次更改地图比例尺时修改codeLevel
+var tj_paramsName = {};//统计图用的参数
+/**
+ * 操作地图显示
+ */
+var stat = {cPointx: 106, cPointy: 35}, app = {}, dong = {};
+var dojoConfig = {
+    async: true,
+    parseOnLoad: true,
+    packages: [{
+        name: 'tdlib',
+        location: "/js/tdlib"
+    }],
+    paths: {
+        extras: location.pathname.replace(/\/[^/]+$/, '') + "/js/extras"
+    }
+};
+var qjid_dq;//当前的情景ID
+var qjname_dq;//当前情景的name
+
 
 var sceneInitialization = vipspa.getMessage('sceneInitialization').content;//从路由中取到情景范围
 if (!sceneInitialization) {
@@ -154,8 +174,7 @@ function exchangeModal() {
     $("#Initialization").modal();
 }
 
-var qjid_dq;//当前的情景ID
-var qjname_dq;//当前情景的name
+
 
 /*添加情景选择按钮*/
 function setQjSelectBtn(data) {
@@ -171,7 +190,7 @@ function setQjSelectBtn(data) {
         }
         $('#qjBtn1 .btn-group').append(btn1);
     }
-
+    shoe_data_start();
 }
 
 
@@ -179,9 +198,7 @@ function setQjSelectBtn(data) {
  *设置导航条信息
  */
 $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
-var gis_paramsName = {};//地图请求的参数，第一次加载地图时初始化，每次更改地图比例尺时修改codeLevel
 
-var tj_paramsName = {};//统计图用的参数
 tj_paramsName.wz = $('#hz_wrw').val();//默认的物种
 tj_paramsName.code = "0";//code默认为0
 tj_paramsName.name = qjname_dq;//name默认为情景名称
@@ -208,21 +225,7 @@ function getchaxuntype() {
 }
 
 
-/**
- * 操作地图显示
- */
-var stat = {cPointx: 106, cPointy: 35}, app = {}, dong = {};
-var dojoConfig = {
-    async: true,
-    parseOnLoad: true,
-    packages: [{
-        name: 'tdlib',
-        location: "/js/tdlib"
-    }],
-    paths: {
-        extras: location.pathname.replace(/\/[^/]+$/, '') + "/js/extras"
-    }
-};
+
 require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", "esri/symbols/PictureMarkerSymbol",
         "esri/renderers/ClassBreaksRenderer", "esri/symbols/SimpleMarkerSymbol", "esri/dijit/PopupTemplate", "esri/geometry/Point", "esri/geometry/Extent",
         "esri/renderers/SimpleRenderer", "esri/graphic", "dojo/_base/Color", "dojo/dom-style", 'dojo/query', "esri/tasks/FeatureSet", "esri/SpatialReference",
