@@ -284,7 +284,12 @@ public interface TScenarinoDetailMapper {
 	
     TScenarinoDetail selectByrealmax(Long missionId);
     List<TScenarinoDetail> selectBytype4(Map map);
-    /**查询空气质量预报--时间序列*/
+    /**
+     * 查询空气质量预报--时间序列
+     * @param map
+     * @return
+     * @author weitan
+     */
     TScenarinoDetail selectScenarinoDetail_timeSeries(Map map);
 	
 
