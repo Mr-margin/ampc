@@ -279,6 +279,8 @@ function initEcharts() {
 				option.title.text = "SO₂"+('(μg/m³)');
 			}else if("NO2"==tname[i]){
 				option.title.text = "NO₂"+('(μg/m³)');
+			}else{
+				option.title.text = tname[i]+('(μg/m³)');
 			}
 		}else{
 			option.title.text = tname[i]+('(mg/m³)');
