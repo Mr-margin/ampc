@@ -143,7 +143,7 @@ $.when(dps_um).then(function(){
         //   controller: ''
         // },
         '/test': {
-          templateUrl: 'a.html',
+          templateUrl: 'main.html',
           controller: ''
         },
 
