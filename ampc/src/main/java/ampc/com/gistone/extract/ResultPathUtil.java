@@ -54,6 +54,14 @@ public class ResultPathUtil {
 		}
 	}
 
+	public String getRealPath(String filePath, Long userId, Long domainId, Long missionId, Long scenarioId,
+			int domain) {
+		String base = filePath.replace("$userid", String.valueOf(userId)).replace("$domainid", String.valueOf(domainId))
+				.replace("$missionid", String.valueOf(missionId)).replace("$scenarioid", String.valueOf(scenarioId))
+				.replace("$domain", String.valueOf(domain));
+		return base;
+	}
+
 	public ExtractConfig getExtractConfig() {
 		return extractConfig;
 	}

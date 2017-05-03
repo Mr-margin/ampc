@@ -29,9 +29,9 @@ public class ExtractDataController {
 			String calcType = String.valueOf(data.get("calcType"));
 			String showType = String.valueOf(data.get("showType"));
 			int borderType = Integer.valueOf(String.valueOf(data.get("borderType")));
-			int userId = Integer.valueOf(String.valueOf(data.get("userId")));
-			int domainId = Integer.valueOf(String.valueOf(data.get("domainId")));
-			int missionId = Integer.valueOf(String.valueOf(data.get("missionId")));
+			Long userId = Long.valueOf(String.valueOf(data.get("userId")));
+			Long domainId = Long.valueOf(String.valueOf(data.get("domainId")));
+			Long missionId = Long.valueOf(String.valueOf(data.get("missionId")));
 			int domain = Integer.valueOf(String.valueOf(data.get("domain")));
 			List<String> species = (List) (data.get("species"));
 			String timePoint = String.valueOf(data.get("timePoint"));
@@ -39,18 +39,18 @@ public class ExtractDataController {
 			ExtractRequestParams params = new ExtractRequestParams(calcType, showType, userId, domainId, missionId,
 					domain, species, timePoint);
 			params.setBorderType(borderType);
-			int scenarioId1 = Integer.valueOf(String.valueOf(data.get("scenarioId1")));
+			Long scenarioId1 = Long.valueOf(String.valueOf(data.get("scenarioId1")));
 			params.setScenarioId1(scenarioId1);
-			if (!"show".equals(calcType)) {
-				int scenarioId2 = Integer.valueOf(String.valueOf(data.get("scenarioId2")));
+			if (!Constants.CALCTYPE_SHOW.equals(calcType)) {
+				Long scenarioId2 = Long.valueOf(String.valueOf(data.get("scenarioId2")));
 				params.setScenarioId2(scenarioId2);
 			}
-			if ("d".equals(timePoint)) {
+			if (Constants.TIMEPOINT_D.equals(timePoint)) {
 				String day = String.valueOf(data.get("day"));
 				params.setDay(day);
 				params.setHour(0);
 			}
-			if ("h".equals(timePoint)) {
+			if (Constants.TIMEPOINT_H.equals(timePoint)) {
 				String day = String.valueOf(data.get("day"));
 				params.setDay(day);
 				int hour = Integer.valueOf(String.valueOf(data.get("hour")));
@@ -60,7 +60,7 @@ public class ExtractDataController {
 				}
 				params.setHour(hour);
 			}
-			if ("a".equals(timePoint)) {
+			if (Constants.TIMEPOINT_A.equals(timePoint)) {
 				List dates = (List) data.get("dates");
 				params.setDates(dates);
 			}
@@ -80,11 +80,11 @@ public class ExtractDataController {
 			params.setRows(rows);
 			params.setCols(cols);
 			res = extractDataService.buildData(params);
-			if (res == null)
-				AmpcResult.build(1000, "buildData error");
+			if (res != null)
+				return AmpcResult.ok(res);
 		} catch (Exception e) {
-			return AmpcResult.build(1000, "参数错误");
+			return AmpcResult.build(1003, "参数异常");
 		}
-		return AmpcResult.ok(res);
+		return AmpcResult.build(1001, "系统异常");
 	}
 }
