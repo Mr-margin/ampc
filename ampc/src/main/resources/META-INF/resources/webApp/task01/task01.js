@@ -514,7 +514,7 @@ function qjOrder(v, row, i) {
  * 只要情景启动就允许终止*/
 function qjEndFormat(v, row, i) {
     if (row.scenarinoStatus == 6 || row.scenarinoStatus == 7) {
-        return "<a href='javascript:' style='color: #FF9A00'><i class='im-stop'> 终止</i></a>"
+        return "<a href='javascript:stopBtn()' style='color: #FF9A00'><i class='im-stop'> 终止</i></a>"
     } else {
         return "<i class='im-stop'style='color: #ccc'> 终止</i>";
     }
@@ -1723,6 +1723,35 @@ function startBtn() {
         $("#startUp").modal('show');
     }, 50)
 
+}
+/*终止情景*/
+function stopBtn(){
+	var param={
+				userId:userId,
+				domainId:selectRW.missionDomainId,
+				scenarinoId:msg.content.qjId,
+				missionId:msg.content.rwId,
+				flag:0
+				};
+	ajaxPost('/ModelType/sendstopModel', param).success(function(res){
+		if(res.status===0){
+			swal({
+                title: res.msg,
+                type: 'success',
+                timer: 1000,
+                showConfirmButton: false
+            });
+			$('#qjTable').bootstrapTable('destroy');
+            initQjTable();
+		}else{
+			swal({
+                title: res.msg,
+                type: 'error',
+                timer: 1000,
+                showConfirmButton: false
+            });
+		}
+	})
 }
 
 /*模态框关闭后事件*/
