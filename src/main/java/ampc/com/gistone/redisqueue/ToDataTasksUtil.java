@@ -255,20 +255,34 @@ public class ToDataTasksUtil {
 										//入库处理
 										if ("0".equals(code)) {
 											//基准情景
-											if ("3".equals(scentype)&&index==3) {
+											if ("3".equals(scentype)) {
 												//基准入库
-												ruku.readyRukuparamsBasis(tasksScenarinoId,tasksEndDate);
+												if (stepindex==3) {
+													//气象入库
+													ruku.readyRukuparamsBasis(stepindex,tasksScenarinoId,tasksEndDate,1);
+												}
+												if (stepindex==8) {
+													//浓度入库
+													ruku.readyRukuparamsBasis(stepindex,tasksScenarinoId,tasksEndDate,0);
+												}
 											}
 											//实时预报
-											if ("4".equals(scentype)&&index==3) {
-												ruku.readyRukuparamsRealPredict(tasksScenarinoId,tasksEndDate);
+											if ("4".equals(scentype)) {
+												if (stepindex==3) {
+													//气象入库
+													ruku.readyRukuparamsRealPredict(stepindex,tasksScenarinoId,tasksEndDate,1);
+												}
+												if (stepindex==8) {
+													//浓度入库
+													ruku.readyRukuparamsRealPredict(stepindex,tasksScenarinoId,tasksEndDate,0);
+												}
 											}
 											//预评估任务的预评估情景
-											if ("1".equals(scentype)&&index==3) {
+											if ("1".equals(scentype)&&stepindex==3) {
 												ruku.readyRukuparamsRrePredict(tasksScenarinoId,tasksEndDate);
 											}
 											//后评估评估情景
-											if ("2".equals(scentype)&&index==3) {
+											if ("2".equals(scentype)&&stepindex==3) {
 												ruku.readyRukuparamspostPevtion(tasksScenarinoId,tasksEndDate);
 											}
 										}
