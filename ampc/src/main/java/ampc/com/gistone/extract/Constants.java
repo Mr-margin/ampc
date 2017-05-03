@@ -15,6 +15,7 @@ public class Constants {
 	public final static String SHOW_TYPE_CONCN = "concn";
 	public final static String SHOW_TYPE_EMIS = "emis";
 	public final static String SHOW_TYPE_WIND = "wind";
+	public final static String SHOW_TYPE_METEOR = "meteor";
 	public final static String TIMEPOINT_A = "a";
 	public final static String TIMEPOINT_D = "d";
 	public final static String TIMEPOINT_H = "h";
@@ -34,6 +35,10 @@ public class Constants {
 			"OM", "PMFINE" };
 	public static final String[] DAILYSPECIES = { "PM25", "PM10", "O3_8_MAX", "O3_1_MAX", "O3_AVG", "SO2", "NO2", "CO",
 			"SO4", "NO3", "NH4", "BC", "OM", "PMFINE" };
+
+	public static final String[] METEORSPECIES = { "TEMP", "RH", "PRSFC", "PT", "PBL" };
+
+	public static final String[] WINDSPECIES = { "WSPD", "WSPDCONVERT", "WDIR", "WDIRCONVERT" };
 
 	public static final Map<Float, String> WINDDIRMAP;
 
@@ -99,6 +104,52 @@ public class Constants {
 		if (ret == 360)
 			ret = 0;
 		return ret;
+	}
+
+	public static int[] buildWindSpd() {
+		int[] windSpdArray = new int[11];
+		int count = 0;
+		for (int i = 0; i < windSpdArray.length; i++) {
+			if (count % 2 == 0)
+				windSpdArray[i] = count;
+			count += 2;
+		}
+		return windSpdArray;
+	}
+
+	public static int binarySearchKeySpd(double targetNum) {
+		int[] array = buildWindSpd();
+		int first = array[0];
+		int last = array[array.length - 1];
+		if (targetNum > last) {
+			return last;
+		}
+		if (targetNum <= first) {
+			return first;
+		}
+
+		int left = 0, right = 0;
+		for (right = array.length - 1; left != right;) {
+			int midIndex = (right + left) / 2;
+			int mid = (right - left);
+			int midValue = array[midIndex];
+			if (targetNum == midValue) {
+				return midValue;
+			}
+			if (targetNum > midValue) {
+				left = midIndex;
+			} else {
+				right = midIndex;
+			}
+			if (mid <= 1) {
+				break;
+			}
+		}
+		int rightnum = array[right];
+		int leftnum = array[left];
+		int ret = Math.abs((rightnum - leftnum) / 2) > Math.abs(rightnum - targetNum) ? rightnum : leftnum;
+		return ret;
+
 	}
 
 	public static boolean checkHourlyFile(String filePath) {

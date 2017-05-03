@@ -297,22 +297,7 @@ public class ExtractDataService {
 							str += value.toString();
 							str += "/";
 						}
-						// for (Map.Entry entry : resMap.entrySet()) {
-						// String specie = (String) entry.getKey();
-						// Double value = 0D;
-						// String resStr = "";
-						// if (specie.equals(FLAG)) {
-						// continue;
-						// } else if (specie.equals("WDIRCONVERT")) {
-						// resStr = Constants.WINDDIRMAP.get(value);
-						// map.put(specie, resStr);
-						// } else {
-						// resStr = value.toString();
-						// map.put(specie, resStr);
-						// }
-						// str += resStr;
-						// str += "/";
-						// }
+
 						res.add(map);
 						str.substring(0, str.lastIndexOf("/") - 1);
 						pb.setValue(str);
@@ -335,6 +320,10 @@ public class ExtractDataService {
 							float vv = Constants.binarySearchKeyDir(value);
 							resStr = Constants.WINDDIRMAP.get(vv);
 							map.put(specie, resStr);
+						} else if (specie.equals("WSPD")) {
+							float vv = Constants.binarySearchKeySpd(value);
+							resStr = String.valueOf(vv);
+							map.put(specie, resStr);
 						} else {
 							resStr = nf.format(value);
 							map.put(specie, resStr);
@@ -342,22 +331,7 @@ public class ExtractDataService {
 						str += resStr;
 						str += "/";
 					}
-					// for (Map.Entry entry : resMap.entrySet()) {
-					// String specie = (String) entry.getKey();
-					// Double value = (Double) entry.getValue();
-					// String resStr = "";
-					// if (specie.equals(FLAG)) {
-					// continue;
-					// } else if (specie.equals("WDIRCONVERT")) {
-					// resStr = Constants.WINDDIRMAP.get(value);
-					// map.put(specie, resStr);
-					// } else {
-					// resStr = nf.format(value);
-					// map.put(specie, resStr);
-					// }
-					// str += resStr;
-					// str += "/";
-					// }
+
 					res.add(map);
 					str.substring(0, str.lastIndexOf("/") - 1);
 					pb.setValue(str);
