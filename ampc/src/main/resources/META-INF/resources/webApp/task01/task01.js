@@ -1564,7 +1564,7 @@ function subStartUp() {
             });
         } else {
             swal({
-                title: '启动失败!',
+                title: res.msg,
                 type: 'error',
                 timer: 1000,
                 showConfirmButton: false

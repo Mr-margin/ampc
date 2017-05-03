@@ -291,7 +291,7 @@ function shoe_data_start(evn) {
 //	if (evn.map.getZoom() <= 6) {
 
     gis_paramsName.codeLevel = 1;//省市区层级（1省，2市，3区）
-    tj_paramsName.codeLevel = 0;
+    tj_paramsName.codeLevel = 1;
 
 //	}else if (evn.map.getZoom() == 7){
 //		
@@ -418,7 +418,7 @@ function createLegend(level) {
     } else if (level == 3) {
         title = "各县 " + $('#hz_wrw').val() + " 减排量（吨）";
     }
-//  	tj_paramsName.codeLevel = level;
+ 	// tj_paramsName.codeLevel = level;
     app.legend = new dong.Legend({
         map: app.map,
         respectCurrentMapScale: false,//当真正的图例会更新每个规模变化和只显示层和子层中可见当前地图比例尺。当假的,图例不更新在每个规模变化和所有层和子层将显示出来。默认值是正确的。
@@ -511,6 +511,7 @@ function optionclick(event) {
         app.map.graphics.add(new dong.Graphic(event.graphic.geometry, app.selectline));//添加选中的图层
         tj_paramsName.code = event.graphic.attributes.ADMINCODE;
         tj_paramsName.name = event.graphic.attributes.NAME;
+        tj_paramsName.codeLevel = gis_paramsName.codeLevel;
         bar();
     } else {
         if (app.map.graphics.graphics.length > 0) {//已经有选中的对象了
@@ -540,7 +541,6 @@ function type_info() {
         pie();
     }, 100);
 }
-
 
 /****************************************************柱状图*************************************************************************/
 function bar() {

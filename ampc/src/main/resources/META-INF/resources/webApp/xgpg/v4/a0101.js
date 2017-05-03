@@ -504,11 +504,11 @@ function bianji(type, g_num, p , wind) {
 //        zmblockUI("#mapDiv1", "end");
 
         }else if(wind == 1){//↑风场
-            par.species = ['WSPDCONVERT','WDIR'];
+            par.species = ['WSPD','WDIR'];
         }else if(wind == 2){//F风场
 //		zmblockUI("#mapDiv0", "start");
 //	    zmblockUI("#mapDiv1", "start");
-            par.species = ['WSPDCONVERT','WDIR'];
+            par.species = ['WSPD','WDIR'];
             // $.get('data7.json', function (data) {
 		ajaxPost('/extract/data', par).success(function (data) {
 			if (!data.data) {
@@ -531,7 +531,7 @@ function bianji(type, g_num, p , wind) {
                         return;
                     }
 
-                    var p_url = "img/fx/"+col.WSPDCONVERT+".png";
+                    var p_url = "img/fx/"+col.WSPD+".png";
                     var angle = 0;
                     switch (col.WDIR) {
                         case "N" :
