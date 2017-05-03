@@ -400,6 +400,10 @@ function bianji(type, g_num, p , wind) {
 	    var GPserver_url = ArcGisServerUrl + "/arcgis/rest/services/ampc_zrly/" + GPserver_type + "/GPServer/" + GPserver_type;
 //	    $.get('data6.json', function (data) {
 //	    console.log(par);
+	    
+	    var pftype = "";
+	    if(par.)
+	    
 	    ajaxPost('/extract/data', par).success(function (data) {
 
 	        if (!data.data) {
@@ -425,7 +429,7 @@ function bianji(type, g_num, p , wind) {
 	            var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
 	            var attr = {};
 	            attr["FID"] = i;
-	            attr["dqvalue"] = col.v;
+	            attr["dqvalue"] = col[pftype[0]];
 	            var graphic = new dong.Graphic(point);
 	            graphic.setAttributes(attr);
 	            features.push(graphic);
