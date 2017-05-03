@@ -877,8 +877,8 @@ public class AirController {
 				String strDateNow=sdfNow.format(dateNow);
 				HashMap<String, Object> mapNow=new HashMap<String, Object>();
 				mapNow.put("USER_ID", userId);
-//				mapNow.put("PATH_DATE", strDateNow);		
-				mapNow.put("PATH_DATE", "2017-04-15");	//需要时注释即可-------------------
+//				mapNow.put("PATH_DATE", strDateNow);	
+				mapNow.put("PATH_DATE", "2017-04-15");	//先查询当天的数据，需要时注释即可-------------------
 				//进行当天的情景查询
 				TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
 				tScenarinoDetail=tScenarinoDetailMapper.selectScenarinoDetail_timeSeries(mapNow);
@@ -924,7 +924,7 @@ public class AirController {
 				tables+=userId;
 				ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 				scenarinoEntity.setCity_station(cityStation);
-				scenarinoEntity.setDomain(3);		//空间分辨率--需要时注释即可,数据库中目前只有为3的数据-----------------------
+				scenarinoEntity.setDomain(3);					//空间分辨率--需要时注释即可,数据库中目前只有为3的数据-----------------------
 //				scenarinoEntity.setDomain(Integer.valueOf(domain));
 				scenarinoEntity.setMode(mode);
 //				scenarinoEntity.setDomainId(Integer.parseInt(String.valueOf(domainId)));
@@ -942,20 +942,20 @@ public class AirController {
 				JSONObject simulationData=new JSONObject();		//返给页面的模拟数据
 				JSONObject speciesData=new JSONObject();		
 				
-//				for(String dayKey:contentmap.keySet()){	//对日期进行排序
+//				for(String dayKey:contentmap.keySet()){			//对日期进行排序
 //					dayArr.add(dayKey);
 //				}
 //				Collections.sort(dayArr);
 //				dayArr.get(0);	//排序
 				Map<String,Object> spmap=new HashMap<String, Object>();
 				for(String dayKey:contentmap.keySet()){
-					Object  species=contentmap.get(dayKey);	//值
+					Object  species=contentmap.get(dayKey);		//值
 					if(species!=null){
 						spmap= (Map)species;
 						break;
 					}
 				}
-				for(String speciesKey:spmap.keySet()){	//循环所有物种名称---并给日期赋值
+				for(String speciesKey:spmap.keySet()){			//循环所有物种名称---并给日期赋值
 					for(String dayKey:contentmap.keySet() ){	//循环全部日期
 //						for(String contentmapKey:contentmap.keySet()){
 //							contentmap.get(dayKey)
@@ -1004,9 +1004,9 @@ public class AirController {
 				String tables_obs="T_OBS_DAILY_";
 				DateFormat df_obs = new SimpleDateFormat("yyyy");
 				Date nowDate=new Date();
-				String nowYear_obs= df_obs.format(nowDate);	//截取该任务的开始时间来改变查询的表格
+				String nowYear_obs= df_obs.format(nowDate);		//截取该任务的开始时间来改变查询的表格
 				tables_obs+=nowYear_obs;
-				obsMap.put("tableName",tables_obs);					//查询的表格
+				obsMap.put("tableName",tables_obs);				//查询的表格
 				
 //				obsMap.put("date", sdfNow.parse(startDate));
 //				ObsBean obsspecies=tObsMapper.queryUnionResult(obsMap);
@@ -1015,7 +1015,7 @@ public class AirController {
 				Object[] speciesArr={"NO2","PM2_5","O3","SO2","PM10","AQI","O3_8h","CO"};
 				for(int m=0;m<speciesArr.length;m++){	
 				
-					for(int j=0;j<=differenceVal;j++){	//循环页面开始年份和结束年份的差值--开始
+					for(int j=0;j<=differenceVal;j++){		//循环页面开始年份和结束年份的差值--开始
 	//					calendar.setTime(sdfNow.parse(startDate));
 						calendar.setTime(sdfNow.parse("2017-04-15"));
 						calendar.add(Calendar.DAY_OF_MONTH, (j+1));

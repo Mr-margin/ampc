@@ -1104,4 +1104,15 @@ AND S.IS_EFFECTIVE ='1'
   		FROM T_SCENARINO_DETAIL  
   		WHERE #{startDate,jdbcType=TIMESTAMP} &lt;= PATH_DATE AND PATH_DATE &lt;= #{endDate,jdbcType=TIMESTAMP} AND SCEN_TYPE = '4'
   </select>
+  <!-- 查询预报情景数据 -->
+  <select id="selectScenarinoDetail_timeSeries" parameterType="hashMap" resultMap="BaseResultMap">
+	SELECT 
+		<include refid="Base_Column_List" />
+  		FROM 
+  			T_SCENARINO_DETAIL 
+  		WHERE 
+  			USER_ID = #{USER_ID,jdbcType=DECIMAL}
+			AND PATH_DATE ="TO_DATE"(#{PATH_DATE,jdbcType=TIMESTAMP},'yyyy-mm-dd')
+  </select>
+  
 </mapper>
