@@ -64,7 +64,6 @@ public class AppraisalController {
 	@RequestMapping("Appraisal/find_appraisal")
 	public AmpcResult find_appraisal(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){ 
 		try{
-//			System.out.println("-------------------------------------------------------------------------------------------------------------");
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			Integer userId=Integer.valueOf(data.get("userId").toString());
@@ -187,12 +186,10 @@ public class AppraisalController {
 					Map<String,Object> datemap=new HashMap();
 					for(String datetime:detamap.keySet()){
 						Object sp=detamap.get(datetime);
-//						JSONObject spobj=JSONObject.fromObject(sp);//行业减排结果
 						Map<String,Object> spmap=(Map)sp;
 						Map<String,Object> spcmap=new HashMap();	//存放数据
 						for(String spr:spmap.keySet()){
 							Object height=spmap.get(spr);
-//							JSONObject heightobj=JSONObject.fromObject(height);//行业减排结果
 							Map<String,Object> heightmap=(Map)height;
 							Object hour=heightmap.get("0");
 							JSONArray hourlist= JSONArray.fromObject(hour);
@@ -201,13 +198,11 @@ public class AppraisalController {
 							if(hourlist.size()==24){
 								for(int a=0;a<=23;a++){
 									if(spr.equals("CO")){
-										BigDecimal bd=(new BigDecimal(hourlist.get(a).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
-										hourcmap.put(String.valueOf(a),bd);
-//										System.out.println(bd+"--"+datetime+"--"+spr+"--"+a+"\n");
-										}else{
 										BigDecimal bd=(new BigDecimal(hourlist.get(a).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
 										hourcmap.put(String.valueOf(a),bd);
-//										System.out.println(bd+"--"+datetime+"--"+spr+"--"+a+"\n");
+										}else{
+										BigDecimal bd=(new BigDecimal(hourlist.get(a).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+										hourcmap.put(String.valueOf(a),bd);
 										}	
 								}
 							}else{
@@ -218,7 +213,6 @@ public class AppraisalController {
 							spcmap.put(datetime, hourcmap);
 							if(datemap.get(spr)!=null){
 								Object maps=datemap.get(spr);
-//								JSONObject mapsbj=JSONObject.fromObject(maps);//行业减排结果
 								Map<String,Object> des=(Map)maps;
 								des.put(datetime, hourcmap);
 								datemap.put(spr, des);
@@ -239,30 +233,27 @@ public class AppraisalController {
 					Map<String,Object> datemap=new HashMap();
 					for(String datetime:detamap.keySet()){
 						Object sp=detamap.get(datetime);
-//						JSONObject spobj=JSONObject.fromObject(sp);//行业减排结果
 						Map<String,Object> spmap=(Map)sp;
 						for(String spr:spmap.keySet()){
 							Map<String,Object> spcmap=new HashMap();
 							Object height=spmap.get(spr);
-//							JSONObject heightobj=JSONObject.fromObject(height);//行业减排结果
 							Map<String,Object> heightmap=(Map)height;
 							Map<String,Object> hourcmap=new HashMap();
 							if(spr.equals("CO")){
-								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
 								spcmap.put(datetime, bd);
 								}else{
-								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
 								spcmap.put(datetime, bd);
 								}
 							if(datemap.get(spr)!=null){
 								Object maps=datemap.get(spr);
-	//							JSONObject mapsbj=JSONObject.fromObject(maps);//行业减排结果
 								Map<String,Object> des=(Map)maps;
 								if(spr.equals("CO")){
-									BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+									BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
 									des.put(datetime, bd);
 									}else{
-									BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+									BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
 									des.put(datetime, bd);
 									}
 								
@@ -276,10 +267,8 @@ public class AppraisalController {
 					}
 				}
 				
-				
 			}
 			
-
 			}
 			return	AmpcResult.build(0, "success",scmap);
 		}catch(Exception e){
@@ -1210,12 +1199,12 @@ public class AppraisalController {
 												
 												Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
 												Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
-												BigDecimal bd=(new BigDecimal(speciesmapval.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+												BigDecimal bd=(new BigDecimal(speciesmapval.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
 												standardobj.put((String)standard_Time, bd);
 											}else if(speciesmap_keyn.equals(spcmapkeyw)&&!"CO".equals(spcmapkeyw)){
 												Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
 												Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
-												BigDecimal bd=(new BigDecimal(speciesmapval.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+												BigDecimal bd=(new BigDecimal(speciesmapval.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
 												standardobj.put((String)standard_Time, bd);
 											}
 										}
@@ -1260,11 +1249,11 @@ public class AppraisalController {
 							for(String contentobj_on_key:contentobj_on_map.keySet()){
 								if(contentmapkey.equals(contentobj_on_key)){
 									if("CO".equals(contentmapkey)){
-										BigDecimal bd=(new BigDecimal(contentobj_on_map.get(contentobj_on_key).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+										BigDecimal bd=(new BigDecimal(contentobj_on_map.get(contentobj_on_key).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
 										contentobj_on.put(contentobj_on_time,bd);
 										break;
 									}else{
-										BigDecimal bd=(new BigDecimal(contentobj_on_map.get(contentobj_on_key).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+										BigDecimal bd=(new BigDecimal(contentobj_on_map.get(contentobj_on_key).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
 										contentobj_on.put(contentobj_on_time,bd);
 										break;
 									}
@@ -1337,7 +1326,7 @@ public class AppraisalController {
 												Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
 												List qq= (List) speciesmapval.get("0");
 												for(int i=0;i<qq.size();i++){
-													BigDecimal bd=(new BigDecimal(qq.get(i).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+													BigDecimal bd=(new BigDecimal(qq.get(i).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
 													standardobjdata.put(i,bd);
 //													System.out.println(bd+"--"+standard_Time+"--"+spcmapkey+"--"+i+"\n");
 //													standardobjdata.put(i,qq.get(i));
@@ -1349,7 +1338,7 @@ public class AppraisalController {
 												Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
 												List qq= (List) speciesmapval.get("0");
 												for(int i=0;i<qq.size();i++){
-													BigDecimal bd=(new BigDecimal(qq.get(i).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+													BigDecimal bd=(new BigDecimal(qq.get(i).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
 													standardobjdata.put(i,bd);
 //													System.out.println(bd+"--"+standard_Time+"--"+spcmapkey+"--"+i+"\n");
 //													standardobjdata.put(i,qq.get(i));
@@ -1408,7 +1397,7 @@ public class AppraisalController {
 												if("-".equals(contentobj_on_key_arrco.get(m).toString())){	//判断某个值为-时，不进行保留位数操作
 													contentobj_on_key_val.put(m, "-");
 												}else{
-													BigDecimal bd=(new BigDecimal(contentobj_on_key_arrco.get(m).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+													BigDecimal bd=(new BigDecimal(contentobj_on_key_arrco.get(m).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
 													contentobj_on_key_val.put(m, bd);
 												}
 											}
@@ -1424,7 +1413,7 @@ public class AppraisalController {
 													contentobj_on_key_val.put(m, "-");
 												}else{
 //													System.out.println(contentobj_on_key_arr.get(m)+"--"+m+contentobj_on_time+contentmapkey+"\r");
-													BigDecimal bd=(new BigDecimal(contentobj_on_key_arr.get(m).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+													BigDecimal bd=(new BigDecimal(contentobj_on_key_arr.get(m).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
 													contentobj_on_key_val.put(m, bd);
 												}
 												
