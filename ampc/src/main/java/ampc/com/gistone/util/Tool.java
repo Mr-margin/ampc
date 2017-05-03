@@ -64,6 +64,15 @@ public class Tool {
 	 }
 
 	
+//	public static void main(String agrs[]) throws NoSuchAlgorithmException, UnsupportedEncodingException{
+//		String pwd ="1";
+//		String md5str = Tool.md5(pwd);
+//		System.out.println(md5str);
+//		md5str=convertMD5(md5str);
+//		System.out.println("加密:"+md5str);
+//		String jmstr=Tool.JM(md5str);
+//		System.out.println("解密："+jmstr);
+//	}
 /*	public static void main(String agrs[]) throws NoSuchAlgorithmException, UnsupportedEncodingException{
 		String pwd ="1";
 		String md5str = Tool.md5(pwd);
@@ -73,6 +82,7 @@ public class Tool {
 		String jmstr=Tool.JM(md5str);
 		System.out.println("解密："+jmstr);
 	}
+>>>>>>> .r1898
 */
 	
 
