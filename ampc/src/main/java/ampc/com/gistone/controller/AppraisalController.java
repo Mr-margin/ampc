@@ -89,16 +89,16 @@ public class AppraisalController {
 				cityStation=data.get("cityStation").toString();					//检测站点具体值
 			}
 			JSONArray lists = JSONArray.fromObject(data.get("scenarinoId"));
-			List<Integer> list=new ArrayList<Integer>();
+			List<Long> list=new ArrayList<Long>();
 			Map<String,Object> scmap=new HashMap();
 			for(Object scid:lists){
-				list.add(Integer.valueOf(scid.toString()));	
+				list.add(Long.valueOf(scid.toString()));	
 			}
 			String datetype=data.get("datetype").toString();
 			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);//该任务下的所有数据
-			Integer domainId=Integer.valueOf(tMissionDetail.getMissionDomainId().toString());
+			Long domainId=Long.valueOf(tMissionDetail.getMissionDomainId().toString());
 			List<ScenarinoEntity> sclist=new ArrayList();
-			for(Integer scenarinoId:list){
+			for(Long scenarinoId:list){
 			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(Long.valueOf(scenarinoId.toString()));//查询该任务中该情景下的所有数据
 			TScenarinoDetail tScenarino=new TScenarinoDetail(); 
 			tScenarino.setMissionId(missionId);
@@ -326,9 +326,9 @@ public class AppraisalController {
 				return AmpcResult.build(1003, "站点code为空!");
 			}
 			JSONArray lists = JSONArray.fromObject(data.get("scenarinoId"));
-			List<Integer> list=new ArrayList<Integer>();
+			List<Long> list=new ArrayList<Long>();
 			for(Object scid:lists){
-				list.add(Integer.valueOf(scid.toString()));	
+				list.add(Long.valueOf(scid.toString()));	
 			}
 			String datetype=data.get("datetype").toString();
 			if(!RegUtil.CheckParameter(datetype, "String", null, false)){
@@ -342,10 +342,10 @@ public class AppraisalController {
 			Date daytimes=daysdf.parse(time);
 			String daytime=daysdf.format(daytimes);
 			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);
-			Integer domainId=Integer.valueOf(tMissionDetail.getMissionDomainId().toString());
+			Long domainId=Long.valueOf(tMissionDetail.getMissionDomainId().toString());
 			List<ScenarinoEntity> sclist=new ArrayList();
 			Map<String,Object> scmap=new HashMap();
-			for(Integer scenarinoId:list){
+			for(Long scenarinoId:list){
 			TScenarinoDetail tScenarinoDetail=tScenarinoDetailMapper.selectByPrimaryKey(Long.valueOf(scenarinoId.toString()));
 			TScenarinoDetail tScenarino=new TScenarinoDetail();
 			tScenarino.setMissionId(missionId);
@@ -654,7 +654,7 @@ public class AppraisalController {
 			Date daytimes=daysdf.parse(time);
 			String daytime=daysdf.format(daytimes);
 			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);
-			Integer domainId=Integer.valueOf(tMissionDetail.getMissionDomainId().toString());
+			Long domainId=Long.valueOf(tMissionDetail.getMissionDomainId().toString());
 			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
 			tScenarinoDetail.setMissionId(missionId);
 			List<TScenarinoDetail> tslist=new ArrayList<TScenarinoDetail>();
@@ -691,7 +691,7 @@ public class AppraisalController {
 						}
 						scenarinoEntity.setDomainId(domainId);
 						scenarinoEntity.setMode(mode);
-						scenarinoEntity.setsId(Integer.valueOf(ScenarinoDetail.getScenarinoId().toString()));
+						scenarinoEntity.setsId(Long.valueOf(ScenarinoDetail.getScenarinoId().toString()));
 						scenarinoEntity.setTableName(tables);
 						sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 						}else{//逐小时
@@ -713,7 +713,7 @@ public class AppraisalController {
 								scenarinoEntity.setDay(ScenarinoDetail.getScenarinoStartDate());
 								}
 							scenarinoEntity.setMode(mode);
-							scenarinoEntity.setsId(Integer.valueOf(ScenarinoDetail.getScenarinoId().toString()));
+							scenarinoEntity.setsId(Long.valueOf(ScenarinoDetail.getScenarinoId().toString()));
 							scenarinoEntity.setTableName(tables);
 							sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 						}//时间分布判断
@@ -736,7 +736,7 @@ public class AppraisalController {
 						scenarinoEntity.setDay(ScenarinoDetail.getScenarinoStartDate());
 						scenarinoEntity.setDomainId(domainId);
 						scenarinoEntity.setMode(mode);
-						scenarinoEntity.setsId(Integer.valueOf(ScenarinoDetail.getScenarinoId().toString()));
+						scenarinoEntity.setsId(Long.valueOf(ScenarinoDetail.getScenarinoId().toString()));
 						scenarinoEntity.setTableName(tables);
 						sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 						}else{//逐小时
@@ -756,7 +756,7 @@ public class AppraisalController {
 							scenarinoEntity.setDomainId(domainId);
 							scenarinoEntity.setDay(ScenarinoDetail.getScenarinoStartDate());
 							scenarinoEntity.setMode(mode);
-							scenarinoEntity.setsId(Integer.valueOf(ScenarinoDetail.getScenarinoId().toString()));
+							scenarinoEntity.setsId(Long.valueOf(ScenarinoDetail.getScenarinoId().toString()));
 							scenarinoEntity.setTableName(tables);
 							sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 						}//时间分布判断
@@ -1003,7 +1003,7 @@ public class AppraisalController {
 			Long tday=(todayl-end)/(24*60*60*1000)-1;//任务开始结束时间差
 			Long chaday=day-tday;
 			
-			Integer domainId=Integer.valueOf(tMissionDetail.getMissionDomainId().toString());
+			Long domainId=Long.valueOf(tMissionDetail.getMissionDomainId().toString());
 			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
 			tScenarinoDetail.setMissionId(missionId);
 			tScenarinoDetail.setScenType("4");
@@ -1067,7 +1067,7 @@ public class AppraisalController {
 						scenarinoEntity.setDomain(3);
 						scenarinoEntity.setDomainId(domainId);
 						scenarinoEntity.setMode(mode);
-						scenarinoEntity.setsId(Integer.valueOf(tsc.getScenarinoId().toString()));
+						scenarinoEntity.setsId(Long.valueOf(tsc.getScenarinoId().toString()));
 						scenarinoEntity.setTableName(tables);
 						scenarinoEntity.setDay(tsc.getScenarinoStartDate());
 						sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
@@ -1084,7 +1084,7 @@ public class AppraisalController {
 							scenarinoEntity.setDomain(3);
 							scenarinoEntity.setDomainId(domainId);
 							scenarinoEntity.setMode(mode);
-							scenarinoEntity.setsId(Integer.valueOf(tsc.getScenarinoId().toString()));
+							scenarinoEntity.setsId(Long.valueOf(tsc.getScenarinoId().toString()));
 							scenarinoEntity.setTableName(tables);
 							scenarinoEntity.setDay(tsc.getScenarinoStartDate());
 							sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
@@ -1156,7 +1156,7 @@ public class AppraisalController {
 			String endDate= dfs.format(tScenarinoDetaillist.get(0).getScenarinoEndDate());		
 			
 			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);	//该任务下的所有数据
-			Integer domainId=Integer.valueOf(tMissionDetail.getMissionDomainId().toString());
+			Long domainId=Long.valueOf(tMissionDetail.getMissionDomainId().toString());
 			DateFormat dfsg = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			
 			Date missionStartDate=tMissionDetail.getMissionStartDate();		//任务开始时间
@@ -1313,7 +1313,7 @@ public class AppraisalController {
 					scenarinoEntity.setDomain(domain);		//空间分辨率--需要时替换即可,数据库中目前只有为3的数据
 					scenarinoEntity.setMode(mode);
 					scenarinoEntity.setDomainId(domainId);
-					scenarinoEntity.setsId(Integer.valueOf(tScenarinoDetaillists.getScenarinoId().toString()));
+					scenarinoEntity.setsId(Long.valueOf(tScenarinoDetaillists.getScenarinoId().toString()));
 					scenarinoEntity.setTableName(tables);
 					List<ScenarinoEntity> Lsclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 					if(!Lsclist.isEmpty()){
