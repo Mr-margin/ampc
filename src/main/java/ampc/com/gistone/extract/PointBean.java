@@ -10,7 +10,7 @@ public class PointBean {
 	private double y;
 	private double xlcc;
 	private double ylcc;
-	private double value;
+	private String value;
 
 	public PointBean() {
 	}
@@ -54,11 +54,11 @@ public class PointBean {
 		this.y = y;
 	}
 
-	public double getValue() {
+	public String getValue() {
 		return value;
 	}
 
-	public void setValue(double value) {
+	public void setValue(String value) {
 		this.value = value;
 	}
 
