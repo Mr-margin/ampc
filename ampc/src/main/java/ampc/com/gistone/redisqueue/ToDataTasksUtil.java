@@ -70,6 +70,8 @@ public class ToDataTasksUtil {
 	//
 	@Autowired
 	private ReadyData readyData;
+	@Autowired
+	private Ruku ruku;
 	
 
 	/**
@@ -116,13 +118,14 @@ public class ToDataTasksUtil {
 						    int i = tasksStatusMapper.updateStatus(tasksStatus);
 						    LogUtil.getLogger().info("tasksstatus："+tasksStatus);
 						    if(i>0){
+						    	LogUtil.getLogger().info("跟新tasksstatus成功");
 						    	if (!errorStatus.equals("")) {
-						    		//出现错误，模式变为暂停
+						    		//出现错误，模式变为出错
 						    		//更新情景状态
 						    		//更新状态
 									Map statusmap = new HashMap();
 									statusmap.put("scenarinoId", tasksScenarinoId);
-									Long status = (long)7;
+									Long status = (long)9;
 									statusmap.put("scenarinoStatus", status);
 									int a = tScenarinoDetailMapper.updateStatus(statusmap);
 									if (a>0) {
@@ -131,7 +134,6 @@ public class ToDataTasksUtil {
 										LogUtil.getLogger().info("修改情景id为"+tasksScenarinoId+"的状态失败");
 									}
 								}else {
-									LogUtil.getLogger().info("跟新tasksstatus成功");
 							    	//当tasksstatus更新成功 并且执行成功  发送下一条消息
 							    	//通过情景的ID查找该情景的开始时间结束时间和情景类型
 							    	TScenarinoDetail selectByPrimaryKey = tScenarinoDetailMapper.selecttypetime(tasksScenarinoId);
@@ -161,7 +163,7 @@ public class ToDataTasksUtil {
 									    		LogUtil.getLogger().info("跟新"+tasksScenarinoId+"的状态为1了"+":"+scentype+",stepindex:"+stepindex);
 											}else {
 												if("0".equals(code)&&compareTo>0&&!scentype.equals("4")){
-													//其他情况需要跑完整个情景模式状态才变为2 没跑完为1 出错为0
+													//其他情况需要跑完整个情景模式状态才变为2 没跑完为1 
 										    		TTasksStatus tasksStatus2 = new TTasksStatus();
 										    		tasksStatus2.setBeizhu("1");
 										    		tasksStatus2.setTasksScenarinoId(tasksScenarinoId);
@@ -227,20 +229,21 @@ public class ToDataTasksUtil {
 									    			readyData.sendqueueRealDataThen(tasksEndDate,tasksScenarinoId); 
 												}
 									    		LogUtil.getLogger().info(tasksEndDate+"tasks的结束时间");
-											}if (stepindex==-1) {
+											}
+									    	if (stepindex==-1) {
 												//发生错误的时候重新组织上一条的参数发送
 												ErrorStatus.Errortips(tasksScenarinoId);
 											}
 										}else {
 											//针对其他三种情景（ 预评估的后评估情景 后评估任务的两种情景）不存在pathdate 当接受到消息时候 给每个tasksstatus一个状态
-											if ("0".equals(code)&&"2".equals(scentype)&&index.equals(stepindex)) {
+											if ("0".equals(code)&&"2".equals(scentype)&&index==stepindex) {
 												//后评估情景更新状态
 												TTasksStatus tasksStatus2 = new TTasksStatus();
 									    		tasksStatus2.setBeizhu("2"); 
 									    		tasksStatus2.setTasksScenarinoId(tasksScenarinoId);
 									    		tasksStatusMapper.updateRunstatus(tasksStatus2);
 											}
-											if ("0".equals(code)&&"3".equals(scentype)&&index.equals(stepindex)) {
+											if ("0".equals(code)&&"3".equals(scentype)&&index==stepindex) {
 												//基准情景更新状态
 												TTasksStatus tasksStatus2 = new TTasksStatus();
 									    		tasksStatus2.setBeizhu("2"); 
@@ -249,6 +252,27 @@ public class ToDataTasksUtil {
 											}
 											
 										}
+										//入库处理
+										if ("0".equals(code)) {
+											//基准情景
+											if ("3".equals(scentype)&&index==3) {
+												//基准入库
+												ruku.readyRukuparamsBasis(tasksScenarinoId,tasksEndDate);
+											}
+											//实时预报
+											if ("4".equals(scentype)&&index==3) {
+												ruku.readyRukuparamsRealPredict(tasksScenarinoId,tasksEndDate);
+											}
+											//预评估任务的预评估情景
+											if ("1".equals(scentype)&&index==3) {
+												ruku.readyRukuparamsRrePredict(tasksScenarinoId,tasksEndDate);
+											}
+											//后评估评估情景
+											if ("2".equals(scentype)&&index==3) {
+												ruku.readyRukuparamspostPevtion(tasksScenarinoId,tasksEndDate);
+											}
+										}
+										
 								}
 						    }else {
 								LogUtil.getLogger().info("情景ID为："+tasksScenarinoId+"的状态更新失败");
