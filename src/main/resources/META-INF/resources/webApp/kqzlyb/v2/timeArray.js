@@ -559,8 +559,9 @@ $('.day').css('display','block');
 $('.hour').css('display','none');
 
 var speciesArr = {
-  day: ['PM₂₅', 'PM₁₀', 'O₃_8_MAX', 'O₃_1_MAX', 'O₃_AVG', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE'],
-  hour: ['PM₂₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE']
+//		day: ['PM₂₅', 'PM₁₀', 'O₃_8_MAX', 'O₃_1_MAX', 'O₃_AVG', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE'],
+		day: ['PM25', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'O3_AVG', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE'],
+		hour: ['PM₂₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE']
 };
 
 var speciesObj = {
@@ -585,6 +586,7 @@ var speciesObj = {
 /**
  * 设置柱状图 模板
  */
+var show_type = "bar";
 var optionAll = {
 		title: {
 		    text: '',  //改变量 放污染物
@@ -827,7 +829,7 @@ function requestRegion() {
                 dps_Station[changeMsg.city + changeMsg.type] = setStation(changeMsg.city, changeMsg.type);
             }
         } else {
-            console.log('站点请求故障！！！')
+            console.log('站点请求故障！！！');
         }
 
     })
@@ -881,7 +883,7 @@ $('.station').on('change', function (e) {
 
 
 var stint = true;
-$('input[name=rmsWrw]').on('change', function (e) { //时间分辨率选择
+$('input[name=rmsWrw]').on('change', function (e) { //污染物时间分辨率选择
     var rms = $(e.target).val();
     if (stint) {
         stint = false;
@@ -890,7 +892,7 @@ $('input[name=rmsWrw]').on('change', function (e) { //时间分辨率选择
     }
 });
 
-$('input[name=rmsQxys]').on('change', function (e) { //时间分辨率选择
+$('input[name=rmsQxys]').on('change', function (e) { //气象要素时间分辨率选择
     var rms = $(e.target).val();
     if (stint) {
         stint = false;
@@ -899,10 +901,10 @@ $('input[name=rmsQxys]').on('change', function (e) { //时间分辨率选择
     }
 });
 
-function changeRms(rms) {
+function changeRms(rms) {	//参数为逐日或逐小时
     stint = true;
     changeMsg.rms = rms;
-    console.log(rms);
+//    console.log(rms);
     updata(true);
 }
 
@@ -926,7 +928,7 @@ function updata(opt) {
             changeMsg.station = $('#' + changeMsg.type + ' .station').val();
         }
         var url='/Air/findAllTimeSeries';
-        console.log(url);
+//        console.log(url);
         ajaxPost(url,{
         	userId: userId,					//用户ID
             mode:changeMsg.station=='avg'?'city':'point',	//站点是否为平均
@@ -937,7 +939,7 @@ function updata(opt) {
             domain:$('input[name=domain]:checked').val(),	//空间分辨率
         }).success(function(res){
         	ecatherData='';
-        	ecatherData=res;
+        	ecatherData=res.data;
         	initEcharts();
         },function(){
         	console.log('接口故障！！！');
@@ -948,53 +950,172 @@ function updata(opt) {
 }
 
 function initEcharts() {
-	  if(changeMsg.rms == 'day'){
-	    $('.hour').css('display','none');
+	if(changeMsg.rms == 'day'){
+		$('.hour').css('display','none');
 	    $('.day').css('display','block');
-	  }else{
+	}else{
 	    $('.day').css('display','none');
 	    $('.hour').css('display','block');
-	  }
-	  var data = ecatherData;
-//	  console.log();
-	  var species = speciesArr[changeMsg.rms];
-	  for (var i = 0; i < species.length; i++) {
-	    echarts.dispose(document.getElementById(species[i]));
-	    var es = echarts.init(document.getElementById(species[i]));
-	    var option = $.extend(true, {}, optionAll);
-
-	    //option.legend.data = ['模拟数据'];
-	    if (species[i] != 'CO') {
-
-	        switch(species[i]){
-	            case 'SO₄':
-	                option.title.text = species[i]+"²¯ (μg/m³)";
-	                break;
-	            case 'NO₃':
-	                option.title.text = species[i]+"¯ (μg/m³)";
-	                break;
-	            case 'NH₄':
-	                option.title.text = species[i]+"⁺ (μg/m³)";
-	                break;
-	            default:
-	                option.title.text = species[i]+" (μg/m³)";
-	        }
-
-	    } else {
-	      //option.xAxis.name = 'mg/m³';
-	      option.title.text = species[i]+'（mg/m³）';
-	    }
-	    option.series = [];
-
-
-
-	      option.series.push({
-	        name: '模拟数据', //可变，存储情景名称
-	        type: 'line',
-	        smooth: true,
-	        symbolSize: 5,
-	        data: data[speciesObj[species[i]]].slice(0, $('#height').val())  //可变，存储情景数据
-	      })
-	    es.setOption(option);
-	  }
+	}
+	var data = ecatherData;
+	
+	  
+	var tname = []; 	//污染物name
+	var species = speciesArr[changeMsg.rms];
+	for (var j = 0; j < species.length; j++) {
+		  tname.push(species[j]);
+	}
+	
+	for (var i = 0; i < species.length; i++) {	//循环物种开始
+//		echarts.dispose(document.getElementById(species[i]));	//echarts内存释放
+//	    var es = echarts.init(document.getElementById(species[i]));	
+		
+		//创建div存放echarts图表
+		var div = $('<div style="height:250px;"></div>');
+		div.attr("id",tname[i]);
+		div.addClass('echartsCZ');
+		$("#initEcharts").append(div);	
+		
+		//拷贝echarts模板
+		var option = $.extend(true, {}, optionAll);		 
+		
+		//设置标题名称
+		if(tname[i] == 'AQI'){
+			option.title.text = tname[i];         //加不同单位
+		}else if(tname[i] != 'CO'){
+			if("PM25"==tname[i]){
+				option.title.text = "PM₂.₅"+('(μg/m³)');
+			}else if("SO4"==tname[i]){
+				option.title.text = "SO₄²¯"+('(μg/m³)');
+			}else if("NO3"==tname[i]){
+				option.title.text = "NO₃¯"+('(μg/m³)');
+			}else if("NH4"==tname[i]){
+				option.title.text = "NH₄⁺"+('(μg/m³)');
+			}else if("PM10"==tname[i]){
+				option.title.text = "PM₁₀"+('(μg/m³)');
+			}else if("O3_8_MAX"==tname[i]){
+				option.title.text = "O₃_8_max"+('(μg/m³)');
+			}else if("O3_1_MAX"==tname[i]){
+				option.title.text = "O₃_1_max"+('(μg/m³)');
+			}else if("SO2"==tname[i]){
+				option.title.text = "SO₂"+('(μg/m³)');
+			}else if("NO2"==tname[i]){
+				option.title.text = "NO₂"+('(μg/m³)');
+			}else{
+				option.title.text = tname[i]+('(μg/m³)');
+			}
+		}else{
+			option.title.text = tname[i]+('(mg/m³)');
+		}	
+		
+		console.log(data);
+		//设置单个图表中包含的图例名称
+		option.legend.data = (function(){	//图例名称
+			var lenArr = [];	//图例的legend.data使用数组存放
+			$.each(data,function(key,val){
+				lenArr.push(key);
+			});
+			return lenArr;
+		})();
+		
+		//存放单个图表的series数据
+		option.series = [];
+		if(changeMsg.rms == 'day'){
+			var xdata = [];		//x轴数据
+			var ydata = [];		//y轴数据
+			$.each(data,function(key,val){
+				var name = key;		//数据name
+//				var xdata = [];		//x轴数据
+//				var ydata = [];		//y轴数据
+				if(val.hasOwnProperty(species[i])){	//包含当前物种
+					$.each(val[species[i]],function(timeKey,timeVal){
+						xdata.push(timeKey);
+					});
+					xdata = xdata.sort();
+					for(var m=0;m<xdata.length;m++){
+						ydata.push(val[species[i]][xdata[m]]);
+					}
+				}
+				
+				
+				
+//				if(data.hasOwnProperty(key)){	//包含模拟或观测数据
+//					if(data[key].hasOwnProperty(species[i])){	//包含当前物种
+//						$.each((data[key])[species[i]],function(timeKey,timeVal){
+//							xdata.push(timeKey);
+//						})
+//						xdata = xdata.sort();
+//						for(var m=0;m<xdata.length;m++){
+//							ydata.push(((data[key])[species[i]])[xdata[m]]);
+//						}
+//					}
+//				}
+//				console.log(xdata);
+//				console.log(ydata);
+				option.series.push({
+					name : name, 				//情景名称  对应图例 exceptsjz
+					type : show_type, 			 //图表类型   已设全局变量 show_type
+					smooth : true,
+					data : ydata     			//可变情景数据 
+				});	
+				
+			});
+			
+			option.xAxis = [];
+		    option.xAxis.push({				    //x轴情景时间
+		    	data: xdata						//修改数据排序
+		    });
+		    var es = echarts.init(document.getElementById(tname[i]));
+		    es.setOption(option);
+		    $(window).resize(es.resize);
+		}
+			
+	 }	//循环物种结束
+	  
+	  
+//	  for (var i = 0; i < species.length; i++) {
+//	    echarts.dispose(document.getElementById(species[i]));	//echarts内存释放
+////	    var es = echarts.init(document.getElementById(species[i]));	
+//	    var div = $('<div style="height:250px;"></div>');
+//		div.attr("id",tname[i]);
+//		div.addClass('echartsCZ');
+//		$("#initEcharts").append(div);	
+//	    var option = $.extend(true, {}, optionAll);
+//	    
+//	    
+//	    
+//	    //option.legend.data = ['模拟数据'];
+//	    if (species[i] != 'CO') {
+//
+//	        switch(species[i]){
+//	            case 'SO₄':
+//	                option.title.text = species[i]+"²¯ (μg/m³)";
+//	                break;
+//	            case 'NO₃':
+//	                option.title.text = species[i]+"¯ (μg/m³)";
+//	                break;
+//	            case 'NH₄':
+//	                option.title.text = species[i]+"⁺ (μg/m³)";
+//	                break;
+//	            default:
+//	                option.title.text = species[i]+" (μg/m³)";
+//	        }
+//
+//	    } else {
+//	      //option.xAxis.name = 'mg/m³';
+//	      option.title.text = species[i]+'（mg/m³）';
+//	    }
+//	    option.series = [];
+//
+//
+//
+//	      option.series.push({
+//	        name: '模拟数据', //可变，存储情景名称
+//	        type: 'line',
+//	        smooth: true,
+//	        symbolSize: 5,
+//	        data: data[speciesObj[species[i]]].slice(0, $('#height').val())  //可变，存储情景数据
+//	      })
+//	    es.setOption(option);
+//	  }
 	}
