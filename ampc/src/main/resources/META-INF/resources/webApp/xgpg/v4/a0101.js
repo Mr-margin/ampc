@@ -128,8 +128,6 @@ require(
         dong.PictureMarkerSymbol = PictureMarkerSymbol;
 
         esri.config.defaults.io.proxyUrl = ArcGisUrl + "/Java/proxy.jsp";
-//		esri.config.defaults.io.proxyUrl = "webApp/xgpg/v4/proxy.jsp";
-//		esri.config.defaults.io.proxyUrl = "proxy.jsp";
         esri.config.defaults.io.alwaysUseProxy = false;
 
         app.mapList = new Array();
@@ -503,23 +501,30 @@ function bianji(type, g_num, p , wind) {
 //		zmblockUI("#mapDiv0", "end");
 //        zmblockUI("#mapDiv1", "end");
 
-        }else if(wind == 1){//↑风场
+        }else{//风场
+        	var lujing = "";
+        	if(wind == 1){
+        		lujing = "fxj";
+        		par.windSymbol = 0;
+        	}else if(wind == 2){
+        		lujing = "fx";
+        		par.windSymbol = 1;//1代表F风，F风最大到20级，箭头风最大到12级
+        	}
+        	par.rows = 20;
+        	par.cols = 20;
+        	
             par.species = ['WSPD','WDIR'];
-        }else if(wind == 2){//F风场
-//		zmblockUI("#mapDiv0", "start");
-//	    zmblockUI("#mapDiv1", "start");
-            par.species = ['WSPD','WDIR'];
-            // $.get('data7.json', function (data) {
-		ajaxPost('/extract/data', par).success(function (data) {
-			if (!data.data) {
-	            console.log("data.data-null");
-	            return;
-	        }
-	        if (data.data.length == 0) {
-	            console.log("length-null");
-	            return;
-	        }
-
+            app.gLyr1.clear();
+            app.gLyr2.clear();
+            ajaxPost('/extract/data', par).success(function (data) {
+				if (!data.data) {
+		            console.log("data.data-null");
+		            return;
+		        }
+		        if (data.data.length == 0) {
+		            console.log("length-null");
+		            return;
+		        }
                 $.each(data.data, function (i, col) {
 
                     if (typeof col.x == "undefined") {
@@ -531,7 +536,7 @@ function bianji(type, g_num, p , wind) {
                         return;
                     }
 
-                    var p_url = "img/fx/"+col.WSPD+".png";
+                    var p_url = "img/"+lujing+"/"+col.WSPD+".png";
                     var angle = 0;
                     switch (col.WDIR) {
                         case "N" :
@@ -586,7 +591,7 @@ function bianji(type, g_num, p , wind) {
                             angle = 0;
                     }
 
-                    var symbol = new dong.PictureMarkerSymbol(p_url,12,12);
+                    var symbol = new dong.PictureMarkerSymbol(p_url,20,20);
                     symbol.setOffset(-10,18);
                     symbol.setAngle(angle);
                     var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
