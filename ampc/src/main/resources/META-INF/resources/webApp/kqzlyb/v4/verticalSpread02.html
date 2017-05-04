@@ -159,81 +159,17 @@
     <div class="ibox-content" style="height:100%;overflow-y: auto;padding: 0px;">
 
 
-      <div class="row disNone" style="margin-top: 12px;margin-left: 0px;margin-right: 0px;height:48px;">
-
-        <div class="col-sm-4" style="padding-left:0px;">
-          <div class="input-group m-b" style="margin-bottom: 0px">
-            <span class="input-group-addon" style="border: 0px solid #E5E6E7;">检测站点:</span>
-
-            <div class="" style="margin-bottom:0px;padding-left:0px;">
-              <div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
-                <div class="input-group group-select">
-                  <select class="form-control m-b" id="proStation" style="border-color: #1c84c6;">
-                   
-                  </select>
-                </div>
-              </div>
-              <div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
-                <div class="input-group group-select">
-                  <select class="form-control m-b" id="cityStation" style="border-color: #1c84c6;">
-                    
-                  </select>
-                </div>
-              </div>
-              <div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
-                <div class="input-group group-select">
-                  <select class="form-control m-b" id="station" style="border-color: #1c84c6;">
-                   
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="btn-group col-md-3" data-toggle="buttons" style="margin-top: 3px;padding: 0;">
-            <label class="btn btn-outline btn-success "><input type="radio" name="rms" value="hour">逐小时</label>
-            <label class="btn btn-outline btn-success  active"><input checked type="radio" name="rms" value="day">逐日</label>
-          </div>
-          <div class="col-md-9">
-            <div class="form-group clearfix">
-              <label for="CZDate" class="col-md-4 control-label lh29" style="text-align: right;">时间选择：</label>
-
-              <div class="col-md-8" style="padding-right: 0px">
-                <input style="min-width: 210px" type="text" class="form-control" id="CZDate" name="CZDate" readonly placeholder="请选择日期···">
-                <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showDate()"
-                   style="cursor:pointer;position: absolute;font-size: 17px;right: 3px;top: 7px;"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-2" style="padding-left:0px;">
-          <div class="input-group m-b" style="margin-bottom: 0px">
-            <span class="input-group-addon" style="border: 0px solid #E5E6E7;">高度:</span>
-
-            <div class="" style="margin-bottom:0px;padding-left:0px;">
-              <div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
-                <div class="input-group group-select">
-                  <select class="form-control m-b" id="height" style="padding-left:6px;border-color: #1c84c6;">
-                    <option value="12">3000m</option>
-                    <option value="11">2000m</option>
-                    <option value="10">1500m</option>
-                    <option value="9" selected="selected">1000m</option>
-                    <option value="8">700m</option>
-                    <option value="7">500m</option>
-                    <option value="6">400m</option>
-                    <option value="5">300m</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div id="showTitle" style="height: 40px;line-height: 40px;padding-left: 10px;font-size: 16px;color:#000">
+        <span class="proName"></span>
+        <span class="cityName"></span>
+        <span class="stationName"></span>
+        <span class="timeName"></span>
+        <span class="rmsName"></span>
+        <span class="heightName"></span>
       </div>
 
-
       <div class="row"
-           style="margin-left: 0px;margin-right: 0px;height:calc(100% - 48px);">
+           style="margin-left: 0px;margin-right: 0px;height:calc(100% - 88px);margin-top: -40px;">
         <div class='col-md-12' id="initEcharts" style="height:100%;padding-left: 20px;">
           <div class="echartsCZ col-md-3 day hour" id="PM₂.₅"></div>
           <div class="echartsCZ col-md-3 day hour" id="PM₁₀"></div>

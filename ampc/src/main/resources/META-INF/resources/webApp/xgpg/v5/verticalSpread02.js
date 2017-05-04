@@ -10,17 +10,22 @@ $(function () {
 });
 /*存储全局改变量*/
 var dps_codeStation, dps_station;
-var ooo = [['-', 0], ['-', 50], ['-', 100], ['-', 200], ['-', 300], ['-', 400], ['-', 500], ['-', 700], ['-', 1000], ['-', 1500], ['-', 2000], ['-', 3000]]
+var ooo = [['-', 0], ['-', 50], ['-', 100], ['-', 200], ['-', 300], ['-', 400], ['-', 500], ['-', 700], ['-', 1000], ['-', 1500], ['-', 2000], ['-', 3000]];
+var heightArr = [0, 50, 100, 200, 300, 400, 500, 700, 1000, 1500, 2000, 3000];
 var changeMsg = {
     pro: '',//站点选择
+    proName: '',
     city: '',
+    cityName: '',
     station: '',
+    stationName: '',
     height: 9,//高度选择
     rms: 'day',//时间分辨率
     time: '',//时间选择
     scenarinoId: [],//选择的情景Id数组
     scenarinoName: [],//选择的情景名称数组
 };
+var zhiCity = ['11', '12', '31', '50'];
 $('.day').css('display', 'block');
 $('.hour').css('display', 'none');
 var speciesArr = {
@@ -175,7 +180,9 @@ function setStation(id) {
             //}
 
             changeMsg.pro = $('#proStation').val();
+            changeMsg.proName = allCode[changeMsg.pro].name;
             changeMsg.city = $('#cityStation').val();
+            changeMsg.cityName = allCode[changeMsg.pro].city[changeMsg.city];
             findStation(changeMsg.city);
             //changeMsg.station = $('#station').val();
         } else {
@@ -195,6 +202,7 @@ function findStation(code) {
             $('#station').append($('<option value="' + res.data[i].stationId + '">' + res.data[i].stationName + '</option>'))
         }
         changeMsg.station = $('#station').val();
+        changeMsg.stationName = '平均';
     })
 }
 
@@ -534,12 +542,14 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
 $('#proStation').on('change', function (e) {
     var pro = $(e.target).val();
     changeMsg.pro = pro;
+    changeMsg.proName = allCode[pro].name;
     $('#cityStation').empty();
     var cityStation = allCode[pro].city;
     for (var city in cityStation) {
         $('#cityStation').append($('<option value="' + city + '">' + cityStation[city] + '</option>'))
     }
     changeMsg.city = $('#cityStation').val();
+    changeMsg.cityName = allCode[changeMsg.pro].city[changeMsg.city];
     findStation(changeMsg.city);
     //var station = cityStation[changeMsg.city].station;
     //for (var s in station) {
@@ -553,6 +563,7 @@ $('#proStation').on('change', function (e) {
 $('#cityStation').on('change', function (e) {
     var city = $(e.target).val();
     changeMsg.city = city;
+    changeMsg.cityName = allCode[changeMsg.pro].city[city];
     findStation(changeMsg.city);
     //var station = allCode[changeMsg.pro].station[city].station;
     //for (var s in station) {
@@ -566,6 +577,7 @@ $('#cityStation').on('change', function (e) {
 $('#station').on('change', function (e) {
     var station = $(e.target).val();
     changeMsg.station = station;
+    changeMsg.stationName = $(e.target)[0].selectedOptions[0].innerHTML;
 
     updata();
 });
@@ -589,6 +601,7 @@ $('#sTime-h').on('change', function (e) {
 $('#height').on('change', function (e) {
     var height = $(e.target).val();
     changeMsg.height = height;
+    showTitleFun();
     initEcharts();
     //updata();
 });
@@ -662,6 +675,13 @@ function updata() {
                 var obj = {};
                 $.extend(obj, resJZ[0].data, res[0].data);
                 czData = obj;
+
+                /*修改显示头 */
+
+                showTitleFun();
+
+                /*修改显示头 end*/
+
                 initEcharts();
             } else {
                 console.log(res.msg)
@@ -670,6 +690,40 @@ function updata() {
             console.log('接口故障！！！')
         })
     });
+}
+
+function showTitleFun() {
+
+    $('#showTitle span').empty();
+    if (zhiCity.indexOf(changeMsg.pro) == -1) {
+        if (changeMsg.station == 'avg') {
+            $('#showTitle .proName').html(changeMsg.proName + '>>');
+            $('#showTitle .cityName').html(changeMsg.cityName + '>>');
+            $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '>>');
+            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '>>');
+            $('#showTitle .heightName').html(heightArr[changeMsg.height - 1] + 'm');
+        } else {
+            $('#showTitle .proName').html(changeMsg.proName + '>>');
+            $('#showTitle .cityName').html(changeMsg.cityName + '>>');
+            $('#showTitle .stationName').html(changeMsg.stationName + '>>');
+            $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '>>');
+            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '>>');
+            $('#showTitle .heightName').html(heightArr[changeMsg.height - 1] + 'm');
+        }
+    } else {
+        if (changeMsg.station == 'avg') {
+            $('#showTitle .cityName').html(changeMsg.cityName + '>>');
+            $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '>>');
+            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '>>');
+            $('#showTitle .heightName').html(heightArr[changeMsg.height - 1] + 'm');
+        } else {
+            $('#showTitle .cityName').html(changeMsg.cityName + '>>');
+            $('#showTitle .stationName').html(changeMsg.stationName + '>>');
+            $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '>>');
+            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '>>');
+            $('#showTitle .heightName').html(heightArr[changeMsg.height - 1] + 'm');
+        }
+    }
 }
 
 
