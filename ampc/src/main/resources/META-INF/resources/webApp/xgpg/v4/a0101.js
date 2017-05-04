@@ -498,17 +498,17 @@ function bianji(type, g_num, p , wind) {
                     });
 
                 });
-//		zmblockUI("#mapDiv0", "end");
-//        zmblockUI("#mapDiv1", "end");
-
         }else{//风场
         	var lujing = "";
+        	var fxOpacity = 0;
         	if(wind == 1){
         		lujing = "fxj";
         		par.windSymbol = 0;
+        		fxOpacity = 0.5;
         	}else if(wind == 2){
         		lujing = "fx";
         		par.windSymbol = 1;//1代表F风，F风最大到20级，箭头风最大到12级
+        		fxOpacity = 1;
         	}
         	par.rows = 20;
         	par.cols = 20;
@@ -598,14 +598,16 @@ function bianji(type, g_num, p , wind) {
                     var graphic = new dong.Graphic(point, symbol);
                     if(g_num == 0){
                         app.gLyr1.add(graphic);
+                        app.gLyr1.setOpacity(fxOpacity);
                     }else if(g_num == 1){
                         app.gLyr2.add(graphic);
+                        app.gLyr2.setOpacity(fxOpacity);
                     }
 
 
                 });
-                zmblockUI("#mapDiv0", "end");
-                zmblockUI("#mapDiv1", "end");
+//                zmblockUI("#mapDiv0", "end");
+//                zmblockUI("#mapDiv1", "end");
                 console.log((new Date().getTime() - v1) + "num:" +g_num);
             });
 
@@ -990,8 +992,7 @@ $('#eTime').on('change', function (e) {//选择平均后的时间
 
 /*数据更新*/
 function updata(t) {
-    zmblockUI("#mapDiv0", "start");
-    zmblockUI("#mapDiv1", "start");
+    
     var parameter = {
         userId: userId,
         layer: changeMsg.layer,
@@ -1059,6 +1060,9 @@ function updata(t) {
         bianji("1", 1, p2,changeMsg.showWind);
         /*执行方法，进行右图添加 end*/
     }else if (t) {
+    	zmblockUI("#mapDiv0", "start");
+        zmblockUI("#mapDiv1", "start");
+        
         for (var x = 0; x < changeMsg.showType.length; x++) {
             p2.calcType = changeMsg.calcType;
             p2.showType = changeMsg.showType[x];
@@ -1070,6 +1074,9 @@ function updata(t) {
 
         }
     } else {
+    	zmblockUI("#mapDiv0", "start");
+        zmblockUI("#mapDiv1", "start");
+        
         for (var i = 0; i < changeMsg.showType.length; i++) {
             p1.showType = changeMsg.showType[i];
 
