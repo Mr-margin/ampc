@@ -238,49 +238,80 @@ function updata(opt) {
         }
 
         $('.showTable').empty();
-        for (var i = 0; i < speciesAll[changeMsg.type][changeMsg.rms].length; i++) {
-            var div = $('.mnDataShow.disNone').clone();
-            div.removeClass('disNone');
-            div.find('.mnName').html(speciesAll[changeMsg.type][changeMsg.rms][i] + '模拟数据');
-            div.find('.12').html('12' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
-            div.find('.13').html('13' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
-            div.find('.14').html('14' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
-            div.find('.22').html('22' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
-            div.find('.23').html('23' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
-            div.find('.24').html('24' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
-            div.find('.32').html('32' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
-            div.find('.33').html('33' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
-            div.find('.34').html('34' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
-            div.find('.42').html('42' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
-            div.find('.43').html('43' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
-            div.find('.44').html('44' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
+        // for (var i = 0; i < speciesAll[changeMsg.type][changeMsg.rms].length; i++) {
+        //     var div = $('.mnDataShow.disNone').clone();
+        //     div.removeClass('disNone');
+        //     div.find('.mnName').html(speciesAll[changeMsg.type][changeMsg.rms][i] + '模拟数据');
+        //     div.find('.12').html('12' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
+        //     div.find('.13').html('13' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
+        //     div.find('.14').html('14' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
+        //     div.find('.22').html('22' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
+        //     div.find('.23').html('23' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
+        //     div.find('.24').html('24' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
+        //     div.find('.32').html('32' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
+        //     div.find('.33').html('33' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
+        //     div.find('.34').html('34' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
+        //     div.find('.42').html('42' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
+        //     div.find('.43').html('43' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
+        //     div.find('.44').html('44' + speciesAll[changeMsg.type][changeMsg.rms][i] + changeMsg.station);
+        //
+        //     $('.showTable').append(div);
+        // }
 
-            $('.showTable').append(div);
-        }
-
-        var url = '';
+        var url = '/Air/checkout';
         ajaxPost(url, {
-            userId: userId
+            userId: userId,
+            mode:changeMsg.station == 'avg'?'city':'point',
+            // starttime:changeMsg.startD,
+            // endtime:changeMsg.endD,
+            starttime:'2017-04-16 00',
+            endtime:'2017-04-17 00',
+            cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
+            datetype:changeMsg.rms
         }).success(function (res) {
-
+            $('.showTable').empty();
             for (var i = 0; i < speciesAll[changeMsg.type][changeMsg.rms].length; i++) {
                 var div = $('.mnDataShow.disNone').clone();
                 div.removeClass('disNone');
-                div.find('.12').html('12' + speciesAll[changeMsg.type][changeMsg.rms][i]);
-                div.find('.13').html('13' + speciesAll[changeMsg.type][changeMsg.rms][i]);
-                div.find('.14').html('14' + speciesAll[changeMsg.type][changeMsg.rms][i]);
-                div.find('.22').html('22' + speciesAll[changeMsg.type][changeMsg.rms][i]);
-                div.find('.23').html('23' + speciesAll[changeMsg.type][changeMsg.rms][i]);
-                div.find('.24').html('24' + speciesAll[changeMsg.type][changeMsg.rms][i]);
-                div.find('.32').html('32' + speciesAll[changeMsg.type][changeMsg.rms][i]);
-                div.find('.33').html('33' + speciesAll[changeMsg.type][changeMsg.rms][i]);
-                div.find('.34').html('34' + speciesAll[changeMsg.type][changeMsg.rms][i]);
-                div.find('.42').html('42' + speciesAll[changeMsg.type][changeMsg.rms][i]);
-                div.find('.43').html('43' + speciesAll[changeMsg.type][changeMsg.rms][i]);
-                div.find('.44').html('44' + speciesAll[changeMsg.type][changeMsg.rms][i]);
-
+                div.addClass(speciesObj[speciesAll[changeMsg.type][changeMsg.rms][i]]);
+                div.find('.mnName').html(speciesAll[changeMsg.type][changeMsg.rms][i]);
                 $('.showTable').append(div);
             }
+
+            for(var n in res.data){
+                for(var s in res.data[n]){
+                    for(var d in res.data[n][s]){
+                        $('.'+s).find('.'+n+d).html(res.data[n][s][d]);
+                    }
+                }
+            }
+
+
+
+
+
+
+
+
+
+            // for (var i = 0; i < speciesAll[changeMsg.type][changeMsg.rms].length; i++) {
+            //     var div = $('.mnDataShow.disNone').clone();
+            //     div.removeClass('disNone');
+            //     div.find('.12').html('12' + speciesAll[changeMsg.type][changeMsg.rms][i]);
+            //     div.find('.13').html('13' + speciesAll[changeMsg.type][changeMsg.rms][i]);
+            //     div.find('.14').html('14' + speciesAll[changeMsg.type][changeMsg.rms][i]);
+            //     div.find('.22').html('22' + speciesAll[changeMsg.type][changeMsg.rms][i]);
+            //     div.find('.23').html('23' + speciesAll[changeMsg.type][changeMsg.rms][i]);
+            //     div.find('.24').html('24' + speciesAll[changeMsg.type][changeMsg.rms][i]);
+            //     div.find('.32').html('32' + speciesAll[changeMsg.type][changeMsg.rms][i]);
+            //     div.find('.33').html('33' + speciesAll[changeMsg.type][changeMsg.rms][i]);
+            //     div.find('.34').html('34' + speciesAll[changeMsg.type][changeMsg.rms][i]);
+            //     div.find('.42').html('42' + speciesAll[changeMsg.type][changeMsg.rms][i]);
+            //     div.find('.43').html('43' + speciesAll[changeMsg.type][changeMsg.rms][i]);
+            //     div.find('.44').html('44' + speciesAll[changeMsg.type][changeMsg.rms][i]);
+            //
+            //     $('.showTable').append(div);
+            // }
 
 
         })
