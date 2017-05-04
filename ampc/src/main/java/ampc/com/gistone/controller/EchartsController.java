@@ -827,6 +827,7 @@ public class EchartsController {
 							break;
 						}
 					}
+					//判断如果都不为空证明有计算结果
 					if(basisrlu!=null&&jplrlu!=null){
 						resultUtil(basisrlu,jplrlu);
 						resultList.add(jplrlu);
@@ -842,6 +843,17 @@ public class EchartsController {
 					String checkCode=code.substring(0,4);
 					//定义基准结果对象
 					RadioListUtil basisrlu=null;
+					//循环所有基准情景的减排结果  如果基准和Code的减排结果集不匹配 则删掉这条基准记录 直到有匹配的
+					for(int i=0;i<selectBisisMap.size();){
+						//获取基准Map
+						Map basisMap=selectBisisMap.get(i);
+						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
+						if(!basisMap.get("CODE").toString().startsWith(checkCode)){
+							selectBisisMap.remove(i);
+						}else{
+							break;
+						}
+					}
 					//循环所有基准情景的减排结果
 					for (int i=0;i<selectBisisMap.size();) {
 						//获取基准Map
@@ -853,7 +865,6 @@ public class EchartsController {
 							//定义判断是否包含子集 默认没有子集
 							boolean isTrue=false;
 							selectBisisMap.remove(i);
-							selectcodeMap.remove(i);
 							for(int j=0;j<selectBisisMap.size();){
 								basisMap=selectBisisMap.get(j);
 								if(basisMap.get("CODE").toString().startsWith(checkCode)){
@@ -862,7 +873,6 @@ public class EchartsController {
 									//包含子集
 									isTrue=true;
 									selectBisisMap.remove(j);
-									selectcodeMap.remove(j);
 								}else{
 									break;
 								}
@@ -937,9 +947,18 @@ public class EchartsController {
 							break;
 						}
 					}
+					//判断如果都不为空证明有计算结果
 					if(basisrlu!=null&&jplrlu!=null){
 						resultUtil(basisrlu,jplrlu);
 						resultList.add(jplrlu);
+					}
+					//该类型的编码已经匹配完毕 在集合中删除和匹配code相符的Code
+					for(int i=0;i<selectcodeMap.size();){
+						if(selectcodeMap.get(o).get("CODE").toString().startsWith(checkCode)){
+							selectcodeMap.remove(o);
+						}else{
+							break;
+						}
 					}
 				}
 			}else{
@@ -950,6 +969,17 @@ public class EchartsController {
 					String code=selectcodeMap.get(o).get("CODE").toString();
 					//定义基准结果对象
 					RadioListUtil basisrlu=null;
+					//循环所有基准情景的减排结果  如果基准和Code的减排结果集不匹配 则删掉这条基准记录 直到有匹配的
+					for (int i=0;i<selectBisisMap.size();) {
+						//获取基准Map
+						Map basisMap=selectBisisMap.get(i);
+						//判断如果其中包含给的Code则包含该区域下的信息进行添加信息
+						if(!basisMap.get("CODE").toString().equals(code)){
+							selectBisisMap.remove(i);
+						}else{
+							break;
+						}
+					}
 					//循环所有基准情景的减排结果
 					for (int i=0;i<selectBisisMap.size();) {
 						//获取基准Map
@@ -959,7 +989,6 @@ public class EchartsController {
 							//获取行业中的减排污染物信息
 							basisrlu=tempUtil(basisMap,basisrlu);
 							selectBisisMap.remove(i);
-							selectcodeMap.remove(i);
 						}else{
 							break;
 						}
@@ -1005,10 +1034,13 @@ public class EchartsController {
 							break;
 						}
 					}
+					//判断如果都不为空证明有计算结果
 					if(basisrlu!=null&&jplrlu!=null){
 						resultUtil(basisrlu,jplrlu);
 						resultList.add(jplrlu);
 					}
+					//该编码已经匹配完毕 在集合中删除该编码
+					selectcodeMap.remove(o);
 				}
 			}
 			LogUtil.getLogger().info("EchartsController 情景减排列表数据查询成功!");
