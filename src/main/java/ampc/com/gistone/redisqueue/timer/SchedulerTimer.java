@@ -102,7 +102,7 @@ public class SchedulerTimer {
 	 * @date 2017年4月7日 上午9:53:09
 	 */
 //	@Scheduled(cron="0 0 11 * * ?")
-	@Scheduled(cron="0 30 09 * * ?")
+//	@Scheduled(cron="0 30 09 * * ?")
 //	@Scheduled(fixedRate = 50000)
 	public void realForTimer() {
 		//Date date = new Date();
