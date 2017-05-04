@@ -1078,9 +1078,9 @@ public class AirController {
 						if(ps.equals(os)){
 							if(spcexactMap.get(spc)==null){
 
-								spcexactMap.put(spc, 1);	
+								spcexactMap.put(spc, 1);
 							}else{
-								spcexactMap.put(spc, spcexactMap.get(spc)+1);								
+								spcexactMap.put(spc, spcexactMap.get(spc)+1);				
 							}
 						}
 					
@@ -1152,10 +1152,9 @@ public class AirController {
 							String os=LevelUtil.Level(num);
 							if(ps.equals(os)){
 								if(spcexactMap.get(spc)==null){
-
 									spcexactMap.put(spc, 1);
 								}else{
-									spcexactMap.put(spc, spcexactMap.get(spc)+1);						
+									spcexactMap.put(spc, spcexactMap.get(spc)+1);			
 								}
 							}					
 						Integer vale=Integer.valueOf(validMap.get(day).get(spc).toString());
