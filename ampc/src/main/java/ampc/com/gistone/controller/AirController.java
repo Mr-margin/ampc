@@ -656,8 +656,8 @@ public class AirController {
 		SimpleDateFormat daysdf=new SimpleDateFormat("yyyy-MM-dd");
 		Date start=daysdf.parse(starttime);
 		Date end=daysdf.parse(endtime);
-		Long beginTime = start.getTime(); 
-		Long endTime2 = end.getTime(); 
+		Long beginTime = start.getTime();
+		Long endTime2 = end.getTime();
 		Long betweenDays = (long)((endTime2 - beginTime) / (1000 * 60 * 60 *24) + 0.5);
 		Map<Integer,Map> validMap=new HashMap();//有效样本数Map
 		Map<Integer,Map> exactMap=new HashMap();//准确样本数map
@@ -672,7 +672,7 @@ public class AirController {
 		howday.add(1);
 		howday.add(2);
 		howday.add(3);
-
+		Map<Integer,List<Date>> DatrMap=new HashMap();
 		for(int a=0;a<=betweenDays;a++){
 			//获取对应的情景起报日期
 			Date times=daysdf.parse(starttime);
@@ -697,6 +697,7 @@ public class AirController {
 			Map<String,Integer> validspcMap=new HashMap();
 			Map<String,Integer> spcexactMap=new HashMap();
 			Map<Date, Map<String, List>> hourdatemap=new HashMap();
+			List<Date> dalist=new ArrayList();
 			for(Date thedate:datelist){//遍历时间集合，获取对应空气质量数据
 				if(datetype.equals("day")){	
 					String tables="T_OBS_DAILY_";
@@ -743,6 +744,8 @@ public class AirController {
 				if(datetype.equals("day")){
 					Map<String,Object> observeMap=(Map)obj;
 					if(!observeMap.isEmpty()){//判断是否为有效样本
+						dalist.add(thedate);
+						DatrMap.put(how, dalist);
 						Iterator<Entry<String,Object>> iter=observeMap.entrySet().iterator();
 						while(iter.hasNext()){
 							Entry<String,Object> observe=iter.next();
@@ -754,26 +757,26 @@ public class AirController {
 							if(!num.equals("-")){
 
 								if(sumMap.get(spc)==null){
-									sumMap.put(spc, new BigDecimal(num));		
+									sumMap.put(spc, new BigDecimal(num));	
 								}else{
-									sumMap.put(spc, sumMap.get(spc).add(new BigDecimal(num)));									
+									sumMap.put(spc, sumMap.get(spc).add(new BigDecimal(num)));								
 								}
 							}else{
 								if(sumMap.get(spc)==null){
-									sumMap.put(spc, new BigDecimal(0));		
+									sumMap.put(spc, new BigDecimal(0));	
 								}else{
 									sumMap.put(spc, sumMap.get(spc).add(new BigDecimal(0)));									
 								}
 							}
 							if(validspcMap.get(spc)==null){
-								validspcMap.put(spc, 1);		
+								validspcMap.put(spc, 1);
 							}else{
-								validspcMap.put(spc, validspcMap.get(spc)+1);									
+								validspcMap.put(spc, validspcMap.get(spc)+1);								
 							}
 							if(!num.equals("-")){
 							odayspcMaps.put(spc, num);
 							}else{
-							odayspcMaps.put(spc, 0);	
+							odayspcMaps.put(spc, 0);
 							}
 						}
 						
@@ -781,7 +784,8 @@ public class AirController {
 				}else{
 					Map<String,List<String>> observeMap=(Map)obj;
 					if(!observeMap.isEmpty()){//判断是否为有效样本
-					
+						dalist.add(thedate);
+						DatrMap.put(how, dalist);
 						Iterator<Entry<String,List<String>>> iter=observeMap.entrySet().iterator();
 						while(iter.hasNext()){
 							Entry<String,List<String>> observe=iter.next();
@@ -801,15 +805,15 @@ public class AirController {
 									}
 								}else{
 									if(sumMap.get(spc)==null){
-										sumMap.put(spc, new BigDecimal(0));		
+										sumMap.put(spc, new BigDecimal(0));	
 									}else{
-										sumMap.put(spc, sumMap.get(spc).add(new BigDecimal(0)));									
+										sumMap.put(spc, sumMap.get(spc).add(new BigDecimal(0)));								
 									}
 								}
 								if(validspcMap.get(spc)==null){
-									validspcMap.put(spc, 1);		
+									validspcMap.put(spc, 1);
 								}else{
-									validspcMap.put(spc, validspcMap.get(spc)+1);									
+									validspcMap.put(spc, validspcMap.get(spc)+1);						
 								}
 								
 								if(!num.equals("-")){
@@ -841,6 +845,10 @@ public class AirController {
 			Map<String,Integer> spcexactMap=new HashMap();
 			Map<Date,Map<String,List>> hourdatemap=new HashMap();
 			for(Date thedate:datelist){//遍历时间集合，获取对应空气质量数据
+				List<Date> dats=DatrMap.get(how);
+				if(!dats.contains(thedate)){
+					continue;
+				}
 				Map<String,List> ohourspcMaps=new HashMap();
 				Map<String,Object> odayspcMaps=new HashMap();
 				if(datetype.equals("day")){	
@@ -874,7 +882,7 @@ public class AirController {
 					tm.setMissionId(jztScenarino.getMissionId());
 					//通过情景中的任务id查询任务，再通过任务查询domainid
 					List<TMissionDetail> tmlist=tMissionDetailMapper.selectByEntity(tm);
-					TMissionDetail thetm=tmlist.get(0);	
+					TMissionDetail thetm=tmlist.get(0);
 					int domainId=Integer.valueOf(thetm.getMissionDomainId().toString());
 					String tables="T_SCENARINO_FNL_DAILY_";
 					Date tims=jztScenarino.getPathDate();
@@ -916,9 +924,9 @@ public class AirController {
 						}
 //						if(ps.equals(os)){
 //							if(spcexactMap.get(spcs)==null){
-//								spcexactMap.put(spcs, 1);		
+//								spcexactMap.put(spcs, 1);
 //							}else{
-//								spcexactMap.put(spcs, spcexactMap.get(spcs)+1);									
+//								spcexactMap.put(spcs, spcexactMap.get(spcs)+1);							
 //							}
 //						}
 						odayspcMaps.put(spcs, p);
@@ -953,7 +961,7 @@ public class AirController {
 					tm.setMissionId(jztScenarino.getMissionId());
 					//通过情景中的任务id查询任务，再通过任务查询domainid
 					List<TMissionDetail> tmlist=tMissionDetailMapper.selectByEntity(tm);
-					TMissionDetail thetm=tmlist.get(0);	
+					TMissionDetail thetm=tmlist.get(0);
 					int domainId=Integer.valueOf(thetm.getMissionDomainId().toString());
 
 					String tables="T_SCENARINO_FNL_HOURLY_";
@@ -1006,9 +1014,9 @@ public class AirController {
 //							if(ps.equals(os)){
 //								if(spcexactMap.get(spce)==null){
 //
-//									spcexactMap.put(spce, 1);		
+//									spcexactMap.put(spce, 1);	
 //								}else{
-//									spcexactMap.put(spce, spcexactMap.get(spce)+1);									
+//									spcexactMap.put(spce, spcexactMap.get(spce)+1);							
 //								}
 //							}
 
@@ -1070,9 +1078,9 @@ public class AirController {
 						if(ps.equals(os)){
 							if(spcexactMap.get(spc)==null){
 
-								spcexactMap.put(spc, 1);		
+								spcexactMap.put(spc, 1);	
 							}else{
-								spcexactMap.put(spc, spcexactMap.get(spc)+1);									
+								spcexactMap.put(spc, spcexactMap.get(spc)+1);								
 							}
 						}
 					
@@ -1089,7 +1097,7 @@ public class AirController {
 								suMap.put("p2", p2);
 								suMap.put("o2", o2);
 								suMap.put("o_p", o_p);
-								spcdeMap.put(spc, suMap);	
+								spcdeMap.put(spc, suMap);
 								aveMap.put(day, spcdeMap);
 							}else{
 								suMap.put("store", spcdeMap.get(spc).get("store")+store);
@@ -1104,7 +1112,7 @@ public class AirController {
 								suMap.put("p2", p2);
 								suMap.put("o2", o2);
 								suMap.put("o_p", o_p);
-								spcdeMap.put(spc, suMap);	
+								spcdeMap.put(spc, suMap);
 								aveMap.put(day, spcdeMap);
 							}
 					}
@@ -1145,9 +1153,9 @@ public class AirController {
 							if(ps.equals(os)){
 								if(spcexactMap.get(spc)==null){
 
-									spcexactMap.put(spc, 1);		
+									spcexactMap.put(spc, 1);
 								}else{
-									spcexactMap.put(spc, spcexactMap.get(spc)+1);									
+									spcexactMap.put(spc, spcexactMap.get(spc)+1);						
 								}
 							}					
 						Integer vale=Integer.valueOf(validMap.get(day).get(spc).toString());
@@ -1164,7 +1172,7 @@ public class AirController {
 							suMap.put("p2", p2);
 							suMap.put("o2", o2);
 							suMap.put("o_p", o_p);
-							spcdeMap.put(spc, suMap);	
+							spcdeMap.put(spc, suMap);
 							aveMap.put(day, spcdeMap);
 						}else{
 							suMap.put("store", spcdeMap.get(spc).get("store")+store);
@@ -1179,7 +1187,7 @@ public class AirController {
 							suMap.put("p2", p2);
 							suMap.put("o2", o2);
 							suMap.put("o_p", o_p);
-							spcdeMap.put(spc, suMap);	
+							spcdeMap.put(spc, suMap);
 							aveMap.put(day, spcdeMap);
 						}
 					}
@@ -1255,7 +1263,7 @@ public class AirController {
 		
 		return	AmpcResult.ok(lastMap);
 	}catch(Exception e){
-		LogUtil.getLogger().error("AppraisalController 预报检验查询异常！",e);	
+		LogUtil.getLogger().error("AppraisalController 预报检验查询异常！",e);
 		return	AmpcResult.build(1000, "error");
 	}
 	}
