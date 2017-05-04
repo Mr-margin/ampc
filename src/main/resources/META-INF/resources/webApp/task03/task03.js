@@ -1131,6 +1131,11 @@ function search_button() {
     //将本次查询的缓存加入到总条件中
 //		console.log(JSON.stringify(temp_val_v1));
     if (JSON.stringify(temp_val_v1) == "{}") {
+      $("#mic").hide();
+      $("#shaixuan_num").html("");
+      $("#metTable_tools").hide();//保存子措施按钮
+      $("#metTable_name_tools").hide();//保存子措施按钮
+      
       //没有条件，就不加了
       swal({
         title: "请选择筛选条件",
