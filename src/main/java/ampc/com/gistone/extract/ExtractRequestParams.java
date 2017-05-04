@@ -6,6 +6,7 @@ public class ExtractRequestParams {
 
 	private String calcType; // show diff ratio
 	private String showType; // emis concn wind
+	private int windSymbol; // 0 as arrows wind and 1 as F wind
 	private int borderType; // 0 don't show over point , 1 show all point
 	private Long userId;
 	private Long domainId;
@@ -65,6 +66,14 @@ public class ExtractRequestParams {
 
 	public void setShowType(String showType) {
 		this.showType = showType;
+	}
+
+	public int getWindSymbol() {
+		return windSymbol;
+	}
+
+	public void setWindSymbol(int windSymbol) {
+		this.windSymbol = windSymbol;
 	}
 
 	public Long getUserId() {

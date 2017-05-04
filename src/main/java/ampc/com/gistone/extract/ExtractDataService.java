@@ -328,7 +328,7 @@ public class ExtractDataService {
 							resStr = Constants.WINDDIRMAP.get(vv);
 							map.put(specie, resStr);
 						} else if (specie.equals("WSPD")) {
-							float vv = Constants.binarySearchKeySpd(value);
+							float vv = Constants.binarySearchKeySpd(value, params.getWindSymbol());
 							resStr = String.valueOf((int) vv);
 							map.put(specie, resStr);
 						} else {

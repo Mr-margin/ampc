@@ -64,6 +64,10 @@ public class ExtractDataController {
 				List dates = (List) data.get("dates");
 				params.setDates(dates);
 			}
+			if (Constants.SHOW_TYPE_WIND.equals(showType)) {
+				int windSymbol = Integer.valueOf(String.valueOf(data.get("windSymbol")));
+				params.setWindSymbol(windSymbol);
+			}
 			int layer = Integer.valueOf(String.valueOf(data.get("layer")));
 			params.setLayer(layer);
 			double xmin = Double.valueOf(String.valueOf(data.get("xmin")));
