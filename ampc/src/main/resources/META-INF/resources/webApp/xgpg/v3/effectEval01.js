@@ -260,7 +260,7 @@ function initEcharts() {
 		div.attr("id",tname[i]);
 		div.addClass('echartsCZ');
 		$("#initEcharts").append(div);
-		var option = $.extend(true,{},optionAll); //复制echarts模板
+		var option = $.extend(true,{},optionAll); //拷贝echarts模板
 		if(tname[i] == 'AQI'){
 			option.title.text = tname[i];         //加不同单位
 		}else if(tname[i] != 'CO'){
