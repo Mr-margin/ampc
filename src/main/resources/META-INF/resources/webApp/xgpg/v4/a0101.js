@@ -411,93 +411,106 @@ function bianji(type, g_num, p , wind) {
 //	    console.log(par);
 
             var pftype = par.species[sp];
+            var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
+            if (out_raster_layer) {
+                app.mapList[g_num].removeLayer(out_raster_layer);
+            }
 
-                ajaxPost('/extract/data', par).success(function (data) {
+            ajaxPost('/extract/data', par).success(function (data) {
 
-                    if (!data.data) {
-                        console.log("data.data-null");
+                if (!data.data) {
+                    console.log("data.data-null");
+                    
+                    zmblockUI("#mapDiv0", "end");
+                    zmblockUI("#mapDiv1", "end");
+                    swal('获取当前范围数据失败', '', 'error');
+                    return;
+                }
+                if (data.data.length == 0) {
+                    console.log("length-null");
+                    zmblockUI("#mapDiv0", "end");
+                    zmblockUI("#mapDiv1", "end");
+                    swal('当前范围缺少数据', '', 'error');
+                    return;
+                }
+                console.log(g_num + '~~~' + data.data.length);
+                var features = [];
+                $.each(data.data, function (i, col) {
+
+                    if (typeof col.x == "undefined") {
+                        console.log("x-null");
                         return;
                     }
-                    if (data.data.length == 0) {
-                        console.log("length-null");
+                    if (typeof col.y == "undefined") {
+                        console.log("y-null");
                         return;
                     }
-                    console.log(g_num + '~~~' + data.data.length);
-                    var features = [];
-                    $.each(data.data, function (i, col) {
+                    var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
+                    var attr = {};
+                    attr["FID"] = i;
+                    attr["dqvalue"] = col[pftype];
+                    var graphic = new dong.Graphic(point);
+                    graphic.setAttributes(attr);
+                    features.push(graphic);
+                });
 
-                        if (typeof col.x == "undefined") {
-                            console.log("x-null");
-                            return;
-                        }
-                        if (typeof col.y == "undefined") {
-                            console.log("y-null");
-                            return;
-                        }
-                        var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
-                        var attr = {};
-                        attr["FID"] = i;
-                        attr["dqvalue"] = col[pftype];
-                        var graphic = new dong.Graphic(point);
-                        graphic.setAttributes(attr);
-                        features.push(graphic);
-                    });
-
-                    var featureset = new dong.FeatureSet();
-                    featureset.fields = [{
-                        "name": "dqvalue",
-                        "type": "esriFieldTypeSingle",
-                        "alias": "dqvalue"
-                    }, {
-                        "name": "FID",
-                        "type": "esriFieldTypeOID",
-                        "alias": "FID"
-                    }];
-                    featureset.fieldAliases = {"dqvalue": "dqvalue", "FID": "FID"};
-                    featureset.spatialReference = new dong.SpatialReference({wkid: 3857});
-                    featureset.features = features;
-                    featureset.exceededTransferLimit = false;
+                var featureset = new dong.FeatureSet();
+                featureset.fields = [{
+                    "name": "dqvalue",
+                    "type": "esriFieldTypeSingle",
+                    "alias": "dqvalue"
+                }, {
+                    "name": "FID",
+                    "type": "esriFieldTypeOID",
+                    "alias": "FID"
+                }];
+                featureset.fieldAliases = {"dqvalue": "dqvalue", "FID": "FID"};
+                featureset.spatialReference = new dong.SpatialReference({wkid: 3857});
+                featureset.features = features;
+                featureset.exceededTransferLimit = false;
 
 //	        console.log(JSON.stringify(featureset));
 //	        console.log((new Date().getTime() - v1) + "生成数据");
-                    app.gp = new esri.tasks.Geoprocessor(GPserver_url);
-                    var parms = {
-                        "imp": featureset,
-                        "out": "out_raster_layer"
-                    };
-                    app.gp.submitJob(parms, function (jobInfo) {
-                        var gpResultLayer = app.gp.getResultImageLayer(jobInfo.jobId, "out");//这里的名字是跟着返回图层的变量名走的，不一样的话是不出图的
-                        //需要判断一下是否已经添加过图层，先移除，再添加
-                        gpResultLayer.id = "out_raster_layer";
-                        var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
-                        if (out_raster_layer) {
-                            app.mapList[g_num].removeLayer(out_raster_layer);
-                        }
-
-                        gpResultLayer.setOpacity(opacity);
-                        app.mapList[g_num].addLayer(gpResultLayer);
-                        //console.log(new Date().getTime() - v1);
-                    }, function (jobinfo) {
-                        var jobstatus = '';
-                        switch (jobinfo.jobStatus) {
-                            case 'esriJobSubmitted':
-                                //jobstatus = type + '正在提交...';
-                                break;
-                            case 'esriJobExecuting':
-                                //jobstatus = type + '处理中...';
-                                break;
-                            case 'esriJobSucceeded':
-                                jobstatus = '--' + g_num + '--处理完成...';
-                                console.log((new Date().getTime() - v1) + jobstatus);
-                                zmblockUI("#mapDiv0", "end");
-                                zmblockUI("#mapDiv1", "end");
-                                break;
-                        }
-                    }, function (error) {
-                        console.log(error);
-                    });
-
+                app.gp = new esri.tasks.Geoprocessor(GPserver_url);
+                var parms = {
+                    "imp": featureset,
+                    "out": "out_raster_layer"
+                };
+                app.gp.submitJob(parms, function (jobInfo) {
+                    var gpResultLayer = app.gp.getResultImageLayer(jobInfo.jobId, "out");//这里的名字是跟着返回图层的变量名走的，不一样的话是不出图的
+                    //需要判断一下是否已经添加过图层，先移除，再添加
+                    gpResultLayer.id = "out_raster_layer";
+                    gpResultLayer.setOpacity(opacity);
+                    app.mapList[g_num].addLayer(gpResultLayer);
+                    //console.log(new Date().getTime() - v1);
+                }, function (jobinfo) {
+                    var jobstatus = '';
+                    switch (jobinfo.jobStatus) {
+                        case 'esriJobSubmitted':
+                            //jobstatus = type + '正在提交...';
+                            break;
+                        case 'esriJobExecuting':
+                            //jobstatus = type + '处理中...';
+                            break;
+                        case 'esriJobSucceeded':
+                            jobstatus = '--' + g_num + '--处理完成...';
+                            console.log((new Date().getTime() - v1) + jobstatus);
+                            zmblockUI("#mapDiv0", "end");
+                            zmblockUI("#mapDiv1", "end");
+                            break;
+                    }
+                }, function (error) {
+                    console.log(error);
+                    zmblockUI("#mapDiv0", "end");
+                    zmblockUI("#mapDiv1", "end");
+                    swal('GIS，内部错误', '', 'error');
                 });
+
+            }).error(function (res) {
+            	zmblockUI("#mapDiv0", "end");
+                zmblockUI("#mapDiv1", "end");
+                swal('抽数，内部错误', '', 'error');
+            });
         }else{//风场
         	var lujing = "";
         	var fxOpacity = 0;
@@ -519,10 +532,12 @@ function bianji(type, g_num, p , wind) {
             ajaxPost('/extract/data', par).success(function (data) {
 				if (!data.data) {
 		            console.log("data.data-null");
+		            swal('获取当前范围风场数据失败', '', 'error');
 		            return;
 		        }
 		        if (data.data.length == 0) {
 		            console.log("length-null");
+		            swal('当前范围缺少风场数据', '', 'error');
 		            return;
 		        }
                 $.each(data.data, function (i, col) {
@@ -609,6 +624,10 @@ function bianji(type, g_num, p , wind) {
 //                zmblockUI("#mapDiv0", "end");
 //                zmblockUI("#mapDiv1", "end");
                 console.log((new Date().getTime() - v1) + "num:" +g_num);
+            }).error(function (res) {
+            	zmblockUI("#mapDiv0", "end");
+                zmblockUI("#mapDiv1", "end");
+                swal('风场抽数，内部错误', '', 'error');
             });
 
         }
