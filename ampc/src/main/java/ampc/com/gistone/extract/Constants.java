@@ -38,7 +38,7 @@ public class Constants {
 
 	public static final String[] METEORSPECIES = { "TEMP", "RH", "PRSFC", "PT", "PBL" };
 
-	public static final String[] WINDSPECIES = { "WSPD", "WSPDCONVERT", "WDIR", "WDIRCONVERT" };
+	public static final String[] WINDSPECIES = { "WSPD", "WDIR" };
 
 	public static final Map<Float, String> WINDDIRMAP;
 
