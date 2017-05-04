@@ -106,8 +106,14 @@ public class Constants {
 		return ret;
 	}
 
-	public static int[] buildWindSpd() {
-		int[] windSpdArray = new int[11];
+	public static int[] buildWindSpd(int windSymbol) {
+		int total = 0;
+		if (windSymbol == 0) {
+			total = 7;
+		} else {
+			total = 11;
+		}
+		int[] windSpdArray = new int[total];
 		int count = 0;
 		for (int i = 0; i < windSpdArray.length; i++) {
 			if (count % 2 == 0)
@@ -117,8 +123,8 @@ public class Constants {
 		return windSpdArray;
 	}
 
-	public static int binarySearchKeySpd(double targetNum) {
-		int[] array = buildWindSpd();
+	public static int binarySearchKeySpd(double targetNum, int windSymbol) {
+		int[] array = buildWindSpd(windSymbol);
 		int first = array[0];
 		int last = array[array.length - 1];
 		if (targetNum > last) {
