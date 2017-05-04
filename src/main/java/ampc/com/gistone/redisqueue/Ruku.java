@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.model.TScenarinoDetail;
+import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.preprocess.concn.ConcnService;
 import ampc.com.gistone.preprocess.concn.RequestParams;
 import ampc.com.gistone.util.DateUtil;
@@ -47,11 +48,12 @@ public class Ruku {
 	 * @Description: TODO
 	 * @param tasksScenarinoId   
 	 * void  
+	 * @param oldStatus 
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年5月2日 下午8:23:58
 	 */
-	public void readyRukuparamsBasis(Integer stepindex,Long tasksScenarinoId,Date tasksEndDate,int flag) {
+	public void readyRukuparamsBasis(Integer stepindex,Long tasksScenarinoId,Date tasksEndDate,TTasksStatus oldStatus,int flag) {
 		Long scenarioId = tasksScenarinoId;
 		TScenarinoDetail scenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(scenarioId);
 		Long userId = scenarinoDetail.getUserId();
@@ -65,40 +67,101 @@ public class Ruku {
 		Date scenStartDate =  DateUtil.DateToDate( scenarinoDetail.getScenarinoStartDate(),"yyyy-MM-dd");
 		//情景结束时间
 		Date scenEndDate =  DateUtil.DateToDate( scenarinoDetail.getScenarinoEndDate(),"yyyy-MM-dd");
-		long day = (endDate.getTime()-scenStartDate.getTime())/(24*60*60*1000);
-		int len = Integer.parseInt(String.valueOf(day));
-		//时间差
+		//上一次tasks的时间
+		Date preDate = DateUtil.DateToDate(oldStatus.getTasksEndDate(), "yyyy-MM-dd");
+		Long oldstepindex = oldStatus.getStepindex();
 		List<String> list = new ArrayList<String>();
-		for (int i = 0; i < len; i++) {
-			String dateString = DateUtil.changeDate(scenStartDate, "yyyy-MM-dd", len);
-			list.add(dateString);
-		}
-		//String timePoint = "h";
-		String[] timepointarray = {"h","d"};
-		for (int i = 1; i < domain; i++) {
-			for (String string : timepointarray) {
-				RequestParams requestParams = new RequestParams();
-				requestParams.setUserId(userId);
-				requestParams.setMissionId(missionId);
-				requestParams.setDomainId(domainId);
-				requestParams.setDomain(i);
-				requestParams.setTimePoint(string);
-				requestParams.setDate(list);
-				//requestParams.setShowType("concn");
-				boolean res = concnService.requestConcnData(requestParams);
-				if (res) {
-					LogUtil.getLogger().info("基准情景气象数据入库成功！");
-				}else {
-					LogUtil.getLogger().info("基准情景气象数据入库失败！");
+		if (flag==1) {
+			//气象数据入库
+			if (oldstepindex==3) {
+				//时间差
+				long day = (endDate.getTime()-preDate.getTime())/(24*60*60*1000);
+				int len = Integer.parseInt(String.valueOf(day));
+				for (int i = 1; i <= len; i++) {
+					String dateString = DateUtil.changeDate(preDate, "yyyy-MM-dd", len);
+					list.add(dateString);
+				}
+			}else if(oldstepindex<3){
+				//时间差
+				long day = (endDate.getTime()-scenStartDate.getTime())/(24*60*60*1000);
+				int len = Integer.parseInt(String.valueOf(day));
+				for (int i = 1; i <= len; i++) {
+					String dateString = DateUtil.changeDate(scenStartDate, "yyyy-MM-dd", len);
+					list.add(dateString);
+				}
+			}
+			//String timePoint = "h";
+			String[] timepointarray = {"h","d"};
+			for (int i = 1; i <= domain; i++) {
+				for (String string : timepointarray) {
+					RequestParams requestParams = new RequestParams();
+					requestParams.setUserId(userId);
+					requestParams.setMissionId(missionId);
+					requestParams.setDomainId(domainId);
+					requestParams.setDomain(i);
+					requestParams.setTimePoint(string);
+					requestParams.setDate(list);
+					//requestParams.setShowType("concn");
+				/*	boolean res = concnService.requestConcnData(requestParams);
+					if (res) {
+						LogUtil.getLogger().info("基准情景气象数据入库成功！");
+					}else {
+						LogUtil.getLogger().info("基准情景气象数据入库失败！");
+					}*/
 				}
 			}
 		}
-		
-		int compareTo = endDate.compareTo(scenEndDate);
-		if (compareTo==0) {
-			//基准情景的dp_met运行完毕
-			LogUtil.getLogger().info("基准情景的气象数据入库完毕!");
+		if (flag==0) {
+			//-----------化学数据入库----------
+			if (oldstepindex==8) {
+				//时间差
+				long day = (endDate.getTime()-preDate.getTime())/(24*60*60*1000);
+				int len = Integer.parseInt(String.valueOf(day));
+				for (int i = 1; i <= len; i++) {
+					String dateString = DateUtil.changeDate(preDate, "yyyy-MM-dd", len);
+					list.add(dateString);
+				}
+			}else if(oldstepindex<8){
+				//时间差
+				long day = (endDate.getTime()-scenStartDate.getTime())/(24*60*60*1000);
+				int len = Integer.parseInt(String.valueOf(day));
+				for (int i = 1; i <= len; i++) {
+					String dateString = DateUtil.changeDate(scenStartDate, "yyyy-MM-dd", len);
+					list.add(dateString);
+				}
+			}
+			
+			//String timePoint = "h";
+			String[] timepointarray = {"h","d"};
+			for (int i = 1; i <= domain; i++) {
+				for (String string : timepointarray) {
+					RequestParams requestParams = new RequestParams();
+					requestParams.setUserId(userId);
+					requestParams.setMissionId(missionId);
+					requestParams.setDomainId(domainId);
+					requestParams.setDomain(i);
+					requestParams.setTimePoint(string);
+					requestParams.setDate(list);
+					//requestParams.setShowType("concn");
+					boolean res = concnService.requestConcnData(requestParams);
+					if (res) {
+						LogUtil.getLogger().info("基准情景化学数据入库成功！");
+					}else {
+						LogUtil.getLogger().info("基准情景化学数据入库失败！");
+					}
+				}
+			}
+			int compareTo = endDate.compareTo(scenEndDate);
+			if (compareTo==0) {
+				//基准情景的dp_chem行完毕
+				LogUtil.getLogger().info("基准情景化学数据入库完毕!");
+				readyData.updateScenStatusUtil(8l, scenarioId);
+			}
 		}
+		
+		
+		
+		
 		
 	}
 	/**
@@ -148,7 +211,7 @@ public class Ruku {
 					if (res) {
 						LogUtil.getLogger().info("实时预报数据入库成功！");
 						int compareTo = endDate.compareTo(scenEndDate);//模式结束时间和情景的结束时间
-						if (compareTo==0&&8==stepindex) {
+						if (compareTo==0) {
 							//模式结束时间和情景的结束时间一致表示数据入库完毕
 							LogUtil.getLogger().info("数据入库完毕！");
 							//修改情景状态
@@ -173,46 +236,109 @@ public class Ruku {
 	 */
 	public void readyRukuparamsRrePredict(Long tasksScenarinoId,
 			Date tasksEndDate) {
-		// TODO Auto-generated method stub
-		
+		Long scenarioId = tasksScenarinoId;
+		TScenarinoDetail scenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(scenarioId);
+		Long userId = scenarinoDetail.getUserId();
+		Long missionId = scenarinoDetail.getMissionId();
+		Long domainId = tMissionDetailMapper.selectDomainid(missionId);
+		int domain = 3;
+		Date endDate = DateUtil.DateToDate(tasksEndDate, "yyyy-MM-dd");
+		//情景结束时间
+		Date scenEndDate =  DateUtil.DateToDate( scenarinoDetail.getScenarinoEndDate(),"yyyy-MM-dd");
+		List<String> list = new ArrayList<String>();
+		list.add(DateUtil.DATEtoString(endDate, "yyyy-MM-dd"));
+		String[] timepointarray = {"h","d"};
+		for (int i = 1; i <= domain; i++) {
+			for (String string : timepointarray) {
+				RequestParams requestParams = new RequestParams();
+				requestParams.setUserId(userId);
+				requestParams.setMissionId(missionId);
+				requestParams.setDomainId(domainId);
+				requestParams.setDomain(i);
+				requestParams.setTimePoint(string);
+				requestParams.setDate(list);
+				boolean res = concnService.requestConcnData(requestParams);
+				if (res) {
+					LogUtil.getLogger().info("预评估数据入库成功！");
+					int compareTo = endDate.compareTo(scenEndDate);//模式结束时间和情景的结束时间
+					if (compareTo==0) {
+						//模式结束时间和情景的结束时间一致表示数据入库完毕
+						LogUtil.getLogger().info("预评估数据入库完毕！");
+						//修改情景状态
+						readyData.updateScenStatusUtil(8l, scenarioId);
+					}
+				}
+			}
+		}
 	}
 	/**
-	 * @Description: 后评估情景
+	 * @Description: 后评估情景入库
 	 * @param tasksScenarinoId
 	 * @param tasksEndDate   
 	 * void  
+	 * @param oldStatus 
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年5月2日 下午9:47:32
 	 */
 	public void readyRukuparamspostPevtion(Long tasksScenarinoId,
-			Date tasksEndDate) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public static void main(String[] args) {
-		List<String> list = new ArrayList<String>();
-		list.add(DateUtil.DATEtoString(new Date(), "yyyy-MM-dd"));
+			Date tasksEndDate, TTasksStatus oldStatus) {
+		Long scenarioId = tasksScenarinoId;
+		TScenarinoDetail scenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(scenarioId);
+		Long userId = scenarinoDetail.getUserId();
+		Long missionId = scenarinoDetail.getMissionId();
+		Long domainId = tMissionDetailMapper.selectDomainid(missionId);
+		int domain = 3;
+		Date endDate = DateUtil.DateToDate(tasksEndDate, "yyyy-MM-dd");
+		//情景开始时间
+		Date scenStartDate =  DateUtil.DateToDate( scenarinoDetail.getScenarinoStartDate(),"yyyy-MM-dd");
+		//情景结束时间
+		Date scenEndDate =  DateUtil.DateToDate( scenarinoDetail.getScenarinoEndDate(),"yyyy-MM-dd");
+		//上一次tasks的时间
+		Date preDate = DateUtil.DateToDate(oldStatus.getTasksEndDate(), "yyyy-MM-dd");
+		Long oldstepindex = oldStatus.getStepindex();
 		String[] timepointarray = {"h","d"};
-		for(int i = 0; i<3; i++){
+		List<String> list = new ArrayList<String>();
+		if (oldstepindex<4) {
+			//时间差
+			long day = (endDate.getTime()-scenStartDate.getTime())/(24*60*60*1000);
+			int len = Integer.parseInt(String.valueOf(day));
+			for (int i = 1; i <= len; i++) {
+				String dateString = DateUtil.changeDate(scenStartDate, "yyyy-MM-dd", len);
+				list.add(dateString);
+			}
+		}else if (oldstepindex==4) {
+			//时间差
+			long day = (endDate.getTime()-preDate.getTime())/(24*60*60*1000);
+			int len = Integer.parseInt(String.valueOf(day));
+			for (int i = 1; i <= len; i++) {
+				String dateString = DateUtil.changeDate(preDate, "yyyy-MM-dd", len);
+				list.add(dateString);
+			}
+		}
+		for (int i = 1; i < domain; i++) {
 			for (String string : timepointarray) {
 				RequestParams requestParams = new RequestParams();
-				requestParams.setUserId(1l);
-				requestParams.setMissionId(2l);
-				requestParams.setDomainId(1l);
+				requestParams.setUserId(userId);
+				requestParams.setMissionId(missionId);
+				requestParams.setDomainId(domainId);
 				requestParams.setDomain(i);
 				requestParams.setTimePoint(string);
 				requestParams.setDate(list);
-				//requestParams.setShowType("concn");
-			//	boolean res = concnService.requestConcnData(requestParams);
-			//	if (res) {
-				//	LogUtil.getLogger().info("实时预报气象数据入库成功！");
-			//	}else {
-				//	LogUtil.getLogger().info("实时预报气象数据入库失败！");
-				//}
+				boolean res = concnService.requestConcnData(requestParams);
+				if (res) {
+					LogUtil.getLogger().info("后评估情景化学数据入库成功！");
+				}else {
+					LogUtil.getLogger().info("后评估情景化学数据入库失败！");
+				}
 			}
 		}
-		
+		int compareTo = endDate.compareTo(scenEndDate);
+		if (compareTo==0) {
+			//基准情景的dp_chem行完毕
+			LogUtil.getLogger().info("后评估情景化学数据入库完毕!");
+			readyData.updateScenStatusUtil(8l, scenarioId);
+		}
 	}
+
 }
