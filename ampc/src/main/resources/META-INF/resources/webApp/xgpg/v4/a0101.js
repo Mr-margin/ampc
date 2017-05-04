@@ -421,15 +421,13 @@ function bianji(type, g_num, p , wind) {
                 if (!data.data) {
                     console.log("data.data-null");
                     
-                    zmblockUI("#mapDiv0", "end");
-                    zmblockUI("#mapDiv1", "end");
+                    zmblockUI("#mapDiv"+g_num, "end");
                     swal('获取当前范围数据失败', '', 'error');
                     return;
                 }
                 if (data.data.length == 0) {
                     console.log("length-null");
-                    zmblockUI("#mapDiv0", "end");
-                    zmblockUI("#mapDiv1", "end");
+                    zmblockUI("#mapDiv"+g_num, "end");
                     swal('当前范围缺少数据', '', 'error');
                     return;
                 }
@@ -482,6 +480,10 @@ function bianji(type, g_num, p , wind) {
                     gpResultLayer.id = "out_raster_layer";
                     gpResultLayer.setOpacity(opacity);
                     app.mapList[g_num].addLayer(gpResultLayer);
+                    
+                    //添加图例
+                    $('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");
+                    
                     //console.log(new Date().getTime() - v1);
                 }, function (jobinfo) {
                     var jobstatus = '';
@@ -495,20 +497,17 @@ function bianji(type, g_num, p , wind) {
                         case 'esriJobSucceeded':
                             jobstatus = '--' + g_num + '--处理完成...';
                             console.log((new Date().getTime() - v1) + jobstatus);
-                            zmblockUI("#mapDiv0", "end");
-                            zmblockUI("#mapDiv1", "end");
+                            zmblockUI("#mapDiv"+g_num, "end");
                             break;
                     }
                 }, function (error) {
                     console.log(error);
-                    zmblockUI("#mapDiv0", "end");
-                    zmblockUI("#mapDiv1", "end");
+                    zmblockUI("#mapDiv"+g_num, "end");
                     swal('GIS，内部错误', '', 'error');
                 });
 
             }).error(function (res) {
-            	zmblockUI("#mapDiv0", "end");
-                zmblockUI("#mapDiv1", "end");
+            	zmblockUI("#mapDiv"+g_num, "end");
                 swal('抽数，内部错误', '', 'error');
             });
         }else{//风场
@@ -625,8 +624,7 @@ function bianji(type, g_num, p , wind) {
 //                zmblockUI("#mapDiv1", "end");
                 console.log((new Date().getTime() - v1) + "num:" +g_num);
             }).error(function (res) {
-            	zmblockUI("#mapDiv0", "end");
-                zmblockUI("#mapDiv1", "end");
+//            	zmblockUI("#mapDiv"+g_num, "end");
                 swal('风场抽数，内部错误', '', 'error');
             });
 
@@ -1087,22 +1085,23 @@ function updata(t) {
         bianji("1", 1, p2,changeMsg.showWind);
         /*执行方法，进行右图添加 end*/
     }else if (t) {
-    	zmblockUI("#mapDiv0", "start");
-        zmblockUI("#mapDiv1", "start");
+//    	zmblockUI("#mapDiv0", "start");
+        
         
         for (var x = 0; x < changeMsg.showType.length; x++) {
             p2.calcType = changeMsg.calcType;
             p2.showType = changeMsg.showType[x];
             //console.log('p2',$.extend({},p2),p2.showType);
 
+            zmblockUI("#mapDiv1", "start");
             /*执行方法，进行右图添加*/
             bianji("1", 1, p2);
             /*执行方法，进行右图添加 end*/
 
         }
     } else {
-    	zmblockUI("#mapDiv0", "start");
-        zmblockUI("#mapDiv1", "start");
+//    	zmblockUI("#mapDiv0", "start");
+//        zmblockUI("#mapDiv1", "start");
         
         for (var i = 0; i < changeMsg.showType.length; i++) {
             p1.showType = changeMsg.showType[i];
@@ -1117,18 +1116,22 @@ function updata(t) {
 
             if(i==0){
                 /*执行方法，进行左图添加*/
+            	zmblockUI("#mapDiv0", "start");
                 bianji("1", 0, p1);
                 /*执行方法，进行左图添加 end*/
 
                 /*执行方法，进行右图添加*/
+                zmblockUI("#mapDiv1", "start");
                 bianji("1", 1, p2);
                 /*执行方法，进行右图添加 end*/
             }else{
                 /*执行方法，进行左图添加*/
+            	zmblockUI("#mapDiv0", "start");
                 bianji("1", 0, p1,changeMsg.showWind);
                 /*执行方法，进行左图添加 end*/
 
                 /*执行方法，进行右图添加*/
+                zmblockUI("#mapDiv1", "start");
                 bianji("1", 1, p2,changeMsg.showWind);
                 /*执行方法，进行右图添加 end*/
             }
