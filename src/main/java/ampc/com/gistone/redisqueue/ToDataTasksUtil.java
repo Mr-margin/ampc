@@ -115,7 +115,9 @@ public class ToDataTasksUtil {
 					    LogUtil.getLogger().info("开始更新tasksstatus数据库了");
 					    try {//找出上一条消息的结果
 					    //	String modelresult = tasksStatusMapper.selectStartModelresult(tasksScenarinoId);
-						    int i = tasksStatusMapper.updateStatus(tasksStatus);
+						   //查找上一次消息的结束时间
+					    	TTasksStatus oldStatus = tasksStatusMapper.selectendByscenarinoId(tasksScenarinoId);
+					    	int i = tasksStatusMapper.updateStatus(tasksStatus);
 						    LogUtil.getLogger().info("tasksstatus："+tasksStatus);
 						    if(i>0){
 						    	LogUtil.getLogger().info("跟新tasksstatus成功");
@@ -259,11 +261,11 @@ public class ToDataTasksUtil {
 												//基准入库
 												if (stepindex==3) {
 													//气象入库
-													ruku.readyRukuparamsBasis(stepindex,tasksScenarinoId,tasksEndDate,1);
+													ruku.readyRukuparamsBasis(stepindex,tasksScenarinoId,tasksEndDate,oldStatus,1);
 												}
 												if (stepindex==8) {
 													//浓度入库
-													ruku.readyRukuparamsBasis(stepindex,tasksScenarinoId,tasksEndDate,0);
+													ruku.readyRukuparamsBasis(stepindex,tasksScenarinoId,tasksEndDate,oldStatus,0);
 												}
 											}
 											//实时预报
@@ -278,12 +280,14 @@ public class ToDataTasksUtil {
 												}
 											}
 											//预评估任务的预评估情景
-											if ("1".equals(scentype)&&stepindex==3) {
+											if ("1".equals(scentype)&&stepindex==4) {
+												//浓度入库
 												ruku.readyRukuparamsRrePredict(tasksScenarinoId,tasksEndDate);
 											}
 											//后评估评估情景
-											if ("2".equals(scentype)&&stepindex==3) {
-												ruku.readyRukuparamspostPevtion(tasksScenarinoId,tasksEndDate);
+											if ("2".equals(scentype)&&stepindex==4) {
+												//浓度入库
+												ruku.readyRukuparamspostPevtion(tasksScenarinoId,tasksEndDate,oldStatus);
 											}
 										}
 										
