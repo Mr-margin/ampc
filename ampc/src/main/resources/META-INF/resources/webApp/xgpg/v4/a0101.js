@@ -1016,9 +1016,17 @@ function updata(t) {
         calcType: 'show'
     }, parameter);
 
-    var p2 = $.extend({
-        scenarioId1: changeMsg.qj2Id
-    }, parameter);
+    if(changeMsg.calcType == 'show'){
+        var p2 = $.extend({
+            scenarioId1: changeMsg.qj2Id
+        }, parameter);
+    }else{
+        var p2 = $.extend({
+            scenarioId1: changeMsg.qj1Id,
+            scenarioId2: changeMsg.qj2Id
+        }, parameter);
+    }
+
 
     if (changeMsg.rms == 'd') {
         p1.day = changeMsg.sTimeD;
