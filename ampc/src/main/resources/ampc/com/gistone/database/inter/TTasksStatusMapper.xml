@@ -437,6 +437,7 @@
   from T_TASKS_STATUS
   where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </select>
+  
   <!-- 查找tasks状态 -->
   <select id="selectStatus" resultMap="BaseResultMap" parameterType="java.lang.Long">
   select
@@ -473,7 +474,7 @@ select START_MODEL_RESULT from T_TASKS_STATUS where TASKS_SCENARINO_ID = #{tasks
     set STOP_STATUS = #{stopStatus,jdbcType=VARCHAR}
   	where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </update>
-  <!--  -->
+  <!--修改暂停的状态  -->
   <update id="updatepausestatus" parameterType="ampc.com.gistone.database.model.TTasksStatus">
    update T_TASKS_STATUS
     set PAUSE_STATUS = #{pauseStatus,jdbcType=VARCHAR}
