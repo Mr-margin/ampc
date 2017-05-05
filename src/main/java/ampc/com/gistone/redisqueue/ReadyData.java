@@ -171,7 +171,7 @@ public class ReadyData {
 	private SendQueueData sendQueueData;
 	
 	/**
-	 * @Description: 需要计算减排的情况  根据情景ID区分并且准备数据
+	 * @Description: 根据减排计算的结果触发发送数据是
 	 * @param scenarioid   
 	 * void  
 	 * @throws
@@ -191,10 +191,26 @@ public class ReadyData {
 		if (scenarinoType==2&&missionType==2) {
 			//预评估的后评估任务
 			//readyPrePostEvaluationSituationData(scenarinoId);
+			LogUtil.getLogger().info("预评估任务的后评估情景模式开始！");
+			readyPrePostEvaluationSituationData(scenarinoId);
 		} 
 		if (scenarinoType==1&&missionType==2) {
-			//预评估的预评估任务
+			//预评估的预评估任务 交由定时器处理
 			
+		}
+		if (scenarinoType==3&&missionType==3) {
+			//新基准情景
+			readyBaseData(scenarinoId,false);
+		}
+		if (scenarinoType==4&&missionType==1) {
+			//实时预报情景
+			TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+			String lastungrib = readyLastUngrib(tScenarinoDetail.getUserId());
+			if (null!=lastungrib) {
+				readyRealMessageDataFirst(tScenarinoDetail, lastungrib,false);
+			}else {
+				LogUtil.getLogger().info("当天的实时预报已经发送过了！");
+			}
 		}
 	}
 	/**
@@ -302,7 +318,7 @@ public class ReadyData {
 			str="ok";
 		}
 		if (scenarinoType==2&&missionType==2) {
-			//预评估任务的后评估情景
+			//预评估任务的后评估情景  
 			LogUtil.getLogger().info("预评估任务的后评估情景模式开始！");
 			readyPrePostEvaluationSituationData(scenarinoId);
 			str="ok";
@@ -1100,8 +1116,8 @@ public class ReadyData {
 		//创建消息bady对象
 		QueueBodyData bodyData = new QueueBodyData();
 		//调试模式的内容
-		bodyData.setFlag(1);
-		//bodyData.setFlag(0);
+		//bodyData.setFlag(1);
+		bodyData.setFlag(0);
 		Integer scenarinoType = Integer.parseInt(scenarinoDetailMSG.getScenType());//情景类型
 		Long userId = scenarinoDetailMSG.getUserId();
 		Long missionId = scenarinoDetailMSG.getMissionId();//任务id
@@ -1159,11 +1175,10 @@ public class ReadyData {
 		return modeltype;
 	}
 	/**
-	 * @Description: TODO
+	 * @Description: QueueDataCommon  获取实时预报的common数据
 	 * @param scenarinoId
 	 * @param lastfnl
 	 * @param scenarinoType   
-	 * QueueDataCommon  获取实时预报的common数据
 	 * @param scenarinoDetailMSG2 
 	 * @return 
 	 * @throws
@@ -1222,29 +1237,6 @@ public class ReadyData {
 		return commonData;
 		
 	}
-	/**
-	 * @Description:  通过情景ID获取wrf参数
-	 * @param scenarinoId
-	 * @return   
-	 * wrfData 
-	 * @throws
-	 * @author yanglei
-	 * @date 2017年3月18日 上午10:40:19
-	 */
-	private  QueueDataWrf  getWrfData(Long scenarinoId,String lastungrib) {
-		//创建wrf对象
-		QueueDataWrf wrfData = new QueueDataWrf();
-		//从数据库里获取该情景下的所有信息
-		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
-		//获取数据库的spinup值
-		Long DBspinup = scenarinoDetailMSG.getSpinup();
-		Long spinup = DBspinup+5;
-		//设置spinup
-		wrfData.setSpinup(spinup);
-		wrfData.setLastungrib(lastungrib);
-		return wrfData;
-	}
-	
 	
 	
 	/**
@@ -1330,16 +1322,16 @@ public class ReadyData {
 		try {
 			int updateScenType = tScenarinoDetailMapper.updateScenType(map);
 			if(updateScenType>0){
-				LogUtil.getLogger().info("实时预报修改执行状态成功！");
+				LogUtil.getLogger().info("修改情景id为:"+scenarinoId+"的状态成功");
 				flag = true;
 			}else {
-				LogUtil.getLogger().info("实时预报修改执行状态失败！");
+				LogUtil.getLogger().info("修改情景id为:"+scenarinoId+"的状态失败");
 				flag = false;
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 			flag = false;
-			LogUtil.getLogger().error("实时预报修改执行状态异常",e);
+			LogUtil.getLogger().error("修改情景id为:"+scenarinoId+"的状态出现异常",e);
 		}
 		return flag;
 		
