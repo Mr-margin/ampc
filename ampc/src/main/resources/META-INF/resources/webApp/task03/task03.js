@@ -1131,6 +1131,7 @@ function search_button() {
     //将本次查询的缓存加入到总条件中
 //		console.log(JSON.stringify(temp_val_v1));
     if (JSON.stringify(temp_val_v1) == "{}") {
+    	//如果筛选为空 则清空下面企业列表中的数据
       $("#mic").hide();
       $("#shaixuan_num").html("");
       $("#metTable_tools").hide();//保存子措施按钮
