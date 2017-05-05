@@ -145,7 +145,7 @@ public class SendQueueData {
 		LogUtil.getLogger().info("开始发送");
 		boolean flag = false;
 		try {
-			long leftPush = redisqueue.leftPush("receive_queue_name",json);//receive_queue_name
+			long leftPush = redisqueue.leftPush("r0_bm",json);//receive_queue_name   r0_bm
 //			long leftPush = redisqueue.leftPush("r0_bm",json);//内网
 //		redisqueue.leftPush("bm",json);//receive_queue_name
 			if (leftPush>0) {
