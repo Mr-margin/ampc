@@ -21,6 +21,7 @@ var changeMsg = {
     rows: 40,
     cols: 40
 };
+var playDay = '',playHour = '',play = false;
 var speciesArr = {
     d: ['PM₂.₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NO₂', 'CO', 'SO₄²¯', 'NO₃¯', 'NH₄⁺', 'BC', 'OM', 'PMFINE'],
     a: ['PM₂.₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NO₂', 'CO', 'SO₄²¯', 'NO₃¯', 'NH₄⁺', 'BC', 'OM', 'PMFINE'],
@@ -495,6 +496,8 @@ function bianji(type, g_num, p , wind) {
                             //jobstatus = type + '处理中...';
                             break;
                         case 'esriJobSucceeded':
+                            judgmentObj.push(g_num);
+                            judgment();
                             jobstatus = '--' + g_num + '--处理完成...';
                             console.log((new Date().getTime() - v1) + jobstatus);
                             zmblockUI("#mapDiv"+g_num, "end");
@@ -684,157 +687,85 @@ function setQjSelectBtn(data) {
         $('#qjBtn1 .btn-group').append(btn1);
         $('#qjBtn2 .btn-group').append(btn2);
     }
-    setDate(s1, e1, s2, e2, rmsType);
+    setDate(s1, e1, s2, e2);
     updata();
 }
 
 var rmsType = 'd';
 var startTime, endTime, nowTime;//存储moment对象
+var videoPlayScale = [];
 /*设置日期下拉框*/
 /*传入毫秒数*/
-function setDate(s1, e1, s2, e2, type) {
-
+function setDate(s1, e1, s2, e2) {
+    console.log('shezhishijian')
     $('#sTime-d').empty();
     $('#eTime').empty();
+    videoPlayScale = [];
     if (!s2 || !e2) {
-        //$('input[name=rms].p').parent().attr('disabled',true);
         s1 = moment(s1 - 0);
         e1 = moment(e1 - 0);
-
-
-        if (type == 'h') {
-            if (e1.isBefore(s1, 'h')) {
-                return;
+        if (e1.isBefore(s1, 'd')) {
+            return;
+        }
+        startTime = s1;
+        endTime = e1;
+        nowTime = moment(startTime);
+        var s = moment(startTime);
+        var e = moment(endTime);
+        while (true) {
+            $('#sTime-d').append($('<option>' + s.format('YYYY-MM-DD') + '</option>'));
+            $('#eTime').append($('<option>' + s.format('YYYY-MM-DD') + '</option>'));
+            videoPlayScale.push(s.format('YYYY-MM-DD'));
+            //console.log(s.format('YYYY-MM-DD'));
+            if (s.format('YYYY-MM-DD') == 'Invalid date') {
+                break;
             }
-            startTime = s1;
-            endTime = e1;
-            nowTime = moment(startTime);
-            var s = moment(startTime);
-            var e = moment(endTime);
-            while (true) {
-                //$('#sTime-d').append($('<option>' + s.format('YYYY-MM-DD') + '</option>'));
-                //console.log(s.format('YYYY-MM-DD'));
-                if (e.format('YYYY-MM-DD') == 'Invalid date') {
-                    break;
-                }
-                if (e.isBefore(s.add(1, 'd'))) {
-                    break;
-                }
-            }
-            s = moment(startTime);
-            while (true) {
-                $('#sTime-h').append($('<option>' + s.format('HH') + '</option>'));
-                if (s.format('YYYY-MM-DD') == 'Invalid date') {
-                    break;
-                }
-                if ('23' == s.add(1, 'h').format('HH')) {
-                    break;
-                }
-            }
-
-        } else {
-            if (e1.isBefore(s1, 'd')) {
-                return;
-            }
-            startTime = s1;
-            endTime = e1;
-            nowTime = moment(startTime);
-            var s = moment(startTime);
-            var e = moment(endTime);
-            while (true) {
-                $('#sTime-d').append($('<option>' + s.format('YYYY-MM-DD') + '</option>'));
-                $('#eTime').append($('<option>' + s.format('YYYY-MM-DD') + '</option>'));
-                //console.log(s.format('YYYY-MM-DD'));
-                if (s.format('YYYY-MM-DD') == 'Invalid date') {
-                    break;
-                }
-                if (e.isBefore(s.add(1, 'd'))) {
-                    break;
-                }
+            if (e.isBefore(s.add(1, 'd'))) {
+                break;
             }
         }
         changeMsg.sTimeD = moment($('#sTime-d').val()).format('YYYYMMDD');
         changeMsg.eTime = moment($('#eTime').val()).format('YYYYMMDD');
     } else {
-        //$('input[name=rms].p').parent().removeAttr('disabled');
         s1 = moment(s1 - 0);
         s2 = moment(s2 - 0);
         e1 = moment(e1 - 0);
         e2 = moment(e2 - 0);
-        if (type == 'h') {
-            if (e1.isBefore(s2, 'h') || e2.isBefore(s1, 'h')) {
-                return;
-            }
+        if (e1.isBefore(s2, 'd') || e2.isBefore(s1, 'd')) {
+            return;
+        }
 
-            if (s1.isBefore(s2, 'h')) {
-                startTime = s2;
-            } else {
-                startTime = s1;
-            }
-
-            if (e1.isBefore(e2, 'h')) {
-                endTime = e1;
-            } else {
-                endTime = e2;
-            }
-            nowTime = moment(startTime);
-            var s = moment(startTime);
-            var e = moment(endTime);
-            while (true) {
-                $('#sTime-d').append($('<option>' + s.format('YYYY-MM-DD') + '</option>'));
-                //console.log(s.format('YYYY-MM-DD'));
-                if (e.format('YYYY-MM-DD') == 'Invalid date') {
-                    break;
-                }
-                if (e.isBefore(s.add(1, 'd'))) {
-                    break;
-                }
-            }
-            s = moment(startTime);
-            while (true) {
-                $('#sTime-h').append($('<option>' + s.format('HH') + '</option>'));
-                if (s.format('YYYY-MM-DD') == 'Invalid date') {
-                    break;
-                }
-                if ('23' == s.add(1, 'h').format('HH')) {
-                    break;
-                }
-            }
+        if (s1.isBefore(s2, 'd')) {
+            startTime = s2;
         } else {
-            if (e1.isBefore(s2, 'd') || e2.isBefore(s1, 'd')) {
-                return;
-            }
+            startTime = s1;
+        }
 
-            if (s1.isBefore(s2, 'd')) {
-                startTime = s2;
-            } else {
-                startTime = s1;
-            }
+        if (e1.isBefore(e2, 'd')) {
+            endTime = e1;
+        } else {
+            endTime = e2;
+        }
 
-            if (e1.isBefore(e2, 'd')) {
-                endTime = e1;
-            } else {
-                endTime = e2;
+        nowTime = moment(startTime);
+        var s = moment(startTime);
+        var e = moment(endTime);
+        while (true) {
+            $('#sTime-d').append($('<option>' + s.format('YYYY-MM-DD') + '</option>'));
+            $('#eTime').append($('<option>' + s.format('YYYY-MM-DD') + '</option>'));
+            videoPlayScale.push(s.format('YYYY-MM-DD'));
+            //console.log(s.format('YYYY-MM-DD'));
+            if (s.format('YYYY-MM-DD') == 'Invalid date') {
+                break;
             }
-
-            nowTime = moment(startTime);
-            var s = moment(startTime);
-            var e = moment(endTime);
-            while (true) {
-                $('#sTime-d').append($('<option>' + s.format('YYYY-MM-DD') + '</option>'));
-                $('#eTime').append($('<option>' + s.format('YYYY-MM-DD') + '</option>'));
-                //console.log(s.format('YYYY-MM-DD'));
-                if (s.format('YYYY-MM-DD') == 'Invalid date') {
-                    break;
-                }
-                if (e.isBefore(s.add(1, 'd'))) {
-                    break;
-                }
+            if (e.isBefore(s.add(1, 'd'))) {
+                break;
             }
         }
         changeMsg.sTimeD = moment($('#sTime-d').val()).format('YYYYMMDD');
         changeMsg.eTime = moment($('#eTime').val()).format('YYYYMMDD');
     }
+    initVideoPlay();
 }
 
 /*顶部选择事件*/
@@ -945,7 +876,7 @@ $('#qjBtn1').on('change', 'input', function (e) {//改变左侧情景
     changeMsg.qj1Id = qjId;
     changeMsg.qj2Id = $('#qjBtn2 label.active').find('input').val();
     //changeMsg.qj2Id = $('input[name=qjBtn2]').val();
-    setDate(s1, e1, s2, e2, rmsType);
+    setDate(s1, e1, s2, e2);
     updata();
 });
 
@@ -960,7 +891,7 @@ $('#qjBtn2').on('change', 'input', function (e) {//改变右侧情景
     var e1 = $('#qjBtn1 label.active input').attr('data-eDate');
 
     changeMsg.qj2Id = qjId;
-    setDate(s1, e1, s2, e2, rmsType);
+    setDate(s1, e1, s2, e2);
     updata(true);
 });
 
@@ -1138,4 +1069,122 @@ function updata(t) {
         }
     }
 
+}
+
+
+// /*视频播放*/
+// var progress = $("#container").videodate({startTime: '2017-3-26', endTime: '2017-5-1', playbutton: fun1});
+// function fun1() {
+//     var ben = this;
+//     console.log(ben);
+//     setInterval(function () {
+//         ben.add(1)
+//     }, 2000);
+// }
+
+
+/*视频播放相关*/
+(function () {
+
+})()
+var b;
+$('.videoS_in').on('click',function (e) {
+    if($(e.target).hasClass('startV')){
+        play = true;
+        $(e.target).removeClass('startV').addClass('stopV');
+        videoPlay();
+    }else if($(e.target).hasClass('stopV')){
+        play = false;
+        $(e.target).removeClass('stopV').addClass('startV');
+    }else if($(e.target).hasClass('xhV')){
+        play = true;
+        initVideoPlay();
+        videoPlay();
+        $(e.target).removeClass('xhV').removeClass('startV').addClass('stopV');
+    }
+
+});
+
+function initVideoPlay() {
+    playDay = videoPlayScale[0];
+    playHour = 0;
+    $('.videoK').css('left','calc(0% - 3px)');
+    $('.videoShow').css('width','0');
+    $('.videoS_in').removeClass('stopV').removeClass('xhV').addClass('startV')
+}
+
+
+
+/*视频播放处理*/
+function videoPlay() {
+    judgmentObj = [];
+    var index = videoPlayScale.indexOf(playDay);
+    if(index == -1){
+        return;
+    }
+    changeMsg.sTimeD = moment(playDay).format('YYYYMMDD');
+    if(changeMsg.rms == 'h'){
+        changeMsg.sTimeH = playHour;
+    }
+    if(play){
+
+        var num = '';
+
+        if(changeMsg.rms == 'd'){
+            num = index/(videoPlayScale.length-1)*100;
+        }else{
+            num = (index/(videoPlayScale.length)*100) + (playHour/23/(videoPlayScale.length)*100);
+        }
+
+        $('.videoK').css('left','calc('+ num +'% - 3px)');
+        $('.videoShow').css('width',num +'%');
+        console.log(playDay,playHour);
+        setVideoPlayTime();
+        updata();
+        if(changeMsg.showWind !=-1){
+            updata('wind');
+        }
+    }
+}
+
+/*时间加一天加一小时处理*/
+function setVideoPlayTime() {
+    var index = videoPlayScale.indexOf(playDay);
+    if(changeMsg.rms == 'd'){
+        playDay = videoPlayScale[index+1];
+        if(!playDay){
+            play = false;
+            playDay = videoPlayScale[0];
+            $('.videoS_in').removeClass('stopV').removeClass('startV').addClass('xhV')
+        }
+    }else{
+        playHour++;
+        if(playHour == 24){
+            playHour = 0;
+            playDay = videoPlayScale[index+1];
+            if(!playDay){
+                play = false;
+                playDay = videoPlayScale[0];
+                $('.videoS_in').removeClass('stopV').removeClass('startV').addClass('xhV')
+            }
+        }
+    }
+}
+
+var judgmentObj = [];
+/*判断是否可以调用视频播放函数*/
+function judgment() {
+    if(changeMsg.showWind == -1){
+        if(judgmentObj.length == 2){
+            window.setTimeout(function () {
+                videoPlay();
+            },2000)
+        }
+    }else{
+        if(judgmentObj.length == 4){
+            window.setTimeout(function () {
+                videoPlay();
+            },2000)
+        }
+    }
 }
