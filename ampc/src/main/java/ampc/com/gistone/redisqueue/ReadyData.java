@@ -293,7 +293,7 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年4月6日 下午2:37:25
 	 */
-	public String branchPredict(Long scenarinoId,Long cores,Integer scenarinoType,Integer missionType,Long missionId,Long userId) {
+	public String branchPredict(Long scenarinoId,Integer scenarinoType,Integer missionType,Long missionId,Long userId) {
 		String str = null;
 		if (scenarinoType==4&&missionType==1) {
 			//准备实时预报的数据(自己测试用的）
@@ -873,6 +873,10 @@ public class ReadyData {
 		if (continuemodel) {
 			//续跑模式
 			QueueBodyData2 bodyData2 = getcontinueParams(scenarinoDetailMSG);
+			bodyData2.setCommon(commonData);
+			bodyData2.setWrf(wrfData);
+			bodyData2.setCmaq(cmaqData);
+			bodyData2.setEmis(DataEmis);
 		}else {
 			//设置消息里面body节点的主体消息
 			QueueBodyData bodyData = getbodyDataHead(scenarinoDetailMSG);
@@ -901,30 +905,34 @@ public class ReadyData {
 	 */
 	private QueueBodyData2 getcontinueParams(TScenarinoDetail scenarinoDetailMSG) {
 		//创建消息bady对象
-		QueueBodyData2 bodyData = new QueueBodyData2();
+		QueueBodyData2 bodyData2 = new QueueBodyData2();
 		//调试模式的内容
 		//bodyData.setFlag(1);
-		bodyData.setFlag(0);
+		bodyData2.setFlag(0);
+		/*bodyData.setcDate(cDate);
+		bodyData.setcIndex(cIndex);*/
 		Integer scenarinoType = Integer.parseInt(scenarinoDetailMSG.getScenType());//情景类型
 		Long userId = scenarinoDetailMSG.getUserId();
 		Long missionId = scenarinoDetailMSG.getMissionId();//任务id
 		Long scenarinoId = scenarinoDetailMSG.getScenarinoId();//情景id
 		Long cores =Long.parseLong(scenarinoDetailMSG.getExpand3());//计算核数
+		
 		getCindexAndcDate(scenarinoId,scenarinoType);
-		bodyData.setCores(cores);
-		bodyData.setUserid(userId.toString());
-		bodyData.setScenarioid(scenarinoId.toString());
-		bodyData.setMissionid(missionId.toString());
+		
+		bodyData2.setCores(cores);
+		bodyData2.setUserid(userId.toString());
+		bodyData2.setScenarioid(scenarinoId.toString());
+		bodyData2.setMissionid(missionId.toString());
 		//从任务表里面获取当条任务的详细内容
 		TMissionDetail mission = tMissionDetailMapper.selectByPrimaryKey(missionId);
 		String missiontype = mission.getMissionStatus().toString();
 		//准备modeltype数据
 		String modeltype = getmodelType(missiontype,scenarinoType);
-		bodyData.setModeltype(modeltype);
+		bodyData2.setModeltype(modeltype);
 		//获取domainId
 		Long domainId = mission.getMissionDomainId();
-		bodyData.setDomainid(domainId.toString());//domainid
-		return bodyData;
+		bodyData2.setDomainid(domainId.toString());//domainid
+		return bodyData2;
 	}
 	/**
 	 * @Description: 获取cindex和cDate
