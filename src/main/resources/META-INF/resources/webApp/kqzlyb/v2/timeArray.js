@@ -958,13 +958,30 @@ function initEcharts() {
 	    $('.day').css('display','none');
 	    $('.hour').css('display','block');
 	}
-	var data = ecatherData;
+	var data = ecatherData;		//模拟和观测数据
 	
 	  
 	var tname = []; 	//污染物name
 	var species = speciesArr[changeMsg.rms];
 	for (var j = 0; j < species.length; j++) {
 		  tname.push(species[j]);
+	}
+	
+	var	proStation=$("#proStation option:selected").text();
+	var	cityStation=$("#cityStation option:selected").text();
+	var	station=$("#station option:selected").text();
+	var	domain=$("input[name='domain']").parents('label.active').text();
+	
+	var mesage='';
+	if(proStation.substr(-1)!="省"&&cityStation.substr(-1)=="市"&&"平均"==station){
+		mesage+=cityStation+">>"+domain+">>";
+	
+	}else if(proStation.substr(-1)!="省"&&cityStation.substr(-1)=="市"&&"平均"!=station){
+		mesage+=cityStation+">>"+station+">>"+domain+">>";
+	}else if("省"==proStation.substr(-1)&&"平均"==station){
+		mesage+=proStation+">>"+cityStation+">>"+domain+">>";
+	}else {
+		mesage+=proStation+">>"+cityStation+">>"+station+">>"+domain+">>";
 	}
 	
 	for (var i = 0; i < species.length; i++) {	//循环物种开始
@@ -985,28 +1002,28 @@ function initEcharts() {
 			option.title.text = tname[i];         //加不同单位
 		}else if(tname[i] != 'CO'){
 			if("PM25"==tname[i]){
-				option.title.text = "PM₂.₅"+('(μg/m³)');
+				option.title.text = mesage +"PM₂.₅"+('(μg/m³)');
 			}else if("SO4"==tname[i]){
-				option.title.text = "SO₄²¯"+('(μg/m³)');
+				option.title.text = mesage +"SO₄²¯"+('(μg/m³)');
 			}else if("NO3"==tname[i]){
-				option.title.text = "NO₃¯"+('(μg/m³)');
+				option.title.text = mesage +"NO₃¯"+('(μg/m³)');
 			}else if("NH4"==tname[i]){
-				option.title.text = "NH₄⁺"+('(μg/m³)');
+				option.title.text = mesage +"NH₄⁺"+('(μg/m³)');
 			}else if("PM10"==tname[i]){
-				option.title.text = "PM₁₀"+('(μg/m³)');
+				option.title.text = mesage +"PM₁₀"+('(μg/m³)');
 			}else if("O3_8_MAX"==tname[i]){
-				option.title.text = "O₃_8_max"+('(μg/m³)');
+				option.title.text = mesage +"O₃_8_max"+('(μg/m³)');
 			}else if("O3_1_MAX"==tname[i]){
-				option.title.text = "O₃_1_max"+('(μg/m³)');
+				option.title.text = mesage +"O₃_1_max"+('(μg/m³)');
 			}else if("SO2"==tname[i]){
-				option.title.text = "SO₂"+('(μg/m³)');
+				option.title.text = mesage +"SO₂"+('(μg/m³)');
 			}else if("NO2"==tname[i]){
-				option.title.text = "NO₂"+('(μg/m³)');
+				option.title.text = mesage +"NO₂"+('(μg/m³)');
 			}else{
-				option.title.text = tname[i]+('(μg/m³)');
+				option.title.text = mesage +tname[i]+('(μg/m³)');
 			}
 		}else{
-			option.title.text = tname[i]+('(mg/m³)');
+			option.title.text = mesage +tname[i]+('(mg/m³)');
 		}	
 		
 //		console.log(data);
