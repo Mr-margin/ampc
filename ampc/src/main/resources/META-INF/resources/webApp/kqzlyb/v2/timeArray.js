@@ -928,7 +928,6 @@ function updata(opt) {
             changeMsg.station = $('#' + changeMsg.type + ' .station').val();
         }
         var url='/Air/findAllTimeSeries';
-//        console.log(url);
         ajaxPost(url,{
         	userId: userId,					//用户ID
             mode:changeMsg.station=='avg'?'city':'point',	//站点是否为平均
@@ -941,9 +940,11 @@ function updata(opt) {
         	ecatherData='';
         	ecatherData=res.data;
         	initEcharts();
-        },function(){
-        	console.log('接口故障！！！');
-        })
+        }
+//        ,function(){
+//        	console.log('接口故障！！！');
+//          }
+        )
         
     })
     
@@ -1008,7 +1009,7 @@ function initEcharts() {
 			option.title.text = tname[i]+('(mg/m³)');
 		}	
 		
-		console.log(data);
+//		console.log(data);
 		//设置单个图表中包含的图例名称
 		option.legend.data = (function(){	//图例名称
 			var lenArr = [];	//图例的legend.data使用数组存放
@@ -1025,8 +1026,6 @@ function initEcharts() {
 			var ydata = [];		//y轴数据
 			$.each(data,function(key,val){
 				var name = key;		//数据name
-//				var xdata = [];		//x轴数据
-//				var ydata = [];		//y轴数据
 				if(val.hasOwnProperty(species[i])){	//包含当前物种
 					$.each(val[species[i]],function(timeKey,timeVal){
 						xdata.push(timeKey);
