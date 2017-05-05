@@ -113,8 +113,8 @@ public class AcceptMessageQueue implements Runnable{
 			
 			try {
 				System.out.println("队列接受数据");
-				String rpop = redisUtilServer.brpop("send_queue_name");//
-//				String rpop = redisUtilServer.brpop("r0_mb");//
+				String rpop = redisUtilServer.brpop("r0_mb");//send_queue_name
+//				String rpop = redisUtilServer.brpop("r0_mb");//r0_mb
 				//	String rpop2 = redisUtilServer.rpop("test");//result_Start_model
 				if (null==rpop) {
 					System.out.println(rpop+"刚取出来的");
