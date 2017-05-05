@@ -554,7 +554,6 @@ function initEcharts() {
 	//组分展开==open  收起==close	
 	$('input[name=spread]').on('change', function (e) {
 		var spType = $(e.target).val();
-	//console.log(spType);
 		if (spType == 'close') {
 			$("#SO4").hide();
 			$("#NO3").hide();
