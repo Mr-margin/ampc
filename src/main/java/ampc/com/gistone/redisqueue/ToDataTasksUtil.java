@@ -78,11 +78,12 @@ public class ToDataTasksUtil {
 	 * @Description: TODO
 	 * @param result_Start_model   
 	 * void  持久化tasks result_start_model 
+	 * @throws IOException 
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年3月27日 下午2:05:42
 	 */
-	public void updateDB(String rpop){
+	public void updateDB(String rpop) {
 		LogUtil.getLogger().info("模式启动的返回结果");
 		try {
 			Message message  = JsonUtil.jsonToObj(rpop, Message.class);
