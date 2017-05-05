@@ -103,7 +103,14 @@ var optionAll = {
 	               nameLocation:'end',
 	               show: true,  
 	               type: 'value',  
-	               splitArea: {show: true}
+	               splitArea: {show: true},
+	               
+	               splitLine:{show: true,
+		                lineStyle:{
+		                    color :['#D3D3D3','#00E400', '#FFFF00','#FF7E00','#FF0000','#99004C','#7E0023']
+		                }
+		                
+		            },//去除网格线
 	             }
                ],
 	   //颜色色卡
@@ -252,27 +259,36 @@ function initEcharts() {
 	var CO;
 	
 	$("#initEcharts").empty();
-	var echartsDatas = echartsData;
-	var standardDatas=standardData;
-	if(standardDatas==undefined){	
-		standardDatas='';
-		var datas= $.extend(echartsDatas,standardDatas);
-	}else{
-		var datas= $.extend(echartsDatas,standardDatas);	//合并json对象
-	}
-	var dd = {};
-	var ds = {};
+	
+	var datas='';	//存放echarts出图需要的数据
 	var tname = []; 	//污染物name
-
+	var sceneInitialization_arr	= [];	//情景id和name
+	
 	var species = speciesArr[changeMsg.rms];
 	for(var s = 0;s<species.length;s++){
 		tname.push(species[s]);
 	}
-	var sceneInitialization_arr	= [];
-	sceneInitialization_arr=$.extend(true,[],sceneInitialization.data); //拷贝数据
-	sceneInitialization_arr.unshift(scenarino);
-	sceneInitialization_arr.unshift(observation);
 	
+	var compare=$("input[name='changes']").parents("label.active").text();
+	
+	if("绝对量比较"==compare){
+		var echartsDatas = echartsData;
+		var standardDatas=standardData;
+		if(standardDatas==undefined){	
+			standardDatas='';
+			 datas= $.extend(echartsDatas,standardDatas);
+		}else{
+			 datas= $.extend(echartsDatas,standardDatas);	//合并json对象
+		}
+		
+		sceneInitialization_arr=$.extend(true,[],sceneInitialization.data); //拷贝数据
+		sceneInitialization_arr.unshift(scenarino);
+		sceneInitialization_arr.unshift(observation);
+	}else if("相对变化"==compare){
+		sceneInitialization_arr=$.extend(true,[],sceneInitialization.data);
+		datas=$.extend(true,{},xdScene);
+		
+	}
 	
 	var	proStation=$("#proStation option:selected").text();
 	var	cityStation=$("#cityStation option:selected").text();
@@ -370,7 +386,6 @@ function initEcharts() {
 //											}
 										}
 										keys = keys.sort();		//.sort()函数重新排序
-//										console.log(keys);
 										for(var m=0; m<keys.length; m++){	//根据键取值
 											ttime.push(keys[m]);
 											ydata.push(ss[keys[m]]);
@@ -871,17 +886,91 @@ $('input[name=rms]').on('change',function(e){
 
 //绝对量比较==1 相对变化==2
 var changeType;
+var xdScene={};		//总和
 $('input[name=changes]').on('change', function (e) {
 	changeType = $(e.target).val();		//获取到被选中的值
 	if (changeType == '1') {	//绝对量变化
+		initEcharts();
 	
-	} else if(changeType == '2'){	//相对变化
-		var echartsData_rt='';
-		var standardData_rt='';
-		echartsData_rt=$.extend(true,{},echartsData);		//该任务下所选情景的所有数据
-		standardData_rt=$.extend(true,{},standardData);		//基准和观测的所有数据
+	}else if(changeType == '2'){	//相对变化开始
+		
+		var xd_echartsData=echartsData;		//该任务下所选情景的所有数据
+		var xd_standardData=standardData;	
+		if(xd_echartsData!=""&&xd_echartsData!=null&&xd_echartsData!=undefined&&xd_standardData!=""&&xd_standardData!=null&&xd_standardData!=undefined){	//存在数据
+//			var xdScene={};		//总和
+			var xdSpecies={};	//物种
+			var xdYear={};		//年份
+			
+			var time=$("input[name='rms']").parents("label.active").text();
+			
+			if("逐日"==time){
+				$.each(xd_standardData,function (k,sv){	//k 为基准数据和观测数据
+					if("基准数据"==k){
+						$.each(xd_echartsData,function (sk,qj){		//k 取情景数据
+							if(sk!=k && "观测数据"!=sk){		//情景类型
+								$.each(sv,function (svkey,svVal){	
+									$.each(qj,function (qjkey,qjval){	
+										if(svkey==qjkey){	//物种
+											$.each(svVal,function (sykey,syval){
+												$.each(qjval,function (qjykey,qjyval){
+													if(sykey==qjykey){	//年份
+														$(xdYear).attr(qjykey,(((qjyval-syval)/syval).toFixed(2))*100);	//赋值
+													}
+												});
+											});
+											$(xdSpecies).attr(svkey,xdYear);
+										}
+									});
+								});
+								$(xdScene).attr(sk,xdSpecies);
+							}
+						});
+					}
+				});
+				initEcharts();
+//				console.log(xdScene);
+			}else if("逐小时"==time){
+				var hours={};	//存放逐小时数据
 				
-	}
+				$.each(xd_standardData,function (k,sv){	//k 为基准数据和观测数据
+					if("基准数据"==k){
+						$.each(xd_echartsData,function (sk,qj){		//k 取情景数据
+							if(sk!=k && "观测数据"!=sk){		//情景类型
+								$.each(sv,function (svkey,svVal){	
+									$.each(qj,function (qjkey,qjval){	
+										if(svkey==qjkey){	//物种
+											$.each(svVal,function (sykey,syval){
+												$.each(qjval,function (qjykey,qjyval){
+													if(sykey==qjykey){	//年份
+														$.each(syval,function (syhkey,syhval){
+															$.each(qjyval,function (qjhkey,qjhval){
+																if(syhkey==qjhkey){
+																	$(hours).attr(qjhkey,(((qjhval-syhval)/syhval).toFixed(2))*100);	//赋值
+																}
+															});
+														});
+														$(xdYear).attr(qjykey,hours);
+													}
+												});
+											});
+											$(xdSpecies).attr(svkey,xdYear);
+										}
+									});
+								});
+								$(xdScene).attr(sk,xdSpecies);
+							}
+						});
+					}
+				});
+				initEcharts();
+//				console.log(xdScene);
+			}
+			
+		}else{	//无数据
+			
+		}
+				
+	}	//相对变化结束
 });
 
 
