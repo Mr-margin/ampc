@@ -62,7 +62,8 @@
      		inner join T_SCENARINO_AREA A on P.AREA_ID=A.SCENARINO_AREA_ID
      		INNER JOIN T_TIME T on P.PLAN_ID=T.PLAN_ID 
        		   where P.PLAN_ID=#{planId,jdbcType=DECIMAL}
-           			AND P.USER_ID=#{userId,jdbcType=DECIMAL} AND P.IS_EFFECTIVE='1'
+           			AND P.USER_ID=#{userId,jdbcType=DECIMAL} AND P.IS_EFFECTIVE='1' AND T.IS_EFFECTIVE='1'
+           			AND S.IS_EFFECTIVE='1' AND A.IS_EFFECTIVE='1' AND M.IS_EFFECTIVE='1'
   </select>
   
   
