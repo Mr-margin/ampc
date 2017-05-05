@@ -409,15 +409,26 @@ function bianji(type, g_num, p , wind) {
 //	    console.log(par);
 
             var pftype = par.species[sp];
+            var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
+            if (out_raster_layer) {
+                app.mapList[g_num].removeLayer(out_raster_layer);
+            }
 
             ajaxPost('/extract/data', par).success(function (data) {
 
                 if (!data.data) {
                     console.log("data.data-null");
+
+                    zmblockUI("#mapDiv0", "end");
+                    zmblockUI("#mapDiv1", "end");
+                    swal('获取当前范围数据失败', '', 'error');
                     return;
                 }
                 if (data.data.length == 0) {
                     console.log("length-null");
+                    zmblockUI("#mapDiv0", "end");
+                    zmblockUI("#mapDiv1", "end");
+                    swal('当前范围缺少数据', '', 'error');
                     return;
                 }
                 console.log(g_num + '~~~' + data.data.length);
@@ -493,29 +504,45 @@ function bianji(type, g_num, p , wind) {
                     }
                 }, function (error) {
                     console.log(error);
+                    zmblockUI("#mapDiv0", "end");
+                    zmblockUI("#mapDiv1", "end");
+                    swal('GIS，内部错误', '', 'error');
                 });
 
+            }).error(function (res) {
+            	zmblockUI("#mapDiv0", "end");
+                zmblockUI("#mapDiv1", "end");
+                swal('抽数，内部错误', '', 'error');
             });
-//		zmblockUI("#mapDiv0", "end");
-//        zmblockUI("#mapDiv1", "end");
+        }else{//风场
+        	var lujing = "";
+        	var fxOpacity = 0;
+        	if(wind == 1){
+        		lujing = "fxj";
+        		par.windSymbol = 0;
+        		fxOpacity = 0.5;
+        	}else if(wind == 2){
+        		lujing = "fx";
+        		par.windSymbol = 1;//1代表F风，F风最大到20级，箭头风最大到12级
+        		fxOpacity = 1;
+        	}
+        	par.rows = 20;
+        	par.cols = 20;
 
-        }else if(wind == 1){//↑风场
             par.species = ['WSPD','WDIR'];
-        }else if(wind == 2){//F风场
-//		zmblockUI("#mapDiv0", "start");
-//	    zmblockUI("#mapDiv1", "start");
-            par.species = ['WSPD','WDIR'];
-            // $.get('data7.json', function (data) {
+            app.gLyr1.clear();
+            app.gLyr2.clear();
             ajaxPost('/extract/data', par).success(function (data) {
-                if (!data.data) {
-                    console.log("data.data-null");
-                    return;
-                }
-                if (data.data.length == 0) {
-                    console.log("length-null");
-                    return;
-                }
-
+				if (!data.data) {
+		            console.log("data.data-null");
+		            swal('获取当前范围风场数据失败', '', 'error');
+		            return;
+		        }
+		        if (data.data.length == 0) {
+		            console.log("length-null");
+		            swal('当前范围缺少风场数据', '', 'error');
+		            return;
+		        }
                 $.each(data.data, function (i, col) {
 
                     if (typeof col.x == "undefined") {
@@ -589,13 +616,19 @@ function bianji(type, g_num, p , wind) {
                     var graphic = new dong.Graphic(point, symbol);
                     if(g_num == 0){
                         app.gLyr1.add(graphic);
+                        app.gLyr1.setOpacity(fxOpacity);
                     }else if(g_num == 1){
                         app.gLyr2.add(graphic);
+                        app.gLyr2.setOpacity(fxOpacity);
                     }
 
 
                 });
-                zmblockUI("#mapDiv0", "end");
+//                zmblockUI("#mapDiv0", "end");
+//                zmblockUI("#mapDiv1", "end");
+                console.log((new Date().getTime() - v1) + "num:" +g_num);
+            }).error(function (res) {
+            	zmblockUI("#mapDiv0", "end");
                 zmblockUI("#mapDiv1", "end");
                 console.log((new Date().getTime() - v1) + "num:" +g_num);
             });
@@ -1050,6 +1083,9 @@ function updata(t) {
         bianji("1", 1, p2,changeMsg.showWind);
         /*执行方法，进行右图添加 end*/
     }else if (t) {
+    	zmblockUI("#mapDiv0", "start");
+        zmblockUI("#mapDiv1", "start");
+
         for (var x = 0; x < changeMsg.showType.length; x++) {
             p2.calcType = changeMsg.calcType;
             p2.showType = changeMsg.showType[x];
@@ -1061,6 +1097,9 @@ function updata(t) {
 
         }
     } else {
+    	zmblockUI("#mapDiv0", "start");
+        zmblockUI("#mapDiv1", "start");
+
         for (var i = 0; i < changeMsg.showType.length; i++) {
             p1.showType = changeMsg.showType[i];
 
