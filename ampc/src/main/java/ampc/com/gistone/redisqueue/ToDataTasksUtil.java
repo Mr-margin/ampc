@@ -89,8 +89,7 @@ public class ToDataTasksUtil {
 			//创建tasksstatus对象
 			TTasksStatus tasksStatus = new TTasksStatus();
 			Date time = message.getTime();
-		    Object object = message.getBody();
-		    Map map = (Map) object;
+			Map map =(Map) message.getBody();
 		    Object code = map.get("code");
 		    Object param = map.get("scenarioid");
 		    if (RegUtil.CheckParameter(param, "Integer", null, false)) {
@@ -125,18 +124,9 @@ public class ToDataTasksUtil {
 						    		//出现错误，模式变为出错
 						    		//更新情景状态
 						    		//更新状态
-									Map statusmap = new HashMap();
-									statusmap.put("scenarinoId", tasksScenarinoId);
-									Long status = (long)9;
-									statusmap.put("scenarinoStatus", status);
-									int a = tScenarinoDetailMapper.updateStatus(statusmap);
-									if (a>0) {
-										LogUtil.getLogger().info("修改情景id为"+tasksScenarinoId+"的状态成功");
-									}else {
-										LogUtil.getLogger().info("修改情景id为"+tasksScenarinoId+"的状态失败");
-									}
+						    		readyData.updateScenStatusUtil(9l, tasksScenarinoId);
 								}else {
-							    	//当tasksstatus更新成功 并且执行成功  发送下一条消息
+							    	//当tasksstatus数据库更新成功 并且模式执行成功  发送下一条消息
 							    	//通过情景的ID查找该情景的开始时间结束时间和情景类型
 							    	TScenarinoDetail selectByPrimaryKey = tScenarinoDetailMapper.selecttypetime(tasksScenarinoId);
 							    	//获取当前情景pathdate 用于确定该条记录是不是补发的
@@ -296,7 +286,6 @@ public class ToDataTasksUtil {
 								LogUtil.getLogger().info("情景ID为："+tasksScenarinoId+"的状态更新失败");
 							}
 						} catch (Exception e) {
-							// TODO: handle exception
 							LogUtil.getLogger().error("查询模式返回结果状态出错！",e);
 						}
 				} catch (Exception e) {
@@ -353,11 +342,8 @@ public class ToDataTasksUtil {
 			}
 		    try {
 		    	//更新情景状态
-		    	Map hashMap = new HashMap();
-		    	hashMap.put("scenarinoId", tasksScenarinoId);
-		    	hashMap.put("scenarinoStatus", 5);
-		    	int updateStatus = tScenarinoDetailMapper.updateStatus(hashMap);
-		    	if (updateStatus>0) {
+		    	boolean updateScenStatus = readyData.updateScenStatusUtil(5l, tasksScenarinoId);
+		    	if (updateScenStatus) {
 		    		LogUtil.getLogger().info("id为"+tasksScenarinoId+"的情景终止后更新状态成功！");
 				}else {
 					LogUtil.getLogger().info("id为"+tasksScenarinoId+"的情景终止后更新状态失败！");
