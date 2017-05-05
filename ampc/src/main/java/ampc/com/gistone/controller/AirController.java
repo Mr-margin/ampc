@@ -439,7 +439,7 @@ public class AirController {
 				Calendar calendar = Calendar.getInstance();
 				//从查询的情景中获取到开始时间和结束时间
 				if(tScenarinoDetail==null){
-					//求处开始时间和结束时间相差的天数
+					//求出开始时间和结束时间相差的天数
 //					Date start_date=sdfNow.parse(startDate);
 //					Date end_date=sdfNow.parse(endDate);
 //					int differenceVal = (int) ((end_date.getTime() - start_date.getTime()) / (1000*3600*24));
