@@ -734,6 +734,11 @@ public class AirController {
 					scenarinoEntity.setTableName(tables);
 					sclist=tPreProcessMapper.selectBysome2(scenarinoEntity);//查询对应的数据
 				}
+				if(sclist.isEmpty()){
+					LogUtil.getLogger().error("AppraisalController 未查询到观测数据！");
+					return	AmpcResult.build(1001, "未查询到观测数据！");
+					
+				}
 				Map spcMaps=new HashMap();
 				Map<String, List> hourspcMaps=new HashMap();
 				Map<String,Object> ospcMaps=new HashMap();
@@ -1084,8 +1089,8 @@ public class AirController {
 							}
 						}
 					
-						double opresult=num.subtract(new BigDecimal(sumMapsum.get(day).get(spc).toString()).divide(new BigDecimal(vale*datelist.size()),2)).doubleValue();
-						double ppresult=new BigDecimal(AllspcMap.get(day).get(date).get(spc).toString()).subtract(psumMapsum.get(day).get(spc).divide(new BigDecimal(vale*datelist.size()),2)).doubleValue();
+						double opresult=num.subtract(new BigDecimal(sumMapsum.get(day).get(spc).toString()).divide(new BigDecimal(vale),2)).doubleValue();
+						double ppresult=new BigDecimal(AllspcMap.get(day).get(date).get(spc).toString()).subtract(psumMapsum.get(day).get(spc).divide(new BigDecimal(vale),2)).doubleValue();
 						double store =opresult*ppresult;
 						double p2=Math.pow(ppresult,2);
 						double o2=Math.pow(opresult,2);
@@ -1158,8 +1163,8 @@ public class AirController {
 								}
 							}					
 						Integer vale=Integer.valueOf(validMap.get(day).get(spc).toString());
-						double opresult=num.subtract(new BigDecimal(sumMapsum.get(day).get(spc).toString()).divide(new BigDecimal(vale*24*datelist.size()),2)).doubleValue();
-						double ppresult=(new BigDecimal(hourpAllspcMap.get(day).get(date).get(spc).get(s).toString()).subtract(new BigDecimal(sumMapsum.get(day).get(spc).toString()).divide(new BigDecimal(vale*24*datelist.size()),2))).doubleValue();
+						double opresult=num.subtract(new BigDecimal(sumMapsum.get(day).get(spc).toString()).divide(new BigDecimal(vale),2)).doubleValue();
+						double ppresult=(new BigDecimal(hourpAllspcMap.get(day).get(date).get(spc).get(s).toString()).subtract(new BigDecimal(sumMapsum.get(day).get(spc).toString()).divide(new BigDecimal(vale),2))).doubleValue();
 						double store =opresult*ppresult;
 						double p2=Math.pow(ppresult,2);
 						double o2=Math.pow(opresult,2);
@@ -1227,7 +1232,7 @@ public class AirController {
 		vb=new BigDecimal(v).setScale(2, BigDecimal.ROUND_HALF_UP);
 		}
 		double bs=o_p/(Double.valueOf(sumMapsum.get(day).get(sp).toString()));
-		BigDecimal bias=new BigDecimal(bs).setScale(2, BigDecimal.ROUND_HALF_UP);
+		BigDecimal bias=new BigDecimal(bs*100).setScale(1, BigDecimal.ROUND_HALF_UP);
 		double exact=0;
 		if(exactMap.get(day).get(sp)!=null){
 			exact=Double.parseDouble(exactMap.get(day).get(sp).toString());
@@ -1235,16 +1240,15 @@ public class AirController {
 		double valid=0;
 		if(datetype.equals("day")){
 			 valid=Double.parseDouble(validMap.get(day).get(sp).toString());
-			
 		}else{
 			 valid=Double.parseDouble(validMap.get(day).get(sp).toString());
 		}
 	
-		BigDecimal rate=new BigDecimal((exact/valid)*100).setScale(2, BigDecimal.ROUND_HALF_UP);
+		BigDecimal rate=new BigDecimal((exact/valid)*100).setScale(1, BigDecimal.ROUND_HALF_UP);
 		
 		
 		StrMap.put("coefficient", vb.toString());
-		StrMap.put("bias", bias.toString());
+		StrMap.put("bias", bias.toString()+"%");
 		StrMap.put("rate", rate.toString()+"%");
 		spaMap.put(sp, StrMap);
 		}
@@ -1253,17 +1257,10 @@ public class AirController {
 		
 		
 		
-		
-		
-		
-		
-		
-		
-		
 		return	AmpcResult.ok(lastMap);
 	}catch(Exception e){
 		LogUtil.getLogger().error("AppraisalController 预报检验查询异常！",e);
-		return	AmpcResult.build(1000, "error");
+		return	AmpcResult.build(1001, "预报检验查询异常！");
 	}
 	}
 }
