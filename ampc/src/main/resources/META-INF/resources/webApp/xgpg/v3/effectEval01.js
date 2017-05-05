@@ -21,8 +21,11 @@ var	dps_codeStation,	//设置站点信息
 var show_type = "bar";
 var changeMsg = {
 		pro: '',			//站点选择
+		proName: '',
 		city: '',
+		cityName: '',
 		station: '',
+		stationName: '',
 		rms: 'day',			//时间分辨率
 		scenarinoId: [],	//选择的情景Id数组
 		scenarinoName: [],	//选择的情景名称数组
@@ -163,8 +166,7 @@ function initNowSession(){
 	
 }
 
-//放置站点信息
-//var allStation = {};
+//var allCode = {};	//用于存储所有的站点信息
 /**
  * 设置站点信息
  */
@@ -172,19 +174,19 @@ function setStation(id) {
 	  $('#proStation').empty();
 	  $('#cityStation').empty();
 	  $('#station').empty();
-	  var url = '/Site/find_code';
+	  var url = '/Site/find_codes';
 	  dps_codeStation = ajaxPost_sy(url, {
 	    userId: userId,
-	    //missionId: id
+	    missionId: id
 	  }).success(function (res) {
 	    if (res.status == 0) {
-	    	allStation = res.data;
-	      for (var pro in allStation) {
-	        $('#proStation').append($('<option value="' + allStation[pro].code + '">' + allStation[pro].name + '</option>'))
+	    	allCode = res.data;
+	      for (var pro in allCode) {
+	        $('#proStation').append($('<option value="'+ pro + '">' + allCode[pro].name + '</option>'))
 	      }
-	      var cityStation = allStation[$('#proStation').val()].station;
+	      var cityStation = allCode[$('#proStation').val()].city;
 	      for (var city in cityStation) {
-	        $('#cityStation').append($('<option value="' + cityStation[city].code + '">' + cityStation[city].name + '</option>'))
+	        $('#cityStation').append($('<option value="' + city + '">' + cityStation[city] + '</option>'))
 	      }
 
 	      //var station = cityStation[$('#cityStation').val()].station;
@@ -193,7 +195,9 @@ function setStation(id) {
 	      //}
 
 	      changeMsg.pro = $('#proStation').val();
+	      changeMsg.proName = allCode[changeMsg.pro].name;
 	      changeMsg.city = $('#cityStation').val();
+	      changeMsg.cityName = allCode[changeMsg.pro].city[changeMsg.city];
 	      findStation(changeMsg.city);
 	      //changeMsg.station = $('#station').val();
 	    } else {
@@ -214,6 +218,7 @@ function findStation(code){
       $('#station').append($('<option value="' + res.data[i].stationId + '">' + res.data[i].stationName + '</option>'))
     }
     changeMsg.station = $('#station').val();
+    changeMsg.stationName = '平均';
   })
 }
 
@@ -232,7 +237,7 @@ function setTime(s, e) {
       break;
     }
   }
-  changeMsg.time = $('#sTime-d').val() + ' 00'
+  changeMsg.time = $('#sTime-d').val() + ' 00';
 }
 
 
@@ -296,12 +301,12 @@ function initEcharts() {
 	var	domain=$("input[name='domain']").parents('label.active').text();
 	
 	var mesage='';
-	if(proStation.substr(-1)=="市"&&"平均"==station){
-		mesage+=proStation+">>"+domain+">>";
+	if(proStation.substr(-1)!="省"&&cityStation.substr(-1)=="市"&&"平均"==station){
+		mesage+=cityStation+">>"+domain+">>";
 	
-	}else if(proStation.substr(-1)=="市"&&cityStation.substr(-1)=="市"&&"平均"!=station){
-		mesage+=proStation+">>"+station+">>"+domain+">>";
-	}else if("市"!==proStation.substr(-1)&&"平均"==station){
+	}else if(proStation.substr(-1)!="省"&&cityStation.substr(-1)=="市"&&"平均"!=station){
+		mesage+=cityStation+">>"+station+">>"+domain+">>";
+	}else if("省"==proStation.substr(-1)&&"平均"==station){
 		mesage+=proStation+">>"+cityStation+">>"+domain+">>";
 	}else {
 		mesage+=proStation+">>"+cityStation+">>"+station+">>"+domain+">>";
@@ -804,7 +809,7 @@ function save_scene() {
 		initNowSession();
 	} else {
 		swal('暂无数据', '', 'error');
-//		$("#close_scene").click();
+		$("#close_scene").click();
 	}
 }
 //超链接显示 模态框
@@ -829,29 +834,33 @@ function set_sce() {
 $('#proStation').on('change', function (e) {
 	  var pro = $(e.target).val();
 	  changeMsg.pro = pro;
+	  console.log(allCode);
+	  changeMsg.proName = allCode[pro].name;
 	  $('#cityStation').empty();
-	  var cityStation = allStation[pro].station;
+	  var cityStation = allCode[pro].city;
 	  for (var city in cityStation) {
-	    $('#cityStation').append($('<option value="' + cityStation[city].code + '">' + cityStation[city].name + '</option>'))
+	    $('#cityStation').append($('<option value="' + city + '">' + cityStation[city] + '</option>'))
 	  }
 	  changeMsg.city = $('#cityStation').val();
+	  changeMsg.cityName = allCode[changeMsg.pro].city[changeMsg.city];
 	  findStation(changeMsg.city);
 	  
-	  $("#provinces").empty();
-	  $("#citys").empty();
-	  $("#stations").empty();
-	  $("#interspaces").empty();
-	  
-	  $("#provinces").text($("#proStation option:selected").text());
-	  $("#citys").text($("#cityStation option:selected").text());
-	  $("#stations").text($("#station option:selected").text());
-	  $("#interspaces").parents('label').text($("input[name='domain']").parents('label.active').text());
+//	  $("#provinces").empty();
+//	  $("#citys").empty();
+//	  $("#stations").empty();
+//	  $("#interspaces").empty();
+//	  
+//	  $("#provinces").text($("#proStation option:selected").text());
+//	  $("#citys").text($("#cityStation option:selected").text());
+//	  $("#stations").text($("#station option:selected").text());
+//	  $("#interspaces").parents('label').text($("input[name='domain']").parents('label.active').text());
 	  getdata();
 });
 
 	$('#cityStation').on('change', function (e) {
 	  var city = $(e.target).val();
 	  changeMsg.city = city;
+	  changeMsg.cityName = allCode[changeMsg.pro].city[city]; 
 	  findStation(changeMsg.city);
 	  getdata();
 	});
@@ -859,6 +868,7 @@ $('#proStation').on('change', function (e) {
 	$('#station').on('change', function (e) {
 	  var station = $(e.target).val();
 	  changeMsg.station = station;
+	  changeMsg.stationName = $(e.target)[0].selectedOptions[0].innerHTML;
 	  getdata();
 	});
 
