@@ -9,6 +9,7 @@
 package ampc.com.gistone.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -124,7 +125,7 @@ public class GetWeatherModelController {
 				map.put("scenarinoId", scenarinoId);
 				Long status = (long)6;
 				map.put("scenarinoStatus", status);
-				int a = tScenarinoDetailMapper.updateStatus(map);
+				int a = tScenarinoDetailMapper.updateScenType(map);
 				if (a>0) {
 					 return AmpcResult.build(0, "ok");
 				}else {
@@ -151,54 +152,6 @@ public class GetWeatherModelController {
 		}
 		
 	}
-	/*@RequestMapping("/ModelType/continueModel")
-	public AmpcResult continueModel(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response){
-		String token = (String) requestDate.get("token");
-		try {
-			//获取数据包
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String,Object> data=(Map)requestDate.get("data");
-			//用户id
-			Long userId = Long.parseLong(data.get("userId").toString());
-			//任务类型
-			Integer missionType = Integer.parseInt(data.get("missionType").toString());
-			//情景ID
-			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
-			//任务ID
-			Long missionId = Long.parseLong(data.get("missionId").toString());
-			//情景类型
-			Integer scenarinoType = Integer.parseInt(data.get("scenarinoType").toString());
-			String conditionString =  readyData.continuePredict(scenarinoId, scenarinoType, missionType,missionId,userId);
-			if (conditionString.equals("ok")) {
-				//更新状态
-				Map map = new HashMap();
-				map.put("scenarinoId", scenarinoId);
-				Long status = (long)6;
-				map.put("scenarinoStatus", status);
-				int a = tScenarinoDetailMapper.updateStatus(map);
-				if (a>0) {
-					 return AmpcResult.build(0, "ok");
-				}else {
-					return AmpcResult.build(1000, "启动失败");
-				}
-			}
-			if(conditionString.equals("false")){
-				
-				return AmpcResult.build(1000, "基准情景模式未完成！");
-				
-			}
-			
-			else {
-				return AmpcResult.build(1000, "继续失败");
-			}
-			
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return AmpcResult.build(1000, "模式继续异常！");
-		}
-		
-	}*/
 	/**
 	 * 
 	 * @Description: 取减排系数的接口
@@ -242,8 +195,11 @@ public class GetWeatherModelController {
 	//			readyData.readyPreEvaluationSituationDataFirst(scenarioid);
 				return AmpcResult.build(0, "ok");
 			}else {
-				return AmpcResult.build(1000, "失败");
+				throw new SQLException("GetWeatherModelController  减排系数存库失败!");
 			}
+		}catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());	
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -291,6 +247,13 @@ public class GetWeatherModelController {
 				return AmpcResult.build(1003, "scenarinoId为空或出现非法字符!");
 			}
 			Long scenarinoId = Long.parseLong(param.toString());
+			/*//情景类型
+			param = data.get("scenarinoType");
+			if (!RegUtil.CheckParameter(param, "Integer", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController scenarinoType为空或出现非法字符!");
+				return AmpcResult.build(1003, "scenarinoType为空或出现非法字符!");
+			}
+			Long scenarinoType = Long.parseLong(param.toString());*/
 			
 			param = data.get("missionId");
 			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
@@ -299,34 +262,106 @@ public class GetWeatherModelController {
 			}
 			//任务ID
 			Long missionId = Long.parseLong(param.toString());
+			
+			/*param = data.get("missionType");
+			if (!RegUtil.CheckParameter(param, "Integer", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController missionType为空或出现非法字符!");
+				return AmpcResult.build(1003, "missionType为空或出现非法字符!");
+			}
+			//任务类型
+			Long missionType = Long.parseLong(param.toString());*/
+			
 			param = data.get("flag");
 			if (!RegUtil.CheckParameter(param, "Integer", null, false)) {
 				LogUtil.getLogger().error("GetWeatherModelController flag为空或出现非法字符!");
 				return AmpcResult.build(1003, "flag为空或出现非法字符!");
 			}
 			Integer flag = Integer.parseInt(param.toString());
+			TTasksStatus tasksStatus = tTasksStatusMapper.selectStatus(scenarinoId);
+			String sendtime = tasksStatus.getBeizhu2();
+			String compentstatus = tasksStatus.getBeizhu();
 			if (flag==0) {
-				//0表示终止
-				boolean branchModel = stopModelData.StopModel(scenarinoId,domainId,missionId,userId);
-				if (branchModel) {
-					return AmpcResult.build(0, "停止成功！");
-				}else {
-					return AmpcResult.build(1004, "停止失败！");
+				//判断是否可以终止
+				if (sendtime.equals("0")&&compentstatus.equals("0")) {
+					//还没有发送数据到队列，可以直接终止-标记tasks状态为2
+					TTasksStatus tTasksStatus = new TTasksStatus();
+					tTasksStatus.setTasksScenarinoId(scenarinoId);
+					tTasksStatus.setStopStatus("2");//表示不可发送消息到队列
+					int i = tTasksStatusMapper.updatestopstatus(tTasksStatus);
+					if (i>0) {
+						//修改情景状态
+						Map map = new HashMap();
+						map.put("scenarinoStatus", 5l);
+						map.put("scenarinoId", scenarinoId);
+						int updateScenType = tScenarinoDetailMapper.updateScenType(map);
+						if (updateScenType>0) {
+							return AmpcResult.build(0, "停止成功！");
+						}else {
+							throw new SQLException("GetWeatherModelController  修改情景状态失败!");
+						}
+					}else {
+						throw new SQLException("GetWeatherModelController  更新发送终止的指令状态失败!");
+					}
 				}
+				else if (!"0".equals(sendtime)&&compentstatus.equals("2")) {
+					//模式已经执行完毕 正在入库等 不能终止
+					return AmpcResult.build(1004, "模式正在后处理，不允许终止！");
+				}
+				else {
+					//0表示终止 开始发送终止的指令
+					boolean branchModel = stopModelData.StopModel(scenarinoId,domainId,missionId,userId);
+					if (branchModel) {
+						return AmpcResult.build(0, "停止成功！");
+					}else {
+						return AmpcResult.build(1004, "停止失败！");
+					}
+				}
+				
 			}
 			else if (flag==1) {
-				//1表示暂停
-				boolean branchModel = stopModelData.pauseModel(scenarinoId,domainId,missionId,userId);
-				if (branchModel) {
-					return AmpcResult.build(0, "暂停成功！");
-				}else {
-					return AmpcResult.build(1004, "暂停失败！");
+				//判断暂停的条件
+				if (sendtime.equals("0")&&compentstatus.equals("0")) {
+					//还未发送过数据  -直接暂停 
+					//还没有发送数据到队列，可以直接终止-标记tasks状态为2
+					TTasksStatus tTasksStatus = new TTasksStatus();
+					tTasksStatus.setTasksScenarinoId(scenarinoId);
+					tTasksStatus.setPauseStatus("2");//表示不可发送消息到队列
+					int i = tTasksStatusMapper.updatepausestatus(tTasksStatus);
+					if (i>0) {
+						//修改情景状态
+						Map map = new HashMap();
+						map.put("scenarinoStatus", 7l);
+						map.put("scenarinoId", scenarinoId);
+						int updateScenType = tScenarinoDetailMapper.updateScenType(map);
+						if (updateScenType>0) {
+							return AmpcResult.build(0, "暂停成功！");
+						}else {
+							throw new SQLException("GetWeatherModelController  修改情景状态失败!");
+						}
+					}else {
+						throw new SQLException("GetWeatherModelController  更新发送暂停的指令状态失败!");
+					}
+				}
+				else if (!"0".equals(sendtime)&&compentstatus.equals("2")) {
+					//模式已经执行完毕 正在入库等 不能终止
+					return AmpcResult.build(1004, "模式正在后处理，不允许暂停！");
+				}
+				else {
+					//1表示暂停
+					boolean branchModel = stopModelData.pauseModel(scenarinoId,domainId,missionId,userId);
+					if (branchModel) {
+						return AmpcResult.build(0, "暂停成功！");
+					}else {
+						return AmpcResult.build(1004, "暂停失败！");
+					}
 				}
 			}else {
 				return AmpcResult.build(1003, "flag参数错误！");
 			}
 			
-				
+		}catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());		
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
