@@ -264,8 +264,8 @@ function updata(opt) {
             mode:changeMsg.station == 'avg'?'city':'point',
             // starttime:changeMsg.startD,
             // endtime:changeMsg.endD,
-            starttime:'2017-04-16 00',
-            endtime:'2017-04-17 00',
+            starttime:'2017-04-30 00',
+            endtime:'2017-05-03 00',
             cityStation:changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
             datetype:changeMsg.rms
         }).success(function (res) {
