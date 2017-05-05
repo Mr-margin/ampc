@@ -1245,23 +1245,35 @@ public class AppraisalController {
 										for(String speciesmap_key:speciesmap.keySet()){
 											String speciesmap_keyn=(String)speciesmap_key;
 											if(speciesmap_keyn.equals(spcmapkeyw)&&"CO".equals(spcmapkeyw)){	
-												
 												Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
 												Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
-												BigDecimal bd=(new BigDecimal(speciesmapval.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
-												standardobj.put((String)standard_Time, bd);
+												
+												String standardval=speciesmapval.get("0").toString();
+												if("".equals(standardval)||"null".equals(standardval)||"NULL".equals(standardval)||null==standardval){
+													standardobj.put((String)standard_Time, "-");
+												}else{
+													BigDecimal bd=(new BigDecimal(standardval)).setScale(2, BigDecimal.ROUND_HALF_UP);
+													standardobj.put((String)standard_Time, bd);
+												}
+												
 											}else if(speciesmap_keyn.equals(spcmapkeyw)&&!"CO".equals(spcmapkeyw)){
 												Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
 												Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
-												BigDecimal bd=(new BigDecimal(speciesmapval.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
-												standardobj.put((String)standard_Time, bd);
+												
+												String standardval=speciesmapval.get("0").toString();
+												if("".equals(standardval)||"null".equals(standardval)||"NULL".equals(standardval)||null==standardval){
+													standardobj.put((String)standard_Time, "-");
+												}else{
+													BigDecimal bd=(new BigDecimal(standardval)).setScale(1, BigDecimal.ROUND_HALF_UP);
+													standardobj.put((String)standard_Time, bd);
+												}
+												
 											}
 										}
 									} 
 									spcmapobj.put((String)spcmapkey, standardobj);
 								}//物种名称结束
 							}
-//							standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);
 							
 					}	/**查询基准数据结束*/	
 					HashMap<String, Object> obsBeanobj=new HashMap<String, Object>();	//查询观测数据开始
@@ -1298,17 +1310,27 @@ public class AppraisalController {
 							for(String contentobj_on_key:contentobj_on_map.keySet()){
 								if(contentmapkey.equals(contentobj_on_key)){
 									if("CO".equals(contentmapkey)){
-										BigDecimal bd=(new BigDecimal(contentobj_on_map.get(contentobj_on_key).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
-										contentobj_on.put(contentobj_on_time,bd);
-										break;
+										String speciesval=contentobj_on_map.get(contentobj_on_key).toString();
+										if(speciesval==null||"null".equals(speciesval)||"".equals(speciesval)){
+											contentobj_on.put(contentobj_on_time,"-");
+											break;
+										}else{
+											BigDecimal bd=(new BigDecimal(speciesval)).setScale(2, BigDecimal.ROUND_HALF_UP);
+											contentobj_on.put(contentobj_on_time,bd);
+											break;
+										}
 									}else{
-										BigDecimal bd=(new BigDecimal(contentobj_on_map.get(contentobj_on_key).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
-										contentobj_on.put(contentobj_on_time,bd);
-										break;
+										String speciesval=contentobj_on_map.get(contentobj_on_key).toString();
+										if(speciesval==null||"".equals(speciesval)||"null".equals(speciesval)){
+											contentobj_on.put(contentobj_on_time,"-");
+											break;
+										}else{
+											BigDecimal bd=(new BigDecimal(speciesval)).setScale(1, BigDecimal.ROUND_HALF_UP);
+											contentobj_on.put(contentobj_on_time,bd);
+											break;
+										}
+										
 									}
-//									BigDecimal bd=(new BigDecimal(contentobj_on_map.get(contentobj_on_key).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
-//									contentobj_on.put(contentobj_on_time,bd);
-//									break;
 								}
 								
 							}
@@ -1336,7 +1358,7 @@ public class AppraisalController {
 					objsed.put("observationId","观测数据");
 					objsed.put("observationName","观测数据");
 					//时间分辨率--逐日结束
-				}else{	//时间分辨率---逐小时开始
+				}else{	//---------------------------时间分辨率---逐小时开始-------------------------------//
 					JSONObject spcmapobj=new JSONObject();
 					JSONObject standardobj=new JSONObject();
 					JSONObject standardData=new JSONObject();
@@ -1354,7 +1376,7 @@ public class AppraisalController {
 					scenarinoEntity.setsId(Long.valueOf(tScenarinoDetaillists.getScenarinoId().toString()));
 					scenarinoEntity.setTableName(tables);
 					List<ScenarinoEntity> Lsclist=tPreProcessMapper.selectBysome(scenarinoEntity);
-					if(!Lsclist.isEmpty()){
+					if(!Lsclist.isEmpty()){			//查询基准数据开始
 							String content=Lsclist.get(0).getContent().toString();
 							JSONObject obj=JSONObject.fromObject(content);
 							Map<String,Object> standard=(Map)obj;				//总数据
@@ -1375,10 +1397,14 @@ public class AppraisalController {
 												Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
 												List qq= (List) speciesmapval.get("0");
 												for(int i=0;i<qq.size();i++){
-													BigDecimal bd=(new BigDecimal(qq.get(i).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
-													standardobjdata.put(i,bd);
-//													System.out.println(bd+"--"+standard_Time+"--"+spcmapkey+"--"+i+"\n");
-//													standardobjdata.put(i,qq.get(i));
+													
+													String standardval=qq.get(i).toString();
+													if("".equals(standardval)||"null".equals(standardval)||"NULL".equals(standardval)||null==standardval){
+														standardobjdata.put(i, "-");
+													}else{
+														BigDecimal bd=(new BigDecimal(standardval)).setScale(2, BigDecimal.ROUND_HALF_UP);
+														standardobjdata.put(i,bd);
+													}
 												}					
 												standardobj.put((String)standard_Time, standardobjdata);
 											}
@@ -1387,10 +1413,15 @@ public class AppraisalController {
 												Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
 												List qq= (List) speciesmapval.get("0");
 												for(int i=0;i<qq.size();i++){
-													BigDecimal bd=(new BigDecimal(qq.get(i).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
-													standardobjdata.put(i,bd);
-//													System.out.println(bd+"--"+standard_Time+"--"+spcmapkey+"--"+i+"\n");
-//													standardobjdata.put(i,qq.get(i));
+													
+													String standardval=qq.get(i).toString();
+													if("".equals(standardval)||"null".equals(standardval)||"NULL".equals(standardval)||null==standardval){
+														standardobjdata.put(i, "-");
+													}else{
+														BigDecimal bd=(new BigDecimal(standardval)).setScale(2, BigDecimal.ROUND_HALF_UP);
+														standardobjdata.put(i,bd);
+													}
+													
 												}					
 												standardobj.put((String)standard_Time, standardobjdata);
 											}
@@ -1399,11 +1430,7 @@ public class AppraisalController {
 									spcmapobj.put((String)spcmapkey, standardobj);
 								}	//物种名称结束
 							}
-//							standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);
-//							objsed.put("data", standardData);
-//							objsed.put("scenarinoId",tScenarinoDetaillist.get(0).getScenarinoId());
-//							objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
-					}
+					}	//基准数结束
 					
 					JSONObject contentobj_on_key_val=new JSONObject();
 					HashMap<String, Object> obsBeanobj=new HashMap<String, Object>();	//查询观测数据开始
@@ -1443,26 +1470,27 @@ public class AppraisalController {
 										if("CO".equals(contentmapkey)){
 											JSONArray contentobj_on_key_arrco=(JSONArray) contentobj_on_map.get(contentobj_on_key);
 											for(int m=0;m<contentobj_on_key_arrco.size();m++){				//循环添加值
-												if("-".equals(contentobj_on_key_arrco.get(m).toString())){	//判断某个值为-时，不进行保留位数操作
+												
+												String observe_coval=contentobj_on_key_arrco.get(m).toString();
+												if("-".equals(observe_coval)||"".equals(observe_coval)||"null".equals(observe_coval)||"NULL".equals(observe_coval)||null==observe_coval){	//判断某个值为-时，不进行保留位数操作
 													contentobj_on_key_val.put(m, "-");
 												}else{
-													BigDecimal bd=(new BigDecimal(contentobj_on_key_arrco.get(m).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+													BigDecimal bd=(new BigDecimal(observe_coval)).setScale(2, BigDecimal.ROUND_HALF_UP);
 													contentobj_on_key_val.put(m, bd);
 												}
+												
 											}
 											contentobj_on.put(contentobj_on_time,contentobj_on_key_val);
 											break;
-//											BigDecimal bd=(new BigDecimal(contentobj_on_map.get(contentobj_on_key).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
-//											contentobj_on.put(contentobj_on_time,bd);
-//											break;
 										}else{
 											JSONArray contentobj_on_key_arr=(JSONArray) contentobj_on_map.get(contentobj_on_key);
 											for(int m=0;m<contentobj_on_key_arr.size();m++){
-												if("-".equals(contentobj_on_key_arr.get(m).toString())){
+												
+												String observeval=contentobj_on_key_arr.get(m).toString();
+												if("-".equals(observeval)||"".equals(observeval)||"null".equals(observeval)||"NULL".equals(observeval)||null==observeval){
 													contentobj_on_key_val.put(m, "-");
 												}else{
-//													System.out.println(contentobj_on_key_arr.get(m)+"--"+m+contentobj_on_time+contentmapkey+"\r");
-													BigDecimal bd=(new BigDecimal(contentobj_on_key_arr.get(m).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+													BigDecimal bd=(new BigDecimal(observeval)).setScale(1, BigDecimal.ROUND_HALF_UP);
 													contentobj_on_key_val.put(m, bd);
 												}
 												
@@ -1470,8 +1498,6 @@ public class AppraisalController {
 											contentobj_on.put(contentobj_on_time,contentobj_on_key_val);
 											break;
 										}
-//										contentobj_on.put(contentobj_on_time, contentobj_on_map.get(contentobj_on_key));
-//										break;
 									}
 									
 								}
