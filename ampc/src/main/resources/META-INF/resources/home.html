@@ -105,9 +105,10 @@
             <img class="user-avatar" src="img/a1.jpg" alt="SuggeElson">无锡市管理员
           </a>
             <ul class="dropdown-menu right" role="menu">
-              <li><a href=""><i class="st-user"></i> 用户信息</a></li>
-              <li><a href=""><i class="st-cloud"></i>用户数据</a></li>
+              <!-- <li><a href=""><i class="st-user"></i> 用户信息</a></li> -->
+              
               <li><a href=""><i class="st-settings"></i>用户设置</a></li>
+              <li><a href=""><i class="ec-trashcan"></i>回收站</a></li>
               <li><a href="javascript:" onclick="dengluOut()"><i class="im-exit"></i>注销登录</a></li>
             </ul>
           </li>
@@ -119,262 +120,6 @@
   </div>
 </div>
 <a id="clickA"></a>
-
-<!--<div id="sidebar">-->
-  <!--<div class="panel-group accordion" id="accordion1">-->
-    <!--<div class="panel panel-default" id="spr_3">-->
-      <!--<div class="panel-heading">-->
-        <!--<h5 class="panel-title">-->
-          <!--<a class="accordion-toggle collapsed" data-toggle="collapse"-->
-             <!--data-parent="#accordion1" href="#sy">首页 <i class="im-home2"></i></a>-->
-        <!--</h5>-->
-      <!--</div>-->
-      <!--<div id="sy" class="panel-collapse collapse" style="height: 0px;">-->
-        <!--<div class="panel-body totalH"></div>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--<div class="panel panel-default" id="spr_4">-->
-      <!--<div class="panel-heading">-->
-        <!--<h5 class="panel-title">-->
-          <!--<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#yqd">源清单 <i-->
-              <!--class="st-align-justify"></i></a>-->
-        <!--</h5>-->
-      <!--</div>-->
-      <!--<div id="yqd" class="panel-collapse collapse" style="height: 0px;">-->
-        <!--<div class="panel-body totalH"></div>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--<div class="panel panel-default" id="spr_5">-->
-      <!--<div class="panel-heading">-->
-        <!--<h5 class="panel-title">-->
-          <!--<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#rwgl">任务管理 <i-->
-              <!--class="st-folder-settings"></i></a>-->
-        <!--</h5>-->
-      <!--</div>-->
-      <!--<div id="rwgl" class="panel-collapse collapse  in" style="height: auto;">-->
-        <!--<div class="panel-body totalH" style="padding: 10px">-->
-
-          <!--<div class="qyCon disNone">-->
-            <!--<div class="nowRw">-->
-              <!--<h3>当前任务：</h3>-->
-              <!--<span></span>-->
-            <!--</div>-->
-            <!--<div class="nowQj">-->
-              <!--<h3>当前情景：</h3>-->
-              <!--<span></span>-->
-            <!--</div>-->
-            <!--<div class="seDate">-->
-              <!--<h3>起止时间：</h3>-->
-              <!--<span></span>-->
-            <!--</div>-->
-            <!--<div class="jsBtn">-->
-              <!--<button class="btn btn-success jpjs" onclick="jpjsBtn(this)">减排计算</button>-->
-              <!--<button class="btn btn-success disNone jpztck" data-toggle="modal" data-target="#jpzt">计算状态</button>-->
-              <!--<button class="btn btn-success jpfx" disabled="disabled" onclick="jumpJpfx()">减排分析</button>-->
-            <!--</div>-->
-          <!--</div>-->
-          <!--<div class="jpfxCon disNone">-->
-            <!--<div class="nowRw">-->
-              <!--<h3>当前任务：</h3>-->
-              <!--<span></span>-->
-            <!--</div>-->
-            <!--<div class="nowQj">-->
-              <!--<h3>当前情景：</h3>-->
-              <!--<span></span>-->
-            <!--</div>-->
-            <!--<div class="seDate">-->
-              <!--<h3>起止时间：</h3>-->
-              <!--<span></span>-->
-            <!--</div>-->
-            <!--<div class="jsBtn">-->
-              <!--<button class="btn btn-success reCsbj" onclick="returnCSBJ(this)">返回</button>-->
-            <!--</div>-->
-          <!--</div>-->
-          <!--<div class="csCon disNone" style="overflow: auto">-->
-            <!--<div class="nowRw">-->
-              <!--<h3>当前任务：</h3>-->
-              <!--<span></span>-->
-            <!--</div>-->
-            <!--<div class="nowQj">-->
-              <!--<h3>当前情景：</h3>-->
-              <!--<span></span>-->
-            <!--</div>-->
-            <!--<div class="nowArea">-->
-              <!--<h3>当前区域：</h3>-->
-              <!--<span></span>-->
-            <!--</div>-->
-            <!--<div class="seDate">-->
-              <!--<h3>当前时段：</h3>-->
-              <!--<span></span>-->
-            <!--</div>-->
-            <!--<div class="nowTime">-->
-              <!--<h3>当前预案：</h3>-->
-              <!--<span></span>-->
-            <!--</div>-->
-            <!--<div class="jsBtn">-->
-              <!--<button class="btn btn-success cryak" onclick="Deposit_Reserve_plan()">存入预案库</button>-->
-              <!--<button class="btn btn-success wc" onclick="complete_Button()">完成</button>-->
-            <!--</div>-->
-          <!--</div>-->
-
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--<div class="panel panel-default" id="spr_6">-->
-      <!--<div class="panel-heading">-->
-        <!--<h5 class="panel-title">-->
-          <!--<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#xgpg">效果评估<i-->
-              <!--class="im-paste2"></i></a>-->
-        <!--</h5>-->
-      <!--</div>-->
-      <!--<div id="xgpg" class="panel-collapse collapse" style="height: 0px;">-->
-        <!--<div class="panel-body totalH">-->
-          <!--<div class="list-group text-left">-->
-            <!--<a href="#xgpg_v1" class="list-group-item">减排分析</a>-->
-            <!--<a href="#xgpg_v2" class="list-group-item">网格排放</a>-->
-            <!--<a href="#xgpg_v3" class="list-group-item">时间序列</a>-->
-            <!--<a href="#xgpg_v4" class="list-group-item">水平分布</a>-->
-            <!--<a href="#xgpg_v5" class="list-group-item">垂直廓线</a>-->
-            <!--<a href="#xgpg_v6" class="list-group-item">评估报告</a>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--<div class="panel panel-default" id="spr_7">-->
-      <!--<div class="panel-heading">-->
-        <!--<h5 class="panel-title">-->
-          <!--<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#kqzlyb">空气质量预报-->
-            <!--<i class="me-cloudy"></i></a>-->
-        <!--</h5>-->
-      <!--</div>-->
-      <!--<div id="kqzlyb" class="panel-collapse collapse" style="height: 0px;">-->
-        <!--<div class="panel-body totalH">-->
-          <!--<div class="list-group text-left">-->
-            <!--<a href="#kqzlyb_v1" class="list-group-item">预报检验</a>-->
-            <!--<a href="#kqzlyb_v2" class="list-group-item">时间序列</a>-->
-            <!--<a href="#kqzlyb_v3" class="list-group-item">水平分布</a>-->
-            <!--<a href="#kqzlyb_v4" class="list-group-item">垂直廓线</a>-->
-          <!--</div>-->
-          <!--<div style="padding-right:5px;" id="timeArrayCondi">-->
-            <!--<div class="input-group">-->
-              <!--<span class="input-group-addon"><small>开始日期：</small></span>-->
-
-              <!--<div class="chaxundiv_2 selectDiv" id="data_1">-->
-                <!--<div class="input-group date" id="datetimeStart" style="width: 100%;">-->
-                  <!--<span class="input-group-addon"><i class="fa-calendar"></i></span>-->
-                  <!--<input type="text" style="width: 100%;height: 33px;" readonly="true"/>-->
-                <!--</div>-->
-              <!--</div>-->
-            <!--</div>-->
-            <!--<div class="input-group" style="margin-top:5px;">-->
-              <!--<span class="input-group-addon"><small>结束日期：</small></span>-->
-
-              <!--<div class="chaxundiv_3 selectDiv" id="data_2">-->
-                <!--<div class="input-group date" id="datetimeEnd" style="width: 100%;">-->
-                  <!--<span class="input-group-addon"><i class="fa-calendar"></i></span>-->
-                  <!--<input type="text" style="width: 100%;height: 33px;" readonly="true"/>-->
-                <!--</div>-->
-              <!--</div>-->
-            <!--</div>-->
-
-            <!--&lt;!&ndash; 检测站点 &ndash;&gt;-->
-            <!--<div class="ibox-content" style="width:210px;height:66px;padding: 0px 0px 0px 0px;margin-top:5px;">-->
-              <!--<div class="col-md-2" id="" style="width:203px;height:66px;border:1px solid #75B9E6;padding: 0px;">-->
-                <!--<div class="ibox-tools" style="padding-right: 0px;">-->
-                  <!--<div class="jczd"-->
-                       <!--style="background-color: #EDF7FF;width:200px;height: 25px;margin-left:0px;padding-top:2px;padding-left:0px;margin-top:0px;">-->
-                    <!--<h5>检测站点</h5>-->
-                  <!--</div>-->
-                  <!--<div class="row col-sm-12" style="padding-right:0px;margin-top:5px; width:204px;">-->
-                    <!--<div class="col-sm-4" style="padding-left:0px;padding-right:0px;">-->
-                      <!--<div class="input-group group-select" style="margin-left:0px;">-->
-                        <!--<select class="form-control m-b" style="width:72px;">-->
-                          <!--<option>浙江省</option>-->
-                          <!--<option>&#45;&#45;</option>-->
-                        <!--</select>-->
-                      <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="col-sm-4" style="padding-left:0px;padding-right:0px;">-->
-                      <!--<div class="input-group group-select" style="margin-right:0px;">-->
-                        <!--<select class="form-control m-b" style="width:73px;">-->
-                          <!--<option>杭州市</option>-->
-                          <!--<option>&#45;&#45;</option>-->
-                        <!--</select>-->
-                      <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="col-sm-4" style="padding-left:0px;padding-right:0px;">-->
-                      <!--<div class="input-group group-select"-->
-                           <!--style="padding-right:0px;">-->
-                        <!--<select class="form-control m-b" style="width:72px;">-->
-                          <!--<option>平均</option>-->
-                          <!--<option>&#45;&#45;</option>-->
-                        <!--</select>-->
-                      <!--</div>-->
-                    <!--</div>-->
-                  <!--</div>-->
-                <!--</div>-->
-              <!--</div>-->
-            <!--</div>-->
-            <!--<div class="ibox-content" style="width:210px;height:66px;padding: 0px 0px 0px 0px;margin-top:5px;">-->
-              <!--<div class="col-md-2" id="" style="width:203px;height:66px;border:1px solid #75B9E6;padding: 0px;">-->
-                <!--<div class="ibox-tools" style="padding-right: 0px;">-->
-                  <!--<div class="jczd"-->
-                       <!--style="background-color: #EDF7FF;width:200px;height: 25px;margin-left:0px;padding-top:2px;padding-left:0px;margin-top:0px;">-->
-                    <!--<h5>时间分辩率</h5>-->
-                  <!--</div>-->
-                  <!--<div class="row" style="margin-top:10px;">-->
-                    <!--<div class="col-md-4 col-md-offset-2">-->
-                      <!--<button type="button" class="btn btn-outline btn-success btn-xs">逐小时</button>-->
-                    <!--</div>-->
-                    <!--<div class="col-md-4">-->
-                      <!--<button type="button" class="btn btn-outline btn-success btn-xs">逐日</button>-->
-                    <!--</div>-->
-                  <!--</div>-->
-                <!--</div>-->
-              <!--</div>-->
-            <!--</div>-->
-            <!--&lt;!&ndash; 时间分辨率结束 &ndash;&gt;-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--<div class="panel panel-default" id="spr_8">-->
-      <!--<div class="panel-heading">-->
-        <!--<h5 class="panel-title">-->
-          <!--<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#sjkj">数据空间 <i-->
-              <!--class="im-storage"></i></a>-->
-        <!--</h5>-->
-      <!--</div>-->
-      <!--<div id="sjkj" class="panel-collapse collapse" style="height: 0px;">-->
-        <!--<div class="panel-body totalH"></div>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--<div class="panel panel-default" id="spr_10">-->
-      <!--<div class="panel-heading">-->
-        <!--<h5 class="panel-title">-->
-          <!--<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#userSZ">用户设置 <i-->
-              <!--class="im-storage"></i></a>-->
-        <!--</h5>-->
-      <!--</div>-->
-      <!--<div id="userSZ" class="panel-collapse collapse" style="height: 0px;">-->
-        <!--<div class="panel-body totalH"></div>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--<div class="panel panel-default" id="spr_9">-->
-      <!--<div class="panel-heading">-->
-        <!--<h5 class="panel-title">-->
-          <!--<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion1" href="#hsz">回收站 <i-->
-              <!--class="ec-trashcan"></i></a>-->
-        <!--</h5>-->
-      <!--</div>-->
-      <!--<div id="hsz" class="panel-collapse collapse" style="height: 0px;">-->
-        <!--&lt;!&ndash;<div class="panel-body">&ndash;&gt;-->
-
-        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
-<!--</div>-->
 <div id="sidebarlt">
   <ul>
     <li  class="active">
@@ -385,6 +130,19 @@
       <a href="#/yqd"><i class="st-align-justify"> 源清单</i></a>
       <div class="borderbox"></div>
     </li>
+    
+    <li class="candrop">
+      <a href="javascript:"><i class="me-cloudy"> 空气质量预报</i></a>
+      <div class="dropmenu">
+        <div>
+          <p><a href="#/kqzlyb_v1">预报检验</a></p>
+          <p><a href="#/kqzlyb_v2">时间序列</a></p>
+          <p><a href="#/kqzlyb_v3">水平分布</a></p>
+          <p><a href="#/kqzlyb_v4">垂直廓线</a></p>
+        </div>
+      </div>
+    </li>
+    
     <li >
       <a href="#/rwgl"><i class="st-folder-settings"> 任务管理</i></a>
       <div class="borderbox">
@@ -465,109 +223,19 @@
         </div>
       </div>
     </li>
-    <li class="candrop">
-      <a href="javascript:"><i class="me-cloudy"> 空气质量预报</i></a>
-      <div class="dropmenu">
-        <div>
-          <p><a href="#/kqzlyb_v1">预报检验</a></p>
-          <p><a href="#/kqzlyb_v2">时间序列</a></p>
-          <p><a href="#/kqzlyb_v3">水平分布</a></p>
-          <p><a href="#/kqzlyb_v4">垂直廓线</a></p>
-          <!--<div style="padding-right:5px;" id="timeArrayCondi">
-            <div class="input-group">
-              <span class="input-group-addon"><small>开始日期：</small></span>
-
-              <div class="chaxundiv_2 selectDiv" id="data_1">
-                <div class="input-group date" id="datetimeStart" style="width: 100%;">
-                  <span class="input-group-addon"><i class="fa-calendar"></i></span>
-                  <input type="text" style="width: 100%;height: 33px;" readonly="true"/>
-                </div>
-              </div>
-            </div>
-            <div class="input-group" style="margin-top:5px;">
-              <span class="input-group-addon"><small>结束日期：</small></span>
-
-              <div class="chaxundiv_3 selectDiv" id="data_2">
-                <div class="input-group date" id="datetimeEnd" style="width: 100%;">
-                  <span class="input-group-addon"><i class="fa-calendar"></i></span>
-                  <input type="text" style="width: 100%;height: 33px;" readonly="true"/>
-                </div>
-              </div>
-            </div>
-
-            &lt;!&ndash; 检测站点 &ndash;&gt;
-            <div class="ibox-content" style="width:210px;height:66px;padding: 0px 0px 0px 0px;margin-top:5px;">
-              <div class="col-md-2"  style="width:203px;height:66px;border:1px solid #75B9E6;padding: 0px;">
-                <div class="ibox-tools" style="padding-right: 0px;">
-                  <div class="jczd"
-                       style="background-color: #EDF7FF;width:200px;height: 25px;margin-left:0px;padding-top:2px;padding-left:0px;margin-top:0px;">
-                    <h5>检测站点</h5>
-                  </div>
-                  <div class="row col-sm-12" style="padding-right:0px;margin-top:5px; width:204px;">
-                    <div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
-                      <div class="input-group group-select" style="margin-left:0px;">
-                        <select class="form-control m-b" style="width:72px;">
-                          <option>浙江省</option>
-                          <option>&#45;&#45;</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
-                      <div class="input-group group-select" style="margin-right:0px;">
-                        <select class="form-control m-b" style="width:73px;">
-                          <option>杭州市</option>
-                          <option>&#45;&#45;</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
-                      <div class="input-group group-select"
-                           style="padding-right:0px;">
-                        <select class="form-control m-b" style="width:72px;">
-                          <option>平均</option>
-                          <option>&#45;&#45;</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="ibox-content" style="width:210px;height:66px;padding: 0px 0px 0px 0px;margin-top:5px;">
-              <div class="col-md-2" id="" style="width:203px;height:66px;border:1px solid #75B9E6;padding: 0px;">
-                <div class="ibox-tools" style="padding-right: 0px;">
-                  <div class="jczd"
-                       style="background-color: #EDF7FF;width:200px;height: 25px;margin-left:0px;padding-top:2px;padding-left:0px;margin-top:0px;">
-                    <h5>时间分辩率</h5>
-                  </div>
-                  <div class="row" style="margin-top:10px;">
-                    <div class="col-md-4 col-md-offset-2">
-                      <button type="button" class="btn btn-outline btn-success btn-xs">逐小时</button>
-                    </div>
-                    <div class="col-md-4">
-                      <button type="button" class="btn btn-outline btn-success btn-xs">逐日</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            &lt;!&ndash; 时间分辨率结束 &ndash;&gt;
-          </div>-->
-        </div>
-      </div>
-    </li>
+    
     <li>
-      <a href="#/sjkj"><i class="im-storage"> 数据空间</i></a>
+      <a href="#/sjkj"><i class="im-storage"> 预案库</i></a>
       <div class="borderbox"></div>
     </li>
-    <li>
-      <a href="#/userSZ"><i class="im-settings"> 用户设置</i></a>
-      <div class="borderbox"></div>
-    </li>
-    <li>
+    <!-- <li>
       <a href="#/hsz"><i class="ec-trashcan"> 回收站</i></a>
       <div class="borderbox"></div>
     </li>
+    <li>
+      <a href="#/userSZ"><i class="st-settings"> 用户设置</i></a>
+      <div class="borderbox"></div>
+    </li> -->
   </ul>
 </div>
 
@@ -582,22 +250,13 @@
 </div>
 <div id="content" >
   <div class="content-wrapper  container-fluid" >
-    <!-- <div class="row container-fluid" >
-      <div class="col-lg-12 heading" style="padding-left:5px;padding-right:7px;">
-        <h1 class="page-header"></h1>
-        <ul id="crumb" class="breadcrumb">
-        </ul>
-      </div>
-    </div> -->
     <div class="outlet row">
       <!-- Start .outlet -->
       <!-- 内容所在区域 -->
       <div class="col-md-12">
-
         <div id="Route_conter" class="ui-view">
           <!--<iframe src="webApp/task01/task01.html"></iframe>-->
         </div>
-
         <!-- 页面内容 -->
       </div>
     </div>
