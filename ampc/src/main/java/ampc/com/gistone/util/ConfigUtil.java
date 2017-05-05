@@ -17,6 +17,11 @@ public class ConfigUtil {
 	// 措施的减排分析Url
 	@Value("${jp.csjpURL}")
 	private String csjpURL;
+	
+	// 措施的减排分析Url
+	@Value("${jp.serverPath}")
+	private String serverPath;
+		
 	// 区域的减排分析Url
 	@Value("${jp.areaURL}")
 	private String areaURL;
@@ -59,5 +64,8 @@ public class ConfigUtil {
 	public String getPreproURL() {
 		return preproURL;
 	}
-
+	
+	public String getServerPath() {
+		return serverPath;
+	}
 }
