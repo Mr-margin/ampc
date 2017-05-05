@@ -1109,5 +1109,9 @@ AND S.IS_EFFECTIVE ='1'
   			USER_ID = #{USER_ID,jdbcType=DECIMAL}
 			AND PATH_DATE ="TO_DATE"(#{PATH_DATE,jdbcType=TIMESTAMP},'yyyy-mm-dd')
   </select>
+  <!--查询情景的运行状态  -->
+  <select id="selectScenExecStatus" parameterType="java.lang.Long" resultType="java.lang.Long">
+  	select SCENARINO_STATUS from T_SCENARINO_DETAIL where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
+  </select>
   
 </mapper>
