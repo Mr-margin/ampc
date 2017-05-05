@@ -23,6 +23,7 @@ import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.preprocess.concn.ConcnService;
 import ampc.com.gistone.preprocess.concn.RequestParams;
+import ampc.com.gistone.preprocess.meteor.MeteorService;
 import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.LogUtil;
 
@@ -42,6 +43,8 @@ public class Ruku {
 	private TMissionDetailMapper tMissionDetailMapper;
 	@Autowired
 	private ConcnService concnService;
+	@Autowired
+	private MeteorService meteorService;
 	@Autowired
 	private ReadyData readyData;
 	/**
@@ -95,6 +98,7 @@ public class Ruku {
 			for (int i = 1; i <= domain; i++) {
 				for (String string : timepointarray) {
 					RequestParams requestParams = new RequestParams();
+					requestParams.setScenarioId(scenarioId);
 					requestParams.setUserId(userId);
 					requestParams.setMissionId(missionId);
 					requestParams.setDomainId(domainId);
@@ -102,12 +106,12 @@ public class Ruku {
 					requestParams.setTimePoint(string);
 					requestParams.setDate(list);
 					//requestParams.setShowType("concn");
-				/*	boolean res = concnService.requestConcnData(requestParams);
+					boolean res = meteorService.requestMeteorData(requestParams);
 					if (res) {
 						LogUtil.getLogger().info("基准情景气象数据入库成功！");
 					}else {
 						LogUtil.getLogger().info("基准情景气象数据入库失败！");
-					}*/
+					}
 				}
 			}
 		}
@@ -136,6 +140,7 @@ public class Ruku {
 			for (int i = 1; i <= domain; i++) {
 				for (String string : timepointarray) {
 					RequestParams requestParams = new RequestParams();
+					requestParams.setScenarioId(scenarioId);
 					requestParams.setUserId(userId);
 					requestParams.setMissionId(missionId);
 					requestParams.setDomainId(domainId);
@@ -194,15 +199,21 @@ public class Ruku {
 		for(int i = 1; i<=domains; i++){
 			for (String string : timepointarray) {
 				RequestParams requestParams = new RequestParams();
+				requestParams.setScenarioId(scenarioId);
 				requestParams.setUserId(userId);
 				requestParams.setMissionId(missionId);
 				requestParams.setDomainId(domainId);
 				requestParams.setDomain(i);
 				requestParams.setTimePoint(string);
 				requestParams.setDate(list);
-				//requestParams.setShowType("concn");
 				if (flag==1) {
 					//气象入库
+					boolean res = meteorService.requestMeteorData(requestParams);
+					if (res) {
+						LogUtil.getLogger().info("实时预报气象数据入库成功！");
+					}else {
+						LogUtil.getLogger().info("实时预报气象数据入库失败！");
+					}
 					
 				}
 				if (flag==0) {
@@ -251,6 +262,7 @@ public class Ruku {
 		for (int i = 1; i <= domain; i++) {
 			for (String string : timepointarray) {
 				RequestParams requestParams = new RequestParams();
+				requestParams.setScenarioId(scenarioId);
 				requestParams.setUserId(userId);
 				requestParams.setMissionId(missionId);
 				requestParams.setDomainId(domainId);
@@ -319,6 +331,7 @@ public class Ruku {
 		for (int i = 1; i < domain; i++) {
 			for (String string : timepointarray) {
 				RequestParams requestParams = new RequestParams();
+				requestParams.setScenarioId(scenarioId);
 				requestParams.setUserId(userId);
 				requestParams.setMissionId(missionId);
 				requestParams.setDomainId(domainId);
