@@ -1351,10 +1351,14 @@ public class AppraisalController {
 							
 					}
 					standardData.put("观测数据", contentobj);	//观测数据
-					standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);		//基准数据
+//					standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);		//基准数据
+					standardData.put("基准数据", spcmapobj);
+					
 					objsed.put("data", standardData);
-					objsed.put("scenarinoId",tScenarinoDetaillist.get(0).getScenarinoId());
-					objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
+//					objsed.put("scenarinoId",tScenarinoDetaillist.get(0).getScenarinoId());
+//					objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
+					objsed.put("scenarinoId","基准数据");
+					objsed.put("scenarinoName","基准数据");
 					objsed.put("observationId","观测数据");
 					objsed.put("observationName","观测数据");
 					//时间分辨率--逐日结束
@@ -1518,10 +1522,13 @@ public class AppraisalController {
 						}	
 					}	//循环所有物种的key结束
 					standardData.put("观测数据", contentobj);	//观测数据
-					standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);		//基准数据
+//					standardData.put(tScenarinoDetaillist.get(0).getScenarinoId(), spcmapobj);		//基准数据
+					standardData.put("基准数据", spcmapobj);		//基准数据
 					objsed.put("data", standardData);
-					objsed.put("scenarinoId",tScenarinoDetaillist.get(0).getScenarinoId());
-					objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
+//					objsed.put("scenarinoId",tScenarinoDetaillist.get(0).getScenarinoId());
+//					objsed.put("scenarinoName",tScenarinoDetaillist.get(0).getScenarinoName());
+					objsed.put("scenarinoId","基准数据");
+					objsed.put("scenarinoName","基准数据");
 					objsed.put("observationId","观测数据");
 					objsed.put("observationName","观测数据");
 					
