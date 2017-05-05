@@ -1459,6 +1459,14 @@ function xishu_save() {
       ttwr = false;
       $("#" + vol).addClass("erroe_input");//加红色边框
     }
+    //加入正则验证  判断内部是否出现了非法字符
+    var re =/^[0-9]+([.]{1}[0-9]+){0,1}$/;
+    var result=  re.test($("#" + vol).val());
+    if(!result){
+    	ttwr = false;
+        $("#" + vol).addClass("erroe_input");//加红色边框
+    }
+    
   });
 
   if (ttwr) {
