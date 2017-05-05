@@ -16,16 +16,6 @@ import ampc.com.gistone.database.model.TTasksStatus;
 public interface TScenarinoDetailMapper {
 	
 	/**
-	 * @Description: 修改情景的模式执行状态
-	 * @param map
-	 * @return   
-	 * int  
-	 * @throws
-	 * @author yanglei
-	 * @date 2017年4月18日 下午4:08:24
-	 */
-	int updateStatus(Map map);
-	/**
 	 * @Description: 获取情景的开始和结束时间
 	 * @param scenarinoId
 	 * @return   
@@ -136,7 +126,7 @@ public interface TScenarinoDetailMapper {
 	/**
 	 * @Description: TODO
 	 * @param tasksScenarinoId
-	 * @return   
+	 * @return    SCENARINO_START_DATE, SCENARINO_END_DATE,SCEN_TYPE,PATH_DATE
 	 * TScenarinoDetail  查找开始结束时间和情景类型
 	 * @throws
 	 * @author yanglei
