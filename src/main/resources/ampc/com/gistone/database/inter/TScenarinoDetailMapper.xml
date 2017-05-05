@@ -110,12 +110,7 @@
   set EXPAND3 = #{expand3,jdbcType=VARCHAR}
   where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
   </update>
-  <!--跟新情景状态  -->
-  <update id="updateStatus" parameterType="hashMap">
-  update T_SCENARINO_DETAIL
-  set SCENARINO_STATUS = #{scenarinoStatus,jdbcType=DECIMAL}
-  where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
-  </update>
+  
   <!-- 根据起报时间 用户id 情景类型  查找该条情景记录 用来确定实时预报消息里面的firsttime的值  -->
   <select id="selectFirstTime" resultMap="BaseResultMap" parameterType="hashMap">
   select 
