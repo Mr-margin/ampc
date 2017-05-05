@@ -31,8 +31,8 @@ var changeMsg = {
 //逐日显示 AQI PM25 ,SO4 NO3 NH4 BC OM PMFINE, PM10 O3_8_max O3_1_max SO2 NO2 CO 
 //物种选择
 var speciesArr = {
-//		day: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'SO2', 'NO2', 'CO'],
-		day: ['PM25', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'O3_AVG', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE'],
+		day: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'SO2', 'NO2', 'CO'],
+//		day: ['PM25', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'O3_AVG', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE'],
 		
 //		hour: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3', 'SO2', 'NO2', 'CO']
 		hour: ['PM25', 'PM10', 'O3', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE']
@@ -64,32 +64,32 @@ var optionAll = {
 		    x: 'left',
 		    y: 'top'
 		 },
-	  tooltip: {
+		 tooltip: {
 		  	trigger: 'axis'
-	  },
-	  legend: {
+		 },
+		 legend: {
 		    show: true,
 		    x: 'center',
 		    y: 'top',
 		    //legend的data: 用于设置图例，data内的字符串数组需要与sereis数组内每一个series的name值对应
 		    data: [],     	//改变量 存储所选情景name
 	
-	  	},
-		grid: {
+		 },
+		 grid: {
 			show: true,
 			left: '3%',
 			right: '3%',
 			bottom: '30%',
-		},
-		dataZoom:[
-		          {
+		 },
+		 dataZoom:[
+		           {
 		        	  show:'true',
 		        	  realtime:'true',
 		        	  start:0,
 		        	  end:100
-		          },
-		     ],
-      calculable: false,  
+		           },
+		          ],
+         calculable: false,  
       xAxis: [  
               	{  
 	        	  show: true,  
@@ -233,6 +233,24 @@ function setTime(s, e) {
  * 动态添加div 填数据
  */
 function initEcharts() {
+	var ech=[];
+	var aqi;
+	
+	var AQI;
+	var PM25;
+	var SO4;
+	var NO3;
+	var NH4;
+	var BC;
+	var OM;
+	var PMFINE;
+	var PM10;
+	var O3_8_MAX;
+	var O3_1_MAX;
+	var SO2;
+	var NO2;
+	var CO;
+	
 	$("#initEcharts").empty();
 	var echartsDatas = echartsData;
 	var standardDatas=standardData;
@@ -255,38 +273,66 @@ function initEcharts() {
 	sceneInitialization_arr.unshift(scenarino);
 	sceneInitialization_arr.unshift(observation);
 	
+	
+	var	proStation=$("#proStation option:selected").text();
+	var	cityStation=$("#cityStation option:selected").text();
+	var	station=$("#station option:selected").text();
+	var	domain=$("input[name='domain']").parents('label.active').text();
+	
+	var mesage='';
+	if(proStation.substr(-1)=="市"&&"平均"==station){
+		mesage+=proStation+">>"+domain+">>";
+	
+	}else if(proStation.substr(-1)=="市"&&cityStation.substr(-1)=="市"&&"平均"!=station){
+		mesage+=proStation+">>"+station+">>"+domain+">>";
+	}else if("市"!==proStation.substr(-1)&&"平均"==station){
+		mesage+=proStation+">>"+cityStation+">>"+domain+">>";
+	}else {
+		mesage+=proStation+">>"+cityStation+">>"+station+">>"+domain+">>";
+	}
+	
 	for(var i = 0;i < tname.length;i++){
-		var div = $('<div style="height:250px;"></div>');
-		div.attr("id",tname[i]);
-		div.addClass('echartsCZ');
-		$("#initEcharts").append(div);
-		var option = $.extend(true,{},optionAll); //拷贝echarts模板
+		if("PM25"==tname[i]){
+			var div_bj=$('<div class="row" style="padding-left:15px;"><div class="col-sm-4"><div class="input-group m-b" style="margin-bottom: 0px"><div class="" style="margin-bottom:0px;padding-left:7px;"><div class="btn-group" data-toggle="buttons"><label name="collapse" class="btn btn-outline btn-success active"><input type="radio" name="spread" value="open" checked>组分展开</label><label name="collapse" class="btn btn-outline btn-success"><input type="radio" name="spread" value="close">组分收起</label></div></div></div></div></div>');
+			var div = $('<div style="height:250px;"></div>');
+			div.attr("id",tname[i]);
+			div.addClass('echartsCZ');
+			$("#initEcharts").append(div_bj);
+			$("#initEcharts").append(div);
+		}else{
+			var div = $('<div style="height:250px;"></div>');
+			div.attr("id",tname[i]);
+			div.addClass('echartsCZ');
+			$("#initEcharts").append(div);
+		}
+		
+		var option = $.extend(true,{},optionAll); 	//拷贝echarts模板
 		if(tname[i] == 'AQI'){
-			option.title.text = tname[i];         //加不同单位
+			option.title.text = mesage +tname[i];   //加不同单位
 		}else if(tname[i] != 'CO'){
 			if("PM25"==tname[i]){
-				option.title.text = "PM₂.₅"+('(μg/m³)');
+				option.title.text = mesage +"PM₂.₅ "+('(μg/m³)');
 			}else if("SO4"==tname[i]){
-				option.title.text = "SO₄²¯"+('(μg/m³)');
+				option.title.text = mesage +"SO₄²¯ "+('(μg/m³)');
 			}else if("NO3"==tname[i]){
-				option.title.text = "NO₃¯"+('(μg/m³)');
+				option.title.text = mesage +"NO₃¯ "+('(μg/m³)');
 			}else if("NH4"==tname[i]){
-				option.title.text = "NH₄⁺"+('(μg/m³)');
+				option.title.text = mesage +"NH₄⁺ "+('(μg/m³)');
 			}else if("PM10"==tname[i]){
-				option.title.text = "PM₁₀"+('(μg/m³)');
+				option.title.text = mesage +"PM₁₀ "+('(μg/m³)');
 			}else if("O3_8_MAX"==tname[i]){
-				option.title.text = "O₃_8_max"+('(μg/m³)');
+				option.title.text = mesage +"O₃_8_max "+('(μg/m³)');
 			}else if("O3_1_MAX"==tname[i]){
-				option.title.text = "O₃_1_max"+('(μg/m³)');
+				option.title.text = mesage +"O₃_1_max "+('(μg/m³)');
 			}else if("SO2"==tname[i]){
-				option.title.text = "SO₂"+('(μg/m³)');
+				option.title.text = mesage +"SO₂ "+('(μg/m³)');
 			}else if("NO2"==tname[i]){
-				option.title.text = "NO₂"+('(μg/m³)');
+				option.title.text = mesage +"NO₂ "+('(μg/m³)');
 			}else{
-				option.title.text = tname[i]+('(μg/m³)');
+				option.title.text = mesage +tname[i]+(' (μg/m³)');
 			}
 		}else{
-			option.title.text = tname[i]+('(mg/m³)');
+			option.title.text = mesage +tname[i]+(' (mg/m³)');
 		}	
 		option.legend.data = (function(){	//图例名称
 		var lenArr = [];
@@ -395,10 +441,128 @@ function initEcharts() {
     option.xAxis.push({				    //x轴情景时间
     	data: ttime						//修改数据排序
     });
-    var es = echarts.init(document.getElementById(tname[i]));
-    es.setOption(option);
-    $(window).resize(es.resize);
+    
+//    if("AQI"==tname[i]){
+//    	 AQI = echarts.init(document.getElementById(tname[i]));
+//    	AQI.setOption(option);
+//    	$(window).resize(AQI.resize);
+//    }else if("PM25"==tname[i]){
+//    	 PM25 = echarts.init(document.getElementById(tname[i]));
+//    	PM25.setOption(option);
+//    	$(window).resize(PM25.resize);
+//    }else if("SO4"==tname[i]){
+//    	 SO4 = echarts.init(document.getElementById(tname[i]));
+//    	SO4.setOption(option);
+//    	$(window).resize(SO4.resize);
+//    }else if("NO3"==tname[i]){
+//    	 NO3 = echarts.init(document.getElementById(tname[i]));
+//    	NO3.setOption(option);
+//    	$(window).resize(NO3.resize);
+//    }else if("NH4"==tname[i]){
+//    	 NH4 = echarts.init(document.getElementById(tname[i]));
+//    	NH4.setOption(option);
+//    	$(window).resize(NH4.resize);
+//    }else if("BC"==tname[i]){
+//    	 BC = echarts.init(document.getElementById(tname[i]));
+//    	BC.setOption(option);
+//    	$(window).resize(BC.resize);
+//    }else if("OM"==tname[i]){
+//    	 OM = echarts.init(document.getElementById(tname[i]));
+//    	OM.setOption(option);
+//    	$(window).resize(OM.resize);
+//    }else if("PMFINE"==tname[i]){
+//    	 PMFINE = echarts.init(document.getElementById(tname[i]));
+//    	PMFINE.setOption(option);
+//    	$(window).resize(PMFINE.resize);
+//    }else if("PM10"==tname[i]){
+//    	 PM10 = echarts.init(document.getElementById(tname[i]));
+//    	PM10.setOption(option);
+//    	$(window).resize(PM10.resize);
+//    }else if("O3_8_MAX"==tname[i]){
+//    	 O3_8_MAX = echarts.init(document.getElementById(tname[i]));
+//    	O3_8_MAX.setOption(option);
+//    	$(window).resize(O3_8_MAX.resize);
+//    }else if("O3_1_MAX"==tname[i]){
+//    	 O3_1_MAX = echarts.init(document.getElementById(tname[i]));
+//    	O3_1_MAX.setOption(option);
+//    	$(window).resize(O3_1_MAX.resize);
+//    }else if("SO2"==tname[i]){
+//    	 SO2 = echarts.init(document.getElementById(tname[i]));
+//    	SO2.setOption(option);
+//    	$(window).resize(SO2.resize);
+//    }else if("NO2"==tname[i]){
+//    	 NO2 = echarts.init(document.getElementById(tname[i]));
+//    	NO2.setOption(option);
+//    	$(window).resize(NO2.resize);
+//    }else if("CO"==tname[i]){
+//    	 CO = echarts.init(document.getElementById(tname[i]));
+//    	CO.setOption(option);
+//    	$(window).resize(CO.resize);
+//    }
+    
+    
+    if("AQI"!=tname[i]){
+    	var es = echarts.init(document.getElementById(tname[i]));
+    	es.group = 'group1';
+//    	ech.push(es);
+    	es.on('datazoom', function (params) {
+//    		ech=[];
+    		group='';
+    		echarts.disconnect(group);
+   	    	
+   	    });
+    	es.setOption(option);
+    	
+    	$(window).resize(es.resize);
+    	
+    }else{
+    	 aqi = echarts.init(document.getElementById(tname[i]));
+    	aqi.group = 'group1';
+//    	ech.push(aqi);
+    	aqi.on('datazoom', function (params) {
+//    		echarts.connect(ech);
+    		echarts.connect('group1');
+   	    });
+    	aqi.setOption(option);
+    	
+    	$(window).resize(aqi.resize);
+    }
+    
+//    var es = echarts.init(document.getElementById(tname[i]));
+//    es.setOption(option);
+//    $(window).resize(es.resize);
   }
+//	echarts.connect(ech);
+//	echarts.connect([PM25, SO4, NO3, NH4, BC, OM, PMFINE, PM10, O3_8_MAX, O3_1_MAX, SO2, NO2, CO]);
+	
+	//逐日显示 AQI PM25 ,< SO4 NO3 NH4 BC OM PMFINE >, PM10 O3_8_max O3_1_max SO2 NO2 CO 
+	//组分展开==open  收起==close	
+	$('input[name=spread]').on('change', function (e) {
+		var spType = $(e.target).val();
+	//console.log(spType);
+		if (spType == 'close') {
+			$("#SO4").hide();
+			$("#NO3").hide();
+			$("#NH4").hide();
+			$("#BC").hide();
+			$("#OM").hide();
+			$("#PMFINE").hide();
+//			$(e.target.parentNode).text("组分展开");
+//			$(e.target).val('open');
+		} else {
+			$("#SO4").show();
+			$("#NO3").show();
+			$("#NH4").show();
+			$("#BC").show();
+			$("#OM").show();
+			$("#PMFINE").show();
+//			$(e.target.parentNode).text("组分收起");
+//			$(e.target).val('close');
+		}
+
+	});
+	
+	
 }
 
 /**
@@ -658,6 +822,16 @@ $('#proStation').on('change', function (e) {
 	  }
 	  changeMsg.city = $('#cityStation').val();
 	  findStation(changeMsg.city);
+	  
+	  $("#provinces").empty();
+	  $("#citys").empty();
+	  $("#stations").empty();
+	  $("#interspaces").empty();
+	  
+	  $("#provinces").text($("#proStation option:selected").text());
+	  $("#citys").text($("#cityStation option:selected").text());
+	  $("#stations").text($("#station option:selected").text());
+	  $("#interspaces").parents('label').text($("input[name='domain']").parents('label.active').text());
 	  getdata();
 });
 
@@ -719,29 +893,5 @@ $('input[name=domain]').on('change', function (e) {
 //	console.log(domain);
 });
 
-//逐日显示 AQI PM25 ,< SO4 NO3 NH4 BC OM PMFINE >, PM10 O3_8_max O3_1_max SO2 NO2 CO 
-//组分展开==open  收起==close
-$('input[name=spread]').on('change', function (e) {
-	var spType = $(e.target).val();
-//console.log(spType);
-	if (spType == 'close') {
-		$("#SO4").hide();
-		$("#NO3").hide();
-		$("#NH4").hide();
-		$("#BC").hide();
-		$("#OM").hide();
-		$("#PMFINE").hide();
-//		$(e.target.parentNode).text("组分展开");
-//		$(e.target).val('open');
-	} else {
-		$("#SO4").show();
-		$("#NO3").show();
-		$("#NH4").show();
-		$("#BC").show();
-		$("#OM").show();
-		$("#PMFINE").show();
-//		$(e.target.parentNode).text("组分收起");
-//		$(e.target).val('close');
-	}
 
-});
+

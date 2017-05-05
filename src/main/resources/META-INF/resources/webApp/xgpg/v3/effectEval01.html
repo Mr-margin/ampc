@@ -107,9 +107,9 @@
 		<h5>空间</h5>
 		<div class="selectTool_con">
 			<div class="btn-group" data-toggle="buttons" style="margin-top: 3px;width: 100%">
-				<label class="col-md-4 btn btn-outline btn-success btn-sm active"><input checked type="radio" name="domain" value="1">3km</label>
+				<label class="col-md-4 btn btn-outline btn-success btn-sm active"><input checked type="radio" name="domain" value="3">3km</label>
 				<label class="col-md-4 btn btn-outline btn-success btn-sm"><input type="radio" name="domain" value="2">9km</label>
-				<label class="col-md-4 btn btn-outline btn-success btn-sm"><input type="radio" name="domain" value="3">27km</label>
+				<label class="col-md-4 btn btn-outline btn-success btn-sm"><input type="radio" name="domain" value="1">27km</label>
 			</div>
 		</div>
 	</div>
@@ -141,97 +141,70 @@
 <div class='col-md-12' style="width:calc(100% - 50px);padding-left: 0px;padding-right: 0px;">
 	<div class="ibox float-e-margins" style="height:100%;width:100%;">
 		<div class="ibox-content" style="height:100%;width:100%;overflow-y: auto;overflow-x: hidden;padding: 0px;">
-			<div class="row disNone" style="margin-top: 12px;margin-left: 0px;margin-right: 0px;height:48px;">
-				<div class="col-sm-3" style="padding-left:0px;">
-						<div class="input-group m-b" style="margin-bottom: 0px">
-							<span class="input-group-addon" style="border: 0px solid #E5E6E7;"> 检测站点：</span>
-							<div class="" style="margin-bottom:0px;padding-left:0px;">
-								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
-									<div class="input-group group-select" style="width:100%;">
-										<select class="form-control m-b" id="proStation" style="border-color: #1c84c6;">
-<!-- 											<option>浙江省</option> -->
-<!-- 											<option>--</option> -->
-										</select>
-									</div>
-								</div>
-								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
-									<div class="input-group group-select" style="width:100%;">
-										<select class="form-control m-b" id="cityStation" style="border-color: #1c84c6;">
-<!-- 											<option>杭州市</option> -->
-<!-- 											<option>--</option> -->
-										</select>
-									</div>
-								</div>
-								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
-									<div class="input-group group-select" style="width:100%;">
-										<select class="form-control m-b" id="station" style="border-color: #1c84c6;">
-<!-- 											<option>平均</option> -->
-<!-- 											<option>--</option> -->
-										</select>
-									</div>
-								</div>
-							</div>
-						</div>
-				</div>
-				<div class="col-sm-3" style="margin-top: 0px;padding-right: 20px;margin-right: 0px;">
-					<div class="input-group m-b" style="margin-bottom: 0px">
-						<span class="input-group-addon" style="border: 0px solid #E5E6E7;">时间分辩率：</span> 
+		
+<!-- 			<div class="row disNone" style="margin-top: 12px;margin-left: 0px;margin-right: 0px;height:48px;"> -->
+<!-- 				<div class="col-sm-3" style="padding-left:0px;"> -->
+<!-- 						<div class="input-group m-b" style="margin-bottom: 0px"> -->
+<!-- 							<span class="input-group-addon" style="border: 0px solid #E5E6E7;"> 检测站点：</span> -->
+<!-- 							<div class="" style="margin-bottom:0px;padding-left:0px;"> -->
+<!-- 								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;"> -->
+<!-- 									<div class="input-group group-select" style="width:100%;"> -->
+<!-- 										<select class="form-control m-b" id="proStation" style="border-color: #1c84c6;"> -->
+<!-- 										</select> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+<!-- 								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;"> -->
+<!-- 									<div class="input-group group-select" style="width:100%;"> -->
+<!-- 										<select class="form-control m-b" id="cityStation" style="border-color: #1c84c6;"> -->
+<!-- 										</select> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+<!-- 								<div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;"> -->
+<!-- 									<div class="input-group group-select" style="width:100%;"> -->
+<!-- 										<select class="form-control m-b" id="station" style="border-color: #1c84c6;"> -->
+<!-- 										</select> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 				</div> -->
+<!-- 				<div class="col-sm-3" style="margin-top: 0px;padding-right: 20px;margin-right: 0px;"> -->
+<!-- 					<div class="input-group m-b" style="margin-bottom: 0px"> -->
+<!-- 						<span class="input-group-addon" style="border: 0px solid #E5E6E7;">时间分辩率：</span>  -->
 						
-						<div class="" style="margin-top:5px;">
-								<div class="btn-group" data-toggle="buttons">
-									<label class="btn btn-outline btn-success">
-										<input type="radio" name="rms" value="hour">逐小时
-									</label>
-									<label class="btn btn-outline btn-success active">
-										<input checked type="radio" name="rms" value="day">逐日
-									</label>
-								</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-3">
-					<div class="input-group m-b" style="margin-bottom: 0px">
-						 	<span class="input-group-addon" style="border: 0px solid #E5E6E7;">空间分辩率：</span> 
-						<div class="" style="margin-top:5px;">
-							<div class="btn-group" data-toggle="buttons">
-								<label class="btn btn-outline btn-success ">
-									<input type="radio" name="domain" id="kjOption1" value="1" >27公里
-								</label>
-								<label class="btn btn-outline btn-success">
-									<input type="radio" name="domain" id="kjOption2" value="2">9公里
-								</label>
-								<label class="btn btn-outline btn-success active">
-									<input type="radio" name="domain" id="kjOption3" value="3" checked>3公里
-								</label>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-3" style="padding-left:13px;">
-					<div class="input-group m-b" style="margin-bottom: 0px">
-						<div class="" style="margin-top:5px;">
-							<div class="btn-group" data-toggle="buttons">
-								<label class="btn btn-outline btn-success active">
-									<input type="radio" name="changes" id="absoluChange" value="1" checked>绝对量比较
-								</label>
-								<label class="btn btn-outline btn-success">
-									<input type="radio" name="changes" id="relativeChange" value="2">相对变化
-								</label>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				
-				
-			</div>
-			<div class="row"  style="padding-left:15px;">
-<!-- 				<div class="col-sm-4" style="padding-left:13px;"> -->
+<!-- 						<div class="" style="margin-top:5px;"> -->
+<!-- 								<div class="btn-group" data-toggle="buttons"> -->
+<!-- 									<label class="btn btn-outline btn-success"> -->
+<!-- 										<input type="radio" name="rms" value="hour">逐小时 -->
+<!-- 									</label> -->
+<!-- 									<label class="btn btn-outline btn-success active"> -->
+<!-- 										<input checked type="radio" name="rms" value="day">逐日 -->
+<!-- 									</label> -->
+<!-- 								</div> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
+<!-- 				<div class="col-sm-3"> -->
+<!-- 					<div class="input-group m-b" style="margin-bottom: 0px"> -->
+<!-- 						 	<span class="input-group-addon" style="border: 0px solid #E5E6E7;">空间分辩率：</span>  -->
+<!-- 						<div class="" style="margin-top:5px;"> -->
+<!-- 							<div class="btn-group" data-toggle="buttons"> -->
+<!-- 								<label class="btn btn-outline btn-success active"> -->
+<!-- 									<input type="radio" name="domain" id="kjOption3" value="3" checked>3km</label> -->
+<!-- 								<label class="btn btn-outline btn-success"> -->
+<!-- 									<input type="radio" name="domain" id="kjOption2" value="2">9km</label> -->
+<!-- 								<label class="btn btn-outline btn-success "> -->
+<!-- 									<input type="radio" name="domain" id="kjOption1" value="1" >27km</label> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
+<!-- 				<div class="col-sm-3" style="padding-left:13px;"> -->
 <!-- 					<div class="input-group m-b" style="margin-bottom: 0px"> -->
 <!-- 						<div class="" style="margin-top:5px;"> -->
 <!-- 							<div class="btn-group" data-toggle="buttons"> -->
 <!-- 								<label class="btn btn-outline btn-success active"> -->
-<!-- 									<input type="radio" name="changes" id="absoluChange" value="1">绝对量比较 -->
+<!-- 									<input type="radio" name="changes" id="absoluChange" value="1" checked>绝对量比较 -->
 <!-- 								</label> -->
 <!-- 								<label class="btn btn-outline btn-success"> -->
 <!-- 									<input type="radio" name="changes" id="relativeChange" value="2">相对变化 -->
@@ -240,25 +213,30 @@
 <!-- 						</div> -->
 <!-- 					</div> -->
 <!-- 				</div> -->
-				<div class="col-sm-4">
-					<div class="input-group m-b" style="margin-bottom: 0px">
-						<div class="" style="margin-bottom:0px;padding-left:7px;">
-							<div class="btn-group" data-toggle="buttons">
-								<label name="collapse" class="btn btn-outline btn-success active">
-									<input type="radio" name="spread" value="open" checked>组分展开
-								</label>
-								<label name="collapse" class="btn btn-outline btn-success">
-									<input type="radio" name="spread" value="close">组分收起
-<!-- 									<button type="button" name="spread" value="close">组分收起</button> -->
-								</label>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+				
+<!-- 			</div> -->
+			
+<!-- 			<div class="row"  style="padding-left:15px;"> -->
+<!-- 				<div class="col-sm-4"> -->
+<!-- 					<div class="input-group m-b" style="margin-bottom: 0px"> -->
+<!-- 						<div class="" style="margin-bottom:0px;padding-left:7px;"> -->
+<!-- 							<div class="btn-group" data-toggle="buttons"> -->
+<!-- 								<label name="collapse" class="btn btn-outline btn-success active"> -->
+<!-- 									<input type="radio" name="spread" value="open" checked>组分展开 -->
+<!-- 								</label> -->
+<!-- 								<label name="collapse" class="btn btn-outline btn-success"> -->
+<!-- 									<input type="radio" name="spread" value="close">组分收起 -->
+<!-- 								</label> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
+			
 			<div class="row" style="margin-left: 0px;margin-right: 0px;width:100%;height:calc(100% - 48px);">
-				<div class='col-md-12' id="initEcharts" style="height:100%;padding-left: 0px;">
-	
+				
+				<div class="col-md-12" id="initEcharts" style="height:100%;padding-left: 0px;">
+					
 	        	</div>
 				<!--<div class='col-md-12' style="height:100%;width:100%;padding-left: 0px;">
 					
