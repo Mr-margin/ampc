@@ -1668,7 +1668,9 @@ function findQJstatus() {
     }).success(function (res) {
         qjMsg.scenarinoStatus = res.data.scenarinoStatus;
         if (qjMsg.scenarinoStatus != 5) {
-            findQJstatus();
+            window.setTimeout(function () {
+                findQJstatus();
+            },1000);
         } else {
             scenarinoType(qjMsg.scenarinoStatus);
         }
