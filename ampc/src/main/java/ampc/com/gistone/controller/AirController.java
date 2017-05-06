@@ -1346,7 +1346,9 @@ public class AirController {
 						Map<String,Double> suMap=new HashMap();
 						Entry<String, List> spciter=Allspciter.next();
 						String spc=spciter.getKey();
-						
+						if(spc.equals("O3_8h")){
+							continue;
+						}
 						Map psm=psumMapsum.get(day);
 						List<Object> numma=spciter.getValue();
 						for(int s=0;s<=23;s++){
