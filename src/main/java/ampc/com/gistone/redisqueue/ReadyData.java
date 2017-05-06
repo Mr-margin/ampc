@@ -88,6 +88,9 @@ import java.util.UUID;
 
 
 
+
+
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -214,7 +217,26 @@ public class ReadyData {
 		}
 	}
 	/**
-	 * @Description: 续跑的方法
+	 * @Description: 出错续跑
+	 * @param scenarinoId
+	 * @param scenarinoType
+	 * @param missionType
+	 * @param missionId
+	 * @param userId
+	 * @return   
+	 * boolean  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年5月5日 下午7:00:38
+	 */
+	public boolean continuePredictByError(Long scenarinoId,
+			Integer scenarinoType, Integer missionType, Long missionId,
+			Long userId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	/**
+	 * @Description: 暂停-续跑的方法
 	 * @param scenarinoId
 	 * @param scenarinoType
 	 * @param missionType
@@ -226,9 +248,9 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年4月28日 下午4:02:09
 	 */
-	public String continuePredict(Long scenarinoId, Integer scenarinoType,
+	public boolean continuePredict(Long scenarinoId, Integer scenarinoType,
 			Integer missionType, Long missionId, Long userId) {
-		String str = null;
+		boolean flag = false;
 		boolean continuemodel = true;
 		if (scenarinoType==4&&missionType==1) {
 			//准备实时预报的数据(自己测试用的）
@@ -239,30 +261,30 @@ public class ReadyData {
 			}else {
 				LogUtil.getLogger().info("当天的实时预报已经发送过了！");
 			}
-			str="ok";
+			flag=true;
 		}
 		if (scenarinoType==3&&missionType==3) {
 			//基准情景
-			readyBaseData(scenarinoId,continuemodel);
-			str="ok";
+			flag =readyBaseData(scenarinoId,continuemodel);
+//			flag=true;
 		}
 		if (scenarinoType==1&&missionType==2) {
 			//预评估任务的预评估情景
 			//readyPreEvaluationSituationDataFirst(scenarinoId,cores);
 			LogUtil.getLogger().info("预评估任务的预评估情景模式开始！");
-			str="ok";
+			flag=true;
 		}
 		if (scenarinoType==2&&missionType==2) {
 			//预评估任务的后评估情景
 			LogUtil.getLogger().info("预评估任务的后评估情景模式开始！");
 			readyPrePostEvaluationSituationData(scenarinoId);
-			str="ok";
+			flag=true;
 		}
 		if (scenarinoType==2&&missionType==3) {
 			//后评估任务的后评估情景
 			continuePPEvSituationData(scenarinoId);
 		}
-		return str;
+		return flag;
 	}
 
 	/**
@@ -836,7 +858,7 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年3月27日 上午10:23:18
 	 */
-	public void readyBaseData(Long scenarinoId,boolean continuemodel) {
+	public boolean readyBaseData(Long scenarinoId,boolean continuemodel) {
 		//创建消息体对象
 		QueueData queueData = getHeadParameter("model.start");
 		//创建wrf对象
@@ -854,11 +876,11 @@ public class ReadyData {
 		QueueDataCommon commonData = getcommonMSG(scenarinoId,"fnl",null,scenarinoType,true,scenarinoDetailMSG);
 		//spinup
 		Long DBspinup = scenarinoDetailMSG.getSpinup();
-		LogUtil.getLogger().info("这个是Dbspinup"+DBspinup);
+		LogUtil.getLogger().info("这个是Dbspinup:"+DBspinup);
 		//准备wrf数据
 		//设置wrf的spinup
 		Long spinup = DBspinup+5;
-		LogUtil.getLogger().info(spinup+"这个是SPINUP");
+		LogUtil.getLogger().info("这个是SPINUP:"+spinup);
 		wrfData.setSpinup(spinup);
 		//准备lastungrib 无关就设置为空
 		//String lastungrib = readyLastUngrib();
@@ -889,8 +911,8 @@ public class ReadyData {
 		
 		//预评估任务的后评估情景 时间是一个时间段  存结束时间
 		String string = DateUtil.DATEtoString(scenarinoDetailMSG.getScenarinoEndDate(), "yyyyMMdd HH:mm:ss");
-		sendQueueData.toJson(queueData,scenarinoId,string);
-		
+		boolean successORfail = sendQueueData.toJson(queueData,scenarinoId,string);
+		return successORfail;
 	}
 	
 	
@@ -917,7 +939,7 @@ public class ReadyData {
 		Long scenarinoId = scenarinoDetailMSG.getScenarinoId();//情景id
 		Long cores =Long.parseLong(scenarinoDetailMSG.getExpand3());//计算核数
 		
-		getCindexAndcDate(scenarinoId,scenarinoType);
+		bodyData2 = getCindexAndcDate(scenarinoId,scenarinoType);
 		
 		bodyData2.setCores(cores);
 		bodyData2.setUserid(userId.toString());
@@ -943,24 +965,109 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年5月2日 下午6:02:56
 	 */
-	private void getCindexAndcDate(Long scenarinoId, Integer scenarinoType) {
+	private QueueBodyData2 getCindexAndcDate(Long scenarinoId, Integer scenarinoType) {
+		//创建消息bady对象
+		QueueBodyData2 bodyData2 = new QueueBodyData2();
 		TTasksStatus selectStatus = tTasksStatusMapper.selectStatus(scenarinoId);
+		Date scenarinoEndDate = selectStatus.getScenarinoEndDate();
+		Date scenarinoStartDate = selectStatus.getScenarinoStartDate();
 		Long stepindex = selectStatus.getStepindex();
-		String cIndex = stepindex.toString();
+		Integer cIndex = null;
 		Date tasksEndDate = selectStatus.getTasksEndDate();
-		if (scenarinoType==1) {
-			//预评估情景
+		String cDate = null;
+		String errorStatus = selectStatus.getErrorStatus();
+		if (null!=errorStatus) {
+			//1.模式执行出错的状态续跑
+			cIndex =Integer.valueOf(stepindex.toString()) ;
+			cDate = DateUtil.DATEtoString(tasksEndDate, "yyyyMMdd");
+		}else {
+			//2.正常情况下的续跑
+			if (scenarinoType==1) {
+				//预评估情景 逐日执行
+				int compareTo = tasksEndDate.compareTo(scenarinoEndDate);
+				if (stepindex==4) {
+					if (compareTo<0) {
+						cIndex = 1;
+						cDate = DateUtil.changeDate(tasksEndDate, "yyyyMMdd", 1);
+					}
+				}
+				if(stepindex<4){
+					if (compareTo<0) {
+						//情景中间的某一个index
+						cIndex = Integer.valueOf(stepindex.toString())+1;
+						cDate = DateUtil.DATEtoString(tasksEndDate, "yyyyMMdd");
+					}
+					
+				}
+			}
+			if (scenarinoType==2) {
+				//后评估情景 逐模块执行
+				int compareTo = tasksEndDate.compareTo(scenarinoEndDate);
+				if (stepindex==4) {
+					if (compareTo<0) {
+						cIndex = Integer.valueOf(stepindex.toString());
+						cDate = DateUtil.changeDate(tasksEndDate, "yyyyMMdd", 1);
+					}
+					/*if (compareTo==0) {
+						cDate = DateUtil.DATEtoString(scenarinoStartDate, "yyyyMMdd");
+					}*/
+				}
+				if(stepindex<4){
+					if (compareTo<0) {
+						cIndex = Integer.valueOf(stepindex.toString());
+						cDate = DateUtil.changeDate(tasksEndDate, "yyyyMMdd", 1);
+					}
+					if (compareTo==0) {
+						cIndex = Integer.valueOf(stepindex.toString())+1;
+						cDate =  DateUtil.DATEtoString(scenarinoStartDate, "yyyyMMdd");
+					}
+				}
+			}
+			if (scenarinoType==3) {
+				//新基准情景
+				int compareTo = tasksEndDate.compareTo(scenarinoEndDate);
+				if (stepindex==8) {
+					if (compareTo<0) {
+						cIndex = Integer.valueOf(stepindex.toString());
+						cDate = DateUtil.changeDate(tasksEndDate, "yyyyMMdd", 1);
+					}
+				}
+				if (stepindex<8){
+					if (compareTo<0) {
+						cIndex = Integer.valueOf(stepindex.toString());
+						cDate = DateUtil.changeDate(tasksEndDate, "yyyyMMdd", 1);
+					}
+					if (compareTo==0) {
+						cIndex = Integer.valueOf(stepindex.toString())+1;
+						cDate = DateUtil.DATEtoString(scenarinoStartDate, "yyyyMMdd");
+					}
+				}
+			}
+			if (scenarinoType==4) {
+				//实时预报情景
+				int compareTo = tasksEndDate.compareTo(scenarinoEndDate);
+				if (stepindex==8) {
+					if (compareTo<0) {
+						cIndex = 1;
+						cDate = DateUtil.changeDate(tasksEndDate, "yyyyMMdd", 1);
+					}
+				}
+				if (stepindex<8) {
+					if (compareTo<0) {
+						cIndex = Integer.valueOf(stepindex.toString())+1;
+						cDate = DateUtil.DATEtoString(tasksEndDate, "yyyyMMdd");
+					}
+					if (compareTo==0) {
+						
+					}
+				}else {
+					cIndex = Integer.valueOf(stepindex.toString())+1;
+				}
+			}
 		}
-		if (scenarinoType==2) {
-			//后评估情景
-		}
-		if (scenarinoType==3) {
-			//新基准情景
-		}
-		if (scenarinoType==4) {
-			//实时预报情景
-			
-		}
+		bodyData2.setcIndex(cIndex);
+		bodyData2.setcDate(cDate);
+		return bodyData2;
 	}
 	/**
 	 * @Description: 预评估任务的预评估情景
@@ -1295,13 +1402,18 @@ public class ReadyData {
 		//设置Calctype 计算方式
 		DataEmis.setCalctype("server");//cache
 		//实时预报和基准情景不需要取减排系数 设置为空
-		if ("3".equals(scenarinoType.trim())||"4".equals(scenarinoType.trim())) {
+		if ("3".equals(scenarinoType.trim())) {
+			//
+			DataEmis.setPsal("");
+			//
+			DataEmis.setSsal("");
+		}else if("4".equals(scenarinoType.trim())){
 			//
 			DataEmis.setPsal("");
 			//
 			DataEmis.setSsal("");
 		}else {
-			//其他情景需要设置减排系数
+			//其他情景需要设置减排系数 从数据库里面取
 			//DataEmis.setPsal(tasksStatus.getPsal());
 			DataEmis.setPsal("");
 			//DataEmis.setSsal(tasksStatus.getSsal());
@@ -1310,6 +1422,7 @@ public class ReadyData {
 	
 		//	DataEmis.setMeiccityconfig(tasksStatus.getMeiccityconfig());
 		DataEmis.setMeiccityconfig("/work/modelcloud/meic_tool/meic-city.conf");
+		DataEmis.setControlfile("/work/modelcloud/lixin_meic/hebei/cf/cf_zero.csv");
 		return DataEmis;
 	}
 
@@ -1344,24 +1457,6 @@ public class ReadyData {
 		return flag;
 		
 	}
-	
-	
-
-
-	
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
 	
 
 }
