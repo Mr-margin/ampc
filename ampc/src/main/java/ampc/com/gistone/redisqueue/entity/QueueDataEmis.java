@@ -29,6 +29,9 @@ public class QueueDataEmis {
 	private String ssal;
 	//"/work/b/lixin_meic/hebei/meic-city.conf"
 	private String meiccityconfig;
+	
+	private String controlfile;
+	
 	public String getSourceid() {
 		return sourceid;
 	}
@@ -58,6 +61,13 @@ public class QueueDataEmis {
 	}
 	public void setMeiccityconfig(String meiccityconfig) {
 		this.meiccityconfig = meiccityconfig;
+	}
+	
+	public String getControlfile() {
+		return controlfile;
+	}
+	public void setControlfile(String controlfile) {
+		this.controlfile = controlfile;
 	}
 	public QueueDataEmis() {
 		super();
