@@ -382,10 +382,7 @@ function bianji_wanggepafang(type, g_num, p , wind){
         var GPserver_url = ArcGisServerUrl + "/arcgis/rest/services/ampc_zrly/reuslt/GPServer/reuslt";
         
         var pftype = par.species[sp];
-        var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
-        if (out_raster_layer) {
-            app.mapList[g_num].removeLayer(out_raster_layer);
-        }
+
         
         app.gp = new esri.tasks.Geoprocessor(GPserver_url);
         var a1 = new dong.RasterData();
@@ -414,6 +411,12 @@ function bianji_wanggepafang(type, g_num, p , wind){
                 case 'esriJobExecuting':
                     break;
                 case 'esriJobSucceeded':
+                    var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
+                    if (out_raster_layer) {
+                        app.mapList[g_num].removeLayer(out_raster_layer);
+                    }
+                    $('#colorBar'+g_num+' .num span').eq(0).html(0);
+                    $('#colorBar'+g_num+' .num span').eq(1).html(0.00054);
                     $('#colorBar'+g_num+' img').attr('src','img/colorbar/'+ mappingSpeciesBig[changeMsg.species[0]] +'.png');
                     jobstatus = '--' + g_num + '--处理完成...';
                     console.log((new Date().getTime() - v1) + jobstatus);
