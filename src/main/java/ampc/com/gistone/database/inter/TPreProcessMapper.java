@@ -29,5 +29,7 @@ public interface TPreProcessMapper {
 	List<ScenarinoEntity> selectBysome2(ScenarinoEntity fnlEntity);
 
 	ScenarinoEntity selectBysomes(ScenarinoEntity fnlEntity);
+	
+	ScenarinoEntity selectBysomesFnl(ScenarinoEntity fnlEntity);
 
 }
