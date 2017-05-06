@@ -409,6 +409,21 @@ public class AirController {
 	public AmpcResult findAllTimeSeries(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
 		try{
 			//接收参数
+			Long missionId;			//查询到的任务id
+			TMissionDetail tMissionDetail;	//任务表的信息
+			Long domainId;			//存放查询的模拟范围id
+			String tables;			//存放拼接的表名
+			SimpleDateFormat sdfYear;	//声明格式化时间对象
+			Date dateYear;			//声明年份对象
+			String strYear;			//声明String类型对象
+			ScenarinoEntity scenarinoEntity;
+			int differenceVal;		//结束时间和开始时间差值
+			Calendar calendar;		//声明对象
+			String  contents;		//存放查询到的模拟数据
+			Date calDate;
+			String calDateStr;
+
+			
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			Long userId=Long.parseLong(data.get("userId").toString());	//用户id
@@ -428,52 +443,24 @@ public class AirController {
 				String strDateNow=sdfNow.format(dateNow);
 				HashMap<String, Object> mapNow=new HashMap<String, Object>();
 				mapNow.put("USER_ID", userId);
-//				mapNow.put("PATH_DATE", strDateNow);	
-				mapNow.put("PATH_DATE", "2017-04-15");	//先查询当天的数据，需要时注释即可-------------------
+				mapNow.put("PATH_DATE", strDateNow);	
+//				mapNow.put("PATH_DATE", "2017-04-15");	//先查询当天的数据，需要时注释即可-------------------
 				//进行当天的情景查询
 				TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
 				tScenarinoDetail=tScenarinoDetailMapper.selectScenarinoDetail_timeSeries(mapNow);
-				Date start_date=sdfNow.parse(startDate);
-				Date end_date=sdfNow.parse(endDate);
-				int differenceVal = (int) ((end_date.getTime() - start_date.getTime()) / (1000*3600*24));
-				Calendar calendar = Calendar.getInstance();
-				//从查询的情景中获取到开始时间和结束时间
-				if(tScenarinoDetail==null){
-					//求出开始时间和结束时间相差的天数
-//					Date start_date=sdfNow.parse(startDate);
-//					Date end_date=sdfNow.parse(endDate);
-//					int differenceVal = (int) ((end_date.getTime() - start_date.getTime()) / (1000*3600*24));
-					for(int i=0;i<differenceVal;i++){	//循环判断查询所选最近一次有数据的日期
-//						Calendar calendar = Calendar.getInstance();
-						calendar.setTime(sdfNow.parse(endDate));
-						calendar.add(Calendar.DAY_OF_MONTH, -(i+1));
-						Date calDate = calendar.getTime();
-						String calDateStr=sdfNow.format(calDate);
-						mapNow.put("PATH_DATE", calDateStr);
-						tScenarinoDetail=tScenarinoDetailMapper.selectScenarinoDetail_timeSeries(mapNow);
-						if(tScenarinoDetail!=null){	//查询到数据跳出
-							break;
-						}else if(i==differenceVal-1){	//查询到最后一次
-							if(tScenarinoDetail==null){	//开始时间没有查询到数据
-								return AmpcResult.build(1000, "该情景任务中数据没有插入到数据库",null);
-							}
-						}
-					}
-				}else{
-					//说明已经查询到数据
-				}
-				//根据该情景所属任务的任务（missionId）查询其情景范围（dominID）
-				Long missionId=tScenarinoDetail.getMissionId();
-				TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);	
-				Long domainId=tMissionDetail.getMissionDomainId();	//得到情景范围ID---作为查询参数
 				
-				String tables="T_SCENARINO_DAILY_";	//表名+年份+userid
-				SimpleDateFormat sdfYear=new SimpleDateFormat("yyyy");	//当前年份
-				Date dateYear=new Date();
-				String strYear=sdfYear.format(dateYear);
+				//根据该情景所属任务的任务（missionId）查询其情景范围（dominID）
+				missionId=tScenarinoDetail.getMissionId();
+				tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);	
+				domainId=tMissionDetail.getMissionDomainId();	//得到情景范围ID---作为查询参数
+				
+				tables="T_SCENARINO_DAILY_";	//表名+年份+userid
+				sdfYear=new SimpleDateFormat("yyyy");	//当前年份
+				dateYear=new Date();
+				strYear=sdfYear.format(dateYear);
 				tables+=strYear+"_";
 				tables+=userId;
-				ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+				scenarinoEntity=new ScenarinoEntity();
 				scenarinoEntity.setCity_station(cityStation);
 				scenarinoEntity.setDomain(3);					//空间分辨率--需要时注释即可,数据库中目前只有为3的数据-----------------------
 //				scenarinoEntity.setDomain(Integer.valueOf(domain));
@@ -485,149 +472,351 @@ public class AirController {
 				scenarinoEntity.setsId(Long.valueOf(tScenarinoDetail.getScenarinoId().toString()).longValue());
 				scenarinoEntity.setTableName(tables);
 				ScenarinoEntity Scenarino=tPreProcessMapper.selectBysomes(scenarinoEntity);
-				String  contents=Scenarino.getContent();		//获取模拟数据
-				JSONObject contentobj= JSONObject.fromObject(contents);
-				JSONArray dayArr=new JSONArray();
-				Map<String,Object> contentmap= (Map)contentobj;	//模拟父数据
 				
-				JSONObject simulationData=new JSONObject();		//返给页面的模拟数据
-				JSONObject speciesData=new JSONObject();		
+				Date start_date=sdfNow.parse(startDate);
+				Date end_date=sdfNow.parse(endDate);
+				differenceVal = (int) ((end_date.getTime() - start_date.getTime()) / (1000*3600*24));
+				calendar = Calendar.getInstance();
 				
-//				for(String dayKey:contentmap.keySet()){			//对日期进行排序
-//					dayArr.add(dayKey);
-//				}
-//				Collections.sort(dayArr);
-//				dayArr.get(0);	//排序
-				Map<String,Object> spmap=new HashMap<String, Object>();
-				for(String dayKey:contentmap.keySet()){
-					Object  species=contentmap.get(dayKey);		//值
-					if(species!=null){
-						spmap= (Map)species;
-						break;
-					}
-				}
-				for(String speciesKey:spmap.keySet()){			//循环所有物种名称---并给日期赋值
-					for(String dayKey:contentmap.keySet() ){	//循环全部日期
-//						for(String contentmapKey:contentmap.keySet()){
-//							contentmap.get(dayKey)
-//						}
-						Object speciesobj=contentmap.get(dayKey);
-						Map<String,Object> speciesMap= (Map)speciesobj;
-//						for(String speciesMapKey:speciesMap.keySet()){
-						Object speciesOne=speciesMap.get(speciesKey);
-						Map<String,Object> speciesOneMap= (Map)speciesOne;
-//						Object speciesOneStr=speciesOneMap.get("0");
-						String speciesOneVal=speciesOneMap.get("0").toString();
-						if("CO".equals(speciesKey)){
-							if("".equals(speciesOneVal)||speciesOneVal==null){		//判断是否有值
-								speciesData.put(dayKey,"-");
-							}else{
-								BigDecimal bd=(new BigDecimal(speciesOneMap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
-								speciesData.put(dayKey,bd);
+				//从查询的情景中获取到开始时间和结束时间
+				if(Scenarino==null||"".equals(Scenarino)){ 
+					
+					//求出开始时间和结束时间相差的天数
+//					Date start_date=sdfNow.parse(startDate);
+//					Date end_date=sdfNow.parse(endDate);
+//					int differenceVal = (int) ((end_date.getTime() - start_date.getTime()) / (1000*3600*24));
+					for(int i=0;i<=differenceVal;i++){	//循环判断查询所选最近一次有数据的日期
+//						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(sdfNow.parse(endDate));
+						calendar.add(Calendar.DAY_OF_MONTH, -(i+1));
+						calDate = calendar.getTime();
+						calDateStr=sdfNow.format(calDate);
+						mapNow.put("PATH_DATE", calDateStr);
+						tScenarinoDetail=tScenarinoDetailMapper.selectScenarinoDetail_timeSeries(mapNow);
+						
+						missionId=tScenarinoDetail.getMissionId();
+						tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);	
+						domainId=tMissionDetail.getMissionDomainId();	//得到情景范围ID---作为查询参数
+						
+						tables="T_SCENARINO_DAILY_";	//表名+年份+userid
+						sdfYear=new SimpleDateFormat("yyyy");	//当前年份
+						dateYear=new Date();
+						strYear=sdfYear.format(dateYear);
+						tables+=strYear+"_";
+						tables+=userId;
+						scenarinoEntity=new ScenarinoEntity();
+						scenarinoEntity.setCity_station(cityStation);
+						scenarinoEntity.setDomain(3);					//空间分辨率--需要时注释即可,数据库中目前只有为3的数据-----------------------
+//						scenarinoEntity.setDomain(Integer.valueOf(domain));
+						scenarinoEntity.setMode(mode);
+//						scenarinoEntity.setDomainId(Integer.parseInt(String.valueOf(domainId)));
+						scenarinoEntity.setDomainId(Long.valueOf(domainId).longValue());
+						
+//						scenarinoEntity.setsId(Integer.valueOf(tScenarinoDetail.getScenarinoId().toString()));
+						scenarinoEntity.setsId(Long.valueOf(tScenarinoDetail.getScenarinoId().toString()).longValue());
+						scenarinoEntity.setTableName(tables);
+						Scenarino=tPreProcessMapper.selectBysomes(scenarinoEntity);
+						
+						if(Scenarino!=null){	//查询到模拟数据跳出
+							
+							contents=Scenarino.getContent();		//获取模拟数据
+							JSONObject contentobj= JSONObject.fromObject(contents);
+							JSONArray dayArr=new JSONArray();
+							Map<String,Object> contentmap= (Map)contentobj;	//模拟父数据
+							
+							JSONObject simulationData=new JSONObject();		//返给页面的模拟数据
+							JSONObject speciesData=new JSONObject();		
+							
+//							for(String dayKey:contentmap.keySet()){			//对日期进行排序
+//								dayArr.add(dayKey);
+//							}
+//							Collections.sort(dayArr);
+//							dayArr.get(0);	//排序
+							Map<String,Object> spmap=new HashMap<String, Object>();
+							for(String dayKey:contentmap.keySet()){
+								Object  species=contentmap.get(dayKey);		//值
+								if(species!=null){
+									spmap= (Map)species;
+									break;
+								}
 							}
-						}else{
-							if("".equals(speciesOneVal)||speciesOneVal==null){		//判断是否有值
-								speciesData.put(dayKey,"-");
+							for(String speciesKey:spmap.keySet()){			//循环所有物种名称---并给日期赋值
+								for(String dayKey:contentmap.keySet() ){	//循环全部日期
+//									for(String contentmapKey:contentmap.keySet()){
+//										contentmap.get(dayKey)
+//									}
+									Object speciesobj=contentmap.get(dayKey);
+									Map<String,Object> speciesMap= (Map)speciesobj;
+//									for(String speciesMapKey:speciesMap.keySet()){
+									Object speciesOne=speciesMap.get(speciesKey);
+									Map<String,Object> speciesOneMap= (Map)speciesOne;
+//									Object speciesOneStr=speciesOneMap.get("0");
+									String speciesOneVal=speciesOneMap.get("0").toString();
+									if("CO".equals(speciesKey)){
+										if("".equals(speciesOneVal)||speciesOneVal==null){		//判断是否有值
+											speciesData.put(dayKey,"-");
+										}else{
+											BigDecimal bd=(new BigDecimal(speciesOneMap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+											speciesData.put(dayKey,bd);
+										}
+									}else{
+										if("".equals(speciesOneVal)||speciesOneVal==null){		//判断是否有值
+											speciesData.put(dayKey,"-");
+										}else{
+											BigDecimal bd=(new BigDecimal(speciesOneMap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+											speciesData.put(dayKey,bd);
+										}
+									}
+//									speciesData.put(dayKey,speciesOneMap.get("0"));
+//									}
+								}
+								simulationData.put(speciesKey,speciesData);
+							}
+							/*
+							 * 查询观测数据
+							 */
+							JSONObject observationData=new JSONObject();		//返给页面的模拟数据
+							JSONObject obsSpeciesData=new JSONObject();
+							HashMap<String, Object> obsMap=new HashMap<String, Object>();	//查询观测数据开始
+							obsMap.put("city_station",cityStation);
+							String modes;								//用于存放新的mode
+							if("point".equals(mode)){
+								 modes="station";
 							}else{
-								BigDecimal bd=(new BigDecimal(speciesOneMap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
-								speciesData.put(dayKey,bd);
+								 modes=mode;
+							}
+							obsMap.put("mode",modes);
+							String tables_obs="T_OBS_DAILY_";
+							DateFormat df_obs = new SimpleDateFormat("yyyy");
+							Date nowDate=new Date();
+							String nowYear_obs= df_obs.format(nowDate);		//截取该任务的开始时间来改变查询的表格
+							tables_obs+=nowYear_obs;
+							obsMap.put("tableName",tables_obs);				//查询的表格
+							
+//							obsMap.put("date", sdfNow.parse(startDate));
+//							ObsBean obsspecies=tObsMapper.queryUnionResult(obsMap);
+//							Object obsContent_one=obsspecies.getContent();
+//							Map<String,Object> obsContentMap_one= (Map)obsContent_one;
+							Object[] speciesArr={"NO2","PM2_5","O3","SO2","PM10","AQI","O3_8h","CO"};
+							for(int m=0;m<speciesArr.length;m++){	
+							
+								for(int j=0;j<=differenceVal;j++){		//循环页面开始年份和结束年份的差值--开始
+				//					calendar.setTime(sdfNow.parse(startDate));
+									calendar.setTime(sdfNow.parse("2017-04-15"));
+									calendar.add(Calendar.DAY_OF_MONTH, (j+1));
+									 calDate = calendar.getTime();
+									 calDateStr=sdfNow.format(calDate);
+									
+									calendar.setTime(sdfNow.parse(calDateStr));
+									calendar.add(Calendar.DAY_OF_MONTH, -1);
+									Date calDates = calendar.getTime();
+									String calDateStrs=sdfNow.format(calDates);
+									Date calDate_now=sdfNow.parse(calDateStrs);
+									obsMap.put("date", calDate_now);
+									ObsBean obsBeans=tObsMapper.queryUnionResult(obsMap);	//查询观测数据
+									
+									if(!"".equals(obsBeans)&&obsBeans!=null&&!"{}".equals(obsBeans)){
+										
+										String obsContent=obsBeans.getContent().toString();
+										JSONObject obsContentobj=JSONObject.fromObject(obsContent);
+										Map<String,Object> obsContentMap= (Map)obsContentobj;
+//										for(String obsContentKey:obsContentMap.keySet()){
+//											if(speciesArr[m].equals(obsContentKey)){
+//												obsSpeciesData.put(calDate_now, obsContentMap.get(obsContentKey));
+//												break;
+//											}
+//										}
+										for(int k=0;k<speciesArr.length;k++){		//查询的观测数据不为空时，进行赋值
+											if(speciesArr[m].equals(speciesArr[k])){
+												try {
+													String speciesval=obsContentMap.get(speciesArr[k]).toString();	//键为空出现异常时，赋值"-"
+													if("CO".equals(speciesArr[k])){									//值不为空，保留位数判断
+														BigDecimal bd=(new BigDecimal(speciesval)).setScale(2, BigDecimal.ROUND_HALF_UP);
+														obsSpeciesData.put(sdfNow.format(calDate_now), bd);
+													}else{
+														BigDecimal bd=(new BigDecimal(speciesval)).setScale(1, BigDecimal.ROUND_HALF_UP);
+														obsSpeciesData.put(sdfNow.format(calDate_now), bd);
+													}
+													
+												} catch (Exception e) {
+													// TODO: handle exception
+													obsSpeciesData.put(calDate_now,"-" );
+												}
+											}
+										}
+									}else{
+										for(int k=0;k<speciesArr.length;k++){	//查询的观测数据为空时，进行赋值
+											if(speciesArr[m].equals(speciesArr[k])){
+												obsSpeciesData.put(calDate_now,"-" );
+											}
+										}
+									}
+									
+								}	//循环页面开始年份和结束年份的差值--结束
+								observationData.put(speciesArr[m],obsSpeciesData);
+							}
+//							Date scenarinoStartDate=tScenarinoDetail.getScenarinoStartDate();	//查询到的实时预报情景的开始时间
+//							Date scenarinoEndDate=tScenarinoDetail.getScenarinoEndDate();		//查询到的实时预报情景的结束时间
+							
+							//查询的情景中结束时间如果没有从页面获取到的结束时间参数时，数据赋值为"-"进行表示
+							//查询的情景中开始时间如果没有从页面获取到的开始时间参数时，则在FNL表中查询
+							objData.put("模拟数据", simulationData);
+							objData.put("观测数据", observationData);
+														
+							break;
+						}else if(i==differenceVal-1){	//查询到最后一次
+							if(Scenarino==null){	//开始时间没有查询到数据
+								return AmpcResult.build(1000, "该情景任务中数据没有插入到数据库",null);
 							}
 						}
-//						speciesData.put(dayKey,speciesOneMap.get("0"));
-//						}
 					}
-					simulationData.put(speciesKey,speciesData);
-				}
-				/*
-				 * 查询观测数据
-				 */
-				JSONObject observationData=new JSONObject();		//返给页面的模拟数据
-				JSONObject obsSpeciesData=new JSONObject();
-				HashMap<String, Object> obsMap=new HashMap<String, Object>();	//查询观测数据开始
-				obsMap.put("city_station",cityStation);
-				String modes;								//用于存放新的mode
-				if("point".equals(mode)){
-					 modes="station";
-				}else{
-					 modes=mode;
-				}
-				obsMap.put("mode",modes);
-				String tables_obs="T_OBS_DAILY_";
-				DateFormat df_obs = new SimpleDateFormat("yyyy");
-				Date nowDate=new Date();
-				String nowYear_obs= df_obs.format(nowDate);		//截取该任务的开始时间来改变查询的表格
-				tables_obs+=nowYear_obs;
-				obsMap.put("tableName",tables_obs);				//查询的表格
-				
-//				obsMap.put("date", sdfNow.parse(startDate));
-//				ObsBean obsspecies=tObsMapper.queryUnionResult(obsMap);
-//				Object obsContent_one=obsspecies.getContent();
-//				Map<String,Object> obsContentMap_one= (Map)obsContent_one;
-				Object[] speciesArr={"NO2","PM2_5","O3","SO2","PM10","AQI","O3_8h","CO"};
-				for(int m=0;m<speciesArr.length;m++){	
-				
-					for(int j=0;j<=differenceVal;j++){		//循环页面开始年份和结束年份的差值--开始
-	//					calendar.setTime(sdfNow.parse(startDate));
-						calendar.setTime(sdfNow.parse("2017-04-15"));
-						calendar.add(Calendar.DAY_OF_MONTH, (j+1));
-						Date calDate = calendar.getTime();
-						String calDateStr=sdfNow.format(calDate);
-						
-						calendar.setTime(sdfNow.parse(calDateStr));
-						calendar.add(Calendar.DAY_OF_MONTH, -1);
-						Date calDates = calendar.getTime();
-						String calDateStrs=sdfNow.format(calDates);
-						Date calDate_now=sdfNow.parse(calDateStrs);
-						obsMap.put("date", calDate_now);
-						ObsBean obsBeans=tObsMapper.queryUnionResult(obsMap);	//查询观测数据
-						
-						if(!"".equals(obsBeans)&&obsBeans!=null&&!"{}".equals(obsBeans)){
-							
-							String obsContent=obsBeans.getContent().toString();
-							JSONObject obsContentobj=JSONObject.fromObject(obsContent);
-							Map<String,Object> obsContentMap= (Map)obsContentobj;
-//							for(String obsContentKey:obsContentMap.keySet()){
-//								if(speciesArr[m].equals(obsContentKey)){
-//									obsSpeciesData.put(calDate_now, obsContentMap.get(obsContentKey));
-//									break;
-//								}
+				}else{	//说明已经查询到当天的到数据--第一次
+					
+					contents=Scenarino.getContent();		//获取模拟数据
+					JSONObject contentobj= JSONObject.fromObject(contents);
+					JSONArray dayArr=new JSONArray();
+					Map<String,Object> contentmap= (Map)contentobj;	//模拟父数据
+					
+					JSONObject simulationData=new JSONObject();		//返给页面的模拟数据
+					JSONObject speciesData=new JSONObject();		
+					
+//					for(String dayKey:contentmap.keySet()){			//对日期进行排序
+//						dayArr.add(dayKey);
+//					}
+//					Collections.sort(dayArr);
+//					dayArr.get(0);	//排序
+					Map<String,Object> spmap=new HashMap<String, Object>();
+					for(String dayKey:contentmap.keySet()){
+						Object  species=contentmap.get(dayKey);		//值
+						if(species!=null){
+							spmap= (Map)species;
+							break;
+						}
+					}
+					for(String speciesKey:spmap.keySet()){			//循环所有物种名称---并给日期赋值
+						for(String dayKey:contentmap.keySet() ){	//循环全部日期
+//							for(String contentmapKey:contentmap.keySet()){
+//								contentmap.get(dayKey)
 //							}
-							for(int k=0;k<speciesArr.length;k++){		//查询的观测数据不为空时，进行赋值
-								if(speciesArr[m].equals(speciesArr[k])){
-									try {
-										String speciesval=obsContentMap.get(speciesArr[k]).toString();	//键为空出现异常时，赋值"-"
-										if("CO".equals(speciesArr[k])){									//值不为空，保留位数判断
-											BigDecimal bd=(new BigDecimal(speciesval)).setScale(2, BigDecimal.ROUND_HALF_UP);
-											obsSpeciesData.put(sdfNow.format(calDate_now), bd);
-										}else{
-											BigDecimal bd=(new BigDecimal(speciesval)).setScale(1, BigDecimal.ROUND_HALF_UP);
-											obsSpeciesData.put(sdfNow.format(calDate_now), bd);
+							Object speciesobj=contentmap.get(dayKey);
+							Map<String,Object> speciesMap= (Map)speciesobj;
+//							for(String speciesMapKey:speciesMap.keySet()){
+							Object speciesOne=speciesMap.get(speciesKey);
+							Map<String,Object> speciesOneMap= (Map)speciesOne;
+//							Object speciesOneStr=speciesOneMap.get("0");
+							String speciesOneVal=speciesOneMap.get("0").toString();
+							if("CO".equals(speciesKey)){
+								if("".equals(speciesOneVal)||speciesOneVal==null){		//判断是否有值
+									speciesData.put(dayKey,"-");
+								}else{
+									BigDecimal bd=(new BigDecimal(speciesOneMap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+									speciesData.put(dayKey,bd);
+								}
+							}else{
+								if("".equals(speciesOneVal)||speciesOneVal==null){		//判断是否有值
+									speciesData.put(dayKey,"-");
+								}else{
+									BigDecimal bd=(new BigDecimal(speciesOneMap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+									speciesData.put(dayKey,bd);
+								}
+							}
+//							speciesData.put(dayKey,speciesOneMap.get("0"));
+//							}
+						}
+						simulationData.put(speciesKey,speciesData);
+					}
+					/*
+					 * 查询观测数据
+					 */
+					JSONObject observationData=new JSONObject();		//返给页面的模拟数据
+					JSONObject obsSpeciesData=new JSONObject();
+					HashMap<String, Object> obsMap=new HashMap<String, Object>();	//查询观测数据开始
+					obsMap.put("city_station",cityStation);
+					String modes;								//用于存放新的mode
+					if("point".equals(mode)){
+						 modes="station";
+					}else{
+						 modes=mode;
+					}
+					obsMap.put("mode",modes);
+					String tables_obs="T_OBS_DAILY_";
+					DateFormat df_obs = new SimpleDateFormat("yyyy");
+					Date nowDate=new Date();
+					String nowYear_obs= df_obs.format(nowDate);		//截取该任务的开始时间来改变查询的表格
+					tables_obs+=nowYear_obs;
+					obsMap.put("tableName",tables_obs);				//查询的表格
+					
+//					obsMap.put("date", sdfNow.parse(startDate));
+//					ObsBean obsspecies=tObsMapper.queryUnionResult(obsMap);
+//					Object obsContent_one=obsspecies.getContent();
+//					Map<String,Object> obsContentMap_one= (Map)obsContent_one;
+					Object[] speciesArr={"NO2","PM2_5","O3","SO2","PM10","AQI","O3_8h","CO"};
+					for(int m=0;m<speciesArr.length;m++){	
+					
+						for(int j=0;j<=differenceVal;j++){		//循环页面开始年份和结束年份的差值--开始
+		//					calendar.setTime(sdfNow.parse(startDate));
+							calendar.setTime(sdfNow.parse("2017-04-15"));
+							calendar.add(Calendar.DAY_OF_MONTH, (j+1));
+							 calDate = calendar.getTime();
+							 calDateStr=sdfNow.format(calDate);
+							
+							calendar.setTime(sdfNow.parse(calDateStr));
+							calendar.add(Calendar.DAY_OF_MONTH, -1);
+							Date calDates = calendar.getTime();
+							String calDateStrs=sdfNow.format(calDates);
+							Date calDate_now=sdfNow.parse(calDateStrs);
+							obsMap.put("date", calDate_now);
+							ObsBean obsBeans=tObsMapper.queryUnionResult(obsMap);	//查询观测数据
+							
+							if(!"".equals(obsBeans)&&obsBeans!=null&&!"{}".equals(obsBeans)){
+								
+								String obsContent=obsBeans.getContent().toString();
+								JSONObject obsContentobj=JSONObject.fromObject(obsContent);
+								Map<String,Object> obsContentMap= (Map)obsContentobj;
+//								for(String obsContentKey:obsContentMap.keySet()){
+//									if(speciesArr[m].equals(obsContentKey)){
+//										obsSpeciesData.put(calDate_now, obsContentMap.get(obsContentKey));
+//										break;
+//									}
+//								}
+								for(int k=0;k<speciesArr.length;k++){		//查询的观测数据不为空时，进行赋值
+									if(speciesArr[m].equals(speciesArr[k])){
+										try {
+											String speciesval=obsContentMap.get(speciesArr[k]).toString();	//键为空出现异常时，赋值"-"
+											if("CO".equals(speciesArr[k])){									//值不为空，保留位数判断
+												BigDecimal bd=(new BigDecimal(speciesval)).setScale(2, BigDecimal.ROUND_HALF_UP);
+												obsSpeciesData.put(sdfNow.format(calDate_now), bd);
+											}else{
+												BigDecimal bd=(new BigDecimal(speciesval)).setScale(1, BigDecimal.ROUND_HALF_UP);
+												obsSpeciesData.put(sdfNow.format(calDate_now), bd);
+											}
+											
+										} catch (Exception e) {
+											// TODO: handle exception
+											obsSpeciesData.put(calDate_now,"-" );
 										}
-										
-									} catch (Exception e) {
-										// TODO: handle exception
+									}
+								}
+							}else{
+								for(int k=0;k<speciesArr.length;k++){	//查询的观测数据为空时，进行赋值
+									if(speciesArr[m].equals(speciesArr[k])){
 										obsSpeciesData.put(calDate_now,"-" );
 									}
 								}
 							}
-						}else{
-							for(int k=0;k<speciesArr.length;k++){	//查询的观测数据为空时，进行赋值
-								if(speciesArr[m].equals(speciesArr[k])){
-									obsSpeciesData.put(calDate_now,"-" );
-								}
-							}
-						}
-						
-					}	//循环页面开始年份和结束年份的差值--结束
-					observationData.put(speciesArr[m],obsSpeciesData);
+							
+						}	//循环页面开始年份和结束年份的差值--结束
+						observationData.put(speciesArr[m],obsSpeciesData);
+					}
+//					Date scenarinoStartDate=tScenarinoDetail.getScenarinoStartDate();	//查询到的实时预报情景的开始时间
+//					Date scenarinoEndDate=tScenarinoDetail.getScenarinoEndDate();		//查询到的实时预报情景的结束时间
+					
+					//查询的情景中结束时间如果没有从页面获取到的结束时间参数时，数据赋值为"-"进行表示
+					//查询的情景中开始时间如果没有从页面获取到的开始时间参数时，则在FNL表中查询
+					objData.put("模拟数据", simulationData);
+					objData.put("观测数据", observationData);
 				}
-//				Date scenarinoStartDate=tScenarinoDetail.getScenarinoStartDate();	//查询到的实时预报情景的开始时间
-//				Date scenarinoEndDate=tScenarinoDetail.getScenarinoEndDate();		//查询到的实时预报情景的结束时间
 				
-				//查询的情景中结束时间如果没有从页面获取到的结束时间参数时，数据赋值为"-"进行表示
-				//查询的情景中开始时间如果没有从页面获取到的开始时间参数时，则在FNL表中查询
-				objData.put("模拟数据", simulationData);
-				objData.put("观测数据", observationData);
 			}else{		//逐小时
 				
 			}
