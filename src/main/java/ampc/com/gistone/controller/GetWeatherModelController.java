@@ -323,26 +323,8 @@ public class GetWeatherModelController {
 			else if (flag==1) {
 				//判断暂停的条件
 				if (sendtime.equals("0")&&compentstatus.equals("0")) {
-					//还未发送过数据  -直接暂停 
-					//还没有发送数据到队列，可以直接终止-标记tasks状态为2
-					TTasksStatus tTasksStatus = new TTasksStatus();
-					tTasksStatus.setTasksScenarinoId(scenarinoId);
-					tTasksStatus.setPauseStatus("2");//表示不可发送消息到队列
-					int i = tTasksStatusMapper.updatepausestatus(tTasksStatus);
-					if (i>0) {
-						//修改情景状态
-						Map map = new HashMap();
-						map.put("scenarinoStatus", 7l);
-						map.put("scenarinoId", scenarinoId);
-						int updateScenType = tScenarinoDetailMapper.updateScenType(map);
-						if (updateScenType>0) {
-							return AmpcResult.build(0, "暂停成功！");
-						}else {
-							throw new SQLException("GetWeatherModelController  修改情景状态失败!");
-						}
-					}else {
-						throw new SQLException("GetWeatherModelController  更新发送暂停的指令状态失败!");
-					}
+					//还未发送过数据  -不允许暂停
+					return AmpcResult.build(1004, "消息未执行不允许暂停！");
 				}
 				else if (!"0".equals(sendtime)&&compentstatus.equals("2")) {
 					//模式已经执行完毕 正在入库等 不允许暂停
@@ -426,7 +408,6 @@ public class GetWeatherModelController {
 			}
 			//任务类型
 			Integer missionType = Integer.parseInt(param.toString());
-			boolean continuemodel = true; //续跑条件
 			try {
 				TTasksStatus selectStatus = tTasksStatusMapper.selectStatus(scenarinoId);
 				if (null!=selectStatus) {
@@ -434,59 +415,27 @@ public class GetWeatherModelController {
 					if (null!=scenarinoStatus) {
 						String compStatus = selectStatus.getBeizhu();
 						String sendtime = selectStatus.getBeizhu2();
-						String pauseStatus = selectStatus.getPauseStatus();
-						//1.消息第一次还没发送出去的情况
-						if (scenarinoStatus==7&&sendtime.equals("0")&&compStatus.equals("0")&&pauseStatus.equals("2")) {
-							//修改tasks的状态--变为可以发送消息
-							TTasksStatus tTasksStatus = new TTasksStatus();
-							tTasksStatus.setTasksScenarinoId(scenarinoId);
-							tTasksStatus.setPauseStatus("0");
-							int updatepausestatus = tTasksStatusMapper.updatepausestatus(tTasksStatus);
-							if (updatepausestatus>0) {
-								if (scenarinoType==3&&missionType==3) {
-									//基准情景
-									readyData.readyBaseData(scenarinoId,false);
-									return AmpcResult.build(0, "续跑成功！");
-								}
-								if (scenarinoType==1&&missionType==2) {
-									//预评估任务的预评估情景
-									return AmpcResult.build(0, "续跑成功！");
-								}
-								if (scenarinoType==2&&missionType==2) {
-									//预评估任务的后评估情景
-									LogUtil.getLogger().info("预评估任务的后评估情景模式续跑开始！");
-									readyData.readyPrePostEvaluationSituationData(scenarinoId);
-									return AmpcResult.build(0, "续跑成功！");
-								}
-								if (scenarinoType==2&&missionType==3) {
-									//后评估任务的后评估情景
-									LogUtil.getLogger().info("后评估任务的后评估情景续跑开始！");
-									readyData.readypost_PostEvaluationSituationData(scenarinoId);
-									return AmpcResult.build(0, "续跑成功！");
-								}
-								if (scenarinoType==4&&missionType==1) {
-									//实时预报情景
-									return AmpcResult.build(0, "续跑成功！");
-								}else {
-									return AmpcResult.build(1004, "情景参数类型错误！");
-								}
-							}else {
-								throw new SQLException("GetWeatherModelController  修改情景的tasks-paruse的状态失败!");
-							}
-						}
-						//2.模式执行中处于暂停的状态
-						else if (scenarinoStatus==7&&!sendtime.equals("0")&&!compStatus.equals("0")) {
-							String continuePredict = readyData.continuePredict(scenarinoId, scenarinoType, missionType, missionId, userId);
-							if (continuePredict.equals("ok")) {
+//						String pauseStatus = selectStatus.getPauseStatus();
+						//1.模式执行中处于暂停的状态 2.出错状态下的续跑
+						 if (scenarinoStatus==7&&!sendtime.equals("0")&&!compStatus.equals("0")) {
+							 boolean continueModelByError = readyData.continuePredict(scenarinoId, scenarinoType, missionType, missionId, userId);
+							if (continueModelByError) {
 								return AmpcResult.build(0, "续跑成功！");
 							}else {
 								return AmpcResult.build(1004, "续跑失败！");
 							}
-						}
-						//3.出错状态下的续跑
-						else {
+						}else{
 							return AmpcResult.build(1004, "其他错误");
 						}
+						/*//2.出错状态下的续跑
+						else if(scenarinoStatus==9&&!sendtime.equals("0")&&!compStatus.equals("0")){
+							boolean continueModelByError = readyData.continuePredictByError(scenarinoId, scenarinoType, missionType, missionId, userId);
+							if (continueModelByError) {
+								return AmpcResult.build(0, "续跑成功！");
+							}else {
+								return AmpcResult.build(1004, "续跑失败！");
+							}*/
+						
 					}else {
 						throw new SQLException("GetWeatherModelController  查找情景的状态失败!");
 					}
