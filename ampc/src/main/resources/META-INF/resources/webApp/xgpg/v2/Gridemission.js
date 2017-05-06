@@ -22,72 +22,61 @@ var changeMsg = {
     cols: 40
 };
 var speciesArr = {
-    d: ['PM₂.₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NOx', 'CO', 'NH₃', 'BC', 'OM', 'PMFINE','PMC'],
-    a: ['PM₂.₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NOx', 'CO', 'NH₃', 'BC', 'OM', 'PMFINE','PMC'],
-    h: ['PM₂.₅', 'PM₁₀', 'O₃', 'SO₂', 'NOX', 'CO', 'NH₃', 'BC', 'OM', 'PMFINE','PMC']
+    d: ['PM₂.₅', 'PM₁₀', 'SO₂', 'NOx', 'CO', 'NH₃', 'BC', 'OC', 'PMFINE','PMcoarse'],
+    a: ['PM₂.₅', 'PM₁₀', 'SO₂', 'NOx', 'CO', 'NH₃', 'BC', 'OC', 'PMFINE','PMcoarse'],
+    h: ['PM₂.₅', 'PM₁₀', 'SO₂', 'NOx', 'CO', 'NH₃', 'BC', 'OC', 'PMFINE','PMcoarse']
 };
 
 var mappingSpecies = {
     d: {
         'PM₂.₅': 'PM25',
         'PM₁₀': 'PM10',
-        'O₃_8_max': 'o3_8_max',
-        'O₃_1_max': 'o3_1_max',
-        'O₃_avg': 'o3_avg',
         'SO₂': 'so2_daily',
         'NOx': 'nox_daily',
         'CO': 'co_daily',
         'NH₃': 'PM25',
         'BC': 'PM25',
-        'OM': 'PM25',
+        'OC': 'PM25',
         'PMFINE': 'PM25',
-        'PMC':'PM25'
+        'PMcoarse':'PM25'
     },
     a: {
         'PM₂.₅': 'PM25',
         'PM₁₀': 'PM10',
-        'O₃_8_max': 'o3_8_max',
-        'O₃_1_max': 'o3_1_max',
-        'O₃_avg': 'o3_avg',
         'SO₂': 'so2_daily',
         'NOx': 'nox_daily',
         'CO': 'co_daily',
         'NH₃': 'PM25',
         'BC': 'PM25',
-        'OM': 'PM25',
+        'OC': 'PM25',
         'PMFINE': 'PM25',
-        'PMC':'PM25'
+        'PMcoarse':'PM25'
     },
     h: {
         'PM₂.₅': 'PM25',
         'PM₁₀': 'PM10',
-        'O₃': 'o3_hourly',
-        'SO2': 'so2_hourly',
-        'NOx': 'nox_hourly',
-        'CO': 'co_hourly',
+        'SO₂': 'so2_daily',
+        'NOx': 'nox_daily',
+        'CO': 'co_daily',
         'NH₃': 'PM25',
         'BC': 'PM25',
-        'OM': 'PM25',
+        'OC': 'PM25',
         'PMFINE': 'PM25',
-        'PMC': 'PM25'
+        'PMcoarse':'PM25'
     }
 };
 
 var mappingSpeciesBig = {
     'PM₂.₅': 'PM25',
     'PM₁₀': 'PM10',
-    'O₃_8_max': 'O3_8_MAX',
-    'O₃_1_max': 'O3_1_MAX',
-    'O₃_avg': 'O3_AVG',
-    'O₃': 'O3',
     'SO₂': 'SO2',
     'NOx': 'NOX',
     'CO': 'CO',
-    'NH₃': 'NH4',
+    'NH₃': 'NH3',
     'BC': 'BC',
-    'OM': 'OM',
+    'OC': 'OC',
     'PMFINE': 'PMFINE',
-    'PMC': 'PMC'
+    'PMcoarse': 'PMcoarse'
 };
 var stat = {cPointx: 106, cPointy: 35}, app = {}, dong = {};
 var dojoConfig = {
@@ -425,6 +414,7 @@ function bianji_wanggepafang(type, g_num, p , wind){
                 case 'esriJobExecuting':
                     break;
                 case 'esriJobSucceeded':
+                    $('#colorBar'+g_num+' img').attr('src','img/colorbar/'+ mappingSpeciesBig[changeMsg.species[0]] +'.png');
                     jobstatus = '--' + g_num + '--处理完成...';
                     console.log((new Date().getTime() - v1) + jobstatus);
                     zmblockUI("#mapDiv"+g_num, "end");

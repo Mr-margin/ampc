@@ -72,6 +72,26 @@
     position: absolute;
     bottom: 10px;
     left: 10px;
+    width: 70%;
+  }
+  .colorBar .num{
+    width: 100%;
+    position: absolute;
+  }
+  .colorBar .num span{
+    position: absolute;
+    top: 5px;
+    font-size: 16px;
+    color: #000000;
+  }
+  .colorBar .num span:nth-child(1){
+    left: 2%;
+  }
+  .colorBar .num span:nth-child(2){
+    right: 10%;
+  }
+  .colorBar img{
+    width: 100%;
   }
 </style>
 
@@ -182,9 +202,9 @@
   <div class="ibox float-e-margins" style="height:100%;margin-bottom: 0">
     <div class="ibox-content" style="height:100%;overflow-y: auto;padding: 0px;">
 
-      <div class="row" style="margin-left: 0px;margin-right: 0px;height:calc(100%);">
-        <div class='col-md-6' style="height:100%;padding-left: 0px;">
-          <div id="mapDiv0" style="height:100%;border:1px solid #75B9E6;"></div>
+			<div class="row" style="margin-left: 0px;margin-right: 0px;height:calc(100%);">
+				<div class='col-md-6' style="height: 100%;padding-left: 0px;padding-right: 15px;">
+					<div id="mapDiv0" style="height:100%;border:1px solid #75B9E6;"></div>
 
 
           <div class="qjBtn" id="qjBtn1">
@@ -203,13 +223,19 @@
               <!--</div>-->
             <!--</div>-->
           <!--</div>-->
-          <div class="colorBar" id="colorBar0"></div>
+          <div class="colorBar" id="colorBar0">
+            <div class="num">
+              <span>0</span>
+              <span>1</span>
+            </div>
+            <img src="img/colorBar/PM25.png" alt="">
+          </div>
           <div id="Point"></div>
 
 
-        </div>
-        <div class='col-md-6' style="height:100%;padding-left: 0px;padding-right: 0px;">
-          <div id="mapDiv1" style="height:100%;border:1px solid #75B9E6;"></div>
+				</div>
+				<div class='col-md-6' style="height: 100%;padding-left: 5px;padding-right: 10px;">
+					<div id="mapDiv1" style="height:100%;border:1px solid #75B9E6;"></div>
 
 
           <div class="qjBtn" id="qjBtn2">
@@ -227,7 +253,13 @@
               </div>
             </div>
           </div>
-          <div class="colorBar" id="colorBar1"></div>
+          <div class="colorBar" id="colorBar1">
+            <div class="num">
+              <span>0</span>
+              <span>1</span>
+            </div>
+            <img src="img/colorBar/PM25.png" alt="">
+          </div>
         </div>
         <!-- <div id="info"></div> -->
       </div>
