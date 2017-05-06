@@ -281,6 +281,17 @@ public interface TScenarinoDetailMapper {
      * @author weitan
      */
     TScenarinoDetail selectScenarinoDetail_timeSeries(Map map);
+
+	/**
+	 * @Description: 通过情景ID获取情景的执行状态
+	 * @param scenarinoId
+	 * @return   
+	 * Long  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年5月5日 下午2:46:24
+	 */
+	Long selectScenExecStatus(Long scenarinoId);
 	
 
 
