@@ -110,6 +110,8 @@ public class QueueBodyData2 {
 	public void setFlag(Integer flag) {
 		this.flag = flag;
 	}
+	
+
 	public Integer getcIndex() {
 		return cIndex;
 	}
