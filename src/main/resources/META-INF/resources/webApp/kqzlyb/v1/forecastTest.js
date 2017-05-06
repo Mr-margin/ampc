@@ -219,7 +219,8 @@ function requestDate() {
             }
 
             changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
-            initWrwDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
+            // initWrwDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
+            initWrwDate('2017-04-27','2017-05-03','2017-04-27','2017-05-03');
             initQxysDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
         }
     })
@@ -243,10 +244,10 @@ function updata(opt) {
         ajaxPost(url, {
             userId: userId,
             mode: changeMsg.station == 'avg' ? 'city' : 'point',
-            // starttime:changeMsg.startD,
-            // endtime:changeMsg.endD,
-            starttime: '2017-05-01 00',
-            endtime: '2017-05-03 00',
+            starttime:changeMsg.startD,
+            endtime:changeMsg.endD,
+            // starttime: '2017-05-01 00',
+            // endtime: '2017-05-03 00',
             cityStation: changeMsg.station == 'avg' ? changeMsg.city : changeMsg.station,
             datetype: changeMsg.rms
         }).success(function (res) {
