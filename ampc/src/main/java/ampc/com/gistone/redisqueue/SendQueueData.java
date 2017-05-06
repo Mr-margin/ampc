@@ -65,7 +65,8 @@ public class SendQueueData {
 	 * @author yanglei
 	 * @date 2017年3月25日 下午4:05:24
 	 */
-	public void toJson(QueueData queueData,Long tasksScenarinoId,String time) {
+	public boolean toJson(QueueData queueData,Long tasksScenarinoId,String time) {
+		boolean sendData = false;
 		JSONObject jsonObject = JSONObject.fromObject(queueData);
 		String json = jsonObject.toString();
 		LogUtil.getLogger().info("这是发送的数据包:"+json);
@@ -78,11 +79,12 @@ public class SendQueueData {
 		if (compantstatus.equals("0")&&sendtime.equals("0")&&"2".equals(stopStatus)) {
 			//处于终止且不可发送消息的状态
 			LogUtil.getLogger().info("该条消息刚发送终止的指令，不可发送！");
-		}else if (compantstatus.equals("0")&&sendtime.equals("0")&&"2".equals(pauseStatus)) {
+		}/*else if (compantstatus.equals("0")&&sendtime.equals("0")&&"2".equals(pauseStatus)) {
 			//处于暂停且不可发送消息的状态
 			LogUtil.getLogger().info("该条消息刚发送暂停的指令，不可发送！");
-		}else{
-			boolean sendData = sendQueueData.sendData(json);
+		}*/
+		else{
+			 sendData = sendQueueData.sendData(json);
 			if (sendData) {
 				TTasksStatus tTasksStatus = new TTasksStatus();
 				tTasksStatus.setTasksScenarinoId(tasksScenarinoId);
@@ -91,11 +93,12 @@ public class SendQueueData {
 				LogUtil.getLogger().info("情景ID为："+tasksScenarinoId+",time:"+time+"当天的数据发送了");
 				LogUtil.getLogger().info("发送成功");
 			}else {
-				//发送消息失败 改为模式执行出错 错误原因-发送消息到redis失败
+				//发送消息失败 改为模式执行出错 错误原因-发送消息到redis失败 
 				readyData.updateScenStatusUtil(9l, tasksScenarinoId);
 				LogUtil.getLogger().info("发送失败！原因：发送消息到redis队列出错");
 			}
 		}
+		return sendData;
 	}
 	
 	
