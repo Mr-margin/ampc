@@ -106,9 +106,8 @@ var optionAll = {
 	               nameLocation:'end',
 	               show: true,  
 	               type: 'value',  
-	               splitArea: {show: true},
-	               
-	               splitLine:{show: true,
+	               splitArea: {show: false},	//去除网格阴影
+	               splitLine:{show: true,		//设置网格线颜色
 		                lineStyle:{
 		                    color :['#D3D3D3','#00E400', '#FFFF00','#FF7E00','#FF0000','#99004C','#7E0023']
 		                }
