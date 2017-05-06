@@ -29,10 +29,10 @@ public interface TTasksStatusMapper {
 	int updateStatus(TTasksStatus tasksStatus);
 
 	/**
-	 * @Description: TODO
+	 * @Description: 测试方法 通过情景ID查询情景的模式执行情况
 	 * @param scenarinoId
 	 * @return   
-	 * TTasksStatus  测试方法 通过情景ID查询情景的模式执行情况
+	 * TTasksStatus  
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年3月28日 上午10:11:36
@@ -53,7 +53,7 @@ public interface TTasksStatusMapper {
 	/**
 	 * @param pathdate 
 	 * @Description: TODO
-	 * @return   
+	 * @return   BaseResultMap
 	 * TTasksStatus   查询数据库中tasks的状态
 	 * @throws
 	 * @author yanglei
