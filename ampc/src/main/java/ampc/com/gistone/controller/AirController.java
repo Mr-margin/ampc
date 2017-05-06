@@ -665,14 +665,14 @@ public class AirController {
 											
 										} catch (Exception e) {
 											// TODO: handle exception
-											obsSpeciesData.put(calDate_now,"-" );
+											obsSpeciesData.put(sdfNow.format(calDate_now),"-" );
 										}
 									}
 								}
 							}else{
 								for(int k=0;k<speciesArr.length;k++){	//查询的观测数据为空时，进行赋值
 									if(speciesArr[m].equals(speciesArr[k])){
-										obsSpeciesData.put(calDate_now,"-" );
+										obsSpeciesData.put(sdfNow.format(calDate_now),"-" );
 									}
 								}
 							}
