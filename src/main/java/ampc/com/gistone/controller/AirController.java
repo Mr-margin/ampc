@@ -1107,6 +1107,9 @@ public class AirController {
 						if(spcs.equals("O3_AVG")){
 							spcs="O3";
 						}
+						if(spcs.equals("O3_8_MAX")){
+							spcs="O3_8h";
+						}
 						BigDecimal p=new BigDecimal(ite.getValue().get("0").toString());
 //						String ps=LevelUtil.Level(p);
 //						String os=LevelUtil.Level(num);
@@ -1261,14 +1264,12 @@ public class AirController {
 						Map<String,Double> suMap=new HashMap();
 						Entry<String,Object> spciter=Allspciter.next();
 						String spc=spciter.getKey();
-						if(spc.equals("O3_8h")){
-							continue;
-						}
+					
 						BigDecimal num=new BigDecimal(spciter.getValue().toString());
 						Integer vale=Integer.valueOf(validMap.get(day).get(spc).toString());
 						
 						String ps=null;
-						if(spc.equals("O3_8h")){
+						if(AllspcMap.get(day).get(date).get(spc)==null){
 							ps="99999999";
 						}else{
 							 ps=LevelUtil.Level(new BigDecimal(AllspcMap.get(day).get(date).get(spc).toString()));
@@ -1286,7 +1287,7 @@ public class AirController {
 						double opresult=num.subtract(new BigDecimal(sumMapsum.get(day).get(spc).toString()).divide(new BigDecimal(vale),2)).doubleValue();
 						
 						double ppresult=0;
-						if(!spc.equals("O3_8h")){
+						if(AllspcMap.get(day).get(date).get(spc)!=null){
 							ppresult=new BigDecimal(AllspcMap.get(day).get(date).get(spc).toString()).subtract(psumMapsum.get(day).get(spc).divide(new BigDecimal(vale),2)).doubleValue();
 						}
 						double store =opresult*ppresult;
@@ -1294,7 +1295,7 @@ public class AirController {
 						double o2=Math.pow(opresult,2);
 						
 						double o_p= 0;
-						if(!spc.equals("O3_8h")){
+						if(AllspcMap.get(day).get(date).get(spc)!=null){
 							o_p=new BigDecimal(AllspcMap.get(day).get(date).get(spc).toString()).subtract(num).doubleValue();
 						}
 						Map amap=aveMap.get(day);
@@ -1351,10 +1352,10 @@ public class AirController {
 						for(int s=0;s<=23;s++){
 							BigDecimal num=new BigDecimal(numma.get(s).toString());
 							
-					
+							List ms=hourpAllspcMap.get(day).get(date).get(spc);
 						
 							String ps=null;
-							if(spc.equals("O3_8h")){
+							if(ms==null){
 								ps="99999999";
 							}else{
 								 ps=LevelUtil.Level(new BigDecimal(hourpAllspcMap.get(day).get(date).get(spc).get(s).toString()));
@@ -1370,14 +1371,14 @@ public class AirController {
 						Integer vale=Integer.valueOf(validMap.get(day).get(spc).toString());
 						double opresult=num.subtract(new BigDecimal(sumMapsum.get(day).get(spc).toString()).divide(new BigDecimal(vale),2)).doubleValue();
 						double ppresult=0;
-						if(!spc.equals("O3_8h")){
+						if(ms!=null){
 							ppresult=(new BigDecimal(hourpAllspcMap.get(day).get(date).get(spc).get(s).toString()).subtract(new BigDecimal(sumMapsum.get(day).get(spc).toString()).divide(new BigDecimal(vale),2))).doubleValue();
 						}
 						double store =opresult*ppresult;
 						double p2=Math.pow(ppresult,2);
 						double o2=Math.pow(opresult,2);
 						double o_p= 0;
-						if(!spc.equals("O3_8h")){
+						if(ms!=null){
 							o_p= new BigDecimal(hourpAllspcMap.get(day).get(date).get(spc).get(s).toString()).subtract(num).doubleValue();
 						}
 						Map amap=aveMap.get(day);
