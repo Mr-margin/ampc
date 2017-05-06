@@ -207,12 +207,6 @@ $('#species').on('change',function(e){
 
 
 
-
-
-
-
-
-
 /*滑动条js*/
 var $document   = $(document);
 var selector    = '[data-rangeslider]';
@@ -269,10 +263,87 @@ $document.on('click', '#js-example-change-attributes button', function(e) {
 });
 
 // Example functionality to demonstrate destroy functionality
-$document
-  .on('click', '#js-example-destroy button[data-behaviour="destroy"]', function(e) {
-    $('input[type="range"]', e.target.parentNode).rangeslider('destroy');
-  })
-  .on('click', '#js-example-destroy button[data-behaviour="initialize"]', function(e) {
-    $('input[type="range"]', e.target.parentNode).rangeslider({ polyfill: false });
-  });
+$document.on('click', '#js-example-destroy button[data-behaviour="destroy"]', function(e) {
+	$('input[type="range"]', e.target.parentNode).rangeslider('destroy');
+}).on('click', '#js-example-destroy button[data-behaviour="initialize"]', function(e) {
+	$('input[type="range"]', e.target.parentNode).rangeslider({ polyfill: false });
+});
+
+
+
+
+var stat = {cPointx: 106, cPointy: 35}, app = {}, dong = {};
+var dojoConfig = {
+    async: true,
+    parseOnLoad: true,
+    packages: [{
+        name: 'tdlib',
+        location: "/js/tdlib"
+    }],
+    paths: {
+        extras: location.pathname.replace(/\/[^/]+$/, '') + "/js/extras"
+    }
+};
+require(
+		[
+		 "esri/map", "esri/tasks/Geoprocessor", "esri/layers/ImageParameters", "esri/layers/DynamicLayerInfo", "esri/layers/RasterDataSource", "esri/layers/TableDataSource",
+		 "esri/layers/LayerDataSource", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "esri/layers/LayerDrawingOptions", "esri/symbols/SimpleFillSymbol",
+		 "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleMarkerSymbol", "esri/geometry/Multipoint", "esri/geometry/Point", "esri/geometry/Extent",
+		 "esri/renderers/SimpleRenderer", "esri/graphic", "esri/lang", "dojo/_base/array", "dojo/number", "dojo/dom-style", "dijit/TooltipDialog",
+		 "dijit/popup", "dojox/widget/ColorPicker", "esri/layers/RasterLayer", "tdlib/gaodeLayer", "esri/tasks/FeatureSet", "esri/SpatialReference", "esri/symbols/PictureMarkerSymbol",
+		 "esri/geometry/Polygon", "esri/symbols/PictureFillSymbol", "esri/Color", "esri/layers/ArcGISDynamicMapServiceLayer", "esri/tasks/RasterData", "dojo/domReady!"
+		 ],
+		 function (Map, Geoprocessor, ImageParameters, DynamicLayerInfo, RasterDataSource, TableDataSource, LayerDataSource, FeatureLayer, GraphicsLayer, LayerDrawingOptions,
+				 SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Multipoint, Point, Extent, SimpleRenderer, Graphic, esriLang, array, number, domStyle,
+				 TooltipDialog, dijitPopup, ColorPicker, RasterLayer, gaodeLayer, FeatureSet, SpatialReference, PictureMarkerSymbol, Polygon, PictureFillSymbol, Color, 
+				 ArcGISDynamicMapServiceLayer, RasterData) {
+
+			dong.gaodeLayer = gaodeLayer;
+			dong.DynamicLayerInfo = DynamicLayerInfo;
+			dong.RasterDataSource = RasterDataSource;
+			dong.LayerDataSource = LayerDataSource;
+
+			dong.Geoprocessor = Geoprocessor;
+			dong.Graphic = Graphic;
+			dong.Point = Point;
+			dong.FeatureSet = FeatureSet;
+			dong.GraphicsLayer = GraphicsLayer;
+			dong.SpatialReference = SpatialReference;
+			dong.PictureMarkerSymbol = PictureMarkerSymbol;//图片点样式
+			dong.Polygon = Polygon;//多边形
+			dong.PictureFillSymbol = PictureFillSymbol;//
+			dong.SimpleLineSymbol = SimpleLineSymbol;//
+			dong.Color = Color;//
+			dong.ArcGISDynamicMapServiceLayer = ArcGISDynamicMapServiceLayer;//
+			dong.RasterData = RasterData;//
+
+			esri.config.defaults.io.proxyUrl = ArcGisUrl + "/Java/proxy.jsp";
+			esri.config.defaults.io.alwaysUseProxy = false;
+
+			app.baselayerList = new Array();//默认加载矢量 new gaodeLayer({layertype:"road"});也可以
+			app.stlayerList = new Array();//加载卫星图
+			app.labellayerList = new Array();//加载标注图
+
+			app.map = new Map("map_in", {
+				logo: false,
+				center: [stat.cPointx, stat.cPointy],
+				minZoom: 4,
+				maxZoom: 13,
+				zoom: 5
+			});
+
+			app.baselayerList = new dong.gaodeLayer();
+			app.stlayerList = new dong.gaodeLayer({layertype: "st"});
+			app.labellayerList = new dong.gaodeLayer({layertype: "label"});
+			app.map.addLayer(app.baselayerList);//添加高德地图到map容器
+			app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
+
+			app.gLyr1 = new dong.GraphicsLayer({"id": "gLyr1"});
+			app.map.addLayer(app.gLyr1);
+
+		});
+
+
+
+
+
