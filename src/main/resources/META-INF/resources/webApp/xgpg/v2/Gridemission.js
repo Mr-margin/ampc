@@ -106,26 +106,35 @@ require(
         "esri/map", "esri/tasks/Geoprocessor", "esri/layers/ImageParameters", "esri/layers/DynamicLayerInfo", "esri/layers/RasterDataSource", "esri/layers/TableDataSource",
         "esri/layers/LayerDataSource", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "esri/layers/LayerDrawingOptions", "esri/symbols/SimpleFillSymbol",
         "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleMarkerSymbol", "esri/geometry/Multipoint", "esri/geometry/Point", "esri/geometry/Extent",
-        "esri/renderers/SimpleRenderer", "esri/graphic", "esri/lang", "dojo/_base/Color", "dojo/_base/array", "dojo/number", "dojo/dom-style", "dijit/TooltipDialog",
+        "esri/renderers/SimpleRenderer", "esri/graphic", "esri/lang", "dojo/_base/array", "dojo/number", "dojo/dom-style", "dijit/TooltipDialog",
         "dijit/popup", "dojox/widget/ColorPicker", "esri/layers/RasterLayer", "tdlib/gaodeLayer", "esri/tasks/FeatureSet", "esri/SpatialReference", "esri/symbols/PictureMarkerSymbol",
-        "dojo/domReady!"
+        "esri/geometry/Polygon", "esri/symbols/PictureFillSymbol", "esri/Color", "esri/layers/ArcGISDynamicMapServiceLayer", "esri/tasks/RasterData", "dojo/domReady!"
     ],
     function (Map, Geoprocessor, ImageParameters, DynamicLayerInfo, RasterDataSource, TableDataSource, LayerDataSource, FeatureLayer, GraphicsLayer, LayerDrawingOptions,
-              SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Multipoint, Point, Extent, SimpleRenderer, Graphic, esriLang, Color, array, number, domStyle,
-              TooltipDialog, dijitPopup, ColorPicker, RasterLayer, gaodeLayer, FeatureSet, SpatialReference, PictureMarkerSymbol) {
+              SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Multipoint, Point, Extent, SimpleRenderer, Graphic, esriLang, array, number, domStyle,
+              TooltipDialog, dijitPopup, ColorPicker, RasterLayer, gaodeLayer, FeatureSet, SpatialReference, PictureMarkerSymbol, Polygon, PictureFillSymbol, Color, 
+              ArcGISDynamicMapServiceLayer, RasterData) {
 
         dong.gaodeLayer = gaodeLayer;
+        dong.DynamicLayerInfo = DynamicLayerInfo;
+        dong.RasterDataSource = RasterDataSource;
+        dong.LayerDataSource = LayerDataSource;
+        
         dong.Geoprocessor = Geoprocessor;
         dong.Graphic = Graphic;
         dong.Point = Point;
         dong.FeatureSet = FeatureSet;
         dong.GraphicsLayer = GraphicsLayer;
         dong.SpatialReference = SpatialReference;
-        dong.PictureMarkerSymbol = PictureMarkerSymbol;
+        dong.PictureMarkerSymbol = PictureMarkerSymbol;//图片点样式
+        dong.Polygon = Polygon;//多边形
+        dong.PictureFillSymbol = PictureFillSymbol;//
+        dong.SimpleLineSymbol = SimpleLineSymbol;//
+        dong.Color = Color;//
+        dong.ArcGISDynamicMapServiceLayer = ArcGISDynamicMapServiceLayer;//
+        dong.RasterData = RasterData;//
 
         esri.config.defaults.io.proxyUrl = ArcGisUrl + "/Java/proxy.jsp";
-//		esri.config.defaults.io.proxyUrl = "webApp/xgpg/v4/proxy.jsp";
-//		esri.config.defaults.io.proxyUrl = "proxy.jsp";
         esri.config.defaults.io.alwaysUseProxy = false;
 
         app.mapList = new Array();
@@ -170,6 +179,9 @@ require(
                 app.gLyr1.clear();
                 app.gLyr2.clear();
                 /*这里清除风场图层 end*/
+                
+                app.tuodong = false;
+                
                 updata();
 
             } else {
@@ -187,6 +199,9 @@ require(
                 app.gLyr1.clear();
                 app.gLyr2.clear();
                 /*这里清除风场图层 end*/
+                
+                app.tuodong = false;
+                
                 updata();
 
             } else {
@@ -194,21 +209,6 @@ require(
             }
         });
 
-//		app.mapList[1].extent.xmax
-//		app.mapList[1].extent.xmin
-//		app.mapList[1].extent.ymax
-//		app.mapList[1].extent.ymin
-//		app.mapList[0].on("mouse-move", showCoordinates);
-//		app.mapList[0].on("mouse-drag", showCoordinates);
-//		event.extent.xmin;
-//		event.extent.ymin;//左下
-//		event.extent.xmax;
-//		event.extent.ymax;//右上
-//      var mp = esri.geometry.webMercatorToGeographic(evt.mapPoint);
-//      dojo.byId("Point").innerHTML = event.mapPoint.x.toFixed(3) + ", " + event.mapPoint.y.toFixed(3);
-
-        //bianji('1',0);
-        //bianji('1',1);
         ls = window.sessionStorage;
         qjMsg = vipspa.getMessage('yaMessage').content;
         if (!qjMsg) {
@@ -223,8 +223,6 @@ require(
         } else {
             ls.setItem('SI', JSON.stringify(sceneInitialization));
         }
-//console.log(JSON.stringify(sceneInitialization));
-
         if (!sceneInitialization) {
             sceneInittion();
         } else {
@@ -236,7 +234,6 @@ require(
             $('#species').append($('<option>' + speciesArr.d[i] + '</option>'))
         }
     });
-
 /**
  *设置导航条信息
  */
@@ -385,164 +382,109 @@ function exchangeModal() {
 }
 
 
+function bianji_wanggepafang(type, g_num, p , wind){
+	for(var sp=0;sp<changeMsg.species.length;sp++){
+		if(!wind){
+            wind = -1
+        }
+        var par = p;
+        var v1 = new Date().getTime();
+        
+        var GPserver_url = ArcGisServerUrl + "/arcgis/rest/services/ampc_zrly/reuslt/GPServer/reuslt";
+        
+        var pftype = par.species[sp];
+        var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
+        if (out_raster_layer) {
+            app.mapList[g_num].removeLayer(out_raster_layer);
+        }
+        
+        app.gp = new esri.tasks.Geoprocessor(GPserver_url);
+        var a1 = new dong.RasterData();
+    	a1.format = "tiff";
+    	a1.url = ArcGisUrl + "/Java/ampc/img/reuslt.tiff";
+    	
+        var parms = {
+            "imp": a1,
+            "out": "out_raster_layer"
+        };
+        app.gp.submitJob(parms, function (jobInfo) {
+            var gpResultLayer = app.gp.getResultImageLayer(jobInfo.jobId, "out");//这里的名字是跟着返回图层的变量名走的，不一样的话是不出图的
+            //需要判断一下是否已经添加过图层，先移除，再添加
+            gpResultLayer.id = "out_raster_layer";
+            gpResultLayer.setOpacity(opacity);
+            app.mapList[g_num].addLayer(gpResultLayer);
+            
+            //添加图例
+//          $('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");
+            
+        }, function (jobinfo) {
+            var jobstatus = '';
+            switch (jobinfo.jobStatus) {
+                case 'esriJobSubmitted':
+                    break;
+                case 'esriJobExecuting':
+                    break;
+                case 'esriJobSucceeded':
+                    jobstatus = '--' + g_num + '--处理完成...';
+                    console.log((new Date().getTime() - v1) + jobstatus);
+                    zmblockUI("#mapDiv"+g_num, "end");
+                    break;
+            }
+        }, function (error) {
+            console.log(error);
+            zmblockUI("#mapDiv"+g_num, "end");
+            swal('GIS，内部错误', '', 'error');
+        });
+	}
+}
+
 
 function bianji(type, g_num, p , wind) {
-
     for(var sp=0;sp<changeMsg.species.length;sp++){
-
 
         if(!wind){
             wind = -1
         }
         var par = p;
         var v1 = new Date().getTime();
-        par.xmax = app.mapList[app.shengx].extent.xmax;
+        
+        var lujing = "";
+    	var fxOpacity = 0;
+    	if(wind == 1){
+    		lujing = "fxj";
+    		par.windSymbol = 0;
+    		fxOpacity = 0.5;
+    	}else if(wind == 2){
+    		lujing = "fx";
+    		par.windSymbol = 1;//1代表F风，F风最大到20级，箭头风最大到12级
+    		fxOpacity = 1;
+    	}
+    	par.rows = 20;
+    	par.cols = 20;
+    	
+    	par.xmax = app.mapList[app.shengx].extent.xmax;
         par.xmin = app.mapList[app.shengx].extent.xmin;
         par.ymax = app.mapList[app.shengx].extent.ymax;
         par.ymin = app.mapList[app.shengx].extent.ymin;
-
+    	
+        
         if(wind == -1){//无风场
-
-            var GPserver_type = par.GPserver_type[sp];
-            var GPserver_url = ArcGisServerUrl + "/arcgis/rest/services/ampc_zrly/" + GPserver_type + "/GPServer/" + GPserver_type;
-//	    $.get('data6.json', function (data) {
-//	    console.log(par);
-
-            var pftype = par.species[sp];
-            var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
-            if (out_raster_layer) {
-                app.mapList[g_num].removeLayer(out_raster_layer);
-            }
-
-            ajaxPost('/extract/data', par).success(function (data) {
-
-                if (!data.data) {
-                    console.log("data.data-null");
-
-                    zmblockUI("#mapDiv0", "end");
-                    zmblockUI("#mapDiv1", "end");
-                    swal('获取当前范围数据失败', '', 'error');
-                    return;
-                }
-                if (data.data.length == 0) {
-                    console.log("length-null");
-                    zmblockUI("#mapDiv0", "end");
-                    zmblockUI("#mapDiv1", "end");
-                    swal('当前范围缺少数据', '', 'error');
-                    return;
-                }
-                console.log(g_num + '~~~' + data.data.length);
-                var features = [];
-                $.each(data.data, function (i, col) {
-
-                    if (typeof col.x == "undefined") {
-                        console.log("x-null");
-                        return;
-                    }
-                    if (typeof col.y == "undefined") {
-                        console.log("y-null");
-                        return;
-                    }
-                    var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
-                    var attr = {};
-                    attr["FID"] = i;
-                    attr["dqvalue"] = col[pftype];
-                    var graphic = new dong.Graphic(point);
-                    graphic.setAttributes(attr);
-                    features.push(graphic);
-                });
-
-                var featureset = new dong.FeatureSet();
-                featureset.fields = [{
-                    "name": "dqvalue",
-                    "type": "esriFieldTypeSingle",
-                    "alias": "dqvalue"
-                }, {
-                    "name": "FID",
-                    "type": "esriFieldTypeOID",
-                    "alias": "FID"
-                }];
-                featureset.fieldAliases = {"dqvalue": "dqvalue", "FID": "FID"};
-                featureset.spatialReference = new dong.SpatialReference({wkid: 3857});
-                featureset.features = features;
-                featureset.exceededTransferLimit = false;
-
-//	        console.log(JSON.stringify(featureset));
-//	        console.log((new Date().getTime() - v1) + "生成数据");
-                app.gp = new esri.tasks.Geoprocessor(GPserver_url);
-                var parms = {
-                    "imp": featureset,
-                    "out": "out_raster_layer"
-                };
-                app.gp.submitJob(parms, function (jobInfo) {
-                    var gpResultLayer = app.gp.getResultImageLayer(jobInfo.jobId, "out");//这里的名字是跟着返回图层的变量名走的，不一样的话是不出图的
-                    //需要判断一下是否已经添加过图层，先移除，再添加
-                    gpResultLayer.id = "out_raster_layer";
-                    var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
-                    if (out_raster_layer) {
-                        app.mapList[g_num].removeLayer(out_raster_layer);
-                    }
-
-                    gpResultLayer.setOpacity(opacity);
-                    app.mapList[g_num].addLayer(gpResultLayer);
-                    //console.log(new Date().getTime() - v1);
-                }, function (jobinfo) {
-                    var jobstatus = '';
-                    switch (jobinfo.jobStatus) {
-                        case 'esriJobSubmitted':
-                            //jobstatus = type + '正在提交...';
-                            break;
-                        case 'esriJobExecuting':
-                            //jobstatus = type + '处理中...';
-                            break;
-                        case 'esriJobSucceeded':
-                            jobstatus = '--' + g_num + '--处理完成...';
-                            console.log((new Date().getTime() - v1) + jobstatus);
-                            zmblockUI("#mapDiv0", "end");
-                            zmblockUI("#mapDiv1", "end");
-                            break;
-                    }
-                }, function (error) {
-                    console.log(error);
-                    zmblockUI("#mapDiv0", "end");
-                    zmblockUI("#mapDiv1", "end");
-                    swal('GIS，内部错误', '', 'error');
-                });
-
-            }).error(function (res) {
-            	zmblockUI("#mapDiv0", "end");
-                zmblockUI("#mapDiv1", "end");
-                swal('抽数，内部错误', '', 'error');
-            });
-        }else{//风场
-        	var lujing = "";
-        	var fxOpacity = 0;
-        	if(wind == 1){
-        		lujing = "fxj";
-        		par.windSymbol = 0;
-        		fxOpacity = 0.5;
-        	}else if(wind == 2){
-        		lujing = "fx";
-        		par.windSymbol = 1;//1代表F风，F风最大到20级，箭头风最大到12级
-        		fxOpacity = 1;
-        	}
-        	par.rows = 20;
-        	par.cols = 20;
-
-            par.species = ['WSPD','WDIR'];
+        	
+        }else{
+        	par.species = ['WSPD','WDIR'];
             app.gLyr1.clear();
             app.gLyr2.clear();
             ajaxPost('/extract/data', par).success(function (data) {
-				if (!data.data) {
-		            console.log("data.data-null");
-		            swal('获取当前范围风场数据失败', '', 'error');
-		            return;
-		        }
-		        if (data.data.length == 0) {
-		            console.log("length-null");
-		            swal('当前范围缺少风场数据', '', 'error');
-		            return;
-		        }
+    			if (!data.data) {
+    	            console.log("data.data-null");
+    	            swal('获取当前范围风场数据失败', '', 'error');
+    	            return;
+    	        }
+    	        if (data.data.length == 0) {
+    	            console.log("length-null");
+    	            swal('当前范围缺少风场数据', '', 'error');
+    	            return;
+    	        }
                 $.each(data.data, function (i, col) {
 
                     if (typeof col.x == "undefined") {
@@ -554,7 +496,7 @@ function bianji(type, g_num, p , wind) {
                         return;
                     }
 
-                    var p_url = "img/fx/"+col.WSPD+".png";
+                    var p_url = "img/"+lujing+"/"+col.WSPD+".png";
                     var angle = 0;
                     switch (col.WDIR) {
                         case "N" :
@@ -608,8 +550,7 @@ function bianji(type, g_num, p , wind) {
                         default :
                             angle = 0;
                     }
-
-                    var symbol = new dong.PictureMarkerSymbol(p_url,12,12);
+                    var symbol = new dong.PictureMarkerSymbol(p_url,20,20);
                     symbol.setOffset(-10,18);
                     symbol.setAngle(angle);
                     var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
@@ -621,30 +562,13 @@ function bianji(type, g_num, p , wind) {
                         app.gLyr2.add(graphic);
                         app.gLyr2.setOpacity(fxOpacity);
                     }
-
-
                 });
-//                zmblockUI("#mapDiv0", "end");
-//                zmblockUI("#mapDiv1", "end");
                 console.log((new Date().getTime() - v1) + "num:" +g_num);
             }).error(function (res) {
-            	zmblockUI("#mapDiv0", "end");
-                zmblockUI("#mapDiv1", "end");
-                console.log((new Date().getTime() - v1) + "num:" +g_num);
+                swal('风场抽数，内部错误', '', 'error');
             });
-
         }
-
-
     }
-
-
-
-
-
-
-
-
 }
 
 
@@ -690,6 +614,7 @@ function setQjSelectBtn(data) {
         $('#qjBtn2 .btn-group').append(btn2);
     }
     setDate(s1, e1, s2, e2, rmsType);
+    app.tuodong = true;
     updata();
 }
 
@@ -848,6 +773,7 @@ $('#species').on('change', function (e) {  //物种选择
     changeMsg.species = [];
     changeMsg.species.push(species);
     console.log(species);
+    app.tuodong = true;
     updata();
 });
 
@@ -855,6 +781,7 @@ $('input[name=domain]').on('change', function (e) { //domaon选择
     var domain = $(e.target).val();
     changeMsg.domain = domain;
     console.log(domain);
+    app.tuodong = true;
     updata();
 });
 
@@ -895,6 +822,7 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
         // changeMsg.showType = ['concn'];
     }
     changeMsg.rms = rms;
+    app.tuodong = true;
     updata();
 });
 
@@ -902,6 +830,7 @@ $('input[name=calcType]').on('change', function (e) { //地图图片类型
     var type = $(e.target).val();
     changeMsg.calcType = type;
     console.log(type);
+    app.tuodong = true;
     updata(true);
 });
 
@@ -923,6 +852,7 @@ $('input[name=showWind]').on('change', function (e) { //地图风场类型
     }
 
     console.log(type);
+    app.tuodong = true;
     updata('wind');
 });
 
@@ -951,6 +881,7 @@ $('#qjBtn1').on('change', 'input', function (e) {//改变左侧情景
     changeMsg.qj2Id = $('#qjBtn2 label.active').find('input').val();
     //changeMsg.qj2Id = $('input[name=qjBtn2]').val();
     setDate(s1, e1, s2, e2, rmsType);
+    app.tuodong = true;
     updata();
 });
 
@@ -966,6 +897,7 @@ $('#qjBtn2').on('change', 'input', function (e) {//改变右侧情景
 
     changeMsg.qj2Id = qjId;
     setDate(s1, e1, s2, e2, rmsType);
+    app.tuodong = true;
     updata(true);
 });
 
@@ -984,6 +916,7 @@ $('#sTime-d').on('change', function (e) {//选择日期
         }
     }
     console.log(date);
+    app.tuodong = true;
     updata();
 });
 
@@ -991,6 +924,7 @@ $('#sTime-h').on('change', function (e) {//选择时间
     var date = $(e.target).val();
     changeMsg.sTimeH = date - 0;
     console.log(date)
+    app.tuodong = true;
     updata();
 });
 
@@ -1009,13 +943,12 @@ $('#eTime').on('change', function (e) {//选择平均后的时间
         }
     }
     console.log(date);
+    app.tuodong = true;
     updata();
 });
 
 /*数据更新*/
 function updata(t) {
-    zmblockUI("#mapDiv0", "start");
-    zmblockUI("#mapDiv1", "start");
     var parameter = {
         userId: userId,
         layer: changeMsg.layer,
@@ -1083,23 +1016,19 @@ function updata(t) {
         bianji("1", 1, p2,changeMsg.showWind);
         /*执行方法，进行右图添加 end*/
     }else if (t) {
-    	zmblockUI("#mapDiv0", "start");
-        zmblockUI("#mapDiv1", "start");
-
         for (var x = 0; x < changeMsg.showType.length; x++) {
             p2.calcType = changeMsg.calcType;
             p2.showType = changeMsg.showType[x];
             //console.log('p2',$.extend({},p2),p2.showType);
 
             /*执行方法，进行右图添加*/
+            zmblockUI("#mapDiv1", "start");
             bianji("1", 1, p2);
+            bianji_wanggepafang("1", 1, p2);
             /*执行方法，进行右图添加 end*/
 
         }
     } else {
-    	zmblockUI("#mapDiv0", "start");
-        zmblockUI("#mapDiv1", "start");
-
         for (var i = 0; i < changeMsg.showType.length; i++) {
             p1.showType = changeMsg.showType[i];
 
@@ -1109,25 +1038,45 @@ function updata(t) {
             p2.showType = changeMsg.showType[i];
             //console.log('p2',$.extend({},p2),p2.showType);
 
-
-
-            if(i==0){
+        	if(i==0){
                 /*执行方法，进行左图添加*/
+        		
                 bianji("1", 0, p1);
+                if(app.tuodong){
+                	zmblockUI("#mapDiv0", "start");
+                	bianji_wanggepafang("1", 0, p1);
+                }
+                
                 /*执行方法，进行左图添加 end*/
 
                 /*执行方法，进行右图添加*/
                 bianji("1", 1, p2);
+                
+                if(app.tuodong){
+                	zmblockUI("#mapDiv1", "start");
+                	bianji_wanggepafang("1", 1, p2);
+                }
                 /*执行方法，进行右图添加 end*/
             }else{
                 /*执行方法，进行左图添加*/
                 bianji("1", 0, p1,changeMsg.showWind);
+                
+                if(app.tuodong){
+                	zmblockUI("#mapDiv0", "start");
+                	bianji_wanggepafang("1", 0, p1,changeMsg.showWind);
+                }
                 /*执行方法，进行左图添加 end*/
 
                 /*执行方法，进行右图添加*/
                 bianji("1", 1, p2,changeMsg.showWind);
+                
+                if(app.tuodong){
+                	zmblockUI("#mapDiv1", "start");
+                	bianji_wanggepafang("1", 1, p2,changeMsg.showWind);
+                }
                 /*执行方法，进行右图添加 end*/
             }
+            
         }
     }
 

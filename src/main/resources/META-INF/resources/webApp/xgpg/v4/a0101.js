@@ -413,10 +413,6 @@ function bianji(type, g_num, p , wind) {
 //	    console.log(par);
 
             var pftype = par.species[sp];
-            var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
-            if (out_raster_layer) {
-                app.mapList[g_num].removeLayer(out_raster_layer);
-            }
 
             ajaxPost('/extract/data', par).success(function (data) {
 
@@ -481,6 +477,11 @@ function bianji(type, g_num, p , wind) {
                     //需要判断一下是否已经添加过图层，先移除，再添加
                     gpResultLayer.id = "out_raster_layer";
                     gpResultLayer.setOpacity(opacity);
+                    
+                    var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
+                    if (out_raster_layer) {
+                        app.mapList[g_num].removeLayer(out_raster_layer);
+                    }
                     app.mapList[g_num].addLayer(gpResultLayer);
                     
                     //添加图例
