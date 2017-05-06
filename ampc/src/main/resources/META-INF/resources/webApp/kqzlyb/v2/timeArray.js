@@ -632,7 +632,7 @@ var optionAll = {
 	               nameLocation:'end',
 	               show: true,
 	               type: 'value',
-	               splitArea: {show: true}
+	               splitArea: {show: false}
 	             }
                ],
 	   //颜色色卡
