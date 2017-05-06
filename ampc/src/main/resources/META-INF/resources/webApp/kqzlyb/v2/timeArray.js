@@ -1052,8 +1052,6 @@ function initEcharts() {
 					}
 				}
 				
-				
-				
 //				if(data.hasOwnProperty(key)){	//包含模拟或观测数据
 //					if(data[key].hasOwnProperty(species[i])){	//包含当前物种
 //						$.each((data[key])[species[i]],function(timeKey,timeVal){
