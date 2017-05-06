@@ -948,6 +948,9 @@ public class AirController {
 							if(spc.equals("PM2_5")){
 								spc="PM25";
 							}
+							if(spc.equals("O3_8h")){
+								spc="O3_8_MAX";
+							}
 							if(!num.equals("-")){
 
 								if(sumMap.get(spc)==null){
@@ -990,6 +993,10 @@ public class AirController {
 								if(spc.equals("PM2_5")){
 									spc="PM25";
 								}
+								if(spc.equals("O3_8h")){
+									spc="O3_8_MAX";
+								}
+								
 								if(!num.equals("-")){
 
 									if(sumMap.get(spc)==null){
@@ -1095,7 +1102,10 @@ public class AirController {
 					scenarinoEntity.setTableName(tables);
 					ssslist=tPreProcessMapper.selectBysome(scenarinoEntity);
 					
-					
+					if(ssslist.isEmpty()){
+						LogUtil.getLogger().error("AppraisalController 未查询到观测数据！");
+						return	AmpcResult.build(1001, "未查询到观测数据！");
+					}
 					ScenarinoEntity housr=ssslist.get(0);
 					JSONObject objs=JSONObject.fromObject(housr.getContent());
 					Map<String,Map<String,Object>> spcMap=(Map<String,Map<String,Object>>) objs;
@@ -1107,9 +1117,7 @@ public class AirController {
 						if(spcs.equals("O3_AVG")){
 							spcs="O3";
 						}
-						if(spcs.equals("O3_8_MAX")){
-							spcs="O3_8h";
-						}
+					
 						BigDecimal p=new BigDecimal(ite.getValue().get("0").toString());
 //						String ps=LevelUtil.Level(p);
 //						String os=LevelUtil.Level(num);
@@ -1178,6 +1186,10 @@ public class AirController {
 					scenarinoEntity.setTableName(tables);
 					ssslist=tPreProcessMapper.selectBysome(scenarinoEntity);	
 					
+					if(ssslist.isEmpty()){
+						LogUtil.getLogger().error("AppraisalController 未查询到观测数据！");
+						return	AmpcResult.build(1001, "未查询到观测数据！");
+					}
 					ScenarinoEntity housr=ssslist.get(0);
 					JSONObject objs=JSONObject.fromObject(housr.getContent());
 					Map<String,Map<String,List<Object>>> spcMap=(Map<String, Map<String, List<Object>>>) objs;
@@ -1346,7 +1358,7 @@ public class AirController {
 						Map<String,Double> suMap=new HashMap();
 						Entry<String, List> spciter=Allspciter.next();
 						String spc=spciter.getKey();
-						if(spc.equals("O3_8h")){
+						if(spc.equals("O3_8_MAX")){
 							continue;
 						}
 						Map psm=psumMapsum.get(day);
