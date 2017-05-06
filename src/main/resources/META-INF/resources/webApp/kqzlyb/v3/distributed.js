@@ -383,7 +383,7 @@ $document.on('click', '#js-example-destroy button[data-behaviour="destroy"]', fu
 
 /*数据更新*/
 function updata(t){
-	
+    load_gis('');
 }
 
 /**
@@ -418,9 +418,9 @@ function load_gis(){
         console.log(g_num + '~~~' + data.data.length);
         
         //物种类型
-        var pftype = par.species[sp];
+        var pftype = par.species[0];
         //地图服务地址
-        var GPserver_type = par.GPserver_type[sp];
+        var GPserver_type = par.GPserver_type[0];
         var GPserver_url = ArcGisServerUrl + "/arcgis/rest/services/ampc_zrly/" + GPserver_type + "/GPServer/" + GPserver_type;
         
         var features = [];
