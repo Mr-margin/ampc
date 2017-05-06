@@ -111,8 +111,8 @@ $.when(dps_um).then(function(){
           controller: 'webApp/xgpg/v5/verticalSpread02.js'
         },
         '/xgpg_v6': {      //效果评估-评估报告
-          templateUrl: '',
-          controller: ''
+          templateUrl: 'webApp/xgpg/v6/assessmentReport.html',
+          controller: 'webApp/xgpg/v6/assessmentReport.js'
         },
 
 
