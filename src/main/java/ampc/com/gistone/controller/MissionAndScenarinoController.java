@@ -1234,13 +1234,13 @@ public class MissionAndScenarinoController {
 				LogUtil.getLogger().error("save_scenarino  情景类型为空!");
 				return AmpcResult.build(1003, "情景类型为空!");
 			}
-			Date date=new Date();
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(date);
-			cal.add(Calendar.DATE, -1);
-			String addTimeDate =sdf.format(cal.getTime());
-			Date pathDate=sdf.parse(addTimeDate);
-			Date enddate=null;
+			Date pathDate=new Date();
+//			Calendar cal = Calendar.getInstance();
+//			cal.setTime(date);
+//			cal.add(Calendar.DATE, -1);
+//			String addTimeDate =sdf.format(cal.getTime());
+//			Date pathDate=sdf.parse(addTimeDate);
+		    Date enddate=null;
 			Date startdate = null;
 			
 			Long sdid=0l;
