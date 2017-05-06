@@ -281,7 +281,6 @@ public class ToDataTasksUtil {
 												ruku.readyRukuparamspostPevtion(tasksScenarinoId,tasksEndDate,oldStatus);
 											}
 										}
-										
 								}
 						    }else {
 								LogUtil.getLogger().info("情景ID为："+tasksScenarinoId+"的状态更新失败");
