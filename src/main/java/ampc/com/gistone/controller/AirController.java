@@ -31,9 +31,11 @@ import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TObsMapper;
 import ampc.com.gistone.database.inter.TPreProcessMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
+import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.model.TDomainMissionWithBLOBs;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
+import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.preprocess.concn.ScenarinoEntity;
 import ampc.com.gistone.preprocess.obs.entity.ObsBean;
 import ampc.com.gistone.util.AmpcResult;
@@ -56,6 +58,10 @@ public class AirController {
 	
 	@Autowired
 	private TObsMapper tObsMapper;
+	
+	@Autowired
+	private TTasksStatusMapper tTasksStatusMapper;
+	
 
 	@RequestMapping("/Air/get_time")
 	public AmpcResult get_time(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response ) throws NoSuchAlgorithmException, IOException {
@@ -1374,11 +1380,83 @@ public class AirController {
 		}
 		
 		
-		
 		return	AmpcResult.ok(lastMap);
+		
 	}catch(Exception e){
 		LogUtil.getLogger().error("AppraisalController 预报检验查询异常！",e);
 		return	AmpcResult.build(1001, "预报检验查询异常！");
+	}
+	}
+	
+	
+	/**
+	 * 实时预报含有数据的时间查询
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("Air/times")
+	public AmpcResult find_times(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+	try{
+		ClientUtil.SetCharsetAndHeader(request, response);
+		Map<String,Object> data=(Map)requestDate.get("data");
+		Long userId=Long.valueOf(data.get("userId").toString());//用户id
+		String date=data.get("date").toString();//站点或者平均
+		SimpleDateFormat hms = new SimpleDateFormat("yyyy-MM-dd");
+		Date pathdate=hms.parse(date);
+		TScenarinoDetail ts=new TScenarinoDetail();
+		ts.setPathDate(pathdate);
+		ts.setScenType("4");
+		List<TScenarinoDetail> tsList=tScenarinoDetailMapper.selectByEntity(ts);
+		if(tsList.isEmpty()){
+			LogUtil.getLogger().error("没有当前时间的实时预报情景！");
+			return	AmpcResult.build(1001, "没有当前时间的实时预报情景！");
+		}
+		TScenarinoDetail thets=tsList.get(0);
+		Date start=thets.getScenarinoStartDate();
+		String stra=hms.format(start);
+		Date starttime=hms.parse(stra);
+		TMissionDetail tm=tMissionDetailMapper.selectByPrimaryKey(thets.getMissionId());
+		TTasksStatus tTasksStatus=tTasksStatusMapper.selectStatus(thets.getScenarinoId());
+		Long status=tTasksStatus.getStepindex();
+		Date endtime=null;
+		if(status==8){
+			Date sdd=tTasksStatus.getTasksEndDate();
+			String addTimeDate =hms.format(sdd);
+			endtime=hms.parse(addTimeDate);//对应情景起报日期
+		}else{
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(tTasksStatus.getTasksEndDate());
+			cal.add(Calendar.DATE, -1);
+			String addTimeDate =hms.format(cal.getTime());
+			endtime=hms.parse(addTimeDate);//对应情景起报日期
+		}
+		
+		
+		Long startTime = starttime.getTime();
+		Long endTime2 = endtime.getTime();
+		Long betweenDays = (long)((endTime2 - startTime) / (1000 * 60 * 60 *24) + 0.5);
+	    JSONObject obj=new JSONObject();
+		JSONArray arr=new JSONArray();
+		for(int a=0;a<=betweenDays;a++){
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(thets.getScenarinoStartDate());
+			cal.add(Calendar.DATE, a);
+			String addTimeDate =hms.format(cal.getTime());
+			Date tim=hms.parse(addTimeDate);//对应情景起报日期
+			arr.add(tim.getTime());
+			
+		}
+		obj.put("missionId", thets.getMissionId());
+		obj.put("domainId", tm.getMissionDomainId());
+		obj.put("scenarioId",thets.getScenarinoId());
+		obj.put("timearr",arr);
+		return	AmpcResult.ok(obj);
+	}catch(Exception e){
+		LogUtil.getLogger().error(" 实时预报含有数据的时间查询！",e);
+		return	AmpcResult.build(1001, " 实时预报含有数据的时间查询！");
+		
 	}
 	}
 }
