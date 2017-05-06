@@ -220,7 +220,10 @@ function requestDate() {
 
             changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
             // initWrwDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
-            initWrwDate('2017-04-27','2017-05-03','2017-04-27','2017-05-03');
+
+            changeMsg.startD = '2017-04-27';
+            changeMsg.endD = '2017-05-03';
+            initWrwDate('2017-04-27','2017-05-03',changeMsg.startD,changeMsg.endD);
             initQxysDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
         }
     })
