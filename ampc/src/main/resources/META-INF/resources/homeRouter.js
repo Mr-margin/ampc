@@ -39,6 +39,12 @@ $.when(dps_um).then(function(){
       $('#sidebarlt>ul').on("click","p",function () {
         $(this).siblings().removeClass("active").end().addClass("active").parentsUntil("#sidebarlt>ul>li").last().parent().siblings().find("p.active").removeClass("active");
       })
+//      特殊页面功能栏记忆
+      if(auri=='#/yabj'){
+    	  $("[href='#/rwgl']").parent().addClass('active').siblings().removeClass('active');
+      }else if(auri=='#/rwgl_reductAnalys'){
+    	  $("[href='#/rwgl']").parent().addClass('active').siblings().removeClass('active');
+      }
 
       /*为功能栏增加滚动条
        * 功能栏下所有展开框都需要滚动条
