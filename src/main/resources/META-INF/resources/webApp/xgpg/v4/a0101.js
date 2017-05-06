@@ -1,5 +1,6 @@
 var opacity = 0.8;//默认的图层透明度
 var ls, sceneInitialization, qjMsg;
+var videoPlayScale = [];
 var changeMsg = {
     borderType:1,
     showWind: '-1',
@@ -693,7 +694,6 @@ function setQjSelectBtn(data) {
 
 var rmsType = 'd';
 var startTime, endTime, nowTime;//存储moment对象
-var videoPlayScale = [];
 /*设置日期下拉框*/
 /*传入毫秒数*/
 function setDate(s1, e1, s2, e2) {
