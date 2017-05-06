@@ -970,12 +970,11 @@ function initEcharts() {
 	var	proStation=$("#proStation option:selected").text();
 	var	cityStation=$("#cityStation option:selected").text();
 	var	station=$("#station option:selected").text();
-	var	domain=$("input[name='domain']").parents('label.active').text();
-	
+	var	domain=$("#wrw input[name='domain']").parents('label.active').text();
+	console.log(domain);
 	var mesage='';
 	if(proStation.substr(-1)!="省"&&cityStation.substr(-1)=="市"&&"平均"==station){
 		mesage+=cityStation+">>"+domain+">>";
-	
 	}else if(proStation.substr(-1)!="省"&&cityStation.substr(-1)=="市"&&"平均"!=station){
 		mesage+=cityStation+">>"+station+">>"+domain+">>";
 	}else if("省"==proStation.substr(-1)&&"平均"==station){
