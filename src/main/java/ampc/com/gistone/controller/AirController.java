@@ -1085,7 +1085,12 @@ public class AirController {
 					List<TMissionDetail> tmlist=tMissionDetailMapper.selectByEntity(tm);
 					TMissionDetail thetm=tmlist.get(0);
 					int domainId=Integer.valueOf(thetm.getMissionDomainId().toString());
-					String tables="T_SCENARINO_FNL_DAILY_";
+					String tables="";
+					if(how==-1){
+						tables+="T_SCENARINO_FNL_DAILY_";
+					}else{
+						continue;	
+					}
 					Date tims=jztScenarino.getPathDate();
 					DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(tims);
@@ -1168,8 +1173,12 @@ public class AirController {
 					List<TMissionDetail> tmlist=tMissionDetailMapper.selectByEntity(tm);
 					TMissionDetail thetm=tmlist.get(0);
 					int domainId=Integer.valueOf(thetm.getMissionDomainId().toString());
-
-					String tables="T_SCENARINO_FNL_HOURLY_";
+					String tables="";
+					if(how==-1){
+						tables+="T_SCENARINO_FNL_HOURLY_";
+					}else{
+						continue;	
+					}
 					Date tims=jztScenarino.getPathDate();
 					DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(tims);
@@ -1281,6 +1290,12 @@ public class AirController {
 						Integer vale=Integer.valueOf(validMap.get(day).get(spc).toString());
 						
 						String ps=null;
+						if(hourpAllspcMap.get(day)==null){
+							continue;
+						}
+						if(hourpAllspcMap.get(day).get(date)==null){
+							continue;
+						}
 						if(AllspcMap.get(day).get(date).get(spc)==null){
 							ps="99999999";
 						}else{
@@ -1365,7 +1380,12 @@ public class AirController {
 						List<Object> numma=spciter.getValue();
 						for(int s=0;s<=23;s++){
 							BigDecimal num=new BigDecimal(numma.get(s).toString());
-							
+							if(hourpAllspcMap.get(day)==null){
+								continue;
+							}
+							if(hourpAllspcMap.get(day).get(date)==null){
+								continue;
+							}
 							List ms=hourpAllspcMap.get(day).get(date).get(spc);
 						
 							String ps=null;
@@ -1433,7 +1453,10 @@ public class AirController {
 		
 		
 		Map<Integer,Map<String,Map<String,String>>> lastMap=new HashMap();
-		
+		lastMap.put(-1, new HashMap());
+		lastMap.put(1, new HashMap());
+		lastMap.put(2, new HashMap());
+		lastMap.put(3, new HashMap());
 		Iterator<Entry<Integer,Map<String,Map<String,Double>>>> aveite=aveMap.entrySet().iterator();
 		while(aveite.hasNext()){
 		Entry<Integer,Map<String,Map<String,Double>>> ave=aveite.next();
