@@ -1837,7 +1837,7 @@ var selectCopyPlan;
 function initCopyPlanTable() {
   $('#copyPlanTable').bootstrapTable({
     method: 'POST',
-    url: localhttp + '/ampc/plan/copy_plan_list',
+    url: '/ampc/plan/copy_plan_list',
     dataType: "json",
     contentType: "application/json", // 请求远程数据的内容类型。
     toobar: '#rwToolbar',
