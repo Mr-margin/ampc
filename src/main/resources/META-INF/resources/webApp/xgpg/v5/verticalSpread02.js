@@ -2,7 +2,7 @@ $(function () {
     /**
      *设置导航条信息
      */
-    $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">垂直廓线</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
+    $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">垂直廓线</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
     //全选复选框
     //initTableCheckbox();
 
@@ -133,7 +133,7 @@ if (!sceneInitialization) {
 
 /*初始化页面数据,在缓存中有数据的情况下*/
 function initialize() {
-    console.log("加载数据")
+
     changeMsg.scenarinoId = [];
     changeMsg.scenarinoName = [];
     for (var i = 0; i < sceneInitialization.data.length; i++) {
@@ -159,7 +159,7 @@ function setStation(id) {
     $('#proStation').empty();
     $('#cityStation').empty();
     $('#station').empty();
-    var url = '/ampc/Site/find_codes';
+    var url = '/Site/find_codes';
     dps_codeStation = ajaxPost(url, {
         userId: userId,
         MissionId: id
@@ -192,7 +192,7 @@ function setStation(id) {
 }
 /*查询站点*/
 function findStation(code) {
-    dps_station = ajaxPost('/ampc/Site/find_Site', {
+    dps_station = ajaxPost('/Site/find_Site', {
         userId: userId,
         siteCode: code
     }).success(function (res) {
@@ -226,7 +226,6 @@ function setTime(s, e) {
 
 
 function initEcharts() {
-    console.log("初始化表单")
     if (changeMsg.rms == 'day') {
         $('.hour').css('display', 'none');
         $('.day').css('display', 'block');
@@ -329,8 +328,7 @@ function initEcharts() {
 //超链接显示 模态框
 function exchangeModal() {
     sceneInittion();
-   // $("#Initialization").modal();
-    $("#Initialization").window("open")
+    $("#Initialization").modal();
 }
 var allMission = {};
 /**
@@ -340,16 +338,16 @@ function sceneInittion() {
     $("#task").html("");
     var paramsName = {};
     paramsName.userId = userId;
-    //console.log(JSON.stringify(paramsName));
-    ajaxPost('/ampc/mission/find_All_mission', paramsName).success(function (res) {
-      //  console.log(JSON.stringify(res));
+    console.log(JSON.stringify(paramsName));
+    ajaxPost('/mission/find_All_mission', paramsName).success(function (res) {
+        console.log(JSON.stringify(res));
         if (res.status == 0) {
             if (res.data || res.data.length > 0) {
                 //if(false){
                 var task = "";
 
 
-              /*测试数据*/
+                /*测试数据*/
                 //res.data = [
                 //  {
                 //    missionEndDate: 1480258800000,
@@ -358,7 +356,7 @@ function sceneInittion() {
                 //    missionStartDate: 1479571200000,
                 //  }
                 //]
-              /*测试数据 end*/
+                /*测试数据 end*/
 
 
                 $.each(res.data, function (k, vol) {
@@ -375,7 +373,7 @@ function sceneInittion() {
                 });
                 $("#task").html(task);
 //      $("#Initialization").modal();//初始化模态框显示
-               /*$("#Initialization").modal({backdrop: 'static', keyboard: false});*/
+                $("#Initialization").modal({backdrop: 'static', keyboard: false});
                 sceneTable();
             } else {
                 swal('无可用任务', '', 'error')
@@ -392,45 +390,7 @@ function sceneInittion() {
  */
 function sceneTable() {
     $("#sceneTableId").bootstrapTable('destroy');//销毁现有表格数据
-    //表格交互 easyui
 
-    $.ajax({
-        url: '/ampc/scenarino/find_All_scenarino',
-        contentType: 'application/json',
-        method: 'post',
-        dataType: 'JSON',
-        data: JSON.stringify({
-            "token": "",
-            "data": {
-                "userId": 1,
-                "missionId":$("#task").val()
-            }
-        }),
-        success:function (data) {
-
-            $("#sceneTableId").datagrid({
-                data:data.data.rows,
-                columns:[[
-                    {field:"ck",checkbox:true},
-                    {field:"scenarinoName",title:"情景名称"},
-                    {field:"scenType",title:"情景描述"},
-                    {field:"scenarinoStartDate",title:"时间"},
-                    {field:"scenarinoEndDate",title:"时间"},
-                ]],
-                clickToSelect: true,// 点击选中行
-                pagination: false, // 在表格底部显示分页工具栏
-                striped: true, // 使表格带有条纹
-                queryParams: function (params) {
-                    var data = {};
-                    data.userId = userId;
-                    data.missionId = $("#task").val();
-                    return JSON.stringify({"token": "", "data": data});
-                }
-            })
-        }
-    })
-
-/*
     $("#sceneTableId").bootstrapTable({
         method: 'POST',
         url: '/ampc/scenarino/find_All_scenarino',
@@ -472,7 +432,7 @@ function sceneTable() {
             }
 
 
-          /*测试使用 start*/
+            /*测试使用 start*/
             //var data = {
             //  rows:[]
             //}
@@ -501,8 +461,7 @@ function sceneTable() {
             //];
             //return data.rows
 
-          /*测试使用 end*/
-          /*
+            /*测试使用 end*/
         },
         onClickRow: function (row, $element) {
             $('.success').removeClass('success');
@@ -519,14 +478,13 @@ function sceneTable() {
         onLoadError: function () {
             swal('连接错误', '', 'error');
         }
-    });*/
+    });
 }
 /**
  * 保存选择的情景
  */
 function save_scene() {
-    //var row = $('#sceneTableId').bootstrapTable('getSelections');//获取所有选中的情景数据
-    var row = $('#sceneTableId').datagrid('getSelections');//获取所有选中的情景数据
+    var row = $('#sceneTableId').bootstrapTable('getSelections');//获取所有选中的情景数据
     if (row.length > 0) {
         var mag = {};
         mag.id = "sceneInitialization";
@@ -550,7 +508,7 @@ function save_scene() {
         console.log(data);
         sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
         $("#close_scene").click();
-      /*数据准备完毕，进行初始化页面*/
+        /*数据准备完毕，进行初始化页面*/
         initialize();
     } else {
         swal('暂无数据', '', 'error');
@@ -652,8 +610,8 @@ var czData;
 /*设置echarts图表*/
 function updata() {
     $.when(dps_station).then(function () {
-        var url = '/ampc/Appraisal/find_vertical';
-        var urlJZ = '/ampc/Appraisal/find_basevertical';
+        var url = '/Appraisal/find_vertical';
+        var urlJZ = '/Appraisal/find_basevertical';
         var echartsData = ajaxPost(url, {
             userId: userId,
             missionId: sceneInitialization.taskID,
@@ -718,11 +676,11 @@ function updata() {
                 $.extend(obj, resJZ[0].data, res[0].data);
                 czData = obj;
 
-              /*修改显示头 */
+                /*修改显示头 */
 
                 showTitleFun();
 
-              /*修改显示头 end*/
+                /*修改显示头 end*/
 
                 initEcharts();
             } else {
@@ -739,30 +697,30 @@ function showTitleFun() {
     $('#showTitle span').empty();
     if (zhiCity.indexOf(changeMsg.pro) == -1) {
         if (changeMsg.station == 'avg') {
-            $('#showTitle .proName').html(changeMsg.proName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .cityName').html(changeMsg.cityName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .proName').html(changeMsg.proName + '>>');
+            $('#showTitle .cityName').html(changeMsg.cityName + '>>');
+            $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '>>');
+            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '>>');
             $('#showTitle .heightName').html(heightArr[changeMsg.height - 1] + 'm');
         } else {
-            $('#showTitle .proName').html(changeMsg.proName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .cityName').html(changeMsg.cityName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .proName').html(changeMsg.proName + '>>');
+            $('#showTitle .cityName').html(changeMsg.cityName + '>>');
             $('#showTitle .stationName').html(changeMsg.stationName + '>>');
-            $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '>>');
+            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '>>');
             $('#showTitle .heightName').html(heightArr[changeMsg.height - 1] + 'm');
         }
     } else {
         if (changeMsg.station == 'avg') {
-            $('#showTitle .cityName').html(changeMsg.cityName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .cityName').html(changeMsg.cityName + '>>');
+            $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '>>');
+            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '>>');
             $('#showTitle .heightName').html(heightArr[changeMsg.height - 1] + 'm');
         } else {
-            $('#showTitle .cityName').html(changeMsg.cityName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .stationName').html(changeMsg.stationName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .cityName').html(changeMsg.cityName + '>>');
+            $('#showTitle .stationName').html(changeMsg.stationName + '>>');
+            $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '>>');
+            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '>>');
             $('#showTitle .heightName').html(heightArr[changeMsg.height - 1] + 'm');
         }
     }

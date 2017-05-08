@@ -32,7 +32,7 @@ if (!qjMsg) {
 } else {
   ls.setItem('yaMsg', JSON.stringify(qjMsg));
 }
-console.log(JSON.stringify(qjMsg));
+//console.log(JSON.stringify(qjMsg));
 
 /**
  * 完成按钮
@@ -61,7 +61,7 @@ function Deposit_Reserve_plan() {
   paramsName.planId = qjMsg.planId;
 
   ajaxPost('/plan/iscopy_plan', paramsName).success(function (res) {//设置可复用预案
-    console.log(JSON.stringify(res));
+//    console.log(JSON.stringify(res));
     if (res.status == 0) {
       swal({
         title: "存入预案库成功",
@@ -83,7 +83,7 @@ function Deposit_Reserve_plan() {
       });
 
     } else {
-      swal('连接错误/plan/get_planInfo' + JSON.stringify(res), '', 'error');
+      swal('连接错误/plan/iscopy_plan' + JSON.stringify(res), '', 'error');
     }
   });
 }
@@ -156,8 +156,8 @@ function hyc() {
   paramsName.userId = userId;
   paramsName.planId = qjMsg.planId;
   paramsName.timeId = qjMsg.timeId;
-  paramsName.timeStartTime = qjMsg.timeStartDate;
-  paramsName.timeEndTime = qjMsg.timeEndDate;
+  paramsName.timeStartTime = moment(qjMsg.timeStartDate).format('YYYY-MM-DD HH:ss');
+  paramsName.timeEndTime = moment(qjMsg.timeEndDate).format('YYYY-MM-DD HH:ss');
 
   $("#dangqianrenwu").html("当前任务：" + qjMsg.rwName);
   $("#dangqianqingjing").html("当前情景：" + qjMsg.qjName);
@@ -166,6 +166,7 @@ function hyc() {
 
   m_planId = qjMsg.planId;
   $("#accordion").html("");
+  console.log(JSON.stringify(paramsName));
   ajaxPost('/plan/get_planInfo', paramsName).success(function (res) {
 //		console.log(JSON.stringify(res));
     var accordion_html = "";
@@ -219,140 +220,140 @@ function hyc() {
  */
 function metTable_hj_info(pa_name) {
 
-  $('#metTable_hj').bootstrapTable('destroy');
+	$('#metTable_hj').bootstrapTable('destroy');
 
-  $("#hz_de").hide();
-  $("#hz_up").hide();
-  $("#jianpaijisuan").hide();
+	$("#hz_de").hide();
+	$("#hz_up").hide();
+	$("#jianpaijisuan").hide();
 
-  var hangye = "";//手风琴当前打开的内容
+	var hangye = "";//手风琴当前打开的内容
 
-  if (typeof pa_name != "undefined") {
-    hangye = pa_name;
-  } else {
-    //循环手风琴列表下所有的一级子节点，查找哪个正在打开
-    $("#accordion").children().each(function () {
-      var e = $(this);
-      e.children().each(function () {//再循环一次，这次下面有两个div，一个标题，一个内容
-        if ($(this).is('.in')) {
-          hangye = e.attr("val_name");
-        }
-      });
-    });
-  }
+	if (typeof pa_name != "undefined") {
+		hangye = pa_name;
+	} else {
+		//循环手风琴列表下所有的一级子节点，查找哪个正在打开
+		$("#accordion").children().each(function () {
+			var e = $(this);
+			e.children().each(function () {//再循环一次，这次下面有两个div，一个标题，一个内容
+				if ($(this).is('.in')) {
+					hangye = e.attr("val_name");
+				}
+			});
+		});
+	}
 
-  //行业的查询状态
-  var hangyede_type = "";
-  $("#hangyedetype").children().each(function () {
-    if ($(this).is('.active')) {
-      hangyede_type = $(this).attr("val_name");
-    }
-  });
+	//行业的查询状态
+	var hangyede_type = "";
+	$("#hangyedetype").children().each(function () {
+		if ($(this).is('.active')) {
+			hangyede_type = $(this).attr("val_name");
+		}
+	});
 
-  var columnsw = [];
-  columnsw.push({field: 'state', title: '', align: 'center', checkbox: true});
-  columnsw.push({field: 'sectorName', title: '行业', align: 'center'});
-  columnsw.push({field: 'measureName', title: '措施', align: 'center'});
-  columnsw.push({field: 'implementationScope', title: '点源实际范围', align: 'center'});
-  columnsw.push({
-    field: 'reduct', title: '涉及年化排放占比', align: 'center', formatter: function (value, row, index) {
+	var columnsw = [];
+	columnsw.push({field: 'state', title: '', align: 'center', checkbox: true});
+	columnsw.push({field: 'sectorName', title: '行业', align: 'center'});
+	columnsw.push({field: 'measureName', title: '措施', align: 'center'});
+	columnsw.push({field: 'implementationScope', title: '点源实际范围', align: 'center'});
+	columnsw.push({
+		field: 'reduct', title: '涉及年化排放占比', align: 'center', formatter: function (value, row, index) {
 
-      return value;
-    }
-  });
-  columnsw.push({
-    field: 'ratio', title: '年化减排比例', align: 'center', formatter: function (value, row, index) {
+			return value;
+		}
+	});
+	columnsw.push({
+		field: 'ratio', title: '年化减排比例', align: 'center', formatter: function (value, row, index) {
 
-      return value;
-    }
-  });
-  $('#metTable_hj').bootstrapTable({
-    method: 'POST',
-    url: "/ampc/measure/get_measureList",
-    dataType: "json",
-    columns: columnsw, //列
-    clickToSelect: true,// 点击选中行
-    pagination: false, // 在表格底部显示分页工具栏
-    singleSelect: true,//设置True 将禁止多选
-    striped: false, // 使表格带有条纹
-    silent: true, // 刷新事件必须设置
-    queryParams: function (params) {
-      var data = {};
-      data.planId = qjMsg.planId;
-      data.userId = userId;
-      data.stainType = $('#hz_wrw').val();
-      if (hangyede_type == "dq") {
-        data.sectorName = hangye;
-      }
-      console.log(JSON.stringify({"token": "", "data": data}));
-      return JSON.stringify({"token": "", "data": data});
-    },
-    queryParamsType: "limit", //参数格式,发送标准的RESTFul类型的参数请求
-    contentType: "application/json", // 请求远程数据的内容类型。
-    responseHandler: function (res) {
+			return value;
+		}
+	});
+	$('#metTable_hj').bootstrapTable({
+		method: 'POST',
+		url: "/ampc/measure/get_measureList",
+		dataType: "json",
+		columns: columnsw, //列
+		clickToSelect: true,// 点击选中行
+		pagination: false, // 在表格底部显示分页工具栏
+		singleSelect: true,//设置True 将禁止多选
+		striped: false, // 使表格带有条纹
+		silent: true, // 刷新事件必须设置
+		queryParams: function (params) {
+			var data = {};
+			data.planId = qjMsg.planId;
+			data.userId = userId;
+			data.stainType = $('#hz_wrw').val();
+			if (hangyede_type == "dq") {
+				data.sectorName = hangye;
+			}
+//			console.log(JSON.stringify({"token": "", "data": data}));
+			return JSON.stringify({"token": "", "data": data});
+		},
+		queryParamsType: "limit", //参数格式,发送标准的RESTFul类型的参数请求
+		contentType: "application/json", // 请求远程数据的内容类型。
+		responseHandler: function (res) {
 
-      if (res.status == 0) {
+			if (res.status == 0) {
 
-        $.each(res.data.rows, function (i, col) {
+				$.each(res.data.rows, function (i, col) {
 
-          if (typeof res.data.rows[i].reduct != "undefined") {
-            if (res.data.rows[i].reduct == "-9999.0") {
-              res.data.rows[i].reduct = "-";
-            } else {
-              res.data.rows[i].reduct = res.data.rows[i].reduct + "%";
-            }
-          } else {
-            res.data.rows[i].reduct = "-";
-          }
-          if (typeof res.data.rows[i].ratio != "undefined") {
+					if (typeof res.data.rows[i].reduct != "undefined") {
+						if (res.data.rows[i].reduct == "-9999.0") {
+							res.data.rows[i].reduct = "-";
+						} else {
+							res.data.rows[i].reduct = res.data.rows[i].reduct + "%";
+						}
+					} else {
+						res.data.rows[i].reduct = "-";
+					}
+					if (typeof res.data.rows[i].ratio != "undefined") {
 
-            if (res.data.rows[i].ratio == "-9999.0") {
-              res.data.rows[i].ratio = "-";
-            } else {
-              res.data.rows[i].ratio = res.data.rows[i].ratio + "%";
-            }
+						if (res.data.rows[i].ratio == "-9999.0") {
+							res.data.rows[i].ratio = "-";
+						} else {
+							res.data.rows[i].ratio = res.data.rows[i].ratio + "%";
+						}
 
-          } else {
-            res.data.rows[i].ratio = "-";
-          }
-
-
-        });
-
-        return res.data.rows;
-
-      } else if (res.status == 1000) {
-        swal('/measure/get_measureList参数错误', '', 'error')
-        return "";
-      }
+					} else {
+						res.data.rows[i].ratio = "-";
+					}
 
 
-    },
-    onClickRow: function (row, $element) {
-//      $('.success').removeClass('success');
-//      $($element).addClass('success');
-    	if (row.state == true) {//如果被选中
-            $("#hz_de").show();
-            $("#hz_up").show();
-          } else {
-            $("#hz_de").hide();
-            $("#hz_up").hide();
-          }
-    },
-    onLoadSuccess: function (data) {
-      if (data.length > 0) {
-        $("#jianpaijisuan").show();
-      }
-    },
-    onCheck: function (row){
-    	$("#hz_de").show();
-        $("#hz_up").show();
-    },
-    onUncheck: function (row){
-    	$("#hz_de").hide();
-        $("#hz_up").hide();
-    }
-  });
+				});
+
+				return res.data.rows;
+
+			} else if (res.status == 1000) {
+				swal('/measure/get_measureList参数错误', '', 'error')
+				return "";
+			}
+
+
+		},
+		onClickRow: function (row, $element) {
+//			$('.success').removeClass('success');
+//			$($element).addClass('success');
+			if (row.state == true) {//如果被选中
+				$("#hz_de").show();
+				$("#hz_up").show();
+			} else {
+				$("#hz_de").hide();
+				$("#hz_up").hide();
+			}
+		},
+		onLoadSuccess: function (data) {
+			if (data.length > 0) {
+				$("#jianpaijisuan").show();
+			}
+		},
+		onCheck: function (row){
+			$("#hz_de").show();
+			$("#hz_up").show();
+		},
+		onUncheck: function (row){
+			$("#hz_de").hide();
+			$("#hz_up").hide();
+		}
+	});
 
 }
 
@@ -406,7 +407,7 @@ function jianpaijisuan() {
     planMeasureIds += col.planMeasureId + ",";
   });
   zmblockUI("#jianpaijisuanbox", 'start');
-  console.log(1);
+//  console.log(1);
   // $("#zhezhao").show();//计算中
   // $("#zhezhao_title").show();
   ajaxPost('/jp/pmjp', {"planMeasureIds": planMeasureIds.substring(0, planMeasureIds.length - 1)}).success(function (res) {
@@ -682,6 +683,15 @@ function open_cs(sectorsName, measureame, mid, planMeasureId) {
 //					console.log(JSON.stringify(res));
         if (res.status == 'success') {
           $("#dianyaunzushu").html("点源总数：" + res.data.count);
+          if(res.data.count == 0){
+        	  $("#se_bu").hide();//筛选按钮关闭
+        	  $("#se_bu_na").hide();//筛选按钮关闭
+        	  $("#se_name").hide();//企业名称输入关闭
+          }else{
+        	  $("#se_bu").show();
+        	  $("#se_bu_na").show();
+        	  $("#se_name").show();
+          }
           $("#xiangxizhibiao").html("点源排放占比:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SO<sub>2</sub>:" + res.data.rate.SO2 + "%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO<sub>x</sub>:" + res.data.rate.NOx + "%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PM<sub>2.5</sub>:" + res.data.rate.PM25 + "%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VOCs:" + res.data.rate.VOC + "%");
           add_point(res.data.company);
 
@@ -1121,6 +1131,12 @@ function search_button() {
     //将本次查询的缓存加入到总条件中
 //		console.log(JSON.stringify(temp_val_v1));
     if (JSON.stringify(temp_val_v1) == "{}") {
+    	//如果筛选为空 则清空下面企业列表中的数据
+      $("#mic").hide();
+      $("#shaixuan_num").html("");
+      $("#metTable_tools").hide();//保存子措施按钮
+      $("#metTable_name_tools").hide();//保存子措施按钮
+      
       //没有条件，就不加了
       swal({
         title: "请选择筛选条件",
@@ -1131,7 +1147,7 @@ function search_button() {
     } else {
       if (ttlk) {
         sc_val.filters.push(temp_val_v1);
-        console.log(JSON.stringify(sc_val));
+//        console.log(JSON.stringify(sc_val));
         temp_val_v1 = jQuery.extend(true, {}, temp_val);//赋值模板到操作缓存
         //根据筛选条件获取点源，准备填写空值系数
         point_table();
@@ -1444,6 +1460,14 @@ function xishu_save() {
       ttwr = false;
       $("#" + vol).addClass("erroe_input");//加红色边框
     }
+    //加入正则验证  判断内部是否出现了非法字符
+    var re =/^[0-9]+([.]{1}[0-9]+){0,1}$/;
+    var result=  re.test($("#" + vol).val());
+    if(!result){
+    	ttwr = false;
+        $("#" + vol).addClass("erroe_input");//加红色边框
+    }
+    
   });
 
   if (ttwr) {
@@ -1913,7 +1937,7 @@ function create() {
     paramsName.measureContent = JSON.stringify(sc_v1);
     paramsName.scenarinoId = qjMsg.qjId;
 
-    console.log(JSON.stringify(sc_v1));
+//    console.log(JSON.stringify(sc_v1));
     ajaxPost('/measure/addOrUpdate_measure', paramsName).success(function (res) {
 //			console.log(JSON.stringify(res));
       if (res.status == 0) {

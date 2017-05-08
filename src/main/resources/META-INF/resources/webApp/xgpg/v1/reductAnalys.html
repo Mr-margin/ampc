@@ -13,7 +13,7 @@
 		border-right: 2px solid #ffffff;
 		border-top-right-radius: 20px;
 	}
-
+	
 	.info {
 		padding: 5px;
 		z-index: 40;
@@ -29,239 +29,121 @@
 	}
 	#legendWrapper {
 		bottom: 15px;
-		/*height: 23.5em;*/
-		/*height:auto;*/
+		height: 23.5em;
 		left: 15px;
 		position: absolute !important;
 		width: 14.0625em;
 	}
-	/*下拉框样式*/
-	/* SELECT W/IMAGE */
-	select#selectTravelCity
-	{
-		width                    : 14em;
-		height                   : 3.2em;
-		padding                  : 0.2em 0.4em 0.2em 0.4em;
-		vertical-align           : middle;
-		border                   : 1px solid #94c1e7;
-		-moz-border-radius       : 0.2em;
-		-webkit-border-radius    : 0.2em;
-		border-radius            : 0.2em;
-		-webkit-appearance       : none;
-		-moz-appearance          : none;
-		appearance               : none;
-		background               : #ffffff;
-		font-family              : SimHei;
-		font-size                : 1.1em;
-		color                    : RGBA(102,102,102,0.7);
-		cursor                   : pointer;
-	}
-
-	/*SELECT W/DOWN-ARROW*/
-	select#selectPointOfInterest
-	{
-		width                    : 185pt;
-		height                   : 40pt;
-		line-height              : 40pt;
-		padding-right            : 20pt;
-		text-indent              : 4pt;
-		text-align               : left;
-		vertical-align           : middle;
-		border                   : 1px solid #94c1e7;
-		-moz-border-radius       : 6px;
-		-webkit-border-radius    : 6px;
-		border-radius            : 6px;
-		-webkit-appearance       : none;
-		-moz-appearance          : none;
-		appearance               : none;
-		font-family              : SimHei;
-		font-size                : 18pt;
-		font-weight              : 500;
-		color                    : RGBA(102,102,102,0.7);
-		cursor                   : pointer;
-		outline                  : none;
-	}
-
-
-	/*LABEL FOR SELECT*/
-	label#lblSelect{ position: relative; display: inline-block;}
-
-
-	/*DOWNWARD ARROW (25bc)*/
-	label#lblSelect::after
-	{
-		content                 : "\25bc";
-		position                : absolute;
-		top                     : 0;
-		right                   : 0;
-		bottom                  : 0;
-		width                   : 20pt;
-		line-height             : 40pt;
-		vertical-align          : middle;
-		text-align              : center;
-		background              : #94c1e7;
-		color                   : #2984ce;
-		-moz-border-radius       : 0 6px 6px 0;
-		-webkit-border-radius    : 0 6px 6px 0;
-		border-radius           : 0 6px 6px 0;
-		pointer-events          : none;
-	}
-	.cloudui .ibox-tools .wzGroup  .easyui-combobox{
-		border:none;
-		color: #333;
-		border: 1px solid #D9D9D9;
-		border-left: 4px solid #0275D8;
-		border-radius: 0 5px 0 0;
-		position: relative;
-		background-color:#fff;
-		border-radius: 0;
-		z-index: 2;
-	}
-	.cloudui .ibox-tools .wzGroup  .easyui-combobox:hover{background-color:#0275D8;color: #fff; border: 1px solid #0275D8;}
-	.cloudui .ibox-tools .wzGroup  .easyui-combobox option{
-		background-color:#ecf0f1;
-		border:none;
-		color:#333;
-		line-height:20px;
-	}
 </style>
-<div class="cloudui" style="height: 100%;width: 100%;position: relative;">
-	<div id="jpfx" class="easyui-layout" data-options="fit:'true',border:'false'" >
-		<div data-options="region:'west',border:'false'" class="jpfxLeft" style="overflow: hidden">
-			<div style="height:100%;padding-left: 0px;">
-				<div class="ibox float-e-margins" style="height:100%;border:1px solid #D9D9D9;">
-					<div class="ibox-title" style="margin-bottom: 0;height: 32px;line-height:32px;padding-left: 10px;background: linear-gradient(#fbfbfb, #f2f2f2);">
-						<h5 id="gis_table_title" class="headTitle"><i class="im-earth"></i>各地区减排</h5>
-						<div class="ibox-tools" style="margin-top: 3px;margin-right: 5px;">
-							<div class="wzGroup" style="margin-bottom: 0px;">
-								<div class="wzGroup_" style="margin-bottom: 0px;">
-									<span class="wz" style="border: none;background-color: transparent">物种: </span>
-									<select name="hz_wrw" id="hz_wrw" class="easyui-combobox" onChange="gis_paifang_show();">
-										<option value="SO2">SO2</option>
-										<option value="PM25">PM25</option>
-										<option value="PM10">PM10</option><!-- PM10=PM25+PMcoarse -->
-
-										<option value="NOX">NOx</option>
-										<option value="VOC">VOC</option>
-										<option value="CO">CO</option>
-										<option value="NH3">NH3</option>
-										<option value="BC">BC</option>
-										<option value="OC">OC</option>
-										<option value="PMFINE">PMFINE</option><!-- PMFINE=PM25-BC-OC -->
-										<option value="PMC">PMC</option>
-									</select>
-								</div>
-							</div>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<div class="switchBtn" id="showtype" onClick="gis_switch_table();" data-toggle="buttons" style="margin-bottom: 0px;">
-								<label class="btn btn-outline btn-success active" val_name="gis"><input type="radio" class="toggle"><i class="en-earth" style="margin-right: 5px;"></i>地图展示</label>
-								<label class="btn btn-outline btn-success" val_name="table"><input type="radio" class="toggle"><i class="st-select" style="margin-right: 5px;"></i>列表展示</label>
-							</div>
-						</div>
+<div class='col-md-6' style="height:100%;padding-left: 0px;">
+	<div class="ibox float-e-margins" style="height:100%;">
+		<div class="ibox-title">
+			<h5 id="gis_table_title">各地区减排</h5>
+			<div class="ibox-tools">
+				<div class="btn-group" style="margin-bottom: 0px;margin-top: -10px;">
+					<div class="input-group m-b" style="margin-bottom: 0px;width:180px;">
+						<span class="input-group-addon" style="border: 1px solid #E5E6E7;">物种: </span>
+						<select name="hz_wrw" id="hz_wrw" class="form-control" onChange="gis_paifang_show();">
+							<option value="SO2">SO2</option>
+							<option value="PM25">PM25</option>
+							<option value="PM10">PM10</option><!-- PM10=PM25+PMcoarse -->
+							
+							<option value="NOX">NOx</option>
+							<option value="VOC">VOC</option>
+							<option value="CO">CO</option>
+							<option value="NH3">NH3</option>
+							<option value="BC">BC</option>
+							<option value="OC">OC</option>
+							<option value="PMFINE">PMFINE</option><!-- PMFINE=PM25-BC-OC -->
+							<option value="PMC">PMC</option>
+		              	</select>
 					</div>
-					<div class="ibox-content" style="height:calc(100% - 33px);overflow-y: hide;border-top:1px solid #d9d9d9;padding: 0px;position: relative">
-						<div class="wzGroup" style="display:none;margin-bottom: 0px;position: absolute;top:6px;left:5px;z-index: 10">
-							<div class="wzGroup_" style="margin-bottom: 0px;">
-								<span class="wz">物种: </span>
-								<select name="hz_wrw" id="hz_wrw" class="easyui-combobox" onChange="gis_paifang_show();">
-									<option value="SO2">SO2</option>
-									<option value="PM25">PM25</option>
-									<option value="PM10">PM10</option><!-- PM10=PM25+PMcoarse -->
-
-									<option value="NOX">NOx</option>
-									<option value="VOC">VOC</option>
-									<option value="CO">CO</option>
-									<option value="NH3">NH3</option>
-									<option value="BC">BC</option>
-									<option value="OC">OC</option>
-									<option value="PMFINE">PMFINE</option><!-- PMFINE=PM25-BC-OC -->
-									<option value="PMC">PMC</option>
-								</select>
-							</div>
-						</div>
-						<div class="qjBtn" id="qjBtn1">
-							<div>
-								<div class="btn-group" data-toggle="buttons">
-								</div>
-							</div>
-						</div>
-						<div id="map_showId" style="height:100%;"></div>
-						<!-- <div class="legendinfo"></div> -->
-						<div id="legendWrapper" class="shadow info"></div>
-
-						<!-- 列表展示modal -->
-						<div  id="listModal" style="height: 100%;display: none;">
-							<div class="btn-group hidden-xs" id="exampleTableEventsToolbar" role="group">
-								<button type="button" class="btn btn-outline btn-default" style="margin-top: 5px;margin-left: 5px;margin-bottom: 5px;" id="returnSuperior">
-									<i class="im-undo" aria-hidden="true" title="返回上级"></i>
-								</button>
-								<button type="button" class="btn btn-outline btn-default" style="margin-top: 5px;margin-left: 5px;margin-bottom: 5px;" id="Refresh">
-									<i class="im-spinner5" aria-hidden="true"  title="刷新"></i>
-								</button>
-							</div>
-							<table id="listModal_table">
-								<thead style="display: none">
-								<tr>
-									<th data-field="name" data-halign="center" data-align="center">行政区</th>
-									<th data-field="pm25" data-halign="center" data-align="center">PM<sub>2.5</sub></th>
-									<th data-field="pm10" data-halign="center" data-align="center">PM<sub>10</sub></th>
-									<th data-field="so2" data-halign="center" data-align="center">SO<sub>2</sub></th>
-									<th data-field="nox" data-halign="center" data-align="center">NO<sub>x</sub></th>
-									<th data-field="voc" data-halign="center" data-align="center">VOC</th>
-									<th data-field="co" data-halign="center" data-align="center">CO</th>
-									<th data-field="nh3" data-halign="center" data-align="center">NH<sub>3</sub></th>
-									<th data-field="bc" data-halign="center" data-align="center">BC</th>
-									<th data-field="oc" data-halign="center" data-align="center">OC</th>
-									<th data-field="pmfine" data-halign="center" data-align="center">PMFINE</th>
-									<th data-field="pmc" data-halign="center" data-align="center">PMC</th>
-								</tr>
-								</thead>
-							</table>
-						</div>
+				</div>
+	        	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	        	<div class="btn-group btn-group-circle" id="showtype" onClick="gis_switch_table();" data-toggle="buttons" style="margin-bottom: 0px;margin-top: -5px;">
+					<label class="btn btn-outline btn-success active" val_name="gis"><input type="radio" class="toggle">地图展示</label> 
+					<label class="btn btn-outline btn-success" val_name="table"><input type="radio" class="toggle">列表展示</label>
+				</div>
+	        </div>
+		</div>
+		<div class="ibox-content" style="height:calc(100% - 48px);overflow-y: hide;border:1px solid #75B9E6;padding: 0px;">
+			<div class="qjBtn" id="qjBtn1">
+				<div class='' style="margin-top: -8px;float:right;">
+					<div class="btn-group" data-toggle="buttons">
 					</div>
 				</div>
 			</div>
-		</div>
-		<div data-options="region:'center',border:'false'" class="jpfxRight" style="overflow: hidden">
-			<div id="jpfxRight" class="easyui-layout" data-options="fit:'true',border:'false'">
-				<div data-options="region:'north',border:'false'" class="ibox float-e-margins" style="height:50%;overflow: hidden;border:1px solid #D9D9D9;">
-					<div class="ibox-title" style="margin-bottom: 0;height: 32px;line-height:32px;padding-left: 10px;background: linear-gradient(#fbfbfb, #f2f2f2);">
-						<h5 class="headTitle" ><i class="im-bars"></i>逐日减排情况</h5>
-					</div>
-					<div class="ibox-content" style="height:calc(100% - 33px);overflow-y: hide;background-color: #ffffff;padding: 0px 0px 0px 0px;border-top:1px solid #d9d9d9;">
-						<div class="col-md-12 easyui-pane" id="pfDiv1" style="height:100%;padding: 0px;"></div>
-					</div>
-				</div>
-
-				<div data-options="region:'center',border:'false'" class="ibox float-e-margins" style="height:calc(50%);padding-top: 10px;">
-					<div style="width: 100%;height: 100%;margin-bottom: 0px;overflow: hidden;border:1px solid #D9D9D9;">
-						<div class="ibox-title" style="margin-bottom: 0;height: 32px;line-height:32px;padding-left: 10px;background: linear-gradient(#fbfbfb, #f2f2f2);">
-							<h5 class="headTitle"><i class="im-pie"></i>行业/措施分担</h5>
-							<div class="" style="float:right;margin-top: 4px;margin-right: 5px;">
-								<div class=''>
-									<div class="btn-group btn-group-circle" id="chaxuntype" onClick="type_info();" data-toggle="buttons" style="margin-bottom: 0px;border:1px solid #d9d9d9;border-radius: 2px;height:24px;">
-										<label class="btn btn-outline btn-success active" val_name="1"><input type="radio" class="toggle">行业</label>
-										<label class="btn btn-outline btn-success" val_name="2"><input type="radio" class="toggle">措施</label>
-									</div>
-								</div>
-							</div>
+	        <div id="map_showId" style="height:100%;"></div>
+	        <!-- <div class="legendinfo"></div> -->
+	        <div id="legendWrapper" class="shadow info"></div>
+				
+	    	<!-- 列表展示modal -->
+	    	<div  id="listModal" style="height:calc(100% - 44px);display: none;">
+	    		<div class="btn-group hidden-xs" id="exampleTableEventsToolbar" role="group">
+                    <button type="button" class="btn btn-outline btn-default" style="margin-top: 5px;margin-left: 5px;" id="returnSuperior">
+                        <i class="glyphicon glyphicon-arrow-left" aria-hidden="true" title="返回上级"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline btn-default" style="margin-top: 5px;margin-left: 5px;" id="Refresh">
+                        <i class="glyphicon glyphicon-refresh" aria-hidden="true"  title="刷新"></i>
+                    </button>
+                </div>
+				<table id="listModal_table">
+					<thead>
+						<tr>
+							<th data-field="name" data-halign="center" data-align="center">行政区</th>
+							<th data-field="pm25" data-halign="center" data-align="center">PM<sub>2.5</sub></th>
+							<th data-field="pm10" data-halign="center" data-align="center">PM<sub>10</sub></th>
+							<th data-field="so2" data-halign="center" data-align="center">SO<sub>2</sub></th>
+							<th data-field="nox" data-halign="center" data-align="center">NO<sub>x</sub></th>
+							<th data-field="voc" data-halign="center" data-align="center">VOC</th>
+							<th data-field="co" data-halign="center" data-align="center">CO</th>
+							<th data-field="nh3" data-halign="center" data-align="center">NH<sub>3</sub></th>
+							<th data-field="bc" data-halign="center" data-align="center">BC</th>
+							<th data-field="oc" data-halign="center" data-align="center">OC</th>
+							<th data-field="pmfine" data-halign="center" data-align="center">PMFINE</th>
+							<th data-field="pmc" data-halign="center" data-align="center">PMC</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+	    </div>
+	</div>
+</div>
+		
+<div class='col-md-6' style="height:100%;padding-left: 0px;padding-right: 0px;">
+	<div class="ibox float-e-margins" style="height:50%;margin-bottom: 15px;">
+	    <div class="ibox-title">
+	        <h5>逐日减排情况</h5>
+	    </div>
+	    <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: hide;background-color: #EDF7FF;padding: 0px 0px 0px 0px;">
+	    	<div class="col-md-12" id="pfDiv1" style="height:100%;border:1px solid #75B9E6;padding: 0px;"></div>
+	    </div>
+	</div>
+	
+	<div class="ibox float-e-margins" style="height:calc(50% - 15px);margin-bottom: 0px;">
+		<div class="ibox-title">
+			<h5>行业/措施分担</h5>
+			<div class="" style="float:right;">
+					<div class='' style="margin-top: -8px;">
+						<div class="btn-group btn-group-circle" id="chaxuntype" onClick="type_info();" data-toggle="buttons" style="margin-bottom: 0px;">
+							<label class="btn btn-outline btn-success active" val_name="1"><input type="radio" class="toggle">行业</label> 
+							<label class="btn btn-outline btn-success" val_name="2"><input type="radio" class="toggle">措施</label>
 						</div>
-						<div class="ibox-content" style="height:calc(100% - 42px);overflow-y: hide;background-color: #ffffff;padding: 0px;border-top:1px solid #d9d9d9">
-							<div class="col-md-12 easyui-panel" id="hycsDiv1" style="height:100%;padding: 0px;"></div>
-						</div>
 					</div>
-				</div>
 			</div>
 		</div>
+		<div class="ibox-content" style="height:calc(100% - 48px);overflow-y: hide;background-color: #EDF7FF;border:1px solid #EDF7FF;padding: 0px;">
+	    	<div class="col-md-12" id="hycsDiv1" style="height:100%;border:1px solid #75B9E6;padding: 0px;"></div>
+	    </div>
 	</div>
 </div>
 
 
 <!-- 设置情景范围模态框 -->
-<div style="display: none;" id="Initialization" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
+<div class="modal fade createRwModal" id="Initialization" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
-			<div class="modal-header" style="display: none;">
+			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -269,56 +151,32 @@
 			</div>
 			<div class="modal-body">
 				<div class="rwCon" >
-					<div class="form-group mt10 clearfix rwdlgTop">
-						<label for="task" class="col-md-2 control-label lh29 rwdlgTopTitle">任务名称</label>
+					<div class="form-group mt10 clearfix">
+						<label for="task" class="col-md-2 control-label lh29">任务名称</label>
 
-						<div class="col-md-10 rwdlgTopCon">
+						<div class="col-md-10">
 							<select class="form-control" id="task" name="task" onchange="sceneTable()"></select>
 						</div>
 					</div>
-					<div class="qjdlg easyui-layout form-group mt10 clearfix"><!-- id="tableId" style="display: none;" -->
-						<div class="col-md-10 col-md-offset-2" data-options="region:'center',border:false">
+					<div class="form-group mt10 clearfix"><!-- id="tableId" style="display: none;" -->
+						<div class="col-md-10 col-md-offset-2">
 							<table class="table table-striped table-bordered table-hover" id="sceneTableId" style="margin-top:5px;">
-								<thead style="display: none;">
-								<th data-checkbox="true" data-field="state"></th>
-								<th data-field="scenarinoName">情景名称</th>
-								<th data-field="scenType">情景描述</th>
-								<th data-field="scenarinoStartDate">时间</th>
-								<th data-field="scenarinoEndDate">时间</th>
+								<thead>
+									  <th data-checkbox="true" data-field="state"></th>
+								      <th data-field="scenarinoName">情景名称</th>
+								      <th data-field="scenType">情景描述</th>
+								      <th data-field="scenarinoStartDate">时间</th>
+								      <th data-field="scenarinoEndDate">时间</th>
 								</thead>
 							</table>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="modal-footer new-foot dlogFooter" >
+			<div class="modal-footer new-foot" >
 				<button type="button" class="btn btn-primary createRwBtn" onclick="save_scene();">确定</button>
 				<button type="button" class="btn btn-default" id="close_scene" data-dismiss="modal">取消</button>
 			</div>
 		</div>
 	</div>
 </div>
-</div>
-
-<script>
-	$("#jpfxRight").layout();
-	//弹框
-    $("#Initialization").window({
-        width:600,
-        collapsible:false,
-        maximizable:false,
-        minimizable:false,
-        modal:true,
-        shadow:false,
-        title:'创建情景',
-        border:false,
-		closed:true
-    });
-
-    $("#Initialization").parent().wrap("<div class='cloudui'></div>")
-	$("#close_scene").click(function () {
-		$("#Initialization").window("close")
-    })
-    $(".cloudui .window .panel-tool .panel-tool-close").html('<i class="im-close"></i>')
-
-</script>
