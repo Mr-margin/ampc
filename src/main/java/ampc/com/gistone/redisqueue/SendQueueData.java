@@ -75,7 +75,7 @@ public class SendQueueData {
 		String compantstatus = selectStatus.getBeizhu();
 		String sendtime = selectStatus.getBeizhu2();
 		String stopStatus = selectStatus.getStopStatus();//终止的状态
-		String pauseStatus = selectStatus.getPauseStatus();//暂停的状态
+//		String pauseStatus = selectStatus.getPauseStatus();//暂停的状态
 		if (compantstatus.equals("0")&&sendtime.equals("0")&&"2".equals(stopStatus)) {
 			//处于终止且不可发送消息的状态
 			LogUtil.getLogger().info("该条消息刚发送终止的指令，不可发送！");
@@ -149,6 +149,7 @@ public class SendQueueData {
 		boolean flag = false;
 		try {
 			long leftPush = redisqueue.leftPush("r0_bm",json);//receive_queue_name   r0_bm
+//			long leftPush = redisqueue.leftPush("r0_test_bm",json);//receive_queue_name   r0_bm
 //			long leftPush = redisqueue.leftPush("r0_bm",json);//内网
 //		redisqueue.leftPush("bm",json);//receive_queue_name
 			if (leftPush>0) {
