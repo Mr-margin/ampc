@@ -1,0 +1,88 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>环境空气质量动态模拟云平台</title>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1">
+  <!--[if IE]><meta http-equiv="x-ua-compatible" content="IE=9" /><![endif]-->
+  <meta name="author" content="SuggeElson" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <meta name="application-name" content="sprFlat admin template" />
+
+  <link href="../../css/icons.css" rel="stylesheet" />
+
+  <link href="../../css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../../css/font-awesome.css" rel="stylesheet">
+  <link href="../../css/animate.css" rel="stylesheet">
+  <link href="../../css/style.css" rel="stylesheet" />
+
+  <link href="../../css/plugins/sprflat-theme/jquery.ui.all.css"
+        rel="stylesheet" />
+  <link rel="stylesheet" href="../../js/plugins/forms/icheck/flat/_all.css" />
+  <link rel="stylesheet"
+        href="../../css/plugins/bootstrap-table/bootstrap-table.min.css" />
+  <link rel="stylesheet" href="../../css/plugins/sweetalert/sweetalert.css" />
+  <!-- <link rel="stylesheet" href="css/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.css" /> -->
+
+  <link rel="stylesheet" href="../../css/bootstrap-table-filter-control.css" />
+  <link rel="stylesheet" href="../../css/plugins/zTreeStyle/zTreeStyle.css" />
+  <link rel="stylesheet" href="../../js/plugins/forms/daterangepicker/daterangepicker.css"/>
+  <link href="../../css/main.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/index.css" />
+  <meta name="msapplication-TileColor" content="#3399cc" />
+  <style>
+    .box{
+      width: 200px;
+      margin: 30px auto;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <input type="text" class="date"/>
+</div>
+
+
+
+<script src="../../js/jquery.min.js"></script>
+<script src="../../js/bootstrap.min.js"></script>
+<script src="../../js/plugins/core/moment/moment.js"></script>
+<script src="../../js/plugins/forms/daterangepicker/daterangepicker.js"></script>
+<!--自己的js文件-->
+<script>
+
+  $('.date').daterangepicker({
+//    singleDatePicker: false,  //显示单个日历
+//    timePicker:false,  //允许选择时间
+//    timePicker24Hour:true, //时间24小时制
+////    minDate:s,//最早可选日期
+////    maxDate:e,//最大可选日期
+    locale: {
+      format: "YYYY-MM-DD",
+      separator: " 至 ",
+      applyLabel: "确定", //按钮文字
+      cancelLabel: "取消",//按钮文字
+      weekLabel: "W",
+      daysOfWeek: [
+        "日","一","二","三","四","五","六"
+      ],
+      monthNames: [
+        "一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"
+      ],
+//      firstDay: 1
+    },
+    //"startDate": "03/03/2017",
+    //"endDate": "04/09/2017",
+//    "opens": "right"
+  })
+
+
+
+</script>
+</body>
+</html>

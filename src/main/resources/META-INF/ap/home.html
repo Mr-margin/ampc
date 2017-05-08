@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="x-ua-compatible" content="IE=9"/><![endif]-->
+  <meta charset="utf-8">
+  <meta http-equiv="Expires" content="0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Cache-Control" CONTENT="no-cache, must-revalidate">
+  <meta http-equiv="Cache-Control" content="no-siteapp"/>
+  <meta http-equiv="Cache" content="no-cache">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+  <title>环境空气质量动态模拟云平台</title>
+
+  <!--[if lt IE 8]>
+  <meta http-equiv="refresh" content="0;ie.html"/>
+  <![endif]-->
+
+  <link href="css/icons.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="font/font-awesome-4.7.0/css/font-awesome.min.css">
+  <!--<link href="css/bootstrap.min.css" rel="stylesheet"/>-->
+  <!--<link href="css/font-awesome.css" rel="stylesheet">-->
+  <link href="css/animate.css" rel="stylesheet">
+  <!--<link href="css/style.css" rel="stylesheet"/>-->
+
+  <!--<link href="css/plugins/sprflat-theme/jquery.ui.all.css" rel="stylesheet"/>-->
+  <!--<link rel="stylesheet" href="css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css"/>-->
+  <link rel="stylesheet" href="css/swan.timeline.min.css"/>
+  <link rel="stylesheet" href="js/plugins/forms/icheck/flat/_all.css"/>
+  <link rel="stylesheet" href="css/plugins/bootstrap-table/bootstrap-table.min.css"/>
+  <link rel="stylesheet" href="css/plugins/sweetalert/sweetalert.css"/>
+  <link rel="stylesheet" href="css/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.css"/>
+  <link rel="stylesheet" href="js/plugins/jquery-range/jquery.range.css"/>
+  <link rel="stylesheet" href="js/plugins/rangeslider/rangeslider.css"/>
+
+  <link rel="stylesheet" href="css/bootstrap-table-filter-control.css"/>
+  <link rel="stylesheet" href="css/plugins/zTreeStyle/zTreeStyle.css"/>
+  <link rel="stylesheet" href="js/plugins/forms/daterangepicker/daterangepicker.css"/>
+  <link href="css/main.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/index.css"/>
+  <link rel="stylesheet" href="easyui/themes/gray/easyui.css">
+  <link rel="stylesheet" href="easyui/themes/icon.css">
+  <link rel="stylesheet" href="core1.css">
+  <meta name="msapplication-TileColor" content="#3399cc"/>
+  <script src="js/jquery.min.js"></script>
+  <script src="easyui/jquery.easyui.min.js"></script>
+  <script src="easyui/locale/easyui-lang-zh_CN.js"></script>
+  <script src="defaultoption.js"></script>
+</head>
+<body class="easyui-layout" style="background-color: #EAEDF1">
+
+<div class="zhezhao" id="zhezhao" style="display:none;"></div>
+<div class="zhezhao_title" id="zhezhao_title" style="display:none;">
+  <div class="sk-spinner sk-spinner-wave" style="width: 200px;">
+    <h2><b><span style="color: #fff;">计算中......</span></b></h2></div>
+  <div class="sk-spinner sk-spinner-wave">
+    <div class="sk-rect1"></div>
+    <div class="sk-rect2"></div>
+    <div class="sk-rect3"></div>
+    <div class="sk-rect4"></div>
+    <div class="sk-rect5"></div>
+  </div>
+</div>
+
+
+<!--<a id="clickA"></a>-->
+<div data-options="region:'west',border:false" style="width: 210px">
+  <div id="sidebarlt">
+    <ul>
+      <li>
+        <a href="#/sy"><i class="im-home2"> 首页</i></a>
+        <div class="borderbox"></div>
+      </li>
+      <li>
+        <a href="#/yqd"><i class="st-align-justify"> 源清单</i></a>
+        <div class="borderbox"></div>
+      </li>
+      <li class="active">
+        <a href="#/rwgl"><i class="st-folder-settings"> 任务管理</i></a>
+        <div class="borderbox">
+          <div class="qyCon disNone">
+            <div class="nowRw">
+              <h3>当前任务：</h3>
+              <span></span>
+            </div>
+            <div class="nowQj">
+              <h3>当前情景：</h3>
+              <span></span>
+            </div>
+            <div class="seDate">
+              <h3>起止时间：</h3>
+              <span></span>
+            </div>
+            <div class="jsBtn">
+              <button class="btn btn-success jpjs" onclick="jpjsBtn(this)">减排计算</button>
+              <button class="btn btn-success disNone jpztck" data-toggle="modal" data-target="#jpzt">计算状态</button>
+              <button class="btn btn-success jpfx" disabled="disabled" onclick="jumpJpfx()">减排分析</button>
+            </div>
+          </div>
+          <div class="jpfxCon disNone">
+            <div class="nowRw">
+              <h3>当前任务：</h3>
+              <span></span>
+            </div>
+            <div class="nowQj">
+              <h3>当前情景：</h3>
+              <span></span>
+            </div>
+            <div class="seDate">
+              <h3>起止时间：</h3>
+              <span></span>
+            </div>
+            <div class="jsBtn">
+              <button class="btn btn-success reCsbj" onclick="returnCSBJ(this)">返回</button>
+            </div>
+          </div>
+          <div class="csCon disNone" style="overflow: auto">
+            <div class="nowRw">
+              <h3>当前任务：</h3>
+              <span></span>
+            </div>
+            <div class="nowQj">
+              <h3>当前情景：</h3>
+              <span></span>
+            </div>
+            <div class="nowArea">
+              <h3>当前区域：</h3>
+              <span></span>
+            </div>
+            <div class="seDate">
+              <h3>当前时段：</h3>
+              <span></span>
+            </div>
+            <div class="nowTime">
+              <h3>当前预案：</h3>
+              <span></span>
+            </div>
+            <div class="jsBtn">
+              <button class="btn btn-success cryak" onclick="Deposit_Reserve_plan()">存入预案库</button>
+              <button class="btn btn-success wc" onclick="complete_Button()">完成</button>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="candrop">
+        <a href="javascript:"><i class="im-paste2"> 效果评估</i></a>
+        <div class="dropmenu">
+          <div>
+            <p><a href="#/xgpg_v1">减排分析</a></p>
+            <p><a href="#/xgpg_v2">网格排放</a></p>
+            <p><a href="#/xgpg_v3">时间序列</a></p>
+            <p><a href="#/xgpg_v4">水平分布</a></p>
+            <p><a href="#/xgpg_v5">垂直廓线</a></p>
+            <p><a href="#/xgpg_v6">评估报告</a></p>
+          </div>
+        </div>
+      </li>
+      <li class="candrop">
+        <a href="javascript:"><i class="me-cloudy"> 空气质量预报</i></a>
+        <div class="dropmenu">
+          <div>
+            <p><a href="#/kqzlyb_v1">预报检验</a></p>
+            <p><a href="#/kqzlyb_v2">时间序列</a></p>
+            <p><a href="#/kqzlyb_v3">水平分布</a></p>
+            <p><a href="#/kqzlyb_v4">垂直廓线</a></p>
+          </div>
+        </div>
+      </li>
+      <li>
+        <a href="#/sjkj"><i class="im-storage"> 数据空间</i></a>
+        <div class="borderbox"></div>
+      </li>
+      <li>
+        <a href="#/userSZ"><i class="im-settings"> 用户设置</i></a>
+        <div class="borderbox"></div>
+      </li>
+      <li>
+        <a href="#/hsz"><i class="ec-trashcan"> 回收站</i></a>
+        <div class="borderbox"></div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div data-options="region:'center',border:false">
+  <div class="easyui-layout" data-options="fit:true">
+    <!-- Start #header -->
+    <div data-options="region:'north',border:false" style="height: 50px">
+      <div id="header" class="clearfloat">
+        <!--logo-->
+        <div class="logobox">
+          <p>
+            <i class="fa fa-cloud" aria-hidden="true"></i><span>&nbsp;<span>环境空气质量</span>动态模拟云平台</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div data-options="region:'center',border:false">
+      <div  class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'north',border:false" style="height: 55px;width: 100px;">
+          <!--面包屑-->
+          <div style="padding: 10px;height: 100%;width: 100%;background-color: #EAEDF1">
+            <div class="cloudui-pannel">
+              <ul id="crumb" class="breadcrumb">
+                <a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>
+                <i class="en-arrow-right7"></i>
+                <a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景编辑</a>
+                <i class="en-arrow-right7"></i>
+                <a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景编辑12</a>
+              </ul>
+            </div>
+          </div>
+
+<!--          <div class="container-fluid" id="content-title">
+
+          </div>-->
+
+          <!--<div class="container-fluid" id="content-title"-->
+          <!--style="background-color:#F3F3F4">-->
+          <!--<div class="row">-->
+          <!--<div class="col-xs-12 heading">-->
+          <!--<h1 class="page-header"></h1>-->
+          <!--<ul id="crumb" class="breadcrumb">-->
+          <!--</ul>-->
+          <!--</div>-->
+          <!--</div>-->
+          <!--</div>-->
+        </div>
+        <div data-options="region:'center',border:false">
+          <div style="height: 100%;position: relative;background: #EAEDF1">
+            <div class="cloudui-pannel" style="position: absolute;top: 0px;left: 10px;right: 10px;bottom: 10px">
+              <div id="Route_conter" class="ui-view">
+                <!--<iframe src="webApp/task01/task01.html"></iframe>-->
+              </div>
+            </div>
+          </div>
+
+          <!--<div id="content">
+            <div class="content-wrapper  container-fluid">
+              &lt;!&ndash; <div class="row container-fluid" >
+                <div class="col-lg-12 heading" style="padding-left:5px;padding-right:7px;">
+                  <h1 class="page-header"></h1>
+                  <ul id="crumb" class="breadcrumb">
+                  </ul>
+                </div>
+              </div> &ndash;&gt;
+              <div class="outlet row">
+                &lt;!&ndash; Start .outlet &ndash;&gt;
+                &lt;!&ndash; 内容所在区域 &ndash;&gt;
+                <div class="col-md-12">
+
+
+
+                  &lt;!&ndash; 页面内容 &ndash;&gt;
+                </div>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>-->
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+<!--<script src="js/jquery-ui-1.10.4.min.js"></script>-->
+<script src="js/plugins/forms/icheck/jquery.icheck.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+<script src="js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="js/bootstrap-table-contextmenu.js.js"></script>
+<script src="js/plugins/core/moment/moment.js"></script>
+<script src="js/plugins/forms/datetimepicker/bootstrap-datetimepicker.js"></script>
+<!--<script src="js/plugins/forms/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>-->
+
+<script src="js/jquery.mousewheel.js"></script>
+<script src="js/plugins/jquery-range/jquery.range.js"></script>
+<script src="js/bootstrap-table-filter-control.js"></script>
+<script src="js/plugins/validate/jquery.validate.min.js"></script>
+<script src="js/plugins/validate/additional-methods.min.js"></script>
+<script src="js/plugins/validate/messages_zh.min.js"></script>
+<script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="js/plugins/core/pace/pace.min.js"></script>
+<script src="js/jRespond.min.js"></script>
+<script src="js/plugins/core/slimscroll/jquery.slimscroll.js"></script>
+<!--<script src="js/plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js"></script>-->
+<script src="js/plugins/core/quicksearch/jquery.quicksearch.js"></script>
+<script src="js/plugins/misc/highlight/highlight.pack.js"></script>
+<script src="js/plugins/misc/countTo/jquery.countTo.js"></script>
+<script src="js/plugins/zTree/jquery.ztree.core.min.js"></script>
+<script src="js/plugins/zTree/jquery.ztree.excheck.min.js"></script>
+<script src="js/plugins/zTree/jquery.ztree.exhide.min.js"></script>
+<script src="js/plugins/rangeslider/rangeslider.min.js"></script>
+<script src="js/jquery.sprFlat.js"></script>
+<script src="js/vipspa.min.js"></script>
+<script src="js/plugins/echarts/echarts.min.js"></script>
+<script src="js/plugins/forms/daterangepicker/daterangepicker.js"></script>
+<script src="js/swan.timeline.js"></script>
+<script src="js/plugins/blockUI/jquery.blockui.min.js"></script>
+<!--自己的js文件-->
+<script src="BackstageIP.js"></script>
+<script src="homeRouter.js"></script>
+</body>
+</html>

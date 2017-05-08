@@ -1,0 +1,1219 @@
+/*栅格*/
+.cloudui .col-1, .cloudui .col-2, .cloudui .col-3, .cloudui .col-4, .cloudui .col-5, .cloudui .col-6, .cloudui .col-7, .cloudui .col-8, .cloudui .col-9, .cloudui .col-10, .cloudui .col-11, .cloudui .col-12 {
+  float: left;
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.cloudui .col-1 {
+  width: 8.33333333%;
+}
+
+.cloudui .col-2 {
+  width: 16.66666667%;
+}
+
+.cloudui .col-3 {
+  width: 25%;
+}
+
+.cloudui .col-4 {
+  width: 33.33333333%;
+}
+
+.cloudui .col-5 {
+  width: 41.66666667%;
+}
+
+.cloudui .col-6 {
+  width: 50%;
+}
+
+.cloudui .col-7 {
+  width: 58.33333333%;
+}
+
+.cloudui .col-8 {
+  width: 66.66666667%;
+}
+
+.cloudui .col-9 {
+  width: 75%;
+}
+
+.cloudui .col-10 {
+  width: 83.33333333%;
+}
+
+.cloudui .col-11 {
+  width: 91.66666667%;
+}
+
+.cloudui .col-12 {
+  width: 100%;
+}
+
+.cloudui .col-offset-1 {
+  margin-left: 8.33333333%;
+}
+
+.cloudui .col-offset-2 {
+  margin-left: 16.66666667%;
+}
+
+.cloudui .col-offset-3 {
+  margin-left: 25%;
+}
+
+.cloudui .col-offset-4 {
+  margin-left: 33.33333333%;
+}
+
+.cloudui .col-offset-5 {
+  margin-left: 41.66666667%;
+}
+
+.cloudui .col-offset-6 {
+  margin-left: 50%;
+}
+
+.cloudui .col-offset-7 {
+  margin-left: 58.33333333%;
+}
+
+.cloudui .col-offset-8 {
+  margin-left: 66.66666667%;
+}
+.cloudui .col-offset-9 {
+  margin-left: 75%;
+}
+.cloudui .col-offset-10 {
+  margin-left: 83.33333333%;
+}
+.cloudui .col-offset-11 {
+  margin-left: 91.66666667%;
+}
+
+/*linkbutton*/
+.cloudui .lt {
+  margin-left: 6px;
+}
+
+.cloudui #toolbar .easyui-linkbutton {
+  margin-right: 6px;
+}
+.cloudui #toolbar .l-btn-left{
+  padding: 1px 5px;
+}
+.cloudui #toolbar .l-btn{
+  border: 1px solid #d9d9d9;
+  outline: none;
+  background: #fff;
+  border-radius: 2px;
+}
+.cloudui #toolbar .l-btn:hover{
+  color: #fff;
+  border:1px solid #0275d8;
+  background: #0275d8;
+}
+/*searchbox*/
+.cloudui .searchbox{
+  background: #fff;
+  margin-right: 6px;
+}
+.cloudui .searchbox-button{
+  width: 24px !important;
+  padding: 1px 0;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAPFBMVEUAAABNTU1OTk5OTk5OTk5PT09NTU1QUFBOTk5NTU1QUFBZWVlNTU1NTU1OTk5OTk5PT09NTU1OTk5QUFBr8vTYAAAAFHRSTlMA99qXfVGiJdBvOwvi7sS6iHZlRpxxpf8AAABnSURBVBjTjY9JDsAgCEUFEeehev+7NhFx1UXZAC+Pn2D+1ROg9nVXHzAmN8AqCJw3Rzo+ZhkSeBGiqk0USAos71adApbYPhTg3G2dLBNLPqeY9g6kKkGzjIXgpnliO7NxSm658vHoCzCdAjsBB14NAAAAAElFTkSuQmCC) no-repeat 50%;
+}
+
+/*textbox*/
+.cloudui .textbox{
+  border:1px solid #d9d9d9;
+  border-radius: 2px;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  background-color: #fff;
+  outline: none;
+}
+.cloudui .textbox .textbox-icon{
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  color: #1a1a1a;
+}
+.cloudui .textbox{
+  padding-left: 6px;
+  background: #fff;
+}
+.cloudui .textbox-prompt{
+  font-size: 12px;
+  color: #aaa;
+}
+.cloudui .textbox-text{
+  padding: 6px 2px 6px 8px;
+  border-radius: 0;
+}
+/*datagrid*/
+#toolbar{
+  background: transparent;
+  border: none;
+}
+.cloudui .datagrid .panel-body {
+  overflow: hidden;
+  position: relative;
+}
+.cloudui .datagrid-view{
+  position: relative;
+  overflow: hidden;
+}
+
+.cloudui .datagrid-view1, .datagrid-view2 {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+}
+.cloudui .datagrid-header{
+  background: transparent;
+  border: none;
+}
+
+.cloudui .datagrid-header-inner {
+  float: left;
+  width: 100%;
+}
+
+.cloudui .datagrid-header-inner table {
+  width: 100%;
+}
+
+.cloudui .datagrid-btable {
+  width: 100%;
+}
+
+.cloudui .datagrid-htable {
+  color: #101010;
+  border-collapse: collapse;
+  background: #F5F6FA;
+  border: 1px solid #E1E6EB;
+}
+.cloudui tbody{
+  padding: 0;
+  margin: 0;
+  font-size: 13px;
+  font-family: Helvetica, Tahoma, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "Microsoft YaHei", STXihei, STHeiti, Heiti, SimSun, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.cloudui .datagrid-header-row {
+  height: 37px;
+}
+
+.cloudui .datagrid-header-row td {
+  border-style: solid;
+  border-color: #d9d9d9;
+  border-width: 0 1px 1px 0;
+}
+
+.cloudui .datagrid .datagrid-pager {
+  padding: 0 10px;
+}
+.cloudui .pagination table {
+  height: 44px;
+  line-height: 44px;
+  float: right;
+}
+.cloudui .pagination-info {
+  float: left;
+  height: 44px;
+  line-height: 44px;
+}
+.cloudui .datagrid-body{
+  background: #fff;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  zoom: 1;
+}
+
+.cloudui .datagrid-btable {
+  border-collapse: separate;
+}
+
+.cloudui .datagrid-btable td {
+  height: 37px;
+}
+
+.cloudui .datagrid-cell-c1-code {
+  width: 137px;
+}
+.cloudui .datagrid-cell{
+  color: #1a1a1a;
+  font-size: 13px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 1px 10px 0;
+  border-right: 0 none;
+}
+.cloudui .datagrid-header td,.cloudui .datagrid-body td,.cloudui .datagrid-footer td{
+  border-style: solid;
+  border-color: #d9d9d9;
+  border-width: 0 0px 1px 0;
+}
+
+.cloudui .datagrid-body td {
+  background: white;
+}
+.cloudui .datagrid-pager{
+  background: transparent;
+}
+
+.cloudui label {
+  display: inline-block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+/*form表单*/
+.cloudui .form-group {
+  margin-bottom: 15px;
+}
+
+.cloudui .form-group:after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.cloudui .form-control {
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #e5e6e7;
+  border-radius: 1px;
+  color: inherit;
+  display: block;
+  padding: 6px 12px;
+  -webkit-transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+  transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+  width: 100%;
+  font-size: 14px;
+  color: #768399;
+}
+
+.cloudui .form-control:focus {
+  border-color: #1ab394 !important;
+}
+
+.cloudui .control-label {
+  padding-top: 7px;
+  margin-bottom: 0;
+  text-align: justify;
+  color: #768399;
+  font-size: 14px;
+}
+
+/*.cloudui .control-label:after {*/
+  /*content: "";*/
+  /*display: inline-block;*/
+  /*width: 100%;*/
+  /*overflow: hidden;*/
+  /*height: 0;*/
+  /*line-height: 0;*/
+/*}*/
+
+/*面包屑*/
+.cloudui .container-fluid {
+  height: 50px;
+}
+
+.cloudui .container-fluid .heading {
+  background-color: #f3f3f4;
+}
+
+.cloudui .breadcrumb {
+  height: 50px;
+  background-color: #f3f3f4 !important;
+  overflow: visible;
+  width: 100% !important;
+  padding: 0;
+}
+
+.cloudui .breadcrumb * {
+  float: left;
+  margin-top: 0;
+}
+
+.cloudui .breadcrumb i {
+  padding: 0 !important;
+  margin-top: 2px !important;
+  font-size: 30px !important;
+}
+
+.cloudui #crumb i {
+  padding: 0 !important;
+  margin-top: 2px !important;
+}
+
+.cloudui .breadcrumb a {
+  height: 30px;
+  line-height: 30px;
+  border-radius: 2px;
+  text-decoration: none;
+  color: #1a1a1a;
+}
+
+.cloudui #crumb span {
+  height: 30px;
+  line-height: 30px;
+  border-radius: 2px;
+  text-decoration: none;
+  color: #1a1a1a;
+}
+
+/*首页开始*/
+/*属性重置*/
+ul, li {
+  list-style: none;
+}
+
+dl, dd {
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+
+.cloudui .row {
+  margin: 0;
+}
+
+/**/
+.cloudui .indexBg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: #f3f3f4;
+}
+
+.cloudui .indexBg .row {
+}
+
+.cloudui .indexDiv {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px solid #75b9e6;
+  border-radius: 0px;
+  overflow: hidden;
+  background: white;
+  position: relative;
+}
+
+.cloudui .indexTitle {
+  height: 30px;
+  background: #f3f3f4;
+  border-bottom: 1px solid #75b9e6;
+  line-height: 30px;
+  padding-left: 10px;
+  color: white;
+}
+
+.cloudui .indexContent {
+  position: absolute;
+  left: 0px;
+  top: 30px;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+}
+
+.cloudui .more {
+  float: right;
+  margin-right: 10px;
+  line-height: 30px;
+  color: white;
+}
+
+/*任务*/
+.cloudui .renwu {
+  width: 100%;
+}
+
+/*分块*/
+.cloudui .indexDivRw {
+  border: 1px solid #97d3c5;
+}
+
+.cloudui .indexTitleRw {
+  background: #97d3c5;
+  border-bottom: 1px solid #97d3c5;
+}
+
+.cloudui .indexDivYqd {
+  border: 1px solid #75b9e6;
+}
+
+.cloudui .indexTitleYqd {
+  background: #75b9e6;
+  border-bottom: 1px solid #75b9e6;
+}
+
+.cloudui .indexDivRb {
+  border: 1px solid #f68484;
+}
+
+.cloudui .indexTitleRb {
+  background: #f68484;
+  border-bottom: 1px solid #f68484;
+}
+
+.cloudui .rbTop {
+  height: 60%;
+  background: #f68484;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: Center;
+  font-size: 4em
+}
+
+.cloudui .rbBottom {
+  height: 40%;
+}
+
+.cloudui .rbBottom ul {
+  overflow: hidden;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.cloudui .rbBottom ul li {
+  float: left;
+  width: 25%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: Center;
+  font-size: 16px;
+}
+
+.cloudui .rbBottom ul li a {
+  text-align: center;
+}
+
+.cloudui .indexDivTime {
+  border: 1px solid #f4b162;
+}
+
+.cloudui .indexTitleTime {
+  background: #f4b162;
+  border-bottom: 1px solid #f4b162;
+}
+
+/*时间进度*/
+.cloudui .proTimeTop {
+  height: 60%;
+  width: 100%;
+  padding-top: 10%;
+}
+
+.cloudui .proTimeBottom {
+  height: 40%;
+  width: 100%;
+  background: #f4b162;
+}
+
+.cloudui .proTimeBottom ul {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.cloudui .proTimeBottom ul li {
+  float: left;
+  width: 33.3%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: Center;
+}
+
+.cloudui .proTimeBottom ul li span {
+  display: block;
+  width: 80%;
+  height: 80%;
+  margin: auto;
+  cursor: pointer;
+  color: white;
+  font-size: 20px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.cloudui .proTimeBottom ul li span:hover {
+  background: #f19932;
+  border-radius: 5px;
+}
+
+.cloudui .proTimeBottom ul li span .time1 {
+  font-size: 14px;
+  margin-top: 10%;
+}
+
+.cloudui .proTimeBottom ul li span .time2 {
+  font-size: 20px;
+}
+
+/*公告*/
+.cloudui .noticeSearch {
+  width: 100%;
+  height: 60px;
+}
+
+.cloudui .noticeSearch input[type="search"] {
+  float: left;
+  width: 300px;
+  height: 30px;
+  margin-left: 20px;
+  margin-top: 15px;
+  border: 1px solid #d0d0ca;
+  border-right: none;
+}
+
+.cloudui .noticeSearch button[type="button"] {
+  float: left;
+  width: 30px;
+  height: 30px;
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: Center;
+  border-radius: 0;
+  background: #75b9e6;
+  color: white;
+}
+
+.cloudui .noticeCon {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.cloudui .noticeCon dd {
+  overflow: hidden;
+  height: 30px;
+  line-height: 30px;
+  border-bottom: 1px dotted #d0d0ca;
+}
+
+.cloudui .noticeCon dd a {
+  float: left;
+}
+
+.cloudui .noticeCon dd span {
+  float: right;
+}
+
+/*基本设置*/
+.cloudui .indexDivSet {
+  border: 1px solid #75b9e6;
+}
+
+.cloudui .indexTitleSet {
+  background: #75b9e6;
+  border-bottom: 1px solid #75b9e6;
+}
+
+.cloudui .indexContentSet {
+  background: #75b9e6;
+}
+
+.cloudui .indexContentSet dl {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.cloudui .indexContentSet dl dd {
+  float: left;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: Center;
+}
+
+.cloudui .indexContentSet dl dd a {
+  display: block;
+  width: 50%;
+  color: white;
+  text-align: center;
+}
+
+.cloudui .indexContentSet dl dd a i {
+  font-size: 4em;
+}
+
+.cloudui .indexContentSet dl dd a div {
+  margin-top: 10px;
+}
+
+/*增加设置*/
+.cloudui .col-xs-8, .cloudui .col-xs-4, .cloudui .col-md-12 {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/*首页结束*/
+/*减排分析开始*/
+.cloudui .easyui-layout {
+}
+
+.cloudui .jpfxLeft {
+  padding-right: 5px;
+}
+
+.cloudui .panel-header, .panel-body {
+  border: none;
+}
+
+.cloudui .ibox-title {
+  -moz-border-bottom-colors: none;
+  -moz-border-left-colors: none;
+  -moz-border-right-colors: none;
+  -moz-border-top-colors: none;
+  background-color: #ffffff;
+  border-color: #e7eaec;
+  -webkit-border-image: none;
+  -o-border-image: none;
+  border-image: none;
+  /* border-style: solid solid none; */
+  border-width: 4px 0px 0;
+  color: inherit;
+  margin-bottom: 0;
+  overflow: hidden;
+  margin-bottom: 5px;
+  height: 27px;
+}
+
+.cloudui .ibox-title h5 {
+  display: inline-block;
+  font-size: 14px;
+  margin: 0 0 7px;
+  padding: 0;
+  text-overflow: ellipsis;
+  float: left;
+}
+
+.cloudui .ibox-tools {
+  display: inline-block;
+  float: right;
+  margin-top: 0;
+}
+.cloudui .ibox-title{background-color: transparent}
+.cloudui .ibox-title .headTitle{color: #0275D8;}
+.cloudui .ibox-title .headTitle i{line-height: 32px;}
+.cloudui .ibox-tools *{font-size:12px;line-height: 24px;}
+.cloudui .ibox-tools .wzGroup{float: left;}
+.cloudui .ibox-tools .wzGroup_{overflow: hidden;}
+.cloudui .ibox-tools .wzGroup .wz{float:left;border:1px solid #d9d9d9;border-right:none;border-radius: 2px 0 0 2px;padding:1px 10px;box-sizing: border-box;background: white;
+  height:27px;line-height: 25px;}
+.cloudui .ibox-tools .wzGroup .easyui-combobox{float: left;border:none;border:1px solid #d9d9d9;border-radius: 0px 2px 2px 0px;height: 27px;box-sizing: border-box;width: 120px;}
+.cloudui .ibox-tools .switchBtn{float: right;border:1px solid #d9d9d9;border-radius: 2px;}
+.cloudui .switchBtn{overflow: hidden;}
+.cloudui label{float: left;padding:0 10px;}
+.cloudui .btn input{display:none;}
+.cloudui .btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success.active, .open .dropdown-toggle.btn-success {
+  display: inline-block;
+  height: 24px;
+  line-height: 24px;
+  background-color: #0275D8;
+  border-color: #0275D8;
+  color: #FFFFFF;
+}
+
+.cloudui .jpfxRight {
+  padding-left: 5px;
+}
+
+.cloudui .btn-outline {
+  font-size: 12px;
+  line-height: 24px;
+}
+
+/*设置时间模态框*/
+.cloudui.window {
+  background: none;
+  background-color: #0275D8;
+  border-radius: 2px;
+}
+
+.cloudui.window .window-header {
+  height: 44px;
+  border-bottom: 1px solid #d9d9d9;
+  padding: 0 22px !important;
+}
+
+.cloudui.window .window-header .panel-title {
+  color: white;
+  line-height: 44px;
+  box-sizing: border-box;
+}
+
+.cloudui.window .panel-tool .panel-tool-close {
+  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAvklEQVQ4T6WT6w3CMAyE7zZhBDZgBTYANoANYAJgAsomHYER2OSQpaZymthCav7l4c/ns0OsXFwZjxkgaQtgR/KZQSWdAYwkP/bOA+ziDmAgeepBJA0ADgAuJB8VwDbuQQNxd2+Sx5Kg8aAHiYIbBYXqIVOZJrvKHCroQOyoGxwqWPhh29DY7hz4midFVkIXkpk4y866UwEytyOIHyTr7SszzEFuJK/LSdwA2JcJi8ZZkiX6khzTLvz7yVb/xh/JyWQRYI5JRQAAAABJRU5ErkJggg==');
+  color: white;
+  font-size: 10px;
+}
+
+.cloudui.window .window-body .rwCon {
+  padding: 10px 30px;
+  width: 100%;
+}
+
+.cloudui.window .window-body .rwCon .rwdlgTop {
+  overflow: hidden;
+  height: 40px;
+}
+
+.cloudui.window .window-body .rwCon .rwdlgTop .rwdlgTopTitle {
+  float: left;
+  line-height: 40px;
+  font-family: "黑体";
+  font-size: 14px;
+  font-weight: bold;
+  color: #666;
+  width: 105px;
+}
+
+.cloudui.window .window-body .rwCon .rwdlgTop .rwdlgTopCon {
+  float: left;
+  height: 30px;
+  width: calc(100% - 105px);
+  padding-top: 5px;
+}
+
+.cloudui.window .window-body .rwCon .rwdlgTop .rwdlgTopCon select {
+  height: 100%;
+  border: 1px solid #d9d9d9;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.cloudui.window .window-body .rwCon .qjdlg {
+  width: 100%;
+}
+
+.
+.cloudui.window .window-body .rwCon .qjdlg .datagrid {
+  width: 100% !important;
+}
+
+.cloudui.window .window-body .rwCon .qjdlg .datagrid .panel-body-noheader {
+  width: 100%;
+}
+
+.cloudui.window .window-body .dlogFooter {
+  border-top: 1px solid #d9d9d9;
+  padding: 10px;
+  text-align: right;
+}
+
+.cloudui.window .window-body .dlogFooter button {
+  padding: 0 10px;
+  margin: 0;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  background: white;
+  font-size: 12px;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.cloudui.window .window-body .dlogFooter button:hover {
+  background: #0275D8;
+  border: 1px solid transparent;
+  color: white;
+}
+
+.cloudui #Initialization .datagrid-view1 {
+  width: 0 !important;
+}
+
+/*情景按钮*/
+/*
+.cloudui .bgw{border-radius:2px!important;margin-bottom:4px;background-color: rgb(242, 242, 242);    box-shadow: 0 0 5px #888;}
+.cloudui .bgw:hover, .bgw:focus, .bgw:active, .bgw.active, .open .dropdown-toggle.btn-success {
+  display: inline-block;
+  height:24px;line-height: 24px;
+  background-color: #0275D8;
+  border-color: #0275D8;
+  color: #FFFFFF;
+}*/
+.breadcrumb .nav_right{background:linear-gradient(#fbfbfb, #f2f2f2);border:1px solid #D9D9D9;border-radius: 2px;line-height: 18px;cursor: pointer}
+.breadcrumb .nav_right:hover{background: #0275D8;color:#fff;}
+.cloudui .qjBtn{bottom:10px;right:10px;top: 20px}
+/*
+.cloudui .qjBtn .btn-group{}
+.cloudui .bgw{background-color: rgb(242, 242, 242); width: auto;border-radius:0!important;border-right:1px solid #ddd;border-left:1px solid #999}
+*/
+.cloudui .bgw{border-radius:2px!important;margin-bottom:4px;background-color: rgb(242, 242, 242);text-align: center;line-height: 24px;clear:both;border:1px solid #D9D9D9;margin-bottom: 0px;margin-top:2px;}
+.cloudui .bgw:hover, .bgw:focus, .bgw:active, .bgw.active, .open .dropdown-toggle.btn-success {
+  display: inline-block;
+  height: 24px;
+  line-height: 24px;
+  background-color: #0275D8;
+  border-color: #0275D8;
+  color: #FFFFFF
+}
+
+.cloudui #listModal .btn-group button {
+  border: 1px solid #d9d9d9;
+  background: white;
+  color: #666;
+  border-radius: 2px;
+  padding: 0 10px;
+}
+
+.cloudui #listModal .btn-group button:hover {
+  background-color: #0275D8;
+  border-color: #0275D8;
+  color: white;
+}
+
+/*自适应布局*/
+#jpfx {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.jpfxLeft {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+}
+
+.jpfxRight {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+}
+
+/*减排分析结束*/
+/*任务管理*/
+#rwgltablebox .datagrid .panel-body {
+  overflow: hidden;
+  position: relative;
+}
+
+#rwgltablebox .datagrid-view {
+  position: relative;
+  overflow: hidden;
+}
+
+#rwgltablebox .datagrid-view1, .datagrid-view2 {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+}
+
+#rwgltablebox .datagrid-header {
+  background: transparent;
+  border: none;
+}
+#rwgltablebox .datagrid-header-inner{
+  float: left;}
+#rwgltablebox .datagrid-htable{
+  color: #101010;
+  border-collapse: collapse;
+  background: #F5F6FA;
+  border: 1px solid #E1E6EB;
+}
+#rwgltablebox tbody{
+  padding: 0;
+  margin: 0;
+  font-size: 13px;
+  font-family: Helvetica,Tahoma,Arial,"Hiragino Sans GB","Hiragino Sans GB W3","Microsoft YaHei",STXihei,STHeiti,Heiti,SimSun,sans-serif;
+  -webkit-font-smoothing: antialiased;}
+#rwgltablebox .datagrid-header-row{
+  height: 37px;}
+#rwgltablebox .datagrid-header-row td{
+  border-style: solid;
+  border-color: #d9d9d9;
+  border-width: 0 1px 1px 0;}
+#rwgltablebox .datagrid .datagrid-pager {
+  padding: 0 10px;
+}
+#rwgltablebox .pagination table {
+  height: 44px;
+  line-height: 44px;
+  float: right;
+}
+#rwgltablebox .pagination-info {
+  float: left;
+  height: 44px;
+  line-height: 44px;
+}
+#rwgltablebox .datagrid-body{
+  background: #fff;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  zoom: 1;}
+#rwgltablebox .datagrid-btable{
+  border-collapse: separate;
+  width: 100%;
+}
+#rwgltablebox .datagrid-btable tr.datagrid-row td{
+  height: 37px;}
+#rwgltablebox .datagrid-cell-c1-code {
+  width: 137px;
+}
+#rwgltablebox .datagrid-cell{
+  font-size: 13px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 1px 10px 0;
+  border-right: 0 none;
+}
+#rwgltablebox .datagrid-header td,#rwgltablebox .datagrid-body td,#rwgltablebox .datagrid-footer td{
+  border-style: solid;
+  border-color: #d9d9d9;
+  border-width: 0 0px 0px 0;}
+/*#rwgltablebox .datagrid-body td{*/
+/*background: white;*/
+/*}*/
+#rwgltablebox .datagrid-pager{
+  background: transparent;
+}
+#rwgltablebox .datagrid-body>.datagrid-btable>tbody>tr.datagrid-row{
+  background: #DAEEF5;
+  border-width: 1px 1px 1px 1px;
+  border-color: #EAF8FF;
+}
+#rwgltablebox .datagrid-body>.datagrid-btable>tbody>tr.treegrid-tr-tree>td{
+  padding-bottom: 15px;
+}
+#rwgltablebox .datagrid-body>.datagrid-btable>tbody>tr.treegrid-tr-tree>td>div{
+  border:1px solid #9CC8F7;
+  border-top:0px;
+}
+#rwgltablebox .datagrid-row>td>div>.tree-indent,#rwgltablebox .datagrid-row>td>div>.tree-hit,#rwgltablebox .datagrid-row>td>div>.tree-icon{
+  visibility: hidden;
+}
+#rwgltablebox .rwdetail{
+  color: #DAEEF5;
+}
+#rwgltablebox .datagrid-row-clicked .rwdetail{
+  color: white;
+}
+#rwgltablebox .datagrid-body>.datagrid-btable>tbody>tr.datagrid-row-clicked{
+  background: #9CC8F7;
+  color: white;
+}
+#rwgltablebox .datagrid-body>.datagrid-btable>tbody>tr.datagrid-row-clicked .missiondetail{
+   display: none;
+}
+#rwgltablebox .datagrid-body>.datagrid-btable>tbody>tr.datagrid-row-clicked .missionstatus{
+  display: block;
+}
+#rwgltablebox .datagrid-body>.datagrid-btable>tbody>tr .missionstatus{
+  display: none;
+}
+#rwgltablebox .datagrid-body>.datagrid-btable>tbody>tr.treegrid-tr-tree>td>div>table>tbody>tr:first-child{
+  font-weight: bold;
+  background: #daeef5;
+}
+#rwgltablebox table>tbody>tr.datagrid-row-over{
+  background: white;
+}
+#rwgltablebox .datagrid-row-selected{
+  background: white;
+  color: #000;
+}
+#rwgltablebox div.datagrid-view>div.datagrid-view2>div.datagrid-body{
+  overflow: hidden !important;
+}
+/*任务管理中的下拉按钮*/
+#rwgltablebox .dropdownmenu{
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  padding-bottom: 1px;
+}
+#rwgltablebox .dropdownmenu>a{
+  padding: 1px 5px;
+  display: inline-block;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+  user-select: none;
+  border-radius: 2px;
+  background: #fff;
+  border: 1px solid #dcdee0;
+  color: #1a1a1a;
+}
+#rwgltablebox .dropdownmenu>ul{
+  position: absolute;
+  float: left;
+  top:100%;
+  right:0;
+  border:medium none;
+  min-width: 110px;
+  font-size: 12px;
+  padding: 5px 0;
+  margin: 0;
+  z-index: 1000;
+  border-radius: 2px;
+  background: #fff;
+  box-shadow: 0 0 3px rgba(86,96,117,.3);
+}
+#rwgltablebox .dropdownmenu>ul>li>a{
+  display: block;
+  padding: 3px 20px;
+  line-height: 24px;
+  clear: both;
+  text-align: left;
+  color: #1a1a1a;
+  white-space: nowrap;
+  text-decoration: none;
+}
+#rwgltablebox .dropdownmenu>ul>li>a:hover{
+  color: #262626;
+  text-decoration: none;
+  background-color: #f5f6f7;
+}
+#rwgltablebox tr.treegrid-tr-tree td>div{
+  overflow: inherit;
+}
+/*垂直轮廓*/
+.cloudui #initEcharts{overflow: hidden;}
+.cloudui .verticalCon{width:100%;height:100%;}
+.cloudui .verticalCon .ibox-content{width: 100%;height:100%;position: relative;}
+.cloudui .verticalCon .xgpgShow{border: 1px solid #D9D9D9;overflow-y: auto;border-left:none;border-right:none;}
+.cloudui .verticalCon .ibox-content #showTitle{z-index:10;left:228px;right:35px;border-bottom: 1px solid #d9d9d9;}
+.cloudui .verticalCon .ibox-content .verticalChar{position:absolute;top:40px;left:0;right:0;bottom: 0;z-index:0;overflow-y: auto;}
+.cloudui .verticalCon .ibox-content .verticalChar #initEcharts{height: auto;}
+.cloudui .echartsCZ{float: left;width: 25%;padding:0 20px;}
+.cloudui .xgpgShow #showTitle .toolAll{overflow: hidden;}
+.cloudui .xgpgShow #showTitle .toolAll .selectTool{float: left}
+.cloudui .xgpgShow #showTitle .toolAll .selectTool h5{float: left}
+.cloudui .xgpgShow #showTitle .toolAll .selectTool .selectTool_con{float: left;}
+
+/*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
+.verticalChar::-webkit-scrollbar{
+  width: 16px;
+  height: 16px;
+  background-color: #f5f5f5;
+}
+/*定义滚动条的轨道，内阴影及圆角*/
+.verticalChar::-webkit-scrollbar-track{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+/*定义滑块，内阴影及圆角*/
+.verticalChar::-webkit-scrollbar-thumb{
+  /*width: 10px;*/
+  height: 20px;
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  background-color: #555;
+}
+/*左拉框*/
+.cloudui .toolAll{background: #57c3e9;overflow: hidden;bottom: 10px;top:105px;}
+.cloudui .toolAll .selectTool{}
+.cloudui .toolAll .selectTool h5{width:70px;margin: auto;}
+.cloudui .toolAll .selectTool h5 i{line-height: 40px;}
+
+/*新增任务模态框*/
+#addRW > .step1 ,#addYQJ > .step1,#addHQJ > .step1 {
+  display: flex;
+  justify-content: space-around;
+  margin: 40px 0;
+}
+
+#addRW > .step1 > button ,#addYQJ > .step1 > button,#addHQJ > .step1 > button {
+  padding: 0;
+  margin: 0;
+  border: none;
+  outline: none;
+  background: none;
+  cursor: pointer;
+}
+#addHQJ > .step1 > button[disabled] {
+  opacity: .65;
+  cursor: no-drop;
+  pointer-events: none;
+}
+/*下拉框*/
+.dropdown-menu {
+  display: none;
+}
+
+/*任务管理的类型切换*/
+#selectTypeBtn{
+  border-color: transparent;
+  background: transparent;
+  filter: none;
+  padding: 0;
+  border: none;
+  padding-left: 10px;
+  margin-bottom: 8px;
+}
+#selectTypeBtn .l-btn-left{
+  padding: 1px 3px 1px 0;
+}
+#selectTypeBtn .l-btn-left .l-btn-text{
+  font-size: 14px;
+  color: #444;
+  width:43px;
+  text-align: justify;
+}
+#selectTypeBtn .l-btn-left .l-btn-text:after{
+  content: "";
+  display: inline-block;
+  width: 100%;
+  overflow: hidden;
+  height: 0;
+  width: 0;
+}
+#selectTypeMenu{
+  display: none;
+  background: #fff;
+  border-color: #e6e7ea;
+  color: #1a1a1a;
+  padding: 5px 0;
+  border-radius: 2px;
+  box-shadow: 0 1px 7px rgba(0,0,0,.1);
+}
+#selectTypeMenu .menu-line{
+  display: none;
+}
+#selectTypeMenu ul>li{
+  position: relative;
+  padding: 5px 9px 5px 16px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 12px;
+}
+#selectTypeMenu ul>li.selected>i{
+  visibility: visible;
+}
+#selectTypeMenu ul>li:hover{
+  background: #f5f6f7;
+}
+#selectTypeMenu ul>li>i{
+  visibility: hidden;
+  color: #0275d8;
+}
