@@ -413,11 +413,11 @@ public class GetWeatherModelController {
 				if (null!=selectStatus) {
 					Long scenarinoStatus = tScenarinoDetailMapper.selectScenExecStatus(scenarinoId);
 					if (null!=scenarinoStatus) {
-						String compStatus = selectStatus.getBeizhu();
+//						String compStatus = selectStatus.getBeizhu();
 						String sendtime = selectStatus.getBeizhu2();
 //						String pauseStatus = selectStatus.getPauseStatus();
 						//1.模式执行中处于暂停的状态 2.出错状态下的续跑
-						 if (scenarinoStatus==7&&!sendtime.equals("0")&&!compStatus.equals("0")) {
+						 if (scenarinoStatus==7&&!sendtime.equals("0")) {
 							 boolean continueModelByError = readyData.continuePredict(scenarinoId, scenarinoType, missionType, missionId, userId);
 							if (continueModelByError) {
 								return AmpcResult.build(0, "续跑成功！");
@@ -427,15 +427,6 @@ public class GetWeatherModelController {
 						}else{
 							return AmpcResult.build(1004, "其他错误");
 						}
-						/*//2.出错状态下的续跑
-						else if(scenarinoStatus==9&&!sendtime.equals("0")&&!compStatus.equals("0")){
-							boolean continueModelByError = readyData.continuePredictByError(scenarinoId, scenarinoType, missionType, missionId, userId);
-							if (continueModelByError) {
-								return AmpcResult.build(0, "续跑成功！");
-							}else {
-								return AmpcResult.build(1004, "续跑失败！");
-							}*/
-						
 					}else {
 						throw new SQLException("GetWeatherModelController  查找情景的状态失败!");
 					}
