@@ -1,0 +1,170 @@
+<div  style="min-width: 1120px">
+
+  <div>
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active" onclick="changeType('wrw')"><a href="#wrw" aria-controls="wrw" role="tab" data-toggle="tab">污染物</a></li>
+      <li role="presentation"  onclick="changeType('qxys')"><a href="#qxys" aria-controls="qxys" role="tab" data-toggle="tab">气象要素</a></li>
+      <!--<li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>-->
+      <!--<li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>-->
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="wrw">
+        <div class="row" style="margin-top: 12px;margin-left: 0px;margin-right: 0px;height:48px;">
+          <div class="col-sm-5" style="padding-left:0px;">
+            <div class="input-group m-b" style="margin-bottom: 0px">
+              <span class="input-group-addon" style="border: 0px solid #E5E6E7;">检测站点：</span>
+
+              <div class="" style="margin-bottom:0px;padding-left:0px;">
+                <div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
+                  <div class="input-group group-select">
+                    <select class="form-control m-b proStation" style="border-color: #1c84c6;">
+                      <option>北京市</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
+                  <div class="input-group group-select">
+                    <select class="form-control m-b cityStation" style="border-color: #1c84c6;">
+                      <option>北京市</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
+                  <div class="input-group group-select">
+                    <select class="form-control m-b station" style="border-color: #1c84c6;">
+                      <option>北京市北京市</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group clearfix">
+              <label for="wrwDate" class="col-md-4 control-label lh29" style="text-align: right;">日期范围：</label>
+
+              <div class="col-md-8" style="padding-right: 0px">
+                <input style="min-width: 210px"  type="text" class="form-control" id="wrwDate" name="wrwDate" readonly placeholder="请选择日期···">
+                <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showRwDate('wrw')"
+                   style="cursor:pointer;position: absolute;font-size: 17px;right: 3px;top: 7px;"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label class="col-md-6 control-label lh29" style="text-align: right;">时间分辨率：</label>
+            <div class="btn-group col-md-6" data-toggle="buttons" style="padding: 0;">
+              <label class="btn btn-outline btn-success "><input type="radio" name="rmsWrw" value="hour">逐小时</label>
+              <label class="btn btn-outline btn-success  active"><input checked type="radio" name="rmsWrw" value="day">逐日</label>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="qxys">
+        <div class="row" style="margin-top: 12px;margin-left: 0px;margin-right: 0px;height:48px;">
+          <div class="col-sm-5" style="padding-left:0px;">
+            <div class="input-group m-b" style="margin-bottom: 0px">
+              <span class="input-group-addon" style="border: 0px solid #E5E6E7;">检测站点：</span>
+
+              <div class="" style="margin-bottom:0px;padding-left:0px;">
+                <div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
+                  <div class="input-group group-select">
+                    <select class="form-control m-b proStation" style="border-color: #1c84c6;">
+                      <option>北京市</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-4" style="padding-left:0px;padding-right:0px;width:90px;">
+                  <div class="input-group group-select">
+                    <select class="form-control m-b cityStation" style="border-color: #1c84c6;">
+                      <option>北京市</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-4" style="padding-left:0px;padding-right:0px;">
+                  <div class="input-group group-select">
+                    <select class="form-control m-b station" style="border-color: #1c84c6;">
+                      <option>北京市北京市</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group clearfix">
+              <label for="qxysDate" class="col-md-4 control-label lh29" style="text-align: right;">日期范围：</label>
+
+              <div class="col-md-8" style="padding-right: 0px">
+                <input style="min-width: 210px" type="text" class="form-control" id="qxysDate" name="qxysDate" readonly placeholder="请选择日期···">
+                <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showRwDate('qxys')"
+                   style="cursor:pointer;position: absolute;font-size: 17px;right: 3px;top: 7px;"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label class="col-md-6 control-label lh29" style="text-align: right;">时间分辨率：</label>
+            <div class="btn-group col-md-6" data-toggle="buttons" style="padding: 0;">
+              <label class="btn btn-outline btn-success "><input type="radio" name="rmsQxys" value="hour">逐小时</label>
+              <label class="btn btn-outline btn-success  active"><input checked type="radio" name="rmsQxys" value="day">逐日</label>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="showTable">
+
+  </div>
+
+
+
+</div>
+
+
+<div class="mb20 mnDataShow disNone col-md-6">
+  <div class="mnName">PM25模拟数据</div>
+  <table>
+    <thead>
+    <tr>
+      <th></th>
+      <th>预报准确率</th>
+      <th>相关系数</th>
+      <th>相对平均偏差</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>历史模拟</td>
+      <td class="12"></td>
+      <td class="13"></td>
+      <td class="14"></td>
+    </tr>
+    <tr>
+      <td>24小时预报</td>
+      <td class="22"></td>
+      <td class="23"></td>
+      <td class="24"></td>
+    </tr>
+    <tr>
+      <td>48小时预报</td>
+      <td class="32"></td>
+      <td class="33"></td>
+      <td class="34"></td>
+    </tr>
+    <tr>
+      <td>72小时预报</td>
+      <td class="42"></td>
+      <td class="43"></td>
+      <td class="44"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
