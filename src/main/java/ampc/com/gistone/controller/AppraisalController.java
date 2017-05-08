@@ -185,7 +185,7 @@ public class AppraisalController {
 				for(ScenarinoEntity sc:sclist){
 					String scid=String.valueOf(sc.getsId());
 					Object content=sc.getContent();
-					JSONObject obj=JSONObject.fromObject(content);	//行业减排结果	--影响转化效率
+					JSONObject obj=JSONObject.fromObject(content);	//行业减排结果	--影响转化效率-----------------------------
 					Map<String,Object> detamap=(Map)obj;
 					
 					for(int i=0;i<speciesArr.length;i++){	
@@ -1228,7 +1228,7 @@ public class AppraisalController {
 					List<ScenarinoEntity> Lsclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 					if(!Lsclist.isEmpty()){
 							String content=Lsclist.get(0).getContent().toString();
-							JSONObject obj=JSONObject.fromObject(content);	//该行代码需优化,转化效率太低，耗时1S以上
+							JSONObject obj=JSONObject.fromObject(content);	//该行代码需优化,转化效率太低，耗时1S以上-----------------------------
 							Map<String,Object> standard=(Map)obj;				//总数据
 							
 							for(String  key : standard.keySet()){							
@@ -1295,7 +1295,7 @@ public class AppraisalController {
 					obsBeanobj.put("tableName",tables_obs);					//查询的表格
 					List<ObsBean> obsBeans=tObsMapper.queryObservationResult(obsBeanobj);	//查询观测数据
 					String contentstr=obsBeans.get(0).getContent();
-					JSONObject content_obj=JSONObject.fromObject(contentstr);
+					JSONObject content_obj=JSONObject.fromObject(contentstr);	//----------------------------------------
 					Map<String,Object> contentmap= (Map)content_obj;
 					JSONObject contentobjs=new JSONObject();		//存放所有观测数据
 					JSONObject contentobj=new JSONObject();			//存放所有的物种
