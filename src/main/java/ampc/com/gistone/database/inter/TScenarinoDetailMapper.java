@@ -237,7 +237,7 @@ public interface TScenarinoDetailMapper {
     /**
 	 * 查询基准情景 
 	 * */
-    List<TScenarinoDetail> selectBystandard(TScenarinoDetail record);
+    TScenarinoDetail selectBystandard(TScenarinoDetail record);
 	/**
 	 * @Description: 获取运行最新的状态的实时预报情景
 	 * @param userId
