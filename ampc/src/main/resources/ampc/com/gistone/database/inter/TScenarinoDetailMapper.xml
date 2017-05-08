@@ -988,84 +988,10 @@ AND IS_EFFECTIVE = '1'
   	 SELECT *
   		FROM T_SCENARINO_DETAIL  
 			 WHERE IS_EFFECTIVE ='1'  and SCEN_TYPE ='3' 
-	  <if test="scenarinoType != null" >
-       and SCENARINO_TYPE = #{scenarinoType,jdbcType=DECIMAL}
-      </if>
-      <if test="scenarinoName != null" >
-       and SCENARINO_NAME = #{scenarinoName,jdbcType=OTHER}
-      </if>
-      <if test="scenarinoStartDate != null" >
-       and SCENARINO_START_DATE = #{scenarinoStartDate,jdbcType=TIMESTAMP}
-      </if>
-      <if test="scenarinoEndDate != null" >
-       and SCENARINO_END_DATE = #{scenarinoEndDate,jdbcType=TIMESTAMP}
-      </if>
-      <if test="scenarinoStatus != null" >
-       and SCENARINO_STATUS = #{scenarinoStatus,jdbcType=DECIMAL}
-      </if>
-      <if test="missionId != null" >
        and MISSION_ID = #{missionId,jdbcType=DECIMAL}
-      </if>
-      <if test="scenarinoAddTime != null" >
-       and SCENARINO_ADD_TIME = #{scenarinoAddTime,jdbcType=TIMESTAMP}
-      </if>
-      <if test="userId != null" >
        and USER_ID = #{userId,jdbcType=DECIMAL}
-      </if>
-      <if test="updateTime != null" >
-       and UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
-      </if>
-      <if test="scenarinoId != null" >
-       and SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
-      </if>
-      <if test="deleteTime != null" >
-       and DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP}
-      </if>
-       <if test="basisScenarinoId != null" >
-       and BASIS_SCENARINO_ID = #{basisScenarinoId,jdbcType=DECIMAL}
-      </if>
-       <if test="basisTime != null" >
-       and BASIS_TIME = #{basisTime,jdbcType=TIMESTAMP}
-      </if>
-       <if test="contrastScenarinoId != null" >
-       and CONTRAST_SCENARINO_ID = #{contrastScenarinoId,jdbcType=DECIMAL}
-      </if>
-       <if test="pathDate != null" >
-       and PATH_DATE = #{pathDate,jdbcType=TIMESTAMP}
-      </if>
-      <if test="spinup != null" >
-       and SPINUP = #{spinup,jdbcType=DECIMAL}
-      </if>
-        <if test="expand1 != null" >
-       and EXPAND1 = #{expand1,jdbcType=VARCHAR}
-      </if>
-        <if test="expand2 != null" >
-       and EXPAND2 = #{expand2,jdbcType=VARCHAR}
-      </if> 
-        <if test="expand3 != null" >
-       and EXPAND3 = #{expand3,jdbcType=VARCHAR}
-      </if>
-        <if test="expand4 != null" >
-       and EXPAND4 = #{expand4,jdbcType=VARCHAR}
-      </if>   
-        <if test="expand5 != null" >
-       and EXPAND5 = #{expand5,jdbcType=VARCHAR}
-      </if>
-        <if test="expand6 != null" >
-       and EXPAND6 = #{expand6,jdbcType=VARCHAR}
-      </if>
-        <if test="expand7 != null" >
-       and EXPAND7 = #{expand7,jdbcType=VARCHAR}
-      </if>   
-        <if test="expand8 != null" >
-       and EXPAND8 = #{expand8,jdbcType=VARCHAR}
-      </if>      
-        <if test="expand9 != null" >
-       and EXPAND9 = #{expand9,jdbcType=VARCHAR}
-      </if>
-        <if test="expand10 != null" >
-       and EXPAND10 = #{expand10,jdbcType=VARCHAR}
-      </if>
+       and ROWNUM=1;
+    
   </select>
    <select id="selectByrealmax" parameterType="java.lang.Long" resultMap="BaseResultMap" >
      SELECT * FROM T_SCENARINO_DETAIL S 
