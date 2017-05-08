@@ -14,8 +14,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+
+
+
+
+
+
 import net.sf.json.JSONObject;
 
+import org.apache.ibatis.annotations.Select;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -49,10 +57,11 @@ import ampc.com.gistone.util.RegUtil;
  * @author yanglei
  * @date 2017年3月31日 下午3:12:38
  * @version 1.0
+ * @param <V>
  */
 @EnableScheduling
 @Component
-public class SchedulerTimer {
+public class SchedulerTimer<V> {
 	
 	//加载准备数据工具类
 	@Autowired
@@ -102,7 +111,7 @@ public class SchedulerTimer {
 	 * @date 2017年4月7日 上午9:53:09
 	 */
 //	@Scheduled(cron="0 0 11 * * ?")
-//	@Scheduled(cron="0 30 09 * * ?")
+	@Scheduled(cron="0 30 09 * * ?")
 //	@Scheduled(fixedRate = 50000)
 	public void realForTimer() {
 		//Date date = new Date();
@@ -353,7 +362,7 @@ public class SchedulerTimer {
 	 * @date 2017年4月21日 下午7:39:01
 	 */
 //	@Scheduled(fixedRate = 5000)
-//	@Scheduled(cron="0 0/10  * * * ?")
+	@Scheduled(cron="0 0/10  * * * ?")
 	public void  sendMessageOnRealprediction() {
 		 LogUtil.getLogger().info("开始检测ungrib的数据");
 		//获取最新的ungrib 
@@ -375,12 +384,13 @@ public class SchedulerTimer {
 			for (TScenarinoDetail tScenarinoDetail : list) {
 					Long userId = tScenarinoDetail.getUserId();
 					Long rangeDay = tScenarinoDetail.getRangeDay();
+					LogUtil.getLogger().info("rangeDay的长度是："+rangeDay);
 					if (length>=rangeDay) {
 						//查找中断的预报时间
 						Date lastpathdate = tScenarinoDetailMapper.getlastrunstatus(userId);
 						String lastungrib = readyData.pivot(userId, lastpathdate, pathdate);
 						if (null!=lastungrib) {
-							readyData.readyRealMessageDataFirst(tScenarinoDetail, lastungrib,false);
+							readyData.readyRealMessageDataFirst(tScenarinoDetail, lastungrib);
 							//修改状态为执行中
 							readyData.updateScenStatusUtil(6l, tScenarinoDetail.getScenarinoId());
 						}else {
@@ -435,83 +445,131 @@ public class SchedulerTimer {
 	 */
 //	@Scheduled(cron="0 0/10 * * * ?")
 //	@Scheduled(fixedRate = 5000)
-	public void getMaxTimeforpreEvalution() {
-		System.out.println("我每隔10分钟执行一次");
+	public void ForpreEvalution() {
 		LogUtil.getLogger().info("每隔10分钟执行一次");
 		//根据情景的状态和情景的类型确定准备参数
-		//找到每一条预评估情景
-		List<TScenarinoDetail> list = tScenarinoDetailMapper.getscenidAndcores();//存在问题
-		//查找可执行的时间
-		Date maxtime = tScenarinoDetailMapper.getmaxtime();
-		for (TScenarinoDetail tScenarinoDetail : list) {
-			Date startDate = tScenarinoDetail.getScenarinoStartDate();
-			Long scenarinoId = tScenarinoDetail.getScenarinoId();
-			Long cores = Long.parseLong(tScenarinoDetail.getExpand3());
-			//查询该预评估情景执行到哪一步了 
-			TTasksStatus tasksStatus = tTasksStatusMapper.gettaskEnddate(scenarinoId);
-			if (null!=tasksStatus) {
-				//当前情景执行到的日期
-				Date nowDate = tasksStatus.getTasksEndDate();
-				//当前情景已经发送过得日期
-				String completetime = tasksStatus.getBeizhu2();
-				if (completetime.equals("0")) {
-					LogUtil.getLogger().info("该情景尚未运行开始发送参数");
-				}
-				Date ctime = DateUtil.StrtoDateYMD(completetime, "yyyyMMdd");
-				//当前情景在当前执行日期下执行到哪一步
-				Long stepindex = tasksStatus.getStepindex();
-				//当前情景的结束时间
-				Date EndDate = tScenarinoDetail.getScenarinoEndDate();
-				//当前任务的错误状态
-				String errorStatus = tasksStatus.getErrorStatus();
-				
-				//nowDate和任务的坐标以及已经发送过得状态都为空表示第一次发送 该情景模式没跑过
-				if (null==nowDate&&null==stepindex&&null==completetime&&null==errorStatus) {
-					//第一次发送
-					nowDate = startDate;
-					//请求减排系数 
-					
-					/*//准备数据发送消息
-					readyData.readyPreEvaluationSituationDataFirst(scenarinoId, cores);*/
-					//跟新该情景下的startdate时间已经发送完毕
-					String time = DateUtil.DATEtoString(nowDate, "yyyyMMdd");
-					TTasksStatus tTasksStatus = new TTasksStatus();
-					tTasksStatus.setTasksScenarinoId(scenarinoId);
-					tTasksStatus.setBeizhu2(time);
-					tTasksStatusMapper.updatemessageStatus(tTasksStatus);
-				}
-				if(null==errorStatus){
-
-					//比较当前情景的时间和情景的结束时间大小
-					int compareTo = EndDate.compareTo(nowDate);
-					//比较当前情景的时间和情景是否可发送的最大时间
-					int compareTo2 = nowDate.compareTo(maxtime);
-					//比较当前时间和已经发送的时间大小 理论上应该是一样大
-					int compareTo3 = nowDate.compareTo(ctime);
-					//compareTo大于0表示时间在开始时间到结束时间之间 还要继续发送消息  
-					//compareTo2小于0表示最新的时间大于该情景正在执行的时间 
-					//compareTo3小于等于0表示已经发送过了当条消息
-					 if(compareTo2<0&&compareTo>0&&compareTo3<=0){
-						//如果不为空表示当前情景已经发送过了，该时间已经完成了任务  准备下一条数据的时间是当时的时间加一天
-					//	timedate= DateUtil.ChangeDay(nowDate, 1);
-						//准备数据发送消息
-						readyData.sendDataEvaluationSituationThen(nowDate, scenarinoId);
-						//跟新该情景下的startdate时间已经发送完毕
-						String time = DateUtil.DATEtoString(nowDate, "yyyyMMdd");
-						TTasksStatus tTasksStatus = new TTasksStatus();
-						tTasksStatus.setTasksScenarinoId(scenarinoId);
-						tTasksStatus.setBeizhu2(time);
-						tTasksStatusMapper.updatemessageStatus(tTasksStatus);
+		try {
+			//找到每一条启动中的预评估情景
+			List<TScenarinoDetail> list = tScenarinoDetailMapper.selectpreEvaluationSituation();
+			for (TScenarinoDetail tScenarinoDetail : list) {
+				Date pathDate = DateUtil.DateToDate(tScenarinoDetail.getPathDate(), "yyyyMMdd");
+				Long userId = tScenarinoDetail.getUserId();
+				Date maxtime = getMaxTimeForMegan(pathDate,userId);
+				Date startDate = DateUtil.DateToDate(tScenarinoDetail.getScenarinoStartDate(), "yyyyMMdd");//预评估情景的开始时间
+				int compareTo = maxtime.compareTo(startDate);//比较最大的时间和预评估情景的开始时间
+				Long scenarinoId = tScenarinoDetail.getScenarinoId();
+				//查询该预评估情景执行到哪一步了 
+//				TTasksStatus tasksStatus = tTasksStatusMapper.gettaskEnddate(scenarinoId);
+				TTasksStatus tasksStatus = tTasksStatusMapper.selectStatus(scenarinoId);
+					if (null!=tasksStatus) {
+						//当前情景已经发送过得日期
+						String sendtime = tasksStatus.getBeizhu2();
+						if (sendtime.equals("0")) {
+							LogUtil.getLogger().info("该情景尚未发送过一次！");
+							if (compareTo>=0) {
+								//发送第一次的数据
+								boolean flag = readyData.readyPreEvaluationSituationDataFirst(tScenarinoDetail);
+								if (flag) {
+									LogUtil.getLogger().info("ID为"+scenarinoId+"预评估情景发送成功！本次消息的时间是："+startDate);
+								}else {
+									LogUtil.getLogger().info("预评估情景发送失败！");
+								}
+							}else {
+								LogUtil.getLogger().info("气象数据不满足");
+							}
+						}else {
+							//当前情景执行到的日期
+							//已经发送的消息，正在执行或者执行完毕
+							Date ctime = DateUtil.StrtoDateYMD(sendtime, "yyyyMMdd");
+							Date nowDate = tasksStatus.getTasksEndDate();
+							nowDate = nowDate ==null?ctime:nowDate;
+							//当前情景在当前执行日期下执行到哪一步
+							Long preEvastepindex = tasksStatus.getStepindex();
+							preEvastepindex = preEvastepindex == null?0:preEvastepindex;
+							//当前情景的结束时间
+							Date EndDate = tScenarinoDetail.getScenarinoEndDate();
+							//当前任务的错误状态
+							String errorStatus = tasksStatus.getErrorStatus();
+							if(null==errorStatus&&preEvastepindex==4){
+								//比较当前情景的模式运行的时间和情景的结束时间大小
+								nowDate = DateUtil.DateToDate(nowDate, "yyyyMMdd");
+								int compareTo1 = EndDate.compareTo(nowDate);
+								//比较当前情景的模式运行的时间时间和情景是否可发送的最大时间
+								int compareTo2 = nowDate.compareTo(maxtime);
+								//比较当前时间模式运行的时间和已经发送的时间大小 理论上应该是一样大（index=4的时候，会小一天）
+								int compareTo3 = nowDate.compareTo(ctime);
+								//compareTo1大于0表示时间在开始时间到结束时间之间 还要继续发送消息  
+								//compareTo2小于0表示最新的时间大于该情景正在执行的时间---气象数据满足
+								//compareTo3小于等于0表示已经发送过了当条消息 index等于4且compareto3等于0 表示可以发送下一条消息
+								//将要发送的消息的时间
+//								Date willsendDate = DateUtil.changestrToDate(sendtime, "yyyyMMdd", 1);
+								if(compareTo2<0&&compareTo1>0&&compareTo3==0){
+									//如果不为空表示当前情景已经发送过了，该时间已经完成了任务  准备下一条数据的时间是当时的时间加一天
+//									timedate= DateUtil.ChangeDay(nowDate, 1);
+									//准备数据发送消息
+									boolean sendDataEvaluationSituationThen = readyData.sendDataEvaluationSituationThen(nowDate, scenarinoId);
+									if (sendDataEvaluationSituationThen) {
+										LogUtil.getLogger().info("预评估消息发送成功！");
+									}else {
+										LogUtil.getLogger().info("预评估消息发送失败！");
+									}
+								}
+								
+							}else {
+								LogUtil.getLogger().info("ID为："+scenarinoId+"的预评估情景的本次消息尚未执行完毕！");
+							}
+						}
+					}else {
+						LogUtil.getLogger().info("该情景尚未创建对应的状态表，程序出错了！");
 					}
-					
-				}
-			}else {
-				LogUtil.getLogger().info("该情景尚未创建对应的状态表，程序出错了！");
 			}
-			
+		} catch (Exception e) {
+			LogUtil.getLogger().error("预评估情景定时器异常",e);
 		}
 		
+		
 	}
+	/**
+	 * @Description: 查询对应的气象数据
+	 * @param pathDate
+	 * @param userId   
+	 * void  
+	 * @return 
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年5月6日 下午8:16:27
+	 */
+	private Date getMaxTimeForMegan(Date pathDate, Long userId) {
+		Date maxtime = null;
+		//查找可执行的时间
+		Map map = new HashMap();
+		map.put("pathdate", pathDate);
+		map.put("userId", userId);
+		map.put("type", "4");
+		//查询对应的实时预报的状态
+		TTasksStatus selectTasksstatusByPathdate = tTasksStatusMapper.selectTasksstatusByPathdate(map);
+		String sendtime = selectTasksstatusByPathdate.getBeizhu2();//发送了消息的时间
+		Date scenarinoStartDate = DateUtil.DateToDate(selectTasksstatusByPathdate.getScenarinoStartDate(), "yyyyMMdd"); 
+		if (!sendtime.equals("0")) {
+			Long stepindex = selectTasksstatusByPathdate.getStepindex();//预报情景进行到了index
+			stepindex = stepindex == null ?0:stepindex;
+			Date sendDate = DateUtil.StrtoDateYMD(sendtime, "yyyyMMdd");
+			Date tasksEndDate = selectTasksstatusByPathdate.getTasksEndDate();//预报情景进行到的时间
+//			int compareTo = sendDate.compareTo(scenarinoStartDate);//发送的时间和情景开始时间比较
+			if (stepindex<4) {
+				maxtime =DateUtil.DateToDate(DateUtil.ChangeDay(tasksEndDate, -1),"yyyyMMdd");
+			}
+			if (stepindex>=4&&stepindex<=8) {
+				maxtime =DateUtil.DateToDate(tasksEndDate,"yyyyMMdd");
+			}
+		}else {
+			maxtime = DateUtil.DateToDate(DateUtil.ChangeDay(scenarinoStartDate, -1),"yyyyMMdd");
+			LogUtil.getLogger().info("实时预报情景尚未开始运行！");
+		}
+		return maxtime;
+	}
+
+
 	/**
 	 * 
 	 * @Description: 测试定时器 每隔5秒开始一次   
@@ -534,6 +592,12 @@ public class SchedulerTimer {
 		String getResult=ClientUtil.doPost(url,jsonObject.toString());
 		System.out.println(getResult);*/
 		System.out.println("aaaaaaaa--------");
+		TTasksStatus tasksStatus = tTasksStatusMapper.selectEmisDataByScenId(642l);
+		if (null==tasksStatus) {
+			LogUtil.getLogger().info("没有收到减排系数");
+		}else {
+			System.out.println("123------");
+		}
 	}
 
 
@@ -554,7 +618,7 @@ public class SchedulerTimer {
 	 * @date 2017年4月17日 上午10:23:32
 	 */
 	
-	//@Scheduled(fixedRate = 5000)
+//	@Scheduled(fixedRate = 5000)
 	public void continueRealModelprediction() {
 		//查找当天的实时预报的运行状态
 		Date pathdateDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
