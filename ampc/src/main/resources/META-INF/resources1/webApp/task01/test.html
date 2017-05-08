@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+  <link rel="stylesheet" href="../../css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="../../css/plugins/bootstrap-table/bootstrap-table.min.css"/>
+  <style>
+    .box{
+      width: 500px;
+      height: 300px;
+      border: 1px solid #333333;
+      margin: 50px auto;
+    }
+    .a{
+      position: relative;
+      width: 90%;
+      margin: 10px auto;
+      height: 4px;
+      background-color: #f9c831;
+    }
+    .a:after{
+      position: absolute;
+      content: '';
+      display: block;
+      width: 0;
+      border: 4px solid transparent;
+      border-top-color: #f9c831;
+      border-right-color: #f9c831;
+      transform: rotate(45deg);
+      right: 0;
+      top: -2px;
+    }
+    .a span{
+      position: absolute;
+      display: block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid #333;
+      top: -5px;
+      background-color: #fff;
+    }
+    .a span:nth-child(1){
+      left: 0;
+      background-color: #1df92c;
+    }
+
+    .a span:nth-child(2){
+      left: 12.5%;
+      background-color: #1df92c;
+    }
+
+    .a span:nth-child(3){
+      left: 25%;
+      background-color: #1df92c;
+    }
+
+    .a span:nth-child(4){
+      left: 37.5%;
+      background-color: #1df92c;
+    }
+
+    .a span:nth-child(5){
+      left: 50%;
+      background-color: #1df92c;
+    }
+
+    .a span:nth-child(6){
+      left: 62.5%;
+    }
+
+    .a span:nth-child(7){
+      left: 75%;
+    }
+
+    .a span:nth-child(8){
+      left: 87.5%;
+    }
+
+    .a span:nth-child(9){
+      left: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <div class="a">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+</body>
+<script src="../../js/jquery.min.js"></script>
+<script src="../../js/bootstrap.min.js"></script>
+<script>
+
+</script>
+</html>

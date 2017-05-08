@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>环境空气质量动态模拟云平台</title>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1">
+  <!--[if IE]>
+  <meta http-equiv="x-ua-compatible" content="IE=9"/><![endif]-->
+  <meta name="author" content="SuggeElson"/>
+  <meta name="description" content=""/>
+  <meta name="keywords" content=""/>
+  <meta name="application-name" content="sprFlat admin template"/>
+
+  <link href="css/icons.css" rel="stylesheet"/>
+
+  <link href="css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="css/font-awesome.css" rel="stylesheet">
+  <link href="css/animate.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet"/>
+
+  <link href="css/plugins/sprflat-theme/jquery.ui.all.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css"/>
+  <link rel="stylesheet" href="css/swan.timeline.min.css"/>
+  <link rel="stylesheet" href="js/plugins/forms/icheck/flat/_all.css"/>
+  <link rel="stylesheet" href="css/plugins/bootstrap-table/bootstrap-table.min.css"/>
+  <link rel="stylesheet" href="css/plugins/sweetalert/sweetalert.css"/>
+  <link rel="stylesheet" href="css/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.css"/>
+
+  <link rel="stylesheet" href="css/bootstrap-table-filter-control.css"/>
+  <link rel="stylesheet" href="css/plugins/zTreeStyle/zTreeStyle.css"/>
+  <link rel="stylesheet" href="js/plugins/forms/daterangepicker/daterangepicker.css"/>
+  <link href="css/main.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/index.css"/>
+  <meta name="msapplication-TileColor" content="#3399cc"/>
+</head>
+<body>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content modal-lg">
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                style='position: absolute;right: 5px;top: 0px;'><span aria-hidden="true">&times;</span></button>
+
+
+        <div>
+
+          <div class="col-md-2">
+            <!-- Nav tabs -->
+            <ul class="nav nav-pills nav-justified" role="tablist">
+              <li role="presentation" class="btn-success btn-outline active" style='background-color:#fff;'><a
+                  href="#time" aria-controls="time" role="tab" data-toggle="tab">时段操作</a></li>
+              <br/>
+              <li role="presentation" class="btn-success btn-outline" style='background-color:#fff;'><a href="#plan"
+                                                                                                        aria-controls="plan"
+                                                                                                        role="tab"
+                                                                                                        data-toggle="tab">预案操作</a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Tab panes -->
+          <div class="tab-content col-md-10" style='border:none;'>
+            <div role="tabpanel" class="tab-pane active" id="time">
+
+
+              <div>
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a href="#addTime" aria-controls="addTime" role="tab"
+                                                            data-toggle="tab">时段添加</a></li>
+                  <li role="presentation" class=""><a href="#delTime" aria-controls="delTime" role="tab"
+                                                      data-toggle="tab">时段删除</a></li>
+                  <li role="presentation" class=""><a href="#editTime" aria-controls="editTime" role="tab"
+                                                      data-toggle="tab">时段编辑</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane active" id="addTime">
+
+
+                    <div class="form-group mt10 clearfix">
+                      <label for="qyTimePoint" class="col-md-12 control-label lh29">请选择需要分割的时间点：</label>
+
+                      <div class="col-md-12">
+                        <input type="text" class="form-control" id="qyTimePoint" name="qyTimePoint" readonly
+                               placeholder="请选择时间点···">
+                      </div>
+                    </div>
+
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                      <button type="button" class="btn btn-success" data-dismiss="modal" onclick="addTimes()">确认添加
+                      </button>
+                    </div>
+
+                  </div>
+                  <div role="tabpanel" class="tab-pane" id="delTime">时段删除</div>
+                  <div role="tabpanel" class="tab-pane" id="editTime">时段编辑</div>
+                </div>
+
+              </div>
+
+
+            </div>
+            <div role="tabpanel" class="tab-pane" id="plan">
+
+              <div>
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a href="#newPlan" aria-controls="newPlan" role="tab"
+                                                            data-toggle="tab">添加新预案</a></li>
+                  <li role="presentation" class=""><a href="#oldPlan" aria-controls="oldPlan" role="tab"
+                                                      data-toggle="tab">复制旧预案</a></li>
+                  <li role="presentation" class=""><a href="#editPlan" aria-controls="editPlan" role="tab"
+                                                      data-toggle="tab">编辑现预案</a></li>
+                  <li role="presentation" class=""><a href="#delPlan" aria-controls="delPlan" role="tab"
+                                                      data-toggle="tab">删除现预案</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane active" id="newPlan">添加新预案</div>
+                  <div role="tabpanel" class="tab-pane" id="oldPlan">复制旧预案</div>
+                  <div role="tabpanel" class="tab-pane" id="editPlan">编辑现预案</div>
+                  <div role="tabpanel" class="tab-pane" id="delPlan">删除现预案</div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<form action="#" class="form-horizontal">
+  <div class="form-group">
+    <label class="col-lg-2 control-label">Basic slider</label>
+
+    <div class="col-lg-10">
+      <div class="slider slider-horizontal" id="slider1">
+        <div class="slider-track">
+          <div class="slider-selection" style="left: 0%; width: 92.9293%;"></div>
+          <div class="slider-handle round" tabindex="0" style="left: 92.9293%;"></div>
+          <div class="slider-handle round hide" tabindex="0" style="left: 0%;"></div>
+        </div>
+        <div class="tooltip top" style="top: -40px; left: 556.515px;">
+          <div class="tooltip-arrow"></div>
+          <div class="tooltip-inner">93</div>
+        </div>
+        <input id="basic-slider" data-slider-id="slider1" type="text" style="display: none;"></div>
+      <span class="help-block color-red">Value : <span class="strong" id="slider1val">93</span></span>
+    </div>
+  </div>
+  <!-- End .form-group  -->
+  <div class="form-group">
+    <label class="col-lg-2 control-label">With 25 step</label>
+
+    <div class="col-lg-10">
+      <div class="slider slider-horizontal" id="slider2">
+        <div class="slider-track">
+          <div class="slider-selection" style="left: 0%; width: 25.2525%;"></div>
+          <div class="slider-handle round" tabindex="0" style="left: 25.2525%;"></div>
+          <div class="slider-handle round hide" tabindex="0" style="left: 0%;"></div>
+        </div>
+        <div class="tooltip top" style="top: -40px; left: 140.303px;">
+          <div class="tooltip-arrow"></div>
+          <div class="tooltip-inner">26</div>
+        </div>
+        <input id="step-slider" data-slider-id="slider2" type="text" style="display: none;"></div>
+      <span class="help-block color-red">Value : <span class="strong" id="slider2val">26</span></span>
+    </div>
+  </div>
+  <!-- End .form-group  -->
+  <div class="form-group">
+    <label class="col-lg-2 control-label">Range slider</label>
+
+    <div class="col-lg-10">
+      <div class="slider slider-horizontal" id="slider3">
+        <div class="slider-track">
+          <div class="slider-selection" style="left: 34.6346%; width: 20.9209%;"></div>
+          <div class="slider-handle round" tabindex="0" style="left: 34.6346%;"></div>
+          <div class="slider-handle round" tabindex="0" style="left: 55.5556%;"></div>
+        </div>
+        <div class="tooltip top" style="top: -40px; left: 242.335px;">
+          <div class="tooltip-arrow"></div>
+          <div class="tooltip-inner">347 : 556</div>
+        </div>
+        <input id="range-slider" data-slider-id="slider3" type="text" style="display: none;"></div>
+      <span class="help-block color-red">Value : <span class="strong" id="slider3val">347,556</span></span>
+    </div>
+  </div>
+  <!-- End .form-group  -->
+  <div class="form-group">
+    <label class="col-lg-2 control-label">Vertical sliders</label>
+
+    <div class="col-lg-10">
+      <div class="slider slider-vertical" id="slider4">
+        <div class="slider-track">
+          <div class="slider-selection" style="top: 22.2222%; height: 77.7778%;"></div>
+          <div class="slider-handle round" tabindex="0" style="top: 22.2222%;"></div>
+          <div class="slider-handle round hide" tabindex="0" style="top: 100%;"></div>
+        </div>
+        <div class="tooltip right" style="left: 100%; top: 29.6667px;">
+          <div class="tooltip-arrow"></div>
+          <div class="tooltip-inner">8</div>
+        </div>
+        <input id="vertical-slider" data-slider-id="slider4" type="text" style="display: none;"></div>
+      <span class="help-block color-red">Value : <span class="strong" id="slider4val">8</span></span>
+    </div>
+  </div>
+  <!-- End .form-group  -->
+</form>
+
+</body>
+</html>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-ui-1.10.4.min.js"></script>
+<script src="js/plugins/forms/icheck/jquery.icheck.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+<script src="js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="js/bootstrap-table-contextmenu.js.js"></script>
+<script src="js/plugins/core/moment/moment.js"></script>
+<script src="js/plugins/forms/datetimepicker/bootstrap-datetimepicker.js"></script>
+<!--<script src="js/plugins/forms/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>-->
+
+<script src="js/jquery.mousewheel.js"></script>
+<script src="js/bootstrap-table-filter-control.js"></script>
+<script src="js/plugins/validate/jquery.validate.min.js"></script>
+<script src="js/plugins/validate/additional-methods.min.js"></script>
+<script src="js/plugins/validate/messages_zh.min.js"></script>
+<script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="js/plugins/core/pace/pace.min.js"></script>
+<script src="js/jRespond.min.js"></script>
+<script src="js/plugins/core/slimscroll/jquery.slimscroll.js"></script>
+<script src="js/plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js"></script>
+<script src="js/plugins/core/quicksearch/jquery.quicksearch.js"></script>
+<script src="js/plugins/misc/highlight/highlight.pack.js"></script>
+<script src="js/plugins/misc/countTo/jquery.countTo.js"></script>
+<script src="js/plugins/zTree/jquery.ztree.core.min.js"></script>
+<script src="js/plugins/zTree/jquery.ztree.excheck.min.js"></script>
+<!-- <script src="js/jquery.sprFlat.js"></script> -->
+<script src="js/vipspa.min.js"></script>
+<script src="js/plugins/echarts/echarts.min.js"></script>
+<script src="js/plugins/forms/daterangepicker/daterangepicker.js"></script>
+<script src="js/swan.timeline.js"></script>
+<!--自己的js文件-->
+<script src="BackstageIP.js"></script>
+<script src="homeRouter.js"></script>
+<script>
+
+
+
+
+</script>
