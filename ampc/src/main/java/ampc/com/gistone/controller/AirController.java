@@ -684,7 +684,12 @@ public class AirController {
 							}
 							
 						}	//循环页面开始年份和结束年份的差值--结束
-						observationData.put(speciesArr[m],obsSpeciesData);
+						if("PM2_5".equals(speciesArr[m])){
+							observationData.put("PM25",obsSpeciesData);
+						}else{
+							observationData.put(speciesArr[m],obsSpeciesData);
+						}
+//						observationData.put(speciesArr[m],obsSpeciesData);
 					}
 					
 					//查询的情景中结束时间如果没有从页面获取到的结束时间参数时，数据赋值为"-"进行表示
