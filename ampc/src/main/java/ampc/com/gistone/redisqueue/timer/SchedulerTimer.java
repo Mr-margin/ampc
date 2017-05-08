@@ -111,7 +111,7 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月7日 上午9:53:09
 	 */
 //	@Scheduled(cron="0 0 11 * * ?")
-	@Scheduled(cron="0 30 09 * * ?")
+//	@Scheduled(cron="0 30 09 * * ?")
 //	@Scheduled(fixedRate = 50000)
 	public void realForTimer() {
 		//Date date = new Date();
@@ -362,7 +362,7 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月21日 下午7:39:01
 	 */
 //	@Scheduled(fixedRate = 5000)
-	@Scheduled(cron="0 0/10  * * * ?")
+//	@Scheduled(cron="0 0/10  * * * ?")
 	public void  sendMessageOnRealprediction() {
 		 LogUtil.getLogger().info("开始检测ungrib的数据");
 		//获取最新的ungrib 
