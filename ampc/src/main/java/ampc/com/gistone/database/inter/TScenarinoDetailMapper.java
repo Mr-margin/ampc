@@ -98,19 +98,8 @@ public interface TScenarinoDetailMapper {
 	 * @author yanglei
 	 * @date 2017年4月8日 下午5:47:07
 	 */
-	List<TScenarinoDetail> getscenidAndcores();
+	List<TScenarinoDetail> selectpreEvaluationSituation();
 
-
-	/**
-	 * @Description: 获取最大的可执行预评估的时间
-	 * @return   
-	 * Date  
-	 * @throws
-	 * @author yanglei
-	 * @date 2017年4月8日 下午6:07:16
-	 */
-	Date getmaxtime();
-	
 	/**
 	 * @Description: TODO
 	 * @param parmap

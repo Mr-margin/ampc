@@ -75,7 +75,7 @@ public interface TTasksStatusMapper {
 
 	
 
-	/**
+/*	*//**
 	 * @Description: 查找该条情景的执行情况的最后一天
 	 * @param scenarinoId
 	 * @return   
@@ -83,9 +83,9 @@ public interface TTasksStatusMapper {
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年4月8日 下午6:42:50
-	 */
+	 *//*
 	TTasksStatus gettaskEnddate(Long scenarinoId);
-
+*/
 	/**
 	 * @Description: 跟新已经发送的预评估时间
 	 * @param tTasksStatus   
@@ -111,18 +111,18 @@ public interface TTasksStatusMapper {
 	 * @Description: 通过情景ID获取该情景的减排系数
 	 * @param scenarinoId
 	 * @return   
-	 * TTasksStatus  
+	 * TTasksStatus  BaseResultMap
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年4月13日 下午7:44:27
 	 */
-	TTasksStatus selectentityByScenId(Long tasksScenarinoId);
+	TTasksStatus selectEmisDataByScenId(Long tasksScenarinoId);
 	
 	int updateinf(Long scenarinoId);
 
 	/**
 	 * @Description: 通过pathdate和情景类型获取该情景的模式执行状态
-	 * @param map
+	 * @param map  pathdate SCEN_TYPE userId
 	 * @return   
 	 * TTasksStatus  
 	 * @throws
