@@ -106,9 +106,9 @@ public class DateUtil {
 
 	/**
 	 * 
-	 * @Description: TODO
+	 * @Description: 当前日期的变化增减 返回时间
 	 * @param date
-	 * @return Date 当前日期的变化增减 返回时间
+	 * @return Date 
 	 * @throws @author
 	 *             yanglei
 	 * @date 2017年3月20日 下午4:35:27
@@ -169,6 +169,34 @@ public class DateUtil {
 		return newdate;
 	}
 
+	/**
+	 * 
+	 * @Description:字符串转化为时间 并且增减  返回时间
+	 * @param date
+	 * @param pattern
+	 * @param i
+	 * @return   
+	 * Date  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年5月8日 上午10:15:50
+	 */
+	public static Date changestrToDate(String date,String pattern,int i) {
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		Calendar cal = Calendar.getInstance();
+		Date newDate = null;
+		try {
+			Date tempDate = format.parse(date);
+			cal.setTime(tempDate);
+			cal.add(Calendar.DATE, i);
+			String newdatestring = format.format(cal.getTime());
+			newDate = format.parse(newdatestring);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return newDate;
+	}
 	/**
 	 * 日期转换成字符串
 	 * 
