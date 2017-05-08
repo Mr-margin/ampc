@@ -377,7 +377,7 @@
   </update>
   
    <!--通过情景ID获取该情景的减排系数  -->
-  <select id="selectentityByScenId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectEmisDataByScenId" parameterType="java.lang.Long" resultMap="BaseResultMap">
   select 
     <include refid="Base_Column_List" />
     from T_TASKS_STATUS
@@ -458,11 +458,11 @@ select START_MODEL_RESULT from T_TASKS_STATUS where TASKS_SCENARINO_ID = #{tasks
   
   <!--查找预评估任务情景的task任务执行情况的全部情景  步数是个未知数-->
   
-  <select id="gettaskEnddate" resultMap="BaseResultMap" parameterType="java.lang.Long">
+<!--   <select id="gettaskEnddate" resultMap="BaseResultMap" parameterType="java.lang.Long">
   select 
   <include refid="Base_Column_List" />
   from T_TASKS_STATUS where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
-  </select>
+  </select> -->
   
   <!--跟新已经发送消息的当天的记录  -->
   <update id="updatemessageStatus" parameterType="ampc.com.gistone.database.model.TTasksStatus">
@@ -493,7 +493,7 @@ update T_TASKS_STATUS
   <!-- 通过情景类型和起报时间查找情景的运行状态 -->
   <select id="selectTasksstatusByPathdate" parameterType="hashMap" resultMap="BaseResultMap">
   select 
-  TASKS_ID, TASKS_SCENARINO_ID, ERROR_STATUS, A.SCENARINO_START_DATE,A.SCENARINO_END_DATE, A.RANGE_DAY, STEPINDEX, TASKS_END_DATE, SOURCEID, CALCTYPE, PSAL, SSAL, MEICCITYCONFIG,
+  TASKS_ID, TASKS_SCENARINO_ID, ERROR_STATUS, A.SCENARINO_START_DATE,A.SCENARINO_END_DATE, A.RANGE_DAY, STEPINDEX, TASKS_END_DATE,
       BEIZHU, BEIZHU2, BEIZHU3
   from T_TASKS_STATUS A LEFT JOIN T_SCENARINO_DETAIL B ON A.TASKS_SCENARINO_ID=B.SCENARINO_ID
   WHERE B.PATH_DATE = #{pathdate} AND B.SCEN_TYPE=#{type} AND B.USER_ID=#{userId}

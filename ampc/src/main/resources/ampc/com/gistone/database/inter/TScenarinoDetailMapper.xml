@@ -61,14 +61,9 @@
   <select id="selectBasisId" parameterType="java.util.Date" resultType="java.lang.Long">
   select SCENARINO_ID from T_SCENARINO_DETAIL where PATH_DATE = #{pathDate,jdbcType=TIMESTAMP} and SCEN_TYPE = '4'
   </select>
-  <!--查找最大的可执行预评估任务预评估情景的时间  -->
-  <select id="getmaxtime" resultType="java.util.Date">
-  SELECT MAX(TASKS_END_DATE) 
-  FROM T_TASKS_STATUS C LEFT JOIN T_SCENARINO_DETAIL D ON C.TASKS_SCENARINO_ID=D.SCENARINO_ID WHERE D.SCEN_TYPE='4' AND C.STEPINDEX='8'
-  </select>
   
   <!--查询所有的执行状态中的预评估情景  6表示模式执行中 1表示预评估情景 -->
-  <select id="getscenidAndcores" resultMap="BaseResultMap">
+  <select id="selectpreEvaluationSituation" resultMap="BaseResultMap">
   select
   <include refid="Base_Column_List" />
   from T_SCENARINO_DETAIL where SCENARINO_STATUS ='6' and SCEN_TYPE ='1'
