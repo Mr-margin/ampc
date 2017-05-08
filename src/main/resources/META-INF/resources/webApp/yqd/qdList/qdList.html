@@ -1,84 +1,57 @@
-<!-- <!DOCTYPE html> -->
-<!-- <html> -->
-<!-- <head lang="en"> -->
-<!--   <meta charset="UTF-8"> -->
-<!--   <meta charset="utf-8"> -->
-<!--   <title>环境空气质量动态模拟云平台</title> -->
-<!--   <meta name="viewport" -->
-<!--         content="width=device-width, initial-scale=1, maximum-scale=1"> -->
 
-<!--   <meta http-equiv="x-ua-compatible" content="IE=9"/><![endif]--> 
-<!--   <meta name="author" content="SuggeElson"/> -->
-<!--   <meta name="description" content=""/> -->
-<!--   <meta name="keywords" content=""/> -->
-<!--   <meta name="application-name" content="sprFlat admin template"/> -->
-
-<!--   <link href="../../../css/icons.css" rel="stylesheet"/> -->
-
-<!--   <link href="../../../css/bootstrap.min.css" rel="stylesheet"/> -->
-<!--   <link href="../../../css/font-awesome.css" rel="stylesheet"> -->
-<!--   <link href="../../../css/animate.css" rel="stylesheet"> -->
-<!--   <link href="../../../css/style.css" rel="stylesheet"/> -->
-
-<!--   <link href="../../../css/plugins/sprflat-theme/jquery.ui.all.css" rel="stylesheet"/> -->
-<!--   <link rel="stylesheet" href="../../../css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css"/> -->
-<!--   <link rel="stylesheet" href="../../../css/swan.timeline.min.css"/> -->
-<!--   <link rel="stylesheet" href="../../../js/plugins/forms/icheck/flat/_all.css"/> -->
-<!--   <link rel="stylesheet" href="../../../css/plugins/bootstrap-table/bootstrap-table.min.css"/> -->
-<!--   <link rel="stylesheet" href="../../../css/plugins/sweetalert/sweetalert.css"/> -->
-<!--   <link rel="stylesheet" href="../../../css/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.css"/> -->
-
-<!--   <link rel="stylesheet" href="../../../css/bootstrap-table-filter-control.css"/> -->
-<!--   <link rel="stylesheet" href="../../../css/plugins/zTreeStyle/zTreeStyle.css"/> -->
-<!--   <link rel="stylesheet" href="../../../js/plugins/forms/daterangepicker/daterangepicker.css"/> -->
-<!--   <link href="../../../css/main.css" rel="stylesheet"/> -->
-<!--   <link rel="stylesheet" href="../../../css/index.css"/> -->
-<!-- </head> -->
-
-<!-- <body> -->
-
-
-
-
-
-
-
-
-<div class="qdListBox">
-  <div class="col-md-12">
-  	<div id="qdToolbar" class="btn-group">
-    <div class="col-md-4 cjsc">
-      <button type="button" class="btn btn-default" onclick="createNewQd()">
-        <i class="glyphicon glyphicon-plus"></i> 创建新清单
-      </button>
-      <button type="button" class="btn btn-default delQD" onclick="delQD()">
-        <i class="glyphicon glyphicon-trash"></i> 删除
-      </button>
+<div class="cloudui" style="height: 100%;width: 100%">
+  <div id="toolbar" class="clearfloat" style="padding: 4px 0">
+    <!--<div class="col-md-4 cjsc">-->
+    <!--<button type="button" class="btn btn-default" onclick="createNewQd()">-->
+    <!--<i class="glyphicon glyphicon-plus"></i> 创建新清单-->
+    <!--</button>-->
+    <!--<button type="button" class="btn btn-default delQD" onclick="delQD()">-->
+    <!--<i class="glyphicon glyphicon-trash"></i> 删除-->
+    <!--</button>-->
+    <!--</div>-->
+    <!--<div class="input-group col-md-3 col-md-offset-9">-->
+    <!--<input type="text" class="form-control qd" placeholder="输入清单名称或字段">-->
+    <!--<span class="input-group-btn">-->
+    <!--<button class="btn btn-default " type="button" onclick="search()"><i class="ec-search"></i>-->
+    <!--</button>-->
+    <!--</span>-->
+    <!--</div>-->
+    <div class="rt">
+      <input type="text" id="searchqd">
     </div>
-    <div class="input-group col-md-3 col-md-offset-9">
-      <input type="text" class="form-control qd" placeholder="输入清单名称或字段">
-                <span class="input-group-btn">
-                  <button class="btn btn-default " type="button" onclick="search()"><i class="ec-search"></i>
-                  </button>
-                </span>
+    <div class="lt">
+      <a href="#" id="addnewqd"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;创建新清单</a>
+      <a href="#" id="deleteqd"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;删除</a>
     </div>
+
+    <script>
+      $('#addnewqd').linkbutton();
+      $('#deleteqd').linkbutton();
+      $('#searchqd').searchbox({prompt:'输入清单名称或字段'})
+    </script>
   </div>
-  <div class="qdList_con">
-    <table id="qdList">
-      <thead>
-      <th data-checkbox="true"></th>
-      <th data-field="qdmc">清单名称</th>
-      <th data-field="qdms">清单描述</th>
-      <th data-field="bdqd">本地清单</th>
-      <th data-field="qgqd">全国清单</th>
-      <th data-field="nf">年份</th>
-      <th data-field="cjsj">创建时间</th>
-      <th data-field="syls">使用历史</th>
-      </thead>
-    </table>
-  </div>
-  </div>
+  <table id="dg">
+  </table>
 </div>
+<!--<div class="qdListBox">-->
+  <!--<div class="col-md-12">-->
+
+  <!--<div class="qdList_con">-->
+    <!--<table id="qdList">-->
+      <!--<thead>-->
+      <!--<th data-checkbox="true"></th>-->
+      <!--<th data-field="qdmc">清单名称</th>-->
+      <!--<th data-field="qdms">清单描述</th>-->
+      <!--<th data-field="bdqd">本地清单</th>-->
+      <!--<th data-field="qgqd">全国清单</th>-->
+      <!--<th data-field="nf">年份</th>-->
+      <!--<th data-field="cjsj">创建时间</th>-->
+      <!--<th data-field="syls">使用历史</th>-->
+      <!--</thead>-->
+    <!--</table>-->
+  <!--</div>-->
+
+
 
 
 

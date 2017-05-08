@@ -3,7 +3,7 @@
  */
 
 $('#captchaImage').click(function(){
-  $('#captchaImage').attr("src", "user/yzmimg?timestamp=" + (new Date()).valueOf());
+  $('#captchaImage').attr("src", "http://localhost:8082/ampc/user/yzmimg?timestamp=" + (new Date()).valueOf());
 });
 
 $("#button").click(function () {
@@ -131,7 +131,8 @@ var parameterPar = {token: '', data: {}};
 function ajaxPost(url, parameter) {
   parameterPar.data = parameter;
   var p = JSON.stringify(parameterPar);
-  return $.ajax('/ampc' + url, {
+  // return $.ajax('http://192.168.4.214:8082/ampc' + url, {
+  return $.ajax('http://localhost:8082/ampc' + url, {
     contentType: "application/json",
     type: "POST",
     async: true,

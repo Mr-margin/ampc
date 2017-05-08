@@ -15,17 +15,14 @@ $(function () {
 var	dps_codeStation,	//设置站点信息
 	dps_station,		//查询站点
 	echartsData,		//该任务下所选情景的所有数据
-	standardData,		//基准和观测的所有数据
+	standardData,		//基准数据
 	allMission;			//放置站点信息
 //默认显示柱状图
 var show_type = "bar";
 var changeMsg = {
 		pro: '',			//站点选择
-		proName: '',
 		city: '',
-		cityName: '',
 		station: '',
-		stationName: '',
 		rms: 'day',			//时间分辨率
 		scenarinoId: [],	//选择的情景Id数组
 		scenarinoName: [],	//选择的情景名称数组
@@ -34,19 +31,12 @@ var changeMsg = {
 //逐日显示 AQI PM25 ,SO4 NO3 NH4 BC OM PMFINE, PM10 O3_8_max O3_1_max SO2 NO2 CO 
 //物种选择
 var speciesArr = {
-		day: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'SO2', 'NO2', 'CO'],
-//		day: ['PM25', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'O3_AVG', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE'],
-		
-//		hour: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3', 'SO2', 'NO2', 'CO']
-		hour: ['PM25', 'PM10', 'O3', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE']
+		day: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'SO2', 'NO2', 'CO',],
+		hour: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3', 'SO2', 'NO2', 'CO']
 };
-var scenarino={			//存放基准数据id和Name
-		scenarinoId:'',
-		scenarinoName:'',
-};
-var observation={		//存放观测数据id和Name
-		scenarinoId:'',
-		scenarinoName:''
+var scenarino={
+	scenarinoId:'',
+	scenarinoName:''
 };
 //window.onresize=function () { //浏览器调整大小后，自动对所有的图进行调整
 //	try{
@@ -58,6 +48,7 @@ var observation={		//存放观测数据id和Name
 //	}
 //};
 
+
 /**
  * 设置柱状图 模板
  */
@@ -67,52 +58,46 @@ var optionAll = {
 		    x: 'left',
 		    y: 'top'
 		 },
-		 tooltip: {
+	  tooltip: {
 		  	trigger: 'axis'
-		 },
-		 legend: {
+	  },
+	  legend: {
 		    show: true,
 		    x: 'center',
 		    y: 'top',
 		    //legend的data: 用于设置图例，data内的字符串数组需要与sereis数组内每一个series的name值对应
-		    data: [],     	//改变量 存储所选情景name
+		    data: [],     //改变量 存储所选情景name
 	
-		 },
-		 grid: {
+	  	},
+		grid: {
 			show: true,
 			left: '3%',
 			right: '3%',
 			bottom: '30%',
-		 },
-		 dataZoom:[
-		           {
+		},
+		dataZoom:[
+		          {
 		        	  show:'true',
 		        	  realtime:'true',
 		        	  start:0,
 		        	  end:100
-		           },
-		          ],
-         calculable: false,  
+		          },
+		     ],
+      calculable: false,  
       xAxis: [  
               	{  
 	        	  show: true,  
 	        	  type: 'category',  
-	        	  data: []  	//改变量
+	        	  data: []  //改变量
               	}
               ],  
       yAxis: [  
 	            {  
-	               name:'',  	//改变量  污染物name
+	               name:'',  //改变量  污染物name
 	               nameLocation:'end',
 	               show: true,  
 	               type: 'value',  
-	               splitArea: {show: false},	//去除网格阴影
-	               splitLine:{show: true,		//设置网格线颜色
-		                lineStyle:{
-		                    color :['#D3D3D3','#00E400', '#FFFF00','#FF7E00','#FF0000','#99004C','#7E0023']
-		                }
-		                
-		            },//去除网格线
+	               splitArea: {show: true}
 	             }
                ],
 	   //颜色色卡
@@ -130,16 +115,16 @@ var ls = window.sessionStorage;
 //	ls.setItem('yaMsg',JSON.stringify(qjMsg));
 //}
 
-var sceneInitialization = vipspa.getMessage('sceneInitialization').content;	//从路由中取到情景范围
+var sceneInitialization = vipspa.getMessage('sceneInitialization').content;//从路由中取到情景范围
 if (!sceneInitialization) {
 	sceneInitialization = JSON.parse(ls.getItem('SI'));
 } else {
-	ls.setItem('SI', JSON.stringify(sceneInitialization));	//不为空往session中存入一份数据
+	ls.setItem('SI', JSON.stringify(sceneInitialization));//不为空往session中存入一份数据
 }
 //console.log(JSON.stringify(sceneInitialization));
 
-if (!sceneInitialization) {	//为空时
-	sceneInittion();		//调用弹出模态框方法
+if (!sceneInitialization) {//为空时
+	sceneInittion();//调用弹出模态框方法
 } else {
 	set_sce();
 	initNowSession();
@@ -159,13 +144,14 @@ function initNowSession(){
 	setStation(sceneInitialization.taskID);
 	setTime(sceneInitialization.s, sceneInitialization.e);
 	$.when(dps_codeStation,dps_station).then(function () {
-//		console.log(changeMsg.station);
+		console.log(changeMsg.station);
 		getdata();
 	});
 	
 }
 
-//var allCode = {};	//用于存储所有的站点信息
+//放置站点信息
+//var allStation = {};
 /**
  * 设置站点信息
  */
@@ -173,19 +159,19 @@ function setStation(id) {
 	  $('#proStation').empty();
 	  $('#cityStation').empty();
 	  $('#station').empty();
-	  var url = '/Site/find_codes';
+	  var url = '/Site/find_code';
 	  dps_codeStation = ajaxPost_sy(url, {
 	    userId: userId,
-	    missionId: id
+	    //missionId: id
 	  }).success(function (res) {
 	    if (res.status == 0) {
-	    	allCode = res.data;
-	      for (var pro in allCode) {
-	        $('#proStation').append($('<option value="'+ pro + '">' + allCode[pro].name + '</option>'))
+	    	allStation = res.data;
+	      for (var pro in allStation) {
+	        $('#proStation').append($('<option value="' + allStation[pro].code + '">' + allStation[pro].name + '</option>'))
 	      }
-	      var cityStation = allCode[$('#proStation').val()].city;
+	      var cityStation = allStation[$('#proStation').val()].station;
 	      for (var city in cityStation) {
-	        $('#cityStation').append($('<option value="' + city + '">' + cityStation[city] + '</option>'))
+	        $('#cityStation').append($('<option value="' + cityStation[city].code + '">' + cityStation[city].name + '</option>'))
 	      }
 
 	      //var station = cityStation[$('#cityStation').val()].station;
@@ -194,9 +180,7 @@ function setStation(id) {
 	      //}
 
 	      changeMsg.pro = $('#proStation').val();
-	      changeMsg.proName = allCode[changeMsg.pro].name;
 	      changeMsg.city = $('#cityStation').val();
-	      changeMsg.cityName = allCode[changeMsg.pro].city[changeMsg.city];
 	      findStation(changeMsg.city);
 	      //changeMsg.station = $('#station').val();
 	    } else {
@@ -217,7 +201,6 @@ function findStation(code){
       $('#station').append($('<option value="' + res.data[i].stationId + '">' + res.data[i].stationName + '</option>'))
     }
     changeMsg.station = $('#station').val();
-    changeMsg.stationName = '平均';
   })
 }
 
@@ -236,7 +219,7 @@ function setTime(s, e) {
       break;
     }
   }
-  changeMsg.time = $('#sTime-d').val() + ' 00';
+  changeMsg.time = $('#sTime-d').val() + ' 00'
 }
 
 
@@ -244,117 +227,48 @@ function setTime(s, e) {
  * 动态添加div 填数据
  */
 function initEcharts() {
-	var ech=[];
-	var aqi;
-	
-	var AQI;
-	var PM25;
-	var SO4;
-	var NO3;
-	var NH4;
-	var BC;
-	var OM;
-	var PMFINE;
-	var PM10;
-	var O3_8_MAX;
-	var O3_1_MAX;
-	var SO2;
-	var NO2;
-	var CO;
-	
 	$("#initEcharts").empty();
-	
-	var datas='';	//存放echarts出图需要的数据
+	var echartsDatas = echartsData;
+	var standardDatas=standardData;
+	if(standardDatas==undefined){	
+		standardDatas='';
+		var datas= $.extend(echartsDatas,standardDatas);
+	}else{
+		var datas= $.extend(echartsDatas,standardDatas);//合并json对象
+	}
+	var dd = {};
+	var ds = {};
 	var tname = []; 	//污染物name
-	var sceneInitialization_arr	= [];	//情景id和name
-	
+
 	var species = speciesArr[changeMsg.rms];
 	for(var s = 0;s<species.length;s++){
 		tname.push(species[s]);
 	}
-	
-	var compare=$("input[name='changes']").parents("label.active").text();
-	
-	if("绝对量比较"==compare){
-		var echartsDatas = echartsData;
-		var standardDatas=standardData;
-		if(standardDatas==undefined){	
-			standardDatas='';
-			 datas= $.extend(echartsDatas,standardDatas);
-		}else{
-			 datas= $.extend(echartsDatas,standardDatas);	//合并json对象
-		}
-		
-		sceneInitialization_arr=$.extend(true,[],sceneInitialization.data); //拷贝数据
-		sceneInitialization_arr.unshift(scenarino);
-		sceneInitialization_arr.unshift(observation);
-	}else if("相对变化"==compare){
-		sceneInitialization_arr=$.extend(true,[],sceneInitialization.data);
-		datas=$.extend(true,{},xdScene);
-		
-	}
-	
-	var	proStation=$("#proStation option:selected").text();
-	var	cityStation=$("#cityStation option:selected").text();
-	var	station=$("#station option:selected").text();
-	var	domain=$("input[name='domain']").parents('label.active').text();
-	
-	var mesage='';
-	if(proStation.substr(-1)!="省"&&cityStation.substr(-1)=="市"&&"平均"==station){
-		mesage+=cityStation+">>"+domain+">>";
-	
-	}else if(proStation.substr(-1)!="省"&&cityStation.substr(-1)=="市"&&"平均"!=station){
-		mesage+=cityStation+">>"+station+">>"+domain+">>";
-	}else if("省"==proStation.substr(-1)&&"平均"==station){
-		mesage+=proStation+">>"+cityStation+">>"+domain+">>";
-	}else {
-		mesage+=proStation+">>"+cityStation+">>"+station+">>"+domain+">>";
-	}
-	
-	for(var i = 0;i < tname.length;i++){
-		if("PM25"==tname[i]){
-			var div_bj=$('<div class="row" style="padding-left:15px;"><div class="col-sm-4"><div class="input-group m-b" style="margin-bottom: 0px"><div class="" style="margin-bottom:0px;padding-left:7px;"><div class="btn-group" data-toggle="buttons"><label name="collapse" class="btn btn-outline btn-success active"><input type="radio" name="spread" value="open" checked>组分展开</label><label name="collapse" class="btn btn-outline btn-success"><input type="radio" name="spread" value="close">组分收起</label></div></div></div></div></div>');
-			var div = $('<div style="height:250px;"></div>');
-			div.attr("id",tname[i]);
-			div.addClass('echartsCZ');
-			$("#initEcharts").append(div_bj);
-			$("#initEcharts").append(div);
-		}else{
-			var div = $('<div style="height:250px;"></div>');
-			div.attr("id",tname[i]);
-			div.addClass('echartsCZ');
-			$("#initEcharts").append(div);
-		}
-		
-		var option = $.extend(true,{},optionAll); 	//拷贝echarts模板
-		if(tname[i] == 'AQI'){
-			option.title.text = mesage +tname[i];   //加不同单位
-		}else if(tname[i] != 'CO'){
-			if("PM25"==tname[i]){
-				option.title.text = mesage +"PM₂.₅ "+('(μg/m³)');
-			}else if("SO4"==tname[i]){
-				option.title.text = mesage +"SO₄²¯ "+('(μg/m³)');
-			}else if("NO3"==tname[i]){
-				option.title.text = mesage +"NO₃¯ "+('(μg/m³)');
-			}else if("NH4"==tname[i]){
-				option.title.text = mesage +"NH₄⁺ "+('(μg/m³)');
-			}else if("PM10"==tname[i]){
-				option.title.text = mesage +"PM₁₀ "+('(μg/m³)');
-			}else if("O3_8_MAX"==tname[i]){
-				option.title.text = mesage +"O₃_8_max "+('(μg/m³)');
-			}else if("O3_1_MAX"==tname[i]){
-				option.title.text = mesage +"O₃_1_max "+('(μg/m³)');
-			}else if("SO2"==tname[i]){
-				option.title.text = mesage +"SO₂ "+('(μg/m³)');
-			}else if("NO2"==tname[i]){
-				option.title.text = mesage +"NO₂ "+('(μg/m³)');
+	var sceneInitialization_arr=sceneInitialization.data;
+	if(standardDatas!=undefined&&standardDatas!=null&&standardDatas!=''){
+		for(var i=0;i<sceneInitialization_arr.length;i++){
+			if(sceneInitialization_arr[i].scenarinoId==scenarino.scenarinoId){
+				break;
 			}else{
-				option.title.text = mesage +tname[i]+(' (μg/m³)');
+				sceneInitialization_arr.unshift(scenarino);
+				break;
 			}
+		}
+	}
+	for(var i = 0;i < tname.length;i++){
+		var div = $('<div style="height:300px;"></div>');
+		div.attr("id",tname[i]);
+		div.addClass('echartsCZ');
+		$("#initEcharts").append(div);
+		var option = $.extend(true,{},optionAll); //复制echarts模板
+		if(tname[i] == 'AQI'){
+			option.title.text = tname[i];         //加不同单位
+		}else if(tname[i] != 'CO'){
+			option.title.text = tname[i]+('(μg/m³)');
 		}else{
-			option.title.text = mesage +tname[i]+(' (mg/m³)');
+			option.title.text = tname[i]+('(mg/m³)');
 		}	
-		option.legend.data = (function(){	//图例名称
+		option.legend.data = (function(){
 		var lenArr = [];
 		for(var i = 0;i<sceneInitialization_arr.length;i++){
 		lenArr.push(sceneInitialization_arr[i].scenarinoName);
@@ -362,7 +276,7 @@ function initEcharts() {
 		return lenArr;
 		})();
 		option.series = [];
-		
+			
 		for(var j = 0;j< sceneInitialization_arr.length; j++){
 			var id = sceneInitialization_arr[j].scenarinoId;
 			var name = sceneInitialization_arr[j].scenarinoName;
@@ -395,24 +309,6 @@ function initEcharts() {
 											ydata.push(ss[keys[m]]);
 										}
 									}
-//									else{		//没有该物种开始
-//										var notData=[];
-//										var notDataobj='';
-//										tname[i]  //没有的物种名称
-//										for ( var pr in datas[prop] ) {		//循环该ID下的pr--物种
-//											if (datas[prop].hasOwnProperty(pr)) {
-//												for(var prkey in datas[prop][pr]){
-//													notData.push(prkey);
-//													break;
-//												}
-//											}
-//										}
-//										notData=notData.sort();		//重新排序数据
-//										for(var n=0; n<notData.length; n++){
-//											notDataobj(notData[n],"-");
-//										}
-//										datas[prop][tname[i]]=notDataobj;
-//									}	//没有该物种结束
 								}
 							}	
 						}
@@ -420,6 +316,7 @@ function initEcharts() {
 				}
 			}else{
 				var arr = Object.keys(datas);
+//				console.log(arr.length);
 				for (var prop in datas) {  
 					if (datas.hasOwnProperty(prop)) {   
 						if(prop == id){ 	//循环不同的情景id
@@ -447,8 +344,8 @@ function initEcharts() {
 					}  
 				}
 			}
-//			console.log(ttime);
-//			console.log(ydata);
+			console.log(ttime);
+			console.log(ydata);
 		option.series.push({
 			name : name, 				//情景名称  对应图例 exceptsjz
 			type : show_type, 			//图表类型   已设全局变量 show_type
@@ -460,127 +357,10 @@ function initEcharts() {
     option.xAxis.push({				    //x轴情景时间
     	data: ttime						//修改数据排序
     });
-    
-//    if("AQI"==tname[i]){
-//    	 AQI = echarts.init(document.getElementById(tname[i]));
-//    	AQI.setOption(option);
-//    	$(window).resize(AQI.resize);
-//    }else if("PM25"==tname[i]){
-//    	 PM25 = echarts.init(document.getElementById(tname[i]));
-//    	PM25.setOption(option);
-//    	$(window).resize(PM25.resize);
-//    }else if("SO4"==tname[i]){
-//    	 SO4 = echarts.init(document.getElementById(tname[i]));
-//    	SO4.setOption(option);
-//    	$(window).resize(SO4.resize);
-//    }else if("NO3"==tname[i]){
-//    	 NO3 = echarts.init(document.getElementById(tname[i]));
-//    	NO3.setOption(option);
-//    	$(window).resize(NO3.resize);
-//    }else if("NH4"==tname[i]){
-//    	 NH4 = echarts.init(document.getElementById(tname[i]));
-//    	NH4.setOption(option);
-//    	$(window).resize(NH4.resize);
-//    }else if("BC"==tname[i]){
-//    	 BC = echarts.init(document.getElementById(tname[i]));
-//    	BC.setOption(option);
-//    	$(window).resize(BC.resize);
-//    }else if("OM"==tname[i]){
-//    	 OM = echarts.init(document.getElementById(tname[i]));
-//    	OM.setOption(option);
-//    	$(window).resize(OM.resize);
-//    }else if("PMFINE"==tname[i]){
-//    	 PMFINE = echarts.init(document.getElementById(tname[i]));
-//    	PMFINE.setOption(option);
-//    	$(window).resize(PMFINE.resize);
-//    }else if("PM10"==tname[i]){
-//    	 PM10 = echarts.init(document.getElementById(tname[i]));
-//    	PM10.setOption(option);
-//    	$(window).resize(PM10.resize);
-//    }else if("O3_8_MAX"==tname[i]){
-//    	 O3_8_MAX = echarts.init(document.getElementById(tname[i]));
-//    	O3_8_MAX.setOption(option);
-//    	$(window).resize(O3_8_MAX.resize);
-//    }else if("O3_1_MAX"==tname[i]){
-//    	 O3_1_MAX = echarts.init(document.getElementById(tname[i]));
-//    	O3_1_MAX.setOption(option);
-//    	$(window).resize(O3_1_MAX.resize);
-//    }else if("SO2"==tname[i]){
-//    	 SO2 = echarts.init(document.getElementById(tname[i]));
-//    	SO2.setOption(option);
-//    	$(window).resize(SO2.resize);
-//    }else if("NO2"==tname[i]){
-//    	 NO2 = echarts.init(document.getElementById(tname[i]));
-//    	NO2.setOption(option);
-//    	$(window).resize(NO2.resize);
-//    }else if("CO"==tname[i]){
-//    	 CO = echarts.init(document.getElementById(tname[i]));
-//    	CO.setOption(option);
-//    	$(window).resize(CO.resize);
-//    }
-    
-    
-    if("AQI"!=tname[i]){
-    	var es = echarts.init(document.getElementById(tname[i]));
-    	es.group = 'group1';
-//    	ech.push(es);
-    	es.on('datazoom', function (params) {
-//    		ech=[];
-    		group='';
-    		echarts.disconnect(group);
-   	    	
-   	    });
-    	es.setOption(option);
-    	
-    	$(window).resize(es.resize);
-    	
-    }else{
-    	 aqi = echarts.init(document.getElementById(tname[i]));
-    	aqi.group = 'group1';
-//    	ech.push(aqi);
-    	aqi.on('datazoom', function (params) {
-//    		echarts.connect(ech);
-    		echarts.connect('group1');
-   	    });
-    	aqi.setOption(option);
-    	
-    	$(window).resize(aqi.resize);
-    }
-    
-//    var es = echarts.init(document.getElementById(tname[i]));
-//    es.setOption(option);
-//    $(window).resize(es.resize);
+    var es = echarts.init(document.getElementById(tname[i]));
+    es.setOption(option);
+    $(window).resize(es.resize);
   }
-//	echarts.connect(ech);
-//	echarts.connect([PM25, SO4, NO3, NH4, BC, OM, PMFINE, PM10, O3_8_MAX, O3_1_MAX, SO2, NO2, CO]);
-	
-	//逐日显示 AQI PM25 ,< SO4 NO3 NH4 BC OM PMFINE >, PM10 O3_8_max O3_1_max SO2 NO2 CO 
-	//组分展开==open  收起==close	
-	$('input[name=spread]').on('change', function (e) {
-		var spType = $(e.target).val();
-		if (spType == 'close') {
-			$("#SO4").hide();
-			$("#NO3").hide();
-			$("#NH4").hide();
-			$("#BC").hide();
-			$("#OM").hide();
-			$("#PMFINE").hide();
-//			$(e.target.parentNode).text("组分展开");
-//			$(e.target).val('open');
-		} else {
-			$("#SO4").show();
-			$("#NO3").show();
-			$("#NH4").show();
-			$("#BC").show();
-			$("#OM").show();
-			$("#PMFINE").show();
-//			$(e.target.parentNode).text("组分收起");
-//			$(e.target).val('close');
-		}
-
-	});
-	
-	
 }
 
 /**
@@ -631,10 +411,6 @@ function ajaxPost_sy(url, parameter) {
  * */
 function find_standard(){
 	var missionId=$("#task").val();
-	scenarino.scenarinoId='';
-	scenarino.scenarinoName='';
-	observation.scenarinoId='';
-	observation.scenarinoName='';
 	var url='/Appraisal/find_standard';
 	var paramsName = {
 			"userId": "1",
@@ -650,8 +426,6 @@ function find_standard(){
 	    	standardData = res.data.data;	//放置基准数据
 	    	scenarino.scenarinoId=res.data.scenarinoId;
 	    	scenarino.scenarinoName=res.data.scenarinoName;
-	    	observation.scenarinoId=res.data.observationId;
-	    	observation.scenarinoName=res.data.observationName;
 	    	if (JSON.stringify(standardData) == '{}' || standardData == null||standardData==undefined||standardData=='') {
 	    	  swal('暂无基准匹配数据', '', 'error')
 	    	} else {
@@ -789,7 +563,6 @@ function save_scene() {
 		mag.domainId = allMission[mag.taskID].domainId;
 		mag.s = allMission[mag.taskID].missionStartDate;
 		mag.e = allMission[mag.taskID].missionEndDate;
-        mag.jzID = allMission[mag.taskID].jzqjid;
 		var data = [];
 		$.each(row, function (i, col) {
 			data.push({"scenarinoId": col.scenarinoId, "scenarinoName": col.scenarinoName});
@@ -798,17 +571,18 @@ function save_scene() {
 		vipspa.setMessage(mag);
 		ls.setItem('SI', JSON.stringify(mag));
 		sceneInitialization = jQuery.extend(true, {}, mag);		//复制数据
-		var arrId = [];		//放入已选的情景id 
+		var arrId = [];		//放入已选的情景id 传传
 		for (i = 0; i < mag.data.length; i++) {
 			arrId.push({"id": mag.data[i].scenarinoId});
 		}
+//    	console.log(JSON.stringify(arrId));
 		$("#close_scene").click();
 		set_sce();
 //    	find_standard();
 		initNowSession();
 	} else {
 		swal('暂无数据', '', 'error');
-		$("#close_scene").click();
+//		$("#close_scene").click();
 	}
 }
 //超链接显示 模态框
@@ -833,33 +607,19 @@ function set_sce() {
 $('#proStation').on('change', function (e) {
 	  var pro = $(e.target).val();
 	  changeMsg.pro = pro;
-	  console.log(allCode);
-	  changeMsg.proName = allCode[pro].name;
 	  $('#cityStation').empty();
-	  var cityStation = allCode[pro].city;
+	  var cityStation = allStation[pro].station;
 	  for (var city in cityStation) {
-	    $('#cityStation').append($('<option value="' + city + '">' + cityStation[city] + '</option>'))
+	    $('#cityStation').append($('<option value="' + cityStation[city].code + '">' + cityStation[city].name + '</option>'))
 	  }
 	  changeMsg.city = $('#cityStation').val();
-	  changeMsg.cityName = allCode[changeMsg.pro].city[changeMsg.city];
 	  findStation(changeMsg.city);
-	  
-//	  $("#provinces").empty();
-//	  $("#citys").empty();
-//	  $("#stations").empty();
-//	  $("#interspaces").empty();
-//	  
-//	  $("#provinces").text($("#proStation option:selected").text());
-//	  $("#citys").text($("#cityStation option:selected").text());
-//	  $("#stations").text($("#station option:selected").text());
-//	  $("#interspaces").parents('label').text($("input[name='domain']").parents('label.active').text());
 	  getdata();
 });
 
 	$('#cityStation').on('change', function (e) {
 	  var city = $(e.target).val();
 	  changeMsg.city = city;
-	  changeMsg.cityName = allCode[changeMsg.pro].city[city]; 
 	  findStation(changeMsg.city);
 	  getdata();
 	});
@@ -867,7 +627,6 @@ $('#proStation').on('change', function (e) {
 	$('#station').on('change', function (e) {
 	  var station = $(e.target).val();
 	  changeMsg.station = station;
-	  changeMsg.stationName = $(e.target)[0].selectedOptions[0].innerHTML;
 	  getdata();
 	});
 
@@ -894,91 +653,14 @@ $('input[name=rms]').on('change',function(e){
 
 //绝对量比较==1 相对变化==2
 var changeType;
-var xdScene={};		//总和
 $('input[name=changes]').on('change', function (e) {
-	changeType = $(e.target).val();		//获取到被选中的值
-	if (changeType == '1') {	//绝对量变化
-		initEcharts();
+	changeType = $(e.target).val();
+//	console.log(changeType);
+	if (changeType == '1') {
 	
-	}else if(changeType == '2'){	//相对变化开始
-		
-		var xd_echartsData=echartsData;		//该任务下所选情景的所有数据
-		var xd_standardData=standardData;	
-		if(xd_echartsData!=""&&xd_echartsData!=null&&xd_echartsData!=undefined&&xd_standardData!=""&&xd_standardData!=null&&xd_standardData!=undefined){	//存在数据
-//			var xdScene={};		//总和
-			var xdSpecies={};	//物种
-			var xdYear={};		//年份
-			
-			var time=$("input[name='rms']").parents("label.active").text();
-			
-			if("逐日"==time){
-				$.each(xd_standardData,function (k,sv){	//k 为基准数据和观测数据
-					if("基准数据"==k){
-						$.each(xd_echartsData,function (sk,qj){		//k 取情景数据
-							if(sk!=k && "观测数据"!=sk){		//情景类型
-								$.each(sv,function (svkey,svVal){	
-									$.each(qj,function (qjkey,qjval){	
-										if(svkey==qjkey){	//物种
-											$.each(svVal,function (sykey,syval){
-												$.each(qjval,function (qjykey,qjyval){
-													if(sykey==qjykey){	//年份
-														$(xdYear).attr(qjykey,(((qjyval-syval)/syval).toFixed(2))*100);	//赋值
-													}
-												});
-											});
-											$(xdSpecies).attr(svkey,xdYear);
-										}
-									});
-								});
-								$(xdScene).attr(sk,xdSpecies);
-							}
-						});
-					}
-				});
-				initEcharts();
-//				console.log(xdScene);
-			}else if("逐小时"==time){
-				var hours={};	//存放逐小时数据
-				
-				$.each(xd_standardData,function (k,sv){	//k 为基准数据和观测数据
-					if("基准数据"==k){
-						$.each(xd_echartsData,function (sk,qj){		//k 取情景数据
-							if(sk!=k && "观测数据"!=sk){		//情景类型
-								$.each(sv,function (svkey,svVal){	
-									$.each(qj,function (qjkey,qjval){	
-										if(svkey==qjkey){	//物种
-											$.each(svVal,function (sykey,syval){
-												$.each(qjval,function (qjykey,qjyval){
-													if(sykey==qjykey){	//年份
-														$.each(syval,function (syhkey,syhval){
-															$.each(qjyval,function (qjhkey,qjhval){
-																if(syhkey==qjhkey){
-																	$(hours).attr(qjhkey,(((qjhval-syhval)/syhval).toFixed(2))*100);	//赋值
-																}
-															});
-														});
-														$(xdYear).attr(qjykey,hours);
-													}
-												});
-											});
-											$(xdSpecies).attr(svkey,xdYear);
-										}
-									});
-								});
-								$(xdScene).attr(sk,xdSpecies);
-							}
-						});
-					}
-				});
-				initEcharts();
-//				console.log(xdScene);
-			}
-			
-		}else{	//无数据
-			
-		}
-				
-	}	//相对变化结束
+	} else if(changeType == '2'){
+		$.ecath()
+	}
 });
 
 
@@ -986,8 +668,34 @@ $('input[name=changes]').on('change', function (e) {
 var domain;
 $('input[name=domain]').on('change', function (e) {
 	domain = $(e.target).val();
-	getdata();
 //	console.log(domain);
+});
+
+//逐日显示 AQI PM25 ,< SO4 NO3 NH4 BC OM PMFINE >, PM10 O3_8_max O3_1_max SO2 NO2 CO 
+//组分展开==open  收起==close
+$('input[name=spread]').on('change', function (e) {
+	var spType = $(e.target).val();
+//console.log(spType);
+	if (spType == 'close') {
+		$("#SO4").hide();
+		$("#NO3").hide();
+		$("#NH4").hide();
+		$("#BC").hide();
+		$("#OM").hide();
+		$("#PMFINE").hide();
+//		$(e.target.parentNode).text("组分展开");
+//		$(e.target).val('open');
+	} else {
+		$("#SO4").show();
+		$("#NO3").show();
+		$("#NH4").show();
+		$("#BC").show();
+		$("#OM").show();
+		$("#PMFINE").show();
+//		$(e.target.parentNode).text("组分收起");
+//		$(e.target).val('close');
+	}
+
 });
 
 
