@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"> -->
+  <!--[if IE]>
+  <meta http-equiv="x-ua-compatible" content="IE=9"/><![endif]-->
+  <!-- <meta name="author" content="SuggeElson"/>
+  <meta name="description" content=""/>
+  <meta name="keywords" content=""/>
+  <meta name="application-name" content="sprFlat admin template"/> -->
+
+  <meta charset="utf-8">
+  <meta http-equiv="Expires" content="0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Cache-Control" CONTENT="no-cache, must-revalidate">
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="Cache" content="no-cache">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+  <title>环境空气质量动态模拟云平台</title>
+
+  <!--[if lt IE 8]>
+  <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+
+  <link href="../../../css/icons.css" rel="stylesheet"/>
+
+  <link href="../../../css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="../../../css/font-awesome.css" rel="stylesheet">
+  <link href="../../../css/animate.css" rel="stylesheet">
+  <link href="../../../css/style.css" rel="stylesheet"/>
+
+  <link href="../../../css/plugins/sprflat-theme/jquery.ui.all.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../../css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css"/>
+  <link rel="stylesheet" href="../../../css/swan.timeline.min.css"/>
+  <link rel="stylesheet" href="../../../js/plugins/forms/icheck/flat/_all.css"/>
+  <link rel="stylesheet" href="../../../css/plugins/bootstrap-table/bootstrap-table.min.css"/>
+  <link rel="stylesheet" href="../../../css/plugins/sweetalert/sweetalert.css"/>
+  <link rel="stylesheet" href="../../../css/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.css"/>
+  <link rel="stylesheet" href="../../../js/plugins/jquery-range/jquery.range.css"/>
+
+  <link rel="stylesheet" href="../../../css/bootstrap-table-filter-control.css"/>
+  <link rel="stylesheet" href="../../../css/plugins/zTreeStyle/zTreeStyle.css"/>
+  <link rel="stylesheet" href="../../../js/plugins/forms/daterangepicker/daterangepicker.css"/>
+  <link href="../../../css/main.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../../css/index.css"/>
+  <meta name="msapplication-TileColor" content="#3399cc"/>
+</head>
+<body>
+
+<b>test</b>
+<span>test</span>
+
+<div style="height: 500px">
+  <div id="test" style="height: 500px;width: 30%;margin: 30px auto"></div>
+</div>
+
+
+</body>
+</html>
+<script src="../../../js/jquery.min.js"></script>
+<script src="../../../js/jquery-ui-1.10.4.min.js"></script>
+<script src="../../../js/plugins/forms/icheck/jquery.icheck.js"></script>
+<script src="../../../js/bootstrap.min.js"></script>
+<script src="../../../js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="../../../js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+<script src="../../../js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="../../../js/bootstrap-table-contextmenu.js.js"></script>
+<script src="../../../js/plugins/core/moment/moment.js"></script>
+<script src="../../../js/plugins/forms/datetimepicker/bootstrap-datetimepicker.js"></script>
+<!--<script src="js/plugins/forms/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>-->
+
+<script src="../../../js/jquery.mousewheel.js"></script>
+<script src="../../../js/plugins/jquery-range/jquery.range.js"></script>
+<script src="../../../js/bootstrap-table-filter-control.js"></script>
+<script src="../../../js/plugins/validate/jquery.validate.min.js"></script>
+<script src="../../../js/plugins/validate/additional-methods.min.js"></script>
+<script src="../../../js/plugins/validate/messages_zh.min.js"></script>
+<script src="../../../js/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="../../../js/plugins/core/pace/pace.min.js"></script>
+<script src="../../../js/jRespond.min.js"></script>
+<script src="../../../js/plugins/core/slimscroll/jquery.slimscroll.js"></script>
+<script src="../../../js/plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js"></script>
+<script src="../../../js/plugins/core/quicksearch/jquery.quicksearch.js"></script>
+<script src="../../../js/plugins/misc/highlight/highlight.pack.js"></script>
+<script src="../../../js/plugins/misc/countTo/jquery.countTo.js"></script>
+<script src="../../../js/plugins/zTree/jquery.ztree.core.min.js"></script>
+<script src="../../../js/plugins/zTree/jquery.ztree.excheck.min.js"></script>
+<script src="../../../js/plugins/zTree/jquery.ztree.exhide.min.js"></script>
+<!-- <script src="js/jquery.sprFlat.js"></script> -->
+<script src="../../../js/vipspa.min.js"></script>
+<script src="../../../js/plugins/echarts/echarts.min.js"></script>
+<script src="../../../js/plugins/forms/daterangepicker/daterangepicker.js"></script>
+<script src="../../../js/swan.timeline.js"></script>
+<!--自己的js文件-->
+<script src="../../../BackstageIP.js"></script>
+<script src="../../../homeRouter.js"></script>
+<script>
+  var d3 = [10,15,20,25,30,35,40,45,50,55,60,65];
+  var d4 = [100,150,200,250,300,350,45,50,55,60,65,70];
+  var data = [[15, 0], [25, 50], [50, 100], [65,200], [75, 300], [55, 400], [65, 500], [125, 700], [55, 1000], [65, 1500], [45, 2000], [35, 3000]];
+  var data1 = [[0, 0], [20, 50], [30, 100], [22,200], [30, 300], [65, 400], [100, 500], [75, 700], [30, 1000], [22, 1500], [50, 2000], [55, 3000]]
+  var option = {
+    title:{
+      text:'名称将写在这里'  //可变，存储每个污染物
+    },
+    legend: {
+      data:['基准','长三角管控'] //可变，存储所有已选情景
+    },
+    toolbox: {
+      show : true,
+      feature : {
+        mark : {show: true}
+      }
+    },
+    calculable : true,
+    tooltip : {
+      trigger: 'axis',
+      axisPointer:{
+        type:'line',
+        axis:'y',
+        snap:true,
+      },
+      formatter:function(params, ticket, callback){
+        console.log(params)
+        console.log(ticket)
+        return params[0].axisValue+'m<br />' +
+            '<i style="width:10px;height:10px;display:inline-block;border-radius:100%;background-color: '+ params[0].color +';"></i> '+params[0].seriesName+' : '+params[0].data[0]+'<br />' +
+            '<i style="width:10px;height:10px;display:inline-block;border-radius:100%;background-color: '+ params[1].color +';"></i> '+params[1].seriesName+' : '+params[1].data[0]
+
+      }
+    },
+    xAxis :{
+        type : 'value',
+        name:'/μg/m³',  //可变，CO为mg/m³其他的为'μg/m³
+      },
+    yAxis :{
+        name:'/m',
+        type: 'value',
+        interval:500,
+        axisLine : {onZero: false},
+      },
+    series : [  //可变，存储所有情景数据
+      {
+        name:'基准', //可变，存储情景名称
+        type: 'line',
+        smooth: true,
+        symbolSize: 5,
+        data:data  //可变，存储情景数据
+      },
+      {
+        name:'长三角管控',//可变，存储情景名称
+        type: 'line',
+        smooth: true,
+        symbolSize: 5,
+        data:data1//可变，存储情景数据
+      }
+    ]
+  };
+
+
+
+  var myChart = echarts.init(document.getElementById('test'));
+  myChart.setOption(option);
+</script>

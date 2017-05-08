@@ -25,7 +25,7 @@ function sceneInittion() {
     var paramsName = {};
     paramsName.userId = userId;
     console.log(JSON.stringify(paramsName));
-    ajaxPost('/ampc/mission/find_All_mission', paramsName).success(function (res) {
+    ajaxPost('/mission/find_All_mission', paramsName).success(function (res) {
         console.log(JSON.stringify(res));
         if (res.status == 0) {
             if (res.data || res.data.length > 0) {
@@ -43,8 +43,7 @@ function sceneInittion() {
                     }
                 });
                 $("#task").html(task);
-                //$("#Initialization").modal();//初始化模态框显示
-                //$("#Initialization").window();
+                $("#Initialization").modal();//初始化模态框显示
                 sceneTable();
             } else {
                 swal('无可用任务', '', 'error')
@@ -62,48 +61,10 @@ function sceneInittion() {
  */
 function sceneTable() {
     $("#sceneTableId").bootstrapTable('destroy');//销毁现有表格数据
-    console.log()
-    //表格交互 easyui
 
-    $.ajax({
-        url: '/ampc/scenarino/find_All_scenarino',
-        contentType: 'application/json',
-        method: 'post',
-        dataType: 'JSON',
-        data: JSON.stringify({
-            "token": "",
-            "data": {
-                "userId": 1,
-                "missionId":$("#task").val()
-            }
-        }),
-        success:function (data) {
-
-            $("#sceneTableId").datagrid({
-                data:data.data.rows,
-                columns:[[
-                    {field:"ck",checkbox:true},
-                    {field:"scenarinoName",title:"情景名称"},
-                    {field:"scenType",title:"情景描述"},
-                    {field:"scenarinoStartDate",title:"时间"},
-                    {field:"scenarinoEndDate",title:"时间"},
-                ]],
-                clickToSelect: true,// 点击选中行
-                pagination: false, // 在表格底部显示分页工具栏
-                striped: true, // 使表格带有条纹
-                queryParams: function (params) {
-                    var data = {};
-                    data.userId = userId;
-                    data.missionId = $("#task").val();
-                    return JSON.stringify({"token": "", "data": data});
-                }
-            })
-        }
-    })
-/*
     $("#sceneTableId").bootstrapTable({
         method: 'POST',
-        url: localhttp+'/ampc/scenarino/find_All_scenarino',
+        url: '/ampc/scenarino/find_All_scenarino',
         dataType: "json",
         iconSize: "outline",
         clickToSelect: true,// 点击选中行
@@ -156,16 +117,14 @@ function sceneTable() {
         onLoadError: function () {
             swal('连接错误', '', 'error');
         }
-    });*/
+    });
 }
 
 /**
  * 保存选择的情景
  */
 function save_scene() {
-   // var row = $('#sceneTableId').bootstrapTable('getSelections');//获取所有选中的情景数据
-    var row = $('#sceneTableId').datagrid('getSelections');//获取所有选中的情景数据
-
+    var row = $('#sceneTableId').bootstrapTable('getSelections');//获取所有选中的情景数据
     if (row.length > 0) {
         var mag = {};
         mag.id = "sceneInitialization";
@@ -184,11 +143,9 @@ function save_scene() {
             });
         });
         mag.data = data;
-
         vipspa.setMessage(mag);
         ls.setItem('SI', JSON.stringify(mag));
         console.log(data);
-        //console.log("数据")
         setQjSelectBtn(data);//添加情景选择按钮
         sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
         $("#close_scene").click();
@@ -198,8 +155,7 @@ function save_scene() {
 //超链接显示 模态框
 function exchangeModal() {
     sceneInittion();
-    //$("#Initialization").modal();
-    $("#Initialization").window("open")
+    $("#Initialization").modal();
 }
 
 
@@ -207,8 +163,7 @@ function exchangeModal() {
 function setQjSelectBtn(data) {
     $('#qjBtn1 .btn-group').empty();
     for (var i = 0; i < data.length; i++) {
-       // var btn1 = $('<label class="btn btn-outline btn-success bgw" style="z-index: 2;position:relative"><input type="radio"  name="qjBtn1"><span></span></label><br/>');
-        var btn1 = $('<label class="btn btn-outline btn-success bgw" style="z-index: 2;position:relative"><input type="radio"  name="qjBtn1"><span></span></label>');
+        var btn1 = $('<label class="btn btn-outline btn-success bgw" style="z-index: 2"><input type="radio" name="qjBtn1"><span></span></label><br/>');
         btn1.attr('title', data[i].scenarinoName).find('input').attr('value', data[i].scenarinoId);
         btn1.find('span').html(data[i].scenarinoName);
         if (i == 0) {
@@ -232,7 +187,7 @@ $('#qjBtn1').on('change', 'input', function (e) {
 /**
  *设置导航条信息
  */
-$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
+$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="exchangeModal()" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
 var gis_paramsName = {};//地图请求的参数，第一次加载地图时初始化，每次更改地图比例尺时修改codeLevel
 
 var tj_paramsName = {};//统计图用的参数
@@ -349,12 +304,12 @@ function shoe_data_start(evn) {
     tj_paramsName.codeLevel = 1;
 
 //	}else if (evn.map.getZoom() == 7){
-//
+//		
 //		gis_paramsName.codeLevel = 2;//省市区层级（1省，2市，3区）
 //		tj_paramsName.codeLevel = 2;
-//
+//		
 //	}else if (evn.map.getZoom() >= 8){
-//
+//		
 //		gis_paramsName.codeLevel = 3;//省市区层级（1省，2市，3区）
 //		tj_paramsName.codeLevel = 3;
 //	}
@@ -372,7 +327,7 @@ function baizhu_jianpai(gis_paramsName, sh_type) {
     if (typeof app.paifang != "undefined") {
         app.map.removeLayer(app.paifang);
     }
-    ajaxPost('/ampc/find_reduceEmission', gis_paramsName).success(function (res) {
+    ajaxPost('/find_reduceEmission', gis_paramsName).success(function (res) {
 //		console.log(JSON.stringify(res));
         if (res.status == 0) {
 
@@ -719,10 +674,9 @@ function bar() {
         "addressLevle": tj_paramsName.codeLevel,
         "stainType": tj_paramsName.wz
     };
-    ajaxPost('/ampc/echarts/get_barInfo', paramsName).error(function () {
-    }).success(function (res) {
-        if (res.status == 0) {//返回成功
 
+    ajaxPost('/echarts/get_barInfo', paramsName).success(function (res) {
+        if (res.status == 0) {//返回成功
             if (res.data.dateResult.length > 0) {//有返回时间，说明可以显示柱状图
 
                 tj_paramsName.new_arr = [];
@@ -733,14 +687,10 @@ function bar() {
                 //饼图
                 pie();
 
-                var myPfChart = echarts.init(document.getElementById('pfDiv1'),'shine');
-
+                var myPfChart = echarts.init(document.getElementById('pfDiv1'));
                 var option = {
                     title: {
                         text: tj_paramsName.name + "-" + tj_paramsName.wz + '-减排分析',
-                        left:'50%',
-                        top:'1%',
-                        textAlign:'center'
                     },
                     tooltip: {
                         trigger: 'axis',
@@ -757,10 +707,8 @@ function bar() {
                     legend: {
                         //不触动
                         selectedMode: false,
-                        top:'30px',
-                        right: '10px;',
-                        data: ['减排量', '实际排放量'],
-                        backgroundColor:'#f0f0f0'
+                        left: 'right',
+                        data: ['减排量', '实际排放量']
                     },
                     grid: {
                         show: true
@@ -833,8 +781,8 @@ function bar() {
                                     barBorderWidth: 4,
                                     barBorderRadius: 0,
                                     label: {
-                                      /*show: true,
-                                       position: 'top',*/
+                                        /*show: true,
+                                         position: 'top',*/
                                         formatter: function (params) {
                                             for (var i = 0, l = option.xAxis[0].data.length; i < l; i++) {
                                                 if (option.xAxis[0].data[i] == params.name) {
@@ -848,11 +796,11 @@ function bar() {
                                     }
                                 }
                             },
-                          /*markLine : {
-                           data : [
-                           {type : 'average', name: '平均值'}
-                           ]
-                           },*/
+                            /*markLine : {
+                             data : [
+                             {type : 'average', name: '平均值'}
+                             ]
+                             },*/
                             //data:res.data.jplResult
                             data: res.data.jplResult
                         }
@@ -862,22 +810,9 @@ function bar() {
                 myPfChart.setOption(option);
 
                 //自适应屏幕大小变化
-                $("#pfDiv1").panel({
-                    onResize:function(){myPfChart.resize()}
-                })
-
                 window.addEventListener("resize", function () {
-
-                  console.log(i);
-
-                    setTimeout(function () {
-                        myPfChart.resize();
-                  },50);
-
+                    myPfChart.resize();
                 });
-
-
-
 
                 //点击联动饼图
                 myPfChart.on('datazoom', function (params) {
@@ -938,7 +873,7 @@ function pie() {
         "endDate": tj_paramsName.new_arr[tj_paramsName.new_arr.length - 1],
         "type": tj_paramsName.type
     };
-    ajaxPost('/ampc/echarts/get_pieInfo', paramsName).success(function (result) {
+    ajaxPost('/echarts/get_pieInfo', paramsName).success(function (result) {
 
         if (result.status == 0) {
 
@@ -955,14 +890,11 @@ function pie() {
                     data_value.push(ttgk);
                 }
 
-                var myhycsChart = echarts.init(document.getElementById('hycsDiv1'),'shine');
+                var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
                 var optionPie = {
                     title: {
                         text: tj_paramsName.name + '-' + (tj_paramsName.type == "1" ? "分行业" : "分措施") + "-" + tj_paramsName.wz + '-减排分析',
                         subtext: '全部' + (tj_paramsName.type == "1" ? "行业" : "措施") + '合计减排：' + sum_value.toFixed(2),
-                        left:'50%',
-                        top:'1%',
-                        textAlign:'center'
                     },
                     tooltip: {
                         trigger: 'item',
@@ -971,10 +903,8 @@ function pie() {
                     legend: {
                         selectedMode: false,//图标不触动
                         orient: 'vertical',
-                        data: legend_name,
-                        top:'30px',
-                        right: '10px;',
-                        backgroundColor:'#f0f0f0'
+                        left: 'right',
+                        data: legend_name
                     },
                     series: [
                         {
@@ -993,13 +923,12 @@ function pie() {
                         }
                     ]
                 };
-
                 //行业措施分担饼状图
                 myhycsChart.setOption(optionPie);
                 //自适应屏幕大小变化
-                $("#hycsDiv1").panel({
-                    onResize:function(){myhycsChart.resize()}
-                })
+                window.addEventListener("resize", function () {
+                    myhycsChart.resize();
+                });
 
             } else {
                 swal('饼图暂无数据', '', 'error')
@@ -1034,8 +963,8 @@ function gis_switch_table() {
                     $("#listModal").hide();
                     $("#map_showId").show();
                     $("#legendWrapper").show();
-                    $("#gis_table_title").html("<i class='im-earth'></i>各地区减排");
-                    $('#qjBtn1 .btn-group label').css({"z-index":"2"});
+                    $("#gis_table_title").html("各地区减排");
+
                     baizhu_jianpai(gis_paramsName, "1");
                     bar();
 
@@ -1046,11 +975,11 @@ function gis_switch_table() {
 
                     table_show(tj_paramsName.code, tj_paramsName.codeLevel);
 
-                    $("#gis_table_title").html("<i class='im-table'></i>各地区减排比例(%)");
+                    $("#gis_table_title").html("各地区减排比例(%)");
                     $("#listModal").show();
                     $("#map_showId").hide();
-                    $('#qjBtn1 .btn-group label').css({"z-index":"-1"});
                     $("#legendWrapper").hide();
+
                 }
             }
         });
@@ -1089,95 +1018,10 @@ function table_show(cod1, level1) {
     d_Level = level1;
 
     $('#listModal_table').bootstrapTable('destroy');
-
-    $.ajax({
-        url: '/ampc/echarts/get_radioList',
-        contentType: 'application/json',
-        method: 'post',
-        dataType: 'JSON',
-        data: JSON.stringify({
-            "token": "",
-            "data": {
-                "code": cod1,
-                "addressLevle":level1,
-                "scenarinoId":qjid_dq
-            }
-        }),
-        success:function (data) {
-
-/*
-            if (data.status == 0) {
-                console.log("状态吗")
-                console.log(data.status)
-                if (data.data.length > 0) {
-                    $.each(data.data, function (i, col) {
-                        console.log("得到")
-                        console.log(col)
-                        $.each(col, function (k, vol) {
-                            if (vol == '-9999') {
-                                data.data[i][k] = "-";
-                            }
-                        });
-                        if (col.type == "1") {
-                            data.data[i].name = '<a style="color:red;" onClick="table_show(\'' + col.code + '\',\'' + (parseInt(d_Level) + 1) + '\');">' + col.name + '</a>';
-                            console.log(data.data[i].name)
-                        }
-                    });
-                    return data.data;
-                }
-            } else if (data.status == '') {
-                return "";
-            }
-*/
-            $("#listModal_table").datagrid({
-                height: $("#listModal").height() - 36,
-                striped:true,
-                data:data.data,
-                columns:[[
-                    {field:"name",title:"行政区"},
-                    {field:"pm25",title:"PM<sub>2.5</sub>"},
-                    {field:"pm10",title:"PM<sub>10</sub>"},
-                    {field:"so2",title:"SO<sub>2</sub>"},
-                    {field:"nox",title:"NO<sub>x</sub>"},
-                    {field:"voc",title:"VOC"},
-                    {field:"co",title:"CO"},
-                    {field:"nh3",title:"NH<sub>3</sub>"},
-                    {field:"bc",title:"BC"},
-                    {field:"oc",title:"OC"},
-                    {field:"pmfine",title:"PMFINE"},
-                    {field:"pmc",title:"PMC"},
-                ]],
-                clickToSelect: true,// 点击选中行
-                pagination: false, // 在表格底部显示分页工具栏
-                striped: true, // 使表格带有条纹
-                queryParams: function (params) {
-                    var data = {};
-                    data.code = cod1;
-                    data.addressLevle = level1;
-                    data.scenarinoId = qjid_dq;//情景id
-
-   //			console.log(JSON.stringify(data));
-                    return JSON.stringify({"token": "", "data": data});
-                },
-                loadFilter:function(data){
-                    console.log(data)
-                     if (data.d){
-
-                         return data.d;
-
-                     } else {
-                     return data;
-                     }
-                }
-            })
-        }
-    })
-
-/*
     $('#listModal_table').bootstrapTable({
         height: $("#listModal").height() - 51,
         method: 'POST',
-        url: localhttp+'/ampc/echarts/get_radioList',
+        url: '/ampc/echarts/get_radioList',
         dataType: "json",
         iconSize: "outline",
         clickToSelect: true,// 点击选中行
@@ -1195,7 +1039,7 @@ function table_show(cod1, level1) {
         },
         responseHandler: function (res) {
 //			console.log(JSON.stringify(res));
-            console.log(res)
+
             if (res.status == 0) {
                 if (res.data.length > 0) {
 
@@ -1208,7 +1052,6 @@ function table_show(cod1, level1) {
 
                         if (col.type == "1") {
                             res.data[i].name = '<a onClick="table_show(\'' + col.code + '\',\'' + (parseInt(d_Level) + 1) + '\');">' + col.name + '</a>';
-
                         }
 
                     });
@@ -1237,6 +1080,5 @@ function table_show(cod1, level1) {
         onLoadError: function () {
             swal('连接错误', '', 'error');
         }
-    });*/
+    });
 }
-

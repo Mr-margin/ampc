@@ -1,83 +1,304 @@
-<style type="text/css">
-	.form-control:hover, .form-control:focus, .form-control:active, .form-control.active, .open .dropdown-toggle.form-control {
-	    border: 1px solid #4f9de0;
+<style>
+  .form-control:hover, .form-control:focus, .form-control:active, .form-control.active, .open .dropdown-toggle.form-control {
+    border: 1px solid #4f9de0;
+  }
+  .toolAll {
+    /*width: 310px;*/
+    width: 60px;
+    height: calc(100% - 190px);
+    position: fixed;
+    /*right: -250px;*/
+    right: 21px;
+    overflow: hidden;
+    /*border: 1px solid #eaeaea;*/
+    transition: all 0.2s linear;
+    box-sizing: border-box;
+    background-color: rgb(26, 123, 185);
+    z-index: 9999;
+  }
+
+  .toolAll:hover {
+    /*right: 0;*/
+    /*height:100%;*/
+    width: 220px;
+    overflow: inherit;
+    /*background-color: rgba(255,255,255,0);*/
+    /*transition: all 0.2s linear;*/
+  }
+
+  .toolAll:hover .selectTool {
+    text-align: center;
+    border: 1px solid #555;
+    background-color: #fff;
+  }
+
+  .toolAll:hover .selectTool h5 {
+    padding: 0;
+  }
+
+  .toolAll:hover .selectTool .selectTool_con {
+    /*display: block;*/
+    opacity: 1;
+  }
+
+  .selectTool {
+    transition: all 0.2s linear;
+    width: 212px;
+    height: 80px;
+    margin: 5px auto;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background-color: #1a7bb9;
+    text-align: left;
+    box-sizing: border-box;
+  }
+
+  .selectTool > h5 {
+    margin: 0 auto;
+    line-height: 40px;
+    background-color: #1a7bb9;
+    color: #fff;
+    padding: 0 15px;
+  }
+
+  .selectTool .selectTool_con {
+    transition: all 0.2s linear;
+    /*display: none;*/
+    opacity: 0;
+    box-sizing: border-box;
+    text-align: center;
+  }
+	.colorBar{
+		position: absolute;
+		bottom: 10px;
+		left: 10px;
 	}
+
+	/*视频播放*/
+	.videoBar{
+		position:relative;
+	}
+
+	.videoS{
+		position:absolute;
+		height:50px;
+		width:50px;
+	}
+
+	.videoBox{
+		position:absolute;
+		left:50px;
+		height:50px;
+		width:calc(100% - 50px)
+	}
+	.videoT{
+		width:98%;
+		height:10px;
+		position:absolute;
+		border-radius:5px;
+		top:20px;
+		left:1%;
+		border: 1px solid #333;
+	}
+	.videoK{
+		width:6px;
+		height:20px;
+		position:absolute;
+		top:-5px;
+		background-color:#8a8484;
+		left:calc(0% - 3px);
+		/*left:0;*/
+		z-index:99;
+		transition: left 0.2s linear;
+	}
+	.videoShow{
+		height:10px;
+		width:0;
+		border-bottom-left-radius:5px;
+		border-top-left-radius:5px;
+		background-color:#aaa;
+		position:absolute;
+		top: -1px;
+		left: -1px;
+		transition: width 0.2s linear;
+	}
+
+	.videoS_in{
+		position:absolute;
+		width:40px;
+		height:40px;
+		border-radius:50%;
+		border:1px solid #333;
+		left:5px;
+		top:5px;
+		overflow:hidden;
+	}
+	.videoS_in:hover{
+		cursor: pointer;
+	}
+	.startV:after{
+		content:'';
+		display:block;
+		position:absolute;
+		left: 13px;
+		top: 6px;
+		width:0;
+		height:0;
+		border-left:20px solid #333;
+		border-top:13px solid transparent;
+		border-bottom:13px solid transparent;
+	}
+	.stopV:after{
+		content:'';
+		display:block;
+		position:absolute;
+		left:11px;
+		top:7px;
+		width:16px;
+		height:24px;
+		border-left:6px solid #333;
+		border-right:6px solid #333;
+	}
+
+	.xhV:after{
+		content:'';
+		display:block;
+		position:absolute;
+		left:6px;
+		top:6px;
+		width:26px;
+		height:26px;
+		border:4px solid #333;
+		border-radius:50%;
+		border-right-color:transparent;
+	}
+	.xhV:before{
+		content:'';
+		display:block;
+		position:absolute;
+		left:21px;
+		top:18px;
+		width:0;
+		height:0;
+		border-bottom:10px solid #333;
+		border-left:8px solid transparent;
+		border-right:8px solid transparent;
+		transform:rotate(45deg);
+
+	}
+
 </style>
 
-<div class='col-md-12' style="height:100%;padding-left: 0px;padding-right: 0px;">
-	<div class="ibox float-e-margins" style="height:100%;">
-		<div class="ibox-content" style="height:100%;overflow-y: auto;padding: 0px;">
-			<div class="row" style="margin-top: 12px;margin-left: 0px;margin-right: 0px;height:48px;">
 
-				<div class="col-md-2">
-					<div class="input-group m-b" style="margin-bottom: 0px">
-						<span class="input-group-addon" style="border: 1px solid #E5E6E7;">物种: </span>
-						<select class="form-control m-b" id="species" name="species">
-
-						</select>
-					</div>
-				</div>
-				<div class="col-md-2">
-					<div class="btn-group" data-toggle="buttons" style="margin-top: 3px">
-						<label class="btn btn-outline btn-success btn-sm active"><input checked type="radio" name="domain" value="1">3km</label>
-						<label class="btn btn-outline btn-success btn-sm"><input type="radio" name="domain" value="2">9km</label>
-						<label class="btn btn-outline btn-success btn-sm"><input type="radio" name="domain" value="3">27km</label>
-					</div>
-				</div>
-				<div class="col-md-2">
-					<div class="btn-group" data-toggle="buttons" style="margin-top: 3px">
-						<label class="btn btn-outline btn-success btn-sm active"><input checked type="radio" name="rms" value="d">日</label>
-						<label class="btn btn-outline btn-success btn-sm"><input type="radio" name="rms" value="h">时</label>
-						<label class="btn btn-outline btn-success btn-sm"><input class="p" type="radio" name="rms" value="a">平均</label>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="col-md-7">
-						<div class="input-group m-b" style="margin-bottom: 0px">
-							<span class="input-group-addon" style="border: 1px solid #E5E6E7;">日期和时间: </span>
-							<select class="form-control m-b" id="sTime-d" name="sTime" style="width: 70%">
-							</select>
-							<select class="form-control m-b disNone" id="sTime-h" name="sTime" style="width: 30%">
-								<option>00</option>
-								<option>01</option>
-								<option>02</option>
-								<option>03</option>
-								<option>04</option>
-								<option>05</option>
-								<option>06</option>
-								<option>07</option>
-								<option>08</option>
-								<option>09</option>
-								<option>10</option>
-								<option>11</option>
-								<option>12</option>
-								<option>13</option>
-								<option>14</option>
-								<option>15</option>
-								<option>16</option>
-								<option>17</option>
-								<option>18</option>
-								<option>19</option>
-								<option>20</option>
-								<option>21</option>
-								<option>22</option>
-								<option>23</option>
-							</select>
-						</div>
-					</div>
-
-					<div class="col-md-5">
-						<div class="input-group m-b disNone" id="eTimeP" style="margin-bottom: 0px">
-							<span class="input-group-addon" style="border: 1px solid #E5E6E7;">日期: </span>
-							<select class="form-control m-b" id="eTime" name="eTime">
-							</select>
-						</div>
-					</div>
-				</div>
+<div class="toolAll">
+	<div class="selectTool">
+		<h5>日期</h5>
+		<div class="selectTool_con">
+			<div class="input-group m-b" style="width: 100%">
+				<select class="form-control m-b" id="sTime-d" name="sTime" style="width: 100%">
+				</select>
+				<select class="form-control m-b disNone" id="sTime-h" name="sTime" style="width: 30%">
+					<option>00</option>
+					<option>01</option>
+					<option>02</option>
+					<option>03</option>
+					<option>04</option>
+					<option>05</option>
+					<option>06</option>
+					<option>07</option>
+					<option>08</option>
+					<option>09</option>
+					<option>10</option>
+					<option>11</option>
+					<option>12</option>
+					<option>13</option>
+					<option>14</option>
+					<option>15</option>
+					<option>16</option>
+					<option>17</option>
+					<option>18</option>
+					<option>19</option>
+					<option>20</option>
+					<option>21</option>
+					<option>22</option>
+					<option>23</option>
+				</select>
 			</div>
-			
-			<div class="row" style="margin-left: 0px;margin-right: 0px;height:calc(100% - 60px);">
-				<div class='col-md-6' style="height:100%;padding-left: 0px;">
+		</div>
+	</div>
+
+	<div class="selectTool disNone" id="eTimeP">
+		<h5>日期</h5>
+		<div class="selectTool_con">
+			<div class="input-group m-b" style="width: 100%">
+				<select class="form-control m-b" id="eTime" name="eTime">
+				</select>
+			</div>
+		</div>
+	</div>
+
+	<div class="selectTool">
+		<h5>空间</h5>
+		<div class="selectTool_con">
+			<div class="btn-group" data-toggle="buttons" style="margin-top: 3px;width: 100%">
+				<label class="col-md-4 btn btn-outline btn-success btn-sm active"><input checked type="radio" name="domain" value="1">3km</label>
+				<label class="col-md-4 btn btn-outline btn-success btn-sm"><input type="radio" name="domain" value="2">9km</label>
+				<label class="col-md-4 btn btn-outline btn-success btn-sm"><input type="radio" name="domain" value="3">27km</label>
+			</div>
+		</div>
+	</div>
+
+	<div class="selectTool">
+		<h5>时间</h5>
+		<div class="selectTool_con">
+			<div class="btn-group" data-toggle="buttons" style="margin: 2px auto;padding: 0;width: 100%;">
+				<label class="col-md-4 btn btn-outline btn-success btn-sm"><input type="radio" name="rms" value="h">逐时</label>
+				<label class="col-md-4 btn btn-outline btn-success btn-sm active"><input checked type="radio" name="rms" value="d">逐日</label>
+				<label class="col-md-4 btn btn-outline btn-success btn-sm"><input class="p" type="radio" name="rms" value="a">平均</label>
+			</div>
+		</div>
+	</div>
+
+
+  <div class="selectTool">
+    <h5>物种</h5>
+    <div class="selectTool_con">
+      <div class="" style="margin-bottom:0px;padding-left:0px;">
+        <div class="" style="margin: 2px auto;padding-left:0px;padding-right:0px;width: 100%">
+          <div class="input-group group-select" style="margin: 0 auto;width: 100%">
+            <select class="form-control m-b" id="species" style="padding-left:6px;border-color: #1c84c6;">
+
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+	<div class="selectTool">
+    <h5>风场</h5>
+    <div class="selectTool_con">
+			<div class="btn-group" data-toggle="buttons" style="margin: 2px auto;padding: 0;width: 100%;">
+				<label class="col-md-4 btn btn-outline btn-success active"><input value="-1" type="radio" name="showWind" checked>无</label>
+				<label class="col-md-4 btn btn-outline btn-success"><input value="1" type="radio" name="showWind">↑
+					风场</label>
+				<label class="col-md-4 btn btn-outline btn-success"><input value="2" type="radio" name="showWind">F
+					风场</label>
+			</div>
+    </div>
+  </div>
+
+
+</div>
+
+
+
+<div class='col-md-12' style="height:100%;padding-left: 0px;padding-right: 0px;width: calc(100% - 80px)">
+	<div class="ibox float-e-margins" style="height:100%;margin-bottom: 0">
+		<div class="ibox-content" style="height:100%;overflow-y: auto;padding: 0px;">
+
+			<div class="row" style="margin-left: 0px;margin-right: 0px;height:calc(100% - 50px);">
+				<div class='col-md-6' style="height: 100%;padding-left: 0px;padding-right: 15px;">
 					<div id="mapDiv0" style="height:100%;border:1px solid #75B9E6;"></div>
 
 
@@ -86,20 +307,12 @@
 							<div class="btn-group" data-toggle="buttons"></div>
 						</div>
 					</div>
-					<div class="showType" id="showType">
-						<div class='' style="margin-top: -8px;float:right;">
-							<div class="btn-group" data-toggle="buttons">
-								<label class="showTypeL btn btn-outline btn-success active"><input value="concn" type="checkbox" name="showType" checked>浓度</label>
-								<label class="showTypeL btn btn-outline btn-success"><input value="wind" type="checkbox" name="showType">风场</label>
-								<label class="showTypeL btn btn-outline btn-success"><input value="emis" type="checkbox" name="showType">排放</label>
-							</div>
-						</div>
-					</div>
+					<div class="colorBar" id="colorBar0"></div>
 					<div id="Point"></div>
 
 
 				</div>
-				<div class='col-md-6' style="height:100%;padding-left: 0px;padding-right: 0px;">
+				<div class='col-md-6' style="height: 100%;padding-left: 5px;padding-right: 10px;">
 					<div id="mapDiv1" style="height:100%;border:1px solid #75B9E6;"></div>
 
 
@@ -118,9 +331,20 @@
 							</div>
 						</div>
 					</div>
-
+					<div class="colorBar" id="colorBar1"></div>
 				</div>
-				<!-- <div id="info"></div> -->
+			</div>
+
+			<div class="videoBar" id="container" style="height: 50px;width: calc(100% - 10px);">
+				<div class="videoS">
+					<div class="videoS_in startV"></div>
+				</div>
+				<div class="videoBox">
+					<div class="videoT">
+						<div class="videoK"></div>
+						<div class="videoShow"></div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

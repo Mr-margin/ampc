@@ -1,36 +1,200 @@
 <style>
-  .distributed{
+  .distributed {
     width: 100%;
     height: 100%;
     position: relative;
   }
-  .distributed_map{
+
+  .distributed_map {
     position: relative;
     /*background-color: #06b6ef;*/
     width: 100%;
-    height: calc(100% - 70px);
+    height: 100%;
     border: 1px solid #777777;
   }
-  .distributed_toolTop{
+
+  .distributed_toolTop {
     width: 100%;
     padding: 5px;
   }
-  .tool_in{
+
+  .tool_in {
     position: absolute;
-    right: 0;
-    top: 0;
+    left: 0;
+    bottom: 15px;
     width: 250px;
     /*height: 150px;*/
     /*background-color: #fff;*/
     padding: 5px;
   }
-  .openness label{
+
+  .openness label {
     margin: 12px 0;
+  }
+
+  .toolAll {
+    /*width: 310px;*/
+    width: 60px;
+    height: calc(100% - 140px);
+    position: fixed;
+    /*right: -250px;*/
+    right: 21px;
+    overflow: hidden;
+    /*border: 1px solid #eaeaea;*/
+    transition: all 0.2s linear;
+    box-sizing: border-box;
+    background-color: rgb(26, 123, 185);
+    z-index: 999;
+  }
+
+  .toolAll:hover {
+    /*right: 0;*/
+    /*height:100%;*/
+    width: 220px;
+    overflow: initial;
+    /*background-color: rgba(255,255,255,0);*/
+    /*transition: all 0.2s linear;*/
+  }
+
+  .toolAll:hover .selectTool {
+    text-align: center;
+    border: 1px solid #555;
+    background-color: #fff;
+  }
+
+  .toolAll:hover .selectTool h5 {
+    padding: 0;
+  }
+
+  .toolAll:hover .selectTool .selectTool_con {
+    /*display: block;*/
+    opacity: 1;
+  }
+
+  .selectTool {
+    transition: all 0.2s linear;
+    width: 212px;
+    height: 80px;
+    margin: 5px auto;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background-color: #1a7bb9;
+    text-align: left;
+    box-sizing: border-box;
+  }
+
+  .selectTool > h5 {
+    margin: 0 auto;
+    line-height: 40px;
+    background-color: #1a7bb9;
+    color: #fff;
+    padding: 0 15px;
+  }
+
+  .selectTool .selectTool_con {
+    transition: all 0.2s linear;
+    /*display: none;*/
+    opacity: 0;
+    box-sizing: border-box;
+    text-align: center;
   }
 </style>
 
-<div class="distributed">
-  <div class="distributed_toolTop">
+
+<div class="toolAll">
+  <div class="selectTool">
+    <h5>起报</h5>
+    <div class="selectTool_con">
+      <div class="" style="padding-right: 0px;margin: 2px auto;position: relative">
+        <input style="min-width: 210px" type="text" class="form-control" id="SPDate" name="SPDate" readonly
+               placeholder="请选择日期···">
+        <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showDate()"
+           style="cursor:pointer;position: absolute;font-size: 17px;right: 10px;top: 9px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="selectTool">
+    <h5>日期</h5>
+    <div class="selectTool_con">
+      <div class="input-group m-b" style="width: 100%">
+        <select class="form-control m-b" id="sTime-d" name="sTime" style="width: 100%">
+        </select>
+        <select class="form-control m-b disNone" id="sTime-h" name="sTime" style="width: 30%">
+          <option>00</option>
+          <option>01</option>
+          <option>02</option>
+          <option>03</option>
+          <option>04</option>
+          <option>05</option>
+          <option>06</option>
+          <option>07</option>
+          <option>08</option>
+          <option>09</option>
+          <option>10</option>
+          <option>11</option>
+          <option>12</option>
+          <option>13</option>
+          <option>14</option>
+          <option>15</option>
+          <option>16</option>
+          <option>17</option>
+          <option>18</option>
+          <option>19</option>
+          <option>20</option>
+          <option>21</option>
+          <option>22</option>
+          <option>23</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="selectTool">
+    <h5>范围</h5>
+    <div class="selectTool_con">
+      <div class="row" style="margin:2px 0;padding-left:0px;">
+        <div class="btn-group" data-toggle="buttons" style="padding: 0;width: 100%">
+          <label class="col-md-4 btn btn-outline btn-success"><input type="radio" name="domain" value="1">中国</label>
+          <label class="col-md-4 btn btn-outline btn-success active" style="padding-left: 5px;"><input checked type="radio" name="domain"
+                                                                   value="2">中国东部</label>
+          <label class="col-md-4 btn btn-outline btn-success"><input type="radio" name="domain" value="3">河北省</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="selectTool">
+    <h5>时间</h5>
+    <div class="selectTool_con">
+      <div class="btn-group" data-toggle="buttons" style="margin: 2px auto;padding: 0;width: 100%;">
+        <label class="col-md-6 btn btn-outline btn-success "><input type="radio" name="rms" value="h">逐小时</label>
+        <label class="col-md-6 btn btn-outline btn-success  active"><input checked type="radio" name="rms" value="d">逐日</label>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="selectTool">
+    <h5>物种</h5>
+    <div class="selectTool_con">
+      <div class="" style="margin-bottom:0px;padding-left:0px;">
+        <div class="" style="margin: 2px auto;padding-left:0px;padding-right:0px;width: 100%">
+          <div class="input-group group-select" style="margin: 0 auto;width: 100%">
+            <select class="form-control m-b" id="species" style="padding-left:6px;border-color: #1c84c6;">
+
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="distributed" style="width: calc(100% - 80px);">
+  <div class="distributed_toolTop disNone">
     <div class="row" style="margin-top: 12px;margin-left: 0px;margin-right: 0px;height:48px;">
 
       <div class="col-sm-4" style="padding-left:0px;">
@@ -38,22 +202,25 @@
           <span class="input-group-addon" style="border: 0px solid #E5E6E7;">空间范围:</span>
           <div class="btn-group" data-toggle="buttons" style="margin-top: 3px;padding: 0;">
             <label class="btn btn-outline btn-success"><input type="radio" name="domain" value="1">中国</label>
-            <label class="btn btn-outline btn-success active"><input checked type="radio" name="domain" value="2">中国东部</label>
-            <label class="btn btn-outline btn-success"><input  type="radio" name="domain" value="3">河北省</label>
+            <label class="btn btn-outline btn-success active"><input checked type="radio" name="domain"
+                                                                     value="2">中国东部</label>
+            <label class="btn btn-outline btn-success"><input type="radio" name="domain" value="3">河北省</label>
           </div>
         </div>
       </div>
       <div class="col-md-6">
         <div class="btn-group col-md-3" data-toggle="buttons" style="margin-top: 3px;padding: 0;">
           <label class="btn btn-outline btn-success "><input type="radio" name="rms" value="hour">逐小时</label>
-          <label class="btn btn-outline btn-success  active"><input checked type="radio" name="rms" value="day">逐日</label>
+          <label class="btn btn-outline btn-success  active"><input checked type="radio" name="rms"
+                                                                    value="day">逐日</label>
         </div>
         <div class="col-md-9">
           <div class="form-group clearfix">
             <label for="SPDate" class="col-md-4 control-label lh29" style="text-align: right;">时间选择：</label>
 
             <div class="col-md-8" style="padding-right: 0px">
-              <input style="min-width: 210px" type="text" class="form-control" id="SPDate" name="SPDate" readonly placeholder="请选择日期···">
+              <input style="min-width: 210px" type="text" class="form-control" id="SPDate" name="SPDate" readonly
+                     placeholder="请选择日期···">
               <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showDate()"
                  style="cursor:pointer;position: absolute;font-size: 17px;right: 3px;top: 7px;"></i>
             </div>
@@ -78,20 +245,28 @@
     </div>
   </div>
   <div class="distributed_map">
-    <div class="map_in"></div>
+    <div class="map_in" style="height:100%;" id="map_in"></div>
     <div class="tool_in">
-      <div class="openness">
-        <label>图层透明度：</label>
-        <div>
-          <input id="a" type="range" min="0" max="1" step="0.01" value="0.5" data-rangeslider>
-          <output style="display: none"></output>
+      <div class="clearfix">
+        <div class="dropdown" style="margin: 12px 10px 0 0;float: left">
+          <button class="btn btn-success active dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="true">
+            视频
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><a href="javascript:">播放已有视频</a></li>
+            <li><a href="javascript:">生成新的视频</a></li>
+          </ul>
         </div>
+        <button class="btn btn-success active" style="margin-top: 12px;float: left">垂直剖面</button>
       </div>
       <div class="speed">
         <div class="input-group m-b" style="margin-bottom: 0px">
           <span style="border: 0px solid #E5E6E7;display: block;margin: 12px 0 8px 0;">动画速度：</span>
           <div class="btn-group" data-toggle="buttons" style="margin-top: 3px;padding: 0;">
-            <label class="btn btn-outline btn-success active"><input checked type="radio" name="speed" value="1">快速</label>
+            <label class="btn btn-outline btn-success active"><input checked type="radio" name="speed"
+                                                                     value="1">快速</label>
             <label class="btn btn-outline btn-success"><input type="radio" name="speed" value="2">中速</label>
             <label class="btn btn-outline btn-success"><input type="radio" name="speed" value="3">慢速</label>
           </div>
@@ -101,24 +276,21 @@
         <div class="input-group m-b" style="margin-bottom: 0px">
           <span style="border: 0px solid #E5E6E7;display: block;margin: 12px 0 8px 0;">风场：</span>
           <div class="btn-group" data-toggle="buttons" style="margin-top: 3px;padding: 0;">
-            <label class="btn btn-outline btn-success active"><input checked type="radio" name="field" value="1"> ↑ 风场</label>
+            <label class="btn btn-outline btn-success active"><input checked type="radio" name="field" value="1"> 无
+              </label>
+            <label class="btn btn-outline btn-success"><input type="radio" name="field" value="1"> ↑
+              风场</label>
             <label class="btn btn-outline btn-success"><input type="radio" name="field" value="2">F风场</label>
           </div>
         </div>
       </div>
-      <div class="clearfix">
-        <div class="dropdown" style="margin: 12px 10px 0 0;float: left">
-        <button class="btn btn-success active dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          视频
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            <li><a href="javascript:">播放已有视频</a></li>
-            <li><a href="javascript:">生成新的视频</a></li>
-          </ul>
+      <div class="openness">
+        <label>图层透明度：</label>
+        <div>
+          <input id="a" type="range" min="0" max="1" step="0.01" value="0.5" data-rangeslider>
+          <output style="display: none"></output>
+        </div>
       </div>
-      <button class="btn btn-success active" style="margin-top: 12px;float: left">垂直剖面</button>
-    </div>
     </div>
   </div>
   <div class="distributed_toolRight">

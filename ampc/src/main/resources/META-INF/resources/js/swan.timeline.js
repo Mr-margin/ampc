@@ -766,10 +766,10 @@ $(function() {
             if (canvasLeft > 0 || canvasWidth < containerWidth) {
                 if (showAnimation) {
                     this._canvas.animate({
-                        left: 0
+                        left: 20
                     }, 300, 'easeOutQuart');
                 } else {
-                    this._canvas.css('left', 0);
+                    this._canvas.css('left', 20);
                 }
             } else {
                 var left = containerWidth - canvasWidth + self._widthAdjust;
@@ -777,11 +777,11 @@ $(function() {
                     // 右越界
                     if (showAnimation) {
                         self._canvas.animate({
-                            left: left
+                            left: left-20
                         }, 300, 'easeOutQuart');
 
                     } else {
-                        this._canvas.css('left', left);
+                        this._canvas.css('left', left-20);
                     }
                 }
             }
