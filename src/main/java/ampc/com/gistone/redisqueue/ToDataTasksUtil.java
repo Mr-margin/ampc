@@ -192,7 +192,7 @@ public class ToDataTasksUtil {
 										    			//	readyData.readyRealMessageDataFirst(scenarinoId, cores,userId);
 										    				String lastungrib = readyData.readyLastUngrib(userId);
 										    				if (null!=lastungrib) {
-										    					readyData.readyRealMessageDataFirst(idandcore, lastungrib,false);
+										    					readyData.readyRealMessageDataFirst(idandcore, lastungrib);
 															}
 														}else {
 															//表示已经发送过当条情景 不用触发
