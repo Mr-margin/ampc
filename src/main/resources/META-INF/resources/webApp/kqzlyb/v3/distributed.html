@@ -103,13 +103,49 @@
 
 <div class="toolAll">
   <div class="selectTool">
-    <h5>日期</h5>
+    <h5>起报</h5>
     <div class="selectTool_con">
       <div class="" style="padding-right: 0px;margin: 2px auto;position: relative">
         <input style="min-width: 210px" type="text" class="form-control" id="SPDate" name="SPDate" readonly
                placeholder="请选择日期···">
         <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showDate()"
            style="cursor:pointer;position: absolute;font-size: 17px;right: 10px;top: 9px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="selectTool">
+    <h5>日期</h5>
+    <div class="selectTool_con">
+      <div class="input-group m-b" style="width: 100%">
+        <select class="form-control m-b" id="sTime-d" name="sTime" style="width: 100%">
+        </select>
+        <select class="form-control m-b disNone" id="sTime-h" name="sTime" style="width: 30%">
+          <option>00</option>
+          <option>01</option>
+          <option>02</option>
+          <option>03</option>
+          <option>04</option>
+          <option>05</option>
+          <option>06</option>
+          <option>07</option>
+          <option>08</option>
+          <option>09</option>
+          <option>10</option>
+          <option>11</option>
+          <option>12</option>
+          <option>13</option>
+          <option>14</option>
+          <option>15</option>
+          <option>16</option>
+          <option>17</option>
+          <option>18</option>
+          <option>19</option>
+          <option>20</option>
+          <option>21</option>
+          <option>22</option>
+          <option>23</option>
+        </select>
       </div>
     </div>
   </div>
@@ -132,8 +168,8 @@
     <h5>时间</h5>
     <div class="selectTool_con">
       <div class="btn-group" data-toggle="buttons" style="margin: 2px auto;padding: 0;width: 100%;">
-        <label class="col-md-6 btn btn-outline btn-success "><input type="radio" name="rms" value="hour">逐小时</label>
-        <label class="col-md-6 btn btn-outline btn-success  active"><input checked type="radio" name="rms" value="day">逐日</label>
+        <label class="col-md-6 btn btn-outline btn-success "><input type="radio" name="rms" value="h">逐小时</label>
+        <label class="col-md-6 btn btn-outline btn-success  active"><input checked type="radio" name="rms" value="d">逐日</label>
       </div>
     </div>
   </div>
