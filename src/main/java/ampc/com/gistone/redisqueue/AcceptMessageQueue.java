@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import ampc.com.gistone.database.inter.TUngribMapper;
 import ampc.com.gistone.redisqueue.result.Message;
+import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.JsonUtil;
 import ampc.com.gistone.util.LogUtil;
 
@@ -52,6 +53,9 @@ public class AcceptMessageQueue implements Runnable{
 	
 	@Autowired
 	private MessageLog messageLog;
+	
+	@Autowired
+	private ConfigUtil configUtil;
 
 	/* (非 Javadoc) 
 	* <p>Title: run</p> 
@@ -113,8 +117,11 @@ public class AcceptMessageQueue implements Runnable{
 			
 			try {
 				System.out.println("队列接受数据");
-				String rpop = redisUtilServer.brpop("r0_mb");//send_queue_name
-//				String rpop = redisUtilServer.brpop("r0_test_mb");//send_queue_name
+				String acceptName = configUtil.getRedisQueueAcceptName();
+//				String rpop = redisUtilServer.brpop("r0_mb");//send_queue_name
+//				String rpop = redisUtilServer.brpop(acceptName);//send_queue_name
+				String rpop = redisUtilServer.brpop("r0_test_mb");//send_queue_name
+//				String rpop = redisUtilServer.brpop("receive_queue_name");//send_queue_name
 //				String rpop = redisUtilServer.brpop("r0_mb");//r0_mb
 				//	String rpop2 = redisUtilServer.rpop("test");//result_Start_model
 				if (null==rpop) {
