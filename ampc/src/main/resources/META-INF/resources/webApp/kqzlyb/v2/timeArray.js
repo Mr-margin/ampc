@@ -971,7 +971,6 @@ function initEcharts() {
 	var	cityStation=$("#cityStation option:selected").text();
 	var	station=$("#station option:selected").text();
 	var	domain=$("#wrw input[name='domain']").parents('label.active').text();
-	console.log(domain);
 	var mesage='';
 	if(proStation.substr(-1)!="省"&&cityStation.substr(-1)=="市"&&"平均"==station){
 		mesage+=cityStation+">>"+domain+">>";
@@ -1037,14 +1036,17 @@ function initEcharts() {
 		
 		//存放单个图表的series数据
 		option.series = [];
-		if(changeMsg.rms == 'day'){
-			var xdata = [];		//x轴数据
-			var ydata = [];		//y轴数据
+		if(changeMsg.rms == 'day'){	//逐日开始
+			var xdataName = [];		//x轴数据
+			
 			$.each(data,function(key,val){
+				var xdata = [];		//x轴数据
+				var ydata = [];		//y轴数据
 				var name = key;		//数据name
 				if(val.hasOwnProperty(species[i])){	//包含当前物种
-					$.each(val[species[i]],function(timeKey,timeVal){
+					$.each(val[species[i]],function(timeKey,timeVal){	//循环单个物种数据
 						xdata.push(timeKey);
+						xdataName.push(timeKey);
 					});
 					xdata = xdata.sort();
 					for(var m=0;m<xdata.length;m++){
@@ -1074,14 +1076,16 @@ function initEcharts() {
 				
 			});
 			
+//			console.log(ydata);
 			option.xAxis = [];
+			
 		    option.xAxis.push({				    //x轴情景时间
 		    	data: xdata						//修改数据排序
 		    });
 		    var es = echarts.init(document.getElementById(tname[i]));
 		    es.setOption(option);
 		    $(window).resize(es.resize);
-		}
+		}	//逐日结束
 			
 	 }	//循环物种结束
 	  
