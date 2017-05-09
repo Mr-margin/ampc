@@ -101,9 +101,9 @@ public interface TScenarinoDetailMapper {
 	List<TScenarinoDetail> selectpreEvaluationSituation();
 
 	/**
-	 * @Description: TODO
+	 * @Description: 通过起报时间查询用户的实时预报情景的全部情景
 	 * @param parmap
-	 * @return   通过起报时间查询用户的实时预报情景的全部情景
+	 * @return   
 	 * TScenarinoDetail  
 	 * @throws
 	 * @author yanglei
