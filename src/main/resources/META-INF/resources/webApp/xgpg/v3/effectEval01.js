@@ -589,12 +589,15 @@ function initEcharts() {
 function getdata() {
 	find_standard();
 	var url = '/Appraisal/find_appraisal';
+	var ch_scenarinoId=changeMsg.scenarinoId.join(",");	
+	
 	var paramsName = {
 	    "userId": "1",
 	    "missionId": sceneInitialization.taskID,
 	    "mode": changeMsg.station=='avg'?'city':'point',
 	    "cityStation": changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
-	    "scenarinoId": changeMsg.scenarinoId,
+//	    "scenarinoId": changeMsg.scenarinoId,
+		"scenarinoId": ch_scenarinoId,
 	    "datetype": changeMsg.rms
 	  };
 	ajaxPost(url, paramsName).success(function (res) {
