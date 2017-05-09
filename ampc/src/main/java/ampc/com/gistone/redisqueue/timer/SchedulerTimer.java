@@ -429,7 +429,6 @@ public class SchedulerTimer<V> {
 			}
 			
 		}
-		
 	}
 
 
@@ -541,13 +540,18 @@ public class SchedulerTimer<V> {
 	 */
 	private Date getMaxTimeForMegan(Date pathDate, Long userId) {
 		Date maxtime = null;
-		//查找可执行的时间
+		//查找可执行的时间 
 		Map map = new HashMap();
 		map.put("pathdate", pathDate);
 		map.put("userId", userId);
 		map.put("type", "4");
-		//查询对应的实时预报的状态
-		TTasksStatus selectTasksstatusByPathdate = tTasksStatusMapper.selectTasksstatusByPathdate(map);
+		TTasksStatus selectTasksstatusByPathdate=null;
+		try {
+			//查询对应的实时预报的状态
+			selectTasksstatusByPathdate = tTasksStatusMapper.selectTasksstatusByPathdate(map);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("预评估情景的定时器    查询实时预报的状态出异常了",e);
+		}
 		String sendtime = selectTasksstatusByPathdate.getBeizhu2();//发送了消息的时间
 		Date scenarinoStartDate = DateUtil.DateToDate(selectTasksstatusByPathdate.getScenarinoStartDate(), "yyyyMMdd"); 
 		if (!sendtime.equals("0")) {
