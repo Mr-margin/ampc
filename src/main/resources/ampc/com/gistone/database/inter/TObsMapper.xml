@@ -59,5 +59,6 @@
 	    AND "DATE"  <![CDATA[<]]> ="TO_DATE"(#{endDate,jdbcType=VARCHAR},'yyyy-mm-dd hh24:mi:ss')
 	    AND "MODE"=#{mode,jdbcType=VARCHAR}
 	    AND "CITY_STATION"=#{city_station,jdbcType=VARCHAR} 
+	    AND ROWNUM=1
  </select> 
 </mapper>
