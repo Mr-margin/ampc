@@ -1037,21 +1037,33 @@ function initEcharts() {
 		//存放单个图表的series数据
 		option.series = [];
 		if(changeMsg.rms == 'day'){	//逐日开始
-			var xdataName = [];		//x轴数据
-			
+//			var xdataName = ['2017-05-02','2017-05-03','2017-05-04','2017-05-05','2017-05-06','2017-05-07','2017-05-08','2017-05-09'];	
+			var xdataName =	[];
 			$.each(data,function(key,val){
 				var xdata = [];		//x轴数据
 				var ydata = [];		//y轴数据
 				var name = key;		//数据name
+//				if("模拟数据"==val){
+//					$.each(val[species[i]],function(timesKey,timesVal){	//循环单个物种数据
+//						xdataName.push(timesKey);
+//					});
+//				}
+				
 				if(val.hasOwnProperty(species[i])){	//包含当前物种
 					$.each(val[species[i]],function(timeKey,timeVal){	//循环单个物种数据
 						xdata.push(timeKey);
-						xdataName.push(timeKey);
 					});
 					xdata = xdata.sort();
 					for(var m=0;m<xdata.length;m++){
 						ydata.push(val[species[i]][xdata[m]]);
 					}
+					if("模拟数据"==key){		//去模拟
+						for(var skey in val[species[i]]){
+							xdataName.push(skey);
+							
+						}
+					}
+					
 				}
 				
 //				if(data.hasOwnProperty(key)){	//包含模拟或观测数据
@@ -1065,22 +1077,17 @@ function initEcharts() {
 //						}
 //					}
 //				}
-//				console.log(xdata);
-//				console.log(ydata);
+				
 				option.series.push({
 					name : name, 				//情景名称  对应图例 exceptsjz
 					type : show_type, 			 //图表类型   已设全局变量 show_type
 					smooth : true,
 					data : ydata     			//可变情景数据 
 				});	
-				
 			});
-			
-//			console.log(ydata);
 			option.xAxis = [];
-			
 		    option.xAxis.push({				    //x轴情景时间
-		    	data: xdata						//修改数据排序
+		    	data: xdataName.sort()						//修改数据排序
 		    });
 		    var es = echarts.init(document.getElementById(tname[i]));
 		    es.setOption(option);
