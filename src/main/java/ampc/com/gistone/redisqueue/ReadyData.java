@@ -245,7 +245,7 @@ public class ReadyData {
 			//准备实时预报的数据(自己测试用的）
 			TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
 			String lastungrib = readyLastUngrib(userId);
-			boolean comtinueRealpredict = comtinueRealpredict(tScenarinoDetail,lastungrib);
+			boolean comtinueRealpredict = continueRealpredict(tScenarinoDetail,lastungrib);
 			flag=comtinueRealpredict;
 		}
 		if (scenarinoType==3&&missionType==3) {
@@ -543,7 +543,7 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年5月6日 上午11:13:28
 	 */
-	private boolean comtinueRealpredict(TScenarinoDetail tScenarinoDetail, String lastungrib) {
+	private boolean continueRealpredict(TScenarinoDetail tScenarinoDetail, String lastungrib) {
 		boolean continuemodel = true ;
 		//查询实时预报的当前的运行状态
 		Long scenarinoId=tScenarinoDetail.getScenarinoId();
@@ -1290,8 +1290,8 @@ public class ReadyData {
 		//创建消息bady对象
 		QueueBodyData bodyData = new QueueBodyData();
 		//调试模式的内容
-//		bodyData.setFlag(1);
-		bodyData.setFlag(0); 
+		bodyData.setFlag(1);
+//		bodyData.setFlag(0); 
 		Integer scenarinoType = Integer.parseInt(scenarinoDetailMSG.getScenType());//情景类型
 		Long userId = scenarinoDetailMSG.getUserId();
 		Long missionId = scenarinoDetailMSG.getMissionId();//任务id
