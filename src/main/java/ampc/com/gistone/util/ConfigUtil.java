@@ -41,6 +41,47 @@ public class ConfigUtil {
 	@Value("${jp.preproURL}")
 	private String preproURL;
 
+	
+	//redisIP地址
+	@Value("${spring.redis.host}")
+	private String redisHost;
+	//redis 端口
+	@Value("${spring.redis.port}")
+	private int redisPort;
+	//redis 密码
+	@Value("${spring.redis.password}")
+	private String redisPassWord;
+	//redis 发送消息队列的名称
+	@Value("${redis.receive.queue.name}")
+	private String redisQueuesSendName;
+	//redis 接受消息队列的名称
+	@Value("${redis.send.queue.name}")
+	private String redisQueueAcceptName;
+	
+	
+	
+
+	
+	public String getRedisQueuesSendName() {
+		return redisQueuesSendName;
+	}
+
+	public String getRedisQueueAcceptName() {
+		return redisQueueAcceptName;
+	}
+
+	public String getRedisHost() {
+		return redisHost;
+	}
+
+	public int getRedisPort() {
+		return redisPort;
+	}
+
+	public String getRedisPassWord() {
+		return redisPassWord;
+	}
+
 	public String getActionlistURL() {
 		return actionlistURL;
 	}
