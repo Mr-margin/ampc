@@ -9,7 +9,7 @@
 </style>
 
 <div class="cloudui" style="width:100%;height:100%;">
-  <div class="toolAll" style="display: none;">
+  <!-- <div class="toolAll" style="display: none;">
     <div class="toolContent">
       <div class="selectTool">
         <h5>日期</h5>
@@ -105,116 +105,120 @@
         </div>
       </div>
     </div>
-  </div>
+  </div>-->
   <div class='col-md-12 verticalCon'>
-    <div class="ibox float-e-margins" style="height:100%;">
-      <div class="ibox-content xgpgShow" style="height:100%;;padding: 0px;">
-        <div id="showTitle" style="height: 40px;line-height: 40px;padding-left: 10px;font-size: 16px;color:#000;background: white">
-          <div class="toolAll" style="background:gray">
-            <div class="toolContent">
-              <div class="selectTool">
-                <h5>日期</h5>
-                <div class="selectTool_con">
-                  <div class="input-group m-b" style="width: 100%">
-                    <select class="form-control m-b" id="sTime-d" name="sTime" style="width: 100%">
-                    </select>
-                    <select class="form-control m-b disNone" id="sTime-h" name="sTime" style="width: 30%">
-                      <option>00</option>
-                      <option>01</option>
-                      <option>02</option>
-                      <option>03</option>
-                      <option>04</option>
-                      <option>05</option>
-                      <option>06</option>
-                      <option>07</option>
-                      <option>08</option>
-                      <option>09</option>
-                      <option>10</option>
-                      <option>11</option>
-                      <option>12</option>
-                      <option>13</option>
-                      <option>14</option>
-                      <option>15</option>
-                      <option>16</option>
-                      <option>17</option>
-                      <option>18</option>
-                      <option>19</option>
-                      <option>20</option>
-                      <option>21</option>
-                      <option>22</option>
-                      <option>23</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="selectTool">
-                <h5>站点</h5>
-                <div class="selectTool_con">
-                  <div class="row" style="margin:2px 0;padding-left:0px;">
-                    <div class="" style="padding-left:0px;padding-right:0px;">
-                      <div class="input-group group-select" style="width: 100%;">
-                        <select class="form-control m-b" id="proStation" style="border-color: #1c84c6;">
-
-                        </select>
-                      </div>
-                    </div>
-                    <div class="" style="padding-left:0px;padding-right:0px;">
-                      <div class="input-group group-select" style="width: 100%;">
-                        <select class="form-control m-b" id="cityStation" style="border-color: #1c84c6;">
-
-                        </select>
-                      </div>
-                    </div>
-                    <div class="" style="padding-left:0px;padding-right:0px;">
-                      <div class="input-group group-select" style="width: 100%;">
-                        <select class="form-control m-b" id="station" style="border-color: #1c84c6;">
-
-                        </select>
-                      </div>
+    <div class="ibox float-e-margins">
+      <div class="ibox-content xgpgShow">
+        <div class="searchT">
+          <div id="showTitle" style="font-size: 16px;color:#000;">
+              <i class="im-tag"></i>
+              <span class="proName"></span>
+              <span class="cityName"></span>
+              <span class="stationName"></span>
+              <span class="timeName"></span>
+              <span class="rmsName"></span>
+              <span class="heightName"></span>
+          </div>
+          <div class="toolAll" style="padding-top: 10px;">
+              <div class="toolContent">
+                <div class="selectTool" style="margin-bottom: 2px;">
+                  <h5>日期：</h5>
+                  <div class="selectTool_con" style="width: 190px;">
+                    <div class="input-group m-b" style="overflow: hidden;width: 100%">
+                      <select class="form-control m-b" id="sTime-d" name="sTime" style="width: 100%;float: left;border-color: #1c84c6">
+                      </select>
+                      <select class="form-control m-b disNone" id="sTime-h" name="sTime" style="width: 35%;float: left;border-color: #1c84c6">
+                        <option>00</option>
+                        <option>01</option>
+                        <option>02</option>
+                        <option>03</option>
+                        <option>04</option>
+                        <option>05</option>
+                        <option>06</option>
+                        <option>07</option>
+                        <option>08</option>
+                        <option>09</option>
+                        <option>10</option>
+                        <option>11</option>
+                        <option>12</option>
+                        <option>13</option>
+                        <option>14</option>
+                        <option>15</option>
+                        <option>16</option>
+                        <option>17</option>
+                        <option>18</option>
+                        <option>19</option>
+                        <option>20</option>
+                        <option>21</option>
+                        <option>22</option>
+                        <option>23</option>
+                      </select>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="selectTool">
-                <h5>时间</h5>
-                <div class="selectTool_con">
-                  <div class="btn-group" data-toggle="buttons" style="margin: 2px auto;padding: 0;width: 100%;">
-                    <label class="col-md-6 btn btn-outline btn-success "><input type="radio" name="rms" value="hour">逐小时</label>
-                    <label class="col-md-6 btn btn-outline btn-success  active"><input checked type="radio" name="rms" value="day">逐日</label>
+                <div class="selectTool">
+                  <h5>时间分辨率：</h5>
+                  <div class="selectTool_con">
+                    <div class="btn-group" data-toggle="buttons" style="margin: 2px auto;padding: 0;width: 102px;border:1px solid #D9D9D9;height: 24px;">
+                      <label class="col-md-6 btn btn-outline btn-success "><input type="radio" name="rms" value="hour">逐小时</label>
+                      <label class="col-md-6 btn btn-outline btn-success  active"><input checked type="radio" name="rms" value="day">逐日</label>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="selectTool">
-                <h5>高度</h5>
-                <div class="selectTool_con">
-                  <div class="" style="margin-bottom:0px;padding-left:0px;">
-                    <div class="" style="margin: 2px auto;padding-left:0px;padding-right:0px;">
-                      <div class="input-group group-select" style="width: 100%">
-                        <select class="form-control m-b" id="height" style="padding-left:6px;border-color: #1c84c6;">
-                          <option value="12">3000m</option>
-                          <option value="11">2000m</option>
-                          <option value="10">1500m</option>
-                          <option value="9" selected="selected">1000m</option>
-                          <option value="8">700m</option>
-                          <option value="7">500m</option>
-                          <option value="6">400m</option>
-                          <option value="5">300m</option>
-                        </select>
+                <div class="selectTool" style="margin-right:0;">
+                  <h5>垂直高度：</h5>
+                  <div class="selectTool_con">
+                    <div class="" style="margin-bottom:0px;padding-left:0px;">
+                      <div class="" style="margin: 2px auto;padding-left:0px;padding-right:0px;">
+                        <div class="input-group group-select" style="width: 100%">
+                          <select class="form-control m-b" id="height" style="padding-left:6px;border-color: #1c84c6;">
+                            <option value="12">3000m</option>
+                            <option value="11">2000m</option>
+                            <option value="10">1500m</option>
+                            <option value="9" selected="selected">1000m</option>
+                            <option value="8">700m</option>
+                            <option value="7">500m</option>
+                            <option value="6">400m</option>
+                            <option value="5">300m</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="selectTool" style="clear: both;">
+                  <h5>监测站点：</h5>
+                  <div class="selectTool_con">
+                    <div class="row" style="margin:2px 0;padding-left:0px;">
+                      <div class="selectRow" style="padding-left:0px;padding-right:0px;">
+                        <div class="input-group group-select" style="width: 100%;">
+                          <select class="form-control m-b" id="proStation" style="border-color: #1c84c6;">
+
+                          </select>
+                        </div>
+                      </div>
+                      <div class="selectRow" style="padding-left:0px;padding-right:0px;">
+                        <div class="input-group group-select" style="width: 100%;">
+                          <select class="form-control m-b" id="cityStation" style="border-color: #1c84c6;">
+
+                          </select>
+                        </div>
+                      </div>
+                      <div class="selectRow" style="padding-left:0px;padding-right:0px;width: auto;">
+                        <div class="input-group group-select" style="width: 100%;">
+                          <select class="form-control m-b" id="station" style="border-color: #1c84c6;">
+
+                          </select>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          <div class="upDown">
+            <span class="upDownBtn">收起</span>
           </div>
-          <span style="display: none;">
-            <span class="proName"></span>
-            <span class="cityName"></span>
-            <span class="stationName"></span>
-            <span class="timeName"></span>
-            <span class="rmsName"></span>
-            <span class="heightName"></span>
-          <span>
         </div>
         <div class="verticalChar" style="margin-left: 0px;margin-right: 0px;">
           <div class='col-md-12' id="initEcharts" style="padding-left: 0px;">
@@ -295,12 +299,12 @@
         border:false,
         buttons:'#dlg_jpBtn',
         modal: true,
-        closed:true
+        closed:true,
+        cls: 'cloudui'
     });
-    $("#Initialization").parent().wrap("<div class='cloudui'></div>")
     $("#close_scene").click(function () {
         $("#Initialization").window("close")
     })
-    $(".cloudui .window .panel-tool .panel-tool-close").html('<i class="im-close"></i>')
+   // $(".cloudui .window .panel-tool .panel-tool-close").html('<i class="im-close"></i>')
 </script>
 

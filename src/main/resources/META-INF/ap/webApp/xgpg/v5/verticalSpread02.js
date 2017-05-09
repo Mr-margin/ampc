@@ -572,7 +572,7 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
         $('#sTime-h').addClass('disNone');
         $('#eTimeP').addClass('disNone');
     } else if (rms == 'hour') {
-        $('#sTime-d').css('width', '70%');
+        $('#sTime-d').css('width', '65%');
         $('#sTime-h').removeClass('disNone');
         $('#eTimeP').addClass('disNone');
     }
@@ -768,7 +768,39 @@ function showTitleFun() {
     }
 }
 
-
+//easyui 添加
+var headerH=$(".cloudui .searchT").height();
+$(".verticalChar").css({"top":headerH+"px"});
+$(".upDownBtn").append("<i class='en-arrow-up7'></i>")
+$(".upDownBtn").click(function(){
+    console.log($(".upDownBtn").val());
+    if($(".upDownBtn").text()=="收起"){
+        $(".upDownBtn").text("更多搜索条件");
+        $(".toolAll").hide();
+        $(".upDownBtn i").remove();
+        $(".upDownBtn").append("<i class='en-arrow-down8'></i>")
+        $(".upDownBtn i").attr("class","en-arrow-down8")
+        headerH=$(".cloudui .searchT").height();
+        $(".verticalChar").css({"top":headerH+"px"})
+    }else{
+        $(".upDownBtn").text("收起");
+        $(".toolAll").show();
+        headerH=$(".cloudui .searchT").height();
+        $(".upDownBtn i").remove();
+        $(".upDownBtn").append("<i class='en-arrow-up7'></i>");
+        $(".verticalChar").css({"top":headerH+"px"});
+    }
+})
+$(".cloudui .verticalCon .ibox-content .searchT .upDown").hover(function(){
+    $(".cloudui .verticalCon .ibox-content .searchT .upDown").css({"border-top":"1px solid #0275D8"});
+    $(".cloudui .verticalCon .ibox-content .searchT .upDown .upDownBtn").css({"border":"1px solid #0275D8"});
+},function(){
+    $(".cloudui .verticalCon .ibox-content .searchT .upDown").css({"border-top":"1px solid #d9d9d9"});
+    $(".cloudui .verticalCon .ibox-content .searchT .upDown .upDownBtn").css({"border":"1px solid #d9d9d9"});
+})
+$("#initEcharts").slimScroll({
+    height: '100%'
+})
 
 
 
