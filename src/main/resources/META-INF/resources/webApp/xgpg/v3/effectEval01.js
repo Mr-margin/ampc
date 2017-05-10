@@ -462,8 +462,19 @@ function initEcharts() {
     });
     
     if("AQI"==tname[i]){
-    	 option.yAxis.axisLabel = [];
+    	 option.yAxis = [];
     	    option.yAxis.push({				    //x轴情景时间
+    	    	name:'',  	//改变量  污染物name
+	               nameLocation:'end',
+	               show: true,  
+	               type: 'value',  
+	               splitArea: {show: false},	//去除网格阴影
+	               splitLine:{show: true,		//设置网格线颜色
+		                lineStyle:{
+		                    color :['#D3D3D3','#00E400', '#FFFF00','#FF7E00','#FF0000','#99004C','#7E0023']
+		                }
+		                
+		            },//去除网格线
     	    	axisLabel:{
     	        	formatter:function (value, index) {	//格式化刻度标签值
     	        		var val;
@@ -489,197 +500,274 @@ function initEcharts() {
     	        },
     	    });
     }
-//    else if("PM25"==tname[i]){
-//   	 option.yAxis.axisLabel = [];
-//	    option.yAxis.push({				    //x轴情景时间
-//	    	axisLabel:{
-//	        	formatter:function (value, index) {	//格式化刻度标签值
-//	        		var val;
-//	        		if(index===0){
-//	        			val='0';
-//	        		}else if(index===1){
-//	        			val='35';
-//	        		}else if(index===2){
-//	        			val='75';
-//	        		}else if(index===3){
-//	        			val='115';
-//	        		}else if(index===4){
-//	        			val='150';
-//	        		}else if(index===5){
-//	        			val='250';
-//	        		}else if(index===6){
-//	        			val='350';
-//	        		}else if(index===6){
-//	        			val='500';
-//	        		}
-//	        		return val; 
-//	        	}
-//	        },
-//	    });
-//    }
-//    else if("SO4"==tname[i]){
-//      	 option.yAxis.axisLabel = [];
-// 	    option.yAxis.push({				    //x轴情景时间
-// 	    	axisLabel:{
-// 	        	formatter:function (value, index) {	//格式化刻度标签值
-// 	        		var val;
-// 	        		if(index===0){
-// 	        			val='0';
-// 	        		}else if(index===1){
-// 	        			val='35';
-// 	        		}else if(index===2){
-// 	        			val='75';
-// 	        		}else if(index===3){
-// 	        			val='115';
-// 	        		}else if(index===4){
-// 	        			val='150';
-// 	        		}else if(index===5){
-// 	        			val='250';
-// 	        		}else if(index===6){
-// 	        			val='350';
-// 	        		}else if(index===6){
-// 	        			val='500';
-// 	        		}
-// 	        		return val; 
-// 	        	}
-// 	        },
-// 	    });
-//     }else if("PM25"==tname[i]){
-//       	 option.yAxis.axisLabel = [];
-// 	    option.yAxis.push({				    //x轴情景时间
-// 	    	axisLabel:{
-// 	        	formatter:function (value, index) {	//格式化刻度标签值
-// 	        		var val;
-// 	        		if(index===0){
-// 	        			val='0';
-// 	        		}else if(index===1){
-// 	        			val='35';
-// 	        		}else if(index===2){
-// 	        			val='75';
-// 	        		}else if(index===3){
-// 	        			val='115';
-// 	        		}else if(index===4){
-// 	        			val='150';
-// 	        		}else if(index===5){
-// 	        			val='250';
-// 	        		}else if(index===6){
-// 	        			val='350';
-// 	        		}else if(index===6){
-// 	        			val='500';
-// 	        		}
-// 	        		return val; 
-// 	        	}
-// 	        },
-// 	    });
-//     }else if("PM25"==tname[i]){
-//       	 option.yAxis.axisLabel = [];
-// 	    option.yAxis.push({				    //x轴情景时间
-// 	    	axisLabel:{
-// 	        	formatter:function (value, index) {	//格式化刻度标签值
-// 	        		var val;
-// 	        		if(index===0){
-// 	        			val='0';
-// 	        		}else if(index===1){
-// 	        			val='35';
-// 	        		}else if(index===2){
-// 	        			val='75';
-// 	        		}else if(index===3){
-// 	        			val='115';
-// 	        		}else if(index===4){
-// 	        			val='150';
-// 	        		}else if(index===5){
-// 	        			val='250';
-// 	        		}else if(index===6){
-// 	        			val='350';
-// 	        		}else if(index===6){
-// 	        			val='500';
-// 	        		}
-// 	        		return val; 
-// 	        	}
-// 	        },
-// 	    });
-//     }else if("PM25"==tname[i]){
-//       	 option.yAxis.axisLabel = [];
-// 	    option.yAxis.push({				    //x轴情景时间
-// 	    	axisLabel:{
-// 	        	formatter:function (value, index) {	//格式化刻度标签值
-// 	        		var val;
-// 	        		if(index===0){
-// 	        			val='0';
-// 	        		}else if(index===1){
-// 	        			val='35';
-// 	        		}else if(index===2){
-// 	        			val='75';
-// 	        		}else if(index===3){
-// 	        			val='115';
-// 	        		}else if(index===4){
-// 	        			val='150';
-// 	        		}else if(index===5){
-// 	        			val='250';
-// 	        		}else if(index===6){
-// 	        			val='350';
-// 	        		}else if(index===6){
-// 	        			val='500';
-// 	        		}
-// 	        		return val; 
-// 	        	}
-// 	        },
-// 	    });
-//     }else if("PM25"==tname[i]){
-//       	 option.yAxis.axisLabel = [];
-// 	    option.yAxis.push({				    //x轴情景时间
-// 	    	axisLabel:{
-// 	        	formatter:function (value, index) {	//格式化刻度标签值
-// 	        		var val;
-// 	        		if(index===0){
-// 	        			val='0';
-// 	        		}else if(index===1){
-// 	        			val='35';
-// 	        		}else if(index===2){
-// 	        			val='75';
-// 	        		}else if(index===3){
-// 	        			val='115';
-// 	        		}else if(index===4){
-// 	        			val='150';
-// 	        		}else if(index===5){
-// 	        			val='250';
-// 	        		}else if(index===6){
-// 	        			val='350';
-// 	        		}else if(index===6){
-// 	        			val='500';
-// 	        		}
-// 	        		return val; 
-// 	        	}
-// 	        },
-// 	    });
-//     }else if("PM25"==tname[i]){
-//       	 option.yAxis.axisLabel = [];
-// 	    option.yAxis.push({				    //x轴情景时间
-// 	    	axisLabel:{
-// 	        	formatter:function (value, index) {	//格式化刻度标签值
-// 	        		var val;
-// 	        		if(index===0){
-// 	        			val='0';
-// 	        		}else if(index===1){
-// 	        			val='35';
-// 	        		}else if(index===2){
-// 	        			val='75';
-// 	        		}else if(index===3){
-// 	        			val='115';
-// 	        		}else if(index===4){
-// 	        			val='150';
-// 	        		}else if(index===5){
-// 	        			val='250';
-// 	        		}else if(index===6){
-// 	        			val='350';
-// 	        		}else if(index===6){
-// 	        			val='500';
-// 	        		}
-// 	        		return val; 
-// 	        	}
-// 	        },
-// 	    });
-//     }
+    else if("PM25"==tname[i]){
+   	 option.yAxis = [];
+	    option.yAxis.push({				    //x轴情景时间
+	    	name:'',  	//改变量  污染物name
+            nameLocation:'end',
+            show: true,  
+            type: 'value',  
+            splitArea: {show: false},	//去除网格阴影
+            splitLine:{show: true,		//设置网格线颜色
+	                lineStyle:{
+	                    color :['#D3D3D3','#00E400', '#FFFF00','#FF7E00','#FF0000','#99004C','#7E0023']
+	                }
+	                
+	            },//去除网格线
+	    	axisLabel:{
+	        	formatter:function (value, index) {	//格式化刻度标签值
+	        		var val;
+	        		if(index===0){
+	        			val='0';
+	        		}else if(index===1){
+	        			val='35';
+	        		}else if(index===2){
+	        			val='75';
+	        		}else if(index===3){
+	        			val='115';
+	        		}else if(index===4){
+	        			val='150';
+	        		}else if(index===5){
+	        			val='250';
+	        		}else if(index===6){
+	        			val='350';
+	        		}else if(index===6){
+	        			val='500';
+	        		}
+	        		return val; 
+	        	}
+	        },
+	    });
+    }
+    else if("SO2"==tname[i]){
+      	 option.yAxis = [];
+ 	    option.yAxis.push({				    //x轴情景时间
+ 	    	name:'',  	//改变量  污染物name
+            nameLocation:'end',
+            show: true,  
+            type: 'value',  
+            splitArea: {show: false},	//去除网格阴影
+            splitLine:{show: true,		//设置网格线颜色
+	                lineStyle:{
+	                    color :['#D3D3D3','#00E400', '#FFFF00','#FF7E00','#FF0000','#99004C','#7E0023']
+	                }
+	                
+	            },//去除网格线
+ 	    	axisLabel:{
+ 	        	formatter:function (value, index) {	//格式化刻度标签值
+ 	        		var val;
+ 	        		if(index===0){
+ 	        			val='0';
+ 	        		}else if(index===1){
+ 	        			val='50';
+ 	        		}else if(index===2){
+ 	        			val='150';
+ 	        		}else if(index===3){
+ 	        			val='475';
+ 	        		}else if(index===4){
+ 	        			val='800';
+ 	        		}else if(index===5){
+ 	        			val='1600';
+ 	        		}else if(index===6){
+ 	        			val='2100';
+ 	        		}else if(index===6){
+ 	        			val='2620';
+ 	        		}
+ 	        		return val; 
+ 	        	}
+ 	        },
+ 	    });
+     }else if("SO2_1"==tname[i]){
+       	 option.yAxis = [];
+ 	    option.yAxis.push({				    //x轴情景时间
+ 	    	name:'',  	//改变量  污染物name
+            nameLocation:'end',
+            show: true,  
+            type: 'value',  
+            splitArea: {show: false},	//去除网格阴影
+            splitLine:{show: true,		//设置网格线颜色
+	                lineStyle:{
+	                    color :['#D3D3D3','#00E400', '#FFFF00','#FF7E00','#FF0000','#99004C','#7E0023']
+	                }
+	                
+	            },//去除网格线
+ 	    	axisLabel:{
+ 	        	formatter:function (value, index) {	//格式化刻度标签值
+ 	        		var val;
+ 	        		if(index===0){
+ 	        			val='0';
+ 	        		}else if(index===1){
+ 	        			val='150';
+ 	        		}else if(index===2){
+ 	        			val='500';
+ 	        		}else if(index===3){
+ 	        			val='650';
+ 	        		}else if(index===4){
+ 	        			val='800';
+ 	        		}else if(index===5){
+ 	        			val='';
+ 	        		}else if(index===6){
+ 	        			val='';
+ 	        		}else if(index===6){
+ 	        			val='';
+ 	        		}
+ 	        		return val; 
+ 	        	}
+ 	        },
+ 	    });
+     }else if("NO2"==tname[i]){
+       	 option.yAxis = [];
+ 	    option.yAxis.push({				    //x轴情景时间
+ 	    	name:'',  	//改变量  污染物name
+            nameLocation:'end',
+            show: true,  
+            type: 'value',  
+            splitArea: {show: false},	//去除网格阴影
+            splitLine:{show: true,		//设置网格线颜色
+	                lineStyle:{
+	                    color :['#D3D3D3','#00E400', '#FFFF00','#FF7E00','#FF0000','#99004C','#7E0023']
+	                }
+	                
+	            },//去除网格线
+ 	    	axisLabel:{
+ 	        	formatter:function (value, index) {	//格式化刻度标签值
+ 	        		var val;
+ 	        		if(index===0){
+ 	        			val='0';
+ 	        		}else if(index===1){
+ 	        			val='40';
+ 	        		}else if(index===2){
+ 	        			val='80';
+ 	        		}else if(index===3){
+ 	        			val='180';
+ 	        		}else if(index===4){
+ 	        			val='280';
+ 	        		}else if(index===5){
+ 	        			val='565';
+ 	        		}else if(index===6){
+ 	        			val='750';
+ 	        		}else if(index===6){
+ 	        			val='940';
+ 	        		}
+ 	        		return val; 
+ 	        	}
+ 	        },
+ 	    });
+     }else if("PM25"==tname[i]){
+       	 option.yAxis = [];
+ 	    option.yAxis.push({				    //x轴情景时间
+ 	    	name:'',  	//改变量  污染物name
+            nameLocation:'end',
+            show: true,  
+            type: 'value',  
+            splitArea: {show: false},	//去除网格阴影
+            splitLine:{show: true,		//设置网格线颜色
+	                lineStyle:{
+	                    color :['#D3D3D3','#00E400', '#FFFF00','#FF7E00','#FF0000','#99004C','#7E0023']
+	                }
+	                
+	            },//去除网格线
+ 	    	axisLabel:{
+ 	        	formatter:function (value, index) {	//格式化刻度标签值
+ 	        		var val;
+ 	        		if(index===0){
+ 	        			val='0';
+ 	        		}else if(index===1){
+ 	        			val='35';
+ 	        		}else if(index===2){
+ 	        			val='75';
+ 	        		}else if(index===3){
+ 	        			val='115';
+ 	        		}else if(index===4){
+ 	        			val='150';
+ 	        		}else if(index===5){
+ 	        			val='250';
+ 	        		}else if(index===6){
+ 	        			val='350';
+ 	        		}else if(index===6){
+ 	        			val='500';
+ 	        		}
+ 	        		return val; 
+ 	        	}
+ 	        },
+ 	    });
+     }else if("PM25"==tname[i]){
+       	 option.yAxis = [];
+ 	    option.yAxis.push({				    //x轴情景时间
+ 	    	name:'',  	//改变量  污染物name
+            nameLocation:'end',
+            show: true,  
+            type: 'value',  
+            splitArea: {show: false},	//去除网格阴影
+            splitLine:{show: true,		//设置网格线颜色
+	                lineStyle:{
+	                    color :['#D3D3D3','#00E400', '#FFFF00','#FF7E00','#FF0000','#99004C','#7E0023']
+	                }
+	                
+	            },//去除网格线
+ 	    	axisLabel:{
+ 	        	formatter:function (value, index) {	//格式化刻度标签值
+ 	        		var val;
+ 	        		if(index===0){
+ 	        			val='0';
+ 	        		}else if(index===1){
+ 	        			val='35';
+ 	        		}else if(index===2){
+ 	        			val='75';
+ 	        		}else if(index===3){
+ 	        			val='115';
+ 	        		}else if(index===4){
+ 	        			val='150';
+ 	        		}else if(index===5){
+ 	        			val='250';
+ 	        		}else if(index===6){
+ 	        			val='350';
+ 	        		}else if(index===6){
+ 	        			val='500';
+ 	        		}
+ 	        		return val; 
+ 	        	}
+ 	        },
+ 	    });
+     }else if("PM25"==tname[i]){
+       	 option.yAxis = [];
+ 	    option.yAxis.push({				    //x轴情景时间
+ 	    	name:'',  	//改变量  污染物name
+            nameLocation:'end',
+            show: true,  
+            type: 'value',  
+            splitArea: {show: false},	//去除网格阴影
+            splitLine:{show: true,		//设置网格线颜色
+	                lineStyle:{
+	                    color :['#D3D3D3','#00E400', '#FFFF00','#FF7E00','#FF0000','#99004C','#7E0023']
+	                }
+	                
+	            },//去除网格线
+ 	    	axisLabel:{
+ 	        	formatter:function (value, index) {	//格式化刻度标签值
+ 	        		var val;
+ 	        		if(index===0){
+ 	        			val='0';
+ 	        		}else if(index===1){
+ 	        			val='35';
+ 	        		}else if(index===2){
+ 	        			val='75';
+ 	        		}else if(index===3){
+ 	        			val='115';
+ 	        		}else if(index===4){
+ 	        			val='150';
+ 	        		}else if(index===5){
+ 	        			val='250';
+ 	        		}else if(index===6){
+ 	        			val='350';
+ 	        		}else if(index===6){
+ 	        			val='500';
+ 	        		}
+ 	        		return val; 
+ 	        	}
+ 	        },
+ 	    });
+     }
 //    if("AQI"==tname[i]){
 //    	 AQI = echarts.init(document.getElementById(tname[i]));
 //    	AQI.setOption(option);
