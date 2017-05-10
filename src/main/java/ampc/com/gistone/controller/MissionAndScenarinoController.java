@@ -149,6 +149,19 @@ public class MissionAndScenarinoController {
 			List<Map> list = this.tMissionDetailMapper.selectAllOrByQueryName(map);
 			for(Map ss:list){
 				Long missionDomainId=Long.valueOf(ss.get("missionDomainId").toString());
+				Long missionId=Long.valueOf(ss.get("missionId").toString());
+				TMissionDetail tmd=new TMissionDetail();
+				tmd.setIsEffective("1");
+				tmd.setMissionId(missionId);
+				List<TScenarinoDetail> tmlist=tScenarinoDetailMapper.selectAllByMissionId(missionId);
+				int s=0;
+				for(TScenarinoDetail tms:tmlist){
+					if(tms.getScenarinoStatus()==6){
+						s++;
+					}
+				}
+				ss.put("scnum", tmlist.size());
+				ss.put("zxscnum", s);
 				TDomainMission tDomainMission=tDomainMissionMapper.selectByPrimaryKey(missionDomainId);
 				ss.put("domainName", tDomainMission.getDomainName());
 			}
