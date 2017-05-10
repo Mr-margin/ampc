@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import oracle.net.aso.k;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -262,11 +263,6 @@ public class AppraisalController {
 						Long scid=sc.getsId();
 						//获取数据Json
 						String content=sc.getContent();
-						/**
-						 * TODO  比较耗时间
-						 */
-						//JSONObject obj=JSONObject.fromObject(content);	//行业减排结果	--影响转化效率-----------------------------
-						//Map<String,Object> detamap=(Map)obj;
 						//进行Json解析
 						Map detamap=mapper.readValue(content, Map.class);
 						//循环污染物名称
@@ -291,8 +287,6 @@ public class AppraisalController {
 											Object height=spmap.get(spr);
 											Map heightmap=(Map)height;
 											Object hour=heightmap.get("0");
-											//JSONArray hourlist= JSONArray.fromObject(hour);
-											//List hourlist=mapper.readValue(hour.toString(), ArrayList.class);
 											List hourlist=(List)hour;
 											for(int j=0;j<hourlist.size();j++){
 												BigDecimal bd=(new BigDecimal(hourlist.get(j).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
@@ -302,8 +296,6 @@ public class AppraisalController {
 											Object height=spmap.get(spr);
 											Map heightmap=(Map)height;
 											Object hour=heightmap.get("0");
-											//JSONArray hourlist= JSONArray.fromObject(hour);
-											//List hourlist=mapper.readValue(hour.toString(), ArrayList.class);
 											List hourlist=(List)hour;
 											for(int j=0;j<hourlist.size();j++){
 												BigDecimal bd=(new BigDecimal(hourlist.get(j).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
@@ -1213,7 +1205,6 @@ public class AppraisalController {
 	 * @param request
 	 * @param response
 	 * @return
-	 * TODO
 	 */
 	@RequestMapping("Appraisal/find_standard")
 	public AmpcResult find_All_scenarino(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
@@ -1254,7 +1245,6 @@ public class AppraisalController {
 				return AmpcResult.build(1003, "日期为空或出现非法字符!");
 			}
 			String datetype=param.toString();
-		
 			//获取站点
 			String cityStation;
 			if("city".equals(mode)){
@@ -1263,7 +1253,6 @@ public class AppraisalController {
 			}else{
 				 cityStation=data.get("cityStation").toString();					
 			}
-
 			//空间分辨率
 			param=data.get("domain");
 			if(!RegUtil.CheckParameter(param, "Integer", null, false)){
@@ -1271,7 +1260,6 @@ public class AppraisalController {
 				return AmpcResult.build(1003, "空间分辨率为空或出现非法字符!");
 			}
 			int domain=Integer.valueOf(param.toString());	
-			
 			//变化状态
 			param=data.get("changeType");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
@@ -1307,11 +1295,7 @@ public class AppraisalController {
 				if(datetype.equals("day")){
 					//所有物种集合
 					Map spcmapobj=new HashMap();
-					//单个物种所有时间数据
-					Map standardobj=new HashMap();
-					//储存结果数据
-					Map standardData=new HashMap();
-					/**查询基准数据开始*/
+					//查询基准数据开始
 					String tables="T_SCENARINO_DAILY_";
 					//获取情景添加时间
 					Date tims=tScenarinoDetaillist.getScenarinoAddTime();
@@ -1334,32 +1318,30 @@ public class AppraisalController {
 					if(!Lsclist.isEmpty()){
 						//获取数据Json串
 						String content=Lsclist.get(0).getContent();
-						/**
-						 * TODO //该行代码需优化,转化效率太低，耗时1S以上-----------------------------
-						 */
-						//JSONObject obj=JSONObject.fromObject(content);	
-						//Map<String,Object> standard=(Map)obj;		
 						//总数据
 						Map standard=mapper.readValue(content, Map.class);
-						//循环数据集合
+						//循环数据集合       最外层的日期
 						for(Object key : standard.keySet()){
-							//值
+							//值     根据日期获取当前日期下的所有值
 							Object species=standard.get(key);				
 							Map spcmap= (Map)species;
-							//物种名称开始
+							//循环当前时间的所有物种名称
 							for(Object  spcmapkey : spcmap.keySet()){ 	
+								//单个物种所有时间数据
+								Map standardobj=new HashMap();
 								//物种名称
 								String spcmapkeyw=spcmapkey.toString();
-								//键为年份
+								//为了拼接需要的数据格式  再次循环收到的数据集  键为日期
 								for(Object standard_Time:standard.keySet()){	
-									//值
+									//获取对应年份下的所有信息
 									Object standard_Times=standard.get(standard_Time);
-									//获取日期数据
+									//转化信息格式
 									Map speciesmap= (Map)standard_Times;
-									//循环日期数据
+									//再次循环当前时间的所有物种名称
 									for(Object speciesmap_key:speciesmap.keySet()){
-										//污染物
+										//物种名称
 										String speciesmap_keyn=speciesmap_key.toString();
+										if(!speciesmap_keyn.equals(spcmapkeyw)) continue;
 										//判断
 										if(speciesmap_keyn.equals(spcmapkeyw)&&"CO".equals(spcmapkeyw)){
 											//对应污染物结果
@@ -1374,10 +1356,9 @@ public class AppraisalController {
 												standardobj.put((String)standard_Time, bd);
 											}
 											
-										}else if(speciesmap_keyn.equals(spcmapkeyw)&&!"CO".equals(spcmapkeyw)){
+										}else{
 											Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
 											Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
-											
 											String standardval=speciesmapval.get("0").toString();
 											if("".equals(standardval)||"null".equals(standardval)||"NULL".equals(standardval)||null==standardval){
 												standardobj.put((String)standard_Time, "-");
@@ -1385,15 +1366,15 @@ public class AppraisalController {
 												BigDecimal bd=(new BigDecimal(standardval)).setScale(1, BigDecimal.ROUND_HALF_UP);
 												standardobj.put((String)standard_Time, bd);
 											}
-											
 										}
 									}
 								} 
 								//写入结果集
 								spcmapobj.put((String)spcmapkey, standardobj);
 							}//物种名称结束
+							break;
 						}
-					}	/**查询基准数据结束*/	
+					}	/**查询基准数据结束*/
 					//查询观测数据开始
 					HashMap<String, Object> obsBeanobj=new HashMap<String, Object>();	
 					//站点信息
@@ -1423,35 +1404,25 @@ public class AppraisalController {
 					List<ObsBean> obsBeans=tObsMapper.queryObservationResult(obsBeanobj);	
 					//获取json
 					String contentstr=obsBeans.get(0).getContent();
-					/**
-					 * TODO浪费性能
-					 */
-					//JSONObject content_obj=JSONObject.fromObject(contentstr);	
-					//Map<String,Object> contentmap= (Map)content_obj;
+					//读取数据
 					Map contentmap=mapper.readValue(contentstr, Map.class);
-					//存放所有观测数据
-					Map contentobjs=new HashMap();		
 					//存放所有的物种
-					Map contentobj=new HashMap();			
-					Map contentobj_on=new HashMap();	
+					Map contentobj=new HashMap();
 					//循环所有的物种key
-					for(Object contentmapkey:contentmap.keySet()){		
+					for(Object contentmapkey:contentmap.keySet()){	
+						//记录数据
+						Map contentobj_on=new HashMap();
 						//循环结果集合
 						for(int i=0;i<obsBeans.size();i++){
 							//获取日期
 							String contentobj_on_time=DateUtil.DATEtoString(obsBeans.get(i).getDate(), "yyyy-MM-dd");
 							//获取json数据
 							String contentobj_on_str=obsBeans.get(i).getContent();
-							/**
-							 * TODO 浪费性能
-							 */
-							//JSONObject contentobj_on_str_obj=JSONObject.fromObject(contentobj_on_str);
-							//Map<String,Object> contentobj_on_map= (Map)contentobj_on_str_obj;
 							Map contentobj_on_map=mapper.readValue(contentobj_on_str, Map.class);
 							//循环结果
 							for(Object contentobj_on_key:contentobj_on_map.keySet()){
 								//判断结果
-								if(contentmapkey.equals(contentobj_on_key.toString())){
+								if(contentmapkey.equals(contentobj_on_key)){
 									//判断结果写入对应结果
 									if("CO".equals(contentmapkey)){
 										String speciesval=contentobj_on_map.get(contentobj_on_key).toString();
@@ -1493,8 +1464,9 @@ public class AppraisalController {
 						}else{
 							contentobj.put(contentmapkey, contentobj_on);
 						}
-							
 					}
+					//储存结果数据
+					Map standardData=new HashMap();
 					//观测数据
 					standardData.put("观测数据", contentobj);	
 					standardData.put("基准数据", spcmapobj);
@@ -1508,8 +1480,6 @@ public class AppraisalController {
 				}else{	//---------------------------时间分辨率---逐小时开始-------------------------------//
 					//定义结果集合
 					Map spcmapobj=new HashMap();
-					Map standardobj=new HashMap();
-					Map standardData=new HashMap();
 					//表名Title
 					String tables="T_SCENARINO_HOURLY_";
 					//情景添加时间
@@ -1530,11 +1500,6 @@ public class AppraisalController {
 					List<ScenarinoEntity> Lsclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 					if(!Lsclist.isEmpty()){			//查询基准数据开始
 						String content=Lsclist.get(0).getContent().toString();
-						/**
-						 * TODO 浪费性能
-						 */
-						//JSONObject obj=JSONObject.fromObject(content);
-						//Map<String,Object> standard=(Map)obj;				
 						//总数据
 						Map standard=mapper.readValue(content,Map.class);
 						//存放结果
@@ -1545,15 +1510,17 @@ public class AppraisalController {
 							Object species=standard.get(key);		
 							Map spcmap= (Map)species;			
 							//物种名称开始							
-							for(Object  spcmapkey : spcmap.keySet()){ 			
+							for(Object  spcmapkey : spcmap.keySet()){ 
+								Map standardobj=new HashMap();
 								String spcmapkeyw=spcmapkey.toString();
 								//键为年份	
-								for(Object standard_Time:standard.keySet()){										
+								for(Object standard_Time:standard.keySet()){
 									Object standard_Times=standard.get(standard_Time);				
 									Map speciesmap= (Map)standard_Times;
 									//循环年份数据
 									for(Object speciesmap_key:speciesmap.keySet()){
 										String speciesmap_keyn=speciesmap_key.toString();
+										if(!speciesmap_keyn.equals(spcmapkeyw)) continue;
 										//判断结果类型 存入对应结果
 										if(speciesmap_keyn.equals(spcmapkeyw)&&"CO".equals(spcmapkeyw)){													
 											Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
@@ -1569,8 +1536,7 @@ public class AppraisalController {
 												}
 											}					
 											standardobj.put((String)standard_Time, standardobjdata);
-										}
-										else if(speciesmap_keyn.equals(spcmapkeyw)&&!"CO".equals(spcmapkeyw)){
+										}else {
 											Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
 											Map speciesmapval= (Map)speciesmap_keyval;
 											List qq= (List) speciesmapval.get("0");
@@ -1592,10 +1558,9 @@ public class AppraisalController {
 								//写入结果
 								spcmapobj.put(spcmapkey.toString(), standardobj);
 							}	//物种名称结束
+							break;
 						}
 					}	//基准数结束
-					
-					Map contentobj_on_key_val=new HashMap();
 					HashMap obsBeanobj=new HashMap();	//查询观测数据开始
 					obsBeanobj.put("city_station",cityStation);
 					//所选任务的开始时间
@@ -1620,19 +1585,12 @@ public class AppraisalController {
 					//查询观测数据
 					List<ObsBean> obsBeans=tObsMapper.queryObservationResult(obsBeanobj);	
 					String contentstr=obsBeans.get(0).getContent();
-					/**
-					 * TODO 浪费性能
-					 */
-					//JSONObject content_obj=JSONObject.fromObject(contentstr);
-					//Map<String,Object> contentmap= (Map)content_obj;
 					Map contentmap=mapper.readValue(contentstr, Map.class);
-					//存放所有观测数据
-					Map contentobjs=new HashMap();		
 					//存放所有的物种
 					Map contentobj=new HashMap();			
-					Map contentobj_on=new HashMap();	
 					//循环所有的物种key开始
 					for(Object contentmapkey:contentmap.keySet()){
+						Map contentobj_on=new HashMap();
 						//去除O3_8h的数据
 						if(!"O3_8h".equals(contentmapkey.toString())){			
 							//循环结果
@@ -1641,11 +1599,6 @@ public class AppraisalController {
 								String contentobj_on_time=DateUtil.DATEtoString(obsBeans.get(i).getDate(), "yyyy-MM-dd");
 								//获取json
 								String contentobj_on_str=obsBeans.get(i).getContent();
-								/**
-								 * TODO 浪费性能
-								 */
-								//JSONObject contentobj_on_str_obj=JSONObject.fromObject(contentobj_on_str);
-								//Map<String,Object> contentobj_on_map= (Map)contentobj_on_str_obj;
 								Map contentobj_on_map=mapper.readValue(contentobj_on_str, Map.class);
 								//循环结果
 								for(Object contentobj_on_key:contentobj_on_map.keySet()){
@@ -1653,11 +1606,8 @@ public class AppraisalController {
 									if(contentmapkey.equals(contentobj_on_key.toString())){
 										//判断污染物
 										if("CO".equals(contentmapkey)){
-											/**
-											 * TODO 浪费性能
-											 */
-											//JSONArray contentobj_on_key_arrco=(JSONArray) contentobj_on_map.get(contentobj_on_key);
 											List contentobj_on_key_arrco=(List)contentobj_on_map.get(contentobj_on_key);
+											Map contentobj_on_key_val=new HashMap();
 											//循环结果集合
 											for(int m=0;m<contentobj_on_key_arrco.size();m++){				//循环添加值
 												//判断类型存放对英结果
@@ -1673,11 +1623,8 @@ public class AppraisalController {
 											contentobj_on.put(contentobj_on_time,contentobj_on_key_val);
 											break;
 										}else{
-											//JSONArray contentobj_on_key_arr=(JSONArray) contentobj_on_map.get(contentobj_on_key);
-											//  修改了
-											//Clob clob=(Clob)contentobj_on_map.get(contentobj_on_key);
-											//List contentobj_on_key_arr=mapper.readValue( clob.getSubString(1, (int) clob.length()), ArrayList.class);
 											List contentobj_on_key_arr=(List)contentobj_on_map.get(contentobj_on_key);
+											Map contentobj_on_key_val=new HashMap();
 											for(int m=0;m<contentobj_on_key_arr.size();m++){
 												
 												String observeval=contentobj_on_key_arr.get(m).toString();
@@ -1713,11 +1660,12 @@ public class AppraisalController {
 							}
 						}	
 					}	//循环所有物种的key结束
+					Map standardData=new HashMap();
 					//观测数据
 					standardData.put("观测数据", contentobj);	
 					standardData.put("基准数据", spcmapobj);		//基准数据
 					objsed.put("data", standardData);
-//					//写入结果数据
+ 				//写入结果数据
 					objsed.put("scenarinoId","基准数据");
 					objsed.put("scenarinoName","基准数据");
 					objsed.put("observationId","观测数据");
@@ -1733,6 +1681,5 @@ public class AppraisalController {
 			LogUtil.getLogger().error("MissionAndScenarinoController 根据任务id以及userid查询情景有异常",e);
 			return AmpcResult.build(1000, "参数错误",null);
 		}
-	}
-	
+	}	
 }
