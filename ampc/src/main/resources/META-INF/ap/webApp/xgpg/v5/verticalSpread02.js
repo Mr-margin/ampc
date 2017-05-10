@@ -159,7 +159,7 @@ function setStation(id) {
     $('#proStation').empty();
     $('#cityStation').empty();
     $('#station').empty();
-    var url = '/ampc/Site/find_codes';
+    var url = '/Site/find_codes';
     dps_codeStation = ajaxPost(url, {
         userId: userId,
         MissionId: id
@@ -192,7 +192,7 @@ function setStation(id) {
 }
 /*查询站点*/
 function findStation(code) {
-    dps_station = ajaxPost('/ampc/Site/find_Site', {
+    dps_station = ajaxPost('/Site/find_Site', {
         userId: userId,
         siteCode: code
     }).success(function (res) {
@@ -656,8 +656,8 @@ var czData;
 /*设置echarts图表*/
 function updata() {
     $.when(dps_station).then(function () {
-        var url = '/ampc/Appraisal/find_vertical';
-        var urlJZ = '/ampc/Appraisal/find_basevertical';
+        var url = '/Appraisal/find_vertical';
+        var urlJZ = '/Appraisal/find_basevertical';
         var echartsData = ajaxPost(url, {
             userId: userId,
             missionId: sceneInitialization.taskID,
