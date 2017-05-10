@@ -37,7 +37,6 @@ import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.redisqueue.entity.QueueData;
 import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.LogUtil;
-import ampc.com.gistone.util.RedisConfig;
 
 
 /**  
