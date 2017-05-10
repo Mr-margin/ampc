@@ -25,6 +25,7 @@ import ampc.com.gistone.redisqueue.result.Message;
 import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.JsonUtil;
 import ampc.com.gistone.util.LogUtil;
+import ampc.com.gistone.util.RedisConfig;
 
 /**  
  * @Title: AcceptMessage.java
@@ -54,6 +55,8 @@ public class AcceptMessageQueue implements Runnable{
 	@Autowired
 	private MessageLog messageLog;
 	
+	/*@Autowired
+	private RedisConfig redisConfig;*/
 	@Autowired
 	private ConfigUtil configUtil;
 
@@ -113,14 +116,13 @@ public class AcceptMessageQueue implements Runnable{
 			}
 		}*/
 		
-	while (!Thread.interrupted()) {
-			
+	while (true) {
 			try {
 				System.out.println("队列接受数据");
 				String acceptName = configUtil.getRedisQueueAcceptName();
 //				String rpop = redisUtilServer.brpop("r0_mb");//send_queue_name
-//				String rpop = redisUtilServer.brpop(acceptName);//send_queue_name
-				String rpop = redisUtilServer.brpop("r0_test_mb");//send_queue_name
+				String rpop = redisUtilServer.brpop(acceptName);//send_queue_name
+//				String rpop = redisUtilServer.brpop("r0_test_mb");//send_queue_name
 //				String rpop = redisUtilServer.brpop("receive_queue_name");//send_queue_name
 //				String rpop = redisUtilServer.brpop("r0_mb");//r0_mb
 				//	String rpop2 = redisUtilServer.rpop("test");//result_Start_model
@@ -158,7 +160,7 @@ public class AcceptMessageQueue implements Runnable{
 					}
 				}
 				
-			} catch (IOException e) {                                                                             
+			} catch (Exception e) {                                                                             
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				LogUtil.getLogger().error("线程出现异常了");
