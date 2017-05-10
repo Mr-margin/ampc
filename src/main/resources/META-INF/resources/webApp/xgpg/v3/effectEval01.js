@@ -311,7 +311,7 @@ function initEcharts() {
 		mesage+=proStation+">>"+cityStation+">>"+station+">>"+domain+">>";
 	}
 	
-	for(var i = 0;i < tname.length;i++){
+	for(var i = 0;i < tname.length;i++){	//循环物种
 		if("PM25"==tname[i]){
 			var div_bj=$('<div class="row" style="padding-left:15px;"><div class="col-sm-4"><div class="input-group m-b" style="margin-bottom: 0px"><div class="" style="margin-bottom:0px;padding-left:7px;"><div class="btn-group" data-toggle="buttons"><label name="collapse" class="btn btn-outline btn-success active"><input type="radio" name="spread" value="open" checked>组分展开</label><label name="collapse" class="btn btn-outline btn-success"><input type="radio" name="spread" value="close">组分收起</label></div></div></div></div></div>');
 			var div = $('<div style="height:250px;"></div>');
@@ -461,6 +461,225 @@ function initEcharts() {
     	data: ttime						//修改数据排序
     });
     
+    if("AQI"==tname[i]){
+    	 option.yAxis.axisLabel = [];
+    	    option.yAxis.push({				    //x轴情景时间
+    	    	axisLabel:{
+    	        	formatter:function (value, index) {	//格式化刻度标签值
+    	        		var val;
+    	        		if(index===0){
+    	        			val='0';
+    	        		}else if(index===1){
+    	        			val='50';
+    	        		}else if(index===2){
+    	        			val='100';
+    	        		}else if(index===3){
+    	        			val='150';
+    	        		}else if(index===4){
+    	        			val='200';
+    	        		}else if(index===5){
+    	        			val='300';
+    	        		}else if(index===6){
+    	        			val='400';
+    	        		}else if(index===6){
+    	        			val='500';
+    	        		}
+    	        		return val; 
+    	        	}
+    	        },
+    	    });
+    }
+//    else if("PM25"==tname[i]){
+//   	 option.yAxis.axisLabel = [];
+//	    option.yAxis.push({				    //x轴情景时间
+//	    	axisLabel:{
+//	        	formatter:function (value, index) {	//格式化刻度标签值
+//	        		var val;
+//	        		if(index===0){
+//	        			val='0';
+//	        		}else if(index===1){
+//	        			val='35';
+//	        		}else if(index===2){
+//	        			val='75';
+//	        		}else if(index===3){
+//	        			val='115';
+//	        		}else if(index===4){
+//	        			val='150';
+//	        		}else if(index===5){
+//	        			val='250';
+//	        		}else if(index===6){
+//	        			val='350';
+//	        		}else if(index===6){
+//	        			val='500';
+//	        		}
+//	        		return val; 
+//	        	}
+//	        },
+//	    });
+//    }
+//    else if("SO4"==tname[i]){
+//      	 option.yAxis.axisLabel = [];
+// 	    option.yAxis.push({				    //x轴情景时间
+// 	    	axisLabel:{
+// 	        	formatter:function (value, index) {	//格式化刻度标签值
+// 	        		var val;
+// 	        		if(index===0){
+// 	        			val='0';
+// 	        		}else if(index===1){
+// 	        			val='35';
+// 	        		}else if(index===2){
+// 	        			val='75';
+// 	        		}else if(index===3){
+// 	        			val='115';
+// 	        		}else if(index===4){
+// 	        			val='150';
+// 	        		}else if(index===5){
+// 	        			val='250';
+// 	        		}else if(index===6){
+// 	        			val='350';
+// 	        		}else if(index===6){
+// 	        			val='500';
+// 	        		}
+// 	        		return val; 
+// 	        	}
+// 	        },
+// 	    });
+//     }else if("PM25"==tname[i]){
+//       	 option.yAxis.axisLabel = [];
+// 	    option.yAxis.push({				    //x轴情景时间
+// 	    	axisLabel:{
+// 	        	formatter:function (value, index) {	//格式化刻度标签值
+// 	        		var val;
+// 	        		if(index===0){
+// 	        			val='0';
+// 	        		}else if(index===1){
+// 	        			val='35';
+// 	        		}else if(index===2){
+// 	        			val='75';
+// 	        		}else if(index===3){
+// 	        			val='115';
+// 	        		}else if(index===4){
+// 	        			val='150';
+// 	        		}else if(index===5){
+// 	        			val='250';
+// 	        		}else if(index===6){
+// 	        			val='350';
+// 	        		}else if(index===6){
+// 	        			val='500';
+// 	        		}
+// 	        		return val; 
+// 	        	}
+// 	        },
+// 	    });
+//     }else if("PM25"==tname[i]){
+//       	 option.yAxis.axisLabel = [];
+// 	    option.yAxis.push({				    //x轴情景时间
+// 	    	axisLabel:{
+// 	        	formatter:function (value, index) {	//格式化刻度标签值
+// 	        		var val;
+// 	        		if(index===0){
+// 	        			val='0';
+// 	        		}else if(index===1){
+// 	        			val='35';
+// 	        		}else if(index===2){
+// 	        			val='75';
+// 	        		}else if(index===3){
+// 	        			val='115';
+// 	        		}else if(index===4){
+// 	        			val='150';
+// 	        		}else if(index===5){
+// 	        			val='250';
+// 	        		}else if(index===6){
+// 	        			val='350';
+// 	        		}else if(index===6){
+// 	        			val='500';
+// 	        		}
+// 	        		return val; 
+// 	        	}
+// 	        },
+// 	    });
+//     }else if("PM25"==tname[i]){
+//       	 option.yAxis.axisLabel = [];
+// 	    option.yAxis.push({				    //x轴情景时间
+// 	    	axisLabel:{
+// 	        	formatter:function (value, index) {	//格式化刻度标签值
+// 	        		var val;
+// 	        		if(index===0){
+// 	        			val='0';
+// 	        		}else if(index===1){
+// 	        			val='35';
+// 	        		}else if(index===2){
+// 	        			val='75';
+// 	        		}else if(index===3){
+// 	        			val='115';
+// 	        		}else if(index===4){
+// 	        			val='150';
+// 	        		}else if(index===5){
+// 	        			val='250';
+// 	        		}else if(index===6){
+// 	        			val='350';
+// 	        		}else if(index===6){
+// 	        			val='500';
+// 	        		}
+// 	        		return val; 
+// 	        	}
+// 	        },
+// 	    });
+//     }else if("PM25"==tname[i]){
+//       	 option.yAxis.axisLabel = [];
+// 	    option.yAxis.push({				    //x轴情景时间
+// 	    	axisLabel:{
+// 	        	formatter:function (value, index) {	//格式化刻度标签值
+// 	        		var val;
+// 	        		if(index===0){
+// 	        			val='0';
+// 	        		}else if(index===1){
+// 	        			val='35';
+// 	        		}else if(index===2){
+// 	        			val='75';
+// 	        		}else if(index===3){
+// 	        			val='115';
+// 	        		}else if(index===4){
+// 	        			val='150';
+// 	        		}else if(index===5){
+// 	        			val='250';
+// 	        		}else if(index===6){
+// 	        			val='350';
+// 	        		}else if(index===6){
+// 	        			val='500';
+// 	        		}
+// 	        		return val; 
+// 	        	}
+// 	        },
+// 	    });
+//     }else if("PM25"==tname[i]){
+//       	 option.yAxis.axisLabel = [];
+// 	    option.yAxis.push({				    //x轴情景时间
+// 	    	axisLabel:{
+// 	        	formatter:function (value, index) {	//格式化刻度标签值
+// 	        		var val;
+// 	        		if(index===0){
+// 	        			val='0';
+// 	        		}else if(index===1){
+// 	        			val='35';
+// 	        		}else if(index===2){
+// 	        			val='75';
+// 	        		}else if(index===3){
+// 	        			val='115';
+// 	        		}else if(index===4){
+// 	        			val='150';
+// 	        		}else if(index===5){
+// 	        			val='250';
+// 	        		}else if(index===6){
+// 	        			val='350';
+// 	        		}else if(index===6){
+// 	        			val='500';
+// 	        		}
+// 	        		return val; 
+// 	        	}
+// 	        },
+// 	    });
+//     }
 //    if("AQI"==tname[i]){
 //    	 AQI = echarts.init(document.getElementById(tname[i]));
 //    	AQI.setOption(option);
@@ -523,9 +742,7 @@ function initEcharts() {
     if("AQI"!=tname[i]){
     	var es = echarts.init(document.getElementById(tname[i]));
     	es.group = 'group1';
-//    	ech.push(es);
     	es.on('datazoom', function (params) {
-//    		ech=[];
     		group='';
     		echarts.disconnect(group);
    	    	
@@ -535,11 +752,9 @@ function initEcharts() {
     	$(window).resize(es.resize);
     	
     }else{
-    	 aqi = echarts.init(document.getElementById(tname[i]));
+    	var aqi = echarts.init(document.getElementById(tname[i]));
     	aqi.group = 'group1';
-//    	ech.push(aqi);
     	aqi.on('datazoom', function (params) {
-//    		echarts.connect(ech);
     		echarts.connect('group1');
    	    });
     	aqi.setOption(option);
@@ -547,9 +762,6 @@ function initEcharts() {
     	$(window).resize(aqi.resize);
     }
     
-//    var es = echarts.init(document.getElementById(tname[i]));
-//    es.setOption(option);
-//    $(window).resize(es.resize);
   }
 //	echarts.connect(ech);
 //	echarts.connect([PM25, SO4, NO3, NH4, BC, OM, PMFINE, PM10, O3_8_MAX, O3_1_MAX, SO2, NO2, CO]);
@@ -655,11 +867,11 @@ function find_standard(){
 	    	scenarino.scenarinoName=res.data.scenarinoName;
 	    	observation.scenarinoId=res.data.observationId;
 	    	observation.scenarinoName=res.data.observationName;
-	    	if (JSON.stringify(standardData) == '{}' || standardData == null||standardData==undefined||standardData=='') {
-	    	  swal('暂无基准匹配数据', '', 'error')
-	    	} else {
-	    	  
-	    	}
+//	    	if (JSON.stringify(standardData) == '{}' || standardData == null||standardData==undefined||standardData=='') {
+//	    	  swal('暂无基准匹配数据', '', 'error')
+//	    	} else {
+//	    	  
+//	    	}
 	    } else {
 	    	swal(res.msg, '', 'error')
 	    }
