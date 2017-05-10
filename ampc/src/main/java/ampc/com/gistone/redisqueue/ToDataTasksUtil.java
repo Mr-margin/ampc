@@ -93,7 +93,7 @@ public class ToDataTasksUtil {
 			Map map =(Map) message.getBody();
 		    Object code = map.get("code");
 		    Object param = map.get("scenarioid");
-		    if (RegUtil.CheckParameter(param, "Integer", null, false)) {
+		    if (RegUtil.CheckParameter(param, "Long", null, false)) {
 			    Long tasksScenarinoId = Long.parseLong(map.get("scenarioid").toString());
 			    String endtime = map.get("date").toString();
 			   //结束时间的年与日形式 用于比较
