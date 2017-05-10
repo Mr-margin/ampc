@@ -1247,7 +1247,9 @@ public class MissionAndScenarinoController {
 				LogUtil.getLogger().error("save_scenarino  情景类型为空!");
 				return AmpcResult.build(1003, "情景类型为空!");
 			}
-			Date pathDate=new Date();
+			Date pathDate1=new Date();
+			String pathdate2=sdf.format(pathDate1);
+			Date pathDate=sdf.parse(pathdate2);
 //			Calendar cal = Calendar.getInstance();
 //			cal.setTime(date);
 //			cal.add(Calendar.DATE, -1);
@@ -1272,6 +1274,17 @@ public class MissionAndScenarinoController {
 					Date basisTime=sdf.parse(baTime);
 				TScenarinoDetail tsd=new TScenarinoDetail();
 				
+//				TScenarinoDetail tsd=new TScenarinoDetail();
+//				
+//				tsd.setBasisScenarinoId(basisScenarinoId);
+//				tsd.setBasisTime(basisTime);
+//				tsd.setScenarinoName(scenarinoName);
+//				tsd.setScenarinoStartDate(scenarinoStartDate);
+//				tsd.setScenarinoEndDate(scenarinoEndDate);
+//				tsd.setScenType(scenType);
+//				tsd.setMissionId(missionId);
+//				tsd.setUserId(userId);
+//				tsd.setIsEffective("1");
 				tsd.setBasisScenarinoId(basisScenarinoId);
 				tsd.setBasisTime(basisTime);
 				tsd.setScenarinoName(scenarinoName);
