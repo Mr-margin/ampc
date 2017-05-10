@@ -561,7 +561,8 @@ $('.hour').css('display','none');
 var speciesArr = {
 //		day: ['PM₂₅', 'PM₁₀', 'O₃_8_MAX', 'O₃_1_MAX', 'O₃_AVG', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE'],
 		day: ['PM25', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'O3_AVG', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE'],
-		hour: ['PM₂₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE']
+		hour: ['PM25', 'PM10', 'O3', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE']
+//		hour: ['PM₂₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE']
 };
 
 var speciesObj = {
@@ -658,8 +659,7 @@ function initialize() {
  * 标签页替换
  * @param type
  */
-function changeTypeLabel(type) {
-
+function changeType(type) {
     if (changeMsg.type != type) {
 
         if (type == 'wrw') {
@@ -675,7 +675,7 @@ function changeTypeLabel(type) {
         if (!dps_Station[changeMsg.city + changeMsg.type]) {
             dps_Station[changeMsg.city + changeMsg.type] = setStation(changeMsg.city, changeMsg.type);
         }
-        updata();
+//        updata();
     }
 
 }
@@ -951,6 +951,7 @@ function updata(opt) {
 }
 
 function initEcharts() {
+	$("#initEcharts").empty();	//清空数据
 	if(changeMsg.rms == 'day'){
 		$('.hour').css('display','none');
 	    $('.day').css('display','block');
@@ -982,7 +983,7 @@ function initEcharts() {
 		mesage+=proStation+">>"+cityStation+">>"+station+">>"+domain+">>";
 	}
 	
-	for (var i = 0; i < species.length; i++) {	//循环物种开始
+	for (var i = 0; i < tname.length; i++) {	//循环物种开始
 //		echarts.dispose(document.getElementById(species[i]));	//echarts内存释放
 //	    var es = echarts.init(document.getElementById(species[i]));	
 		
@@ -1024,7 +1025,6 @@ function initEcharts() {
 			option.title.text = mesage +tname[i]+('(mg/m³)');
 		}	
 		
-//		console.log(data);
 		//设置单个图表中包含的图例名称
 		option.legend.data = (function(){	//图例名称
 			var lenArr = [];	//图例的legend.data使用数组存放
@@ -1037,46 +1037,32 @@ function initEcharts() {
 		//存放单个图表的series数据
 		option.series = [];
 		if(changeMsg.rms == 'day'){	//逐日开始
-//			var xdataName = ['2017-05-02','2017-05-03','2017-05-04','2017-05-05','2017-05-06','2017-05-07','2017-05-08','2017-05-09'];	
 			var xdataName =	[];
 			$.each(data,function(key,val){
 				var xdata = [];		//x轴数据
 				var ydata = [];		//y轴数据
 				var name = key;		//数据name
-//				if("模拟数据"==val){
-//					$.each(val[species[i]],function(timesKey,timesVal){	//循环单个物种数据
-//						xdataName.push(timesKey);
-//					});
-//				}
 				
-				if(val.hasOwnProperty(species[i])){	//包含当前物种
-					$.each(val[species[i]],function(timeKey,timeVal){	//循环单个物种数据
-						xdata.push(timeKey);
-					});
-					xdata = xdata.sort();
-					for(var m=0;m<xdata.length;m++){
-						ydata.push(val[species[i]][xdata[m]]);
-					}
-					if("模拟数据"==key){		//去模拟
-						for(var skey in val[species[i]]){
-							xdataName.push(skey);
-							
+				if(val.hasOwnProperty(tname[i])){	//包含当前物种
+					$.each(val,function(speKey,speVal){
+						if(speKey==tname[i]){
+							$.each(val[tname[i]],function(timeKey,timeVal){	//循环单个物种数据
+								xdata.push(timeKey);
+							});
+							xdata = xdata.sort();
+							for(var m=0;m<xdata.length;m++){
+								ydata.push(val[tname[i]][xdata[m]]);
+							}
+							if("模拟数据"==key){		//去模拟
+								for(var skey in val[tname[i]]){
+									xdataName.push(skey);
+									
+								}
+							}
 						}
-					}
+					});
 					
 				}
-				
-//				if(data.hasOwnProperty(key)){	//包含模拟或观测数据
-//					if(data[key].hasOwnProperty(species[i])){	//包含当前物种
-//						$.each((data[key])[species[i]],function(timeKey,timeVal){
-//							xdata.push(timeKey);
-//						})
-//						xdata = xdata.sort();
-//						for(var m=0;m<xdata.length;m++){
-//							ydata.push(((data[key])[species[i]])[xdata[m]]);
-//						}
-//					}
-//				}
 				
 				option.series.push({
 					name : name, 				//情景名称  对应图例 exceptsjz
@@ -1089,11 +1075,52 @@ function initEcharts() {
 		    option.xAxis.push({				    //x轴情景时间
 		    	data: xdataName.sort()						//修改数据排序
 		    });
-		    var es = echarts.init(document.getElementById(tname[i]));
-		    es.setOption(option);
-		    $(window).resize(es.resize);
-		}	//逐日结束
+		}else{	//-----------------------逐日结束--逐小时开始--------------------//
+			var xdataName =	[];
+			$.each(data,function(key,val){	//键为模拟或观测
+				var xdata = [];		//x轴数据
+				var ydata = [];		//y轴数据
+				var name = key;		//数据name
+				var keys = [];
+				
+				if(val.hasOwnProperty(species[i])){	//包含当前物种
+					for(var timesKey in val[species[i]]){
+						xdata.push(timesKey);	//全部日期
+					}
+					xdata = xdata.sort();	//排序
+					
+						for(var n=0;n<xdata.length;n++){
+							var arr = Object.keys(val[species[i]][xdata[n]]);
+							for(var m=0;m<arr.length;m++){
+								keys.push(xdata[n]+' '+m);
+								ydata.push(val[species[i]][xdata[n]][m]);
+							}
+						
+						}
+					
+					if("模拟数据"==key){		//去除模拟
+						xdataName=keys;
+					}
+				}
+				
+				option.series.push({
+					name : name, 				//情景名称  对应图例 exceptsjz
+					type : show_type, 			//图表类型   已设全局变量 show_type
+					smooth : true,
+					data : ydata     			//可变情景数据 
+				});	
+			});
+			option.xAxis = [];
+		    option.xAxis.push({				    //x轴情景时间
+		    	data: xdataName					//修改数据排序
+		    });
 			
+		}
+		var es = echarts.init(document.getElementById(tname[i]));
+	    es.setOption(option);
+	    $(window).resize(es.resize);
+		
+		
 	 }	//循环物种结束
 	  
 	  
