@@ -904,7 +904,7 @@ function table_show(cod1, level1){
 	$('#listModal_table').bootstrapTable({
 		height : $("#listModal").height()-51,
 		method : 'POST',
-		url : localhttp + '/ampc/echarts/get_radioList',
+		url : '/ampc/echarts/get_radioList',
 		dataType : "json",
 		iconSize : "outline",
 		clickToSelect : true,// 点击选中行

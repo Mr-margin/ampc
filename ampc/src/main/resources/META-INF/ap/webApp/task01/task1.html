@@ -284,7 +284,7 @@
       showPageList:false,
       onSelectPage:function(pageNumber, pageSize){
         $.ajax({
-          url: localhttp + '/ampc/mission/get_mission_list',
+          url: '/ampc/mission/get_mission_list',
           contentType: 'application/json',
           method: 'post',
           dataType: 'JSON',
@@ -434,7 +434,7 @@
     for (var i = 0; i < res.rows.length; i++) {
       transformdata.push($.extend({}, res.rows[i], {id: 'rw' + res.rows[i].missionId, state: 'closed'}));
       $.ajax({
-        url: localhttp + '/ampc/scenarino/get_scenarinoListBymissionId',
+        url: '/ampc/scenarino/get_scenarinoListBymissionId',
         contentType: 'application/json',
         method: 'post',
         async: false,

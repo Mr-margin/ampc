@@ -715,7 +715,7 @@ function sceneTable(){
 	
 	$("#sceneTableId").bootstrapTable({
 		method : 'POST',
-		url : localhttp + '/ampc/scenarino/find_All_scenarino',
+		url : '/ampc/scenarino/find_All_scenarino',
 		dataType : "json",
 		iconSize : "outline",
 		clickToSelect : true,	// 点击选中行

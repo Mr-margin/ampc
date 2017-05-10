@@ -9,12 +9,15 @@ var userId;
 
 var dps_um = getSessionMsg();
 
-$.when(dps_um).then(function () {
-    if (!userMsg) {
-      window.location.href = "index.html";
-      return;
-    }
-      userId = userMsg.userId;
+
+$.when(dps_um).then(function(){
+  if(!userMsg){
+    window.location.href="index.html";
+    return;
+  }
+  userId = userMsg.userId;
+// userId = 1;
+
       if (!userId) {
         window.location.href = "index.html";
       } else {
@@ -206,7 +209,7 @@ $.when(dps_um).then(function () {
 
 /*退出登录*/
 function dengluOut() {
-    var url = '/ampc/user/loginOut';
+    var url = '/user/loginOut';
     ajaxPost(url, {}).success(function () {
         window.location.href = "index.html";
     })
@@ -214,7 +217,7 @@ function dengluOut() {
 
 /*获取session信息*/
 function getSessionMsg() {
-    var url = '/ampc/user/get_sessionInfo';
+    var url = '/user/get_sessionInfo';
     return ajaxPost(url, {}).success(function (res) {
         userMsg = res.data;
     })
@@ -222,7 +225,7 @@ function getSessionMsg() {
 
 /*初始化zTree数据*/
 function initZTree() {
-    var url = '/ampc/area/find_areas_new';
+    var url = '/area/find_areas_new';
     ajaxPost(url, {
         userId: userId
     }).success(function (res) {
@@ -279,7 +282,7 @@ function zmblockUI(selector, method) {
 function ajaxPost(url, parameter) {
     parameterPar.data = parameter;
     var p = JSON.stringify(parameterPar);
-    return $.ajax(localhttp + url, {
+    return $.ajax('/ampc'+url, {
         contentType: "application/json",
         type: "POST",
         async: true,
