@@ -41,47 +41,76 @@ public class ConfigUtil {
 	@Value("${jp.preproURL}")
 	private String preproURL;
 
-	
 	//redisIP地址
-	@Value("${spring.redis.host}")
-	private String redisHost;
-	//redis 端口
-	@Value("${spring.redis.port}")
-	private int redisPort;
-	//redis 密码
-	@Value("${spring.redis.password}")
-	private String redisPassWord;
-	//redis 发送消息队列的名称
-	@Value("${redis.receive.queue.name}")
-	private String redisQueuesSendName;
-	//redis 接受消息队列的名称
-	@Value("${redis.send.queue.name}")
-	private String redisQueueAcceptName;
+			@Value("${spring.redis.host}")
+			private String redisHost;
+			//redis 端口
+			@Value("${spring.redis.port}")
+			private int redisPort;
+			//redis 密码
+			@Value("${spring.redis.password}")
+			private String redisPassWord;
+			//redis 发送消息队列的名称
+			@Value("${redis.receive.queue.name}")
+			private String redisQueuesSendName;
+			//redis 接受消息队列的名称
+			@Value("${redis.send.queue.name}")
+			private String redisQueueAcceptName;
+			//redis 连接池中的最大空闲连接
+			@Value("${spring.redis.pool.max-idle}")
+			private String maxIdle;
+			//redis 连接池中的最小空闲连接
+			@Value("${spring.redis.pool.min-idle}")
+			private String minidle;
+			//redis 连接池最大连接数（使用负值表示没有限制
+			@Value("${spring.redis.pool.max-active}")
+			private String maxActive;
+			//redis 连接池最大阻塞等待时间（使用负值表示没有限制)
+			@Value("${spring.redis.pool.max-wait}")
+			private String maxWait;
 	
 	
 	
+	
+
+			public String getMaxIdle() {
+				return maxIdle;
+			}
+
+			public String getMinidle() {
+				return minidle;
+			}
+
+			public String getMaxActive() {
+				return maxActive;
+			}
+
+			public String getMaxWait() {
+				return maxWait;
+			}
+
+			public String getRedisQueuesSendName() {
+				return redisQueuesSendName;
+			}
+
+			public String getRedisQueueAcceptName() {
+				return redisQueueAcceptName;
+			}
+
+			public String getRedisHost() {
+				return redisHost;
+			}
+
+			public int getRedisPort() {
+				return redisPort;
+			}
+
+			public String getRedisPassWord() {
+				return redisPassWord;
+			}
 
 	
-	public String getRedisQueuesSendName() {
-		return redisQueuesSendName;
-	}
-
-	public String getRedisQueueAcceptName() {
-		return redisQueueAcceptName;
-	}
-
-	public String getRedisHost() {
-		return redisHost;
-	}
-
-	public int getRedisPort() {
-		return redisPort;
-	}
-
-	public String getRedisPassWord() {
-		return redisPassWord;
-	}
-
+	
 	public String getActionlistURL() {
 		return actionlistURL;
 	}
