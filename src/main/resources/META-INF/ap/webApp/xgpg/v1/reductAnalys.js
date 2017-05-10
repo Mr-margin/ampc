@@ -25,7 +25,7 @@ function sceneInittion() {
     var paramsName = {};
     paramsName.userId = userId;
     console.log(JSON.stringify(paramsName));
-    ajaxPost('/ampc/mission/find_All_mission', paramsName).success(function (res) {
+    ajaxPost('/mission/find_All_mission', paramsName).success(function (res) {
         console.log(JSON.stringify(res));
         if (res.status == 0) {
             if (res.data || res.data.length > 0) {
@@ -372,7 +372,7 @@ function baizhu_jianpai(gis_paramsName, sh_type) {
     if (typeof app.paifang != "undefined") {
         app.map.removeLayer(app.paifang);
     }
-    ajaxPost('/ampc/find_reduceEmission', gis_paramsName).success(function (res) {
+    ajaxPost('/find_reduceEmission', gis_paramsName).success(function (res) {
 //		console.log(JSON.stringify(res));
         if (res.status == 0) {
 
