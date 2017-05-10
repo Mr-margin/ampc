@@ -443,7 +443,7 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月7日 下午8:46:00
 	 */
 //	@Scheduled(cron="0 0/10 * * * ?")
-//	@Scheduled(fixedRate = 5000)
+//	@Scheduled(fixedRate = 50000)
 	public void ForpreEvalution() {
 		LogUtil.getLogger().info("每隔10分钟执行一次");
 		//根据情景的状态和情景的类型确定准备参数
@@ -482,6 +482,7 @@ public class SchedulerTimer<V> {
 							Date ctime = DateUtil.StrtoDateYMD(sendtime, "yyyyMMdd");
 							Date nowDate = tasksStatus.getTasksEndDate();
 							nowDate = nowDate ==null?ctime:nowDate;
+//							Date toSendDate = DateUtil.StrtoDateYMD(DateUtil.changeDate(nowDate, "yyyyMMdd", 1), "yyyyMMdd") ;
 							//当前情景在当前执行日期下执行到哪一步
 							Long preEvastepindex = tasksStatus.getStepindex();
 							preEvastepindex = preEvastepindex == null?0:preEvastepindex;
@@ -495,7 +496,7 @@ public class SchedulerTimer<V> {
 								int compareTo1 = EndDate.compareTo(nowDate);
 								//比较当前情景的模式运行的时间时间和情景是否可发送的最大时间
 								int compareTo2 = nowDate.compareTo(maxtime);
-								//比较当前时间模式运行的时间和已经发送的时间大小 理论上应该是一样大（index=4的时候，会小一天）
+								//比较当前时间模式运行的时间和已经发送的时间大小 理论上应该是一样大（index=4的时候，并在运行下一条的数据的时候会小一天）
 								int compareTo3 = nowDate.compareTo(ctime);
 								//compareTo1大于0表示时间在开始时间到结束时间之间 还要继续发送消息  
 								//compareTo2小于0表示最新的时间大于该情景正在执行的时间---气象数据满足
@@ -508,9 +509,9 @@ public class SchedulerTimer<V> {
 									//准备数据发送消息
 									boolean sendDataEvaluationSituationThen = readyData.sendDataEvaluationSituationThen(nowDate, scenarinoId);
 									if (sendDataEvaluationSituationThen) {
-										LogUtil.getLogger().info("预评估消息发送成功！");
+										LogUtil.getLogger().info("ID为"+scenarinoId+"预评估情景发送成功！");
 									}else {
-										LogUtil.getLogger().info("预评估消息发送失败！");
+										LogUtil.getLogger().info("ID为"+scenarinoId+"预评估情景发送成功！");
 									}
 								}
 								
