@@ -99,6 +99,7 @@ import java.util.UUID;
 
 
 
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -288,31 +289,96 @@ public class ReadyData {
 		String str = null;
 		if (scenarinoType==4&&missionType==1) {
 			//准备实时预报的数据(自己测试用的）
-			TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+/*			TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
 			String lastungrib = readyLastUngrib(userId);
 			if (null!=lastungrib) {
 				readyRealMessageDataFirst(tScenarinoDetail, lastungrib);
 			}else {
 				LogUtil.getLogger().info("当天的实时预报已经发送过了！");
-			}
+			}*/
 			str="ok";
 		}
 		if (scenarinoType==3&&missionType==3) {
 			//基准情景
-			readyBaseData(scenarinoId,false);
-			str="ok";
+//			readyBaseData(scenarinoId,false);
+//			str="ok";
+			str = getEmisParams(scenarinoId);
+			
 		}
 		if (scenarinoType==1&&missionType==2) {
 			//预评估任务的预评估情景
 			//readyPreEvaluationSituationDataFirst(scenarinoId,cores);
 			LogUtil.getLogger().info("预评估任务的预评估情景模式开始！");
-			str="ok";
+//			str="ok";
+			try {
+				//预评估任务的预评估情景
+				//获取能够执行的条件
+				TScenarinoDetail scenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+				//请求actionlist
+				LogUtil.getLogger().info("请求actionlist，获取减排系数");
+				//获取情景的开始时间和结束时间
+				TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectStartAndEndDate(scenarinoId);
+				Date start = tScenarinoDetail.getScenarinoStartDate();
+				String startDate = DateUtil.DATEtoString(start, "yyyy-MM-dd HH:mm:ss");
+				Date end = tScenarinoDetail.getScenarinoEndDate();
+				String endDate = DateUtil.DATEtoString(end, "yyyy-MM-dd HH:mm:ss");
+				//获取减排的json串
+				String jpjson = planAndMeasureController.JPUtil(scenarinoId, userId, startDate, endDate);
+				if (null!=jpjson) {
+					//发送actionlist请求
+					String actionlistURL = configUtil.getActionlistURL()+scenarinoId;
+					String getResult=ClientUtil.doPost(actionlistURL,jpjson);
+					LogUtil.getLogger().info(getResult+"jp action list，情景ID："+scenarinoId);
+						Map mapResult=mapper.readValue(getResult, Map.class);
+						LogUtil.getLogger().info(mapResult+"返回值");
+						if(mapResult.get("status").toString().equals("success")){
+							str="ok";
+						}else {
+							str="error";
+						}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+				LogUtil.getLogger().error("发送actionlist出异常了",e);
+				str = "exception";
+			}
 		}
 		if (scenarinoType==2&&missionType==2) {
 			//预评估任务的后评估情景  
 			LogUtil.getLogger().info("预评估任务的后评估情景模式开始！");
-			readyPrePostEvaluationSituationData(scenarinoId,false);
-			str="ok";
+//			readyPrePostEvaluationSituationData(scenarinoId,false);
+			try {
+				//预评估任务的预评估情景
+				//获取能够执行的条件
+				TScenarinoDetail scenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+				//请求actionlist
+				LogUtil.getLogger().info("请求actionlist，获取减排系数");
+				//获取情景的开始时间和结束时间
+				TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectStartAndEndDate(scenarinoId);
+				Date start = tScenarinoDetail.getScenarinoStartDate();
+				String startDate = DateUtil.DATEtoString(start, "yyyy-MM-dd HH:mm:ss");
+				Date end = tScenarinoDetail.getScenarinoEndDate();
+				String endDate = DateUtil.DATEtoString(end, "yyyy-MM-dd HH:mm:ss");
+				//获取减排的json串
+				String jpjson = planAndMeasureController.JPUtil(scenarinoId, userId, startDate, endDate);
+				if (null!=jpjson) {
+					//发送actionlist请求
+					String actionlistURL = configUtil.getActionlistURL()+scenarinoId;
+					String getResult=ClientUtil.doPost(actionlistURL,jpjson);
+					LogUtil.getLogger().info(getResult+"jp action list，情景ID："+scenarinoId);
+						Map mapResult=mapper.readValue(getResult, Map.class);
+						LogUtil.getLogger().info(mapResult+"返回值");
+						if(mapResult.get("status").toString().equals("success")){
+							str="ok";
+						}else {
+							str="error";
+						}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+				LogUtil.getLogger().error("发送actionlist出异常了",e);
+				str = "exception";
+			}
 		}
 		if (scenarinoType==2&&missionType==3) {
 			try {
@@ -349,7 +415,7 @@ public class ReadyData {
 						//发送actionlist请求
 						String actionlistURL = configUtil.getActionlistURL()+scenarinoId;
 						String getResult=ClientUtil.doPost(actionlistURL,jpjson);
-						LogUtil.getLogger().info(getResult+"jp action list");
+						LogUtil.getLogger().info(getResult+"jp action list,情景ID："+scenarinoId);
 							Map mapResult=mapper.readValue(getResult, Map.class);
 							LogUtil.getLogger().info(mapResult+"返回值");
 							if(mapResult.get("status").toString().equals("success")){
@@ -1415,27 +1481,6 @@ public class ReadyData {
 	
 	
 	/**
-	 * 
-	 * @Description: TODO
-	 * @param sourceid
-	 * @return   
-	 * Map<String,Object>  获取emis的数据
-	 * @throws UnknownHostException 
-	 * @throws
-	 * @author yanglei
-	 * @date 2017年3月17日 下午2:19:53
-	 */
-	public Map<String, String> getEmis(Long missionId,Long scenarinoId,Long userId,Integer scenarinoType) throws UnknownHostException {
-		LogUtil.getLogger().info("开始计算减排");
-		//通过情景ID获取清单ID
-		Long sourceid = tMissionDetailMapper.getsourceid(missionId);
-		/*String strResult="jobId="+scenarinoId;
-		String url="http://192.168.1.128:8082/ampc/app";
-		String getResult=ClientUtil.doPost(url,map.toString());*/
-		
-		return null;
-	}
-	/**
 	 * @Description: 设置emis数据的方法 从数据库里面取
 	 * @param missionId
 	 * @return   
@@ -1522,8 +1567,38 @@ public class ReadyData {
 			LogUtil.getLogger().error("修改情景id为:"+scenarinoId+"的状态出现异常",e);
 		}
 		return flag;
-		
 	}
-	
+	/**
+	 * 
+	 * @Description: 获取
+	 * @param scenarinoId
+	 * @return   
+	 * String  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年5月10日 下午2:39:22
+	 */
+	public String getEmisParams(Long scenarinoId) {
+		//发送actionlist请求
+		String str ;
+		String actionlistURL = configUtil.getActionlistURL()+scenarinoId;
+		String getResult=ClientUtil.doPost(actionlistURL);
+		LogUtil.getLogger().info(getResult+"emisdata params，情景ID："+scenarinoId);
+			Map mapResult;
+			try {
+				mapResult = mapper.readValue(getResult, Map.class);
+				LogUtil.getLogger().info(mapResult+"返回值");
+				if(mapResult.get("status").toString().equals("success")){
+					str="ok";
+				}else {
+					str="error";
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				str = "exception";
+			}
+			return str;
+	}
 
 }
