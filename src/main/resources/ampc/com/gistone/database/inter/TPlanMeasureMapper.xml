@@ -88,6 +88,7 @@
 				 <if test="measureId != null" >
        					 AND TPM.MEASURE_ID=#{measureId,jdbcType=DECIMAL} 
      			  </if>
+     			  	ORDER BY ADD_TIME
   </select>
   
   
