@@ -395,7 +395,7 @@ function sceneTable() {
     //表格交互 easyui
 
     $.ajax({
-        url: localhttp+'/ampc/scenarino/find_All_scenarino',
+        url: '/ampc/scenarino/find_All_scenarino',
         contentType: 'application/json',
         method: 'post',
         dataType: 'JSON',
