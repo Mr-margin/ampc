@@ -25,7 +25,6 @@ import ampc.com.gistone.redisqueue.result.Message;
 import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.JsonUtil;
 import ampc.com.gistone.util.LogUtil;
-import ampc.com.gistone.util.RedisConfig;
 
 /**  
  * @Title: AcceptMessage.java
