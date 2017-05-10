@@ -1502,8 +1502,7 @@ public class AppraisalController {
 						String content=Lsclist.get(0).getContent().toString();
 						//总数据
 						Map standard=mapper.readValue(content,Map.class);
-						//存放结果
-						Map standardobjdata=new HashMap();
+						
 						//循环数据
 						for(Object  key : standard.keySet()){	
 							//值
@@ -1519,6 +1518,8 @@ public class AppraisalController {
 									Map speciesmap= (Map)standard_Times;
 									//循环年份数据
 									for(Object speciesmap_key:speciesmap.keySet()){
+										//存放结果
+										Map standardobjdata=new HashMap();
 										String speciesmap_keyn=speciesmap_key.toString();
 										if(!speciesmap_keyn.equals(spcmapkeyw)) continue;
 										//判断结果类型 存入对应结果
