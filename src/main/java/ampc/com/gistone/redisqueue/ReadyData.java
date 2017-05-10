@@ -1025,6 +1025,7 @@ public class ReadyData {
 		LogUtil.getLogger().info("发下一条数据");
 		//消息的time的内容
 		String time = DateUtil.changeDate(tasksEndDate, "yyyyMMdd", 1);
+//		String time = DateUtil.DATEtoString(tasksEndDate, "yyyyMMdd");
 		Long scenarinoId = tasksScenarinoId;
 		Date today = DateUtil.DateToDate(new Date(), "yyyyMMdd");
 		//比较时间 确定datetype
@@ -1290,8 +1291,8 @@ public class ReadyData {
 		//创建消息bady对象
 		QueueBodyData bodyData = new QueueBodyData();
 		//调试模式的内容
-		bodyData.setFlag(1);
-//		bodyData.setFlag(0); 
+//		bodyData.setFlag(1);
+		bodyData.setFlag(0); 
 		Integer scenarinoType = Integer.parseInt(scenarinoDetailMSG.getScenType());//情景类型
 		Long userId = scenarinoDetailMSG.getUserId();
 		Long missionId = scenarinoDetailMSG.getMissionId();//任务id
@@ -1444,10 +1445,17 @@ public class ReadyData {
 	 * @date 2017年3月28日 下午6:50:19
 	 */
 	private QueueDataEmis getDataEmis(Long missionId,String scenarinoType,Long scenarinoId) {
-		//通过情景ID获取清单ID
-		Long sourceid = tMissionDetailMapper.getsourceid(missionId);
-		//通过情景ID获取对应的减排系数
-		TTasksStatus tasksStatus = tTasksStatusMapper.selectEmisDataByScenId(scenarinoId);
+		Long sourceid = null;
+		TTasksStatus tasksStatus = null;
+		try {
+			//通过情景ID获取清单ID
+			sourceid = tMissionDetailMapper.getsourceid(missionId);
+			//通过情景ID获取对应的减排系数
+			tasksStatus = tTasksStatusMapper.selectEmisDataByScenId(scenarinoId);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("ReadyData getDataEmis 查询减排系数异常！ ",e);
+		}
+		
 		if (null==tasksStatus) {
 			LogUtil.getLogger().info("没有收到减排系数");
 		}
