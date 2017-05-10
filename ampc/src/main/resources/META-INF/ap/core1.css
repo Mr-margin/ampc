@@ -787,13 +787,13 @@ dl, dd {
   font-weight: bold;
   color: #666;
   width: 105px;
+  padding-top:0;
 }
 
 .cloudui.window .window-body .rwCon .rwdlgTop .rwdlgTopCon {
   float: left;
-  height: 30px;
+  height: 40px;
   width: calc(100% - 105px);
-  padding-top: 5px;
 }
 
 .cloudui.window .window-body .rwCon .rwdlgTop .rwdlgTopCon select {
@@ -1097,15 +1097,16 @@ dl, dd {
   overflow: inherit;
 }
 /*垂直轮廓*/
-.cloudui #initEcharts{overflow: hidden;}
 .cloudui .verticalCon{width:100%;height:100%;}
 .cloudui .verticalCon .ibox{width:100%;height:100%;}
 .cloudui .verticalCon .xgpgShow{width: 100%;height:100%;overflow-y: auto;position: relative;}
 .cloudui .verticalCon .ibox-content .searchT{position:absolute;left:0px;right:0px;top:0;z-index:10;background-color:white;}
 .cloudui .verticalCon .ibox-content #showTitle{}
 .cloudui .verticalCon .ibox-content .verticalChar{position:absolute;top:0px;left:0;right:0;bottom: 0;z-index:0;overflow-y: auto;}
-.cloudui .verticalCon .ibox-content .verticalChar #initEcharts{height: auto;}
-.cloudui .echartsCZ{float: left;width: 25%;padding:0 20px;}
+.cloudui .verticalCon .ibox-content .verticalChar #initEcharts{height: auto;overflow: hidden;width:100%;}
+.cloudui .verticalCon .ibox-content .verticalChar #initEcharts .echartsCZ{float: left;width: 25%;}
+.cloudui .verticalCon .ibox-content .verticalChar #initEcharts .echartsCZ .easyui-panel{width: 100%!important;height:100%;height:300px;}
+/*.cloudui .verticalCon .ibox-content .verticalChar #initEcharts .echartsCZ .easyui-panel div{width: 100%!important;height:100%;height:300px;}*/
 /*搜索条件*/
 .cloudui .xgpgShow .searchT .toolAll .toolContent{overflow: hidden;}
 .cloudui .xgpgShow .searchT .toolAll .selectTool{float: left;padding-top:10px;padding-bottom: 10px;margin-right:30px;}
