@@ -1,7 +1,6 @@
-var ArcGisUrl = "http://192.168.1.132:8080";//ArcGis服务器javascript API地址
-var ArcGisServerUrl = "http://192.168.1.132:6080";//ArcGis地图服务器地址
-var jianpaiUrl = "http://192.168.1.128:8089";//减排计算的地址
-
+var ArcGisUrl = "http://166.111.42.46:8080";//ArcGis服务器javascript API地址
+var ArcGisServerUrl = "http://166.111.42.46:6080";//ArcGis地图服务器地址
+var jianpaiUrl = "http://166.111.42.85:8090";//减排计算的地址
 var maxAreaNum = 5;//定义最大区域数量
 // var localhttp="http://192.168.4.214:8082";
 var localhttp="http://localhost:8082";

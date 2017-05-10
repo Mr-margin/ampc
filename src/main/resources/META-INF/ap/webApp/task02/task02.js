@@ -5,10 +5,11 @@
 /*全局变量*/
 var totalWidth, totalDate, startDate, qjMsg;
 var index, indexPar, handle, minLeft, maxLeft, selfLeft, startX, leftWidth, rightWidth;
-var allData = [];
-var areaIndex, timeIndex;
-var showCode = [{}, {}, {}];
-var proNum, cityNum, countyNum;
+var allData = [];//保存所有区域时段信息
+var areaIndex, timeIndex;//保存选择区域和时段的索引
+var showCode = [{}, {}, {}];//保存所选的地区
+var proNum, cityNum, countyNum;//保存所选地区数量
+/*向路由保存信息对象结构*/
 var msg = {
   'id': 'yaMessage',
   'content': {
@@ -24,6 +25,7 @@ var msg = {
   }
 };
 
+/*tree数配置*/
 var zTreeSetting = {
   check: {
     enable: true,
@@ -68,9 +70,20 @@ function showMap() {
   addLayer(showCode);
 }
 
+/**
+ * 创建区域模态框中中间显示地区部分
+ * @param adcode 地区code
+ * @param name 地区名称
+ * @param level 地区等级（省市县 对应 012）
+ * @returns {jQuery|Mixed|HTMLElement}
+ */
 function addP(adcode, name, level) {
   return $('<p class="col-md-3"><i class="im-close" style="cursor: pointer" onclick="delAdcode(' + adcode + ',' + level + ')"></i>&nbsp;&nbsp;' + name + ' </p>')
 }
+
+/**
+ * 更新保存显示的地区code信息
+ */
 function updataCodeList() {
   var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
   $('.adcodeList').empty();
@@ -118,7 +131,11 @@ function updataCodeList() {
 
 }
 
-/*删除所选地区*/
+/**
+ * 删除所选地区
+ * @param adcode 地区code
+ * @param level 地区等级（省市县对应012）
+ */
 function delAdcode(adcode, level) {
   var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
   var node = treeObj.getNodeByParam("adcode", adcode, null);
@@ -139,7 +156,9 @@ function delAdcode(adcode, level) {
 
 }
 
-/*删除所有所选地区*/
+/**
+ * 删除所有地区
+ */
 function clearAllArea() {
   var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
   treeObj.checkAllNodes(false);
@@ -149,7 +168,10 @@ function clearAllArea() {
 }
 
 
-/*情景计算状态*/
+/**
+ * 情景计算状态
+ * @param typeNum
+ */
 function scenarinoType(typeNum) {
   $('.toolShow').removeAttr('disabled');
   $('.addNewArea').removeAttr('disabled');
@@ -211,7 +233,7 @@ function initialize() {
   if (!qjMsg) {
     var url = '/scenarino/find_Scenarino_status';
     qjMsg = JSON.parse(ls.getItem('qjMsg'));
-    ajaxPost(url, {
+    ajaxPost(url, {                   //请求情景状态，根据情景状态，对区域时段进行操作控制
       userId: userId,
       scenarinoId: qjMsg.qjId
     }).success(function (res) {
@@ -223,10 +245,14 @@ function initialize() {
     scenarinoType(qjMsg.scenarinoStatus)
   }
   $('.qyCon').removeClass('disNone');
+
+  /*显示左侧菜单栏中信息*/
   $('.qyCon .nowRw span').html(qjMsg.rwName);
   $('.qyCon .nowQj span').html(qjMsg.qjName);
   $('.qyCon .seDate span').html(moment(qjMsg.qjStartDate).format('YYYY-MM-DD') + '至' + moment(qjMsg.qjEndDate).format('YYYY-MM-DD'));
 
+
+  /*向路由中存放信息，以备措施页面使用*/
   msg.content.rwId = qjMsg.rwId;
   msg.content.rwName = qjMsg.rwName;
   msg.content.qjId = qjMsg.qjId;
@@ -240,7 +266,7 @@ function initialize() {
   $('.footerShow .qj span').html(qjMsg.qjName);
 
   var url = '/area/get_areaAndTimeList';
-  var scenarino = ajaxPost(url, {
+  var scenarino = ajaxPost(url, {   //请求所有区域及时段
     scenarinoId: qjMsg.qjId,
     userId: userId
   });
@@ -248,8 +274,8 @@ function initialize() {
 
   scenarino.then(function (res) {
 
-    allData1 = res.data.slice(0, -1);
-    if (qjMsg.scenarinoStatus == 2) {
+    allData1 = res.data.slice(0, -1);//保存除最后一条以外的数据
+    if (qjMsg.scenarinoStatus == 2) {//根据情景状态及预案信息（有无缘），判断减排计算按钮的使用控制
       for (var i = 0; i < allData1.length; i++) {
         for (var m = 0; m < allData1[i].timeItems.length; m++) {
           if (allData1[i].timeItems[m].planId != -1) {
@@ -259,6 +285,7 @@ function initialize() {
         }
       }
     }
+      //根据返回值最后一条数据isnew判断当前情景是否为新创建，新创建情景弹窗提示是新建情景还是复制情景
     if (res.data[res.data.length - 1].isnew) {
       $('#selectCreateQj').modal('show')
     } else {
@@ -312,7 +339,7 @@ function getAreaAndTime() {
         }
       }
     }
-    showTimeline(allData);
+    showTimeline(allData);//生成区域时段
   });
 }
 
@@ -347,7 +374,7 @@ function delArea(e) {
 
           for (var i = 0; i < allData.length; i++) {
             for (var ii = 0; ii < allData[i].timeItems.length; ii++) {
-              if (allData[i].timeItems[ii].planId == -1) {
+              if (allData[i].timeItems[ii].planId == -1) {//对左侧菜单栏中按钮操作
                 $('.jpjs').removeClass('disNone');
                 $('.jpjs').attr('disabled', true);
                 $('.jpztck').addClass('disNone');
@@ -743,7 +770,7 @@ var newPlan;
 /*添加预案*/
 function addPlan(e) {
   newPlan = e;
-  if (newPlan) {
+  if (newPlan) {//判断是添加预案，还是复制预案
     var url = '/plan/add_plan';
     var params = {
       timeId: msg.content.timeId,
@@ -914,6 +941,7 @@ function updatetimeSow() {
   initEditTimeDate(s, e);
 }
 
+/*编辑时段弹窗中显示的时段信息，分别为前一时段、当前时段和后一时段*/
 function editHtml(id) {
   $('#' + id + ' .showTimes .col-md-4 p').eq(0).empty();
   $('#' + id + ' .showTimes .col-md-4 p').eq(1).empty();
@@ -969,8 +997,11 @@ function selectEditPoint(t) {
 }
 
 
+/**
+ * 打开区域创建编辑模态框
+ */
 $('#editArea').on('show.bs.modal', function (event) {
-  console.log(cnArea)
+  /*初始化tree树相关信息*/
   $.fn.zTree.init($("#adcodeTree"), zTreeSetting, zTreeData);
   var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
   var nodes = treeObj.getNodesByParam("level", 1);
@@ -1003,6 +1034,7 @@ $('#editArea').on('show.bs.modal', function (event) {
       userId: userId
     }).success(function (res) {
       if (res.data) {
+        /*设置显示已选code*/
         setShowCode(res.data);
         addLayer(showCode);
       }
@@ -1292,6 +1324,7 @@ function selectNode(node) {
   }
 }
 
+/*以下几个是点击tree树节点时，对code进行判断及操作*/
 function level0(node) {
   var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
   var nodesDis = treeObj.getNodesByParam('chkDisabled', true, node);
@@ -1480,7 +1513,7 @@ var selectCopyQJ, statusRW = '';
 function initCoptTable() {
   $('#copyQJ').bootstrapTable({
     method: 'POST',
-    url: localhttp + '/ampc/scenarino/get_CopyScenarinoList',
+    url: '/ampc/scenarino/get_CopyScenarinoList',
     dataType: "json",
     contentType: "application/json", // 请求远程数据的内容类型。
     toobar: '#rwToolbar',
@@ -1578,6 +1611,10 @@ function rwType(v, row, i) {
   return type
 }
 
+/**
+ * 选择复制情景时操作
+ * @param t
+ */
 function selectCopy(t) {
   if (t) {
     initCoptTable();
@@ -1607,12 +1644,16 @@ function selectCopy(t) {
 
 }
 
+/*选择创建情景时模态框上一步操作*/
 function previous() {
   $('#selectCreateQj .selectCQJbtn').removeClass('disNone');
   $('#selectCreateQj .selectCopyQj').addClass('disNone');
   $('#selectCreateQj .modal-footer').addClass('disNone');
 }
 
+/**
+ * 复制情景请求
+ */
 function subCopyQJ() {
   console.log(selectCopyQJ);
 
@@ -1789,6 +1830,9 @@ function jpztckBtn(t) {
   //}
 }
 
+/**
+ * 查看情景状态
+ */
 function findQJstatus(){
   var url = '/scenarino/find_Scenarino_status';
   ajaxPost(url, {

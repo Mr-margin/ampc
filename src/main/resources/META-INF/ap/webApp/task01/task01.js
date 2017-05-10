@@ -144,7 +144,7 @@ var QJheight;
 function initRwTable() {
   $('#rwTable').bootstrapTable({
     method: 'POST',
-    url: localhttp + '/ampc/mission/get_mission_list',
+    url: '/ampc/mission/get_mission_list',
     dataType: "json",
     contentType: "application/json", // 请求远程数据的内容类型。
     toolbar: '#rwToolbar',
