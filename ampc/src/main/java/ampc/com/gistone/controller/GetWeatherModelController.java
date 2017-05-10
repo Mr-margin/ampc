@@ -17,11 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.druid.support.logging.Log;
 
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
@@ -29,7 +29,6 @@ import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.redisqueue.ReadyData;
-import ampc.com.gistone.redisqueue.RedisUtilServer;
 import ampc.com.gistone.redisqueue.StopModelData;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
@@ -165,6 +164,7 @@ public class GetWeatherModelController {
 	 * @author yanglei
 	 * @date 2017年4月13日 下午4:22:55
 	 */
+	@Transactional
 	@RequestMapping("/saveEmis")
 	public AmpcResult saveEmisData(@RequestBody Map<String, Object> requestDate, Long jobId,HttpServletRequest request,HttpServletResponse response) {
 		try {
@@ -174,6 +174,7 @@ public class GetWeatherModelController {
 		//	Long sourceid = tMissionDetailMapper.getsourceid(missionId);
 			String psal = requestDate.get("psal").toString();
 			String ssal = requestDate.get("ssal").toString();
+			String setControlfile = requestDate.get("setControlfile").toString();
 			String meiccityconfig = requestDate.get("meiccityconfig").toString();
 			Long scenarinoId = Long.parseLong( requestDate.get("scenarioid").toString());
 			TTasksStatus tTasksStatus = new TTasksStatus();
@@ -182,6 +183,7 @@ public class GetWeatherModelController {
 			tTasksStatus.setPsal(psal);
 			tTasksStatus.setSsal(ssal);
 			tTasksStatus.setMeiccityconfig(meiccityconfig);
+//			tTasksStatus.setControlfile("/work/modelcloud/lixin_meic/hebei/cf/cf_zero.csv");
 			tTasksStatus.setTasksScenarinoId(scenarinoId);
 			System.out.println(tTasksStatus.toString());
 		//添加到对应的情景下面去
