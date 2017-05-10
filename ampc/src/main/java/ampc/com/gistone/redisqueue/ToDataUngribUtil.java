@@ -20,6 +20,7 @@ import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import ampc.com.gistone.database.inter.TGlobalSettingMapper;
@@ -260,6 +261,7 @@ public class ToDataUngribUtil {
 	 /**
 	  * 解析ungrib数据 并更新数据库
 	  */
+	@Transactional
 	public void  updateUngrib(String rpop) {
 		LogUtil.getLogger().info("开始解析ungrib数据");
 		//创建ungrib对象
