@@ -858,6 +858,7 @@ function bar() {
                         }
                     ]
                 };
+
                 //减排量echarts
                 myPfChart.setOption(option);
 

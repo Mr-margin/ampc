@@ -226,7 +226,7 @@ function setTime(s, e) {
 
 
 function initEcharts() {
-    console.log("初始化表单")
+    //console.log("初始化表单")
     if (changeMsg.rms == 'day') {
         $('.hour').css('display', 'none');
         $('.day').css('display', 'block');
@@ -321,8 +321,13 @@ function initEcharts() {
             data: data['-1'][speciesObj[species[i]]].slice(0, $('#height').val())  //可变，存储情景数据
             //data: data['191']['CO']  //可变，存储情景数据
         });
-        //$('#'+species)
         es.setOption(option);
+        var thisID=es._dom.id;
+
+        //自适应屏幕大小变化
+        $(window).resize(es.resize);
+        //自适应结束
+
     }
 }
 
@@ -798,7 +803,7 @@ $(".cloudui .verticalCon .ibox-content .searchT .upDown").hover(function(){
     $(".cloudui .verticalCon .ibox-content .searchT .upDown").css({"border-top":"1px solid #d9d9d9"});
     $(".cloudui .verticalCon .ibox-content .searchT .upDown .upDownBtn").css({"border":"1px solid #d9d9d9"});
 })
-$("#initEcharts").slimScroll({
+$(".verticalChar").slimScroll({
     height: '100%'
 })
 
