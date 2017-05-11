@@ -1086,7 +1086,7 @@ AND S.IS_EFFECTIVE ='1'
   </resultMap>
   
    <!-- new根据任务Id查询情景列表 并可根据条件名模糊查询 -->
-  <select id="selectByMissionIdAndQueryNameNew" parameterType="hashMap" resultMap="scenarinoListMapNew" >
+  <select id="selectByMissionIdNew" parameterType="hashMap" resultMap="scenarinoListMapNew" >
    	 SELECT  <include refid="scenarino_Column_List"/>
   		FROM T_SCENARINO_DETAIL  SCEN 
   		INNER JOIN T_SCENARINO_STATUS STAT  ON SCEN.SCENARINO_STATUS=STAT.SCENARINO_STATU_ID
