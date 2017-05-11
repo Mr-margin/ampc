@@ -22,6 +22,7 @@ import ampc.com.gistone.database.inter.TMessageLogMapper;
 import ampc.com.gistone.database.model.TMessageLog;
 import ampc.com.gistone.redisqueue.result.Message;
 import ampc.com.gistone.util.AmpcResult;
+import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.JsonUtil;
 import ampc.com.gistone.util.LogUtil;
 
@@ -47,7 +48,7 @@ public class MessageLog {
 	 * @author yanglei
 	 * @date 2017年4月27日 下午8:35:11
 	 */
-	public void saveStartMessagelog(String rpop) {
+	public void saveDomainlog(String rpop) {
 		LogUtil.getLogger().info("开始添加消息的log到数据库！");
 		try {
 			//获取rpop数据
@@ -56,8 +57,8 @@ public class MessageLog {
 			Date time = message.getTime();//messageTIME
 			String type = message.getType();//messagetype
 			Map body = (Map) message.getBody();//messagebody
-			Long scenarioid = Long.parseLong(body.get("scenarioid").toString());
-			Integer index = Integer.parseInt(body.get("index").toString());
+			Long userid = Long.parseLong(body.get("userid").toString());
+			Long domainid = Long.valueOf(body.get("domainid").toString());
 			String taskenddate = body.get("date").toString();
 			String desc = body.get("desc").toString();
 			String code = body.get("code").toString();
@@ -65,21 +66,23 @@ public class MessageLog {
 			tMessageLog.setMessageUuid(id);
 			tMessageLog.setMessageTime(time);
 			tMessageLog.setMessageType(type);
-			tMessageLog.setScenarinoId(scenarioid);
-			tMessageLog.setMessageIndex(index);
+			
+			
+			tMessageLog.setUserId(userid);
+			tMessageLog.setDomainId(domainid);
 			tMessageLog.setTasksEndDate(taskenddate);
 			tMessageLog.setResultDesc(desc);
 			tMessageLog.setResultCode(code);
 			int insertSelective = tMessageLogMapper.insertSelective(tMessageLog);
 			if (insertSelective>0) {
-				LogUtil.getLogger().info("更新消息日志成功！");
+				LogUtil.getLogger().info("更新domain消息日志成功！");
 			}else {
-				LogUtil.getLogger().error("更新消息日志失败！！");
-				throw new SQLException("更新消息日志失败！！");
+				LogUtil.getLogger().error("更新domain消息日志失败！！");
+				throw new SQLException("更新domain消息日志失败！！");
 			}
 		} catch (IOException | SQLException e) {
 			// TODO Auto-generated catch block
-			LogUtil.getLogger().error("更新消息日志失败！！"+e);
+			LogUtil.getLogger().error("更新domain消息日志失败！！"+e);
 		}
 		
 	}
@@ -103,10 +106,18 @@ public class MessageLog {
 			Map body = (Map)message.getBody();
 			
 			tMessageLog.setUngribPathDate(body.get("pathdate").toString());
+			if(body.get("fnl")!=null){
 			tMessageLog.setUngribFnl(body.get("fnl").toString());
+			}
+			if(body.get("gfs")!=null){
 			tMessageLog.setUngribGfs(body.get("gfs").toString());
+			}
+			if(body.get("fnlDesc")!=null){
 			tMessageLog.setFnlDesc(body.get("fnlDesc").toString());
+			}
+			if(body.get("gfsDesc")!=null){
 			tMessageLog.setGfsDesc(body.get("gfsDesc").toString());
+			}
 			int insertSelective = tMessageLogMapper.insertSelective(tMessageLog);
 			if (insertSelective>0) {
 				LogUtil.getLogger().info("更新ungrib消息日志成功！");
@@ -137,17 +148,18 @@ public class MessageLog {
 			String type = message.getType();
 			Map body = (Map) message.getBody();
 			Long scenarioid = Long.parseLong(body.get("scenarioid").toString());
-			Long domainId = Long.parseLong(body.get("domainId").toString()); ///kongzhongzheng
-			Long userId =  Long.parseLong(body.get("userId").toString());
+//			Long domainId = Long.parseLong(body.get("domainId").toString()); ///kongzhongzheng
+//			Long userId =  Long.parseLong(body.get("userId").toString());
+			
 			String desc = body.get("desc").toString();
 			String code = body.get("code").toString();
 			TMessageLog tMessageLog = new TMessageLog();
 			tMessageLog.setMessageUuid(id);
 			tMessageLog.setMessageTime(time);
 			tMessageLog.setMessageType(type);
-			
-			tMessageLog.setUserId(userId);
-			tMessageLog.setDomainId(domainId);
+			tMessageLog.setScenarinoId(scenarioid);
+//			tMessageLog.setUserId(userId);
+//			tMessageLog.setDomainId(domainId);
 			tMessageLog.setResultDesc(desc);
 			tMessageLog.setResultCode(code);
 			int insertSelective = tMessageLogMapper.insertSelective(tMessageLog);
@@ -171,7 +183,7 @@ public class MessageLog {
 	 * @author yanglei
 	 * @date 2017年5月11日 下午5:11:20
 	 */
-	public void savepauseMessagelog(String rpop) {
+	public void savesatrtMessagelog(String rpop) {
 		LogUtil.getLogger().info("开始添加model.stop.pause消息的log到数据库！");
 		try {
 			Message message  = JsonUtil.jsonToObj(rpop, Message.class);
@@ -180,8 +192,8 @@ public class MessageLog {
 			String type = message.getType();
 			Map body = (Map) message.getBody();
 			Long scenarioid = Long.parseLong(body.get("scenarioid").toString());
-			Long domainId = Long.parseLong(body.get("domainId").toString());
-			Long userId =  Long.parseLong(body.get("userId").toString());
+			Integer index = Integer.parseInt(body.get("index").toString());
+			String dates =  body.get("date").toString();
 			String desc = body.get("desc").toString();
 			String code = body.get("code").toString();
 			TMessageLog tMessageLog = new TMessageLog();
@@ -189,8 +201,9 @@ public class MessageLog {
 			tMessageLog.setMessageTime(time);
 			tMessageLog.setMessageType(type);
 			
-			tMessageLog.setUserId(userId);
-			tMessageLog.setDomainId(domainId);
+			tMessageLog.setMessageIndex(index);
+			tMessageLog.setScenarinoId(scenarioid);
+			tMessageLog.setTasksEndDate(dates);
 			tMessageLog.setResultDesc(desc);
 			tMessageLog.setResultCode(code);
 			int insertSelective = tMessageLogMapper.insertSelective(tMessageLog);
