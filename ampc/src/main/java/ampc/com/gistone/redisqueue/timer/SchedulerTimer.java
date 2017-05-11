@@ -8,11 +8,19 @@
  */
 package ampc.com.gistone.redisqueue.timer;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+
+
+
+
+
 
 
 
@@ -30,6 +38,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ampc.com.gistone.database.inter.TGlobalSettingMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
@@ -62,7 +72,7 @@ import ampc.com.gistone.util.RegUtil;
 @EnableScheduling
 @Component
 public class SchedulerTimer<V> {
-	
+	private ObjectMapper mapper=new ObjectMapper();
 	//加载准备数据工具类
 	@Autowired
 	private ReadyData readyData;
@@ -111,7 +121,7 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月7日 上午9:53:09
 	 */
 //	@Scheduled(cron="0 0 11 * * ?")
-//	@Scheduled(cron="0 30 09 * * ?")
+	@Scheduled(cron="0 30 09 * * ?")
 //	@Scheduled(fixedRate = 50000)
 	public void realForTimer() {
 		//Date date = new Date();
@@ -316,26 +326,62 @@ public class SchedulerTimer<V> {
 				//得到刚新建的情景ID
 				scenarinoId = tScenarinoDetailMapper.selectforecastid(tScenarinoDetail);
 				tTasksStatus.setTasksScenarinoId(scenarinoId);
-				tTasksStatus.setScenarinoStartDate(scenarinoStartDate);
-				tTasksStatus.setScenarinoEndDate(scenarinoEndDate);
-				tTasksStatus.setRangeDay((long)rangeday);
+				tTasksStatus.setTasksScenarinoStartDate(scenarinoStartDate);
+				tTasksStatus.setTasksScenarinoEndDate(scenarinoEndDate);
+				tTasksStatus.setTasksRangeDay((long)rangeday);
 			} catch (Exception e) {
 				LogUtil.getLogger().error("系统错误！同一天的实时预报存在多条数据！");
 			}
+			
 			//调用方法获取meiccityconfig
-			int flag = 1;//表示不需要减排系数
-			Map<String, String> emis = getEmisData(esCouplingId,scenarinoId,flag);
+			String emisParamesURL = configUtil.getEmisParamesURL();
+			String getResult=ClientUtil.doPost(emisParamesURL,scenarinoId.toString());
+			LogUtil.getLogger().info(getResult+"emisdata params，情景ID："+scenarinoId);
+			Map mapResult;
+			try {
+				mapResult = mapper.readValue(getResult, Map.class);
+				LogUtil.getLogger().info(mapResult+"返回值");
+				if(mapResult.get("status").toString().equals("success")){
+					Map map = (Map) mapResult.get("data");
+					String controlfile = map.get("controlfile").toString();
+					String meiccityconfig = map.get("meiccityconfig").toString();
+//					int flag = 1;//表示不需要减排系数
+//					Map<String, String> emis = getEmisData(esCouplingId,scenarinoId,flag);
+					
+					tTasksStatus.setSourceid(esCouplingId.toString());
+					//设置calctype是系统设置 目前定义为server
+					tTasksStatus.setCalctype("server");
+					tTasksStatus.setPsal("");
+					tTasksStatus.setSsal("");
+					//目前的死数据
+					tTasksStatus.setTasksExpand1(0l);
+//					tTasksStatus.setExpand3("/work/modelcloud/lixin_meic/hebei/cf/cf_zero.csv");
+//					tTasksStatus.setMeiccityconfig("/work/modelcloud/meic_tool/meic-city.conf");
+					tTasksStatus.setTasksExpand3(controlfile);
+					tTasksStatus.setMeiccityconfig(meiccityconfig);
+					//添加该情景到tasksstatus表
+					i = tTasksStatusMapper.insertSelective(tTasksStatus);
+					if (i>0) {
+						LogUtil.getLogger().info("添加预报到tasks表成功！");
+					}else {
+						throw new SQLException("SchedulerTimer  添加预报到tasks表失败!");
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+				LogUtil.getLogger().error("获取emis参数出错！预报情景ID为："+scenarinoId,e);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 			
-			tTasksStatus.setSourceid(esCouplingId.toString());
-			//设置calctype是系统设置 目前定义为server
-			tTasksStatus.setCalctype("server");
-			tTasksStatus.setPsal("");
-			tTasksStatus.setSsal("");
-			//目前的死数据
-			tTasksStatus.setMeiccityconfig("/work/modelcloud/meic_tool/meic-city.conf");
-			//添加该情景到tasksstatus表
-			i = tTasksStatusMapper.insertSelective(tTasksStatus);
 			
+			
+			/*boolean emisParams = readyData.getEmisParams(scenarinoId);
+			if (emisParams) {
+				LogUtil.getLogger().info("实时预报情景请求meiccityconfig参数成功！");
+			}else {
+				LogUtil.getLogger().info("实时预报情景请求meiccityconfig参数失败！");
+			}*/
 	/*		if (i>0) {
 				//根据情景调动实时预报接口开始实时预报
 				readyData.readyRealMessageDataFirst(scenarinoId,cores,userId);
@@ -362,7 +408,8 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月21日 下午7:39:01
 	 */
 //	@Scheduled(fixedRate = 5000)
-//	@Scheduled(cron="0 0/10  * * * ?")
+	@Scheduled(cron="0 0/10  * * * ?")
+//	@Scheduled(cron="0 04 15 * * ?")
 	public void  sendMessageOnRealprediction() {
 		 LogUtil.getLogger().info("开始检测ungrib的数据");
 		//获取最新的ungrib 
@@ -413,11 +460,11 @@ public class SchedulerTimer<V> {
 	public void chackRunningStatus(TScenarinoDetail scen_detail) {
 		Long scenarinoId = scen_detail.getScenarinoId();
 		TTasksStatus tTasksStatus = tTasksStatusMapper.selectendByscenarinoId(scenarinoId);
-		String errorStatus = tTasksStatus.getErrorStatus();
+		String errorStatus = tTasksStatus.getModelErrorStatus();
 		if (null!=errorStatus) {
 			//出错了的情况
 			Date tasksEndDate = DateUtil.DateToDate(tTasksStatus.getTasksEndDate(), "yyyyMMdd");
-			Date scenarinoStartDate = DateUtil.DateToDate(tTasksStatus.getScenarinoStartDate(), "yyyyMMdd");
+			Date scenarinoStartDate = DateUtil.DateToDate(tTasksStatus.getTasksScenarinoStartDate(), "yyyyMMdd");
 			String goingtime = tTasksStatus.getBeizhu2();
 			Long userId = scen_detail.getUserId();
 			Calendar cal = Calendar.getInstance();
@@ -443,7 +490,7 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月7日 下午8:46:00
 	 */
 //	@Scheduled(cron="0 0/10 * * * ?")
-//	@Scheduled(fixedRate = 50000)
+//	@Scheduled(fixedRate = 5000)
 	public void ForpreEvalution() {
 		LogUtil.getLogger().info("每隔10分钟执行一次");
 		//根据情景的状态和情景的类型确定准备参数
@@ -453,7 +500,7 @@ public class SchedulerTimer<V> {
 			for (TScenarinoDetail tScenarinoDetail : list) {
 				Date pathDate = DateUtil.DateToDate(tScenarinoDetail.getPathDate(), "yyyyMMdd");
 				Long userId = tScenarinoDetail.getUserId();
-				Date maxtime = getMaxTimeForMegan(pathDate,userId);
+				Date maxtime = readyData.getMaxTimeForMegan(pathDate,userId);
 				Date startDate = DateUtil.DateToDate(tScenarinoDetail.getScenarinoStartDate(), "yyyyMMdd");//预评估情景的开始时间
 				int compareTo = maxtime.compareTo(startDate);//比较最大的时间和预评估情景的开始时间
 				Long scenarinoId = tScenarinoDetail.getScenarinoId();
@@ -489,7 +536,7 @@ public class SchedulerTimer<V> {
 							//当前情景的结束时间
 							Date EndDate = tScenarinoDetail.getScenarinoEndDate();
 							//当前任务的错误状态
-							String errorStatus = tasksStatus.getErrorStatus();
+							String errorStatus = tasksStatus.getModelErrorStatus();
 							if(null==errorStatus&&preEvastepindex==4){
 								//比较当前情景的模式运行的时间和情景的结束时间大小
 								nowDate = DateUtil.DateToDate(nowDate, "yyyyMMdd");
@@ -507,7 +554,7 @@ public class SchedulerTimer<V> {
 									//如果不为空表示当前情景已经发送过了，该时间已经完成了任务  准备下一条数据的时间是当时的时间加一天
 //									timedate= DateUtil.ChangeDay(nowDate, 1);
 									//准备数据发送消息
-									boolean sendDataEvaluationSituationThen = readyData.sendDataEvaluationSituationThen(nowDate, scenarinoId);
+									boolean sendDataEvaluationSituationThen = readyData.sendDataEvaluationSituationThen(nowDate, tScenarinoDetail);
 									if (sendDataEvaluationSituationThen) {
 										LogUtil.getLogger().info("ID为"+scenarinoId+"预评估情景发送成功！");
 									}else {
@@ -529,50 +576,7 @@ public class SchedulerTimer<V> {
 		
 		
 	}
-	/**
-	 * @Description: 查询对应的气象数据
-	 * @param pathDate
-	 * @param userId   
-	 * void  
-	 * @return 
-	 * @throws
-	 * @author yanglei
-	 * @date 2017年5月6日 下午8:16:27
-	 */
-	private Date getMaxTimeForMegan(Date pathDate, Long userId) {
-		Date maxtime = null;
-		//查找可执行的时间 
-		Map map = new HashMap();
-		map.put("pathdate", pathDate);
-		map.put("userId", userId);
-		map.put("type", "4");
-		TTasksStatus selectTasksstatusByPathdate=null;
-		try {
-			//查询对应的实时预报的状态
-			selectTasksstatusByPathdate = tTasksStatusMapper.selectTasksstatusByPathdate(map);
-		} catch (Exception e) {
-			LogUtil.getLogger().error("预评估情景的定时器    查询实时预报的状态出异常了",e);
-		}
-		String sendtime = selectTasksstatusByPathdate.getBeizhu2();//发送了消息的时间
-		Date scenarinoStartDate = DateUtil.DateToDate(selectTasksstatusByPathdate.getScenarinoStartDate(), "yyyyMMdd"); 
-		if (!sendtime.equals("0")) {
-			Long stepindex = selectTasksstatusByPathdate.getStepindex();//预报情景进行到了index
-			stepindex = stepindex == null ?0:stepindex;
-			Date sendDate = DateUtil.StrtoDateYMD(sendtime, "yyyyMMdd");
-			Date tasksEndDate = selectTasksstatusByPathdate.getTasksEndDate();//预报情景进行到的时间
-//			int compareTo = sendDate.compareTo(scenarinoStartDate);//发送的时间和情景开始时间比较
-			if (stepindex<4) {
-				maxtime =DateUtil.DateToDate(DateUtil.ChangeDay(tasksEndDate, -1),"yyyyMMdd");
-			}
-			if (stepindex>=4&&stepindex<=8) {
-				maxtime =DateUtil.DateToDate(tasksEndDate,"yyyyMMdd");
-			}
-		}else {
-			maxtime = DateUtil.DateToDate(DateUtil.ChangeDay(scenarinoStartDate, -1),"yyyyMMdd");
-			LogUtil.getLogger().info("实时预报情景尚未开始运行！");
-		}
-		return maxtime;
-	}
+	
 
 
 	/**
