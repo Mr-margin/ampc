@@ -336,41 +336,48 @@ public class ToDataTasksUtil {
 			LogUtil.getLogger().info("停止模式返回的结果！");
 		    Object object = message.getBody();
 		    Map map = (Map) object;
-		    Object code = map.get("code");
-		    Long tasksScenarinoId = Long.parseLong(map.get("scenarioid").toString());
-		    TTasksStatus tTasksStatus = new TTasksStatus();
-		    tTasksStatus.setTasksScenarinoId(tasksScenarinoId);
-		    tTasksStatus.setStopStatus(code.toString());
-		    tTasksStatus.setStopModelResult(rpop);
-		    tTasksStatus.setBeizhu2("0");
-//		    tTasksStatus.setStepindex(null);
-//		    tTasksStatus.setTasksEndDate(null);
-		    try {
-		    	//更新tasks状态
-		    	int i = tasksStatusMapper.updatestopModelresult(tTasksStatus);
-		    	if (i>0) {
-		    		LogUtil.getLogger().info("停止模式的消息更新数据库成功！");
+		    Object codeobject = map.get("code");
+		    if (RegUtil.CheckParameter(codeobject, "Integer", null, false)) {
+		    	Integer code = Integer.parseInt(codeobject.toString());
+		    	Object scenarioid = map.get("scenarioid");
+		    	if (RegUtil.CheckParameter(scenarioid, "Long", null, false)) {
+			    	Long tasksScenarinoId = Long.parseLong(map.get("scenarioid").toString());
+				    TTasksStatus tTasksStatus = new TTasksStatus();
+				    tTasksStatus.setTasksScenarinoId(tasksScenarinoId);
+				    tTasksStatus.setStopStatus(code.toString());
+//				    tTasksStatus.setStopModelResult(rpop);
+				    try {
+				    	//更新tasks状态
+				    	int i = tasksStatusMapper.updatestopModelresult(tTasksStatus);
+				    	if (i>0) {
+				    		LogUtil.getLogger().info("停止模式的消息更新数据库成功！");
+						}else {
+							LogUtil.getLogger().error("停止模式的消息更新数据库成功！");
+						}
+					} catch (Exception e) {
+						LogUtil.getLogger().error("停止模式的消息更新数据库成功！"+e.getMessage());
+					}
+				    try {
+				    	//更新情景状态
+				    	boolean updateScenStatus = readyData.updateScenStatusUtil(5l, tasksScenarinoId);
+				    	if (updateScenStatus) {
+				    		LogUtil.getLogger().info("id为"+tasksScenarinoId+"的情景终止后更新状态成功！");
+						}else {
+							LogUtil.getLogger().info("id为"+tasksScenarinoId+"的情景终止后更新状态失败！");
+						}
+					} catch (Exception e) {
+						LogUtil.getLogger().error("停止模式的消息更新情景状态出现异常！"+e.getMessage());
+					}
+				    if (code==0) {
+						LogUtil.getLogger().info("情景："+tasksScenarinoId+"停止成功！");
+					}else {
+						LogUtil.getLogger().info("情景："+tasksScenarinoId+"停止失败！");
+					}
 				}else {
-					LogUtil.getLogger().error("停止模式的消息更新数据库失败！");
+					LogUtil.getLogger().info("stop_model-result scenariod 参数错误！");
 				}
-			} catch (Exception e) {
-				LogUtil.getLogger().error("停止模式的消息更新数据出现异常！"+e.getMessage());
-			}
-		    try {
-		    	//更新情景状态
-		    	boolean updateScenStatus = readyData.updateScenStatusUtil(5l, tasksScenarinoId);
-		    	if (updateScenStatus) {
-		    		LogUtil.getLogger().info("id为"+tasksScenarinoId+"的情景终止后更新状态成功！");
-				}else {
-					LogUtil.getLogger().info("id为"+tasksScenarinoId+"的情景终止后更新状态失败！");
-				}
-			} catch (Exception e) {
-				LogUtil.getLogger().error("停止模式的消息更新情景状态出现异常！"+e.getMessage());
-			}
-		    if (code.equals(0)) {
-				LogUtil.getLogger().info("情景："+tasksScenarinoId+"停止成功！");
-			}else {
-				LogUtil.getLogger().info("情景："+tasksScenarinoId+"停止失败！");
+		    }else {
+				LogUtil.getLogger().info("stop-model-result code 参数错误！");
 			}
 		} catch (IOException e1) {
 			LogUtil.getLogger().error("停止的消息转换异常！"+e1.getMessage(),e1);
@@ -410,6 +417,57 @@ public class ToDataTasksUtil {
 		}
 		
 		return index;
+	}
+
+
+
+	/**
+	 * @Description:处理暂停的结果
+	 * @param rpop   
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年5月11日 下午5:12:53
+	 */
+	public void pauseModelresult(String rpop) {
+		Message message;
+		try {
+			message = JsonUtil.jsonToObj(rpop, Message.class);
+			LogUtil.getLogger().info("暂停模式返回的结果！");
+		    Object object = message.getBody();
+		    Map map = (Map) object;
+		    Object codeobject = map.get("code");
+		    if (RegUtil.CheckParameter(codeobject, "Integer", null, false)) {
+		    	Integer code = Integer.parseInt(codeobject.toString());
+		    	Object scenarioid = map.get("scenarioid");
+		    	if (RegUtil.CheckParameter(scenarioid, "Long", null, false)) {
+		    		Long tasksScenarinoId = Long.parseLong(map.get("scenarioid").toString());
+				    TTasksStatus tTasksStatus = new TTasksStatus();
+				    tTasksStatus.setTasksScenarinoId(tasksScenarinoId);
+				    tTasksStatus.setPauseStatus(code.toString());
+				    int updatepausestatus = tasksStatusMapper.updatepausestatus(tTasksStatus);
+		    		if (updatepausestatus>0) {
+						LogUtil.getLogger().info("跟新暂停模式返回的结果成功！");
+					}else {
+						throw new SQLException("pause-model-result  更新模式暂停返回的结果!");
+					}
+		    	}else {
+		    		LogUtil.getLogger().info("pause-model-result scenarioid 参数错误！");
+				}
+		    }else {
+				LogUtil.getLogger().info("pause-model-result code 参数错误！");
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			LogUtil.getLogger().error("暂停模式的返回结果转换异常！",e);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			LogUtil.getLogger().error("更新暂停模式返回结果异常！",e);
+		}
+		
+		
 	}
 
 }
