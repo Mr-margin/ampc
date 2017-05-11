@@ -411,7 +411,6 @@ function sceneTable() {
             }
         }),
         success:function (data) {
-
             $("#sceneTableId").datagrid({
                 data:data.data.rows,
                 columns:[[
