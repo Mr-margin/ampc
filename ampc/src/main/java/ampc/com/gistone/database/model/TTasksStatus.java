@@ -7,13 +7,13 @@ public class TTasksStatus {
 
     private Long tasksScenarinoId;
 
-    private String errorStatus;
+    private String modelErrorStatus;
 
-    private Date scenarinoStartDate;
+    private Date tasksScenarinoStartDate;
 
-    private Date scenarinoEndDate;
+    private Date tasksScenarinoEndDate;
 
-    private Long rangeDay;
+    private Long tasksRangeDay;
 
     private Long stepindex;
 
@@ -37,9 +37,9 @@ public class TTasksStatus {
 
     private String stopStatus;
 
-    private Date sendTime;
+    private Date tasksSendTime;
 
-    private Date endTime;
+    private Date tasksEndTime;
 
     private String startModelResult;
 
@@ -49,17 +49,17 @@ public class TTasksStatus {
 
     private String pauseStatus;
 
-    private Long expand1;
+    private Long tasksExpand1;
 
-    private Date expand2;
+    private Date tasksExpand2;
 
-    private String expand3;
+    private String tasksExpand3;
 
-    private String expand4;
+    private String tasksExpand4;
 
-    private String expand5;
+    private String tasksExpand5;
 
-    private Date updateTime;
+    private Date tasksUpdateTime;
 
     public Long getTasksId() {
         return tasksId;
@@ -77,36 +77,36 @@ public class TTasksStatus {
         this.tasksScenarinoId = tasksScenarinoId;
     }
 
-    public String getErrorStatus() {
-        return errorStatus;
+    public String getModelErrorStatus() {
+        return modelErrorStatus;
     }
 
-    public void setErrorStatus(String errorStatus) {
-        this.errorStatus = errorStatus == null ? null : errorStatus.trim();
+    public void setModelErrorStatus(String modelErrorStatus) {
+        this.modelErrorStatus = modelErrorStatus == null ? null : modelErrorStatus.trim();
     }
 
-    public Date getScenarinoStartDate() {
-        return scenarinoStartDate;
+    public Date getTasksScenarinoStartDate() {
+        return tasksScenarinoStartDate;
     }
 
-    public void setScenarinoStartDate(Date scenarinoStartDate) {
-        this.scenarinoStartDate = scenarinoStartDate;
+    public void setTasksScenarinoStartDate(Date tasksScenarinoStartDate) {
+        this.tasksScenarinoStartDate = tasksScenarinoStartDate;
     }
 
-    public Date getScenarinoEndDate() {
-        return scenarinoEndDate;
+    public Date getTasksScenarinoEndDate() {
+        return tasksScenarinoEndDate;
     }
 
-    public void setScenarinoEndDate(Date scenarinoEndDate) {
-        this.scenarinoEndDate = scenarinoEndDate;
+    public void setTasksScenarinoEndDate(Date tasksScenarinoEndDate) {
+        this.tasksScenarinoEndDate = tasksScenarinoEndDate;
     }
 
-    public Long getRangeDay() {
-        return rangeDay;
+    public Long getTasksRangeDay() {
+        return tasksRangeDay;
     }
 
-    public void setRangeDay(Long rangeDay) {
-        this.rangeDay = rangeDay;
+    public void setTasksRangeDay(Long tasksRangeDay) {
+        this.tasksRangeDay = tasksRangeDay;
     }
 
     public Long getStepindex() {
@@ -197,20 +197,20 @@ public class TTasksStatus {
         this.stopStatus = stopStatus == null ? null : stopStatus.trim();
     }
 
-    public Date getSendTime() {
-        return sendTime;
+    public Date getTasksSendTime() {
+        return tasksSendTime;
     }
 
-    public void setSendTime(Date sendTime) {
-        this.sendTime = sendTime;
+    public void setTasksSendTime(Date tasksSendTime) {
+        this.tasksSendTime = tasksSendTime;
     }
 
-    public Date getEndTime() {
-        return endTime;
+    public Date getTasksEndTime() {
+        return tasksEndTime;
     }
 
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+    public void setTasksEndTime(Date tasksEndTime) {
+        this.tasksEndTime = tasksEndTime;
     }
 
     public String getStartModelResult() {
@@ -245,72 +245,51 @@ public class TTasksStatus {
         this.pauseStatus = pauseStatus == null ? null : pauseStatus.trim();
     }
 
-    public Long getExpand1() {
-        return expand1;
+    public Long getTasksExpand1() {
+        return tasksExpand1;
     }
 
-    public void setExpand1(Long expand1) {
-        this.expand1 = expand1;
+    public void setTasksExpand1(Long tasksExpand1) {
+        this.tasksExpand1 = tasksExpand1;
     }
 
-    public Date getExpand2() {
-        return expand2;
+    public Date getTasksExpand2() {
+        return tasksExpand2;
     }
 
-    public void setExpand2(Date expand2) {
-        this.expand2 = expand2;
+    public void setTasksExpand2(Date tasksExpand2) {
+        this.tasksExpand2 = tasksExpand2;
     }
 
-    public String getExpand3() {
-        return expand3;
+    public String getTasksExpand3() {
+        return tasksExpand3;
     }
 
-    public void setExpand3(String expand3) {
-        this.expand3 = expand3 == null ? null : expand3.trim();
+    public void setTasksExpand3(String tasksExpand3) {
+        this.tasksExpand3 = tasksExpand3 == null ? null : tasksExpand3.trim();
     }
 
-    public String getExpand4() {
-        return expand4;
+    public String getTasksExpand4() {
+        return tasksExpand4;
     }
 
-    public void setExpand4(String expand4) {
-        this.expand4 = expand4 == null ? null : expand4.trim();
+    public void setTasksExpand4(String tasksExpand4) {
+        this.tasksExpand4 = tasksExpand4 == null ? null : tasksExpand4.trim();
     }
 
-    public String getExpand5() {
-        return expand5;
+    public String getTasksExpand5() {
+        return tasksExpand5;
     }
 
-    public void setExpand5(String expand5) {
-        this.expand5 = expand5 == null ? null : expand5.trim();
+    public void setTasksExpand5(String tasksExpand5) {
+        this.tasksExpand5 = tasksExpand5 == null ? null : tasksExpand5.trim();
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public Date getTasksUpdateTime() {
+        return tasksUpdateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public void setTasksUpdateTime(Date tasksUpdateTime) {
+        this.tasksUpdateTime = tasksUpdateTime;
     }
-
-	@Override
-	public String toString() {
-		return "TTasksStatus [tasksId=" + tasksId + ", tasksScenarinoId="
-				+ tasksScenarinoId + ", errorStatus=" + errorStatus
-				+ ", scenarinoStartDate=" + scenarinoStartDate
-				+ ", scenarinoEndDate=" + scenarinoEndDate + ", rangeDay="
-				+ rangeDay + ", stepindex=" + stepindex + ", tasksEndDate="
-				+ tasksEndDate + ", sourceid=" + sourceid + ", calctype="
-				+ calctype + ", psal=" + psal + ", ssal=" + ssal
-				+ ", meiccityconfig=" + meiccityconfig + ", beizhu=" + beizhu
-				+ ", beizhu2=" + beizhu2 + ", beizhu3=" + beizhu3
-				+ ", stopStatus=" + stopStatus + ", sendTime=" + sendTime
-				+ ", endTime=" + endTime + ", startModelResult="
-				+ startModelResult + ", stopModelResult=" + stopModelResult
-				+ ", contunueStatus=" + contunueStatus + ", pauseStatus="
-				+ pauseStatus + ", expand1=" + expand1 + ", expand2=" + expand2
-				+ ", expand3=" + expand3 + ", expand4=" + expand4
-				+ ", expand5=" + expand5 + ", updateTime=" + updateTime + "]";
-	}
-    
 }
