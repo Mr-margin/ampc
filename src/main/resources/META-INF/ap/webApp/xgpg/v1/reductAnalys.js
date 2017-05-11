@@ -861,7 +861,6 @@ function bar() {
 
                 //减排量echarts
                 myPfChart.setOption(option);
-
                 //自适应屏幕大小变化
                 $("#pfDiv1").panel({
                     onResize:function(){myPfChart.resize()}
