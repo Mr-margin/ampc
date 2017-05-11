@@ -17,7 +17,6 @@ public interface TTasksStatusMapper {
 
     int updateByPrimaryKey(TTasksStatus record);
     
-    
     /**
 	 * @Description: TODO
 	 * @param tasksStatus   
@@ -175,4 +174,14 @@ public interface TTasksStatusMapper {
 	 */
 	int updatepausestatus(TTasksStatus tTasksStatus);
 
+	/**
+	 * @Description: 清空模式运行的状态
+	 * @param tTasksStatus
+	 * @return   
+	 * int  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年5月10日 下午8:54:00
+	 */
+	int updatecleanStatus(TTasksStatus tTasksStatus);
 }
