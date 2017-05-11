@@ -162,6 +162,49 @@ public class MessageLog {
 		}
 		
 	}
+
+	/**
+	 * @Description: TODO
+	 * @param rpop   
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年5月11日 下午5:11:20
+	 */
+	public void savepauseMessagelog(String rpop) {
+		LogUtil.getLogger().info("开始添加model.stop.pause消息的log到数据库！");
+		try {
+			Message message  = JsonUtil.jsonToObj(rpop, Message.class);
+			String id = message.getId();
+			Date time = message.getTime();
+			String type = message.getType();
+			Map body = (Map) message.getBody();
+			Long scenarioid = Long.parseLong(body.get("scenarioid").toString());
+			Long domainId = Long.parseLong(body.get("domainId").toString());
+			Long userId =  Long.parseLong(body.get("userId").toString());
+			String desc = body.get("desc").toString();
+			String code = body.get("code").toString();
+			TMessageLog tMessageLog = new TMessageLog();
+			tMessageLog.setMessageUuid(id);
+			tMessageLog.setMessageTime(time);
+			tMessageLog.setMessageType(type);
+			
+			tMessageLog.setUserId(userId);
+			tMessageLog.setDomainId(domainId);
+			tMessageLog.setResultDesc(desc);
+			tMessageLog.setResultCode(code);
+			int insertSelective = tMessageLogMapper.insertSelective(tMessageLog);
+			if (insertSelective>0) {
+				LogUtil.getLogger().info("更新model.stop.pause消息日志成功！");
+			}else {
+				LogUtil.getLogger().error("更新model.stop.pause消息日志失败！！");
+				throw new SQLException("更新model.stop.pause消息日志失败！！");
+			}
+		} catch (IOException | SQLException e) {
+			LogUtil.getLogger().error(" 更新model.stop.pause消息日志失败！！",e);
+		}
+		
+	}
 	
 
 }
