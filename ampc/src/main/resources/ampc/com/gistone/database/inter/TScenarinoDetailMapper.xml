@@ -10,10 +10,6 @@
     <result column="SCENARINO_STATUS" property="scenarinoStatus" jdbcType="DECIMAL" />
     <result column="SCENARINO_STATU_NAME" property="scenarinoStatuName" jdbcType="OTHER" />
     <result column="SCENARINO_ADD_TIME" property="scenarinoAddTime" jdbcType="TIMESTAMP" />
-    <result column="BASIS_TIME" property="basisTime" jdbcType="TIMESTAMP" />
-    <result column="BASIS_SCENARINO_ID" property="basisScenarinoId" jdbcType="DECIMAL" />
-    <result column="PATH_DATE" property="pathDate" jdbcType="TIMESTAMP" />
-    <result column="SCEN_TYPE" property="scenType" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TScenarinoDetail" >
     <id column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
@@ -275,18 +271,6 @@
       		 </if>
 			  ORDER BY SCENARINO_ID DESC
   </select>
-  
-  
-   <!-- new根据任务Id查询情景列表 并可根据条件名模糊查询 -->
-  <select id="selectByMissionIdAndQueryNameNew" parameterType="hashMap" resultMap="scenarinoListMap" >
-   	 SELECT  <include refid="scenarino_Column_List"/>
-  		FROM T_SCENARINO_DETAIL  SCEN 
-  		INNER JOIN T_SCENARINO_STATUS STAT  ON SCEN.SCENARINO_STATUS=STAT.SCENARINO_STATU_ID
-			  WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
-			  AND MISSION_ID=#{missionId,jdbcType=OTHER} AND SCEN_TYPE!='4'
-			  ORDER BY SCENARINO_ID DESC
-  </select>
-  
   
   <!-- 根据任务Id查询出所有的情景Id 用来级联删除 -->
   <select id="selectByMissionId" parameterType="hashMap" resultType="java.lang.Long" >
@@ -1050,6 +1034,65 @@ AND S.IS_EFFECTIVE ='1'
   <!--查询情景的运行状态  -->
   <select id="selectScenExecStatus" parameterType="java.lang.Long" resultType="java.lang.Long">
   	select SCENARINO_STATUS from T_SCENARINO_DETAIL where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <!-- 返回情景查询列表的数据 -->
+  <resultMap id="scenarinoListMapNew" type="hashMap" >
+    <id column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
+    <result column="SCENARINO_NAME" property="scenarinoName" jdbcType="OTHER" />
+    <result column="SCENARINO_START_DATE" property="scenarinoStartDate" jdbcType="TIMESTAMP" />
+    <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="TIMESTAMP" />
+    <result column="SCENARINO_STATUS" property="scenarinoStatus" jdbcType="DECIMAL" />
+    <result column="SCENARINO_STATU_NAME" property="scenarinoStatuName" jdbcType="OTHER" />
+    <result column="SCENARINO_ADD_TIME" property="scenarinoAddTime" jdbcType="TIMESTAMP" />
+    <result column="BASIS_TIME" property="basisTime" jdbcType="TIMESTAMP" />
+    <result column="BASIS_SCENARINO_ID" property="basisScenarinoId" jdbcType="DECIMAL" />
+    <result column="PATH_DATE" property="pathDate" jdbcType="TIMESTAMP" />
+    <result column="SCEN_TYPE" property="scenType" jdbcType="VARCHAR" />
+  </resultMap>
+  
+   <!-- new根据任务Id查询情景列表 并可根据条件名模糊查询 -->
+  <select id="selectByMissionIdAndQueryNameNew" parameterType="hashMap" resultMap="scenarinoListMapNew" >
+   	 SELECT  <include refid="scenarino_Column_List"/>
+  		FROM T_SCENARINO_DETAIL  SCEN 
+  		INNER JOIN T_SCENARINO_STATUS STAT  ON SCEN.SCENARINO_STATUS=STAT.SCENARINO_STATU_ID
+			  WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+			  AND MISSION_ID=#{missionId,jdbcType=OTHER} AND SCEN_TYPE!='4'
+			  ORDER BY SCENARINO_ID DESC
   </select>
   
 </mapper>
