@@ -40,7 +40,7 @@
     margin: 4px auto
   }
 
-  .btnG{
+  .btnG {
     display: inline-block;
     text-align: left;
     border: 1px solid #0275D8;
@@ -159,7 +159,6 @@
     border: 1px solid #e4153e;
   }
 
-
   #accordion {
     background-color: rgb(237, 245, 255);
   }
@@ -168,9 +167,10 @@
     margin: 5px 0;
   }
 
-  .menuCD div{
+  .menuCD div {
     box-sizing: border-box;
   }
+
   .menuCD_title {
     height: 45px;
     background-color: #fff;
@@ -194,18 +194,204 @@
     overflow: hidden;
     transition: all 0.5s linear;
   }
+
+  .legendinfo {
+    width: 14.0625em;
+    background-color: rgb(242, 242, 242);
+    color: #000;
+    position: absolute;
+    bottom: 0;
+    padding-left: 10px;
+    padding-top: 10px;
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+    border-top: 2px solid #ffffff;
+    border-right: 2px solid #ffffff;
+    border-top-right-radius: 20px;
+  }
+
+  .info {
+    padding: 5px;
+    z-index: 40;
+  }
+
+  .shadow {
+    /* background: #fff; */
+    background-color: rgb(242, 242, 242);
+    font-family: Helvetica, Arial, sans-serif;
+    -moz-box-shadow: 0 0 5px #888;
+    -webkit-box-shadow: 0 0 5px #888;
+    box-shadow: 0 0 5px #888;
+    border-radius: 5px;
+  }
+
+  #legendWrapper {
+    bottom: 15px;
+    /*height: 23.5em;*/
+    /*height:auto;*/
+    left: 15px;
+    position: absolute !important;
+    width: 14.0625em;
+  }
+
+  .easyui-layout.h100{
+    height: 100%;
+  }
 </style>
 
-<div class="cloudui" style="width: 100%;height: 100%">
+<div class="cloudui" style="height: 100%;width: 100%;position: relative;">
+  <div class="easyui-layout" data-options="fit:'true',border:'false'">
+    <div data-options="region:'west',border:'false'" class="jpfxLeft" style="overflow: hidden">
+      <div style="height:100%;padding-left: 0px;">
+        <div class="ibox float-e-margins" style="height:100%;border:1px solid #D9D9D9;">
+          <div class="ibox-title" style="margin-bottom: 0;height: 32px;line-height:32px;padding-left: 10px;background: linear-gradient(#fbfbfb, #f2f2f2);">
+            <h5 id="gis_table_title" class="headTitle"><i class="im-paragraph-center"></i> 行业-措施选择</h5>
+          </div>
+          <div class="ibox-content" style="height:calc(100% - 33px);overflow-y: hide;border-top:1px solid #d9d9d9;padding: 0px;position: relative">
+            <div class="panel-body" style="padding: 0px;width: 100%">
+              <!--<div class="panel-group" id="accordion"></div>-->
+              <div id="accordion" class="" style="width: 100%;height: 100%">
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div data-options="region:'center',border:'false'" class="jpfxRight" style="overflow: hidden">
+      <div class="easyui-layout" data-options="fit:'true',border:'false'" style="height: 100%">
+        <div data-options="region:'north',border:'false'" class="ibox float-e-margins"
+             style="height:50%;overflow: hidden;border:1px solid #D9D9D9;">
+          <div class="ibox-title" style="margin-bottom: 0;height: 32px;line-height:32px;padding-left: 10px;background: linear-gradient(#fbfbfb, #f2f2f2);">
+            <h5 class="headTitle"><i class="im-earth"></i> 地图展示</h5>
+            <div class="ibox-tools toolAll">
+
+              <div class="selectTool" style="margin-right:50px;float: left">
+                <h5 style="line-height: 30px;">污染物: ：</h5>
+                <div class="selectTool_con" style="display: inline-block;">
+                  <div class="" style="margin-bottom:0px;padding-left:0px;">
+                    <div class="" style="margin: 2px auto;padding-left:0px;padding-right:0px;">
+                      <div class="input-group group-select" style="width: 100%">
+                        <select class="form-control m-b" name="hz_wrw" id="hz_wrw" onChange="metTable_hj_info();"
+                                style="padding-left:6px;border-color: #1c84c6;">
+                          <option value="PM25">PM25</option>
+                          <option value="PM10">PM10</option><!-- PM10=PM25+PMcoarse -->
+                          <option value="SO2">SO2</option>
+                          <option value="NOx">NOx</option>
+                          <option value="VOC">VOC</option>
+                          <option value="CO">CO</option>
+                          <option value="NH3">NH3</option>
+                          <option value="BC">BC</option>
+                          <option value="OC">OC</option>
+                          <option value="PMFINE">PMFINE</option><!-- PMFINE=PM25-BC-OC -->
+                          <option value="PMcoarse">PMcoarse</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="selectTool" style="float: left">
+                <!--<h5>时间分辨率：</h5>-->
+                <div class="selectTool_con" style="display: inline-block;">
+                  <div class="btn-group" id="hangyedetype" data-toggle="buttons" onClick="hangye_type_info();"
+                       style="margin: 2px auto;padding: 0;border:1px solid #D9D9D9;height: 32px;">
+                    <label class="col-6 btn btn-outline btn-success  active" style="height: 30px;line-height: 30px;"><input
+                        checked type="radio" class="toggle">全部行业</label>
+                    <label class="col-6 btn btn-outline btn-success " style="height: 30px;line-height: 30px;"><input
+                        type="radio" class="toggle">当前行业</label>
+                  </div>
+                </div>
+              </div>
+
+
+              <!--<div class="" style="margin-bottom: 0px;margin-top: -10px;">-->
+              <!--<div class="m-b" style="margin-bottom: 0px;width:200px;">-->
+              <!--<span class="" style="border: 1px solid #E5E6E7;">污染物: </span>-->
+              <!--<select name="hz_wrw" id="hz_wrw" class="" onChange="metTable_hj_info();">-->
+              <!--<option value="PM25">PM25</option>-->
+              <!--<option value="PM10">PM10</option>&lt;!&ndash; PM10=PM25+PMcoarse &ndash;&gt;-->
+              <!--<option value="SO2">SO2</option>-->
+              <!--<option value="NOx">NOx</option>-->
+              <!--<option value="VOC">VOC</option>-->
+              <!--<option value="CO">CO</option>-->
+              <!--<option value="NH3">NH3</option>-->
+              <!--<option value="BC">BC</option>-->
+              <!--<option value="OC">OC</option>-->
+              <!--<option value="PMFINE">PMFINE</option>&lt;!&ndash; PMFINE=PM25-BC-OC &ndash;&gt;-->
+              <!--<option value="PMcoarse">PMcoarse</option>-->
+              <!--</select>-->
+              <!--</div>-->
+              <!--</div>-->
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <!--<div class="" id="hangyedetype" onClick="hangye_type_info();" data-toggle="buttons"-->
+              <!--style="margin-bottom: 0px;margin-top: -5px;">-->
+              <!--<label class="btn btn-outline btn-success active" val_name="all"><input type="radio"-->
+              <!--class="toggle">全部行业</label>-->
+              <!--<label class="btn btn-outline btn-success" val_name="dq"><input type="radio" class="toggle">当前行业</label>-->
+              <!--</div>-->
+            </div>
+          </div>
+          <div class="ibox-content" style="height:calc(100% - 33px);overflow-y: hide;background-color: #ffffff;padding: 0px 0px 0px 0px;border-top:1px solid #d9d9d9;">
+            <div class="col-12 easyui-panel" id="mapDiv0" style="height:100%;padding: 0px;"></div>
+          </div>
+        </div>
+
+        <div data-options="region:'center',border:'false'"  id="jianpaijisuanbox" class="ibox float-e-margins" style="height:calc(50%);padding-top: 10px;">
+          <div style="width: 100%;height: 100%;margin-bottom: 0px;overflow: hidden;border:1px solid #D9D9D9;">
+            <div class="ibox-title" style="margin-bottom: 0;height: 32px;line-height:32px;padding-left: 10px;background: linear-gradient(#fbfbfb, #f2f2f2);">
+              <h5 class="headTitle"><i class="fa-table"></i> 措施汇总</h5>
+              <div class="ibox-tools">
+                <button class="btn btn-success" id="hz_up" style="margin-bottom: 0px;margin-top: -7px;" onclick="hz_up();"
+                        type="button">
+                  <i class="fa fa-edit"></i>&nbsp;&nbsp;<span class="bold">修改</span>
+                </button>
+                <button class="btn btn-success" id="hz_de" style="margin-bottom: 0px;margin-top: -7px;" onclick="hz_de();"
+                        type="button">
+                  <i class="fa fa-close"></i>&nbsp;&nbsp;<span class="bold">删除</span>
+                </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button class="btn btn-success" id="jianpaijisuan" style="margin-bottom: 0px;margin-top: -7px;"
+                        onclick="jianpaijisuan();" type="button">
+                  <i class="fa fa-hourglass-2"></i>&nbsp;&nbsp;<span class="bold">计算减排</span>
+                </button>
+              </div>
+            </div>
+            <div class="ibox-content" style="height:calc(100% - 42px);overflow-y: hide;background-color: #ffffff;padding: 0px;border-top:1px solid #d9d9d9">
+              <table id='metTable_hj' class='table-bordered'></table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<div class="cloudui" style="width: 100%;height: 100%">
   <div class='col-6' style="height:100%;padding-left: 0px;">
     <div class="ibox float-e-margins" style="height:100%;">
       <div class="ibox-title">
         <h5>行业-措施选择</h5>
       </div>
-      <div class="ibox-content"
-           style="width:100%;height:calc(100% - 48px);overflow-y: auto;background-color: #EDF7FF;border:1px solid #75B9E6;padding: 0px;">
+      <div class="ibox-content" style="width:100%;height:calc(100% - 48px);overflow-y: auto;background-color: #EDF7FF;border:1px solid #75B9E6;padding: 0px;">
         <div class="panel-body" style="padding: 0px;width: 100%">
-          <!--<div class="panel-group" id="accordion"></div>-->
+          &lt;!&ndash;<div class="panel-group" id="accordion"></div>&ndash;&gt;
           <div id="accordion" class="" style="width: 100%;height: 100%">
 
 
@@ -227,9 +413,10 @@
               <div class="" style="margin-bottom:0px;padding-left:0px;">
                 <div class="" style="margin: 2px auto;padding-left:0px;padding-right:0px;">
                   <div class="input-group group-select" style="width: 100%">
-                    <select class="form-control m-b" name="hz_wrw" id="hz_wrw" onChange="metTable_hj_info();" style="padding-left:6px;border-color: #1c84c6;">
+                    <select class="form-control m-b" name="hz_wrw" id="hz_wrw" onChange="metTable_hj_info();"
+                            style="padding-left:6px;border-color: #1c84c6;">
                       <option value="PM25">PM25</option>
-                      <option value="PM10">PM10</option><!-- PM10=PM25+PMcoarse -->
+                      <option value="PM10">PM10</option>&lt;!&ndash; PM10=PM25+PMcoarse &ndash;&gt;
                       <option value="SO2">SO2</option>
                       <option value="NOx">NOx</option>
                       <option value="VOC">VOC</option>
@@ -237,7 +424,7 @@
                       <option value="NH3">NH3</option>
                       <option value="BC">BC</option>
                       <option value="OC">OC</option>
-                      <option value="PMFINE">PMFINE</option><!-- PMFINE=PM25-BC-OC -->
+                      <option value="PMFINE">PMFINE</option>&lt;!&ndash; PMFINE=PM25-BC-OC &ndash;&gt;
                       <option value="PMcoarse">PMcoarse</option>
                     </select>
                   </div>
@@ -247,47 +434,48 @@
           </div>
 
           <div class="selectTool" style="float: left">
-            <!--<h5>时间分辨率：</h5>-->
+            &lt;!&ndash;<h5>时间分辨率：</h5>&ndash;&gt;
             <div class="selectTool_con" style="display: inline-block;">
-              <div class="btn-group" id="hangyedetype" data-toggle="buttons" onClick="hangye_type_info();" style="margin: 2px auto;padding: 0;border:1px solid #D9D9D9;height: 32px;">
-                <label class="col-6 btn btn-outline btn-success  active" style="height: 30px;line-height: 30px;"><input checked type="radio" class="toggle">全部行业</label>
-                <label class="col-6 btn btn-outline btn-success " style="height: 30px;line-height: 30px;"><input type="radio" class="toggle">当前行业</label>
+              <div class="btn-group" id="hangyedetype" data-toggle="buttons" onClick="hangye_type_info();"
+                   style="margin: 2px auto;padding: 0;border:1px solid #D9D9D9;height: 32px;">
+                <label class="col-6 btn btn-outline btn-success  active" style="height: 30px;line-height: 30px;"><input
+                    checked type="radio" class="toggle">全部行业</label>
+                <label class="col-6 btn btn-outline btn-success " style="height: 30px;line-height: 30px;"><input
+                    type="radio" class="toggle">当前行业</label>
               </div>
             </div>
           </div>
 
 
-
-
-
-          <!--<div class="" style="margin-bottom: 0px;margin-top: -10px;">-->
-            <!--<div class="m-b" style="margin-bottom: 0px;width:200px;">-->
-              <!--<span class="" style="border: 1px solid #E5E6E7;">污染物: </span>-->
-              <!--<select name="hz_wrw" id="hz_wrw" class="" onChange="metTable_hj_info();">-->
-                <!--<option value="PM25">PM25</option>-->
-                <!--<option value="PM10">PM10</option>&lt;!&ndash; PM10=PM25+PMcoarse &ndash;&gt;-->
-                <!--<option value="SO2">SO2</option>-->
-                <!--<option value="NOx">NOx</option>-->
-                <!--<option value="VOC">VOC</option>-->
-                <!--<option value="CO">CO</option>-->
-                <!--<option value="NH3">NH3</option>-->
-                <!--<option value="BC">BC</option>-->
-                <!--<option value="OC">OC</option>-->
-                <!--<option value="PMFINE">PMFINE</option>&lt;!&ndash; PMFINE=PM25-BC-OC &ndash;&gt;-->
-                <!--<option value="PMcoarse">PMcoarse</option>-->
-              <!--</select>-->
-            <!--</div>-->
-          <!--</div>-->
+          &lt;!&ndash;<div class="" style="margin-bottom: 0px;margin-top: -10px;">&ndash;&gt;
+          &lt;!&ndash;<div class="m-b" style="margin-bottom: 0px;width:200px;">&ndash;&gt;
+          &lt;!&ndash;<span class="" style="border: 1px solid #E5E6E7;">污染物: </span>&ndash;&gt;
+          &lt;!&ndash;<select name="hz_wrw" id="hz_wrw" class="" onChange="metTable_hj_info();">&ndash;&gt;
+          &lt;!&ndash;<option value="PM25">PM25</option>&ndash;&gt;
+          &lt;!&ndash;<option value="PM10">PM10</option>&lt;!&ndash; PM10=PM25+PMcoarse &ndash;&gt;&ndash;&gt;
+          &lt;!&ndash;<option value="SO2">SO2</option>&ndash;&gt;
+          &lt;!&ndash;<option value="NOx">NOx</option>&ndash;&gt;
+          &lt;!&ndash;<option value="VOC">VOC</option>&ndash;&gt;
+          &lt;!&ndash;<option value="CO">CO</option>&ndash;&gt;
+          &lt;!&ndash;<option value="NH3">NH3</option>&ndash;&gt;
+          &lt;!&ndash;<option value="BC">BC</option>&ndash;&gt;
+          &lt;!&ndash;<option value="OC">OC</option>&ndash;&gt;
+          &lt;!&ndash;<option value="PMFINE">PMFINE</option>&lt;!&ndash; PMFINE=PM25-BC-OC &ndash;&gt;&ndash;&gt;
+          &lt;!&ndash;<option value="PMcoarse">PMcoarse</option>&ndash;&gt;
+          &lt;!&ndash;</select>&ndash;&gt;
+          &lt;!&ndash;</div>&ndash;&gt;
+          &lt;!&ndash;</div>&ndash;&gt;
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <!--<div class="" id="hangyedetype" onClick="hangye_type_info();" data-toggle="buttons"-->
-               <!--style="margin-bottom: 0px;margin-top: -5px;">-->
-            <!--<label class="btn btn-outline btn-success active" val_name="all"><input type="radio"-->
-                                                                                    <!--class="toggle">全部行业</label>-->
-            <!--<label class="btn btn-outline btn-success" val_name="dq"><input type="radio" class="toggle">当前行业</label>-->
-          <!--</div>-->
+          &lt;!&ndash;<div class="" id="hangyedetype" onClick="hangye_type_info();" data-toggle="buttons"&ndash;&gt;
+          &lt;!&ndash;style="margin-bottom: 0px;margin-top: -5px;">&ndash;&gt;
+          &lt;!&ndash;<label class="btn btn-outline btn-success active" val_name="all"><input type="radio"&ndash;&gt;
+          &lt;!&ndash;class="toggle">全部行业</label>&ndash;&gt;
+          &lt;!&ndash;<label class="btn btn-outline btn-success" val_name="dq"><input type="radio" class="toggle">当前行业</label>&ndash;&gt;
+          &lt;!&ndash;</div>&ndash;&gt;
         </div>
       </div>
-      <div class="ibox-content" style="height:calc(100% - 48px);overflow-y: auto;border:1px solid #75B9E6;padding: 0px;">
+      <div class="ibox-content"
+           style="height:calc(100% - 48px);overflow-y: auto;border:1px solid #75B9E6;padding: 0px;">
         <div class="col-12" id="mapDiv0" style="height:100%;padding: 0px;"></div>
       </div>
     </div>
@@ -314,7 +502,7 @@
       </div>
     </div>
   </div>
-</div>
+</div>-->
 
 
 <!-- Modal -->
