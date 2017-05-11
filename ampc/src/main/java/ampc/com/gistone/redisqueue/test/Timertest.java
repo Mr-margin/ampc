@@ -18,13 +18,9 @@ import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.util.ConfigUtil;
-import ampc.com.gistone.util.LogUtil;
-import ampc.com.gistone.util.RedisConfig;
 
 /**  
  * @Title: Timertest.java
