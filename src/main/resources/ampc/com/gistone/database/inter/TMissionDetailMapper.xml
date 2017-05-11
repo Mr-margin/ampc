@@ -21,7 +21,6 @@
     <id column="MISSION_ID" property="missionId" jdbcType="DECIMAL" />
     <result column="MISSION_NAME" property="missionName" jdbcType="OTHER" />
     <result column="MISSION_DOMAIN_ID" property="missionDomainId" jdbcType="DECIMAL" />
-    
     <result column="ES_COUPLING_ID" property="esCouplingId" jdbcType="DECIMAL" />
     <result column="ES_COUPLING_NAME" property="esCouplingName" jdbcType="OTHER" />
     <result column="ES_CODE_RANGE" property="esCodeRange" jdbcType="VARCHAR" />
