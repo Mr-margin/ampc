@@ -137,7 +137,7 @@ public class MessageLog {
 			String type = message.getType();
 			Map body = (Map) message.getBody();
 			Long scenarioid = Long.parseLong(body.get("scenarioid").toString());
-			Long domainId = Long.parseLong(body.get("domainId").toString());
+			Long domainId = Long.parseLong(body.get("domainId").toString()); ///kongzhongzheng
 			Long userId =  Long.parseLong(body.get("userId").toString());
 			String desc = body.get("desc").toString();
 			String code = body.get("code").toString();
