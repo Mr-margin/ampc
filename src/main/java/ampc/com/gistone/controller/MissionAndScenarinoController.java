@@ -1442,9 +1442,9 @@ public class MissionAndScenarinoController {
 			       aCalendar.setTime(startdate);
 			       int day2 = aCalendar.get(Calendar.DAY_OF_YEAR);
 			     int days= day1-day2;
-				tasks.setRangeDay(Long.valueOf(days+1));
-				tasks.setScenarinoEndDate(enddate);
-				tasks.setScenarinoStartDate(startdate);
+				tasks.setTasksRangeDay(Long.valueOf(days+1));
+				tasks.setTasksScenarinoEndDate(enddate);
+				tasks.setTasksScenarinoStartDate(startdate);
 				tTasksStatusMapper.insertSelective(tasks);
 
 				List<String> areanamelist=new ArrayList();
