@@ -253,10 +253,10 @@ $('.hour').css('display','none');
 
 var speciesArr = {
 //		day: ['PM₂₅', 'PM₁₀', 'O₃_8_MAX', 'O₃_1_MAX', 'O₃_AVG', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE'],
-//		day: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'SO2', 'NO2', 'CO'],
-		day: ['PM25', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'O3_AVG', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE'],
-//		hour: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3', 'SO2', 'NO2', 'CO']
-		hour: ['PM25', 'PM10', 'O3', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE']
+		day: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'SO2', 'NO2', 'CO'],
+//		day: ['PM25', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'O3_AVG', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE'],
+		hour: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3', 'SO2', 'NO2', 'CO']
+//		hour: ['PM25', 'PM10', 'O3', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE']
 //		hour: ['PM₂₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE']
 };
 
@@ -779,10 +779,7 @@ function initEcharts() {
 					data : ydata     			//可变情景数据 
 				});	
 			});
-			option.xAxis = [];
-		    option.xAxis.push({				    //x轴情景时间
-		    	data: xdataName.sort()						//修改数据排序
-		    });
+			
 		}else{	//-----------------------逐日结束--逐小时开始--------------------//
 			var xdataName =	[];
 			$.each(data,function(key,val){	//键为模拟或观测
@@ -818,12 +815,100 @@ function initEcharts() {
 					data : ydata     			//可变情景数据 
 				});	
 			});
-			option.xAxis = [];
-		    option.xAxis.push({				    //x轴情景时间
-		    	data: xdataName					//修改数据排序
-		    });
 			
 		}
+		
+		/**
+		 * 逐日--根据不同物种添加相应的刻度标注线配色
+		 * */
+		//逐日和逐小时共用标注线颜色卡
+		var colors=['rgb(0, 228, 0)','rgb(255, 255, 0)','rgb(255, 126, 0)','rgb(255, 0, 0)','rgb(153, 0, 76)','rgb(126, 0, 35)','rgb(0, 0, 0)'];
+		if(changeMsg.rms == 'day'){
+			if("AQI"==tname[i]){	
+				var markLineName=[50,100,150,200,300,400,500];
+			}else if("PM25"==tname[i]){
+				var markLineName=[35,75,115,150,250,350,500];
+			}else if("PM10"==tname[i]){
+				var markLineName=[50,150,250,350,420,500,600];
+			}else if("O3_8_MAX"==tname[i]){
+				var markLineName=[100,160,215,265,800];
+			}else if("O3_1_MAX"==tname[i]){
+				var markLineName=[160,200,300,400,800,1000,1200];
+			}else if("SO2"==tname[i]){
+				var markLineName=[50,150,475,800,1600,2100,2620];
+			}else if("NO2"==tname[i]){
+				var markLineName=[40,80,180,280,565,750,940];
+			}else if("CO"==tname[i]){
+				var markLineName=[2,4,14,24,36,48,60];
+			}
+			for(var w=0;w<markLineName.length;w++){
+				var mkname=markLineName[w];
+				var markLines={
+						name:mkname ,
+			            type:'line',
+			            markLine : {
+			                lineStyle: {
+			                    normal: {
+			                        type: 'dashed',
+			                        color:colors[w]
+			                    }
+			                },
+			                data : [
+			                    {yAxis:mkname  }
+			                ]
+			            }
+					};
+				option.series.push(markLines);
+			}
+		}else{
+			//逐小时--根据不同物种添加相应的刻度标注线配色
+			if("AQI"==tname[i]){	
+				var markLineName=[50,100,150,200,300,400,500];
+			}else if("PM25"==tname[i]){
+				var markLineName=[35,75,115,150,250,350,500];
+			}else if("PM10"==tname[i]){
+				var markLineName=[50,150,250,350,420,500,600];
+			}else if("O3"==tname[i]){
+				var markLineName=[160,200,300,400,800,1000,1200];
+			}else if("SO2"==tname[i]){
+				var markLineName=[150,500,650,800];
+			}else if("NO2"==tname[i]){
+				var markLineName=[100,200,700,1200,2340,3090,3840];
+			}else if("CO"==tname[i]){
+				var markLineName=[5,10,35,60,90,120,150];
+			}
+			for(var w=0;w<markLineName.length;w++){
+				var mkname=markLineName[w];
+				var markLines={
+						name:mkname ,
+			            type:'line',
+			            markLine : {
+			                lineStyle: {
+			                    normal: {
+			                        type: 'dashed',
+			                        color:colors[w]
+			                    }
+			                },
+			                data : [
+			                    {yAxis:mkname  }
+			                ]
+			            }
+					};
+				option.series.push(markLines);
+			}
+		}	//标注线配色结束
+		
+		option.xAxis = [];
+		if(changeMsg.rms == 'day'){
+			option.xAxis.push({				    //x轴情景时间
+		    	data: xdataName.sort()			//修改数据排序
+		    });
+		}else{
+			option.xAxis.push({				    //x轴情景时间
+		    	data: xdataName					//修改数据排序
+		    });
+		}
+	    
 		var es = echarts.init(document.getElementById(tname[i]));
 	    es.setOption(option);
 	    $(window).resize(es.resize);
