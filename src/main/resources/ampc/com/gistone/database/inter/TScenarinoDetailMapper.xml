@@ -72,11 +72,12 @@
   select SCENARINO_ID from T_SCENARINO_DETAIL where PATH_DATE = #{pathDate,jdbcType=TIMESTAMP} and SCEN_TYPE = '4'
   </select>
   
-  <!--查询所有的执行状态中的预评估情景  6表示模式执行中 1表示预评估情景 -->
+  <!--查询所有的执行状态中的预评估情景  6表示模式执行中 1表示预评估情景 EXPAND1=0表示减排计算完毕-->
   <select id="selectpreEvaluationSituation" resultMap="BaseResultMap">
   select
-  <include refid="Base_Column_List" />
-  from T_SCENARINO_DETAIL where SCENARINO_STATUS ='6' and SCEN_TYPE ='1'
+ <include refid="Base_Column_List" />
+  from T_SCENARINO_DETAIL A LEFT JOIN T_TASKS_STATUS B ON A.SCENARINO_ID=B.TASKS_SCENARINO_ID
+  where SCENARINO_STATUS ='6' and SCEN_TYPE ='1' and B.TASKS_EXPAND1 ='0'
   </select>
   <!--通过pathdate查询实时预报情景  -->
   <select id="getidByuserIdAndpathdate" resultMap="BaseResultMap" parameterType="hashMap">
