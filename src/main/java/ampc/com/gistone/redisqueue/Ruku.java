@@ -227,6 +227,21 @@ public class Ruku {
 							LogUtil.getLogger().info("数据入库完毕！");
 							//修改情景状态
 							readyData.updateScenStatusUtil(8l, scenarioId);
+						}else {
+							Date date = new Date();
+							Date pathDate = scenarinoDetail.getPathDate();
+							Date tempDate = DateUtil.DateToDate(DateUtil.ChangeDay(pathDate, 1), "yyyyMMdd");
+							Date timeCritical = DateUtil.changedateByHour(tempDate, 7);
+							/*
+							 * 临界时间和当前系统时间比较 
+							 * 如果当前系统时间大于临界时间 表示当前执行的消息是该条实时预报的能执行的上线次数
+							 * 本次对应的消息执行完毕，以后的实时预报不再执行
+							 * */
+							int criticalCompare = date.compareTo(timeCritical);	
+							if (criticalCompare>0) {
+								//修改情景状态
+								readyData.updateScenStatusUtil(8l, scenarioId);
+							}
 						}
 					}else {
 						LogUtil.getLogger().info("实时预报数据入库失败！");
@@ -273,11 +288,37 @@ public class Ruku {
 				if (res) {
 					LogUtil.getLogger().info("预评估数据入库成功！");
 					int compareTo = endDate.compareTo(scenEndDate);//模式结束时间和情景的结束时间
+					/*
+					 * 1.正常情况下，模式执行的结束时间和情景结束的结束时间一直，入库完成 ---模式执行完毕
+					 * 2.当当条预评估情景对应的实时预报情景没有执行完毕，只执行到其中的某一天，预评估情景也只能执行到其对应的时间，然后模式执行完毕
+					 */
 					if (compareTo==0) {
 						//模式结束时间和情景的结束时间一致表示数据入库完毕
 						LogUtil.getLogger().info("预评估数据入库完毕！");
 						//修改情景状态
 						readyData.updateScenStatusUtil(8l, scenarioId);
+					}else {
+						Date date = new Date();
+						Date pathDate = scenarinoDetail.getPathDate();
+						Date tempDate = DateUtil.DateToDate(DateUtil.ChangeDay(pathDate, 1), "yyyyMMdd");
+						Date timeCritical = DateUtil.changedateByHour(tempDate, 7);
+						/* 临界时间和当前系统时间比较 
+						 * 如果当前系统时间大于临界时间 表示当前执行的消息是该条实时预报的能执行的上线次数
+						 * 本次对应的消息执行完毕，以后的实时预报不再执行
+						 * 比较当次预评估任务的time和最大的气象数据，当时间相等的时候，预评估情景结束，之后的预评估的次数不再执行
+						 * 
+						 * */
+						int criticalCompare = date.compareTo(timeCritical);	
+						if (criticalCompare>0) {
+							Date maxTimeForMegan = readyData.getMaxTimeForMegan(pathDate,userId);//最大的气象数据时间
+							tasksEndDate = DateUtil.DateToDate(tasksEndDate, "yyyyMMdd");
+							maxTimeForMegan = DateUtil.DateToDate(maxTimeForMegan, "yyyyMMdd");
+							int compareifSend = maxTimeForMegan.compareTo(tasksEndDate);
+							if (compareifSend==0) {
+								//修改情景状态
+								readyData.updateScenStatusUtil(8l, scenarioId);
+							}
+						}
 					}
 				}
 			}
