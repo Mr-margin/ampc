@@ -40,8 +40,13 @@ public class ConfigUtil {
 	// 调用外部的预处理接口时使用的URL
 	@Value("${jp.preproURL}")
 	private String preproURL;
+	// 获取emis的参数（不需要减排系数）
+	@Value("${emis.paramesURL}")
+	private String emisParamesURL;
+	
+	
 
-	//redisIP地址
+			//redisIP地址
 			@Value("${spring.redis.host}")
 			private String redisHost;
 			//redis 端口
@@ -111,6 +116,10 @@ public class ConfigUtil {
 
 	
 	
+	public String getEmisParamesURL() {
+				return emisParamesURL;
+			}
+
 	public String getActionlistURL() {
 		return actionlistURL;
 	}
