@@ -378,7 +378,7 @@
 
     $('#rwglpanle').layout();
     $('#ceshi1').datagrid({
-      url:'/ampc/mission/get_mission_list',
+      url:'/ampc/new_mission/get_mission_list',
       mothod:'post',
       pagination:true,
       queryParams: {
@@ -417,7 +417,7 @@
 //      },
       success: function (data) {
         requestQJData(data.data);
-        console.log(transformdata);
+        console.log(JSON.stringify(transformdata));
         $('#rwgltable').treegrid({
           data: transformdata,
           idField: 'id',
