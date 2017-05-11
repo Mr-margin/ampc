@@ -101,7 +101,7 @@ public class StopModelData {
 	 */
 	public boolean pauseModel(Long scenarinoId, Long domainId, Long missionId,
 			Long userId) {
-		QueueData queueData = getHeadParameter("model.stop");
+		QueueData queueData = getHeadParameter("model.pause");
 		StopModelBean stopModelBean = new StopModelBean();
 		stopModelBean.setDomainid(domainId.toString());
 		stopModelBean.setMissionid(missionId.toString());
