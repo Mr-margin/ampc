@@ -22,7 +22,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import ampc.com.gistone.database.model.TTasksStatus;
+import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.LogUtil;
+import ampc.com.gistone.util.RedisConfig;
 
 /**  
  * @Title: Timertest.java
@@ -38,9 +40,13 @@ public class Timertest {
 
 	@Autowired
 	private RedisTestService redisqueue;
+	/*@Autowired
+	private RedisConfig redisConfig;*/
+	@Autowired
+	private ConfigUtil configUtil;
 	
-//	@Scheduled(fixedRate = 300000)
-	@Scheduled(cron="0 37 10 * * ?")
+//	@Scheduled(fixedRate = 3000)
+//	@Scheduled(cron="0 37 10 * * ?")
 	public void continueRealModel() {
 		//--------------启动模式的实例----------
 		Result_Start_model result_Start_model = new Result_Start_model();
@@ -51,23 +57,30 @@ public class Timertest {
 				result_Start_model.setTime("2017-05-04 15:26:41");
 				result_Start_model.setType("model.start.result");
 				Map<String,Object> map = new HashMap<String, Object>();
-				Long scenarioid2 = (long)617;
+				Long scenarioid2 = (long)2;
 				map.put("scenarioid",scenarioid2 );
 				map.put("index", 8);
 				map.put("date", "20170507");
-				map.put("code", "0");
+				map.put("code", "1");
 				map.put("desc", "");
 				result_Start_model.setBody(map);
 				JSONObject jsonObject = JSONObject.fromObject(result_Start_model);
 				String json = jsonObject.toString();
 //				redisqueue.in("send_queue_name", json);//result_Start_model
-				redisqueue.in("r0_mb", json);//result_Start_model
-				System.out.println(json+"返回结果");
+//				redisqueue.in("r0_mb", json);//result_Start_model
+				Long in = redisqueue.in("r0_test_mb", json);//result_Start_model
+				System.out.println(in+":"+json+"返回结果");
 	}
+	
+	
+//	@Scheduled(fixedRate = 5000)
 	public void test() {
-		
+		System.out.println(configUtil.getRedisQueueAcceptName());//mb
+		System.out.println(configUtil.getRedisQueuesSendName());//bm
 	}
-//	@Scheduled(fixedRate = 50000)
+	
+//	@Scheduled(fixedRate = 5000)
+//	@Scheduled(cron="0 32 10 * * ?")
 	private void ungribshili() {
 		//----------------ungrib的实例-------------
 				//RedisQueue redisqueue = new RedisQueue();
@@ -77,12 +90,12 @@ public class Timertest {
 				ungribTest.setId(UUID.randomUUID().toString());
 				String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 				System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-				ungribTest.setTime(format);
+				ungribTest.setTime("2017-05-10 09:53:39");
 				ungribTest.setType("ungrib.result");
 				Map<String,Object> map = new HashMap<String, Object>();
 				//Map<String,Object> body = new HashMap<String,Object>();
 				String format2 = new SimpleDateFormat("yyyyMMdd").format(new Date());
-				map.put("pathdate",  "20170427");
+				map.put("pathdate",  "20170510");
 				 int[] fnl ={1};
 		 		map.put("fnl", fnl);
 		 		
@@ -96,7 +109,7 @@ public class Timertest {
 				JSONObject jsonObject1 = JSONObject.fromObject(ungribTest);
 				String json1 = jsonObject1.toString();
 				//redisqueue.in("test", json1);
-				redisqueue.in("send_queue_name", json1);
+				redisqueue.in("r0_mb", json1);
 				System.out.println(json1+"fangrushuju  ungrib");
 				//{"id":"bafe5458-fb66-4fe3-b268-917d0a96b28f","time":"2017-04-27 11:41:17","type":"ungrib.result","body":{"gfsDesc":["","","","","","","","",""],"fnl":["1"],"gfs":["1","1","1","1","1","1","1","1","1"],"fnlDesc":[""],"pathdate":"20170427"}}
 				/*
