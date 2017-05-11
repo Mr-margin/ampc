@@ -25,6 +25,7 @@ $("#show").click(function () {
     }
 });
 
+var checkeded;//选中行
 var ls = window.sessionStorage;
 var qjMsg = vipspa.getMessage('yaMessage').content;
 
@@ -322,7 +323,7 @@ function metTable_hj_info(pa_name) {
     });
 
     var columnsw = [[]];
-    columnsw[0].push({field: 'state', title: '', align: 'center', checkbox: true});
+    columnsw[0].push({field: 's1', title: '', align: 'center', checkbox: true});
     columnsw[0].push({field: 'sectorName', title: '行业', align: 'center'});
     columnsw[0].push({field: 'measureName', title: '措施', align: 'center'});
     columnsw[0].push({field: 'implementationScope', title: '点源实际范围', align: 'center'});
@@ -353,8 +354,10 @@ function metTable_hj_info(pa_name) {
             // method: 'POST',
             // url: "/ampc/measure/get_measureList",
             // dataType: "json",
-            data:res.data,
+            data:res,
             columns: columnsw, //列
+            checkOnSelect:true,
+            selectOnCheck:true,
             clickToSelect: true,// 点击选中行
             pagination: false, // 在表格底部显示分页工具栏
             singleSelect: true,//设置True 将禁止多选
@@ -372,8 +375,7 @@ function metTable_hj_info(pa_name) {
 //                 return JSON.stringify({"token": "", "data": data});
 //             },
             queryParamsType: "limit", //参数格式,发送标准的RESTFul类型的参数请求
-            contentType: "application/json", // 请求远程数据的内容类型。
-            responseHandler: function (res) {
+            loadFilter: function (res) {
 
                 if (res.status == 0) {
 
@@ -412,30 +414,45 @@ function metTable_hj_info(pa_name) {
 
 
             },
-            onClickRow: function (row, $element) {
-//			$('.success').removeClass('success');
-//			$($element).addClass('success');
-                if (row.state == true) {//如果被选中
+//             onClickRow: function (index,row) {
+// //			$('.success').removeClass('success');
+// //			$($element).addClass('success');
+//                 if(checkeded == '-1'){
+//                     checkeded = '';
+//                     return;
+//                 }
+//                 if (row.planMeasureId != checkeded) {//如果被选中
+//                     checkeded = row.planMeasureId;
+//                     $("#hz_de").show();
+//                     $("#hz_up").show();
+//                 } else {
+//                     checkeded = '';
+//                     $('#metTable_hj').datagrid('clearChecked');
+//                     $("#hz_de").hide();
+//                     $("#hz_up").hide();
+//                 }
+//             },
+            onLoadSuccess: function (data) {
+                if (data.rows.length > 0) {
+                    $("#jianpaijisuan").show();
+                }
+            },
+            onCheck: function (index,row) {
+                if (row.planMeasureId != checkeded) {//如果被选中
+                    checkeded = row.planMeasureId;
                     $("#hz_de").show();
                     $("#hz_up").show();
                 } else {
+                    checkeded = '-1';
+                    $('#metTable_hj').datagrid('clearChecked');
                     $("#hz_de").hide();
                     $("#hz_up").hide();
                 }
             },
-            onLoadSuccess: function (data) {
-                if (data.length > 0) {
-                    $("#jianpaijisuan").show();
-                }
-            },
-            onCheck: function (row) {
-                $("#hz_de").show();
-                $("#hz_up").show();
-            },
-            onUncheck: function (row) {
-                $("#hz_de").hide();
-                $("#hz_up").hide();
-            }
+            // onUncheck: function (index,row) {
+            //     $("#hz_de").hide();
+            //     $("#hz_up").hide();
+            // }
         });
       console.log(2);
     })
@@ -576,7 +593,7 @@ function hz_de() {
 function jianpaijisuan() {
     var row = $('#metTable_hj').datagrid('getData');//获取所有的数据
     var planMeasureIds = "";
-    $.each(row, function (i, col) {
+    $.each(row.rows, function (i, col) {
         planMeasureIds += col.planMeasureId + ",";
     });
     zmblockUI("#jianpaijisuanbox", 'start');
