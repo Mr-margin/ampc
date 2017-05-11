@@ -110,15 +110,20 @@ public class GetWeatherModelController {
 			tTasksStatus.setStepindex(null);
 			tTasksStatus.setTasksEndDate(null);
 			tTasksStatus.setBeizhu("0");
+			tTasksStatus.setBeizhu2("0");
 			tTasksStatus.setTasksScenarinoId(scenarinoId);
 			//清空模式运行状态
-			int updateByPrimaryKey = tTasksStatusMapper.updateByPrimaryKeySelective(tTasksStatus);
+			int updateByPrimaryKey = tTasksStatusMapper.updatecleanStatus(tTasksStatus);
 			System.out.println(updateByPrimaryKey+"清空模式运行状态");
 			if (updateByPrimaryKey>0) {
 				LogUtil.getLogger().info("情况模式的运行状态");
 			}else {
 				LogUtil.getLogger().info("清空运行状态失败！");
 			}
+			TTasksStatus tTasksStatus2 = new TTasksStatus();
+			tTasksStatus2.setTasksScenarinoId(scenarinoId);
+			tTasksStatus2.setStopStatus("0");//表示不可发送消息到队列
+			int i = tTasksStatusMapper.updatestopstatus(tTasksStatus2);
 			String conditionString =  readyData.branchPredict(scenarinoId, scenarinoType, missionType,missionId,userId);
 			if (updateCores>0&&conditionString.equals("ok")) {
 				//更新状态
@@ -140,6 +145,9 @@ public class GetWeatherModelController {
 			}
 			if (updateCores>0&&conditionString.equals("error")) {
 				return AmpcResult.build(1000, "减排计算失败");
+			}
+			if (updateCores>0&&conditionString.equals("queue_error")) {
+				return AmpcResult.build(1000, "启动失败");
 			}
 			
 			else {
@@ -166,28 +174,59 @@ public class GetWeatherModelController {
 	 */
 	@Transactional
 	@RequestMapping("/saveEmis")
-	public AmpcResult saveEmisData(@RequestBody Map<String, Object> requestDate, Long jobId,HttpServletRequest request,HttpServletResponse response) {
+	public AmpcResult saveEmisData(@RequestBody Map<String, Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
 		try {
 			ClientUtil.SetCharsetAndHeader(request, response);
-			String sourceid = requestDate.get("sourceid").toString();
+//			String sourceid = requestDate.get("sourceid").toString();
 			//通过情景ID获取清单ID
 		//	Long sourceid = tMissionDetailMapper.getsourceid(missionId);
+			Object param = requestDate.get("psal");
+			if (!RegUtil.CheckParameter(param, "String", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController--saveEmis  psal为空或出现非法字符!");
+				return AmpcResult.build(1003, "psal为空或出现非法字符!");
+			}
+			param = requestDate.get("ssal");
+			if (!RegUtil.CheckParameter(param, "String", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController--saveEmis  ssal为空或出现非法字符!");
+				return AmpcResult.build(1003, "ssal为空或出现非法字符!");
+			}
+			param = requestDate.get("controlfile");
+			if (!RegUtil.CheckParameter(param, "String", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController--saveEmis  controlfile为空或出现非法字符!");
+				return AmpcResult.build(1003, "controlfile为空或出现非法字符!");
+			}
+			param = requestDate.get("meiccityconfig");
+			if (!RegUtil.CheckParameter(param, "String", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController--saveEmis  meiccityconfig为空或出现非法字符!");
+				return AmpcResult.build(1003, "meiccityconfig为空或出现非法字符!");
+			}
+			param = requestDate.get("scenarioid");
+			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController--saveEmis  scenarioid为空或出现非法字符!");
+				return AmpcResult.build(1003, "scenarioid为空或出现非法字符!");
+			}
+			
 			String psal = requestDate.get("psal").toString();
 			String ssal = requestDate.get("ssal").toString();
-			String setControlfile = requestDate.get("setControlfile").toString();
+			String controlfile = requestDate.get("controlfile").toString();
 			String meiccityconfig = requestDate.get("meiccityconfig").toString();
-			Long scenarinoId = Long.parseLong( requestDate.get("scenarioid").toString());
+			Long scenarinoId = Long.parseLong(requestDate.get("scenarioid").toString());
 			TTasksStatus tTasksStatus = new TTasksStatus();
 			tTasksStatus.setSourceid("1");
 			tTasksStatus.setCalctype("server");
 			tTasksStatus.setPsal(psal);
 			tTasksStatus.setSsal(ssal);
 			tTasksStatus.setMeiccityconfig(meiccityconfig);
-//			tTasksStatus.setControlfile("/work/modelcloud/lixin_meic/hebei/cf/cf_zero.csv");
+			//setControlfile
+//			tTasksStatus.setExpand3(controlfile);
+			tTasksStatus.setTasksExpand3(controlfile);
 			tTasksStatus.setTasksScenarinoId(scenarinoId);
+//			tTasksStatus.setExpand1(0l);
+			tTasksStatus.setTasksExpand1(0l);
 			System.out.println(tTasksStatus.toString());
 		//添加到对应的情景下面去
-			int i = tTasksStatusMapper.updateEmisData(tTasksStatus);
+//			int i = tTasksStatusMapper.updateEmisData(tTasksStatus);
+			int	i = tTasksStatusMapper.updateEmisData(tTasksStatus);
 		//	int i = tTasksStatusMapper.updateByPrimaryKeySelective(tTasksStatus);
 			if (i>0) {
 				LogUtil.getLogger().info("获取减排系数成功！并更新了数据库！");
