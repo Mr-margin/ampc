@@ -180,6 +180,7 @@ public interface TScenarinoDetailMapper {
     List<Map> selectByMissionIdAndQueryName(Map map);
     
     
+    
     /**
      * 根据任务Id查询出所有的情景Id 用来级联删除
      * @return 总条数
@@ -286,8 +287,12 @@ public interface TScenarinoDetailMapper {
 
 	
 
-	
-	
+	/**
+	 * TODO  新页面的情景查询方法
+	 * @param map
+	 * @return
+	 */
+	List<Map> selectByMissionIdNew(Map map);
 
 	
 }
