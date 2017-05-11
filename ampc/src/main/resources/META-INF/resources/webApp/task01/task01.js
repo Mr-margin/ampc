@@ -501,10 +501,9 @@ function qjOrder(v, row, i) {
     if (row.scenarinoStatus == 5) {
         return "<a href='javascript:' onclick='startBtn()' style='color: #FF9A00'><i class='im-play2'> 启动</i></a>";
     } else if (row.scenarinoStatus == 6) {
-        return "<a href='javascript:' style='color: #FF9A00'><i class='im-pause'> 暂停</i></a>";
+        return "<a href='javascript:pauseBtn()' style='color: #FF9A00'><i class='im-pause'> 暂停</i></a>";
     } else if (row.scenarinoStatus == 7) {
         return "<a href='javascript:' style='color: #FF9A00'><i class='im-play2'> 续跑</i></a>";
-        c
     }
 }
 
@@ -1728,32 +1727,61 @@ function startBtn() {
 }
 /*终止情景*/
 function stopBtn(){
-	var param={
-				userId:userId,
-				domainId:selectRW.missionDomainId,
-				scenarinoId:msg.content.qjId,
-				missionId:msg.content.rwId,
-				flag:0
-				};
-	ajaxPost('/ModelType/sendstopModel', param).success(function(res){
-		if(res.status===0){
-			swal({
-                title: res.msg,
-                type: 'success',
-                timer: 1000,
-                showConfirmButton: false
-            });
-			$('#qjTable').bootstrapTable('destroy');
-            initQjTable();
-		}else{
-			swal({
-                title: res.msg,
-                type: 'error',
-                timer: 1000,
-                showConfirmButton: false
-            });
-		}
-	})
+  var param={
+    userId:userId,
+    domainId:selectRW.missionDomainId,
+    scenarinoId:msg.content.qjId,
+    missionId:msg.content.rwId,
+    flag:0
+  };
+  ajaxPost('/ModelType/sendstopModel', param).success(function(res){
+    if(res.status===0){
+      swal({
+        title: res.msg,
+        type: 'success',
+        timer: 1000,
+        showConfirmButton: false
+      });
+      $('#qjTable').bootstrapTable('destroy');
+      initQjTable();
+    }else{
+      swal({
+        title: res.msg,
+        type: 'error',
+        timer: 1000,
+        showConfirmButton: false
+      });
+    }
+  })
+}
+/*终止情景*/
+function pauseBtn(){
+  var param={
+    userId:userId,
+    domainId:selectRW.missionDomainId,
+    scenarinoId:msg.content.qjId,
+    missionId:msg.content.rwId,
+    flag:1
+  };
+  ajaxPost('/ModelType/sendstopModel', param).success(function(res){
+    if(res.status===0){
+      swal({
+        title: res.msg,
+        type: 'success',
+        timer: 1000,
+        showConfirmButton: false
+      });
+      $('#qjTable').bootstrapTable('destroy');
+      initQjTable();
+    }else{
+      swal({
+        title: res.msg,
+        type: 'error',
+        timer: 1000,
+        showConfirmButton: false
+      });
+    }
+  })
 }
 
 /*模态框关闭后事件*/
