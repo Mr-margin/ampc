@@ -1953,6 +1953,7 @@ public class MissionAndScenarinoController {
 						s++;
 					}
 				}
+				ss.put("state", "closed");
 				//写入情景信息
 				ss.put("children", children);
 				//写入ID
