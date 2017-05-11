@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="ampc.com.gistone.database.inter.TScenarinoDetailMapper" >
+  <!-- 返回情景查询列表的数据 -->
+  <resultMap id="scenarinoListMap" type="hashMap" >
+    <id column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
+    <result column="SCENARINO_NAME" property="scenarinoName" jdbcType="OTHER" />
+    <result column="SCENARINO_START_DATE" property="scenarinoStartDate" jdbcType="TIMESTAMP" />
+    <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="TIMESTAMP" />
+    <result column="SCENARINO_STATUS" property="scenarinoStatus" jdbcType="DECIMAL" />
+    <result column="SCENARINO_STATU_NAME" property="scenarinoStatuName" jdbcType="OTHER" />
+    <result column="SCENARINO_ADD_TIME" property="scenarinoAddTime" jdbcType="TIMESTAMP" />
+    <result column="BASIS_TIME" property="basisTime" jdbcType="TIMESTAMP" />
+    <result column="BASIS_SCENARINO_ID" property="basisScenarinoId" jdbcType="DECIMAL" />
+    <result column="PATH_DATE" property="pathDate" jdbcType="TIMESTAMP" />
+    <result column="SCEN_TYPE" property="scenType" jdbcType="VARCHAR" />
+  </resultMap>
   <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TScenarinoDetail" >
     <id column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
     <result column="SCENARINO_TYPE" property="scenarinoType" jdbcType="DECIMAL" />
@@ -114,16 +128,7 @@
   	where USER_ID=#{userId,jdbcType=DECIMAL} and PATH_DATE=#{pathDate,jdbcType=TIMESTAMP} and SCEN_TYPE=#{scenType,jdbcType=VARCHAR}
   
   </select>
-  <!-- 返回情景查询列表的数据 -->
-  <resultMap id="scenarinoListMap" type="hashMap" >
-    <id column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
-    <result column="SCENARINO_NAME" property="scenarinoName" jdbcType="OTHER" />
-    <result column="SCENARINO_START_DATE" property="scenarinoStartDate" jdbcType="TIMESTAMP" />
-    <result column="SCENARINO_END_DATE" property="scenarinoEndDate" jdbcType="TIMESTAMP" />
-    <result column="SCENARINO_STATUS" property="scenarinoStatus" jdbcType="DECIMAL" />
-    <result column="SCENARINO_STATU_NAME" property="scenarinoStatuName" jdbcType="OTHER" />
-    <result column="SCENARINO_ADD_TIME" property="scenarinoAddTime" jdbcType="TIMESTAMP" />
-  </resultMap>
+
   <!-- 返回情景查询列表的列 -->
   <sql id="scenarino_Column_List" >
   	SCENARINO_ID,SCENARINO_NAME,SCENARINO_START_DATE,SCENARINO_END_DATE,SCENARINO_STATUS,
@@ -268,6 +273,17 @@
         		OR to_char(SCENARINO_ADD_TIME,'yyyy-mm-dd HH') LIKE #{queryName,jdbcType=OTHER}
         		OR SCENARINO_STATU_NAME LIKE #{queryName,jdbcType=OTHER})
       		 </if>
+			  ORDER BY SCENARINO_ID DESC
+  </select>
+  
+  
+   <!-- new根据任务Id查询情景列表 并可根据条件名模糊查询 -->
+  <select id="selectByMissionIdAndQueryNameNew" parameterType="hashMap" resultMap="scenarinoListMap" >
+   	 SELECT  <include refid="scenarino_Column_List"/>
+  		FROM T_SCENARINO_DETAIL  SCEN 
+  		INNER JOIN T_SCENARINO_STATUS STAT  ON SCEN.SCENARINO_STATUS=STAT.SCENARINO_STATU_ID
+			  WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+			  AND MISSION_ID=#{missionId,jdbcType=OTHER} AND SCEN_TYPE!='4'
 			  ORDER BY SCENARINO_ID DESC
   </select>
   
