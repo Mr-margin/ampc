@@ -1435,11 +1435,11 @@ public class AppraisalController {
 											break;
 										}
 									}else{
-										String speciesval=contentobj_on_map.get(contentobj_on_key).toString();
-										if(speciesval==null||"".equals(speciesval)||"null".equals(speciesval)){
+										if("null".equals(contentobj_on_map.get(contentobj_on_key))||"NULL".equals(contentobj_on_map.get(contentobj_on_key))||"".equals(contentobj_on_map.get(contentobj_on_key))||contentobj_on_map.get(contentobj_on_key)==null){
 											contentobj_on.put(contentobj_on_time,"-");
 											break;
 										}else{
+											String speciesval=contentobj_on_map.get(contentobj_on_key).toString();
 											BigDecimal bd=(new BigDecimal(speciesval)).setScale(1, BigDecimal.ROUND_HALF_UP);
 											contentobj_on.put(contentobj_on_time,bd);
 											break;
