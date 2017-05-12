@@ -29,6 +29,11 @@ import java.util.Map;
 
 
 
+
+
+
+
+
 import net.sf.json.JSONObject;
 
 import org.apache.ibatis.annotations.Select;
@@ -644,22 +649,50 @@ public class SchedulerTimer<V> {
 			Map map = new HashMap();
 			map.put("pathdate", pathDate);
 			map.put("type", "4");
-			List<TTasksStatus> selectTasksstatuslist = tTasksStatusMapper.selectTasksstatusByPathdateandtype(map);
+			try {
+				List<TTasksStatus> selectTasksstatuslist = tTasksStatusMapper.selectTasksstatusByPathdateandtype(map);
+				for (TTasksStatus tTasksStatus : selectTasksstatuslist) {
+					String modelErrorStatus = tTasksStatus.getModelErrorStatus();
+					Long tasksScenarinoId = tTasksStatus.getTasksScenarinoId();
+					TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(tasksScenarinoId);
+					if (null!=modelErrorStatus) {
+						TUngrib tUngrib = tUngribMapper.getlastungrib();
+						String lastungrib =  DateUtil.DATEtoString(tUngrib.getPathDate(), "yyyyMMdd");
+						boolean comtinueRealpredict =readyData.continueRealpredict(tScenarinoDetail,lastungrib);
+						if (comtinueRealpredict) {
+							LogUtil.getLogger().info("自动续跑实时预报成功！");
+						}else {
+							LogUtil.getLogger().info("自动续跑实时预报失败！");
+						}
+					}
+				}
+			} catch (Exception e) {
+				LogUtil.getLogger().error("");
+			}
 			
 		}
-		/*String scenType = "4";
-		Map map = new HashMap();
-		map.put("pathdate", pathdateDate);
-		map.put("type", scenType);
-		map.put("userId", 1);*/
-		//TTasksStatus status =tScenarinoDetailMapper.selectTasksstatusByPathdate(pathdateDate);
-//		TTasksStatus status =tTasksStatusMapper.selectTasksstatusByPathdate(map);
-//		System.out.println(status+"今天的实时预报情景");
-		/*Long missionType = tMissionDetailMapper.selectMissionType((long)367);
-		System.out.println(missionType+"---test:任务类型");*/
-		
-		
-		
+		if (compareTo<0) {
+			pathDate = DateUtil.ChangeDay(originalDate, -1);
+			Map map = new HashMap();
+			map.put("pathdate", pathDate);
+			map.put("type", "4");
+			List<TTasksStatus> selectTasksstatuslist = tTasksStatusMapper.selectTasksstatusByPathdateandtype(map);
+			for (TTasksStatus tTasksStatus : selectTasksstatuslist) {
+				String modelErrorStatus = tTasksStatus.getModelErrorStatus();
+				Long tasksScenarinoId = tTasksStatus.getTasksScenarinoId();
+				TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(tasksScenarinoId);
+				if (null!=modelErrorStatus) {
+					TUngrib tUngrib = tUngribMapper.getlastungrib();
+					String lastungrib =  DateUtil.DATEtoString(tUngrib.getPathDate(), "yyyyMMdd");
+					boolean comtinueRealpredict =readyData.continueRealpredict(tScenarinoDetail,lastungrib);
+					if (comtinueRealpredict) {
+						LogUtil.getLogger().info("自动续跑实时预报成功！");
+					}else {
+						LogUtil.getLogger().info("自动续跑实时预报失败！");
+					}
+				}
+			}
+		}
 	}
 
 }
