@@ -69,24 +69,6 @@ label#lblSelect::after
   border-radius           : 0 6px 6px 0;
   pointer-events          : none;
 }
-.cloudui .ibox-tools .wzGroup  .easyui-combobox{
-  border:none;
-  color: #333;
-  border: 1px solid #D9D9D9;
-  border-left: 4px solid #0275D8;
-  border-radius: 0 5px 0 0;
-  position: relative;
-  background-color:#fff;
-  border-radius: 0;
-  z-index: 2;
-}
-.cloudui .ibox-tools .wzGroup  .easyui-combobox:hover{background-color:#0275D8;color: #fff; border: 1px solid #0275D8;}
-.cloudui .ibox-tools .wzGroup  .easyui-combobox option{
-  background-color:#ecf0f1;
-  border:none;
-  color:#333;
-  line-height:20px;
-}
 /*栅格*/
 .cloudui .col-1, .cloudui .col-2, .cloudui .col-3, .cloudui .col-4, .cloudui .col-5, .cloudui .col-6, .cloudui .col-7, .cloudui .col-8, .cloudui .col-9, .cloudui .col-10, .cloudui .col-11, .cloudui .col-12 {
   float: left;
@@ -402,7 +384,28 @@ label#lblSelect::after
   color: #768399;
   font-size: 14px;
 }
-
+/*下拉菜单*/
+.cloudui  .easyui-combobox{
+  float: left;
+  border-radius: 0px 2px 2px 0px;
+  height: 27px;
+  box-sizing: border-box;
+  width: 120px;
+  color: #333;
+  border: 1px solid #D9D9D9;
+  border-left: 4px solid #0275D8;
+  position: relative;
+  background-color:#fff;
+  border-radius: 0;
+  z-index: 2;
+}
+.cloudui .ibox-tools .wzGroup  .easyui-combobox:hover{background-color:#0275D8;color: #fff; border: 1px solid #0275D8;}
+.cloudui .ibox-tools .wzGroup  .easyui-combobox option{
+  background-color:#ecf0f1;
+  border:none;
+  color:#333;
+  line-height:20px;
+}
 /*.cloudui .control-label:after {*/
   /*content: "";*/
   /*display: inline-block;*/
@@ -801,6 +804,7 @@ dl, dd {
   display: inline-block;
   float: right;
   margin-top: 0;
+  padding-top:0px;
 }
 .cloudui .ibox-title{background-color: transparent}
 .cloudui .ibox-title .headTitle{color: #0275D8;}
@@ -810,15 +814,16 @@ dl, dd {
 .cloudui .ibox-tools .wzGroup_{overflow: hidden;}
 .cloudui .ibox-tools .wzGroup .wz{float:left;border:1px solid #d9d9d9;border-right:none;border-radius: 2px 0 0 2px;padding:1px 10px;box-sizing: border-box;background: white;
   height:27px;line-height: 25px;}
-.cloudui .ibox-tools .wzGroup .easyui-combobox{float: left;border:none;border:1px solid #d9d9d9;border-radius: 0px 2px 2px 0px;height: 27px;box-sizing: border-box;width: 120px;}
-.cloudui .ibox-tools .switchBtn{float: right;border:1px solid #d9d9d9;border-radius: 2px;height: 24px;}
+.cloudui .ibox-tools .switchBtn{float: right;border-radius: 2px;margin-top:2px;}
 .cloudui .switchBtn{overflow: hidden;}
 .cloudui label{float: left;padding:0 10px;}
 .cloudui .btn input{display:none;}
+.cloudui .btn-success{border-radius: 2px;border: 1px solid #D9D9D9;height:28px;line-height:28px;background-color:white;box-sizing: border-box;color:#333;}
+.cloudui .btn-success i{margin-right:5px;}
 .cloudui .btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success.active, .open .dropdown-toggle.btn-success {
   display: inline-block;
-  height: 24px;
-  line-height: 24px;
+  height: 28px;
+  line-height: 28px;
   background-color: #0275D8;
   border-color: #0275D8;
   color: #FFFFFF;
@@ -828,8 +833,8 @@ dl, dd {
 }
 .cloudui .btn-success.disabled:hover, .btn-success.disabled:focus, .btn-success.disabled:active{
   display: inline-block;
-  height: 24px;
-  line-height: 24px;
+  height: 28px;
+  line-height: 28px;
   background-color: #0275D8;
   border-color: #0275D8;
   color: #FFFFFF;
@@ -843,7 +848,8 @@ dl, dd {
   font-size: 12px;
   line-height: 24px;
 }
-
+/*选择滑块*/
+.cloudui .switchBtn label{float: left;line-height: 28px;height:28px;}
 /*设置时间模态框*/
 .cloudui.window {
   background: none;
@@ -1212,6 +1218,7 @@ dl, dd {
 /*搜索条件*/
 .cloudui .xgpgShow .searchT .toolAll .toolContent{overflow: hidden;}
 .cloudui .xgpgShow .searchT .toolAll .selectTool{float: left;padding-top:10px;padding-bottom: 10px;margin-right:30px;}
+
 .cloudui .xgpgShow .searchT .toolAll .selectTool h5{float: left;font-size:12px;line-height:30px;margin-right:10px;width: 80px;text-align: right;}
 .cloudui .xgpgShow .searchT .toolAll .selectTool .selectTool_con{float: left;}
 .cloudui .xgpgShow .searchT .toolAll .selectTool .selectTool_con .selectRow{float: left;margin-right:10px;line-height:30px;}
@@ -1249,7 +1256,7 @@ dl, dd {
 .dropdown-menu {
   display: none;
 }
-
+.upDown{margin-top:2px;}
 /*任务管理的类型切换*/
 #selectTypeBtn{
   border-color: transparent;
