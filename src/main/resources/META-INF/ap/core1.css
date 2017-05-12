@@ -1345,3 +1345,33 @@ dl, dd {
   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
   background-color: #555;
 }
+/*水平分布 视频播放*/
+.cloudui .videoBar{position: absolute;left: 0;right: 0;bottom: 0;height:50px;}
+/*.cloudui .videoS{*/
+  /*position:absolute;*/
+  /*height:50px;*/
+  /*width:50px;*/
+/*}*/
+/*.cloudui .startV{*/
+  /*position:absolute;*/
+  /*left:0px;*/
+  /*top:0px;*/
+  /*width:40px;*/
+  /*height:40px;*/
+  /*border-radius:50%;*/
+  /*border:none;*/
+  /*background-color: red;*/
+  /*z-index: 100;*/
+  /*!*overflow:hidden;*!*/
+/*}*/
+/*.cloudui .videoT{*/
+  /*width:98%;*/
+  /*height:10px;*/
+  /*position:absolute;*/
+  /*border-radius:5px;*/
+  /*top:20px;*/
+  /*left:1%;*/
+  /*background-color: #fff;*/
+/*}*/
+/*.cloudui .startV{}*/
+/*.cloudui .startV i{color: white;font-family: 20px;line-height: 40px;}*/
