@@ -173,7 +173,6 @@ public class AirController {
 				Date tims=jztScenarino.getPathDate();
 				DateFormat df = new SimpleDateFormat("yyyy");
 				String nowTime= df.format(tims);
-				System.out.println(nowTime);
 				tables+=nowTime+"_";
 				tables+=userId;
 				ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -191,7 +190,6 @@ public class AirController {
 				Date tims=jztScenarino.getPathDate();
 				DateFormat df = new SimpleDateFormat("yyyy");
 				String nowTime= df.format(tims);
-				System.out.println(nowTime);
 				tables+=nowTime+"_";
 				tables+=userId.toString();
 				ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -1624,14 +1622,62 @@ public class AirController {
 	@RequestMapping("Air/checkout")
 	public AmpcResult find_checkout(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
 	try{
+		//设置跨域
 		ClientUtil.SetCharsetAndHeader(request, response);
+		//接收请求参数
 		Map<String,Object> data=(Map)requestDate.get("data");
-		Long userId=Long.valueOf(data.get("userId").toString());//用户id
-		String mode=data.get("mode").toString();//站点或者平均
-		String starttime=data.get("starttime").toString();//开始时间
-		String endtime=data.get("endtime").toString();//开始时间
-		String cityStation=data.get("cityStation").toString();//站点code
-		String datetype=data.get("datetype").toString();
+		//获取用户ID
+		Object param=data.get("userId");
+		//进行参数判断
+		if(!RegUtil.CheckParameter(param, "Long", null, false)){
+			LogUtil.getLogger().error("AirController 用户ID为空或出现非法字符!");
+			return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+		}
+		// 用户id
+		Long userId = Long.parseLong(param.toString());
+		//获取站点类型
+		param=data.get("mode");
+		if(!RegUtil.CheckParameter(param, "String", null, false)){
+			LogUtil.getLogger().error("AirController  站点类型为空或出现非法字符!");
+			return AmpcResult.build(1003, "站点类型为空或出现非法字符!");
+		}
+		String mode=param.toString();
+		//开始时间
+		param=data.get("starttime");
+		if(!RegUtil.CheckParameter(param, "String", null, false)){
+			LogUtil.getLogger().error("AirController  日期为空或出现非法字符!");
+			return AmpcResult.build(1003, "日期为空或出现非法字符!");
+		}
+		String starttime=param.toString();
+		//结束时间
+		param=data.get("endtime");
+		if(!RegUtil.CheckParameter(param, "String", null, false)){
+			LogUtil.getLogger().error("AirController  日期为空或出现非法字符!");
+			return AmpcResult.build(1003, "日期为空或出现非法字符!");
+		}
+		String endtime=param.toString();
+		//获取站点
+		String cityStation;
+		if("city".equals(mode)){
+			//检测站点具体值
+			 cityStation=data.get("cityStation").toString().substring(0, 4);	
+		}else{
+			 cityStation=data.get("cityStation").toString();					
+		}
+		//获取日期类型
+		param=data.get("datetype");
+		if(!RegUtil.CheckParameter(param, "String", null, false)){
+			LogUtil.getLogger().error("AirController  日期为空或出现非法字符!");
+			return AmpcResult.build(1003, "日期为空或出现非法字符!");
+		}
+		String datetype=param.toString();
+		//选择页签
+		param=data.get("tabType");
+		if(!RegUtil.CheckParameter(param, "String", null, false)){
+			LogUtil.getLogger().error("AirController  页签参数为空或出现非法字符!");
+			return AmpcResult.build(1003, "页签参数为空或出现非法字符!");
+		}
+		String tabType=param.toString();	
 
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH");
 		SimpleDateFormat daysdf=new SimpleDateFormat("yyyy-MM-dd");
@@ -1643,7 +1689,7 @@ public class AirController {
 		Map<Integer,Map> validMap=new HashMap();//有效样本数Map
 		Map<Integer,Map> exactMap=new HashMap();//准确样本数map
 		List<Date> datelist=new ArrayList();
-		Map<Integer,Map<Date,Map>> oAllspcMap=new HashMap();
+		Map<Integer,Map<Date,Map>> oAllspcMap=new HashMap(); 
 
 		Map<Integer, Map<Date, Map<String, List>>> houroAllspcMap=new HashMap();
 		Map<Integer,Map<Date,Map<String,List>>> hourpAllspcMap=new HashMap();
@@ -1669,6 +1715,9 @@ public class AirController {
 		List<ScenarinoEntity> dlist=new ArrayList();
 		Map<Integer,Map> sumMapsum=new HashMap();
 		Map<Integer,Map<String,BigDecimal>> psumMapsum=new HashMap();//所有日期所有预报日期的污染物数值和
+		Map<Integer,Map<String,Map<String,String>>> lastMap=new HashMap();
+		if("wrw".equals(tabType)){
+			
 		for(Integer how:howday){
 			Map<String,BigDecimal> sumMap=new HashMap();//所有日期所预报日期的污染物数值和
 			Map<Date,Map> psumMap=new HashMap();
@@ -1684,7 +1733,6 @@ public class AirController {
 					String tables="T_OBS_DAILY_";
 					DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(thedate);
-					System.out.println(nowTime);
 					tables+=nowTime;
 					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 					scenarinoEntity.setCity_station(cityStation);
@@ -1701,7 +1749,6 @@ public class AirController {
 					String tables="T_OBS_HOURLY_";
 					DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(thedate);
-					System.out.println(nowTime);
 					tables+=nowTime;
 					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 					scenarinoEntity.setCity_station(cityStation);
@@ -1716,7 +1763,7 @@ public class AirController {
 					sclist=tPreProcessMapper.selectBysome2(scenarinoEntity);//查询对应的数据
 				}
 				if(sclist.isEmpty()){
-					LogUtil.getLogger().error("AppraisalController 未查询到观测数据！");
+					LogUtil.getLogger().error("AirController 未查询到观测数据！");
 					return	AmpcResult.build(1001, "未查询到观测数据！");
 					
 				}
@@ -1886,7 +1933,6 @@ public class AirController {
 					Date tims=jztScenarino.getPathDate();
 					DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(tims);
-					System.out.println(nowTime);
 					tables+=nowTime+"_";
 					tables+=userId;
 					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -1900,7 +1946,7 @@ public class AirController {
 					ssslist=tPreProcessMapper.selectBysome(scenarinoEntity);
 					
 					if(ssslist.isEmpty()){
-						LogUtil.getLogger().error("AppraisalController 未查询到观测数据！");
+						LogUtil.getLogger().error("AirController 未查询到观测数据！");
 						return	AmpcResult.build(1001, "未查询到观测数据！");
 					}
 					ScenarinoEntity housr=ssslist.get(0);
@@ -1974,7 +2020,6 @@ public class AirController {
 					Date tims=jztScenarino.getPathDate();
 					DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(tims);
-					System.out.println(nowTime);
 					tables+=nowTime+"_";
 					tables+=userId.toString();
 					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
@@ -1988,7 +2033,7 @@ public class AirController {
 					ssslist=tPreProcessMapper.selectBysome(scenarinoEntity);	
 					
 					if(ssslist.isEmpty()){
-						LogUtil.getLogger().error("AppraisalController 未查询到观测数据！");
+						LogUtil.getLogger().error("AirController 未查询到观测数据！");
 						return	AmpcResult.build(1001, "未查询到观测数据！");
 					}
 					ScenarinoEntity housr=ssslist.get(0);
@@ -2043,13 +2088,8 @@ public class AirController {
 			hourpAllspcMap.put(how, hourdatemap);//所有预报数据hour
 			psumMapsum.put(how, psumMap);//预测数据和
 		}//遍历预测日期
-
 		
 		//开始计算数据
-		
-		
-		
-		
 		
 		Map<Integer,Map<String,Map<String,Double>>> aveMap=new HashMap();
 //		AllspcMap.put(how, odateMap);//所有预报数据
@@ -2243,8 +2283,8 @@ public class AirController {
 		}
 		
 		
+//		Map<Integer,Map<String,Map<String,String>>> lastMap=new HashMap();
 		
-		Map<Integer,Map<String,Map<String,String>>> lastMap=new HashMap();
 		lastMap.put(-1, new HashMap());
 		lastMap.put(1, new HashMap());
 		lastMap.put(2, new HashMap());
@@ -2295,12 +2335,631 @@ public class AirController {
 		}
 		lastMap.put(day, spaMap);
 		}
+	}else{	
+		//------------------------------------------------空气质量预报--气象要素-----------------------------------------------------------//
+		
+		for(Integer how:howday){
+			Map<String,BigDecimal> sumMap=new HashMap();//所有日期所预报日期的污染物数值和
+			Map<Date,Map> psumMap=new HashMap();
+			Map<Date,Map> dateMap=new HashMap();
+			Map<Date,Map<String,List>> hourdateMap=new HashMap();
+			Map<Date,Map> odateMap=new HashMap();
+			Map<String,Integer> validspcMap=new HashMap();
+			Map<String,Integer> spcexactMap=new HashMap();
+			Map<Date, Map<String, List>> hourdatemap=new HashMap();
+			List<Date> dalist=new ArrayList();
+			for(Date thedate:datelist){//遍历时间集合，获取对应空气质量数据
+				if(datetype.equals("day")){	
+					String tables="T_OBS_DAILY_";
+					DateFormat df = new SimpleDateFormat("yyyy");
+					String nowTime= df.format(thedate);
+					tables+=nowTime;
+					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+					scenarinoEntity.setCity_station(cityStation);
+					scenarinoEntity.setMode(mode);
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(thedate);
+					cal.add(Calendar.DATE, how);
+					String addTimeDate =daysdf.format(cal.getTime());
+					Date pathDate=daysdf.parse(addTimeDate);//对应情景起报日期
+					scenarinoEntity.setDate(thedate);
+					scenarinoEntity.setTableName(tables);
+					sclist=tPreProcessMapper.selectBysome2(scenarinoEntity);//查询对应的数据
+				}else{
+					String tables="T_OBS_HOURLY_";
+					DateFormat df = new SimpleDateFormat("yyyy");
+					String nowTime= df.format(thedate);
+					tables+=nowTime;
+					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+					scenarinoEntity.setCity_station(cityStation);
+					scenarinoEntity.setMode(mode);
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(thedate);
+					cal.add(Calendar.DATE, how);
+					String addTimeDate =daysdf.format(cal.getTime());
+					Date pathDate=daysdf.parse(addTimeDate);//对应情景起报日期
+					scenarinoEntity.setDate(thedate);
+					scenarinoEntity.setTableName(tables);
+					sclist=tPreProcessMapper.selectBysome2(scenarinoEntity);//查询对应的数据
+				}
+				if(sclist.isEmpty()){
+					LogUtil.getLogger().error("AirController 未查询到观测数据！");
+					return	AmpcResult.build(1001, "未查询到观测数据！");
+					
+				}
+				Map spcMaps=new HashMap();
+				Map<String, List> hourspcMaps=new HashMap();
+				Map<String,Object> ospcMaps=new HashMap();
+				Map<String,List> ohourspcMaps=new HashMap();
+				Map<String,Object> odayspcMaps=new HashMap();
+				ScenarinoEntity se=sclist.get(0);
+				JSONObject obj=JSONObject.fromObject(se.getContent());
+				if(datetype.equals("day")){
+					Map<String,Object> observeMap=(Map)obj;
+					if(!observeMap.isEmpty()){//判断是否为有效样本
+						dalist.add(thedate);
+						DatrMap.put(how, dalist);
+						Iterator<Entry<String,Object>> iter=observeMap.entrySet().iterator();
+						while(iter.hasNext()){
+							Entry<String,Object> observe=iter.next();
+							String spc=observe.getKey();
+							String num=observe.getValue().toString();
+							if(spc.equals("PM2_5")){
+								spc="PM25";
+							}
+							if(spc.equals("O3_8h")){
+								spc="O3_8_MAX";
+							}
+							if(!num.equals("-")){
+
+								if(sumMap.get(spc)==null){
+									sumMap.put(spc, new BigDecimal(num));	
+								}else{
+									sumMap.put(spc, sumMap.get(spc).add(new BigDecimal(num)));								
+								}
+							}else{
+								if(sumMap.get(spc)==null){
+									sumMap.put(spc, new BigDecimal(0));	
+								}else{
+									sumMap.put(spc, sumMap.get(spc).add(new BigDecimal(0)));									
+								}
+							}
+							if(validspcMap.get(spc)==null){
+								validspcMap.put(spc, 1);
+							}else{
+								validspcMap.put(spc, validspcMap.get(spc)+1);								
+							}
+							if(!num.equals("-")){
+							odayspcMaps.put(spc, num);
+							}else{
+							odayspcMaps.put(spc, 0);
+							}
+						}
+						
+					}
+				}else{
+					Map<String,List<String>> observeMap=(Map)obj;
+					if(!observeMap.isEmpty()){//判断是否为有效样本
+						dalist.add(thedate);
+						DatrMap.put(how, dalist);
+						Iterator<Entry<String,List<String>>> iter=observeMap.entrySet().iterator();
+						while(iter.hasNext()){
+							Entry<String,List<String>> observe=iter.next();
+							String spc=observe.getKey();
+							List<String> numlist=observe.getValue();
+							List<String> lists=new ArrayList();
+							for(String num:numlist){
+								if(spc.equals("PM2_5")){
+									spc="PM25";
+								}
+								if(spc.equals("O3_8h")){
+									spc="O3_8_MAX";
+								}
+								
+								if(!num.equals("-")){
+
+									if(sumMap.get(spc)==null){
+										sumMap.put(spc, new BigDecimal(num));		
+									}else{
+										sumMap.put(spc, sumMap.get(spc).add(new BigDecimal(num)));									
+									}
+								}else{
+									if(sumMap.get(spc)==null){
+										sumMap.put(spc, new BigDecimal(0));	
+									}else{
+										sumMap.put(spc, sumMap.get(spc).add(new BigDecimal(0)));								
+									}
+								}
+								if(validspcMap.get(spc)==null){
+									validspcMap.put(spc, 1);
+								}else{
+									validspcMap.put(spc, validspcMap.get(spc)+1);						
+								}
+								
+								if(!num.equals("-")){
+									lists.add(num);
+								}else{
+									lists.add("0");
+								}
+							}//numList遍历
+							ohourspcMaps.put(spc, lists);
+						}
+					}
+				}
+				hourdatemap.put(thedate,ohourspcMaps);
+				odateMap.put(thedate, odayspcMaps);
+			}//遍历时间集合
+			validMap.put(how, validspcMap);//有效样本数
+			oAllspcMap.put(how, odateMap);//所有观测数据day
+			houroAllspcMap.put(how, hourdatemap);//所有观测数据小时
+			sumMapsum.put(how, sumMap);//观测数据和
+		}
+		
+		for(Integer how:howday){
+			Map<String,BigDecimal> sumMap=new HashMap();//所有日期所预报日期的污染物数值和
+			Map<String,BigDecimal> psumMap=new HashMap();
+			Map<Date,Map> dateMap=new HashMap();
+			Map<Date,Map> hourdateMap=new HashMap();
+			Map<Date,Map> odateMap=new HashMap();
+			Map<String,Integer> validspcMap=new HashMap();
+			Map<String,Integer> spcexactMap=new HashMap();
+			Map<Date,Map<String,List>> hourdatemap=new HashMap();
+			for(Date thedate:datelist){//遍历时间集合，获取对应空气质量数据
+				List<Date> dats=DatrMap.get(how);
+				if(!dats.contains(thedate)){
+					continue;
+				}
+				Map<String,List> ohourspcMaps=new HashMap();
+				Map<String,Object> odayspcMaps=new HashMap();
+				if(datetype.equals("day")){	
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(thedate);
+					if(how==-1){
+						cal.add(Calendar.DATE, 1);
+					}
+					if(how==1){
+						cal.add(Calendar.DATE, -1);
+					}
+					if(how==2){
+						cal.add(Calendar.DATE, -2);
+					}
+					if(how==3){
+						cal.add(Calendar.DATE, -3);
+					}
+					String addTimeDate =daysdf.format(cal.getTime());
+					Date pathDate=daysdf.parse(addTimeDate);//对应情景起报日期
+
+
+					List<ScenarinoEntity> ssslist=new ArrayList();
+					Map<String,Object> scmap=new HashMap();
+					TScenarinoDetail tScenarino=new TScenarinoDetail();
+					tScenarino.setScenType("4");
+					tScenarino.setPathDate(pathDate);
+					//查询对应情景
+					List<TScenarinoDetail> jztScenarinoDetail=tScenarinoDetailMapper.selectByEntity(tScenarino);
+					TScenarinoDetail jztScenarino=jztScenarinoDetail.get(0);
+					TMissionDetail tm=new TMissionDetail();
+					tm.setMissionId(jztScenarino.getMissionId());
+					//通过情景中的任务id查询任务，再通过任务查询domainid
+					List<TMissionDetail> tmlist=tMissionDetailMapper.selectByEntity(tm);
+					TMissionDetail thetm=tmlist.get(0);
+					int domainId=Integer.valueOf(thetm.getMissionDomainId().toString());
+					String tables="";
+					if(how==-1){
+						tables+="T_METEOR_FNL_DAILY_";
+					}else{
+						continue;	
+					}
+					Date tims=jztScenarino.getPathDate();
+					DateFormat df = new SimpleDateFormat("yyyy");
+					String nowTime= df.format(tims);
+					tables+=nowTime+"_";
+					tables+=userId;
+					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+					scenarinoEntity.setCity_station(cityStation);
+					scenarinoEntity.setDomain(3);
+					scenarinoEntity.setDomainId(Long.valueOf(domainId).longValue());
+					scenarinoEntity.setMode(mode);
+					scenarinoEntity.setDay(jztScenarino.getScenarinoStartDate());
+					scenarinoEntity.setsId(Long.valueOf(jztScenarino.getScenarinoId().toString()));
+					scenarinoEntity.setTableName(tables);
+					ssslist=tPreProcessMapper.selectBysome(scenarinoEntity);
+					
+					if(ssslist.isEmpty()){
+						LogUtil.getLogger().error("AirController 未查询到观测数据！");
+						return	AmpcResult.build(1001, "未查询到观测数据！");
+					}
+					ScenarinoEntity housr=ssslist.get(0);
+					JSONObject objs=JSONObject.fromObject(housr.getContent());
+					Map<String,Map<String,Object>> spcMap=(Map<String,Map<String,Object>>) objs;
+					Iterator<Entry<String,Map<String,Object>>> iters=spcMap.entrySet().iterator();
+
+					while(iters.hasNext()){
+						Entry<String,Map<String,Object>> ite=iters.next();
+						String spcs=ite.getKey();
+						if(spcs.equals("O3_AVG")){
+							spcs="O3";
+						}
+					
+						BigDecimal p=new BigDecimal(ite.getValue().get("0").toString());
+//						String ps=LevelUtil.Level(p);
+//						String os=LevelUtil.Level(num);
+						if(psumMap.get(spcs)==null){
+							psumMap.put(spcs, p);
+						}else{
+							psumMap.put(spcs, psumMap.get(spcs).add(p));
+							
+						}
+//						if(ps.equals(os)){
+//							if(spcexactMap.get(spcs)==null){
+//								spcexactMap.put(spcs, 1);
+//							}else{
+//								spcexactMap.put(spcs, spcexactMap.get(spcs)+1);							
+//							}
+//						}
+						odayspcMaps.put(spcs, p);
+					}
+				}else{//逐日
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(thedate);
+					if(how==-1){
+						cal.add(Calendar.DATE, 1);
+					}
+					if(how==1){
+						cal.add(Calendar.DATE, -1);
+					}
+					if(how==2){
+						cal.add(Calendar.DATE, -2);
+					}
+					if(how==3){
+						cal.add(Calendar.DATE, -3);
+					}
+					String addTimeDate =daysdf.format(cal.getTime());
+					Date pathDate=daysdf.parse(addTimeDate);//对应情景起报日期
+
+					List<ScenarinoEntity> ssslist=new ArrayList();
+					Map<String,Object> scmap=new HashMap();
+					TScenarinoDetail tScenarino=new TScenarinoDetail();
+					tScenarino.setScenType("4");
+					tScenarino.setPathDate(pathDate);
+					//查询对应情景
+					List<TScenarinoDetail> jztScenarinoDetail=tScenarinoDetailMapper.selectByEntity(tScenarino);
+					TScenarinoDetail jztScenarino=jztScenarinoDetail.get(0);
+					TMissionDetail tm=new TMissionDetail();
+					tm.setMissionId(jztScenarino.getMissionId());
+					//通过情景中的任务id查询任务，再通过任务查询domainid
+					List<TMissionDetail> tmlist=tMissionDetailMapper.selectByEntity(tm);
+					TMissionDetail thetm=tmlist.get(0);
+					int domainId=Integer.valueOf(thetm.getMissionDomainId().toString());
+					String tables="";
+					if(how==-1){
+						tables+="T_METEOR_FNL_HOURLY_";
+					}else{
+						continue;	
+					}
+					Date tims=jztScenarino.getPathDate();
+					DateFormat df = new SimpleDateFormat("yyyy");
+					String nowTime= df.format(tims);
+					tables+=nowTime+"_";
+					tables+=userId.toString();
+					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+					scenarinoEntity.setCity_station(cityStation);
+					scenarinoEntity.setDomain(3);
+					scenarinoEntity.setDomainId(Long.valueOf(domainId));
+					scenarinoEntity.setMode(mode);
+					scenarinoEntity.setDay(jztScenarino.getScenarinoStartDate());
+					scenarinoEntity.setsId(Long.valueOf(jztScenarino.getScenarinoId().toString()));
+					scenarinoEntity.setTableName(tables);
+					ssslist=tPreProcessMapper.selectBysome(scenarinoEntity);	
+					
+					if(ssslist.isEmpty()){
+						LogUtil.getLogger().error("AirController 未查询到观测数据！");
+						return	AmpcResult.build(1001, "未查询到观测数据！");
+					}
+					ScenarinoEntity housr=ssslist.get(0);
+					JSONObject objs=JSONObject.fromObject(housr.getContent());
+					Map<String,Map<String,List<Object>>> spcMap=(Map<String, Map<String, List<Object>>>) objs;
+					
+					Iterator<Entry<String,Map<String,List<Object>>>> iters=spcMap.entrySet().iterator();
+					while(iters.hasNext()){
+						Entry<String,Map<String,List<Object>>> ite=iters.next();
+						String spce=ite.getKey();
+						Map<String,List<Object>> spclmap=ite.getValue();
+						List<Object> spclist=spclmap.get("0");
+				
+						for(int c=0;c<=23;c++){
+							
+							BigDecimal p=new BigDecimal(spclist.get(c).toString());
+							BigDecimal o=null;
+//							if(!numlists.get(c).equals("-")){
+//								o=new BigDecimal(numlists.get(c));
+//							}else{
+//								o=new BigDecimal(0);
+//							}
+//							
+//							String ps=LevelUtil.Level(p);
+//							String os=LevelUtil.Level(o);
+							
+							if(psumMap.get(spce)==null){
+								psumMap.put(spce, p);
+							}else{
+								psumMap.put(spce, psumMap.get(spce).add(p));
+								
+							}
+//							if(ps.equals(os)){
+//								if(spcexactMap.get(spce)==null){
+//
+//									spcexactMap.put(spce, 1);	
+//								}else{
+//									spcexactMap.put(spce, spcexactMap.get(spce)+1);							
+//								}
+//							}
+
+						}
+						ohourspcMaps.put(spce, spclist);
+						
+					}
+				}//逐小时
+				hourdatemap.put(thedate,ohourspcMaps);
+				odateMap.put(thedate, odayspcMaps);
+			}//遍历日期
+
+			AllspcMap.put(how, odateMap);//所有预报数据
+			hourpAllspcMap.put(how, hourdatemap);//所有预报数据hour
+			psumMapsum.put(how, psumMap);//预测数据和
+		}//遍历预测日期
+		
+		//开始计算数据
+		
+		Map<Integer,Map<String,Map<String,Double>>> aveMap=new HashMap();
+//		AllspcMap.put(how, odateMap);//所有预报数据
+//		hourpAllspcMap.put(how, hourdateMap);//所有预报数据hour
+//		psumMapsum.put(how, psumMap);//预测数据和
+//		validMap.put(how, validspcMap);//有效样本数
+//		oAllspcMap.put(how, odateMap);//所有观测数据day
+//		houroAllspcMap.put(how, hourdatemap);//所有观测数据小时
+//		sumMapsum.put(how, sumMap);//观测数据和
+		if(datetype.equals("day")){
+			Iterator<Entry<Integer, Map<Date, Map>>> Alliter=oAllspcMap.entrySet().iterator();
+			while(Alliter.hasNext()){
+				Map<String,Integer> spcexactMap=new HashMap();
+				Map<String,Map<String,Double>> spcdeMap=new HashMap();
+				Entry<Integer, Map<Date, Map>> alls=Alliter.next();
+				Integer day=alls.getKey();
+				Map<Date,Map> alldateMap=alls.getValue();
+				Iterator<Entry<Date,Map>> Alldateite=alldateMap.entrySet().iterator();
+				while(Alldateite.hasNext()){
+					Entry<Date,Map> dateite=Alldateite.next();
+					Date date=dateite.getKey();
+					Map<String,Object> spcMap=dateite.getValue();
+					Iterator<Entry<String,Object>> Allspciter=spcMap.entrySet().iterator();
+					while(Allspciter.hasNext()){
+						Map<String,Double> suMap=new HashMap();
+						Entry<String,Object> spciter=Allspciter.next();
+						String spc=spciter.getKey();
+					
+						BigDecimal num=new BigDecimal(spciter.getValue().toString());
+						Integer vale=Integer.valueOf(validMap.get(day).get(spc).toString());
+						
+						String ps=null;
+						if(hourpAllspcMap.get(day)==null){
+							continue;
+						}
+						if(hourpAllspcMap.get(day).get(date)==null){
+							continue;
+						}
+						if(AllspcMap.get(day).get(date).get(spc)==null){
+							ps="99999999";
+						}else{
+							 ps=LevelUtil.Level(new BigDecimal(AllspcMap.get(day).get(date).get(spc).toString()));
+						}
+						String os=LevelUtil.Level(num);
+						if(ps.equals(os)){
+							if(spcexactMap.get(spc)==null){
+
+								spcexactMap.put(spc, 1);
+							}else{
+								spcexactMap.put(spc, spcexactMap.get(spc)+1);				
+							}
+						}
+					
+						double opresult=num.subtract(new BigDecimal(sumMapsum.get(day).get(spc).toString()).divide(new BigDecimal(vale),2)).doubleValue();
+						
+						double ppresult=0;
+						if(AllspcMap.get(day).get(date).get(spc)!=null){
+							ppresult=new BigDecimal(AllspcMap.get(day).get(date).get(spc).toString()).subtract(psumMapsum.get(day).get(spc).divide(new BigDecimal(vale),2)).doubleValue();
+						}
+						double store =opresult*ppresult;
+						double p2=Math.pow(ppresult,2);
+						double o2=Math.pow(opresult,2);
+						
+						double o_p= 0;
+						if(AllspcMap.get(day).get(date).get(spc)!=null){
+							o_p=new BigDecimal(AllspcMap.get(day).get(date).get(spc).toString()).subtract(num).doubleValue();
+						}
+						Map amap=aveMap.get(day);
+						if(amap!=null){
+							if(amap.get(spc)==null){
+								suMap.put("store", store);
+								suMap.put("p2", p2);
+								suMap.put("o2", o2);
+								suMap.put("o_p", o_p);
+								spcdeMap.put(spc, suMap);
+								aveMap.put(day, spcdeMap);
+							}else{
+								suMap.put("store", spcdeMap.get(spc).get("store")+store);
+								suMap.put("p2", spcdeMap.get(spc).get("p2")+p2);
+								suMap.put("o2", spcdeMap.get(spc).get("o2")+o2);
+								suMap.put("o_p", spcdeMap.get(spc).get("o_p")+o_p);
+								spcdeMap.put(spc, suMap);
+								aveMap.put(day, spcdeMap);
+							}
+							}else{
+								suMap.put("store", store);
+								suMap.put("p2", p2);
+								suMap.put("o2", o2);
+								suMap.put("o_p", o_p);
+								spcdeMap.put(spc, suMap);
+								aveMap.put(day, spcdeMap);
+							}
+					}
+					
+				}
+				exactMap.put(day, spcexactMap);
+			}
+		}else{
+			Iterator<Entry<Integer, Map<Date, Map<String, List>>>> Alliter=houroAllspcMap.entrySet().iterator();
+			while(Alliter.hasNext()){
+				Map<String,Integer> spcexactMap=new HashMap();
+				Map<String,Map<String,Double>> spcdeMap=new HashMap();
+				Entry<Integer, Map<Date, Map<String, List>>> alls=Alliter.next();
+				Integer day=alls.getKey();
+				Map<Date, Map<String, List>> alldateMap=alls.getValue();
+				Iterator<Entry<Date, Map<String, List>>> Alldateite=alldateMap.entrySet().iterator();
+				while(Alldateite.hasNext()){
+					Entry<Date, Map<String, List>> dateite=Alldateite.next();
+					Date date=dateite.getKey();
+					Map<String, List> spcMap=dateite.getValue();
+					Iterator<Entry<String, List>> Allspciter=spcMap.entrySet().iterator();
+					while(Allspciter.hasNext()){
+						Map<String,Double> suMap=new HashMap();
+						Entry<String, List> spciter=Allspciter.next();
+						String spc=spciter.getKey();
+						if(spc.equals("O3_8_MAX")){
+							continue;
+						}
+						Map psm=psumMapsum.get(day);
+						List<Object> numma=spciter.getValue();
+						for(int s=0;s<=23;s++){
+							BigDecimal num=new BigDecimal(numma.get(s).toString());
+							if(hourpAllspcMap.get(day)==null){
+								continue;
+							}
+							if(hourpAllspcMap.get(day).get(date)==null){
+								continue;
+							}
+							List ms=hourpAllspcMap.get(day).get(date).get(spc);
+						
+							String ps=null;
+							if(ms==null){
+								ps="99999999";
+							}else{
+								 ps=LevelUtil.Level(new BigDecimal(hourpAllspcMap.get(day).get(date).get(spc).get(s).toString()));
+							}
+							String os=LevelUtil.Level(num);
+							if(ps.equals(os)){
+								if(spcexactMap.get(spc)==null){
+									spcexactMap.put(spc, 1);
+								}else{
+									spcexactMap.put(spc, spcexactMap.get(spc)+1);			
+								}
+							}					
+						Integer vale=Integer.valueOf(validMap.get(day).get(spc).toString());
+						double opresult=num.subtract(new BigDecimal(sumMapsum.get(day).get(spc).toString()).divide(new BigDecimal(vale),2)).doubleValue();
+						double ppresult=0;
+						if(ms!=null){
+							ppresult=(new BigDecimal(hourpAllspcMap.get(day).get(date).get(spc).get(s).toString()).subtract(new BigDecimal(sumMapsum.get(day).get(spc).toString()).divide(new BigDecimal(vale),2))).doubleValue();
+						}
+						double store =opresult*ppresult;
+						double p2=Math.pow(ppresult,2);
+						double o2=Math.pow(opresult,2);
+						double o_p= 0;
+						if(ms!=null){
+							o_p= new BigDecimal(hourpAllspcMap.get(day).get(date).get(spc).get(s).toString()).subtract(num).doubleValue();
+						}
+						Map amap=aveMap.get(day);
+						if(amap!=null){
+						if(amap.get(spc)==null){
+							suMap.put("store", store);
+							suMap.put("p2", p2);
+							suMap.put("o2", o2);
+							suMap.put("o_p", o_p);
+							spcdeMap.put(spc, suMap);
+							aveMap.put(day, spcdeMap);
+						}else{
+							suMap.put("store", spcdeMap.get(spc).get("store")+store);
+							suMap.put("p2", spcdeMap.get(spc).get("p2")+p2);
+							suMap.put("o2", spcdeMap.get(spc).get("o2")+o2);
+							suMap.put("o_p", spcdeMap.get(spc).get("o_p")+o_p);
+							spcdeMap.put(spc, suMap);
+							aveMap.put(day, spcdeMap);
+						}
+						}else{
+							suMap.put("store", store);
+							suMap.put("p2", p2);
+							suMap.put("o2", o2);
+							suMap.put("o_p", o_p);
+							spcdeMap.put(spc, suMap);
+							aveMap.put(day, spcdeMap);
+						}
+					}
+					}
+					
+				}
+				exactMap.put(day, spcexactMap);
+			}
+			
+			
+		}
+		
+//		Map<Integer,Map<String,Map<String,String>>> lastMap=new HashMap();
+		
+		lastMap.put(-1, new HashMap());
+		lastMap.put(1, new HashMap());
+		lastMap.put(2, new HashMap());
+		lastMap.put(3, new HashMap());
+		Iterator<Entry<Integer,Map<String,Map<String,Double>>>> aveite=aveMap.entrySet().iterator();
+		while(aveite.hasNext()){
+		Entry<Integer,Map<String,Map<String,Double>>> ave=aveite.next();
+		Integer day=ave.getKey();
+		Map<String,Map<String,Double>> spcmaps=ave.getValue();
+		Iterator<Entry<String,Map<String,Double>>> spcs=spcmaps.entrySet().iterator();
+		Map<String,Map<String,String>> spaMap=new HashMap();
+		while(spcs.hasNext()){
+		Entry<String,Map<String,Double>> spc=spcs.next();
+		Map<String,String> StrMap=new HashMap();
+		String sp=spc.getKey();
+		Map<String,Double> arv=spc.getValue();
+		double store=arv.get("store");
+		double p2=arv.get("p2");
+		double o2=arv.get("o2");
+		double o_p=arv.get("o_p");
+		double n=p2*o2;
+		double v=0;
+		BigDecimal vb=new BigDecimal(0);
+		if(n!=0){
+		v=store/Math.sqrt(n);//计算相关系数系数	
+		vb=new BigDecimal(v).setScale(2, BigDecimal.ROUND_HALF_UP);
+		}
+		double bs=o_p/(Double.valueOf(sumMapsum.get(day).get(sp).toString()));
+		BigDecimal bias=new BigDecimal(bs*100).setScale(1, BigDecimal.ROUND_HALF_UP);
+		double exact=0;
+		if(exactMap.get(day).get(sp)!=null){
+			exact=Double.parseDouble(exactMap.get(day).get(sp).toString());
+		}
+		double valid=0;
+		if(datetype.equals("day")){
+			 valid=Double.parseDouble(validMap.get(day).get(sp).toString());
+		}else{
+			 valid=Double.parseDouble(validMap.get(day).get(sp).toString());
+		}
+	
+		BigDecimal rate=new BigDecimal((exact/valid)*100).setScale(1, BigDecimal.ROUND_HALF_UP);
 		
 		
+		StrMap.put("coefficient", vb.toString());
+		StrMap.put("bias", bias.toString()+"%");
+		StrMap.put("rate", rate.toString()+"%");
+		spaMap.put(sp, StrMap);
+		}
+		lastMap.put(day, spaMap);
+		}  
+		
+		
+	}	//气象要素结束
 		return	AmpcResult.ok(lastMap);
-		
 	}catch(Exception e){
-		LogUtil.getLogger().error("AppraisalController 预报检验查询异常！",e);
+		LogUtil.getLogger().error("AirController 预报检验查询异常！",e);
 		return	AmpcResult.build(1001, "预报检验查询异常！");
 	}
 	}
