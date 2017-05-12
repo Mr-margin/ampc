@@ -83,6 +83,8 @@ public class MessageLog {
 		} catch (IOException | SQLException e) {
 			// TODO Auto-generated catch block
 			LogUtil.getLogger().error("更新domain消息日志失败！！"+e);
+		}catch (Exception e) {
+			// TODO: handle exception
 		}
 		
 	}
@@ -128,6 +130,8 @@ public class MessageLog {
 		} catch (IOException | SQLException e) {
 			// TODO Auto-generated catch block
 			LogUtil.getLogger().error("更新消息日志失败！！"+e);
+		}catch (Exception e) {
+			// TODO: handle exception
 		}
 	}
 
@@ -171,20 +175,68 @@ public class MessageLog {
 			}
 		} catch (IOException | SQLException e) {
 			LogUtil.getLogger().error(" 更新model.stop消息日志失败！！",e);
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+	}
+	/**
+	 * 
+	 * @Description: 暂停返回的结果 日志持久化
+	 * @param rpop   
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年5月11日 下午9:03:47
+	 */
+	public void savepauseMessagelog(String rpop) {
+		LogUtil.getLogger().info("开始添加model.stop.pause消息的log到数据库！");
+		try {
+			Message message  = JsonUtil.jsonToObj(rpop, Message.class);
+			String id = message.getId();
+			Date time = message.getTime();
+			String type = message.getType();
+			Map body = (Map) message.getBody();
+			Long scenarioid = Long.parseLong(body.get("scenarioid").toString());
+//			Long domainId = Long.parseLong(body.get("domainId").toString()); ///kongzhongzheng
+//			Long userId =  Long.parseLong(body.get("userId").toString());
+			
+			String desc = body.get("desc").toString();
+			String code = body.get("code").toString();
+			TMessageLog tMessageLog = new TMessageLog();
+			tMessageLog.setMessageUuid(id);
+			tMessageLog.setMessageTime(time);
+			tMessageLog.setMessageType(type);
+			tMessageLog.setScenarinoId(scenarioid);
+//			tMessageLog.setUserId(userId);
+//			tMessageLog.setDomainId(domainId);
+			tMessageLog.setResultDesc(desc);
+			tMessageLog.setResultCode(code);
+			int insertSelective = tMessageLogMapper.insertSelective(tMessageLog);
+			if (insertSelective>0) {
+				LogUtil.getLogger().info("更新model.stop.pause消息日志成功！");
+			}else {
+				LogUtil.getLogger().error("更新model.stop.pause消息日志失败！！");
+				throw new SQLException("更新model.stop.pause消息日志失败！！");
+			}
+		} catch (IOException | SQLException e) {
+			LogUtil.getLogger().error(" 更新model.stop.pause消息日志失败！！",e);
+		}catch (Exception e) {
+			// TODO: handle exception
 		}
 		
 	}
 
 	/**
-	 * @Description: TODO
+	 * @Description: 执行模式返回的结果日志
 	 * @param rpop   
 	 * void  
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年5月11日 下午5:11:20
 	 */
-	public void savesatrtMessagelog(String rpop) {
-		LogUtil.getLogger().info("开始添加model.stop.pause消息的log到数据库！");
+	public void savesatrtModelMessagelog(String rpop) {
+		LogUtil.getLogger().info("开始添加model.start.result消息的log到数据库！");
 		try {
 			Message message  = JsonUtil.jsonToObj(rpop, Message.class);
 			String id = message.getId();
@@ -208,13 +260,15 @@ public class MessageLog {
 			tMessageLog.setResultCode(code);
 			int insertSelective = tMessageLogMapper.insertSelective(tMessageLog);
 			if (insertSelective>0) {
-				LogUtil.getLogger().info("更新model.stop.pause消息日志成功！");
+				LogUtil.getLogger().info("更新model.start.result消息日志成功！");
 			}else {
-				LogUtil.getLogger().error("更新model.stop.pause消息日志失败！！");
-				throw new SQLException("更新model.stop.pause消息日志失败！！");
+				LogUtil.getLogger().error("更新model.start.result消息日志失败！！");
+				throw new SQLException("更新model.start.result消息日志失败！！");
 			}
 		} catch (IOException | SQLException e) {
-			LogUtil.getLogger().error(" 更新model.stop.pause消息日志失败！！",e);
+			LogUtil.getLogger().error(" 更新model.start.result消息日志失败！！",e);
+		}catch (Exception e) {
+			// TODO: handle exception
 		}
 		
 	}
