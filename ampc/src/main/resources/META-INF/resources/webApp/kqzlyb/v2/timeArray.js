@@ -260,6 +260,12 @@ var speciesArr = {
 //		hour: ['PM₂₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄', 'NO₃', 'NH₄', 'BC', 'OM', 'PMFINE']
 };
 
+var meteorArr = {
+		day: ["TEMP","PRSFC","PT","RH","WSPD"],
+		hour: ["TEMP","PRSFC","PT","RH","WSPD"]
+};
+
+
 var speciesObj = {
   'PM₂₅':'PM25',
   'PM₁₀':'PM10',
@@ -671,10 +677,19 @@ function initEcharts() {
 	
 	  
 	var tname = []; 	//污染物name
-	var species = speciesArr[changeMsg.rms];
-	for (var j = 0; j < species.length; j++) {
-		  tname.push(species[j]);
+	var species =[];
+	if("wrw"==changeMsg.type){
+		 species = speciesArr[changeMsg.rms];
+		for (var j = 0; j < species.length; j++) {
+			  tname.push(species[j]);
+		}
+	}else if("qxys"==changeMsg.type){
+		 species = meteorArr[changeMsg.rms];
+		for (var j = 0; j < species.length; j++) {
+			  tname.push(species[j]);
+		}
 	}
+	
 	
 	var	proStation=$("#proStation option:selected").text();
 	var	cityStation=$("#cityStation option:selected").text();
@@ -696,10 +711,19 @@ function initEcharts() {
 //	    var es = echarts.init(document.getElementById(species[i]));	
 		
 		//创建div存放echarts图表
-		var div = $('<div style="height:250px;"></div>');
-		div.attr("id",tname[i]);
-		div.addClass('echartsCZ');
-		$("#initEcharts").append(div);	
+		if("PM25"==tname[i]){
+			var div_bj=$('<div class="row" style="padding-left:15px;"><div class="col-sm-4"><div class="input-group m-b" style="margin-bottom: 0px"><div class="" style="margin-bottom:0px;padding-left:7px;"><div class="btn-group" data-toggle="buttons"><label name="collapse" class="btn btn-outline btn-success active"><input type="radio" name="spread" value="open" checked>组分展开</label><label name="collapse" class="btn btn-outline btn-success"><input type="radio" name="spread" value="close">组分收起</label></div></div></div></div></div>');
+			var div = $('<div style="height:250px;"></div>');
+			div.attr("id",tname[i]);
+			div.addClass('echartsCZ');
+			$("#initEcharts").append(div_bj);
+			$("#initEcharts").append(div);
+		}else{
+			var div = $('<div style="height:250px;"></div>');
+			div.attr("id",tname[i]);
+			div.addClass('echartsCZ');
+			$("#initEcharts").append(div);
+		}
 		
 		//拷贝echarts模板
 		var option = $.extend(true, {}, optionAll);		 
@@ -726,7 +750,18 @@ function initEcharts() {
 				option.title.text = mesage +"SO₂"+('(μg/m³)');
 			}else if("NO2"==tname[i]){
 				option.title.text = mesage +"NO₂"+('(μg/m³)');
-			}else{
+			}else if("TEMP"==tname[i]){
+				option.title.text = mesage +tname[i]+('(℃)');
+			}else if("PRSFC"==tname[i]){
+				option.title.text = mesage +tname[i]+('(hPa)');
+			}else if("PT"==tname[i]){
+				option.title.text = mesage +tname[i]+('(mm)');
+			}else if("RH"==tname[i]){
+				option.title.text = mesage +tname[i]+('(%)');
+			}else if("WSPD"==tname[i]){
+				option.title.text = mesage +tname[i]+('(m/s)');
+			}
+			else{
 				option.title.text = mesage +tname[i]+('(μg/m³)');
 			}
 		}else{
@@ -822,82 +857,84 @@ function initEcharts() {
 		 * 逐日--根据不同物种添加相应的刻度标注线配色
 		 * */
 		//逐日和逐小时共用标注线颜色卡
-		var colors=['rgb(0, 228, 0)','rgb(255, 255, 0)','rgb(255, 126, 0)','rgb(255, 0, 0)','rgb(153, 0, 76)','rgb(126, 0, 35)','rgb(0, 0, 0)'];
-		if(changeMsg.rms == 'day'){
-			if("AQI"==tname[i]){	
-				var markLineName=[50,100,150,200,300,400,500];
-			}else if("PM25"==tname[i]){
-				var markLineName=[35,75,115,150,250,350,500];
-			}else if("PM10"==tname[i]){
-				var markLineName=[50,150,250,350,420,500,600];
-			}else if("O3_8_MAX"==tname[i]){
-				var markLineName=[100,160,215,265,800];
-			}else if("O3_1_MAX"==tname[i]){
-				var markLineName=[160,200,300,400,800,1000,1200];
-			}else if("SO2"==tname[i]){
-				var markLineName=[50,150,475,800,1600,2100,2620];
-			}else if("NO2"==tname[i]){
-				var markLineName=[40,80,180,280,565,750,940];
-			}else if("CO"==tname[i]){
-				var markLineName=[2,4,14,24,36,48,60];
-			}
-			for(var w=0;w<markLineName.length;w++){
-				var mkname=markLineName[w];
-				var markLines={
-						name:mkname ,
-			            type:'line',
-			            markLine : {
-			                lineStyle: {
-			                    normal: {
-			                        type: 'dashed',
-			                        color:colors[w]
-			                    }
-			                },
-			                data : [
-			                    {yAxis:mkname  }
-			                ]
-			            }
-					};
-				option.series.push(markLines);
-			}
-		}else{
-			//逐小时--根据不同物种添加相应的刻度标注线配色
-			if("AQI"==tname[i]){	
-				var markLineName=[50,100,150,200,300,400,500];
-			}else if("PM25"==tname[i]){
-				var markLineName=[35,75,115,150,250,350,500];
-			}else if("PM10"==tname[i]){
-				var markLineName=[50,150,250,350,420,500,600];
-			}else if("O3"==tname[i]){
-				var markLineName=[160,200,300,400,800,1000,1200];
-			}else if("SO2"==tname[i]){
-				var markLineName=[150,500,650,800];
-			}else if("NO2"==tname[i]){
-				var markLineName=[100,200,700,1200,2340,3090,3840];
-			}else if("CO"==tname[i]){
-				var markLineName=[5,10,35,60,90,120,150];
-			}
-			for(var w=0;w<markLineName.length;w++){
-				var mkname=markLineName[w];
-				var markLines={
-						name:mkname ,
-			            type:'line',
-			            markLine : {
-			                lineStyle: {
-			                    normal: {
-			                        type: 'dashed',
-			                        color:colors[w]
-			                    }
-			                },
-			                data : [
-			                    {yAxis:mkname  }
-			                ]
-			            }
-					};
-				option.series.push(markLines);
-			}
-		}	//标注线配色结束
-		
+		if("wrw"==changeMsg.type){
+			
+			var colors=['rgb(0, 228, 0)','rgb(255, 255, 0)','rgb(255, 126, 0)','rgb(255, 0, 0)','rgb(153, 0, 76)','rgb(126, 0, 35)','rgb(0, 0, 0)'];
+			if(changeMsg.rms == 'day'){
+				if("AQI"==tname[i]){	
+					var markLineName=[50,100,150,200,300,400,500];
+				}else if("PM25"==tname[i]){
+					var markLineName=[35,75,115,150,250,350,500];
+				}else if("PM10"==tname[i]){
+					var markLineName=[50,150,250,350,420,500,600];
+				}else if("O3_8_MAX"==tname[i]){
+					var markLineName=[100,160,215,265,800];
+				}else if("O3_1_MAX"==tname[i]){
+					var markLineName=[160,200,300,400,800,1000,1200];
+				}else if("SO2"==tname[i]){
+					var markLineName=[50,150,475,800,1600,2100,2620];
+				}else if("NO2"==tname[i]){
+					var markLineName=[40,80,180,280,565,750,940];
+				}else if("CO"==tname[i]){
+					var markLineName=[2,4,14,24,36,48,60];
+				}
+				for(var w=0;w<markLineName.length;w++){
+					var mkname=markLineName[w];
+					var markLines={
+							name:mkname ,
+				            type:'line',
+				            markLine : {
+				                lineStyle: {
+				                    normal: {
+				                        type: 'dashed',
+				                        color:colors[w]
+				                    }
+				                },
+				                data : [
+				                    {yAxis:mkname  }
+				                ]
+				            }
+						};
+					option.series.push(markLines);
+				}
+			}else{
+				//逐小时--根据不同物种添加相应的刻度标注线配色
+				if("AQI"==tname[i]){	
+					var markLineName=[50,100,150,200,300,400,500];
+				}else if("PM25"==tname[i]){
+					var markLineName=[35,75,115,150,250,350,500];
+				}else if("PM10"==tname[i]){
+					var markLineName=[50,150,250,350,420,500,600];
+				}else if("O3"==tname[i]){
+					var markLineName=[160,200,300,400,800,1000,1200];
+				}else if("SO2"==tname[i]){
+					var markLineName=[150,500,650,800];
+				}else if("NO2"==tname[i]){
+					var markLineName=[100,200,700,1200,2340,3090,3840];
+				}else if("CO"==tname[i]){
+					var markLineName=[5,10,35,60,90,120,150];
+				}
+				for(var w=0;w<markLineName.length;w++){
+					var mkname=markLineName[w];
+					var markLines={
+							name:mkname ,
+				            type:'line',
+				            markLine : {
+				                lineStyle: {
+				                    normal: {
+				                        type: 'dashed',
+				                        color:colors[w]
+				                    }
+				                },
+				                data : [
+				                    {yAxis:mkname  }
+				                ]
+				            }
+						};
+					option.series.push(markLines);
+				}
+			}	//标注线配色结束
+		}
 		option.xAxis = [];
 		if(changeMsg.rms == 'day'){
 			option.xAxis.push({				    //x轴情景时间
