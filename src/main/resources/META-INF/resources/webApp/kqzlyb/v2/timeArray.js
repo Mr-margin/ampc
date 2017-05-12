@@ -624,6 +624,7 @@ function changeRms(rms) {	//参数为逐日或逐小时
     updata(true);
 }
 
+
 /**
  * 数据更新使用
  * @param opt
@@ -663,7 +664,9 @@ function updata(opt) {
     })
     
 }
-
+/**
+ * 加载echarts图形数据
+ */
 function initEcharts() {
 	$("#initEcharts").empty();	//清空数据
 	if(changeMsg.rms == 'day'){
@@ -952,5 +955,31 @@ function initEcharts() {
 		
 		
 	 }	//循环物种结束
-	  
+
+	//组分展开==open  收起==close	
+$('input[name=spread]').on('change', function (e) {
+	var spType = $(e.target).val();
+	if (spType == 'close') {
+		$("#SO4").hide();
+		$("#NO3").hide();
+		$("#NH4").hide();
+		$("#BC").hide();
+		$("#OM").hide();
+		$("#PMFINE").hide();
+//			$(e.target.parentNode).text("组分展开");
+//			$(e.target).val('open');
+	} else {
+		$("#SO4").show();
+		$("#NO3").show();
+		$("#NH4").show();
+		$("#BC").show();
+		$("#OM").show();
+		$("#PMFINE").show();
+//			$(e.target.parentNode).text("组分收起");
+//			$(e.target).val('close');
 	}
+
+});	
+	
+	
+}
