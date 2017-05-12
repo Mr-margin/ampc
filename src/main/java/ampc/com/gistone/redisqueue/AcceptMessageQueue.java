@@ -115,8 +115,8 @@ public class AcceptMessageQueue implements Runnable{
 				System.out.println("队列接受数据");
 				String acceptName = configUtil.getRedisQueueAcceptName();
 //				String rpop = redisUtilServer.brpop("r0_mb");//send_queue_name
-//				String rpop = redisUtilServer.brpop(acceptName);//send_queue_name
-				String rpop = redisUtilServer.brpop("r0_test_mb");//send_queue_name
+				String rpop = redisUtilServer.brpop(acceptName);//send_queue_name
+//				String rpop = redisUtilServer.brpop("r0_test_mb");//send_queue_name
 //				String rpop = redisUtilServer.brpop("receive_queue_name");//send_queue_name
 //				String rpop = redisUtilServer.brpop("r0_mb");//r0_mb
 				//	String rpop2 = redisUtilServer.rpop("test");//result_Start_model
@@ -129,13 +129,13 @@ public class AcceptMessageQueue implements Runnable{
 					switch (key) {
 					case "model.start.result":
 						LogUtil.getLogger().info("start tasks"+new Date()+":"+rpop);
-						messageLog.saveStartMessagelog(rpop);
+						messageLog.savesatrtModelMessagelog(rpop);
 						toDataTasksUtil.updateDB(rpop);
 						LogUtil.getLogger().info("end tasks"+new Date());
 						break;
 					case "ungrib.result":
 						LogUtil.getLogger().info("接受ungrib数据："+new Date()+":"+rpop);
-//						messageLog.saveUngribMessagelog(rpop);
+						messageLog.saveUngribMessagelog(rpop);
 //						toDataUngribUtil.updateDB(rpop);
 						toDataUngribUtil.updateUngrib(rpop);
 						LogUtil.getLogger().info("ungrib处理完毕："+new Date());
@@ -152,6 +152,12 @@ public class AcceptMessageQueue implements Runnable{
 						toDataTasksUtil.pauseModelresult(rpop);
 						LogUtil.getLogger().info("暂停模式处理完毕："+new Date());
 						break;
+				/*	case "domain.create.result":
+						LogUtil.getLogger().info("domain模式处理开始："+new Date()+":"+rpop);
+						messageLog.saveDomainlog(rpop);
+						toDataTasksUtil.pauseModelresult(rpop);
+						LogUtil.getLogger().info("domain模式处理完毕："+new Date());
+						break;*/
 						
 					default:
 						break;
