@@ -335,7 +335,11 @@ var optionAll = {
 	               	show: true,
 	               	type: 'value',
 	               	splitArea: {show: false},
-	            	
+	               	splitLine:{show: false,		//设置网格线颜色
+		                lineStyle:{
+		                	
+		                }
+		            },//去除网格线
 	             }
                ],
 	   //颜色色卡
