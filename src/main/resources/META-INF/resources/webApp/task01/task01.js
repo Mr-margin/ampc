@@ -868,7 +868,15 @@ function selectQJtype(type) {
                     params.scenType = qjType;
 
                     setOption('#jcqj', basisArr);
-                    var dateArr = setSelectDate(basisArr[0].scenarinoStartDate, basisArr[0].scenarinoEndDate, !(basisArr[0].pathDate) ? moment().add(-1, 'd') : basisArr[0].pathDate);
+
+                    if(!basisArr[0].theDate){
+                        var dateArr = setSelectDate(basisArr[0].scenarinoStartDate, basisArr[0].scenarinoEndDate, !(basisArr[0].pathDate) ? moment().add(-1, 'd') : basisArr[0].pathDate);
+                    }else{
+                        var dateArr = [];
+                        dateArr.push(moment(basisArr[0].theDate).format('YYYY-MM-DD'))
+                    }
+
+
                     $('#jcdate').empty();
                     for (var i = 0; i < dateArr.length; i++) {
                         $('#jcdate').append($('<option value="' + dateArr[i] + '">' + dateArr[i] + '</option>'))
@@ -1284,8 +1292,14 @@ function changeJcDate(t) {
 function changeJcqj1(t) {
     var index = $(t).val();
     var selectJcqj = basisArr[index];
-    var dateArr = setSelectDate(selectJcqj.scenarinoStartDate, moment(selectRW.missionEndDate).subtract(2, 'd').format('YYYY-MM-DD'));
-    dateArr = dateArr.reverse();
+    if(!selectJcqj.theDate){
+        var dateArr = setSelectDate(selectJcqj.scenarinoStartDate, moment(selectRW.missionEndDate).subtract(2, 'd').format('YYYY-MM-DD'));
+        dateArr = dateArr.reverse();
+    }else{
+        var dateArr = [];
+        dateArr.push(moment(selectJcqj.theDate).format('YYYY-MM-DD'))
+    }
+
     $('#jcdate1').empty();
     for (var i = 0; i < dateArr.length; i++) {
         $('#jcdate1').append($('<option value="' + dateArr[i] + '">' + dateArr[i] + '</option>'))
