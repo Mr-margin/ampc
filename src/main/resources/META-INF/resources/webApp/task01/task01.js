@@ -922,7 +922,14 @@ function selectQJtype(type) {
                     setOption('#dbqj', basisArr);
                     setOption('#jcqj', basisArr);
 
-                    var dateArr = setSelectDate(basisArr[0].scenarinoStartDate, basisArr[0].scenarinoEndDate, basisArr[0].pathDate);
+                    if(!basisArr[0].theDate){
+                        var dateArr = setSelectDate(basisArr[0].scenarinoStartDate, basisArr[0].scenarinoEndDate, basisArr[0].pathDate);
+                    }else{
+                        var dateArr = [];
+                        dateArr.push(moment(basisArr[0].theDate).format('YYYY-MM-DD'))
+                    }
+
+                    // var dateArr = setSelectDate(basisArr[0].scenarinoStartDate, basisArr[0].scenarinoEndDate, basisArr[0].pathDate);
                     dateArr = dateArr.reverse();
                     $('#jcdate').empty();
                     for (var i = 0; i < dateArr.length; i++) {
@@ -965,7 +972,15 @@ function selectQJtype(type) {
                     }
                     setOption('#dbqj1', basisArr);
                     setOption('#jcqj1', basisArr);
-                    var dateArr = setSelectDate(basisArr[0].scenarinoStartDate, moment(selectRW.missionEndDate).subtract(1, 'd').format('YYYY-MM-DD'));
+
+                    if(!basisArr[0].theDate){
+                        var dateArr = setSelectDate(basisArr[0].scenarinoStartDate, moment(selectRW.missionEndDate).subtract(1, 'd').format('YYYY-MM-DD'));
+                    }else{
+                        var dateArr = [];
+                        dateArr.push(moment(basisArr[0].theDate).format('YYYY-MM-DD'))
+                    }
+
+                    // var dateArr = setSelectDate(basisArr[0].scenarinoStartDate, moment(selectRW.missionEndDate).subtract(1, 'd').format('YYYY-MM-DD'));
                     dateArr = dateArr.reverse();
                     $('#jcdate1').empty();
                     for (var i = 0; i < dateArr.length; i++) {
@@ -1301,8 +1316,17 @@ function changeJcDate(t) {
 function changeJcqj1(t) {
     var index = $(t).val();
     var selectJcqj = basisArr[index];
-    var dateArr = setSelectDate(selectJcqj.scenarinoStartDate, moment(selectRW.missionEndDate).subtract(2, 'd').format('YYYY-MM-DD'));
-    dateArr = dateArr.reverse();
+
+    if(!selectJcqj.theDate){
+        var dateArr = setSelectDate(selectJcqj.scenarinoStartDate, moment(selectRW.missionEndDate).subtract(2, 'd').format('YYYY-MM-DD'));
+        dateArr = dateArr.reverse();
+    }else{
+        var dateArr = [];
+        dateArr.push(moment(selectJcqj.theDate).format('YYYY-MM-DD'))
+    }
+
+    // var dateArr = setSelectDate(selectJcqj.scenarinoStartDate, moment(selectRW.missionEndDate).subtract(2, 'd').format('YYYY-MM-DD'));
+    // dateArr = dateArr.reverse();
     $('#jcdate1').empty();
     for (var i = 0; i < dateArr.length; i++) {
         $('#jcdate1').append($('<option value="' + dateArr[i] + '">' + dateArr[i] + '</option>'))
