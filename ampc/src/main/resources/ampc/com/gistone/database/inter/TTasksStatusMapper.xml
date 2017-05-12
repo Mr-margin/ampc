@@ -604,5 +604,12 @@ update T_TASKS_STATUS
       BEIZHU, BEIZHU2, BEIZHU3
   from T_TASKS_STATUS A LEFT JOIN T_SCENARINO_DETAIL B ON A.TASKS_SCENARINO_ID=B.SCENARINO_ID
   WHERE B.PATH_DATE = #{pathdate} AND B.SCEN_TYPE=#{type} AND B.USER_ID=#{userId}
-  </select> 
+  </select>
+  <!-- 通过情景类型和情景pathdate查找所有用户的正在运行的实时预报的状态 -->
+  <select id="selectTasksstatusByPathdateandtype" parameterType="hashMap" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List" />
+  from T_TASKS_STATUS A LEFT JOIN T_SCENARINO_DETAIL B ON A.TASKS_SCENARINO_ID=B.SCENARINO_ID
+  where B.PATH_DATE = #{pathdate} AND B.SCEN_TYPE=#{type}
+  </select>
 </mapper>
