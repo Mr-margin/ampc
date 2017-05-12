@@ -255,7 +255,8 @@ function sceneInittion() {
                     }
                 });
                 $("#task").html(task);
-                $("#Initialization").modal();//初始化模态框显示
+                //$("#Initialization").modal();//初始化模态框显示
+                $("#Initialization").window()
                 sceneTable();
             } else {
                 swal('无可用任务', '', 'error')
