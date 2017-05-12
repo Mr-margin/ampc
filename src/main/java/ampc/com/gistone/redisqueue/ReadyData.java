@@ -1304,8 +1304,8 @@ public class ReadyData {
 		//创建消息bady对象
 		QueueBodyData bodyData = new QueueBodyData();
 		//调试模式的内容
-//		bodyData.setFlag(1);
-		bodyData.setFlag(0); 
+		bodyData.setFlag(1);
+//		bodyData.setFlag(0); 
 		Integer scenarinoType = Integer.parseInt(scenarinoDetailMSG.getScenType());//情景类型
 		Long userId = scenarinoDetailMSG.getUserId();
 		Long missionId = scenarinoDetailMSG.getMissionId();//任务id
