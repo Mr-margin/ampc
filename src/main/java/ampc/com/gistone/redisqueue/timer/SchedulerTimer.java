@@ -581,7 +581,7 @@ public class SchedulerTimer<V> {
 
 	/**
 	 * 
-	 * @Description: 测试定时器 每隔5秒开始一次   
+	 * @Description: 定时查错，续跑实时预报
 	 * void  
 	 * @throws
 	 * @author yanglei
@@ -620,7 +620,9 @@ public class SchedulerTimer<V> {
 	
 	/**
 	 * 
-	 * @Description: 模式继续的定时器   
+	 * @Description: 定时查错，续跑实时预报
+	 * 1.当前系统时间大于当天的上午七点整 检查当天的实时预报情景，如果出错则自动续跑
+	 * 2.当前系统时间小于当天的上午七点整，检查上一天的实时预报情景，如果出错，则自动续跑
 	 * void  
 	 * @throws
 	 * @author yanglei
@@ -628,17 +630,31 @@ public class SchedulerTimer<V> {
 	 */
 	
 //	@Scheduled(fixedRate = 5000)
+//	@Scheduled(cron="0 */3 * * * ")
 	public void continueRealModelprediction() {
+		LogUtil.getLogger().info("每隔三个小时检查一次！");
 		//查找当天的实时预报的运行状态
-		Date pathdateDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
-		String scenType = "4";
+		Date originalDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+		Date starandDate = DateUtil.changedateByHour(originalDate,7);
+		Date nowDate = new Date();
+		int compareTo = nowDate.compareTo(starandDate);
+		Date pathDate;
+		if (compareTo>0) {
+			pathDate = originalDate;
+			Map map = new HashMap();
+			map.put("pathdate", pathDate);
+			map.put("type", "4");
+			List<TTasksStatus> selectTasksstatuslist = tTasksStatusMapper.selectTasksstatusByPathdateandtype(map);
+			
+		}
+		/*String scenType = "4";
 		Map map = new HashMap();
 		map.put("pathdate", pathdateDate);
 		map.put("type", scenType);
-		map.put("userId", 1);
+		map.put("userId", 1);*/
 		//TTasksStatus status =tScenarinoDetailMapper.selectTasksstatusByPathdate(pathdateDate);
-		TTasksStatus status =tTasksStatusMapper.selectTasksstatusByPathdate(map);
-		System.out.println(status+"今天的实时预报情景");
+//		TTasksStatus status =tTasksStatusMapper.selectTasksstatusByPathdate(map);
+//		System.out.println(status+"今天的实时预报情景");
 		/*Long missionType = tMissionDetailMapper.selectMissionType((long)367);
 		System.out.println(missionType+"---test:任务类型");*/
 		
