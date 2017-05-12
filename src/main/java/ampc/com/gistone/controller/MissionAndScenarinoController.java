@@ -1027,12 +1027,13 @@ public class MissionAndScenarinoController {
 			
 			//根据任务id查询所有情景
 			List<TScenarinoDetail> scenarlist=tScenarinoDetailMapper.selectAllByMissionId(missionId);
+			Map<String,Date> map=new HashMap();
+			map.put("startDate", tMission.getMissionStartDate());
+			map.put("endDate", tMission.getMissionEndDate());
 			if(tMission.getMissionStatus().equals("3")){
 			if(scenarlist.isEmpty()){
 				if(false){
-				Map<String,Date> map=new HashMap();
-				map.put("startDate", tMission.getMissionStartDate());
-				map.put("endDate", tMission.getMissionEndDate());
+				
 				sslist=tScenarinoDetailMapper.selectBytype4(map);
 				}
 				if(sslist.isEmpty()){
@@ -1057,8 +1058,8 @@ public class MissionAndScenarinoController {
 			
 			}
 			if(tMission.getMissionStatus().equals("2")){
-				if(null!=tScenarinoDetailMapper.selectMaxEndTime4()){
-					frtscen=tScenarinoDetailMapper.selectMaxEndTime4();
+				if(!tScenarinoDetailMapper.selectBytype4(map).isEmpty()){
+					sslist=tScenarinoDetailMapper.selectBytype4(map);
 				}else{
 					System.out.println("无实时预报情景");	
 					return AmpcResult.build(1000, "无实时预报情景",null);
@@ -1081,9 +1082,9 @@ public class MissionAndScenarinoController {
 			if(null!=tScenarinoDetailMapper.selectMaxEndTime(missionId)){
 			scenar=tsdate.getScenarinoEndDate();
 			}
-			if(null!=tScenarinoDetailMapper.selectMaxEndTime4()){
-			frtdate=frtscen.getScenarinoEndDate();
-			}
+//			if(null!=tScenarinoDetailMapper.selectMaxEndTime4()){
+//			frtdate=frtscen.getScenarinoEndDate();
+//			}
 			//转换类型
 			Date mission=tMission.getMissionStartDate();
 			
@@ -1094,9 +1095,9 @@ public class MissionAndScenarinoController {
 			times=formatter.format(scenar);
 			}
 			String missiondate=formatter.format(mission);
-			if(null!=tScenarinoDetailMapper.selectMaxEndTime4()){
-			frdate=formatter.format(frtdate);
-			}
+//			if(null!=tScenarinoDetailMapper.selectMaxEndTime4()){
+//			frdate=formatter.format(frtdate);
+//			}
 			JSONArray arr=new JSONArray();
 			
 			if(tMission.getMissionStatus().equals("3")&&!sslist.isEmpty()){
@@ -1119,13 +1120,16 @@ public class MissionAndScenarinoController {
 				lastobj.put("scenarinoEndDate", times);
 				arr.add(lastobj);	
 			}else{
-				JSONObject forobj=new JSONObject();
-				forobj.put("scenarinoId",frtscen.getScenarinoId());
-				forobj.put("scenarinoName", "实时预报情景");
-				forobj.put("scenarinoStartDate", missiondate);
-				forobj.put("ScenType", frtscen.getScenType());
-				forobj.put("scenarinoEndDate", frdate);
-				arr.add(forobj);		
+				for(TScenarinoDetail tsc:sslist){
+					JSONObject forobj=new JSONObject();
+					forobj.put("scenarinoId",tsc.getScenarinoId());
+					forobj.put("scenarinoName", tsc.getScenarinoName());
+					forobj.put("scenarinoStartDate", formatter.format(tsc.getScenarinoStartDate()));
+					forobj.put("ScenType", tsc.getScenType());
+					forobj.put("scenarinoEndDate", formatter.format(tsc.getPathDate()));
+					forobj.put("theDate", formatter.format(tsc.getScenarinoStartDate()));
+					arr.add(forobj);	
+					}
 			}
 			for(TScenarinoDetail tscenar:scenarlist){
 				JSONObject obj=new JSONObject();
