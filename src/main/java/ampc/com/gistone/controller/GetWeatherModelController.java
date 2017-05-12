@@ -221,18 +221,18 @@ public class GetWeatherModelController {
 			//setControlfile
 //			tTasksStatus.setExpand3(controlfile);
 			
-//			tTasksStatus.setTasksExpand3(controlfile);
-			tTasksStatus.setTasksExpand3("/work/modelcloud/lixin_meic/hebei/cf/cf_zero.csv");
+			tTasksStatus.setTasksExpand3(controlfile);
+//			tTasksStatus.setTasksExpand3("/work/modelcloud/lixin_meic/hebei/cf/cf_zero.csv");
 			tTasksStatus.setTasksScenarinoId(scenarinoId);
 //			tTasksStatus.setExpand1(0l);
 			tTasksStatus.setTasksExpand1(0l);
-			System.out.println(tTasksStatus.toString()+"-------------------");
+//			System.out.println(tTasksStatus.toString()+"-------------------");
 		//添加到对应的情景下面去
 //			int i = tTasksStatusMapper.updateEmisData(tTasksStatus);
 			int	i = tTasksStatusMapper.updateEmisData(tTasksStatus);
 		//	int i = tTasksStatusMapper.updateByPrimaryKeySelective(tTasksStatus);
 			if (i>0) {
-				LogUtil.getLogger().info("获取减排系数成功！并更新了数据库！");
+				LogUtil.getLogger().info("获取减排系数成功！并更新了数据库！"+scenarinoId);
 				//后评估任务后评估情景
 				//readyData.readypost_PostEvaluationSituationData(scenarinoid);
 				//准备对应的队列参数数据
