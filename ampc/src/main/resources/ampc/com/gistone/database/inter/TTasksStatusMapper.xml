@@ -594,7 +594,7 @@ select START_MODEL_RESULT from T_TASKS_STATUS where TASKS_SCENARINO_ID = #{tasks
   <!-- 修改模式终止返回的状态 -->
 <update id="updatestopModelresult" parameterType="ampc.com.gistone.database.model.TTasksStatus">
 update T_TASKS_STATUS
-    set STOP_STATUS = #{stopStatus,jdbcType=VARCHAR},
+    set STOP_STATUS = #{stopStatus,jdbcType=VARCHAR}
   	where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
 </update>  
   <!-- 通过情景类型和起报时间查找情景的运行状态 -->
