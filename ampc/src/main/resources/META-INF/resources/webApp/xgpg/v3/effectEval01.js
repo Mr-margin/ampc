@@ -300,7 +300,7 @@ function initEcharts() {
 	
 	for(var i = 0;i < tname.length;i++){	//循环物种
 		if("PM25"==tname[i]){
-			var div_bj=$('<div class="row" style="padding-left:15px;"><div class="col-sm-4"><div class="input-group m-b" style="margin-bottom: 0px"><div class="" style="margin-bottom:0px;padding-left:7px;"><div class="btn-group" data-toggle="buttons"><label name="collapse" class="btn btn-outline btn-success active"><input type="radio" name="spread" value="open" checked>组分展开</label><label name="collapse" class="btn btn-outline btn-success"><input type="radio" name="spread" value="close">组分收起</label></div></div></div></div></div>');
+			var div_bj=$('<div class="row" style="padding-left:15px;"><div class="col-sm-4"><div class="input-group m-b" style="margin-bottom: 0px"><div class="" style="margin-bottom:0px;padding-left:7px;"><div class="btn-group" data-toggle="buttons"><label name="collapse" class="btn btn-outline btn-success "><input type="radio" name="spread" value="open" >组分展开</label><label name="collapse" class="btn btn-outline btn-success active"><input type="radio" name="spread" value="close" checked>组分收起</label></div></div></div></div></div>');
 			var div = $('<div style="height:250px;"></div>');
 			div.attr("id",tname[i]);
 			div.addClass('echartsCZ');
@@ -541,6 +541,13 @@ function initEcharts() {
     	aqi.setOption(option);
     	$(window).resize(aqi.resize);
     }
+    
+    $("#SO4").hide();
+	$("#NO3").hide();
+	$("#NH4").hide();
+	$("#BC").hide();
+	$("#OM").hide();
+	$("#PMFINE").hide();
     
   }
 	
