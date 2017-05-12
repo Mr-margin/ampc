@@ -266,14 +266,14 @@
             <h5 class="headTitle"><i class="im-earth"></i> 地图展示</h5>
             <div class="ibox-tools toolAll">
 
-              <div class="selectTool" style="margin-right:50px;float: left">
-                <h5 style="line-height: 30px;">污染物: ：</h5>
+              <div class="selectTool upDown" style="margin-right:50px;float: left">
+                <h5 style="line-height: 30px;">污染物：</h5>
                 <div class="selectTool_con" style="display: inline-block;">
                   <div class="" style="margin-bottom:0px;padding-left:0px;">
-                    <div class="" style="margin: 2px auto;padding-left:0px;padding-right:0px;">
+                    <div class="" style="padding-left:0px;padding-right:0px;">
                       <div class="input-group group-select" style="width: 100%">
-                        <select class="form-control m-b" name="hz_wrw" id="hz_wrw" onChange="metTable_hj_info();"
-                                style="padding-left:6px;border-color: #1c84c6;">
+                        <select class="easyui-combobox" name="hz_wrw" id="hz_wrw" onChange="metTable_hj_info();"
+                                style="padding-left:6px;">
                           <option value="PM25">PM25</option>
                           <option value="PM10">PM10</option><!-- PM10=PM25+PMcoarse -->
                           <option value="SO2">SO2</option>
@@ -295,11 +295,10 @@
               <div class="selectTool" style="float: left">
                 <!--<h5>时间分辨率：</h5>-->
                 <div class="selectTool_con" style="display: inline-block;">
-                  <div class="btn-group" id="hangyedetype" data-toggle="buttons" onClick="hangye_type_info();"
-                       style="margin: 2px auto;padding: 0;border:1px solid #D9D9D9;height: 32px;">
-                    <label class="col-6 btn btn-outline btn-success  active" style="height: 30px;line-height: 30px;"><input
+                  <div class="btn-group switchBtn" id="hangyedetype" data-toggle="buttons" onClick="hangye_type_info();">
+                    <label class="col-6 btn btn-outline btn-success  active"><input
                         checked type="radio" class="toggle">全部行业</label>
-                    <label class="col-6 btn btn-outline btn-success " style="height: 30px;line-height: 30px;"><input
+                    <label class="col-6 btn btn-outline btn-success"><input
                         type="radio" class="toggle">当前行业</label>
                   </div>
                 </div>
