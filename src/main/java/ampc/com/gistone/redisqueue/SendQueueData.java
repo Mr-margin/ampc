@@ -156,8 +156,8 @@ public class SendQueueData {
 		boolean flag = false;
 		String sendname = configUtil.getRedisQueuesSendName();
 		try {
-			long leftPush = redisqueue.leftPush(sendname,json);//receive_queue_name   r0_bm
-//			long leftPush = redisqueue.leftPush("r0_test_bm",json);//receive_queue_name   r0_bm
+//			long leftPush = redisqueue.leftPush(sendname,json);//receive_queue_name   r0_bm
+			long leftPush = redisqueue.leftPush("r0_test_bm",json);//receive_queue_name   r0_bm
 //			long leftPush = redisqueue.leftPush("r0_bm",json);//内网
 //		redisqueue.leftPush("bm",json);//receive_queue_name
 			if (leftPush>0) {
