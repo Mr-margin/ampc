@@ -252,7 +252,8 @@ function updata(opt) {
             // starttime: '2017-05-01 00',
             // endtime: '2017-05-03 00',
             cityStation: changeMsg.station == 'avg' ? changeMsg.city : changeMsg.station,
-            datetype: changeMsg.rms
+            datetype: changeMsg.rms,
+            tabType:changeMsg.type
         }).success(function (res) {
             $('.showTable').empty();
             for (var i = 0; i < speciesAll[changeMsg.type][changeMsg.rms].length; i++) {
