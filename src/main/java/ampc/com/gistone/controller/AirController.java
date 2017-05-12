@@ -1612,7 +1612,14 @@ public class AirController {
 		}
 		
 	}
-
+	
+	/**
+	 * 空气质量预报--预报检验--污染物和气象要素
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	
 	@RequestMapping("Air/checkout")
 	public AmpcResult find_checkout(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
