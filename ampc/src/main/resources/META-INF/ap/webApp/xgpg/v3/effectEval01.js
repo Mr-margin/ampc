@@ -21,6 +21,7 @@ var dps_codeStation,	//设置站点信息
 var show_type = "bar";
 var changeMsg = {
     pro: '',			//站点选择
+    domain:'',//模拟范围、空间分辨率
     proName: '',
     city: '',
     cityName: '',
@@ -30,6 +31,7 @@ var changeMsg = {
     scenarinoId: [],	//选择的情景Id数组
     scenarinoName: [],	//选择的情景名称数组
 };
+var zhiCity = ['11', '12', '31', '50'];
 //逐小时显示 AQI PM25 ,SO4 NO3 NH4 BC OM PMFINE, PM10 O3 SO2 NO2 CO
 //逐日显示 AQI PM25 ,SO4 NO3 NH4 BC OM PMFINE, PM10 O3_8_max O3_1_max SO2 NO2 CO
 //物种选择
@@ -316,12 +318,13 @@ function initEcharts() {
 
     for (var i = 0; i < tname.length; i++) {
         if ("PM25" == tname[i]) {
-            var div_bj = $('<div class="row" style="padding-left:15px;"><div class="col-sm-4"><div class="input-group m-b" style="margin-bottom: 0px"><div class="" style="margin-bottom:0px;padding-left:7px;"><div class="btn-group" data-toggle="buttons" style="border:1px solid #D9D9D9;overflow: hidden;display: inline-block;"><label name="collapse" class="btn btn-outline btn-success active"><input type="radio" name="spread" value="open" checked>组分展开</label><label name="collapse" class="btn btn-outline btn-success"><input type="radio" name="spread" value="close">组分收起</label></div></div></div></div></div>');
+            //var div_bj = $('<div class="row" style="padding-left:15px;"><div class="col-sm-4"><div class="input-group m-b" style="margin-bottom: 0px"><div class="" style="margin-bottom:0px;padding-left:7px;"><div class="btn-group" data-toggle="buttons" style="border:1px solid #D9D9D9;overflow: hidden;display: inline-block;"><label name="collapse" class="btn btn-outline btn-success active"><input type="radio" name="spread" value="open" checked>组分展开</label><label name="collapse" class="btn btn-outline btn-success"><input type="radio" name="spread" value="close">组分收起</label></div></div></div></div></div>');
+            var div_bj=$('<div class="upDown timeUpDown"><span class="upDownBtn">组分展开</span></div>');
             var div = $('<div style="height:250px;"></div>');
             div.attr("id", tname[i]);
             div.addClass('echartsCZ');
-            $("#initEcharts").append(div_bj);
             $("#initEcharts").append(div);
+            $("#initEcharts").append(div_bj);
         } else {
             var div = $('<div style="height:250px;"></div>');
             div.attr("id", tname[i]);
@@ -374,8 +377,6 @@ function initEcharts() {
             var keys = [];
             var vals = [];
             if (changeMsg.rms == 'day') {
-                // console.log("生成数据");
-                // console.log(datas)
                 for (var prop in datas) {  		//prop--情景id-507     datas--json对象
                     if (datas.hasOwnProperty(prop)) {
                         if (prop == id) { 		//循环不同的情景id
@@ -461,6 +462,30 @@ function initEcharts() {
                 data: ydata     			//可变情景数据
             });
         }
+        //图表对称 添加  相对变化
+        if ("相对变化" == compare){
+            var timexlDate=option.series;
+            var timexlAll=[];
+            var dataAMax;
+            var dataY=[],dataYMax;
+            for(var m=0;m<timexlDate.length;m++){
+                for(var n=0;n<timexlDate[m].data.length;n++){
+                    timexlAll[n]=Math.abs(timexlDate[m].data[n]);
+                }
+                dataAMax=Math.max.apply(null,timexlAll);
+                console.log(dataAMax);
+            }
+            dataY.push(dataAMax);
+            dataYMax=Math.max.apply(null,dataY)
+            console.log("最大值");
+            console.log(option.yAxis[0]);
+            option.yAxis[0].max=dataYMax;
+            option.yAxis[0].min=-dataYMax;
+
+            console.log(option.yAxis.max);
+            console.log(option.yAxis.min);
+        }
+
         option.xAxis = [];
         option.xAxis.push({				    //x轴情景时间
             data: ttime						//修改数据排序
@@ -581,6 +606,32 @@ function initEcharts() {
 //			$(e.target).val('close');
         }
 
+    });
+    $("#SO4").hide();
+    $("#NO3").hide();
+    $("#NH4").hide();
+    $("#BC").hide();
+    $("#OM").hide();
+    $("#PMFINE").hide();
+    //组分展开收缩  添加
+    $(".timeUpDown .upDownBtn").click(function(){
+        if($(".timeUpDown .upDownBtn").text()=="组分展开"){
+            $(".timeUpDown .upDownBtn").text("组分收起");
+            $("#SO4").show();
+            $("#NO3").show();
+            $("#NH4").show();
+            $("#BC").show();
+            $("#OM").show();
+            $("#PMFINE").show();
+        }else{
+            $(".timeUpDown .upDownBtn").text("组分展开");
+            $("#SO4").hide();
+            $("#NO3").hide();
+            $("#NH4").hide();
+            $("#BC").hide();
+            $("#OM").hide();
+            $("#PMFINE").hide();
+        }
     });
 
 
@@ -896,6 +947,7 @@ $('#proStation').on('change', function (e) {
 //	  $("#citys").text($("#cityStation option:selected").text());
 //	  $("#stations").text($("#station option:selected").text());
 //	  $("#interspaces").parents('label').text($("input[name='domain']").parents('label.active').text());
+    showTitleFun();
     getdata();
 });
 
@@ -904,6 +956,7 @@ $('#cityStation').on('change', function (e) {
     changeMsg.city = city;
     changeMsg.cityName = allCode[changeMsg.pro].city[city];
     findStation(changeMsg.city);
+    showTitleFun();
     getdata();
 });
 
@@ -911,6 +964,7 @@ $('#station').on('change', function (e) {
     var station = $(e.target).val();
     changeMsg.station = station;
     changeMsg.stationName = $(e.target)[0].selectedOptions[0].innerHTML;
+    showTitleFun();
     getdata();
 });
 
@@ -926,9 +980,11 @@ $('input[name=rms]').on('change', function (e) {
 //		console.log(rms);
     if (rms == 'hour') {
         show_type = "line";
+        showTitleFun();
         getdata();
     } else {
         show_type = "bar";
+        showTitleFun();
         getdata();
     }
 
@@ -941,19 +997,16 @@ var xdScene = {};		//总和
 $('input[name=changes]').on('change', function (e) {
     changeType = $(e.target).val();		//获取到被选中的值
     if (changeType == '1') {	//绝对量变化
+        showTitleFun();
         initEcharts();
-
     } else if (changeType == '2') {	//相对变化开始
-
         var xd_echartsData = echartsData;		//该任务下所选情景的所有数据
         var xd_standardData = standardData;
         if (xd_echartsData != "" && xd_echartsData != null && xd_echartsData != undefined && xd_standardData != "" && xd_standardData != null && xd_standardData != undefined) {	//存在数据
 //			var xdScene={};		//总和
             var xdSpecies = {};	//物种
             var xdYear = {};		//年份
-
             var time = $("input[name='rms']").parents("label.active").text();
-
             if ("逐日" == time) {
                 $.each(xd_standardData, function (k, sv) {	//k 为基准数据和观测数据
                     if ("基准数据" == k) {
@@ -978,6 +1031,7 @@ $('input[name=changes]').on('change', function (e) {
                         });
                     }
                 });
+                showTitleFun();
                 initEcharts();
 //				console.log(xdScene);
             } else if ("逐小时" == time) {
@@ -1029,42 +1083,77 @@ $('input[name=changes]').on('change', function (e) {
 var domain;
 $('input[name=domain]').on('change', function (e) {
     domain = $(e.target).val();
+    console.log(domain);
+    showTitleFun();
     getdata();
 //	console.log(domain);
 });
 //easyui 添加
-var headerH = $(".cloudui .searchT").height();
-$(".charContent").css({"top": headerH + "px"});
-$(".upDownBtn").append("<i class='en-arrow-up7'></i>")
-$(".upDownBtn").click(function () {
-    console.log($(".upDownBtn").val());
-    if ($(".upDownBtn").text() == "收起") {
-        $(".upDownBtn").text("更多搜索条件");
+//var headerH = $(".cloudui .searchT").height();
+//$(".charContent").css({"top": headerH + "px"});
+$(".cloudui .searchT  .upDownBtn").append("<i class='en-arrow-up7'></i>")
+$(".cloudui .searchT .upDownBtn").click(function () {
+    //console.log($(".upDownBtn").val());
+    if ($(".cloudui .searchT .upDownBtn").text() == "收起") {
+        $(".cloudui .searchT .upDownBtn").text("更多搜索条件");
         $(".toolAll").hide();
-        $(".upDownBtn i").remove();
-        $(".upDownBtn").append("<i class='en-arrow-down8'></i>")
-        $(".upDownBtn i").attr("class", "en-arrow-down8")
-        headerH = $(".cloudui .searchT").height();
-        $(".charContent").css({"top": headerH + "px"})
+        $(".cloudui .searchT .upDownBtn i").remove();
+        $(".cloudui .searchT .upDownBtn").append("<i class='en-arrow-down8'></i>")
+        $(".cloudui .searchT .upDownBtn i").attr("class", "en-arrow-down8")
+        //headerH = $(".cloudui .searchT").height();
+       // $(".charContent").css({"top": headerH + "px"})
     } else {
-        $(".upDownBtn").text("收起");
+        $(".cloudui .searchT .upDownBtn").text("收起");
         $(".toolAll").show();
-        headerH = $(".cloudui .searchT").height();
-        $(".upDownBtn i").remove();
-        $(".upDownBtn").append("<i class='en-arrow-up7'></i>");
-        $(".charContent").css({"top": headerH + "px"});
+       // headerH = $(".cloudui .searchT").height();
+        $(".cloudui .searchT .upDownBtn i").remove();
+        $(".cloudui .searchT .upDownBtn").append("<i class='en-arrow-up7'></i>");
+       // $(".charContent").css({"top": headerH + "px"});
     }
 })
-$(".cloudui .verticalCon .ibox-content .searchT .upDown").hover(function () {
-    $(".cloudui .verticalCon .ibox-content .searchT .upDown").css({"border-top": "1px solid #0275D8"});
-    $(".cloudui .verticalCon .ibox-content .searchT .upDown .upDownBtn").css({"border": "1px solid #0275D8"});
+$(".cloudui .upDown").hover(function () {
+    $(".cloudui .upDown").css({"border-top": "1px solid #0275D8"});
+    $(".cloudui .upDownBtn").css({"border": "1px solid #0275D8"});
 }, function () {
-    $(".cloudui .verticalCon .ibox-content .searchT .upDown").css({"border-top": "1px solid #d9d9d9"});
-    $(".cloudui .verticalCon .ibox-content .searchT .upDown .upDownBtn").css({"border": "1px solid #d9d9d9"});
+    $(".cloudui .upDown").css({"border-top": "1px solid #d9d9d9"});
+    $(".cloudui .upDown .upDownBtn").css({"border": "1px solid #d9d9d9"});
 })
-$(".charContent").slimScroll({
-    height: '100%'
-})
-
+// $(".charContent").slimScroll({
+//     height: '100%'
+// })
+//标题
+showTitleFun();
+function showTitleFun() {
+    $('#showTitle span').empty();
+    if (zhiCity.indexOf(changeMsg.pro) == -1) {
+        if (changeMsg.station == 'avg') {
+            $('#showTitle .proName').html(changeMsg.proName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .cityName').html(changeMsg.cityName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .spaceName').html((domain=='1'?'27KM':(domain=='2'?'9KM':'3KM')) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .compName').html(changeType=="1"?"绝对量比较":"相对变化");
+        } else {
+            $('#showTitle .proName').html(changeMsg.proName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .cityName').html(changeMsg.cityName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .stationName').html(changeMsg.stationName + '>>');
+            $('#showTitle .spaceName').html((domain=='1'?'27KM':(domain=='2'?'9KM':'3KM')) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .compName').html(changeType=="1"?"绝对量比较":"相对变化");
+        }
+    } else {
+        if (changeMsg.station == 'avg') {
+            $('#showTitle .cityName').html(changeMsg.cityName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .spaceName').html((domain=='1'?'27KM':(domain=='2'?'9KM':'3KM')) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .compName').html(changeType=="1"?"绝对量比较":"相对变化");
+        } else {
+            $('#showTitle .cityName').html(changeMsg.cityName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .stationName').html(changeMsg.stationName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .spaceName').html((domain=='1'?'27KM':(domain=='2'?'9KM':'3KM')) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .compName').html(changeType=="1"?"绝对量比较":"相对变化");
+        }
+    }
+}
 
 
