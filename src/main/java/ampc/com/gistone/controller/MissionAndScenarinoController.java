@@ -160,7 +160,6 @@ public class MissionAndScenarinoController {
 						s++;
 					}
 				}
-				ss.put("state", "closed");
 				ss.put("scnum", tmlist.size());
 				ss.put("zxscnum", s);
 				TDomainMission tDomainMission=tDomainMissionMapper.selectByPrimaryKey(missionDomainId);
@@ -1939,7 +1938,7 @@ public class MissionAndScenarinoController {
 					//判断是否需要拼接头信息
 					if(i==0){
 						Map qjTitle=new HashMap();
-						qjTitle.put("id", "qjtitle"+i);
+						qjTitle.put("id", "ID");
 						qjTitle.put("scenarinoNameTitle", "情景名称");
 						qjTitle.put("scenarinoIdTitle","ID");
 						qjTitle.put("operationTitle","操作");
@@ -1947,7 +1946,7 @@ public class MissionAndScenarinoController {
 						qjTitle.put("scenarinoStatusTitle","情景状态");
 						qjTitle.put("runTimeTitle","执行日期");
 						qjTitle.put("EndDateTitle","结束日期");
-						qjTitle.put("typeTitle","类型");
+						qjTitle.put("scenarinoStatusTitle","情景状态");
 						//加入数据
 						children.add(qjTitle);
 					}
@@ -1957,7 +1956,6 @@ public class MissionAndScenarinoController {
 						s++;
 					}
 				}
-				ss.put("state", "closed");
 				//写入情景信息
 				ss.put("children", children);
 				//写入ID
