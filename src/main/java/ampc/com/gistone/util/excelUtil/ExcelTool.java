@@ -51,6 +51,9 @@ public class ExcelTool {
     this.anchor = factory.createClientAnchor();
   }
 
+  /**
+   * 获取头信息
+   */
   public void buildHeader() {
     this.headerMap = new LinkedHashMap<>();
     for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
