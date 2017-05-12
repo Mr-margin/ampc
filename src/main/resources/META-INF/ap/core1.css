@@ -969,8 +969,8 @@ dl, dd {
 .cloudui .bgw{border-radius:2px!important;margin-bottom:4px;background-color: rgb(242, 242, 242);text-align: center;line-height: 24px;clear:both;border:1px solid #D9D9D9;margin-bottom: 0px;margin-top:2px;}
 .cloudui .bgw:hover, .bgw:focus, .bgw:active, .bgw.active, .open .dropdown-toggle.btn-success {
   display: inline-block;
-  height: 24px;
-  line-height: 24px;
+  height: 28px;
+  line-height: 28px;
   background-color: #0275D8;
   border-color: #0275D8;
   color: #FFFFFF
@@ -1206,17 +1206,17 @@ dl, dd {
 .cloudui .verticalCon{width:100%;height:100%;}
 .cloudui .verticalCon .ibox{width:100%;height:100%;}
 .cloudui .verticalCon .xgpgShow{width: 100%;height:100%;overflow-y: auto;position: relative;}
-.cloudui .verticalCon .ibox-content .searchT{position:absolute;left:0px;right:0px;top:0;z-index:10;background-color:white;}
+.cloudui .verticalCon .ibox-content .searchT{position:absolute;left:0px;right:0px;top:0;z-index:10;}
 .cloudui .verticalCon .ibox-content #showTitle{}
-.cloudui .verticalCon .ibox-content .verticalChar{position:absolute;top:0px;left:0;right:0;bottom: 0;z-index:0;overflow-y: auto;}
+.cloudui .verticalCon .ibox-content .verticalChar{position:absolute;top:60px;left:0;right:0;bottom: 0;z-index:0;overflow-y: auto;}
 .cloudui .verticalCon .ibox-content .verticalChar #initEcharts{height: auto;overflow: hidden;width:100%;}
 .cloudui .verticalCon .ibox-content .verticalChar #initEcharts .echartsCZ{float: left;width: 25%;}
 .cloudui .verticalCon .ibox-content .verticalChar #initEcharts .echartsCZ .easyui-panel{width: 100%!important;height:100%;height:300px;}
 /*.cloudui .verticalCon .ibox-content .verticalChar #initEcharts .echartsCZ .easyui-panel div{width: 100%!important;height:100%;height:300px;}*/
 /*效果评估图表展示*/
-.cloudui .verticalCon .ibox-content .charContent{position:absolute;top:0px;left:0;right:0;bottom: 0;z-index:0;overflow-y: auto;}
+.cloudui .verticalCon .ibox-content .charContent{position:absolute;top:60px;left:0;right:0;bottom: 0;z-index:0;overflow-y: auto;}
 /*搜索条件*/
-.cloudui .xgpgShow .searchT .toolAll .toolContent{overflow: hidden;}
+.cloudui .xgpgShow .searchT .toolAll .toolContent{overflow: hidden;background-color: #fff;}
 .cloudui .xgpgShow .searchT .toolAll .selectTool{float: left;padding-top:10px;padding-bottom: 10px;margin-right:30px;}
 
 .cloudui .xgpgShow .searchT .toolAll .selectTool h5{float: left;font-size:12px;line-height:30px;margin-right:10px;width: 80px;text-align: right;}
@@ -1224,14 +1224,16 @@ dl, dd {
 .cloudui .xgpgShow .searchT .toolAll .selectTool .selectTool_con .selectRow{float: left;margin-right:10px;line-height:30px;}
 .cloudui .xgpgShow .searchT .toolAll .selectTool .selectTool_con .selectRow .form-control{padding: 0;}
 .cloudui .xgpgShow .searchT .toolAll .selectTool .selectTool_con .input-group select{width: 120px;height:30px;}
-.cloudui .toolAll .selectTool .headerSwitch{border:1px solid #D9D9D9;display: inline-block;}
+.cloudui .toolAll .selectTool .headerSwitch{display: inline-block;}
 /*标题*/
 .cloudui .xgpgShow .searchT #showTitle{border-top:1px solid #d9d9d9;background: linear-gradient(#fbfbfb, #f2f2f2); border-bottom:1px solid #d9d9d9;}
 .cloudui .xgpgShow .searchT #showTitle *{font-size: 16px;line-height:30px;color: #0275D8;}
 /*收缩按钮*/
-.cloudui .verticalCon .ibox-content .searchT .upDown{border-top:1px solid #d9d9d9;text-align: center;line-height: 23px;}
-.cloudui .verticalCon .ibox-content .searchT .upDown .upDownBtn{display: inline-block;border: 1px solid #D9D9D9;border-top:none!important;background: white;height: 24px;position: relative;cursor: pointer;top:-1px;padding:0 10px;}
-
+.cloudui .upDown{border-top:1px solid #d9d9d9;text-align: center;line-height: 23px;}
+.cloudui .upDown .upDownBtn{display: inline-block;border: 1px solid #D9D9D9;border-top:none!important;background: white;height: 24px;position: relative;cursor: pointer;top:-1px;padding:0 10px;}
+.cloudui .timeUpDown{border-top:1px solid #0275D8;}
+.cloudui .timeUpDown .upDownBtn{border: 1px solid #0275D8;background-color:#0275D8;color: #fff;}
+.cloudui .timeUpDown .upDownBtn:hover{background-color: #fff;color:#333;}
 /*新增任务模态框*/
 #addRW > .step1 ,#addYQJ > .step1,#addHQJ > .step1 {
   display: flex;
@@ -1256,7 +1258,6 @@ dl, dd {
 .dropdown-menu {
   display: none;
 }
-.upDown{margin-top:2px;}
 /*任务管理的类型切换*/
 #selectTypeBtn{
   border-color: transparent;
@@ -1323,3 +1324,24 @@ dl, dd {
   opacity: 0.65;
   filter: alpha(opacity=65);
   box-shadow: none;}
+/*滚动条*/
+  /*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
+.verticalChar::-webkit-scrollbar,.charContent::-webkit-scrollbar{
+  width: 10px;
+  height: 16px;
+  background-color: #f5f5f5;
+}
+/*定义滚动条的轨道，内阴影及圆角*/
+.verticalChar::-webkit-scrollbar-track.charContent::-webkit-scrollbar-track{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+/*定义滑块，内阴影及圆角*/
+.verticalChar::-webkit-scrollbar-thumb,.charContent::-webkit-scrollbar-thumb{
+  /*width: 10px;*/
+  height: 20px;
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  background-color: #555;
+}
