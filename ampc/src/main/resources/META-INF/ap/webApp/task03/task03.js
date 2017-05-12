@@ -25,15 +25,18 @@ $("#show").click(function () {
     }
 });
 
-var checkeded;//选中行
 var ls = window.sessionStorage;
 var qjMsg = vipspa.getMessage('yaMessage').content;
-
 if (!qjMsg) {
     qjMsg = JSON.parse(ls.getItem('yaMsg'));
 } else {
     ls.setItem('yaMsg', JSON.stringify(qjMsg));
 }
+var checkeded;//选中行
+var msg = {
+    'id': 'csMessage',
+    'content': qjMsg
+};
 //console.log(JSON.stringify(qjMsg));
 
 /**
@@ -211,14 +214,14 @@ function hyc() {
                     if (col.planMeasure.length > 0) {
                         $.each(col.planMeasure,function (n, ool) {
                             if (ool.measureId == vol.mid) {
-                                caidan_k = $('<div class="col-6 c6center"><a class="btnG btn btn-success-cs-w" style="width:80%;" onclick="open_cs(\''+col.sectorsName+'\',\''+vol.measureame+'\',\''+vol.mid+'\',\''+ ool.planMeasureId +'\')";><i class="fa fa-check"> </i> '+ vol.measureame +'</a></div>')
+                                caidan_k = $('<div class="col-6 c6center"><a class="btnG btn btn-success-cs-w" style="width:80%;" onclick="open_csbjSon(\''+col.sectorsName+'\',\''+vol.measureame+'\',\''+vol.mid+'\',\''+ ool.planMeasureId +'\')";><i class="fa fa-check"> </i> '+ vol.measureame +'</a></div>')
                                 bggh = false;
                             }
                         })
                     }
 
                     if(bggh){
-                        caidan_k = $('<div class="col-6 c6center"><a class="btnG btn btn-success-cs" style="width:80%;" onclick="open_cs(\''+col.sectorsName+'\',\''+vol.measureame+'\',\''+vol.mid+'\',\'null\')";><i class="fa fa-ban"> </i> '+ vol.measureame +'</a></div>')
+                        caidan_k = $('<div class="col-6 c6center"><a class="btnG btn btn-success-cs" style="width:80%;" onclick="open_csbjSon(\''+col.sectorsName+'\',\''+vol.measureame+'\',\''+vol.mid+'\',\'null\')";><i class="fa fa-ban"> </i> '+ vol.measureame +'</a></div>')
                     }
 
                     caidan_con.append(caidan_k);
@@ -237,49 +240,49 @@ function hyc() {
 return;
 
 
-
-//		console.log(JSON.stringify(res));
-        var accordion_html = "";
-        if (res.status == 0) {
-            $.each(res.data, function (i, col) {
-
-//      var inn = i == 0 ? "in" : "";//第一个手风琴页签打开
-                var inn = "";
-                if (stname) {
-                    inn = stname == col.sectorsName ? "in" : "";
-                }
-
-                accordion_html += '<div title=' + col.sectorsName + ' val_name="' + col.sectorsName + '"><div class="panel-heading" style="background-color: #FFF;">';
-                accordion_html += '<a data-toggle="collapse" data-parent="#accordion" style="font-weight: 700;" href="#collapse' + i + '"><h5 onclick="metTable_hj_info(\'' + col.sectorsName + '\');" class="panel-title">' + col.sectorsName + '';
-                if (col.count != "0") {
-                    accordion_html += '<code class="pull-right">已使用&nbsp;' + col.count + '&nbsp;条措施</code>';
-                }
-                accordion_html += '</h5></a></div><div id="collapse' + i + '" class="panel-collapse collapse ' + inn + '" style="background-color: #EDF7FF;"><div class="panel-body" style="border: 0px;">';
-
-                $.each(col.measureItems, function (j, vol) {
-                    accordion_html += '<div class="col-6 c6center">';
-                    var bggh = true;
-                    if (col.planMeasure.length > 0) {
-                        $.each(col.planMeasure, function (k, ool) {//循环已选中的措施
-                            if (ool.measureId == vol.mid) {//已选中的措施和措施列表的ID相同，标签需要更改效果
-                                accordion_html += '<a class="btn btn-success-cs-w" id="' + ool.planMeasureId + '" style="width:80%;" onclick="open_cs(\'' + col.sectorsName + '\',\'' + vol.measureame + '\',\'' + vol.mid + '\',\'' + ool.planMeasureId + '\');"><i class="fa fa-check"> </i>&nbsp;&nbsp;&nbsp;' + vol.measureame + '</a>';
-                                bggh = false;//如果已选中，在这里添加，否则需要添加未选中的标签
-                            }
-                        });
-                    }
-                    if (bggh) {
-                        accordion_html += '<a class="btn btn-success-cs btn-outline" style="width:80%;" onclick="open_cs(\'' + col.sectorsName + '\',\'' + vol.measureame + '\',\'' + vol.mid + '\',\'null\');"><i class="fa fa-ban"> </i>&nbsp;&nbsp;&nbsp;' + vol.measureame + '</a>';
-                    }
-                    accordion_html += '</div>';
-                });
-                accordion_html += '</div></div></div>';
-            });
-            $("#accordion").html(accordion_html);
-
-        } else {
-            swal('连接错误/plan/get_planInfo', '', 'error');
-//			swal('添加成功', '', 'success');
-        }
+//
+// //		console.log(JSON.stringify(res));
+//         var accordion_html = "";
+//         if (res.status == 0) {
+//             $.each(res.data, function (i, col) {
+//
+// //      var inn = i == 0 ? "in" : "";//第一个手风琴页签打开
+//                 var inn = "";
+//                 if (stname) {
+//                     inn = stname == col.sectorsName ? "in" : "";
+//                 }
+//
+//                 accordion_html += '<div title=' + col.sectorsName + ' val_name="' + col.sectorsName + '"><div class="panel-heading" style="background-color: #FFF;">';
+//                 accordion_html += '<a data-toggle="collapse" data-parent="#accordion" style="font-weight: 700;" href="#collapse' + i + '"><h5 onclick="metTable_hj_info(\'' + col.sectorsName + '\');" class="panel-title">' + col.sectorsName + '';
+//                 if (col.count != "0") {
+//                     accordion_html += '<code class="pull-right">已使用&nbsp;' + col.count + '&nbsp;条措施</code>';
+//                 }
+//                 accordion_html += '</h5></a></div><div id="collapse' + i + '" class="panel-collapse collapse ' + inn + '" style="background-color: #EDF7FF;"><div class="panel-body" style="border: 0px;">';
+//
+//                 $.each(col.measureItems, function (j, vol) {
+//                     accordion_html += '<div class="col-6 c6center">';
+//                     var bggh = true;
+//                     if (col.planMeasure.length > 0) {
+//                         $.each(col.planMeasure, function (k, ool) {//循环已选中的措施
+//                             if (ool.measureId == vol.mid) {//已选中的措施和措施列表的ID相同，标签需要更改效果
+//                                 accordion_html += '<a class="btn btn-success-cs-w" id="' + ool.planMeasureId + '" style="width:80%;" onclick="open_cs(\'' + col.sectorsName + '\',\'' + vol.measureame + '\',\'' + vol.mid + '\',\'' + ool.planMeasureId + '\');"><i class="fa fa-check"> </i>&nbsp;&nbsp;&nbsp;' + vol.measureame + '</a>';
+//                                 bggh = false;//如果已选中，在这里添加，否则需要添加未选中的标签
+//                             }
+//                         });
+//                     }
+//                     if (bggh) {
+//                         accordion_html += '<a class="btn btn-success-cs btn-outline" style="width:80%;" onclick="open_cs(\'' + col.sectorsName + '\',\'' + vol.measureame + '\',\'' + vol.mid + '\',\'null\');"><i class="fa fa-ban"> </i>&nbsp;&nbsp;&nbsp;' + vol.measureame + '</a>';
+//                     }
+//                     accordion_html += '</div>';
+//                 });
+//                 accordion_html += '</div></div></div>';
+//             });
+//             $("#accordion").html(accordion_html);
+//
+//         } else {
+//             swal('连接错误/plan/get_planInfo', '', 'error');
+// //			swal('添加成功', '', 'success');
+//         }
     }).error(function () {
         swal('校验失败', '', 'error')
     })
@@ -2444,4 +2447,26 @@ function optionclick(event) {
 //	     app.mapList[1].infoWindow.setContent(content);
 //	     app.mapList[1].infoWindow.show(event.mapPoint);
     });
+}
+
+
+/*打开子措施页面*/
+/**
+ *
+ * @param sectorsName   行业名称
+ * @param measureame    措施名称
+ * @param mid   措施id
+ * @param planMeasureId     已经选中的措施ID，如果为null，证明是新建，否则为修改
+ */
+function open_csbjSon(sectorsName, measureame, mid, planMeasureId) {
+    msg.content.sectorsName = sectorsName;
+    msg.content.measureame = measureame;
+    msg.content.mid = mid;
+    msg.content.planMeasureId = planMeasureId;
+
+    vipspa.setMessage(msg);
+
+    var a = document.createElement('a');
+    a.href = '#/csbj_zi';
+    a.click();
 }

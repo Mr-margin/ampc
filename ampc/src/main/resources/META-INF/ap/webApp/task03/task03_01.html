@@ -1,0 +1,316 @@
+<style>
+  .price_list {
+    list-style: none
+  }
+
+  .price_list li {
+    float: left;
+    line-height: 22px;
+    margin-right: 10px;
+    padding: 2px 6px
+  }
+
+  .price_list li.title {
+    display: block;
+    width: 80px;
+    height: 40px;
+  }
+
+  #custom {
+    border: 1px solid #d3d3d3;
+    padding: 0 16px 0 2px;
+    background: url(img/icon.gif) no-repeat right 8px;
+    position: relative;
+  }
+
+  #slider_wrap {
+    width: 250px;
+    height: 80px;
+    padding: 10px;
+    position: absolute;
+    left: -1px;
+    top: 22px;
+    border: 1px solid #d3d3d3;
+    background: #fff;
+    display: none;
+  }
+
+  #slider_wrap p {
+    width: 230px;
+    margin: 4px auto
+  }
+
+  .btnG {
+    display: inline-block;
+    text-align: left;
+    border: 1px solid #0275D8;
+    border-radius: 3px;
+    padding-left: 5px;
+    margin-top: 10px;
+    color: #0275D8;
+    height: 35px;
+    line-height: 35px;
+  }
+
+  .btn-cuoshi-qian:hover {
+    color: #595959;
+    border: 1px solid #595959;
+  }
+
+  .btn-cuoshi-shen:hover {
+    color: #ffffff;
+    border: 1px solid #ffffff;
+  }
+
+  .btn-success-cs {
+    font-weight: 400;
+    font-size: 14px;
+    border-color: #4f9de0;
+    color: #4f9de0;
+    text-align: left;
+  }
+
+  .btn-success-cs:hover, .btn-success-cs:focus, .btn-success-cs:active, .btn-success-cs.active, .open .dropdown-toggle.btn-success-cs {
+    background-color: #4f9de0;
+    border-color: #4f9de0;
+    color: #FFFFFF;
+  }
+
+  .btn-success-cs.btn-outline:hover {
+    color: #fff;
+  }
+
+  .btn-success-cs-w {
+    font-weight: 400;
+    font-size: 14px;
+    border-color: #4f9de0;
+    color: #4f9de0;
+    text-align: left;
+    background-color: #4f9de0;
+    color: #FFFFFF;
+  }
+
+  .btn-success-cs-w:hover, .btn-success-cs-w:focus, .btn-success-cs-w:active, .btn-success-cs-w.active, .open .dropdown-toggle.btn-success-cs-w {
+    background-color: #4f9de0;
+    border-color: #4f9de0;
+    color: #FFFFFF;
+  }
+
+  .btn-success-cs-w.btn-outline:hover {
+    color: #fff;
+  }
+
+  .c6center {
+    text-align: center;
+  }
+
+  .tiaojian {
+    width: 100%;
+    padding: 5px 5px 20px 5px;
+  }
+
+  .tiaojian-title {
+    float: left;
+    height: 30px;
+    padding: 5px 5px 5px 5px;
+  }
+
+  .btn-d1.active {
+    background-color: #1a7bb9;
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    height: 30px;
+    color: #FFF;
+    font-size: 12px;
+  }
+
+  .btn-d1 {
+    color: #1a7bb9;
+    background-color: #fff;
+    border-color: #1c84c6;
+    border-radius: 0;
+    height: 30px;
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+
+  .btn-group.btn-group-circle > .btn:first-child {
+    border-radius: 3px 0 0 3px !important
+  }
+
+  .btn-group.btn-group-circle > .btn:last-child {
+    border-radius: 0 3px 3px 0 !important
+  }
+
+  .btn-group > .btn-group:first-child:not(:last-child) > .btn:last-child, .btn-group > .btn-group:first-child:not(:last-child) > .dropdown-toggle, .btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  .btn-group-vertical > .btn:not(:first-child):not(:last-child), .btn-group > .btn-group:not(:first-child):not(:last-child) > .btn, .btn-group > .btn:not(:first-child):not(:last-child):not(.dropdown-toggle) {
+    border-radius: 0;
+  }
+
+  .btn-group > .btn-group:last-child:not(:first-child) > .btn:first-child, .btn-group > .btn:last-child:not(:first-child), .btn-group > .dropdown-toggle:not(:first-child) {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+  }
+
+  .erroe_input {
+    border: 1px solid #e4153e;
+  }
+
+  .menuCD_con  .form-group{
+    display: inline-block;
+    margin-bottom: 0;
+  }
+
+  #show_zicuoshi_table_div .datagrid-cell{
+    padding: 0 4px;
+  }
+  /*横向手风琴 css*/
+  #accordion_h {
+    background-color: rgb(237, 245, 255);
+  }
+
+  .menuCD {
+    margin: 0 5px;
+    height: 100%;
+    float: left;
+    transition: all 0.5s linear;
+    width: 45px;
+  }
+
+  .menuCD.menuCD_in{
+     width: calc(100% - 120px);
+  }
+
+  .menuCD div {
+    box-sizing: border-box;
+  }
+
+  .menuCD_title {
+    float: left;
+    background-color: #fff;
+    /*padding: 0 20px;*/
+    text-align: center;
+    height: 100%;
+    width: 45px;
+    box-sizing: border-box;
+    border:1px solid #333;
+  }
+
+  .menuCD_title:hover{
+    cursor: pointer;
+  }
+  .menuCD_title span:hover{
+    cursor: pointer;
+  }
+
+  .menuCD_title span {
+    line-height: 45px;
+    color: #333;
+    writing-mode: tb-rl;
+    text-align: center;
+    display: inline-block;
+    height: 100%;
+  }
+
+  .menuCD_con {
+    float: left;
+    height: 100%;
+    width: calc(100% - 45px);
+    overflow: hidden;
+    transition: all 0.5s linear;
+  }
+  /*横向手风琴 css end*/
+</style>
+<script type="text/javascript" src="easyui/datagrid-detailview.js"></script>
+<div class="cloudui" style="height: 100%;width: 100%;position: relative;">
+  <div class="easyui-layout" data-options="fit:'true',border:'false'">
+    <div data-options="region:'center',border:'false'" class="jpfxRight" style="overflow: hidden;width: 100%;">
+      <div class="easyui-layout" data-options="fit:'true',border:'false'" style="height: 100%">
+        <div data-options="region:'north',border:'false'" class="ibox float-e-margins" style="height:50%;overflow: hidden;border:1px solid #D9D9D9;">
+          <div class="ibox-title"
+               style="margin-bottom: 0;height: 32px;line-height:32px;padding-left: 10px;background: linear-gradient(#fbfbfb, #f2f2f2);">
+            <h5 class="headTitle"><i class="im-earth"></i> 条件筛选</h5>
+            <div class="ibox-tools toolAll">
+
+
+              <div class="selectTool" style="float: left">
+                <div class="selectTool_con" style="display: inline-block;">
+                  <button class="btn btn-success" onclick="search_button();">筛选</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ibox-content" style="height:calc(100% - 33px);overflow-y: hide;background-color: #ffffff;padding: 0px 0px 0px 0px;border-top:1px solid #d9d9d9;">
+            <div class="col-12 easyui-panel" id="mapDiv0" style="height:100%;padding: 0px;">
+
+
+              <div id="accordion_h" class="" style="width: 100%;height: 100%">
+                <div class="menuCD">
+                  <div class="menuCD_title">
+                    <span>区&nbsp;&nbsp;&nbsp;域&nbsp;&nbsp;&nbsp;筛&nbsp;&nbsp;&nbsp;选</span></div>
+                  <div class="menuCD_con">
+
+                  </div>
+                </div>
+
+                <div class="menuCD">
+                  <div class="menuCD_title">
+                    <span>名&nbsp;&nbsp;&nbsp;称&nbsp;&nbsp;&nbsp;筛&nbsp;&nbsp;&nbsp;选</span></div>
+                  <div class="menuCD_con">
+
+                  </div>
+                </div>
+
+                <div class="menuCD">
+                  <div class="menuCD_title">
+                    <span>条&nbsp;&nbsp;&nbsp;件&nbsp;&nbsp;&nbsp;筛&nbsp;&nbsp;&nbsp;选</span></div>
+                  <div class="menuCD_con">
+                    <div style="height:100%;overflow-y: auto;padding: 10px;"
+                         id="sc_conter"></div>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+
+        <div data-options="region:'center',border:'false'" class="ibox float-e-margins"
+             style="height:calc(50%);padding-top: 10px;">
+          <div style="width: 100%;height: 100%;margin-bottom: 0px;overflow: hidden;border:1px solid #D9D9D9;">
+            <div class="ibox-title" style="margin-bottom: 0;height: 32px;line-height:32px;padding-left: 10px;background: linear-gradient(#fbfbfb, #f2f2f2);">
+              <h5 class="headTitle"><i class="fa-table"></i> 子措施列表</h5>
+              <div class="ibox-tools">
+                <button class="btn btn-success" id="hz_up" style="margin-bottom: 0px;margin-top: -7px;"
+                        onclick="hz_up();"
+                        type="button">
+                  <i class="fa fa-edit"></i>&nbsp;&nbsp;<span class="bold">修改</span>
+                </button>
+                <button class="btn btn-success" id="hz_de" style="margin-bottom: 0px;margin-top: -7px;"
+                        onclick="hz_de();"
+                        type="button">
+                  <i class="fa fa-close"></i>&nbsp;&nbsp;<span class="bold">删除</span>
+                </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button class="btn btn-success" id="jianpaijisuan" style="margin-bottom: 0px;margin-top: -7px;"
+                        onclick="jianpaijisuan();" type="button">
+                  <i class="fa fa-hourglass-2"></i>&nbsp;&nbsp;<span class="bold">计算减排</span>
+                </button>
+              </div>
+            </div>
+            <div class="ibox-content" style="height:calc(100% - 42px);overflow-y: hide;background-color: #ffffff;padding: 0px;border-top:1px solid #d9d9d9">
+              <div id="show_zicuoshi_table_div" class="ibox-content"
+                   style="height:100%;overflow-y: auto;border:1px solid #75B9E6;padding: 5px;">
+                <table id="show_zicuoshi_table" class='easyui-propertygrid'></table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
