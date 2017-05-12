@@ -119,15 +119,16 @@ public class ToDataTasksUtil {
 									    tasksStatus.setTasksScenarinoId(tasksScenarinoId);
 									    tasksStatus.setStepindex((long)stepindex);
 									    tasksStatus.setTasksEndDate(tasksEndDate);
-									    LogUtil.getLogger().info("开始更新tasksstatus数据库了");
+									    tasksStatus.setModelErrorStatus(errorStatus);
+									    LogUtil.getLogger().info("开始更新tasksstatus数据库");
 									    try {//找出上一条消息的结果
 									    //	String modelresult = tasksStatusMapper.selectStartModelresult(tasksScenarinoId);
 										   //查找上一次消息的结束时间
-									    	TTasksStatus oldStatus = tasksStatusMapper.selectendByscenarinoId(tasksScenarinoId);
+									    	TTasksStatus oldStatus = tasksStatusMapper.selectendByscenarinoId(tasksScenarinoId);   //经常出问题的地方
 									    	int i = tasksStatusMapper.updateStatus(tasksStatus);
 										    LogUtil.getLogger().info("tasksstatus："+tasksStatus);
 										    if(i>0){
-										    	LogUtil.getLogger().info("跟新tasksstatus成功");
+										    	LogUtil.getLogger().info("更新tasksstatus成功");
 										    	if (code!=0||!errorStatus.equals("")) {
 										    		//出现错误，模式变为出错
 										    		//更新情景状态
