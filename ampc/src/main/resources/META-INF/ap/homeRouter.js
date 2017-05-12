@@ -129,6 +129,10 @@ $.when(dps_um).then(function(){
                     templateUrl: 'webApp/task03/task03.html',
                     controller: 'webApp/task03/task03.js'
                 },
+                '/csbj_zi': {		//任务管理-措施子措施
+                    templateUrl: 'webApp/task03/task03_01.html',
+                    controller: 'webApp/task03/task03_01.js'
+                },
                 '/rwgl_reductAnalys': {		//任务管理-减排分析
                     templateUrl: 'webApp/task02/reductAnalys.html',
                     controller: 'webApp/task02/reductAnalys.js'
