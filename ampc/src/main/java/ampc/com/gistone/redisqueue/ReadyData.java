@@ -557,7 +557,7 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年5月6日 上午11:13:28
 	 */
-	private boolean continueRealpredict(TScenarinoDetail tScenarinoDetail, String lastungrib) {
+	public boolean continueRealpredict(TScenarinoDetail tScenarinoDetail, String lastungrib) {
 		boolean continuemodel = true ;
 		//查询实时预报的当前的运行状态
 		Long scenarinoId=tScenarinoDetail.getScenarinoId();
