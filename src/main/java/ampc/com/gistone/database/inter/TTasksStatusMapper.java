@@ -1,5 +1,6 @@
 package ampc.com.gistone.database.inter;
 
+import java.util.List;
 import java.util.Map;
 
 import ampc.com.gistone.database.model.TTasksStatus;
@@ -184,4 +185,17 @@ public interface TTasksStatusMapper {
 	 * @date 2017年5月10日 下午8:54:00
 	 */
 	int updatecleanStatus(TTasksStatus tTasksStatus);
+
+	/**
+	 * @Description: 查找全部用户的的实时预报情景运行的状态
+	 * @param mapB.PATH_DATE = #{pathdate} AND B.SCEN_TYPE=#{type}
+	 * pathDate---pathdate
+	 * scentype---type
+	 * @return   
+	 * List<TTasksStatus>  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年5月12日 上午11:11:41
+	 */
+	List<TTasksStatus> selectTasksstatusByPathdateandtype(Map map);
 }
