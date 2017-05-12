@@ -285,6 +285,7 @@ public class Ruku {
 				requestParams.setTimePoint(string);
 				requestParams.setDate(list);
 				boolean res = concnService.requestConcnData(requestParams);
+				
 				if (res) {
 					LogUtil.getLogger().info("预评估数据入库成功！");
 					int compareTo = endDate.compareTo(scenEndDate);//模式结束时间和情景的结束时间
