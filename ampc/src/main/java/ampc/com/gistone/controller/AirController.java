@@ -498,16 +498,12 @@ public class AirController {
 			Map contentmap ;
 			String hourOneVal;		//逐小时 24小时存储值
 			
-//			JSONObject objData=new JSONObject();			//存放模拟和观测数据 
-			Map objData=new HashMap();
-//			JSONObject simulationData=new JSONObject();		//返给页面的模拟数据
-			Map simulationData=new HashMap();
-//			JSONObject speciesData=new JSONObject();		//单个物种所有日期的数据
-			Map speciesData=new HashMap();
-//			JSONObject hourData=new JSONObject();			//模拟24小时数据
-			Map hourData=new HashMap();
-//			JSONObject obsHourData=new JSONObject();		//观测24小时数据
-			Map obsHourData=new HashMap();
+			Map objData=new HashMap();			//存放模拟和观测数据 
+			Map simulationData=new HashMap();		//返给页面的模拟数据
+			Map speciesData=new HashMap();		//单个物种所有日期的数据
+			Map hourData=new HashMap();			//模拟24小时数据
+			Map obsHourData=new HashMap();		//观测24小时数据
+			
 			//污染物页签开始
 			if("wrw".equals(tabType)){		
 				//逐日
@@ -559,11 +555,9 @@ public class AirController {
 								scenarinoEntity=tPreProcessMapper.selectBysomes(scenarinoEntity);
 								if(scenarinoEntity!=null){
 									contents=scenarinoEntity.getContent();		//获取模拟数据
-//									JSONObject contentobj= JSONObject.fromObject(contents);
-									contentmap=mapper.readValue(contents, Map.class);
+									contentmap=mapper.readValue(contents, Map.class);	//模拟父数据
 									
 									JSONArray dayArr=new JSONArray();
-//									contentmap= (Map)contentobj;	//模拟父数据
 									
 									for(Object dayKey:contentmap.keySet()){		//获取所有日期
 										dayArr.add(dayKey);
@@ -588,9 +582,7 @@ public class AirController {
 											continue;
 										}else{
 											if(calDate.getTime()>sdfNow.parse(dayArr.get(dayArr.size()-1).toString()).getTime()){	//后期
-//												JSONObject speciesobj=new JSONObject();
 												Map speciesobj=new HashMap();
-//												JSONObject numVal=new JSONObject();
 												Map numVal=new HashMap();
 												
 												for(int v=0;v<simulationArr.length;v++){	//循环物种
@@ -686,9 +678,7 @@ public class AirController {
 						/*
 						 * 查询观测数据
 						 */
-//						JSONObject observationData=new JSONObject();		//返给页面的观测数据
-						HashMap<Object, Object> observationData=new HashMap<Object, Object>();
-//						JSONObject obsSpeciesData=new JSONObject();
+						HashMap<Object, Object> observationData=new HashMap<Object, Object>();	//返给页面的观测数据
 						HashMap obsSpeciesData=new HashMap();
 						
 						HashMap<String, Object> obsMap=new HashMap<String, Object>();	//查询观测数据开始
@@ -713,8 +703,8 @@ public class AirController {
 								calendar.setTime(sdfNow.parse(startDate));
 	//							calendar.setTime(sdfNow.parse("2017-04-15"));
 								calendar.add(Calendar.DAY_OF_MONTH, (j+1));
-								 calDate = calendar.getTime();
-								 calDateStr=sdfNow.format(calDate);
+								calDate = calendar.getTime();
+								calDateStr=sdfNow.format(calDate);
 								
 								calendar.setTime(sdfNow.parse(calDateStr));
 								calendar.add(Calendar.DAY_OF_MONTH, -1);
@@ -727,7 +717,6 @@ public class AirController {
 								if(!"".equals(obsBeans)&&obsBeans!=null&&!"{}".equals(obsBeans)){
 									
 									String obsContent=obsBeans.getContent().toString();
-//									JSONObject obsContentobj=JSONObject.fromObject(obsContent);
 									Map obsContentobj=mapper.readValue(obsContent, Map.class);
 									
 									Map<String,Object> obsContentMap= (Map)obsContentobj;
@@ -820,11 +809,9 @@ public class AirController {
 								scenarinoEntity=tPreProcessMapper.selectBysomes(scenarinoEntity);
 								if(scenarinoEntity!=null){
 									contents=scenarinoEntity.getContent();		//获取模拟数据
-//									JSONObject contentobj= JSONObject.fromObject(contents);
-									contentmap=mapper.readValue(contents, Map.class);
+									contentmap=mapper.readValue(contents, Map.class);	//模拟父数据
 									
 									JSONArray dayArr=new JSONArray();
-//									contentmap= (Map)contentobj;	//模拟父数据
 									
 									for(Object dayKey:contentmap.keySet()){			//日期
 										dayArr.add(dayKey);
@@ -849,8 +836,8 @@ public class AirController {
 											continue;
 										}else{
 											if(calDate.getTime()>sdfNow.parse(dayArr.get(dayArr.size()-1).toString()).getTime()){	//后期
-												JSONObject speciesobj=new JSONObject();
-												JSONObject numVal=new JSONObject();
+												Map speciesobj=new HashMap();	//物种数据
+												Map numVal=new HashMap();		//单个物种全部值的集合
 												
 												for(int v=0;v<simulationHour.length;v++){	//循环物种
 													JSONArray hourval=new JSONArray();
@@ -974,8 +961,9 @@ public class AirController {
 						/*
 						 * 查询观测数据
 						 */
-						JSONObject observationData=new JSONObject();		//返给页面的观测数据
-						JSONObject obsSpeciesData=new JSONObject();
+						HashMap observationData=new HashMap();		//返给页面的观测数据
+						HashMap obsSpeciesData=new HashMap();
+						
 						HashMap<String, Object> obsMap=new HashMap<String, Object>();	//查询观测数据开始
 						obsMap.put("city_station",cityStation);
 						String modes;	//用于存放新的mode
@@ -998,8 +986,8 @@ public class AirController {
 								calendar.setTime(sdfNow.parse(startDate));
 	//							calendar.setTime(sdfNow.parse("2017-04-15"));
 								calendar.add(Calendar.DAY_OF_MONTH, (j+1));
-								 calDate = calendar.getTime();
-								 calDateStr=sdfNow.format(calDate);
+								calDate = calendar.getTime();
+								calDateStr=sdfNow.format(calDate);
 								
 								calendar.setTime(sdfNow.parse(calDateStr));
 								calendar.add(Calendar.DAY_OF_MONTH, -1);
@@ -1017,7 +1005,8 @@ public class AirController {
 										}
 										obsSpeciesData.put(sdfNow.format(calDate_now),obsHourData);
 									}else{		//单条观测数据的content属性有具体的数据
-										JSONObject obsContentobj=JSONObject.fromObject(obsContent);
+										Map obsContentobj=mapper.readValue(obsContent, Map.class);
+										
 										Map<String,Object> obsContentMap= (Map)obsContentobj;
 										for(int k=0;k<speciesArr.length;k++){		//查询的观测数据不为空时，进行赋值
 											if(speciesArr[m].equals(speciesArr[k])){
@@ -1118,10 +1107,8 @@ public class AirController {
 								scenarinoEntity=tPreProcessMapper.selectBysomes(scenarinoEntity);
 								if(scenarinoEntity!=null){
 									contents=scenarinoEntity.getContent();		//获取模拟数据
-//									JSONObject contentobj= JSONObject.fromObject(contents);
-									contentmap=mapper.readValue(contents, Map.class);
+									contentmap=mapper.readValue(contents, Map.class);	//模拟父数据
 									JSONArray dayArr=new JSONArray();
-//									contentmap= (Map)contentobj;	//模拟父数据
 									
 									for(Object dayKey:contentmap.keySet()){		//获取所有日期
 										dayArr.add(dayKey);
@@ -1146,8 +1133,8 @@ public class AirController {
 											continue;
 										}else{
 											if(calDate.getTime()>sdfNow.parse(dayArr.get(dayArr.size()-1).toString()).getTime()){	//后期
-												JSONObject speciesobj=new JSONObject();
-												JSONObject numVal=new JSONObject();
+												Map speciesobj=new HashMap();
+												Map numVal=new HashMap();
 												
 												for(int v=0;v<meteormnArr.length;v++){	//循环物种
 													numVal.put("0", "-");
@@ -1190,9 +1177,7 @@ public class AirController {
 										}
 									}
 									
-//									for(String speciesKey:spmap.keySet()){			//循环所有物种名称---并给日期赋值
-										
-									for(int i=0;i<meteormnArr.length;i++){	
+									for(int i=0;i<meteormnArr.length;i++){		//循环所有物种名称---并给日期赋值
 										for(Object dayKey:contentmap.keySet() ){	//循环全部日期
 											Object speciesobj=contentmap.get(dayKey);
 											Map<String,Object> speciesMap= (Map)speciesobj;
@@ -1371,12 +1356,12 @@ public class AirController {
 								scenarinoEntity.setTableName(tables);
 								scenarinoEntity=tPreProcessMapper.selectBysomes(scenarinoEntity);
 								if(scenarinoEntity!=null){
-									contents=scenarinoEntity.getContent();		//获取模拟数据
-//									JSONObject contentobj= JSONObject.fromObject(contents);
-									contentmap=mapper.readValue(contents, Map.class);
+									//获取模拟数据
+									contents=scenarinoEntity.getContent();
+									//模拟父数据
+									contentmap=mapper.readValue(contents, Map.class);	
 									
 									JSONArray dayArr=new JSONArray();
-//									contentmap= (Map)contentobj;	//模拟父数据
 									
 									for(Object dayKey:contentmap.keySet()){			//日期
 										dayArr.add(dayKey);
@@ -1397,12 +1382,12 @@ public class AirController {
 										calendar.add(Calendar.DAY_OF_MONTH, -(j+1));
 										calDate = calendar.getTime();
 										calDateStr=sdfNow.format(calDate);
-										if(Arrays.asList(dayArr).contains(calDateStr)){		//包含该日期
+										if(Arrays.asList(dayArr).contains(calDateStr)){		//判断是否包含该日期
 											continue;
 										}else{
 											if(calDate.getTime()>sdfNow.parse(dayArr.get(dayArr.size()-1).toString()).getTime()){	//后期
-												JSONObject speciesobj=new JSONObject();
-												JSONObject numVal=new JSONObject();
+												Map speciesobj=new HashMap();
+												Map	numVal=new HashMap();
 												
 												for(int v=0;v<meteormnArr.length;v++){	//循环物种
 													JSONArray hourval=new JSONArray();
