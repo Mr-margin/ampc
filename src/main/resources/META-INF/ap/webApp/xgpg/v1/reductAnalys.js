@@ -21,6 +21,7 @@ var allMission = {};
  * 初始化模态框显示
  */
 function sceneInittion() {
+
     $("#task").html("");
     var paramsName = {};
     paramsName.userId = userId;
@@ -45,6 +46,8 @@ function sceneInittion() {
                 $("#task").html(task);
                 //$("#Initialization").modal();//初始化模态框显示
                 //$("#Initialization").window();
+
+                $("#Initialization").window('open');
                 sceneTable();
             } else {
                 swal('无可用任务', '', 'error')
@@ -78,7 +81,6 @@ function sceneTable() {
             }
         }),
         success:function (data) {
-
             $("#sceneTableId").datagrid({
                 data:data.data.rows,
                 columns:[[
@@ -96,6 +98,20 @@ function sceneTable() {
                     data.userId = userId;
                     data.missionId = $("#task").val();
                     return JSON.stringify({"token": "", "data": data});
+                },
+                onLoadSuccess:function(data){
+                    var truedData=sceneInitialization.data;
+                    for(var i=0;i<truedData.length;i++){
+                        if(data){
+                            $.each(data.rows, function(index, item){
+                                console.log(index);
+                                console.log(item);
+                                if(truedData[i].scenarinoId==item.scenarinoId){
+                                    $('#sceneTableId').datagrid('checkRow', index);
+                                }
+                            });
+                        }
+                    }
                 }
             })
         }
@@ -197,9 +213,11 @@ function save_scene() {
 }
 //超链接显示 模态框
 function exchangeModal() {
+    // console.log("选择数据");
+    // console.log(sceneInitialization)
     sceneInittion();
     //$("#Initialization").modal();
-    $("#Initialization").window("open")
+   // $("#Initialization").window("open")
 }
 
 
@@ -340,6 +358,8 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
  * 启动后加载数据，
  */
 function shoe_data_start(evn) {
+    console.log("数据")
+    console.log(evn)
     gis_paramsName.userId = userId;
     gis_paramsName.pollutant = $('#hz_wrw').val();//物种
     //获取地图当前比例尺，决定数据请求省市县的哪一级
