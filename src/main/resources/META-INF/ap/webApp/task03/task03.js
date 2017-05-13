@@ -109,7 +109,7 @@ function m_gis_q() {
         $("#right_div").attr("class", "col-12");
     }
 }
-console.log(8);
+
 /**
  * 设置导航条菜单
  */
@@ -140,9 +140,9 @@ $.each(qjMsg.provinceCodes, function (k, col) {
     });
 });
 
-console.log(6);
+
 hyc();
-console.log(7);
+
 metTable_hj_info();
 
 /**
@@ -295,7 +295,7 @@ return;
 function metTable_hj_info(pa_name) {
 
     // $('#metTable_hj').datagrid('destroy');
-    console.log(5);
+    
     $("#hz_de").hide();
     $("#hz_up").hide();
     $("#jianpaijisuan").hide();
@@ -305,7 +305,7 @@ function metTable_hj_info(pa_name) {
     if (typeof pa_name != "undefined") {
         hangye = pa_name;
     } else {
-        console.log(4);
+        
         //循环手风琴列表下所有的一级子节点，查找哪个正在打开
         $("#accordion").children().each(function () {
             var e = $(this);
@@ -350,9 +350,9 @@ function metTable_hj_info(pa_name) {
     if (hangyede_type == "dq") {
         data.sectorName = hangye;
     }
-  console.log(0);
+  
     ajaxPost('/measure/get_measureList',data).success(function (res) {
-      console.log(1);
+      
         $('#metTable_hj').datagrid({
             // method: 'POST',
             // url: "/ampc/measure/get_measureList",
@@ -457,7 +457,7 @@ function metTable_hj_info(pa_name) {
             //     $("#hz_up").hide();
             // }
         });
-      console.log(2);
+      
     })
 
 //     $('#metTable_hj').datagrid({
