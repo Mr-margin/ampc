@@ -174,7 +174,12 @@ public interface TTasksStatusMapper {
 	 * @date 2017年4月28日 上午10:27:15
 	 */
 	int updatepausestatus(TTasksStatus tTasksStatus);
-
+	/**
+	 * 根据情景id查询TTasksStatus
+	 * @param tasksScenarinoId
+	 * @return
+	 */
+	TTasksStatus selectzt(Long tasksScenarinoId);
 	/**
 	 * @Description: 清空模式运行的状态
 	 * @param tTasksStatus
