@@ -202,9 +202,8 @@ function save_scene() {
 
         vipspa.setMessage(mag);
         ls.setItem('SI', JSON.stringify(mag));
-//        console.log("地图列表切换");
         var qiehuan=$("#showtype .active").attr("val_name");
-        //console.log(qiehuan);
+          //console.log(qiehuan);
         if (qiehuan == "gis") {
             setQjSelectBtn(data);//添加情景选择按钮
         }
@@ -1034,7 +1033,7 @@ function gis_switch_table() {
                     $("#gis_table_title").html("<i class='im-earth'></i>各地区减排");
                     $('#qjBtn1 .btn-group label').css({"z-index":"2"});
                     baizhu_jianpai(gis_paramsName, "1");
-                    bar();
+                   // bar();
 
                 } else if ($(this).attr("val_name") == "table") {
 
