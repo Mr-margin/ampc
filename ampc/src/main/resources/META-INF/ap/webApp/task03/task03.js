@@ -350,7 +350,7 @@ function metTable_hj_info(pa_name) {
     if (hangyede_type == "dq") {
         data.sectorName = hangye;
     }
-  
+
     ajaxPost('/measure/get_measureList',data).success(function (res) {
       
         $('#metTable_hj').datagrid({
