@@ -1170,6 +1170,7 @@ function showTitleFun() {
 //var headerH=$(".cloudui .searchT").height();
 //$(".charContent").css({"top":headerH+"px"});
 $(".upDownBtn").append("<i class='en-arrow-up7'></i>")
+$(".toolAll").hide();
 $(".upDownBtn").click(function(){
     console.log($(".upDownBtn").val());
     if($(".upDownBtn").text()=="收起"){
