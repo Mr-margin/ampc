@@ -391,8 +391,7 @@ public class ReadyData {
 				}
 			
 			} catch (IOException e) {
-				e.printStackTrace();
-				LogUtil.getLogger().error("发送actionlist出异常了",e);
+				LogUtil.getLogger().error("发送actionlist出异常了  branchPredict",e);
 				str = "exception";
 			}
 		}
@@ -401,9 +400,9 @@ public class ReadyData {
 	}
 	
 	/**
-	 * @Description: TODO   
+	 * @Description:准备后评估任务的后评估情景的数据
 	 * @param body   
-	 * void   准备后评估任务的后评估情景的数据
+	 * void   
 	 * 
 	 * @throws
 	 * @author yanglei
@@ -686,7 +685,7 @@ public class ReadyData {
 		Long userId = scenarinoDetailMSG.getUserId();
 		//lastungrib
 		String lastungrib = readyLastUngrib(userId);
-		LogUtil.getLogger().info("实时预报对应的lastungrib："+lastungrib);
+		LogUtil.getLogger().info("sendqueueRealDataThen   实时预报对应的lastungrib："+lastungrib);
 		//准备实时预报的参数
 		QueueData queueData = readyRealMessageData(scenarinoDetailMSG, time, firsttime, datatype, scenarinoId, lastungrib,false,null);
 		sendQueueData.toJson(queueData, scenarinoId,time);
@@ -736,8 +735,8 @@ public class ReadyData {
 	public String  pivot(Long userId,Date lastpathdate,Date pathdate) {
 		String lastungrib = null;
 		if (null!=lastpathdate) {
-			LogUtil.getLogger().info("我从"+DateUtil.DATEtoString(lastpathdate, "yyyy-MM-dd")+"开始断了");
-			LogUtil.getLogger().info("pathdate:"+pathdate);
+			LogUtil.getLogger().info("pivot方法日志:从"+DateUtil.DATEtoString(lastpathdate, "yyyy-MM-dd")+"开始断了");
+			LogUtil.getLogger().info("pivot方法日志:pathdate:"+pathdate);
 			//将当前的的系统时间转化为于pathdate一样的时间格式（ 年月日形式）
 			Date todayDate = DateUtil.DateToDate(new Date(),"yyyyMMdd");
 			//比较最新的pathdate和当前系统时间 i=0表示时间一致 小于0表示 时间pathdate小于系统时间
@@ -759,7 +758,7 @@ public class ReadyData {
 				//出现断层的情况 中间存在几天没跑的情况 但是ungrib是最新的 ungrib=today
 				lastungrib = DateUtil.DATEtoString(pathdate, "yyyyMMdd");
 				bufamessage(scenarinoDetailMSG,lastungrib);
-				LogUtil.getLogger().info("补发了ID为"+scenarinoDetailMSG.getScenarinoId()+"的情景！");
+				LogUtil.getLogger().info("pivot方法日志:补发了ID为"+scenarinoDetailMSG.getScenarinoId()+"的情景！");
 				//修改情景状态
 				updateScenStatusUtil(6l, scenarinoDetailMSG.getScenarinoId());
 				lastungrib=null;
@@ -768,23 +767,23 @@ public class ReadyData {
 				//最新的ungrib不是最新， 同时最早未运行的情景小于最新的等于ungrib 表示跟新了中间的几个断层
 				lastungrib = DateUtil.DATEtoString(pathdate, "yyyyMMdd");
 				bufamessage(scenarinoDetailMSG,lastungrib);
-				LogUtil.getLogger().info("补发了ID为"+scenarinoDetailMSG.getScenarinoId()+"的情景！");
+				LogUtil.getLogger().info("pivot方法日志:补发了ID为"+scenarinoDetailMSG.getScenarinoId()+"的情景！");
 				//修改情景状态
 				updateScenStatusUtil(6l, scenarinoDetailMSG.getScenarinoId());
 				lastungrib=null;
 			}
 			if (i<0&&compareTo==0&&compareungrib>0) {
 				//表示ungrib不是当天 但是没有出现断层的情况下 等待ungrib跟新  最新未运行的情景是当天 compareTo
-				LogUtil.getLogger().info("时间："+todayDate+"的ungrib还未跟新！不发送任何数据！");
+				LogUtil.getLogger().info("pivot方法日志:时间："+todayDate+"的ungrib还未跟新！不发送任何数据！");
 				lastungrib=null;
 			}
 			if (i==0&&compareungrib==0&&compareTo<0) {
 				//表示ungrib不是当天 但是没有出现断层的情况下 等待ungrib跟新 那天的数据则不发了等下次补发  表示当天的没有跟新
-				LogUtil.getLogger().info("时间："+todayDate+"的ungrib还未跟新！不发送任何数据！");
+				LogUtil.getLogger().info("pivot方法日志:时间："+todayDate+"的ungrib还未跟新！不发送任何数据！");
 				lastungrib=null;
 			}
 		}else {
-			LogUtil.getLogger().info("没有未运行的预报数据了！");
+			LogUtil.getLogger().info("pivot方法日志:没有未运行的预报数据了！");
 		}
 		return lastungrib;
 	}
@@ -797,7 +796,7 @@ public class ReadyData {
 	 * @date 2017年4月6日 上午11:23:09
 	 */
 	public void bufamessage(TScenarinoDetail scenarinoDetailMSG,String lastungrib) {
-		LogUtil.getLogger().info("进入补发方法");
+		LogUtil.getLogger().info("bufamessage：进入补发方法");
 		//设置第一次
 		boolean firsttime = false;
 		//确定datatype
@@ -965,11 +964,11 @@ public class ReadyData {
 		QueueDataCommon commonData = getcommonMSG(scenarinoId,"fnl",null,scenarinoType,true,scenarinoDetailMSG);
 		//spinup
 		Long DBspinup = scenarinoDetailMSG.getSpinup();
-		LogUtil.getLogger().info("这个是Dbspinup:"+DBspinup);
+		LogUtil.getLogger().info("readyBaseData方法：Dbspinup:"+DBspinup);
 		//准备wrf数据
 		//设置wrf的spinup
 		Long spinup = DBspinup+5;
-		LogUtil.getLogger().info("这个是SPINUP:"+spinup);
+		LogUtil.getLogger().info("readyBaseData方法：SPINUP:"+spinup);
 		wrfData.setSpinup(spinup);
 		//准备lastungrib 无关就设置为空
 		//String lastungrib = readyLastUngrib();
@@ -1134,9 +1133,9 @@ public class ReadyData {
 					QueueData queueData = readypreEvaSituMessageData(selectByPrimaryKey, datatype, time, first,continuemodel,selectStatus);
 					successflag = sendQueueData.toJson(queueData,scenarinoId,time);
 					if (successflag) {
-						LogUtil.getLogger().info("发送预评估情景续跑到消息队列成功！");
+						LogUtil.getLogger().info("readycontinuePreEvaluationSituationData：发送预评估情景续跑到消息队列成功！");
 					}else {
-						LogUtil.getLogger().info("发送预评估情景续跑消息到消息队列失败！");
+						LogUtil.getLogger().info("readycontinuePreEvaluationSituationData：发送预评估情景续跑消息到消息队列失败！");
 					}
 				}else {
 					LogUtil.getLogger().info("readycontinuePreEvaluationSituationData 查找预评估情景的tasks状态为空");
@@ -1148,6 +1147,7 @@ public class ReadyData {
 			}
 		} catch (Exception e) {
 			 successflag = false;
+			 LogUtil.getLogger().error("readycontinuePreEvaluationSituationData :",e.getMessage(),e);
 		}
 		return successflag;
 	}
@@ -1557,7 +1557,7 @@ public class ReadyData {
 			//通过情景ID获取对应的减排系数
 			tasksStatus = tTasksStatusMapper.selectEmisDataByScenId(scenarinoId);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("ReadyData getDataEmis 查询减排系数异常！ ",e);
+			LogUtil.getLogger().error("ReadyData getDataEmis方法： 查询减排系数异常！ ",e);
 		}
 		
 		if (null==tasksStatus) {
@@ -1615,16 +1615,16 @@ public class ReadyData {
 		try {
 			int updateScenType = tScenarinoDetailMapper.updateScenType(map);
 			if(updateScenType>0){
-				LogUtil.getLogger().info("修改情景id为:"+scenarinoId+"的状态成功");
+				LogUtil.getLogger().info("readyData-updateScenStatusUtil：修改情景id为:"+scenarinoId+"的状态成功");
 				flag = true;
 			}else {
-				LogUtil.getLogger().info("修改情景id为:"+scenarinoId+"的状态失败");
+				LogUtil.getLogger().info("readyData-updateScenStatusUtil：修改情景id为:"+scenarinoId+"的状态失败");
 				flag = false;
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 			flag = false;
-			LogUtil.getLogger().error("修改情景id为:"+scenarinoId+"的状态出现异常",e);
+			LogUtil.getLogger().error("readyData-updateScenStatusUtil：修改情景id为:"+scenarinoId+"的状态出现异常",e);
 		}
 		return flag;
 	}
@@ -1661,17 +1661,15 @@ public class ReadyData {
 				if (i>0) {
 					flag=true;
 				}else {
-					throw new SQLException("getEmisParams  减排系数存库失败!情景ID："+scenarinoId);
+					throw new SQLException("readyData-getEmisParams  减排系数存库失败!情景ID："+scenarinoId);
 				}
 			}else {
-				LogUtil.getLogger().error("获取emis参数出错！情景ID为："+scenarinoId);
+				LogUtil.getLogger().error("readyData-getEmisParams   获取emis参数出错！情景ID为："+scenarinoId);
 				flag=false;
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			flag=false;
-			LogUtil.getLogger().error("获取emis参数出错！情景ID为："+scenarinoId);
+			LogUtil.getLogger().error("readyData-getEmisParams  获取emis参数出错！情景ID为："+scenarinoId,e);
 		}
 		return flag;
 	}
@@ -1691,7 +1689,7 @@ public class ReadyData {
 		try {
 			//预评估任务的预评估情景
 			//请求actionlist
-			LogUtil.getLogger().info("请求actionlist，获取减排系数");
+			LogUtil.getLogger().info("JPParams:请求actionlist，获取减排系数");
 			//获取情景的开始时间和结束时间
 			TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectStartAndEndDate(scenarinoId);
 			Date start = tScenarinoDetail.getScenarinoStartDate();
@@ -1715,7 +1713,7 @@ public class ReadyData {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			LogUtil.getLogger().error("发送actionlist出异常了",e);
+			LogUtil.getLogger().error("JPParams:发送actionlist出异常了",e);
 			str = "exception";
 		}
 		return str;
@@ -1743,7 +1741,7 @@ public class ReadyData {
 			//查询对应的实时预报的状态
 			selectTasksstatusByPathdate = tTasksStatusMapper.selectTasksstatusByPathdate(map);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("预评估情景的定时器    查询实时预报的状态出异常了",e);
+			LogUtil.getLogger().error("getMaxTimeForMegan:预评估情景的定时器    查询实时预报的状态出异常了",e);
 		}
 		String sendtime = selectTasksstatusByPathdate.getBeizhu2();//发送了消息的时间
 		Date scenarinoStartDate = DateUtil.DateToDate(selectTasksstatusByPathdate.getTasksScenarinoStartDate(), "yyyyMMdd"); 
@@ -1761,7 +1759,7 @@ public class ReadyData {
 			}
 		}else {
 			maxtime = DateUtil.DateToDate(DateUtil.ChangeDay(scenarinoStartDate, -1),"yyyyMMdd");
-			LogUtil.getLogger().info("实时预报情景尚未开始运行！");
+			LogUtil.getLogger().info("getMaxTimeForMegan:实时预报情景尚未开始运行！");
 		}
 		return maxtime;
 	}
