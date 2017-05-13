@@ -23,6 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+
+
+
+
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
@@ -459,6 +463,7 @@ public class GetWeatherModelController {
 					if (null!=scenarinoStatus) {
 //						String compStatus = selectStatus.getBeizhu();
 						String sendtime = selectStatus.getBeizhu2();
+						Long tasksExpand1 = selectStatus.getTasksExpand1();//减排计算是否成功
 //						String pauseStatus = selectStatus.getPauseStatus();
 						//1.模式执行中处于暂停的状态 2.出错状态下的续跑
 						 if (scenarinoStatus==7&&!sendtime.equals("0")) {
@@ -468,7 +473,20 @@ public class GetWeatherModelController {
 							}else {
 								return AmpcResult.build(1004, "续跑失败！");
 							}
-						}else{
+						}
+				/*		 else if(scenarinoStatus==7&&sendtime.equals("0")&&tasksExpand1==0){
+							//3.消息一次都没发的续跑（发送到消息队列出错的时候）
+							 TScenarinoDetail selectByPrimaryKey = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+							 if (null!=selectByPrimaryKey) {
+								 readyData.readyPreEvaluationSituationDataFirst(selectByPrimaryKey);
+								
+							}
+								return AmpcResult.build(0, "续跑成功！");
+							}else {
+								return AmpcResult.build(1004, "续跑失败！");
+							}
+						}*/
+						 else {
 							return AmpcResult.build(1004, "其他错误");
 						}
 					}else {
