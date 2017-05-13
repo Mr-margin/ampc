@@ -126,7 +126,7 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月7日 上午9:53:09
 	 */
 //	@Scheduled(cron="0 0 11 * * ?")
-//	@Scheduled(cron="0 30 09 * * ?")
+	@Scheduled(cron="0 30 09 * * ?")   //每天9:30定时触发创建实时预报任务---服务器配置
 //	@Scheduled(fixedRate = 50000)
 	public void realForTimer() {
 		//Date date = new Date();
@@ -334,9 +334,18 @@ public class SchedulerTimer<V> {
 				tTasksStatus.setTasksScenarinoStartDate(scenarinoStartDate);
 				tTasksStatus.setTasksScenarinoEndDate(scenarinoEndDate);
 				tTasksStatus.setTasksRangeDay((long)rangeday);
+				//添加该情景到tasksstatus表
+				i = tTasksStatusMapper.insertSelective(tTasksStatus);
+				if (i>0) {
+					LogUtil.getLogger().info("添加预报到tasks表成功！");
+				}else {
+					throw new SQLException("SchedulerTimer  添加预报到tasks表失败!");
+				}
 			} catch (Exception e) {
 				LogUtil.getLogger().error("系统错误！同一天的实时预报存在多条数据！");
 			}
+			
+	
 			
 			//调用方法获取meiccityconfig
 			String emisParamesURL = configUtil.getEmisParamesURL();
@@ -352,24 +361,25 @@ public class SchedulerTimer<V> {
 					String meiccityconfig = map.get("meiccityconfig").toString();
 //					int flag = 1;//表示不需要减排系数
 //					Map<String, String> emis = getEmisData(esCouplingId,scenarinoId,flag);
-					
-					tTasksStatus.setSourceid(esCouplingId.toString());
+					TTasksStatus tTasksStatus2 = new TTasksStatus();
+					tTasksStatus2.setTasksScenarinoId(scenarinoId);
+					tTasksStatus2.setSourceid(esCouplingId.toString());
 					//设置calctype是系统设置 目前定义为server
-					tTasksStatus.setCalctype("server");
-					tTasksStatus.setPsal("");
-					tTasksStatus.setSsal("");
+					tTasksStatus2.setCalctype("server");
+					tTasksStatus2.setPsal("");
+					tTasksStatus2.setSsal("");
 					//目前的死数据
-					tTasksStatus.setTasksExpand1(0l);
+					tTasksStatus2.setTasksExpand1(0l);
 //					tTasksStatus.setExpand3("/work/modelcloud/lixin_meic/hebei/cf/cf_zero.csv");
 //					tTasksStatus.setMeiccityconfig("/work/modelcloud/meic_tool/meic-city.conf");
-					tTasksStatus.setTasksExpand3(controlfile);
-					tTasksStatus.setMeiccityconfig(meiccityconfig);
+					tTasksStatus2.setTasksExpand3(controlfile);
+					tTasksStatus2.setMeiccityconfig(meiccityconfig);
 					//添加该情景到tasksstatus表
-					i = tTasksStatusMapper.insertSelective(tTasksStatus);
+					i = tTasksStatusMapper.updateEmisData(tTasksStatus2);
 					if (i>0) {
-						LogUtil.getLogger().info("添加预报到tasks表成功！");
+						LogUtil.getLogger().info("添加预报emisData到tasks表成功！");
 					}else {
-						throw new SQLException("SchedulerTimer  添加预报到tasks表失败!");
+						throw new SQLException("SchedulerTimer  添加预报emisData到tasks表失败!");
 					}
 				}
 			} catch (IOException e) {
@@ -378,8 +388,6 @@ public class SchedulerTimer<V> {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-			
-			
 			
 			/*boolean emisParams = readyData.getEmisParams(scenarinoId);
 			if (emisParams) {
@@ -413,7 +421,7 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月21日 下午7:39:01
 	 */
 //	@Scheduled(fixedRate = 5000)
-//	@Scheduled(cron="0 0/10  * * * ?")
+	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
 //	@Scheduled(cron="0 04 15 * * ?")
 	public void  sendMessageOnRealprediction() {
 		 LogUtil.getLogger().info("开始检测ungrib的数据");
@@ -494,7 +502,7 @@ public class SchedulerTimer<V> {
 	 * @author yanglei
 	 * @date 2017年4月7日 下午8:46:00
 	 */
-//	@Scheduled(cron="0 0/10 * * * ?")
+	@Scheduled(cron="0 0/10 * * * ?")  //每隔10分钟定时触发一次预评估任务的检查---服务器配置
 //	@Scheduled(fixedRate = 5000)
 	public void ForpreEvalution() {
 		LogUtil.getLogger().info("每隔10分钟执行一次");
@@ -592,7 +600,7 @@ public class SchedulerTimer<V> {
 	 * @author yanglei
 	 * @date 2017年4月8日 上午10:19:16
 	 */
-//	@Scheduled(fixedRate = 5000)
+	@Scheduled(fixedRate = 5000)
 	public void  test1() {
 		/*String url="http://192.168.1.10:8082/ampc/saveEmis";
 		HashMap<String,String> hashMap = new HashMap<String, String>();
@@ -605,13 +613,17 @@ public class SchedulerTimer<V> {
 		JSONObject jsonObject = JSONObject.fromObject(hashMap);
 		String getResult=ClientUtil.doPost(url,jsonObject.toString());
 		System.out.println(getResult);*/
-		System.out.println("aaaaaaaa--------");
-		TTasksStatus tasksStatus = tTasksStatusMapper.selectEmisDataByScenId(642l);
-		if (null==tasksStatus) {
-			LogUtil.getLogger().info("没有收到减排系数");
-		}else {
-			System.out.println("123------");
-		}
+		/*System.out.println("aaaaaaaa--------");
+//		TTasksStatus tasksStatus = tTasksStatusMapper.selectEmisDataByScenId(642l);
+		TTasksStatus selectStatus = tTasksStatusMapper.selectStatus(730l);
+		System.out.println(selectStatus);*/
+//		if (null==tasksStatus) {
+//			LogUtil.getLogger().info("没有收到减排系数");
+//		}else {
+//			System.out.println("123------");
+//		}
+//		Date lastpathdate = tScenarinoDetailMapper.getlastrunstatus(1l);
+//		System.out.println(lastpathdate.toString());
 	}
 
 
@@ -635,9 +647,9 @@ public class SchedulerTimer<V> {
 	 */
 	
 //	@Scheduled(fixedRate = 5000)
-//	@Scheduled(cron="0 */3 * * * ")
+//	@Scheduled(cron="0 */3 * * * ") //每隔三个小时检查一次实时预报的情况---服务器配置
 	public void continueRealModelprediction() {
-		LogUtil.getLogger().info("每隔三个小时检查一次！");
+		LogUtil.getLogger().info("每隔三个小时检查一次实时预报的情况！");
 		//查找当天的实时预报的运行状态
 		Date originalDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
 		Date starandDate = DateUtil.changedateByHour(originalDate,7);
@@ -669,7 +681,6 @@ public class SchedulerTimer<V> {
 			} catch (Exception e) {
 				LogUtil.getLogger().error("");
 			}
-			
 		}
 		if (compareTo<0) {
 			pathDate = DateUtil.ChangeDay(originalDate, -1);
