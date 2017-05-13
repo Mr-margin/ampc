@@ -448,7 +448,7 @@ public class ToDataTasksUtil {
 				    tTasksStatus.setPauseStatus(code.toString());
 				    int updatepausestatus = tasksStatusMapper.updatepausestatus(tTasksStatus);
 		    		if (updatepausestatus>0) {
-						LogUtil.getLogger().info("跟新暂停模式返回的结果成功！");
+						LogUtil.getLogger().info("更新暂停模式返回的结果成功！");
 					}else {
 						throw new SQLException("pause-model-result  更新模式暂停返回的结果!");
 					}
@@ -466,6 +466,8 @@ public class ToDataTasksUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			LogUtil.getLogger().error("更新暂停模式返回结果异常！",e);
+		}catch (Exception e) {
+			// TODO: handle exception
 		}
 		
 		
