@@ -4,7 +4,7 @@
 
     <!-- 项目名称及日志目录定义 -->
     <property name="PROJECT_NAME" value="dragon"/>
-    <property name="LOG_PATH" value="/var/log/webapps/${PROJECT_NAME}"/>
+    <property name="LOG_PATH" value="/home/xulili/ampc_logs/${PROJECT_NAME}"/>
 
     <contextName>${CONTEXT_NAME}</contextName>
 
