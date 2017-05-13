@@ -202,7 +202,7 @@ function save_scene() {
 
         vipspa.setMessage(mag);
         ls.setItem('SI', JSON.stringify(mag));
-        console.log("地图列表切换");
+//        console.log("地图列表切换");
         var qiehuan=$("#showtype .active").attr("val_name");
         //console.log(qiehuan);
         if (qiehuan == "gis") {
@@ -259,11 +259,8 @@ var gis_paramsName = {};//地图请求的参数，第一次加载地图时初始
 var tj_paramsName = {};//统计图用的参数
 tj_paramsName.wz = $('#hz_wrw').val();//默认的物种
 tj_paramsName.code = "0";//code默认为0
-// tj_paramsName.name = qjname_dq;//name默认为情景名称
 tj_paramsName.name = "全部区域";//name默认为情景名称
 tj_paramsName.codeLevel = 1;
-
-
 
 /**
  * 时间戳转成日期格式
@@ -342,7 +339,8 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
         app.baselayerList = new dong.gaodeLayer();//默认加载矢量 new gaodeLayer({layertype:"road"});也可以
         app.stlayerList = new dong.gaodeLayer({layertype: "st"});//加载卫星图
         app.labellayerList = new dong.gaodeLayer({layertype: "label"});//加载标注图
-
+        app.zoom_start = false;//全局zoom变量，用来控制第一次加载数据一定显示全部省级
+        
         app.map.on("load", shoe_data_start);//启动后立即执行获取数据
 
         app.map.addLayer(app.baselayerList);//添加高德地图到map容器
@@ -351,7 +349,7 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
         app.map.graphics.clear();
 
         dojo.connect(app.map, "onClick", optionclick);//点击
-
+        
         dojo.connect(app.map, "onZoomEnd", resizess);//缩放
         app.outline = new dong.SimpleLineSymbol("solid", new dong.Color("#444"), 1);
         app.selectline = new dong.SimpleLineSymbol("solid", new dong.Color("#5D1F68"), 3);
@@ -361,28 +359,14 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
  * 启动后加载数据，
  */
 function shoe_data_start(evn) {
-    console.log("数据")
-    console.log(evn)
+//    console.log(evn)
     gis_paramsName.userId = userId;
     gis_paramsName.pollutant = $('#hz_wrw').val();//物种
-    //获取地图当前比例尺，决定数据请求省市县的哪一级
-//	if (evn.map.getZoom() <= 6) {
-
+    
+    gis_paramsName.scenarinoId = qjid_dq;//情景id
     gis_paramsName.codeLevel = 1;//省市区层级（1省，2市，3区）
     tj_paramsName.codeLevel = 1;
-
-//	}else if (evn.map.getZoom() == 7){
-//
-//		gis_paramsName.codeLevel = 2;//省市区层级（1省，2市，3区）
-//		tj_paramsName.codeLevel = 2;
-//
-//	}else if (evn.map.getZoom() >= 8){
-//
-//		gis_paramsName.codeLevel = 3;//省市区层级（1省，2市，3区）
-//		tj_paramsName.codeLevel = 3;
-//	}
-    gis_paramsName.scenarinoId = qjid_dq;//情景id
-    baizhu_jianpai(gis_paramsName, "1");
+    baizhu_jianpai(gis_paramsName, "1"); 
 }
 
 var gghjl = "";
@@ -478,7 +462,8 @@ function baizhu_jianpai(gis_paramsName, sh_type) {
             dojo.connect(app.paifang, "onMouseOver", app.tip.showInfo);
             dojo.connect(app.paifang, "onMouseOut", app.tip.hideInfo);
 
-            if (gis_paramsName.codeLevel == 1) {
+//            if (gis_paramsName.codeLevel == 1) {//省级
+            if(!app.zoom_start){//第一次进入页面，自动缩放省级比例
                 var query = new dong.query();
                 query.where = "ADMINCODE in (" + data_id.substring(0, data_id.length - 1) + ")";
                 app.paifang.queryFeatures(query, function (featureSet) {
@@ -491,7 +476,8 @@ function baizhu_jianpai(gis_paramsName, sh_type) {
                             extent = extent.union(graphic.geometry.getExtent());
                         }
                     }
-                    app.map.setExtent(extent.expand(1.5));
+                    app.map.setExtent(extent.expand(2));
+                    app.zoom_start = true;//全局zoom控制放开，加载第一次数据后，可以使用zoom级别控制显示层级
                 });
             }
             if (sh_type == "1") {
@@ -664,20 +650,22 @@ function calcBreaks(data) {
  * @param event
  */
 function resizess(event) {
-    //获取地图当前比例尺，如果比例尺要请求的数据与初始化的请求级别不一致，重新请求
-    var level = 0;
-    if (app.map.getZoom() <= 6) {
-        level = 1;//省市区层级（1省，2市，3区）
-    } else if (app.map.getZoom() == 7) {
-        level = 2;//省市区层级（1省，2市，3区）
-    } else if (app.map.getZoom() >= 8) {
-        level = 3;//省市区层级（1省，2市，3区）
-    }
-    if (level != gis_paramsName.codeLevel) {
-        gis_paramsName.codeLevel = level;
-        baizhu_jianpai(gis_paramsName, "2");
-        app.map.graphics.clear();//清空图层
-    }
+	if(app.zoom_start){
+		//获取地图当前比例尺，如果比例尺要请求的数据与初始化的请求级别不一致，重新请求
+	    var level = 0;
+	    if (app.map.getZoom() <= 6) {
+	        level = 1;//省市区层级（1省，2市，3区）
+	    } else if (app.map.getZoom() == 7) {
+	        level = 2;//省市区层级（1省，2市，3区）
+	    } else if (app.map.getZoom() >= 8) {
+	        level = 3;//省市区层级（1省，2市，3区）
+	    }
+	    if (level != gis_paramsName.codeLevel) {
+	        gis_paramsName.codeLevel = level;
+	        baizhu_jianpai(gis_paramsName, "2");
+	        app.map.graphics.clear();//清空图层
+	    }
+	}
 }
 
 /**
@@ -794,9 +782,8 @@ function bar() {
                             show: 'true',
                             realtime: 'true',
                             start: 0,
-                            end: 50
+                            end: 100
                             //startValue:
-
                         },
                         {
                             type: 'inside',
@@ -872,12 +859,6 @@ function bar() {
                                     }
                                 }
                             },
-                          /*markLine : {
-                           data : [
-                           {type : 'average', name: '平均值'}
-                           ]
-                           },*/
-                            //data:res.data.jplResult
                             data: res.data.jplResult
                         }
                     ]
@@ -891,9 +872,7 @@ function bar() {
                 })
 
                 window.addEventListener("resize", function () {
-
-                  console.log(i);
-
+//                  console.log(i);
                     setTimeout(function () {
                         myPfChart.resize();
                   },50);
@@ -946,12 +925,6 @@ function pie() {
     var nameVal;
     var valueVal;
     getchaxuntype();
-
-//	if(tj_paramsName.code == '0'){
-//		tj_paramsName.codeLevel = 0;
-//	}else{
-//		tj_paramsName.codeLevel = gis_paramsName.codeLevel;
-//	}
 
     var paramsName = {
         "scenarinoId": gis_paramsName.scenarinoId,
@@ -1023,7 +996,7 @@ function pie() {
                 //自适应屏幕大小变化
                 $("#hycsDiv1").panel({
                     onResize:function(){myhycsChart.resize()}
-                })
+                });
 
             } else {
                 swal('饼图暂无数据', '', 'error')

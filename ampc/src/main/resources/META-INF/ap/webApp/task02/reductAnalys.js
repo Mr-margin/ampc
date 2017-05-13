@@ -104,6 +104,7 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 		app.baselayerList = new dong.gaodeLayer();//默认加载矢量 new gaodeLayer({layertype:"road"});也可以
 		app.stlayerList = new dong.gaodeLayer({layertype: "st"});//加载卫星图
 		app.labellayerList = new dong.gaodeLayer({layertype: "label"});//加载标注图
+		app.zoom_start = false;//全局zoom变量，用来控制第一次加载数据一定显示全部省级
 		
 		app.map.on("load", shoe_data_start);//启动后立即执行获取数据
 		
@@ -125,21 +126,9 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 function shoe_data_start(evn){
 	gis_paramsName.userId = userId;
 	gis_paramsName.pollutant = $('#hz_wrw').val();//物种
-	//获取地图当前比例尺，决定数据请求省市县的哪一级
-//	if (evn.map.getZoom() <= 6) {
-		
-		gis_paramsName.codeLevel = 1;//省市区层级（1省，2市，3区）
-		
-//	}else if (evn.map.getZoom() == 7){
-//		
-//		gis_paramsName.codeLevel = 2;//省市区层级（1省，2市，3区）
-//		tj_paramsName.codeLevel = 2;
-//		
-//	}else if (evn.map.getZoom() >= 8){
-//		
-//		gis_paramsName.codeLevel = 3;//省市区层级（1省，2市，3区）
-//		tj_paramsName.codeLevel = 3;
-//	}
+	
+	gis_paramsName.codeLevel = 1;//省市区层级（1省，2市，3区）
+	tj_paramsName.codeLevel = 1;
 	gis_paramsName.scenarinoId = qjMsg.qjId;//情景id
 	baizhu_jianpai(gis_paramsName,"1");
 }
@@ -202,7 +191,7 @@ function baizhu_jianpai(gis_paramsName, sh_type){
 			app.paifang = new dong.FeatureLayer(paifang_url, {
 				mode: dong.FeatureLayer.MODE_ONDEMAND,
 				outFields: ["*"],
-//				id: "paifang"
+				id: "paifang"
 			});
 			
 			var template = "<strong>${NAME}:  ${DATAVALU}</strong>";
@@ -237,7 +226,7 @@ function baizhu_jianpai(gis_paramsName, sh_type){
             dojo.connect(app.paifang, "onMouseOver", app.tip.showInfo);
             dojo.connect(app.paifang, "onMouseOut", app.tip.hideInfo);
             
-			if(gis_paramsName.codeLevel == 1){
+            if(!app.zoom_start){//第一次进入页面，自动缩放省级比例
 	            var query = new dong.query();
 				query.where = "ADMINCODE in ("+data_id.substring(0, data_id.length-1)+")";
 				app.paifang.queryFeatures(query, function(featureSet) {
@@ -251,10 +240,12 @@ function baizhu_jianpai(gis_paramsName, sh_type){
 						}
 					}
 					app.map.setExtent(extent.expand(1.5));
+					app.zoom_start = true;//全局zoom控制放开，加载第一次数据后，可以使用zoom级别控制显示层级
 				});
 			}
-			
-			return true;
+            if (sh_type == "1") {
+                bar();
+            }
 		}else{
 			swal('减排数据获取失败', '', 'error');
 		}
@@ -457,19 +448,21 @@ function calcBreaks(data){
  * @param event
  */
 function resizess(event){
-	//获取地图当前比例尺，如果比例尺要请求的数据与初始化的请求级别不一致，重新请求
-	var level = 0;
-	if (app.map.getZoom() <= 6) {
-		level = 1;//省市区层级（1省，2市，3区）
-	}else if (app.map.getZoom() == 7){
-		level = 2;//省市区层级（1省，2市，3区）
-	}else if (app.map.getZoom() >= 8){
-		level = 3;//省市区层级（1省，2市，3区）
-	}
-	if(level != gis_paramsName.codeLevel){
-		gis_paramsName.codeLevel = level;
-		baizhu_jianpai(gis_paramsName, "2");
-		app.map.graphics.clear();//清空图层
+	if(app.zoom_start){
+		//获取地图当前比例尺，如果比例尺要请求的数据与初始化的请求级别不一致，重新请求
+		var level = 0;
+		if (app.map.getZoom() <= 6) {
+			level = 1;//省市区层级（1省，2市，3区）
+		}else if (app.map.getZoom() == 7){
+			level = 2;//省市区层级（1省，2市，3区）
+		}else if (app.map.getZoom() >= 8){
+			level = 3;//省市区层级（1省，2市，3区）
+		}
+		if(level != gis_paramsName.codeLevel){
+			gis_paramsName.codeLevel = level;
+			baizhu_jianpai(gis_paramsName, "2");
+			app.map.graphics.clear();//清空图层
+		}
 	}
 }
 
@@ -507,31 +500,11 @@ function gis_paifang_show(){
 	
 	$("#showtype").children().each(function(){
 		if($(this).is('.active')){
-			
 			if($(this).attr("val_name") == "gis"){
-				
-//				$("#listModal").hide();
-//				$("#map_showId").show();
-//				$("#legendWrapper").show();
-//				$("#gis_table_title").html("各地区减排");
-				
 				baizhu_jianpai(gis_paramsName, "1");
 				bar();
-				
 			}else if($(this).attr("val_name") == "table"){
-				
 				bar();
-				
-//				query_code = tj_paramsName.code;
-//				query_Level = tj_paramsName.codeLevel;
-//				
-//				table_show(tj_paramsName.code, tj_paramsName.codeLevel);
-//				
-//				$("#gis_table_title").html("各地区减排比例(%)");
-//				$("#listModal").show();
-//				$("#map_showId").hide();
-//				$("#legendWrapper").hide();
-				
 			}
 		}
 	});
@@ -552,18 +525,14 @@ function type_info(){
 
 /****************************************************柱状图*************************************************************************/
 function bar() {
-	
-//	if(tj_paramsName.code == '0'){
-//		tj_paramsName.codeLevel = 0;
-//	}else{
-//		tj_paramsName.codeLevel = gis_paramsName.codeLevel;
-//	}
-	
-	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":tj_paramsName.code,"addressLevle":tj_paramsName.codeLevel,"stainType":tj_paramsName.wz};
-	//console.log(JSON.stringify(paramsName));
+	var paramsName = {
+			"scenarinoId":gis_paramsName.scenarinoId,
+			"code":tj_paramsName.code,
+			"addressLevle":tj_paramsName.codeLevel,
+			"stainType":tj_paramsName.wz
+	};
 	ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
 //		console.log(JSON.stringify(res));
-		
 		if(res.status == 0){//返回成功
 			if(res.data.dateResult.length > 0){//有返回时间，说明可以显示柱状图
 				
@@ -579,6 +548,9 @@ function bar() {
 				var option = {
 					    title : {
 					        text: tj_paramsName.name +"-"+tj_paramsName.wz+'-减排分析',
+					        left:'50%',
+	                        top:'1%',
+	                        textAlign:'center'
 					    },
 					    tooltip : {
 					        trigger: 'axis',
@@ -596,8 +568,10 @@ function bar() {
 					    legend: {
 					    	//不触动
 					        selectedMode:false,
-					        left: 'right',
-					        data:['减排量', '实际排放量']
+					        top:'30px',
+	                        right: '10px;',
+					        data:['减排量', '实际排放量'],
+					        backgroundColor:'#f0f0f0'
 					    },
 					    grid:{
 					    		show:true
@@ -686,23 +660,30 @@ function bar() {
 					                    }
 					                }
 					            },
-					            /*markLine : {
-		                    		data : [
-		                    		        {type : 'average', name: '平均值'}
-		                    		]
-		                    	},*/
-					            //data:res.data.jplResult
 		                    	data:res.data.jplResult
 					        }
 					    ]
 					};
 					//减排量echarts
 					myPfChart.setOption(option);
-				
+//					//自适应屏幕大小变化
+//					window.addEventListener("resize",function(){
+//						 myPfChart.resize();
+//					 });
+					
 					//自适应屏幕大小变化
-					window.addEventListener("resize",function(){
-						 myPfChart.resize();
-					 });
+	                $("#pfDiv1").panel({
+	                    onResize:function(){myPfChart.resize()}
+	                })
+
+	                window.addEventListener("resize", function () {
+//	                  console.log(i);
+	                    setTimeout(function () {
+	                        myPfChart.resize();
+	                  },50);
+
+	                });
+	                
 				
 					//点击联动饼图
 					myPfChart.on('datazoom', function (params){
@@ -748,13 +729,15 @@ function  pie(){
 	var valueVal;
 	getchaxuntype();
 	
-//	if(tj_paramsName.code == '0'){
-//		tj_paramsName.codeLevel = 0;
-//	}else{
-//		tj_paramsName.codeLevel = gis_paramsName.codeLevel;
-//	}
-	
-	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":tj_paramsName.code,"addressLevle":tj_paramsName.codeLevel,"stainType":tj_paramsName.wz,"startDate":tj_paramsName.new_arr[0],"endDate":tj_paramsName.new_arr[tj_paramsName.new_arr.length-1],"type":tj_paramsName.type};
+	var paramsName = {
+			"scenarinoId":gis_paramsName.scenarinoId,
+			"code":tj_paramsName.code,
+			"addressLevle":tj_paramsName.codeLevel,
+			"stainType":tj_paramsName.wz,
+			"startDate":tj_paramsName.new_arr[0],
+			"endDate":tj_paramsName.new_arr[tj_paramsName.new_arr.length-1],
+			"type":tj_paramsName.type
+	};
 	ajaxPost('/echarts/get_pieInfo',paramsName).success(function(result){
 		
 		if(result.status == 0){
@@ -777,6 +760,9 @@ function  pie(){
 					    title : {
 					        text: tj_paramsName.name +'-'+(tj_paramsName.type == "1" ? "分行业" : "分措施")+"-"+tj_paramsName.wz+'-减排分析',
 					        subtext: '全部'+(tj_paramsName.type == "1" ? "行业" : "措施")+'合计减排：'+sum_value.toFixed(2),
+					        left:'50%',
+	                        top:'1%',
+	                        textAlign:'center'
 					    },
 					    tooltip : {
 					        trigger: 'item',
@@ -785,8 +771,10 @@ function  pie(){
 					    legend: {
 					    	selectedMode:false,//图标不触动
 					        orient: 'vertical',
-					        left: 'right',
-					        data: legend_name
+					        data: legend_name,
+					        top:'30px',
+	                        right: '10px;',
+	                        backgroundColor:'#f0f0f0'
 					    },
 					    series : [
 					        {
@@ -808,9 +796,13 @@ function  pie(){
 				//行业措施分担饼状图
 				myhycsChart.setOption(optionPie);
 				//自适应屏幕大小变化
-				window.addEventListener("resize",function(){
-					myhycsChart.resize();
-				});
+				$("#hycsDiv1").panel({
+                    onResize:function(){myhycsChart.resize()}
+                });
+				
+//				window.addEventListener("resize",function(){
+//					myhycsChart.resize();
+//				});
 				
 			}else{
 				swal('饼图暂无数据', '', 'error')
