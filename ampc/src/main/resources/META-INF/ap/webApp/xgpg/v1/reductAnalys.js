@@ -719,7 +719,7 @@ function bar() {
         "addressLevle": tj_paramsName.codeLevel,
         "stainType": tj_paramsName.wz
     };
-    ajaxPost('/ampc/echarts/get_barInfo', paramsName).error(function () {
+    ajaxPost('/echarts/get_barInfo', paramsName).error(function () {
     }).success(function (res) {
         if (res.status == 0) {//返回成功
 
@@ -938,7 +938,7 @@ function pie() {
         "endDate": tj_paramsName.new_arr[tj_paramsName.new_arr.length - 1],
         "type": tj_paramsName.type
     };
-    ajaxPost('/ampc/echarts/get_pieInfo', paramsName).success(function (result) {
+    ajaxPost('/echarts/get_pieInfo', paramsName).success(function (result) {
 
         if (result.status == 0) {
 
