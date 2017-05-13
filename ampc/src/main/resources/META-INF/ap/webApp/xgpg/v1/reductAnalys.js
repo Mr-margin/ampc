@@ -2,7 +2,6 @@ var ls = window.sessionStorage;
 var qjid_dq;//当前的情景ID
 var qjname_dq;//当前情景的name
 
-
 var sceneInitialization = vipspa.getMessage('sceneInitialization').content;//从路由中取到情景范围
 if (!sceneInitialization) {
     sceneInitialization = JSON.parse(ls.getItem('SI'));
@@ -450,7 +449,7 @@ function baizhu_jianpai(gis_paramsName, sh_type) {
             var template = "<strong>${NAME}:  ${DATAVALU}</strong>";
             app.tip = new dong.Tip({
                 "format": template,
-                "node": "legend",
+                "node": "legendWrapper",
                 "res": res.data
             });
 
@@ -504,6 +503,7 @@ function baizhu_jianpai(gis_paramsName, sh_type) {
     });
 }
 
+
 /**
  * 创建图例
  */
@@ -518,9 +518,9 @@ function createLegend(level) {
     $("#legendWrapper").children(".tip").remove();//清空标题，否则会存留到下一个图例中
     //创建一个新的div图例
     var legendDiv = dong.domConstruct.create("div", {
-        id: "legend"
-    }, dong.dom.byId("legendWrapper"));
-
+  		id: parseInt(Math.random(1000) * 1000 + 1)
+  	}, dong.dom.byId("legendWrapper"));
+    
     var title = "";
     if (level == 1) {
         title = "各省 " + $('#hz_wrw').val() + " 减排量（吨）";
