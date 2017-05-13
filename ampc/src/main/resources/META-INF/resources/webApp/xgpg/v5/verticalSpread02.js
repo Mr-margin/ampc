@@ -322,6 +322,13 @@ function initEcharts() {
         });
         //$('#'+species)
         es.setOption(option);
+        window.addEventListener("resize", function () {
+            console.log(12);
+            setTimeout(function () {
+                es.resize();
+            },50);
+        });
+
     }
 }
 
@@ -725,6 +732,8 @@ function showTitleFun() {
         }
     }
 }
+//easyui 添加 LH
+$("#Initialization").window({})
 
 
 
