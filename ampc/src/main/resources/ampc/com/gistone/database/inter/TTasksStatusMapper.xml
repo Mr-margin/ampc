@@ -612,4 +612,9 @@ update T_TASKS_STATUS
   from T_TASKS_STATUS A LEFT JOIN T_SCENARINO_DETAIL B ON A.TASKS_SCENARINO_ID=B.SCENARINO_ID
   where B.PATH_DATE = #{pathdate} AND B.SCEN_TYPE=#{type}
   </select>
+  <select id="selectzt" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  select * from T_TASKS_STATUS 
+  WHERE TASKS_SCENARINO_ID=#{tasksScenarinoId,jdbcType=DECIMAL}
+  </select> 
+  
 </mapper>
