@@ -385,7 +385,7 @@ function initNowSession(){
 	setStation(sceneInitialization.taskID);
 	setTime(sceneInitialization.s, sceneInitialization.e);
 	$.when(dps_codeStation,dps_station).then(function () {
-		console.log(changeMsg.station);
+//		console.log(changeMsg.station);
 //		getdata();
 	});
 	
@@ -837,7 +837,7 @@ $('#proStation').on('change', function (e) {
 	  var pro = $(e.target).val();
 	  changeMsg.pro = pro;
 	  $('#cityStation').empty();
-	  console.log(allStation);
+//	  console.log(allStation);
 	  var cityStation = allStation[pro].station;
 	  for (var city in cityStation) {
 	    $('#cityStation').append($('<option value="' + cityStation[city].code + '">' + cityStation[city].name + '</option>'))

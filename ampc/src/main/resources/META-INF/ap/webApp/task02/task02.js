@@ -606,7 +606,7 @@ function delTimes() {
 var selectedTimes;
 function ontTimes(data) {
   selectedTimes = data;
-  console.log(selectedTimes);
+  //console.log(selectedTimes);
   //if (data.planId != -1) {
   //  $('.yacz').attr('disabled', true);
   //} else {
@@ -1655,7 +1655,7 @@ function previous() {
  * 复制情景请求
  */
 function subCopyQJ() {
-  console.log(selectCopyQJ);
+  //console.log(selectCopyQJ);
 
   var copyUrl = '/scenarino/copy_Scenarino';
   ajaxPost(copyUrl, {
@@ -1726,7 +1726,7 @@ function jpjsBtn() {
 
   if (Object.keys(params.areaAndPlanIds).length > 0) {
     ajaxPost(url, params).success(function (res) {
-      console.log(res);
+      //console.log(res);
       if (res.status == 0) {
         if (res.data == 1) {
           $('.jpjs').addClass('disNone');
@@ -1931,7 +1931,7 @@ function initCopyPlanTable() {
     },
     onLoadSuccess: function (data) {
       selectCopyPlan = data.rows[0];
-      console.log(data);
+      //console.log(data);
       if (selectCopyPlan) {
         $('#copyPlanTable').bootstrapTable('check', 0)
       }

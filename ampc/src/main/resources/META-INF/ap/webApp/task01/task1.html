@@ -319,7 +319,7 @@
           success: function (data) {
 //            transformdat=[];
             requestQJData(data.data);
-            console.log(transformdata);
+            //console.log(transformdata);
             $('#rwgltable').treegrid({data: transformdata});
           }
         });
@@ -417,7 +417,7 @@
 //      },
       success: function (data) {
         requestQJData(data.data);
-        console.log(JSON.stringify(transformdata));
+        //console.log(JSON.stringify(transformdata));
         $('#rwgltable').treegrid({
           data: transformdata,
           idField: 'id',
@@ -447,7 +447,7 @@
           }]],
           onClickRow: function (row) {
             if (typeof row.children === 'undefined') {
-              console.log(row);
+              //console.log(row);
               return
             }
             if ($('[node-id="' + row.id + '"]').hasClass('datagrid-row-clicked')) {
@@ -457,7 +457,7 @@
               $('[node-id="' + row.id + '"]').addClass('datagrid-row-clicked').siblings().removeClass('datagrid-row-clicked');
               $('#rwgltable').treegrid('collapseAll').treegrid('expand', row.id);
             }
-            console.log(row);
+            //console.log(row);
             msg.content.rwId = selectRW.missionId;
             msg.content.rwName = selectRW.missionName;
             msg.content.rwType = selectRW.missionStatus;
@@ -504,7 +504,7 @@
 //          if(data.data.rows.length==0){
 //            return;
 //          }
-          console.log(data);
+          //console.log(data);
           transformdata[transformdata.length - 1].children = [];
           transformdata[transformdata.length - 1].children.push($.extend({}, {
             missionNameTitle: '情景名称', missionIdTitle: 'ID', domainNameTitle: '操作', esCouplingNameTitle: '管理',
@@ -647,7 +647,7 @@
   }
   function stop(t) {
     var e = e || window.event;
-    console.log(e);
+    //console.log(e);
     e.stopPropagation();
     createQJselect($(t).attr('data-missionId'));
   }
@@ -799,7 +799,7 @@
           subBtn = true;
         }
       }).error(function () {
-        console.log(arguments);
+        //console.log(arguments);
         swal({
           title: '校验失败!',
           type: 'error',
@@ -908,7 +908,7 @@
       success: function (data) {
         transformdata = [];
         requestQJData(data.data);
-        console.log(transformdata);
+        //console.log(transformdata);
         $('#rwgltable').treegrid({data: transformdata});
       }
     });
@@ -931,7 +931,7 @@
         }
       }
     }
-    console.log(delQJid);
+    //console.log(delQJid);
 //    if (type == 'rw') {
     for (var i in delRWid) {
       delList += i + ',';
@@ -984,7 +984,7 @@
   /*筛选*/
   function statusRWfun(t, status) {
     $(t).addClass('selected').siblings().removeClass('selected');
-    console.log($(this).find('span'));
+    //console.log($(this).find('span'));
     $("#selectTypeBtn").find('.l-btn-text').html($(t).find('span').html());
     statusRW = status;
     search('rw');
@@ -1001,7 +1001,7 @@
       .success(function (data) {
         transformdata = [];
         requestQJData(data.data);
-        console.log(transformdata);
+        //console.log(transformdata);
         $('#rwgltable').treegrid({data: transformdata});
       })
   }
@@ -1013,7 +1013,7 @@
     //var oldQJUrl = 'date.json';
     var row = $('#rwgltable').treegrid('find', id);
     selectRW = $.extend({}, row);
-    console.log(selectRW);
+    //console.log(selectRW);
     var oldQJparams = {
       userId: userId,
       missionId: row.missionId
@@ -1100,9 +1100,9 @@
             }
             var startD = dateArr[0] ? moment(moment(dateArr[0])).add(1, 'd').format('YYYY-MM-DD') : '';
             $('#yStartDate').empty().append($('<option value="' + startD + '">' + startD + '</option>'));
-            console.log(1);
+            //console.log(1);
             ajaxPost(url, params).success(function (res) {
-              console.log(res);
+              //console.log(res);
               selectEndDate = res.data.endTime;
               selectEndDate = moment(selectRW.missionEndDate).add(1, 'd').isBefore(selectEndDate) ? moment(selectRW.missionEndDate).format('YYYY-MM-DD') : selectEndDate;
               if ($('#yStartDate').val() == '') {
@@ -1115,9 +1115,9 @@
                 if (endDateArr[i] < moment().format('YYYY-MM-DD'))continue;
                 $('#yEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
               }
-              console.log(2);
+              //console.log(2);
             }).fail(function () {
-              console.log(arguments);
+              //console.log(arguments);
             });
 
             break;
@@ -1350,7 +1350,7 @@
   }
   /*新改情景创建*/
   function createQj(type) {
-    console.log(subBtn);
+    //console.log(subBtn);
     if (!subBtn)return;
     subBtn = false;
     var url, urlName;

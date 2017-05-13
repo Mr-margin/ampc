@@ -52,7 +52,7 @@ function initialize(){
   dps_Date = requestDate();
 
   $.when(dps_Date,dps_City).then(function(){
-    console.log('initialize  updata');
+//    console.log('initialize  updata');
     updata();
   })
 }
@@ -344,7 +344,7 @@ $('input[name=rmsQxys]').on('change', function (e) { //时间分辨率选择
 function changeRms(rms){
   stint = true;
   changeMsg.rms = rms;
-  console.log(rms);
+//  console.log(rms);
   updata(true);
 }
 

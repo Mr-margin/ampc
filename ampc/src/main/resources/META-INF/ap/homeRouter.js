@@ -50,7 +50,7 @@ $.when(dps_um).then(function(){
         });
         // 左侧菜单栏隐藏展开功能
         $("#toggle-sidebar").on("click", function (e) {
-            console.log(1);
+//            console.log(1);
           if ($(this).hasClass("toggle-flag")) {
             $("#sidebarlt").show();
             $("#content-title").css({'left': '210px'});
@@ -66,7 +66,7 @@ $.when(dps_um).then(function(){
 
           /*当url改变的时候，左侧菜单栏中内容改变*/
         $(window).bind('hashchange', function (e) {
-          console.log('url改变了====' + e.target.location.hash);
+//          console.log('url改变了====' + e.target.location.hash);
           if (e.target.location.hash == '#/yabj') {
             $('.qyCon').removeClass('disNone');
           } else {

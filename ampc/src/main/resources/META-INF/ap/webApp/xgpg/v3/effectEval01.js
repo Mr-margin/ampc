@@ -144,7 +144,7 @@ if (!sceneInitialization) {
     ls.setItem('SI', JSON.stringify(sceneInitialization));	//不为空往session中存入一份数据
 }
 //console.log(JSON.stringify(sceneInitialization));
-console.log(!sceneInitialization)
+//console.log(!sceneInitialization)
 if (!sceneInitialization) {	//为空时
     sceneInittion();		//调用弹出模态框方法
 } else {
@@ -473,17 +473,17 @@ function initEcharts() {
                     timexlAll[n]=Math.abs(timexlDate[m].data[n]);
                 }
                 dataAMax=Math.max.apply(null,timexlAll);
-                console.log(dataAMax);
+                //console.log(dataAMax);
             }
             dataY.push(dataAMax);
             dataYMax=Math.max.apply(null,dataY)
-            console.log("最大值");
-            console.log(option.yAxis[0]);
+            //console.log("最大值");
+            //console.log(option.yAxis[0]);
             option.yAxis[0].max=dataYMax;
             option.yAxis[0].min=-dataYMax;
 
-            console.log(option.yAxis.max);
-            console.log(option.yAxis.min);
+            //console.log(option.yAxis.max);
+            //console.log(option.yAxis.min);
         }
 
         option.xAxis = [];
@@ -927,7 +927,7 @@ function set_sce() {
 $('#proStation').on('change', function (e) {
     var pro = $(e.target).val();
     changeMsg.pro = pro;
-    console.log(allCode);
+    //console.log(allCode);
     changeMsg.proName = allCode[pro].name;
     $('#cityStation').empty();
     var cityStation = allCode[pro].city;
@@ -1083,7 +1083,7 @@ $('input[name=changes]').on('change', function (e) {
 var domain;
 $('input[name=domain]').on('change', function (e) {
     domain = $(e.target).val();
-    console.log(domain);
+    //console.log(domain);
     showTitleFun();
     getdata();
 //	console.log(domain);

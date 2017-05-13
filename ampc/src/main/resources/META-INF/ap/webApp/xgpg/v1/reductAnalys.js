@@ -9,7 +9,7 @@ if (!sceneInitialization) {
 } else {
     ls.setItem('SI', JSON.stringify(sceneInitialization));
 }
-console.log(JSON.stringify(sceneInitialization));
+//console.log(JSON.stringify(sceneInitialization));
 
 if (!sceneInitialization) {
     sceneInittion();
@@ -24,9 +24,9 @@ function sceneInittion() {
     $("#task").html("");
     var paramsName = {};
     paramsName.userId = userId;
-    console.log(JSON.stringify(paramsName));
+//    console.log(JSON.stringify(paramsName));
     ajaxPost('/mission/find_All_mission', paramsName).success(function (res) {
-        console.log(JSON.stringify(res));
+//        console.log(JSON.stringify(res));
         if (res.status == 0) {
             if (res.data || res.data.length > 0) {
                 var task = "";
@@ -62,7 +62,7 @@ function sceneInittion() {
  */
 function sceneTable() {
     $("#sceneTableId").bootstrapTable('destroy');//销毁现有表格数据
-    console.log()
+//    console.log()
     //表格交互 easyui
 
     $.ajax({
@@ -187,7 +187,7 @@ function save_scene() {
 
         vipspa.setMessage(mag);
         ls.setItem('SI', JSON.stringify(mag));
-        console.log(data);
+//        console.log(data);
         //console.log("数据")
         setQjSelectBtn(data);//添加情景选择按钮
         sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
@@ -223,7 +223,7 @@ function setQjSelectBtn(data) {
 
 /*切换情景事件*/
 $('#qjBtn1').on('change', 'input', function (e) {
-    console.log($(e.target).val());
+//    console.log($(e.target).val());
     qjid_dq = $(e.target).val();
     shoe_data_start()
 })

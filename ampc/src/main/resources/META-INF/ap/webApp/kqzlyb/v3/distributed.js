@@ -163,7 +163,7 @@ function updata(t){
 $('input[name=rms]').on('change', function (e) { //时间分辨率选择
   var rms = $(e.target).val();
   changeMsg.rms = rms;
-  console.log(rms);
+//  console.log(rms);
   $('#species').empty();
   for (var i = 0; i < speciesArr[rms].length; i++) {
     $('#species').append($('<option>' + speciesArr[rms][i] + '</option>'))
@@ -177,7 +177,7 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
 $('input[name=domain]').on('change', function (e) {
   var domain = $(e.target).val();
   changeMsg.domain = domain;
-  console.log(domain);
+//  console.log(domain);
 
   updata();
 });
@@ -185,7 +185,7 @@ $('input[name=domain]').on('change', function (e) {
 $('input[name=speed]').on('change', function (e) {
   var speed = $(e.target).val();
   changeMsg.speed = speed;
-  console.log(speed);
+//  console.log(speed);
 
   updata();
 });
@@ -193,7 +193,7 @@ $('input[name=speed]').on('change', function (e) {
 $('input[name=field]').on('change', function (e) {
   var field = $(e.target).val();
   changeMsg.field = field;
-  console.log(field);
+//  console.log(field);
 
   updata();
 });
@@ -201,7 +201,7 @@ $('input[name=field]').on('change', function (e) {
 $('#species').on('change',function(e){
   var species = $(e.target).val();
   changeMsg.species = species;
-  console.log(species);
+//  console.log(species);
   updata();
 });
 
@@ -225,7 +225,7 @@ function valueOutput(element) {
   var output = element.parentNode.getElementsByTagName('output')[0];
 
   output.innerHTML = value;
-  console.log(value);
+//  console.log(value);
   changeMsg.opt = value;
 }
 

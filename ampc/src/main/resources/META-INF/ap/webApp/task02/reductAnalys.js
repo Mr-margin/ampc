@@ -560,7 +560,7 @@ function bar() {
 //	}
 	
 	var paramsName = {"scenarinoId":gis_paramsName.scenarinoId,"code":tj_paramsName.code,"addressLevle":tj_paramsName.codeLevel,"stainType":tj_paramsName.wz};
-	console.log(JSON.stringify(paramsName));
+	//console.log(JSON.stringify(paramsName));
 	ajaxPost('/echarts/get_barInfo',paramsName).success(function(res){
 //		console.log(JSON.stringify(res));
 		
