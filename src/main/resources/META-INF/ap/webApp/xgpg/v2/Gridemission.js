@@ -95,14 +95,15 @@ require(
         "esri/map", "esri/tasks/Geoprocessor", "esri/layers/ImageParameters", "esri/layers/DynamicLayerInfo", "esri/layers/RasterDataSource", "esri/layers/TableDataSource",
         "esri/layers/LayerDataSource", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "esri/layers/LayerDrawingOptions", "esri/symbols/SimpleFillSymbol",
         "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleMarkerSymbol", "esri/geometry/Multipoint", "esri/geometry/Point", "esri/geometry/Extent",
-        "esri/renderers/SimpleRenderer", "esri/graphic", "esri/lang", "dojo/_base/array", "dojo/number", "dojo/dom-style", "dijit/TooltipDialog",
+        "esri/renderers/SimpleRenderer", "esri/graphic", "dojo/_base/array", "dojo/number", "dojo/dom-style", "dijit/TooltipDialog",
         "dijit/popup", "dojox/widget/ColorPicker", "esri/layers/RasterLayer", "tdlib/gaodeLayer", "esri/tasks/FeatureSet", "esri/SpatialReference", "esri/symbols/PictureMarkerSymbol",
-        "esri/geometry/Polygon", "esri/symbols/PictureFillSymbol", "esri/Color", "esri/layers/ArcGISDynamicMapServiceLayer", "esri/tasks/RasterData", "dojo/domReady!"
+        "esri/geometry/Polygon", "esri/symbols/PictureFillSymbol", "esri/Color", "esri/layers/ArcGISDynamicMapServiceLayer", "esri/tasks/RasterData", "esri/layers/MapImageLayer", 
+        "esri/layers/MapImage", "dojo/domReady!"
     ],
     function (Map, Geoprocessor, ImageParameters, DynamicLayerInfo, RasterDataSource, TableDataSource, LayerDataSource, FeatureLayer, GraphicsLayer, LayerDrawingOptions,
-              SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Multipoint, Point, Extent, SimpleRenderer, Graphic, esriLang, array, number, domStyle,
+              SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Multipoint, Point, Extent, SimpleRenderer, Graphic,  array, number, domStyle,
               TooltipDialog, dijitPopup, ColorPicker, RasterLayer, gaodeLayer, FeatureSet, SpatialReference, PictureMarkerSymbol, Polygon, PictureFillSymbol, Color,
-              ArcGISDynamicMapServiceLayer, RasterData) {
+              ArcGISDynamicMapServiceLayer, RasterData, MapImageLayer, MapImage) {
 
         dong.gaodeLayer = gaodeLayer;
         dong.DynamicLayerInfo = DynamicLayerInfo;
@@ -122,6 +123,9 @@ require(
         dong.Color = Color;//
         dong.ArcGISDynamicMapServiceLayer = ArcGISDynamicMapServiceLayer;//
         dong.RasterData = RasterData;//
+        dong.MapImageLayer = MapImageLayer;//
+        dong.Extent = Extent;//
+        dong.MapImage = MapImage;//
 
         esri.config.defaults.io.proxyUrl = ArcGisUrl + "/Java/proxy.jsp";
         esri.config.defaults.io.alwaysUseProxy = false;
@@ -130,6 +134,7 @@ require(
         app.baselayerList = new Array();//默认加载矢量 new gaodeLayer({layertype:"road"});也可以
         app.stlayerList = new Array();//加载卫星图
         app.labellayerList = new Array();//加载标注图
+        app.mapimagelayer = new Array();//图片图层
 
         for (var i = 0; i < 2; i++) {
             var map = new Map("mapDiv" + i, {
@@ -146,6 +151,9 @@ require(
             app.labellayerList[i] = new dong.gaodeLayer({layertype: "label"});
             app.mapList[i].addLayer(app.baselayerList[i]);//添加高德地图到map容器
             app.mapList[i].addLayers([app.baselayerList[i]]);//添加高德地图到map容器
+            
+            app.mapimagelayer[i] = new dong.MapImageLayer({"id":"myil"+i});
+            app.mapList[i].addLayer(app.mapimagelayer[i]);
         }
 
         app.gLyr1 = new dong.GraphicsLayer({"id": "gLyr1"});
@@ -372,7 +380,13 @@ function exchangeModal() {
     $("#Initialization").window("open")
 }
 
-
+/**
+ * 网格排放出图
+ * @param type
+ * @param g_num
+ * @param p
+ * @param wind
+ */
 function bianji_wanggepafang(type, g_num, p , wind){
     for(var sp=0;sp<changeMsg.species.length;sp++){
         if(!wind){
@@ -380,60 +394,31 @@ function bianji_wanggepafang(type, g_num, p , wind){
         }
         var par = p;
         var v1 = new Date().getTime();
-
-        var GPserver_url = ArcGisServerUrl + "/arcgis/rest/services/ampc_zrly/reuslt/GPServer/reuslt";
-
-        var pftype = par.species[sp];
-
-
-        app.gp = new esri.tasks.Geoprocessor(GPserver_url);
-        var a1 = new dong.RasterData();
-        a1.format = "tiff";
-        a1.url = ArcGisUrl + "/Java/ampc/img/reuslt.tiff";
-
-        var parms = {
-            "imp": a1,
-            "out": "out_raster_layer"
-        };
-        app.gp.submitJob(parms, function (jobInfo) {
-            var gpResultLayer = app.gp.getResultImageLayer(jobInfo.jobId, "out");//这里的名字是跟着返回图层的变量名走的，不一样的话是不出图的
-            //需要判断一下是否已经添加过图层，先移除，再添加
-            gpResultLayer.id = "out_raster_layer";
-            gpResultLayer.setOpacity(opacity);
-            app.mapList[g_num].addLayer(gpResultLayer);
-
-            //添加图例
-//          $('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");
-
-        }, function (jobinfo) {
-            var jobstatus = '';
-            switch (jobinfo.jobStatus) {
-                case 'esriJobSubmitted':
-                    break;
-                case 'esriJobExecuting':
-                    break;
-                case 'esriJobSucceeded':
-                    var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
-                    if (out_raster_layer) {
-                        app.mapList[g_num].removeLayer(out_raster_layer);
-                    }
-                    $('#colorBar'+g_num+' .num span').eq(0).html(0);
-                    $('#colorBar'+g_num+' .num span').eq(1).html(0.00054);
-                    $('#colorBar'+g_num+' img').attr('src','img/colorbar/'+ mappingSpeciesBig[changeMsg.species[0]] +'.png');
-                    jobstatus = '--' + g_num + '--处理完成...';
-                    console.log((new Date().getTime() - v1) + jobstatus);
-                    zmblockUI("#mapDiv"+g_num, "end");
-                    break;
-            }
-        }, function (error) {
-            console.log(error);
-            zmblockUI("#mapDiv"+g_num, "end");
-            swal('GIS，内部错误', '', 'error');
+        
+        var imageURL = "http://localhost:8082/ampc/img/ceshi/now.png";//定义图片路径，这个图片是动态生成的
+        
+        var initE = new dong.Extent({ 'xmin': app.mapList[g_num].extent.xmin, 'ymin': app.mapList[g_num].extent.ymin, 'xmax': app.mapList[g_num].extent.xmax, 'ymax': app.mapList[g_num].extent.ymax, 'spatialReference': { 'wkid': 3857 }});
+        var mapImage = new dong.MapImage({
+            'extent': initE,
+            'href': imageURL
         });
+        
+        app.mapimagelayer[g_num].removeAllImages();//删除全部的图片图层
+        app.mapimagelayer[g_num].addImage(mapImage);//将新的图片图层添加到地图
+        $('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
+        zmblockUI("#mapDiv"+g_num, "end");//打开锁屏控制
+        console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
     }
 }
 
 
+/**
+ * 风场出图
+ * @param type
+ * @param g_num
+ * @param p
+ * @param wind
+ */
 function bianji(type, g_num, p , wind) {
     for(var sp=0;sp<changeMsg.species.length;sp++){
 
