@@ -203,9 +203,13 @@ function save_scene() {
 
         vipspa.setMessage(mag);
         ls.setItem('SI', JSON.stringify(mag));
-//        console.log(data);
-        //console.log("数据")
-        setQjSelectBtn(data);//添加情景选择按钮
+        console.log("地图列表切换");
+        var qiehuan=$("#showtype .active").attr("val_name");
+        //console.log(qiehuan);
+        if (qiehuan == "gis") {
+            setQjSelectBtn(data);//添加情景选择按钮
+        }
+
         sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
         $("#close_scene").click();
         shoe_data_start();
@@ -1067,6 +1071,7 @@ function gis_switch_table() {
                     table_show(tj_paramsName.code, tj_paramsName.codeLevel);
 
                     $("#gis_table_title").html("<i class='im-table'></i>各地区减排比例(%)");
+
                     $("#listModal").show();
                     $("#map_showId").hide();
                     $('#qjBtn1 .btn-group label').css({"z-index":"-1"});
@@ -1188,6 +1193,22 @@ function table_show(cod1, level1) {
                      } else {
                      return data;
                      }
+                },
+                loadFilter:function(data){
+                    //过滤数据
+                    var value={
+                        total:data.total,
+                        rows:[]
+                    };
+                    if (data.length > 0) {
+                         console.log(data.length);
+                        $.each(data, function (i, col) {
+                            if (col.type == "1") {
+                                data[i].name= '<a style="text-decoration:underline;color: #0275d8;" onClick="table_show(\'' + col.code + '\',\'' + (parseInt(d_Level) + 1) + '\');">' + col.name + '</a>';
+                            }
+                        });
+                         return data;
+                    }
                 }
             })
         }
