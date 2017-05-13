@@ -774,6 +774,7 @@ function showTitleFun() {
 //easyui 添加
 //var headerH=$(".cloudui .searchT").height();
 //$(".verticalChar").css({"top":headerH+"px"});
+$(".toolAll").hide();
 $(".upDownBtn").append("<i class='en-arrow-up7'></i>")
 $(".upDownBtn").click(function(){
     console.log($(".upDownBtn").val());
