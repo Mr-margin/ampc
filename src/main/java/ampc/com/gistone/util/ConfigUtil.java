@@ -67,18 +67,18 @@ public class ConfigUtil {
 			@Value("${redis.send.queue.name}")
 			private String redisQueueAcceptName;
 			//redis 连接池中的最大空闲连接
-			@Value("${spring.redis.pool.max-idle}")
-			private int maxIdle;
-			//redis 连接池中的最小空闲连接
-			@Value("${spring.redis.pool.min-idle}")
-			private int minidle;
-			//redis 连接池最大连接数（使用负值表示没有限制
-			@Value("${spring.redis.pool.max-active}")
-			private String maxActive;
-			//redis 连接池最大阻塞等待时间（使用负值表示没有限制)
-			@Value("${spring.redis.pool.max-wait}")
-			private Long maxWait;
-			//连接超时时间（毫秒）
+//			@Value("${spring.redis.pool.max-idle}")
+//			private int maxIdle;
+//			//redis 连接池中的最小空闲连接
+//			@Value("${spring.redis.pool.min-idle}")
+//			private int minidle;
+//			//redis 连接池最大连接数（使用负值表示没有限制
+//			@Value("${spring.redis.pool.max-active}")
+//			private String maxActive;
+//			//redis 连接池最大阻塞等待时间（使用负值表示没有限制)
+//			@Value("${spring.redis.pool.max-wait}")
+//			private Long maxWait;
+/*			//连接超时时间（毫秒）
 			@Value("${spring.redis.timeout}")
 			private int timeout;
 	
@@ -99,10 +99,10 @@ public class ConfigUtil {
 
 			public int getTimeout() {
 				return timeout;
-			}
+			}*/
 
 
-			public void setMaxIdle(int maxIdle) {
+/*			public void setMaxIdle(int maxIdle) {
 				this.maxIdle = maxIdle;
 			}
 
@@ -123,7 +123,7 @@ public class ConfigUtil {
 			public Long getMaxWait() {
 				return maxWait;
 			}
-
+*/
 
 
 			public String getRedisQueuesSendName() {
