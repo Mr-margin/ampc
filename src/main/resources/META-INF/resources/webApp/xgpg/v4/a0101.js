@@ -415,9 +415,10 @@ function bianji(type, g_num, p , wind) {
             var pftype = par.species[sp];
 
             ajaxPost('/extract/data', par).success(function (data) {
-
+            	
                 if (!data.data) {
                     console.log("data.data-null");
+                    console.log(JSON.stringify(par));
                     
                     zmblockUI("#mapDiv"+g_num, "end");
                     swal('获取当前范围数据失败', '', 'error');
@@ -698,7 +699,7 @@ var startTime, endTime, nowTime;//存储moment对象
 /*设置日期下拉框*/
 /*传入毫秒数*/
 function setDate(s1, e1, s2, e2) {
-    console.log('shezhishijian')
+//    console.log('shezhishijian')
     $('#sTime-d').empty();
     $('#eTime').empty();
     videoPlayScale = [];
