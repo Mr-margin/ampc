@@ -84,7 +84,7 @@ public class ToDataTasksUtil {
 	 * @date 2017年3月27日 下午2:05:42
 	 */
 	public void updateDB(String rpop) {
-		LogUtil.getLogger().info("模式启动的返回结果");
+		LogUtil.getLogger().info("updateDB-model.start.result-处理模式启动的返回结果");
 		try {
 			Message message  = JsonUtil.jsonToObj(rpop, Message.class);
 			//创建tasksstatus对象
@@ -109,7 +109,7 @@ public class ToDataTasksUtil {
 							   Date tasksEndDate = DateUtil.StrtoDateYMD(endtimeString, "yyyyMMdd HH:mm:ss");
 							   Object step = map.get("index");
 							   if (RegUtil.CheckParameter(step, "Integer", null, false)) {
-								   Integer stepindex = Integer.parseInt(step.toString());
+								   Integer stepindex = Integer.parseInt(step.toString().trim());
 								   if (stepindex<=8&&stepindex>0) {
 									   String errorStatus = (String) map.get("desc");
 									   if (code!=0) {
@@ -120,7 +120,7 @@ public class ToDataTasksUtil {
 									    tasksStatus.setStepindex((long)stepindex);
 									    tasksStatus.setTasksEndDate(tasksEndDate);
 									    tasksStatus.setModelErrorStatus(errorStatus);
-									    LogUtil.getLogger().info("开始更新tasksstatus数据库");
+									    LogUtil.getLogger().info("updateDB-model.start.result：开始更新tasksstatus数据库");
 									    try {//找出上一条消息的结果
 									    //	String modelresult = tasksStatusMapper.selectStartModelresult(tasksScenarinoId);
 										   //查找上一次消息的结束时间
@@ -298,10 +298,10 @@ public class ToDataTasksUtil {
 											LogUtil.getLogger().error("查询模式返回结果状态出错！",e);
 										}
 								}else {
-									LogUtil.getLogger().error("更新stepindex参数不合法，不在规定范围内！");
+									LogUtil.getLogger().error("更新stepindex参数不合法，不在规定范围内！stepindex:"+stepindex);
 								}
 							}else {
-								LogUtil.getLogger().error("更新stepindex参数不对！");
+								LogUtil.getLogger().error("更新stepindex参数不对！stepindex:"+step);
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -315,7 +315,7 @@ public class ToDataTasksUtil {
 				LogUtil.getLogger().error("start.model.result code参数错误！");
 			}
 		} catch (Exception e1) {
-			LogUtil.getLogger().error("tasksresult转换异常"+e1.getMessage());
+			LogUtil.getLogger().error("updateDB-model.start.result：tasksresult转换异常"+e1.getMessage());
 		}
 		
 	}
