@@ -114,11 +114,11 @@ require(
         "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleMarkerSymbol", "esri/geometry/Multipoint", "esri/geometry/Point", "esri/geometry/Extent",
         "esri/renderers/SimpleRenderer", "esri/graphic", "esri/lang", "dojo/_base/Color", "dojo/_base/array", "dojo/number", "dojo/dom-style", "dijit/TooltipDialog",
         "dijit/popup", "dojox/widget/ColorPicker", "esri/layers/RasterLayer", "tdlib/gaodeLayer", "esri/tasks/FeatureSet", "esri/SpatialReference", "esri/symbols/PictureMarkerSymbol",
-        "dojo/domReady!"
+        "esri/layers/MapImageLayer", "esri/layers/MapImage", "dojo/domReady!"
     ],
     function (Map, Geoprocessor, ImageParameters, DynamicLayerInfo, RasterDataSource, TableDataSource, LayerDataSource, FeatureLayer, GraphicsLayer, LayerDrawingOptions,
               SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Multipoint, Point, Extent, SimpleRenderer, Graphic, esriLang, Color, array, number, domStyle,
-              TooltipDialog, dijitPopup, ColorPicker, RasterLayer, gaodeLayer, FeatureSet, SpatialReference, PictureMarkerSymbol) {
+              TooltipDialog, dijitPopup, ColorPicker, RasterLayer, gaodeLayer, FeatureSet, SpatialReference, PictureMarkerSymbol, MapImageLayer, MapImage) {
 
         dong.gaodeLayer = gaodeLayer;
         dong.Geoprocessor = Geoprocessor;
@@ -128,6 +128,10 @@ require(
         dong.GraphicsLayer = GraphicsLayer;
         dong.SpatialReference = SpatialReference;
         dong.PictureMarkerSymbol = PictureMarkerSymbol;
+        
+        dong.MapImageLayer = MapImageLayer;//
+        dong.Extent = Extent;//
+        dong.MapImage = MapImage;//
 
         esri.config.defaults.io.proxyUrl = ArcGisUrl + "/Java/proxy.jsp";
         esri.config.defaults.io.alwaysUseProxy = false;
@@ -136,6 +140,7 @@ require(
         app.baselayerList = new Array();//默认加载矢量 new gaodeLayer({layertype:"road"});也可以
         app.stlayerList = new Array();//加载卫星图
         app.labellayerList = new Array();//加载标注图
+        app.mapimagelayer = new Array();//图片图层
 
         for (var i = 0; i < 2; i++) {
             var map = new Map("mapDiv" + i, {
@@ -152,6 +157,9 @@ require(
             app.labellayerList[i] = new dong.gaodeLayer({layertype: "label"});
             app.mapList[i].addLayer(app.baselayerList[i]);//添加高德地图到map容器
             app.mapList[i].addLayers([app.baselayerList[i]]);//添加高德地图到map容器
+            
+            app.mapimagelayer[i] = new dong.MapImageLayer({"id":"myil"+i});
+            app.mapList[i].addLayer(app.mapimagelayer[i]);
         }
 
         app.gLyr1 = new dong.GraphicsLayer({"id": "gLyr1"});
@@ -408,115 +416,128 @@ function bianji(type, g_num, p , wind) {
         par.ymin = app.mapList[app.shengx].extent.ymin;
 
         if(wind == -1){//无风场
-
-            var GPserver_type = par.GPserver_type[sp];
-            var GPserver_url = ArcGisServerUrl + "/arcgis/rest/services/ampc_zrly/" + GPserver_type + "/GPServer/" + GPserver_type;
-//	    $.get('data6.json', function (data) {
-//	    console.log(par);
-
-            var pftype = par.species[sp];
-
-            ajaxPost('/extract/data', par).success(function (data) {
-
-                if (!data.data) {
-                    console.log("data.data-null");
-
-                    zmblockUI("#mapDiv"+g_num, "end");
-                    swal('获取当前范围数据失败', '', 'error');
-                    return;
-                }
-                if (data.data.length == 0) {
-                    console.log("length-null");
-                    zmblockUI("#mapDiv"+g_num, "end");
-                    swal('当前范围缺少数据', '', 'error');
-                    return;
-                }
-                console.log(g_num + '~~~' + data.data.length);
-                var features = [];
-                $.each(data.data, function (i, col) {
-
-                    if (typeof col.x == "undefined") {
-                        console.log("x-null");
-                        return;
-                    }
-                    if (typeof col.y == "undefined") {
-                        console.log("y-null");
-                        return;
-                    }
-                    var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
-                    var attr = {};
-                    attr["FID"] = i;
-                    attr["dqvalue"] = col[pftype];
-                    var graphic = new dong.Graphic(point);
-                    graphic.setAttributes(attr);
-                    features.push(graphic);
-                });
-
-                var featureset = new dong.FeatureSet();
-                featureset.fields = [{
-                    "name": "dqvalue",
-                    "type": "esriFieldTypeSingle",
-                    "alias": "dqvalue"
-                }, {
-                    "name": "FID",
-                    "type": "esriFieldTypeOID",
-                    "alias": "FID"
-                }];
-                featureset.fieldAliases = {"dqvalue": "dqvalue", "FID": "FID"};
-                featureset.spatialReference = new dong.SpatialReference({wkid: 3857});
-                featureset.features = features;
-                featureset.exceededTransferLimit = false;
-
-//	        console.log(JSON.stringify(featureset));
-//	        console.log((new Date().getTime() - v1) + "生成数据");
-                app.gp = new esri.tasks.Geoprocessor(GPserver_url);
-                var parms = {
-                    "imp": featureset,
-                    "out": "out_raster_layer"
-                };
-                app.gp.submitJob(parms, function (jobInfo) {
-                    var gpResultLayer = app.gp.getResultImageLayer(jobInfo.jobId, "out");//这里的名字是跟着返回图层的变量名走的，不一样的话是不出图的
-                    //需要判断一下是否已经添加过图层，先移除，再添加
-                    gpResultLayer.id = "out_raster_layer";
-                    gpResultLayer.setOpacity(opacity);
-
-                    var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
-                    if (out_raster_layer) {
-                        app.mapList[g_num].removeLayer(out_raster_layer);
-                    }
-                    app.mapList[g_num].addLayer(gpResultLayer);
-
-                    //添加图例
-                    $('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");
-
-                    //console.log(new Date().getTime() - v1);
-                }, function (jobinfo) {
-                    var jobstatus = '';
-                    switch (jobinfo.jobStatus) {
-                        case 'esriJobSubmitted':
-                            //jobstatus = type + '正在提交...';
-                            break;
-                        case 'esriJobExecuting':
-                            //jobstatus = type + '处理中...';
-                            break;
-                        case 'esriJobSucceeded':
-                            judgmentObj.push(g_num);
-                            judgment();
-                            jobstatus = '--' + g_num + '--处理完成...';
-                            console.log((new Date().getTime() - v1) + jobstatus);
-                            zmblockUI("#mapDiv"+g_num, "end");
-                            break;
-                    }
-                }, function (error) {
-                    console.log(error);
-                    zmblockUI("#mapDiv"+g_num, "end");
-                    swal('GIS，内部错误', '', 'error');
-                });
-
-            }).error(function (res) {
-                zmblockUI("#mapDiv"+g_num, "end");
-                swal('抽数，内部错误', '', 'error');
+        	
+        	var imageURL = "http://localhost:8082/ampc/img/ceshi/now.png";//定义图片路径，这个图片是动态生成的
+            
+            var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
+            var mapImage = new dong.MapImage({
+                'extent': initE,
+                'href': imageURL
             });
+            
+            app.mapimagelayer[g_num].removeAllImages();//删除全部的图片图层
+            app.mapimagelayer[g_num].addImage(mapImage);//将新的图片图层添加到地图
+            $('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
+            zmblockUI("#mapDiv"+g_num, "end");//打开锁屏控制
+            console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
+        	
+
+//            var GPserver_type = par.GPserver_type[sp];
+//            var GPserver_url = ArcGisServerUrl + "/arcgis/rest/services/ampc_zrly/" + GPserver_type + "/GPServer/" + GPserver_type;
+//
+//            var pftype = par.species[sp];
+//
+//            ajaxPost('/extract/data', par).success(function (data) {
+//
+//                if (!data.data) {
+//                    console.log("data.data-null");
+//
+//                    zmblockUI("#mapDiv"+g_num, "end");
+//                    swal('获取当前范围数据失败', '', 'error');
+//                    return;
+//                }
+//                if (data.data.length == 0) {
+//                    console.log("length-null");
+//                    zmblockUI("#mapDiv"+g_num, "end");
+//                    swal('当前范围缺少数据', '', 'error');
+//                    return;
+//                }
+//                console.log(g_num + '~~~' + data.data.length);
+//                var features = [];
+//                $.each(data.data, function (i, col) {
+//
+//                    if (typeof col.x == "undefined") {
+//                        console.log("x-null");
+//                        return;
+//                    }
+//                    if (typeof col.y == "undefined") {
+//                        console.log("y-null");
+//                        return;
+//                    }
+//                    var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
+//                    var attr = {};
+//                    attr["FID"] = i;
+//                    attr["dqvalue"] = col[pftype];
+//                    var graphic = new dong.Graphic(point);
+//                    graphic.setAttributes(attr);
+//                    features.push(graphic);
+//                });
+//
+//                var featureset = new dong.FeatureSet();
+//                featureset.fields = [{
+//                    "name": "dqvalue",
+//                    "type": "esriFieldTypeSingle",
+//                    "alias": "dqvalue"
+//                }, {
+//                    "name": "FID",
+//                    "type": "esriFieldTypeOID",
+//                    "alias": "FID"
+//                }];
+//                featureset.fieldAliases = {"dqvalue": "dqvalue", "FID": "FID"};
+//                featureset.spatialReference = new dong.SpatialReference({wkid: 3857});
+//                featureset.features = features;
+//                featureset.exceededTransferLimit = false;
+//
+////	        console.log(JSON.stringify(featureset));
+////	        console.log((new Date().getTime() - v1) + "生成数据");
+//                app.gp = new esri.tasks.Geoprocessor(GPserver_url);
+//                var parms = {
+//                    "imp": featureset,
+//                    "out": "out_raster_layer"
+//                };
+//                app.gp.submitJob(parms, function (jobInfo) {
+//                    var gpResultLayer = app.gp.getResultImageLayer(jobInfo.jobId, "out");//这里的名字是跟着返回图层的变量名走的，不一样的话是不出图的
+//                    //需要判断一下是否已经添加过图层，先移除，再添加
+//                    gpResultLayer.id = "out_raster_layer";
+//                    gpResultLayer.setOpacity(opacity);
+//
+//                    var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
+//                    if (out_raster_layer) {
+//                        app.mapList[g_num].removeLayer(out_raster_layer);
+//                    }
+//                    app.mapList[g_num].addLayer(gpResultLayer);
+//
+//                    //添加图例
+//                    $('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");
+//
+//                    //console.log(new Date().getTime() - v1);
+//                }, function (jobinfo) {
+//                    var jobstatus = '';
+//                    switch (jobinfo.jobStatus) {
+//                        case 'esriJobSubmitted':
+//                            //jobstatus = type + '正在提交...';
+//                            break;
+//                        case 'esriJobExecuting':
+//                            //jobstatus = type + '处理中...';
+//                            break;
+//                        case 'esriJobSucceeded':
+//                            judgmentObj.push(g_num);
+//                            judgment();
+//                            jobstatus = '--' + g_num + '--处理完成...';
+//                            console.log((new Date().getTime() - v1) + jobstatus);
+//                            zmblockUI("#mapDiv"+g_num, "end");
+//                            break;
+//                    }
+//                }, function (error) {
+//                    console.log(error);
+//                    zmblockUI("#mapDiv"+g_num, "end");
+//                    swal('GIS，内部错误', '', 'error');
+//                });
+//
+//            }).error(function (res) {
+//                zmblockUI("#mapDiv"+g_num, "end");
+//                swal('抽数，内部错误', '', 'error');
+//            });
         }else{//风场
             var lujing = "";
             var fxOpacity = 0;
