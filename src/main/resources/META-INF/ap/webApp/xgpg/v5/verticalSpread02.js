@@ -334,7 +334,7 @@ function initEcharts() {
 function exchangeModal() {
     sceneInittion();
    // $("#Initialization").modal();
-    $("#Initialization").window("open")
+    //$("#Initialization").window("open")
 }
 var allMission = {};
 /**
@@ -380,6 +380,7 @@ function sceneInittion() {
                 $("#task").html(task);
 //      $("#Initialization").modal();//初始化模态框显示
                /*$("#Initialization").modal({backdrop: 'static', keyboard: false});*/
+                $("#Initialization").window('open');
                 sceneTable();
             } else {
                 swal('无可用任务', '', 'error')
