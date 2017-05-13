@@ -747,7 +747,8 @@ function sceneInittion() {
                 }
             });
             $("#task").html(task);
-            $("#Initialization").modal({backdrop: 'static', keyboard: false});	//初始化模态框显示
+            //$("#Initialization").modal({backdrop: 'static', keyboard: false});	//初始化模态框显示
+            $("#Initialization").window('open');
             sceneTable();
         }
 //		else {
@@ -908,7 +909,7 @@ function save_scene() {
 function exchangeModal() {
     sceneInittion();
     //$("#Initialization").modal();
-    $("#Initialization").window("open")
+    // $("#Initialization").window("open")
 }
 
 
