@@ -391,13 +391,11 @@ label#lblSelect::after
 /*下拉菜单*/
 .cloudui  .easyui-combobox{
   float: left;
-  border-radius: 0px 2px 2px 0px;
   height: 27px;
   box-sizing: border-box;
   width: 120px;
   color: #333;
-  border: 1px solid #D9D9D9;
-  border-left: 4px solid #0275D8;
+  border:1px solid  #1c84c6;
   position: relative;
   background-color:#fff;
   border-radius: 0;
@@ -807,7 +805,7 @@ dl, dd {
 .cloudui .ibox-tools {
   display: inline-block;
   float: right;
-  margin-top: 0;
+  margin-top: 2px;
   padding-top:0px;
 }
 .cloudui .ibox-title{background-color: transparent}
@@ -818,7 +816,7 @@ dl, dd {
 .cloudui .ibox-tools .wzGroup_{overflow: hidden;}
 .cloudui .ibox-tools .wzGroup .wz{float:left;border:1px solid #d9d9d9;border-right:none;border-radius: 2px 0 0 2px;padding:1px 10px;box-sizing: border-box;background: white;
   height:27px;line-height: 25px;}
-.cloudui .ibox-tools .switchBtn{float: right;border-radius: 2px;margin-top:2px;}
+.cloudui .ibox-tools .switchBtn{float: right;border-radius: 2px;}
 .cloudui .switchBtn{overflow: hidden;}
 .cloudui label{float: left;padding:0 10px;}
 .cloudui .btn input{display:none;}
@@ -1232,7 +1230,7 @@ dl, dd {
 .cloudui .xgpgShow .searchT #showTitle{border-top:1px solid #d9d9d9;background: linear-gradient(#fbfbfb, #f2f2f2); border-bottom:1px solid #d9d9d9;}
 .cloudui .xgpgShow .searchT #showTitle *{font-size: 16px;line-height:30px;color: #0275D8;}
 /*收缩按钮*/
-.cloudui .upDown{border-top:1px solid #d9d9d9;text-align: center;line-height: 23px;}
+.cloudui .upDown{text-align: center;line-height: 23px;}
 .cloudui .upDown .upDownBtn{display: inline-block;border: 1px solid #D9D9D9;border-top:none!important;background: white;height: 24px;position: relative;cursor: pointer;top:-1px;padding:0 10px;}
 .cloudui .timeUpDown{border-top:1px solid #0275D8;}
 .cloudui .timeUpDown .upDownBtn{border: 1px solid #0275D8;background-color:#0275D8;color: #fff;}
