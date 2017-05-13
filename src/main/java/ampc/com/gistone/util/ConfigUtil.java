@@ -4,10 +4,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.stereotype.Component;
 
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 
 @Component
 @Configuration
@@ -78,52 +85,61 @@ public class ConfigUtil {
 //			//redis 连接池最大阻塞等待时间（使用负值表示没有限制)
 //			@Value("${spring.redis.pool.max-wait}")
 //			private Long maxWait;
-/*			//连接超时时间（毫秒）
-			@Value("${spring.redis.timeout}")
-			private int timeout;
-	
-		    @Bean
-		    public JedisPool redisPoolFactory() {
-		        LogUtil.getLogger().info("JedisPool注入成功！！");
-		        LogUtil.getLogger().info("redis地址：" + redisHost + ":" + redisPort);
-		        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-		        jedisPoolConfig.setMaxIdle(maxIdle);
-		        jedisPoolConfig.setMaxWaitMillis(maxWait);
-		        JedisPool jedisPool = new JedisPool(jedisPoolConfig, redisHost, redisPort, timeout, redisPassWord);
-		        return jedisPool;
-		    }
-	
-	
-			
+//		    //连接超时时间（毫秒）
+//			@Value("${spring.redis.timeout}")
+//			private int timeout;
+//	
+//		    @Bean
+//		    public JedisPool redisPoolFactory() {
+//		        LogUtil.getLogger().info("JedisPool注入成功！！");
+//		        LogUtil.getLogger().info("redis地址：" + redisHost + ":" + redisPort);
+//		        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+//		        jedisPoolConfig.setMaxIdle(maxIdle);
+//		        jedisPoolConfig.setMaxWaitMillis(maxWait);
+//		        JedisPool jedisPool = new JedisPool(jedisPoolConfig, redisHost, redisPort, timeout, redisPassWord);
+//		        return jedisPool;
+//		    }
+//	
+//	    
+//			@Bean
+//	        public RedisConnectionFactory redisConnectionFactory() {
+//	            JedisConnectionFactory cf = new JedisConnectionFactory();  
+//	            cf.setHostName(redisHost);  
+//	            cf.setPort(redisPort); 
+//	            cf.setPassword(redisPassWord);
+//	            cf.afterPropertiesSet();  
+//	            return cf;  
+//	        }
+//			
+//
+//
+//			public int getTimeout() {
+//				return timeout;
+//			}
+//
+//
+//			public void setMaxIdle(int maxIdle) {
+//				this.maxIdle = maxIdle;
+//			}
+//
+//
+//
+//
+//			public int getMinidle() {
+//				return minidle;
+//			}
+//
+//
+//
+//			public String getMaxActive() {
+//				return maxActive;
+//			}
+//
+//
+//			public Long getMaxWait() {
+//				return maxWait;
+//			}
 
-
-			public int getTimeout() {
-				return timeout;
-			}*/
-
-
-/*			public void setMaxIdle(int maxIdle) {
-				this.maxIdle = maxIdle;
-			}
-
-
-
-
-			public int getMinidle() {
-				return minidle;
-			}
-
-
-
-			public String getMaxActive() {
-				return maxActive;
-			}
-
-
-			public Long getMaxWait() {
-				return maxWait;
-			}
-*/
 
 
 			public String getRedisQueuesSendName() {
