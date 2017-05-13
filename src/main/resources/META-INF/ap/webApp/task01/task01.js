@@ -196,7 +196,7 @@ function initRwTable() {
     onClickRow: function (row, $element) {
       $('.qj').val('');
       selectRW = row;
-      console.log(selectRW);
+//      console.log(selectRW);
       $('#qjTable').bootstrapTable('destroy');
       initQjTable();
       $('.info').removeClass('info');
@@ -258,8 +258,8 @@ function statusRWfun(status, t) {
   // $('.btn-success.btn-danger').removeClass('btn-danger');
   // $(t).addClass('btn-danger');
   // $('.seeName').html($(t).children('a').html());
-  console.log($(t).text());
-  console.log($("#selectType"));
+//  console.log($(t).text());
+//  console.log($("#selectType"));
   $("#selectType").html($(t).html());
   statusRW = status;
   search('rw');
@@ -389,7 +389,7 @@ function initQjTable() {
       msg.content.scenarinoStatuName = row.scenarinoStatuName;
       msg.content.SCEN_TYPE = row.SCEN_TYPE;
       vipspa.setMessage(msg);
-      console.log(row)
+//      console.log(row)
     },
     /*复选框设置*/
     onCheck: function (row) {
@@ -450,7 +450,7 @@ function rwDomain(v, row, i) {
 }
 
 function qjName(v, row, i) {
-	console.log(arguments)
+//	console.log(arguments)
   var name = row.SCEN_TYPE == 3 ? '<h3 title="创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '">' + row.scenarinoName + '</h3>' : '<h3  title="' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '"><a href="#/yabj" style="text-decoration: underline">' + row.scenarinoName + '</a></h3>';
 
   return name;
@@ -506,7 +506,7 @@ function qjOrder(v, row, i) {
  * scenarinoStatus为6、7时可以进行终止
  * 只要情景启动就允许终止*/
 function qjEndFormat(v, row, i) {
-  console.log(row);
+//  console.log(row);
   if (row.scenarinoStatus == 6 || row.scenarinoStatus == 7) {
     return "<a href='javascript:' style='color: #FF9A00'><i class='im-stop'> 终止</i></a>"
   } else {
@@ -1006,7 +1006,7 @@ function selectQJtype(type) {
       }
     }
   }, function () {
-    console.log('基础情景获取失败！！！！！');
+//    console.log('基础情景获取失败！！！！！');
     if (type == 'hj') {
       $('.hpgQJType').css('display', 'none');
       $('.hpgQJCon').css('display', 'block');
@@ -1516,12 +1516,12 @@ $('body').on('click', '.statusType', function () {
 $('#startUp').on('show.bs.modal', function (event) {
   var num = Math.round((msg.content.qjEndDate - msg.content.qjStartDate) / 1000 / 60 / 60 / 24);
   var url = '/getCores/spentTimes';
-  console.log({
-    userId: userId,
-    missionId: msg.content.rwId,
-    missionType: msg.content.rwType,
-    scenarinoType: msg.content.SCEN_TYPE
-  });
+//  console.log({
+//    userId: userId,
+//    missionId: msg.content.rwId,
+//    missionType: msg.content.rwType,
+//    scenarinoType: msg.content.SCEN_TYPE
+//  });
   ajaxPost(url, {
     userId: userId,
     missionId: msg.content.rwId,

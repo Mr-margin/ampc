@@ -303,7 +303,7 @@ function showDate(type) {
 $('input[name=rms]').on('change', function (e) { //时间分辨率选择
   var rms = $(e.target).val();
   changeMsg.rms = rms;
-  console.log(rms);
+//  console.log(rms);
   $('#species').empty();
   for (var i = 0; i < speciesArr[rms].length; i++) {
     $('#species').append($('<option>' + speciesArr[rms][i] + '</option>'))
@@ -397,7 +397,7 @@ function updata() {
         czData =  obj;
         initEcharts();
       } else {
-        console.log(res.msg)
+//        console.log(res.msg)
       }
     }, function () {
       console.log('接口故障！！！')

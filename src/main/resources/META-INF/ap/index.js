@@ -35,7 +35,7 @@ $("#button").keydown(function (event) {
 function loadIngFun(){
   var name = $('#name').val();
   if(!name){
-    console.log('请填写用户名');
+//    console.log('请填写用户名');
     swal({
       title: '请填写用户名!',
       type: 'error',
@@ -46,7 +46,7 @@ function loadIngFun(){
   }
   var pas = $('#passwordIndex').val();
   if(!pas){
-    console.log('请填写密码');
+//    console.log('请填写密码');
     swal({
       title: '请填写密码!',
       type: 'error',
@@ -67,7 +67,7 @@ function loadIngFun(){
       $('#verify').val('');
       window.location.href="home.html"
     }else{
-      console.log(res.msg);
+//      console.log(res.msg);
       swal({
         title: res.msg+'!',
         type: 'error',
