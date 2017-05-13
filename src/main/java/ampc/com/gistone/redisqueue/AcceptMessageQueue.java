@@ -165,9 +165,7 @@ public class AcceptMessageQueue implements Runnable{
 				}
 				
 			} catch (Exception e) {                                                                             
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				LogUtil.getLogger().error("线程出现异常了");
+				LogUtil.getLogger().error("线程出现异常了",e);
 			}
 			try {
 				Thread.sleep(5000);
