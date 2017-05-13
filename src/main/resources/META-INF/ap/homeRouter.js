@@ -181,8 +181,6 @@ $.when(dps_um).then(function(){
                     templateUrl: 'webApp/kqzlyb/v4/verticalSpread02.html',
                     controller: 'webApp/kqzlyb/v4/verticalSpread02.js'
                 },
-
-
                 '/userSZ': {//用户设置
                     templateUrl: 'a.html',
                     controller: ''
