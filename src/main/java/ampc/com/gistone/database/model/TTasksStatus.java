@@ -292,4 +292,27 @@ public class TTasksStatus {
     public void setTasksUpdateTime(Date tasksUpdateTime) {
         this.tasksUpdateTime = tasksUpdateTime;
     }
+
+	@Override
+	public String toString() {
+		return "TTasksStatus [tasksId=" + tasksId + ", tasksScenarinoId="
+				+ tasksScenarinoId + ", modelErrorStatus=" + modelErrorStatus
+				+ ", tasksScenarinoStartDate=" + tasksScenarinoStartDate
+				+ ", tasksScenarinoEndDate=" + tasksScenarinoEndDate
+				+ ", tasksRangeDay=" + tasksRangeDay + ", stepindex="
+				+ stepindex + ", tasksEndDate=" + tasksEndDate + ", sourceid="
+				+ sourceid + ", calctype=" + calctype + ", psal=" + psal
+				+ ", ssal=" + ssal + ", meiccityconfig=" + meiccityconfig
+				+ ", beizhu=" + beizhu + ", beizhu2=" + beizhu2 + ", beizhu3="
+				+ beizhu3 + ", stopStatus=" + stopStatus + ", tasksSendTime="
+				+ tasksSendTime + ", tasksEndTime=" + tasksEndTime
+				+ ", startModelResult=" + startModelResult
+				+ ", stopModelResult=" + stopModelResult + ", contunueStatus="
+				+ contunueStatus + ", pauseStatus=" + pauseStatus
+				+ ", tasksExpand1=" + tasksExpand1 + ", tasksExpand2="
+				+ tasksExpand2 + ", tasksExpand3=" + tasksExpand3
+				+ ", tasksExpand4=" + tasksExpand4 + ", tasksExpand5="
+				+ tasksExpand5 + ", tasksUpdateTime=" + tasksUpdateTime + "]";
+	}
+    
 }
