@@ -1,9 +1,13 @@
 package ampc.com.gistone.util;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
+
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 @Component
 @Configuration
@@ -43,8 +47,9 @@ public class ConfigUtil {
 	// 获取emis的参数（不需要减排系数）
 	@Value("${emis.paramesURL}")
 	private String emisParamesURL;
-	
-	
+	//模式运行的bodyflag参数
+	@Value("${model.bodyparames.flag}")
+	private Integer modelbodyflagparams;
 
 			//redisIP地址
 			@Value("${spring.redis.host}")
@@ -63,36 +68,63 @@ public class ConfigUtil {
 			private String redisQueueAcceptName;
 			//redis 连接池中的最大空闲连接
 			@Value("${spring.redis.pool.max-idle}")
-			private String maxIdle;
+			private int maxIdle;
 			//redis 连接池中的最小空闲连接
 			@Value("${spring.redis.pool.min-idle}")
-			private String minidle;
+			private int minidle;
 			//redis 连接池最大连接数（使用负值表示没有限制
 			@Value("${spring.redis.pool.max-active}")
 			private String maxActive;
 			//redis 连接池最大阻塞等待时间（使用负值表示没有限制)
 			@Value("${spring.redis.pool.max-wait}")
-			private String maxWait;
+			private Long maxWait;
+			//连接超时时间（毫秒）
+			@Value("${spring.redis.timeout}")
+			private int timeout;
+	
+		    @Bean
+		    public JedisPool redisPoolFactory() {
+		        LogUtil.getLogger().info("JedisPool注入成功！！");
+		        LogUtil.getLogger().info("redis地址：" + redisHost + ":" + redisPort);
+		        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+		        jedisPoolConfig.setMaxIdle(maxIdle);
+		        jedisPoolConfig.setMaxWaitMillis(maxWait);
+		        JedisPool jedisPool = new JedisPool(jedisPoolConfig, redisHost, redisPort, timeout, redisPassWord);
+		        return jedisPool;
+		    }
 	
 	
-	
-	
+			
 
-			public String getMaxIdle() {
-				return maxIdle;
+
+			public int getTimeout() {
+				return timeout;
 			}
 
-			public String getMinidle() {
+
+			public void setMaxIdle(int maxIdle) {
+				this.maxIdle = maxIdle;
+			}
+
+
+
+
+			public int getMinidle() {
 				return minidle;
 			}
+
+
 
 			public String getMaxActive() {
 				return maxActive;
 			}
 
-			public String getMaxWait() {
+
+			public Long getMaxWait() {
 				return maxWait;
 			}
+
+
 
 			public String getRedisQueuesSendName() {
 				return redisQueuesSendName;
@@ -116,6 +148,11 @@ public class ConfigUtil {
 
 	
 	
+
+	public Integer getModelbodyflagparams() {
+				return modelbodyflagparams;
+			}
+
 	public String getEmisParamesURL() {
 				return emisParamesURL;
 			}
