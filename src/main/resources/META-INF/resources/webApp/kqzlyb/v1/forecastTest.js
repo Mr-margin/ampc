@@ -312,6 +312,7 @@ $('.proStation').on('change', function (e) {
     if (!dps_Station[changeMsg.city + changeMsg.type]) {
         dps_Station[changeMsg.city + changeMsg.type] = setStation(changeMsg.city, changeMsg.type);
     }
+    showTitleFun();
     updata();
 });
 
