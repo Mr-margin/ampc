@@ -260,7 +260,12 @@
                   <div class="menuCD_title">
                     <span>名&nbsp;&nbsp;&nbsp;称&nbsp;&nbsp;&nbsp;筛&nbsp;&nbsp;&nbsp;选</span></div>
                   <div class="menuCD_con">
-
+                    <div class="col-6" style="margin-top: 10px;" id="se_name">
+                      <div class="input-group m-b" style="margin-bottom: 0px">
+                        <span class="input-group-addon" style="border: 1px solid #E5E6E7;">企业名称:</span>
+                        <input type="text" class="form-control" id="qiye_name" name="qiye_name">
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -314,3 +319,58 @@
     </div>
   </div>
 </div>
+
+<!-- 设置情景范围模态框 -->
+<div class="modal fade sxTableMap" id="sxTableMap" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document" style="height: 100%">
+    <div class="modal-content" style="height: 100%">
+      <div class="modal-body" style="height:calc(100% - 50px);">
+        <div class="sxRequirement" style="height: 50px;background-color: #00a2d4"></div>
+        <div class="sxCon" style="height:calc(100% - 50px);">
+          <div class="col-6 sxTable" style="height: 100%">
+            <table id="metTable_point">
+              <!--<thead>-->
+              <!--<tr>-->
+                <!--<th data-field="regionName" data-halign="center" data-align="center">所属</th>-->
+                <!--<th data-field="companyname" data-halign="center" data-align="center">企业名称</th>-->
+                <!--<th data-field="equipId" data-halign="center" data-align="center">设备编号</th>-->
+                <!--<th data-field="equipnumbers" data-halign="center" data-align="center">设备数</th>-->
+              <!--</tr>-->
+              <!--</thead>-->
+            </table>
+          </div>
+          <div class="col-6 sxMap" style="height: 100%">
+            <div class="col-12" id="mapDiv1" style="height:100%;border:1px solid #75B9E6;padding: 0px;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer new-foot dlogFooter" >
+        <button type="button" class="btn btn-primary" >保存子措施</button>
+        <button type="button" class="btn btn-default" id="close_scene" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    //弹框
+    $("#sxTableMap").window({
+        width:'80%',
+        height:'80%',
+        collapsible:false,
+        maximizable:false,
+        minimizable:false,
+        draggable:false,
+        modal:true,
+        shadow:false,
+        title:'筛选列表',
+        border:false,
+        buttons:'#dlg_jpBtn',
+        closed:true,
+        cls: 'cloudui'
+    });
+    $("#close_scene").click(function () {
+        $("#sxTableMap").window("close")
+    })
+
+</script>
