@@ -110,6 +110,7 @@ public class AcceptMessageQueue implements Runnable{
 			}
 		}*/
 		
+		LogUtil.getLogger().info("线程开始运行：redis-ip:"+configUtil.getRedisHost()+",redis-port:"+configUtil.getRedisPort());
 	while (true) {
 			try {
 				System.out.println("队列接受数据");
@@ -165,7 +166,7 @@ public class AcceptMessageQueue implements Runnable{
 				}
 				
 			} catch (Exception e) {                                                                             
-				LogUtil.getLogger().error("线程出现异常了",e);
+				LogUtil.getLogger().error("线程出现异常了,redis-ip:"+configUtil.getRedisHost()+",redis-port:"+configUtil.getRedisPort(),e.getMessage(),e);
 			}
 			try {
 				Thread.sleep(5000);
