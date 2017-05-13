@@ -105,6 +105,15 @@ import java.util.UUID;
 
 
 
+
+
+
+
+
+
+
+
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -260,9 +269,8 @@ public class ReadyData {
 		}
 		if (scenarinoType==1&&missionType==2) {
 			//预评估任务的预评估情景
-			//readyPreEvaluationSituationDataFirst(scenarinoId,cores);
 			LogUtil.getLogger().info("预评估任务的预评估情景模式开始！");
-			flag=true;
+			flag = readycontinuePreEvaluationSituationData(scenarinoId,continuemodel);
 		}
 		if (scenarinoType==2&&missionType==2) {
 			//预评估任务的后评估情景
@@ -277,6 +285,7 @@ public class ReadyData {
 	}
 
 	
+
 	/**
 	 * 
 	 * @Description: 根据情景和任务类型分类准备数据 当这几种情况都不存在的时候返回参数1
@@ -416,8 +425,6 @@ public class ReadyData {
 		QueueDataWrf wrfData = new QueueDataWrf();
 		//创建cmaq对象
 		QueueDataCmaq cmaqData = new QueueDataCmaq();
-		//设置消息里面的的time和type的值
-		queueData = getHeadParameter("model.start");
 		//情景类型
 		String scenarinoType = scenarinoDetailMSG.getScenType();
 		//准备commom数据
@@ -446,8 +453,10 @@ public class ReadyData {
 		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType,scenarinoId);
 		if (continuemodel) {
 			//续跑模式
+			//设置消息里面的的time和type的值
+			queueData = getHeadParameter("model.continue");
 			//创建消息bady对象   并获取 bodydata的数据
-			QueueBodyData2 bodyData2 = getcontinueParams(scenarinoDetailMSG);
+			QueueBodyData2 bodyData2 = getcontinueParams(scenarinoDetailMSG,null);
 			//设置body的数据
 			bodyData2.setCommon(commonData);
 			bodyData2.setWrf(wrfData);
@@ -455,6 +464,8 @@ public class ReadyData {
 			bodyData2.setEmis(DataEmis);
 			queueData.setBody(bodyData2);
 		}else {
+			//设置消息里面的的time和type的值
+			queueData = getHeadParameter("model.start");
 			//创建消息bady对象   并获取 bodydata的数据
 			QueueBodyData bodyData = getbodyDataHead(scenarinoDetailMSG);
 			//设置body的数据
@@ -496,8 +507,6 @@ public class ReadyData {
 		QueueDataWrf wrfData = new QueueDataWrf();
 		//创建cmaq对象
 		QueueDataCmaq cmaqData = new QueueDataCmaq();
-		//设置消息里面的的time和type的值
-		queueData = getHeadParameter("model.start");
 		//准备commom数据
 		//情景类型
 		String scenarinoType = scenarinoDetailMSG.getScenType();
@@ -527,13 +536,17 @@ public class ReadyData {
 		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType,scenarinoId);
 		if (continuemodel) {
 			//续跑模式
-			QueueBodyData2 bodyData2 = getcontinueParams(scenarinoDetailMSG);
+			//设置消息里面的的time和type的值
+			queueData = getHeadParameter("model.continue");
+			QueueBodyData2 bodyData2 = getcontinueParams(scenarinoDetailMSG,null);
 			bodyData2.setCommon(commonData);
 			bodyData2.setWrf(wrfData);
 			bodyData2.setCmaq(cmaqData);
 			bodyData2.setEmis(DataEmis);
 			queueData.setBody(bodyData2);
 		}else {
+			//设置消息里面的的time和type的值
+			queueData = getHeadParameter("model.start");
 			//创建消息bady对象   并获取 bodydata的数据
 			QueueBodyData bodyData = getbodyDataHead(scenarinoDetailMSG);
 			//设置body的数据
@@ -577,7 +590,7 @@ public class ReadyData {
 		if (null==stepindex&&null==tasksEndDate&&compstatus.equals("0")&&sendtime.equals(DateUtil.DATEtoString(startdate, "yyyyMMdd"))) {
 			//确定firsttime
 			boolean firsttime = getfirsttime(tScenarinoDetail);
-			QueueData queueData = readyRealMessageData(tScenarinoDetail, sendtime, firsttime, "fnl", scenarinoId, lastungrib,continuemodel);
+			QueueData queueData = readyRealMessageData(tScenarinoDetail, sendtime, firsttime, "fnl", scenarinoId, lastungrib,continuemodel,selectStatus);
 			boolean flag = sendQueueData.toJson(queueData, scenarinoId,sendtime);
 			return flag;
 		}
@@ -585,7 +598,7 @@ public class ReadyData {
 		else if (compareTo>=0) {
 			//确定firsttime
 			boolean firsttime = getfirsttime(tScenarinoDetail);
-			QueueData queueData = readyRealMessageData(tScenarinoDetail, sendtime, firsttime, "gfs", scenarinoId, lastungrib,continuemodel);
+			QueueData queueData = readyRealMessageData(tScenarinoDetail, sendtime, firsttime, "gfs", scenarinoId, lastungrib,continuemodel,selectStatus);
 			boolean flag = sendQueueData.toJson(queueData, scenarinoId,sendtime);
 			return flag;
 		}else {
@@ -611,7 +624,7 @@ public class ReadyData {
 		//确定firsttime
 		boolean firsttime = getfirsttime(scenarinoDetailMSG);
 		String datatype = "fnl";
-		QueueData queueData = readyRealMessageData(scenarinoDetailMSG,time,firsttime,datatype,null,lastungrib,false);
+		QueueData queueData = readyRealMessageData(scenarinoDetailMSG,time,firsttime,datatype,null,lastungrib,false,null);
 		sendQueueData.toJson(queueData, scenarinoId,time);
 	}
 	
@@ -675,7 +688,7 @@ public class ReadyData {
 		String lastungrib = readyLastUngrib(userId);
 		LogUtil.getLogger().info("实时预报对应的lastungrib："+lastungrib);
 		//准备实时预报的参数
-		QueueData queueData = readyRealMessageData(scenarinoDetailMSG, time, firsttime, datatype, scenarinoId, lastungrib,false);
+		QueueData queueData = readyRealMessageData(scenarinoDetailMSG, time, firsttime, datatype, scenarinoId, lastungrib,false,null);
 		sendQueueData.toJson(queueData, scenarinoId,time);
 	}
 	
@@ -849,11 +862,9 @@ public class ReadyData {
 	 */
 	private QueueData readyRealMessageData(
 			TScenarinoDetail scenarinoDetailMSG,String time, boolean firsttime,
-			String datatype, Long scenarinoId,String lastungrib,boolean continuemodel) {
+			String datatype, Long scenarinoId,String lastungrib,boolean continuemodel,TTasksStatus selectStatus) {
 		//创建消息体对象
 		QueueData queueData = new QueueData();
-		//设置消息里面的的time和type的值
-		queueData = getHeadParameter("model.start");
 		if (null!=scenarinoId) {
 			//查找数据库的情景详情的消息通过情景ID
 			scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
@@ -901,8 +912,10 @@ public class ReadyData {
 		//创建emis对象   调用方法获取emis数据
 		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType,scenarinoId);
 		if (continuemodel) {
+			//设置消息里面的的time和type的值
+			queueData = getHeadParameter("model.continue");
 			//设置消息里面body节点的主体消息
-			QueueBodyData2 bodyData2 = getcontinueParams(scenarinoDetailMSG);
+			QueueBodyData2 bodyData2 = getcontinueParams(scenarinoDetailMSG,selectStatus);
 			//设置body的数据
 			bodyData2.setCommon(commonData);
 			bodyData2.setWrf(wrfData);
@@ -910,6 +923,8 @@ public class ReadyData {
 			bodyData2.setEmis(DataEmis);
 			queueData.setBody(bodyData2);
 		}else {
+			//设置消息里面的的time和type的值
+			queueData = getHeadParameter("model.start");
 			//设置消息里面body节点的主体消息
 			QueueBodyData bodyData = getbodyDataHead(scenarinoDetailMSG);
 			//设置body的数据
@@ -934,7 +949,7 @@ public class ReadyData {
 	 */
 	public boolean readyBaseData(Long scenarinoId,boolean continuemodel) {
 		//创建消息体对象
-		QueueData queueData = getHeadParameter("model.start");
+		QueueData queueData = new QueueData();
 		//创建wrf对象
 		QueueDataWrf wrfData = new QueueDataWrf();
 		//创建cmaq对象
@@ -967,14 +982,16 @@ public class ReadyData {
 		//创建emis对象   调用方法获取emis数据
 		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType,scenarinoId);
 		if (continuemodel) {
+			queueData = getHeadParameter("model.continue");
 			//续跑模式
-			QueueBodyData2 bodyData2 = getcontinueParams(scenarinoDetailMSG);
+			QueueBodyData2 bodyData2 = getcontinueParams(scenarinoDetailMSG,null);
 			bodyData2.setCommon(commonData);
 			bodyData2.setWrf(wrfData);
 			bodyData2.setCmaq(cmaqData);
 			bodyData2.setEmis(DataEmis);
 			queueData.setBody(bodyData2);
 		}else {
+			queueData = getHeadParameter("model.start");
 			//设置消息里面body节点的主体消息
 			QueueBodyData bodyData = getbodyDataHead(scenarinoDetailMSG);
 			bodyData.setCommon(commonData);
@@ -1018,7 +1035,7 @@ public class ReadyData {
 		//第一次发送数据 ic是基础情景 后面的户数ic是本条情景ID和任务ID
 		boolean first= true;
 		String time = DateUtil.DATEtoString(startDate, "yyyyMMdd");
-		QueueData queueData = readypreEvaSituMessageData(tScenarinoDetail,datatype,time,first);
+		QueueData queueData = readypreEvaSituMessageData(tScenarinoDetail,datatype,time,first,false,null);
 		boolean json = sendQueueData.toJson(queueData,scenarinoId, time);
 		return json;
 	}
@@ -1049,10 +1066,90 @@ public class ReadyData {
 			datatype = "gfs";
 		}
 		boolean first=false;
-		QueueData queueData = readypreEvaSituMessageData(tScenarinoDetail , datatype, time,first);
+		QueueData queueData = readypreEvaSituMessageData(tScenarinoDetail , datatype, time,first,false,null);
 		//预评估数据已经跟新了状态了 这里传空
 		boolean json = sendQueueData.toJson(queueData,scenarinoId, time);
 		return json;
+	}
+	/**
+	 * @Description: 预评估任务的续跑
+	 * 	//模式运行未出错的情况下
+	 * //模式运行出错的情况下的续跑
+	 * @param scenarinoId
+	 * @param continuemodel   
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年5月12日 下午7:15:23
+	 */
+	private boolean readycontinuePreEvaluationSituationData(Long scenarinoId,
+			boolean continuemodel) {
+		boolean successflag = false ;
+		String datatype ;
+		String time ;
+		boolean first = false;
+		try {
+			TScenarinoDetail selectByPrimaryKey = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+			if (null!=selectByPrimaryKey) {
+				TTasksStatus selectStatus = tTasksStatusMapper.selectStatus(scenarinoId);
+				if (null!=selectStatus) {
+					Long stepindex = selectStatus.getStepindex();
+					Date tasksEndDate = selectStatus.getTasksEndDate();
+					String sendtime = selectStatus.getBeizhu2();
+					String modelErrorStatus = selectStatus.getModelErrorStatus();
+					Date pathDate = DateUtil.DateToDate(selectByPrimaryKey.getPathDate(), "yyyyMMdd");
+					Date nowDate = DateUtil.StrtoDateYMD(sendtime, "yyyyMMdd");
+					//比较已经发送了的时间和pathdate
+					int compareTo = pathDate.compareTo(nowDate);
+					Date scenarinoStartDate =DateUtil.DateToDate(selectByPrimaryKey.getScenarinoStartDate(), "yyyyMMdd");
+					//比较已经发送了的时间和情景的开始时间 等于0表示发的是第一条消息 小于0表示至少是第二条消息
+					int compareTo2 = scenarinoStartDate.compareTo(nowDate);
+					
+					if (compareTo>0) {
+						 datatype="fnl";
+					}else {
+						datatype = "gfs";
+					}
+					time = sendtime;
+					if (null!=modelErrorStatus) {
+						if (compareTo2==0) {
+							first=true;
+						}else {
+							first = false;
+						}
+					}else {
+						if (stepindex<4) {
+							if (compareTo2==0) {
+								first=true;
+							}else {
+								first=false;
+							}
+						}
+						if (stepindex==4) {
+							//至少第一次的消息发送完毕
+							first = false;
+							time = DateUtil.changeDate(tasksEndDate, "yyyyMMdd", 1);
+						}
+					}
+					QueueData queueData = readypreEvaSituMessageData(selectByPrimaryKey, datatype, time, first,continuemodel,selectStatus);
+					successflag = sendQueueData.toJson(queueData,scenarinoId,time);
+					if (successflag) {
+						LogUtil.getLogger().info("发送预评估情景续跑到消息队列成功！");
+					}else {
+						LogUtil.getLogger().info("发送预评估情景续跑消息到消息队列失败！");
+					}
+				}else {
+					LogUtil.getLogger().info("readycontinuePreEvaluationSituationData 查找预评估情景的tasks状态为空");
+					successflag = false;
+				}
+			}else {
+				LogUtil.getLogger().info("readycontinuePreEvaluationSituationData  查找预评估情景为空!");
+				successflag = false;
+			}
+		} catch (Exception e) {
+			 successflag = false;
+		}
+		return successflag;
 	}
 	/**
 	 * @Description: TODO
@@ -1062,19 +1159,15 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年3月30日 下午4:45:39
 	 */
-	private QueueData readypreEvaSituMessageData(TScenarinoDetail scenarinoDetailMSG,String datatype,String time,boolean first) {
+	private QueueData readypreEvaSituMessageData(TScenarinoDetail scenarinoDetailMSG,String datatype,String time,boolean first,boolean continuemodel,TTasksStatus selectStatus) {
 		//创建消息体对象
 		QueueData queueData = new QueueData();
 		//创建wrf对象
 		QueueDataWrf wrfData = new QueueDataWrf();
 		//创建cmaq对象
 		QueueDataCmaq cmaqData = new QueueDataCmaq();
-		//设置消息里面的的time和type的值
-		queueData = getHeadParameter("model.start");
 		//查找数据库的情景详情的消息通过情景ID
 //		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
-		//创建消息bady对象 设置消息里面body节点的主体消息
-		QueueBodyData bodyDate = getbodyDataHead(scenarinoDetailMSG);
 		String scenarinoType = scenarinoDetailMSG.getScenType();
 		//设置firsttime
 		boolean firsttime = false;
@@ -1106,15 +1199,30 @@ public class ReadyData {
 			Map<String, Object> icMap = getIC(scenarinoId,missionId ,firsttime,icdate); 
 			cmaqData.setIc(icMap);
 		}
-		
 		//创建emis对象   调用方法获取emis数据
 		QueueDataEmis DataEmis = getDataEmis(missionId,scenarinoType,scenarinoId);
-		//设置body的数据
-		bodyDate.setCommon(commonData);
-		bodyDate.setWrf(wrfData);
-		bodyDate.setCmaq(cmaqData);
-		bodyDate.setEmis(DataEmis);
-		queueData.setBody(bodyDate);
+		if (continuemodel) {
+			//设置消息里面的的time和type的值
+			queueData = getHeadParameter("model.continue");
+			//创建消息bady对象 设置消息里面body节点的主体消息
+			QueueBodyData2 bodyData2 = getcontinueParams(scenarinoDetailMSG,selectStatus);
+			bodyData2.setCommon(commonData);
+			bodyData2.setWrf(wrfData);
+			bodyData2.setCmaq(cmaqData);
+			bodyData2.setEmis(DataEmis);
+			queueData.setBody(bodyData2);
+		}else {
+			//设置消息里面的的time和type的值
+			queueData = getHeadParameter("model.start");
+			//创建消息bady对象 设置消息里面body节点的主体消息
+			QueueBodyData bodyDate = getbodyDataHead(scenarinoDetailMSG);
+			//设置body的数据
+			bodyDate.setCommon(commonData);
+			bodyDate.setWrf(wrfData);
+			bodyDate.setCmaq(cmaqData);
+			bodyDate.setEmis(DataEmis);
+			queueData.setBody(bodyDate);
+		}
 		return queueData;
 	}
 
@@ -1156,10 +1264,12 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年5月2日 下午6:02:56
 	 */
-	private QueueBodyData2 getCindexAndcDate(Long scenarinoId, Integer scenarinoType) {
+	private QueueBodyData2 getCindexAndcDate(Long scenarinoId, Integer scenarinoType,TTasksStatus selectStatus) {
 		//创建消息bady对象
 		QueueBodyData2 bodyData2 = new QueueBodyData2();
-		TTasksStatus selectStatus = tTasksStatusMapper.selectStatus(scenarinoId);
+		if (null==selectStatus) {
+			selectStatus = tTasksStatusMapper.selectStatus(scenarinoId);
+		}
 		Date scenarinoEndDate = selectStatus.getTasksScenarinoEndDate();
 		Date scenarinoStartDate = selectStatus.getTasksScenarinoStartDate();
 		Long stepindex = selectStatus.getStepindex();
@@ -1265,17 +1375,18 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年5月2日 下午5:51:32
 	 */
-	private QueueBodyData2 getcontinueParams(TScenarinoDetail scenarinoDetailMSG) {
+	private QueueBodyData2 getcontinueParams(TScenarinoDetail scenarinoDetailMSG,TTasksStatus selectStatus) {
 		Integer scenarinoType = Integer.parseInt(scenarinoDetailMSG.getScenType());//情景类型
 		Long userId = scenarinoDetailMSG.getUserId();
 		Long missionId = scenarinoDetailMSG.getMissionId();//任务id
 		Long scenarinoId = scenarinoDetailMSG.getScenarinoId();//情景id
 		Long cores =Long.parseLong(scenarinoDetailMSG.getExpand3());//计算核数
 		//创建消息bady对象
-		QueueBodyData2 bodyData2 = getCindexAndcDate(scenarinoId,scenarinoType);
+		QueueBodyData2 bodyData2 = getCindexAndcDate(scenarinoId,scenarinoType,selectStatus);
 		//调试模式的内容
-		//bodyData.setFlag(1);
-		bodyData2.setFlag(0);
+		Integer flag = configUtil.getModelbodyflagparams();
+//		bodyData2.setFlag(1);
+		bodyData2.setFlag(flag);
 		bodyData2.setCores(cores);
 		bodyData2.setUserid(userId.toString());
 		bodyData2.setScenarioid(scenarinoId.toString());
@@ -1304,8 +1415,9 @@ public class ReadyData {
 		//创建消息bady对象
 		QueueBodyData bodyData = new QueueBodyData();
 		//调试模式的内容
+		Integer flag = configUtil.getModelbodyflagparams();
 //		bodyData.setFlag(1);
-		bodyData.setFlag(0); 
+		bodyData.setFlag(flag); 
 		Integer scenarinoType = Integer.parseInt(scenarinoDetailMSG.getScenType());//情景类型
 		Long userId = scenarinoDetailMSG.getUserId();
 		Long missionId = scenarinoDetailMSG.getMissionId();//任务id
