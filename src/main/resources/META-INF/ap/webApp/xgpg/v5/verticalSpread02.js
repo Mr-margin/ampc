@@ -738,7 +738,6 @@ function updata() {
 }
 
 function showTitleFun() {
-
     $('#showTitle span').empty();
     if (zhiCity.indexOf(changeMsg.pro) == -1) {
         if (changeMsg.station == 'avg') {
