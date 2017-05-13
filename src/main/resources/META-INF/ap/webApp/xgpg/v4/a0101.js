@@ -1272,7 +1272,8 @@ function judgment() {
     }
 }
 //easyui 增加
-$(".upDownBtn").append("<i class='en-arrow-up7'></i>")
+$(".upDownBtn").append("<i class='en-arrow-up7'></i>");
+$(".toolAll").hide();
 $(".upDownBtn").click(function(){
     console.log($(".upDownBtn").val());
     if($(".upDownBtn").text()=="收起"){

@@ -1092,6 +1092,7 @@ $('input[name=domain]').on('change', function (e) {
 //easyui 添加
 //var headerH = $(".cloudui .searchT").height();
 //$(".charContent").css({"top": headerH + "px"});
+$(".toolAll").hide();
 $(".cloudui .searchT  .upDownBtn").append("<i class='en-arrow-up7'></i>")
 $(".cloudui .searchT .upDownBtn").click(function () {
     //console.log($(".upDownBtn").val());
