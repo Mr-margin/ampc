@@ -520,4 +520,47 @@ public class GetWeatherModelController {
 		String getResult=ClientUtil.doPost(url,sourceid.toString());*/
 		return null;
 	}
+	
+
+	/**
+	 * 查询暂停是否成功
+	 * @param scenarinoId
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping("/find_tTask")
+	public  AmpcResult selectzt(@RequestBody Map<String,Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
+		try {
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());
+			Integer flag=Integer.valueOf(data.get("flag").toString());	
+			//根据情景id查询task
+				TTasksStatus tTask=tTasksStatusMapper.selectzt(scenarinoId);
+				//判断是否查询到task
+				if(tTask==null){
+					throw new SQLException("未查询到task信息！");
+				} 
+				//判断为暂停还是停止
+				if(flag==1){
+					if(tTask.getPauseStatus()!=null&&!tTask.getPauseStatus().equals("")&&tTask.getPauseStatus().equals("0")){//暂停判断
+						return AmpcResult.ok("ok");
+					}else{
+						return AmpcResult.ok("no");
+					}
+				}else{
+					if(tTask.getStopStatus()!=null&&tTask.getStopStatus().equals("")&&tTask.getStopStatus().equals("0")){//停止
+						return AmpcResult.ok("ok");
+					}else{
+						return AmpcResult.ok("no");
+					}					
+				}
+		}catch(SQLException e){
+			LogUtil.getLogger().error("未查询到task信息！",e);
+			return AmpcResult.build(1000, "未查询到task信息！");
+		}catch(Exception e){
+			LogUtil.getLogger().error("查询task信息异常！",e);
+			return AmpcResult.build(1001, "查询task信息异常！");
+		}
+	}
 }
