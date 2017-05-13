@@ -244,9 +244,9 @@ function sceneInittion() {
     $("#task").html("");
     var paramsName = {};
     paramsName.userId = userId;
-    console.log(JSON.stringify(paramsName));
+    //console.log(JSON.stringify(paramsName));
     ajaxPost('/mission/find_All_mission', paramsName).success(function (res) {
-        console.log(JSON.stringify(res));
+        //console.log(JSON.stringify(res));
         if (res.status == 0) {
             if (res.data || res.data.length > 0) {
                 var task = "";
@@ -366,7 +366,7 @@ function save_scene() {
         mag.data = data;
         vipspa.setMessage(mag);
         ls.setItem('SI', JSON.stringify(mag));
-        console.log(data);
+        //console.log(data);
         sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
         setQjSelectBtn(data);
         $("#close_scene").click();
@@ -753,7 +753,7 @@ $('#species').on('change', function (e) {  //物种选择
     var species = $(e.target).val();
     changeMsg.species = [];
     changeMsg.species.push(species);
-    console.log(species);
+    //console.log(species);
     app.tuodong = true;
     showTitleFun();
     updata();
@@ -762,7 +762,7 @@ $('#species').on('change', function (e) {  //物种选择
 $('input[name=domain]').on('change', function (e) { //domaon选择
     var domain = $(e.target).val();
     changeMsg.domain = domain;
-    console.log(domain);
+    //console.log(domain);
     app.tuodong = true;
     showTitleFun()
     updata();
@@ -772,7 +772,7 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
     var rms = $(e.target).val();
     changeMsg.dates = [];
     rmsType = rms;
-    console.log(rms);
+    //console.log(rms);
     $('#species').empty();
     for (var i = 0; i < speciesArr[rms].length; i++) {
         $('#species').append($('<option>' + speciesArr[rms][i] + '</option>'))
@@ -813,7 +813,7 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
 $('input[name=calcType]').on('change', function (e) { //地图图片类型
     var type = $(e.target).val();
     changeMsg.calcType = type;
-    console.log(type);
+    //console.log(type);
     app.tuodong = true;
     showTitleFun()
     updata(true);
@@ -836,14 +836,14 @@ $('input[name=showWind]').on('change', function (e) { //地图风场类型
         changeMsg.showType.push('wind');
     }
 
-    console.log(type);
+    //console.log(type);
     app.tuodong = true;
     updata('wind');
 });
 
 $('#qjBtn1').on('change', 'input', function (e) {//改变左侧情景
     var qjId = $(e.target).val();
-    console.log(qjId)
+    //console.log(qjId)
     var index = $('input[name=qjBtn1]').index($(e.target));
     $('#qjBtn2 .disabled').removeClass('disabled');
     $('#qjBtn2 .active').removeClass('active');
@@ -900,7 +900,7 @@ $('#sTime-d').on('change', function (e) {//选择日期
             }
         }
     }
-    console.log(date);
+    //console.log(date);
     app.tuodong = true;
     showTitleFun();
     updata();
@@ -909,7 +909,7 @@ $('#sTime-d').on('change', function (e) {//选择日期
 $('#sTime-h').on('change', function (e) {//选择时间
     var date = $(e.target).val();
     changeMsg.sTimeH = date - 0;
-    console.log(date)
+    //console.log(date)
     app.tuodong = true;
     showTitleFun()
     updata();
@@ -929,7 +929,7 @@ $('#eTime').on('change', function (e) {//选择平均后的时间
             }
         }
     }
-    console.log(date);
+    //console.log(date);
     app.tuodong = true;
     showTitleFun();
     updata();
