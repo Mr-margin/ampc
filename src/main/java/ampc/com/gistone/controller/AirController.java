@@ -549,7 +549,7 @@ public class AirController {
 							scenarinoEntity.setDay(calDate);
 							scenarinoEntity.setTableName(tables);
 							scenarinoEntity=tPreProcessMapper.selectBysomesFnl(scenarinoEntity);
-							if(scenarinoEntity==null||"".equals(scenarinoEntity)||"{}".equals(scenarinoEntity)||"null".equals(scenarinoEntity)){
+							if(scenarinoEntity==null||"".equals(scenarinoEntity.toString())||"{}".equals(scenarinoEntity.toString())||"null".equals(scenarinoEntity.toString())){
 								contentmapData.put(sdfNow.format(calDate), "{}");
 							}else{
 								contentmapData.put(sdfNow.format(calDate), mapper.readValue(scenarinoEntity.getContent(), Map.class));	//数据--空
@@ -568,7 +568,6 @@ public class AirController {
 								if(speciesobj==null||"{}".equals(speciesobj)||"".equals(speciesobj)||"null".equals(speciesobj)||"NULL".equals(speciesobj)){
 									speciesDayData.put(dayKey,"-");
 								}else{
-								
 									Map<String,Object> speciesMap= (Map)speciesobj;
 									//单个物种数据
 									Object speciesOne=speciesMap.get(simulationArr[s].toString());	
@@ -589,12 +588,9 @@ public class AirController {
 											speciesDayData.put(dayKey,bd);
 										}
 									}
-								
 								}
-								
 							}
 							simulationData.put(simulationArr[s].toString(),speciesDayData);
-						
 					}
 					
 //					HashMap<String, Object> mapNow=new HashMap<String, Object>();
@@ -805,25 +801,27 @@ public class AirController {
 								Date calDate_now=sdfNow.parse(calDateStrs);
 								obsMap.put("date", calDate_now);
 								ObsBean obsBeans=tObsMapper.queryUnionResult(obsMap);	//查询观测数据
-								if(!"".equals(obsBeans)&&obsBeans!=null&&!"{}".equals(obsBeans)){
+								if(!"".equals(obsBeans)&&obsBeans!=null&&!"{}".equals(obsBeans)&&!"null".equals(obsBeans)&&!"NULL".equals(obsBeans)){
 									String obsContent=obsBeans.getContent().toString();
 									Map obsContentobj=mapper.readValue(obsContent, Map.class);
-//									Map<String,Object> obsContentMap= (Map)obsContentobj;
 									for(int k=0;k<speciesArr.length;k++){		//查询的观测数据不为空时，进行赋值
 										if(speciesArr[m].equals(speciesArr[k])){
-											try {
+											if("".equals(obsContentobj.toString())||"null".equals(obsContentobj.toString())||"NULL".equals(obsContentobj.toString())||"{}".equals(obsContentobj.toString())||obsContentobj==null){
+												obsSpeciesData.put(sdfNow.format(calDate_now), "-");
+											}else{
 												String speciesval=obsContentobj.get(speciesArr[k]).toString();	//键为空出现异常时，赋值"-"
-												if("CO".equals(speciesArr[k])){									//值不为空，保留位数判断
-													BigDecimal bd=(new BigDecimal(speciesval)).setScale(2, BigDecimal.ROUND_HALF_UP);
-													obsSpeciesData.put(sdfNow.format(calDate_now), bd);
+												if("-".equals(speciesval)||"".equals(speciesval)||"null".equals(speciesval)||"NULL".equals(speciesval)||"{}".equals(speciesval)||speciesval==null){
+													obsSpeciesData.put(sdfNow.format(calDate_now), "-");
 												}else{
-													BigDecimal bd=(new BigDecimal(speciesval)).setScale(1, BigDecimal.ROUND_HALF_UP);
-													obsSpeciesData.put(sdfNow.format(calDate_now), bd);
+													if("CO".equals(speciesArr[k])){									//值不为空，保留位数判断
+														BigDecimal bd=(new BigDecimal(speciesval)).setScale(2, BigDecimal.ROUND_HALF_UP);
+														obsSpeciesData.put(sdfNow.format(calDate_now), bd);
+													}else{
+														BigDecimal bd=(new BigDecimal(speciesval)).setScale(1, BigDecimal.ROUND_HALF_UP);
+														obsSpeciesData.put(sdfNow.format(calDate_now), bd);
+													}
 												}
-											} catch (Exception e) {
-												// TODO: handle exception
-												obsSpeciesData.put(sdfNow.format(calDate_now),"-" );
-											}
+											}	
 										}
 									}
 								}else{
@@ -1098,7 +1096,7 @@ public class AirController {
 							scenarinoEntity.setDay(calDate);
 							scenarinoEntity.setTableName(tables);
 							scenarinoEntity=tPreProcessMapper.selectBysomesFnl(scenarinoEntity);
-							if(scenarinoEntity==null||"".equals(scenarinoEntity)||"{}".equals(scenarinoEntity)||"null".equals(scenarinoEntity)){
+							if(scenarinoEntity==null||"".equals(scenarinoEntity.toString())||"{}".equals(scenarinoEntity.toString())||"null".equals(scenarinoEntity.toString())){
 								//数据--空
 								contentmapData.put(sdfNow.format(calDate), "{}");
 							}else{
@@ -1145,7 +1143,7 @@ public class AirController {
 										}else{
 											for(int h=0;h<speciesOneVal.size();h++){
 												hourOneVal=speciesOneVal.get(h).toString();
-												if("-".equals(hourOneVal)){
+												if("-".equals(hourOneVal)||"".equals(hourOneVal)||"null".equals(hourOneVal)||"NULL".equals(hourOneVal)||"{}".equals(hourOneVal)||hourOneVal==null){
 													hourData.put(h, "-");
 												}else{
 													BigDecimal bd=(new BigDecimal(speciesOneVal.get(h).toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
@@ -1156,7 +1154,7 @@ public class AirController {
 											speciesData.put(dayKey,hourData);
 										}
 									}else{
-										if("".equals(speciesOneVal)||speciesOneVal==null||"-".equals(speciesOneVal)){		//判断是否有值
+										if("".equals(speciesOneVal)||speciesOneVal==null||"-".equals(speciesOneVal)||"{}".equals(speciesOneVal)||"NULL".equals(speciesOneVal)||"null".equals(speciesOneVal)){		//判断是否有值
 											for(int h=0;h<speciesOneVal.size();h++){
 												hourData.put(h, "-");
 											}
@@ -1165,7 +1163,7 @@ public class AirController {
 											for(int h=0;h<speciesOneVal.size();h++){
 												
 												hourOneVal=speciesOneVal.get(h).toString();
-												if("-".equals(hourOneVal)){
+												if("-".equals(hourOneVal)||"".equals(hourOneVal)||"null".equals(hourOneVal)||"NULL".equals(hourOneVal)||"{}".equals(hourOneVal)||hourOneVal==null){
 													hourData.put(h, "-");
 												}else{
 													BigDecimal bd=(new BigDecimal(speciesOneVal.get(h).toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
@@ -1248,7 +1246,7 @@ public class AirController {
 												if("CO".equals(speciesArr[k])){									
 													for(int i=0;i<24;i++){
 														String speciesVal=speciesval.get(i).toString();
-														if("".equals(speciesVal)||"null".equals(speciesVal)||"NULL".equals(speciesVal)||"{}".equals(speciesVal)||speciesVal==null){
+														if("".equals(speciesVal)||"null".equals(speciesVal)||"NULL".equals(speciesVal)||"{}".equals(speciesVal)||speciesVal==null||"-".equals(speciesVal)){
 															obsHourData.put(i, "-");
 														}else{
 															BigDecimal bd=(new BigDecimal(speciesVal)).setScale(2, BigDecimal.ROUND_HALF_UP);
@@ -1259,8 +1257,8 @@ public class AirController {
 												}else{
 													for(int i=0;i<24;i++){
 														String speciesVal=speciesval.get(i).toString();
-														if("".equals(speciesVal)||"null".equals(speciesVal)||"NULL".equals(speciesVal)||"{}".equals(speciesVal)||speciesVal==null){
-															obsHourData.put(i, "-");
+														if("".equals(speciesVal)||"null".equals(speciesVal)||"NULL".equals(speciesVal)||"{}".equals(speciesVal)||speciesVal==null||"-".equals(speciesVal)){
+														obsHourData.put(i, "-");
 														}else{
 															BigDecimal bd=(new BigDecimal(speciesVal)).setScale(1, BigDecimal.ROUND_HALF_UP);
 															obsHourData.put(i, bd);
