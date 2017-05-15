@@ -793,12 +793,10 @@ function sceneTable() {
                             }
                         }
                 	}
-                    
-                    
                 }
-            })
+            });
         }
-    })
+    });
     /*
      $("#sceneTableId").bootstrapTable({
      method : 'POST',
