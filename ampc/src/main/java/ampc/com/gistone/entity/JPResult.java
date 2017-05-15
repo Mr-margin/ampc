@@ -9,6 +9,8 @@ import java.util.List;
  * @date 2017年3月7日
  */
 public class JPResult {
+	//actionlist 地址前缀
+	private String actionDir;
 	//IP
 	private String serverPath;
 	//预案措施Id+预案名称 用来作为唯一表示
@@ -74,5 +76,13 @@ public class JPResult {
 	public void setOps(List<Object> ops) {
 		this.ops = ops;
 	}
+	public String getActionDir() {
+		return actionDir;
+	}
+	public void setActionDir(String actionDir) {
+		this.actionDir = actionDir;
+	}
+	
+	
 	
 }
