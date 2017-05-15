@@ -160,7 +160,7 @@ public class GetWeatherModelController {
 			
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LogUtil.getLogger().error("GetWeatherModelController runmodel",e);
 			return AmpcResult.build(1000, "模式启动异常！");
 		}
 		
@@ -248,11 +248,10 @@ public class GetWeatherModelController {
 				throw new SQLException("GetWeatherModelController  减排系数存库失败!");
 			}
 		}catch(SQLException e){
-			LogUtil.getLogger().error(e.getMessage(),e);
+			LogUtil.getLogger().error("GetWeatherModelController  saveEmisData",e.getMessage(),e);
 			return AmpcResult.build(1000,e.getMessage());	
 		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
+			LogUtil.getLogger().error("GetWeatherModelController  saveEmisData",e.getMessage(),e);
 			return AmpcResult.build(1000, "参数错误");
 		}
 		
@@ -392,10 +391,10 @@ public class GetWeatherModelController {
 			}
 			
 		}catch(SQLException e){
-			LogUtil.getLogger().error(e.getMessage(),e);
+			LogUtil.getLogger().error("GetWeatherModelController  stopModel",e.getMessage(),e);
 			return AmpcResult.build(1000,e.getMessage());		
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			LogUtil.getLogger().error("GetWeatherModelController  stopModel",e.getMessage(),e);
 			return AmpcResult.build(1000, "系统错误");
 		}
 		
@@ -500,7 +499,7 @@ public class GetWeatherModelController {
 				return AmpcResult.build(1000,e.getMessage());		
 			}
 		} catch (UnsupportedEncodingException e) {
-			LogUtil.getLogger().error(e.getMessage(),e);
+			LogUtil.getLogger().error("GetWeatherModelController continueModel",e.getMessage(),e);
 			return AmpcResult.build(1000, "系统错误");
 		}
 	}
