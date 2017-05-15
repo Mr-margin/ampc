@@ -226,6 +226,7 @@ function setTime(s, e) {
 
 
 function initEcharts() {
+    showTitleFun();
     //console.log("初始化表单")
     if (changeMsg.rms == 'day') {
         $('.hour').css('display', 'none');
@@ -647,7 +648,7 @@ $('#sTime-h').on('change', function (e) {
 $('#height').on('change', function (e) {
     var height = $(e.target).val();
     changeMsg.height = height;
-    showTitleFun();
+
     initEcharts();
     //updata();
 });
@@ -655,6 +656,7 @@ $('#height').on('change', function (e) {
 var czData;
 /*设置echarts图表*/
 function updata() {
+    showTitleFun()
     $.when(dps_station).then(function () {
         var url = '/Appraisal/find_vertical';
         var urlJZ = '/Appraisal/find_basevertical';
@@ -722,11 +724,6 @@ function updata() {
                 $.extend(obj, resJZ[0].data, res[0].data);
                 czData = obj;
 
-              /*修改显示头 */
-
-                showTitleFun();
-
-              /*修改显示头 end*/
 
                 initEcharts();
             } else {
@@ -742,31 +739,31 @@ function showTitleFun() {
     $('#showTitle span').empty();
     if (zhiCity.indexOf(changeMsg.pro) == -1) {
         if (changeMsg.station == 'avg') {
-            $('#showTitle .proName').html(changeMsg.proName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .cityName').html(changeMsg.cityName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .heightName').html(heightArr[changeMsg.height - 1] + 'm');
+            $('#showTitle .proName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.proName);
+            $('#showTitle .cityName').html(changeMsg.cityName);
+            $('#showTitle .timeName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+(changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time));
+            $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时'));
+            $('#showTitle .heightName').html("<span class='titleTab'><i class='fa-sort-by-attributes-alt'></i>"+"&nbsp;高度：</span>"+heightArr[changeMsg.height - 1] + 'm');
         } else {
-            $('#showTitle .proName').html(changeMsg.proName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .cityName').html(changeMsg.cityName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .stationName').html(changeMsg.stationName + '>>');
-            $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .heightName').html(heightArr[changeMsg.height - 1] + 'm');
+            $('#showTitle .proName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.proName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .cityName').html(changeMsg.cityName);
+            $('#showTitle .stationName').html(changeMsg.stationName);
+            $('#showTitle .timeName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+(changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time));
+            $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时'));
+            $('#showTitle .heightName').html("<span class='titleTab'><i class='fa-sort-by-attributes-alt'></i>"+"&nbsp;高度：</span>"+heightArr[changeMsg.height - 1] + 'm');
         }
     } else {
         if (changeMsg.station == 'avg') {
-            $('#showTitle .cityName').html(changeMsg.cityName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .heightName').html(heightArr[changeMsg.height - 1] + 'm');
+            $('#showTitle .cityName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.cityName);
+            $('#showTitle .timeName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+(changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time));
+            $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时'));
+            $('#showTitle .heightName').html("<span class='titleTab'><i class='fa-sort-by-attributes-alt'></i>"+"&nbsp;高度：</span>"+heightArr[changeMsg.height - 1] + 'm');
         } else {
-            $('#showTitle .cityName').html(changeMsg.cityName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .stationName').html(changeMsg.stationName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-            $('#showTitle .heightName').html(heightArr[changeMsg.height - 1] + 'm');
+            $('#showTitle .cityName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.cityName);
+            $('#showTitle .stationName').html(changeMsg.stationName);
+            $('#showTitle .timeName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+(changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time));
+            $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时') );
+            $('#showTitle .heightName').html("<span class='titleTab'><i class='fa-sort-by-attributes-alt'></i>"+"&nbsp;高度：</span>"+heightArr[changeMsg.height - 1] + 'm');
         }
     }
 }
