@@ -805,7 +805,6 @@ $('#species').on('change', function (e) {  //物种选择
     changeMsg.species.push(species);
    // console.log(species);
     app.tuodong = true;
-    showTitleFun();
     updata();
 });
 
@@ -814,7 +813,6 @@ $('input[name=domain]').on('change', function (e) { //domaon选择
     changeMsg.domain = domain;
     //console.log(domain);
     app.tuodong = true;
-    showTitleFun()
     updata();
 });
 
@@ -856,7 +854,7 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
     }
     changeMsg.rms = rms;
     app.tuodong = true;
-    showTitleFun()
+
     updata();
 });
 
@@ -865,7 +863,6 @@ $('input[name=calcType]').on('change', function (e) { //地图图片类型
     changeMsg.calcType = type;
    // console.log(type);
     app.tuodong = true;
-    showTitleFun()
     updata(true);
 });
 
@@ -952,7 +949,6 @@ $('#sTime-d').on('change', function (e) {//选择日期
     }
    // console.log(date);
     app.tuodong = true;
-    showTitleFun();
     updata();
 });
 
@@ -961,7 +957,6 @@ $('#sTime-h').on('change', function (e) {//选择时间
     changeMsg.sTimeH = date - 0;
     //console.log(date)
     app.tuodong = true;
-    showTitleFun()
     updata();
 });
 
@@ -981,12 +976,12 @@ $('#eTime').on('change', function (e) {//选择平均后的时间
     }
    // console.log(date);
     app.tuodong = true;
-    showTitleFun();
     updata();
 });
 
 /*数据更新*/
 function updata(t) {
+    showTitleFun();
     var parameter = {
         userId: userId,
         layer: changeMsg.layer,
@@ -1119,20 +1114,26 @@ function updata(t) {
     }
 
 }
-showTitleFun();
+
 function showTitleFun() {
     $('#showTitle span').empty();
-    $('#showTitle .specieName').html(changeMsg.species + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-    $('#showTitle .spaceName').html((changeMsg.domain=='1'?'3KM':(changeMsg.domain=='2'?'9KM':'27km')) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+    var timeStartFor=moment(changeMsg.sTimeD,"YYYYMMDD").format("YYYY-MM-DD");
+    var stateFor=moment(changeMsg.sTimeD+changeMsg.sTimeH,"YYYYMMDDH").format("YYYY-MM-DD HH");
+    var timeTwoFor=moment(changeMsg.sTimeD+"-"+changeMsg.eTime,"YYYYMMDD-YYYYMMDD").format("YYYY-MM-DD-YYYY-MM-DD");
+    $('#showTitle .specieName').html("<span class='titleTab'><i class='en-layout' style='font-size: 16px;'></i>"+"&nbsp;物种：</span>"+changeMsg.species);
+    $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(changeMsg.domain=='1'?'3KM':(changeMsg.domain=='2'?'9KM':'27km')));
     if(changeMsg.rms=='d'){
-        $('#showTitle .timeName').html('逐日'+'<i class="en-arrow-right7" style="font-size:16px;"></i>');
-        $('#showTitle .dateStartName').html(changeMsg.sTimeD);
+        $('#showTitle .timeName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'逐日');
+        $('#showTitle .dateStartName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+timeStartFor);
+        //$('#showTitle .dateStartName').html("<i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;"+changeMsg.sTimeD);
     }else  if(changeMsg.rms=='h'){
-        $('#showTitle .timeName').html('逐时'+'<i class="en-arrow-right7" style="font-size:16px;"></i>');
-        $('#showTitle .dateStartName').html(changeMsg.sTimeD+"&nbsp;"+changeMsg.sTimeH);
+        $('#showTitle .timeName').html("<span  class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'逐时');
+        $('#showTitle .dateStartName').html("<span  class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+stateFor);
+        //$('#showTitle .dateStartName').html("<i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;"+changeMsg.sTimeD+changeMsg.sTimeH);
     }else {
-        $('#showTitle .timeName').html('平均'+'<i class="en-arrow-right7" style="font-size:16px;"></i>');
-        $('#showTitle .dateEndName').html(changeMsg.sTimeD+"-"+changeMsg.eTime);
+        $('#showTitle .timeName').html("<span  class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'平均');
+        $('#showTitle .dateEndName').html("<span  class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+timeTwoFor);
+        //$('#showTitle .dateEndName').html("<i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;"+changeMsg.sTimeD+"-"+changeMsg.eTime);
     }
 
     // if (zhiCity.indexOf(changeMsg.pro) == -1) {
