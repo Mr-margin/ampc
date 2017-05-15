@@ -561,14 +561,15 @@ function initEcharts() {
     	$(window).resize(aqi.resize);
     }
     
+    
+  }
+	//默认隐藏PM25的子类
     $("#SO4").hide();
 	$("#NO3").hide();
 	$("#NH4").hide();
 	$("#BC").hide();
 	$("#OM").hide();
 	$("#PMFINE").hide();
-    
-  }
 	
 	//逐日显示 AQI PM25 ,< SO4 NO3 NH4 BC OM PMFINE >, PM10 O3_8_max O3_1_max SO2 NO2 CO 
 	//组分展开==open  收起==close	
@@ -581,8 +582,6 @@ function initEcharts() {
 			$("#BC").hide();
 			$("#OM").hide();
 			$("#PMFINE").hide();
-//			$(e.target.parentNode).text("组分展开");
-//			$(e.target).val('open');
 		} else {
 			$("#SO4").show();
 			$("#NO3").show();
@@ -590,17 +589,9 @@ function initEcharts() {
 			$("#BC").show();
 			$("#OM").show();
 			$("#PMFINE").show();
-//			$(e.target.parentNode).text("组分收起");
-//			$(e.target).val('close');
 		}
-
     });
-    $("#SO4").hide();
-    $("#NO3").hide();
-    $("#NH4").hide();
-    $("#BC").hide();
-    $("#OM").hide();
-    $("#PMFINE").hide();
+	
     //组分展开收缩  添加
     $(".timeUpDown .upDownBtn").click(function(){
         if($(".timeUpDown .upDownBtn").text()=="组分展开"){
@@ -788,18 +779,22 @@ function sceneTable() {
                     return JSON.stringify({"token": "", "data": data});
                 },
                 onLoadSuccess:function(data){
-                    var truedData=sceneInitialization.data;
-                    for(var i=0;i<truedData.length;i++){
-                        if(data){
-                            $.each(data.rows, function(index, item){
-                                console.log(index);
-                                console.log(item);
-                                if(truedData[i].scenarinoId==item.scenarinoId){
-                                    $('#sceneTableId').datagrid('checkRow', index);
-                                }
-                            });
+                	if(sceneInitialization!=null&&sceneInitialization!=""&&sceneInitialization!=undefined){
+                		var truedData=sceneInitialization.data;
+                        for(var i=0;i<truedData.length;i++){
+                            if(data){
+                                $.each(data.rows, function(index, item){
+//                                    console.log(index);
+//                                    console.log(item);
+                                    if(truedData[i].scenarinoId==item.scenarinoId){
+                                        $('#sceneTableId').datagrid('checkRow', index);
+                                    }
+                                });
+                            }
                         }
-                    }
+                	}
+                    
+                    
                 }
             })
         }
