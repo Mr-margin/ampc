@@ -57,7 +57,12 @@ public class ConfigUtil {
 	//模式运行的bodyflag参数
 	@Value("${model.bodyparames.flag}")
 	private Integer modelbodyflagparams;
-
+	//actionlist.actionDirPre
+	@Value("${actionlist.actionDirPre}")
+	private String actionlistDirPre;
+	//actionlist.actionDirAfter
+	@Value("${actionlist.actionDirAfter}")
+	private String actionlistDirAfter;
 			//redisIP地址
 			@Value("${spring.redis.host}")
 			private String redisHost;
@@ -164,6 +169,15 @@ public class ConfigUtil {
 
 	
 	
+
+			
+	public String getActionlistDirPre() {
+				return actionlistDirPre;
+			}
+
+			public String getActionlistDirAfter() {
+				return actionlistDirAfter;
+			}
 
 	public Integer getModelbodyflagparams() {
 				return modelbodyflagparams;
