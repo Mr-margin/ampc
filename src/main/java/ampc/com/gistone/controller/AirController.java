@@ -550,18 +550,8 @@ public class AirController {
 						}	//查询全部日期的物种数据结束
 					}
 						//出数据
-						//获取模拟数据中物种名称
-						Map spmap=new HashMap();
-						for(Object dayKey:contentmapData.keySet()){
-							Object  species=contentmapData.get(dayKey);		//值
-							if(species!=null){
-								spmap= (Map)species;
-								
-								break;
-							}
-						}
 						//循环所有物种名称---并给日期赋值
-						for(Object speciesKey:spmap.keySet()){
+							for(int s=0;s<simulationArr.length;s++){
 							//单个物种所有日期的数据
 							Map speciesDayData=new HashMap();
 							//循环全部日期
@@ -574,10 +564,10 @@ public class AirController {
 								
 									Map<String,Object> speciesMap= (Map)speciesobj;
 									//单个物种数据
-									Object speciesOne=speciesMap.get(speciesKey);	
-									Map<String,Object> speciesOneMap= (Map)speciesOne;
+									Object speciesOne=speciesMap.get(simulationArr[s].toString());	
+									Map speciesOneMap=(Map)speciesOne;
 									String speciesOneVal=speciesOneMap.get("0").toString();
-									if("CO".equals(speciesKey)){
+									if("CO".equals(simulationArr[s])){
 										if("".equals(speciesOneVal)||speciesOneVal==null||"-".equals(speciesOneVal)){		//判断是否有值
 											speciesDayData.put(dayKey,"-");
 										}else{
@@ -596,7 +586,7 @@ public class AirController {
 								}
 								
 							}
-							simulationData.put(speciesKey,speciesDayData);
+							simulationData.put(simulationArr[s].toString(),speciesDayData);
 						
 					}
 					
