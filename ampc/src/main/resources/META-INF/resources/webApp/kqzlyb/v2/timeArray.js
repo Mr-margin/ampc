@@ -356,7 +356,7 @@ function initialize() {
     dps_Date = requestDate();
 
     $.when(dps_Date, dps_City).then(function () {
-//        console.log('initialize  updata');
+    	
         updata();
     })
 }
@@ -416,8 +416,10 @@ function initWrwDate(s, e, start, end) {
             ],
             firstDay: 1
         },
-        "startDate": start,
-        "endDate": end,
+//        "startDate": start,
+//        "endDate": end,
+        "startDate": "2017-04-27",
+        "endDate": "2017-05-03",
         "opens": "left"
     }, function (start, end, label) {
         changeMsg.startD = start.format('YYYY-MM-DD');
@@ -458,8 +460,10 @@ function initQxysDate(s, e, start, end) {
             ],
             firstDay: 1
         },
-        "startDate": start,
-        "endDate": end,
+//        "startDate": start,
+//        "endDate": end,
+        "startDate": "2017-04-27",
+        "endDate": "2017-05-03",
         "opens": "left"
     }, function (start, end, label) {
         changeMsg.startD = start.format('YYYY-MM-DD');
@@ -502,8 +506,7 @@ function requestDate() {
             }
 
             changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
-//            initWrwDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
-            initWrwDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), "2017-04-27","2017-05-03");
+            initWrwDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
             initQxysDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
         }
     })
@@ -650,8 +653,10 @@ function updata(opt) {
         ajaxPost(url,{
         	userId: userId,					//用户ID
             mode:changeMsg.station=='avg'?'city':'point',	//站点是否为平均
-            startDate : changeMsg.startD,	//开始日期
-            endDate :changeMsg.endD,		//结束日期
+//            startDate : changeMsg.startD,	//开始日期
+//            endDate :changeMsg.endD,		//结束日期
+            startDate : "2017-04-27",	//开始日期
+            endDate :"2017-05-03",		//结束日期
             cityStation:changeMsg.station=='avg'?changeMsg.city.substr(0,4):changeMsg.station,	//站点具体值
             datetype:changeMsg.rms,			//时间分辨率
             domain:$('input[name=domain]:checked').val(),	//空间分辨率
@@ -955,6 +960,8 @@ function initEcharts() {
 		}
 	    
 		var es = echarts.init(document.getElementById(tname[i]));
+		es.group = 'group1';
+		echarts.connect('group1');
 	    es.setOption(option);
 	    $(window).resize(es.resize);
 		
