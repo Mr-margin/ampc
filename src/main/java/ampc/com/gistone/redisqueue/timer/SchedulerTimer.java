@@ -34,6 +34,7 @@ import java.util.Map;
 
 
 
+
 import net.sf.json.JSONObject;
 
 import org.apache.ibatis.annotations.Select;
@@ -624,6 +625,13 @@ public class SchedulerTimer<V> {
 //		}
 //		Date lastpathdate = tScenarinoDetailMapper.getlastrunstatus(1l);
 //		System.out.println(lastpathdate.toString());
+//		TTasksStatus tasksStatus = tTasksStatusMapper.selectEmisDataByScenId(755l);
+//		System.out.println(tasksStatus.getTasksExpand3()+"-----------------");
+//		 String jpParams = readyData.JPParams(753l,1l);
+		
+		
+		
+		
 	}
 
 
