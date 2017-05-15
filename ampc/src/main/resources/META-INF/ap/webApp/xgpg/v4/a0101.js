@@ -310,7 +310,7 @@ function sceneTable() {
         data: JSON.stringify({
             "token": "",
             "data": {
-                "userId": 1,
+                "userId": userId,
                 "missionId":$("#task").val()
             }
         }),
