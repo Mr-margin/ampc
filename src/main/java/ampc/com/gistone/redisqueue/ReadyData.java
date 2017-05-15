@@ -1591,10 +1591,10 @@ public class ReadyData {
 			DataEmis.setSsal("");
 		}
 	
-//		DataEmis.setMeiccityconfig(tasksStatus.getMeiccityconfig());
-		DataEmis.setMeiccityconfig("/work/modelcloud/meic_tool/meic-city.conf");
-//		DataEmis.setControlfile(tasksStatus.getExpand3());
-		DataEmis.setControlfile("/work/modelcloud/lixin_meic/hebei/cf/cf_zero.csv");
+		DataEmis.setMeiccityconfig(tasksStatus.getMeiccityconfig());
+//		DataEmis.setMeiccityconfig("/work/modelcloud/meic_tool/meic-city.conf");
+		DataEmis.setControlfile(tasksStatus.getTasksExpand3());
+//		DataEmis.setControlfile("/work/modelcloud/lixin_meic/hebei/cf/cf_zero.csv");
 		return DataEmis;
 	}
 
@@ -1657,6 +1657,8 @@ public class ReadyData {
 				tTasksStatus.setTasksScenarinoId(scenarinoId);
 				//获取emis数据成功
 				tTasksStatus.setTasksExpand1(0l);
+				tTasksStatus.setCalctype("server");
+				tTasksStatus.setSourceid("1");
 				int	i = tTasksStatusMapper.updateEmisData(tTasksStatus);
 				if (i>0) {
 					flag=true;
