@@ -57,10 +57,10 @@ public interface TMissionDetailMapper {
     int updateByPrimaryKey(TMissionDetail record);
     /**
      * 
-     * @Description: TODO
+     * @Description: 查询domainid
      * @param missionId
      * @return   
-     * int  查询domainid
+     * Long  
      * @throws
      * @author yanglei
      * @date 2017年3月18日 下午5:55:44
