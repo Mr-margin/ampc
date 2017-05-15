@@ -553,10 +553,10 @@ public class AirController {
 						//获取模拟数据中物种名称
 						Map spmap=new HashMap();
 						for(Object dayKey:contentmapData.keySet()){
-							String  species=contentmapData.get(dayKey).toString();		//值
+							Object  species=contentmapData.get(dayKey);		//值
 							if(species!=null){
-//								spmap= (Map)species;
-								spmap=mapper.readValue(species, Map.class);
+								spmap= (Map)species;
+								
 								break;
 							}
 						}
