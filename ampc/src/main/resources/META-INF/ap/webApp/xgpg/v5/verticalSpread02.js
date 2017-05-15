@@ -408,7 +408,7 @@ function sceneTable() {
         data: JSON.stringify({
             "token": "",
             "data": {
-                "userId": 1,
+                "userId": userId,
                 "missionId":$("#task").val()
             }
         }),
@@ -430,6 +430,20 @@ function sceneTable() {
                     data.userId = userId;
                     data.missionId = $("#task").val();
                     return JSON.stringify({"token": "", "data": data});
+                },
+                onLoadSuccess:function(data){
+                    var truedData=sceneInitialization.data;
+                    for(var i=0;i<truedData.length;i++){
+                        if(data){
+                            $.each(data.rows, function(index, item){
+                                console.log(index);
+                                console.log(item);
+                                if(truedData[i].scenarinoId==item.scenarinoId){
+                                    $('#sceneTableId').datagrid('checkRow', index);
+                                }
+                            });
+                        }
+                    }
                 }
             })
         }
