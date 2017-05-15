@@ -9,7 +9,6 @@ if (!sceneInitialization) {
     ls.setItem('SI', JSON.stringify(sceneInitialization));
 }
 //console.log(JSON.stringify(sceneInitialization));
-
 if (!sceneInitialization) {
     sceneInittion();
 } else {
@@ -75,7 +74,7 @@ function sceneTable() {
         data: JSON.stringify({
             "token": "",
             "data": {
-                "userId": 1,
+                "userId": userId,
                 "missionId":$("#task").val()
             }
         }),
@@ -99,16 +98,16 @@ function sceneTable() {
                     return JSON.stringify({"token": "", "data": data});
                 },
                 onLoadSuccess:function(data){
-                    var truedData=sceneInitialization.data;
-                    for(var i=0;i<truedData.length;i++){
-                        if(data){
-                            $.each(data.rows, function(index, item){
-                                console.log(index);
-                                console.log(item);
-                                if(truedData[i].scenarinoId==item.scenarinoId){
-                                    $('#sceneTableId').datagrid('checkRow', index);
-                                }
-                            });
+                    if(sceneInitialization!=null){
+                        var truedData=sceneInitialization.data;
+                        for(var i=0;i<truedData.length;i++){
+                            if(data){
+                                $.each(data.rows, function(index, item){
+                                    if(truedData[i].scenarinoId==item.scenarinoId){
+                                        $('#sceneTableId').datagrid('checkRow', index);
+                                    }
+                                });
+                            }
                         }
                     }
                 }
@@ -340,7 +339,7 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
         app.labellayerList = new dong.gaodeLayer({layertype: "label"});//加载标注图
         app.zoom_start = false;//全局zoom变量，用来控制第一次加载数据一定显示全部省级
         
-        app.map.on("load", shoe_data_start);//启动后立即执行获取数据
+        //app.map.on("load", shoe_data_start);//启动后立即执行获取数据
 
         app.map.addLayer(app.baselayerList);//添加高德地图到map容器
         app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
@@ -379,9 +378,7 @@ function baizhu_jianpai(gis_paramsName, sh_type) {
         app.map.removeLayer(app.paifang);
     }
     ajaxPost('/find_reduceEmission', gis_paramsName).success(function (res) {
-//		console.log(JSON.stringify(res));
         if (res.status == 0) {
-
             var valMax = 0;//数据中的最大值
             $.each(res.data, function (k, col) {
                 if (col > valMax) {
@@ -1101,31 +1098,6 @@ function table_show(cod1, level1) {
             }
         }),
         success:function (data) {
-
-/*
-            if (data.status == 0) {
-                console.log("状态吗")
-                console.log(data.status)
-                if (data.data.length > 0) {
-                    $.each(data.data, function (i, col) {
-                        console.log("得到")
-                        console.log(col)
-                        $.each(col, function (k, vol) {
-                            if (vol == '-9999') {
-                                data.data[i][k] = "-";
-                            }
-                        });
-                        if (col.type == "1") {
-                            data.data[i].name = '<a style="color:red;" onClick="table_show(\'' + col.code + '\',\'' + (parseInt(d_Level) + 1) + '\');">' + col.name + '</a>';
-                            console.log(data.data[i].name)
-                        }
-                    });
-                    return data.data;
-                }
-            } else if (data.status == '') {
-                return "";
-            }
-*/
             $("#listModal_table").datagrid({
                 height: $("#listModal").height() - 36,
                 striped:true,
@@ -1157,7 +1129,6 @@ function table_show(cod1, level1) {
                     return JSON.stringify({"token": "", "data": data});
                 },
                 loadFilter:function(data){
-                    console.log(data)
                      if (data.d){
 
                          return data.d;
@@ -1173,10 +1144,9 @@ function table_show(cod1, level1) {
                         rows:[]
                     };
                     if (data.length > 0) {
-                         console.log(data.length);
                         $.each(data, function (i, col) {
                             if (col.type == "1") {
-                                data[i].name= '<a style="text-decoration:underline;color: #0275d8;" onClick="table_show(\'' + col.code + '\',\'' + (parseInt(d_Level) + 1) + '\');">' + col.name + '</a>';
+                                data[i].name= '<a style="text-decoration:underline;color: #0275d8;cursor:pointer;" onClick="table_show(\'' + col.code + '\',\'' + (parseInt(d_Level) + 1) + '\');">' + col.name + '</a>';
                             }
                         });
                          return data;
