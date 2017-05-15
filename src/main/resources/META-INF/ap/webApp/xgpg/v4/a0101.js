@@ -847,8 +847,6 @@ $('#species').on('change', function (e) {  //物种选择
     var species = $(e.target).val();
     changeMsg.species = [];
     changeMsg.species.push(species);
-    console.log(species);
-    showTitleFun();
     updata();
 });
 
@@ -856,7 +854,6 @@ $('input[name=domain]').on('change', function (e) { //domaon选择
     var domain = $(e.target).val();
     changeMsg.domain = domain;
     console.log(domain);
-    showTitleFun();
     updata();
 });
 
@@ -897,7 +894,6 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
         // changeMsg.showType = ['concn'];
     }
     changeMsg.rms = rms;
-    showTitleFun();
     updata();
 });
 
@@ -924,9 +920,6 @@ $('input[name=showWind]').on('change', function (e) { //地图风场类型
     } else {
         changeMsg.showType.push('wind');
     }
-
-    console.log(type);
-    showTitleFun();
     updata('wind');
 });
 
@@ -955,7 +948,6 @@ $('#qjBtn1').on('change', 'input', function (e) {//改变左侧情景
     changeMsg.qj2Id = $('#qjBtn2 label.active').find('input').val();
     //changeMsg.qj2Id = $('input[name=qjBtn2]').val();
     setDate(s1, e1, s2, e2);
-    showTitleFun();
     updata();
 });
 
@@ -971,7 +963,6 @@ $('#qjBtn2').on('change', 'input', function (e) {//改变右侧情景
 
     changeMsg.qj2Id = qjId;
     setDate(s1, e1, s2, e2);
-    showTitleFun();
     updata(true);
 });
 
@@ -989,16 +980,12 @@ $('#sTime-d').on('change', function (e) {//选择日期
             }
         }
     }
-    console.log(date);
-    showTitleFun();
     updata();
 });
 
 $('#sTime-h').on('change', function (e) {//选择时间
     var date = $(e.target).val();
     changeMsg.sTimeH = date - 0;
-    console.log(date);
-    showTitleFun();
     updata();
 });
 
@@ -1016,14 +1003,12 @@ $('#eTime').on('change', function (e) {//选择平均后的时间
             }
         }
     }
-    console.log(date);
-    showTitleFun();
     updata();
 });
 
 /*数据更新*/
 function updata(t) {
-
+    showTitleFun();
     var parameter = {
         userId: userId,
         layer: changeMsg.layer,
@@ -1301,23 +1286,25 @@ $(".cloudui .verticalCon .ibox-content .searchT .upDown").hover(function(){
     $(".cloudui .verticalCon .ibox-content .searchT .upDown .upDownBtn").css({"border":"1px solid #d9d9d9"});
 })
 //增加标题
-showTitleFun();
 function showTitleFun() {
     var timeStartFor=moment(changeMsg.sTimeD,"YYYYMMDD").format("YYYY-MM-DD");
     var stateFor=moment(changeMsg.sTimeD+changeMsg.sTimeH,"YYYYMMDDH").format("YYYY-MM-DD HH");
     var timeTwoFor=moment(changeMsg.sTimeD+"-"+changeMsg.eTime,"YYYYMMDD-YYYYMMDD").format("YYYY-MM-DD-YYYY-MM-DD");
-
+    console.log(changeMsg.sTimeD)
+    console.log(changeMsg.sTimeD+changeMsg.sTimeH)
+    console.log(changeMsg.sTimeD+"-"+changeMsg.eTime)
     $('#showTitle span').empty();
-    $('#showTitle .specieName').html(changeMsg.species + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-    $('#showTitle .spaceName').html((changeMsg.domain=='1'?'3KM':(changeMsg.domain=='2'?'9KM':'27km')) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+    $('#showTitle .specieName').html("<span class='titleTab'><i class='en-layout' style='font-size: 16px;'></i>"+"&nbsp;物种：</span>"+changeMsg.species);
+    $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(changeMsg.domain=='1'?'3KM':(changeMsg.domain=='2'?'9KM':'27km')));
     if(changeMsg.rms=='d'){
-        $('#showTitle .timeName').html('逐日'+'<i class="en-arrow-right7" style="font-size:16px;"></i>');
-        $('#showTitle .dateStartName').html(timeStartFor);
+        $('#showTitle .timeName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'逐日');
+        $('#showTitle .dateStartName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+timeStartFor);
     }else  if(changeMsg.rms=='h'){
-        $('#showTitle .timeName').html('逐时'+'<i class="en-arrow-right7" style="font-size:16px;"></i>');
-        $('#showTitle .dateStartName').html(stateFor);
+        $('#showTitle .timeName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'逐时');
+        $('#showTitle .dateStartName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+stateFor);
     }else {
-        $('#showTitle .timeName').html('平均'+'<i class="en-arrow-right7" style="font-size:16px;"></i>');
-        $('#showTitle .dateEndName').html(timeTwoFor);
+        $('#showTitle .timeName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'平均');
+        $('#showTitle .dateEndName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+timeTwoFor);
     }
+
 }
