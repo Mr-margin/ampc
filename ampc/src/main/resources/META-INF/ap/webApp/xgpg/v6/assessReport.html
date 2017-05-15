@@ -1,0 +1,143 @@
+<!-- 效果评估 评估报告 -->
+<div class="cloudui" style="width:100%;height:100%;">
+    <div class='verticalCon'>
+        <div class="ibox float-e-margins">
+            <div class="ibox-content xgpgShow">
+                <div class="searchT">
+                    <div id="showTitle" style="font-size: 16px;color:#000;">
+                        <span class="proName titleDiv"></span>
+                        <span class="cityName titleDiv"></span>
+                        <span class="stationName titleDiv"></span>
+                        <span class="timeName titleDiv"></span>
+                        <span class="rmsName titleDiv"></span>
+                        <span class="heightName titleDiv"></span>
+                    </div>
+                    <div class="toolAll" style="padding-top: 10px;">
+                        <div class="toolContent">
+                            <div class="selectTool" style="margin-bottom: 2px;">
+                                <h5>日期：</h5>
+                                <div class="selectTool_con" style="width: 190px;">
+                                    <div class="input-group m-b" style="overflow: hidden;width: 100%">
+                                        <select class="form-control m-b" id="sTime-d" name="sTime" style="width: 100%;float: left;border-color: #1c84c6">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="selectTool" id="eTimeP">
+                                <h5>结束日期：</h5>
+                                <div class="selectTool_con">
+                                    <div class="input-group m-b" style="width: 120px">
+                                        <select class="form-control m-b" id="eTime" name="eTime" style="border-color: #1c84c6;display: block;width: 100%;">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="selectTool" style="clear: both;">
+                                <h5>监测站点：</h5>
+                                <div class="selectTool_con">
+                                    <div class="row" style="margin:2px 0;padding-left:0px;">
+                                        <div class="selectRow" style="padding-left:0px;padding-right:0px;">
+                                            <div class="input-group group-select" style="width: 100%;">
+                                                <select class="form-control m-b" id="proStation" style="border-color: #1c84c6;">
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="selectRow" style="padding-left:0px;padding-right:0px;">
+                                            <div class="input-group group-select" style="width: 100%;">
+                                                <select class="form-control m-b" id="cityStation" style="border-color: #1c84c6;">
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="selectRow" style="padding-left:0px;padding-right:0px;width: auto;">
+                                            <div class="input-group group-select" style="width: 100%;">
+                                                <select class="form-control m-b" id="station" style="border-color: #1c84c6;">
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="upDown">
+                        <span class="upDownBtn">更多搜索条件</span>
+                    </div>
+                </div>
+                <div class="verticalChar" style="margin-left: 0px;margin-right: 0px;border:1px solid red;">
+                    <div class='col-md-12' id="initEcharts" style="padding-left: 0px;">
+                        这个是内容部分！
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 设置情景范围模态框 -->
+<div class="modal fade createRwModal" id="Initialization" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="display: none">
+                <button type="button" class="close" data-dismiss="modal"aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">创建情景</h4>
+            </div>
+            <div class="modal-body">
+                <div class="rwCon" >
+                    <div class="form-group mt10 clearfix rwdlgTop">
+                        <label for="task" class="col-md-2 control-label lh29 rwdlgTopTitle">任务名称</label>
+
+                        <div class="col-md-10 rwdlgTopCon">
+                            <select class="form-control" id="task" name="task" onchange="sceneTable()"></select>
+                        </div>
+                    </div>
+                    <div class="qjdlg easyui-layout form-group mt10 clearfix"><!-- id="tableId" style="display: none;" -->
+                        <div class="col-md-10 col-md-offset-2">
+                            <table class="table table-striped table-bordered table-hover" id="sceneTableId" style="margin-top:5px;">
+                                <thead style="display: none">
+                                <th data-checkbox="true" data-field="state"></th>
+                                <th data-field="scenarinoName">情景名称</th>
+                                <th data-field="scenType">情景描述</th>
+                                <th data-field="scenarinoStartDate">时间</th>
+                                <th data-field="scenarinoEndDate">时间</th>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer new-foot dlogFooter" >
+                <button type="button" class="btn btn-primary createRwBtn" onclick="save_scene();">确定</button>
+                <button type="button" class="btn btn-default" id="close_scene" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //弹框
+    $("#Initialization").window({
+        width:600,
+        collapsible:false,
+        maximizable:false,
+        minimizable:false,
+        modal:true,
+        shadow:false,
+        title:'创建情景',
+        border:false,
+        buttons:'#dlg_jpBtn',
+        modal: true,
+        closed:true,
+        cls: 'cloudui'
+    });
+    $("#close_scene").click(function () {
+        $("#Initialization").window("close")
+    })
+    // $(".cloudui .window .panel-tool .panel-tool-close").html('<i class="im-close"></i>')
+
+</script>
+
