@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMeasureExcelMapper;
 import ampc.com.gistone.database.inter.TMeasureSectorExcelMapper;
+import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TPlanMapper;
 import ampc.com.gistone.database.inter.TPlanMeasureMapper;
 import ampc.com.gistone.database.inter.TPlanMeasureReuseMapper;
@@ -116,7 +117,8 @@ public class PlanAndMeasureController {
 	//情景状态更新帮助类
 	@Autowired
 	private ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
-
+	@Autowired
+	private TMissionDetailMapper tMissionDetailMapper;
 	
 	/**
 	 * 重置情景状态
@@ -2136,6 +2138,9 @@ public class PlanAndMeasureController {
 							MeasureContentUtil mcu = (MeasureContentUtil) JSONObject.toBean(jsonobject, MeasureContentUtil.class, cmap);
 							//写入IP
 							result.setServerPath(configUtil.getServerPath());
+							//actiondir
+							String actionlistDir = getactionlistDir(scenarinoId,userId);
+							result.setActionDir(actionlistDir);
 							// 写入BigIndex
 							result.setBigIndex(mcu.getBigIndex());
 							// 写入SmallIndex
@@ -2380,6 +2385,40 @@ public class PlanAndMeasureController {
 			LogUtil.getLogger().error("PlanAndMeasureController   提供对外的计算接口异常！",e);
 			return null;
 		}
+	}
+
+	/**
+	 * @Description: actionlistdir
+	 * @param scenarinoId
+	 * @param userId 
+	 * @return   
+	 * String  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年5月15日 下午3:40:06
+	 */
+	private String getactionlistDir(Long scenarinoId, Long userId) {
+		String actionlistDir = null;
+		String actionlistDirPre = configUtil.getActionlistDirPre();
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append(actionlistDirPre);//----/work/modelcloud/
+		stringBuffer.append(userId);
+		stringBuffer.append("/");
+		String actionlistDirAfter = configUtil.getActionlistDirAfter();//---/run/emis/actionlist
+		try {
+			Long missionId = tScenarinoDetailMapper.selectMissionidByID(scenarinoId);
+			Long domainId = tMissionDetailMapper.selectDomainid(missionId);
+			stringBuffer.append(domainId);
+			stringBuffer.append("/");
+			stringBuffer.append(missionId);
+			stringBuffer.append("/");
+			stringBuffer.append(scenarinoId);
+			stringBuffer.append(actionlistDirAfter);
+			actionlistDir = stringBuffer.toString();
+		} catch (Exception e) {
+			LogUtil.getLogger().error("PlanAndMeasureController--getactionlistDir 查找任务ID或者domainID出错！",e.getMessage(),e);
+		}
+		return actionlistDir;
 	}
 
 }
