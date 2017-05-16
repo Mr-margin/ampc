@@ -530,6 +530,12 @@ function initEcharts() {
     		es.group='';
     		echarts.disconnect('group1');
    	    });
+    	//点击图例事件
+    	es.on('legendselectchanged', function (params) {
+    		//图表联动
+    		es.group='';
+    		echarts.disconnect('group1');
+   	    });
     	es.setOption(option);
     	$(window).resize(es.resize);
     }else{	//AQI
@@ -538,6 +544,11 @@ function initEcharts() {
     	aqi.group = 'group1';
     	//鼠标悬停事件
     	aqi.on('mouseover', function (params) {
+    		//图表联动
+    		echarts.connect('group1');
+   	    });
+    	//点击图例事件
+    	aqi.on('legendselectchanged', function (params) {
     		//图表联动
     		echarts.connect('group1');
    	    });
