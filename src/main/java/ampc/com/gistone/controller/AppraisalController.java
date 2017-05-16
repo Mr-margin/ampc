@@ -113,6 +113,13 @@ public class AppraisalController {
 				return AmpcResult.build(1003, "日期为空或出现非法字符!");
 			}
 			String datetype=param.toString();
+			//空间分辨率
+			param=data.get("domain");
+			if(!RegUtil.CheckParameter(param, "Integer", null, false)){
+				LogUtil.getLogger().error("AppraisalController  空间分辨率为空或出现非法字符!");
+				return AmpcResult.build(1003, "空间分辨率为空或出现非法字符!");
+			}
+			int domain=Integer.valueOf(param.toString());
 			
 			//获取站点
 			String cityStation;
@@ -169,7 +176,7 @@ public class AppraisalController {
 							ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 							scenarinoEntity.setCity_station(cityStation);
 							//空间分辨率--需要时替换即可
-							scenarinoEntity.setDomain(3);		
+							scenarinoEntity.setDomain(domain);		
 							scenarinoEntity.setDomainId(domainId);
 							scenarinoEntity.setMode(mode);
 							scenarinoEntity.setsId(scenarinoId);
@@ -192,7 +199,7 @@ public class AppraisalController {
 							ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 							scenarinoEntity.setCity_station(cityStation);
 							//空间分辨率--需要时替换即可
-							scenarinoEntity.setDomain(3);	
+							scenarinoEntity.setDomain(domain);	
 							scenarinoEntity.setDomainId(domainId);
 							scenarinoEntity.setMode(mode);
 							scenarinoEntity.setsId(scenarinoId);
@@ -217,7 +224,7 @@ public class AppraisalController {
 						//定义查询类 并写入查询条件
 						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 						scenarinoEntity.setCity_station(cityStation);
-						scenarinoEntity.setDomain(3);
+						scenarinoEntity.setDomain(domain);
 						scenarinoEntity.setDomainId(domainId);
 						scenarinoEntity.setMode(mode);
 						scenarinoEntity.setsId(scenarinoId);
@@ -238,7 +245,7 @@ public class AppraisalController {
 						//定义查询类 并写入查询条件
 						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 						scenarinoEntity.setCity_station(cityStation);
-						scenarinoEntity.setDomain(3);
+						scenarinoEntity.setDomain(domain);
 						scenarinoEntity.setDomainId(domainId);
 						scenarinoEntity.setMode(mode);
 						scenarinoEntity.setsId(scenarinoId);
