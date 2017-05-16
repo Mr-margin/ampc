@@ -318,7 +318,7 @@ public class ToDataTasksUtil {
 			LogUtil.getLogger().error("updateDB-model.start.result：tasksresult转换异常"+e1.getMessage());
 		}
 		
-	}
+	} 
 
 	
 
