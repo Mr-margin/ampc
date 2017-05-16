@@ -32,6 +32,11 @@ import org.springframework.stereotype.Component;
 
 
 
+
+
+
+
+
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.redisqueue.entity.QueueData;
@@ -73,19 +78,24 @@ public class SendQueueData {
 	 * @date 2017年3月25日 下午4:05:24
 	 */
 	public boolean toJson(QueueData queueData,Long tasksScenarinoId,String time) {
+//		StringBuffer stringBuffer = new StringBuffer();
 		boolean sendData = false;
 		JSONObject jsonObject = JSONObject.fromObject(queueData);
 		String json = jsonObject.toString();
-		LogUtil.getLogger().info("这是发送的数据包:"+json);
+		LogUtil.getLogger().info("SendQueueData：这是发送的数据包:"+json);
 		//检查是否满足发送的条件
 		TTasksStatus selectStatus = tTasksStatusMapper.selectStatus(tasksScenarinoId);
 		String compantstatus = selectStatus.getBeizhu();
+//		String tasksExpand4 = selectStatus.getTasksExpand4();//记录已经发送出去的过得消息串
+//		if (null!=tasksExpand4) {
+//			stringBuffer.append(tasksExpand4);
+//		}
 		String sendtime = selectStatus.getBeizhu2();
 		String stopStatus = selectStatus.getStopStatus();//终止的状态
 //		String pauseStatus = selectStatus.getPauseStatus();//暂停的状态
 		if (compantstatus.equals("0")&&sendtime.equals("0")&&"2".equals(stopStatus)) {
 			//处于终止且不可发送消息的状态
-			LogUtil.getLogger().info("该条消息刚发送终止的指令，不可发送！");
+			LogUtil.getLogger().info("SendQueueData：该条消息刚发送终止的指令，不可发送！");
 		}/*else if (compantstatus.equals("0")&&sendtime.equals("0")&&"2".equals(pauseStatus)) {
 			//处于暂停且不可发送消息的状态
 			LogUtil.getLogger().info("该条消息刚发送暂停的指令，不可发送！");
@@ -96,13 +106,17 @@ public class SendQueueData {
 				TTasksStatus tTasksStatus = new TTasksStatus();
 				tTasksStatus.setTasksScenarinoId(tasksScenarinoId);
 				tTasksStatus.setBeizhu2(time);
+				tTasksStatus.setTasksSendTime(new Date());
+//				stringBuffer.append(",");
+//				stringBuffer.append(json);
+//				tTasksStatus.setTasksExpand4(stringBuffer.toString());
 				tTasksStatusMapper.updatemessageStatus(tTasksStatus);
-				LogUtil.getLogger().info("情景ID为："+tasksScenarinoId+",time:"+time+"当天的数据发送了");
-				LogUtil.getLogger().info("发送成功");
+				LogUtil.getLogger().info("SendQueueData：情景ID为："+tasksScenarinoId+",time:"+time+"当天的数据发送了");
+				LogUtil.getLogger().info("SendQueueData：发送成功");
 			}else {
 				//发送消息失败 改为模式执行出错 错误原因-发送消息到redis失败 
 				readyData.updateScenStatusUtil(9l, tasksScenarinoId);
-				LogUtil.getLogger().info("发送失败！原因：发送消息到redis队列出错");
+				LogUtil.getLogger().info("SendQueueData：发送失败！原因：发送消息到redis队列出错");
 			}
 		}
 		return sendData;
@@ -124,7 +138,7 @@ public class SendQueueData {
 	public boolean stoptoJson(QueueData queueData,Long scenarinoId) {
 		JSONObject jsonObject = JSONObject.fromObject(queueData);
 		String json = jsonObject.toString();
-		LogUtil.getLogger().info("停止的指令:"+json);
+		LogUtil.getLogger().info("SendQueueData-stoptoJson：停止的指令:"+json);
 		boolean flag = sendQueueData.sendData(json);
 		if (flag) {
 			//修改状态表示发送了停止的消息
@@ -152,7 +166,7 @@ public class SendQueueData {
 	 * @date 2017年3月29日 上午11:51:50
 	 */
 	private boolean sendData(String json) {
-		LogUtil.getLogger().info("开始发送");
+		LogUtil.getLogger().info("SendQueueData-sendData:开始发送");
 		boolean flag = false;
 		String sendname = configUtil.getRedisQueuesSendName();
 		try {
@@ -166,12 +180,12 @@ public class SendQueueData {
 			}else {
 				flag = false;
 			}
-			LogUtil.getLogger().info("发送结束");
+			LogUtil.getLogger().info("SendQueueData-sendData:发送结束");
 			return flag;
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			LogUtil.getLogger().error("发送消息到消息队列出现异常！",e);
+			LogUtil.getLogger().error("SendQueueData-sendData:发送消息到消息队列出现异常！",e);
 			flag = false;
 			return flag;
 		}
