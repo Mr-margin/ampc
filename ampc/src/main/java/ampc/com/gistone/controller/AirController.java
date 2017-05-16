@@ -516,12 +516,11 @@ public class AirController {
 				//逐日
 				if("day".equals(datetype)){		
 					//查询当天的情景（未完成则查询前一天）
-					 sdfNow=new SimpleDateFormat("yyyy-MM-dd");
-					
+					sdfNow=new SimpleDateFormat("yyyy-MM-dd");
 					SimpleDateFormat sdfyear=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					//当前时间
-					 dateNow=new Date();
-					 strDateNow=sdfNow.format(dateNow);
+					dateNow=new Date();
+					strDateNow=sdfNow.format(dateNow);
 					Date limitDate=sdfyear.parse(strDateNow+" 08:00:00");
 					//8点后
 					if(dateNow.getTime()>limitDate.getTime()){
