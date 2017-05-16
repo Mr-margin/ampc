@@ -3,6 +3,7 @@ package ampc.com.gistone.preprocess.meteor;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import ampc.com.gistone.preprocess.concn.CheckTableParams;
 import ampc.com.gistone.preprocess.concn.PreproUtil;
 import ampc.com.gistone.preprocess.concn.RequestParams;
 import ampc.com.gistone.preprocess.core.CityWorkerV2;
+import ampc.com.gistone.util.DateUtil;
 
 @Service
 public class MeteorService {
@@ -55,11 +57,12 @@ public class MeteorService {
 		try {
 			Long sId = Long.valueOf(params.getScenarioId());
 			TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(sId);
-			int year = preproUtil.getScenarinoYear(tScenarinoDetail);
+			Date date = tScenarinoDetail.getScenarinoAddTime();
+			int year = DateUtil.getYear(date);
 			params.setYear(year);
 			int type = Integer.valueOf(tScenarinoDetail.getScenType());
-			if (type == 4)
-				params.setType(true);
+			Map<String, String[]> dataTypeMap = preproUtil.buildFnlAndGfsDate(tScenarinoDetail);
+			params.setDateTypeMap(dataTypeMap);
 			CheckTableParams checkTableParams = new CheckTableParams();
 			checkTableParams.setUser_id(params.getUserId());
 			checkTableParams.setYears(String.valueOf(year));
@@ -73,9 +76,10 @@ public class MeteorService {
 			logger.info("start request meteor data, the params : ");
 			logger.info(params.toString());
 			try {
-				cityWorkerV2.exe(params.getUserId(), params.getDomainId(), params.getMissionId(),
-						params.getScenarioId(), params.getDomain(), params.getDate(), params.getTimePoint(),
-						Constants.AREA_CITY, cites, Constants.SHOW_TYPE_METEOR);
+
+				// 判断浓度、气象数据的文件路径，气象数据有fnl和gfs之分
+
+				cityWorkerV2.exe(params, Constants.AREA_CITY, cites, Constants.SHOW_TYPE_METEOR);
 				dataMap = cityWorkerV2.getResult();
 
 			} catch (TransformException e) {
@@ -88,7 +92,7 @@ public class MeteorService {
 			if (dataMap == null || dataMap.size() == 0)
 				return false;
 
-			preproUtil.updateRecord(tableName, params, dataMap, Constants.SHOW_TYPE_METEOR);
+			preproUtil.updateRecord(tableName, params, dataMap, Constants.SHOW_TYPE_METEOR, type);
 
 			Map map = new HashMap();
 			map.put("siteCodeList", cites);
@@ -96,7 +100,7 @@ public class MeteorService {
 
 			params.setMode(Constants.AREA_POINT2);
 			params.setFilter(stationList);
-			preproUtil.updateRecord(tableName, params, dataMap, Constants.SHOW_TYPE_METEOR);
+			preproUtil.updateRecord(tableName, params, dataMap, Constants.SHOW_TYPE_METEOR, type);
 
 			return true;
 		} catch (JsonParseException e) {

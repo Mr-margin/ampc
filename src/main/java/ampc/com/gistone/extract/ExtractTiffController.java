@@ -14,33 +14,28 @@ import ampc.com.gistone.util.AmpcResult;
 
 @RestController
 @RequestMapping(value = "/extract")
-public class ExtractDataController {
+public class ExtractTiffController {
 
-	private final static Logger logger = LoggerFactory.getLogger(ExtractDataController.class);
-
+	private final static Logger logger = LoggerFactory.getLogger(ExtractTiffController.class);
 	@Autowired
-	private ExtractDataService extractDataService;
-	@Autowired
-	private ExtractPngService extractPngService;
+	private ExtractTiffService extractTiffService;
 
-	@RequestMapping(value = "/data")
+	@RequestMapping(value = "/tiff")
 	public AmpcResult getExtractData(@RequestBody Map<String, Object> requestData) {
+		long startTimes = System.currentTimeMillis();
 		Map<String, Map> data = (Map) requestData.get("data");
-		List res;
 		try {
 			String calcType = String.valueOf(data.get("calcType"));
 			String showType = String.valueOf(data.get("showType"));
-			int borderType = Integer.valueOf(String.valueOf(data.get("borderType")));
 			Long userId = Long.valueOf(String.valueOf(data.get("userId")));
 			Long domainId = Long.valueOf(String.valueOf(data.get("domainId")));
 			Long missionId = Long.valueOf(String.valueOf(data.get("missionId")));
 			int domain = Integer.valueOf(String.valueOf(data.get("domain")));
-			List<String> species = (List) (data.get("species"));
+			String specie = String.valueOf(data.get("specie"));
 			String timePoint = String.valueOf(data.get("timePoint"));
 
 			ExtractRequestParams params = new ExtractRequestParams(calcType, showType, userId, domainId, missionId,
-					domain, species, timePoint);
-			params.setBorderType(borderType);
+					domain, specie, timePoint);
 			Long scenarioId1 = Long.valueOf(String.valueOf(data.get("scenarioId1")));
 			params.setScenarioId1(scenarioId1);
 			if (!Constants.CALCTYPE_SHOW.equals(calcType)) {
@@ -67,33 +62,22 @@ public class ExtractDataController {
 				params.setDates(dates);
 			}
 			if (Constants.SHOW_TYPE_WIND.equals(showType)) {
-				int windSymbol = Integer.valueOf(String.valueOf(data.get("windSymbol")));
+				int windSymbol = Integer.valueOf(String.valueOf(data.get("windSymbol"))); // 代表箭头风还是F风
 				params.setWindSymbol(windSymbol);
 			}
 			int layer = Integer.valueOf(String.valueOf(data.get("layer")));
+			if (layer <= 0)
+				return AmpcResult.build(1000, "参数layer的值错误， 不应该小于等于0");
 			params.setLayer(layer);
-			double xmin = Double.valueOf(String.valueOf(data.get("xmin")));
-			double ymin = Double.valueOf(String.valueOf(data.get("ymin")));
-			double xmax = Double.valueOf(String.valueOf(data.get("xmax")));
-			double ymax = Double.valueOf(String.valueOf(data.get("ymax")));
-			params.setXmin(xmin);
-			params.setYmin(ymin);
-			params.setXmax(xmax);
-			params.setYmax(ymax);
 
-			int rows = Integer.valueOf(String.valueOf(data.get("rows")));
-			int cols = Integer.valueOf(String.valueOf(data.get("cols")));
-			int width = Integer.valueOf(String.valueOf(data.get("width")));
-			int height = Integer.valueOf(String.valueOf(data.get("height")));
-			params.setRows(rows);
-			params.setCols(cols);
-			res = extractDataService.buildData(params);
-			if (res != null)
-				return AmpcResult.ok(res);
-
+			String outFile = extractTiffService.buildTiff(params);
+			logger.info("get tiff file times: " + (System.currentTimeMillis() - startTimes) + "ms");
+			if (outFile != null)
+				return AmpcResult.ok(outFile);
 		} catch (Exception e) {
 			return AmpcResult.build(1003, "参数异常");
 		}
 		return AmpcResult.build(1001, "系统异常");
 	}
+
 }

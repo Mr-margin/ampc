@@ -35,4 +35,21 @@ public class ProjectUtil {
 			return null;
 		}
 	}
+
+	public static String getWKT(Map attribute) {
+
+		Double lat_1 = Double.valueOf(attribute.get("P_ALP").toString());
+		Double lat_2 = Double.valueOf(attribute.get("P_BET").toString());
+		Double lat_0 = Double.valueOf(attribute.get("YCENT").toString());
+		Double lon_0 = Double.valueOf(attribute.get("XCENT").toString());
+
+		String wkt = "PROJCS[\"source\"," + "GEOGCS[\"WGS 84\"," + "DATUM[\"World Geodetic System 1984\", "
+				+ "SPHEROID[\"WGS 84\", 6378137.0, 298.257223563, AUTHORITY[\"EPSG\",\"7030\"]], \n"
+				+ "AUTHORITY[\"EPSG\",\"6326\"]]," + "PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],"
+				+ "PROJECTION[\"Lambert_Conformal_Conic_2SP\"]," + "PARAMETER[\"standard_parallel_1\"," + lat_1 + "],"
+				+ "PARAMETER[\"standard_parallel_2\"," + lat_2 + "]," + "PARAMETER[\"latitude_of_origin\"," + lat_0
+				+ "]," + "PARAMETER[\"central_meridian\"," + lon_0 + "]," + "PARAMETER[\"false_easting\",0],"
+				+ "PARAMETER[\"false_northing\",0]," + "UNIT[\"Meter\",1]]";
+		return wkt;
+	}
 }

@@ -20,6 +20,8 @@ public class Constants {
 	public final static String TIMEPOINT_D = "d";
 	public final static String TIMEPOINT_H = "h";
 	public final static String CALCTYPE_SHOW = "show";
+	public final static String CALCTYPE_DIFF = "diff";
+	public final static String CALCTYPE_RATIO = "ratio";
 	public final static double MINIMUM = 0.0000000001;
 
 	public final static String RESOLUTION_MONTH = "M";
@@ -30,6 +32,10 @@ public class Constants {
 	public final static String AREA_PROVINCE = "province";
 	public final static String AREA_POINT = "station";
 	public final static String AREA_POINT2 = "point";
+
+	public final static String MODEL_DATA_TYPE_FNL = "fnl";
+	public final static String MODEL_DATA_TYPE_GFS = "gfs";
+	public final static String MODEL_DATA_TYPE_GFS_FIRST = "gfs_first"; // 实时预报中第一天gfs
 
 	public static final String[] HOURLYSPECIES = { "PM25", "PM10", "O3", "SO2", "NO2", "CO", "SO4", "NO3", "NH4", "BC",
 			"OM", "PMFINE" };

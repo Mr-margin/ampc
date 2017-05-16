@@ -24,8 +24,8 @@ import ampc.com.gistone.extract.ExtractConfig;
 import ampc.com.gistone.extract.ProjectUtil;
 import ampc.com.gistone.extract.ResultPathUtil;
 import ampc.com.gistone.extract.netcdf.Netcdf;
+import ampc.com.gistone.preprocess.concn.RequestParams;
 import ampc.com.gistone.util.DateUtil;
-import ampc.com.gistone.util.Jsons;
 import ucar.ma2.Array;
 
 /**
@@ -62,10 +62,12 @@ public class CityWorkerV2 {
 				p.setCode(hm.getStationId());
 				p.buildIndex(attributes);
 				if (p.isCross()) {
-					logger.info("Point " + p.getCode() + " is at cell X:" + p.xi + " Y:" + p.yi + " beyond the domain");
+					// logger.info("Point " + p.getCode() + " is at cell X:" +
+					// p.xi + " Y:" + p.yi + " beyond the domain");
 				} else {
 					ps.add(p);
-					logger.info("Point " + p.getCode() + " is at cell X:" + p.xi + " Y:" + p.yi);
+					// logger.info("Point " + p.getCode() + " is at cell X:" +
+					// p.xi + " Y:" + p.yi);
 				}
 			}
 			if (ps.size() > 0)
@@ -73,24 +75,30 @@ public class CityWorkerV2 {
 		}
 	}
 
-	public void exe(Long userId, Long domainId, Long missionId, Long scenarioId, int domain, List<String> dates,
-			String timePoint, String mode, List<String> filter, String type)
-					throws IOException, TransformException, FactoryException, ParseException {
+	public void exe(RequestParams params, String mode, List<String> filter, String type)
+			throws IOException, TransformException, FactoryException, ParseException {
+		String timePoint = params.getTimePoint();
+		Long userId = params.getUserId();
+		Long domainId = params.getDomainId();
+		Long missionId = params.getMissionId();
+		Long scenarioId = params.getScenarioId();
+		int domain = params.getDomain();
+		List<String> dates = params.getDate();
 		stationMap = calculateCityService.getStations();
 		// this.Cities(filter);
 		result = new LinkedHashMap<>();
 		extractConfig = resultPathUtil.getExtractConfig();
 
 		if (Constants.SHOW_TYPE_CONCN.equals(type)) {
-			String filePath1 = extractConfig.getConcnFilePath() + "/" + (Constants.TIMEPOINT_H.equals(timePoint)
-					? extractConfig.getConcnHourlyPrefix() : extractConfig.getConcnDailyPrefix());
-			String base = resultPathUtil.getRealPath(filePath1, userId, domainId, missionId, scenarioId, domain);
 
 			switch (timePoint.toLowerCase()) {
 			case "d":
 				for (String date : dates) {
+					String base = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_CONCN,
+							params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
+							params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
 					String day = DateUtil.strConvertToStr(date);
-					String ncPath = base + day;
+					String ncPath = base.replace("$Day", day);
 					if (!Constants.checkHourlyFile(ncPath))
 						continue;
 					logger.info("Loading File " + ncPath);
@@ -125,8 +133,11 @@ public class CityWorkerV2 {
 				break;
 			case "h":
 				for (String date : dates) {
+					String base = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_CONCN,
+							params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
+							params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
 					String day = DateUtil.strConvertToStr(date);
-					String ncPath = base + day;
+					String ncPath = base.replace("$Day", day);
 					if (!Constants.checkHourlyFile(ncPath))
 						continue;
 					logger.info("Loading File " + ncPath);
@@ -163,18 +174,19 @@ public class CityWorkerV2 {
 			}
 
 		} else if (Constants.SHOW_TYPE_METEOR.equals(type)) {
-			String filePath1 = extractConfig.getWindFilePath() + "/" + (Constants.TIMEPOINT_H.equals(timePoint)
-					? extractConfig.getMeteorHourlyPrefix() : extractConfig.getMeteorDailyPrefix());
-			String filePath2 = extractConfig.getWindFilePath() + "/" + (Constants.TIMEPOINT_H.equals(timePoint)
-					? extractConfig.getMeteorHourlyWindPrefix() : extractConfig.getMeteorDailyWindPrefix());
-			String base1 = resultPathUtil.getRealPath(filePath1, userId, domainId, missionId, scenarioId, domain);
-			String base2 = resultPathUtil.getRealPath(filePath2, userId, domainId, missionId, scenarioId, domain);
+
 			switch (timePoint.toLowerCase()) {
 			case "d":
 				for (String date : dates) {
+					String base1 = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_METEOR,
+							params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
+							params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
+					String base2 = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_WIND,
+							params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
+							params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
 					String day = DateUtil.strConvertToStr(date);
-					String ncPath1 = base1 + day;
-					String ncPath2 = base2 + day;
+					String ncPath1 = base1.replace("$Day", day); // 气象文件路径，不包含风
+					String ncPath2 = base2.replace("$Day", day); // 风场文件路径
 					if (!Constants.checkHourlyFile(ncPath1))
 						continue;
 					if (!Constants.checkHourlyFile(ncPath2))
@@ -192,9 +204,15 @@ public class CityWorkerV2 {
 				break;
 			case "h":
 				for (String date : dates) {
+					String base1 = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_METEOR,
+							params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
+							params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
+					String base2 = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_WIND,
+							params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
+							params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
 					String day = DateUtil.strConvertToStr(date);
-					String ncPath1 = base1 + day;
-					String ncPath2 = base2 + day;
+					String ncPath1 = base1.replace("$Day", day); // 气象文件路径，不包含风
+					String ncPath2 = base2.replace("$Day", day); // 风场文件路径
 					if (!Constants.checkHourlyFile(ncPath1))
 						continue;
 					logger.info("Loading File " + ncPath1);
@@ -285,8 +303,9 @@ public class CityWorkerV2 {
 							}
 							pointDateSLMap.put(l, curr);
 							layerMap.put(l, hv);
-							logger.info(p.getName() + " date: " + date + " x: " + p.xi + " y: " + p.yi + " z: " + l
-									+ " " + s + ":" + Jsons.objToJson(curr));
+							// logger.info(p.getName() + " date: " + date + " x:
+							// " + p.xi + " y: " + p.yi + " z: " + l
+							// + " " + s + ":" + Jsons.objToJson(curr));
 						}
 						point++;
 					}
@@ -360,8 +379,9 @@ public class CityWorkerV2 {
 							}
 							hv += v[0][i][p.yi][p.xi] / ps.size();
 							layerMap.put(i, hv);
-							logger.info(p.getName() + " date: " + date + " x: " + p.xi + " y: " + p.yi + " z: " + i
-									+ " " + s + ":" + v[0][i][p.yi][p.xi]);
+							// logger.info(p.getName() + " date: " + date + " x:
+							// " + p.xi + " y: " + p.yi + " z: " + i
+							// + " " + s + ":" + v[0][i][p.yi][p.xi]);
 						}
 						point++;
 					}

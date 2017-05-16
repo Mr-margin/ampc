@@ -23,35 +23,29 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import ampc.com.gistone.extract.netcdf.Netcdf;
+import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
+import ampc.com.gistone.database.model.TScenarinoDetail;
+import ampc.com.gistone.preprocess.concn.PreproUtil;
+import ampc.com.gistone.util.DateUtil;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
 @Service
-public class ExtractDataService {
+public class ExtractDataService extends ExtractService {
+
+	private final static Logger logger = LoggerFactory.getLogger(ExtractDataService.class);
 
 	@Autowired
-	private ResultPathUtil resultPathUtil;
-	private final static Logger logger = LoggerFactory.getLogger(ExtractDataService.class);
-	private final static String FLAG = "flag";
+	private TScenarinoDetailMapper tScenarinoDetailMapper;
+	@Autowired
+	private PreproUtil preproUtil;
 
-	private ExtractConfig extractConfig;
-	private ExtractRequestParams params;
 	private PointBean[][] pointBeanArray;
-	private String filePath1;
-	private String filePath2;
-	private NetcdfFile ncFile1;
-	private Map<String, List<Variable>> variableMap1; // diff or ratio
-														// scenario1/scenario2
-	private Map<String, List<Variable>> variableMap2;
-	private Map attributes;
-	private Projection projection;
+
 	private NumberFormat nf;
 	private List<PointBean> pointBeanList;
-	private Interpolation interpolation;
+
 	private List<Map<String, Object>> res;
 
 	private StringBuffer sbcsv_latlon = new StringBuffer();
@@ -66,9 +60,27 @@ public class ExtractDataService {
 			extractConfig = resultPathUtil.getExtractConfig();
 			params = extractRequestParams;
 			res = new ArrayList<Map<String, Object>>();
-			boolean bool = getNcFilePath();
-			if (!bool)
-				return null;
+			// boolean bool = getNcFilePath();
+			// if (!bool)
+			// return null;
+
+			variableMap1 = new HashMap<String, List<Variable>>();
+			variableMap2 = new HashMap<String, List<Variable>>();
+
+			Long scenarioId1 = params.getScenarioId1();
+			TScenarinoDetail tScenarinoDetail1 = tScenarinoDetailMapper.selectByPrimaryKey(scenarioId1);
+			// Date date = tScenarinoDetail.getScenarinoAddTime();
+			// int year = DateUtil.getYear(date);
+			// params.setYear(year);
+			Map<String, String[]> dataTypeMap1 = preproUtil.buildFnlAndGfsDate(tScenarinoDetail1);
+			params.setDateTypeMap1(dataTypeMap1);
+			if (!Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
+				Long scenarioId2 = params.getScenarioId2();
+				TScenarinoDetail tScenarinoDetail2 = tScenarinoDetailMapper.selectByPrimaryKey(scenarioId2);
+				Map<String, String[]> dataTypeMap2 = preproUtil.buildFnlAndGfsDate(tScenarinoDetail2);
+				params.setDateTypeMap2(dataTypeMap2);
+			}
+
 			getVariables();
 
 			projection = buildProject(params);
@@ -81,21 +93,27 @@ public class ExtractDataService {
 
 			pointBeanList = buildPointList(res);
 
-			ObjectMapper mapper = new ObjectMapper();
-			if (Constants.SHOW_TYPE_CONCN.equals(params.getShowType())) {
-				pathOut = extractConfig.getConcnFilePath();
-			} else if (Constants.SHOW_TYPE_EMIS.equals(params.getShowType())) {
-				pathOut = extractConfig.getEmisFilePath();
-			} else if (Constants.SHOW_TYPE_WIND.equals(params.getShowType())) {
-				pathOut = extractConfig.getWindFilePath();
-			}
-			pathOut = resultPathUtil.getRealPath(pathOut, params.getUserId(), params.getDomainId(),
-					params.getMissionId(), params.getScenarioId1(), params.getDomain());
-			pathOut = pathOut + "/" + params.getCalcType() + "-" + params.getTimePoint();
-			saveFile(pathOut, "/data.json", mapper.writeValueAsString(res));
-			saveFile(pathOut, "/extract-data-lonlat.csv", sbcsv_latlon.toString());
-			saveFile(pathOut, "/extract-data-lcc.csv", sbcsv_lcc.toString());
-			exportExcel(pointBeanArray, pathOut);
+			// ObjectMapper mapper = new ObjectMapper();
+			// if (Constants.SHOW_TYPE_CONCN.equals(params.getShowType())) {
+			// pathOut = extractConfig.getConcnFilePath();
+			// } else if (Constants.SHOW_TYPE_EMIS.equals(params.getShowType()))
+			// {
+			// pathOut = extractConfig.getEmisFilePath();
+			// } else if (Constants.SHOW_TYPE_WIND.equals(params.getShowType()))
+			// {
+			// pathOut = extractConfig.getWindFilePath();
+			// }
+			// pathOut = resultPathUtil.getRealPath(pathOut, params.getUserId(),
+			// params.getDomainId(),
+			// params.getMissionId(), params.getScenarioId1(),
+			// params.getDomain());
+			// pathOut = pathOut + "/" + params.getCalcType() + "-" +
+			// params.getTimePoint();
+			// saveFile(pathOut, "/data.json", mapper.writeValueAsString(res));
+			// saveFile(pathOut, "/extract-data-lonlat.csv",
+			// sbcsv_latlon.toString());
+			// saveFile(pathOut, "/extract-data-lcc.csv", sbcsv_lcc.toString());
+			// exportExcel(pointBeanArray, pathOut);
 
 			logger.info("buildData use time : " + (System.currentTimeMillis() - startTimes) + "ms");
 			return res;
@@ -106,38 +124,46 @@ public class ExtractDataService {
 
 	}
 
-	private void getVariables() {
-		String timePoint = params.getTimePoint();
-		variableMap1 = new HashMap<String, List<Variable>>();
-		variableMap2 = new HashMap<String, List<Variable>>();
-		if (Constants.TIMEPOINT_A.equals(timePoint)) {
+	// private void getVariables() {
+	// String timePoint = params.getTimePoint();
+	// variableMap1 = new HashMap<String, List<Variable>>();
+	// variableMap2 = new HashMap<String, List<Variable>>();
+	// if (Constants.TIMEPOINT_A.equals(timePoint)) {
+	//
+	// List<String> list = params.getDates();
+	// for (int i = 0; i < list.size(); i++) {
+	// String day = list.get(i);
+	// buildVariables(day);
+	// }
+	// try {
+	// attributes = Netcdf.getAttributes(filePath1 + list.get(0));
+	// } catch (IOException e) {
+	// logger.error("ExtractDataService | getVariables() : getAttributes
+	// IOException");
+	// return;
+	// }
+	// } else if (Constants.TIMEPOINT_D.equals(timePoint) ||
+	// Constants.TIMEPOINT_H.equals(timePoint)) {
+	// buildVariables(params.getDay());
+	//
+	// try {
+	// attributes = Netcdf.getAttributes(filePath1 + params.getDay());
+	// } catch (IOException e) {
+	// logger.error("ExtractDataService | getVariables() : getAttributes
+	// IOException");
+	// return;
+	// }
+	// }
+	// }
 
-			List<String> list = params.getDates();
-			for (int i = 0; i < list.size(); i++) {
-				String day = list.get(i);
-				buildVariables(day);
-			}
-			try {
-				attributes = Netcdf.getAttributes(filePath1 + list.get(0));
-			} catch (IOException e) {
-				logger.error("ExtractDataService | getVariables() : getAttributes IOException");
-				return;
-			}
-		} else if (Constants.TIMEPOINT_D.equals(timePoint) || Constants.TIMEPOINT_H.equals(timePoint)) {
-			buildVariables(params.getDay());
-
-			try {
-				attributes = Netcdf.getAttributes(filePath1 + params.getDay());
-			} catch (IOException e) {
-				logger.error("ExtractDataService | getVariables() : getAttributes IOException");
-				return;
-			}
-		}
-	}
-
-	private void buildVariables(String day) {
+	public void buildVariables(String date) {
 		try {
-			String p1 = filePath1 + day;
+			String base1 = resultPathUtil.getResultFilePath(date, params.getShowType(), params.getTimePoint(),
+					params.getUserId(), params.getDomainId(), params.getMissionId(), params.getScenarioId1(),
+					params.getDomain(), params.getDateTypeMap1());
+			String day1 = DateUtil.strConvertToStr(date);
+			String p1 = base1.replace("$Day", day1);
+			filePath1 = p1;
 			long openNcTimes = System.currentTimeMillis();
 			NetcdfFile nc1;
 			try {
@@ -163,7 +189,12 @@ public class ExtractDataService {
 				variableList1.add(variable1);
 
 				if (!Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
-					String p2 = filePath2 + day;
+					String base2 = resultPathUtil.getResultFilePath(date, params.getShowType(), params.getTimePoint(),
+							params.getUserId(), params.getDomainId(), params.getMissionId(), params.getScenarioId2(),
+							params.getDomain(), params.getDateTypeMap2());
+					String day2 = DateUtil.strConvertToStr(date);
+					String p2 = base2.replace("$Day", day2);
+					filePath2 = p2;
 					NetcdfFile nc2;
 					try {
 						nc2 = NetcdfFile.open(p2);
@@ -186,77 +217,6 @@ public class ExtractDataService {
 		} catch (Exception e) {
 			logger.error("ExtractDataService | buildVariables() error");
 		}
-	}
-
-	private boolean getNcFilePath() {
-		try {
-			String showType = params.getShowType();
-			if (Constants.SHOW_TYPE_CONCN.equals(showType)) {
-				filePath1 = extractConfig.getConcnFilePath() + "/"
-						+ (Constants.TIMEPOINT_H.equals(params.getTimePoint()) ? extractConfig.getConcnHourlyPrefix()
-								: extractConfig.getConcnDailyPrefix());
-			} else if (Constants.SHOW_TYPE_EMIS.equals(showType)) {
-				filePath1 = extractConfig.getEmisFilePath() + "/" + (Constants.TIMEPOINT_D.equals(params.getTimePoint())
-						? extractConfig.getEmisDailyPrefix() : extractConfig.getEmisHourlyPrefix());
-			} else if (Constants.SHOW_TYPE_WIND.equals(showType)) {
-				filePath1 = extractConfig.getWindFilePath() + "/" + (Constants.TIMEPOINT_D.equals(params.getTimePoint())
-						? extractConfig.getMeteorDailyWindPrefix() : extractConfig.getMeteorHourlyWindPrefix());
-			} else {
-				return false;
-			}
-			filePath2 = filePath1;
-
-			filePath1 = resultPathUtil.getRealPath(filePath1, params.getUserId(), params.getDomainId(),
-					params.getMissionId(), params.getScenarioId1(), params.getDomain());
-
-			if (!Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
-				filePath2 = resultPathUtil.getRealPath(filePath2, params.getUserId(), params.getDomainId(),
-						params.getMissionId(), params.getScenarioId2(), params.getDomain());
-			}
-			return true;
-		} catch (Exception e) {
-			logger.error("ExtractDataService | getNcFilePath error");
-			return false;
-		}
-
-	}
-
-	private Projection buildProject(ExtractRequestParams params)
-			throws TransformException, FactoryException, IOException {
-
-		long readAttrTimes = System.currentTimeMillis();
-
-		double xorig = Double.valueOf((String.valueOf(attributes.get("XORIG"))));
-		double yorig = Double.valueOf((String.valueOf(attributes.get("YORIG"))));
-		double xcell = Double.valueOf((String.valueOf(attributes.get("XCELL"))));
-		double ycell = Double.valueOf((String.valueOf(attributes.get("YCELL"))));
-		String lat_1 = attributes.get("P_ALP").toString();
-		String lat_2 = attributes.get("P_BET").toString();
-		String lat_0 = attributes.get("YCENT").toString();
-		String lon_0 = attributes.get("XCENT").toString();
-		int totalLayer = ncFile1.findDimension("LAY").getLength();
-		int row = Integer.valueOf(String.valueOf(attributes.get("NROWS")));
-		int col = Integer.valueOf(String.valueOf(attributes.get("NCOLS")));
-		params.setXorig(xorig);
-		params.setYorig(yorig);
-		params.setXcell(xcell);
-		params.setYcell(ycell);
-		params.setLat_1(lat_1);
-		params.setLat_2(lat_2);
-		params.setLat_0(lat_0);
-		params.setLon_0(lon_0);
-		logger.info("read attr, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
-		int layer = params.getLayer();
-		if (layer < 1 || layer > totalLayer) {
-			logger.error("the layer params should be between in 1 and " + totalLayer);
-		}
-		logger.info("(xorig,yorig) = (" + xorig + "," + yorig + "), (xcell,ycell) = (" + xcell + "," + ycell
-				+ "), (nrows, ncols) = (" + row + "," + col + ")");
-
-		interpolation = new Interpolation(params.getHour(), layer, xorig, yorig, xcell, ycell, row, col);
-
-		return ProjectUtil.getProj(attributes);
-
 	}
 
 	public List<PointBean> buildPointList(List<Map<String, Object>> res) throws IOException, InvalidRangeException {
@@ -361,7 +321,7 @@ public class ExtractDataService {
 				.append("\r\n");
 	}
 
-	private Map<String, Double> getValue(PointBean pb) throws IOException, InvalidRangeException {
+	public Map<String, Double> getValue(PointBean pb) throws IOException, InvalidRangeException {
 		try {
 			Point2D p = projection.transform(pb.getLon(), pb.getLat());
 			pb.setXlcc(p.getX());
@@ -468,6 +428,10 @@ public class ExtractDataService {
 		bufferedWriter.write(content);
 		bufferedWriter.flush();
 		bufferedWriter.close();
+	}
+
+	public PointBean[][] getPointBeanArray() {
+		return pointBeanArray;
 	}
 
 }
