@@ -631,6 +631,7 @@ function getdata() {
         "mode": changeMsg.station == 'avg' ? 'city' : 'point',
         "cityStation": changeMsg.station == 'avg' ? changeMsg.city : changeMsg.station,
 //	    "scenarinoId": changeMsg.scenarinoId,
+        "domain":$('input[name=domain]:checked').val(),
 		"scenarinoId": ch_scenarinoId,
 	    "datetype": changeMsg.rms
 	  };
