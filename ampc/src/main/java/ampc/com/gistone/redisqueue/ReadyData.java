@@ -736,7 +736,7 @@ public class ReadyData {
 		String lastungrib = null;
 		if (null!=lastpathdate) {
 			LogUtil.getLogger().info("pivot方法日志:从"+DateUtil.DATEtoString(lastpathdate, "yyyy-MM-dd")+"开始断了");
-			LogUtil.getLogger().info("pivot方法日志:pathdate:"+pathdate);
+			LogUtil.getLogger().info("pivot方法日志:ungrib最新pathdate:"+pathdate);
 			//将当前的的系统时间转化为于pathdate一样的时间格式（ 年月日形式）
 			Date todayDate = DateUtil.DateToDate(new Date(),"yyyyMMdd");
 			//比较最新的pathdate和当前系统时间 i=0表示时间一致 小于0表示 时间pathdate小于系统时间
@@ -774,7 +774,7 @@ public class ReadyData {
 			}
 			if (i<0&&compareTo==0&&compareungrib>0) {
 				//表示ungrib不是当天 但是没有出现断层的情况下 等待ungrib跟新  最新未运行的情景是当天 compareTo
-				LogUtil.getLogger().info("pivot方法日志:时间："+todayDate+"的ungrib还未跟新！不发送任何数据！");
+				LogUtil.getLogger().info("pivot方法日志:时间："+todayDate+"的ungrib还未跟新！");
 				lastungrib=null;
 			}
 			if (i==0&&compareungrib==0&&compareTo<0) {
@@ -867,6 +867,8 @@ public class ReadyData {
 		if (null!=scenarinoId) {
 			//查找数据库的情景详情的消息通过情景ID
 			scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+		}else {
+			scenarinoId = scenarinoDetailMSG.getScenarinoId();
 		}
 		
 		String scenarinoType = scenarinoDetailMSG.getScenType();
@@ -1030,6 +1032,8 @@ public class ReadyData {
 		String datatype = null;
 		if (i<0) {
 			 datatype = "fnl";
+		}else if(i>=0){
+			datatype = "gfs";
 		}
 		//第一次发送数据 ic是基础情景 后面的户数ic是本条情景ID和任务ID
 		boolean first= true;
@@ -1053,11 +1057,12 @@ public class ReadyData {
 		LogUtil.getLogger().info("发下一条数据");
 		//消息的time的内容
 		String time = DateUtil.changeDate(tasksEndDate, "yyyyMMdd", 1);
+		Date timeDate = DateUtil.StrtoDateYMD(time, "yyyyMMdd");
 //		String time = DateUtil.DATEtoString(tasksEndDate, "yyyyMMdd");
 		Long scenarinoId = tScenarinoDetail.getScenarinoId();
 		Date today = DateUtil.DateToDate(tScenarinoDetail.getPathDate(), "yyyyMMdd");
 		//比较时间 确定datetype
-		int i = tasksEndDate.compareTo(today);
+		int i = timeDate.compareTo(today);
 		String datatype = null;
 		if (i<0) {
 			datatype = "fnl";
@@ -1561,7 +1566,7 @@ public class ReadyData {
 		}
 		
 		if (null==tasksStatus) {
-			LogUtil.getLogger().info("没有收到减排系数");
+			LogUtil.getLogger().info("ReadyData--getDataEmis:没有收到减排系数");
 		}
 		//获取减排清单 从数据库里面取
 		
