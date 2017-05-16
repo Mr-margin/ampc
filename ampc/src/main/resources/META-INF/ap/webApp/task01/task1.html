@@ -1003,7 +1003,7 @@
 
   /*创建情景时选择模态框*/
   function createQJselect(id) {
-    var oldQJUrl = '/ampc/scenarino/find_scenarino_time';
+    var oldQJUrl = '/scenarino/find_scenarino_time';
     //var oldQJUrl = 'date.json';
     var row = $('#rwgltable').treegrid('find', id);
     selectRW = $.extend({}, row);
@@ -1053,7 +1053,7 @@
   /*创建情景选择类型*/
   function selectQJtype(type) {
 
-    var url = '/ampc/scenarino/find_endTime';
+    var url = '/scenarino/find_endTime';
     //var url = 'end.json';
     var params = {
       userId: userId
