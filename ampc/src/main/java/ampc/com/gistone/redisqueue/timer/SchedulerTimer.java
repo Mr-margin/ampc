@@ -35,6 +35,7 @@ import java.util.Map;
 
 
 
+
 import net.sf.json.JSONObject;
 
 import org.apache.ibatis.annotations.Select;
@@ -44,6 +45,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -127,7 +129,7 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月7日 上午9:53:09
 	 */
 //	@Scheduled(cron="0 0 11 * * ?")
-//	@Scheduled(cron="0 30 09 * * ?")   //每天9:30定时触发创建实时预报任务---服务器配置
+	@Scheduled(cron="0 30 09 * * ?")   //每天9:30定时触发创建实时预报任务---服务器配置
 //	@Scheduled(fixedRate = 50000)
 	public void realForTimer() {
 		//Date date = new Date();
@@ -265,7 +267,7 @@ public class SchedulerTimer<V> {
 						}
 					} catch (Exception e) {
 						// TODO: handle exception
-						LogUtil.getLogger().error("创建新的实时预报任务出现异常！");
+						LogUtil.getLogger().error("创建新的实时预报任务出现异常！",e);
 					}
 					//获取新任务的任务ID
 				}
@@ -319,13 +321,18 @@ public class SchedulerTimer<V> {
 			tScenarinoDetail.setSpinup((long)spinup);
 			tScenarinoDetail.setRangeDay((long)rangeday);
 			tScenarinoDetail.setExpand3(cores.toString());
-			
-			//创建新的情景
-			insertSelective = tScenarinoDetailMapper.insertSelective(tScenarinoDetail);
-			if (insertSelective>0) {
-				//System.out.println("创建了新的实时预报");
-				LogUtil.getLogger().info("创建了新的实时预报");
+			try {
+				//创建新的情景
+				insertSelective = tScenarinoDetailMapper.insertSelective(tScenarinoDetail);
+				if (insertSelective>0) {
+					LogUtil.getLogger().info("创建了新的实时预报");
+				}else {
+					throw new SQLException("SchedulerTimer  创建了新的实时预报出错!");
+				}
+			} catch (Exception e) {
+				LogUtil.getLogger().error("SchedulerTimer realForTimer  创建了新的实时预报出错!",e);
 			}
+			
 			//创建情景对应的tasksstatus
 			TTasksStatus tTasksStatus = new TTasksStatus();
 			try {
@@ -345,9 +352,6 @@ public class SchedulerTimer<V> {
 			} catch (Exception e) {
 				LogUtil.getLogger().error("系统错误！同一天的实时预报存在多条数据！");
 			}
-			
-	
-			
 			//调用方法获取meiccityconfig
 			String emisParamesURL = configUtil.getEmisParamesURL();
 			String getResult=ClientUtil.doPost(emisParamesURL,scenarinoId.toString());
@@ -422,43 +426,59 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月21日 下午7:39:01
 	 */
 //	@Scheduled(fixedRate = 5000)
-//	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
-//	@Scheduled(cron="0 04 15 * * ?")
+	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
+//	@Scheduled(cron="0 30 10 * * ?")
 	public void  sendMessageOnRealprediction() {
-		 LogUtil.getLogger().info("开始检测ungrib的数据");
-		//获取最新的ungrib 
-		TUngrib tUngrib = tUngribMapper.getlastungrib();
-		if (null==tUngrib) {
-			LogUtil.getLogger().info("没有ungrib数据,系统第一次启动预报！");
-		}else {
-			//最新的pathdate（年月日）
-			Date pathdate = tUngrib.getPathDate();
-			 //当天时间
-			Date pathdatetoday = DateUtil.DateToDate(new Date(), "yyyyMMdd");
-			int length = toDataUngribUtil.UpdateORNo(tUngrib);
-			//查找当天所有的用户的实时预报的状态
-			Map map = new HashMap();
-			String scenType = "4";
-			map.put("pathDate", pathdatetoday);
-			map.put("scenType", scenType);
-			List<TScenarinoDetail>  list = tScenarinoDetailMapper.selectAllByPathdateAndtype(map);
-			for (TScenarinoDetail tScenarinoDetail : list) {
-					Long userId = tScenarinoDetail.getUserId();
-					Long rangeDay = tScenarinoDetail.getRangeDay();
-					LogUtil.getLogger().info("rangeDay的长度是："+rangeDay);
-					if (length>=rangeDay) {
-						//查找中断的预报时间
-						Date lastpathdate = tScenarinoDetailMapper.getlastrunstatus(userId);
-						String lastungrib = readyData.pivot(userId, lastpathdate, pathdate);
-						if (null!=lastungrib) {
-							readyData.readyRealMessageDataFirst(tScenarinoDetail, lastungrib);
-							//修改状态为执行中
-							readyData.updateScenStatusUtil(6l, tScenarinoDetail.getScenarinoId());
+		 LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:开始检测ungrib的数据");
+		 try {
+			//获取最新的ungrib 
+			 TUngrib tUngrib = tUngribMapper.getlastungrib();
+				if (null==tUngrib) {
+					LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:没有ungrib数据,系统第一次启动预报！");
+				}else {
+					//最新的pathdate（年月日）
+					Date pathdate = tUngrib.getPathDate();
+					 //当天时间
+					Date pathdatetoday = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+					int length = toDataUngribUtil.UpdateORNo(tUngrib);
+					//查找当天所有的用户的实时预报的状态
+					Map map = new HashMap();
+					String scenType = "4";
+					map.put("pathDate", pathdatetoday);
+					map.put("scenType", scenType);
+					List<TScenarinoDetail>  list = tScenarinoDetailMapper.selectAllByPathdateAndtype(map);
+					for (TScenarinoDetail tScenarinoDetail : list) {
+						//检查排放数据参数是否存在
+						TTasksStatus selectEmisDataByScenId = tTasksStatusMapper.selectEmisDataByScenId(tScenarinoDetail.getScenarinoId());
+						if (0==(selectEmisDataByScenId.getTasksExpand1())) {
+							Long userId = tScenarinoDetail.getUserId();
+							Long rangeDay = tScenarinoDetail.getRangeDay();
+							LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:rangeDay的长度是："+rangeDay);
+							if (length>=rangeDay) {
+								//查找中断的预报时间
+								Date lastpathdate = tScenarinoDetailMapper.getlastrunstatus(userId);
+								String lastungrib = readyData.pivot(userId, lastpathdate, pathdate);
+								if (null!=lastungrib) {
+									readyData.readyRealMessageDataFirst(tScenarinoDetail, lastungrib);
+									//修改状态为执行中
+									readyData.updateScenStatusUtil(6l, tScenarinoDetail.getScenarinoId());
+								}else {
+									LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:lastungrib对应的实时预报已经发送过了或者当天的ungrib还未更新！");
+								}
+							}
 						}else {
-							LogUtil.getLogger().info("lastungrib对应的实时预报已经发送过了或者当天的ungrib还未更新！");
-						}
+							//重新请求一次emis排放数据
+							boolean emisParams = readyData.getEmisParams(tScenarinoDetail.getScenarinoId());
+							if (emisParams) {
+								LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:重新请求实时预报的emisdata参数成功！");
+							}else {
+								LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:重新请求实时预报的emisdata参数失败！");
+							}
+						}	
 					}
-				}
+				}	
+		} catch (Exception e) {
+			LogUtil.getLogger().error("定时器 sendMessageOnRealprediction 出错！",e);
 		}
 	}
 	
@@ -503,7 +523,7 @@ public class SchedulerTimer<V> {
 	 * @author yanglei
 	 * @date 2017年4月7日 下午8:46:00
 	 */
-//	@Scheduled(cron="0 0/10 * * * ?")  //每隔10分钟定时触发一次预评估任务的检查---服务器配置
+	@Scheduled(cron="0 0/10 * * * ?")  //每隔10分钟定时触发一次预评估任务的检查---服务器配置
 //	@Scheduled(fixedRate = 5000)
 	public void ForpreEvalution() {
 		LogUtil.getLogger().info("每隔10分钟执行一次");
@@ -515,6 +535,7 @@ public class SchedulerTimer<V> {
 				Date pathDate = DateUtil.DateToDate(tScenarinoDetail.getPathDate(), "yyyyMMdd");
 				Long userId = tScenarinoDetail.getUserId();
 				Date maxtime = readyData.getMaxTimeForMegan(pathDate,userId);
+				LogUtil.getLogger().info("定时器 ForpreEvalution-预评估任务最大的气象数据maxtime："+maxtime);
 				Date startDate = DateUtil.DateToDate(tScenarinoDetail.getScenarinoStartDate(), "yyyyMMdd");//预评估情景的开始时间
 				int compareTo = maxtime.compareTo(startDate);//比较最大的时间和预评估情景的开始时间
 				Long scenarinoId = tScenarinoDetail.getScenarinoId();
@@ -572,7 +593,7 @@ public class SchedulerTimer<V> {
 									if (sendDataEvaluationSituationThen) {
 										LogUtil.getLogger().info("ID为"+scenarinoId+"预评估情景发送成功！");
 									}else {
-										LogUtil.getLogger().info("ID为"+scenarinoId+"预评估情景发送成功！");
+										LogUtil.getLogger().info("ID为"+scenarinoId+"预评估情景发送失败！");
 									}
 								}
 								
@@ -601,7 +622,7 @@ public class SchedulerTimer<V> {
 	 * @author yanglei
 	 * @date 2017年4月8日 上午10:19:16
 	 */
-	@Scheduled(fixedRate = 5000)
+//	@Scheduled(fixedRate = 5000)
 	public void  test1() {
 		/*String url="http://192.168.1.10:8082/ampc/saveEmis";
 		HashMap<String,String> hashMap = new HashMap<String, String>();
@@ -657,7 +678,7 @@ public class SchedulerTimer<V> {
 //	@Scheduled(fixedRate = 5000)
 //	@Scheduled(cron="0 */3 * * * ") //每隔三个小时检查一次实时预报的情况---服务器配置
 	public void continueRealModelprediction() {
-		LogUtil.getLogger().info("每隔三个小时检查一次实时预报的情况！");
+		LogUtil.getLogger().info("continueRealModelprediction:每隔三个小时检查一次实时预报的情况！");
 		//查找当天的实时预报的运行状态
 		Date originalDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
 		Date starandDate = DateUtil.changedateByHour(originalDate,7);
@@ -671,23 +692,27 @@ public class SchedulerTimer<V> {
 			map.put("type", "4");
 			try {
 				List<TTasksStatus> selectTasksstatuslist = tTasksStatusMapper.selectTasksstatusByPathdateandtype(map);
-				for (TTasksStatus tTasksStatus : selectTasksstatuslist) {
-					String modelErrorStatus = tTasksStatus.getModelErrorStatus();
-					Long tasksScenarinoId = tTasksStatus.getTasksScenarinoId();
-					TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(tasksScenarinoId);
-					if (null!=modelErrorStatus) {
-						TUngrib tUngrib = tUngribMapper.getlastungrib();
-						String lastungrib =  DateUtil.DATEtoString(tUngrib.getPathDate(), "yyyyMMdd");
-						boolean comtinueRealpredict =readyData.continueRealpredict(tScenarinoDetail,lastungrib);
-						if (comtinueRealpredict) {
-							LogUtil.getLogger().info("自动续跑实时预报成功！");
-						}else {
-							LogUtil.getLogger().info("自动续跑实时预报失败！");
+				if (null!=selectTasksstatuslist) {
+					for (TTasksStatus tTasksStatus : selectTasksstatuslist) {
+						String modelErrorStatus = tTasksStatus.getModelErrorStatus();
+						Long tasksScenarinoId = tTasksStatus.getTasksScenarinoId();
+						TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(tasksScenarinoId);
+						if (null!=modelErrorStatus) {
+							TUngrib tUngrib = tUngribMapper.getlastungrib();
+							String lastungrib =  DateUtil.DATEtoString(tUngrib.getPathDate(), "yyyyMMdd");
+							boolean comtinueRealpredict =readyData.continueRealpredict(tScenarinoDetail,lastungrib);
+							if (comtinueRealpredict) {
+								LogUtil.getLogger().info("continueRealModelprediction:自动续跑实时预报成功！");
+							}else {
+								LogUtil.getLogger().info("continueRealModelprediction:自动续跑实时预报失败！");
+							}
 						}
 					}
+				}else {
+					LogUtil.getLogger().info("continueRealModelprediction:当天的预报情景未创建！");
 				}
 			} catch (Exception e) {
-				LogUtil.getLogger().error("");
+				LogUtil.getLogger().error("continueRealModelprediction: 查询预报情景执行状态出错或者对应的情景的详情出错！（当天）pathdate:"+pathDate,e.getMessage(),e);
 			}
 		}
 		if (compareTo<0) {
@@ -695,23 +720,30 @@ public class SchedulerTimer<V> {
 			Map map = new HashMap();
 			map.put("pathdate", pathDate);
 			map.put("type", "4");
-			List<TTasksStatus> selectTasksstatuslist = tTasksStatusMapper.selectTasksstatusByPathdateandtype(map);
-			for (TTasksStatus tTasksStatus : selectTasksstatuslist) {
-				String modelErrorStatus = tTasksStatus.getModelErrorStatus();
-				Long tasksScenarinoId = tTasksStatus.getTasksScenarinoId();
-				TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(tasksScenarinoId);
-				if (null!=modelErrorStatus) {
-					TUngrib tUngrib = tUngribMapper.getlastungrib();
-					String lastungrib =  DateUtil.DATEtoString(tUngrib.getPathDate(), "yyyyMMdd");
-					boolean comtinueRealpredict =readyData.continueRealpredict(tScenarinoDetail,lastungrib);
-					if (comtinueRealpredict) {
-						LogUtil.getLogger().info("自动续跑实时预报成功！");
-					}else {
-						LogUtil.getLogger().info("自动续跑实时预报失败！");
+			try {
+				List<TTasksStatus> selectTasksstatuslist = tTasksStatusMapper.selectTasksstatusByPathdateandtype(map);
+				if (null!=selectTasksstatuslist) {
+					for (TTasksStatus tTasksStatus : selectTasksstatuslist) {
+						String modelErrorStatus = tTasksStatus.getModelErrorStatus();
+						Long tasksScenarinoId = tTasksStatus.getTasksScenarinoId();
+						TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(tasksScenarinoId);
+						if (null!=modelErrorStatus) {
+							TUngrib tUngrib = tUngribMapper.getlastungrib();
+							String lastungrib =  DateUtil.DATEtoString(tUngrib.getPathDate(), "yyyyMMdd");
+							boolean comtinueRealpredict =readyData.continueRealpredict(tScenarinoDetail,lastungrib);
+							if (comtinueRealpredict) {
+								LogUtil.getLogger().info("continueRealModelprediction:自动续跑实时预报成功！");
+							}else {
+								LogUtil.getLogger().info("continueRealModelprediction:自动续跑实时预报失败！");
+							}
+						}
 					}
+				}else {
+					LogUtil.getLogger().info("continueRealModelprediction:当天的预报情景未创建！");
 				}
+			} catch (Exception e) {
+				LogUtil.getLogger().error("continueRealModelprediction:查询预报情景执行状态出错或者对应的情景的详情出错！（上一天）pathdate:"+pathDate,e.getMessage(),e);
 			}
 		}
 	}
-
 }
