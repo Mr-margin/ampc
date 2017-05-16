@@ -3,6 +3,7 @@ package ampc.com.gistone.preprocess.concn;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,6 +30,7 @@ import ampc.com.gistone.extract.Constants;
 import ampc.com.gistone.preprocess.core.CityWorkerV2;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.ConfigUtil;
+import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.JsonUtil;
 import net.sf.json.JSONObject;
 
@@ -51,6 +54,7 @@ public class ConcnService {
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
+	@Transactional
 	public boolean requestConcnData(RequestParams params) {
 
 		String[] filter = { "1101", "1201", "1301", "1302", "1303", "1304", "1305", "1306", "1307", "1308", "1309",
@@ -64,11 +68,13 @@ public class ConcnService {
 		try {
 			Long sId = Long.valueOf(params.getScenarioId());
 			TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(sId);
-			int year = preproUtil.getScenarinoYear(tScenarinoDetail);
-			params.setYear(year);
+			Date date = tScenarinoDetail.getScenarinoAddTime();
+			int year = DateUtil.getYear(date);
+			params.setYear(year); // 根据情景的创建时间来决定将数据存储至哪张表中
 			int type = Integer.valueOf(tScenarinoDetail.getScenType());
-			if (type == 4)
-				params.setType(true);
+			Map<String, String[]> dataTypeMap = preproUtil.buildFnlAndGfsDate(tScenarinoDetail);
+
+			params.setDateTypeMap(dataTypeMap);
 			// 根据userID、预案的创建时间来检测当前的表是否存在，不存在要创建
 			CheckTableParams checkTableParams = new CheckTableParams();
 			checkTableParams.setUser_id(params.getUserId());
@@ -93,9 +99,7 @@ public class ConcnService {
 				dataMap = mapper.readValue(jsonObject.toString(), Map.class);
 			} else { // 从当前服务中的接口获取数据
 				try {
-					cityWorkerV2.exe(params.getUserId(), params.getDomainId(), params.getMissionId(),
-							params.getScenarioId(), params.getDomain(), params.getDate(), params.getTimePoint(),
-							Constants.AREA_CITY, cites, Constants.SHOW_TYPE_CONCN);
+					cityWorkerV2.exe(params, Constants.AREA_CITY, cites, Constants.SHOW_TYPE_CONCN);
 					dataMap = cityWorkerV2.getResult();
 
 				} catch (TransformException e) {
@@ -108,7 +112,7 @@ public class ConcnService {
 			}
 			if (dataMap == null || dataMap.size() == 0)
 				return false;
-			preproUtil.updateRecord(tableName, params, dataMap, Constants.SHOW_TYPE_CONCN);
+			preproUtil.updateRecord(tableName, params, dataMap, Constants.SHOW_TYPE_CONCN, type);
 
 			Map map = new HashMap();
 			map.put("siteCodeList", cites);
@@ -116,7 +120,7 @@ public class ConcnService {
 
 			params.setMode(Constants.AREA_POINT2);
 			params.setFilter(stationList);
-			preproUtil.updateRecord(tableName, params, dataMap, Constants.SHOW_TYPE_CONCN);
+			preproUtil.updateRecord(tableName, params, dataMap, Constants.SHOW_TYPE_CONCN, type);
 
 			return true;
 		} catch (JsonParseException e) {

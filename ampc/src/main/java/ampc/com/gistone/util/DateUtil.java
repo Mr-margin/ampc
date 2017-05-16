@@ -108,7 +108,7 @@ public class DateUtil {
 	 * 
 	 * @Description: 当前日期的变化增减 返回时间
 	 * @param date
-	 * @return Date 
+	 * @return Date
 	 * @throws @author
 	 *             yanglei
 	 * @date 2017年3月20日 下午4:35:27
@@ -171,17 +171,16 @@ public class DateUtil {
 
 	/**
 	 * 
-	 * @Description:字符串转化为时间 并且增减  返回时间
+	 * @Description:字符串转化为时间 并且增减 返回时间
 	 * @param date
 	 * @param pattern
 	 * @param i
-	 * @return   
-	 * Date  
-	 * @throws
-	 * @author yanglei
+	 * @return Date
+	 * @throws @author
+	 *             yanglei
 	 * @date 2017年5月8日 上午10:15:50
 	 */
-	public static Date changestrToDate(String date,String pattern,int i) {
+	public static Date changestrToDate(String date, String pattern, int i) {
 		SimpleDateFormat format = new SimpleDateFormat(pattern);
 		Calendar cal = Calendar.getInstance();
 		Date newDate = null;
@@ -197,6 +196,7 @@ public class DateUtil {
 		}
 		return newDate;
 	}
+
 	/**
 	 * 日期转换成字符串
 	 * 
@@ -307,5 +307,34 @@ public class DateUtil {
 		SimpleDateFormat format2 = new SimpleDateFormat("yyyyMMdd");
 		String s = format2.format(date);
 		return s;
+	}
+
+	/**
+	 * 获取年份
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static int getYear(Date date) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		return c.get(Calendar.YEAR);
+	}
+
+	// 北京时转换为世界时
+	public static String zoneFormat(String date) {
+		// 1、取得本地时间：
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(phraseDate(date));
+		// 2、取得时间偏移量：
+		int zoneOffset = cal.get(Calendar.ZONE_OFFSET);
+		// 3、取得夏令时差：
+		int dstOffset = cal.get(Calendar.DST_OFFSET);
+		// 4、从本地时间里扣除这些差量，即可以取得UTC时间：
+		cal.add(Calendar.MILLISECOND, -(zoneOffset + dstOffset));
+		// 之后调用cal.get(int x)或cal.getTimeInMillis()方法所取得的时间即是UTC标准时间。
+		Date utcDate = new Date(cal.getTimeInMillis());
+		String str = DATEtoString(utcDate, DATE_FORMAT);
+		return strConvertToStr(str);
 	}
 }

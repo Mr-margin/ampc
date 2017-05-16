@@ -14,16 +14,13 @@ import ampc.com.gistone.util.AmpcResult;
 
 @RestController
 @RequestMapping(value = "/extract")
-public class ExtractDataController {
+public class ExtractPngController {
 
 	private final static Logger logger = LoggerFactory.getLogger(ExtractDataController.class);
-
-	@Autowired
-	private ExtractDataService extractDataService;
 	@Autowired
 	private ExtractPngService extractPngService;
 
-	@RequestMapping(value = "/data")
+	@RequestMapping(value = "/png")
 	public AmpcResult getExtractData(@RequestBody Map<String, Object> requestData) {
 		Map<String, Map> data = (Map) requestData.get("data");
 		List res;
@@ -35,7 +32,7 @@ public class ExtractDataController {
 			Long domainId = Long.valueOf(String.valueOf(data.get("domainId")));
 			Long missionId = Long.valueOf(String.valueOf(data.get("missionId")));
 			int domain = Integer.valueOf(String.valueOf(data.get("domain")));
-			List<String> species = (List) (data.get("species"));
+			String species = String.valueOf(data.get("specie"));
 			String timePoint = String.valueOf(data.get("timePoint"));
 
 			ExtractRequestParams params = new ExtractRequestParams(calcType, showType, userId, domainId, missionId,
@@ -87,10 +84,12 @@ public class ExtractDataController {
 			int height = Integer.valueOf(String.valueOf(data.get("height")));
 			params.setRows(rows);
 			params.setCols(cols);
-			res = extractDataService.buildData(params);
-			if (res != null)
-				return AmpcResult.ok(res);
+			params.setWidth(width);
+			params.setHeight(height);
 
+			String pngPath = extractPngService.buildPng(params);
+			if (pngPath != null)
+				return AmpcResult.ok(pngPath);
 		} catch (Exception e) {
 			return AmpcResult.build(1003, "参数异常");
 		}
