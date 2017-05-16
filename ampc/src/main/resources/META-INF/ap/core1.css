@@ -375,6 +375,7 @@ label#lblSelect::after
   width: 100%;
   font-size: 14px;
   color: #768399;
+  border-color: #1c84c6
 }
 
 .cloudui .form-control:focus {
@@ -1214,6 +1215,13 @@ dl, dd {
 .cloudui .verticalCon .ibox-content .verticalChar #initEcharts .echartsCZ{float: left;width: 25%;}
 .cloudui .verticalCon .ibox-content .verticalChar #initEcharts .echartsCZ .easyui-panel{width: 100%!important;height:100%;height:300px;}
 /*.cloudui .verticalCon .ibox-content .verticalChar #initEcharts .echartsCZ .easyui-panel div{width: 100%!important;height:100%;height:300px;}*/
+/*评估报告*/
+.cloudui .verticalCon .ibox-content .verticalChar .pgbgContent{width: 100%;height:100%;}
+.cloudui .verticalCon .ibox-content .verticalChar .pgbgContent p{text-indent: 2em;}
+.cloudui .verticalCon .ibox-content .verticalChar .pgbgContent p .pgbgPointer{font-family: "黑体";font-size: 2em;color:#0275D8;font-weight:bold;}
+.cloudui .verticalCon .toolContent .selectTool_con .pgbaQj{position: static;}
+/*.cloudui .verticalCon .toolContent .selectTool_con .pgbaQj label{float: left!important;}*/
+/*.cloudui .verticalCon .toolContent .selectTool_con .pgbaQj .btn-group{overflow: hidden;width:auto!important;height: auto ;}*/
 /*效果评估图表展示*/
 .cloudui .verticalCon .charContent{position:absolute;top:60px;left:0;right:0;bottom: 0;z-index:0;overflow-y: auto;}
 /*搜索条件*/
