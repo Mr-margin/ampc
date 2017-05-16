@@ -76,14 +76,14 @@ var optionAll = {
 			right: '3%',
 			bottom: '30%',
 		 },
-		 dataZoom:[
-		           {
-		        	  show:'true',
-		        	  realtime:'true',
-		        	  start:0,
-		        	  end:100
-		           },
-		          ],
+//		 dataZoom:[
+//		           {
+//		        	  show:'true',
+//		        	  realtime:'true',
+//		        	  start:0,
+//		        	  end:100
+//		           },
+//		          ],
          calculable: false,  
       xAxis: [  
               	{  
@@ -526,16 +526,19 @@ function initEcharts() {
     if("AQI"!=tname[i]){
     	var es = echarts.init(document.getElementById(tname[i]));
     	es.group = 'group1';
-    	es.on('datazoom', function (params) {
-    		group='';
-    		echarts.disconnect(group);
+    	es.on('mouseover', function (params) {
+    		es.group='';
+    		echarts.disconnect('group1');
    	    });
     	es.setOption(option);
     	$(window).resize(es.resize);
-    }else{
+    }else{	//AQI
     	var aqi = echarts.init(document.getElementById(tname[i]));
+    	//图表联动
     	aqi.group = 'group1';
-    	aqi.on('datazoom', function (params) {
+    	//鼠标悬停事件
+    	aqi.on('mouseover', function (params) {
+    		//图表联动
     		echarts.connect('group1');
    	    });
     	aqi.setOption(option);
@@ -594,6 +597,7 @@ function getdata() {
 	    "mode": changeMsg.station=='avg'?'city':'point',
 	    "cityStation": changeMsg.station=='avg'?changeMsg.city:changeMsg.station,
 //	    "scenarinoId": changeMsg.scenarinoId,
+	    "domain":$('input[name=domain]:checked').val(),	
 		"scenarinoId": ch_scenarinoId,
 	    "datetype": changeMsg.rms
 	  };
