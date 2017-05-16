@@ -26,10 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
+import ampc.com.gistone.database.inter.TEmissionDetailMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TObsMapper;
 import ampc.com.gistone.database.inter.TPreProcessMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
+import ampc.com.gistone.database.model.TEmissionDetailWithBLOBs;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.preprocess.concn.ScenarinoEntity;
@@ -53,6 +55,9 @@ public class AppraisalController {
 	
 	@Autowired
 	private TPreProcessMapper tPreProcessMapper;
+	
+	@Autowired
+	private TEmissionDetailMapper tEmissionDetailMapper;
 	
 	@Autowired
 	private TObsMapper tObsMapper;
@@ -212,6 +217,7 @@ public class AppraisalController {
 				}else{
 					if(datetype.equals("day")){		//逐天
 						//表名title
+						//*****
 						String tables="T_SCENARINO_DAILY_";
 						//获取情景添加时间
 						Date tims=tScenarinoDetail.getScenarinoAddTime();
@@ -1685,6 +1691,283 @@ public class AppraisalController {
 			}
 			//返回结果
 			return AmpcResult.build(0, "success",objsed);
+		}catch(Exception e){
+			LogUtil.getLogger().error("MissionAndScenarinoController 根据任务id以及userid查询情景有异常",e);
+			return AmpcResult.build(1000, "参数错误",null);
+		}
+	}	
+	
+	
+	
+	/**
+	 * 评估报告数据查询接口
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	
+	@RequestMapping("Appraisal/report")
+	public AmpcResult report(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+		try{
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("AppraisalController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			Long userId = Long.parseLong(param.toString());
+			//情景id
+			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			//获取任务ID
+			param=data.get("missionId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("AppraisalController  任务id为空或出现非法字符!");
+				return AmpcResult.build(1003, "任务id为空或出现非法字符!");
+			}
+			Long missionId=Long.valueOf(param.toString());
+			String start=data.get("startdate").toString();
+			Date startdate=DateUtil.StrToDate(start);
+			String end=data.get("enddate").toString();
+			Date enddate=DateUtil.StrToDate(end);
+			Long betweenDays = (long)((enddate.getTime() - startdate.getTime()) / (1000 * 60 * 60 *24) + 0.5);
+			List<Date> datelist=new ArrayList();	
+			SimpleDateFormat daysdf=new SimpleDateFormat("yyyy-MM-dd");
+			for(int a=0;a<=betweenDays;a++){
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(startdate);
+				cal.add(Calendar.DATE, a);
+				String addTimeDate =daysdf.format(cal.getTime());
+				Date date=daysdf.parse(addTimeDate);//对应情景起报日期
+				datelist.add(date);
+			}
+			param=data.get("mode");//获取站点类型
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("AppraisalController  站点类型为空或出现非法字符!");
+				return AmpcResult.build(1003, "站点类型为空或出现非法字符!");
+			}
+			String mode=param.toString();
+			
+			//获取站点
+			String cityStation;
+			if("city".equals(mode)){
+				//检测站点具体值
+				 cityStation=data.get("cityStation").toString().substring(0, 4);	
+			}else{
+				 cityStation=data.get("cityStation").toString();					
+			}
+						
+			//定义情景查询对象
+			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
+			tScenarinoDetail.setUserId(userId);
+			tScenarinoDetail.setMissionId(missionId);
+			//进行数据查询
+			TScenarinoDetail tScenarinoDetaillist=tScenarinoDetailMapper.selectBystandard(tScenarinoDetail);
+			//获取情景开始时间
+			String startDate= DateUtil.DATEtoString(tScenarinoDetaillist.getScenarinoStartDate(), "yyyy-MM-dd");	
+			//获取情景结束时间
+			String endDate= DateUtil.DATEtoString(tScenarinoDetaillist.getScenarinoEndDate(), "yyyy-MM-dd");
+			//该任务下的所有数据
+			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);	
+			//获取domainId
+			Long domainId=tMissionDetail.getMissionDomainId();
+			Map scmap=new HashMap();
+			//任务开始时间
+			Date missionStartDate=tMissionDetail.getMissionStartDate();
+			String missionStartDatestr=DateUtil.DATEtoString(missionStartDate, "yyyy-MM-dd HH:mm:ss");
+			//任务结束时间
+			Date missionEndDate=tMissionDetail.getMissionEndDate();		
+			String missionEndDatestr=DateUtil.DATEtoString(missionEndDate, "yyyy-MM-dd HH:mm:ss");
+			//定义结果集合
+			Map objsed=new HashMap();
+			//如果情景不为空
+			if(tScenarinoDetaillist!=null){
+				//时间分辨率--逐日开始
+					//所有物种集合
+					Map spcmapobj=new HashMap();
+					//查询基准数据开始
+					String tables="T_SCENARINO_DAILY_";
+					//获取情景添加时间
+					Date tims=tScenarinoDetaillist.getScenarinoAddTime();
+					//转换获取年份 拼接表名
+					String nowTime= DateUtil.DATEtoString(tims,"yyyy");
+					tables+=nowTime+"_";
+					tables+=userId;
+					//定义查询实体类
+					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+					scenarinoEntity.setCity_station(cityStation);
+					//空间分辨率--需要时替换即可,数据库中目前只有为3的数据
+					
+					scenarinoEntity.setMode(mode);
+					scenarinoEntity.setDomainId(domainId);
+					scenarinoEntity.setsId(scenarinoId);
+					scenarinoEntity.setTableName(tables);
+					//查询结果
+					List<ScenarinoEntity> Lsclist=tPreProcessMapper.selectBysomeRE(scenarinoEntity);
+					//如果为空
+					if(!Lsclist.isEmpty()){
+						//获取数据Json串
+						String content=Lsclist.get(0).getContent();
+						//总数据
+						Map standard=mapper.readValue(content, Map.class);
+						//循环数据集合       最外层的日期
+						Map<String,Object> datemap=new HashMap();
+						System.out.println(standard.keySet());
+						for(Object key : standard.keySet()){
+							Date s=daysdf.parse(key.toString());
+							if(datelist.contains(s)){
+							//值     根据日期获取当前日期下的所有值
+							Object species=standard.get(key);				
+							Map spcmap= (Map)species;
+							//循环当前时间的所有物种名称
+							for(Object  spcmapkey : spcmap.keySet()){ 	
+								//单个物种所有时间数据
+								Map standardobj=new HashMap();
+								//物种名称
+								String spcmapkeyw=spcmapkey.toString();
+								Object num=spcmap.get(spcmapkeyw);
+								Map numMap= (Map)num;
+								BigDecimal bd=(new BigDecimal(numMap.get("0").toString()));
+								if(datemap.get(spcmapkey)==null){
+									datemap.put(spcmapkey.toString(), bd);
+									}else{
+									BigDecimal bc=new BigDecimal(datemap.get(spcmapkey).toString()).add(bd);
+									datemap.put(spcmapkey.toString(), bc);
+									}
+									scmap.put("基准情景", datemap);
+							}//物种名称结束
+						}
+						}
+					}	/**查询基准数据结束*/
+					
+					String tabless="T_SCENARINO_DAILY_";
+					//获取情景添加时间
+					Date timss=tScenarinoDetail.getScenarinoAddTime();
+					//定义格式化类
+					DateFormat df = new SimpleDateFormat("yyyy");
+					//进行格式化
+					String nowTimes= df.format(tims);
+					tabless+=nowTime+"_";
+					tabless+=userId;
+					//定义查询类 并写入查询条件
+					ScenarinoEntity scenarinoEntitys=new ScenarinoEntity();
+					scenarinoEntity.setCity_station(cityStation);
+					scenarinoEntity.setDomainId(domainId);
+					scenarinoEntity.setMode(mode);
+					scenarinoEntity.setsId(scenarinoId);
+					scenarinoEntity.setTableName(tables);
+					//进行查询
+					List<ScenarinoEntity> sclist=tPreProcessMapper.selectBysomeRE(scenarinoEntity);
+					if(!sclist.isEmpty()){
+					for(ScenarinoEntity sc:sclist){
+						String scid=String.valueOf(sc.getsId());
+						Object content=sc.getContent();
+						JSONObject obj=JSONObject.fromObject(content);//行业减排结果
+						Map<String,Object> detamap=(Map)obj;
+						Map<String,Object> datemap=new HashMap();
+						for(String datetime:detamap.keySet()){
+							Date s=daysdf.parse(datetime);
+							if(datelist.contains(s)){
+							Object sp=detamap.get(datetime);
+							Map<String,Object> spmap=(Map)sp;
+							for(String spr:spmap.keySet()){
+								Map<String,Object> spcmap=new HashMap();
+								Object height=spmap.get(spr);
+								Map<String,Object> heightmap=(Map)height;
+								Map<String,Object> hourcmap=new HashMap();
+								BigDecimal bd=(new BigDecimal(heightmap.get("0").toString()));
+								if(datemap.get(spr)==null){
+								datemap.put(spr, bd);
+								}else{
+								BigDecimal bc=new BigDecimal(datemap.get(spr).toString()).add(bd);
+								datemap.put(spr, bc);
+								}
+								scmap.put("减排情景", datemap);
+							}
+							
+						}
+						}
+					}
+			}else{
+				return AmpcResult.build(1000, "该任务没有创建情景",null);
+			}
+			
+			}else{
+				//没有情景
+				return AmpcResult.build(1000, "该任务没有创建情景",null);
+			}
+			
+			Map spr=(Map)scmap.get("减排情景");
+			Map jzsp=(Map)scmap.get("基准情景");
+			Map<String,String> concentration=new HashMap();
+			for(Object sp:spr.keySet()){
+				BigDecimal jp=new BigDecimal(spr.get(sp).toString());
+				BigDecimal jz=new BigDecimal(jzsp.get(sp).toString());
+				BigDecimal jpavg=jp.divide(new BigDecimal(datelist.size()));
+				BigDecimal jzavg=jz.divide(new BigDecimal(datelist.size()));
+				BigDecimal jg=(jzavg.subtract(jpavg)).divide(jzavg, 6, BigDecimal.ROUND_HALF_UP);
+				Double con=jg.doubleValue();
+				if(con<0){
+				Double co=con*100;	
+				BigDecimal bd=new BigDecimal(co).setScale(1, BigDecimal.ROUND_HALF_UP);
+				String ser=bd.toString().substring(1);
+				String updown="上升"+ser+"%";
+				concentration.put(sp.toString(), updown);
+				}else{
+					Double co=con*100;	
+					BigDecimal bd=new BigDecimal(co).setScale(1, BigDecimal.ROUND_HALF_UP);
+					String updown="下降"+bd+"%";
+					concentration.put(sp.toString(), updown);	
+				}
+			}
+			Map<String,BigDecimal> jpmap=new HashMap();
+			TEmissionDetailWithBLOBs tEmission=new TEmissionDetailWithBLOBs();
+			tEmission.setScenarinoId(scenarinoId);
+			tEmission.setEmissionType("2");
+			//查询情景下的所有减排结果
+			List<TEmissionDetailWithBLOBs> tEmissions=tEmissionDetailMapper.selectByEntity(tEmission);
+			for(TEmissionDetailWithBLOBs emission:tEmissions){
+			if(datelist.contains(emission.getEmissionDate())){
+				Object detail=emission.getEmissionDetails();
+				Map<String,Object> details=(Map)detail;
+				for(String industry:details.keySet()){
+					Map<String,Object> num=(Map) details.get(industry);
+					for(String spe:num.keySet()){
+						if(jpmap.keySet().contains(spe)){
+							BigDecimal old=new BigDecimal(jpmap.get(spe).toString());
+							BigDecimal news=new BigDecimal(num.get(spe).toString());
+							BigDecimal yes=news.add(old);
+							jpmap.put(spe, yes);
+						}else{
+							BigDecimal news=new BigDecimal(num.get(spe).toString());
+							jpmap.put(spe, news);
+						}
+					}	
+				}
+			}
+			}
+			for(String sp:jpmap.keySet()){
+				BigDecimal num=jpmap.get(sp);
+				if(num.doubleValue()>0){
+					BigDecimal yesd=num.setScale(0,BigDecimal.ROUND_HALF_UP);
+					String ye="减少"+yesd+"吨";
+					concentration.put(sp.toString()+"_jp", ye);
+				}else{
+					BigDecimal yesd=num.setScale(0,BigDecimal.ROUND_HALF_UP);
+					String ser=yesd.toString().substring(1);
+					String updown="增加"+ser+"%";
+					concentration.put(sp.toString()+"_jp", updown);
+				}
+			}
+			
+			
+			//返回结果
+			return AmpcResult.build(0, "success",concentration);
 		}catch(Exception e){
 			LogUtil.getLogger().error("MissionAndScenarinoController 根据任务id以及userid查询情景有异常",e);
 			return AmpcResult.build(1000, "参数错误",null);
