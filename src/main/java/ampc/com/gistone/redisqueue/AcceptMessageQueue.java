@@ -134,6 +134,12 @@ public class AcceptMessageQueue implements Runnable{
 						toDataTasksUtil.updateDB(rpop);
 						LogUtil.getLogger().info("end tasks"+new Date());
 						break;
+					case "model.continue.result":
+						LogUtil.getLogger().info("model.continue.result tasks"+new Date()+":"+rpop);
+						messageLog.savesatrtModelMessagelog(rpop);
+						toDataTasksUtil.updateDB(rpop);
+						LogUtil.getLogger().info("model.continue.result end tasks"+new Date());
+						break;
 					case "ungrib.result":
 						LogUtil.getLogger().info("接受ungrib数据："+new Date()+":"+rpop);
 						messageLog.saveUngribMessagelog(rpop);
