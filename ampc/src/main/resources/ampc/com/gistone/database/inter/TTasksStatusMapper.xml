@@ -577,7 +577,19 @@ select START_MODEL_RESULT from T_TASKS_STATUS where TASKS_SCENARINO_ID = #{tasks
   
   <!--跟新已经发送消息的当天的记录  -->
   <update id="updatemessageStatus" parameterType="ampc.com.gistone.database.model.TTasksStatus">
-  update T_TASKS_STATUS set BEIZHU2 = #{beizhu2,jdbcType=VARCHAR} where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
+  update T_TASKS_STATUS 
+  <set >
+   <if test="beizhu2 != null" >
+        BEIZHU2 = #{beizhu2,jdbcType=VARCHAR},
+   </if>
+   <if test="tasksSendTime != null" >
+        TASKS_SEND_TIME = #{tasksSendTime,jdbcType=TIMESTAMP},
+   </if>
+   <if test="tasksExpand4 != null" >
+        TASKS_EXPAND4 = #{tasksExpand4,jdbcType=VARCHAR}
+   </if>
+   </set>
+   where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </update>
   <!-- 修改模式停止的状态 -->
   <update id="updatestopstatus" parameterType="ampc.com.gistone.database.model.TTasksStatus">
