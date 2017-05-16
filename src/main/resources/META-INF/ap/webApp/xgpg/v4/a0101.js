@@ -1,4 +1,4 @@
-var opacity = 0.8;//默认的图层透明度
+var opacity = 0.7;//默认的图层透明度
 var ls, sceneInitialization, qjMsg;
 var videoPlayScale = [];
 var changeMsg = {
@@ -160,6 +160,7 @@ require(
             
             app.mapimagelayer[i] = new dong.MapImageLayer({"id":"myil"+i});
             app.mapList[i].addLayer(app.mapimagelayer[i]);
+            app.mapimagelayer[i].setOpacity(opacity);
         }
 
         app.gLyr1 = new dong.GraphicsLayer({"id": "gLyr1"});
@@ -477,6 +478,7 @@ function bianji(type, g_num, p , wind) {
             
             app.mapimagelayer[g_num].removeAllImages();//删除全部的图片图层
             app.mapimagelayer[g_num].addImage(mapImage);//将新的图片图层添加到地图
+            
             $('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
             zmblockUI("#mapDiv"+g_num, "end");//打开锁屏控制
             console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
