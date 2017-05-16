@@ -877,7 +877,7 @@ function sceneTable() {
      }
      });*/
 }
-
+var showTime="";
 /**
  * 保存选择的情景
  */
@@ -908,21 +908,19 @@ function save_scene() {
 			arrId.push({"id": mag.data[i].scenarinoId});
 		}
 		$("#close_scene").click();
-		
+		//查询任务的开始时间和结束时间
 		var url='/Appraisal/showTime';
 		var paramsName = {
 				"missionId":sceneInitialization.taskID,				//任务ID
 			  };
 		ajaxPost(url, paramsName).success(function (res) {
 		    if (res.status == 0) {
-		    	
+		    	showTime=res;
 		    } else {
-		    	swal(res.msg, '', 'error')
+		    	swal(res.msg, '', 'error');
 		    }
 
 		  });
-		
-		
 		set_sce();
 //    	find_standard();
 		initNowSession();
