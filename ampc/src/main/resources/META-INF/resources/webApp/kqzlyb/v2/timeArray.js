@@ -312,14 +312,14 @@ var optionAll = {
 			right: '3%',
 			bottom: '30%',
 		},
-		dataZoom:[
-		          {
-		        	  show:'true',
-		        	  realtime:'true',
-		        	  start:0,
-		        	  end:100
-		          },
-		     ],
+//		dataZoom:[
+//		          {
+//		        	  show:'true',
+//		        	  realtime:'true',
+//		        	  start:0,
+//		        	  end:100
+//		          },
+//		     ],
       calculable: false,
       xAxis: [
               	{
@@ -460,10 +460,10 @@ function initQxysDate(s, e, start, end) {
             ],
             firstDay: 1
         },
-//        "startDate": start,
-//        "endDate": end,
-        "startDate": "2017-04-27",
-        "endDate": "2017-05-03",
+        "startDate": start,
+        "endDate": end,
+//        "startDate": "2017-04-27",
+//        "endDate": "2017-05-03",
         "opens": "left"
     }, function (start, end, label) {
         changeMsg.startD = start.format('YYYY-MM-DD');
@@ -506,7 +506,17 @@ function requestDate() {
             }
 
             changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
-            initWrwDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
+            var datenum=true;
+//            initWrwDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
+            if(datenum){
+            	changeMsg.startD="2017-04-27";
+            	changeMsg.endD= "2017-05-03";
+            	initWrwDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
+            	datenum=false;
+            }else{
+            	initWrwDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
+            }
+            initWrwDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), "2017-04-27", "2017-05-03");
             initQxysDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
         }
     })
@@ -653,10 +663,10 @@ function updata(opt) {
         ajaxPost(url,{
         	userId: userId,					//用户ID
             mode:changeMsg.station=='avg'?'city':'point',	//站点是否为平均
-//            startDate : changeMsg.startD,	//开始日期
-//            endDate :changeMsg.endD,		//结束日期
-            startDate : "2017-04-27",		//开始日期
-            endDate :"2017-05-03",			//结束日期
+            startDate : changeMsg.startD,	//开始日期
+            endDate :changeMsg.endD,		//结束日期
+//            startDate : "2017-04-27",		//开始日期
+//            endDate :"2017-05-03",			//结束日期
             cityStation:changeMsg.station=='avg'?changeMsg.city.substr(0,4):changeMsg.station,	//站点具体值
             datetype:changeMsg.rms,			//时间分辨率
             domain:$('input[name=domain]:checked').val(),	//空间分辨率
@@ -959,12 +969,30 @@ function initEcharts() {
 		    });
 		}
 	    
-		var es = echarts.init(document.getElementById(tname[i]));
-		es.group = 'group1';
-		echarts.connect('group1');
-	    es.setOption(option);
-	    $(window).resize(es.resize);
+//		var es = echarts.init(document.getElementById(tname[i]));
+//		es.group = 'group1';
+//		echarts.connect([es]);
+//	    es.setOption(option);
+//	    $(window).resize(es.resize);
 		
+	    if("AQI"!=tname[i]){
+	    	var es = echarts.init(document.getElementById(tname[i]));
+	    	es.group = 'group1';
+	    	es.on('mouseover', function (params) {
+	    		es.group='';
+	    		echarts.disconnect('group1');
+	   	    });
+	    	es.setOption(option);
+	    	$(window).resize(es.resize);
+	    }else{	//AQI
+	    	var aqi = echarts.init(document.getElementById(tname[i]));
+	    	aqi.group = 'group1';
+	    	aqi.on('mouseover', function (params) {
+	    		echarts.connect('group1');
+	   	    });
+	    	aqi.setOption(option);
+	    	$(window).resize(aqi.resize);
+	    }
 		
 	 }	//循环物种结束
 	
