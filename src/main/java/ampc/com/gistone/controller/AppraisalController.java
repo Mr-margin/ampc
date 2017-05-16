@@ -1695,7 +1695,9 @@ public class AppraisalController {
 			LogUtil.getLogger().error("MissionAndScenarinoController 根据任务id以及userid查询情景有异常",e);
 			return AmpcResult.build(1000, "参数错误",null);
 		}
-	}	
+	}
+	
+	
 	
 	
 	
@@ -1972,5 +1974,37 @@ public class AppraisalController {
 			LogUtil.getLogger().error("MissionAndScenarinoController 根据任务id以及userid查询情景有异常",e);
 			return AmpcResult.build(1000, "参数错误",null);
 		}
-	}	
+	}
+	/**
+	 * 查询任务的开始时间和结束 
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("Appraisal/showTime")
+	public AmpcResult showTime(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+		try{
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//获取任务ID
+			Object param=data.get("missionId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("AppraisalController  任务id为空或出现非法字符!");
+				return AmpcResult.build(1003, "任务id为空或出现非法字符!");
+			}
+			Long missionId=Long.valueOf(param.toString());
+			//查询该任务的数据
+			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);
+			Map dates=new HashMap();
+			dates.put("startTime", DateUtil.DATEtoString(tMissionDetail.getMissionStartDate(), "yyyy-MM-dd HH:mm:ss"));
+			dates.put("endTime",  DateUtil.DATEtoString(tMissionDetail.getMissionEndDate(),"yyyy-MM-dd HH:mm:ss"));
+			return AmpcResult.build(0, "success",dates);
+		}catch(Exception e){
+			LogUtil.getLogger().error("AppraisalController 查询任务的开始时间和结束有异常",e);
+		}
+		
+		return null;
+	} 
 }

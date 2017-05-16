@@ -641,7 +641,7 @@ function getdata() {
     var ch_scenarinoId = changeMsg.scenarinoId.join(",");
 
     var paramsName = {
-        "userId": "1",
+        "userId": userId,
         "missionId": sceneInitialization.taskID,
         "mode": changeMsg.station == 'avg' ? 'city' : 'point',
         "cityStation": changeMsg.station == 'avg' ? changeMsg.city : changeMsg.station,
@@ -690,7 +690,7 @@ function find_standard(){
 	observation.scenarinoName='';
 	var url='/Appraisal/find_standard';
 	var paramsName = {
-			"userId": "1",
+			"userId": userId,
 			"missionId":sceneInitialization.taskID,				//任务ID
 			"mode":changeMsg.station=='avg'?'city':'point',		//检测站点
 			"cityStation":changeMsg.station=='avg'?changeMsg.city:changeMsg.station,	//检测站点具体值
@@ -908,6 +908,21 @@ function save_scene() {
 			arrId.push({"id": mag.data[i].scenarinoId});
 		}
 		$("#close_scene").click();
+		
+		var url='/Appraisal/showTime';
+		var paramsName = {
+				"missionId":sceneInitialization.taskID,				//任务ID
+			  };
+		ajaxPost(url, paramsName).success(function (res) {
+		    if (res.status == 0) {
+		    	
+		    } else {
+		    	swal(res.msg, '', 'error')
+		    }
+
+		  });
+		
+		
 		set_sce();
 //    	find_standard();
 		initNowSession();
