@@ -544,19 +544,22 @@ function initEcharts() {
     
     if("AQI"!=tname[i]){
     	var es = echarts.init(document.getElementById(tname[i]));
-//    	es.group = 'group1';
-//    	es.on('datazoom', function (params) {
-//    		group='';
-//    		echarts.disconnect(group);
-//   	    });
+    	es.group = 'group1';
+    	es.on('datazoom', function (params) {
+    		es.group='';
+    		echarts.disconnect(group);
+   	    });
     	es.setOption(option);
     	$(window).resize(es.resize);
-    }else{
+    }else{	//AQI
     	var aqi = echarts.init(document.getElementById(tname[i]));
-//    	aqi.group = 'group1';
-//    	aqi.on('datazoom', function (params) {
-//    		echarts.connect('group1');
-//   	    });
+    	//图表联动
+    	aqi.group = 'group1';
+    	//鼠标悬停事件
+    	aqi.on('datazoom', function (params) {
+    		//图表联动
+    		echarts.connect('group1');
+   	    });
     	aqi.setOption(option);
     	$(window).resize(aqi.resize);
     }
