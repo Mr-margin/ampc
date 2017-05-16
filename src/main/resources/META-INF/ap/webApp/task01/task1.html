@@ -319,7 +319,6 @@
           success: function (data) {
 //            transformdat=[];
             requestQJData(data.data);
-            //console.log(transformdata);
             $('#rwgltable').treegrid({data: transformdata});
           }
         });
@@ -417,7 +416,6 @@
 //      },
       success: function (data) {
         requestQJData(data.data);
-        //console.log(JSON.stringify(transformdata));
         $('#rwgltable').treegrid({
           data: transformdata,
           idField: 'id',
@@ -447,7 +445,14 @@
           }]],
           onClickRow: function (row) {
             if (typeof row.children === 'undefined') {
-              //console.log(row);
+              msg.content.qjName = row.scenarinoName;
+              msg.content.qjId = row.scenarinoId;
+              msg.content.qjStartDate = row.scenarinoStartDate;
+              msg.content.qjEndDate = row.scenarinoEndDate;
+              msg.content.scenarinoStatus = row.scenarinoStatus;
+              msg.content.scenarinoStatuName = row.scenarinoStatuName;
+              msg.content.SCEN_TYPE = row.SCEN_TYPE;
+              storageqjmsg();
               return
             }
             if ($('[node-id="' + row.id + '"]').hasClass('datagrid-row-clicked')) {
@@ -457,21 +462,13 @@
               $('[node-id="' + row.id + '"]').addClass('datagrid-row-clicked').siblings().removeClass('datagrid-row-clicked');
               $('#rwgltable').treegrid('collapseAll').treegrid('expand', row.id);
             }
-            //console.log(row);
-            msg.content.rwId = selectRW.missionId;
-            msg.content.rwName = selectRW.missionName;
-            msg.content.rwType = selectRW.missionStatus;
-            msg.content.domainId = selectRW.missionDomainId;
-            msg.content.qjName = row.scenarinoName;
-            msg.content.qjId = row.scenarinoId;
-            msg.content.qjStartDate = row.scenarinoStartDate;
-            msg.content.qjEndDate = row.scenarinoEndDate;
-            msg.content.esCouplingId = selectRW.esCouplingId;
-            msg.content.esCouplingName = selectRW.esCouplingName;
-            msg.content.esCodeRange = selectRW.esCodeRange.split(',');
-            msg.content.scenarinoStatus = row.scenarinoStatus;
-            msg.content.scenarinoStatuName = row.scenarinoStatuName;
-            msg.content.SCEN_TYPE = row.SCEN_TYPE;
+            msg.content.rwId = row.missionId;
+            msg.content.rwName = row.missionName;
+            msg.content.rwType = row.missionStatus;
+            msg.content.domainId = row.missionDomainId;
+            msg.content.esCouplingId = row.esCouplingId;
+            msg.content.esCouplingName = row.esCouplingName;
+            msg.content.esCodeRange = row.esCodeRange.split(',');
           }
         });
         $('#rwpagination').pagination({total:data.data.total});
@@ -504,7 +501,6 @@
 //          if(data.data.rows.length==0){
 //            return;
 //          }
-          //console.log(data);
           transformdata[transformdata.length - 1].children = [];
           transformdata[transformdata.length - 1].children.push($.extend({}, {
             missionNameTitle: '情景名称', missionIdTitle: 'ID', domainNameTitle: '操作', esCouplingNameTitle: '管理',
@@ -526,6 +522,10 @@
       return row.missionNameTitle;
     }
     return row.missionName
+  }
+  /*存储情景msg信息*/
+  function storageqjmsg() {
+    vipspa.setMessage(msg);
   }
   function missionIdFormatter(value, row, index) {
     if (typeof row.missionId === 'undefined') {
@@ -643,11 +643,10 @@
       return '设置'
     }
 //    return '<a href="#"><i class="fa fa-plus" aria-hidden="true" style="color: #000"></i></a>'
-    return '<a href="javascript:console.log(1)" onclick="stop(this)" data-missionId="' + row.id + '" style="font-size: 12px">[新增]</a>'
+    return '<a href="javascript:" onclick="stop(this)" data-missionId="' + row.id + '" style="font-size: 12px">[新增]</a>'
   }
   function stop(t) {
     var e = e || window.event;
-    //console.log(e);
     e.stopPropagation();
     createQJselect($(t).attr('data-missionId'));
   }
@@ -799,7 +798,6 @@
           subBtn = true;
         }
       }).error(function () {
-        //console.log(arguments);
         swal({
           title: '校验失败!',
           type: 'error',
@@ -908,7 +906,6 @@
       success: function (data) {
         transformdata = [];
         requestQJData(data.data);
-        //console.log(transformdata);
         $('#rwgltable').treegrid({data: transformdata});
       }
     });
@@ -931,7 +928,6 @@
         }
       }
     }
-    //console.log(delQJid);
 //    if (type == 'rw') {
     for (var i in delRWid) {
       delList += i + ',';
@@ -984,7 +980,6 @@
   /*筛选*/
   function statusRWfun(t, status) {
     $(t).addClass('selected').siblings().removeClass('selected');
-    //console.log($(this).find('span'));
     $("#selectTypeBtn").find('.l-btn-text').html($(t).find('span').html());
     statusRW = status;
     search('rw');
@@ -1001,7 +996,6 @@
       .success(function (data) {
         transformdata = [];
         requestQJData(data.data);
-        //console.log(transformdata);
         $('#rwgltable').treegrid({data: transformdata});
       })
   }
@@ -1013,7 +1007,6 @@
     //var oldQJUrl = 'date.json';
     var row = $('#rwgltable').treegrid('find', id);
     selectRW = $.extend({}, row);
-    //console.log(selectRW);
     var oldQJparams = {
       userId: userId,
       missionId: row.missionId
@@ -1100,9 +1093,7 @@
             }
             var startD = dateArr[0] ? moment(moment(dateArr[0])).add(1, 'd').format('YYYY-MM-DD') : '';
             $('#yStartDate').empty().append($('<option value="' + startD + '">' + startD + '</option>'));
-            //console.log(1);
             ajaxPost(url, params).success(function (res) {
-              //console.log(res);
               selectEndDate = res.data.endTime;
               selectEndDate = moment(selectRW.missionEndDate).add(1, 'd').isBefore(selectEndDate) ? moment(selectRW.missionEndDate).format('YYYY-MM-DD') : selectEndDate;
               if ($('#yStartDate').val() == '') {
@@ -1115,9 +1106,7 @@
                 if (endDateArr[i] < moment().format('YYYY-MM-DD'))continue;
                 $('#yEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
               }
-              //console.log(2);
             }).fail(function () {
-              //console.log(arguments);
             });
 
             break;
@@ -1233,7 +1222,6 @@
         }
       }
     }, function () {
-      console.log('基础情景获取失败！！！！！');
       if (type == 'hj') {
 //        $('.hpgQJType').css('display', 'none');
 //        $('.hpgQJCon').css('display', 'block');
@@ -1350,7 +1338,6 @@
   }
   /*新改情景创建*/
   function createQj(type) {
-    //console.log(subBtn);
     if (!subBtn)return;
     subBtn = false;
     var url, urlName;
