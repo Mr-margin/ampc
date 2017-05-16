@@ -655,12 +655,12 @@ function updata(opt) {
             mode:changeMsg.station=='avg'?'city':'point',	//站点是否为平均
 //            startDate : changeMsg.startD,	//开始日期
 //            endDate :changeMsg.endD,		//结束日期
-            startDate : "2017-04-27",	//开始日期
-            endDate :"2017-05-03",		//结束日期
+            startDate : "2017-04-27",		//开始日期
+            endDate :"2017-05-03",			//结束日期
             cityStation:changeMsg.station=='avg'?changeMsg.city.substr(0,4):changeMsg.station,	//站点具体值
             datetype:changeMsg.rms,			//时间分辨率
             domain:$('input[name=domain]:checked').val(),	//空间分辨率
-            changeType:changeMsg.type	//选择的页签
+            changeType:changeMsg.type		//选择的页签
         }).success(function(res){
         	ecatherData='';
         	ecatherData=res.data;
