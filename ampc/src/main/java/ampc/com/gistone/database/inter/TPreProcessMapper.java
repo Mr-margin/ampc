@@ -41,5 +41,5 @@ public interface TPreProcessMapper {
 	ScenarinoEntity selectBysomesFnl(ScenarinoEntity fnlEntity);
 	/**
 	 */
-
+	List<ScenarinoEntity> selectBysomeRE(ScenarinoEntity fnlEntity);
 }
