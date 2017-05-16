@@ -29,8 +29,13 @@ var changeMsg = {
 		rms: 'day',			//时间分辨率
 		scenarinoId: [],	//选择的情景Id数组
 		scenarinoName: [],	//选择的情景名称数组
+		startD: '',
+		endD: '',
 };
 var zhiCity = ['11', '12', '31', '50'];
+var showTime="";
+var qjStartTime;
+var qjEndTime;
 //逐小时显示 AQI PM25 ,SO4 NO3 NH4 BC OM PMFINE, PM10 O3 SO2 NO2 CO
 //逐日显示 AQI PM25 ,SO4 NO3 NH4 BC OM PMFINE, PM10 O3_8_max O3_1_max SO2 NO2 CO
 //物种选择
@@ -124,6 +129,7 @@ var ls = window.sessionStorage;
 //}
 
 var sceneInitialization = vipspa.getMessage('sceneInitialization').content;	//从路由中取到情景范围
+
 if (!sceneInitialization) {
 	sceneInitialization = JSON.parse(ls.getItem('SI'));
 } else {
@@ -137,18 +143,20 @@ if (!sceneInitialization) {	//为空时
 	set_sce();
 	initNowSession();
 }
-
 /**
  * 初始化获取页面数据
  */
+var dps_Date;
 function initNowSession(){
 	changeMsg.scenarinoId = [];
 	changeMsg.scenarinoName = [];
+    changeMsg.startD = qjStartTime;
+    changeMsg.endD = qjEndTime;
 	for(var i = 0;i< sceneInitialization.data.length; i++){
 		changeMsg.scenarinoId.push(sceneInitialization.data[i].scenarinoId);
 		changeMsg.scenarinoName.push(sceneInitialization.data[i].scenarinoName);
 	}
-	
+    dps_Date = requestDate();
 	setStation(sceneInitialization.taskID);
 	setTime(sceneInitialization.s, sceneInitialization.e);
 	$.when(dps_codeStation,dps_station).then(function () {
@@ -877,7 +885,7 @@ function sceneTable() {
      }
      });*/
 }
-var showTime="";
+
 /**
  * 保存选择的情景
  */
@@ -897,7 +905,8 @@ function save_scene() {
         mag.jzID = allMission[mag.taskID].jzqjid;
 		var data = [];
 		$.each(row, function (i, col) {
-			data.push({"scenarinoId": col.scenarinoId, "scenarinoName": col.scenarinoName});
+			data.push({"scenarinoId": col.scenarinoId, "scenarinoName": col.scenarinoName,"scenType":col.scenType,"scenarinoStartDate":col.scenarinoStartDate,"scenarinoEndDate":col.scenarinoEndDate});
+
 		});
 		mag.data = data;
 		vipspa.setMessage(mag);
@@ -916,6 +925,8 @@ function save_scene() {
 		ajaxPost(url, paramsName).success(function (res) {
 		    if (res.status == 0) {
 		    	showTime=res;
+                qjStartTime=showTime.data.startTime;
+                qjEndTime=showTime.data.endTime;
 		    } else {
 		    	swal(res.msg, '', 'error');
 		    }
@@ -1134,6 +1145,7 @@ $(".cloudui .upDown").hover(function () {
 function showTitleFun() {
     $('#showTitle span').empty();
     $('#showTitle .compName').html("<span class='titleTab'><i class='en-tag'></i>"+"&nbsp;比较：</span>"+(changeType=="1"?"绝对量比较":"相对变化"));
+    $('#showTitle .dataName').html("<span class='titleTab'><i class='en-flow-parallel'></i>"+"&nbsp;日期：</span>"+changeMsg.startD+"至"+changeMsg.endD);
     if (zhiCity.indexOf(changeMsg.pro) == -1) {
         if (changeMsg.station == 'avg') {
             $('#showTitle .proName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.proName);
@@ -1166,4 +1178,120 @@ function showTitleFun() {
     }
 }
 
+/**
+ * 初始化污染物时间范围
+ * @param s 最大开始时间
+ * @param e 最大结束时间
+ * @param start 默认开始时间
+ * @param end 默认结束时间
+ */
+function initSjxlDate(s, e, start, end) {
+    $('#sjxlDate').daterangepicker({
+//    "parentEl": ".toolAll",
+        "autoApply": true,
+        singleDatePicker: false,  //显示单个日历
+        timePicker: false,  //允许选择时间
+        timePicker24Hour: true, //时间24小时制
+        minDate: s,//最早可选日期
+        maxDate: e,//最大可选日期
+        locale: {
+            format: "YYYY-MM-DD",
+            separator: " 至 ",
+            applyLabel: "确定", //按钮文字
+            cancelLabel: "取消",//按钮文字
+            weekLabel: "W",
+            daysOfWeek: [
+                "日", "一", "二", "三", "四", "五", "六"
+            ],
+            monthNames: [
+                "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"
+            ],
+            firstDay: 1
+        },
+        "startDate": start,
+        "endDate": end,
+        "opens": "left"
+    }, function (start, end, label) {
+    	var daysCha=end-start;
+       // daysCha=daysCha/(1000*60*60*24);
+        console.log(daysCha);
 
+        changeMsg.startD = start.format('YYYY-MM-DD');
+    	end=start.add('days',10).format('YYYY-MM-DD');
+        changeMsg.endD = end;
+        updata(true);
+    })
+    var d = $('#sjxlDate').data('daterangepicker');
+    d.element.off();
+}
+/*按钮打开日期*/
+function showDate(type) {
+    var d = $('#' + type + 'Date').data('daterangepicker');
+    if (!d) {
+        swal({
+            title: '无可选日期!',
+            type: 'error',
+            timer: 1000,
+            showConfirmButton: false
+        });
+        return
+    }
+    d.toggle();
+}
+/*请求可选日期范围*/
+function requestDate() {
+    var url = '/Air/get_time';
+    return ajaxPost(url, {
+        userId: userId
+    }).success(function (res) {
+
+        if (res.status == 0) {
+			/*这里要初始化时间*/
+
+            if (!(moment(res.data.maxtime).add(-7, 'd').isBefore(moment(res.data.mintime)))) {
+                changeMsg.startD = moment(res.data.maxtime).add(-7, 'd').format('YYYY-MM-DD')
+            } else {
+                changeMsg.startD = moment(res.data.mintime).format('YYYY-MM-DD')
+            }
+
+            changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
+            // initWrwDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
+
+            changeMsg.startD = qjStartTime;
+            changeMsg.endD = qjEndTime;
+            //initWrwDate('2017-04-27','2017-05-03',changeMsg.startD,changeMsg.endD);
+            initSjxlDate(qjStartTime,qjEndTime,changeMsg.startD,changeMsg.endD);
+            //initQxysDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
+        }
+    })
+}
+/*更新数据*/
+var dps_Station = {};
+function updata(opt) {
+    showTitleFun();
+    $.when(dps_Station[changeMsg.city + changeMsg.type]).done(function (res) {
+        if (!opt) {
+            res = dps_Station[changeMsg.city + changeMsg.type].responseJSON;
+            $('#' + changeMsg.type + ' .station').empty();
+            $('#' + changeMsg.type + ' .station').append($('<option value="avg">平均</option>'));
+            for (var i = 0; i < res.data.length; i++) {
+                $('#' + changeMsg.type + ' .station').append($('<option value="' + res.data[i].stationId + '">' + res.data[i].stationName + '</option>'))
+            }
+            changeMsg.station = $('#' + changeMsg.type + ' .station').val();
+        }
+
+        $('.showTable').empty();
+        var url = '/Air/checkout';
+        ajaxPost(url, {
+            userId: userId,
+            mode: changeMsg.station == 'avg' ? 'city' : 'point',
+            starttime:changeMsg.startD,
+            endtime:changeMsg.endD,
+            cityStation: changeMsg.station == 'avg' ? changeMsg.city : changeMsg.station,
+            datetype: changeMsg.rms,
+            tabType:changeMsg.type
+        }).success(function (res) {
+            $('.showTable').empty();
+        })
+    })
+}
