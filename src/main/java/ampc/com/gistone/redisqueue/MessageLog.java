@@ -236,12 +236,17 @@ public class MessageLog {
 	 * @date 2017年5月11日 下午5:11:20
 	 */
 	public void savesatrtModelMessagelog(String rpop) {
-		LogUtil.getLogger().info("开始添加model.start.result消息的log到数据库！");
+		LogUtil.getLogger().info("savesatrtModelMessagelog：开始处理模式执行返回消息的log到数据库！");
 		try {
 			Message message  = JsonUtil.jsonToObj(rpop, Message.class);
 			String id = message.getId();
 			Date time = message.getTime();
 			String type = message.getType();
+		/*	if (type.equals("model.start.result")) {
+				LogUtil.getLogger().info("savesatrtModelMessagelog：model.start.result 消息");
+			}else if (type.equals("model.continue.result")) {
+				LogUtil.getLogger().info("savesatrtModelMessagelog：model.continue.result 消息");
+			}*/
 			Map body = (Map) message.getBody();
 			Long scenarioid = Long.parseLong(body.get("scenarioid").toString());
 			Integer index = Integer.parseInt(body.get("index").toString());
