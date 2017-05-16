@@ -185,6 +185,7 @@
 		"USER_ID"
 	    from ${tableName} where "SID"=#{sId,jdbcType=DECIMAL} AND "MODE"=#{mode,jdbcType=VARCHAR} AND "CITY_STATION"=#{city_station,jdbcType=VARCHAR}  
 	    AND "DOMAINID"=#{domainId,jdbcType=DECIMAL} AND "DOMAIN"=#{domain,jdbcType=DECIMAL}
+	    
 	  <if test="date != null" >
        AND "DATE" = #{date,jdbcType=DATE}
       </if>
@@ -259,5 +260,26 @@
        AND "DATE" = #{date,jdbcType=DATE}
       </if>
  </select>
-
+ <select id="selectBysomeRE" parameterType="hashMap" resultMap="ResultMapWithBLOBs">
+ 	select 
+	 	"ID",
+		"SID",
+		"MODE",
+		"CITY_STATION",
+		"DOMAINID",
+		"DOMAIN",
+		"CONTENT",
+		"ADD_TIME",
+		"UPDATE_TIME",
+		"USER_ID"
+	    from ${tableName} where "SID"=#{sId,jdbcType=DECIMAL} AND "MODE"=#{mode,jdbcType=VARCHAR} AND "CITY_STATION"=#{city_station,jdbcType=VARCHAR}  
+	    AND "DOMAINID"=#{domainId,jdbcType=DECIMAL}
+	    
+	  <if test="date != null" >
+       AND "DATE" = #{date,jdbcType=DATE}
+      </if>
+         <if test="day != null" >
+       AND "DAY"=#{day,jdbcType=DATE}
+      </if>
+ </select>
 </mapper>
