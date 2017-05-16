@@ -77,14 +77,14 @@ var optionAll = {
 			right: '3%',
 			bottom: '30%',
 		 },
-		 dataZoom:[
-		           {
-		        	  show:'true',
-		        	  realtime:'true',
-		        	  start:0,
-		        	  end:100
-		           },
-		          ],
+//		 dataZoom:[
+//		           {
+//		        	  show:'true',
+//		        	  realtime:'true',
+//		        	  start:0,
+//		        	  end:100
+//		           },
+//		          ],
          calculable: false,  
       xAxis: [  
               	{  
@@ -544,19 +544,19 @@ function initEcharts() {
     
     if("AQI"!=tname[i]){
     	var es = echarts.init(document.getElementById(tname[i]));
-    	es.group = 'group1';
-    	es.on('datazoom', function (params) {
-    		group='';
-    		echarts.disconnect(group);
-   	    });
+//    	es.group = 'group1';
+//    	es.on('datazoom', function (params) {
+//    		group='';
+//    		echarts.disconnect(group);
+//   	    });
     	es.setOption(option);
     	$(window).resize(es.resize);
     }else{
     	var aqi = echarts.init(document.getElementById(tname[i]));
-    	aqi.group = 'group1';
-    	aqi.on('datazoom', function (params) {
-    		echarts.connect('group1');
-   	    });
+//    	aqi.group = 'group1';
+//    	aqi.on('datazoom', function (params) {
+//    		echarts.connect('group1');
+//   	    });
     	aqi.setOption(option);
     	$(window).resize(aqi.resize);
     }
