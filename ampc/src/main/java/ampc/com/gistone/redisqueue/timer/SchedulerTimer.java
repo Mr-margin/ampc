@@ -129,7 +129,7 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月7日 上午9:53:09
 	 */
 //	@Scheduled(cron="0 0 11 * * ?")
-	@Scheduled(cron="0 30 09 * * ?")   //每天9:30定时触发创建实时预报任务---服务器配置
+//	@Scheduled(cron="0 30 09 * * ?")   //每天9:30定时触发创建实时预报任务---服务器配置
 //	@Scheduled(fixedRate = 50000)
 	public void realForTimer() {
 		//Date date = new Date();
@@ -426,7 +426,7 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月21日 下午7:39:01
 	 */
 //	@Scheduled(fixedRate = 5000)
-	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
+//	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
 //	@Scheduled(cron="0 30 10 * * ?")
 	public void  sendMessageOnRealprediction() {
 		 LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:开始检测ungrib的数据");
@@ -523,7 +523,7 @@ public class SchedulerTimer<V> {
 	 * @author yanglei
 	 * @date 2017年4月7日 下午8:46:00
 	 */
-	@Scheduled(cron="0 0/10 * * * ?")  //每隔10分钟定时触发一次预评估任务的检查---服务器配置
+//	@Scheduled(cron="0 0/10 * * * ?")  //每隔10分钟定时触发一次预评估任务的检查---服务器配置
 //	@Scheduled(fixedRate = 5000)
 	public void ForpreEvalution() {
 		LogUtil.getLogger().info("每隔10分钟执行一次");
