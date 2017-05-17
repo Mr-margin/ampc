@@ -1,4 +1,4 @@
-package ampc.com.gistone.util.excelUtil;
+package ampc.com.gistone.util;
 
 import java.io.File;
 import java.util.Arrays;
