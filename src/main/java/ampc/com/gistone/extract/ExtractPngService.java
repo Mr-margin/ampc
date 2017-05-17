@@ -155,10 +155,10 @@ public class ExtractPngService extends ExtractService {
 		double x = params.getXmin();
 		double y = params.getYmin();
 
-		float[][] res = new float[rows + 1][cols + 1];
+		float[][] res = new float[rows][cols];
 
-		for (int i = 0; i <= rows; i++) {
-			for (int j = 0; j <= cols; j++) {
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
 				double merc_y = y;
 				double merc_x;
 				if (i == 0 && j == 0) {
@@ -325,7 +325,8 @@ public class ExtractPngService extends ExtractService {
 				.replace("$domainid", String.valueOf(params.getDomainId()))
 				.replace("$missionid", String.valueOf(params.getMissionId()))
 				.replace("$domain", String.valueOf(params.getDomain())).replace("$showType", params.getShowType())
-				.replace("$calcType", params.getCalcType()).replace("$currDate", DateUtil.DATEtoString(date, DateUtil.DATE_FORMAT));
+				.replace("$calcType", params.getCalcType())
+				.replace("$currDate", DateUtil.DATEtoString(date, DateUtil.DATE_FORMAT));
 		String imageFileName = extractConfig.getImageFileName(); // $timePoint-$day-$hour-$layer-$specie-$scenario-$random.png
 		String day = "";
 		String scenario = "";
