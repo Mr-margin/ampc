@@ -371,8 +371,7 @@ public class AppraisalController {
 						Map<String,Object> datemap=new HashMap();
 //						for(String datetime:detamap.keySet()){
 						for(int s=0; s<=differenceVal;s++){
-//							calendar.setTime(sdf.parse(end_Date));
-							calendar.setTime(sdf.parse(("2016-11-26").toString()));
+							calendar.setTime(sdf.parse(end_Date));
 							calendar.add(Calendar.DAY_OF_MONTH, -s);
 							calDate = calendar.getTime();
 							calDateStr=sdf.format(calDate);
@@ -1410,7 +1409,6 @@ public class AppraisalController {
 //						for(Object key : standard.keySet()){
 						for(int i=0; i<=differenceVal;i++){
 							calendar.setTime(sdf.parse(end_Date));
-//							calendar.setTime(sdf.parse(("2016-11-26").toString()));
 							calendar.add(Calendar.DAY_OF_MONTH, -i);
 							calDate = calendar.getTime();
 							calDateStr=sdf.format(calDate);
@@ -1431,7 +1429,6 @@ public class AppraisalController {
 //									Object standard_Times=standard.get(standard_Time);
 								for(int j=0; j<=differenceVal;j++){
 									calendar.setTime(sdf.parse(end_Date));
-//									calendar.setTime(sdf.parse(("2016-11-26").toString()));
 									calendar.add(Calendar.DAY_OF_MONTH, -j);
 									calDate = calendar.getTime();
 									calDateStr=sdf.format(calDate);	
@@ -1611,8 +1608,7 @@ public class AppraisalController {
 						//循环数据-key=日期
 //						for(Object  key : standard.keySet()){
 						for(int s=0; s<=differenceVal;s++){
-//							calendar.setTime(sdf.parse(end_Date));
-							calendar.setTime(sdf.parse(("2016-11-26").toString()));
+							calendar.setTime(sdf.parse(end_Date));
 							calendar.add(Calendar.DAY_OF_MONTH, -s);
 							calDate = calendar.getTime();
 							calDateStr=sdf.format(calDate);	
@@ -1627,7 +1623,7 @@ public class AppraisalController {
 								//键为年份	
 //								for(Object standard_Time:standard.keySet()){
 								for(int t=0; t<=differenceVal;t++){
-									calendar.setTime(sdf.parse(("2016-11-26").toString()));
+									calendar.setTime(sdf.parse(end_Date));
 									calendar.add(Calendar.DAY_OF_MONTH, -t);
 									calDate = calendar.getTime();
 									calDateStr=sdf.format(calDate);	
@@ -2114,8 +2110,7 @@ public class AppraisalController {
 			return AmpcResult.build(0, "success",dates);
 		}catch(Exception e){
 			LogUtil.getLogger().error("AppraisalController 查询任务的开始时间和结束有异常",e);
+			return AmpcResult.build(1000, "参数错误",null);
 		}
-		
-		return null;
 	} 
 }
