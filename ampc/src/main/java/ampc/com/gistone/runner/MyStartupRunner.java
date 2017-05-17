@@ -40,7 +40,7 @@ public class MyStartupRunner implements CommandLineRunner{
 				new Thread(testRedisRunnble).start();
 				Thread.sleep(10000);*/
 //				new Thread(acceptMessageQueue).start();
-//				new Thread(acceptMessageQueue).start();
+				new Thread(acceptMessageQueue).start();
 //				new Thread(acceptMessageQueue).start();
 			//	Thread.sleep(5000);
 				//启动一个线程者线程 模拟任务的处理
