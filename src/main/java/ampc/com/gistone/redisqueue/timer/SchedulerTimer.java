@@ -734,7 +734,7 @@ public class SchedulerTimer<V> {
 									}else {
 										LogUtil.getLogger().info("continueRealModelprediction:续跑后修改状态失败！");
 									}
-								}else {
+								}else { 
 									LogUtil.getLogger().info("continueRealModelprediction:自动续跑实时预报失败！");
 								}
 							}else {
