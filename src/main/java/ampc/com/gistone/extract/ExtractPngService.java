@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -318,13 +319,14 @@ public class ExtractPngService extends ExtractService {
 	}
 
 	public String buildIamgeFilePath() {
-		String imageFilePath = extractConfig.getImageFilePath(); // /$userid/$domainid/$missionid/$domain/$showType/$calcType/
+		Date date = new Date();
+		String imageFilePath = extractConfig.getImageFilePath(); // /$userid/$domainid/$missionid/$domain/$showType/$calcType/$currDate/
 		imageFilePath = imageFilePath.replace("$userid", String.valueOf(params.getUserId()))
 				.replace("$domainid", String.valueOf(params.getDomainId()))
 				.replace("$missionid", String.valueOf(params.getMissionId()))
 				.replace("$domain", String.valueOf(params.getDomain())).replace("$showType", params.getShowType())
-				.replace("$calcType", params.getCalcType());
-		String imageFileName = extractConfig.getImageFileName(); // $timePoint-$day-$hour-$layer-$specie-$scenario.tiff
+				.replace("$calcType", params.getCalcType()).replace("$currDate", DateUtil.DATEtoString(date, DateUtil.DATE_FORMAT));
+		String imageFileName = extractConfig.getImageFileName(); // $timePoint-$day-$hour-$layer-$specie-$scenario-$random.png
 		String day = "";
 		String scenario = "";
 		if (Constants.TIMEPOINT_A.equals(params.getTimePoint())) {
@@ -346,7 +348,7 @@ public class ExtractPngService extends ExtractService {
 		imageFileName = imageFileName.replace("$timePoint", params.getTimePoint()).replace("$day", day)
 				.replace("$hour", String.valueOf(params.getHour()))
 				.replace("$layer", String.valueOf(params.getLayer() - 1)).replace("$specie", params.getSpecie())
-				.replace("$scenario", scenario);
+				.replace("$scenario", scenario).replace("$random", String.valueOf(new Date().getTime()));
 		return imageFilePath + "/" + imageFileName;
 
 	}
