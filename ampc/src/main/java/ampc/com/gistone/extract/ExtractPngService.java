@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -15,6 +16,10 @@ import java.util.Map;
 import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.ScaleDescriptor;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
 import org.geotools.coverage.processing.Operations;
@@ -95,9 +100,39 @@ public class ExtractPngService extends ExtractService {
 
 		float[][] res = buildPngData();
 
+		// try {
+		// exportExcel(res, "E:/1/1/372/3/concn/show/2017-05-17");
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
 		res = reversalArray(res);
-
 		return drawPngPicture(res);
+	}
+
+	public void exportExcel(float[][] pointBeanArray, String pathOut)
+			throws IOException, InvalidRangeException, TransformException, FactoryException {
+
+		HSSFWorkbook workbook = new HSSFWorkbook();
+		HSSFSheet oneOfSheet = workbook.createSheet("data");
+
+		for (int i = 0; i < pointBeanArray.length; i++) {
+			HSSFRow hssfRow = oneOfSheet.createRow(i);
+			for (int j = 0; j < pointBeanArray[i].length; j++) {
+				System.out.println(j);
+				HSSFCell cell = hssfRow.createCell(j);
+				float pb = pointBeanArray[i][j];
+				cell.setCellValue(pb);
+			}
+		}
+		String excel = pathOut + "/extract-data.xls";
+		File file = new File(pathOut);
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		FileOutputStream out = new FileOutputStream(excel);
+		workbook.write(out);
+		out.close();
+
 	}
 
 	public void buildVariables(String date) {
@@ -155,10 +190,10 @@ public class ExtractPngService extends ExtractService {
 		double x = params.getXmin();
 		double y = params.getYmin();
 
-		float[][] res = new float[rows][cols];
+		float[][] res = new float[rows + 1][cols + 1];
 
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
+		for (int i = 0; i <= rows; i++) {
+			for (int j = 0; j <= cols; j++) {
 				double merc_y = y;
 				double merc_x;
 				if (i == 0 && j == 0) {
@@ -259,26 +294,30 @@ public class ExtractPngService extends ExtractService {
 		double xmin = params.getXmin();
 		double xmax = params.getXmax();
 
-		CoordinateReferenceSystem sourceCRS;
 		try {
-			sourceCRS = CRS.decode("EPSG:4326");
 
-			ReferencedEnvelope sourceee = new ReferencedEnvelope(Projection.transToLat(params.getXmin()),
-					Projection.transToLat(params.getXmax()), Projection.transToLon(params.getYmin()),
-					Projection.transToLon(params.getYmax()), sourceCRS); // TODO
-																			// 需要更新坐标点，
+			double x1 = Double.valueOf(String.valueOf(attributes.get("XORIG")));
+			double y1 = Double.valueOf(String.valueOf(attributes.get("YORIG")));
+			int rows = Integer.valueOf(String.valueOf(attributes.get("NROWS")));
+			int cols = Integer.valueOf(String.valueOf(attributes.get("NCOLS")));
+			double xcell = Double.valueOf(String.valueOf(attributes.get("XCELL")));
+			double ycell = Double.valueOf(String.valueOf(attributes.get("YCELL")));
+			double x2 = x1 + xcell * cols;
+			double y2 = y1 + ycell * rows;
+			CoordinateReferenceSystem sourceCRS = CRS.parseWKT(ProjectUtil.getWKT(attributes));
+			ReferencedEnvelope refEnvelope = new ReferencedEnvelope(x1, x2, y1, y2, sourceCRS);
 			GridCoverageFactory factory = new GridCoverageFactory();
-			GridCoverage gcs = factory.create("source", temp, sourceee);
+			GridCoverage gcs = factory.create("source", temp, refEnvelope);
 
 			final RenderedOp scaledImage = ScaleDescriptor.create(gcs.getRenderedImage(), 2f, 2f, 0f, 0f,
 					javax.media.jai.Interpolation.getInstance(javax.media.jai.Interpolation.INTERP_BICUBIC_2), null);
 
 			BufferedImage bi = scaledImage.getAsBufferedImage();
 
-			GridCoverage2D newcov = (new GridCoverageFactory()).create("new", bi, sourceee);
+			GridCoverage2D newcov = (new GridCoverageFactory()).create("new", bi, refEnvelope);
 
 			CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:3857");
-			ReferencedEnvelope targetee = sourceee.transform(targetCRS, true);
+			ReferencedEnvelope targetee = refEnvelope.transform(targetCRS, true);
 
 			MapViewport mapViewport = new MapViewport(targetee);
 			map.setViewport(mapViewport);
