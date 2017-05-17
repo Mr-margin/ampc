@@ -943,7 +943,7 @@ public class ReadyData {
 	/**
 	 * @Description: 接口调用该方法   准备基准情景的参数数据  
 	 * @param body   
-	 * void  
+	 * void   
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年3月27日 上午10:23:18
