@@ -1212,12 +1212,17 @@ function initSjxlDate(s, e, start, end) {
         "endDate": end,
         "opens": "left"
     }, function (start, end, label) {
-    	var daysCha=end-start;
-       // daysCha=daysCha/(1000*60*60*24);
+    	var s = moment(start);
+    	var e = moment(end);
+    	if(!s.add(10,'d').isAfter(e)){
+    		end = s;
+            $('#sjxlDate').data('daterangepicker').setEndDate(end);
+		}
+
         changeMsg.startD = start.format('YYYY-MM-DD');
-    	//end=start.add('days',10).format('YYYY-MM-DD');
-        changeMsg.endD = end;
-        updata(true);
+        changeMsg.endD = end.format('YYYY-MM-DD');
+        getdata()
+
     })
     var d = $('#sjxlDate').data('daterangepicker');
     d.element.off();
@@ -1262,31 +1267,3 @@ function requestDate() {
 }
 /*更新数据*/
 var dps_Station = {};
-function updata(opt) {
-    showTitleFun();
-    $.when(dps_Station[changeMsg.city + changeMsg.type]).done(function (res) {
-        if (!opt) {
-            res = dps_Station[changeMsg.city + changeMsg.type].responseJSON;
-            $('#' + changeMsg.type + ' .station').empty();
-            $('#' + changeMsg.type + ' .station').append($('<option value="avg">平均</option>'));
-            for (var i = 0; i < res.data.length; i++) {
-                $('#' + changeMsg.type + ' .station').append($('<option value="' + res.data[i].stationId + '">' + res.data[i].stationName + '</option>'))
-            }
-            changeMsg.station = $('#' + changeMsg.type + ' .station').val();
-        }
-
-        $('.showTable').empty();
-        var url = '/Air/checkout';
-        ajaxPost(url, {
-            userId: userId,
-            mode: changeMsg.station == 'avg' ? 'city' : 'point',
-            starttime:changeMsg.startD,
-            endtime:changeMsg.endD,
-            cityStation: changeMsg.station == 'avg' ? changeMsg.city : changeMsg.station,
-            datetype: changeMsg.rms,
-            tabType:changeMsg.type
-        }).success(function (res) {
-            $('.showTable').empty();
-        })
-    })
-}
