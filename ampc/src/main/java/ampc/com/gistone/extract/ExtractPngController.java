@@ -32,11 +32,11 @@ public class ExtractPngController {
 			Long domainId = Long.valueOf(String.valueOf(data.get("domainId")));
 			Long missionId = Long.valueOf(String.valueOf(data.get("missionId")));
 			int domain = Integer.valueOf(String.valueOf(data.get("domain")));
-			String species = String.valueOf(data.get("specie"));
+			List<String> species = (List) (data.get("species"));
 			String timePoint = String.valueOf(data.get("timePoint"));
 
 			ExtractRequestParams params = new ExtractRequestParams(calcType, showType, userId, domainId, missionId,
-					domain, species, timePoint);
+					domain, species.get(0), timePoint);
 			params.setBorderType(borderType);
 			Long scenarioId1 = Long.valueOf(String.valueOf(data.get("scenarioId1")));
 			params.setScenarioId1(scenarioId1);

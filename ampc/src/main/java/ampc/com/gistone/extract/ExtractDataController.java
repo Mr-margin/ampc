@@ -83,8 +83,6 @@ public class ExtractDataController {
 
 			int rows = Integer.valueOf(String.valueOf(data.get("rows")));
 			int cols = Integer.valueOf(String.valueOf(data.get("cols")));
-			int width = Integer.valueOf(String.valueOf(data.get("width")));
-			int height = Integer.valueOf(String.valueOf(data.get("height")));
 			params.setRows(rows);
 			params.setCols(cols);
 			res = extractDataService.buildData(params);
