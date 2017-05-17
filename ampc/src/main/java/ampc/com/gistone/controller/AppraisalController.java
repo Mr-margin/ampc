@@ -125,6 +125,20 @@ public class AppraisalController {
 				return AmpcResult.build(1003, "空间分辨率为空或出现非法字符!");
 			}
 			int domain=Integer.valueOf(param.toString());
+			//开始日期
+			param=data.get("startDate");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("AppraisalController  开始日期为空或出现非法字符!");
+				return AmpcResult.build(1003, "开始日期为空或出现非法字符!");
+			}
+			String start_Date=param.toString();
+//			//结束日期
+			param=data.get("endDate");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("AppraisalController  结束日期为空或出现非法字符!");
+				return AmpcResult.build(1003, "结束日期为空或出现非法字符!");
+			}
+			String end_Date=param.toString();
 			
 			//获取站点
 			String cityStation;
@@ -133,6 +147,21 @@ public class AppraisalController {
 			}else{
 				cityStation=data.get("cityStation").toString();					//检测站点具体值
 			}
+			
+			//格式化日期变量
+			SimpleDateFormat sdf;
+			//选择的结束和开始日期的差值
+			int differenceVal;
+			//声明局部变量
+			Calendar calendar = Calendar.getInstance(); 
+			Date calDate ;
+			String calDateStr;
+			
+			sdf=new SimpleDateFormat("yyyy-MM-dd");
+			Date start_date=sdf.parse(start_Date);
+			Date end_date=sdf.parse(end_Date);
+			differenceVal = (int) ((end_date.getTime() - start_date.getTime()) / (1000*3600*24));
+			
 			//定义结果Map
 			Map scmap=new HashMap();
 			//获取情景集合
@@ -283,9 +312,16 @@ public class AppraisalController {
 							//创建日期结果Map
 							Map datemap=new HashMap();
 							//content全部数据	key--日期
-							for(Object datetime:detamap.keySet()){			
+//							for(Object datetime:detamap.keySet()){
+							for(int s=0; s<=differenceVal;s++){
+//								calendar.setTime(sdf.parse(end_Date));
+								calendar.setTime(sdf.parse(("2016-11-26").toString()));
+								calendar.add(Calendar.DAY_OF_MONTH, -s);
+								calDate = calendar.getTime();
+								calDateStr=sdf.format(calDate);
+								Object sp=detamap.get(calDateStr);
 								//获取结果集中的对象
-								Object sp=detamap.get(datetime);
+//								Object sp=detamap.get(datetime);
 								//转换成Map
 								Map spmap=(Map)sp;
 								//存放数据
@@ -318,7 +354,7 @@ public class AppraisalController {
 									}
 								}	
 								//写入日期结果
-								datemap.put(datetime, spcmap);
+								datemap.put(calDateStr, spcmap);
 							}
 							//写入污染物结果
 							speciesMap.put(""+speciesArr[i]+"", datemap);
@@ -333,8 +369,16 @@ public class AppraisalController {
 						JSONObject obj=JSONObject.fromObject(content);//行业减排结果
 						Map<String,Object> detamap=(Map)obj;
 						Map<String,Object> datemap=new HashMap();
-						for(String datetime:detamap.keySet()){
-							Object sp=detamap.get(datetime);
+//						for(String datetime:detamap.keySet()){
+						for(int s=0; s<=differenceVal;s++){
+//							calendar.setTime(sdf.parse(end_Date));
+							calendar.setTime(sdf.parse(("2016-11-26").toString()));
+							calendar.add(Calendar.DAY_OF_MONTH, -s);
+							calDate = calendar.getTime();
+							calDateStr=sdf.format(calDate);
+							Object sp=detamap.get(calDateStr);
+							
+//							Object sp=detamap.get(datetime);
 							Map<String,Object> spmap=(Map)sp;
 							for(String spr:spmap.keySet()){
 								Map<String,Object> spcmap=new HashMap();
@@ -343,20 +387,20 @@ public class AppraisalController {
 								Map<String,Object> hourcmap=new HashMap();
 								if(spr.equals("CO")){
 									BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
-									spcmap.put(datetime, bd);
+									spcmap.put(calDateStr, bd);
 									}else{
 									BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
-									spcmap.put(datetime, bd);
+									spcmap.put(calDateStr, bd);
 									}
 								if(datemap.get(spr)!=null){
 									Object maps=datemap.get(spr);
 									Map<String,Object> des=(Map)maps;
 									if(spr.equals("CO")){
 										BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
-										des.put(datetime, bd);
+										des.put(calDateStr, bd);
 										}else{
 										BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
-										des.put(datetime, bd);
+										des.put(calDateStr, bd);
 										}
 									
 									datemap.put(spr, des);
@@ -1279,7 +1323,23 @@ public class AppraisalController {
 				LogUtil.getLogger().error("AppraisalController  变化状态为空或出现非法字符!");
 				return AmpcResult.build(1003, "变化状态为空或出现非法字符!");
 			}
-			String changeType=param.toString();				
+			String changeType=param.toString();
+			
+//			//开始日期
+			param=data.get("startDate");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("AppraisalController  开始日期为空或出现非法字符!");
+				return AmpcResult.build(1003, "开始日期为空或出现非法字符!");
+			}
+			String start_Date=param.toString();
+//			//结束日期
+			param=data.get("endDate");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("AppraisalController  结束日期为空或出现非法字符!");
+				return AmpcResult.build(1003, "结束日期为空或出现非法字符!");
+			}
+			String end_Date=param.toString();
+			
 			//定义情景查询对象
 			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
 			tScenarinoDetail.setUserId(userId);
@@ -1302,6 +1362,19 @@ public class AppraisalController {
 			String missionEndDatestr=DateUtil.DATEtoString(missionEndDate, "yyyy-MM-dd HH:mm:ss");
 			//定义结果集合
 			Map objsed=new HashMap();
+			//格式化日期变量
+			SimpleDateFormat sdf;
+			//选择的结束和开始日期的差值
+			int differenceVal;
+			//声明局部变量
+			Calendar calendar = Calendar.getInstance(); 
+			Date calDate ;
+			String calDateStr;
+			
+			sdf=new SimpleDateFormat("yyyy-MM-dd");
+			Date start_date=sdf.parse(start_Date);
+			Date end_date=sdf.parse(end_Date);
+			differenceVal = (int) ((end_date.getTime() - start_date.getTime()) / (1000*3600*24));
 			//如果情景不为空
 			if(tScenarinoDetaillist!=null){
 				//时间分辨率--逐日开始
@@ -1334,9 +1407,17 @@ public class AppraisalController {
 						//总数据
 						Map standard=mapper.readValue(content, Map.class);
 						//循环数据集合       最外层的日期
-						for(Object key : standard.keySet()){
+//						for(Object key : standard.keySet()){
+						for(int i=0; i<=differenceVal;i++){
+							calendar.setTime(sdf.parse(end_Date));
+//							calendar.setTime(sdf.parse(("2016-11-26").toString()));
+							calendar.add(Calendar.DAY_OF_MONTH, -i);
+							calDate = calendar.getTime();
+							calDateStr=sdf.format(calDate);
+							
 							//值     根据日期获取当前日期下的所有值
-							Object species=standard.get(key);				
+//							Object species=standard.get(key);
+							Object species=standard.get(calDateStr);
 							Map spcmap= (Map)species;
 							//循环当前时间的所有物种名称
 							for(Object  spcmapkey : spcmap.keySet()){ 	
@@ -1345,9 +1426,17 @@ public class AppraisalController {
 								//物种名称
 								String spcmapkeyw=spcmapkey.toString();
 								//为了拼接需要的数据格式  再次循环收到的数据集  键为日期
-								for(Object standard_Time:standard.keySet()){	
+//								for(Object standard_Time:standard.keySet()){	
+//									//获取对应年份下的所有信息
+//									Object standard_Times=standard.get(standard_Time);
+								for(int j=0; j<=differenceVal;j++){
+									calendar.setTime(sdf.parse(end_Date));
+//									calendar.setTime(sdf.parse(("2016-11-26").toString()));
+									calendar.add(Calendar.DAY_OF_MONTH, -j);
+									calDate = calendar.getTime();
+									calDateStr=sdf.format(calDate);	
 									//获取对应年份下的所有信息
-									Object standard_Times=standard.get(standard_Time);
+									Object standard_Times=standard.get(calDateStr);
 									//转化信息格式
 									Map speciesmap= (Map)standard_Times;
 									//再次循环当前时间的所有物种名称
@@ -1363,10 +1452,10 @@ public class AppraisalController {
 											String standardval=speciesmapval.get("0").toString();
 											//判断结果  写入对应结果
 											if("".equals(standardval)||"null".equals(standardval)||"NULL".equals(standardval)||null==standardval){
-												standardobj.put((String)standard_Time, "-");
+												standardobj.put((String)calDateStr, "-");
 											}else{
 												BigDecimal bd=(new BigDecimal(standardval)).setScale(2, BigDecimal.ROUND_HALF_UP);
-												standardobj.put((String)standard_Time, bd);
+												standardobj.put((String)calDateStr, bd);
 											}
 											
 										}else{
@@ -1374,10 +1463,10 @@ public class AppraisalController {
 											Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
 											String standardval=speciesmapval.get("0").toString();
 											if("".equals(standardval)||"null".equals(standardval)||"NULL".equals(standardval)||null==standardval){
-												standardobj.put((String)standard_Time, "-");
+												standardobj.put((String)calDateStr, "-");
 											}else{
 												BigDecimal bd=(new BigDecimal(standardval)).setScale(1, BigDecimal.ROUND_HALF_UP);
-												standardobj.put((String)standard_Time, bd);
+												standardobj.put((String)calDateStr, bd);
 											}
 										}
 									}
@@ -1385,7 +1474,7 @@ public class AppraisalController {
 								//写入结果集
 								spcmapobj.put((String)spcmapkey, standardobj);
 							}//物种名称结束
-							break;
+//							break;
 						}
 					}	/**查询基准数据结束*/
 					//查询观测数据开始
@@ -1393,9 +1482,12 @@ public class AppraisalController {
 					//站点信息
 					obsBeanobj.put("city_station",cityStation);
 					//所选任务的开始时间
-					obsBeanobj.put("startDate", missionStartDatestr);	
+//					obsBeanobj.put("startDate", missionStartDatestr);	
+//					//所选任务的结束时间
+//					obsBeanobj.put("endDate", missionEndDatestr);
+					obsBeanobj.put("startDate", start_Date);	
 					//所选任务的结束时间
-					obsBeanobj.put("endDate", missionEndDatestr);		
+					obsBeanobj.put("endDate", end_Date);
 					//用于存放新的mode
 					String modes;	
 					//判断mode类型
@@ -1516,18 +1608,32 @@ public class AppraisalController {
 						//总数据
 						Map standard=mapper.readValue(content,Map.class);
 						
-						//循环数据
-						for(Object  key : standard.keySet()){	
+						//循环数据-key=日期
+//						for(Object  key : standard.keySet()){
+						for(int s=0; s<=differenceVal;s++){
+//							calendar.setTime(sdf.parse(end_Date));
+							calendar.setTime(sdf.parse(("2016-11-26").toString()));
+							calendar.add(Calendar.DAY_OF_MONTH, -s);
+							calDate = calendar.getTime();
+							calDateStr=sdf.format(calDate);	
 							//值
-							Object species=standard.get(key);		
+//							Object species=standard.get(key);
+							Object species=standard.get(calDateStr);
 							Map spcmap= (Map)species;			
 							//物种名称开始							
 							for(Object  spcmapkey : spcmap.keySet()){ 
 								Map standardobj=new HashMap();
 								String spcmapkeyw=spcmapkey.toString();
 								//键为年份	
-								for(Object standard_Time:standard.keySet()){
-									Object standard_Times=standard.get(standard_Time);				
+//								for(Object standard_Time:standard.keySet()){
+								for(int t=0; t<=differenceVal;t++){
+									calendar.setTime(sdf.parse(("2016-11-26").toString()));
+									calendar.add(Calendar.DAY_OF_MONTH, -t);
+									calDate = calendar.getTime();
+									calDateStr=sdf.format(calDate);	
+									
+//									Object standard_Times=standard.get(standard_Time);
+									Object standard_Times=standard.get(calDateStr);
 									Map speciesmap= (Map)standard_Times;
 									//循环年份数据
 									for(Object speciesmap_key:speciesmap.keySet()){
@@ -1549,7 +1655,8 @@ public class AppraisalController {
 													standardobjdata.put(i,bd);
 												}
 											}					
-											standardobj.put((String)standard_Time, standardobjdata);
+//											standardobj.put((String)standard_Time, standardobjdata);
+											standardobj.put(calDateStr, standardobjdata);
 										}else {
 											Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
 											Map speciesmapval= (Map)speciesmap_keyval;
@@ -1565,7 +1672,8 @@ public class AppraisalController {
 												
 											}	
 											//写入结果
-											standardobj.put(standard_Time.toString(), standardobjdata);
+//											standardobj.put(standard_Time.toString(), standardobjdata);
+											standardobj.put(calDateStr, standardobjdata);
 										}
 									}
 								}
@@ -1578,9 +1686,12 @@ public class AppraisalController {
 					HashMap obsBeanobj=new HashMap();	//查询观测数据开始
 					obsBeanobj.put("city_station",cityStation);
 					//所选任务的开始时间
-					obsBeanobj.put("startDate", missionStartDatestr);
+//					obsBeanobj.put("startDate", missionStartDatestr);
+//					//所选任务的结束时间
+//					obsBeanobj.put("endDate", missionEndDatestr);
+					obsBeanobj.put("startDate", start_Date);	
 					//所选任务的结束时间
-					obsBeanobj.put("endDate", missionEndDatestr);
+					obsBeanobj.put("endDate", end_Date);
 					//用于存放新的mode
 					String modes;										
 					if("point".equals(mode)){
@@ -1982,7 +2093,7 @@ public class AppraisalController {
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping("Appraisal/showTime")
+	@RequestMapping("Appraisal/show_Times")
 	public AmpcResult showTime(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
 		try{
 			//设置跨域
