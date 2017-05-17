@@ -112,7 +112,7 @@ public class ExtractPngService extends ExtractService {
 		Map data = new HashMap();
 		data.put("imagePath", drawPngPicture(res));
 		ObjectMapper mapper = new ObjectMapper();
-		data.put("data", mapper.writeValueAsString(pointBeanList));
+		data.put("data", pointBeanList);
 		return data;
 	}
 
@@ -345,6 +345,7 @@ public class ExtractPngService extends ExtractService {
 					defaultValue);
 
 			Style rasterStyle = Styles.createXMLStyle("WhiteBlueGreenYellowRed", 200, "PNG");
+			// Style rasterStyle = Styles.createXMLStyle(params.getSpecie());
 			Layer rasterLayer = new GridCoverageLayer(gct, rasterStyle);
 
 			map.addLayer(rasterLayer);
