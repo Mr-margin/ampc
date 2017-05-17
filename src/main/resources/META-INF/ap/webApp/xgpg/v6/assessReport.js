@@ -485,9 +485,25 @@ function updata() {
     $("#pgbaStart").html(changeMsg.sTimeD);
     $("#pgbgEnd").html(changeMsg.eTime);
     $("#pgbgQjName").html(changeMsg.qjName);
-    $("#proName").html(changeMsg.proName);
-    $("#cityName").html(changeMsg.cityName);
-    $("#stationName").html(changeMsg.stationName);
+
+    if (zhiCity.indexOf(changeMsg.pro) == -1) {
+        if (changeMsg.station == 'avg') {
+            $('.cloudui  #proName').html(changeMsg.proName);
+            $('.cloudui #cityName').html(changeMsg.cityName);
+             } else {
+            $('.cloudui #proName').html(changeMsg.proName);
+            $('.cloudui #cityName').html(changeMsg.cityName);
+            $('.cloudui #stationName').html(changeMsg.stationName);
+             }
+    } else {
+        if (changeMsg.station == 'avg') {
+            $('.cloudui #cityName').html(changeMsg.cityName);
+            } else {
+            $('.cloudui #cityName').html(changeMsg.cityName);
+            $('.cloudui #stationName').html(changeMsg.stationName);
+            }
+    }
+
     $.ajax({
         url:'/ampc/Appraisal/report',
         contentType: 'application/json',
