@@ -112,7 +112,7 @@ public class ExtractPngService extends ExtractService {
 		Map data = new HashMap();
 		data.put("imagePath", drawPngPicture(res));
 		ObjectMapper mapper = new ObjectMapper();
-		data.put("data", pointBeanList);
+		// data.put("data", pointBeanList);
 		return data;
 	}
 
