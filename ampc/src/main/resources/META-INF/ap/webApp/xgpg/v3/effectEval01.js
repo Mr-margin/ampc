@@ -154,8 +154,6 @@ var dps_Date;
 function initNowSession(){
 	changeMsg.scenarinoId = [];
 	changeMsg.scenarinoName = [];
-//    changeMsg.startD = qjStartTime;
-//    changeMsg.endD = qjEndTime;
 	for(var i = 0;i< sceneInitialization.data.length; i++){
 		changeMsg.scenarinoId.push(sceneInitialization.data[i].scenarinoId);
 		changeMsg.scenarinoName.push(sceneInitialization.data[i].scenarinoName);
@@ -164,7 +162,6 @@ function initNowSession(){
 	setStation(sceneInitialization.taskID);
 	setTime(sceneInitialization.s, sceneInitialization.e);
 	$.when(dps_codeStation,dps_station).then(function () {
-//		console.log(changeMsg.station);
 		getdata();
 	});
 	
@@ -647,7 +644,6 @@ function initEcharts() {
  * 接收/更新数据
  */
 function getdata() {
-	console.log(showTime);
     showTitleFun();
     find_standard();
     var url = '/Appraisal/find_appraisal';
@@ -699,8 +695,6 @@ function ajaxPost_sy(url, parameter) {
  * 查询基准
  * */
 function find_standard(){
-	console.log(showTime);
-	console.log(showTime.endTime);
 	var missionId=$("#task").val();
 	scenarino.scenarinoId='';
 	scenarino.scenarinoName='';
@@ -821,8 +815,6 @@ function sceneTable() {
                         for(var i=0;i<truedData.length;i++){
                             if(data){
                                 $.each(data.rows, function(index, item){
-//                                    console.log(index);
-//                                    console.log(item);
                                     if(truedData[i].scenarinoId==item.scenarinoId){
                                         $('#sceneTableId').datagrid('checkRow', index);
                                     }
@@ -975,7 +967,6 @@ function set_sce() {
 $('#proStation').on('change', function (e) {
 	  var pro = $(e.target).val();
 	  changeMsg.pro = pro;
-	  console.log(allCode);
 	  changeMsg.proName = allCode[pro].name;
 	  $('#cityStation').empty();
 	  var cityStation = allCode[pro].city;
@@ -1013,7 +1004,6 @@ $('#proStation').on('change', function (e) {
 $('input[name=rms]').on('change',function(e){
 		var rms = $(e.target).val();
 		changeMsg.rms= rms
-//		console.log(rms);
 		if(rms == 'hour'){
 			show_type = "line";
 			getdata();
@@ -1070,7 +1060,6 @@ $('input[name=changes]').on('change', function (e) {
 					}
 				});
 				initEcharts();
-//				console.log(xdScene);
 			}else if("逐小时"==time){
 				var hours={};	//存放逐小时数据
 				
@@ -1105,7 +1094,6 @@ $('input[name=changes]').on('change', function (e) {
 					}
 				});
 				initEcharts();
-//				console.log(xdScene);
 			}
 		}else{	//无数据
 		}
@@ -1126,7 +1114,6 @@ $('input[name=domain]').on('change', function (e) {
 $(".toolAll").hide();
 $(".cloudui .searchT  .upDownBtn").append("<i class='en-arrow-up7'></i>")
 $(".cloudui .searchT .upDownBtn").click(function () {
-    //console.log($(".upDownBtn").val());
     if ($(".cloudui .searchT .upDownBtn").text() == "收起") {
         $(".cloudui .searchT .upDownBtn").text("更多搜索条件");
         $(".toolAll").hide();
@@ -1227,8 +1214,6 @@ function initSjxlDate(s, e, start, end) {
     }, function (start, end, label) {
     	var daysCha=end-start;
        // daysCha=daysCha/(1000*60*60*24);
-        console.log(daysCha);
-
         changeMsg.startD = start.format('YYYY-MM-DD');
     	end=start.add('days',10).format('YYYY-MM-DD');
         changeMsg.endD = end;
