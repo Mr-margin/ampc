@@ -436,9 +436,7 @@
       <if test="stepindex != null" >
         STEPINDEX = #{stepindex,jdbcType=DECIMAL},
       </if>
-      <if test="tasksEndDate != null" >
         TASKS_END_DATE = #{tasksEndDate,jdbcType=TIMESTAMP},
-      </if>
       <if test="sourceid != null" >
         SOURCEID = #{sourceid,jdbcType=VARCHAR},
       </if>
@@ -463,12 +461,8 @@
       <if test="beizhu3 != null" >
         BEIZHU3 = #{beizhu3,jdbcType=VARCHAR},
       </if>
-      <if test="stopStatus != null" >
         STOP_STATUS = #{stopStatus,jdbcType=VARCHAR},
-      </if>
-      <if test="tasksSendTime != null" >
         TASKS_SEND_TIME = #{tasksSendTime,jdbcType=TIMESTAMP},
-      </if>
       <if test="tasksEndTime != null" >
         TASKS_END_TIME = #{tasksEndTime,jdbcType=TIMESTAMP},
       </if>
@@ -484,9 +478,7 @@
       <if test="pauseStatus != null" >
         PAUSE_STATUS = #{pauseStatus,jdbcType=VARCHAR},
       </if>
-    <if test="tasksExpand1 != null" >
         TASKS_EXPAND1 = #{tasksExpand1,jdbcType=DECIMAL},
-      </if>
       <if test="tasksExpand2 != null" >
         TASKS_EXPAND2 = #{tasksExpand2,jdbcType=TIMESTAMP},
       </if>
