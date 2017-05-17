@@ -2,7 +2,7 @@ $(function () {
     /**
      *设置导航条信息
      */
-    $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">垂直廓线</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
+    $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">评估报告</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
     //全选复选框
     //initTableCheckbox();
 
@@ -481,28 +481,9 @@ var czData;
 /*设置echarts图表*/
 var allData;
 function updata() {
-    showTitleFun();
-    $("#pgbaStart").html(changeMsg.sTimeD);
-    $("#pgbgEnd").html(changeMsg.eTime);
-    $("#pgbgQjName").html(changeMsg.qjName);
 
-    if (zhiCity.indexOf(changeMsg.pro) == -1) {
-        if (changeMsg.station == 'avg') {
-            $('.cloudui  #proName').html(changeMsg.proName);
-            $('.cloudui #cityName').html(changeMsg.cityName);
-             } else {
-            $('.cloudui #proName').html(changeMsg.proName);
-            $('.cloudui #cityName').html(changeMsg.cityName);
-            $('.cloudui #stationName').html(changeMsg.stationName);
-             }
-    } else {
-        if (changeMsg.station == 'avg') {
-            $('.cloudui #cityName').html(changeMsg.cityName);
-            } else {
-            $('.cloudui #cityName').html(changeMsg.cityName);
-            $('.cloudui #stationName').html(changeMsg.stationName);
-            }
-    }
+    showTitleFun();
+    shownPgbg()
 
     $.ajax({
         url:'/ampc/Appraisal/report',
@@ -547,7 +528,7 @@ function updata() {
 function showTitleFun() {
     $('#showTitle span').empty();
     $('#showTitle .qjName').html("<span class='titleTab'><i class='br-calendar'></i>"+"&nbsp;情景：</span>"+changeMsg.qjName);
-    var timeTwoFor=moment(changeMsg.sTimeD+"-"+changeMsg.eTime,"YYYYMMDD-YYYYMMDD").format("YYYY-MM-DD-YYYY-MM-DD");
+    var timeTwoFor=moment(changeMsg.sTimeD+"-"+changeMsg.eTime,"YYYYMMDD-YYYYMMDD").format("YYYY年MM月DD日-YYYY年MM月DD日");
     $('#showTitle .dateStartName').html("<span class='titleTab'><i class='br-calendar'></i>"+"&nbsp;开始时间：</span>"+changeMsg.sTimeD+"至"+changeMsg.eTime);
     if (zhiCity.indexOf(changeMsg.pro) == -1) {
         if (changeMsg.station == 'avg') {
@@ -568,7 +549,30 @@ function showTitleFun() {
             }
     }
 }
+function shownPgbg(){
+    $('.pgbgContent span').empty();
+    $(".pgbgContent #pgbaStart").html(moment(changeMsg.sTimeD,"YYYYMMDD").format("YYYY年MM月DD日"));
+    $(".pgbgContent #pgbgEnd").html(moment(changeMsg.eTime,"YYYYMMDD").format("YYYY年MM月DD日"));
+    $(".pgbgContent #pgbgQjName").html(changeMsg.qjName);
 
+    if (zhiCity.indexOf(changeMsg.pro) == -1) {
+
+            // $('.pgbgContent #proName').html(changeMsg.proName);
+            // $('.pgbgContent #cityName').html(changeMsg.cityName);
+
+            $('.pgbgContent #proName').html(changeMsg.proName);
+            $('.pgbgContent #cityName').html(changeMsg.cityName);
+            $('.pgbgContent #stationName').html(changeMsg.stationName);
+
+    } else {
+
+            // $('.pgbgContent #cityName').html(changeMsg.cityName);
+
+            $('.pgbgContent #cityName').html(changeMsg.cityName);
+            $('.pgbgContent #stationName').html(changeMsg.stationName);
+
+    }
+}
 //easyui 添加
 $(".toolAll").hide();
 $(".upDownBtn").append("<i class='en-arrow-up7'></i>")
@@ -601,10 +605,10 @@ $("#close_scene").click(function () {
 //报告展示
 // var pWidth=$(".cloudui .verticalCon .verticalChar .pgbgContent").width();
 // var pHeight=$(".cloudui .verticalCon .verticalChar .pgbgContent").height();
-var cWidth=$(".cloudui .verticalCon .verticalChar .pgbgContent p").width();
-var cHeight=$(".cloudui .verticalCon .verticalChar .pgbgContent p").height();
-$(".cloudui .verticalCon .verticalChar .pgbgContent p").css({"left":"50%","margin-left":(-cWidth/2)+"px"})
-$(".cloudui .verticalCon .verticalChar .pgbgContent p").css({"top":"50%","margin-top":(-cHeight/2)+"px"})
+var cWidth=$(".cloudui .verticalCon .verticalChar .pgbgContent .pgbgCon").width();
+var cHeight=$(".cloudui .verticalCon .verticalChar .pgbgContent .pgbgCon").height();
+$(".cloudui .verticalCon .verticalChar .pgbgContent .pgbgCon").css({"left":"50%","margin-left":(-cWidth/2)+"px"})
+$(".cloudui .verticalCon .verticalChar .pgbgContent .pgbgCon").css({"top":"40%","margin-top":(-cHeight/2)+"px"})
 
 
 
