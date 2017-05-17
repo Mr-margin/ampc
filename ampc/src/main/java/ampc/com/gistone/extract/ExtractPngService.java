@@ -298,7 +298,7 @@ public class ExtractPngService extends ExtractService {
 			headers.setContentType(MediaType.IMAGE_PNG);
 
 			String imagePath = buildIamgeFilePath();
-			boolean b = Images.buildImage(map, params.getWidth(), imagePath);
+			boolean b = Images.buildImage(map, params.getWidth(), params.getHeight(), imagePath);
 			if (b)
 				return imagePath;
 			return null;
