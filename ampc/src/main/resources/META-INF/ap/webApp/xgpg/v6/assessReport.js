@@ -603,12 +603,24 @@ $("#close_scene").click(function () {
 })
 
 //报告展示
-// var pWidth=$(".cloudui .verticalCon .verticalChar .pgbgContent").width();
-// var pHeight=$(".cloudui .verticalCon .verticalChar .pgbgContent").height();
+var pWidth=$(".cloudui .verticalCon .verticalChar .pgbgContent").width();
+var pHeight=$(".cloudui .verticalCon .verticalChar .pgbgContent").height();
 var cWidth=$(".cloudui .verticalCon .verticalChar .pgbgContent .pgbgCon").width();
 var cHeight=$(".cloudui .verticalCon .verticalChar .pgbgContent .pgbgCon").height();
 $(".cloudui .verticalCon .verticalChar .pgbgContent .pgbgCon").css({"left":"50%","margin-left":(-cWidth/2)+"px"})
 $(".cloudui .verticalCon .verticalChar .pgbgContent .pgbgCon").css({"top":"40%","margin-top":(-cHeight/2)+"px"})
+window.addEventListener("resize", function () {
+    setTimeout(function () {
+        pWidth=$(".cloudui .verticalCon .verticalChar .pgbgContent").width();
+        pHeight=$(".cloudui .verticalCon .verticalChar .pgbgContent").height();
+        cWidth=$(".cloudui .verticalCon .verticalChar .pgbgContent .pgbgCon").width();
+        cHeight=$(".cloudui .verticalCon .verticalChar .pgbgContent .pgbgCon").height();
+        $(".cloudui .verticalCon .verticalChar .pgbgContent .pgbgCon").css({"left":"50%","margin-left":(-cWidth/2)+"px"});
+        $(".cloudui .verticalCon .verticalChar .pgbgContent .pgbgCon").css({"top":"50%","margin-top":(-cHeight/2)+"px"});
+        console.log(pWidth);
+        console.log(pHeight)
+    },50)}
+    )
 
 
 
