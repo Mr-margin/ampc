@@ -800,8 +800,8 @@ function setDate(s1, e1, s2, e2) {
                 break;
             }
         }
-        changeMsg.sTimeD = moment($('#sTime-d').val()).format('YYYYMMDD');
-        changeMsg.eTime = moment($('#eTime').val()).format('YYYYMMDD');
+        changeMsg.sTimeD = moment($('#sTime-d').val()).format('YYYY-MM-DD');
+        changeMsg.eTime = moment($('#eTime').val()).format('YYYY-MM-DD');
     } else {
         s1 = moment(s1 - 0);
         s2 = moment(s2 - 0);
@@ -838,8 +838,8 @@ function setDate(s1, e1, s2, e2) {
                 break;
             }
         }
-        changeMsg.sTimeD = moment($('#sTime-d').val()).format('YYYYMMDD');
-        changeMsg.eTime = moment($('#eTime').val()).format('YYYYMMDD');
+        changeMsg.sTimeD = moment($('#sTime-d').val()).format('YYYY-MM-DD');
+        changeMsg.eTime = moment($('#eTime').val()).format('YYYY-MM-DD');
     }
     initVideoPlay();
 }
@@ -883,7 +883,7 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
         var s = moment($('#sTime-d').val());
         var e = moment($('#eTime').val());
         while (true) {
-            changeMsg.dates.push(s.format('YYYYMMDD'));
+            changeMsg.dates.push(s.format('YYYY-MM-DD'));
             if (s.add(1, 'd').isAfter(e)) {
                 break;
             }
@@ -970,13 +970,13 @@ $('#qjBtn2').on('change', 'input', function (e) {//改变右侧情景
 
 $('#sTime-d').on('change', function (e) {//选择日期
     var date = $(e.target).val();
-    changeMsg.sTimeD = moment(date).format('YYYYMMDD');
+    changeMsg.sTimeD = moment(date).format('YYYY-MM-DD');
     if (changeMsg.rms == 'a') {
         changeMsg.dates = []
         var s = moment($('#sTime-d').val());
         var e = moment($('#eTime').val());
         while (true) {
-            changeMsg.dates.push(s.format('YYYYMMDD'));
+            changeMsg.dates.push(s.format('YYYY-MM-DD'));
             if (s.add(1, 'd').isAfter(e)) {
                 break;
             }
@@ -993,13 +993,13 @@ $('#sTime-h').on('change', function (e) {//选择时间
 
 $('#eTime').on('change', function (e) {//选择平均后的时间
     var date = $(e.target).val();
-    changeMsg.eTime = moment(date).format('YYYYMMDD');
+    changeMsg.eTime = moment(date).format('YYYY-MM-DD');
     if (changeMsg.rms == 'a') {
         changeMsg.dates = [];
         var s = moment($('#sTime-d').val());
         var e = moment($('#eTime').val());
         while (true) {
-            changeMsg.dates.push(s.format('YYYYMMDD'));
+            changeMsg.dates.push(s.format('YYYY-MM-DD'));
             if (s.add(1, 'd').isAfter(e)) {
                 break;
             }
@@ -1192,7 +1192,7 @@ function videoPlay() {
     if(index == -1){
         return;
     }
-    changeMsg.sTimeD = moment(playDay).format('YYYYMMDD');
+    changeMsg.sTimeD = moment(playDay).format('YYYY-MM-DD');
     if(changeMsg.rms == 'h'){
         changeMsg.sTimeH = playHour;
     }
@@ -1289,9 +1289,9 @@ $(".cloudui .verticalCon .ibox-content .searchT .upDown").hover(function(){
 })
 //增加标题
 function showTitleFun() {
-    var timeStartFor=moment(changeMsg.sTimeD,"YYYYMMDD").format("YYYY-MM-DD");
-    var stateFor=moment(changeMsg.sTimeD+changeMsg.sTimeH,"YYYYMMDDH").format("YYYY-MM-DD HH");
-    var timeTwoFor=moment(changeMsg.sTimeD+"-"+changeMsg.eTime,"YYYYMMDD-YYYYMMDD").format("YYYY-MM-DD-YYYY-MM-DD");
+    var timeStartFor=moment(changeMsg.sTimeD,"YYYY-MM-DD").format("YYYY-MM-DD");
+    var stateFor=moment(changeMsg.sTimeD+changeMsg.sTimeH,"YYYY-MM-DDH").format("YYYY-MM-DD HH");
+    var timeTwoFor=moment(changeMsg.sTimeD+"-"+changeMsg.eTime,"YYYY-MM-DD-YYYY-MM-DD").format("YYYY-MM-DD-YYYY-MM-DD");
     console.log(changeMsg.sTimeD)
     console.log(changeMsg.sTimeD+changeMsg.sTimeH)
     console.log(changeMsg.sTimeD+"-"+changeMsg.eTime)
