@@ -44,7 +44,6 @@ import ampc.com.gistone.util.LogUtil;
  * @date 2017年3月9日
  */
 public class ExcelToDate {
-	
 	//工作簿对象
 	public static Workbook wb  = null;  
 	//得到一个POI的工具类
@@ -63,7 +62,57 @@ public class ExcelToDate {
     //定义结果  默认false 
     public static boolean isError=false;
     //存放验证信息的Map
-    public static LinkedHashMap checkMap=null;	
+    public static LinkedHashMap checkMap=null;
+    //用来存放错误信息的集合
+    public static List<ItemError> errorList=null;
+    //单个错误信息对象
+    public static ItemError error=null;
+    
+    
+    //SheetName错误信息
+    public static final String SHEETNAME_ERROR="SheetName名称超过规定长度(要求在10个字符以内)!";
+    
+    
+    /**
+     * 初始化Excel信息方法
+     * @param path 要解析的路径
+     */
+	public static boolean init(String path,String msg){
+		try{
+			String p=path.substring(path.indexOf("."));
+			if(!p.equals("xlsx")||p.equals("xls")){
+				msg="上传文件不是Excel类型文件。";
+				return false;
+			}
+			File file =new File(path);
+			if(!file.exists()){
+				msg="上传文件不存在,没有找到对应文件。";
+				return false;
+			}
+			
+	        is=new FileInputStream(file);    
+	        wb = WorkbookFactory.create(is);  
+	        factory = wb.getCreationHelper();
+	        anchor = new XSSFClientAnchor(0, 0, 0, 0, (short)1, 2, (short)3, 10);
+	        drawMap = new LinkedHashMap();
+	        for (int i = 0; i < wb.getNumberOfSheets(); i++) {
+	          Sheet sheet = wb.getSheetAt(i);
+	          drawMap.put(sheet.getSheetName(), sheet.createDrawingPatriarch());
+	        }
+	        yellowStyle = wb.createCellStyle();
+	        yellowStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+          	yellowStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+          	yellowStyle.setAlignment(CellStyle.ALIGN_CENTER);
+          	yellowStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+	        LogUtil.getLogger().info("ExcelToDateController 初始化Excel信息方法!");
+	        return true;
+		}catch(Exception e){
+			LogUtil.getLogger().error("ExcelToDateController 初始化Excel信息方法异常!",e);
+			msg="初始化Excel出现异常!";
+			return false;
+		}
+	}
+	
 	/**
 	 * 根据jsonName解析对应的校验规则
 	 * @param jsonName 校验规则文件
@@ -85,63 +134,7 @@ public class ExcelToDate {
 		}
     }
 	
-	
-    /**
-	  * 生成标注
-	  */
-	public static Comment getComment(Sheet sheet, String message) {
-	  Drawing drawing = (Drawing)drawMap.get(sheet.getSheetName());
-	  ClientAnchor an = drawing.createAnchor(0, 0, 0, 0, (short) 1, 2, (short) 3, 10);
-	  Comment comment0 = drawing.createCellComment(an);
-	  RichTextString str0 = factory.createRichTextString(message);
-	  comment0.setString(str0);
-	  comment0.setAuthor("Apache POI");
-	  return comment0;
-	}
-	
-	
-	
-    /**
-     * 初始化Excel信息方法
-     * @param path 要解析的路径
-     */
-	public static boolean init(String path){
-		try{
-			File file =new File(path);
-	        is=new FileInputStream(file);    
-	        wb = WorkbookFactory.create(is);  
-	        factory = wb.getCreationHelper();
-	        anchor = new XSSFClientAnchor(0, 0, 0, 0, (short)1, 2, (short)3, 10);
-	        drawMap = new LinkedHashMap();
-	        for (int i = 0; i < wb.getNumberOfSheets(); i++) {
-	          Sheet sheet = wb.getSheetAt(i);
-	          drawMap.put(sheet.getSheetName(), sheet.createDrawingPatriarch());
-	        }
-	        yellowStyle = wb.createCellStyle();
-	        yellowStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
-          	yellowStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
-          	yellowStyle.setAlignment(CellStyle.ALIGN_CENTER);
-          	yellowStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
-	        LogUtil.getLogger().info("ExcelToDateController 初始化Excel信息方法!");
-	        return true;
-		}catch(Exception e){
-			LogUtil.getLogger().error("ExcelToDateController 初始化Excel信息方法异常!",e);
-			return false;
-		}
-	}
-	
-	
-	/**
-	  * 保存Excel
-	  * @param path
-	  * @throws Exception
-	  */
-	public static void save(String path) throws Exception {
-	    FileOutputStream out = new FileOutputStream(path);
-	    wb.write(out);
-	    out.close();
-	}
-	/**
+   /**
     * 读取表头
     * @param sheet
     * @return
@@ -155,20 +148,6 @@ public class ExcelToDate {
 	      m.put(headers[j], j + 1);
 	    return m;
 	}
-	
-	 /**
-	  *将列传换成英文字母   相当于Excel中的列名 如:1-A 2-B
-	  */
-    public static String columnChar(int num) {
-		int big = num / 26;
-		String sBig = "";
-		if (big != 0) {
-		  sBig = String.valueOf(((char) (big + 64)));
-		}
-		int small = num % 26;
-		String sSmall = String.valueOf(((char) (small + 65)));
-		return sBig + sSmall;
-    }
 	
 	/**
     * 获取行数据
@@ -192,31 +171,79 @@ public class ExcelToDate {
 	    return values;
 	}
 	
+    /**
+	  * 生成标注
+	  */
+	public static Comment getComment(Sheet sheet, String message) {
+	  Drawing drawing = (Drawing)drawMap.get(sheet.getSheetName());
+	  ClientAnchor an = drawing.createAnchor(0, 0, 0, 0, (short) 1, 2, (short) 3, 10);
+	  Comment comment0 = drawing.createCellComment(an);
+	  RichTextString str0 = factory.createRichTextString(message);
+	  comment0.setString(str0);
+	  comment0.setAuthor("Apache POI");
+	  return comment0;
+	}
+	
+   /**
+	*将列传换成英文字母   相当于Excel中的列名 如:1-A 2-B
+	*/
+    public static String columnChar(int num) {
+		int big = num / 26;
+		String sBig = "";
+		if (big != 0) {
+		  sBig = String.valueOf(((char) (big + 64)));
+		}
+		int small = num % 26;
+		String sSmall = String.valueOf(((char) (small + 65)));
+		return sBig + sSmall;
+    }
+	
+    /**
+	  * 保存Excel
+	  * @param path
+	  * @throws Exception
+	  */
+	public static void save(String path) throws Exception {
+	    FileOutputStream out = new FileOutputStream(path);
+	    wb.write(out);
+	    out.close();
+	}
+	
   /**  
 	*行业描述Excel表
 	* 读取excel描述数据   读取行业描述Excel表
 	* @param path  
 	*/
-	public static List<TSectordocExcel> ReadSectorDOC(String fileName,Long versionId,Long userId,String msg){  
+	public static List<TSectordocExcel> ReadSectorDOC(String fileName,Long versionId,Long userId,List<String> msg){  
 		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_1描述文件.xlsx";
+		//获取文件名称
+		String file=path.substring(path.lastIndexOf("//"));
 		//返回结果的集合
 		List<TSectordocExcel> sectorDocList=new ArrayList<TSectordocExcel>();
         try {  
+        	String message=null;
         	//执行Excel初始化
-        	if(!init(path)){
-        		msg="初始化Excel失败!";
+        	if(!init(path,message)){
+        		msg.add(message);
         		return null;
         	}
         	//获取验证集合
         	checkMap=readCheckJson("应急系统新_1描述文件.json");
         	if(checkMap==null){
-        		msg="获取Excel验证失败!";
+        		msg.add("读取系统内置校验文件出现异常!");
         		return null;
         	}
+        	//获取字段验证Map
+        	Map checkHeader=(Map)checkMap.get("SheetNum");
         	//获取sheet名称的长度验证
         	int sheetNameMaxLength=Integer.valueOf(((Map)((Map)checkMap.get("应急系统新_1描述文件")).get("sheetName")).get("maxLenth").toString());
             //获得所有页数
             int sheetCount=wb.getNumberOfSheets();
+            //sheet页验证
+            if(sheetCount<1){
+            	msg.add("缺失sheet页!");
+        		return null;
+            }
             //循环每一页
             for(int i=0;i<sheetCount;i++){
             	//获得当前页
@@ -225,17 +252,40 @@ public class ExcelToDate {
             	String sheetName=sheet.getSheetName();
             	//判断sheet名称的信息是否合格
             	if(sheetName.length()>sheetNameMaxLength){
-            		
+            		//写入错误信息
+            		error=new ItemError(file,sheetName,SHEETNAME_ERROR,1);
+            		//添加到错误集合
+            		errorList.add(error);
             	}
             	//获得所有行
             	Iterator<Row> rows = sheet.rowIterator(); 
             	//循环所有行
-            	while (rows.hasNext()) {  
-                    Row row = rows.next();  //获得行数据  
+            	while (rows.hasNext()) {
+            		//获得行数据 
+                    Row row = rows.next(); 
+                    //第一行是表头行
                     if(row.getRowNum()==0){
+                    	//获取表头信息
                     	Map headerMap=readHeader(sheet);
-                    	
-                    	
+                    	//定义临时变量
+                    	int j=0;
+                    	//循环所有的验证表头
+                    	for(Object ch:checkHeader.keySet()){
+                    		try{
+                    			if(!headerMap.get(j).equals(ch)){
+                    				//写入错误信息
+                            		error=new ItemError(file,sheetName,SHEETNAME_ERROR,1);
+                            		//添加到错误集合
+                            		errorList.add(error);
+                        		}
+                    		}catch(Exception e){
+                    			//写入错误信息
+                        		error=new ItemError(file,sheetName,SHEETNAME_ERROR,1);
+                        		//添加到错误集合
+                        		errorList.add(error);
+                    		}
+                    		j++;
+                    	}
                     	continue;
                     }
                     String t=getCellValue(row.getCell(4));
