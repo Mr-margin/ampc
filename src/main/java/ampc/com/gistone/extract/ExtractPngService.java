@@ -311,28 +311,40 @@ public class ExtractPngService extends ExtractService {
 
 		try {
 
-			double x1 = Double.valueOf(String.valueOf(attributes.get("XORIG")));
-			double y1 = Double.valueOf(String.valueOf(attributes.get("YORIG")));
-			int rows = Integer.valueOf(String.valueOf(attributes.get("NROWS")));
-			int cols = Integer.valueOf(String.valueOf(attributes.get("NCOLS")));
-			double xcell = Double.valueOf(String.valueOf(attributes.get("XCELL")));
-			double ycell = Double.valueOf(String.valueOf(attributes.get("YCELL")));
-			double x2 = x1 + xcell * cols;
-			double y2 = y1 + ycell * rows;
-			CoordinateReferenceSystem sourceCRS = CRS.parseWKT(ProjectUtil.getWKT(attributes));
-			ReferencedEnvelope refEnvelope = new ReferencedEnvelope(x1, x2, y1, y2, sourceCRS);
+			// double x1 =
+			// Double.valueOf(String.valueOf(attributes.get("XORIG")));
+			// double y1 =
+			// Double.valueOf(String.valueOf(attributes.get("YORIG")));
+			// int rows =
+			// Integer.valueOf(String.valueOf(attributes.get("NROWS")));
+			// int cols =
+			// Integer.valueOf(String.valueOf(attributes.get("NCOLS")));
+			// double xcell =
+			// Double.valueOf(String.valueOf(attributes.get("XCELL")));
+			// double ycell =
+			// Double.valueOf(String.valueOf(attributes.get("YCELL")));
+			// double x2 = x1 + xcell * cols;
+			// double y2 = y1 + ycell * rows;
+			// CoordinateReferenceSystem sourceCRS =
+			// CRS.parseWKT(ProjectUtil.getWKT(attributes));
+			// ReferencedEnvelope refEnvelope = new ReferencedEnvelope(x1, x2,
+			// y1, y2, sourceCRS);
+
+			CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:3857");
+			ReferencedEnvelope sourceee = new ReferencedEnvelope(ymin, ymax, xmin, xmax, sourceCRS);
+
 			GridCoverageFactory factory = new GridCoverageFactory();
-			GridCoverage gcs = factory.create("source", temp, refEnvelope);
+			GridCoverage gcs = factory.create("source", temp, sourceee);
 
 			final RenderedOp scaledImage = ScaleDescriptor.create(gcs.getRenderedImage(), 2f, 2f, 0f, 0f,
 					javax.media.jai.Interpolation.getInstance(javax.media.jai.Interpolation.INTERP_BICUBIC_2), null);
 
 			BufferedImage bi = scaledImage.getAsBufferedImage();
 
-			GridCoverage2D newcov = (new GridCoverageFactory()).create("new", bi, refEnvelope);
+			GridCoverage2D newcov = (new GridCoverageFactory()).create("new", bi, sourceee);
 
 			CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:3857");
-			ReferencedEnvelope targetee = refEnvelope.transform(targetCRS, true);
+			ReferencedEnvelope targetee = sourceee.transform(targetCRS, true);
 
 			MapViewport mapViewport = new MapViewport(targetee);
 			map.setViewport(mapViewport);
