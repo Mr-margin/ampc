@@ -785,7 +785,7 @@ function sceneInittion(){
 function sceneTable() {
     $("#sceneTableId").bootstrapTable('destroy');	//销毁现有表格数据
     $.ajax({
-        url: localhttp + '/ampc/scenarino/find_All_scenarino',
+        url: '/ampc/scenarino/find_All_scenarino',
         contentType: 'application/json',
         method: 'post',
         dataType: 'JSON',
