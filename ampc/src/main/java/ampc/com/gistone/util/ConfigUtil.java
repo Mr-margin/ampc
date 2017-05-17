@@ -63,6 +63,9 @@ public class ConfigUtil {
 	//actionlist.actionDirAfter
 	@Value("${actionlist.actionDirAfter}")
 	private String actionlistDirAfter;
+	//线程和定时器的一件设置
+	@Value("${schedulerandrunnable.setting}")
+	private boolean runningSetting;
 			//redisIP地址
 			@Value("${spring.redis.host}")
 			private String redisHost;
@@ -171,6 +174,12 @@ public class ConfigUtil {
 	
 
 			
+			
+
+	public boolean isRunningSetting() {
+				return runningSetting;
+			}
+
 	public String getActionlistDirPre() {
 				return actionlistDirPre;
 			}
