@@ -33,9 +33,9 @@ import ampc.com.gistone.entity.CheckUtil1;
 import ampc.com.gistone.entity.ColorUtil;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
-import ampc.com.gistone.util.ExcelToDate;
 import ampc.com.gistone.util.LogUtil;
 import ampc.com.gistone.util.RegUtil;
+import ampc.com.gistone.util.checkExcelUtil.ExcelToDate;
 
 /**
  * 行业和措施的控制类
@@ -167,7 +167,7 @@ public class ExcelToDateController {
 			if (data.get("userId") != null) {
 				//获取用户ID
 				Object param=data.get("userId");
-				//进行参数判断
+	   			//进行参数判断
 				if(!RegUtil.CheckParameter(param, "Long", null, false)){
 					LogUtil.getLogger().error("ExcelToDateController 用户ID为空或出现非法字符!");
 					return AmpcResult.build(1003, "ExcelToDateController 用户ID为空或出现非法字符!");
@@ -185,8 +185,9 @@ public class ExcelToDateController {
 			}else{
 				versionId++;
 			}
+			String msg=null;
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
-			List<TSectordocExcel> tse = ExcelToDate.ReadSectorDOC(fileName,versionId,userId);
+			List<TSectordocExcel> tse = ExcelToDate.ReadSectorDOC(fileName,versionId,userId,msg);
 			for (TSectordocExcel tsd : tse) {
 				int result=tSectordocExcelMapper.insertSelective(tsd);
 				if(result<1){
