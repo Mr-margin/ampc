@@ -18,7 +18,7 @@ import org.geotools.renderer.lite.StreamingRenderer;
  */
 public class Images {
 
-	public static boolean buildImage(final MapContent map, final int imageWidth, String imagePath) throws IOException {
+	public static boolean buildImage(final MapContent map, int imageWidth, int imageHeight, String imagePath) throws IOException {
 
 		GTRenderer renderer = new StreamingRenderer();
 		renderer.setMapContent(map);
@@ -28,7 +28,8 @@ public class Images {
 		try {
 			mapBounds = map.getViewport().getBounds();
 			double heightToWidth = mapBounds.getSpan(1) / mapBounds.getSpan(0);
-			imageBounds = new Rectangle(0, 0, imageWidth, (int) Math.round(imageWidth * heightToWidth));
+//			imageBounds = new Rectangle(0, 0, imageWidth, (int) Math.round(imageWidth * heightToWidth));
+			imageBounds = new Rectangle(0, 0, imageWidth, imageHeight);
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
