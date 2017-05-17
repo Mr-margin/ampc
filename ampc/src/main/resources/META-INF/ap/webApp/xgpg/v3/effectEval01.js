@@ -658,9 +658,10 @@ function getdata() {
         "domain":$('input[name=domain]:checked').val(),
 		"scenarinoId": ch_scenarinoId,
 	    "datetype": changeMsg.rms,
-	    "startDate":showTime.startTime,
-//		"endDate":showTime.endTime
-		"endDate":'2016-11-26 23:59:59'
+//	    "startDate":showTime.startTime,
+	    "startDate":changeMsg.startD,
+		"endDate":changeMsg.endD
+//		"endDate":'2016-11-26 23:59:59'
 	  };
 	ajaxPost(url, paramsName).success(function (res) {
 	    if (res.status == 0) {
@@ -709,9 +710,10 @@ function find_standard(){
 		    "domain":$('input[name=domain]:checked').val(),		
 		    "changeType":$('input[name=changes]:checked').val(),			//变化状态
 			"datetype":changeMsg.rms,			//时间分辨率
-			"startDate":showTime.startTime,
-//			"endDate":showTime.endTime
-			"endDate":'2016-11-26 23:59:59'
+//			"startDate":showTime.startTime,
+			"startDate":changeMsg.startD,
+			"endDate":changeMsg.endD
+//			"endDate":'2016-11-26 23:59:59'
 		  };
 	ajaxPost(url, paramsName).success(function (res) {
 	    if (res.status == 0) {
@@ -1251,17 +1253,20 @@ function requestDate() {
 
         if (res.status == 0) {
 			/*这里要初始化时间*/
-        	showTime=res.data;
-            if (!(moment(res.data.maxtime).add(-7, 'd').isBefore(moment(res.data.mintime)))) {
-                changeMsg.startD = moment(res.data.maxtime).add(-7, 'd').format('YYYY-MM-DD')
+//        	showTime=res.data;
+        	console.log(changeMsg);
+        	changeMsg.startD='';
+        	changeMsg.endD='';
+        	changeMsg.startD=res.data.startTime;
+        	changeMsg.endD=res.data.endTime;
+        	console.log(changeMsg);
+            if (!(moment(res.data.endTime).add(-9, 'd').isBefore(moment(res.data.startTime)))) {
+                changeMsg.startD = moment(res.data.endTime).add(-9, 'd').format('YYYY-MM-DD')
             } else {
-                changeMsg.startD = moment(res.data.mintime).format('YYYY-MM-DD')
+                changeMsg.startD = moment(res.data.startTime).format('YYYY-MM-DD')
             }
-
-            changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
-
-            initSjxlDate(moment(res.data.startTime).format('YYYY-MM-DD'), moment(res.data.endTime).format('YYYY-MM-DD'),showTime.startTime,showTime.endTime);
-            //initQxysDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
+            changeMsg.endD = moment(res.data.endTime).format('YYYY-MM-DD');
+            initSjxlDate(moment(res.data.startTime).format('YYYY-MM-DD'), moment(res.data.endTime).format('YYYY-MM-DD'),changeMsg.startD,changeMsg.endD);
         }
     })
 }
