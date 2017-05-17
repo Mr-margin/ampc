@@ -29,13 +29,17 @@ var changeMsg = {
 		rms: 'day',			//时间分辨率
 		scenarinoId: [],	//选择的情景Id数组
 		scenarinoName: [],	//选择的情景名称数组
-		startD: '',
-		endD: '',
+		startD:'',			//开始日期
+		endD:'',			//结束日期
 };
 var zhiCity = ['11', '12', '31', '50'];
-var showTime="";
-var qjStartTime;
-var qjEndTime;
+var showTime;
+//={
+//		qjStartTime:'',
+//		qjEndTime:''
+//};
+//var qjStartTime;
+//var qjEndTime;
 //逐小时显示 AQI PM25 ,SO4 NO3 NH4 BC OM PMFINE, PM10 O3 SO2 NO2 CO
 //逐日显示 AQI PM25 ,SO4 NO3 NH4 BC OM PMFINE, PM10 O3_8_max O3_1_max SO2 NO2 CO
 //物种选择
@@ -150,8 +154,8 @@ var dps_Date;
 function initNowSession(){
 	changeMsg.scenarinoId = [];
 	changeMsg.scenarinoName = [];
-    changeMsg.startD = qjStartTime;
-    changeMsg.endD = qjEndTime;
+//    changeMsg.startD = qjStartTime;
+//    changeMsg.endD = qjEndTime;
 	for(var i = 0;i< sceneInitialization.data.length; i++){
 		changeMsg.scenarinoId.push(sceneInitialization.data[i].scenarinoId);
 		changeMsg.scenarinoName.push(sceneInitialization.data[i].scenarinoName);
@@ -643,6 +647,7 @@ function initEcharts() {
  * 接收/更新数据
  */
 function getdata() {
+	console.log(showTime);
     showTitleFun();
     find_standard();
     var url = '/Appraisal/find_appraisal';
@@ -656,7 +661,10 @@ function getdata() {
 //	    "scenarinoId": changeMsg.scenarinoId,
         "domain":$('input[name=domain]:checked').val(),
 		"scenarinoId": ch_scenarinoId,
-	    "datetype": changeMsg.rms
+	    "datetype": changeMsg.rms,
+	    "startDate":showTime.startTime,
+//		"endDate":showTime.endTime
+		"endDate":'2016-11-26 23:59:59'
 	  };
 	ajaxPost(url, paramsName).success(function (res) {
 	    if (res.status == 0) {
@@ -691,6 +699,8 @@ function ajaxPost_sy(url, parameter) {
  * 查询基准
  * */
 function find_standard(){
+	console.log(showTime);
+	console.log(showTime.endTime);
 	var missionId=$("#task").val();
 	scenarino.scenarinoId='';
 	scenarino.scenarinoName='';
@@ -704,7 +714,10 @@ function find_standard(){
 			"cityStation":changeMsg.station=='avg'?changeMsg.city:changeMsg.station,	//检测站点具体值
 		    "domain":$('input[name=domain]:checked').val(),		
 		    "changeType":$('input[name=changes]:checked').val(),			//变化状态
-			"datetype":changeMsg.rms			//时间分辨率
+			"datetype":changeMsg.rms,			//时间分辨率
+			"startDate":showTime.startTime,
+//			"endDate":showTime.endTime
+			"endDate":'2016-11-26 23:59:59'
 		  };
 	ajaxPost(url, paramsName).success(function (res) {
 	    if (res.status == 0) {
@@ -918,20 +931,20 @@ function save_scene() {
 		}
 		$("#close_scene").click();
 		//查询任务的开始时间和结束时间
-		var url='/Appraisal/showTime';
-		var paramsName = {
-				"missionId":sceneInitialization.taskID,				//任务ID
-			  };
-		ajaxPost(url, paramsName).success(function (res) {
-		    if (res.status == 0) {
-		    	showTime=res;
-                qjStartTime=showTime.data.startTime;
-                qjEndTime=showTime.data.endTime;
-		    } else {
-		    	swal(res.msg, '', 'error');
-		    }
-
-		  });
+//		var url='/Appraisal/show_Times';
+//		var paramsName = {
+//				"missionId":sceneInitialization.taskID,				//任务ID
+//			  };
+//		ajaxPost_sy(url, paramsName).success(function (res) {
+//		    if (res.status == 0) {
+//		    	showTime=res;
+////                qjStartTime=showTime.data.startTime;
+////                qjEndTime=showTime.data.endTime;
+//		    } else {
+//		    	swal(res.msg, '', 'error');
+//		    }
+//		  });
+		
 		set_sce();
 //    	find_standard();
 		initNowSession();
@@ -1240,14 +1253,15 @@ function showDate(type) {
 }
 /*请求可选日期范围*/
 function requestDate() {
-    var url = '/Air/get_time';
-    return ajaxPost(url, {
-        userId: userId
+    var url = '/Appraisal/show_Times';
+    return ajaxPost_sy(url, {
+        userId: userId,
+        "missionId":sceneInitialization.taskID,
     }).success(function (res) {
 
         if (res.status == 0) {
 			/*这里要初始化时间*/
-
+        	showTime=res.data;
             if (!(moment(res.data.maxtime).add(-7, 'd').isBefore(moment(res.data.mintime)))) {
                 changeMsg.startD = moment(res.data.maxtime).add(-7, 'd').format('YYYY-MM-DD')
             } else {
@@ -1255,12 +1269,8 @@ function requestDate() {
             }
 
             changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
-            // initWrwDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
 
-            changeMsg.startD = qjStartTime;
-            changeMsg.endD = qjEndTime;
-            //initWrwDate('2017-04-27','2017-05-03',changeMsg.startD,changeMsg.endD);
-            initSjxlDate(qjStartTime,qjEndTime,changeMsg.startD,changeMsg.endD);
+            initSjxlDate(moment(res.data.startTime).format('YYYY-MM-DD'), moment(res.data.endTime).format('YYYY-MM-DD'),showTime.startTime,showTime.endTime);
             //initQxysDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
         }
     })
