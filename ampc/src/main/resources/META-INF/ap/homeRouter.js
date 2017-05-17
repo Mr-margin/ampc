@@ -117,7 +117,7 @@ $.when(dps_um).then(function(){
 
                 '/rwgl': {      //任务管理-任务情景
                     templateUrl: 'webApp/task01/task1.html',
-                    controller: ''
+                    controller: 'webApp/task01/task1.js'
                     // controller: 'webApp/task01/task1.js'
                 },
                 '/yabj': {      //任务管理-区域时段

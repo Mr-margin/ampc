@@ -16,6 +16,13 @@
   <meta http-equiv="refresh" content="0;ie.html"/>
   <![endif]-->
 
+
+<style>
+#loadDiv{
+display:block;
+}
+</style>
+
   <link href="css/icons.css" rel="stylesheet"/>
   <link rel="stylesheet" href="font/font-awesome-4.7.0/css/font-awesome.min.css">
   <!--<link href="css/bootstrap.min.css" rel="stylesheet"/>-->
@@ -43,8 +50,8 @@
   <link rel="stylesheet" href="core1.css">
   <meta name="msapplication-TileColor" content="#3399cc"/>
 </head>
-<body class="easyui-layout" style="background-color: #EAEDF1">
-
+<body class="easyui-layout" style="background-color: #fff;">
+<div id="loadDiv" style="width:100%;position:fixed;z-index:9999999999999;border: 1px solid #fff;background-color: #fff;"><img src="img/Loading.gif" alt="" style="margin: 0 auto;display: block;margin-top: 200px;"></div>
 <div class="zhezhao" id="zhezhao" style="display:none;"></div>
 <div class="zhezhao_title" id="zhezhao_title" style="display:none;">
   <div class="sk-spinner sk-spinner-wave" style="width: 200px;">
@@ -60,7 +67,7 @@
 
 
 <!--<a id="clickA"></a>-->
-<div data-options="region:'west',border:false" style="width: 210px">
+<div id="d1" data-options="region:'west',border:false" style="width: 210px;display: none">
   <div id="sidebarlt">
     <ul>
       <li>
@@ -170,7 +177,7 @@
   </div>
 </div>
 
-<div data-options="region:'center',border:false">
+<div id="d2" data-options="region:'center',border:false" style="display: none">
   <div class="easyui-layout" data-options="fit:true">
     <!-- Start #header -->
     <div data-options="region:'north',border:false" style="height: 50px">
@@ -199,9 +206,9 @@
             </div>
           </div>
 
-<!--          <div class="container-fluid" id="content-title">
+          <!--          <div class="container-fluid" id="content-title">
 
-          </div>-->
+                    </div>-->
 
           <!--<div class="container-fluid" id="content-title"-->
           <!--style="background-color:#F3F3F4">-->
@@ -251,7 +258,14 @@
   </div>
 
 </div>
-
+<script>
+    window.onload = function () {
+    	document.body.style.backgroundColor = '#EAEDF1';
+        document.getElementById('d1').style.display = 'block'
+        document.getElementById('d2').style.display = 'block'
+        document.getElementById('loadDiv').style.display = 'none'
+    }
+</script>
 
 
 <script src="js/jquery.min.js"></script>
