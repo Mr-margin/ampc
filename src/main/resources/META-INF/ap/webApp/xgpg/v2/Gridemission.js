@@ -234,7 +234,7 @@ require(
 /**
  *设置导航条信息
  */
-$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">水平分布</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
+$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">网格排放</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
 
 var allMission = {};
 /**
@@ -410,7 +410,8 @@ function save_scene() {
                 "scenarinoId": col.scenarinoId,
                 "scenarinoName": col.scenarinoName,
                 "scenarinoStartDate": col.scenarinoStartDate,
-                "scenarinoEndDate": col.scenarinoEndDate
+                "scenarinoEndDate": col.scenarinoEndDate,
+                "scenType":col.scenType
             });
         });
         mag.data = data;
@@ -420,6 +421,21 @@ function save_scene() {
         sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
         setQjSelectBtn(data);
         $("#close_scene").click();
+        //查询任务的开始时间和结束时间
+        var url='/Appraisal/showTime';
+        var paramsName = {
+            "missionId":sceneInitialization.taskID,				//任务ID
+        };
+        ajaxPost(url, paramsName).success(function (res) {
+            if (res.status == 0) {
+                showTime=res;
+                qjStartTime=showTime.data.startTime;
+                qjEndTime=showTime.data.endTime;
+            } else {
+                swal(res.msg, '', 'error');
+            }
+
+        });
 
     }
 }
@@ -714,8 +730,8 @@ function setDate(s1, e1, s2, e2, type) {
                 }
             }
         }
-        changeMsg.sTimeD = moment($('#sTime-d').val()).format('YYYYMMDD');
-        changeMsg.eTime = moment($('#eTime').val()).format('YYYYMMDD');
+        changeMsg.sTimeD = moment($('#sTime-d').val()).format('YYYY-MM-DD');
+        changeMsg.eTime = moment($('#eTime').val()).format('YYYY-MM-DD');
     } else {
         //$('input[name=rms].p').parent().removeAttr('disabled');
         s1 = moment(s1 - 0);
@@ -793,8 +809,8 @@ function setDate(s1, e1, s2, e2, type) {
                 }
             }
         }
-        changeMsg.sTimeD = moment($('#sTime-d').val()).format('YYYYMMDD');
-        changeMsg.eTime = moment($('#eTime').val()).format('YYYYMMDD');
+        changeMsg.sTimeD = moment($('#sTime-d').val()).format('YYYY-MM-DD');
+        changeMsg.eTime = moment($('#eTime').val()).format('YYYY-MM-DD');
     }
 }
 
@@ -840,7 +856,7 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
         var s = moment($('#sTime-d').val());
         var e = moment($('#eTime').val());
         while (true) {
-            changeMsg.dates.push(s.format('YYYYMMDD'));
+            changeMsg.dates.push(s.format('YYYY-MM-DD'));
             if (s.add(1, 'd').isAfter(e)) {
                 break;
             }
@@ -935,13 +951,13 @@ $('#qjBtn2').on('change', 'input', function (e) {//改变右侧情景
 
 $('#sTime-d').on('change', function (e) {//选择日期
     var date = $(e.target).val();
-    changeMsg.sTimeD = moment(date).format('YYYYMMDD');
+    changeMsg.sTimeD = moment(date).format('YYYY-MM-DD');
     if (changeMsg.rms == 'a') {
         changeMsg.dates = []
         var s = moment($('#sTime-d').val());
         var e = moment($('#eTime').val());
         while (true) {
-            changeMsg.dates.push(s.format('YYYYMMDD'));
+            changeMsg.dates.push(s.format('YYYY-MM-DD'));
             if (s.add(1, 'd').isAfter(e)) {
                 break;
             }
@@ -962,13 +978,13 @@ $('#sTime-h').on('change', function (e) {//选择时间
 
 $('#eTime').on('change', function (e) {//选择平均后的时间
     var date = $(e.target).val();
-    changeMsg.eTime = moment(date).format('YYYYMMDD');
+    changeMsg.eTime = moment(date).format('YYYY-MM-DD');
     if (changeMsg.rms == 'a') {
         changeMsg.dates = [];
         var s = moment($('#sTime-d').val());
         var e = moment($('#eTime').val());
         while (true) {
-            changeMsg.dates.push(s.format('YYYYMMDD'));
+            changeMsg.dates.push(s.format('YYYY-MM-DD'));
             if (s.add(1, 'd').isAfter(e)) {
                 break;
             }
@@ -1117,9 +1133,9 @@ function updata(t) {
 
 function showTitleFun() {
     $('#showTitle span').empty();
-    var timeStartFor=moment(changeMsg.sTimeD,"YYYYMMDD").format("YYYY-MM-DD");
-    var stateFor=moment(changeMsg.sTimeD+changeMsg.sTimeH,"YYYYMMDDH").format("YYYY-MM-DD HH");
-    var timeTwoFor=moment(changeMsg.sTimeD+"-"+changeMsg.eTime,"YYYYMMDD-YYYYMMDD").format("YYYY-MM-DD-YYYY-MM-DD");
+    var timeStartFor=moment(changeMsg.sTimeD,"YYYY-MM-DD").format("YYYY-MM-DD");
+    var stateFor=moment(changeMsg.sTimeD+changeMsg.sTimeH,"YYYY-MM-DDH").format("YYYY-MM-DD HH");
+    var timeTwoFor=moment(changeMsg.sTimeD+"-"+changeMsg.eTime,"YYYY-MM-DD-YYYY-MM-DD").format("YYYY-MM-DD-YYYY-MM-DD");
     $('#showTitle .specieName').html("<span class='titleTab'><i class='en-layout' style='font-size: 16px;'></i>"+"&nbsp;物种：</span>"+changeMsg.species);
     $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(changeMsg.domain=='1'?'3KM':(changeMsg.domain=='2'?'9KM':'27km')));
     if(changeMsg.rms=='d'){
