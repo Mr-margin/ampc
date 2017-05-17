@@ -2017,8 +2017,8 @@ public class AppraisalController {
 			for(Object sp:spr.keySet()){
 				BigDecimal jp=new BigDecimal(spr.get(sp).toString());
 				BigDecimal jz=new BigDecimal(jzsp.get(sp).toString());
-				BigDecimal jpavg=jp.divide(new BigDecimal(datelist.size()));
-				BigDecimal jzavg=jz.divide(new BigDecimal(datelist.size()));
+				BigDecimal jpavg=jp.divide(new BigDecimal(datelist.size()), 6, BigDecimal.ROUND_HALF_UP);
+				BigDecimal jzavg=jz.divide(new BigDecimal(datelist.size()), 6, BigDecimal.ROUND_HALF_UP);
 				BigDecimal jg=(jzavg.subtract(jpavg)).divide(jzavg, 6, BigDecimal.ROUND_HALF_UP);
 				Double con=jg.doubleValue();
 				if(con<0){
@@ -2076,9 +2076,9 @@ public class AppraisalController {
 			
 			
 			//返回结果
-			return AmpcResult.build(0, "success",concentration);
+			return AmpcResult.ok(concentration);
 		}catch(Exception e){
-			LogUtil.getLogger().error("MissionAndScenarinoController 根据任务id以及userid查询情景有异常",e);
+			LogUtil.getLogger().error("MissionAndScenarinoController 查询评估报告数据异常",e);
 			return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
