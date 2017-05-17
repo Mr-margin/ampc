@@ -1254,12 +1254,10 @@ function requestDate() {
         if (res.status == 0) {
 			/*这里要初始化时间*/
 //        	showTime=res.data;
-        	console.log(changeMsg);
         	changeMsg.startD='';
         	changeMsg.endD='';
         	changeMsg.startD=res.data.startTime;
         	changeMsg.endD=res.data.endTime;
-        	console.log(changeMsg);
             if (!(moment(res.data.endTime).add(-9, 'd').isBefore(moment(res.data.startTime)))) {
                 changeMsg.startD = moment(res.data.endTime).add(-9, 'd').format('YYYY-MM-DD')
             } else {
