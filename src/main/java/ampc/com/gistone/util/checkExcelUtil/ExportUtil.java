@@ -1,4 +1,4 @@
-package ampc.com.gistone.util.checkExcel;
+package ampc.com.gistone.util.checkExcelUtil;
 
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.usermodel.*;

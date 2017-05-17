@@ -1,22 +1,41 @@
-package ampc.com.gistone.util;
+package ampc.com.gistone.util.checkExcelUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.Comment;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import ampc.com.gistone.database.model.TMeasureExcel;
 import ampc.com.gistone.database.model.TQueryExcel;
 import ampc.com.gistone.database.model.TSectorExcel;
 import ampc.com.gistone.database.model.TSectordocExcel;
+import ampc.com.gistone.util.JsonUtil;
+import ampc.com.gistone.util.LogUtil;
 
 /**
  * Excel解析帮助类
@@ -26,31 +45,197 @@ import ampc.com.gistone.database.model.TSectordocExcel;
  */
 public class ExcelToDate {
 	
-	/**  
-	 *行业描述Excel表
+	//工作簿对象
+	public static Workbook wb  = null;  
+	//得到一个POI的工具类
+	public static CreationHelper factory;
+	public static ClientAnchor anchor =null;
+	//用来构建Common的map
+	public static LinkedHashMap drawMap;
+	//错误信息
+	public static ItemError itemError=null;
+	//定义输入流
+	public static InputStream is=null;
+	//定义输出流
+    public static OutputStream os=null;
+    //黄色背景
+	public static CellStyle yellowStyle;
+    //定义结果  默认false 
+    public static boolean isError=false;
+    //存放验证信息的Map
+    public static LinkedHashMap checkMap=null;	
+	/**
+	 * 根据jsonName解析对应的校验规则
+	 * @param jsonName 校验规则文件
+	 * @return 校验规则Map
+	 */
+	public static LinkedHashMap readCheckJson(String jsonName){  
+		try {
+			//获取校验文件
+			File directory = new File("");
+			String path= directory.getCanonicalPath()+"\\src\\main\\resources\\"+jsonName;
+			//解析文件获取解析信息
+			LinkedHashMap map=JsonUtil.readObjFromJsonFile(path, LinkedHashMap.class);
+			//返回信息
+			LogUtil.getLogger().info("ExcelToDateController 获取Excel校验信息成功!");
+			return map;
+		} catch (IOException e) {
+			LogUtil.getLogger().error("ExcelToDateController 获取Excel校验信息异常!",e);
+			return null;
+		}
+    }
+	
+	
+    /**
+	  * 生成标注
+	  */
+	public static Comment getComment(Sheet sheet, String message) {
+	  Drawing drawing = (Drawing)drawMap.get(sheet.getSheetName());
+	  ClientAnchor an = drawing.createAnchor(0, 0, 0, 0, (short) 1, 2, (short) 3, 10);
+	  Comment comment0 = drawing.createCellComment(an);
+	  RichTextString str0 = factory.createRichTextString(message);
+	  comment0.setString(str0);
+	  comment0.setAuthor("Apache POI");
+	  return comment0;
+	}
+	
+	
+	
+    /**
+     * 初始化Excel信息方法
+     * @param path 要解析的路径
+     */
+	public static boolean init(String path){
+		try{
+			File file =new File(path);
+	        is=new FileInputStream(file);    
+	        wb = WorkbookFactory.create(is);  
+	        factory = wb.getCreationHelper();
+	        anchor = new XSSFClientAnchor(0, 0, 0, 0, (short)1, 2, (short)3, 10);
+	        drawMap = new LinkedHashMap();
+	        for (int i = 0; i < wb.getNumberOfSheets(); i++) {
+	          Sheet sheet = wb.getSheetAt(i);
+	          drawMap.put(sheet.getSheetName(), sheet.createDrawingPatriarch());
+	        }
+	        yellowStyle = wb.createCellStyle();
+	        yellowStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+          	yellowStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+          	yellowStyle.setAlignment(CellStyle.ALIGN_CENTER);
+          	yellowStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+	        LogUtil.getLogger().info("ExcelToDateController 初始化Excel信息方法!");
+	        return true;
+		}catch(Exception e){
+			LogUtil.getLogger().error("ExcelToDateController 初始化Excel信息方法异常!",e);
+			return false;
+		}
+	}
+	
+	
+	/**
+	  * 保存Excel
+	  * @param path
+	  * @throws Exception
+	  */
+	public static void save(String path) throws Exception {
+	    FileOutputStream out = new FileOutputStream(path);
+	    wb.write(out);
+	    out.close();
+	}
+	/**
+    * 读取表头
+    * @param sheet
+    * @return
+    */
+	public static Map readHeader(Sheet sheet) {
+	    //设置表头
+	    String[] headers = obtainRow(sheet, 0);
+	    //存放表头顺序
+	    Map m = new LinkedHashMap<>();
+	    for (int j = 0; j < headers.length; j++)
+	      m.put(headers[j], j + 1);
+	    return m;
+	}
+	
+	 /**
+	  *将列传换成英文字母   相当于Excel中的列名 如:1-A 2-B
+	  */
+    public static String columnChar(int num) {
+		int big = num / 26;
+		String sBig = "";
+		if (big != 0) {
+		  sBig = String.valueOf(((char) (big + 64)));
+		}
+		int small = num % 26;
+		String sSmall = String.valueOf(((char) (small + 65)));
+		return sBig + sSmall;
+    }
+	
+	/**
+    * 获取行数据
+    * 获取字符串数组类型的行数据
+    * @param sheet  sheet页
+    * @param rowNum 行数
+    * @return 字符串数据数组
+    */
+	public static String[] obtainRow(Sheet sheet, int rowNum) {
+	    Row row = sheet.getRow(rowNum);
+	    if (null == row) {
+	      return null;
+	    }
+	    int num = row.getLastCellNum();
+	    //获取数据库字段名称数组
+	    String[] values = new String[num];
+	    for (int j = 0; j < num; j++) {
+	      String s = getCellValue(row.getCell(j));
+	      values[j] = s;
+	    }
+	    return values;
+	}
+	
+  /**  
+	*行业描述Excel表
 	* 读取excel描述数据   读取行业描述Excel表
 	* @param path  
 	*/
-	public static List<TSectordocExcel> ReadSectorDOC(String fileName,Long versionId,Long userId){  
+	public static List<TSectordocExcel> ReadSectorDOC(String fileName,Long versionId,Long userId,String msg){  
 		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_1描述文件.xlsx";
+		//返回结果的集合
 		List<TSectordocExcel> sectorDocList=new ArrayList<TSectordocExcel>();
         try {  
-            Workbook wb  = null;  
-            //自动根据Excel版本创建对应的Workbook
-            wb = WorkbookFactory.create(new File(path));  
+        	//执行Excel初始化
+        	if(!init(path)){
+        		msg="初始化Excel失败!";
+        		return null;
+        	}
+        	//获取验证集合
+        	checkMap=readCheckJson("应急系统新_1描述文件.json");
+        	if(checkMap==null){
+        		msg="获取Excel验证失败!";
+        		return null;
+        	}
+        	//获取sheet名称的长度验证
+        	int sheetNameMaxLength=Integer.valueOf(((Map)((Map)checkMap.get("应急系统新_1描述文件")).get("sheetName")).get("maxLenth").toString());
             //获得所有页数
             int sheetCount=wb.getNumberOfSheets();
             //循环每一页
             for(int i=0;i<sheetCount;i++){
             	//获得当前页
-            	Sheet sheet = wb.getSheetAt(i);  
+            	Sheet sheet = wb.getSheetAt(i); 
+            	//获取sheet名称
             	String sheetName=sheet.getSheetName();
+            	//判断sheet名称的信息是否合格
+            	if(sheetName.length()>sheetNameMaxLength){
+            		
+            	}
             	//获得所有行
             	Iterator<Row> rows = sheet.rowIterator(); 
             	//循环所有行
             	while (rows.hasNext()) {  
                     Row row = rows.next();  //获得行数据  
                     if(row.getRowNum()==0){
+                    	Map headerMap=readHeader(sheet);
+                    	
+                    	
                     	continue;
                     }
                     String t=getCellValue(row.getCell(4));
@@ -362,4 +547,51 @@ public class ExcelToDate {
 		}
 	}
 	
+//	/**
+//	   * 清空错误信息的方法
+//	   */
+//	  private void clearErrorInfo() {
+//	    for (int i = 0; i < wb.getNumberOfSheets(); i++) {
+//	      Sheet sheet = wb.getSheetAt(i);
+//	      for (int j = 0; j < sheet.getPhysicalNumberOfRows(); j++) {
+//	        Row row = sheet.getRow(j);
+//	        if (null == row) continue;
+//	        for (int k = 0; k < row.getLastCellNum(); k++) {
+//	          Cell cell = row.getCell(k);
+//	          if (null != cell) {
+//	            if (null != cell.getCellComment()) {
+//	              cell.removeCellComment();
+//	              cell.setCellStyle(copyStyle(cell.getCellStyle()));
+//	            }
+//	          }
+//	        }
+//	      }
+//	    }
+//	  }
+//	/**
+//	   * 对缺失的表头进行标注
+//	   * @param loseHeader
+//	   */
+//	  public void headerRemark(Map loseHeader) {
+//	    Set s = loseHeader.keySet();
+//	    for (Object k : s) {
+//	      Sheet sheet = workbook.getSheet(k.toString());
+//	      Map hm = (Map) headerMap.get(k.toString());
+//	      List hs = (List) loseHeader.get(k);
+//	      for (int i = 0; i < startRow - 1; i++) {
+//	        Row row = sheet.getRow(i);
+//	        for (Object h : hs) {
+//	          int n = (int) hm.get(h) - 1;
+//	          for (int j = n; j >= 0; j--) {
+//	            Cell cell = row.getCell(j);
+//	            if (null != cell) {
+//	              cell.setCellStyle(yellowStyle);
+//	              cell.setCellComment(getComment(sheet, "补充缺失的表头"));
+//	              break;
+//	            }
+//	          }
+//	        }
+//	      }
+//	    }
+//	  }
 }
