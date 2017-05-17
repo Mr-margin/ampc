@@ -1215,7 +1215,7 @@ function initSjxlDate(s, e, start, end) {
     	var daysCha=end-start;
        // daysCha=daysCha/(1000*60*60*24);
         changeMsg.startD = start.format('YYYY-MM-DD');
-    	end=start.add('days',10).format('YYYY-MM-DD');
+    	//end=start.add('days',10).format('YYYY-MM-DD');
         changeMsg.endD = end;
         updata(true);
     })
