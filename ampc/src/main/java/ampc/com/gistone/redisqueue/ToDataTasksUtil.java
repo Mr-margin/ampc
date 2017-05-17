@@ -134,7 +134,7 @@ public class ToDataTasksUtil {
 										    		//更新情景状态
 										    		//更新状态
 										    		readyData.updateScenStatusUtil(9l, tasksScenarinoId);
-										    		LogUtil.getLogger().info("模式运行出错！");
+										    		LogUtil.getLogger().info("updateDB-model.start.result：模式运行出错！");
 												}else {
 											    	//当tasksstatus数据库更新成功 并且模式执行成功  发送下一条消息
 											    	//通过情景的ID查找该情景的开始时间结束时间和情景类型
@@ -232,10 +232,7 @@ public class ToDataTasksUtil {
 																}
 													    		LogUtil.getLogger().info(tasksEndDate+"tasks的结束时间");
 															}
-													    	if (stepindex==-1) {
-																//发生错误的时候重新组织上一条的参数发送
-																ErrorStatus.Errortips(tasksScenarinoId);
-															}
+													    	
 														}else {
 															//针对其他三种情景（ 预评估的后评估情景 后评估任务的两种情景）不存在pathdate 当接受到消息时候 给每个tasksstatus一个状态
 															if (code==0&&"2".equals(scentype)&&index==stepindex) {
@@ -295,17 +292,22 @@ public class ToDataTasksUtil {
 												LogUtil.getLogger().info("情景ID为："+tasksScenarinoId+"的状态更新失败");
 											}
 										} catch (Exception e) {
-											LogUtil.getLogger().error("查询模式返回结果状态出错！",e);
+											LogUtil.getLogger().error("查找上一次消息的结束时间：查询模式返回结果状态出错！",e);
 										}
 								}else {
 									LogUtil.getLogger().error("更新stepindex参数不合法，不在规定范围内！stepindex:"+stepindex);
+									if (stepindex==-1) {
+										//表示没有运行成功
+										ErrorStatus.Errortips(tasksScenarinoId);
+										readyData.updateScenStatusUtil(9l, tasksScenarinoId);
+							    		LogUtil.getLogger().info("updateDB-model.start.result：模式运行出错！");
+									}
 								}
 							}else {
-								LogUtil.getLogger().error("更新stepindex参数不对！stepindex:"+step);
+								LogUtil.getLogger().error("stepindex参数不是整形！stepindex:"+step);
 							}
 						} catch (Exception e) {
-							e.printStackTrace();
-							LogUtil.getLogger().error("更新tasksstauts出异常！"+e.getMessage());
+							LogUtil.getLogger().error("更新tasksstauts出异常！"+e.getMessage(),e);
 						}
 						}
 					}else {
