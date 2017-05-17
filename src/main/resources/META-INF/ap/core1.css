@@ -1217,7 +1217,7 @@ dl, dd {
 /*.cloudui .verticalCon .ibox-content .verticalChar #initEcharts .echartsCZ .easyui-panel div{width: 100%!important;height:100%;height:300px;}*/
 /*评估报告*/
 /*background: radial-gradient(#5CB5D7, #fff);*/
-.cloudui .verticalCon .ibox-content .verticalChar .pgbgContent{width: 100%;height:100%;position: relative;background-image: url("img/pgbgBg.png");background-repeat: no-repeat;background-position: center;}
+.cloudui .verticalCon .ibox-content .verticalChar .pgbgContent{width: 100%;height:100%;position: relative;background-image: url("img/pgbgBg.png");background-repeat: no-repeat;background-position: center;background-size: 100%;}
 .cloudui .verticalCon .ibox-content .verticalChar .pgbgContent p{letter-spacing:2px;color:#fff;text-indent: 2em;line-height:30px;word-spacing:20px;font-size: 16px;background-color: rgba(79,162,74,1);padding: 40px;border-radius: 2px;}
 .cloudui .verticalCon .ibox-content .verticalChar .pgbgContent p .pgbgPointer{color:#333;text-decoration: underline;cursor: pointer;}
 .cloudui .verticalCon .toolContent .selectTool_con .pgbaQj{position: static;}
