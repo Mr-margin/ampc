@@ -159,15 +159,17 @@ function getLocalTime(nS) {
 (function () {
     $('.menuCD_con').css('height', '0');
     $('#accordion').on('click','.menuCD_title',function (e) {
+        $('.openAccordion').removeClass('openAccordion');
         var len = $(e.target).parents('.menuCD').attr('data-cslen');
         if ($(e.target).parents('.menuCD').find('.menuCD_con').css('height') != '0px') {
             $(e.target).parents('.menuCD').find('.menuCD_con').css('height', '0')
         } else {
+            $(e.target).parents('.menuCD').addClass('openAccordion');
             $('.menuCD_con').css('height', '0');
             $(e.target).parents('.menuCD').find('.menuCD_con').css('height', (Math.ceil(len/2)*45 + 10)+'px')
         }
     })
-})()
+})();
 
 
 /**
@@ -305,16 +307,16 @@ function metTable_hj_info(pa_name) {
     if (typeof pa_name != "undefined") {
         hangye = pa_name;
     } else {
-        
+        hangye = $("#accordion .openAccordion .menuCD_title").attr("val_name");
         //循环手风琴列表下所有的一级子节点，查找哪个正在打开
-        $("#accordion").children().each(function () {
-            var e = $(this);
-            e.children().each(function () {//再循环一次，这次下面有两个div，一个标题，一个内容
-                if ($(this).is('.in')) {
-                    hangye = e.attr("val_name");
-                }
-            });
-        });
+        // $("#accordion").children().each(function () {
+        //     var e = $(this);
+        //     e.children().each(function () {//再循环一次，这次下面有两个div，一个标题，一个内容
+        //         if ($(this).is('.openAccordion')) {
+        //             hangye = e.attr("val_name");
+        //         }
+        //     });
+        // });
     }
 
     //行业的查询状态
@@ -351,13 +353,13 @@ function metTable_hj_info(pa_name) {
         data.sectorName = hangye;
     }
 
-    ajaxPost('/measure/get_measureList',data).success(function (res) {
+    // ajaxPost('/measure/get_measureList',data).success(function (res) {
       
         $('#metTable_hj').datagrid({
-            // method: 'POST',
-            // url: "/ampc/measure/get_measureList",
-            // dataType: "json",
-            data:res,
+            method: 'POST',
+            url: "/ampc/measure/get_measureList",
+            dataType: "json",
+            // data:res,
             columns: columnsw, //列
             checkOnSelect:true,
             selectOnCheck:true,
@@ -366,17 +368,19 @@ function metTable_hj_info(pa_name) {
             singleSelect: true,//设置True 将禁止多选
             striped: false, // 使表格带有条纹
             silent: true, // 刷新事件必须设置
-//             queryParams: function (params) {
-//                 var data = {};
-//                 data.planId = qjMsg.planId;
-//                 data.userId = userId;
-//                 data.stainType = $('#hz_wrw').val();
-//                 if (hangyede_type == "dq") {
-//                     data.sectorName = hangye;
-//                 }
-// //			console.log(JSON.stringify({"token": "", "data": data}));
+            contentType: "application/json",
+            queryParams: function (params) {
+                var data = {};
+                data.planId = qjMsg.planId;
+                data.userId = userId;
+                data.stainType = $('#hz_wrw').val();
+                if (hangyede_type == "dq") {
+                    data.sectorName = hangye;
+                }
+//			console.log(JSON.stringify({"token": "", "data": data}));
 //                 return JSON.stringify({"token": "", "data": data});
-//             },
+                return {"token": "", "data": data};
+            },
             queryParamsType: "limit", //参数格式,发送标准的RESTFul类型的参数请求
             loadFilter: function (res) {
 
@@ -417,24 +421,6 @@ function metTable_hj_info(pa_name) {
 
 
             },
-//             onClickRow: function (index,row) {
-// //			$('.success').removeClass('success');
-// //			$($element).addClass('success');
-//                 if(checkeded == '-1'){
-//                     checkeded = '';
-//                     return;
-//                 }
-//                 if (row.planMeasureId != checkeded) {//如果被选中
-//                     checkeded = row.planMeasureId;
-//                     $("#hz_de").show();
-//                     $("#hz_up").show();
-//                 } else {
-//                     checkeded = '';
-//                     $('#metTable_hj').datagrid('clearChecked');
-//                     $("#hz_de").hide();
-//                     $("#hz_up").hide();
-//                 }
-//             },
             onLoadSuccess: function (data) {
                 if (data.rows.length > 0) {
                     $("#jianpaijisuan").show();
@@ -452,102 +438,9 @@ function metTable_hj_info(pa_name) {
                     $("#hz_up").hide();
                 }
             },
-            // onUncheck: function (index,row) {
-            //     $("#hz_de").hide();
-            //     $("#hz_up").hide();
-            // }
         });
       
-    })
-
-//     $('#metTable_hj').datagrid({
-//         method: 'POST',
-//         url: "/ampc/measure/get_measureList",
-//         dataType: "json",
-//         columns: columnsw, //列
-//         clickToSelect: true,// 点击选中行
-//         pagination: false, // 在表格底部显示分页工具栏
-//         singleSelect: true,//设置True 将禁止多选
-//         striped: false, // 使表格带有条纹
-//         silent: true, // 刷新事件必须设置
-//         queryParams: function (params) {
-//             var data = {};
-//             data.planId = qjMsg.planId;
-//             data.userId = userId;
-//             data.stainType = $('#hz_wrw').val();
-//             if (hangyede_type == "dq") {
-//                 data.sectorName = hangye;
-//             }
-// //			console.log(JSON.stringify({"token": "", "data": data}));
-//             return JSON.stringify({"token": "", "data": data});
-//         },
-//         queryParamsType: "limit", //参数格式,发送标准的RESTFul类型的参数请求
-//         contentType: "application/json", // 请求远程数据的内容类型。
-//         responseHandler: function (res) {
-//
-//             if (res.status == 0) {
-//
-//                 $.each(res.data.rows, function (i, col) {
-//
-//                     if (typeof res.data.rows[i].reduct != "undefined") {
-//                         if (res.data.rows[i].reduct == "-9999.0") {
-//                             res.data.rows[i].reduct = "-";
-//                         } else {
-//                             res.data.rows[i].reduct = res.data.rows[i].reduct + "%";
-//                         }
-//                     } else {
-//                         res.data.rows[i].reduct = "-";
-//                     }
-//                     if (typeof res.data.rows[i].ratio != "undefined") {
-//
-//                         if (res.data.rows[i].ratio == "-9999.0") {
-//                             res.data.rows[i].ratio = "-";
-//                         } else {
-//                             res.data.rows[i].ratio = res.data.rows[i].ratio + "%";
-//                         }
-//
-//                     } else {
-//                         res.data.rows[i].ratio = "-";
-//                     }
-//
-//
-//                 });
-//
-//                 return res.data.rows;
-//
-//             } else if (res.status == 1000) {
-//                 swal('/measure/get_measureList参数错误', '', 'error')
-//                 return "";
-//             }
-//
-//
-//         },
-//         onClickRow: function (row, $element) {
-// //			$('.success').removeClass('success');
-// //			$($element).addClass('success');
-//             if (row.state == true) {//如果被选中
-//                 $("#hz_de").show();
-//                 $("#hz_up").show();
-//             } else {
-//                 $("#hz_de").hide();
-//                 $("#hz_up").hide();
-//             }
-//         },
-//         onLoadSuccess: function (data) {
-//             if (data.length > 0) {
-//                 $("#jianpaijisuan").show();
-//             }
-//         },
-//         onCheck: function (row) {
-//             $("#hz_de").show();
-//             $("#hz_up").show();
-//         },
-//         onUncheck: function (row) {
-//             $("#hz_de").hide();
-//             $("#hz_up").hide();
-//         }
-//     });
-
+    // })
 }
 
 /**
@@ -566,7 +459,8 @@ function hangye_type_info() {
 function hz_up() {
     var row = $('#metTable_hj').datagrid('getSelections');
     if (row.length > 0) {
-        open_cs(row[0].sectorName, row[0].measureName, row[0].measureId, row[0].planMeasureId);
+        open_csbjSon(row[0].sectorName, row[0].measureName, row[0].measureId, row[0].planMeasureId);
+        // open_cs(row[0].sectorName, row[0].measureName, row[0].measureId, row[0].planMeasureId);
     }
 }
 

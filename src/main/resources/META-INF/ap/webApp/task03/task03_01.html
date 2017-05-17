@@ -290,19 +290,19 @@
             <div class="ibox-title" style="margin-bottom: 0;height: 32px;line-height:32px;padding-left: 10px;background: linear-gradient(#fbfbfb, #f2f2f2);">
               <h5 class="headTitle"><i class="fa-table"></i> 子措施列表</h5>
               <div class="ibox-tools">
-                <button class="btn btn-success" id="hz_up" style="margin-bottom: 0px;margin-top: -7px;"
-                        onclick="hz_up();"
-                        type="button">
-                  <i class="fa fa-edit"></i>&nbsp;&nbsp;<span class="bold">修改</span>
-                </button>
-                <button class="btn btn-success" id="hz_de" style="margin-bottom: 0px;margin-top: -7px;"
-                        onclick="hz_de();"
-                        type="button">
-                  <i class="fa fa-close"></i>&nbsp;&nbsp;<span class="bold">删除</span>
-                </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <!--<button class="btn btn-success" id="hz_up" style="margin-bottom: 0px;margin-top: -7px;"-->
+                        <!--onclick="hz_up();"-->
+                        <!--type="button">-->
+                  <!--<i class="fa fa-edit"></i>&nbsp;&nbsp;<span class="bold">修改</span>-->
+                <!--</button>-->
+                <!--<button class="btn btn-success" id="hz_de" style="margin-bottom: 0px;margin-top: -7px;"-->
+                        <!--onclick="hz_de();"-->
+                        <!--type="button">-->
+                  <!--<i class="fa fa-close"></i>&nbsp;&nbsp;<span class="bold">删除</span>-->
+                <!--</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
                 <button class="btn btn-success" id="jianpaijisuan" style="margin-bottom: 0px;margin-top: -7px;"
-                        onclick="jianpaijisuan();" type="button">
-                  <i class="fa fa-hourglass-2"></i>&nbsp;&nbsp;<span class="bold">计算减排</span>
+                        onclick="create();" type="button">
+                  <i class="fa fa-hourglass-2"></i>&nbsp;&nbsp;<span class="bold">保存措施</span>
                 </button>
               </div>
             </div>
@@ -320,7 +320,7 @@
   </div>
 </div>
 
-<!-- 设置情景范围模态框 -->
+<!-- 设置措施筛选模态框 -->
 <div class="modal fade sxTableMap" id="sxTableMap" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document" style="height: 100%">
     <div class="modal-content" style="height: 100%">
@@ -328,6 +328,9 @@
         <div class="sxRequirement" style="height: 50px;background-color: #00a2d4"></div>
         <div class="sxCon" style="height:calc(100% - 50px);">
           <div class="col-6 sxTable" style="height: 100%">
+            <div id="delSX">
+              <button class="btn btn-success">删除</button>
+            </div>
             <table id="metTable_point">
               <!--<thead>-->
               <!--<tr>-->
@@ -345,8 +348,23 @@
         </div>
       </div>
       <div class="modal-footer new-foot dlogFooter" >
-        <button type="button" class="btn btn-primary" >保存子措施</button>
+        <button type="button" class="btn btn-primary" onclick="bcZcs()">保存子措施</button>
         <button type="button" class="btn btn-default" id="close_scene" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 设置措施系数模态框 -->
+<div class="modal fade sxNumber" id="sxNumber" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document" style="height: 100%">
+    <div class="modal-content" style="height: 100%">
+      <div class="modal-body" style="height:calc(100% - 50px);">
+        <div class="row" id="xishuMO" style="margin-left: 0px;margin-right: 0px;"></div>
+      </div>
+      <div class="modal-footer new-foot dlogFooter" >
+        <button type="button" class="btn btn-primary" onclick="xishu_save()">保存</button>
+        <button type="button" class="btn btn-default" id="returnSxTable" data-dismiss="modal">取消</button>
       </div>
     </div>
   </div>
@@ -371,6 +389,31 @@
     });
     $("#close_scene").click(function () {
         $("#sxTableMap").window("close")
+    });
+    function bcZcs() {
+        $("#sxTableMap").window("close");
+        $("#sxNumber").window("open");
+    }
+
+
+    $("#sxNumber").window({
+        width:'50%',
+        height:'50%',
+        collapsible:false,
+        maximizable:false,
+        minimizable:false,
+        draggable:false,
+        modal:true,
+        shadow:false,
+        title:'子措施系数',
+        border:false,
+        buttons:'#dlg_jpBtn',
+        closed:true,
+        cls: 'cloudui'
+    });
+    $("#returnSxTable").click(function () {
+        $("#sxNumber").window("close");
+        $("#sxTableMap").window("open")
     })
 
 </script>
