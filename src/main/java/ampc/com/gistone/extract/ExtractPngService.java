@@ -43,6 +43,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.extract.image.Images;
@@ -67,8 +69,9 @@ public class ExtractPngService extends ExtractService {
 	public List<Variable> variableList2;
 
 	private NumberFormat nf;
+	private List<PointBean> pointBeanList;
 
-	public synchronized String buildPng(ExtractRequestParams extractRequestParams)
+	public synchronized Map buildPng(ExtractRequestParams extractRequestParams)
 			throws IOException, TransformException, FactoryException, InvalidRangeException {
 
 		extractConfig = resultPathUtil.getExtractConfig();
@@ -100,13 +103,17 @@ public class ExtractPngService extends ExtractService {
 
 		float[][] res = buildPngData();
 
-		// try {
-		// exportExcel(res, "E:/1/1/372/3/concn/show/2017-05-17");
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
+		try {
+			exportExcel(res, "E:/1/1/372/3/concn/show/2017-05-17");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		res = reversalArray(res);
-		return drawPngPicture(res);
+		Map data = new HashMap();
+		data.put("imagePath", drawPngPicture(res));
+		ObjectMapper mapper = new ObjectMapper();
+		data.put("data", mapper.writeValueAsString(pointBeanList));
+		return data;
 	}
 
 	public void exportExcel(float[][] pointBeanArray, String pathOut)
@@ -182,7 +189,7 @@ public class ExtractPngService extends ExtractService {
 	}
 
 	private float[][] buildPngData() throws IOException, InvalidRangeException {
-		List<PointBean> pointBeanList = new ArrayList<>();
+		pointBeanList = new ArrayList<>();
 		int cols = params.getCols();
 		int rows = params.getRows();
 		double xcellsize = (params.getXmax() - params.getXmin()) / cols;
@@ -211,6 +218,14 @@ public class ExtractPngService extends ExtractService {
 				pb = getValue(pb);
 				float value = Float.valueOf(pb.getValue());
 				res[i][j] = value;
+				if (value != Constants.OVERBORDER) {
+					PointBean point = new PointBean();
+					point.setX(merc_x);
+					point.setY(merc_y);
+					point.setValue(String.valueOf(value));
+					pointBeanList.add(point);
+				}
+
 				// if (value == Constants.OVERBORDER) {
 				// res[i][j] = value;
 				// } else {
