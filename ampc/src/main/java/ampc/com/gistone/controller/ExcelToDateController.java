@@ -185,7 +185,8 @@ public class ExcelToDateController {
 			}else{
 				versionId++;
 			}
-			String msg=null;
+			//错误信息的数据集合
+			List<String> msg=null;
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			List<TSectordocExcel> tse = ExcelToDate.ReadSectorDOC(fileName,versionId,userId,msg);
 			for (TSectordocExcel tsd : tse) {
