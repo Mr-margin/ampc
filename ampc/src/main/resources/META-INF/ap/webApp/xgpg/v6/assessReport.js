@@ -100,7 +100,9 @@ function initialize() {
     dps_station = setStation(sceneInitialization.taskID);
 
     // console.log(setStation(sceneInitialization.taskID))
-    setTime(sceneInitialization.s, sceneInitialization.e);
+    //setTime(sceneInitialization.s, sceneInitialization.e);
+    setTime(sceneInitialization.data[$("#qjbtnCon").val()].scenarinoStartDate,sceneInitialization.data[$("#qjbtnCon").val()].scenarinoEndDate);
+    console.log(sceneInitialization.data[$("#qjbtnCon").val()].scenarinoStartDate)
     $.when(dps_codeStation, dps_station).done(function () {
         window.setTimeout(function () {
             updata();
@@ -113,7 +115,7 @@ function initialize() {
 }
 /*添加情景选择按钮*/
 function setQjSelectBtn(data) {
-    $('#qjBtn1 .btn-group').empty();
+    $('.cloudui #qjbtnCon').empty();
     for (var i = 0; i < data.length; i++) {
         // var btn1 = $('<label class="btn btn-outline btn-success bgw" style="z-index: 2;position:relative"><input type="radio"  name="qjBtn1"><span></span></label><br/>');
         //var btn1 = $('<label class="btn btn-outline btn-success bgw" style="z-index: 2;position:relative"><input type="radio"  name="qjBtn1"><span></span></label>');
@@ -196,6 +198,7 @@ function findStation(code) {
 function setTime(s, e) {
     s = moment(s - 0);
     e = moment(e - 0);
+
     $('#sTime-d').empty();
     while (true) {
         $('#sTime-d').append($('<option>' + s.format('YYYY-MM-DD') + '</option>'));
@@ -486,7 +489,7 @@ function updata() {
     $("#cityName").html(changeMsg.cityName);
     $("#stationName").html(changeMsg.stationName);
     $.ajax({
-        url:localhttp+'/ampc/Appraisal/report',
+        url:'/ampc/Appraisal/report',
         contentType: 'application/json',
         method: 'post',
         dataType: 'JSON',
@@ -494,8 +497,8 @@ function updata() {
             "token": "",
             "data": {
                 "mode":changeMsg.station == 'avg' ? 'city' : 'point',
-                "startdate":changeMsg.sTimeD,
-                "enddate":changeMsg.eTime,
+                "startdate":changeMsg.sTimeD+" 00",
+                "enddate":changeMsg.eTime+" 00",
                 "userId":userId,
                 "cityStation":changeMsg.station == 'avg' ? changeMsg.city.substr(0, 4) : changeMsg.station,
                 "scenarinoId":changeMsg.qjId,
@@ -551,7 +554,7 @@ function showTitleFun() {
 }
 
 //easyui 添加
-$(".toolAll").show();
+$(".toolAll").hide();
 $(".upDownBtn").append("<i class='en-arrow-up7'></i>")
 $(".upDownBtn").click(function(){
     if($(".upDownBtn").text()=="收起"){
