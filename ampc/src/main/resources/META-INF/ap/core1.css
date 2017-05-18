@@ -831,6 +831,8 @@ dl, dd {
   border-color: #0275D8;
   color: #FFFFFF!important;
 }
+.cloudui .btn-success a{color: #333;}
+.cloudui .btn-success:active a,.cloudui .btn-success:focus a,.cloudui .btn-success:hover a,.cloudui .btn-success.active a{color:#fff;}
 .cloudui .btn-success.disabled{
   color: #000;
 }
@@ -1379,8 +1381,8 @@ dl, dd {
 }
 .cloudui .airtab{
   position: absolute;
-  top:2px;
-  right: 0;
+  top:0px;
+  right: 5px;
 }
 .cloudui .airtab .nav-tabs{overflow: hidden}
 .cloudui .airtab .nav-tabs li{float: left;margin-left:10px;}
