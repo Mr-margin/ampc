@@ -1399,3 +1399,5 @@ dl, dd {
   width:48%!important;
   float:right!important;
 }
+
+.clearfix:after {clear:both;content:'.';display:block;width: 0;height: 0;visibility:hidden;}
