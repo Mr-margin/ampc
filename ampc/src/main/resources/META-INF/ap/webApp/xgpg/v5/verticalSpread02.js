@@ -227,7 +227,6 @@ function setTime(s, e) {
 
 function initEcharts() {
     showTitleFun();
-    //console.log("初始化表单")
     if (changeMsg.rms == 'day') {
         $('.hour').css('display', 'none');
         $('.day').css('display', 'block');
@@ -236,7 +235,6 @@ function initEcharts() {
         $('.hour').css('display', 'block');
     }
     var data = czData;
-    //$('#initEcharts').empty();
     var species = speciesArr[changeMsg.rms];
     for (var i = 0; i < species.length; i++) {
         echarts.dispose(document.getElementById(species[i]));
@@ -399,56 +397,41 @@ function sceneInittion() {
 function sceneTable() {
     $("#sceneTableId").bootstrapTable('destroy');//销毁现有表格数据
     //表格交互 easyui
-
-    $.ajax({
-        url: '/ampc/scenarino/find_All_scenarino',
-        contentType: 'application/json',
-        method: 'post',
-        dataType: 'JSON',
-        data: JSON.stringify({
-            "token": "",
-            "data": {
-                "userId": userId,
-                "missionId":$("#task").val()
-            }
-        }),
-        success:function (data) {
-            $("#sceneTableId").datagrid({
-                data:data.data.rows,
-                columns:[[
-                    {field:"ck",checkbox:true},
-                    {field:"scenarinoName",title:"情景名称"},
-                    {field:"scenType",title:"情景描述"},
-                    {field:"scenarinoStartDate",title:"时间"},
-                    {field:"scenarinoEndDate",title:"时间"},
-                ]],
-                clickToSelect: true,// 点击选中行
-                pagination: false, // 在表格底部显示分页工具栏
-                striped: true, // 使表格带有条纹
-                queryParams: function (params) {
-                    var data = {};
-                    data.userId = userId;
-                    data.missionId = $("#task").val();
-                    return JSON.stringify({"token": "", "data": data});
-                },
-                onLoadSuccess:function(data){
-                    var truedData=sceneInitialization.data;
-                    for(var i=0;i<truedData.length;i++){
-                        if(data){
-                            $.each(data.rows, function(index, item){
-                                console.log(index);
-                                console.log(item);
-                                if(truedData[i].scenarinoId==item.scenarinoId){
-                                    $('#sceneTableId').datagrid('checkRow', index);
-                                }
-                            });
-                        }
+    ajaxPost('/scenarino/find_All_scenarino',{ "userId": userId,
+        "missionId":$("#task").val()
+    }).success(function(data){
+        $("#sceneTableId").datagrid({
+            data:data.data.rows,
+            columns:[[
+                {field:"ck",checkbox:true},
+                {field:"scenarinoName",title:"情景名称"},
+                {field:"scenType",title:"情景描述"},
+                {field:"scenarinoStartDate",title:"时间"},
+                {field:"scenarinoEndDate",title:"时间"},
+            ]],
+            clickToSelect: true,// 点击选中行
+            pagination: false, // 在表格底部显示分页工具栏
+            striped: true, // 使表格带有条纹
+            queryParams: function (params) {
+                var data = {};
+                data.userId = userId;
+                data.missionId = $("#task").val();
+                return JSON.stringify({"token": "", "data": data});
+            },
+            onLoadSuccess:function(data){
+                var truedData=sceneInitialization.data;
+                for(var i=0;i<truedData.length;i++){
+                    if(data){
+                        $.each(data.rows, function(index, item){
+                            if(truedData[i].scenarinoId==item.scenarinoId){
+                                $('#sceneTableId').datagrid('checkRow', index);
+                            }
+                        });
                     }
                 }
-            })
-        }
+            }
+        })
     })
-
 /*
     $("#sceneTableId").bootstrapTable({
         method: 'POST',
@@ -544,7 +527,6 @@ function sceneTable() {
  * 保存选择的情景
  */
 function save_scene() {
-    //var row = $('#sceneTableId').bootstrapTable('getSelections');//获取所有选中的情景数据
     var row = $('#sceneTableId').datagrid('getSelections');//获取所有选中的情景数据
     if (row.length > 0) {
         var mag = {};
@@ -560,7 +542,8 @@ function save_scene() {
                 "scenarinoId": col.scenarinoId,
                 "scenarinoName": col.scenarinoName,
                 "scenarinoStartDate": col.scenarinoStartDate,
-                "scenarinoEndDate": col.scenarinoEndDate
+                "scenarinoEndDate": col.scenarinoEndDate,
+                "scenType":col.scenType
             });
         });
         mag.data = data;
@@ -569,6 +552,20 @@ function save_scene() {
         console.log(data);
         sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
         $("#close_scene").click();
+        var url='/Appraisal/showTime';
+        var paramsName = {
+            "missionId":sceneInitialization.taskID,				//任务ID
+        };
+        ajaxPost(url, paramsName).success(function (res) {
+            if (res.status == 0) {
+                showTime=res;
+                qjStartTime=showTime.data.startTime;
+                qjEndTime=showTime.data.endTime;
+            } else {
+                swal(res.msg, '', 'error');
+            }
+
+        });
       /*数据准备完毕，进行初始化页面*/
         initialize();
     } else {
@@ -755,6 +752,7 @@ function showTitleFun() {
         if (changeMsg.station == 'avg') {
             $('#showTitle .proName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.proName);
             $('#showTitle .cityName').html(changeMsg.cityName);
+            $("#showTitle .stationName").css({"margin-right":"0px"})
             $('#showTitle .timeName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+(changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time));
             $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时'));
             $('#showTitle .heightName').html("<span class='titleTab'><i class='fa-sort-by-attributes-alt'></i>"+"&nbsp;高度：</span>"+heightArr[changeMsg.height - 1] + 'm');
@@ -768,11 +766,14 @@ function showTitleFun() {
         }
     } else {
         if (changeMsg.station == 'avg') {
+            $("#showTitle .proName").css({"margin-right":"0px"});
             $('#showTitle .cityName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.cityName);
+            $("#showTitle .stationName").css({"margin-right":"0px"})
             $('#showTitle .timeName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+(changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time));
             $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时'));
             $('#showTitle .heightName').html("<span class='titleTab'><i class='fa-sort-by-attributes-alt'></i>"+"&nbsp;高度：</span>"+heightArr[changeMsg.height - 1] + 'm');
         } else {
+            $("#showTitle .proName").css({"margin-right":"0px"});
             $('#showTitle .cityName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.cityName);
             $('#showTitle .stationName').html(changeMsg.stationName);
             $('#showTitle .timeName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+(changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time));

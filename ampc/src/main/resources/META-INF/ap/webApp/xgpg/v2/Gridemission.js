@@ -283,54 +283,43 @@ function sceneInittion() {
 function sceneTable() {
     $("#sceneTableId").bootstrapTable('destroy');//销毁现有表格数据
     //表格交互 easyui
-
-    $.ajax({
-        url: '/ampc/scenarino/find_All_scenarino',
-        contentType: 'application/json',
-        method: 'post',
-        dataType: 'JSON',
-        data: JSON.stringify({
-            "token": "",
-            "data": {
-                "userId": userId,
-                "missionId":$("#task").val()
-            }
-        }),
-        success:function (data) {
-            $("#sceneTableId").datagrid({
-                data:data.data.rows,
-                columns:[[
-                    {field:"ck",checkbox:true},
-                    {field:"scenarinoName",title:"情景名称"},
-                    {field:"scenType",title:"情景描述"},
-                    {field:"scenarinoStartDate",title:"时间"},
-                    {field:"scenarinoEndDate",title:"时间"},
-                ]],
-                clickToSelect: true,// 点击选中行
-                pagination: false, // 在表格底部显示分页工具栏
-                striped: true, // 使表格带有条纹
-                queryParams: function (params) {
-                    var data = {};
-                    data.userId = userId;
-                    data.missionId = $("#task").val();
-                    return JSON.stringify({"token": "", "data": data});
-                },
-                onLoadSuccess:function(data){
-                    var truedData=sceneInitialization.data;
-                    for(var i=0;i<truedData.length;i++){
-                        if(data){
-                            $.each(data.rows, function(index, item){
-                                console.log(index);
-                                console.log(item);
-                                if(truedData[i].scenarinoId==item.scenarinoId){
-                                    $('#sceneTableId').datagrid('checkRow', index);
-                                }
-                            });
-                        }
+    ajaxPost('/scenarino/find_All_scenarino',{
+        "userId": userId,
+        "missionId":$("#task").val()
+    }).success(function(data){
+        $("#sceneTableId").datagrid({
+            data:data.data.rows,
+            columns:[[
+                {field:"ck",checkbox:true},
+                {field:"scenarinoName",title:"情景名称"},
+                {field:"scenType",title:"情景描述"},
+                {field:"scenarinoStartDate",title:"时间"},
+                {field:"scenarinoEndDate",title:"时间"},
+            ]],
+            clickToSelect: true,// 点击选中行
+            pagination: false, // 在表格底部显示分页工具栏
+            striped: true, // 使表格带有条纹
+            queryParams: function (params) {
+                var data = {};
+                data.userId = userId;
+                data.missionId = $("#task").val();
+                return JSON.stringify({"token": "", "data": data});
+            },
+            onLoadSuccess:function(data){
+                var truedData=sceneInitialization.data;
+                for(var i=0;i<truedData.length;i++){
+                    if(data){
+                        $.each(data.rows, function(index, item){
+                            console.log(index);
+                            console.log(item);
+                            if(truedData[i].scenarinoId==item.scenarinoId){
+                                $('#sceneTableId').datagrid('checkRow', index);
+                            }
+                        });
                     }
                 }
-            })
-        }
+            }
+        })
     })
 //     $("#sceneTableId").bootstrapTable({
 //         method: 'POST',
