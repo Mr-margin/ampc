@@ -37,7 +37,15 @@ import org.springframework.stereotype.Component;
 
 
 
+
+
+
+
+
+
+import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
+import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.redisqueue.entity.QueueData;
 import ampc.com.gistone.util.ConfigUtil;
@@ -63,6 +71,8 @@ public class SendQueueData {
 	@Autowired
 	private TTasksStatusMapper tTasksStatusMapper;
 	@Autowired
+	private TScenarinoDetailMapper tscenarinoDetailMapper;
+	@Autowired
 	private ReadyData readyData;
 	/*@Autowired
 	private RedisConfig redisConfig;*/
@@ -83,7 +93,12 @@ public class SendQueueData {
 		JSONObject jsonObject = JSONObject.fromObject(queueData);
 		String json = jsonObject.toString();
 		LogUtil.getLogger().info("SendQueueData：这是发送的数据包:"+json);
-		//检查是否满足发送的条件
+		//检查是否满足发送的条件--情景状态
+		/* TScenarinoDetail selectByPrimaryKey = tscenarinoDetailMapper.selectByPrimaryKey(tasksScenarinoId);
+		 Long scenarinoStatus = selectByPrimaryKey.getScenarinoStatus();
+		if (scenarinoStatus!=6) {
+			LogUtil.getLogger().info("SendQueueData：该情景不是运行状态，不可发送！");
+		}*/
 		TTasksStatus selectStatus = tTasksStatusMapper.selectStatus(tasksScenarinoId);
 		String compantstatus = selectStatus.getBeizhu();
 //		String tasksExpand4 = selectStatus.getTasksExpand4();//记录已经发送出去的过得消息串
