@@ -2,7 +2,7 @@ var opacity = 0.7;//默认的图层透明度
 var ls, sceneInitialization, qjMsg;
 var videoPlayScale = [];
 var changeMsg = {
-    borderType:1,
+    borderType:1,//生成点位是否规整，png格式必须为1
     showWind: '-1',
     showType: ['concn'],//"emis"代表排放、"concn"代表浓度、"wind"代表风场
     calcType: 'show',//"show"当前情景，"diff"差值，"ratio"比例
@@ -19,8 +19,8 @@ var changeMsg = {
     GPserver_type: [],//
     dates: [],
     layer: 1,
-    rows: 40,
-    cols: 40
+    rows: 100,
+    cols: 100
 };
 var playDay = '',playHour = '',play = false;
 var speciesArr = {
@@ -132,6 +132,9 @@ require(
         dong.MapImageLayer = MapImageLayer;//
         dong.Extent = Extent;//
         dong.MapImage = MapImage;//
+        
+        dong.SimpleMarkerSymbol = SimpleMarkerSymbol;//
+        dong.SimpleLineSymbol = SimpleLineSymbol;//
 
         esri.config.defaults.io.proxyUrl = ArcGisUrl + "/Java/proxy.jsp";
         esri.config.defaults.io.alwaysUseProxy = false;
@@ -141,6 +144,8 @@ require(
         app.stlayerList = new Array();//加载卫星图
         app.labellayerList = new Array();//加载标注图
         app.mapimagelayer = new Array();//图片图层
+        
+        app.gLyr = new Array();
 
         for (var i = 0; i < 2; i++) {
             var map = new Map("mapDiv" + i, {
@@ -161,13 +166,26 @@ require(
             app.mapimagelayer[i] = new dong.MapImageLayer({"id":"myil"+i});
             app.mapList[i].addLayer(app.mapimagelayer[i]);
             app.mapimagelayer[i].setOpacity(opacity);
+            
+            app.gLyr[i] = new dong.GraphicsLayer({"id": "gLyr"});
+            app.mapList[i].addLayer(app.gLyr[i]);
         }
+        
+        
+        app.pointSymbol = new dong.SimpleMarkerSymbol(
+        		dong.SimpleMarkerSymbol.STYLE_CROSS, 22,
+                new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new Color([0, 128, 0]), 4));
+        
+        app.pointSymbol1 = new dong.SimpleMarkerSymbol(
+        		dong.SimpleMarkerSymbol.STYLE_SQUARE, 6,
+                new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new Color([0, 0, 0]), 1),
+                new Color([255, 0, 0]));
 
-        app.gLyr1 = new dong.GraphicsLayer({"id": "gLyr1"});
-        app.mapList[0].addLayer(app.gLyr1);
-
-        app.gLyr2 = new dong.GraphicsLayer({"id": "gLyr2"});
-        app.mapList[1].addLayer(app.gLyr2);
+//        app.gLyr1 = new dong.GraphicsLayer({"id": "gLyr1"});
+//        app.mapList[0].addLayer(app.gLyr1);
+//
+//        app.gLyr2 = new dong.GraphicsLayer({"id": "gLyr2"});
+//        app.mapList[1].addLayer(app.gLyr2);
 
         app.shengx = 0;
 
@@ -180,8 +198,8 @@ require(
                 app.shengx = 0;//当前生效的地图位置
                 //0
               /*这里清除风场图层*/
-                app.gLyr1.clear();
-                app.gLyr2.clear();
+                app.gLyr[0].clear();
+                app.gLyr[1].clear();
               /*这里清除风场图层 end*/
                 updata();
 
@@ -197,8 +215,8 @@ require(
                 app.shengx = 1;//当前生效的地图位置
                 //1
               /*这里清除风场图层*/
-                app.gLyr1.clear();
-                app.gLyr2.clear();
+                app.gLyr[0].clear();
+                app.gLyr[1].clear();
               /*这里清除风场图层 end*/
                 updata();
 
@@ -461,27 +479,57 @@ function bianji(type, g_num, p , wind) {
         }
         var par = p;
         var v1 = new Date().getTime();
-        par.xmax = app.mapList[app.shengx].extent.xmax;
-        par.xmin = app.mapList[app.shengx].extent.xmin;
-        par.ymax = app.mapList[app.shengx].extent.ymax;
-        par.ymin = app.mapList[app.shengx].extent.ymin;
+        par.xmax = app.mapList[app.shengx].extent.xmax+1;
+        par.xmin = app.mapList[app.shengx].extent.xmin+1;
+        par.ymax = app.mapList[app.shengx].extent.ymax+1;
+        par.ymin = app.mapList[app.shengx].extent.ymin+1;
 
         if(wind == -1){//无风场
         	
-        	var imageURL = "http://localhost:8082/ampc/img/ceshi/now.png";//定义图片路径，这个图片是动态生成的
-            
-            var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
-            var mapImage = new dong.MapImage({
-                'extent': initE,
-                'href': imageURL
-            });
-            
-            app.mapimagelayer[g_num].removeAllImages();//删除全部的图片图层
-            app.mapimagelayer[g_num].addImage(mapImage);//将新的图片图层添加到地图
-            
-            $('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
-            zmblockUI("#mapDiv"+g_num, "end");//打开锁屏控制
-            console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
+        	par.width = $("#mapDiv"+g_num).css("width").replace("px","")-2;
+        	par.height = $("#mapDiv"+g_num).css("height").replace("px","")-2;
+        	par.borderType = 1;
+        	
+//        	console.log(JSON.stringify(par));
+        	ajaxPost('/extract/png', par).success(function (data) {
+//        		console.log(JSON.stringify(data));
+        		
+        		if(data.status == 0){
+        			app.mapimagelayer[g_num].removeAllImages();//删除全部的图片图层
+        			
+//        			var imageURL = "http://192.168.1.148:8082/ampc/img/ceshi/now.png";//定义图片路径，这个图片是动态生成的
+        			var imageURL = "http://192.168.1.148:8091/Java/"+data.data.imagePath.substring(data.data.imagePath.indexOf("imageFilePath"))+"?t="+Math.random();
+        			console.log(imageURL);
+        			
+        			var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
+                    var mapImage = new dong.MapImage({
+                        'extent': initE,
+                        'href': imageURL
+                    });
+                    
+                    
+                    app.mapimagelayer[g_num].addImage(mapImage);//将新的图片图层添加到地图
+                    
+                    $('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
+                    zmblockUI("#mapDiv"+g_num, "end");//打开锁屏控制
+                    
+//                    $.each(data.data, function (i, col) {
+//                    	$.each(col, function (k, vvol) {
+//                    		if (vvol.value != "-9999.0") {
+//                        		var point = new dong.Point(vvol.x, vvol.y, new dong.SpatialReference({wkid: 3857}));
+//                        		var graphic = new dong.Graphic(point,app.pointSymbol1);
+//                        		app.gLyr[g_num].add(graphic);
+//                        	}
+//                    	});
+//                    }); 
+                    
+                    
+                    console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
+        	
+        		}
+        	});
+        	
+        	
         	
 
 //            var GPserver_type = par.GPserver_type[sp];
@@ -606,8 +654,8 @@ function bianji(type, g_num, p , wind) {
             par.cols = 20;
 
             par.species = ['WSPD','WDIR'];
-            app.gLyr1.clear();
-            app.gLyr2.clear();
+            app.gLyr[0].clear();
+            app.gLyr[1].clear();
             ajaxPost('/extract/data', par).success(function (data) {
                 if (!data.data) {
                     console.log("data.data-null");
@@ -690,15 +738,17 @@ function bianji(type, g_num, p , wind) {
                     symbol.setAngle(angle);
                     var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
                     var graphic = new dong.Graphic(point, symbol);
-                    if(g_num == 0){
-                        app.gLyr1.add(graphic);
-                        app.gLyr1.setOpacity(fxOpacity);
-                    }else if(g_num == 1){
-                        app.gLyr2.add(graphic);
-                        app.gLyr2.setOpacity(fxOpacity);
-                    }
-
-
+                    
+                    app.gLyr[g_num].add(graphic);
+                    app.gLyr[g_num].setOpacity(fxOpacity);
+                    
+//                    if(g_num == 0){
+//                        app.gLyr1.add(graphic);
+//                        app.gLyr1.setOpacity(fxOpacity);
+//                    }else if(g_num == 1){
+//                        app.gLyr2.add(graphic);
+//                        app.gLyr2.setOpacity(fxOpacity);
+//                    }
                 });
 //                zmblockUI("#mapDiv0", "end");
 //                zmblockUI("#mapDiv1", "end");
@@ -707,18 +757,8 @@ function bianji(type, g_num, p , wind) {
 //            	zmblockUI("#mapDiv"+g_num, "end");
                 swal('风场抽数，内部错误', '', 'error');
             });
-
         }
-
-
     }
-
-
-
-
-
-
-
 
 }
 
@@ -800,8 +840,8 @@ function setDate(s1, e1, s2, e2) {
                 break;
             }
         }
-        changeMsg.sTimeD = moment($('#sTime-d').val()).format('YYYY-MM-DD');
-        changeMsg.eTime = moment($('#eTime').val()).format('YYYY-MM-DD');
+        changeMsg.sTimeD = moment($('#sTime-d').val()).format("YYYY-MM-DD");
+        changeMsg.eTime = moment($('#eTime').val()).format("YYYY-MM-DD");
     } else {
         s1 = moment(s1 - 0);
         s2 = moment(s2 - 0);
@@ -838,8 +878,8 @@ function setDate(s1, e1, s2, e2) {
                 break;
             }
         }
-        changeMsg.sTimeD = moment($('#sTime-d').val()).format('YYYY-MM-DD');
-        changeMsg.eTime = moment($('#eTime').val()).format('YYYY-MM-DD');
+        changeMsg.sTimeD = moment($('#sTime-d').val()).format("YYYY-MM-DD");
+        changeMsg.eTime = moment($('#eTime').val()).format("YYYY-MM-DD");
     }
     initVideoPlay();
 }
@@ -883,17 +923,11 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
         var s = moment($('#sTime-d').val());
         var e = moment($('#eTime').val());
         while (true) {
-            changeMsg.dates.push(s.format('YYYY-MM-DD'));
+            changeMsg.dates.push(s.format("YYYY-MM-DD"));
             if (s.add(1, 'd').isAfter(e)) {
                 break;
             }
         }
-
-        // $('#showType .active input').prop('checked', false);
-        // $('#showType .active').removeClass('active');
-        // $('#showType label').attr('disabled', true);
-        // $('#showType input[value=concn]').prop('checked', true).parent().addClass('active').removeAttr('disabled');
-        // changeMsg.showType = ['concn'];
     }
     changeMsg.rms = rms;
     updata();
@@ -914,8 +948,8 @@ $('input[name=showWind]').on('change', function (e) { //地图风场类型
     if (type == -1) {
 
       /*这里清除风场图层*/
-        app.gLyr1.clear();
-        app.gLyr2.clear();
+    	app.gLyr[0].clear();
+    	app.gLyr[1].clear();
         return;
       /*这里清除风场图层 end*/
 
@@ -970,13 +1004,13 @@ $('#qjBtn2').on('change', 'input', function (e) {//改变右侧情景
 
 $('#sTime-d').on('change', function (e) {//选择日期
     var date = $(e.target).val();
-    changeMsg.sTimeD = moment(date).format('YYYY-MM-DD');
+    changeMsg.sTimeD = moment(date).format("YYYY-MM-DD");
     if (changeMsg.rms == 'a') {
         changeMsg.dates = []
         var s = moment($('#sTime-d').val());
         var e = moment($('#eTime').val());
         while (true) {
-            changeMsg.dates.push(s.format('YYYY-MM-DD'));
+            changeMsg.dates.push(s.format("YYYY-MM-DD"));
             if (s.add(1, 'd').isAfter(e)) {
                 break;
             }
@@ -993,13 +1027,13 @@ $('#sTime-h').on('change', function (e) {//选择时间
 
 $('#eTime').on('change', function (e) {//选择平均后的时间
     var date = $(e.target).val();
-    changeMsg.eTime = moment(date).format('YYYY-MM-DD');
+    changeMsg.eTime = moment(date).format("YYYY-MM-DD");
     if (changeMsg.rms == 'a') {
         changeMsg.dates = [];
         var s = moment($('#sTime-d').val());
         var e = moment($('#eTime').val());
         while (true) {
-            changeMsg.dates.push(s.format('YYYY-MM-DD'));
+            changeMsg.dates.push(s.format("YYYY-MM-DD"));
             if (s.add(1, 'd').isAfter(e)) {
                 break;
             }
@@ -1047,14 +1081,12 @@ function updata(t) {
 
 
     if (changeMsg.rms == 'd') {
-        p1.day = changeMsg.sTimeD;
-        p2.day = changeMsg.sTimeD;
+        p1.day = moment(changeMsg.sTimeD,'YYYYMMDD').format('YYYY-MM-DD');
+        p2.day = moment(changeMsg.sTimeD,'YYYYMMDD').format('YYYY-MM-DD');
 
-        //p1.day = '2016322';
-        //p2.day = '2016322';
     } else if (changeMsg.rms == 'h') {
-        p1.day = changeMsg.sTimeD;
-        p2.day = changeMsg.sTimeD;
+        p1.day = moment(changeMsg.sTimeD,'YYYYMMDD').format('YYYY-MM-DD');
+        p2.day = moment(changeMsg.sTimeD,'YYYYMMDD').format('YYYY-MM-DD');
         p1.hour = changeMsg.sTimeH;
         p2.hour = changeMsg.sTimeH;
     } else {
@@ -1192,7 +1224,7 @@ function videoPlay() {
     if(index == -1){
         return;
     }
-    changeMsg.sTimeD = moment(playDay).format('YYYY-MM-DD');
+    changeMsg.sTimeD = moment(playDay).format("YYYY-MM-DD");
     if(changeMsg.rms == 'h'){
         changeMsg.sTimeH = playHour;
     }
@@ -1289,9 +1321,9 @@ $(".cloudui .verticalCon .ibox-content .searchT .upDown").hover(function(){
 })
 //增加标题
 function showTitleFun() {
-    var timeStartFor=moment(changeMsg.sTimeD,"YYYY-MM-DD").format("YYYY-MM-DD");
-    var stateFor=moment(changeMsg.sTimeD+changeMsg.sTimeH,"YYYY-MM-DDH").format("YYYY-MM-DD HH");
-    var timeTwoFor=moment(changeMsg.sTimeD+"-"+changeMsg.eTime,"YYYY-MM-DD-YYYY-MM-DD").format("YYYY-MM-DD-YYYY-MM-DD");
+    var timeStartFor=moment(changeMsg.sTimeD,"YYYYMMDD").format("YYYY-MM-DD");
+    var stateFor=moment(changeMsg.sTimeD+changeMsg.sTimeH,"YYYYMMDDH").format("YYYY-MM-DD HH");
+    var timeTwoFor=moment(changeMsg.sTimeD+"-"+changeMsg.eTime,"YYYYMMDD-YYYYMMDD").format("YYYY-MM-DD-YYYY-MM-DD");
     console.log(changeMsg.sTimeD)
     console.log(changeMsg.sTimeD+changeMsg.sTimeH)
     console.log(changeMsg.sTimeD+"-"+changeMsg.eTime)
