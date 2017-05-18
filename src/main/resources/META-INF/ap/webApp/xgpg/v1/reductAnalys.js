@@ -65,54 +65,43 @@ function sceneTable() {
     $("#sceneTableId").bootstrapTable('destroy');//销毁现有表格数据
 //    console.log()
     //表格交互 easyui
-
-    $.ajax({
-        url: '/ampc/scenarino/find_All_scenarino',
-        contentType: 'application/json',
-        method: 'post',
-        dataType: 'JSON',
-        data: JSON.stringify({
-            "token": "",
-            "data": {
-                "userId": userId,
-                "missionId":$("#task").val()
-            }
-        }),
-        success:function (data) {
-            $("#sceneTableId").datagrid({
-                data:data.data.rows,
-                columns:[[
-                    {field:"ck",checkbox:true},
-                    {field:"scenarinoName",title:"情景名称"},
-                    {field:"scenType",title:"情景描述"},
-                    {field:"scenarinoStartDate",title:"时间"},
-                    {field:"scenarinoEndDate",title:"时间"},
-                ]],
-                clickToSelect: true,// 点击选中行
-                pagination: false, // 在表格底部显示分页工具栏
-                striped: true, // 使表格带有条纹
-                queryParams: function (params) {
-                    var data = {};
-                    data.userId = userId;
-                    data.missionId = $("#task").val();
-                    return JSON.stringify({"token": "", "data": data});
-                },
-                onLoadSuccess:function(data){
-                    if(sceneInitialization!=null){
-                        var truedData=sceneInitialization.data;
-                        for(var i=0;i<truedData.length;i++){
-                            if(data){
-                                $.each(data.rows, function(index, item){
-                                    if(truedData[i].scenarinoId==item.scenarinoId){
-                                        $('#sceneTableId').datagrid('checkRow', index);
-                                    }
-                                });
-                            }
+    ajaxPost('/scenarino/find_All_scenarino',{
+        "userId": userId,
+        "missionId":$("#task").val()
+    }).success(function(data){
+        $("#sceneTableId").datagrid({
+            data:data.data.rows,
+            columns:[[
+                {field:"ck",checkbox:true},
+                {field:"scenarinoName",title:"情景名称"},
+                {field:"scenType",title:"情景描述"},
+                {field:"scenarinoStartDate",title:"时间"},
+                {field:"scenarinoEndDate",title:"时间"},
+            ]],
+            clickToSelect: true,// 点击选中行
+            pagination: false, // 在表格底部显示分页工具栏
+            striped: true, // 使表格带有条纹
+            queryParams: function (params) {
+                var data = {};
+                data.userId = userId;
+                data.missionId = $("#task").val();
+                return JSON.stringify({"token": "", "data": data});
+            },
+            onLoadSuccess:function(data){
+                if(sceneInitialization!=null){
+                    var truedData=sceneInitialization.data;
+                    for(var i=0;i<truedData.length;i++){
+                        if(data){
+                            $.each(data.rows, function(index, item){
+                                if(truedData[i].scenarinoId==item.scenarinoId){
+                                    $('#sceneTableId').datagrid('checkRow', index);
+                                }
+                            });
                         }
                     }
                 }
-            })
-        }
+            }
+        })
     })
 /*
     $("#sceneTableId").bootstrapTable({
@@ -194,7 +183,8 @@ function save_scene() {
                 "scenarinoId": col.scenarinoId,
                 "scenarinoName": col.scenarinoName,
                 "scenarinoStartDate": col.scenarinoStartDate,
-                "scenarinoEndDate": col.scenarinoEndDate
+                "scenarinoEndDate": col.scenarinoEndDate,
+                "scenType":col.scenType
             });
         });
         mag.data = data;
@@ -209,6 +199,21 @@ function save_scene() {
 
         sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
         $("#close_scene").click();
+        //查询任务的开始时间和结束时间
+        var url='/Appraisal/showTime';
+        var paramsName = {
+            "missionId":sceneInitialization.taskID,				//任务ID
+        };
+        ajaxPost(url, paramsName).success(function (res) {
+            if (res.status == 0) {
+                showTime=res;
+                qjStartTime=showTime.data.startTime;
+                qjEndTime=showTime.data.endTime;
+            } else {
+                swal(res.msg, '', 'error');
+            }
+
+        });
         shoe_data_start();
     }
 }
@@ -1083,77 +1088,66 @@ function table_show(cod1, level1) {
     d_Level = level1;
 
     $('#listModal_table').bootstrapTable('destroy');
+    ajaxPost('/echarts/get_radioList',{
+        "code": cod1,
+        "addressLevle":level1,
+        "scenarinoId":qjid_dq
+    }).success(function(data){
+        $("#listModal_table").datagrid({
+            height: $("#listModal").height() - 36,
+            striped:true,
+            data:data.data,
+            columns:[[
+                {field:"name",title:"行政区"},
+                {field:"pm25",title:"PM<sub>2.5</sub>"},
+                {field:"pm10",title:"PM<sub>10</sub>"},
+                {field:"so2",title:"SO<sub>2</sub>"},
+                {field:"nox",title:"NO<sub>x</sub>"},
+                {field:"voc",title:"VOC"},
+                {field:"co",title:"CO"},
+                {field:"nh3",title:"NH<sub>3</sub>"},
+                {field:"bc",title:"BC"},
+                {field:"oc",title:"OC"},
+                {field:"pmfine",title:"PMFINE"},
+                {field:"pmc",title:"PMC"},
+            ]],
+            clickToSelect: true,// 点击选中行
+            pagination: false, // 在表格底部显示分页工具栏
+            striped: true, // 使表格带有条纹
+            queryParams: function (params) {
+                var data = {};
+                data.code = cod1;
+                data.addressLevle = level1;
+                data.scenarinoId = qjid_dq;//情景id
 
-    $.ajax({
-        url: '/ampc/echarts/get_radioList',
-        contentType: 'application/json',
-        method: 'post',
-        dataType: 'JSON',
-        data: JSON.stringify({
-            "token": "",
-            "data": {
-                "code": cod1,
-                "addressLevle":level1,
-                "scenarinoId":qjid_dq
-            }
-        }),
-        success:function (data) {
-            $("#listModal_table").datagrid({
-                height: $("#listModal").height() - 36,
-                striped:true,
-                data:data.data,
-                columns:[[
-                    {field:"name",title:"行政区"},
-                    {field:"pm25",title:"PM<sub>2.5</sub>"},
-                    {field:"pm10",title:"PM<sub>10</sub>"},
-                    {field:"so2",title:"SO<sub>2</sub>"},
-                    {field:"nox",title:"NO<sub>x</sub>"},
-                    {field:"voc",title:"VOC"},
-                    {field:"co",title:"CO"},
-                    {field:"nh3",title:"NH<sub>3</sub>"},
-                    {field:"bc",title:"BC"},
-                    {field:"oc",title:"OC"},
-                    {field:"pmfine",title:"PMFINE"},
-                    {field:"pmc",title:"PMC"},
-                ]],
-                clickToSelect: true,// 点击选中行
-                pagination: false, // 在表格底部显示分页工具栏
-                striped: true, // 使表格带有条纹
-                queryParams: function (params) {
-                    var data = {};
-                    data.code = cod1;
-                    data.addressLevle = level1;
-                    data.scenarinoId = qjid_dq;//情景id
+                //			console.log(JSON.stringify(data));
+                return JSON.stringify({"token": "", "data": data});
+            },
+            loadFilter:function(data){
+                if (data.d){
 
-   //			console.log(JSON.stringify(data));
-                    return JSON.stringify({"token": "", "data": data});
-                },
-                loadFilter:function(data){
-                     if (data.d){
+                    return data.d;
 
-                         return data.d;
-
-                     } else {
-                     return data;
-                     }
-                },
-                loadFilter:function(data){
-                    //过滤数据
-                    var value={
-                        total:data.total,
-                        rows:[]
-                    };
-                    if (data.length > 0) {
-                        $.each(data, function (i, col) {
-                            if (col.type == "1") {
-                                data[i].name= '<a style="text-decoration:underline;color: #0275d8;cursor:pointer;" onClick="table_show(\'' + col.code + '\',\'' + (parseInt(d_Level) + 1) + '\');">' + col.name + '</a>';
-                            }
-                        });
-                         return data;
-                    }
+                } else {
+                    return data;
                 }
-            })
-        }
+            },
+            loadFilter:function(data){
+                //过滤数据
+                var value={
+                    total:data.total,
+                    rows:[]
+                };
+                if (data.length > 0) {
+                    $.each(data, function (i, col) {
+                        if (col.type == "1") {
+                            data[i].name= '<a style="text-decoration:underline;color: #0275d8;cursor:pointer;" onClick="table_show(\'' + col.code + '\',\'' + (parseInt(d_Level) + 1) + '\');">' + col.name + '</a>';
+                        }
+                    });
+                    return data;
+                }
+            }
+        })
     })
 
 /*

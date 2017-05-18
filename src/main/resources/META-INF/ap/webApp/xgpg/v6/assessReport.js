@@ -67,7 +67,6 @@ if (!sceneInitialization) {
 if (!sceneInitialization) {
     sceneInittion();
 } else {
-    //set_sce1_sce2();
     setQjSelectBtn(sceneInitialization.data);//加载地图上的情景按钮
     initialize();
 }
@@ -93,20 +92,15 @@ function initialize() {
         //console.log(sceneInitialization.data[i].scenarinoId=sceneInitialization.data[i].scenarinoName);
         changeMsg.scenarinoId.push(sceneInitialization.data[i].scenarinoId);
         changeMsg.scenarinoName.push(sceneInitialization.data[i].scenarinoName);
-        //changeMsg.qjName.push({sceneInitialization.data[i].scenarinoId:sceneInitialization.data[i].scenarinoName});
     }
     //changeMsg.scenarinoId.unshift('-1');
     //changeMsg.scenarinoName.unshift('基准');
     dps_station = setStation(sceneInitialization.taskID);
-
-    // console.log(setStation(sceneInitialization.taskID))
-    //setTime(sceneInitialization.s, sceneInitialization.e);
     setTime(sceneInitialization.data[$("#qjbtnCon").val()].scenarinoStartDate,sceneInitialization.data[$("#qjbtnCon").val()].scenarinoEndDate);
     console.log(sceneInitialization.data[$("#qjbtnCon").val()].scenarinoStartDate)
     $.when(dps_codeStation, dps_station).done(function () {
         window.setTimeout(function () {
             updata();
-
         },200)
     });
     //updata();
@@ -117,29 +111,12 @@ function initialize() {
 function setQjSelectBtn(data) {
     $('.cloudui #qjbtnCon').empty();
     for (var i = 0; i < data.length; i++) {
-        // var btn1 = $('<label class="btn btn-outline btn-success bgw" style="z-index: 2;position:relative"><input type="radio"  name="qjBtn1"><span></span></label><br/>');
-        //var btn1 = $('<label class="btn btn-outline btn-success bgw" style="z-index: 2;position:relative"><input type="radio"  name="qjBtn1"><span></span></label>');
         var btn1 = $('<option value="'+i+'">'+data[i].scenarinoName+'</option>');
-       // btn1.attr('title', data[i].scenarinoName).find('input').attr('value', data[i].scenarinoId);
-        //btn1.find('span').html(data[i].scenarinoName);
-        // if (i == 0) {
-        //     btn1.addClass('active').find('input').attr('checked', true);
-        //     qjid_dq = data[i].scenarinoId;
-        //     qjname_dq = data[i].scenarinoName;
-        // }
         $('.cloudui #qjbtnCon').append(btn1);
 
     }
-    // shoe_data_start();
-
 }
 
-/*切换情景事件*/
-// $('#qjBtn1').on('change', 'input', function (e) {
-// //    console.log($(e.target).val());
-//     qjid_dq = $(e.target).val();
-//     shoe_data_start()
-// })
 
 var allCode = {};//用于存储所有的站点信息
 /*设置站点*/
@@ -218,8 +195,6 @@ function setTime(s, e) {
 //超链接显示 模态框
 function exchangeModal() {
     sceneInittion();
-    // $("#Initialization").modal();
-    //$("#Initialization").window("open")
 }
 var allMission = {};
 /**
@@ -229,7 +204,6 @@ function sceneInittion() {
     $("#task").html("");
     var paramsName = {};
     paramsName.userId = userId;
-    //console.log(JSON.stringify(paramsName));
     ajaxPost('/mission/find_All_mission', paramsName).success(function (res) {
         //  console.log(JSON.stringify(res));
         if (res.status == 0) {
@@ -339,7 +313,6 @@ function sceneTable() {
  * 保存选择的情景
  */
 function save_scene() {
-    //var row = $('#sceneTableId').bootstrapTable('getSelections');//获取所有选中的情景数据
     var row = $('#sceneTableId').datagrid('getSelections');//获取所有选中的情景数据
     if (row.length > 0) {
         var mag = {};
@@ -377,19 +350,6 @@ function save_scene() {
             }
 
         });
-
-        // ajaxPost(xgpgURL, XGPGparamsName).success(function (res) {
-        //     console.log("变化")
-        //     console.log(res);
-        //     if (res.status == 0) {
-        //         // showTime=res;
-        //         // qjStartTime=showTime.data.startTime;
-        //         // qjEndTime=showTime.data.endTime;
-        //     } else {
-        //         swal(res.msg, '', 'error');
-        //     }
-        //
-        // });
 
         $("#close_scene").click();
 
@@ -458,7 +418,6 @@ $('#station').on('change', function (e) {
 
 $('#sTime-d').on('change', function (e) {
     var time_d = $(e.target).val();
-    //changeMsg.sTimeD = moment(time_d).format('YYYYMMDD');
     if(moment(time_d).isAfter(moment($("#eTime").val()))){
         $("#eTime").val(time_d);
         changeMsg.eTime = time_d;
@@ -484,44 +443,31 @@ function updata() {
 
     showTitleFun();
     shownPgbg()
-
-    $.ajax({
-        url:'/ampc/Appraisal/report',
-        contentType: 'application/json',
-        method: 'post',
-        dataType: 'JSON',
-        data: JSON.stringify({
-            "token": "",
-            "data": {
-                "mode":changeMsg.station == 'avg' ? 'city' : 'point',
-                "startdate":changeMsg.sTimeD+" 00",
-                "enddate":changeMsg.eTime+" 00",
-                "userId":userId,
-                "cityStation":changeMsg.station == 'avg' ? changeMsg.city.substr(0, 4) : changeMsg.station,
-                "scenarinoId":changeMsg.qjId,
-                "missionId":sceneInitialization.taskID
-            }
-        }),
-        success:function(res){
-            if(res.status==0){
-                allData=res.data;
-                $("#PM25_jp").html(allData.PM25_jp==null?"暂无":allData.PM25_jp)
-                $("#SO2_jp").html(allData.SO2_jp==null?"暂无":allData.SO2_jp)
-                $("#NOx_jp").html(allData.NOx_jp==null?"暂无":allData.NOx_jp)
-                $("#VOC_jp").html(allData.VOC_jp==null?"暂无":allData.VOC_jp)
-                $("#PM25").html(allData.PM25);
-                $("#SO4").html(allData.SO4);
-                $("#NH4").html(allData.NH4);
-                $("#NO3").html(allData.NO3)
-                $("#CO").html(allData.CO);
-                $("#NO2").html(allData.NO2)
-                $("#SO2").html(allData.SO2)
-                $("#O3_8_MAX").html(allData.O3_8_MAX)
-                $("#PM10").html(allData.PM10)
-            } else {
-                swal(res.msg, '', 'error');
-            }
-        }
+    ajaxPost('/Appraisal/report',{"mode":changeMsg.station == 'avg' ? 'city' : 'point',
+                     "startdate":changeMsg.sTimeD+" 00",
+                     "enddate":changeMsg.eTime+" 00",
+                     "userId":userId,
+                     "cityStation":changeMsg.station == 'avg' ? changeMsg.city.substr(0, 4) : changeMsg.station,
+                     "scenarinoId":changeMsg.qjId,
+                     "missionId":sceneInitialization.taskID}).success(function(res){
+        if(res.status==0){
+                        allData=res.data;
+                        $("#PM25_jp").html(allData.PM25_jp==null?"暂无":allData.PM25_jp)
+                        $("#SO2_jp").html(allData.SO2_jp==null?"暂无":allData.SO2_jp)
+                        $("#NOx_jp").html(allData.NOx_jp==null?"暂无":allData.NOx_jp)
+                        $("#VOC_jp").html(allData.VOC_jp==null?"暂无":allData.VOC_jp)
+                        $("#PM25").html(allData.PM25);
+                        $("#SO4").html(allData.SO4);
+                        $("#NH4").html(allData.NH4);
+                        $("#NO3").html(allData.NO3)
+                        $("#CO").html(allData.CO);
+                        $("#NO2").html(allData.NO2)
+                        $("#SO2").html(allData.SO2)
+                        $("#O3_8_MAX").html(allData.O3_8_MAX)
+                        $("#PM10").html(allData.PM10)
+                    } else {
+                        swal(res.msg, '', 'error');
+                    }
     })
 }
 
@@ -534,16 +480,20 @@ function showTitleFun() {
         if (changeMsg.station == 'avg') {
             $('#showTitle .proName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.proName);
             $('#showTitle .cityName').html(changeMsg.cityName);
+            $("#showTitle .stationName").css({"margin-right":"0px"})
         } else {
-            $('#showTitle .proName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.proName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
+            $('#showTitle .proName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.proName);
             $('#showTitle .cityName').html(changeMsg.cityName);
             $('#showTitle .stationName').html(changeMsg.stationName);
             }
     } else {
         if (changeMsg.station == 'avg') {
+            $("#showTitle .proName").css({"margin-right":"0px"});
             $('#showTitle .cityName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.cityName);
             $('#showTitle .timeName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+(changeMsg.rms == 'day' ? changeMsg.sTimeD.substr(0, 10) : changeMsg.time));
-             } else {
+            $("#showTitle .stationName").css({"margin-right":"0px"})
+        } else {
+            $("#showTitle .proName").css({"margin-right":"0px"});
             $('#showTitle .cityName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.cityName);
             $('#showTitle .stationName').html(changeMsg.stationName);
             }
@@ -551,26 +501,18 @@ function showTitleFun() {
 }
 function shownPgbg(){
     $('.pgbgContent span').empty();
+    $(".pgbgContent #stationName").empty();
     $(".pgbgContent #pgbaStart").html(moment(changeMsg.sTimeD,"YYYYMMDD").format("YYYY年MM月DD日"));
     $(".pgbgContent #pgbgEnd").html(moment(changeMsg.eTime,"YYYYMMDD").format("YYYY年MM月DD日"));
     $(".pgbgContent #pgbgQjName").html(changeMsg.qjName);
 
     if (zhiCity.indexOf(changeMsg.pro) == -1) {
-
-            // $('.pgbgContent #proName').html(changeMsg.proName);
-            // $('.pgbgContent #cityName').html(changeMsg.cityName);
-
             $('.pgbgContent #proName').html(changeMsg.proName);
             $('.pgbgContent #cityName').html(changeMsg.cityName);
             $('.pgbgContent #stationName').html(changeMsg.stationName);
-
     } else {
-
-            // $('.pgbgContent #cityName').html(changeMsg.cityName);
-
             $('.pgbgContent #cityName').html(changeMsg.cityName);
             $('.pgbgContent #stationName').html(changeMsg.stationName);
-
     }
 }
 //easyui 添加
