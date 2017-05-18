@@ -33,13 +33,9 @@ var changeMsg = {
 		endD:'',			//结束日期
 };
 var zhiCity = ['11', '12', '31', '50'];
+//页面初始化默认的开始时间和结束时间
 var showTime;
-//={
-//		qjStartTime:'',
-//		qjEndTime:''
-//};
-//var qjStartTime;
-//var qjEndTime;
+
 //逐小时显示 AQI PM25 ,SO4 NO3 NH4 BC OM PMFINE, PM10 O3 SO2 NO2 CO
 //逐日显示 AQI PM25 ,SO4 NO3 NH4 BC OM PMFINE, PM10 O3_8_max O3_1_max SO2 NO2 CO
 //物种选择
@@ -50,20 +46,24 @@ var speciesArr = {
 		hour: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3', 'SO2', 'NO2', 'CO']
 //		hour: ['PM25', 'PM10', 'O3', 'SO2', 'NO2', 'CO', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE']
 };
-var scenarino={			//存放基准数据id和Name
+
+//存放基准数据id和Name
+var scenarino={			
 		scenarinoId:'',
 		scenarinoName:'',
 };
-var observation={		//存放观测数据id和Name
+
+//存放观测数据id和Name
+var observation={		
 		scenarinoId:'',
 		scenarinoName:''
 };
-
 
 /**
  * 设置柱状图 模板
  */
 var optionAll = {
+		backgroundColor:'rgb(220,220,220)',
 		title: {
 		    text: '',  //改变量 放污染物
 		    x: 'left',
@@ -236,7 +236,6 @@ function setTime(s, e) {
   changeMsg.time = $('#sTime-d').val() + ' 00';
 }
 
-
 /**
  * 动态添加div 填数据
  */
@@ -371,11 +370,11 @@ function initEcharts() {
 			option.title.text = mesage +tname[i]+(' (mg/m³)');
 		}	
 		option.legend.data = (function(){	//图例名称
-		var lenArr = [];
-		for(var i = 0;i<sceneInitialization_arr.length;i++){
-		lenArr.push(sceneInitialization_arr[i].scenarinoName);
-		}
-		return lenArr;
+			var lenArr = [];
+			for(var i = 0;i<sceneInitialization_arr.length;i++){
+				lenArr.push(sceneInitialization_arr[i].scenarinoName);
+			}
+			return lenArr;
 		})();
 		option.series = [];
 		
@@ -494,6 +493,13 @@ function initEcharts() {
 						name:mkname ,
 			            type:'line',
 			            markLine : {
+			            	//标线的文本
+			            	label:{
+			            		normal: {
+			            			show: true,
+			                    }
+			            	},
+			            	//标线的样式
 			                lineStyle: {
 			                    normal: {
 			                        type: 'dashed',
@@ -550,6 +556,40 @@ function initEcharts() {
     	data: ttime						//修改数据排序
     });
     
+    /**
+     * PM25的子类配置网格线
+     */
+    var yAxis_sub={
+    		name:'',  	//改变量  污染物name
+            nameLocation:'end',
+            show: true,  
+            type: 'value',  
+            splitArea: {show: false},	//去除网格阴影
+            splitLine:{show: true,		//设置网格线颜色
+	                lineStyle:{
+	                }
+	            },//去除网格线
+    };
+     if("SO4"==tname[i]){
+    	 option.yAxis = [];
+    	 option.yAxis.push(yAxis_sub);
+     }else if("NO3"==tname[i]){
+    	 option.yAxis = [];
+    	 option.yAxis.push(yAxis_sub);
+     }else if("NH4"==tname[i]){
+    	 option.yAxis = [];
+    	 option.yAxis.push(yAxis_sub);
+     }else if("BC"==tname[i]){
+    	 option.yAxis = [];
+    	 option.yAxis.push(yAxis_sub);
+     }else if("OM"==tname[i]){
+    	 option.yAxis = [];
+    	 option.yAxis.push(yAxis_sub);
+     }else if("PMFINE"==tname[i]){
+    	 option.yAxis = [];
+    	 option.yAxis.push(yAxis_sub);
+     }	//配置网格线结束
+     
     if("AQI"==tname[i]){	//AQI
     	var aqi = echarts.init(document.getElementById(tname[i]));
     	//图表联动
@@ -656,10 +696,8 @@ function getdata() {
         "domain":$('input[name=domain]:checked').val(),
 		"scenarinoId": ch_scenarinoId,
 	    "datetype": changeMsg.rms,
-//	    "startDate":showTime.startTime,
 	    "startDate":changeMsg.startD,
 		"endDate":changeMsg.endD
-//		"endDate":'2016-11-26 23:59:59'
 	  };
 	ajaxPost(url, paramsName).success(function (res) {
 	    if (res.status == 0) {
@@ -676,7 +714,12 @@ function getdata() {
 
 	});
 }
-
+/**
+ * 同步函数
+ * @param url
+ * @param parameter
+ * @returns
+ */
 function ajaxPost_sy(url, parameter) {
 	  parameterPar.data = parameter;
 	  var p = JSON.stringify(parameterPar);
@@ -708,10 +751,8 @@ function find_standard(){
 		    "domain":$('input[name=domain]:checked').val(),		
 		    "changeType":$('input[name=changes]:checked').val(),			//变化状态
 			"datetype":changeMsg.rms,			//时间分辨率
-//			"startDate":showTime.startTime,
 			"startDate":changeMsg.startD,
 			"endDate":changeMsg.endD
-//			"endDate":'2016-11-26 23:59:59'
 		  };
 	ajaxPost(url, paramsName).success(function (res) {
 	    if (res.status == 0) {
@@ -912,20 +953,6 @@ function save_scene() {
 			arrId.push({"id": mag.data[i].scenarinoId});
 		}
 		$("#close_scene").click();
-		//查询任务的开始时间和结束时间
-//		var url='/Appraisal/show_Times';
-//		var paramsName = {
-//				"missionId":sceneInitialization.taskID,				//任务ID
-//			  };
-//		ajaxPost_sy(url, paramsName).success(function (res) {
-//		    if (res.status == 0) {
-//		    	showTime=res;
-////                qjStartTime=showTime.data.startTime;
-////                qjEndTime=showTime.data.endTime;
-//		    } else {
-//		    	swal(res.msg, '', 'error');
-//		    }
-//		  });
 		
 		set_sce();
 //    	find_standard();
@@ -1019,7 +1046,6 @@ $('input[name=changes]').on('change', function (e) {
 		var xd_echartsData=echartsData;		//该任务下所选情景的所有数据
 		var xd_standardData=standardData;	
 		if(xd_echartsData!=""&&xd_echartsData!=null&&xd_echartsData!=undefined&&xd_standardData!=""&&xd_standardData!=null&&xd_standardData!=undefined){	//存在数据
-//			var xdScene={};		//总和
 			var xdSpecies={};	//物种
 			var xdYear={};		//年份
 			
