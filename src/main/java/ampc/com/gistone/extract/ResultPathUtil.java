@@ -1,9 +1,11 @@
 package ampc.com.gistone.extract;
 
+import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -20,12 +22,25 @@ public class ResultPathUtil {
 
 	private final static Logger logger = LoggerFactory.getLogger(ResultPathUtil.class);
 	private ExtractConfig extractConfig;
+	private LinkedHashMap<String, Color> showColorMap;
+	private LinkedHashMap<String, Color> diffColorMap;
+	private LinkedHashMap<String, Color> ratioColorMap;
 
 	@PostConstruct
 	public void init() {
 		getExtractConfig("/extract.properties");
+		getImageColorConfig();
 	}
 
+	private void getImageColorConfig() {
+
+	}
+
+	/**
+	 * 获取后处理文件的配置路径
+	 * 
+	 * @param config
+	 */
 	private void getExtractConfig(String config) {
 
 		InputStream ins = getClass().getResourceAsStream(config);
@@ -151,6 +166,18 @@ public class ResultPathUtil {
 
 	public void setExtractConfig(ExtractConfig extractConfig) {
 		this.extractConfig = extractConfig;
+	}
+
+	public LinkedHashMap<String, Color> getShowColorMap() {
+		return showColorMap;
+	}
+
+	public LinkedHashMap<String, Color> getDiffColorMap() {
+		return diffColorMap;
+	}
+
+	public LinkedHashMap<String, Color> getRatioColorMap() {
+		return ratioColorMap;
 	}
 
 }
