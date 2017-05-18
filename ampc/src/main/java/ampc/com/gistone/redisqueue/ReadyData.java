@@ -217,7 +217,7 @@ public class ReadyData {
 		if (scenarinoType==2&&missionType==2) {
 			//预评估的后评估任务
 			//readyPrePostEvaluationSituationData(scenarinoId);
-			LogUtil.getLogger().info("预评估任务的后评估情景模式开始！");
+			LogUtil.getLogger().info("ReadyData-needJPsituation:预评估任务的后评估情景模式开始！");
 			readyPrePostEvaluationSituationData(scenarinoId,false);
 		} 
 		if (scenarinoType==1&&missionType==2) {
@@ -662,14 +662,19 @@ public class ReadyData {
 	 * @date 2017年3月29日 下午3:49:58
 	 */
 	public void sendqueueRealDataThen(Date tasksEndDate, Long tasksScenarinoId) {
-		LogUtil.getLogger().info("发实时预报gfs的数据");
+		LogUtil.getLogger().info("sendqueueRealDataThen：发实时预报gfs的数据");
 		//消息的time的内容
 		String time = DateUtil.changeDate(tasksEndDate, "yyyyMMdd", 1);
-		LogUtil.getLogger().info("该条消息的时间:"+time);
+		LogUtil.getLogger().info("sendqueueRealDataThen：该条消息的时间:"+time+"id:"+tasksScenarinoId);
 		String datatype;
 	    Long scenarinoId = tasksScenarinoId;
 	    //查找数据库的情景详情的消息通过情景ID
-		TScenarinoDetail scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+		TScenarinoDetail scenarinoDetailMSG =null;
+		try {
+			scenarinoDetailMSG = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("ReadyData-sendqueueRealDataThen：根据情景ID查询情景详情出错！scenarinoId："+scenarinoId,e.getMessage(),e);
+		}
 		Date pathDate = DateUtil.DateToDate(scenarinoDetailMSG.getPathDate(), "yyyyMMdd");//起报时间
 		Date timeDate = DateUtil.StrtoDateYMD(time, "yyyyMMdd");//当天数据的time
 		int compareTo = pathDate.compareTo(timeDate);
@@ -700,18 +705,18 @@ public class ReadyData {
 	 * @date 2017年3月29日 下午4:23:17
 	 */
 	public String  readyLastUngrib(Long userId) {
-		LogUtil.getLogger().info("查找最新的ungrib的方法！");
+		LogUtil.getLogger().info("readyLastUngrib:查找最新的ungrib的方法！");
 		String lastungrib = null;
 		//获取最新的ungrib 
 		TUngrib tUngrib = tUngribMapper.getlastungrib();
 		//fnl的状态
 		if (null==tUngrib) {
-			LogUtil.getLogger().info("没有ungrib数据");
+			LogUtil.getLogger().info("readyLastUngrib:没有ungrib数据");
 		}else {
 			//获取最新ungrib 的pathdate 最新的pathdate（年月日）
 			Date pathdate = tUngrib.getPathDate();
 			//lastungrib = DateUtil.DATEtoString(pathdate, "yyyyMMdd");
-			LogUtil.getLogger().info("最新的ungrib"+pathdate);
+			LogUtil.getLogger().info("readyLastUngrib:最新的ungrib"+pathdate);
 			//查找是否是连续的   最早的实时预报pathdate
 			Date lastpathdate = tScenarinoDetailMapper.getlastrunstatus(userId);
 			lastungrib = pivot(userId, lastpathdate, pathdate);
@@ -1590,10 +1595,10 @@ public class ReadyData {
 			DataEmis.setSsal("");
 		}else {
 			//其他情景需要设置减排系数 从数据库里面取
-			//DataEmis.setPsal(tasksStatus.getPsal());
-			DataEmis.setPsal("");
-			//DataEmis.setSsal(tasksStatus.getSsal());
-			DataEmis.setSsal("");
+			DataEmis.setPsal(tasksStatus.getPsal());
+//			DataEmis.setPsal("");
+			DataEmis.setSsal(tasksStatus.getSsal());
+//			DataEmis.setSsal("");
 		}
 	
 		DataEmis.setMeiccityconfig(tasksStatus.getMeiccityconfig());
