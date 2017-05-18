@@ -4,31 +4,31 @@
       {
         "Sheet": {		
           "valueRange": "sheetName",   
-          "dataType": "string",     
+          "dataType": "String",     
           "isNotNull": "y",	     
           "maxLenth": "10"		     
         },
         "Etitle": {
           "valueRange": "",
-          "dataType": "string",
+          "dataType": "String",
           "isNotNull": "y",
           "maxLenth": "30"
         },
 		"CTitle1": {		
           "valueRange": "",   
-          "dataType": "string",     
+          "dataType": "String",     
           "isNotNull": "y",	     
           "maxLenth": "30"		     
         },
 		"Type": {		
           "valueRange": "string-double-int",   
-          "dataType": "string",     
+          "dataType": "String",     
           "isNotNull": "y",	     
           "maxLenth": "6"	     
         },
 		"属性类型": {		
           "valueRange": "清单原始输出-统计-筛选-筛选和统计",   
-          "dataType": "string",     
+          "dataType": "String",     
           "isNotNull": "y",	     
           "maxLenth": "6"	     
         }
