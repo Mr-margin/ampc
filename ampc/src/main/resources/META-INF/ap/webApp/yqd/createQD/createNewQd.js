@@ -61,8 +61,8 @@ function initQgqdListTable() {
 
 function initBdqdListTable() {
   $('#bdqdList').bootstrapTable({
-    method: 'GET',
-      url: 'webApp/yqd/createQD/bdqd.json',
+    method: 'post',
+    url: '/escoupling/get_couplingInfo',
     dataType: "json",
     contentType: "application/json",
     toobar: '#bdqdToolbar',
@@ -73,9 +73,9 @@ function initBdqdListTable() {
     maintainSelected: true,
     clickToSelect: false,
     pagination: true,
-    pageSize: 20,
+    pageSize: 10,
     pageNumber: 1,
-    pageList: [20],
+    pageList: [20,50,100],
     striped: true,
     sidePagination: "server",
     rowStyle: function (row, index) {
@@ -86,7 +86,7 @@ function initBdqdListTable() {
       var json = {
         "token": "",
         "data": {
-
+        	"userId":userId,
         }
       };
 
