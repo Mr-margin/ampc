@@ -108,7 +108,6 @@ public class ExtractPngService extends ExtractService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		res = reversalArray(res);
 		Map data = new HashMap();
 		data.put("imagePath", drawPngPicture(res));
 		ObjectMapper mapper = new ObjectMapper();
@@ -225,20 +224,11 @@ public class ExtractPngService extends ExtractService {
 					point.setValue(String.valueOf(value));
 					pointBeanList.add(point);
 				}
-
-				// if (value == Constants.OVERBORDER) {
-				// res[i][j] = value;
-				// } else {
-				// String specie = params.getSpecie();
-				// float value =
-				// Float.parseFloat(String.valueOf(resMap.get(specie)));
-				// res[i][j] = (float) value;
-				// }
 			}
 			x = params.getXmin();
 			y += ycellsize;
 		}
-
+		res = reversalArray(res);
 		return res;
 	}
 
@@ -387,6 +377,7 @@ public class ExtractPngService extends ExtractService {
 
 	public String buildIamgeFilePath() {
 		Date date = new Date();
+		String rootPath = System.getProperty("user.dir");
 		String imageFilePath = extractConfig.getImageFilePath(); // /$userid/$domainid/$missionid/$domain/$showType/$calcType/$currDate/
 		imageFilePath = imageFilePath.replace("$userid", String.valueOf(params.getUserId()))
 				.replace("$domainid", String.valueOf(params.getDomainId()))
@@ -417,7 +408,7 @@ public class ExtractPngService extends ExtractService {
 				.replace("$hour", String.valueOf(params.getHour()))
 				.replace("$layer", String.valueOf(params.getLayer() - 1)).replace("$specie", params.getSpecie())
 				.replace("$scenario", scenario).replace("$random", String.valueOf(new Date().getTime()));
-		return imageFilePath + "/" + imageFileName;
+		return rootPath + "/imagePath/" + imageFilePath + "/" + imageFileName;
 
 	}
 
