@@ -264,14 +264,11 @@ public class GetWeatherModelController {
 			tTasksStatus.setSsal(ssal);
 			tTasksStatus.setMeiccityconfig(meiccityconfig);
 			//setControlfile
-//			tTasksStatus.setExpand3(controlfile);
 			
 			tTasksStatus.setTasksExpand3(controlfile);
 //			tTasksStatus.setTasksExpand3("/work/modelcloud/lixin_meic/hebei/cf/cf_zero.csv");
 			tTasksStatus.setTasksScenarinoId(scenarinoId);
-//			tTasksStatus.setExpand1(0l);
 			tTasksStatus.setTasksExpand1(0l);
-//			System.out.println(tTasksStatus.toString()+"-------------------");
 		//添加到对应的情景下面去
 //			int i = tTasksStatusMapper.updateEmisData(tTasksStatus);
 			int	i = tTasksStatusMapper.updateEmisData(tTasksStatus);
