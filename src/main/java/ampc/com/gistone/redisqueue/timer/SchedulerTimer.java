@@ -148,7 +148,6 @@ public class SchedulerTimer<V> {
 			//查找实时时预报任务并修改任务为最新的时间状态 
 			List<TGlobalSetting>  list = tGlobalSettingMapper.selectAll();
 			for (TGlobalSetting tGlobalSetting : list) {
-				System.out.println(tGlobalSetting);
 				Long userId = tGlobalSetting.getUserid();
 				Integer spinup = tGlobalSetting.getSpinup();
 				cores = Long.parseLong(tGlobalSetting.getCores().toString());
@@ -473,7 +472,12 @@ public class SchedulerTimer<V> {
 									if (null!=lastungrib) {
 										readyData.readyRealMessageDataFirst(tScenarinoDetail, lastungrib);
 										//修改状态为执行中
-										readyData.updateScenStatusUtil(6l, tScenarinoDetail.getScenarinoId());
+										boolean updateScenStatusUtil = readyData.updateScenStatusUtil(6l, tScenarinoDetail.getScenarinoId());
+										if (updateScenStatusUtil) {
+											LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:修改预报情景状态成功！");
+										}else {
+											LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:修改预报情景状态失败！");
+										}
 									}else {
 										LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:lastungrib对应的实时预报已经发送过了或者当天的ungrib还未更新！");
 									}
@@ -564,17 +568,17 @@ public class SchedulerTimer<V> {
 							//当前情景已经发送过得日期
 							String sendtime = tasksStatus.getBeizhu2();
 							if (sendtime.equals("0")) {
-								LogUtil.getLogger().info("该情景尚未发送过一次！");
+								LogUtil.getLogger().info("情景id为："+scenarinoId+"尚未发送过一次！");
 								if (compareTo>=0) {
 									//发送第一次的数据
 									boolean flag = readyData.readyPreEvaluationSituationDataFirst(tScenarinoDetail);
 									if (flag) {
 										LogUtil.getLogger().info("ID为"+scenarinoId+"预评估情景发送成功！本次消息的时间是："+startDate);
 									}else {
-										LogUtil.getLogger().info("预评估情景发送失败！");
+										LogUtil.getLogger().info("ID为"+scenarinoId+"预评估情景发送失败！");
 									}
 								}else {
-									LogUtil.getLogger().info("气象数据不满足");
+									LogUtil.getLogger().info("ID为"+scenarinoId+"气象数据不满足");
 								}
 							}else {
 								//当前情景执行到的日期
@@ -637,7 +641,7 @@ public class SchedulerTimer<V> {
 
 	/**
 	 * 
-	 * @Description: 定时查错，续跑实时预报
+	 * @Description: 
 	 * void  
 	 * @throws
 	 * @author yanglei
@@ -676,15 +680,6 @@ public class SchedulerTimer<V> {
 		
 	}
 
-
-	public Map<String, String> getEmisData(Long sourceid,Long scenarinoId,int flag) {
-		
-		/*Map<String,String> map = new HashMap<String,String>();
-		String url="http://192.168.1.128:8082/ampc/app";
-		String getResult=ClientUtil.doPost(url,sourceid.toString());*/
-		return null;
-	}
-	
 	/**
 	 * 
 	 * @Description: 定时查错，续跑实时预报
@@ -697,10 +692,10 @@ public class SchedulerTimer<V> {
 	 */
 	
 //	@Scheduled(fixedRate = 5000)
-//	@Scheduled(cron="0 */3 * * * ") //每隔三个小时检查一次实时预报的情况---服务器配置
+	@Scheduled(cron="0 0 */3 * * ?") //每隔三个小时检查一次实时预报的情况---服务器配置
 	public void continueRealModelprediction() {
 		boolean runningSetting = configUtil.isRunningSetting();
-		LogUtil.getLogger().info("定时器 ForpreEvalution:runningSetting:"+runningSetting);
+		LogUtil.getLogger().info("定时器continueRealModelprediction:runningSetting:"+runningSetting);
 		if (runningSetting) {
 			LogUtil.getLogger().info("continueRealModelprediction:每隔三个小时检查一次实时预报的情况！");
 			//查找当天的实时预报的运行状态
@@ -724,18 +719,21 @@ public class SchedulerTimer<V> {
 							if (null!=modelErrorStatus) {
 								TUngrib tUngrib = tUngribMapper.getlastungrib();
 								String lastungrib =  DateUtil.DATEtoString(tUngrib.getPathDate(), "yyyyMMdd");
-								boolean comtinueRealpredict =readyData.continueRealpredict(tScenarinoDetail,lastungrib);
-								if (comtinueRealpredict) {
-									LogUtil.getLogger().info("continueRealModelprediction:自动续跑实时预报成功！");
-									//修改情景状态和清空模式错误信息
-									boolean updateScenStatusUtil = readyData.updateScenStatusUtil(6l, tasksScenarinoId);
-									if (updateScenStatusUtil) {
-										LogUtil.getLogger().info("continueRealModelprediction:续跑后修改状态成功！");
+								//修改情景状态和清空模式错误信息
+								boolean updateScenStatusUtil = readyData.updateScenStatusUtil(6l, tasksScenarinoId);
+								
+								if (updateScenStatusUtil) {
+									LogUtil.getLogger().info("continueRealModelprediction:修改续跑状态成功！");
+									boolean comtinueRealpredict =readyData.continueRealpredict(tScenarinoDetail,lastungrib);
+									if (comtinueRealpredict) {
+										LogUtil.getLogger().info("continueRealModelprediction:自动续跑实时预报成功！");
 									}else {
-										LogUtil.getLogger().info("continueRealModelprediction:续跑后修改状态失败！");
+										LogUtil.getLogger().info("continueRealModelprediction:自动续跑实时预报失败！");
+										//状态改回出错
+										boolean updateScenStatusUtil2 = readyData.updateScenStatusUtil(9l, tasksScenarinoId);
 									}
 								}else { 
-									LogUtil.getLogger().info("continueRealModelprediction:自动续跑实时预报失败！");
+									LogUtil.getLogger().info("continueRealModelprediction:修改续跑状态失败！");
 								}
 							}else {
 								LogUtil.getLogger().info("continueRealModelprediction:预报运行正常！");
@@ -763,18 +761,18 @@ public class SchedulerTimer<V> {
 							if (null!=modelErrorStatus) {
 								TUngrib tUngrib = tUngribMapper.getlastungrib();
 								String lastungrib =  DateUtil.DATEtoString(tUngrib.getPathDate(), "yyyyMMdd");
-								boolean comtinueRealpredict =readyData.continueRealpredict(tScenarinoDetail,lastungrib);
-								if (comtinueRealpredict) {
-									LogUtil.getLogger().info("continueRealModelprediction:自动续跑实时预报成功！");
-									//修改情景状态和清空模式错误信息
-									boolean updateScenStatusUtil = readyData.updateScenStatusUtil(6l, tasksScenarinoId);
-									if (updateScenStatusUtil) {
-										LogUtil.getLogger().info("continueRealModelprediction:续跑后修改状态成功！");
+								//修改情景状态和清空模式错误信息
+								boolean updateScenStatusUtil = readyData.updateScenStatusUtil(6l, tasksScenarinoId);
+								if (updateScenStatusUtil) {
+									LogUtil.getLogger().info("continueRealModelprediction:续跑后修改续跑状态成功！");
+									boolean comtinueRealpredict =readyData.continueRealpredict(tScenarinoDetail,lastungrib);
+									if (comtinueRealpredict) {
+										LogUtil.getLogger().info("continueRealModelprediction:自动续跑实时预报成功！");
 									}else {
-										LogUtil.getLogger().info("continueRealModelprediction:续跑后修改状态失败！");
+										LogUtil.getLogger().info("continueRealModelprediction:自动续跑实时预报失败！");
 									}
 								}else {
-									LogUtil.getLogger().info("continueRealModelprediction:自动续跑实时预报失败！");
+									LogUtil.getLogger().info("continueRealModelprediction:修改续跑状态失败！");
 								}
 							}else {
 								LogUtil.getLogger().info("continueRealModelprediction:预报运行正常！");
