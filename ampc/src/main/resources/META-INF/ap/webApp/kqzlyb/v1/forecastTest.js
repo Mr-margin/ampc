@@ -25,14 +25,15 @@ var changeMsg = {
     city: ''
 };
 var zhiCity = ['11', '12', '31', '50'];
+//定义的污染物和气象要素
 var speciesAll = {
     wrw: {
         day: ['AQI','PM₂.₅', 'PM₁₀', 'O₃_8_max', 'SO₂', 'NO₂', 'CO'],
         hour: ['AQI','PM₂.₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO']
     },
     qxys: {
-        day: [],
-        hour: []
+    	day: ["TEMP","PRSFC","PT","RH","WSPD"],
+		hour: ["TEMP","PRSFC","PT","RH","WSPD"]
     }
 };
 var speciesObj = {
