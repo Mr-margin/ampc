@@ -979,7 +979,11 @@ function initEcharts() {
 	    	var es = echarts.init(document.getElementById(tname[i]));
 	    	es.group = 'group1';
 	    	es.on('mouseover', function (params) {
-	    		es.group='';
+//	    		es.group='';
+	    		echarts.disconnect('group1');
+	   	    });
+	    	es.on('legendselectchanged', function (params) {
+	    		//图表联动
 	    		echarts.disconnect('group1');
 	   	    });
 	    	es.setOption(option);
@@ -988,6 +992,10 @@ function initEcharts() {
 	    	var aqi = echarts.init(document.getElementById(tname[i]));
 	    	aqi.group = 'group1';
 	    	aqi.on('mouseover', function (params) {
+	    		echarts.connect('group1');
+	   	    });
+	    	aqi.on('legendselectchanged', function (params) {
+	    		//图表联动
 	    		echarts.connect('group1');
 	   	    });
 	    	aqi.setOption(option);
