@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,8 +35,10 @@ import ampc.com.gistone.database.model.TMeasureExcel;
 import ampc.com.gistone.database.model.TQueryExcel;
 import ampc.com.gistone.database.model.TSectorExcel;
 import ampc.com.gistone.database.model.TSectordocExcel;
+import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.JsonUtil;
 import ampc.com.gistone.util.LogUtil;
+import ampc.com.gistone.util.RegUtil;
 
 /**
  * Excel解析帮助类
@@ -63,14 +66,22 @@ public class ExcelToDate {
     public static boolean isError=false;
     //存放验证信息的Map
     public static LinkedHashMap checkMap=null;
-    //用来存放错误信息的集合
-    public static List<ItemError> errorList=null;
-    //单个错误信息对象
-    public static ItemError error=null;
+    /**
+     * 用来存放错误信息的集合
+     * 0.sheetName长度不匹配
+     * 1.表头不匹配
+     * 2.表头缺失
+     * 3.单元格数据违反了非空验证
+     * 4.单元格数据违反了数据类型要求验证
+     * 5.单元格数据违反了取值范围要求验证
+     * 6.单元格数据违反了长度验证
+     */
+    public static Map errorMap=new HashMap();
     
     
     //SheetName错误信息
     public static final String SHEETNAME_ERROR="SheetName名称超过规定长度(要求在10个字符以内)!";
+    
     
     
     /**
@@ -209,28 +220,155 @@ public class ExcelToDate {
 	    out.close();
 	}
 	
+	/**
+	 * 单元格的验证方法
+	 * @param file  文件名称
+	 * @param sheetName  sheet页名称
+	 * @param rowNum     行数
+	 * @param columnNum  列数
+	 * @param tempMap    验证Map
+	 * @param cellError  单元格错误集合
+	 * @param cellValue  单元格值
+	 */
+	public static void checkCell(String file,String sheetName,int rowNum,int columnNum,Map tempMap,List<String> cellError,String cellValue){
+		//进行非空验证
+        if(tempMap.get("isNotNull").toString().equals("y")){
+        	if(!cellValue.isEmpty()){
+        		//写入错误信息
+        		cellError.add(file+":"+sheetName+"工作簿下的第"+rowNum+"行"+columnChar(columnNum)+"列的单元格为空,验证文件要求必须填写!");
+				//写入错误信息
+				errorMap.put(3,file+":单元格数据违反了非空验证!");
+            }
+    	}
+        //获取要求单元格的数据类型
+        String dataType=tempMap.get("dataType").toString();
+        //进行数据类型验证
+        if(!dataType.isEmpty()){
+        	//将数据转换进行判断
+        	if(!RegUtil.CheckParameter(cellValue, dataType, null, false)){
+        		//写入错误信息
+        		cellError.add(file+":"+sheetName+"工作簿下的第"+rowNum+"行"+columnChar(columnNum)+"列的单元格数据类型不匹配,验证文件要求必须为"+dataType+"类型!");
+				//写入错误信息
+				errorMap.put(4,file+":单元格数据违反了数据类型要求验证!");
+			}else{
+				//获取要求单元格的取值范围
+                String valueRange=tempMap.get("valueRange").toString();
+                //进行取值范围验证
+                if(!valueRange.isEmpty()){
+                	//判断取值范围
+                	if(dataType.equals("Integer")){
+                		String[] valuesRanges=valueRange.split("~");
+                		int value=Integer.valueOf(cellValue);
+                		if(valuesRanges[0].equals("inf")&&!(valuesRanges[1].equals("inf"))){
+                			if(value>Integer.valueOf(valuesRanges[1])){
+                				//写入错误信息
+                        		cellError.add(file+":"+sheetName+"工作簿下的第"+rowNum+"行"+columnChar(columnNum)+"列的单元格数据取值范围不匹配,验证文件要求必须为"+valuesRanges[0]+"~"+valuesRanges[1]+"之间!");
+            					//写入错误信息
+            					errorMap.put(5,file+":单元格数据违反了数据取值范围验证!");
+                			}
+                		}else if(valuesRanges[1].equals("inf")&&!(valuesRanges[0].equals("inf"))){
+                			if(value<Integer.valueOf(valuesRanges[0])){
+                				//写入错误信息
+                				cellError.add(file+":"+sheetName+"工作簿下的第"+rowNum+"行"+columnChar(columnNum)+"列的单元格数据取值范围不匹配,验证文件要求必须为"+valuesRanges[0]+"~"+valuesRanges[1]+"之间!");
+            					//写入错误信息
+                				errorMap.put(5,file+":单元格数据违反了数据取值范围验证!");
+                			}
+                		}else if(!(valuesRanges[0].equals("inf"))&&!(valuesRanges[0].equals("inf"))){
+                			if(value<Integer.valueOf(valuesRanges[0])||value>Integer.valueOf(valuesRanges[1])){
+                				//写入错误信息
+                				cellError.add(file+":"+sheetName+"工作簿下的第"+rowNum+"行"+columnChar(columnNum)+"列的单元格数据取值范围不匹配,验证文件要求必须为"+valuesRanges[0]+"~"+valuesRanges[1]+"之间!");
+            					//写入错误信息
+                				errorMap.put(5,file+":单元格数据违反了数据取值范围验证!");
+                			}
+                		}
+                	}else if(dataType.equals("Double")){
+                		String[] valuesRanges=valueRange.split("~");
+                		double value=Double.valueOf(cellValue);
+                		if(valuesRanges[0].equals("inf")&&!(valuesRanges[1].equals("inf"))){
+                			if(value>Double.valueOf(valuesRanges[1])){
+                				//写入错误信息
+                        		cellError.add(file+":"+sheetName+"工作簿下的第"+rowNum+"行"+columnChar(columnNum)+"列的单元格数据取值范围不匹配,验证文件要求必须为"+valuesRanges[0]+"~"+valuesRanges[1]+"之间!");
+            					//写入错误信息
+                        		errorMap.put(5,file+":单元格数据违反了数据取值范围验证!");
+                			}
+                		}else if(valuesRanges[1].equals("inf")&&!(valuesRanges[0].equals("inf"))){
+                			if(value<Double.valueOf(valuesRanges[0])){
+                				//写入错误信息
+                				cellError.add(file+":"+sheetName+"工作簿下的第"+rowNum+"行"+columnChar(columnNum)+"列的单元格数据取值范围不匹配,验证文件要求必须为"+valuesRanges[0]+"~"+valuesRanges[1]+"之间!");
+            					//写入错误信息
+                				errorMap.put(5,file+":单元格数据违反了数据取值范围验证!");
+                			}
+                		}else if(!(valuesRanges[0].equals("inf"))&&!(valuesRanges[0].equals("inf"))){
+                			if(value<Integer.valueOf(valuesRanges[0])||value>Integer.valueOf(valuesRanges[1])){
+                				//写入错误信息
+                				cellError.add(file+":"+sheetName+"工作簿下的第"+rowNum+"行"+columnChar(columnNum)+"列的单元格数据取值范围不匹配,验证文件要求必须为"+valuesRanges[0]+"~"+valuesRanges[1]+"之间!");
+            					//写入错误信息
+                				errorMap.put(5,file+":单元格数据违反了数据取值范围验证!");
+                			}
+                		}
+                	}else{
+                		String[] valuesRanges=valueRange.split("-");
+                		boolean isExist=false;
+                		String joinInfo="";
+                		for(int q=0;q<valuesRanges.length;q++){
+                			if((q+1)==valuesRanges.length){
+                				joinInfo+=valuesRanges[q]+"!";
+                			}else{
+                				joinInfo+=valuesRanges[q]+",";
+                			}
+                			if(cellValue.equals(valuesRanges[q])){
+                				isExist=true;
+                			}
+                		}
+                		if(!isExist){
+                			//写入错误信息
+            				cellError.add(file+":"+sheetName+"工作簿下的第"+rowNum+"行"+columnChar(columnNum)+"列的单元格数据取值范围不匹配,验证文件要求必须为"+joinInfo+"之一!");
+        					//写入错误信息
+            				errorMap.put(5,file+":单元格数据违反了数据取值范围验证!");
+                		}
+                	}
+                }
+			}
+        }
+        //获取要求单元格的长度验证
+        String maxLenths=tempMap.get("maxLenth").toString();
+        //进行数据长度验证
+        if(!maxLenths.isEmpty()){
+        	int maxLenth=Integer.valueOf(maxLenths);
+        	if(cellValue.length()>maxLenth){
+        		//写入错误信息
+        		cellError.add(file+":"+sheetName+"工作簿下的第"+rowNum+"行"+columnChar(columnNum)+"列的单元格违反了长度验证,验证文件要求长度在"+maxLenth+"之内!");
+				//写入错误信息
+				errorMap.put(6,file+":单元格数据违反了长度验证!");
+            }
+    	}
+	}
   /**  
-	*行业描述Excel表
+	* 行业描述Excel表
 	* 读取excel描述数据   读取行业描述Excel表
 	* @param path  
 	*/
-	public static List<TSectordocExcel> ReadSectorDOC(String fileName,Long versionId,Long userId,List<String> msg){  
+	public static List<TSectordocExcel> ReadSectorDOC(String fileName,Long versionId,Long userId,List<String> msg){ 
 		String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_1描述文件.xlsx";
+		//初始化异常信息集合
+		msg=new ArrayList();
 		//获取文件名称
 		String file=path.substring(path.lastIndexOf("//"));
 		//返回结果的集合
 		List<TSectordocExcel> sectorDocList=new ArrayList<TSectordocExcel>();
+		//初始化错误类型Map
+		errorMap=new HashMap();
         try {  
         	String message=null;
         	//执行Excel初始化
         	if(!init(path,message)){
-        		msg.add(message);
+        		msg.add(file+":"+message);
         		return null;
         	}
         	//获取验证集合
         	checkMap=readCheckJson("应急系统新_1描述文件.json");
         	if(checkMap==null){
-        		msg.add("读取系统内置校验文件出现异常!");
+        		msg.add(file+":读取系统内置校验文件出现异常!");
         		return null;
         	}
         	//获取字段验证Map
@@ -241,7 +379,7 @@ public class ExcelToDate {
             int sheetCount=wb.getNumberOfSheets();
             //sheet页验证
             if(sheetCount<1){
-            	msg.add("缺失sheet页!");
+            	msg.add(file+":缺失sheet页!");
         		return null;
             }
             //循环每一页
@@ -253,9 +391,7 @@ public class ExcelToDate {
             	//判断sheet名称的信息是否合格
             	if(sheetName.length()>sheetNameMaxLength){
             		//写入错误信息
-            		error=new ItemError(file,sheetName,SHEETNAME_ERROR,1);
-            		//添加到错误集合
-            		errorList.add(error);
+					errorMap.put(0,file+":"+SHEETNAME_ERROR);
             	}
             	//获得所有行
             	Iterator<Row> rows = sheet.rowIterator(); 
@@ -274,48 +410,174 @@ public class ExcelToDate {
                     		try{
                     			if(!headerMap.get(j).equals(ch)){
                     				//写入错误信息
-                            		error=new ItemError(file,sheetName,SHEETNAME_ERROR,1);
-                            		//添加到错误集合
-                            		errorList.add(error);
-                        		}
+                    				message=file+":"+sheetName+"工作簿下的第1行"+columnChar(j+1)+"列的表头"+headerMap.get(j)+"和验证文件表头名称不匹配,验证文件表头名称为:"+ch+"!";
+                            		Cell cell=row.getCell(j);
+                					cell.setCellStyle(yellowStyle);
+                					cell.setCellComment(getComment(sheet, message));
+                					//写入错误信息
+                					errorMap.put(1,file+":表头和验证文件表头名称不匹配!");
+                    			}
                     		}catch(Exception e){
                     			//写入错误信息
-                        		error=new ItemError(file,sheetName,SHEETNAME_ERROR,1);
-                        		//添加到错误集合
-                        		errorList.add(error);
+                    			message=file+":"+sheetName+"工作簿下的第1行"+columnChar(j+1)+"列的表头缺失,验证文件表头名称为:"+ch+"!";
+                    			Cell cell=row.getCell(j);
+            					cell=row.createCell((short) j);
+            					cell.setCellStyle(yellowStyle);
+            					cell.setCellComment(getComment(sheet, message));
+            					//写入错误信息
+            					errorMap.put(2,file+":表头缺失!");
                     		}
+                    		//临时变量迭代 获取下一个表头信息
                     		j++;
                     	}
                     	continue;
                     }
-                    String t=getCellValue(row.getCell(4));
+                    //定义中间验证Map
+                    Map tempMap=null;
+                    //定义中间单元格对象
+                    Cell cell=null;
+                    //获取单元格信息
+                    cell=row.getCell(4);
+                    //获取4的验证条件
+                    tempMap=(Map)checkHeader.get("属性类型");
+                    //先获取Excel中4的属性
+                    String cellValue=getCellValue(cell);
+                    //单元格的验证错误信息
+                    List<String> cellError=new ArrayList();
+                    //执行单元格验证方法
+                    checkCell(file, sheetName, row.getRowNum()+1, 4+1, tempMap, cellError, cellValue);
+                    //判断是否出现错误
+                    if(cellError.size()>0){
+                    	cell=row.createCell((short) 4);
+    					cell.setCellStyle(yellowStyle);
+    					message="";
+    					for(int u=0;u<cellError.size();u++){
+    						message+=(u+1)+":"+cellError.get(u)+"/n";
+    					}
+    					cell.setCellComment(getComment(sheet, message));
+                    }
                     //只保留属性为 统计 和 筛选和统计 的信息
-                    if(t.equals("统计")||t.equals("筛选和统计")){
-                    	TSectordocExcel sectorDoc=new TSectordocExcel();
-                        //写入行业表中名称
-                        sectorDoc.setSectordocName(getCellValue(row.getCell(0)));
-                        //写入行业Etitle
-                        sectorDoc.setSectordocEtitle(getCellValue(row.getCell(1)));
-                        //写入行业名头
-                        sectorDoc.setSectordocCtitle(getCellValue(row.getCell(2)));
-                        //写入属性
-                        sectorDoc.setSectordocType(getCellValue(row.getCell(3)));
-                        //写入属性类型
-                        sectorDoc.setSectordocStype(getCellValue(row.getCell(4)));
-                        //写入用户填写说明
-                        sectorDoc.setSectordocDoc(getCellValue(row.getCell(5)));
-                        //写入行业显示的名称
-                        sectorDoc.setSectordocDisname(sheetName);
-                        //写入版本等信息
-                        sectorDoc.setSectordocVersion(versionId);
-                        sectorDoc.setUserId(userId);
-                        sectorDocList.add(sectorDoc);
+                    if(cellValue.equals("统计")||cellValue.equals("筛选和统计")){
+                        //获取单元格信息
+                        cell=row.getCell(0);
+                        //获取4的验证条件
+                        tempMap=(Map)checkHeader.get("Sheet");
+                        //先获取Excel中4的属性
+                        cellValue=getCellValue(cell);
+                        //单元格的验证错误信息
+                        cellError=new ArrayList();
+                        //执行单元格验证方法
+                        checkCell(file, sheetName, row.getRowNum()+1,1, tempMap, cellError, cellValue);
+                        //判断是否出现错误
+                        if(cellError.size()>0){
+                        	cell=row.createCell((short) 0);
+        					cell.setCellStyle(yellowStyle);
+        					message="";
+        					for(int u=0;u<cellError.size();u++){
+        						message+=(u+1)+":"+cellError.get(u)+"/n";
+        					}
+        					cell.setCellComment(getComment(sheet, message));
+                        }
+                    	
+                        //获取单元格信息
+                        cell=row.getCell(1);
+                        //获取4的验证条件
+                        tempMap=(Map)checkHeader.get("Etitle");
+                        //先获取Excel中4的属性
+                        cellValue=getCellValue(cell);
+                        //单元格的验证错误信息
+                        cellError=new ArrayList();
+                        //执行单元格验证方法
+                        checkCell(file, sheetName, row.getRowNum()+1,2, tempMap, cellError, cellValue);
+                        //判断是否出现错误
+                        if(cellError.size()>0){
+                        	cell=row.createCell((short) 1);
+        					cell.setCellStyle(yellowStyle);
+        					message="";
+        					for(int u=0;u<cellError.size();u++){
+        						message+=(u+1)+":"+cellError.get(u)+"/n";
+        					}
+        					cell.setCellComment(getComment(sheet, message));
+                        }
+                      
+                        //获取单元格信息
+                        cell=row.getCell(2);
+                        //获取4的验证条件
+                        tempMap=(Map)checkHeader.get("CTitle1");
+                        //先获取Excel中4的属性
+                        cellValue=getCellValue(cell);
+                        //单元格的验证错误信息
+                        cellError=new ArrayList();
+                        //执行单元格验证方法
+                        checkCell(file, sheetName, row.getRowNum()+1,3, tempMap, cellError, cellValue);
+                        //判断是否出现错误
+                        if(cellError.size()>0){
+                        	cell=row.createCell((short) 2);
+        					cell.setCellStyle(yellowStyle);
+        					message="";
+        					for(int u=0;u<cellError.size();u++){
+        						message+=(u+1)+":"+cellError.get(u)+"/n";
+        					}
+        					cell.setCellComment(getComment(sheet, message));
+                        }
+                      
+                        //获取单元格信息
+                        cell=row.getCell(3);
+                        //获取4的验证条件
+                        tempMap=(Map)checkHeader.get("Type");
+                        //先获取Excel中4的属性
+                        cellValue=getCellValue(cell);
+                        //单元格的验证错误信息
+                        cellError=new ArrayList();
+                        //执行单元格验证方法
+                        checkCell(file, sheetName, row.getRowNum()+1,4, tempMap, cellError, cellValue);
+                        //判断是否出现错误
+                        if(cellError.size()>0){
+                        	cell=row.createCell((short) 3);
+        					cell.setCellStyle(yellowStyle);
+        					message="";
+        					for(int u=0;u<cellError.size();u++){
+        						message+=(u+1)+":"+cellError.get(u)+"/n";
+        					}
+        					cell.setCellComment(getComment(sheet, message));
+                        }
+                        //循环错误信息的Map,记录错误信息
+                    	if(errorMap.size()>0){
+                    		isError=true;
+                    		for(Object key:errorMap.keySet()){
+                    			msg.add(errorMap.get(key).toString());
+                    		}
+                    	}
+                    	//如果没有出现错误则记录数据 
+                    	if(!isError){
+                    		TSectordocExcel sectorDoc=new TSectordocExcel();
+                            //写入行业表中名称
+                            sectorDoc.setSectordocName(getCellValue(row.getCell(0)));
+                            //写入行业Etitle
+                            sectorDoc.setSectordocEtitle(getCellValue(row.getCell(1)));
+                            //写入行业名头
+                            sectorDoc.setSectordocCtitle(getCellValue(row.getCell(2)));
+                            //写入属性
+                            sectorDoc.setSectordocType(getCellValue(row.getCell(3)));
+                            //写入属性类型
+                            sectorDoc.setSectordocStype(getCellValue(row.getCell(4)));
+                            //写入用户填写说明
+                            sectorDoc.setSectordocDoc(getCellValue(row.getCell(5)));
+                            //写入行业显示的名称
+                            sectorDoc.setSectordocDisname(sheetName);
+                            //写入版本等信息
+                            sectorDoc.setSectordocVersion(versionId);
+                            sectorDoc.setUserId(userId);
+                            sectorDocList.add(sectorDoc);
+                    	}
                     }
                 }  
             }
+            //返回信息
+			LogUtil.getLogger().info("ExcelToDateController 获取行业描述Excel表!");
             return sectorDocList;
-        } catch (Exception ex) {  
-            ex.printStackTrace();
+        } catch (Exception e) {  
+        	LogUtil.getLogger().error("ExcelToDateController 获取行业描述Excel表异常!",e);
             return null;
         }  
     }  
