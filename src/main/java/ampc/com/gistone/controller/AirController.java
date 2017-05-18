@@ -3009,9 +3009,9 @@ public class AirController {
 					while(iters.hasNext()){
 						Entry<String,Map<String,Object>> ite=iters.next();
 						String spcs=ite.getKey();
-						if(spcs.equals("O3_AVG")){
-							spcs="O3";
-						}
+//						if(spcs.equals("O3_AVG")){
+//							spcs="O3";
+//						}
 					
 						BigDecimal p=new BigDecimal(ite.getValue().get("0").toString());
 //						String ps=LevelUtil.Level(p);
@@ -3194,15 +3194,18 @@ public class AirController {
 								spcexactMap.put(spc, spcexactMap.get(spc)+1);				
 							}
 						}
-					
+						//单个观测减去观测平均值的差值
 						double opresult=num.subtract(new BigDecimal(sumMapsum.get(day).get(spc).toString()).divide(new BigDecimal(vale),2)).doubleValue();
 						
 						double ppresult=0;
 						if(AllspcMap.get(day).get(date).get(spc)!=null){
 							ppresult=new BigDecimal(AllspcMap.get(day).get(date).get(spc).toString()).subtract(psumMapsum.get(day).get(spc).divide(new BigDecimal(vale),2)).doubleValue();
 						}
+						//分子
 						double store =opresult*ppresult;
+						//
 						double p2=Math.pow(ppresult,2);
+						//
 						double o2=Math.pow(opresult,2);
 						
 						double o_p= 0;

@@ -111,12 +111,17 @@
 //   $('#qdList').bootstrapTable('refresh', params);
 // }
 //
-// /*创建新清单*/
-// function createNewQd(){
-//   var a = document.createElement('a');
-//   a.href = '#/newQd';
-//   a.click();
-// }
+/*创建新清单*/
+function createNewQd(){
+	var a = document.createElement('a');
+	a.href = '#/newQd';
+	a.click();
+}
+//点击创建新清单按钮跳转
+$("#addnewqd").click(function(){
+	$("#addnewqd").attr("href","#/newQd");
+	$("#addnewqd").click();
+});
 //
 // function delQD(){
 //   console.log(delQDMap);
@@ -128,7 +133,7 @@
  */
 $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span>');
 defaultdatagridoption.method='get';
-defaultdatagridoption.url=localhttp+'/ampc/webApp/yqd/qdList/qd.json';
+defaultdatagridoption.url='/ampc/webApp/yqd/qdList/qd.json';
 clacdatagridcolumnwidth();
 defaultdatagridoption.columns=[[
   {field:'qdmc',title:'清单名称',width:30*datagridcolumnwidthrem},
@@ -160,6 +165,9 @@ defaultdatagridoption.columns=[[
 //   {field:'cjsj',title:'创建时间',width:1},
 //   {field:'syls',title:'使用历史',width:1}
 // ]];
+//groupFormatter:function(value, rows){
+//	return value + ' - ' + rows.length + ' Item(s)';
+//    }
 $('#dg').datagrid(
   defaultdatagridoption
 )

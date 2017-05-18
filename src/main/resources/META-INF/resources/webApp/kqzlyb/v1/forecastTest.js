@@ -29,10 +29,12 @@ var speciesAll = {
         hour: ['AQI','PM₂.₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO']
     },
     qxys: {
-        day: [],
-        hour: []
+    	day: ["TEMP","PRSFC","PT","RH","WSPD"],
+		hour: ["TEMP","PRSFC","PT","RH","WSPD"]
     }
 };
+
+
 var speciesObj = {
     'AQI':'AQI',
     'PM₂.₅': 'PM25',
