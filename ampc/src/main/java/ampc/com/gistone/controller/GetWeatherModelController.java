@@ -18,10 +18,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 
 
@@ -55,6 +57,7 @@ import ampc.com.gistone.util.RegUtil;
  * @date 2017年4月12日 上午11:57:45
  * @version 1.0
  */
+@Controller
 @RestController
 @RequestMapping
 public class GetWeatherModelController {
@@ -97,26 +100,58 @@ public class GetWeatherModelController {
 			//获取数据包
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
+			
 			//用户id
+			Object param = data.get("userId");
+			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController getRunModel userId为空或出现非法字符!");
+				return AmpcResult.build(1003, "userId为空或出现非法字符!");
+			}
 			Long userId = Long.parseLong(data.get("userId").toString());
+			
 			//任务类型
+			param = data.get("missionType");
+			if (!RegUtil.CheckParameter(param, "Integer", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController getRunModel missionType为空或出现非法字符!");
+				return AmpcResult.build(1003, "missionType为空或出现非法字符!");
+			}
 			Integer missionType = Integer.parseInt(data.get("missionType").toString());
+			
 			//情景ID
+			param = data.get("scenarinoId");
+			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController getRunModel scenarinoId为空或出现非法字符!");
+				return AmpcResult.build(1003, "scenarinoId为空或出现非法字符!");
+			}
 			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
+			
 			//任务ID
+			param = data.get("missionId");
+			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController getRunModel missionId为空或出现非法字符!");
+				return AmpcResult.build(1003, "missionId为空或出现非法字符!");
+			}
 			Long missionId = Long.parseLong(data.get("missionId").toString());
 			//情景类型
+			param = data.get("scenarinoType");
+			if (!RegUtil.CheckParameter(param, "Integer", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController getRunModel scenarinoType为空或出现非法字符!");
+				return AmpcResult.build(1003, "scenarinoType为空或出现非法字符!");
+			}
 			Integer scenarinoType = Integer.parseInt(data.get("scenarinoType").toString());
+			
 			//计算核数
+			param = data.get("cores");
+			if (!RegUtil.CheckParameter(param, "Integer", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController getRunModel cores为空或出现非法字符!");
+				return AmpcResult.build(1003, "cores为空或出现非法字符!");
+			}
 			Long cores = Long.parseLong(data.get("cores").toString());
 			//持久化cores 并更新状态变为模式执行中
 			TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
 			tScenarinoDetail.setExpand3(cores.toString());
 			tScenarinoDetail.setScenarinoId(scenarinoId);
 			int updateCores = tScenarinoDetailMapper.updateCores(tScenarinoDetail);
-			//获取减排参数
-		//	Map<String, String> emis = readyData.getEmis(missionId,scenarinoId,userId,scenarinoType);
-			
 			//清空taskstatus中的index和tasksenddate 以及情景运行完成状态beizhu为0
 			TTasksStatus tTasksStatus = new TTasksStatus();
 			tTasksStatus.setStepindex(null);
@@ -126,11 +161,10 @@ public class GetWeatherModelController {
 			tTasksStatus.setTasksScenarinoId(scenarinoId);
 			//清空模式运行状态
 			int updateByPrimaryKey = tTasksStatusMapper.updatecleanStatus(tTasksStatus);
-			System.out.println(updateByPrimaryKey+"清空模式运行状态");
 			if (updateByPrimaryKey>0) {
-				LogUtil.getLogger().info("情况模式的运行状态");
+				LogUtil.getLogger().info("情况模式的运行状态,updateByPrimaryKey："+updateByPrimaryKey);
 			}else {
-				LogUtil.getLogger().info("清空运行状态失败！");
+				LogUtil.getLogger().info("清空运行状态失败！updateByPrimaryKey："+updateByPrimaryKey);
 			}
 			TTasksStatus tTasksStatus2 = new TTasksStatus();
 			tTasksStatus2.setTasksScenarinoId(scenarinoId);
@@ -167,7 +201,6 @@ public class GetWeatherModelController {
 			}
 			
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			LogUtil.getLogger().error("GetWeatherModelController runmodel",e);
 			return AmpcResult.build(1000, "模式启动异常！");
 		}
@@ -347,12 +380,25 @@ public class GetWeatherModelController {
 			Date tasksEndDate = tasksStatus.getTasksEndDate();
 			Date tasksScenarinoEndDate = tasksStatus.getTasksScenarinoEndDate();
 			Long stepindex = tasksStatus.getStepindex();
+			/*
+			 * 用于预评估
+			 */
+			Date sendDate = null;
+			try {
+				sendDate = DateUtil.StrtoDateYMD(sendtime, "yyyyMMdd");
+			} catch (Exception e) {
+				LogUtil.getLogger().error("GetWeatherModelController-stopModel:时间格式转换错误！",e);
+			}
+			//比价情景发送了的时间和已经完成了的时间
+			int compareTo = tasksEndDate.compareTo(sendDate);
+			//比较情景的任务结束时间和情景的结束时间
+			int compareTo2 = tasksEndDate.compareTo(tasksScenarinoEndDate);
 			/**
 			 * 对于预评估情景有两种情况可以直接终止和暂停
 			 * 1.模式在减排计算的过程中，点击的暂停和终止-模式不用发送指令到消息队列----这种情景适用于所有的情景
 			 * 2.模式在某一次执行完毕中，由定时器等待的发送下一次的消息的情况下，可以直接终止和暂停，因为此时模式没有执行---预评估独有
 			 */
-			if (scenarinoType==1&&missionType==2) {
+/*			if (scenarinoType==1&&missionType==2) {
 				//预评估情景
 				if (scenarinoStatus!=9&&!"0".equals(sendtime)&&null!=tasksEndDate) {
 					Date sendDate = null;
@@ -365,11 +411,11 @@ public class GetWeatherModelController {
 					int compareTo = tasksEndDate.compareTo(sendDate);
 					//比较情景的任务结束时间和情景的结束时间
 					int compareTo2 = tasksEndDate.compareTo(tasksScenarinoEndDate);
-					if (4==stepindex&&compareTo==0&&compareTo>0) {
-						/*
+					if (4==stepindex&&compareTo==0&&compareTo2>0) {
+						
 						 * 表示某一次的模式执行完毕，正在入库处理或者等待定时器发送下一次消息时间
 						 * 这时候可以直接停止
-						 * */
+						 * 
 						if (flag==0) {
 							TTasksStatus tTasksStatus = new TTasksStatus();
 							tTasksStatus.setTasksScenarinoId(scenarinoId);
@@ -384,29 +430,37 @@ public class GetWeatherModelController {
 								if (updateScenType>0) {
 									return AmpcResult.build(0, "停止成功！");
 								}else {
-									throw new SQLException("GetWeatherModelController  修改情景状态失败!");
+									throw new SQLException("GetWeatherModelController  修改情景状态失败!scenarinoId："+scenarinoId);
 								}
 							}else {
-								throw new SQLException("GetWeatherModelController  更新终止的指令状态失败!");
+								throw new SQLException("GetWeatherModelController  更新终止的指令状态失败!scenarinoId："+scenarinoId);
+							}
+						}else if (flag==1){
+							//flag=1--可直接暂停
+							TTasksStatus tTasksStatus = new TTasksStatus();
+							tTasksStatus.setTasksScenarinoId(scenarinoId);
+							tTasksStatus.setPauseStatus("2");;//2表示不可发送消息到队列
+							int i = tTasksStatusMapper.updatepausestatus(tTasksStatus);
+							if (i>0) {
+								//修改情景状态
+								Map map = new HashMap();
+								map.put("scenarinoStatus", 7l);
+								map.put("scenarinoId", scenarinoId);
+								int updateScenType = tScenarinoDetailMapper.updateScenType(map);
+								if (updateScenType>0) {
+									return AmpcResult.build(0, "暂停成功！");
+								}else {
+									throw new SQLException("GetWeatherModelController  修改情景状态失败!scenarinoId："+scenarinoId);
+								}
+							}else {
+								throw new SQLException("GetWeatherModelController--updatepausestatus 修改情景暂停状态失败!scenarinoId："+scenarinoId);
 							}
 						}else {
-							//flag=1--可直接暂停
-							//修改情景状态
-							Map map = new HashMap();
-							map.put("scenarinoStatus", 7l);
-							map.put("scenarinoId", scenarinoId);
-							int updateScenType = tScenarinoDetailMapper.updateScenType(map);
-							if (updateScenType>0) {
-								return AmpcResult.build(0, "暂停成功！");
-							}else {
-								throw new SQLException("GetWeatherModelController  修改情景状态失败!");
-							}
+							return AmpcResult.build(1003, "flag参数错误！");
 						}
-						
 					}
 				}
-				
-			}
+			}*/
 			if (flag==0) {
 				//判断是否可以终止
 				if (sendtime.equals("0")&&compentstatus.equals("0")) {
@@ -424,10 +478,10 @@ public class GetWeatherModelController {
 						if (updateScenType>0) {
 							return AmpcResult.build(0, "停止成功！");
 						}else {
-							throw new SQLException("GetWeatherModelController  修改情景状态失败!");
+							throw new SQLException("GetWeatherModelController  修改情景状态失败!scenarinoId："+scenarinoId);
 						}
 					}else {
-						throw new SQLException("GetWeatherModelController  更新发送终止的指令状态失败!");
+						throw new SQLException("GetWeatherModelController  更新发送终止的指令状态失败!scenarinoId："+scenarinoId);
 					}
 				}
 				else if (!"0".equals(sendtime)&&compentstatus.equals("2")) {
@@ -464,12 +518,39 @@ public class GetWeatherModelController {
 						if (updatecleanStatus>0) {
 							return AmpcResult.build(0, "停止成功！");
 						}else {
-							throw new SQLException("GetWeatherModelController 模式出错终止  清空情景状态失败!");
+							throw new SQLException("GetWeatherModelController 模式出错终止  清空情景状态失败!scenarinoId："+scenarinoId);
 						}
 					}else {
-						throw new SQLException("GetWeatherModelController  修改情景状态失败!");
+						throw new SQLException("GetWeatherModelController  修改情景状态失败!scenarinoId："+scenarinoId);
 					}
 				}
+				else if (scenarinoType==1&&missionType==2&&scenarinoStatus!=9&&!"0".equals(sendtime)&&null!=tasksEndDate&&4==stepindex&&compareTo==0&&compareTo>0) {
+					/**
+					 * 预评估情景的特殊情况
+					 * 预评估情景
+					 * 表示某一次的模式执行完毕，正在入库处理或者等待定时器发送下一次消息时间
+					 * 这时候可以直接停止
+					 */
+					TTasksStatus tTasksStatus = new TTasksStatus();
+					tTasksStatus.setTasksScenarinoId(scenarinoId);
+					tTasksStatus.setStopStatus("2");//2表示不可发送消息到队列
+					int i = tTasksStatusMapper.updatestopstatus(tTasksStatus);
+					if (i>0) {
+						//修改情景状态
+						Map map = new HashMap();
+						map.put("scenarinoStatus", 5l);
+						map.put("scenarinoId", scenarinoId);
+						int updateScenType = tScenarinoDetailMapper.updateScenType(map);
+						if (updateScenType>0) {
+							return AmpcResult.build(0, "停止成功！");
+						}else {
+							throw new SQLException("GetWeatherModelController  修改情景状态失败!scenarinoId："+scenarinoId);
+						}
+					}else {
+						throw new SQLException("GetWeatherModelController  更新终止的指令状态失败!scenarinoId："+scenarinoId);
+					}		
+				}
+				
 				else {
 					//0表示终止 开始发送终止的指令
 					boolean branchModel = stopModelData.StopModel(scenarinoId,domainId,missionId,userId);
@@ -490,6 +571,25 @@ public class GetWeatherModelController {
 				else if (!"0".equals(sendtime)&&compentstatus.equals("2")) {
 					//模式已经执行完毕 正在入库等 不允许暂停
 					return AmpcResult.build(1004, "模式正在后处理，不允许暂停！");
+				}else if (scenarinoType==1&&missionType==2&&scenarinoStatus!=9&&!"0".equals(sendtime)&&null!=tasksEndDate&&4==stepindex&&compareTo==0&&compareTo>0) {
+					TTasksStatus tTasksStatus = new TTasksStatus();
+					tTasksStatus.setTasksScenarinoId(scenarinoId);
+					tTasksStatus.setPauseStatus("2");;//2表示不可发送消息到队列
+					int i = tTasksStatusMapper.updatepausestatus(tTasksStatus);
+					if (i>0) {
+						//修改情景状态
+						Map map = new HashMap();
+						map.put("scenarinoStatus", 7l);
+						map.put("scenarinoId", scenarinoId);
+						int updateScenType = tScenarinoDetailMapper.updateScenType(map);
+						if (updateScenType>0) {
+							return AmpcResult.build(0, "暂停成功！");
+						}else {
+							throw new SQLException("GetWeatherModelController  修改情景状态失败!scenarinoId："+scenarinoId);
+						}
+					}else {
+						throw new SQLException("GetWeatherModelController--updatepausestatus 修改情景暂停状态失败!scenarinoId："+scenarinoId);
+					}
 				}
 				else {
 					//1表示暂停
@@ -536,27 +636,27 @@ public class GetWeatherModelController {
 			//用户id
 			Object param = data.get("userId");
 			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
-				LogUtil.getLogger().error("GetWeatherModelController userId为空或出现非法字符!");
+				LogUtil.getLogger().error("GetWeatherModelController continueModel userId为空或出现非法字符!");
 				return AmpcResult.build(1003, "userId为空或出现非法字符!");
 			}
 			Long userId =Long.parseLong(param.toString());
 			//情景ID
 			param = data.get("scenarinoId");
 			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
-				LogUtil.getLogger().error("GetWeatherModelController scenarinoId为空或出现非法字符!");
+				LogUtil.getLogger().error("GetWeatherModelController continueModel scenarinoId为空或出现非法字符!");
 				return AmpcResult.build(1003, "scenarinoId为空或出现非法字符!");
 			}
 			Long scenarinoId = Long.parseLong(param.toString());
 			param = data.get("missionId");
 			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
-				LogUtil.getLogger().error("GetWeatherModelController missionId为空或出现非法字符!");
+				LogUtil.getLogger().error("GetWeatherModelController continueModel missionId为空或出现非法字符!");
 				return AmpcResult.build(1003, "missionId为空或出现非法字符!");
 			}
 			//任务ID
 			Long missionId = Long.parseLong(param.toString());
 			param = data.get("scenarinoType");
 			if (!RegUtil.CheckParameter(param, "Integer", null, false)) {
-				LogUtil.getLogger().error("GetWeatherModelController scenarinoType为空或出现非法字符!");
+				LogUtil.getLogger().error("GetWeatherModelController continueModel scenarinoType为空或出现非法字符!");
 				return AmpcResult.build(1003, "scenarinoType为空或出现非法字符!");
 			}
 			//情景类型
@@ -564,7 +664,7 @@ public class GetWeatherModelController {
 			
 			param = data.get("missionType");
 			if (!RegUtil.CheckParameter(param, "Integer", null, false)) {
-				LogUtil.getLogger().error("GetWeatherModelController missionType为空或出现非法字符!");
+				LogUtil.getLogger().error("GetWeatherModelController continueModel missionType为空或出现非法字符!");
 				return AmpcResult.build(1003, "missionType为空或出现非法字符!");
 			}
 			//任务类型
