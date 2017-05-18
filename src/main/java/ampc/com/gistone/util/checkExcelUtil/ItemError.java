@@ -29,27 +29,8 @@ public class ItemError {
   public int errorType;//错误类型
   
 
-  public ItemError() {
-  }
+  public ItemError() {}
 
-  public ItemError(String sheetName, String columnName, String message, int rowNumber, int errorType) {
-    this.sheetName = sheetName;
-    this.columnName = columnName;
-    this.message = message;
-    this.rowNumber = rowNumber;
-    this.errorType = errorType;
-  }
-
-  public ItemError(String fileName, String sheetName, String columnName, Object id, String message, Object columnValue, int rowNumber, int errorType) {
-    this.fileName = fileName;
-    this.sheetName = sheetName;
-    this.columnName = columnName;
-    this.id = id;
-    this.message = message;
-    this.columnValue = columnValue;
-    this.rowNumber = rowNumber;
-    this.errorType = errorType;
-  }
   /**
    * sheet名称错误
    * @param fileName
@@ -62,5 +43,47 @@ public class ItemError {
 	  this.sheetName = sheetName;
 	  this.message = message;
 	  this.errorType = errorType;
+  }
+  
+  /**
+   * 表头不匹配
+   * @param fileName
+   * @param sheetName
+   * @param columnName
+   * @param id
+   * @param message
+   * @param columnValue
+   * @param rowNumber
+   * @param errorType
+   */
+  public ItemError(String fileName, String sheetName, String columnName, Object id, String message,int errorType) {
+	    this.fileName = fileName;
+	    this.sheetName = sheetName;
+	    this.columnName = columnName;
+	    this.id = id;
+	    this.message = message;
+	    this.errorType = errorType;
+  }
+  
+  /**
+   * 单元格错误
+   * @param fileName
+   * @param sheetName
+   * @param columnName
+   * @param id
+   * @param message
+   * @param columnValue
+   * @param rowNumber
+   * @param errorType
+   */
+  public ItemError(String fileName, String sheetName, String columnName, Object id, String message, Object columnValue, int rowNumber, int errorType) {
+	    this.fileName = fileName;
+	    this.sheetName = sheetName;
+	    this.columnName = columnName;
+	    this.id = id;
+	    this.message = message;
+	    this.columnValue = columnValue;
+	    this.rowNumber = rowNumber;
+	    this.errorType = errorType;
   }
 }
