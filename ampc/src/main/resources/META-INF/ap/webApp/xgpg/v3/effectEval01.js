@@ -550,24 +550,7 @@ function initEcharts() {
     	data: ttime						//修改数据排序
     });
     
-    
-    if("AQI"!=tname[i]){
-    	var es = echarts.init(document.getElementById(tname[i]));
-    	es.group = 'group1';
-    	//鼠标悬停事件
-    	es.on('mouseover', function (params) {
-    		es.group='';
-    		echarts.disconnect('group1');
-   	    });
-    	//点击图例事件
-    	es.on('legendselectchanged', function (params) {
-    		//图表联动
-    		es.group='';
-    		echarts.disconnect('group1');
-   	    });
-    	es.setOption(option);
-    	$(window).resize(es.resize);
-    }else{	//AQI
+    if("AQI"==tname[i]){	//AQI
     	var aqi = echarts.init(document.getElementById(tname[i]));
     	//图表联动
     	aqi.group = 'group1';
@@ -583,6 +566,21 @@ function initEcharts() {
    	    });
     	aqi.setOption(option);
     	$(window).resize(aqi.resize);
+    	
+    }else{	
+    	var es = echarts.init(document.getElementById(tname[i]));
+    	es.group = 'group1';
+    	//鼠标悬停事件
+    	es.on('mouseover', function (params) {
+    		echarts.disconnect('group1');
+   	    });
+    	//点击图例事件
+    	es.on('legendselectchanged', function (params) {
+    		//图表联动
+    		echarts.disconnect('group1');
+   	    });
+    	es.setOption(option);
+    	$(window).resize(es.resize);
     }
     
     
