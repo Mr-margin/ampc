@@ -22,18 +22,6 @@
     ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME, ES_CODE_RANGE, ES_VERSION
   </sql>
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -199,4 +187,13 @@
       ES_VERSION = #{esVersion,jdbcType=VARCHAR}
     where ES_NATIVE_ID = #{esNativeId,jdbcType=DECIMAL}
   </update>
+  
+  <!-- 根据用户Id查询本地清单 -->
+  <select id="selectAllNative" resultMap="selectAllMap" parameterType="java.lang.Long" >
+    select 
+    *
+    from T_ES_NATIVE
+    where USER_ID = #{userId,jdbcType=DECIMAL}
+  </select>
+  
 </mapper>

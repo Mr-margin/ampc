@@ -150,4 +150,12 @@
       DELETE_TIME = #{deleteTime,jdbcType=DATE}
     where ES_NATION_ID = #{esNationId,jdbcType=DECIMAL}
   </update>
+  
+  <!-- 根据用户Id查询全国清单 -->
+  <select id="selectAllNation" resultMap="selectAllMap" parameterType="java.lang.Long" >
+    select 
+    *
+    from T_ES_NATION
+    where USER_ID = #{userId,jdbcType=DECIMAL}
+  </select>
 </mapper>
