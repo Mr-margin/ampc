@@ -105,9 +105,9 @@ $.when(dps_um).then(function(){
                     templateUrl: 'a.html',
                     controller: ''
                 },
-                '/yqd': {       //源清单
-                    templateUrl: 'webApp/yqd/qdList/qdList.html',
-                    controller: 'webApp/yqd/qdList/qdList.js'
+                '/yqd_v1': {       //源清单-全国清单
+                    templateUrl: 'webApp/yqd/v1/nationalQd.html',
+                    controller: 'webApp/yqd/v1/nationalQd.js'
                 },
                 '/newQd': {       //源清单
                     templateUrl: 'webApp/yqd/createQD/createNewQd.html',
