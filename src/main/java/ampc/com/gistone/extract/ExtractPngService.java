@@ -107,11 +107,11 @@ public class ExtractPngService extends ExtractService {
 
 		float[][] res = buildPngData();
 		String imagePath = buildPngImage(res);
-		// try {
-		// exportExcel(res, imagePath);
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
+//		try {
+//			exportExcel(res, imagePath);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 
 		Map data = new HashMap();
 		// data.put("imagePath", drawPngPicture(res));
@@ -144,14 +144,10 @@ public class ExtractPngService extends ExtractService {
 				imgArr[r * col + c] = cc;
 			}
 		}
-
-		String imagePath = buildIamgeFilePath();
-		BufferedImage bi = Images.buildGraphics2D(imgArr, res[0].length, res.length);
-		// BufferedImage bi = Images.buildGraphics2D(imgArr, params.getWidth(),
-		// params.getHeight());
-		// Graphics2D g2d = (Graphics2D) bi.getGraphics();
-		// g2d.dispose();
+		String imagePath = "";
 		try {
+			imagePath = buildIamgeFilePath();
+			BufferedImage bi = Images.buildGraphics2D(imgArr, res[0].length, res.length);
 			ImageIO.write(bi, "png", new File(imagePath));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -236,6 +232,9 @@ public class ExtractPngService extends ExtractService {
 		pointBeanList = new ArrayList<>();
 		int cols = params.getCols();
 		int rows = params.getRows();
+		int width = params.getWidth();
+		int height = params.getHeight();
+		rows = (cols * height) / width;
 		double xcellsize = (params.getXmax() - params.getXmin()) / cols;
 		double ycellsize = (params.getYmax() - params.getYmin()) / rows;
 		double x = params.getXmin();
@@ -308,7 +307,9 @@ public class ExtractPngService extends ExtractService {
 					double vv = interpolation.interpolation(variable, p);
 					if (vv == Constants.OVERBORDER) {
 						value = vv;
-						break;
+						pb.setValue(String.valueOf(value));
+						pb.setV(new BigDecimal(value));
+						return pb;
 					}
 					value1 += vv / variableList1.size();
 				}
@@ -317,7 +318,9 @@ public class ExtractPngService extends ExtractService {
 					double vv = interpolation.interpolation(variable, p);
 					if (vv == Constants.OVERBORDER) {
 						value = vv;
-						break;
+						pb.setValue(String.valueOf(value));
+						pb.setV(new BigDecimal(value));
+						return pb;
 					}
 					value2 += vv / variableList2.size();
 				}
