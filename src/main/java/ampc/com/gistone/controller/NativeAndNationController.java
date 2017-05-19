@@ -61,4 +61,68 @@ public class NativeAndNationController {
 			return AmpcResult.build(1001, "NativeAndNationController 查询当前用户下的耦合清单信息异常!");
 		}
 	}
+	
+	/**
+	 * 查询当前用户的全国清单
+	 * @author WangShanxi
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
+	 */
+	@RequestMapping("/NativeAndNation/find_nation")
+	public AmpcResult find_nation(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			Long userId = Long.parseLong(param.toString());
+			List<Map> list=tEsCouplingMapper.selectAllNation(userId);
+			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的耦合清单信息成功!");
+			return AmpcResult.ok(list);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("NativeAndNationController 查询当前用户下的耦合清单信息异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 查询当前用户下的耦合清单信息异常!");
+		}
+	}
+	
+	/**
+	 * 查询当前用户下的本地清单
+	 * @author WangShanxi
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
+	 */
+	@RequestMapping("/NativeAndNation/find_natives")
+	public AmpcResult find_natives(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			Long userId = Long.parseLong(param.toString());
+			List<Map> list=tEsCouplingMapper.selectAllNative(userId);
+			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的耦合清单信息成功!");
+			return AmpcResult.ok(list);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("NativeAndNationController 查询当前用户下的耦合清单信息异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 查询当前用户下的耦合清单信息异常!");
+		}
+	}
 }
