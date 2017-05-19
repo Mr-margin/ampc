@@ -44,7 +44,6 @@ function initQgqdListTable() {
       return {};
     },
     queryParams: function formPm(m) {
-      console.log(m);
       var json = {
         "token": "",
         "data": {
@@ -82,9 +81,10 @@ function initQgqdListTable() {
 function initBdqdListTable() {
   $('#bdqdList').bootstrapTable({
     method: 'post',
-    url: '/escoupling/get_couplingInfo',
+    url: '/ampc/escoupling/get_couplingInfo',
     dataType: "json",
     contentType: "application/json",
+//    contentType : "application/x-www-form-urlencoded",
     toobar: '#bdqdToolbar',
     iconSize: "outline",
     search: false,
@@ -102,16 +102,16 @@ function initBdqdListTable() {
       return {};
     },
     queryParams: function formPm(m) {
-      console.log(m);
-      var json = {
-        "token": "",
-        "data": {
-        	"userId":userId,
-        }
-      };
+    	console.log(m);
+    	var json = {
+	        token: "",
+	        data: {
+	        	userId:userId,
+	        }
+	      };
 
-//        return JSON.stringify(json);
-      return '';
+//    	return JSON.stringify(json);
+    	return json;
     },
     responseHandler: function (res) {
       return res.data

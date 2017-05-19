@@ -38,6 +38,21 @@
     where USER_ID = #{userId,jdbcType=DECIMAL}
   </select>
   
+  <!-- 根据用户Id查询全国清单 -->
+  <select id="selectAllNation" resultMap="selectAllMap" parameterType="java.lang.Long" >
+    select 
+    *
+    from T_ES_NATION
+    where USER_ID = #{userId,jdbcType=DECIMAL}
+  </select>
+  
+  <!-- 根据用户Id查询本地清单 -->
+  <select id="selectAllNative" resultMap="selectAllMap" parameterType="java.lang.Long" >
+    select 
+    *
+    from T_ES_NATIVE
+    where USER_ID = #{userId,jdbcType=DECIMAL}
+  </select>
   
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
