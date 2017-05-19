@@ -1125,56 +1125,23 @@ function showTitleFun() {
     var timeStartFor=moment(changeMsg.sTimeD,"YYYY-MM-DD").format("YYYY-MM-DD");
     var stateFor=moment(changeMsg.sTimeD+changeMsg.sTimeH,"YYYY-MM-DDH").format("YYYY-MM-DD HH");
     var timeTwoFor=moment(changeMsg.sTimeD+"-"+changeMsg.eTime,"YYYY-MM-DD-YYYY-MM-DD").format("YYYY-MM-DD-YYYY-MM-DD");
-    $('#showTitle .specieName').html("<span class='titleTab'><i class='en-layout' style='font-size: 16px;'></i>"+"&nbsp;物种：</span>"+changeMsg.species);
-    $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(changeMsg.domain=='1'?'3KM':(changeMsg.domain=='2'?'9KM':'27km')));
+    $('#showTitle .specieName').html("<span class='titleTab'><i class='en-layout' style='font-size: 16px;'></i>"+"&nbsp;物种：</span>"+changeMsg.species).css({"margin-right":"40px"});
+    $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(changeMsg.domain=='1'?'3KM':(changeMsg.domain=='2'?'9KM':'27km'))).css({"margin-right":"40px"});
     if(changeMsg.rms=='d'){
-        $('#showTitle .timeName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'逐日');
-        $('#showTitle .dateStartName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+timeStartFor);
+        $('#showTitle .timeName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'逐日').css({"margin-right":"40px"});
+        $('#showTitle .dateStartName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+timeStartFor).css({"margin-right":"40px"});
         //$('#showTitle .dateStartName').html("<i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;"+changeMsg.sTimeD);
     }else  if(changeMsg.rms=='h'){
-        $('#showTitle .timeName').html("<span  class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'逐时');
-        $('#showTitle .dateStartName').html("<span  class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+stateFor);
+        $('#showTitle .timeName').html("<span  class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'逐时').css({"margin-right":"40px"});
+        $('#showTitle .dateStartName').html("<span  class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+stateFor).css({"margin-right":"40px"});
         //$('#showTitle .dateStartName').html("<i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;"+changeMsg.sTimeD+changeMsg.sTimeH);
     }else {
-        $('#showTitle .timeName').html("<span  class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'平均');
-        $('#showTitle .dateEndName').html("<span  class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+timeTwoFor);
+        $('#showTitle .timeName').html("<span  class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'平均').css({"margin-right":"40px"});
+        $('#showTitle .dateEndName').html("<span  class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+timeTwoFor).css({"margin-right":"40px"});
         //$('#showTitle .dateEndName').html("<i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;"+changeMsg.sTimeD+"-"+changeMsg.eTime);
     }
-
-    // if (zhiCity.indexOf(changeMsg.pro) == -1) {
-    //     if (changeMsg.station == 'a') {
-    //
-    //        // $('#showTitle .windName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-    //        // $('#showTitle .timeName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-    //         $('#showTitle .timeName').html('平均' + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-    //         $('#showTitle .dateStartName').html(changeMsg.sTimeD);
-    //         //$('#showTitle .dateEndName').html(heightArr[changeMsg.height - 1] + 'm');
-    //     } else {
-    //         $('#showTitle .proName').html(changeMsg.proName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-    //         $('#showTitle .cityName').html(changeMsg.cityName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-    //         $('#showTitle .stationName').html(changeMsg.stationName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-    //         $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-    //         $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-    //         $('#showTitle .heightName').html(heightArr[changeMsg.height - 1] + 'm');
-    //     }
-    // } else {
-    //     if (changeMsg.station == 'avg') {
-    //         $('#showTitle .cityName').html(changeMsg.cityName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-    //         $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-    //         $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-    //         $('#showTitle .heightName').html(heightArr[changeMsg.height - 1] + 'm');
-    //     } else {
-    //         $('#showTitle .cityName').html(changeMsg.cityName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-    //         $('#showTitle .stationName').html(changeMsg.stationName + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-    //         $('#showTitle .timeName').html((changeMsg.rms == 'day' ? changeMsg.time.substr(0, 10) : changeMsg.time) + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-    //         $('#showTitle .rmsName').html((changeMsg.rms == 'day' ? '逐日' : '逐小时') + '<i class="en-arrow-right7" style="font-size:16px;"></i>');
-    //         $('#showTitle .heightName').html(heightArr[changeMsg.height - 1] + 'm');
-    //     }
-    // }
 }
 //easyui 添加
-//var headerH=$(".cloudui .searchT").height();
-//$(".charContent").css({"top":headerH+"px"});
 $(".upDownBtn").append("<i class='en-arrow-up7'></i>")
 $(".toolAll").hide();
 $(".upDownBtn").click(function(){
