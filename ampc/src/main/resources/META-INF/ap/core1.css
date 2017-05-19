@@ -860,8 +860,11 @@ dl, dd {
   background: none;
   background-color: #0275D8;
   border-radius: 2px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
-
+.window-mask{
+  background: #828282;
+}
 .cloudui.window .window-header {
   height: 44px;
   border-bottom: 1px solid #d9d9d9;
@@ -1238,6 +1241,7 @@ dl, dd {
 .cloudui .xgpgShow .searchT .toolAll .selectTool .selectTool_con .selectRow{float: left;margin-right:10px;line-height:30px;}
 .cloudui .xgpgShow .searchT .toolAll .selectTool .selectTool_con .selectRow .form-control{padding: 0;}
 .cloudui .xgpgShow .searchT .toolAll .selectTool .selectTool_con .input-group select{width: 120px;height:30px;}
+.cloudui .xgpgShow .searchT .toolAll .selectTool .selectTool_con input{width: 150px;}
 .cloudui .toolAll .selectTool .headerSwitch{display: inline-block;}
 /*标题*/
 .cloudui .xgpgShow .searchT #showTitle{border-top:1px solid #d9d9d9;background: linear-gradient(#fbfbfb, #f2f2f2); border-bottom:1px solid #d9d9d9;}
