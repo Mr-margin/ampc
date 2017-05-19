@@ -622,8 +622,7 @@ function initEcharts() {
     	es.setOption(option);
     	$(window).resize(es.resize);
     }
-    
-    
+
   }
 	//默认隐藏PM25的子类
     $("#SO4").hide();
