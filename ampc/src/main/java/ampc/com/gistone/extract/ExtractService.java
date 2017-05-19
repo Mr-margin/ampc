@@ -75,6 +75,7 @@ public abstract class ExtractService {
 	// }
 
 	public void getVariables() {
+		long startTimes = System.currentTimeMillis();
 		String timePoint = params.getTimePoint();
 
 		if (Constants.TIMEPOINT_A.equals(timePoint)) {
@@ -99,63 +100,10 @@ public abstract class ExtractService {
 				return;
 			}
 		}
+		logger.info("getVariables times : " + (System.currentTimeMillis() - startTimes) + "ms");
 	}
 
 	public abstract void buildVariables(String day);
-
-	// public void buildVariables(String day) {
-	// try {
-	// String p1 = filePath1 + day;
-	// long openNcTimes = System.currentTimeMillis();
-	// NetcdfFile nc1;
-	// try {
-	// nc1 = NetcdfFile.open(p1);
-	// logger.info("open nc file " + p1 + ", times = " +
-	// (System.currentTimeMillis() - openNcTimes) + "ms");
-	// } catch (IOException e) {
-	// logger.error("open file " + p1 + " error");
-	// return;
-	// }
-	// if (nc1 == null)
-	// return;
-	// ncFile1 = nc1;
-	//
-	// for (String specie : params.getSpecies()) {
-	// Variable variable1 = nc1.findVariable(null, specie);
-	// List<Variable> variableList1;
-	// if (variableMap1.containsKey(specie)) {
-	// variableList1 = variableMap1.get(specie);
-	// } else {
-	// variableList1 = new ArrayList<Variable>();
-	// variableMap1.put(specie, variableList1);
-	// }
-	// variableList1.add(variable1);
-	//
-	// if (!Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
-	// String p2 = filePath2 + day;
-	// NetcdfFile nc2;
-	// try {
-	// nc2 = NetcdfFile.open(p2);
-	// } catch (IOException e) {
-	// logger.error("open file " + p2 + " error");
-	// return;
-	// }
-	// Variable variable2 = nc2.findVariable(null, specie);
-	//
-	// List<Variable> variableList2;
-	// if (variableMap2.containsKey(specie)) {
-	// variableList2 = variableMap2.get(specie);
-	// } else {
-	// variableList2 = new ArrayList<Variable>();
-	// variableMap2.put(specie, variableList2);
-	// }
-	// variableList2.add(variable2);
-	// }
-	// }
-	// } catch (Exception e) {
-	// logger.error("ExtractDataService | buildVariables() error");
-	// }
-	// }
 
 	public Projection buildProject(ExtractRequestParams params)
 			throws TransformException, FactoryException, IOException {
@@ -181,7 +129,7 @@ public abstract class ExtractService {
 		params.setLat_2(lat_2);
 		params.setLat_0(lat_0);
 		params.setLon_0(lon_0);
-		logger.info("read attr, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
+
 		int layer = params.getLayer();
 		if (layer < 1 || layer > totalLayer) {
 			logger.error("the layer params should be between in 1 and " + totalLayer);
@@ -190,7 +138,7 @@ public abstract class ExtractService {
 				+ "), (nrows, ncols) = (" + row + "," + col + ")");
 
 		interpolation = new Interpolation(params.getHour(), layer, xorig, yorig, xcell, ycell, row, col);
-
+		logger.info("buildProject times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
 		return ProjectUtil.getProj(attributes);
 
 	}

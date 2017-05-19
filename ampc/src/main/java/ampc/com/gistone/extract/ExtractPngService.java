@@ -75,7 +75,7 @@ public class ExtractPngService extends ExtractService {
 	private NumberFormat nf;
 	private List<PointBean> pointBeanList;
 
-	public synchronized Map buildPng(ExtractRequestParams extractRequestParams)
+	public Map buildPng(ExtractRequestParams extractRequestParams)
 			throws IOException, TransformException, FactoryException, InvalidRangeException {
 		long startTimes = System.currentTimeMillis();
 		extractConfig = resultPathUtil.getExtractConfig();
