@@ -1401,3 +1401,22 @@ dl, dd {
 }
 
 .clearfix:after {clear:both;content:'.';display:block;width: 0;height: 0;visibility:hidden;}
+/*空气质量预报*/
+/*下拉菜单按钮*/
+.cloudui .m-btn{    background-color: #0275d8;
+  color: #fff;
+  border-radius: 2px;}
+.cloudui .m-btn .l-btn-left .l-btn-text{
+  margin-right:0;
+  line-height: 28px!important;
+}
+.cloudui .l-btn{border: none;}
+.cloudui .l-btn-plain{padding: 0;}
+  /*水平分布*/
+.cloudui .distributed_map .tool_in{background: rgba(200,200,200,0.5);overflow: visible;}
+.cloudui .clearfix,.cloudui .speed,.cloudui .field{overflow: hidden;}
+.cloudui .openness .title_{margin:12px 0 8px 0;}
+.cloudui .distributed_map .tool_in #dropdownMenu1{text-align: center;}
+}
+
+.clearfix:after {clear:both;content:'.';display:block;width: 0;height: 0;visibility:hidden;}
