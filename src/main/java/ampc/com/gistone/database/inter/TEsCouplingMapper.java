@@ -29,8 +29,4 @@ public interface TEsCouplingMapper {
 
     int updateByPrimaryKey(TEsCoupling record);
     
-    //查询全国清单
-    List<Map> selectAllNation(Long userId);
-    //查询本地清单
-    List<Map> selectAllNative(Long userId);
 }
