@@ -499,8 +499,8 @@ function initEcharts() {
             var div = $('<div style="height:250px;"></div>');
             div.attr("id",tname[i]);
             div.addClass('echartsCZ');
-            $("#initEcharts").append(div_bj);
             $("#initEcharts").append(div);
+            $("#initEcharts").append(div_bj);
         }else{
             var div = $('<div style="height:250px;"></div>');
             div.attr("id",tname[i]);
@@ -821,23 +821,23 @@ function initEcharts() {
 
 //easyui 添加
 $(".toolAll").hide();
-$(".upDownBtn").text("更多搜索条件");
-$(".upDownBtn").append("<i class='en-arrow-up7'></i>")
-$(".upDownBtn").click(function(){
-    if($(".upDownBtn").text()=="收起"){
-        $(".upDownBtn").text("更多搜索条件");
+$(".searchT .upDownBtn").text("更多搜索条件");
+$(".searchT .upDownBtn").append("<i class='en-arrow-up7'></i>")
+$(".searchT .upDownBtn").click(function(){
+    if($(".searchT .upDownBtn").text()=="收起"){
+        $(".searchT .upDownBtn").text("更多搜索条件");
         $(".toolAll").hide();
-        $(".upDownBtn i").remove();
-        $(".upDownBtn").append("<i class='en-arrow-down8'></i>")
-        $(".upDownBtn i").attr("class","en-arrow-down8")
+        $(".searchT .upDownBtn i").remove();
+        $(".searchT .upDownBtn").append("<i class='en-arrow-down8'></i>")
+        $(".searchT .upDownBtn i").attr("class","en-arrow-down8")
         // headerH=$(".cloudui .searchT").height();
         // $(".charContent").css({"top":headerH+"px"})
     }else{
-        $(".upDownBtn").text("收起");
-        $(".toolAll").show();
+        $(".searchT .upDownBtn").text("收起");
+        $(".searchT .toolAll").show();
         // headerH=$(".cloudui .searchT").height();
-        $(".upDownBtn i").remove();
-        $(".upDownBtn").append("<i class='en-arrow-up7'></i>");
+        $(".searchT .upDownBtn i").remove();
+        $(".searchT .upDownBtn").append("<i class='en-arrow-up7'></i>");
         // $(".charContent").css({"top":headerH+"px"});
     }
 })
@@ -854,25 +854,25 @@ function showTitleFun() {
     if (zhiCity.indexOf(changeMsg.pro) == -1) {
         if (changeMsg.station == 'avg') {
             $('#showTitle .proName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+proStation);
-            $('#showTitle .cityName').html(cityStation);
-            $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时'));
+            $('#showTitle .cityName').html(cityStation).css({"margin-right":"40px"});
+            $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时')).css({"margin-right":"40px"});
         } else {
             $('#showTitle .proName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+proStation);
             $('#showTitle .cityName').html(cityStation );
-            $('#showTitle .stationName').html(changeMsg.stationName);
-            $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时'));
+            $('#showTitle .stationName').html(changeMsg.stationName).css({"margin-right":"40px"});
+            $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时')).css({"margin-right":"40px"});
         }
     } else {
         if (changeMsg.station == 'avg') {
-            $('#showTitle .cityName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+cityStation );
-            $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时'));
+            $('#showTitle .cityName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+cityStation ).css({"margin-right":"40px"});
+            $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时')).css({"margin-right":"40px"});
         } else {
             $('#showTitle .cityName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+cityStation );
-            $('#showTitle .stationName').html(changeMsg.stationName);
-            $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时'));
+            $('#showTitle .stationName').html(changeMsg.stationName).css({"margin-right":"40px"});
+            $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时')).css({"margin-right":"40px"});
         }
     }
     var timeTwoFor=moment(changeMsg.startD+"-"+changeMsg.endD,"YYYYMMDD-YYYYMMDD").format("YYYY年MM月DD日-YYYY年MM月DD日");
-    $('#showTitle .dateName').html("<span class='titleTab'><i class='br-calendar'></i>"+"&nbsp;日期：</span>"+changeMsg.startD+"至"+changeMsg.endD);
-    $("#showTitle .spaceName").html("<span class='titleTab'><i class='en-flow-parallel'></i>"+"&nbsp;空间分辨率：</span>"+($('input[name=domain]:checked').val()=="1"?"3KM":($('input[name=domain]:checked').val()==2?"9KM":"27KM")));
+    $('#showTitle .dateName').html("<span class='titleTab'><i class='br-calendar'></i>"+"&nbsp;日期：</span>"+changeMsg.startD+"至"+changeMsg.endD).css({"margin-right":"40px"});
+    $("#showTitle .spaceName").html("<span class='titleTab'><i class='en-flow-parallel'></i>"+"&nbsp;空间分辨率：</span>"+($('input[name=domain]:checked').val()=="1"?"3KM":($('input[name=domain]:checked').val()==2?"9KM":"27KM"))).css({"margin-right":"40px"});
 }

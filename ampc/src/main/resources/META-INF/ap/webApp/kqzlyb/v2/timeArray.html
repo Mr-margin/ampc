@@ -68,13 +68,13 @@
   <div class='verticalCon'>
     <div class="xgpgShow">
       <div class="searchT">
-        <div id="showTitle" style="font-size: 16px;color:#000;">
+        <div id="showTitle">
           <span class="proName titleDiv"></span>
           <span class="cityName titleDiv"></span>
           <span class="stationName titleDiv"></span>
           <span class="rmsName titleDiv"></span>
-          <span class="spaceName titleDiv"></span>
           <span class="dateName titleDiv"></span>
+          <span class="spaceName titleDiv"></span>
         </div>
         <div class="airtab">
           <div class="btn-group switchBtn" data-toggle="buttons" style="margin: 2px auto;padding: 0;width: 100%">
@@ -85,47 +85,7 @@
         <div class="toolAll wrwTool" id="wrw">
           <div class="toolContent">
             <div class="selectTool">
-              <h5>日期</h5>
-              <div class="selectTool_con">
-                <div class="" style="padding-right: 0px;margin: 2px auto;position: relative">
-                  <input style="min-width: 210px" type="text" class="form-control" id="wrwDate" name="wrwDate" readonly placeholder="请选择日期···">
-                  <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showDate('wrw')"
-                     style="cursor:pointer;position: absolute;font-size: 17px;right: 10px;top: 9px;"></i>
-                </div>
-              </div>
-            </div>
-            <div class="selectTool">
-              <h5>站点</h5>
-              <div class="selectTool_con">
-                <div class="row" style="margin:2px 0;padding-left:0px;">
-                  <div class="selectRow" style="padding-left:0px;padding-right:0px;">
-                    <div class="input-group group-select" style="width: 100%;">
-                      <select class="form-control m-b proStation" style="border-color: #1c84c6;">
-
-                      </select>
-                    </div>
-                  </div>
-                  <div class="selectRow" style="padding-left:0px;padding-right:0px;">
-                    <div class="input-group group-select" style="width: 100%;">
-                      <select class="form-control m-b cityStation" style="border-color: #1c84c6;">
-
-                      </select>
-                    </div>
-                  </div>
-                  <div class="selectRow" style="padding-left:0px;padding-right:0px;">
-                    <div class="input-group group-select" style="width: 100%;">
-                      <select class="form-control m-b station" style="border-color: #1c84c6;">
-
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="toolContent">
-            <div class="selectTool">
-              <h5>时间</h5>
+              <h5>时间分辨率：</h5>
               <div class="selectTool_con">
                 <div class="btn-group" data-toggle="buttons" style="margin: 2px auto;padding: 0;width: 100%;">
                   <label class="col-md-6 btn btn-outline btn-success "><input type="radio" name="rmsWrw" value="hour">逐小时</label>
@@ -134,7 +94,7 @@
               </div>
             </div>
             <div class="selectTool">
-              <h5>空间</h5>
+              <h5>空间分辨率：</h5>
               <div class="selectTool_con">
                 <div class="btn-group" data-toggle="buttons" style="margin: 2px auto;padding: 0;width: 100%;">
                   <label class="col-md-4 btn btn-outline btn-success "><input checked type="radio" name="domain" value="1">3km</label>
@@ -143,22 +103,20 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="toolAll qxysTool disNone" id="qxys">
-          <div class="toolContent">
             <div class="selectTool">
-              <h5>日期</h5>
+              <h5>日期：</h5>
               <div class="selectTool_con">
                 <div class="" style="padding-right: 0px;margin: 2px auto;position: relative">
-                  <input style="min-width: 210px" type="text" class="form-control" id="qxysDate" name="qxysDate" readonly placeholder="请选择日期···">
-                  <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showDate('qxys')"
+                  <input style="min-width: 210px" type="text" class="form-control" id="wrwDate" name="wrwDate" readonly placeholder="请选择日期···">
+                  <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showDate('wrw')"
                      style="cursor:pointer;position: absolute;font-size: 17px;right: 10px;top: 9px;"></i>
                 </div>
               </div>
             </div>
+          </div>
+          <div class="toolContent">
             <div class="selectTool">
-              <h5>站点</h5>
+              <h5>监测站点：</h5>
               <div class="selectTool_con">
                 <div class="row" style="margin:2px 0;padding-left:0px;">
                   <div class="selectRow" style="padding-left:0px;padding-right:0px;">
@@ -186,9 +144,11 @@
               </div>
             </div>
           </div>
+        </div>
+        <div class="toolAll qxysTool disNone" id="qxys">
           <div class="toolContent">
             <div class="selectTool">
-              <h5>时间</h5>
+              <h5>时间分辨率：</h5>
               <div class="selectTool_con">
                 <div class="btn-group" data-toggle="buttons" style="margin: 2px auto;padding: 0;width: 100%">
                   <label class="col-md-6 btn btn-outline btn-success "><input type="radio" name="rmsQxys" value="hour">逐小时</label>
@@ -197,12 +157,52 @@
               </div>
             </div>
             <div class="selectTool">
-              <h5>空间</h5>
+              <h5>空间分辨率：</h5>
               <div class="selectTool_con">
                 <div class="btn-group" data-toggle="buttons" style="margin: 2px auto;padding: 0;width: 100%">
                   <label class="col-md-4 btn btn-outline btn-success "><input checked type="radio" name="domain" value="3">3km</label>
                   <label class="col-md-4 btn btn-outline btn-success  "><input  type="radio" name="domain" value="2">9km</label>
                   <label class="col-md-4 btn btn-outline btn-success active"><input type="radio" name="domain" value="1">27km</label>
+                </div>
+              </div>
+            </div>
+            <div class="selectTool">
+              <h5>日期：</h5>
+              <div class="selectTool_con">
+                <div class="" style="padding-right: 0px;margin: 2px auto;position: relative">
+                  <input style="min-width: 210px" type="text" class="form-control" id="qxysDate" name="qxysDate" readonly placeholder="请选择日期···">
+                  <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showDate('qxys')"
+                     style="cursor:pointer;position: absolute;font-size: 17px;right: 10px;top: 9px;"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="toolContent">
+            <div class="selectTool">
+              <h5>监测站点：</h5>
+              <div class="selectTool_con">
+                <div class="row" style="margin:2px 0;padding-left:0px;">
+                  <div class="selectRow" style="padding-left:0px;padding-right:0px;">
+                    <div class="input-group group-select" style="width: 100%;">
+                      <select class="form-control m-b proStation" style="border-color: #1c84c6;">
+
+                      </select>
+                    </div>
+                  </div>
+                  <div class="selectRow" style="padding-left:0px;padding-right:0px;">
+                    <div class="input-group group-select" style="width: 100%;">
+                      <select class="form-control m-b cityStation" style="border-color: #1c84c6;">
+
+                      </select>
+                    </div>
+                  </div>
+                  <div class="selectRow" style="padding-left:0px;padding-right:0px;">
+                    <div class="input-group group-select" style="width: 100%;">
+                      <select class="form-control m-b station" style="border-color: #1c84c6;">
+
+                      </select>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

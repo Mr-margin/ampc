@@ -700,15 +700,15 @@ function showTitleFun() {
     var sData=moment($("#SPDate").val(),"YYYYMMDD").format("YYYY-MM-DD");
     var dataT=moment($("#sTime-d").val(),"YYYYMMDD").format("YYYY-MM-DD");
     var dataState=moment($("#sTime-d").val()+$("#sTime-h").val(),"YYYYMMDDH").format("YYYY-MM-DD H");
-    $("#showTitle .rangeName").html("<span class='titleTab'><i class='en-flow-parallel'></i>"+"&nbsp;地域范围：</span>"+($('input[name=domain]:checked').val()=="1"?"中国":($('input[name=domain]:checked').val()==2?"中国东部":"河北省")));
-    $("#showTitle .rmsName").html("<span class='titleTab'><i class='en-flow-parallel'></i>"+"&nbsp;时间分辨率：</span>"+($('input[name=rms]:checked').val()=="h"?"逐小时":"逐日"));
-    $("#showTitle .speciesName").html("<span class='titleTab'><i class='en-flow-parallel'></i>"+"&nbsp;物种分辨率：</span>"+$("#species").val());
-    $("#showTitle .sDateName").html("<span class='titleTab'><i class='br-calendar'></i>"+"&nbsp;起报日期：</span>"+sData);
+    $("#showTitle .rangeName").html("<span class='titleTab'><i class='en-flow-parallel'></i>"+"&nbsp;地域范围：</span>"+($('input[name=domain]:checked').val()=="1"?"中国":($('input[name=domain]:checked').val()==2?"中国东部":"河北省"))).css({"margin-right":"40px"});
+    $("#showTitle .rmsName").html("<span class='titleTab'><i class='en-flow-parallel'></i>"+"&nbsp;时间分辨率：</span>"+($('input[name=rms]:checked').val()=="h"?"逐小时":"逐日")).css({"margin-right":"40px"});
+    $("#showTitle .speciesName").html("<span class='titleTab'><i class='en-flow-parallel'></i>"+"&nbsp;物种分辨率：</span>"+$("#species").val()).css({"margin-right":"40px"});
+    $("#showTitle .sDateName").html("<span class='titleTab'><i class='br-calendar'></i>"+"&nbsp;起报日期：</span>"+sData).css({"margin-right":"40px"});
 
     if($('input[name=rms]:checked').val()=='d'){
-        $('#showTitle .dateName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+dataT);
+        $('#showTitle .dateName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+dataT).css({"margin-right":"40px"});
     }else{
-        $('#showTitle .dateName').html("<span  class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+dataState);
+        $('#showTitle .dateName').html("<span  class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+dataState).css({"margin-right":"40px"});
     }
 }
 //修改easyui 下拉菜单按钮样式
