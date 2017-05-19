@@ -20,11 +20,12 @@ $(function(){
 });
 
 
-
+//查询全国清单
 function initQgqdListTable() {
-  $('#qgqdList').bootstrapTable({
-    method: 'GET',
-      url: 'webApp/yqd/createQD/qgqd.json',
+	$('#qgqdList').bootstrapTable({
+    method: 'post',
+//    url: 'webApp/yqd/createQD/qgqd.json',
+    url:'/ampc/NativeAndNation/find_nation',
     dataType: "json",
     contentType: "application/json",
     toobar: '#qgqdToolbar',
@@ -44,20 +45,20 @@ function initQgqdListTable() {
       return {};
     },
     queryParams: function formPm(m) {
-      var json = {
-        "token": "",
-        "data": {
-
-        }
-      };
+    	var json = {
+	        "token": "",
+	        "data": {
+	        	userId:userId,
+	        }
+    	};
 
 //        return JSON.stringify(json);
-      return '';
+    	return json;
     },
     responseHandler: function (res) {
       return res.data
     },
-    queryParamsType: "undefined",
+    queryParamsType: "limit",
     silent: true,
     onClickRow: function (row, $element) {
       $('.info').removeClass('info');
@@ -77,11 +78,11 @@ function initQgqdListTable() {
   });
 }
 
-
+//查询本地清单
 function initBdqdListTable() {
   $('#bdqdList').bootstrapTable({
     method: 'post',
-    url: '/ampc/escoupling/get_couplingInfo',
+    url: '/ampc/NativeAndNation/find_natives',
     dataType: "json",
     contentType: "application/json",
 //    contentType : "application/x-www-form-urlencoded",
@@ -116,7 +117,7 @@ function initBdqdListTable() {
     responseHandler: function (res) {
       return res.data
     },
-    queryParamsType: "undefined",
+    queryParamsType: "limit",
     silent: true,
     onClickRow: function (row, $element) {
       $('.info').removeClass('info');
