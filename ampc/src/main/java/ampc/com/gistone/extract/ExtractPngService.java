@@ -1,11 +1,13 @@
 package ampc.com.gistone.extract;
 
+import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,13 +15,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.ScaleDescriptor;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
 import org.geotools.coverage.processing.Operations;
@@ -47,6 +50,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.model.TScenarinoDetail;
+import ampc.com.gistone.extract.image.Colors;
 import ampc.com.gistone.extract.image.Images;
 import ampc.com.gistone.extract.image.Styles;
 import ampc.com.gistone.preprocess.concn.PreproUtil;
@@ -73,7 +77,7 @@ public class ExtractPngService extends ExtractService {
 
 	public synchronized Map buildPng(ExtractRequestParams extractRequestParams)
 			throws IOException, TransformException, FactoryException, InvalidRangeException {
-
+		long startTimes = System.currentTimeMillis();
 		extractConfig = resultPathUtil.getExtractConfig();
 		params = extractRequestParams;
 
@@ -102,39 +106,79 @@ public class ExtractPngService extends ExtractService {
 		nf.setMaximumFractionDigits(10);
 
 		float[][] res = buildPngData();
+		String imagePath = buildPngImage(res);
+		// try {
+		// exportExcel(res, imagePath);
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
 
+		Map data = new HashMap();
+		// data.put("imagePath", drawPngPicture(res));
+		data.put("imagePath", imagePath);
+		ObjectMapper mapper = new ObjectMapper();
+		// data.put("data", pointBeanList);
+		logger.info("buildPng total times : " + (System.currentTimeMillis() - startTimes) + "ms");
+		return data;
+	}
+
+	private String buildPngImage(float[][] res) throws IOException {
+		long startTimes = System.currentTimeMillis();
+		String showType = params.getShowType();
+		String calcType = params.getCalcType();
+		String timePoint = params.getTimePoint();
+		timePoint = timePoint.equals(Constants.TIMEPOINT_D) ? Constants.TIMEPOINT_DAILY : Constants.TIMEPOINT_HOURLY;
+		String name = showType + "-" + calcType + "-" + timePoint;
+		name = name.toLowerCase();
+		Map<String, Map<String, List>> specieMap = resultPathUtil.getImageColorConfig().getSheetMap(name);
+		Map<String, List> valueMap = specieMap.get(params.getSpecie());
+		List<Float> valueList = valueMap.get(Constants.VALUE_LIST);
+		List<Color> colorList = valueMap.get(Constants.COLOR_LIST);
+		List<Integer> colorLongList = valueMap.get(Constants.COLOR_LONG_LIST);
+		int row = res.length;
+		int col = res[0].length;
+		int[] imgArr = new int[row * col];
+		for (int r = 0; r < row; r++) {
+			for (int c = 0; c < col; c++) {
+				int cc = Colors.getColor(res[r][c], valueList, colorList, colorLongList);
+				imgArr[r * col + c] = cc;
+			}
+		}
+
+		String imagePath = buildIamgeFilePath();
+		BufferedImage bi = Images.buildGraphics2D(imgArr, res[0].length, res.length);
+		// BufferedImage bi = Images.buildGraphics2D(imgArr, params.getWidth(),
+		// params.getHeight());
+		// Graphics2D g2d = (Graphics2D) bi.getGraphics();
+		// g2d.dispose();
 		try {
-			exportExcel(res, "E:/1/1/372/3/concn/show/2017-05-17");
+			ImageIO.write(bi, "png", new File(imagePath));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		Map data = new HashMap();
-		data.put("imagePath", drawPngPicture(res));
-		ObjectMapper mapper = new ObjectMapper();
-		// data.put("data", pointBeanList);
-		return data;
+		logger.info("buildPngImage times : " + (System.currentTimeMillis() - startTimes) + "ms");
+		return imagePath;
 	}
 
 	public void exportExcel(float[][] pointBeanArray, String pathOut)
 			throws IOException, InvalidRangeException, TransformException, FactoryException {
 
-		HSSFWorkbook workbook = new HSSFWorkbook();
-		HSSFSheet oneOfSheet = workbook.createSheet("data");
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet oneOfSheet = workbook.createSheet("data");
 
 		for (int i = 0; i < pointBeanArray.length; i++) {
-			HSSFRow hssfRow = oneOfSheet.createRow(i);
+			XSSFRow hssfRow = oneOfSheet.createRow(i);
 			for (int j = 0; j < pointBeanArray[i].length; j++) {
-				System.out.println(j);
-				HSSFCell cell = hssfRow.createCell(j);
+				XSSFCell cell = hssfRow.createCell(j);
 				float pb = pointBeanArray[i][j];
 				cell.setCellValue(pb);
 			}
 		}
-		String excel = pathOut + "/extract-data.xls";
 		File file = new File(pathOut);
 		if (!file.exists()) {
 			file.mkdirs();
 		}
+		String excel = file.getParent() + "/extract-data.xls";
 		FileOutputStream out = new FileOutputStream(excel);
 		workbook.write(out);
 		out.close();
@@ -188,6 +232,7 @@ public class ExtractPngService extends ExtractService {
 	}
 
 	private float[][] buildPngData() throws IOException, InvalidRangeException {
+		long startTimes = System.currentTimeMillis();
 		pointBeanList = new ArrayList<>();
 		int cols = params.getCols();
 		int rows = params.getRows();
@@ -215,13 +260,15 @@ public class ExtractPngService extends ExtractService {
 				pointBeanList.add(pb);
 
 				pb = getValue(pb);
-				float value = Float.valueOf(pb.getValue());
+				BigDecimal b = pb.getV();
+				float value = b.floatValue();
 				res[i][j] = value;
 				if (value != Constants.OVERBORDER) {
 					PointBean point = new PointBean();
 					point.setX(merc_x);
 					point.setY(merc_y);
 					point.setValue(String.valueOf(value));
+					point.setV(b);
 					pointBeanList.add(point);
 				}
 			}
@@ -229,6 +276,7 @@ public class ExtractPngService extends ExtractService {
 			y += ycellsize;
 		}
 		res = reversalArray(res);
+		logger.info("buildPngData times: " + (System.currentTimeMillis() - startTimes) + "ms");
 		return res;
 	}
 
@@ -251,7 +299,8 @@ public class ExtractPngService extends ExtractService {
 					value += vv / variableList1.size();
 				}
 
-			} else if ("diff".equals(params.getCalcType()) || "ratio".equals(params.getCalcType())) {
+			} else if (Constants.CALCTYPE_DIFF.equals(params.getCalcType())
+					|| Constants.CALCTYPE_RATIO.equals(params.getCalcType())) {
 				double value1 = 0;
 				double value2 = 0;
 
@@ -273,7 +322,7 @@ public class ExtractPngService extends ExtractService {
 					value2 += vv / variableList2.size();
 				}
 
-				if ("diff".equals(params.getCalcType())) {
+				if (Constants.CALCTYPE_DIFF.equals(params.getCalcType())) {
 					value = value2 - value1;
 				} else {
 					if (value1 == 0) {
@@ -283,6 +332,7 @@ public class ExtractPngService extends ExtractService {
 				}
 			}
 			pb.setValue(String.valueOf(value));
+			pb.setV(new BigDecimal(value));
 			return pb;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -291,6 +341,7 @@ public class ExtractPngService extends ExtractService {
 		}
 	}
 
+	// 暂时没用到
 	private String drawPngPicture(float[][] temp) {
 		MapContent map = new MapContent();
 
@@ -400,15 +451,17 @@ public class ExtractPngService extends ExtractService {
 			scenario = String.valueOf(params.getScenarioId1().toString()) + "-"
 					+ String.valueOf(params.getScenarioId2());
 		}
-		File file = new File(imageFilePath);
-		if (!file.exists()) {
-			file.mkdirs();
-		}
+
 		imageFileName = imageFileName.replace("$timePoint", params.getTimePoint()).replace("$day", day)
 				.replace("$hour", String.valueOf(params.getHour()))
 				.replace("$layer", String.valueOf(params.getLayer() - 1)).replace("$specie", params.getSpecie())
 				.replace("$scenario", scenario).replace("$random", String.valueOf(new Date().getTime()));
-		return rootPath + "/imagePath/" + imageFilePath + "/" + imageFileName;
+		String contentPath = rootPath + "/imagePath/" + imageFilePath + "/";
+		File file = new File(contentPath);
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		return contentPath + imageFileName;
 
 	}
 
