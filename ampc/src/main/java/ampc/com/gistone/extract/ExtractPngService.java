@@ -75,7 +75,7 @@ public class ExtractPngService extends ExtractService {
 	private NumberFormat nf;
 	private List<PointBean> pointBeanList;
 
-	public Map buildPng(ExtractRequestParams extractRequestParams)
+	public synchronized Map buildPng(ExtractRequestParams extractRequestParams)
 			throws IOException, TransformException, FactoryException, InvalidRangeException {
 		long startTimes = System.currentTimeMillis();
 		extractConfig = resultPathUtil.getExtractConfig();
@@ -107,11 +107,11 @@ public class ExtractPngService extends ExtractService {
 
 		float[][] res = buildPngData();
 		String imagePath = buildPngImage(res);
-//		try {
-//			exportExcel(res, imagePath);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+		// try {
+		// exportExcel(res, imagePath);
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
 
 		Map data = new HashMap();
 		// data.put("imagePath", drawPngPicture(res));
