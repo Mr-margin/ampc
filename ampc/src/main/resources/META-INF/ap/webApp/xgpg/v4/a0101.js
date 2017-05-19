@@ -19,8 +19,8 @@ var changeMsg = {
     GPserver_type: [],//
     dates: [],
     layer: 1,
-    rows: 100,
-    cols: 100
+    rows: 350,
+    cols: 350
 };
 var playDay = '',playHour = '',play = false;
 var speciesArr = {
@@ -144,6 +144,18 @@ require(
         app.stlayerList = new Array();//加载卫星图
         app.labellayerList = new Array();//加载标注图
         app.mapimagelayer = new Array();//图片图层
+        
+//        app.spatialReference = new esri.SpatialReference({
+//			"wkt" : 'PROJCS["Lambert_Conformal_Conic_China",GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic"],PARAMETER["False_Easting",0.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",110.0],PARAMETER["Standard_Parallel_1",25.0],PARAMETER["Standard_Parallel_2",40.0],PARAMETER["Scale_Factor",1.0],PARAMETER["Latitude_Of_Origin",34.0],UNIT["Meter",1.0]]'
+//		});
+//        //中央经线：110
+//        //标准纬线1：25
+//        //标准纬线2:40
+//        //起始原点：34
+//        
+//		app.map = new esri.Map("mapDiv");
+//		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer(app.url);// 创建动态地图
+		
         
         app.gLyr = new Array();
 
@@ -488,7 +500,7 @@ function bianji(type, g_num, p , wind) {
         			
 //        			var imageURL = "http://192.168.1.148:8082/ampc/img/ceshi/now.png";//定义图片路径，这个图片是动态生成的
         			var imageURL = "http://192.168.1.148:8091/Java/"+data.data.imagePath.substring(data.data.imagePath.indexOf("imageFilePath"))+"?t="+Math.random();
-        			console.log(imageURL);
+//        			console.log(imageURL);
         			
         			var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
                     var mapImage = new dong.MapImage({
