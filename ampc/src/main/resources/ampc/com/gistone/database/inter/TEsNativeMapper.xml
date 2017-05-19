@@ -189,11 +189,11 @@
   </update>
   
   <!-- 根据用户Id查询本地清单 -->
-<!--   <select id="selectAllNative" resultMap="selectAllMap" parameterType="java.lang.Long" > -->
-<!--     select  -->
-<!--     * -->
-<!--     from T_ES_NATIVE -->
-<!--     where USER_ID = #{userId,jdbcType=DECIMAL} -->
-<!--   </select> -->
+  <select id="selectAllNative" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    *
+    from T_ES_NATIVE
+    where USER_ID = #{userId,jdbcType=DECIMAL}
+  </select>
   
 </mapper>
