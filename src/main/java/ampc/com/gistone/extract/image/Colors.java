@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -22,12 +23,96 @@ import org.geotools.styling.ColorMapEntryImpl;
 import org.geotools.styling.ColorMapImpl;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Literal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ampc.com.gistone.extract.Constants;
 
 /**
  * Created by dell on 2016-2-20.
  */
 
 public class Colors {
+
+	private final static Logger logger = LoggerFactory.getLogger(Colors.class);
+	public final static int trans;
+
+	static {
+		int a = 0;
+		int r = 255;
+		int g = 255;
+		int b = 255;
+		long argbs = (a << 24) + (r << 16) + (g << 8) + b; // a默认为0 表示透明
+		trans = (int) (argbs & 0xffffffffl);
+	}
+
+	public static int getColor(float value, List<Float> valueList, List<Color> colorList, List<Integer> colorLongList) {
+		int i = 0;
+		int colorData = 0;
+		if (value == Constants.OVERBORDER) {
+			colorData = trans;
+			return colorData;
+		}
+		do {
+			float cur = valueList.get(i);
+			float next = valueList.get(i + 1);
+			if (value >= cur && value < next) {
+				if (colorLongList.size() > i) {
+					colorData = colorLongList.get(i);
+				} else {
+					colorData = colorLongList.get(colorLongList.size() - 1);
+				}
+				break;
+			}
+			i++;
+		} while (i < valueList.size() - 1);
+		if (colorData == 0) {
+			if (value < valueList.get(0)) {
+				colorData = colorLongList.get(0);
+			} else if (value > valueList.get(valueList.size() - 1)) {
+				colorData = colorLongList.get(colorLongList.size() - 1);
+			}
+		}
+		return colorData;
+	}
+
+	// ***以下暂时不用***//
+	public static ColorMapEntryImpl buildColorMapEntry(String colorR, String colorG, String colorB, float v) {
+		String r = Integer.toHexString(Integer.valueOf(colorR));
+		if (r.length() % 2 == 1)
+			r = "0" + r;
+
+		String g = Integer.toHexString(Integer.valueOf(colorG));
+		if (g.length() % 2 == 1)
+			g = "0" + g;
+
+		String b = Integer.toHexString(Integer.valueOf(colorB));
+		if (b.length() % 2 == 1)
+			b = "0" + b;
+
+		String val = "#" + r + g + b;
+
+		System.out.println(val + " : " + v);
+
+		ColorMapEntryImpl colorMapEntry = new ColorMapEntryImpl();
+		FilterFactory ff = CommonFactoryFinder.getFilterFactory();
+		Literal ep = ff.literal(val);
+		colorMapEntry.setColor(ep);
+		// 颜色渲染方法 1
+		ep = ff.literal(v);
+
+		colorMapEntry.setQuantity(ep);
+
+		// add-by-Wgy 当quantity值为0时将颜色设置为透明
+		if (ep.getValue().equals(0.0) || ep.getValue().equals(Constants.OVERBORDER)) {
+
+			org.opengis.filter.expression.Expression ex = ff.literal(0);
+
+			colorMapEntry.setOpacity(ex);
+
+		}
+		return colorMapEntry;
+	}
 
 	public static ColorMap buildColor(String path, float v, String name) {
 		try {

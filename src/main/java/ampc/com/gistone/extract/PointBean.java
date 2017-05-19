@@ -1,5 +1,7 @@
 package ampc.com.gistone.extract;
 
+import java.math.BigDecimal;
+
 /**
  * Created by xll on 2017/3/2.
  */
@@ -11,6 +13,7 @@ public class PointBean {
 	private double xlcc;
 	private double ylcc;
 	private String value;
+	private BigDecimal v;
 
 	public PointBean() {
 	}
@@ -77,4 +80,13 @@ public class PointBean {
 	public void setYlcc(double ylcc) {
 		this.ylcc = ylcc;
 	}
+
+	public BigDecimal getV() {
+		return v;
+	}
+
+	public void setV(BigDecimal v) {
+		this.v = v;
+	}
+
 }

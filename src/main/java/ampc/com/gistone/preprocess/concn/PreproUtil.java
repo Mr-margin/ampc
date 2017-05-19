@@ -25,6 +25,12 @@ import ampc.com.gistone.extract.Constants;
 import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.JsonUtil;
 
+/**
+ * 预处理工具类
+ * 
+ * @author xll
+ *
+ */
 @Component
 public class PreproUtil {
 

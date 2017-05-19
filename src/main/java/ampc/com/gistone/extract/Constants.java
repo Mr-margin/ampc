@@ -11,7 +11,8 @@ public class Constants {
 
 	private final static Logger logger = LoggerFactory.getLogger(Constants.class);
 
-	public final static double OVERBORDER = -9999;
+	public final static double OVERBORDER = -1000000000;
+	// public final static double OVERBORDER = -99999999;
 	public final static String SHOW_TYPE_CONCN = "concn";
 	public final static String SHOW_TYPE_EMIS = "emis";
 	public final static String SHOW_TYPE_WIND = "wind";
@@ -19,6 +20,8 @@ public class Constants {
 	public final static String TIMEPOINT_A = "a";
 	public final static String TIMEPOINT_D = "d";
 	public final static String TIMEPOINT_H = "h";
+	public final static String TIMEPOINT_DAILY = "daily";
+	public final static String TIMEPOINT_HOURLY = "hourly";
 	public final static String CALCTYPE_SHOW = "show";
 	public final static String CALCTYPE_DIFF = "diff";
 	public final static String CALCTYPE_RATIO = "ratio";
@@ -36,6 +39,23 @@ public class Constants {
 	public final static String MODEL_DATA_TYPE_FNL = "fnl";
 	public final static String MODEL_DATA_TYPE_GFS = "gfs";
 	public final static String MODEL_DATA_TYPE_GFS_FIRST = "gfs_first"; // 实时预报中第一天gfs
+
+	public final static String CONCN_SHOW_HOURLY = "concn-show-hourly";
+	public final static String CONCN_SHOW_DAILY = "concn-show-daily";
+	public final static String CONCN_DIFF_HOURLY = "concn-diff-hourly";
+	public final static String CONCN_DIFF_DAILY = "concn-diff-daily";
+	public final static String CONCN_RATIO_HOURLY = "concn-ratio-hourly";
+	public final static String CONCN_RATIO_DAILY = "concn-ratio-daily";
+
+	public final static String EMIS_SHOW_HOURLY = "emis-show-hourly";
+	public final static String EMIS_SHOW_DAILY = "emis-show-daily";
+	public final static String EMIS_DIFF_HOURLY = "emis-diff-hourly";
+	public final static String EMIS_DIFF_DAILY = "emis-diff-daily";
+	public final static String EMIS_RATIO_HOURLY = "emis-ratio-hourly";
+	public final static String EMIS_RATIO_DAILY = "emis-ratio-daily";
+	public final static String VALUE_LIST = "valueList";
+	public final static String COLOR_LIST = "colorList";
+	public final static String COLOR_LONG_LIST = "colorLongList"; // 颜色的long类型格式
 
 	public static final String[] HOURLYSPECIES = { "PM25", "PM10", "O3", "SO2", "NO2", "CO", "SO4", "NO3", "NH4", "BC",
 			"OM", "PMFINE" };

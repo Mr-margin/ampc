@@ -345,7 +345,8 @@ public class ExtractDataService extends ExtractService {
 					}
 				}
 
-			} else if ("diff".equals(params.getCalcType()) || "ratio".equals(params.getCalcType())) {
+			} else if (Constants.CALCTYPE_DIFF.equals(params.getCalcType())
+					|| Constants.CALCTYPE_RATIO.equals(params.getCalcType())) {
 				double value1 = 0;
 				double value2 = 0;
 				for (Map.Entry entry : variableMap1.entrySet()) {
@@ -368,7 +369,7 @@ public class ExtractDataService extends ExtractService {
 						}
 						value2 += vv / variableList2.size();
 					}
-					if ("diff".equals(params.getCalcType())) {
+					if (Constants.CALCTYPE_DIFF.equals(params.getCalcType())) {
 						value = value2 - value1;
 					} else {
 						if (value1 == 0) {
