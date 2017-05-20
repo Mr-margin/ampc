@@ -49,29 +49,34 @@ public class Colors {
 	public static int getColor(float value, List<Float> valueList, List<Color> colorList, List<Integer> colorLongList) {
 		int i = 0;
 		int colorData = 0;
-		if (value == Constants.OVERBORDER) {
-			colorData = trans;
-			return colorData;
-		}
-		do {
-			float cur = valueList.get(i);
-			float next = valueList.get(i + 1);
-			if (value >= cur && value < next) {
-				if (colorLongList.size() > i) {
-					colorData = colorLongList.get(i);
-				} else {
+		try {
+			if (value == Constants.OVERBORDER) {
+				colorData = trans;
+				return colorData;
+			}
+			do {
+				float cur = valueList.get(i);
+				float next = valueList.get(i + 1);
+				if (value >= cur && value < next) {
+					if (colorLongList.size() > i) {
+						colorData = colorLongList.get(i);
+					} else {
+						colorData = colorLongList.get(colorLongList.size() - 1);
+					}
+					break;
+				}
+				i++;
+			} while (i < valueList.size() - 1);
+			if (colorData == 0) {
+				if (value < valueList.get(0)) {
+					colorData = colorLongList.get(0);
+				} else if (value > valueList.get(valueList.size() - 1)) {
 					colorData = colorLongList.get(colorLongList.size() - 1);
 				}
-				break;
 			}
-			i++;
-		} while (i < valueList.size() - 1);
-		if (colorData == 0) {
-			if (value < valueList.get(0)) {
-				colorData = colorLongList.get(0);
-			} else if (value > valueList.get(valueList.size() - 1)) {
-				colorData = colorLongList.get(colorLongList.size() - 1);
-			}
+		} catch (Exception e) {
+			logger.error("Colors | getColor", e);
+			colorData = trans;
 		}
 		return colorData;
 	}
