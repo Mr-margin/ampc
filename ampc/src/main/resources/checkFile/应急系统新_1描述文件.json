@@ -1,6 +1,6 @@
 {
   "应急系统新_1描述文件": {    
-    "sheetNum": [	
+    "sheetNum": 	
       {
         "Sheet": {		
           "valueRange": "sheetName",   
@@ -27,13 +27,13 @@
           "maxLenth": "6"	     
         },
 		"属性类型": {		
-          "valueRange": "清单原始输出-统计-筛选-筛选和统计",   
+          "valueRange": "清单原始输出-统计-筛选-筛选和统计-清单原始输入",   
           "dataType": "String",     
           "isNotNull": "y",	     
           "maxLenth": "6"	     
         }
       }
-    ],
+    ,
     "sheetName": {
         "maxLenth": "10"
     }
