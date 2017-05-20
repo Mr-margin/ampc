@@ -1,7 +1,6 @@
 package ampc.com.gistone.extract;
 
 import java.awt.Color;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,16 +47,16 @@ public class ResultPathUtil {
 
 	private void buildImageColorConfig() {
 		imageColorConfig = new ImageColorConfig();
-		String rootDir = System.getProperty("user.dir");
-		buildColorSetting(rootDir + "/src/main/resources/drawPicture/color/concn_color_setting.xlsx");
-		buildColorSetting(rootDir + "/src/main/resources/drawPicture/color/emis_color_setting.xlsx");
+		buildColorSetting("/drawPicture/color/concn_color_setting.xlsx");
+		buildColorSetting("/drawPicture/color/emis_color_setting.xlsx");
 	}
 
 	private void buildColorSetting(String configPath) {
-		File file = new File(configPath);
-		if (file.exists()) {
+		InputStream ins;
+		ins = getClass().getResourceAsStream(configPath);
+		if (ins != null) {
 			try {
-				Workbook wb = WorkbookFactory.create(file);
+				Workbook wb = WorkbookFactory.create(ins);
 				int sheets = wb.getNumberOfSheets();
 				for (int i = 0; i < sheets; i++) {
 					buildColorMap(wb.getSheetAt(i));
