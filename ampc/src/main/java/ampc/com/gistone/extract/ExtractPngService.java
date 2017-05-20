@@ -122,34 +122,37 @@ public class ExtractPngService extends ExtractService {
 		return data;
 	}
 
-	private String buildPngImage(float[][] res) throws IOException {
+	private String buildPngImage(float[][] res) {
+		logger.info("start buildPngImage...");
 		long startTimes = System.currentTimeMillis();
-		String showType = params.getShowType();
-		String calcType = params.getCalcType();
-		String timePoint = params.getTimePoint();
-		timePoint = timePoint.equals(Constants.TIMEPOINT_D) ? Constants.TIMEPOINT_DAILY : Constants.TIMEPOINT_HOURLY;
-		String name = showType + "-" + calcType + "-" + timePoint;
-		name = name.toLowerCase();
-		Map<String, Map<String, List>> specieMap = resultPathUtil.getImageColorConfig().getSheetMap(name);
-		Map<String, List> valueMap = specieMap.get(params.getSpecie());
-		List<Float> valueList = valueMap.get(Constants.VALUE_LIST);
-		List<Color> colorList = valueMap.get(Constants.COLOR_LIST);
-		List<Integer> colorLongList = valueMap.get(Constants.COLOR_LONG_LIST);
-		int row = res.length;
-		int col = res[0].length;
-		int[] imgArr = new int[row * col];
-		for (int r = 0; r < row; r++) {
-			for (int c = 0; c < col; c++) {
-				int cc = Colors.getColor(res[r][c], valueList, colorList, colorLongList);
-				imgArr[r * col + c] = cc;
-			}
-		}
-		String imagePath = "";
+		String imagePath = buildIamgeFilePath();
+		logger.info("pngImage path:" + imagePath);
 		try {
-			imagePath = buildIamgeFilePath();
+			String showType = params.getShowType();
+			String calcType = params.getCalcType();
+			String timePoint = params.getTimePoint();
+			timePoint = timePoint.equals(Constants.TIMEPOINT_D) ? Constants.TIMEPOINT_DAILY
+					: Constants.TIMEPOINT_HOURLY;
+			String name = showType + "-" + calcType + "-" + timePoint;
+			name = name.toLowerCase();
+			Map<String, Map<String, List>> specieMap = resultPathUtil.getImageColorConfig().getSheetMap(name);
+			Map<String, List> valueMap = specieMap.get(params.getSpecie());
+			List<Float> valueList = valueMap.get(Constants.VALUE_LIST);
+			List<Color> colorList = valueMap.get(Constants.COLOR_LIST);
+			List<Integer> colorLongList = valueMap.get(Constants.COLOR_LONG_LIST);
+			int row = res.length;
+			int col = res[0].length;
+			int[] imgArr = new int[row * col];
+			for (int r = 0; r < row; r++) {
+				for (int c = 0; c < col; c++) {
+					int cc = Colors.getColor(res[r][c], valueList, colorList, colorLongList);
+					imgArr[r * col + c] = cc;
+				}
+			}
 			BufferedImage bi = Images.buildGraphics2D(imgArr, res[0].length, res.length);
 			ImageIO.write(bi, "png", new File(imagePath));
 		} catch (Exception e) {
+			logger.error("ExtractPngService | buildPngImage error", e);
 			e.printStackTrace();
 		}
 		logger.info("buildPngImage times : " + (System.currentTimeMillis() - startTimes) + "ms");
@@ -464,6 +467,7 @@ public class ExtractPngService extends ExtractService {
 		if (!file.exists()) {
 			file.mkdirs();
 		}
+		logger.info("image path : " + contentPath + imageFileName);
 		return contentPath + imageFileName;
 
 	}
