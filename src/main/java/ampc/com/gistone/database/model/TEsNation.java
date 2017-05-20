@@ -22,12 +22,22 @@ public class TEsNation {
     private String isEffective;
 
     private Date deleteTime;
+    
+    private String reamrk;
 
     public Long getEsNationId() {
         return esNationId;
     }
 
-    public void setEsNationId(Long esNationId) {
+    public String getReamrk() {
+		return reamrk;
+	}
+
+	public void setReamrk(String reamrk) {
+		this.reamrk = reamrk;
+	}
+
+	public void setEsNationId(Long esNationId) {
         this.esNationId = esNationId;
     }
 
