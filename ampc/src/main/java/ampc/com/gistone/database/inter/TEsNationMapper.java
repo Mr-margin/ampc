@@ -20,4 +20,6 @@ public interface TEsNationMapper {
     
     //查询全国清单
     List<Map> selectAllNation(Long userId);
+    //编辑更新清单信息
+    int updateByIdSelective(TEsNation record);
 }
