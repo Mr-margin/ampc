@@ -112,13 +112,14 @@ public class ToDataTasksUtil {
 								endtimeDate = DateUtil.StrtoDateYMD(endtime, "yyyyMMdd");
 								String endtimeString = endtime+" "+"23:59:59";
 								Date tasksEndDate = DateUtil.StrtoDateYMD(endtimeString, "yyyyMMdd HH:mm:ss");
+								String errorStatus = (String) map.get("desc");
 								//2.验证结束-根据code区别系统错误
 								if (code!=0&&code!=1) {
-									
+									//模式出错处理
+									ModelexecuteErrorHandel(code,tasksScenarinoId,stepindex,endtime,errorStatus);
 								}else {
 									//3.验证结束 -为保证健壮性code非0时，和错误信息合并
 									if (stepindex<=8&&stepindex>0) {
-										String errorStatus = (String) map.get("desc");
 										if (code!=0) {
 											errorStatus ="code:"+code+","+errorStatus;
 										}
@@ -139,7 +140,7 @@ public class ToDataTasksUtil {
 									    LogUtil.getLogger().info("tasksstatus："+tasksStatus);
 									    if (i>0) {
 									    	LogUtil.getLogger().info("更新tasksstatus成功");
-									    	if (code!=0||!errorStatus.equals("")) {
+									    	if (code!=0||!"".equals(errorStatus)) {
 									    		//出现错误，模式变为出错
 									    		//更新情景状态
 									    		//更新状态
@@ -192,7 +193,7 @@ public class ToDataTasksUtil {
 												    		tasksStatus2.setBeizhu("2"); 
 												    		tasksStatus2.setTasksScenarinoId(tasksScenarinoId);
 												    		tasksStatusMapper.updateRunstatus(tasksStatus2);
-												    		LogUtil.getLogger().info("不是事实预报"+scentype+index+":"+stepindex);
+												    		LogUtil.getLogger().info("不是事实预报,情景类型："+scentype+",情景ID："+tasksScenarinoId+"执行完毕！"+index+":"+stepindex);
 														}
 													}
 											    	//code为0的时候是成功的  同时是实时预报类型的情况下 stepindex==8才会发下一条 同时时间小于该任务的结束时间  同时该条情景对应的pathdate是当天才能走这个方法
@@ -574,6 +575,57 @@ public class ToDataTasksUtil {
 	} 
 
 	
+
+	/**
+	 * @Description:模式出错处理
+	 * @param code
+	 * @param tasksScenarinoId
+	 * @param stepindex
+	 * @param endtime
+	 * @param errorStatus   
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年5月19日 上午10:59:21
+	 */
+	private void ModelexecuteErrorHandel(int code, Long tasksScenarinoId,
+			Integer stepindex, String endtime, String errorStatus) {
+		//模式运行出错，修改情景状态
+		readyData.updateScenStatusUtil(9l, tasksScenarinoId);
+		switch (code) {
+		case 9999:
+			LogUtil.getLogger().info("ModelexecuteErrorHandel：系统错误！情景ID："+tasksScenarinoId);
+			break;
+		case 1001:
+			LogUtil.getLogger().info("ModelexecuteErrorHandel：参数错误！情景ID："+tasksScenarinoId);
+			break;
+		case 1002:
+			LogUtil.getLogger().info("ModelexecuteErrorHandel：commit job failed！情景ID："+tasksScenarinoId);
+			break;
+		case 1003:
+			LogUtil.getLogger().info("ModelexecuteErrorHandel：start date or end date invalid！情景ID："+tasksScenarinoId);
+			break;
+		case 1004:
+			LogUtil.getLogger().info("ModelexecuteErrorHandel：spinup invalid！情景ID："+tasksScenarinoId);
+			break;
+		case 1005:
+			LogUtil.getLogger().info("ModelexecuteErrorHandel：cores invalid！情景ID："+tasksScenarinoId);
+			break;
+		case 1006:
+			LogUtil.getLogger().info("ModelexecuteErrorHandel：invalid path date！情景ID："+tasksScenarinoId);
+			break;
+		case 1007:
+			LogUtil.getLogger().info("ModelexecuteErrorHandel：job not exist！情景ID："+tasksScenarinoId);
+			break;
+		default:
+			break;
+		}
+	}
+
+
+
+
+
 
 	/**
 	 * @Description: 停止模式的处理
