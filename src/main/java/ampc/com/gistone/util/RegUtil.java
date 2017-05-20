@@ -40,6 +40,14 @@ public class RegUtil {
 			         return false;  
 			    }  
 			}
+			//是否是指定的目标类型
+			if(clazz.equals("Short")){
+				try {  
+					Short.parseShort(param.toString());  
+			    } catch (Exception e) {  
+			         return false;  
+			    }  
+			}
 			if(clazz.equals("String")){
 				try {  
 					param.toString();  
