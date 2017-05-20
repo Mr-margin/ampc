@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 
+
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
@@ -380,16 +381,21 @@ public class GetWeatherModelController {
 			/*
 			 * 用于预评估
 			 */
-			Date sendDate = null;
-			try {
-				sendDate = DateUtil.StrtoDateYMD(sendtime, "yyyyMMdd");
-			} catch (Exception e) {
-				LogUtil.getLogger().error("GetWeatherModelController-stopModel:时间格式转换错误！",e);
+			Integer compareTo = null;
+			Integer compareTo2 = null;
+			if (!"0".equals(sendtime)) {
+				Date sendDate = null;
+				try {
+					sendDate = DateUtil.StrtoDateYMD(sendtime, "yyyyMMdd");
+				} catch (Exception e) {
+					LogUtil.getLogger().error("GetWeatherModelController-stopModel:时间格式转换错误！",e);
+				}
+				//比价情景发送了的时间和已经完成了的时间
+				compareTo = tasksEndDate.compareTo(sendDate);
+				//比较情景的任务结束时间和情景的结束时间
+				compareTo2 = tasksEndDate.compareTo(tasksScenarinoEndDate);
 			}
-			//比价情景发送了的时间和已经完成了的时间
-			int compareTo = tasksEndDate.compareTo(sendDate);
-			//比较情景的任务结束时间和情景的结束时间
-			int compareTo2 = tasksEndDate.compareTo(tasksScenarinoEndDate);
+			
 			/**
 			 * 对于预评估情景有两种情况可以直接终止和暂停
 			 * 1.模式在减排计算的过程中，点击的暂停和终止-模式不用发送指令到消息队列----这种情景适用于所有的情景
@@ -521,7 +527,7 @@ public class GetWeatherModelController {
 						throw new SQLException("GetWeatherModelController  修改情景状态失败!scenarinoId："+scenarinoId);
 					}
 				}
-				else if (scenarinoType==1&&missionType==2&&scenarinoStatus!=9&&!"0".equals(sendtime)&&null!=tasksEndDate&&4==stepindex&&compareTo==0&&compareTo>0) {
+				else if (scenarinoType==1&&missionType==2&&scenarinoStatus!=9&&!"0".equals(sendtime)&&null!=tasksEndDate&&4==stepindex&&compareTo==0&&compareTo2>0) {
 					/**
 					 * 预评估情景的特殊情况
 					 * 预评估情景
@@ -568,7 +574,7 @@ public class GetWeatherModelController {
 				else if (!"0".equals(sendtime)&&compentstatus.equals("2")) {
 					//模式已经执行完毕 正在入库等 不允许暂停
 					return AmpcResult.build(1004, "模式正在后处理，不允许暂停！");
-				}else if (scenarinoType==1&&missionType==2&&scenarinoStatus!=9&&!"0".equals(sendtime)&&null!=tasksEndDate&&4==stepindex&&compareTo==0&&compareTo>0) {
+				}else if (scenarinoType==1&&missionType==2&&scenarinoStatus!=9&&!"0".equals(sendtime)&&null!=tasksEndDate&&4==stepindex&&compareTo==0&&compareTo2>0) {
 					TTasksStatus tTasksStatus = new TTasksStatus();
 					tTasksStatus.setTasksScenarinoId(scenarinoId);
 					tTasksStatus.setPauseStatus("2");;//2表示不可发送消息到队列
@@ -675,7 +681,7 @@ public class GetWeatherModelController {
 						String sendtime = selectStatus.getBeizhu2();
 						Long tasksExpand1 = selectStatus.getTasksExpand1();//减排计算是否成功
 //						String pauseStatus = selectStatus.getPauseStatus();
-						//1.模式执行中处于暂停的状态 2.出错状态下的续跑
+						//1.模式执行中处于暂停的状态
 						 if (scenarinoStatus==7&&!sendtime.equals("0")) {
 							 boolean continueModelByError = readyData.continuePredict(scenarinoId, scenarinoType, missionType, missionId, userId);
 							if (continueModelByError) {
@@ -684,18 +690,24 @@ public class GetWeatherModelController {
 								return AmpcResult.build(1004, "续跑失败！");
 							}
 						}
-				/*		 else if(scenarinoStatus==7&&sendtime.equals("0")&&tasksExpand1==0){
+						// 2.出错状态下的续跑
+						 if (scenarinoStatus==9&&!sendtime.equals("0")) {
+							 boolean continueModelByError = readyData.continuePredict(scenarinoId, scenarinoType, missionType, missionId, userId);
+							 if (continueModelByError) {
+								 return AmpcResult.build(0, "续跑成功！");
+							 }else {
+								 return AmpcResult.build(1004, "续跑失败！");
+							 }
+						 }
+						 if(scenarinoStatus==9&&sendtime.equals("0")&&tasksExpand1==0){
 							//3.消息一次都没发的续跑（发送到消息队列出错的时候）
-							 TScenarinoDetail selectByPrimaryKey = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
-							 if (null!=selectByPrimaryKey) {
-								 readyData.readyPreEvaluationSituationDataFirst(selectByPrimaryKey);
-								
-							}
+							 String branchPredict = readyData.branchPredict(scenarinoId, scenarinoType, missionType, missionId, userId);
+							if (branchPredict.equals("")) {
 								return AmpcResult.build(0, "续跑成功！");
 							}else {
 								return AmpcResult.build(1004, "续跑失败！");
 							}
-						}*/
+						}
 						 else {
 							return AmpcResult.build(1004, "其他错误");
 						}
@@ -716,19 +728,48 @@ public class GetWeatherModelController {
 	}
 	/**
 	 * 
-	 * @Description: 请求减排计算
-	 * @param sourceid
+	 * @Description: 减排计算出错的情况下
+	 * @param requestDate
+	 * @param request
+	 * @param response
 	 * @return   
-	 * Map<String,Object>  获取emis的数据
+	 * AmpcResult  
 	 * @throws
 	 * @author yanglei
-	 * @date 2017年3月17日 下午2:19:53
+	 * @date 2017年5月19日 下午8:32:14
 	 */
-	public Map<String, String> getEmis(Long sourceid) {
-		/*Map<String,String> map = new HashMap<String,String>();
-		String url="http://192.168.1.128:8082/ampc/app";
-		String getResult=ClientUtil.doPost(url,sourceid.toString());*/
-		return null;
+	@Transactional
+	@RequestMapping("/Model/errorActionlist")
+	public AmpcResult CalActionlistError(@RequestBody Map<String, Object> requestDate,HttpServletRequest request,HttpServletResponse response) {
+		try {
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Object param = requestDate.get("scenarioid");
+			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
+				LogUtil.getLogger().error("GetWeatherModelController--CalActionlistError  scenarioid为空或出现非法字符!");
+				return AmpcResult.build(1003, "scenarioid为空或出现非法字符!");
+			}
+			Long scenarinoId = Long.parseLong(param.toString());
+			param = requestDate.get("actionlistErrorMSG");
+			boolean actionlist;
+			try {
+				actionlist = (boolean) param;
+			} catch (Exception e) {
+				LogUtil.getLogger().error("GetWeatherModelController--CalActionlistError  actionlistErrorMSG参数错误!");
+				return AmpcResult.build(1003, "actionlistErrorMSG为空或出现非法字符!");
+			}
+			TTasksStatus tTasksStatus = new TTasksStatus();
+			tTasksStatus.setTasksScenarinoId(scenarinoId);
+			tTasksStatus.setTasksExpand1(1l);
+			int updateEmisData = tTasksStatusMapper.updateEmisData(tTasksStatus);
+			if (updateEmisData>0) {
+				return AmpcResult.build(0, "success");
+			}else {
+				throw new SQLException("GetWeatherModelController CalActionlistError 更新情景actionlist计算失败状态失败!");
+			}
+		} catch (UnsupportedEncodingException | SQLException e) {
+			LogUtil.getLogger().error("GetWeatherModelController  CalActionlistError",e.getMessage(),e);
+			return AmpcResult.build(1000, "系统错误");
+		}
 	}
 	
 
