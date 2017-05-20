@@ -1466,6 +1466,7 @@ dl, dd {
   float: left;
   width: calc(100% - 80px);
   line-height: 20px;
+  text-align: left;
   /*border:none;*/
   /*border-bottom:1px solid #D9D9D9;*/
 }

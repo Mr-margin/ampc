@@ -75,17 +75,35 @@ $("#creatQd").window({
     cls:"cloudui"
 })
 function submitQd(){
-    $("#formQd").form('submit',{
-        url:'/NativeAndNation/add_nation',
-        dataType : 'text',
-        onSubmit: function(param){
-            param.esNationName =$("#esNationName").val();
-            param.esNationYear = $("#esNationYear").val();
-            param.esNationMark = $("#esNationMark").val();
-        },
-        success:function (data) {
-        }
-    })
+    // $('#formQd').submit();
+    // $("#formQd").form({
+    //     url:'/NativeAndNation/add_nation',
+    //     onSubmit: function(param){
+    //         param.esNationName =$("#esNationName").val();
+    //         param.esNationYear = $("#esNationYear").val();
+    //         param.esNationMark = $("#esNationMark").val();
+    //         console.log(param)
+    //     },
+    //     success:function (data) {
+    //
+    //     }
+    // })
+
+    var param={};
+    param.userId=userId;
+    param.nationName =$("#esNationName").val();
+    param.nationYear = $("#esNationYear").val();
+    // param.esNationMark = $("#esNationMark").val();
+
+    $("#formQd").submit(
+        ajaxPost('/NativeAndNation/add_nation',param).success(function(data){
+            console.log(data)
+        })
+    )
+
+
+    $("#creatQd").window('close');
+
 }
 function claearQd(){
     $("#formQd").form('clear');
