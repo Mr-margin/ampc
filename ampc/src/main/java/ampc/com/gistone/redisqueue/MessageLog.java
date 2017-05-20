@@ -22,6 +22,7 @@ import ampc.com.gistone.database.inter.TMessageLogMapper;
 import ampc.com.gistone.database.model.TMessageLog;
 import ampc.com.gistone.redisqueue.result.Message;
 import ampc.com.gistone.util.AmpcResult;
+import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.JsonUtil;
 import ampc.com.gistone.util.LogUtil;
@@ -39,6 +40,8 @@ public class MessageLog {
 	//日志映射
 	@Autowired
 	private TMessageLogMapper tMessageLogMapper;
+	@Autowired
+	private ConfigUtil configUtil;
 
 	/**
 	 * @Description: 保存返回消息的日志
@@ -145,6 +148,7 @@ public class MessageLog {
 	 */
 	public void savestopMessagelog(String rpop) {
 		LogUtil.getLogger().info("开始添加model.stop消息的log到数据库！");
+		boolean modelResultFlagLog = configUtil.isModelResultFlagLog();
 		try {
 			Message message  = JsonUtil.jsonToObj(rpop, Message.class);
 			String id = message.getId();
@@ -166,6 +170,9 @@ public class MessageLog {
 //			tMessageLog.setDomainId(domainId);
 			tMessageLog.setResultDesc(desc);
 			tMessageLog.setResultCode(code);
+			if (!modelResultFlagLog) {
+				tMessageLog.setExpand1("1");
+			}
 			int insertSelective = tMessageLogMapper.insertSelective(tMessageLog);
 			if (insertSelective>0) {
 				LogUtil.getLogger().info("更新model.stop消息日志成功！");
@@ -191,6 +198,7 @@ public class MessageLog {
 	 */
 	public void savepauseMessagelog(String rpop) {
 		LogUtil.getLogger().info("开始添加model.stop.pause消息的log到数据库！");
+		boolean modelResultFlagLog = configUtil.isModelResultFlagLog();
 		try {
 			Message message  = JsonUtil.jsonToObj(rpop, Message.class);
 			String id = message.getId();
@@ -212,6 +220,9 @@ public class MessageLog {
 //			tMessageLog.setDomainId(domainId);
 			tMessageLog.setResultDesc(desc);
 			tMessageLog.setResultCode(code);
+			if (!modelResultFlagLog) {
+				tMessageLog.setExpand1("1");
+			}
 			int insertSelective = tMessageLogMapper.insertSelective(tMessageLog);
 			if (insertSelective>0) {
 				LogUtil.getLogger().info("更新model.stop.pause消息日志成功！");
@@ -237,6 +248,7 @@ public class MessageLog {
 	 */
 	public void savesatrtModelMessagelog(String rpop) {
 		LogUtil.getLogger().info("savesatrtModelMessagelog：开始处理模式执行返回消息的log到数据库！");
+		boolean modelResultFlagLog = configUtil.isModelResultFlagLog();
 		try {
 			Message message  = JsonUtil.jsonToObj(rpop, Message.class);
 			String id = message.getId();
@@ -263,6 +275,9 @@ public class MessageLog {
 			tMessageLog.setTasksEndDate(dates);
 			tMessageLog.setResultDesc(desc);
 			tMessageLog.setResultCode(code);
+			if (!modelResultFlagLog) {
+				tMessageLog.setExpand1("1");
+			}
 			int insertSelective = tMessageLogMapper.insertSelective(tMessageLog);
 			if (insertSelective>0) {
 				LogUtil.getLogger().info("更新model.start.result消息日志成功！");
