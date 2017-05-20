@@ -551,13 +551,13 @@ public class SchedulerTimer<V> {
 			LogUtil.getLogger().info("每隔10分钟执行一次");
 			//根据情景的状态和情景的类型确定准备参数
 			try {
-				//找到每一条启动中的预评估情景
+				//找到每一条启动中的预评估情景-并且已经获取到了actionlist
 				List<TScenarinoDetail> list = tScenarinoDetailMapper.selectpreEvaluationSituation();
 				for (TScenarinoDetail tScenarinoDetail : list) {
 					Date pathDate = DateUtil.DateToDate(tScenarinoDetail.getPathDate(), "yyyyMMdd");
 					Long userId = tScenarinoDetail.getUserId();
 					Date maxtime = readyData.getMaxTimeForMegan(pathDate,userId);
-					LogUtil.getLogger().info("定时器 ForpreEvalution-预评估任务最大的气象数据maxtime："+maxtime);
+					LogUtil.getLogger().info("定时器 ForpreEvalution-pathDate："+pathDate+",userId:"+userId+",预评估情景ID："+tScenarinoDetail.getScenarinoId()+"最大的气象数据maxtime："+maxtime);
 					Date startDate = DateUtil.DateToDate(tScenarinoDetail.getScenarinoStartDate(), "yyyyMMdd");//预评估情景的开始时间
 					int compareTo = maxtime.compareTo(startDate);//比较最大的时间和预评估情景的开始时间
 					Long scenarinoId = tScenarinoDetail.getScenarinoId();
@@ -591,7 +591,7 @@ public class SchedulerTimer<V> {
 								Long preEvastepindex = tasksStatus.getStepindex();
 								preEvastepindex = preEvastepindex == null?0:preEvastepindex;
 								//当前情景的结束时间
-								Date EndDate = tScenarinoDetail.getScenarinoEndDate();
+								Date EndDate = DateUtil.DateToDate(tScenarinoDetail.getScenarinoEndDate(), "yyyyMMdd");
 								//当前任务的错误状态
 								String errorStatus = tasksStatus.getModelErrorStatus();
 								if(null==errorStatus&&preEvastepindex==4){
