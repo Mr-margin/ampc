@@ -125,7 +125,7 @@ public class ExtractPngService extends ExtractService {
 	private String buildPngImage(float[][] res) {
 		logger.info("start buildPngImage...");
 		long startTimes = System.currentTimeMillis();
-		String imagePath = buildIamgeFilePath();
+		String[] imagePath = buildIamgeFilePath();
 		logger.info("pngImage path:" + imagePath);
 		try {
 			String showType = params.getShowType();
@@ -150,13 +150,12 @@ public class ExtractPngService extends ExtractService {
 				}
 			}
 			BufferedImage bi = Images.buildGraphics2D(imgArr, res[0].length, res.length);
-			ImageIO.write(bi, "png", new File(imagePath));
+			ImageIO.write(bi, "png", new File(imagePath[0]));
 		} catch (Exception e) {
 			logger.error("ExtractPngService | buildPngImage error", e);
-			e.printStackTrace();
 		}
 		logger.info("buildPngImage times : " + (System.currentTimeMillis() - startTimes) + "ms");
-		return imagePath;
+		return imagePath[1];
 	}
 
 	public void exportExcel(float[][] pointBeanArray, String pathOut)
@@ -412,10 +411,10 @@ public class ExtractPngService extends ExtractService {
 			final HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.IMAGE_PNG);
 
-			String imagePath = buildIamgeFilePath();
-			boolean b = Images.buildImage(map, params.getWidth(), params.getHeight(), imagePath);
+			String[] imagePath = buildIamgeFilePath();
+			boolean b = Images.buildImage(map, params.getWidth(), params.getHeight(), imagePath[0]);
 			if (b)
-				return imagePath;
+				return imagePath[1];
 			return null;
 		} catch (NoSuchAuthorityCodeException e) {
 			e.printStackTrace();
@@ -432,7 +431,8 @@ public class ExtractPngService extends ExtractService {
 		return null;
 	}
 
-	public String buildIamgeFilePath() {
+	public String[] buildIamgeFilePath() {
+		String[] path = new String[2];
 		Date date = new Date();
 		String rootPath = System.getProperty("user.dir");
 		String imageFilePath = extractConfig.getImageFilePath(); // /$userid/$domainid/$missionid/$domain/$showType/$calcType/$currDate/
@@ -462,13 +462,15 @@ public class ExtractPngService extends ExtractService {
 				.replace("$hour", String.valueOf(params.getHour()))
 				.replace("$layer", String.valueOf(params.getLayer() - 1)).replace("$specie", params.getSpecie())
 				.replace("$scenario", scenario).replace("$random", String.valueOf(new Date().getTime()));
-		String contentPath = rootPath + "/imagePath/" + imageFilePath + "/";
+		String contentPath = rootPath + "/" + imageFilePath + "/";
 		File file = new File(contentPath);
 		if (!file.exists()) {
 			file.mkdirs();
 		}
-		logger.info("image path : " + contentPath + imageFileName);
-		return contentPath + imageFileName;
+		path[0] = contentPath + imageFileName; // 绝对路径，全路径
+		path[1] = imageFilePath + imageFileName; // 需要返给前端的路径
+		logger.info("image path : " + path[0]);
+		return path;
 
 	}
 
