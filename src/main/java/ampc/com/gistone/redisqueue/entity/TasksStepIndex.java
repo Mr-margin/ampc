@@ -8,6 +8,8 @@
  */
 package ampc.com.gistone.redisqueue.entity;
 
+import java.io.Serializable;
+
 /**  
  * @Title: TasksStepIndex.java
  * @Package ampc.com.gistone.redisqueue.entity
@@ -16,7 +18,7 @@ package ampc.com.gistone.redisqueue.entity;
  * @date 2017年4月5日 下午7:13:38
  * @version 1.0
  */
-public class TasksStepIndex {
+public class TasksStepIndex implements Serializable{
 	
 	private boolean wrf;
 	
