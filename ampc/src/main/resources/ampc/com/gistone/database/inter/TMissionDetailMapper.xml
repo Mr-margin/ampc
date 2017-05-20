@@ -389,4 +389,8 @@ WHERE
 AND IS_EFFECTIVE = '1')
 AND M.IS_EFFECTIVE = '1' AND M.MISSION_STATUS = '1'
   </select>
+  
+   <select id="selectDomain" resultMap="BaseResultMap" parameterType="java.lang.Long">
+  select * from T_MISSION_DETAIL where MISSION_DOMAIN_ID = #{missionDomainId,jdbcType=DECIMAL}
+  </select>
 </mapper>
