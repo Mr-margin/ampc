@@ -2,6 +2,7 @@ package ampc.com.gistone.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -159,29 +160,47 @@ public class NativeAndNationController {
 			Long userId = Long.parseLong(param.toString());
 			//获取清单名称
 			param=data.get("nationName");
-			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
-				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单名称为空或出现非法字符!");
 			}
-			Long nationName = Long.parseLong(param.toString());
+			String nationName = param.toString();
 			
 			//获取清单年份
 			param=data.get("nationYear");
-			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+			if(!RegUtil.CheckParameter(param, "Short", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
-				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单年份为空或出现非法字符!");
 			}
-			Short nationYear=new Short(param.toString());
+			Short nationYear=Short.valueOf(param.toString());
+			//获取清单备注
+			param=data.get("nationRemark");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单年份为空或出现非法字符!");
+			}
+			String nationRemark=param.toString();
+			
+			//日期格式
 			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date date=new Date();
+			//添加数据
 			TEsNation tEsNation=new TEsNation();
 			tEsNation.setUserId(userId);
 			tEsNation.setEsNationName(nationName);
 			tEsNation.setEsNationYear(nationYear);
+			tEsNation.setReamrk(nationRemark);
+//			tEsNation.setAddTime();
+			//插入数据
 			int total=tEsNationMapper.insertSelective(tEsNation);
-			
+			Map msgMap=new HashMap();
+			if(total==1){
+				msgMap.put("msg", true);
+			}else{
+				msgMap.put("msg", false);
+			}
 			LogUtil.getLogger().info("NativeAndNationController 创建全国清单信息成功!");
-			return AmpcResult.ok(total);
+			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
 			LogUtil.getLogger().error("NativeAndNationController 创建全国清单信息异常!",e);
