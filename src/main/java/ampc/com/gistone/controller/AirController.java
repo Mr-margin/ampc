@@ -80,36 +80,38 @@ public class AirController {
 				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
 			}
 			Long userId = Long.parseLong(param.toString());
-			//结束日期
-			param=data.get("endDate");
-			if(!RegUtil.CheckParameter(param, "String", null, false)){
-				LogUtil.getLogger().error("AirController  日期为空或出现非法字符!");
-				return AmpcResult.build(1003, "日期为空或出现非法字符!");
-			}
-			String endDate=param.toString();
 			
+			Calendar calendar = Calendar.getInstance();
+			SimpleDateFormat sdf;
+			sdf=new SimpleDateFormat("yyyy-MM-dd");
+			Date calDate ;
+			String calDateStr;
 			Calendar c1 = Calendar.getInstance();
 		    c1.setTime(new Date());
 		    int hour=c1.get(Calendar.HOUR_OF_DAY);
 		    //8点以后
 		    if(hour>8){
-//		    	calendar.setTime(sdf.parse(endDate));
-//				calendar.add(Calendar.DAY_OF_MONTH, -s);
-//				calDate = calendar.getTime();
-//				calDateStr=sdf.format(calDate);
+		    	calendar.setTime(new Date());
+				calendar.add(Calendar.DAY_OF_MONTH, -1);
+				calDate = calendar.getTime();
+				calDateStr=sdf.format(calDate);
 		    }else{
 		    //8点以前
-		    	
+		    	calendar.setTime(new Date());
+				calendar.add(Calendar.DAY_OF_MONTH, -2);
+				calDate = calendar.getTime();
+				calDateStr=sdf.format(calDate);
 		    }
+		    TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
+		    tScenarinoDetail.setUserId(userId);
+		    tScenarinoDetail.setPathDate(calDate);
+		    TScenarinoDetail tScenarinoDetails=tScenarinoDetailMapper.selectendStart(tScenarinoDetail);
 			
-			TMissionDetail tm=tMissionDetailMapper.selectMaxMission();
-			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
-			tScenarinoDetail.setMissionId(tm.getMissionId());
-			TScenarinoDetail maxtm=tScenarinoDetailMapper.selectByrealmax(tm.getMissionId());
-			TScenarinoDetail mintm=tScenarinoDetailMapper.selectByrealmin(tm.getMissionId());
+//			TScenarinoDetail maxtm=tScenarinoDetailMapper.selectByrealmax(tm.getMissionId());
+//			TScenarinoDetail mintm=tScenarinoDetailMapper.selectByrealmin(tm.getMissionId());
 			JSONObject obj=new JSONObject();
-			obj.put("mintime", mintm.getPathDate().getTime());
-			obj.put("maxtime", maxtm.getPathDate().getTime());
+//			obj.put("mintime", mintm.getPathDate().getTime());
+//			obj.put("maxtime", maxtm.getPathDate().getTime());
 			LogUtil.getLogger().error("空气质量预报时间查询成功");
 			return AmpcResult.ok(obj);
 		}catch(Exception e){
