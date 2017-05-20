@@ -248,17 +248,17 @@ public class NativeAndNationController {
 			String nationName = param.toString();
 			
 			//获取清单年份
-//			param=data.get("nationYear");
-//			if(!RegUtil.CheckParameter(param, "Short", null, false)){
-//				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
-//				return AmpcResult.build(1003, "清单年份为空或出现非法字符!");
-//			}
-//			Short nationYear=Short.valueOf(param.toString());
+			param=data.get("nationYear");
+			if(!RegUtil.CheckParameter(param, "Short", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单年份为空或出现非法字符!");
+			}
+			Short nationYear=Short.valueOf(param.toString());
 			//获取清单备注
 			param=data.get("nationRemark");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 清单年份为空或出现非法字符!");
-				return AmpcResult.build(1003, "清单年份为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单备注为空或出现非法字符!");
 			}
 			String nationRemark=param.toString();
 			

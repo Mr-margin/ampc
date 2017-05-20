@@ -80,13 +80,25 @@ public class AirController {
 				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
 			}
 			Long userId = Long.parseLong(param.toString());
+			//结束日期
+			param=data.get("endDate");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("AirController  日期为空或出现非法字符!");
+				return AmpcResult.build(1003, "日期为空或出现非法字符!");
+			}
+			String endDate=param.toString();
 			
 			Calendar c1 = Calendar.getInstance();
 		    c1.setTime(new Date());
 		    int hour=c1.get(Calendar.HOUR_OF_DAY);
+		    //8点以后
 		    if(hour>8){
-		    	
+//		    	calendar.setTime(sdf.parse(endDate));
+//				calendar.add(Calendar.DAY_OF_MONTH, -s);
+//				calDate = calendar.getTime();
+//				calDateStr=sdf.format(calDate);
 		    }else{
+		    //8点以前
 		    	
 		    }
 			
