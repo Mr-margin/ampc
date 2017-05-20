@@ -1,5 +1,7 @@
 package ampc.com.gistone.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ampc.com.gistone.database.inter.TEsCouplingMapper;
 import ampc.com.gistone.database.inter.TEsNationMapper;
 import ampc.com.gistone.database.inter.TEsNativeMapper;
+import ampc.com.gistone.database.model.TEsNation;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.LogUtil;
@@ -91,11 +94,11 @@ public class NativeAndNationController {
 			// 用户id
 			Long userId = Long.parseLong(param.toString());
 			List<Map> list=tEsNationMapper.selectAllNation(userId);
-			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的耦合清单信息成功!");
+			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的全国清单信息成功!");
 			return AmpcResult.ok(list);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("NativeAndNationController 查询当前用户下的耦合清单信息异常!",e);
-			return AmpcResult.build(1001, "NativeAndNationController 查询当前用户下的耦合清单信息异常!");
+			LogUtil.getLogger().error("NativeAndNationController 查询当前用户下的全国清单信息异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 查询当前用户下的全国清单信息异常!");
 		}
 	}
 	
@@ -123,11 +126,11 @@ public class NativeAndNationController {
 			// 用户id
 			Long userId = Long.parseLong(param.toString());
 			List<Map> list=tEsNativeMapper.selectAllNative(userId);
-			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的耦合清单信息成功!");
+			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的本地清单信息成功!");
 			return AmpcResult.ok(list);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("NativeAndNationController 查询当前用户下的耦合清单信息异常!",e);
-			return AmpcResult.build(1001, "NativeAndNationController 查询当前用户下的耦合清单信息异常!");
+			LogUtil.getLogger().error("NativeAndNationController 查询当前用户下的本地清单信息异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 查询当前用户下的本地清单信息异常!");
 		}
 	}
 	
@@ -154,13 +157,35 @@ public class NativeAndNationController {
 			}
 			// 用户id
 			Long userId = Long.parseLong(param.toString());
-			List<Map> list=tEsNationMapper.selectAllNation(userId);
-			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的耦合清单信息成功!");
-			return AmpcResult.ok(list);
+			//获取清单名称
+			param=data.get("nationName");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			Long nationName = Long.parseLong(param.toString());
+			
+			//获取清单年份
+			param=data.get("nationYear");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			Short nationYear=new Short(param.toString());
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date date=new Date();
+			TEsNation tEsNation=new TEsNation();
+			tEsNation.setUserId(userId);
+			tEsNation.setEsNationName(nationName);
+			tEsNation.setEsNationYear(nationYear);
+			int total=tEsNationMapper.insertSelective(tEsNation);
+			
+			LogUtil.getLogger().info("NativeAndNationController 创建全国清单信息成功!");
+			return AmpcResult.ok(total);
 		} catch (Exception e) {
 			// TODO: handle exception
-			LogUtil.getLogger().error("NativeAndNationController 查询当前用户下的耦合清单信息异常!",e);
-			return AmpcResult.build(1001, "NativeAndNationController 查询当前用户下的耦合清单信息异常!");
+			LogUtil.getLogger().error("NativeAndNationController 创建全国清单信息异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 创建全国清单信息异常!");
 		}
 	}
 }
