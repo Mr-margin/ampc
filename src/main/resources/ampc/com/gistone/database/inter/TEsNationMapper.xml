@@ -141,6 +141,9 @@
       <if test="deleteTime != null" >
         DELETE_TIME = #{deleteTime,jdbcType=DATE},
       </if>
+      <if test="nationRemark != null" >
+        ES_NATION_REMARK = #{nationRemark,jdbcType=VARCHAR},
+      </if>
     </set>
     where ES_NATION_ID = #{esNationId,jdbcType=DECIMAL}
   </update>
@@ -165,4 +168,39 @@
     from T_ES_NATION
     where USER_ID = #{userId,jdbcType=DECIMAL}
   </select>
+  <!-- 编辑全国清单信息 -->
+  <update id="updateByIdSelective" parameterType="ampc.com.gistone.database.model.TEsNation" >
+    update "AMPC"."T_ES_NATION"
+    <set >
+      <if test="esNationName != null" >
+        ES_NATION_NAME = #{esNationName,jdbcType=OTHER},
+      </if>
+      <if test="esNationYear != null" >
+        ES_NATION_YEAR = #{esNationYear,jdbcType=DECIMAL},
+      </if>
+      <if test="publishTime != null" >
+        PUBLISH_TIME = #{publishTime,jdbcType=DATE},
+      </if>
+      <if test="esNationRelationId != null" >
+        ES_NATION_RELATION_ID = #{esNationRelationId,jdbcType=DECIMAL},
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME = #{addTime,jdbcType=DATE},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      </if>
+      <if test="nationRemark != null" >
+        ES_NATION_REMARK = #{nationRemark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ES_NATION_ID = #{esNationId,jdbcType=DECIMAL} and 
+    	USER_ID = #{userId,jdbcType=DECIMAL}
+  </update>
 </mapper>

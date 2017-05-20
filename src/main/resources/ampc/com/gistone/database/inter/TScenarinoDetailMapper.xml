@@ -1095,5 +1095,15 @@ AND S.IS_EFFECTIVE ='1'
 			  AND MISSION_ID=#{missionId,jdbcType=OTHER} AND SCEN_TYPE!='4'
 			  ORDER BY SCENARINO_ID DESC
   </select>
+  <!-- 查询结束时间-->
+  <select id="selectendStart" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TScenarinoDetail">
+  	 SELECT *
+  		FROM T_SCENARINO_DETAIL  
+			 WHERE 
+			 IS_EFFECTIVE = '1'
+			AND USER_ID = #{userId,jdbcType=OTHER} 
+			AND PATH_DATE &lt;= #{calDate,jdbcType=TIMESTAMP}
+    
+  </select>
   
 </mapper>
