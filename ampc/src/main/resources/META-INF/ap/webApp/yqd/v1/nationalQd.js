@@ -10,9 +10,11 @@ var preams = {
 // 表单生成
 innitdata()
 function innitdata(){
-    // $('#grid').datagrid("loadData",{total:0,rows:[]});
     ajaxPost('/NativeAndNation/find_nation',preams).success(function(data){
         $("#qgqd").datagrid({
+            checkOnSelect:true,
+            selectOnCheck:true,
+            clickToSelect: true,// 点击选中行
             data:data.data,
             columns:[[
                 {field:"ck",checkbox:true},
@@ -27,7 +29,8 @@ function innitdata(){
             fit:'true',
             pageSize:1,
             pageNumber:1,
-            pageList:[1]
+            pageList:[1],
+            sortOrder:'desc'
         });
     });
 }
@@ -79,54 +82,55 @@ $("#creatQd").window({
     closed:true,
     cls:"cloudui"
 })
-//创建清单限制
-//年份
-// creatQdYear()
-function creatQdYear(){
-    var nData=new Date();
-    var nYear=myDate.getYear();
-    var myYear=$("#esNationYear").val()
-    if(myYear>nYear){
-        swal({
-            title: '添加失败!',
-            type: 'error',
-            // timer: 1000,
-            // showConfirmButton: false
-        });
-    }
-}
+//创建清单
 
-$("#esNationYear").keyup(function(){
-    var nData=new Date();
-    var nYear=myDate.getYear();
-
-    if(myYear>nYear){
-        console.log("失败")
-    }
-})
 function submitQd(){
-    // $("#formQd .easyui-validatebox").empty();
+    $("#formQd .easyui-validatebox").empty();
     var param={};
     param.userId=userId;
     param.nationName =$("#esNationName").val();
     param.nationYear = $("#esNationYear").val();
     param.nationRemark = $("#esNationMark").val();
 
-    $("#formQd").submit(
-        ajaxPost('/NativeAndNation/add_nation',param).success(function(data){
-            console.log(data)
-        })
-    )
-    // creatQdYear()
-    $("#creatQd").window('close');
-    innitdata()
+    //判断年份
+    var nData=new Date();
+    var nYear=nData.getYear();
+    var myYear=$("#esNationYear").val()
+    if(myYear>nYear&&myYear<2000){
+        swal('年份错误', '', 'error');
+    }else{
+        $("#formQd").submit(
+            ajaxPost('/NativeAndNation/add_nation',param).success(function(data){
+                $("#qgqd").datagrid('insertRow',{
+                    index: 0,	// 索引从0开始
+                    row: {
+                        esNationName: param.nationName,
+                        esNationYear: param.nationYear,
+                        // note: '新消息'
+                    }
+                })
+            })
+        )
+        $("#creatQd").window('close');
+    }
 }
 function claearQd(){
     $("#formQd").form('clear');
 }
 // 编辑清单
 function editQd(){
-    $("#creatQd").window('open');
+    var row = $('#qgqd').datagrid('getSelected');//获取所有选中的清单数据
+    if(row!=''&&row!=null&&row!=undefined){
+        $("#creatQd").window('open');
+        var editQdName=row.esNationName,editQdYear=row.esNationYear;
+        console.log("mingzi")
+        console.log(editQdName);
+        console.log(editQdYear)
+        $("#esNationName_edit").val(editQdName);
+        $("#esNationYear_edit").val(editQdYear);
+    }else{
+        swal('请先选择编辑清单', '', 'error');
+    }
 }
 $("#editQd").window({
     width:600,
