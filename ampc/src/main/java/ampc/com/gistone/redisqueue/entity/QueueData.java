@@ -8,6 +8,8 @@
  */
 package ampc.com.gistone.redisqueue.entity;
 
+import java.io.Serializable;
+
 /**  
  * @Title: QueueData.java
  * @Package ampc.com.gistone.redisqueue
@@ -16,7 +18,7 @@ package ampc.com.gistone.redisqueue.entity;
  * @date 2017年3月17日 下午1:46:42
  * @version 1.0
  */
-public class QueueData {
+public class QueueData implements Serializable{
 	//id 每一条消息的id 保证唯一
 	private String id;
 	// 消息发送的系统时间
