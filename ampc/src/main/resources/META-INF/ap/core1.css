@@ -1424,7 +1424,8 @@ dl, dd {
 .clearfix:after {clear:both;content:'.';display:block;width: 0;height: 0;visibility:hidden;}
 /*源清单-全国清单*/
 .cloudui .yqdTable{width: 100%;height:100%;}
-.cloudui .yqdTable #qgqd{width: 100%;height:100%;}
+.cloudui .yqdTable #qgqd{width: 100%;
+  height: 100% !important;}
 .navRight{float:right;margin-right:20px;}
 .qdnavRight button{float: left;width: 54px;height:20px;border-radius:2px;color:white;border:none;margin-left:10px;cursor: pointer;}
 .qdnavRight button.qdCreat{background-color:#119e59;border:1px solid #3b694d;}
