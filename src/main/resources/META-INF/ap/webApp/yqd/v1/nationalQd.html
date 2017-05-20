@@ -8,18 +8,49 @@
 </div>
 <!--创建清单模态框-->
 <div id="creatQd">
-    <form method="post" id="formQd" class="rwCon">
-        <div class="qdContent">
-            <label for="esNationName" class="qdTitle">名称：</label>
-            <input class="easyui-validatebox qdCon" type="text" name="esNationName" data-options="required:true" id="esNationName" />
+    <form method="post" id="formQd" >
+        <div class="rwCon">
+            <div class="qdContent">
+                <label for="esNationName" class="qdTitle">名称：</label>
+                <input class="easyui-validatebox qdCon" type="text" name="esNationName" data-options="required:true" id="esNationName" />
+            </div>
+            <div  class="qdContent">
+                <label for="esNationYear" class="qdTitle">年份：</label>
+                <input class="easyui-validatebox qdCon" type="text" name="esNationYear" data-options="required:true" id="esNationYear" />
+            </div>
         </div>
-        <div  class="qdContent">
-            <label for="esNationYear" class="qdTitle">年份：</label>
-            <input class="easyui-validatebox qdCon" type="text" name="esNationYear" data-options="required:true" id="esNationYear" />
+        <div class="rwCon">
+            <div class="qdContent qdMark">
+                <label for="esNationMark" class="qdTitle">备注：</label>
+                <textarea rows="3" class="easyui-validatebox qdCon" type="text" name="esNationMark" data-options="required:true" id="esNationMark">
+                </textarea>
+            </div>
         </div>
-        <div class="qdContent">
-            <label for="esNationMark" class="qdTitle">备注：</label>
-            <input class="easyui-validatebox qdCon" type="text" name="esNationMark" data-options="required:true" id="esNationMark" />
+    </form>
+    <div class="dlogFooter" >
+        <button type="button" class="btn btn-primary createQdBtn" onclick="submitQd()">提交</button>
+        <button type="button" class="btn btn-default claearQdBtn" onclick="claearQd()">清除</button>
+    </div>
+</div>
+<!--编辑清单模态框-->
+<div id="editQd">
+    <form method="post" id="editQdForm">
+        <div class="rwCon">
+            <div class="qdContent">
+                <label for="esNationName_edit" class="qdTitle">名称：</label>
+                <input class="easyui-validatebox qdCon" type="text" name="esNationName" data-options="required:true" id="esNationName_edit" />
+            </div>
+            <div  class="qdContent">
+                <label for="esNationYear_edit" class="qdTitle">年份：</label>
+                <input class="easyui-validatebox qdCon" type="text" name="esNationYear" data-options="required:true" id="esNationYear_edit" />
+            </div>
+        </div>
+        <div class="rwCon">
+            <div class="qdMark qdMark">
+                <label for="esNationMark_edit" class="qdTitle">备注：</label>
+                <textarea rows="3" class="easyui-validatebox qdCon" type="text" name="esNationMark" data-options="required:true" id="esNationMark_edit">
+                </textarea>
+            </div>
         </div>
     </form>
     <div class="dlogFooter" >
