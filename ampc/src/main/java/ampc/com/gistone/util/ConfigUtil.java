@@ -63,9 +63,15 @@ public class ConfigUtil {
 	//actionlist.actionDirAfter
 	@Value("${actionlist.actionDirAfter}")
 	private String actionlistDirAfter;
-	//线程和定时器的一件设置
+	//线程和定时器的一键设置
 	@Value("${schedulerandrunnable.setting}")
 	private boolean runningSetting;
+	//正式和测试运行结果的flag-用于记录日志
+	@Value("${model.officialexecute.result.log}")
+	private boolean modelResultFlagLog;
+	//记录发送的消息生成的文件的路径
+	@Value("${sendmessage.log}")
+	private String sendMessageLog;
 			//redisIP地址
 			@Value("${spring.redis.host}")
 			private String redisHost;
@@ -175,6 +181,14 @@ public class ConfigUtil {
 
 			
 			
+
+	public String getSendMessageLog() {
+				return sendMessageLog;
+			}
+
+	public boolean isModelResultFlagLog() {
+				return modelResultFlagLog;
+			}
 
 	public boolean isRunningSetting() {
 				return runningSetting;
