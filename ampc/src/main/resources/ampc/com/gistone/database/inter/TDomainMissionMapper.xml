@@ -228,4 +228,23 @@
       CREATE_STATUS = #{createStatus,jdbcType=OTHER}
     where DOMAIN_ID = #{domainId,jdbcType=DECIMAL}
   </update>
+  <select id="selectAll" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from T_DOMAIN_MISSION
+    where ID_EFFECTIVE ='1'
+  </select>
+  <update id="updateByUserId" parameterType="java.lang.Long" >
+    update T_DOMAIN_MISSION
+    set VERSION ='1'
+    where USER_ID = #{userId,jdbcType=DECIMAL}
+  </update>
+  
+  <update id="deletebyid" parameterType="java.lang.Long" >
+    update T_DOMAIN_MISSION
+    set ID_EFFECTIVE ='0'
+    where DOMAIN_ID = #{domainId,jdbcType=DECIMAL}
+  </update>
 </mapper>
