@@ -86,8 +86,9 @@ public class ExtractPngController {
 			params.setCols(cols);
 			params.setWidth(width);
 			params.setHeight(height);
-
-			Map pngPath = extractPngService.buildPng(params);
+			ManageParams manageParams = new ManageParams();
+			manageParams.setParams(params);
+			Map pngPath = extractPngService.buildPng(manageParams);
 			if (pngPath != null)
 				return AmpcResult.ok(pngPath);
 		} catch (Exception e) {

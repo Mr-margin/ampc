@@ -8,9 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,18 +66,18 @@ public class ExtractPngService extends ExtractService {
 	@Autowired
 	private PreproUtil preproUtil;
 
-	public List<Variable> variableList1; // diff or ratio
-											// scenario1/scenario2
-	public List<Variable> variableList2;
+	// public List<Variable> variableList1; // diff or ratio
+	// // scenario1/scenario2
+	// public List<Variable> variableList2;
+	//
+	// private NumberFormat nf;
+	// private List<PointBean> pointBeanList;
 
-	private NumberFormat nf;
-	private List<PointBean> pointBeanList;
-
-	public synchronized Map buildPng(ExtractRequestParams extractRequestParams)
+	public Map buildPng(ManageParams manageParams)
 			throws IOException, TransformException, FactoryException, InvalidRangeException {
 		long startTimes = System.currentTimeMillis();
 		extractConfig = resultPathUtil.getExtractConfig();
-		params = extractRequestParams;
+		ExtractRequestParams params = manageParams.getParams();
 
 		Long scenarioId1 = params.getScenarioId1();
 		TScenarinoDetail tScenarinoDetail1 = tScenarinoDetailMapper.selectByPrimaryKey(scenarioId1);
@@ -91,22 +89,17 @@ public class ExtractPngService extends ExtractService {
 			Map<String, String[]> dataTypeMap2 = preproUtil.buildFnlAndGfsDate(tScenarinoDetail2);
 			params.setDateTypeMap2(dataTypeMap2);
 		}
+		getVariables(manageParams);
 
-		variableList1 = new ArrayList<Variable>();
-		variableList2 = new ArrayList<Variable>();
-
-		getVariables();
-
-		projection = buildProject(params);
-		if (projection == null)
+		Projection projection = buildProject(manageParams);
+		if (projection == null) {
 			return null;
+		} else {
+			manageParams.setProjection(projection);
+		}
 
-		nf = NumberFormat.getInstance();
-		nf.setGroupingUsed(false);
-		nf.setMaximumFractionDigits(10);
-
-		float[][] res = buildPngData();
-		String imagePath = buildPngImage(res);
+		float[][] res = buildPngData(manageParams);
+		String imagePath = buildPngImage(res, params);
 		// try {
 		// exportExcel(res, imagePath);
 		// } catch (Exception e) {
@@ -114,7 +107,7 @@ public class ExtractPngService extends ExtractService {
 		// }
 
 		Map data = new HashMap();
-		// data.put("imagePath", drawPngPicture(res));
+		// data.put("imagePath", drawPngPicture(res, params));
 		data.put("imagePath", imagePath);
 		ObjectMapper mapper = new ObjectMapper();
 		// data.put("data", pointBeanList);
@@ -122,11 +115,11 @@ public class ExtractPngService extends ExtractService {
 		return data;
 	}
 
-	private String buildPngImage(float[][] res) {
+	private String buildPngImage(float[][] res, ExtractRequestParams params) {
 		logger.info("start buildPngImage...");
 		long startTimes = System.currentTimeMillis();
-		String[] imagePath = buildIamgeFilePath();
-		logger.info("pngImage path:" + imagePath);
+		String[] imagePath = buildIamgeFilePath(params, Constants.FILE_TYPE_IMAGE);
+		logger.info("pngImage path:" + imagePath[0]);
 		try {
 			String showType = params.getShowType();
 			String calcType = params.getCalcType();
@@ -183,7 +176,8 @@ public class ExtractPngService extends ExtractService {
 
 	}
 
-	public void buildVariables(String date) {
+	public void buildVariables(ManageParams manageParams, String date) {
+		ExtractRequestParams params = manageParams.getParams();
 		String specie = params.getSpecie();
 		try {
 			String base1 = resultPathUtil.getResultFilePath(date, params.getShowType(), params.getTimePoint(),
@@ -202,10 +196,10 @@ public class ExtractPngService extends ExtractService {
 			}
 			if (nc1 == null)
 				return;
-			ncFile1 = nc1;
-			filePath1 = p1;
+			manageParams.setNcFile1(nc1);
+			manageParams.setFilePath1(p1);
 			Variable variable1 = nc1.findVariable(null, specie);
-			variableList1.add(variable1);
+			manageParams.getVariableList1().add(variable1);
 
 			if (!Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
 				String base2 = resultPathUtil.getResultFilePath(date, params.getShowType(), params.getTimePoint(),
@@ -220,18 +214,24 @@ public class ExtractPngService extends ExtractService {
 					logger.error("open file " + p2 + " error");
 					return;
 				}
-				filePath2 = p2;
+				manageParams.setFilePath2(p2);
 				Variable variable2 = nc2.findVariable(null, specie);
-				variableList2.add(variable2);
+				manageParams.getVariableList2().add(variable2);
 			}
 		} catch (Exception e) {
 			logger.error("ExtractPngService | buildVariables() error");
 		}
 	}
 
-	private float[][] buildPngData() throws IOException, InvalidRangeException {
+	private float[][] buildPngData(ManageParams manageParams) throws IOException, InvalidRangeException {
 		long startTimes = System.currentTimeMillis();
-		pointBeanList = new ArrayList<>();
+		List<PointBean> pointBeanList = new ArrayList<>();
+		manageParams.setPointBeanList(pointBeanList);
+		ExtractRequestParams params = manageParams.getParams();
+		Projection projection = manageParams.getProjection();
+		List<Variable> variableList1 = manageParams.getVariableList1();
+		List<Variable> variableList2 = manageParams.getVariableList2();
+		Interpolation interpolation = manageParams.getInterpolation();
 		int cols = params.getCols();
 		int rows = params.getRows();
 		int width = params.getWidth();
@@ -260,7 +260,7 @@ public class ExtractPngService extends ExtractService {
 						merc_y);
 				pointBeanList.add(pb);
 
-				pb = getValue(pb);
+				pb = getValue(pb, params, projection, variableList1, variableList2, interpolation);
 				BigDecimal b = pb.getV();
 				float value = b.floatValue();
 				res[i][j] = value;
@@ -281,7 +281,9 @@ public class ExtractPngService extends ExtractService {
 		return res;
 	}
 
-	public PointBean getValue(PointBean pb) throws IOException, InvalidRangeException {
+	public PointBean getValue(PointBean pb, ExtractRequestParams params, Projection projection,
+			List<Variable> variableList1, List<Variable> variableList2, Interpolation interpolation)
+					throws IOException, InvalidRangeException {
 		try {
 			Point2D p = projection.transform(pb.getLon(), pb.getLat());
 			pb.setXlcc(p.getX());
@@ -340,14 +342,13 @@ public class ExtractPngService extends ExtractService {
 			pb.setV(new BigDecimal(value));
 			return pb;
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("ExtractPngService | getValue error");
+			logger.error("ExtractPngService | getValue error", e);
 			return null;
 		}
 	}
 
 	// 暂时没用到
-	private String drawPngPicture(float[][] temp) {
+	private String drawPngPicture(float[][] temp, ExtractRequestParams params) {
 		MapContent map = new MapContent();
 
 		double ymin = params.getYmin();
@@ -411,7 +412,7 @@ public class ExtractPngService extends ExtractService {
 			final HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.IMAGE_PNG);
 
-			String[] imagePath = buildIamgeFilePath();
+			String[] imagePath = buildIamgeFilePath(params, Constants.FILE_TYPE_IMAGE);
 			boolean b = Images.buildImage(map, params.getWidth(), params.getHeight(), imagePath[0]);
 			if (b)
 				return imagePath[1];
@@ -431,47 +432,55 @@ public class ExtractPngService extends ExtractService {
 		return null;
 	}
 
-	public String[] buildIamgeFilePath() {
-		String[] path = new String[2];
-		Date date = new Date();
-		String rootPath = System.getProperty("user.dir");
-		String imageFilePath = extractConfig.getImageFilePath(); // /$userid/$domainid/$missionid/$domain/$showType/$calcType/$currDate/
-		imageFilePath = imageFilePath.replace("$userid", String.valueOf(params.getUserId()))
-				.replace("$domainid", String.valueOf(params.getDomainId()))
-				.replace("$missionid", String.valueOf(params.getMissionId()))
-				.replace("$domain", String.valueOf(params.getDomain())).replace("$showType", params.getShowType())
-				.replace("$calcType", params.getCalcType())
-				.replace("$currDate", DateUtil.DATEtoString(date, DateUtil.DATE_FORMAT));
-		String imageFileName = extractConfig.getImageFileName(); // $timePoint-$day-$hour-$layer-$specie-$scenario-$random.png
-		String day = "";
-		String scenario = "";
-		if (Constants.TIMEPOINT_A.equals(params.getTimePoint())) {
-			List<String> list = params.getDates();
-			day = list.get(0) + list.get(list.size() - 1);
-		} else {
-			day = params.getDay();
-		}
-		if (Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
-			scenario = String.valueOf(params.getScenarioId1());
-		} else {
-			scenario = String.valueOf(params.getScenarioId1().toString()) + "-"
-					+ String.valueOf(params.getScenarioId2());
-		}
-
-		imageFileName = imageFileName.replace("$timePoint", params.getTimePoint()).replace("$day", day)
-				.replace("$hour", String.valueOf(params.getHour()))
-				.replace("$layer", String.valueOf(params.getLayer() - 1)).replace("$specie", params.getSpecie())
-				.replace("$scenario", scenario).replace("$random", String.valueOf(new Date().getTime()));
-		String contentPath = rootPath + "/" + imageFilePath + "/";
-		File file = new File(contentPath);
-		if (!file.exists()) {
-			file.mkdirs();
-		}
-		path[0] = contentPath + imageFileName; // 绝对路径，全路径
-		path[1] = imageFilePath + imageFileName; // 需要返给前端的路径
-		logger.info("image path : " + path[0]);
-		return path;
-
-	}
+	// public String[] buildIamgeFilePath(ExtractRequestParams params) {
+	// String[] path = new String[2];
+	// Date date = new Date();
+	// String rootPath = System.getProperty("user.dir");
+	// String imageFilePath = extractConfig.getImageFilePath(); //
+	// /$userid/$domainid/$missionid/$domain/$showType/$calcType/$currDate/
+	// imageFilePath = imageFilePath.replace("$userid",
+	// String.valueOf(params.getUserId()))
+	// .replace("$domainid", String.valueOf(params.getDomainId()))
+	// .replace("$missionid", String.valueOf(params.getMissionId()))
+	// .replace("$domain",
+	// String.valueOf(params.getDomain())).replace("$showType",
+	// params.getShowType())
+	// .replace("$calcType", params.getCalcType())
+	// .replace("$currDate", DateUtil.DATEtoString(date, DateUtil.DATE_FORMAT));
+	// String imageFileName = extractConfig.getImageFileName(); //
+	// $timePoint-$day-$hour-$layer-$specie-$scenario-$random.png
+	// String day = "";
+	// String scenario = "";
+	// if (Constants.TIMEPOINT_A.equals(params.getTimePoint())) {
+	// List<String> list = params.getDates();
+	// day = list.get(0) + list.get(list.size() - 1);
+	// } else {
+	// day = params.getDay();
+	// }
+	// if (Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
+	// scenario = String.valueOf(params.getScenarioId1());
+	// } else {
+	// scenario = String.valueOf(params.getScenarioId1().toString()) + "-"
+	// + String.valueOf(params.getScenarioId2());
+	// }
+	//
+	// imageFileName = imageFileName.replace("$timePoint",
+	// params.getTimePoint()).replace("$day", day)
+	// .replace("$hour", String.valueOf(params.getHour()))
+	// .replace("$layer", String.valueOf(params.getLayer() -
+	// 1)).replace("$specie", params.getSpecie())
+	// .replace("$scenario", scenario).replace("$random", String.valueOf(new
+	// Date().getTime()));
+	// String contentPath = rootPath + "/" + imageFilePath + "/";
+	// File file = new File(contentPath);
+	// if (!file.exists()) {
+	// file.mkdirs();
+	// }
+	// path[0] = contentPath + imageFileName; // 绝对路径，全路径
+	// path[1] = imageFilePath + imageFileName; // 需要返给前端的路径
+	// logger.info("image path : " + path[0]);
+	// return path;
+	//
+	// }
 
 }

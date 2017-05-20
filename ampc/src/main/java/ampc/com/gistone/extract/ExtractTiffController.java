@@ -31,11 +31,11 @@ public class ExtractTiffController {
 			Long domainId = Long.valueOf(String.valueOf(data.get("domainId")));
 			Long missionId = Long.valueOf(String.valueOf(data.get("missionId")));
 			int domain = Integer.valueOf(String.valueOf(data.get("domain")));
-			String specie = String.valueOf(data.get("specie"));
+			List<String> species = (List) (data.get("species"));
 			String timePoint = String.valueOf(data.get("timePoint"));
 
 			ExtractRequestParams params = new ExtractRequestParams(calcType, showType, userId, domainId, missionId,
-					domain, specie, timePoint);
+					domain, species.get(0), timePoint);
 			Long scenarioId1 = Long.valueOf(String.valueOf(data.get("scenarioId1")));
 			params.setScenarioId1(scenarioId1);
 			if (!Constants.CALCTYPE_SHOW.equals(calcType)) {
@@ -69,8 +69,9 @@ public class ExtractTiffController {
 			if (layer <= 0)
 				return AmpcResult.build(1000, "参数layer的值错误， 不应该小于等于0");
 			params.setLayer(layer);
-
-			String outFile = extractTiffService.buildTiff(params);
+			ManageParams manageParams = new ManageParams();
+			manageParams.setParams(params);
+			String outFile = extractTiffService.buildTiff(manageParams);
 			logger.info("get tiff file times: " + (System.currentTimeMillis() - startTimes) + "ms");
 			if (outFile != null)
 				return AmpcResult.ok(outFile);

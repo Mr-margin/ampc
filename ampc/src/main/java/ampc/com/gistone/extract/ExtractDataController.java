@@ -85,7 +85,9 @@ public class ExtractDataController {
 			int cols = Integer.valueOf(String.valueOf(data.get("cols")));
 			params.setRows(rows);
 			params.setCols(cols);
-			res = extractDataService.buildData(params);
+			ManageParams manageParams = new ManageParams();
+			manageParams.setParams(params);
+			res = extractDataService.buildData(manageParams);
 			if (res != null)
 				return AmpcResult.ok(res);
 

@@ -2,7 +2,6 @@ package ampc.com.gistone.extract;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,14 +37,14 @@ public class ExtractTiffService extends ExtractService {
 	@Autowired
 	private PreproUtil preproUtil;
 
-	public List<float[][]> variableList1; // diff or ratio
-											// scenario1/scenario2
-	public List<float[][]> variableList2;
+	// public List<float[][]> variableList1; // diff or ratio
+	// // scenario1/scenario2
+	// public List<float[][]> variableList2;
 
-	public static float[][] imagePixelData;
+	// public float[][] imagePixelData;
 
-	public String buildTiff(ExtractRequestParams extractRequestParams) throws IOException, FactoryException {
-		params = extractRequestParams;
+	public String buildTiff(ManageParams manageParams) throws IOException, FactoryException {
+		ExtractRequestParams params = manageParams.getParams();
 		extractConfig = resultPathUtil.getExtractConfig();
 
 		Long scenarioId1 = params.getScenarioId1();
@@ -58,50 +57,58 @@ public class ExtractTiffService extends ExtractService {
 			Map<String, String[]> dataTypeMap2 = preproUtil.buildFnlAndGfsDate(tScenarinoDetail2);
 			params.setDateTypeMap2(dataTypeMap2);
 		}
-		variableList1 = new ArrayList<float[][]>();
-		variableList2 = new ArrayList<float[][]>();
 		// 2. get variables and build attributes
-		getVariables();
+		getVariables(manageParams);
 		// 3. calc data
-		buildImagePixelData();
+		float[][] imagePixelData = buildImagePixelData(manageParams);
 		// 4. save tiff file
-		String tiffFilePath = extractConfig.getTiffFilePath(); // /$userid/$domainid/$missionid/$domain/$showType/$calcType/
-		tiffFilePath = tiffFilePath.replace("$userid", String.valueOf(params.getUserId()))
-				.replace("$domainid", String.valueOf(params.getDomainId()))
-				.replace("$missionid", String.valueOf(params.getMissionId()))
-				.replace("$domain", String.valueOf(params.getDomain())).replace("$showType", params.getShowType())
-				.replace("$calcType", params.getCalcType());
-		String tiffFileName = extractConfig.getTiffFileName(); // $timePoint-$day-$hour-$layer-$specie-$scenario.tiff
-		String day = "";
-		String scenario = "";
-		if (Constants.TIMEPOINT_A.equals(params.getTimePoint())) {
-			List<String> list = params.getDates();
-			day = list.get(0) + list.get(list.size() - 1);
-		} else {
-			day = params.getDay();
-		}
-		if (Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
-			scenario = String.valueOf(params.getScenarioId1());
-		} else {
-			scenario = String.valueOf(params.getScenarioId1().toString()) + "-"
-					+ String.valueOf(params.getScenarioId2());
-		}
-		File file = new File(tiffFilePath);
-		if (!file.exists()) {
-			file.mkdirs();
-		}
-		tiffFileName = tiffFileName.replace("$timePoint", params.getTimePoint()).replace("$day", day)
-				.replace("$hour", String.valueOf(params.getHour()))
-				.replace("$layer", String.valueOf(params.getLayer() - 1)).replace("$specie", params.getSpecie())
-				.replace("$scenario", scenario);
-		String outFile = writeGeotiff(tiffFilePath + "/" + tiffFileName);
-		return outFile;
+		// String tiffFilePath = extractConfig.getTiffFilePath(); //
+		// /$userid/$domainid/$missionid/$domain/$showType/$calcType/
+		// tiffFilePath = tiffFilePath.replace("$userid",
+		// String.valueOf(params.getUserId()))
+		// .replace("$domainid", String.valueOf(params.getDomainId()))
+		// .replace("$missionid", String.valueOf(params.getMissionId()))
+		// .replace("$domain",
+		// String.valueOf(params.getDomain())).replace("$showType",
+		// params.getShowType())
+		// .replace("$calcType", params.getCalcType());
+		// String tiffFileName = extractConfig.getTiffFileName(); //
+		// $timePoint-$day-$hour-$layer-$specie-$scenario.tiff
+		// String day = "";
+		// String scenario = "";
+		// if (Constants.TIMEPOINT_A.equals(params.getTimePoint())) {
+		// List<String> list = params.getDates();
+		// day = list.get(0) + list.get(list.size() - 1);
+		// } else {
+		// day = params.getDay();
+		// }
+		// if (Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
+		// scenario = String.valueOf(params.getScenarioId1());
+		// } else {
+		// scenario = String.valueOf(params.getScenarioId1().toString()) + "-"
+		// + String.valueOf(params.getScenarioId2());
+		// }
+		// File file = new File(tiffFilePath);
+		// if (!file.exists()) {
+		// file.mkdirs();
+		// }
+		// tiffFileName = tiffFileName.replace("$timePoint",
+		// params.getTimePoint()).replace("$day", day)
+		// .replace("$hour", String.valueOf(params.getHour()))
+		// .replace("$layer", String.valueOf(params.getLayer() -
+		// 1)).replace("$specie", params.getSpecie())
+		// .replace("$scenario", scenario);
+		String[] tiffPath = buildIamgeFilePath(params, Constants.FILE_TYPE_TIFF);
+		logger.info("tiff file path:" + tiffPath[0]);
+		String outFile = writeGeotiff(tiffPath[0], imagePixelData, manageParams);
+		return tiffPath[1];
 
 	}
 
-	public String writeGeotiff(String fileName) throws FactoryException, IOException {
+	public String writeGeotiff(String fileName, float[][] imagePixelData, ManageParams manageParams)
+			throws FactoryException, IOException {
 		logger.info("ExtractTiffService | writing geotiff.");
-
+		Map attributes = manageParams.getAttributes();
 		long startTime = System.currentTimeMillis();
 		double x1 = Double.valueOf(String.valueOf(attributes.get("XORIG")));
 		double y1 = Double.valueOf(String.valueOf(attributes.get("YORIG")));
@@ -138,36 +145,40 @@ public class ExtractTiffService extends ExtractService {
 	}
 
 	// build tiff file need data
-	public void buildImagePixelData() throws IOException {
+	public float[][] buildImagePixelData(ManageParams manageParams) throws IOException {
+		ExtractRequestParams params = manageParams.getParams();
+		Map attributes = manageParams.getAttributes();
+		List<float[][]> floatList1 = manageParams.getFloatList1();
+		List<float[][]> floatList2 = manageParams.getFloatList2();
 		String calcType = params.getCalcType();
 		int rows = Integer.valueOf(String.valueOf(attributes.get("NROWS")));
 		int cols = Integer.valueOf(String.valueOf(attributes.get("NCOLS")));
-		imagePixelData = new float[rows][cols];
+		float[][] imagePixelData = new float[rows][cols];
 
 		if (Constants.CALCTYPE_SHOW.equals(calcType)) {
-			int size = variableList1.size();
+			int size = floatList1.size();
 			for (int r = 0; r < rows; r++) {
 				for (int c = 0; c < cols; c++) {
 					float value = 0;
-					for (float[][] variable : variableList1) {
+					for (float[][] variable : floatList1) {
 						value += variable[r][c] / size;
 					}
 					imagePixelData[r][c] = value;
 				}
 			}
 		} else if (Constants.CALCTYPE_DIFF.equals(calcType) || Constants.CALCTYPE_RATIO.equals(calcType)) {
-			int size1 = variableList1.size();
-			int size2 = variableList2.size();
+			int size1 = floatList1.size();
+			int size2 = floatList2.size();
 
 			for (int r = 0; r < rows; r++) {
 				for (int c = 0; c < cols; c++) {
 					float value = 0;
 					float value1 = 0;
 					float value2 = 0;
-					for (float[][] variable : variableList1) {
+					for (float[][] variable : floatList1) {
 						value1 += variable[r][c] / size1;
 					}
-					for (float[][] variable : variableList2) {
+					for (float[][] variable : floatList2) {
 						value2 += variable[r][c] / size2;
 					}
 					if (Constants.CALCTYPE_DIFF.equals(params.getCalcType())) {
@@ -182,40 +193,11 @@ public class ExtractTiffService extends ExtractService {
 				}
 			}
 		}
-
+		return imagePixelData;
 	}
 
-	// public void getVariables() {
-	// String timePoint = params.getTimePoint();
-	//
-	// if (Constants.TIMEPOINT_A.equals(timePoint)) {
-	// List<String> list = params.getDates();
-	// for (int i = 0; i < list.size(); i++) {
-	// String day = list.get(i);
-	// buildVariables(day);
-	// }
-	// try {
-	// attributes = Netcdf.getAttributes(filePath1 + list.get(0));
-	// } catch (IOException e) {
-	// logger.error("ExtractTiffService | getVariables() : getAttributes
-	// IOException");
-	// return;
-	// }
-	// } else if (Constants.TIMEPOINT_D.equals(timePoint) ||
-	// Constants.TIMEPOINT_H.equals(timePoint)) {
-	// buildVariables(params.getDay());
-	//
-	// try {
-	// attributes = Netcdf.getAttributes(filePath1 + params.getDay());
-	// } catch (IOException e) {
-	// logger.error("ExtractTiffService | getVariables() : getAttributes
-	// IOException");
-	// return;
-	// }
-	// }
-	// }
-
-	public void buildVariables(String date) {
+	public void buildVariables(ManageParams manageParams, String date) {
+		ExtractRequestParams params = manageParams.getParams();
 		String specie = params.getSpecie();
 		int hour = params.getHour();
 		int layer = params.getLayer() - 1;
@@ -239,13 +221,13 @@ public class ExtractTiffService extends ExtractService {
 			}
 			if (nc1 == null)
 				return;
-			ncFile1 = nc1;
-			filePath1 = p1;
+			manageParams.setNcFile1(nc1);
+			manageParams.setFilePath1(p1);
 
 			float[][] variable1 = ((float[][][][]) nc1.findVariable(null, specie).read()
 					.copyToNDJavaArray())[hour][layer];
 			variable1 = reversalArray(variable1);
-			variableList1.add(variable1);
+			manageParams.getFloatList1().add(variable1);
 
 			if (!Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
 				String base2 = resultPathUtil.getResultFilePath(date, params.getShowType(), params.getTimePoint(),
@@ -260,14 +242,14 @@ public class ExtractTiffService extends ExtractService {
 					logger.error("open file " + p2 + " error");
 					return;
 				}
-				filePath2 = p2;
+				manageParams.setFilePath2(p2);
 				float[][] variable2 = ((float[][][][]) nc2.findVariable(null, specie).read()
 						.copyToNDJavaArray())[hour][layer];
 				variable2 = reversalArray(variable2);
-				variableList2.add(variable2);
+				manageParams.getFloatList2().add(variable2);
 			}
 		} catch (Exception e) {
-			logger.error("ExtractTiffService | buildVariables() error");
+			logger.error("ExtractTiffService | buildVariables() error", e);
 		}
 	}
 
