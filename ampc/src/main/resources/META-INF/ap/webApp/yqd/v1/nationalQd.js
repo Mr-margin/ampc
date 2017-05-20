@@ -8,25 +8,30 @@ var preams = {
     "missionId":$("#task").val()
 };
 // 表单生成
-ajaxPost('/NativeAndNation/find_nation',preams).success(function(data){
-    $("#qgqd").datagrid({
-        data:data.data,
-        columns:[[
-            {field:"ck",checkbox:true},
-            {field:"esNationName",title:"全国清单"},
-            {field:"esNationYear",title:"年份"},
-            {field:"publishTime",title:"创建时间"},
-            {field:"qgqdCheck",title:"状态"},//新建（打开校验按钮）   正常（校验成功） 错误（校验错误）
-            //是否使用 如果使用 不许删除 未使用可以删除
-            {field:"qgqdConfig",title:"操作"}//校验清单
-        ]],
-        pagination:'true',
-        fit:'true',
-        pageSize:1,
-        pageNumber:1,
-        pageList:[1]
+innitdata()
+function innitdata(){
+    // $('#grid').datagrid("loadData",{total:0,rows:[]});
+    ajaxPost('/NativeAndNation/find_nation',preams).success(function(data){
+        $("#qgqd").datagrid({
+            data:data.data,
+            columns:[[
+                {field:"ck",checkbox:true},
+                {field:"esNationName",title:"全国清单"},
+                {field:"esNationYear",title:"年份"},
+                {field:"publishTime",title:"创建时间"},
+                {field:"qgqdCheck",title:"状态"},//新建（打开校验按钮）   正常（校验成功） 错误（校验错误）
+                //是否使用 如果使用 不许删除 未使用可以删除
+                {field:"qgqdConfig",title:"操作"}//校验清单
+            ]],
+            pagination:'true',
+            fit:'true',
+            pageSize:1,
+            pageNumber:1,
+            pageList:[1]
+        });
     });
-});
+}
+
 // $("#qgqd").datagrid({
 //     url:'/ampc/NativeAndNation/find_nation',
 //     method: 'POST',
@@ -74,36 +79,47 @@ $("#creatQd").window({
     closed:true,
     cls:"cloudui"
 })
-function submitQd(){
-    // $('#formQd').submit();
-    // $("#formQd").form({
-    //     url:'/NativeAndNation/add_nation',
-    //     onSubmit: function(param){
-    //         param.esNationName =$("#esNationName").val();
-    //         param.esNationYear = $("#esNationYear").val();
-    //         param.esNationMark = $("#esNationMark").val();
-    //         console.log(param)
-    //     },
-    //     success:function (data) {
-    //
-    //     }
-    // })
+//创建清单限制
+//年份
+// creatQdYear()
+function creatQdYear(){
+    var nData=new Date();
+    var nYear=myDate.getYear();
+    var myYear=$("#esNationYear").val()
+    if(myYear>nYear){
+        swal({
+            title: '添加失败!',
+            type: 'error',
+            // timer: 1000,
+            // showConfirmButton: false
+        });
+    }
+}
 
+$("#esNationYear").keyup(function(){
+    var nData=new Date();
+    var nYear=myDate.getYear();
+
+    if(myYear>nYear){
+        console.log("失败")
+    }
+})
+function submitQd(){
+    // $("#formQd .easyui-validatebox").empty();
     var param={};
     param.userId=userId;
     param.nationName =$("#esNationName").val();
     param.nationYear = $("#esNationYear").val();
-    // param.esNationMark = $("#esNationMark").val();
+    param.nationRemark = $("#esNationMark").val();
 
     $("#formQd").submit(
         ajaxPost('/NativeAndNation/add_nation',param).success(function(data){
             console.log(data)
         })
     )
-
-
+    // creatQdYear()
     $("#creatQd").window('close');
-
+    innitdata()
 }
 function claearQd(){
     $("#formQd").form('clear');
