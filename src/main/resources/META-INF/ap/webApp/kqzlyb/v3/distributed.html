@@ -1,36 +1,34 @@
 <style>
-  .distributed {
-    width: 100%;
-    height: 100%;
-    position: relative;
-  }
-
-  .distributed_map {
-    position: relative;
-    /*background-color: #06b6ef;*/
-    width: 100%;
-    height: 100%;
-    border: 1px solid #D9D9D9;
-  }
-
-  .distributed_toolTop {
-    width: 100%;
-    padding: 5px;
-  }
-
-  .tool_in {
-    position: absolute;
-    left: 0;
-    bottom: 15px;
-    width: 250px;
-    /*height: 150px;*/
-    /*background-color: #fff;*/
-    padding: 5px;
-  }
-
-  .openness label {
-    margin: 12px 0;
-  }
+	.distributed {
+		width: 100%;
+		height: 100%;
+		position: relative;
+	}
+	
+	.distributed_map {
+		position: relative;
+		/*background-color: #06b6ef;*/
+		width: 100%;
+		height: 100%;
+		border: 1px solid #D9D9D9;
+	}
+	
+	.distributed_toolTop {
+		width: 100%;
+		padding: 5px;
+	}
+	
+	.tool_in {
+		position: absolute;
+		left: 0;
+		bottom: 15px;
+		width: 250px;
+		padding: 5px;
+	}
+	
+	.openness label {
+		margin: 12px 0;
+	}
 </style>
 
 <div class="cloudui" style="width: 100%;height:100%;">
@@ -52,8 +50,7 @@
                 <div class="row" style="margin:2px 0;padding-left:0px;">
                   <div class="btn-group switchBtn" data-toggle="buttons" style="padding: 0;width: 100%">
                     <label class="col-md-4 btn btn-outline btn-success"><input type="radio" name="domain" value="1">中国</label>
-                    <label class="col-md-4 btn btn-outline btn-success active" style="padding-left: 5px;"><input checked type="radio" name="domain"
-                                                                                                                 value="2">中国东部</label>
+                    <label class="col-md-4 btn btn-outline btn-success active" style="padding-left: 5px;"><input checked type="radio" name="domain" value="2">中国东部</label>
                     <label class="col-md-4 btn btn-outline btn-success"><input type="radio" name="domain" value="3">河北省</label>
                   </div>
                 </div>
@@ -74,9 +71,7 @@
                 <div class="" style="margin-bottom:0px;padding-left:0px;">
                   <div class="" style="margin: 2px auto;padding-left:0px;padding-right:0px;width: 100%">
                     <div class="input-group group-select" style="margin: 0 auto;width: 100%">
-                      <select class="form-control m-b" id="species" style="padding-left:6px;border-color: #1c84c6;">
-
-                      </select>
+                      <select class="form-control m-b" id="species" style="padding-left:6px;border-color: #1c84c6;"></select>
                     </div>
                   </div>
                 </div>
@@ -88,10 +83,8 @@
               <h5>起报日期：</h5>
               <div class="selectTool_con">
                 <div class="" style="padding-right: 0px;margin: 2px auto;position: relative">
-                  <input type="text" class="form-control" id="SPDate" name="SPDate" readonly
-                         placeholder="请选择日期···">
-                  <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showDate()"
-                     style="cursor:pointer;position: absolute;font-size: 17px;right: 10px;top: 9px;"></i>
+                  <input type="text" class="form-control" id="SPDate" name="SPDate" readonly placeholder="请选择日期···">
+                  <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showDate()" style="cursor:pointer;position: absolute;font-size: 17px;right: 10px;top: 9px;"></i>
                 </div>
               </div>
             </div>
@@ -99,8 +92,7 @@
               <h5>日期：</h5>
               <div class="selectTool_con">
                 <div class="input-group m-b" style="width: 100%;overflow: hidden;">
-                  <select class="form-control m-b" id="sTime-d" name="sTime" style="width: 100%;float: left;">
-                  </select>
+                  <select class="form-control m-b" id="sTime-d" name="sTime" style="width: 100%;float: left;"></select>
                   <select class="form-control m-b disNone" id="sTime-h" name="sTime" style="width: 35%;float: left;">
                     <option>00</option>
                     <option>01</option>
@@ -138,56 +130,6 @@
       </div>
       <div class="charContent">
         <div class="distributed">
-          <div class="distributed_toolTop disNone">
-            <div class="row" style="margin-top: 12px;margin-left: 0px;margin-right: 0px;height:48px;">
-
-              <div class="col-sm-4" style="padding-left:0px;">
-                <div class="input-group m-b" style="margin-bottom: 0px">
-                  <span class="input-group-addon" style="border: 0px solid #E5E6E7;">空间范围:</span>
-                  <div class="btn-group" data-toggle="buttons" style="margin-top: 3px;padding: 0;">
-                    <label class="btn btn-outline btn-success"><input type="radio" name="domain" value="1">中国</label>
-                    <label class="btn btn-outline btn-success active"><input checked type="radio" name="domain"
-                                                                             value="2">中国东部</label>
-                    <label class="btn btn-outline btn-success"><input type="radio" name="domain" value="3">河北省</label>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="btn-group col-md-3" data-toggle="buttons" style="margin-top: 3px;padding: 0;">
-                  <label class="btn btn-outline btn-success "><input type="radio" name="rms" value="hour">逐小时</label>
-                  <label class="btn btn-outline btn-success  active"><input checked type="radio" name="rms"
-                                                                            value="day">逐日</label>
-                </div>
-                <div class="col-md-9">
-                  <div class="form-group clearfix">
-                    <label for="SPDate" class="col-md-4 control-label lh29" style="text-align: right;">时间选择：</label>
-
-                    <div class="col-md-8" style="padding-right: 0px">
-                      <input style="min-width: 210px" type="text" class="form-control" id="SPDate" name="SPDate" readonly
-                             placeholder="请选择日期···">
-                      <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showDate()"
-                         style="cursor:pointer;position: absolute;font-size: 17px;right: 3px;top: 7px;"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-2" style="padding-left:0px;">
-                <div class="input-group m-b" style="margin-bottom: 0px">
-                  <span class="input-group-addon" style="border: 0px solid #E5E6E7;">物种：</span>
-
-                  <div class="" style="margin-bottom:0px;padding-left:0px;">
-                    <div class="col-sm-4" style="padding-left:0px;padding-right:0px;width: 115px;">
-                      <div class="input-group group-select">
-                        <select class="form-control m-b" id="species" style="padding-left:6px;border-color: #1c84c6;">
-
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
           <div class="distributed_map">
             <div class="map_in" style="height:100%;" id="map_in"></div>
             <div class="tool_in">
@@ -208,8 +150,7 @@
                 <div class="input-group m-b" style="margin-bottom: 0px">
                   <span style="border: 0px solid #E5E6E7;display: block;margin: 12px 0 8px 0;">动画速度：</span>
                   <div class="btn-group switchBtn" data-toggle="buttons" style="margin-top: 3px;padding: 0;">
-                    <label class="btn btn-outline btn-success active"><input checked type="radio" name="speed"
-                                                                             value="1">快速</label>
+                    <label class="btn btn-outline btn-success active"><input checked type="radio" name="speed" value="1">快速</label>
                     <label class="btn btn-outline btn-success"><input type="radio" name="speed" value="2">中速</label>
                     <label class="btn btn-outline btn-success"><input type="radio" name="speed" value="3">慢速</label>
                   </div>
@@ -219,10 +160,8 @@
                 <div class="input-group m-b" style="margin-bottom: 0px">
                   <span style="border: 0px solid #E5E6E7;display: block;margin: 12px 0 8px 0;">风场：</span>
                   <div class="btn-group switchBtn" data-toggle="buttons" style="margin-top: 3px;padding: 0;">
-                    <label class="btn btn-outline btn-success active"><input checked type="radio" name="field" value="1"> 无
-                    </label>
-                    <label class="btn btn-outline btn-success"><input type="radio" name="field" value="1"> ↑
-                      风场</label>
+                    <label class="btn btn-outline btn-success active"><input checked type="radio" name="field" value="0"> 无</label>
+                    <label class="btn btn-outline btn-success"><input type="radio" name="field" value="1"> ↑  风场</label>
                     <label class="btn btn-outline btn-success"><input type="radio" name="field" value="2">F风场</label>
                   </div>
                 </div>
