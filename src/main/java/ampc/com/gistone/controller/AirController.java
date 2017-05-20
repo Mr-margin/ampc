@@ -74,6 +74,22 @@ public class AirController {
 		try{
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
+			Object param=data.get("userId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			Long userId = Long.parseLong(param.toString());
+			
+			Calendar c1 = Calendar.getInstance();
+		    c1.setTime(new Date());
+		    int hour=c1.get(Calendar.HOUR_OF_DAY);
+		    if(hour>8){
+		    	
+		    }else{
+		    	
+		    }
+			
 			TMissionDetail tm=tMissionDetailMapper.selectMaxMission();
 			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
 			tScenarinoDetail.setMissionId(tm.getMissionId());
@@ -523,9 +539,14 @@ public class AirController {
 					strDateNow=sdfNow.format(dateNow);
 					Date limitDate=sdfyear.parse(strDateNow+" 08:00:00");
 					//8点后
-					if(dateNow.getTime()>limitDate.getTime()){
-						Date start_date=sdfNow.parse(startDate);
-						Date end_date=sdfNow.parse(endDate);
+					Date start_date=sdfNow.parse(startDate);
+					Date end_date=sdfNow.parse(endDate);
+					
+					calendar.setTime(dateNow);
+					calendar.add(Calendar.DAY_OF_MONTH, -3);
+					calDate = calendar.getTime();
+					//如果小于当前日期减3 全部查询FNL表数据
+					if(end_date.getTime()<calDate.getTime()){
 						differenceVal = (int) ((end_date.getTime() - start_date.getTime()) / (1000*3600*24));
 						//查询全部日期的物种数据
 						for(int i=0;i<=differenceVal;i++){
@@ -549,11 +570,13 @@ public class AirController {
 							scenarinoEntity.setTableName(tables);
 							scenarinoEntity=tPreProcessMapper.selectBysomesFnl(scenarinoEntity);
 							if(scenarinoEntity==null||"".equals(scenarinoEntity.toString())||"{}".equals(scenarinoEntity.toString())||"null".equals(scenarinoEntity.toString())){
-								contentmapData.put(sdfNow.format(calDate), "{}");
+								contentmapData.put(sdfNow.format(calDate), "{}");	//数据--空
 							}else{
-								contentmapData.put(sdfNow.format(calDate), mapper.readValue(scenarinoEntity.getContent(), Map.class));	//数据--空
+								contentmapData.put(sdfNow.format(calDate), mapper.readValue(scenarinoEntity.getContent(), Map.class));	
 							}
 						}	//查询全部日期的物种数据结束
+					}else{
+						
 					}
 						//出数据
 						//循环所有物种名称---并给日期赋值
