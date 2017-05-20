@@ -231,13 +231,13 @@ public class NativeAndNationController {
 			}
 			// 用户id
 			Long userId = Long.parseLong(param.toString());
-			//获取ID
+			//获取清单ID
 			param=data.get("nationId");
 			if(!RegUtil.CheckParameter(param, "Long", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 清单Id为空或出现非法字符!");
 				return AmpcResult.build(1003, "清单Id为空或出现非法字符!");
 			}
-			Long nationId = Long.parseLong(param.toString());
+			Long esNationId = Long.parseLong(param.toString());
 			
 			//获取清单名称
 			param=data.get("nationName");
@@ -245,7 +245,7 @@ public class NativeAndNationController {
 				LogUtil.getLogger().error("NativeAndNationController 清单名称为空或出现非法字符!");
 				return AmpcResult.build(1003, "清单名称为空或出现非法字符!");
 			}
-			String nationName = param.toString();
+			String esNationName = param.toString();
 			
 			//获取清单年份
 			param=data.get("nationYear");
@@ -268,12 +268,12 @@ public class NativeAndNationController {
 			//添加数据
 			TEsNation tEsNation=new TEsNation();
 			tEsNation.setUserId(userId);
-			tEsNation.setEsNationName(nationName);
-//			tEsNation.setEsNationYear(nationYear);
+			tEsNation.setEsNationName(esNationName);
+			tEsNation.setEsNationYear(nationYear);
 			tEsNation.setNationRemark(nationRemark);
-			tEsNation.setEsNationId(nationId);
+			tEsNation.setEsNationId(esNationId);
 			//插入数据
-			int total=tEsNationMapper.updateByPrimaryKeySelective(tEsNation);
+			int total=tEsNationMapper.updateByIdSelective(tEsNation);
 			Map msgMap=new HashMap();
 			if(total==1){
 				msgMap.put("msg", true);
