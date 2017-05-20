@@ -1431,12 +1431,15 @@ dl, dd {
 .qdnavRight button.qdCreat{background-color:#119e59;border:1px solid #3b694d;}
 .qdnavRight button.qdEdit{background-color:#4783f3;border:1px solid #4a6696;}
 .qdnavRight button.qdDelet{background-color:#d8453d;border:1px solid #7a332d;}
-.cloudui #creatQd .qdContent{
+.cloudui #creatQd .rwCon{overflow: hidden }
+.cloudui #creatQd .qdContent,.cloudui #editQd .qdContent{
+  float: left;
   overflow: hidden;
   height: 30px;
   margin-bottom:10px;
+  width: 50%;
 }
-.cloudui #creatQd .rwCon .qdTitle{
+.cloudui #creatQd .rwCon .qdTitle,.cloudui #editQd .rwCon .qdTitle{
   float: left;
   line-height: 30px;
   font-family: 黑体;
@@ -1447,10 +1450,22 @@ dl, dd {
   padding-top: 0px;
   text-align: left;
 }
-.cloudui #creatQd .rwCon .qdContent .qdCon{
+.cloudui #creatQd .rwCon .qdContent .qdCon,.cloudui #editQd .rwCon .qdContent .qdCon{
   float: left;
   height:30px;
   width: calc(100% - 80px);
+  /*border:none;*/
+  /*border-bottom:1px solid #D9D9D9;*/
+}
+.cloudui #creatQd .qdMark,.cloudui #editQd .qdMark{
+  overflow: hidden;
+  margin-bottom:10px;
+  width: 100%;
+}
+.cloudui #creatQd .rwCon .qdMark .qdCon,.cloudui #editQd .rwCon .qdMark .qdCon{
+  float: left;
+  width: calc(100% - 80px);
+  line-height: 20px;
   /*border:none;*/
   /*border-bottom:1px solid #D9D9D9;*/
 }
