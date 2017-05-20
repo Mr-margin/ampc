@@ -1461,12 +1461,17 @@ dl, dd {
   overflow: hidden;
   margin-bottom:10px;
   width: 100%;
+  height: auto;
 }
 .cloudui #creatQd .rwCon .qdMark .qdCon,.cloudui #editQd .rwCon .qdMark .qdCon{
   float: left;
   width: calc(100% - 80px);
   line-height: 20px;
   text-align: left;
+  height: auto;
   /*border:none;*/
   /*border-bottom:1px solid #D9D9D9;*/
+}
+.cloudui .rwCon .qdMark textarea{
+  text-align: left;
 }
