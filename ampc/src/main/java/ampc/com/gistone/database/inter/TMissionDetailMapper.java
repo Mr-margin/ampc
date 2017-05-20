@@ -142,4 +142,5 @@ public interface TMissionDetailMapper {
 	Long selectMissionType(Long missionId);
 	
 	TMissionDetail selectMaxMission();
+	List<TMissionDetail> selectDomain(Long missionDomainId);
 }
