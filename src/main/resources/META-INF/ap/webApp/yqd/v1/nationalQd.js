@@ -21,6 +21,7 @@ function innitdata(){
                 {field:"esNationName",title:"全国清单"},
                 {field:"esNationYear",title:"年份"},
                 {field:"publishTime",title:"创建时间"},
+                {field:"nationRemark",title:"备注"},
                 {field:"qgqdCheck",title:"状态"},//新建（打开校验按钮）   正常（校验成功） 错误（校验错误）
                 //是否使用 如果使用 不许删除 未使用可以删除
                 {field:"qgqdConfig",title:"操作"}//校验清单
