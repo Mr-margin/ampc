@@ -3505,5 +3505,41 @@ public class AirController {
 		
 	}
 	}
-	
+	/**
+	 * 预报检验的开始结束时间查询
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/Air/checkout_time")	
+	public AmpcResult checkout_time(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response ){
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+			//获取前端参数
+			SimpleDateFormat hms = new SimpleDateFormat("yyyy-MM-dd");
+			Date date=new Date();
+			int hour=date.getHours();
+			String sdate="2017-04-27";
+			Date startdate=hms.parse(sdate);
+			JSONObject obj=new JSONObject();
+			
+			obj.put("starttime", startdate.getTime());
+			if(hour>8){
+			obj.put("endtime", date.getTime());
+			}else{
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(date);
+				cal.add(Calendar.DATE, -1);
+				String addTimeDate =hms.format(cal.getTime());
+				Date endtime=hms.parse(addTimeDate);
+				obj.put("endDate", endtime.getTime());
+			}
+			
+		return AmpcResult.ok(obj);
+		}catch(Exception e){
+			LogUtil.getLogger().error("checkout_time 查询预报检验时间异常",e);
+			return AmpcResult.build(1001, "查询预报检验时间异常！");	
+		}
+	}
 }
