@@ -9,6 +9,10 @@
 package ampc.com.gistone.redisqueue;
 
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -43,12 +47,28 @@ import org.springframework.stereotype.Component;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.redisqueue.entity.QueueData;
 import ampc.com.gistone.util.ConfigUtil;
+import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.LogUtil;
 
 
@@ -128,6 +148,7 @@ public class SendQueueData {
 				tTasksStatusMapper.updatemessageStatus(tTasksStatus);
 				LogUtil.getLogger().info("SendQueueData：情景ID为："+tasksScenarinoId+",time:"+time+"当天的数据发送了");
 				LogUtil.getLogger().info("SendQueueData：发送成功");
+				sendmessagelogfile(json);
 			}else {
 				//发送消息失败 改为模式执行出错 错误原因-发送消息到redis失败 
 				readyData.updateScenStatusUtil(9l, tasksScenarinoId);
@@ -139,6 +160,41 @@ public class SendQueueData {
 	
 	
 	
+
+	/**
+	 * @param tasksScenarinoId 
+	 * @Description: 发送的消息记录成文件存放
+	 * @param json   
+	 * void  
+	 * @throws IOException 
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年5月19日 下午2:19:55
+	 */
+	private void sendmessagelogfile(String json){
+		String sendMessageLogurl = configUtil.getSendMessageLog();
+		try {
+			File file = new File(sendMessageLogurl);
+			if (!file.exists()) {
+				file.mkdirs();
+			}
+			String datEtoString = DateUtil.DATEtoString(new Date(), "yyyyMMdd");
+			String ss = DateUtil.DATEtoString(new Date(), "yyyyMMdd HH:mm:ss");
+			String messagefilename = datEtoString+"messageJson.json";
+			File file2 = new File(file, messagefilename);
+			FileOutputStream fileOutputStream = new FileOutputStream(file2,true);
+			String messagefile = ss+json+"\r\n";
+			byte[] b = messagefile.getBytes();
+			fileOutputStream.write(b, 0, b.length);
+			fileOutputStream.flush();
+			fileOutputStream.close();
+		} catch (IOException e) {
+			LogUtil.getLogger().error("SendQueueData-sendmessagelogfile：发送的消息写入文件失败！",e);
+		}
+	}
+
+
+
 
 	/**
 	 * @Description: 停止模式的消息
