@@ -23,19 +23,22 @@ public class TEsNation {
 
     private Date deleteTime;
     
-    private String reamrk;
+    private String nationRemark;
 
     public Long getEsNationId() {
         return esNationId;
     }
 
-    public String getReamrk() {
-		return reamrk;
+
+	public String getNationRemark() {
+		return nationRemark;
 	}
 
-	public void setReamrk(String reamrk) {
-		this.reamrk = reamrk;
+
+	public void setNationRemark(String nationRemark) {
+		this.nationRemark = nationRemark;
 	}
+
 
 	public void setEsNationId(Long esNationId) {
         this.esNationId = esNationId;

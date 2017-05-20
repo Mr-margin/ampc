@@ -161,7 +161,7 @@ public class NativeAndNationController {
 			//获取清单名称
 			param=data.get("nationName");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				LogUtil.getLogger().error("NativeAndNationController 清单名称为空或出现非法字符!");
 				return AmpcResult.build(1003, "清单名称为空或出现非法字符!");
 			}
 			String nationName = param.toString();
@@ -176,7 +176,7 @@ public class NativeAndNationController {
 			//获取清单备注
 			param=data.get("nationRemark");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				LogUtil.getLogger().error("NativeAndNationController 清单年份为空或出现非法字符!");
 				return AmpcResult.build(1003, "清单年份为空或出现非法字符!");
 			}
 			String nationRemark=param.toString();
@@ -189,7 +189,7 @@ public class NativeAndNationController {
 			tEsNation.setUserId(userId);
 			tEsNation.setEsNationName(nationName);
 			tEsNation.setEsNationYear(nationYear);
-			tEsNation.setReamrk(nationRemark);
+			tEsNation.setNationRemark(nationRemark);
 //			tEsNation.setAddTime();
 			//插入数据
 			int total=tEsNationMapper.insertSelective(tEsNation);
