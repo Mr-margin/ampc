@@ -34,20 +34,22 @@ $("#creatQd").window({
     minimizable:false,
     modal:true,
     shadow:false,
-    title:'创建情景',
+    title:'新建清单',
     border:false,
-    closed:false,
+    closed:true,
     cls:"cloudui"
 })
 function submitQd(){
     $("#formQd").form('submit',{
-        url:'/NativeAndNation/add_nation',
+        // url:'/NativeAndNation/add_nation',
+        dataType : 'text',
+        onSubmit: function(param){
+            param.esNationName =$("#esNationName").val();
+            param.esNationYear = $("#esNationYear").val();
+            param.esNationMark = $("#esNationMark").val();
+        },
         success:function (data) {
-            console.log("成功");
-            console.log(data);
         }
-        // onLoadSuccess:function(){
-        //     console.log("提交成功");
     })
 }
 function claearQd(){
