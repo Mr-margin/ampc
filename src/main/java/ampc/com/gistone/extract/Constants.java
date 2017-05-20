@@ -56,6 +56,8 @@ public class Constants {
 	public final static String VALUE_LIST = "valueList";
 	public final static String COLOR_LIST = "colorList";
 	public final static String COLOR_LONG_LIST = "colorLongList"; // 颜色的long类型格式
+	public final static String FILE_TYPE_TIFF = "tiff";
+	public final static String FILE_TYPE_IMAGE = "image";
 
 	public static final String[] HOURLYSPECIES = { "PM25", "PM10", "O3", "SO2", "NO2", "CO", "SO4", "NO3", "NH4", "BC",
 			"OM", "PMFINE" };

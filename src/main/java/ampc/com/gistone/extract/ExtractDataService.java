@@ -41,31 +41,26 @@ public class ExtractDataService extends ExtractService {
 	@Autowired
 	private PreproUtil preproUtil;
 
-	private PointBean[][] pointBeanArray;
+	// private PointBean[][] pointBeanArray;
 
-	private NumberFormat nf;
-	private List<PointBean> pointBeanList;
+	// private NumberFormat nf;
+	// private List<PointBean> pointBeanList;
 
-	private List<Map<String, Object>> res;
+	// private List<Map<String, Object>> res;
 
 	private StringBuffer sbcsv_latlon = new StringBuffer();
 	private StringBuffer sbcsv_lcc = new StringBuffer();
 
 	private String pathOut;
 
-	public synchronized List<Map<String, Object>> buildData(ExtractRequestParams extractRequestParams)
+	public List<Map<String, Object>> buildData(ManageParams manageParams)
 			throws IOException, TransformException, FactoryException, InvalidRangeException {
 		try {
 			long startTimes = System.currentTimeMillis();
 			extractConfig = resultPathUtil.getExtractConfig();
-			params = extractRequestParams;
-			res = new ArrayList<Map<String, Object>>();
-			// boolean bool = getNcFilePath();
-			// if (!bool)
-			// return null;
-
-			variableMap1 = new HashMap<String, List<Variable>>();
-			variableMap2 = new HashMap<String, List<Variable>>();
+			ExtractRequestParams params = manageParams.getParams();
+			List<Map<String, Object>> res = new ArrayList<Map<String, Object>>();
+			manageParams.setRes(res);
 
 			Long scenarioId1 = params.getScenarioId1();
 			TScenarinoDetail tScenarinoDetail1 = tScenarinoDetailMapper.selectByPrimaryKey(scenarioId1);
@@ -81,17 +76,16 @@ public class ExtractDataService extends ExtractService {
 				params.setDateTypeMap2(dataTypeMap2);
 			}
 
-			getVariables();
+			getVariables(manageParams);
 
-			projection = buildProject(params);
-			if (projection == null)
+			Projection projection = buildProject(manageParams);
+			if (projection == null) {
 				return null;
-
-			nf = NumberFormat.getInstance();
-			nf.setGroupingUsed(false);
-			nf.setMaximumFractionDigits(10);
-
-			pointBeanList = buildPointList(res);
+			} else {
+				manageParams.setProjection(projection);
+			}
+			List<PointBean> pointBeanList = buildPointList(manageParams);
+			manageParams.setPointBeanList(pointBeanList);
 
 			// ObjectMapper mapper = new ObjectMapper();
 			// if (Constants.SHOW_TYPE_CONCN.equals(params.getShowType())) {
@@ -124,46 +118,18 @@ public class ExtractDataService extends ExtractService {
 
 	}
 
-	// private void getVariables() {
-	// String timePoint = params.getTimePoint();
-	// variableMap1 = new HashMap<String, List<Variable>>();
-	// variableMap2 = new HashMap<String, List<Variable>>();
-	// if (Constants.TIMEPOINT_A.equals(timePoint)) {
-	//
-	// List<String> list = params.getDates();
-	// for (int i = 0; i < list.size(); i++) {
-	// String day = list.get(i);
-	// buildVariables(day);
-	// }
-	// try {
-	// attributes = Netcdf.getAttributes(filePath1 + list.get(0));
-	// } catch (IOException e) {
-	// logger.error("ExtractDataService | getVariables() : getAttributes
-	// IOException");
-	// return;
-	// }
-	// } else if (Constants.TIMEPOINT_D.equals(timePoint) ||
-	// Constants.TIMEPOINT_H.equals(timePoint)) {
-	// buildVariables(params.getDay());
-	//
-	// try {
-	// attributes = Netcdf.getAttributes(filePath1 + params.getDay());
-	// } catch (IOException e) {
-	// logger.error("ExtractDataService | getVariables() : getAttributes
-	// IOException");
-	// return;
-	// }
-	// }
-	// }
-
-	public void buildVariables(String date) {
+	public void buildVariables(ManageParams manageParams, String date) {
+		ExtractRequestParams params = manageParams.getParams();
+		Map<String, List<Variable>> variableMap1 = manageParams.getVariableMap1();
+		Map<String, List<Variable>> variableMap2 = manageParams.getVariableMap2();
 		try {
 			String base1 = resultPathUtil.getResultFilePath(date, params.getShowType(), params.getTimePoint(),
 					params.getUserId(), params.getDomainId(), params.getMissionId(), params.getScenarioId1(),
 					params.getDomain(), params.getDateTypeMap1());
 			String day1 = DateUtil.strConvertToStr(date);
 			String p1 = base1.replace("$Day", day1);
-			filePath1 = p1;
+
+			manageParams.setFilePath1(p1);
 			long openNcTimes = System.currentTimeMillis();
 			NetcdfFile nc1;
 			try {
@@ -175,8 +141,7 @@ public class ExtractDataService extends ExtractService {
 			}
 			if (nc1 == null)
 				return;
-			ncFile1 = nc1;
-
+			manageParams.setNcFile1(nc1);
 			for (String specie : params.getSpecies()) {
 				Variable variable1 = nc1.findVariable(null, specie);
 				List<Variable> variableList1;
@@ -187,14 +152,14 @@ public class ExtractDataService extends ExtractService {
 					variableMap1.put(specie, variableList1);
 				}
 				variableList1.add(variable1);
-
+				manageParams.setVariableMap1(variableMap1);
 				if (!Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
 					String base2 = resultPathUtil.getResultFilePath(date, params.getShowType(), params.getTimePoint(),
 							params.getUserId(), params.getDomainId(), params.getMissionId(), params.getScenarioId2(),
 							params.getDomain(), params.getDateTypeMap2());
 					String day2 = DateUtil.strConvertToStr(date);
 					String p2 = base2.replace("$Day", day2);
-					filePath2 = p2;
+					manageParams.setFilePath2(p2);
 					NetcdfFile nc2;
 					try {
 						nc2 = NetcdfFile.open(p2);
@@ -212,15 +177,23 @@ public class ExtractDataService extends ExtractService {
 						variableMap2.put(specie, variableList2);
 					}
 					variableList2.add(variable2);
+					manageParams.setVariableMap2(variableMap2);
 				}
 			}
 		} catch (Exception e) {
-			logger.error("ExtractDataService | buildVariables() error");
+			logger.error("ExtractDataService | buildVariables() error", e);
 		}
 	}
 
-	public List<PointBean> buildPointList(List<Map<String, Object>> res) throws IOException, InvalidRangeException {
+	public List<PointBean> buildPointList(ManageParams manageParams) throws IOException, InvalidRangeException {
 		List<PointBean> pointBeanList = new ArrayList<>();
+		List<Map<String, Object>> res = manageParams.getRes();
+		ExtractRequestParams params = manageParams.getParams();
+		Projection projection = manageParams.getProjection();
+		Map<String, List<Variable>> variableMap1 = manageParams.getVariableMap1();
+		Map<String, List<Variable>> variableMap2 = manageParams.getVariableMap2();
+		Interpolation interpolation = manageParams.getInterpolation();
+		NumberFormat nf = manageParams.getNf();
 		int cols = params.getCols();
 		int rows = params.getRows();
 		double xcellsize = (params.getXmax() - params.getXmin()) / cols;
@@ -228,7 +201,8 @@ public class ExtractDataService extends ExtractService {
 		double x = params.getXmin();
 		double y = params.getYmin();
 
-		pointBeanArray = new PointBean[rows + 1][cols + 1];
+		PointBean[][] pointBeanArray = new PointBean[rows + 1][cols + 1];
+		manageParams.setPointBeanArray(pointBeanArray);
 		long startTimes = System.currentTimeMillis();
 		for (int i = 0; i <= rows; i++) {
 			for (int j = 0; j <= cols; j++) {
@@ -247,7 +221,8 @@ public class ExtractDataService extends ExtractService {
 				pointBeanList.add(pb);
 				pointBeanArray[i][j] = pb;
 
-				Map<String, Double> resMap = getValue(pb);
+				Map<String, Double> resMap = getValue(pb, params, projection, variableMap1, variableMap2,
+						interpolation);
 				if (resMap.containsKey(FLAG) && resMap.get(FLAG) == Constants.OVERBORDER) {
 					if (params.getBorderType() == 1) {
 						Map map = new HashMap<>();
@@ -321,7 +296,9 @@ public class ExtractDataService extends ExtractService {
 				.append("\r\n");
 	}
 
-	public Map<String, Double> getValue(PointBean pb) throws IOException, InvalidRangeException {
+	public Map<String, Double> getValue(PointBean pb, ExtractRequestParams params, Projection projection,
+			Map<String, List<Variable>> variableMap1, Map<String, List<Variable>> variableMap2,
+			Interpolation interpolation) throws IOException, InvalidRangeException {
 		try {
 			Point2D p = projection.transform(pb.getLon(), pb.getLat());
 			pb.setXlcc(p.getX());
@@ -383,8 +360,7 @@ public class ExtractDataService extends ExtractService {
 			}
 			return resMap;
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("ExtractDataService | getValue error");
+			logger.error("ExtractDataService | getValue error", e);
 			return null;
 		}
 	}
@@ -431,8 +407,8 @@ public class ExtractDataService extends ExtractService {
 		bufferedWriter.close();
 	}
 
-	public PointBean[][] getPointBeanArray() {
-		return pointBeanArray;
-	}
+	// public PointBean[][] getPointBeanArray() {
+	// return pointBeanArray;
+	// }
 
 }
