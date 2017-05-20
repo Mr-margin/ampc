@@ -293,6 +293,11 @@ public interface TScenarinoDetailMapper {
 	 * @return
 	 */
 	List<Map> selectByMissionIdNew(Map map);
-
+	/**
+	 * 查询结束时间
+	 * @param userId
+	 * @return
+	 */
+	TScenarinoDetail selectendStart(TScenarinoDetail record);
 	
 }
