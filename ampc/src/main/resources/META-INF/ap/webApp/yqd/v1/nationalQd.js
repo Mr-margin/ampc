@@ -26,6 +26,10 @@ function innitdata(){
                 {field:"qgqdConfig",title:"操作"}//校验清单
             ]],
             pagination:'true',
+            pagePosition:'bottom',
+            pageNumber:1,
+            pageSize:5,
+            pageList:[5,10,15,20],
             fit:'true',
             pageSize:1,
             pageNumber:1,
@@ -65,7 +69,6 @@ function innitdata(){
 //         return json;
 //     }
 // })
-$(".yqdTable").layout();
 // 创建清单
 function creatQd(){
     $("#creatQd").window('open');
@@ -118,12 +121,12 @@ function submitQd(){
 function claearQd(){
     $("#formQd").form('clear');
 }
-var editQdName,editQdYear,editMark,editId;
+
 // 编辑清单
 function editQd(){
     var row = $('#qgqd').datagrid('getSelected');//获取所有选中的清单数据
-    console.log(row)
     if(row!=''&&row!=null&&row!=undefined){
+        var editQdName,editQdYear,editMark,editId;
         editQdName=row.esNationName,editQdYear=row.esNationYear,editMark=row.nationRemark,editId=row.esNationId;
         document.getElementById("esNationName_edit").value=editQdName;
         document.getElementById("esNationYear_edit").value=editQdYear;
@@ -146,16 +149,16 @@ $("#editQd").window({
     cls:"cloudui"
 })
 function editSubmitQd(){
+    var row = $('#qgqd').datagrid('getSelected');//获取所有选中的清单数据
+    console.log(row);
+    // var editQdName,editQdYear,editMark,editId;
+    // editQdName=row.esNationName,editQdYear=row.esNationYear,editMark=row.nationRemark,editId=row.esNationId;
     var param={};
     param.userId=userId;
-    param.nationName =$("#esNationName").val();
-    param.nationYear = $("#esNationYear").val();
-    param.nationRemark = $("#esNationMark").val();
-    console.log("数据")
-    console.log(editId)
-    console.log(param.nationName)
-    console.log(param.nationYear)
-    console.log(param.nationRemark)
+    param.nationName =row.esNationName;
+    param.nationId = row.esNationId;
+    param.nationRemark = row.nationRemark;
+
     //判断年份
     var nData=new Date();
     var nYear=nData.getYear();
@@ -164,9 +167,10 @@ function editSubmitQd(){
         swal('年份错误', '', 'error');
     }else{
         $("#formQd").submit(
-            ajaxPost('/NativeAndNation/add_nation',param).success(function(data){
-                $("#qgqd").datagrid('reload',{
-                    index: editId,	// 索引从0开始
+            ajaxPost('/NativeAndNation/update_nation',param).success(function(data){
+                console.log("加载成功")
+                $("#qgqd").datagrid('insert',{
+                    index: 0,	// 索引从0开始
                     row: {
                         esNationName: param.nationName,
                         esNationYear: param.nationYear,
