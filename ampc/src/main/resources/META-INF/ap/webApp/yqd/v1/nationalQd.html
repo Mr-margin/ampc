@@ -1,6 +1,29 @@
 <div class="cloudui" style="width: 100%;height: 100%;">
-    <div class="yqdTable">
-        <table id="qgqd">
-        </table>
+    <div class="yqdTable easyui-layout">
+        <div data-options="region:'center',border:false">
+            <table id="qgqd" class="esyui-datagrid">
+            </table>
+        </div>
+    </div>
+</div>
+<!--创建清单模态框-->
+<div id="creatQd">
+    <form method="post" id="formQd">
+        <div>
+            <label for="esNationName">名称：</label>
+            <input class="easyui-validatebox" type="text" name="name" data-options="required:true" />
+        </div>
+        <div>
+            <label for="esNationYear">年份：</label>
+            <input class="easyui-validatebox" type="text" name="name" data-options="required:true" />
+        </div>
+        <div>
+            <label for="esNationYear">备注：</label>
+            <input class="easyui-validatebox" type="text" name="name" data-options="required:true" />
+        </div>
+    </form>
+    <div class="dlogFooter" >
+        <button type="button" class="btn btn-primary createQdBtn" onclick="submitQd()">提交</button>
+        <button type="button" class="btn btn-default claearQdBtn" onclick="claearQd()">清除</button>
     </div>
 </div>
