@@ -12,6 +12,7 @@
     <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
     <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
+    <result column="ES_NATION_REMARK" property="nationRemark" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ES_NATION_ID, ES_NATION_NAME, ES_NATION_YEAR, PUBLISH_TIME, ES_NATION_RELATION_ID, 
@@ -70,6 +71,9 @@
       <if test="deleteTime != null" >
         DELETE_TIME,
       </if>
+      <if test="nationRemark != null" >
+        ES_NATION_REMARK,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="esNationId != null" >
@@ -101,6 +105,9 @@
       </if>
       <if test="deleteTime != null" >
         #{deleteTime,jdbcType=DATE},
+      </if>
+      <if test="nationRemark != null" >
+        #{nationRemark,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
