@@ -130,7 +130,7 @@ $.when(dps_um).then(function(){
                     controller: 'webApp/task03/task03.js'
                 },
                 '/csbj_zi': {		//任务管理-措施子措施
-                    templateUrl: 'webApp/task03/task03_01.html',
+                    templateUrl: 'webApp/task03/task03_1.html',
                     controller: 'webApp/task03/task03_01.js'
                 },
                 '/rwgl_reductAnalys': {		//任务管理-减排分析
@@ -301,3 +301,21 @@ function ajaxPost_w(url, parameter) {
         data: JSON.stringify(parameter)
     })
 }
+
+/*数组排序(数字型大小排序)*/
+Array.prototype.quickSort = function() {
+    if (this.length <= 1) { return this; }
+    var pivotIndex = Math.floor(this.length / 2);
+    var pivot = parseInt(this.splice(pivotIndex, 1)[0]);
+    var left = [];
+    var right = [];
+    for (var i = 0; i < this.length; i++){
+        var n = parseInt(this[i]);
+        if (n < pivot) {
+            left.push(n);
+        } else {
+            right.push(n);
+        }
+    }
+    return left.quickSort().concat([pivot], right.quickSort());
+};
