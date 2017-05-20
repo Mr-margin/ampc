@@ -269,12 +269,12 @@ public class ReadyData {
 		}
 		if (scenarinoType==1&&missionType==2) {
 			//预评估任务的预评估情景
-			LogUtil.getLogger().info("预评估任务的预评估情景模式开始！");
+			LogUtil.getLogger().info("continuePredict:预评估任务的预评估情景模式续跑开始！");
 			flag = readycontinuePreEvaluationSituationData(scenarinoId,continuemodel);
 		}
 		if (scenarinoType==2&&missionType==2) {
 			//预评估任务的后评估情景
-			LogUtil.getLogger().info("预评估任务的后评估情景模式开始！");
+			LogUtil.getLogger().info("continuePredict：预评估任务的后评估情景模式续跑开始！");
 			flag= readyPrePostEvaluationSituationData(scenarinoId,continuemodel);
 		}
 		if (scenarinoType==2&&missionType==3) {
@@ -1096,6 +1096,7 @@ public class ReadyData {
 		boolean successflag = false ;
 		String datatype ;
 		String time ;
+		//first-确定是不是第一次发送
 		boolean first = false;
 		try {
 			TScenarinoDetail selectByPrimaryKey = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
@@ -1113,7 +1114,8 @@ public class ReadyData {
 					Date scenarinoStartDate =DateUtil.DateToDate(selectByPrimaryKey.getScenarinoStartDate(), "yyyyMMdd");
 					//比较已经发送了的时间和情景的开始时间 等于0表示发的是第一条消息 小于0表示至少是第二条消息
 					int compareTo2 = scenarinoStartDate.compareTo(nowDate);
-					
+					//比较已经发送的时间和任务完成的时间
+					int compareTo3 = tasksEndDate.compareTo(nowDate);
 					if (compareTo>0) {
 						 datatype="fnl";
 					}else {
@@ -1121,6 +1123,10 @@ public class ReadyData {
 					}
 					time = sendtime;
 					if (null!=modelErrorStatus) {
+						if (compareTo3>0) {
+							//表示返回的时间格式有问题 
+							
+						}
 						if (compareTo2==0) {
 							first=true;
 						}else {
@@ -1289,10 +1295,17 @@ public class ReadyData {
 		tasksEndDate= tasksEndDate ==null?scenarinoStartDate:tasksEndDate;
 		String cDate = null;
 		String errorStatus = selectStatus.getModelErrorStatus();
+		//比较已经发送的时间和任务完成的时间
+		Date nowDate = DateUtil.StrtoDateYMD(selectStatus.getBeizhu2(), "yyyyMMdd");
+		int compareTo3 = tasksEndDate.compareTo(nowDate);
 		if (null!=errorStatus) {
 			//1.模式执行出错的状态续跑
 			cIndex =Integer.valueOf(stepindex.toString()) ;
-			cDate = DateUtil.DATEtoString(tasksEndDate, "yyyyMMdd");
+			if (compareTo3>0) {
+				cDate = DateUtil.DATEtoString(nowDate, "yyyyMMdd");
+			}else {
+				cDate = DateUtil.DATEtoString(tasksEndDate, "yyyyMMdd");
+			}
 		}else {
 			//2.正常情况下的续跑
 			if (scenarinoType==1) {
