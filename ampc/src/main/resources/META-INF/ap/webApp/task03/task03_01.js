@@ -7,13 +7,26 @@
  */
 $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景编辑</a>>><a href="#/csbj" style="padding-left: 15px;padding-right: 15px;">措施编辑</a>>><span style="padding-left: 15px;padding-right: 15px;">子措施编辑</span>');
 
+/*左侧菜单栏显示*/
+(function () {
+    $('.cryak').hide();
+    $('.wc').hide();
+    $('.nowCS').show();
+    $('.nowHY').show();
+})()
+
 /*设置变量*/
 var sc_val = {};//存储最终的自措施条件
+var sc_v1 = {};
 var columns = [];//模态框内表格显示的表头
 var point_z = [];//点源总数
 var measureame_temp = "";//措施名称
 var m_mid, m_planId, m_sectorName, m_planMeasureId;
-var delSxRow = [];//存储被删除的电源
+var delSxRow = [];//存储被删除的点源
+var temp_val_v1 = {};//单次查询的缓存
+var delSXtableRow = [];
+var boolean_delete_sc = false;//是否删除过点源
+var isNew = true;//判断是否是新创建措施
 
 
 var ls = window.sessionStorage;
@@ -52,17 +65,100 @@ $.each(csMsg.provinceCodes, function (k, col) {
 $('.menuCD:nth-child(3)').css('width', 'calc(100% - 120px)');
 $('.menuCD:nth-child(3) .menuCD_con').css('opacity', 1);
 
+/*模态框中筛选标签页*/
+$('#sx').tabs({
+    border: false,
+    onSelect:function(title){
+        if(title != '已控制点源'){
+            try {
+                $('#metTable_point').datagrid('reload');
+            }catch(e){
 
-/*手风琴点击事件*/
-$('.menuCD_title').click(function (e) {
-    $('.menuCD').css('width', '45px');
-    $('.menuCD_con').css('opacity', 0);
-    $(e.target).parents('.menuCD').css('width', 'calc(100% - 120px)');
-    $(e.target).parents('.menuCD').find('.menuCD_con').css('opacity', 1);
+            }
+            return;
+        }
+        var rows = $('#show_zicuoshi_table').datagrid('getData').rows;
+        var columns1 = [[]];
+        columns1[0].push({field: 'regionName', title: '所属',align:'center'});
+        columns1[0].push({field: 'companyname', title: '企业名称',align:'center'});
+        columns1[0].push({field: 'equipId', title: '设备编号',align:'center'});
+
+        $('#metTable_point_ykz').datagrid({
+            method: 'POST',
+            url: jianpaiUrl + '/search/sourceList',
+            dataType: "json",
+            columns: columns1,
+            checkOnSelect:true,
+            selectOnCheck:true,
+            clickToSelect: true,// 点击选中行
+            singleSelect: false,//设置True 将禁止多选
+            striped: false, // 使表格带有条纹
+            silent: true, // 刷新事件必须设置
+            pagination: true, // 在表格底部显示分页工具栏
+            pageSize: 10, // 页面大小
+            pageNumber: 1, // 页数
+            pageList: [5, 10],
+            view: detailview,
+            height:'100%',
+            detailFormatter:function(index,row){//注意2
+                var obj = rows[rows.length-3-row.filterIndex];
+                return obj.tiaojian+',控制系数：'+obj.psl_a;
+            },
+            onExpandRow:function(index,row){
+                $('#metTable_point_ykz').datagrid('fixDetailRowHeight',index);
+                $('#metTable_point_ykz').datagrid('expandRow', index);
+            },
+            queryParams: function (params) {
+                var temp_sc_val = jQuery.extend(true, {}, sc_val);
+                delete temp_sc_val.summary;
+                temp_sc_val.regionIds = Codes;
+                temp_sc_val.pageHelper = {};
+                temp_sc_val.pageHelper.pageSize = params.pageSize;
+                temp_sc_val.pageHelper.pageNumber = (params.pageNumber-1)*params.pageSize;
+                temp_sc_val.filters.splice(temp_sc_val.filters.length-1,1);
+                temp_sc_val.searchLast = false;
+                return temp_sc_val;
+            },
+            loadFilter: function (res) {
+                if (res.status == 'success') {
+                    if (res.data.rows.length > 0) {
+                        $("#shaixuan_num").html("筛选点源：" + res.data.append.sourceTotalCount);
+                        if (typeof res.data.append.total != "undefined") {
+                            if (res.data.append.total.length > 0) {//加地图坐标
+                                add_point(res.data.append.total);
+                            }
+                        }
+                    }else{
+                        app.mapList[0].removeLayer(clusterLayer_ttft);//清空已有的点位信息
+                    }
+                    return res.data;
+                } else if (res.status == '') {
+
+                    return "";
+                }
+            },
+            contentType: "application/json", // 请求远程数据的内容类型。
+            onLoadSuccess: function (data) {
+                $.each(data.rows,function (i,col) {
+                    $('#metTable_point_ykz').datagrid('expandRow', i);
+                })
+            },
+            onLoadError: function () {
+                swal('连接错误', '', 'error');
+            },
+        });
+    }
 });
+$('#bj').tabs({
+    border: false,
+});
+$('#sx').hide();
+$('#bj').hide();
 
 /*初始化函数*/
 function initialize() {
+    $('.nowHY span').html(csMsg.sectorsName);
+    $('.nowCS span').html(csMsg.measureame);
     open_cs(csMsg.sectorsName, csMsg.measureame, csMsg.mid, csMsg.planMeasureId)
 }
 
@@ -118,7 +214,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId) {
         $("#shaixuan_num").html("");//筛选点源
         $("#shaixuan_num").hide();
 
-        boolean_delete_sc_name = false;//记录是否删除过按名称筛选的结果
+        boolean_delete_sc = false;//记录是否删除过按名称筛选的结果
         poi_name_or_pub = null;//记录当前的筛选条件是按照属性来，还是按照名称来
 
         if (res.status == 0) {//返回状态正常
@@ -414,7 +510,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId) {
         swal('校验失败', '', 'error')
     });
 }
-
+var checkeded;
 /**
  * 显示子措施表格的列表
  */
@@ -450,32 +546,33 @@ function show_zicuoshi_table(columns, b_data) {
                 return row.tiaojian;
             }
         },
-        onClickRow: function (row, $element) {
-//      $('.success').removeClass('success');
-//      $($element).addClass('success');
-            if (row.state == true) {//如果被选中
-                if (row.f1 != "剩余点源" && row.f1 != "面源") {
+        onClickRow: function (row, $element) {},
+        onCheck: function (index,row) {
+            $("#zicuoshi_tools_de").hide();
+            $("#zicuoshi_tools_up").hide();
+            $("#zicuoshi_tools_see").hide();
+            $('#returnSxTable').show();
+            if ((row.f1+index) != checkeded) {//如果被选中
+                checkeded = (row.f1+index);
+                if (row.f1 != "剩余点源" && row.f1 != "面源" && row.f1 != "汇总") {
                     $("#zicuoshi_tools_de").show();
+                    $("#zicuoshi_tools_up").hide();
+                    $("#zicuoshi_tools_see").show();
+                }else if(row.f1 != "汇总"){
                     $("#zicuoshi_tools_up").show();
-                } else {
-                    $("#zicuoshi_tools_de").hide();
-                    $("#zicuoshi_tools_up").show();
+                    $('#returnSxTable').hide();
                 }
+                zicuoshi_up_index = index
             } else {
+                checkeded = '-1';
+                zicuoshi_up_index = '';
+                $('#show_zicuoshi_table').datagrid('clearChecked');
                 $("#zicuoshi_tools_de").hide();
                 $("#zicuoshi_tools_up").hide();
+                $("#zicuoshi_tools_see").hide();
             }
         },
-        onCheck: function (row) {
-            if (row.f1 != "剩余点源" && row.f1 != "面源") {
-                $("#zicuoshi_tools_de").show();
-                $("#zicuoshi_tools_up").show();
-            } else {
-                $("#zicuoshi_tools_de").hide();
-                $("#zicuoshi_tools_up").show();
-            }
-        },
-        onUncheck: function (row) {
+        onUncheck: function (index,row) {
             $("#zicuoshi_tools_de").hide();
             $("#zicuoshi_tools_up").hide();
         },
@@ -488,8 +585,7 @@ function show_zicuoshi_table(columns, b_data) {
     });
     $.each(b_data, function (i, vol) {
         $('#show_zicuoshi_table').datagrid('fixDetailRowHeight', i);
-//         $('#show_zicuoshi_table').datagrid('expandRow', i);
-//         $('#show_zicuoshi_table').datagrid('appendRow',i);
+        $('#show_zicuoshi_table').datagrid('expandRow', i);
     });
 }
 
@@ -773,10 +869,12 @@ function val_handle(e, queryEtitle, queryName, type, sourceType) {
  * 筛选按钮
  */
 function search_button() {
-
+    $('#returnSxTable').show();
+    isNew = true;
+    var temp_val_v1_Copy = jQuery.extend(true, {}, temp_val_v1);
     var ttlk = true;//点源的编辑状态
     var row = $('#show_zicuoshi_table').datagrid('getData');//已有子措施的所有的记录
-    $.each(row, function (i, col) {
+    $.each(row.rows, function (i, col) {
         if (col.f1 == '剩余点源') {
             $.each(col, function (k, vol) {//循环剩余点源的所有列
                 if (k.indexOf("psl_") == 0) {
@@ -793,24 +891,24 @@ function search_button() {
 
     setTimeout(function () {
         //条件缓存中的空值删除
-        $.each(temp_val_v1, function (key, col) {
+        $.each(temp_val_v1_Copy, function (key, col) {
             if (jQuery.isArray(col)) {//判断值是否数组
 
                 var ttp = [];//有效数组
                 var bool = false;//记录是否进行了处理
                 $.each(col, function (i, vol) {//循环数组
-//					if((typeof vol=='string') && vol.constructor==String){//字符串不需处理
-//
-//					}else{
-//						bool = true;
-//						$("#"+key).children().each(function(){//循环数组的页面，查看现有的元素是否选中
-//							if($(this).attr("val_name") == vol[key]){//如果当前的标签的值与数组中唯一元素的值相同，同时数组中唯一元素的key与顶层key一致，说明找到标签
-//								if($(this).is(".active")){//判断这个标签是否被选中，如果选中说明正常，未选中需要再数组中删除这个元素
-//									ttp.push(vol);//删除操作就是将有效数组放入到新数组中，循环结束一次性覆盖
-//								}
-//							}
-//						});
-//					}
+					if((typeof vol=='string') && vol.constructor==String){//字符串不需处理
+
+					}else{
+						bool = true;
+						$("#"+key).children().each(function(){//循环数组的页面，查看现有的元素是否选中
+							if($(this).attr("val_name") == vol[key]){//如果当前的标签的值与数组中唯一元素的值相同，同时数组中唯一元素的key与顶层key一致，说明找到标签
+								if($(this).is(".active")){//判断这个标签是否被选中，如果选中说明正常，未选中需要再数组中删除这个元素
+									ttp.push(vol);//删除操作就是将有效数组放入到新数组中，循环结束一次性覆盖
+								}
+							}
+						});
+					}
                     bool = true;
                     $("#" + key).children().each(function () {//循环数组的页面，查看现有的元素是否选中
                         if ($(this).attr("val_name") == vol) {//如果当前的标签的值与数组中唯一元素的值相同，同时数组中唯一元素的key与顶层key一致，说明找到标签
@@ -822,20 +920,20 @@ function search_button() {
                 });
 
                 if (bool) {
-                    temp_val_v1[key] = ttp;
+                    temp_val_v1_Copy[key] = ttp;
                 }
 
             } else {
                 if (col == "") {//不是数组，同时为空值，删除
-                    delete temp_val_v1[key];
+                    delete temp_val_v1_Copy[key];
                 }
             }
         });
 
         //删除空数组
-        $.each(temp_val_v1, function (key, col) {
+        $.each(temp_val_v1_Copy, function (key, col) {
             if (!col.length > 0) {
-                delete temp_val_v1[key];
+                delete temp_val_v1_Copy[key];
             }
         });
 
@@ -844,16 +942,16 @@ function search_button() {
         sc_val = jQuery.extend(true, {}, sc_v1);
 
         /*添加企业名称的筛选*/
+        var ttqr = {};
         if ($("#qiye_name").val() != "") {
-            var ttqr = {};
             ttqr.companyname = "%" + $("#qiye_name").val() + "%";
-            sc_val.filters.push(ttqr);
-            point_name_info = [];
+            // sc_val.filters.push(ttqr);
+            // sc_val.filters[sc_val.filters.length==0?0:sc_val.filters.length-1].companyname = "%" + $("#qiye_name").val() + "%";
         }
 
         //将本次查询的缓存加入到总条件中
-//		console.log(JSON.stringify(temp_val_v1));
-        if (JSON.stringify(temp_val_v1) == "{}") {
+//		console.log(JSON.stringify(temp_val_v1_Copy));
+        if (JSON.stringify(temp_val_v1_Copy) == "{}"&&($('#qiye_name').val() == '')) {
             //如果筛选为空 则清空下面企业列表中的数据
             $("#mic").hide();
             $("#shaixuan_num").html("");
@@ -869,9 +967,15 @@ function search_button() {
             });
         } else {
             if (ttlk) {
-                sc_val.filters.push(temp_val_v1);
+                if(JSON.stringify(temp_val_v1_Copy) != "{}"){
+                    ttqr = jQuery.extend(true,ttqr,temp_val_v1_Copy);
+                }
+                // if(delSXtableRow.length > 0){
+                //     ttqr.id = 'not in '+ delSXtableRow.join(',');
+                // }
+                sc_val.filters.push(ttqr);
 //        console.log(JSON.stringify(sc_val));
-                temp_val_v1 = jQuery.extend(true, {}, temp_val);//赋值模板到操作缓存
+                temp_val_v1_Copy = jQuery.extend(true, {}, temp_val);//赋值模板到操作缓存
                 //根据筛选条件获取点源，准备填写空值系数
                 point_table();
             } else {
@@ -885,66 +989,55 @@ function search_button() {
         }
 
 
-        //所有查询条件初始化
-        $("#qiye_name").val("");
-        $("#sc_conter").children().each(function () {//循环一级标签
-            if ($(this).attr("sc_su") != "null") {//没有前置条件显示，有前置条件隐藏
-                $(this).hide();
-            }
-            $("#se_bu").show();//筛选按钮打开
 
-            //循环下级的div标签，div内的子项为单选和复选，全部初始化为不限
-            $(this).children("div").each(function () {
-                $(this).children().each(function () {
-                    $(this).removeClass("active");
-                    if ($(this).attr("val_name") == "不限") {
-                        $(this).addClass("active");
-                    }
-                });
-            });
-
-            //循环下级的文本框，文本框清空
-            $(this).find("input").each(function () {
-                $(this).val("");
-            });
-        });
         //获取点源相应的减排占比等内容，数据加入到表格显示，刷新显示区域
     }, 200);
 }
 
-/**
- * 按企业名称的筛选
- */
-function search_name_button() {
-    //先将备份的内容复制到查询条件中，只有保存子措施后，备份内容才添加
-    if ($("#qiye_name").val() != "") {
-        sc_val = jQuery.extend(true, {}, sc_v1);
-        var ttqr = {};
-        ttqr.companyname = "%" + $("#qiye_name").val() + "%";
-        sc_val.filters.push(ttqr);
-        point_name_info = [];
-        //根据筛选条件获取点源，准备填写空值系数
-        point_name_table();
+function clearSXtj() {
+    temp_val_v1 = {};
+    //所有查询条件初始化
+    $("#qiye_name").val("");
+    $("#sc_conter").children().each(function () {//循环一级标签
+        if ($(this).attr("sc_su") != "null") {//没有前置条件显示，有前置条件隐藏
+            $(this).hide();
+        }
+        $("#se_bu").show();//筛选按钮打开
 
-        $("#qiye_name").removeClass("erroe_input");//删除红色边框
-    } else {
-        $("#qiye_name").addClass("erroe_input");//加红色边框
-    }
+        //循环下级的div标签，div内的子项为单选和复选，全部初始化为不限
+        $(this).children("div").each(function () {
+            $(this).children().each(function () {
+                $(this).removeClass("active");
+                if ($(this).attr("val_name") == "不限") {
+                    $(this).addClass("active");
+                }
+            });
+        });
+
+        //循环下级的文本框，文本框清空
+        $(this).find("input").each(function () {
+            $(this).val("");
+        });
+    });
 }
+
 
 var poi_name_or_pub;//记录当前的筛选条件是按照属性来，还是按照名称来
 
 var delIndex = [];
 //筛选点源列表---按属性查询
 function point_table() {
-    $("#sxTableMap").window('open')
+    $('#sx').tabs('select','未控制点源');
+    $('#sx').show();
+    $('#bj').hide();
+    $("#sxTableMap").window('open');
+    delSXtableRow = [];
     window.setTimeout(function () {
         var columns = [[]];
         columns[0].push({field: 'check', title: '',checkbox:true,align:'center'});
         columns[0].push({field: 'regionName', title: '所属',align:'center'});
         columns[0].push({field: 'companyname', title: '企业名称',align:'center'});
         columns[0].push({field: 'equipId', title: '设备编号',align:'center'});
-        // columns[0].push({field: 'equipnumbers', title: '设备数',align:'center'});
 
         poi_name_or_pub = "pub";//记录当前的筛选条件是按照属性来，还是按照名称来
         //$('#metTable_point').datagrid('destroy');//销毁现有表格数据
@@ -959,6 +1052,7 @@ function point_table() {
             columns: columns,
             // data:res.data,
             toolbar:'#delSX',
+            height:'100%',
             checkOnSelect:true,
             selectOnCheck:true,
             clickToSelect: true,// 点击选中行
@@ -968,21 +1062,22 @@ function point_table() {
             pagination: true, // 在表格底部显示分页工具栏
             pageSize: 10, // 页面大小
             pageNumber: 1, // 页数
-            pageList: [10, 20],
+            pageList: [10, 15],
             queryParams: function (params) {
                 var temp_sc_val = jQuery.extend(true, {}, sc_val);
                 delete temp_sc_val.summary;
                 temp_sc_val.regionIds = Codes;
                 temp_sc_val.pageHelper = {};
                 temp_sc_val.pageHelper.pageSize = params.pageSize;
-                temp_sc_val.pageHelper.pageNumber = params.pageNumber;
+                temp_sc_val.pageHelper.pageNumber = (params.pageNumber-1)*params.pageSize;
+                if(delSXtableRow.length > 0){
+                    temp_sc_val.filters[temp_sc_val.filters.length-1].id = 'not in '+ delSXtableRow.join(',');
+                }
                 return temp_sc_val;
             },
             loadFilter: function (res) {
-
                 if (res.status == 'success') {
                     if (res.data.rows.length > 0) {
-                        delIndex = {};
                         $("#shaixuan_num").html("筛选点源：" + res.data.append.sourceTotalCount);
                         if (typeof res.data.append.total != "undefined") {
                             if (res.data.append.total.length > 0) {//加地图坐标
@@ -1005,7 +1100,150 @@ function point_table() {
                         }
 
                         $("#shaixuan_num").attr("title", tablejieguo.substring(0, tablejieguo.length - 1));
+                    }else{
+                        app.mapList[0].removeLayer(clusterLayer_ttft);//清空已有的点位信息
                     }
+
+
+                    return res.data;
+                } else if (res.status == '') {
+
+                    return "";
+                }
+            },
+            contentType: "application/json", // 请求远程数据的内容类型。
+            onLoadSuccess: function (data) {
+                data.total > 0 ? $("#metTable_tools").show() : $("#metTable_tools").hide();//保存子措施按钮
+                if (data.rows.length > 0) {
+                    $("#shaixuan_num").html("筛选点源：" + data.append.sourceTotalCount);
+                    if (typeof data.append.total != "undefined") {
+                        if (data.append.total.length > 0) {//加地图坐标
+                            add_point(data.append.total);
+                        }
+                    }
+                    $("#shaixuan_num").show();
+                    var tablejieguo = "";
+                    if (sc_val.filters.length == 0) {
+                        //没有条件，直接筛选
+                        tablejieguo = "全部,";
+                    } else {
+                        $.each(sc_val.filters[sc_val.filters.length - 1], function (k, vol) {//循环最后一个条件，这个条件是要添加显示的条件
+                            $.each(query, function (i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
+                                if (col.queryEtitle == k) {
+                                    tablejieguo += col.queryName + "：" + vol + ",";
+                                }
+                            });
+                        });
+                    }
+                    if(delSXtableRow.length>0){
+                        tablejieguo += "已删除点源：" + delSXtableRow.length +','
+                    }
+                    tablejieguo = "筛选点源：" + data.append.sourceTotalCount + ',<br />' + tablejieguo;
+                    $('.sxRequirement').html(tablejieguo);
+                    $("#shaixuan_num").attr("title", tablejieguo.substring(0, tablejieguo.length - 1));
+                }else {
+                    swal('无数据', '', 'error');
+                }
+            },
+            onLoadError: function () {
+                swal('连接错误', '', 'error');
+            },
+            // onClickRow:function (index, row) {
+            //   console.log(index,row)
+            // },
+            onCheck:function (i, data) {
+                delIndex[i] = data;
+            },
+            onUncheck:function (i, data) {
+                delete delIndex[i];
+            },
+            onCheckAll:function (rows) {
+                for(var i=0;i<rows.length;i++){
+                    delIndex[i] = rows[i];
+                }
+            },
+            onUncheckAll:function (rows) {
+                delIndex = {};
+            }
+        });
+
+    },100)
+
+}
+
+//编辑筛选点源列表
+function edit_point_table() {
+    $('#bj').show();
+    $('#sx').hide();
+    $("#sxTableMap").window('open');
+    // delSXtableRow = [];
+    window.setTimeout(function () {
+        var columns = [[]];
+        columns[0].push({field: 'check', title: '',checkbox:true,align:'center'});
+        columns[0].push({field: 'regionName', title: '所属',align:'center'});
+        columns[0].push({field: 'companyname', title: '企业名称',align:'center'});
+        columns[0].push({field: 'equipId', title: '设备编号',align:'center'});
+
+        poi_name_or_pub = "pub";//记录当前的筛选条件是按照属性来，还是按照名称来
+        //$('#metTable_point').datagrid('destroy');//销毁现有表格数据
+        $('#edit_point').datagrid({
+            method: 'POST',
+            url: jianpaiUrl + '/search/sourceList',
+            dataType: "json",
+            columns: columns,
+            // data:res.data,
+            toolbar:'#delEdit',
+            checkOnSelect:true,
+            selectOnCheck:true,
+            clickToSelect: true,// 点击选中行
+            singleSelect: false,//设置True 将禁止多选
+            striped: false, // 使表格带有条纹
+            silent: true, // 刷新事件必须设置
+            pagination: true, // 在表格底部显示分页工具栏
+            pageSize: 10, // 页面大小
+            pageNumber: 1, // 页数
+            pageList: [10, 15],
+            queryParams: function (params) {
+                var temp_sc_val = jQuery.extend(true, {}, edit_point_sc_v1);
+                delete temp_sc_val.summary;
+                temp_sc_val.pageHelper = {};
+                if(delSXtableRow.length > 0){
+                    temp_sc_val.filters[temp_sc_val.filters.length-1].id = 'not in '+ delSXtableRow.join(',');
+                }
+                temp_sc_val.pageHelper.pageSize = params.pageSize;
+                temp_sc_val.pageHelper.pageNumber = (params.pageNumber-1)*params.pageSize;
+
+                return temp_sc_val;
+            },
+            loadFilter: function (res) {
+                if (res.status == 'success') {
+                    if (res.data.rows.length > 0) {
+                        $("#shaixuan_num").html("筛选点源：" + res.data.append.sourceTotalCount);
+                        if (typeof res.data.append.total != "undefined") {
+                            if (res.data.append.total.length > 0) {//加地图坐标
+                                add_point(res.data.append.total);
+                            }
+                        }
+                        $("#shaixuan_num").show();
+                        var tablejieguo = "";
+                        if (sc_val.filters.length == 0) {
+                            //没有条件，直接筛选
+                            tablejieguo = "全部,";
+                        } else {
+                            $.each(sc_val.filters[sc_val.filters.length - 1], function (k, vol) {//循环最后一个条件，这个条件是要添加显示的条件
+                                $.each(query, function (i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
+                                    if (col.queryEtitle == k) {
+                                        tablejieguo += col.queryName + "：" + vol + ",";
+                                    }
+                                });
+                            });
+                        }
+
+                        $("#shaixuan_num").attr("title", tablejieguo.substring(0, tablejieguo.length - 1));
+                    }else{
+                        app.mapList[0].removeLayer(clusterLayer_ttft);//清空已有的点位信息
+                    }
+
 
                     return res.data;
                 } else if (res.status == '') {
@@ -1046,6 +1284,9 @@ function point_table() {
             onLoadError: function () {
                 swal('连接错误', '', 'error');
             },
+            // onClickRow:function (index, row) {
+            //   console.log(index,row)
+            // },
             onCheck:function (i, data) {
                 delIndex[i] = data;
             },
@@ -1061,117 +1302,168 @@ function point_table() {
                 delIndex = {};
             }
         });
+
     },100)
 
 }
 
-
-$('#delSX').click(function (e) {
-    var key = Object.keys(delIndex).sort();
+/*筛选出点源删除处理*/
+$('#delSX button').click(function (e) {
+    var key = Object.keys(delIndex).quickSort();
     for(var k = key.length;k>0;k--){
         delSxRow.push(delIndex[key[k-1]].companyId);
         $('#metTable_point').datagrid('deleteRow',key[k-1]);
+        delSXtableRow.push(delIndex[key[k-1]].id);
         delete delIndex[key[k-1]]
     }
+    $('#metTable_point').datagrid('reload');
 })
 
-var point_name_info = [];//按名称查询时候的坐标
+/*筛选出点源删除处理*/
+$('#delEdit button').click(function (e) {
+    var key = Object.keys(delIndex).quickSort();
+    for(var k = key.length;k>0;k--){
+        delSxRow.push(delIndex[key[k-1]].companyId);
+        $('#edit_point').datagrid('deleteRow',key[k-1]);
+        delSXtableRow.push(delIndex[key[k-1]].id);
+        delete delIndex[key[k-1]]
+    }
+    $('#edit_point').datagrid('reload');
+})
 
-//筛选点源列表---按名称查询
-function point_name_table() {
-    poi_name_or_pub = "name";//记录当前的筛选条件是按照属性来，还是按照名称来
-    $('#metTable_name_point').datagrid('destroy');//销毁现有表格数据
-    $("#shaixuan_num").html("");//筛选点源
-    $("#shaixuan_num").hide();
-    $("#mic").hide();//筛选结果div隐藏
-    $("#mic_name").show();//按名称筛选结果div显示
-    // $("#xishuMO").hide();//控制系数隐藏
-    // $("#xishuMOB").hide();//控制系数按钮隐藏
-    $('#metTable_name_point').datagrid({
-        method: 'POST',
-        url: jianpaiUrl + '/search/sourceList',
-        dataType: "json",
-        iconSize: "outline",
-        clickToSelect: true,// 点击选中行
-        pagination: false, // 在表格底部显示分页工具栏
-        striped: true, // 使表格带有条纹
-        queryParams: function (params) {
-            var temp_sc_val = jQuery.extend(true, {}, sc_val);
-            delete temp_sc_val.summary;
-            temp_sc_val.regionIds = Codes;
-//			console.log(JSON.stringify(temp_sc_val));
-            return JSON.stringify(temp_sc_val);
-        },
-        queryParamsType: "limit", // 参数格式,发送标准的RESTFul类型的参数请求
-        silent: true, // 刷新事件必须设置
-        contentType: "application/json", // 请求远程数据的内容类型。
-        responseHandler: function (res) {
-            if (res.status == 'success') {
-//				console.log(JSON.stringify(res));
-                if (typeof res.data.append.total != "undefined") {
-                    if (res.data.append.total.length > 0) {//加地图坐标
-                        add_point(res.data.append.total);
-                        point_name_info = res.data.append.total;
+/**
+ * 子措施的修改
+ */
+function zicuoshi_up() {
+    isNew = false;
+    $('#returnSxTable').hide();
+    var row = $('#show_zicuoshi_table').datagrid('getData');//所有的记录
+    // zicuoshi_up_index = null;
+
+    $.each(row.rows, function (i, col) {
+        if (zicuoshi_up_index == i) {//如果被选中
+
+            $.each(col, function (k, vol) {
+                if (k.indexOf("psl_") == 0) {
+                    if (vol == "") {
+                        $.each(xishu_temp, function (w, txt) {
+                            if (txt == k.substring(4, k.length)) {//找到要填写的内容的名称
+                                $("#" + k.substring(4, k.length)).val(xishu_temp_v[w]);
+                            }
+                        });
+                    } else {
+                        $("#" + k.substring(4, k.length)).val(vol);
                     }
                 }
-                $.each(res.data.rows, function (k, vol) {
-                    vol.caozuo = '<a onClick="delete_sc_name(\'' + vol.id + '\',\'' + vol.companyId + '\');">删除</a>';
-                });
-                return res.data.rows;
-            } else if (res.status == 'fail' && res.error == '查询数据超过50条') {//筛选结果大于50条
-                swal('查询结果超过50个设备，请精确输入企业名称', '', 'error');
-                return "";
-            }
-        },
-        onClickRow: function (row, $element) {
-            $('.success').removeClass('success');
-            $($element).addClass('success');
-        },
-        icons: {
-            refresh: "glyphicon-repeat",
-            toggle: "glyphicon-list-alt",
-            columns: "glyphicon-list"
-        },
-        onLoadSuccess: function (data) {
-//			console.log(data);
-            data.length > 0 ? $("#metTable_name_tools").show() : $("#metTable_name_tools").hide();//保存子措施按钮
-        },
-        onLoadError: function () {
-            swal('连接错误', '', 'error');
+            });
+            $('#sxNumber').window('open');
+            //打开控制系数填写页面
+            $("#mic").hide();//筛选结果div
+            $("#mic_name").hide();//按名称筛选结果div隐藏
+            $("#metTable_tools").hide();//保存子措施按钮
+            $("#metTable_name_tools").hide();//保存子措施按钮
+            $("#shaixuan_num").html("");//筛选点源
+            $("#shaixuan_num").hide();
+            $("#xishuMO").show();//控制系数div
+            $("#xishuMOB").show();//控制系数按钮
+            // zicuoshi_up_index = i;//当前选中的行是要修改的子措施
         }
     });
 }
 
-
-var boolean_delete_sc_name = false;//记录是否删除过按名称筛选的结果
 /**
- * 删除按名称筛选的结果
- * vval:id的值
+ * 子措施的删除
  */
-function delete_sc_name(vval, cid) {
-    $('#metTable_name_point').datagrid('remove', {field: 'id', values: [vval]});
+function zicuoshi_de() {
+    isNew = false;
+    var row = $('#show_zicuoshi_table').datagrid('getData').rows;//所有的记录
+    // zicuoshi_up_index = null;
 
-    var row = $('#metTable_name_point').datagrid('getData')
-    var ttgu = true;
-    $.each(row, function (i, col) {//循环表格现有的数据，判断删除的企业是否还在表格内存在，多个设备的问题
-        if (col.companyId == cid) {
-            ttgu = false;//同一个企业还要没删除干净的
+    var kk = zicuoshi_up_index;
+    // $.each(row, function (i, col) {
+    //     if (col.state) {//如果被选中
+    //         kk = i;
+    //     }
+    // });
+
+    if (kk > 0) {
+        var rowq = $('#show_zicuoshi_table').datagrid('getSelections');
+        // SKUNo = $.map(rowq, function (rowww) {
+        //     return rowww.state;
+        // });
+        // $('#show_zicuoshi_table').datagrid('remove', {
+        //     field: 'state',
+        //     values: SKUNo
+        // });
+        $('#show_zicuoshi_table').datagrid('deleteRow',kk)
+
+        if (kk > 1) {
+
+//			console.log(JSON.stringify(sc_v1));
+            sc_v1.filters.splice(sc_v1.filters.length - kk, 1);
+//			console.log(JSON.stringify(sc_v1));
+
+            ajaxPost_w(jianpaiUrl + '/search/summaryLevel', sc_v1).success(function (res) {
+//				console.log(JSON.stringify(res));
+                if (res.status == 'success') {
+
+                    $.each(res.data, function (k, col) {//循环返回的数据
+                        var ttr = {};
+                        $.each(sc_val.summary.sum, function (i, vol) {
+                            ttr[vol] = Math.round(col[vol]);
+                        });
+                        ttr.f2 = col["count"];
+                        $('#show_zicuoshi_table').bootstrapTable('updateRow', {index: (res.data.length - k), row: ttr});
+                        restion_table();
+                    });
+                }
+            });
+
+        } else {//删除的是第一条，不用重新计算，只要把条件的最后一条删除即可
+            sc_v1.filters.pop();
+            restion_table();
         }
-    });
-
-    if (ttgu) {//同一个企业全部都删除完了
-        var xin = [];
-        $.each(point_name_info, function (i, col) {//在保存的店坐标中，将没有出现的企业保存为新的记录
-            if (col.companyId != cid) {
-                xin.push(col);
-            }
-        });
-        add_point(xin);
-        point_name_info = xin;
+        $("#zicuoshi_tools_de").hide();
+        $("#zicuoshi_tools_up").hide();
     }
-
-    boolean_delete_sc_name = true;
 }
+
+/**
+ * 子措施编辑
+ * @type {Array}
+ */
+var edit_point_sc_v1;
+function zicuoshi_edit() {
+    isNew = false;
+    $('#returnSxTable').show();
+    delSXtableRow = [];
+    delIndex = [];
+    var row = $('#show_zicuoshi_table').datagrid('getData').rows;
+    var filterIndex = row.length-3-zicuoshi_up_index;
+    edit_point_sc_v1 = $.extend(true,{},sc_v1);
+    edit_point_sc_v1.filters = edit_point_sc_v1.filters.slice(0,filterIndex+1);
+    if((edit_point_sc_v1.filters[edit_point_sc_v1.filters.length-1].id)&&(edit_point_sc_v1.filters[edit_point_sc_v1.filters.length-1].id.indexOf('not in')!=-1)){
+        delSXtableRow = edit_point_sc_v1.filters[edit_point_sc_v1.filters.length-1].id.substr(7).split(',');
+    }
+    edit_point_table();
+}
+
+/*保存措施按钮*/
+function bcZcs() {
+    if(!isNew){
+        var row = $('#show_zicuoshi_table').datagrid('getData').rows[zicuoshi_up_index];
+        for(var i=0;i<xishu_temp.length;i++){
+            $('#'+xishu_temp[i]).val(row['psl_'+xishu_temp[i]])
+        }
+    }else{
+        for(var i=0;i<xishu_temp.length;i++){
+            $('#'+xishu_temp[i]).val(xishu_temp_v[i])
+        }
+    }
+    $("#sxTableMap").window("close");
+    $("#sxNumber").window("open");
+}
+
 
 
 /**
@@ -1293,14 +1585,6 @@ function create() {
 }
 
 
-function openSXtable() {
-    var url = '';
-    ajaxPost(url, {}).success(function (res) {
-
-    })
-}
-
-
 /*========================================== MAP ==========================================*/
 var point_message = "";
 var clusterLayer_ttft = "";
@@ -1344,8 +1628,8 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
         app.stlayerList = new Array();//加载卫星图
         app.labellayerList = new Array();//加载标注图
 
-        for (var i = 0; i < 2; i++) {
-            var map = new Map("mapDiv" + i, {
+        for (var i = 0; i < 1; i++) {
+            var map = new Map("mapDiv" + (i+1), {
                 logo: false,
                 center: [stat.cPointx, stat.cPointy],
                 minZoom: 3,
@@ -1399,12 +1683,14 @@ function xishu_save() {
 
     if (ttwr) {
 
-        if (zicuoshi_up_index == null) {//添加新的子措施
-//			console.log(JSON.stringify(sc_val));
+        if (isNew) {//添加新的子措施
+            if(delSXtableRow.length > 0){
+                sc_val.filters[sc_val.filters.length-1].id = 'not in '+ delSXtableRow.join(',');
+            }
             ajaxPost_w(jianpaiUrl + '/search/summary', sc_val).success(function (res) {
 //				console.log(JSON.stringify(res));
                 if (res.status == 'success') {
-
+                    delSXtableRow = [];
                     var ttr = {};
 
 //					var re1 = new RegExp("{","g");
@@ -1412,8 +1698,7 @@ function xishu_save() {
 //					var re3 = new RegExp("\"","g");
 
                     var tablejieguo = "";
-                    var row = $('#metTable_point').datagrid("getData");
-                    row = row.rows;
+                    var row = $('#metTable_point').datagrid("getData").rows;
 
                     if (sc_val.filters.length >= 1) {//大于1，说明有条件
                         $.each(sc_val.filters[sc_val.filters.length - 1], function (k, vol) {//循环最后一个条件，这个条件是要添加显示的条件
@@ -1421,7 +1706,11 @@ function xishu_save() {
 //								var re4 = new RegExp("%","g");
                                 tablejieguo += "企业名称：" + row[0].companyname + ",";
                             } else if (k == "id") {
-                                tablejieguo += "企业名称：" + row[0].companyname + ",";
+                                if(vol.indexOf('not in')!=-1){
+                                    tablejieguo += "删除点源：" + vol.split(',').length + ",";
+                                }else{
+                                    tablejieguo += "企业名称：" + row[0].companyname + ",";
+                                }
                             } else {
                                 $.each(query, function (i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
                                     if (col.queryEtitle == k) {
@@ -1457,7 +1746,7 @@ function xishu_save() {
                         $("#" + vol).removeClass("erroe_input");//删除红色边框
                         $("#" + vol).val(xishu_temp_v[i]);
                     });
-                    $("#qiye_name").val("");//按名称筛选条件
+                    //$("#qiye_name").val("");//按名称筛选条件
                     // $('#metTable_point').datagrid('destroy');//销毁现有表格数据
                     // $('#metTable_name_point').datagrid('destroy');//销毁现有表格数据
 
@@ -1468,33 +1757,102 @@ function xishu_save() {
                 $("#sxNumber").window("close");
             });
         } else {//修改已有子措施
+            var row = $('#show_zicuoshi_table').datagrid('getData').rows;
+            if((zicuoshi_up_index!=0)&&(zicuoshi_up_index!=row.length-1)&&(zicuoshi_up_index!=row.length-2)){
+                if(delSXtableRow.length > 0){
+                    edit_point_sc_v1.filters[edit_point_sc_v1.filters.length-1].id = 'not in '+ delSXtableRow.join(',');
+                }
+                ajaxPost_w(jianpaiUrl + '/search/summary', edit_point_sc_v1).success(function (res) {
+//				console.log(JSON.stringify(res));
+                    if (res.status == 'success') {
+                        delSXtableRow = [];
+                        var ttr = {};
 
-            var up_row = {};
-            $.each(xishu_temp, function (i, vol) {
-                up_row["psl_" + vol] = $("#" + vol).val();
-            });
-            $('#show_zicuoshi_table').datagrid('updateRow', {index: zicuoshi_up_index, row: up_row});
-            restion_table();
-            zicuoshi_up_index = null;
-            //输入框初始化
-            $.each(xishu_temp, function (i, vol) {
-                $("#" + vol).removeClass("erroe_input");//删除红色边框
-                $("#" + vol).val(xishu_temp_v[i]);
-            });
+//					var re1 = new RegExp("{","g");
+//					var re2 = new RegExp("}","g");
+//					var re3 = new RegExp("\"","g");
 
+                        var tablejieguo = "";
+                        var row = $('#edit_point').datagrid("getData").rows;
+
+                        if (edit_point_sc_v1.filters.length >= 1) {//大于1，说明有条件
+                            $.each(edit_point_sc_v1.filters[edit_point_sc_v1.filters.length - 1], function (k, vol) {//循环最后一个条件，这个条件是要添加显示的条件
+                                if (k == "companyname") {
+//								var re4 = new RegExp("%","g");
+                                    tablejieguo += "企业名称：" + row[0].companyname + ",";
+                                } else if (k == "id") {
+                                    if(vol.indexOf('not in')!=-1){
+                                        tablejieguo += "删除点源：" + vol.split(',').length + ",";
+                                    }else{
+                                        tablejieguo += "企业名称：" + row[0].companyname + ",";
+                                    }
+                                } else {
+                                    $.each(query, function (i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
+                                        if (col.queryEtitle == k) {
+                                            tablejieguo += col.queryName + "：" + vol + ",";
+                                        }
+                                    });
+                                }
+                            });
+                        } else {//等于0，说明条件是全部
+                            tablejieguo = "全部点源,";
+                        }
+
+                        ttr.tiaojian = tablejieguo.substring(0, tablejieguo.length - 1);
+                        ttr.f1 = measureame_temp;
+                        ttr.f2 = res.data.count;
+
+                        $.each(edit_point_sc_v1.summary.sum, function (i, vol) {
+                            ttr[vol] = Math.round(res.data[vol]);
+                        });
+                        $.each(xishu_temp, function (i, vol) {
+                            ttr["psl_" + vol] = $("#" + vol).val();
+                        });
+
+                        $('#show_zicuoshi_table').datagrid('updateRow', {index: zicuoshi_up_index, row: ttr});
+                        restion_table();
+
+                        //计算完成，将结果保存为上一级的缓存
+                        $.each(edit_point_sc_v1.filters,function (k, vol) {
+                            sc_v1.filters[k] = edit_point_sc_v1.filters[k];
+                        })
+                        // sc_v1 = jQuery.extend(true, {}, edit_point_sc_v1);
+                        // sc_val = jQuery.extend(true, {}, edit_point_sc_v1);
+//					console.log(JSON.stringify(sc_v1));
+
+                        //输入框初始化
+                        $.each(xishu_temp, function (i, vol) {
+                            $("#" + vol).removeClass("erroe_input");//删除红色边框
+                            $("#" + vol).val(xishu_temp_v[i]);
+                        });
+                        //$("#qiye_name").val("");//按名称筛选条件
+                        // $('#metTable_point').datagrid('destroy');//销毁现有表格数据
+                        // $('#metTable_name_point').datagrid('destroy');//销毁现有表格数据
+
+                        if (point_z.length > 0) {
+                            add_point(point_z);//地图初始化
+                        }
+                    }
+                    $("#sxNumber").window("close");
+                });
+            }else{
+                var up_row = {};
+                $.each(xishu_temp, function (i, vol) {
+                    up_row["psl_" + vol] = $("#" + vol).val();
+                });
+                $('#show_zicuoshi_table').datagrid('updateRow', {index: zicuoshi_up_index, row: up_row});
+                restion_table();
+                // zicuoshi_up_index = null;
+                //输入框初始化
+                $.each(xishu_temp, function (i, vol) {
+                    $("#" + vol).removeClass("erroe_input");//删除红色边框
+                    $("#" + vol).val(xishu_temp_v[i]);
+                });
+            }
         }
 
-        boolean_delete_sc_name = false;//记录是否删除过按名称筛选的结果
+        boolean_delete_sc = false;//记录是否删除过按名称筛选的结果
         poi_name_or_pub = null;//记录当前的筛选条件是按照属性来，还是按照名称来
-
-        // $("#mic").hide();//筛选结果div
-        // $("#mic_name").hide();//按名称筛选结果div隐藏
-        // $("#metTable_tools").hide();//保存子措施按钮
-        // $("#metTable_name_tools").hide();//保存子措施按钮
-        // $("#xishuMO").hide();//控制系数div
-        // $("#xishuMOB").hide();//控制系数按钮
-        // $("#shaixuan_num").html("");//筛选点源
-        // $("#shaixuan_num").hide();
     }
 }
 
@@ -1505,8 +1863,8 @@ function add_point(col) {
 //	console.log(JSON.stringify(col));
 
     if (clusterLayer_ttft != "") {
-        app.mapList[1].removeLayer(clusterLayer_ttft);//清空已有的点位信息
-        app.mapList[1].infoWindow.hide();
+        app.mapList[0].removeLayer(clusterLayer_ttft);//清空已有的点位信息
+        app.mapList[0].infoWindow.hide();
     }
     var photoInfo = {};
     var point_sz = [];
@@ -1549,7 +1907,7 @@ function add_point(col) {
             "id": "clusters",
             "labelColor": "#fff",
             "labelOffset": -4,
-            "resolution": app.mapList[1].extent.getWidth() / app.mapList[1].width,
+            "resolution": app.mapList[0].extent.getWidth() / app.mapList[0].width,
             "singleColor": "#888",
             "maxSingles": 3000,
             "showSingles": false
@@ -1571,15 +1929,17 @@ function add_point(col) {
         renderer.addBreak(10000, 99999999, style5);
 
         clusterLayer.setRenderer(renderer);
-        app.mapList[1].addLayer(clusterLayer);
+        app.mapList[0].addLayer(clusterLayer);
         clusterLayer_ttft = clusterLayer;
 
         setTimeout(function () {
             var extent = new dong.Extent(xmin, ymin, xmax, ymax, new dong.SpatialReference({wkid: 3857}));
-            app.mapList[1].setExtent(extent.expand(1.5));
+            app.mapList[0].setExtent(extent.expand(1.5));
         }, 100);
     }
 }
+
+
 
 /*初始化*/
 initialize();

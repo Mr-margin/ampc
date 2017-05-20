@@ -14,7 +14,13 @@
 //    }, 50);
 //});
 
-
+/*左侧菜单栏显示*/
+(function () {
+    $('.cryak').show();
+    $('.wc').show();
+    $('.nowCS').hide();
+    $('.nowHY').hide();
+})()
 $("#show").click(function () {
     if ($("#slider_wrap").css("display") == "none") {
         $("#slider_wrap").show();
@@ -2101,7 +2107,7 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
         app.stlayerList = new Array();//加载卫星图
         app.labellayerList = new Array();//加载标注图
 
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < 1; i++) {
             var map = new Map("mapDiv" + i, {
                 logo: false,
                 center: [stat.cPointx, stat.cPointy],

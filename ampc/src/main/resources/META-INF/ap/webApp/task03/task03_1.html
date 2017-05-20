@@ -106,6 +106,7 @@
 
   .tiaojian {
     width: 100%;
+    min-width: 640px;
     padding: 5px 5px 20px 5px;
   }
 
@@ -159,127 +160,101 @@
     border: 1px solid #e4153e;
   }
 
-  .menuCD_con  .form-group{
+  .sxCon .form-group {
     display: inline-block;
     margin-bottom: 0;
   }
 
-  #show_zicuoshi_table_div .datagrid-cell{
-    padding: 0 4px;
-  }
-  /*横向手风琴 css*/
-  #accordion_h {
-    background-color: rgb(237, 245, 255);
+  .sxTitle h3 {
+    margin-left: 10px;
+    font-size: 17px;
   }
 
-  .menuCD {
-    margin: 0 5px;
+  /*标签页*/
+  .tagBox {
+    width: 100%;
     height: 100%;
+  }
+
+  .tagTitle {
+    width: 100%;
+    border-bottom: 1px solid #333;
+  }
+
+  .tagTitle ul.tagtitleUl {
+    position: relative;
+  }
+
+  ul.tagtitleUl li {
+    display: block;
     float: left;
-    transition: all 0.5s linear;
-    width: 45px;
+    padding: 5px;
+    list-style-type: none;
   }
 
-  .menuCD.menuCD_in{
-     width: calc(100% - 120px);
-  }
-
-  .menuCD div {
-    box-sizing: border-box;
-  }
-
-  .menuCD_title {
-    float: left;
-    background-color: #fff;
-    /*padding: 0 20px;*/
-    text-align: center;
-    height: 100%;
-    width: 45px;
-    box-sizing: border-box;
-    border:1px solid #333;
-  }
-
-  .menuCD_title:hover{
-    cursor: pointer;
-  }
-  .menuCD_title span:hover{
-    cursor: pointer;
-  }
-
-  .menuCD_title span {
-    line-height: 45px;
+  ul.tagtitleUl li a {
     color: #333;
-    writing-mode: tb-rl;
-    text-align: center;
-    display: inline-block;
-    height: 100%;
   }
 
-  .menuCD_con {
-    float: left;
-    height: 100%;
-    width: calc(100% - 45px);
+  .cloudui .datagrid-view1 .datagrid-body {
     overflow: hidden;
-    transition: all 0.5s linear;
   }
-  /*横向手风琴 css end*/
 </style>
+
 <script type="text/javascript" src="easyui/datagrid-detailview.js"></script>
+
+
 <div class="cloudui" style="height: 100%;width: 100%;position: relative;">
   <div class="easyui-layout" data-options="fit:'true',border:'false'">
     <div data-options="region:'center',border:'false'" class="jpfxRight" style="overflow: hidden;width: 100%;">
       <div class="easyui-layout" data-options="fit:'true',border:'false'" style="height: 100%">
-        <div data-options="region:'north',border:'false'" class="ibox float-e-margins" style="height:50%;overflow: hidden;border:1px solid #D9D9D9;">
+        <div data-options="region:'north',border:'false'" class="ibox float-e-margins"
+             style="height:50%;overflow: hidden;border:1px solid #D9D9D9;position: relative">
           <div class="ibox-title"
                style="margin-bottom: 0;height: 32px;line-height:32px;padding-left: 10px;background: linear-gradient(#fbfbfb, #f2f2f2);">
             <h5 class="headTitle"><i class="im-earth"></i> 条件筛选</h5>
-            <div class="ibox-tools toolAll">
+          </div>
+          <div class="ibox-content"
+               style="height:calc(100% - 33px);overflow-y: auto;background-color: #ffffff;padding: 0px 0px 0px 0px;border-top:1px solid #d9d9d9;">
+            <div class="col-12 easyui-panel" style="height:100%;padding: 0px;">
 
+              <div class="sxQuyu">
+                <div class="sxTitle">
+                  <h3>区域筛选</h3>
+                </div>
+                <div class="sxCon clearfix">
 
-              <div class="selectTool" style="float: left">
-                <div class="selectTool_con" style="display: inline-block;">
-                  <button class="btn btn-success" onclick="search_button();">筛选</button>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="ibox-content" style="height:calc(100% - 33px);overflow-y: hide;background-color: #ffffff;padding: 0px 0px 0px 0px;border-top:1px solid #d9d9d9;">
-            <div class="col-12 easyui-panel" id="mapDiv0" style="height:100%;padding: 0px;">
-
-
-              <div id="accordion_h" class="" style="width: 100%;height: 100%">
-                <div class="menuCD">
-                  <div class="menuCD_title">
-                    <span>区&nbsp;&nbsp;&nbsp;域&nbsp;&nbsp;&nbsp;筛&nbsp;&nbsp;&nbsp;选</span></div>
-                  <div class="menuCD_con">
-
-                  </div>
+              <div class="sxTiaojian">
+                <div class="sxTitle">
+                  <h3>条件筛选</h3>
                 </div>
-
-                <div class="menuCD">
-                  <div class="menuCD_title">
-                    <span>名&nbsp;&nbsp;&nbsp;称&nbsp;&nbsp;&nbsp;筛&nbsp;&nbsp;&nbsp;选</span></div>
-                  <div class="menuCD_con">
-                    <div class="col-6" style="margin-top: 10px;" id="se_name">
-                      <div class="input-group m-b" style="margin-bottom: 0px">
-                        <span class="input-group-addon" style="border: 1px solid #E5E6E7;">企业名称:</span>
-                        <input type="text" class="form-control" id="qiye_name" name="qiye_name">
-                      </div>
+                <div class="sxCon clearfix">
+                  <div id="sc_conter" class="clearfix"></div>
+                </div>
+              </div>
+              <div class=sxMingcheng">
+                <div class="sxTitle">
+                  <h3>名称筛选</h3>
+                </div>
+                <div class="sxCon clearfix">
+                  <div class="btn-group tiaojian col-6" sc_su="null" sc_su_val="null"><span
+                      class="font-bold tiaojian-title" style="width: 96px;">企业名称</span>
+                    <div class="btn-group btn-group-circle" data-toggle="buttons" id="capacityAmount-power">
+                      <input id="qiye_name" name="qiye_name" class="form-control" type="text"
+                             style="width:calc(100% - 100px);height: 30px;padding: 6px 3px;">
                     </div>
                   </div>
                 </div>
-
-                <div class="menuCD">
-                  <div class="menuCD_title">
-                    <span>条&nbsp;&nbsp;&nbsp;件&nbsp;&nbsp;&nbsp;筛&nbsp;&nbsp;&nbsp;选</span></div>
-                  <div class="menuCD_con">
-                    <div style="height:100%;overflow-y: auto;padding: 10px;"
-                         id="sc_conter"></div>
-                  </div>
-                </div>
               </div>
 
-
+            </div>
+          </div>
+          <div class="selectTool" style="float: left;position: absolute;bottom: 15px;right: 30px">
+            <div class="selectTool_con" style="display: inline-block;">
+              <button class="btn btn-success" id="se_bu" onclick="search_button();">筛选</button>
+              <button class="btn btn-success" onclick="clearSXtj()">清空</button>
             </div>
           </div>
         </div>
@@ -287,16 +262,33 @@
         <div data-options="region:'center',border:'false'" class="ibox float-e-margins"
              style="height:calc(50%);padding-top: 10px;">
           <div style="width: 100%;height: 100%;margin-bottom: 0px;overflow: hidden;border:1px solid #D9D9D9;">
-            <div class="ibox-title" style="margin-bottom: 0;height: 32px;line-height:32px;padding-left: 10px;background: linear-gradient(#fbfbfb, #f2f2f2);">
+            <div class="ibox-title"
+                 style="margin-bottom: 0;height: 32px;line-height:32px;padding-left: 10px;background: linear-gradient(#fbfbfb, #f2f2f2);">
               <h5 class="headTitle"><i class="fa-table"></i> 子措施列表</h5>
               <div class="ibox-tools">
+                <button class="btn btn-success" id="zicuoshi_tools_see"
+                        style="margin-bottom: 0px;margin-top: -7px;display:none;" onclick="zicuoshi_edit()"
+                        type="button">
+                  <i class="fa fa-eye-open"></i>&nbsp;&nbsp;<span class="bold">编辑</span>
+                </button>
+                <button class="btn btn-success" id="zicuoshi_tools_up"
+                        style="margin-bottom: 0px;margin-top: -7px;display:none;" onclick="zicuoshi_up();"
+                        type="button">
+                  <i class="fa fa-edit"></i>&nbsp;&nbsp;<span class="bold">修改</span>
+                </button>
+                <button class="btn btn-success" id="zicuoshi_tools_de"
+                        style="margin-bottom: 0px;margin-top: -7px;display:none;" onclick="zicuoshi_de();"
+                        type="button">
+                  <i class="fa fa-close"></i>&nbsp;&nbsp;<span class="bold">删除</span>
+                </button>
                 <button class="btn btn-success" id="jianpaijisuan" style="margin-bottom: 0px;margin-top: -7px;"
                         onclick="create();" type="button">
                   <i class="fa fa-hourglass-2"></i>&nbsp;&nbsp;<span class="bold">保存措施</span>
                 </button>
               </div>
             </div>
-            <div class="ibox-content" style="height:calc(100% - 42px);overflow-y: hide;background-color: #ffffff;padding: 0px;border-top:1px solid #d9d9d9">
+            <div class="ibox-content"
+                 style="height:calc(100% - 42px);overflow-y: hide;background-color: #ffffff;padding: 0px;border-top:1px solid #d9d9d9">
               <div id="show_zicuoshi_table_div" class="ibox-content"
                    style="height:100%;overflow-y: auto;border:1px solid #75B9E6;padding: 5px;">
                 <table id="show_zicuoshi_table" class='easyui-propertygrid'></table>
@@ -310,26 +302,52 @@
   </div>
 </div>
 
+<div id="mapDiv0 disNone"></div>
+
 <!-- 设置措施筛选模态框 -->
 <div class="modal fade sxTableMap" id="sxTableMap" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document" style="height: 100%">
     <div class="modal-content" style="height: 100%">
       <div class="modal-body" style="height:calc(100% - 50px);">
-        <div class="sxRequirement" style="height: 50px;background-color: #00a2d4"></div>
+
         <div class="sxCon" style="height:calc(100% - 50px);">
-          <div class="col-6 sxTable" style="height: 100%">
-            <div id="delSX">
-              <button class="btn btn-success">删除</button>
+          <div class="col-6 sxTable" style="height: 100%;position: relative">
+
+            <div id="sx" class="easyui-tabs" style="width:100%;height:100%;position: absolute;">
+              <div title="未控制点源" style="padding:20px;display:none;">
+                <div class="sxRequirement" style=""></div>
+                <div id="delSX">
+                  <button class="btn btn-success">删除</button>
+                </div>
+                <table id="metTable_point">
+                </table>
+              </div>
+              <div title="已控制点源" style="overflow:auto;padding:20px;display:none;">
+                <!--<div id="delSXykz">-->
+                  <!--<button class="btn btn-success">删除</button>-->
+                <!--</div>-->
+                <table id="metTable_point_ykz">
+                </table>
+              </div>
             </div>
-            <table id="metTable_point">
-            </table>
+            <div id="bj" class="easyui-tabs" style="width:100%;height:100%;position: absolute;">
+              <div title="被编辑点源" style="overflow:auto;padding:20px;display:none;">
+                <div id="delEdit">
+                  <button class="btn btn-success">删除</button>
+                </div>
+                <table id="edit_point">
+                </table>
+              </div>
+            </div>
+
+
           </div>
           <div class="col-6 sxMap" style="height: 100%">
             <div class="col-12" id="mapDiv1" style="height:100%;border:1px solid #75B9E6;padding: 0px;"></div>
           </div>
         </div>
       </div>
-      <div class="modal-footer new-foot dlogFooter" >
+      <div class="modal-footer new-foot dlogFooter">
         <button type="button" class="btn btn-primary" onclick="bcZcs()">保存子措施</button>
         <button type="button" class="btn btn-default" id="close_scene" data-dismiss="modal">取消</button>
       </div>
@@ -344,7 +362,7 @@
       <div class="modal-body" style="height:calc(100% - 50px);">
         <div class="row" id="xishuMO" style="margin-left: 0px;margin-right: 0px;"></div>
       </div>
-      <div class="modal-footer new-foot dlogFooter" >
+      <div class="modal-footer new-foot dlogFooter">
         <button type="button" class="btn btn-primary" onclick="xishu_save()">保存</button>
         <button type="button" class="btn btn-default" id="returnSxTable" data-dismiss="modal">取消</button>
       </div>
@@ -355,47 +373,45 @@
 <script>
     //弹框
     $("#sxTableMap").window({
-        width:'80%',
-        height:'80%',
-        collapsible:false,
-        maximizable:false,
-        minimizable:false,
-        draggable:false,
-        modal:true,
-        shadow:false,
-        title:'筛选列表',
-        border:false,
-        buttons:'#dlg_jpBtn',
-        closed:true,
+        width: '80%',
+        height: '80%',
+        collapsible: false,
+        maximizable: false,
+        minimizable: false,
+        draggable: false,
+        modal: true,
+        shadow: false,
+        title: '筛选列表',
+        border: false,
+        buttons: '#dlg_jpBtn',
+        closed: true,
         cls: 'cloudui'
     });
     $("#close_scene").click(function () {
         $("#sxTableMap").window("close")
     });
-    function bcZcs() {
-        $("#sxTableMap").window("close");
-        $("#sxNumber").window("open");
-    }
+
 
 
     $("#sxNumber").window({
-        width:'50%',
-        height:'50%',
-        collapsible:false,
-        maximizable:false,
-        minimizable:false,
-        draggable:false,
-        modal:true,
-        shadow:false,
-        title:'子措施系数',
-        border:false,
-        buttons:'#dlg_jpBtn',
-        closed:true,
+        width: '50%',
+        height: '50%',
+        collapsible: false,
+        maximizable: false,
+        minimizable: false,
+        draggable: false,
+        modal: true,
+        shadow: false,
+        title: '子措施系数',
+        border: false,
+        buttons: '#dlg_jpBtn',
+        closed: true,
         cls: 'cloudui'
     });
     $("#returnSxTable").click(function () {
         $("#sxNumber").window("close");
         $("#sxTableMap").window("open")
     })
+
 
 </script>
