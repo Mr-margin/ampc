@@ -228,13 +228,13 @@
       CREATE_STATUS = #{createStatus,jdbcType=OTHER}
     where DOMAIN_ID = #{domainId,jdbcType=DECIMAL}
   </update>
-  <select id="selectAll" resultMap="ResultMapWithBLOBs">
+  <select id="selectAll" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long">
     select 
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
     from T_DOMAIN_MISSION
-    where ID_EFFECTIVE ='1'
+    where ID_EFFECTIVE ='1' AND USER_ID = #{userId,jdbcType=DECIMAL}
   </select>
   <update id="updateByUserId" parameterType="java.lang.Long" >
     update T_DOMAIN_MISSION
