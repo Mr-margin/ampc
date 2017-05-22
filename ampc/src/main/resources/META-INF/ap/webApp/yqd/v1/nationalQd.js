@@ -1,7 +1,7 @@
 /**
  * Created by shanhaichushi on 2017/5/19.
  */
-$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">全国清单</span><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatQd()">新建</button><button class="qdEdit" onclick="editQd()">编辑</button><button class="qdDelet">删除</button></span>');
+$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">全国清单</span><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatQd()">新建</button><button class="qdEdit" onclick="editQd()">编辑</button><button class="qdDelet" onclick="delectQd()">删除</button></span>');
 //全国清单
 var preams = {
 	"userId": userId,
@@ -202,4 +202,13 @@ function editSubmitQd(){
         )
         $("#editQd").window('close');
     }
+}
+// 删除清单
+function delectQd(){
+    var row = $('#qgqd').datagrid('getSelected');//获取所有选中的清单数据
+    console.log("数据")
+    console.log(row);
+    ajaxPost('/NativeAndNation/delete_nation',{"nationId":row.esNationId}).success(function(){
+        console.log("删除进来了")
+    })
 }
