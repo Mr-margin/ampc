@@ -283,13 +283,17 @@ function initialize() {
         $('#species').append($('<option>' + speciesArr[changeMsg.rms][i] + '</option>'))
     }
     requestDate();//请求可选日期范围
-    
+
+    $.when(dps_Date).then(function () {
+        dps_YBd = setYBdate();
+        $.when(dps_YBd).then(function () {
+            window.setTimeout(function () {
+                updata();
+            },50);
+        });
+    })
     //当时间获取完成，开始请求数据
-    $.when(dps_Date, dps_YBd).done(function () {
-        window.setTimeout(function () {
-            updata();
-        },50);
-    });
+
 }
 
 /*请求可选日期范围*/
@@ -320,7 +324,7 @@ function requestDate() {
 //            changeMsg.time = moment(changeMsg.startD).format('YYYY-MM-DD HH');
           /*测试使用 end*/
             initSPDate(changeMsg.minDate, changeMsg.maxDate, changeMsg.startD, changeMsg.endD);
-            dps_YBd = setYBdate();
+
         }
 
     })
