@@ -208,7 +208,13 @@ function delectQd(){
     var row = $('#qgqd').datagrid('getSelected');//获取所有选中的清单数据
     console.log("数据")
     console.log(row);
-    ajaxPost('/NativeAndNation/delete_nation',{"nationId":row.esNationId}).success(function(){
-        console.log("删除进来了")
+    ajaxPost('/NativeAndNation/delete_nation',{"nationId":row.esNationId}).success(function(res){
+        if(res.status=0){
+            var rowIndex = $('#qgqd').datagrid('getRowIndex', row);
+            $('#qgqd').datagrid('deleteRow', rowIndex);
+            $('#qgqd').datagrid('reload');//删除后重新加载下
+        }else{
+            swal('参数错误', '', 'error');
+        }
     })
 }
