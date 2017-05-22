@@ -92,7 +92,7 @@ function initWrwDate(s, e, start, end) {
         },
         "startDate": start,
         "endDate": end,
-        "opens": "left"
+        "opens": "right"
     }, function (start, end, label) {
         changeMsg.startD = start.format('YYYY-MM-DD');
         changeMsg.endD = end.format('YYYY-MM-DD');
@@ -112,6 +112,7 @@ function initWrwDate(s, e, start, end) {
 function initQxysDate(s, e, start, end) {
     $('#qxysDate').daterangepicker({
 //    "parentEl": ".toolAll",
+        "opens": "right",
         "autoApply": true,
         singleDatePicker: false,  //显示单个日历
         timePicker: false,  //允许选择时间
@@ -134,7 +135,6 @@ function initQxysDate(s, e, start, end) {
         },
         "startDate": start,
         "endDate": end,
-        "opens": "left"
     }, function (start, end, label) {
         changeMsg.startD = start.format('YYYY-MM-DD');
         changeMsg.endD = end.format('YYYY-MM-DD');
