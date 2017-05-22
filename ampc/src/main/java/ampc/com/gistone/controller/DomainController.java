@@ -59,7 +59,7 @@ public class DomainController {
 			}
 			Long userId=Long.valueOf(data.get("userId").toString());
 			//查询所有Domain信息
-		List<TDomainMissionWithBLOBs> tdlist=tDomainMissionMapper.selectAll();
+		List<TDomainMissionWithBLOBs> tdlist=tDomainMissionMapper.selectAll(userId);
 		//创建返回的jsonArray
 		JSONArray arr=new JSONArray();
 		//遍历查询到的Domain集合，并添加到返回的json中
@@ -67,15 +67,12 @@ public class DomainController {
 			JSONObject obj=new JSONObject();
 			//查看当前domain是否用来创建了任务
 			List<TMissionDetail> Tmlist=tMissionDetailMapper.selectDomain(td.getDomainId());
-			if(Tmlist.isEmpty()){
-				LogUtil.getLogger().error("findAll 未查询到Domain信息");
-				return AmpcResult.build(1000, "未查询到Domain信息");
-			}
 			if(!Tmlist.isEmpty()){
 				obj.put("haveMission", "已使用");	
 			}else{
 				obj.put("haveMission", "未使用");		
 			}
+			obj.put("domainId", td.getDomainId());
 			obj.put("userId", td.getUserId());
 			obj.put("addTime", td.getAddTime().getTime());//创建时间
 			obj.put("version", td.getVersion());//版本（用来区分当前还是历史）
