@@ -169,7 +169,6 @@ $("#editQd").window({
 })
 function editSubmitQd(){
     var row = $('#qgqd').datagrid('getSelected');//获取所有选中的清单数据
-
     var qdName=$("#esNationName_edit").val();
     var qdYear=$("#esNationYear_edit").val();
     var qdMark=$("#esNationMark_edit").val();
@@ -188,16 +187,20 @@ function editSubmitQd(){
         swal('年份错误', '', 'error');
     }else{
         $("#formQd").submit(
-            ajaxPost('/NativeAndNation/update_nation',param).success(function(data){
-                $("#qgqd").datagrid('updateRow',{
-                    index: rowIndex,
-                    row: {
-                        esNationName: qdName,
-                        esNationYear:qdYear,
-                        nationRemark:qdMark
-                    }
+            ajaxPost('/NativeAndNation/update_nation',param).success(function(res){
+                if(res.status==0){
+                    $("#qgqd").datagrid('updateRow',{
+                        index: rowIndex,
+                        row: {
+                            esNationName: qdName,
+                            esNationYear:qdYear,
+                            nationRemark:qdMark
+                        }
 
-                })
+                    })
+                }else{
+                    swal('参数错误', '', 'error');
+                }
             })
         )
         $("#editQd").window('close');
@@ -209,7 +212,7 @@ function delectQd(){
     console.log("数据")
     console.log(row);
     ajaxPost('/NativeAndNation/delete_nation',{"nationId":row.esNationId}).success(function(res){
-        if(res.status=0){
+        if(res.status==0){
             var rowIndex = $('#qgqd').datagrid('getRowIndex', row);
             $('#qgqd').datagrid('deleteRow', rowIndex);
             $('#qgqd').datagrid('reload');//删除后重新加载下
