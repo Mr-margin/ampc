@@ -1392,16 +1392,7 @@ dl, dd {
 .cloudui .airtab .nav-tabs li{float: left;margin-left:10px;}
 .cloudui .airtab .nav-tabs li a{display: block;padding: 0 5px;}
 .daterangepicker{
- overflow: hidden;
   padding: 0;
-}
-.daterangepicker .left{
-  width:48%!important;
-  float:left!important;
-}
-.daterangepicker .right{
-  width:48%!important;
-  float:right!important;
 }
 
 .clearfix:after {clear:both;content:'.';display:block;width: 0;height: 0;visibility:hidden;}
@@ -1484,23 +1475,50 @@ dl, dd {
 .cloudui .yqdTable .coupSetTitle{
   height: 70px;
   border-bottom: 1px solid #e1e1e1;
+  overflow: hidden;
 }
 .cloudui .yqdTable .coupSetTitle .coupSetTitleList{
+  float: left;
   margin-left:5px;
   overflow: hidden;
   margin-top:20px;
 }
+/*耦合步骤*/
+.cloudui .yqdTable .coupSetTitle .coupSetArrow{
+  float: right;
+}
+.cloudui .yqdTable .coupSetTitle .coupSetArrow button{
+  float: left;
+  height: 30px;
+  width: 80px;
+  line-height:30px;
+  text-align: center;
+  background-color: #17bc9c;
+  border:1px solid #134b2e;
+  border-radius: 2px;
+  cursor: pointer;
+  color: #fff;
+  margin-right:10px;
+  box-sizing: border-box;
+  margin-top:20px;
+}
 .cloudui .yqdTable .coupSetTitle .coupSetTitleList li{
   float: left;
-  margin-right:20px;
+  margin-right:40px;
+  cursor: pointer;
 }
+
 .cloudui .yqdTable .coupSetTitle .coupSetTitleList li div{
   position: relative;
     width:80px;
     height:30px;
-  background: #ececec;
+  background-color: #ececec;
   line-height:30px;
   text-align: center;
+}
+.cloudui .yqdTable .coupSetTitle .coupSetTitleList li.active div{
+  background-color: #17bc9c;
+  color: #fff;
 }
 .cloudui .yqdTable .coupSetTitle .coupSetTitleList li div:before{
   position: absolute;
@@ -1514,4 +1532,7 @@ dl, dd {
   border-bottom: 15px solid transparent;
   border-top:15px solid transparent;
   border-left:15px solid #ececec;
+}
+.cloudui .yqdTable .coupSetTitle .coupSetTitleList li.active div:before{
+  border-left:15px solid #17bc9c;
 }
