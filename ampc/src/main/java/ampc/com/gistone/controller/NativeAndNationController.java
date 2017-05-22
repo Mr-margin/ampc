@@ -289,4 +289,35 @@ public class NativeAndNationController {
 		}
 	}
 	
+	@RequestMapping("/NativeAndNation/delete_nation")
+	public AmpcResult delete_nation(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			
+			Object param=data.get("tEsNation");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			Long tEsNation = Long.parseLong(param.toString());
+			int total=tEsNationMapper.deleteByPrimaryKey(tEsNation);
+			Map msgMap=new HashMap();
+			if(total==1){
+				msgMap.put("msg", true);
+			}else{
+				msgMap.put("msg", false);
+			}
+			LogUtil.getLogger().info("NativeAndNationController 创建全国清单信息成功!");
+			return AmpcResult.ok(msgMap);
+		} catch (Exception e) {
+			// TODO: handle exception
+			LogUtil.getLogger().error("NativeAndNationController 创建全国清单信息异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 创建全国清单信息异常!");
+		}
+	}
+	
 }
