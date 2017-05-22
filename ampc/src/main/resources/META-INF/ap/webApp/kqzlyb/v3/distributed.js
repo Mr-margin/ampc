@@ -39,6 +39,7 @@ var changeMsg = {
     cols: 350
 }
 
+/*不同时间分辨率下，不同的污染物*/
 var speciesArr = {
     d: ['PM₂.₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NO₂', 'CO', 'SO₄²¯', 'NO₃¯', 'NH₄⁺', 'BC', 'OM', 'PMFINE'],
     h: ['PM₂.₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄²¯', 'NO₃¯', 'NH₄⁺', 'BC', 'OM', 'PMFINE']
@@ -384,7 +385,6 @@ function setYBdate() {
             for (var i = 0; i < res.data.timearr.length; i++) {
                 $('#sTime-d').append($('<option>' + moment(res.data.timearr[i]).format('YYYY-MM-DD') + '</option>'))
             }
-
             changeMsg.YBDate = $('#sTime-d').val();
 
         } else {
@@ -430,37 +430,37 @@ function updata() {
 //	zmblockUI("#map_in", "start");
 	
     var parameter = {
-        calcType: 'show',
-        showType: 'concn',
+        calcType: 'show',//请求类型 show：当前情景，还有相对变化绝对变化，此处只需要show
+        showType: 'concn',//请求类型 concn：浓度，还有风场排放，此处只需要concn
         userId: userId,
-        layer: changeMsg.layer,
-        rows: changeMsg.rows,
-        cols: changeMsg.cols,
-        domainId: changeMsg.domainId,
-        domain: changeMsg.domain,
-        missionId: changeMsg.missionId,
-        scenarioId1: changeMsg.qj1Id,
-        species: (function () {
+        layer: changeMsg.layer,//高度层参数
+        rows: changeMsg.rows,//绘制图片的横向格数
+        cols: changeMsg.cols,//绘制图片纵向格数
+        domainId: changeMsg.domainId,//
+        domain: changeMsg.domain,//地图范围1：最大范围，2：中等范围，3：最小范围
+        missionId: changeMsg.missionId,//任务ID
+        scenarioId1: changeMsg.qj1Id,//情景ID
+        species: (function () {//循环查看选择的污染物
             var arr = [];
             for (var i = 0; i < changeMsg.species.length; i++) {
                 arr.push(speciesObj[changeMsg.species[i]])
             }
             return arr;
         })(),
-        timePoint: changeMsg.rms,
+        timePoint: changeMsg.rms,//时间分辨率d：逐日，h：逐小时
         borderType: "0"
     };
     var p1 = $.extend({}, parameter);
 
     if (changeMsg.rms == 'd') {
-        p1.day = moment(changeMsg.YBDate).format('YYYY-MM-DD');
+        p1.day = moment(changeMsg.YBDate).format('YYYY-MM-DD');//格式化请求参数时间
     } else if (changeMsg.rms == 'h') {
         p1.day = moment(changeMsg.YBDate).format('YYYY-MM-DD');
         p1.hour = changeMsg.YBHour;
     }
     p1.GPserver_type = [];
     for (var i = 0; i < changeMsg.species.length; i++) {
-        p1.GPserver_type.push(mappingSpecies[changeMsg.rms][changeMsg.species[i]]);
+        p1.GPserver_type.push(mappingSpecies[changeMsg.rms][changeMsg.species[i]]);//地图图片所需污染物对照
     }
     load_gis(p1);
     
@@ -529,21 +529,23 @@ function load_gis(p) {
  */
 function updataWind() {
     var parameter = {
-        calcType: 'show',
-        showType: 'wind',
+        calcType: 'show',//请求类型 show：当前情景，还有相对变化绝对变化，此处只需要show
+        showType: 'wind', //请求类型 wind：风场，还有浓度排放，此处只需要wind
         userId: userId,
-        layer: changeMsg.layer,
-        rows: changeMsg.rows,
-        cols: changeMsg.cols,
-        domainId: changeMsg.domainId,
-        domain: changeMsg.domain,
-        missionId: changeMsg.missionId,
-        scenarioId1: changeMsg.qj1Id,
-        species: ['WSPD', 'WDIR'],
-        timePoint: changeMsg.rms,
+        layer: changeMsg.layer,//高度层参数
+        rows: changeMsg.rows,//绘制图片的横向格数
+        cols: changeMsg.cols,//绘制图片纵向格数
+        domainId: changeMsg.domainId,//
+        domain: changeMsg.domain,//地图范围1：最大范围，2：中等范围，3：最小范围
+        missionId: changeMsg.missionId,//任务ID
+        scenarioId1: changeMsg.qj1Id,//情景ID
+        species: ['WSPD', 'WDIR'],//请求风场时，所需必要参数
+        timePoint: changeMsg.rms,//时间分辨率d：逐日，h：逐小时
         borderType: "0"
     };
     var p1 = $.extend({}, parameter);
+
+    /*请求在逐时和逐日不同情况下，所附带参数*/
     if (changeMsg.rms == 'd') {
         p1.day = changeMsg.YBDate;
     } else if (changeMsg.rms == 'h') {
