@@ -13,7 +13,7 @@ $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px
     $('.wc').hide();
     $('.nowCS').show();
     $('.nowHY').show();
-})()
+})();
 
 /*设置变量*/
 var sc_val = {};//存储最终的自措施条件
@@ -24,8 +24,7 @@ var measureame_temp = "";//措施名称
 var m_mid, m_planId, m_sectorName, m_planMeasureId;
 var delSxRow = [];//存储被删除的点源
 var temp_val_v1 = {};//单次查询的缓存
-var delSXtableRow = [];
-var boolean_delete_sc = false;//是否删除过点源
+var delSXtableRow = [];//记录本次筛选，删除了哪些点源
 var isNew = true;//判断是否是新创建措施
 
 
@@ -61,9 +60,6 @@ $.each(csMsg.provinceCodes, function (k, col) {
     });
 });
 
-/*初始化第三个手风琴菜单打开*/
-$('.menuCD:nth-child(3)').css('width', 'calc(100% - 120px)');
-$('.menuCD:nth-child(3) .menuCD_con').css('opacity', 1);
 
 /*模态框中筛选标签页*/
 $('#sx').tabs({
@@ -164,17 +160,17 @@ function initialize() {
 
 
 /**
- * 打开措施的窗口，数据初始化
+ * 打开措施，数据初始化
  * sectorsName:行业名称
  * measureame:措施名称
  * mid:措施ID
  * planMeasureId: 已经选中的措施ID，如果为null，证明是新建，否则为修改
  */
 function open_cs(sectorsName, measureame, mid, planMeasureId) {
-    $("#measureame").html("措施：" + measureame);//发开弹出窗，设置标题、行业、措施等内容
-    $("#sectorsName").html("行业：" + sectorsName);
-    $("#dianyaunzushu").html("");//清空点源与占比
-    $("#xiangxizhibiao").html("");
+    // $("#measureame").html("措施：" + measureame);//发开弹出窗，设置标题、行业、措施等内容
+    // $("#sectorsName").html("行业：" + sectorsName);
+    // $("#dianyaunzushu").html("");//清空点源与占比
+    // $("#xiangxizhibiao").html("");
 
     var paramsName = {};
     paramsName.userId = userId;
@@ -203,22 +199,19 @@ function open_cs(sectorsName, measureame, mid, planMeasureId) {
 
     ajaxPost('/measure/get_measureQuery', paramsName).success(function (res) {
 //		console.log(JSON.stringify(res));
-        $("#sc_conter").html("");//按属性筛选条件
-        $("#qiye_name").val("");//按名称筛选条件
+//         $("#sc_conter").html("");//按属性筛选条件
+//         $("#qiye_name").val("");//按名称筛选条件
         $("#xishuMO").html("");//控制系数div
         // $("#xishuMO").hide();//控制系数div
         // $("#xishuMOB").hide();//控制系数按钮
         // $("#mic").hide();//筛选结果div
         // $("#mic_name").hide();//按名称筛选结果div隐藏
 
-        $("#shaixuan_num").html("");//筛选点源
-        $("#shaixuan_num").hide();
+        // $("#shaixuan_num").html("");//筛选点源
+        // $("#shaixuan_num").hide();
 
-        boolean_delete_sc = false;//记录是否删除过按名称筛选的结果
-        poi_name_or_pub = null;//记录当前的筛选条件是按照属性来，还是按照名称来
 
         if (res.status == 0) {//返回状态正常
-            $("#createModal").modal();
 
             if (res.data.query.length > 0) {//返回筛选条件
                 query = jQuery.extend(true, {}, res.data.query);//保存一份返回的条件结果集
@@ -279,7 +272,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId) {
                 // sc_conter += '<i class="fa fa-search"></i>&nbsp;&nbsp;<span class="bold">筛选</span>';
                 // sc_conter += '</button></div>';
 
-                re = new RegExp("90px;", "g");
+                var re = new RegExp("90px;", "g");
                 sc_conter = sc_conter.replace(re, (name_length * 16) + "px;");
                 $("#sc_conter").html(sc_conter);
 
@@ -593,8 +586,7 @@ function show_zicuoshi_table(columns, b_data) {
  * 重新计算并打开表格
  */
 function restion_table() {
-    var row = $('#show_zicuoshi_table').datagrid('getData');//添加后所有的数据
-    row = row.rows;
+    var row = $('#show_zicuoshi_table').datagrid('getData').rows;//添加后所有的数据
     var row_0_temp = jQuery.extend(true, {}, row[0]);
     var row_1_temp = jQuery.extend(true, {}, row[row.length - 1]);//面源
     var row_2_temp = jQuery.extend(true, {}, row[row.length - 2]);//剩余点源
@@ -945,8 +937,6 @@ function search_button() {
         var ttqr = {};
         if ($("#qiye_name").val() != "") {
             ttqr.companyname = "%" + $("#qiye_name").val() + "%";
-            // sc_val.filters.push(ttqr);
-            // sc_val.filters[sc_val.filters.length==0?0:sc_val.filters.length-1].companyname = "%" + $("#qiye_name").val() + "%";
         }
 
         //将本次查询的缓存加入到总条件中
@@ -994,6 +984,7 @@ function search_button() {
     }, 200);
 }
 
+/*清除筛选条件*/
 function clearSXtj() {
     temp_val_v1 = {};
     //所有查询条件初始化
@@ -1022,10 +1013,9 @@ function clearSXtj() {
 }
 
 
-var poi_name_or_pub;//记录当前的筛选条件是按照属性来，还是按照名称来
 
-var delIndex = [];
-//筛选点源列表---按属性查询
+var delIndex = [];//记录筛选出点源点击删除的行号
+//筛选点源列表
 function point_table() {
     $('#sx').tabs('select','未控制点源');
     $('#sx').show();
@@ -1039,8 +1029,6 @@ function point_table() {
         columns[0].push({field: 'companyname', title: '企业名称',align:'center'});
         columns[0].push({field: 'equipId', title: '设备编号',align:'center'});
 
-        poi_name_or_pub = "pub";//记录当前的筛选条件是按照属性来，还是按照名称来
-        //$('#metTable_point').datagrid('destroy');//销毁现有表格数据
         $("#shaixuan_num").html("");//筛选点源
         $("#shaixuan_num").hide();
         $("#mic").show();//筛选结果div显示
@@ -1184,8 +1172,6 @@ function edit_point_table() {
         columns[0].push({field: 'companyname', title: '企业名称',align:'center'});
         columns[0].push({field: 'equipId', title: '设备编号',align:'center'});
 
-        poi_name_or_pub = "pub";//记录当前的筛选条件是按照属性来，还是按照名称来
-        //$('#metTable_point').datagrid('destroy');//销毁现有表格数据
         $('#edit_point').datagrid({
             method: 'POST',
             url: jianpaiUrl + '/search/sourceList',
@@ -1319,7 +1305,7 @@ $('#delSX button').click(function (e) {
     $('#metTable_point').datagrid('reload');
 })
 
-/*筛选出点源删除处理*/
+/*编辑措施筛选出点源删除处理*/
 $('#delEdit button').click(function (e) {
     var key = Object.keys(delIndex).quickSort();
     for(var k = key.length;k>0;k--){
@@ -1338,7 +1324,6 @@ function zicuoshi_up() {
     isNew = false;
     $('#returnSxTable').hide();
     var row = $('#show_zicuoshi_table').datagrid('getData');//所有的记录
-    // zicuoshi_up_index = null;
 
     $.each(row.rows, function (i, col) {
         if (zicuoshi_up_index == i) {//如果被选中
@@ -1366,7 +1351,6 @@ function zicuoshi_up() {
             $("#shaixuan_num").hide();
             $("#xishuMO").show();//控制系数div
             $("#xishuMOB").show();//控制系数按钮
-            // zicuoshi_up_index = i;//当前选中的行是要修改的子措施
         }
     });
 }
@@ -1377,34 +1361,18 @@ function zicuoshi_up() {
 function zicuoshi_de() {
     isNew = false;
     var row = $('#show_zicuoshi_table').datagrid('getData').rows;//所有的记录
-    // zicuoshi_up_index = null;
 
     var kk = zicuoshi_up_index;
-    // $.each(row, function (i, col) {
-    //     if (col.state) {//如果被选中
-    //         kk = i;
-    //     }
-    // });
 
     if (kk > 0) {
         var rowq = $('#show_zicuoshi_table').datagrid('getSelections');
-        // SKUNo = $.map(rowq, function (rowww) {
-        //     return rowww.state;
-        // });
-        // $('#show_zicuoshi_table').datagrid('remove', {
-        //     field: 'state',
-        //     values: SKUNo
-        // });
         $('#show_zicuoshi_table').datagrid('deleteRow',kk)
 
         if (kk > 1) {
 
-//			console.log(JSON.stringify(sc_v1));
             sc_v1.filters.splice(sc_v1.filters.length - kk, 1);
-//			console.log(JSON.stringify(sc_v1));
 
             ajaxPost_w(jianpaiUrl + '/search/summaryLevel', sc_v1).success(function (res) {
-//				console.log(JSON.stringify(res));
                 if (res.status == 'success') {
 
                     $.each(res.data, function (k, col) {//循环返回的数据
@@ -1432,7 +1400,7 @@ function zicuoshi_de() {
  * 子措施编辑
  * @type {Array}
  */
-var edit_point_sc_v1;
+var edit_point_sc_v1;//记录当前编辑的措施的参数
 function zicuoshi_edit() {
     isNew = false;
     $('#returnSxTable').show();
@@ -1448,7 +1416,7 @@ function zicuoshi_edit() {
     edit_point_table();
 }
 
-/*保存措施按钮*/
+/*保存措施按钮（进入系数填写）*/
 function bcZcs() {
     if(!isNew){
         var row = $('#show_zicuoshi_table').datagrid('getData').rows[zicuoshi_up_index];
@@ -1471,7 +1439,6 @@ function bcZcs() {
  */
 var zicuoshi_bool = true;
 function create() {
-//	delete sc_v1.summary;
 
     if (zicuoshi_bool) {
         zicuoshi_bool = false;
@@ -1564,7 +1531,6 @@ function create() {
         paramsName.measureContent = JSON.stringify(sc_v1);
         paramsName.scenarinoId = csMsg.qjId;
 
-//    console.log(JSON.stringify(sc_v1));
         ajaxPost('/measure/addOrUpdate_measure', paramsName).success(function (res) {
 //			console.log(JSON.stringify(res));
             if (res.status == 0) {
@@ -1851,8 +1817,6 @@ function xishu_save() {
             }
         }
 
-        boolean_delete_sc = false;//记录是否删除过按名称筛选的结果
-        poi_name_or_pub = null;//记录当前的筛选条件是按照属性来，还是按照名称来
     }
 }
 
