@@ -109,6 +109,14 @@ $.when(dps_um).then(function(){
                     templateUrl: 'webApp/yqd/v1/nationalQd.html',
                     controller: 'webApp/yqd/v1/nationalQd.js'
                 },
+                '/yqd_v2': {       //源清单-本地清单
+                    templateUrl: 'webApp/yqd/v2/localQd.html',
+                    controller: 'webApp/yqd/v2/localQd.js'
+                },
+                '/yqd_v3': {       //源清单-耦合清单
+                    templateUrl: 'webApp/yqd/v3/couQd.html',
+                    controller: 'webApp/yqd/v3/couQd.js'
+                },
                 '/newQd': {       //源清单
                     templateUrl: 'webApp/yqd/createQD/createNewQd.html',
                     controller: 'webApp/yqd/createQD/createNewQd.js'
