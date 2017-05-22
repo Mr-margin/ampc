@@ -94,26 +94,35 @@ public class NativeAndNationController {
 			}
 			Long userId = Long.parseLong(param.toString());
 			
-//			param=data.get("pageNum");
-//			//进行参数判断
-//			if(!RegUtil.CheckParameter(param, "Long", null, false)){
-//				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
-//				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
-//			}
-//			Long pageNum = Long.parseLong(param.toString());
-//			
-//			param=data.get("pageSize");
-//			//进行参数判断
-//			if(!RegUtil.CheckParameter(param, "Long", null, false)){
-//				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
-//				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
-//			}
-//			// 用户id
-//			Long pageSize = Long.parseLong(param.toString());
+			param=data.get("pageNumber");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, null, null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 页码为空或出现非法字符!");
+				return AmpcResult.build(1003, "页码为空或出现非法字符!");
+			}
+			int pageNumber = Integer.valueOf(param.toString());
 			
-			List<Map> list=tEsNationMapper.selectAllNation(userId);
+			param=data.get("pageSize");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, null, null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 每页条数为空或出现非法字符!");
+				return AmpcResult.build(1003, "每页条数为空或出现非法字符!");
+			}
+			// 用户id
+			int pageSize = Integer.valueOf(param.toString());
+			Map nationMap=new HashMap();
+			nationMap.put("userId", userId);
+			nationMap.put("startTotal", (pageNumber*pageSize)-pageSize+1);
+			nationMap.put("endTotal",pageNumber*pageSize);
+			
+			List<Map> list=tEsNationMapper.selectAllNation(nationMap);
+			int total=tEsNationMapper.selectTotalNation(userId);
+			Map nationsMap=new HashMap();
+			nationsMap.put("rows", list);
+			nationsMap.put("total", total);
+			nationsMap.put("page", pageNumber);
 			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的全国清单信息成功!");
-			return AmpcResult.ok(list);
+			return AmpcResult.ok(nationsMap);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("NativeAndNationController 查询当前用户下的全国清单信息异常!",e);
 			return AmpcResult.build(1001, "NativeAndNationController 查询当前用户下的全国清单信息异常!");
@@ -325,7 +334,7 @@ public class NativeAndNationController {
 				LogUtil.getLogger().error("NativeAndNationController 清单ID为空或出现非法字符!");
 				return AmpcResult.build(1003, "清单ID为空或出现非法字符!");
 			}
-			// 用户id
+			// 清单id
 			Long nationId = Long.parseLong(param.toString());
 			int total=tEsNationMapper.deleteByPrimaryKey(nationId);
 			Map msgMap=new HashMap();
