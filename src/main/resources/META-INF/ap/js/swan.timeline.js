@@ -600,7 +600,7 @@ $(function() {
                           if(qjMsg.scenarinoStatus == 7)return;
                           if(qjMsg.scenarinoStatus == 8)return;
                           if(qjMsg.scenarinoStatus == 9)return;
-
+                          console.log($(this));
                           if(event.target.nodeName == 'A'){
                               editPlan(self._findItem($(this)))
                           }else{
