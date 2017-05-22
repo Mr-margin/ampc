@@ -295,7 +295,7 @@ function initCZDate(s, e, start, end) {
         },
         "startDate": start,
         "endDate": end,
-        "opens": "right"
+        "opens": "left"
     }, function (start, end, label) {
 
         changeMsg.time = start.format('YYYY-MM-DD HH');
