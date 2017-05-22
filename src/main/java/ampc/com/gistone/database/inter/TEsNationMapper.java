@@ -19,7 +19,9 @@ public interface TEsNationMapper {
     int updateByPrimaryKey(TEsNation record);
     
     //查询全国清单
-    List<Map> selectAllNation(Long userId);
+    List<Map> selectAllNation(Map nationMap);
     //编辑更新清单信息
     int updateByIdSelective(TEsNation record);
+    //查询总条数
+	int selectTotalNation(Long userId);
 }
