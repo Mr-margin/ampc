@@ -218,7 +218,7 @@
   <select id="selectTotalNation"  parameterType="java.lang.Long" resultType="int">
     SELECT
 	"COUNT" (ROWNUM)
-FROM
+	FROM
 	"AMPC"."T_ES_NATION" T  WHERE USER_ID=#{userId,jdbcType=DECIMAL}
   </select>
   
