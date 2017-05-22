@@ -11,7 +11,6 @@ $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">空气�
 /**
  * 页面默认参数
  */
-var opacity = 0.7;//默认的图层透明度
 var dps_Date, dps_YBd;
 var changeMsg = {
     species: ['PM₂.₅'],//物种
@@ -26,7 +25,7 @@ var changeMsg = {
     endD: '',
     speed: '',//动画速度
     field: '',//风场
-    opt: 0.5,//透明度
+    opt: 0.7,//默认的图层透明度
     borderType: 1,
     showWind: '-1',
     showType: ['concn'],//"emis"代表排放、"concn"代表浓度、"wind"代表风场
@@ -215,72 +214,6 @@ $('#sTime-h').on('change', function (e) {//选择时间
     updata();
 });
 
-/*------------------------滑动条js------------------------------------------------------------------------*/
-var $document = $(document);
-var selector = '[data-rangeslider]';
-var $inputRange = $(selector);
-
-// Example functionality to demonstrate a value feedback
-// and change the output's value.
-function valueOutput(element) {
-    var value = element.value;
-    var output = element.parentNode.getElementsByTagName('output')[0];
-
-    output.innerHTML = value;
-    console.log(value);
-    changeMsg.opt = value;
-    //改变地图的透明度----------------------------------------------------------------
-}
-
-// Initial value output
-for (var i = $inputRange.length - 1; i >= 0; i--) {
-    valueOutput($inputRange[i]);
-}
-;
-
-// Update value output
-$document.on('input', selector, function (e) {
-    valueOutput(e.target);
-});
-
-// Initialize the elements
-$inputRange.rangeslider({
-    polyfill: false
-});
-
-// Example functionality to demonstrate programmatic value changes
-$document.on('click', '#js-example-change-value button', function (e) {
-    var $inputRange = $('input[type="range"]', e.target.parentNode);
-    var value = $('input[type="number"]', e.target.parentNode)[0].value;
-
-    $inputRange
-        .val(value)
-        .change();
-});
-
-// Example functionality to demonstrate programmatic attribute changes
-$document.on('click', '#js-example-change-attributes button', function (e) {
-    var $inputRange = $('input[type="range"]', e.target.parentNode);
-    var attributes = {
-        min: $('input[name="min"]', e.target.parentNode)[0].value,
-        max: $('input[name="max"]', e.target.parentNode)[0].value,
-        step: $('input[name="step"]', e.target.parentNode)[0].value
-    };
-
-    $inputRange
-        .attr(attributes)
-        .rangeslider('update', true);
-});
-
-// Example functionality to demonstrate destroy functionality
-$document.on('click', '#js-example-destroy button[data-behaviour="destroy"]', function (e) {
-    $('input[type="range"]', e.target.parentNode).rangeslider('destroy');
-}).on('click', '#js-example-destroy button[data-behaviour="initialize"]', function (e) {
-    $('input[type="range"]', e.target.parentNode).rangeslider({polyfill: false});
-});
-/*------------------------滑动条js------------------------------------------------------------------------*/
-
-
 
 
 
@@ -324,7 +257,7 @@ require(
         
         app.mapimagelayer = new dong.MapImageLayer({"id":"myil"});
         app.map.addLayer(app.mapimagelayer);
-        app.mapimagelayer.setOpacity(opacity);
+        app.mapimagelayer.setOpacity(changeMsg.opt);
 
 
         app.map.on("load", initialize);//启动后立即执行获取数据
@@ -557,13 +490,14 @@ function load_gis(p) {
     	console.log(JSON.stringify(data));
     	
         if(data.status == 0){
-			app.mapimagelayer.removeAllImages();//删除全部的图片图层
+//			app.mapimagelayer.removeAllImages();//删除全部的图片图层
+//			
+//			console.log(data.data.imagePath);
 			
-//			var imageURL = "http://192.168.1.148:8082/ampc/img/ceshi/now.png";//定义图片路径，这个图片是动态生成的
-//			var imageURL = "http://192.168.1.148:8091/Java/"+data.data.imagePath.substring(data.data.imagePath.indexOf("imageFilePath"))+"?t="+Math.random();
-			var imageURL = "http://166.111.42.85:8300/ampc/"+data.data.imagePath+"?t="+Math.random();
-//			var imageURL = "/imagePath/d-2016-11-17-0-0-PM25-507-1495248228006.png";
-//			console.log(imageURL);
+//			var imageURL = "http://166.111.42.85:8300/ampc/"+data.data.imagePath+"?t="+Math.random();
+			var imageURL = "http://192.168.1.147:8091/Java/"+data.data.imagePath+"?t="+Math.random();
+//			var imageURL = "/ampc/"+data.data.imagePath+"?t="+Math.random();
+			console.log(imageURL);
 			
 			var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
             var mapImage = new dong.MapImage({
@@ -627,6 +561,70 @@ function updataWind() {
 
 
 
+
+
+
+
+/*------------------------滑动条js------------------------------------------------------------------------*/
+var $document = $(document);
+var selector = '[data-rangeslider]';
+var $inputRange = $(selector);
+
+// Example functionality to demonstrate a value feedback
+// and change the output's value.
+function valueOutput(element,t) {
+    var value = element.value;
+    var output = element.parentNode.getElementsByTagName('output')[0];
+
+    output.innerHTML = value;
+//    console.log(value);
+    changeMsg.opt = parseFloat(value);
+    //改变地图的透明度----------------------------------------------------------------
+    if(t){
+    	app.mapimagelayer.setOpacity(changeMsg.opt);
+    }
+}
+
+// Initial value output
+for (var i = $inputRange.length - 1; i >= 0; i--) {
+    valueOutput($inputRange[i]);
+};
+
+// Update value output
+$document.on('input', selector, function (e) {
+    valueOutput(e.target,true);
+});
+
+// Initialize the elements
+$inputRange.rangeslider({
+    polyfill: false
+});
+
+// Example functionality to demonstrate programmatic value changes
+$document.on('click', '#js-example-change-value button', function (e) {
+    var $inputRange = $('input[type="range"]', e.target.parentNode);
+    var value = $('input[type="number"]', e.target.parentNode)[0].value;
+    $inputRange.val(value).change();
+});
+
+// Example functionality to demonstrate programmatic attribute changes
+$document.on('click', '#js-example-change-attributes button', function (e) {
+    var $inputRange = $('input[type="range"]', e.target.parentNode);
+    var attributes = {
+        min: $('input[name="min"]', e.target.parentNode)[0].value,
+        max: $('input[name="max"]', e.target.parentNode)[0].value,
+        step: $('input[name="step"]', e.target.parentNode)[0].value
+    };
+    $inputRange.attr(attributes).rangeslider('update', true);
+});
+
+// Example functionality to demonstrate destroy functionality
+$document.on('click', '#js-example-destroy button[data-behaviour="destroy"]', function (e) {
+    $('input[type="range"]', e.target.parentNode).rangeslider('destroy');
+}).on('click', '#js-example-destroy button[data-behaviour="initialize"]', function (e) {
+    $('input[type="range"]', e.target.parentNode).rangeslider({polyfill: false});
+});
+/*------------------------滑动条js------------------------------------------------------------------------*/
 
 
 
