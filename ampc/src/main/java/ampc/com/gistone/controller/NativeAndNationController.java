@@ -87,36 +87,35 @@ public class NativeAndNationController {
 			Map<String, Object> data = (Map) requestDate.get("data");
 			//获取用户ID
 			Object param=data.get("userId");
-			//进行参数判断
 			if(!RegUtil.CheckParameter(param, "Long", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
 				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
 			}
 			Long userId = Long.parseLong(param.toString());
-			
+			//获取页码
 			param=data.get("pageNumber");
-			//进行参数判断
 			if(!RegUtil.CheckParameter(param, null, null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 页码为空或出现非法字符!");
 				return AmpcResult.build(1003, "页码为空或出现非法字符!");
 			}
 			int pageNumber = Integer.valueOf(param.toString());
-			
+			//获取每页显示条数
 			param=data.get("pageSize");
-			//进行参数判断
 			if(!RegUtil.CheckParameter(param, null, null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 每页条数为空或出现非法字符!");
 				return AmpcResult.build(1003, "每页条数为空或出现非法字符!");
 			}
-			// 用户id
 			int pageSize = Integer.valueOf(param.toString());
+			//添加查询参数
 			Map nationMap=new HashMap();
 			nationMap.put("userId", userId);
 			nationMap.put("startTotal", (pageNumber*pageSize)-pageSize+1);
 			nationMap.put("endTotal",pageNumber*pageSize);
-			
+			//查询分页数据
 			List<Map> list=tEsNationMapper.selectAllNation(nationMap);
+			//查询总条数
 			int total=tEsNationMapper.selectTotalNation(userId);
+			//返回页面的数据
 			Map nationsMap=new HashMap();
 			nationsMap.put("rows", list);
 			nationsMap.put("total", total);
