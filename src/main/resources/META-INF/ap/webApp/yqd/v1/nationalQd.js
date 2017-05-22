@@ -52,8 +52,6 @@ function innitdata(){
                     {field:"esNationYear",title:"年份"},
                     {field:"publishTime",title:"创建时间",formatter:function(value,row,index){
                         moment(value).format("YYYY-MM-DD")
-                        console.log("日期");
-                        console.log( moment(value).format("YYYY-MM-DD"));
                         return  moment(value).format("YYYY-MM-DD");
                     },sortable :true},
                     {field:"nationRemark",title:"备注"},
@@ -61,19 +59,24 @@ function innitdata(){
                     //是否使用 如果使用 不许删除 未使用可以删除
                     {field:"qgqdConfig",title:"操作"}//校验清单
                 ]],
+        loadFilter:function (data) {
+            return data.data;
+        },
         checkOnSelect:true,
         selectOnCheck:true,
         clickToSelect: true,// 点击选中行
         pagination: true, // 在表格底部显示分页工具栏
-        pageSize: 10, // 页面大小
+        pageSize:2,
         pageNumber: 1, // 页数
-        pageList: [5, 10,15],
+        pageList: [2, 4,15],
         height:'100%',
         singleSelect: true,//设置True 将禁止多选
         striped: false, // 使表格带有条纹
         silent: true, // 刷新事件必须设置
         contentType: "application/json",
         queryParams:function (params) {
+            console.log("分页")
+            console.log(params)
             var data = {};
             data.userId = userId;
             data.pageSize=params.pageSize;
@@ -118,16 +121,21 @@ function submitQd(){
         swal('年份错误', '', 'error');
     }else{
         $("#formQd").submit(
-            ajaxPost('/NativeAndNation/add_nation',param).success(function(data){
-                $("#qgqd").datagrid('insertRow',{
-                    index: 0,	// 索引从0开始
-                    row: {
-                        esNationName: param.nationName,
-                        esNationYear: param.nationYear,
-                        reamrk:param.nationRemark
-                        // note: '新消息'
-                    }
-                })
+            ajaxPost('/NativeAndNation/add_nation',param).success(function(res){
+                if(res.status==0){
+                    $("#qgqd").datagrid('insertRow',{
+                        index: 0,	// 索引从0开始
+                        row: {
+                            esNationName: param.nationName,
+                            esNationYear: param.nationYear,
+                            nationRemark:param.nationRemark
+                            // note: '新消息'
+                        }
+                    })
+                }else{
+                    swal('参数错误', '', 'error');
+                }
+
             })
         )
         $("#creatQd").window('close');
