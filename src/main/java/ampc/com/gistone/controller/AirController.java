@@ -68,6 +68,8 @@ public class AirController {
 	//定义公用的jackson帮助类
 	private ObjectMapper mapper=new ObjectMapper();
 	
+	TScenarinoDetail tScenarinoDetail;
+	
 
 	@RequestMapping("/Air/get_time")
 	public AmpcResult get_time(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response ) throws NoSuchAlgorithmException, IOException {
@@ -84,7 +86,7 @@ public class AirController {
 			Calendar calendar = Calendar.getInstance();
 			SimpleDateFormat sdf;
 			sdf=new SimpleDateFormat("yyyy-MM-dd");
-			Date calDate ;
+			Date PathDate ;
 			String calDateStr;
 			Calendar c1 = Calendar.getInstance();
 		    c1.setTime(new Date());
@@ -93,19 +95,22 @@ public class AirController {
 		    if(hour>8){
 		    	calendar.setTime(new Date());
 				calendar.add(Calendar.DAY_OF_MONTH, -1);
-				calDate = calendar.getTime();
-				calDateStr=sdf.format(calDate);
+				PathDate = calendar.getTime();
+				calDateStr=sdf.format(PathDate);
 		    }else{
 		    //8点以前
 		    	calendar.setTime(new Date());
 				calendar.add(Calendar.DAY_OF_MONTH, -2);
-				calDate = calendar.getTime();
-				calDateStr=sdf.format(calDate);
+				PathDate = calendar.getTime();
+				calDateStr=sdf.format(PathDate);
 		    }
 		    TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
-		    tScenarinoDetail.setUserId(userId);
-		    tScenarinoDetail.setPathDate(calDate);
-		    TScenarinoDetail tScenarinoDetails=tScenarinoDetailMapper.selectendStart(tScenarinoDetail);
+		    Map tsMap=new HashMap();
+		    tsMap.put("userId", userId);
+		    tsMap.put("PathDate", PathDate);
+//		    tScenarinoDetail.setUserId(userId);
+//		    tScenarinoDetail.setPathDate(PathDate);
+		    tScenarinoDetail=tScenarinoDetailMapper.selectendStart(tsMap);
 			
 //			TScenarinoDetail maxtm=tScenarinoDetailMapper.selectByrealmax(tm.getMissionId());
 //			TScenarinoDetail mintm=tScenarinoDetailMapper.selectByrealmin(tm.getMissionId());

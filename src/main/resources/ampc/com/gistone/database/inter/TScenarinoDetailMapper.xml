@@ -1096,14 +1096,18 @@ AND S.IS_EFFECTIVE ='1'
 			  ORDER BY SCENARINO_ID DESC
   </select>
   <!-- 查询结束时间-->
-  <select id="selectendStart" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TScenarinoDetail">
-  	 SELECT *
-  		FROM T_SCENARINO_DETAIL  
-			 WHERE 
-			 IS_EFFECTIVE = '1'
-			AND USER_ID = #{userId,jdbcType=OTHER} 
-			AND PATH_DATE &lt;= #{calDate,jdbcType=TIMESTAMP}
+<!--   <select id="selectendStart" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TScenarinoDetail"> -->
+<!--   	 SELECT * -->
+<!--   		FROM "AMPC"."T_SCENARINO_DETAIL"   -->
+<!-- 			 WHERE  -->
+<!-- 			 IS_EFFECTIVE = '1' -->
+<!-- 			AND USER_ID = #{userId,jdbcType=OTHER}  -->
+<!-- 			AND PATH_DATE =#{PathDate,jdbcType=TIMESTAMP} -->
     
+<!--   </select> -->
+  <select id="selectendStart" resultMap="BaseResultMap" parameterType="hashMap">
+  select 
+  <include refid="Base_Column_List" />
+  from T_SCENARINO_DETAIL where PATH_DATE = #{pathDate,jdbcType=TIMESTAMP} and IS_EFFECTIVE = '1' and USER_ID = #{userId,jdbcType=DECIMAL}
   </select>
-  
 </mapper>

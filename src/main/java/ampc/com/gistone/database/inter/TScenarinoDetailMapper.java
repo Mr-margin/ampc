@@ -298,6 +298,6 @@ public interface TScenarinoDetailMapper {
 	 * @param userId
 	 * @return
 	 */
-	TScenarinoDetail selectendStart(TScenarinoDetail record);
+	TScenarinoDetail selectendStart(Map map);
 	
 }
