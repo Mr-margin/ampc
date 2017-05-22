@@ -238,7 +238,7 @@
   </select>
   <update id="updateByUserId" parameterType="java.lang.Long" >
     update T_DOMAIN_MISSION
-    set VERSION ='1'
+    set CREATE_STATUS ='1'
     where USER_ID = #{userId,jdbcType=DECIMAL}
   </update>
   
