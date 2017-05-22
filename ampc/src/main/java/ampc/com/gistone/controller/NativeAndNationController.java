@@ -288,7 +288,13 @@ public class NativeAndNationController {
 			return AmpcResult.build(1001, "NativeAndNationController 创建全国清单信息异常!");
 		}
 	}
-	
+	/**
+	 * 删除清单信息
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping("/NativeAndNation/delete_nation")
 	public AmpcResult delete_nation(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
