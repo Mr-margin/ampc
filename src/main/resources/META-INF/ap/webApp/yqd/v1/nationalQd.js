@@ -66,9 +66,9 @@ function innitdata(){
         selectOnCheck:true,
         clickToSelect: true,// 点击选中行
         pagination: true, // 在表格底部显示分页工具栏
-        pageSize:2,
+        pageSize:20,
         pageNumber: 1, // 页数
-        pageList: [2, 4,15],
+        pageList: [20,30,40],
         height:'100%',
         singleSelect: true,//设置True 将禁止多选
         striped: false, // 使表格带有条纹
