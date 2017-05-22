@@ -1476,3 +1476,9 @@ dl, dd {
 .cloudui .rwCon .qdMark textarea{
   text-align: left;
 }
+/*清单耦合设计*/
+.cloudui .yqdTable .coupSet{
+ width: 100%;
+  height:100%;
+  border: 1px solid red;
+}
