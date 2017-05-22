@@ -19,7 +19,7 @@ public interface TDomainMissionMapper {
     int updateByPrimaryKeyWithBLOBs(TDomainMissionWithBLOBs record);
 
     int updateByPrimaryKey(TDomainMission record);
-    List<TDomainMissionWithBLOBs> selectAll();
+    List<TDomainMissionWithBLOBs> selectAll(Long userId);
     int updateByUserId(Long userId);
     int deletebyid(Long domainId);
 }
