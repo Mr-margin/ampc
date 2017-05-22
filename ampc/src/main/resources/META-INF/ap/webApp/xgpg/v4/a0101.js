@@ -496,11 +496,14 @@ function bianji(type, g_num, p , wind) {
 //        		console.log(JSON.stringify(data));
         		
         		if(data.status == 0){
-        			app.mapimagelayer[g_num].removeAllImages();//删除全部的图片图层
+//        			app.mapimagelayer[g_num].removeAllImages();//删除全部的图片图层
         			
-//        			var imageURL = "http://192.168.1.148:8082/ampc/img/ceshi/now.png";//定义图片路径，这个图片是动态生成的
-        			var imageURL = "http://192.168.1.148:8091/Java/"+data.data.imagePath.substring(data.data.imagePath.indexOf("imageFilePath"))+"?t="+Math.random();
-//        			console.log(imageURL);
+//        			console.log(data.data.imagePath);
+        			
+//        			var imageURL = "http://166.111.42.85:8300/ampc/"+data.data.imagePath+"?t="+Math.random();
+        			var imageURL = "http://192.168.1.147:8091/Java/"+data.data.imagePath+"?t="+Math.random();
+//        			var imageURL = "/ampc/"+data.data.imagePath+"?t="+Math.random();
+        			console.log(imageURL);
         			
         			var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
                     var mapImage = new dong.MapImage({
