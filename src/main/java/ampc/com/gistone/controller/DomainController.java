@@ -75,7 +75,7 @@ public class DomainController {
 			obj.put("domainId", td.getDomainId());
 			obj.put("userId", td.getUserId());
 			obj.put("addTime", td.getAddTime().getTime());//创建时间
-			obj.put("version", td.getVersion());//版本（用来区分当前还是历史）
+			obj.put("createStatus", td.getCreateStatus().toString());//状态（用来区分当前还是历史）
 			obj.put("domainName", td.getDomainName());//domain名称
 			obj.put("domainDoc", td.getDomainDoc());//备注
 			arr.add(obj);
@@ -180,7 +180,7 @@ public class DomainController {
 			return AmpcResult.build(1000, "数据库修改版本操作异常！");	
 		}
 		TDomainMissionWithBLOBs td=new TDomainMissionWithBLOBs();
-		td.setVersion("2");
+		td.setCreateStatus("2");
 		td.setAddTime(new Date());
 		td.setDomainDoc(domainDoc);
 		td.setDomainName(domainName);
