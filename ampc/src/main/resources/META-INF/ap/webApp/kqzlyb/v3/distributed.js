@@ -560,8 +560,8 @@ function load_gis(p) {
 			app.mapimagelayer.removeAllImages();//删除全部的图片图层
 			
 //			var imageURL = "http://192.168.1.148:8082/ampc/img/ceshi/now.png";//定义图片路径，这个图片是动态生成的
-			var imageURL = "http://192.168.1.148:8091/Java/"+data.data.imagePath.substring(data.data.imagePath.indexOf("imageFilePath"))+"?t="+Math.random();
-//			var imageURL = "http://166.111.42.85:8300/ampc/"+data.data.imagePath.substring(data.data.imagePath.indexOf("imageFilePath"))+"?t="+Math.random();
+//			var imageURL = "http://192.168.1.148:8091/Java/"+data.data.imagePath.substring(data.data.imagePath.indexOf("imageFilePath"))+"?t="+Math.random();
+			var imageURL = "http://166.111.42.85:8300/ampc/"+data.data.imagePath+"?t="+Math.random();
 //			var imageURL = "/imagePath/d-2016-11-17-0-0-PM25-507-1495248228006.png";
 //			console.log(imageURL);
 			
