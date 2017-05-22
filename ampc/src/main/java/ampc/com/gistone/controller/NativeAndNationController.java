@@ -92,8 +92,25 @@ public class NativeAndNationController {
 				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
 				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
 			}
-			// 用户id
 			Long userId = Long.parseLong(param.toString());
+			
+//			param=data.get("pageNum");
+//			//进行参数判断
+//			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+//				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+//				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+//			}
+//			Long pageNum = Long.parseLong(param.toString());
+//			
+//			param=data.get("pageSize");
+//			//进行参数判断
+//			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+//				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+//				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+//			}
+//			// 用户id
+//			Long pageSize = Long.parseLong(param.toString());
+			
 			List<Map> list=tEsNationMapper.selectAllNation(userId);
 			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的全国清单信息成功!");
 			return AmpcResult.ok(list);
@@ -280,12 +297,12 @@ public class NativeAndNationController {
 			}else{
 				msgMap.put("msg", false);
 			}
-			LogUtil.getLogger().info("NativeAndNationController 创建全国清单信息成功!");
+			LogUtil.getLogger().info("NativeAndNationController 编辑全国清单信息成功!");
 			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
-			LogUtil.getLogger().error("NativeAndNationController 创建全国清单信息异常!",e);
-			return AmpcResult.build(1001, "NativeAndNationController 创建全国清单信息异常!");
+			LogUtil.getLogger().error("NativeAndNationController 编辑全国清单信息异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 编辑全国清单信息异常!");
 		}
 	}
 	/**
@@ -303,26 +320,26 @@ public class NativeAndNationController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			
-			Object param=data.get("tEsNation");
+			Object param=data.get("nationId");
 			if(!RegUtil.CheckParameter(param, "Long", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
-				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+				LogUtil.getLogger().error("NativeAndNationController 清单ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单ID为空或出现非法字符!");
 			}
 			// 用户id
-			Long tEsNation = Long.parseLong(param.toString());
-			int total=tEsNationMapper.deleteByPrimaryKey(tEsNation);
+			Long nationId = Long.parseLong(param.toString());
+			int total=tEsNationMapper.deleteByPrimaryKey(nationId);
 			Map msgMap=new HashMap();
 			if(total==1){
 				msgMap.put("msg", true);
 			}else{
 				msgMap.put("msg", false);
 			}
-			LogUtil.getLogger().info("NativeAndNationController 创建全国清单信息成功!");
+			LogUtil.getLogger().info("NativeAndNationController 删除全国清单信息成功!");
 			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
-			LogUtil.getLogger().error("NativeAndNationController 创建全国清单信息异常!",e);
-			return AmpcResult.build(1001, "NativeAndNationController 创建全国清单信息异常!");
+			LogUtil.getLogger().error("NativeAndNationController 删除全国清单信息异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 删除全国清单信息异常!");
 		}
 	}
 	
