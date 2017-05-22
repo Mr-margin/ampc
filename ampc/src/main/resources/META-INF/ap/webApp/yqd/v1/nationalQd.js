@@ -16,60 +16,78 @@ function innitdata(){
             selectOnCheck:true,
             clickToSelect: true,// 点击选中行
             data:data.data,
+            sortName:'publishTime',
+            sortOrder:"asc",
             columns:[[
                 {field:"ck",checkbox:true},
                 {field:"esNationName",title:"全国清单"},
                 {field:"esNationYear",title:"年份"},
-                {field:"publishTime",title:"创建时间"},
+                {field:"publishTime",title:"创建时间",formatter:function(value,row,index){
+                    moment(value).format("YYYY-MM-DD")
+                    console.log("日期");
+                    console.log( moment(value).format("YYYY-MM-DD"));
+                    return  moment(value).format("YYYY-MM-DD");
+                },sortable :true},
                 {field:"nationRemark",title:"备注"},
                 {field:"qgqdCheck",title:"状态"},//新建（打开校验按钮）   正常（校验成功） 错误（校验错误）
                 //是否使用 如果使用 不许删除 未使用可以删除
                 {field:"qgqdConfig",title:"操作"}//校验清单
             ]],
-            pagination:'true',
+              pagination:'true',
+    silent: true, // 刷新事件必须设置
+        pageSize: 10, // 页面大小
+        pageNumber: 1, // 页数
+        pageList: [5, 10],
+        height:'100%',
             pagePosition:'bottom',
-            pageNumber:1,
-            pageSize:5,
-            pageList:[5,10,15,20],
             fit:'true',
-            pageSize:1,
-            pageNumber:1,
-            pageList:[1],
-            sortOrder:'desc'
+            sortOrder:'desc',
+            singleSelect:'true'
         });
+
     });
+    // $("#qgqd").datagrid({
+    //     method:'post',
+    //     url: "/ampc//NativeAndNation/find_nation",
+    //     dataType: "json",
+    //     columns:[[
+    //                 {field:"ck",checkbox:true},
+    //                 {field:"esNationName",title:"全国清单"},
+    //                 {field:"esNationYear",title:"年份"},
+    //                 {field:"publishTime",title:"创建时间",formatter:function(value,row,index){
+    //                     moment(value).format("YYYY-MM-DD")
+    //                     console.log("日期");
+    //                     console.log( moment(value).format("YYYY-MM-DD"));
+    //                     return  moment(value).format("YYYY-MM-DD");
+    //                 },sortable :true},
+    //                 {field:"nationRemark",title:"备注"},
+    //                 {field:"qgqdCheck",title:"状态"},//新建（打开校验按钮）   正常（校验成功） 错误（校验错误）
+    //                 //是否使用 如果使用 不许删除 未使用可以删除
+    //                 {field:"qgqdConfig",title:"操作"}//校验清单
+    //             ]],
+    //     checkOnSelect:true,
+    //     selectOnCheck:true,
+    //     clickToSelect: true,// 点击选中行
+    //     pagination: true, // 在表格底部显示分页工具栏
+    //     pageSize: 10, // 页面大小
+    //     pageNumber: 1, // 页数
+    //     pageList: [5, 10,15],
+    //     height:'100%',
+    //     singleSelect: true,//设置True 将禁止多选
+    //     striped: false, // 使表格带有条纹
+    //     silent: true, // 刷新事件必须设置
+    //     contentType: "application/json",
+    //     queryParams:function (params) {
+    //         var data = {};
+    //         data.userId = userId;
+    //         data.pageSize=params.pageSize;
+    //         data.pageNumber=params.pageNumber
+    //         return {"token": "", "data": data};
+    //     },
+    // })
 }
 
-// $("#qgqd").datagrid({
-//     url:'/ampc/NativeAndNation/find_nation',
-//     method: 'POST',
-//     dataType: "json",
-//     columns:[[
-//             {field:"ck",checkbox:true},
-//             {field:"esNationName",title:"全国清单"},
-//             {field:"esNationYear",title:"年份"},
-//             {field:"publishTime",title:"创建时间"},
-//             {field:"qgqdCheck",title:"状态"},//新建（打开校验按钮）   正常（校验成功） 错误（校验错误）
-//             //是否使用 如果使用 不许删除 未使用可以删除
-//             {field:"qgqdConfig",title:"操作"}//校验清单
-//         ]],
-//     contentType:'application/Json',
-//     pagination:'true',
-//     pageNumber:1,
-//     pageSize:1,
-//     pageList:[1],
-//     queryParams:function(params){
-//         var json={
-//             "token":"",
-//             "data":{
-//                 "userId": userId,
-//                 "missionId":$("#task").val()
-//                 }
-//         }
-//
-//         return json;
-//     }
-// })
+
 // 创建清单
 function creatQd(){
     $("#creatQd").window('open');
@@ -151,36 +169,34 @@ $("#editQd").window({
 })
 function editSubmitQd(){
     var row = $('#qgqd').datagrid('getSelected');//获取所有选中的清单数据
-    var param={};
-    param.userId=userId;
-    param.nationName =row.esNationName;
-    param.nationId = row.esNationId;
-    param.nationRemark = row.nationRemark;
-    param.nationYear = row.esNationYear;
-    var rowIndex = $('#qgqd').datagrid('getRowIndex',row);
-    console.log(rowIndex);
+
+    var qdName=$("#esNationName_edit").val();
+    var qdYear=$("#esNationYear_edit").val();
+    var qdMark=$("#esNationMark_edit").val();
     //判断年份
     var nData=new Date();
     var nYear=nData.getYear();
     var myYear=$("#esNationYear").val()
+    var param={};
+    param.userId=userId;
+    param.nationName=qdName;
+    param.nationId = row.esNationId;
+    param.nationRemark = qdMark;
+    param.nationYear = qdYear;
+    var rowIndex = $('#qgqd').datagrid('getRowIndex',row);
     if(myYear>nYear&&myYear<2000){
         swal('年份错误', '', 'error');
     }else{
         $("#formQd").submit(
             ajaxPost('/NativeAndNation/update_nation',param).success(function(data){
-                var qdName=$("#esNationName_edit").val();
-                var qdYear=$("#esNationYear_edit").val();
-                var qdMark=$("#esNationMark_edit").val();
-                console.log("加载成功")
-                console.log(param.nationId)
                 $("#qgqd").datagrid('updateRow',{
-                    index:rowIndex ,	// 索引从0开始
+                    index: rowIndex,
                     row: {
                         esNationName: qdName,
-                        esNationYear: qdYear,
+                        esNationYear:qdYear,
                         nationRemark:qdMark
-                        // note: '新消息'
                     }
+
                 })
             })
         )
