@@ -282,6 +282,7 @@ function zmblockUI(selector, method) {
     $(selector).unblock();
   }
 }
+//上面方法的复制
 function zmblockUI1(selector, method) {
     if ($(selector).length == 0) {
         console.info(selector + "没有匹配dom元素,无法执行加载动画");
