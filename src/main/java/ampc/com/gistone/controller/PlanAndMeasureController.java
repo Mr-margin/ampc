@@ -1843,7 +1843,7 @@ public class PlanAndMeasureController {
 			//写入行政区划代码
 			result.setRegionIds(mcu.getRegionIds());
 			// 写入行业名称
-			result.setGroupName(pmList.get(i).get("sectorName").toString()+i);
+			result.setGroupName(pmList.get(i).get("sectorName").toString()+"-"+i);
 			// 写入预案开始时间
 			result.setStart(pmList.get(i).get("planStartTime").toString().substring(0,pmList.get(i).get("planStartTime").toString().indexOf(".")));
 			// 写入预案结束时间
@@ -2148,7 +2148,7 @@ public class PlanAndMeasureController {
 							//写入行政区划代码
 							result.setRegionIds(mcu.getRegionIds());
 							// 写入行业名称
-							result.setGroupName(pmList.get(i).get("sectorName").toString()+i);
+							result.setGroupName(pmList.get(i).get("sectorName").toString()+"-"+i);
 							// 写入预案开始时间
 							result.setStart(startDate);
 							// 写入预案结束时间
