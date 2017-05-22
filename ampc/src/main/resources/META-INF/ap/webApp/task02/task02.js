@@ -172,7 +172,7 @@ function clearAllArea() {
  * 情景计算状态
  * @param typeNum
  */
-function scenarinoType(typeNum) {
+function  scenarinoType(typeNum) {
   $('.toolShow').removeAttr('disabled');
   $('.addNewArea').removeAttr('disabled');
   switch (typeNum) {
