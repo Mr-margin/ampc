@@ -162,11 +162,22 @@
   </update>
   
   <!-- 根据用户Id查询全国清单 -->
-  <select id="selectAllNation" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    *
-    from T_ES_NATION
-    where USER_ID = #{userId,jdbcType=DECIMAL}
+  <select id="selectAllNation" resultMap="BaseResultMap" parameterType="hashMap" >
+    SELECT
+	*
+	FROM
+		(
+			SELECT
+				ROWNUM AS rn,
+				T .*
+			FROM
+				"AMPC"."T_ES_NATION" T
+			WHERE
+				USER_ID = #{userId,jdbcType=DECIMAL}
+		)
+	WHERE
+		rn >= #{startTotal,jdbcType=OTHER}
+	AND rn <![CDATA[<=]]> #{endTotal,jdbcType=OTHER}
   </select>
   <!-- 编辑全国清单信息 -->
   <update id="updateByIdSelective" parameterType="ampc.com.gistone.database.model.TEsNation" >
@@ -203,4 +214,13 @@
     where ES_NATION_ID = #{esNationId,jdbcType=DECIMAL} and 
     	USER_ID = #{userId,jdbcType=DECIMAL}
   </update>
+  <!-- 查询总条数 -->
+  <select id="selectTotalNation"  parameterType="java.lang.Long" resultType="int">
+    SELECT
+	"COUNT" (ROWNUM)
+FROM
+	"AMPC"."T_ES_NATION" T  WHERE USER_ID=#{userId,jdbcType=DECIMAL}
+  </select>
+  
+  
 </mapper>
