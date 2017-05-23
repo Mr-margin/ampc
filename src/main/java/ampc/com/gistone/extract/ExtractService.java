@@ -217,18 +217,7 @@ public abstract class ExtractService {
 
 	}
 	
-	/**
-	 * 
-	 * @param params
-	 * @return
-	 */
-	public String getSheetName(String showType, String calcType, String timePoint, String specie) {
-		timePoint = timePoint.equals(Constants.TIMEPOINT_D) ? Constants.TIMEPOINT_DAILY
-				: Constants.TIMEPOINT_HOURLY;
-		String name = showType + "-" + calcType + "-" + timePoint;
-		name = name.toLowerCase();
-		return name;
-	}
+	
 
 }
 

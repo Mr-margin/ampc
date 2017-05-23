@@ -124,7 +124,7 @@ public class ExtractPngService extends ExtractService {
 			String showType = params.getShowType();
 			String calcType = params.getCalcType();
 			String timePoint = params.getTimePoint();
-			Map<String, Map<String, List>> specieMap = resultPathUtil.getImageColorConfig().getSheetMap(getSheetName(showType, calcType, timePoint, params.getSpecie()));
+			Map<String, Map<String, List>> specieMap = resultPathUtil.getSheetName(showType, calcType, timePoint, params.getSpecie());
 			Map<String, List> valueMap = specieMap.get(params.getSpecie());
 			List<Float> valueList = valueMap.get(Constants.VALUE_LIST);
 			List<Color> colorList = valueMap.get(Constants.COLOR_LIST);
