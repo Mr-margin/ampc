@@ -331,6 +331,8 @@ label#lblSelect::after
   text-overflow: ellipsis;
   padding: 1px 10px 0;
   border-right: 0 none;
+  /*设置文本超过单元格的宽度做溢行处理*/
+  overflow: hidden;text-overflow:ellipsis;white-space: nowrap;
 }
 .cloudui .datagrid-header td,.cloudui .datagrid-body td,.cloudui .datagrid-footer td{
   border-style: solid;
