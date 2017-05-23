@@ -370,69 +370,12 @@ function sceneTable() {
             }
         })
     })
-//     $("#sceneTableId").bootstrapTable({
-//         method: 'POST',
-//         url: '/ampc/scenarino/find_All_scenarino',
-//         dataType: "json",
-//         iconSize: "outline",
-//         clickToSelect: true,// 点击选中行
-//         pagination: false, // 在表格底部显示分页工具栏
-//         striped: true, // 使表格带有条纹
-//         queryParams: function (params) {
-//             var data = {};
-//             data.userId = userId;
-//             data.missionId = $("#task").val();
-//             return JSON.stringify({"token": "", "data": data});
-//         },
-//         queryParamsType: "limit", // 参数格式,发送标准的RESTFul类型的参数请求
-//         silent: true, // 刷新事件必须设置
-//         contentType: "application/json", // 请求远程数据的内容类型。
-//         responseHandler: function (res) {
-//             if (res.status == 0) {
-//                 if (!res.data.rows) {
-//                     res.data.rows = [];
-//                 } else if (res.data.rows.length > 0) {
-//                     if (sceneInitialization) {
-//                         if (sceneInitialization.data.length > 0) {
-//
-//                             $.each(res.data.rows, function (i, col) {
-//                                 $.each(sceneInitialization.data, function (k, vol) {
-//                                     if (col.scenarinoId == vol.scenarinoId) {
-//                                         res.data.rows[i].state = true;
-//                                     }
-//                                 });
-//                             });
-//                         }
-//                     }
-//                 }
-//                 return res.data.rows;
-//             } else if (res.status == 1000) {
-//                 swal(res.msg, '', 'error');
-//             }
-//         },
-//         onClickRow: function (row, $element) {
-//             $('.success').removeClass('success');
-//             $($element).addClass('success');
-//         },
-//         icons: {
-//             refresh: "glyphicon-repeat",
-//             toggle: "glyphicon-list-alt",
-//             columns: "glyphicon-list"
-//         },
-//         onLoadSuccess: function (data) {
-// //			console.log(data);
-//         },
-//         onLoadError: function () {
-//             swal('连接错误', '', 'error');
-//         }
-//     });
 }
 
 /**
  * 保存选择的情景
  */
 function save_scene() {
-    //var row = $('#sceneTableId').bootstrapTable('getSelections');//获取所有选中的情景数据
     var row = $('#sceneTableId').datagrid('getSelections');//获取所有选中的情景数据
     if (row.length > 0) {
         var mag = {};
@@ -471,9 +414,7 @@ function exchangeModal() {
 
 
 function bianji(type, g_num, p , wind) {
-
     for(var sp=0;sp<changeMsg.species.length;sp++){
-
 
         if(!wind){
             wind = -1
