@@ -741,7 +741,7 @@ public class ExcelToDate {
                 	CheckNativeUtil cn=new CheckNativeUtil();
                 	cn.setSheetNum(String.valueOf(i));
                 	cn.setDataType(getCellValue(row.getCell(3)));
-                	cn.setTitle(getCellValue(row.getCell(1))+"-"+getCellValue(row.getCell(2)));
+                	cn.setTitle(getCellValue(row.getCell(1))+","+getCellValue(row.getCell(2)));
                 	cn.setIsNotNull(getCellValue(row.getCell(6)));
                 	cn.setValueRange(getCellValue(row.getCell(7)));
                 	nativeList.add(cn);
@@ -790,7 +790,7 @@ public class ExcelToDate {
             	}
             }
             //定义结果数据对象
-            Map<String,Map> resultMap=new HashMap<String, Map>();
+            LinkedHashMap<String,Map> resultMap=new LinkedHashMap<String, Map>();
             //循环当前的有多少Sheet页
             for(int o=0;o<sheetCount;o++){
             	//中间转换
@@ -798,16 +798,25 @@ public class ExcelToDate {
             	//得到对应sheet页的信息
             	List<CheckNativeUtil> list=nativeList.stream().filter(n->n.getSheetNum().equals(num)).collect(Collectors.toList());
             	//记录页的数据
-            	Map<String,Map> dataMap=new HashMap<String,Map>();
+            	LinkedHashMap<String,Map> dataMap=new LinkedHashMap<String,Map>();
+            	LinkedHashMap<String,String> tempMap=new LinkedHashMap<String,String>();
             	//循环页数据  记录页数据
             	for(CheckNativeUtil cnu : list){
-            		Map<String,String> tempMap=new HashMap<String,String>();
+            		tempMap=new LinkedHashMap<String,String>();
             		tempMap.put("valueRange", cnu.getValueRange());
             		tempMap.put("dataType", cnu.getDataType());
             		tempMap.put("isNotNull", cnu.getIsNotNull());
             		tempMap.put("maxLenth", "");
             		dataMap.put(cnu.getTitle(), tempMap);
             	}
+            	tempMap=new LinkedHashMap<String,String>();
+            	//获得当前页
+            	Sheet sheet = wb.getSheetAt(o); 
+            	//获取sheet名称
+            	String sheetName=sheet.getSheetName();
+            	tempMap.put("valueRange", sheetName);
+            	tempMap.put("maxLenth", "10");
+            	dataMap.put("sheetName", tempMap);
             	//填充到结果数据
             	resultMap.put("sheet"+o, dataMap);
             }
@@ -879,6 +888,11 @@ public class ExcelToDate {
         	}
         	//获取字段验证Map
         	Map checkHeader=(Map)((Map)checkMap.get("应急系统新_2筛选文件")).get("sheet0");
+        	//记录sheet页的Key 用来获取验证条件
+        	List<String> keyList=new ArrayList<String>();
+        	for(Object ch1:checkHeader.keySet()){
+        		keyList.add(ch1.toString());
+        	}
         	//获取sheet名称的长度验证
         	int sheetNameMaxLength=Integer.valueOf(((Map)checkHeader.get("sheetName")).get("maxLenth").toString());
             //获得所有页数
@@ -948,247 +962,29 @@ public class ExcelToDate {
                     List<String> cellError=new ArrayList();
                     //记录单元格信息
                     String cellValue="";
-                    //获取单元格信息
-                    cell=row.getCell(0);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("程序字段");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1,0, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 0);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
+                    for(int k=0;k<keyList.size()-1;k++){
+                    	//获取单元格信息
+                        cell=row.getCell(k);
+                        //获取验证条件
+                        tempMap=(Map)checkHeader.get(keyList.get(k));
+                        //先获取Excel中属性
+                        cellValue=getCellValue(cell);
+                        //单元格的验证错误信息
+                        cellError=new ArrayList();
+                        //执行单元格验证方法
+                        checkCell(file, sheetName, row.getRowNum()+1,k, tempMap, cellError, cellValue);
+                        //判断是否出现错误
+                        if(cellError.size()>0){
+                        	cell=row.createCell((short) k);
+                    		cell.setCellValue(cellValue);
+        					cell.setCellStyle(yellowStyle);
+        					message="";
+        					for(int u=0;u<cellError.size();u++){
+        						message+=(u+1)+":"+cellError.get(u)+"\n";
+        					}
+        					cell.setCellComment(getComment(sheet, message));
+                        }
                     }
-                    
-                    //获取单元格信息
-                    cell=row.getCell(1);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("显示字段");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1,1, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 1);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    
-                    //获取单元格信息
-                    cell=row.getCell(2);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("程序字段_条件");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1,2, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 2);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                  
-                   
-                    //获取单元格信息
-                    cell=row.getCell(3);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("出现条件");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1,3, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 3);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    //获取单元格信息
-                    cell=row.getCell(4);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("条件值");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1, 4, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 4);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    //获取单元格信息
-                    cell=row.getCell(5);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("选项类型");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1, 5, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 5);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                 
-                    //获取单元格信息
-                    cell=row.getCell(6);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("选项1");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1, 6, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 6);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    
-                    //获取单元格信息
-                    cell=row.getCell(7);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("选项2");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1, 7, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 7);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    
-                    //获取单元格信息
-                    cell=row.getCell(8);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("选项3");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1, 8, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 8);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    
-                    //获取单元格信息
-                    cell=row.getCell(9);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("选项4");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1, 9, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 9);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    
-                    //获取单元格信息
-                    cell=row.getCell(10);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("选项5");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1, 10, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 10);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    
                     //循环错误信息的Map,记录错误信息
                 	if(errorMap.size()>0){
                 		isError=true;
@@ -1293,6 +1089,11 @@ public class ExcelToDate {
         	}
         	//获取字段验证Map
         	Map checkHeader=(Map)((Map)checkMap.get("应急系统新_4行业匹配")).get("sheet0");
+        	//记录sheet页的Key 用来获取验证条件
+        	List<String> keyList=new ArrayList<String>();
+        	for(Object ch1:checkHeader.keySet()){
+        		keyList.add(ch1.toString());
+        	}
         	//获取sheet名称的长度验证
         	int sheetNameMaxLength=Integer.valueOf(((Map)checkHeader.get("sheetName")).get("maxLenth").toString());
             //获得所有页数
@@ -1363,311 +1164,29 @@ public class ExcelToDate {
                     List<String> cellError=new ArrayList();
                     //记录单元格信息
                     String cellValue="";
-                    //获取单元格信息
-                    cell=row.getCell(0);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("ID");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1,0, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 0);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
+                    for(int k=0;k<keyList.size()-1;k++){
+                    	//获取单元格信息
+                        cell=row.getCell(k);
+                        //获取验证条件
+                        tempMap=(Map)checkHeader.get(keyList.get(k));
+                        //先获取Excel中属性
+                        cellValue=getCellValue(cell);
+                        //单元格的验证错误信息
+                        cellError=new ArrayList();
+                        //执行单元格验证方法
+                        checkCell(file, sheetName, row.getRowNum()+1,k, tempMap, cellError, cellValue);
+                        //判断是否出现错误
+                        if(cellError.size()>0){
+                        	cell=row.createCell((short) k);
+                    		cell.setCellValue(cellValue);
+        					cell.setCellStyle(yellowStyle);
+        					message="";
+        					for(int u=0;u<cellError.size();u++){
+        						message+=(u+1)+":"+cellError.get(u)+"\n";
+        					}
+        					cell.setCellComment(getComment(sheet, message));
+                        }
                     }
-                    
-                    //获取单元格信息
-                    cell=row.getCell(1);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("ID0");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1,1, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 1);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    
-                    //获取单元格信息
-                    cell=row.getCell(2);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("ID0Name");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1,2, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 2);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                  
-                   
-                    //获取单元格信息
-                    cell=row.getCell(3);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("ID1");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1,3, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 3);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    //获取单元格信息
-                    cell=row.getCell(4);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("ID1Name");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1, 4, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 4);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    //获取单元格信息
-                    cell=row.getCell(5);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("ID2");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1, 5, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 5);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                 
-                    //获取单元格信息
-                    cell=row.getCell(6);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("ID2Name");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1, 6, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 6);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    
-                    //获取单元格信息
-                    cell=row.getCell(7);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("ID3");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1, 7, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 7);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    
-                    //获取单元格信息
-                    cell=row.getCell(8);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("ID3Name");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1, 8, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 8);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    
-                    //获取单元格信息
-                    cell=row.getCell(9);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("Group_Sector");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1, 9, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 9);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    
-                    //获取单元格信息
-                    cell=row.getCell(10);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("Group_1");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1, 10, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 10);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    
-                    //获取单元格信息
-                    cell=row.getCell(11);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("Group_2");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1, 11, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 11);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    //获取单元格信息
-                    cell=row.getCell(12);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("Group_3");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1, 12, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 12);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    //获取单元格信息
-                    cell=row.getCell(13);
-                    //获取验证条件
-                    tempMap=(Map)checkHeader.get("Tag");
-                    //先获取Excel中属性
-                    cellValue=getCellValue(cell);
-                    //单元格的验证错误信息
-                    cellError=new ArrayList();
-                    //执行单元格验证方法
-                    checkCell(file, sheetName, row.getRowNum()+1, 13, tempMap, cellError, cellValue);
-                    //判断是否出现错误
-                    if(cellError.size()>0){
-                    	cell=row.createCell((short) 13);
-                		cell.setCellValue(cellValue);
-    					cell.setCellStyle(yellowStyle);
-    					message="";
-    					for(int u=0;u<cellError.size();u++){
-    						message+=(u+1)+":"+cellError.get(u)+"\n";
-    					}
-    					cell.setCellComment(getComment(sheet, message));
-                    }
-                    
                     //循环错误信息的Map,记录错误信息
                 	if(errorMap.size()>0){
                 		isError=true;
@@ -1747,6 +1266,229 @@ public class ExcelToDate {
         	}
         }  
     }  
+	
+	
+	
+   /**  TODO
+	* 清单数据验证
+	* 读取excel数据   
+	* @param path  
+	*/
+	public boolean CheckNative(String fileName,List<String> msg,String outPath){  
+		//String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_4行业匹配.xlsx";
+		//定义结果  默认false 
+	    boolean isError=false;
+		String path="C:\\Users\\Mr_Wang\\Desktop\\应急系统新_3清单数据.xlsx";
+		//获取文件名称
+		String file=path.substring(path.lastIndexOf("\\")+1);
+		//初始化错误类型Map
+		errorMap=new HashMap();
+        try {  
+        	String message=null;
+        	StringBuilder mssg=new StringBuilder();
+        	//执行Excel初始化
+        	if(!init(path,mssg)){
+        		msg.add(file+":"+mssg.toString());
+        		return false;
+        	}
+        	//获取验证集合
+        	checkMap=readCheckJson("应急系统新_3清单数据.json");
+        	if(checkMap==null){
+        		msg.add(file+":读取系统内置校验文件出现异常!");
+        		return false;
+        	}
+            //获得所有页数
+            int sheetCount=wb.getNumberOfSheets();
+            //sheet页验证
+            if(sheetCount<1){
+            	msg.add(file+":缺失sheet页!");
+        		return false;
+            }
+            if(checkMap.size()!=sheetCount){
+            	msg.add(file+":sheet页和行业描述的sheet页不匹配!");
+        		return false;
+            }
+            //循环每一页
+            for(int i=0;i<sheetCount;i++){
+            	//获取字段验证Map
+            	Map checkHeader=(Map)checkMap.get("sheet"+i);
+            	//记录sheet页的Key 用来获取验证条件
+            	List<String> keyList=new ArrayList<String>();
+            	for(Object ch1:checkHeader.keySet()){
+            		keyList.add(ch1.toString());
+            	}
+            	//获取sheet名称的长度验证
+            	int sheetNameMaxLength=Integer.valueOf(((Map)checkHeader.get("sheetName")).get("maxLenth").toString());
+            	//获得当前页
+            	Sheet sheet = wb.getSheetAt(i); 
+            	//获取sheet名称
+            	String sheetName=sheet.getSheetName();
+            	//判断sheet名称的信息是否合格
+            	if(sheetName.length()>sheetNameMaxLength){
+            		//写入错误信息
+					errorMap.put(0,file+":"+SHEETNAME_ERROR);
+            	}
+            	//获得所有行
+            	Iterator<Row> rows = sheet.rowIterator(); 
+            	//循环所有行
+            	while (rows.hasNext()) {  
+                    Row row = rows.next();  //获得行数据  
+                    if(row.getRowNum()==0){
+                    	//获取表头信息
+                    	Map headerMap=readHeader(sheet);
+                    	//定义临时变量
+                    	int j=0;
+                    	//循环所有的验证英文表头
+                    	for(Object ch1:checkHeader.keySet()){
+                    		String ch=ch1.toString().split(",")[0];
+                    		if(ch.toString().equals("sheetName")) continue;
+                    		try{
+                    			if(!headerMap.get(j).equals(ch)){
+                    				//写入错误信息
+                    				message=file+":"+sheetName+"工作簿下的第1行"+columnChar(j)+"列的表头"+headerMap.get(j)+"和验证文件表头名称不匹配,验证文件表头名称为:"+ch+"!";
+                            		Cell cell=row.getCell(j);
+                            		cell=row.createCell((short) j);
+                            		cell.setCellValue(getCellValue(cell));
+                					cell.setCellStyle(yellowStyle);
+                					cell.setCellComment(getComment(sheet, message));
+                					//写入错误信息
+                					errorMap.put(1,file+":表头和验证文件表头名称不匹配!");
+                    			}
+                    		}catch(Exception e){
+                    			//写入错误信息
+                    			message=file+":"+sheetName+"工作簿下的第1行"+columnChar(j+1)+"列的表头缺失,验证文件表头名称为:"+ch+"!";
+                    			Cell cell=row.getCell(j);
+                    			cell=row.createCell((short) j);
+                        		cell.setCellValue(getCellValue(cell));
+            					cell.setCellStyle(yellowStyle);
+            					cell.setCellComment(getComment(sheet, message));
+            					//写入错误信息
+            					errorMap.put(2,file+":表头缺失!");
+                    		}
+                    		//临时变量迭代 获取下一个表头信息
+                    		j++;
+                    	}
+                    	continue;
+                    }
+                    //如果是第二行 则是中文表头
+                    if(row.getRowNum()==1){
+                    	//获取表头信息
+                    	Map headerMap=new HashMap();
+                    	String[] headers=obtainRow(sheet,1);
+                    	for (int j = 0; j < headers.length; j++)
+                    		headerMap.put(j, headers[j]);
+                    	//定义临时变量
+                    	int j=0;
+                    	//循环所有的验证表头
+                    	for(Object ch1:checkHeader.keySet()){
+                    		if(ch1.toString().equals("sheetName")) continue;
+                    		String ch=ch1.toString().split(",")[1];
+                    		try{
+                    			if(!headerMap.get(j).equals(ch)){
+                    				//写入错误信息
+                    				message=file+":"+sheetName+"工作簿下的第2行"+columnChar(j)+"列的中文表头"+headerMap.get(j)+"和验证文件表头名称不匹配,验证文件表头名称为:"+ch+"!";
+                            		Cell cell=row.getCell(j);
+                            		cell=row.createCell((short) j);
+                            		cell.setCellValue(getCellValue(cell));
+                					cell.setCellStyle(yellowStyle);
+                					cell.setCellComment(getComment(sheet, message));
+                					//写入错误信息
+                					errorMap.put(1,file+":表头和验证文件表头名称不匹配!");
+                    			}
+                    		}catch(Exception e){
+                    			//写入错误信息
+                    			message=file+":"+sheetName+"工作簿下的第2行"+columnChar(j+1)+"列的中文表头缺失,验证文件表头名称为:"+ch+"!";
+                    			Cell cell=row.getCell(j);
+                    			cell=row.createCell((short) j);
+                        		cell.setCellValue(getCellValue(cell));
+            					cell.setCellStyle(yellowStyle);
+            					cell.setCellComment(getComment(sheet, message));
+            					//写入错误信息
+            					errorMap.put(2,file+":表头缺失!");
+                    		}
+                    		//临时变量迭代 获取下一个表头信息
+                    		j++;
+                    	}
+                    	continue;
+                    }
+                    //定义中间验证Map
+                    Map tempMap=null;
+                    //定义中间单元格对象
+                    Cell cell=null;
+                    //单元格的验证错误信息
+                    List<String> cellError=new ArrayList();
+                    //记录单元格信息
+                    String cellValue="";
+                    
+                    for(int k=0;k<keyList.size()-1;k++){
+                    	//获取单元格信息
+                        cell=row.getCell(k);
+                        //获取验证条件
+                        tempMap=(Map)checkHeader.get(keyList.get(k));
+                        //先获取Excel中属性
+                        cellValue=getCellValue(cell);
+                        //单元格的验证错误信息
+                        cellError=new ArrayList();
+                        //执行单元格验证方法
+                        checkCell(file, sheetName, row.getRowNum()+1,k, tempMap, cellError, cellValue);
+                        //判断是否出现错误
+                        if(cellError.size()>0){
+                        	cell=row.createCell((short) k);
+                    		cell.setCellValue(cellValue);
+        					cell.setCellStyle(yellowStyle);
+        					message="";
+        					for(int u=0;u<cellError.size();u++){
+        						message+=(u+1)+":"+cellError.get(u)+"\n";
+        					}
+        					cell.setCellComment(getComment(sheet, message));
+                        }
+                    }
+                    //循环错误信息的Map,记录错误信息
+                	if(errorMap.size()>0){
+                		isError=true;
+                		continue;
+                	}
+                	
+                }  
+            }
+            //如果出现错误就写入错误信息 并创建输出流用来存放验证
+            if(isError){
+            	for(Object key:errorMap.keySet()){
+        			msg.add(errorMap.get(key).toString());
+        		}
+            	File filePath =new File(outPath);
+            	os = new FileOutputStream(filePath);
+                LogUtil.getLogger().error("ExcelToDateController 校验清单数据Excel表异常!");
+                return false;
+            }else{
+            	//删除验证Excel的结果文件
+                if(!delete(outPath)){
+            		LogUtil.getLogger().error("ExcelToDateController 删除校验清单数据Excel异常!");
+                    return false;
+            	}
+            }
+            LogUtil.getLogger().info("ExcelToDateController 校验清单数据Excel成功!");
+            return true;
+        } catch (Exception e) {  
+        	LogUtil.getLogger().error("ExcelToDateController 校验清单数据Excel异常!",e);
+            return false;
+        } finally{
+        	try{
+        		if(is!=null) is.close();
+        		if(os!=null){
+        			wb.write(os);
+        			os.close();
+        		} 
+        		if(wb!=null) wb.close();
+        	}catch(Exception e){
+        		LogUtil.getLogger().error("ExcelToDateController 关闭流异常!",e);
+        	}
+        }  
+    }  
+	
+	
+	
+	
 	/**  
 	 * 措施Excel表
 	* 读取excel数据   读取措施Excel表
