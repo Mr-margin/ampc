@@ -1,3 +1,4 @@
+*{margin:0;padding: 0}
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,
 form,fieldset,input,textarea,p,blockquote,th,td {
     padding: 0;
@@ -66,13 +67,17 @@ abbr,acronym {
 }
 
 #header>.logobox{
-    line-height: 50px;
+    /*line-height: 50px;*/
+    height: 50px;
 }
 
 #header>.logobox>p{
+    margin:0;
+    padding: 0;
     padding-left: 10px;
     color: #303949;
     font-size: 18px;
+    height: 50px;
 }
 /* -----------------------------------------
    Sidebar styles
