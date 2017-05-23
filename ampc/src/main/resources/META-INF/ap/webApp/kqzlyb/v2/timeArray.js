@@ -258,12 +258,12 @@ function requestDate() {
         	if(JSON.stringify(res.data) == "{}"){
         		//如果返回值状态成功，但是时间数据没有，需要为时间控件设置一个默认值
         		changeMsg.startD = "2017-04-28";
-    			changeMsg.endD = "2017-05-03";
+    			changeMsg.endD = "2017-05-23";
     			if(changeMsg.type=="qxys"){
-    				initQxysDate("2017-04-28", changeMsg.endD, changeMsg.startD, changeMsg.endD);
+    				initQxysDate("2017-04-28", changeMsg.endD, changeMsg.startD,'2017-05-04');
     				showTitleFun();
     			}else{
-    				initWrwDate("2017-04-28", changeMsg.endD, changeMsg.startD, changeMsg.endD);
+    				initWrwDate("2017-04-28", changeMsg.endD, changeMsg.startD, '2017-05-04');
     			}
         	}else{
         		//后台返回时间
@@ -459,6 +459,7 @@ function updata(opt) {
     console.log("站点")
     proStation=allCode[$(".proStation").val()].name
     cityStation= allCode[$('.proStation').val()].city[$(".cityStation").val()];
+    changeMsg.endD = "2017-05-04";
     showTitleFun();
 }
 /**
