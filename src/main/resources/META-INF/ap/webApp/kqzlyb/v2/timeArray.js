@@ -256,15 +256,16 @@ function requestDate() {
         if (res.status == 0) {
 			/*这里要初始化时间*/
         	if(JSON.stringify(res.data) == "{}"){
-        		//如果返回值状态成功，但是时间数据没有，需要为时间控件设置一个默认值
-        		changeMsg.startD = "2017-04-28";
-    			changeMsg.endD = "2017-05-23";
-    			if(changeMsg.type=="qxys"){
-    				initQxysDate("2017-04-28", changeMsg.endD, changeMsg.startD,'2017-05-04');
-    				showTitleFun();
-    			}else{
-    				initWrwDate("2017-04-28", changeMsg.endD, changeMsg.startD, '2017-05-04');
-    			}
+//        		//如果返回值状态成功，但是时间数据没有，需要为时间控件设置一个默认值
+//        		changeMsg.startD = "2017-04-28";
+//    			changeMsg.endD = "2017-05-23";
+//    			if(changeMsg.type=="qxys"){
+//    				initQxysDate("2017-04-28", changeMsg.endD, changeMsg.startD,'2017-05-04');
+//    				showTitleFun();
+//    			}else{
+//    				initWrwDate("2017-04-28", changeMsg.endD, changeMsg.startD, '2017-05-04');
+//    			}
+        		swal('FNL时间查询错误', '', 'error');
         	}else{
         		//后台返回时间
         		//1、判断最大时间与最小时间的天数
@@ -272,28 +273,31 @@ function requestDate() {
         		//小于等于7天：（最大时间最小时间就是开始结束时间）
         		var maxtime = moment(res.data.maxtime);//最大时间
         		var mintime = moment(res.data.mintime);//最小时间
+        		
         		if(maxtime.diff(mintime, 'days') > 7){//事件间隔大于7天
         			changeMsg.startD = moment(res.data.maxtime).add(-7, 'd').format('YYYY-MM-DD');
         			changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
-        			if(changeMsg.type=="qxys"){
-        				initQxysDate("2017-04-28", changeMsg.endD, changeMsg.startD, changeMsg.endD);
-        			}else{
-        				initWrwDate("2017-04-28", changeMsg.endD, changeMsg.startD, changeMsg.endD);
-        			}
         			
+        			if(changeMsg.type=="qxys"){
+        				initQxysDate(mintime.format('YYYY-MM-DD'), maxtime.format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
+        			}else{
+        				initWrwDate(mintime.format('YYYY-MM-DD'), maxtime.format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
+        			}
         			//			最大可选时间     最小可选时间		默认开始时间		  默认结束时间
         		}else{//小于等于7天
         			changeMsg.startD = moment(res.data.maxtime).format('YYYY-MM-DD');
         			changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
         			if(changeMsg.type=="qxys"){
-        				initQxysDate("2017-04-28", changeMsg.endD, changeMsg.startD, changeMsg.endD);
+        				initQxysDate(mintime.format('YYYY-MM-DD'), maxtime.format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
         			}else{
-        				initWrwDate("2017-04-28", changeMsg.endD, changeMsg.startD, changeMsg.endD);
+        				initWrwDate(mintime.format('YYYY-MM-DD'), maxtime.format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
         			}
         			
         		}
         	}
         	
+        }else{
+        	swal('内部错误，时间查询失败', '', 'error');
         }
     })
 }
@@ -459,7 +463,7 @@ function updata(opt) {
     console.log("站点")
     proStation=allCode[$(".proStation").val()].name
     cityStation= allCode[$('.proStation').val()].city[$(".cityStation").val()];
-    changeMsg.endD = "2017-05-04";
+//    changeMsg.endD = "2017-05-04";
     showTitleFun();
 }
 /**
