@@ -7,46 +7,106 @@ $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清�
 // 表单生成
 innitdata()
 function innitdata(){
-    $("#qgqd").datagrid({
-        method:'post',
-        url: "/ampc/NativeAndNation/find_nation",
-        dataType: "json",
-        columns:[[  //表头
-            {field:"ck",checkbox:true},
-            {field:"esNationName",title:"全国清单"},
-            {field:"esNationYear",title:"年份"},
-            {field:"publishTime",title:"创建时间",formatter:function(value,row,index){
-                moment(value).format("YYYY-MM-DD")//格式化带日期格式
-                return  moment(value).format("YYYY-MM-DD");
-            },sortable :true},
-            {field:"nationRemark",title:"备注"},
-            {field:"qgqdCheck",title:"状态"},//新建（打开校验按钮）   正常（校验成功） 错误（校验错误）
-            //是否使用 如果使用 不许删除 未使用可以删除
-            {field:"qgqdConfig",title:"操作"}//校验清单
-        ]],
-        loadFilter:function (data) { //过滤数据，转换成符合格式的数据
-            return data.data;
-        },
-        checkOnSelect:true,
-        selectOnCheck:true,
-        clickToSelect: true,// 点击选中行
-        pagination: true, // 在表格底部显示分页工具栏
-        pageSize:20,  //页面里面显示数据的行数
-        pageNumber: 1, // 页数
-        pageList: [20, 30,40], //页面可以进行选择的数据行数
-        height:'100%',
-        singleSelect: true,//设置True 将禁止多选
-        striped: false, // 使表格带有条纹
-        silent: true, // 刷新事件必须设置
-        contentType: "application/json",
-        queryParams:function (params) { //ajax 传递的参数  分页
-            console.log("分页")
-            console.log(params)
-            var data = {};
-            data.userId = userId;
-            data.pageSize=params.pageSize; //初始化页面上面表单的数据行数
-            data.pageNumber=params.pageNumber  //初始化页面的页码
-            return {"token": "", "data": data};
-        },
+    // $("#localqd").datagrid({
+    //     method:'post',
+    //     url: "/ampc/NativeAndNation/find_nation",
+    //     dataType: "json",
+    //     columns:[[  //表头
+    //         {field:"ck",checkbox:true},
+    //         {field:"esNationName",title:"全国清单"},
+    //         {field:"esNationYear",title:"年份"},
+    //         {field:"publishTime",title:"创建时间",formatter:function(value,row,index){
+    //             moment(value).format("YYYY-MM-DD")//格式化带日期格式
+    //             return  moment(value).format("YYYY-MM-DD");
+    //         },sortable :true},
+    //         {field:"nationRemark",title:"备注"},
+    //         {field:"qgqdCheck",title:"状态"},//新建（打开校验按钮）   正常（校验成功） 错误（校验错误）
+    //         //是否使用 如果使用 不许删除 未使用可以删除
+    //         {field:"qgqdConfig",title:"操作"}//校验清单
+    //     ]],
+    //     loadFilter:function (data) { //过滤数据，转换成符合格式的数据
+    //         return data.data;
+    //     },
+    //     checkOnSelect:true,
+    //     selectOnCheck:true,
+    //     clickToSelect: true,// 点击选中行
+    //     pagination: true, // 在表格底部显示分页工具栏
+    //     pageSize:20,  //页面里面显示数据的行数
+    //     pageNumber: 1, // 页数
+    //     pageList: [20, 30,40], //页面可以进行选择的数据行数
+    //     height:'100%',
+    //     singleSelect: true,//设置True 将禁止多选
+    //     striped: false, // 使表格带有条纹
+    //     silent: true, // 刷新事件必须设置
+    //     contentType: "application/json",
+    //     queryParams:function (params) { //ajax 传递的参数  分页
+    //         console.log("分页")
+    //         console.log(params)
+    //         var data = {};
+    //         data.userId = userId;
+    //         data.pageSize=params.pageSize; //初始化页面上面表单的数据行数
+    //         data.pageNumber=params.pageNumber  //初始化页面的页码
+    //         return {"token": "", "data": data};
+    //     },
+    // })
+    //任务接口测试
+    ajaxPost('/mission/get_mission_list',{
+        "queryName": '',
+        "missionStatus": '',
+        "pageNum": 1,
+        "pageSize": 10,
+        "sort": '',
+        "userId": 1
+    }).success(function(data){
+        requestQJData(data.data);
+        $("#localqd").treegrid({
+            data: transformdata,
+            idField:'id',
+            treeField:'missionName',
+            columns:[[
+                {field:"ck",checkbox:true},
+                {field:'missionName',title:'任务名称'},
+                {field:'missionId',title:'ID'},
+            ]],
+
+        })
     })
+
+    function requestQJData(res) {
+        transformdata=[];
+        for (var i = 0; i < res.rows.length; i++) {
+            transformdata.push($.extend({}, res.rows[i], {id: 'rw' + res.rows[i].missionId, state: 'closed'}));
+            $.ajax({
+                url: '/ampc/scenarino/get_scenarinoListBymissionId',
+                contentType: 'application/json',
+                method: 'post',
+                async: false,
+                dataType: 'JSON',
+                data: JSON.stringify({
+                    "token": "",
+                    "data": {
+                        "missionId": res.rows[i].missionId,
+                        "queryName": '',
+                        "sort": '',
+                        "userId": 1
+                    }
+                }),
+                success: function (data) {
+//          if(data.data.rows.length==0){
+//            return;
+//          }
+                    transformdata[transformdata.length - 1].children = [];
+                    transformdata[transformdata.length - 1].children.push($.extend({}, {
+                        missionNameTitle: '情景名称', missionIdTitle: 'ID', domainNameTitle: '操作', esCouplingNameTitle: '管理',
+                        missionAddTimeTitle: '情景状态', missionStartDateTitle: '执行日期', missionEndDateTitle: '结束日期',
+                        missionStatusTitle: '类型'
+                    }, {id: 'qjtitle' + res.rows[i].missionId}))
+                    for (var j = 0; j < data.data.rows.length; j++) {
+                        transformdata[transformdata.length - 1].children.push($.extend({}, data.data.rows[j], {id: 'qj' + data.data.rows[j].scenarinoId}));
+                    }
+                }
+            });
+        }
+    }
+
 }

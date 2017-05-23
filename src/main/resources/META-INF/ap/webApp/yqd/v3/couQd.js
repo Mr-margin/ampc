@@ -5,7 +5,6 @@
 $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">耦合清单</span><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatQd()">新建</button><button class="qdEdit" onclick="editQd()">编辑</button><button class="qdDelet">删除</button></span>');
 
 $(".coupSet").layout();// 耦合设置面板
-innitdata()
 function innitdata(){  //全国清单的初始化
     $("#qgqd").datagrid({
         method:'post',
@@ -13,13 +12,12 @@ function innitdata(){  //全国清单的初始化
         dataType: "json",
         columns:[[
             {field:"ck",checkbox:true},
-            {field:"esNationName",title:"全国清单"},
-            {field:"esNationYear",title:"年份"},
+            {field:"esNationName",title:"全国清单",width:200},
+            {field:"esNationYear",title:"年份",width:80},
             {field:"publishTime",title:"创建时间",formatter:function(value,row,index){
-                moment(value).format("YYYY-MM-DD")
                 return  moment(value).format("YYYY-MM-DD");
-            },sortable :true},
-            {field:"nationRemark",title:"备注"},
+            }},
+            {field:"nationRemark",title:"备注",width:400},
         ]],
         loadFilter:function (data) {
             return data.data;
@@ -49,8 +47,8 @@ coupQd() //清单耦合步骤初始化
 function coupQd(){
     innitdata();    //生成全国清单
     $("#prevCoup").hide();//隐藏上一步按钮
-    $(".coudui .coupSetCon").eq(1).hide();//隐藏其他步骤
-    $(".coudui .coupSetCon").eq(2).hide();
+    $(".coupSetCon").eq(1).hide();//隐藏其他步骤
+    $(".coupSetCon").eq(2).hide();
 }
 function nextCoup(){//点击下一步按钮
     var conText=$(".coupSetTitle .coupSetTitleList .active div").text()
