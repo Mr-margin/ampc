@@ -80,6 +80,39 @@ public class Colors {
 		}
 		return colorData;
 	}
+	
+	public static Color getColor1(float value, List<Float> valueList, List<Color> colorList, List<Integer> colorLongList) {
+		int i = 0;
+		Color color = Color.WHITE;
+		try {
+			if (value == Constants.OVERBORDER) {
+				return color;
+			}
+			do {
+				float cur = valueList.get(i);
+				float next = valueList.get(i + 1);
+				if (value >= cur && value < next) {
+					if (colorList.size() > i) {
+						color = colorList.get(i);
+					} else {
+						color = colorList.get(colorList.size() - 1);
+					}
+					break;
+				}
+				i++;
+			} while (i < valueList.size() - 1);
+			if (color == Color.WHITE) {
+				if (value < valueList.get(0)) {
+					color = colorList.get(0);
+				} else if (value > valueList.get(valueList.size() - 1)) {
+					color = colorList.get(colorList.size() - 1);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("Colors | getColor", e);
+		}
+		return color;
+	}
 
 	// ***以下暂时不用***//
 	public static ColorMapEntryImpl buildColorMapEntry(String colorR, String colorG, String colorB, float v) {
