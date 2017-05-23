@@ -114,6 +114,19 @@ import java.util.UUID;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -628,7 +641,8 @@ public class ReadyData {
 	}
 	
 	/**
-	 * @Description:获取第一次的值
+	 * @Description:获取firsttime参数的值：
+	 * 该情景第一运行成功的时候是true之后为false
 	 * @param scenarinoId
 	 * @return   
 	 * String  获取firsttime
@@ -638,17 +652,46 @@ public class ReadyData {
 	 */
 	private Boolean getfirsttime(TScenarinoDetail scenarinoDetailMSG) {
 		//准备firsttime 通过用户ID 情景类型 和pathdate来决定
+		boolean firsttime = false;
 		Date zoreDate = DateUtil.ChangeDay(scenarinoDetailMSG.getPathDate(), -1);
+		//查询该用户的所有的实时预报情景
+		Map<String,Object> hashmap = new HashMap<String, Object>();
+		hashmap.put("userId", scenarinoDetailMSG.getUserId());
+		hashmap.put("scenType", scenarinoDetailMSG.getScenType());
+		List<TScenarinoDetail> list = tScenarinoDetailMapper.selectListFirstTime(hashmap);
+		TScenarinoDetail tScenarinoDetail = list.get(0);
+		int size = list.size();
+		Date pathDate = tScenarinoDetail.getPathDate();
+		Date pathDate2 = scenarinoDetailMSG.getPathDate();
+		int compareTo = pathDate.compareTo(pathDate2);
+		if (compareTo<0) {
+			//
+		}
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("pathDate", zoreDate);
 		map.put("userId", scenarinoDetailMSG.getUserId());
 		map.put("scenType", scenarinoDetailMSG.getScenType());
 		TScenarinoDetail scenarinoDetailMSG2 = tScenarinoDetailMapper.selectFirstTime(map);
-		boolean firsttime;
+		/*if (scenarinoDetailMSG2==null) {
+			if (size==1) {
+				firsttime = true;
+			}else if (size>1) {
+				LogUtil.getLogger().info("出现错误，系统定时创建每天的实时预报情景出现中断！");
+				firsttime = false;
+			}
+		}else {
+			TTasksStatus selectStatus = tTasksStatusMapper.selectStatus(scenarinoDetailMSG2.getScenarinoId());
+			Integer beizhu = Integer.parseInt(selectStatus.getBeizhu());//表示上一天的fnl是否完成
+			firsttime = false;
+		}*/
 		if (scenarinoDetailMSG2!=null) {
 			 firsttime = false;
 		}else {
-			firsttime = true;
+			if (size>1) {
+				firsttime = false;
+			}else {
+				firsttime = true;
+			}
 		}
 		return firsttime;
 	}
@@ -754,38 +797,86 @@ public class ReadyData {
 			Parmap.put("userId", userId);
 			Parmap.put("pathDate", lastpathdate);
 			//中断了的实时预报的数据
-			TScenarinoDetail scenarinoDetailMSG =tScenarinoDetailMapper.getForecastScenID(Parmap);
-			if (i==0&&compareTo==0) {
-				//今天等于最新的ungrib 没有出现断层的情况--正常情况下
-				lastungrib = DateUtil.DATEtoString(pathdate, "yyyyMMdd");
+			TScenarinoDetail scenarinoDetailMSG=null;
+			TTasksStatus selectStatus=null;
+			Long basisScenarinoId=null;
+			try {
+				scenarinoDetailMSG = tScenarinoDetailMapper.getForecastScenID(Parmap);
+				basisScenarinoId = scenarinoDetailMSG.getBasisScenarinoId();
+				selectStatus = tTasksStatusMapper.selectStatus(basisScenarinoId);
+				
+			} catch (Exception e) {
+				LogUtil.getLogger().error("pivot方法日志: 查询中断了的情景的数据详情失败！",e.getMessage(),e);
 			}
-			if (i==0&&compareTo<0) {
-				//出现断层的情况 中间存在几天没跑的情况 但是ungrib是最新的 ungrib=today
-				lastungrib = DateUtil.DATEtoString(pathdate, "yyyyMMdd");
-				bufamessage(scenarinoDetailMSG,lastungrib);
-				LogUtil.getLogger().info("pivot方法日志:补发了ID为"+scenarinoDetailMSG.getScenarinoId()+"的情景！");
-				//修改情景状态
-				updateScenStatusUtil(6l, scenarinoDetailMSG.getScenarinoId());
+			//基础情景是否满足
+			//beizhu =0 表示该条预报情景第一天的数据尚未执行完毕  不可发送 
+			Integer beizhu = Integer.parseInt(selectStatus.getBeizhu());
+			String beizhu2 = selectStatus.getBeizhu2();
+			if (beizhu==0&&!"0".equals(beizhu2.trim())) {
+				LogUtil.getLogger().info("pivot方法日志:实时预报的基础情景条件不满足！basisScenarinoId："+basisScenarinoId);
+				//续跑或者补跑基础情景fnl--根据基础情景的fnl的运行情况
+				String modelErrorStatus = selectStatus.getModelErrorStatus();
+
+				TScenarinoDetail selectByPrimaryKey = null;
+				try {
+					selectByPrimaryKey = tScenarinoDetailMapper.selectByPrimaryKey(basisScenarinoId);
+				} catch (Exception e) {
+					LogUtil.getLogger().error("pivot方法日志:查询基础情景的详细信息出错！",e.getMessage(),e);
+				}
+				if (null!=modelErrorStatus) {
+					boolean comtinueRealpredict = continueRealpredict(selectByPrimaryKey,lastungrib);
+					if (comtinueRealpredict) {
+						LogUtil.getLogger().info("pivot方法日志:续跑fnl成功，情景ID为："+basisScenarinoId);
+					}else {
+						LogUtil.getLogger().info("pivot方法日志:续跑fnl失败，情景ID为："+basisScenarinoId);
+					}
+				}else {
+					Long scenarinoStatus = selectByPrimaryKey.getScenarinoStatus();
+					if (scenarinoStatus!=6) {
+						//续跑
+						boolean comtinueRealpredict = continueRealpredict(selectByPrimaryKey,lastungrib);
+						if (comtinueRealpredict) {
+							LogUtil.getLogger().info("pivot方法日志:续跑fnl成功，情景ID为："+basisScenarinoId);
+						}else {
+							LogUtil.getLogger().info("pivot方法日志:续跑fnl失败，情景ID为："+basisScenarinoId);
+						}
+					}
+				}
 				lastungrib=null;
-			}
-			if (i<0&&compareungrib<=0) {
-				//最新的ungrib不是最新， 同时最早未运行的情景小于最新的等于ungrib 表示跟新了中间的几个断层
-				lastungrib = DateUtil.DATEtoString(pathdate, "yyyyMMdd");
-				bufamessage(scenarinoDetailMSG,lastungrib);
-				LogUtil.getLogger().info("pivot方法日志:补发了ID为"+scenarinoDetailMSG.getScenarinoId()+"的情景！");
-				//修改情景状态
-				updateScenStatusUtil(6l, scenarinoDetailMSG.getScenarinoId());
-				lastungrib=null;
-			}
-			if (i<0&&compareTo==0&&compareungrib>0) {
-				//表示ungrib不是当天 但是没有出现断层的情况下 等待ungrib跟新  最新未运行的情景是当天 compareTo
-				LogUtil.getLogger().info("pivot方法日志:时间："+todayDate+"的ungrib还未跟新！");
-				lastungrib=null;
-			}
-			if (i==0&&compareungrib==0&&compareTo<0) {
-				//表示ungrib不是当天 但是没有出现断层的情况下 等待ungrib跟新 那天的数据则不发了等下次补发  表示当天的没有跟新
-				LogUtil.getLogger().info("pivot方法日志:时间："+todayDate+"的ungrib还未跟新！不发送任何数据！");
-				lastungrib=null;
+			}else {
+				LogUtil.getLogger().info("pivot方法日志:实时预报的基础情景满足条件！ScenarinoId："+scenarinoDetailMSG.getScenarinoId());
+				if (i==0&&compareTo==0) {
+					//今天等于最新的ungrib 没有出现断层的情况--正常情况下
+					lastungrib = DateUtil.DATEtoString(pathdate, "yyyyMMdd");
+				}
+				if (i==0&&compareTo<0) {
+					//出现断层的情况 中间存在几天没跑的情况 但是ungrib是最新的 ungrib=today
+					lastungrib = DateUtil.DATEtoString(pathdate, "yyyyMMdd");
+					bufamessage(scenarinoDetailMSG,lastungrib);
+					LogUtil.getLogger().info("pivot方法日志:补发了ID为"+scenarinoDetailMSG.getScenarinoId()+"的情景！");
+					//修改情景状态
+					updateScenStatusUtil(6l, scenarinoDetailMSG.getScenarinoId());
+					lastungrib=null;
+				}
+				if (i<0&&compareungrib<=0) {
+					//最新的ungrib不是最新， 同时最早未运行的情景小于最新的等于ungrib 表示跟新了中间的几个断层
+					lastungrib = DateUtil.DATEtoString(pathdate, "yyyyMMdd");
+					bufamessage(scenarinoDetailMSG,lastungrib);
+					LogUtil.getLogger().info("pivot方法日志:补发了ID为"+scenarinoDetailMSG.getScenarinoId()+"的情景！");
+					//修改情景状态
+					updateScenStatusUtil(6l, scenarinoDetailMSG.getScenarinoId());
+					lastungrib=null;
+				}
+				if (i<0&&compareTo==0&&compareungrib>0) {
+					//表示ungrib不是当天 但是没有出现断层的情况下 等待ungrib跟新  最新未运行的情景是当天 compareTo
+					LogUtil.getLogger().info("pivot方法日志:时间："+todayDate+"的ungrib还未跟新！");
+					lastungrib=null;
+				}
+				if (i==0&&compareungrib==0&&compareTo<0) {
+					//表示ungrib不是当天 但是没有出现断层的情况下 等待ungrib跟新 那天的数据则不发了等下次补发  表示当天的没有跟新
+					LogUtil.getLogger().info("pivot方法日志:时间："+todayDate+"的ungrib还未跟新！不发送任何数据！");
+					lastungrib=null;
+				}
 			}
 		}else {
 			LogUtil.getLogger().info("pivot方法日志:没有未运行的预报数据了！");
