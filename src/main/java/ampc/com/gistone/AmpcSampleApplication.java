@@ -18,10 +18,12 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @SpringBootApplication
 @ServletComponentScan
+@EnableScheduling
 @MapperScan("ampc.com.gistone")
 public class AmpcSampleApplication extends SpringBootServletInitializer {
 
