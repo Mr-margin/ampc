@@ -86,6 +86,59 @@
         </div>
     </div>
 </div>
+<div id="editArea">
+    <div>
+        <!--新增/编辑弹窗的主题内容-->
+        <!--区域名称修改框-->
+        <div class="modal-header form-group">
+            <label class="col-2 control-label">当前区域名称</label>
+            <div class="col-4">
+                <input type="text" class="form-control required" id="areaName" placeholder='请输入区域名称'>
+            </div>
+        </div>
+        <!--选择区域范围的ztree结构和回显内容-->
+        <div class="modal-body bcg">
+            <div>
+                <div class="codeTree">
+                    <ul id="adcodeTree" class="ztree">
+
+                    </ul>
+                    <!--当点击确定按钮后将ztree选择的区域在id为adcodelistbox的div中显示-->
+                    <div class="adcodeTreeBtn">
+                        <button>确定</button>
+                    </div>
+                </div>
+                <!--作为选择区域的回显div-->
+                <div class="adcodeList" style="display: none">
+                    <div id="adcodeListBox">
+
+                    </div>
+                    <div class="adcodeTreeBtn">
+                        <button></button>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div id="mapDiv" class="showMap">
+
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer ">
+            <div class="footerShow"
+                 style="text-align: left;margin-left: 10px;width:calc(100% - 150px);float: left;padding: 8px 0px 5px 0px;">
+                <div class='col-md-3 rw' style="padding: 0px 0px 0px 0px;">
+                    <h5>当前任务：<span></span></h5>
+                </div>
+                <div class='col-md-3 qj' style="padding: 0px 0px 0px 0px;">
+                    <h5>当前情景：<span></span></h5>
+                </div>
+            </div>
+            <button type="button" class="btn btn-success" onclick="createEditArea()">确定</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        </div>
+    </div>
+</div>
 <script>
     var qjMsg;
     /*向路由保存信息对象结构*/
@@ -106,7 +159,49 @@
     var plancharts;
     var allData = [];//保存所有区域时段信息
     var allData1 = null;
-//    var isMouseDrag = 0;
+    var cnArea = false;//判断是否超过区域的最大数量
+    var showCode = [{}, {}, {}];//保存所选的地区
+    //    var isMouseDrag = 0;
+    /*tree数配置*/
+    var zTreeSetting = {
+        check: {
+            enable: true,
+//				autoCheckTrigger:true,
+            chkboxType: {"Y": "ps", "N": "ps"}, //设置父子联动
+            chkDisabledInherit: true //是否沿用disabled
+        },
+        data: {
+            simpleData: {
+                enable: true,     //简单数据模式
+                idKey: "adcode",
+                pIdKey: "padcode" //子父级关系对照
+            },
+            key: {
+                name: 'name',
+            }
+        },
+        callback: {
+            onCheck: function (e, t, tr) {
+                var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+                //selectNode(tr);
+                if (tr.checked) {
+//    	  setExtent(tr);
+                    if (tr.level == 0) {
+                        level0(tr)
+                    } else {
+                        level12(tr)
+                    }
+                } else {
+                    if (tr.level == 0) {
+                        delNode0(tr)
+                    } else {
+                        delNode12(tr)
+                    }
+                }
+                //updataCodeList();
+            }
+        }
+    };
     (function () {
 //        页面布局的渲染
         $('#task2content').layout();
@@ -120,6 +215,64 @@
         $('#settingqjbox').window(defaultwindowoption);
 //        时段编辑的窗口渲染
         $('#timePlan').window($.extend({}, defaultwindowoption, {title: '时段编辑'}));
+//        新增区域的窗口渲染，新增区域和编辑区域是一个window弹框
+        $('#editArea').window($.extend({}, defaultwindowoption, {
+            title: '定义区域范围',
+            width: 900,
+            onOpen: function () {
+                /*初始化tree树相关信息*/
+                $.fn.zTree.init($("#adcodeTree"), zTreeSetting, zTreeData);//zTreeData是从home页面传过来的数据
+                var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+                var nodes = treeObj.getNodesByParam("level", 1);
+                var code = qjMsg.esCodeRange;
+//                对应的任务范围中市级下可显示县一级
+                for (var i = 0; i < nodes.length; i++) {
+                    var adcode = nodes[i].adcode;
+                    if ((code.indexOf(adcode.substr(0, 2)) == -1) && (code.indexOf(adcode.substr(0, 4)) == -1)) {
+//                        在这里将非当前任务范围中的县级给隐藏起来
+                        treeObj.hideNodes(nodes[i].children);
+                    }
+                }
+
+//                var button = $(event.relatedTarget);
+//                areaIndex = $('.areaTitle_con').index($(button).parents('.areaTitle_con'));
+                //var create = button.data('new');
+                var create = cnArea;
+                var areaId, findUrl;
+                var allUrl = '/area/find_areaAll';
+                $('.adcodeList').empty();
+                if (create) {
+                    $('#areaName').val('').removeAttr('data-id');
+                    showCode = [{}, {}, {}];
+//                    $('.adcodeList.mt20').empty();
+//                    app.gLyr.clear();
+                } else {
+                    findUrl = '/area/get_areaList';
+                    areaId = button.parents('.areaTitle_con').attr('id');
+                    ajaxPost(findUrl, {
+                        areaId: areaId,
+                        userId: userId
+                    }).success(function (res) {
+                        if (res.data) {
+                            /*设置显示已选code*/
+                            setShowCode(res.data);
+                            addLayer(showCode);
+                        }
+                        updataCodeList();
+                    });
+                    $('#areaName').val(button.parents('.areaTitle_con').find('b').html()).attr('data-id', areaId);
+                }
+                cnArea = false;
+
+                ajaxPost(allUrl, {
+                    scenarinoId: qjMsg.qjId,
+                    userId: userId,
+                    areaId: areaId
+                }).success(function (res) {
+                    setDisabled(res.data);
+                });
+            }
+        }));
 //        时段编辑的标签页渲染
         $('#timeorplan').tabs({
             tabPosition: 'left',
@@ -354,6 +507,39 @@
                 },
                 triggerEvent: true
             },
+            toolbox: {
+                show: true,
+                feature: {
+                    saveAslmage: {
+                        show: false
+                    },
+                    restore: {
+                        show: false
+                    },
+                    dataView: {
+                        show: false
+                    },
+                    dataZoom: {
+                        show: false
+                    },
+                    magicType: {
+                        show: false
+                    },
+                    brush: {
+                        show: false
+                    },
+                    myTool: {
+                        show: true,
+                        title: "新增区域",
+                        icon: 'path://M995 420h-362v359h-241v-359h-362v-240h362v-360h241v360h362v240z',
+                        onclick: function () {
+                            createNewAreaBtn();
+                        }
+                    }
+                },
+                left: 30
+
+            },
             series: (function () {
                 var _arr = [];
                 for (var i = 0; i < _temp.seriesData.length; i++) {
@@ -409,76 +595,76 @@
         };
 
         /*function _onmouseover() {
-            isMouseDrag = 2;
-            var option = plancharts.getOption();
-            plancharts.setOption($.extend(true, {}, option, {
-                xAxis: {
-                    axisPointer: {
-                        value: echarts.format.formatTime('yyyy-MM-dd hh:mm:ss', 1493920799000),
-                        snap: true,
-                        lineStyle: {
-                            color: '#004E52',
-                            opacity: 0.5,
-                            width: 2
-                        },
-                        label: {
-                            show: true,
-                            formatter: function (params) {
-                                return echarts.format.formatTime('yyyy-MM-dd hh:mm:ss', params.value);
-                            },
-                            backgroundColor: '#004E52'
-                        },
-                        handle: {
-                            show: true,
-                            icon: 'none',
-                            color: '#004E52'
-                        }
-                    }
-                }
-            }));
-            allData.plancharts.setOption(option);
-//            plancharts.on('mouseover',function () {
-//
-//            });
-        }*/
+         isMouseDrag = 2;
+         var option = plancharts.getOption();
+         plancharts.setOption($.extend(true, {}, option, {
+         xAxis: {
+         axisPointer: {
+         value: echarts.format.formatTime('yyyy-MM-dd hh:mm:ss', 1493920799000),
+         snap: true,
+         lineStyle: {
+         color: '#004E52',
+         opacity: 0.5,
+         width: 2
+         },
+         label: {
+         show: true,
+         formatter: function (params) {
+         return echarts.format.formatTime('yyyy-MM-dd hh:mm:ss', params.value);
+         },
+         backgroundColor: '#004E52'
+         },
+         handle: {
+         show: true,
+         icon: 'none',
+         color: '#004E52'
+         }
+         }
+         }
+         }));
+         allData.plancharts.setOption(option);
+         //            plancharts.on('mouseover',function () {
+         //
+         //            });
+         }*/
 
-/*        function _offmouseover() {
-            var option = plancharts.getOption();
-            delete option.xAxis.axisPointer;
-            plancharts.setOption(option);
-        }*/
+        /*        function _offmouseover() {
+         var option = plancharts.getOption();
+         delete option.xAxis.axisPointer;
+         plancharts.setOption(option);
+         }*/
 
         plancharts.setOption(_option);
-/*        plancharts.on('mousedown', function (params) {
-            isMouseDrag = 1;
-            setTimeout(function () {
-                isMouseDrag = 2;
-            }, 700);
-        });*/
+        /*        plancharts.on('mousedown', function (params) {
+         isMouseDrag = 1;
+         setTimeout(function () {
+         isMouseDrag = 2;
+         }, 700);
+         });*/
         plancharts.on('click', function (params) {
-/*            if (isMouseDrag = 1) {
-                isMouseDrag = 3;
-            }
-            if (isMouseDrag = 2) {
-                isMouseDrag = 3;
-            }*/
+            /*            if (isMouseDrag = 1) {
+             isMouseDrag = 3;
+             }
+             if (isMouseDrag = 2) {
+             isMouseDrag = 3;
+             }*/
             if (params.componentType == 'yAxis') {
                 $('#settingqjbox').window('open').window('center').find('.step1 button').attr('data-qjid', params.value);
             }
             if (params.seriesType == 'scatter') {
                 if (params.seriesName == -1) {
                     return
-                }else{
+                } else {
                     out:
-                    for(var i=0;i<allData.length;i++){
-                        console.log(allData);
-                        for(var j=0;j<allData[i].timeItems.length;j++){
-                            if(allData[i].timeItems[j].planId==params.seriesName){
-                                break out;
+                        for (var i = 0; i < allData.length; i++) {
+                            console.log(allData);
+                            for (var j = 0; j < allData[i].timeItems.length; j++) {
+                                if (allData[i].timeItems[j].planId == params.seriesName) {
+                                    break out;
+                                }
                             }
                         }
-                    }
-                    selectedTimes={
+                    selectedTimes = {
                         areaId: allData[i].areaId,
                         areaName: allData[i].areaName,
                         cityCodes: allData[i].cityCodes,
@@ -1041,5 +1227,74 @@
 
             });
         }
+    }
+
+    /*---------------------------------------------------以上是地图部分----------------------------------------------------------*/
+    /*检测是否超过最大区域数量*/
+    function createNewAreaBtn() {
+        if (allData.length >= maxAreaNum) {
+            cnArea = false;
+            swal({
+                title: '已达最大区域数量!',
+                type: 'warning',
+                timer: 1000,
+                showConfirmButton: false
+            });
+        } else {
+            cnArea = true;
+            $('#editArea').window('open');
+        }
+    }
+    /*前端设置disabled*/
+    function setDisabled(data) {
+        var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+        for (var i = 0; i < data.length; i++) {
+            var name = '(' + data[i].areaName + ')';
+//            检索省份列表
+            for (var pro = 0; pro < data[i].provinceCodes.length; pro++) {
+                var node = treeObj.getNodeByParam("adcode", Object.keys(data[i].provinceCodes[pro]), null);
+                node.name += name;
+                //node.chkDisabled = true;
+                treeObj.setChkDisabled(node, true, false, true);
+                treeObj.updateNode(node);
+            }
+//            检索市级列表
+            for (var ci = 0; ci < data[i].cityCodes.length; ci++) {
+                var node = treeObj.getNodeByParam("adcode", Object.keys(data[i].cityCodes[ci]), null);
+                node.name += name;
+                //node.chkDisabled = true;
+                treeObj.setChkDisabled(node, true, false, true);
+                treeObj.updateNode(node);
+            }
+//          检索县区级列表
+            for (var ct = 0; ct < data[i].countyCodes.length; ct++) {
+                var node = treeObj.getNodeByParam("adcode", Object.keys(data[i].countyCodes[ct]), null);
+                node.name += name;
+                //node.chkDisabled = true;
+                treeObj.setChkDisabled(node, true, false, true);
+                treeObj.updateNode(node);
+            }
+        }
+    }
+    /**
+     * 更新保存显示的地区code信息
+     */
+    function updataCodeList() {
+        var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+        $('.adcodeList').empty();
+        for (var i = 0; i < 3; i++) {
+            for (var ad in showCode[i]) {
+                if (i == 0) {
+                    $('.adcodeList').append(addP(ad, showCode[i][ad], i))
+                } else {
+                    for (var add in showCode[i][ad]) {
+                        $('.adcodeList').append(addP(add, showCode[i][ad][add], i))
+                    }
+                }
+
+            }
+        }
+
+
     }
 </script>
