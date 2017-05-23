@@ -11,6 +11,9 @@ function innitdata(){
         "userId":userId
     }).success(function(data){
         console.log("数据加载成功了")
+        $("#localqd").treegrid({
+
+        })
     })
     // $("#localqd").treegrid({
     //     method:'post',
@@ -57,6 +60,23 @@ function innitdata(){
 
 }
 //创建模板窗口
+$("#creatTemp").window({
+    width:600,  //easyui 窗口宽度
+    collapsible:false, //easyui 自带的折叠按钮
+    maximizable:false,//easyui 自带的最大按钮
+    minimizable:false,//easyui 自带的最小按钮
+    modal:true,
+    shadow:false,
+    title:'新建模板',
+    border:false,
+    closed:true,
+    cls:"cloudui"
+})
 function creatTemp(){
-
+    $("#creatTemp #formQd").form("clear");
+    $("#creatTemp").window("open");
+}
+//清空弹窗输入框内容
+function claearTemp() {
+    $("#creatTemp #formQd").form("clear");
 }
