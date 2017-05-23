@@ -111,12 +111,14 @@ initialize();
 
 /*初始化函数*/
 function initialize() {
-    dps_City = requestRegion();
-    dps_Date = requestDate();
+    dps_City = requestRegion();//请求省市区code
+    dps_Date = requestDate();//请求可选日期范围
 
+    //当时间和code全部完成时，开始组织查询条件，进行第一次查询
     $.when(dps_Date, dps_City).then(function () {
-
-        updata();
+    	window.setTimeout(function () {
+            updata();
+        },50);
     })
 }
 
@@ -140,6 +142,7 @@ function changeType(type) {
         if (!dps_Station[changeMsg.city + changeMsg.type]) {
             dps_Station[changeMsg.city + changeMsg.type] = setStation(changeMsg.city, changeMsg.type);
         }
+        requestDate();
         updata();
     }
 
@@ -154,8 +157,7 @@ function changeType(type) {
  */
 function initWrwDate(s, e, start, end) {
     $('#wrwDate').daterangepicker({
-//    "parentEl": ".toolAll",
-        "autoApply": true,
+        autoApply: true,
         singleDatePicker: false,  //显示单个日历
         timePicker: false,  //允许选择时间
         timePicker24Hour: true, //时间24小时制
@@ -175,11 +177,9 @@ function initWrwDate(s, e, start, end) {
             ],
             firstDay: 1
         },
-//        "startDate": start,
-//        "endDate": end,
-        "startDate": "2017-04-27",
-        "endDate": "2017-05-03",
-        "opens": "left"
+        startDate: start,
+        endDate: end,
+        opens: "left"
     }, function (start, end, label) {
         changeMsg.startD = start.format('YYYY-MM-DD');
         changeMsg.endD = end.format('YYYY-MM-DD');
@@ -199,7 +199,7 @@ function initWrwDate(s, e, start, end) {
 function initQxysDate(s, e, start, end) {
     $('#qxysDate').daterangepicker({
 //    "parentEl": ".toolAll",
-        "autoApply": true,
+        autoApply: true,
         singleDatePicker: false,  //显示单个日历
         timePicker: false,  //允许选择时间
         timePicker24Hour: true, //时间24小时制
@@ -219,11 +219,9 @@ function initQxysDate(s, e, start, end) {
             ],
             firstDay: 1
         },
-        "startDate": start,
-        "endDate": end,
-//        "startDate": "2017-04-27",
-//        "endDate": "2017-05-03",
-        "opens": "left"
+        startDate: start,
+        endDate: end,
+        opens: "left"
     }, function (start, end, label) {
         changeMsg.startD = start.format('YYYY-MM-DD');
         changeMsg.endD = end.format('YYYY-MM-DD');
@@ -257,24 +255,45 @@ function requestDate() {
 
         if (res.status == 0) {
 			/*这里要初始化时间*/
-
-            if (!(moment(res.data.maxtime).add(-7, 'd').isBefore(moment(res.data.mintime)))) {
-                changeMsg.startD = moment(res.data.maxtime).add(-7, 'd').format('YYYY-MM-DD')
-            } else {
-                changeMsg.startD = moment(res.data.mintime).format('YYYY-MM-DD')
-            }
-
-            changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
-            var datenum=true;
-            if(datenum){
-                changeMsg.startD="2017-04-27";
-                changeMsg.endD= "2017-05-03";
-                initWrwDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
-                datenum=false;
-            }else{
-                initWrwDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
-            }
-            initQxysDate(moment(res.data.mintime).format('YYYY-MM-DD'), moment(res.data.maxtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
+        	if(JSON.stringify(res.data) == "{}"){
+        		//如果返回值状态成功，但是时间数据没有，需要为时间控件设置一个默认值
+        		changeMsg.startD = "2017-04-28";
+    			changeMsg.endD = "2017-05-03";
+    			if(changeMsg.type=="qxys"){
+    				initQxysDate("2017-04-28", changeMsg.endD, changeMsg.startD, changeMsg.endD);
+    				showTitleFun();
+    			}else{
+    				initWrwDate("2017-04-28", changeMsg.endD, changeMsg.startD, changeMsg.endD);
+    			}
+        	}else{
+        		//后台返回时间
+        		//1、判断最大时间与最小时间的天数
+        		//超过7天：（取最大时间-7天为开始时间，最大时间为结束时间，显示7天的数据）
+        		//小于等于7天：（最大时间最小时间就是开始结束时间）
+        		var maxtime = moment(res.data.maxtime);//最大时间
+        		var mintime = moment(res.data.mintime);//最小时间
+        		if(maxtime.diff(mintime, 'days') > 7){//事件间隔大于7天
+        			changeMsg.startD = moment(res.data.maxtime).add(-7, 'd').format('YYYY-MM-DD');
+        			changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
+        			if(changeMsg.type=="qxys"){
+        				initQxysDate("2017-04-28", changeMsg.endD, changeMsg.startD, changeMsg.endD);
+        			}else{
+        				initWrwDate("2017-04-28", changeMsg.endD, changeMsg.startD, changeMsg.endD);
+        			}
+        			
+        			//			最大可选时间     最小可选时间		默认开始时间		  默认结束时间
+        		}else{//小于等于7天
+        			changeMsg.startD = moment(res.data.maxtime).format('YYYY-MM-DD');
+        			changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
+        			if(changeMsg.type=="qxys"){
+        				initQxysDate("2017-04-28", changeMsg.endD, changeMsg.startD, changeMsg.endD);
+        			}else{
+        				initWrwDate("2017-04-28", changeMsg.endD, changeMsg.startD, changeMsg.endD);
+        			}
+        			
+        		}
+        	}
+        	
         }
     })
 }
