@@ -20,7 +20,7 @@ import ampc.com.gistone.extract.ProjectUtil;
 import ampc.com.gistone.extract.Projection;
 import ampc.com.gistone.extract.netcdf.Netcdf;
 import ampc.com.gistone.util.CSVUtil;
-import ampc.com.gistone.util.excelUtil.DateUtil;
+import ampc.com.gistone.util.DateUtil;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
@@ -31,7 +31,7 @@ public class VerticalService {
 	@Autowired
 	private SpecieIndexList specieIndexList;
 
-	private String tempPath = Constants.CSV_TEMP_PATH + DateUtil.getYYYYMMDDLineStr(new Date())+"/";
+	private String tempPath = Constants.CSV_TEMP_PATH + DateUtil.DATEtoString(new Date(), DateUtil.DATE_FORMAT)+"/";
 	private List<PointBean> pointBeanList;
 	private String filePath1;
 	private String filePath2;

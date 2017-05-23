@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ampc.com.gistone.extract.Constants;
 import ampc.com.gistone.util.AmpcResult;
-import ampc.com.gistone.util.excelUtil.StringUtil;
+import ampc.com.gistone.util.StringUtil;
 import oracle.net.aso.e;
 
 @RestController
