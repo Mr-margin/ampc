@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import ampc.com.gistone.util.excelUtil.DateUtil;
-import ampc.com.gistone.util.excelUtil.StringUtil;
+import ampc.com.gistone.util.DateUtil;
+import ampc.com.gistone.util.StringUtil;
 
 //删除目标目录下符合条件的文件，定时器
 @Component
@@ -24,7 +24,7 @@ public class DeledeScheduled {
 	@Scheduled(cron = "0 0 1 * * ?") // 每天凌晨1点执行,删除本天前的
 	public void dayDeleteTempFileTask() {
 		String deleteFilePath = timerParameter.getDayDeleteFilePath();
-		String date = DateUtil.getYYYYMMDDLineStr(new Date());
+		String date = DateUtil.DATEtoString(new Date(), DateUtil.DATE_FORMAT);
 		deleteFile(deleteFilePath, date);
 	}
 
@@ -32,7 +32,7 @@ public class DeledeScheduled {
 	@Scheduled(cron = "0 0 2 * * ?") // 每天凌晨2点执行，保留近期的
 	public void weeklyDeleteTempFileTask() {
 		String deleteFilePath = timerParameter.getManyDaysDeleteFilePath();
-		String date = DateUtil.getYYYYMMDDLineStr(new Date(System.currentTimeMillis() - timerParameter.getManyDays()));
+		String date = DateUtil.DATEtoString(new Date(System.currentTimeMillis() - timerParameter.getManyDays()), DateUtil.DATE_FORMAT);
 		deleteFile(deleteFilePath, date);
 	}
 //匹配需要删除的文件路径
