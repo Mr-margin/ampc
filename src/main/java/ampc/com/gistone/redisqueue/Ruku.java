@@ -241,6 +241,7 @@ public class Ruku {
 							if (criticalCompare>0) {
 								//修改情景状态
 								readyData.updateScenStatusUtil(8l, scenarioId);
+								LogUtil.getLogger().info("Ruku-readyRukuparamsRealPredict :实时预报模式执行完毕！");
 							}
 						}
 					}else {
@@ -287,7 +288,7 @@ public class Ruku {
 				boolean res = concnService.requestConcnData(requestParams);
 				
 				if (res) {
-					LogUtil.getLogger().info("预评估数据入库成功！");
+					LogUtil.getLogger().info("预评估数据入库成功！情景ID："+scenarioId);
 					int compareTo = endDate.compareTo(scenEndDate);//模式结束时间和情景的结束时间
 					/*
 					 * 1.正常情况下，模式执行的结束时间和情景结束的结束时间一直，入库完成 ---模式执行完毕
@@ -295,7 +296,7 @@ public class Ruku {
 					 */
 					if (compareTo==0) {
 						//模式结束时间和情景的结束时间一致表示数据入库完毕
-						LogUtil.getLogger().info("预评估数据入库完毕！");
+						LogUtil.getLogger().info("预评估数据入库完毕！情景ID："+scenarioId);
 						//修改情景状态
 						readyData.updateScenStatusUtil(8l, scenarioId);
 					}else {
@@ -382,16 +383,16 @@ public class Ruku {
 				requestParams.setDate(list);
 				boolean res = concnService.requestConcnData(requestParams);
 				if (res) {
-					LogUtil.getLogger().info("后评估情景化学数据入库成功！");
+					LogUtil.getLogger().info("后评估情景化学数据入库成功！domain："+domain+",timepoint:"+string+",scenarioId："+scenarioId);
 				}else {
-					LogUtil.getLogger().info("后评估情景化学数据入库失败！");
+					LogUtil.getLogger().info("后评估情景化学数据入库失败！domain："+domain+",timepoint:"+string+",scenarioId："+scenarioId);
 				}
 			}
 		}
 		int compareTo = endDate.compareTo(scenEndDate);
 		if (compareTo==0) {
 			//基准情景的dp_chem行完毕
-			LogUtil.getLogger().info("后评估情景化学数据入库完毕!");
+			LogUtil.getLogger().info("后评估情景化学数据入库完毕!scenarioId："+scenarioId);
 			readyData.updateScenStatusUtil(8l, scenarioId);
 		}
 	}
