@@ -1257,13 +1257,13 @@ dl, dd {
 .cloudui .timeUpDown .upDownBtn{border: 1px solid #0275D8;background-color:#0275D8;color: #fff;}
 .cloudui .timeUpDown .upDownBtn:hover{background-color: #fff;color:#333;}
 /*新增任务模态框*/
-#addRW > .step1 ,#addYQJ > .step1,#addHQJ > .step1 {
+#addRW > .step1 ,#addYQJ > .step1,#addHQJ > .step1 ,#settingqjbox>.step1{
   display: flex;
   justify-content: space-around;
   margin: 40px 0;
 }
 
-#addRW > .step1 > button ,#addYQJ > .step1 > button,#addHQJ > .step1 > button {
+#addRW > .step1 > button ,#addYQJ > .step1 > button,#addHQJ > .step1 > button  ,#settingqjbox>.step1>button{
   padding: 0;
   margin: 0;
   border: none;
@@ -1535,6 +1535,49 @@ dl, dd {
   border-top:15px solid transparent;
   border-left:15px solid #ececec;
 }
-.cloudui .yqdTable .coupSetTitle .coupSetTitleList li.active div:before{
-  border-left:15px solid #17bc9c;
+.daterangepicker .right{
+  width:48%!important;
+  float:right!important;
+}
+
+/*预案编辑的样式*/
+/*新增、编辑区域弹框的样式*/
+#editArea .modal-header{
+  margin-top: 10px;
+}
+#editArea .modal-body:before{
+  content:'';
+  display:table;
+}
+#editArea .modal-body:after{
+  content:'';
+  display: table;
+  clear:both;
+}
+#editArea .modal-body>div{
+  height: 500px;
+}
+#editArea .modal-body>div:first-child{
+  width: 50%;
+  float: left;
+  position: relative;
+}
+#editArea .modal-body>div:last-child{
+  width: 50%;
+  float: left;
+}
+#editArea .modal-body .codeTree{
+  height: 100%;
+  overflow-y: auto;
+}
+#editArea .modal-body .adcodeTreeBtn{
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 6px;
+  text-align: right;
+  padding-right: 20px;
+}
+#editArea .modal-body .showMap{
+  height: 100%;
 }
