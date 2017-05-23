@@ -222,17 +222,12 @@ public abstract class ExtractService {
 	 * @param params
 	 * @return
 	 */
-	public Map getColorWithSpecie(ExtractRequestParams params) {
-		String showType = params.getShowType();
-		String calcType = params.getCalcType();
-		String timePoint = params.getTimePoint();
+	public String getSheetName(String showType, String calcType, String timePoint, String specie) {
 		timePoint = timePoint.equals(Constants.TIMEPOINT_D) ? Constants.TIMEPOINT_DAILY
 				: Constants.TIMEPOINT_HOURLY;
 		String name = showType + "-" + calcType + "-" + timePoint;
 		name = name.toLowerCase();
-		Map<String, Map<String, List>> specieMap = resultPathUtil.getImageColorConfig().getSheetMap(name);
-		Map<String, List> valueMap = specieMap.get(params.getSpecie());
-		return valueMap;
+		return name;
 	}
 
 }
