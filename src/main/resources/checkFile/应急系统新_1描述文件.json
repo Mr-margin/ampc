@@ -1,41 +1,52 @@
 {
-  "应急系统新_1描述文件": {    
-    "sheetNum": 	
-      {
-        "Sheet": {		
-          "valueRange": "sheetName",   
-          "dataType": "String",     
-          "isNotNull": "y",	     
-          "maxLenth": "10"		     
-        },
-        "Etitle": {
-          "valueRange": "",
-          "dataType": "String",
-          "isNotNull": "y",
-          "maxLenth": "30"
-        },
-		"CTitle1": {		
-          "valueRange": "",   
-          "dataType": "String",     
-          "isNotNull": "y",	     
-          "maxLenth": "30"		     
-        },
-		"Type": {		
-          "valueRange": "string-double-int",   
-          "dataType": "String",     
-          "isNotNull": "y",	     
-          "maxLenth": "6"	     
-        },
-		"属性类型": {		
-          "valueRange": "清单原始输出-统计-筛选-筛选和统计-清单原始输入",   
-          "dataType": "String",     
-          "isNotNull": "y",	     
-          "maxLenth": "6"	     
-        }
-      }
-    ,
-    "sheetName": {
+  "应急系统新_1描述文件": {
+    "sheet0": {
+      "Sheet": {
+        "valueRange": "sheetName",
+        "dataType": "String",
+        "isNotNull": "y",
         "maxLenth": "10"
+      },
+      "Etitle": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "30"
+      },
+      "CTitle1": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "30"
+      },
+      "Type": {
+        "valueRange": "string,double,int",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "6"
+      },
+      "属性类型": {
+        "valueRange": "清单原始输出,统计,筛选,筛选和统计,清单原始输入",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "6"
+      },
+      "用户填写说明": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "n",
+        "maxLenth": ""
+      },
+      "是否必填": {
+        "valueRange": "y,n",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "1"
+      },
+      "sheetName": {
+        "maxLenth": "10",
+        "valueRange": "none"
+      }
     }
   }
 }

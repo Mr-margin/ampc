@@ -1,0 +1,76 @@
+{
+  "应急系统新_2筛选文件": {
+    "sheet0": {
+      "程序字段": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "30"
+      },
+      "显示字段": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "15"
+      },
+      "程序字段_条件": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "n",
+        "maxLenth": "15"
+      },
+      "出现条件": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "n",
+        "maxLenth": "15"
+      },
+      "条件值": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "n",
+        "maxLenth": "10"
+      },
+      "选项类型": {
+        "valueRange": "值域-浮点,值域-整,复选,单选",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "5"
+      },
+      "选项1": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "10"
+      },
+      "选项2": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "10"
+      },
+      "选项3": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "n",
+        "maxLenth": "10"
+      },
+      "选项4": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "n",
+        "maxLenth": "10"
+      },
+      "选项5": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "n",
+        "maxLenth": "10"
+      },
+      "sheetName": {
+        "maxLenth": "10",
+        "valueRange": "none"
+      }
+    }
+  }
+}
