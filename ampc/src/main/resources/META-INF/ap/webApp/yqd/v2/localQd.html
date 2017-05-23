@@ -6,3 +6,25 @@
         </div>
     </div>
 </div>
+<!--创建模板-->
+<div id="creatTemp">
+    <form method="post" id="formQd" >
+        <div class="rwCon">
+            <div class="qdContent">
+                <label for="esNationName" class="qdTitle">名称：</label>
+                <input class="easyui-validatebox qdCon" type="text" name="esNationName" data-options="required:true" id="esNationName" />
+            </div>
+        </div>
+        <div class="rwCon">
+            <div class="qdContent qdMark">
+                <label for="esNationMark" class="qdTitle">备注：</label>
+                <textarea rows="3" class="easyui-validatebox qdCon" type="text" name="esNationMark" data-options="required:true" id="esNationMark">
+                </textarea>
+            </div>
+        </div>
+    </form>
+    <div class="dlogFooter" >
+        <button type="button" class="btn btn-primary createQdBtn" onclick="submitTemp()">提交</button>
+        <button type="button" class="btn btn-default claearQdBtn" onclick="claearTemp()">清除</button>
+    </div>
+</div>
