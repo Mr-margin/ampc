@@ -90,24 +90,7 @@ function submitQd(){ //点击提交按钮进行新建清单数据的提交
         )
         $("#creatQd").window('close');
     }else{
-        $("#formQd").submit(
-            ajaxPost('/NativeAndNation/add_nation',param).success(function(res){
-                if(res.status==0){
-                    $("#qgqd").datagrid('insertRow',{ //在表格中插入新建清单
-                        index: 0,	// 索引从0开始
-                        row: {
-                            esNationName: param.nationName, //新建清单的名字
-                            esNationYear: param.nationYear,//新建清单的年份
-                            nationRemark:param.nationRemark //新建清单的备注
-                        }
-                    })
-                }else{
-                    swal('参数错误', '', 'error');
-                }
-
-            })
-        )
-        $("#creatQd").window('close');
+        swal('清单年份获取错误', '', 'error');
     }
 }
 function claearQd(){ //点击窗口清空按钮 对表单输入框进行数据清空
@@ -151,7 +134,7 @@ function editSubmitQd(){//点击提交按钮进行编辑数据提交
     param.nationId = row.esNationId;
     param.nationRemark = qdMark;
     param.nationYear = qdYear;
-    var myYear=$("#esNationYear").val()
+    var myYear=$("#esNationYear_edit").val()
     if(myYear>=1990&&myYear<2100){//判断年份是否符合要求 符合提交编辑后数据
         $("#formQd").submit(
             ajaxPost('/NativeAndNation/update_nation',param).success(function(res){
