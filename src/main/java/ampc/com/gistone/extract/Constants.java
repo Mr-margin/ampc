@@ -1,11 +1,15 @@
 package ampc.com.gistone.extract;
 
 import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.mockito.internal.matchers.Find;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import ampc.com.gistone.util.excelUtil.DateUtil;
 
 public class Constants {
 
@@ -26,7 +30,14 @@ public class Constants {
 	public final static String CALCTYPE_DIFF = "diff";
 	public final static String CALCTYPE_RATIO = "ratio";
 	public final static double MINIMUM = 0.0000000001;
-
+	
+	public final static String CSV_JZ_PREFIX = "vertical";
+	public final static String CSV_SUFFIX = ".csv";
+	public final static String CSV_TEMPLATE_PATH = "csv/ncl/template/0.Run_Vertical.csh";
+	public final static String CSV_TEMP_PATH = "csv/temp/";
+	public final static String CSV_INDEX_PATH = "csv/specie";
+	public final static String NCL_PATH = "csv/ncl/2.Plot_Vertical.ncl";
+	
 	public final static String RESOLUTION_MONTH = "M";
 	public final static String RESOLUTION_DAY = TIMEPOINT_D;
 	public final static String RESOLUTION_HOUR = TIMEPOINT_H;
@@ -35,7 +46,7 @@ public class Constants {
 	public final static String AREA_PROVINCE = "province";
 	public final static String AREA_POINT = "station";
 	public final static String AREA_POINT2 = "point";
-
+	
 	public final static String MODEL_DATA_TYPE_FNL = "fnl";
 	public final static String MODEL_DATA_TYPE_GFS = "gfs";
 	public final static String MODEL_DATA_TYPE_GFS_FIRST = "gfs_first"; // 实时预报中第一天gfs
@@ -58,6 +69,7 @@ public class Constants {
 	public final static String COLOR_LONG_LIST = "colorLongList"; // 颜色的long类型格式
 	public final static String FILE_TYPE_TIFF = "tiff";
 	public final static String FILE_TYPE_IMAGE = "image";
+
 
 	public static final String[] HOURLYSPECIES = { "PM25", "PM10", "O3", "SO2", "NO2", "CO", "SO4", "NO3", "NH4", "BC",
 			"OM", "PMFINE" };
