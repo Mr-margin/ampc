@@ -24,7 +24,7 @@ public class DomainParams {
 	private DomainDataMcip mcip; // mcip 参数
 	private DomainDataMeic meic;
 	
-	private MeganParams megan;
+//	private MeganParams megan;
 	
 
 	public DomainDataCommon getCommon() {
@@ -67,14 +67,14 @@ public class DomainParams {
 		this.meic = meic;
 	}
 
-	public MeganParams getMegan() {
-		return megan;
-	}
-
-	public void setMegan(MeganParams megan) {
-		this.megan = megan;
-	}
-	
+//	public MeganParams getMegan() {
+//		return megan;
+//	}
+//
+//	public void setMegan(MeganParams megan) {
+//		this.megan = megan;
+//	}
+//	
 	
 	
 
