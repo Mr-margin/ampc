@@ -2,12 +2,17 @@
  * Created by shanhaichushi on 2017/5/19.
  */
 // 导航
-$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">本地清单</span><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatQd()">新建</button><button class="qdEdit" onclick="editQd()">编辑</button><button class="qdDelet">删除</button></span>');
+$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">本地清单</span><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatTemp()">新建</button><button class="qdEdit" onclick="editTemp()">编辑</button><button class="qdDelet" onclick="delectTemp()">删除</button></span>');
 
 // 表单生成
 innitdata()
 function innitdata(){
-    // $("#localqd").datagrid({
+    ajaxPost('/NativeAndNation/find_natives',{
+        "userId":userId
+    }).success(function(data){
+        console.log("数据加载成功了")
+    })
+    // $("#localqd").treegrid({
     //     method:'post',
     //     url: "/ampc/NativeAndNation/find_nation",
     //     dataType: "json",
@@ -49,64 +54,9 @@ function innitdata(){
     //         return {"token": "", "data": data};
     //     },
     // })
-    //任务接口测试
-    ajaxPost('/mission/get_mission_list',{
-        "queryName": '',
-        "missionStatus": '',
-        "pageNum": 1,
-        "pageSize": 10,
-        "sort": '',
-        "userId": 1
-    }).success(function(data){
-        requestQJData(data.data);
-        $("#localqd").treegrid({
-            data: transformdata,
-            idField:'id',
-            treeField:'missionName',
-            columns:[[
-                {field:"ck",checkbox:true},
-                {field:'missionName',title:'任务名称'},
-                {field:'missionId',title:'ID'},
-            ]],
 
-        })
-    })
-
-    function requestQJData(res) {
-        transformdata=[];
-        for (var i = 0; i < res.rows.length; i++) {
-            transformdata.push($.extend({}, res.rows[i], {id: 'rw' + res.rows[i].missionId, state: 'closed'}));
-            $.ajax({
-                url: '/ampc/scenarino/get_scenarinoListBymissionId',
-                contentType: 'application/json',
-                method: 'post',
-                async: false,
-                dataType: 'JSON',
-                data: JSON.stringify({
-                    "token": "",
-                    "data": {
-                        "missionId": res.rows[i].missionId,
-                        "queryName": '',
-                        "sort": '',
-                        "userId": 1
-                    }
-                }),
-                success: function (data) {
-//          if(data.data.rows.length==0){
-//            return;
-//          }
-                    transformdata[transformdata.length - 1].children = [];
-                    transformdata[transformdata.length - 1].children.push($.extend({}, {
-                        missionNameTitle: '情景名称', missionIdTitle: 'ID', domainNameTitle: '操作', esCouplingNameTitle: '管理',
-                        missionAddTimeTitle: '情景状态', missionStartDateTitle: '执行日期', missionEndDateTitle: '结束日期',
-                        missionStatusTitle: '类型'
-                    }, {id: 'qjtitle' + res.rows[i].missionId}))
-                    for (var j = 0; j < data.data.rows.length; j++) {
-                        transformdata[transformdata.length - 1].children.push($.extend({}, data.data.rows[j], {id: 'qj' + data.data.rows[j].scenarinoId}));
-                    }
-                }
-            });
-        }
-    }
+}
+//创建模板窗口
+function creatTemp(){
 
 }
