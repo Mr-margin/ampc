@@ -3,13 +3,12 @@ var qjid_dq;//当前的情景ID
 var qjname_dq;//当前情景的name
 
 var sceneInitialization = vipspa.getMessage('sceneInitialization').content;//从路由中取到情景范围
-if (!sceneInitialization) {
-    sceneInitialization = JSON.parse(ls.getItem('SI'));
+if (!sceneInitialization) {//判断路由里面有没有
+    sceneInitialization = JSON.parse(ls.getItem('SI'));//从seesion取数据
 } else {
-    ls.setItem('SI', JSON.stringify(sceneInitialization));
+    ls.setItem('SI', JSON.stringify(sceneInitialization));//更新session数据
 }
-//console.log(JSON.stringify(sceneInitialization));
-if (!sceneInitialization) {
+if (!sceneInitialization) {//判断里面有没有数据
     sceneInittion();
 } else {
     setQjSelectBtn(sceneInitialization.data);//加载地图上的情景按钮
@@ -19,7 +18,6 @@ var allMission = {};
  * 初始化模态框显示
  */
 function sceneInittion() {
-
     $("#task").html("");
     var paramsName = {};
     paramsName.userId = userId;
@@ -166,7 +164,7 @@ function sceneTable() {
  * 保存选择的情景
  */
 function save_scene() {
-   // var row = $('#sceneTableId').bootstrapTable('getSelections');//获取所有选中的情景数据
+    // var row = $('#sceneTableId').bootstrapTable('getSelections');//获取所有选中的情景数据
     var row = $('#sceneTableId').datagrid('getSelections');//获取所有选中的情景数据
 
     if (row.length > 0) {
@@ -192,7 +190,7 @@ function save_scene() {
         vipspa.setMessage(mag);
         ls.setItem('SI', JSON.stringify(mag));
         var qiehuan=$("#showtype .active").attr("val_name");
-          //console.log(qiehuan);
+        //console.log(qiehuan);
         if (qiehuan == "gis") {
             setQjSelectBtn(data);//添加情景选择按钮
         }
@@ -343,8 +341,8 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
         app.stlayerList = new dong.gaodeLayer({layertype: "st"});//加载卫星图
         app.labellayerList = new dong.gaodeLayer({layertype: "label"});//加载标注图
         app.zoom_start = false;//全局zoom变量，用来控制第一次加载数据一定显示全部省级
-        
-        //app.map.on("load", shoe_data_start);//启动后立即执行获取数据
+
+        app.map.on("load", shoe_data_start);//启动后立即执行获取数据
 
         app.map.addLayer(app.baselayerList);//添加高德地图到map容器
         app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
@@ -352,17 +350,18 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
         app.map.graphics.clear();
 
         dojo.connect(app.map, "onClick", optionclick);//点击
-        
+
         dojo.connect(app.map, "onZoomEnd", resizess);//缩放
         app.outline = new dong.SimpleLineSymbol("solid", new dong.Color("#444"), 1);
         app.selectline = new dong.SimpleLineSymbol("solid", new dong.Color("#5D1F68"), 3);
     });
 
+
+
 /**
  * 启动后加载数据，
  */
 function shoe_data_start(evn) {
-//    console.log(evn)
     gis_paramsName.userId = userId;
     gis_paramsName.pollutant = $('#hz_wrw').val();//物种
     
@@ -485,7 +484,10 @@ function baizhu_jianpai(gis_paramsName, sh_type) {
                 bar();
             }
         } else {
-            swal('减排数据获取失败', '', 'error');
+            //判断是否有情景
+            if(sceneInitialization){
+                swal('减排数据获取失败', '', 'error');
+            }
         }
     });
 }
@@ -735,7 +737,6 @@ function bar() {
     ajaxPost('/echarts/get_barInfo', paramsName).error(function () {
     }).success(function (res) {
         if (res.status == 0) {//返回成功
-
             if (res.data.dateResult.length > 0) {//有返回时间，说明可以显示柱状图
 
                 tj_paramsName.new_arr = [];
