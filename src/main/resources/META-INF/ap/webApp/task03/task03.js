@@ -248,49 +248,6 @@ function hyc() {
 return;
 
 
-//
-// //		console.log(JSON.stringify(res));
-//         var accordion_html = "";
-//         if (res.status == 0) {
-//             $.each(res.data, function (i, col) {
-//
-// //      var inn = i == 0 ? "in" : "";//第一个手风琴页签打开
-//                 var inn = "";
-//                 if (stname) {
-//                     inn = stname == col.sectorsName ? "in" : "";
-//                 }
-//
-//                 accordion_html += '<div title=' + col.sectorsName + ' val_name="' + col.sectorsName + '"><div class="panel-heading" style="background-color: #FFF;">';
-//                 accordion_html += '<a data-toggle="collapse" data-parent="#accordion" style="font-weight: 700;" href="#collapse' + i + '"><h5 onclick="metTable_hj_info(\'' + col.sectorsName + '\');" class="panel-title">' + col.sectorsName + '';
-//                 if (col.count != "0") {
-//                     accordion_html += '<code class="pull-right">已使用&nbsp;' + col.count + '&nbsp;条措施</code>';
-//                 }
-//                 accordion_html += '</h5></a></div><div id="collapse' + i + '" class="panel-collapse collapse ' + inn + '" style="background-color: #EDF7FF;"><div class="panel-body" style="border: 0px;">';
-//
-//                 $.each(col.measureItems, function (j, vol) {
-//                     accordion_html += '<div class="col-6 c6center">';
-//                     var bggh = true;
-//                     if (col.planMeasure.length > 0) {
-//                         $.each(col.planMeasure, function (k, ool) {//循环已选中的措施
-//                             if (ool.measureId == vol.mid) {//已选中的措施和措施列表的ID相同，标签需要更改效果
-//                                 accordion_html += '<a class="btn btn-success-cs-w" id="' + ool.planMeasureId + '" style="width:80%;" onclick="open_cs(\'' + col.sectorsName + '\',\'' + vol.measureame + '\',\'' + vol.mid + '\',\'' + ool.planMeasureId + '\');"><i class="fa fa-check"> </i>&nbsp;&nbsp;&nbsp;' + vol.measureame + '</a>';
-//                                 bggh = false;//如果已选中，在这里添加，否则需要添加未选中的标签
-//                             }
-//                         });
-//                     }
-//                     if (bggh) {
-//                         accordion_html += '<a class="btn btn-success-cs btn-outline" style="width:80%;" onclick="open_cs(\'' + col.sectorsName + '\',\'' + vol.measureame + '\',\'' + vol.mid + '\',\'null\');"><i class="fa fa-ban"> </i>&nbsp;&nbsp;&nbsp;' + vol.measureame + '</a>';
-//                     }
-//                     accordion_html += '</div>';
-//                 });
-//                 accordion_html += '</div></div></div>';
-//             });
-//             $("#accordion").html(accordion_html);
-//
-//         } else {
-//             swal('连接错误/plan/get_planInfo', '', 'error');
-// //			swal('添加成功', '', 'success');
-//         }
     }).error(function () {
         swal('校验失败', '', 'error')
     })
@@ -314,15 +271,6 @@ function metTable_hj_info(pa_name) {
         hangye = pa_name;
     } else {
         hangye = $("#accordion .openAccordion .menuCD_title").attr("val_name");
-        //循环手风琴列表下所有的一级子节点，查找哪个正在打开
-        // $("#accordion").children().each(function () {
-        //     var e = $(this);
-        //     e.children().each(function () {//再循环一次，这次下面有两个div，一个标题，一个内容
-        //         if ($(this).is('.openAccordion')) {
-        //             hangye = e.attr("val_name");
-        //         }
-        //     });
-        // });
     }
 
     //行业的查询状态
@@ -359,6 +307,7 @@ function metTable_hj_info(pa_name) {
         data.sectorName = hangye;
     }
 
+    getMapPoint(data.sectorName);
     // ajaxPost('/measure/get_measureList',data).success(function (res) {
       
         $('#metTable_hj').datagrid({
@@ -456,6 +405,63 @@ function hangye_type_info() {
     setTimeout(function () {
         metTable_hj_info();
     }, 100);
+}
+
+/**
+ * 获取地图上的点信息
+ * @param sector 所请求的行业
+ */
+function getMapPoint(sector) {
+    var parameter = {
+        userId:userId,
+        planId:qjMsg.planId,
+        species:$('#hz_wrw').val(),
+        sector:sector||'',
+    }
+
+    ajaxPost_w(jianpaiUrl+'/search/companyPoint',parameter).success(function (res) {
+        if(res.code == '0'){
+            if(res.data.total){
+                var total = res.data.total;
+                var pointArr = [];
+                for(var i in total){
+                    if(total[i].length>0){
+                        pointArr = pointArr.concat(total[i]);
+
+                    }
+                }
+                if(pointArr.length == 0){
+                    app.mapList[0].removeLayer(clusterLayer_ttft);//清空已有的点位信息
+                }else{
+                    add_point(pointArr);
+                }
+
+                // if(res.data.total.length>0){
+                //     add_point(res.data.total);
+                // }else if(res.data.total.length==0){
+                //     app.mapList[0].removeLayer(clusterLayer_ttft);//清空已有的点位信息
+                // }
+            }else{
+                console.log('/search/companyPoint返回数据格式错误')
+            }
+        }else{
+            swal({
+                title: "地图点源信息查询有误",
+                type:'error',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+
+    }).error(function () {
+        swal({
+            title: "/search/companyPoint 接口错误",
+            type:'error',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    })
+
 }
 
 /**
@@ -2127,7 +2133,7 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
         app.mapList[0].addLayer(app.gLyr);
 
 //		app.pint = new dong.GraphicsLayer({"id":"pint"});
-//		app.mapList[1].addLayer(app.pint);
+//		app.mapList[0].addLayer(app.pint);
 
 //		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/cms/MapServer");//创建动态地图
 //		app.mapList[0].addLayer(app.layer);
@@ -2167,8 +2173,8 @@ function add_point(col) {
 //	console.log(JSON.stringify(col));
 
     if (clusterLayer_ttft != "") {
-        app.mapList[1].removeLayer(clusterLayer_ttft);//清空已有的点位信息
-        app.mapList[1].infoWindow.hide();
+        app.mapList[0].removeLayer(clusterLayer_ttft);//清空已有的点位信息
+        app.mapList[0].infoWindow.hide();
     }
     var photoInfo = {};
     var point_sz = [];
@@ -2211,8 +2217,8 @@ function add_point(col) {
             "id": "clusters",
             "labelColor": "#fff",
             "labelOffset": -4,
-            "resolution": app.mapList[1].extent.getWidth() / app.mapList[1].width,
-            "singleColor": "#888",
+            "resolution": app.mapList[0].extent.getWidth() / app.mapList[0].width,
+            "singleColor": "#88232a",
             "maxSingles": 3000,
             "showSingles": false
 
@@ -2233,12 +2239,12 @@ function add_point(col) {
         renderer.addBreak(10000, 99999999, style5);
 
         clusterLayer.setRenderer(renderer);
-        app.mapList[1].addLayer(clusterLayer);
+        app.mapList[0].addLayer(clusterLayer);
         clusterLayer_ttft = clusterLayer;
 
         setTimeout(function () {
             var extent = new dong.Extent(xmin, ymin, xmax, ymax, new dong.SpatialReference({wkid: 3857}));
-            app.mapList[1].setExtent(extent.expand(1.5));
+            app.mapList[0].setExtent(extent.expand(1.5));
         }, 100);
     }
 }
@@ -2315,7 +2321,7 @@ function liangtoFixed(jk) {
 
 
 function cleanUp() {
-    app.mapList[1].infoWindow.hide();
+    app.mapList[0].infoWindow.hide();
     //clusterLayer.clearSingles();
 }
 
@@ -2343,9 +2349,9 @@ function optionclick(event) {
         }
 //		 var content =  "22222<br><b>Order</b>: erer<br><b>SubOrder</b>: 23<br><b>Description</b>: ssss<br><b>Drainage</b>:graphic.attributes.DrainageCl " +
 //	       + "<br><a href='#' onclick=\"infoWindowMobileHandler(event)\" class='info-window-mobile-button ui-btn'>Close</a> ";
-//	     app.mapList[1].infoWindow.setTitle("");
-//	     app.mapList[1].infoWindow.setContent(content);
-//	     app.mapList[1].infoWindow.show(event.mapPoint);
+//	     app.mapList[0].infoWindow.setTitle("");
+//	     app.mapList[0].infoWindow.setContent(content);
+//	     app.mapList[0].infoWindow.show(event.mapPoint);
     });
 }
 
