@@ -1,0 +1,94 @@
+{
+  "应急系统新_4行业匹配": {
+    "sheet0": {
+      "ID": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "30"
+      },
+      "ID0": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "4"
+      },
+      "ID0Name": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "15"
+      },
+      "ID1": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "4"
+      },
+      "ID1Name": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "15"
+      },
+      "ID2": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "4"
+      },
+      "ID2Name": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "15"
+      },
+      "ID3": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "4"
+      },
+      "ID3Name": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "15"
+      },
+      "Group_Sector": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "15"
+      },
+      "Group_1": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "15"
+      },
+      "Group_2": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "10"
+      },
+      "Group_3": {
+        "valueRange": "none",
+        "dataType": "String",
+        "isNotNull": "y",
+        "maxLenth": "10"
+      },
+      "Tag": {
+        "valueRange": "none",
+        "dataType": "Double",
+        "isNotNull": "y",
+        "maxLenth": "5"
+      },
+      "sheetName": {
+        "maxLenth": "10",
+        "valueRange": "none"
+      }
+    }
+  }
+}
