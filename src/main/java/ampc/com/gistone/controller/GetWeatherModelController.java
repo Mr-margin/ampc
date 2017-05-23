@@ -37,6 +37,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 
+
+
+
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
@@ -46,6 +49,7 @@ import ampc.com.gistone.redisqueue.ReadyData;
 import ampc.com.gistone.redisqueue.StopModelData;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.LogUtil;
 import ampc.com.gistone.util.RegUtil;
@@ -81,6 +85,9 @@ public class GetWeatherModelController {
 	
 	@Autowired
 	private StopModelData stopModelData;
+	
+	@Autowired
+	private ConfigUtil configUtil;
 	/**
 	 * 
 	 * @Description: 模式启动接口
@@ -749,20 +756,26 @@ public class GetWeatherModelController {
 				return AmpcResult.build(1003, "scenarioid为空或出现非法字符!");
 			}
 			Long scenarinoId = Long.parseLong(param.toString());
-			param = requestDate.get("actionlistErrorMSG");
-			boolean actionlist;
-			try {
-				actionlist = (boolean) param;
-			} catch (Exception e) {
-				LogUtil.getLogger().error("GetWeatherModelController--CalActionlistError  actionlistErrorMSG参数错误!");
-				return AmpcResult.build(1003, "actionlistErrorMSG为空或出现非法字符!");
-			}
+			LogUtil.getLogger().info("GetWeatherModelController-CalActionlistError 请求actionlist失败！情景ID："+scenarinoId);
 			TTasksStatus tTasksStatus = new TTasksStatus();
 			tTasksStatus.setTasksScenarinoId(scenarinoId);
 			tTasksStatus.setTasksExpand1(1l);
 			int updateEmisData = tTasksStatusMapper.updateEmisData(tTasksStatus);
 			if (updateEmisData>0) {
-				return AmpcResult.build(0, "success");
+				//修改情景状态
+				Map map = new HashMap();
+				map.put("scenarinoStatus", 9l);
+				map.put("scenarinoId", scenarinoId);
+				int updateScenType = tScenarinoDetailMapper.updateScenType(map);
+				if (updateScenType>0) {
+					//接入微信接口
+					String weixinServerURL = configUtil.getWeixinServerURL();
+					
+					
+					return AmpcResult.build(0, "success");
+				}else {
+					throw new SQLException("GetWeatherModelController CalActionlistError 更新情景败状态失败!");
+				}
 			}else {
 				throw new SQLException("GetWeatherModelController CalActionlistError 更新情景actionlist计算失败状态失败!");
 			}
