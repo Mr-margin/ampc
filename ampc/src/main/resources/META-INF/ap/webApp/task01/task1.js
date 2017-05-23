@@ -1,8 +1,8 @@
-var transformdata = [];
-var subBtn = true;
-var rwSelectType = '';
-var statusRW = '';
-var selectRW = {};
+var transformdata = [];//因为获取任务和获取情景是两个接口，此变量用于存储两个接口转换成一个数据的变量
+var subBtn = true;//用于防止重复提交的flag
+var rwSelectType = ''; //存储选中情景所对应的任务
+var statusRW = '';//任务类型选择使用的变量，废弃中
+var selectRW = {};//存储被选中的任务的数据
 var basisArr, qjType;
 var qjType = 0;
 var __dsp = {};//用于存储请求信息，做Promise存储
