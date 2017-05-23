@@ -299,5 +299,16 @@ public interface TScenarinoDetailMapper {
 	 * @return
 	 */
 	TScenarinoDetail selectendStart(Map map);
+
+	/**
+	 * @Description: 查找用户某个情类型的全部情景
+	 * @param hashmap --  userId  scenType 
+	 * List  
+	 * @return 
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年5月22日 下午5:27:19
+	 */
+	List<TScenarinoDetail> selectListFirstTime(Map hashmap);
 	
 }
