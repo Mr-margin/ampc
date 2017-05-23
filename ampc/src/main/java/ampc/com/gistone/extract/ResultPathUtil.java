@@ -319,6 +319,21 @@ public class ResultPathUtil {
 		}
 		return null;
 	}
+	
+	/**
+	 * 
+	 * @param params
+	 * @return
+	 */
+	public Map<String, Map<String, List>> getSheetName(String showType, String calcType, String timePoint, String specie) {
+		
+		timePoint = timePoint.equals(Constants.TIMEPOINT_D) ? Constants.TIMEPOINT_DAILY
+				: Constants.TIMEPOINT_HOURLY;
+		String name = showType + "-" + calcType + "-" + timePoint;
+		name = name.toLowerCase();
+		
+		return this.imageColorConfig.getSheetMap(name);
+	}
 
 	public ExtractConfig getExtractConfig() {
 		return extractConfig;
