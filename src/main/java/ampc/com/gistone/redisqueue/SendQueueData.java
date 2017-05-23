@@ -62,6 +62,8 @@ import org.springframework.stereotype.Component;
 
 
 
+
+
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.model.TScenarinoDetail;
@@ -240,27 +242,29 @@ public class SendQueueData {
 		LogUtil.getLogger().info("SendQueueData-sendData:开始发送");
 		boolean flag = false;
 		String sendname = configUtil.getRedisQueuesSendName();
-		try {
-			long leftPush = redisqueue.leftPush(sendname,json);//receive_queue_name   r0_bm
-//			long leftPush = redisqueue.leftPush("r0_test_bm",json);//receive_queue_name   r0_bm
-//			long leftPush = redisqueue.leftPush("r0_bm",json);//内网
-//		redisqueue.leftPush("bm",json);//receive_queue_name
-			if (leftPush>0) {
-				LogUtil.getLogger().info("leftPush："+leftPush);
-				flag = true;
-			}else {
+		
+		for (int i = 0; i < 3; i++) {
+			try {
+				long leftPush = redisqueue.leftPush(sendname,json);//receive_queue_name   r0_bm
+				if (leftPush>0) {
+					LogUtil.getLogger().info("leftPush："+leftPush);
+					flag = true;
+					break;
+				}else { 
+					flag = false;
+				}
+			} catch (Exception e) {
+				LogUtil.getLogger().error("SendQueueData-sendData:发送消息到消息队列出现异常！",e);
 				flag = false;
 			}
-			LogUtil.getLogger().info("SendQueueData-sendData:发送结束");
-			return flag;
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			LogUtil.getLogger().error("SendQueueData-sendData:发送消息到消息队列出现异常！",e);
-			flag = false;
-			return flag;
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		
+		LogUtil.getLogger().info("SendQueueData-sendData:发送结束");
+		return flag;
 	}
 
 
@@ -287,6 +291,24 @@ public class SendQueueData {
 			readyData.updateScenStatusUtil(10l, scenarinoId);
 		}
 		return flag;
+	}
+
+
+
+
+	/**
+	 * @Description: 发送domaindata参数到消息队列
+	 * @param queueData   
+	 * void  
+	 * @return 
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年5月22日 下午4:31:54
+	 */
+	public boolean sendDomainDatajson(QueueData queueData) {
+		String domainDatajson = null;
+		sendmessagelogfile(domainDatajson);
+		return false;
 	}
 
 
