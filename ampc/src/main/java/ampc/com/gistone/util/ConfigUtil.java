@@ -72,6 +72,9 @@ public class ConfigUtil {
 	//记录发送的消息生成的文件的路径
 	@Value("${sendmessage.log}")
 	private String sendMessageLog;
+	//微信路径url
+	@Value("${weixin.serverURL}")
+	private String weixinServerURL;
 			//redisIP地址
 			@Value("${spring.redis.host}")
 			private String redisHost;
@@ -182,6 +185,10 @@ public class ConfigUtil {
 			
 			
 
+	public String getWeixinServerURL() {
+				return weixinServerURL;
+			}
+
 	public String getSendMessageLog() {
 				return sendMessageLog;
 			}
@@ -198,9 +205,9 @@ public class ConfigUtil {
 				return actionlistDirPre;
 			}
 
-			public String getActionlistDirAfter() {
-				return actionlistDirAfter;
-			}
+	public String getActionlistDirAfter() {
+			return actionlistDirAfter;
+		}
 
 	public Integer getModelbodyflagparams() {
 				return modelbodyflagparams;
