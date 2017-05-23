@@ -42,9 +42,12 @@ import org.springframework.util.StringUtils;
 
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
+import ampc.com.gistone.database.inter.TUngribMapper;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTasksStatus;
+import ampc.com.gistone.database.model.TUngrib;
 import ampc.com.gistone.redisqueue.result.Message;
+import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.JsonUtil;
 import ampc.com.gistone.util.LogUtil;
@@ -72,7 +75,13 @@ public class ToDataTasksUtil {
 	private ReadyData readyData;
 	@Autowired
 	private Ruku ruku;
-	
+	@Autowired
+	private ConfigUtil configUtil;
+	@Autowired
+	private TUngribMapper tUngribMapper;
+	//加载dataungributil
+	@Autowired
+	private ToDataUngribUtil toDataUngribUtil;
 
 	/**
 	 * @Description: TODO
@@ -139,20 +148,20 @@ public class ToDataTasksUtil {
 									    int i = tasksStatusMapper.updateStatus(tasksStatus);
 									    LogUtil.getLogger().info("tasksstatus："+tasksStatus);
 									    if (i>0) {
-									    	LogUtil.getLogger().info("更新tasksstatus成功");
+									    	LogUtil.getLogger().info("更新tasksstatus成功，情景ID："+tasksScenarinoId);
 									    	if (code!=0||!"".equals(errorStatus)) {
 									    		//出现错误，模式变为出错
 									    		//更新情景状态
 									    		//更新状态
 									    		readyData.updateScenStatusUtil(9l, tasksScenarinoId);
-									    		LogUtil.getLogger().info("updateDB-model.start.result：模式运行出错！");
+									    		LogUtil.getLogger().info("updateDB-model.start.result：模式运行出错！情景ID："+tasksScenarinoId);
 											}else {
 												TScenarinoDetail selectByPrimaryKey=null;
 												try {
 													//通过情景的ID查找该情景的开始时间结束时间和情景类型
 													selectByPrimaryKey = tScenarinoDetailMapper.selecttypetime(tasksScenarinoId);
 												} catch (Exception e) {
-													LogUtil.getLogger().error("updateDB-model.start.result:查询情景详情出错！scenarinoId："+tasksScenarinoId,e);
+													LogUtil.getLogger().error("updateDB-model.start.result:查询情景selecttypetime出错！scenarinoId："+tasksScenarinoId,e);
 												}
 										    	//获取当前情景pathdate 用于确定该条记录是不是补发的
 										    	Date pathDate = selectByPrimaryKey.getPathDate();
@@ -209,17 +218,25 @@ public class ToDataTasksUtil {
 											    			TScenarinoDetail idandcore = tScenarinoDetailMapper.getidByuserIdAndpathdate(map2);
 											    			if (null!=idandcore) {
 											    				Long scenarinoId = idandcore.getScenarinoId();
-												    			Long cores =Long.parseLong(idandcore.getExpand3());
 												    			//检查当天的实时预报是否正在执行（测试出的bug）
 												    			TTasksStatus tasksStatus2 = tasksStatusMapper.selectendByscenarinoId(scenarinoId);
 												    			//获取当条情景是否在执行
 												    			String nowexMo = tasksStatus2.getBeizhu2();
 												    			if (nowexMo.trim().equals("0")) {
-												    			//	readyData.readyRealMessageDataFirst(scenarinoId, cores,userId);
-												    				String lastungrib = readyData.readyLastUngrib(userId);
-												    				if (null!=lastungrib) {
-												    					readyData.readyRealMessageDataFirst(idandcore, lastungrib);
-																	}
+												    				//获取最新的ungrib 
+												    				TUngrib tUngrib = tUngribMapper.getlastungrib();
+												    				int length = toDataUngribUtil.UpdateORNo(tUngrib);
+												    				Long rangeDay = idandcore.getRangeDay();
+												    				if (length>=rangeDay) {
+												    					//最新的pathdate（年月日）
+																		Date pathdate = tUngrib.getPathDate();
+													    				//查找中断的预报时间
+																		Date lastpathdate = tScenarinoDetailMapper.getlastrunstatus(userId);
+																		String lastungrib = readyData.pivot(userId, lastpathdate, pathdate);
+													    				if (null!=lastungrib) {
+													    					readyData.readyRealMessageDataFirst(idandcore, lastungrib);
+																		}
+												    				}
 																}else {
 																	//表示已经发送过当条情景 不用触发
 												    				LogUtil.getLogger().info("情景ID为："+scenarinoId+"的情景已经发送过消息了！");
@@ -237,14 +254,12 @@ public class ToDataTasksUtil {
 																if (goon>0) {
 																	LogUtil.getLogger().info("时间超过七点，不能再发送了");
 																}else{
-																//	readyData.sendqueueRealData(tasksEndDate,tasksScenarinoId);
 																	readyData.sendqueueRealDataThen(tasksEndDate,tasksScenarinoId);
 																}
 															}
 														}
 											    		if (pathcompare==0) {
 											    			//当时间到当天的时候发当天的实时预报
-											    		//	readyData.sendqueueRealData(tasksEndDate,tasksScenarinoId); 
 											    			readyData.sendqueueRealDataThen(tasksEndDate,tasksScenarinoId); 
 														}
 											    		LogUtil.getLogger().info(tasksEndDate+"tasks的结束时间");
@@ -592,9 +607,11 @@ public class ToDataTasksUtil {
 			Integer stepindex, String endtime, String errorStatus) {
 		//模式运行出错，修改情景状态
 		readyData.updateScenStatusUtil(9l, tasksScenarinoId);
+		String weixinServerURL = configUtil.getWeixinServerURL();
 		switch (code) {
 		case 9999:
 			LogUtil.getLogger().info("ModelexecuteErrorHandel：系统错误！情景ID："+tasksScenarinoId);
+			
 			break;
 		case 1001:
 			LogUtil.getLogger().info("ModelexecuteErrorHandel：参数错误！情景ID："+tasksScenarinoId);
