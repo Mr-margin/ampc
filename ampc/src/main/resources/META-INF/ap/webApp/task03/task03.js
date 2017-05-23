@@ -2218,7 +2218,7 @@ function add_point(col) {
             "labelColor": "#fff",
             "labelOffset": -4,
             "resolution": app.mapList[0].extent.getWidth() / app.mapList[0].width,
-            "singleColor": "#88232a",
+            "singleColor": "#888",
             "maxSingles": 3000,
             "showSingles": false
 
