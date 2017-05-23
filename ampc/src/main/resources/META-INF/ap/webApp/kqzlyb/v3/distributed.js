@@ -220,11 +220,11 @@ $('#sTime-h').on('change', function (e) {//选择时间
 
 require(
     [
-        "esri/map", "esri/layers/GraphicsLayer", "esri/geometry/Extent", "tdlib/gaodeLayer", "esri/SpatialReference", "esri/symbols/PictureMarkerSymbol",
-        "esri/symbols/PictureFillSymbol", "esri/layers/MapImageLayer", "esri/layers/MapImage", "dojo/domReady!"
+        "esri/map", "esri/graphic", "esri/layers/GraphicsLayer", "esri/geometry/Extent", "tdlib/gaodeLayer", "esri/SpatialReference", "esri/symbols/PictureMarkerSymbol",
+        "esri/symbols/PictureFillSymbol", "esri/layers/MapImageLayer", "esri/layers/MapImage", "esri/geometry/Point", "dojo/domReady!"
     ],
-    function (Map,   GraphicsLayer, Extent, gaodeLayer, SpatialReference, PictureMarkerSymbol, 
-    		PictureFillSymbol, MapImageLayer, MapImage) {
+    function (Map, Graphic,  GraphicsLayer, Extent, gaodeLayer, SpatialReference, PictureMarkerSymbol, 
+    		PictureFillSymbol, MapImageLayer, MapImage, Point) {
 
     	dong.GraphicsLayer = GraphicsLayer;//画布层，用于加点，标线等等
     	dong.Extent = Extent;//空间范围
@@ -234,6 +234,8 @@ require(
         dong.PictureFillSymbol = PictureFillSymbol;//
         dong.MapImageLayer = MapImageLayer;//
         dong.MapImage = MapImage;//
+        dong.Point = Point;
+        dong.Graphic = Graphic;
 
         //arcgis代理，在GP服务时使用
 //      esri.config.defaults.io.proxyUrl = ArcGisUrl + "/Java/proxy.jsp";
@@ -253,8 +255,8 @@ require(
         app.map.addLayer(app.baselayerList);//添加高德地图到map容器
         app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
 
-        app.gLyr1 = new dong.GraphicsLayer({"id": "gLyr1"});
-        app.map.addLayer(app.gLyr1);
+        app.gLyr = new dong.GraphicsLayer({"id": "gLyr"});
+        app.map.addLayer(app.gLyr);
         
         app.mapimagelayer = new dong.MapImageLayer({"id":"myil"});
         app.map.addLayer(app.mapimagelayer);
@@ -431,8 +433,7 @@ function showDate(type) {
  * 排放数据更新并加载
  */
 function updata() {
-//	zmblockUI("#map_in", "start");
-	
+	zmblockUI1("#map_in", "start");
     var parameter = {
         calcType: 'show',//请求类型 show：当前情景，还有相对变化绝对变化，此处只需要show
         showType: 'concn',//请求类型 concn：浓度，还有风场排放，此处只需要concn
@@ -462,10 +463,10 @@ function updata() {
         p1.day = moment(changeMsg.YBDate).format('YYYY-MM-DD');
         p1.hour = changeMsg.YBHour;
     }
-    p1.GPserver_type = [];
-    for (var i = 0; i < changeMsg.species.length; i++) {
-        p1.GPserver_type.push(mappingSpecies[changeMsg.rms][changeMsg.species[i]]);//地图图片所需污染物对照
-    }
+//    p1.GPserver_type = [];
+//    for (var i = 0; i < changeMsg.species.length; i++) {
+//        p1.GPserver_type.push(mappingSpecies[changeMsg.rms][changeMsg.species[i]]);//地图图片所需污染物对照
+//    }
     load_gis(p1);
     
     showTitleFun();//更新标题行显示的查询条件
@@ -512,16 +513,16 @@ function load_gis(p) {
             app.mapimagelayer.addImage(mapImage);//将新的图片图层添加到地图
             
             $('#colorBar').html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
-            zmblockUI("#map_in", "end");//打开锁屏控制
+            zmblockUI1("#map_in", "end");//打开锁屏控制
             console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
 	
 		}else{
-			zmblockUI("#map_in", "end");//打开锁屏控制
+			zmblockUI1("#map_in", "end");//打开锁屏控制
 		}
 
 
     }).error(function (res) {
-        zmblockUI("#map_in", "end");
+        zmblockUI1("#map_in", "end");
         swal('抽数，内部错误', '', 'error');
     });
 }
@@ -544,6 +545,7 @@ function updataWind() {
         missionId: changeMsg.missionId,//任务ID
         scenarioId1: changeMsg.qj1Id,//情景ID
         species: ['WSPD', 'WDIR'],//请求风场时，所需必要参数
+        field:changeMsg.field,//风场类型
         timePoint: changeMsg.rms,//时间分辨率d：逐日，h：逐小时
         borderType: "0"
     };
@@ -556,15 +558,139 @@ function updataWind() {
         p1.day = changeMsg.YBDate;
         p1.hour = changeMsg.YBHour;
     }
-    p1.GPserver_type = [];
-    for (var i = 0; i < changeMsg.species.length; i++) {
-        p1.GPserver_type.push(mappingSpecies[changeMsg.rms][changeMsg.species[i]]);
+//    p1.GPserver_type = [];
+//    for (var i = 0; i < changeMsg.species.length; i++) {
+//        p1.GPserver_type.push(mappingSpecies[changeMsg.rms][changeMsg.species[i]]);
+//    }
+    app.gLyr.clear();
+    if(changeMsg.field > 0){
+    	fengchang(p1);
     }
-//    load_gis(p1);
-
 }
 
 
+/**
+ * 加载风场
+ */
+function fengchang(p){
+	
+	//获取屏幕显示的地图范围
+    var par = p;
+    par.xmax = app.map.extent.xmax;
+    par.xmin = app.map.extent.xmin;
+    par.ymax = app.map.extent.ymax;
+    par.ymin = app.map.extent.ymin;
+    
+	//风场
+    var lujing = "";
+    var fxOpacity = 0;
+    if(par.field == 1){
+        lujing = "fxj";
+        par.windSymbol = 0;
+        fxOpacity = 0.5;
+    }else if(par.field == 2){
+        lujing = "fx";
+        par.windSymbol = 1;//1代表F风，F风最大到20级，箭头风最大到12级
+        fxOpacity = 1;
+    }
+    par.rows = 20;
+    par.cols = 20;
+
+    par.species = ['WSPD','WDIR'];
+    
+    ajaxPost('/extract/data', par).success(function (data) {
+        if (!data.data) {
+            console.log("data.data-null");
+            swal('获取当前范围风场数据失败', '', 'error');
+            return;
+        }
+        if (data.data.length == 0) {
+            console.log("length-null");
+            swal('当前范围缺少风场数据', '', 'error');
+            return;
+        }
+        
+        $.each(data.data, function (i, col) {
+
+            if (typeof col.x == "undefined") {
+                console.log("x-null");
+                return;
+            }
+            if (typeof col.y == "undefined") {
+                console.log("y-null");
+                return;
+            }
+
+            var p_url = "img/"+lujing+"/"+col.WSPD+".png";
+            var angle = 0;
+            switch (col.WDIR) {
+                case "N" :
+                    angle = 0;
+                    break;
+                case "NNE" :
+                    angle = 22.5;
+                    break;
+                case "NE" :
+                    angle = 45;
+                    break;
+                case "ENE" :
+                    angle = 67.5;
+                    break;
+                case "E" :
+                    angle = 90;
+                    break;
+                case "ESE" :
+                    angle = 112.5;
+                    break;
+                case "SE" :
+                    angle = 135;
+                    break;
+                case "SSE" :
+                    angle = 157.5;
+                    break;
+                case "S" :
+                    angle = 180;
+                    break;
+                case "SSW" :
+                    angle = 202.5;
+                    break;
+                case "SW" :
+                    angle = 225;
+                    break;
+                case "WSW" :
+                    angle = 247.5;
+                    break;
+                case "W" :
+                    angle = 270;
+                    break;
+                case "WNW" :
+                    angle = 292.5;
+                    break;
+                case "NW" :
+                    angle = 315;
+                    break;
+                case "NNW" :
+                    angle = 337.5;
+                    break;
+                default :
+                    angle = 0;
+            }
+
+            var symbol = new dong.PictureMarkerSymbol(p_url,20,20);
+            symbol.setOffset(-10,18);
+            symbol.setAngle(angle);
+            var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
+            var graphic = new dong.Graphic(point, symbol);
+            
+            app.gLyr.add(graphic);
+            app.gLyr.setOpacity(fxOpacity);
+        });
+        console.log((new Date().getTime() - v1) + "num:" +g_num);
+    }).error(function (res) {
+        swal('风场抽数，内部错误', '', 'error');
+    });
+
+}
 
 
 
