@@ -5,11 +5,11 @@
 /*全局变量*/
 var totalWidth, totalDate, startDate, qjMsg;
 var index, indexPar, handle, minLeft, maxLeft, selfLeft, startX, leftWidth, rightWidth;
-var allData = [];
+var allData = [];//用于存储所有区域时段和预案信息，展示和数据处理
 var areaIndex, timeIndex;
 var showCode = [{}, {}, {}];
 var proNum, cityNum, countyNum;
-var msg = {
+var msg = {//路由传递信息参数
     'id': 'yaMessage',
     'content': {
         rwId: '',
@@ -62,56 +62,45 @@ var zTreeSetting = {
             //updataCodeList();
         }
     }
-};
+};//zTree 设置option对象
 
 function showMap() {
     addLayer(showCode);
 }
 
+/*创建编辑区域模态框中间部分显示区域名称*/
 function addP(adcode, name, level) {
     return $('<p class="col-md-3"><i class="im-close" style="cursor: pointer" onclick="delAdcode(' + adcode + ',' + level + ')"></i>&nbsp;&nbsp;' + name + ' </p>')
 }
+
+/*创建编辑区域中间部分的adcode更新处理*/
 function updataCodeList() {
-    var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+    var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");//获取zTree对象
     $('.adcodeList').empty();
     for (var i = 0; i < 3; i++) {
         for (var ad in showCode[i]) {
-            if (i == 0) {
-                $('.adcodeList').append(addP(ad, showCode[i][ad], i))
+            if (i == 0) {//根据showCode的数据结构，分为两部分进行处理i==0为省级
+                $('.adcodeList').append(addP(ad, showCode[i][ad], i))//将设着好的地区名称标签添加至模态框中间显示部分
             } else {
                 for (var add in showCode[i][ad]) {
-                    $('.adcodeList').append(addP(add, showCode[i][ad][add], i))
+                    $('.adcodeList').append(addP(add, showCode[i][ad][add], i))//将设着好的地区名称标签添加至模态框中间显示部分
                 }
             }
 
         }
     }
-    /*  proNum = Object.keys(showCode[0]).length;
-     cityNum = (function () {
-     var n = 0;
-     for (var ad in showCode[1]) {
-     n += Object.keys(showCode[1][ad]).length;
-     }
-     return n;
-     })();
-     countyNum = (function () {
-     var n = 0;
-     for (var ad in showCode[2]) {
-     n += Object.keys(showCode[2][ad]).length;
-     }
-     return n;
-     })();*/
 
     proNum = treeObj.getNodesByFilter(function (node) {
         return (node.checked && (node.level == 0))
-    }).length;
+    }).length;//获取已选省数量
     cityNum = treeObj.getNodesByFilter(function (node) {
         return (node.checked && (node.level == 1))
-    }).length;
+    }).length;//获取已选市数量
     countyNum = treeObj.getNodesByFilter(function (node) {
         return (node.checked && (node.level == 2))
-    }).length;
+    }).length;//获取已选县数量
 
+    //将三个数进行展示（暂未使用，标签display：none）
     $('.proNumber span').html(proNum);
     $('.cityNumber span').html(cityNum);
     $('.countyNumber span').html(countyNum);
@@ -149,7 +138,12 @@ function clearAllArea() {
 }
 
 
-/*情景计算状态*/
+/**
+ * 情景计算状态
+ * 情景在不同状态下减排计算、状态查看、减排分析三个按钮的功能操作
+ * 1：创建中，2：编辑中，3：减排计算中，4：减排计算失败，5：可执行，6：模式执行中，7：暂停，8：模式执行完毕，9,10暂且不用
+ * @param typeNum 情景状态
+ */
 function scenarinoType(typeNum) {
     $('.toolShow').removeAttr('disabled');
     $('.addNewArea').removeAttr('disabled');
@@ -191,7 +185,7 @@ function scenarinoType(typeNum) {
     }
 }
 
-
+/*执行初始化函数*/
 initialize();
 
 
@@ -226,7 +220,7 @@ function initialize() {
     $('.qyCon .nowRw span').html(qjMsg.rwName);
     $('.qyCon .nowQj span').html(qjMsg.qjName);
     $('.qyCon .seDate span').html(moment(qjMsg.qjStartDate).format('YYYY-MM-DD') + '至' + moment(qjMsg.qjEndDate).format('YYYY-MM-DD'));
-
+    //向路由对象中添加数据
     msg.content.rwId = qjMsg.rwId;
     msg.content.rwName = qjMsg.rwName;
     msg.content.qjId = qjMsg.qjId;
@@ -239,6 +233,7 @@ function initialize() {
     $('.footerShow .rw span').html(qjMsg.rwName);
     $('.footerShow .qj span').html(qjMsg.qjName);
 
+    /*请求所有区域及时段预案信息*/
     var url = '/area/get_areaAndTimeList';
     var scenarino = ajaxPost(url, {
         scenarinoId: qjMsg.qjId,
@@ -248,6 +243,7 @@ function initialize() {
 
     scenarino.then(function (res) {
 
+        /*使用临时变量存储，后续有可能因为复制情景不使用此数据*/
         allData1 = res.data.slice(0, -1);
         if (qjMsg.scenarinoStatus == 2) {
             for (var i = 0; i < allData1.length; i++) {
@@ -259,6 +255,7 @@ function initialize() {
                 }
             }
         }
+        //判断isNew参数，确定当前情景是不是新创建的，用以判断是否是继续新建还是复制情景
         if (res.data[res.data.length - 1].isnew) {
             $('#selectCreateQj').modal('show')
         } else {
@@ -319,6 +316,7 @@ function getAreaAndTime() {
 
 /*删除区域*/
 function delArea(e) {
+    //当前区域的索引位置，后续需要根据此索引位置到allData中查找数据
     var areaIndex = $('.areaTitle_con').index($(e).parents('.areaTitle_con'));
     var url = '/area/delete_area';
     //var areaIds = [allData[areaIndex].areaId.toString()];
@@ -345,6 +343,7 @@ function delArea(e) {
                     $('.areaTitle_con').eq(areaIndex).remove();
                     showTimeline(allData);
 
+                    //删除区域之后，判断剩余区域是否还有预案，判断减排计算等按钮的使用与否
                     for (var i = 0; i < allData.length; i++) {
                         for (var ii = 0; ii < allData[i].timeItems.length; ii++) {
                             if (allData[i].timeItems[ii].planId == -1) {
@@ -415,7 +414,7 @@ function initEditTimeDate(s, e) {
         //"endDate": end,
         "opens": "right"
     }, function (start, end, label) {
-
+        //editTimeDateObj编辑时段的时候存储的前后时段时间对象
         if (editTimeDateObj.type == 'start') {
             if (editTimeDateObj.beforeS >= moment(start).subtract(1, 'h').format('YYYY-MM-DD HH')) {
                 console.log('时间不合理请重新选择！！！');
@@ -435,10 +434,13 @@ function initEditTimeDate(s, e) {
     })
 }
 
-/*编辑时段时间*/
+/**
+ * 提交编辑时段的时间
+ */
 function sunEditTimeDate() {
     var url = '/time/update_time';
     var after, before, date;
+    //判断修改时段的时间是开始时间还是结束时间
     if (editTimeDateObj.type == 'start') {
         date = moment(editTimeDateObj.s).format('YYYY-MM-DD HH:mm:ss');
         before = allData[areaIndex].timeItems[timeIndex - 1].timeId;
@@ -457,6 +459,7 @@ function sunEditTimeDate() {
         scenarinoId: qjMsg.qjId
     }).success(function (res) {
         if (res.status == 0) {
+            //在前端将allData进行更新，省去在请求一遍areaAndTimeList接口
             if (editTimeDateObj.type == 'start') {
                 allData[areaIndex].timeItems[timeIndex].timeStartDate = moment(date).format('x') - 0;
                 allData[areaIndex].timeItems[timeIndex - 1].timeEndDate = moment(editTimeDateObj.beforeE).format('x') - 0;
@@ -469,10 +472,13 @@ function sunEditTimeDate() {
     })
 }
 
-/*添加时间段*/
+/**
+ * 添加时间段
+ */
 function addTimes() {
     addTimePoint = $('#qyTimePoint').val();
     var timePoint = moment(addTimePoint).format('YYYY-MM-DD HH:mm:ss');
+    //通过areaIndex确定我是编辑的哪一个区域中的
     var timeFrame = allData[areaIndex].timeFrame;
     timeFrame.push(timePoint);
     timeFrame.sort();
@@ -489,6 +495,7 @@ function addTimes() {
         scenarinoStatus: qjMsg.scenarinoStatus
     }).success(function (res) {
 
+        //重新请求一遍区域时段和预案信息
         getAreaAndTime();
 
 
@@ -518,17 +525,15 @@ function momentDate(d) {
     }
 }
 
-/*打开删除时段模态框*/
-//function openDelTimes() {
-//  $('#delTime').modal('show');
-//}
-
-/*删除时间段*/
+/**
+ * 删除时间段
+ */
 function delTimes() {
     var url = '/time/delete_time';
     var mId;
     var ub = $('.delSelect input:checked').val();
     var delTime;
+    //判断我删除的时段是与前一时段合并还是与后一时段合并
     if (ub == 'up') {
         mId = allData[areaIndex].timeItems[timeIndex - 1].timeId;
         delTime = moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate)).format('YYYY-MM-DD HH');
@@ -548,6 +553,7 @@ function delTimes() {
         scenarinoId: qjMsg.qjId
     }).success(function () {
         var index = allData[areaIndex].timeFrame.indexOf(delTime);
+        //在前端进行数据处理
         if (ub == 'up') {
             allData[areaIndex].timeItems[timeIndex - 1].timeEndDate = allData[areaIndex].timeItems[timeIndex].timeEndDate;
         } else {
@@ -557,6 +563,7 @@ function delTimes() {
         allData[areaIndex].timeFrame.splice(index, 1);
         allData[areaIndex].timeItems.splice(timeIndex, 1);
         showTimeline(allData);
+        //循环判断数据信息，进行减排计算等按钮的使用操作
         for (var i = 0; i < allData.length; i++) {
             for (var ii = 0; ii < allData[i].timeItems.length; ii++) {
                 if (allData[i].timeItems[ii].planId == -1) {
@@ -575,16 +582,15 @@ function delTimes() {
 
 }
 
-/*当前选中的时段*/
 var selectedTimes;
+/**
+ * 当前选中的时段
+ * 点击某时段，拿到该时段上保存的信息
+ * @param data 时段上保存的信息
+ */
 function ontTimes(data) {
     selectedTimes = data;
     console.log(selectedTimes);
-    //if (data.planId != -1) {
-    //  $('.yacz').attr('disabled', true);
-    //} else {
-    //  $('.yacz').removeAttr('disabled');
-    //}
 
     if (data.planId != -1) {
         $('.addNewPlanBtn').attr('disabled', true);
@@ -604,19 +610,23 @@ function ontTimes(data) {
 
 
 var addTimePoint;         //添加的时间点
-/*timePlan 打开时需的准备工作*/
+/**
+ * timePlan 打开时需的准备工作
+ */
 $('#timePlan').on('show.bs.modal', function (event) {
 
     $('#time .active').removeClass('active');
     $('#plan .active').removeClass('active');
     $('.addTimeLi').addClass('active');
     $('.addTimeDiv').addClass('active');
-    areaIndex = selectedTimes.index;
-    timeIndex = selectedTimes.indexNum;
-    var timeStart = moment(selectedTimes.startTime);
-    var timeEnd = moment(selectedTimes.endTime);
+    //拿到区域和时段的索引
+    areaIndex = selectedTimes.index;//区域索引
+    timeIndex = selectedTimes.indexNum;//时段索引
+    var timeStart = moment(selectedTimes.startTime);//时段开始时间
+    var timeEnd = moment(selectedTimes.endTime);//时段结束时间
     /*最小间隔一小时*/
     var timeEnd1 = moment(selectedTimes.endTime).add(-1, 'h');
+    //向路由对象中存放数据
     msg.content.areaId = allData[areaIndex].areaId;
     msg.content.areaName = allData[areaIndex].areaName;
     msg.content.timeId = allData[areaIndex].timeItems[timeIndex].timeId;
@@ -629,34 +639,11 @@ $('#timePlan').on('show.bs.modal', function (event) {
     /*添加时段 start*/
     initDate(timeStart.add(2, 'h'), timeEnd1);
     editHtml('addTime1');
-    /*滑块*/
-    /*var timeArr = [];
-     while (timeStart.isBefore(timeEnd1, 'h')) {
-     timeArr.push(timeStart.add(1, 'h').format('YYYY-MM-DD HH'));
-     }
-     $('.addTimeHk').eq(0).empty();
-     $('.addTimeHk').eq(0).append($('<h3 style="margin-bottom:40px;">编辑插入此时间段的时间点：</h3>'));
-     $('.addTimeHk').eq(0).append($('<input type="hidden" class="qyTimePoint" id="qyTimePoint" />'));
-     $('#qyTimePoint').jRange({/!*初始化滑块控件*!/
-     from: 0,
-     to: timeArr.length,
-     step: 1,
-     scale: [timeArr[0].substr(5), timeArr[Math.floor(timeArr.length/2)].substr(5), timeArr[timeArr.length - 1].substr(5)],
-     format: function (s) {
-     addTimePoint = timeArr[s];
-     return timeArr[s];
-     },
-     width: 550,
-     showLabels: true,
-     showScale: true,
-     theme: 'theme-blue'
-     });
-     $('#qyTimePoint').jRange('setValue', Math.floor(timeArr.length/2));*/
-    /*添加时段 end*/
 
-    /**************************************************************************************/
     /*删除时段 start*/
     editHtml('delTime');
+
+    /*打开模态框后，需要展示的前一时段，当前时段，后一时段*/
     if (allData[areaIndex].timeItems.length > 1) {
         $('.delTimeLi').removeClass('disNone');
         $('.delTimeDiv').find('.delSelect').empty();
@@ -727,21 +714,12 @@ $('#timePlan').on('show.bs.modal', function (event) {
 });
 
 /*打开预案编辑*/
-//function openAddYA() {
-//  $('#addYA .selectAdd').removeClass('disNone');
-//  $('#addYA .addCopyPlan').addClass('disNone');
-//  $('#addYA .addNewPlan').addClass('disNone');
-//  $('#addYA .modal-footer').addClass('disNone');
-//
-//  window.setTimeout(function () {
-//    $('#addYA').modal('show')
-//  }, 350)
-//}
 
 /*时段预案操作模态框选择 end*/
 var newPlan;
 /*添加预案*/
 function addPlan(e) {
+    //添加预案时判断是新建的预案还是copy的预案
     newPlan = e;
     if (newPlan) {
         var url = '/plan/add_plan';
@@ -790,6 +768,7 @@ function addPlan(e) {
             $('.jpjs.disNone').removeClass('disNone');
             $('.jpjs').removeAttr('disabled');
             $('.jpztck').addClass('disNone');
+            //添加预案成功后更新allData数据
             allData[areaIndex].timeItems[timeIndex].planId = res.data;
             allData[areaIndex].timeItems[timeIndex].planName = selectCopyPlan.planReuseName;
             showTimeline(allData);
@@ -807,14 +786,6 @@ function createNewPlan(e) {
 /*选择已有预案按钮*/
 function copyPlan() {
     initCopyPlanTable();
-    //var url = '/plan/copy_plan_list';
-    //ajaxPost(url, {
-    //  userId: userId
-    //}).success(function (res) {
-    //  for (var i = 0; i < res.data.length; i++) {
-    //    $('<option value="' + res.data[i].planId + '">' + res.data[i].planName + '</option>').appendTo('#copyPlan')
-    //  }
-    //})
 }
 
 /*编辑预案*/
@@ -827,6 +798,7 @@ function editPlan(t) {
     areaIndex = t.index;
     timeIndex = t.indexNum;
 
+    //点击编辑预案后需要跳转页面，此时向路由中存放数据
     msg.content.areaId = allData[areaIndex].areaId;
     msg.content.areaName = allData[areaIndex].areaName;
     msg.content.timeId = allData[areaIndex].timeItems[timeIndex].timeId;
@@ -853,7 +825,11 @@ function editPlan(t) {
     createNewPlan();
 }
 
-/*编辑时段时间使用*/
+/**
+ * 编辑时段时间使用
+ * 用于保存前一时段后一时段和当前时段的时间
+ * @type {{}}
+ */
 var editTimeDateObj = {};
 function clearTimeDate() {
     editTimeDateObj = {};
@@ -873,7 +849,10 @@ function clearTimeDate() {
     }
 }
 
-/*编辑时段时间html*/
+/**
+ * 编辑时段时间html （更新使用）
+ * 时段编辑时显示的前一时段后一时段当前时段的信息
+ */
 function updatetimeSow() {
     $('#editTime1 .showTimes .col-md-4 p').eq(0).empty();
     $('#editTime1 .showTimes .col-md-4 p').eq(1).empty();
@@ -910,10 +889,15 @@ function updatetimeSow() {
     }
     $('#editTime1 .showTimes .col-md-4 p').eq(1).html(editTimeDateObj.s + '<br />至<br/>' + editTimeDateObj.e);
 
+    //此处执行两遍不是错误，只执行一遍会出问题
     initEditTimeDate(s, e);
     initEditTimeDate(s, e);
 }
 
+/**
+ * 编辑时段时间html （编辑某一时段使用）
+ * 时段编辑时显示的前一时段后一时段当前时段的信息
+ */
 function editHtml(id) {
     $('#' + id + ' .showTimes .col-md-4 p').eq(0).empty();
     $('#' + id + ' .showTimes .col-md-4 p').eq(1).empty();
@@ -969,23 +953,28 @@ function selectEditPoint(t) {
 }
 
 
+/**
+ * 区域编辑模态框打开时处理
+ */
 $('#editArea').on('show.bs.modal', function (event) {
-    console.log(cnArea)
+    //初始化Tree树数据
     $.fn.zTree.init($("#adcodeTree"), zTreeSetting, zTreeData);
     var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
-    var nodes = treeObj.getNodesByParam("level", 1);
+    var nodes = treeObj.getNodesByParam("level", 1);//选择所有市级节点，0：省，1：市，2：县
     //var a = ['11','12','1301'];
-    var code = qjMsg.esCodeRange;
+    var code = qjMsg.esCodeRange;//需要展示到县级的行政区划
     for (var i = 0; i < nodes.length; i++) {
         var adcode = nodes[i].adcode;
         if ((code.indexOf(adcode.substr(0, 2)) == -1) && (code.indexOf(adcode.substr(0, 4)) == -1)) {
-            treeObj.hideNodes(nodes[i].children);
+            treeObj.hideNodes(nodes[i].children);//如果不需要展示到县级，则隐藏县级
         }
     }
 
     var button = $(event.relatedTarget);
+    //确定点击的某个区域的索引
     areaIndex = $('.areaTitle_con').index($(button).parents('.areaTitle_con'));
     //var create = button.data('new');
+    //判断是创建还是编辑
     var create = cnArea;
     var areaId, findUrl;
     var allUrl = '/area/find_areaAll';
@@ -1012,6 +1001,7 @@ $('#editArea').on('show.bs.modal', function (event) {
     }
     cnArea = false;
 
+    //请求区域地区信息，进行disabled处理
     ajaxPost(allUrl, {
         scenarinoId: qjMsg.qjId,
         userId: userId,
@@ -1022,7 +1012,9 @@ $('#editArea').on('show.bs.modal', function (event) {
 
 });
 
-/*创建/编辑区域*/
+/**
+ * 创建/编辑区域
+ */
 function createEditArea() {
     var url = '/area/saveorupdate_area';
     var checkUrl = '/area/check_areaname';
@@ -1292,6 +1284,7 @@ function selectNode(node) {
     }
 }
 
+/*选择省级*/
 function level0(node) {
     var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
     var nodesDis = treeObj.getNodesByParam('chkDisabled', true, node);
@@ -1316,6 +1309,7 @@ function level0(node) {
     }
 }
 
+/*选择市县级*/
 function level12(node) {
     var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
     var nodesDis = treeObj.getNodesByParam('chkDisabled', true, node);
@@ -1353,6 +1347,7 @@ function level12(node) {
 
 }
 
+/*移除省级*/
 function delNode0(node) {
     delete showCode[node.level][node.adcode];
     delete showCode[node.level + 1][node.adcode];
@@ -1365,6 +1360,7 @@ function delNode0(node) {
     }
 }
 
+/*移除市县级*/
 function delNode12(node) {
     var parNode = node.getParentNode();
     var parTrue;
@@ -1444,7 +1440,10 @@ function initDate(s, e, start) {
         });
 }
 
-/*前端设置disabled*/
+/**
+ * 前端设置disabled
+ * @param data
+ */
 function setDisabled(data) {
     var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
     for (var i = 0; i < data.length; i++) {
@@ -1578,6 +1577,10 @@ function rwType(v, row, i) {
     return type
 }
 
+/**
+ * 选择复制情景或者新建情景
+ * @param t true：复制情景，false：使用新建情景
+ */
 function selectCopy(t) {
     if (t) {
         initCoptTable();
@@ -1585,7 +1588,7 @@ function selectCopy(t) {
         $('#selectCreateQj .selectCopyQj').removeClass('disNone');
         $('#selectCreateQj .modal-footer').removeClass('disNone');
     } else {
-        allData = allData1;
+        allData = allData1;//当确定使用新建情景时，将临时变量值传递给allData
         allData1 = null;
         for (var i = 0; i < allData.length; i++) {
             allData[i].timeFrame = [];
@@ -1613,6 +1616,9 @@ function previous() {
     $('#selectCreateQj .modal-footer').addClass('disNone');
 }
 
+/**
+ * 选择copy情景，处理copy之后的事件
+ */
 function subCopyQJ() {
     console.log(selectCopyQJ);
 
@@ -1623,6 +1629,7 @@ function subCopyQJ() {
         copyscenarinoId: selectCopyQJ.scenarinoId
     }).success(function (res) {
         if (res.status == 0) {
+            /*copy成功之后，重新请求区域时段及预案信息*/
             var url = '/area/get_areaAndTimeList';
             ajaxPost(url, {
                 scenarinoId: qjMsg.qjId,
@@ -1685,9 +1692,9 @@ function jpjsBtn() {
 
     if (Object.keys(params.areaAndPlanIds).length > 0) {
         ajaxPost(url, params).success(function (res) {
-            console.log(res);
             if (res.status == 0) {
                 if (res.data == 1) {
+                    /*减排计算成功后关闭减排计算按钮，打开减排计算状态查看按钮*/
                     $('.jpjs').addClass('disNone');
                     $('.jpztck.disNone').removeClass('disNone').click();
 
@@ -1751,8 +1758,10 @@ function jpztckBtn(t) {
 
 
                 if (res.data.percent == 1) {
+                    /*减排计算完成后，查看情景状态*/
                     findQJstatus();
                 } else {
+                    /*如果减排计算未完成，则递归函数，反复查看，直到减排计算完成，t为等候时间，模态框打开时为3s，模态框关闭时为1min*/
                     jpztSetTimeOut = window.setTimeout(function () {
                         jpztckBtn(t)
                     }, t)
@@ -1798,6 +1807,7 @@ function findQJstatus() {
     }).success(function (res) {
         qjMsg.scenarinoStatus = res.data.scenarinoStatus;
         if (qjMsg.scenarinoStatus != 5) {
+            /*如果情景状态未变成可执行，递归请求*/
             window.setTimeout(function () {
                 findQJstatus();
             },1000);
@@ -1807,6 +1817,9 @@ function findQJstatus() {
     })
 }
 
+/**
+ * 减排状态打开关闭时处理
+ */
 var jpztSetInterval;
 $('#jpzt').on('show.bs.modal', function (event) {
     window.clearTimeout(jpztSetTimeOut);
