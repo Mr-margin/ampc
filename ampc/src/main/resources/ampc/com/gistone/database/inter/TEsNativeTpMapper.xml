@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TEsNativeTpMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TEsNativeTp" >
+    <id column="ES_NATIVE_TP_ID" property="esNativeTpId" jdbcType="DECIMAL" />
+    <result column="ES_NATIVE_TP_NAME" property="esNativeTpName" jdbcType="VARCHAR" />
+    <result column="ES_NATIVE_TP_YEAR" property="esNativeTpYear" jdbcType="DECIMAL" />
+    <result column="ES_UPLOAD_TP_TIME" property="esUploadTpTime" jdbcType="TIMESTAMP" />
+    <result column="ES_COMMENT" property="esComment" jdbcType="VARCHAR" />
+    <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
+    <result column="ES_VERSION" property="esVersion" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ES_NATIVE_TP_ID, ES_NATIVE_TP_NAME, ES_NATIVE_TP_YEAR, ES_UPLOAD_TP_TIME, ES_COMMENT, 
+    ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME, ES_VERSION
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_ES_NATIVE_TP
+    where ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_ES_NATIVE_TP
+    where ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TEsNativeTp" >
+    insert into T_ES_NATIVE_TP (ES_NATIVE_TP_ID, ES_NATIVE_TP_NAME, ES_NATIVE_TP_YEAR, 
+      ES_UPLOAD_TP_TIME, ES_COMMENT, ADD_TIME, 
+      UPDATE_TIME, USER_ID, IS_EFFECTIVE, 
+      DELETE_TIME, ES_VERSION)
+    values (#{esNativeTpId,jdbcType=DECIMAL}, #{esNativeTpName,jdbcType=VARCHAR}, #{esNativeTpYear,jdbcType=DECIMAL}, 
+      #{esUploadTpTime,jdbcType=TIMESTAMP}, #{esComment,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=DECIMAL}, #{isEffective,jdbcType=VARCHAR}, 
+      #{deleteTime,jdbcType=TIMESTAMP}, #{esVersion,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TEsNativeTp" >
+    insert into T_ES_NATIVE_TP
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="esNativeTpId != null" >
+        ES_NATIVE_TP_ID,
+      </if>
+      <if test="esNativeTpName != null" >
+        ES_NATIVE_TP_NAME,
+      </if>
+      <if test="esNativeTpYear != null" >
+        ES_NATIVE_TP_YEAR,
+      </if>
+      <if test="esUploadTpTime != null" >
+        ES_UPLOAD_TP_TIME,
+      </if>
+      <if test="esComment != null" >
+        ES_COMMENT,
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE,
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME,
+      </if>
+      <if test="esVersion != null" >
+        ES_VERSION,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="esNativeTpId != null" >
+        #{esNativeTpId,jdbcType=DECIMAL},
+      </if>
+      <if test="esNativeTpName != null" >
+        #{esNativeTpName,jdbcType=VARCHAR},
+      </if>
+      <if test="esNativeTpYear != null" >
+        #{esNativeTpYear,jdbcType=DECIMAL},
+      </if>
+      <if test="esUploadTpTime != null" >
+        #{esUploadTpTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="esComment != null" >
+        #{esComment,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="isEffective != null" >
+        #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="esVersion != null" >
+        #{esVersion,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TEsNativeTp" >
+    update T_ES_NATIVE_TP
+    <set >
+      <if test="esNativeTpName != null" >
+        ES_NATIVE_TP_NAME = #{esNativeTpName,jdbcType=VARCHAR},
+      </if>
+      <if test="esNativeTpYear != null" >
+        ES_NATIVE_TP_YEAR = #{esNativeTpYear,jdbcType=DECIMAL},
+      </if>
+      <if test="esUploadTpTime != null" >
+        ES_UPLOAD_TP_TIME = #{esUploadTpTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="esComment != null" >
+        ES_COMMENT = #{esComment,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="esVersion != null" >
+        ES_VERSION = #{esVersion,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TEsNativeTp" >
+    update T_ES_NATIVE_TP
+    set ES_NATIVE_TP_NAME = #{esNativeTpName,jdbcType=VARCHAR},
+      ES_NATIVE_TP_YEAR = #{esNativeTpYear,jdbcType=DECIMAL},
+      ES_UPLOAD_TP_TIME = #{esUploadTpTime,jdbcType=TIMESTAMP},
+      ES_COMMENT = #{esComment,jdbcType=VARCHAR},
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      USER_ID = #{userId,jdbcType=DECIMAL},
+      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      ES_VERSION = #{esVersion,jdbcType=VARCHAR}
+    where ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL}
+  </update>
+</mapper>
