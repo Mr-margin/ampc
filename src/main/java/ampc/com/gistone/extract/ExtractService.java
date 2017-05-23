@@ -216,5 +216,25 @@ public abstract class ExtractService {
 		return path;
 
 	}
+	
+	/**
+	 * 
+	 * @param params
+	 * @return
+	 */
+	public Map getColorWithSpecie(ExtractRequestParams params) {
+		String showType = params.getShowType();
+		String calcType = params.getCalcType();
+		String timePoint = params.getTimePoint();
+		timePoint = timePoint.equals(Constants.TIMEPOINT_D) ? Constants.TIMEPOINT_DAILY
+				: Constants.TIMEPOINT_HOURLY;
+		String name = showType + "-" + calcType + "-" + timePoint;
+		name = name.toLowerCase();
+		Map<String, Map<String, List>> specieMap = resultPathUtil.getImageColorConfig().getSheetMap(name);
+		Map<String, List> valueMap = specieMap.get(params.getSpecie());
+		return valueMap;
+	}
 
 }
+
+
