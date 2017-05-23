@@ -15,6 +15,8 @@ $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px
     $('.nowHY').show();
 })();
 
+/*openAccordion 打开的手风琴*/
+
 /*设置变量*/
 var sc_val = {};//存储最终的自措施条件
 var sc_v1 = {};
@@ -1814,6 +1816,7 @@ function xishu_save() {
                     $("#" + vol).removeClass("erroe_input");//删除红色边框
                     $("#" + vol).val(xishu_temp_v[i]);
                 });
+                $("#sxNumber").window('close');
             }
         }
 
