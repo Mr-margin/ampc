@@ -1,15 +1,12 @@
 package ampc.com.gistone.controller;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,14 +25,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TObsMapper;
 import ampc.com.gistone.database.inter.TPreProcessMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
-import ampc.com.gistone.database.model.TDomainMissionWithBLOBs;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTasksStatus;
@@ -43,9 +38,12 @@ import ampc.com.gistone.preprocess.concn.ScenarinoEntity;
 import ampc.com.gistone.preprocess.obs.entity.ObsBean;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.LevelUtil;
 import ampc.com.gistone.util.LogUtil;
 import ampc.com.gistone.util.RegUtil;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping
@@ -65,6 +63,9 @@ public class AirController {
 	@Autowired
 	private TTasksStatusMapper tTasksStatusMapper;
 	
+	@Autowired
+	private GetBySqlMapper getBySqlMapper;
+	
 	//定义公用的jackson帮助类
 	private ObjectMapper mapper=new ObjectMapper();
 	
@@ -83,54 +84,47 @@ public class AirController {
 			}
 			Long userId = Long.parseLong(param.toString());
 			
-			Calendar calendar = Calendar.getInstance();
-			SimpleDateFormat sdf;
-			sdf=new SimpleDateFormat("yyyy-MM-dd");
-			Date PathDate ;
-			String calDateStr;
-			Calendar c1 = Calendar.getInstance();
-		    c1.setTime(new Date());
-		    int hour=c1.get(Calendar.HOUR_OF_DAY);
-		    //8点以后
-		    if(hour>8){
-		    	calendar.setTime(new Date());
-				calendar.add(Calendar.DAY_OF_MONTH, -1);
-				PathDate = calendar.getTime();
-				calDateStr=sdf.format(PathDate);
-		    }else{
-		    //8点以前
-		    	calendar.setTime(new Date());
-				calendar.add(Calendar.DAY_OF_MONTH, -2);
-				PathDate = calendar.getTime();
-				calDateStr=sdf.format(PathDate);
-		    }
-		    TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
-		    Map tsMap=new HashMap();
-		    tsMap.put("userId", userId);
-		    tsMap.put("PathDate", PathDate);
-//		    tScenarinoDetail.setUserId(userId);
-//		    tScenarinoDetail.setPathDate(PathDate);
-		    tScenarinoDetail=tScenarinoDetailMapper.selectendStart(tsMap);
-			
-//			TScenarinoDetail maxtm=tScenarinoDetailMapper.selectByrealmax(tm.getMissionId());
-//			TScenarinoDetail mintm=tScenarinoDetailMapper.selectByrealmin(tm.getMissionId());
 			JSONObject obj=new JSONObject();
-//			obj.put("mintime", mintm.getPathDate().getTime());
-//			obj.put("maxtime", maxtm.getPathDate().getTime());
-			LogUtil.getLogger().error("空气质量预报时间查询成功");
+			
+			Calendar calendar = Calendar.getInstance();//获取一个Calendar对象并可以进行时间的计算，时区的指定
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		    
+		    //获取当前时间的小时，判断是否大于早上8点，8点之后昨天的空气质量预报已经完成，8点之前只能取前天的空气质量预报
+		    if(calendar.get(Calendar.HOUR_OF_DAY) > 8){//8点以后
+				calendar.add(Calendar.DATE, -1);//获取昨天的日期
+		    }else{//8点以前
+		    	calendar.add(Calendar.DATE, -2);//获取前天的日期
+		    }
+		    
+		    Map tsMap = new HashMap();
+		    
+		    tsMap.put("userId", userId);
+		    tsMap.put("pathDate", sdf.format(calendar.getTime()));
+		    
+		    TScenarinoDetail tScenarinoDetail = this.tScenarinoDetailMapper.selectendStart(tsMap);
+		    obj.put("maxtime", sdf.format(tScenarinoDetail.getScenarinoEndDate()));//结束时间
+		    
+		    String sql = "select \"DAY\" from T_SCENARINO_FNL_DAILY_2017_"+userId+" where  ROWNUM = 1 group by \"DAY\" order by \"DAY\" ";
+		    List<Map> list_FNL_DAILY = this.getBySqlMapper.findRecords(sql);
+		    
+		    if(list_FNL_DAILY.size()>0){
+		    	for(int i = 0;i<list_FNL_DAILY.size();i++){
+					Map st_map = list_FNL_DAILY.get(i);
+					obj.put("mintime", "".equals(st_map.get("DAY")) || st_map.get("DAY") == null ? "" : st_map.get("DAY").toString());//开始时间
+		    	}
+		    }else{
+		    	//没有开始时间，返回错误信息：fnl缺少数据
+		    	//或者使用预报的开始时间
+		    	obj.put("mintime", tScenarinoDetail.getScenarinoStartDate());//开始时间
+		    }
+			
+			LogUtil.getLogger().info("空气质量预报时间查询成功");
 			return AmpcResult.ok(obj);
 		}catch(Exception e){
 			LogUtil.getLogger().error("get_time 查询时间失败",e);
 			return AmpcResult.build(1001, "查询时间失败");
 		}
 	}
-
-
-
-
-
-
-
 
 
 
@@ -479,14 +473,19 @@ public class AirController {
 				LogUtil.getLogger().error("AirController  日期为空或出现非法字符!");
 				return AmpcResult.build(1003, "日期为空或出现非法字符!");
 			}
-			String startDate=param.toString();
+			String startDate = param.toString();
 			//结束日期
 			param=data.get("endDate");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
 				LogUtil.getLogger().error("AirController  日期为空或出现非法字符!");
 				return AmpcResult.build(1003, "日期为空或出现非法字符!");
 			}
-			String endDate=param.toString();
+			String endDate = param.toString();
+			
+			
+			System.out.println(startDate +"--"+ endDate);
+			
+			
 			//选择站点值
 			String cityStation=data.get("cityStation").toString();	
 			//逐日或逐小时
