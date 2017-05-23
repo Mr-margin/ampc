@@ -125,7 +125,13 @@
   	where USER_ID=#{userId,jdbcType=DECIMAL} and PATH_DATE=#{pathDate,jdbcType=TIMESTAMP} and SCEN_TYPE=#{scenType,jdbcType=VARCHAR}
   
   </select>
-
+<!--根据用户的ID和情景类型查询该情景的所有的情景  -->
+<select id="selectListFirstTime" parameterType="hashMap" resultMap="BaseResultMap">
+ select 
+  <include refid="Base_Column_List" />
+    from T_SCENARINO_DETAIL
+  	where USER_ID=#{userId,jdbcType=DECIMAL} and SCEN_TYPE=#{scenType,jdbcType=VARCHAR} ORDER BY PATH_DATE ASC
+</select>
   <!-- 返回情景查询列表的列 -->
   <sql id="scenarino_Column_List" >
   	SCENARINO_ID,SCENARINO_NAME,SCENARINO_START_DATE,SCENARINO_END_DATE,SCENARINO_STATUS,
