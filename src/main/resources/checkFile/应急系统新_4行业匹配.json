@@ -17,7 +17,7 @@
         "valueRange": "none",
         "dataType": "String",
         "isNotNull": "y",
-        "maxLenth": "15"
+        "maxLenth": "30"
       },
       "ID1": {
         "valueRange": "none",
@@ -29,7 +29,7 @@
         "valueRange": "none",
         "dataType": "String",
         "isNotNull": "y",
-        "maxLenth": "15"
+        "maxLenth": "30"
       },
       "ID2": {
         "valueRange": "none",
@@ -41,7 +41,7 @@
         "valueRange": "none",
         "dataType": "String",
         "isNotNull": "y",
-        "maxLenth": "15"
+        "maxLenth": "30"
       },
       "ID3": {
         "valueRange": "none",
@@ -53,31 +53,31 @@
         "valueRange": "none",
         "dataType": "String",
         "isNotNull": "y",
-        "maxLenth": "15"
+        "maxLenth": "30"
       },
       "Group_Sector": {
         "valueRange": "none",
         "dataType": "String",
         "isNotNull": "y",
-        "maxLenth": "15"
+        "maxLenth": "30"
       },
       "Group_1": {
         "valueRange": "none",
         "dataType": "String",
         "isNotNull": "y",
-        "maxLenth": "15"
+        "maxLenth": "30"
       },
       "Group_2": {
         "valueRange": "none",
         "dataType": "String",
         "isNotNull": "y",
-        "maxLenth": "10"
+        "maxLenth": "30"
       },
       "Group_3": {
         "valueRange": "none",
         "dataType": "String",
         "isNotNull": "y",
-        "maxLenth": "10"
+        "maxLenth": "30"
       },
       "Tag": {
         "valueRange": "none",
