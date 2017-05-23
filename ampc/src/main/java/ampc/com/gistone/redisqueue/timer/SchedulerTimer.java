@@ -139,7 +139,7 @@ public class SchedulerTimer<V> {
 		LogUtil.getLogger().info("realForTimer:runningSetting:"+runningSetting);
 		if (runningSetting) {
 			//Date date = new Date();
-			LogUtil.getLogger().info("实时预报任务开始");
+			LogUtil.getLogger().info("realForTimer：创建实时预报任务开始");
 		//	logger.info("我每天中午12点开始执行");
 			Long scenarinoId = null;
 			Long cores = null;
@@ -481,6 +481,8 @@ public class SchedulerTimer<V> {
 									}else {
 										LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:lastungrib对应的实时预报已经发送过了或者当天的ungrib还未更新！");
 									}
+								}else {
+									LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:ungrib条件为满足！");
 								}
 							}else {
 								//重新请求一次emis排放数据
@@ -695,9 +697,9 @@ public class SchedulerTimer<V> {
 	@Scheduled(cron="0 0 */3 * * ?") //每隔三个小时检查一次实时预报的情况---服务器配置
 	public void continueRealModelprediction() {
 		boolean runningSetting = configUtil.isRunningSetting();
-		LogUtil.getLogger().info("定时器continueRealModelprediction:runningSetting:"+runningSetting);
+		LogUtil.getLogger().info("定时器 continueRealModelprediction:runningSetting:"+runningSetting);
 		if (runningSetting) {
-			LogUtil.getLogger().info("continueRealModelprediction:每隔三个小时检查一次实时预报的情况！");
+			LogUtil.getLogger().info("定时器 continueRealModelprediction:每隔三个小时检查一次实时预报的情况！");
 			//查找当天的实时预报的运行状态
 			Date originalDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
 			Date starandDate = DateUtil.changedateByHour(originalDate,7);
@@ -726,24 +728,24 @@ public class SchedulerTimer<V> {
 									LogUtil.getLogger().info("continueRealModelprediction:修改续跑状态成功！");
 									boolean comtinueRealpredict =readyData.continueRealpredict(tScenarinoDetail,lastungrib);
 									if (comtinueRealpredict) {
-										LogUtil.getLogger().info("continueRealModelprediction:自动续跑实时预报成功！");
+										LogUtil.getLogger().info("定时器 continueRealModelprediction:自动续跑实时预报成功！");
 									}else {
-										LogUtil.getLogger().info("continueRealModelprediction:自动续跑实时预报失败！");
+										LogUtil.getLogger().info("定时器 continueRealModelprediction:自动续跑实时预报失败！");
 										//状态改回出错
 										boolean updateScenStatusUtil2 = readyData.updateScenStatusUtil(9l, tasksScenarinoId);
 									}
 								}else { 
-									LogUtil.getLogger().info("continueRealModelprediction:修改续跑状态失败！");
+									LogUtil.getLogger().info("定时器 continueRealModelprediction:修改续跑状态失败！");
 								}
 							}else {
-								LogUtil.getLogger().info("continueRealModelprediction:预报运行正常！");
+								LogUtil.getLogger().info("定时器 continueRealModelprediction:预报运行正常！");
 							}
 						}
 					}else {
-						LogUtil.getLogger().info("continueRealModelprediction:当天的预报情景未创建！");
+						LogUtil.getLogger().info("定时器 continueRealModelprediction:当天的预报情景未创建！");
 					}
 				} catch (Exception e) {
-					LogUtil.getLogger().error("continueRealModelprediction: 查询预报情景执行状态出错或者对应的情景的详情出错！（当天）pathdate:"+pathDate,e.getMessage(),e);
+					LogUtil.getLogger().error("定时器 continueRealModelprediction: 查询预报情景执行状态出错或者对应的情景的详情出错！（当天）pathdate:"+pathDate,e.getMessage(),e);
 				}
 			}
 			if (compareTo<0) {
@@ -764,29 +766,29 @@ public class SchedulerTimer<V> {
 								//修改情景状态和清空模式错误信息
 								boolean updateScenStatusUtil = readyData.updateScenStatusUtil(6l, tasksScenarinoId);
 								if (updateScenStatusUtil) {
-									LogUtil.getLogger().info("continueRealModelprediction:续跑后修改续跑状态成功！");
+									LogUtil.getLogger().info("定时器 continueRealModelprediction:续跑后修改续跑状态成功！");
 									boolean comtinueRealpredict =readyData.continueRealpredict(tScenarinoDetail,lastungrib);
 									if (comtinueRealpredict) {
-										LogUtil.getLogger().info("continueRealModelprediction:自动续跑实时预报成功！");
+										LogUtil.getLogger().info("定时器 continueRealModelprediction:自动续跑实时预报成功！");
 									}else {
-										LogUtil.getLogger().info("continueRealModelprediction:自动续跑实时预报失败！");
+										LogUtil.getLogger().info("定时器 continueRealModelprediction:自动续跑实时预报失败！");
 									}
 								}else {
-									LogUtil.getLogger().info("continueRealModelprediction:修改续跑状态失败！");
+									LogUtil.getLogger().info("定时器 continueRealModelprediction:修改续跑状态失败！");
 								}
 							}else {
-								LogUtil.getLogger().info("continueRealModelprediction:预报运行正常！");
+								LogUtil.getLogger().info("定时器 continueRealModelprediction:预报运行正常！");
 							}
 						}
 					}else {
-						LogUtil.getLogger().info("continueRealModelprediction:当天的预报情景未创建！");
+						LogUtil.getLogger().info("定时器 continueRealModelprediction:当天的预报情景未创建！");
 					}
 				} catch (Exception e) {
-					LogUtil.getLogger().error("continueRealModelprediction:查询预报情景执行状态出错或者对应的情景的详情出错！（上一天）pathdate:"+pathDate,e.getMessage(),e);
+					LogUtil.getLogger().error("定时器 continueRealModelprediction:查询预报情景执行状态出错或者对应的情景的详情出错！（上一天）pathdate:"+pathDate,e.getMessage(),e);
 				}
 			}
 		}else {
-			LogUtil.getLogger().info("continueRealModelprediction:空执行！");
+			LogUtil.getLogger().info("定时器 continueRealModelprediction:空执行！");
 		}
 	}
 }
