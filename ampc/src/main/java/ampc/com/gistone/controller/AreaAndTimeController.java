@@ -510,7 +510,8 @@ public class AreaAndTimeController {
 					int a=tPlanMapper.updateByPrimaryKeySelective(newPlan);
 				}
 				//查看预案是否为可复制预案
-				if(tPlan.getCopyPlan().equals("0")){
+			
+				if(null!=tPlan&&tPlan.getCopyPlan().equals("0")){
 					//为零则将预案设置为无效
 					tPlan.setIsEffective("0");
 					int up_status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
