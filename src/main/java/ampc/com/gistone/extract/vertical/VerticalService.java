@@ -18,9 +18,11 @@ import ampc.com.gistone.extract.Interpolation;
 import ampc.com.gistone.extract.PointBean;
 import ampc.com.gistone.extract.ProjectUtil;
 import ampc.com.gistone.extract.Projection;
+import ampc.com.gistone.extract.ResultPathUtil;
 import ampc.com.gistone.extract.netcdf.Netcdf;
 import ampc.com.gistone.util.CSVUtil;
 import ampc.com.gistone.util.DateUtil;
+import ampc.com.gistone.util.StringUtil;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
@@ -29,29 +31,22 @@ import ucar.nc2.Variable;
 public class VerticalService {
 	private static Logger logger = LoggerFactory.getLogger(VerticalService.class);
 	@Autowired
-	private SpecieIndexList specieIndexList;
+	public ResultPathUtil resultPathUtil;
 
-	private String tempPath = Constants.CSV_TEMP_PATH + DateUtil.DATEtoString(new Date(), DateUtil.DATE_FORMAT)+"/";
+	private String tempPath;
 	private List<PointBean> pointBeanList;
-	private String filePath1;
-	private String filePath2;
+	private String filePath;
 	private Map<String, Object> attributes;
-	private NetcdfFile ncFile;
 	private List<Variable> variableList1; // diff or ratio scenario1/scenario2
 	private List<Variable> variableList2;
 	private Projection projection;
 	private double[][] resTemp;
 	private double[][] res;
 
-	// private final static int[] height =
-	// {0,50,100,200,300,400,500,700,1000,1500,2000,3000,4000}; //现有的垂直层
-	private final static int[] height = { 0, 50, 100, 200, 300, 400, 500, 700, 1000, 1500, 2000, 3000 }; // 现有的垂直层
-	private final static double heightSpace = 50;
-
 	public String vertical(VerticalParams verticalParams, String concnFilePath) {
-		//获取可变参数封装进variableList1，variableList2中
+		// 获取可变参数封装进variableList1，variableList2中，设置临时文件路径
 		getVariables(concnFilePath, verticalParams);
-		//将projecttion参数从verticalParams中获取封装
+		// 将projecttion参数从verticalParams中获取封装
 		setProjection(verticalParams);
 		// 2. build earth surf point取座标划线
 		buildSurfPoints(verticalParams);
@@ -67,7 +62,7 @@ public class VerticalService {
 		}
 		// 4. vertical interpolation在线上取点
 		buildHeightInterpolation();
-		//返回verticalpng路径
+		// 返回verticalpng路径
 		return createPng(verticalParams);
 
 	}
@@ -99,14 +94,15 @@ public class VerticalService {
 				+ "), (nrows, ncols) = (" + row + "," + col + ")");
 		projection = ProjectUtil.getProj(attributes);
 		if (projection == null) {
-			logger.error("projection is null");
+			logger.error("VerticalService.java projection is null");
 			return;
 		}
 
 	}
-//生成画图所需两个csv文件,将路径及图片生成路径传递入csh文件中画图
+
+	// 生成画图所需两个csv文件,将路径及图片生成路径传递入csh文件中画图
 	private String createPng(VerticalParams verticalParams) {
-		logger.info("create two csv file is juzheng and specieIndex");
+		long readAttrTimes = System.currentTimeMillis();
 		File juzhen = CSVUtil.createCSVFile(res, tempPath, Constants.CSV_JZ_PREFIX);
 		String specieIndex = getSpecieIndex(verticalParams);
 		File specieIndexFile = CSVUtil.createIndexCSVFile(specieIndex, Constants.CSV_INDEX_PATH);
@@ -120,6 +116,7 @@ public class VerticalService {
 		shellVertival.setNclPath(new File(Constants.NCL_PATH).getAbsolutePath());
 		shellVertival.setPngPath(new File(path).getAbsolutePath());
 		String filePath = path + ".csh";
+		logger.info("create two csv file is juzheng and specieIndex,Transfer parameter:"+shellVertival.toString());
 		try {
 			logger.info("build csh file ,Incoming parameter");
 			buildCshWithVertical(filePath, shellVertival);
@@ -135,6 +132,7 @@ public class VerticalService {
 			String pngPath = path + ".png";
 			File pngFile = new File(pngPath);
 			if (pngFile.exists() && pngFile.isFile()) {
+				logger.info("run createPng, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms,pngPath="+pngPath);
 				return pngPath;
 			}
 			return null;
@@ -144,79 +142,38 @@ public class VerticalService {
 		}
 	}
 
-	//通过摸版动态加载csh文件，并执行
+	// 通过摸版动态加载csh文件，并执行
 	private void buildCshWithVertical(String filePath, ShellVertival shellVertival) throws IOException {
 		String content = VelocityUtil.buildTemplate(Constants.CSV_TEMPLATE_PATH, "shellVertival", shellVertival);
 		File modelRunFile = new File(filePath);
 		FilePathUtil.writeLocalFile(modelRunFile, content);
 		modelRunFile.setExecutable(true);
 	}
-//需要重写配置获取
+
 	private String getSpecieIndex(VerticalParams verticalParams) {
-		logger.info("Determine what pollutant data is loaded according to the conditions");
 		String specie = verticalParams.getSpecie();
+		String showType = verticalParams.getShowType();
 		String calcType = verticalParams.getCalcType();
 		String timePoint = verticalParams.getTimePoint();
-		String fileName = null;
-		if (Constants.CALCTYPE_SHOW.equals(calcType)) {
-			if (Constants.TIMEPOINT_H.equals(timePoint)) {
-				switch (specie) {
-				case "PM25":
-					return Constants.TIMEPOINT_HOURLY + specie + "=" + specieIndexList.getHourly_PM25();
-				case "PM10":
-					return Constants.TIMEPOINT_HOURLY + specie + "=" + specieIndexList.getHourly_PM10();
-				case "O3":
-					return Constants.TIMEPOINT_HOURLY + specie + "=" + specieIndexList.getHourly_O3();
-				case "SO2":
-					return Constants.TIMEPOINT_HOURLY + specie + "=" + specieIndexList.getHourly_SO2();
-				case "NO2":
-					return Constants.TIMEPOINT_HOURLY + specie + "=" + specieIndexList.getHourly_NO2();
-				case "CO":
-					return Constants.TIMEPOINT_HOURLY + specie + "=" + specieIndexList.getHourly_CO();
-				}
-			} else if (Constants.TIMEPOINT_D.equals(timePoint)) {
-				switch (specie) {
-				case "PM25":
-					return Constants.TIMEPOINT_DAILY + specie + "=" + specieIndexList.getDaily_PM25();
-				case "PM10":
-					return Constants.TIMEPOINT_DAILY + specie + "=" + specieIndexList.getDaily_PM10();
-				case "O3_8_max":
-					return Constants.TIMEPOINT_DAILY + specie + "=" + specieIndexList.getDaily_O3_8_max();
-				case "O3_1_max":
-					return Constants.TIMEPOINT_DAILY + specie + "=" + specieIndexList.getDaily_O3_1_max();
-				case "O3_avg":
-					return Constants.TIMEPOINT_DAILY + specie + "=" + specieIndexList.getDaily_O3_avg();
-				case "NO2":
-					return Constants.TIMEPOINT_DAILY + specie + "=" + specieIndexList.getDaily_NO2();
-				case "SO2":
-					return Constants.TIMEPOINT_DAILY + specie + "=" + specieIndexList.getDaily_SO2();
-				case "CO":
-					return Constants.TIMEPOINT_DAILY + specie + "=" + specieIndexList.getDaily_CO();
-				}
-			}
-		} else if (Constants.CALCTYPE_DIFF.equals(calcType)) {
-			switch (specie) {
-			case "PM25":
-				return Constants.CALCTYPE_DIFF + specie + "=" + specieIndexList.getDiff_PM25();
-			case "PM10":
-				return Constants.CALCTYPE_DIFF + specie + "=" + specieIndexList.getDiff_PM10();
-			case "O3":
-				return Constants.CALCTYPE_DIFF + specie + "=" + specieIndexList.getDiff_O3();
-			case "SO2":
-				return Constants.CALCTYPE_DIFF + specie + "=" + specieIndexList.getDiff_SO2();
-			case "NO2":
-				return Constants.CALCTYPE_DIFF + specie + "=" + specieIndexList.getDiff_NO2();
-			case "CO":
-				return Constants.CALCTYPE_DIFF + specie + "=" + specieIndexList.getDiff_CO();
-			}
-
-		} else if (Constants.CALCTYPE_RATIO.equals(calcType)) {
-			return Constants.CALCTYPE_RATIO + "=" + specieIndexList.getRatio();
+		Map<String, Map<String, List>> specieMap = resultPathUtil.getSheetName(showType, calcType, timePoint, specie);
+		Map<String, List> valueMap = specieMap.get(specie);
+		List<Float> valueList = valueMap.get(Constants.VALUE_LIST);
+		String speciespecieIndex = "";
+		for (Float float1 : valueList) {
+			speciespecieIndex += float1 + ",";
 		}
-		return fileName;
+		if (!StringUtil.isEmpty(speciespecieIndex)) {
+			speciespecieIndex.substring(0, speciespecieIndex.length() - 1);
+		}
+		logger.info("Determine what pollutant data is loaded according to the conditions:" + showType + "_" + calcType
+				+ "_" + timePoint + "_" + specie + "=" + speciespecieIndex);
+		return showType + "_" + calcType + "_" + timePoint + "_" + specie + "=" + speciespecieIndex;
 	}
 
 	private void buildHeightInterpolation() {
+		long readAttrTimes = System.currentTimeMillis();
+		int[] height = Constants.HEIGHT;
+		double heightSpace = Constants.HEIGHT_SPACE;
 		int targetLayer = (int) (height[height.length - 1] / heightSpace + 1);
 		double[] targetArray = new double[targetLayer];
 		for (int tl = 0; tl < targetLayer; tl++) {
@@ -237,10 +194,12 @@ public class VerticalService {
 				res[tl][p] = v;
 			}
 		}
+		logger.info("run buildHeightInterpolation, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
 	}
 
 	private void buildEveryLayerValue(VerticalParams verticalParams) throws IOException, InvalidRangeException {
-		int length = height.length;
+		long readAttrTimes = System.currentTimeMillis();
+		int length = Constants.HEIGHT.length;
 		resTemp = new double[length][pointBeanList.size()];
 		for (int layer = 1; layer <= length; layer++) {
 			Interpolation interpolation = new Interpolation(verticalParams.getHour(), layer, verticalParams.getXorig(),
@@ -297,11 +256,19 @@ public class VerticalService {
 				resTemp[layer - 1][p] = value;
 			}
 		}
+		logger.info("run buildEveryLayerValue, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
 	}
 
-	//获取可变参数封装进variableList1，variableList2中
 	private void getVariables(String concnFilePath, VerticalParams verticalParams) {
+		long readAttrTimes = System.currentTimeMillis();
 		String timePoint = verticalParams.getTimePoint();
+		tempPath = resultPathUtil.getExtractConfig().getVerticalTepmPath()
+				.replace("$currDate", DateUtil.DATEtoString(new Date(), DateUtil.DATE_FORMAT))
+				.replace("$userid", verticalParams.getUserId().toString())
+				.replace("$domainid", verticalParams.getDomainId().toString())
+				.replace("$missionid", verticalParams.getMissionId().toString())
+				.replace("$scenarioid", verticalParams.getScenarioId1().toString())
+				.replace("$domain", verticalParams.getDomain().toString());
 		variableList1 = new ArrayList<Variable>();
 		variableList2 = new ArrayList<Variable>();
 		if (Constants.TIMEPOINT_A.equals(timePoint)) {
@@ -312,6 +279,8 @@ public class VerticalService {
 			}
 			try {
 				attributes = Netcdf.getAttributes(concnFilePath + list.get(0));
+				logger.info("read getVariables, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
+				logger.info("tempPath=" + tempPath + ";attributes=" + attributes.toString());
 			} catch (IOException e) {
 				logger.error("VerticalService | variables() : getAttributes IOException");
 				return;
@@ -320,6 +289,8 @@ public class VerticalService {
 			buildVariables(verticalParams.getDay(), concnFilePath, verticalParams);
 			try {
 				attributes = Netcdf.getAttributes(concnFilePath + verticalParams.getDay());
+				logger.info("read getVariables, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
+				logger.info("tempPath=" + tempPath + ";attributes=" + attributes.toString());
 			} catch (IOException e) {
 				logger.error("VerticalService | variables() : getAttributes IOException");
 				return;
@@ -343,11 +314,11 @@ public class VerticalService {
 			}
 			if (nc == null)
 				return;
-			ncFile = nc;
+			NetcdfFile ncFile = nc;
 			Variable variable1 = nc.findVariable(null, specie);
 			variableList1.add(variable1);
 			if (!Constants.CALCTYPE_SHOW.equals(verticalParams.getCalcType())) {
-				String p2 = filePath2 + day;
+				String p2 = filePath + day;
 				NetcdfFile nc2;
 				try {
 					nc2 = NetcdfFile.open(p2);
