@@ -2028,38 +2028,38 @@
      * 时段编辑时显示的前一时段后一时段当前时段的信息
      */
     function editHtml(id) {
-        $('#' + id + ' .showTimes .col-md-4 p').eq(0).empty();
-        $('#' + id + ' .showTimes .col-md-4 p').eq(1).empty();
-        $('#' + id + ' .showTimes .col-md-4 p').eq(2).empty();
+        $('#' + id + ' .showTimes .col-4 p').eq(0).empty();
+        $('#' + id + ' .showTimes .col-4 p').eq(1).empty();
+        $('#' + id + ' .showTimes .col-4 p').eq(2).empty();
         $('#selectEditPoint').empty();
         if (timeIndex == 0) {
-            $('#' + id + ' .showTimes .col-md-4 p').eq(0)
+            $('#' + id + ' .showTimes .col-4 p').eq(0)
                 .html('<h4>无时段</h4>');
             if (allData[areaIndex].timeItems.length == 1) {
-                $('#' + id + ' .showTimes .col-md-4 p').eq(2)
+                $('#' + id + ' .showTimes .col-4 p').eq(2)
                     .html('<h4>无时段</h4>');
             } else {
-                $('#' + id + ' .showTimes .col-md-4 p').eq(2)
+                $('#' + id + ' .showTimes .col-4 p').eq(2)
                     .html(momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeStartDate) + '<br />至<br/>' + momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeEndDate));
             }
         } else if (timeIndex == allData[areaIndex].timeItems.length - 1) {
-            $('#' + id + ' .showTimes .col-md-4 p').eq(2)
+            $('#' + id + ' .showTimes .col-4 p').eq(2)
                 .html('<h4>无时段</h4>');
             if (allData[areaIndex].timeItems.length == 1) {
-                $('#' + id + ' .showTimes .col-md-4 p').eq(0)
+                $('#' + id + ' .showTimes .col-4 p').eq(0)
                     .html('<h4>无时段</h4>');
             } else {
-                $('#' + id + ' .showTimes .col-md-4 p').eq(0)
+                $('#' + id + ' .showTimes .col-4 p').eq(0)
                     .html(momentDate(allData[areaIndex].timeItems[timeIndex - 1].timeStartDate) + '<br />至<br/>' + momentDate(allData[areaIndex].timeItems[timeIndex - 1].timeEndDate));
             }
         } else {
-            $('#' + id + ' .showTimes .col-md-4 p').eq(0)
+            $('#' + id + ' .showTimes .col-4 p').eq(0)
                 .html(momentDate(allData[areaIndex].timeItems[timeIndex - 1].timeStartDate) + '<br />至<br/>' + momentDate(allData[areaIndex].timeItems[timeIndex - 1].timeEndDate));
-            $('#' + id + ' .showTimes .col-md-4 p').eq(2)
+            $('#' + id + ' .showTimes .col-4 p').eq(2)
                 .html(momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeStartDate) + '<br />至<br/>' + momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeEndDate));
             //editTimeDateObj.type = 'start'
         }
-        $('#' + id + ' .showTimes .col-md-4 p').eq(1)
+        $('#' + id + ' .showTimes .col-4 p').eq(1)
             .html(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate) + '<br />至<br/>' + momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate));
     }
     /**
