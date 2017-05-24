@@ -200,13 +200,13 @@ function setTime() {
             changeMsg.time = moment(changeMsg.startD).format('YYYY-MM-DD HH');
 
 
-          /*测试使用*/
-            changeMsg.minDate = '2017-04-27';
-            changeMsg.maxDate = '2017-05-03';
-            changeMsg.startD = '2017-04-27';
-            changeMsg.endD = '2017-04-27';
-            changeMsg.time = moment(changeMsg.startD).format('YYYY-MM-DD HH');
-          /*测试使用 end*/
+          // /*测试使用*/
+          //   changeMsg.minDate = '2017-04-27';
+          //   changeMsg.maxDate = '2017-05-03';
+          //   changeMsg.startD = '2017-04-27';
+          //   changeMsg.endD = '2017-04-27';
+          //   changeMsg.time = moment(changeMsg.startD).format('YYYY-MM-DD HH');
+          // /*测试使用 end*/
             initCZDate(changeMsg.minDate, changeMsg.maxDate, changeMsg.startD, changeMsg.endD);
         }
 
