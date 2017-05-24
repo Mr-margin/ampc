@@ -9,17 +9,57 @@
     </div>
 </div>
 <div id="selectCreateQj" class="easyui-window" style="display: none">
-    <div class="step1">
-        <button onclick="selectQJtype('hh')" class="cjhpgqj"><img src="img/newQJ.png" alt=""></button>
-        <button onclick="selectQJtype('hj')" class="cjxjzqj"><img src="img/copyQJ.png" alt=""></button>
+    <div class="step1 selectCQJbtn">
+        <button onclick="selectCopy(false)" class="cjhpgqj"><img src="img/newQJ.png" alt=""></button>
+        <button onclick="selectCopy(true)" class="cjxjzqj"><img src="img/copyQJ.png" alt=""></button>
     </div>
-    <div class="cloudui step2">
-
+    <div class="step2 selectCopyQj">
+        <div id="rwToolbar" class="btn-group">
+            <div class="col-8 bigP">
+                <button type="button" class="btn btn-success statusRw" onclick="statusRWfun('',this)">
+                    <i class="im-folder-open"></i> 全部
+                </button>
+                <button type="button" class="btn btn-success statusRw" onclick="statusRWfun('1',this)">
+                    <i class="st-folder-settings"></i> 预评估
+                </button>
+                <button type="button" class="btn btn-success statusRw" onclick="statusRWfun('2',this)">
+                    <i class="im-paste2"></i> 后评估
+                </button>
+            </div>
+            <div class="input-group col-4">
+                <!--<input type="text" class="form-control copyQjsearch " placeholder="输入情景名称或字段">-->
+                <!--<span class="input-group-btn">-->
+                  <!--<button class="btn btn-default " type="button" onclick="search()"><i class="ec-search"></i>-->
+                  <!--</button>-->
+                <!--</span>-->
+                <input type="text" id="searchqd">
+                <script>
+                    $('#searchqd').searchbox({
+                        prompt: '输入任务或情景名称',
+                        searcher:function (value,name) {
+                            
+                        }
+                    });
+                </script>
+            </div>
+            <!-- /input-group -->
+        </div>
+        <table id="copyQJ">
+            <thead>
+            <th data-field="missionName">任务名称</th>
+            <th data-formatter="rwType">任务类型</th>
+            <th data-field="scenarinoName">情景名称</th>
+            </thead>
+        </table>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-success" data-dismiss="modal" onclick="subCopyQJ()">确定</button>
+            <button type="button" class="btn btn-default" onclick="previous()">上一步</button>
+        </div>
     </div>
 </div>
 <div id="settingqjbox">
     <div class="step1">
-        <button><img src="img/setting.png" alt=""></button>
+        <button onclick="$('#editArea').window('open')"><img src="img/setting.png" alt=""></button>
         <button onclick="delArea(this)"><img src="img/delete.png" alt=""></button>
     </div>
     <div class="step2">
@@ -30,8 +70,8 @@
     <div id="timeorplan">
         <div title="时段操作">
             <div id="timepanel">
-                <div title="时段添加">
-                    <div style="height:90px">
+                <div title="时段添加" id="addTime1">
+                    <div style="height:90px" class="showTimes">
                         <div class="col-4" style="height:90px">
                             <h4>前一时段</h4>
                             <p></p>
@@ -57,29 +97,153 @@
                         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                     </div>
                 </div>
-                <div title="时段删除">
-                    2
+                <div title="时段删除" id="delTime">
+                    <div class="showTimes text-center" style="height: 90px;">
+                        <div class="col-4" style="border:1px solid #aaa;border-radius: 3px">
+                            <h4>前一时段</h4>
+
+                            <p></p>
+                        </div>
+                        <div class="col-4" style="border:1px solid #aaa;border-radius: 3px">
+                            <h4>待编辑时段</h4>
+
+                            <p></p>
+
+                        </div>
+                        <div class="col-4" style="border:1px solid #aaa;border-radius: 3px">
+                            <h4>后一时段</h4>
+
+                            <p></p>
+                        </div>
+                    </div>
+
+                    <h3>请选择删除后需要合并的时段：</h3>
+                    <h4 style="color: #990000"> 注：删除时段会同时删除时段上预案，请谨慎选择删除的时段</h4>
+
+                    <div class="delSelect"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal"
+                                onclick="delTimes()">确定删除
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                        </button>
+                    </div>
                 </div>
-                <div title="时段编辑">
-                    3
+                <div title="时段编辑" id="editTime1">
+                    <div class="showTimes text-center" style="height: 90px;">
+                        <div class="col-4" style="border:1px solid #aaa;border-radius: 3px">
+                            <h4>前一时段</h4>
+
+                            <p></p>
+                        </div>
+                        <div class="col-4" style="border:1px solid #aaa;border-radius: 3px">
+                            <h4>待编辑时段</h4>
+
+                            <p></p>
+
+                        </div>
+                        <div class="col-4" style="border:1px solid #aaa;border-radius: 3px">
+                            <h4>后一时段</h4>
+
+                            <p></p>
+                        </div>
+                    </div>
+                    <div class="selectEditPoint mt20">
+                        <div class="form-group" style="line-height: 30px;padding: 30px">
+                            <label class="col-md-3" for="selectEditPoint">修改时间点：</label>
+
+                            <div class="col-md-9">
+                                <select class="form-control mb25" id="selectEditPoint"
+                                        onchange="selectEditPoint(this)">
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inputEditPoint mt20">
+                        <div class="form-group" style="line-height: 30px;padding: 30px">
+                            <label class="col-md-3" for="editDate">输入时间：</label>
+
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="editDate"
+                                       name="editDate" readonly
+                                       placeholder="请选择时间···">
+                                <!--<input type="text" placeholder="YYYY-MM-DD HH" class="form-control mb25" id="inputEditPoint">-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal"
+                                onclick="sunEditTimeDate()">
+                            确定
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
         <div title="预案操作">
             <div id="planpanel">
-                <div title="添加新预案">
-                    4
+                <div title="添加新预案" id="newPlan">
+                    <div class="form-group mt10 clearfix"
+                         style="line-height: 30px;padding: 30px">
+                        <label for="yaName" class="col-md-3 control-label lh29">预案名称：</label>
+
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" id="yaName" name="yaName"
+                                   placeholder="预案名称">
+                        </div>
+                        <div class="col-md-9 col-md-offset-3">
+                            <span>（限15字以内）</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal"
+                                onclick="addPlan(true)">
+                            确定添加
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                        </button>
+                    </div>
                 </div>
-                <div title="复制旧预案">
-                    5
+                <div title="复制旧预案" id="oldPlan">
+                    <div>
+                        <table id="copyPlanTable">
+                            <thead>
+                            <th data-radio="true"></th>
+                            <th data-field="planReuseName">预案名称</th>
+                            <th data-field="missionName">任务名称</th>
+                            <th data-field="scenarioName">情景名称</th>
+                            <th data-field="areaName">区域名称</th>
+                            <th data-formatter="copyPlanAddTime">添加时间</th>
+                            <!--<th data-field="scenarinoName">情景名称</th>-->
+                            </thead>
+                        </table>
+                    </div>
+
+
+                    <!--<div class="form-group mt10 clearfix" style="line-height: 30px;padding: 30px">-->
+                    <!--<label class="mb25" for="copyPlan">预案名称：</label>-->
+                    <!--<select class="form-control mb25" id="copyPlan">-->
+                    <!--</select>-->
+                    <!--</div>-->
+                    <div class="modal-footer" style="padding-top: 35px;">
+                        <button type="button" class="btn btn-success" data-dismiss="modal"
+                                onclick="addPlan(false)">
+                            确定添加
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                        </button>
+                    </div>
                 </div>
-                <div title="编辑现预案">
+                <div title="编辑现预案" id="editPlan">
                     <div>
                         <h3>点击进行预案编辑：</h3>
                         <button class="btn btn-success btn-lg" onclick="editPlan()" data-dismiss="modal">编辑预案</button>
                     </div>
                 </div>
-                <div title="删除现预案">
+                <div title="删除现预案" id="delPlan">
                     7
                 </div>
             </div>
@@ -105,7 +269,7 @@
                     </ul>
                     <!--当点击确定按钮后将ztree选择的区域在id为adcodelistbox的div中显示-->
                     <div class="adcodeTreeBtn">
-                        <button>确定</button>
+                        <button onclick="updataCodeList()">确定</button>
                     </div>
                 </div>
                 <!--作为选择区域的回显div-->
@@ -114,7 +278,7 @@
 
                     </div>
                     <div class="adcodeTreeBtn">
-                        <button></button>
+                        <button onclick="revise()">修改</button>
                     </div>
                 </div>
             </div>
@@ -125,17 +289,18 @@
             </div>
         </div>
         <div class="modal-footer ">
-            <div class="footerShow"
-                 style="text-align: left;margin-left: 10px;width:calc(100% - 150px);float: left;padding: 8px 0px 5px 0px;">
-                <div class='col-md-3 rw' style="padding: 0px 0px 0px 0px;">
+            <div class="footerShow">
+                <div class='col-3 rw'>
                     <h5>当前任务：<span></span></h5>
                 </div>
-                <div class='col-md-3 qj' style="padding: 0px 0px 0px 0px;">
+                <div class='col-3 qj'>
                     <h5>当前情景：<span></span></h5>
                 </div>
+                <div class="col-6" style="text-align: right">
+                    <button type="button" class="btn btn-success" onclick="createEditArea()">确定</button>
+                    <button type="button" class="btn btn-default">取消</button>
+                </div>
             </div>
-            <button type="button" class="btn btn-success" onclick="createEditArea()">确定</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
         </div>
     </div>
 </div>
@@ -202,6 +367,7 @@
             }
         }
     };
+    var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时段的序号
     (function () {
 //        页面布局的渲染
         $('#task2content').layout();
@@ -211,10 +377,112 @@
 //        页面初始化
         initialize();
 //        情景编辑的弹窗渲染
-        defaultwindowoption.title = '情景编辑';
-        $('#settingqjbox').window(defaultwindowoption);
+        $('#settingqjbox').window($.extend({}, defaultwindowoption, {
+            title: '情景编辑',
+            onClose: function () {
+                $('#settingqjbox .step1>button').removeAttr('data-qjid');
+            }
+        }));
 //        时段编辑的窗口渲染
-        $('#timePlan').window($.extend({}, defaultwindowoption, {title: '时段编辑'}));
+        $('#timePlan').window($.extend({}, defaultwindowoption, {
+            title: '时段编辑',
+            onOpen: function () {
+//                $('#time .active').removeClass('active');
+//                $('#plan .active').removeClass('active');
+//                $('.addTimeLi').addClass('active');
+//                $('.addTimeDiv').addClass('active');
+
+//                全局变量变量的存储
+                areaIndex = selectedTimes.index;
+                timeIndex = selectedTimes.indexNum;
+                var timeStart = moment(selectedTimes.startTime);
+                var timeEnd = moment(selectedTimes.endTime);
+                /*最小间隔一小时*/
+                var timeEnd1 = moment(selectedTimes.endTime).add(-1, 'h');
+                msg.content.areaId = allData[areaIndex].areaId;
+                msg.content.areaName = allData[areaIndex].areaName;
+                msg.content.timeId = allData[areaIndex].timeItems[timeIndex].timeId;
+                msg.content.timeEndDate = allData[areaIndex].timeItems[timeIndex].timeEndDate;
+                msg.content.timeStartDate = allData[areaIndex].timeItems[timeIndex].timeStartDate;
+                msg.content.cityCodes = allData[areaIndex].cityCodes;
+                msg.content.countyCodes = allData[areaIndex].countyCodes;
+                msg.content.provinceCodes = allData[areaIndex].provinceCodes;
+
+                /*添加时段 start*/
+                initDate(timeStart.add(2, 'h'), timeEnd1);
+                editHtml('addTime1');
+
+                /*删除时段 start*/
+                editHtml('delTime');
+                if (allData[areaIndex].timeItems.length > 1) {
+                    $('.delTimeLi').removeClass('disNone');
+                    $('#timepanel').tabs('enabled', '时段删除');
+                    $('.delTimeDiv').find('.delSelect').empty();
+
+
+                    var redio = $('.radio.disNone').clone().removeClass('disNone');
+                    if (timeIndex == 0) {
+                        redio.find('span').html('时   段ID：' + allData[areaIndex].timeItems[timeIndex + 1].timeId + '<br />' + '开始时间：' + momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeStartDate) + '&nbsp;&nbsp;&nbsp;&nbsp;' + '结束时间：' + momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeEndDate));
+                        redio.find('input').val('down');
+                    } else if (timeIndex == (allData[areaIndex].timeItems.length - 1)) {
+                        redio.find('span').html('时   段ID：' + allData[areaIndex].timeItems[timeIndex - 1].timeId + '<br />' + '开始时间：' + momentDate(allData[areaIndex].timeItems[timeIndex - 1].timeStartDate) + '<br />' + '结束时间：' + momentDate(allData[areaIndex].timeItems[timeIndex - 1].timeEndDate));
+                        redio.find('input').val('up');
+                    } else {
+                        var redio2 = $('.radio.disNone').clone().removeClass('disNone');
+                        redio2.find('span').html('时   段ID：' + allData[areaIndex].timeItems[timeIndex - 1].timeId + '<br />' + '开始时间：' + momentDate(allData[areaIndex].timeItems[timeIndex - 1].timeStartDate) + '&nbsp;&nbsp;&nbsp;&nbsp;' + '结束时间：' + momentDate(allData[areaIndex].timeItems[timeIndex - 1].timeEndDate));
+                        redio2.find('input').val('up');
+                        redio.find('span').html('时   段ID：' + allData[areaIndex].timeItems[timeIndex + 1].timeId + '<br />' + '开始时间：' + momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeStartDate) + '&nbsp;&nbsp;&nbsp;&nbsp;' + '结束时间：' + momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeEndDate));
+                        redio.find('input').val('down');
+                        $('.delTimeDiv').find('.delSelect').append(redio2);
+                    }
+                    $('.delTimeDiv').find('.delSelect').append(redio);
+                    redio.find('input').attr('checked', 'checked');
+
+
+                } else {
+                    $('.delTimeLi').addClass('disNone');
+                    $('.delTimeLi').removeClass('active');
+                    $('.delTimeDiv').removeClass('active');
+                }
+                /*删除时段 end*/
+
+                /**************************************************************************************/
+                /*编辑时段 start*/
+                if (allData[areaIndex].timeItems.length > 1) {
+                    $('.editTimeLi').removeClass('disNone');
+
+                    clearTimeDate();
+                    updatetimeSow();
+                    editTimeDateObj.type = $('#selectEditPoint').val();
+                } else {
+                    $('.editTimeLi').addClass('disNone');
+                }
+
+                /*编辑时段 end*/
+
+                /**************************************************************************************/
+                /*添加预案 start*/
+                $('.delPlanLi').addClass('disNone');//暂无删除预案接口支持
+                if (selectedTimes.planId == -1) {
+                    copyPlan();
+                    $('.addPlanLi').removeClass('disNone');
+                    $('.copyPlanLi').removeClass('disNone');
+                    $('.editPlanLi').addClass('disNone');
+
+                    $('.addPlanLi').addClass('active');
+                    $('.addPlanDiv').addClass('active');
+
+                } else {
+                    $('.addPlanLi').addClass('disNone');
+                    $('.copyPlanLi').addClass('disNone');
+                    $('.editPlanLi').removeClass('disNone');
+
+                    $('.editPlanLi').addClass('active');
+                    $('.editPlanDiv').addClass('active');
+                }
+                /*添加预案 end*/
+            }
+        }));
 //        新增区域的窗口渲染，新增区域和编辑区域是一个window弹框
         $('#editArea').window($.extend({}, defaultwindowoption, {
             title: '定义区域范围',
@@ -223,8 +491,8 @@
                 /*初始化tree树相关信息*/
                 $.fn.zTree.init($("#adcodeTree"), zTreeSetting, zTreeData);//zTreeData是从home页面传过来的数据
                 var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
-                var nodes = treeObj.getNodesByParam("level", 1);
-                var code = qjMsg.esCodeRange;
+                var nodes = treeObj.getNodesByParam("level", 1);//获取地市一级的节点
+                var code = qjMsg.esCodeRange; //获取当前
 //                对应的任务范围中市级下可显示县一级
                 for (var i = 0; i < nodes.length; i++) {
                     var adcode = nodes[i].adcode;
@@ -240,7 +508,7 @@
                 var create = cnArea;
                 var areaId, findUrl;
                 var allUrl = '/area/find_areaAll';
-                $('.adcodeList').empty();
+                $('#adcodeListBox').empty();
                 if (create) {
                     $('#areaName').val('').removeAttr('data-id');
                     showCode = [{}, {}, {}];
@@ -248,7 +516,7 @@
 //                    app.gLyr.clear();
                 } else {
                     findUrl = '/area/get_areaList';
-                    areaId = button.parents('.areaTitle_con').attr('id');
+                    areaId = $('#settingqjbox .step1>button').attr('data-qjid');//获取当前区域id
                     ajaxPost(findUrl, {
                         areaId: areaId,
                         userId: userId
@@ -256,14 +524,19 @@
                         if (res.data) {
                             /*设置显示已选code*/
                             setShowCode(res.data);
-                            addLayer(showCode);
+//                            addLayer(showCode);
                         }
                         updataCodeList();
                     });
-                    $('#areaName').val(button.parents('.areaTitle_con').find('b').html()).attr('data-id', areaId);
+                    $('#areaName').attr('data-id', areaId);
+                    $.each(allData, function (i, n) {
+                        if (n.areaId == areaId) {
+                            $('#areaName').val(n.areaName);
+                        }
+                    });
                 }
                 cnArea = false;
-
+                $('#editArea').window('close');
                 ajaxPost(allUrl, {
                     scenarinoId: qjMsg.qjId,
                     userId: userId,
@@ -324,8 +597,8 @@
         msg.content.esCouplingId = qjMsg.esCouplingId;
         msg.content.esCouplingName = qjMsg.esCouplingName;
 
-        //    $('.footerShow .rw span').html(qjMsg.rwName);
-        //    $('.footerShow .qj span').html(qjMsg.qjName);
+        $('.footerShow .rw span').html(qjMsg.rwName);
+        $('.footerShow .qj span').html(qjMsg.qjName);
 
         var url = '/area/get_areaAndTimeList';
         var scenarino = ajaxPost(url, {
@@ -365,9 +638,9 @@
     function selectCopy(t) {
         if (t) {
             initCoptTable();
-            $('#selectCreateQj .selectCQJbtn').addClass('disNone');
-            $('#selectCreateQj .selectCopyQj').removeClass('disNone');
-            $('#selectCreateQj .modal-footer').removeClass('disNone');
+            $('#selectCreateQj .selectCQJbtn').hide();
+            $('#selectCreateQj .selectCopyQj').show();
+            $('#selectCreateQj .modal-footer').show();
         } else {
             allData = allData1;
             allData1 = null;
@@ -389,6 +662,103 @@
             app2();
         }
 
+    }
+    var selectCopyQJ, statusRW = '';
+    /*初始化复制情景table*/
+    function initCoptTable() {
+        $('#copyQJ').datagrid($.extend({}, defaultdatagridoption, {
+            url: '/ampc/scenarino/get_CopyScenarinoList',
+            dataType: "json",
+            contentType: "application/json", // 请求远程数据的内容类型。
+            queryParams: function (m) {
+                var json = {
+                    "token": "",
+                    "data": {
+                        "scenarinoId": qjMsg.qjId,
+                        "queryName": m.searchText || '',
+                        "missionStatus": statusRW,
+                        "pageNum": m.pageNumber,
+                        "pageSize": m.pageSize,
+                        "sort": '',
+                        "userId": 1
+                    }
+                };
+                return json;
+            },
+            loadFilter: function (res) {
+                return res.data.rows
+            },
+            columns: [[{
+                field: 'missionName',
+                title: '任务名称',
+                width: 150
+            }, {
+                field: 'missionStatus',
+                title: '任务类型',
+                width: 80,
+                formatter: function (v) {
+                    return v == 1 ? '实时预报' : v == 2 ? '预评估' : '后评估'
+                }
+            }, {
+                field: 'scenarinoName',
+                title:'情景名称',
+                width:120
+            }]]
+        }))
+        /*        $('#copyQJ').bootstrapTable({
+         method: 'POST',
+         url: '/ampc/scenarino/get_CopyScenarinoList',
+         dataType: "json",
+         contentType: "application/json", // 请求远程数据的内容类型。
+         toobar: '#rwToolbar',
+         iconSize: "outline",
+         search: false,
+         searchAlign: 'right',
+         height: 453,
+         maintainSelected: true,
+         clickToSelect: false,// 点击选中行
+         pagination: true, // 在表格底部显示分页工具栏
+         pageSize: 10, // 页面大小
+         pageNumber: 1, // 页数
+         pageList: [10],
+         striped: true, // 使表格带有条纹
+         sidePagination: "server",// 表格分页的位置 client||server
+         rowStyle: function (row, index) {
+         if (index == 0) {
+         return {classes: 'info'}
+         }
+         return {};
+         },
+         queryParams: function (m) {
+         var json = {
+         "token": "",
+         "data": {
+         "scenarinoId": qjMsg.qjId,
+         "queryName": m.searchText || '',
+         "missionStatus": statusRW,
+         "pageNum": m.pageNumber,
+         "pageSize": m.pageSize,
+         "sort": '',
+         "userId": 1
+         }
+         };
+
+         return JSON.stringify(json);
+         },
+         responseHandler: function (res) {
+         return res.data
+         },
+         queryParamsType: "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
+         silent: true, // 刷新事件必须设置
+         onClickRow: function (row, $element) {
+         $('.info').removeClass('info');
+         $($element).addClass('info');
+         selectCopyQJ = row;
+         },
+         onLoadSuccess: function (data) {
+         selectCopyQJ = data.rows[0];
+         }
+         });*/
     }
     /*选择创建情景时模态框上一步操作*/
     function previous() {
@@ -933,7 +1303,7 @@
         vipspa.setMessage(msg);
 
         if (msg.content.planId == -1) {
-            $('#timePlan').modal('show');
+            $('#timePlan').window('open');
             $('a[href="#plan"]').eq(0).click();
 
             return
@@ -1280,21 +1650,456 @@
      * 更新保存显示的地区code信息
      */
     function updataCodeList() {
-        var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
-        $('.adcodeList').empty();
-        for (var i = 0; i < 3; i++) {
+        var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");//获取ztree对象
+        $('#adcodeListBox').empty();//清空原有显示内容
+        for (var i = 0; i < 3; i++) {  //遍历省市县三级地区
+            switch (i) {
+                case 0:
+                    $('#adcodeListBox').append("<p class='adcodeListBox-title'>选中的省份：</p><div class='adcodeListBox-province'></div>");
+                    break;
+                case 1:
+                    $('#adcodeListBox').append("<p class='adcodeListBox-title'>选中的地市：</p><div class='adcodeListBox-city'></div>");
+                    break;
+                case 2:
+                    $('#adcodeListBox').append("<p class='adcodeListBox-title'>选中的区县：</p><div class='adcodeListBox-county'></div>");
+                    break;
+                default:
+                    break;
+            }
+
             for (var ad in showCode[i]) {
                 if (i == 0) {
-                    $('.adcodeList').append(addP(ad, showCode[i][ad], i))
-                } else {
+                    $('#adcodeListBox .adcodeListBox-province').append('<span class="alb-pn">' + showCode[i][ad] + '</span>');
+                } else if (i == 1) {
+                    for (var j = 0; j < zTreeData.length; j++) {
+                        if (zTreeData[j].code == ad) {
+                            break;
+                        }
+                    }
+                    $('#adcodeListBox .adcodeListBox-city').append('<p>' + zTreeData[j].name + '</p><div class="province-city city' + zTreeData[j].code + '"></div>');
                     for (var add in showCode[i][ad]) {
-                        $('.adcodeList').append(addP(add, showCode[i][ad][add], i))
+                        $('#adcodeListBox .city' + zTreeData[j].code).append('<span class="alb-cn">' + showCode[i][ad][add] + '</span>')
+                    }
+                } else if (i = 2) {
+                    for (var j = 0; j < zTreeData.length; j++) {
+                        if (zTreeData[j].code == ad) {
+                            break;
+                        }
+                    }
+                    $('#adcodeListBox .adcodeListBox-county').append('<p>' + zTreeData[j].name + '</p><div class="city-county county' + zTreeData[j].code + '"></div>');
+                    for (var add in showCode[i][ad]) {
+                        $('#adcodeListBox .county' + zTreeData[j].code).append('<span class="alb-cn">' + showCode[i][ad][add] + '</span>')
                     }
                 }
+            }
+        }
+        $('.codeTree').hide();
+        $('.adcodeList').show();
+    }
+    /*在选中地区的面板进行修改选中的区域时的函数，重新跳出ztree*/
+    function revise() {
+        $('.adcodeList').hide();
+        $('.codeTree').show();
+    }
+    /*选择省级*/
+    function level0(node) {
+        var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+        var nodesDis = treeObj.getNodesByParam('chkDisabled', true, node);
+        if (nodesDis.length == 0) {
+            showCode[node.level][node.adcode] = node.name;
+            delete showCode[node.level + 1][node.adcode];
+            for (var i = 1; i < showCode.length; i++) {
+                for (var a in showCode[i]) {
+                    if (a.toString().substr(0, 2) == node.adcode.toString().substr(0, 2)) {
+                        delete showCode[i][a];
+                    }
+                }
+            }
+        } else {
+            //treeObj.checkNode(node, false, false, false);
+            var child = node.children;
+            for (var ch = 0; ch < child.length; ch++) {
+                if (!child[ch].chkDisabled) {
+                    level12(child[ch])
+                }
+            }
+        }
+    }
 
+    /*选择市县级*/
+    function level12(node) {
+        var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+        var nodesDis = treeObj.getNodesByParam('chkDisabled', true, node);
+        var parNode = node.getParentNode();
+
+        if (nodesDis.length == 0) {
+            if (!showCode[node.level][parNode.adcode]) {
+                showCode[node.level][parNode.adcode] = {}
+            }
+            showCode[node.level][parNode.adcode][node.adcode] = node.name;
+            if (parNode.children.length == Object.keys(showCode[node.level][parNode.adcode]).length) {
+                delete showCode[node.level][parNode.adcode];
+                if (node.level == 1) {
+                    level0(parNode);
+                } else {
+                    level12(parNode);
+                }
+            }
+            if (node.level == 1) {
+                delete showCode[node.level + 1][node.adcode];
+            }
+        } else {
+//    delete showCode[node.level][parNode.adcode];
+//    treeObj.checkNode(node, false, false, false);
+            var child = node.children;
+            if (!showCode[node.level + 1][node.adcode]) {
+                showCode[node.level + 1][node.adcode] = {};
+            }
+            for (var ch = 0; ch < child.length; ch++) {
+                if (!child[ch].chkDisabled) {
+                    showCode[node.level + 1][node.adcode][child[ch].adcode] = child[ch].name;
+                }
             }
         }
 
+    }
 
+    /*移除省级*/
+    function delNode0(node) {
+        delete showCode[node.level][node.adcode];
+        delete showCode[node.level + 1][node.adcode];
+        var ad = node.adcode.substr(0, 2);
+        var show = showCode[2];
+        for (var i in show) {
+            if (i.substr(0, 2) == ad) {
+                delete showCode[2][i];
+            }
+        }
+    }
+
+    /*移除市县级*/
+    function delNode12(node) {
+        var parNode = node.getParentNode();
+        var parTrue;
+        if (!showCode[node.level][parNode.adcode]) {
+            if (node.level == 1) {
+                if ($.isEmptyObject(showCode[node.level - 1])) {
+                    parTrue = true;
+                } else {
+                    parTrue = false;
+                }
+                delNode0(parNode);
+            } else {
+                delNode12(parNode);
+            }
+            if (node.level == 1) {
+                if (!parTrue) {
+                    showCode[node.level][parNode.adcode] = {};
+                    var child = parNode.children;
+                    for (var n = 0; n < child.length; n++) {
+                        if (!child[n].chkDisabled) {
+                            showCode[node.level][parNode.adcode][child[n].adcode] = child[n].name;
+                        }
+                    }
+                }
+            } else {
+                showCode[node.level][parNode.adcode] = {};
+                var child = parNode.children;
+                for (var n = 0; n < child.length; n++) {
+                    if (!child[n].chkDisabled) {
+                        showCode[node.level][parNode.adcode][child[n].adcode] = child[n].name;
+                    }
+                }
+            }
+
+        }
+        delete showCode[node.level][parNode.adcode][node.adcode];
+        if ($.isEmptyObject(showCode[node.level][parNode.adcode])) {
+            delete showCode[node.level][parNode.adcode];
+        }
+        if (node.level == 1) {
+            delete showCode[node.level + 1][node.adcode];
+        }
+    }
+    /**
+     * 创建/编辑区域
+     */
+    function createEditArea() {
+        var url = '/area/saveorupdate_area';//新增和修改区域数据的接口
+        var checkUrl = '/area/check_areaname';//新增区域时检查区域名称是否重复的
+        var areaName = $('#areaName').val();//存储修改的区域名称
+        if (!areaName) { //判断区域名称是否为空
+            alert('kong')
+            return;
+        }
+
+        var obj = {
+            missionId: qjMsg.rwId,
+            scenarinoId: qjMsg.qjId,
+            areaName: areaName,
+            userId: userId,
+            scenarinoStartDate: moment(qjMsg.qjStartDate).format('YYYY-MM-DD HH:mm:ss'),
+            scenarinoEndDate: moment(qjMsg.qjEndDate).format('YYYY-MM-DD HH:mm:ss'),
+            areaId: $('#areaName').attr('data-id') || '',
+            provinceCodes: '',
+            cityCodes: '',
+            countyCodes: '',
+            scenarinoStatus: qjMsg.scenarinoStatus
+        };  //存储此区域的信息
+
+        var pArr = []; //临时的省份数组
+        for (var i in showCode[0]) {
+            var proObj = {};
+            proObj[i] = showCode[0][i];
+            pArr.push(proObj);
+        }
+        obj.provinceCodes = JSON.stringify(pArr);
+        var ctArr = []; //临时的地市数组
+        for (var i in showCode[1]) {
+            for (var ii in showCode[1][i]) {
+                var cityObj = {};
+                cityObj[ii] = showCode[1][i][ii];
+                ctArr.push(cityObj)
+            }
+        }
+        obj.cityCodes = JSON.stringify(ctArr);
+        var crArr = []; //临时的区县数组
+        for (var i in showCode[2]) {
+            for (var ii in showCode[2][i]) {
+                var countyObj = {};
+                countyObj[ii] = showCode[2][i][ii];
+                crArr.push(countyObj)
+            }
+        }
+        obj.countyCodes = JSON.stringify(crArr);
+
+        if (pArr.length == 0 && ctArr.length == 0 && crArr.length == 0) {  //如果一个区域没有选择任何地区则不允许创建或修改
+            alert("请选择范围");
+            return;
+        }
+
+        if (!$('#areaName').attr('data-id')) {  //通过判断是否有data-id这个属性，判断是否为创建
+            ajaxPost(checkUrl, {  //判断是否重名
+                userId: userId,
+                scenarinoId: qjMsg.qjId,
+                areaName: areaName,
+            }).success(function (res) {
+                if (!res.data) {   //如果返回的数据为空说明，名称重复
+                    swal({
+                        title: '名称重复!',
+                        type: 'error',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                } else {
+
+
+                    $('#' + $('#areaName').attr('data-id')).find('button.btn-flash').removeClass('btn-flash');
+                    ajaxPost(url, obj).success(function (res) {
+
+                        var obj = {};  //创建一个临时的存储此区域的对象
+                        obj.areaId = res.data.areaId;
+                        obj.areaName = areaName;
+                        obj.timeFrame = [];
+                        obj.timeItems = [{
+                            planId: -1,
+                            planName: '无',
+                            timeId: res.data.timeId,
+                            timeEndDate: qjMsg.qjEndDate,
+                            timeStartDate: qjMsg.qjStartDate
+                        }];//给一个空的时段
+                        obj.provinceCodes = pArr;
+                        obj.cityCodes = ctArr;
+                        obj.countyCodes = crArr;
+                        allData.push(obj);  //将此条数据传入alldata
+                        showTimeline(allData); //重新绘制时间线函数
+                        $('#editArea').window('close'); //关闭编辑弹出框
+                        app2();
+
+                    })
+                }
+            }).error(function () {
+                swal({
+                    title: '名称校验失败!',
+                    type: 'error',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            });
+        } else {
+            ajaxPost(url, obj).success(function (res) {
+
+                allData[areaIndex].provinceCodes = pArr;
+                allData[areaIndex].cityCodes = ctArr;
+                allData[areaIndex].countyCodes = crArr;
+//                $('#' + $('#areaName').attr('data-id')).find('b').html(areaName);
+                $('#editArea').window('close'); //关闭编辑弹出框
+                app2();
+            })
+        }
+    }
+    /*显示已选择code,并进行checked*/
+    function setShowCode(data) {
+        var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+        proNum = data.provinceCodes.length;
+        cityNum = data.cityCodes.length;
+        countyNum = data.countyCodes.length;
+        showCode[0] = {};
+        showCode[1] = {};
+        showCode[2] = {};
+
+        if (proNum == 0) {
+            showCode[0] = {};
+        } else {
+            for (var i = 0; i < proNum; i++) {
+                $.extend(showCode[0], data.provinceCodes[i]);
+
+                var node = treeObj.getNodeByParam("adcode", Object.keys(data.provinceCodes[i]), null);
+                treeObj.checkNode(node, true, true, false);
+            }
+        }
+        if (cityNum == 0) {
+            showCode[1] = {};
+        } else {
+            for (var ii = 0; ii < cityNum; ii++) {
+                var adcode1 = Object.keys(data.cityCodes[ii])[0];
+                if (!showCode[1][adcode1.substr(0, 2) + '0000']) showCode[1][adcode1.substr(0, 2) + '0000'] = {};
+                $.extend(showCode[1][adcode1.substr(0, 2) + '0000'], data.cityCodes[ii]);
+
+                var node = treeObj.getNodeByParam("adcode", Object.keys(data.cityCodes[ii]), null);
+                treeObj.checkNode(node, true, true, false);
+            }
+        }
+        if (countyNum == 0) {
+            showCode[2] = {};
+        } else {
+            for (var iii = 0; iii < countyNum; iii++) {
+                var adcode2 = Object.keys(data.countyCodes[iii])[0];
+                if (!showCode[2][adcode2.substr(0, 4) + '00']) showCode[2][adcode2.substr(0, 4) + '00'] = {};
+                $.extend(showCode[2][adcode2.substr(0, 4) + '00'], data.countyCodes[iii]);
+
+                var node = treeObj.getNodeByParam("adcode", Object.keys(data.countyCodes[iii]), null);
+                treeObj.checkNode(node, true, true, false);
+            }
+        }
+    }
+    function initDate(s, e, start) {
+        $("#qyTimePoint").daterangepicker({
+
+
+            timePicker: true,
+            format: 'YYYY-MM-DD HH',
+            todayHighlight: false,
+            singleDatePicker: true,
+            language: 'zh-CN',
+            autoclose: true,
+            todayBtn: true,
+            timePicker24Hour: true,
+            startDate: s.format('YYYY-MM-DD HH'),
+            //endDate: e.format('YYYY-MM-DD HH'),
+            minDate: s.format('YYYY-MM-DD HH'),//最早可选日期
+            maxDate: e.format('YYYY-MM-DD HH'),//最大可选日期
+            locale: {
+                format: "YYYY-MM-DD HH",
+                //weekLabel: "W",
+                applyLabel: "确定", //按钮文字
+                cancelLabel: "取消",//按钮文字
+                daysOfWeek: [
+                    "日", "一", "二", "三", "四", "五", "六"
+                ],
+                monthNames: [
+                    "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"
+                ],
+                //firstDay: 1
+            },
+        })
+            .on('changeDate', function (ev) {
+                var date = moment(ev.date).format('YYYY-MM-DD HH');
+            });
+    }
+    /**
+     * 编辑时段时间html （编辑某一时段使用）
+     * 时段编辑时显示的前一时段后一时段当前时段的信息
+     */
+    function editHtml(id) {
+        $('#' + id + ' .showTimes .col-md-4 p').eq(0).empty();
+        $('#' + id + ' .showTimes .col-md-4 p').eq(1).empty();
+        $('#' + id + ' .showTimes .col-md-4 p').eq(2).empty();
+        $('#selectEditPoint').empty();
+        if (timeIndex == 0) {
+            $('#' + id + ' .showTimes .col-md-4 p').eq(0)
+                .html('<h4>无时段</h4>');
+            if (allData[areaIndex].timeItems.length == 1) {
+                $('#' + id + ' .showTimes .col-md-4 p').eq(2)
+                    .html('<h4>无时段</h4>');
+            } else {
+                $('#' + id + ' .showTimes .col-md-4 p').eq(2)
+                    .html(momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeStartDate) + '<br />至<br/>' + momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeEndDate));
+            }
+        } else if (timeIndex == allData[areaIndex].timeItems.length - 1) {
+            $('#' + id + ' .showTimes .col-md-4 p').eq(2)
+                .html('<h4>无时段</h4>');
+            if (allData[areaIndex].timeItems.length == 1) {
+                $('#' + id + ' .showTimes .col-md-4 p').eq(0)
+                    .html('<h4>无时段</h4>');
+            } else {
+                $('#' + id + ' .showTimes .col-md-4 p').eq(0)
+                    .html(momentDate(allData[areaIndex].timeItems[timeIndex - 1].timeStartDate) + '<br />至<br/>' + momentDate(allData[areaIndex].timeItems[timeIndex - 1].timeEndDate));
+            }
+        } else {
+            $('#' + id + ' .showTimes .col-md-4 p').eq(0)
+                .html(momentDate(allData[areaIndex].timeItems[timeIndex - 1].timeStartDate) + '<br />至<br/>' + momentDate(allData[areaIndex].timeItems[timeIndex - 1].timeEndDate));
+            $('#' + id + ' .showTimes .col-md-4 p').eq(2)
+                .html(momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeStartDate) + '<br />至<br/>' + momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeEndDate));
+            //editTimeDateObj.type = 'start'
+        }
+        $('#' + id + ' .showTimes .col-md-4 p').eq(1)
+            .html(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate) + '<br />至<br/>' + momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate));
+    }
+    /**
+     * 选择copy情景，处理copy之后的事件
+     */
+    function subCopyQJ() {
+        console.log(selectCopyQJ);
+
+        var copyUrl = '/scenarino/copy_Scenarino';
+        ajaxPost(copyUrl, {
+            scenarinoId: qjMsg.qjId,
+            userId: userId,
+            copyscenarinoId: selectCopyQJ.scenarinoId
+        }).success(function (res) {
+            if (res.status == 0) {
+                /*copy成功之后，重新请求区域时段及预案信息*/
+                var url = '/area/get_areaAndTimeList';
+                ajaxPost(url, {
+                    scenarinoId: qjMsg.qjId,
+                    userId: userId
+                }).success(function (res) {
+                    if (res.status == 0) {
+                        allData = res.data.slice(0, -1);
+                        for (var i = 0; i < allData.length; i++) {
+                            allData[i].timeFrame = [];
+                            var timeItems = allData[i].timeItems;
+                            var tLength = timeItems.length;
+                            //$('.areaMsg').append(area);
+                            for (var item = 0; item < tLength; item++) {
+
+                                if (item > 0) {
+                                    var sD = timeItems[item].timeStartDate;
+                                    allData[i].timeFrame[item - 1] = moment(sD).format('YYYY-MM-DD HH');
+                                }
+                            }
+                        }
+                        showTimeline(allData);
+                        app2();
+                    } else {
+                        console.log('get_areaAndTimeList 接口异常')
+                    }
+
+                });
+            } else {
+                console.log('copy_Scenarino 接口异常')
+            }
+        })
     }
 </script>
