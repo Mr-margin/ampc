@@ -170,13 +170,15 @@ public abstract class ExtractService {
 	public String[] buildIamgeFilePath(ExtractRequestParams params, String fileType) {
 		String[] path = new String[2];
 		Date date = new Date();
-		String rootPath = System.getProperty("user.dir");
+		String rootPath = "";
 		String imageFilePath = "";
 		String imageFileName = "";
 		if (Constants.FILE_TYPE_IMAGE.equals(fileType)) {
+			rootPath = System.getProperty("user.dir");
 			imageFilePath = extractConfig.getImageFilePath(); // /$userid/$domainid/$missionid/$domain/$showType/$calcType/$currDate/
 			imageFileName = extractConfig.getImageFileName(); // $timePoint-$day-$hour-$layer-$specie-$scenario-$random.png
 		} else {
+			rootPath = extractConfig.getTiffRootPath();
 			imageFilePath = extractConfig.getTiffFilePath(); // /$userid/$domainid/$missionid/$domain/$showType/$calcType/$currDate/
 			imageFileName = extractConfig.getTiffFileName(); // $timePoint-$day-$hour-$layer-$specie-$scenario-$random.png
 		}

@@ -221,6 +221,7 @@ public class ResultPathUtil {
 			extractConfig.setMeteorHourlyWindPrefix((String) pro.get("meteorHourlyWindPrefix"));
 			extractConfig.setEmisDailyPrefix((String) pro.get("emisDailyPrefix"));
 			extractConfig.setEmisHourlyPrefix((String) pro.get("emisHourlyPrefix"));
+			extractConfig.setTiffRootPath((String) pro.get("tiffRootPath"));
 			extractConfig.setTiffFilePath((String) pro.get("tiffFilePath"));
 			extractConfig.setTiffFileName((String) pro.get("tiffFileName"));
 			extractConfig.setImageFilePath((String) pro.get("imageFilePath"));
