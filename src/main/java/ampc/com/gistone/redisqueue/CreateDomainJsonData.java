@@ -117,7 +117,6 @@ public class CreateDomainJsonData {
 	 * @date 2017年5月22日 下午4:15:26
 	 */
 	private DomainDataMeic getDomainDataMeic() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -133,7 +132,6 @@ public class CreateDomainJsonData {
 	 * @date 2017年5月22日 下午4:13:55
 	 */
 	private DomainDataMcip getDomianDataMcip() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -149,7 +147,6 @@ public class CreateDomainJsonData {
 	 * @date 2017年5月22日 下午4:12:39
 	 */
 	private DomainDataWrf getDomainDataWrf() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -165,7 +162,6 @@ public class CreateDomainJsonData {
 	 * @date 2017年5月22日 下午3:56:52
 	 */
 	private DomainDataCmaq getDoaminDataCmaq() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
