@@ -1567,6 +1567,7 @@ dl, dd {
   width: 50%;
   float: left;
   position: relative;
+  border:1px solid #eee;
 }
 #editArea .modal-body>div:last-child{
   width: 50%;
@@ -1586,6 +1587,20 @@ dl, dd {
 }
 #editArea .modal-body .showMap{
   height: 100%;
+}
+#adcodeListBox{
+  padding: 10px;
+}
+.adcodeListBox-title{
+  font-size: 16px;
+}
+.adcodeListBox-province,.adcodeListBox-city,.adcodeListBox-county{
+  padding: 10px 0;
+  text-indent: 24px;
+  font-size: 14px;
+}
+.alb-pn:not(:last-child):after,.alb-cn:not(:last-child):after{
+  content: '、';
 }
 /*编辑子措施*/
 .cloudui .sxQuyu,.cloudui .sxTiaojian,.cloudui .sxMingcheng{width: 100%;overflow: hidden;border-bottom:1px dotted #D9D9D9;}
