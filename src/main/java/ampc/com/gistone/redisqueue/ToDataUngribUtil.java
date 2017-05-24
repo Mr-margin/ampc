@@ -250,7 +250,6 @@ public class ToDataUngribUtil {
 						method.invoke(tUngrib, 0);
 					}
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				break;
@@ -263,7 +262,7 @@ public class ToDataUngribUtil {
 	  */
 	@Transactional
 	public void  updateUngrib(String rpop) {
-		LogUtil.getLogger().info("开始解析ungrib数据");
+		LogUtil.getLogger().info("updateUngrib:开始解析ungrib数据");
 		//创建ungrib对象
 		TUngrib tUngrib = new TUngrib();
 		try {
@@ -308,7 +307,7 @@ public class ToDataUngribUtil {
 						//查询该条ungrib是否存在，存在则修改，否则添加
 						tUngrib.setErrorFnlMsg(fnlerror);
 						tUngrib.setErrorGfsMsg(gfserror);
-						LogUtil.getLogger().info("我要给fnl和gfs赋值了");
+						LogUtil.getLogger().info("updateUngrib:我要给fnl和gfs赋值了");
 						//调用方法给每个gfs的状态赋值
 						tUngrib = ToDataUngribUtil.updateGFSstatus(tUngrib,status);
 						//判断上一天的ungrib是否成功
@@ -333,15 +332,15 @@ public class ToDataUngribUtil {
 											try {
 												int i = tUngribMapper.updateByPrimaryKey(tUngrib);
 												if (i>0) {
-													LogUtil.getLogger().info("跟新ungrib"+new Date());
+													LogUtil.getLogger().info("updateUngrib:跟新ungrib"+new Date());
 												}else {
-													LogUtil.getLogger().info("跟新ungrib失败！时间："+new Date());
+													LogUtil.getLogger().info("updateUngrib:跟新ungrib失败！时间："+new Date());
 												}
 											} catch (Exception e) {
-												LogUtil.getLogger().error("跟新ungrib出异常！"+e.getMessage());
+												LogUtil.getLogger().error("updateUngrib:跟新ungrib出异常！"+e.getMessage());
 											}
 										}else {
-											LogUtil.getLogger().info("ungrib已经全部更新完毕l！不需要更新了！");
+											LogUtil.getLogger().info("updateUngrib:ungrib已经全部更新完毕l！不需要更新了！");
 										}
 									}else {
 										//执行添加操作
@@ -351,34 +350,34 @@ public class ToDataUngribUtil {
 										try {
 											int i = tUngribMapper.insert(tUngrib);
 											if (i>0) {
-												LogUtil.getLogger().info("添加了最新的ungrib数据！");
+												LogUtil.getLogger().info("updateUngrib:添加了最新的ungrib数据！");
 											}else {
-												LogUtil.getLogger().info("添加最新的ungrib数据失败！");
+												LogUtil.getLogger().info("updateUngrib:添加最新的ungrib数据失败！");
 											}
 										} catch (Exception e) {
-											LogUtil.getLogger().error("添加了最新的ungrib数据出异常了"+e.getMessage());
+											LogUtil.getLogger().error("updateUngrib:添加了最新的ungrib数据出异常了"+e.getMessage());
 										}
 									}
 								} catch (Exception e) {
-									LogUtil.getLogger().error("查找当前pathdate的ungrib出错！"+e.getMessage());
+									LogUtil.getLogger().error("updateUngrib:updateUngrib:查找当前pathdate的ungrib出错！"+e.getMessage());
 								}
 							}else {
-								LogUtil.getLogger().info("上一天："+yestdate+"的ungrib没有更新！不允许跳跃跟新ungrib！");
+								LogUtil.getLogger().info("updateUngrib:上一天："+yestdate+"的ungrib没有更新！不允许跳跃跟新ungrib！");
 							}
 						} catch (Exception e) {
-							LogUtil.getLogger().error("查找上一天的ungrib出错！"+e.getMessage());
+							LogUtil.getLogger().error("updateUngrib:查找上一天的ungrib出错！"+e.getMessage());
 						}
 					} catch (Exception e) {
-						LogUtil.getLogger().error("ungrib的pathdate格式不对！"+e.getMessage());
+						LogUtil.getLogger().error("updateUngrib:ungrib的pathdate格式不对！"+e.getMessage());
 					}
 				}else {
-					LogUtil.getLogger().info("ungrib的pathdate参数为空！");
+					LogUtil.getLogger().info("updateUngrib:ungrib的pathdate参数为空！");
 				}
 			} catch (Exception e) {
-				LogUtil.getLogger().error("ungrib的更新出错！"+e.getMessage());
+				LogUtil.getLogger().error("updateUngrib:ungrib的更新出错！"+e.getMessage());
 			}
 		} catch (IOException e1) {
-			LogUtil.getLogger().error("ungrib转换异常！",e1);
+			LogUtil.getLogger().error("updateUngrib:ungrib转换异常！",e1);
 		}
 	}
 
