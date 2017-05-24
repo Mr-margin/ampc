@@ -239,10 +239,10 @@ public class ToDataTasksUtil {
 												    				}
 																}else {
 																	//表示已经发送过当条情景 不用触发
-												    				LogUtil.getLogger().info("情景ID为："+scenarinoId+"的情景已经发送过消息了！");
+												    				LogUtil.getLogger().info("updateDB-model.start.result:情景ID为："+scenarinoId+"的情景已经发送过消息了！");
 																}
 															}else {
-																LogUtil.getLogger().info("当天的实时预报情景还没有创建！");
+																LogUtil.getLogger().info("updateDB-model.start.result:当天的实时预报情景还没有创建！");
 																//当天的实时预报 还未创建  上一天的gfs可以继续发送消息直到当天的上午7点整
 																//上一条的情景ID和完成tasks的时间
 																//当前系统时间
@@ -252,7 +252,7 @@ public class ToDataTasksUtil {
 																Date upperDate = DateUtil.changedateByHour(initDate,7);
 																int goon = nowDate.compareTo(upperDate);
 																if (goon>0) {
-																	LogUtil.getLogger().info("时间超过七点，不能再发送了");
+																	LogUtil.getLogger().info("updateDB-model.start.result:时间超过七点，不能再发送了");
 																}else{
 																	readyData.sendqueueRealDataThen(tasksEndDate,tasksScenarinoId);
 																}
@@ -262,9 +262,10 @@ public class ToDataTasksUtil {
 											    			//当时间到当天的时候发当天的实时预报
 											    			readyData.sendqueueRealDataThen(tasksEndDate,tasksScenarinoId); 
 														}
-											    		LogUtil.getLogger().info(tasksEndDate+"tasks的结束时间");
+											    		LogUtil.getLogger().info("updateDB-model.start.result:"+tasksEndDate+"tasks的结束时间");
 													}
 										    	}
+										    	
 										    	else {
 													//针对其他三种情景（ 预评估的后评估情景 后评估任务的两种情景）不存在pathdate 当接受到消息时候 给每个tasksstatus一个状态
 													if (code==0&&"2".equals(scentype)&&index==stepindex) {
@@ -321,7 +322,7 @@ public class ToDataTasksUtil {
 												}
 											}
 										}else {
-											LogUtil.getLogger().error("更新taskstatus状态失败!scenarinoId："+tasksScenarinoId);
+											LogUtil.getLogger().error("updateDB-model.start.result:更新taskstatus状态失败!scenarinoId："+tasksScenarinoId);
 											throw new SQLException("updateDB-model.start.result 更新taskstatus状态失败!scenarinoId："+tasksScenarinoId);
 										}
 									}else {
