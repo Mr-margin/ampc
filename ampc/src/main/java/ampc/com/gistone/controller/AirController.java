@@ -71,42 +71,57 @@ public class AirController {
 	
 	TScenarinoDetail tScenarinoDetail;
 	
-
+	/**
+	 * 空气质量预报时间序列查询最小和最大可选时间
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 * @throws IOException
+	 */
 	@RequestMapping("/Air/get_time")
 	public AmpcResult get_time(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response ) throws NoSuchAlgorithmException, IOException {
 		try{
+			//设置跨域编码格式
 			ClientUtil.SetCharsetAndHeader(request, response);
+			//获取请求的参数
 			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户id
 			Object param=data.get("userId");
 			if(!RegUtil.CheckParameter(param, "Long", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
 				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
 			}
 			Long userId = Long.parseLong(param.toString());
-			
+			//返回给前台的数据
 			JSONObject obj=new JSONObject();
-			
-			Calendar calendar = Calendar.getInstance();//获取一个Calendar对象并可以进行时间的计算，时区的指定
+			//获取一个Calendar对象并可以进行时间的计算，时区的指定
+			Calendar calendar = Calendar.getInstance();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		    
 		    //获取当前时间的小时，判断是否大于早上8点，8点之后昨天的空气质量预报已经完成，8点之前只能取前天的空气质量预报
-		    if(calendar.get(Calendar.HOUR_OF_DAY) > 8){//8点以后
-				calendar.add(Calendar.DATE, -1);//获取昨天的日期
-		    }else{//8点以前
-		    	calendar.add(Calendar.DATE, -2);//获取前天的日期
+			//8点以后
+		    if(calendar.get(Calendar.HOUR_OF_DAY) > 8){
+		    	//获取昨天的日期
+				calendar.add(Calendar.DATE, -1);
+		    }else{
+		    	//8点以前--获取前天的日期
+		    	calendar.add(Calendar.DATE, -2);
 		    }
-		    
+		    //组织查询的参数
 		    Map tsMap = new HashMap();
-		    
+		    //用户id
 		    tsMap.put("userId", userId);
+		    //起报日期
 		    tsMap.put("pathDate", sdf.format(calendar.getTime()));
-		    
+		    //查询最近一次预报情景的结束时间
 		    TScenarinoDetail tScenarinoDetail = this.tScenarinoDetailMapper.selectendStart(tsMap);
-		    obj.put("maxtime", sdf.format(tScenarinoDetail.getScenarinoEndDate()));//结束时间
-		    
+		    //结束时间
+		    obj.put("maxtime", sdf.format(tScenarinoDetail.getScenarinoEndDate()));
+		    //查询系统开始时间为最早可选时间
 		    String sql = "select \"DAY\" from T_SCENARINO_FNL_DAILY_2017_"+userId+" where  ROWNUM = 1 group by \"DAY\" order by \"DAY\" ";
 		    List<Map> list_FNL_DAILY = this.getBySqlMapper.findRecords(sql);
-		    
+		    //获取查询到的最早系统时间并添加到json对象中
 		    if(list_FNL_DAILY.size()>0){
 		    	for(int i = 0;i<list_FNL_DAILY.size();i++){
 					Map st_map = list_FNL_DAILY.get(i);
@@ -481,11 +496,6 @@ public class AirController {
 				return AmpcResult.build(1003, "日期为空或出现非法字符!");
 			}
 			String endDate = param.toString();
-			
-			
-			System.out.println(startDate +"--"+ endDate);
-			
-			
 			//选择站点值
 			String cityStation=data.get("cityStation").toString();	
 			//逐日或逐小时
@@ -497,7 +507,6 @@ public class AirController {
 				return AmpcResult.build(1003, "空间分辨率为空或出现非法字符!");
 			}
 			int domain=Integer.valueOf(param.toString());
-
 			//页面选择的页签值
 			param=data.get("changeType");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
@@ -537,7 +546,7 @@ public class AirController {
 			Map objData=new HashMap();
 			//返给页面的模拟数据
 			Map simulationData=new HashMap();
-			
+			//存放查询到的模拟数据
 			Map contentmapData=new HashMap();
 			//日期格式化
 			SimpleDateFormat sdfNow;
@@ -581,7 +590,6 @@ public class AirController {
 							scenarinoEntity=tPreProcessMapper.selectBysomesFnl(scenarinoEntity);
 							if(scenarinoEntity==null||"".equals(scenarinoEntity.toString())||"{}".equals(scenarinoEntity.toString())||"null".equals(scenarinoEntity.toString())){
 								//循环全部物种
-								
 								contentmapData.put(sdfNow.format(calDate), "{}");	//数据--空
 							}else{
 								contentmapData.put(sdfNow.format(calDate), mapper.readValue(scenarinoEntity.getContent(), Map.class));	
@@ -590,7 +598,6 @@ public class AirController {
 					}else{
 						//8点以后
 						if(calendar.get(Calendar.HOUR_OF_DAY) > 8){
-							 
 						//查询模拟表
 						//查询起报日期的sid
 						calendar.add(Calendar.DATE, -1);//获取昨天的日期
@@ -613,9 +620,10 @@ public class AirController {
 						scenarinoEntity.setsId(Long.valueOf(tScenarinoDetail.getScenarinoId().toString()).longValue());
 						scenarinoEntity.setTableName(tables);
 						scenarinoEntity=tPreProcessMapper.selectBysomes(scenarinoEntity);   
-						
-						contents=scenarinoEntity.getContent();		//获取模拟数据
-						contentmapData=mapper.readValue(contents, Map.class);	//模拟父数据
+						//获取模拟数据
+						contents=scenarinoEntity.getContent();
+						//模拟父数据
+						contentmapData=mapper.readValue(contents, Map.class);	
 						
 						Calendar calendar1 = Calendar.getInstance();
 						calendar1.add(Calendar.DATE, -2);
@@ -659,7 +667,8 @@ public class AirController {
 					    	
 					    	//查询模拟表
 							//查询起报日期的sid
-							calendar.add(Calendar.DATE, -2);//获取前天的日期
+					    	//获取前天的日期
+							calendar.add(Calendar.DATE, -2);
 						    Map tsMap = new HashMap();
 						    tsMap.put("userId", userId);
 						    tsMap.put("pathDate", sdfNow.format(calendar.getTime()));
@@ -679,9 +688,10 @@ public class AirController {
 							scenarinoEntity.setsId(Long.valueOf(tScenarinoDetail.getScenarinoId().toString()).longValue());
 							scenarinoEntity.setTableName(tables);
 							scenarinoEntity=tPreProcessMapper.selectBysomes(scenarinoEntity);   
-							
-							contents=scenarinoEntity.getContent();		//获取模拟数据
-							contentmapData=mapper.readValue(contents, Map.class);	//模拟父数据
+							//获取模拟数据
+							contents=scenarinoEntity.getContent();
+							//模拟父数据
+							contentmapData=mapper.readValue(contents, Map.class);	
 							
 							Calendar calendar1 = Calendar.getInstance();
 							calendar1.add(Calendar.DATE, -3);
@@ -748,14 +758,16 @@ public class AirController {
 								Map speciesOneMap=(Map)speciesOne;
 								String speciesOneVal=speciesOneMap.get("0").toString();
 								if("CO".equals(simulationArr[s])){
-									if("".equals(speciesOneVal)||speciesOneVal==null||"-".equals(speciesOneVal)){		//判断是否有值
+									//判断值为空时赋值"-"
+									if("".equals(speciesOneVal)||speciesOneVal==null||"-".equals(speciesOneVal)){		
 										speciesDayData.put(dayKey,"-");
 									}else{
 										BigDecimal bd=(new BigDecimal(speciesOneMap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
 										speciesDayData.put(dayKey,bd);
 									}
 								}else{
-									if("".equals(speciesOneVal)||speciesOneVal==null||"-".equals(speciesOneVal)){		//判断是否有值
+									//判断值为空时赋值"-"
+									if("".equals(speciesOneVal)||speciesOneVal==null||"-".equals(speciesOneVal)){		
 										speciesDayData.put(dayKey,"-");
 									}else{
 										BigDecimal bd=(new BigDecimal(speciesOneMap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
@@ -770,9 +782,10 @@ public class AirController {
 						/*
 						 * 查询观测数据
 						 */
-						HashMap<Object, Object> observationData=new HashMap<Object, Object>();	//返给页面的观测数据
-						
-						HashMap<String, Object> obsMap=new HashMap<String, Object>();	//查询观测数据开始
+						//返给页面的观测数据
+						HashMap<Object, Object> observationData=new HashMap<Object, Object>();	
+						//查询观测数据开始
+						HashMap<String, Object> obsMap=new HashMap<String, Object>();	
 						obsMap.put("city_station",cityStation);
 						String modes;	//用于存放新的mode
 						if("point".equals(mode)){
@@ -784,13 +797,16 @@ public class AirController {
 						String tables_obs="T_OBS_DAILY_";
 						DateFormat df_obs = new SimpleDateFormat("yyyy");
 						Date nowDate=new Date();
-						String nowYear_obs= df_obs.format(nowDate);		//截取该任务的开始时间来改变查询的表格
+						//截取该任务的开始时间来改变查询的表格
+						String nowYear_obs= df_obs.format(nowDate);		
 						tables_obs+=nowYear_obs;
-						obsMap.put("tableName",tables_obs);				//查询的表格
+						//查询的表格
+						obsMap.put("tableName",tables_obs);				
 						
 						for(int m=0;m<speciesArr.length;m++){	
 							HashMap obsSpeciesData=new HashMap();
-							for(int j=0;j<=differenceVal;j++){		//循环页面开始年份和结束年份的差值--开始
+							//循环页面开始年份和结束年份的差值--开始
+							for(int j=0;j<=differenceVal;j++){		
 								calendar.setTime(sdfNow.parse(startDate));
 								calendar.add(Calendar.DAY_OF_MONTH, (j+1));
 								calDate = calendar.getTime();
@@ -802,20 +818,24 @@ public class AirController {
 								String calDateStrs=sdfNow.format(calDates);
 								Date calDate_now=sdfNow.parse(calDateStrs);
 								obsMap.put("date", calDate_now);
-								ObsBean obsBeans=tObsMapper.queryUnionResult(obsMap);	//查询观测数据
+								//查询观测数据
+								ObsBean obsBeans=tObsMapper.queryUnionResult(obsMap);	
 								if(!"".equals(obsBeans)&&obsBeans!=null&&!"{}".equals(obsBeans)&&!"null".equals(obsBeans)&&!"NULL".equals(obsBeans)){
 									String obsContent=obsBeans.getContent().toString();
 									Map obsContentobj=mapper.readValue(obsContent, Map.class);
-									for(int k=0;k<speciesArr.length;k++){		//查询的观测数据不为空时，进行赋值
+									//查询的观测数据不为空时，进行赋值
+									for(int k=0;k<speciesArr.length;k++){		
 										if(speciesArr[m].equals(speciesArr[k])){
 											if("".equals(obsContentobj.toString())||"null".equals(obsContentobj.toString())||"NULL".equals(obsContentobj.toString())||"{}".equals(obsContentobj.toString())||obsContentobj==null){
 												obsSpeciesData.put(sdfNow.format(calDate_now), "-");
 											}else{
-												String speciesval=obsContentobj.get(speciesArr[k]).toString();	//键为空出现异常时，赋值"-"
+												String speciesval=obsContentobj.get(speciesArr[k]).toString();
+												//键为空出现异常时，赋值"-"
 												if("-".equals(speciesval)||"".equals(speciesval)||"null".equals(speciesval)||"NULL".equals(speciesval)||"{}".equals(speciesval)||speciesval==null){
 													obsSpeciesData.put(sdfNow.format(calDate_now), "-");
 												}else{
-													if("CO".equals(speciesArr[k])){									//值不为空，保留位数判断
+													if("CO".equals(speciesArr[k])){
+														//值不为空，保留位数判断
 														BigDecimal bd=(new BigDecimal(speciesval)).setScale(2, BigDecimal.ROUND_HALF_UP);
 														obsSpeciesData.put(sdfNow.format(calDate_now), bd);
 													}else{
@@ -827,7 +847,8 @@ public class AirController {
 										}
 									}
 								}else{
-									for(int k=0;k<speciesArr.length;k++){	//查询的观测数据为空时，进行赋值
+									//查询的观测数据为空时，进行赋值
+									for(int k=0;k<speciesArr.length;k++){	
 										if(speciesArr[m].equals(speciesArr[k])){
 											obsSpeciesData.put(sdfNow.format(calDate_now),"-" );
 										}
