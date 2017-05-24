@@ -543,6 +543,18 @@ public class AreaAndTimeController {
 								return AmpcResult.build(0, "delete_time success");
 							}	
 					}
+				}else{
+					if(scenarinoStatus==1){
+						int a=scenarinoStatusUtil.updateScenarinoStatus(scenarinoId);
+						if(a!=0){ 
+							return AmpcResult.build(0, "delete_time success");
+						}else{
+							LogUtil.getLogger().error("delete_time 情景状态转换失败！");
+							return AmpcResult.build(1000, "情景状态转换失败",null);
+						}
+						}else{
+							return AmpcResult.build(0, "delete_time success");
+						}
 				}
 				}else{
 					
