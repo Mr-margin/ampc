@@ -161,35 +161,10 @@ public class NativeAndNationController {
 			}
 			// 用户id
 			Long userId = Long.parseLong(param.toString());
-			//查询本地清单模板
+			//查询本地清单模板前添加参数
 			tEsNativeTp=new TEsNativeTp();
 			tEsNativeTp.setUserId(userId);
-//			List<TEsNativeTp> listTp=tEsNativeTpMapper.selecttesNativeTp(tEsNativeTp);
-//			//循环添加list
-//			List list=new ArrayList();
-//			for(int k=0;k<listTp.size();k++){
-//				TEsNativeTp tEsNativeTp=listTp.get(k);
-//				list.add(tEsNativeTp);
-//			}
-//			//循环模板id进行查询
-//			for(int i=0;i<listTp.size();i++){
-//				//获取ID
-//				Long es_native_Id=listTp.get(i).getEsNativeTpId();
-//				tEsNative=new TEsNative();
-//				tEsNative.setUserId(userId);
-//				//和模板清单数据关联的ID
-//				tEsNative.setEsNativeTpId(es_native_Id);
-//				//循环查询得到单个id的本地清单数据结果集
-//				List<TEsNative>listNative=tEsNativeMapper.selectAllNative(tEsNative);
-//				//循环把清单模板下的对应清单数据添加到集合中
-//				for(int j=0;j<listNative.size();j++){
-//					TEsNative tEsNative=listNative.get(j);
-//					list.add(tEsNative);
-//				}
-//			}
-//			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的本地清单信息成功!");
-//			return AmpcResult.ok(list);
-			
+			//查询本地清单模板
 			List<Map> listTp=tEsNativeTpMapper.selecttesNativeTp(tEsNativeTp);
 			//循环全部模板
 			for(int k=0;k<listTp.size();k++){
@@ -203,11 +178,9 @@ public class NativeAndNationController {
 				tEsNative.setEsNativeTpId(es_native_Id);
 				//循环查询得到单个id的本地清单数据结果集
 				List<TEsNative>listNative=tEsNativeMapper.selectAllNative(tEsNative);
-				
+				//将查询到清单模板对应所拥有的清单数据集合添加到map中
 				tEsNativeTp.put("tpData", listNative);
-//				list.add(tEsNativeTp);
 			}
-			
 			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的本地清单信息成功!");
 			return AmpcResult.ok(listTp);
 		} catch (Exception e) {
