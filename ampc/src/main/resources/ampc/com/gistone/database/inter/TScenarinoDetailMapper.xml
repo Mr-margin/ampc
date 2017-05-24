@@ -1112,7 +1112,7 @@ AND S.IS_EFFECTIVE ='1'
     
 <!--   </select> -->
   <select id="selectendStart" resultMap="BaseResultMap" parameterType="hashMap">
-  select SCENARINO_START_DATE,SCENARINO_END_DATE 
+  select <include refid="Base_Column_List" /> 
   from T_SCENARINO_DETAIL where PATH_DATE = "TO_DATE"(#{pathDate,jdbcType=TIMESTAMP},'yyyy-MM-dd') and IS_EFFECTIVE = '1' and USER_ID = #{userId,jdbcType=DECIMAL}
   </select>
   
