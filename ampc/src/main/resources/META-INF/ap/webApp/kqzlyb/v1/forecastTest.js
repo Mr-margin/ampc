@@ -158,7 +158,7 @@ function showDate(type) {
         return
     }
     d.toggle();
-    showTitleFun();
+//    showTitleFun();
 }
 
 /*设置污染物/气象要素站点
@@ -208,7 +208,7 @@ function requestRegion() {
 
 /*请求可选日期范围*/
 function requestDate() {
-    var url = '/Air/get_time';
+    var url = '/Air/checkout_time';
     return ajaxPost(url, {
         userId: userId
     }).success(function (res) {
@@ -236,7 +236,7 @@ function requestDate() {
     			changeMsg.endD = "2017-05-23";
     			if(changeMsg.type=="qxys"){
     				initQxysDate("2017-04-28", changeMsg.endD, changeMsg.startD, '2017-05-04');
-    				showTitleFun();
+//    				showTitleFun();
     			}else{
     				initWrwDate("2017-04-28", changeMsg.endD, changeMsg.startD, '2017-05-04');
     			}
@@ -245,25 +245,25 @@ function requestDate() {
         		//1、判断最大时间与最小时间的天数
         		//超过7天：（取最大时间-7天为开始时间，最大时间为结束时间，显示7天的数据）
         		//小于等于7天：（最大时间最小时间就是开始结束时间）
-        		var maxtime = moment(res.data.maxtime);//最大时间
-        		var mintime = moment(res.data.mintime);//最小时间
-        		if(maxtime.diff(mintime, 'days') > 7){//事件间隔大于7天
-        			changeMsg.startD = moment(res.data.maxtime).add(-7, 'd').format('YYYY-MM-DD');
-        			changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
+        		var endtime = moment(res.data.endtime);//最大时间
+        		var starttime = moment(res.data.starttime);//最小时间
+        		if(endtime.diff(starttime, 'days') > 7){//事件间隔大于7天
+        			changeMsg.startD = moment(res.data.endtime).add(-7, 'd').format('YYYY-MM-DD');
+        			changeMsg.endD = moment(res.data.endtime).format('YYYY-MM-DD');
         			if(changeMsg.type=="qxys"){
-        				initQxysDate("2017-04-28", changeMsg.endD, changeMsg.startD, changeMsg.endD);
+        				initQxysDate(moment(res.data.starttime).format('YYYY-MM-DD'), moment(res.data.endtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
         			}else{
-        				initWrwDate("2017-04-28", changeMsg.endD, changeMsg.startD, changeMsg.endD);
+        				initWrwDate(moment(res.data.starttime).format('YYYY-MM-DD'), moment(res.data.endtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
         			}
         			
         			//			最大可选时间     最小可选时间		默认开始时间		  默认结束时间
         		}else{//小于等于7天
-        			changeMsg.startD = moment(res.data.maxtime).format('YYYY-MM-DD');
-        			changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
+        			changeMsg.startD = moment(res.data.endtime).format('YYYY-MM-DD');
+        			changeMsg.endD = moment(res.data.endtime).format('YYYY-MM-DD');
         			if(changeMsg.type=="qxys"){
-        				initQxysDate("2017-04-28", changeMsg.endD, changeMsg.startD, changeMsg.endD);
+        				initQxysDate(changeMsg.startD, changeMsg.endD, changeMsg.startD, changeMsg.endD);
         			}else{
-        				initWrwDate("2017-04-28", changeMsg.endD, changeMsg.startD, changeMsg.endD);
+        				initWrwDate(changeMsg.startD, changeMsg.endD, changeMsg.startD, changeMsg.endD);
         			}
         			
         		}
@@ -348,7 +348,6 @@ function updata(opt) {
     })
     proStation=allCode[$(".proStation").val()].name
     cityStation=allCode[$('.proStation').val()].city[$(".cityStation").val()]
-    changeMsg.endD = "2017-05-04";
     showTitleFun();
 }
 
