@@ -93,6 +93,7 @@ public class VerticalController {
 //返回的是图片路径
 		String res = verticalService.vertical(verticalParams,concnFilePath);
 		if (StringUtil.isEmpty(res)) {
+			//还没有和前端交互，交互时要将图片路径返回到前端页面
 			return AmpcResult.ok(res);
 		}
 		return AmpcResult.build(1001, "系统异常");
