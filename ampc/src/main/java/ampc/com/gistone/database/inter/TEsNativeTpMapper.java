@@ -18,6 +18,5 @@ public interface TEsNativeTpMapper {
 
     int updateByPrimaryKey(TEsNativeTp record);
     //根据id查询模板数据
-//	List<TEsNativeTp> selecttesNativeTp(TEsNativeTp record);
 	List<Map> selecttesNativeTp(TEsNativeTp record);
 }
