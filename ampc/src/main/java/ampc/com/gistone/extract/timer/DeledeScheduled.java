@@ -18,7 +18,7 @@ public class DeledeScheduled {
 	private static final Logger logger = LoggerFactory.getLogger(DeledeScheduled.class);
 
 	@Autowired
-	private TimerParameter timerParameter;
+	private TimerConfig timerParameter;
 
 	// @Scheduled(cron = "0 0/1 * * * ?")
 	@Scheduled(cron = "0 0 1 * * ?") // 每天凌晨1点执行,删除本天前的

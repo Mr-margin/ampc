@@ -6,7 +6,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @PropertySource("classpath:timer.properties")
-public class TimerParameter {
+public class TimerConfig {
 
 	@Value("${dayDeleteFile}")
 	private String dayDeleteFilePath;
