@@ -24,7 +24,9 @@ public interface TEsNativeMapper {
     int updateByPrimaryKeySelective(TEsNative record);
 
     int updateByPrimaryKey(TEsNative record);
+
+	List<TEsNative> selectAllNative(TEsNative tEsNative);
     
-    //查询本地清单
-    List<Map> selectAllNative(Long userId);
+    
+    
 }
