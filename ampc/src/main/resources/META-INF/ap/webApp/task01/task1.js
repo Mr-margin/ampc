@@ -3,6 +3,8 @@ var subBtn = true;//用于防止重复提交的flag
 var rwSelectType = ''; //存储选中情景所对应的任务
 var statusRW = '';//任务类型选择使用的变量，废弃中
 var selectRW = {};//存储被选中的任务的数据
+var rwStartDate;
+var rwEndDate;
 var basisArr, qjType;
 var qjType = 0;
 var __dsp = {};//用于存储请求信息，做Promise存储
@@ -463,20 +465,21 @@ function createRw() {
     if ($('#rwForm').valid()) {
         if (!subBtn)return;
         subBtn = false;
-        var url = '/ampc/mission/save_mission';
-        var urlName = '/ampc/mission/check_missioname';
+        var url = '/mission/save_mission';
+        var urlName = '/mission/check_missioname';
         var params = {};
         var paramsName = {};
         params.missionName = paramsName.missionName = $('#rwName').val();
         params.missionDomainId = $('#mnfw').val();
         params.esCouplingId = $('#qd').val();
-        params.missionStartDate = moment(selectRW.missionStartDate).format('YYYY-MM-DD HH:mm:ss');
-        params.missionEndDate = moment(selectRW.missionEndDate).add(1, 'd').subtract(1, 's').format('YYYY-MM-DD HH:mm:ss');
+        params.missionStartDate = moment(rwStartDate).format('YYYY-MM-DD HH:mm:ss');
+        params.missionEndDate = moment(rwEndDate).add(1, 'd').subtract(1, 's').format('YYYY-MM-DD HH:mm:ss');
         params.userId = paramsName.userId = userId;
         params.missionStauts = rwSelectType;
         if (rwSelectType == '2') {
             if (rwEndDate < moment().format('YYYY-MM-DD')) {
                 $('.rwDateTip').show();
+                subBtn = true;
                 return;
             } else {
                 $('.rwDateTip').hide();
@@ -496,7 +499,8 @@ function createRw() {
                             timer: 1000,
                             showConfirmButton: false
                         });
-                        $('#rwName').val('')
+                        $('#rwName').val('');
+                        subBtn = true;
                     } else {
                         $("#addRW").window("close");
                         swal({
@@ -505,10 +509,11 @@ function createRw() {
                             timer: 1000,
                             showConfirmButton: false
                         });
+                        subBtn = true;
                     }
                 }).error(function () {
 
-                    $('#createRwModal').modal('hide');
+                    $("#addRW").window("close");
                     swal({
                         title: '添加失败!',
                         type: 'error',
@@ -516,6 +521,7 @@ function createRw() {
                         showConfirmButton: false
                     });
                     //swal('添加失败', '', 'error')
+                    subBtn = true;
                 })
             } else {
                 swal({
@@ -664,7 +670,7 @@ function deleteFun(type) {
     }
     delList = delList.substr(0, delList.length - 1);
     params.missionIds = delList;
-    url = '/ampc/mission/delete_mission';
+    url = '/mission/delete_mission';
 //    } else {
     delList = '';
     for (var ii in delQJid) {
@@ -672,7 +678,7 @@ function deleteFun(type) {
     }
     delList = delList.substr(0, delList.length - 1);
     params1.scenarinoIds = delList;
-    url1 = '/ampc/scenarino/delete_scenarino'
+    url1 = '/scenarino/delete_scenarino'
 //    }
 
     swal({
@@ -720,7 +726,7 @@ function search(type) {
         pageNum = 1,
         pageSize = 10,
         sort = '';
-    ajaxPost('/ampc/mission/get_mission_list', {
+    ajaxPost('/mission/get_mission_list', {
         queryName: queryName, pageNum: pageNum, pageSize: pageSize, missionStatus: statusRW, sort: sort, userId: userId
     })
         .success(function (data) {
@@ -796,6 +802,8 @@ function selectQJtype(type) {
 //        $('.hpgQJCon').css('display', 'block');
 //        $('.createQjBtn').css('display', 'inline-block');
 //        $('.return_S_qj').css('display', 'inline-block');
+            $('#addHQJ').find('.step1').hide().end().find('.step2').show().end().window('close').window('open');
+
             $('.diffNo').css('display', 'none');
             $('.spinup').css('display', 'block');
             $('#hEndDate').attr('disabled', true);
@@ -957,6 +965,7 @@ function selectQJtype(type) {
 //        $('.hpgQJCon').css('display', 'block');
 //        $('.createQjBtn').css('display', 'inline-block');
 //        $('.return_S_qj').css('display', 'inline-block');
+            $('#addHQJ').find('.step1').hide().end().find('.step2').show().end().window('close').window('open');
             $('.diffNo').css('display', 'none');
             $('.spinup').css('display', 'block');
             $('#hEndDate').attr('disabled', true);
@@ -1072,8 +1081,8 @@ function createQj(type) {
     subBtn = false;
     var url, urlName;
     var params, paramsName;
-    url = '/ampc/scenarino/save_scenarino';
-    urlName = '/ampc/scenarino/check_scenarinoname';
+    url = '/scenarino/save_scenarino';
+    urlName = '/scenarino/check_scenarinoname';
     if (type == 'ypg') {
 
         if ($('#yqjForm').valid()) {
@@ -1187,10 +1196,12 @@ function createQj(type) {
             ajaxPost(urlName, paramsName).success(function (res) {
                 if (res.data) {
                     ajaxPost(url, params).success(function () {
-                        $('#qjTable').bootstrapTable('destroy');
-                        initQjTable();
-                        $('#createHpQjModal').modal('hide');
-                        $('#createYpQjModal').modal('hide');
+                        // initQjTable();
+                        // $('#createHpQjModal').modal('hide');
+                        // $('#createYpQjModal').modal('hide');
+                        reloadTreegrid();
+                        subBtn = true;
+                        $("#addHQJ").window('close');
                         swal({
                             title: '添加成功!',
                             type: 'success',
@@ -1231,5 +1242,5 @@ function createQj(type) {
         }
 
     }
-
+    subBtn=true;
 }
