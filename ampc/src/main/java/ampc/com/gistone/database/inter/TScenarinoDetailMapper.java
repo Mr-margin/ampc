@@ -310,5 +310,11 @@ public interface TScenarinoDetailMapper {
 	 * @date 2017年5月22日 下午5:27:19
 	 */
 	List<TScenarinoDetail> selectListFirstTime(Map hashmap);
+	/**
+	 * 根据开始时间查询sid
+	 * @param tscdetail
+	 * @return
+	 */
+	TScenarinoDetail selectbysid(Map tscdetail);
 	
 }

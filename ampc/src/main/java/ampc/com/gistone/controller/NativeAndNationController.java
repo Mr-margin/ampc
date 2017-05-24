@@ -1,6 +1,7 @@
 package ampc.com.gistone.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import ampc.com.gistone.database.inter.TEsCouplingMapper;
 import ampc.com.gistone.database.inter.TEsNationMapper;
 import ampc.com.gistone.database.inter.TEsNativeMapper;
+import ampc.com.gistone.database.inter.TEsNativeTpMapper;
 import ampc.com.gistone.database.model.TEsNation;
+import ampc.com.gistone.database.model.TEsNative;
+import ampc.com.gistone.database.model.TEsNativeTp;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.LogUtil;
@@ -39,6 +43,12 @@ public class NativeAndNationController {
 	public	TEsNationMapper	tEsNationMapper;
 	@Autowired
 	public	TEsNativeMapper	tEsNativeMapper;
+	@Autowired
+	public	TEsNativeTpMapper tEsNativeTpMapper;
+	
+	private TEsNative tEsNative;
+	
+	private TEsNativeTp tEsNativeTp;
 	/**
 	 * 查询当前用户下的清单
 	 * @author WangShanxi
@@ -151,7 +161,34 @@ public class NativeAndNationController {
 			}
 			// 用户id
 			Long userId = Long.parseLong(param.toString());
-			List<Map> list=tEsNativeMapper.selectAllNative(userId);
+			//查询本地清单模板
+			tEsNativeTp=new TEsNativeTp();
+			tEsNativeTp.setUserId(userId);
+			List<TEsNativeTp> listTp=tEsNativeTpMapper.selecttesNativeTp(tEsNativeTp);
+			//循环添加list
+			List list=new ArrayList();
+			for(int k=0;k<listTp.size();k++){
+				list.add(listTp.get(k).toString());
+			}
+			//循环模板id进行查询
+			for(int i=0;i<listTp.size();i++){
+				List esNative=new ArrayList();
+				//获取ID
+				Long es_native_Id=listTp.get(i).getEsNativeTpId();
+				tEsNative=new TEsNative();
+				tEsNative.setUserId(userId);
+				tEsNative.setEsNativeTpId(es_native_Id);
+				//循环查询得到单个id的本地清单数据结果集
+				List<TEsNative>listNative=tEsNativeMapper.selectAllNative(tEsNative);
+				for(int j=0;j<listNative.size();j++){
+					TEsNative tEsNative=listNative.get(j);
+					list.add(tEsNative);
+				}
+				
+//				esNative.
+//				listNative
+			}
+			
 			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的本地清单信息成功!");
 			return AmpcResult.ok(list);
 		} catch (Exception e) {
@@ -338,8 +375,10 @@ public class NativeAndNationController {
 			int total=tEsNationMapper.deleteByPrimaryKey(nationId);
 			Map msgMap=new HashMap();
 			if(total==1){
-				msgMap.put("msg", true);
+				//成功
+				msgMap.put("msg", true);	
 			}else{
+				//失败
 				msgMap.put("msg", false);
 			}
 			LogUtil.getLogger().info("NativeAndNationController 删除全国清单信息成功!");

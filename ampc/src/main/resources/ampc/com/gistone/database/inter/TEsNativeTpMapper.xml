@@ -161,4 +161,10 @@
       ES_VERSION = #{esVersion,jdbcType=VARCHAR}
     where ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL}
   </update>
+  <select id="selecttesNativeTp" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TEsNativeTp" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_ES_NATIVE_TP
+    where USER_ID = #{userId,jdbcType=DECIMAL}
+  </select>
 </mapper>

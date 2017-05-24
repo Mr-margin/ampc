@@ -28,8 +28,18 @@ public class TEsNative {
     private String esCodeRange;
 
     private String esVersion;
+    
+    private Long esNativeTpId; 
 
-    public Long getEsNativeId() {
+    public Long getEsNativeTpId() {
+		return esNativeTpId;
+	}
+
+	public void setEsNativeTpId(Long esNativeTpId) {
+		this.esNativeTpId = esNativeTpId;
+	}
+
+	public Long getEsNativeId() {
         return esNativeId;
     }
 
