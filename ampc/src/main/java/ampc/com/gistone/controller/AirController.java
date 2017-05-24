@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -2400,19 +2401,16 @@ public class AirController {
 		Map<Integer,Map<String,BigDecimal>> psumMapsum=new HashMap();//所有日期所有预报日期的污染物数值和
 		Map<Integer,Map<String,Map<String,String>>> lastMap=new HashMap();
 		if("wrw".equals(tabType)){
-			
-		for(Integer how:howday){
-			Map<String,BigDecimal> sumMap=new HashMap();//所有日期所预报日期的污染物数值和
-			Map<Date,Map> psumMap=new HashMap();
-			Map<Date,Map> dateMap=new HashMap();
-			Map<Date,Map<String,List>> hourdateMap=new HashMap();
-			Map<Date,Map> odateMap=new HashMap();
-			Map<String,Integer> validspcMap=new HashMap();
-			Map<String,Integer> spcexactMap=new HashMap();
-			Map<Date, Map<String, List>> hourdatemap=new HashMap();
-			List<Date> dalist=new ArrayList();
-			for(Date thedate:datelist){//遍历时间集合，获取对应空气质量数据
-				if(datetype.equals("day")){	
+			Map<Integer,Map<Date,Object>> odMap=new HashMap();
+			List<Date> daslist=new ArrayList();
+			List<String> erlist=new ArrayList();
+			for(Integer how:howday){
+				Map<Date,Object> oddMap=new HashMap();
+				for(Date thedate:datelist){
+					if(daslist.contains(thedate)){
+						continue;
+					}
+					if(datetype.equals("day")){	
 					String tables="T_OBS_DAILY_";
 					DateFormat df = new SimpleDateFormat("yyyy");
 					String nowTime= df.format(thedate);
@@ -2427,35 +2425,218 @@ public class AirController {
 					Date pathDate=daysdf.parse(addTimeDate);//对应情景起报日期
 					scenarinoEntity.setDate(thedate);
 					scenarinoEntity.setTableName(tables);
-					sclist=tPreProcessMapper.selectBysome2(scenarinoEntity);//查询对应的数据
-				}else{
-					String tables="T_OBS_HOURLY_";
-					DateFormat df = new SimpleDateFormat("yyyy");
-					String nowTime= df.format(thedate);
-					tables+=nowTime;
-					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
-					scenarinoEntity.setCity_station(cityStation);
-					scenarinoEntity.setMode(mode);
-					Calendar cal = Calendar.getInstance();
-					cal.setTime(thedate);
-					cal.add(Calendar.DATE, how);
-					String addTimeDate =daysdf.format(cal.getTime());
-					Date pathDate=daysdf.parse(addTimeDate);//对应情景起报日期
-					scenarinoEntity.setDate(thedate);
-					scenarinoEntity.setTableName(tables);
-					sclist=tPreProcessMapper.selectBysome2(scenarinoEntity);//查询对应的数据
+					sclist=tPreProcessMapper.selectBysome2(scenarinoEntity);
+					}else{
+						String tables="T_OBS_HOURLY_";
+						DateFormat df = new SimpleDateFormat("yyyy");
+						String nowTime= df.format(thedate);
+						tables+=nowTime;
+						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+						scenarinoEntity.setCity_station(cityStation);
+						scenarinoEntity.setMode(mode);
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(thedate);
+						cal.add(Calendar.DATE, how);
+						String addTimeDate =daysdf.format(cal.getTime());
+						Date pathDate=daysdf.parse(addTimeDate);//对应情景起报日期
+						scenarinoEntity.setDate(thedate);
+						scenarinoEntity.setTableName(tables);
+						sclist=tPreProcessMapper.selectBysome2(scenarinoEntity);
+						
+					}
+					if(!sclist.isEmpty()){
+						oddMap.put(thedate, sclist.get(0));
+					}else{
+						daslist.add(thedate);
+					}
 				}
-				if(sclist.isEmpty()){
-					LogUtil.getLogger().error("AirController 未查询到观测数据！");
-					return	AmpcResult.build(1001, "未查询到观测数据！");
+					odMap.put(how, oddMap);	
+			}
+			
+			
+			
+			Map<Integer,Map<Date,Object>> pdMap=new HashMap();
+			List<Date> pdaslist=new ArrayList();
+			List<String> perlist=new ArrayList();
+			for(Integer how:howday){
+				Map<Date,Object> pddMap=new HashMap();
+				List<ScenarinoEntity> ssslist=new ArrayList();
+				for(Date thedate:datelist){
+					if(pdaslist.contains(thedate)){
+						continue;
+					}
+					if(datetype.equals("day")){	
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(thedate);
+						if(how==-1){
+							cal.add(Calendar.DATE, 1);
+						}
+						if(how==1){
+							cal.add(Calendar.DATE, -1);
+						}
+						if(how==2){
+							cal.add(Calendar.DATE, -2);
+						}
+						if(how==3){
+							cal.add(Calendar.DATE, -3);
+						}
+						String addTimeDate =daysdf.format(cal.getTime());
+						Date pathDate=daysdf.parse(addTimeDate);//对应情景起报日期
+
+
+						
+						Map<String,Object> scmap=new HashMap();
+						TScenarinoDetail tScenarino=new TScenarinoDetail();
+						tScenarino.setScenType("4");
+						tScenarino.setPathDate(pathDate);
+						//查询对应情景
+						List<TScenarinoDetail> jztScenarinoDetail=tScenarinoDetailMapper.selectByEntity(tScenarino);
+						TScenarinoDetail jztScenarino=jztScenarinoDetail.get(0);
+						TMissionDetail tm=new TMissionDetail();
+						tm.setMissionId(jztScenarino.getMissionId());
+						//通过情景中的任务id查询任务，再通过任务查询domainid
+						List<TMissionDetail> tmlist=tMissionDetailMapper.selectByEntity(tm);
+						TMissionDetail thetm=tmlist.get(0);
+						int domainId=Integer.valueOf(thetm.getMissionDomainId().toString());
+						String tables="";
+						//if(how==-1){
+							tables+="T_SCENARINO_FNL_DAILY_";
+						//}else{
+						//	continue;	
+						//}
+						Date tims=jztScenarino.getPathDate();
+						DateFormat df = new SimpleDateFormat("yyyy");
+						String nowTime= df.format(tims);
+						tables+=nowTime+"_";
+						tables+=userId;
+						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+						scenarinoEntity.setCity_station(cityStation);
+						scenarinoEntity.setDomain(3);
+						scenarinoEntity.setDomainId(Long.valueOf(domainId).longValue());
+						scenarinoEntity.setMode(mode);
+						scenarinoEntity.setDay(jztScenarino.getScenarinoStartDate());
+						scenarinoEntity.setsId(Long.valueOf(jztScenarino.getScenarinoId().toString()));
+						scenarinoEntity.setTableName(tables);
+						ssslist=tPreProcessMapper.selectBysome(scenarinoEntity);
+					}else{
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(thedate);
+						if(how==-1){
+							cal.add(Calendar.DATE, 1);
+						}
+						if(how==1){
+							cal.add(Calendar.DATE, -1);
+						}
+						if(how==2){
+							cal.add(Calendar.DATE, -2);
+						}
+						if(how==3){
+							cal.add(Calendar.DATE, -3);
+						}
+						String addTimeDate =daysdf.format(cal.getTime());
+						Date pathDate=daysdf.parse(addTimeDate);//对应情景起报日期
+
+				
+						Map<String,Object> scmap=new HashMap();
+						TScenarinoDetail tScenarino=new TScenarinoDetail();
+						tScenarino.setScenType("4");
+						tScenarino.setPathDate(pathDate);
+						//查询对应情景
+						List<TScenarinoDetail> jztScenarinoDetail=tScenarinoDetailMapper.selectByEntity(tScenarino);
+						TScenarinoDetail jztScenarino=jztScenarinoDetail.get(0);
+						TMissionDetail tm=new TMissionDetail();
+						tm.setMissionId(jztScenarino.getMissionId());
+						//通过情景中的任务id查询任务，再通过任务查询domainid
+						List<TMissionDetail> tmlist=tMissionDetailMapper.selectByEntity(tm);
+						TMissionDetail thetm=tmlist.get(0);
+						int domainId=Integer.valueOf(thetm.getMissionDomainId().toString());
+						String tables="";
+
+							tables+="T_SCENARINO_FNL_HOURLY_";
+						Date tims=jztScenarino.getPathDate();
+						DateFormat df = new SimpleDateFormat("yyyy");
+						String nowTime= df.format(tims);
+						tables+=nowTime+"_";
+						tables+=userId.toString();
+						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+						scenarinoEntity.setCity_station(cityStation);
+						scenarinoEntity.setDomain(3);
+						scenarinoEntity.setDomainId(Long.valueOf(domainId));
+						scenarinoEntity.setMode(mode);
+						scenarinoEntity.setDay(jztScenarino.getScenarinoStartDate());
+						scenarinoEntity.setsId(Long.valueOf(jztScenarino.getScenarinoId().toString()));
+						scenarinoEntity.setTableName(tables);
+						ssslist=tPreProcessMapper.selectBysome(scenarinoEntity);	
+						
+					}
+					if(!ssslist.isEmpty()){
+						pddMap.put(thedate, ssslist.get(0));
+					}else{
+						pdaslist.add(thedate);
+					
+					}
+				}
+					pdMap.put(how, pddMap);	
+			}
+			Map<Integer,Map<Date,Object>> lastoMap=new HashMap();
+			Map<Integer,Map<Date,Object>> lastpMap=new HashMap();
+			Iterator<Entry<Integer,Map<Date,Object>>> oiter=odMap.entrySet().iterator();
+			while(oiter.hasNext()){
+				Entry<Integer,Map<Date,Object>> obs=oiter.next();
+				Integer num=obs.getKey();
+				Map<Date,Object> datemap= obs.getValue();
+				Map<Date,Object> om=new HashMap();
+				Map<Date,Object> pm=new HashMap();
+				Iterator<Entry<Date,Object>> dateiter=datemap.entrySet().iterator();
+				while(dateiter.hasNext()){
+					Entry<Date,Object> dates=dateiter.next();
+					Date date=dates.getKey();
+					
+					if(null!=pdMap.get(num)){
+						if(null!=pdMap.get(num).get(date)){
+							om.put(date, dates.getValue());
+							pm.put(date, pdMap.get(num).get(date));
+						}
+						
+					}
 					
 				}
+				lastoMap.put(num, om);
+				lastpMap.put(num, pm);
+				}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		Set<Integer> days=lastoMap.keySet();
+			
+		for(Integer how:days){
+			Map<Date,Object> dat=lastoMap.get(how);
+			Set<Date> das=dat.keySet();
+			
+			Map<String,BigDecimal> sumMap=new HashMap();//所有日期所预报日期的污染物数值和
+			Map<Date,Map> psumMap=new HashMap();
+			Map<Date,Map> dateMap=new HashMap();
+			Map<Date,Map<String,List>> hourdateMap=new HashMap();
+			Map<Date,Map> odateMap=new HashMap();
+			Map<String,Integer> validspcMap=new HashMap();
+			Map<String,Integer> spcexactMap=new HashMap();
+			Map<Date, Map<String, List>> hourdatemap=new HashMap();
+			List<Date> dalist=new ArrayList();
+			for(Date thedate:das){//遍历时间集合，获取对应空气质量数据
+				
 				Map spcMaps=new HashMap();
 				Map<String, List> hourspcMaps=new HashMap();
 				Map<String,Object> ospcMaps=new HashMap();
 				Map<String,List> ohourspcMaps=new HashMap();
 				Map<String,Object> odayspcMaps=new HashMap();
-				ScenarinoEntity se=sclist.get(0);
+				ScenarinoEntity se=(ScenarinoEntity) dat.get(thedate);
 				JSONObject obj=JSONObject.fromObject(se.getContent());
 				if(datetype.equals("day")){
 					Map<String,Object> observeMap=(Map)obj;
@@ -2557,8 +2738,10 @@ public class AirController {
 			houroAllspcMap.put(how, hourdatemap);//所有观测数据小时
 			sumMapsum.put(how, sumMap);//观测数据和
 		}
-		
-		for(Integer how:howday){
+		Set<Integer> pdays=lastpMap.keySet();
+		for(Integer how:pdays){
+			Map<Date,Object> dat=lastpMap.get(how);
+			Set<Date> das=dat.keySet();
 			Map<String,BigDecimal> sumMap=new HashMap();//所有日期所预报日期的污染物数值和
 			Map<String,BigDecimal> psumMap=new HashMap();
 			Map<Date,Map> dateMap=new HashMap();
@@ -2567,72 +2750,13 @@ public class AirController {
 			Map<String,Integer> validspcMap=new HashMap();
 			Map<String,Integer> spcexactMap=new HashMap();
 			Map<Date,Map<String,List>> hourdatemap=new HashMap();
-			for(Date thedate:datelist){//遍历时间集合，获取对应空气质量数据
-				List<Date> dats=DatrMap.get(how);
-				if(!dats.contains(thedate)){
-					continue;
-				}
+			for(Date thedate:das){//遍历时间集合，获取对应空气质量数据
+				
 				Map<String,List> ohourspcMaps=new HashMap();
 				Map<String,Object> odayspcMaps=new HashMap();
 				if(datetype.equals("day")){	
-					Calendar cal = Calendar.getInstance();
-					cal.setTime(thedate);
-					if(how==-1){
-						cal.add(Calendar.DATE, 1);
-					}
-					if(how==1){
-						cal.add(Calendar.DATE, -1);
-					}
-					if(how==2){
-						cal.add(Calendar.DATE, -2);
-					}
-					if(how==3){
-						cal.add(Calendar.DATE, -3);
-					}
-					String addTimeDate =daysdf.format(cal.getTime());
-					Date pathDate=daysdf.parse(addTimeDate);//对应情景起报日期
-
-
-					List<ScenarinoEntity> ssslist=new ArrayList();
-					Map<String,Object> scmap=new HashMap();
-					TScenarinoDetail tScenarino=new TScenarinoDetail();
-					tScenarino.setScenType("4");
-					tScenarino.setPathDate(pathDate);
-					//查询对应情景
-					List<TScenarinoDetail> jztScenarinoDetail=tScenarinoDetailMapper.selectByEntity(tScenarino);
-					TScenarinoDetail jztScenarino=jztScenarinoDetail.get(0);
-					TMissionDetail tm=new TMissionDetail();
-					tm.setMissionId(jztScenarino.getMissionId());
-					//通过情景中的任务id查询任务，再通过任务查询domainid
-					List<TMissionDetail> tmlist=tMissionDetailMapper.selectByEntity(tm);
-					TMissionDetail thetm=tmlist.get(0);
-					int domainId=Integer.valueOf(thetm.getMissionDomainId().toString());
-					String tables="";
-					if(how==-1){
-						tables+="T_SCENARINO_FNL_DAILY_";
-					}else{
-						continue;	
-					}
-					Date tims=jztScenarino.getPathDate();
-					DateFormat df = new SimpleDateFormat("yyyy");
-					String nowTime= df.format(tims);
-					tables+=nowTime+"_";
-					tables+=userId;
-					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
-					scenarinoEntity.setCity_station(cityStation);
-					scenarinoEntity.setDomain(3);
-					scenarinoEntity.setDomainId(Long.valueOf(domainId).longValue());
-					scenarinoEntity.setMode(mode);
-					scenarinoEntity.setDay(jztScenarino.getScenarinoStartDate());
-					scenarinoEntity.setsId(Long.valueOf(jztScenarino.getScenarinoId().toString()));
-					scenarinoEntity.setTableName(tables);
-					ssslist=tPreProcessMapper.selectBysome(scenarinoEntity);
 					
-					if(ssslist.isEmpty()){
-						LogUtil.getLogger().error("AirController 未查询到观测数据！");
-						return	AmpcResult.build(1001, "未查询到观测数据！");
-					}
-					ScenarinoEntity housr=ssslist.get(0);
+					ScenarinoEntity housr=(ScenarinoEntity) dat.get(thedate);
 					JSONObject objs=JSONObject.fromObject(housr.getContent());
 					Map<String,Map<String,Object>> spcMap=(Map<String,Map<String,Object>>) objs;
 					Iterator<Entry<String,Map<String,Object>>> iters=spcMap.entrySet().iterator();
@@ -2663,63 +2787,8 @@ public class AirController {
 						odayspcMaps.put(spcs, p);
 					}
 				}else{//逐日
-					Calendar cal = Calendar.getInstance();
-					cal.setTime(thedate);
-					if(how==-1){
-						cal.add(Calendar.DATE, 1);
-					}
-					if(how==1){
-						cal.add(Calendar.DATE, -1);
-					}
-					if(how==2){
-						cal.add(Calendar.DATE, -2);
-					}
-					if(how==3){
-						cal.add(Calendar.DATE, -3);
-					}
-					String addTimeDate =daysdf.format(cal.getTime());
-					Date pathDate=daysdf.parse(addTimeDate);//对应情景起报日期
-
-					List<ScenarinoEntity> ssslist=new ArrayList();
-					Map<String,Object> scmap=new HashMap();
-					TScenarinoDetail tScenarino=new TScenarinoDetail();
-					tScenarino.setScenType("4");
-					tScenarino.setPathDate(pathDate);
-					//查询对应情景
-					List<TScenarinoDetail> jztScenarinoDetail=tScenarinoDetailMapper.selectByEntity(tScenarino);
-					TScenarinoDetail jztScenarino=jztScenarinoDetail.get(0);
-					TMissionDetail tm=new TMissionDetail();
-					tm.setMissionId(jztScenarino.getMissionId());
-					//通过情景中的任务id查询任务，再通过任务查询domainid
-					List<TMissionDetail> tmlist=tMissionDetailMapper.selectByEntity(tm);
-					TMissionDetail thetm=tmlist.get(0);
-					int domainId=Integer.valueOf(thetm.getMissionDomainId().toString());
-					String tables="";
-					if(how==-1){
-						tables+="T_SCENARINO_FNL_HOURLY_";
-					}else{
-						continue;	
-					}
-					Date tims=jztScenarino.getPathDate();
-					DateFormat df = new SimpleDateFormat("yyyy");
-					String nowTime= df.format(tims);
-					tables+=nowTime+"_";
-					tables+=userId.toString();
-					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
-					scenarinoEntity.setCity_station(cityStation);
-					scenarinoEntity.setDomain(3);
-					scenarinoEntity.setDomainId(Long.valueOf(domainId));
-					scenarinoEntity.setMode(mode);
-					scenarinoEntity.setDay(jztScenarino.getScenarinoStartDate());
-					scenarinoEntity.setsId(Long.valueOf(jztScenarino.getScenarinoId().toString()));
-					scenarinoEntity.setTableName(tables);
-					ssslist=tPreProcessMapper.selectBysome(scenarinoEntity);	
-					
-					if(ssslist.isEmpty()){
-						LogUtil.getLogger().error("AirController 未查询到观测数据！");
-						return	AmpcResult.build(1001, "未查询到观测数据！");
-					}
-					ScenarinoEntity housr=ssslist.get(0);
+				
+					ScenarinoEntity housr=(ScenarinoEntity) dat.get(thedate);
 					JSONObject objs=JSONObject.fromObject(housr.getContent());
 					Map<String,Map<String,List<Object>>> spcMap=(Map<String, Map<String, List<Object>>>) objs;
 					
