@@ -2374,7 +2374,8 @@ public class AirController {
 		Map<Integer,Map> exactMap=new HashMap();//准确样本数map
 		List<Date> datelist=new ArrayList();
 		Map<Integer,Map<Date,Map>> oAllspcMap=new HashMap(); 
-
+		List<Date> daslist=new ArrayList();
+		List<Date> pdaslist=new ArrayList();
 		Map<Integer, Map<Date, Map<String, List>>> houroAllspcMap=new HashMap();
 		Map<Integer,Map<Date,Map<String,List>>> hourpAllspcMap=new HashMap();
 		Map<Integer,Map<Date,Map>> AllspcMap=new HashMap();//所有数据的Map集合
@@ -2402,7 +2403,7 @@ public class AirController {
 		Map<Integer,Map<String,Map<String,String>>> lastMap=new HashMap();
 		if("wrw".equals(tabType)){
 			Map<Integer,Map<Date,Object>> odMap=new HashMap();
-			List<Date> daslist=new ArrayList();
+			
 			List<String> erlist=new ArrayList();
 			for(Integer how:howday){
 				Map<Date,Object> oddMap=new HashMap();
@@ -2456,7 +2457,7 @@ public class AirController {
 			
 			
 			Map<Integer,Map<Date,Object>> pdMap=new HashMap();
-			List<Date> pdaslist=new ArrayList();
+			
 			List<String> perlist=new ArrayList();
 			for(Integer how:howday){
 				Map<Date,Object> pddMap=new HashMap();
@@ -3712,6 +3713,10 @@ public class AirController {
 		
 		
 	}	//气象要素结束
+//		Map<String,Object> obj=new HashMap();
+//		obj.put("lastMap", lastMap);
+//		obj.put("obs", daslist);
+//		obj.put("pbs", pdaslist);
 		return	AmpcResult.ok(lastMap);
 	}catch(Exception e){
 		LogUtil.getLogger().error("AirController 预报检验查询异常！",e);
