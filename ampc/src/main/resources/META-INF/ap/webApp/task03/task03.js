@@ -30,7 +30,7 @@ $("#show").click(function () {
         $("#custom").css("background-position", "right 8px");
     }
 });
-
+var wrwSelect;
 var ls = window.sessionStorage;
 var qjMsg = vipspa.getMessage('yaMessage').content;
 if (!qjMsg) {
@@ -119,7 +119,7 @@ function m_gis_q() {
 /**
  * 设置导航条菜单
  */
-$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景编辑</a>>><span style="padding-left: 15px;padding-right: 15px;">措施编辑</span>');
+$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;color: #1a1a1a;text-decoration: none;font-size: 19px;">任务管理</a><i class="en-arrow-right7" style="font-size:16px;"></i><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;color: #1a1a1a;text-decoration: none;font-size: 19px;">情景编辑</a><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">措施编辑</span>');
 
 
 $('.csCon').removeClass('disNone');
@@ -306,7 +306,7 @@ function metTable_hj_info(pa_name) {
     if (hangyede_type == "dq") {
         data.sectorName = hangye;
     }
-
+    wrwSelect=data.sectorName;
     getMapPoint(data.sectorName);
     // ajaxPost('/measure/get_measureList',data).success(function (res) {
       
@@ -2375,4 +2375,75 @@ function open_csbjSon(sectorsName, measureame, mid, planMeasureId) {
     var a = document.createElement('a');
     a.href = '#/csbj_zi';
     a.click();
+}
+//显示详细信息模态框
+$("#detalMsg").window({
+    width:800,
+    collapsible:false,
+    maximizable:false,
+    minimizable:false,
+    modal:true,
+    shadow:false,
+    title:'详细信息',
+    border:false,
+    closed:true,
+    cls:"cloudui"
+})
+//生成详细信息表格
+function initConpamyTable(){
+    $("#detalMsgTable").datagrid({
+        url:jianpaiUrl+'/search/companyList',
+        method:'post',
+        dataType: "json",
+        columns:[[  //表头
+            {field:"regionName",title:"地区"},
+            {field:"companyname",title:"企业名称"},
+            {field:"industrytype",title:"所属行业"},
+            {field:"smallIndex",title:"控制行业"},
+            {field:"eqipId",title:"设备编号"},
+            {field:"measure",title:"控制措施"},
+        ]],
+        loadFilter:function (data) { //过滤数据，转换成符合格式的数据
+            return data.data;
+        },
+        selectOnCheck:false, //true，单击复选框将永远选择行 false，选择行将不选中复选框。
+        singleSelect: true,//设置True 将禁止多选
+        checkOnSelect:true,//true，当用户点击行的时候该复选框就会被选中或取消选中。false，当用户仅在点击该复选框的时候才会呗选中或取消。
+        fitColumns:true,//真正的自动展开/收缩列的大小，以适应网格的宽度，防止水平滚动。
+        clickToSelect: true,// 点击选中行
+        pagination: true, // 在表格底部显示分页工具栏
+        pageSize:15,  //页面里面显示数据的行数
+        pageNumber: 1, // 页数
+        pageList: [15, 20,25], //页面可以进行选择的数据行数
+        height:'100%',
+        striped: false, // 使表格带有条纹
+        silent: true, // 刷新事件必须设置
+        contentType: "application/json",
+        queryParams:function (params) { //ajax 传递的参数  分页
+            var data = {};
+            data.userId = userId;
+            data.planId = qjMsg.planId;
+            data.species = $("#hz_wrw").val();
+            data.sector = wrwSelect;//污染物 手风琴选择
+            data.pageSize=params.pageSize; //初始化页面上面表单的数据行数
+            data.pageNumber=(params.pageNumber-1)*params.pageSize  //初始化页面的页码
+            return data;
+        },
+    })
+}
+//详细信息弹窗
+function showDetail(){
+    var downLoadUrl="<a href='"+jianpaiUrl+"/search/exportCompany?userId="+userId+"&planId="+qjMsg.planId+"'>下载</a>"
+    document.getElementById("detailDownload").innerHTML=downLoadUrl;
+    $("#detalMsg").window("open")
+    window.setTimeout(initConpamyTable(),100)
+
+}
+//点击详细信息关闭按钮
+$("#close_scene").click(function(){
+    $("#detalMsg").window("close")
+})
+//详细信息下载
+function detailDownload(){
+
 }
