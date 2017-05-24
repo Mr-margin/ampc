@@ -1,9 +1,22 @@
 package ampc.com.gistone.extract;
 
+import java.awt.Color;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferInt;
+import java.awt.image.DirectColorModel;
+import java.awt.image.IndexColorModel;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import javax.measure.unit.Unit;
+import javax.media.jai.RasterFactory;
 
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
@@ -13,6 +26,7 @@ import org.geotools.gce.geotiff.GeoTiffWriteParams;
 import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.opengis.geometry.Envelope;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
@@ -24,6 +38,7 @@ import org.springframework.stereotype.Service;
 
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.model.TScenarinoDetail;
+import ampc.com.gistone.extract.image.Colors;
 import ampc.com.gistone.preprocess.concn.PreproUtil;
 import ampc.com.gistone.util.DateUtil;
 import ucar.nc2.NetcdfFile;
@@ -62,47 +77,125 @@ public class ExtractTiffService extends ExtractService {
 		// 3. calc data
 		float[][] imagePixelData = buildImagePixelData(manageParams);
 		// 4. save tiff file
-		// String tiffFilePath = extractConfig.getTiffFilePath(); //
-		// /$userid/$domainid/$missionid/$domain/$showType/$calcType/
-		// tiffFilePath = tiffFilePath.replace("$userid",
-		// String.valueOf(params.getUserId()))
-		// .replace("$domainid", String.valueOf(params.getDomainId()))
-		// .replace("$missionid", String.valueOf(params.getMissionId()))
-		// .replace("$domain",
-		// String.valueOf(params.getDomain())).replace("$showType",
-		// params.getShowType())
-		// .replace("$calcType", params.getCalcType());
-		// String tiffFileName = extractConfig.getTiffFileName(); //
-		// $timePoint-$day-$hour-$layer-$specie-$scenario.tiff
-		// String day = "";
-		// String scenario = "";
-		// if (Constants.TIMEPOINT_A.equals(params.getTimePoint())) {
-		// List<String> list = params.getDates();
-		// day = list.get(0) + list.get(list.size() - 1);
-		// } else {
-		// day = params.getDay();
-		// }
-		// if (Constants.CALCTYPE_SHOW.equals(params.getCalcType())) {
-		// scenario = String.valueOf(params.getScenarioId1());
-		// } else {
-		// scenario = String.valueOf(params.getScenarioId1().toString()) + "-"
-		// + String.valueOf(params.getScenarioId2());
-		// }
-		// File file = new File(tiffFilePath);
-		// if (!file.exists()) {
-		// file.mkdirs();
-		// }
-		// tiffFileName = tiffFileName.replace("$timePoint",
-		// params.getTimePoint()).replace("$day", day)
-		// .replace("$hour", String.valueOf(params.getHour()))
-		// .replace("$layer", String.valueOf(params.getLayer() -
-		// 1)).replace("$specie", params.getSpecie())
-		// .replace("$scenario", scenario);
 		String[] tiffPath = buildIamgeFilePath(params, Constants.FILE_TYPE_TIFF);
 		logger.info("tiff file path:" + tiffPath[0]);
 		String outFile = writeGeotiff(tiffPath[0], imagePixelData, manageParams);
 		return tiffPath[1];
 
+	}
+	
+	public String writeGeotiff1(String fileName, float[][] imagePixelData, ManageParams manageParams)
+			throws FactoryException, IOException {
+		logger.info("ExtractTiffService | writing geotiff.");
+		ExtractRequestParams params = manageParams.getParams();
+		Map attributes = manageParams.getAttributes();
+		long startTime = System.currentTimeMillis();
+		double x1 = Double.valueOf(String.valueOf(attributes.get("XORIG")));
+		double y1 = Double.valueOf(String.valueOf(attributes.get("YORIG")));
+		int rows = Integer.valueOf(String.valueOf(attributes.get("NROWS")));
+		int cols = Integer.valueOf(String.valueOf(attributes.get("NCOLS")));
+		double xcell = Double.valueOf(String.valueOf(attributes.get("XCELL")));
+		double ycell = Double.valueOf(String.valueOf(attributes.get("YCELL")));
+		double x2 = x1 + xcell * cols;
+		double y2 = y1 + ycell * rows;
+		logger.info("ExtractTiffService | get params " + (System.currentTimeMillis() - startTime) + "ms");
+		
+		String showType = params.getShowType();
+		String calcType = params.getCalcType();
+		String timePoint = params.getTimePoint();
+		timePoint = timePoint.equals(Constants.TIMEPOINT_D) ? Constants.TIMEPOINT_DAILY
+				: Constants.TIMEPOINT_HOURLY;
+		String name = showType + "-" + calcType + "-" + timePoint;
+		name = name.toLowerCase();
+		Map<String, Map<String, List>> specieMap = resultPathUtil.getImageColorConfig().getSheetMap(name);
+		Map<String, List> valueMap = specieMap.get(params.getSpecie());
+		List<Float> valueList = valueMap.get(Constants.VALUE_LIST);
+		List<Color> colorList = valueMap.get(Constants.COLOR_LIST);
+		List<Integer> colorLongList = valueMap.get(Constants.COLOR_LONG_LIST);
+		
+		int row = imagePixelData.length;
+		int col = imagePixelData[0].length;
+		int res[][] = new int[row][col];
+		int[] imgArr = new int[row * col];
+		Color[][] colors = new Color[4][row * col];
+		for(int i = 0; i < colors.length; i++) {
+			for(int j = 0; j < colors[i].length; j++) {
+				colors[i][j] = new Color(20, 20, 240, 255);
+			}
+		}
+		for (int r = 0; r < row; r++) {
+			for (int c = 0; c < col; c++) {
+				Color cc = Colors.getColor1(imagePixelData[r][c], valueList, colorList, colorLongList);
+				res[r][c] = (int) imagePixelData[r][c];
+//				colors[r][c] = cc;
+				imgArr[r * col + c] = (int) imagePixelData[r][c];
+			}
+		}
+
+		long startTimes = System.currentTimeMillis();
+		try {
+			CoordinateReferenceSystem sourceCRS = CRS.parseWKT(ProjectUtil.getWKT(attributes));
+			ReferencedEnvelope refEnvelope = new ReferencedEnvelope(x1, x2, y1, y2, sourceCRS);
+			
+//			WritableRaster raster = RasterFactory.createBandedRaster(DataBuffer.TYPE_FLOAT, col, row, 1, null);
+//			raster.setDataElements(0, 0, col, row, imagePixelData);
+			
+//			BufferedImage image = new BufferedImage(col, row, BufferedImage.TYPE_INT_ARGB);
+//			WritableRaster raster = image.getWritableTile(0, 0);
+//			raster.setDataElements(0, 0, col, row, imagePixelData);
+//			raster.setDataElements(0, 0, res);
+			
+//			WritableRaster raster = Raster.createCompatibleWritableRaster();
+			ColorModel model = new DirectColorModel(32, 0x00ff0000,0x0000ff00,0x000000ff, 0xff000000);
+			DataBufferInt buffer = new DataBufferInt(imgArr, col * row); 
+			WritableRaster raster = WritableRaster.createPackedRaster(buffer, col, row, col, 
+                    new int[] { 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 }, null);
+//			byte b000 = (byte) 0;
+//			byte b255 = (byte) 255;
+//			byte[] reds = new byte[]{b255, b255, b000, b000, b255, b255, b000, b000};
+//			byte[] greens = new byte[]{b255, b255, b255, b255, b000, b000, b000, b000};
+//			byte[] blues = new byte[]{b255, b000, b255, b000, b255, b000, b255, b000};
+//
+//			IndexColorModel colorModel = new IndexColorModel(3, 8, reds, greens, blues);
+//			WritableRaster raster = colorModel.createCompatibleWritableRaster(col, row);
+			logger.info("band" +  raster.getNumBands()) ;
+			for (int r = 0; r < row; r++) {
+				for (int c = 0; c < col; c++) {
+					int[] colorComponents = new int[4];
+					colorComponents[0] = 20;
+					colorComponents[1] = 20;
+					colorComponents[2] = 240;
+					colorComponents[3] = 0;
+					// Set the color of the pixel
+					raster.setPixel(c, r, colorComponents);
+//					raster.setSample(c, r, 0, 20);
+//					raster.setSample(c, r, 1, 20);
+//					raster.setSample(c, r, 2, 240);
+//					raster.setSample(c, r, 3, 30);
+				}
+			}
+			GridCoverage2D coverage1 = new GridCoverageFactory().create("OTPAnalyst", raster, refEnvelope);
+			
+		
+		
+//		GridCoverage2D coverage = new GridCoverageFactory().create("OTPAnalyst", imagePixelData, refEnvelope);
+		
+			GeoTiffWriteParams wp = new GeoTiffWriteParams();
+			wp.setCompressionMode(GeoTiffWriteParams.MODE_EXPLICIT);
+			wp.setCompressionType("LZW");
+			long s = System.currentTimeMillis();
+			ParameterValueGroup parameter = new GeoTiffFormat().getWriteParameters();
+			logger.info((System.currentTimeMillis() - s) + "ms");
+			parameter.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString()).setValue(wp);
+			GeoTiffWriter writer = new GeoTiffWriter(new File(fileName));
+			writer.write(coverage1, (GeneralParameterValue[]) parameter.values().toArray(new GeneralParameterValue[1]));
+			logger.info("ExtractTiffService | write file " + (System.currentTimeMillis() - startTimes) + "ms");
+			logger.info("ExtractTiffService | done writing geotiff.");
+			return fileName;
+		} catch (Exception e) {
+			logger.error("ExtractTiffService | exception while writing geotiff.", e);
+			return null;
+		}
 	}
 
 	public String writeGeotiff(String fileName, float[][] imagePixelData, ManageParams manageParams)
@@ -131,7 +224,7 @@ public class ExtractTiffService extends ExtractService {
 			wp.setCompressionType("LZW");
 			long s = System.currentTimeMillis();
 			ParameterValueGroup params = new GeoTiffFormat().getWriteParameters();
-			System.out.println((System.currentTimeMillis() - s) + "ms");
+			logger.info((System.currentTimeMillis() - s) + "ms");
 			params.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString()).setValue(wp);
 			GeoTiffWriter writer = new GeoTiffWriter(new File(fileName));
 			writer.write(coverage, (GeneralParameterValue[]) params.values().toArray(new GeneralParameterValue[1]));

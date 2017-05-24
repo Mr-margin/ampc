@@ -15,6 +15,7 @@ public class ExtractConfig {
 	private String meteorHourlyWindPrefix;
 	private String emisDailyPrefix;
 	private String emisHourlyPrefix;
+	private String tiffRootPath;
 	private String tiffFilePath;
 	private String tiffFileName;
 	private String imageFilePath;
@@ -163,6 +164,14 @@ public class ExtractConfig {
 
 	public void setImageFileName(String imageFileName) {
 		this.imageFileName = imageFileName;
+	}
+
+	public String getTiffRootPath() {
+		return tiffRootPath;
+	}
+
+	public void setTiffRootPath(String tiffRootPath) {
+		this.tiffRootPath = tiffRootPath;
 	}
 
 }
