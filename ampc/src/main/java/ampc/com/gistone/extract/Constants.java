@@ -29,10 +29,10 @@ public class Constants {
 	public final static double MINIMUM = 0.0000000001;
 	
 	public final static String CSV_JZ_PREFIX = "vertical";
-	public final static String CSV_SUFFIX = ".csv";
 	public final static String CSV_TEMPLATE_PATH = "src/main/resources/csv/ncl/template/0.Run_Vertical.csh";
 	public final static String CSV_INDEX_PATH = "src/main/resources/csv/specie";
 	public final static String NCL_PATH = "src/main/resources/csv/ncl/2.Plot_Vertical.ncl";
+	public final static String VERTICAL_PNG_PATH="vertical/png/$currDate/$userid/$domainid/$missionid/$domain/";
 	
 	public final static String RESOLUTION_MONTH = "M";
 	public final static String RESOLUTION_DAY = TIMEPOINT_D;

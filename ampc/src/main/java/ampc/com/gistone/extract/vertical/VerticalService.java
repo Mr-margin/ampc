@@ -67,6 +67,7 @@ public class VerticalService {
 
 	}
 
+	// 将projecttion参数从verticalParams中获取封装
 	private void setProjection(VerticalParams verticalParams) {
 		long readAttrTimes = System.currentTimeMillis();
 		double xorig = Double.valueOf((String.valueOf(attributes.get("XORIG"))));
@@ -103,10 +104,16 @@ public class VerticalService {
 	// 生成画图所需两个csv文件,将路径及图片生成路径传递入csh文件中画图
 	private String createPng(VerticalParams verticalParams) {
 		long readAttrTimes = System.currentTimeMillis();
+		File pathFile = new File(replacePath(Constants.VERTICAL_PNG_PATH, verticalParams));
+		if (!pathFile.exists() && !pathFile.isDirectory()) {
+			pathFile.mkdirs();
+		}
 		File juzhen = CSVUtil.createCSVFile(res, tempPath, Constants.CSV_JZ_PREFIX);
+		// 获取对应条件污染物图像下标参数，用条件和污染物拼接成要向csh中传递的文件名，形成“名=下标参数”的字符串返回
 		String specieIndex = getSpecieIndex(verticalParams);
 		File specieIndexFile = CSVUtil.createIndexCSVFile(specieIndex, Constants.CSV_INDEX_PATH);
-		String path = tempPath + System.currentTimeMillis();
+		String tempFilePath = tempPath + System.currentTimeMillis();
+		String pngPath = replacePath(Constants.VERTICAL_PNG_PATH + System.currentTimeMillis(), verticalParams);
 		if (juzhen == null || specieIndexFile == null) {
 			return null;
 		}
@@ -114,9 +121,10 @@ public class VerticalService {
 		shellVertival.setJuzhenPath(juzhen.getAbsolutePath());
 		shellVertival.setSpecieIndexFilePath(specieIndexFile.getAbsolutePath());
 		shellVertival.setNclPath(new File(Constants.NCL_PATH).getAbsolutePath());
-		shellVertival.setPngPath(new File(path).getAbsolutePath());
-		String filePath = path + ".csh";
-		logger.info("create two csv file is juzheng and specieIndex,Transfer parameter:"+shellVertival.toString());
+		shellVertival.setPngPath(new File(pngPath).getAbsolutePath());
+		String filePath = tempFilePath + ".csh";
+		System.out.println(filePath);
+		logger.info("create two csv file is juzheng and specieIndex,Transfer parameter:" + shellVertival.toString());
 		try {
 			logger.info("build csh file ,Incoming parameter");
 			buildCshWithVertical(filePath, shellVertival);
@@ -129,11 +137,12 @@ public class VerticalService {
 		String[] cmd = new String[] { script };
 		try {
 			TaskHelper.execute(cmd);
-			String pngPath = path + ".png";
-			File pngFile = new File(pngPath);
+			String pngFilePath = pngPath + ".png";
+			File pngFile = new File(pngFilePath);
 			if (pngFile.exists() && pngFile.isFile()) {
-				logger.info("run createPng, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms,pngPath="+pngPath);
-				return pngPath;
+				logger.info("run createPng, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms,pngPath="
+						+ pngFilePath);
+				return pngFilePath;
 			}
 			return null;
 		} catch (IOException e) {
@@ -150,6 +159,7 @@ public class VerticalService {
 		modelRunFile.setExecutable(true);
 	}
 
+	// 获取对应条件污染物图像下标参数，用条件和污染物拼接成要向csh中传递的文件名，形成“名=下标参数”的字符串返回
 	private String getSpecieIndex(VerticalParams verticalParams) {
 		String specie = verticalParams.getSpecie();
 		String showType = verticalParams.getShowType();
@@ -170,6 +180,7 @@ public class VerticalService {
 		return showType + "_" + calcType + "_" + timePoint + "_" + specie + "=" + speciespecieIndex;
 	}
 
+	// 4. vertical interpolation在线上取点
 	private void buildHeightInterpolation() {
 		long readAttrTimes = System.currentTimeMillis();
 		int[] height = Constants.HEIGHT;
@@ -197,6 +208,7 @@ public class VerticalService {
 		logger.info("run buildHeightInterpolation, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
 	}
 
+	// 3. every layer level interpolation每层插值
 	private void buildEveryLayerValue(VerticalParams verticalParams) throws IOException, InvalidRangeException {
 		long readAttrTimes = System.currentTimeMillis();
 		int length = Constants.HEIGHT.length;
@@ -259,16 +271,11 @@ public class VerticalService {
 		logger.info("run buildEveryLayerValue, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
 	}
 
+	// 获取可变参数封装进variableList1，variableList2中，设置临时文件路径
 	private void getVariables(String concnFilePath, VerticalParams verticalParams) {
 		long readAttrTimes = System.currentTimeMillis();
 		String timePoint = verticalParams.getTimePoint();
-		tempPath = resultPathUtil.getExtractConfig().getVerticalTepmPath()
-				.replace("$currDate", DateUtil.DATEtoString(new Date(), DateUtil.DATE_FORMAT))
-				.replace("$userid", verticalParams.getUserId().toString())
-				.replace("$domainid", verticalParams.getDomainId().toString())
-				.replace("$missionid", verticalParams.getMissionId().toString())
-				.replace("$scenarioid", verticalParams.getScenarioId1().toString())
-				.replace("$domain", verticalParams.getDomain().toString());
+		tempPath = replacePath(resultPathUtil.getExtractConfig().getVerticalTepmPath(), verticalParams);
 		variableList1 = new ArrayList<Variable>();
 		variableList2 = new ArrayList<Variable>();
 		if (Constants.TIMEPOINT_A.equals(timePoint)) {
@@ -334,6 +341,7 @@ public class VerticalService {
 		}
 	}
 
+	// 2. build earth surf point取座标划线
 	private void buildSurfPoints(VerticalParams verticalParams) {
 		long startTimes = System.currentTimeMillis();
 		pointBeanList = new ArrayList<>();
@@ -365,5 +373,15 @@ public class VerticalService {
 			}
 		}
 		logger.info("get need line surf point list, times = " + (System.currentTimeMillis() - startTimes) + "ms");
+	}
+
+	// 替换路径中的特殊字符串
+	private String replacePath(String path, VerticalParams verticalParams) {
+		return path.replace("$currDate", DateUtil.DATEtoString(new Date(), DateUtil.DATE_FORMAT))
+				.replace("$userid", verticalParams.getUserId().toString())
+				.replace("$domainid", verticalParams.getDomainId().toString())
+				.replace("$missionid", verticalParams.getMissionId().toString())
+				.replace("$scenarioid", verticalParams.getScenarioId1().toString())
+				.replace("$domain", verticalParams.getDomain().toString());
 	}
 }
