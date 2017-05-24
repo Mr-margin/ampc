@@ -168,27 +168,25 @@ public class NativeAndNationController {
 			//循环添加list
 			List list=new ArrayList();
 			for(int k=0;k<listTp.size();k++){
-				list.add(listTp.get(k).toString());
+				TEsNativeTp tEsNativeTp=listTp.get(k);
+				list.add(tEsNativeTp);
 			}
 			//循环模板id进行查询
 			for(int i=0;i<listTp.size();i++){
-				List esNative=new ArrayList();
 				//获取ID
 				Long es_native_Id=listTp.get(i).getEsNativeTpId();
 				tEsNative=new TEsNative();
 				tEsNative.setUserId(userId);
+				//和模板清单数据关联的ID
 				tEsNative.setEsNativeTpId(es_native_Id);
 				//循环查询得到单个id的本地清单数据结果集
 				List<TEsNative>listNative=tEsNativeMapper.selectAllNative(tEsNative);
+				//循环把清单模板下的对应清单数据添加到集合中
 				for(int j=0;j<listNative.size();j++){
 					TEsNative tEsNative=listNative.get(j);
 					list.add(tEsNative);
 				}
-				
-//				esNative.
-//				listNative
 			}
-			
 			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的本地清单信息成功!");
 			return AmpcResult.ok(list);
 		} catch (Exception e) {
