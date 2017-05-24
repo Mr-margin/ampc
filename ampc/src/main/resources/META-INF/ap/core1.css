@@ -1405,7 +1405,7 @@ dl, dd {
   color: #fff;
   border-radius: 2px;}
 .cloudui .m-btn .l-btn-left .l-btn-text{
-  margin-right:0;
+  /*margin-right:0;*/
   line-height: 28px!important;
 }
 .cloudui .l-btn{border: none;}

@@ -14,7 +14,7 @@
         <button onclick="selectCopy(true)" class="cjxjzqj"><img src="img/copyQJ.png" alt=""></button>
     </div>
     <div class="step2 selectCopyQj">
-        <div id="rwToolbar" class="btn-group">
+        <div id="rwToolbar" style="height: 40px" class="btn-group">
             <div class="col-8 bigP">
                 <button type="button" class="btn btn-success statusRw" onclick="statusRWfun('',this)">
                     <i class="im-folder-open"></i> 全部
@@ -44,13 +44,12 @@
             </div>
             <!-- /input-group -->
         </div>
-        <table id="copyQJ">
-            <thead>
-            <th data-field="missionName">任务名称</th>
-            <th data-formatter="rwType">任务类型</th>
-            <th data-field="scenarinoName">情景名称</th>
-            </thead>
-        </table>
+        <div style="height:300px">
+            <table id="copyQJ">
+            </table>
+        </div>
+
+
         <div class="modal-footer">
             <button type="button" class="btn btn-success" data-dismiss="modal" onclick="subCopyQJ()">确定</button>
             <button type="button" class="btn btn-default" onclick="previous()">上一步</button>
@@ -637,10 +636,11 @@
      */
     function selectCopy(t) {
         if (t) {
-            initCoptTable();
+
             $('#selectCreateQj .selectCQJbtn').hide();
             $('#selectCreateQj .selectCopyQj').show();
             $('#selectCreateQj .modal-footer').show();
+            initCoptTable();
         } else {
             allData = allData1;
             allData1 = null;
@@ -659,6 +659,7 @@
 
             }
             showTimeline(allData);
+            $('#selectCreateQj').window('close');
             app2();
         }
 
@@ -669,6 +670,7 @@
         $('#copyQJ').datagrid($.extend({}, defaultdatagridoption, {
             url: '/ampc/scenarino/get_CopyScenarinoList',
             dataType: "json",
+            singleSelect:true,
             contentType: "application/json", // 请求远程数据的内容类型。
             queryParams: function (m) {
                 var json = {
@@ -689,6 +691,9 @@
                 return res.data.rows
             },
             columns: [[{
+                checkbox:true,
+                field:'cb'
+            },{
                 field: 'missionName',
                 title: '任务名称',
                 width: 150
@@ -703,7 +708,8 @@
                 field: 'scenarinoName',
                 title:'情景名称',
                 width:120
-            }]]
+            }]],
+
         }))
         /*        $('#copyQJ').bootstrapTable({
          method: 'POST',
@@ -2060,7 +2066,7 @@
      * 选择copy情景，处理copy之后的事件
      */
     function subCopyQJ() {
-        console.log(selectCopyQJ);
+        selectCopyQJ=$('#copyQJ').datagrid('getSelected');
 
         var copyUrl = '/scenarino/copy_Scenarino';
         ajaxPost(copyUrl, {
@@ -2091,6 +2097,7 @@
                             }
                         }
                         showTimeline(allData);
+                        $('#selectCreateQj').window('close');
                         app2();
                     } else {
                         console.log('get_areaAndTimeList 接口异常')
@@ -2101,5 +2108,14 @@
                 console.log('copy_Scenarino 接口异常')
             }
         })
+    }
+    /*返回YYYY-MM-DD HH格式*/
+    function momentDate(d) {
+        var n = Number(d);
+        if (!isNaN(n)) {
+            return moment(d).format('YYYY-MM-DD HH')
+        } else {
+            return moment(d, 'YYYY-MM-DD HH').format('YYYY-MM-DD HH')
+        }
     }
 </script>
