@@ -14,6 +14,21 @@
     <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="ES_VERSION" property="esVersion" jdbcType="VARCHAR" />
   </resultMap>
+  
+  <resultMap id="ListResultMap" type="hashMap" >
+    <id column="ES_NATIVE_TP_ID" property="esNativeTpId" jdbcType="DECIMAL" />
+    <result column="ES_NATIVE_TP_NAME" property="esNativeTpName" jdbcType="VARCHAR" />
+    <result column="ES_NATIVE_TP_YEAR" property="esNativeTpYear" jdbcType="DECIMAL" />
+    <result column="ES_UPLOAD_TP_TIME" property="esUploadTpTime" jdbcType="TIMESTAMP" />
+    <result column="ES_COMMENT" property="esComment" jdbcType="VARCHAR" />
+    <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
+    <result column="ES_VERSION" property="esVersion" jdbcType="VARCHAR" />
+  </resultMap>
+  
   <sql id="Base_Column_List" >
     ES_NATIVE_TP_ID, ES_NATIVE_TP_NAME, ES_NATIVE_TP_YEAR, ES_UPLOAD_TP_TIME, ES_COMMENT, 
     ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME, ES_VERSION
@@ -161,7 +176,13 @@
       ES_VERSION = #{esVersion,jdbcType=VARCHAR}
     where ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL}
   </update>
-  <select id="selecttesNativeTp" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TEsNativeTp" >
+<!--   <select id="selecttesNativeTp" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TEsNativeTp" > -->
+<!--     select  -->
+<!--     <include refid="Base_Column_List" /> -->
+<!--     from T_ES_NATIVE_TP -->
+<!--     where USER_ID = #{userId,jdbcType=DECIMAL} -->
+<!--   </select> -->
+<select id="selecttesNativeTp" resultMap="ListResultMap" parameterType="ampc.com.gistone.database.model.TEsNativeTp" >
     select 
     <include refid="Base_Column_List" />
     from T_ES_NATIVE_TP
