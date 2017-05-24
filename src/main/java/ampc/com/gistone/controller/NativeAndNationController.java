@@ -250,11 +250,11 @@ public class NativeAndNationController {
 			tEsNation.setEsNationName(nationName);
 			tEsNation.setEsNationYear(nationYear);
 			tEsNation.setNationRemark(nationRemark);
-//			tEsNation.setAddTime();
 			//插入数据
 			int total=tEsNationMapper.insertSelective(tEsNation);
 			Map msgMap=new HashMap();
 			if(total==1){
+				
 				msgMap.put("msg", true);
 			}else{
 				msgMap.put("msg", false);
