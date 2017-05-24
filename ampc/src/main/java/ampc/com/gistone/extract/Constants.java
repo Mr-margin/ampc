@@ -32,9 +32,9 @@ public class Constants {
 	
 	public final static String CSV_JZ_PREFIX = "vertical";
 	public final static String CSV_SUFFIX = ".csv";
-	public final static String CSV_TEMPLATE_PATH = "csv/ncl/template/0.Run_Vertical.csh";
-	public final static String CSV_INDEX_PATH = "csv/specie";
-	public final static String NCL_PATH = "csv/ncl/2.Plot_Vertical.ncl";
+	public final static String CSV_TEMPLATE_PATH = "src/main/resources/csv/ncl/template/0.Run_Vertical.csh";
+	public final static String CSV_INDEX_PATH = "src/main/resources/csv/specie";
+	public final static String NCL_PATH = "src/main/resources/csv/ncl/2.Plot_Vertical.ncl";
 	
 	public final static String RESOLUTION_MONTH = "M";
 	public final static String RESOLUTION_DAY = TIMEPOINT_D;
