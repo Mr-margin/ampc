@@ -460,8 +460,8 @@ function updata(opt) {
 //          }
         )
     })
-    console.log("站点")
-    proStation=allCode[$(".proStation").val()].name
+    console.log("站点");
+    proStation=allCode[$(".proStation").val()].name;
     cityStation= allCode[$('.proStation').val()].city[$(".cityStation").val()];
     showTitleFun();
 }
@@ -873,6 +873,7 @@ $(".cloudui .verticalCon .searchT .upDown").hover(function(){
 })
 
 function showTitleFun() {
+	console.log(changeMsg);
     $('#showTitle span').empty();
     if (zhiCity.indexOf(changeMsg.pro) == -1) {
         if (changeMsg.station == 'avg') {
