@@ -5,7 +5,7 @@
 /**
  * 设置导航条菜单
  */
-$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景编辑</a>>><a href="#/csbj" style="padding-left: 15px;padding-right: 15px;">措施编辑</a>>><span style="padding-left: 15px;padding-right: 15px;">子措施编辑</span>');
+$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;color: #1a1a1a;text-decoration: none;">任务管理</a><i class="en-arrow-right7" style="font-size:16px;"></i><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;color: #1a1a1a;text-decoration: none;">情景编辑</a><i class="en-arrow-right7" style="font-size:16px;"></i><a href="#/csbj" style="padding-left: 15px;padding-right: 15px;color: #1a1a1a;text-decoration: none;">措施编辑</a><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">子措施编辑</span>');
 
 /*左侧菜单栏显示*/
 (function () {
@@ -214,7 +214,6 @@ function open_cs(sectorsName, measureame, mid, planMeasureId) {
 
 
         if (res.status == 0) {//返回状态正常
-
             if (res.data.query.length > 0) {//返回筛选条件
                 query = jQuery.extend(true, {}, res.data.query);//保存一份返回的条件结果集
                 var sc_conter = '';//页面的标签
@@ -228,7 +227,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId) {
                     name_length = temp_name.length > name_length ? temp_name.length : name_length;//记录字数最多的标题
 
                     sc_conter += '<div class="btn-group tiaojian col-6" ' + queryShowquery + ' sc_su="' + col.queryShowqueryen + '" sc_su_val="' + col.queryValue + '">';
-                    sc_conter += '<span class="font-bold tiaojian-title" style="width: 90px;">' + col.queryName.replace("(", "<br>(") + '</span>';
+                    sc_conter += '<span class="font-bold tiaojian-title" style="width: 90px;">' + col.queryName.replace("<br>(", "(") + '</span>';
                     sc_conter += '<div class="btn-group btn-group-circle" data-toggle="buttons" id="' + col.queryEtitle + '" onclick="val_handle($(this),\'' + col.queryEtitle + '\',\'' + col.queryName + '\',\'' + type + '\',\'onclick\');">';
                     if (col.queryOptiontype.indexOf("值域") >= 0) {//所有的值域需要自定义修改
                         sc_conter += '<label class="btn btn-success active" val_name="不限"><input type="' + type + '" class="toggle">不限</label>';
@@ -1910,3 +1909,28 @@ function add_point(col) {
 
 /*初始化*/
 initialize();
+
+//修改筛选条件样式 添加
+$(".cloudui .sxMore").append("<i class='en-arrow-down8'></i>")
+// $(".cloudui .clearfix").css({"height":"50px"})
+$(".cloudui .sxMore").hover(function(){
+    $(this).css({"color":"#0275d8"})
+},function(){
+    $(this).css({"color":"#333"})
+})
+$(".cloudui .sxMore").click(function(){
+    console.log("点击进来了")
+    if($(this).text()=="更多"){
+        $(this).parent().next().css({"height":"100px"})
+        $(this).parent().next().children().css({"height":"100px"})
+        $(this).text("收起")
+        $(this).children("i").remove();
+        $(this).append("<i class='en-arrow-up7'></i>");
+    }else{
+        $(this).parent().next().css({"height":"50px"})
+        $(this).parent().next().children().css({"height":"50px"})
+        $(this).text("更多")
+        $(this).children("i").remove();
+        $(this).append("<i class='en-arrow-down8'></i>");
+    }
+})
