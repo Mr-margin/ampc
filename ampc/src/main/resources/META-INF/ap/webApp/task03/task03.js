@@ -2396,11 +2396,11 @@ function initConpamyTable(){
         method:'post',
         dataType: "json",
         columns:[[  //表头
-            {field:"regionName",title:"地区"},
-            {field:"companyname",title:"企业名称"},
-            {field:"industrytype",title:"所属行业"},
-            {field:"smallIndex",title:"控制行业"},
-            {field:"equipId",title:"设备编号"},
+            {field:"regionName",title:"地区",width:100},
+            {field:"companyname",title:"企业名称",width:160},
+            {field:"industrytype",title:"所属行业",width:200},
+            {field:"smallIndex",title:"控制行业",width:100},
+            {field:"equipId",title:"设备编号",width:100},
             {field:"measure",title:"控制措施"},
         ]],
         loadFilter:function (data) { //过滤数据，转换成符合格式的数据
