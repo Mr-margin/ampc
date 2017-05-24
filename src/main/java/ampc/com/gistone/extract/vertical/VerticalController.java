@@ -92,7 +92,7 @@ public class VerticalController {
 				.replace("$scenarioid", String.valueOf(scenarioId1)).replace("$domain", String.valueOf(domain));
 //返回的是图片路径
 		String res = verticalService.vertical(verticalParams,concnFilePath);
-		if (StringUtil.isEmpty(res)) {
+		if (!StringUtil.isEmpty(res)) {
 			//还没有和前端交互，交互时要将图片路径返回到前端页面
 			return AmpcResult.ok(res);
 		}

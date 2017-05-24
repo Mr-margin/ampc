@@ -15,14 +15,14 @@ import ampc.com.gistone.extract.vertical.VerticalService;
 public class CSVUtil {
 	private static Logger logger = LoggerFactory.getLogger(VerticalService.class);
 
-	// 返回污染物下标csv文件
+	// 返回污染物下标csv文件，对“名=下标参数”的字符串截取，建立文件返回
 	public static File createIndexCSVFile(String speciespecieIndex, String outPutPath) {
-		String fileName = speciespecieIndex.split("=")[0] + Constants.CSV_SUFFIX;
+		String fileName = speciespecieIndex.split("=")[0] + ".csv";
 		File csvFile = null;
 		BufferedWriter csvFileOutputStream = null;
 
 		File file = new File(outPutPath);
-		if (!file.exists()) {
+		if (!file.exists() && !file.isDirectory()) {
 			file.mkdirs();
 		}
 		csvFile = new File(outPutPath, fileName);
@@ -57,7 +57,7 @@ public class CSVUtil {
 		BufferedWriter csvFileOutputStream = null;
 		try {
 			File file = new File(outPutPath);
-			if (!file.exists()) {
+			if (!file.exists() && !file.isDirectory()) {
 				file.mkdirs();
 			}
 			// 定义文件名格式并创建
