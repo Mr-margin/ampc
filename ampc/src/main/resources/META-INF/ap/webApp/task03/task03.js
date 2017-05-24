@@ -2400,7 +2400,7 @@ function initConpamyTable(){
             {field:"companyname",title:"企业名称"},
             {field:"industrytype",title:"所属行业"},
             {field:"smallIndex",title:"控制行业"},
-            {field:"eqipId",title:"设备编号"},
+            {field:"equipId",title:"设备编号"},
             {field:"measure",title:"控制措施"},
         ]],
         loadFilter:function (data) { //过滤数据，转换成符合格式的数据
