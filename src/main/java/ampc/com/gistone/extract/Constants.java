@@ -33,7 +33,6 @@ public class Constants {
 	public final static String CSV_JZ_PREFIX = "vertical";
 	public final static String CSV_SUFFIX = ".csv";
 	public final static String CSV_TEMPLATE_PATH = "csv/ncl/template/0.Run_Vertical.csh";
-	public final static String CSV_TEMP_PATH = "csv/temp/";
 	public final static String CSV_INDEX_PATH = "csv/specie";
 	public final static String NCL_PATH = "csv/ncl/2.Plot_Vertical.ncl";
 	
@@ -69,7 +68,9 @@ public class Constants {
 	public final static String FILE_TYPE_TIFF = "tiff";
 	public final static String FILE_TYPE_IMAGE = "image";
 
-
+	public final static int[] HEIGHT = { 0, 50, 100, 200, 300, 400, 500, 700, 1000, 1500, 2000, 3000 }; // 现有的垂直层
+	public final static double HEIGHT_SPACE = 50;
+	
 	public static final String[] HOURLYSPECIES = { "PM25", "PM10", "O3", "SO2", "NO2", "CO", "SO4", "NO3", "NH4", "BC",
 			"OM", "PMFINE" };
 	public static final String[] DAILYSPECIES = { "PM25", "PM10", "O3_8_MAX", "O3_1_MAX", "O3_AVG", "SO2", "NO2", "CO",

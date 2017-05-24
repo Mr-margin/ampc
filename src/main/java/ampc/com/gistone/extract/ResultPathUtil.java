@@ -225,6 +225,7 @@ public class ResultPathUtil {
 			extractConfig.setTiffFileName((String) pro.get("tiffFileName"));
 			extractConfig.setImageFilePath((String) pro.get("imageFilePath"));
 			extractConfig.setImageFileName((String) pro.get("imageFileName"));
+			extractConfig.setVerticalTepmPath((String) pro.get("verticalTepmPath"));
 		} catch (FileNotFoundException e) {
 			logger.error(config + " file does not exits!", e);
 		} catch (IOException e) {
