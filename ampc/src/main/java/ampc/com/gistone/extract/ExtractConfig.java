@@ -19,6 +19,15 @@ public class ExtractConfig {
 	private String tiffFileName;
 	private String imageFilePath;
 	private String imageFileName;
+	private String verticalTepmPath;
+
+	public String getVerticalTepmPath() {
+		return verticalTepmPath;
+	}
+
+	public void setVerticalTepmPath(String verticalTepmPath) {
+		this.verticalTepmPath = verticalTepmPath;
+	}
 
 	public String getConcnFilePath() {
 		return concnFilePath;
