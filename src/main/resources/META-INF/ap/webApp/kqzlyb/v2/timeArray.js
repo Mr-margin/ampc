@@ -463,7 +463,6 @@ function updata(opt) {
     console.log("站点")
     proStation=allCode[$(".proStation").val()].name
     cityStation= allCode[$('.proStation').val()].city[$(".cityStation").val()];
-//    changeMsg.endD = "2017-05-04";
     showTitleFun();
 }
 /**
