@@ -61,7 +61,7 @@ public class StopModelData {
 		stopModelBean.setUserid(userId.toString());
 		stopModelBean.setScenarioid(scenarinoId.toString());
 		queueData.setBody(stopModelBean);
-		LogUtil.getLogger().info("开始发送终止模式的消息，该情景id是："+scenarinoId);
+		LogUtil.getLogger().info("StopModel:开始发送终止模式的消息，该情景id是："+scenarinoId);
 		boolean stoptoJson = sendQueueData.stoptoJson(queueData,scenarinoId);
 		return stoptoJson;
 	}
