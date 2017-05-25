@@ -144,6 +144,7 @@ public class SendQueueData {
 				tTasksStatus.setTasksScenarinoId(tasksScenarinoId);
 				tTasksStatus.setBeizhu2(time);
 				tTasksStatus.setTasksSendTime(new Date());
+				
 //				stringBuffer.append(",");
 //				stringBuffer.append(json);
 //				tTasksStatus.setTasksExpand4(stringBuffer.toString());
