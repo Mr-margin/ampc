@@ -200,7 +200,7 @@
 						  INNER JOIN T_SCENARINO_DETAIL SCEN ON MISS.MISSION_ID=SCEN.MISSION_ID
 						  INNER JOIN T_SCENARINO_STATUS STAT  ON SCEN.SCENARINO_STATUS=STAT.SCENARINO_STATU_ID
 									WHERE MISS.IS_EFFECTIVE='1' AND MISS.USER_ID=#{userId,jdbcType=OTHER}  AND
-											  SCEN.IS_EFFECTIVE='1' AND SCEN.USER_ID=#{userId,jdbcType=OTHER} 
+											  SCEN.IS_EFFECTIVE='1' AND SCEN.USER_ID=#{userId,jdbcType=OTHER} AND SCEN.SCENARINO_STATUS!=1
 											    <if test="missionStatus != null" >
         											AND MISSION_STATUS= #{missionStatus,jdbcType=OTHER}
       		 									</if>
@@ -496,6 +496,7 @@ AND IS_EFFECTIVE = '1'
       #{expand4,jdbcType=VARCHAR}, #{expand5,jdbcType=VARCHAR}, #{expand6,jdbcType=VARCHAR}, #{expand7,jdbcType=VARCHAR},
       #{expand8,jdbcType=VARCHAR}, #{expand9,jdbcType=VARCHAR}, #{expand10,jdbcType=VARCHAR})
   </insert>
+  
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TScenarinoDetail" >
     insert into T_SCENARINO_DETAIL
     <trim prefix="(" suffix=")" suffixOverrides="," >
