@@ -86,6 +86,8 @@ public class ObsQuartz {
 				0, 0, 0);
 
 		LocalDateTime startDateTime = endTime.minus(24, ChronoUnit.HOURS);
+		
+		endTime = endTime.plus(24, ChronoUnit.HOURS);
 
 		obsHourService.preCollectHourDataInCitys(startDateTime, endTime, cityList);
 
