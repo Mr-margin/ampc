@@ -2414,7 +2414,7 @@ function initConpamyTable(){
         pagination: true, // 在表格底部显示分页工具栏
         pageSize:15,  //页面里面显示数据的行数
         pageNumber: 1, // 页数
-        pageList: [15, 20,25], //页面可以进行选择的数据行数
+        pageList: [10, 15,20], //页面可以进行选择的数据行数
         height:'100%',
         striped: false, // 使表格带有条纹
         silent: true, // 刷新事件必须设置
