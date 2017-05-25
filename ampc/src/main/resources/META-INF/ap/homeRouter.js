@@ -130,7 +130,7 @@ $.when(dps_um).then(function(){
                 },
                 '/yabj': {      //任务管理-区域时段
                     templateUrl: 'webApp/task02/task2.html',
-                    controller: ''
+                    controller: 'webApp/task02/task2.js'
                     // controller: 'webApp/task02/task02.js'
                 },
                 '/csbj': {		//任务管理-措施子措施
