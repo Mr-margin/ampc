@@ -427,8 +427,11 @@ public class SchedulerTimer<V> {
 	}
 	/**
 	 * 
-	 * @Description: 发送实时预报的定时器 由ungrib的成与否来触发当天的数据 每天十点之后 没隔十分钟触发一次 
-	 * void  
+	 * @Description: 发送实时预报的定时器
+	 * 1.由ungrib的成与否
+	 * 2.基础情景是否满足
+	 * 来触发当天的数据 每天十点之后 没隔十分钟触发一次 
+	 * 
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年4月21日 下午7:39:01
@@ -465,9 +468,10 @@ public class SchedulerTimer<V> {
 								Long userId = tScenarinoDetail.getUserId();
 								Long rangeDay = tScenarinoDetail.getRangeDay();
 								LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:rangeDay的长度是："+rangeDay);
-								if (length>=rangeDay) {
+								if (length>1) {
 									//查找中断的预报时间
 									Date lastpathdate = tScenarinoDetailMapper.getlastrunstatus(userId);
+									//如果基础情景不满足 则续跑该基础情景
 									String lastungrib = readyData.pivot(userId, lastpathdate, pathdate);
 									if (null!=lastungrib) {
 										readyData.readyRealMessageDataFirst(tScenarinoDetail, lastungrib);
