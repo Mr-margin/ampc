@@ -38,8 +38,6 @@ public class ObsHourService extends ObsService {
 
 	private Logger logger = LoggerFactory.getLogger(ObsHourService.class);
 
-	private final DateTimeFormatter hourTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH");
-	private final DateTimeFormatter dayTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	@Autowired
 	private TObsMapper obsMapper;
 

@@ -17,6 +17,7 @@ import ampc.com.gistone.preprocess.obs.entity.ObsBean;
 @Transactional
 public class ObsService {
 
+	public final DateTimeFormatter hourTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH");
 	public final DateTimeFormatter dayTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	public final ObjectMapper mapper = new ObjectMapper();
 
