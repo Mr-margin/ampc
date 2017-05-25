@@ -7,8 +7,10 @@ import java.util.LinkedList;
 import java.util.List;  
   
 
+
 import javax.xml.parsers.ParserConfigurationException;  
   
+
 
 import org.apache.poi.openxml4j.opc.OPCPackage;  
 import org.apache.poi.openxml4j.opc.PackageAccess;  
@@ -22,6 +24,8 @@ import org.apache.poi.xssf.usermodel.XSSFComment;
 import org.xml.sax.InputSource;  
 import org.xml.sax.SAXException;  
 import org.xml.sax.XMLReader;  
+
+import com.fasterxml.jackson.databind.ObjectMapper;
   
 /**
  * 如果读取15Mb以上的Excel太耗费性能  使用这个方法进行读取
@@ -115,7 +119,7 @@ public class Util {
         long start = System.currentTimeMillis();  
           
         final List<List<String>> table = new ArrayList<>();  
-        new Util("D:/ExcelTestModel.xlsx").setHandler(new SimpleSheetContentsHandler(){  
+        new Util("C:\\Users\\Mr_Wang\\Desktop\\应急系统新_3清单数据.xlsx").setHandler(new SimpleSheetContentsHandler(){  
               
             private List<String> fields;  
               
@@ -133,8 +137,10 @@ public class Util {
             }  
         }).parse();  
           
-        long end = System.currentTimeMillis();  
-          
+        long end = System.currentTimeMillis(); 
+        ObjectMapper om=new ObjectMapper();
+        String json=om.writeValueAsString(table);
+         System.out.println(json);
         System.err.println(table.size());  
         System.err.println(end - start);  
     }  
