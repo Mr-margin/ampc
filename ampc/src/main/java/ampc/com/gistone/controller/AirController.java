@@ -620,12 +620,18 @@ public class AirController {
 						scenarinoEntity.setMode(mode);
 						scenarinoEntity.setsId(Long.valueOf(tScenarinoDetail.getScenarinoId().toString()).longValue());
 						scenarinoEntity.setTableName(tables);
-						scenarinoEntity=tPreProcessMapper.selectBysomes(scenarinoEntity);   
-						//获取模拟数据
-						contents=scenarinoEntity.getContent();
-						//模拟父数据
-						contentmapData=mapper.readValue(contents, Map.class);	
-						
+						scenarinoEntity=tPreProcessMapper.selectBysomes(scenarinoEntity);
+						if(scenarinoEntity!=null){
+							//获取模拟数据
+							contents=scenarinoEntity.getContent();
+							//模拟父数据
+							contentmapData=mapper.readValue(contents, Map.class);
+						}else{
+							//获取模拟数据为空时赋值"{}"
+							contents="{}";
+							//模拟父数据
+							contentmapData=mapper.readValue(contents, Map.class);
+						}
 						Calendar calendar1 = Calendar.getInstance();
 						calendar1.add(Calendar.DATE, -2);
 						Date nowdate=calendar1.getTime();
@@ -688,12 +694,19 @@ public class AirController {
 							scenarinoEntity.setMode(mode);
 							scenarinoEntity.setsId(Long.valueOf(tScenarinoDetail.getScenarinoId().toString()).longValue());
 							scenarinoEntity.setTableName(tables);
-							scenarinoEntity=tPreProcessMapper.selectBysomes(scenarinoEntity);   
-							//获取模拟数据
-							contents=scenarinoEntity.getContent();
-							//模拟父数据
-							contentmapData=mapper.readValue(contents, Map.class);	
-							
+							scenarinoEntity=tPreProcessMapper.selectBysomes(scenarinoEntity);
+							//查询到的模拟数据不为空值
+							if(scenarinoEntity!=null){
+								//获取模拟数据
+								contents=scenarinoEntity.getContent();
+								//模拟父数据
+								contentmapData=mapper.readValue(contents, Map.class);
+							}else{
+								//获取模拟数据为空时赋值"{}"
+								contents="{}";
+								//模拟父数据
+								contentmapData=mapper.readValue(contents, Map.class);
+							}
 							Calendar calendar1 = Calendar.getInstance();
 							calendar1.add(Calendar.DATE, -3);
 							Date nowdate=calendar1.getTime();
@@ -940,11 +953,19 @@ public class AirController {
 							scenarinoEntity.setMode(mode);
 							scenarinoEntity.setsId(Long.valueOf(tScenarinoDetail.getScenarinoId().toString()).longValue());
 							scenarinoEntity.setTableName(tables);
-							scenarinoEntity=tPreProcessMapper.selectBysomes(scenarinoEntity);   
-							//获取模拟数据
-							contents=scenarinoEntity.getContent();
-							//模拟父数据
-							contentmapData=mapper.readValue(contents, Map.class);	
+							scenarinoEntity=tPreProcessMapper.selectBysomes(scenarinoEntity);
+							//查询到的模拟数据不为空值
+							if(scenarinoEntity!=null){
+								//获取模拟数据
+								contents=scenarinoEntity.getContent();
+								//模拟父数据
+								contentmapData=mapper.readValue(contents, Map.class);
+							}else{
+								//获取模拟数据为空时赋值"{}"
+								contents="{}";
+								//模拟父数据
+								contentmapData=mapper.readValue(contents, Map.class);
+							}
 							//该方法返回一个日历Calendar
 							Calendar calendar1 = Calendar.getInstance();
 							//当天日期减2
@@ -1008,11 +1029,19 @@ public class AirController {
 							scenarinoEntity.setMode(mode);
 							scenarinoEntity.setsId(Long.valueOf(tScenarinoDetail.getScenarinoId().toString()).longValue());
 							scenarinoEntity.setTableName(tables);
-							scenarinoEntity=tPreProcessMapper.selectBysomes(scenarinoEntity);   
-							
-							contents=scenarinoEntity.getContent();		//获取模拟数据
-							contentmapData=mapper.readValue(contents, Map.class);	//模拟父数据
-							
+							scenarinoEntity=tPreProcessMapper.selectBysomes(scenarinoEntity);
+							//查询到的模拟数据不为空值
+							if(scenarinoEntity!=null){
+								//获取模拟数据
+								contents=scenarinoEntity.getContent();
+								//模拟父数据
+								contentmapData=mapper.readValue(contents, Map.class);
+							}else{
+								//获取模拟数据为空时赋值"{}"
+								contents="{}";
+								//模拟父数据
+								contentmapData=mapper.readValue(contents, Map.class);
+							}
 							Calendar calendar1 = Calendar.getInstance();
 							calendar1.add(Calendar.DATE, -3);
 							Date nowdate=calendar1.getTime();
