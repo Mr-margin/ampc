@@ -207,6 +207,9 @@ public class ToDataTasksUtil {
 													}
 											    	//code为0的时候是成功的  同时是实时预报类型的情况下 stepindex==8才会发下一条 同时时间小于该任务的结束时间  同时该条情景对应的pathdate是当天才能走这个方法
 											    	if (code==0&&"4".equals(scentype)&&stepindex==index&&compareTo>0) {
+											    		//获取最新的ungrib 
+									    				TUngrib tUngrib = tUngribMapper.getlastungrib();
+									    				int length = toDataUngribUtil.UpdateORNo(tUngrib);
 											    		if (pathcompare<0) {
 											    			//查找用户ID
 											    			TScenarinoDetail scenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(tasksScenarinoId);
@@ -223,9 +226,6 @@ public class ToDataTasksUtil {
 												    			//获取当条情景是否在执行
 												    			String nowexMo = tasksStatus2.getBeizhu2();
 												    			if (nowexMo.trim().equals("0")) {
-												    				//获取最新的ungrib 
-												    				TUngrib tUngrib = tUngribMapper.getlastungrib();
-												    				int length = toDataUngribUtil.UpdateORNo(tUngrib);
 												    				Long rangeDay = idandcore.getRangeDay();
 												    				if (length>=rangeDay) {
 												    					//最新的pathdate（年月日）
