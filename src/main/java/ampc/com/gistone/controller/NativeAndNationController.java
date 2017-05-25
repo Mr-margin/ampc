@@ -178,8 +178,35 @@ public class NativeAndNationController {
 				tEsNative.setEsNativeTpId(es_native_Id);
 				//循环查询得到单个id的本地清单数据结果集
 				List<TEsNative>listNative=tEsNativeMapper.selectAllNative(tEsNative);
+				
+				List tpDataList=new ArrayList();
+				for(int i=0;i<listNative.size();i++){
+					Map tesNative=new HashMap();
+					TEsNative tEsNative=listNative.get(i);
+					tesNative.put("id", i);
+					tesNative.put("esNativeId", tEsNative.getEsNativeId());
+					tesNative.put("esNativeTpName", tEsNative.getEsNativeName());
+					tesNative.put("esNativeRelationId", tEsNative.getEsNativeRelationId());
+					tesNative.put("esNativeTpId", tEsNative.getEsNativeTpId());
+					tesNative.put("esNativeYear", tEsNative.getEsNativeYear());
+					tesNative.put("esUploadTpTime", tEsNative.getEsUploadTime());
+					tesNative.put("esVersion", tEsNative.getEsVersion());
+					tesNative.put("isEffective", tEsNative.getIsEffective());
+					tesNative.put("updateTime", tEsNative.getUpdateTime());
+					tesNative.put("userId", tEsNative.getUserId());
+					tesNative.put("addTime", tEsNative.getAddTime());
+					tesNative.put("deleteTime", tEsNative.getDeleteTime());
+					tesNative.put("esCodeRange", tEsNative.getEsCodeRange());
+					tesNative.put("esComment", tEsNative.getEsComment());
+					//把map对象添加到集合中
+					tpDataList.add(tesNative);
+				}
+				
 				//将查询到清单模板对应所拥有的清单数据集合添加到map中
-				tEsNativeTp.put("tpData", listNative);
+				tEsNativeTp.put("id", k);
+				tEsNativeTp.put("children", tpDataList);
+				//添加配置页面收缩配置
+				tEsNativeTp.put("state", "closed");
 			}
 			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的本地清单信息成功!");
 			return AmpcResult.ok(listTp);

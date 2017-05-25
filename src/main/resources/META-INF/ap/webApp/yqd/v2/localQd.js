@@ -12,51 +12,65 @@ function innitdata(){
     }).success(function(data){
         console.log("数据加载成功了")
         $("#localqd").treegrid({
-
+        	idField:'id',    
+            treeField:'esNativeTpName',
+        	columns:[[  //表头
+        	             {field:"ck",checkbox:true},
+        	             {field:"esNativeTpName",title:"全国清单"},
+        	             {field:"esNativeTpYear",title:"年份"},
+        	             {field:"esUploadTpTime",title:"创建时间",formatter:function(value,row,index){
+        	                 moment(value).format("YYYY-MM-DD")//格式化带日期格式
+        	                 return  moment(value).format("YYYY-MM-DD");
+        	             },sortable :true},
+        	             {field:"esComment",title:"备注"},
+        	             {field:"isEffective",title:"状态"},//新建（打开校验按钮）   正常（校验成功） 错误（校验错误）
+        	             //是否使用 如果使用 不许删除 未使用可以删除
+//        	             {field:"qgqdConfig",title:"操作"}//校验清单
+        	         ]],
         })
     })
-    // $("#localqd").treegrid({
-    //     method:'post',
-    //     url: "/ampc/NativeAndNation/find_nation",
-    //     dataType: "json",
-    //     columns:[[  //表头
-    //         {field:"ck",checkbox:true},
-    //         {field:"esNationName",title:"全国清单"},
-    //         {field:"esNationYear",title:"年份"},
-    //         {field:"publishTime",title:"创建时间",formatter:function(value,row,index){
-    //             moment(value).format("YYYY-MM-DD")//格式化带日期格式
-    //             return  moment(value).format("YYYY-MM-DD");
-    //         },sortable :true},
-    //         {field:"nationRemark",title:"备注"},
-    //         {field:"qgqdCheck",title:"状态"},//新建（打开校验按钮）   正常（校验成功） 错误（校验错误）
-    //         //是否使用 如果使用 不许删除 未使用可以删除
-    //         {field:"qgqdConfig",title:"操作"}//校验清单
-    //     ]],
-    //     loadFilter:function (data) { //过滤数据，转换成符合格式的数据
-    //         return data.data;
-    //     },
-    //     checkOnSelect:true,
-    //     selectOnCheck:true,
-    //     clickToSelect: true,// 点击选中行
-    //     pagination: true, // 在表格底部显示分页工具栏
-    //     pageSize:20,  //页面里面显示数据的行数
-    //     pageNumber: 1, // 页数
-    //     pageList: [20, 30,40], //页面可以进行选择的数据行数
-    //     height:'100%',
-    //     singleSelect: true,//设置True 将禁止多选
-    //     striped: false, // 使表格带有条纹
-    //     silent: true, // 刷新事件必须设置
-    //     contentType: "application/json",
-    //     queryParams:function (params) { //ajax 传递的参数  分页
-    //         console.log("分页")
-    //         console.log(params)
-    //         var data = {};
-    //         data.userId = userId;
-    //         data.pageSize=params.pageSize; //初始化页面上面表单的数据行数
-    //         data.pageNumber=params.pageNumber  //初始化页面的页码
-    //         return {"token": "", "data": data};
-    //     },
-    // })
+//     $("#localqd").treegrid({
+//         method:'post',
+//         url: "/ampc/NativeAndNation/find_nation",
+//         dataType: "json",
+//         columns:[[  //表头
+//             {field:"ck",checkbox:true},
+//             {field:"esNationName",title:"全国清单"},
+//             {field:"esNationYear",title:"年份"},
+//             {field:"publishTime",title:"创建时间",formatter:function(value,row,index){
+//                 moment(value).format("YYYY-MM-DD")//格式化带日期格式
+//                 return  moment(value).format("YYYY-MM-DD");
+//             },sortable :true},
+//             {field:"nationRemark",title:"备注"},
+//             {field:"qgqdCheck",title:"状态"},//新建（打开校验按钮）   正常（校验成功） 错误（校验错误）
+//             //是否使用 如果使用 不许删除 未使用可以删除
+//             {field:"qgqdConfig",title:"操作"}//校验清单
+//         ]],
+//         loadFilter:function (data) { //过滤数据，转换成符合格式的数据
+//             return data.data;
+//         },
+//         checkOnSelect:true,
+//         selectOnCheck:true,
+//         clickToSelect: true,// 点击选中行
+//         pagination: true, // 在表格底部显示分页工具栏
+//         pageSize:20,  //页面里面显示数据的行数
+//         pageNumber: 1, // 页数
+//         pageList: [20, 30,40], //页面可以进行选择的数据行数
+//         height:'100%',
+//         singleSelect: true,//设置True 将禁止多选
+//         striped: false, // 使表格带有条纹
+//         silent: true, // 刷新事件必须设置
+//         contentType: "application/json",
+//         queryParams:function (params) { //ajax 传递的参数  分页
+//             console.log("分页")
+//             console.log(params)
+//             var data = {};
+//             data.userId = userId;
+//             data.pageSize=params.pageSize; //初始化页面上面表单的数据行数
+//             data.pageNumber=params.pageNumber  //初始化页面的页码
+//             return {"token": "", "data": data};
+//         },
+//     })
 
 }
 //创建模板窗口
