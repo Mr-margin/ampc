@@ -3815,16 +3815,12 @@ public class AirController {
 			JSONObject obj=new JSONObject();
 			
 			obj.put("starttime", startdate.getTime());
-			if(hour>8){
-			obj.put("endtime", date.getTime());
-			}else{
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(date);
 				cal.add(Calendar.DATE, -1);
 				String addTimeDate =hms.format(cal.getTime());
 				Date endtime=hms.parse(addTimeDate);
 				obj.put("endDate", endtime.getTime());
-			}
 			
 		return AmpcResult.ok(obj);
 		}catch(Exception e){
