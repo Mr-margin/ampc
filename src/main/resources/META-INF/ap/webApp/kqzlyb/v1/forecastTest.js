@@ -245,21 +245,21 @@ function requestDate() {
         		//1、判断最大时间与最小时间的天数
         		//超过7天：（取最大时间-7天为开始时间，最大时间为结束时间，显示7天的数据）
         		//小于等于7天：（最大时间最小时间就是开始结束时间）
-        		var endtime = moment(res.data.endtime);//最大时间
+        		var endtime = moment(res.data.endDate);//最大时间
         		var starttime = moment(res.data.starttime);//最小时间
         		if(endtime.diff(starttime, 'days') > 7){//事件间隔大于7天
-        			changeMsg.startD = moment(res.data.endtime).add(-7, 'd').format('YYYY-MM-DD');
-        			changeMsg.endD = moment(res.data.endtime).format('YYYY-MM-DD');
+        			changeMsg.startD = moment(res.data.endDate).add(-7, 'd').format('YYYY-MM-DD');
+        			changeMsg.endD = moment(res.data.endDate).format('YYYY-MM-DD');
         			if(changeMsg.type=="qxys"){
-        				initQxysDate(moment(res.data.starttime).format('YYYY-MM-DD'), moment(res.data.endtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
+        				initQxysDate(moment(res.data.starttime).format('YYYY-MM-DD'), moment(res.data.endDate).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
         			}else{
-        				initWrwDate(moment(res.data.starttime).format('YYYY-MM-DD'), moment(res.data.endtime).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
+        				initWrwDate(moment(res.data.starttime).format('YYYY-MM-DD'), moment(res.data.endDate).format('YYYY-MM-DD'), changeMsg.startD, changeMsg.endD);
         			}
         			
         			//			最大可选时间     最小可选时间		默认开始时间		  默认结束时间
         		}else{//小于等于7天
-        			changeMsg.startD = moment(res.data.endtime).format('YYYY-MM-DD');
-        			changeMsg.endD = moment(res.data.endtime).format('YYYY-MM-DD');
+        			changeMsg.startD = moment(res.data.endDate).format('YYYY-MM-DD');
+        			changeMsg.endD = moment(res.data.endDate).format('YYYY-MM-DD');
         			if(changeMsg.type=="qxys"){
         				initQxysDate(changeMsg.startD, changeMsg.endD, changeMsg.startD, changeMsg.endD);
         			}else{
