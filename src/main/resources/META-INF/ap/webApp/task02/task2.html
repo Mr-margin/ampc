@@ -56,7 +56,7 @@
         </div>
     </div>
 </div>
-<div id="settingqjbox">
+<div id="settingqjbox" style="display: none">
     <div class="step1">
         <button onclick="$('#editArea').window('open')"><img src="img/setting.png" alt=""></button>
         <button onclick="delArea(this)"><img src="img/delete.png" alt=""></button>
@@ -96,7 +96,7 @@
                         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                     </div>
                 </div>
-                <div title="时段删除" id="delTime">
+                <div title="时段删除" class="delTimeDiv" id="delTime">
                     <div class="showTimes text-center" style="height: 90px;">
                         <div class="col-4" style="border:1px solid #aaa;border-radius: 3px">
                             <h4>前一时段</h4>
@@ -207,17 +207,17 @@
                     </div>
                 </div>
                 <div title="复制旧预案" id="oldPlan">
-                    <div>
+                    <div style="height: 300px">
                         <table id="copyPlanTable">
-                            <thead>
+<!--                            <thead>
                             <th data-radio="true"></th>
                             <th data-field="planReuseName">预案名称</th>
                             <th data-field="missionName">任务名称</th>
                             <th data-field="scenarioName">情景名称</th>
                             <th data-field="areaName">区域名称</th>
                             <th data-formatter="copyPlanAddTime">添加时间</th>
-                            <!--<th data-field="scenarinoName">情景名称</th>-->
-                            </thead>
+                            &lt;!&ndash;<th data-field="scenarinoName">情景名称</th>&ndash;&gt;
+                            </thead>-->
                         </table>
                     </div>
 
@@ -242,9 +242,9 @@
                         <button class="btn btn-success btn-lg" onclick="editPlan()" data-dismiss="modal">编辑预案</button>
                     </div>
                 </div>
-                <div title="删除现预案" id="delPlan">
+<!--                <div title="删除现预案" id="delPlan">
                     7
-                </div>
+                </div>-->
             </div>
         </div>
     </div>
@@ -302,4 +302,11 @@
             </div>
         </div>
     </div>
+</div>
+<!--redio dom-->
+<div class="radio" style="display: none">
+    <label>
+        <input type="radio" name="optionsRadios" id="optionsRadios1" value="">
+        <span></span>
+    </label>
 </div>

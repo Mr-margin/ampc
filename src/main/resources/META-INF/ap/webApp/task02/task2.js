@@ -22,6 +22,9 @@ var allData = [];//保存所有区域时段信息
 var allData1 = null;
 var cnArea = false;//判断是否超过区域的最大数量
 var showCode = [{}, {}, {}];//保存所选的地区
+var editTimeDateObj = {};//作为编辑时段时存储时间段的变量
+var scenarino;
+var selectCopyPlan;
 //    var isMouseDrag = 0;
 /*tree数配置*/
 var zTreeSetting = {
@@ -74,52 +77,74 @@ var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时�
     initialize();
 //        情景编辑的弹窗渲染
     $('#settingqjbox').window($.extend({}, defaultwindowoption, {
-        title: '情景编辑',
-        onClose: function () {
-            $('#settingqjbox .step1>button').removeAttr('data-qjid');
-        }
+        title: '情景编辑'
     }));
 //        时段编辑的窗口渲染
     $('#timePlan').window($.extend({}, defaultwindowoption, {
         title: '时段编辑',
-        top:10,
+        top: 10,
         onOpen: function () {
-            window.setTimeout(function () {
+            areaIndex = selectedTimes.index;
+            timeIndex = selectedTimes.indexNum;
+            $('#timepanel').tabs({
+                width: '100%',
+                height: '100%',
+                fit: true
+            });
+            $('#planpanel').tabs({
+                width: '100%',
+                height: '100%',
+                fit: true
+            });
+            if (allData[areaIndex].timeItems.length <= 1) {
+                $('#timepanel').tabs('disableTab', '时段删除');
+                $('#timepanel').tabs('disableTab', '时段编辑');
+            }
+
+            if (allData[areaIndex].timeItems[timeIndex].planId == -1) {
+                $('#planpanel').tabs('disableTab', '编辑现预案');
+                // $('#planpanel').tabs('disableTab', '删除现预案');
+                $('#planpanel').tabs('select', '添加新预案');
+            } else {
+                $('#planpanel').tabs('disableTab', '添加新预案');
+                $('#planpanel').tabs('disableTab', '复制旧预案');
+                $('#planpanel').tabs('select', '编辑现预案');
+            }
+            /*window.setTimeout(function () {
                 $('#timepanel').tabs({
-                    width:'100%',
-                    height:'100%',
+                    width: '100%',
+                    height: '100%',
                     fit: true
                 });
                 $('#planpanel').tabs({
-                    width:'100%',
-                    height:'100%',
+                    width: '100%',
+                    height: '100%',
                     fit: true
                 });
 
-                if(allData[areaIndex].timeItems.length<=1){
-                    $('#timepanel').tabs('disableTab','时段删除');
-                    $('#timepanel').tabs('disableTab','时段编辑');
+                if (allData[areaIndex].timeItems.length <= 1) {
+                    $('#timepanel').tabs('disableTab', '时段删除');
+                    $('#timepanel').tabs('disableTab', '时段编辑');
                 }
 
-                if(allData[areaIndex].timeItems[timeIndex].planId==-1){
-                    $('#planpanel').tabs('disableTab','编辑现预案');
-                    $('#planpanel').tabs('disableTab','删除现预案');
-                    $('#planpanel').tabs('select','添加新预案');
-                }else{
-                    $('#planpanel').tabs('disableTab','添加新预案');
-                    $('#planpanel').tabs('disableTab','复制旧预案');
-                    $('#planpanel').tabs('select','编辑现预案');
+                if (allData[areaIndex].timeItems[timeIndex].planId == -1) {
+                    $('#planpanel').tabs('disableTab', '编辑现预案');
+                    $('#planpanel').tabs('disableTab', '删除现预案');
+                    $('#planpanel').tabs('select', '添加新预案');
+                } else {
+                    $('#planpanel').tabs('disableTab', '添加新预案');
+                    $('#planpanel').tabs('disableTab', '复制旧预案');
+                    $('#planpanel').tabs('select', '编辑现预案');
                 }
 
-            },100);
+            }, 100);*/
 //                $('#time .active').removeClass('active');
 //                $('#plan .active').removeClass('active');
 //                $('.addTimeLi').addClass('active');
 //                $('.addTimeDiv').addClass('active');
 
 //                全局变量变量的存储
-            areaIndex = selectedTimes.index;
-            timeIndex = selectedTimes.indexNum;
+
             var timeStart = moment(selectedTimes.startTime);
             var timeEnd = moment(selectedTimes.endTime);
             /*最小间隔一小时*/
@@ -139,13 +164,19 @@ var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时�
 
             /*删除时段 start*/
             editHtml('delTime');
+            console.log(allData[areaIndex].timeItems.length);
             if (allData[areaIndex].timeItems.length > 1) {
                 $('.delTimeLi').removeClass('disNone');
-                $('#timepanel').tabs('enabled', '时段删除');
+                try{
+                    $('#timepanel').tabs('enabled', '时段删除');
+                }catch (err){
+
+                }
+
                 $('.delTimeDiv').find('.delSelect').empty();
 
 
-                var redio = $('.radio.disNone').clone().removeClass('disNone');
+                var redio = $('.radio').clone().show();
                 if (timeIndex == 0) {
                     redio.find('span').html('时   段ID：' + allData[areaIndex].timeItems[timeIndex + 1].timeId + '<br />' + '开始时间：' + momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeStartDate) + '&nbsp;&nbsp;&nbsp;&nbsp;' + '结束时间：' + momentDate(allData[areaIndex].timeItems[timeIndex + 1].timeEndDate));
                     redio.find('input').val('down');
@@ -160,50 +191,53 @@ var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时�
                     redio.find('input').val('down');
                     $('.delTimeDiv').find('.delSelect').append(redio2);
                 }
+                console.log(redio);
                 $('.delTimeDiv').find('.delSelect').append(redio);
                 redio.find('input').attr('checked', 'checked');
 
 
-            } else {
-                $('.delTimeLi').addClass('disNone');
-                $('.delTimeLi').removeClass('active');
-                $('.delTimeDiv').removeClass('active');
             }
+            /* else {
+             // $('.delTimeLi').addClass('disNone');
+             $('.delTimeLi').removeClass('active');
+             $('.delTimeDiv').removeClass('active');
+             $('#timepanel').tabs('disableTab','时段删除');
+             }*/
             /*删除时段 end*/
 
             /**************************************************************************************/
             /*编辑时段 start*/
             if (allData[areaIndex].timeItems.length > 1) {
-                $('.editTimeLi').removeClass('disNone');
+                // $('.editTimeLi').removeClass('disNone');
 
                 clearTimeDate();
                 updatetimeSow();
                 editTimeDateObj.type = $('#selectEditPoint').val();
             } else {
-                $('.editTimeLi').addClass('disNone');
+                // $('.editTimeLi').addClass('disNone');
             }
 
             /*编辑时段 end*/
 
             /**************************************************************************************/
             /*添加预案 start*/
-            $('.delPlanLi').addClass('disNone');//暂无删除预案接口支持
+            // $('.delPlanLi').addClass('disNone');//暂无删除预案接口支持
             if (selectedTimes.planId == -1) {
                 copyPlan();
-                $('.addPlanLi').removeClass('disNone');
-                $('.copyPlanLi').removeClass('disNone');
-                $('.editPlanLi').addClass('disNone');
-
-                $('.addPlanLi').addClass('active');
-                $('.addPlanDiv').addClass('active');
+                // $('.addPlanLi').removeClass('disNone');
+                // $('.copyPlanLi').removeClass('disNone');
+                // $('.editPlanLi').addClass('disNone');
+                //
+                // $('.addPlanLi').addClass('active');
+                // $('.addPlanDiv').addClass('active');
 
             } else {
-                $('.addPlanLi').addClass('disNone');
-                $('.copyPlanLi').addClass('disNone');
-                $('.editPlanLi').removeClass('disNone');
-
-                $('.editPlanLi').addClass('active');
-                $('.editPlanDiv').addClass('active');
+                // $('.addPlanLi').addClass('disNone');
+                // $('.copyPlanLi').addClass('disNone');
+                // $('.editPlanLi').removeClass('disNone');
+                //
+                // $('.editPlanLi').addClass('active');
+                // $('.editPlanDiv').addClass('active');
             }
             /*添加预案 end*/
         }
@@ -275,24 +309,24 @@ var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时�
 //        时段编辑的标签页渲染
     $('#timeorplan').tabs({
         tabPosition: 'left',
-        width:'100%',
+        width: '100%',
         height: 300,
-        onSelect:function (t,i) {
-            if((!areaIndex)&&(areaIndex!=0))return;
-            if(t == '时段操作'){
-                if(allData[areaIndex].timeItems.length<=1){
-                    $('#timepanel').tabs('disableTab','时段删除');
-                    $('#timepanel').tabs('disableTab','时段编辑');
+        onSelect: function (t, i) {
+            if ((!areaIndex) && (areaIndex != 0))return;
+            if (t == '时段操作') {
+                if (allData[areaIndex].timeItems.length <= 1) {
+                    $('#timepanel').tabs('disableTab', '时段删除');
+                    $('#timepanel').tabs('disableTab', '时段编辑');
                 }
-            }else if(t == '预案操作'){
-                if(allData[areaIndex].timeItems[timeIndex].planId==-1){
-                    $('#planpanel').tabs('disableTab','编辑现预案');
-                    $('#planpanel').tabs('disableTab','删除现预案');
-                    $('#planpanel').tabs('select','添加新预案');
-                }else{
-                    $('#planpanel').tabs('disableTab','添加新预案');
-                    $('#planpanel').tabs('disableTab','复制旧预案');
-                    $('#planpanel').tabs('select','编辑现预案');
+            } else if (t == '预案操作') {
+                if (allData[areaIndex].timeItems[timeIndex].planId == -1) {
+                    $('#planpanel').tabs('disableTab', '编辑现预案');
+                    // $('#planpanel').tabs('disableTab', '删除现预案');
+                    $('#planpanel').tabs('select', '添加新预案');
+                } else {
+                    $('#planpanel').tabs('disableTab', '添加新预案');
+                    $('#planpanel').tabs('disableTab', '复制旧预案');
+                    $('#planpanel').tabs('select', '编辑现预案');
                 }
             }
         }
@@ -423,7 +457,7 @@ function initCoptTable() {
     $('#copyQJ').datagrid($.extend({}, defaultdatagridoption, {
         url: '/ampc/scenarino/get_CopyScenarinoList',
         dataType: "json",
-        singleSelect:true,
+        singleSelect: true,
         contentType: "application/json", // 请求远程数据的内容类型。
         queryParams: function (m) {
             var json = {
@@ -444,9 +478,9 @@ function initCoptTable() {
             return res.data.rows
         },
         columns: [[{
-            checkbox:true,
-            field:'cb'
-        },{
+            checkbox: true,
+            field: 'cb'
+        }, {
             field: 'missionName',
             title: '任务名称',
             width: 150
@@ -459,9 +493,9 @@ function initCoptTable() {
             }
         }, {
             field: 'scenarinoName',
-            title:'情景名称',
-            width:120
-        }]],
+            title: '情景名称',
+            width: 120
+        }]]
 
     }))
     /*        $('#copyQJ').bootstrapTable({
@@ -580,12 +614,12 @@ function showTimeline(data) {
     var _temparr = [];
     var _temparr1 = [];
     for (var i = 0; i < data.length; i++) {
-        var obj = {
-            id:data[i].areaId.toString(),
-            index:i
-        };
-        // _temp.yAxisLabel.push(data[i].areaName + '1', data[i].areaId.toString(), data[i].areaName + '2');
-        _temp.yAxisLabel.push(data[i].areaName + '1', JSON.stringify(obj), data[i].areaName + '2');
+        /*        var obj = {
+         id:data[i].areaId.toString(),
+         index:i
+         };*/
+        _temp.yAxisLabel.push(data[i].areaName + '1', data[i].areaId.toString(), data[i].areaName + '2');
+        // _temp.yAxisLabel.push(data[i].areaName + '1', JSON.stringify(obj), data[i].areaName + '2');
         _temp.seriesData.push([]);
         for (var j = 0; j < data[i].timeItems.length; j++) {
             _temparr = [];
@@ -629,13 +663,15 @@ function showTimeline(data) {
                     if (index % 3 == 1) {
                         var obj = JSON.parse(value);
                         for (var i = 0; i < allData.length; i++) {
-                            // if (value == allData[i].areaId) {
-                            if (obj.id == allData[i].areaId) {
+                            if (value == allData[i].areaId) {
+                                // if (obj.id == allData[i].areaId) {
                                 return allData[i].areaName;
+                                // }
+
                             }
                         }
+                        return value;
                     }
-                    return value;
                 }
             },
             axisTick: {
@@ -722,7 +758,7 @@ function showTimeline(data) {
                     },
                     name: _temp.seriesName[i],
                     silent: false,
-                    data: [{value: [_temp.seriesLabel[i][0], _temp.seriesLabel[i][1]]}]
+                    data: [[_temp.seriesLabel[i][0], _temp.seriesLabel[i][1]]]
                 })
             }
             return _arr
@@ -785,9 +821,15 @@ function showTimeline(data) {
          isMouseDrag = 3;
          }*/
         if (params.componentType == 'yAxis') {
-            var obj = JSON.parse(params.value);
-            areaIndex = obj.index;
-            $('#settingqjbox').window('open').window('center').find('.step1 button').attr('data-qjid', obj.id);
+            console.log(params);
+            // areaIndex = obj.index;
+            for(var i=0;i<allData.length;i++){
+                if(params.value==allData[i].areaId.toString()){
+                    areaIndex=i;
+                    break
+                }
+            }
+            $('#settingqjbox').window('open').window('center').find('.step1 button').attr('data-qjid', allData[i].areaId);
         }
         if (params.seriesType == 'scatter') {
             if (params.seriesName == -1) {
@@ -862,8 +904,22 @@ function showTimeline(data) {
         if (qjMsg.scenarinoStatus == 9)return;
         for (var i = 0; i < allData[labelIndex].timeItems.length; i++) {
 //                if(Math.floor(pointInGrid[1]/3))
-            console.log(allData[labelIndex].timeItems[i].timeStartDate < pointInGrid[0] && allData[labelIndex].timeItems[i].timeEndDate > pointInGrid[0]);
-            if (allData[labelIndex].timeItems[i].timeStartDate < pointInGrid[0] && allData[labelIndex].timeItems[i].timeEndDate > pointInGrid[0]) {
+            console.log((i-1<0?allData[labelIndex].timeItems[i].timeEndDate:allData[labelIndex].timeItems[i-1].timeStartDate) < pointInGrid[0] && allData[labelIndex].timeItems[i].timeEndDate > pointInGrid[0]);
+            if (allData[labelIndex].timeItems[i].timeStartDate < pointInGrid[0]  && allData[labelIndex].timeItems[i].timeEndDate > pointInGrid[0]) {
+                selectedTimes = {
+                    areaId: allData[labelIndex].areaId,
+                    areaName: allData[labelIndex].areaName,
+                    cityCodes: allData[labelIndex].cityCodes,
+                    countyCodes: allData[labelIndex].countyCodes,
+                    endTime: allData[labelIndex].timeItems[i].timeEndDate,
+                    index: labelIndex,
+                    indexNum: i,
+                    planId: allData[labelIndex].timeItems[i].planId,
+                    planName: allData[labelIndex].timeItems[i].planName,
+                    provinceCodes: allData[labelIndex].provinceCodes,
+                    startTime: allData[labelIndex].timeItems[i].timeStartDate,
+                    timeId: allData[labelIndex].timeItems[i].timeId
+                };
                 ontTimes({
                     areaId: allData[labelIndex].areaId,
                     areaName: allData[labelIndex].areaName,
@@ -1045,6 +1101,7 @@ function delArea(e) {
         });
 
 }
+
 /*编辑预案*/
 function editPlan(t) {
     if (!t) {
@@ -1091,6 +1148,7 @@ function createNewPlan(e) {
 
 /*当前选中的时段*/
 var selectedTimes;
+
 function ontTimes(data) {
     selectedTimes = data;
     console.log(selectedTimes);
@@ -1393,6 +1451,7 @@ function createNewAreaBtn() {
         $('#editArea').window('open');
     }
 }
+
 /*前端设置disabled*/
 function setDisabled(data) {
     var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
@@ -1424,6 +1483,7 @@ function setDisabled(data) {
         }
     }
 }
+
 /**
  * 更新保存显示的地区code信息
  */
@@ -1474,11 +1534,13 @@ function updataCodeList() {
     $('.codeTree').hide();
     $('.adcodeList').show();
 }
+
 /*在选中地区的面板进行修改选中的区域时的函数，重新跳出ztree*/
 function revise() {
     $('.adcodeList').hide();
     $('.codeTree').show();
 }
+
 /*选择省级*/
 function level0(node) {
     var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
@@ -1599,6 +1661,7 @@ function delNode12(node) {
         delete showCode[node.level + 1][node.adcode];
     }
 }
+
 /**
  * 创建/编辑区域
  */
@@ -1716,6 +1779,7 @@ function createEditArea() {
         })
     }
 }
+
 /*显示已选择code,并进行checked*/
 function setShowCode(data) {
     var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
@@ -1761,6 +1825,7 @@ function setShowCode(data) {
         }
     }
 }
+
 function initDate(s, e, start) {
     $("#qyTimePoint").daterangepicker({
 
@@ -1795,6 +1860,7 @@ function initDate(s, e, start) {
             var date = moment(ev.date).format('YYYY-MM-DD HH');
         });
 }
+
 /**
  * 编辑时段时间html （编辑某一时段使用）
  * 时段编辑时显示的前一时段后一时段当前时段的信息
@@ -1834,11 +1900,12 @@ function editHtml(id) {
     $('#' + id + ' .showTimes .col-4 p').eq(1)
         .html(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate) + '<br />至<br/>' + momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate));
 }
+
 /**
  * 选择copy情景，处理copy之后的事件
  */
 function subCopyQJ() {
-    selectCopyQJ=$('#copyQJ').datagrid('getSelected');
+    selectCopyQJ = $('#copyQJ').datagrid('getSelected');
 
     var copyUrl = '/scenarino/copy_Scenarino';
     ajaxPost(copyUrl, {
@@ -1881,6 +1948,7 @@ function subCopyQJ() {
         }
     })
 }
+
 /*返回YYYY-MM-DD HH格式*/
 function momentDate(d) {
     var n = Number(d);
@@ -1889,4 +1957,445 @@ function momentDate(d) {
     } else {
         return moment(d, 'YYYY-MM-DD HH').format('YYYY-MM-DD HH')
     }
+}
+
+/*编辑时段时间使用*/
+
+function clearTimeDate() {
+    editTimeDateObj = {};
+    editTimeDateObj.s = moment(selectedTimes.startTime).format('YYYY-MM-DD HH');
+    editTimeDateObj.e = moment(selectedTimes.endTime).format('YYYY-MM-DD HH');
+    if (timeIndex == 0) {
+        editTimeDateObj.afterS = moment(allData[areaIndex].timeItems[timeIndex + 1].timeStartDate).format('YYYY-MM-DD HH');
+        editTimeDateObj.afterE = moment(allData[areaIndex].timeItems[timeIndex + 1].timeEndDate).format('YYYY-MM-DD HH');
+    } else if (timeIndex == allData[areaIndex].timeItems.length - 1) {
+        editTimeDateObj.beforeS = moment(allData[areaIndex].timeItems[timeIndex - 1].timeStartDate).format('YYYY-MM-DD HH');
+        editTimeDateObj.beforeE = moment(allData[areaIndex].timeItems[timeIndex - 1].timeEndDate).format('YYYY-MM-DD HH');
+    } else {
+        editTimeDateObj.afterS = moment(allData[areaIndex].timeItems[timeIndex + 1].timeStartDate).format('YYYY-MM-DD HH');
+        editTimeDateObj.afterE = moment(allData[areaIndex].timeItems[timeIndex + 1].timeEndDate).format('YYYY-MM-DD HH');
+        editTimeDateObj.beforeS = moment(allData[areaIndex].timeItems[timeIndex - 1].timeStartDate).format('YYYY-MM-DD HH');
+        editTimeDateObj.beforeE = moment(allData[areaIndex].timeItems[timeIndex - 1].timeEndDate).format('YYYY-MM-DD HH');
+    }
+}
+
+/*编辑时段时间html*/
+function updatetimeSow() {
+    $('#editTime1 .showTimes .col-4 p').eq(0).empty();
+    $('#editTime1 .showTimes .col-4 p').eq(1).empty();
+    $('#editTime1 .showTimes .col-4 p').eq(2).empty();
+    $('#selectEditPoint').empty();
+    var s, e;
+    s = editTimeDateObj.s;
+    e = editTimeDateObj.e;
+    if (timeIndex == 0) {
+        e = editTimeDateObj.afterE;
+        $('#editTime1 .showTimes .col-4 p').eq(0)
+            .html('<h4>无时段</h4>');
+        $('#editTime1 .showTimes .col-4 p').eq(2)
+            .html(editTimeDateObj.afterS + '<br />至<br/>' + editTimeDateObj.afterE);
+        $('#selectEditPoint').append($('<option value="end">结束时间</option>'))
+        //editTimeDateObj.type = 'end'
+    } else if (timeIndex == allData[areaIndex].timeItems.length - 1) {
+        s = editTimeDateObj.beforeS;
+        $('#editTime1 .showTimes .col-4 p').eq(2)
+            .html('<h4>无时段</h4>');
+        $('#editTime1 .showTimes .col-4 p').eq(0)
+            .html(editTimeDateObj.beforeS + '<br />至<br/>' + editTimeDateObj.beforeE);
+        $('#selectEditPoint').append($('<option value="start">开始时间</option>'))
+        //editTimeDateObj.type = 'start'
+    } else {
+        s = editTimeDateObj.beforeS;
+        $('#selectEditPoint').append($('<option value="start">开始时间</option>'));
+        $('#selectEditPoint').append($('<option value="end">结束时间</option>'));
+        $('#editTime1 .showTimes .col-4 p').eq(0)
+            .html(editTimeDateObj.beforeS + '<br />至<br/>' + editTimeDateObj.beforeE);
+        $('#editTime1 .showTimes .col-4 p').eq(2)
+            .html(editTimeDateObj.afterS + '<br />至<br/>' + editTimeDateObj.afterE);
+        //editTimeDateObj.type = 'start'
+    }
+    $('#editTime1 .showTimes .col-4 p').eq(1).html(editTimeDateObj.s + '<br />至<br/>' + editTimeDateObj.e);
+
+    initEditTimeDate(s, e);
+    initEditTimeDate(s, e);
+}
+
+/*初始化日期插件*/
+function initEditTimeDate(s, e) {
+    $('#editDate').daterangepicker({
+        singleDatePicker: true,  //显示单个日历
+        timePicker: true,  //允许选择时间
+        timePicker24Hour: true, //时间24小时制
+        minDate: s,//最早可选日期
+        maxDate: e,//最大可选日期
+        locale: {
+            format: "YYYY-MM-DD HH",
+            separator: " 至 ",
+            applyLabel: "确定", //按钮文字
+            cancelLabel: "取消",//按钮文字
+            weekLabel: "W",
+            daysOfWeek: [
+                "日", "一", "二", "三", "四", "五", "六"
+            ],
+            monthNames: [
+                "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"
+            ],
+            firstDay: 1
+        },
+        //"startDate": moment().subtract(2,'w'),
+        //"endDate": end,
+        "opens": "right"
+    }, function (start, end, label) {
+        //editTimeDateObj编辑时段的时候存储的前后时段时间对象
+        if (editTimeDateObj.type == 'start') {
+            if (editTimeDateObj.beforeS >= moment(start).subtract(1, 'h').format('YYYY-MM-DD HH')) {
+                console.log('时间不合理请重新选择！！！');
+                return
+            }
+            editTimeDateObj.s = moment(start).format('YYYY-MM-DD HH');
+            editTimeDateObj.beforeE = moment(start).subtract(1, 'h').format('YYYY-MM-DD HH')
+        } else {
+            if (moment(start).add(1, 'h').format('YYYY-MM-DD HH') >= editTimeDateObj.afterE) {
+                console.log('时间不合理请重新选择！！！');
+                return
+            }
+            editTimeDateObj.e = moment(start).format('YYYY-MM-DD HH');
+            editTimeDateObj.afterS = moment(start).add(1, 'h').format('YYYY-MM-DD HH')
+        }
+        updatetimeSow();
+    })
+}
+
+/*添加时间段*/
+function addTimes() {
+    addTimePoint = $('#qyTimePoint').val();
+    var timePoint = moment(addTimePoint).format('YYYY-MM-DD HH:mm:ss');
+    var timeFrame = allData[areaIndex].timeFrame;
+    timeFrame.push(timePoint);
+    timeFrame.sort();
+    var index = timeFrame.indexOf(timePoint);
+
+    var url = '/time/save_time';
+    ajaxPost(url, {
+        missionId: qjMsg.rwId,
+        scenarinoId: qjMsg.qjId,
+        userId: userId,
+        areaId: allData[areaIndex].areaId,
+        selectTimeId: allData[areaIndex].timeItems[index].timeId,
+        addTimeDate: timePoint,
+        scenarinoStatus: qjMsg.scenarinoStatus
+    }).success(function (res) {
+
+        getAreaAndTime();
+        $('#timePlan').window('close');
+
+    }).error(function () {
+        timeFrame.splice(index, 1);
+        swal({
+            title: '添加失败!',
+            type: 'error',
+            timer: 1000,
+            showConfirmButton: false
+        });
+        $('#timePlan').window('close');
+    });
+}
+/*请求区域及时段*/
+function getAreaAndTime() {
+    var url = '/area/get_areaAndTimeList';
+    scenarino = ajaxPost(url, {
+        scenarinoId: qjMsg.qjId,
+        userId: userId
+    });
+
+    scenarino.then(function (res) {
+        allData = res.data.slice(0, -1);
+        for (var i = 0; i < allData.length; i++) {
+            allData[i].timeFrame = [];
+            var timeItems = allData[i].timeItems;
+            var tLength = timeItems.length;
+            for (var item = 0; item < tLength; item++) {
+                if (item > 0) {
+                    var sD = timeItems[item].timeStartDate;
+                    allData[i].timeFrame[item - 1] = moment(sD).format('YYYY-MM-DD HH');
+                }
+            }
+        }
+        showTimeline(allData);//生成区域时段
+    });
+}
+/*添加预案*/
+function addPlan(e) {
+    //添加预案时判断是新建的预案还是copy的预案
+    newPlan = e;
+    if (newPlan) {
+        var url = '/plan/add_plan';
+        var params = {
+            timeId: msg.content.timeId,
+            userId: userId,
+            missionId: msg.content.rwId,
+            scenarioId: msg.content.qjId,
+            areaId: msg.content.areaId,
+            timeStartTime: moment(msg.content.timeStartDate).format('YYYY-MM-DD HH'),
+            timeEndTime: moment(msg.content.timeEndDate).format('YYYY-MM-DD HH'),
+            planName: $('#yaName').val(),
+            scenarinoStatus: qjMsg.scenarinoStatus,
+        };
+        ajaxPost(url, params).success(function (res) {
+            msg.content.planId = res.data;
+            msg.content.planName = $('#yaName').val();
+            vipspa.setMessage(msg);
+            createNewPlan();
+            $('#yaName').val('');
+        });
+    } else {
+        if (!selectCopyPlan) {
+            swal({
+                title: '无预案!',
+                type: 'error',
+                timer: 1000,
+                showConfirmButton: false
+            });
+            return
+        }
+        ;
+        var url = '/plan/copy_plan';
+
+        ajaxPost(url, {
+            userId: userId,
+            timeId: allData[areaIndex].timeItems[timeIndex].timeId,
+            scenarinoStatus: qjMsg.scenarinoStatus,
+            scenarioId: qjMsg.qjId,
+            missionId: qjMsg.rwId,
+            areaId: allData[areaIndex].areaId,
+            timeStartTime: moment(allData[areaIndex].timeItems[timeIndex].timeStartDate).format('YYYY-MM-DD HH'),
+            timeEndTime: moment(allData[areaIndex].timeItems[timeIndex].timeEndDate).format('YYYY-MM-DD HH'),
+            copyPlanId: selectCopyPlan.planReuseId
+        }).success(function (res) {
+            $('.jpjs.disNone').removeClass('disNone');
+            $('.jpjs').removeAttr('disabled');
+            $('.jpztck').addClass('disNone');
+            //添加预案成功后更新allData数据
+            allData[areaIndex].timeItems[timeIndex].planId = res.data;
+            allData[areaIndex].timeItems[timeIndex].planName = selectCopyPlan.planReuseName;
+            showTimeline(allData);
+            $('#timePlan').window('close');
+        })
+    }
+}
+/*选择已有预案按钮*/
+function copyPlan() {
+    initCopyPlanTable();
+}
+/*初始化复制预案table*/
+function initCopyPlanTable() {
+    $('#copyPlanTable').datagrid($.extend({}, defaultdatagridoption, {
+        url: '/ampc/plan/copy_plan_list',
+        dataType: "json",
+        singleSelect: true,
+        contentType: "application/json", // 请求远程数据的内容类型。
+        queryParams: function (m) {
+            var json = {
+                "token": "",
+                "data": {
+                    "userId": userId
+                }
+            };
+            return json;
+        },
+        loadFilter: function (res) {
+            return res.data
+        },
+        columns: [[{
+            checkbox: true,
+            field: 'cb'
+        }, {
+            field: 'planReuseName',
+            title: '预案名称',
+            width: 150
+        }, {
+            field: 'missionName',
+            title: '任务名称',
+            width: 80
+        }, {
+            field: 'scenarioName',
+            title: '情景名称',
+            width: 120
+        }, {
+            field: 'areaName',
+            title: '区域名称',
+            width: 120
+        }, {
+            field: 'areaName',
+            title: '区域名称',
+            width: 120,
+            formatter:copyPlanAddTime
+        }]],
+        onCheck:function (index,row) {
+            selectCopyPlan = row;
+            
+        }
+/*        onClickRow: function (index, row) {
+            // $('.info').removeClass('info');
+            // $($element).addClass('info');
+            selectCopyPlan = row;
+        }*/
+    }));
+    /*$('#copyPlanTable').bootstrapTable({
+        method: 'POST',
+        url: '/ampc/plan/copy_plan_list',
+        dataType: "json",
+        contentType: "application/json", // 请求远程数据的内容类型。
+        toobar: '#rwToolbar',
+        iconSize: "outline",
+        search: false,
+        searchAlign: 'right',
+        height: 453,
+        maintainSelected: true,
+        clickToSelect: true,// 点击选中行
+        pagination: false, // 在表格底部显示分页工具栏
+        pageSize: 10, // 页面大小
+        pageNumber: 1, // 页数
+        pageList: [10],
+        striped: true, // 使表格带有条纹
+        sidePagination: "server",// 表格分页的位置 client||server
+        rowStyle: function (row, index) {
+            if (index == 0) {
+                return {classes: 'info'}
+            }
+            return {};
+        },
+        queryParams: function formPm(m) {
+            var json = {
+                "token": "",
+                "data": {
+                    "userId": userId
+                }
+            };
+
+            return JSON.stringify(json);
+        },
+        responseHandler: function (res) {
+            var data = {
+                rows: res.data
+            };
+            return data;
+        },
+        queryParamsType: "undefined", // 参数格式,发送标准的RESTFul类型的参数请求
+        silent: true, // 刷新事件必须设置
+        onClickRow: function (row, $element) {
+            $('.info').removeClass('info');
+            $($element).addClass('info');
+            selectCopyPlan = row;
+        },
+        onCheck: function (row) {
+            selectCopyPlan = row;
+        },
+        onLoadSuccess: function (data) {
+            selectCopyPlan = data.rows[0];
+            console.log(data);
+            if (selectCopyPlan) {
+                $('#copyPlanTable').bootstrapTable('check', 0)
+            }
+        }
+    });*/
+}
+/*format 函数*/
+function copyPlanAddTime(v, row, i) {
+    return moment(row.addTime).format('YYYY-MM-DD HH:mm:ss')
+}
+/**
+ * 删除时间段
+ */
+function delTimes() {
+    var url = '/time/delete_time';
+    var mId;
+    var ub = $('.delSelect input:checked').val();
+    var delTime;
+    //判断我删除的时段是与前一时段合并还是与后一时段合并
+    if (ub == 'up') {
+        mId = allData[areaIndex].timeItems[timeIndex - 1].timeId;
+        delTime = moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeStartDate)).format('YYYY-MM-DD HH');
+    } else {
+        mId = allData[areaIndex].timeItems[timeIndex + 1].timeId;
+        delTime = moment(momentDate(allData[areaIndex].timeItems[timeIndex].timeEndDate)).format('YYYY-MM-DD HH');
+    }
+
+    ajaxPost(url, {
+        deleteTimeId: allData[areaIndex].timeItems[timeIndex].timeId,
+        startDate: moment(allData[areaIndex].timeItems[timeIndex].timeStartDate).format('YYYY-MM-DD HH:mm:ss'),
+        endDate: moment(allData[areaIndex].timeItems[timeIndex].timeEndDate).format('YYYY-MM-DD HH:mm:ss'),
+        mergeTimeId: mId,
+        userId: userId,
+        status: ub,
+        scenarinoStatus: qjMsg.scenarinoStatus,
+        scenarinoId: qjMsg.qjId
+    }).success(function () {
+        var index = allData[areaIndex].timeFrame.indexOf(delTime);
+        //在前端进行数据处理
+        if (ub == 'up') {
+            allData[areaIndex].timeItems[timeIndex - 1].timeEndDate = allData[areaIndex].timeItems[timeIndex].timeEndDate;
+        } else {
+            allData[areaIndex].timeItems[timeIndex + 1].timeStartDate = allData[areaIndex].timeItems[timeIndex].timeStartDate;
+        }
+        //delTimes.remove();
+        allData[areaIndex].timeFrame.splice(index, 1);
+        allData[areaIndex].timeItems.splice(timeIndex, 1);
+        showTimeline(allData);
+        $('#timePlan').window('close');
+        //循环判断数据信息，进行减排计算等按钮的使用操作
+        for (var i = 0; i < allData.length; i++) {
+            for (var ii = 0; ii < allData[i].timeItems.length; ii++) {
+                if (allData[i].timeItems[ii].planId == -1) {
+                    $('.jpjs').removeClass('disNone');
+                    $('.jpjs').attr('disabled', true);
+                    $('.jpztck').addClass('disNone');
+                } else {
+                    $('.jpjs').removeAttr('disNone');
+                    $('.jpjs').removeClass('disNone');
+                    $('.jpztck').addClass('disNone');
+                    return;
+                }
+            }
+        }
+    })
+
+}
+/**
+ * 提交编辑时段的时间
+ */
+function sunEditTimeDate() {
+    var url = '/time/update_time';
+    var after, before, date;
+    //判断修改时段的时间是开始时间还是结束时间
+    if (editTimeDateObj.type == 'start') {
+        date = moment(editTimeDateObj.s).format('YYYY-MM-DD HH:mm:ss');
+        before = allData[areaIndex].timeItems[timeIndex - 1].timeId;
+        after = allData[areaIndex].timeItems[timeIndex].timeId
+    } else {
+        date = moment(editTimeDateObj.e).add(1, 'h').format('YYYY-MM-DD HH:mm:ss');
+        after = allData[areaIndex].timeItems[timeIndex + 1].timeId;
+        before = allData[areaIndex].timeItems[timeIndex].timeId
+    }
+    ajaxPost(url, {
+        userId: userId,
+        updateDate: date,
+        beforeTimeId: before,
+        afterTimeId: after,
+        scenarinoStatus: qjMsg.scenarinoStatus,
+        scenarinoId: qjMsg.qjId
+    }).success(function (res) {
+        if (res.status == 0) {
+            //在前端将allData进行更新，省去在请求一遍areaAndTimeList接口
+            if (editTimeDateObj.type == 'start') {
+                allData[areaIndex].timeItems[timeIndex].timeStartDate = moment(date).format('x') - 0;
+                allData[areaIndex].timeItems[timeIndex - 1].timeEndDate = moment(editTimeDateObj.beforeE).format('x') - 0;
+            } else {
+                allData[areaIndex].timeItems[timeIndex].timeEndDate = moment(editTimeDateObj.e).format('x') - 0;
+                allData[areaIndex].timeItems[timeIndex + 1].timeStartDate = moment(editTimeDateObj.afterS).format('x') - 0;
+            }
+            showTimeline(allData);
+            $('#timePlan').window('close');
+        }
+    })
 }
