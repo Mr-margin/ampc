@@ -109,7 +109,7 @@ function innitdata(active){
     }else if(active=="delete_nativeTp"){
         var obj_node = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
         console.log(obj_node);
-        ajaxPost('/NativeAndNation/doPost',{"nativeTpId ":obj_node.esNativeTpId,"method":"delete_nativeTp"}).success(function(res){
+        ajaxPost('/NativeAndNation/doPost',{"nativeTpId":obj_node.esNativeTpId,"method":"delete_nativeTp"}).success(function(res){
             if(res.status==0){
                 var obj_node_id=obj_node.id+1;
                 console.log(obj_node_id);
