@@ -2662,6 +2662,9 @@ public class AirController {
 							pm.put(date, pdMap.get(num).get(date));
 						}
 						
+					}else{
+						pdaslist.add(date);
+						daslist.add(date);
 					}
 					
 				}
@@ -2951,12 +2954,15 @@ public class AirController {
 						
 						String ps=null;
 						if(hourpAllspcMap.get(day)==null){
+							pdaslist.add(date);
 							continue;
 						}
 						if(hourpAllspcMap.get(day).get(date)==null){
+							pdaslist.add(date);
 							continue;
 						}
 						if(AllspcMap.get(day).get(date).get(spc)==null){
+							pdaslist.add(date);
 							ps="99999999";
 						}else{
 							 ps=LevelUtil.Level(new BigDecimal(AllspcMap.get(day).get(date).get(spc).toString()));
@@ -2977,6 +2983,7 @@ public class AirController {
 						if(AllspcMap.get(day).get(date).get(spc)!=null){
 							ppresult=new BigDecimal(AllspcMap.get(day).get(date).get(spc).toString()).subtract(psumMapsum.get(day).get(spc).divide(new BigDecimal(vale),2)).doubleValue();
 						}else{
+							pdaslist.add(date);
 							continue;
 						}
 						double store =opresult*ppresult;
@@ -2987,6 +2994,7 @@ public class AirController {
 						if(AllspcMap.get(day).get(date).get(spc)!=null){
 							o_p=new BigDecimal(AllspcMap.get(day).get(date).get(spc).toString()).subtract(num).doubleValue();
 						}else{
+							pdaslist.add(date);
 							continue;
 						}
 						Map amap=aveMap.get(day);
@@ -3038,6 +3046,7 @@ public class AirController {
 						Entry<String, List> spciter=Allspciter.next();
 						String spc=spciter.getKey();
 						if(spc.equals("O3_8_MAX")){
+							
 							continue;
 						}
 						Map psm=psumMapsum.get(day);
@@ -3045,9 +3054,13 @@ public class AirController {
 						for(int s=0;s<=23;s++){
 							BigDecimal num=new BigDecimal(numma.get(s).toString());
 							if(hourpAllspcMap.get(day)==null){
+								daslist.add(date);
+								pdaslist.add(date);
 								continue;
 							}
 							if(hourpAllspcMap.get(day).get(date)==null){
+								daslist.add(date);
+								pdaslist.add(date);
 								continue;
 							}
 							List ms=hourpAllspcMap.get(day).get(date).get(spc);
@@ -3072,6 +3085,8 @@ public class AirController {
 						if(ms!=null){
 							ppresult=(new BigDecimal(hourpAllspcMap.get(day).get(date).get(spc).get(s).toString()).subtract(new BigDecimal(sumMapsum.get(day).get(spc).toString()).divide(new BigDecimal(vale),2))).doubleValue();
 						}else{
+							daslist.add(date);
+							pdaslist.add(date);
 							continue;
 						}
 						double store =opresult*ppresult;
@@ -3081,6 +3096,8 @@ public class AirController {
 						if(ms!=null){
 							o_p= new BigDecimal(hourpAllspcMap.get(day).get(date).get(spc).get(s).toString()).subtract(num).doubleValue();
 						}else{
+							daslist.add(date);
+							pdaslist.add(date);
 							continue;
 						}
 						Map amap=aveMap.get(day);
@@ -3169,13 +3186,40 @@ public class AirController {
 		}
 		lastMap.put(day, spaMap);
 		}
-	
-//		Map<String,Object> obj=new HashMap();
-//		obj.put("lastMap", lastMap);
-//		obj.put("obs", daslist);
-//		obj.put("pbs", pdaslist);
-//		return	AmpcResult.ok(obj);
-		return	AmpcResult.ok(lastMap);
+		 List<Date> plistTemp= new ArrayList<Date>();  
+		 Iterator<Date> pit=pdaslist.iterator();  
+		 while(pit.hasNext()){  
+		  Date a=pit.next();  
+		  if(plistTemp.contains(a)){  
+		   pit.remove();  
+		  }  
+		  else{  
+		   plistTemp.add(a);  
+		  }  
+		 }  
+		 
+		 List<Date> listTemp= new ArrayList<Date>();  
+		 Iterator<Date> it=daslist.iterator();  
+		 while(it.hasNext()){  
+		  Date a=it.next();  
+		  if(listTemp.contains(a)){  
+		   it.remove();  
+		  }  
+		  else{  
+		   listTemp.add(a);  
+		  }  
+		 }  
+		 
+		 
+		Map<String,Object> obj=new HashMap();
+		obj.put("lastMap", lastMap);
+		obj.put("obs", listTemp);
+		obj.put("pbs", plistTemp);
+		return	AmpcResult.ok(obj);
+
+
+//		return	AmpcResult.ok(lastMap);
+
 	}catch(Exception e){
 		LogUtil.getLogger().error("AirController 预报检验查询异常！",e);
 		return	AmpcResult.build(1001, "预报检验查询异常！");
