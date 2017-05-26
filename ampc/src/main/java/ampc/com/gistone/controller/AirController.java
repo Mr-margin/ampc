@@ -3163,12 +3163,12 @@ public class AirController {
 		lastMap.put(day, spaMap);
 		}
 	
-		Map<String,Object> obj=new HashMap();
-		obj.put("lastMap", lastMap);
-		obj.put("obs", daslist);
-		obj.put("pbs", pdaslist);
-		return	AmpcResult.ok(obj);
-//		return	AmpcResult.ok(lastMap);
+//		Map<String,Object> obj=new HashMap();
+//		obj.put("lastMap", lastMap);
+//		obj.put("obs", daslist);
+//		obj.put("pbs", pdaslist);
+//		return	AmpcResult.ok(obj);
+		return	AmpcResult.ok(lastMap);
 	}catch(Exception e){
 		LogUtil.getLogger().error("AirController 预报检验查询异常！",e);
 		return	AmpcResult.build(1001, "预报检验查询异常！");
