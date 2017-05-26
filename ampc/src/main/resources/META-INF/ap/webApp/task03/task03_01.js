@@ -552,7 +552,7 @@ function show_zicuoshi_table(columns, b_data) {
                     $("#zicuoshi_tools_de").show();
                     $("#zicuoshi_tools_up").hide();
                     $("#zicuoshi_tools_see").show();
-                }else if(row.f1 != "汇总"){
+                }else if(row.f1 != "剩余点源" && row.f1 != "汇总"){
                     $("#zicuoshi_tools_up").show();
                     $('#returnSxTable').hide();
                 }
@@ -942,21 +942,22 @@ function search_button() {
 
         //将本次查询的缓存加入到总条件中
 //		console.log(JSON.stringify(temp_val_v1_Copy));
-        if (JSON.stringify(temp_val_v1_Copy) == "{}"&&($('#qiye_name').val() == '')) {
-            //如果筛选为空 则清空下面企业列表中的数据
-            $("#mic").hide();
-            $("#shaixuan_num").html("");
-            $("#metTable_tools").hide();//保存子措施按钮
-            $("#metTable_name_tools").hide();//保存子措施按钮
-
-            //没有条件，就不加了
-            swal({
-                title: "请选择筛选条件",
-                text: "筛选条件至少选择一项，全部点源请对剩余点源进行操作.",
-                timer: 2000,
-                showConfirmButton: false
-            });
-        } else {
+//         if (JSON.stringify(temp_val_v1_Copy) == "{}"&&($('#qiye_name').val() == '')) {
+//             //如果筛选为空 则清空下面企业列表中的数据
+//             $("#mic").hide();
+//             $("#shaixuan_num").html("");
+//             $("#metTable_tools").hide();//保存子措施按钮
+//             $("#metTable_name_tools").hide();//保存子措施按钮
+//
+//             //没有条件，就不加了
+//             swal({
+//                 title: "请选择筛选条件",
+//                 text: "筛选条件至少选择一项，全部点源请对剩余点源进行操作.",
+//                 timer: 2000,
+//                 showConfirmButton: false
+//             });
+//         } else
+            {
             if (ttlk) {
                 if(JSON.stringify(temp_val_v1_Copy) != "{}"){
                     ttqr = jQuery.extend(true,ttqr,temp_val_v1_Copy);
@@ -1921,8 +1922,8 @@ $(".cloudui .sxMore").hover(function(){
 $(".cloudui .sxMore").click(function(){
     console.log("点击进来了")
     if($(this).text()=="更多"){
-        $(this).parent().next().css({"height":"100px"})
-        $(this).parent().next().children().css({"height":"100px"})
+        $(this).parent().next().css({"height":"100%"})
+        $(this).parent().next().children().css({"height":"100%"})
         $(this).text("收起")
         $(this).children("i").remove();
         $(this).append("<i class='en-arrow-up7'></i>");
