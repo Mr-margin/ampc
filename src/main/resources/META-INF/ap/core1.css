@@ -443,9 +443,9 @@ label#lblSelect::after
 }
 
 .cloudui .breadcrumb i {
-  padding: 0 !important;
-  margin-top: 2px !important;
-  font-size: 30px !important;
+  padding: 0 ;
+  margin-top: 2px ;
+  font-size: 30px ;
 }
 
 .cloudui #crumb i {
@@ -459,13 +459,17 @@ label#lblSelect::after
   text-decoration: none;
   color: #1a1a1a!important;
 }
-
+.cloudui #crumb a:hover{
+  text-decoration: underline!important;
+  color:#0275D8!important;
+}
 .cloudui #crumb span{
   height: 30px;
   line-height: 30px;
   border-radius: 2px;
   text-decoration: none;
   color: #1a1a1a!important;
+  font-size:12px!important;
 }
 
 /*首页开始*/
@@ -825,6 +829,8 @@ dl, dd {
 .cloudui label{float: left;padding:0 10px;}
 .cloudui .btn input{display:none;}
 .cloudui .btn-success{border-radius: 2px;border: 1px solid #D9D9D9;height:28px;line-height:28px;background-color:white;box-sizing: border-box;color:#333;padding: 0 5px;}
+.cloudui .delete-btn{border: 1px solid #7a332d;background-color:#d8453d;color: #fff;}
+.cloudui .edit-btn{border: 1px solid #3b694d;background-color:#119e59;color: #fff;}
 .cloudui .btn-success i{margin-right:2px;}
 .cloudui .btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success.active, .open .dropdown-toggle.btn-success {
   display: inline-block;
@@ -833,6 +839,22 @@ dl, dd {
   background-color: #0275D8;
   border-color: #0275D8;
   color: #FFFFFF!important;
+}
+.cloudui .delete-btn:hover, .delete-btn:focus, .delete-btn:active, .delete-btn.active, .open .dropdown-toggle.delete-btn {
+  display: inline-block;
+  height: 28px;
+  line-height: 28px;
+  background-color: white;
+  border-color: #D9D9D9;
+  color: #333!important;
+}
+.cloudui .edit-btn:hover, .edit-btn:focus, .edit-btn:active, .edit-btn.active, .open .dropdown-toggle.edit-btn {
+  display: inline-block;
+  height: 28px;
+  line-height: 28px;
+  background-color: white;
+  border-color: #D9D9D9;
+  color: #333!important;
 }
 .cloudui .btn-success a{color: #333;}
 .cloudui .btn-success:active a,.cloudui .btn-success:focus a,.cloudui .btn-success:hover a,.cloudui .btn-success.active a{color:#fff;}
@@ -1426,8 +1448,8 @@ dl, dd {
 .qdnavRight button.qdCreat{background-color:#119e59;border:1px solid #3b694d;}
 .qdnavRight button.qdEdit{background-color:#4783f3;border:1px solid #4a6696;}
 .qdnavRight button.qdDelet{background-color:#d8453d;border:1px solid #7a332d;}
-.cloudui #creatQd .rwCon,.cloudui #editQd .rwCon{overflow: hidden!important; }
-.cloudui #creatQd .qdContent,.cloudui #editQd .qdContent{
+.cloudui #creatQd .rwCon,.cloudui #editQd .rwCon,.cloudui #creatTemp .rwCon{overflow: hidden!important; }
+.cloudui #creatQd .qdContent,.cloudui #editQd .qdContent,.cloudui #creatTemp .qdContent{
   float: left;
   overflow: hidden;
   height: 30px;
@@ -1471,10 +1493,7 @@ dl, dd {
   text-align: left;
 }
 /*本地清单*/
-.cloudui #creatTemp .qdContent{
-  width: 100%;
-  overflow: hidden;
-}
+
 /*清单耦合设计*/
 .cloudui .yqdTable .coupSet{
  width: 100%;
