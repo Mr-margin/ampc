@@ -896,5 +896,5 @@ function showTitleFun() {
     }
     var timeTwoFor=moment(changeMsg.startD+"-"+changeMsg.endD,"YYYYMMDD-YYYYMMDD").format("YYYY年MM月DD日-YYYY年MM月DD日");
     $('#showTitle .dateName').html("<span class='titleTab'><i class='br-calendar'></i>"+"&nbsp;日期：</span>"+changeMsg.startD+"至"+changeMsg.endD).css({"margin-right":"40px"});
-    $("#showTitle .spaceName").html("<span class='titleTab'><i class='en-flow-parallel'></i>"+"&nbsp;空间分辨率：</span>"+($('input[name=domain]:checked').val()=="1"?"3KM":($('input[name=domain]:checked').val()==2?"9KM":"27KM"))).css({"margin-right":"40px"});
+    $("#showTitle .spaceName").html("<span class='titleTab'><i class='en-flow-parallel'></i>"+"&nbsp;空间分辨率：</span>"+($('input[name=domain]:checked').val()=="3"?"3km":($('input[name=domain]:checked').val()==2?"9km":"27km"))).css({"margin-right":"40px"});
 }

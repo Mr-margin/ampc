@@ -1,5 +1,6 @@
 package ampc.com.gistone.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,6 +50,41 @@ public class NativeAndNationController {
 	private TEsNative tEsNative;
 	
 	private TEsNativeTp tEsNativeTp;
+	
+	@RequestMapping("/NativeAndNation/doPost")
+	public AmpcResult doPost(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+			AmpcResult listTps = null;
+			try {
+				// 设置跨域
+				ClientUtil.SetCharsetAndHeader(request, response);
+				//获取请求参数
+				Map<String, Object> data = (Map) requestDate.get("data");
+				//获取请求方法
+				Object param=data.get("method");
+				//根据参数值判断执行对应的处理方法
+				if("find_natives".equals(param)){
+					listTps = find_natives(requestDate,request,response);
+				}else if("add_nativeTp".equals(param)){
+					listTps = add_nationTp(requestDate,request,response);
+				}else if("update_nationTp".equals(param)){
+					listTps = updata_nationTp(requestDate,request,response);
+				}else if("delete_nationTp".equals(param)){
+					listTps = delete_nationTp(requestDate,request,response);
+				}else if("".equals(param)){
+					return AmpcResult.build(1001, "NativeAndNationController 请求方法参数异常!");
+				}
+				
+				return AmpcResult.ok(listTps);
+			} catch (UnsupportedEncodingException e) {
+				// TODO 自动生成的 catch 块
+				e.printStackTrace();
+				LogUtil.getLogger().error("NativeAndNationController doPost异常!",e);
+				return AmpcResult.build(1001, "NativeAndNationController doPost异常!");
+			}
+			
+	}
+	
 	/**
 	 * 查询当前用户下的清单
 	 * @author WangShanxi
@@ -145,12 +181,12 @@ public class NativeAndNationController {
 	 * @param response 响应
 	 * @return 返回响应结果对象
 	 */
-	@RequestMapping("/NativeAndNation/find_natives")
+//	@RequestMapping("/NativeAndNation/find_natives")
 	public AmpcResult find_natives(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
 			// 设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
+//			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			//获取用户ID
 			Object param=data.get("userId");
@@ -178,9 +214,11 @@ public class NativeAndNationController {
 				tEsNative.setEsNativeTpId(es_native_Id);
 				//循环查询得到单个id的本地清单数据结果集
 				List<TEsNative>listNative=tEsNativeMapper.selectAllNative(tEsNative);
-				
+				//存放每个清单模板下的清单数据集合
 				List tpDataList=new ArrayList();
+				//循环清单模板
 				for(int i=0;i<listNative.size();i++){
+					//对每个清单模板下的清单数据的格式重新设置为符合easyui中tree树形结构的格式
 					Map tesNative=new HashMap();
 					TEsNative tEsNative=listNative.get(i);
 					tesNative.put("id", i);
@@ -242,23 +280,23 @@ public class NativeAndNationController {
 			//获取清单名称
 			param=data.get("nationName");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 清单名称为空或出现非法字符!");
-				return AmpcResult.build(1003, "清单名称为空或出现非法字符!");
+				LogUtil.getLogger().error("NativeAndNationController 全国清单名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "全国清单名称为空或出现非法字符!");
 			}
 			String nationName = param.toString();
 			
 			//获取清单年份
 			param=data.get("nationYear");
 			if(!RegUtil.CheckParameter(param, "Short", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
-				return AmpcResult.build(1003, "清单年份为空或出现非法字符!");
+				LogUtil.getLogger().error("NativeAndNationController 全国清单年份为空或出现非法字符!");
+				return AmpcResult.build(1003, "全国清单年份为空或出现非法字符!");
 			}
 			Short nationYear=Short.valueOf(param.toString());
 			//获取清单备注
 			param=data.get("nationRemark");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 清单年份为空或出现非法字符!");
-				return AmpcResult.build(1003, "清单年份为空或出现非法字符!");
+				LogUtil.getLogger().error("NativeAndNationController 全国清单备注为空或出现非法字符!");
+				return AmpcResult.build(1003, "全国清单备注为空或出现非法字符!");
 			}
 			String nationRemark=param.toString();
 			
@@ -289,7 +327,7 @@ public class NativeAndNationController {
 		}
 	}
 	/**
-	 * 编辑清单
+	 * 编辑全国清单
 	 * @param requestDate
 	 * @param request
 	 * @param response
@@ -315,31 +353,31 @@ public class NativeAndNationController {
 			//获取清单ID
 			param=data.get("nationId");
 			if(!RegUtil.CheckParameter(param, "Long", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 清单Id为空或出现非法字符!");
-				return AmpcResult.build(1003, "清单Id为空或出现非法字符!");
+				LogUtil.getLogger().error("NativeAndNationController 全国清单Id为空或出现非法字符!");
+				return AmpcResult.build(1003, "全国清单Id为空或出现非法字符!");
 			}
 			Long esNationId = Long.parseLong(param.toString());
 			
 			//获取清单名称
 			param=data.get("nationName");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 清单名称为空或出现非法字符!");
-				return AmpcResult.build(1003, "清单名称为空或出现非法字符!");
+				LogUtil.getLogger().error("NativeAndNationController 全国清单名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "全国清单名称为空或出现非法字符!");
 			}
 			String esNationName = param.toString();
 			
 			//获取清单年份
 			param=data.get("nationYear");
 			if(!RegUtil.CheckParameter(param, "Short", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
-				return AmpcResult.build(1003, "清单年份为空或出现非法字符!");
+				LogUtil.getLogger().error("NativeAndNationController 全国清单年份为空或出现非法字符!");
+				return AmpcResult.build(1003, "全国清单年份为空或出现非法字符!");
 			}
 			Short nationYear=Short.valueOf(param.toString());
 			//获取清单备注
 			param=data.get("nationRemark");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 清单年份为空或出现非法字符!");
-				return AmpcResult.build(1003, "清单备注为空或出现非法字符!");
+				LogUtil.getLogger().error("NativeAndNationController 全国清单备注为空或出现非法字符!");
+				return AmpcResult.build(1003, "全国清单备注为空或出现非法字符!");
 			}
 			String nationRemark=param.toString();
 			
@@ -353,7 +391,7 @@ public class NativeAndNationController {
 			tEsNation.setEsNationYear(nationYear);
 			tEsNation.setNationRemark(nationRemark);
 			tEsNation.setEsNationId(esNationId);
-			//插入数据
+			//更新数据
 			int total=tEsNationMapper.updateByIdSelective(tEsNation);
 			Map msgMap=new HashMap();
 			if(total==1){
@@ -370,7 +408,7 @@ public class NativeAndNationController {
 		}
 	}
 	/**
-	 * 删除清单信息
+	 * 删除全国清单
 	 * @param requestDate
 	 * @param request
 	 * @param response
@@ -392,6 +430,195 @@ public class NativeAndNationController {
 			// 清单id
 			Long nationId = Long.parseLong(param.toString());
 			int total=tEsNationMapper.deleteByPrimaryKey(nationId);
+			Map msgMap=new HashMap();
+			if(total==1){
+				//成功
+				msgMap.put("msg", true);	
+			}else{
+				//失败
+				msgMap.put("msg", false);
+			}
+			LogUtil.getLogger().info("NativeAndNationController 删除全国清单信息成功!");
+			return AmpcResult.ok(msgMap);
+		} catch (Exception e) {
+			// TODO: handle exception
+			LogUtil.getLogger().error("NativeAndNationController 删除全国清单信息异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 删除全国清单信息异常!");
+		}
+	}
+	
+	/**
+	 * 创建本地清单模板
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public AmpcResult add_nationTp(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			// 设置跨域
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			Long userId = Long.parseLong(param.toString());
+			//获取清单名称
+			param=data.get("nativeTpName");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单模板名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单模板名称为空或出现非法字符!");
+			}
+			String nativeTpName = param.toString();
+			
+			//获取清单年份
+			param=data.get("nativeTpYear");
+			if(!RegUtil.CheckParameter(param, "Short", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单模板年份为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单模板年份为空或出现非法字符!");
+			}
+			Short nativeTpYear=Short.valueOf(param.toString());
+			//获取清单备注
+			param=data.get("nativeTpRemark");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单模板备注为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单模板备注为空或出现非法字符!");
+			}
+			String nativeTpRemark=param.toString();
+			
+			//日期格式
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date date=new Date();
+			//添加数据
+			TEsNativeTp tEsNativeTp=new TEsNativeTp();
+			tEsNativeTp.setUserId(userId);
+			tEsNativeTp.setEsNativeTpName(nativeTpName);
+			tEsNativeTp.setEsNativeTpYear(nativeTpYear);
+			tEsNativeTp.setEsComment(nativeTpRemark);
+			//插入数据
+			int total=tEsNativeTpMapper.insertSelective(tEsNativeTp);
+			Map msgMap=new HashMap();
+			if(total==1){
+				
+				msgMap.put("msg", true);
+			}else{
+				msgMap.put("msg", false);
+			}
+			LogUtil.getLogger().info("NativeAndNationController 创建本地清单模板信息成功!");
+			return AmpcResult.ok(msgMap);
+		} catch (Exception e) {
+			// TODO: handle exception
+			LogUtil.getLogger().error("NativeAndNationController 创建本地清单模板异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 创建本地清单模板异常!");
+		}
+	}
+	/**
+	 * 编辑本地清单模板
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public AmpcResult updata_nationTp(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			Long userId = Long.parseLong(param.toString());
+			//获取清单ID
+			param=data.get("nativeTpId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 清单Id为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单Id为空或出现非法字符!");
+			}
+			Long nativeTpId = Long.parseLong(param.toString());
+			
+			//获取清单名称
+			param=data.get("nativeTpName");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 清单名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单名称为空或出现非法字符!");
+			}
+			String nativeTpName = param.toString();
+			
+			//获取清单年份
+			param=data.get("nativeTpYear");
+			if(!RegUtil.CheckParameter(param, "Short", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单年份为空或出现非法字符!");
+			}
+			Short nativeTpYear=Short.valueOf(param.toString());
+			//获取清单备注
+			param=data.get("nativeTpRemark");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 清单年份为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单备注为空或出现非法字符!");
+			}
+			String nativeTpRemark=param.toString();
+			
+			//日期格式
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date date=new Date();
+			//添加数据
+			TEsNativeTp tEsNativeTp=new TEsNativeTp();
+			tEsNativeTp.setUserId(userId);
+			tEsNativeTp.setEsNativeTpName(nativeTpName);
+			tEsNativeTp.setEsNativeTpYear(nativeTpYear);
+			tEsNativeTp.setEsComment(nativeTpRemark);
+			tEsNativeTp.setEsNativeTpId(nativeTpId);
+			//更新数据
+			int total=tEsNativeTpMapper.updateByIdSelective(tEsNativeTp);
+			Map msgMap=new HashMap();
+			if(total==1){
+				msgMap.put("msg", true);
+			}else{
+				msgMap.put("msg", false);
+			}
+			LogUtil.getLogger().info("NativeAndNationController 编辑全国清单信息成功!");
+			return AmpcResult.ok(msgMap);
+		} catch (Exception e) {
+			// TODO: handle exception
+			LogUtil.getLogger().error("NativeAndNationController 编辑全国清单信息异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 编辑全国清单信息异常!");
+		}
+	}
+	/**
+	 * 删除本地清单模板
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public AmpcResult delete_nationTp(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			
+			Object param=data.get("nativeTpId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 清单ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单ID为空或出现非法字符!");
+			}
+			// 清单id
+			Long nativeTpId = Long.parseLong(param.toString());
+			int total=tEsNativeTpMapper.deleteByPrimaryKey(nativeTpId);
 			Map msgMap=new HashMap();
 			if(total==1){
 				//成功

@@ -1166,24 +1166,24 @@ function showTitleFun() {
             $('#showTitle .proName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.proName);
             $('#showTitle .cityName').html(changeMsg.cityName).css({"margin-right":"40px"});
             $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时')).css({"margin-right":"40px"});
-            $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(domain=='1'?'27KM':(domain=='2'?'9KM':'3KM'))).css({"margin-right":"40px"});
+            $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(domain=='1'?'27km':(domain=='2'?'9km':'3km'))).css({"margin-right":"40px"});
 
         } else {
             $('#showTitle .proName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.proName);
             $('#showTitle .cityName').html(changeMsg.cityName);
             $('#showTitle .stationName').html(changeMsg.stationName).css({"margin-right":"40px"});
-            $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(domain=='1'?'27KM':(domain=='2'?'9KM':'3KM')) ).css({"margin-right":"40px"});
+            $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(domain=='1'?'27km':(domain=='2'?'9km':'3km')) ).css({"margin-right":"40px"});
             $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时')).css({"margin-right":"40px"});
         }
     } else {
         if (changeMsg.station == 'avg') {
             $('#showTitle .cityName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.cityName).css({"margin-right":"40px"}).css({"margin-right":"40px"});
-            $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(domain=='1'?'27KM':(domain=='2'?'9KM':'3KM'))).css({"margin-right":"40px"});
+            $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(domain=='1'?'27km':(domain=='2'?'9km':'3km'))).css({"margin-right":"40px"});
             $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时')).css({"margin-right":"40px"});
         } else {
             $('#showTitle .cityName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.cityName);
             $('#showTitle .stationName').html(changeMsg.stationName).css({"margin-right":"40px"});
-            $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(domain=='1'?'27KM':(domain=='2'?'9KM':'3KM'))).css({"margin-right":"40px"});
+            $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(domain=='1'?'27km':(domain=='2'?'9km':'3km'))).css({"margin-right":"40px"});
             $('#showTitle .rmsName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+(changeMsg.rms == 'day' ? '逐日' : '逐小时')).css({"margin-right":"40px"});
            // $('#showTitle .compName').html("<span class='titleTab'><i class='en-tag'></i>"+"&nbsp;比较：</span>"+changeType=="1"?"绝对量比较":"相对变化");
         }
