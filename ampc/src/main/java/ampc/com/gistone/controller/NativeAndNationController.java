@@ -67,7 +67,7 @@ public class NativeAndNationController {
 					listTps = find_natives(requestDate,request,response);
 				}else if("add_nativeTp".equals(param)){
 					listTps = add_nationTp(requestDate,request,response);
-				}else if("update_nationTp".equals(param)){
+				}else if("updata_nationTp".equals(param)){
 					listTps = updata_nationTp(requestDate,request,response);
 				}else if("delete_nationTp".equals(param)){
 					listTps = delete_nationTp(requestDate,request,response);
