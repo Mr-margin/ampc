@@ -316,5 +316,6 @@ public interface TScenarinoDetailMapper {
 	 * @return
 	 */
 	TScenarinoDetail selectbysid(Map tscdetail);
-	
+	Date selectmaxpathdate();
+	Date selectminpathdate();
 }
