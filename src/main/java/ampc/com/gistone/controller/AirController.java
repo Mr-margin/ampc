@@ -18,6 +18,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -3328,6 +3329,28 @@ public class AirController {
 		}catch(Exception e){
 			LogUtil.getLogger().error("checkout_time 查询预报检验时间异常",e);
 			return AmpcResult.build(1001, "查询预报检验时间异常！");	
+		}
+	}
+	/**
+	 * 查询最大和最小起报日期
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/Air/findpathdate")	
+	public AmpcResult findpathdate(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response ){
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+		Date selectmaxpathdate = tScenarinoDetailMapper.selectmaxpathdate();
+		Date selectminpathdate = tScenarinoDetailMapper.selectminpathdate();
+		JSONObject obj=new JSONObject();
+		obj.put("mindate", selectminpathdate.getTime());
+		obj.put("maxdate", selectmaxpathdate.getTime());
+		return AmpcResult.ok(obj);
+		}catch(Exception e){
+			LogUtil.getLogger().error("findpathdate 查询最大和最小起报日期异常",e);
+			return AmpcResult.build(1001, "查询最大和最小起报日期！");	
 		}
 	}
 }
