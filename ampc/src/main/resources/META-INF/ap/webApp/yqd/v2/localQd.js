@@ -2,7 +2,7 @@
  * Created by shanhaichushi on 2017/5/19.
  */
 // 导航
-$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">本地清单</span><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatTemp()">新建</button><button class="qdEdit" onclick="editTemp()">编辑</button><button class="qdDelet" onclick="delectTemp()">删除</button></span>');
+$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">本地清单</span><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatTemp()">新建</button><button class="qdEdit" onclick="editTemp()">编辑</button><button class="qdDelet" onclick=innitdata("delete_nativeTp")>删除</button></span>');
 
 // 表单生成
 innitdata("find_natives")
@@ -106,6 +106,18 @@ function innitdata(active){
         }else{
             swal('年份错误', '', 'error');
         }
+    }else if(active=="delete_nativeTp"){
+        var obj_node = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
+        console.log(obj_node);
+        ajaxPost('/NativeAndNation/doPost',{"nativeTpId ":obj_node.esNativeTpId,"method":"delete_nativeTp"}).success(function(res){
+            if(res.status==0){
+                var obj_node_id=obj_node.id+1;
+                console.log(obj_node_id);
+                $("#localqd").treegrid("remove",obj_node_id)
+            }else{
+                swal('参数错误', '', 'error');
+            }
+        })
     }
 }
 //创建模板窗口
@@ -159,5 +171,4 @@ function editTemp() {
 
 function delectTemp() {
     var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
-
 }
