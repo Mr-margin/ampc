@@ -80,6 +80,7 @@ function innitdata(active){
         param.userId=userId;
         param.method="updata_nativeTp";
         param.nativeTpName =tempName;
+        param.nativeTpYear=tempYear;
         param.nativeTpId  = row.esNativeTpId;
         param.nativeTpRemark = tempMark;
         var myYear=$("#esLocalEditYear").val()
