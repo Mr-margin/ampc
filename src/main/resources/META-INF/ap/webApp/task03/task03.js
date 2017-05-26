@@ -173,7 +173,11 @@ function getLocalTime(nS) {
             $(e.target).parents('.menuCD').addClass('openAccordion');
             $('.menuCD_con').css('height', '0');
             $(e.target).parents('.menuCD').find('.menuCD_con').css('height', (Math.ceil(len/2)*45 + 10)+'px')
+
+            var name = $(e.target).parents('.menuCD').find('.menuCD_title').attr('val_name');
+            metTable_hj_info(name);
         }
+
     })
 })();
 
@@ -208,7 +212,7 @@ function hyc() {
                     inn = stname == col.sectorsName ? "in" : "";
                 }
                 var caidan = $('<div class="menuCD" data-cslen="'+ col.measureItems.length +'"></div>');
-                var caidan_title = $('<div class="menuCD_title" title="'+ col.sectorsName +'" val_name="' + col.sectorsName + '" onclick="metTable_hj_info(\'' + col.sectorsName + '\')" ></div>');
+                var caidan_title = $('<div class="menuCD_title" title="'+ col.sectorsName +'" val_name="' + col.sectorsName + '"  ></div>');
                 caidan_title.append($('<span>'+ col.sectorsName +'</span>'));
                 if (col.planMeasure.length > 0) {
                     caidan_title.append($('<span>已使用 '+ col.planMeasure.length +' 条措施</span>'));
