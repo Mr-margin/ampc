@@ -183,4 +183,42 @@
     from T_ES_NATIVE_TP
     where USER_ID = #{userId,jdbcType=DECIMAL}
   </select>
+  <!-- 编辑本地清单模板 -->
+  <update id="updateByIdSelective" parameterType="ampc.com.gistone.database.model.TEsNativeTp" >
+    update T_ES_NATIVE_TP
+    <set >
+      <if test="esNativeTpName != null" >
+        ES_NATIVE_TP_NAME = #{esNativeTpName,jdbcType=VARCHAR},
+      </if>
+      <if test="esNativeTpYear != null" >
+        ES_NATIVE_TP_YEAR = #{esNativeTpYear,jdbcType=DECIMAL},
+      </if>
+      <if test="esUploadTpTime != null" >
+        ES_UPLOAD_TP_TIME = #{esUploadTpTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="esComment != null" >
+        ES_COMMENT = #{esComment,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="esVersion != null" >
+        ES_VERSION = #{esVersion,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL} and 
+    	USER_ID = #{userId,jdbcType=DECIMAL}
+  </update>
 </mapper>
