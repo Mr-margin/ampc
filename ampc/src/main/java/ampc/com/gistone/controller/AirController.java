@@ -90,6 +90,7 @@ public class AirController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			//获取请求的参数
 			Map<String, Object> data = (Map) requestDate.get("data");
+			Date endDate;
 			//获取用户id
 			Object param=data.get("userId");
 			if(!RegUtil.CheckParameter(param, "Long", null, false)){
@@ -120,7 +121,13 @@ public class AirController {
 		    //查询最近一次预报情景的结束时间
 		    TScenarinoDetail tScenarinoDetail = this.tScenarinoDetailMapper.selectendStart(tsMap);
 		    //结束时间
-		    obj.put("maxtime", sdf.format(tScenarinoDetail.getScenarinoEndDate()));
+		    if(tScenarinoDetail==null){
+		    	return AmpcResult.ok("数据库未查询到最近一次预报情景的结束日期");
+		    }else{
+		    	endDate=tScenarinoDetail.getScenarinoEndDate();
+		    }
+		    
+			obj.put("maxtime", sdf.format(endDate));
 		    //查询系统开始时间为最早可选时间
 		    String sql = "select \"DAY\" from T_SCENARINO_FNL_DAILY_2017_"+userId+" where  ROWNUM = 1 group by \"DAY\" order by \"DAY\" ";
 		    List<Map> list_FNL_DAILY = this.getBySqlMapper.findRecords(sql);
