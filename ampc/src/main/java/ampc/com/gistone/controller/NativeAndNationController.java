@@ -181,12 +181,9 @@ public class NativeAndNationController {
 	 * @param response 响应
 	 * @return 返回响应结果对象
 	 */
-//	@RequestMapping("/NativeAndNation/find_natives")
 	public AmpcResult find_natives(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
-			// 设置跨域
-//			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			//获取用户ID
 			Object param=data.get("userId");
@@ -457,7 +454,6 @@ public class NativeAndNationController {
 	public AmpcResult add_nationTp(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
-			// 设置跨域
 			Map<String, Object> data = (Map) requestDate.get("data");
 			//获取用户ID
 			Object param=data.get("userId");
@@ -527,10 +523,7 @@ public class NativeAndNationController {
 	public AmpcResult updata_nativeTp(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
-			// 设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			
 			//获取用户ID
 			Object param=data.get("userId");
 			//进行参数判断
@@ -607,10 +600,7 @@ public class NativeAndNationController {
 	public AmpcResult delete_nativeTp(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
-			// 设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			
 			Object param=data.get("nativeTpId");
 			if(!RegUtil.CheckParameter(param, "Long", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 清单ID为空或出现非法字符!");
