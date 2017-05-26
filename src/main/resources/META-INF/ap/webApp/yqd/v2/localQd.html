@@ -33,3 +33,29 @@
         <button type="button" class="btn btn-default claearQdBtn" onclick="claearTemp()">清除</button>
     </div>
 </div>
+<!--编辑模板-->
+<div id="editTemp">
+    <form method="post" id="formEditTemp" >
+        <div class="rwCon">
+            <div class="qdContent">
+                <label for="esNationName" class="qdTitle">名称：</label>
+                <input class="easyui-validatebox qdCon" type="text" name="esNationName" data-options="required:true" id="esLocalEditName" />
+            </div>
+            <div class="qdContent">
+                <label for="esNationYear" class="qdTitle">年份：</label>
+                <input class="easyui-validatebox qdCon" type="text" name="esNationYear" data-options="required:true" id="esLocalEditYear" />
+            </div>
+        </div>
+        <div class="rwCon">
+            <div class="qdContent qdMark">
+                <label for="esNationMark" class="qdTitle">备注：</label>
+                <textarea rows="3" class="easyui-validatebox qdCon" type="text" name="esNationMark" data-options="required:true" id="esLocalEditMark">
+                </textarea>
+            </div>
+        </div>
+    </form>
+    <div class="dlogFooter" >
+        <button type="button" class="btn btn-primary createQdBtn" onclick="innitdata('updata_nativeTp')">提交</button>
+        <button type="button" class="btn btn-default claearQdBtn" onclick="claearTemp()">清除</button>
+    </div>
+</div>
