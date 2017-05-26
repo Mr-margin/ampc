@@ -12,8 +12,9 @@ function innitdata(){
     }).success(function(data){
         console.log("数据加载成功了")
         $("#localqd").treegrid({
-        	idField:'id',    
+        	idField:'esNativeTpId',
             treeField:'esNativeTpName',
+        	data:data.data,
         	columns:[[  //表头
         	             {field:"ck",checkbox:true},
         	             {field:"esNativeTpName",title:"全国清单"},
@@ -27,51 +28,14 @@ function innitdata(){
         	             //是否使用 如果使用 不许删除 未使用可以删除
 //        	             {field:"qgqdConfig",title:"操作"}//校验清单
         	         ]],
+            selectOnCheck:true, //true，单击复选框将永远选择行 false，选择行将不选中复选框。
+            singleSelect: true,//设置True 将禁止多选
+            checkOnSelect:true,//true，当用户点击行的时候该复选框就会被选中或取消选中。false，当用户仅在点击该复选框的时候才会呗选中或取消。
+            fitColumns:true,//真正的自动展开/收缩列的大小，以适应网格的宽度，防止水平滚动。
+            clickToSelect: true,// 点击选中行
+            pagination: true, // 在表格底部显示分页工具栏
         })
     })
-//     $("#localqd").treegrid({
-//         method:'post',
-//         url: "/ampc/NativeAndNation/find_nation",
-//         dataType: "json",
-//         columns:[[  //表头
-//             {field:"ck",checkbox:true},
-//             {field:"esNationName",title:"全国清单"},
-//             {field:"esNationYear",title:"年份"},
-//             {field:"publishTime",title:"创建时间",formatter:function(value,row,index){
-//                 moment(value).format("YYYY-MM-DD")//格式化带日期格式
-//                 return  moment(value).format("YYYY-MM-DD");
-//             },sortable :true},
-//             {field:"nationRemark",title:"备注"},
-//             {field:"qgqdCheck",title:"状态"},//新建（打开校验按钮）   正常（校验成功） 错误（校验错误）
-//             //是否使用 如果使用 不许删除 未使用可以删除
-//             {field:"qgqdConfig",title:"操作"}//校验清单
-//         ]],
-//         loadFilter:function (data) { //过滤数据，转换成符合格式的数据
-//             return data.data;
-//         },
-//         checkOnSelect:true,
-//         selectOnCheck:true,
-//         clickToSelect: true,// 点击选中行
-//         pagination: true, // 在表格底部显示分页工具栏
-//         pageSize:20,  //页面里面显示数据的行数
-//         pageNumber: 1, // 页数
-//         pageList: [20, 30,40], //页面可以进行选择的数据行数
-//         height:'100%',
-//         singleSelect: true,//设置True 将禁止多选
-//         striped: false, // 使表格带有条纹
-//         silent: true, // 刷新事件必须设置
-//         contentType: "application/json",
-//         queryParams:function (params) { //ajax 传递的参数  分页
-//             console.log("分页")
-//             console.log(params)
-//             var data = {};
-//             data.userId = userId;
-//             data.pageSize=params.pageSize; //初始化页面上面表单的数据行数
-//             data.pageNumber=params.pageNumber  //初始化页面的页码
-//             return {"token": "", "data": data};
-//         },
-//     })
-
 }
 //创建模板窗口
 $("#creatTemp").window({
@@ -93,4 +57,68 @@ function creatTemp(){
 //清空弹窗输入框内容
 function claearTemp() {
     $("#creatTemp #formQd").form("clear");
+}
+//点击新建窗口的提交按钮
+// function submitTemp() {
+//     var param={};
+//     param.userId=userId;
+//     param.nationName =$("#esNationName").val(); //清单名字
+//     param.nationYear = $("#esNationYear").val(); //清单年份
+//     param.nationRemark = $("#esNationMark").val();//清单备注
+//     //判断新建清单的年份是否在1990-2100之间
+//     var myYear=$("#esNationYear").val()
+//     if(myYear>=1990&&myYear<2100){    //判断年份
+//         $("#formQd").submit(
+//             ajaxPost('/NativeAndNation/doPost',param).success(function(res){
+//                 if(res.status==0){
+//                     $("#qgqd").datagrid('insertRow',{ //在表格中插入新建清单
+//                         index: 0,	// 索引从0开始
+//                         row: {
+//                             esNationName: param.nationName, //新建清单的名字
+//                             esNationYear: param.nationYear,//新建清单的年份
+//                             nationRemark:param.nationRemark //新建清单的备注
+//                         }
+//                     })
+//                 }else{
+//                     swal('参数错误', '', 'error');
+//                 }
+//
+//             })
+//         )
+//         $("#creatQd").window('close');
+//     }else{
+//         swal('清单年份获取错误', '', 'error');
+//     }
+// }
+function submitTemp() {
+    var param = {};
+    param.userId = userId;
+    param.nationName = $("#esNationName").val(); //清单名字
+    param.nationYear = $("#esNationYear").val(); //清单年份
+    param.nationRemark = $("#esNationMark").val();//清单备注
+    param.method = "find_natives";
+    //判断新建清单的年份是否在1990-2100之间
+    var myYear = $("#esNationYear").val()
+    if (myYear >= 1990 && myYear < 2100) {    //判断年份
+        $("#formQd").submit(
+            ajaxPost('/NativeAndNation/doPost', param).success(function (res) {
+                if (res.status == 0) {
+                    $("#qgqd").datagrid('insertRow', { //在表格中插入新建清单
+                        index: 0,	// 索引从0开始
+                        row: {
+                            esNationName: param.nationName, //新建清单的名字
+                            esNationYear: param.nationYear,//新建清单的年份
+                            nationRemark: param.nationRemark //新建清单的备注
+                        }
+                    })
+                } else {
+                    swal('参数错误', '', 'error');
+                }
+
+            })
+        )
+        $("#creatQd").window('close');
+    } else {
+        swal('清单年份获取错误', '', 'error');
+    }
 }
