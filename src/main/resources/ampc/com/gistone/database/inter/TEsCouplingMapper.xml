@@ -35,7 +35,7 @@
     select 
     ES_COUPLING_ID, ES_COUPLING_NAME
     from T_ES_COUPLING
-    where USER_ID = #{userId,jdbcType=DECIMAL}
+    where USER_ID = #{userId,jdbcType=DECIMAL} AND IS_EFFECTIVE=1
   </select>
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
