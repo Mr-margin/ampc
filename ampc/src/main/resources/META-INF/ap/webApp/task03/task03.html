@@ -314,11 +314,11 @@
             <div class="ibox-title" style="margin-bottom: 0;height: 32px;line-height:32px;padding-left: 10px;background: linear-gradient(#fbfbfb, #f2f2f2);">
               <h5 class="headTitle"><i class="fa-table"></i> 措施汇总</h5>
               <div class="ibox-tools" style="margin-top:0px;">
-                <button class="btn btn-success" id="hz_up" style="margin-bottom: 0px;margin-top: -7px;" onclick="hz_up();"
+                <button class="btn btn-success edit-btn" id="hz_up" style="margin-bottom: 0px;margin-top: -7px;" onclick="hz_up();"
                         type="button">
                   <i class="fa fa-edit"></i>&nbsp;&nbsp;<span class="bold">修改</span>
                 </button>
-                <button class="btn btn-success" id="hz_de" style="margin-bottom: 0px;margin-top: -7px;" onclick="hz_de();"
+                <button class="btn btn-success delete-btn" id="hz_de" style="margin-bottom: 0px;margin-top: -7px;" onclick="hz_de();"
                         type="button">
                   <i class="fa fa-close"></i>&nbsp;&nbsp;<span class="bold">删除</span>
                 </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -341,7 +341,13 @@
   </div>
 </div>
 <!--显示详细信息-->
-<div id="detalMsg">
+<!--搜索工具栏-->
+<div id="searchTool" style="padding:3px">
+  <span>企业名称:</span>
+  <input id="companyname" style="line-height:26px;border:1px solid #ccc">
+  <button plain="true" onclick="doSearch()" style="border:1px solid #ccc;background-color: #fff;padding: "><i class="im-search" style="color: #666;font-size:16px;line-height:26px;"></i>搜索</button>
+</div>
+<div id="detalMsg" style="min-width: 600px;">
     <div class="modal-body">
       <div class="rwCon" style="width: 100%;height:500px;">
         <table id="detalMsgTable" style="width: 100%;height:100%;"></table>

@@ -119,7 +119,7 @@ function m_gis_q() {
 /**
  * 设置导航条菜单
  */
-$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;color: #1a1a1a;text-decoration: none;font-size: 19px;">任务管理</a><i class="en-arrow-right7" style="font-size:16px;"></i><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;color: #1a1a1a;text-decoration: none;font-size: 19px;">情景编辑</a><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">措施编辑</span>');
+$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;color: #1a1a1a;text-decoration: none;">任务管理</a><i class="en-arrow-right7" style="font-size:16px;"></i><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;color: #1a1a1a;text-decoration: none;">情景编辑</a><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;font-size:12px;">措施编辑</span>');
 
 
 $('.csCon').removeClass('disNone');
@@ -164,11 +164,14 @@ function getLocalTime(nS) {
 /*手风琴初始化处理*/
 (function () {
     $('.menuCD_con').css('height', '0');
+
     $('#accordion').on('click','.menuCD_title',function (e) {
         $('.openAccordion').removeClass('openAccordion');
         var len = $(e.target).parents('.menuCD').attr('data-cslen');
         if ($(e.target).parents('.menuCD').find('.menuCD_con').css('height') != '0px') {
-            $(e.target).parents('.menuCD').find('.menuCD_con').css('height', '0')
+            $(e.target).parents('.menuCD').find('.menuCD_con').css('height', '0');
+            // $(".measureNum").removeChild("i")
+            // $(".measureNum").append("<i class='en-arrow-up7'></i>")
         } else {
             $(e.target).parents('.menuCD').addClass('openAccordion');
             $('.menuCD_con').css('height', '0');
@@ -176,6 +179,8 @@ function getLocalTime(nS) {
 
             var name = $(e.target).parents('.menuCD').find('.menuCD_title').attr('val_name');
             metTable_hj_info(name);
+            // $(".measureNum").removeChild("i")
+            // $(".measureNum").append("<i class='en-arrow-down8'></i>")
         }
 
     })
@@ -215,7 +220,7 @@ function hyc() {
                 var caidan_title = $('<div class="menuCD_title" title="'+ col.sectorsName +'" val_name="' + col.sectorsName + '"  ></div>');
                 caidan_title.append($('<span>'+ col.sectorsName +'</span>'));
                 if (col.planMeasure.length > 0) {
-                    caidan_title.append($('<span>已使用 '+ col.planMeasure.length +' 条措施</span>'));
+                    caidan_title.append($('<span class="measureNum">已使用 '+ col.planMeasure.length +' 条措施</span>'));
                 }
                 var caidan_con = $('<div class="menuCD_con"></div>');
 
@@ -243,6 +248,8 @@ function hyc() {
                 accordion.append(caidan);
 
             })
+            //行业措施添加箭头
+            $(".measureNum").append("<i class='en-arrow-up7'></i>")
 
         } else {
             swal('连接错误/plan/get_planInfo', '', 'error');
@@ -2393,6 +2400,55 @@ $("#detalMsg").window({
     closed:true,
     cls:"cloudui"
 })
+// 通过企业名称搜索信息
+function doSearch(){
+    var searchCon=$("#companyname").val();
+    $("#detalMsgTable").datagrid({
+        url:jianpaiUrl+'/search/companyList',
+        method:'post',
+        dataType: "json",
+        columns:[[  //表头
+            {field:"regionName",title:"地区",width:100,formatter: function (value) {
+                return "<span title='" + value + "'>" + value + "</span>";}
+            },
+            {field:"companyname",title:"企业名称",width:160,formatter: function (value) {
+                return "<span title='" + value + "'>" + value + "</span>";}},
+            {field:"industrytype",title:"所属行业",formatter: function (value) {
+                return "<span title='" + value + "'>" + value + "</span>";}},
+            {field:"smallIndex",title:"控制行业",width:100,formatter: function (value) {
+                return "<span title='" + value + "'>" + value + "</span>";}},
+            {field:"equipId",title:"设备编号",width:100,formatter: function (value) {
+                return "<span title='" + value + "'>" + value + "</span>";}},
+            {field:"measure",title:"控制措施",width:200,formatter: function (value) {
+                return "<span title='" + value + "'>" + value + "</span>";}},
+        ]],
+        loadFilter:function (data) { //过滤数据，转换成符合格式的数据
+            return data.data;
+        },
+        fitColumns:true,//真正的自动展开/收缩列的大小，以适应网格的宽度，防止水平滚动。
+        clickToSelect: true,// 点击选中行
+        pagination: true, // 在表格底部显示分页工具栏
+        pageSize:15,  //页面里面显示数据的行数
+        pageNumber: 1, // 页数
+        pageList: [10, 15,20], //页面可以进行选择的数据行数
+        height:'100%',
+        striped: false, // 使表格带有条纹
+        silent: true, // 刷新事件必须设置
+        contentType: "application/json",
+        toolbar: '#searchTool',
+        queryParams:function (params) { //ajax 传递的参数  分页
+            var data = {};
+            data.userId = userId;
+            data.planId = qjMsg.planId;
+            data.species = $("#hz_wrw").val();
+            data.sector = wrwSelect;//污染物 手风琴选择
+            data.companyname=(searchCon=""?null:searchCon)
+            data.pageSize=params.pageSize; //初始化页面上面表单的数据行数
+            data.pageNumber=(params.pageNumber-1)*params.pageSize  //初始化页面的页码
+            return data;
+        },
+    })
+}
 //生成详细信息表格
 function initConpamyTable(){
     $("#detalMsgTable").datagrid({
@@ -2400,12 +2456,19 @@ function initConpamyTable(){
         method:'post',
         dataType: "json",
         columns:[[  //表头
-            {field:"regionName",title:"地区",width:100},
-            {field:"companyname",title:"企业名称",width:160},
-            {field:"industrytype",title:"所属行业",width:200},
-            {field:"smallIndex",title:"控制行业",width:100},
-            {field:"equipId",title:"设备编号",width:100},
-            {field:"measure",title:"控制措施"},
+            {field:"regionName",title:"地区",width:100,formatter: function (value) {
+                return "<span title='" + value + "'>" + value + "</span>";}
+            },
+            {field:"companyname",title:"企业名称",width:160,formatter: function (value) {
+        return "<span title='" + value + "'>" + value + "</span>";}},
+            {field:"industrytype",title:"所属行业",formatter: function (value) {
+                return "<span title='" + value + "'>" + value + "</span>";}},
+            {field:"smallIndex",title:"控制行业",width:100,formatter: function (value) {
+                return "<span title='" + value + "'>" + value + "</span>";}},
+            {field:"equipId",title:"设备编号",width:100,formatter: function (value) {
+                return "<span title='" + value + "'>" + value + "</span>";}},
+            {field:"measure",title:"控制措施",width:200,formatter: function (value) {
+                return "<span title='" + value + "'>" + value + "</span>";}},
         ]],
         loadFilter:function (data) { //过滤数据，转换成符合格式的数据
             return data.data;
@@ -2423,6 +2486,7 @@ function initConpamyTable(){
         striped: false, // 使表格带有条纹
         silent: true, // 刷新事件必须设置
         contentType: "application/json",
+        toolbar: '#searchTool',
         queryParams:function (params) { //ajax 传递的参数  分页
             var data = {};
             data.userId = userId;
@@ -2447,7 +2511,3 @@ function showDetail(){
 $("#close_scene").click(function(){
     $("#detalMsg").window("close")
 })
-//详细信息下载
-function detailDownload(){
-
-}
