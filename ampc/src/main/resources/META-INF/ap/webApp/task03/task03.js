@@ -250,7 +250,7 @@ function hyc() {
             })
             //行业措施添加箭头
             $(".measureNum").append("<i class='en-arrow-up7'></i>")
-
+            $(".measureNum").css({"margin-right":"20px"})
         } else {
             swal('连接错误/plan/get_planInfo', '', 'error');
 //			swal('添加成功', '', 'success');
