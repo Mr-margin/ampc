@@ -1127,5 +1127,22 @@ AND S.IS_EFFECTIVE ='1'
 	AND T .SCEN_TYPE = 4
 	AND T .USER_ID = #{userId,jdbcType=OTHER}
   </select>
-  
+  <select id="selectminpathdate" resultType="java.util.Date" >
+  	SELECT
+	min(PATH_DATE)
+	FROM
+		T_SCENARINO_DETAIL
+	WHERE
+	    SCEN_TYPE = 4
+	
+  </select>
+  <select id="selectmaxpathdate" resultType="java.util.Date" >
+  	SELECT
+	MAX (PATH_DATE)
+	FROM
+		T_SCENARINO_DETAIL
+	WHERE
+	    SCEN_TYPE = 4  
+	
+  </select>
 </mapper>
