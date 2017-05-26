@@ -3342,12 +3342,19 @@ public class AirController {
 	public AmpcResult findpathdate(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response ){
 		try{
 			ClientUtil.SetCharsetAndHeader(request, response);
-		Date selectmaxpathdate = tScenarinoDetailMapper.selectmaxpathdate();
-		Date selectminpathdate = tScenarinoDetailMapper.selectminpathdate();
-		JSONObject obj=new JSONObject();
-		obj.put("mindate", selectminpathdate.getTime());
-		obj.put("maxdate", selectmaxpathdate.getTime());
-		return AmpcResult.ok(obj);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Long userId=Long.valueOf(data.get("userId").toString());//用户id
+			if(!RegUtil.CheckParameter(userId, "Long", null, false)){
+				LogUtil.getLogger().error("find_vertical  用户id为空!");
+				return AmpcResult.build(1003, "用户id为空!");
+			}
+
+			Date selectmaxpathdate = tScenarinoDetailMapper.selectmaxpathdate();
+			Date selectminpathdate = tScenarinoDetailMapper.selectminpathdate();
+			JSONObject obj=new JSONObject();
+			obj.put("mindate", selectminpathdate.getTime());
+			obj.put("maxdate", selectmaxpathdate.getTime());
+			return AmpcResult.ok(obj);
 		}catch(Exception e){
 			LogUtil.getLogger().error("findpathdate 查询最大和最小起报日期异常",e);
 			return AmpcResult.build(1001, "查询最大和最小起报日期！");	
