@@ -1,8 +1,8 @@
 #!/bin/csh
 
-setenv VertInDataFile  ${shellVertival.juzhenPath}
-setenv VertInColorFile ${shellVertival.specieIndexFilePath}
-setenv VertOutFileName ${shellVertival.pngPath}
+setenv VertInDataFile  ${juzhenPath}
+setenv VertInColorFile ${specieIndexFilePath}
+setenv VertOutFileName ${pngPath}
 
-ncl ${shellVertival.nclPath}
+ncl ${nclPath}
 convert -density 300 -trim $VertOutFileName.eps $VertOutFileName.png
