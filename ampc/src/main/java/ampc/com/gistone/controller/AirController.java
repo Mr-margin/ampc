@@ -2507,13 +2507,13 @@ public class AirController {
 							cal.add(Calendar.DATE, 1);
 						}
 						if(how==1){
-							
-						}
-						if(how==2){
 							cal.add(Calendar.DATE, -1);
 						}
-						if(how==3){
+						if(how==2){
 							cal.add(Calendar.DATE, -2);
+						}
+						if(how==3){
+							cal.add(Calendar.DATE, -3);
 						}
 						String addTimeDate =daysdf.format(cal.getTime());
 						Date pathDate=daysdf.parse(addTimeDate);//对应情景起报日期
@@ -2570,13 +2570,13 @@ public class AirController {
 							cal.add(Calendar.DATE, 1);
 						}
 						if(how==1){
-							
-						}
-						if(how==2){
 							cal.add(Calendar.DATE, -1);
 						}
-						if(how==3){
+						if(how==2){
 							cal.add(Calendar.DATE, -2);
+						}
+						if(how==3){
+							cal.add(Calendar.DATE, -3);
 						}
 						String addTimeDate =daysdf.format(cal.getTime());
 						Date pathDate=daysdf.parse(addTimeDate);//对应情景起报日期
@@ -3163,11 +3163,12 @@ public class AirController {
 		lastMap.put(day, spaMap);
 		}
 	
-//		Map<String,Object> obj=new HashMap();
-//		obj.put("lastMap", lastMap);
-//		obj.put("obs", daslist);
-//		obj.put("pbs", pdaslist);
-		return	AmpcResult.ok(lastMap);
+		Map<String,Object> obj=new HashMap();
+		obj.put("lastMap", lastMap);
+		obj.put("obs", daslist);
+		obj.put("pbs", pdaslist);
+		return	AmpcResult.ok(obj);
+//		return	AmpcResult.ok(lastMap);
 	}catch(Exception e){
 		LogUtil.getLogger().error("AirController 预报检验查询异常！",e);
 		return	AmpcResult.build(1001, "预报检验查询异常！");
