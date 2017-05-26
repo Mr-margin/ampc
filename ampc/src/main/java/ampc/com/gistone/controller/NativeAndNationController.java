@@ -67,10 +67,10 @@ public class NativeAndNationController {
 					listTps = find_natives(requestDate,request,response);
 				}else if("add_nativeTp".equals(param)){
 					listTps = add_nationTp(requestDate,request,response);
-				}else if("updata_nationTp".equals(param)){
-					listTps = updata_nationTp(requestDate,request,response);
-				}else if("delete_nationTp".equals(param)){
-					listTps = delete_nationTp(requestDate,request,response);
+				}else if("updata_nativeTp".equals(param)){
+					listTps = updata_nativeTp(requestDate,request,response);
+				}else if("delete_nativeTp".equals(param)){
+					listTps = delete_nativeTp(requestDate,request,response);
 				}else if("".equals(param)){
 					return AmpcResult.build(1001, "NativeAndNationController 请求方法参数异常!");
 				}
@@ -524,7 +524,7 @@ public class NativeAndNationController {
 	 * @param response
 	 * @return
 	 */
-	public AmpcResult updata_nationTp(@RequestBody Map<String, Object> requestDate,
+	public AmpcResult updata_nativeTp(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
 			// 设置跨域
@@ -604,7 +604,7 @@ public class NativeAndNationController {
 	 * @param response
 	 * @return
 	 */
-	public AmpcResult delete_nationTp(@RequestBody Map<String, Object> requestDate,
+	public AmpcResult delete_nativeTp(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
 			// 设置跨域
