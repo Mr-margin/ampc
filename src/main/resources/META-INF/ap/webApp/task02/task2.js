@@ -95,6 +95,22 @@ var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时�
                     height:'100%',
                     fit: true
                 });
+
+                if(allData[areaIndex].timeItems.length<=1){
+                    $('#timepanel').tabs('disableTab','时段删除');
+                    $('#timepanel').tabs('disableTab','时段编辑');
+                }
+
+                if(allData[areaIndex].timeItems[timeIndex].planId==-1){
+                    $('#planpanel').tabs('disableTab','编辑现预案');
+                    $('#planpanel').tabs('disableTab','删除现预案');
+                    $('#planpanel').tabs('select','添加新预案');
+                }else{
+                    $('#planpanel').tabs('disableTab','添加新预案');
+                    $('#planpanel').tabs('disableTab','复制旧预案');
+                    $('#planpanel').tabs('select','编辑现预案');
+                }
+
             },100);
 //                $('#time .active').removeClass('active');
 //                $('#plan .active').removeClass('active');
@@ -260,7 +276,26 @@ var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时�
     $('#timeorplan').tabs({
         tabPosition: 'left',
         width:'100%',
-        height: 300
+        height: 300,
+        onSelect:function (t,i) {
+            if((!areaIndex)&&(areaIndex!=0))return;
+            if(t == '时段操作'){
+                if(allData[areaIndex].timeItems.length<=1){
+                    $('#timepanel').tabs('disableTab','时段删除');
+                    $('#timepanel').tabs('disableTab','时段编辑');
+                }
+            }else if(t == '预案操作'){
+                if(allData[areaIndex].timeItems[timeIndex].planId==-1){
+                    $('#planpanel').tabs('disableTab','编辑现预案');
+                    $('#planpanel').tabs('disableTab','删除现预案');
+                    $('#planpanel').tabs('select','添加新预案');
+                }else{
+                    $('#planpanel').tabs('disableTab','添加新预案');
+                    $('#planpanel').tabs('disableTab','复制旧预案');
+                    $('#planpanel').tabs('select','编辑现预案');
+                }
+            }
+        }
     });
     // window.setTimeout(function () {
     //     $('#timepanel').tabs({
