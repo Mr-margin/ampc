@@ -3212,14 +3212,14 @@ public class AirController {
 		 }  
 		 
 		 
-		Map<String,Object> obj=new HashMap();
-		obj.put("lastMap", lastMap);
-		obj.put("obs", listTemp);
-		obj.put("pbs", plistTemp);
-		return	AmpcResult.ok(obj);
+//		Map<String,Object> obj=new HashMap();
+//		obj.put("lastMap", lastMap);
+//		obj.put("obs", listTemp);
+//		obj.put("pbs", plistTemp);
+//		return	AmpcResult.ok(obj);
 
 
-//		return	AmpcResult.ok(lastMap);
+		return	AmpcResult.ok(lastMap);
 
 	}catch(Exception e){
 		LogUtil.getLogger().error("AirController 预报检验查询异常！",e);
@@ -3352,8 +3352,8 @@ public class AirController {
 			Date selectmaxpathdate = tScenarinoDetailMapper.selectmaxpathdate();
 			Date selectminpathdate = tScenarinoDetailMapper.selectminpathdate();
 			JSONObject obj=new JSONObject();
-			obj.put("mindate", selectminpathdate.getTime());
-			obj.put("maxdate", selectmaxpathdate.getTime());
+			obj.put("mintime", selectminpathdate.getTime());
+			obj.put("maxtime", selectmaxpathdate.getTime());
 			return AmpcResult.ok(obj);
 		}catch(Exception e){
 			LogUtil.getLogger().error("findpathdate 查询最大和最小起报日期异常",e);
