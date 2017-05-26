@@ -6,6 +6,12 @@ public class ShellVertival {
 	private String nclPath;
 	private String pngPath;
 	
+	@Override
+	public String toString() {
+		return "ShellVertival [specieIndexFilePath=" + specieIndexFilePath + ", juzhenPath=" + juzhenPath + ", nclPath="
+				+ nclPath + ", pngPath=" + pngPath + "]";
+	}
+
 	public String getPngPath() {
 		return pngPath;
 	}

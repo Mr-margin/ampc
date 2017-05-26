@@ -21,6 +21,42 @@ public class ExtractConfig {
 	private String imageFilePath;
 	private String imageFileName;
 	private String verticalTepmPath;
+	private String verticalPngPath;
+	private String cshTemplatePath;
+	private String csvIndexPath;
+	private String nclPath;
+
+	public String getVerticalPngPath() {
+		return verticalPngPath;
+	}
+
+	public void setVerticalPngPath(String verticalPngPath) {
+		this.verticalPngPath = verticalPngPath;
+	}
+
+	public String getCshTemplatePath() {
+		return cshTemplatePath;
+	}
+
+	public void setCshTemplatePath(String cshTemplatePath) {
+		this.cshTemplatePath = cshTemplatePath;
+	}
+
+	public String getNclPath() {
+		return nclPath;
+	}
+
+	public void setNclPath(String nclPath) {
+		this.nclPath = nclPath;
+	}
+
+	public String getCsvIndexPath() {
+		return csvIndexPath;
+	}
+
+	public void setCsvIndexPath(String csvIndexPath) {
+		this.csvIndexPath = csvIndexPath;
+	}
 
 	public String getVerticalTepmPath() {
 		return verticalTepmPath;

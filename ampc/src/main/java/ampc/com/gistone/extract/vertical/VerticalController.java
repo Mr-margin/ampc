@@ -84,14 +84,8 @@ public class VerticalController {
 			verticalParams.setHour(hour);
 		}
 
-		String concnFilePath = String.valueOf(Params.get("concnFilePath")) + "/"
-				+ (Constants.TIMEPOINT_H.equals(verticalParams.getTimePoint()) ? String.valueOf(Params.get("concnHourlyPrefix"))
-						: String.valueOf(Params.get("concnDailyPrefix")));
-		concnFilePath = concnFilePath.replace("$userid", String.valueOf(userId))
-				.replace("$domainid", String.valueOf(domainId)).replace("$missionid", String.valueOf(missionId))
-				.replace("$scenarioid", String.valueOf(scenarioId1)).replace("$domain", String.valueOf(domain));
 //返回的是图片路径
-		String res = verticalService.vertical(verticalParams,concnFilePath);
+		String res = verticalService.vertical(verticalParams);
 		if (!StringUtil.isEmpty(res)) {
 			//还没有和前端交互，交互时要将图片路径返回到前端页面
 			return AmpcResult.ok(res);

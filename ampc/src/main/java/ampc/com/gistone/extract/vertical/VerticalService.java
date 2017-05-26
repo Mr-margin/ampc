@@ -1,7 +1,12 @@
 package ampc.com.gistone.extract.vertical;
 
 import java.awt.geom.Point2D;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,7 +40,6 @@ public class VerticalService {
 
 	private String tempPath;
 	private List<PointBean> pointBeanList;
-	private String filePath;
 	private Map<String, Object> attributes;
 	private List<Variable> variableList1; // diff or ratio scenario1/scenario2
 	private List<Variable> variableList2;
@@ -43,9 +47,9 @@ public class VerticalService {
 	private double[][] resTemp;
 	private double[][] res;
 
-	public String vertical(VerticalParams verticalParams, String concnFilePath) {
+	public String vertical(VerticalParams verticalParams) {
 		// 获取可变参数封装进variableList1，variableList2中，设置临时文件路径
-		getVariables(concnFilePath, verticalParams);
+		getVariables(verticalParams);
 		// 将projecttion参数从verticalParams中获取封装
 		setProjection(verticalParams);
 		// 2. build earth surf point取座标划线
@@ -104,34 +108,39 @@ public class VerticalService {
 	// 生成画图所需两个csv文件,将路径及图片生成路径传递入csh文件中画图
 	private String createPng(VerticalParams verticalParams) {
 		long readAttrTimes = System.currentTimeMillis();
-		File pathFile = new File(replacePath(Constants.VERTICAL_PNG_PATH, verticalParams));
+		File pathFile = new File(resultPathUtil
+				.getRealPath(resultPathUtil.getExtractConfig().getVerticalPngPath(), verticalParams.getUserId(),
+						verticalParams.getDomainId(), verticalParams.getMissionId(), verticalParams.getScenarioId1(),
+						verticalParams.getDomain())
+				.replace("$currDate", DateUtil.DATEtoString(new Date(), DateUtil.DATE_FORMAT)));
 		if (!pathFile.exists() && !pathFile.isDirectory()) {
 			pathFile.mkdirs();
 		}
 		File juzhen = CSVUtil.createCSVFile(res, tempPath, Constants.CSV_JZ_PREFIX);
 		// 获取对应条件污染物图像下标参数，用条件和污染物拼接成要向csh中传递的文件名，形成“名=下标参数”的字符串返回
 		String specieIndex = getSpecieIndex(verticalParams);
-		File specieIndexFile = CSVUtil.createIndexCSVFile(specieIndex, Constants.CSV_INDEX_PATH);
+		File specieIndexFile = CSVUtil.createIndexCSVFile(specieIndex,
+				resultPathUtil.getExtractConfig().getCsvIndexPath());
 		String tempFilePath = tempPath + System.currentTimeMillis();
-		String pngPath = replacePath(Constants.VERTICAL_PNG_PATH + System.currentTimeMillis(), verticalParams);
+		String pngPath = resultPathUtil
+				.getRealPath(resultPathUtil.getExtractConfig().getVerticalPngPath() + System.currentTimeMillis(),
+						verticalParams.getUserId(), verticalParams.getDomainId(), verticalParams.getMissionId(),
+						verticalParams.getScenarioId1(), verticalParams.getDomain())
+				.replace("$currDate", DateUtil.DATEtoString(new Date(), DateUtil.DATE_FORMAT));
 		if (juzhen == null || specieIndexFile == null) {
 			return null;
 		}
 		ShellVertival shellVertival = new ShellVertival();
 		shellVertival.setJuzhenPath(juzhen.getAbsolutePath());
 		shellVertival.setSpecieIndexFilePath(specieIndexFile.getAbsolutePath());
-		shellVertival.setNclPath(new File(Constants.NCL_PATH).getAbsolutePath());
+		shellVertival.setNclPath(resultPathUtil.getExtractConfig().getNclPath());
 		shellVertival.setPngPath(new File(pngPath).getAbsolutePath());
 		String filePath = tempFilePath + ".csh";
-		System.out.println(filePath);
 		logger.info("create two csv file is juzheng and specieIndex,Transfer parameter:" + shellVertival.toString());
-		try {
-			logger.info("build csh file ,Incoming parameter");
-			buildCshWithVertical(filePath, shellVertival);
-		} catch (IOException e) {
-			logger.error("", e);
-			return null;
-		}
+		logger.info("build csh file ,Incoming parameter");
+		
+		buildCshWithVertical(filePath, shellVertival);
+		
 		logger.info("start Execute script");
 		String script = FilePathUtil.combinePath(filePath);
 		String[] cmd = new String[] { script };
@@ -152,11 +161,43 @@ public class VerticalService {
 	}
 
 	// 通过摸版动态加载csh文件，并执行
-	private void buildCshWithVertical(String filePath, ShellVertival shellVertival) throws IOException {
-		String content = VelocityUtil.buildTemplate(Constants.CSV_TEMPLATE_PATH, "shellVertival", shellVertival);
-		File modelRunFile = new File(filePath);
-		FilePathUtil.writeLocalFile(modelRunFile, content);
-		modelRunFile.setExecutable(true);
+	private void buildCshWithVertical(String filePath, ShellVertival shellVertival) {
+		BufferedReader br = null;
+		BufferedWriter bw = null;
+		try {
+			br = new BufferedReader(new FileReader(resultPathUtil.getExtractConfig().getCshTemplatePath()));
+			bw = new BufferedWriter(new FileWriter(filePath));
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				String writeLine = line.replace("${juzhenPath}", shellVertival.getJuzhenPath())
+						.replace("${specieIndexFilePath}", shellVertival.getSpecieIndexFilePath())
+						.replace("${pngPath}", shellVertival.getPngPath())
+						.replace("${nclPath}", shellVertival.getNclPath());
+				bw.write(writeLine);
+				bw.write("\n");
+				bw.flush();
+			}
+		} catch (FileNotFoundException e) {
+			logger.error("", e);
+		} catch (IOException e) {
+			logger.error("", e);
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					logger.error("", e);
+				}
+			}
+			if (bw != null) {
+				try {
+					bw.close();
+				} catch (IOException e) {
+					logger.error("", e);
+				}
+			}
+		}
+
 	}
 
 	// 获取对应条件污染物图像下标参数，用条件和污染物拼接成要向csh中传递的文件名，形成“名=下标参数”的字符串返回
@@ -272,20 +313,28 @@ public class VerticalService {
 	}
 
 	// 获取可变参数封装进variableList1，variableList2中，设置临时文件路径
-	private void getVariables(String concnFilePath, VerticalParams verticalParams) {
+	private void getVariables(VerticalParams verticalParams) {
 		long readAttrTimes = System.currentTimeMillis();
+		String concnFilePath = resultPathUtil.getResultFilePath(verticalParams.getDay(), verticalParams.getShowType(),
+				verticalParams.getTimePoint(), verticalParams.getUserId(), verticalParams.getDomainId(),
+				verticalParams.getMissionId(), verticalParams.getScenarioId1(), verticalParams.getDomain(), null);
 		String timePoint = verticalParams.getTimePoint();
-		tempPath = replacePath(resultPathUtil.getExtractConfig().getVerticalTepmPath(), verticalParams);
+		tempPath = resultPathUtil
+				.getRealPath(resultPathUtil.getExtractConfig().getVerticalTepmPath(), verticalParams.getUserId(),
+						verticalParams.getDomainId(), verticalParams.getMissionId(), verticalParams.getScenarioId1(),
+						verticalParams.getDomain())
+				.replace("$currDate", DateUtil.DATEtoString(new Date(), DateUtil.DATE_FORMAT));
 		variableList1 = new ArrayList<Variable>();
 		variableList2 = new ArrayList<Variable>();
 		if (Constants.TIMEPOINT_A.equals(timePoint)) {
 			List<String> list = verticalParams.getDates();
 			for (int i = 0; i < list.size(); i++) {
 				String day = list.get(i);
-				buildVariables(day, concnFilePath, verticalParams);
+				concnFilePath = concnFilePath.replace("$Day", day);
+				buildVariables(concnFilePath, verticalParams);
 			}
 			try {
-				attributes = Netcdf.getAttributes(concnFilePath + list.get(0));
+				attributes = Netcdf.getAttributes(concnFilePath);
 				logger.info("read getVariables, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
 				logger.info("tempPath=" + tempPath + ";attributes=" + attributes.toString());
 			} catch (IOException e) {
@@ -293,9 +342,10 @@ public class VerticalService {
 				return;
 			}
 		} else if (Constants.TIMEPOINT_D.equals(timePoint) || Constants.TIMEPOINT_H.equals(timePoint)) {
-			buildVariables(verticalParams.getDay(), concnFilePath, verticalParams);
+			concnFilePath = concnFilePath.replace("$Day", verticalParams.getDay());
+			buildVariables(concnFilePath, verticalParams);
 			try {
-				attributes = Netcdf.getAttributes(concnFilePath + verticalParams.getDay());
+				attributes = Netcdf.getAttributes(concnFilePath);
 				logger.info("read getVariables, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
 				logger.info("tempPath=" + tempPath + ";attributes=" + attributes.toString());
 			} catch (IOException e) {
@@ -305,32 +355,34 @@ public class VerticalService {
 		}
 	}
 
-	private void buildVariables(String day, String concnFilePath, VerticalParams verticalParams) {
+	private void buildVariables(String concnFilePath, VerticalParams verticalParams) {
 		String specie = verticalParams.getSpecie();
 		try {
-			String p1 = concnFilePath + day;
 			long openNcTimes = System.currentTimeMillis();
 			NetcdfFile nc;
 			try {
-				nc = NetcdfFile.open(p1);
-				logger.info("VerticalService | variables() :buildVariables  open nc file " + p1 + ", times = "
-						+ (System.currentTimeMillis() - openNcTimes) + "ms");
+				nc = NetcdfFile.open(concnFilePath);
+				logger.info("VerticalService | variables() :buildVariables  open nc file " + concnFilePath
+						+ ", times = " + (System.currentTimeMillis() - openNcTimes) + "ms");
 			} catch (IOException e) {
-				logger.error("VerticalService | variables() :buildVariables  open file " + p1 + " error");
+				logger.error("VerticalService | variables() :buildVariables  open file " + concnFilePath + " error");
 				return;
 			}
 			if (nc == null)
 				return;
-			NetcdfFile ncFile = nc;
 			Variable variable1 = nc.findVariable(null, specie);
 			variableList1.add(variable1);
 			if (!Constants.CALCTYPE_SHOW.equals(verticalParams.getCalcType())) {
-				String p2 = filePath + day;
+				// 需要ScenarioId2
+				String filePath = resultPathUtil.getResultFilePath(verticalParams.getDay(),
+						verticalParams.getShowType(), verticalParams.getTimePoint(), verticalParams.getUserId(),
+						verticalParams.getDomainId(), verticalParams.getMissionId(), verticalParams.getScenarioId2(),
+						verticalParams.getDomain(), null);
 				NetcdfFile nc2;
 				try {
-					nc2 = NetcdfFile.open(p2);
+					nc2 = NetcdfFile.open(filePath);
 				} catch (IOException e) {
-					logger.error("VerticalService | variables() :buildVariables  open file " + p2 + " error");
+					logger.error("VerticalService | variables() :buildVariables  open file " + filePath + " error");
 					return;
 				}
 				Variable variable2 = nc2.findVariable(null, specie);
@@ -373,15 +425,5 @@ public class VerticalService {
 			}
 		}
 		logger.info("get need line surf point list, times = " + (System.currentTimeMillis() - startTimes) + "ms");
-	}
-
-	// 替换路径中的特殊字符串
-	private String replacePath(String path, VerticalParams verticalParams) {
-		return path.replace("$currDate", DateUtil.DATEtoString(new Date(), DateUtil.DATE_FORMAT))
-				.replace("$userid", verticalParams.getUserId().toString())
-				.replace("$domainid", verticalParams.getDomainId().toString())
-				.replace("$missionid", verticalParams.getMissionId().toString())
-				.replace("$scenarioid", verticalParams.getScenarioId1().toString())
-				.replace("$domain", verticalParams.getDomain().toString());
 	}
 }

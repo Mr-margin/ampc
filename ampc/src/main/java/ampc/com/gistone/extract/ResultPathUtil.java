@@ -227,6 +227,10 @@ public class ResultPathUtil {
 			extractConfig.setImageFilePath((String) pro.get("imageFilePath"));
 			extractConfig.setImageFileName((String) pro.get("imageFileName"));
 			extractConfig.setVerticalTepmPath((String) pro.get("verticalTepmPath"));
+			extractConfig.setVerticalPngPath((String) pro.get("verticalPngPath"));
+			extractConfig.setCshTemplatePath((String) pro.get("cshTemplatePath"));
+			extractConfig.setCsvIndexPath((String) pro.get("csvIndexPath"));
+			extractConfig.setNclPath((String) pro.get("nclPath"));
 		} catch (FileNotFoundException e) {
 			logger.error(config + " file does not exits!", e);
 		} catch (IOException e) {
