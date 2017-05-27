@@ -15,17 +15,19 @@
     <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
     <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
+    <result column="DETAILED_LIST_ID" property="detailedListId" jdbcType="DECIMAL" />
+    <result column="DETAILED_LIST_TYPE" property="detailedListType" jdbcType="OTHER" />
   </resultMap>
   <sql id="Base_Column_List" >
     SECTORDOC_ID, SECTORDOC_NAME, SECTORDOC_ETITLE, SECTORDOC_CTITLE, SECTORDOC_TYPE, 
     SECTORDOC_STYPE, SECTORDOC_DOC, SECTORDOC_DISNAME, SECTORDOC_VERSION, USER_ID, ADD_TIME, 
-    DELETE_TIME, IS_EFFECTIVE
+    DELETE_TIME, IS_EFFECTIVE, DETAILED_LIST_ID, DETAILED_LIST_TYPE
   </sql>
-  
-  
-  
-  
-   <resultMap id="mapSelect" type="hashMap" >
+ 
+ 
+ 
+ 
+<resultMap id="mapSelect" type="hashMap" >
     <result column="SECTORDOC_ETITLE" property="sectordocEtitle" jdbcType="VARCHAR" />
     <result column="SECTORDOC_CTITLE" property="sectordocCtitle" jdbcType="OTHER" />
   </resultMap>
@@ -59,14 +61,12 @@
         where USER_ID=#{_parameter,jdbcType=DECIMAL} 
       </if> 
   </update>
-  
-  
-  
-  
-  
-  
-  
-  
+ 
+ 
+ 
+ 
+ 
+ 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -82,12 +82,14 @@
       SECTORDOC_CTITLE, SECTORDOC_TYPE, SECTORDOC_STYPE, 
       SECTORDOC_DOC, SECTORDOC_DISNAME, SECTORDOC_VERSION, 
       USER_ID, ADD_TIME, DELETE_TIME, 
-      IS_EFFECTIVE)
+      IS_EFFECTIVE, DETAILED_LIST_ID, DETAILED_LIST_TYPE
+      )
     values (#{sectordocId,jdbcType=DECIMAL}, #{sectordocName,jdbcType=OTHER}, #{sectordocEtitle,jdbcType=VARCHAR}, 
       #{sectordocCtitle,jdbcType=OTHER}, #{sectordocType,jdbcType=VARCHAR}, #{sectordocStype,jdbcType=OTHER}, 
       #{sectordocDoc,jdbcType=OTHER}, #{sectordocDisname,jdbcType=OTHER}, #{sectordocVersion,jdbcType=DECIMAL}, 
       #{userId,jdbcType=OTHER}, #{addTime,jdbcType=TIMESTAMP}, #{deleteTime,jdbcType=TIMESTAMP}, 
-      #{isEffective,jdbcType=VARCHAR})
+      #{isEffective,jdbcType=VARCHAR}, #{detailedListId,jdbcType=DECIMAL}, #{detailedListType,jdbcType=OTHER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TSectordocExcel" >
     insert into T_SECTORDOC_EXCEL
@@ -131,6 +133,12 @@
       <if test="isEffective != null" >
         IS_EFFECTIVE,
       </if>
+      <if test="detailedListId != null" >
+        DETAILED_LIST_ID,
+      </if>
+      <if test="detailedListType != null" >
+        DETAILED_LIST_TYPE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="sectordocId != null" >
@@ -171,6 +179,12 @@
       </if>
       <if test="isEffective != null" >
         #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="detailedListId != null" >
+        #{detailedListId,jdbcType=DECIMAL},
+      </if>
+      <if test="detailedListType != null" >
+        #{detailedListType,jdbcType=OTHER},
       </if>
     </trim>
   </insert>
@@ -213,6 +227,12 @@
       <if test="isEffective != null" >
         IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
       </if>
+      <if test="detailedListId != null" >
+        DETAILED_LIST_ID = #{detailedListId,jdbcType=DECIMAL},
+      </if>
+      <if test="detailedListType != null" >
+        DETAILED_LIST_TYPE = #{detailedListType,jdbcType=OTHER},
+      </if>
     </set>
     where SECTORDOC_ID = #{sectordocId,jdbcType=DECIMAL}
   </update>
@@ -229,7 +249,9 @@
       USER_ID = #{userId,jdbcType=OTHER},
       ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
       DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
-      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR}
+      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      DETAILED_LIST_ID = #{detailedListId,jdbcType=DECIMAL},
+      DETAILED_LIST_TYPE = #{detailedListType,jdbcType=OTHER}
     where SECTORDOC_ID = #{sectordocId,jdbcType=DECIMAL}
   </update>
 </mapper>

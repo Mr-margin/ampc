@@ -20,14 +20,15 @@
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
     <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="QUERY_SHOWQUERYEN" property="queryShowqueryen" jdbcType="OTHER" />
+    <result column="DETAILED_LIST_ID" property="detailedListId" jdbcType="DECIMAL" />
+    <result column="DETAILED_LIST_TYPE" property="detailedListType" jdbcType="OTHER" />
   </resultMap>
   <sql id="Base_Column_List" >
     QUERY_ID, QUERY_NAME, QUERY_ETITLE, QUERY_SHOWQUERY, QUERY_VALUE, QUERY_OPTIONTYPE, 
     QUERY_OPTION1, QUERY_OPTION2, QUERY_OPTION3, QUERY_OPTION4, QUERY_OPTION5, SECTOR_NAME, 
-    QUERY_VERSION, USER_ID, ADD_TIME, IS_EFFECTIVE, DELETE_TIME, QUERY_SHOWQUERYEN
+    QUERY_VERSION, USER_ID, ADD_TIME, IS_EFFECTIVE, DELETE_TIME, QUERY_SHOWQUERYEN, DETAILED_LIST_ID, 
+    DETAILED_LIST_TYPE
   </sql>
-  
-  
   
   
   
@@ -83,6 +84,11 @@
   
   
   
+  
+  
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -99,15 +105,15 @@
       QUERY_OPTION1, QUERY_OPTION2, QUERY_OPTION3, 
       QUERY_OPTION4, QUERY_OPTION5, SECTOR_NAME, 
       QUERY_VERSION, USER_ID, ADD_TIME, 
-      IS_EFFECTIVE, DELETE_TIME, QUERY_SHOWQUERYEN
-      )
+      IS_EFFECTIVE, DELETE_TIME, QUERY_SHOWQUERYEN, 
+      DETAILED_LIST_ID, DETAILED_LIST_TYPE)
     values (#{queryId,jdbcType=DECIMAL}, #{queryName,jdbcType=OTHER}, #{queryEtitle,jdbcType=VARCHAR}, 
       #{queryShowquery,jdbcType=OTHER}, #{queryValue,jdbcType=OTHER}, #{queryOptiontype,jdbcType=OTHER}, 
       #{queryOption1,jdbcType=OTHER}, #{queryOption2,jdbcType=OTHER}, #{queryOption3,jdbcType=OTHER}, 
       #{queryOption4,jdbcType=OTHER}, #{queryOption5,jdbcType=OTHER}, #{sectorName,jdbcType=OTHER}, 
       #{queryVersion,jdbcType=DECIMAL}, #{userId,jdbcType=OTHER}, #{addTime,jdbcType=TIMESTAMP}, 
-      #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=TIMESTAMP}, #{queryShowqueryen,jdbcType=OTHER}
-      )
+      #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=TIMESTAMP}, #{queryShowqueryen,jdbcType=OTHER}, 
+      #{detailedListId,jdbcType=DECIMAL}, #{detailedListType,jdbcType=OTHER})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TQueryExcel" >
     insert into T_QUERY_EXCEL
@@ -166,6 +172,12 @@
       <if test="queryShowqueryen != null" >
         QUERY_SHOWQUERYEN,
       </if>
+      <if test="detailedListId != null" >
+        DETAILED_LIST_ID,
+      </if>
+      <if test="detailedListType != null" >
+        DETAILED_LIST_TYPE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="queryId != null" >
@@ -221,6 +233,12 @@
       </if>
       <if test="queryShowqueryen != null" >
         #{queryShowqueryen,jdbcType=OTHER},
+      </if>
+      <if test="detailedListId != null" >
+        #{detailedListId,jdbcType=DECIMAL},
+      </if>
+      <if test="detailedListType != null" >
+        #{detailedListType,jdbcType=OTHER},
       </if>
     </trim>
   </insert>
@@ -278,6 +296,12 @@
       <if test="queryShowqueryen != null" >
         QUERY_SHOWQUERYEN = #{queryShowqueryen,jdbcType=OTHER},
       </if>
+      <if test="detailedListId != null" >
+        DETAILED_LIST_ID = #{detailedListId,jdbcType=DECIMAL},
+      </if>
+      <if test="detailedListType != null" >
+        DETAILED_LIST_TYPE = #{detailedListType,jdbcType=OTHER},
+      </if>
     </set>
     where QUERY_ID = #{queryId,jdbcType=DECIMAL}
   </update>
@@ -299,7 +323,9 @@
       ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
       IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
       DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
-      QUERY_SHOWQUERYEN = #{queryShowqueryen,jdbcType=OTHER}
+      QUERY_SHOWQUERYEN = #{queryShowqueryen,jdbcType=OTHER},
+      DETAILED_LIST_ID = #{detailedListId,jdbcType=DECIMAL},
+      DETAILED_LIST_TYPE = #{detailedListType,jdbcType=OTHER}
     where QUERY_ID = #{queryId,jdbcType=DECIMAL}
   </update>
 </mapper>

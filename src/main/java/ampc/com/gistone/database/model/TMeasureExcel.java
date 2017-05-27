@@ -71,6 +71,10 @@ public class TMeasureExcel {
 
     private Object measureExcelSvrange;
 
+    private Long detailedListId;
+
+    private Object detailedListType;
+
     public Long getMeasureExcelId() {
         return measureExcelId;
     }
@@ -341,5 +345,21 @@ public class TMeasureExcel {
 
     public void setMeasureExcelSvrange(Object measureExcelSvrange) {
         this.measureExcelSvrange = measureExcelSvrange;
+    }
+
+    public Long getDetailedListId() {
+        return detailedListId;
+    }
+
+    public void setDetailedListId(Long detailedListId) {
+        this.detailedListId = detailedListId;
+    }
+
+    public Object getDetailedListType() {
+        return detailedListType;
+    }
+
+    public void setDetailedListType(Object detailedListType) {
+        this.detailedListType = detailedListType;
     }
 }

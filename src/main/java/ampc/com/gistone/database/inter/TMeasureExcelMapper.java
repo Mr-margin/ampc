@@ -26,6 +26,7 @@ public interface TMeasureExcelMapper {
      * @return
      */
     int updateIsEffeByIds(Long userId);
+	
     int deleteByPrimaryKey(Long measureExcelId);
 
     int insert(TMeasureExcel record);
