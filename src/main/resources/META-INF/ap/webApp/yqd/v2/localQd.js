@@ -82,7 +82,7 @@ function innitdata(active){
                         if(row.isEffective==1){
                             return "<button id='addQdBtn' onclick='adgQdBtn()' style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box'>添加数据</button>"
                         }else{
-                            return "<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #00662f;color: white;border-radius:2px;box-sizing:border-box'>校验数据</button>"
+                            return "<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box'>校验数据</button>"
                         }
                     }}
                 ]],
@@ -164,7 +164,6 @@ function innitdata(active){
         }
     }else if(active=="delete_nativeTp"){
         var obj_node = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
-        console.log(obj_node);
         ajaxPost('/NativeAndNation/doPost',{"nativeTpId":obj_node.esNativeTpId,"method":"delete_nativeTp"}).success(function(res){
             if(res.status==0){
                 var obj_node_id=obj_node.id+1;
@@ -174,7 +173,66 @@ function innitdata(active){
                 swal('参数错误', '', 'error');
             }
         })
+    }else if(active=="add_native"){
+        var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
+        var row_id=row.id;
+        var qdName=$("#esLocalQdName").val();
+        var qdYear=$("#esLocalQdYear").val();
+        var qdRemark=$("#esLocalQdMark").val();
+        if(row){
+            ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark}).success(function(res){
+                if(res.status==0){
+                    myLoadFilter([qdName,qdYear,qdRemark],row_id)
+                    // console.log(row_id);
+                    // $("#localqd").treegrid('append',{
+                    //     parent:row_id,
+                    //     data:{
+                    //         esNativeTpName:qdName,
+                    //         esNativeTpYear:qdYear,
+                    //         esComment:qdRemark
+                    //     }
+                    // })
+                    $("#editTempQd").window('close');
+                }else{
+                    swal('参数错误', '', 'error');
+                }
+            })
+        }
     }
+}
+// 给模板增加子节点
+function myLoadFilter(data,parentId){
+    function setData(){
+        var todo = [];
+        for(var i=0; i<data.length; i++){
+            todo.push(data[i]);
+        }
+        while(todo.length){
+            var node = todo.shift();
+            if (node.children){
+                node.state = 'closed';
+                node.children1 = node.children;
+                node.children = undefined;
+                todo = todo.concat(node.children1);
+            }
+        }
+    }
+
+    setData(data);
+    var tg = $(this);
+    var opts = tg.treegrid('options');
+    opts.onBeforeExpand = function(row){
+        if (row.children1){
+            tg.treegrid('append',{
+                parent: row[opts.idField],
+                data: row.children1
+            });
+            row.children1 = undefined;
+            tg.treegrid('expand', row[opts.idField]);
+        }
+        return row.children1 == undefined;
+    };
+    return data;
 }
 //创建模板窗口
 $("#creatTemp").window({
@@ -224,7 +282,20 @@ function editTemp() {
         swal('请先选择编辑清单', '', 'error');
     }
 }
+//创建模板清单窗口
+$("#editTempQd").window({
+    width:600,  //easyui 窗口宽度
+    collapsible:false, //easyui 自带的折叠按钮
+    maximizable:false,//easyui 自带的最大按钮
+    minimizable:false,//easyui 自带的最小按钮
+    modal:true,
+    shadow:false,
+    title:'添加清单',
+    border:false,
+    closed:true,
+    cls:"cloudui"
+})
 //点击按钮创建模板下面的清单
 function adgQdBtn(){
-
+    $("#editTempQd").window("open")
 }
