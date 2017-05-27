@@ -132,7 +132,7 @@ public class AppraisalController {
 				return AmpcResult.build(1003, "开始日期为空或出现非法字符!");
 			}
 			String start_Date=param.toString();
-//			//结束日期
+			//结束日期
 			param=data.get("endDate");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
 				LogUtil.getLogger().error("AppraisalController  结束日期为空或出现非法字符!");
@@ -312,16 +312,13 @@ public class AppraisalController {
 							//创建日期结果Map
 							Map datemap=new HashMap();
 							//content全部数据	key--日期
-//							for(Object datetime:detamap.keySet()){
 							for(int s=0; s<=differenceVal;s++){
-//								calendar.setTime(sdf.parse(end_Date));
-								calendar.setTime(sdf.parse(("2016-11-26").toString()));
+								calendar.setTime(sdf.parse(end_Date));
 								calendar.add(Calendar.DAY_OF_MONTH, -s);
 								calDate = calendar.getTime();
 								calDateStr=sdf.format(calDate);
 								Object sp=detamap.get(calDateStr);
 								//获取结果集中的对象
-//								Object sp=detamap.get(datetime);
 								//转换成Map
 								Map spmap=(Map)sp;
 								//存放数据
@@ -369,7 +366,6 @@ public class AppraisalController {
 						JSONObject obj=JSONObject.fromObject(content);//行业减排结果
 						Map<String,Object> detamap=(Map)obj;
 						Map<String,Object> datemap=new HashMap();
-//						for(String datetime:detamap.keySet()){
 						for(int s=0; s<=differenceVal;s++){
 							calendar.setTime(sdf.parse(end_Date));
 							calendar.add(Calendar.DAY_OF_MONTH, -s);
@@ -377,7 +373,6 @@ public class AppraisalController {
 							calDateStr=sdf.format(calDate);
 							Object sp=detamap.get(calDateStr);
 							
-//							Object sp=detamap.get(datetime);
 							Map<String,Object> spmap=(Map)sp;
 							for(String spr:spmap.keySet()){
 								Map<String,Object> spcmap=new HashMap();
@@ -1324,14 +1319,14 @@ public class AppraisalController {
 			}
 			String changeType=param.toString();
 			
-//			//开始日期
+			//开始日期
 			param=data.get("startDate");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
 				LogUtil.getLogger().error("AppraisalController  开始日期为空或出现非法字符!");
 				return AmpcResult.build(1003, "开始日期为空或出现非法字符!");
 			}
 			String start_Date=param.toString();
-//			//结束日期
+			//结束日期
 			param=data.get("endDate");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
 				LogUtil.getLogger().error("AppraisalController  结束日期为空或出现非法字符!");
@@ -1683,7 +1678,7 @@ public class AppraisalController {
 					obsBeanobj.put("city_station",cityStation);
 					//所选任务的开始时间
 //					obsBeanobj.put("startDate", missionStartDatestr);
-//					//所选任务的结束时间
+					//所选任务的结束时间
 //					obsBeanobj.put("endDate", missionEndDatestr);
 					obsBeanobj.put("startDate", start_Date);	
 					//所选任务的结束时间
