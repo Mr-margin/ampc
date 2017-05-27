@@ -3376,9 +3376,9 @@ public class AirController {
 				ts.setPathDate(endtime);
 				ts.setScenType("4");
 				List<TScenarinoDetail> tsList=tScenarinoDetailMapper.selectByEntity(ts);
-				if(tsList!=null){
-					obj.put("maxtime", endtime.getTime());
-					break;
+				if(tsList==null){
+					
+					continue;
 				}
 				TScenarinoDetail thets=tsList.get(0);
 				Date start=thets.getScenarinoStartDate();
