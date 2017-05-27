@@ -300,15 +300,15 @@ function initialize() {
 
 /*请求可选日期范围*/
 function requestDate() {
-    var url = '/Air/get_time';
+    var url = '/Air/findpathdate';
     dps_Date = ajaxPost(url, {
         userId: userId
     }).success(function (res) {
 
         if (res.status == 0) {
           /*这里要初始化时间*/
-            changeMsg.minDate = res.data.mintime;
-            changeMsg.maxDate = res.data.maxtime;
+            changeMsg.minDate = moment(res.data.mintime).format('YYYY-MM-DD');
+            changeMsg.maxDate = moment(res.data.maxtime).format('YYYY-MM-DD');
 
             if (!(moment(res.data.maxtime).add(-7, 'd').isBefore(moment(res.data.mintime)))) {
                 changeMsg.startD = moment(res.data.maxtime).add(-7, 'd').format('YYYY-MM-DD')
@@ -319,7 +319,7 @@ function requestDate() {
             changeMsg.time = moment(changeMsg.startD).format('YYYY-MM-DD HH');
 
           /*测试使用*/
-            changeMsg.minDate = '2017-04-28';
+            // changeMsg.minDate = '2017-04-28';
 //            changeMsg.maxDate = '2017-04-16';
 //            changeMsg.startD = '2017-04-14';
 //            changeMsg.endD = '2017-04-16';
