@@ -625,6 +625,7 @@ function initEcharts() {
 
         }else{	//-----------------------逐日结束--逐小时开始--------------------//
             var xdataName =	[];
+            var xAarr = [];
             $.each(data,function(key,val){	//键为模拟或观测
                 var xdata = [];		//x轴数据
                 var ydata = [];		//y轴数据
@@ -634,6 +635,8 @@ function initEcharts() {
                 if(val.hasOwnProperty(species[i])){	//包含当前物种
                     for(var timesKey in val[species[i]]){
                         xdata.push(timesKey);	//全部日期
+                        //$.each循环不能复制到外部变量
+                        xAarr.push(timesKey);
                     }
                     xdata = xdata.sort();	//排序
 
@@ -744,13 +747,44 @@ function initEcharts() {
         }
         option.xAxis = [];
         if(changeMsg.rms == 'day'){
+        	
             option.xAxis.push({				    //x轴情景时间
                 data: xdataName.sort()			//修改数据排序
             });
         }else{
-            option.xAxis.push({				    //x轴情景时间
-                data: xdataName					//修改数据排序
-            });
+        	if(xAarr.length>=24){
+		    	 option.xAxis = [];
+				    option.xAxis.push({			
+				    	axisLabel:{
+				    		interval:71
+				    	},
+				    	data: xdataName						//修改数据排序
+				    });
+			}else if(xAarr.length>=11){
+			    		 option.xAxis = [];
+					    option.xAxis.push({			
+					    	axisLabel:{
+					    		interval:47
+					    	},
+					    	data: xdataName						//修改数据排序
+					    });
+			}else if(xAarr.length>5){
+				 option.xAxis = [];
+				    option.xAxis.push({			
+				    	axisLabel:{
+				    		interval:23
+				    	},
+				    	data: xdataName						//修改数据排序
+				    });
+			}else if(xAarr.length<=5){
+				 option.xAxis = [];
+				    option.xAxis.push({			
+				    	axisLabel:{
+				    		interval:11
+				    	},
+				    	data: xdataName						//修改数据排序
+				    });
+			}
         }
         
         //气象要素设置y轴坐标为自适应
