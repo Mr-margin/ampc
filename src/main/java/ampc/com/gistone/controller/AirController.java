@@ -3250,7 +3250,7 @@ public class AirController {
 		ClientUtil.SetCharsetAndHeader(request, response);
 		Map<String,Object> data=(Map)requestDate.get("data");
 		Long userId=Long.valueOf(data.get("userId").toString());//用户id
-		String date=data.get("date").toString();//站点或者平均
+		String date=data.get("date").toString();
 		SimpleDateFormat hms = new SimpleDateFormat("yyyy-MM-dd");
 		Date pathdate=hms.parse(date);
 		TScenarinoDetail ts=new TScenarinoDetail();
@@ -3361,8 +3361,30 @@ public class AirController {
 			Date selectmaxpathdate = tScenarinoDetailMapper.selectmaxpathdate();
 			Date selectminpathdate = tScenarinoDetailMapper.selectminpathdate();
 			JSONObject obj=new JSONObject();
+			SimpleDateFormat hms = new SimpleDateFormat("yyyy-MM-dd");
 			obj.put("mintime", selectminpathdate.getTime());
+			Long betweenDays = (long)((selectmaxpathdate.getTime() - selectminpathdate.getTime()) / (1000 * 60 * 60 *24) + 0.5);
+			for(int a=0;a<betweenDays;a++){
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(selectmaxpathdate);
+				cal.add(Calendar.DATE, -1);
+				String addTimeDate =hms.format(cal.getTime());
+				Date endtime=hms.parse(addTimeDate);
+		
+				
+				TScenarinoDetail ts=new TScenarinoDetail();
+				ts.setPathDate(endtime);
+				ts.setScenType("4");
+				List<TScenarinoDetail> tsList=tScenarinoDetailMapper.selectByEntity(ts);
+				if(tsList!=null){
+					obj.put("maxtime", endtime.getTime());
+					break;
+				}
+	
+			}
+			
 			obj.put("maxtime", selectmaxpathdate.getTime());
+			
 			return AmpcResult.ok(obj);
 		}catch(Exception e){
 			LogUtil.getLogger().error("findpathdate 查询最大和最小起报日期异常",e);
