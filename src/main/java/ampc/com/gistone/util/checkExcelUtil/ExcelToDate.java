@@ -1,4 +1,4 @@
-package ampc.com.gistone.util.checkExcelUtil;
+   package ampc.com.gistone.util.checkExcelUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -1225,6 +1225,8 @@ public class ExcelToDate {
                     sector.setGroup2(getCellValue(row.getCell(11)));
                     //写入Group3
                     sector.setGroup3(getCellValue(row.getCell(12)));
+                    //写入Tag
+                    sector.setTag(getCellValue(row.getCell(13)));
                     //写入版本等信息
                     sector.setVersionExcelId(versionId);
                     sector.setUserId(userId);
@@ -1597,9 +1599,10 @@ public class ExcelToDate {
                 measure.setUserId(userId);
                 measureList.add(measure);
             }  
+        	LogUtil.getLogger().info("ExcelToDateController 读取措施数据Excel成功!");
             return measureList;
-        } catch (Exception ex) {  
-            ex.printStackTrace();
+        } catch (Exception e) {  
+        	LogUtil.getLogger().error("ExcelToDateController 读取措施数据Excel异常!",e);
             return null;
         }  
     }  
