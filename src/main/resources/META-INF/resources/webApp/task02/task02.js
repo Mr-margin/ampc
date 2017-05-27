@@ -8,6 +8,7 @@ var index, indexPar, handle, minLeft, maxLeft, selfLeft, startX, leftWidth, righ
 var allData = [];//用于存储所有区域时段和预案信息，展示和数据处理
 var areaIndex, timeIndex;
 var showCode = [{}, {}, {}];
+var newPlan;
 var proNum, cityNum, countyNum;
 var msg = {//路由传递信息参数
     'id': 'yaMessage',

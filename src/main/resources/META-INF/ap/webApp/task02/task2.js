@@ -17,6 +17,7 @@ var msg = {
         timeId: ''
     }
 };
+var jpztSetTimeOut;
 var plancharts;
 var allData = [];//保存所有区域时段信息
 var allData1 = null;
@@ -304,6 +305,18 @@ var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时�
             }).success(function (res) {
                 setDisabled(res.data);
             });
+        }
+    }));
+//    状态查看的窗口渲染
+    $('#jpzt').window($.extend({},defaultwindowoption,{
+        title:'减排计算状态',
+        onOpen:function () {
+            window.clearTimeout(jpztSetTimeOut);
+            jpztckBtn(3000);
+        },
+        onClose:function(){
+            window.clearTimeout(jpztSetTimeOut);
+            jpztckBtn(60000);
         }
     }));
 //        时段编辑的标签页渲染
@@ -2396,6 +2409,164 @@ function sunEditTimeDate() {
             }
             showTimeline(allData);
             $('#timePlan').window('close');
+        }
+    })
+}
+/*减排计算按钮*/
+function jpjsBtn() {
+    var url = '/jp/areajp';
+    var params = {
+        scenarinoId: qjMsg.qjId,
+        areaAndPlanIds: {},
+        userId: userId
+    }
+    for (var i = 0; i < allData.length; i++) {
+        var planArr = [];
+        var times = allData[i].timeItems;
+        for (var p = 0; p < times.length; p++) {
+            if (times[p].planId != -1) {
+                planArr.push(times[p].planId)
+            }
+        }
+        if (planArr.length > 0) {
+            params.areaAndPlanIds[allData[i].areaId] = planArr
+        }
+    }
+
+    if (Object.keys(params.areaAndPlanIds).length > 0) {
+        ajaxPost(url, params).success(function (res) {
+            if (res.status == 0) {
+                if (res.data == 1) {
+                    /*减排计算成功后关闭减排计算按钮，打开减排计算状态查看按钮*/
+                    $('.jpjs').addClass('disNone');
+                    $('.jpztck.disNone').removeClass('disNone').click();
+
+                    scenarinoType(3);
+                    qjMsg.scenarinoStatus = 3;
+                    window.clearTimeout(jpztSetTimeOut);
+                    //jpztckBtn(60000);
+                } else {
+                    console.log('计算异常')
+                }
+
+                /*这里控制所有禁止操作*/
+
+            } else {
+                console.log(res.msg);
+                console.log('接口异常')
+            }
+        })
+    }
+}
+/*减排分析按钮*/
+function jumpJpfx() {
+    var msg1 = {
+        'id': 'jpfxMessage',
+        'content': {}
+    };
+    msg1.content.rwId = qjMsg.rwId;
+    msg1.content.rwName = qjMsg.rwName;
+    msg1.content.qjId = qjMsg.qjId;
+    msg1.content.qjName = qjMsg.qjName;
+    vipspa.setMessage(msg);
+
+    var a = document.createElement('a');
+    a.href = '#/rwgl_reductAnalys';
+    a.click();
+}
+/*重置减排计算*/
+function initJPJS() {
+    var url = '/plan/update_Status';
+    ajaxPost(url, {
+        userId: userId,
+        scenarinoId: qjMsg.qjId
+    }).success(function (res) {
+        if (res.status == 0) {
+            /*window.clearTimeout(jpztSetTimeOut);
+            jpztckBtn(3000);*/
+        } else {
+            console.log(url + '故障')
+        }
+    }).error(function () {
+        console.log(url + '错误')
+    })
+}
+/*减排状态查看*/
+function jpztckBtn(t) {
+    var url = '/jp/areaStatusJp';
+    var params = {
+        scenarinoId: qjMsg.qjId,
+        userId: userId,
+        areaAndPlanIds: ''
+    }
+    ajaxPost(url, params).success(function (res) {
+
+        if (res.status == 0) {
+            if (res.data.type == 0) {
+                var jsjd = (Math.round(res.data.percent * 10000)) / 100 + '%';
+                var yys = moment(res.data.time * 1000).subtract(8, 'h').format('HH时mm分ss秒');
+                var sysj = moment((res.data.time / res.data.percent - res.data.time) * 1000).subtract(8, 'h').format('HH时mm分ss秒');
+
+                $('.jsjd').empty().html(jsjd);
+                $('.yys').empty().html(yys);
+                $('.sysj').empty().html(sysj);
+
+
+                if (res.data.percent == 1) {
+                    /*减排计算完成后，查看情景状态*/
+                    findQJstatus();
+                } else {
+                    /*如果减排计算未完成，则递归函数，反复查看，直到减排计算完成，t为等候时间，模态框打开时为3s，模态框关闭时为1min*/
+                    /*jpztSetTimeOut = window.setTimeout(function () {
+                        jpztckBtn(t)
+                    }, t)*/
+                }
+            } else if (res.data.type == 1) {
+                $('#jpzt').window('close');
+                console.log('重新计算中！！！');
+                window.setTimeout(function () {
+                    swal({
+                        title: '重新计算中!',
+                        type: 'warning',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                }, 50)
+            } else if (res.data.type == 2) {
+                $('#jpzt').window('close');
+                console.log('计算排队中');
+                window.setTimeout(function () {
+                    swal({
+                        title: '计算排队中!',
+                        type: 'warning',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                }, 50)
+            } else {
+                console.log('计算接口异常')
+            }
+        } else {
+            console.log('接口故障')
+        }
+
+    })
+    //}
+}
+function findQJstatus() {
+    var url = '/scenarino/find_Scenarino_status';
+    ajaxPost(url, {
+        userId: userId,
+        scenarinoId: qjMsg.qjId
+    }).success(function (res) {
+        qjMsg.scenarinoStatus = res.data.scenarinoStatus;
+        if (qjMsg.scenarinoStatus != 5) {
+            /*如果情景状态未变成可执行，递归请求*/
+            window.setTimeout(function () {
+                findQJstatus();
+            },1000);
+        } else {
+            scenarinoType(qjMsg.scenarinoStatus);
         }
     })
 }
