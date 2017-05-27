@@ -1280,13 +1280,13 @@ dl, dd {
 .cloudui .timeUpDown .timeUpDownBtn{display: inline-block;border-top:none!important;height: 24px;position: relative;cursor: pointer;top:-1px;padding:0 10px;border: 1px solid #0275D8;background-color:#0275D8;color: #fff;}
 .cloudui .timeUpDown .timeUpDownBtn:hover{background-color: #fff;color:#333;}
 /*新增任务模态框*/
-#addRW > .step1 ,#addYQJ > .step1,#addHQJ > .step1 ,#settingqjbox>.step1{
+#addRW > .step1 ,#addYQJ > .step1,#addHQJ > .step1 ,#settingqjbox>.step1,#selectCreateQj>.step1{
   display: flex;
   justify-content: space-around;
   margin: 40px 0;
 }
 
-#addRW > .step1 > button ,#addYQJ > .step1 > button,#addHQJ > .step1 > button  ,#settingqjbox>.step1>button{
+#addRW > .step1 > button ,#addYQJ > .step1 > button,#addHQJ > .step1 > button  ,#settingqjbox>.step1>button,#selectCreateQj>.step1>button{
   padding: 0;
   margin: 0;
   border: none;

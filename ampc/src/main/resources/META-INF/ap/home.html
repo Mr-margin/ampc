@@ -67,149 +67,164 @@ display:block;
 
 
 <!--<a id="clickA"></a>-->
-<div id="d1" data-options="region:'west',border:false" style="width: 210px;display: none">
-  <div id="sidebarlt">
-    <ul>
-      <li>
-        <a href="#/sy"><i class="im-home2"> 首页</i></a>
-        <div class="borderbox"></div>
-      </li>
-      <li class="candrop">
-        <a href="javascript:"><i class="st-align-justify"> 源清单</i></a>
-        <div class="dropmenu">
-          <div>
-            <p><a href="#/yqd_v1">全国清单</a></p>
-            <p><a href="#/yqd_v2">本地清单</a></p>
-            <p><a href="#/yqd_v3">耦合清单</a></p>
-          </div>
-        </div>
-      </li>
-      <li class="candrop">
-        <a href="javascript:"><i class="me-cloudy"> 空气质量预报</i></a>
-        <div class="dropmenu">
-          <div>
-            <p><a href="#/kqzlyb_v1">预报检验</a></p>
-            <p><a href="#/kqzlyb_v2">时间序列</a></p>
-            <p><a href="#/kqzlyb_v3">水平分布</a></p>
-            <p><a href="#/kqzlyb_v4">垂直廓线</a></p>
-          </div>
-        </div>
-      </li>
-      <li class="active">
-        <a href="#/rwgl"><i class="st-folder-settings"> 任务管理</i></a>
-        <div class="borderbox">
-          <div class="qyCon disNone">
-            <div class="nowRw">
-              <h3>当前任务：</h3>
-              <span></span>
-            </div>
-            <div class="nowQj">
-              <h3>当前情景：</h3>
-              <span></span>
-            </div>
-            <div class="seDate">
-              <h3>起止时间：</h3>
-              <span></span>
-            </div>
-            <div class="jsBtn">
-              <button class="btn btn-success jpjs" onclick="jpjsBtn(this)">减排计算</button>
-              <button class="btn btn-success disNone jpztck" data-toggle="modal" data-target="#jpzt">计算状态</button>
-              <button class="btn btn-success jpfx" disabled="disabled" onclick="jumpJpfx()">减排分析</button>
-            </div>
-          </div>
-          <div class="jpfxCon disNone">
-            <div class="nowRw">
-              <h3>当前任务：</h3>
-              <span></span>
-            </div>
-            <div class="nowQj">
-              <h3>当前情景：</h3>
-              <span></span>
-            </div>
-            <div class="seDate">
-              <h3>起止时间：</h3>
-              <span></span>
-            </div>
-            <div class="jsBtn">
-              <button class="btn btn-success reCsbj" onclick="returnCSBJ(this)">返回</button>
-            </div>
-          </div>
-          <div class="csCon disNone" style="overflow: auto">
-            <div class="nowRw">
-              <h3>当前任务：</h3>
-              <span></span>
-            </div>
-            <div class="nowQj">
-              <h3>当前情景：</h3>
-              <span></span>
-            </div>
-            <div class="nowArea">
-              <h3>当前区域：</h3>
-              <span></span>
-            </div>
-            <div class="seDate">
-              <h3>当前时段：</h3>
-              <span></span>
-            </div>
-            <div class="nowTime">
-              <h3>当前预案：</h3>
-              <span></span>
-            </div>
-            <div class="nowHY">
-              <h3>当前行业：</h3>
-              <span></span>
-            </div>
-            <div class="nowCS">
-              <h3>当前措施：</h3>
-              <span></span>
-            </div>
-            <div class="jsBtn cloudui">
-              <button class="btn btn-success cryak" onclick="Deposit_Reserve_plan()"><i class="ec-archive"></i>存入预案库</button>
-              <button class="btn btn-success wc" onclick="complete_Button()"><i class="im-paste2"></i>完成</button>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="candrop">
-        <a href="javascript:"><i class="im-paste2"> 效果评估</i></a>
-        <div class="dropmenu">
-          <div>
-            <p><a href="#/xgpg_v1">减排分析</a></p>
-            <p><a href="#/xgpg_v2">网格排放</a></p>
-            <p><a href="#/xgpg_v3">时间序列</a></p>
-            <p><a href="#/xgpg_v4">水平分布</a></p>
-            <p><a href="#/xgpg_v5">垂直廓线</a></p>
-            <p><a href="#/xgpg_v6">评估报告</a></p>
-          </div>
-        </div>
-      </li>
-      <li>
-        <a href="#/sjkj"><i class="im-storage"> 预案库</i></a>
-        <div class="borderbox"></div>
-      </li>
-      <li>
-        <a href="#/domain"><i class="im-storage"> domain设置</i></a>
-        <div class="borderbox"></div>
-      </li>
-    </ul>
+<div id="d1" data-options="region:'north',border:false" style="height: 51px;display: none;border-bottom: 1px solid #ddd">
+  <div>
+    <img src="img/logo.jpg" style="vertical-align: bottom">
   </div>
+<!--  <div class="user-center">
+    <div>
+      <a href="javascript:"><i class="fa fa-user-circle" aria-hidden="true"></i><span>用户名</span></a>
+      <div style="display:none">
+        <ul>
+          <li>用户设置</li>
+          <li>取消登录</li>
+        </ul>
+      </div>
+    </div>
+  </div>-->
+
+
+  <!--<div id="header" class="clearfloat">-->
+  <!--&lt;!&ndash;logo&ndash;&gt;-->
+  <!--&lt;!&ndash;<div class="logobox">&ndash;&gt;-->
+  <!--&lt;!&ndash;<p  style="border:1px solid red;">&ndash;&gt;-->
+  <!--&lt;!&ndash;&lt;!&ndash;<i class="fa fa-cloud" aria-hidden="true"></i><span>&nbsp;<span>环境空气质量</span>动态模拟云平台</span>&ndash;&gt;&ndash;&gt;-->
+  <!--&lt;!&ndash;<img src="img/logo.jpg" style="border:1px solid blue">&ndash;&gt;-->
+  <!--&lt;!&ndash;</p>&ndash;&gt;-->
+  <!--&lt;!&ndash;</div>&ndash;&gt;-->
+  <!--</div>-->
+
 </div>
 
 <div id="d2" data-options="region:'center',border:false" style="display: none">
   <div class="easyui-layout" data-options="fit:true">
     <!-- Start #header -->
-    <div data-options="region:'north',border:false" style="height: 50px;overflow: hidden">
-      <img src="img/logo.jpg">
-
-      <!--<div id="header" class="clearfloat">-->
-        <!--&lt;!&ndash;logo&ndash;&gt;-->
-        <!--&lt;!&ndash;<div class="logobox">&ndash;&gt;-->
-          <!--&lt;!&ndash;<p  style="border:1px solid red;">&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;<i class="fa fa-cloud" aria-hidden="true"></i><span>&nbsp;<span>环境空气质量</span>动态模拟云平台</span>&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;<img src="img/logo.jpg" style="border:1px solid blue">&ndash;&gt;-->
-          <!--&lt;!&ndash;</p>&ndash;&gt;-->
-        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-      <!--</div>-->
+    <div data-options="region:'west',border:false" style="width: 210px;overflow: hidden">
+      <div id="sidebarlt">
+        <ul>
+          <li>
+            <a href="#/sy"><i class="im-home2"> 首页</i></a>
+            <div class="borderbox"></div>
+          </li>
+          <li class="candrop">
+            <a href="javascript:"><i class="st-align-justify"> 源清单</i></a>
+            <div class="dropmenu">
+              <div>
+                <p><a href="#/yqd_v1">全国清单</a></p>
+                <p><a href="#/yqd_v2">本地清单</a></p>
+                <p><a href="#/yqd_v3">耦合清单</a></p>
+              </div>
+            </div>
+          </li>
+          <li class="candrop">
+            <a href="javascript:"><i class="me-cloudy"> 空气质量预报</i></a>
+            <div class="dropmenu">
+              <div>
+                <p><a href="#/kqzlyb_v1">预报检验</a></p>
+                <p><a href="#/kqzlyb_v2">时间序列</a></p>
+                <p><a href="#/kqzlyb_v3">水平分布</a></p>
+                <p><a href="#/kqzlyb_v4">垂直廓线</a></p>
+              </div>
+            </div>
+          </li>
+          <li class="active">
+            <a href="#/rwgl"><i class="st-folder-settings"> 任务管理</i></a>
+            <div class="borderbox">
+              <div class="qyCon disNone">
+                <div class="nowRw">
+                  <h3>当前任务：</h3>
+                  <span></span>
+                </div>
+                <div class="nowQj">
+                  <h3>当前情景：</h3>
+                  <span></span>
+                </div>
+                <div class="seDate">
+                  <h3>起止时间：</h3>
+                  <span></span>
+                </div>
+                <div class="jsBtn">
+                  <button class="btn btn-success jpjs" onclick="jpjsBtn(this)">减排计算</button>
+                  <button class="btn btn-success disNone jpztck" onclick="$('#jpzt').window('open')">计算状态</button>
+                  <button class="btn btn-success jpfx" disabled="disabled" onclick="jumpJpfx()">减排分析</button>
+                </div>
+              </div>
+              <div class="jpfxCon disNone">
+                <div class="nowRw">
+                  <h3>当前任务：</h3>
+                  <span></span>
+                </div>
+                <div class="nowQj">
+                  <h3>当前情景：</h3>
+                  <span></span>
+                </div>
+                <div class="seDate">
+                  <h3>起止时间：</h3>
+                  <span></span>
+                </div>
+                <div class="jsBtn">
+                  <button class="btn btn-success reCsbj" onclick="returnCSBJ(this)">返回</button>
+                </div>
+              </div>
+              <div class="csCon disNone" style="overflow: auto">
+                <div class="nowRw">
+                  <h3>当前任务：</h3>
+                  <span></span>
+                </div>
+                <div class="nowQj">
+                  <h3>当前情景：</h3>
+                  <span></span>
+                </div>
+                <div class="nowArea">
+                  <h3>当前区域：</h3>
+                  <span></span>
+                </div>
+                <div class="seDate">
+                  <h3>当前时段：</h3>
+                  <span></span>
+                </div>
+                <div class="nowTime">
+                  <h3>当前预案：</h3>
+                  <span></span>
+                </div>
+                <div class="nowHY">
+                  <h3>当前行业：</h3>
+                  <span></span>
+                </div>
+                <div class="nowCS">
+                  <h3>当前措施：</h3>
+                  <span></span>
+                </div>
+                <div class="jsBtn cloudui">
+                  <button class="btn btn-success cryak" onclick="Deposit_Reserve_plan()"><i class="ec-archive"></i>存入预案库</button>
+                  <button class="btn btn-success wc" onclick="complete_Button()"><i class="im-paste2"></i>完成</button>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="candrop">
+            <a href="javascript:"><i class="im-paste2"> 效果评估</i></a>
+            <div class="dropmenu">
+              <div>
+                <p><a href="#/xgpg_v1">减排分析</a></p>
+                <p><a href="#/xgpg_v2">网格排放</a></p>
+                <p><a href="#/xgpg_v3">时间序列</a></p>
+                <p><a href="#/xgpg_v4">水平分布</a></p>
+                <p><a href="#/xgpg_v5">垂直廓线</a></p>
+                <p><a href="#/xgpg_v6">评估报告</a></p>
+              </div>
+            </div>
+          </li>
+          <li>
+            <a href="#/sjkj"><i class="im-storage"> 预案库</i></a>
+            <div class="borderbox"></div>
+          </li>
+          <li>
+            <a href="#/domain"><i class="im-storage"> domain设置</i></a>
+            <div class="borderbox"></div>
+          </li>
+        </ul>
+      </div>
     </div>
     <div data-options="region:'center',border:false">
       <div  class="easyui-layout" data-options="fit:true">
