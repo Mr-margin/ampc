@@ -13,44 +13,46 @@ $(function(){
 var dps_City,dps_Date ;
 var dps_Station = {};
 var changeMsg = {
-    type: 'wrw',
-    startD: '',		//开始时间
-    endD: '',		//结束时间
-    rms: 'day',		//时间分辨率
-    pro: '',		//站点选择
-    city: ''
+		type: 'wrw',
+	    startD: '',		//开始时间
+	    endD: '',		//结束时间
+	    rms: 'day',		//时间分辨率
+	    pro: '',		//站点选择
+	    city: ''
 };
 
 $('.day').css('display','block');
 $('.hour').css('display','none');
 var zhiCity = ['11', '12', '31', '50'];
 var speciesArr = {
-    day: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'SO2', 'NO2', 'CO'],
-    hour: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3', 'SO2', 'NO2', 'CO']
+		day: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3_8_MAX', 'O3_1_MAX', 'SO2', 'NO2', 'CO'],
+		hour: ['AQI', 'PM25', 'SO4', 'NO3', 'NH4', 'BC', 'OM', 'PMFINE', 'PM10', 'O3', 'SO2', 'NO2', 'CO']
 };
 
 var meteorArr = {
-    day: ["TEMP","PRSFC","PT","RH","WSPD"],
-    hour: ["TEMP","PRSFC","PT","RH","WSPD"]
+//    day: ["TEMP","PRSFC","PT","RH","WSPD"],
+//    hour: ["TEMP","PRSFC","PT","RH","WSPD"]
+		day: ["温度","湿度","风速","气压","降水"],
+	    hour: ["温度","湿度","风速","气压","降水"]
 };
 
 
 var speciesObj = {
-    'PM₂₅':'PM25',
-    'PM₁₀':'PM10',
-    'O₃_8_MAX':'O3_8_MAX',
-    'O₃_1_MAX':'O3_1_MAX',
-    'O₃_AVG':'O3_AVG',
-    'SO₂':'SO2',
-    'NO₂':'NO2',
-    'CO':'CO',
-    'SO₄':'SO4',
-    'NO₃':'NO3',
-    'NH₄':'NH4',
-    'BC':'BC',
-    'OM':'OM',
-    'PMFINE':'PMFINE',
-    'O₃':'O3'
+	    'PM₂₅':'PM25',
+	    'PM₁₀':'PM10',
+	    'O₃_8_MAX':'O3_8_MAX',
+	    'O₃_1_MAX':'O3_1_MAX',
+	    'O₃_AVG':'O3_AVG',
+	    'SO₂':'SO2',
+	    'NO₂':'NO2',
+	    'CO':'CO',
+	    'SO₄':'SO4',
+	    'NO₃':'NO3',
+	    'NH₄':'NH4',
+	    'BC':'BC',
+	    'OM':'OM',
+	    'PMFINE':'PMFINE',
+	    'O₃':'O3'
 };
 
 /**
@@ -58,53 +60,53 @@ var speciesObj = {
  */
 var show_type = "bar";
 var optionAll = {
-    title: {
-        text: '',  //改变量 放污染物
-        x: 'left',
-        y: 'top'
-    },
-    tooltip: {
-        trigger: 'axis'
-    },
-    legend: {
-        show: true,
-        x: 'center',
-        y: 'top',
-        //legend的data: 用于设置图例，data内的字符串数组需要与sereis数组内每一个series的name值对应
-        data: [],     //改变量 存储所选情景name
-
-    },
-    grid: {
-        show: true,
-        left: '3%',
-        right: '3%',
-        bottom: '30%',
-    },
-    calculable: false,
-    xAxis: [
-        {
-            show: true,
-            type: 'category',
-            data: []  //改变量
-        }
-    ],
-    yAxis: [
-        {
-            name:'',  //改变量  污染物name
-            nameLocation:'end',
-            show: true,
-            type: 'value',
-            splitArea: {show: false},
-            splitLine:{show: false,		//设置网格线颜色
-                lineStyle:{
-
-                }
-            },//去除网格线
-        }
-    ],
-    //颜色色卡
-    color:["#c12e34","#e6b600", "#0098d9", "#2b821d","#005eaa","#339ca8","#cda819","#32a487"],
-    series:[]   //改变量  观测数据单独写一个接口  其它的放在一起
+	    title: {
+	        text: '',  //改变量 放污染物
+	        x: 'left',
+	        y: 'top'
+	    },
+	    tooltip: {
+	        trigger: 'axis'
+	    },
+	    legend: {
+	        show: true,
+	        x: 'center',
+	        y: 'top',
+	        //legend的data: 用于设置图例，data内的字符串数组需要与sereis数组内每一个series的name值对应
+	        data: [],     //改变量 存储所选情景name
+	
+	    },
+	    grid: {
+	        show: true,
+	        left: '3%',
+	        right: '3%',
+	        bottom: '30%',
+	    },
+	    calculable: false,
+	    xAxis: [
+	        {
+	            show: true,
+	            type: 'category',
+	            data: []  //改变量
+	        }
+	    ],
+	    yAxis: [
+	        {
+	            name:'',  //改变量  污染物name
+	            nameLocation:'end',
+	            show: true,
+	            type: 'value',
+	            splitArea: {show: false},
+	            splitLine:{show: false,		//设置网格线颜色
+	                lineStyle:{
+	
+	                }
+	            },//去除网格线
+	        }
+	    ],
+	    //颜色色卡
+	    color:["#c12e34","#e6b600", "#0098d9", "#2b821d","#005eaa","#339ca8","#cda819","#32a487"],
+	    series:[]   //改变量  观测数据单独写一个接口  其它的放在一起
 };
 
 initialize();
@@ -499,7 +501,7 @@ function initEcharts() {
     cityStation=$("#cityStation option:selected").text();
     station=$("#station option:selected").text();
     var	domain=$("#wrw input[name='domain']").parents('label.active').text();
-    var mesage='';
+//    var mesage='';
     // if(proStation.substr(-1)!="省"&&cityStation.substr(-1)=="市"&&"平均"==station){
     //     mesage+=cityStation+">>"+domain+">>";
     // }else if(proStation.substr(-1)!="省"&&cityStation.substr(-1)=="市"&&"平均"!=station){
@@ -538,39 +540,39 @@ function initEcharts() {
             option.title.text = tname[i];         //加不同单位
         }else if(tname[i] != 'CO'){
             if("PM25"==tname[i]){
-                option.title.text = mesage +"PM₂.₅"+('(μg/m³)');
+                option.title.text = "PM₂.₅"+('(μg/m³)');
             }else if("SO4"==tname[i]){
-                option.title.text = mesage +"SO₄²¯"+('(μg/m³)');
+                option.title.text = "SO₄²¯"+('(μg/m³)');
             }else if("NO3"==tname[i]){
-                option.title.text = mesage +"NO₃¯"+('(μg/m³)');
+                option.title.text = "NO₃¯"+('(μg/m³)');
             }else if("NH4"==tname[i]){
-                option.title.text = mesage +"NH₄⁺"+('(μg/m³)');
+                option.title.text = "NH₄⁺"+('(μg/m³)');
             }else if("PM10"==tname[i]){
-                option.title.text = mesage +"PM₁₀"+('(μg/m³)');
+                option.title.text = "PM₁₀"+('(μg/m³)');
             }else if("O3_8_MAX"==tname[i]){
-                option.title.text = mesage +"O₃_8_max"+('(μg/m³)');
+                option.title.text = "O₃_8_max"+('(μg/m³)');
             }else if("O3_1_MAX"==tname[i]){
-                option.title.text = mesage +"O₃_1_max"+('(μg/m³)');
+                option.title.text = "O₃_1_max"+('(μg/m³)');
             }else if("SO2"==tname[i]){
-                option.title.text = mesage +"SO₂"+('(μg/m³)');
+                option.title.text = "SO₂"+('(μg/m³)');
             }else if("NO2"==tname[i]){
-                option.title.text = mesage +"NO₂"+('(μg/m³)');
-            }else if("TEMP"==tname[i]){
-                option.title.text = mesage +tname[i]+('(℃)');
-            }else if("PRSFC"==tname[i]){
-                option.title.text = mesage +tname[i]+('(hPa)');
-            }else if("PT"==tname[i]){
-                option.title.text = mesage +tname[i]+('(mm)');
-            }else if("RH"==tname[i]){
-                option.title.text = mesage +tname[i]+('(%)');
-            }else if("WSPD"==tname[i]){
-                option.title.text = mesage +tname[i]+('(m/s)');
+                option.title.text = "NO₂"+('(μg/m³)');
+            }else if("温度"==tname[i]){
+                option.title.text = tname[i]+('(℃)');
+            }else if("气压"==tname[i]){
+                option.title.text = tname[i]+('(hPa)');
+            }else if("降水"==tname[i]){
+                option.title.text = tname[i]+('(mm)');
+            }else if("湿度"==tname[i]){
+                option.title.text = tname[i]+('(%)');
+            }else if("风速"==tname[i]){
+                option.title.text = tname[i]+('(m/s)');
             }
             else{
-                option.title.text = mesage +tname[i]+('(μg/m³)');
+                option.title.text = tname[i]+('(μg/m³)');
             }
         }else{
-            option.title.text = mesage +tname[i]+('(mg/m³)');
+            option.title.text = tname[i]+('(mg/m³)');
         }
 
         //设置单个图表中包含的图例名称
@@ -640,7 +642,6 @@ function initEcharts() {
                             keys.push(xdata[n]+' '+m);
                             ydata.push(val[species[i]][xdata[n]][m]);
                         }
-
                     }
 
                     if("模拟数据"==key){		//去除模拟
@@ -749,6 +750,46 @@ function initEcharts() {
             option.xAxis.push({				    //x轴情景时间
                 data: xdataName					//修改数据排序
             });
+        }
+        
+        //气象要素设置y轴坐标为自适应
+        if("qxys"==changeMsg.type){
+        	//气象要素逐小时
+        	if(changeMsg.rms == 'hour'){
+        		option.yAxis = [];
+        		if("气温"==tname[i]){
+        			 option.yAxis.push({
+        				 	name:'',  //改变量  污染物name
+				            nameLocation:'end',
+				            show: true,
+				            type: 'value',
+				            boundaryGap: ['20%', '20%'],
+				            splitArea: {show: false},
+				            splitLine:{show: false,		//设置网格线颜色
+				                lineStyle:{
+				
+				                }
+				            },//去除网格线
+        			 });
+        		}else if("气压"==tname[i]){
+        			option.yAxis = [];
+            		if("气温"==tname[i]){
+            			 option.yAxis.push({
+            				 	name:'',  //改变量  污染物name
+    				            nameLocation:'end',
+    				            show: true,
+    				            type: 'value',
+    				            boundaryGap: ['20%', '20%'],
+    				            splitArea: {show: false},
+    				            splitLine:{show: false,		//设置网格线颜色
+    				                lineStyle:{
+    				
+    				                }
+    				            },//去除网格线
+            			 });
+        		}
+        		
+        	}
         }
 
 //		var es = echarts.init(document.getElementById(tname[i]));

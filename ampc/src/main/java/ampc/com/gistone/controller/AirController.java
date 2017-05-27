@@ -546,7 +546,8 @@ public class AirController {
 			//污染物--观测数据
 			Object[] speciesArr={"NO2","PM2_5","O3","SO2","PM10","AQI","O3_8h","CO"};
 			//气象要素--模拟数据
-			Object[] meteormnArr={"TEMP","PRSFC","PT","RH","WSPD"};	
+//			Object[] meteormnArr={"TEMP","PRSFC","PT","RH","WSPD"};	
+			Object[] meteormnArr={"温度","湿度","风速","气压","降水"};
 //			Object[] meteorgcArr={"TEMP","PRSFC","PT","RH","WSPD"};	//气象要素--观测数据--暂无
 			
 			calendar = Calendar.getInstance();
@@ -1376,7 +1377,6 @@ public class AirController {
 							contents=scenarinoEntity.getContent();		//获取模拟数据
 							contentmapData=mapper.readValue(contents, Map.class);	//模拟父数据
 						}
-						
 						
 						Calendar calendar1 = Calendar.getInstance();
 						calendar1.add(Calendar.DATE, -2);

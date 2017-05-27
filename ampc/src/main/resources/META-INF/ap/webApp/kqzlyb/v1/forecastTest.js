@@ -32,8 +32,10 @@ var speciesAll = {
         hour: ['AQI','PM₂.₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO']
     },
     qxys: {
-    	day: ["TEMP","PRSFC","PT","RH","WSPD"],
-		hour: ["TEMP","PRSFC","PT","RH","WSPD"]
+//    	day: ["TEMP","PRSFC","PT","RH","WSPD"],
+//		hour: ["TEMP","PRSFC","PT","RH","WSPD"]
+	    day: ["温度","湿度","风速","气压","降水"],
+	    hour: ["温度","湿度","风速","气压","降水"]
     }
 };
 var speciesObj = {

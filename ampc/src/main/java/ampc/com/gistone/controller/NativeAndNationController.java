@@ -685,6 +685,8 @@ public class NativeAndNationController {
 			int total=tEsNativeMapper.insertSelective(tEsNative);
 			Map msgMap=new HashMap();
 			if(total==1){
+				
+				
 				msgMap.put("msg", true);
 			}else{
 				msgMap.put("msg", false);
