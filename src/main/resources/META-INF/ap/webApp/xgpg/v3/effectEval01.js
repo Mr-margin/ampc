@@ -98,7 +98,10 @@ var optionAll = {
       xAxis: [  
               	{  
 	        	  show: true,  
-	        	  type: 'category',  
+	        	  type: 'category',
+	        	  axisLabel:{
+	        		  interval:'',
+	        		  },
 	        	  data: []  	//改变量
               	}
               ],  
@@ -382,24 +385,31 @@ function initEcharts() {
 			var id = sceneInitialization_arr[j].scenarinoId;
 			var name = sceneInitialization_arr[j].scenarinoName;
 			var ttime = [];		//x轴数据
-			var ydata = [];		//y轴数据	
+			var ydata = [];		//y轴数据
 			var keys = [];
 			var vals = [];
 			if(changeMsg.rms == 'day'){
-				for (var prop in datas) {  		//prop--情景id-507     datas--json对象
-					if (datas.hasOwnProperty(prop)) {   
-						if(prop == id){ 		//循环不同的情景id
-							for ( var pr in datas[prop] ) {		//无规律循环该ID下的pr--物种
+				//逐日
+				//prop--情景id-507     datas-返回的数据
+				for (var prop in datas) {  		
+					if (datas.hasOwnProperty(prop)) {
+						//循环不同的情景id
+						if(prop == id){
+							//无规律循环该ID下的pr--物种
+							for ( var pr in datas[prop] ) {		
 								if (datas[prop].hasOwnProperty(pr)) {
-									if(pr == tname[i]){			//判断是否含有该物种
+									//判断是否含有该物种
+									if(pr == tname[i]){			
 										var ss = datas[prop][pr];
 										for( var s in ss ) {
 											if(ss.hasOwnProperty(s)){
 												keys.push(s);
 											}
 										}
-										keys = keys.sort();		//.sort()函数重新排序
-										for(var m=0; m<keys.length; m++){	//根据键取值
+										//.sort()函数重新排序
+										keys = keys.sort();
+										//根据键取值
+										for(var m=0; m<keys.length; m++){	
 											ttime.push(keys[m]);
 											ydata.push(ss[keys[m]]);
 										}
@@ -410,6 +420,7 @@ function initEcharts() {
 					}  
 				}
 			}else{
+				//逐小时
 				var arr = Object.keys(datas);
 				for (var prop in datas) {  
 					if (datas.hasOwnProperty(prop)) {   
@@ -551,10 +562,50 @@ function initEcharts() {
 			}
 		}	//标注线配色结束
 		
-    option.xAxis = [];
-    option.xAxis.push({				    //x轴情景时间
-    	data: ttime						//修改数据排序
-    });
+		/**
+		 * 设置根据选择的日期使用不同的间隔展示
+		 */
+		if("hour"==changeMsg.rms ){
+			//keys为查询返回的全部日期
+			if(keys.length>=24){
+		    	 option.xAxis = [];
+				    option.xAxis.push({			
+				    	axisLabel:{
+				    		interval:71
+				    	},
+				    	data: ttime						//修改数据排序
+				    });
+			}else if(keys.length>=11){
+			    		 option.xAxis = [];
+					    option.xAxis.push({			
+					    	axisLabel:{
+					    		interval:47
+					    	},
+					    	data: ttime						//修改数据排序
+					    });
+			}else if(keys.length>5){
+				 option.xAxis = [];
+				    option.xAxis.push({			
+				    	axisLabel:{
+				    		interval:23
+				    	},
+				    	data: ttime						//修改数据排序
+				    });
+			}else if(keys.length<=5){
+				 option.xAxis = [];
+				    option.xAxis.push({			
+				    	axisLabel:{
+				    		interval:11
+				    	},
+				    	data: ttime						//修改数据排序
+				    });
+			}
+		}else{
+			option.xAxis = [];
+		    option.xAxis.push({				    //x轴情景时间
+		    	data: ttime						//修改数据排序
+		    });
+		}
     
     /**
      * PM25的子类配置网格线

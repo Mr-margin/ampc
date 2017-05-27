@@ -1021,7 +1021,12 @@ public class AirController {
 								scenarinoEntity.setTableName(tables);
 								scenarinoEntity=tPreProcessMapper.selectBysomesFnl(scenarinoEntity);
 								//循环添加到map中
-								contentmapData.put(sdfNow.format(calDate), mapper.readValue(scenarinoEntity.getContent(), Map.class));
+								if(scenarinoEntity==null){
+									contentmapData.put(sdfNow.format(calDate), "{}");
+								}else{
+									contentmapData.put(sdfNow.format(calDate), mapper.readValue(scenarinoEntity.getContent(), Map.class));
+								}
+								
 							}
 							
 					    }else{

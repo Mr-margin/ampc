@@ -60,6 +60,7 @@ var speciesObj = {
  */
 var show_type = "bar";
 var optionAll = {
+		backgroundColor:'rgb(220,220,220)',
 	    title: {
 	        text: '',  //改变量 放污染物
 	        x: 'left',
@@ -772,21 +773,19 @@ function initEcharts() {
 				            },//去除网格线
         			 });
         		}else if("气压"==tname[i]){
-        			option.yAxis = [];
-            		if("气温"==tname[i]){
-            			 option.yAxis.push({
-            				 	name:'',  //改变量  污染物name
-    				            nameLocation:'end',
-    				            show: true,
-    				            type: 'value',
-    				            boundaryGap: ['20%', '20%'],
-    				            splitArea: {show: false},
-    				            splitLine:{show: false,		//设置网格线颜色
-    				                lineStyle:{
-    				
-    				                }
-    				            },//去除网格线
-            			 });
+        			option.yAxis.push({
+    				 	name:'',  //改变量  污染物name
+			            nameLocation:'end',
+			            show: true,
+			            type: 'value',
+			            boundaryGap: ['20%', '20%'],
+			            splitArea: {show: false},
+			            splitLine:{show: false,		//设置网格线颜色
+			                lineStyle:{
+			
+			                }
+			            },//去除网格线
+    			 });
         		}
         		
         	}
