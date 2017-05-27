@@ -676,8 +676,15 @@ public class AirController {
 								scenarinoEntity.setsId(tscdetails.getScenarinoId().longValue());
 								scenarinoEntity.setTableName(tables);
 								scenarinoEntity=tPreProcessMapper.selectBysomesFnl(scenarinoEntity);
-								//循环添加到map中
-								contentmapData.put(sdfNow.format(calDate), mapper.readValue(scenarinoEntity.getContent(), Map.class));
+								//未查询到FNL表的模拟数据
+								if(scenarinoEntity==null){
+									contentmapData.put(sdfNow.format(calDate),"{}");
+								}else{
+									//查询到FNL表的模拟数据
+									//循环添加到map中
+									contentmapData.put(sdfNow.format(calDate), mapper.readValue(scenarinoEntity.getContent(), Map.class));
+								}
+								
 							}
 							
 					    }else{//8点以前
@@ -1363,9 +1370,13 @@ public class AirController {
 						scenarinoEntity.setsId(Long.valueOf(tScenarinoDetail.getScenarinoId().toString()).longValue());
 						scenarinoEntity.setTableName(tables);
 						scenarinoEntity=tPreProcessMapper.selectBysomes(scenarinoEntity);   
+						if(scenarinoEntity==null){
+							System.out.println("未查询到模拟GFS数据");
+						}else{
+							contents=scenarinoEntity.getContent();		//获取模拟数据
+							contentmapData=mapper.readValue(contents, Map.class);	//模拟父数据
+						}
 						
-						contents=scenarinoEntity.getContent();		//获取模拟数据
-						contentmapData=mapper.readValue(contents, Map.class);	//模拟父数据
 						
 						Calendar calendar1 = Calendar.getInstance();
 						calendar1.add(Calendar.DATE, -2);
@@ -1401,8 +1412,14 @@ public class AirController {
 								scenarinoEntity.setsId(tscdetails.getScenarinoId().longValue());
 								scenarinoEntity.setTableName(tables);
 								scenarinoEntity=tPreProcessMapper.selectBysomesFnl(scenarinoEntity);
-								//循环添加到map中
-								contentmapData.put(sdfNow.format(calDate), mapper.readValue(scenarinoEntity.getContent(), Map.class));
+								if(scenarinoEntity==null){
+									//循环添加到map中
+									contentmapData.put(sdfNow.format(calDate), "{}");
+								}else{
+									//循环添加到map中
+									contentmapData.put(sdfNow.format(calDate), mapper.readValue(scenarinoEntity.getContent(), Map.class));
+								}
+								
 							}
 							
 					    }else{//8点以前

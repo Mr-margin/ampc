@@ -71,7 +71,10 @@ public class NativeAndNationController {
 					listTps = updata_nativeTp(requestDate,request,response);
 				}else if("delete_nativeTp".equals(param)){
 					listTps = delete_nativeTp(requestDate,request,response);
-				}else if("".equals(param)){
+				}else if("add_native".equals(param)){
+					listTps = add_native(requestDate,request,response);
+				}
+				else if("".equals(param)){
 					return AmpcResult.build(1001, "NativeAndNationController 请求方法参数异常!");
 				}
 				
@@ -623,6 +626,75 @@ public class NativeAndNationController {
 			// TODO: handle exception
 			LogUtil.getLogger().error("NativeAndNationController 删除全国清单信息异常!",e);
 			return AmpcResult.build(1001, "NativeAndNationController 删除全国清单信息异常!");
+		}
+	}
+	
+	/**
+	 * 创建本地清单
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public AmpcResult add_native(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			Long userId = Long.parseLong(param.toString());
+			//获取清单名称
+			param=data.get("nativeName");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单名称为空或出现非法字符!");
+			}
+			String nativeName = param.toString();
+			
+			//获取清单年份
+			param=data.get("nativeYear");
+			if(!RegUtil.CheckParameter(param, "Short", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单年份为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单年份为空或出现非法字符!");
+			}
+			Short nativeYear=Short.valueOf(param.toString());
+			//获取清单备注
+			param=data.get("nativeRemark");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单备注为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单备注为空或出现非法字符!");
+			}
+			String nativeRemark=param.toString();
+			
+			//日期格式
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date date=new Date();
+			//添加数据
+			TEsNative tEsNative=new TEsNative();
+			tEsNative.setUserId(userId);
+			tEsNative.setEsNativeName(nativeName);
+			tEsNative.setEsNativeYear(nativeYear);
+			tEsNative.setEsComment(nativeRemark);
+			//插入数据
+			int total=tEsNativeMapper.insertSelective(tEsNative);
+			Map msgMap=new HashMap();
+			if(total==1){
+				msgMap.put("msg", true);
+			}else{
+				msgMap.put("msg", false);
+			}
+			LogUtil.getLogger().info("NativeAndNationController 创建本地清单模板信息成功!");
+			return AmpcResult.ok(msgMap);
+		} catch (Exception e) {
+			// TODO: handle exception
+			LogUtil.getLogger().error("NativeAndNationController 创建本地清单模板异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 创建本地清单模板异常!");
 		}
 	}
 	
