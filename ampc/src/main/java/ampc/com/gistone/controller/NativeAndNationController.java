@@ -671,7 +671,13 @@ public class NativeAndNationController {
 				return AmpcResult.build(1003, "本地清单备注为空或出现非法字符!");
 			}
 			String nativeRemark=param.toString();
-			
+			//获取清单备注
+			param=data.get("nativeTpId");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单模板id为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单模板id为空或出现非法字符!");
+			}
+			Long nativeTpId=Long.parseLong(param.toString());
 			//日期格式
 			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date date=new Date();
@@ -681,6 +687,7 @@ public class NativeAndNationController {
 			tEsNative.setEsNativeName(nativeName);
 			tEsNative.setEsNativeYear(nativeYear);
 			tEsNative.setEsComment(nativeRemark);
+			tEsNative.setEsNativeTpId(nativeTpId);
 			//插入数据
 			int total=tEsNativeMapper.insertSelective(tEsNative);
 			Map msgMap=new HashMap();
