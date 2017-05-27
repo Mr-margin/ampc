@@ -77,157 +77,161 @@ public class CityWorkerV2 {
 
 	public void exe(RequestParams params, String mode, List<String> filter, String type)
 			throws IOException, TransformException, FactoryException, ParseException {
-		String timePoint = params.getTimePoint();
-		Long userId = params.getUserId();
-		Long domainId = params.getDomainId();
-		Long missionId = params.getMissionId();
-		Long scenarioId = params.getScenarioId();
-		int domain = params.getDomain();
-		List<String> dates = params.getDate();
-		stationMap = calculateCityService.getStations();
-		// this.Cities(filter);
-		result = new LinkedHashMap<>();
-		extractConfig = resultPathUtil.getExtractConfig();
+		try {
+			String timePoint = params.getTimePoint();
+			Long userId = params.getUserId();
+			Long domainId = params.getDomainId();
+			Long missionId = params.getMissionId();
+			Long scenarioId = params.getScenarioId();
+			int domain = params.getDomain();
+			List<String> dates = params.getDate();
+			stationMap = calculateCityService.getStations();
+			// this.Cities(filter);
+			result = new LinkedHashMap<>();
+			extractConfig = resultPathUtil.getExtractConfig();
 
-		if (Constants.SHOW_TYPE_CONCN.equals(type)) {
+			if (Constants.SHOW_TYPE_CONCN.equals(type)) {
 
-			switch (timePoint.toLowerCase()) {
-			case "d":
-				for (String date : dates) {
-					String base = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_CONCN,
-							params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
-							params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
-					String day = DateUtil.strConvertToStr(date);
-					String ncPath = base.replace("$Day", day);
-					if (!Constants.checkHourlyFile(ncPath))
-						continue;
-					logger.info("Loading File " + ncPath);
-					Array[] ncFile = Netcdf.loadArray(ncPath, Constants.DAILYSPECIES);
-					attributes = Netcdf.getAttributes(ncPath);
-					this.Cities(filter);
-					buildDailyData(ncFile, filter, date, Constants.DAILYSPECIES);
+				switch (timePoint.toLowerCase()) {
+				case "d":
+					for (String date : dates) {
+						String base = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_CONCN,
+								params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
+								params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
+						String day = DateUtil.strConvertToStr(date);
+						String ncPath = base.replace("$Day", day);
+						if (!Constants.checkHourlyFile(ncPath))
+							continue;
+						logger.info("Loading File " + ncPath);
+						Array[] ncFile = Netcdf.loadArray(ncPath, Constants.DAILYSPECIES);
+						attributes = Netcdf.getAttributes(ncPath);
+						this.Cities(filter);
+						buildDailyData(ncFile, filter, date, Constants.DAILYSPECIES);
 
-					for (Map.Entry entry : (Set<Map.Entry>) result.entrySet()) {
-						Map cityOrStationMap = (Map) entry.getValue();
-						for (Map.Entry e : (Set<Map.Entry>) cityOrStationMap.entrySet()) {
-							String cityOrStation = (String) e.getKey();
-							Map dateMap = (Map) cityOrStationMap.get(cityOrStation);
-							Map speciesMap = (Map) dateMap.get(date);
-							HashMap hm = new HashMap();
-							for (String spe : Constants.DAILYSPECIES) {
-								if (spe.equals("O3_8_MAX")) {
-									hm.put("O3_8", ((Map) speciesMap.get(spe)).get(0));
-								} else if (spe.equals("NO2") || spe.equals("SO2") || spe.equals("CO")) {
-									hm.put(spe + "_24", ((Map) speciesMap.get(spe)).get(0));
-								} else {
-									hm.put(spe, ((Map) speciesMap.get(spe)).get(0));
+						for (Map.Entry entry : (Set<Map.Entry>) result.entrySet()) {
+							Map cityOrStationMap = (Map) entry.getValue();
+							for (Map.Entry e : (Set<Map.Entry>) cityOrStationMap.entrySet()) {
+								String cityOrStation = (String) e.getKey();
+								Map dateMap = (Map) cityOrStationMap.get(cityOrStation);
+								Map speciesMap = (Map) dateMap.get(date);
+								HashMap hm = new HashMap();
+								for (String spe : Constants.DAILYSPECIES) {
+									if (spe.equals("O3_8_MAX")) {
+										hm.put("O3_8", ((Map) speciesMap.get(spe)).get(0));
+									} else if (spe.equals("NO2") || spe.equals("SO2") || spe.equals("CO")) {
+										hm.put(spe + "_24", ((Map) speciesMap.get(spe)).get(0));
+									} else {
+										hm.put(spe, ((Map) speciesMap.get(spe)).get(0));
+									}
 								}
+								if (!speciesMap.containsKey("AQI")) {
+									speciesMap.put("AQI", new HashMap<>());
+								}
+								((Map) speciesMap.get("AQI")).put(0, AqiUtil.getAqi(hm));
 							}
-							if (!speciesMap.containsKey("AQI")) {
-								speciesMap.put("AQI", new HashMap<>());
-							}
-							((Map) speciesMap.get("AQI")).put(0, AqiUtil.getAqi(hm));
 						}
 					}
-				}
-				break;
-			case "h":
-				for (String date : dates) {
-					String base = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_CONCN,
-							params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
-							params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
-					String day = DateUtil.strConvertToStr(date);
-					String ncPath = base.replace("$Day", day);
-					if (!Constants.checkHourlyFile(ncPath))
-						continue;
-					logger.info("Loading File " + ncPath);
-					Array[] ncFile = Netcdf.loadArray(ncPath, Constants.HOURLYSPECIES);
-					attributes = Netcdf.getAttributes(ncPath);
-					this.Cities(filter);
-					buildHourlyData(ncFile, filter, date, Constants.HOURLYSPECIES);
+					break;
+				case "h":
+					for (String date : dates) {
+						String base = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_CONCN,
+								params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
+								params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
+						String day = DateUtil.strConvertToStr(date);
+						String ncPath = base.replace("$Day", day);
+						if (!Constants.checkHourlyFile(ncPath))
+							continue;
+						logger.info("Loading File " + ncPath);
+						Array[] ncFile = Netcdf.loadArray(ncPath, Constants.HOURLYSPECIES);
+						attributes = Netcdf.getAttributes(ncPath);
+						this.Cities(filter);
+						buildHourlyData(ncFile, filter, date, Constants.HOURLYSPECIES);
 
-					for (Map.Entry entry : (Set<Map.Entry>) result.entrySet()) {
-						Map cityOrStationMap = (Map) entry.getValue();
-						for (Map.Entry e : (Set<Map.Entry>) cityOrStationMap.entrySet()) {
-							String cityOrStation = (String) e.getKey();
-							Map dateMap = (Map) cityOrStationMap.get(cityOrStation);
-							Map speciesMap = (Map) dateMap.get(date);
-							HashMap hm = new HashMap();
-							for (String spe : Constants.HOURLYSPECIES) {
+						for (Map.Entry entry : (Set<Map.Entry>) result.entrySet()) {
+							Map cityOrStationMap = (Map) entry.getValue();
+							for (Map.Entry e : (Set<Map.Entry>) cityOrStationMap.entrySet()) {
+								String cityOrStation = (String) e.getKey();
+								Map dateMap = (Map) cityOrStationMap.get(cityOrStation);
+								Map speciesMap = (Map) dateMap.get(date);
+								HashMap hm = new HashMap();
+								for (String spe : Constants.HOURLYSPECIES) {
 
-								if (spe.equals("O3")) {
-									hm.put("O3_8", ((Map) speciesMap.get(spe)).get(0));
-								} else {
-									hm.put(spe, ((Map) speciesMap.get(spe)).get(0));
+									if (spe.equals("O3")) {
+										hm.put("O3_8", ((Map) speciesMap.get(spe)).get(0));
+									} else {
+										hm.put(spe, ((Map) speciesMap.get(spe)).get(0));
+									}
 								}
+								if (!speciesMap.containsKey("AQI")) {
+									speciesMap.put("AQI", new HashMap<>());
+								}
+								((Map) speciesMap.get("AQI")).put(0, AqiUtil.getAqis(hm));
 							}
-							if (!speciesMap.containsKey("AQI")) {
-								speciesMap.put("AQI", new HashMap<>());
-							}
-							((Map) speciesMap.get("AQI")).put(0, AqiUtil.getAqis(hm));
 						}
+
 					}
 
+					break;
 				}
 
-				break;
+			} else if (Constants.SHOW_TYPE_METEOR.equals(type)) {
+
+				switch (timePoint.toLowerCase()) {
+				case "d":
+					for (String date : dates) {
+						String base1 = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_METEOR,
+								params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
+								params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
+						String base2 = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_WIND,
+								params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
+								params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
+						String day = DateUtil.strConvertToStr(date);
+						String ncPath1 = base1.replace("$Day", day); // 气象文件路径，不包含风
+						String ncPath2 = base2.replace("$Day", day); // 风场文件路径
+						if (!Constants.checkHourlyFile(ncPath1))
+							continue;
+						if (!Constants.checkHourlyFile(ncPath2))
+							continue;
+						logger.info("Loading File " + ncPath1);
+						Array[] ncFile1 = Netcdf.loadArray(ncPath1, Constants.METEORSPECIES);
+						attributes = Netcdf.getAttributes(ncPath1);
+						this.Cities(filter);
+						buildDailyData(ncFile1, filter, date, Constants.METEORSPECIES);
+
+						Array[] ncFile2 = Netcdf.loadArray(ncPath2, Constants.WINDSPECIES);
+						buildDailyData(ncFile2, filter, date, Constants.WINDSPECIES);
+
+					}
+					break;
+				case "h":
+					for (String date : dates) {
+						String base1 = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_METEOR,
+								params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
+								params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
+						String base2 = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_WIND,
+								params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
+								params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
+						String day = DateUtil.strConvertToStr(date);
+						String ncPath1 = base1.replace("$Day", day); // 气象文件路径，不包含风
+						String ncPath2 = base2.replace("$Day", day); // 风场文件路径
+						if (!Constants.checkHourlyFile(ncPath1))
+							continue;
+						logger.info("Loading File " + ncPath1);
+						Array[] ncFile1 = Netcdf.loadArray(ncPath1, Constants.METEORSPECIES);
+						attributes = Netcdf.getAttributes(ncPath1);
+						this.Cities(filter);
+						buildHourlyData(ncFile1, filter, date, Constants.METEORSPECIES);
+
+						Array[] ncFile2 = Netcdf.loadArray(ncPath2, Constants.WINDSPECIES);
+						buildHourlyData(ncFile2, filter, date, Constants.WINDSPECIES);
+
+					}
+					break;
+				}
+
 			}
-
-		} else if (Constants.SHOW_TYPE_METEOR.equals(type)) {
-
-			switch (timePoint.toLowerCase()) {
-			case "d":
-				for (String date : dates) {
-					String base1 = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_METEOR,
-							params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
-							params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
-					String base2 = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_WIND,
-							params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
-							params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
-					String day = DateUtil.strConvertToStr(date);
-					String ncPath1 = base1.replace("$Day", day); // 气象文件路径，不包含风
-					String ncPath2 = base2.replace("$Day", day); // 风场文件路径
-					if (!Constants.checkHourlyFile(ncPath1))
-						continue;
-					if (!Constants.checkHourlyFile(ncPath2))
-						continue;
-					logger.info("Loading File " + ncPath1);
-					Array[] ncFile1 = Netcdf.loadArray(ncPath1, Constants.METEORSPECIES);
-					attributes = Netcdf.getAttributes(ncPath1);
-					this.Cities(filter);
-					buildDailyData(ncFile1, filter, date, Constants.METEORSPECIES);
-
-					Array[] ncFile2 = Netcdf.loadArray(ncPath2, Constants.WINDSPECIES);
-					buildDailyData(ncFile2, filter, date, Constants.WINDSPECIES);
-
-				}
-				break;
-			case "h":
-				for (String date : dates) {
-					String base1 = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_METEOR,
-							params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
-							params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
-					String base2 = resultPathUtil.getResultFilePath(date, Constants.SHOW_TYPE_WIND,
-							params.getTimePoint(), params.getUserId(), params.getDomainId(), params.getMissionId(),
-							params.getScenarioId(), params.getDomain(), params.getDateTypeMap());
-					String day = DateUtil.strConvertToStr(date);
-					String ncPath1 = base1.replace("$Day", day); // 气象文件路径，不包含风
-					String ncPath2 = base2.replace("$Day", day); // 风场文件路径
-					if (!Constants.checkHourlyFile(ncPath1))
-						continue;
-					logger.info("Loading File " + ncPath1);
-					Array[] ncFile1 = Netcdf.loadArray(ncPath1, Constants.METEORSPECIES);
-					attributes = Netcdf.getAttributes(ncPath1);
-					this.Cities(filter);
-					buildHourlyData(ncFile1, filter, date, Constants.METEORSPECIES);
-
-					Array[] ncFile2 = Netcdf.loadArray(ncPath2, Constants.WINDSPECIES);
-					buildHourlyData(ncFile2, filter, date, Constants.WINDSPECIES);
-
-				}
-				break;
-			}
-
+		} catch (Exception e) {
+			logger.error("CityWorkerV2 | exe error", e);
 		}
 
 	}
