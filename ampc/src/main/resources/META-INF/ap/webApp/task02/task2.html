@@ -71,15 +71,15 @@
             <div id="timepanel">
                 <div title="时段添加" id="addTime1">
                     <div style="height:90px" class="showTimes">
-                        <div class="col-4" style="height:90px">
+                        <div class="col-4" style="height:90px;border:1px solid #aaa">
                             <h4>前一时段</h4>
                             <p></p>
                         </div>
-                        <div class="col-4" style="height:90px">
+                        <div class="col-4" style="height:90px;border:1px solid #aaa">
                             <h4>待编辑时段</h4>
                             <p></p>
                         </div>
-                        <div class="col-4" style="height:90px">
+                        <div class="col-4" style="height:90px;border:1px solid #aaa">
                             <h4>后一时段</h4>
                             <p></p>
                         </div>
@@ -309,4 +309,45 @@
         <input type="radio" name="optionsRadios" id="optionsRadios1" value="">
         <span></span>
     </label>
+</div>
+<div id="jpzt" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body text-center">
+                <div class="clearfix">
+                    <button type="button" class="btn btn-success" style="float: right" onclick="initJPJS()">
+                        初始化减排计算
+                    </button>
+                </div>
+                <div class="row  mt20 mb20">
+                    <div class="col-md-3">计算进度</div>
+                    <div class="col-md-3">已用时</div>
+                    <div class="col-md-3">剩余时间预计</div>
+                    <div class="col-md-3">计算速度</div>
+                </div>
+                <div style="width: 100%;height: 3px;background-color: #909090"></div>
+                <div class="row  mt20 mb20">
+                    <div class="col-md-3 jsjd"></div>
+                    <div class="col-md-3 yys"></div>
+                    <div class="col-md-3 sysj"></div>
+                    <div class="col-md-3 jssd"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="footerShow"
+                     style="text-align: left;margin-left: 10px;width:calc(100% - 150px);float: left;padding: 8px 0px 5px 0px;">
+                    <div class='col-md-6 rw' style="padding: 0px 0px 0px 0px;">
+                        <h5>当前任务：<span></span></h5>
+                    </div>
+                    <div class='col-md-5 col-md-offset-1 qj' style="padding: 0px 0px 0px 0px;">
+                        <h5>当前情景：<span></span></h5>
+                    </div>
+                </div>
+
+                <!--<button type="button" class="btn btn-success" id="refreshJPJS" onclick="jpztckBtn()">刷新</button>-->
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
 </div>
