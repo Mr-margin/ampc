@@ -350,7 +350,7 @@ function initialize() {
     /**
      * 设置导航条菜单
      */
-    $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景编辑</a>');
+    $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景编辑</a>');
     previous();
 
     var ls = window.sessionStorage;
