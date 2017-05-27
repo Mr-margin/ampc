@@ -405,13 +405,13 @@ public class ExcelToDate {
 	* 读取excel描述数据   读取行业描述Excel表
 	* @param path  
 	*/
-	public List<TSectordocExcel> ReadSectorDOC(String fileName,Long versionId,Long userId,List<String> msg,String outPath){ 
+	public List<TSectordocExcel> ReadSectorDOC(String fileName,Long versionId,Long userId,List<String> msg,String outPath,Long qdId){ 
 		//定义结果  默认false 
 	    boolean isError=false;
 		//String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_1描述文件.xlsx";
-		String path="C:\\Users\\Mr_Wang\\Desktop\\应急系统新_1描述文件.xlsx";
+		//String path="C:\\Users\\Mr_Wang\\Desktop\\应急系统新_1描述文件.xlsx";
 		//获取文件名称
-		String file=path.substring(path.lastIndexOf("\\")+1);
+		String file=fileName.substring(fileName.lastIndexOf("\\")+1);
 		//返回结果的集合
 		List<TSectordocExcel> sectorDocList=new ArrayList<TSectordocExcel>();
 		//生成校验清单文件的数据集合
@@ -422,7 +422,7 @@ public class ExcelToDate {
         	String message=null;
         	StringBuilder mssg=new StringBuilder();
         	//执行Excel初始化
-        	if(!init(path,mssg)){
+        	if(!init(fileName,mssg)){
         		msg.add(file+":"+mssg.toString());
         		return null;
         	}
@@ -766,6 +766,8 @@ public class ExcelToDate {
                             sectorDoc.setSectordocDisname(sheetName);
                             //写入版本等信息
                             sectorDoc.setSectordocVersion(versionId);
+                            sectorDoc.setDetailedListId(qdId);
+                            sectorDoc.setDetailedListType("本地清单");
                             sectorDoc.setUserId(userId);
                             sectorDocList.add(sectorDoc);
                     	}
