@@ -20,6 +20,7 @@ var changeMsg = {
     time: '',//时间选择
     scenarinoId: [],//选择的情景Id数组
     scenarinoName: [],//选择的情景名称数组
+    nowT:''
 };
 var zhiCity = ['11', '12', '31', '50'];
 $('.day').css('display', 'block');
@@ -190,13 +191,19 @@ function setTime() {
 
             changeMsg.minDate = res.data.mintime;
             changeMsg.maxDate = res.data.maxtime;
+            changeMsg.nowT = moment(res.data.nowTime).format('HH');
 
-            if (!(moment(res.data.maxtime).add(-7, 'd').isBefore(moment(res.data.mintime)))) {
-                changeMsg.startD = moment(res.data.maxtime).add(-7, 'd').format('YYYY-MM-DD')
-            } else {
-                changeMsg.startD = moment(res.data.mintime).format('YYYY-MM-DD')
+            if(!(moment(res.data.maxtime).isBefore(moment()))){
+                changeMsg.startD = moment().format('YYYY-MM-DD');
+            }else{
+                changeMsg.startD = moment(res.data.maxtime).format('YYYY-MM-DD');
             }
-            changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
+            // if (!(moment(res.data.maxtime).add(-7, 'd').isBefore(moment(res.data.mintime)))) {
+            //     changeMsg.startD = moment(res.data.maxtime).add(-7, 'd').format('YYYY-MM-DD')
+            // } else {
+            //     changeMsg.startD = moment(res.data.mintime).format('YYYY-MM-DD')
+            // }
+            changeMsg.endD = changeMsg.startD;
             changeMsg.time = moment(changeMsg.startD).format('YYYY-MM-DD HH');
 
 
@@ -293,8 +300,8 @@ function initCZDate(s, e, start, end) {
             ],
             firstDay: 1
         },
-        "startDate": start,
-        "endDate": end,
+        "startDate": changeMsg.rms == 'day'?start:(moment(start).format('YYYY-MM-DD') + ' '+changeMsg.nowT),
+        "endDate": changeMsg.rms == 'day'?end:(moment(end).format('YYYY-MM-DD') + ' '+changeMsg.nowT),
         "opens": "left"
     }, function (start, end, label) {
 
@@ -404,12 +411,18 @@ function updata() {
             datetype: changeMsg.rms
         }).success(function (res) {
             if ((res.status == 0)) {
-                if (!res.data) {
+                if($.isEmptyObject(res.data)||!res.data){
                     res.data = {};
                     for (var y in speciesObj) {
                         res.data[speciesObj[y]] = ooo;
                     }
-                } else {
+                    swal({
+                        title: '暂无数据!',
+                        type: 'error',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                }else{
                     for (var y in speciesObj) {
                         if ((!res.data[speciesObj[y]]) || (res.data[speciesObj[y]].length == 0)) {
                             res.data[speciesObj[y]] = ooo;
@@ -426,9 +439,34 @@ function updata() {
               /*修改显示头 end*/
                 initEcharts();
             } else {
+                swal({
+                    title: '数据异常!',
+                    type: 'error',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+                res.data = {};
+                for (var y in speciesObj) {
+                    res.data[speciesObj[y]] = ooo;
+                }
+                var obj = {};
+                $.extend(obj, res.data);
+                czData = obj;
+                /*修改显示头 */
+
+                showTitleFun();
+
+                /*修改显示头 end*/
+                initEcharts();
                 console.log(res.msg)
             }
-        }, function () {
+        }).error( function () {
+            swal({
+                title: 'find_vertical接口故障!',
+                type: 'error',
+                timer: 1000,
+                showConfirmButton: false
+            });
             console.log('接口故障！！！')
         })
     });

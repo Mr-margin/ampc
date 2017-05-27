@@ -310,12 +310,18 @@ function requestDate() {
             changeMsg.minDate = moment(res.data.mintime).format('YYYY-MM-DD');
             changeMsg.maxDate = moment(res.data.maxtime).format('YYYY-MM-DD');
 
-            if (!(moment(res.data.maxtime).add(-7, 'd').isBefore(moment(res.data.mintime)))) {
-                changeMsg.startD = moment(res.data.maxtime).add(-7, 'd').format('YYYY-MM-DD')
-            } else {
-                changeMsg.startD = moment(res.data.mintime).format('YYYY-MM-DD')
+            if(!(moment(res.data.maxtime).isBefore(moment(moment().add(-1,'d').format('YYYY-MM-DD')+' 08'),'h'))){
+                changeMsg.startD = moment().add(-1,'d').format('YYYY-MM-DD')
+            }else{
+                changeMsg.startD = moment(res.data.maxtime).format('YYYY-MM-DD')
             }
-            changeMsg.endD = moment(res.data.maxtime).format('YYYY-MM-DD');
+
+            // if (!(moment(res.data.maxtime).add(-7, 'd').isBefore(moment(res.data.mintime)))) {
+            //     changeMsg.startD = moment(res.data.maxtime).add(-7, 'd').format('YYYY-MM-DD')
+            // } else {
+            //     changeMsg.startD = moment(res.data.mintime).format('YYYY-MM-DD')
+            // }
+            changeMsg.endD = changeMsg.startD;
             changeMsg.time = moment(changeMsg.startD).format('YYYY-MM-DD HH');
 
           /*测试使用*/
