@@ -3352,11 +3352,11 @@ public class AirController {
 		try{
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
-			Long userId=Long.valueOf(data.get("userId").toString());//用户id
-			if(!RegUtil.CheckParameter(userId, "Long", null, false)){
-				LogUtil.getLogger().error("find_vertical  用户id为空!");
-				return AmpcResult.build(1003, "用户id为空!");
-			}
+//			Long userId=Long.valueOf(data.get("userId").toString());//用户id
+//			if(!RegUtil.CheckParameter(userId, "Long", null, false)){
+//				LogUtil.getLogger().error("find_vertical  用户id为空!");
+//				return AmpcResult.build(1003, "用户id为空!");
+//			}
 
 			Date selectmaxpathdate = tScenarinoDetailMapper.selectmaxpathdate();
 			Date selectminpathdate = tScenarinoDetailMapper.selectminpathdate();
@@ -3367,7 +3367,7 @@ public class AirController {
 			for(int a=0;a<betweenDays;a++){
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(selectmaxpathdate);
-				cal.add(Calendar.DATE, -1);
+				cal.add(Calendar.DATE, -a);
 				String addTimeDate =hms.format(cal.getTime());
 				Date endtime=hms.parse(addTimeDate);
 		
