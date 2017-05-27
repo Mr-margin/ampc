@@ -106,6 +106,7 @@ public class AirController {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		    //获取当前时间的小时，判断是否大于早上8点，8点之后昨天的空气质量预报已经完成，8点之前只能取前天的空气质量预报
 			//8点以后
+			Date date=new Date();
 		    if(calendar.get(Calendar.HOUR_OF_DAY) > 8){
 		    	//获取昨天的日期
 				calendar.add(Calendar.DATE, -1);
@@ -143,7 +144,7 @@ public class AirController {
 		    	//或者使用预报的开始时间
 		    	obj.put("mintime", tScenarinoDetail.getScenarinoStartDate());//开始时间
 		    }
-			
+		    obj.put("nowtime", date.getTime());
 			LogUtil.getLogger().info("空气质量预报时间查询成功");
 			return AmpcResult.ok(obj);
 		}catch(Exception e){
@@ -2856,7 +2857,7 @@ public class AirController {
 						String da=daysdf.format(thedate);
 						Map ss =mapper.readValue(housr.getContent().toString(), Map.class);
 						objs= JSONObject.fromObject(ss.get(da));
-						System.out.println(objs);
+						
 					}
 					Map<String,Map<String,Object>> spcMap=(Map<String,Map<String,Object>>) objs;
 					Iterator<Entry<String,Map<String,Object>>> iters=spcMap.entrySet().iterator();
