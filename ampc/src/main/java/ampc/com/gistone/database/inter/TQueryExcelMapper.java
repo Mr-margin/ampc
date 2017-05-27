@@ -32,7 +32,6 @@ public interface TQueryExcelMapper {
      * @return
      */
     int updateIsEffeByIds(Long userId);
-
     int deleteByPrimaryKey(Long queryId);
 
     int insert(TQueryExcel record);

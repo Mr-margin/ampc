@@ -29,6 +29,10 @@ public class TSectordocExcel {
 
     private String isEffective;
 
+    private Long detailedListId;
+
+    private Object detailedListType;
+
     public Long getSectordocId() {
         return sectordocId;
     }
@@ -131,5 +135,21 @@ public class TSectordocExcel {
 
     public void setIsEffective(String isEffective) {
         this.isEffective = isEffective == null ? null : isEffective.trim();
+    }
+
+    public Long getDetailedListId() {
+        return detailedListId;
+    }
+
+    public void setDetailedListId(Long detailedListId) {
+        this.detailedListId = detailedListId;
+    }
+
+    public Object getDetailedListType() {
+        return detailedListType;
+    }
+
+    public void setDetailedListType(Object detailedListType) {
+        this.detailedListType = detailedListType;
     }
 }

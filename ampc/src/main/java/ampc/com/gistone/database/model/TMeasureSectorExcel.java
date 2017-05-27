@@ -55,6 +55,10 @@ public class TMeasureSectorExcel {
 
     private String isEffective;
 
+    private Long detailedListId;
+
+    private Object detailedListType;
+
     public Long getMsExcelId() {
         return msExcelId;
     }
@@ -262,16 +266,20 @@ public class TMeasureSectorExcel {
     public void setIsEffective(String isEffective) {
         this.isEffective = isEffective == null ? null : isEffective.trim();
     }
-    @Override
-   	public boolean equals(Object obj) {
-       	TMeasureSectorExcel s = (TMeasureSectorExcel) obj;
-   		return (msExcelName.equals(s.msExcelName) && sectorsname.equals(s.sectorsname));
-   	}
 
-   	@Override
-   	public int hashCode() {
-   		//UUID uuid = UUID.randomUUID();
-   		String in = (msExcelName.toString() + sectorsname.toString());
-   		return in.hashCode();
-   	}
+    public Long getDetailedListId() {
+        return detailedListId;
+    }
+
+    public void setDetailedListId(Long detailedListId) {
+        this.detailedListId = detailedListId;
+    }
+
+    public Object getDetailedListType() {
+        return detailedListType;
+    }
+
+    public void setDetailedListType(Object detailedListType) {
+        this.detailedListType = detailedListType;
+    }
 }

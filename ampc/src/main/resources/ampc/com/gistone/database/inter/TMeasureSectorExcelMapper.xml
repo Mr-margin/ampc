@@ -28,19 +28,23 @@
     <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
     <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
+    <result column="DETAILED_LIST_ID" property="detailedListId" jdbcType="DECIMAL" />
+    <result column="DETAILED_LIST_TYPE" property="detailedListType" jdbcType="OTHER" />
   </resultMap>
   <sql id="Base_Column_List" >
     MS_EXCEL_ID, USER_ID, MS_EXCEL_VERSION_ID, MID, MS_EXCEL_NAME, MS_EXCEL_DESC, MS_EXCEL_OP, 
     MS_EXCEL_INTENSITY, SECTORSNAME, CONTENT, MS_EXCEL_DISPLAY, DEBUG_MODEL, MS_EXCEL_TYPE, 
     MS_EXCEL_LEVEL, MS_EXCEL_A, MS_EXCEL_A1, MS_EXCEL_INTENSITY1, MS_EXCEL_ASH, MS_EXCEL_SULFER, 
-    MS_EXCEL_SV, SID, COLORCODE, COLORNAME, ADD_TIME, DELETE_TIME, IS_EFFECTIVE
+    MS_EXCEL_SV, SID, COLORCODE, COLORNAME, ADD_TIME, DELETE_TIME, IS_EFFECTIVE, DETAILED_LIST_ID, 
+    DETAILED_LIST_TYPE
   </sql>
- 
- 
- 
- 
- 
- <!-- 根据userId 查询返回行业措施结果 -->
+  
+  
+  
+  
+  
+  
+  <!-- 根据userId 查询返回行业措施结果 -->
   <resultMap id="mapByUserId" type="hashMap" >
     <id column="MS_EXCEL_ID" property="msExcelId" jdbcType="DECIMAL" />
     <result column="MID" property="mid" jdbcType="DECIMAL" />
@@ -106,26 +110,17 @@
         where USER_ID=#{_parameter,jdbcType=DECIMAL} 
       </if> 
   </update>
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -145,7 +140,8 @@
       MS_EXCEL_A1, MS_EXCEL_INTENSITY1, MS_EXCEL_ASH, 
       MS_EXCEL_SULFER, MS_EXCEL_SV, SID, 
       COLORCODE, COLORNAME, ADD_TIME, 
-      DELETE_TIME, IS_EFFECTIVE)
+      DELETE_TIME, IS_EFFECTIVE, DETAILED_LIST_ID, 
+      DETAILED_LIST_TYPE)
     values (#{msExcelId,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{msExcelVersionId,jdbcType=VARCHAR}, 
       #{mid,jdbcType=DECIMAL}, #{msExcelName,jdbcType=OTHER}, #{msExcelDesc,jdbcType=OTHER}, 
       #{msExcelOp,jdbcType=OTHER}, #{msExcelIntensity,jdbcType=VARCHAR}, #{sectorsname,jdbcType=OTHER}, 
@@ -154,7 +150,8 @@
       #{msExcelA1,jdbcType=VARCHAR}, #{msExcelIntensity1,jdbcType=VARCHAR}, #{msExcelAsh,jdbcType=VARCHAR}, 
       #{msExcelSulfer,jdbcType=VARCHAR}, #{msExcelSv,jdbcType=VARCHAR}, #{sid,jdbcType=DECIMAL}, 
       #{colorcode,jdbcType=VARCHAR}, #{colorname,jdbcType=OTHER}, #{addTime,jdbcType=TIMESTAMP}, 
-      #{deleteTime,jdbcType=TIMESTAMP}, #{isEffective,jdbcType=VARCHAR})
+      #{deleteTime,jdbcType=TIMESTAMP}, #{isEffective,jdbcType=VARCHAR}, #{detailedListId,jdbcType=DECIMAL}, 
+      #{detailedListType,jdbcType=OTHER})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TMeasureSectorExcel" >
     insert into T_MEASURE_SECTOR_EXCEL
@@ -237,6 +234,12 @@
       <if test="isEffective != null" >
         IS_EFFECTIVE,
       </if>
+      <if test="detailedListId != null" >
+        DETAILED_LIST_ID,
+      </if>
+      <if test="detailedListType != null" >
+        DETAILED_LIST_TYPE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="msExcelId != null" >
@@ -316,6 +319,12 @@
       </if>
       <if test="isEffective != null" >
         #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="detailedListId != null" >
+        #{detailedListId,jdbcType=DECIMAL},
+      </if>
+      <if test="detailedListType != null" >
+        #{detailedListType,jdbcType=OTHER},
       </if>
     </trim>
   </insert>
@@ -397,6 +406,12 @@
       <if test="isEffective != null" >
         IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
       </if>
+      <if test="detailedListId != null" >
+        DETAILED_LIST_ID = #{detailedListId,jdbcType=DECIMAL},
+      </if>
+      <if test="detailedListType != null" >
+        DETAILED_LIST_TYPE = #{detailedListType,jdbcType=OTHER},
+      </if>
     </set>
     where MS_EXCEL_ID = #{msExcelId,jdbcType=DECIMAL}
   </update>
@@ -426,7 +441,9 @@
       COLORNAME = #{colorname,jdbcType=OTHER},
       ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
       DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
-      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR}
+      IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      DETAILED_LIST_ID = #{detailedListId,jdbcType=DECIMAL},
+      DETAILED_LIST_TYPE = #{detailedListType,jdbcType=OTHER}
     where MS_EXCEL_ID = #{msExcelId,jdbcType=DECIMAL}
   </update>
 </mapper>

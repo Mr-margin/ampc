@@ -39,6 +39,10 @@ public class TQueryExcel {
 
     private Object queryShowqueryen;
 
+    private Long detailedListId;
+
+    private Object detailedListType;
+
     public Long getQueryId() {
         return queryId;
     }
@@ -181,5 +185,21 @@ public class TQueryExcel {
 
     public void setQueryShowqueryen(Object queryShowqueryen) {
         this.queryShowqueryen = queryShowqueryen;
+    }
+
+    public Long getDetailedListId() {
+        return detailedListId;
+    }
+
+    public void setDetailedListId(Long detailedListId) {
+        this.detailedListId = detailedListId;
+    }
+
+    public Object getDetailedListType() {
+        return detailedListType;
+    }
+
+    public void setDetailedListType(Object detailedListType) {
+        this.detailedListType = detailedListType;
     }
 }
