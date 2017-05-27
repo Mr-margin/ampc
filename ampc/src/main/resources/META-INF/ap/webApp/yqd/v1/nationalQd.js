@@ -10,16 +10,15 @@ function innitdata(){
         dataType: "json",
         columns:[[  //表头
                     {field:"ck",checkbox:true},
-                    {field:"esNationName",title:"全国清单",width:200},
-                    {field:"esNationYear",title:"年份",width:80},
+                    {field:"esNationName",title:"全国清单",width:200,align:'cneter'},
+                    {field:"esNationYear",title:"年份",width:80,align:'cneter'},
                     {field:"publishTime",title:"创建时间",formatter:function(value,row,index){
-                        moment(value).format("YYYY-MM-DD")//格式化带日期格式
                         return  moment(value).format("YYYY-MM-DD");
-                    }},
-                    {field:"nationRemark",title:"备注",width:400},
-                    {field:"qgqdCheck",title:"状态"},//新建（打开校验按钮）   正常（校验成功） 错误（校验错误）
+                    },align:'cneter'},
+                    {field:"nationRemark",title:"备注",width:400,align:'cneter'},
+                    {field:"qgqdCheck",title:"状态",align:'cneter',width:100},//新建（打开校验按钮）   正常（校验成功） 错误（校验错误）
                     //是否使用 如果使用 不许删除 未使用可以删除
-                    {field:"qgqdConfig",title:"操作"}//校验清单
+                    {field:"qgqdConfig",title:"操作",align:'cneter',width:100}//校验清单
                 ]],
         loadFilter:function (data) { //过滤数据，转换成符合格式的数据
             return data.data;
@@ -65,11 +64,11 @@ $("#creatQd").window({  //创建全国清单窗口
 function submitQd(){ //点击提交按钮进行新建清单数据的提交
     var param={};
     param.userId=userId;
-    param.nationName =$("#esNationName").val(); //清单名字
-    param.nationYear = $("#esNationYear").val(); //清单年份
-    param.nationRemark = $("#esNationMark").val();//清单备注
+    param.nationName =$("#creatQd #esNationName").val(); //清单名字
+    param.nationYear = $("#creatQd #esNationYear").val(); //清单年份
+    param.nationRemark = $("#creatQd #esNationMark").val();//清单备注
     //判断新建清单的年份是否在1990-2100之间
-    var myYear=$("#esNationYear").val()
+    var myYear=$("#creatQd #esNationYear").val()
     if(myYear>=1990&&myYear<2100){    //判断年份
         $("#formQd").submit(
             ajaxPost('/NativeAndNation/add_nation',param).success(function(res){
@@ -125,9 +124,9 @@ $("#editQd").window({ //编辑清单窗口
 function editSubmitQd(){//点击提交按钮进行编辑数据提交
     var row = $('#qgqd').datagrid('getSelected');//获取所有选中的清单数据
     var rowIndex = $('#qgqd').datagrid('getRowIndex',row);//获取选中行的行数索引
-    var qdName=$("#esNationName_edit").val();//获取编辑后的数据 清单名称
-    var qdYear=$("#esNationYear_edit").val();//年份
-    var qdMark=$("#esNationMark_edit").val();//备注
+    var qdName=$("#editQd #esNationName_edit").val();//获取编辑后的数据 清单名称
+    var qdYear=$("#editQd #esNationYear_edit").val();//年份
+    var qdMark=$("#editQd #esNationMark_edit").val();//备注
     var param={};//设置接口参数
     param.userId=userId;
     param.nationName=qdName;
@@ -161,13 +160,32 @@ function editSubmitQd(){//点击提交按钮进行编辑数据提交
 // 删除清单
 function delectQd(){
     var row = $('#qgqd').datagrid('getSelected');//获取所有选中的清单数据
-    ajaxPost('/NativeAndNation/delete_nation',{"nationId":row.esNationId}).success(function(res){
-        if(res.status==0){
-            var rowIndex = $('#qgqd').datagrid('getRowIndex', row);
-            $('#qgqd').datagrid('deleteRow', rowIndex);
-            $('#qgqd').datagrid('reload');//删除后重新加载下
-        }else{
-            swal('参数错误', '', 'error');
-        }
-    })
+    swal({
+        title: "您确定要删除吗？",
+        text: "您确定要删除这条数据？",
+        type: "warning",
+        animation:"slide-from-top",
+        showCancelButton: true,
+        closeOnConfirm: true,
+        confirmButtonText: "是的，我要删除",
+    }, function() {
+        ajaxPost('/NativeAndNation/delete_nation',{"nationId":row.esNationId}).success(function(res){
+            if(res.status==0){
+                var rowIndex = $('#qgqd').datagrid('getRowIndex', row);
+                $('#qgqd').datagrid('deleteRow', rowIndex);
+                $('#qgqd').datagrid('reload');//删除后重新加载下
+            }else{
+                swal('参数错误', '', 'error');
+            }
+        })
+    });
+    // ajaxPost('/NativeAndNation/delete_nation',{"nationId":row.esNationId}).success(function(res){
+    //     if(res.status==0){
+    //         var rowIndex = $('#qgqd').datagrid('getRowIndex', row);
+    //         $('#qgqd').datagrid('deleteRow', rowIndex);
+    //         $('#qgqd').datagrid('reload');//删除后重新加载下
+    //     }else{
+    //         swal('参数错误', '', 'error');
+    //     }
+    // })
 }
