@@ -2630,6 +2630,7 @@ public class AirController {
 							scenarinoEntity.setDay(jztScenarino.getScenarinoStartDate());
 						}else{
 							tables+="T_SCENARINO_HOURLY_";	
+							scenarinoEntity.setsId(Long.valueOf(jztScenarino.getScenarinoId().toString()));
 						}
 						Date tims=jztScenarino.getPathDate();
 						DateFormat df = new SimpleDateFormat("yyyy");
@@ -2642,7 +2643,7 @@ public class AirController {
 						scenarinoEntity.setDomainId(Long.valueOf(domainId));
 						scenarinoEntity.setMode(mode);
 						
-						scenarinoEntity.setsId(Long.valueOf(jztScenarino.getScenarinoId().toString()));
+						
 						scenarinoEntity.setTableName(tables);
 						if(how==-1){
 						ssslist=tPreProcessMapper.selectBysome(scenarinoEntity);	
@@ -2846,9 +2847,10 @@ public class AirController {
 					if(how==-1){
 					objs=JSONObject.fromObject(housr.getContent());
 					}else{
-						JSONObject jstr=JSONObject.fromObject(housr.getContent());
+					
 						String da=daysdf.format(thedate);
-						objs=JSONObject.fromObject(jstr.get(da));
+						Map ss =mapper.readValue(housr.getContent().toString(), Map.class);
+						objs= JSONObject.fromObject(ss.get(da));
 						System.out.println(objs);
 					}
 					Map<String,Map<String,Object>> spcMap=(Map<String,Map<String,Object>>) objs;
@@ -2886,9 +2888,10 @@ public class AirController {
 					if(how==-1){
 					objs=JSONObject.fromObject(housr.getContent());
 					}else{
-						JSONObject jstr=JSONObject.fromObject(housr.getContent());
 						String da=daysdf.format(thedate);
-						objs=JSONObject.fromObject(jstr.get(da));
+						Map ss =mapper.readValue(housr.getContent().toString(), Map.class);
+						objs= JSONObject.fromObject(ss.get(da));
+			
 					}
 					Map<String,Map<String,List<Object>>> spcMap=(Map<String, Map<String, List<Object>>>) objs;
 					
@@ -3029,7 +3032,7 @@ public class AirController {
 			}
 		}else{
 			
-			Iterator<Entry<Integer, Map<Date, Map<String, List>>>> Alliter=hourpAllspcMap.entrySet().iterator();
+			Iterator<Entry<Integer, Map<Date, Map<String, List>>>> Alliter=houroAllspcMap.entrySet().iterator();
 			
 			while(Alliter.hasNext()){
 				Map<String,Integer> spcexactMap=new HashMap();
@@ -3047,10 +3050,14 @@ public class AirController {
 						Map<String,Double> suMap=new HashMap();
 						Entry<String, List> spciter=Allspciter.next();
 						String spc=spciter.getKey();
-						if(spc.equals("O3_8_MAX")){
+                       
+						if(spc.equals("CO")||spc.equals("O3_8h")||spc.equals("AQI")||spc.equals("PM10")||spc.equals("SO2")||spc.equals("O3")||spc.equals("NO2")||spc.equals("PM25")){
 							
+							
+						}else{
 							continue;
 						}
+                    
 						Map psm=psumMapsum.get(day);
 						List<Object> numma=spciter.getValue();
 						for(int s=0;s<=23;s++){
@@ -3079,11 +3086,12 @@ public class AirController {
 									spcexactMap.put(spc, spcexactMap.get(spc)+1);			
 								}
 							}					
+							
 						Integer vale=Integer.valueOf(validMap.get(day).get(spc).toString());
 						double opresult=num.subtract(new BigDecimal(sumMapsum.get(day).get(spc).toString()).divide(new BigDecimal(vale),2)).doubleValue();
 						double ppresult=0;
 						if(ms!=null){
-							ppresult=(new BigDecimal(hourpAllspcMap.get(day).get(date).get(spc).get(s).toString()).subtract(new BigDecimal(sumMapsum.get(day).get(spc).toString()).divide(new BigDecimal(vale),2))).doubleValue();
+							ppresult=(new BigDecimal(hourpAllspcMap.get(day).get(date).get(spc).get(s).toString()).subtract(new BigDecimal(psumMapsum.get(day).get(spc).toString()).divide(new BigDecimal(vale),2))).doubleValue();
 						}
 						double store =opresult*ppresult;
 						double p2=Math.pow(ppresult,2);
@@ -3091,6 +3099,10 @@ public class AirController {
 						double o_p= 0;
 						if(ms!=null){
 							o_p= new BigDecimal(hourpAllspcMap.get(day).get(date).get(spc).get(s).toString()).subtract(num).doubleValue();
+						
+						}else{
+							
+							continue;
 						}
 						Map amap=aveMap.get(day);
 						if(amap!=null){
