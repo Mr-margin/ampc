@@ -8,6 +8,51 @@ $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清�
 innitdata("find_natives")
 function innitdata(active){
     if(active=="find_natives"){
+        // $("#localqd").treegrid({
+        //     method:'post', //ajax 请求远程数据方法
+        //     url: "/ampc/NativeAndNation/doPost", //请求数据
+        //     idField:'esNativeTpId',
+        //     treeField:'esNativeTpName',
+        //     dataType: "json",
+        //     columns:[[  //表头
+        //         {field:"ck",checkbox:true},
+        //         {field:"esNativeTpName",title:"全国清单",width:200},
+        //         {field:"esNativeTpYear",title:"年份"},
+        //         {field:"esUploadTpTime",title:"创建时间",formatter:function(value,row,index){
+        //             moment(value).format("YYYY-MM-DD")//格式化带日期格式
+        //             return  moment(value).format("YYYY-MM-DD");
+        //         }},
+        //         {field:"esComment",title:"备注",width:400},
+        //         {field:"isEffective",title:"操作",},//新建（打开校验按钮）   正常（校验成功） 错误（校验错误）
+        //         //是否使用 如果使用 不许删除 未使用可以删除
+        //         //        	             {field:"qgqdConfig",title:"操作"}//校验清单
+        //     ]],
+        //     loadFilter:function (data) { //过滤数据，转换成符合格式的数据
+        //         return data.data.data;
+        //     },
+        //     selectOnCheck:true, //true，单击复选框将永远选择行 false，选择行将不选中复选框。
+        //     singleSelect: true,//设置True 将禁止多选
+        //     checkOnSelect:true,//true，当用户点击行的时候该复选框就会被选中或取消选中。false，当用户仅在点击该复选框的时候才会呗选中或取消。
+        //     fitColumns:true,//真正的自动展开/收缩列的大小，以适应网格的宽度，防止水平滚动。
+        //     clickToSelect: true,// 点击选中行
+        //     pagination: true, // 在表格底部显示分页工具栏
+        //     pageSize:10,  //页面里面显示数据的行数
+        //     pageNumber: 1, // 页数
+        //     pageList: [10, 15,20], //页面可以进行选择的数据行数
+        //     height:'100%',
+        //     striped: false, // 使表格带有条纹
+        //     silent: true, // 刷新事件必须设置
+        //     contentType: "application/json",
+        //     queryParams:function (params) { //ajax 传递的参数  分页
+        //         var data = {};
+        //         data.userId = userId;
+        //         data.method="active";
+        //         // data.pageSize=params.pageSize; //初始化页面上面表单的数据行数
+        //         // data.pageNumber=params.pageNumber  //初始化页面的页码
+        //        // return {"token": "", "data": data};
+        //         return data;
+        //     },
+        // })
         ajaxPost('/NativeAndNation/doPost',{
             "userId":userId,
             "method":active,
@@ -19,16 +64,27 @@ function innitdata(active){
                 lines:false,
                 columns:[[  //表头
                     {field:"ck",checkbox:true},
-                    {field:"esNativeTpName",title:"全国清单",width:200},
+                    {field:"esNativeTpName",title:"清单模板名称",width:200},
                     {field:"esNativeTpYear",title:"年份"},
                     {field:"esUploadTpTime",title:"创建时间",formatter:function(value,row,index){
                         moment(value).format("YYYY-MM-DD")//格式化带日期格式
                         return  moment(value).format("YYYY-MM-DD");
                     },sortable :true},
-                    {field:"esComment",title:"备注",width:400},
-                    {field:"isEffective",title:"状态"},//新建（打开校验按钮）   正常（校验成功） 错误（校验错误）
-                    //是否使用 如果使用 不许删除 未使用可以删除
-                    //        	             {field:"qgqdConfig",title:"操作"}//校验清单
+                    {field:"esComment",title:"备注",width:300},
+                    {field:"isEffective",title:"状态",width:100,formatter:function(value,row,index){
+                        if(value==1){
+                            return "<span style='color: #009943'>已校验</span>"
+                        }else{
+                            return "<span style='color: #dc3f35'>未校验</span>"
+                        }
+                    }},
+                    {field:"actor",title:"操作",width:100,align:'center',formatter:function(value,row,index){
+                        if(row.isEffective==1){
+                            return "<button id='addQdBtn' onclick='adgQdBtn()' style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box'>添加数据</button>"
+                        }else{
+                            return "<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #00662f;color: white;border-radius:2px;box-sizing:border-box'>校验数据</button>"
+                        }
+                    }}
                 ]],
                 selectOnCheck:true, //true，单击复选框将永远选择行 false，选择行将不选中复选框。
                 singleSelect: true,//设置True 将禁止多选
@@ -168,7 +224,7 @@ function editTemp() {
         swal('请先选择编辑清单', '', 'error');
     }
 }
+//点击按钮创建模板下面的清单
+function adgQdBtn(){
 
-function delectTemp() {
-    var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
 }
