@@ -170,8 +170,6 @@ function getLocalTime(nS) {
         var len = $(e.target).parents('.menuCD').attr('data-cslen');
         if ($(e.target).parents('.menuCD').find('.menuCD_con').css('height') != '0px') {
             $(e.target).parents('.menuCD').find('.menuCD_con').css('height', '0');
-            // $(".measureNum").removeChild("i")
-            // $(".measureNum").append("<i class='en-arrow-up7'></i>")
         } else {
             $(e.target).parents('.menuCD').addClass('openAccordion');
             $('.menuCD_con').css('height', '0');
@@ -179,10 +177,7 @@ function getLocalTime(nS) {
 
             var name = $(e.target).parents('.menuCD').find('.menuCD_title').attr('val_name');
             metTable_hj_info(name);
-            // $(".measureNum").removeChild("i")
-            // $(".measureNum").append("<i class='en-arrow-down8'></i>")
         }
-
     })
 })();
 
@@ -219,8 +214,10 @@ function hyc() {
                 var caidan = $('<div class="menuCD" data-cslen="'+ col.measureItems.length +'"></div>');
                 var caidan_title = $('<div class="menuCD_title" title="'+ col.sectorsName +'" val_name="' + col.sectorsName + '"  ></div>');
                 caidan_title.append($('<span>'+ col.sectorsName +'</span>'));
+                //添加箭头
+                caidan_title.append($('<i class="en-arrow-up7" style="float: right;line-height:45px;"></i>'))
                 if (col.planMeasure.length > 0) {
-                    caidan_title.append($('<span class="measureNum">已使用 '+ col.planMeasure.length +' 条措施</span>'));
+                    caidan_title.append($('<span class="measureNum" style="float:right;line-height:45px;">已使用 '+ col.planMeasure.length +' 条措施</span>'));
                 }
                 var caidan_con = $('<div class="menuCD_con"></div>');
 
@@ -248,8 +245,6 @@ function hyc() {
                 accordion.append(caidan);
 
             })
-            //行业措施添加箭头
-            $(".measureNum").append("<i class='en-arrow-up7'></i>")
             $(".measureNum").css({"margin-right":"20px"})
         } else {
             swal('连接错误/plan/get_planInfo', '', 'error');
