@@ -3380,10 +3380,18 @@ public class AirController {
 					obj.put("maxtime", endtime.getTime());
 					break;
 				}
-	
+				TScenarinoDetail thets=tsList.get(0);
+				Date start=thets.getScenarinoStartDate();
+				String stra=hms.format(start);
+				Date starttime=hms.parse(stra);
+				TMissionDetail tm=tMissionDetailMapper.selectByPrimaryKey(thets.getMissionId());
+				TTasksStatus tTasksStatus=tTasksStatusMapper.selectStatus(thets.getScenarinoId());
+				Long status=tTasksStatus.getStepindex();
+				if(tTasksStatus.getTasksEndDate()!=null){
+					obj.put("maxtime", endtime.getTime());
+					break;
+				}
 			}
-			
-			obj.put("maxtime", selectmaxpathdate.getTime());
 			
 			return AmpcResult.ok(obj);
 		}catch(Exception e){
