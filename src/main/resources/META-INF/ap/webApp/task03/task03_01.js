@@ -5,7 +5,7 @@
 /**
  * 设置导航条菜单
  */
-$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;color: #1a1a1a;text-decoration: none;">任务管理</a><i class="en-arrow-right7" style="font-size:16px;"></i><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;color: #1a1a1a;text-decoration: none;">情景编辑</a><i class="en-arrow-right7" style="font-size:16px;"></i><a href="#/csbj" style="padding-left: 15px;padding-right: 15px;color: #1a1a1a;text-decoration: none;">措施编辑</a><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;font-size:12px;">子措施编辑</span>');
+$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a><i class="en-arrow-right7" style="font-size:16px;"></i><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景编辑</a><i class="en-arrow-right7" style="font-size:16px;"></i><a href="#/csbj" style="padding-left: 15px;padding-right: 15px;">措施编辑</a><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;font-size:12px;">子措施编辑</span>');
 
 /*左侧菜单栏显示*/
 (function () {
