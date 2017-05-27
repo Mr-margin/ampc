@@ -55,13 +55,14 @@ function innitdata(active){
         // })
         ajaxPost('/NativeAndNation/doPost',{
             "userId":userId,
-            "method":active,
+            "method":"find_natives",
         }).success(function(data){
             $("#localqd").treegrid({
                 idField:'esNativeTpId',
                 treeField:'esNativeTpName',
                 data:data.data.data,
-                lines:false,
+                lines:true,
+                animate:true,
                 columns:[[  //表头
                     {field:"ck",checkbox:true},
                     {field:"esNativeTpName",title:"清单模板名称",width:200},
@@ -82,7 +83,7 @@ function innitdata(active){
                         if(row.isEffective==1){
                             return "<button id='addQdBtn' onclick='adgQdBtn()' style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box'>添加数据</button>"
                         }else{
-                            return "<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box'>校验数据</button>"
+                            return "<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkData()'>校验数据</button>"
                         }
                     }}
                 ]],
@@ -92,17 +93,21 @@ function innitdata(active){
                 fitColumns:true,//真正的自动展开/收缩列的大小，以适应网格的宽度，防止水平滚动。
                 clickToSelect: true,// 点击选中行
                 pagination: true, // 在表格底部显示分页工具栏
+                onCheckNode:function (data) {
+                    console.log("选择节点");
+                    console.log(data);
+                }
             })
         })
     }else if(active=="add_nativeTp"){
         var param={};
         param.userId=userId;
         param.method="add_nativeTp";
-        param.nativeTpName =$("#esNationName").val(); //清单名字
-        param.nativeTpYear = $("#esNationYear").val(); //清单年份
-        param.nativeTpRemark = $("#esNationMark").val();//清单备注
+        param.nativeTpName =$("#creatTemp #esNationName").val(); //清单名字
+        param.nativeTpYear = $("#creatTemp #esNationYear").val(); //清单年份
+        param.nativeTpRemark = $("#creatTemp #esNationMark").val();//清单备注
         //判断新建清单的年份是否在1990-2100之间
-        var myYear=$("#esNationYear").val()
+        var myYear=$("#creatTemp #esNationYear").val()
         if(myYear>=1990&&myYear<2100){    //判断年份
             $("#formQd").submit(
                 ajaxPost('/NativeAndNation/doPost',param).success(function(res){
@@ -264,4 +269,17 @@ $("#editTempQd").window({
 //点击按钮创建模板下面的清单
 function adgQdBtn(){
     $("#editTempQd").window("open")
+}
+function checkData() {
+    var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
+    var rowNode=row.children;
+    ajaxPost('/NativeAndNation/doPost',{
+        "userId":userId,
+        "method":"checkData",
+        "filePath":'',
+        "nativeTpId":rowNode[0].esNativeId,
+        "nativeName":rowNode[0].esNativeTpName
+    }).success(function () {
+        console.log("校验成功了")
+    })
 }
