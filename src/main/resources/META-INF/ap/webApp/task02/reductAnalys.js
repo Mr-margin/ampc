@@ -19,7 +19,7 @@ function returnCSBJ(e){
 /**
  *设置导航条信息
  */
-$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>>><a id="yabj" href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景管理</a>>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span>');
+$("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>><a id="yabj" href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景管理</a>><span style="padding-left: 15px;padding-right: 15px;">减排分析</span>');
 var gis_paramsName = {};//地图请求的参数，第一次加载地图时初始化，每次更改地图比例尺时修改codeLevel
 
 var tj_paramsName = {};//统计图用的参数
