@@ -112,6 +112,7 @@ function innitdata(active){
             $("#formQd").submit(
                 ajaxPost('/NativeAndNation/doPost',param).success(function(res){
                     if(res.status==0){
+                        console.log("进来了")
                         $("#localqd").treegrid('insert',{ //在表格中插入新建模板
                             before: 0,	// 索引从0开始
                             data: {
@@ -272,12 +273,13 @@ function adgQdBtn(){
 }
 function checkData() {
     var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
+    console.log(row)
     var rowNode=row.children;
     ajaxPost('/NativeAndNation/doPost',{
         "userId":userId,
         "method":"checkData",
         "filePath":'',
-        "nativeTpId":rowNode[0].esNativeId,
+        "nativeId":rowNode[0].esNativeId,
         "nativeName":rowNode[0].esNativeTpName
     }).success(function () {
         console.log("校验成功了")
