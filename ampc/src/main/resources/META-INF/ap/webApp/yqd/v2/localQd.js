@@ -180,18 +180,17 @@ function innitdata(active){
         var qdYear=$("#esLocalQdYear").val();
         var qdRemark=$("#esLocalQdMark").val();
         if(row){
-            ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark}).success(function(res){
+            ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark,"nativeTpId":row.esNativeTpId}).success(function(res){
                 if(res.status==0){
-                    myLoadFilter([qdName,qdYear,qdRemark],row_id)
-                    // console.log(row_id);
-                    // $("#localqd").treegrid('append',{
-                    //     parent:row_id,
-                    //     data:{
-                    //         esNativeTpName:qdName,
-                    //         esNativeTpYear:qdYear,
-                    //         esComment:qdRemark
-                    //     }
-                    // })
+                    console.log(row_id);
+                    $("#localqd").treegrid('append',{
+                        parent:row_id+1,
+                        data:[{
+                            esNativeTpName:qdName,
+                            esNativeTpYear:qdYear,
+                            esComment:qdRemark
+                        }]
+                    })
                     $("#editTempQd").window('close');
                 }else{
                     swal('参数错误', '', 'error');
@@ -200,40 +199,7 @@ function innitdata(active){
         }
     }
 }
-// 给模板增加子节点
-function myLoadFilter(data,parentId){
-    function setData(){
-        var todo = [];
-        for(var i=0; i<data.length; i++){
-            todo.push(data[i]);
-        }
-        while(todo.length){
-            var node = todo.shift();
-            if (node.children){
-                node.state = 'closed';
-                node.children1 = node.children;
-                node.children = undefined;
-                todo = todo.concat(node.children1);
-            }
-        }
-    }
 
-    setData(data);
-    var tg = $(this);
-    var opts = tg.treegrid('options');
-    opts.onBeforeExpand = function(row){
-        if (row.children1){
-            tg.treegrid('append',{
-                parent: row[opts.idField],
-                data: row.children1
-            });
-            row.children1 = undefined;
-            tg.treegrid('expand', row[opts.idField]);
-        }
-        return row.children1 == undefined;
-    };
-    return data;
-}
 //创建模板窗口
 $("#creatTemp").window({
     width:600,  //easyui 窗口宽度
