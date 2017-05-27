@@ -3,6 +3,7 @@ package ampc.com.gistone.controller;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -44,8 +45,8 @@ import ampc.com.gistone.util.checkExcelUtil.ExcelToDate;
  * @version v.0.1
  * @date 2017年3月3日
  */
-@RestController
-@RequestMapping
+//@RestController
+//@RequestMapping
 public class ExcelToDateController {
 
 	// 默认映射
@@ -155,66 +156,126 @@ public class ExcelToDateController {
 	 * @return 返回响应结果对象
 	 * TODO 行业描述
 	 */
-	@RequestMapping("excel/update_sectorDocExcelData")
-	public AmpcResult update_SectorDocExcelData(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
+	public Map update_SectorDocExcelData(Long userId,Long qdId,String filePath) {
+		//出错的文件保存路径
+		String outPath="C:\\Users\\Mr_Wang\\Desktop\\验证应急系统新_1描述文件.xlsx";
+		//错误信息的数据集合
+		List<String> msg=new ArrayList();
+		//结果Map
+		Map map=new HashMap();
 		// 添加异常捕捉
 		try {
-			// 设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String, Object> data = (Map) requestDate.get("data");
-			// 用户的id 确定当前用户
-			Long userId = null;
-			if (data.get("userId") != null) {
-				//获取用户ID
-				Object param=data.get("userId");
-	   			//进行参数判断
-				if(!RegUtil.CheckParameter(param, "Long", null, false)){
-					LogUtil.getLogger().error("ExcelToDateController 用户ID为空或出现非法字符!");
-					return AmpcResult.build(1003, "ExcelToDateController 用户ID为空或出现非法字符!");
-				}
-				// 用户id
-				userId = Long.parseLong(param.toString());
-			}
-			/**
-			 * 根据request获取excel地址
-			 */
-			String fileName = request.getServletContext().getRealPath("/")+ "***.xlsx";
+			//查询当前的版本ID
 			Long versionId=tSectordocExcelMapper.selectMaxVersion(userId);
 			if(versionId==null){
 				versionId=1L;
 			}else{
 				versionId++;
 			}
-			//错误信息的数据集合
-			List<String> msg=new ArrayList();
-			//出错的文件保存路径
-			String outPath="C:\\Users\\Mr_Wang\\Desktop\\验证应急系统新_1描述文件.xlsx";
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			ExcelToDate ed=new ExcelToDate();
-			List<TSectordocExcel> tse = ed.ReadSectorDOC(fileName,versionId,userId,msg,outPath);
+			List<TSectordocExcel> tse = ed.ReadSectorDOC(filePath,versionId,userId,msg,outPath,qdId);
 			//如果错误信息大于0 则证明出错了
 			if(msg.size()>0||tse==null){
 				LogUtil.getLogger().error("读取行业描述Excel出错!");
-				msg.add("生成验证模板的路径在:"+outPath);
-				return AmpcResult.build(1001,"读取Excel出错",msg);
+				map.put("errorMsg", msg);
+				map.put("outPath", outPath);
+				return map;
 			}
 			for (TSectordocExcel tsd : tse) {
-				//int result=tSectordocExcelMapper.insertSelective(tsd);
-//				if(result<1){
-//					throw new SQLException("ExcelToDateController 保存行业描述信息失败,数据库添加失败。");
-//				}
+				int result=tSectordocExcelMapper.insertSelective(tsd);
+				if(result<1){
+					throw new SQLException("ExcelToDateController 保存行业描述信息失败,数据库添加失败。");
+				}
 			}
 			LogUtil.getLogger().info("ExcelToDateController 保存行业描述信息成功!");
-			return AmpcResult.ok("更新成功");
-//		}catch(SQLException e){
-//			LogUtil.getLogger().error(e.getMessage(),e);
-//			return AmpcResult.build(1000,e.getMessage());
+			return null;
+		}catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			msg.add("保存行业描述信息失败,数据库添加失败。");
+			map.put("errorMsg",msg);
+			map.put("outPath", outPath);
+			return map;
 		} catch (Exception e) {
 			LogUtil.getLogger().error("ExcelToDateController 保存行业描述信息异常!",e);
+			msg.add("保存行业描述信息异常!");
+			map.put("errorMsg",msg);
+			map.put("outPath", outPath);
 			// 返回错误信息
-			return AmpcResult.build(1001, "ExcelToDateController 保存行业描述信息异常!");
+			return map;
 		}
 	}
+	
+	
+	
+	/**
+	 * 行业描述Excel
+	 * 根据Excel更改行业描述Excel表中数据
+	 * @param request     请求
+	 * @param response    响应
+	 * @return 返回响应结果对象
+	 * TODO 行业描述
+	 */
+//	@RequestMapping("excel/update_sectorDocExcelData")
+//	public AmpcResult update_SectorDocExcelData(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
+//		// 添加异常捕捉
+//		try {
+//			// 设置跨域
+//			ClientUtil.SetCharsetAndHeader(request, response);
+//			Map<String, Object> data = (Map) requestDate.get("data");
+//			// 用户的id 确定当前用户
+//			Long userId = null;
+//			if (data.get("userId") != null) {
+//				//获取用户ID
+//				Object param=data.get("userId");
+//	   			//进行参数判断
+//				if(!RegUtil.CheckParameter(param, "Long", null, false)){
+//					LogUtil.getLogger().error("ExcelToDateController 用户ID为空或出现非法字符!");
+//					return AmpcResult.build(1003, "ExcelToDateController 用户ID为空或出现非法字符!");
+//				}
+//				// 用户id
+//				userId = Long.parseLong(param.toString());
+//			}
+//			/**
+//			 * 根据request获取excel地址
+//			 */
+//			String fileName = request.getServletContext().getRealPath("/")+ "***.xlsx";
+//			Long versionId=tSectordocExcelMapper.selectMaxVersion(userId);
+//			if(versionId==null){
+//				versionId=1L;
+//			}else{
+//				versionId++;
+//			}
+//			//错误信息的数据集合
+//			List<String> msg=new ArrayList();
+//			//出错的文件保存路径
+//			String outPath="C:\\Users\\Mr_Wang\\Desktop\\验证应急系统新_1描述文件.xlsx";
+//			//地址不确定  先写死了 获取到所有Excel中需要的数据
+//			ExcelToDate ed=new ExcelToDate();
+//			List<TSectordocExcel> tse = ed.ReadSectorDOC(fileName,versionId,userId,msg,outPath);
+//			//如果错误信息大于0 则证明出错了
+//			if(msg.size()>0||tse==null){
+//				LogUtil.getLogger().error("读取行业描述Excel出错!");
+//				msg.add("生成验证模板的路径在:"+outPath);
+//				return AmpcResult.build(1001,"读取Excel出错",msg);
+//			}
+//			for (TSectordocExcel tsd : tse) {
+//				//int result=tSectordocExcelMapper.insertSelective(tsd);
+////				if(result<1){
+////					throw new SQLException("ExcelToDateController 保存行业描述信息失败,数据库添加失败。");
+////				}
+//			}
+//			LogUtil.getLogger().info("ExcelToDateController 保存行业描述信息成功!");
+//			return AmpcResult.ok("更新成功");
+////		}catch(SQLException e){
+////			LogUtil.getLogger().error(e.getMessage(),e);
+////			return AmpcResult.build(1000,e.getMessage());
+//		} catch (Exception e) {
+//			LogUtil.getLogger().error("ExcelToDateController 保存行业描述信息异常!",e);
+//			// 返回错误信息
+//			return AmpcResult.build(1001, "ExcelToDateController 保存行业描述信息异常!");
+//		}
+//	}
 	
 	/**
 	 * 筛选条件Excel
