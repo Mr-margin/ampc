@@ -60,14 +60,14 @@ abbr,acronym {
 /* -----------------------------------------
    Header styles
 ----------------------------------------- */
-#header {
+/*#header {
     height: 50px;
     background: #FAFBFC;
     border-bottom: 1px solid #d9d9d9;
 }
 
 #header>.logobox{
-    /*line-height: 50px;*/
+    !*line-height: 50px;*!
     height: 50px;
 }
 
@@ -78,6 +78,10 @@ abbr,acronym {
     color: #303949;
     font-size: 18px;
     height: 50px;
+}*/
+.user-center{
+    position: absolute;
+
 }
 /* -----------------------------------------
    Sidebar styles
