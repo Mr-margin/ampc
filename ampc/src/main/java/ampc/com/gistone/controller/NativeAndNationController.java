@@ -1,5 +1,6 @@
 package ampc.com.gistone.controller;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -789,7 +790,8 @@ public class NativeAndNationController {
 				return AmpcResult.build(1003, "清单名称为空或出现非法字符!");
 			}
 //			String filePath = param.toString();
-			String filePath = "C:\\Users\\Administrator\\Desktop\\应急系统新_1描述文件.xlsx";
+//			String filePath = "C:\\Users\\Administrator\\Desktop\\应急系统新_1描述文件.xlsx";
+			String filePath= "河北省模板";
 			
 			Map mapData=new HashMap();
 			mapData.put("userId", 1);
@@ -817,6 +819,25 @@ public class NativeAndNationController {
 					ins.close();
 			} catch (IOException e) {
 				logger.error("close " + config + " file error!", e);
+			}
+			//获取路径
+			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeId+"/"+filePath+".xlsx";
+			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeId+"/";
+			//获取file对象
+			File files =new File(nativesfilePath);
+			File file =new File(nativefilePath);
+			//目录已经存在
+			if(files.exists()){
+				System.out.println("目录已经存在!");
+			}else{
+				//不存在进行创建
+				file.mkdirs();
+//				if(){
+//					
+//				}else{
+//					
+//				}
+				
 			}
 			
 			
