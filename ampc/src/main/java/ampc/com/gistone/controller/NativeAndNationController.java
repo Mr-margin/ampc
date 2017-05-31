@@ -795,8 +795,29 @@ public class NativeAndNationController {
 			mapData.put("userId", 1);
 			mapData.put("nativeId", 1);
 			mapData.put("pathFile", filePath);
-			
+			//调用校验数据函数
 			Map  ampcResult =excelToDateController.update_SectorDocExcelData(userId,nativeId,filePath);
+			
+			//读取配置文件路径
+			String config = "/extract.properties";
+			InputStream ins = getClass().getResourceAsStream(config);
+			Properties pro = new Properties();
+			try {
+				pro.load(ins);
+				extractConfig = new ExtractConfig();
+				extractConfig.setLocalListingFilePath((String) pro.get("LocalListingFilePath"));
+			} catch (FileNotFoundException e) {
+				logger.error(config + " file does not exits!", e);
+			} catch (IOException e) {
+				logger.error("load " + config + " file error!", e);
+			}
+			//关闭输入流
+			try {
+				if (ins != null)
+					ins.close();
+			} catch (IOException e) {
+				logger.error("close " + config + " file error!", e);
+			}
 			
 			
 			LogUtil.getLogger().info("NativeAndNationController 创建本地清单模板信息成功!");
