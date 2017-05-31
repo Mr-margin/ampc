@@ -317,15 +317,17 @@ function updata(opt) {
                 $('.showTable').append(div);
             }
 
+            var kongData = true;
+
             var sp = speciesAll[changeMsg.type][changeMsg.rms];
             for (var n in res.data) {
 
                 for (var s = 0; s < sp.length; s++) {
                     var spObj = res.data[n][speciesObj[sp[s]]];
                     if (!spObj) {
-                        $('.' + speciesObj[sp[s]]).find('.' + n + 'bias').html('-');
-                        $('.' + speciesObj[sp[s]]).find('.' + n + 'coefficient').html('-');
-                        $('.' + speciesObj[sp[s]]).find('.' + n + 'rate').html('-');
+                        $("." + speciesObj[sp[s]]).find('.' + n + 'bias').html('-');
+                        $("." + speciesObj[sp[s]]).find('.' + n + 'coefficient').html('-');
+                        $("." + speciesObj[sp[s]]).find('.' + n + 'rate').html('-');
                     } else {
                         for (var d in spObj) {
                             var num = res.data[n][speciesObj[sp[s]]][d];
@@ -335,6 +337,7 @@ function updata(opt) {
                                 $('.' + speciesObj[sp[s]]).find('.' + n + d).html(num);
                             }
                         }
+                        kongData = false;
                     }
 
                 }
@@ -346,10 +349,18 @@ function updata(opt) {
                 // }
             }
 
+            if(kongData){
+                swal({
+                    title: '无数据!',
+                    type: 'error',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            }
         })
     })
-    proStation=allCode[$(".proStation").val()].name
-    cityStation=allCode[$('.proStation').val()].city[$(".cityStation").val()]
+    proStation=allCode[$(".proStation").val()].name;
+    cityStation=allCode[$('.proStation').val()].city[$(".cityStation").val()];
     showTitleFun();
 }
 
