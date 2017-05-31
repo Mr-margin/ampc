@@ -71,45 +71,45 @@
             <div id="timepanel">
                 <div title="时段添加" id="addTime1" style="padding: 8px">
                     <div style="height:90px" class="showTimes">
-                        <div class="col-4" style="height:90px;border:1px solid #aaa">
+                        <div class="col-4">
                             <h4>前一时段</h4>
                             <p></p>
                         </div>
-                        <div class="col-4" style="height:90px;border:1px solid #aaa">
+                        <div class="col-4" >
                             <h4>待编辑时段</h4>
                             <p></p>
                         </div>
-                        <div class="col-4" style="height:90px;border:1px solid #aaa">
+                        <div class="col-4">
                             <h4>后一时段</h4>
                             <p></p>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>请选择插入此事件段的时间点：</label>
+                    <div class="form-group" style="margin-top: 10px">
+                        <label style="margin: 10px 0">请选择插入此事件段的时间点：</label>
                         <div class="col-12">
                             <input type="text" class="form-control" id="qyTimePoint" name="qyTimePoint">
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="addTimes()">确认添加
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addTimes()">确认添加
                         </button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
                     </div>
                 </div>
-                <div title="时段删除" class="delTimeDiv" id="delTime">
+                <div title="时段删除" class="delTimeDiv" id="delTime" style="padding: 8px">
                     <div class="showTimes text-center" style="height: 90px;">
-                        <div class="col-4" style="border:1px solid #aaa;border-radius: 3px">
+                        <div class="col-4">
                             <h4>前一时段</h4>
 
                             <p></p>
                         </div>
-                        <div class="col-4" style="border:1px solid #aaa;border-radius: 3px">
+                        <div class="col-4" >
                             <h4>待编辑时段</h4>
 
                             <p></p>
 
                         </div>
-                        <div class="col-4" style="border:1px solid #aaa;border-radius: 3px">
+                        <div class="col-4" >
                             <h4>后一时段</h4>
 
                             <p></p>
@@ -121,10 +121,10 @@
 
                     <div class="delSelect"></div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success" data-dismiss="modal"
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"
                                 onclick="delTimes()">确定删除
                         </button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">取消
                         </button>
                     </div>
                 </div>

@@ -104,15 +104,21 @@ var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时�
             if (allData[areaIndex].timeItems.length <= 1) {
                 $('#timepanel').tabs('disableTab', '时段删除');
                 $('#timepanel').tabs('disableTab', '时段编辑');
+            }else {
+                $('#timepanel').tabs('enableTab', '时段删除');
+                $('#timepanel').tabs('enableTab', '时段编辑');
             }
 
             if (allData[areaIndex].timeItems[timeIndex].planId == -1) {
                 $('#planpanel').tabs('disableTab', '编辑现预案');
                 // $('#planpanel').tabs('disableTab', '删除现预案');
+                $('#planpanel').tabs('enableTab', '复制旧预案').tabs('enableTab', '添加新预案');
                 $('#planpanel').tabs('select', '添加新预案');
+
             } else {
                 $('#planpanel').tabs('disableTab', '添加新预案');
                 $('#planpanel').tabs('disableTab', '复制旧预案');
+                $('#planpanel').tabs('enableTab', '编辑现预案');
                 $('#planpanel').tabs('select', '编辑现预案');
             }
             /*window.setTimeout(function () {
