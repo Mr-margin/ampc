@@ -442,7 +442,7 @@ function bianji(type, g_num, p , wind) {
 //        			console.log(data.data.imagePath);
         			
 //        			var imageURL = "http://166.111.42.85:8300/ampc/"+data.data.imagePath+"?t="+Math.random();
-        			var imageURL = "http://192.168.1.147:8091/Java/"+data.data.imagePath+"?t="+Math.random();
+        			var imageURL = "http://192.168.4.214:8091/Java/"+data.data.imagePath+"?t="+Math.random();
 //        			var imageURL = "/ampc/"+data.data.imagePath+"?t="+Math.random();
         			console.log(imageURL);
         			
@@ -456,7 +456,7 @@ function bianji(type, g_num, p , wind) {
                     app.mapimagelayer[g_num].addImage(mapImage);//将新的图片图层添加到地图
                     
                     $('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
-                    zmblockUI("#mapDiv"+g_num, "end");//打开锁屏控制
+                    zmblockUI1("#mapDiv"+g_num, "end");//打开锁屏控制
                     
 //                    $.each(data.data, function (i, col) {
 //                    	$.each(col, function (k, vvol) {
@@ -1071,7 +1071,7 @@ function updata(t) {
             p2.showType = changeMsg.showType[x];
             //console.log('p2',$.extend({},p2),p2.showType);
 
-            zmblockUI("#mapDiv1", "start");
+            zmblockUI1("#mapDiv1", "start");
           /*执行方法，进行右图添加*/
             bianji("1", 1, p2);
           /*执行方法，进行右图添加 end*/
@@ -1094,22 +1094,22 @@ function updata(t) {
 
             if(i==0){
               /*执行方法，进行左图添加*/
-                zmblockUI("#mapDiv0", "start");
+                zmblockUI1("#mapDiv0", "start");
                 bianji("1", 0, p1);
               /*执行方法，进行左图添加 end*/
 
               /*执行方法，进行右图添加*/
-                zmblockUI("#mapDiv1", "start");
+                zmblockUI1("#mapDiv1", "start");
                 bianji("1", 1, p2);
               /*执行方法，进行右图添加 end*/
             }else{
               /*执行方法，进行左图添加*/
-                zmblockUI("#mapDiv0", "start");
+                zmblockUI1("#mapDiv0", "start");
                 bianji("1", 0, p1,changeMsg.showWind);
               /*执行方法，进行左图添加 end*/
 
               /*执行方法，进行右图添加*/
-                zmblockUI("#mapDiv1", "start");
+                zmblockUI1("#mapDiv1", "start");
                 bianji("1", 1, p2,changeMsg.showWind);
               /*执行方法，进行右图添加 end*/
             }
