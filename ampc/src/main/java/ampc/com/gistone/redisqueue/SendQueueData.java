@@ -260,8 +260,9 @@ public class SendQueueData {
 			}
 			try {
 				Thread.sleep(5000);
-			} catch (InterruptedException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
+				LogUtil.getLogger().error("SendQueueData-sendData:发送消息的线程睡眠出现异常！",e);
 			}
 		}
 		LogUtil.getLogger().info("SendQueueData-sendData:发送结束");
