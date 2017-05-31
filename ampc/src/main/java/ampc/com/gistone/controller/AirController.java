@@ -3376,7 +3376,7 @@ public class AirController {
 				ts.setPathDate(endtime);
 				ts.setScenType("4");
 				List<TScenarinoDetail> tsList=tScenarinoDetailMapper.selectByEntity(ts);
-				if(tsList==null){
+				if(tsList.isEmpty()){
 					
 					continue;
 				}
