@@ -24,8 +24,18 @@ public class TEsNativeTp {
     private Date deleteTime;
 
     private String esVersion;
+    
+    private String isUpload;
 
-    public Long getEsNativeTpId() {
+    public String getIsUpload() {
+		return isUpload;
+	}
+
+	public void setIsUpload(String isUpload) {
+		this.isUpload = isUpload;
+	}
+
+	public Long getEsNativeTpId() {
         return esNativeTpId;
     }
 
