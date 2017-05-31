@@ -525,25 +525,25 @@ public class NativeAndNationController {
 			if(total==1){
 				msgMap.put("msg", true);
 				//读取配置文件路径
-				String config = "/extract.properties";
-				InputStream ins = getClass().getResourceAsStream(config);
-				Properties pro = new Properties();
-				try {
-					pro.load(ins);
-					extractConfig = new ExtractConfig();
-					extractConfig.setLocalListingFilePath((String) pro.get("LocalListingFilePath"));
-				} catch (FileNotFoundException e) {
-					logger.error(config + " file does not exits!", e);
-				} catch (IOException e) {
-					logger.error("load " + config + " file error!", e);
-				}
-				//关闭输入流
-				try {
-					if (ins != null)
-						ins.close();
-				} catch (IOException e) {
-					logger.error("close " + config + " file error!", e);
-				}
+//				String config = "/extract.properties";
+//				InputStream ins = getClass().getResourceAsStream(config);
+//				Properties pro = new Properties();
+//				try {
+//					pro.load(ins);
+//					extractConfig = new ExtractConfig();
+//					extractConfig.setLocalListingFilePath((String) pro.get("LocalListingFilePath"));
+//				} catch (FileNotFoundException e) {
+//					logger.error(config + " file does not exits!", e);
+//				} catch (IOException e) {
+//					logger.error("load " + config + " file error!", e);
+//				}
+//				//关闭输入流
+//				try {
+//					if (ins != null)
+//						ins.close();
+//				} catch (IOException e) {
+//					logger.error("close " + config + " file error!", e);
+//				}
 				
 				
 			}else{
@@ -830,7 +830,7 @@ public class NativeAndNationController {
 			if(files.exists()){
 				System.out.println("目录已经存在!");
 			}else{
-				//不存在进行创建
+				//不存在进行创建目录
 				file.mkdirs();
 //				if(){
 //					
