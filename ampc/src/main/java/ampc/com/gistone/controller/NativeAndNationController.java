@@ -801,44 +801,45 @@ public class NativeAndNationController {
 			Map  ampcResult =excelToDateController.update_SectorDocExcelData(userId,nativeId,filePath);
 			
 			//读取配置文件路径
-			String config = "/extract.properties";
-			InputStream ins = getClass().getResourceAsStream(config);
-			Properties pro = new Properties();
-			try {
-				pro.load(ins);
-				extractConfig = new ExtractConfig();
-				extractConfig.setLocalListingFilePath((String) pro.get("LocalListingFilePath"));
-			} catch (FileNotFoundException e) {
-				logger.error(config + " file does not exits!", e);
-			} catch (IOException e) {
-				logger.error("load " + config + " file error!", e);
-			}
-			//关闭输入流
-			try {
-				if (ins != null)
-					ins.close();
-			} catch (IOException e) {
-				logger.error("close " + config + " file error!", e);
-			}
-			//获取路径
-			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeId+"/"+filePath+".xlsx";
-			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeId+"/";
-			//获取file对象
-			File files =new File(nativesfilePath);
-			File file =new File(nativefilePath);
-			//目录已经存在
-			if(files.exists()){
-				System.out.println("目录已经存在!");
-			}else{
-				//不存在进行创建目录
-				file.mkdirs();
-//				if(){
-//					
+//			String config = "/extract.properties";
+//			InputStream ins = getClass().getResourceAsStream(config);
+//			Properties pro = new Properties();
+//			try {
+//				pro.load(ins);
+//				extractConfig = new ExtractConfig();
+//				extractConfig.setLocalListingFilePath((String) pro.get("LocalListingFilePath"));
+//			} catch (FileNotFoundException e) {
+//				logger.error(config + " file does not exits!", e);
+//			} catch (IOException e) {
+//				logger.error("load " + config + " file error!", e);
+//			}
+//			//关闭输入流
+//			try {
+//				if (ins != null)
+//					ins.close();
+//			} catch (IOException e) {
+//				logger.error("close " + config + " file error!", e);
+//			}
+//			//获取路径
+//			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeId+"/"+filePath+".xlsx";
+//			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeId+"/";
+//			//获取file对象
+//			File files =new File(nativesfilePath);
+//			File file =new File(nativefilePath);
+//			//目录已经存在
+//			if(files.exists()){
+//				System.out.println("目录已经存在!");
+//			}else{
+//				//不存在进行创建目录
+//				file.mkdirs();
+//				if(file.exists()){
+//					System.out.println("文件已存在");
 //				}else{
-//					
+//					//不存在创建文件
+//					file.createNewFile();
 //				}
-				
-			}
+//				
+//			}
 			
 			
 			LogUtil.getLogger().info("NativeAndNationController 创建本地清单模板信息成功!");
