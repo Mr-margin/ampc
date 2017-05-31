@@ -665,6 +665,7 @@ function showTimeline(data) {
         yAxis: {
             type: 'category',
             data: _temp.yAxisLabel,
+            inverse:true,
             axisLabel: {
                 interval: function (index, value) {
                     if (index % 3 == 1) {
@@ -907,6 +908,8 @@ function showTimeline(data) {
         var labelIndex = Math.floor(pointInGrid[1] / 3);
         console.log(allData[labelIndex].cityCodes.length > 0 || allData[labelIndex].countyCodes.length > 0 || allData[labelIndex].provinceCodes.length > 0);
         if (allData[labelIndex].cityCodes.length == 0 && allData[labelIndex].countyCodes.length == 0 && allData[labelIndex].provinceCodes.length == 0) {
+
+            $('#settingqjbox').window('open').window('center').find('.step1 button').attr('data-qjid', allData[labelIndex].areaId);
             return
         }
         if (qjMsg.scenarinoStatus == 3)return;
