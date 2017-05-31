@@ -1,5 +1,8 @@
 package ampc.com.gistone.controller;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -7,10 +10,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +29,8 @@ import ampc.com.gistone.database.inter.TEsNativeTpMapper;
 import ampc.com.gistone.database.model.TEsNation;
 import ampc.com.gistone.database.model.TEsNative;
 import ampc.com.gistone.database.model.TEsNativeTp;
+import ampc.com.gistone.extract.ExtractConfig;
+import ampc.com.gistone.extract.ResultPathUtil;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.LogUtil;
@@ -52,6 +60,10 @@ public class NativeAndNationController {
 	private TEsNative tEsNative;
 	
 	private TEsNativeTp tEsNativeTp;
+	
+	private final static Logger logger = LoggerFactory.getLogger(ResultPathUtil.class);
+	private ExtractConfig extractConfig;
+	
 	//源清单请求过滤
 	@RequestMapping("/NativeAndNation/doPost")
 	public AmpcResult doPost(@RequestBody Map<String, Object> requestDate,
@@ -227,7 +239,7 @@ public class NativeAndNationController {
 					//对每个清单模板下的清单数据的格式重新设置为符合easyui中tree树形结构的格式
 					Map tesNative=new HashMap();
 					TEsNative tEsNative=listNative.get(i);
-					tesNative.put("id", i);
+					tesNative.put("id", k+""+i);
 					tesNative.put("esNativeId", tEsNative.getEsNativeId());
 					tesNative.put("esNativeTpName", tEsNative.getEsNativeName());
 					tesNative.put("esNativeRelationId", tEsNative.getEsNativeRelationId());
@@ -508,10 +520,33 @@ public class NativeAndNationController {
 			//插入数据
 			int total=tEsNativeTpMapper.insertSelective(tEsNativeTp);
 			Map msgMap=new HashMap();
+			//清单模板数据成功入库
 			if(total==1){
-				
 				msgMap.put("msg", true);
+				//读取配置文件路径
+				String config = "/extract.properties";
+				InputStream ins = getClass().getResourceAsStream(config);
+				Properties pro = new Properties();
+				try {
+					pro.load(ins);
+					extractConfig = new ExtractConfig();
+					extractConfig.setLocalListingFilePath((String) pro.get("LocalListingFilePath"));
+				} catch (FileNotFoundException e) {
+					logger.error(config + " file does not exits!", e);
+				} catch (IOException e) {
+					logger.error("load " + config + " file error!", e);
+				}
+				//关闭输入流
+				try {
+					if (ins != null)
+						ins.close();
+				} catch (IOException e) {
+					logger.error("close " + config + " file error!", e);
+				}
+				
+				
 			}else{
+				//清单模板数据入库失败
 				msgMap.put("msg", false);
 			}
 			LogUtil.getLogger().info("NativeAndNationController 创建本地清单模板信息成功!");
@@ -765,7 +800,7 @@ public class NativeAndNationController {
 			
 			
 			LogUtil.getLogger().info("NativeAndNationController 创建本地清单模板信息成功!");
-			return AmpcResult.ok();
+			return AmpcResult.ok(ampcResult);
 		} catch (Exception e) {
 			// TODO: handle exception
 			LogUtil.getLogger().error("NativeAndNationController 创建本地清单模板异常!",e);
