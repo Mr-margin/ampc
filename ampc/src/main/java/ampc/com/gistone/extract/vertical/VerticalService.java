@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +30,7 @@ import ampc.com.gistone.extract.netcdf.Netcdf;
 import ampc.com.gistone.util.CSVUtil;
 import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.StringUtil;
+import oracle.net.aso.n;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
@@ -119,9 +122,9 @@ public class VerticalService {
 		File juzhen = CSVUtil.createCSVFile(res, tempPath, Constants.CSV_JZ_PREFIX);
 		// 获取对应条件污染物图像下标参数，用条件和污染物拼接成要向csh中传递的文件名，形成“名=下标参数”的字符串返回
 		String specieIndex = getSpecieIndex(verticalParams);
-		File specieIndexFile = CSVUtil.createIndexCSVFile(specieIndex,
-				resultPathUtil.getExtractConfig().getCsvIndexPath());
-		String tempFilePath = tempPath + System.currentTimeMillis();
+		File csvIndexFile=new File(resultPathUtil.getExtractConfig().getCsvIndexPath());
+		File specieIndexFile = CSVUtil.createIndexCSVFile(specieIndex,csvIndexFile.getAbsolutePath());
+		String tempFilePath = tempPath +"/"+ System.currentTimeMillis();
 		String pngPath = resultPathUtil
 				.getRealPath(resultPathUtil.getExtractConfig().getVerticalPngPath() + System.currentTimeMillis(),
 						verticalParams.getUserId(), verticalParams.getDomainId(), verticalParams.getMissionId(),
@@ -133,7 +136,7 @@ public class VerticalService {
 		ShellVertival shellVertival = new ShellVertival();
 		shellVertival.setJuzhenPath(juzhen.getAbsolutePath());
 		shellVertival.setSpecieIndexFilePath(specieIndexFile.getAbsolutePath());
-		shellVertival.setNclPath(resultPathUtil.getExtractConfig().getNclPath());
+		shellVertival.setNclPath(getClass().getClassLoader().getResource(Constants.NCL_PATH).getPath());
 		shellVertival.setPngPath(new File(pngPath).getAbsolutePath());
 		String filePath = tempFilePath + ".csh";
 		logger.info("create two csv file is juzheng and specieIndex,Transfer parameter:" + shellVertival.toString());
@@ -165,14 +168,14 @@ public class VerticalService {
 		BufferedReader br = null;
 		BufferedWriter bw = null;
 		try {
-			br = new BufferedReader(new FileReader(resultPathUtil.getExtractConfig().getCshTemplatePath()));
+			br = new BufferedReader(new FileReader(getClass().getClassLoader().getResource(Constants.CSH_TEMPLATE_PATH).getPath()));
 			bw = new BufferedWriter(new FileWriter(filePath));
 			String line = null;
 			while ((line = br.readLine()) != null) {
-				String writeLine = line.replace("${juzhenPath}", shellVertival.getJuzhenPath())
-						.replace("${specieIndexFilePath}", shellVertival.getSpecieIndexFilePath())
-						.replace("${pngPath}", shellVertival.getPngPath())
-						.replace("${nclPath}", shellVertival.getNclPath());
+				String writeLine = line.replace("${juzhenPath}", shellVertival.getJuzhenPath().replace("\\", "/"))
+						.replace("${specieIndexFilePath}", shellVertival.getSpecieIndexFilePath().replace("\\", "/"))
+						.replace("${pngPath}", shellVertival.getPngPath().replace("\\", "/"))
+						.replace("${nclPath}", shellVertival.getNclPath().replace("\\", "/"));
 				bw.write(writeLine);
 				bw.write("\n");
 				bw.flush();
@@ -324,6 +327,8 @@ public class VerticalService {
 						verticalParams.getDomainId(), verticalParams.getMissionId(), verticalParams.getScenarioId1(),
 						verticalParams.getDomain())
 				.replace("$currDate", DateUtil.DATEtoString(new Date(), DateUtil.DATE_FORMAT));
+		File tempFile=new File(tempPath);
+		tempPath=tempFile.getAbsolutePath();
 		variableList1 = new ArrayList<Variable>();
 		variableList2 = new ArrayList<Variable>();
 		if (Constants.TIMEPOINT_A.equals(timePoint)) {

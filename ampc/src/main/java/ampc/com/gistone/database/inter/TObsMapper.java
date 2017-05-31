@@ -21,4 +21,8 @@ public interface TObsMapper {
 	 */
 	List<ObsBean> queryObservationResult(Map<String, Object> params);
 	
+	List<String> findAllCityCode();
+	
+	List<String> findAllStationCode();
+	
 }

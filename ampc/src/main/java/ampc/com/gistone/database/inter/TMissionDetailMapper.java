@@ -143,4 +143,10 @@ public interface TMissionDetailMapper {
 	
 	TMissionDetail selectMaxMission();
 	List<TMissionDetail> selectDomain(Long missionDomainId);
+	/**
+	 * @Description: 通过任务ID查找对应任务用到的城市列表json
+	 * @param missionId
+	 * @return
+	 */
+	String findCityListByMissionId(Long missionId);
 }

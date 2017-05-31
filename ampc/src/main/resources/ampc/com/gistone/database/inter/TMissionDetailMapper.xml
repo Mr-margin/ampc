@@ -393,4 +393,9 @@ AND M.IS_EFFECTIVE = '1' AND M.MISSION_STATUS = '1'
    <select id="selectDomain" resultMap="BaseResultMap" parameterType="java.lang.Long">
   select * from T_MISSION_DETAIL where MISSION_DOMAIN_ID = #{missionDomainId,jdbcType=DECIMAL}
   </select>
+  <select id="findCityListByMissionId" resultType="String" parameterType="java.lang.Long">
+  SELECT d.DOMAIN_CODE 
+  FROM T_MISSION_DETAIL m,T_DOMAIN_MISSION d 
+  WHERE m.MISSION_DOMAIN_ID=d.DOMAIN_ID AND m.MISSION_ID = #{missionId,jdbcType=DECIMAL}
+  </select>
 </mapper>
