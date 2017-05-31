@@ -512,69 +512,71 @@ public class NativeAndNationController {
 			//日期格式
 			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date date=new Date();
+			
+			//读取配置文件路径
+			String config = "/extract.properties";
+			InputStream ins = getClass().getResourceAsStream(config);
+			Properties pro = new Properties();
+			try {
+				pro.load(ins);
+				extractConfig = new ExtractConfig();
+				extractConfig.setLocalListingFilePath((String) pro.get("LocalListingFilePath"));
+			} catch (FileNotFoundException e) {
+				logger.error(config + " file does not exits!", e);
+			} catch (IOException e) {
+				logger.error("load " + config + " file error!", e);
+			}
+			//关闭输入流
+			try {
+				if (ins != null)
+					ins.close();
+			} catch (IOException e) {
+				logger.error("close " + config + " file error!", e);
+			}
+			//获取路径
+			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName;
+			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/";
+			//获取file对象
+			File files =new File(nativesfilePath);
+			File file =new File(nativefilePath);
+			//目录已经存在
+			if(files.exists()){
+				System.out.println("目录已经存在!");
+				//判断是否包含该文件模板
+				if(file.exists()){
+					System.out.println("该模板已经存在");
+				}else{
+					//模板文件夹不存在,进行创建
+					file.mkdir();
+				}
+			}else{
+				//不存在进行创建目录
+				files.mkdirs();
+				if(file.exists()){
+					System.out.println("文件已存在");
+				}else{
+					//不存在创建文件
+					//模板文件夹创建完成
+					file.mkdir();
+					System.out.println("模板文件夹创建完成");
+				}
+			}
+			
+			
 			//添加数据
 			TEsNativeTp tEsNativeTp=new TEsNativeTp();
 			tEsNativeTp.setUserId(userId);
 			tEsNativeTp.setEsNativeTpName(nativeTpName);
 			tEsNativeTp.setEsNativeTpYear(nativeTpYear);
 			tEsNativeTp.setEsComment(nativeTpRemark);
+			tEsNativeTp.setFilePath(nativefilePath);
 			//插入数据
 			int total=tEsNativeTpMapper.insertSelective(tEsNativeTp);
 			Map msgMap=new HashMap();
 			//清单模板数据成功入库
 			if(total==1){
 				msgMap.put("msg", true);
-				
-				//读取配置文件路径
-				String config = "/extract.properties";
-				InputStream ins = getClass().getResourceAsStream(config);
-				Properties pro = new Properties();
-				try {
-					pro.load(ins);
-					extractConfig = new ExtractConfig();
-					extractConfig.setLocalListingFilePath((String) pro.get("LocalListingFilePath"));
-				} catch (FileNotFoundException e) {
-					logger.error(config + " file does not exits!", e);
-				} catch (IOException e) {
-					logger.error("load " + config + " file error!", e);
-				}
-				//关闭输入流
-				try {
-					if (ins != null)
-						ins.close();
-				} catch (IOException e) {
-					logger.error("close " + config + " file error!", e);
-				}
-				//获取路径
-				String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName;
-				String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/";
-				//获取file对象
-				File files =new File(nativesfilePath);
-				File file =new File(nativefilePath);
-				//目录已经存在
-				if(files.exists()){
-					System.out.println("目录已经存在!");
-					//判断是否包含该文件模板
-					if(file.exists()){
-						System.out.println("该模板已经存在");
-					}else{
-						//模板文件夹不存在,进行创建
-						file.mkdir();
-					}
-				}else{
-					//不存在进行创建目录
-					files.mkdirs();
-					if(file.exists()){
-						System.out.println("文件已存在");
-					}else{
-						//不存在创建文件
-						//模板文件夹创建完成
-						file.mkdir();
-						System.out.println("模板文件夹创建完成");
-					}
-				}
 				msgMap.put("filePath", nativefilePath);
-				
 			}else{
 				//清单模板数据入库失败
 				msgMap.put("msg", false);
@@ -818,37 +820,37 @@ public class NativeAndNationController {
 				LogUtil.getLogger().error("NativeAndNationController 清单名称为空或出现非法字符!");
 				return AmpcResult.build(1003, "清单名称为空或出现非法字符!");
 			}
-//			String filePath = param.toString();
+			String filePath = param.toString();
 //			String filePath = "C:\\Users\\Administrator\\Desktop\\应急系统新_1描述文件.xlsx";
-			String filePath= "河北省模板";
+//			String filePath= "河北省模板";
 			
 			Map mapData=new HashMap();
 			mapData.put("userId", 1);
 			mapData.put("nativeId", 1);
 			mapData.put("pathFile", filePath);
 			
-//			//读取配置文件路径
-//			String config = "/extract.properties";
-//			InputStream ins = getClass().getResourceAsStream(config);
-//			Properties pro = new Properties();
-//			try {
-//				pro.load(ins);
-//				extractConfig = new ExtractConfig();
-//				extractConfig.setLocalListingFilePath((String) pro.get("LocalListingFilePath"));
-//			} catch (FileNotFoundException e) {
-//				logger.error(config + " file does not exits!", e);
-//			} catch (IOException e) {
-//				logger.error("load " + config + " file error!", e);
-//			}
-//			//关闭输入流
-//			try {
-//				if (ins != null)
-//					ins.close();
-//			} catch (IOException e) {
-//				logger.error("close " + config + " file error!", e);
-//			}
+			//读取配置文件路径
+			String config = "/extract.properties";
+			InputStream ins = getClass().getResourceAsStream(config);
+			Properties pro = new Properties();
+			try {
+				pro.load(ins);
+				extractConfig = new ExtractConfig();
+				extractConfig.setLocalListingFilePath((String) pro.get("LocalListingFilePath"));
+			} catch (FileNotFoundException e) {
+				logger.error(config + " file does not exits!", e);
+			} catch (IOException e) {
+				logger.error("load " + config + " file error!", e);
+			}
+			//关闭输入流
+			try {
+				if (ins != null)
+					ins.close();
+			} catch (IOException e) {
+				logger.error("close " + config + " file error!", e);
+			}
 //			//获取路径
-//			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+filePath;
+			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+filePath;
 //			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/";
 //			//获取file对象
 //			File files =new File(nativesfilePath);
@@ -877,7 +879,10 @@ public class NativeAndNationController {
 //			}
 			
 			//调用校验数据函数
-//			Map  ampcResult =excelToDateController.update_SectorDocExcelData(userId,nativeId,nativefilePath+ "/"+"应急系统新_1描述文件.xlsx");
+			Map  sectorDocExcel =excelToDateController.update_SectorDocExcelData(userId,nativeId,nativefilePath+ "/"+"应急系统新_1描述文件.xlsx");
+			Map  queryExcel =excelToDateController.update_QueryExcelData(userId,nativeId,nativefilePath+ "/"+"应急系统新_2筛选逻辑.xlsx");
+			Map  sector =excelToDateController.update_SectorData(userId,nativeId,nativefilePath+ "/"+"应急系统新_4行业匹配.xlsx");
+			Map  nativeExcel =excelToDateController.check_nativeExcelData(nativefilePath+ "/"+"应急系统新_3清单数据demo.xlsx");
 			
 			LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息成功!");
 			return AmpcResult.ok();
