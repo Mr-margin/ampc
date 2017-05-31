@@ -16,7 +16,7 @@ function innitdata(){
                         return  moment(value).format("YYYY-MM-DD");
                     },align:'cneter'},
                     {field:"nationRemark",title:"备注",width:400,align:'cneter'},
-                    {field:"qgqdCheck",title:"状态",align:'cneter',width:100},//新建（打开校验按钮）   正常（校验成功） 错误（校验错误）
+                    {field:"qgqdCheck",title:"状态",align:'cneter',width:100},//新建（校验按钮）   正常（校验成功） 错误（校验错误）
                     //是否使用 如果使用 不许删除 未使用可以删除
                     {field:"qgqdConfig",title:"操作",align:'cneter',width:100}//校验清单
                 ]],
