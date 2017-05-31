@@ -8,7 +8,7 @@
         <div id="mapDiv1" class="showMap" style="width:100%;height:100%;border: 1px solid #ccc"></div>
     </div>
 </div>
-<div id="selectCreateQj" class="easyui-window" style="display: none">
+<div id="selectCreateQj" class="easyui-window zm" style="display: none">
     <div class="step1 selectCQJbtn">
         <button onclick="selectCopy(false)" class="cjhpgqj"><img src="img/newQJ.png" alt=""></button>
         <button onclick="selectCopy(true)" class="cjxjzqj"><img src="img/copyQJ.png" alt=""></button>
@@ -56,7 +56,7 @@
         </div>
     </div>
 </div>
-<div id="settingqjbox" style="display: none">
+<div id="settingqjbox" class="zm" style="display: none">
     <div class="step1">
         <button onclick="$('#editArea').window('open')"><img src="img/setting.png" alt=""></button>
         <button onclick="delArea(this)"><img src="img/delete.png" alt=""></button>
@@ -65,11 +65,11 @@
 
     </div>
 </div>
-<div id="timePlan" style="display: none">
+<div id="timePlan" class="zm" style="display: none">
     <div id="timeorplan">
         <div title="时段操作">
             <div id="timepanel">
-                <div title="时段添加" id="addTime1">
+                <div title="时段添加" id="addTime1" style="padding: 8px">
                     <div style="height:90px" class="showTimes">
                         <div class="col-4" style="height:90px;border:1px solid #aaa">
                             <h4>前一时段</h4>
@@ -249,7 +249,7 @@
         </div>
     </div>
 </div>
-<div id="editArea" style="display: none">
+<div id="editArea" class="zm" style="display: none">
     <div>
         <!--新增/编辑弹窗的主题内容-->
         <!--区域名称修改框-->
@@ -304,13 +304,13 @@
     </div>
 </div>
 <!--redio dom-->
-<div class="radio" style="display: none">
+<div class="radio zm" style="display: none">
     <label>
         <input type="radio" name="optionsRadios" id="optionsRadios1" value="">
         <span></span>
     </label>
 </div>
-<div id="jpzt" style="display: none">
+<div id="jpzt" class="zm" style="display: none">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
 
