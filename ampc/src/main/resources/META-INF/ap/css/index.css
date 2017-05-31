@@ -393,7 +393,7 @@
 }
 
 .adcodeList{
-  height: 585px;
+  height: 100%;
   overflow: auto;
 }
 /*.showMap{*/

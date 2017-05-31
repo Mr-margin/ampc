@@ -268,7 +268,7 @@
                     </ul>
                     <!--当点击确定按钮后将ztree选择的区域在id为adcodelistbox的div中显示-->
                     <div class="adcodeTreeBtn">
-                        <button onclick="updataCodeList()">确定</button>
+                        <button class="btn btn-info" onclick="updataCodeList()">确定</button>
                     </div>
                 </div>
                 <!--作为选择区域的回显div-->
@@ -277,7 +277,7 @@
 
                     </div>
                     <div class="adcodeTreeBtn">
-                        <button onclick="revise()">修改</button>
+                        <button class="btn btn-info" onclick="revise()">修改</button>
                     </div>
                 </div>
             </div>
@@ -296,8 +296,8 @@
                     <h5>当前情景：<span></span></h5>
                 </div>
                 <div class="col-6" style="text-align: right">
-                    <button type="button" class="btn btn-success" onclick="createEditArea()">确定</button>
-                    <button type="button" class="btn btn-default">取消</button>
+                    <button type="button" class="btn btn-default" onclick="createEditArea()">确定</button>
+                    <button type="button" class="btn btn-default" onclick="$('#editArea').window('close')">取消</button>
                 </div>
             </div>
         </div>
@@ -310,7 +310,7 @@
         <span></span>
     </label>
 </div>
-<div id="jpzt" >
+<div id="jpzt" style="display: none">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
 
