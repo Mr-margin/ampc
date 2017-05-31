@@ -202,7 +202,7 @@ public class ToDataTasksUtil {
 												    		tasksStatus2.setBeizhu("2"); 
 												    		tasksStatus2.setTasksScenarinoId(tasksScenarinoId);
 												    		tasksStatusMapper.updateRunstatus(tasksStatus2);
-												    		LogUtil.getLogger().info("不是事实预报,情景类型："+scentype+",情景ID："+tasksScenarinoId+"执行完毕！"+index+":"+stepindex);
+												    		LogUtil.getLogger().info("情景类型："+scentype+",情景ID："+tasksScenarinoId+"执行完毕！"+index+":"+stepindex);
 														}
 													}
 											    	//code为0的时候是成功的  同时是实时预报类型的情况下 stepindex==8才会发下一条 同时时间小于该任务的结束时间  同时该条情景对应的pathdate是当天才能走这个方法
