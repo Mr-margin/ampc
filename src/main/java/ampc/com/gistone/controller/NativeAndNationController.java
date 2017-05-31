@@ -46,6 +46,8 @@ public class NativeAndNationController {
 	public	TEsNativeMapper	tEsNativeMapper;
 	@Autowired
 	public	TEsNativeTpMapper tEsNativeTpMapper;
+	@Autowired
+	public ExcelToDateController excelToDateController;
 	
 	private TEsNative tEsNative;
 	
@@ -752,14 +754,12 @@ public class NativeAndNationController {
 				return AmpcResult.build(1003, "清单名称为空或出现非法字符!");
 			}
 //			String filePath = param.toString();
-			String filePath = "D:\\work\\1\\1\\应急系统新_1描述文件.xlsx";
+			String filePath = "C:\\Users\\Mr_Wang\\Desktop\\应急系统新_1描述文件.xlsx";
 			
 			Map mapData=new HashMap();
 			mapData.put("userId", 1);
 			mapData.put("nativeId", 1);
-			mapData.put("pathFile", "D:\\work\\1\\1\\应急系统新_1描述文件.xlsx");
-			
-			ExcelToDateController excelToDateController=new ExcelToDateController();
+			mapData.put("pathFile", filePath);
 			
 			Map  ampcResult =excelToDateController.update_SectorDocExcelData(userId,nativeId,filePath);
 			
