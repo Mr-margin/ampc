@@ -282,4 +282,16 @@ public class TMeasureSectorExcel {
     public void setDetailedListType(Object detailedListType) {
         this.detailedListType = detailedListType;
     }
+    @Override
+   	public boolean equals(Object obj) {
+       	TMeasureSectorExcel s = (TMeasureSectorExcel) obj;
+   		return (msExcelName.equals(s.msExcelName) && sectorsname.equals(s.sectorsname));
+   	}
+
+   	@Override
+   	public int hashCode() {
+   		//UUID uuid = UUID.randomUUID();
+   		String in = (msExcelName.toString() + sectorsname.toString());
+   		return in.hashCode();
+   	}
 }
