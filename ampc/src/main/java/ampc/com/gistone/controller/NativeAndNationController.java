@@ -50,7 +50,7 @@ public class NativeAndNationController {
 	private TEsNative tEsNative;
 	
 	private TEsNativeTp tEsNativeTp;
-	
+	//源清单请求过滤
 	@RequestMapping("/NativeAndNation/doPost")
 	public AmpcResult doPost(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
