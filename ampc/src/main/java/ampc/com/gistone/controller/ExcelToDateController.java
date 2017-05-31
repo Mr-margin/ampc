@@ -216,50 +216,32 @@ public class ExcelToDateController {
 	 * @return 返回响应结果对象
 	 * TODO 条件
 	 */
-	@RequestMapping("excel/update_queryExcelData")
-	public AmpcResult update_QueryExcelData(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
+	public Map update_QueryExcelData(Long userId,Long qdId,String filePath) {
+		//出错的文件保存路径
+		String outPath="C:\\Users\\Administrator\\Desktop\\验证应急系统新_2筛选文件.xlsx";
+		//错误信息的数据集合
+		List<String> msg=new ArrayList();
+		//结果Map
+		Map map=new HashMap();
 		// 添加异常捕捉
 		try {
-			// 设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String, Object> data = (Map) requestDate.get("data");
-			// 用户的id 确定当前用户 如果为空代表是系统默认
-			Long userId = null;
-			if (data.get("userId") != null) {
-				//获取用户ID
-				Object param=data.get("userId");
-				//进行参数判断
-				if(!RegUtil.CheckParameter(param, "Long", null, false)){
-					LogUtil.getLogger().error("ExcelToDateController 用户ID为空或出现非法字符!");
-					return AmpcResult.build(1003, "ExcelToDateController 用户ID为空或出现非法字符!");
-				}
-				// 用户id
-				userId = Long.parseLong(param.toString());
-			}
-			/**
-			 * 根据request获取excel地址
-			 */
-			String fileName = request.getServletContext().getRealPath("/")+ "***.xlsx";
+			//查询当前的版本ID
 			Long versionId=tQueryExcelMapper.selectMaxVersion(userId);
 			if(versionId==null){
 				versionId=1L;
 			}else{
 				versionId++;
 			}
-			//错误信息的数据集合
-			List<String> msg=new ArrayList();
-			//出错的文件保存路径
-			String outPath="C:\\Users\\Mr_Wang\\Desktop\\验证应急系统新_2筛选文件.xlsx";
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			ExcelToDate ed=new ExcelToDate();
-			List<TQueryExcel> tqe = ed.ReadQuery(fileName,versionId,userId,msg,outPath);
+			List<TQueryExcel> tqe = ed.ReadQuery(filePath,versionId,userId,msg,outPath,qdId);
 			//如果错误信息大于0 则证明出错了
 			if(msg.size()>0||tqe==null){
-				LogUtil.getLogger().error("读取行业描述Excel出错!");
-				msg.add("生成验证模板的路径在:"+outPath);
-				return AmpcResult.build(1001,"读取Excel出错",msg);
+				LogUtil.getLogger().error("读取行业筛选条件Excel出错!");
+				map.put("errorMsg", msg);
+				map.put("outPath", outPath);
+				return map;
 			}
-			
 			for (TQueryExcel t : tqe) {
 //				int result=tQueryExcelMapper.insertSelective(t);
 //				if(result<1){
@@ -267,14 +249,20 @@ public class ExcelToDateController {
 //				}
 			}
 			LogUtil.getLogger().info("ExcelToDateController 保存行业筛选条件成功!");
-			return AmpcResult.ok("更新成功");
+			return null;
 //		}catch(SQLException e){
 //			LogUtil.getLogger().error(e.getMessage(),e);
-//			return AmpcResult.build(1000,e.getMessage());
+//			msg.add("保存行业筛选条件失败,数据库添加失败。");
+//			map.put("errorMsg",msg);
+//			map.put("outPath", outPath);
+//			return map;
 		} catch (Exception e) {
 			LogUtil.getLogger().error("ExcelToDateController 保存行业筛选条件异常!",e);
+			msg.add("保存行业描述信息异常!");
+			map.put("errorMsg",msg);
+			map.put("outPath", outPath);
 			// 返回错误信息
-			return AmpcResult.build(1001, "ExcelToDateController 保存行业筛选条件异常!", null);
+			return map;
 		}
 	}
 	
@@ -285,44 +273,26 @@ public class ExcelToDateController {
 	 * @param response    响应
 	 * @return 返回响应结果对象
 	 */
-	@RequestMapping("excel/update_sectorExcelData")
-	public AmpcResult update_SectorData(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
+	public Map update_SectorData(Long userId,Long qdId,String filePath) {
+		//出错的文件保存路径
+		String outPath="C:\\Users\\Administrator\\Desktop\\验证应急系统新_2筛选文件.xlsx";
+		//错误信息的数据集合
+		List<String> msg=new ArrayList();
+		//结果Map
+		Map map=new HashMap();
 		// 添加异常捕捉
 		try {
-			// 设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String, Object> data = (Map) requestDate.get("data");
-			// 用户的id 确定当前用户 如果为空代表是系统默认
-			Long userId = null;
-			if (data.get("userId") != null) {
-				//获取用户ID
-				Object param=data.get("userId");
-				//进行参数判断
-				if(!RegUtil.CheckParameter(param, "Long", null, false)){
-					LogUtil.getLogger().error("ExcelToDateController 用户ID为空或出现非法字符!");
-					return AmpcResult.build(1003, "ExcelToDateController 用户ID为空或出现非法字符!");
-				}
-				// 用户id
-				userId = Long.parseLong(param.toString());
-			}
-			/**
-			 * 根据request获取excel地址
-			 */
-			String fileName = request.getServletContext().getRealPath("/")+ "***.xlsx";
 			Long time=new Date().getTime();
 			String versionId="行业文件"+time;
-			//错误信息的数据集合
-			List<String> msg=new ArrayList();
-			//出错的文件保存路径
-			String outPath="C:\\Users\\Mr_Wang\\Desktop\\验证应急系统新_4行业匹配.xlsx";
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			ExcelToDate ed=new ExcelToDate();
-			List<TSectorExcel> readSector = ed.ReadSector(fileName,versionId,userId,msg,outPath);
+			List<TSectorExcel> readSector = ed.ReadSector(filePath,versionId,userId,msg,outPath,qdId);
 			//如果错误信息大于0 则证明出错了
 			if(msg.size()>0||readSector==null){
-				LogUtil.getLogger().error("读取行业描述Excel出错!");
-				msg.add("生成验证模板的路径在:"+outPath);
-				return AmpcResult.build(1001,"读取Excel出错",msg);
+				LogUtil.getLogger().error("读取行业Excel出错!");
+				map.put("errorMsg", msg);
+				map.put("outPath", outPath);
+				return map;
 			}
 			for (TSectorExcel tSector : readSector) {
 //				int result=tSectorExcelMapper.insertSelective(tSector);
@@ -331,14 +301,20 @@ public class ExcelToDateController {
 //				}
 			}
 			LogUtil.getLogger().info("ExcelToDateController 保存行业信息成功!");
-			return AmpcResult.ok("更新成功");
+			return null;
 //		} catch(SQLException e){
 //			LogUtil.getLogger().error(e.getMessage(),e);
-//			return AmpcResult.build(1000,e.getMessage());
+//			msg.add("保存行业信息失败,数据库添加失败。");
+//			map.put("errorMsg",msg);
+//			map.put("outPath", outPath);
+//			return map;
 		} catch (Exception e) {
 			LogUtil.getLogger().error("ExcelToDateController 保存行业信息异常!",e);
+			msg.add("保存行业信息异常!");
+			map.put("errorMsg",msg);
+			map.put("outPath", outPath);
 			// 返回错误信息
-			return AmpcResult.build(1001, "保存行业信息异常!", null);
+			return map;
 		}
 	}
 	
@@ -350,49 +326,35 @@ public class ExcelToDateController {
 	 * @param response    响应
 	 * @return 返回响应结果对象
 	 */
-	@RequestMapping("excel/check_nativeExcelData")
-	public AmpcResult check_nativeExcelData(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response) {
+	public Map check_nativeExcelData(String filePath) {
+		//出错的文件保存路径
+		String outPath="C:\\Users\\Administrator\\Desktop\\验证应急系统新_2筛选文件.xlsx";
+		//错误信息的数据集合
+		List<String> msg=new ArrayList();
+		//结果Map
+		Map map=new HashMap();
 		// 添加异常捕捉
 		try {
-			// 设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String, Object> data = (Map) requestDate.get("data");
-			// 用户的id 确定当前用户 如果为空代表是系统默认
-			Long userId = null;
-			if (data.get("userId") != null) {
-				//获取用户ID
-				Object param=data.get("userId");
-				//进行参数判断
-				if(!RegUtil.CheckParameter(param, "Long", null, false)){
-					LogUtil.getLogger().error("ExcelToDateController 用户ID为空或出现非法字符!");
-					return AmpcResult.build(1003, "ExcelToDateController 用户ID为空或出现非法字符!");
-				}
-				// 用户id
-				userId = Long.parseLong(param.toString());
-			}
-			/**
-			 * 根据request获取excel地址
-			 */
-			String fileName = request.getServletContext().getRealPath("/")+ "***.xlsx";
-			//错误信息的数据集合
-			List<String> msg=new ArrayList();
-			//出错的文件保存路径
-			String outPath="C:\\Users\\Mr_Wang\\Desktop\\验证应急系统新_3清单数据.xlsx";
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			ExcelToDate ed=new ExcelToDate();
-			boolean isTrue = ed.CheckNative(fileName,msg,outPath);
+			boolean isTrue = ed.CheckNative(filePath,msg,outPath);
 			//如果错误信息大于0 则证明出错了
 			if(!isTrue){
 				LogUtil.getLogger().error("验证清单数据Excel出错!");
-				msg.add("生成验证模板的路径在:"+outPath);
-				return AmpcResult.build(1001,"验证清单数据Excel出错!",msg);
+				msg.add("验证清单数据Excel出错,数据库添加失败。");
+				map.put("errorMsg",msg);
+				map.put("outPath", outPath);
+				return map;
 			}
 			LogUtil.getLogger().info("ExcelToDateController 验证清单数据成功!");
-			return AmpcResult.ok("验证清单数据成功!");
+			return null;
 		} catch (Exception e) {
-			LogUtil.getLogger().error("ExcelToDateController 验证清单数据异常!",e);
+			LogUtil.getLogger().error("ExcelToDateController 验证清单数据Excel异常!",e);
+			msg.add("验证清单数据Excel异常!");
+			map.put("errorMsg",msg);
+			map.put("outPath", outPath);
 			// 返回错误信息
-			return AmpcResult.build(1001, "ExcelToDateController 验证清单数据异常!", null);
+			return map;
 		}
 	}
 	
