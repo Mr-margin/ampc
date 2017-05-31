@@ -57,21 +57,29 @@ function innitdata(active){
             "userId":userId,
             "method":"find_natives",
         }).success(function(data){
+            //给每个子节点添加标题
+            var rowDate=data.data.data
+            for(var i=0;i<rowDate.length;i++){
+                rowDate[i].children.unshift({esNativeTpName:"清单名称",esNativeTpYear:"年份",updateTime:"创建时间",esComment:"备注"})
+            }
             $("#localqd").treegrid({
                 idField:'esNativeTpId',
                 treeField:'esNativeTpName',
-                data:data.data.data,
+                // data:data.data.data,
+                data:rowDate,
                 lines:true,
                 showHeader: false,
                 animate:true,
                 columns:[[  //表头
                     {field:"ck",checkbox:true},
-                    {field:"esNativeTpName",title:"清单模板名称",width:200},
-                    {field:"esNativeTpYear",title:"年份"},
+                    {field:"esNativeTpName",title:"清单模板名称",width:200,formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";}},
+                    {field:"esNativeTpYear",title:"年份",width:80},
                     {field:"esUploadTpTime",title:"创建时间",formatter:function(value,row,index){
-                        moment(value).format("YYYY-MM-DD")//格式化带日期格式
                         return  moment(value).format("YYYY-MM-DD");
-                    },sortable :true},
+                    },width :100,},
+                    {field:"filePath",title:"路径",width:120,formatter: function (value) {
+                return "<span title='" + value + "'>" + value + "</span>";}},
                     {field:"esComment",title:"备注",width:300},
                     {field:"isEffective",title:"状态",width:100,formatter:function(value,row,index){
                         if(value==1){
@@ -83,19 +91,28 @@ function innitdata(active){
                     {field:"actor",title:"操作",width:100,align:'center',formatter:function(value,row,index){
                         if(row.isEffective==1){
                             return "<button id='addQdBtn' onclick='adgQdBtn()' style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box'>添加数据</button>"
+                            // if(row.isUpload=0){
+                            //     return "<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkData()'>未校验</button>"
+                            // }else{
+                            //     return "<button id='addQdBtn' onclick='adgQdBtn()' style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box'>添加数据</button>"
+                            // }
                         }else{
-                            return "<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkData()'>校验数据</button>"
+                                // return "<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='uploadFiel()'>上传</button>"
+                            return "<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkData()'>校验</button>"
                         }
                     }}
                 ]],
                 onClickRow:function (row) {
-                    console.log(row);
-                    if ($('[node-id="' + row.id + '"]').hasClass('datagrid-row-clicked')) {
-                        $('[node-id="' + row.id + '"]').removeClass('datagrid-row-clicked');
-                        $('#rwgltable').treegrid('toggle', row.id);
-                    } else {
-                        $('[node-id="' + row.id + '"]').addClass('datagrid-row-clicked').siblings().removeClass('datagrid-row-clicked');
-                        $('#rwgltable').treegrid('collapseAll').treegrid('expand', row.id);
+                    if(row.children.length>1){
+                        // $("#localqd").treegrid('toggle', row.id+1)
+                        var rowId=row.id+1;
+                        if ($('[node-id="' + rowId + '"]').hasClass('datagrid-row-clicked')) {
+                            $('[node-id="' + rowId + '"]').removeClass('datagrid-row-clicked');
+                            $('#localqd').treegrid('toggle', row.id+1);
+                        } else {
+                            $('[node-id="' + rowId + '"]').addClass('datagrid-row-clicked').siblings().removeClass('datagrid-row-clicked');
+                            $('#localqd').treegrid('collapseAll').treegrid('expand', row.id+1);
+                        }
                     }
                 },
                 selectOnCheck:true, //true，单击复选框将永远选择行 false，选择行将不选中复选框。
@@ -104,10 +121,12 @@ function innitdata(active){
                 fitColumns:true,//真正的自动展开/收缩列的大小，以适应网格的宽度，防止水平滚动。
                 clickToSelect: true,// 点击选中行
                 pagination: true, // 在表格底部显示分页工具栏
-                onCheckNode:function (data) {
-                    console.log("选择节点");
-                    console.log(data);
-                }
+                // loadFilter:function (data,parentId) {
+                //     var row=$('#localqd').treegrid('getSelected');//获取所有选中的清单数据
+                //     console.log(row)
+                //     // row.children.unshift({esNativeTpName:"清单名字",esNativeYear:"年份",updateTime:"创建时间",esComment:"备注"});
+                //     return data;
+                // }
             })
         })
     }else if(active=="add_nativeTp"){
@@ -131,11 +150,11 @@ function innitdata(active){
                                 esComment:param.nativeTpRemark //新建模板的备注
                             }
                         })
-                        $("#localqd").treegrid("reload");
+                        // $("#localqd").treegrid("reload");
                     }else{
                         swal('参数错误', '', 'error');
                     }
-
+                    innitdata("find_natives")
                 })
             )
             $("#creatTemp").window('close');
@@ -145,7 +164,6 @@ function innitdata(active){
     }else if(active=="updata_nativeTp"){
         var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
         var rowIndex = row.id;//获取选中行的行数索引
-        console.log(rowIndex)
         var tempName=$("#esLocalEditName").val();//获取编辑后的数据 清单名称
         var tempYear=$("#esLocalEditYear").val();//年份
         var tempMark=$("#esLocalEditMark").val();//备注
@@ -170,7 +188,7 @@ function innitdata(active){
                             }
 
                         })
-                        $("#localqd").treegrid("reload");
+                        innitdata("find_natives")
                     }else{
                         swal('参数错误', '', 'error');
                     }
@@ -194,8 +212,8 @@ function innitdata(active){
             ajaxPost('/NativeAndNation/doPost',{"nativeTpId":row.esNativeTpId,"method":"delete_nativeTp"}).success(function(res){
                 if(res.status==0){
                     var row_id=row.id+1;
-                    $("#localqd").treegrid("remove",row_id)
-                    $("#localqd").treegrid("reload",row_id)
+                    $("#localqd").treegrid("remove",row_id);
+                    innitdata("find_natives")
                 }else{
                     swal('参数错误', '', 'error');
                 }
@@ -294,7 +312,6 @@ function adgQdBtn(){
 }
 function checkData() {
     var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
-    console.log(row)
     var rowNode=row.children;
     ajaxPost('/NativeAndNation/doPost',{
         "userId":userId,
@@ -306,3 +323,45 @@ function checkData() {
         console.log("校验成功了")
     })
 }
+// //点击上传按钮 进行文件上传
+// $("#uploadFiel").window({
+//     width:600,  //easyui 窗口宽度
+//     height:100,
+//     collapsible:false, //easyui 自带的折叠按钮
+//     maximizable:false,//easyui 自带的最大按钮
+//     minimizable:false,//easyui 自带的最小按钮
+//     modal:true,
+//     shadow:false,
+//     title:'上传文件',
+//     border:false,
+//     closed:true,
+//     cls:"cloudui"
+// })
+// function uploadFiel(){
+//     var e = e || window.event;
+//     e.stopPropagation();//防止出现下拉
+// $("#uploadFiel").window("open")
+//     var input = document.getElementById("file_input");
+//     var result,div;
+//
+//     if(typeof FileReader==='undefined'){
+//         result.innerHTML = "抱歉，你的浏览器不支持 FileReader";
+//         input.setAttribute('disabled','disabled');
+//     }else{
+//         input.addEventListener('change',readFile,false);
+//     }　　　　　//handler
+//     function readFile(){
+//         for(var i=0;i<this.files.length;i++){
+//             if (!input['value'].match(/.xlsx|.xls/i)){　　//判断上传文件格式
+//                return swal('上传的文件格式不正确，请重新选择', '', 'error');}
+//             var reader = new FileReader();
+//             reader.readAsDataURL(this.files[i]);
+//             reader.onload = function(e){
+//                 result = '<div id="result" style="width: 200px;height:100px;border:1px solid red">'+this.files[i]+'</div>';
+//                 div = document.createElement('div');
+//                 div.innerHTML = result;
+//                 document.getElementById('uploadFiel').appendChild(div); 　　//插入dom树      <br>　　　　　　　　　　}
+//             }
+//         }
+//     }
+// }
