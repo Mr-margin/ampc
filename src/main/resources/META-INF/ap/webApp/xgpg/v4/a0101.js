@@ -441,9 +441,7 @@ function bianji(type, g_num, p , wind) {
         			
 //        			console.log(data.data.imagePath);
         			
-//        			var imageURL = "http://166.111.42.85:8300/ampc/"+data.data.imagePath+"?t="+Math.random();
-        			var imageURL = "http://192.168.4.214:8091/Java/"+data.data.imagePath+"?t="+Math.random();
-//        			var imageURL = "/ampc/"+data.data.imagePath+"?t="+Math.random();
+        			var imageURL = pngUrl + "/ampc/"+data.data.imagePath+"?t="+Math.random();
         			console.log(imageURL);
         			
         			var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
