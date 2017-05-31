@@ -468,7 +468,7 @@ public class SchedulerTimer<V> {
 								Long userId = tScenarinoDetail.getUserId();
 								Long rangeDay = tScenarinoDetail.getRangeDay();
 								LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:rangeDay的长度是："+rangeDay);
-								if (length>1) {
+								if (length>=rangeDay) {
 									//查找中断的预报时间
 									Date lastpathdate = tScenarinoDetailMapper.getlastrunstatus(userId);
 									//如果基础情景不满足 则续跑该基础情景
