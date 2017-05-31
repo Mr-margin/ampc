@@ -1920,7 +1920,6 @@ $(".cloudui .sxMore").hover(function(){
     $(this).css({"color":"#333"})
 })
 $(".cloudui .sxMore").click(function(){
-    console.log("点击进来了")
     if($(this).text()=="更多"){
         $(this).parent().next().css({"height":"100%"})
         $(this).parent().next().children().css({"height":"100%"})
