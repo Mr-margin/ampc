@@ -573,7 +573,7 @@ function initEcharts() {
 				    	axisLabel:{
 				    		interval:71
 				    	},
-				    	data: ttime						//修改数据排序
+				    	data: ttime						
 				    });
 			}else if(keys.length>=11){
 			    		 option.xAxis = [];
@@ -581,7 +581,7 @@ function initEcharts() {
 					    	axisLabel:{
 					    		interval:47
 					    	},
-					    	data: ttime						//修改数据排序
+					    	data: ttime						
 					    });
 			}else if(keys.length>5){
 				 option.xAxis = [];
@@ -589,7 +589,7 @@ function initEcharts() {
 				    	axisLabel:{
 				    		interval:23
 				    	},
-				    	data: ttime						//修改数据排序
+				    	data: ttime						
 				    });
 			}else if(keys.length<=5){
 				 option.xAxis = [];
@@ -597,13 +597,13 @@ function initEcharts() {
 				    	axisLabel:{
 				    		interval:11
 				    	},
-				    	data: ttime						//修改数据排序
+				    	data: ttime						
 				    });
 			}
 		}else{
 			option.xAxis = [];
-		    option.xAxis.push({				    //x轴情景时间
-		    	data: ttime						//修改数据排序
+		    option.xAxis.push({		//x轴情景时间
+		    	data: ttime			//修改数据排序
 		    });
 		}
     
@@ -755,9 +755,8 @@ function getdata() {
 	    	if (JSON.stringify(echartsData) == '{}' || echartsData == null) {
 	    		swal('暂无数据', '', 'error')
 	    	} else {
-	
+	    		initEcharts();
 	    	}
-	    	initEcharts();
 	    } else {
 	      swal(res.msg, '', 'error')
 	    }
@@ -811,11 +810,11 @@ function find_standard(){
 	    	scenarino.scenarinoName=res.data.scenarinoName;
 	    	observation.scenarinoId=res.data.observationId;
 	    	observation.scenarinoName=res.data.observationName;
-//	    	if (JSON.stringify(standardData) == '{}' || standardData == null||standardData==undefined||standardData=='') {
-//	    	  swal('暂无基准匹配数据', '', 'error')
-//	    	} else {
-//	    	  
-//	    	}
+	    	if (JSON.stringify(standardData) == '{}' || standardData == null||standardData==undefined||standardData=='') {
+	    	  swal('暂无基准匹配数据', '', 'error')
+	    	} else {
+	    	  
+	    	}
 	    } else {
 	    	swal(res.msg, '', 'error')
 	    }
