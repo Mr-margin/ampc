@@ -982,7 +982,12 @@ dl, dd {
 .cloudui #Initialization .datagrid-view1 {
   width: 0 !important;
 }
-
+.cloudui .modal-footer{
+  padding-top: 10px;
+  margin-top: 10px;
+  text-align: right;
+  border-top: 1px solid #e7e7e7;
+}
 /*情景按钮*/
 /*
 .cloudui .bgw{border-radius:2px!important;margin-bottom:4px;background-color: rgb(242, 242, 242);    box-shadow: 0 0 5px #888;}
@@ -1640,8 +1645,21 @@ dl, dd {
   line-height: 34px;
 }
 /*时段编辑弹框样式*/
-#timePlan{
-
+#timeorplan>.tabs-header>.tabs-wrap>ul{
+  border: 0;
+}
+#addTime1>div:first-child>div,#delTime>div:first-child>div{
+  padding-top: 10px;
+  height: 90px;
+  border:1px solid #aaa;
+}
+#addTime1>div:first-child>div:first-child,#delTime>div:first-child>div:first-child{
+  border-radius: 4px 0 0 4px;
+  border-right: 0;
+}
+#addTime1>div:first-child>div:last-child,#delTime>div:first-child>div:last-child{
+  border-radius: 0 4px 4px 0;
+  border-left: 0;
 }
 
 /*编辑子措施*/
