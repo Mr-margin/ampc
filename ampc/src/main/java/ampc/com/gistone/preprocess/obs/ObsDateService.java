@@ -155,7 +155,6 @@ public class ObsDateService extends ObsService {
 				}
 			} catch (JsonProcessingException e) {
 				logger.error("JsonProcessingException | ObsDailyService: convert Map to String error!", e);
-				;
 			}
 		}
 	}
