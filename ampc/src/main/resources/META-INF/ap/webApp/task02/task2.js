@@ -90,12 +90,16 @@ var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时�
             $('#timepanel').tabs({
                 width: '100%',
                 height: '100%',
-                fit: true
+                fit: true,
+                plain:true,
+                narrow:true
             });
             $('#planpanel').tabs({
                 width: '100%',
                 height: '100%',
-                fit: true
+                fit: true,
+                plain:true,
+                narrow:true
             });
             if (allData[areaIndex].timeItems.length <= 1) {
                 $('#timepanel').tabs('disableTab', '时段删除');
@@ -324,6 +328,9 @@ var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时�
         tabPosition: 'left',
         width: '100%',
         height: 300,
+        pill:true,
+        plain:true,
+        border:false,
         onSelect: function (t, i) {
             if ((!areaIndex) && (areaIndex != 0))return;
             if (t == '时段操作') {
@@ -908,7 +915,7 @@ function showTimeline(data) {
         var labelIndex = Math.floor(pointInGrid[1] / 3);
         console.log(allData[labelIndex].cityCodes.length > 0 || allData[labelIndex].countyCodes.length > 0 || allData[labelIndex].provinceCodes.length > 0);
         if (allData[labelIndex].cityCodes.length == 0 && allData[labelIndex].countyCodes.length == 0 && allData[labelIndex].provinceCodes.length == 0) {
-
+            areaIndex=labelIndex;
             $('#settingqjbox').window('open').window('center').find('.step1 button').attr('data-qjid', allData[labelIndex].areaId);
             return
         }
@@ -1144,7 +1151,7 @@ function editPlan(t) {
     vipspa.setMessage(msg);
 
     if (msg.content.planId == -1) {
-        $('#timePlan').window('open');
+        $('#timePlan').window('open').window('center');
         $('a[href="#plan"]').eq(0).click();
 
         return
@@ -1188,7 +1195,7 @@ function ontTimes(data) {
 
     //$('#editTime').modal('show')
     // $('#timePlan').window('open').window('center');
-    $('#timePlan').window('open');
+    $('#timePlan').window('open').window('center');
 }
 
 //通用属性
