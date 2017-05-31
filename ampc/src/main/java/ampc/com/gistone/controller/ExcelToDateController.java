@@ -45,8 +45,8 @@ import ampc.com.gistone.util.checkExcelUtil.ExcelToDate;
  * @version v.0.1
  * @date 2017年3月3日
  */
-//@RestController
-//@RequestMapping
+@RestController
+@RequestMapping
 public class ExcelToDateController {
 
 	// 默认映射
