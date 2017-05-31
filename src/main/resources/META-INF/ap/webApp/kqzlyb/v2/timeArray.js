@@ -454,9 +454,19 @@ function updata(opt) {
             domain:$('input[name=domain]:checked').val(),	//空间分辨率
             changeType:changeMsg.type		//选择的页签
         }).success(function(res){
-            ecatherData='';
-            ecatherData=res.data;
-            initEcharts();
+//        	if(res.data==null||res.data==''||res.data=='{}'){
+//        		swal({
+//                    title: '暂无数据!',
+//                    type: 'error',
+//                    timer: 1000,
+//                    showConfirmButton: false
+//                });
+//        	}else{
+        		ecatherData='';
+                ecatherData=res.data;
+                initEcharts();
+//        	}
+            
         }
 //        ,function(){
 //        	console.log('接口故障！！！');
