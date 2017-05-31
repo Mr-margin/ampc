@@ -118,12 +118,7 @@ public class AcceptMessageQueue implements Runnable{
 				try {
 					System.out.println("队列接受数据");
 					String acceptName = configUtil.getRedisQueueAcceptName();
-//					String rpop = redisUtilServer.brpop("r0_mb");//send_queue_name
 					String rpop = redisUtilServer.brpop(acceptName);//send_queue_name
-//					String rpop = redisUtilServer.brpop("r0_test_mb");//send_queue_name
-//					String rpop = redisUtilServer.brpop("receive_queue_name");//send_queue_name
-//					String rpop = redisUtilServer.brpop("r0_mb");//r0_mb
-					//	String rpop2 = redisUtilServer.rpop("test");//result_Start_model
 					if (null==rpop) {
 						System.out.println(rpop+"刚取出来的");
 						LogUtil.getLogger().info("队列里面没有数据了！");
@@ -146,7 +141,6 @@ public class AcceptMessageQueue implements Runnable{
 						case "ungrib.result":
 							LogUtil.getLogger().info("接受ungrib数据："+new Date()+":"+rpop);
 							messageLog.saveUngribMessagelog(rpop);
-//							toDataUngribUtil.updateDB(rpop);
 							toDataUngribUtil.updateUngrib(rpop);
 							LogUtil.getLogger().info("ungrib处理完毕："+new Date());
 							break;
@@ -179,8 +173,7 @@ public class AcceptMessageQueue implements Runnable{
 				}
 				try {
 					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
