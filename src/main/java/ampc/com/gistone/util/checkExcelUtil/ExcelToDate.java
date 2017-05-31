@@ -866,21 +866,21 @@ public class ExcelToDate {
 	* 读取excel筛选逻辑数据   读取筛选逻辑Excel表
 	* @param path  
 	*/
-	public List<TQueryExcel> ReadQuery(String fileName,Long versionId,Long userId,List<String> msg,String outPath){  
+	public List<TQueryExcel> ReadQuery(String fileName,Long versionId,Long userId,List<String> msg,String outPath,Long qdId){  
 		//String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_2筛选逻辑.xlsx";
 		//定义结果  默认false 
 	    boolean isError=false;
-		String path="C:\\Users\\Mr_Wang\\Desktop\\应急系统新_2筛选逻辑.xlsx";
+		//String path="C:\\Users\\Mr_Wang\\Desktop\\应急系统新_2筛选逻辑.xlsx";
 		List<TQueryExcel> queryList=new ArrayList<TQueryExcel>();
 		//获取文件名称
-		String file=path.substring(path.lastIndexOf("\\")+1);
+		String file=fileName.substring(fileName.lastIndexOf("\\")+1);
 		//初始化错误类型Map
 		errorMap=new HashMap();
 		try {  
 			String message=null;
 			StringBuilder mssg=new StringBuilder();
         	//执行Excel初始化
-        	if(!init(path,mssg)){
+        	if(!init(fileName,mssg)){
         		msg.add(file+":"+mssg.toString());
         		return null;
         	}
@@ -1022,6 +1022,8 @@ public class ExcelToDate {
                     query.setSectorName(sheetName);
                     //写入版本等信息
                     query.setQueryVersion(versionId);
+                    query.setDetailedListId(qdId);
+                    query.setDetailedListType("本地清单");
                     query.setUserId(userId);
                     queryList.add(query);
                 }  
@@ -1067,21 +1069,21 @@ public class ExcelToDate {
 	* 读取excel数据   读取行业Excel表
 	* @param path  
 	*/
-	public List<TSectorExcel> ReadSector(String fileName,String versionId,Long userId,List<String> msg,String outPath){  
+	public List<TSectorExcel> ReadSector(String fileName,String versionId,Long userId,List<String> msg,String outPath,Long qdId){  
 		//String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_4行业匹配.xlsx";
 		List<TSectorExcel> sectorList=new ArrayList<TSectorExcel>();
 		//定义结果  默认false 
 	    boolean isError=false;
-		String path="C:\\Users\\Mr_Wang\\Desktop\\应急系统新_4行业匹配.xlsx";
+		//String path="C:\\Users\\Mr_Wang\\Desktop\\应急系统新_4行业匹配.xlsx";
 		//获取文件名称
-		String file=path.substring(path.lastIndexOf("\\")+1);
+		String file=fileName.substring(fileName.lastIndexOf("\\")+1);
 		//初始化错误类型Map
 		errorMap=new HashMap();
         try {  
         	String message=null;
         	StringBuilder mssg=new StringBuilder();
         	//执行Excel初始化
-        	if(!init(path,mssg)){
+        	if(!init(fileName,mssg)){
         		msg.add(file+":"+mssg.toString());
         		return null;
         	}
@@ -1234,6 +1236,8 @@ public class ExcelToDate {
                     //写入版本等信息
                     sector.setVersionExcelId(versionId);
                     sector.setUserId(userId);
+                    sector.setDetailedListId(qdId);
+                    sector.setDetailedListType("本地清单");
                     sectorList.add(sector);
                 }  
             }
@@ -1284,16 +1288,16 @@ public class ExcelToDate {
 		//String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_4行业匹配.xlsx";
 		//定义结果  默认false 
 	    boolean isError=false;
-		String path="C:\\Users\\Mr_Wang\\Desktop\\应急系统新_3清单数据.xlsx";
+		//String path="C:\\Users\\Mr_Wang\\Desktop\\应急系统新_3清单数据.xlsx";
 		//获取文件名称
-		String file=path.substring(path.lastIndexOf("\\")+1);
+		String file=fileName.substring(fileName.lastIndexOf("\\")+1);
 		//初始化错误类型Map
 		errorMap=new HashMap();
         try {  
         	String message=null;
         	StringBuilder mssg=new StringBuilder();
         	//执行Excel初始化
-        	if(!init(path,mssg)){
+        	if(!init(fileName,mssg)){
         		msg.add(file+":"+mssg.toString());
         		return false;
         	}
