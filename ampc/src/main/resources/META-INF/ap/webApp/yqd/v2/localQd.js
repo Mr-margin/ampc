@@ -62,6 +62,7 @@ function innitdata(active){
                 treeField:'esNativeTpName',
                 data:data.data.data,
                 lines:true,
+                showHeader: false,
                 animate:true,
                 columns:[[  //表头
                     {field:"ck",checkbox:true},
@@ -87,6 +88,16 @@ function innitdata(active){
                         }
                     }}
                 ]],
+                onClickRow:function (row) {
+                    console.log(row);
+                    if ($('[node-id="' + row.id + '"]').hasClass('datagrid-row-clicked')) {
+                        $('[node-id="' + row.id + '"]').removeClass('datagrid-row-clicked');
+                        $('#rwgltable').treegrid('toggle', row.id);
+                    } else {
+                        $('[node-id="' + row.id + '"]').addClass('datagrid-row-clicked').siblings().removeClass('datagrid-row-clicked');
+                        $('#rwgltable').treegrid('collapseAll').treegrid('expand', row.id);
+                    }
+                },
                 selectOnCheck:true, //true，单击复选框将永远选择行 false，选择行将不选中复选框。
                 singleSelect: true,//设置True 将禁止多选
                 checkOnSelect:true,//true，当用户点击行的时候该复选框就会被选中或取消选中。false，当用户仅在点击该复选框的时候才会呗选中或取消。
@@ -112,15 +123,15 @@ function innitdata(active){
             $("#formQd").submit(
                 ajaxPost('/NativeAndNation/doPost',param).success(function(res){
                     if(res.status==0){
-                        console.log("进来了")
                         $("#localqd").treegrid('insert',{ //在表格中插入新建模板
-                            before: 0,	// 索引从0开始
+                            before: 1,	// 索引从0开始
                             data: {
                                 esNativeTpName: param.nativeTpName, //新建模板的名字
                                 esNativeTpYear: param.nativeTpYear,//新建模板的年份
                                 esComment:param.nativeTpRemark //新建模板的备注
                             }
                         })
+                        $("#localqd").treegrid("reload");
                     }else{
                         swal('参数错误', '', 'error');
                     }
@@ -159,6 +170,7 @@ function innitdata(active){
                             }
 
                         })
+                        $("#localqd").treegrid("reload");
                     }else{
                         swal('参数错误', '', 'error');
                     }
@@ -169,16 +181,26 @@ function innitdata(active){
             swal('年份错误', '', 'error');
         }
     }else if(active=="delete_nativeTp"){
-        var obj_node = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
-        ajaxPost('/NativeAndNation/doPost',{"nativeTpId":obj_node.esNativeTpId,"method":"delete_nativeTp"}).success(function(res){
-            if(res.status==0){
-                var obj_node_id=obj_node.id+1;
-                console.log(obj_node_id);
-                $("#localqd").treegrid("remove",obj_node_id)
-            }else{
-                swal('参数错误', '', 'error');
-            }
-        })
+        var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
+        swal({
+            title: "您确定要删除吗？",
+            text: "您确定要删除这条数据？",
+            type: "warning",
+            animation:"slide-from-top",
+            showCancelButton: true,
+            closeOnConfirm: true,
+            confirmButtonText: "是的，我要删除",
+        }, function() {
+            ajaxPost('/NativeAndNation/doPost',{"nativeTpId":row.esNativeTpId,"method":"delete_nativeTp"}).success(function(res){
+                if(res.status==0){
+                    var row_id=row.id+1;
+                    $("#localqd").treegrid("remove",row_id)
+                    $("#localqd").treegrid("reload",row_id)
+                }else{
+                    swal('参数错误', '', 'error');
+                }
+            })
+        });
     }else if(active=="add_native"){
         var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
         var row_id=row.id;
@@ -188,7 +210,6 @@ function innitdata(active){
         if(row){
             ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark,"nativeTpId":row.esNativeTpId}).success(function(res){
                 if(res.status==0){
-                    console.log(row_id);
                     $("#localqd").treegrid('append',{
                         parent:row_id+1,
                         data:[{
