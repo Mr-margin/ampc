@@ -14,6 +14,7 @@
     <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="ES_VERSION" property="esVersion" jdbcType="VARCHAR" />
     <result column="IS_UPLOAD" property="isUpload" jdbcType="VARCHAR" />
+    <result column="FILEPATH" property="filePath" jdbcType="VARCHAR" />
   </resultMap>
   
   <resultMap id="ListResultMap" type="hashMap" >
@@ -29,11 +30,12 @@
     <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="ES_VERSION" property="esVersion" jdbcType="VARCHAR" />
     <result column="IS_UPLOAD" property="isUpload" jdbcType="VARCHAR" />
+    <result column="FILEPATH" property="filePath" jdbcType="VARCHAR" />
   </resultMap>
   
   <sql id="Base_Column_List" >
     ES_NATIVE_TP_ID, ES_NATIVE_TP_NAME, ES_NATIVE_TP_YEAR, ES_UPLOAD_TP_TIME, ES_COMMENT, 
-    ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME, ES_VERSION,IS_UPLOAD
+    ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME, ES_VERSION,IS_UPLOAD,FILEPATH
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -49,11 +51,11 @@
     insert into T_ES_NATIVE_TP (ES_NATIVE_TP_ID, ES_NATIVE_TP_NAME, ES_NATIVE_TP_YEAR, 
       ES_UPLOAD_TP_TIME, ES_COMMENT, ADD_TIME, 
       UPDATE_TIME, USER_ID, IS_EFFECTIVE, 
-      DELETE_TIME, ES_VERSION,IS_UPLOAD)
+      DELETE_TIME, ES_VERSION,IS_UPLOAD,FILEPATH)
     values (#{esNativeTpId,jdbcType=DECIMAL}, #{esNativeTpName,jdbcType=VARCHAR}, #{esNativeTpYear,jdbcType=DECIMAL}, 
       #{esUploadTpTime,jdbcType=TIMESTAMP}, #{esComment,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=DECIMAL}, #{isEffective,jdbcType=VARCHAR}, 
-      #{deleteTime,jdbcType=TIMESTAMP}, #{esVersion,jdbcType=VARCHAR}, #{isUpload,jdbcType=VARCHAR})
+      #{deleteTime,jdbcType=TIMESTAMP}, #{esVersion,jdbcType=VARCHAR}, #{isUpload,jdbcType=VARCHAR},#{filePath,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TEsNativeTp" >
     insert into T_ES_NATIVE_TP
@@ -94,6 +96,9 @@
       <if test="isUpload != null" >
         IS_UPLOAD,
       </if>
+      <if test="filePath != null" >
+        FILEPATH,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="esNativeTpId != null" >
@@ -131,6 +136,9 @@
       </if>
       <if test="isUpload != null" >
         #{isUpload,jdbcType=VARCHAR},
+      </if>
+      <if test="filePath != null" >
+        #{filePath,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -170,6 +178,9 @@
       <if test="isUpload != null" >
         IS_UPLOAD = #{isUpload,jdbcType=VARCHAR},
       </if>
+      <if test="filePath != null" >
+        FILEPATH = #{filePath,jdbcType=VARCHAR},
+      </if>
     </set>
     where ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL}
   </update>
@@ -185,7 +196,8 @@
       IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
       DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       ES_VERSION = #{esVersion,jdbcType=VARCHAR},
-      IS_UPLOAD = #{isUpload,jdbcType=VARCHAR}
+      IS_UPLOAD = #{isUpload,jdbcType=VARCHAR},
+      FILEPATH = #{filePath,jdbcType=VARCHAR}
     where ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL}
   </update>
   
@@ -231,6 +243,9 @@
       </if>
       <if test="isUpload != null" >
         IS_UPLOAD = #{isUpload,jdbcType=VARCHAR},
+      </if>
+      <if test="filePath != null" >
+        FILEPATH = #{filePath,jdbcType=VARCHAR},
       </if>
     </set>
     where ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL} and 
