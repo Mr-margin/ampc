@@ -100,71 +100,13 @@ function sceneTable() {
                 }
             }
         })
-    })
-/*
-    $("#sceneTableId").bootstrapTable({
-        method: 'POST',
-        url: localhttp+'/ampc/scenarino/find_All_scenarino',
-        dataType: "json",
-        iconSize: "outline",
-        clickToSelect: true,// 点击选中行
-        pagination: false, // 在表格底部显示分页工具栏
-        striped: true, // 使表格带有条纹
-        queryParams: function (params) {
-            var data = {};
-            data.userId = userId;
-            data.missionId = $("#task").val();
-            return JSON.stringify({"token": "", "data": data});
-        },
-        queryParamsType: "limit", // 参数格式,发送标准的RESTFul类型的参数请求
-        silent: true, // 刷新事件必须设置
-        contentType: "application/json", // 请求远程数据的内容类型。
-        responseHandler: function (res) {
-            if (res.status == 0) {
-                if (!res.data.rows) {
-                    res.data.rows = [];
-                } else if (res.data.rows.length > 0) {
-                    if (sceneInitialization) {
-                        if (sceneInitialization.data.length > 0) {
-
-                            $.each(res.data.rows, function (i, col) {
-                                $.each(sceneInitialization.data, function (k, vol) {
-                                    if (col.scenarinoId == vol.scenarinoId) {
-                                        res.data.rows[i].state = true;
-                                    }
-                                });
-                            });
-                        }
-                    }
-                }
-                return res.data.rows;
-            } else if (res.status == 1000) {
-                swal(res.msg, '', 'error');
-            }
-        },
-        onClickRow: function (row, $element) {
-            $('.success').removeClass('success');
-            $($element).addClass('success');
-        },
-        icons: {
-            refresh: "glyphicon-repeat",
-            toggle: "glyphicon-list-alt",
-            columns: "glyphicon-list"
-        },
-        onLoadSuccess: function (data) {
-//			console.log(data);
-        },
-        onLoadError: function () {
-            swal('连接错误', '', 'error');
-        }
-    });*/
+    });
 }
 
 /**
  * 保存选择的情景
  */
 function save_scene() {
-    // var row = $('#sceneTableId').bootstrapTable('getSelections');//获取所有选中的情景数据
     var row = $('#sceneTableId').datagrid('getSelections');//获取所有选中的情景数据
 
     if (row.length > 0) {
@@ -215,21 +157,12 @@ function save_scene() {
         shoe_data_start();
     }
 }
-//超链接显示 模态框
-function exchangeModal() {
-    // console.log("选择数据");
-    // console.log(sceneInitialization)
-    sceneInittion();
-    //$("#Initialization").modal();
-   // $("#Initialization").window("open")
-}
 
 
 /*添加情景选择按钮*/
 function setQjSelectBtn(data) {
     $('#qjBtn1 .btn-group').empty();
     for (var i = 0; i < data.length; i++) {
-       // var btn1 = $('<label class="btn btn-outline btn-success bgw" style="z-index: 2;position:relative"><input type="radio"  name="qjBtn1"><span></span></label><br/>');
         var btn1 = $('<label class="btn btn-outline btn-success bgw" style="z-index: 2;position:relative"><input type="radio"  name="qjBtn1"><span></span></label>');
         btn1.attr('title', data[i].scenarinoName).find('input').attr('value', data[i].scenarinoId);
         btn1.find('span').html(data[i].scenarinoName);
@@ -254,7 +187,7 @@ $('#qjBtn1').on('change', 'input', function (e) {
 /**
  *设置导航条信息
  */
-$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
+$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="sceneInittion()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
 var gis_paramsName = {};//地图请求的参数，第一次加载地图时初始化，每次更改地图比例尺时修改codeLevel
 
 var tj_paramsName = {};//统计图用的参数
