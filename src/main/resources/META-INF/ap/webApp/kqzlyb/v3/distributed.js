@@ -506,7 +506,7 @@ function load_gis(p) {
 //			console.log(data.data.imagePath);
 			
 //			var imageURL = "http://166.111.42.85:8300/ampc/"+data.data.imagePath+"?t="+Math.random();
-			var imageURL = "http://192.168.1.147:8091/Java/"+data.data.imagePath+"?t="+Math.random();
+			var imageURL = "http://192.168.4.214:8091/Java/"+data.data.imagePath+"?t="+Math.random();
 //			var imageURL = "/ampc/"+data.data.imagePath+"?t="+Math.random();
 			console.log(imageURL);
 			
