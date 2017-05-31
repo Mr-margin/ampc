@@ -23,8 +23,18 @@ public class ExtractConfig {
 	private String verticalTepmPath;
 	private String verticalPngPath;
 	private String csvIndexPath;
+	
+	private String localListingFilePath;
 
 	
+	public String getLocalListingFilePath() {
+		return localListingFilePath;
+	}
+
+	public void setLocalListingFilePath(String localListingFilePath) {
+		this.localListingFilePath = localListingFilePath;
+	}
+
 	public String getCsvIndexPath() {
 		return csvIndexPath;
 	}
