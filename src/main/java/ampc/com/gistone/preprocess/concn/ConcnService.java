@@ -2,6 +2,7 @@ package ampc.com.gistone.preprocess.concn;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,7 +22,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.mail.handlers.text_html;
 
+import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TPreProcessMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TSiteMapper;
@@ -33,6 +36,7 @@ import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.JsonUtil;
 import net.sf.json.JSONObject;
+import oracle.net.aso.e;
 
 @Service
 public class ConcnService {
@@ -50,18 +54,31 @@ public class ConcnService {
 	@Autowired
 	private TSiteMapper tSiteMapper;
 	@Autowired
+	private TMissionDetailMapper tMissionDetailMapper;
+	@Autowired
 	private CityWorkerV2 cityWorkerV2;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@Transactional
 	public boolean requestConcnData(RequestParams params) {
-
-		String[] filter = { "1101", "1201", "1301", "1302", "1303", "1304", "1305", "1306", "1307", "1308", "1309",
-				"1310", "1311", "1402", "1403", "1404", "1407", "1409", "1504", "1509", "3701", "3703", "3705", "3707",
-				"3709", "3712", "3714", "3715", "3716", "4105", "4106", "4109" };
-
-		List<String> cites = Arrays.asList(filter);
+		List<String> cites=new ArrayList<String>();
+		String cityJson=tMissionDetailMapper.findCityListByMissionId(params.getMissionId());
+		Map<String, Map<String, Object>> cityMap = null;
+		Map<String, String> cityListMap=null;
+		try {
+			cityMap = JsonUtil.jsonToObj(cityJson, Map.class);
+		} catch (IOException e1) {
+			logger.error("ConcnService | requestConcnData jsonToObj IOException ",e1);
+		}
+		for (Map<String, Object> v : cityMap.values()) {
+		            cityListMap=(Map<String, String>) v.get("city");
+		            cites.addAll(cityListMap.keySet());
+		 }
+		//		String[] filter = { "1101", "1201", "1301", "1302", "1303", "1304", "1305", "1306", "1307", "1308", "1309",
+//				"1310", "1311", "1402", "1403", "1404", "1407", "1409", "1504", "1509", "3701", "3703", "3705", "3707",
+//				"3709", "3712", "3714", "3715", "3716", "4105", "4106", "4109" };
+//		List<String> cites = Arrays.asList(filter);
 		params.setFilter(cites);
 		params.setMode(Constants.AREA_CITY);
 
