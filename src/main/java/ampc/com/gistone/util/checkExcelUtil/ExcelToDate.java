@@ -601,6 +601,8 @@ public class ExcelToDate {
                     tempMap=(Map)checkHeader.get("属性类型");
                     //先获取Excel中属性
                     cellValue=getCellValue(cell);
+                    //记录类型
+                    String type=cellValue;
                     //单元格的验证错误信息
                     cellError=new ArrayList();
                     //执行单元格验证方法
@@ -746,7 +748,7 @@ public class ExcelToDate {
                 	cn.setValueRange(getCellValue(row.getCell(7)));
                 	nativeList.add(cn);
                     //只保留属性为 统计 和 筛选和统计 的信息
-                    if(cellValue.equals("统计")||cellValue.equals("筛选和统计")){
+                    if(type.equals("统计")||type.equals("筛选和统计")){
                     	//如果没有出现错误则记录数据 
                     	if(!isError){
                     		TSectordocExcel sectorDoc=new TSectordocExcel();
