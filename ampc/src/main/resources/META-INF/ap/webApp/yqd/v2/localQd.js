@@ -56,12 +56,12 @@ function innitdata(active){
             "userId":userId,
             "method":"find_natives",
             "pageNum": 1,
-            "pageSize": 10,
+            "pageSize": 15,
         }).success(function(data){
             //给每个子节点添加标题
-            var rowDate=data.data.data
+            var rowDate=data.data.data.rows
             for(var i=0;i<rowDate.length;i++){
-                rowDate[i].children.unshift({esNativeTpName:"清单名称",esNativeTpYear:"年份",updateTime:"创建时间",filePath:"路径",esComment:"备注",isEffective:"状态",actor:"操作"})
+                rowDate[i].children.unshift({esNativeTpName:"清单名称",esNativeTpYear:"年份",updateTime:"创建时间",filePath:"路径",esComment:"备注",isEffective:"状态",actor:"操作",id:rowDate[i].id+"title"})
             }
             $("#localqd").treegrid({
                 idField:'id',//通过id区分子节点父节点
@@ -99,11 +99,11 @@ function innitdata(active){
                     }}
                 ]],
                 onClickRow:function (row) {
+                    console.log(row.children)
                     if(row.children!=undefined&&row.children!=""&&row.children!=null){
                         if(row.children.length>1){
                             var rowId=row.id
                             if ($('[node-id="' + rowId + '"]').hasClass('datagrid-row-clicked')) {
-
                                 $('[node-id="' + rowId + '"]').removeClass('datagrid-row-clicked');
                                 $(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree .datagrid-row").removeClass('datagrid-row-clicked');
                                 $('#localqd').treegrid('toggle',rowId);
@@ -119,11 +119,35 @@ function innitdata(active){
                 singleSelect: true,//设置True 将禁止多选
                 checkOnSelect:true,//true，当用户点击行的时候该复选框就会被选中或取消选中。false，当用户仅在点击该复选框的时候才会呗选中或取消。
                 fitColumns:true,//真正的自动展开/收缩列的大小，以适应网格的宽度，防止水平滚动。
-                clickToSelect: true,// 点击选中行
-                pagination: true, // 在表格底部显示分页工具栏
-                pageNum: 1,
-                pageSize: 10,
             })
+            $('#rwpagination').pagination({
+                total: 33,
+                pageSize: 10,
+                showPageList:false,
+                // onSelectPage:function(pageNumber, pageSize){
+                //     $.ajax({
+                //         url:'/NativeAndNation/doPost',
+                //         contentType: 'application/json',
+                //         method: 'post',
+                //         dataType: 'JSON',
+                //         data: JSON.stringify({
+                //             "token": "",
+                //             "data": {
+                //                 "queryName": '',
+                //                 "missionStatus": '',
+                //                 "pageNum": pageNumber,
+                //                 "pageSize": 10,
+                //                 "sort": '',
+                //                 "userId": userId
+                //             }
+                //         }),
+                //         success: function (data) {
+                //             requestQJData(data.data);
+                //             $('#rwgltable').treegrid({data: transformdata});
+                //         }
+                //     });
+                // }
+            });
         })
     }else if(active=="add_nativeTp"){
         var param={};
@@ -240,6 +264,8 @@ function innitdata(active){
     }
 }
 
+//easyui布局
+$(".treeTable").layout()
 //创建模板窗口
 $("#creatTemp").window({
     width:600,  //easyui 窗口宽度
