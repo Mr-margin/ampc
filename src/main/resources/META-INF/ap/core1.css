@@ -1828,3 +1828,43 @@ dl, dd {
   line-height: 1.5;
   border-radius: 3px;
 }
+/*树形结构表单样式*/
+.cloudui .treeTable .datagrid-body td{
+  background: transparent;
+}
+.cloudui .treeTable .datagrid-body td{
+  border:none;
+}
+.cloudui .treeTable  .datagrid-btable td{
+  height: 0;
+}
+.cloudui .treeTable .datagrid-view2 .datagrid-btable .datagrid-row{
+  background-color: #daeef5;
+  height:37px;
+}
+.cloudui .treeTable .datagrid-view2 .datagrid-btable tr{
+}
+.cloudui .treeTable .datagrid-body>.datagrid-btable>tbody>tr.treegrid-tr-tree>td>div>table>tbody>tr{
+  background: #fff;
+}
+.cloudui .treeTable .datagrid-body>.datagrid-btable>tbody>tr.treegrid-tr-tree>td{
+  padding-bottom: 15px;
+}
+.cloudui .treeTable .datagrid-body>.datagrid-btable>tbody>tr.treegrid-tr-tree>td>div{
+  border:1px solid #9CC8F7;
+  border-top:0px;
+}
+.cloudui .treeTable .datagrid-body>.datagrid-btable>tbody>tr.treegrid-tr-tree>td>div>table>tbody>tr:first-child{
+  font-weight: bold;
+  background: #daeef5;
+}
+.cloudui .treeTable .datagrid-body>.datagrid-btable>tbody>tr.treegrid-tr-tree>td>div>table>tbody>tr:first-child>td:first-child>div>.tree-checkbox{
+  display: none;
+}
+.cloudui .treeTable tr.treegrid-tr-tree td>div{
+  overflow: inherit;
+}
+.cloudui .treeTable .datagrid-body>.datagrid-btable>tbody>tr.datagrid-row-clicked{
+  background: #9CC8F7;
+  color: white;
+}
