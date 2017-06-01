@@ -870,12 +870,15 @@ function search_button() {
     $.each(row.rows, function (i, col) {
         if (col.f1 == '剩余点源') {
             $.each(col, function (k, vol) {//循环剩余点源的所有列
-                if (k.indexOf("psl_") == 0) {
-                    if (typeof vol != "undefined" && vol != "") {
-                        if (parseFloat(vol) > 0) {
-                            ttlk = false;
-                        }
+                if (k.indexOf("f2") == 0) {
+                    if(vol <= 0){
+                        // ttlk = false;//此处需要打开，暂时在测试中
                     }
+                    // if (typeof vol != "undefined" && vol != "") {
+                    //     if (parseFloat(vol) > 0) {
+                    //         ttlk = false;
+                    //     }
+                    // }
                 }
             });
         }
@@ -972,8 +975,8 @@ function search_button() {
                 point_table();
             } else {
                 swal({
-                    title: "剩余点源已设置，无法进行筛选",
-                    text: "筛选条件至少选择一项，全部点源请对剩余点源进行操作.",
+                    title: "无点源可设置，无法进行筛选",
+                    // text: "筛选条件至少选择一项，全部点源请对剩余点源进行操作.",
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -1265,6 +1268,10 @@ function edit_point_table() {
                     }
 
                     $("#shaixuan_num").attr("title", tablejieguo.substring(0, tablejieguo.length - 1));
+                    if(delSXtableRow.length > 0){
+                        tablejieguo += "已删除点源：" + delSXtableRow.length +','
+                    }
+                    $('.sxRequirement1').html(tablejieguo.substring(0, tablejieguo.length - 1))
                 }else {
                     swal('无数据', '', 'error');
                 }

@@ -417,7 +417,7 @@ function updata() {
                         res.data[speciesObj[y]] = ooo;
                     }
                     swal({
-                        title: '暂无数据!',
+                        title: res.msg,
                         type: 'error',
                         timer: 1000,
                         showConfirmButton: false
@@ -440,7 +440,7 @@ function updata() {
                 initEcharts();
             } else {
                 swal({
-                    title: '数据异常!',
+                    title: res.msg,
                     type: 'error',
                     timer: 1000,
                     showConfirmButton: false

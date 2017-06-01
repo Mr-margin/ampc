@@ -431,7 +431,7 @@ function getMapPoint(sector) {
         userId:userId,
         planId:qjMsg.planId,
         species:$('#hz_wrw').val(),
-        sector:sector||'',
+        sector:sector||'null',
     }
 
     ajaxPost_w(jianpaiUrl+'/search/companyPoint',parameter).success(function (res) {
