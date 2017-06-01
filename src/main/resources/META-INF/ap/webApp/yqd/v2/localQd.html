@@ -1,9 +1,14 @@
 <div class="cloudui" style="width: 100%;height: 100%;">
     <div class="yqdTable">
-        <div class="tableBox treeTable">
-            <table id="localqd" style="width:100%;height:100%;">
+        <div class="tableBox treeTable easyui-layout">
+            <div data-options="region:'center',border:false">
+                <table id="localqd" style="width:100%;height:100%;">
 
-            </table>
+                </table>
+            </div>
+            <div data-options="region:'south',border:false" style="height:20px;">
+                <div id="rwpagination"></div>
+            </div>
         </div>
     </div>
 </div>
