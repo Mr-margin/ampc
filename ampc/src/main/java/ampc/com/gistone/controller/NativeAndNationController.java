@@ -27,6 +27,7 @@ import ampc.com.gistone.database.inter.TEsCouplingMapper;
 import ampc.com.gistone.database.inter.TEsNationMapper;
 import ampc.com.gistone.database.inter.TEsNativeMapper;
 import ampc.com.gistone.database.inter.TEsNativeTpMapper;
+import ampc.com.gistone.database.model.TEsCoupling;
 import ampc.com.gistone.database.model.TEsNation;
 import ampc.com.gistone.database.model.TEsNative;
 import ampc.com.gistone.database.model.TEsNativeTp;
@@ -1094,7 +1095,6 @@ public class NativeAndNationController {
 	 * @param response
 	 * @return
 	 */
-//	@RequestMapping("/NativeAndNation/find_coupling")
 	public AmpcResult find_coupling(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -1144,5 +1144,191 @@ public class NativeAndNationController {
 		}
 	}
 	
+	/**
+	 * 创建耦合清单
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public AmpcResult add_coupling(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			Long userId = Long.parseLong(param.toString());
+			//获取清单名称
+			param=data.get("couplingName");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 耦合清单名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "耦合清单名称为空或出现非法字符!");
+			}
+			String couplingName = param.toString();
+			
+			//获取清单年份
+			param=data.get("couplingYear");
+			if(!RegUtil.CheckParameter(param, "Short", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 耦合清单年份为空或出现非法字符!");
+				return AmpcResult.build(1003, "耦合清单年份为空或出现非法字符!");
+			}
+			Short couplingYear=Short.valueOf(param.toString());
+			//获取清单备注
+			param=data.get("couplingDesc");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 耦合清单备注为空或出现非法字符!");
+				return AmpcResult.build(1003, "耦合清单备注为空或出现非法字符!");
+			}
+			String couplingDesc=param.toString();
+			
+			//日期格式
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date date=new Date();
+			//添加数据
+			TEsCoupling tEsCoupling=new TEsCoupling();
+			tEsCoupling.setUserId(userId);
+			tEsCoupling.setEsCouplingName(couplingName);
+			tEsCoupling.setEsCouplingYear(couplingYear);
+			tEsCoupling.setEsCouplingDesc(couplingDesc);
+			//插入数据
+			int total=tEsCouplingMapper.insertSelective(tEsCoupling);
+			Map msgMap=new HashMap();
+			if(total==1){
+				msgMap.put("msg", true);
+			}else{
+				msgMap.put("msg", false);
+			}
+			LogUtil.getLogger().info("NativeAndNationController 创建耦合清单信息成功!");
+			return AmpcResult.ok(msgMap);
+		} catch (Exception e) {
+			// TODO: handle exception
+			LogUtil.getLogger().error("NativeAndNationController 创建耦合清单信息异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 创建耦合清单信息异常!");
+		}
+	}
+	
+	/**
+	 * 编辑耦合清单
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+//	@RequestMapping("/NativeAndNation/update_coupling")
+	public AmpcResult update_coupling(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> data = (Map) requestDate.get("data");
+			
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			Long userId = Long.parseLong(param.toString());
+			//获取清单ID
+			param=data.get("couplingId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 耦合清单Id为空或出现非法字符!");
+				return AmpcResult.build(1003, "耦合清单Id为空或出现非法字符!");
+			}
+			Long esNationId = Long.parseLong(param.toString());
+			
+			//获取清单名称
+			param=data.get("couplingName");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 耦合清单名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "耦合清单名称为空或出现非法字符!");
+			}
+			String esNationName = param.toString();
+			
+			//获取清单年份
+			param=data.get("couplingYear");
+			if(!RegUtil.CheckParameter(param, "Short", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 耦合清单年份为空或出现非法字符!");
+				return AmpcResult.build(1003, "耦合清单年份为空或出现非法字符!");
+			}
+			Short nationYear=Short.valueOf(param.toString());
+			//获取清单备注
+			param=data.get("nationRemark");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 耦合清单备注为空或出现非法字符!");
+				return AmpcResult.build(1003, "耦合清单备注为空或出现非法字符!");
+			}
+			String nationRemark=param.toString();
+			
+			//日期格式
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date date=new Date();
+			//添加数据
+			TEsNation tEsNation=new TEsNation();
+			tEsNation.setUserId(userId);
+			tEsNation.setEsNationName(esNationName);
+			tEsNation.setEsNationYear(nationYear);
+			tEsNation.setNationRemark(nationRemark);
+			tEsNation.setEsNationId(esNationId);
+			//更新数据
+			int total=tEsNationMapper.updateByIdSelective(tEsNation);
+			Map msgMap=new HashMap();
+			if(total==1){
+				msgMap.put("msg", true);
+			}else{
+				msgMap.put("msg", false);
+			}
+			LogUtil.getLogger().info("NativeAndNationController 编辑耦合清单信息成功!");
+			return AmpcResult.ok(msgMap);
+		} catch (Exception e) {
+			// TODO: handle exception
+			LogUtil.getLogger().error("NativeAndNationController 编辑耦合清单信息异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 编辑耦合清单信息异常!");
+		}
+	}
+	
+	/**
+	 * 删除耦合清单
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+//	@RequestMapping("/NativeAndNation/delete_coupling")
+	public AmpcResult delete_coupling(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> data = (Map) requestDate.get("data");
+			
+			Object param=data.get("nationId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 清单ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单ID为空或出现非法字符!");
+			}
+			// 清单id
+			Long nationId = Long.parseLong(param.toString());
+			int total=tEsNationMapper.deleteByPrimaryKey(nationId);
+			Map msgMap=new HashMap();
+			if(total==1){
+				//成功
+				msgMap.put("msg", true);	
+			}else{
+				//失败
+				msgMap.put("msg", false);
+			}
+			LogUtil.getLogger().info("NativeAndNationController 删除耦合清单信息成功!");
+			return AmpcResult.ok(msgMap);
+		} catch (Exception e) {
+			// TODO: handle exception
+			LogUtil.getLogger().error("NativeAndNationController 删除耦合清单信息异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 删除耦合清单信息异常!");
+		}
+	}
 	
 }
