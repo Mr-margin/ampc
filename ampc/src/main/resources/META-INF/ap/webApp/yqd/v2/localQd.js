@@ -4,7 +4,7 @@
 // 导航
 $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">本地清单</span><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatTemp()">新建</button><button class="qdEdit" onclick="editTemp()">编辑</button><button class="qdDelet" onclick=innitdata("delete_nativeTp")>删除</button></span>');
 // 表单生成
-innitdata("find_natives")
+innitdata("find_natives");
 function innitdata(active){
     if(active=="find_natives"){
         // $("#localqd").treegrid({
@@ -56,7 +56,7 @@ function innitdata(active){
             "userId":userId,
             "method":"find_natives",
             "pageNum": 1,
-            "pageSize": 2,
+            "pageSize": 10,
         }).success(function(data){
             //给每个子节点添加标题
             var rowDate=data.data.data
@@ -90,16 +90,11 @@ function innitdata(active){
                     }},
                     {field:"actor",title:"操作",width:100,align:'center',formatter:function(value,row,index){
                         if(row.isEffective==1){
-                            return "<button id='addQdBtn' onclick='adgQdBtn()' style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box'>添加数据</button>"
+                            var addNativeDiv="<button id='addQdBtn'  style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='adgQdBtn(\""+row.id+"\")'>添加数据</button>"
+                            return addNativeDiv;
                         }else{
                             var checkDiv="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkData(\""+row.id+"\")'>校验</button>"
                             return checkDiv
-                            // console.log(row.id)
-                            // if(row.id.indexOf("mb_")==0){
-                            //     return "<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkDataMb()'>校验</button>"
-                            // }else if(row.id.indexOf("qd_")==0){
-                            //     return "<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkDataQd()'>校验</button>"
-                            // }
                         }
                     }}
                 ]],
@@ -127,8 +122,7 @@ function innitdata(active){
                 clickToSelect: true,// 点击选中行
                 pagination: true, // 在表格底部显示分页工具栏
                 pageNum: 1,
-                pageSize: 2,
-                pageList: [2,10,20]
+                pageSize: 10,
             })
         })
     }else if(active=="add_nativeTp"){
@@ -144,7 +138,15 @@ function innitdata(active){
             $("#formQd").submit(
                 ajaxPost('/NativeAndNation/doPost',param).success(function(res){
                     if(res.status==0){
-                        $("#localqd").treegrid()
+                        $("#localqd").treegrid('insert',{
+                            before:'mb_1',
+                            data:{
+                                esNativeTpName:param.nativeTpName,
+                                esNativeTpYear:param.nativeTpYear,
+                                esComment:param.nativeTpRemark
+                            }
+                        })
+                        innitdata("find_natives");
                     }else{
                         swal('参数错误', '', 'error');
                     }
@@ -173,7 +175,7 @@ function innitdata(active){
                 ajaxPost('/NativeAndNation/doPost',param).success(function(res){
                     if(res.status==0){
                         $("#localqd").treegrid('update',{//更新清单列表编辑后的数据
-                            id: rowIndex+1,
+                            id: rowIndex,
                             row: {
                                 esNativeTpName: param.nativeTpName,
                                 esNativeTpYear:tempYear,
@@ -204,7 +206,7 @@ function innitdata(active){
         }, function() {
             ajaxPost('/NativeAndNation/doPost',{"nativeTpId":row.esNativeTpId,"method":"delete_nativeTp"}).success(function(res){
                 if(res.status==0){
-                    var row_id=row.id+1;
+                    var row_id=row.id;
                     $("#localqd").treegrid("remove",row_id);
                     innitdata("find_natives")
                 }else{
@@ -213,22 +215,22 @@ function innitdata(active){
             })
         });
     }else if(active=="add_native"){
-        var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
-        var row_id=row.id;
+        var rowDiv=$("#localqd").treegrid('find',creatQd);
         var qdName=$("#esLocalQdName").val();
         var qdYear=$("#esLocalQdYear").val();
         var qdRemark=$("#esLocalQdMark").val();
-        if(row){
-            ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark,"nativeTpId":row.esNativeTpId}).success(function(res){
+        if(rowDiv){
+            ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark,"nativeTpId":rowDiv.id}).success(function(res){
                 if(res.status==0){
                     $("#localqd").treegrid('append',{
-                        parent:row_id+1,
+                        parent:rowDiv.id,
                         data:[{
                             esNativeTpName:qdName,
                             esNativeTpYear:qdYear,
                             esComment:qdRemark
                         }]
                     })
+                    innitdata("find_natives");
                     $("#editTempQd").window('close');
                 }else{
                     swal('参数错误', '', 'error');
@@ -299,8 +301,10 @@ $("#editTempQd").window({
     closed:true,
     cls:"cloudui"
 })
+var creatQd
 //点击按钮创建模板下面的清单
-function adgQdBtn(){
+function adgQdBtn(rowId){
+    creatQd=rowId
     var e = e || window.event;
     e.stopPropagation();//防止出现下拉
     $("#editTempQd").window("open")
@@ -311,34 +315,6 @@ $(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree tr").click(function(){
     e.stopPropagation();//防止出现下拉
     console.log("点击子节点")
 })
-//校验模板
-function checkDataMb() {
-    var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
-    console.log("模板")
-    console.log(row.id)
-    ajaxPost('/NativeAndNation/doPost',{
-        "userId":userId,
-        "method":"checkNativeTp",
-        "nativeTpId":row.esNativeTpId,
-        "nativeTpName":row.esNativeTpName,
-    }).success(function () {
-        // console.log("校验模板")
-    })
-}
-//校验清单
-function checkDataQd() {
-    var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
-    console.log("清单")
-    console.log(row.id)
-    ajaxPost('/NativeAndNation/doPost',{
-        "userId":userId,
-        "method":"checkNative",
-        "nativeTpId":row.esNativeTpId,
-        "nativeTpName":row.esNativeTpName,
-    }).success(function () {
-        // console.log("校验模板")
-    })
-}
 //校验
 function checkData(rowId) {
     var rowDiv=$("#localqd").treegrid('find',rowId)
