@@ -56,16 +56,17 @@ function innitdata(active){
         ajaxPost('/NativeAndNation/doPost',{
             "userId":userId,
             "method":"find_natives",
+            "pageNum": 1,
+            "pageSize": 2,
         }).success(function(data){
             //给每个子节点添加标题
             var rowDate=data.data.data
             for(var i=0;i<rowDate.length;i++){
-                rowDate[i].children.unshift({esNativeTpName:"清单名称",esNativeTpYear:"年份",updateTime:"创建时间",esComment:"备注"})
+                rowDate[i].children.unshift({esNativeTpName:"清单名称",esNativeTpYear:"年份",updateTime:"创建时间",filePath:"路径",esComment:"备注"})
             }
             $("#localqd").treegrid({
-                idField:'esNativeTpId',
-                treeField:'esNativeTpName',
-                // data:data.data.data,
+                idField:'id',//通过id区分子节点父节点
+                treeField:'esNativeTpName',//树形结构分支节点
                 data:rowDate,
                 lines:true,
                 showHeader: false,
@@ -91,27 +92,25 @@ function innitdata(active){
                     {field:"actor",title:"操作",width:100,align:'center',formatter:function(value,row,index){
                         if(row.isEffective==1){
                             return "<button id='addQdBtn' onclick='adgQdBtn()' style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box'>添加数据</button>"
-                            // if(row.isUpload=0){
-                            //     return "<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkData()'>未校验</button>"
-                            // }else{
-                            //     return "<button id='addQdBtn' onclick='adgQdBtn()' style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box'>添加数据</button>"
-                            // }
                         }else{
-                                // return "<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='uploadFiel()'>上传</button>"
                             return "<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkData()'>校验</button>"
                         }
                     }}
                 ]],
                 onClickRow:function (row) {
-                    if(row.children.length>1){
-                        // $("#localqd").treegrid('toggle', row.id+1)
-                        var rowId=row.id+1;
-                        if ($('[node-id="' + rowId + '"]').hasClass('datagrid-row-clicked')) {
-                            $('[node-id="' + rowId + '"]').removeClass('datagrid-row-clicked');
-                            $('#localqd').treegrid('toggle', row.id+1);
-                        } else {
-                            $('[node-id="' + rowId + '"]').addClass('datagrid-row-clicked').siblings().removeClass('datagrid-row-clicked');
-                            $('#localqd').treegrid('collapseAll').treegrid('expand', row.id+1);
+                    if(row.children!=undefined&&row.children!=""&&row.children!=null){
+                        if(row.children.length>1){
+                            var rowId=row.id
+                            if ($('[node-id="' + rowId + '"]').hasClass('datagrid-row-clicked')) {
+
+                                $('[node-id="' + rowId + '"]').removeClass('datagrid-row-clicked');
+                                $(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree .datagrid-row").removeClass('datagrid-row-clicked');
+                                $('#localqd').treegrid('toggle',rowId);
+                            } else {
+                                $('[node-id="' + rowId + '"]').addClass('datagrid-row-clicked').siblings().removeClass('datagrid-row-clicked');
+                                $(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree .datagrid-row").removeClass('datagrid-row-clicked');
+                                $('#localqd').treegrid('collapseAll').treegrid('expand',rowId);
+                            }
                         }
                     }
                 },
@@ -121,12 +120,9 @@ function innitdata(active){
                 fitColumns:true,//真正的自动展开/收缩列的大小，以适应网格的宽度，防止水平滚动。
                 clickToSelect: true,// 点击选中行
                 pagination: true, // 在表格底部显示分页工具栏
-                // loadFilter:function (data,parentId) {
-                //     var row=$('#localqd').treegrid('getSelected');//获取所有选中的清单数据
-                //     console.log(row)
-                //     // row.children.unshift({esNativeTpName:"清单名字",esNativeYear:"年份",updateTime:"创建时间",esComment:"备注"});
-                //     return data;
-                // }
+                pageNum: 1,
+                pageSize: 2,
+                pageList: [2,10,20]
             })
         })
     }else if(active=="add_nativeTp"){
@@ -142,19 +138,10 @@ function innitdata(active){
             $("#formQd").submit(
                 ajaxPost('/NativeAndNation/doPost',param).success(function(res){
                     if(res.status==0){
-                        $("#localqd").treegrid('insert',{ //在表格中插入新建模板
-                            before: 1,	// 索引从0开始
-                            data: {
-                                esNativeTpName: param.nativeTpName, //新建模板的名字
-                                esNativeTpYear: param.nativeTpYear,//新建模板的年份
-                                esComment:param.nativeTpRemark //新建模板的备注
-                            }
-                        })
-                        // $("#localqd").treegrid("reload");
+                        $("#localqd").treegrid()
                     }else{
                         swal('参数错误', '', 'error');
                     }
-                    innitdata("find_natives")
                 })
             )
             $("#creatTemp").window('close');
@@ -308,20 +295,44 @@ $("#editTempQd").window({
 })
 //点击按钮创建模板下面的清单
 function adgQdBtn(){
+    var e = e || window.event;
+    e.stopPropagation();//防止出现下拉
     $("#editTempQd").window("open")
 }
+//防止树形表单子节点点击出现下拉效果
+$(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree tr").click(function(){
+    var e = e || window.event;
+    e.stopPropagation();//防止出现下拉
+    console.log("点击子节点")
+})
 function checkData() {
+    // var e = e || window.event;
+    // e.stopPropagation();//防止出现下拉
     var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
-    var rowNode=row.children;
-    ajaxPost('/NativeAndNation/doPost',{
-        "userId":userId,
-        "method":"checkData",
-        "filePath":'',
-        "nativeId":rowNode[0].esNativeId,
-        "nativeName":rowNode[0].esNativeTpName
-    }).success(function () {
-        console.log("校验成功了")
-    })
+    if(row.id.indexOf("mb_")==0){
+        ajaxPost('/NativeAndNation/doPost',{
+            "userId":userId,
+            "method":"checkNativeTp",
+            "nativeTpId":row.esNativeTpId,
+            "nativeTpName":row.esNativeTpName,
+        }).success(function () {
+            console.log("校验模板")
+        })
+    }else if(row.id.indexOf("qd_")==0){
+        ajaxPost('/NativeAndNation/doPost',{
+            "userId":userId,
+            "method":"checkNativeTp",
+            "nativeId":row.esNativeId,
+            "nativeName":row.esNativeTpName,
+        }).success(function () {
+            console.log("校验清单")
+        })
+    }else{
+        swal('请您再次选择', '', 'error');
+    }
+    // var rowNode=row.children;
+
+
 }
 // //点击上传按钮 进行文件上传
 // $("#uploadFiel").window({
