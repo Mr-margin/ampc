@@ -3,7 +3,6 @@
  */
 // 导航
 $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">本地清单</span><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatTemp()">新建</button><button class="qdEdit" onclick="editTemp()">编辑</button><button class="qdDelet" onclick=innitdata("delete_nativeTp")>删除</button></span>');
-
 // 表单生成
 innitdata("find_natives")
 function innitdata(active){
@@ -62,7 +61,7 @@ function innitdata(active){
             //给每个子节点添加标题
             var rowDate=data.data.data
             for(var i=0;i<rowDate.length;i++){
-                rowDate[i].children.unshift({esNativeTpName:"清单名称",esNativeTpYear:"年份",updateTime:"创建时间",filePath:"路径",esComment:"备注"})
+                rowDate[i].children.unshift({esNativeTpName:"清单名称",esNativeTpYear:"年份",updateTime:"创建时间",filePath:"路径",esComment:"备注",isEffective:"状态",actor:"操作"})
             }
             $("#localqd").treegrid({
                 idField:'id',//通过id区分子节点父节点
@@ -93,7 +92,14 @@ function innitdata(active){
                         if(row.isEffective==1){
                             return "<button id='addQdBtn' onclick='adgQdBtn()' style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box'>添加数据</button>"
                         }else{
-                            return "<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkData()'>校验</button>"
+                            var checkDiv="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkData(\""+row.id+"\")'>校验</button>"
+                            return checkDiv
+                            // console.log(row.id)
+                            // if(row.id.indexOf("mb_")==0){
+                            //     return "<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkDataMb()'>校验</button>"
+                            // }else if(row.id.indexOf("qd_")==0){
+                            //     return "<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkDataQd()'>校验</button>"
+                            // }
                         }
                     }}
                 ]],
@@ -305,33 +311,56 @@ $(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree tr").click(function(){
     e.stopPropagation();//防止出现下拉
     console.log("点击子节点")
 })
-function checkData() {
-    // var e = e || window.event;
-    // e.stopPropagation();//防止出现下拉
+//校验模板
+function checkDataMb() {
     var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
-    if(row.id.indexOf("mb_")==0){
+    console.log("模板")
+    console.log(row.id)
+    ajaxPost('/NativeAndNation/doPost',{
+        "userId":userId,
+        "method":"checkNativeTp",
+        "nativeTpId":row.esNativeTpId,
+        "nativeTpName":row.esNativeTpName,
+    }).success(function () {
+        // console.log("校验模板")
+    })
+}
+//校验清单
+function checkDataQd() {
+    var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
+    console.log("清单")
+    console.log(row.id)
+    ajaxPost('/NativeAndNation/doPost',{
+        "userId":userId,
+        "method":"checkNative",
+        "nativeTpId":row.esNativeTpId,
+        "nativeTpName":row.esNativeTpName,
+    }).success(function () {
+        // console.log("校验模板")
+    })
+}
+//校验
+function checkData(rowId) {
+    var rowDiv=$("#localqd").treegrid('find',rowId)
+    if(rowId.indexOf("mb")==0){
         ajaxPost('/NativeAndNation/doPost',{
             "userId":userId,
             "method":"checkNativeTp",
-            "nativeTpId":row.esNativeTpId,
-            "nativeTpName":row.esNativeTpName,
+            "nativeTpId":rowDiv.esNativeTpId,
+            "nativeTpName":rowDiv.esNativeTpName,
         }).success(function () {
             console.log("校验模板")
         })
-    }else if(row.id.indexOf("qd_")==0){
+    }else  if(rowId.indexOf("qd")==0){
         ajaxPost('/NativeAndNation/doPost',{
             "userId":userId,
-            "method":"checkNativeTp",
-            "nativeId":row.esNativeId,
-            "nativeName":row.esNativeTpName,
+            "method":"checkNative",
+            "nativeTpId":rowDiv.esNativeTpId,
+            "nativeTpName":rowDiv.esNativeTpName,
         }).success(function () {
-            console.log("校验清单")
+            console.log("校验模板")
         })
-    }else{
-        swal('请您再次选择', '', 'error');
     }
-    // var rowNode=row.children;
-
 
 }
 // //点击上传按钮 进行文件上传
