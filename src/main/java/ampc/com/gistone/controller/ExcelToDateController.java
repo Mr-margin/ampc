@@ -1,5 +1,6 @@
 package ampc.com.gistone.controller;
 
+import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMeasureExcelMapper;
@@ -70,6 +73,8 @@ public class ExcelToDateController {
 	//预案措施映射
 	@Autowired
 	public TPlanMeasureMapper tPlanMeasureMapper;
+	
+	private ObjectMapper mapper=new ObjectMapper();
 		
 	/**
 	 * 删除数据方法
@@ -156,9 +161,13 @@ public class ExcelToDateController {
 	 * @return 返回响应结果对象
 	 * TODO 行业描述
 	 */
+	@RequestMapping("excel/checkDoc")
 	public Map update_SectorDocExcelData(Long userId,Long qdId,String filePath) {
+		userId=1L;
+		qdId=1L;
+		filePath="D:\\清单数据\\应急系统新_1描述文件.xlsx";
 		//出错的文件保存路径
-		String outPath="C:\\Users\\Administrator\\Desktop\\验证应急系统新_1描述文件.xlsx";
+		String outPath="D:\\验证模板\\验证应急系统新_1描述文件.xlsx";
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
@@ -188,8 +197,23 @@ public class ExcelToDateController {
 //					throw new SQLException("ExcelToDateController 保存行业描述信息失败,数据库添加失败。");
 //				}
 			}
-			LogUtil.getLogger().info("ExcelToDateController 保存行业描述信息成功!");
-			return null;
+			filePath=URLEncoder.encode(filePath, "utf-8");
+			// 调用减排计算接口 并获取结果Json
+			String url="http://192.168.7.98:8089/import/importTemplate?bigIndex="+qdId+"&version=1&filePath="+filePath;
+			String getResult = ClientUtil.doPost(url,"");
+			// 并根据减排分析得到的结果进行Json的解析
+			Map resultMap=mapper.readValue(getResult, Map.class);
+			//判断执行状态是否成功  如果成功就要修改情景的执行状态
+			if(resultMap.get("status").toString().equals("success")){
+				LogUtil.getLogger().info("ExcelToDateController 保存行业描述信息成功!");
+				return null;
+			}else{
+				LogUtil.getLogger().error("ExcelToDateController 保存行业描述信息失败,外部保存数据库数据失败!");
+				msg.add("保存行业描述信息失败,数据库添加失败。");
+				map.put("errorMsg",msg);
+				map.put("outPath", outPath);
+				return map;
+			}
 //		}catch(SQLException e){
 //			LogUtil.getLogger().error(e.getMessage(),e);
 //			msg.add("保存行业描述信息失败,数据库添加失败。");
@@ -218,7 +242,7 @@ public class ExcelToDateController {
 	 */
 	public Map update_QueryExcelData(Long userId,Long qdId,String filePath) {
 		//出错的文件保存路径
-		String outPath="C:\\Users\\Administrator\\Desktop\\验证应急系统新_2筛选文件.xlsx";
+		String outPath="D:\\验证模板\\验证应急系统新_2筛选文件.xlsx";
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
@@ -275,7 +299,7 @@ public class ExcelToDateController {
 	 */
 	public Map update_SectorData(Long userId,Long qdId,String filePath) {
 		//出错的文件保存路径
-		String outPath="C:\\Users\\Administrator\\Desktop\\验证应急系统新_2筛选文件.xlsx";
+		String outPath="D:\\验证模板\\验证应急系统新_4行业匹配.xlsx";
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
@@ -326,9 +350,12 @@ public class ExcelToDateController {
 	 * @param response    响应
 	 * @return 返回响应结果对象
 	 */
+	@RequestMapping("excel/checkNative")
 	public Map check_nativeExcelData(String filePath) {
+		Long qdId=1L;
+		filePath="D:\\清单数据\\应急系统新_3清单数据_hb_ywjv11_QY3_CPH1.xlsx";
 		//出错的文件保存路径
-		String outPath="D:\\模板测试\\验证应急系统新_2筛选文件.xlsx";
+		String outPath="D:\\验证模板\\验证应急系统新_3清单数据.xlsx";
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
@@ -346,8 +373,23 @@ public class ExcelToDateController {
 				map.put("outPath", outPath);
 				return map;
 			}
-			LogUtil.getLogger().info("ExcelToDateController 验证清单数据成功!");
-			return null;
+			filePath=URLEncoder.encode(filePath, "utf-8");
+			// 调用减排计算接口 并获取结果Json
+			String url="http://192.168.7.98:8089/import/importData?bigIndex="+qdId+"&version=1&filePath="+filePath;
+			String getResult = ClientUtil.doPost(url,"");
+			// 并根据减排分析得到的结果进行Json的解析
+			Map resultMap=mapper.readValue(getResult, Map.class);
+			//判断执行状态是否成功  如果成功就要修改情景的执行状态
+			if(resultMap.get("status").toString().equals("success")){
+				LogUtil.getLogger().info("ExcelToDateController 验证清单数据成功!");
+				return null;
+			}else{
+				LogUtil.getLogger().error("ExcelToDateController 保存清单数据失败,外部保存数据库数据失败!");
+				msg.add("保存清单数据失败,数据库添加失败。");
+				map.put("errorMsg",msg);
+				map.put("outPath", outPath);
+				return map;
+			}
 		} catch (Exception e) {
 			LogUtil.getLogger().error("ExcelToDateController 验证清单数据Excel异常!",e);
 			msg.add("验证清单数据Excel异常!");
