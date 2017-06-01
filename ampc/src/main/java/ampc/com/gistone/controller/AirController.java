@@ -207,7 +207,7 @@ public class AirController {
 			int hournum=times.getHours();
 			Date daytimes=daysdf.parse(time);
 			String daytime=daysdf.format(daytimes);
-
+			int s=0;
 			List<ScenarinoEntity> sclist=new ArrayList();
 			Map<String,Object> scmap=new HashMap();
 			TScenarinoDetail tScenarino=new TScenarinoDetail();
@@ -215,6 +215,75 @@ public class AirController {
 			tScenarino.setPathDate(pathDate);
 			//查询对应情景
 			List<TScenarinoDetail> jztScenarinoDetail=tScenarinoDetailMapper.selectByEntity(tScenarino);
+				if(jztScenarinoDetail.isEmpty()){
+					s=1;
+					Date selectmaxpathdate = tScenarinoDetailMapper.selectmaxpathdate();
+					Date selectminpathdate = tScenarinoDetailMapper.selectminpathdate();
+					Long betweenDays = (long)((selectmaxpathdate.getTime() - selectminpathdate.getTime()) / (1000 * 60 * 60 *24) + 0.5);
+					for(int a=0;a<betweenDays;a++){
+						Date timess=sdf.parse(time);
+						Calendar calc = Calendar.getInstance();
+						calc.setTime(times);
+						calc.add(Calendar.DATE, -(a+1));
+						String addTimeDate1 =daysdf.format(calc.getTime());
+						Date pathDate1=daysdf.parse(addTimeDate1);//对应情景起报日期
+						TScenarinoDetail tScenarino1=new TScenarinoDetail();
+						tScenarino1.setScenType("4");
+						tScenarino1.setPathDate(pathDate1);
+						List<TScenarinoDetail> jztScenarinoDetail1=tScenarinoDetailMapper.selectByEntity(tScenarino1);
+						if(jztScenarinoDetail1.isEmpty()){
+							continue;
+						}
+						TScenarinoDetail jztScenarino1=jztScenarinoDetail1.get(0);
+						TMissionDetail tm1=new TMissionDetail();
+						tm1.setMissionId(jztScenarino1.getMissionId());
+						//通过情景中的任务id查询任务，再通过任务查询domainid
+						List<TMissionDetail> tmlist1=tMissionDetailMapper.selectByEntity(tm1);
+						TMissionDetail thetm1=tmlist1.get(0);	
+						int domainId1=Integer.valueOf(thetm1.getMissionDomainId().toString());
+						
+						if(datetype.equals("day")){//逐天
+							String tables="T_SCENARINO_DAILY_";
+							Date tims=jztScenarino1.getPathDate();
+							DateFormat df = new SimpleDateFormat("yyyy");
+							String nowTime= df.format(tims);
+							tables+=nowTime+"_";
+							tables+=userId;
+							ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+							scenarinoEntity.setCity_station(cityStation);
+							scenarinoEntity.setDomain(3);
+							scenarinoEntity.setDomainId((long)domainId1);
+							
+							scenarinoEntity.setMode(mode);
+							scenarinoEntity.setsId(Long.parseLong((jztScenarino1.getScenarinoId().toString())));
+							scenarinoEntity.setTableName(tables);
+							sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+						}else{//逐小时
+							String tables="T_SCENARINO_HOURLY_";
+							Date tims=jztScenarino1.getPathDate();
+							DateFormat df = new SimpleDateFormat("yyyy");
+							String nowTime= df.format(tims);
+							tables+=nowTime+"_";
+							tables+=userId.toString();
+							ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+							scenarinoEntity.setCity_station(cityStation);
+							scenarinoEntity.setDomain(3);
+							scenarinoEntity.setDomainId(Long.valueOf(domainId1));
+							scenarinoEntity.setMode(mode);
+							scenarinoEntity.setsId(Long.valueOf(jztScenarino1.getScenarinoId().toString()));
+							scenarinoEntity.setTableName(tables);
+							sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+						}//时间分布判断
+						if(!sclist.isEmpty()){
+							break;
+						}
+					}
+					
+					
+				}else{
+			
+		
+		
 			TScenarinoDetail jztScenarino=jztScenarinoDetail.get(0);
 			TMissionDetail tm=new TMissionDetail();
 			tm.setMissionId(jztScenarino.getMissionId());
@@ -224,6 +293,7 @@ public class AirController {
 			int domainId=Integer.valueOf(thetm.getMissionDomainId().toString());
 			//预评估任务
 			//判断是时均还是日均，分别查不同的数据表
+			
 			if(datetype.equals("day")){//逐天
 				String tables="T_SCENARINO_FNL_DAILY_";
 				Date tims=jztScenarino.getPathDate();
@@ -258,7 +328,73 @@ public class AirController {
 				scenarinoEntity.setTableName(tables);
 				sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
 			}//时间分布判断
-
+				}
+				if(sclist.isEmpty()){
+					s=1;
+					Date selectmaxpathdate = tScenarinoDetailMapper.selectmaxpathdate();
+					Date selectminpathdate = tScenarinoDetailMapper.selectminpathdate();
+					Long betweenDays = (long)((selectmaxpathdate.getTime() - selectminpathdate.getTime()) / (1000 * 60 * 60 *24) + 0.5);
+					for(int a=0;a<betweenDays;a++){
+						Date timess=sdf.parse(time);
+						Calendar calc = Calendar.getInstance();
+						calc.setTime(times);
+						calc.add(Calendar.DATE, -(a+1));
+						String addTimeDate1 =daysdf.format(calc.getTime());
+						Date pathDate1=daysdf.parse(addTimeDate1);//对应情景起报日期
+						TScenarinoDetail tScenarino1=new TScenarinoDetail();
+						tScenarino1.setScenType("4");
+						tScenarino1.setPathDate(pathDate1);
+						List<TScenarinoDetail> jztScenarinoDetail1=tScenarinoDetailMapper.selectByEntity(tScenarino1);
+						if(jztScenarinoDetail1.isEmpty()){
+							continue;
+						}
+						TScenarinoDetail jztScenarino1=jztScenarinoDetail1.get(0);
+						TMissionDetail tm1=new TMissionDetail();
+						tm1.setMissionId(jztScenarino1.getMissionId());
+						//通过情景中的任务id查询任务，再通过任务查询domainid
+						List<TMissionDetail> tmlist1=tMissionDetailMapper.selectByEntity(tm1);
+						TMissionDetail thetm1=tmlist1.get(0);	
+						int domainId1=Integer.valueOf(thetm1.getMissionDomainId().toString());
+						
+						if(datetype.equals("day")){//逐天
+							String tables="T_SCENARINO_DAILY_";
+							Date tims=jztScenarino1.getPathDate();
+							DateFormat df = new SimpleDateFormat("yyyy");
+							String nowTime= df.format(tims);
+							tables+=nowTime+"_";
+							tables+=userId;
+							ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+							scenarinoEntity.setCity_station(cityStation);
+							scenarinoEntity.setDomain(3);
+							scenarinoEntity.setDomainId((long)domainId1);
+							
+							scenarinoEntity.setMode(mode);
+							scenarinoEntity.setsId(Long.parseLong((jztScenarino1.getScenarinoId().toString())));
+							scenarinoEntity.setTableName(tables);
+							sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+						}else{//逐小时
+							String tables="T_SCENARINO_HOURLY_";
+							Date tims=jztScenarino1.getPathDate();
+							DateFormat df = new SimpleDateFormat("yyyy");
+							String nowTime= df.format(tims);
+							tables+=nowTime+"_";
+							tables+=userId.toString();
+							ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+							scenarinoEntity.setCity_station(cityStation);
+							scenarinoEntity.setDomain(3);
+							scenarinoEntity.setDomainId(Long.valueOf(domainId1));
+							scenarinoEntity.setMode(mode);
+							scenarinoEntity.setsId(Long.valueOf(jztScenarino1.getScenarinoId().toString()));
+							scenarinoEntity.setTableName(tables);
+							sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+						}//时间分布判断
+						if(!sclist.isEmpty()){
+							break;
+						}
+					}
+					
+					
+				}
 
 			//判断时均还是日均然后进行不同的解析
 			Map<String,Object> spcmap=new HashMap();
@@ -266,9 +402,17 @@ public class AirController {
 				for(ScenarinoEntity sc:sclist){
 					String scid=String.valueOf(sc.getsId());
 					String content=sc.getContent().toString();
+					Map<String,Object> spmap;
 					JSONObject obj=JSONObject.fromObject(content);
-					Map<String,Object> spmap=(Map)obj;
-
+                    if(s==1){
+                    	spmap=(Map)obj.get(daytime);
+                    	if(spmap==null){
+                    		LogUtil.getLogger().error("find_vertical 无当前时间数据！");
+                			return	AmpcResult.build(1001, "无当前时间数据！",new HashMap());
+                    	}
+					}else{
+						spmap=(Map)obj;
+					}
 					for(String spr:spmap.keySet()){
 						Map<String,Object> heightmap=(Map) spmap.get(spr);
 						JSONArray arr=new JSONArray();
@@ -377,8 +521,17 @@ public class AirController {
 				for(ScenarinoEntity sc:sclist){
 					String scid=String.valueOf(sc.getsId());
 					String content=sc.getContent().toString();
+					Map<String,Object> spmap;
 					JSONObject obj = JSONObject.fromObject(content);
-					Map<String,Object> spmap=(Map)obj;
+					 if(s==1){
+	                    	spmap=(Map)obj.get(daytime);
+	                    	if(spmap==null){
+	                    		LogUtil.getLogger().error("find_vertical 无当前时间数据！");
+	                			return	AmpcResult.build(1001, "无当前时间数据！",new HashMap());
+	                    	}
+						}else{
+							spmap=(Map)obj;
+						}
 
 					for(String spr:spmap.keySet()){
 						String height=spmap.get(spr).toString();
