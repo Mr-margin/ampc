@@ -65,7 +65,13 @@ public class NativeAndNationController {
 	private final static Logger logger = LoggerFactory.getLogger(ResultPathUtil.class);
 	private ExtractConfig extractConfig;
 	
-	//源清单请求过滤
+	/**
+	 * 源清单请求过滤
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping("/NativeAndNation/doPost")
 	public AmpcResult doPost(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -380,6 +386,7 @@ public class NativeAndNationController {
 			return AmpcResult.build(1001, "NativeAndNationController 创建全国清单信息异常!");
 		}
 	}
+	
 	/**
 	 * 编辑全国清单
 	 * @param requestDate
@@ -461,6 +468,7 @@ public class NativeAndNationController {
 			return AmpcResult.build(1001, "NativeAndNationController 编辑全国清单信息异常!");
 		}
 	}
+	
 	/**
 	 * 删除全国清单
 	 * @param requestDate
@@ -624,6 +632,7 @@ public class NativeAndNationController {
 			return AmpcResult.build(1001, "NativeAndNationController 创建本地清单模板异常!");
 		}
 	}
+	
 	/**
 	 * 编辑本地清单模板
 	 * @param requestDate
@@ -701,6 +710,7 @@ public class NativeAndNationController {
 			return AmpcResult.build(1001, "NativeAndNationController 编辑全国清单信息异常!");
 		}
 	}
+	
 	/**
 	 * 删除本地清单模板
 	 * @param requestDate
@@ -872,8 +882,10 @@ public class NativeAndNationController {
 			//获取路径
 //			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName;
 //			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/";
-			String nativefilePath = pro.get("LocalListingFilePath").toString();
-			String nativesfilePath = pro.get("LocalListingFilePath").toString();
+			String nativefilePath = new String((pro.get("LocalListingFilePath")).toString().getBytes("iso-8859-1"),"utf-8");
+			String nativesfilePath = new String((pro.get("LocalListingFilePath")).toString().getBytes("iso-8859-1"),"utf-8");
+//			String nativefilePath = pro.get("LocalListingFilePath").toString();
+//			String nativesfilePath = pro.get("LocalListingFilePath").toString();
 			
 			//获取file对象
 			File files =new File(nativesfilePath);
@@ -937,7 +949,7 @@ public class NativeAndNationController {
 				if(queryExcel==null){
 					Map  sector =excelToDateController.update_SectorData(userId,nativeTpId,nativefilePath+ "/"+"应急系统新_4行业匹配.xlsx");
 					if(sector==null){
-						Map  nativeExcel =excelToDateController.check_nativeExcelData(nativefilePath+ "/"+"应急系统新_3清单数据demo.xlsx");
+						Map  nativeExcel =excelToDateController.check_nativeExcelData(nativefilePath+ "/"+"应急系统新_3清单数据_hb_ywjv11_QY3_CPH1.xlsx");
 						if(nativeExcel==null){
 							return AmpcResult.ok(nativeExcel);
 						}else{
