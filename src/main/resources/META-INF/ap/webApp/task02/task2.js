@@ -17,16 +17,16 @@ var msg = {
         timeId: ''
     }
 };
-var jpztSetTimeOut;
-var plancharts;
+var jpztSetTimeOut;//减排计算之后查看计算的进度，做了一个轮训查看状态，有问题暂时放弃
+var plancharts;//作为存储时间线绘制的echarts实例
 var allData = [];//保存所有区域时段信息
-var allData1 = null;
+var allData1 = null;  //临时存储区域、时段的临时变量
 var cnArea = false;//判断是否超过区域的最大数量
 var showCode = [{}, {}, {}];//保存所选的地区
 var editTimeDateObj = {};//作为编辑时段时存储时间段的变量
-var scenarino;
-var selectCopyPlan;
-//    var isMouseDrag = 0;
+var scenarino; //存储promise的变量
+var selectCopyPlan; //当进入情景编辑的时候，可以选择复制预案，存储的变量
+var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时段的序号
 /*tree数配置*/
 var zTreeSetting = {
     check: {
@@ -67,7 +67,7 @@ var zTreeSetting = {
         }
     }
 };
-var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时段的序号
+//在这里做初始化操作
 (function () {
 //        页面布局的渲染
     $('#task2content').layout();
@@ -80,6 +80,34 @@ var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时�
     $('#settingqjbox').window($.extend({}, defaultwindowoption, {
         title: '情景编辑'
     }));
+//  时段编辑的标签页渲染
+    $('#timeorplan').tabs({
+        tabPosition: 'left',
+        width: '100%',
+        height: 400,
+        pill:true,
+        plain:true,
+        border:false,
+        onSelect: function (t, i) {
+            if ((!areaIndex) && (areaIndex != 0))return;
+            if (t == '时段操作') {
+                if (allData[areaIndex].timeItems.length <= 1) {
+                    $('#timepanel').tabs('disableTab', '时段删除');
+                    $('#timepanel').tabs('disableTab', '时段编辑');
+                }
+            } else if (t == '预案操作') {
+                if (allData[areaIndex].timeItems[timeIndex].planId == -1) {
+                    $('#planpanel').tabs('disableTab', '编辑现预案');
+                    // $('#planpanel').tabs('disableTab', '删除现预案');
+                    $('#planpanel').tabs('select', '添加新预案');
+                } else {
+                    $('#planpanel').tabs('disableTab', '添加新预案');
+                    $('#planpanel').tabs('disableTab', '复制旧预案');
+                    $('#planpanel').tabs('select', '编辑现预案');
+                }
+            }
+        }
+    });
 //        时段编辑的窗口渲染
     $('#timePlan').window($.extend({}, defaultwindowoption, {
         title: '时段编辑',
@@ -91,8 +119,8 @@ var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时�
                 width: '100%',
                 height: '100%',
                 fit: true,
-                plain:true,
-                narrow:true
+                plain:true, //样式的属性
+                narrow:true  //样式的属性
             });
             $('#planpanel').tabs({
                 width: '100%',
@@ -103,27 +131,14 @@ var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时�
                 onSelect:function (title,index) {
                     if(title=='复制旧预案'){
                         console.log(selectedTimes);
-                        if (selectedTimes.planId == -1) {
-                            // copyPlan();
+                        if (selectedTimes.planId == -1) {                           
                             setTimeout(copyPlan,500);
-                            // $('.addPlanLi').removeClass('disNone');
-                            // $('.copyPlanLi').removeClass('disNone');
-                            // $('.editPlanLi').addClass('disNone');
-                            //
-                            // $('.addPlanLi').addClass('active');
-                            // $('.addPlanDiv').addClass('active');
 
-                        } else {
-                            // $('.addPlanLi').addClass('disNone');
-                            // $('.copyPlanLi').addClass('disNone');
-                            // $('.editPlanLi').removeClass('disNone');
-                            //
-                            // $('.editPlanLi').addClass('active');
-                            // $('.editPlanDiv').addClass('active');
                         }
                     }
                 }
             });
+            //当当前区域只有一个时段的时候，时段不能删除和进行编辑
             if (allData[areaIndex].timeItems.length <= 1) {
                 $('#timepanel').tabs('disableTab', '时段删除');
                 $('#timepanel').tabs('disableTab', '时段编辑');
@@ -144,39 +159,8 @@ var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时�
                 $('#planpanel').tabs('enableTab', '编辑现预案');
                 $('#planpanel').tabs('select', '编辑现预案');
             }
-            /*window.setTimeout(function () {
-                $('#timepanel').tabs({
-                    width: '100%',
-                    height: '100%',
-                    fit: true
-                });
-                $('#planpanel').tabs({
-                    width: '100%',
-                    height: '100%',
-                    fit: true
-                });
-
-                if (allData[areaIndex].timeItems.length <= 1) {
-                    $('#timepanel').tabs('disableTab', '时段删除');
-                    $('#timepanel').tabs('disableTab', '时段编辑');
-                }
-
-                if (allData[areaIndex].timeItems[timeIndex].planId == -1) {
-                    $('#planpanel').tabs('disableTab', '编辑现预案');
-                    $('#planpanel').tabs('disableTab', '删除现预案');
-                    $('#planpanel').tabs('select', '添加新预案');
-                } else {
-                    $('#planpanel').tabs('disableTab', '添加新预案');
-                    $('#planpanel').tabs('disableTab', '复制旧预案');
-                    $('#planpanel').tabs('select', '编辑现预案');
-                }
-
-            }, 100);*/
-//                $('#time .active').removeClass('active');
-//                $('#plan .active').removeClass('active');
-//                $('.addTimeLi').addClass('active');
-//                $('.addTimeDiv').addClass('active');
-
+            
+            $('#timeorplan').tabs('select','预案操作');
 //                全局变量变量的存储
 
             var timeStart = moment(selectedTimes.startTime);
@@ -198,15 +182,10 @@ var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时�
 
             /*删除时段 start*/
             editHtml('delTime');
-            console.log(allData[areaIndex].timeItems.length);
+            
             if (allData[areaIndex].timeItems.length > 1) {
                 $('.delTimeLi').removeClass('disNone');
-                try{
-                    $('#timepanel').tabs('enabled', '时段删除');
-                }catch (err){
-
-                }
-
+                $('#timepanel').tabs('enableTab', '时段删除');
                 $('.delTimeDiv').find('.delSelect').empty();
 
 
@@ -336,34 +315,7 @@ var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时�
             jpztckBtn(60000);
         }
     }));
-//        时段编辑的标签页渲染
-    $('#timeorplan').tabs({
-        tabPosition: 'left',
-        width: '100%',
-        height: 400,
-        pill:true,
-        plain:true,
-        border:false,
-        onSelect: function (t, i) {
-            if ((!areaIndex) && (areaIndex != 0))return;
-            if (t == '时段操作') {
-                if (allData[areaIndex].timeItems.length <= 1) {
-                    $('#timepanel').tabs('disableTab', '时段删除');
-                    $('#timepanel').tabs('disableTab', '时段编辑');
-                }
-            } else if (t == '预案操作') {
-                if (allData[areaIndex].timeItems[timeIndex].planId == -1) {
-                    $('#planpanel').tabs('disableTab', '编辑现预案');
-                    // $('#planpanel').tabs('disableTab', '删除现预案');
-                    $('#planpanel').tabs('select', '添加新预案');
-                } else {
-                    $('#planpanel').tabs('disableTab', '添加新预案');
-                    $('#planpanel').tabs('disableTab', '复制旧预案');
-                    $('#planpanel').tabs('select', '编辑现预案');
-                }
-            }
-        }
-    });
+
     // window.setTimeout(function () {
     //     $('#timepanel').tabs({
     //         width:'100%',
@@ -713,39 +665,6 @@ function showTimeline(data) {
             },
             triggerEvent: true
         },
-        /*toolbox: {
-            show: true,
-            feature: {
-                saveAslmage: {
-                    show: false
-                },
-                restore: {
-                    show: false
-                },
-                dataView: {
-                    show: false
-                },
-                dataZoom: {
-                    show: false
-                },
-                magicType: {
-                    show: false
-                },
-                brush: {
-                    show: false
-                },
-                myTool: {
-                    show: true,
-                    title: "新增区域",
-                    icon: 'path://M995 420h-362v359h-241v-359h-362v-240h362v-360h241v360h362v240z',
-                    onclick: function () {
-                        createNewAreaBtn();
-                    }
-                }
-            },
-            left: 30
-
-        },*/
         series: (function () {
             var _arr = [];
             for (var i = 0; i < _temp.seriesData.length; i++) {
