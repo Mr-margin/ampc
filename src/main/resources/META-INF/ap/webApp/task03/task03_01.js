@@ -872,7 +872,7 @@ function search_button() {
             $.each(col, function (k, vol) {//循环剩余点源的所有列
                 if (k.indexOf("f2") == 0) {
                     if(vol <= 0){
-                        // ttlk = false;//此处需要打开，暂时在测试中
+                         ttlk = false;//此处需要打开，暂时在测试中
                     }
                     // if (typeof vol != "undefined" && vol != "") {
                     //     if (parseFloat(vol) > 0) {
