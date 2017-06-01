@@ -173,7 +173,7 @@
 			FROM
 				"AMPC"."T_ES_NATION" T
 			WHERE
-				USER_ID = #{userId,jdbcType=DECIMAL}
+				USER_ID = #{userId,jdbcType=DECIMAL} order by ES_NATION_ID DESC
 		)
 	WHERE
 		rn >= #{startTotal,jdbcType=OTHER}
