@@ -203,4 +203,29 @@
       HISTORY_COUPLING = #{historyCoupling,jdbcType=VARCHAR}
     where ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL}
   </update>
+  <!-- 根据用户Id查询全国清单 -->
+  <select id="selectAllCoupling" resultMap="BaseResultMap" parameterType="hashMap" >
+    SELECT
+	*
+	FROM
+		(
+			SELECT
+				ROWNUM AS rn,
+				T .*
+			FROM
+				"AMPC"."T_ES_COUPLING" T
+			WHERE
+				USER_ID = #{userId,jdbcType=DECIMAL} order by ES_COUPLING_ID DESC
+		)
+	WHERE
+		rn >= #{startTotal,jdbcType=OTHER}
+	AND rn <![CDATA[<=]]> #{endTotal,jdbcType=OTHER}
+  </select>
+  <!-- 查询总条数 -->
+  <select id="selectTotalCoupling"  parameterType="java.lang.Long" resultType="int">
+    SELECT
+	"COUNT" (ROWNUM)
+	FROM
+	"AMPC"."T_ES_COUPLING" T  WHERE USER_ID=#{userId,jdbcType=DECIMAL}
+  </select>
 </mapper>

@@ -100,6 +100,8 @@ public class NativeAndNationController {
 					listTps = checkNativeTp(requestDate,request,response);
 				}else if("checkNative".equals(param)){
 					listTps = checkNative(requestDate,request,response);
+				}else if("find_coupling".equals(param)){
+					listTps = find_coupling(requestDate,request,response);
 				}
 				else if("".equals(param)){
 					return AmpcResult.build(1001, "NativeAndNationController 请求方法参数异常!");
@@ -1083,5 +1085,64 @@ public class NativeAndNationController {
 			return AmpcResult.build(1001, "NativeAndNationController 校验本地清单模板异常!");
 		}
 	}
+	
+	
+	/**
+	 * 查询耦合清单
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+//	@RequestMapping("/NativeAndNation/find_coupling")
+	public AmpcResult find_coupling(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			Long userId = Long.parseLong(param.toString());
+			//获取页码
+			param=data.get("pageNumber");
+			if(!RegUtil.CheckParameter(param, null, null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 页码为空或出现非法字符!");
+				return AmpcResult.build(1003, "页码为空或出现非法字符!");
+			}
+			int pageNumber = Integer.valueOf(param.toString());
+			//获取每页显示条数
+			param=data.get("pageSize");
+			if(!RegUtil.CheckParameter(param, null, null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 每页条数为空或出现非法字符!");
+				return AmpcResult.build(1003, "每页条数为空或出现非法字符!");
+			}
+			int pageSize = Integer.valueOf(param.toString());
+			//添加查询参数
+			Map couplingMap=new HashMap();
+			couplingMap.put("userId", userId);
+			//分页开始条数
+			couplingMap.put("startTotal", (pageNumber*pageSize)-pageSize+1);
+			//分页结束条数
+			couplingMap.put("endTotal",pageNumber*pageSize);
+			//查询分页数据
+			List<Map> list=tEsCouplingMapper.selectAllCoupling(couplingMap);
+			//查询总条数
+			int total=tEsCouplingMapper.selectTotalCoupling(userId);
+			//返回页面的数据
+			Map couplingsMap=new HashMap();
+			couplingsMap.put("rows", list);
+			couplingsMap.put("total", total);
+			couplingsMap.put("page", pageNumber);
+			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的全国清单信息成功!");
+			return AmpcResult.ok(couplingsMap);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("NativeAndNationController 查询当前用户下的全国清单信息异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 查询当前用户下的全国清单信息异常!");
+		}
+	}
+	
 	
 }

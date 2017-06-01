@@ -29,4 +29,8 @@ public interface TEsCouplingMapper {
 
     int updateByPrimaryKey(TEsCoupling record);
     
+	List<Map> selectAllCoupling(Map couplingMap);
+	
+	int selectTotalCoupling(Long userId);
+    
 }
