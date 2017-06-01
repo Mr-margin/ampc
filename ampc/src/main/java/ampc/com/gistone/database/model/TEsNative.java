@@ -29,9 +29,19 @@ public class TEsNative {
 
     private String esVersion;
     
-    private Long esNativeTpId; 
+    private Long esNativeTpId;
+    
+    private String filePath;
 
-    public Long getEsNativeTpId() {
+    public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+
+	public Long getEsNativeTpId() {
 		return esNativeTpId;
 	}
 

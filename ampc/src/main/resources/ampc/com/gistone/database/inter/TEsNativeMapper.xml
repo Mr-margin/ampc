@@ -16,11 +16,12 @@
     <result column="ES_CODE_RANGE" property="esCodeRange" jdbcType="VARCHAR" />
     <result column="ES_VERSION" property="esVersion" jdbcType="VARCHAR" />
     <result column="ES_NATIVE_TP_ID" property="esNativeTpId" jdbcType="DECIMAL" />
+    <result column="FILEPATH" property="filePath" jdbcType="VARCHAR" />
   </resultMap>
  
   <sql id="Base_Column_List" >
     ES_NATIVE_ID, ES_NATIVE_NAME, ES_NATIVE_YEAR, ES_UPLOAD_TIME, ES_COMMENT, ES_NATIVE_RELATION_ID, 
-    ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME, ES_CODE_RANGE, ES_VERSION,ES_NATIVE_TP_ID
+    ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME, ES_CODE_RANGE, ES_VERSION,ES_NATIVE_TP_ID,FILEPATH
   </sql>
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -38,12 +39,12 @@
       ES_UPLOAD_TIME, ES_COMMENT, ES_NATIVE_RELATION_ID, 
       ADD_TIME, UPDATE_TIME, USER_ID, 
       IS_EFFECTIVE, DELETE_TIME, ES_CODE_RANGE, 
-      ES_VERSION,ES_NATIVE_TP_ID)
+      ES_VERSION,ES_NATIVE_TP_ID,FILEPATH)
     values (#{esNativeId,jdbcType=DECIMAL}, #{esNativeName,jdbcType=OTHER}, #{esNativeYear,jdbcType=DECIMAL}, 
       #{esUploadTime,jdbcType=TIMESTAMP}, #{esComment,jdbcType=OTHER}, #{esNativeRelationId,jdbcType=DECIMAL}, 
       #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=DECIMAL}, 
       #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=TIMESTAMP}, #{esCodeRange,jdbcType=VARCHAR}, 
-      #{esVersion,jdbcType=VARCHAR}, #{esNativeTpId,jdbcType=DECIMAL})
+      #{esVersion,jdbcType=VARCHAR}, #{esNativeTpId,jdbcType=DECIMAL}, #{filePath,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TEsNative" >
     insert into T_ES_NATIVE
@@ -90,6 +91,9 @@
       <if test="esNativeTpId != null" >
         ES_NATIVE_TP_ID,
       </if>
+      <if test="filePath != null" >
+        FILEPATH,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="esNativeId != null" >
@@ -133,6 +137,9 @@
       </if>
       <if test="esNativeTpId != null" >
         #{esNativeTpId,jdbcType=DECIMAL},
+      </if>
+      <if test="filePath != null" >
+        #{filePath,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -178,6 +185,9 @@
       <if test="esNativeTpId != null" >
         ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL},
       </if>
+      <if test="filePath != null" >
+        FILEPATH = #{filePath,jdbcType=VARCHAR},
+      </if>
     </set>
     where ES_NATIVE_ID = #{esNativeId,jdbcType=DECIMAL}
   </update>
@@ -195,7 +205,8 @@
       DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       ES_CODE_RANGE = #{esCodeRange,jdbcType=VARCHAR},
       ES_VERSION = #{esVersion,jdbcType=VARCHAR},
-      ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL}
+      ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL},
+      FILEPATH = #{filePath,jdbcType=VARCHAR}
     where ES_NATIVE_ID = #{esNativeId,jdbcType=DECIMAL}
   </update>
   
