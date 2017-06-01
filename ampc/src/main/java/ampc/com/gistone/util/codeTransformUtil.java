@@ -13,6 +13,7 @@ import java.util.StringTokenizer;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import ampc.com.gistone.database.model.TEsNative;
 
@@ -62,7 +63,12 @@ public class codeTransformUtil {
 		}	
 		return list;
 	}
-	
+	/**
+	 * 减排code转换
+	 * @param map
+	 * @param tEsNative
+	 * @return
+	 */
 	public static Map<String,Object> codeTransformEmission(Map<String,Object> map,TEsNative tEsNative){
 		Map<String,Object> codemap=new HashMap<String, Object>();
 		Map<String,String> newcodemap=CodeUtil.codearray();
@@ -76,6 +82,7 @@ public class codeTransformUtil {
 			String codestring=code.toString();
 			String thestr=codestring.substring(0, 2);
 			String code4=codestring.substring(0, 4);
+			@SuppressWarnings("unchecked")
 			Map<String, Object> somemap=(Map<String, Object>) map.get(code);	
 			JSONObject someobj = JSONObject.fromObject(somemap);
 			Map<String,Object> opMap= (Map<String, Object>)someobj;//将emission的值	转化为Map集
@@ -103,6 +110,7 @@ public class codeTransformUtil {
 							typemap.put(type, industrymap);
 							codemap.put(code, typemap);
 							continue;
+							
 						}else{
 							speciesmap.put(species, new BigDecimal(speciesMap.get(species).toString()));
 							industrymap.put(industry, speciesmap);
