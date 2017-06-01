@@ -839,7 +839,6 @@ public class NativeAndNationController {
 				return AmpcResult.build(1003, "清单ID为空或出现非法字符!");
 			}
 			Long nativeTpId = Long.parseLong(param.toString());
-//			Long nativeTpId = Long.parseLong("1");
 			
 			//获取清单名称
 			param=data.get("nativeTpName");
@@ -848,20 +847,6 @@ public class NativeAndNationController {
 				return AmpcResult.build(1003, "清单名称为空或出现非法字符!");
 			}
 			String nativeTpName = param.toString();
-			
-//			param=data.get("filePath");
-//			if(!RegUtil.CheckParameter(param, "String", null, false)){
-//				LogUtil.getLogger().error("NativeAndNationController 清单名称为空或出现非法字符!");
-//				return AmpcResult.build(1003, "清单名称为空或出现非法字符!");
-//			}
-//			String filePath = param.toString();
-//			String filePath = "C:\\Users\\Administrator\\Desktop\\应急系统新_1描述文件.xlsx";
-//			String filePath= "河北省模板";
-			
-//			Map mapData=new HashMap();
-//			mapData.put("userId", 1);
-//			mapData.put("nativeId", 1);
-//			mapData.put("pathFile", filePath);
 			
 			//读取配置文件路径
 			String config = "/extract.properties";
@@ -884,8 +869,11 @@ public class NativeAndNationController {
 				logger.error("close " + config + " file error!", e);
 			}
 			//获取路径
-			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName;
-			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/";
+//			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName;
+//			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/";
+			String nativefilePath = pro.get("LocalListingFilePath").toString();
+			String nativesfilePath = pro.get("LocalListingFilePath").toString();
+			
 			//获取file对象
 			File files =new File(nativesfilePath);
 			File file =new File(nativefilePath);
@@ -915,23 +903,44 @@ public class NativeAndNationController {
 			Map msgMap = new HashMap();
 			
 			//调用校验数据函数
+//			Map  sectorDocExcel =excelToDateController.update_SectorDocExcelData(userId,nativeTpId,nativefilePath+ "/"+"应急系统新_1描述文件.xlsx");
+//			if(sectorDocExcel==null){
+//				Map  queryExcel =excelToDateController.update_QueryExcelData(userId,nativeTpId,nativefilePath+ "/"+"应急系统新_2筛选逻辑.xlsx");
+//				if(queryExcel==null){
+//					Map  sector =excelToDateController.update_SectorData(userId,nativeTpId,nativefilePath+ "/"+"应急系统新_4行业匹配.xlsx");
+//					if(sector==null){
+//						//修改清单模板
+//						TEsNativeTp	tEsNativeTp=new TEsNativeTp();
+//						tEsNativeTp.setUserId(userId);
+//						tEsNativeTp.setEsNativeTpId(nativeTpId);
+//						tEsNativeTp.setIsEffective("1");
+//						int total=tEsNativeTpMapper.updateByIdSelective(tEsNativeTp);
+//						if(total==1){
+//							msgMap.put("msg", true);
+//							LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息成功!");
+//						}else{
+//							msgMap.put("msg", false);
+//						}
+//					}else{
+//						return AmpcResult.ok(sector);
+//					}
+//				}else{
+//					return AmpcResult.ok(queryExcel);
+//				}
+//			}else{
+//				return AmpcResult.ok(sectorDocExcel);
+//			}
 			Map  sectorDocExcel =excelToDateController.update_SectorDocExcelData(userId,nativeTpId,nativefilePath+ "/"+"应急系统新_1描述文件.xlsx");
 			if(sectorDocExcel==null){
 				Map  queryExcel =excelToDateController.update_QueryExcelData(userId,nativeTpId,nativefilePath+ "/"+"应急系统新_2筛选逻辑.xlsx");
 				if(queryExcel==null){
 					Map  sector =excelToDateController.update_SectorData(userId,nativeTpId,nativefilePath+ "/"+"应急系统新_4行业匹配.xlsx");
 					if(sector==null){
-						//修改清单模板
-						TEsNativeTp	tEsNativeTp=new TEsNativeTp();
-						tEsNativeTp.setUserId(userId);
-						tEsNativeTp.setEsNativeTpId(nativeTpId);
-						tEsNativeTp.setIsEffective("1");
-						int total=tEsNativeTpMapper.updateByIdSelective(tEsNativeTp);
-						if(total==1){
-							msgMap.put("msg", true);
-							LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息成功!");
+						Map  nativeExcel =excelToDateController.check_nativeExcelData(nativefilePath+ "/"+"应急系统新_3清单数据demo.xlsx");
+						if(nativeExcel==null){
+							return AmpcResult.ok(nativeExcel);
 						}else{
-							msgMap.put("msg", false);
+							return AmpcResult.ok(nativeExcel);
 						}
 					}else{
 						return AmpcResult.ok(sector);
@@ -942,8 +951,8 @@ public class NativeAndNationController {
 			}else{
 				return AmpcResult.ok(sectorDocExcel);
 			}
-			
-			return AmpcResult.ok(msgMap);
+//			return AmpcResult.ok();
+//			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
 			LogUtil.getLogger().error("NativeAndNationController 校验本地清单模板异常!",e);
