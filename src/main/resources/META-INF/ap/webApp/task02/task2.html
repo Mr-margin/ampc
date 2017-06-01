@@ -1,0 +1,339 @@
+<div class="easyui-layout zm" data-options="fit:true" id="task2content">
+    <div  data-options="region:'center',split:true,onResize:function(){if(typeof plancharts!='undefined')plancharts.resize();}" style="position: relative">
+        <button class="btn btn-primary" style="position: absolute;top: 10px;left: 10px;z-index: 1" onclick="createNewAreaBtn()"><i class="fa fa-plus-circle" aria-hidden="true"></i> 添加区域</button>
+        <div id="plancharts" style="height: 100%;border: 1px solid #ccc">
+
+        </div>
+    </div>
+    <div data-options="region:'east',split:true" style="width:450px">
+        <div id="mapDiv1" class="showMap" style="width:100%;height:100%;border: 1px solid #ccc"></div>
+    </div>
+</div>
+<div id="selectCreateQj" class="easyui-window zm" style="display: none">
+    <div class="step1 selectCQJbtn">
+        <button onclick="selectCopy(false)" class="cjhpgqj"><img src="img/newQJ.png" alt=""></button>
+        <button onclick="selectCopy(true)" class="cjxjzqj"><img src="img/copyQJ.png" alt=""></button>
+    </div>
+    <div class="step2 selectCopyQj">
+        <div id="rwToolbar" style="height: 40px" class="btn-group">
+            <div class="col-8 bigP">
+                <button type="button" class="btn btn-success statusRw" onclick="statusRWfun('',this)">
+                    <i class="im-folder-open"></i> 全部
+                </button>
+                <button type="button" class="btn btn-success statusRw" onclick="statusRWfun('1',this)">
+                    <i class="st-folder-settings"></i> 预评估
+                </button>
+                <button type="button" class="btn btn-success statusRw" onclick="statusRWfun('2',this)">
+                    <i class="im-paste2"></i> 后评估
+                </button>
+            </div>
+            <div class="input-group col-4">
+                <!--<input type="text" class="form-control copyQjsearch " placeholder="输入情景名称或字段">-->
+                <!--<span class="input-group-btn">-->
+                  <!--<button class="btn btn-default " type="button" onclick="search()"><i class="ec-search"></i>-->
+                  <!--</button>-->
+                <!--</span>-->
+                <input type="text" id="searchqd">
+                <script>
+                    $('#searchqd').searchbox({
+                        prompt: '输入任务或情景名称',
+                        searcher:function (value,name) {
+                            
+                        }
+                    });
+                </script>
+            </div>
+            <!-- /input-group -->
+        </div>
+        <div style="height:300px">
+            <table id="copyQJ">
+            </table>
+        </div>
+
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-success" data-dismiss="modal" onclick="subCopyQJ()"><i class="fa fa-check" aria-hidden="true"></i> 确定</button>
+            <button type="button" class="btn btn-default" onclick="previous()"><i class="fa fa-times" aria-hidden="true"></i> 上一步</button>
+        </div>
+    </div>
+</div>
+<div id="settingqjbox" class="zm" style="display: none">
+    <div class="step1">
+        <button onclick="$('#editArea').window('open')"><img src="img/setting.png" alt=""></button>
+        <button onclick="delArea(this)"><img src="img/delete.png" alt=""></button>
+    </div>
+</div>
+<div id="timePlan" class="zm" style="display: none">
+    <div id="timeorplan">
+        <div title="时段操作">
+            <div id="timepanel">
+                <div title="时段添加" id="addTime1" style="padding: 8px">
+                    <div style="height:90px" class="showTimes">
+                        <div class="col-4">
+                            <h4>前一时段</h4>
+                            <p></p>
+                        </div>
+                        <div class="col-4" >
+                            <h4>待编辑时段</h4>
+                            <p></p>
+                        </div>
+                        <div class="col-4">
+                            <h4>后一时段</h4>
+                            <p></p>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 10px">
+                        <label style="margin: 10px 0">请选择插入此事件段的时间点：</label>
+                        <div class="col-12">
+                            <input type="text" class="form-control" id="qyTimePoint" name="qyTimePoint">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addTimes()"><i class="fa fa-check" aria-hidden="true"></i> 确认添加
+                        </button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> 取消</button>
+                    </div>
+                </div>
+                <div title="时段删除" class="delTimeDiv" id="delTime" style="padding: 8px">
+                    <div class="showTimes text-center" style="height: 90px;">
+                        <div class="col-4">
+                            <h4>前一时段</h4>
+
+                            <p></p>
+                        </div>
+                        <div class="col-4" >
+                            <h4>待编辑时段</h4>
+
+                            <p></p>
+
+                        </div>
+                        <div class="col-4" >
+                            <h4>后一时段</h4>
+
+                            <p></p>
+                        </div>
+                    </div>
+
+                    <h3>请选择删除后需要合并的时段：</h3>
+                    <h4 style="color: #990000"> 注：删除时段会同时删除时段上预案，请谨慎选择删除的时段</h4>
+
+                    <div class="delSelect"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                onclick="delTimes()"><i class="fa fa-check" aria-hidden="true"></i> 确定删除
+                        </button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> 取消
+                        </button>
+                    </div>
+                </div>
+                <div title="时段编辑" id="editTime1" style="padding: 8px">
+                    <div class="showTimes text-center" style="height: 90px;">
+                        <div class="col-4">
+                            <h4>前一时段</h4>
+
+                            <p></p>
+                        </div>
+                        <div class="col-4">
+                            <h4>待编辑时段</h4>
+
+                            <p></p>
+
+                        </div>
+                        <div class="col-4">
+                            <h4>后一时段</h4>
+
+                            <p></p>
+                        </div>
+                    </div>
+                    <div class="selectEditPoint mt20">
+                        <div class="form-group">
+                            <label class="col-md-3" for="selectEditPoint">修改时间点：</label>
+
+                            <div class="col-md-9">
+                                <select class="form-control mb25" id="selectEditPoint"
+                                        onchange="selectEditPoint(this)">
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inputEditPoint mt20">
+                        <div class="form-group">
+                            <label class="col-md-3" for="editDate">输入时间：</label>
+
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="editDate"
+                                       name="editDate" readonly
+                                       placeholder="请选择时间···">
+                                <!--<input type="text" placeholder="YYYY-MM-DD HH" class="form-control mb25" id="inputEditPoint">-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                onclick="sunEditTimeDate()"><i class="fa fa-check" aria-hidden="true"></i> 确定
+                        </button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> 取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div title="预案操作">
+            <div id="planpanel">
+                <div title="添加新预案" id="newPlan">
+                    <div class="form-group mt10 clearfix"
+                         style="line-height: 30px;padding: 30px">
+                        <label for="yaName" class="col-md-3 control-label lh29">预案名称：</label>
+
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" id="yaName" name="yaName"
+                                   placeholder="预案名称">
+                        </div>
+                        <div class="col-md-9 col-md-offset-3">
+                            <span>（限15字以内）</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                onclick="addPlan(true)"><i class="fa fa-check" aria-hidden="true"></i> 确定添加
+                        </button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> 取消
+                        </button>
+                    </div>
+                </div>
+                <div title="复制旧预案" id="oldPlan">
+                    <div style="height: 320px">
+                        <table id="copyPlanTable">
+                        </table>
+                    </div>
+
+
+                    <!--<div class="form-group mt10 clearfix" style="line-height: 30px;padding: 30px">-->
+                    <!--<label class="mb25" for="copyPlan">预案名称：</label>-->
+                    <!--<select class="form-control mb25" id="copyPlan">-->
+                    <!--</select>-->
+                    <!--</div>-->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                onclick="addPlan(false)"><i class="fa fa-check" aria-hidden="true"></i> 确定添加
+                        </button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-check" aria-hidden="true"></i> 取消
+                        </button>
+                    </div>
+                </div>
+                <div title="编辑现预案" id="editPlan">
+                    <div style="padding-top: 64px;text-align: center">
+                        <h3>点击进行预案编辑：</h3>
+                        <button class="btn btn-success" onclick="editPlan()" style="margin-top: 30px"><i class="fa fa-tasks" aria-hidden="true"></i> 编辑预案</button>
+                    </div>
+                </div>
+<!--                <div title="删除现预案" id="delPlan">
+                    7
+                </div>-->
+            </div>
+        </div>
+    </div>
+</div>
+<div id="editArea" class="zm" style="display: none">
+    <div>
+        <!--新增/编辑弹窗的主题内容-->
+        <!--区域名称修改框-->
+        <div class="modal-header form-group">
+            <label class="col-2 control-label">当前区域名称</label>
+            <div class="col-4">
+                <input type="text" class="form-control required" id="areaName" placeholder='请输入区域名称'>
+            </div>
+        </div>
+        <!--选择区域范围的ztree结构和回显内容-->
+        <div class="modal-body bcg">
+            <div>
+                <div class="codeTree">
+                    <ul id="adcodeTree" class="ztree">
+
+                    </ul>
+                    <!--当点击确定按钮后将ztree选择的区域在id为adcodelistbox的div中显示-->
+                    <div class="adcodeTreeBtn">
+                        <button class="btn btn-info" onclick="updataCodeList()"><i class="fa fa-check-square-o" aria-hidden="true"></i> 确定</button>
+                    </div>
+                </div>
+                <!--作为选择区域的回显div-->
+                <div class="adcodeList" style="display: none">
+                    <div id="adcodeListBox">
+
+                    </div>
+                    <div class="adcodeTreeBtn">
+                        <button class="btn btn-info" onclick="revise()"><i class="fa fa-cog" aria-hidden="true"></i> 修改</button>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div id="mapDiv" class="showMap">
+
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer ">
+            <div class="footerShow">
+                <div class='col-3 rw'>
+                    <h5>当前任务：<span></span></h5>
+                </div>
+                <div class='col-3 qj'>
+                    <h5>当前情景：<span></span></h5>
+                </div>
+                <div class="col-6" style="text-align: right">
+                    <button type="button" class="btn btn-primary" onclick="createEditArea()"><i class="fa fa-check" aria-hidden="true"></i> 确定</button>
+                    <button type="button" class="btn btn-primary" onclick="$('#editArea').window('close')"><i class="fa fa-times" aria-hidden="true"></i> 取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--redio dom-->
+<div class="radio zm" style="display: none">
+    <label>
+        <input type="radio" name="optionsRadios" id="optionsRadios1" value="">
+        <span></span>
+    </label>
+</div>
+<div id="jpzt" class="zm" style="display: none">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body text-center">
+                <div class="clearfix">
+                    <button type="button" class="btn btn-success" style="float: right" onclick="initJPJS()">
+                        初始化减排计算
+                    </button>
+                </div>
+                <div class="row  mt20 mb20">
+                    <div class="col-md-3">计算进度</div>
+                    <div class="col-md-3">已用时</div>
+                    <div class="col-md-3">剩余时间预计</div>
+                    <div class="col-md-3">计算速度</div>
+                </div>
+                <div style="width: 100%;height: 3px;background-color: #909090"></div>
+                <div class="row  mt20 mb20">
+                    <div class="col-md-3 jsjd"></div>
+                    <div class="col-md-3 yys"></div>
+                    <div class="col-md-3 sysj"></div>
+                    <div class="col-md-3 jssd"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="footerShow"
+                     style="text-align: left;margin-left: 10px;width:calc(100% - 150px);float: left;padding: 8px 0px 5px 0px;">
+                    <div class='col-md-6 rw' style="padding: 0px 0px 0px 0px;">
+                        <h5>当前任务：<span></span></h5>
+                    </div>
+                    <div class='col-md-5 col-md-offset-1 qj' style="padding: 0px 0px 0px 0px;">
+                        <h5>当前情景：<span></span></h5>
+                    </div>
+                </div>
+
+                <!--<button type="button" class="btn btn-success" id="refreshJPJS" onclick="jpztckBtn()">刷新</button>-->
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
