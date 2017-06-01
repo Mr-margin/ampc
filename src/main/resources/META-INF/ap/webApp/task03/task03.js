@@ -166,12 +166,14 @@ function getLocalTime(nS) {
     $('.menuCD_con').css('height', '0');
 
     $('#accordion').on('click','.menuCD_title',function (e) {
+        $('.openAccordion').find('.en-arrow-up7').css('transform','rotate(0deg)')
         $('.openAccordion').removeClass('openAccordion');
         var len = $(e.target).parents('.menuCD').attr('data-cslen');
         if ($(e.target).parents('.menuCD').find('.menuCD_con').css('height') != '0px') {
             $(e.target).parents('.menuCD').find('.menuCD_con').css('height', '0');
         } else {
             $(e.target).parents('.menuCD').addClass('openAccordion');
+            $(e.target).parents('.menuCD').find('.en-arrow-up7').css('transform','rotate(180deg)');
             $('.menuCD_con').css('height', '0');
             $(e.target).parents('.menuCD').find('.menuCD_con').css('height', (Math.ceil(len/2)*45 + 10)+'px')
 
@@ -252,7 +254,7 @@ function hyc() {
                 accordion.append(caidan);
 
             })
-            $(".measureNum").css({"margin-right":"20px"})
+            $(".measureNum").css({"margin-right":"20px","color":"rgb(210, 68, 64)"}).parents('.menuCD_title').find('.en-arrow-up7').css('color','rgb(210, 68, 64)')
         } else {
             swal('连接错误/plan/get_planInfo', '', 'error');
 //			swal('添加成功', '', 'success');

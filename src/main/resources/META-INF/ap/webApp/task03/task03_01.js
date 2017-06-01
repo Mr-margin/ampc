@@ -1298,6 +1298,7 @@ function edit_point_table() {
 /*筛选出点源删除处理*/
 $('#delSX button').click(function (e) {
     var key = Object.keys(delIndex).quickSort();
+    if(key.length<1)return;
     for(var k = key.length;k>0;k--){
         delSxRow.push(delIndex[key[k-1]].companyId);
         $('#metTable_point').datagrid('deleteRow',key[k-1]);
