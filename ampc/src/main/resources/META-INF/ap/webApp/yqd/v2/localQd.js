@@ -4,7 +4,17 @@
 // 导航
 $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">本地清单</span><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatTemp()">新建</button><button class="qdEdit" onclick="editTemp()">编辑</button><button class="qdDelet" onclick=innitdata("delete_nativeTp")>删除</button></span>');
 // 表单生成
+var tmp=1;
 innitdata("find_natives");
+$('#rwpagination').pagination({
+    total:10,
+    pageSize: 10,
+    pageNumber:1,
+    onSelectPage:function(pageNumber, pageSize){
+        tmp=pageNumber;
+        innitdata("find_natives");
+    }
+});
 function innitdata(active){
     if(active=="find_natives"){
         // $("#localqd").treegrid({
@@ -52,14 +62,15 @@ function innitdata(active){
         //         return data;
         //     },
         // })
+
         ajaxPost('/NativeAndNation/doPost',{
             "userId":userId,
             "method":"find_natives",
-            "pageNum": 1,
-            "pageSize": 15,
+            "pageNum": tmp,
+            "pageSize": 10,
         }).success(function(data){
             //给每个子节点添加标题
-            var rowDate=data.data.data.rows
+            var rowDate=data.data.data.rows;
             for(var i=0;i<rowDate.length;i++){
                 rowDate[i].children.unshift({esNativeTpName:"清单名称",esNativeTpYear:"年份",updateTime:"创建时间",filePath:"路径",esComment:"备注",isEffective:"状态",actor:"操作",id:rowDate[i].id+"title"})
             }
@@ -121,32 +132,7 @@ function innitdata(active){
                 fitColumns:true,//真正的自动展开/收缩列的大小，以适应网格的宽度，防止水平滚动。
             })
             $('#rwpagination').pagination({
-                total: 33,
-                pageSize: 10,
-                showPageList:false,
-                // onSelectPage:function(pageNumber, pageSize){
-                //     $.ajax({
-                //         url:'/NativeAndNation/doPost',
-                //         contentType: 'application/json',
-                //         method: 'post',
-                //         dataType: 'JSON',
-                //         data: JSON.stringify({
-                //             "token": "",
-                //             "data": {
-                //                 "queryName": '',
-                //                 "missionStatus": '',
-                //                 "pageNum": pageNumber,
-                //                 "pageSize": 10,
-                //                 "sort": '',
-                //                 "userId": userId
-                //             }
-                //         }),
-                //         success: function (data) {
-                //             requestQJData(data.data);
-                //             $('#rwgltable').treegrid({data: transformdata});
-                //         }
-                //     });
-                // }
+                total:data.data.data.total
             });
         })
     }else if(active=="add_nativeTp"){
