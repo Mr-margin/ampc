@@ -307,7 +307,7 @@ function missionAddTimeFormatter(value, row, index) {
         }
         return row.missionAddTimeTitle;
     }
-    return '<div class="rwdetail">创建于&nbsp;' + moment(row.missionAddTime).format('YYYY-M-D H:MM:ss') + '</div>';
+    return '<div class="rwdetail">创建于&nbsp;' + moment(row.missionAddTime).format('YYYY-MM-DD HH:MM:ss') + '</div>';
 }
 function missionDateFormatter(value, row, index) {
     if (typeof row.missionStartDate === 'undefined') {
@@ -316,7 +316,7 @@ function missionDateFormatter(value, row, index) {
         }
         return row.missionStartDateTitle;
     }
-    return '<div class="missionstatus"><div class="rwdetail">' + moment(row.missionStartDate).format('YYYY-M-D') + '&nbsp;--&nbsp;' + moment(row.missionEndDate).format('YYYY-M-D') + '</div></div><div class="missiondetail">情景：'+row.scnum+'，正在执行：'+row.zxscnum+'</div>';
+    return '<div class="missionstatus"><div class="rwdetail">' + moment(row.missionStartDate).format('YYYY-MM-DD') + '&nbsp;--&nbsp;' + moment(row.missionEndDate).format('YYYY-MM-DD') + '</div></div><div class="missiondetail">情景：'+row.scnum+'，正在执行：'+row.zxscnum+'</div>';
 }
 //  function missionStartDateFormatter(value, row, index) {
 //    if (typeof row.missionStartDate=== 'undefined') {
