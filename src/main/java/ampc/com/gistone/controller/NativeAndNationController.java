@@ -240,12 +240,12 @@ public class NativeAndNationController {
 					//对每个清单模板下的清单数据的格式重新设置为符合easyui中tree树形结构的格式
 					Map tesNative=new HashMap();
 					TEsNative tEsNative=listNative.get(i);
-					tesNative.put("id", k+""+i);
+					tesNative.put("id", "qd_"+k+""+i);
 					tesNative.put("esNativeId", tEsNative.getEsNativeId());
 					tesNative.put("esNativeTpName", tEsNative.getEsNativeName());
 					tesNative.put("esNativeRelationId", tEsNative.getEsNativeRelationId());
 					tesNative.put("esNativeTpId", tEsNative.getEsNativeTpId());
-					tesNative.put("esNativeYear", tEsNative.getEsNativeYear());
+					tesNative.put("esNativeTpYear", tEsNative.getEsNativeYear());
 					tesNative.put("esUploadTpTime", tEsNative.getEsUploadTime());
 					tesNative.put("esVersion", tEsNative.getEsVersion());
 					tesNative.put("isEffective", tEsNative.getIsEffective());
@@ -260,7 +260,7 @@ public class NativeAndNationController {
 				}
 				
 				//将查询到清单模板对应所拥有的清单数据集合添加到map中
-				tEsNativeTp.put("id", k);
+				tEsNativeTp.put("id", "mb_"+k);
 				tEsNativeTp.put("children", tpDataList);
 				//添加配置页面收缩配置
 				tEsNativeTp.put("state", "closed");
@@ -801,12 +801,14 @@ public class NativeAndNationController {
 			// 用户id
 			Long userId = Long.parseLong(param.toString());
 			
-			param=data.get("nativeId");
-			if(!RegUtil.CheckParameter(param, "Long", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 清单ID为空或出现非法字符!");
-				return AmpcResult.build(1003, "清单ID为空或出现非法字符!");
-			}
-			Long nativeId = Long.parseLong(param.toString());
+//			param=data.get("nativeId");
+//			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+//				LogUtil.getLogger().error("NativeAndNationController 清单ID为空或出现非法字符!");
+//				return AmpcResult.build(1003, "清单ID为空或出现非法字符!");
+//			}
+//			Long nativeId = Long.parseLong(param.toString());
+			Long nativeId = Long.parseLong("1");
+			
 			//获取清单名称
 			param=data.get("nativeName");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
@@ -820,9 +822,9 @@ public class NativeAndNationController {
 				LogUtil.getLogger().error("NativeAndNationController 清单名称为空或出现非法字符!");
 				return AmpcResult.build(1003, "清单名称为空或出现非法字符!");
 			}
-			String filePath = param.toString();
+//			String filePath = param.toString();
 //			String filePath = "C:\\Users\\Administrator\\Desktop\\应急系统新_1描述文件.xlsx";
-//			String filePath= "河北省模板";
+			String filePath= "河北省模板";
 			
 			Map mapData=new HashMap();
 			mapData.put("userId", 1);
@@ -851,38 +853,53 @@ public class NativeAndNationController {
 			}
 //			//获取路径
 			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+filePath;
-//			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/";
-//			//获取file对象
-//			File files =new File(nativesfilePath);
-//			File file =new File(nativefilePath);
-//			//目录已经存在
-//			if(files.exists()){
-//				System.out.println("目录已经存在!");
-//				//判断是否包含该文件模板
-//				if(file.exists()){
-//					System.out.println("该模板已经存在");
-//				}else{
-//					//模板文件夹不存在,进行创建
-//					file.mkdir();
-//				}
-//			}else{
-//				//不存在进行创建目录
-//				files.mkdirs();
-//				if(file.exists()){
-//					System.out.println("文件已存在");
-//				}else{
-//					//不存在创建文件
-//					//模板文件夹创建完成
-//					file.mkdir();
-//					System.out.println("模板文件夹创建完成");
-//				}
-//			}
+			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/";
+			//获取file对象
+			File files =new File(nativesfilePath);
+			File file =new File(nativefilePath);
+			//目录已经存在
+			if(files.exists()){
+				System.out.println("目录已经存在!");
+				//判断是否包含该文件模板
+				if(file.exists()){
+					System.out.println("该模板已经存在");
+				}else{
+					//模板文件夹不存在,进行创建
+					file.mkdir();
+				}
+			}else{
+				//不存在进行创建目录
+				files.mkdirs();
+				if(file.exists()){
+					System.out.println("文件已存在");
+				}else{
+					//不存在创建文件
+					//模板文件夹创建完成
+					file.mkdir();
+					System.out.println("模板文件夹创建完成");
+				}
+			}
 			
 			//调用校验数据函数
 			Map  sectorDocExcel =excelToDateController.update_SectorDocExcelData(userId,nativeId,nativefilePath+ "/"+"应急系统新_1描述文件.xlsx");
-			Map  queryExcel =excelToDateController.update_QueryExcelData(userId,nativeId,nativefilePath+ "/"+"应急系统新_2筛选逻辑.xlsx");
-			Map  sector =excelToDateController.update_SectorData(userId,nativeId,nativefilePath+ "/"+"应急系统新_4行业匹配.xlsx");
-			Map  nativeExcel =excelToDateController.check_nativeExcelData(nativefilePath+ "/"+"应急系统新_3清单数据demo.xlsx");
+			if(sectorDocExcel==null){
+				Map  queryExcel =excelToDateController.update_QueryExcelData(userId,nativeId,nativefilePath+ "/"+"应急系统新_2筛选逻辑.xlsx");
+				if(queryExcel==null){
+					Map  sector =excelToDateController.update_SectorData(userId,nativeId,nativefilePath+ "/"+"应急系统新_4行业匹配.xlsx");
+					if(sector==null){
+						Map  nativeExcel =excelToDateController.check_nativeExcelData(nativefilePath+ "/"+"应急系统新_3清单数据demo.xlsx");
+						if(nativeExcel!=null){
+							return AmpcResult.ok(nativeExcel);
+						}
+					}else{
+						return AmpcResult.ok(sector);
+					}
+				}else{
+					return AmpcResult.ok(queryExcel);
+				}
+			}else{
+				return AmpcResult.ok(sectorDocExcel);
+			}
 			
 			LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息成功!");
 			return AmpcResult.ok();
