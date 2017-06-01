@@ -799,7 +799,8 @@ function showTimeline(data) {
         })(),
         useUTC: false,
         animation:false,
-        animationDuration:0
+        animationDuration:0,
+        progressive:0
     };
     plancharts.setOption(_option);
     plancharts.on('click', function (params) {
@@ -934,10 +935,46 @@ function showTimeline(data) {
         var labelIndex = Math.floor(pointInGrid[1] / 3);
         console.log(pointInGrid[0]>qjMsg.qjEndDate||pointInGrid[0]<qjMsg.qjStartDate||pointInGrid[1]<0||pointInGrid[1]>allData.length*3-1);
         if(pointInGrid[0]>qjMsg.qjEndDate||pointInGrid[0]<qjMsg.qjStartDate||pointInGrid[1]<0||pointInGrid[1]>allData.length*3-1){
-        	
+        	var _series=plancharts.getOption().series;
+        	var _line=[];
+        	for(var i=0;i<allData.length;i++){
+        		for(var j=0;j<allData[i].timeItems.length;j++){
+        			_line.push(allData[i].timeItems[j]);
+        		}
+        	}
+        	for(var i=0;i<_line.length;i++){
+        		if(_line[i].planId==-1){
+        			_series[i].areaStyle.normal.color='#5bc0de';
+        		}else{
+        			_series[i].areaStyle.normal.color='#337ab7';
+        		}
+        	}
+        	plancharts.setOption({series:_series});
         	return
         }else{
-        	$('plancharts>div').css('cursor','pointer');
+        	$('#plancharts>div').css('cursor','pointer');
+        	var _series=plancharts.getOption().series;
+        	var _line=[];
+        	var _temp=0;
+        	for(var i=0;i<allData.length;i++){
+        		for(var j=0;j<allData[i].timeItems.length;j++){
+        			_line.push(allData[i].timeItems[j]);
+        			if(plancharts.getOption().yAxis[0].data[labelIndex*3+1]==allData[i].areaId&&pointInGrid[0]>allData[i].timeItems[j].timeStartDate&&pointInGrid[0]<allData[i].timeItems[j].timeEndDate){
+        				_temp=_line.length-1;
+        			}
+        		}
+        	}
+        	for(var i=0;i<_line.length;i++){
+        		if(_line[i].planId==-1){
+        			_series[i].areaStyle.normal.color='#5bc0de';
+        		}else{
+        			_series[i].areaStyle.normal.color='#337ab7';
+        		}
+        		if(i==_temp){
+        			_series[i].areaStyle.normal.color='#626C91';
+        		}
+        	}
+        	plancharts.setOption({series:_series});
         }
 
     });
