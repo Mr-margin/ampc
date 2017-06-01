@@ -251,4 +251,29 @@
     where ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL} and 
     	USER_ID = #{userId,jdbcType=DECIMAL}
   </update>
+  <!-- 根据用户Id查询本地清单模板 -->
+  <select id="selectAllNativeTp" resultMap="ListResultMap" parameterType="hashMap" >
+    SELECT
+	*
+	FROM
+		(
+			SELECT
+				ROWNUM AS rn,
+				T .*
+			FROM
+				"AMPC"."T_ES_NATIVE_TP" T
+			WHERE
+				USER_ID = #{userId,jdbcType=DECIMAL}
+		)
+	WHERE
+		rn >= #{startTotal,jdbcType=OTHER}
+	AND rn <![CDATA[<=]]> #{endTotal,jdbcType=OTHER}
+  </select>
+  <!-- 查询总条数 -->
+  <select id="selectTotalNativeTp"  parameterType="java.lang.Long" resultType="int">
+    SELECT
+	"COUNT" (ROWNUM)
+	FROM
+	"AMPC"."T_ES_NATIVE_TP" T  WHERE USER_ID=#{userId,jdbcType=DECIMAL}
+  </select>
 </mapper>
