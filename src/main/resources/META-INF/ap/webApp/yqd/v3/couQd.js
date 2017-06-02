@@ -232,7 +232,6 @@ function coupDelete(){
     }, function() {
         ajaxPost('/NativeAndNation/doPost',{"couplingId":row.esCouplingId,"method":"delete_coupling"}).success(function(res){
             if(res.status==0){
-                var rowIndex = $('#qgqd').datagrid('getRowIndex', row);
                 $('#couqd').datagrid('deleteRow', rowIndex);
                 $('#couqd').datagrid('reload');//删除后重新加载下
             }else{
