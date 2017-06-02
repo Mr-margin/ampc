@@ -1934,22 +1934,20 @@ public class MissionAndScenarinoController {
 				int s=0;
 				//组装子集的数据
 				List children=new ArrayList();
+				Map qjTitle=new HashMap();
+				qjTitle.put("id", missionId+"title");
+				qjTitle.put("scenarinoNameTitle", "情景名称");
+				qjTitle.put("scenarinoIdTitle","ID");
+				qjTitle.put("operationTitle","操作");
+				qjTitle.put("adminTitle","管理");
+				qjTitle.put("scenarinoStatusTitle","情景状态");
+				qjTitle.put("runTimeTitle","执行日期");
+				qjTitle.put("EndDateTitle","结束日期");
+				qjTitle.put("scenTypeTitle","类型");
+				qjTitle.put("settingTitle","设置");
+				//加入数据
+				children.add(qjTitle);
 				for(int i=0;i<tmMap.size();i++){
-					//判断是否需要拼接头信息
-					if(i==0){
-						Map qjTitle=new HashMap();
-						qjTitle.put("id", "ID");
-						qjTitle.put("scenarinoNameTitle", "情景名称");
-						qjTitle.put("scenarinoIdTitle","ID");
-						qjTitle.put("operationTitle","操作");
-						qjTitle.put("adminTitle","管理");
-						qjTitle.put("scenarinoStatusTitle","情景状态");
-						qjTitle.put("runTimeTitle","执行日期");
-						qjTitle.put("EndDateTitle","结束日期");
-						qjTitle.put("scenarinoStatusTitle","情景状态");
-						//加入数据
-						children.add(qjTitle);
-					}
 					tmMap.get(i).put("id", "qj"+tmMap.get(i).get("scenarinoId"));
 					children.add(tmMap.get(i));
 					if(tmMap.get(i).get("scenarinoStatus").equals(6)){
@@ -1968,6 +1966,7 @@ public class MissionAndScenarinoController {
 				TDomainMission tDomainMission=tDomainMissionMapper.selectByPrimaryKey(missionDomainId);
 				//写入domain名称
 				ss.put("domainName", tDomainMission.getDomainName());
+				ss.put("state", "closed");
 			}
 			mapResult.put("total", this.tMissionDetailMapper.selectCountOrByQueryName(map));
 			mapResult.put("rows",list);
