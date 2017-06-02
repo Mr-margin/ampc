@@ -1,7 +1,7 @@
 <div class="cloudui" style="width: 100%;height: 100%;">
     <div class="yqdTable">
         <!--耦合清单-->
-        <div class="tableBox" style="display: none">
+        <div class="tableBox">
             <table id="couqd" class="esyui-datagrid">
             </table>
         </div>
@@ -27,5 +27,57 @@
                 <div class="coupSetCon">第三步内容</div>
             </div>
         </div>
+    </div>
+</div>
+<!--新建耦合清单-->
+<div id="creatCoupQd">
+    <form method="post" id="formCoup" >
+        <div class="rwCon">
+            <div class="qdContent">
+                <label for="coupQdName" class="qdTitle">名称：</label>
+                <input class="easyui-validatebox qdCon" type="text" name="esNationName" data-options="required:true" id="coupQdName" />
+            </div>
+            <div class="qdContent">
+                <label for="coupQdYear" class="qdTitle">年份：</label>
+                <input class="easyui-validatebox qdCon" type="number" name="esNationYear" data-options="required:true" id="coupQdYear" />
+            </div>
+        </div>
+        <div class="rwCon">
+            <div class="qdContent qdMark">
+                <label for="coupQdMark" class="qdTitle">描述：</label>
+                <textarea rows="3" class="easyui-validatebox qdCon" type="text" name="esNationMark" data-options="required:true" id="coupQdMark">
+                </textarea>
+            </div>
+        </div>
+    </form>
+    <div class="dlogFooter" >
+        <button type="button" class="btn btn-primary createQdBtn" onclick="submitCoup()">提交</button>
+        <button type="button" class="btn btn-default claearQdBtn" onclick="">清除</button>
+    </div>
+</div>
+<!--编辑耦合清单-->
+<div id="editCoupQd">
+    <form method="post" id="formEditCoup" >
+        <div class="rwCon">
+            <div class="qdContent">
+                <label for="coupEditQdName" class="qdTitle">名称：</label>
+                <input class="easyui-validatebox qdCon" type="text" name="esNationName" data-options="required:true" id="coupEditQdName" />
+            </div>
+            <div class="qdContent">
+                <label for="coupEditQdYear" class="qdTitle">年份：</label>
+                <input class="easyui-validatebox qdCon" type="number" name="esNationYear" data-options="required:true" id="coupEditQdYear" />
+            </div>
+        </div>
+        <div class="rwCon">
+            <div class="qdContent qdMark">
+                <label for="coupEditQdMark" class="qdTitle">描述：</label>
+                <textarea rows="3" class="easyui-validatebox qdCon" type="text" name="esNationMark" data-options="required:true" id="coupEditQdMark">
+                </textarea>
+            </div>
+        </div>
+    </form>
+    <div class="dlogFooter" >
+        <button type="button" class="btn btn-primary createQdBtn" onclick="submitEditCoup()">提交</button>
+        <button type="button" class="btn btn-default claearQdBtn" onclick="">清除</button>
     </div>
 </div>
