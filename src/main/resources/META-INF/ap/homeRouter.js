@@ -321,13 +321,26 @@ function ajaxPost(url, parameter) {
     })
 }
 
+//function ajaxPost_w(url, parameter) {
+//	parameterPar.data = parameter;
+//    var p = JSON.stringify(parameterPar);
+//    return $.ajax(url, {
+//        contentType: "application/json",
+//        type: "POST",
+//        async: true,
+//        dataType: 'JSON',
+//        data: p
+//    })
+//}
+
 function ajaxPost_w(url, parameter) {
+    var p = JSON.stringify(parameter);
     return $.ajax(url, {
         contentType: "application/json",
         type: "POST",
         async: true,
         dataType: 'JSON',
-        data: JSON.stringify(parameter)
+        data: p
     })
 }
 
