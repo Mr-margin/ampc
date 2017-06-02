@@ -109,7 +109,10 @@ public class NativeAndNationController {
 					listTps = update_coupling(requestDate,request,response);
 				}else if("delete_coupling".equals(param)){
 					listTps = delete_coupling(requestDate,request,response);
+				}else if("find_couplingNativeTp".equals(param)){
+					listTps = find_couplingNativeTp(requestDate,request,response);
 				}
+				
 				else if("".equals(param)){
 					return AmpcResult.build(1001, "NativeAndNationController 请求方法参数异常!");
 				}
@@ -1342,5 +1345,65 @@ public class NativeAndNationController {
 			return AmpcResult.build(1001, "NativeAndNationController 删除耦合清单信息异常!");
 		}
 	}
+	
+	/**
+	 * 查询耦合清单模板数据
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public AmpcResult find_couplingNativeTp(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			Long userId = Long.parseLong(param.toString());
+			
+			param=data.get("pageNum");
+				//进行参数判断
+			if(!RegUtil.CheckParameter(param, null, null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			int pageNum = Integer.valueOf(param.toString());
+			
+			param=data.get("pageSize");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, null, null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			int pageSize = Integer.valueOf(param.toString());
+			
+			//查询本地清单模板前添加参数
+			Map tEsNativeTpMap = new HashMap(); 
+			tEsNativeTpMap.put("userId", userId);
+			tEsNativeTpMap.put("startTotal", (pageNum*pageSize)-pageSize+1);
+			tEsNativeTpMap.put("endTotal", pageNum*pageSize);
+			//查询本地清单模板
+			List<Map> listTp=tEsNativeTpMapper.selectAllNativeTp(tEsNativeTpMap);
+			
+			Map nativeTpMap=new HashMap();
+			nativeTpMap.put("rows", listTp);
+			
+			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的本地清单信息成功!");
+			return AmpcResult.ok(nativeTpMap);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("NativeAndNationController 查询当前用户下的本地清单信息异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 查询当前用户下的本地清单信息异常!");
+		}
+	}
+	
+	
 	
 }
