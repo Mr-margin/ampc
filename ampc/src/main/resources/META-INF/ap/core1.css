@@ -1620,6 +1620,10 @@ dl, dd {
   width:48%!important;
   float:right!important;
 }
+/*第二步*/
+.cloudui .coupSetCon .mbSelect{overflow: hidden}
+.cloudui .coupSetCon .mbSelect label{float: left}
+.cloudui .coupSetCon .mbSelect .coupSetMb{float: left}
 
 /*预案编辑的样式*/
 /*新增、编辑区域弹框的样式*/
