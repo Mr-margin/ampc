@@ -1816,7 +1816,7 @@ public class ReadyData {
 			String jpjson = planAndMeasureController.JPUtil(scenarinoId, userId, startDate, endDate);
 			if (null!=jpjson) {
 				//发送actionlist请求
-				String actionlistURL = configUtil.getJpURL()+scenarinoId;
+				String actionlistURL = configUtil.getJpURL()+"/calc/submit/actionList?jobId="+scenarinoId;
 				String getResult=ClientUtil.doPost(actionlistURL,jpjson);
 				LogUtil.getLogger().info(getResult+"jp action list，情景ID："+scenarinoId);
 					Map mapResult=mapper.readValue(getResult, Map.class);
