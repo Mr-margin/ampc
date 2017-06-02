@@ -93,8 +93,6 @@ function innitdata(active){
                 return "<span title='" + value + "'>" + value + "</span>";}},
                     {field:"esComment",title:"备注",width:300},
                     {field:"isEffective",title:"状态",width:100,formatter:function(value,row,index){
-                        console.log("状态")
-                        console.log(value)
                         if(value==1){
                             return "<span style='color: #009943'>已校验</span>"
                         }else if(value==0){
@@ -155,14 +153,14 @@ function innitdata(active){
                 ajaxPost('/NativeAndNation/doPost',param).success(function(res){
                     if(res.status==0){
                         $("#localqd").treegrid('insert',{
-                            before:'mb_1',
+                            before:'mb_0',
                             data:{
                                 esNativeTpName:param.nativeTpName,
                                 esNativeTpYear:param.nativeTpYear,
                                 esComment:param.nativeTpRemark
                             }
                         })
-                        innitdata("find_natives");
+                        // innitdata("find_natives");
                     }else{
                         swal('参数错误', '', 'error');
                     }
@@ -236,7 +234,7 @@ function innitdata(active){
         var qdYear=$("#esLocalQdYear").val();
         var qdRemark=$("#esLocalQdMark").val();
         if(rowDiv){
-            ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark,"nativeTpId":rowDiv.id}).success(function(res){
+            ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark,"nativeTpId":rowDiv.esNativeTpId}).success(function(res){
                 if(res.status==0){
                     $("#localqd").treegrid('append',{
                         parent:rowDiv.id,
