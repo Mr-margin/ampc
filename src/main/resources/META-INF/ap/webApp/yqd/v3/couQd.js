@@ -2,8 +2,8 @@
  * Created by shanhaichushi on 2017/5/21.
  */
 // 导航
-$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">耦合清单</span><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatCoupQd()">新建</button><button class="qdEdit" onclick="editCoupQd()">编辑</button><button class="qdDelet">删除</button></span>');
-
+$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">耦合清单</span><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatCoupQd()">新建</button><button class="qdEdit" onclick="editCoupQd()">编辑</button><button class="qdDelet" onclick="coupDelete()">删除</button></span>');
+var coupingQd,checkQgQd;
 $(".coupSet").layout();// 耦合设置面板
 function innitdata(){  //全国清单的初始化
     $("#couqd").datagrid({
@@ -202,11 +202,10 @@ function submitEditCoup() {
                     $("#couqd").datagrid('updateRow',{//更新清单列表编辑后的数据
                         index: rowIndex,
                         row: {
-                            esCouplingName: qdName,
+                            esCouplingName:qdName,
                             esCouplingYear:qdYear,
                             esCouplingDesc:qdMark
                         }
-
                     })
                 }else{
                     swal('参数错误', '', 'error');
@@ -218,9 +217,32 @@ function submitEditCoup() {
         swal('年份错误', '', 'error');
     }
 }
+//删除选中的耦合清单
+function coupDelete(){
+    var row = $('#couqd').datagrid('getSelected');//获取所有选中的清单数据
+    var rowIndex = $('#couqd').datagrid('getRowIndex', row);
+    swal({
+        title: "您确定要删除吗？",
+        text: "您确定要删除这条数据？",
+        type: "warning",
+        animation:"slide-from-top",
+        showCancelButton: true,
+        closeOnConfirm: true,
+        confirmButtonText: "是的，我要删除",
+    }, function() {
+        ajaxPost('/NativeAndNation/doPost',{"couplingId":row.esCouplingId,"method":"delete_coupling"}).success(function(res){
+            if(res.status==0){
+                var rowIndex = $('#qgqd').datagrid('getRowIndex', row);
+                $('#couqd').datagrid('deleteRow', rowIndex);
+                $('#couqd').datagrid('reload');//删除后重新加载下
+            }else{
+                swal('参数错误', '', 'error');
+            }
+        })
+    });
+}
 //点击耦合清单
 function coupSetQd(coupId) {
-    qgqdTable() //全国清单
     var rowsAll=$("#couqd").datagrid("getRows");
     var checkRow;
     if(coupId){
@@ -230,19 +252,31 @@ function coupSetQd(coupId) {
             }
         }
     }
+    coupingQd=checkRow;
     $(".tableBox").hide();
     $(".coupSet").show();
-
+    $(".coupSetCon").eq(0).show();//隐藏其他步骤
+    $(".coupSetCon").eq(1).hide();
+    $(".coupSetCon").eq(2).hide();
+    window.setTimeout(qgqdTable(),100)
+    $("#prevCoup").hide();//上一步按钮
 }
 function nextCoup(){//点击下一步按钮
     var conText=$(".coupSetTitle .coupSetTitleList .active div").text()
     if(conText=="第一步"){
-        $(".cloudui .coupSetTitleList").children("li").eq(0).removeClass("active");
-        $(".cloudui .coupSetTitleList").children("li").eq(1).addClass("active");
-        $("#prevCoup").show();//上一步按钮
-        $(".coupSetCon").eq(0).hide();//隐藏其他步骤
-        $(".coupSetCon").eq(1).show();
-        $(".coupSetCon").eq(2).hide();
+        console.log("第一步");
+        checkQgQd=$("#qgqd").datagrid("getSelected");
+        console.log(checkQgQd);
+        if(checkQgQd!=''&&checkQgQd!=null&&checkQgQd!=undefined){
+            $(".cloudui .coupSetTitleList").children("li").eq(0).removeClass("active");
+            $(".cloudui .coupSetTitleList").children("li").eq(1).addClass("active");
+            $("#prevCoup").show();//上一步按钮
+            $(".coupSetCon").eq(0).hide();//隐藏其他步骤
+            $(".coupSetCon").eq(1).show();
+            $(".coupSetCon").eq(2).hide();
+        }else{
+            swal('请先选择全国清单', '', 'error');
+        }
     }else if(conText=="第二步"){
         $(".cloudui .coupSetTitleList").children("li").eq(1).removeClass("active");
         $(".cloudui .coupSetTitleList").children("li").eq(2).addClass("active");
