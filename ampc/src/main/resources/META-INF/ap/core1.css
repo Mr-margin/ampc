@@ -1500,7 +1500,8 @@ dl, dd {
 .cloudui .rwCon .qdMark textarea{
   text-align: left;
 }
-/*本地清单*/
+/*清单弹窗*/
+.cloudui form .rwCon .qdContent input{color:#D9D9D9}
 
 /*清单耦合设计*/
 .cloudui #creatCoupQd .rwCon{overflow: hidden!important; }
