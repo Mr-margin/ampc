@@ -354,6 +354,7 @@ public class ExcelToDateController {
 	 */
 	@RequestMapping("excel/checkNative")
 	public Map check_nativeExcelData(Long userId,Long templateId,Long qdId,String filePath) {
+		templateId=1L;
 		qdId=1L;
 		filePath="D:\\清单数据\\应急系统新_3清单数据_hb_ywjv11_QY3_CPH1.xlsx";
 		//出错的文件保存路径
@@ -377,8 +378,7 @@ public class ExcelToDateController {
 			}
 			filePath=URLEncoder.encode(filePath, "utf-8");
 			// 调用减排计算接口 并获取结果Json
-			String url=configUtil.getExqd()+"/import/importData?templateId="+templateId+"&bigIndex="+qdId+"&version=1&filePath="+filePath+"&"
-					+ "versionExcelId=行业文件1490694892376";
+			String url=configUtil.getExqd()+"/import/importData?templateId="+templateId+"&bigIndex="+qdId+"&version=1&filePath="+filePath+"&versionExcelId=行业文件1490694892376";
 			String getResult = ClientUtil.doPost(url,"");
 			// 并根据减排分析得到的结果进行Json的解析
 			Map resultMap=mapper.readValue(getResult, Map.class);
