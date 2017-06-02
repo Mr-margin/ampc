@@ -25,25 +25,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author WangShanxi
  */
 public class ConfigUtil {
-	// 措施的减排分析Url
-	@Value("${jp.csjpURL}")
-	private String csjpURL;
+	// 减排Url
+	@Value("${jpURL}")
+	private String jpURL;
 	
+	public String getJpURL() {
+		return jpURL;
+	}
+
 	// 措施的减排分析Url
 	@Value("${jp.serverPath}")
 	private String serverPath;
 		
-	// 区域的减排分析Url
-	@Value("${jp.areaURL}")
-	private String areaURL;
-	// 区域状态的减排url
-	@Value("${jp.areaStatusURL}")
-	private String areaStatusURL;
-
-	// 减排计算获取actionlist的url
-	@Value("${jp.actionlistURL}")
-	private String actionlistURL;
-
 	// 是否调用外部的预处理接口
 	@Value("${jp.preproEnable}")
 	private boolean preproEnable;
@@ -51,9 +44,6 @@ public class ConfigUtil {
 	// 调用外部的预处理接口时使用的URL
 	@Value("${jp.preproURL}")
 	private String preproURL;
-	// 获取emis的参数（不需要减排系数）
-	@Value("${emis.paramesURL}")
-	private String emisParamesURL;
 	//模式运行的bodyflag参数
 	@Value("${model.bodyparames.flag}")
 	private Integer modelbodyflagparams;
@@ -73,10 +63,16 @@ public class ConfigUtil {
 	@Value("${sendmessage.log}")
 	private String sendMessageLog;
 	
-	@Value("${ex.qdData}")
-	private String qdData;
-	@Value("${ex.qdTemplate}")
-	private String qdTemplate;
+	@Value("${exqd}")
+	private String exqd;
+	
+	
+	
+
+
+	public String getExqd() {
+		return exqd;
+	}
 	@Value("${ex.docURL}")
 	private String docURL;
 	@Value("${ex.queryURL}")
@@ -87,13 +83,7 @@ public class ConfigUtil {
 	private String sectorURL;
 	
 	
-	public String getQdData() {
-		return qdData;
-	}
-
-	public String getQdTemplate() {
-		return qdTemplate;
-	}
+	
 
 	public String getDocURL() {
 		return docURL;
@@ -252,25 +242,9 @@ public class ConfigUtil {
 				return modelbodyflagparams;
 			}
 
-	public String getEmisParamesURL() {
-				return emisParamesURL;
-			}
+	
 
-	public String getActionlistURL() {
-		return actionlistURL;
-	}
 
-	public String getCsjpURL() {
-		return csjpURL;
-	}
-
-	public String getAreaURL() {
-		return areaURL;
-	}
-
-	public String getAreaStatusURL() {
-		return areaStatusURL;
-	}
 
 	public boolean isPreproEnable() {
 		return preproEnable;

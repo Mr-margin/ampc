@@ -284,15 +284,18 @@ public interface TScenarinoDetailMapper {
 	Long selectScenExecStatus(Long scenarinoId);
 	
 
-
-	
-
 	/**
 	 * TODO  新页面的情景查询方法
 	 * @param map
 	 * @return
 	 */
 	List<Map> selectByMissionIdNew(Map map);
+	
+	/**
+	 * 查询有多少个模式处理中的情景总数
+	 * @return
+	 */
+	Long selectMiddleStatusCount(Map map);
 	/**
 	 * 查询结束时间
 	 * @param userId

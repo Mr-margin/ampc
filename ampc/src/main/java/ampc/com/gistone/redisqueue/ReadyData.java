@@ -387,7 +387,7 @@ public class ReadyData {
 					String jpjson = planAndMeasureController.JPUtil(scenarinoId, userId, startDate, endDate);
 					if (null!=jpjson) {
 						//发送actionlist请求
-						String actionlistURL = configUtil.getActionlistURL()+"/calc/submit/actionList?jobId="+scenarinoId;
+						String actionlistURL = configUtil.getJpURL()+"/calc/submit/actionList?jobId="+scenarinoId;
 						String getResult=ClientUtil.doPost(actionlistURL,jpjson);
 						LogUtil.getLogger().info(getResult+"jp action list,情景ID："+scenarinoId);
 							Map mapResult=mapper.readValue(getResult, Map.class);
@@ -1755,7 +1755,7 @@ public class ReadyData {
 	public boolean getEmisParams(Long scenarinoId) {
 		boolean flag;
 		try {
-			String emisParamesURL = configUtil.getEmisParamesURL()+"/summary/info";
+			String emisParamesURL = configUtil.getJpURL()+"/summary/info";
 			String getResult=ClientUtil.doPost(emisParamesURL,scenarinoId.toString());
 			LogUtil.getLogger().info(getResult+"emisdata params，情景ID："+scenarinoId);
 			Map mapResult = mapper.readValue(getResult, Map.class);
@@ -1816,7 +1816,7 @@ public class ReadyData {
 			String jpjson = planAndMeasureController.JPUtil(scenarinoId, userId, startDate, endDate);
 			if (null!=jpjson) {
 				//发送actionlist请求
-				String actionlistURL = configUtil.getActionlistURL()+scenarinoId;
+				String actionlistURL = configUtil.getJpURL()+scenarinoId;
 				String getResult=ClientUtil.doPost(actionlistURL,jpjson);
 				LogUtil.getLogger().info(getResult+"jp action list，情景ID："+scenarinoId);
 					Map mapResult=mapper.readValue(getResult, Map.class);

@@ -1514,7 +1514,7 @@ public class PlanAndMeasureController {
 			JSONArray json = JSONArray.fromObject(jpList);
 			String str = json.toString();
 			// 调用减排计算接口 并获取结果Json
-			String getResult = ClientUtil.doPost(configUtil.getCsjpURL()+"/calc/submit/subSector", str);
+			String getResult = ClientUtil.doPost(configUtil.getJpURL()+"/calc/submit/subSector", str);
 			// 并根据减排分析得到的结果进行JsonTree的解析
 			Map mapResult=mapper.readValue(getResult, Map.class);
 			if(!mapResult.get("status").toString().equals("success")){
@@ -1629,7 +1629,7 @@ public class PlanAndMeasureController {
 			JSONArray json = JSONArray.fromObject(jpList);
 			String str = json.toString();
 			// 调用减排计算接口 并获取结果Json
-			String AreaJPURL=configUtil.getAreaURL()+"/calc/submit/analysis?jobId="+scenarinoId;
+			String AreaJPURL=configUtil.getJpURL()+"/calc/submit/analysis?jobId="+scenarinoId;
 			String getResult = ClientUtil.doPost(AreaJPURL, str);
 			// 并根据减排分析得到的结果进行Json的解析
 			Map map=mapper.readValue(getResult, Map.class);
@@ -1690,7 +1690,7 @@ public class PlanAndMeasureController {
 			//情景id
 			Long scenarinoId = Long.parseLong(param.toString());
 			// 调用减排计算状态接口 并获取结果Json
-			String getResult = ClientUtil.doPost(configUtil.getAreaStatusURL()+"/calc/status?jobId="+scenarinoId,"");
+			String getResult = ClientUtil.doPost(configUtil.getJpURL()+"/calc/status?jobId="+scenarinoId,"");
 			// 并根据减排分析得到的结果进行JsonTree的解析
 			Map mapResult=mapper.readValue(getResult, Map.class);
 			Map resultMap=new HashMap();
@@ -1770,7 +1770,7 @@ public class PlanAndMeasureController {
 				JSONArray json = JSONArray.fromObject(jpList);
 				String str = json.toString();
 				// 调用减排计算接口 并获取结果Json
-				String AreaJPURL=configUtil.getAreaURL()+scenarinoId;
+				String AreaJPURL=configUtil.getJpURL()+scenarinoId;
 				getResult = ClientUtil.doPost(AreaJPURL, str);
 				// 并根据减排分析得到的结果进行JsonTree的解析
 				Map map=mapper.readValue(getResult, Map.class);

@@ -169,7 +169,7 @@ public class ExcelToDateController {
 		templateId=1L;
 		filePath="D:\\清单数据\\应急系统新_1描述文件.xlsx";
 		//出错的文件保存路径
-		String outPath=configUtil.getDocURL();
+		String outPath=configUtil.getExqd();
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
@@ -201,7 +201,7 @@ public class ExcelToDateController {
 			}
 			filePath=URLEncoder.encode(filePath, "utf-8");
 			// 调用减排计算接口 并获取结果Json
-			String url=configUtil.getQdTemplate()+"/import/importTemplate?bigIndex="+templateId+"&version=1&filePath="+filePath;
+			String url=configUtil.getExqd()+"/import/importTemplate?bigIndex="+templateId+"&version=1&filePath="+filePath;
 			String getResult = ClientUtil.doPost(url,"");
 			// 并根据减排分析得到的结果进行Json的解析
 			Map resultMap=mapper.readValue(getResult, Map.class);
@@ -377,7 +377,7 @@ public class ExcelToDateController {
 			}
 			filePath=URLEncoder.encode(filePath, "utf-8");
 			// 调用减排计算接口 并获取结果Json
-			String url=configUtil.getQdData()+"/import/importData?bigIndex="+qdId+"&version=1&filePath="+filePath+"&"
+			String url=configUtil.getExqd()+"/import/importData?bigIndex="+qdId+"&version=1&filePath="+filePath+"&"
 					+ "versionExcelId=行业文件1490694892376";
 			String getResult = ClientUtil.doPost(url,"");
 			// 并根据减排分析得到的结果进行Json的解析
