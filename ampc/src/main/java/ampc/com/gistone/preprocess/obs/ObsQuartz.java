@@ -3,6 +3,7 @@ package ampc.com.gistone.preprocess.obs;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,14 +34,16 @@ public class ObsQuartz {
 	@Autowired
 	private TObsMapper tObsMapper;
 
-	private List<String> cityList;
+	private List<String> cityList=new ArrayList<String>();
 	private List<String> stationList;
+	private List<String> citys;
 	
 	@PostConstruct
 	public void init() {
-		cityList = tObsMapper.findAllCityCode();
-		for (String city : cityList) {
-			city = city.substring(0, 3);
+		citys = tObsMapper.findAllCityCode();
+		for (String city : citys) {
+			city = city.substring(0, 4);
+			cityList.add(city);
 		}
 		stationList = tObsMapper.findAllStationCode();
 		logger.info("build all cityList and stationList");
