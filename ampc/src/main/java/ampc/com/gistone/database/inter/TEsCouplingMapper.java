@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import ampc.com.gistone.database.model.TEsCoupling;
+import ampc.com.gistone.database.model.TEsNation;
 /**
  * 耦合过后的清单
  * @author WangShanxi
@@ -32,5 +33,8 @@ public interface TEsCouplingMapper {
 	List<Map> selectAllCoupling(Map couplingMap);
 	
 	int selectTotalCoupling(Long userId);
+	
+	int updateByIdSelective(TEsCoupling tEsCoupling);
+	
     
 }
