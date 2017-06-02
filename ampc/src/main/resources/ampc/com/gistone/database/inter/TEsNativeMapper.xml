@@ -232,7 +232,7 @@
 			WHERE
 				USER_ID = #{userId,jdbcType=DECIMAL} AND
 				ES_NATIVE_TP_ID = #{nativeTpId,jdbcType=DECIMAL}
-				 order by ES_NATION_ID DESC
+				 order by ES_NATIVE_ID DESC
 		)
 	WHERE
 		rn >= #{startTotal,jdbcType=OTHER}
