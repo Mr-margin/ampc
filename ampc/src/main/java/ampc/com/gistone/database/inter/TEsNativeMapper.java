@@ -26,6 +26,10 @@ public interface TEsNativeMapper {
     int updateByPrimaryKey(TEsNative record);
 
 	List<TEsNative> selectAllNative(TEsNative tEsNative);
+
+	List<Map> selectByNativeTpAllNative(Map nativeMap);
+
+	int selectTotalNative(TEsNative tEsNative);
     
     
     

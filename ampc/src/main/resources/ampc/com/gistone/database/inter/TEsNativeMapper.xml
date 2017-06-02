@@ -218,5 +218,32 @@
     where USER_ID = #{userId,jdbcType=DECIMAL}
     AND ES_NATIVE_TP_ID=#{esNativeTpId,jdbcType=DECIMAL}
   </select>
-  
+  <!-- 根据用户Id查询全国清单 -->
+  <select id="selectByNativeTpAllNative" resultMap="BaseResultMap" parameterType="hashMap" >
+    SELECT
+	*
+	FROM
+		(
+			SELECT
+				ROWNUM AS rn,
+				T .*
+			FROM
+				"AMPC"."T_ES_NATIVE" T
+			WHERE
+				USER_ID = #{userId,jdbcType=DECIMAL} AND
+				ES_NATIVE_TP_ID = #{nativeTpId,jdbcType=DECIMAL}
+				 order by ES_NATION_ID DESC
+		)
+	WHERE
+		rn >= #{startTotal,jdbcType=OTHER}
+	AND rn <![CDATA[<=]]> #{endTotal,jdbcType=OTHER}
+  </select>
+  <!-- 查询总条数 -->
+  <select id="selectTotalNative"  parameterType="ampc.com.gistone.database.model.TEsNative" resultType="int">
+    SELECT
+	"COUNT" (ROWNUM)
+	FROM
+	"AMPC"."T_ES_NATIVE" T  WHERE USER_ID=#{userId,jdbcType=DECIMAL} AND 
+	ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL}
+  </select>
 </mapper>
