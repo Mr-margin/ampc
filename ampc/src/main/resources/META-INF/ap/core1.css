@@ -1544,6 +1544,14 @@ dl, dd {
  width: 100%;
   height:100%;
 }
+.cloudui .yqdTable .coupSetCon{
+  width: 100%;
+  height:100%;
+}
+.cloudui .yqdTable .coupSetCon .datagrid{
+  width: 100%!important;
+  height:100%!important;
+}
 .cloudui .yqdTable .coupSetTitle{
   height: 70px;
   border-bottom: 1px solid #e1e1e1;
