@@ -276,4 +276,13 @@
 	FROM
 	"AMPC"."T_ES_NATIVE_TP" T  WHERE USER_ID=#{userId,jdbcType=DECIMAL}
   </select>
+  
+  <select id="selectByKey" resultMap="BaseResultMap" parameterType="hashMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_ES_NATIVE_TP
+    where  USER_ID = #{userId,jdbcType=DECIMAL}
+    AND ES_NATIVE_TP_NAME = #{nativeTpName,jdbcType=VARCHAR} AND ES_NATIVE_TP_YEAR = #{nativeTpYear,jdbcType=DECIMAL}
+     AND ES_COMMENT = #{nativeTpRemark,jdbcType=VARCHAR}
+  </select>
 </mapper>
