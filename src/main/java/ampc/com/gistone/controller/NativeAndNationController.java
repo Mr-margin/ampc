@@ -103,6 +103,12 @@ public class NativeAndNationController {
 					listTps = checkNative(requestDate,request,response);
 				}else if("find_coupling".equals(param)){
 					listTps = find_coupling(requestDate,request,response);
+				}else if("add_coupling".equals(param)){
+					listTps = add_coupling(requestDate,request,response);
+				}else if("update_coupling".equals(param)){
+					listTps = update_coupling(requestDate,request,response);
+				}else if("delete_coupling".equals(param)){
+					listTps = delete_coupling(requestDate,request,response);
 				}
 				else if("".equals(param)){
 					return AmpcResult.build(1001, "NativeAndNationController 请求方法参数异常!");
@@ -1188,8 +1194,8 @@ public class NativeAndNationController {
 			String couplingDesc=param.toString();
 			
 			//日期格式
-			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date date=new Date();
+//			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//			Date date=new Date();
 			//添加数据
 			TEsCoupling tEsCoupling=new TEsCoupling();
 			tEsCoupling.setUserId(userId);
