@@ -350,7 +350,7 @@ function checkData(rowId) {
             "method":"checkNative",
             "nativeTpId":rowDiv.esNativeTpId,
             "nativeTpName":rowDiv.esNativeTpName,
-            "parentMbId":parentId
+            "nativeTpId":parentId
         }).success(function () {
             console.log("校验清单")
         })
