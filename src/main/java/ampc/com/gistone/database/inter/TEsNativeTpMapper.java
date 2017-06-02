@@ -26,4 +26,6 @@ public interface TEsNativeTpMapper {
     List<Map> selectAllNativeTp(Map nativeTpMap);
     //查询本地清单模板总条数
 	int selectTotalNativeTp(Long userId);
+
+	TEsNativeTp selectByKey(Map nativeTpMap);
 }

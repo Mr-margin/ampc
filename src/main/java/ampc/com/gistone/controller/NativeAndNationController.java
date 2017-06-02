@@ -561,10 +561,6 @@ public class NativeAndNationController {
 			}
 			String nativeTpRemark=param.toString();
 			
-			//日期格式
-			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date date=new Date();
-			
 			//读取配置文件路径
 			String config = "/extract.properties";
 			InputStream ins = getClass().getResourceAsStream(config);
@@ -627,8 +623,17 @@ public class NativeAndNationController {
 			Map msgMap=new HashMap();
 			//清单模板数据成功入库
 			if(total==1){
+				Map nativeTpMap=new HashMap();
+				nativeTpMap.put("userId", userId);
+				nativeTpMap.put("nativeTpName", nativeTpName);
+				nativeTpMap.put("nativeTpYear", nativeTpYear);
+				nativeTpMap.put("nativeTpRemark", nativeTpRemark);
+				
+				TEsNativeTp nativeTp=tEsNativeTpMapper.selectByKey(nativeTpMap);
+				
 				msgMap.put("msg", true);
 				msgMap.put("filePath", nativefilePath);
+				msgMap.put("nativeTpId","mb_"+nativeTp.getEsNativeTpId());
 			}else{
 				//清单模板数据入库失败
 				msgMap.put("msg", false);
@@ -889,12 +894,10 @@ public class NativeAndNationController {
 				logger.error("close " + config + " file error!", e);
 			}
 			//获取路径
-//			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName;
-//			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/";
-			String nativefilePath = new String((pro.get("LocalListingFilePath")).toString().getBytes("iso-8859-1"),"utf-8");
-			String nativesfilePath = new String((pro.get("LocalListingFilePath")).toString().getBytes("iso-8859-1"),"utf-8");
-//			String nativefilePath = pro.get("LocalListingFilePath").toString();
-//			String nativesfilePath = pro.get("LocalListingFilePath").toString();
+			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName;
+			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/";
+//			String nativefilePath = new String((pro.get("LocalListingFilePath")).toString().getBytes("iso-8859-1"),"utf-8");
+//			String nativesfilePath = new String((pro.get("LocalListingFilePath")).toString().getBytes("iso-8859-1"),"utf-8");
 			
 			//获取file对象
 			File files =new File(nativesfilePath);
@@ -925,33 +928,33 @@ public class NativeAndNationController {
 			Map msgMap = new HashMap();
 			
 			//调用校验数据函数
-//			Map  sectorDocExcel =excelToDateController.update_SectorDocExcelData(userId,nativeTpId,nativefilePath+ "/"+"应急系统新_1描述文件.xlsx");
-//			if(sectorDocExcel==null){
-//				Map  queryExcel =excelToDateController.update_QueryExcelData(userId,nativeTpId,nativefilePath+ "/"+"应急系统新_2筛选逻辑.xlsx");
-//				if(queryExcel==null){
-//					Map  sector =excelToDateController.update_SectorData(userId,nativeTpId,nativefilePath+ "/"+"应急系统新_4行业匹配.xlsx");
-//					if(sector==null){
-//						//修改清单模板
-//						TEsNativeTp	tEsNativeTp=new TEsNativeTp();
-//						tEsNativeTp.setUserId(userId);
-//						tEsNativeTp.setEsNativeTpId(nativeTpId);
-//						tEsNativeTp.setIsEffective("1");
-//						int total=tEsNativeTpMapper.updateByIdSelective(tEsNativeTp);
-//						if(total==1){
-//							msgMap.put("msg", true);
-//							LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息成功!");
-//						}else{
-//							msgMap.put("msg", false);
-//						}
-//					}else{
-//						return AmpcResult.ok(sector);
-//					}
-//				}else{
-//					return AmpcResult.ok(queryExcel);
-//				}
-//			}else{
-//				return AmpcResult.ok(sectorDocExcel);
-//			}
+			Map  sectorDocExcel =excelToDateController.update_SectorDocExcelData(userId,nativeTpId,nativefilePath+ "/"+"应急系统新_1描述文件.xlsx");
+			if(sectorDocExcel==null){
+				Map  queryExcel =excelToDateController.update_QueryExcelData(userId,nativeTpId,nativefilePath+ "/"+"应急系统新_2筛选逻辑.xlsx");
+				if(queryExcel==null){
+					Map  sector =excelToDateController.update_SectorData(userId,nativeTpId,nativefilePath+ "/"+"应急系统新_4行业匹配.xlsx");
+					if(sector==null){
+						//修改清单模板
+						TEsNativeTp	tEsNativeTp=new TEsNativeTp();
+						tEsNativeTp.setUserId(userId);
+						tEsNativeTp.setEsNativeTpId(nativeTpId);
+						tEsNativeTp.setIsEffective("1");
+						int total=tEsNativeTpMapper.updateByIdSelective(tEsNativeTp);
+						if(total==1){
+							msgMap.put("msg", true);
+							LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息成功!");
+						}else{
+							msgMap.put("msg", false);
+						}
+					}else{
+						return AmpcResult.ok(sector);
+					}
+				}else{
+					return AmpcResult.ok(queryExcel);
+				}
+			}else{
+				return AmpcResult.ok(sectorDocExcel);
+			}
 			
 			
 //			Map  sectorDocExcel =excelToDateController.update_SectorDocExcelData(userId,nativeTpId,nativefilePath+ "/"+"应急系统新_1描述文件.xlsx");
@@ -977,8 +980,8 @@ public class NativeAndNationController {
 //			}
 			
 			
-			return AmpcResult.ok();
-//			return AmpcResult.ok(msgMap);
+//			return AmpcResult.ok();
+			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
 			LogUtil.getLogger().error("NativeAndNationController 校验本地清单模板异常!",e);
