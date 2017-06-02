@@ -1247,7 +1247,7 @@ public class NativeAndNationController {
 				LogUtil.getLogger().error("NativeAndNationController 耦合清单Id为空或出现非法字符!");
 				return AmpcResult.build(1003, "耦合清单Id为空或出现非法字符!");
 			}
-			Long esNationId = Long.parseLong(param.toString());
+			Long couplingId = Long.parseLong(param.toString());
 			
 			//获取清单名称
 			param=data.get("couplingName");
@@ -1255,7 +1255,7 @@ public class NativeAndNationController {
 				LogUtil.getLogger().error("NativeAndNationController 耦合清单名称为空或出现非法字符!");
 				return AmpcResult.build(1003, "耦合清单名称为空或出现非法字符!");
 			}
-			String esNationName = param.toString();
+			String couplingName = param.toString();
 			
 			//获取清单年份
 			param=data.get("couplingYear");
@@ -1263,27 +1263,27 @@ public class NativeAndNationController {
 				LogUtil.getLogger().error("NativeAndNationController 耦合清单年份为空或出现非法字符!");
 				return AmpcResult.build(1003, "耦合清单年份为空或出现非法字符!");
 			}
-			Short nationYear=Short.valueOf(param.toString());
+			Short couplingYear=Short.valueOf(param.toString());
 			//获取清单备注
-			param=data.get("nationRemark");
+			param=data.get("couplingDesc");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 耦合清单备注为空或出现非法字符!");
 				return AmpcResult.build(1003, "耦合清单备注为空或出现非法字符!");
 			}
-			String nationRemark=param.toString();
+			String couplingDesc=param.toString();
 			
 			//日期格式
-			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date date=new Date();
+//			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//			Date date=new Date();
 			//添加数据
-			TEsNation tEsNation=new TEsNation();
-			tEsNation.setUserId(userId);
-			tEsNation.setEsNationName(esNationName);
-			tEsNation.setEsNationYear(nationYear);
-			tEsNation.setNationRemark(nationRemark);
-			tEsNation.setEsNationId(esNationId);
+			TEsCoupling tEsCoupling=new TEsCoupling();
+			tEsCoupling.setUserId(userId);
+			tEsCoupling.setEsCouplingName(couplingName);
+			tEsCoupling.setEsCouplingYear(couplingYear);
+			tEsCoupling.setEsCouplingDesc(couplingDesc);
+			tEsCoupling.setEsCouplingId(couplingId);
 			//更新数据
-			int total=tEsNationMapper.updateByIdSelective(tEsNation);
+			int total=tEsCouplingMapper.updateByIdSelective(tEsCoupling);
 			Map msgMap=new HashMap();
 			if(total==1){
 				msgMap.put("msg", true);
@@ -1319,7 +1319,7 @@ public class NativeAndNationController {
 			}
 			// 清单id
 			Long nationId = Long.parseLong(param.toString());
-			int total=tEsNationMapper.deleteByPrimaryKey(nationId);
+			int total=tEsCouplingMapper.deleteByPrimaryKey(nationId);
 			Map msgMap=new HashMap();
 			if(total==1){
 				//成功
