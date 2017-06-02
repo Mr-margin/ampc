@@ -22,7 +22,8 @@ function innitdata(){  //全国清单的初始化
             },align:'cneter'},
             {field:"historyCoupling",title:"使用历史"},
             {field:"coupingSet",title:"配置",formatter:function(value,row,index){
-                var coupSetBtn="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkData()'>耦合配置</button>"
+                var coupId=row.esCouplingId
+                var coupSetBtn="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='coupSetQd("+coupId+")'>耦合配置</button>"
                 return  coupSetBtn;
             },align:'cneter'}
 
@@ -145,9 +146,9 @@ function submitEditCoup() {
     var qdMark=$("#editCoupQd #coupEditQdMark").val();//描述
     var param={};//设置接口参数
     param.userId=userId;
-    param.nationName=qdName;
-    param.nationId = row.esCouplingId;
-    param.nationRemark = qdMark;
+    param.couplingName=qdName;
+    param.cuplingId = row.esCouplingId;
+    param.couplingDesc = qdMark;
     param.couplingYear = qdYear;
     param.method="update_coupling"
     var myYear=$("#editCoupQd #coupEditQdYear").val()
@@ -173,6 +174,21 @@ function submitEditCoup() {
     }else{
         swal('年份错误', '', 'error');
     }
+}
+//点击耦合清单
+function coupSetQd(coupId) {
+    var rowsAll=$("#couqd").datagrid("getRows");
+    var checkRow;
+    if(coupId){
+        for(var i=0;i<rowsAll.length;i++){
+            if(rowsAll[i].esCouplingId==coupId){
+                checkRow=rowsAll[i];
+            }
+        }
+    }
+    console.log(checkRow);
+    $(".tableBox").hide();
+    $(".coupSet").show();
 }
 function nextCoup(){//点击下一步按钮
     var conText=$(".coupSetTitle .coupSetTitleList .active div").text()
