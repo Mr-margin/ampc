@@ -37,6 +37,8 @@ import java.util.Map;
 
 
 
+
+
 import net.sf.json.JSONObject;
 
 import org.apache.ibatis.annotations.Select;
@@ -51,12 +53,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.druid.support.logging.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ampc.com.gistone.database.inter.TDomainMissionMapper;
 import ampc.com.gistone.database.inter.TGlobalSettingMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TScenarinoAreaMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.inter.TUngribMapper;
+import ampc.com.gistone.database.model.TDomainMissionWithBLOBs;
 import ampc.com.gistone.database.model.TGlobalSetting;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
@@ -64,9 +68,11 @@ import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.database.model.TUngrib;
 import ampc.com.gistone.redisqueue.ReadyData;
 import ampc.com.gistone.redisqueue.ToDataUngribUtil;
+import ampc.com.gistone.redisqueue.entity.DomainParams;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.DateUtil;
+import ampc.com.gistone.util.JsonUtil;
 import ampc.com.gistone.util.LogUtil;
 import ampc.com.gistone.util.RegUtil;
 
@@ -111,11 +117,9 @@ public class SchedulerTimer<V> {
 	@Autowired
 	private ToDataUngribUtil toDataUngribUtil;
 	
-	
-	// 情景区域映射(测试，后面删除）
+	//domain信息表映射(ceshi)
 		@Autowired
-		private TScenarinoAreaMapper tScenarinoAreaMapper;
-	
+		private TDomainMissionMapper tDomainMissionMapper;	
 	public SchedulerTimer() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -654,6 +658,7 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月8日 上午10:19:16
 	 */
 //	@Scheduled(fixedRate = 5000)
+//	@Scheduled(cron="0 48 17 * * ?")
 	public void  test1() {
 		/*String url="http://192.168.1.10:8082/ampc/saveEmis";
 		HashMap<String,String> hashMap = new HashMap<String, String>();
@@ -681,9 +686,93 @@ public class SchedulerTimer<V> {
 //		System.out.println(tasksStatus.getTasksExpand3()+"-----------------");
 //		 String jpParams = readyData.JPParams(753l,1l);
 		
+		/*DomainParams domainParams=null;
+		Long domainId = 4l;
+		TDomainMissionWithBLOBs selectByPrimaryKey=null;
+		try {
+			selectByPrimaryKey = tDomainMissionMapper.selectByPrimaryKey(domainId);
+			String domainInfo = selectByPrimaryKey.getDomainInfo();
+			domainParams = JsonUtil.jsonToObj(domainInfo, DomainParams.class);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("CreateDomainJsonData--getDomainDataCommon：查询domain数据出错！",e);
+		}*/
 		
 		
-		
+	}
+	/**
+	 * 
+	 * @Description:  发送实时预报gfs的定时器
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月1日 上午11:45:39
+	 */
+	
+	public void sendGFSMessageONRealPrediction() {
+		boolean runningSetting = configUtil.isRunningSetting();
+		LogUtil.getLogger().info("定时器 sendGFSMessageONRealPrediction:runningSetting:"+runningSetting);
+		if (runningSetting) {
+			LogUtil.getLogger().info("sendGFSMessageONRealPrediction:预报的gfs数据开始触发");
+			try {
+				//获取最新的ungrib 
+				 TUngrib tUngrib = tUngribMapper.getlastungrib();
+					if (null==tUngrib) {
+						LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:没有ungrib数据,系统第一次启动预报！");
+					}else {
+						//最新的pathdate（年月日）
+						Date pathdate = tUngrib.getPathDate();
+						 //当天时间
+						Date pathdatetoday = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+						int length = toDataUngribUtil.UpdateORNo(tUngrib);
+						//查找当天所有的用户的实时预报的状态
+						Map map = new HashMap();
+						String scenType = "4";
+						map.put("pathDate", pathdatetoday);
+						map.put("scenType", scenType);
+						List<TScenarinoDetail>  list = tScenarinoDetailMapper.selectAllByPathdateAndtype(map);
+						for (TScenarinoDetail tScenarinoDetail : list) {
+							//检查排放数据参数是否存在
+							TTasksStatus selectEmisDataByScenId = tTasksStatusMapper.selectEmisDataByScenId(tScenarinoDetail.getScenarinoId());
+							if (0==(selectEmisDataByScenId.getTasksExpand1())) {
+								Long userId = tScenarinoDetail.getUserId();
+								Long rangeDay = tScenarinoDetail.getRangeDay();
+								LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:rangeDay的长度是："+rangeDay);
+								if (length>=rangeDay) {
+									//查找中断的预报时间
+									Date lastpathdate = tScenarinoDetailMapper.getlastrunstatus(userId);
+									//如果基础情景不满足 则续跑该基础情景
+									String lastungrib = readyData.pivot(userId, lastpathdate, pathdate);
+									if (null!=lastungrib) {
+										readyData.readyRealMessageDataFirst(tScenarinoDetail, lastungrib);
+										//修改状态为执行中
+										boolean updateScenStatusUtil = readyData.updateScenStatusUtil(6l, tScenarinoDetail.getScenarinoId());
+										if (updateScenStatusUtil) {
+											LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:修改预报情景状态成功！");
+										}else {
+											LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:修改预报情景状态失败！");
+										}
+									}else {
+										LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:lastungrib对应的实时预报已经发送过了或者当天的ungrib还未更新！");
+									}
+								}else {
+									LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:ungrib条件为满足！");
+								}
+							}else {
+								//重新请求一次emis排放数据
+								boolean emisParams = readyData.getEmisParams(tScenarinoDetail.getScenarinoId());
+								if (emisParams) {
+									LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:重新请求实时预报的emisdata参数成功！");
+								}else {
+									LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:重新请求实时预报的emisdata参数失败！");
+								}
+							}	
+						}
+					}	
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+	
 	}
 
 	/**
