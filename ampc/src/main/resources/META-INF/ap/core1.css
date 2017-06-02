@@ -1913,10 +1913,19 @@ dl, dd {
   background: #9CC8F7;
   color: white;
 }
-/*本地清单*/
-.cloudui .treeTable  .datagrid-body .datagrid-btable .datagrid-cell .tree-collapsed,.cloudui .treeTable  .datagrid-body .datagrid-btable .datagrid-cell .tree-folder{
+/*本地清单去掉图标*/
+.cloudui .treeTable  .datagrid-body .datagrid-btable .datagrid-cell .tree-hit{
   display: none;
 }
-.cloudui .treeTable  .datagrid-body .datagrid-btable .datagrid-cell .tree-join,.cloudui .treeTable  .datagrid-body .datagrid-btable .datagrid-cell .tree-file{
+.cloudui .treeTable  .datagrid-body .datagrid-btable .datagrid-cell .tree-folder{
+  display: none;
+}
+.cloudui .treeTable  .datagrid-body .datagrid-btable .datagrid-cell .tree-join{
+  display: none;
+}
+.cloudui .treeTable  .datagrid-body .datagrid-btable .datagrid-cell .tree-file{
+  display: none;
+}
+.cloudui .treeTable  .datagrid-body .datagrid-btable .datagrid-cell .tree-joinbottom{
   display: none;
 }

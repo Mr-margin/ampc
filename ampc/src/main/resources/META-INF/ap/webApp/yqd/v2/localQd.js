@@ -93,19 +93,25 @@ function innitdata(active){
                 return "<span title='" + value + "'>" + value + "</span>";}},
                     {field:"esComment",title:"备注",width:300},
                     {field:"isEffective",title:"状态",width:100,formatter:function(value,row,index){
+                        console.log("状态")
+                        console.log(value)
                         if(value==1){
                             return "<span style='color: #009943'>已校验</span>"
-                        }else{
+                        }else if(value==0){
                             return "<span style='color: #dc3f35'>未校验</span>"
+                        }else{
+                            return value;
                         }
                     }},
                     {field:"actor",title:"操作",width:100,align:'center',formatter:function(value,row,index){
                         if(row.isEffective==1){
                             var addNativeDiv="<button id='addQdBtn'  style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='adgQdBtn(\""+row.id+"\")'>添加数据</button>"
                             return addNativeDiv;
-                        }else{
+                        }else if(row.isEffective==0){
                             var checkDiv="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkData(\""+row.id+"\")'>校验</button>"
                             return checkDiv
+                        }else {
+                            return value;
                         }
                     }}
                 ]],
