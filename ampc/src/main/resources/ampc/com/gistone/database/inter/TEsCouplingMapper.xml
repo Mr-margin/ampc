@@ -228,4 +228,45 @@
 	FROM
 	"AMPC"."T_ES_COUPLING" T  WHERE USER_ID=#{userId,jdbcType=DECIMAL}
   </select>
+  <!-- 编辑耦合清单 -->
+  <update id="updateByIdSelective" parameterType="ampc.com.gistone.database.model.TEsCoupling" >
+    update T_ES_COUPLING
+    <set >
+      <if test="esCouplingName != null" >
+        ES_COUPLING_NAME = #{esCouplingName,jdbcType=OTHER},
+      </if>
+      <if test="esCouplingDesc != null" >
+        ES_COUPLING_DESC = #{esCouplingDesc,jdbcType=OTHER},
+      </if>
+      <if test="esCouplingYear != null" >
+        ES_COUPLING_YEAR = #{esCouplingYear,jdbcType=DECIMAL},
+      </if>
+      <if test="esCouplingNationId != null" >
+        ES_COUPLING_NATION_ID = #{esCouplingNationId,jdbcType=DECIMAL},
+      </if>
+      <if test="esCouplingNativeId != null" >
+        ES_COUPLING_NATIVE_ID = #{esCouplingNativeId,jdbcType=DECIMAL},
+      </if>
+      <if test="esCoupingRelationId != null" >
+        ES_COUPING_RELATION_ID = #{esCoupingRelationId,jdbcType=DECIMAL},
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME = #{addTime,jdbcType=DATE},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="isEffective != null" >
+        IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteTime != null" >
+        DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      </if>
+      <if test="historyCoupling != null" >
+        HISTORY_COUPLING = #{historyCoupling,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL} and 
+    	USER_ID = #{userId,jdbcType=DECIMAL}
+  </update>
 </mapper>
