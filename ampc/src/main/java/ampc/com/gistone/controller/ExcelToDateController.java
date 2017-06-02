@@ -201,7 +201,7 @@ public class ExcelToDateController {
 			}
 			filePath=URLEncoder.encode(filePath, "utf-8");
 			// 调用减排计算接口 并获取结果Json
-			String url=configUtil.getQdData()+"?bigIndex="+qdId+"&version=1&filePath="+filePath;
+			String url=configUtil.getQdTemplate()+"?bigIndex="+qdId+"&version=1&filePath="+filePath;
 			String getResult = ClientUtil.doPost(url,"");
 			// 并根据减排分析得到的结果进行Json的解析
 			Map resultMap=mapper.readValue(getResult, Map.class);
