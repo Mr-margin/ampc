@@ -1367,31 +1367,14 @@ public class NativeAndNationController {
 			// 用户id
 			Long userId = Long.parseLong(param.toString());
 			
-			param=data.get("pageNum");
-				//进行参数判断
-			if(!RegUtil.CheckParameter(param, null, null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
-				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
-			}
-			// 用户id
-			int pageNum = Integer.valueOf(param.toString());
-			
-			param=data.get("pageSize");
-			//进行参数判断
-			if(!RegUtil.CheckParameter(param, null, null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
-				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
-			}
-			// 用户id
-			int pageSize = Integer.valueOf(param.toString());
-			
 			//查询本地清单模板前添加参数
-			Map tEsNativeTpMap = new HashMap(); 
-			tEsNativeTpMap.put("userId", userId);
-			tEsNativeTpMap.put("startTotal", (pageNum*pageSize)-pageSize+1);
-			tEsNativeTpMap.put("endTotal", pageNum*pageSize);
+//			Map tEsNativeTpMap = new HashMap(); 
+//			tEsNativeTpMap.put("userId", userId);
+			
+			TEsNativeTp tEsNativeTp = new TEsNativeTp();
+			tEsNativeTp.setUserId(userId);
 			//查询本地清单模板
-			List<Map> listTp=tEsNativeTpMapper.selectAllNativeTp(tEsNativeTpMap);
+			List<Map> listTp=tEsNativeTpMapper.selecttesNativeTp(tEsNativeTp);
 			
 			Map nativeTpMap=new HashMap();
 			nativeTpMap.put("rows", listTp);
