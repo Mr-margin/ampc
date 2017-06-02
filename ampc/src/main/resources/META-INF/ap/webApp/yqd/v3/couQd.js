@@ -147,7 +147,7 @@ function submitEditCoup() {
     var param={};//设置接口参数
     param.userId=userId;
     param.couplingName=qdName;
-    param.cuplingId = row.esCouplingId;
+    param.couplingId = row.esCouplingId;
     param.couplingDesc = qdMark;
     param.couplingYear = qdYear;
     param.method="update_coupling"
@@ -186,9 +186,9 @@ function coupSetQd(coupId) {
             }
         }
     }
-    console.log(checkRow);
     $(".tableBox").hide();
     $(".coupSet").show();
+
 }
 function nextCoup(){//点击下一步按钮
     var conText=$(".coupSetTitle .coupSetTitleList .active div").text()
