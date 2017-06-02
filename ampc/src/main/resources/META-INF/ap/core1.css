@@ -1503,6 +1503,43 @@ dl, dd {
 /*本地清单*/
 
 /*清单耦合设计*/
+.cloudui #creatCoupQd .rwCon{overflow: hidden!important; }
+.cloudui #creatCoupQd .qdContent{
+  float: left;
+  overflow: hidden;
+  height: 30px;
+  margin-bottom:10px;
+  width: 50%;
+}
+.cloudui #creatCoupQd .rwCon .qdTitle{
+  float: left;
+  line-height: 30px;
+  font-family: 黑体;
+  font-size: 14px;
+  font-weight: bold;
+  color: rgb(102, 102, 102);
+  width: 80px;
+  padding-top: 0px;
+  text-align: left;
+}
+.cloudui #creatCoupQd .rwCon .qdContent .qdCon{
+  float: left;
+  height:30px;
+  width: calc(100% - 80px);
+}
+.cloudui #creatCoupQd .qdMark{
+  overflow: hidden;
+  margin-bottom:10px;
+  width: 100%;
+  height: auto;
+}
+.cloudui #creatCoupQd .rwCon .qdMark .qdCon{
+  float: left;
+  width: calc(100% - 80px);
+  line-height: 20px;
+  text-align: left;
+  height: auto;
+}
 .cloudui .yqdTable .coupSet{
  width: 100%;
   height:100%;
