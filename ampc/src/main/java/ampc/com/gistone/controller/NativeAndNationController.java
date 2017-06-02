@@ -1193,9 +1193,6 @@ public class NativeAndNationController {
 			}
 			String couplingDesc=param.toString();
 			
-			//日期格式
-//			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//			Date date=new Date();
 			//添加数据
 			TEsCoupling tEsCoupling=new TEsCoupling();
 			tEsCoupling.setUserId(userId);
@@ -1226,7 +1223,6 @@ public class NativeAndNationController {
 	 * @param response
 	 * @return
 	 */
-//	@RequestMapping("/NativeAndNation/update_coupling")
 	public AmpcResult update_coupling(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -1272,9 +1268,6 @@ public class NativeAndNationController {
 			}
 			String couplingDesc=param.toString();
 			
-			//日期格式
-//			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//			Date date=new Date();
 			//添加数据
 			TEsCoupling tEsCoupling=new TEsCoupling();
 			tEsCoupling.setUserId(userId);
@@ -1306,20 +1299,19 @@ public class NativeAndNationController {
 	 * @param response
 	 * @return
 	 */
-//	@RequestMapping("/NativeAndNation/delete_coupling")
 	public AmpcResult delete_coupling(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Map<String, Object> data = (Map) requestDate.get("data");
 			
-			Object param=data.get("nationId");
+			Object param=data.get("couplingId");
 			if(!RegUtil.CheckParameter(param, "Long", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 清单ID为空或出现非法字符!");
 				return AmpcResult.build(1003, "清单ID为空或出现非法字符!");
 			}
-			// 清单id
-			Long nationId = Long.parseLong(param.toString());
-			int total=tEsCouplingMapper.deleteByPrimaryKey(nationId);
+			//耦合清单id
+			Long couplingId = Long.parseLong(param.toString());
+			int total=tEsCouplingMapper.deleteByPrimaryKey(couplingId);
 			Map msgMap=new HashMap();
 			if(total==1){
 				//成功
