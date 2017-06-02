@@ -358,7 +358,7 @@ public class SchedulerTimer<V> {
 					LogUtil.getLogger().error("系统错误！同一天的实时预报存在多条数据！");
 				}
 				//调用方法获取meiccityconfig
-				String emisParamesURL = configUtil.getEmisParamesURL();
+				String emisParamesURL = configUtil.getEmisParamesURL()+"/summary/info";
 				String getResult=ClientUtil.doPost(emisParamesURL,scenarinoId.toString());
 				LogUtil.getLogger().info(getResult+"emisdata params，情景ID："+scenarinoId);
 				Map mapResult;
