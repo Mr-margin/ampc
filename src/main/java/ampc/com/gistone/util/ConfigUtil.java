@@ -72,6 +72,45 @@ public class ConfigUtil {
 	//记录发送的消息生成的文件的路径
 	@Value("${sendmessage.log}")
 	private String sendMessageLog;
+	
+	@Value("${ex.qdData}")
+	private String qdData;
+	@Value("${ex.qdTemplate}")
+	private String qdTemplate;
+	@Value("${ex.docURL}")
+	private String docURL;
+	@Value("${ex.queryURL}")
+	private String queryURL;
+	@Value("${ex.dataURL}")
+	private String dataURL;
+	@Value("${ex.sectorURL}")
+	private String sectorURL;
+	
+	
+	public String getQdData() {
+		return qdData;
+	}
+
+	public String getQdTemplate() {
+		return qdTemplate;
+	}
+
+	public String getDocURL() {
+		return docURL;
+	}
+
+	public String getQueryURL() {
+		return queryURL;
+	}
+
+	public String getDataURL() {
+		return dataURL;
+	}
+
+	public String getSectorURL() {
+		return sectorURL;
+	}
+
 	//微信路径url
 	@Value("${weixin.serverURL}")
 	private String weixinServerURL;

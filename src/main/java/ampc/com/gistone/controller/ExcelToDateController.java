@@ -37,6 +37,7 @@ import ampc.com.gistone.entity.CheckUtil1;
 import ampc.com.gistone.entity.ColorUtil;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.LogUtil;
 import ampc.com.gistone.util.RegUtil;
 import ampc.com.gistone.util.checkExcelUtil.ExcelToDate;
@@ -73,7 +74,8 @@ public class ExcelToDateController {
 	//预案措施映射
 	@Autowired
 	public TPlanMeasureMapper tPlanMeasureMapper;
-	
+	@Autowired
+	private ConfigUtil configUtil;
 	private ObjectMapper mapper=new ObjectMapper();
 		
 	/**
@@ -167,7 +169,7 @@ public class ExcelToDateController {
 		qdId=1L;
 		filePath="D:\\清单数据\\应急系统新_1描述文件.xlsx";
 		//出错的文件保存路径
-		String outPath="D:\\验证模板\\验证应急系统新_1描述文件.xlsx";
+		String outPath=configUtil.getDocURL();
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
@@ -199,7 +201,7 @@ public class ExcelToDateController {
 			}
 			filePath=URLEncoder.encode(filePath, "utf-8");
 			// 调用减排计算接口 并获取结果Json
-			String url="http://192.168.7.98:8089/import/importTemplate?bigIndex="+qdId+"&version=1&filePath="+filePath;
+			String url=configUtil.getQdData()+"?bigIndex="+qdId+"&version=1&filePath="+filePath;
 			String getResult = ClientUtil.doPost(url,"");
 			// 并根据减排分析得到的结果进行Json的解析
 			Map resultMap=mapper.readValue(getResult, Map.class);
@@ -242,7 +244,7 @@ public class ExcelToDateController {
 	 */
 	public Map update_QueryExcelData(Long userId,Long qdId,String filePath) {
 		//出错的文件保存路径
-		String outPath="D:\\验证模板\\验证应急系统新_2筛选文件.xlsx";
+		String outPath=configUtil.getQueryURL();
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
@@ -299,7 +301,7 @@ public class ExcelToDateController {
 	 */
 	public Map update_SectorData(Long userId,Long qdId,String filePath) {
 		//出错的文件保存路径
-		String outPath="D:\\验证模板\\验证应急系统新_4行业匹配.xlsx";
+		String outPath=configUtil.getSectorURL();
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
@@ -355,7 +357,7 @@ public class ExcelToDateController {
 		Long qdId=1L;
 		filePath="D:\\清单数据\\应急系统新_3清单数据_hb_ywjv11_QY3_CPH1.xlsx";
 		//出错的文件保存路径
-		String outPath="D:\\验证模板\\验证应急系统新_3清单数据.xlsx";
+		String outPath=configUtil.getDataURL();
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
@@ -375,7 +377,8 @@ public class ExcelToDateController {
 			}
 			filePath=URLEncoder.encode(filePath, "utf-8");
 			// 调用减排计算接口 并获取结果Json
-			String url="http://192.168.7.98:8089/import/importData?bigIndex="+qdId+"&version=1&filePath="+filePath;
+			String url=configUtil.getQdData()+"?bigIndex="+qdId+"&version=1&filePath="+filePath+"&"
+					+ "versionExcelId=行业文件1490694892376";
 			String getResult = ClientUtil.doPost(url,"");
 			// 并根据减排分析得到的结果进行Json的解析
 			Map resultMap=mapper.readValue(getResult, Map.class);
