@@ -168,7 +168,6 @@ $("#editCoupQd").window({
 //编辑耦合清单
 function editCoupQd(){
     var row = $('#couqd').datagrid('getSelected');//获取所有选中的清单数据
-    console.log(row)
     if(row!=''&&row!=null&&row!=undefined){ //所选数据不为空
         var editQdName,editQdYear,editMark,editId;
         editQdName=row.esCouplingName,editQdYear=row.esCouplingYear,editMark=row.esCouplingDesc,editId=row.esCouplingId;
@@ -263,9 +262,7 @@ function coupSetQd(coupId) {
 function nextCoup(){//点击下一步按钮
     var conText=$(".coupSetTitle .coupSetTitleList .active div").text()
     if(conText=="第一步"){
-        console.log("第一步");
         checkQgQd=$("#qgqd").datagrid("getSelected");
-        console.log(checkQgQd);
         if(checkQgQd!=''&&checkQgQd!=null&&checkQgQd!=undefined){
             $(".cloudui .coupSetTitleList").children("li").eq(0).removeClass("active");
             $(".cloudui .coupSetTitleList").children("li").eq(1).addClass("active");
@@ -273,6 +270,7 @@ function nextCoup(){//点击下一步按钮
             $(".coupSetCon").eq(0).hide();//隐藏其他步骤
             $(".coupSetCon").eq(1).show();
             $(".coupSetCon").eq(2).hide();
+            mbSelect();
         }else{
             swal('请先选择全国清单', '', 'error');
         }
@@ -296,6 +294,7 @@ function prevCoup(){
         $(".coupSetCon").eq(0).hide();//隐藏其他步骤
         $(".coupSetCon").eq(1).show();
         $(".coupSetCon").eq(2).hide();
+        mbSelect();
     }else if(conText=="第二步"){
         $(".cloudui .coupSetTitleList").children("li").eq(1).removeClass("active");
         $(".cloudui .coupSetTitleList").children("li").eq(0).addClass("active");
@@ -305,4 +304,14 @@ function prevCoup(){
         $(".coupSetCon").eq(1).hide();
         $(".coupSetCon").eq(2).hide();
     }
+}
+//耦合措施第二步
+function mbSelect() {
+    ajaxPost("/NativeAndNation/doPost",{"userId":userId,"method":"find_couplingNativeTp"}).success(function (res) {
+        console.log(res)
+        console.log(res.data)
+        if(res.status==0){
+            return res.data;
+        }else{}
+    })
 }

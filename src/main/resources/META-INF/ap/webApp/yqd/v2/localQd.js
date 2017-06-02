@@ -72,7 +72,7 @@ function innitdata(active){
             //给每个子节点添加标题
             var rowDate=data.data.data.rows;
             for(var i=0;i<rowDate.length;i++){
-                rowDate[i].children.unshift({esNativeTpName:"清单名称",esNativeTpYear:"年份",updateTime:"创建时间",filePath:"路径",esComment:"备注",isEffective:"状态",actor:"操作",id:rowDate[i].id+"title"})
+                rowDate[i].children.unshift({esNativeTpName:"清单名称",esNativeTpYear:"年份",updateTime:"创建时间",filePath:"路径",esComment:"备注",his:"使用状态",isEffective:"状态",actor:"操作",id:rowDate[i].id+"title"})
             }
             $("#localqd").treegrid({
                 idField:'id',//通过id区分子节点父节点
@@ -91,7 +91,8 @@ function innitdata(active){
                     },width :100,},
                     {field:"filePath",title:"路径",width:120,formatter: function (value) {
                 return "<span title='" + value + "'>" + value + "</span>";}},
-                    {field:"esComment",title:"备注",width:300},
+                    {field:"esComment",title:"备注",width:200},
+                    {field:"his",title:"使用状态",width:100},
                     {field:"isEffective",title:"状态",width:100,formatter:function(value,row,index){
                         if(value==1){
                             return "<span style='color: #009943'>已校验</span>"
@@ -229,7 +230,6 @@ function innitdata(active){
             ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark,"nativeTpId":rowDiv.esNativeTpId}).success(function(res){
                 if(res.status==0){
                     innitdata("find_natives");
-
                     $("#localqd").treegrid("expand",creatQd);
                     $("#editTempQd").window('close');
                 }else{
