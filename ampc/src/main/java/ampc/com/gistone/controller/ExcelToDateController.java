@@ -377,7 +377,7 @@ public class ExcelToDateController {
 			}
 			filePath=URLEncoder.encode(filePath, "utf-8");
 			// 调用减排计算接口 并获取结果Json
-			String url=configUtil.getExqd()+"/import/importData?bigIndex="+qdId+"&version=1&filePath="+filePath+"&"
+			String url=configUtil.getExqd()+"/import/importData?templateId="+templateId+"&bigIndex="+qdId+"&version=1&filePath="+filePath+"&"
 					+ "versionExcelId=行业文件1490694892376";
 			String getResult = ClientUtil.doPost(url,"");
 			// 并根据减排分析得到的结果进行Json的解析
