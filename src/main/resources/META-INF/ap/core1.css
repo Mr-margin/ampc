@@ -1729,7 +1729,7 @@ dl, dd {
 .cloudui .sxCon{width:100%;height: 100%;}
 .cloudui .sxMore{float: right;text-align: center;line-height:20px;height:20px;margin-top:5px;}
 .cloudui .sxMore:hover,.cloudui .sxMore:active,.cloudui .sxMore.active{height:20px;line-height: 20px;}
-.cloudui .tiaojian{width: 50%;float: left;padding-bottom: 10px;padding-top:10px;}
+.cloudui .tiaojian{min-width:600px;width: 50%;float: left;padding-bottom: 10px;padding-top:10px;}
 .cloudui .tiaojian .tiaojian-title{text-align: right;}
 
 /*button样式*/
