@@ -133,7 +133,6 @@ var zTreeSetting = {
                         console.log(selectedTimes);
                         if (selectedTimes.planId == -1) {                           
                             setTimeout(copyPlan,500);
-
                         }
                     }
                 }
