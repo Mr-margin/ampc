@@ -329,7 +329,8 @@ $(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree tr").click(function(){
 })
 //校验
 function checkData(rowId) {
-    var rowDiv=$("#localqd").treegrid('find',rowId)
+    var rowDiv=$("#localqd").treegrid('find',rowId);
+    var parentId=rowDiv._parentId;
     if(rowId.indexOf("mb")==0){
         ajaxPost('/NativeAndNation/doPost',{
             "userId":userId,
@@ -345,8 +346,9 @@ function checkData(rowId) {
             "method":"checkNative",
             "nativeTpId":rowDiv.esNativeTpId,
             "nativeTpName":rowDiv.esNativeTpName,
+            "parentMbId":parentId
         }).success(function () {
-            console.log("校验模板")
+            console.log("校验清单")
         })
     }
 
