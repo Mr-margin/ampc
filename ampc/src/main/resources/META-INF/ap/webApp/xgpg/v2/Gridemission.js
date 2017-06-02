@@ -135,6 +135,7 @@ require(
         app.stlayerList = new Array();//加载卫星图
         app.labellayerList = new Array();//加载标注图
         app.mapimagelayer = new Array();//图片图层
+        app.dynamicData = new Array();//栅格图层
 
         for (var i = 0; i < 2; i++) {
             var map = new Map("mapDiv" + i, {
@@ -154,6 +155,10 @@ require(
             
             app.mapimagelayer[i] = new dong.MapImageLayer({"id":"myil"+i});
             app.mapList[i].addLayer(app.mapimagelayer[i]);
+            
+            app.dynamicData[i] = new dong.ArcGISDynamicMapServiceLayer("http://192.168.1.103:6080/arcgis/rest/services/ampc/cms/MapServer");
+            app.mapList[i].addLayer(app.dynamicData[i]);
+            
         }
 
         app.gLyr1 = new dong.GraphicsLayer({"id": "gLyr1"});
@@ -321,62 +326,6 @@ function sceneTable() {
             }
         })
     })
-//     $("#sceneTableId").bootstrapTable({
-//         method: 'POST',
-//         url: '/ampc/scenarino/find_All_scenarino',
-//         dataType: "json",
-//         iconSize: "outline",
-//         clickToSelect: true,// 点击选中行
-//         pagination: false, // 在表格底部显示分页工具栏
-//         striped: true, // 使表格带有条纹
-//         queryParams: function (params) {
-//             var data = {};
-//             data.userId = userId;
-//             data.missionId = $("#task").val();
-//             return JSON.stringify({"token": "", "data": data});
-//         },
-//         queryParamsType: "limit", // 参数格式,发送标准的RESTFul类型的参数请求
-//         silent: true, // 刷新事件必须设置
-//         contentType: "application/json", // 请求远程数据的内容类型。
-//         responseHandler: function (res) {
-//             if (res.status == 0) {
-//                 if (!res.data.rows) {
-//                     res.data.rows = [];
-//                 } else if (res.data.rows.length > 0) {
-//                     if (sceneInitialization) {
-//                         if (sceneInitialization.data.length > 0) {
-//
-//                             $.each(res.data.rows, function (i, col) {
-//                                 $.each(sceneInitialization.data, function (k, vol) {
-//                                     if (col.scenarinoId == vol.scenarinoId) {
-//                                         res.data.rows[i].state = true;
-//                                     }
-//                                 });
-//                             });
-//                         }
-//                     }
-//                 }
-//                 return res.data.rows;
-//             } else if (res.status == 1000) {
-//                 swal(res.msg, '', 'error');
-//             }
-//         },
-//         onClickRow: function (row, $element) {
-//             $('.success').removeClass('success');
-//             $($element).addClass('success');
-//         },
-//         icons: {
-//             refresh: "glyphicon-repeat",
-//             toggle: "glyphicon-list-alt",
-//             columns: "glyphicon-list"
-//         },
-//         onLoadSuccess: function (data) {
-// //			console.log(data);
-//         },
-//         onLoadError: function () {
-//             swal('连接错误', '', 'error');
-//         }
-//     });
 }
 
 /**
@@ -450,21 +399,56 @@ function bianji_wanggepafang(type, g_num, p , wind){
         var par = p;
         var v1 = new Date().getTime();
         
-        var imageURL = "http://localhost:8082/ampc/img/ceshi/now.png";//定义图片路径，这个图片是动态生成的
+//        var imageURL = "http://localhost:8082/ampc/img/ceshi/now.png";//定义图片路径，这个图片是动态生成的
+//        var initE = new dong.Extent({ 'xmin': app.mapList[g_num].extent.xmin, 'ymin': app.mapList[g_num].extent.ymin, 'xmax': app.mapList[g_num].extent.xmax, 'ymax': app.mapList[g_num].extent.ymax, 'spatialReference': { 'wkid': 3857 }});
+//        var mapImage = new dong.MapImage({
+//            'extent': initE,
+//            'href': imageURL
+//        });
+//        app.mapimagelayer[g_num].removeAllImages();//删除全部的图片图层
+//        app.mapimagelayer[g_num].addImage(mapImage);//将新的图片图层添加到地图
         
-        var initE = new dong.Extent({ 'xmin': app.mapList[g_num].extent.xmin, 'ymin': app.mapList[g_num].extent.ymin, 'xmax': app.mapList[g_num].extent.xmax, 'ymax': app.mapList[g_num].extent.ymax, 'spatialReference': { 'wkid': 3857 }});
-        var mapImage = new dong.MapImage({
-            'extent': initE,
-            'href': imageURL
-        });
+        console.log(JSON.stringify(par));
         
-        app.mapimagelayer[g_num].removeAllImages();//删除全部的图片图层
-        app.mapimagelayer[g_num].addImage(mapImage);//将新的图片图层添加到地图
-        $('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
-        zmblockUI("#mapDiv"+g_num, "end");//打开锁屏控制
-        console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
+//        ajaxPost_w('http://166.111.42.85:8300/ampc/extract/tiff', par).success(function (data) {
+        ajaxPost('/extract/tiff', par).success(function (data) {
+        	console.log(JSON.stringify(data));
+        	
+    		if(data.status == 0){
+    			
+    			app.dynamicData[g_num].show();
+    			var dynamicLayerInfos = app.dynamicData[g_num].createDynamicLayerInfosFromLayerInfos();
+    			var dynamicLayerInfo = new dong.DynamicLayerInfo();
+    			dynamicLayerInfo.id = 996;
+    			dynamicLayerInfo.defaultVisibility = false;
+    			dynamicLayerInfo.name = "reuslt";
+    			var dataSource = new dong.RasterDataSource();
+    			dataSource.workspaceId = "ampctiff";
+    			
+//    			dataSource.dataSourceName = "d-2016-11-17-0-0-SO2-508.tiff";
+    			dataSource.dataSourceName = data.data;
+    			
+    			var layerSource = new dong.LayerDataSource();
+    			layerSource.dataSource = dataSource;
+    			dynamicLayerInfo.source = layerSource;
+    			dynamicLayerInfos.push(dynamicLayerInfo);
+    			app.dynamicData[g_num].setDynamicLayerInfos(dynamicLayerInfos);
+    			app.dynamicData[g_num].setVisibleLayers([996]);
+    			
+    			$('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
+    			zmblockUI1("#mapDiv"+g_num, "end");//打开锁屏控制
+    			console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
+    		}else{
+    			zmblockUI1("#mapDiv"+g_num, "end");//打开锁屏控制
+    		}
+    	});
+        
+        
+        
+        
     }
 }
+
 
 
 /**
