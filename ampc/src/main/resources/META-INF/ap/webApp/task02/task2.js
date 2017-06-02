@@ -89,7 +89,7 @@ var zTreeSetting = {
         plain:true,
         border:false,
         onSelect: function (t, i) {
-            if ((!areaIndex) && (areaIndex != 0))return;
+            if (((!areaIndex) && (areaIndex != 0))||(allData.length==0))return;
             if (t == '时段操作') {
                 if (allData[areaIndex].timeItems.length <= 1) {
                     $('#timepanel').tabs('disableTab', '时段删除');
