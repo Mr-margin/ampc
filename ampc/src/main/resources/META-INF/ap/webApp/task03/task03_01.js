@@ -65,7 +65,8 @@ $.each(csMsg.provinceCodes, function (k, col) {
 
 /*模态框中筛选标签页*/
 $('#sx').tabs({
-    border: false,
+    border: true,
+    plain:true,
     onSelect:function(title){
         if(title != '已控制点源'){
             try {
@@ -148,7 +149,8 @@ $('#sx').tabs({
     }
 });
 $('#bj').tabs({
-    border: false,
+    border: true,
+    plain:true,
 });
 $('#sx').hide();
 $('#bj').hide();
@@ -1045,7 +1047,7 @@ function point_table() {
             columns: columns,
             // data:res.data,
             toolbar:'#delSX',
-            height:'100%',
+            height:'calc(100% - 100px)',
             checkOnSelect:true,
             selectOnCheck:true,
             clickToSelect: true,// 点击选中行
