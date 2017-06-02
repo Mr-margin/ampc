@@ -297,6 +297,8 @@ function prevCoup(){
         $(".coupSetCon").eq(2).hide();
         $(".coupSetConSecond").layout()//耦合第二步进行渲染
         mbSelect()
+        var mbIndex=$(".cloudui .coupSetCon #coupSetMb").val();
+        localTable(mbIndex)
     }else if(conText=="第二步"){
         $(".cloudui .coupSetTitleList").children("li").eq(1).removeClass("active");
         $(".cloudui .coupSetTitleList").children("li").eq(0).addClass("active");
@@ -311,13 +313,16 @@ function prevCoup(){
 var mbArray
 function mbSelect() {
     ajaxPost("/NativeAndNation/doPost",{"userId":userId,"method":"find_couplingNativeTp"}).success(function (res) {
-        console.log(res.data)
         mbArray=res.data.data.rows;
         if(res.status==0){
             for(var i=0;i<mbArray.length;i++){
                 var mbDiv= $('<option value="'+i+'">'+mbArray[i].esNativeTpName+'</option>');
                 $(".cloudui .coupSetCon .coupSetMb").append(mbDiv);
             }
+            var mbIndex=$(".cloudui .coupSetCon #coupSetMb").val();
+            console.log("模板索引")
+            console.log(mbIndex)
+            localTable(mbIndex)
         }else{
             swal('参数故障', '', 'error')
         }
@@ -326,5 +331,28 @@ function mbSelect() {
 //本地模板选择变化时
 $(".cloudui #coupSetMb").on("change",function (e) {
     var index=$(e.target).val();
-    mbArray[index]
+    localTable(index);
 })
+//根据清单模板的ID 生成本地清单表单
+function  localTable(value) {
+   var mbQd= mbArray[value];
+   ajaxPost('/NativeAndNation/doPost',{'userId':userId,'method':'find_couplingNatives','nativeTpId':mbQd.esNativeTpId,'pageNumber':1,'pageSize':2}).success(function (res) {
+       if(res.status==0){
+          $("#localTable").datagrid({
+              columns:[[  //表头
+                  {field:"ck",checkbox:true},
+                  {field:"esNativeName",title:"清单名称",width:200,align:'cneter'},
+                  {field:"esComment",title:"清单备注",width:80,align:'cneter'},
+                  {field:"esNativeYear",title:"年份"},
+                  {field:"addTime",title:"创建时间",formatter:function(value,row,index){
+                      return  moment(value).format("YYYY-MM-DD");
+                  },align:'cneter'},
+              ]],
+              data:res.data.data.rows,
+              pagination:true,
+          })
+       }else{
+           swal('参数故障', '', 'error')
+       }
+   })
+}
