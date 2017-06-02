@@ -336,23 +336,35 @@ $(".cloudui #coupSetMb").on("change",function (e) {
 //根据清单模板的ID 生成本地清单表单
 function  localTable(value) {
    var mbQd= mbArray[value];
-   ajaxPost('/NativeAndNation/doPost',{'userId':userId,'method':'find_couplingNatives','nativeTpId':mbQd.esNativeTpId,'pageNumber':1,'pageSize':2}).success(function (res) {
-       if(res.status==0){
-          $("#localTable").datagrid({
-              columns:[[  //表头
-                  {field:"ck",checkbox:true},
-                  {field:"esNativeName",title:"清单名称",width:200,align:'cneter'},
-                  {field:"esComment",title:"清单备注",width:80,align:'cneter'},
-                  {field:"esNativeYear",title:"年份"},
-                  {field:"addTime",title:"创建时间",formatter:function(value,row,index){
-                      return  moment(value).format("YYYY-MM-DD");
-                  },align:'cneter'},
-              ]],
-              data:res.data.data.rows,
-              pagination:true,
-          })
-       }else{
-           swal('参数故障', '', 'error')
-       }
-   })
+    $("#localTable").datagrid({
+        url:'/ampc/NativeAndNation/doPost',
+        method:'post', //ajax 请求远程数据方法
+        dataType: "json",
+        columns:[[  //表头
+            {field:"ck",checkbox:true},
+            {field:"esNativeName",title:"清单名称",width:200,align:'cneter'},
+            {field:"esComment",title:"清单备注",width:80,align:'cneter'},
+            {field:"esNativeYear",title:"年份"},
+            {field:"addTime",title:"创建时间",formatter:function(value,row,index){
+                return  moment(value).format("YYYY-MM-DD");
+            },align:'cneter'},
+        ]],
+        loadFilter:function (data) { //过滤数据，转换成符合格式的数据
+            return data.data.data.rows;
+        },
+        pagination: true, // 在表格底部显示分页工具栏
+        pageSize:20,  //页面里面显示数据的行数
+        pageNumber: 1, // 页数
+        pageList: [20, 30,40], //页面可以进行选择的数据行数
+        contentType: "application/json",
+        queryParams:function (params) { //ajax 传递的参数  分页
+            var data = {};
+            data.userId = userId;
+            data.method = 'find_couplingNatives';
+            data.nativeTpId =mbQd.esNativeTpId;
+            data.pageSize=params.pageSize; //初始化页面上面表单的数据行数
+            data.pageNumber=params.pageNumber  //初始化页面的页码
+            return {"token": "", "data": data};
+        }
+    })
 }
