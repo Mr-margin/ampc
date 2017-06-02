@@ -405,7 +405,7 @@ public class ExcelToDate {
 	* 读取excel描述数据   读取行业描述Excel表
 	* @param path  
 	*/
-	public List<TSectordocExcel> ReadSectorDOC(String fileName,Long versionId,Long userId,List<String> msg,String outPath,Long qdId){ 
+	public List<TSectordocExcel> ReadSectorDOC(String fileName,Long versionId,Long userId,List<String> msg,String outPath,Long templateId){ 
 		//定义结果  默认false 
 	    boolean isError=false;
 		//String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_1描述文件.xlsx";
@@ -768,7 +768,7 @@ public class ExcelToDate {
                             sectorDoc.setSectordocDisname(sheetName);
                             //写入版本等信息
                             sectorDoc.setSectordocVersion(versionId);
-                            sectorDoc.setDetailedListId(qdId);
+                            sectorDoc.setDetailedListId(templateId);
                             sectorDoc.setDetailedListType("本地清单");
                             sectorDoc.setUserId(userId);
                             sectorDocList.add(sectorDoc);
@@ -866,7 +866,7 @@ public class ExcelToDate {
 	* 读取excel筛选逻辑数据   读取筛选逻辑Excel表
 	* @param path  
 	*/
-	public List<TQueryExcel> ReadQuery(String fileName,Long versionId,Long userId,List<String> msg,String outPath,Long qdId){  
+	public List<TQueryExcel> ReadQuery(String fileName,Long versionId,Long userId,List<String> msg,String outPath,Long templateId){  
 		//String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_2筛选逻辑.xlsx";
 		//定义结果  默认false 
 	    boolean isError=false;
@@ -1022,7 +1022,7 @@ public class ExcelToDate {
                     query.setSectorName(sheetName);
                     //写入版本等信息
                     query.setQueryVersion(versionId);
-                    query.setDetailedListId(qdId);
+                    query.setDetailedListId(templateId);
                     query.setDetailedListType("本地清单");
                     query.setUserId(userId);
                     queryList.add(query);
@@ -1069,7 +1069,7 @@ public class ExcelToDate {
 	* 读取excel数据   读取行业Excel表
 	* @param path  
 	*/
-	public List<TSectorExcel> ReadSector(String fileName,String versionId,Long userId,List<String> msg,String outPath,Long qdId){  
+	public List<TSectorExcel> ReadSector(String fileName,String versionId,Long userId,List<String> msg,String outPath,Long templateId){  
 		//String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_4行业匹配.xlsx";
 		List<TSectorExcel> sectorList=new ArrayList<TSectorExcel>();
 		//定义结果  默认false 
@@ -1236,7 +1236,7 @@ public class ExcelToDate {
                     //写入版本等信息
                     sector.setVersionExcelId(versionId);
                     sector.setUserId(userId);
-                    sector.setDetailedListId(qdId);
+                    sector.setDetailedListId(templateId);
                     sector.setDetailedListType("本地清单");
                     sectorList.add(sector);
                 }  
