@@ -121,6 +121,9 @@ function m_gis_q() {
  */
 $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a><i class="en-arrow-right7" style="font-size:16px;"></i><a href="#/yabj" style="padding-left: 15px;padding-right: 15px;">情景编辑</a><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;font-size:12px;">措施编辑</span>');
 
+$(function () {
+
+})
 
 $('.csCon').removeClass('disNone');
 $('.csCon .nowRw span').html(qjMsg.rwName);
@@ -145,11 +148,6 @@ $.each(qjMsg.provinceCodes, function (k, col) {
         Codes.push(k);
     });
 });
-
-
-hyc();
-
-metTable_hj_info();
 
 /**
  * 时间戳转成日期格式
@@ -2152,6 +2150,10 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
 
 //		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/cms/MapServer");//创建动态地图
 //		app.mapList[0].addLayer(app.layer);
+
+        hyc();
+
+        metTable_hj_info();
 
     });
 
