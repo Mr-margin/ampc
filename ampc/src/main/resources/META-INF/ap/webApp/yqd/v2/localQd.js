@@ -78,7 +78,7 @@ function innitdata(active){
                 idField:'id',//通过id区分子节点父节点
                 treeField:'esNativeTpName',//树形结构分支节点
                 data:rowDate,
-                lines:true,
+                lines:false,
                 showHeader: false,
                 animate:true,
                 columns:[[  //表头
@@ -152,15 +152,7 @@ function innitdata(active){
             $("#formQd").submit(
                 ajaxPost('/NativeAndNation/doPost',param).success(function(res){
                     if(res.status==0){
-                        $("#localqd").treegrid('insert',{
-                            before:'mb_0',
-                            data:{
-                                esNativeTpName:param.nativeTpName,
-                                esNativeTpYear:param.nativeTpYear,
-                                esComment:param.nativeTpRemark
-                            }
-                        })
-                        // innitdata("find_natives");
+                        innitdata("find_natives");
                     }else{
                         swal('参数错误', '', 'error');
                     }
@@ -236,15 +228,9 @@ function innitdata(active){
         if(rowDiv){
             ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark,"nativeTpId":rowDiv.esNativeTpId}).success(function(res){
                 if(res.status==0){
-                    $("#localqd").treegrid('append',{
-                        parent:rowDiv.id,
-                        data:[{
-                            esNativeTpName:qdName,
-                            esNativeTpYear:qdYear,
-                            esComment:qdRemark
-                        }]
-                    })
                     innitdata("find_natives");
+
+                    $("#localqd").treegrid("expand",creatQd);
                     $("#editTempQd").window('close');
                 }else{
                     swal('参数错误', '', 'error');
@@ -323,7 +309,8 @@ function adgQdBtn(rowId){
     creatQd=rowId
     var e = e || window.event;
     e.stopPropagation();//防止出现下拉
-    $("#editTempQd").window("open")
+    $("#formTempQd").form("clear");
+    $("#editTempQd").window("open");
 }
 //防止树形表单子节点点击出现下拉效果
 $(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree tr").click(function(){
@@ -341,8 +328,12 @@ function checkData(rowId) {
             "method":"checkNativeTp",
             "nativeTpId":rowDiv.esNativeTpId,
             "nativeTpName":rowDiv.esNativeTpName,
-        }).success(function () {
-            console.log("校验模板")
+        }).success(function (res) {
+            if(res.status==0){
+
+            }else{
+
+            }
         })
     }else  if(rowId.indexOf("qd")==0){
         ajaxPost('/NativeAndNation/doPost',{
@@ -351,8 +342,12 @@ function checkData(rowId) {
             "nativeTpId":rowDiv.esNativeTpId,
             "nativeTpName":rowDiv.esNativeTpName,
             "nativeTpId":parentId
-        }).success(function () {
-            console.log("校验清单")
+        }).success(function (res) {
+            if(res.status==0){
+
+            }else{
+
+            }
         })
     }
 
