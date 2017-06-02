@@ -207,7 +207,6 @@ function hyc() {
 
     m_planId = qjMsg.planId;
     $("#accordion").html("");
-    console.log(JSON.stringify(paramsName));
     ajaxPost('/plan/get_planInfo', paramsName).success(function (res) {
 
         if(res.status == 0){
