@@ -3,7 +3,7 @@
  */
 // 导航
 $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">耦合清单</span><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatCoupQd()">新建</button><button class="qdEdit" onclick="editCoupQd()">编辑</button><button class="qdDelet" onclick="coupDelete()">删除</button></span>');
-var coupingQd,checkQgQd;
+var coupingQd,checkQgQd,localQd;
 $(".coupSet").layout();// 耦合设置面板
 function innitdata(){  //全国清单的初始化
     $("#couqd").datagrid({
@@ -276,13 +276,20 @@ function nextCoup(){//点击下一步按钮
             swal('请先选择全国清单', '', 'error');
         }
     }else if(conText=="第二步"){
-        $(".cloudui .coupSetTitleList").children("li").eq(1).removeClass("active");
-        $(".cloudui .coupSetTitleList").children("li").eq(2).addClass("active");
-        $("#prevCoup").show();//最后一步 上一步按钮
-        $("#nextCoup").hide();//最后一步 隐藏下一步按钮
-        $(".coupSetCon").eq(0).hide();//隐藏其他步骤
-        $(".coupSetCon").eq(1).hide();
-        $(".coupSetCon").eq(2).show();
+        localQd=$("#localTable").datagrid("getSelected");
+        if(localQd!=''&&localQd!=null&&localQd!=undefined){
+            $(".cloudui .coupSetTitleList").children("li").eq(1).removeClass("active");
+            $(".cloudui .coupSetTitleList").children("li").eq(2).addClass("active");
+            $("#prevCoup").show();//最后一步 上一步按钮
+            $("#nextCoup").hide();//最后一步 隐藏下一步按钮
+            $(".coupSetCon").eq(0).hide();//隐藏其他步骤
+            $(".coupSetCon").eq(1).hide();
+            $(".coupSetCon").eq(2).show();
+            var mbIndex=$(".cloudui .coupSetCon #coupSetMb").val();
+            localTable(mbIndex)
+        }else{
+            swal('请先选择本地清单', '', 'error');
+        }
     }
 }
 function prevCoup(){
@@ -307,6 +314,8 @@ function prevCoup(){
         $(".coupSetCon").eq(0).show();//隐藏其他步骤
         $(".coupSetCon").eq(1).hide();
         $(".coupSetCon").eq(2).hide();
+        var mbIndex=$(".cloudui .coupSetCon #coupSetMb").val();
+        localTable(mbIndex)
     }
 }
 //耦合措施第二步
@@ -320,8 +329,6 @@ function mbSelect() {
                 $(".cloudui .coupSetCon .coupSetMb").append(mbDiv);
             }
             var mbIndex=$(".cloudui .coupSetCon #coupSetMb").val();
-            console.log("模板索引")
-            console.log(mbIndex)
             localTable(mbIndex)
         }else{
             swal('参数故障', '', 'error')
