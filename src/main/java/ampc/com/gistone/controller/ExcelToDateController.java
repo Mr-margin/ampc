@@ -164,9 +164,9 @@ public class ExcelToDateController {
 	 * TODO 行业描述
 	 */
 	@RequestMapping("excel/checkDoc")
-	public Map update_SectorDocExcelData(Long userId,Long qdId,String filePath) {
+	public Map update_SectorDocExcelData(Long userId,Long templateId,String filePath) {
 		userId=1L;
-		qdId=1L;
+		templateId=1L;
 		filePath="D:\\清单数据\\应急系统新_1描述文件.xlsx";
 		//出错的文件保存路径
 		String outPath=configUtil.getDocURL();
@@ -185,7 +185,7 @@ public class ExcelToDateController {
 			}
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			ExcelToDate ed=new ExcelToDate();
-			List<TSectordocExcel> tse = ed.ReadSectorDOC(filePath,versionId,userId,msg,outPath,qdId);
+			List<TSectordocExcel> tse = ed.ReadSectorDOC(filePath,versionId,userId,msg,outPath,templateId);
 			//如果错误信息大于0 则证明出错了
 			if(msg.size()>0||tse==null){
 				LogUtil.getLogger().error("读取行业描述Excel出错!");
@@ -201,7 +201,7 @@ public class ExcelToDateController {
 			}
 			filePath=URLEncoder.encode(filePath, "utf-8");
 			// 调用减排计算接口 并获取结果Json
-			String url=configUtil.getQdTemplate()+"/import/importTemplate?bigIndex="+qdId+"&version=1&filePath="+filePath;
+			String url=configUtil.getQdTemplate()+"/import/importTemplate?bigIndex="+templateId+"&version=1&filePath="+filePath;
 			String getResult = ClientUtil.doPost(url,"");
 			// 并根据减排分析得到的结果进行Json的解析
 			Map resultMap=mapper.readValue(getResult, Map.class);
@@ -242,7 +242,7 @@ public class ExcelToDateController {
 	 * @return 返回响应结果对象
 	 * TODO 条件
 	 */
-	public Map update_QueryExcelData(Long userId,Long qdId,String filePath) {
+	public Map update_QueryExcelData(Long userId,Long templateId,String filePath) {
 		//出错的文件保存路径
 		String outPath=configUtil.getQueryURL();
 		//错误信息的数据集合
@@ -260,7 +260,7 @@ public class ExcelToDateController {
 			}
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			ExcelToDate ed=new ExcelToDate();
-			List<TQueryExcel> tqe = ed.ReadQuery(filePath,versionId,userId,msg,outPath,qdId);
+			List<TQueryExcel> tqe = ed.ReadQuery(filePath,versionId,userId,msg,outPath,templateId);
 			//如果错误信息大于0 则证明出错了
 			if(msg.size()>0||tqe==null){
 				LogUtil.getLogger().error("读取行业筛选条件Excel出错!");
@@ -299,7 +299,7 @@ public class ExcelToDateController {
 	 * @param response    响应
 	 * @return 返回响应结果对象
 	 */
-	public Map update_SectorData(Long userId,Long qdId,String filePath) {
+	public Map update_SectorData(Long userId,Long templateId,String filePath) {
 		//出错的文件保存路径
 		String outPath=configUtil.getSectorURL();
 		//错误信息的数据集合
@@ -312,7 +312,7 @@ public class ExcelToDateController {
 			String versionId="行业文件"+time;
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			ExcelToDate ed=new ExcelToDate();
-			List<TSectorExcel> readSector = ed.ReadSector(filePath,versionId,userId,msg,outPath,qdId);
+			List<TSectorExcel> readSector = ed.ReadSector(filePath,versionId,userId,msg,outPath,templateId);
 			//如果错误信息大于0 则证明出错了
 			if(msg.size()>0||readSector==null){
 				LogUtil.getLogger().error("读取行业Excel出错!");
@@ -353,8 +353,8 @@ public class ExcelToDateController {
 	 * @return 返回响应结果对象
 	 */
 	@RequestMapping("excel/checkNative")
-	public Map check_nativeExcelData(String filePath) {
-		Long qdId=1L;
+	public Map check_nativeExcelData(Long userId,Long templateId,Long qdId,String filePath) {
+		qdId=1L;
 		filePath="D:\\清单数据\\应急系统新_3清单数据_hb_ywjv11_QY3_CPH1.xlsx";
 		//出错的文件保存路径
 		String outPath=configUtil.getDataURL();
