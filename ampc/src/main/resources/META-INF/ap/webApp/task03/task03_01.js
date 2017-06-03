@@ -68,6 +68,7 @@ $.each(csMsg.provinceCodes, function (k, col) {
 $('#sx').tabs({
     border: true,
     plain:true,
+    narrow:true,
     onSelect:function(title){
         if(title != '已控制点源'){
             try {
@@ -524,13 +525,11 @@ function show_zicuoshi_table(columns, b_data) {
         pagination: false, // 在表格底部显示分页工具栏
         clickToSelect: true,//设置true 将在点击行时，自动选择rediobox 和 checkbox
         singleSelect: true,//设置True 将禁止多选
-        striped: false, // 使表格带有条纹
-        silent: true, // 刷新事件必须设置
+        fit:true,
         showGroup: true,
         scrollbarSize: 0,
 //        title:"DataGrid - SubGrid",
-        fitColumns: "true",
-
+        fitColumns: true,
         view: detailview,
         // onExpandRow: function(index,row){
         //     $('#show_zicuoshi_table').datagrid('fixDetailRowHeight',index);
@@ -1047,8 +1046,9 @@ function point_table() {
             dataType: "json",
             columns: columns,
             // data:res.data,
-            toolbar:'#delSX',
-            height:'calc(100% - 100px)',
+//            toolbar:'#delSX',
+            toolbar:'.sxRequirement',
+            fit:true,
             checkOnSelect:true,
             selectOnCheck:true,
             clickToSelect: true,// 点击选中行
@@ -1135,7 +1135,8 @@ function point_table() {
                         tablejieguo += "已删除点源：" + delSXtableRow.length +','
                     }
                     tablejieguo = "筛选点源：" + data.append.sourceTotalCount + ',<br />' + tablejieguo;
-                    $('.sxRequirement').html(tablejieguo);
+                    $('.sxRequirement>.sxR-text').html(tablejieguo);
+                    $('#metTable_point').datagrid('resize');
                     $("#shaixuan_num").attr("title", tablejieguo.substring(0, tablejieguo.length - 1));
                 }else {
                     swal('无数据', '', 'error');
@@ -1186,7 +1187,8 @@ function edit_point_table() {
             dataType: "json",
             columns: columns,
             // data:res.data,
-            toolbar:'#delEdit',
+            toolbar:'.sxRequirement1',
+            fit:true,
             checkOnSelect:true,
             selectOnCheck:true,
             clickToSelect: true,// 点击选中行
@@ -1274,7 +1276,7 @@ function edit_point_table() {
                     if(delSXtableRow.length > 0){
                         tablejieguo += "已删除点源：" + delSXtableRow.length +','
                     }
-                    $('.sxRequirement1').html(tablejieguo.substring(0, tablejieguo.length - 1))
+                    $('.sxRequirement1>.sxR-text').html(tablejieguo.substring(0, tablejieguo.length - 1))
                 }else {
                     swal('无数据', '', 'error');
                 }
