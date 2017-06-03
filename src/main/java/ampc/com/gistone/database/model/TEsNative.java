@@ -32,8 +32,18 @@ public class TEsNative {
     private Long esNativeTpId;
     
     private String filePath;
+    
+    private String isVerify;
 
-    public String getFilePath() {
+    public String getIsVerify() {
+		return isVerify;
+	}
+
+	public void setIsVerify(String isVerify) {
+		this.isVerify = isVerify;
+	}
+
+	public String getFilePath() {
 		return filePath;
 	}
 

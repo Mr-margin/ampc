@@ -264,8 +264,6 @@ public class NativeAndNationController {
 			tEsNativeTpMap.put("userId", userId);
 			tEsNativeTpMap.put("startTotal", (pageNum*pageSize)-pageSize+1);
 			tEsNativeTpMap.put("endTotal", pageNum*pageSize);
-//			tEsNativeTp=new TEsNativeTp();
-//			tEsNativeTp.setUserId(userId);
 			//查询本地清单模板
 			List<Map> listTp=tEsNativeTpMapper.selectAllNativeTp(tEsNativeTpMap);
 			//循环全部模板
@@ -615,6 +613,22 @@ public class NativeAndNationController {
 				}
 			}
 			
+			//文件输出路径
+			String nativeOutPath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName+"/outPath";
+			String nativesOutPath = pro.get("LocalListingFilePath")+""+userId+"/";
+			//获取file对象
+			File outPath =new File(nativeOutPath);
+			File outPaths =new File(nativesfilePath);
+			//目录已经存在
+			if(outPath.exists()){
+				System.out.println("目录已经存在!");
+				//判断是否包含该文件模板
+			}else{
+				//不存在进行创建目录
+				outPath.mkdirs();
+			}
+			
+			
 			
 			//添加数据
 			TEsNativeTp tEsNativeTp=new TEsNativeTp();
@@ -623,6 +637,7 @@ public class NativeAndNationController {
 			tEsNativeTp.setEsNativeTpYear(nativeTpYear);
 			tEsNativeTp.setEsComment(nativeTpRemark);
 			tEsNativeTp.setFilePath(nativefilePath);
+			tEsNativeTp.setEsNativeTpOutPath(nativeOutPath);
 			//插入数据
 			int total=tEsNativeTpMapper.insertSelective(tEsNativeTp);
 			Map msgMap=new HashMap();
@@ -998,7 +1013,7 @@ public class NativeAndNationController {
 						TEsNativeTp	tEsNativeTp=new TEsNativeTp();
 						tEsNativeTp.setUserId(userId);
 						tEsNativeTp.setEsNativeTpId(nativeTpId);
-						tEsNativeTp.setIsEffective("1");
+						tEsNativeTp.setIsVerify("1");
 						int total=tEsNativeTpMapper.updateByIdSelective(tEsNativeTp);
 						if(total==1){
 							msgMap.put("msg", true);
@@ -1155,7 +1170,7 @@ public class NativeAndNationController {
 				//修改清单模板
 				TEsNative tEsNative = new TEsNative();
 				tEsNative.setEsNativeId(nativeId);
-				tEsNative.setIsEffective("1");
+				tEsNative.setIsVerify("1");
 				int total=tEsNativeMapper.updateByPrimaryKeySelective(tEsNative);
 				if(total==1){
 					msgMap.put("msg", true);

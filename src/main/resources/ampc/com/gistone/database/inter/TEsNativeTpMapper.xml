@@ -15,6 +15,8 @@
     <result column="ES_VERSION" property="esVersion" jdbcType="VARCHAR" />
     <result column="IS_UPLOAD" property="isUpload" jdbcType="VARCHAR" />
     <result column="FILEPATH" property="filePath" jdbcType="VARCHAR" />
+    <result column="ES_NATIVE_TP_OUTPATH" property="esNativeTpOutPath" jdbcType="VARCHAR" />
+    <result column="IS_VERIFY" property="isVerify" jdbcType="VARCHAR" />
   </resultMap>
   
   <resultMap id="ListResultMap" type="hashMap" >
@@ -31,11 +33,13 @@
     <result column="ES_VERSION" property="esVersion" jdbcType="VARCHAR" />
     <result column="IS_UPLOAD" property="isUpload" jdbcType="VARCHAR" />
     <result column="FILEPATH" property="filePath" jdbcType="VARCHAR" />
+    <result column="ES_NATIVE_TP_OUTPATH" property="esNativeTpOutPath" jdbcType="VARCHAR" />
+    <result column="IS_VERIFY" property="isVerify" jdbcType="VARCHAR" />
   </resultMap>
   
   <sql id="Base_Column_List" >
     ES_NATIVE_TP_ID, ES_NATIVE_TP_NAME, ES_NATIVE_TP_YEAR, ES_UPLOAD_TP_TIME, ES_COMMENT, 
-    ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME, ES_VERSION,IS_UPLOAD,FILEPATH
+    ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, DELETE_TIME, ES_VERSION,IS_UPLOAD,FILEPATH,ES_NATIVE_TP_OUTPATH,IS_VERIFY
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -51,11 +55,11 @@
     insert into T_ES_NATIVE_TP (ES_NATIVE_TP_ID, ES_NATIVE_TP_NAME, ES_NATIVE_TP_YEAR, 
       ES_UPLOAD_TP_TIME, ES_COMMENT, ADD_TIME, 
       UPDATE_TIME, USER_ID, IS_EFFECTIVE, 
-      DELETE_TIME, ES_VERSION,IS_UPLOAD,FILEPATH)
+      DELETE_TIME, ES_VERSION,IS_UPLOAD,FILEPATH,ES_NATIVE_TP_OUTPATH,IS_VERIFY)
     values (#{esNativeTpId,jdbcType=DECIMAL}, #{esNativeTpName,jdbcType=VARCHAR}, #{esNativeTpYear,jdbcType=DECIMAL}, 
       #{esUploadTpTime,jdbcType=TIMESTAMP}, #{esComment,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=DECIMAL}, #{isEffective,jdbcType=VARCHAR}, 
-      #{deleteTime,jdbcType=TIMESTAMP}, #{esVersion,jdbcType=VARCHAR}, #{isUpload,jdbcType=VARCHAR},#{filePath,jdbcType=VARCHAR})
+      #{deleteTime,jdbcType=TIMESTAMP}, #{esVersion,jdbcType=VARCHAR}, #{isUpload,jdbcType=VARCHAR},#{filePath,jdbcType=VARCHAR},#{esNativeTpOutPath,jdbcType=VARCHAR},#{isVerify,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TEsNativeTp" >
     insert into T_ES_NATIVE_TP
@@ -99,6 +103,12 @@
       <if test="filePath != null" >
         FILEPATH,
       </if>
+      <if test="esNativeTpOutPath != null" >
+        ES_NATIVE_TP_OUTPATH,
+      </if>
+      <if test="isVerify != null" >
+        IS_VERIFY,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="esNativeTpId != null" >
@@ -139,6 +149,12 @@
       </if>
       <if test="filePath != null" >
         #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="esNativeTpOutPath != null" >
+        #{esNativeTpOutPath,jdbcType=VARCHAR}
+      </if>
+      <if test="isVerify != null" >
+        #{isVerify,jdbcType=VARCHAR}
       </if>
     </trim>
   </insert>
@@ -181,6 +197,12 @@
       <if test="filePath != null" >
         FILEPATH = #{filePath,jdbcType=VARCHAR},
       </if>
+      <if test="esNativeTpOutPath != null" >
+        ES_NATIVE_TP_OUTPATH = #{esNativeTpOutPath,jdbcType=VARCHAR},
+      </if>
+      <if test="isVerify != null" >
+        IS_VERIFY = #{isVerify,jdbcType=VARCHAR}
+      </if>
     </set>
     where ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL}
   </update>
@@ -197,7 +219,9 @@
       DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       ES_VERSION = #{esVersion,jdbcType=VARCHAR},
       IS_UPLOAD = #{isUpload,jdbcType=VARCHAR},
-      FILEPATH = #{filePath,jdbcType=VARCHAR}
+      FILEPATH = #{filePath,jdbcType=VARCHAR},
+      ES_NATIVE_TP_OUTPATH = #{esNativeTpOutPath,jdbcType=VARCHAR},
+      IS_VERIFY = #{isVerify,jdbcType=VARCHAR}
     where ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL}
   </update>
   
@@ -246,6 +270,12 @@
       </if>
       <if test="filePath != null" >
         FILEPATH = #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="esNativeTpOutPath != null" >
+        ES_NATIVE_TP_OUTPATH = #{esNativeTpOutPath,jdbcType=VARCHAR},
+      </if>
+      <if test="isVerify != null" >
+        IS_VERIFY = #{isVerify,jdbcType=VARCHAR}
       </if>
     </set>
     where ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL} and 
