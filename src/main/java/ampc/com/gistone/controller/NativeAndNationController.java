@@ -821,7 +821,7 @@ public class NativeAndNationController {
 				LogUtil.getLogger().error("NativeAndNationController 本地清单模板id为空或出现非法字符!");
 				return AmpcResult.build(1003, "本地清单模板id为空或出现非法字符!");
 			}
-			Long nativeTpName=Long.parseLong(param.toString());
+			String nativeTpName=param.toString();
 			
 			//读取配置文件路径
 			String config = "/extract.properties";
@@ -1091,6 +1091,13 @@ public class NativeAndNationController {
 			}
 			String nativeName = param.toString();
 			
+			param=data.get("nativeTpName");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 清单名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单名称为空或出现非法字符!");
+			}
+			String nativeTpName = param.toString();
+			
 			//读取配置文件路径
 			String config = "/extract.properties";
 			InputStream ins = getClass().getResourceAsStream(config);
@@ -1112,8 +1119,8 @@ public class NativeAndNationController {
 				logger.error("close " + config + " file error!", e);
 			}
 			//获取路径
-			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeName;
-			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/";
+			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName+"/"+nativeName;
+			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName+"/"+nativeName;
 			//获取file对象
 			File files =new File(nativesfilePath);
 			File file =new File(nativefilePath);
