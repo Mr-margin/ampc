@@ -1446,6 +1446,10 @@ dl, dd {
 .cloudui .openness .title_{margin:12px 0 8px 0;}
 .cloudui .distributed_map .tool_in #dropdownMenu1{text-align: center;}
 .clearfix:after {clear:both;content:'.';display:block;width: 0;height: 0;visibility:hidden;}
+/*清单输入框*/
+.cloudui .rwCon .qdContent .qdName,.cloudui .rwCon .qdContent .qdYear{
+  color: gray;
+}
 /*源清单-全国清单*/
 .cloudui .yqdTable{width: 100%;height:100%;}
 .cloudui .yqdTable .tableBox{width: 100%;height: 100%;}
