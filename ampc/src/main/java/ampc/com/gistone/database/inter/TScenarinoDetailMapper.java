@@ -26,6 +26,8 @@ public interface TScenarinoDetailMapper {
 	 */
 	TScenarinoDetail selectStartAndEndDate(Long scenarinoId);
 	
+	Long selectErrorCount(Long userId);
+	
 	/**
 	 * @Description: 修改情景类型
 	 * @param map
