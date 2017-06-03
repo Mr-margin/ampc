@@ -1091,8 +1091,24 @@ AND S.IS_EFFECTIVE ='1'
     <result column="BASIS_SCENARINO_ID" property="basisScenarinoId" jdbcType="DECIMAL" />
     <result column="PATH_DATE" property="pathDate" jdbcType="TIMESTAMP" />
     <result column="SCEN_TYPE" property="scenType" jdbcType="VARCHAR" />
+    <result column="EXPAND4" property="expand4" jdbcType="VARCHAR" />
   </resultMap>
   
+  <!-- 查询当前用户下有多少个错误的情景 -->
+  <select id="selectErrorCount" parameterType="java.util.Long" resultType="java.util.Long" >
+   	 SELECT  count(*)
+  		FROM T_SCENARINO_DETAIL 
+			  WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+			  AND EXPAND4!=NULL
+  </select>
+  
+  <!-- 查询所有的错误情景所属的任务ID -->
+  <select id="selectMissionIdByErrorScenarino" parameterType="java.util.Long" resultType="java.util.Long" >
+   	 SELECT distinct MISSION_ID
+  		FROM T_SCENARINO_DETAIL 
+			  WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
+			  AND EXPAND4!=NULL
+  </select>
    <!-- new根据任务Id查询情景列表 并可根据条件名模糊查询 -->
   <select id="selectByMissionIdNew" parameterType="hashMap" resultMap="scenarinoListMapNew" >
    	 SELECT  <include refid="scenarino_Column_List"/>
