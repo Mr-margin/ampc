@@ -61,7 +61,7 @@ public class NativeAndNationController {
 	
 	private TEsNative tEsNative;
 	
-	private TEsNativeTp tEsNativeTp;
+//	private TEsNativeTp tEsNativeTp;
 	
 	private final static Logger logger = LoggerFactory.getLogger(ResultPathUtil.class);
 	private ExtractConfig extractConfig;
@@ -815,9 +815,63 @@ public class NativeAndNationController {
 				return AmpcResult.build(1003, "本地清单模板id为空或出现非法字符!");
 			}
 			Long nativeTpId=Long.parseLong(param.toString());
-			//日期格式
-			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date date=new Date();
+			
+			param=data.get("nativeTpName");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单模板id为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单模板id为空或出现非法字符!");
+			}
+			Long nativeTpName=Long.parseLong(param.toString());
+			
+			//读取配置文件路径
+			String config = "/extract.properties";
+			InputStream ins = getClass().getResourceAsStream(config);
+			Properties pro = new Properties();
+			try {
+				pro.load(ins);
+				extractConfig = new ExtractConfig();
+				extractConfig.setLocalListingFilePath((String) pro.get("LocalListingFilePath"));
+			} catch (FileNotFoundException e) {
+				logger.error(config + " file does not exits!", e);
+			} catch (IOException e) {
+				logger.error("load " + config + " file error!", e);
+			}
+			//关闭输入流
+			try {
+				if (ins != null)
+					ins.close();
+			} catch (IOException e) {
+				logger.error("close " + config + " file error!", e);
+			}
+			//获取路径
+			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName+"/"+nativeName;
+			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName+"/"+nativeName;
+			//获取file对象
+			File files =new File(nativesfilePath);
+			File file =new File(nativefilePath);
+			//目录已经存在
+			if(files.exists()){
+				System.out.println("目录已经存在!");
+				//判断是否包含该文件模板
+				if(file.exists()){
+					System.out.println("该模板已经存在");
+				}else{
+					//模板文件夹不存在,进行创建
+					file.mkdir();
+				}
+			}else{
+				//不存在进行创建目录
+				files.mkdirs();
+				if(file.exists()){
+					System.out.println("文件已存在");
+				}else{
+					//不存在创建文件
+					//模板文件夹创建完成
+					file.mkdir();
+					System.out.println("模板文件夹创建完成");
+				}
+			}
+			
 			//添加数据
 			TEsNative tEsNative=new TEsNative();
 			tEsNative.setUserId(userId);
