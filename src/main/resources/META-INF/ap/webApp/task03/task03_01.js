@@ -1150,7 +1150,17 @@ function point_table() {
                     $('#metTable_point').datagrid('resize');
                     $("#shaixuan_num").attr("title", tablejieguo.substring(0, tablejieguo.length - 1));
                 }else {
-                    swal('无数据', '', 'error');
+                    // swal('无数据', '', 'error');
+                    swal({
+                        title: "无数据",
+                        type:'error',
+                        // text: "筛选条件至少选择一项，全部点源请对剩余点源进行操作.",
+                        timer: 2000,
+                        showConfirmButton: false
+                    },function () {
+                        swal.close();
+                        $("#sxTableMap").window('close');
+                    });
                 }
             },
             onLoadError: function () {
