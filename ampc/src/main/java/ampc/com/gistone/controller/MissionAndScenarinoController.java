@@ -1991,4 +1991,112 @@ public class MissionAndScenarinoController {
 			return AmpcResult.build(1001, "系统异常",null);
 		}
 	}
+	/**
+	 * 任务查询方法
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
+	 */
+	@RequestMapping("new_mission/get_errormission_list")
+	public AmpcResult new_get_ErrorMission_list(HttpServletRequest request, HttpServletResponse response){
+	    //添加异常捕捉
+		try {
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			//当前页码
+			Integer pageNum=Integer.valueOf(request.getParameter("page"));
+			//每页展示的条数
+			Integer pageSize=Integer.valueOf(request.getParameter("rows"));
+			//列表排序  暂时内定按照任务ID逆序排序
+			String sort=request.getParameter("sort");
+			//用户的id  确定当前用户
+			String userId=request.getParameter("userId");
+			//添加分页信息到参数中
+			Map<String,Object> map=new HashMap<String,Object>();
+			map.put("startNum", ((pageNum-1)*pageSize));
+			map.put("endNum", (pageNum*pageSize));
+			map.put("userId", userId);
+			//新建返回结果的Map
+			Map<String,Object> mapResult=new HashMap<String,Object>();
+			//返回的页码
+			mapResult.put("page", pageNum);
+			//查询当前用户下有多少错误的情景
+			Long errorCount=tScenarinoDetailMapper.selectErrorCount(Long.parseLong(userId));
+			mapResult.put("errorCount", errorCount);
+			//所有的错误任务ID
+			List<Long> errorMissionId=tScenarinoDetailMapper.selectMissionIdByErrorScenarino(Long.parseLong(userId));
+			map.put("missionlist", errorMissionId);
+			//查询全部写入返回结果集
+			List<Map> list = this.tMissionDetailMapper.selectErrorMission(map);
+			//循环结果集合
+			for(Map ss:list){
+				//获取到范围ID
+				Long missionDomainId=Long.valueOf(ss.get("missionDomainId").toString());
+				//获取任务ID
+				Long missionId=Long.valueOf(ss.get("missionId").toString());
+				//查询情景条件
+				Map queryMap=new HashMap();
+				queryMap.put("missionId", missionId);
+				queryMap.put("userId", userId);
+				//根据任务ID查询所有的情景
+				List<Map> tmMap=tScenarinoDetailMapper.selectByMissionIdNew(queryMap);
+				//记录当前有多少情景
+				int s=0;
+				//组装子集的数据
+				List children=new ArrayList();
+				Map qjTitle=new HashMap();
+				qjTitle.put("id", missionId+"title");
+				qjTitle.put("scenarinoNameTitle", "情景名称");
+				qjTitle.put("scenarinoIdTitle","ID");
+				qjTitle.put("operationTitle","操作");
+				qjTitle.put("adminTitle","管理");
+				qjTitle.put("scenarinoStatusTitle","情景状态");
+				qjTitle.put("runTimeTitle","执行日期");
+				qjTitle.put("EndDateTitle","结束日期");
+				qjTitle.put("scenTypeTitle","类型");
+				qjTitle.put("settingTitle","设置");
+				int missionErrorCount=0;
+				//加入数据
+				children.add(qjTitle);
+				for(int i=0;i<tmMap.size();i++){
+					tmMap.get(i).put("id", "qj"+tmMap.get(i).get("scenarinoId"));
+					//查询有多少个错误的情景  累计增加
+					if(tmMap.get(i).get("expand4")!=null){
+						missionErrorCount++;
+					}
+					children.add(tmMap.get(i));
+					//判断有多少个正在执行的情景
+					if(tmMap.get(i).get("scenarinoStatus").equals(6)){
+						s++;
+					}
+				}
+				//记录当前任务下有多少个错误的情景
+				ss.put("missionErrorCount",missionErrorCount);
+				//写入情景信息
+				ss.put("children", children);
+				//写入ID
+				ss.put("id", "rw"+ss.get("missionId"));
+				//写入当前任务有多少情景
+				ss.put("scnum", tmMap.size());
+				//写入当前任务有多少正在执行的情景
+				ss.put("zxscnum", s);
+				//根据domain查询domain信息
+				TDomainMission tDomainMission=tDomainMissionMapper.selectByPrimaryKey(missionDomainId);
+				//写入domain名称
+				ss.put("domainName", tDomainMission.getDomainName());
+				ss.put("state", "closed");
+			}
+			mapResult.put("total", this.tMissionDetailMapper.selectCountOrByQueryName(map));
+			mapResult.put("rows",list);
+			
+			LogUtil.getLogger().info("MissionAndScenarinoController 任务查询成功");
+			//返回结果
+			return AmpcResult.ok(mapResult);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("MissionAndScenarinoController 任务查询方法异常",e);
+			//返回错误信息
+			return AmpcResult.build(1001, "系统异常",null);
+		}
+	}
+	
 }
