@@ -28,8 +28,28 @@ public class TEsNativeTp {
     private String isUpload;
     
     private String filePath;
+    
+    private String esNativeTpOutPath;
+    
+    private String isVerify;
 
-    public String getFilePath() {
+    public String getIsVerify() {
+		return isVerify;
+	}
+
+	public void setIsVerify(String isVerify) {
+		this.isVerify = isVerify;
+	}
+
+	public String getEsNativeTpOutPath() {
+		return esNativeTpOutPath;
+	}
+
+	public void setEsNativeTpOutPath(String esNativeTpOutPath) {
+		this.esNativeTpOutPath = esNativeTpOutPath;
+	}
+
+	public String getFilePath() {
 		return filePath;
 	}
 
