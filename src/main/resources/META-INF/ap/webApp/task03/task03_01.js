@@ -1124,18 +1124,22 @@ function point_table() {
                         tablejieguo = "全部,";
                     } else {
                         $.each(sc_val.filters[sc_val.filters.length - 1], function (k, vol) {//循环最后一个条件，这个条件是要添加显示的条件
-                            $.each(query, function (i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
-                                if (col.queryEtitle == k) {
-                                    tablejieguo += col.queryName + "：" + vol + ",";
-                                }
-                            });
+                            if(k == 'companyname'){
+                                tablejieguo = '企业名称包含' + '：“' + vol.substring(1,vol.length-1) + '”，' + tablejieguo
+                            }else{
+                                $.each(query, function (i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
+                                    if (col.queryEtitle == k) {
+                                        tablejieguo += col.queryName + "：" + vol + "，";
+                                    }
+                                });
+                            }
                         });
                     }
                     if(delSXtableRow.length>0){
-                        tablejieguo += "已删除点源：" + delSXtableRow.length +','
+                        tablejieguo += "已删除点源：" + delSXtableRow.length +'，'
                     }
-                    tablejieguo = "筛选点源：" + data.append.sourceTotalCount + ',<br />' + tablejieguo;
-                    $('.sxRequirement>.sxR-text').html(tablejieguo);
+                    tablejieguo = "筛选点源：" + data.append.sourceTotalCount + '；<br />' + tablejieguo;
+                    $('.sxRequirement>.sxR-text').html(tablejieguo.substring(0, tablejieguo.length - 1));
                     $('#metTable_point').datagrid('resize');
                     $("#shaixuan_num").attr("title", tablejieguo.substring(0, tablejieguo.length - 1));
                 }else {
