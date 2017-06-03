@@ -23,10 +23,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ampc.com.gistone.database.inter.TAddressMapper;
 import ampc.com.gistone.database.inter.TEsCouplingMapper;
 import ampc.com.gistone.database.inter.TEsNationMapper;
 import ampc.com.gistone.database.inter.TEsNativeMapper;
 import ampc.com.gistone.database.inter.TEsNativeTpMapper;
+import ampc.com.gistone.database.inter.TSectorExcelMapper;
 import ampc.com.gistone.database.model.TEsCoupling;
 import ampc.com.gistone.database.model.TEsNation;
 import ampc.com.gistone.database.model.TEsNative;
@@ -55,9 +57,13 @@ public class NativeAndNationController {
 	@Autowired
 	public	TEsNativeMapper	tEsNativeMapper;
 	@Autowired
-	public	TEsNativeTpMapper tEsNativeTpMapper;
+	public	TEsNativeTpMapper	tEsNativeTpMapper;
 	@Autowired
-	public ExcelToDateController excelToDateController;
+	public ExcelToDateController	excelToDateController;
+	@Autowired
+	public TSectorExcelMapper	tSectorExcelMapper;
+	@Autowired
+	public TAddressMapper	tAddressMapper;
 	
 	private TEsNative tEsNative;
 	
@@ -113,8 +119,9 @@ public class NativeAndNationController {
 					listTps = find_couplingNativeTp(requestDate,request,response);
 				}else if("find_couplingNatives".equals(param)){
 					listTps = find_couplingNatives(requestDate,request,response);
+				}else if("findCityAndIndustryById".equals(param)){
+					listTps = findCityAndIndustryById(requestDate,request,response);
 				}
-				
 				else if("".equals(param)){
 					return AmpcResult.build(1001, "NativeAndNationController 请求方法参数异常!");
 				}
@@ -1547,6 +1554,57 @@ public class NativeAndNationController {
 		} catch (Exception e) {
 			LogUtil.getLogger().error("NativeAndNationController 查询清单模板下的清单数据信息异常!",e);
 			return AmpcResult.build(1001, "NativeAndNationController 查询清单模板下的清单数据信息异常!");
+		}
+	}
+	
+	/**
+	 * 根据id查询涉及到的城市和行业
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public AmpcResult findCityAndIndustryById(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			Long userId = Long.parseLong(param.toString());
+			
+			param=data.get("nationId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 全国清单ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "全国清单ID为空或出现非法字符!");
+			}
+			Long nationId = Long.parseLong(param.toString());
+			
+			param=data.get("nativesId");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 清单ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "全国清单ID为空或出现非法字符!");
+			}
+			String  nativeId = param.toString();
+			
+			
+			//根据本地清单id查询涉及到的城市
+			tAddressMapper.selectAll();
+			
+			//根据本地清单id查询涉及到的行业
+			tSectorExcelMapper.selectAll(userId);
+			
+			
+			
+			LogUtil.getLogger().info("NativeAndNationController 根据id查询涉及到的城市和行业信息成功!");
+			return AmpcResult.ok();
+		} catch (Exception e) {
+			LogUtil.getLogger().error("NativeAndNationController 根据id查询涉及到的城市和行业信息异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 根据id查询涉及到的城市和行业信息异常!");
 		}
 	}
 	
