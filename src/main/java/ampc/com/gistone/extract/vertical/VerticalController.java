@@ -26,7 +26,7 @@ public class VerticalController {
 //获取封装参数
 	@RequestMapping(value = "/vertical")
 	public AmpcResult vertical(@RequestBody Map<String, Object> requestParams) {
-		Map<String, Map> Params = (Map) requestParams.get("vertical");
+		Map<String, Map> Params = (Map) requestParams.get("data");
 		String calcType = String.valueOf(Params.get("calcType"));
 		String showType = String.valueOf(Params.get("showType"));
 		Double xmin = Double.valueOf(String.valueOf(Params.get("xmin")));
