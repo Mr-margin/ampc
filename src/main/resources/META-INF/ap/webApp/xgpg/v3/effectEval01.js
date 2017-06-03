@@ -878,8 +878,12 @@ function sceneTable() {
                 {field: "ck", checkbox: true},
                 {field: "scenarinoName", title: "情景名称"},
                 {field: "scenType", title: "情景描述"},
-                {field: "scenarinoStartDate", title: "时间"},
-                {field: "scenarinoEndDate", title: "时间"},
+                {field: "scenarinoStartDate", title: "时间",formatter:function(value,row,index){
+                    return  moment(value).format("YYYY年MM月DD日");
+                },align:'center'},
+                {field: "scenarinoEndDate", title: "时间",formatter:function(value,row,index){
+                    return  moment(value).format("YYYY年MM月DD日");
+                },align:'center'},
             ]],
             clickToSelect: true,// 点击选中行
             pagination: false, // 在表格底部显示分页工具栏
@@ -1210,7 +1214,7 @@ $(".cloudui .upDown").hover(function () {
 function showTitleFun() {
     $('#showTitle span').empty();
     $('#showTitle .compName').html("<span class='titleTab'><i class='en-tag'></i>"+"&nbsp;比较：</span>"+(changeType=="1"?"绝对量比较":"相对变化")).css({"margin-right":"40px"});
-    $('#showTitle .dataName').html("<span class='titleTab'><i class='en-flow-parallel'></i>"+"&nbsp;日期：</span>"+changeMsg.startD+"至"+changeMsg.endD).css({"margin-right":"40px"});
+    $('#showTitle .dataName').html("<span class='titleTab'><i class='br-calendar'></i>"+"&nbsp;日期：</span>"+changeMsg.startD+"至"+changeMsg.endD).css({"margin-right":"40px"});
     if (zhiCity.indexOf(changeMsg.pro) == -1) {
         if (changeMsg.station == 'avg') {
             $('#showTitle .proName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+changeMsg.proName);
