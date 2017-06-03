@@ -1054,7 +1054,7 @@ function point_table() {
             columns: columns,
             // data:res.data,
 //            toolbar:'#delSX',
-            toolbar:'.sxRequirement',
+            toolbar:'#sxRequirement',
             fit:true,
             checkOnSelect:true,
             selectOnCheck:true,
@@ -1146,7 +1146,7 @@ function point_table() {
                         tablejieguo += "已删除点源：" + delSXtableRow.length +'，'
                     }
                     tablejieguo = "筛选点源：" + data.append.sourceTotalCount + '；<br />' + tablejieguo;
-                    $('.sxRequirement>.sxR-text').html(tablejieguo.substring(0, tablejieguo.length - 1));
+                    $('#sxRequirement>.sxR-text').html(tablejieguo.substring(0, tablejieguo.length - 1));
                     $('#metTable_point').datagrid('resize');
                     $("#shaixuan_num").attr("title", tablejieguo.substring(0, tablejieguo.length - 1));
                 }else {
@@ -1198,7 +1198,7 @@ function edit_point_table() {
             dataType: "json",
             columns: columns,
             // data:res.data,
-            toolbar:'.sxRequirement1',
+            toolbar:'#sxRequirement1',
             fit:true,
             checkOnSelect:true,
             selectOnCheck:true,
@@ -1287,7 +1287,7 @@ function edit_point_table() {
                     if(delSXtableRow.length > 0){
                         tablejieguo += "已删除点源：" + delSXtableRow.length +','
                     }
-                    $('.sxRequirement1>.sxR-text').html(tablejieguo.substring(0, tablejieguo.length - 1))
+                    $('#sxRequirement1>.sxR-text').html(tablejieguo.substring(0, tablejieguo.length - 1))
                 }else {
                     swal('无数据', '', 'error');
                 }
