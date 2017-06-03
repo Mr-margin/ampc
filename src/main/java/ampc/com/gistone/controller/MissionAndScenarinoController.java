@@ -2086,7 +2086,7 @@ public class MissionAndScenarinoController {
 				ss.put("domainName", tDomainMission.getDomainName());
 				ss.put("state", "closed");
 			}
-			mapResult.put("total", this.tMissionDetailMapper.selectCountOrByQueryName(map));
+			mapResult.put("total", errorMissionId.size());
 			mapResult.put("rows",list);
 			
 			LogUtil.getLogger().info("MissionAndScenarinoController 任务查询成功");
