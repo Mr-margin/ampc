@@ -329,30 +329,45 @@
           <div class="col-6 sxTable" style="height: 100%;position: relative">
 
             <div id="sx" class="easyui-tabs" style="width:100%;height:100%;position: absolute;">
-              <div title="未控制点源" style="padding:20px;display:none;">
-                <div class="sxRequirement" style=""></div>
-                <div id="delSX">
-                  <button class="btn btn-success">删除</button>
-                </div>
+              <div title="未控制点源" style="padding:10px;display:none;">
+              <div class="sxRequirement" style="position:relactive;height:35px">
+                	<div class='sxR-text'>
+                	</div>
+                	<div id="delSX" style="position:absolute;top:4px;right:4px">
+                  		<button class="btn btn-success">删除</button>
+                	</div>
+               </div> 
+              	<div style='height:100%'>
+              		               
                 <table id="metTable_point">
                 </table>
+              	</div>                
               </div>
-              <div title="已控制点源" style="overflow:auto;padding:20px;display:none;">
+              <div title="已控制点源" style="overflow:auto;padding:10px;display:none;">
                 <!--<div id="delSXykz">-->
                   <!--<button class="btn btn-success">删除</button>-->
                 <!--</div>-->
-                <table id="metTable_point_ykz">
-                </table>
+                <div style='height:100%'>
+                	<table id="metTable_point_ykz">
+                	</table>
+                </div>                
               </div>
             </div>
             <div id="bj" class="easyui-tabs" style="width:100%;height:100%;position: absolute;">
-              <div title="被编辑点源" style="overflow:auto;padding:20px;display:none;">
-                <div class="sxRequirement1" style=""></div>
-                <div id="delEdit">
-                  <button class="btn btn-success">删除</button>
-                </div>
-                <table id="edit_point">
-                </table>
+              <div title="被编辑点源" style="overflow:auto;padding:10px;display:none;">
+              	<div style="height:100%">
+              		<div class="sxRequirement1" style="height:35px;position:relactive">
+                		<div class='sxR-text'>
+                		</div>
+                		<div id="delEdit" style="position:absolute;top:4px;right:4px">
+                  			<button class="btn btn-success">删除</button>
+                		</div>
+                	</div>
+                
+                	<table id="edit_point">
+                	</table>
+              	</div>
+                
               </div>
             </div>
 

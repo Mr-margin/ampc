@@ -22,44 +22,46 @@ var msg = {
     }
 };//用于存储情景信息
 (function () {
-    /*新增情景的事件绑定*/
-//    $('#rwgltablebox').on("click",'[field=missionEndDate]>div>a',function (e) {
-//      e.stopPropagation();
-//      e.preventDefault();
-//      createQJselect($(this).attr('data-missionId'));
-//      console.log($(this).attr('data-missionId'));
-//    })
     /*修改面包屑中的显示内容*/
     $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>');
     /*生成页面底部的分页器*/
-
     $('#rwpagination').pagination({
         total: 33,
         pageSize: 10,
         showPageList:false,
+//        layout:['info','sep','first','prev','sep','manual','sep','last','next'],
         onSelectPage:function(pageNumber, pageSize){
-            $.ajax({
-                url: '/ampc/mission/get_mission_list',
-                contentType: 'application/json',
-                method: 'post',
-                dataType: 'JSON',
-                data: JSON.stringify({
-                    "token": "",
-                    "data": {
-                        "queryName": '',
-                        "missionStatus": '',
-                        "pageNum": pageNumber,
-                        "pageSize": 10,
-                        "sort": '',
-                        "userId": 1
-                    }
-                }),
-                success: function (data) {
-//            transformdat=[];
-                    requestQJData(data.data);
-                    $('#rwgltable').treegrid({data: transformdata});
-                }
-            });
+//            $.ajax({
+//                url: '/ampc/mission/get_mission_list',
+//                contentType: 'application/json',
+//                method: 'post',
+//                dataType: 'JSON',
+//                data: JSON.stringify({
+//                    "token": "",
+//                    "data": {
+//                        "queryName": '',
+//                        "missionStatus": '',
+//                        "pageNum": pageNumber,
+//                        "pageSize": 10,
+//                        "sort": '',
+//                        "userId": 1
+//                    }
+//                }),
+//                success: function (data) {
+//                    requestQJData(data.data);
+//                    $('#rwgltable').treegrid({data: transformdata});
+//                }
+//            });
+        	$('#rwgltable').treegrid({
+        		queryParams:{
+        			"page":pageNumber,
+        			"rows":10,
+        			"queryName": '',
+        			"missionStatus": '',
+        			"sort": '',
+        			"userId": userId
+        		}	
+        	})
         }
     });
     /*生成相关创建任务的模态框*/
@@ -102,7 +104,8 @@ var msg = {
     });
     /*页面中间的任务列表部分的滚动条*/
     $("#rwgltablebox").slimScroll({
-        height: '100%'
+        height: '100%',
+        alwaysVisible:true  //滚动条的常显
     });
     /*事件绑定*/
     /*任务列表中设置的下拉框*/
@@ -122,20 +125,60 @@ var msg = {
     columnsRW[0].push({field: 'missionStartDate', title: '开始日期', width: 250, formatter: missionDateFormatter});
     columnsRW[0].push({field: 'missionStatus', title: '类型', width: 90, formatter: missionStatusFormatter});
     columnsRW[0].push({field: 'missionEndDate', title: '操作', width: 80, formatter: missionmanage});
-
+    //页面布局的渲染
     $('#rwglpanle').layout();
-    // $('#ceshi1').datagrid({
-    //     url:'/ampc/new_mission/get_mission_list',
-    //     mothod:'post',
-    //     pagination:true,
-    //     queryParams: {
-    //         sort: '',
-    //         userId: 1,
-    //         queryName: '',
-    //         missionStatus: ''
-    //     }
-    // })
-    $.ajax({
+    $('#rwgltable').treegrid({
+    	url: '/ampc/new_mission/get_mission_list',
+        idField: 'id',
+        showHeader: false,
+        checkbox: true,
+        animate: true,
+        border: false,
+        checkOnSelect: false,
+        fitColumns: true,
+//        pagination:true,
+        queryParams:{
+        	"page":1,
+        	"rows":10,
+        	"queryName": '',
+            "missionStatus": '',
+            "sort": '',
+            "userId": userId
+        },
+        loadFilter:function(data){
+        	return data.data;
+        },
+        treeField: 'missionName',
+        columns: columnsRW,
+        onClickRow: function (row) {
+            if (typeof row.children === 'undefined') {
+                msg.content.qjName = row.scenarinoName;
+                msg.content.qjId = row.scenarinoId;
+                msg.content.qjStartDate = row.scenarinoStartDate;
+                msg.content.qjEndDate = row.scenarinoEndDate;
+                msg.content.scenarinoStatus = row.scenarinoStatus;
+                msg.content.scenarinoStatuName = row.scenarinoStatuName;
+                msg.content.SCEN_TYPE = row.SCEN_TYPE;
+                storageqjmsg();
+                return
+            }
+            if ($('[node-id="' + row.id + '"]').hasClass('datagrid-row-clicked')) {
+                $('[node-id="' + row.id + '"]').removeClass('datagrid-row-clicked');
+                $('#rwgltable').treegrid('toggle', row.id);
+            } else {
+                $('[node-id="' + row.id + '"]').addClass('datagrid-row-clicked').siblings().removeClass('datagrid-row-clicked');
+                $('#rwgltable').treegrid('collapseAll').treegrid('expand', row.id);
+            }
+            msg.content.rwId = row.missionId;
+            msg.content.rwName = row.missionName;
+            msg.content.rwType = row.missionStatus;
+            msg.content.domainId = row.missionDomainId;
+            msg.content.esCouplingId = row.esCouplingId;
+            msg.content.esCouplingName = row.esCouplingName;
+            msg.content.esCodeRange = row.esCodeRange.split(',');
+        }
+    });
+    /*$.ajax({
         url: '/ampc/mission/get_mission_list',
         contentType: 'application/json',
         method: 'post',
@@ -205,7 +248,7 @@ var msg = {
             });
             $('#rwpagination').pagination({total:data.data.total});
         }
-    });
+    });*/
 //    启动表单验证
     formVerify();
 })();
@@ -246,12 +289,13 @@ function requestQJData(res) {
         });
     }
 }
+//格式化missionName列的显示，如果此行是任务就显示为任务的名称，如果此行是虚拟标题行则显示标题，如果是慈航石情景，则显示情景名称
 function missionNameFormatter(value, row, index) {
     if (typeof row.missionName === 'undefined') {
-        if (typeof row.missionNameTitle === 'undefined') {
-            return row.SCEN_TYPE == 3 ? '<h3 title="创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '">' + row.scenarinoName + '</h3>' : '<h3  title="' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '"><a href="#/yabj" style="text-decoration: underline">' + row.scenarinoName + '</a></h3>';
+        if (typeof row.scenarinoNameTitle === 'undefined') {
+            return row.scenType == 3 ? '<h3 title="创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '">' + row.scenarinoName + '</h3>' : '<h3  title="' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '"><a href="#/yabj" style="text-decoration: underline">' + row.scenarinoName + '</a></h3>';
         }
-        return row.missionNameTitle;
+        return row.scenarinoNameTitle;
     }
     return row.missionName
 }
@@ -259,18 +303,20 @@ function missionNameFormatter(value, row, index) {
 function storageqjmsg() {
     vipspa.setMessage(msg);
 }
+//格式化missionID的显示，如果此行是任务就显示任务的Id，如果此行是虚拟标题行则显示标题，如果是情景则显示情景ID
 function missionIdFormatter(value, row, index) {
     if (typeof row.missionId === 'undefined') {
-        if (typeof row.missionIdTitle === 'undefined') {
+        if (typeof row.scenarinoIdTitle === 'undefined') {
             return row.scenarinoId;
         }
-        return row.missionIdTitle;
+        return row.scenarinoIdTitle;
     }
     return 'No:' + row.missionId
 }
+//格式化domainName的显示，如果此行是任务就显示任务的模拟范围，如果此行是虚拟标题行则显示标题，如果是情景则显示情景的操作按钮
 function domainNameFormatter(value, row, index) {
     if (typeof row.domainName === 'undefined') {
-        if (typeof row.domainNameTitle === 'undefined') {
+        if (typeof row.operationTitle === 'undefined') {
             if (row.scenarinoStatus == 5) {
                 return "<a href='javascript:' onclick='startBtn()' style='color: #9CC8F7'><i class='im-play2'> 启动</i></a>";
             } else if (row.scenarinoStatus == 6) {
@@ -279,44 +325,47 @@ function domainNameFormatter(value, row, index) {
                 return "<a href='javascript:' style='color: #9CC8F7'><i class='im-play2'> 续跑</i></a>";
             }
         }
-        return row.domainNameTitle;
+        return row.operationTitle;
     }
     return '<div class="rwdetail">模拟范围：' + row.domainName + '</div>'
 }
+//格式化esCouplingName的显示，如果此行是任务则显示使用的清单名称，如果此行是虚拟标题行则显示为标题，如果此行是情景则为终止按钮
 function esCouplingNameFormatter(value, row, index) {
     if (typeof row.esCouplingName === 'undefined') {
-        if (typeof row.esCouplingNameTitle === 'undefined') {
+        if (typeof row.adminTitle === 'undefined') {
             if (row.scenarinoStatus == 6 || row.scenarinoStatus == 7) {
                 return "<a href='javascript:' style='color: #9CC8F7'><i class='im-stop'> 终止</i></a>"
             } else {
                 return "<i class='im-stop'style='color: #ccc'> 终止</i>";
             }
         }
-        return row.esCouplingNameTitle;
+        return row.adminTitle;
     }
     return '<div class="rwdetail">' + row.esCouplingName + '</div>'
 }
+//格式化missionAddTime的显示，如果此行是任务则显示创建时间，如果是标题行则显示标题，如果是情景行则显示情景的执行状态名称
 function missionAddTimeFormatter(value, row, index) {
     if (typeof row.missionAddTime === 'undefined') {
-        if (typeof row.missionAddTimeTitle === 'undefined') {
+        if (typeof row.scenarinoStatusTitle === 'undefined') {
             if (row.scenarinoStatus == 3 || row.scenarinoStatus == 6) {
                 return '<a href="javascript:" class="statusType">' + row.scenarinoStatuName + '</a>'
             } else {
                 return row.scenarinoStatuName
             }
         }
-        return row.missionAddTimeTitle;
+        return row.scenarinoStatusTitle;
     }
-    return '<div class="rwdetail">创建于&nbsp;' + moment(row.missionAddTime).format('YYYY-MM-DD HH:MM:ss') + '</div>';
+    return '<div class="rwdetail">创建于&nbsp;' + moment(row.missionAddTime).format('YYYY-M-D H:MM:ss') + '</div>';
 }
+//格式化missionDate的显示，如果此行是任务则显示任务的执行时间，如果是标题则显示标题，如果是情景则显示情景的执行时间
 function missionDateFormatter(value, row, index) {
     if (typeof row.missionStartDate === 'undefined') {
-        if (typeof row.missionStartDateTitle === 'undefined') {
+        if (typeof row.runTimeTitle === 'undefined') {
             return moment(row.scenarinoStartDate).format('YYYY-MM-DD') + '&nbsp;--&nbsp;' + moment(row.scenarinoEndDate).format('YYYY-MM-DD');
         }
-        return row.missionStartDateTitle;
+        return row.runTimeTitle;
     }
-    return '<div class="missionstatus"><div class="rwdetail">' + moment(row.missionStartDate).format('YYYY-MM-DD') + '&nbsp;--&nbsp;' + moment(row.missionEndDate).format('YYYY-MM-DD') + '</div></div><div class="missiondetail">情景：'+row.scnum+'，正在执行：'+row.zxscnum+'</div>';
+    return '<div class="missionstatus"><div class="rwdetail">' + moment(row.missionStartDate).format('YYYY-M-D') + '&nbsp;--&nbsp;' + moment(row.missionEndDate).format('YYYY-M-D') + '</div></div><div class="missiondetail">情景：'+row.scnum+'，正在执行：'+row.zxscnum+'</div>';
 }
 //  function missionStartDateFormatter(value, row, index) {
 //    if (typeof row.missionStartDate=== 'undefined') {
@@ -336,6 +385,7 @@ function missionDateFormatter(value, row, index) {
 //    }
 //    return '<div class="rwdetail">到&nbsp;'+moment(row.missionEndDate).format('YYYY-M-D')+'</div>';
 //  }
+//显示此行类型
 function missionStatusFormatter(value, row, index) {
     if (typeof row.missionStatus === 'undefined') {
         if (typeof row.missionStatusTitle === 'undefined') {
@@ -623,28 +673,16 @@ function formVerify() {
 }
 /*刷新datagrid的数据*/
 function reloadTreegrid() {
-    $.ajax({
-        url:  '/ampc/mission/get_mission_list',
-        contentType: 'application/json',
-        method: 'post',
-        dataType: 'JSON',
-        data: JSON.stringify({
-            "token": "",
-            "data": {
-                "queryName": '',
-                "missionStatus": '',
-                "pageNum": 1,
-                "pageSize": 10,
-                "sort": '',
-                "userId": 1
-            }
-        }),
-        success: function (data) {
-            transformdata = [];
-            requestQJData(data.data);
-            $('#rwgltable').treegrid({data: transformdata});
-        }
-    });
+	$('#rwgltable').treegrid({
+		queryParams:{
+			"page":1,
+			"rows":10,
+			"queryName": '',
+			"missionStatus": '',
+			"sort": '',
+			"userId": userId
+		}	
+	})
 }
 /*delete 函数*/
 function deleteFun(type) {
@@ -652,7 +690,7 @@ function deleteFun(type) {
     var params1 = {userId: userId};
     var delList = '', url;
     var delRWid = {}, delQJid = {};
-    var data = $('#rwgltable').treegrid('options').data;
+    var data = $('#rwgltable').treegrid('getData');
     for (var i = 0; i < data.length; i++) {
         if (data[i].checkState == 'checked') {
             delRWid[data[i].missionId] = true;
@@ -722,7 +760,17 @@ function statusRWfun(t, status) {
 }
 /*搜索事件*/
 function search(type) {
-    var queryName = '',
+	$('#rwgltable').treegrid({
+		queryParams:{
+			"page":1,
+			"rows":10,
+			"queryName": '',
+			"missionStatus": statusRW,
+			"sort": '',
+			"userId": userId
+		}
+	})
+    /*var queryName = '',
         pageNum = 1,
         pageSize = 10,
         sort = '';
@@ -733,7 +781,7 @@ function search(type) {
             transformdata = [];
             requestQJData(data.data);
             $('#rwgltable').treegrid({data: transformdata});
-        })
+        })*/
 }
 
 
