@@ -200,10 +200,10 @@ public class ExcelToDateController {
 //				}
 			}
 			filePath=URLEncoder.encode(filePath, "utf-8");
-			// 调用减排计算接口 并获取结果Json
+			// 调用外部保存接口 并获取结果Json
 			String url=configUtil.getExqd()+"/import/importTemplate?bigIndex="+templateId+"&version=1&filePath="+filePath;
 			String getResult = ClientUtil.doPost(url,"");
-			// 并根据减排分析得到的结果进行Json的解析
+			// 并根据得到的结果进行Json的解析
 			Map resultMap=mapper.readValue(getResult, Map.class);
 			//判断执行状态是否成功  如果成功就要修改情景的执行状态
 			if(resultMap.get("status").toString().equals("success")){
@@ -377,10 +377,10 @@ public class ExcelToDateController {
 				return map;
 			}
 			filePath=URLEncoder.encode(filePath, "utf-8");
-			// 调用减排计算接口 并获取结果Json
+			// 调用外部保存接口 并获取结果Json
 			String url=configUtil.getExqd()+"/import/importData?templateId="+templateId+"&bigIndex="+qdId+"&version=1&filePath="+filePath+"&versionExcelId=行业文件1490694892376";
 			String getResult = ClientUtil.doPost(url,"");
-			// 并根据减排分析得到的结果进行Json的解析
+			// 并根据得到的结果进行Json的解析
 			Map resultMap=mapper.readValue(getResult, Map.class);
 			//判断执行状态是否成功  如果成功就要修改情景的执行状态
 			if(resultMap.get("status").toString().equals("success")){
