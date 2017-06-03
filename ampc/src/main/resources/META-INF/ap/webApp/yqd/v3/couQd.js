@@ -269,9 +269,10 @@ function nextCoup(){//点击下一步按钮
             $("#prevCoup").show();//上一步按钮
             $(".coupSetCon").eq(0).hide();//隐藏其他步骤
             $(".coupSetCon").eq(1).show();
-            $(".coupSetCon").eq(2).hide();
             $(".coupSetConSecond").layout()//耦合第二步进行渲染
-            mbSelect()
+            $(".coupSetCon").eq(2).hide();
+            mbSelect();
+
         }else{
             swal('请先选择全国清单', '', 'error');
         }
@@ -285,8 +286,6 @@ function nextCoup(){//点击下一步按钮
             $(".coupSetCon").eq(0).hide();//隐藏其他步骤
             $(".coupSetCon").eq(1).hide();
             $(".coupSetCon").eq(2).show();
-            var mbIndex=$(".cloudui .coupSetCon #coupSetMb").val();
-            localTable(mbIndex)
         }else{
             swal('请先选择本地清单', '', 'error');
         }
@@ -304,8 +303,7 @@ function prevCoup(){
         $(".coupSetCon").eq(2).hide();
         $(".coupSetConSecond").layout()//耦合第二步进行渲染
         mbSelect()
-        var mbIndex=$(".cloudui .coupSetCon #coupSetMb").val();
-        localTable(mbIndex)
+
     }else if(conText=="第二步"){
         $(".cloudui .coupSetTitleList").children("li").eq(1).removeClass("active");
         $(".cloudui .coupSetTitleList").children("li").eq(0).addClass("active");
@@ -314,10 +312,9 @@ function prevCoup(){
         $(".coupSetCon").eq(0).show();//隐藏其他步骤
         $(".coupSetCon").eq(1).hide();
         $(".coupSetCon").eq(2).hide();
-        var mbIndex=$(".cloudui .coupSetCon #coupSetMb").val();
-        localTable(mbIndex)
     }
 }
+
 //耦合措施第二步
 var mbArray
 function mbSelect() {
@@ -328,11 +325,11 @@ function mbSelect() {
                 var mbDiv= $('<option value="'+i+'">'+mbArray[i].esNativeTpName+'</option>');
                 $(".cloudui .coupSetCon .coupSetMb").append(mbDiv);
             }
-            var mbIndex=$(".cloudui .coupSetCon #coupSetMb").val();
-            localTable(mbIndex)
         }else{
             swal('参数故障', '', 'error')
         }
+        var mbIndex=$(".cloudui .coupSetCon #coupSetMb").val();
+        window.setTimeout(localTable(mbIndex),100)
     })
 }
 //本地模板选择变化时
