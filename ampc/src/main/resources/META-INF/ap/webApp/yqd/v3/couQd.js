@@ -280,7 +280,11 @@ function nextCoup(){//点击下一步按钮
             swal('请先选择全国清单', '', 'error');
         }
     }else if(conText=="第二步"){
-        localQd=$("#localTable").datagrid("getSelected");
+        localQd=$("#localTable").datagrid("getSelections");
+        var localQdId=[];
+        for(var i=0;i<localQd.length;i++){
+            localQdId.push(localQd[i].esNativeId)
+        }
         if(localQd!=''&&localQd!=null&&localQd!=undefined){
             $(".cloudui .coupSetTitleList").children("li").eq(1).removeClass("active");
             $(".cloudui .coupSetTitleList").children("li").eq(2).addClass("active");
@@ -289,6 +293,15 @@ function nextCoup(){//点击下一步按钮
             $(".coupSetCon").eq(0).hide();//隐藏其他步骤
             $(".coupSetCon").eq(1).hide();
             $(".coupSetCon").eq(2).show();
+            //获得选择全国清单个本地清单的ID
+            ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"findCityAndIndustryById","nationId":checkQgQd.esNationId,"nativesId":localQdId}).success(function (res) {
+                if(res.status==0){
+                    console.log("数据接通成功")
+                }else{
+                    console.log("数据接通失败")
+                }
+            })
+            coupCity()
         }else{
             swal('请先选择本地清单', '', 'error');
         }
@@ -402,3 +415,7 @@ $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
         $(this).css({"color":"gray"})
     }
 })
+
+function coupCity() {
+    
+}

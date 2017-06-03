@@ -85,13 +85,37 @@
         </div>
         <div class="toolAll wrwTool" id="wrw">
           <div class="toolContent">
+            <!--<div class="selectTool">-->
+              <!--<h5>日期：</h5>-->
+              <!--<div class="selectTool_con">-->
+                <!--<div class="" style="padding-right: 0px;margin: 2px auto;position: relative">-->
+                  <!--<input style="min-width: 210px" type="text" class="form-control" id="wrwDate" name="wrwDate" readonly-->
+                         <!--placeholder="请选择日期···">-->
+                  <!--<i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showDate('wrw')"-->
+                     <!--style="cursor:pointer;position: absolute;font-size: 17px;right: 10px;top: 9px;"></i>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+            <!--开始日期-->
             <div class="selectTool">
-              <h5>日期：</h5>
+              <h5>开始日期：</h5>
               <div class="selectTool_con">
                 <div class="" style="padding-right: 0px;margin: 2px auto;position: relative">
-                  <input style="min-width: 210px" type="text" class="form-control" id="wrwDate" name="wrwDate" readonly
-                         placeholder="请选择日期···">
-                  <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showDate('wrw')"
+                  <input style="min-width: 210px" type="text" class="form-control" id="wrwStartDate" name="wrwStartDate" readonly
+                         placeholder="请选择日期···" height="30px">
+                  <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showDate('wrwStart')"
+                     style="cursor:pointer;position: absolute;font-size: 17px;right: 10px;top: 9px;"></i>
+                </div>
+              </div>
+            </div>
+            <!--结束日期-->
+            <div class="selectTool">
+              <h5>结束日期：</h5>
+              <div class="selectTool_con">
+                <div class="" style="padding-right: 0px;margin: 2px auto;position: relative">
+                  <input style="min-width: 210px" type="text" class="form-control" id="wrwEndDate" name="wrwEndDate" readonly
+                         placeholder="请选择日期···" height="30px">
+                  <i class="glyphicon glyphicon-calendar fa fa-calendar" onclick="showDate('wrwEnd')"
                      style="cursor:pointer;position: absolute;font-size: 17px;right: 10px;top: 9px;"></i>
                 </div>
               </div>
@@ -106,7 +130,7 @@
                 </div>
               </div>
             </div>
-            <div class="selectTool">
+            <div style="clear: both" class="selectTool">
               <h5>监测站点：</h5>
               <div class="selectTool_con">
                 <div class="row" style="margin:2px 0;padding-left:0px;">
