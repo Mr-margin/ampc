@@ -118,6 +118,8 @@ $("#creatCoupQd").window({
 //点击新建按钮 打开窗口
 function creatCoupQd(){
     $("#formCoup").form("clear")
+    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称");
+    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份");
     $("#creatCoupQd").window("open");
 }
 //点击新建窗口提交按钮进行耦合清单创建
@@ -372,3 +374,30 @@ function  localTable(value) {
         }
     })
 }
+// 创建 输入框获得焦点
+$(".cloudui .rwCon .qdContent .qdName").focus(function () {//名称获取焦点
+    if($(this).val()=="请输入长度不超过20的名称"){
+        $(this).val("");
+        $(this).css({"color":"black"})
+    }
+})
+$(".cloudui .rwCon .qdContent .qdYear").focus(function () {//年份获取焦点
+    if($(this).val()=="请输入1990-2100之间的年份"){
+        $(this).val("");
+        $(this).css({"color":"black"})
+    }
+})
+
+//创建 输入框失去焦点
+$(".cloudui .rwCon .qdContent .qdName").blur(function () {//名称失去焦点
+    if($(this).val()==""){
+        $(this).val("请输入长度不超过20的名称")
+        $(this).css({"color":"gray"})
+    }
+})
+$(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
+    if($(this).val()==""){
+        $(this).val("请输入1990-2100之间的年份")
+        $(this).css({"color":"gray"})
+    }
+})

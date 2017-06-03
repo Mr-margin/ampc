@@ -257,6 +257,8 @@ $("#creatTemp").window({
 })
 function creatTemp(){
     $("#creatTemp #formQd").form("clear");
+    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称");
+    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份");
     $("#creatTemp").window("open");
 }
 //清空弹窗输入框内容
@@ -310,6 +312,8 @@ function adgQdBtn(rowId){
     var e = e || window.event;
     e.stopPropagation();//防止出现下拉
     $("#formTempQd").form("clear");
+    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称");
+    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份");
     $("#editTempQd").window("open");
 }
 //防止树形表单子节点点击出现下拉效果
@@ -352,45 +356,30 @@ function checkData(rowId) {
     }
 
 }
-// //点击上传按钮 进行文件上传
-// $("#uploadFiel").window({
-//     width:600,  //easyui 窗口宽度
-//     height:100,
-//     collapsible:false, //easyui 自带的折叠按钮
-//     maximizable:false,//easyui 自带的最大按钮
-//     minimizable:false,//easyui 自带的最小按钮
-//     modal:true,
-//     shadow:false,
-//     title:'上传文件',
-//     border:false,
-//     closed:true,
-//     cls:"cloudui"
-// })
-// function uploadFiel(){
-//     var e = e || window.event;
-//     e.stopPropagation();//防止出现下拉
-// $("#uploadFiel").window("open")
-//     var input = document.getElementById("file_input");
-//     var result,div;
-//
-//     if(typeof FileReader==='undefined'){
-//         result.innerHTML = "抱歉，你的浏览器不支持 FileReader";
-//         input.setAttribute('disabled','disabled');
-//     }else{
-//         input.addEventListener('change',readFile,false);
-//     }　　　　　//handler
-//     function readFile(){
-//         for(var i=0;i<this.files.length;i++){
-//             if (!input['value'].match(/.xlsx|.xls/i)){　　//判断上传文件格式
-//                return swal('上传的文件格式不正确，请重新选择', '', 'error');}
-//             var reader = new FileReader();
-//             reader.readAsDataURL(this.files[i]);
-//             reader.onload = function(e){
-//                 result = '<div id="result" style="width: 200px;height:100px;border:1px solid red">'+this.files[i]+'</div>';
-//                 div = document.createElement('div');
-//                 div.innerHTML = result;
-//                 document.getElementById('uploadFiel').appendChild(div); 　　//插入dom树      <br>　　　　　　　　　　}
-//             }
-//         }
-//     }
-// }
+// 创建 输入框获得焦点
+$(".cloudui .rwCon .qdContent .qdName").focus(function () {//名称获取焦点
+    if($(this).val()=="请输入长度不超过20的名称"){
+        $(this).val("");
+        $(this).css({"color":"black"})
+    }
+})
+$(".cloudui .rwCon .qdContent .qdYear").focus(function () {//年份获取焦点
+    if($(this).val()=="请输入1990-2100之间的年份"){
+        $(this).val("");
+        $(this).css({"color":"black"})
+    }
+})
+
+//创建 输入框失去焦点
+$(".cloudui .rwCon .qdContent .qdName").blur(function () {//名称失去焦点
+    if($(this).val()==""){
+        $(this).val("请输入长度不超过20的名称")
+        $(this).css({"color":"gray"})
+    }
+})
+$(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
+    if($(this).val()==""){
+        $(this).val("请输入1990-2100之间的年份")
+        $(this).css({"color":"gray"})
+    }
+})

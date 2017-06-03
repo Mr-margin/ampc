@@ -47,6 +47,8 @@ function innitdata(){
 }
 function creatQd(){ // 点击创建清单按钮 弹出创建窗口
     $("#formQd").form('clear');//打开窗口清空输入框数据
+    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称");
+    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份");
     $("#creatQd").window('open');
 }
 $("#creatQd").window({  //创建全国清单窗口
@@ -179,13 +181,31 @@ function delectQd(){
             }
         })
     });
-    // ajaxPost('/NativeAndNation/delete_nation',{"nationId":row.esNationId}).success(function(res){
-    //     if(res.status==0){
-    //         var rowIndex = $('#qgqd').datagrid('getRowIndex', row);
-    //         $('#qgqd').datagrid('deleteRow', rowIndex);
-    //         $('#qgqd').datagrid('reload');//删除后重新加载下
-    //     }else{
-    //         swal('参数错误', '', 'error');
-    //     }
-    // })
 }
+// 创建 输入框获得焦点
+$(".cloudui .rwCon .qdContent .qdName").focus(function () {//名称获取焦点
+    if($(this).val()=="请输入长度不超过20的名称"){
+        $(this).val("");
+        $(this).css({"color":"black"})
+    }
+})
+$(".cloudui .rwCon .qdContent .qdYear").focus(function () {//年份获取焦点
+    if($(this).val()=="请输入1990-2100之间的年份"){
+        $(this).val("");
+        $(this).css({"color":"black"})
+    }
+})
+
+//创建 输入框失去焦点
+$(".cloudui .rwCon .qdContent .qdName").blur(function () {//名称失去焦点
+    if($(this).val()==""){
+        $(this).val("请输入长度不超过20的名称")
+        $(this).css({"color":"gray"})
+    }
+})
+$(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
+    if($(this).val()==""){
+        $(this).val("请输入1990-2100之间的年份")
+        $(this).css({"color":"gray"})
+    }
+})
