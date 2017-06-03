@@ -227,7 +227,7 @@ function innitdata(active){
         var qdYear=$("#esLocalQdYear").val();
         var qdRemark=$("#esLocalQdMark").val();
         if(rowDiv){
-            ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark,"nativeTpId":rowDiv.esNativeTpId}).success(function(res){
+            ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark,"nativeTpId":rowDiv.esNativeTpId,"nativeTpName":rowDiv.esNativeTpName}).success(function(res){
                 if(res.status==0){
                     innitdata("find_natives");
                     $("#localqd").treegrid("expand",creatQd);
