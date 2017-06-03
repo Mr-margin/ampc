@@ -28,6 +28,7 @@ var msg = {
     'id': 'csMessage',
     'content': qjMsg
 };
+var pointColor = {};
 //console.log(JSON.stringify(qjMsg));
 
 /**
@@ -196,7 +197,12 @@ function hyc() {
 
         if(res.status == 0){
             var accordion = $("#accordion");
+            pointColor = {};
+            var len = res.data.length;
             $.each(res.data,function (i, col) {
+
+                pointColor[col.sectorsName] = colorArr[Math.floor(colorArr.length/len * i)];
+
                 //      var inn = i == 0 ? "in" : "";//第一个手风琴页签打开
                 var inn = "";
                 if (stname) {
@@ -817,14 +823,23 @@ function add_point(col) {
  */
 var styleType = [];
 function createSymbol(smallIndex){
+
+    if(smallIndex == '水泥'){
+        console.log(1)
+    }else if(smallIndex == '钢铁'){
+        console.log(2)
+    }else{
+        console.log(3)
+    }
 	
-  var style1 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20, new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([72, 165, 251]), 1), new dong.Color([218, 83, 25, 0.9]));
+  var style1 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20, new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([122, 251, 159]), 1), new dong.Color(pointColor[smallIndex]));
+    // var style1 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20, new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([72, 165, 251]), 1), new dong.Color([218, 83, 25, 0.9]));
   var style2 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20, new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([122, 251, 159]), 1), new dong.Color([218, 83, 25, 0.9]));
   var style3 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 25, new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([229, 251, 72]), 1), new dong.Color([218, 83, 25, 0.9]));
   var style4 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 30, new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([251, 171, 72]), 1), new dong.Color([218, 83, 25, 0.9]));
   var style5 = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 35, new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([251, 100, 72]), 1), new dong.Color([218, 83, 25, 0.9]));
 
-
+    return style1;
 }
 
 /**
@@ -1085,3 +1100,95 @@ function showDetail(){
 $("#close_scene").click(function(){
     $("#detalMsg").window("close")
 })
+
+
+var colorArr = [
+    [0, 0, 255,0.9], [0, 21, 255,0.9], [0, 43, 255,0.9], [0, 64, 255,0.9], [0, 85, 255,0.9], [0, 106, 255,0.9], [0, 128, 255,0.9], [0, 149, 255,0.9], [0, 170, 255,0.9], [0, 191, 255,0.9], [0, 213, 255,0.9], [0, 234, 255,0.9], [
+        0, 255, 255,0.9], [
+        12, 255, 255,0.9], [
+        24, 255, 255,0.9], [
+        35, 255, 255,0.9], [
+        47, 255, 255,0.9], [
+        59, 255, 255,0.9], [
+        71, 255, 255,0.9], [
+        82, 255, 255,0.9], [
+        94, 255, 255,0.9], [
+        106, 255, 255,0.9], [
+        118, 255, 255,0.9], [
+        129, 255, 255,0.9], [
+        141, 255, 255,0.9], [
+        153, 255, 255,0.9], [
+        140, 255, 234,0.9], [
+        128, 255, 213,0.9], [
+        115, 255, 191,0.9], [
+        102, 255, 170,0.9], [
+        89, 255, 149,0.9], [
+        77, 255, 128,0.9], [
+        64, 255, 106,0.9], [
+        51, 255, 85,0.9], [
+        38, 255, 64,0.9], [
+        26, 255, 43,0.9], [
+        13, 255, 21,0.9], [
+        0, 255, 0,0.9], [
+        16, 255, 0,0.9], [
+        31, 255, 0,0.9], [
+        47, 255, 0,0.9], [
+        63, 255, 0,0.9], [
+        78, 255, 0,0.9], [
+        94, 255, 0,0.9], [
+        110, 255, 0,0.9], [
+        126, 255, 0,0.9], [
+        141, 255, 0,0.9], [
+        157, 255, 0,0.9], [
+        173, 255, 0,0.9], [
+        188, 255, 0,0.9], [
+        204, 255, 0,0.9], [
+        207, 255, 0,0.9], [
+        210, 255, 0,0.9], [
+        214, 255, 0,0.9], [
+        217, 255, 0,0.9], [
+        220, 255, 0,0.9], [
+        223, 255, 0,0.9], [
+        226, 255, 0,0.9], [
+        230, 255, 0,0.9], [
+        233, 255, 0,0.9], [
+        236, 255, 0,0.9], [
+        239, 255, 0,0.9], [
+        242, 255, 0,0.9], [
+        245, 255, 0,0.9], [
+        249, 255, 0,0.9], [
+        252, 255, 0,0.9], [
+        255, 255, 0,0.9], [
+        255, 248, 0,0.9], [
+        255, 240, 0,0.9], [
+        255, 233, 0,0.9], [
+        255, 225, 0,0.9], [
+        255, 218, 0,0.9], [
+        255, 210, 0,0.9], [
+        255, 203, 0,0.9], [
+        255, 195, 0,0.9], [
+        255, 188, 0,0.9], [
+        255, 180, 0,0.9], [
+        255, 173, 0,0.9], [
+        255, 165, 0,0.9], [
+        255, 158, 0,0.9], [
+        255, 150, 0,0.9], [
+        255, 143, 0,0.9], [
+        255, 135, 0,0.9], [
+        255, 128, 0,0.9], [
+        255, 120, 0,0.9], [
+        255, 112, 0,0.9], [
+        255, 104, 0,0.9], [
+        255, 96, 0,0.9], [
+        255, 88, 0,0.9], [
+        255, 80, 0,0.9], [
+        255, 72, 0,0.9], [
+        255, 64, 0,0.9], [
+        255, 56, 0,0.9], [
+        255, 48, 0,0.9], [
+        255, 40, 0,0.9], [
+        255, 32, 0,0.9], [
+        255, 24, 0,0.9], [
+        255, 16, 0,0.9], [
+        255, 8, 0,0.9], [
+        255, 0, 0,0.9]];
