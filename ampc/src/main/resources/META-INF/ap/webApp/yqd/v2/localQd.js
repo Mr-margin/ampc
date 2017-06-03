@@ -325,7 +325,11 @@ $(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree tr").click(function(){
 //校验
 function checkData(rowId) {
     var rowDiv=$("#localqd").treegrid('find',rowId);
+
     var parentId=rowDiv._parentId;
+    var parentRowDiv=$("#localqd").treegrid('find',parentId);
+    console.log("校验")
+    console.log(parentRowDiv);
     if(rowId.indexOf("mb")==0){
         ajaxPost('/NativeAndNation/doPost',{
             "userId":userId,
@@ -343,9 +347,9 @@ function checkData(rowId) {
         ajaxPost('/NativeAndNation/doPost',{
             "userId":userId,
             "method":"checkNative",
-            "nativeTpId":rowDiv.esNativeTpId,
-            "nativeTpName":rowDiv.esNativeTpName,
-            "nativeTpId":parentId
+            "nativeTpId":parentRowDiv.esNativeTpId,
+            "nativeId":rowDiv.esNativeId,
+            "nativeName":rowDiv.esNativeTpName
         }).success(function (res) {
             if(res.status==0){
 
