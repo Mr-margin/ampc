@@ -12,8 +12,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 @Component
-public class TaskHelper {
-	private static Logger logger = LoggerFactory.getLogger(TaskHelper.class);
+public class CLIHelper {
+	private static Logger logger = LoggerFactory.getLogger(CLIHelper.class);
 
 	public boolean process(String... commond) {
 		try {

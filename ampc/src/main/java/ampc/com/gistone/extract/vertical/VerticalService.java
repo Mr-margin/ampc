@@ -38,7 +38,7 @@ public class VerticalService {
 	@Autowired
 	private ResultPathUtil resultPathUtil;
 	@Autowired
-	private TaskHelper taskHelper;
+	private CLIHelper cliHelper;
 
 	private String tempPath;
 	private List<PointBean> pointBeanList;
@@ -76,29 +76,33 @@ public class VerticalService {
 	// 将projecttion参数从verticalParams中获取封装
 	private void setProjection(VerticalParams verticalParams) {
 		long readAttrTimes = System.currentTimeMillis();
-		double xorig = Double.valueOf((String.valueOf(attributes.get("XORIG"))));
-		double yorig = Double.valueOf((String.valueOf(attributes.get("YORIG"))));
-		double xcell = Double.valueOf((String.valueOf(attributes.get("XCELL"))));
-		double ycell = Double.valueOf((String.valueOf(attributes.get("YCELL"))));
-		String lat_1 = attributes.get("P_ALP").toString();
-		String lat_2 = attributes.get("P_BET").toString();
-		String lat_0 = attributes.get("YCENT").toString();
-		String lon_0 = attributes.get("XCENT").toString();
-		int row = Integer.valueOf(String.valueOf(attributes.get("NROWS")));
-		int col = Integer.valueOf(String.valueOf(attributes.get("NCOLS")));
-		verticalParams.setXorig(xorig);
-		verticalParams.setYorig(yorig);
-		verticalParams.setXcell(xcell);
-		verticalParams.setYcell(ycell);
-		verticalParams.setLat_1(lat_1);
-		verticalParams.setLat_2(lat_2);
-		verticalParams.setLat_0(lat_0);
-		verticalParams.setLon_0(lon_0);
-		verticalParams.setRow(row);
-		verticalParams.setCol(col);
-		logger.info("read attr, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
-		logger.info("(xorig,yorig) = (" + xorig + "," + yorig + "), (xcell,ycell) = (" + xcell + "," + ycell
-				+ "), (nrows, ncols) = (" + row + "," + col + ")");
+		try {
+			double xorig = Double.valueOf((String.valueOf(attributes.get("XORIG"))));
+			double yorig = Double.valueOf((String.valueOf(attributes.get("YORIG"))));
+			double xcell = Double.valueOf((String.valueOf(attributes.get("XCELL"))));
+			double ycell = Double.valueOf((String.valueOf(attributes.get("YCELL"))));
+			String lat_1 = attributes.get("P_ALP").toString();
+			String lat_2 = attributes.get("P_BET").toString();
+			String lat_0 = attributes.get("YCENT").toString();
+			String lon_0 = attributes.get("XCENT").toString();
+			int row = Integer.valueOf(String.valueOf(attributes.get("NROWS")));
+			int col = Integer.valueOf(String.valueOf(attributes.get("NCOLS")));
+			verticalParams.setXorig(xorig);
+			verticalParams.setYorig(yorig);
+			verticalParams.setXcell(xcell);
+			verticalParams.setYcell(ycell);
+			verticalParams.setLat_1(lat_1);
+			verticalParams.setLat_2(lat_2);
+			verticalParams.setLat_0(lat_0);
+			verticalParams.setLon_0(lon_0);
+			verticalParams.setRow(row);
+			verticalParams.setCol(col);
+			logger.info("read attr, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
+			logger.info("(xorig,yorig) = (" + xorig + "," + yorig + "), (xcell,ycell) = (" + xcell + "," + ycell
+					+ "), (nrows, ncols) = (" + row + "," + col + ")");
+		} catch (Exception e) {
+			logger.error("read parameter error, at attributes", e);
+		}
 		projection = ProjectUtil.getProj(attributes);
 		if (projection == null) {
 			logger.error("VerticalService.java projection is null");
@@ -145,7 +149,7 @@ public class VerticalService {
 		logger.info("start Execute script");
 		String pngFilePath = pngPath + ".png";
 		// 运行filePath文件
-		if (taskHelper.process(new String[] { "csh", filePath })) {
+		if (cliHelper.process(new String[] { "csh", filePath })) {
 			File pngFile = new File(pngFilePath);
 			if (pngFile.exists() && pngFile.isFile()) {
 				logger.info("run createPng, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms,pngPath="
@@ -302,14 +306,13 @@ public class VerticalService {
 						value = (value2 - value1) / value1;
 					}
 				}
-
 				resTemp[layer - 1][p] = value;
 			}
 		}
 		logger.info("run buildEveryLayerValue, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
 	}
 
-	// 获取可变参数封装进variableList1，variableList2中，设置临时文件路径
+	// 获取可变参数封装进attributes中，设置临时文件路径
 	private void getVariables(VerticalParams verticalParams) {
 		long readAttrTimes = System.currentTimeMillis();
 		String concnFilePath = resultPathUtil.getResultFilePath(verticalParams.getDay(), verticalParams.getShowType(),
@@ -330,7 +333,7 @@ public class VerticalService {
 			for (int i = 0; i < list.size(); i++) {
 				String day = list.get(i);
 				concnFilePath = concnFilePath.replace("$Day", day);
-				buildVariables(concnFilePath, verticalParams);
+				buildVariables(concnFilePath, verticalParams);//找到对应netcdf文件，读取数据封装进variableList1，variableList2中
 			}
 			try {
 				attributes = Netcdf.getAttributes(concnFilePath);
@@ -342,7 +345,7 @@ public class VerticalService {
 			}
 		} else if (Constants.TIMEPOINT_D.equals(timePoint) || Constants.TIMEPOINT_H.equals(timePoint)) {
 			concnFilePath = concnFilePath.replace("$Day", verticalParams.getDay());
-			buildVariables(concnFilePath, verticalParams);
+			buildVariables(concnFilePath, verticalParams);//找到对应netcdf文件，读取数据封装进variableList1，variableList2中
 			try {
 				attributes = Netcdf.getAttributes(concnFilePath);
 				logger.info("read getVariables, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
@@ -353,7 +356,7 @@ public class VerticalService {
 			}
 		}
 	}
-
+//找到对应netcdf文件，读取数据封装进variableList1，variableList2中
 	private void buildVariables(String concnFilePath, VerticalParams verticalParams) {
 		String specie = verticalParams.getSpecie();
 		try {
@@ -367,8 +370,10 @@ public class VerticalService {
 				logger.error("VerticalService | variables() :buildVariables  open file " + concnFilePath + " error");
 				return;
 			}
-			if (nc == null)
+			if (nc == null) {
+				logger.error("open netcdf file :" + concnFilePath + "error");
 				return;
+			}
 			Variable variable1 = nc.findVariable(null, specie);
 			variableList1.add(variable1);
 			if (!Constants.CALCTYPE_SHOW.equals(verticalParams.getCalcType())) {
