@@ -103,7 +103,14 @@ $('#sx').tabs({
             height:'100%',
             detailFormatter:function(index,row){//注意2
                 var obj = rows[rows.length-3-row.filterIndex];
-                return obj.tiaojian+',控制系数：'+obj.psl_a;
+                var xs = '';
+                $.each(obj,function (k,vol) {
+                    if(k.indexOf('psl') != -1){
+                        var key = k.split('_')[1];
+                        xs += xishu_temp_ch[xishu_temp.indexOf(key)] + '(' + obj[k] + ')；'
+                    }
+                })
+                return obj.tiaojian+',控制系数：'+ xs.substring(0, xs.length - 1);;
             },
             onExpandRow:function(index,row){
                 $('#metTable_point_ykz').datagrid('fixDetailRowHeight',index);
@@ -1024,12 +1031,12 @@ function clearSXtj() {
 var delIndex = [];//记录筛选出点源点击删除的行号
 //筛选点源列表
 function point_table() {
-    $('#sx').tabs('select','未控制点源');
     $('#sx').show();
     $('#bj').hide();
     $("#sxTableMap").window('open');
     delSXtableRow = [];
     window.setTimeout(function () {
+        $('#sx').tabs('select','未控制点源');
         var columns = [[]];
         columns[0].push({field: 'check', title: '',checkbox:true,align:'center'});
         columns[0].push({field: 'regionName', title: '所属',align:'center'});
@@ -1689,17 +1696,17 @@ function xishu_save() {
                         $.each(sc_val.filters[sc_val.filters.length - 1], function (k, vol) {//循环最后一个条件，这个条件是要添加显示的条件
                             if (k == "companyname") {
 //								var re4 = new RegExp("%","g");
-                                tablejieguo += "企业名称：" + row[0].companyname + ",";
+                                tablejieguo += '企业名称包含' + '：“' + vol.substring(1,vol.length-1) + '”，' + tablejieguo
                             } else if (k == "id") {
                                 if(vol.indexOf('not in')!=-1){
-                                    tablejieguo += "删除点源：" + vol.split(',').length + ",";
+                                    tablejieguo += "删除点源：" + vol.split(',').length + "，";
                                 }else{
-                                    tablejieguo += "企业名称：" + row[0].companyname + ",";
+                                    tablejieguo += "企业名称：" + row[0].companyname + "，";
                                 }
                             } else {
                                 $.each(query, function (i, col) {//循环提前记录的条件结果集，将英文名称换为中文名称
                                     if (col.queryEtitle == k) {
-                                        tablejieguo += col.queryName + "：" + vol + ",";
+                                        tablejieguo += col.queryName + "：" + vol + "，";
                                     }
                                 });
                             }
