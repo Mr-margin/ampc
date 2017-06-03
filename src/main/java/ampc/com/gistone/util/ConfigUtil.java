@@ -65,10 +65,6 @@ public class ConfigUtil {
 	
 	@Value("${exqd}")
 	private String exqd;
-	
-	
-	
-
 
 	public String getExqd() {
 		return exqd;
