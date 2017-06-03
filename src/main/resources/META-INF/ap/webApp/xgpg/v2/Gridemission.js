@@ -163,7 +163,7 @@ require(
 
         app.gLyr1 = new dong.GraphicsLayer({"id": "gLyr1"});
         app.mapList[0].addLayer(app.gLyr1);
-
+        
         app.gLyr2 = new dong.GraphicsLayer({"id": "gLyr2"});
         app.mapList[1].addLayer(app.gLyr2);
 
@@ -497,6 +497,9 @@ function bianji(type, g_num, p , wind) {
             par.species = ['WSPD','WDIR'];
             app.gLyr1.clear();
             app.gLyr2.clear();
+            
+//            console.log(JSON.stringify(par));
+            
             ajaxPost('/extract/data', par).success(function (data) {
                 if (!data.data) {
                     console.log("data.data-null");
