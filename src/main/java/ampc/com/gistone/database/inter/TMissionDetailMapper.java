@@ -20,6 +20,13 @@ public interface TMissionDetailMapper {
      */
     List<Map> selectAllOrByQueryName(Map map);
     
+    /**
+     * 查询所有错误的任务列表 
+     * @param map 分页参数
+     * @return 结果集
+     */
+    List<Map> selectErrorMission(Map map);
+    
     
     /**
      * 不分页查询所有任务有效的条数 可根据条件名
