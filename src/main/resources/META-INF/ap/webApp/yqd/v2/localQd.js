@@ -72,7 +72,7 @@ function innitdata(active){
             //给每个子节点添加标题
             var rowDate=data.data.data.rows;
             for(var i=0;i<rowDate.length;i++){
-                rowDate[i].children.unshift({esNativeTpName:"清单名称",esNativeTpYear:"年份",updateTime:"创建时间",filePath:"路径",esComment:"备注",his:"使用状态",isEffective:"状态",actor:"操作",id:rowDate[i].id+"title"})
+                rowDate[i].children.unshift({esNativeTpName:"清单名称",esNativeTpYear:"年份",updateTime:"创建时间",filePath:"路径",esComment:"备注",his:"使用状态",isVerify:"状态",actor:"操作",id:rowDate[i].id+"title"})
             }
             $("#localqd").treegrid({
                 idField:'id',//通过id区分子节点父节点
@@ -93,7 +93,7 @@ function innitdata(active){
                 return "<span title='" + value + "'>" + value + "</span>";}},
                     {field:"esComment",title:"备注",width:200},
                     {field:"his",title:"使用状态",width:100},
-                    {field:"isEffective",title:"状态",width:100,formatter:function(value,row,index){
+                    {field:"isVerify",title:"状态",width:100,formatter:function(value,row,index){
                         if(value==1){
                             return "<span style='color: #009943'>已校验</span>"
                         }else if(value==0){
@@ -103,10 +103,10 @@ function innitdata(active){
                         }
                     }},
                     {field:"actor",title:"操作",width:100,align:'center',formatter:function(value,row,index){
-                        if(row.isEffective==1){
+                        if(row.isVerify==1){
                             var addNativeDiv="<button id='addQdBtn'  style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='adgQdBtn(\""+row.id+"\")'>添加数据</button>"
                             return addNativeDiv;
-                        }else if(row.isEffective==0){
+                        }else if(row.isVerify==0){
                             var checkDiv="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkData(\""+row.id+"\")'>校验</button>"
                             return checkDiv
                         }else {
@@ -328,14 +328,13 @@ function checkData(rowId) {
 
     var parentId=rowDiv._parentId;
     var parentRowDiv=$("#localqd").treegrid('find',parentId);
-    console.log("校验")
-    console.log(parentRowDiv);
     if(rowId.indexOf("mb")==0){
         ajaxPost('/NativeAndNation/doPost',{
             "userId":userId,
             "method":"checkNativeTp",
             "nativeTpId":rowDiv.esNativeTpId,
             "nativeTpName":rowDiv.esNativeTpName,
+            "esNativeTpOutPath":rowDiv.esNativeTpOutPath
         }).success(function (res) {
             if(res.status==0){
 
@@ -350,7 +349,8 @@ function checkData(rowId) {
             "nativeTpId":parentRowDiv.esNativeTpId,
             "nativeId":rowDiv.esNativeId,
             "nativeName":rowDiv.esNativeTpName,
-            "nativeTpName":parentRowDiv.esNativeTpName
+            "nativeTpName":parentRowDiv.esNativeTpName,
+            "esNativeTpOutPath":parentRowDiv.esNativeTpOutPath
         }).success(function (res) {
             if(res.status==0){
 
