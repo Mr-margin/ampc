@@ -342,8 +342,12 @@ function sceneTable() {
                 {field:"ck",checkbox:true},
                 {field:"scenarinoName",title:"情景名称"},
                 {field:"scenType",title:"情景描述"},
-                {field:"scenarinoStartDate",title:"时间"},
-                {field:"scenarinoEndDate",title:"时间"},
+                {field:"scenarinoStartDate",title:"时间",formatter:function(value,row,index){
+                    return  moment(value).format("YYYY年MM月DD日");
+                },align:'center'},
+                {field:"scenarinoEndDate",title:"时间",formatter:function(value,row,index){
+                    return  moment(value).format("YYYY年MM月DD日");
+                },align:'center'},
             ]],
             clickToSelect: true,// 点击选中行
             pagination: false, // 在表格底部显示分页工具栏

@@ -298,8 +298,12 @@ function sceneTable() {
                 {field:"ck",checkbox:true},
                 {field:"scenarinoName",title:"情景名称"},
                 {field:"scenType",title:"情景描述"},
-                {field:"scenarinoStartDate",title:"时间"},
-                {field:"scenarinoEndDate",title:"时间"},
+                {field:"scenarinoStartDate",title:"时间",formatter:function(value,row,index){
+                    return  moment(value).format("YYYY年MM月DD日");
+                },align:'center'},
+                {field:"scenarinoEndDate",title:"时间",formatter:function(value,row,index){
+                    return  moment(value).format("YYYY年MM月DD日");
+                },align:'center'},
             ]],
             clickToSelect: true,// 点击选中行
             pagination: false, // 在表格底部显示分页工具栏
@@ -1114,15 +1118,12 @@ function showTitleFun() {
     if(changeMsg.rms=='d'){
         $('#showTitle .timeName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'逐日').css({"margin-right":"40px"});
         $('#showTitle .dateStartName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+timeStartFor).css({"margin-right":"40px"});
-        //$('#showTitle .dateStartName').html("<i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;"+changeMsg.sTimeD);
     }else  if(changeMsg.rms=='h'){
         $('#showTitle .timeName').html("<span  class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'逐时').css({"margin-right":"40px"});
         $('#showTitle .dateStartName').html("<span  class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+stateFor).css({"margin-right":"40px"});
-        //$('#showTitle .dateStartName').html("<i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;"+changeMsg.sTimeD+changeMsg.sTimeH);
     }else {
         $('#showTitle .timeName').html("<span  class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'平均').css({"margin-right":"40px"});
         $('#showTitle .dateEndName').html("<span  class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+timeTwoFor).css({"margin-right":"40px"});
-        //$('#showTitle .dateEndName').html("<i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;"+changeMsg.sTimeD+"-"+changeMsg.eTime);
     }
 }
 //easyui 添加
