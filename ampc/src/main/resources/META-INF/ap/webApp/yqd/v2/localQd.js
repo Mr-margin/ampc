@@ -349,7 +349,8 @@ function checkData(rowId) {
             "method":"checkNative",
             "nativeTpId":parentRowDiv.esNativeTpId,
             "nativeId":rowDiv.esNativeId,
-            "nativeName":rowDiv.esNativeTpName
+            "nativeName":rowDiv.esNativeTpName,
+            "nativeTpName":parentRowDiv.esNativeTpName
         }).success(function (res) {
             if(res.status==0){
 
