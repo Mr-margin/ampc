@@ -1916,6 +1916,9 @@ public class MissionAndScenarinoController {
 			}else{
 				map.put("missionStatus",null);
 			}
+			//查询当前用户下有多少错误的情景
+			Long errorCount=tScenarinoDetailMapper.selectErrorCount(Long.parseLong(userId));
+			mapResult.put("errorCount", errorCount);
 			//查询全部写入返回结果集
 			List<Map> list = this.tMissionDetailMapper.selectAllOrByQueryName(map);
 			//循环结果集合
@@ -1945,15 +1948,23 @@ public class MissionAndScenarinoController {
 				qjTitle.put("EndDateTitle","结束日期");
 				qjTitle.put("scenTypeTitle","类型");
 				qjTitle.put("settingTitle","设置");
+				int missionErrorCount=0;
 				//加入数据
 				children.add(qjTitle);
 				for(int i=0;i<tmMap.size();i++){
 					tmMap.get(i).put("id", "qj"+tmMap.get(i).get("scenarinoId"));
+					//查询有多少个错误的情景  累计增加
+					if(tmMap.get(i).get("expand4")!=null){
+						missionErrorCount++;
+					}
 					children.add(tmMap.get(i));
+					//判断有多少个正在执行的情景
 					if(tmMap.get(i).get("scenarinoStatus").equals(6)){
 						s++;
 					}
 				}
+				//记录当前任务下有多少个错误的情景
+				ss.put("missionErrorCount",missionErrorCount);
 				//写入情景信息
 				ss.put("children", children);
 				//写入ID
@@ -1970,6 +1981,7 @@ public class MissionAndScenarinoController {
 			}
 			mapResult.put("total", this.tMissionDetailMapper.selectCountOrByQueryName(map));
 			mapResult.put("rows",list);
+			
 			LogUtil.getLogger().info("MissionAndScenarinoController 任务查询成功");
 			//返回结果
 			return AmpcResult.ok(mapResult);
