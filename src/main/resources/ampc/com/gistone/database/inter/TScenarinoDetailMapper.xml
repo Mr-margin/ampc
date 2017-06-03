@@ -1095,7 +1095,7 @@ AND S.IS_EFFECTIVE ='1'
   </resultMap>
   
   <!-- 查询当前用户下有多少个错误的情景 -->
-  <select id="selectErrorCount" parameterType="java.util.Long" resultType="java.util.Long" >
+  <select id="selectErrorCount" parameterType="java.lang.Long" resultType="java.lang.Long" >
    	 SELECT  count(*)
   		FROM T_SCENARINO_DETAIL 
 			  WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
@@ -1103,7 +1103,7 @@ AND S.IS_EFFECTIVE ='1'
   </select>
   
   <!-- 查询所有的错误情景所属的任务ID -->
-  <select id="selectMissionIdByErrorScenarino" parameterType="java.util.Long" resultType="java.util.Long" >
+  <select id="selectMissionIdByErrorScenarino" parameterType="java.lang.Long" resultType="java.lang.Long" >
    	 SELECT distinct MISSION_ID
   		FROM T_SCENARINO_DETAIL 
 			  WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
