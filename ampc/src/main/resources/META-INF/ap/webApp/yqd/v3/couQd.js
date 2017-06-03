@@ -301,8 +301,8 @@ function prevCoup(){
         $(".coupSetCon").eq(0).hide();//隐藏其他步骤
         $(".coupSetCon").eq(1).show();
         $(".coupSetCon").eq(2).hide();
-        $(".coupSetConSecond").layout()//耦合第二步进行渲染
-        mbSelect()
+        // $(".coupSetConSecond").layout()//耦合第二步进行渲染
+        // mbSelect()
 
     }else if(conText=="第二步"){
         $(".cloudui .coupSetTitleList").children("li").eq(1).removeClass("active");
@@ -329,7 +329,7 @@ function mbSelect() {
             swal('参数故障', '', 'error')
         }
         var mbIndex=$(".cloudui .coupSetCon #coupSetMb").val();
-        window.setTimeout(localTable(mbIndex),100)
+        window.setTimeout(localTable(mbIndex),100);
     })
 }
 //本地模板选择变化时
