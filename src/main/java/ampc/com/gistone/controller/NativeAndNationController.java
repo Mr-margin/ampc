@@ -879,6 +879,7 @@ public class NativeAndNationController {
 			tEsNative.setEsNativeYear(nativeYear);
 			tEsNative.setEsComment(nativeRemark);
 			tEsNative.setEsNativeTpId(nativeTpId);
+			tEsNative.setFilePath(nativesfilePath);
 			//插入数据
 			int total=tEsNativeMapper.insertSelective(tEsNative);
 			Map msgMap=new HashMap();
