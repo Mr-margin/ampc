@@ -8,8 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +28,6 @@ import ampc.com.gistone.extract.netcdf.Netcdf;
 import ampc.com.gistone.util.CSVUtil;
 import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.StringUtil;
-import oracle.net.aso.n;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
@@ -39,7 +36,9 @@ import ucar.nc2.Variable;
 public class VerticalService {
 	private static Logger logger = LoggerFactory.getLogger(VerticalService.class);
 	@Autowired
-	public ResultPathUtil resultPathUtil;
+	private ResultPathUtil resultPathUtil;
+	@Autowired
+	private TaskHelper taskHelper;
 
 	private String tempPath;
 	private List<PointBean> pointBeanList;
@@ -122,9 +121,9 @@ public class VerticalService {
 		File juzhen = CSVUtil.createCSVFile(res, tempPath, Constants.CSV_JZ_PREFIX);
 		// 获取对应条件污染物图像下标参数，用条件和污染物拼接成要向csh中传递的文件名，形成“名=下标参数”的字符串返回
 		String specieIndex = getSpecieIndex(verticalParams);
-		File csvIndexFile=new File(resultPathUtil.getExtractConfig().getCsvIndexPath());
-		File specieIndexFile = CSVUtil.createIndexCSVFile(specieIndex,csvIndexFile.getAbsolutePath());
-		String tempFilePath = tempPath +"/"+ System.currentTimeMillis();
+		File csvIndexFile = new File(resultPathUtil.getExtractConfig().getCsvIndexPath());
+		File specieIndexFile = CSVUtil.createIndexCSVFile(specieIndex, csvIndexFile.getAbsolutePath());
+		String tempFilePath = tempPath + "/" + System.currentTimeMillis();
 		String pngPath = resultPathUtil
 				.getRealPath(resultPathUtil.getExtractConfig().getVerticalPngPath() + System.currentTimeMillis(),
 						verticalParams.getUserId(), verticalParams.getDomainId(), verticalParams.getMissionId(),
@@ -141,26 +140,20 @@ public class VerticalService {
 		String filePath = tempFilePath + ".csh";
 		logger.info("create two csv file is juzheng and specieIndex,Transfer parameter:" + shellVertival.toString());
 		logger.info("build csh file ,Incoming parameter");
-		
+		// 根据摸版生成要调用的csh文件
 		buildCshWithVertical(filePath, shellVertival);
-		
 		logger.info("start Execute script");
-		String script = FilePathUtil.combinePath(filePath);
-		String[] cmd = new String[] { script };
-		try {
-			TaskHelper.execute(cmd);
-			String pngFilePath = pngPath + ".png";
+		String pngFilePath = pngPath + ".png";
+		// 运行filePath文件
+		if (taskHelper.process(new String[] { "csh", filePath })) {
 			File pngFile = new File(pngFilePath);
 			if (pngFile.exists() && pngFile.isFile()) {
 				logger.info("run createPng, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms,pngPath="
 						+ pngFilePath);
 				return pngFilePath;
 			}
-			return null;
-		} catch (IOException e) {
-			logger.error("", e);
-			return null;
 		}
+		return null;
 	}
 
 	// 通过摸版动态加载csh文件，并执行
@@ -168,7 +161,8 @@ public class VerticalService {
 		BufferedReader br = null;
 		BufferedWriter bw = null;
 		try {
-			br = new BufferedReader(new FileReader(getClass().getClassLoader().getResource(Constants.CSH_TEMPLATE_PATH).getPath()));
+			br = new BufferedReader(
+					new FileReader(getClass().getClassLoader().getResource(Constants.CSH_TEMPLATE_PATH).getPath()));
 			bw = new BufferedWriter(new FileWriter(filePath));
 			String line = null;
 			while ((line = br.readLine()) != null) {
@@ -327,8 +321,8 @@ public class VerticalService {
 						verticalParams.getDomainId(), verticalParams.getMissionId(), verticalParams.getScenarioId1(),
 						verticalParams.getDomain())
 				.replace("$currDate", DateUtil.DATEtoString(new Date(), DateUtil.DATE_FORMAT));
-		File tempFile=new File(tempPath);
-		tempPath=tempFile.getAbsolutePath();
+		File tempFile = new File(tempPath);
+		tempPath = tempFile.getAbsolutePath();
 		variableList1 = new ArrayList<Variable>();
 		variableList2 = new ArrayList<Variable>();
 		if (Constants.TIMEPOINT_A.equals(timePoint)) {
@@ -341,7 +335,7 @@ public class VerticalService {
 			try {
 				attributes = Netcdf.getAttributes(concnFilePath);
 				logger.info("read getVariables, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
-				logger.info("tempPath=" + tempPath + ";attributes=" + attributes.toString());
+				logger.info("tempPath=" + tempPath);
 			} catch (IOException e) {
 				logger.error("VerticalService | variables() : getAttributes IOException");
 				return;
@@ -352,7 +346,7 @@ public class VerticalService {
 			try {
 				attributes = Netcdf.getAttributes(concnFilePath);
 				logger.info("read getVariables, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
-				logger.info("tempPath=" + tempPath + ";attributes=" + attributes.toString());
+				logger.info("tempPath=" + tempPath);
 			} catch (IOException e) {
 				logger.error("VerticalService | variables() : getAttributes IOException");
 				return;
