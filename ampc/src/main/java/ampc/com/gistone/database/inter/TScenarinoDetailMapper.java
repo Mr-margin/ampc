@@ -26,7 +26,16 @@ public interface TScenarinoDetailMapper {
 	 */
 	TScenarinoDetail selectStartAndEndDate(Long scenarinoId);
 	
+	/**
+	 * 查询所有的错误情景总数
+	 * @param userId
+	 * @return
+	 */
 	Long selectErrorCount(Long userId);
+	/**
+	 * 查询所有的错误情景所在的任务ID
+	 */
+	List<Long> selectMissionIdByErrorScenarino(Long userId);
 	
 	/**
 	 * @Description: 修改情景类型
