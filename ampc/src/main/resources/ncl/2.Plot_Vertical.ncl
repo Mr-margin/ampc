@@ -73,5 +73,5 @@ begin
    plot = gsn_csm_contour(wks,XX,res)
  ;  system("convert -density 300 -trim "+fon+".eps "+fon+".png")
    delete(XX)
-
+exit
 end
