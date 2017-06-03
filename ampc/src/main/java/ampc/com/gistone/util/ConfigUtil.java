@@ -69,34 +69,6 @@ public class ConfigUtil {
 	public String getExqd() {
 		return exqd;
 	}
-	@Value("${ex.docURL}")
-	private String docURL;
-	@Value("${ex.queryURL}")
-	private String queryURL;
-	@Value("${ex.dataURL}")
-	private String dataURL;
-	@Value("${ex.sectorURL}")
-	private String sectorURL;
-	
-	
-	
-
-	public String getDocURL() {
-		return docURL;
-	}
-
-	public String getQueryURL() {
-		return queryURL;
-	}
-
-	public String getDataURL() {
-		return dataURL;
-	}
-
-	public String getSectorURL() {
-		return sectorURL;
-	}
-
 	//微信路径url
 	@Value("${weixin.serverURL}")
 	private String weixinServerURL;
