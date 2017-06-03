@@ -163,13 +163,9 @@ public class ExcelToDateController {
 	 * @return 返回响应结果对象
 	 * TODO 行业描述
 	 */
-	@RequestMapping("excel/checkDoc")
-	public Map update_SectorDocExcelData(Long userId,Long templateId,String filePath) {
-		userId=1L;
-		templateId=1L;
-		filePath="D:\\清单数据\\应急系统新_1描述文件.xlsx";
+	public Map update_SectorDocExcelData(Long userId,Long templateId,String filePath,String outPath) {
 		//出错的文件保存路径
-		String outPath=configUtil.getDocURL();
+		outPath=outPath+"\\checkDoc.xlsx";
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
@@ -242,9 +238,9 @@ public class ExcelToDateController {
 	 * @return 返回响应结果对象
 	 * TODO 条件
 	 */
-	public Map update_QueryExcelData(Long userId,Long templateId,String filePath) {
+	public Map update_QueryExcelData(Long userId,Long templateId,String filePath,String outPath) {
 		//出错的文件保存路径
-		String outPath=configUtil.getQueryURL();
+		outPath=outPath+"\\checkQuery.xlsx";
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
@@ -299,9 +295,9 @@ public class ExcelToDateController {
 	 * @param response    响应
 	 * @return 返回响应结果对象
 	 */
-	public Map update_SectorData(Long userId,Long templateId,String filePath) {
+	public Map update_SectorData(Long userId,Long templateId,String filePath,String outPath) {
 		//出错的文件保存路径
-		String outPath=configUtil.getSectorURL();
+		outPath=outPath+"checkSector.xlsx";
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
@@ -353,12 +349,9 @@ public class ExcelToDateController {
 	 * @return 返回响应结果对象
 	 */
 	@RequestMapping("excel/checkNative")
-	public Map check_nativeExcelData(Long userId,Long templateId,Long qdId,String filePath) {
-		templateId=1L;
-		qdId=1L;
-		filePath="D:\\清单数据\\应急系统新_3清单数据_hb_ywjv11_QY3_CPH1.xlsx";
+	public Map check_nativeExcelData(Long userId,Long templateId,Long qdId,String filePath,String outPath) {
 		//出错的文件保存路径
-		String outPath=configUtil.getDataURL();
+		outPath=outPath+"\\checkData.xlsx";
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
