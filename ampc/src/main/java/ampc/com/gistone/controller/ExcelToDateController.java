@@ -169,7 +169,7 @@ public class ExcelToDateController {
 		templateId=1L;
 		filePath="D:\\清单数据\\应急系统新_1描述文件.xlsx";
 		//出错的文件保存路径
-		String outPath=configUtil.getExqd();
+		String outPath=configUtil.getDocURL();
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
