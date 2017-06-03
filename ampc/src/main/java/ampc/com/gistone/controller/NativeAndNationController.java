@@ -628,8 +628,6 @@ public class NativeAndNationController {
 				outPath.mkdirs();
 			}
 			
-			
-			
 			//添加数据
 			TEsNativeTp tEsNativeTp=new TEsNativeTp();
 			tEsNativeTp.setUserId(userId);
@@ -1188,7 +1186,6 @@ public class NativeAndNationController {
 			return AmpcResult.build(1001, "NativeAndNationController 校验本地清单模板异常!");
 		}
 	}
-	
 	
 	/**
 	 * 查询耦合清单
