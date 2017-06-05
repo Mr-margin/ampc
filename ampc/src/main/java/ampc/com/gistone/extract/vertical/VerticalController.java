@@ -26,15 +26,17 @@ public class VerticalController {
 	@RequestMapping(value = "/vertical")
 	public AmpcResult vertical(@RequestBody Map<String, Object> requestParams) {
 		VerticalParams verticalParams = null;
-		Map<String, Map> params = (Map) requestParams.get("data");
+		Map<String, Map> params = null;
 		try {
+			params = (Map) requestParams.get("data");
 			String calcType = String.valueOf(params.get("calcType"));
 			String showType = String.valueOf(params.get("showType"));
 			Double xmin = Double.valueOf(String.valueOf(params.get("xmin")));
 			Double ymin = Double.valueOf(String.valueOf(params.get("ymin")));
 			Double xmax = Double.valueOf(String.valueOf(params.get("xmax")));
 			Double ymax = Double.valueOf(String.valueOf(params.get("ymax")));
-			// Double space = Double.valueOf(String.valueOf(params.get("space")));暂时没用
+			// Double space =
+			// Double.valueOf(String.valueOf(params.get("space")));暂时没用
 			Integer pointNums = Integer.valueOf(String.valueOf(params.get("pointNums")));
 			Long userId = Long.valueOf(String.valueOf(params.get("userId")));
 			Long domainId = Long.valueOf(String.valueOf(params.get("domainId")));
@@ -49,19 +51,22 @@ public class VerticalController {
 			String timePoint = String.valueOf(params.get("timePoint"));
 			Long scenarioId1 = Long.valueOf(String.valueOf(params.get("scenarioId1")));
 			verticalParams = new VerticalParams(xmin, ymin, xmax, ymax, pointNums, userId, domainId, missionId, domain,
-					specie, timePoint);
-			verticalParams.setCalcType(calcType);
-			verticalParams.setShowType(showType);
-			verticalParams.setScenarioId1(scenarioId1);
+					specie, timePoint, calcType, showType, scenarioId1);
 		} catch (Exception e) {
 			logger.error("参数异常", e);
 			return AmpcResult.build(1003, "参数异常");
 		}
 		if (!Constants.CALCTYPE_SHOW.equals(verticalParams.getCalcType())) {
-			Long scenarioId2 = Long.valueOf(String.valueOf(params.get("scenarioId2")));
+			Long scenarioId2 = null;
+			try {
+				scenarioId2 = Long.valueOf(String.valueOf(params.get("scenarioId2")));
+			} catch (Exception e) {
+				logger.error("无scenarioId2参数,或calctype参数错误", e);
+				return AmpcResult.build(1000, "无scenarioId2参数,或calctype参数错误");
+			}
 			if (scenarioId2 == null) {
 				logger.error("the ScenarioId2 params is wrong, the value notis null");
-				return AmpcResult.build(1000, "参数ScenarioId2的值错误，不应该为空,或valctype错误");
+				return AmpcResult.build(1000, "参数ScenarioId2的值错误，不应该为空,或calctype参数错误");
 			}
 			verticalParams.setScenarioId2(scenarioId2);
 		}
@@ -72,8 +77,8 @@ public class VerticalController {
 				try {
 					dates = (List<String>) params.get("dates");
 				} catch (Exception e) {
-					logger.error("参数dates的值错误，不能为空", e);
-					return AmpcResult.build(1000, "参数dates的值错误，不能为空");
+					logger.error("无dates参数,或timePoint参数错误", e);
+					return AmpcResult.build(1000, "无dates参数,或timePoint参数错误");
 				}
 				if (dates.isEmpty()) {
 					logger.error("the dates params is wrong, the value notis null");
@@ -85,8 +90,8 @@ public class VerticalController {
 				try {
 					day = String.valueOf(params.get("day"));
 				} catch (Exception e) {
-					logger.error("参数day的值错误，不能为空", e);
-					return AmpcResult.build(1000, "参数day的值错误，不能为空");
+					logger.error("无day参数,或timePoint参数错误", e);
+					return AmpcResult.build(1000, "无day参数,或timePoint参数错误");
 				}
 				if (StringUtil.isEmpty(day)) {
 					logger.error("the dates params is wrong, the value notis null");
@@ -95,7 +100,13 @@ public class VerticalController {
 				verticalParams.setDay(day);
 			}
 		} else {
-			Integer hour = Integer.valueOf(String.valueOf(params.get("hour")));
+			Integer hour = null;
+			try {
+				hour = Integer.valueOf(String.valueOf(params.get("hour")));
+			} catch (Exception e) {
+				logger.error("无hour参数,或timePoint参数错误", e);
+				return AmpcResult.build(1000, "无hour参数,或timePoint参数错误");
+			}
 			if (hour == null) {
 				logger.error("the hour params is wrong, the value not null");
 				return AmpcResult.build(1000, "参数hour的值错误，不应该为空");
@@ -106,11 +117,10 @@ public class VerticalController {
 			}
 			verticalParams.setHour(hour);
 		}
-
-		// 返回的是图片路径
+		// 返回的是图片的相对路径
 		String res = verticalService.vertical(verticalParams);
 		if (!StringUtil.isEmpty(res)) {
-			// 还没有和前端交互，交互时要将图片路径返回到前端页面
+			// 将图片路径返回到前端页面
 			return AmpcResult.ok(res);
 		}
 		return AmpcResult.build(1001, "系统参数异常");
