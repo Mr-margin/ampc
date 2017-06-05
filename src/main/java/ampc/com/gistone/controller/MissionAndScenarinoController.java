@@ -1954,7 +1954,7 @@ public class MissionAndScenarinoController {
 				for(int i=0;i<tmMap.size();i++){
 					tmMap.get(i).put("id", "qj"+tmMap.get(i).get("scenarinoId"));
 					//查询有多少个错误的情景  累计增加
-					if(tmMap.get(i).get("expand4")!=null){
+					if(tmMap.get(i).get("expand4")==null||tmMap.get(i).get("expand4").equals("")){
 						missionErrorCount++;
 					}
 					children.add(tmMap.get(i));
@@ -2061,7 +2061,7 @@ public class MissionAndScenarinoController {
 				for(int i=0;i<tmMap.size();i++){
 					tmMap.get(i).put("id", "qj"+tmMap.get(i).get("scenarinoId"));
 					//查询有多少个错误的情景  累计增加
-					if(tmMap.get(i).get("expand4")!=null){
+					if(tmMap.get(i).get("expand4")==null||tmMap.get(i).get("expand4").equals("")){
 						missionErrorCount++;
 					}
 					children.add(tmMap.get(i));
