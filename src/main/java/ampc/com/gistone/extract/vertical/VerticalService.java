@@ -55,7 +55,7 @@ public class VerticalService {
 			return null;
 		}
 		// 将projecttion参数从verticalParams中获取封装
-		if(!setProjection(verticalParams)){
+		if (!setProjection(verticalParams)) {
 			return null;
 		}
 		// 2. build earth surf point取座标划线
@@ -150,7 +150,9 @@ public class VerticalService {
 		logger.info("create two csv file is juzheng and specieIndex,Transfer parameter:" + shellVertival.toString());
 		logger.info("build csh file ,Incoming parameter");
 		// 根据摸版生成要调用的csh文件
-		buildCshWithVertical(filePath, shellVertival);
+		if (!buildCshWithVertical(filePath, shellVertival)) {
+			return null;
+		}
 		logger.info("start Execute script");
 		String pngFilePath = pngPath + ".png";
 		// 运行filePath文件
@@ -167,7 +169,7 @@ public class VerticalService {
 	}
 
 	// 通过摸版动态加载csh文件，并执行
-	private void buildCshWithVertical(String filePath, ShellVertival shellVertival) {
+	private boolean buildCshWithVertical(String filePath, ShellVertival shellVertival) {
 		BufferedReader br = null;
 		BufferedWriter bw = null;
 		try {
@@ -186,14 +188,17 @@ public class VerticalService {
 			}
 		} catch (FileNotFoundException e) {
 			logger.error("", e);
+			return false;
 		} catch (IOException e) {
 			logger.error("", e);
+			return false;
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
 					logger.error("", e);
+					return false;
 				}
 			}
 			if (bw != null) {
@@ -201,10 +206,11 @@ public class VerticalService {
 					bw.close();
 				} catch (IOException e) {
 					logger.error("", e);
+					return false;
 				}
 			}
 		}
-
+		return true;
 	}
 
 	// 获取对应条件污染物图像下标参数，用条件和污染物拼接成要向csh中传递的文件名，形成“名=下标参数”的字符串返回
