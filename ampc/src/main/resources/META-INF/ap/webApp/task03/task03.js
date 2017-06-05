@@ -644,10 +644,10 @@ var dojoConfig = {
 };
 require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol", 'esri/symbols/PictureMarkerSymbol',
         'esri/renderers/ClassBreaksRenderer', "esri/symbols/SimpleMarkerSymbol", 'esri/dijit/PopupTemplate', "esri/geometry/Point", "esri/geometry/Extent", "esri/renderers/SimpleRenderer", "esri/graphic",
-        "dojo/_base/Color", "dojo/dom-style", 'dojo/query', "esri/tasks/FeatureSet", "esri/SpatialReference", 'extras/ClusterLayer', "tdlib/gaodeLayer", "esri/dijit/InfoWindow", 
+        "dojo/_base/Color", "dojo/dom-style", 'dojo/query', "esri/tasks/FeatureSet", "esri/SpatialReference", 'extras/ClusterLayer', "tdlib/gaodeLayer", "esri/InfoTemplate", 
         "dojo/dom-construct", "dojo/dom", "dojo/domReady!"],
     function (Map, FeatureLayer, GraphicsLayer, SimpleFillSymbol, SimpleLineSymbol, PictureMarkerSymbol, ClassBreaksRenderer, SimpleMarkerSymbol, PopupTemplate, Point, Extent, SimpleRenderer, Graphic,
-              Color, domStyle, query, FeatureSet, SpatialReference, ClusterLayer, gaodeLayer, InfoWindow, domConstruct, dom) {
+              Color, domStyle, query, FeatureSet, SpatialReference, ClusterLayer, gaodeLayer, InfoTemplate, domConstruct, dom) {
         dong.gaodeLayer = gaodeLayer;
         dong.Graphic = Graphic;
         dong.Point = Point;
@@ -663,16 +663,19 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
         dong.ClassBreaksRenderer = ClassBreaksRenderer;
         dong.domStyle = domStyle;
         dong.query = query;
-        dong.InfoWindow = InfoWindow;
+        dong.InfoTemplate = InfoTemplate;
         
         app.mapList = new Array();
         app.baselayerList = new Array();//默认加载矢量 new gaodeLayer({layertype:"road"});也可以
         app.stlayerList = new Array();//加载卫星图
         app.labellayerList = new Array();//加载标注图
         
-        app.infoWindow = new  dong.InfoWindow({
-            domNode: domConstruct.create("div", null, dom.byId("mapDiv0"))
-         });
+        app.infoTemplate = new InfoTemplate();
+        app.infoTemplate.setTitle("企业排放信息");
+        app.infoTemplate.setContent("<b>企业名称: </b>${companyname}<br/>" +
+					                "<b>当前行业: </b>${smallIndex}<br/><br/> +" +
+					                "<table></table>");
+        
 
         for (var i = 0; i < 1; i++) {
             var map = new Map("mapDiv" + i, {
@@ -680,8 +683,7 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
                 center: [stat.cPointx, stat.cPointy],
                 minZoom: 3,
                 maxZoom: 13,
-                zoom: 3,
-                infoWindow: app.infoWindow
+                zoom: 3
             });
 
             app.mapList.push(map);
@@ -693,7 +695,7 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
         }
         app.gLyr = new dong.GraphicsLayer({"id": "gLyr"});
         app.mapList[0].addLayer(app.gLyr);
-
+        app.mapList[0].infoWindow.resize(250,300);
       //定义绘制图层的点击事件，此模块内绘制图层只有点，所以直接是marker点的单击事件
     	dojo.connect(app.gLyr, "onClick", capitalclick);
     	
@@ -784,7 +786,10 @@ function add_point(col) {
                     point.companyname = vol.companyname;
                     point.smallIndex = vol.smallIndex;
                     
-                    var graphic = new dong.Graphic(point, createSymbol(vol.smallIndex));
+                    var attr = { "companyname": vol.companyname,
+                    			 "smallIndex": vol.smallIndex};
+                    
+                    var graphic = new dong.Graphic(point, createSymbol(vol.smallIndex), attr, app.infoTemplate);
                     app.gLyr.add(graphic);
                     
                 }
@@ -836,15 +841,6 @@ function add_point(col) {
  * 为marker点设置显示样式
  */
 function createSymbol(smallIndex){
-
-//    if(smallIndex == '水泥'){
-//        console.log(1)
-//    }else if(smallIndex == '钢铁'){
-//        console.log(2)
-//    }else{
-//        console.log(3)
-//    }
-	
   var style = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20, new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([122, 251, 159]), 1), new dong.Color(pointColor[smallIndex]?pointColor[smallIndex].color:pointColor.other.color));
   return style;
 }
@@ -855,10 +851,11 @@ function createSymbol(smallIndex){
 function capitalclick(){
 	var pt=event.graphic.geometry;//当前点击的marker点
 	
-	app.mapList[0].infoWindow.resize(250,300);
-	app.mapList[0].infoWindow.setTitle(pt.companyname+"  <a class='detailsinfo' id='detailsinfo'>详细</a>");
-	app.mapList[0].infoWindow.setContent(pt.companyname+" : "+pt.companyname);
-	app.mapList[0].infoWindow.show(event.mapPoint);
+//	event.graphic.attributes.companyname = "111111";
+	
+	
+	
+	app.mapList[0].infoWindow.show(pt);//显示气泡框
 }
 
 /**
