@@ -297,7 +297,7 @@ function nextCoup(){//点击下一步按钮
             ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"findCityAndIndustryById","nationId":checkQgQd.esNationId,"nativesId":localQdId,"nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId}).success(function (res) {
                 if(res.status==0){
                     // console.log(res);
-                    ajaxPost('http://192.168.1.128:8089/swagger-ui.html#/',{"nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId}).success(function (res) {
+                    ajaxPost('http://192.168.1.128:8089/summary/regions',{"nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId}).success(function (res) {
                         console.log(res);
                     })
                     coupCity()
