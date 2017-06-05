@@ -1676,7 +1676,11 @@ dl, dd {
   margin-top:20px;
 }
 /*//批量选择*/
-#batchWindow label{clear: both!important;}
+#batchWindow .batchCon{}
+#batchWindow .batchCon{}
+#batchWindow .batchCon #citySelect,#batchWindow .batchCon #industrySelect{overflow: hidden}
+#batchWindow .batchCon #citySelect span,#batchWindow .batchCon #industrySelect span{float: left;width: 100px;}
+#batchWindow .batchCon #citySelect span *,#batchWindow .batchCon #industrySelect span *{float: left;}
 /*预案编辑的样式*/
 /*新增、编辑区域弹框的样式*/
 #editArea .modal-header{

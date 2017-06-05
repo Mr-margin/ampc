@@ -296,10 +296,16 @@ function nextCoup(){//点击下一步按钮
             //获得选择全国清单个本地清单的ID
             ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"findCityAndIndustryById","nationId":checkQgQd.esNationId,"nativesId":localQdId,"nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId}).success(function (res) {
                 if(res.status==0){
-                    // console.log(res);
-                    ajaxPost('http://192.168.1.128:8089/summary/regions',{"nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId}).success(function (res) {
-                        console.log(res);
-                    })
+                   var cityNames=res.data.data.cityNames;
+                   var industryNames=res.data.data.industryNames;
+                   var data=[]
+                    $.each(cityNames, function (i, col) {
+                        data.push({
+                            "id":i,
+                            "name":col,
+                        });
+                    });
+                   console.log(data)
                     coupCity()
                 }else{
                     swal('参数错误', '', 'error');
@@ -446,7 +452,7 @@ batchSelect()
 function batchSelect() {
     var cityDiv="";
     for(var i=0;i<city.length;i++){
-        cityDiv+="<input type='checkbox' id=\'city_"+i+"\' /><label for=\'city_"+i+"\'>"+city[i]+"</label>"
+        cityDiv+="<span><input type='checkbox' name='city' id=\'city_"+i+"\' /><label for=\'city_"+i+"\'>"+city[i]+"</label></span>"
     }
     $("#citySelect").append(cityDiv);
 }
@@ -460,6 +466,26 @@ $("#batchWindow").window({
     shadow:false,
     title:'批量选择',
     border:false,
-    closed:false,
+    closed:true,
     cls:"cloudui"
+})
+//点击城市添加相应的行业
+var industryDiv="";
+var industryDivLeave="";
+var cityList=[]
+$("#citySelect span").click(function () {
+    var cityIndex=$(this).index();
+    if($(this).children("input").is(":checked")){
+        for(var i=0;i<industry[cityIndex].length;i++){
+            industryDiv+="<span><input type='checkbox' name='industry' id=\'industry_"+i+"\' /><label for=\'city_"+i+"\'>"+industry[cityIndex][i]+"</label></span>"
+
+        }
+        $("#industrySelect").append(industryDiv)
+    }
+    // else {
+    //     for(var i=0;i<industry[cityIndex].length;i++){
+    //         industryDivLeave+="<span><input type='checkbox' name='industry' id=\'industry_"+i+"\' /><label for=\'city_"+i+"\'>"+industry[cityIndex][i]+"</label></span>"
+    //     }
+    //     $("#industrySelect").remove(industryDivLeave)
+    // }
 })
