@@ -156,7 +156,7 @@ require(
             app.mapimagelayer[i] = new dong.MapImageLayer({"id":"myil"+i});
             app.mapList[i].addLayer(app.mapimagelayer[i]);
             
-            app.dynamicData[i] = new dong.ArcGISDynamicMapServiceLayer("http://192.168.1.103:6080/arcgis/rest/services/ampc/cms/MapServer");
+            app.dynamicData[i] = new dong.ArcGISDynamicMapServiceLayer(ArcGisServerUrl + "/arcgis/rest/services/ampc/cms/MapServer");
             app.mapList[i].addLayer(app.dynamicData[i]);
             
         }
@@ -403,17 +403,7 @@ function bianji_wanggepafang(type, g_num, p , wind){
         var par = p;
         var v1 = new Date().getTime();
         
-//        var imageURL = "http://localhost:8082/ampc/img/ceshi/now.png";//定义图片路径，这个图片是动态生成的
-//        var initE = new dong.Extent({ 'xmin': app.mapList[g_num].extent.xmin, 'ymin': app.mapList[g_num].extent.ymin, 'xmax': app.mapList[g_num].extent.xmax, 'ymax': app.mapList[g_num].extent.ymax, 'spatialReference': { 'wkid': 3857 }});
-//        var mapImage = new dong.MapImage({
-//            'extent': initE,
-//            'href': imageURL
-//        });
-//        app.mapimagelayer[g_num].removeAllImages();//删除全部的图片图层
-//        app.mapimagelayer[g_num].addImage(mapImage);//将新的图片图层添加到地图
-        
         console.log(JSON.stringify(par));
-        
 //        ajaxPost_w('http://166.111.42.85:8300/ampc/extract/tiff', par).success(function (data) {
         ajaxPost('/extract/tiff', par).success(function (data) {
         	console.log(JSON.stringify(data));
@@ -427,9 +417,9 @@ function bianji_wanggepafang(type, g_num, p , wind){
     			dynamicLayerInfo.defaultVisibility = false;
     			dynamicLayerInfo.name = "reuslt";
     			var dataSource = new dong.RasterDataSource();
-    			dataSource.workspaceId = "ampctiff";
+    			dataSource.workspaceId = "tiffPath";
     			
-//    			dataSource.dataSourceName = "d-2016-11-17-0-0-SO2-508.tiff";
+//    			dataSource.dataSourceName = "tiffPath/2017-06-05/1/1/372/3/emis/show/d-2016-11-17-0-0-PM25-509.tiff";
     			dataSource.dataSourceName = data.data;
     			
     			var layerSource = new dong.LayerDataSource();
