@@ -310,6 +310,7 @@ public class NativeAndNationController {
 					tesNative.put("esCodeRange", tEsNative.getEsCodeRange());
 					tesNative.put("esComment", tEsNative.getEsComment());
 					tesNative.put("filePath", tEsNative.getFilePath());
+					tesNative.put("isVerify", tEsNative.getIsVerify());
 					//把map对象添加到集合中
 					tpDataList.add(tesNative);
 				}
