@@ -84,7 +84,7 @@ public class DomainController {
 			obj.put("createStatus", td.getCreateStatus().toString());//状态（用来区分当前还是历史）
 			obj.put("domainName", td.getDomainName());//domain名称
 			obj.put("domainDoc", td.getDomainDoc());//备注
-			obj.put("common", td.getCommon());
+			obj.put("domainInfo", td.getDomainInfo());
 			arr.add(obj);
 			
 		}
