@@ -16,12 +16,18 @@ import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSON;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ampc.com.gistone.database.inter.TAddressMapper;
 import ampc.com.gistone.database.inter.TEsCouplingMapper;
@@ -68,6 +74,9 @@ public class NativeAndNationController {
 	public TAddressMapper	tAddressMapper;
 	
 	private TEsNative tEsNative;
+	
+	//定义公用的jackson帮助类
+	private ObjectMapper mapper=new ObjectMapper();
 	
 //	private TEsNativeTp tEsNativeTp;
 	
@@ -1190,7 +1199,7 @@ public class NativeAndNationController {
 			Map msgMap = new HashMap();
 			String esNativeTpOutPathre = esNativeTpOutPath.replace("/", "\\");
 			//调用校验数据函数
-			Map  nativeExcel =excelToDateController.check_nativeExcelData(userId, nativeTpId, nativeId, nativefilePath+ "/"+"应急系统新_3清单数据demo.xlsx",esNativeTpOutPathre);
+			Map  nativeExcel =excelToDateController.check_nativeExcelData(userId, nativeTpId, nativeId, nativefilePath+ "/"+"应急系统新_3清单数据_测试.xlsx",esNativeTpOutPathre);
 				if(nativeExcel==null){
 				//修改清单模板
 				TEsNative tEsNative = new TEsNative();
@@ -1590,13 +1599,12 @@ public class NativeAndNationController {
 			}
 			Long nationId = Long.parseLong(param.toString());
 			
-//			param=data.get("nationTpId");
-//			if(!RegUtil.CheckParameter(param, "Long", null, false)){
-//				LogUtil.getLogger().error("NativeAndNationController 清单模板ID为空或出现非法字符!");
-//				return AmpcResult.build(1003, "清单模板ID为空或出现非法字符!");
-//			}
-//			Long nationTpId = Long.parseLong(param.toString());
-			Long nationTpId = Long.parseLong("1");
+			param=data.get("nativeTpId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 清单模板ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单模板ID为空或出现非法字符!");
+			}
+			Long nativeTpId = Long.parseLong(param.toString());
 			
 			param=data.get("nativesId");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
@@ -1605,33 +1613,45 @@ public class NativeAndNationController {
 			}
 			String  nativesIdStr = param.toString();
 			String nativeIds=nativesIdStr.substring(1, nativesIdStr.length() -1);
-//			String[] nativeIdArray=nativeIds.split(",");
+			String[] nativeIdsArray=nativeIds.split(",");
+			JSONArray json = JSONArray.fromObject(nativeIdsArray);
+			String str = json.toString();
 			
 			//此处会有调用晓东的接口，根据参数为清单id查询涉及到的城市id
-			//先写固定值测试
-			String[] nativeIdArray={"532931","532932","533102"};
+			String getResult=ClientUtil.doPost("http://192.168.1.128:8089/summary/regions",str);
+			Map contentMap=mapper.readValue(getResult, Map.class);
+			String cityStr = contentMap.get("data").toString();
+			JSONObject obj = new JSONObject();
+			JSONObject objs= obj.fromObject(cityStr);
+			//得到城市集合
+			Map cityMap=mapper.readValue(objs.toString(), Map.class);
+			//遍历每个清单id下的城市
+			String[] cityIdArray = null;
+			for(Object cityKey:cityMap.keySet()){
+				String cityStrs = cityMap.get(cityKey).toString();
+				String cityIdStrs = cityStrs.substring(1, cityStrs.length() -1);
+				cityIdArray = cityIdStrs.split(",");
+			}
 			
 			//查询到的城市添加到Map集合中
-			Map cityMap = new HashMap<String, Object>();
+			Map cityNameMap = new HashMap<String, Object>();
 			//循环全部城市ID
-			for(int i=0; i<nativeIdArray.length; i++){
+			for(int i=0; i<cityIdArray.length; i++){
 				//根据城市id查询涉及到的城市名称
-				String addressCode = nativeIdArray[i];
+				String addressCode = cityIdArray[i];
 				String tAddressName=tAddressMapper.selectCityNameById(addressCode);
-				cityMap.put(nativeIdArray[i], tAddressName);
+				cityNameMap.put(cityIdArray[i], tAddressName);
 			}
 			
 			//根据本地清单模板id查询涉及到的行业
-//			TSectorExcel tSectorExcel=new TSectorExcel();
-//			tSectorExcel.setDetailedListId(nationTpId);
-			List<String> listTSectorExcel=tSectorExcelMapper.selectIndustryById(nationTpId);
+			List<String> listTSectorExcel=tSectorExcelMapper.selectIndustryById(nativeTpId);
 			
-			Map cityAndAdressMap= new HashMap<String, Object>();
-			cityAndAdressMap.put("cityMap", cityMap);
-			cityAndAdressMap.put("adressList", listTSectorExcel);
+			Map cityAndIndustryMap= new HashMap<String, Object>();
+			cityAndIndustryMap.put("cityNames", cityNameMap);
+			cityAndIndustryMap.put("industryNames", listTSectorExcel);
 			
 			LogUtil.getLogger().info("NativeAndNationController 根据id查询涉及到的城市和行业信息成功!");
-			return AmpcResult.ok(cityAndAdressMap);
+			return AmpcResult.ok(cityAndIndustryMap);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("NativeAndNationController 根据id查询涉及到的城市和行业信息异常!",e);
 			return AmpcResult.build(1001, "NativeAndNationController 根据id查询涉及到的城市和行业信息异常!");
