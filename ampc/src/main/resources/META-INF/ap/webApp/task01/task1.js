@@ -145,7 +145,11 @@ var msg = {
         border: false,
         checkOnSelect: false,
         fitColumns: true,
-//        pagination:true,
+        rowStyler:function(index,row){
+        	if(row){
+        		
+        	}
+        },
         queryParams:{
         	"page":1,
         	"rows":10,
@@ -155,7 +159,13 @@ var msg = {
             "userId": userId
         },
         loadFilter:function(data){
-        	console.log(data);
+        	console.log(data.data.errorCount);
+        	if(data.data.errorCount==0){
+        		$('#showErrorBtn').hide();
+        	}else{
+        		$('#showErrorBtnNum').html(data.data.errorCount);
+        		$('#showErrorBtn').show();
+        	}
         	$('#rwpagination').pagination('refresh',{
         		total:data.data.total
         	});
@@ -1471,6 +1481,7 @@ function getQD() {
     var params = {
         userId: userId
     };
+    $('#qd').empty();
     ajaxPost(url, params).success(function (res) {
         for (var i = 0; i < res.data.length; i++) {
             $('#qd').append($('<option value="' + res.data[i].esCouplingId + '">' + res.data[i].esCouplingName + '</option>'))
