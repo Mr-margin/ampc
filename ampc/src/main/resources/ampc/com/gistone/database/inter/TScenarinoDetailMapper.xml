@@ -1099,7 +1099,7 @@ AND S.IS_EFFECTIVE ='1'
    	 SELECT  count(*)
   		FROM T_SCENARINO_DETAIL 
 			  WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
-			  AND EXPAND4!=NULL
+			  AND EXPAND4!='NULL'
   </select>
   
   <!-- 查询所有的错误情景所属的任务ID -->
@@ -1107,7 +1107,7 @@ AND S.IS_EFFECTIVE ='1'
    	 SELECT distinct MISSION_ID
   		FROM T_SCENARINO_DETAIL 
 			  WHERE IS_EFFECTIVE='1' AND USER_ID=#{userId,jdbcType=OTHER} 
-			  AND EXPAND4!=NULL
+			  AND EXPAND4!='NULL'
   </select>
    <!-- new根据任务Id查询情景列表 并可根据条件名模糊查询 -->
   <select id="selectByMissionIdNew" parameterType="hashMap" resultMap="scenarinoListMapNew" >
