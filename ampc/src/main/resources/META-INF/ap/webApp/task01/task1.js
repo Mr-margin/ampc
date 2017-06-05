@@ -90,6 +90,7 @@ var msg = {
         closed: true,
         cls: 'cloudui'
     });
+//    生成后评估的模态框
     $("#addHQJ").window({
         width: 600,
         collapsible: false,
@@ -102,6 +103,37 @@ var msg = {
         closed: true,
         cls: 'cloudui'
     });
+//    启动模式的模态框
+    $("#startUp").window($.extend({},defaultwindowoption,{
+    	title:'启动模式',
+    	onOpen:function(){
+    		var num = Math.round((msg.content.qjEndDate - msg.content.qjStartDate) / 1000 / 60 / 60 / 24);
+    		var url = '/getCores/spentTimes';
+
+    		  ajaxPost(url, {
+    		    userId: userId,
+    		    missionId: msg.content.rwId,
+    		    missionType: msg.content.rwType,
+    		    scenarinoType: msg.content.SCEN_TYPE
+    		  }).success(function (res) {
+    		    if (res.status == 0) {
+    		      $('.cpu span').empty();
+    		      $('.baseTime').empty();
+    		      $('.allTime').empty();
+    		      for (var i = 0; i < res.data.length; i++) {
+    		        $('.cpu span').eq(i).html(res.data[i].cores);
+    		        $('.cpu input').eq(i).val(res.data[i].cores);
+    		        $('.baseTime').eq(i).html((res.data[i].avgTime - 0) * num + 'h');
+    		        $('.allTime').eq(i).html((res.data[i].avgTime - 0) * num * (res.data[i].cores - 0));
+    		      }
+    		    } else {
+    		      console.log('接口故障！！！')
+    		    }
+    		  }).error(function () {
+    		    console.log('接口未成功发送')
+    		  })
+    	}
+    }));
     /*页面中间的任务列表部分的滚动条*/
     $("#rwgltablebox").slimScroll({
         height: '100%',
@@ -151,6 +183,7 @@ var msg = {
         treeField: 'missionName',
         columns: columnsRW,
         onClickRow: function (row) {
+        	console.log(row);
             if (typeof row.children === 'undefined') {
                 msg.content.qjName = row.scenarinoName;
                 msg.content.qjId = row.scenarinoId;
@@ -158,9 +191,11 @@ var msg = {
                 msg.content.qjEndDate = row.scenarinoEndDate;
                 msg.content.scenarinoStatus = row.scenarinoStatus;
                 msg.content.scenarinoStatuName = row.scenarinoStatuName;
-                msg.content.SCEN_TYPE = row.SCEN_TYPE;
+                msg.content.SCEN_TYPE = row.scenType;
                 storageqjmsg();
                 return
+            }else{
+            	selectRW=row;
             }
             if ($('[node-id="' + row.id + '"]').hasClass('datagrid-row-clicked')) {
                 $('[node-id="' + row.id + '"]').removeClass('datagrid-row-clicked');
@@ -320,7 +355,7 @@ function domainNameFormatter(value, row, index) {
             if (row.scenarinoStatus == 5) {
                 return "<a href='javascript:' onclick='startBtn()' style='color: #9CC8F7'><i class='im-play2'> 启动</i></a>";
             } else if (row.scenarinoStatus == 6) {
-                return "<a href='javascript:' style='color: #9CC8F7'><i class='im-pause'> 暂停</i></a>";
+                return "<a href='javascript:pauseBtn()'  style='color: #9CC8F7'><i class='im-pause'> 暂停</i></a>";
             } else if (row.scenarinoStatus == 7) {
                 return "<a href='javascript:' style='color: #9CC8F7'><i class='im-play2'> 续跑</i></a>";
             }
@@ -390,7 +425,7 @@ function missionStatusFormatter(value, row, index) {
     if (typeof row.missionStatus === 'undefined') {
         if (typeof row.missionStatusTitle === 'undefined') {
             var type;
-            switch (row.SCEN_TYPE) {
+            switch (row.scenType) {
                 case '1':
                     type = '预评估情景';
                     break;
@@ -1291,4 +1326,100 @@ function createQj(type) {
 
     }
     subBtn=true;
+}
+/*打开模式启动模态框*/
+function startBtn(){
+	console.log(msg);
+	setTimeout(function(){
+		$("#startUp").window('open').window('center');
+	},1)	
+}
+/*选择计算核心后开始情景 */
+function subStartUp() {
+	  if (!subBtn)return;
+	  subBtn = false;
+	  var url = '/ModelType/startModel';
+	  ajaxPost(url, {
+	    userId: userId,
+	    scenarinoId: msg.content.qjId,
+	    missionId: msg.content.rwId,
+	    missionType: msg.content.rwType,
+	    scenarinoType: msg.content.SCEN_TYPE,
+	    cores: $('input[name=cpuNum]:checked').val()
+	  }).success(function (res) {
+	    if (res.status == 0) {
+	    	$('#rwgltable').treegrid({
+        		queryParams:{
+        			"page":1,
+        			"rows":10,
+        			"queryName": '',
+        			"missionStatus": '',
+        			"sort": '',
+        			"userId": userId
+        		}	
+        	})
+	      $('#startUp').window('close');
+	      swal({
+	        title: '启动成功!',
+	        type: 'success',
+	        timer: 1000,
+	        showConfirmButton: false
+	      });
+	    } else {
+	      swal({
+	        title: '启动失败!',
+	        type: 'error',
+	        timer: 1000,
+	        showConfirmButton: false
+	      });
+	    }
+
+	  }).error(function () {
+	    swal({
+	      title: '启动失败!',
+	      type: 'error',
+	      timer: 1000,
+	      showConfirmButton: false
+	    });
+	  })
+	}
+/*终止情景*/
+function pauseBtn(){
+	var param={
+		    userId:userId,
+		    domainId:selectRW.missionDomainId,
+		    scenarinoId:msg.content.qjId,
+		    missionId:msg.content.rwId,
+		    flag:1,
+		    missionType:selectRW.missionStatus,
+		    scenarinoType:msg.content.SCEN_TYPE
+		  };
+		  ajaxPost('/ModelType/sendstopModel', param).success(function(res){
+		    if(res.status===0){
+		      swal({
+		        title: res.msg,
+		        type: 'success',
+		        timer: 1000,
+		        showConfirmButton: false
+		      });
+		      $('#rwgltable').treegrid({
+		  		queryParams:{
+		  			"page":1,
+		  			"rows":10,
+		  			"queryName": '',
+		  			"missionStatus": '',
+		  			"sort": '',
+		  			"userId": userId
+		  		}	
+		  	})
+		    }else{
+		      swal({
+		        title: res.msg,
+		        type: 'error',
+		        timer: 1000,
+		        showConfirmButton: false
+		      });
+		    }
+		  })
+  
 }

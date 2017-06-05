@@ -256,6 +256,31 @@
     </div>
   </div>
 </div>
-<div id="startUp">
-  <div></div>
+<div id="startUp" style="display:none">
+  <div style="padding:10px">
+  	<div class="header">
+    	<div class="col-3">计算资源（CPU）</div>
+        <div class="col-3">描述</div>
+        <div class="col-3">耗时预期（h）</div>
+        <div class="col-3">机时预期（cpu·h）</div>
+    </div>
+    <div class="body">
+        <div class="col-3 cpu"><input type="radio" name="cpuNum" value="16"/> <span>16</span></div>
+        <div class="col-3">正常速度</div>
+        <div class="col-3 baseTime">6h</div>
+        <div class="col-3 allTime">96</div>
+        <div class="col-3 cpu"><input type="radio" name="cpuNum" value="32" checked/> <span>32</span></div>
+        <div class="col-3">较快</div>
+        <div class="col-3 baseTime">4h</div>
+        <div class="col-3 allTime">128</div>
+        <div class="col-3 cpu"><input type="radio" name="cpuNum" value="48"/> <span>48</span></div>
+        <div class="col-3">高速</div>
+        <div class="col-3 baseTime">3h</div>
+        <div class="col-3 allTime">144</div>
+    </div>
+  </div>
+  <div class="modal-footer dlogFooter">
+    <button type="button" class="btn btn-success" onclick="subStartUp()">提交</button>
+    <button type="button" class="btn btn-success" onclick="$('#startUp').window('close')">取消</button>
+  </div>
 </div>
