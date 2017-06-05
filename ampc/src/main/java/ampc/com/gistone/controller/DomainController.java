@@ -26,6 +26,7 @@ import ampc.com.gistone.database.inter.TDomainMissionMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.model.TDomainMissionWithBLOBs;
 import ampc.com.gistone.database.model.TMissionDetail;
+import ampc.com.gistone.preprocess.core.CalculateCityService;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.LogUtil;
@@ -39,6 +40,9 @@ public class DomainController {
 	
 	@Autowired
 	private TMissionDetailMapper tMissionDetailMapper;
+	
+	@Autowired
+	private CalculateCityService calculateCityService;
 	
 	//定义公用的jackson帮助类
 		private ObjectMapper mapper=new ObjectMapper();
@@ -72,7 +76,7 @@ public class DomainController {
 			if(!Tmlist.isEmpty()){
 				obj.put("haveMission", "已使用");	
 			}else{
-				obj.put("haveMission", "未使用");		
+				obj.put("haveMission", "未使用");	
 			}
 			obj.put("domainId", td.getDomainId());
 			obj.put("userId", td.getUserId());
@@ -96,7 +100,7 @@ public class DomainController {
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping("/Domain/updateRangeAndCode")	
+	@RequestMapping("/Domain/updateRangeAndCode")
 	public AmpcResult updateRangeAndCode(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response ){
 		try{
 			ClientUtil.SetCharsetAndHeader(request, response);
@@ -278,6 +282,10 @@ public class DomainController {
 		   obs.put("common", JSONObject.fromObject(common));
 		   JSONObject cmobj=new JSONObject();
 		   cmobj.put("cmaq", JSONObject.fromObject(cmaq));
+		   
+		   String domainCode=calculateCityService.getCityResult((double) xorig[2], (double) yorig[2], (double)dxs[2], (double)dys[2], Integer.valueOf(ny[2].toString()), Integer.valueOf(nx[2].toString()), Double.valueOf(common.get("stand_lat1").toString()), Double.valueOf(common.get("stand_lat2").toString()), Double.valueOf(common.get("ref_lon").toString()), Double.valueOf(common.get("ref_lat").toString()));
+		   
+		   
 		   //将需要修改的数据添入对象
 			TDomainMissionWithBLOBs td=new TDomainMissionWithBLOBs();
 			td.setCmap(cmobj.toString());
@@ -285,6 +293,7 @@ public class DomainController {
 			td.setCommon(obs.toString());
 			td.setDomainRange(domainRange);
 			td.setDomainId(domainId);
+			td.setDomainCode(domainCode);
 			int s=tDomainMissionMapper.updateByPrimaryKeySelective(td);
 			//判断修改数据是否成功
 			if(s>0){
@@ -335,7 +344,7 @@ public class DomainController {
 		int a=tDomainMissionMapper.updateByUserId(userId);
 		if(a==0){
 			LogUtil.getLogger().error("save_domain 数据库修改版本操作异常！");
-			return AmpcResult.build(1000, "数据库修改版本操作异常！");	
+			return AmpcResult.build(1000, "数据库修改版本操作异常！");
 		}
 		//将数据填入对象中
 		TDomainMissionWithBLOBs td=new TDomainMissionWithBLOBs();
@@ -403,12 +412,12 @@ public class DomainController {
 		int s=tDomainMissionMapper.updateByPrimaryKeySelective(td);
 		if(s==0){
 			LogUtil.getLogger().error("updateNameAndDoc 数据库修改Name及Doc操作异常！");
-			return AmpcResult.build(1000, "数据库修改Name及Doc操作异常！");	
+			return AmpcResult.build(1000, "数据库修改Name及Doc操作异常！");
 		}
 		return AmpcResult.ok();
 	}catch(Exception e){
 		LogUtil.getLogger().error("updateNameAndDoc 修改Name及Doc异常！",e);
-		return AmpcResult.build(1001, "修改Name及Doc异常！");	
+		return AmpcResult.build(1001, "修改Name及Doc异常！");
 	}
 	}
 	/**
