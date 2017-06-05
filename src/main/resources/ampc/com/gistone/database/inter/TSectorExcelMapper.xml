@@ -361,13 +361,13 @@
     where SECTOR_EXCEL_ID = #{sectorExcelId,jdbcType=DECIMAL}
   </update>
   
-<!--   <select id="selectIndustryById" resultMap="BaseResultMap" parameterType="java.lang.Long" > -->
-<!--     SELECT -->
-<!-- 			distinct(SECTOR_EXCEL_NAME) -->
-<!-- 		FROM -->
-<!-- 			"AMPC"."T_SECTOR_EXCEL" -->
-<!-- 		WHERE -->
-<!-- 			DETAILED_LIST_ID = #{detailedListId,jdbcType=DECIMAL} GROUP BY SECTOR_EXCEL_NAME -->
-<!--   </select> -->
+  <select id="selectIndustryById" resultType="java.lang.String" parameterType="java.lang.Long" >
+    SELECT
+			distinct(SECTOR_EXCEL_NAME)
+		FROM
+			"AMPC"."T_SECTOR_EXCEL"
+		WHERE
+			DETAILED_LIST_ID = #{nationTpId,jdbcType=DECIMAL} GROUP BY SECTOR_EXCEL_NAME
+  </select>
   
 </mapper>
