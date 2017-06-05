@@ -15,7 +15,7 @@ $("#show").click(function () {
         $("#custom").css("background-position", "right 8px");
     }
 });
-var wrwSelect;
+var wrwSelect,dps_mesColor;
 var ls = window.sessionStorage;
 var qjMsg = vipspa.getMessage('yaMessage').content;
 if (!qjMsg) {
@@ -30,6 +30,12 @@ var msg = {
 };
 var pointColor = {};
 //console.log(JSON.stringify(qjMsg));
+
+(function getColor() {
+    dps_mesColor = $.get('data/measureMsg.json',function (res) {
+        pointColor = res
+    })
+})()
 
 /**
  * 完成按钮
@@ -197,11 +203,11 @@ function hyc() {
 
         if(res.status == 0){
             var accordion = $("#accordion");
-            pointColor = {};
+            // pointColor = {};
             var len = res.data.length;
             $.each(res.data,function (i, col) {
 
-                pointColor[col.sectorsName] = colorArr[Math.floor(colorArr.length/len * i)];
+                // pointColor[col.sectorsName] = colorArr[Math.floor(colorArr.length/len * i)];
 
                 //      var inn = i == 0 ? "in" : "";//第一个手风琴页签打开
                 var inn = "";
@@ -210,7 +216,7 @@ function hyc() {
                 }
                 var caidan = $('<div class="menuCD" data-cslen="'+ col.measureItems.length +'"></div>');
                 var caidan_title = $('<div class="menuCD_title" title="'+ col.sectorsName +'" val_name="' + col.sectorsName + '"  ></div>');
-                caidan_title.append($('<span>'+ col.sectorsName +'</span>'));
+                caidan_title.append($('<span style="color: rgba('+ (pointColor[col.sectorsName]?pointColor[col.sectorsName].color.toString():pointColor.other.color.toString()) +')">'+ col.sectorsName +'</span>'));
                 //添加箭头
                 caidan_title.append($('<i class="en-arrow-up7" style="float: right;line-height:45px;"></i>'))
                 if (col.planMeasure.length > 0) {
@@ -839,7 +845,7 @@ function createSymbol(smallIndex){
 //        console.log(3)
 //    }
 	
-  var style = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20, new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([122, 251, 159]), 1), new dong.Color(pointColor[smallIndex]));
+  var style = new dong.SimpleMarkerSymbol(dong.SimpleMarkerSymbol.STYLE_CIRCLE, 20, new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([122, 251, 159]), 1), new dong.Color(pointColor[smallIndex]?pointColor[smallIndex].color:pointColor.other.color));
   return style;
 }
 
