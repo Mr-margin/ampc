@@ -1640,7 +1640,7 @@ public class NativeAndNationController {
 				//根据城市id查询涉及到的城市名称
 				String addressCode = cityIdArray[i];
 				String tAddressName=tAddressMapper.selectCityNameById(addressCode);
-				cityNameMap.put(cityIdArray[i], tAddressName);
+				cityNameMap.put(cityIdArray[i].trim(), tAddressName);
 			}
 			
 			//根据本地清单模板id查询涉及到的行业
