@@ -9,35 +9,18 @@
     <result column="ES_COUPLING_NATION_ID" property="esCouplingNationId" jdbcType="DECIMAL" />
     <result column="ES_COUPLING_NATIVE_ID" property="esCouplingNativeId" jdbcType="DECIMAL" />
     <result column="ES_COUPING_RELATION_ID" property="esCoupingRelationId" jdbcType="DECIMAL" />
-    <result column="ADD_TIME" property="addTime" jdbcType="DATE" />
-    <result column="UPDATE_TIME" property="updateTime" jdbcType="DATE" />
+    <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
     <result column="IS_EFFECTIVE" property="isEffective" jdbcType="VARCHAR" />
-    <result column="DELETE_TIME" property="deleteTime" jdbcType="DATE" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="HISTORY_COUPLING" property="historyCoupling" jdbcType="VARCHAR" />
-  </resultMap>
-  <!-- 根据用户Id查询所有清单 -->
-   <resultMap id="selectAllMap" type="hashMap" >
-    <id column="ES_COUPLING_ID" property="esCouplingId" jdbcType="DECIMAL" />
-    <result column="ES_COUPLING_NAME" property="esCouplingName" jdbcType="OTHER" />
   </resultMap>
   <sql id="Base_Column_List" >
     ES_COUPLING_ID, ES_COUPLING_NAME, ES_COUPLING_DESC, ES_COUPLING_YEAR, ES_COUPLING_NATION_ID, 
     ES_COUPLING_NATIVE_ID, ES_COUPING_RELATION_ID, ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, 
     DELETE_TIME, HISTORY_COUPLING
   </sql>
-  
-  
-  
-  
-  <!-- 根据用户Id查询所有清单 -->
-  <select id="selectAll" resultMap="selectAllMap" parameterType="java.lang.Long" >
-    select 
-    ES_COUPLING_ID, ES_COUPLING_NAME
-    from T_ES_COUPLING
-    where USER_ID = #{userId,jdbcType=DECIMAL} 
-  </select>
-  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -56,8 +39,8 @@
       HISTORY_COUPLING)
     values (#{esCouplingId,jdbcType=DECIMAL}, #{esCouplingName,jdbcType=OTHER}, #{esCouplingDesc,jdbcType=OTHER}, 
       #{esCouplingYear,jdbcType=DECIMAL}, #{esCouplingNationId,jdbcType=DECIMAL}, #{esCouplingNativeId,jdbcType=DECIMAL}, 
-      #{esCoupingRelationId,jdbcType=DECIMAL}, #{addTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE}, 
-      #{userId,jdbcType=DECIMAL}, #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=DATE}, 
+      #{esCoupingRelationId,jdbcType=DECIMAL}, #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{userId,jdbcType=DECIMAL}, #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=TIMESTAMP}, 
       #{historyCoupling,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TEsCoupling" >
@@ -126,10 +109,10 @@
         #{esCoupingRelationId,jdbcType=DECIMAL},
       </if>
       <if test="addTime != null" >
-        #{addTime,jdbcType=DATE},
+        #{addTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updateTime != null" >
-        #{updateTime,jdbcType=DATE},
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="userId != null" >
         #{userId,jdbcType=DECIMAL},
@@ -138,7 +121,7 @@
         #{isEffective,jdbcType=VARCHAR},
       </if>
       <if test="deleteTime != null" >
-        #{deleteTime,jdbcType=DATE},
+        #{deleteTime,jdbcType=TIMESTAMP},
       </if>
       <if test="historyCoupling != null" >
         #{historyCoupling,jdbcType=VARCHAR},
@@ -167,10 +150,10 @@
         ES_COUPING_RELATION_ID = #{esCoupingRelationId,jdbcType=DECIMAL},
       </if>
       <if test="addTime != null" >
-        ADD_TIME = #{addTime,jdbcType=DATE},
+        ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updateTime != null" >
-        UPDATE_TIME = #{updateTime,jdbcType=DATE},
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="userId != null" >
         USER_ID = #{userId,jdbcType=DECIMAL},
@@ -179,7 +162,7 @@
         IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
       </if>
       <if test="deleteTime != null" >
-        DELETE_TIME = #{deleteTime,jdbcType=DATE},
+        DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       </if>
       <if test="historyCoupling != null" >
         HISTORY_COUPLING = #{historyCoupling,jdbcType=VARCHAR},
@@ -195,14 +178,27 @@
       ES_COUPLING_NATION_ID = #{esCouplingNationId,jdbcType=DECIMAL},
       ES_COUPLING_NATIVE_ID = #{esCouplingNativeId,jdbcType=DECIMAL},
       ES_COUPING_RELATION_ID = #{esCoupingRelationId,jdbcType=DECIMAL},
-      ADD_TIME = #{addTime,jdbcType=DATE},
-      UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       USER_ID = #{userId,jdbcType=DECIMAL},
       IS_EFFECTIVE = #{isEffective,jdbcType=VARCHAR},
-      DELETE_TIME = #{deleteTime,jdbcType=DATE},
+      DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
       HISTORY_COUPLING = #{historyCoupling,jdbcType=VARCHAR}
     where ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL}
   </update>
+   <!-- 根据用户Id查询所有清单 -->
+   <resultMap id="selectAllMap" type="hashMap" >
+    <id column="ES_COUPLING_ID" property="esCouplingId" jdbcType="DECIMAL" />
+    <result column="ES_COUPLING_NAME" property="esCouplingName" jdbcType="OTHER" />
+  </resultMap>
+  
+  <!-- 根据用户Id查询所有清单 -->
+  <select id="selectAll" resultMap="selectAllMap" parameterType="java.lang.Long" >
+    select 
+    ES_COUPLING_ID, ES_COUPLING_NAME
+    from T_ES_COUPLING
+    where USER_ID = #{userId,jdbcType=DECIMAL} AND IS_EFFECTIVE=1 AND 
+  </select>
   <!-- 根据用户Id查询全国清单 -->
   <select id="selectAllCoupling" resultMap="BaseResultMap" parameterType="hashMap" >
     SELECT
@@ -269,4 +265,5 @@
     where ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL} and 
     	USER_ID = #{userId,jdbcType=DECIMAL}
   </update>
+  
 </mapper>

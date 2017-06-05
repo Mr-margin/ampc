@@ -4,20 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import ampc.com.gistone.database.model.TEsCoupling;
-import ampc.com.gistone.database.model.TEsNation;
-/**
- * 耦合过后的清单
- * @author WangShanxi
- * @version v.0.1
- * @date 2017年3月28日
- */
+
 public interface TEsCouplingMapper {
-	/**
-	 * 根据用户Id查询所有清单 
-	 * @param userId
-	 * @return
-	 */
-	List<Map> selectAll(Long userId);
     int deleteByPrimaryKey(Long esCouplingId);
 
     int insert(TEsCoupling record);
@@ -29,12 +17,17 @@ public interface TEsCouplingMapper {
     int updateByPrimaryKeySelective(TEsCoupling record);
 
     int updateByPrimaryKey(TEsCoupling record);
-    
-	List<Map> selectAllCoupling(Map couplingMap);
+
+    List<Map> selectAllCoupling(Map couplingMap);
 	
 	int selectTotalCoupling(Long userId);
 	
 	int updateByIdSelective(TEsCoupling tEsCoupling);
 	
-    
+	/**
+	 * 根据用户Id查询所有清单 
+	 * @param userId
+	 * @return
+	 */
+	List<Map> selectAll(Long userId);
 }
