@@ -6,9 +6,6 @@ import java.util.Map;
 import ampc.com.gistone.database.model.TEsCoupling;
 
 public interface TEsCouplingMapper {
-
-
-
 	List<Map> selectAllCoupling(Map couplingMap);
 	
 	int selectTotalCoupling(Long userId);
