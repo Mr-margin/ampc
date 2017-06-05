@@ -213,6 +213,8 @@ var msg = {
             msg.content.esCodeRange = row.esCodeRange.split(',');
         }
     });
+    //获取清单数据
+    getQD();
     /*$.ajax({
         url: '/ampc/mission/get_mission_list',
         contentType: 'application/json',
@@ -357,7 +359,7 @@ function domainNameFormatter(value, row, index) {
             } else if (row.scenarinoStatus == 6) {
                 return "<a href='javascript:pauseBtn()'  style='color: #9CC8F7'><i class='im-pause'> 暂停</i></a>";
             } else if (row.scenarinoStatus == 7) {
-                return "<a href='javascript:' style='color: #9CC8F7'><i class='im-play2'> 续跑</i></a>";
+                return "<a href='javascript:continueBtn()' style='color: #9CC8F7'><i class='im-play2'> 续跑</i></a>";
             }
         }
         return row.operationTitle;
@@ -369,7 +371,7 @@ function esCouplingNameFormatter(value, row, index) {
     if (typeof row.esCouplingName === 'undefined') {
         if (typeof row.adminTitle === 'undefined') {
             if (row.scenarinoStatus == 6 || row.scenarinoStatus == 7) {
-                return "<a href='javascript:' style='color: #9CC8F7'><i class='im-stop'> 终止</i></a>"
+                return "<a href='javascript:stopBtn()' style='color: #9CC8F7'><i class='im-stop'> 终止</i></a>"
             } else {
                 return "<i class='im-stop'style='color: #ccc'> 终止</i>";
             }
@@ -1422,4 +1424,79 @@ function pauseBtn(){
 		    }
 		  })
   
+}
+/*终止情景*/
+function stopBtn(){
+  var param={
+    userId:userId,
+    domainId:selectRW.missionDomainId,
+    scenarinoId:msg.content.qjId,
+    missionId:msg.content.rwId,
+    flag:0,
+    missionType:selectRW.missionStatus,
+    scenarinoType:msg.content.SCEN_TYPE
+  };
+  ajaxPost('/ModelType/sendstopModel', param).success(function(res){
+    if(res.status===0){
+      swal({
+        title: res.msg,
+        type: 'success',
+        timer: 1000,
+        showConfirmButton: false
+      });
+      reloadTreegrid()
+    }else{
+      swal({
+        title: res.msg,
+        type: 'error',
+        timer: 1000,
+        showConfirmButton: false
+      });
+    }
+  })
+}
+/*续跑按钮*/
+function continueBtn(){
+	var param={
+			userId:userId,
+			missionType:selectRW.missionStatus,
+			scenarinoType:msg.content.SCEN_TYPE,
+			scenarinoId:msg.content.qjId,
+			missionId:selectRW.missionId
+	},
+	url='/ModelType/continueModel';
+	ajaxPost(url,params).success(function(res){
+		if(res.status==0){
+			swal({
+		        title: res.msg,
+		        type: 'success',
+		        timer: 1000,
+		        showConfirmButton: false
+		      });
+		      reloadTreegrid()
+		}else{
+			swal({
+		        title: res.msg,
+		        type: 'error',
+		        timer: 1000,
+		        showConfirmButton: false
+		      });
+		}
+	})
+}
+/*获取清单*/
+function getQD() {
+    var url = '/escoupling/get_couplingInfo';
+    var params = {
+        userId: userId
+    };
+    ajaxPost(url, params).success(function (res) {
+        for (var i = 0; i < res.data.length; i++) {
+            $('#qd').append($('<option value="' + res.data[i].esCouplingId + '">' + res.data[i].esCouplingName + '</option>'))
+        }
+
+    }).error(function () {
+        console.log('清单未获取到！！！！')
+    })
+    //$('#qd').append($('<option value="1">jjj</option>'))
 }
