@@ -36,8 +36,14 @@
                 </div>
                 <div class="coupSetCon">
                     <div class="coupSetConThird">
-                        <!--地市级 行业 清单选择-->
-                        <table id="coupCityTable"></table>
+                        <div class="coupSetConThirdTable" style="border:1px solid #d7d7d7;">
+                            <!--地市级 行业 清单选择-->
+                            <table id="coupCityTable"></table>
+                        </div>
+                        <div class="coupSetConThirdBtn">
+                            <button>保存</button>
+                            <button onclick="batchSelect()">批量选择</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -94,5 +100,23 @@
     <div class="dlogFooter" >
         <button type="button" class="btn btn-primary createQdBtn" onclick="submitEditCoup()">提交</button>
         <button type="button" class="btn btn-default claearQdBtn" onclick="" style="display: none;">清除</button>
+    </div>
+</div>
+<!--批量选择-->
+<div id="batchWindow">
+    <!--城市-->
+    <div>
+        <h3>城市</h3>
+        <div id="citySelect"></div>
+    </div>
+    <!--行业-->
+    <div>
+        <h3>行业</h3>
+        <div id="industrySelect"></div>
+    </div>
+    <!--清单-->
+    <div>
+        <h3>清单</h3>
+        <div id="qdSelect"></div>
     </div>
 </div>

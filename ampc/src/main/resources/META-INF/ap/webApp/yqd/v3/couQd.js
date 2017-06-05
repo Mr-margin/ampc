@@ -296,7 +296,10 @@ function nextCoup(){//点击下一步按钮
             //获得选择全国清单个本地清单的ID
             ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"findCityAndIndustryById","nationId":checkQgQd.esNationId,"nativesId":localQdId,"nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId}).success(function (res) {
                 if(res.status==0){
-                    console.log(res);
+                    // console.log(res);
+                    ajaxPost('http://192.168.1.128:8089/swagger-ui.html#/',{"nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId}).success(function (res) {
+                        console.log(res);
+                    })
                     coupCity()
                 }else{
                     swal('参数错误', '', 'error');
@@ -416,16 +419,47 @@ $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
     }
 })
 //耦合第三步
+var city=["北京","天津","石家庄"]
+var industry=[["钢铁","工业","火力","煤炭"],["钢铁","水力","煤炭清洗"],["行业1","行业2","行业3","行业4","行业5","行业6","行业7","行业8"]]
 function coupCity() {
-    var city=["北京","天津"]
-    var industry=[["钢铁","工业","火力","煤炭"],["钢铁","水力","煤炭清洗"]]
     var coupFirst="";
     for(var m=0;m<city.length;m++){
-        coupFirst+="<tr><td class='cityName' rowspan=\'"+industry[m].length+"\'>"+city[m]+"</td><td class='industryName'>"+industry[m][0]+"</td><td></td></tr>"
+        coupFirst+="<tr><td class='cityName' rowspan=\'"+industry[m].length+"\'>"+city[m]+"</td><td class='industryName'>"+industry[m][0]+"</td><td class='industryQd'></td></tr>"
         for(var i=1;i<industry[m].length;i++){
-            var coupOther="<tr><td class='industryName'>"+industry[m][i]+"</td><td></td></tr>";
+            var coupOther="<tr><td class='industryName'>"+industry[m][i]+"</td><td class='industryQd'></td></tr>";
             coupFirst+=coupOther;
         }
     }
     $("#coupCityTable").append(coupFirst);
+//添加下拉框数据
+    var industrySelect="<select>"
+    industrySelect+="<option value='0'>无</option>"
+    industrySelect+="<option value='1'>"+checkQgQd.esNationName+"</option>"
+    for(var m=0;m<localQd.length;m++){
+        industrySelect+="<option value=\'"+(m+2)+"\'>"+localQd[m].esNativeName+"</option>"
+    }
+    industrySelect+="</select>";
+    $(".industryQd").append(industrySelect)
 }
+//批量选择
+batchSelect()
+function batchSelect() {
+    var cityDiv="";
+    for(var i=0;i<city.length;i++){
+        cityDiv+="<input type='checkbox' id=\'city_"+i+"\' /><label for=\'city_"+i+"\'>"+city[i]+"</label>"
+    }
+    $("#citySelect").append(cityDiv);
+}
+//批量选择
+$("#batchWindow").window({
+    width:600,  //easyui 窗口宽度
+    collapsible:false, //easyui 自带的折叠按钮
+    maximizable:false,//easyui 自带的最大按钮
+    minimizable:false,//easyui 自带的最小按钮
+    modal:true,
+    shadow:false,
+    title:'批量选择',
+    border:false,
+    closed:false,
+    cls:"cloudui"
+})
