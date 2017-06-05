@@ -34,22 +34,22 @@ public class VerticalController {
 			Double ymin = Double.valueOf(String.valueOf(params.get("ymin")));
 			Double xmax = Double.valueOf(String.valueOf(params.get("xmax")));
 			Double ymax = Double.valueOf(String.valueOf(params.get("ymax")));
-			Double space = Double.valueOf(String.valueOf(params.get("space")));
+			// Double space = Double.valueOf(String.valueOf(params.get("space")));暂时没用
 			Integer pointNums = Integer.valueOf(String.valueOf(params.get("pointNums")));
 			Long userId = Long.valueOf(String.valueOf(params.get("userId")));
 			Long domainId = Long.valueOf(String.valueOf(params.get("domainId")));
 			Long missionId = Long.valueOf(String.valueOf(params.get("missionId")));
 			Integer domain = Integer.valueOf(String.valueOf(params.get("domain")));
-			String specie = String.valueOf(params.get("specie"));
-			if (StringUtil.isEmpty(specie)) {
+			List<String> species = (List<String>) params.get("species");
+			if (species.isEmpty()) {
 				logger.error("the specie params is wrong, the value notis null");
 				return AmpcResult.build(1000, "参数specie的值错误，不应该为空");
 			}
+			String specie = species.get(0);
 			String timePoint = String.valueOf(params.get("timePoint"));
-			String day = String.valueOf(params.get("day"));
 			Long scenarioId1 = Long.valueOf(String.valueOf(params.get("scenarioId1")));
 			verticalParams = new VerticalParams(xmin, ymin, xmax, ymax, pointNums, userId, domainId, missionId, domain,
-					specie, timePoint, day);
+					specie, timePoint);
 			verticalParams.setCalcType(calcType);
 			verticalParams.setShowType(showType);
 			verticalParams.setScenarioId1(scenarioId1);
@@ -80,6 +80,19 @@ public class VerticalController {
 					return AmpcResult.build(1000, "参数dates的值错误，不能为空");
 				}
 				verticalParams.setDates(dates);
+			} else {
+				String day = null;
+				try {
+					day = String.valueOf(params.get("day"));
+				} catch (Exception e) {
+					logger.error("参数day的值错误，不能为空", e);
+					return AmpcResult.build(1000, "参数day的值错误，不能为空");
+				}
+				if (StringUtil.isEmpty(day)) {
+					logger.error("the dates params is wrong, the value notis null");
+					return AmpcResult.build(1000, "参数dates的值错误，不能为空");
+				}
+				verticalParams.setDay(day);
 			}
 		} else {
 			Integer hour = Integer.valueOf(String.valueOf(params.get("hour")));
