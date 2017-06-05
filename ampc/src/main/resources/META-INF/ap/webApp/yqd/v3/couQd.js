@@ -294,8 +294,9 @@ function nextCoup(){//点击下一步按钮
             $(".coupSetCon").eq(1).hide();
             $(".coupSetCon").eq(2).show();
             //获得选择全国清单个本地清单的ID
-            ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"findCityAndIndustryById","nationId":checkQgQd.esNationId,"nativesId":localQdId}).success(function (res) {
+            ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"findCityAndIndustryById","nationId":checkQgQd.esNationId,"nativesId":localQdId,"nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId}).success(function (res) {
                 if(res.status==0){
+                    console.log(res);
                     coupCity()
                     // console.log("数据接通成功")
                 }else{
