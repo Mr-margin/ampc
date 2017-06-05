@@ -26,32 +26,9 @@ var msg = {
     $("#crumb").html('<a href="#/rwgl" style="padding-left: 15px;padding-right: 15px;">任务管理</a>');
     /*生成页面底部的分页器*/
     $('#rwpagination').pagination({
-        total: 33,
         pageSize: 10,
         showPageList:false,
-//        layout:['info','sep','first','prev','sep','manual','sep','last','next'],
         onSelectPage:function(pageNumber, pageSize){
-//            $.ajax({
-//                url: '/ampc/mission/get_mission_list',
-//                contentType: 'application/json',
-//                method: 'post',
-//                dataType: 'JSON',
-//                data: JSON.stringify({
-//                    "token": "",
-//                    "data": {
-//                        "queryName": '',
-//                        "missionStatus": '',
-//                        "pageNum": pageNumber,
-//                        "pageSize": 10,
-//                        "sort": '',
-//                        "userId": 1
-//                    }
-//                }),
-//                success: function (data) {
-//                    requestQJData(data.data);
-//                    $('#rwgltable').treegrid({data: transformdata});
-//                }
-//            });
         	$('#rwgltable').treegrid({
         		queryParams:{
         			"page":pageNumber,
@@ -178,6 +155,10 @@ var msg = {
             "userId": userId
         },
         loadFilter:function(data){
+        	console.log(data);
+        	$('#rwpagination').pagination('refresh',{
+        		total:data.data.total
+        	});
         	return data.data;
         },
         treeField: 'missionName',
