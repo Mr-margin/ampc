@@ -1243,6 +1243,17 @@ dl, dd {
 #rwgltablebox tr.treegrid-tr-tree td>div{
   overflow: inherit;
 }
+#startUp .col-3{
+	height:75px;
+	text-align:center;
+	border:1px solid #aaa;
+	line-height:75px
+}
+#startUp .header:after,#startUp .body:after{
+	content:'';
+	display:table;
+	clear:both
+}
 /*垂直轮廓*/
 .cloudui .verticalCon{width:100%;height:100%;}
 .cloudui .verticalCon .ibox{width:100%;height:100%;}
@@ -1500,7 +1511,8 @@ dl, dd {
 .cloudui .rwCon .qdMark textarea{
   text-align: left;
 }
-
+/*清单弹窗*/
+.cloudui form .rwCon .qdContent input{color:#D9D9D9}
 
 /*清单耦合设计*/
 .cloudui #creatCoupQd .rwCon{overflow: hidden!important; }
