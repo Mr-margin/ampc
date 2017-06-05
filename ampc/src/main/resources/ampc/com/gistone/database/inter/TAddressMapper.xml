@@ -161,7 +161,7 @@
     from T_ADDRESS
      </select>
      
-   <select id="selectCityNameById" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TAddress">
+   <select id="selectCityNameById" resultType="java.lang.String" parameterType="java.lang.String">
    SELECT
 			ADDRESS_NAME
 		FROM

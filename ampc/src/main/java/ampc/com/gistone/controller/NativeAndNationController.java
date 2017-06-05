@@ -1586,12 +1586,13 @@ public class NativeAndNationController {
 			}
 			Long nationId = Long.parseLong(param.toString());
 			
-			param=data.get("nationTpId");
-			if(!RegUtil.CheckParameter(param, "Long", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 清单模板ID为空或出现非法字符!");
-				return AmpcResult.build(1003, "清单模板ID为空或出现非法字符!");
-			}
-			Long nationTpId = Long.parseLong(param.toString());
+//			param=data.get("nationTpId");
+//			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+//				LogUtil.getLogger().error("NativeAndNationController 清单模板ID为空或出现非法字符!");
+//				return AmpcResult.build(1003, "清单模板ID为空或出现非法字符!");
+//			}
+//			Long nationTpId = Long.parseLong(param.toString());
+			Long nationTpId = Long.parseLong("1");
 			
 			param=data.get("nativesId");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
@@ -1611,7 +1612,8 @@ public class NativeAndNationController {
 			//循环全部城市ID
 			for(int i=0; i<nativeIdArray.length; i++){
 				//根据城市id查询涉及到的城市名称
-				String tAddressName=tAddressMapper.selectCityNameById(nativeIdArray[i]);
+				String addressCode = nativeIdArray[i];
+				String tAddressName=tAddressMapper.selectCityNameById(addressCode);
 				cityMap.put(nativeIdArray[i], tAddressName);
 			}
 			
@@ -1623,8 +1625,9 @@ public class NativeAndNationController {
 			Map cityAndAdressMap= new HashMap<String, Object>();
 			cityAndAdressMap.put("cityMap", cityMap);
 			cityAndAdressMap.put("adressList", listTSectorExcel);
+			
 			LogUtil.getLogger().info("NativeAndNationController 根据id查询涉及到的城市和行业信息成功!");
-			return AmpcResult.ok();
+			return AmpcResult.ok(cityAndAdressMap);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("NativeAndNationController 根据id查询涉及到的城市和行业信息异常!",e);
 			return AmpcResult.build(1001, "NativeAndNationController 根据id查询涉及到的城市和行业信息异常!");
