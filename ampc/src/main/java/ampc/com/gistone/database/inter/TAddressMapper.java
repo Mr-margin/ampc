@@ -41,4 +41,8 @@ public interface TAddressMapper {
     List<TAddress> selectBLevel(TAddress record);
     
     List<TAddress> selectAll();
+
+	String selectCityNameById(String string);
+
+
 }

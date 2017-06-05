@@ -160,4 +160,14 @@
     <include refid="Base_Column_List" />
     from T_ADDRESS
      </select>
+     
+   <select id="selectCityNameById" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TAddress">
+   SELECT
+			ADDRESS_NAME
+		FROM
+			"AMPC"."T_ADDRESS"
+		WHERE
+			ADDRESS_CODE =  #{addressCode,jdbcType=DECIMAL}
+    </select> 
+     
 </mapper>

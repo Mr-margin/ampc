@@ -29,10 +29,12 @@ import ampc.com.gistone.database.inter.TEsNationMapper;
 import ampc.com.gistone.database.inter.TEsNativeMapper;
 import ampc.com.gistone.database.inter.TEsNativeTpMapper;
 import ampc.com.gistone.database.inter.TSectorExcelMapper;
+import ampc.com.gistone.database.model.TAddress;
 import ampc.com.gistone.database.model.TEsCoupling;
 import ampc.com.gistone.database.model.TEsNation;
 import ampc.com.gistone.database.model.TEsNative;
 import ampc.com.gistone.database.model.TEsNativeTp;
+import ampc.com.gistone.database.model.TSectorExcel;
 import ampc.com.gistone.extract.ExtractConfig;
 import ampc.com.gistone.extract.ResultPathUtil;
 import ampc.com.gistone.util.AmpcResult;
@@ -1584,22 +1586,43 @@ public class NativeAndNationController {
 			}
 			Long nationId = Long.parseLong(param.toString());
 			
+			param=data.get("nationTpId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 清单模板ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单模板ID为空或出现非法字符!");
+			}
+			Long nationTpId = Long.parseLong(param.toString());
+			
 			param=data.get("nativesId");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 清单ID为空或出现非法字符!");
 				return AmpcResult.build(1003, "全国清单ID为空或出现非法字符!");
 			}
-			String  nativeId = param.toString();
+			String  nativesIdStr = param.toString();
+			String nativeIds=nativesIdStr.substring(1, nativesIdStr.length() -1);
+//			String[] nativeIdArray=nativeIds.split(",");
 			
+			//此处会有调用晓东的接口，根据参数为清单id查询涉及到的城市id
+			//先写固定值测试
+			String[] nativeIdArray={"532931","532932","533102"};
 			
-			//根据本地清单id查询涉及到的城市
-			tAddressMapper.selectAll();
+			//查询到的城市添加到Map集合中
+			Map cityMap = new HashMap<String, Object>();
+			//循环全部城市ID
+			for(int i=0; i<nativeIdArray.length; i++){
+				//根据城市id查询涉及到的城市名称
+				String tAddressName=tAddressMapper.selectCityNameById(nativeIdArray[i]);
+				cityMap.put(nativeIdArray[i], tAddressName);
+			}
 			
-			//根据本地清单id查询涉及到的行业
-			tSectorExcelMapper.selectAll(userId);
+			//根据本地清单模板id查询涉及到的行业
+//			TSectorExcel tSectorExcel=new TSectorExcel();
+//			tSectorExcel.setDetailedListId(nationTpId);
+			List<String> listTSectorExcel=tSectorExcelMapper.selectIndustryById(nationTpId);
 			
-			
-			
+			Map cityAndAdressMap= new HashMap<String, Object>();
+			cityAndAdressMap.put("cityMap", cityMap);
+			cityAndAdressMap.put("adressList", listTSectorExcel);
 			LogUtil.getLogger().info("NativeAndNationController 根据id查询涉及到的城市和行业信息成功!");
 			return AmpcResult.ok();
 		} catch (Exception e) {
