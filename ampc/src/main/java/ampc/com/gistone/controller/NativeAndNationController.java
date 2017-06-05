@@ -123,6 +123,8 @@ public class NativeAndNationController {
 					listTps = find_couplingNatives(requestDate,request,response);
 				}else if("findCityAndIndustryById".equals(param)){
 					listTps = findCityAndIndustryById(requestDate,request,response);
+				}else if("saveCoupling".equals(param)){
+					listTps = saveCoupling(requestDate,request,response);
 				}
 				else if("".equals(param)){
 					return AmpcResult.build(1001, "NativeAndNationController 请求方法参数异常!");
@@ -1634,5 +1636,35 @@ public class NativeAndNationController {
 			return AmpcResult.build(1001, "NativeAndNationController 根据id查询涉及到的城市和行业信息异常!");
 		}
 	}
+	
+	/**
+	 * 保存耦合配置信息
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public AmpcResult saveCoupling(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			Long userId = Long.parseLong(param.toString());
+			
+			
+			LogUtil.getLogger().info("NativeAndNationController 保存耦合配置信息成功!");
+			return AmpcResult.ok();
+		} catch (Exception e) {
+			LogUtil.getLogger().error("NativeAndNationController 保存耦合配置信息异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 保存耦合配置信息异常!");
+		}
+	}
+	
 	
 }
