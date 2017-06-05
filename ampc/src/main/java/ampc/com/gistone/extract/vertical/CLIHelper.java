@@ -16,15 +16,18 @@ public class CLIHelper {
 	private static Logger logger = LoggerFactory.getLogger(CLIHelper.class);
 
 	public boolean process(String... commond) {
+		Process process = null;
 		try {
-			Process process = new ProcessBuilder(commond).start();
+			process = new ProcessBuilder(commond).start();
 			new PrintStream(process.getErrorStream()).start();
 			new PrintStream(process.getInputStream()).start();
 			process.waitFor();
 			return true;
 		} catch (Exception e) {
-			logger.debug("[ConvertVideo | process]", e);
+			logger.debug("[CLIHelper | process]", e);
 			return false;
+		}finally {
+			process.destroy();
 		}
 	}
 
