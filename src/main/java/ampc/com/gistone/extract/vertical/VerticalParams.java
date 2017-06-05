@@ -47,7 +47,8 @@ public class VerticalParams {
 	}
 
 	public VerticalParams(Double xmin, Double ymin, Double xmax, Double ymax, Integer pointNums, Long userId,
-			Long domainId, Long missionId, Integer domain, String specie, String timePoint) {
+			Long domainId, Long missionId, Integer domain, String specie, String timePoint, String calcType,
+			String showType, Long scenarioId1) {
 		this.xmin = xmin;
 		this.ymin = ymin;
 		this.xmax = xmax;
@@ -59,6 +60,9 @@ public class VerticalParams {
 		this.domain = domain;
 		this.specie = specie;
 		this.timePoint = timePoint;
+		this.calcType = calcType;
+		this.showType = showType;
+		this.scenarioId1 = scenarioId1;
 	}
 
 	public String getCalcType() {
