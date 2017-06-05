@@ -6,19 +6,10 @@ import java.util.Map;
 import ampc.com.gistone.database.model.TEsCoupling;
 
 public interface TEsCouplingMapper {
-    int deleteByPrimaryKey(Long esCouplingId);
 
-    int insert(TEsCoupling record);
 
-    int insertSelective(TEsCoupling record);
 
-    TEsCoupling selectByPrimaryKey(Long esCouplingId);
-
-    int updateByPrimaryKeySelective(TEsCoupling record);
-
-    int updateByPrimaryKey(TEsCoupling record);
-
-    List<Map> selectAllCoupling(Map couplingMap);
+	List<Map> selectAllCoupling(Map couplingMap);
 	
 	int selectTotalCoupling(Long userId);
 	
@@ -30,4 +21,15 @@ public interface TEsCouplingMapper {
 	 * @return
 	 */
 	List<Map> selectAll(Long userId);
+    int deleteByPrimaryKey(Long esCouplingId);
+
+    int insert(TEsCoupling record);
+
+    int insertSelective(TEsCoupling record);
+
+    TEsCoupling selectByPrimaryKey(Long esCouplingId);
+
+    int updateByPrimaryKeySelective(TEsCoupling record);
+
+    int updateByPrimaryKey(TEsCoupling record);
 }

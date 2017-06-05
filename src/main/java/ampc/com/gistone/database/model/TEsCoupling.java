@@ -29,6 +29,10 @@ public class TEsCoupling {
 
     private String historyCoupling;
 
+    private String esCouplingCity;
+
+    private String esCouplingStatus;
+
     public Long getEsCouplingId() {
         return esCouplingId;
     }
@@ -131,5 +135,21 @@ public class TEsCoupling {
 
     public void setHistoryCoupling(String historyCoupling) {
         this.historyCoupling = historyCoupling == null ? null : historyCoupling.trim();
+    }
+
+    public String getEsCouplingCity() {
+        return esCouplingCity;
+    }
+
+    public void setEsCouplingCity(String esCouplingCity) {
+        this.esCouplingCity = esCouplingCity == null ? null : esCouplingCity.trim();
+    }
+
+    public String getEsCouplingStatus() {
+        return esCouplingStatus;
+    }
+
+    public void setEsCouplingStatus(String esCouplingStatus) {
+        this.esCouplingStatus = esCouplingStatus == null ? null : esCouplingStatus.trim();
     }
 }
