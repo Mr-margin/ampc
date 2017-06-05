@@ -90,7 +90,7 @@ function innitdata(active){
                         return  moment(value).format("YYYY-MM-DD");
                     },width :100,},
                     {field:"filePath",title:"路径",width:120,formatter: function (value) {
-                return "<span title='" + value + "'>" + value + "</span>";}},
+                return "<span class='localPath' title='" + value + "'>" + value + "</span>";}},
                     {field:"esComment",title:"备注",width:200},
                     {field:"his",title:"使用状态",width:100},
                     {field:"isVerify",title:"状态",width:100,formatter:function(value,row,index){
@@ -379,12 +379,12 @@ $(".cloudui .rwCon .qdContent .qdYear").focus(function () {//年份获取焦点
 $(".cloudui .rwCon .qdContent .qdName").blur(function () {//名称失去焦点
     if($(this).val()==""){
         $(this).val("请输入长度不超过20的名称")
-        $(this).css({"color":"gray"})
+        $(this).css({"color":"#a9a9a9"})
     }
 })
 $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
     if($(this).val()==""){
         $(this).val("请输入1990-2100之间的年份")
-        $(this).css({"color":"gray"})
+        $(this).css({"color":"#a9a9a9"})
     }
 })

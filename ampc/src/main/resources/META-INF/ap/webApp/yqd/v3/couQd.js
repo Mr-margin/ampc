@@ -12,20 +12,20 @@ function innitdata(){  //全国清单的初始化
         dataType: "json",
         columns:[[  //表头
             {field:"ck",checkbox:true},
-            {field:"esCouplingName",title:"清单名称",width:200,align:'cneter'},
-            {field:"esCouplingDesc",title:"清单描述",width:80,align:'cneter'},
-            {field:"publishTime",title:"本地清单"},
-            {field:"nationRemark",title:"全国清单",width:400},
-            {field:"esCouplingYear",title:"年份"},
+            {field:"esCouplingName",title:"清单名称",width:100,align:'cneter'},
+            {field:"esCouplingDesc",title:"清单描述",width:400,align:'cneter'},
+            {field:"publishTime",title:"本地清单",width:100},
+            {field:"nationRemark",title:"全国清单",width:100},
+            {field:"esCouplingYear",title:"年份",width:80},
             {field:"addTime",title:"创建时间",formatter:function(value,row,index){
                 return  moment(value).format("YYYY-MM-DD");
-            },align:'cneter'},
-            {field:"historyCoupling",title:"使用历史"},
+            },align:'cneter',width:80},
+            {field:"historyCoupling",title:"使用历史",width:100},
             {field:"coupingSet",title:"配置",formatter:function(value,row,index){
                 var coupId=row.esCouplingId
                 var coupSetBtn="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='coupSetQd("+coupId+")'>耦合配置</button>"
                 return  coupSetBtn;
-            },align:'cneter'}
+            },align:'cneter',width:120}
 
         ]],
         loadFilter:function (data) { //过滤数据，转换成符合格式的数据
@@ -296,12 +296,12 @@ function nextCoup(){//点击下一步按钮
             //获得选择全国清单个本地清单的ID
             ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"findCityAndIndustryById","nationId":checkQgQd.esNationId,"nativesId":localQdId}).success(function (res) {
                 if(res.status==0){
-                    console.log("数据接通成功")
+                    coupCity()
+                    // console.log("数据接通成功")
                 }else{
-                    console.log("数据接通失败")
+                    // console.log("数据接通")
                 }
             })
-            coupCity()
         }else{
             swal('请先选择本地清单', '', 'error');
         }
@@ -406,16 +406,26 @@ $(".cloudui .rwCon .qdContent .qdYear").focus(function () {//年份获取焦点
 $(".cloudui .rwCon .qdContent .qdName").blur(function () {//名称失去焦点
     if($(this).val()==""){
         $(this).val("请输入长度不超过20的名称")
-        $(this).css({"color":"gray"})
+        $(this).css({"color":"#a9a9a9"})
     }
 })
 $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
     if($(this).val()==""){
         $(this).val("请输入1990-2100之间的年份")
-        $(this).css({"color":"gray"})
+        $(this).css({"color":"#a9a9a9"})
     }
 })
-
+//耦合第三步
 function coupCity() {
-    
+    var city=["北京","天津"]
+    var industry=[["钢铁","工业","火力","煤炭"],["钢铁","水力","煤炭清洗"]]
+    var coupFirst="";
+    for(var m=0;m<city.length;m++){
+        coupFirst+="<tr><td class='cityName' rowspan=\'"+industry[m].length+"\'>"+city[m]+"</td><td class='industryName'>"+industry[m][0]+"</td><td></td></tr>"
+        for(var i=1;i<industry[m].length;i++){
+            var coupOther="<tr><td class='industryName'>"+industry[m][i]+"</td><td></td></tr>";
+            coupFirst+=coupOther;
+        }
+    }
+    $("#coupCityTable").append(coupFirst);
 }
