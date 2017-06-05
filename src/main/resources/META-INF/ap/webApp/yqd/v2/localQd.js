@@ -83,20 +83,21 @@ function innitdata(active){
                 animate:true,
                 columns:[[  //表头
                     {field:"ck",checkbox:true},
-                    {field:"esNativeTpName",title:"清单模板名称",width:200,formatter: function (value) {
+                    {field:"esNativeTpName",title:"清单模板名称",width:160,formatter: function (value) {
                         return "<span title='" + value + "'>" + value + "</span>";}},
                     {field:"esNativeTpYear",title:"年份",width:80},
                     {field:"esUploadTpTime",title:"创建时间",formatter:function(value,row,index){
                         return  moment(value).format("YYYY-MM-DD");
                     },width :100,},
                     {field:"filePath",title:"路径",width:120,formatter: function (value) {
-                return "<span class='localPath' title='" + value + "'>" + value + "</span>";}},
+                return "<span style='width:120px;' class='localPath' title='" + value + "'>" + value + "</span>";}},
                     {field:"esComment",title:"备注",width:200},
                     {field:"his",title:"使用状态",width:100},
                     {field:"isVerify",title:"状态",width:100,formatter:function(value,row,index){
-                        if(value==1){
+                    console.log(value)
+                        if(value=="1"){
                             return "<span style='color: #009943'>已校验</span>"
-                        }else if(value==0){
+                        }else if(value=="0"){
                             return "<span style='color: #dc3f35'>未校验</span>"
                         }else{
                             return value;
@@ -104,8 +105,12 @@ function innitdata(active){
                     }},
                     {field:"actor",title:"操作",width:100,align:'center',formatter:function(value,row,index){
                         if(row.isVerify==1){
-                            var addNativeDiv="<button id='addQdBtn'  style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='adgQdBtn(\""+row.id+"\")'>添加数据</button>"
-                            return addNativeDiv;
+                            if(row.id.indexOf("mb")==0){
+                                var addNativeDiv="<button id='addQdBtn'  style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='adgQdBtn(\""+row.id+"\")'>添加数据</button>"
+                                return addNativeDiv;
+                            }else{
+                                return "<span>校验成功</span>"
+                            }
                         }else if(row.isVerify==0){
                             var checkDiv="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkData(\""+row.id+"\")'>校验</button>"
                             return checkDiv
@@ -115,7 +120,6 @@ function innitdata(active){
                     }}
                 ]],
                 onClickRow:function (row) {
-                    console.log(row.children)
                     if(row.children!=undefined&&row.children!=""&&row.children!=null){
                         if(row.children.length>1){
                             var rowId=row.id
@@ -320,7 +324,6 @@ function adgQdBtn(rowId){
 $(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree tr").click(function(){
     var e = e || window.event;
     e.stopPropagation();//防止出现下拉
-    console.log("点击子节点")
 })
 //校验
 function checkData(rowId) {

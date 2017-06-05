@@ -334,18 +334,23 @@ label#lblSelect::after
   /*设置文本超过单元格的宽度做溢行处理*/
   overflow: hidden;text-overflow:ellipsis;white-space: nowrap;
 }
-.cloudui .datagrid-cell span{
-  width: 120px;
+.cloudui .treeTable .datagrid-view2  .datagrid-body .datagrid-cell span{display: none}
+.cloudui .treeTable .datagrid-view2  .datagrid-body .datagrid-cell span:last-child{
+  /*width: 120px;*/
+  width: 100%;
   display: inline-block;
   color: #1a1a1a;
   font-size: 13px;
   white-space: nowrap;
   text-overflow: ellipsis;
-  padding: 1px 10px 0;
+  /*padding: 1px 10px 0;*/
+  padding: 0;
   border-right: 0 none;
   /*设置文本超过单元格的宽度做溢行处理*/
   overflow: hidden;text-overflow:ellipsis;white-space: nowrap;
 }
+
+.cloudui .treeTable .datagrid-view2 .datagrid-cell-c1-esNativeTpName{display:inline-block;width: 160px;}
 .cloudui .datagrid-header td,.cloudui .datagrid-body td,.cloudui .datagrid-footer td{
   border-style: solid;
   border-color: #d9d9d9;
