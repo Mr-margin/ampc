@@ -298,9 +298,8 @@ function nextCoup(){//点击下一步按钮
                 if(res.status==0){
                     console.log(res);
                     coupCity()
-                    // console.log("数据接通成功")
                 }else{
-                    // console.log("数据接通")
+                    swal('参数错误', '', 'error');
                 }
             })
         }else{

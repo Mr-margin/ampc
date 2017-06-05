@@ -159,6 +159,85 @@ function changeType(type) {
  * @param end 默认结束时间
  */
 function initWrwDate(s, e, start, end) {
+
+    $('#wrwStartDate').daterangepicker({
+//    "parentEl": ".toolAll",
+        autoApply: true,
+        singleDatePicker: true,  //显示单个日历
+        timePicker: false,  //允许选择时间
+        timePicker24Hour: true, //时间24小时制
+        minDate: s,//最早可选日期
+        maxDate: e,//最大可选日期
+        locale: {
+            format: "YYYY-MM-DD",
+            separator: " 至 ",
+            applyLabel: "确定", //按钮文字
+            cancelLabel: "取消",//按钮文字
+            weekLabel: "W",
+            daysOfWeek: [
+                "日", "一", "二", "三", "四", "五", "六"
+            ],
+            monthNames: [
+                "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"
+            ],
+            firstDay: 1
+        },
+        startDate: start,
+        endDate: end,
+        opens: "right"
+    }, function (start, end, label) {
+        changeMsg.startD = start.format('YYYY-MM-DD');
+        // changeMsg.endD = end.format('YYYY-MM-DD');
+        if(moment(changeMsg.startD).isAfter(moment($("#wrwEndDate").val()))){
+            $("#wrwEndDate").val(changeMsg.startD)
+        }
+        changeMsg.endD=moment($("#wrwEndDate").val()).format('YYYY-MM-DD');
+        updata(true);
+    });
+    var ds = $('#wrwStartDate').data('daterangepicker');
+    ds.element.off();
+
+
+    $('#wrwEndDate').daterangepicker({
+//    "parentEl": ".toolAll",
+        autoApply: true,
+        singleDatePicker: true,  //显示单个日历
+        timePicker: false,  //允许选择时间
+        timePicker24Hour: true, //时间24小时制
+        minDate: s,//最早可选日期
+        maxDate: e,//最大可选日期
+        locale: {
+            format: "YYYY-MM-DD",
+            separator: " 至 ",
+            applyLabel: "确定", //按钮文字
+            cancelLabel: "取消",//按钮文字
+            weekLabel: "W",
+            daysOfWeek: [
+                "日", "一", "二", "三", "四", "五", "六"
+            ],
+            monthNames: [
+                "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"
+            ],
+            firstDay: 1
+        },
+        startDate: start,
+        endDate: end,
+        opens: "right"
+    }, function (start, end, label) {
+        // changeMsg.startD = start.format('YYYY-MM-DD');
+        changeMsg.endD = end.format('YYYY-MM-DD');
+        if(moment(changeMsg.endD).isBefore(moment($("#wrwStartDate").val()))){
+            $("#wrwStartDate").val(changeMsg.endD);
+        }
+        changeMsg.startD= changeMsg.endD
+        updata(true);
+    });
+    var de = $('#wrwEndDate').data('daterangepicker');
+    de.element.off();
+
+
+
+
     $('#wrwDate').daterangepicker({
         autoApply: true,
         singleDatePicker: false,  //显示单个日历
@@ -189,7 +268,7 @@ function initWrwDate(s, e, start, end) {
         updata(true);
     });
     var d = $('#wrwDate').data('daterangepicker');
-    d.element.off();
+    // d.element.off();
 }
 
 /**
@@ -200,6 +279,86 @@ function initWrwDate(s, e, start, end) {
  * @param end 默认结束时间
  */
 function initQxysDate(s, e, start, end) {
+    $('#qxysStartDate').daterangepicker({
+//    "parentEl": ".toolAll",
+        autoApply: true,
+        singleDatePicker: true,  //显示单个日历
+        timePicker: false,  //允许选择时间
+        timePicker24Hour: true, //时间24小时制
+        minDate: s,//最早可选日期
+        maxDate: e,//最大可选日期
+        locale: {
+            format: "YYYY-MM-DD",
+            separator: " 至 ",
+            applyLabel: "确定", //按钮文字
+            cancelLabel: "取消",//按钮文字
+            weekLabel: "W",
+            daysOfWeek: [
+                "日", "一", "二", "三", "四", "五", "六"
+            ],
+            monthNames: [
+                "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"
+            ],
+            firstDay: 1
+        },
+        startDate: start,
+        endDate: end,
+        opens: "right"
+    }, function (start, end, label) {
+        changeMsg.startD = start.format('YYYY-MM-DD');
+        // changeMsg.endD = end.format('YYYY-MM-DD');
+        if(moment(changeMsg.startD).isAfter(moment($("#qxysEndDate").val()))){
+            $("#qxysEndDate").val(changeMsg.startD)
+        }
+        changeMsg.endD=moment($("#qxysEndDate").val()).format('YYYY-MM-DD');
+        updata(true);
+    });
+    var ds = $('#qxysStartDate').data('daterangepicker');
+    ds.element.off();
+
+
+    $('#qxysEndDate').daterangepicker({
+//    "parentEl": ".toolAll",
+        autoApply: true,
+        singleDatePicker: true,  //显示单个日历
+        timePicker: false,  //允许选择时间
+        timePicker24Hour: true, //时间24小时制
+        minDate: s,//最早可选日期
+        maxDate: e,//最大可选日期
+        locale: {
+            format: "YYYY-MM-DD",
+            separator: " 至 ",
+            applyLabel: "确定", //按钮文字
+            cancelLabel: "取消",//按钮文字
+            weekLabel: "W",
+            daysOfWeek: [
+                "日", "一", "二", "三", "四", "五", "六"
+            ],
+            monthNames: [
+                "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"
+            ],
+            firstDay: 1
+        },
+        startDate: start,
+        endDate: end,
+        opens: "right"
+    }, function (start, end, label) {
+        // changeMsg.startD = start.format('YYYY-MM-DD');
+        changeMsg.endD = end.format('YYYY-MM-DD');
+        if(moment(changeMsg.endD).isBefore(moment($("#qxysStartDate").val()))){
+            $("#qxysStartDate").val(changeMsg.endD);
+        }
+        changeMsg.startD= changeMsg.endD
+        updata(true);
+    });
+    var de = $('#qxysEndDate').data('daterangepicker');
+    de.element.off();
+
+
+
+
+
+
     $('#qxysDate').daterangepicker({
 //    "parentEl": ".toolAll",
         autoApply: true,
@@ -231,7 +390,7 @@ function initQxysDate(s, e, start, end) {
         updata(true);
     })
     var d = $('#qxysDate').data('daterangepicker');
-    d.element.off();
+    // d.element.off();
 }
 
 /*按钮打开日期*/
