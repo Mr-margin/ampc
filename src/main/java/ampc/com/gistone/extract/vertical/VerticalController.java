@@ -21,39 +21,40 @@ public class VerticalController {
 
 	@Autowired
 	private VerticalService verticalService;
-//获取封装参数
+
+	// 获取封装参数
 	@RequestMapping(value = "/vertical")
 	public AmpcResult vertical(@RequestBody Map<String, Object> requestParams) {
-		VerticalParams verticalParams=null;
+		VerticalParams verticalParams = null;
 		Map<String, Map> params = (Map) requestParams.get("data");
 		try {
-		String calcType = String.valueOf(params.get("calcType"));
-		String showType = String.valueOf(params.get("showType"));
-		Double xmin = Double.valueOf(String.valueOf(params.get("xmin")));
-		Double ymin = Double.valueOf(String.valueOf(params.get("ymin")));
-		Double xmax = Double.valueOf(String.valueOf(params.get("xmax")));
-		Double ymax = Double.valueOf(String.valueOf(params.get("ymax")));
-		Double space = Double.valueOf(String.valueOf(params.get("space")));
-		Integer pointNums = Integer.valueOf(String.valueOf(params.get("pointNums")));
-		Long userId = Long.valueOf(String.valueOf(params.get("userId")));
-		Long domainId = Long.valueOf(String.valueOf(params.get("domainId")));
-		Long missionId = Long.valueOf(String.valueOf(params.get("missionId")));
-		Integer domain = Integer.valueOf(String.valueOf(params.get("domain")));
-		String specie = String.valueOf(params.get("specie"));
-		if (StringUtil.isEmpty(specie)) {
-			logger.error("the specie params is wrong, the value notis null");
-			return AmpcResult.build(1000, "参数specie的值错误，不应该为空");
-		}
-		String timePoint = String.valueOf(params.get("timePoint"));
-		String day = String.valueOf(params.get("day"));
-		Long scenarioId1 = Long.valueOf(String.valueOf(params.get("scenarioId1")));
-		verticalParams = new VerticalParams(xmin, ymin, xmax, ymax, pointNums, userId, domainId,
-				missionId, domain, specie, timePoint, day);
-		verticalParams.setCalcType(calcType);
-		verticalParams.setShowType(showType);
-		verticalParams.setScenarioId1(scenarioId1);
+			String calcType = String.valueOf(params.get("calcType"));
+			String showType = String.valueOf(params.get("showType"));
+			Double xmin = Double.valueOf(String.valueOf(params.get("xmin")));
+			Double ymin = Double.valueOf(String.valueOf(params.get("ymin")));
+			Double xmax = Double.valueOf(String.valueOf(params.get("xmax")));
+			Double ymax = Double.valueOf(String.valueOf(params.get("ymax")));
+			Double space = Double.valueOf(String.valueOf(params.get("space")));
+			Integer pointNums = Integer.valueOf(String.valueOf(params.get("pointNums")));
+			Long userId = Long.valueOf(String.valueOf(params.get("userId")));
+			Long domainId = Long.valueOf(String.valueOf(params.get("domainId")));
+			Long missionId = Long.valueOf(String.valueOf(params.get("missionId")));
+			Integer domain = Integer.valueOf(String.valueOf(params.get("domain")));
+			String specie = String.valueOf(params.get("specie"));
+			if (StringUtil.isEmpty(specie)) {
+				logger.error("the specie params is wrong, the value notis null");
+				return AmpcResult.build(1000, "参数specie的值错误，不应该为空");
+			}
+			String timePoint = String.valueOf(params.get("timePoint"));
+			String day = String.valueOf(params.get("day"));
+			Long scenarioId1 = Long.valueOf(String.valueOf(params.get("scenarioId1")));
+			verticalParams = new VerticalParams(xmin, ymin, xmax, ymax, pointNums, userId, domainId, missionId, domain,
+					specie, timePoint, day);
+			verticalParams.setCalcType(calcType);
+			verticalParams.setShowType(showType);
+			verticalParams.setScenarioId1(scenarioId1);
 		} catch (Exception e) {
-			logger.error("参数异常",e);
+			logger.error("参数异常", e);
 			return AmpcResult.build(1003, "参数异常");
 		}
 		if (!Constants.CALCTYPE_SHOW.equals(verticalParams.getCalcType())) {
@@ -67,11 +68,18 @@ public class VerticalController {
 		if (!Constants.TIMEPOINT_H.equals(verticalParams.getTimePoint())) {
 			verticalParams.setHour(0);
 			if (Constants.TIMEPOINT_A.equals(verticalParams.getTimePoint())) {
-				if (verticalParams.getDates().isEmpty()) {
+				List<String> dates = null;
+				try {
+					dates = (List<String>) params.get("dates");
+				} catch (Exception e) {
+					logger.error("参数dates的值错误，不能为空", e);
+					return AmpcResult.build(1000, "参数dates的值错误，不能为空");
+				}
+				if (dates.isEmpty()) {
 					logger.error("the dates params is wrong, the value notis null");
 					return AmpcResult.build(1000, "参数dates的值错误，不能为空");
 				}
-				verticalParams.setDates((List<String>) params.get("dates"));
+				verticalParams.setDates(dates);
 			}
 		} else {
 			Integer hour = Integer.valueOf(String.valueOf(params.get("hour")));
@@ -86,12 +94,12 @@ public class VerticalController {
 			verticalParams.setHour(hour);
 		}
 
-//返回的是图片路径
+		// 返回的是图片路径
 		String res = verticalService.vertical(verticalParams);
 		if (!StringUtil.isEmpty(res)) {
-			//还没有和前端交互，交互时要将图片路径返回到前端页面
+			// 还没有和前端交互，交互时要将图片路径返回到前端页面
 			return AmpcResult.ok(res);
 		}
-		return AmpcResult.build(1001, "系统异常");
+		return AmpcResult.build(1001, "系统参数异常");
 	}
 }

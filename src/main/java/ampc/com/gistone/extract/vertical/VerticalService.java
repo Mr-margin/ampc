@@ -51,9 +51,13 @@ public class VerticalService {
 
 	public String vertical(VerticalParams verticalParams) {
 		// 获取可变参数封装进variableList1，variableList2中，设置临时文件路径
-		getVariables(verticalParams);
+		if (!getVariables(verticalParams)) {
+			return null;
+		}
 		// 将projecttion参数从verticalParams中获取封装
-		setProjection(verticalParams);
+		if(!setProjection(verticalParams)){
+			return null;
+		}
 		// 2. build earth surf point取座标划线
 		buildSurfPoints(verticalParams);
 		// 3. every layer level interpolation每层插值
@@ -74,7 +78,7 @@ public class VerticalService {
 	}
 
 	// 将projecttion参数从verticalParams中获取封装
-	private void setProjection(VerticalParams verticalParams) {
+	private boolean setProjection(VerticalParams verticalParams) {
 		long readAttrTimes = System.currentTimeMillis();
 		try {
 			double xorig = Double.valueOf((String.valueOf(attributes.get("XORIG"))));
@@ -102,13 +106,14 @@ public class VerticalService {
 					+ "), (nrows, ncols) = (" + row + "," + col + ")");
 		} catch (Exception e) {
 			logger.error("read parameter error, at attributes", e);
+			return false;
 		}
 		projection = ProjectUtil.getProj(attributes);
 		if (projection == null) {
 			logger.error("VerticalService.java projection is null");
-			return;
+			return false;
 		}
-
+		return true;
 	}
 
 	// 生成画图所需两个csv文件,将路径及图片生成路径传递入csh文件中画图
@@ -149,10 +154,11 @@ public class VerticalService {
 		logger.info("start Execute script");
 		String pngFilePath = pngPath + ".png";
 		// 运行filePath文件
+		logger.info("run createPng csv, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
 		if (cliHelper.process(new String[] { "csh", filePath })) {
 			File pngFile = new File(pngFilePath);
 			if (pngFile.exists() && pngFile.isFile()) {
-				logger.info("run createPng, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms,pngPath="
+				logger.info("run createPng ncl, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms,pngPath="
 						+ pngFilePath);
 				return pngFilePath;
 			}
@@ -313,8 +319,9 @@ public class VerticalService {
 	}
 
 	// 获取可变参数封装进attributes中，设置临时文件路径
-	private void getVariables(VerticalParams verticalParams) {
+	private boolean getVariables(VerticalParams verticalParams) {
 		long readAttrTimes = System.currentTimeMillis();
+		boolean b = false;
 		String concnFilePath = resultPathUtil.getResultFilePath(verticalParams.getDay(), verticalParams.getShowType(),
 				verticalParams.getTimePoint(), verticalParams.getUserId(), verticalParams.getDomainId(),
 				verticalParams.getMissionId(), verticalParams.getScenarioId1(), verticalParams.getDomain(), null);
@@ -333,7 +340,7 @@ public class VerticalService {
 			for (int i = 0; i < list.size(); i++) {
 				String day = list.get(i);
 				concnFilePath = concnFilePath.replace("$Day", day);
-				buildVariables(concnFilePath, verticalParams);//找到对应netcdf文件，读取数据封装进variableList1，variableList2中
+				b = buildVariables(concnFilePath, verticalParams);// 找到对应netcdf文件，读取数据封装进variableList1，variableList2中
 			}
 			try {
 				attributes = Netcdf.getAttributes(concnFilePath);
@@ -341,25 +348,27 @@ public class VerticalService {
 				logger.info("tempPath=" + tempPath);
 			} catch (IOException e) {
 				logger.error("VerticalService | variables() : getAttributes IOException");
-				return;
+				return false;
 			}
 		} else if (Constants.TIMEPOINT_D.equals(timePoint) || Constants.TIMEPOINT_H.equals(timePoint)) {
 			concnFilePath = concnFilePath.replace("$Day", verticalParams.getDay());
-			buildVariables(concnFilePath, verticalParams);//找到对应netcdf文件，读取数据封装进variableList1，variableList2中
+			b = buildVariables(concnFilePath, verticalParams);
 			try {
 				attributes = Netcdf.getAttributes(concnFilePath);
 				logger.info("read getVariables, times = " + (System.currentTimeMillis() - readAttrTimes) + "ms");
 				logger.info("tempPath=" + tempPath);
 			} catch (IOException e) {
 				logger.error("VerticalService | variables() : getAttributes IOException");
-				return;
+				return false;
 			}
 		}
+		return b;
 	}
-//找到对应netcdf文件，读取数据封装进variableList1，variableList2中
-	private void buildVariables(String concnFilePath, VerticalParams verticalParams) {
-		String specie = verticalParams.getSpecie();
+
+	// 找到对应netcdf文件，读取数据封装进variableList1，variableList2中,能正常封装返回true
+	private boolean buildVariables(String concnFilePath, VerticalParams verticalParams) {
 		try {
+			String specie = verticalParams.getSpecie();
 			long openNcTimes = System.currentTimeMillis();
 			NetcdfFile nc;
 			try {
@@ -368,11 +377,11 @@ public class VerticalService {
 						+ ", times = " + (System.currentTimeMillis() - openNcTimes) + "ms");
 			} catch (IOException e) {
 				logger.error("VerticalService | variables() :buildVariables  open file " + concnFilePath + " error");
-				return;
+				return false;
 			}
 			if (nc == null) {
 				logger.error("open netcdf file :" + concnFilePath + "error");
-				return;
+				return false;
 			}
 			Variable variable1 = nc.findVariable(null, specie);
 			variableList1.add(variable1);
@@ -381,20 +390,22 @@ public class VerticalService {
 				String filePath = resultPathUtil.getResultFilePath(verticalParams.getDay(),
 						verticalParams.getShowType(), verticalParams.getTimePoint(), verticalParams.getUserId(),
 						verticalParams.getDomainId(), verticalParams.getMissionId(), verticalParams.getScenarioId2(),
-						verticalParams.getDomain(), null);
+						verticalParams.getDomain(), null).replace("$Day", verticalParams.getDay());
 				NetcdfFile nc2;
 				try {
 					nc2 = NetcdfFile.open(filePath);
 				} catch (IOException e) {
 					logger.error("VerticalService | variables() :buildVariables  open file " + filePath + " error");
-					return;
+					return false;
 				}
 				Variable variable2 = nc2.findVariable(null, specie);
 				variableList2.add(variable2);
 			}
 		} catch (Exception e) {
 			logger.error("VerticalService | variables() :buildVariables   error");
+			return false;
 		}
+		return true;
 	}
 
 	// 2. build earth surf point取座标划线
