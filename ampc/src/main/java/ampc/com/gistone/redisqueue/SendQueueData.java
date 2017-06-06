@@ -10,11 +10,9 @@ package ampc.com.gistone.redisqueue;
 
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 
 import net.sf.json.JSONObject;
 
@@ -66,7 +64,6 @@ import org.springframework.stereotype.Component;
 
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
-import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.redisqueue.entity.QueueData;
 import ampc.com.gistone.util.ConfigUtil;
@@ -96,8 +93,6 @@ public class SendQueueData {
 	private TScenarinoDetailMapper tscenarinoDetailMapper;
 	@Autowired
 	private ReadyData readyData;
-	/*@Autowired
-	private RedisConfig redisConfig;*/
 	@Autowired
 	private ConfigUtil configUtil;
 	
@@ -110,7 +105,6 @@ public class SendQueueData {
 	 * @date 2017年3月25日 下午4:05:24
 	 */
 	public boolean toJson(QueueData queueData,Long tasksScenarinoId,String time) {
-//		StringBuffer stringBuffer = new StringBuffer();
 		boolean sendData = false;
 		JSONObject jsonObject = JSONObject.fromObject(queueData);
 		String json = jsonObject.toString();
