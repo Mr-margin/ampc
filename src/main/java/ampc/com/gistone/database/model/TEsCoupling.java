@@ -35,6 +35,8 @@ public class TEsCoupling {
 
     private String esVersion;
 
+    private Long esCouplingNativetpId;
+
     public Long getEsCouplingId() {
         return esCouplingId;
     }
@@ -161,5 +163,13 @@ public class TEsCoupling {
 
     public void setEsVersion(String esVersion) {
         this.esVersion = esVersion == null ? null : esVersion.trim();
+    }
+
+    public Long getEsCouplingNativetpId() {
+        return esCouplingNativetpId;
+    }
+
+    public void setEsCouplingNativetpId(Long esCouplingNativetpId) {
+        this.esCouplingNativetpId = esCouplingNativetpId;
     }
 }
