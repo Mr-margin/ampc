@@ -1126,7 +1126,7 @@ public class MissionAndScenarinoController {
 					forobj.put("scenarinoStartDate", formatter.format(tsc.getScenarinoStartDate()));
 					forobj.put("ScenType", tsc.getScenType());
 					forobj.put("scenarinoEndDate", formatter.format(tsc.getPathDate()));
-					forobj.put("theDate", formatter.format(tsc.getScenarinoStartDate()));
+					forobj.put("pathDate", formatter.format(tsc.getPathDate()));
 					arr.add(forobj);	
 					}
 			}
@@ -1196,7 +1196,7 @@ public class MissionAndScenarinoController {
 			if(scenType.equals("1")){
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(date);
-			cal.add(Calendar.DATE, predictionTime);
+			cal.add(Calendar.DATE, (predictionTime-2));
 			String addTimeDate =sdf.format(cal.getTime());
 			obj.put("endTime", addTimeDate);
 			}else{
