@@ -2301,6 +2301,7 @@ function sunEditTimeDate() {
 function jpjsBtn() {
     var url = '/jp/areajp';
     var params = {
+        bigIndex:qjMsg.esCouplingId,
         scenarinoId: qjMsg.qjId,
         areaAndPlanIds: {},
         userId: userId
@@ -2380,6 +2381,7 @@ function initJPJS() {
 function jpztckBtn(t) {
     var url = '/jp/areaStatusJp';
     var params = {
+        bigIndex:qjMsg.esCouplingId,
         scenarinoId: qjMsg.qjId,
         userId: userId,
         areaAndPlanIds: ''

@@ -1610,6 +1610,7 @@ function initJPJS() {
 function jpztckBtn(t) {
   var url = '/jp/areaStatusJp';
   var params = {
+      bigIndex: msg.content.esCouplingId,
     scenarinoId: msg.content.qjId,
     areaAndPlanIds: '',
     userId: userId
