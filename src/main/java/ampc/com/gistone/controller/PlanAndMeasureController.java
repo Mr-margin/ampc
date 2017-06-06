@@ -1660,6 +1660,8 @@ public class PlanAndMeasureController {
 			}
 			// planId预案ID
 			Long planId = Long.parseLong(param.toString());
+			//定义结果对象
+			Map resultMap=new HashMap();
 			//查询行业版本
 			Map qmap=new HashMap();
 			qmap.put("userId", userId);
@@ -1685,10 +1687,12 @@ public class PlanAndMeasureController {
 				LogUtil.getLogger().error("PlanAndMeasureController   企业排放量外部查询异常");
 				return AmpcResult.build(1000, "企业排放量外部查询异常",-1);
 			}
+			//写入排放量信息
+			resultMap.put("pfl", (Map)mapResult.get("data"));
 			//创建查询条件Map
 			Map queryMap=new HashMap();
 			queryMap.put("planId", planId);
-			queryMap.put("userId", planId);
+			queryMap.put("userId", userId);
 			queryMap.put("sectorName", smallIndex);
 			//查询预案措施ID
 			List<Long> planMeasureIdss = tPlanMeasureMapper.selectPMIDByQuery(queryMap);
@@ -1963,7 +1967,7 @@ public class PlanAndMeasureController {
 			// 将java对象转换为json对象
 			String str = mapper.writeValueAsString(jpList);
 			// 调用减排计算接口 并获取结果Json
-			getResult = ClientUtil.doPost(configUtil.getYunURL()+"/calc/submit/subSector", str);
+			getResult = ClientUtil.doPost(configUtil.getYunURL()+"/calc/submit/sumAll", str);
 			// 并根据减排分析得到的结果进行JsonTree的解析
 			mapResult=mapper.readValue(getResult, Map.class);
 			if(!mapResult.get("status").toString().equals("success")){
@@ -1976,28 +1980,24 @@ public class PlanAndMeasureController {
 			}
 			// 讲数据转换成Map
 			Map dataMap = (Map)mapResult.get("data");
-			// 每一个对象对应一个预案措施
-//			for (Object obj : dataMap.keySet()) {
-//				Map map=(Map) dataMap.get(obj);
-//				for (Object obj1 : map.keySet()) {
-//					Map map1=(Map) map.get(obj1);
-//					//定义临时对象
-//					TPlanMeasureWithBLOBs tPlanMeasure = new TPlanMeasureWithBLOBs();
-//					//获取预案措施Id
-//					Long id = Long.parseLong(obj1.toString().split("-")[1]);
-//					tPlanMeasure.setPlanMeasureId(id);
-//					JSONObject jsonStr = JSONObject.fromObject(map1.get("reduce"));
-//					tPlanMeasure.setTableRatio(jsonStr.toString());
-//					//根据Id修改预案措施 补全减排Json列的数据
-//					int updatestatus = tPlanMeasureMapper.updateByPrimaryKeySelective(tPlanMeasure);
-//					// 判断是否成功
-//					if (updatestatus < 0) {
-//						throw new SQLException("PlanAndMeasureController  措施汇总中的减排计算失败,数据库中添加减排结果信息时失败。");
-//					}
-//			    }
-//			}
+			if (dataMap.get("PMcoarse") != null&& dataMap.get("PM25") != null) {
+				double pMcoarse = Double.parseDouble(dataMap.get("PMcoarse").toString());
+				double pM25 = Double.parseDouble(dataMap.get("PM25").toString());
+				dataMap.put("PM10", pMcoarse+pM25);
+			}
+			if (dataMap.get("PMcoarse") != null) {
+				double pMcoarse = Double.parseDouble(dataMap.get("PMcoarse").toString());
+				dataMap.put("PMC",pMcoarse);
+			}
+			if (dataMap.get("PM25") != null&&dataMap.get("BC") != null&&dataMap.get("OC") != null) {
+				double pM25 = Double.parseDouble(dataMap.get("PM25").toString());
+				double bc = Double.parseDouble(dataMap.get("BC").toString());
+				double oc = Double.parseDouble(dataMap.get("OC").toString());
+				dataMap.put("PMFINE",pM25-bc-oc);
+			}
+			resultMap.put("jpl", dataMap);
 			LogUtil.getLogger().info("PlanAndMeasureController   企业排放信息查询成功");
-			return AmpcResult.ok(getResult);
+			return AmpcResult.ok(resultMap);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("PlanAndMeasureController   企业排放信息查询异常！",e);
 			return AmpcResult.build(1001, "PlanAndMeasureController   企业排放信息查询异常！");
