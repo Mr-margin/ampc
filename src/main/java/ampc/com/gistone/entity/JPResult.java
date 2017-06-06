@@ -23,10 +23,20 @@ public class JPResult {
 	private String start;
 	//预案的结束时间  分秒要59分59秒
 	private String end;
-	//装的是行政区划代码  暂时先不传递
+	//装的是行政区划代码  
 	private List<String> regionIds;
 	//每一个Object对象中都是一个Map集合 放着子措施拆分出来和过滤信息
 	private List<Object> ops;
+	//行业版本ID
+	private String l4sCategory;
+
+	
+	public String getL4sCategory() {
+		return l4sCategory;
+	}
+	public void setL4sCategory(String l4sCategory) {
+		this.l4sCategory = l4sCategory;
+	}
 	public String getGroupName() {
 		return groupName;
 	}
