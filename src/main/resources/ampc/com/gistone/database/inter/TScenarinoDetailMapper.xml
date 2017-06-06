@@ -94,7 +94,7 @@
   </select>
   <!-- 根据ID查找开始时间结束时间和情景类型 -->
   <select id="selecttypetime" resultMap="BaseResultMap" parameterType="java.lang.Long">
-  select SCENARINO_START_DATE, SCENARINO_END_DATE,SCEN_TYPE,PATH_DATE
+  select SCENARINO_START_DATE, SCENARINO_END_DATE,SCEN_TYPE,RANGE_DAY,PATH_DATE
   from T_SCENARINO_DETAIL where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
   
   </select>
@@ -311,6 +311,13 @@
 		<include refid="Base_Column_List" />
   		FROM T_SCENARINO_DETAIL  
   		WHERE PATH_DATE = #{pathDate,jdbcType=TIMESTAMP} AND SCEN_TYPE=#{scenType,jdbcType=VARCHAR}
+  </select>
+  <!-- 查找正在执行的实时预报 -->
+  <select id="selectAllOnExecByPathdateAndtype" parameterType="hashMap" resultMap="BaseResultMap">
+   SELECT 
+		<include refid="Base_Column_List" />
+  		FROM T_SCENARINO_DETAIL  
+  		WHERE PATH_DATE = #{pathDate,jdbcType=TIMESTAMP} AND SCEN_TYPE=#{scenType,jdbcType=VARCHAR} AND SCENARINO_STATUS = '6'
   </select>
    <!--添加情景对名称重复判断-->
   <select id="check_ScenarinoName" parameterType="hashMap" resultType="int">
