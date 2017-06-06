@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
+import ampc.com.gistone.database.inter.TEsCouplingMapper;
 import ampc.com.gistone.database.inter.TMeasureExcelMapper;
 import ampc.com.gistone.database.inter.TMeasureSectorExcelMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
@@ -47,6 +48,7 @@ import ampc.com.gistone.database.model.TPlanReuse;
 import ampc.com.gistone.database.model.TPlanReuseWithBLOBs;
 import ampc.com.gistone.database.model.TQueryExcel;
 import ampc.com.gistone.database.model.TScenarinoDetail;
+import ampc.com.gistone.database.model.TSectorExcel;
 import ampc.com.gistone.database.model.TTime;
 import ampc.com.gistone.entity.JPResult;
 import ampc.com.gistone.entity.MeasureContentUtil;
@@ -119,7 +121,8 @@ public class PlanAndMeasureController {
 	private ScenarinoStatusUtil scenarinoStatusUtil=new ScenarinoStatusUtil();
 	@Autowired
 	private TMissionDetailMapper tMissionDetailMapper;
-	
+	@Autowired
+	private TEsCouplingMapper tEsCouplingMapper;
 	/**
 	 * 重置情景状态
 	 * @author WangShanxi
@@ -2493,9 +2496,23 @@ public class PlanAndMeasureController {
 	 * @param endDate		结束时间
 	 * @return	减排的Json串
 	 */
-	public String JPUtil(Long scenarinoId,Long userId,String startDate,String endDate){
+	public String JPUtil(Long scenarinoId,Long userId,String startDate,String endDate,Long bigIndex){
 		// 添加异常捕捉
 		try {
+			Map qmap=new HashMap();
+			qmap.put("userId", userId);
+			qmap.put("esCouplingId", bigIndex);
+			Long templateId=tEsCouplingMapper.selectTIdByCId(qmap);
+			//查询行业版本
+			TSectorExcel tSectorExcel=new TSectorExcel();
+			tSectorExcel.setUserId(userId);
+			tSectorExcel.setDetailedListId(templateId);
+			String version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
+			if(version.equals("")||version==null){
+				 tSectorExcel=new TSectorExcel();
+				 tSectorExcel.setDetailedListId(templateId);
+				 version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
+			}
 			// 创建一个减排的结果集合
 			List<JPResult> jpList = new ArrayList<JPResult>();
 			Map mapQusery=new HashMap();
@@ -2539,6 +2556,8 @@ public class PlanAndMeasureController {
 							result.setActionDir(actionlistDir);
 							// 写入BigIndex
 							result.setBigIndex(mcu.getBigIndex());
+							//写入行业版本
+							result.setL4sCategory(version);
 							// 写入SmallIndex
 							result.setSmallIndex(mcu.getSmallIndex());
 							//写入行政区划代码
