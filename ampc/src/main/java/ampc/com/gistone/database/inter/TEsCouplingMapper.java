@@ -37,4 +37,6 @@ public interface TEsCouplingMapper {
     int updateByPrimaryKey(TEsCoupling record);
     
 	int updateStatusByPrimaryKey(TEsCoupling tEsCoupling);
+	
+	int updateDataByPrimaryKey(TEsCoupling tEsCoupling);
 }

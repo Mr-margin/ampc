@@ -1697,15 +1697,13 @@ public class NativeAndNationController {
 				return AmpcResult.build(1003, "清单模板ID为空或出现非法字符!");
 			}
 			Long nativeTpId = Long.parseLong(param.toString());
-//			Long nativeTpId = Long.parseLong("120");
 			
 			param=data.get("nativesId");
-			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 本地清单ID为空或出现非法字符!");
 				return AmpcResult.build(1003, "本地清单ID为空或出现非法字符!");
 			}
-			Long nativesId = Long.parseLong(param.toString());
-//			Long nativesId = Long.parseLong("60");
+			String nativesId = param.toString();
 			
 			param=data.get("couplingId");
 			if(!RegUtil.CheckParameter(param, "Long", null, false)){
@@ -1713,7 +1711,6 @@ public class NativeAndNationController {
 				return AmpcResult.build(1003, "耦合清单ID为空或出现非法字符!");
 			}
 			Long couplingId = Long.parseLong(param.toString());
-//			Long couplingId = Long.parseLong("1");
 			
 			param=data.get("CouplingCity");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
@@ -1743,7 +1740,6 @@ public class NativeAndNationController {
 			couplingMap.put("templateId", nativeTpId);
 			//返回结果的路径
 			//读取config.properties配置文件的url
-//			String  resultUrl = configUtil.getYunURL()+"http://localhost:8082/ampc/NativeAndNation/doPost";
 			String  resultUrl = "http://192.168.7.150:8082/ampc/NativeAndNation/doPost";
 			couplingMap.put("serverPath", resultUrl);
 			//设置参数查询行业版本
@@ -1761,24 +1757,39 @@ public class NativeAndNationController {
 			}
 			//行业版本
 			couplingMap.put("versionExcelId", versionNumber);
-			
-//			couplingMap.put("meicCityConfig", "[{"meicCityId":"清单数据ID","regionId":"单一行政区划4位","sectorName":"行业名称"},{},{}]");
-			Map cinMap = new HashMap<String, Object>();
-			cinMap.put("meicCityId", "60");
-			cinMap.put("regionId", "1303");
-			cinMap.put("sectorName", "废弃物处理源");
-			List cinList = new ArrayList();
-			cinList.add(cinMap);
-			couplingMap.put("meicCityConfig", cinList);
-			
+			JSONArray meicCityConfigArr = JSONArray.fromObject(meicCityConfig); 
+			couplingMap.put("meicCityConfig", meicCityConfigArr);
+			//转化为json对象
 			JSONObject json = JSONObject.fromObject(couplingMap);
-			String couplingStr = json.toString();
-			String getResult=ClientUtil.doPost("http://192.168.1.128:8089/summary/regions",couplingStr);
-			
-			
+			//调用晓东的接口
+			String getResult=ClientUtil.doPost("http://192.168.1.128:8089/coupling/submit",json.toString());
+			Map detamap=mapper.readValue(getResult, Map.class);
+			Map messageMap = new HashMap<String, Object>();
+			//如果状态执行成功
+			if("success".equals(detamap.get("status"))){
+				//添加所需参数更新耦合配置信息
+				TEsCoupling tEsCoupling = new TEsCoupling();
+				tEsCoupling.setEsCouplingId(couplingId);
+				tEsCoupling.setEsCouplingCity(CouplingCity);
+				tEsCoupling.setEsCouplingNativetpId(nativeTpId);
+				tEsCoupling.setEsCouplingNationId(nationId);
+				//该字段类型需修改为String类型
+				tEsCoupling.setEsCouplingNativeId(Long.valueOf("60"));
+				//更新耦合清单数据
+				int result= tEsCouplingMapper.updateDataByPrimaryKey(tEsCoupling);
+				if(result>0){
+					//更新成功
+					messageMap.put("msg", true);
+				}else{
+					//更新失败
+					messageMap.put("msg", false);
+				}
+			}else{
+				messageMap.put("msg", false);
+			}
 			
 			LogUtil.getLogger().info("NativeAndNationController 保存耦合配置信息成功!");
-			return AmpcResult.ok();
+			return AmpcResult.ok(messageMap);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("NativeAndNationController 保存耦合配置信息异常!",e);
 			return AmpcResult.build(1001, "NativeAndNationController 保存耦合配置信息异常!");
@@ -1810,6 +1821,7 @@ public class NativeAndNationController {
 			tEsCoupling.setEsCouplingId(tEsCouplingId);
 			//更新耦合清单状态为成功
 			int result = tEsCouplingMapper.updateStatusByPrimaryKey(tEsCoupling);
+			//返回调用者的信息
 			Map messageMap = new HashMap<String, Object>();
 			if(result>0){
 				//更新成功

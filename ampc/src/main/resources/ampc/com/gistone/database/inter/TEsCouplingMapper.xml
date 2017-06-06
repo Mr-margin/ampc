@@ -308,6 +308,19 @@
       <if test="historyCoupling != null" >
         HISTORY_COUPLING = #{historyCoupling,jdbcType=VARCHAR},
       </if>
+      
+      <if test="esCouplingCity != null" >
+        ES_COUPLING_CITY = #{esCouplingCity,jdbcType=VARCHAR},
+      </if>
+      <if test="esCouplingStatus != null" >
+        ES_COUPLING_STATUS = #{esCouplingStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="esVersion != null" >
+        ES_VERSION = #{esVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="esCouplingNativetpId != null" >
+        ES_COUPLING_NATIVETP_ID = #{esCouplingNativetpId,jdbcType=DECIMAL}
+      </if>
     </set>
     where ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL} and 
     	USER_ID = #{userId,jdbcType=DECIMAL}
@@ -323,6 +336,16 @@
   <update id="updateStatusByPrimaryKey" parameterType="ampc.com.gistone.database.model.TEsCoupling" >
 	  UPDATE T_ES_COUPLING
 		SET ES_COUPLING_STATUS = 3
+		WHERE
+			ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL}
+  </update>
+  <!-- 耦合后更新耦合清单配置信息 -->
+  <update id="updateDataByPrimaryKey" parameterType="ampc.com.gistone.database.model.TEsCoupling" >
+	  UPDATE T_ES_COUPLING
+		SET ES_COUPLING_NATION_ID = #{esCouplingNationId,jdbcType=DECIMAL}
+		, ES_COUPLING_NATIVETP_ID = #{esCouplingNativetpId,jdbcType=DECIMAL}
+		, ES_COUPLING_NATIVE_ID = #{esCouplingNativeId,jdbcType=DECIMAL}
+		, ES_COUPLING_CITY = #{esCouplingCity,jdbcType=VARCHAR}
 		WHERE
 			ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL}
   </update>
