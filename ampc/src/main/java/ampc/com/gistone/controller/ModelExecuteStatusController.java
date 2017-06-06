@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,9 +184,12 @@ public class ModelExecuteStatusController {
 					//模式运行的tips信息
 					String tips = getTipsMessage(selectStatus,scenarinoStatus);
 					modelExecuJson.setModelExecTips(tips);
-					JSONObject jsonObject = JSONObject.fromObject(modelExecuJson);
-					String json = jsonObject.toString();
-					return AmpcResult.ok(json);
+//					JSONArray json = JSONArray.fromObject(jpList);
+//					JSONArray fromObject = JSONArray.fromObject(modelExecuJson);
+//					String json = fromObject.toString();
+//					System.out.println(json);
+//					return AmpcResult.ok(json);
+					return AmpcResult.build(0, "successs",modelExecuJson);
 				}else {
 					return AmpcResult.build(1005, "未查到该信息！请联系管理员！");
 				}
