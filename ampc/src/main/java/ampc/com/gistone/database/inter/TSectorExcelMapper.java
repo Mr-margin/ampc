@@ -38,5 +38,7 @@ public interface TSectorExcelMapper {
     int updateByPrimaryKey(TSectorExcel record);
 
 	List<String> selectIndustryById(Long nationTpId);
+
+	String selectVersionsExcelId(TSectorExcel tSectorExcel);
     
 }

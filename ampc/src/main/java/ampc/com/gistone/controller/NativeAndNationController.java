@@ -1678,6 +1678,76 @@ public class NativeAndNationController {
 			}
 			Long userId = Long.parseLong(param.toString());
 			
+			param=data.get("nationId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 全国清单ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "全国清单ID为空或出现非法字符!");
+			}
+			Long nationId = Long.parseLong(param.toString());
+			
+			param=data.get("nativeTpId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 清单模板ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单模板ID为空或出现非法字符!");
+			}
+			Long nativeTpId = Long.parseLong(param.toString());
+			
+			param=data.get("nativesId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单ID为空或出现非法字符!");
+			}
+			Long nativesId = Long.parseLong(param.toString());
+			
+			param=data.get("couplingId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单ID为空或出现非法字符!");
+			}
+			Long couplingId = Long.parseLong(param.toString());
+			
+			param=data.get("CouplingCity");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 耦合后涉及的城市ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "耦合后涉及的城市ID为空或出现非法字符!");
+			}
+			String  CouplingCity = param.toString();
+			
+			param=data.get("meicCityConfig");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 清单数据、行政区划、行业名称参数信息为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单数据、行政区划、行业名称参数信息为空或出现非法字符!");
+			}
+			String  meicCityConfig = param.toString();
+			
+			//调用晓东接口所需的参数
+			Map couplingMap = new HashMap<String, Object>();
+			//用户id
+			couplingMap.put("userId", userId);
+			//全国清单ID
+			couplingMap.put("meicId", nationId);
+			//固定前缀
+			couplingMap.put("prefix", "MC");
+			//耦合后的清单ID
+			couplingMap.put("destId", couplingId);
+			//模板ID
+			couplingMap.put("templateId", nativeTpId);
+			//返回结果的路径
+			couplingMap.put("serverPath", "返回结果的路径");
+			//设置参数查询行业版本
+			TSectorExcel tSectorExcel = new TSectorExcel();
+			//模板ID参数
+			tSectorExcel.setDetailedListId(nativeTpId);
+			//版本号参数
+			//查询得到版本号
+			String versionNumber = tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
+			//行业版本
+			couplingMap.put("versionExcelId", versionNumber);
+//			couplingMap.put("meicCityConfig", "[{"meicCityId":"清单数据ID","regionId":"单一行政区划4位","sectorName":"行业名称"},{},{}]");
+			
+			String getResult=ClientUtil.doPost("http://192.168.1.128:8089/summary/regions",couplingMap.toString());
+			
+			
 			
 			LogUtil.getLogger().info("NativeAndNationController 保存耦合配置信息成功!");
 			return AmpcResult.ok();
