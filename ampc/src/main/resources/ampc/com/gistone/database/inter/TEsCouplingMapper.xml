@@ -315,8 +315,8 @@
   <!-- 根据清单ID查询模板ID -->
   <select id="selectTIdByCId" resultType="java.lang.Long" parameterType="hashMap" >
     select 
-    
+    ES_COUPLING_NATIVETP_ID
     from T_ES_COUPLING
-    where ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL}
+    where ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL} and USER_ID = #{userId,jdbcType=DECIMAL}
   </select>
 </mapper>
