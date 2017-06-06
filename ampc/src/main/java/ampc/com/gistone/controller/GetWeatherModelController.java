@@ -133,12 +133,12 @@ public class GetWeatherModelController {
 			}
 			Long scenarinoId = Long.parseLong(data.get("scenarinoId").toString());
 			//清单ID
-			param = data.get("sourceId");
+			param = data.get("bigIndex");
 			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
-				LogUtil.getLogger().error("GetWeatherModelController getRunModel sourceid为空或出现非法字符!");
-				return AmpcResult.build(1003, "sourceId为空或出现非法字符!");
+				LogUtil.getLogger().error("GetWeatherModelController getRunModel 清单ID（sourceid）为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单ID（sourceId）为空或出现非法字符!");
 			}
-			Long sourceId = Long.parseLong(data.get("sourceId").toString());
+			Long sourceId = Long.parseLong(data.get("bigIndex").toString());
 			
 			//任务ID
 			param = data.get("missionId");
@@ -610,12 +610,12 @@ public class GetWeatherModelController {
 			Long missionId = Long.parseLong(param.toString());
 			
 			//清单ID
-			param = data.get("sourceId");
+			param = data.get("bigIndex");
 			if (!RegUtil.CheckParameter(param, "Long", null, false)) {
-				LogUtil.getLogger().error("GetWeatherModelController getRunModel sourceid为空或出现非法字符!");
-				return AmpcResult.build(1003, "sourceId为空或出现非法字符!");
+				LogUtil.getLogger().error("GetWeatherModelController getRunModel 清单ID（sourceid）为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单ID（sourceId）为空或出现非法字符!");
 			}
-			Long sourceId = Long.parseLong(data.get("sourceId").toString());
+			Long sourceId = Long.parseLong(data.get("bigIndex").toString());
 			
 			param = data.get("scenarinoType");
 			if (!RegUtil.CheckParameter(param, "Integer", null, false)) {
