@@ -23,9 +23,14 @@
           $('#showErrorBtn').linkbutton();
           $('#addnewqd').linkbutton();
           $('#deleteqd').linkbutton();
-          $('#searchqd').searchbox({prompt: '输入任务或情景名称'});
+          $('#searchqd').searchbox({
+          	prompt: '输入任务名称',
+          	searcher:function(value,name){
+          		reloadTreegrid();
+          	}
+          });
           $('#selectTypeBtn').menubutton({
-            menu: '#selectTypeMenu',
+            menu: '#selectTypeMenu'
           });
         </script>
       </div>

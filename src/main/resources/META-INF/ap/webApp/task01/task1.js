@@ -145,9 +145,11 @@ var msg = {
         border: false,
         checkOnSelect: false,
         fitColumns: true,
-        rowStyler:function(index,row){
-        	if(row){
-        		
+        rowStyler:function(obj){
+        	console.log(obj);
+        	if(typeof obj=='object'&&obj.missionErrorCount>0){
+        		console.log(1);
+        		return {class:'haserror'};
         	}
         },
         queryParams:{
@@ -159,7 +161,6 @@ var msg = {
             "userId": userId
         },
         loadFilter:function(data){
-        	console.log(data.data.errorCount);
         	if(data.data.errorCount==0){
         		$('#showErrorBtn').hide();
         	}else{
@@ -325,7 +326,12 @@ function missionNameFormatter(value, row, index) {
         }
         return row.scenarinoNameTitle;
     }
-    return row.missionName
+    if(row.missionErrorCount>0){
+    	return row.missionName+' <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color:#FF0000"></i>';
+    }else{
+    	return row.missionName;
+    }
+    
 }
 /*存储情景msg信息*/
 function storageqjmsg() {
@@ -447,7 +453,7 @@ function missionStatusFormatter(value, row, index) {
 }
 function missionmanage(value, row, index) {
     if (typeof row.missionStatus === 'undefined') {
-        if (typeof row.missionStatusTitle === 'undefined') {
+        if (typeof row.settingTitle === 'undefined') {
             return '<div class="dropdownmenu"><a href="javascript:"><i class="fa fa-caret-down" aria-hidden="true"></i></a><ul style="display: none"><li><a href="javascript:">修改情景名</a></li><li><a href="javascript:">删除</a></li></ul></div>'
         }
         return '设置'
@@ -705,7 +711,7 @@ function reloadTreegrid() {
 		queryParams:{
 			"page":1,
 			"rows":10,
-			"queryName": '',
+			"queryName": $('#searchqd').searchbox('getValue'),
 			"missionStatus": '',
 			"sort": '',
 			"userId": userId
