@@ -341,10 +341,12 @@ function submitCity(){
         if($('input[name=cityName]').eq(i).is(":checked")){
             checkCity.push({
                 "cityId":$('input[name=cityName]').eq(i).val(),
-                "cityName":cityData.cityNames
+                "cityName":cityData[i].cityName
             })
             cityCurren.cityId=$('input[name=cityName]').eq(i).val();
-            cityCurren.cityName=cityData.cityNames;
+            cityCurren.cityName=cityData[i].cityName;
+            //点击过的input radio 再不可选
+            $('#citySelect #cityOption span').eq(i).append("<div style='color: red'>已选择</div>")
         }
     }
 
@@ -465,8 +467,9 @@ var globelCityData,globelindustryData;
 function coupCity(cityCurren,industryData) {
     // globelCityData=cityData;
     // globelindustryData=industryData;
+    $("#coupCityTable").empty()
     var coupFirst="";
-    coupFirst+="<tr><td id='cityName' rowspan=\'"+industryData.length+"\'>"+cityCurren.cityName+"</td><td class='industryName'>"+industryData[0].industryNames+"</td><td class='industryQd'></td></tr>"
+    coupFirst+="<tr><td class='cityName' rowspan=\'"+industryData.length+"\'>"+cityCurren.cityName+"</td><td class='industryName'>"+industryData[0].industryNames+"</td><td class='industryQd'></td></tr>"
     if(industryData.length>1){
         for(var i=1;i<industryData.length;i++){
             var coupOther="<tr><td class='industryName'>"+industryData[i].industryNames+"</td><td class='industryQd'></td></tr>";
@@ -496,53 +499,65 @@ $("#citySelect").window({
     closed:true,
     cls:"cloudui"
 })
+//数组去重
+Array.prototype.unique3 = function(){
+    var res = [];
+    var json = {};
+    for(var i = 0; i < this.length; i++){
+        if(!json[this[i]]){
+            res.push(this[i]);
+            json[this[i]] = 1;
+        }
+    }
+    return res;
+}
 //点击保存按钮保存耦合清单 全国清单 本地清单 企业 行业 等信息
 var globelCheckedCity=[],globelCheckedIndustry=[],checkQd;
+var globelCheckedQd=[];//保存选择的 行政-行业-清单 一一对应
+var allCity=[];
 function saveAllId(){
-    $("#citySelect").window("open")
-    // for(var i=0;i<globelCityData.length;i++){
-    //     if($('input[name=cityName]').eq(i).is(":checked")){
-    //         var cityVal=$('input[name=cityName]').eq(i).val()
-    //         console.log(cityVal);
-    //         globelCheckedCity.push(cityVal)
-    //     }
-    // }
-    // for(var m=0;m<globelindustryData.length;m++){
-    //     if($('input[name=industryName]').eq(m).is(":checked")){
-    //         var industryVal=$('input[name=industryName]').eq(m).val()
-    //         console.log(industryVal);
-    //         globelCheckedIndustry.push(industryVal)
-    //     }
-    // }
-    // for(var n=0;n<localQd.length+2;n++){
-    //     if($('input[name=qdName]').eq(n).is(":checked")){
-    //         checkQd=$('input[name=qdName]').eq(n).val();
-    //     }
-    // }
-    // var nativesId=[];
-    // for(var l=0;l<localQd.length;l++){
-    //     nativesId.push(localQd[l].esNativeId)
-    // }
-    //
-    nativesId=[60];
-    meicCityConfig=[{"meicCityId":checkQgQd.esNationId,"regionId":'130324',"sectorName":'废弃物处理源'}]
-    ajaxPost('/NativeAndNation/doPost',{"couplingId":coupingQd.esCouplingId,"userId":userId,"method":'saveCoupling',"nationId":checkQgQd.esNationId,"nativesId":localQd.esNativeId,"CouplingCity":globelCheckedCity,"nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()],"couplingId":coupingQd.esCouplingId,"meicCityConfig":meicCityConfig}).success(function (res) {
-        if(res.status==0){
-            console.log("成功")
-        }else{
-            console.log("失败")
+    for(var i=0;i<industryData.length;i++){
+        if($(".selectQd").eq(i).val()!="w_0"){
+            if($(".selectQd").eq(i).val()=="qg_1"){
+                globelCheckedQd.push({
+                    "meicCityId":checkQgQd.esNationId,
+                    "regionId":cityCurren.cityId,
+                    "sectorName":industryData[i].industryNames
+                })
+            }else{
+                globelCheckedQd.push({
+                    "meicCityId":$(".selectQd").eq(i).val(),
+                    "regionId":cityCurren.cityId,
+                    "sectorName":industryData[i].industryNames
+                })
+            }
+            allCity.push(cityCurren.cityId)
         }
-    })
-    console.log("耦合")
-    console.log(coupingQd)
-    console.log("全国")
-    console.log(checkQgQd)
-    console.log("本地")
-    console.log(localQd)
-    console.log("chengsh")
-    console.log(globelCheckedCity);
-    console.log("行业")
-    console.log(globelCheckedIndustry);
-    console.log("清单")
-    console.log(checkQd);
+
+    }
+
+    globelCheckedCity=allCity.unique3()
+    var localQdId=[];
+    for(var m=0;m<localQd.length;m++){
+        localQdId.push(localQd[m].esNativeId)
+    }
+    if(checkCity.length<cityData.length){
+        $("#citySelect").window("open");
+    }else{
+        meicCityConfig=globelCheckedQd;
+        ajaxPost('/NativeAndNation/doPost',{"userId":userId,
+                                                "method":'saveCoupling',
+                                                "nationId":checkQgQd.esNationId,
+                                                "nativesId":localQdId,
+                                                "CouplingCity":globelCheckedCity,
+                                                "nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId,
+                                                "couplingId":coupingQd.esCouplingId,
+                                                "meicCityConfig":meicCityConfig,}).success(function (res) {
+            if(res.status==0){
+                console.log("成功")
+            }else{
+                console.log("失败")
+            }
+        })
+    }
 }
