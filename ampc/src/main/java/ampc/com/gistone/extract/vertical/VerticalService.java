@@ -344,8 +344,8 @@ public class VerticalService {
 		if (Constants.TIMEPOINT_A.equals(timePoint)) {
 			List<String> list = verticalParams.getDates();
 			for (int i = 0; i < list.size(); i++) {
-				String day = list.get(i);
-				concnFilePath = concnFilePath.replace("$Day", day);
+				verticalParams.setDay(list.get(i));
+				concnFilePath = concnFilePath.replace("$Day", verticalParams.getDay());
 				b = buildVariables(concnFilePath, verticalParams);// 找到对应netcdf文件，读取数据封装进variableList1，variableList2中
 			}
 			try {
@@ -408,7 +408,7 @@ public class VerticalService {
 				variableList2.add(variable2);
 			}
 		} catch (Exception e) {
-			logger.error("VerticalService | variables() :buildVariables   error");
+			logger.error("",e);
 			return false;
 		}
 		return true;
