@@ -35,4 +35,15 @@ public interface TUngribMapper {
 	 * @date 2017年3月23日 下午3:36:33
 	 */
 	TUngrib selectUngrib(Date pathdateDate);
+
+	/**
+	 * @Description: 根据pathdate查询ungrib
+	 * @param today
+	 * @return   
+	 * TUngrib  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月3日 下午3:07:16
+	 */
+	TUngrib getNowUngrib(Date today);
 }
