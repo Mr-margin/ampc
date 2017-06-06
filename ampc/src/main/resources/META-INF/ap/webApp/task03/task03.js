@@ -519,7 +519,7 @@ function jianpaijisuan() {
 //  console.log(1);
     // $("#zhezhao").show();//计算中
     // $("#zhezhao_title").show();
-    ajaxPost('/jp/pmjp', {bigIndex:qjMsg.esCouplingId,"planMeasureIds": planMeasureIds.substring(0, planMeasureIds.length - 1)}).success(function (res) {
+    ajaxPost('/jp/pmjp', {userId:userId,bigIndex:qjMsg.esCouplingId,"planMeasureIds": planMeasureIds.substring(0, planMeasureIds.length - 1)}).success(function (res) {
 //		console.log(JSON.stringify(res));
         metTable_hj_info();
         // $("#zhezhao").hide();//计算中
@@ -753,8 +753,8 @@ function add_point(col) {
     
 //    var photoInfo = {};
 //    var point_sz = [];
-    
-    
+
+    app.gLyr.clear();
     var xmax = 0, xmin = 0, ymax = 0, ymin = 0;
     var k = 0;
     $.each(col, function (i, vol) {
