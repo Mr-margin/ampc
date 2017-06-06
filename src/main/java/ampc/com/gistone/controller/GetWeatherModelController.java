@@ -390,7 +390,12 @@ public class GetWeatherModelController {
 			String sendtime = tasksStatus.getBeizhu2();
 			String compentstatus = tasksStatus.getBeizhu();
 			Date tasksEndDate = tasksStatus.getTasksEndDate();
+			Date startdate = tasksStatus.getTasksScenarinoStartDate();
+			//格式化时间
+			tasksEndDate = tasksEndDate ==null?startdate:tasksEndDate;
+			tasksEndDate = DateUtil.DateToDate(tasksEndDate, "yyyyMMdd");
 			Date tasksScenarinoEndDate = tasksStatus.getTasksScenarinoEndDate();
+			tasksScenarinoEndDate = DateUtil.DateToDate(tasksScenarinoEndDate, "yyyyMMdd");
 			Long stepindex = tasksStatus.getStepindex();
 			/*
 			 * 用于预评估
@@ -401,13 +406,13 @@ public class GetWeatherModelController {
 				Date sendDate = null;
 				try {
 					sendDate = DateUtil.StrtoDateYMD(sendtime, "yyyyMMdd");
+					//比价情景发送了的时间和已经完成了的时间
+					compareTo = tasksEndDate.compareTo(sendDate);
+					//比较情景的任务结束时间和情景的结束时间
+					compareTo2 = tasksEndDate.compareTo(tasksScenarinoEndDate);
 				} catch (Exception e) {
 					LogUtil.getLogger().error("GetWeatherModelController-stopModel:时间格式转换错误！",e);
 				}
-				//比价情景发送了的时间和已经完成了的时间
-				compareTo = tasksEndDate.compareTo(sendDate);
-				//比较情景的任务结束时间和情景的结束时间
-				compareTo2 = tasksEndDate.compareTo(tasksScenarinoEndDate);
 			}
 			
 			/**
