@@ -41,8 +41,7 @@
                             <table id="coupCityTable"></table>
                         </div>
                         <div class="coupSetConThirdBtn">
-                            <button>保存</button>
-                            <button onclick="batchSelect()">批量选择</button>
+                            <button onclick="saveAllId()">保存</button>
                         </div>
                     </div>
                 </div>
@@ -102,21 +101,10 @@
         <button type="button" class="btn btn-default claearQdBtn" onclick="" style="display: none;">清除</button>
     </div>
 </div>
-<!--批量选择-->
-<div id="batchWindow">
-    <!--城市-->
-    <div class="batchCon">
-        <h3>城市</h3>
-        <div id="citySelect"></div>
-    </div>
-    <!--行业-->
-    <div class="batchCon">
-        <h3>行业</h3>
-        <div id="industrySelect"></div>
-    </div>
-    <!--清单-->
-    <div class="batchCon">
-        <h3>清单</h3>
-        <div id="qdSelect"></div>
+<!--城市选择-->
+<div id="citySelect">
+    <div id="cityOption"></div>
+    <div class="dlogFooter" >
+        <button type="button" class="btn btn-primary createQdBtn" onclick="submitCity()">确定</button>
     </div>
 </div>

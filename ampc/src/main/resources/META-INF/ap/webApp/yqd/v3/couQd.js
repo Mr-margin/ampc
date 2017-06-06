@@ -262,6 +262,10 @@ function coupSetQd(coupId) {
     $("#prevCoup").hide();//上一步按钮
     $(".navRight").hide();
 }
+var cityList='';
+var checkCity=[];
+var cityData=[];
+var industryData=[];
 function nextCoup(){//点击下一步按钮
     var conText=$(".coupSetTitle .coupSetTitleList .active div").text()
     if(conText=="第一步"){
@@ -298,15 +302,29 @@ function nextCoup(){//点击下一步按钮
                 if(res.status==0){
                    var cityNames=res.data.data.cityNames;
                    var industryNames=res.data.data.industryNames;
-                   var data=[]
-                    $.each(cityNames, function (i, col) {
-                        data.push({
-                            "id":i,
-                            "name":col,
+
+                   //城市数据添加到数组中
+                    $.each(cityNames, function (id, cityNames) {
+                        cityData.push({
+                            "cityId":id,
+                            "cityName":cityNames,
                         });
                     });
-                   console.log(data)
-                    coupCity()
+                    //行业数组添加到数组中
+                    $.each(industryNames, function (id, industryNames) {
+                        industryData.push({
+                            "industryNamesId":id,
+                            "industryNames":industryNames,
+                        });
+                    });
+                    //城市数据添加到弹窗中
+                    for(var i=0;i<cityData.length;i++){
+                        cityList+="<span><input type='radio' name='cityName' value=\'"+cityData[i].cityId+"\' /><label>"+cityData[i].cityName+"</label></span>";
+                    }
+                    $("#cityOption").append(cityList);
+                    //打开城市选择窗口
+                    $("#citySelect").window('open')
+                    // coupCity(cityData,industryData)
                 }else{
                     swal('参数错误', '', 'error');
                 }
@@ -316,6 +334,25 @@ function nextCoup(){//点击下一步按钮
         }
     }
 }
+//选择城市进行提交
+var cityCurren={};
+function submitCity(){
+    for(var i=0;i<cityData.length;i++){
+        if($('input[name=cityName]').eq(i).is(":checked")){
+            checkCity.push({
+                "cityId":$('input[name=cityName]').eq(i).val(),
+                "cityName":cityData.cityNames
+            })
+            cityCurren.cityId=$('input[name=cityName]').eq(i).val();
+            cityCurren.cityName=cityData.cityNames;
+        }
+    }
+
+    coupCity(cityCurren,industryData)
+    $("#citySelect").window("close");
+}
+
+
 function prevCoup(){
     var conText=$(".coupSetTitle .coupSetTitleList .active div").text()
     if(conText=="第三步"){
@@ -328,7 +365,6 @@ function prevCoup(){
         $(".coupSetCon").eq(2).hide();
         // $(".coupSetConSecond").layout()//耦合第二步进行渲染
         // mbSelect()
-
     }else if(conText=="第二步"){
         $(".cloudui .coupSetTitleList").children("li").eq(1).removeClass("active");
         $(".cloudui .coupSetTitleList").children("li").eq(0).addClass("active");
@@ -425,67 +461,88 @@ $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
     }
 })
 //耦合第三步
-var city=["北京","天津","石家庄"]
-var industry=[["钢铁","工业","火力","煤炭"],["钢铁","水力","煤炭清洗"],["行业1","行业2","行业3","行业4","行业5","行业6","行业7","行业8"]]
-function coupCity() {
+var globelCityData,globelindustryData;
+function coupCity(cityCurren,industryData) {
+    // globelCityData=cityData;
+    // globelindustryData=industryData;
     var coupFirst="";
-    for(var m=0;m<city.length;m++){
-        coupFirst+="<tr><td class='cityName' rowspan=\'"+industry[m].length+"\'>"+city[m]+"</td><td class='industryName'>"+industry[m][0]+"</td><td class='industryQd'></td></tr>"
-        for(var i=1;i<industry[m].length;i++){
-            var coupOther="<tr><td class='industryName'>"+industry[m][i]+"</td><td class='industryQd'></td></tr>";
+    coupFirst+="<tr><td id='cityName' rowspan=\'"+industryData.length+"\'>"+cityCurren.cityName+"</td><td class='industryName'>"+industryData[0].industryNames+"</td><td class='industryQd'></td></tr>"
+    if(industryData.length>1){
+        for(var i=1;i<industryData.length;i++){
+            var coupOther="<tr><td class='industryName'>"+industryData[i].industryNames+"</td><td class='industryQd'></td></tr>";
             coupFirst+=coupOther;
         }
     }
     $("#coupCityTable").append(coupFirst);
-//添加下拉框数据
-    var industrySelect="<select>"
-    industrySelect+="<option value='0'>无</option>"
-    industrySelect+="<option value='1'>"+checkQgQd.esNationName+"</option>"
+    // 添加下拉框数据
+    var industrySelect="<select class='selectQd'>"
+    industrySelect+="<option value='w_0'>无</option>"
+    industrySelect+="<option value='qg_1'>"+checkQgQd.esNationName+"</option>"
     for(var m=0;m<localQd.length;m++){
-        industrySelect+="<option value=\'"+(m+2)+"\'>"+localQd[m].esNativeName+"</option>"
+        industrySelect+="<option value=\'"+localQd[m].esNativeId+"\'>"+localQd[m].esNativeName+"</option>"
     }
     industrySelect+="</select>";
-    $(".industryQd").append(industrySelect)
+    $(".industryQd").append(industrySelect);
 }
-//批量选择
-batchSelect()
-function batchSelect() {
-    var cityDiv="";
-    for(var i=0;i<city.length;i++){
-        cityDiv+="<span><input type='checkbox' name='city' id=\'city_"+i+"\' /><label for=\'city_"+i+"\'>"+city[i]+"</label></span>"
-    }
-    $("#citySelect").append(cityDiv);
-}
-//批量选择
-$("#batchWindow").window({
+$("#citySelect").window({
     width:600,  //easyui 窗口宽度
     collapsible:false, //easyui 自带的折叠按钮
     maximizable:false,//easyui 自带的最大按钮
     minimizable:false,//easyui 自带的最小按钮
     modal:true,
     shadow:false,
-    title:'批量选择',
+    title:'选择城市',
     border:false,
     closed:true,
     cls:"cloudui"
 })
-//点击城市添加相应的行业
-var industryDiv="";
-var industryDivLeave="";
-var cityList=[]
-$("#citySelect span").click(function () {
-    var cityIndex=$(this).index();
-    if($(this).children("input").is(":checked")){
-        for(var i=0;i<industry[cityIndex].length;i++){
-            industryDiv+="<span><input type='checkbox' name='industry' id=\'industry_"+i+"\' /><label for=\'city_"+i+"\'>"+industry[cityIndex][i]+"</label></span>"
-
-        }
-        $("#industrySelect").append(industryDiv)
-    }
-    // else {
-    //     for(var i=0;i<industry[cityIndex].length;i++){
-    //         industryDivLeave+="<span><input type='checkbox' name='industry' id=\'industry_"+i+"\' /><label for=\'city_"+i+"\'>"+industry[cityIndex][i]+"</label></span>"
+//点击保存按钮保存耦合清单 全国清单 本地清单 企业 行业 等信息
+var globelCheckedCity=[],globelCheckedIndustry=[],checkQd;
+function saveAllId(){
+    $("#citySelect").window("open")
+    // for(var i=0;i<globelCityData.length;i++){
+    //     if($('input[name=cityName]').eq(i).is(":checked")){
+    //         var cityVal=$('input[name=cityName]').eq(i).val()
+    //         console.log(cityVal);
+    //         globelCheckedCity.push(cityVal)
     //     }
-    //     $("#industrySelect").remove(industryDivLeave)
     // }
-})
+    // for(var m=0;m<globelindustryData.length;m++){
+    //     if($('input[name=industryName]').eq(m).is(":checked")){
+    //         var industryVal=$('input[name=industryName]').eq(m).val()
+    //         console.log(industryVal);
+    //         globelCheckedIndustry.push(industryVal)
+    //     }
+    // }
+    // for(var n=0;n<localQd.length+2;n++){
+    //     if($('input[name=qdName]').eq(n).is(":checked")){
+    //         checkQd=$('input[name=qdName]').eq(n).val();
+    //     }
+    // }
+    // var nativesId=[];
+    // for(var l=0;l<localQd.length;l++){
+    //     nativesId.push(localQd[l].esNativeId)
+    // }
+    //
+    nativesId=[60];
+    meicCityConfig=[{"meicCityId":checkQgQd.esNationId,"regionId":'130324',"sectorName":'废弃物处理源'}]
+    ajaxPost('/NativeAndNation/doPost',{"couplingId":coupingQd.esCouplingId,"userId":userId,"method":'saveCoupling',"nationId":checkQgQd.esNationId,"nativesId":localQd.esNativeId,"CouplingCity":globelCheckedCity,"nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()],"couplingId":coupingQd.esCouplingId,"meicCityConfig":meicCityConfig}).success(function (res) {
+        if(res.status==0){
+            console.log("成功")
+        }else{
+            console.log("失败")
+        }
+    })
+    console.log("耦合")
+    console.log(coupingQd)
+    console.log("全国")
+    console.log(checkQgQd)
+    console.log("本地")
+    console.log(localQd)
+    console.log("chengsh")
+    console.log(globelCheckedCity);
+    console.log("行业")
+    console.log(globelCheckedIndustry);
+    console.log("清单")
+    console.log(checkQd);
+}
