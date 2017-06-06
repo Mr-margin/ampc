@@ -14,6 +14,12 @@ import ampc.com.gistone.database.model.TPlanMeasureWithBLOBs;
 */
 public interface TPlanMeasureMapper {
 	/**
+	 * 查询预案措施ID根据条件
+	 * @param map
+	 * @return
+	 */
+	List<Long> selectPMIDByQuery(Map map);
+	/**
 	 * 根据条件查询措施汇总的信息
 	 * @param map
 	 * @return

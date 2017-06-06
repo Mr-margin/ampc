@@ -1491,14 +1491,14 @@ public class PlanAndMeasureController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			//预案id
+			//预案措施id
 			Object param=data.get("planMeasureIds");
 			//进行参数判断
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
 				LogUtil.getLogger().error("PlanAndMeasureController 预案id为空或出现非法字符!");
 				return AmpcResult.build(1003, "预案id为空或出现非法字符!");
 			}
-			// 预案id
+			// 预案措施id
 			String planMeasureIds = param.toString();
 			// 将得到的数据拆分 放入集合中
 			String[] idss = planMeasureIds.split(",");
@@ -1513,9 +1513,11 @@ public class PlanAndMeasureController {
 			// 将java对象转换为json对象
 			JSONArray json = JSONArray.fromObject(jpList);
 			String str = json.toString();
+			System.out.println(str);
 			// 调用减排计算接口 并获取结果Json
-			String getResult = ClientUtil.doPost(configUtil.getJpURL()+"/calc/submit/subSector", str);
+			String getResult = ClientUtil.doPost(configUtil.getYunURL()+"/calc/submit/subSector", str);
 			// 并根据减排分析得到的结果进行JsonTree的解析
+			System.out.println(getResult);
 			Map mapResult=mapper.readValue(getResult, Map.class);
 			if(!mapResult.get("status").toString().equals("success")){
 				LogUtil.getLogger().error("PlanAndMeasureController   措施汇总中的减排计算接口出现异常。");
@@ -1559,6 +1561,400 @@ public class PlanAndMeasureController {
 		}
 
 	}
+	
+	/**
+	 * 措施企业数据查询
+	 * @author WangShanxi
+	 * @param request 请求
+	 * @param response 响应
+	 * @return 返回响应结果对象
+	 */
+	@RequestMapping("/select/companyInfo")
+	public AmpcResult companyInfo(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		// 添加异常捕捉
+		try {
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//用户id
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 用户id为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户id为空或出现非法字符!");
+			}
+			// 用户id
+			Long userId = Long.parseLong(param.toString());
+			
+			//bigIndex
+			param=data.get("bigIndex");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController bigIndex为空或出现非法字符!");
+				return AmpcResult.build(1003, "bigIndex为空或出现非法字符!");
+			}
+			// bigIndex
+			Long bigIndex = Long.parseLong(param.toString());
+			
+			//smallIndex
+			param=data.get("smallIndex");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController smallIndex为空或出现非法字符!");
+				return AmpcResult.build(1003, "smallIndex为空或出现非法字符!");
+			}
+			// smallIndex
+			String smallIndex = param.toString();
+			
+			//companyId 企业ID
+			param=data.get("smallIndex");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController companyId为空或出现非法字符!");
+				return AmpcResult.build(1003, "companyId为空或出现非法字符!");
+			}
+			// companyId
+			Long companyId = Long.parseLong(param.toString());
+			
+			//planId 预案ID
+			param=data.get("planId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController planId为空或出现非法字符!");
+				return AmpcResult.build(1003, "planId为空或出现非法字符!");
+			}
+			// planId预案ID
+			Long planId = Long.parseLong(param.toString());
+			//获取排放量的url
+			String url=configUtil.getYunURL()+"/search/companyQuery?userId="+userId+"&bigIndex="+bigIndex+"&smallIndex="+smallIndex+"&companyId="+companyId;
+			//调用外部接口获取结果
+			String getResult = ClientUtil.doPost(url,"");
+			//解析结果
+			Map mapResult=mapper.readValue(getResult, Map.class);
+			if(!mapResult.get("status").toString().equals("success")){
+				LogUtil.getLogger().error("PlanAndMeasureController   企业排放量外部查询异常");
+				return AmpcResult.build(1000, "企业排放量外部查询异常",-1);
+			}
+			//创建查询条件Map
+			Map queryMap=new HashMap();
+			queryMap.put("planId", planId);
+			queryMap.put("userId", planId);
+			queryMap.put("sectorName", smallIndex);
+			//查询预案措施ID
+			List<Long> planMeasureIdss = tPlanMeasureMapper.selectPMIDByQuery(queryMap);
+			// 创建一个减排的结果集合
+			List<JPResult> jpList = new ArrayList<JPResult>();
+			// 根据拆分后得到的id查询所有的预案措施对象
+			
+			
+			// 根据拆分后得到的id查询所有的预案措施对象
+			List<Map> pmList = tPlanMeasureMapper.getPmByIds(planMeasureIdss);
+			// 循环每一个预案措施对象 拼接想要的数据放入JPResult帮助类集合中
+			//定义临时变量K 用于内部循环
+			int k=0;
+			for (int i=0;i<pmList.size();i++) {
+				// 创建JPResult帮助类;
+				JPResult result = new JPResult();
+				// 将子措施转换成JsonObject对象进行解析
+				Clob clob = (Clob) pmList.get(i).get("measureContent");
+				JSONObject jsonobject = JSONObject.fromObject(clob.getSubString(1, (int) clob.length()));
+				// 设置内部值的转换类型
+				Map<String, Class> cmap = new HashMap<String, Class>();
+				cmap.put("filters", HashMap.class);
+				cmap.put("summary", HashMap.class);
+				cmap.put("table", HashMap.class);
+				cmap.put("table1", HashMap.class);
+				cmap.put("oopp", HashMap.class);
+				cmap.put("regionIds", ArrayList.class);
+				// 将json对象转换成Java对象
+				MeasureContentUtil mcu = (MeasureContentUtil) JSONObject.toBean(jsonobject, MeasureContentUtil.class, cmap);
+				//写入IP
+				result.setServerPath(configUtil.getServerPath());
+				// 写入BigIndex
+				result.setBigIndex(mcu.getBigIndex());
+				// 写入SmallIndex
+				result.setSmallIndex(mcu.getSmallIndex());
+				//写入行政区划代码
+				result.setRegionIds(mcu.getRegionIds());
+				// 写入行业名称
+				result.setGroupName(pmList.get(i).get("sectorName").toString()+"-"+i);
+				// 写入预案开始时间
+				result.setStart(pmList.get(i).get("planStartTime").toString().substring(0,pmList.get(i).get("planStartTime").toString().indexOf(".")));
+				// 写入预案结束时间
+				result.setEnd(pmList.get(i).get("planEndTime").toString().substring(0,pmList.get(i).get("planEndTime").toString().indexOf(".")));
+				// 获取Json中的Filter
+				List<Map> lms = mcu.getFilters();
+				// 获取Json中的子措施集合
+				List<Map> table1 = mcu.getTable1();
+				// 创建要减排分析中的子项
+				List<Object> opList = new ArrayList<Object>();
+				// 循环Filter 因为Filter中的项 和 子措施汇总的是相同的 所以循环一个
+				for (int j = 0; j < table1.size(); j++) {
+					Map opresult = new HashMap();
+					// 获取对应Filter中的子措施
+					Map t1map = table1.get(j);
+					lms.get(j).put("companyId",  companyId);
+					// 获取用户修改的OP
+					Map opmap = (Map) t1map.get("oopp");
+					opresult.put("filter", lms.get(j));
+					opresult.put("l4sFilter", pmList.get(i).get("l4sFilter"));
+					opresult.put("opLevel", pmList.get(i).get("level"));
+					opresult.put("opName", pmList.get(i).get("measureName")+"-"+pmList.get(i).get("planMeasureId"));
+					opresult.put("opType", pmList.get(i).get("op"));
+					//定义临时变量 用来判断op中的项是否有值 如果没有就为false 则不需要添加该条记录
+					boolean isTrue=true;
+					for (Object obj : opmap.keySet()) {
+						//判断Op中是否有值
+						if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")){
+							//更改为false  不添加循环
+							isTrue=false;
+							//有一条没用则不要了这条记录
+							break;
+						} 
+						opresult.put(obj,Double.parseDouble(opmap.get(obj).toString()));
+					}
+					//判断是否要该条记录
+					if(isTrue){
+						opList.add(opresult);
+					}
+				}
+				// 获取Json中的汇总集合
+				List<Map> table = mcu.getTable();
+				// 循环汇总中的所有数据 包括 会总管
+				for (Map map : table) {
+					String f1 = map.get("f1").toString();
+					//如果是汇总就继续下一次循环 因为汇总不是用户可已更改的
+					if (f1.equals("汇总")) continue;
+					Map opresult = new HashMap();
+					// 获取用户修改的OP
+					Map opmap = (Map) map.get("oopp");
+					//判断如果为空就不添加
+					if(opmap==null) continue;
+					// 用来定义Filter
+					Map mf = new HashMap();
+					// 判断类型
+					if (f1.equals("剩余点源")) {
+						mf.put("unitType", "P");
+						mf.put("companyId", companyId);
+						opresult.put("filter", mf);
+						opresult.put("l4sFilter", pmList.get(i).get("l4sFilter"));
+						opresult.put("opLevel", pmList.get(i).get("level"));
+						opresult.put("opName", pmList.get(i).get("measureName")+"-"+pmList.get(i).get("planMeasureId"));
+						opresult.put("opType", pmList.get(i).get("op"));
+						//定义临时变量 用来判断op中的项是否有值 如果没有就为false 则不需要添加该条记录
+						boolean isTrue=true;
+						for (Object obj : opmap.keySet()) {
+							//判断Op中是否有值
+							if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")){
+								//更改为false  不添加循环
+								isTrue=false;
+								//有一条没用则不要了这条记录
+								break;
+							} 
+							opresult.put(obj,Double.parseDouble(opmap.get(obj).toString()));
+						}
+						//判断是否要该条记录
+						if(isTrue){
+							opList.add(opresult);
+						}
+					} 
+					if (f1.equals("面源")) {
+						mf.put("unitType", "S");
+						mf.put("companyId", companyId);
+						opresult.put("filter", mf);
+						opresult.put("l4sFilter", pmList.get(i).get("l4sFilter"));
+						opresult.put("opLevel", pmList.get(i).get("level"));
+						opresult.put("opName", pmList.get(i).get("measureName")+"-"+pmList.get(i).get("planMeasureId"));
+						opresult.put("opType", pmList.get(i).get("op"));
+						//定义临时变量 用来判断op中的项是否有值 如果没有就为false 则不需要添加该条记录
+						boolean isTrue=true;
+						for (Object obj : opmap.keySet()) {
+							//判断Op中是否有值
+							if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")){
+								//更改为false  不添加循环
+								isTrue=false;
+								//有一条没用则不要了这条记录
+								break;
+							} 
+							opresult.put(obj,Double.parseDouble(opmap.get(obj).toString()));
+						}
+						//判断是否要该条记录
+						if(isTrue){
+							opList.add(opresult);
+						}
+					}
+				}
+				//k的记录加1
+				k++;
+				// 循环每一个预案措施对象 拼接想要的数据放入JPResult帮助类集合中
+				for (;k<pmList.size();k++) {
+					if(pmList.get(k).get("sectorName").toString().equals(pmList.get(i).get("sectorName").toString())){
+						// 将子措施转换成JsonObject对象进行解析
+						Clob clob1 = (Clob) pmList.get(k).get("measureContent");
+						JSONObject jsonobject1 = JSONObject.fromObject(clob1.getSubString(1, (int) clob1.length()));
+						// 将json对象转换成Java对象
+						MeasureContentUtil mcu1 = (MeasureContentUtil) JSONObject.toBean(jsonobject1, MeasureContentUtil.class, cmap);
+						// 获取Json中的Filter
+						List<Map> lms1 = mcu1.getFilters();
+						// 获取Json中的子措施集合
+						List<Map> table11 = mcu1.getTable1();
+						// 循环Filter 因为Filter中的项 和 子措施汇总的是相同的 所以循环一个
+						for (int j = 0; j < table11.size(); j++) {
+							Map opresult = new HashMap();
+							// 获取对应Filter中的子措施
+							Map t1map = table11.get(j);
+							lms1.get(j).put("companyId",  companyId);
+							// 获取用户修改的OP
+							Map opmap = (Map) t1map.get("oopp");
+							opresult.put("filter", lms1.get(j));
+							opresult.put("l4sFilter", pmList.get(k).get("l4sFilter"));
+							opresult.put("opLevel", pmList.get(k).get("level"));
+							opresult.put("opName", pmList.get(k).get("measureName")+"-"+pmList.get(k).get("planMeasureId"));
+							opresult.put("opType", pmList.get(k).get("op"));
+							//定义临时变量 用来判断op中的项是否有值 如果没有就为false 则不需要添加该条记录
+							boolean isTrue=true;
+							for (Object obj : opmap.keySet()) {
+								//判断Op中是否有值
+								if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")){
+									//更改为false  不添加循环
+									isTrue=false;
+									//有一条没用则不要了这条记录
+									break;
+								} 
+								opresult.put(obj,Double.parseDouble(opmap.get(obj).toString()));
+							}
+							//判断是否要该条记录
+							if(isTrue){
+								opList.add(opresult);
+							}
+						}
+						// 获取Json中的汇总集合
+						List<Map> table22 = mcu1.getTable();
+						// 判断汇总中是否有对点源和面源的计算
+						// 循环汇总中的所有数据 包括 会总管
+						for (Map map : table22) {
+							String f1 = map.get("f1").toString();
+							if (f1.equals("汇总")) continue;
+							Map opresult = new HashMap();
+							// 获取用户修改的OP
+							Map opmap = (Map) map.get("oopp");
+							//判断如果为空就不添加
+							if(opmap==null) continue;
+							// 用来定义Filter
+							Map mf = new HashMap();
+							// 判断类型
+							if (f1.equals("剩余点源")) {
+								mf.put("unitType", "P");
+								mf.put("companyId", companyId);
+								opresult.put("filter", mf);
+								opresult.put("l4sFilter", pmList.get(k).get("l4sFilter"));
+								opresult.put("opLevel", pmList.get(k).get("level"));
+								opresult.put("opName", pmList.get(k).get("measureName")+"-"+pmList.get(k).get("planMeasureId"));
+								opresult.put("opType", pmList.get(k).get("op"));
+								//定义临时变量 用来判断op中的项是否有值 如果没有就为false 则不需要添加该条记录
+								boolean isTrue=true;
+								for (Object obj : opmap.keySet()) {
+									//判断Op中是否有值
+									if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")){
+										//更改为false  不添加循环
+										isTrue=false;
+										//有一条没用则不要了这条记录
+										break;
+									} 
+									opresult.put(obj,Double.parseDouble(opmap.get(obj).toString()));
+								}
+								//判断是否要该条记录
+								if(isTrue){
+									opList.add(opresult);
+								}
+							} 
+							if (f1.equals("面源")) {
+								mf.put("unitType", "S");
+								mf.put("companyId", companyId);
+								opresult.put("filter", mf);
+								opresult.put("l4sFilter", pmList.get(k).get("l4sFilter"));
+								opresult.put("opLevel", pmList.get(k).get("level"));
+								opresult.put("opName", pmList.get(k).get("measureName")+"-"+pmList.get(k).get("planMeasureId"));
+								opresult.put("opType", pmList.get(k).get("op"));
+								//定义临时变量 用来判断op中的项是否有值 如果没有就为false 则不需要添加该条记录
+								boolean isTrue=true;
+								for (Object obj : opmap.keySet()) {
+									//判断Op中是否有值
+									if(opmap.get(obj)==null||opmap.get(obj).toString().equals("")){
+										//更改为false  不添加循环
+										isTrue=false;
+										//有一条没用则不要了这条记录
+										break;
+									} 
+									opresult.put(obj,Double.parseDouble(opmap.get(obj).toString()));
+								}
+								//判断是否要该条记录
+								if(isTrue){
+									opList.add(opresult);
+								}
+							}
+						}
+					}else{
+						//如果条件不满足更改第一层循环的值  因为到上面还要++所以-1
+						i=k-1;
+						break;
+					}
+					//判断是否还有数据了
+					if((k+1)==pmList.size()){
+						i=k;
+					}
+				}
+				// 放入OPS
+				result.setOps(opList);
+				jpList.add(result);
+			}
+			// 将java对象转换为json对象
+			String str = mapper.writeValueAsString(jpList);
+			// 调用减排计算接口 并获取结果Json
+			getResult = ClientUtil.doPost(configUtil.getYunURL()+"/calc/submit/subSector", str);
+			// 并根据减排分析得到的结果进行JsonTree的解析
+			mapResult=mapper.readValue(getResult, Map.class);
+			if(!mapResult.get("status").toString().equals("success")){
+				LogUtil.getLogger().error("PlanAndMeasureController   企业排放信息查询异常。");
+				return AmpcResult.build(1001, "企业排放信息查询异常",-1);
+			}else if(mapResult.get("status").toString().equals("fail")){
+				LogUtil.getLogger().error("PlanAndMeasureController   企业排放信息查询预案措施为空或没有管控设置。");
+				//-1代表计算接口出现异常
+				return AmpcResult.build(1001,"企业排放信息查询预案措施为空或没有管控设置。",-1);
+			}
+			// 讲数据转换成Map
+			Map dataMap = (Map)mapResult.get("data");
+			// 每一个对象对应一个预案措施
+//			for (Object obj : dataMap.keySet()) {
+//				Map map=(Map) dataMap.get(obj);
+//				for (Object obj1 : map.keySet()) {
+//					Map map1=(Map) map.get(obj1);
+//					//定义临时对象
+//					TPlanMeasureWithBLOBs tPlanMeasure = new TPlanMeasureWithBLOBs();
+//					//获取预案措施Id
+//					Long id = Long.parseLong(obj1.toString().split("-")[1]);
+//					tPlanMeasure.setPlanMeasureId(id);
+//					JSONObject jsonStr = JSONObject.fromObject(map1.get("reduce"));
+//					tPlanMeasure.setTableRatio(jsonStr.toString());
+//					//根据Id修改预案措施 补全减排Json列的数据
+//					int updatestatus = tPlanMeasureMapper.updateByPrimaryKeySelective(tPlanMeasure);
+//					// 判断是否成功
+//					if (updatestatus < 0) {
+//						throw new SQLException("PlanAndMeasureController  措施汇总中的减排计算失败,数据库中添加减排结果信息时失败。");
+//					}
+//			    }
+//			}
+			LogUtil.getLogger().info("PlanAndMeasureController   企业排放信息查询成功");
+			return AmpcResult.ok(getResult);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("PlanAndMeasureController   企业排放信息查询异常！",e);
+			return AmpcResult.build(1001, "PlanAndMeasureController   企业排放信息查询异常！");
+		}
+
+	}
+	
+	
 	
 	/**
 	 * 区域数据的减排计算
@@ -1629,7 +2025,7 @@ public class PlanAndMeasureController {
 			JSONArray json = JSONArray.fromObject(jpList);
 			String str = json.toString();
 			// 调用减排计算接口 并获取结果Json
-			String AreaJPURL=configUtil.getJpURL()+"/calc/submit/analysis?jobId="+scenarinoId;
+			String AreaJPURL=configUtil.getYunURL()+"/calc/submit/analysis?jobId="+scenarinoId;
 			String getResult = ClientUtil.doPost(AreaJPURL, str);
 			// 并根据减排分析得到的结果进行Json的解析
 			Map map=mapper.readValue(getResult, Map.class);
@@ -1690,7 +2086,7 @@ public class PlanAndMeasureController {
 			//情景id
 			Long scenarinoId = Long.parseLong(param.toString());
 			// 调用减排计算状态接口 并获取结果Json
-			String getResult = ClientUtil.doPost(configUtil.getJpURL()+"/calc/status?jobId="+scenarinoId,"");
+			String getResult = ClientUtil.doPost(configUtil.getYunURL()+"/calc/status?jobId="+scenarinoId,"");
 			// 并根据减排分析得到的结果进行JsonTree的解析
 			Map mapResult=mapper.readValue(getResult, Map.class);
 			Map resultMap=new HashMap();
@@ -1770,7 +2166,7 @@ public class PlanAndMeasureController {
 				JSONArray json = JSONArray.fromObject(jpList);
 				String str = json.toString();
 				// 调用减排计算接口 并获取结果Json
-				String AreaJPURL=configUtil.getJpURL()+scenarinoId;
+				String AreaJPURL=configUtil.getYunURL()+scenarinoId;
 				getResult = ClientUtil.doPost(AreaJPURL, str);
 				// 并根据减排分析得到的结果进行JsonTree的解析
 				Map map=mapper.readValue(getResult, Map.class);
