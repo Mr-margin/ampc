@@ -172,9 +172,7 @@ var msg = {
         checkOnSelect: false,
         fitColumns: true,
         rowStyler:function(obj){
-        	console.log(typeof obj.expend4!='undefined');
         	if(typeof obj=='object'&&typeof obj.expand4!='undefined'){
-        		console.log(1);
         		return {class:'haserror'};
         	}
         },
@@ -231,6 +229,12 @@ var msg = {
             msg.content.esCodeRange = row.esCodeRange.split(',');
         }
     });
+    //将页面进行重新resize
+    $("#rwgltableboxpanel").panel({
+    	onResize:function(){
+    		$('#rwgltable').treegrid('resize')
+    	}
+    })
     //获取清单数据
     getQD();
     /*$.ajax({
@@ -1379,8 +1383,7 @@ function subStartUp() {
 	    missionId: msg.content.rwId,
 	    missionType: msg.content.rwType,
 	    scenarinoType: msg.content.SCEN_TYPE,
-	    cores: $('input[name=cpuNum]:checked').val(),
-	    bigIndex:selectRW.esCouplingId
+	    cores: $('input[name=cpuNum]:checked').val()
 	  }).success(function (res) {
 	    if (res.status == 0) {
 	    	$('#rwgltable').treegrid({
@@ -1391,7 +1394,7 @@ function subStartUp() {
         			"missionStatus": '',
         			"sort": '',
         			"userId": userId,
-        			
+        			"bigIndex":selectRW.esCouplingId
         		}	
         	})
 	      $('#startUp').window('close');
