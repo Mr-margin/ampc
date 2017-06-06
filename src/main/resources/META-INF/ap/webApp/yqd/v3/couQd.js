@@ -568,7 +568,7 @@ function saveAllId(){ //选好清单以后进行保存
                                                 "CouplingCity":globelCheckedCity, //耦合涉及的城市
                                                 "nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId,//第二步模板ID
                                                 "couplingId":coupingQd.esCouplingId,//耦合清单的ID
-                                                "meicCityConfig":meicCityConfig,}).success(function (res) {
+                                                "meicCityConfig":JSON.stringify(meicCityConfig),}).success(function (res) {
             if(res.status==0){
                 console.log("成功")
             }else{
