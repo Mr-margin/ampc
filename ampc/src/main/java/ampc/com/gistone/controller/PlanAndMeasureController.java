@@ -1503,24 +1503,55 @@ public class PlanAndMeasureController {
 			}
 			// 预案措施id
 			String planMeasureIds = param.toString();
+			//获取用户ID
+			param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			Long userId = Long.parseLong(param.toString());
+			//获取bigIndex
+			param=data.get("bigIndex");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController bigIndex为空或出现非法字符!");
+				return AmpcResult.build(1003, "bigIndex为空或出现非法字符!");
+			}
+			// bigIndexid
+			Long bigIndex = Long.parseLong(param.toString());
 			// 将得到的数据拆分 放入集合中
 			String[] idss = planMeasureIds.split(",");
 			List<Long> planMeasureIdss = new ArrayList<Long>();
 			for (int i = 0; i < idss.length; i++) {
 				planMeasureIdss.add(Long.parseLong(idss[i]));
 			}
+			//查询行业版本
+			Map qmap=new HashMap();
+			qmap.put("userId", userId);
+			qmap.put("esCouplingId", bigIndex);
+			Long templateId=tEsCouplingMapper.selectTIdByCId(qmap);
+			//查询行业版本
+			TSectorExcel tSectorExcel=new TSectorExcel();
+			tSectorExcel.setUserId(userId);
+			tSectorExcel.setDetailedListId(templateId);
+			String version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
+			if(version.equals("")||version==null){
+				 tSectorExcel=new TSectorExcel();
+				 tSectorExcel.setDetailedListId(templateId);
+				 version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
+			}
 			// 创建一个减排的结果集合
 			List<JPResult> jpList = new ArrayList<JPResult>();
 			// 根据拆分后得到的id查询所有的预案措施对象
-			tempCalc(planMeasureIdss,jpList);
+			tempCalc(planMeasureIdss,jpList,version);
 			// 将java对象转换为json对象
 			JSONArray json = JSONArray.fromObject(jpList);
 			String str = json.toString();
-			System.out.println(str);
 			// 调用减排计算接口 并获取结果Json
 			String getResult = ClientUtil.doPost(configUtil.getYunURL()+"/calc/submit/subSector", str);
 			// 并根据减排分析得到的结果进行JsonTree的解析
-			System.out.println(getResult);
 			Map mapResult=mapper.readValue(getResult, Map.class);
 			if(!mapResult.get("status").toString().equals("success")){
 				LogUtil.getLogger().error("PlanAndMeasureController   措施汇总中的减排计算接口出现异常。");
@@ -1629,6 +1660,21 @@ public class PlanAndMeasureController {
 			}
 			// planId预案ID
 			Long planId = Long.parseLong(param.toString());
+			//查询行业版本
+			Map qmap=new HashMap();
+			qmap.put("userId", userId);
+			qmap.put("esCouplingId", bigIndex);
+			Long templateId=tEsCouplingMapper.selectTIdByCId(qmap);
+			//查询行业版本
+			TSectorExcel tSectorExcel=new TSectorExcel();
+			tSectorExcel.setUserId(userId);
+			tSectorExcel.setDetailedListId(templateId);
+			String version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
+			if(version.equals("")||version==null){
+				 tSectorExcel=new TSectorExcel();
+				 tSectorExcel.setDetailedListId(templateId);
+				 version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
+			}
 			//获取排放量的url
 			String url=configUtil.getYunURL()+"/search/companyQuery?userId="+userId+"&bigIndex="+bigIndex+"&smallIndex="+smallIndex+"&companyId="+companyId;
 			//调用外部接口获取结果
@@ -1674,6 +1720,8 @@ public class PlanAndMeasureController {
 				MeasureContentUtil mcu = (MeasureContentUtil) JSONObject.toBean(jsonobject, MeasureContentUtil.class, cmap);
 				//写入IP
 				result.setServerPath(configUtil.getServerPath());
+				//写入行业版本
+				result.setL4sCategory(version);
 				// 写入BigIndex
 				result.setBigIndex(mcu.getBigIndex());
 				// 写入SmallIndex
@@ -1993,7 +2041,15 @@ public class PlanAndMeasureController {
 			}
 			//情景id
 			Long scenarinoId = Long.parseLong(param.toString());
-			
+			//获取bigIndex
+			param=data.get("bigIndex");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController bigIndex为空或出现非法字符!");
+				return AmpcResult.build(1003, "bigIndex为空或出现非法字符!");
+			}
+			// bigIndexid
+			Long bigIndex = Long.parseLong(param.toString());
 			//值键对
 			param=data.get("areaAndPlanIds");
 			//进行参数判断
@@ -2005,6 +2061,21 @@ public class PlanAndMeasureController {
 			//定义条件Map
 			Map mapQuery=new HashMap();
 			mapQuery.put("userId", userId);
+			//查询行业版本
+			Map qmap=new HashMap();
+			qmap.put("userId", userId);
+			qmap.put("esCouplingId", bigIndex);
+			Long templateId=tEsCouplingMapper.selectTIdByCId(qmap);
+			//查询行业版本
+			TSectorExcel tSectorExcel=new TSectorExcel();
+			tSectorExcel.setUserId(userId);
+			tSectorExcel.setDetailedListId(templateId);
+			String version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
+			if(version.equals("")||version==null){
+				 tSectorExcel=new TSectorExcel();
+				 tSectorExcel.setDetailedListId(templateId);
+				 version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
+			}
 			// 创建一个减排的结果集合
 			List<JPResult> jpList = new ArrayList<JPResult>();
 			//循环获取到的区域ID key   预案Id value
@@ -2020,7 +2091,7 @@ public class PlanAndMeasureController {
 					List<Long> pmIds=tPlanMeasureMapper.selectIdByMap(mapQuery);
 					//如果该预案下包含措施 则需要调用减排计算的接口
 					if(pmIds!=null&&pmIds.size()>0){
-						tempCalc(pmIds,jpList);
+						tempCalc(pmIds,jpList,version);
 					}
 				}
 			}
@@ -2120,8 +2191,32 @@ public class PlanAndMeasureController {
 				}
 				// 用户id
 				Long userId = Long.parseLong(param.toString());
+				//获取bigIndex
+				param=data.get("bigIndex");
+				//进行参数判断
+				if(!RegUtil.CheckParameter(param, "Long", null, false)){
+					LogUtil.getLogger().error("PlanAndMeasureController bigIndex为空或出现非法字符!");
+					return AmpcResult.build(1003, "bigIndex为空或出现非法字符!");
+				}
+				// bigIndexid
+				Long bigIndex = Long.parseLong(param.toString());
 				//值键对
 				Object object=data.get("areaAndPlanIds");
+				//查询行业版本
+				Map qmap=new HashMap();
+				qmap.put("userId", userId);
+				qmap.put("esCouplingId", bigIndex);
+				Long templateId=tEsCouplingMapper.selectTIdByCId(qmap);
+				//查询行业版本
+				TSectorExcel tSectorExcel=new TSectorExcel();
+				tSectorExcel.setUserId(userId);
+				tSectorExcel.setDetailedListId(templateId);
+				String version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
+				if(version.equals("")||version==null){
+					 tSectorExcel=new TSectorExcel();
+					 tSectorExcel.setDetailedListId(templateId);
+					 version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
+				}
 				// 创建一个减排的结果集合
 				List<JPResult> jpList = new ArrayList<JPResult>();
 				if(object.toString().equals("")){
@@ -2138,7 +2233,7 @@ public class PlanAndMeasureController {
 							List<Long> pmIds=tPlanMeasureMapper.selectIdByMap(map);
 							//如果该预案下包含措施 则需要调用减排计算的接口
 							if(pmIds!=null&&pmIds.size()>0){
-								tempCalc(pmIds,jpList);
+								tempCalc(pmIds,jpList,version);
 							}
 						}
 					}
@@ -2160,7 +2255,7 @@ public class PlanAndMeasureController {
 							List<Long> pmIds=tPlanMeasureMapper.selectIdByMap(mapQuery);
 							//如果该预案下包含措施 则需要调用减排计算的接口
 							if(pmIds!=null&&pmIds.size()>0){
-								tempCalc(pmIds,jpList);
+								tempCalc(pmIds,jpList,version);
 							}
 						}
 					}
@@ -2211,7 +2306,7 @@ public class PlanAndMeasureController {
 	 * @param jpList 结果集合
 	 * @throws UnknownHostException 
 	 */
-	public void tempCalc(List<Long> pmIds ,List<JPResult> jpList) throws SQLException, UnknownHostException{
+	public void tempCalc(List<Long> pmIds ,List<JPResult> jpList,String version) throws SQLException, UnknownHostException{
 		// 根据拆分后得到的id查询所有的预案措施对象
 		List<Map> pmList = tPlanMeasureMapper.getPmByIds(pmIds);
 		// 循环每一个预案措施对象 拼接想要的数据放入JPResult帮助类集合中
@@ -2235,6 +2330,8 @@ public class PlanAndMeasureController {
 			MeasureContentUtil mcu = (MeasureContentUtil) JSONObject.toBean(jsonobject, MeasureContentUtil.class, cmap);
 			//写入IP
 			result.setServerPath(configUtil.getServerPath());
+			//写入行业版本
+			result.setL4sCategory(version);
 			// 写入BigIndex
 			result.setBigIndex(mcu.getBigIndex());
 			// 写入SmallIndex
@@ -2499,6 +2596,7 @@ public class PlanAndMeasureController {
 	public String JPUtil(Long scenarinoId,Long userId,String startDate,String endDate,Long bigIndex){
 		// 添加异常捕捉
 		try {
+			//查询行业版本
 			Map qmap=new HashMap();
 			qmap.put("userId", userId);
 			qmap.put("esCouplingId", bigIndex);
