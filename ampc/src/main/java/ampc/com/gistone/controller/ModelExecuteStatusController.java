@@ -403,21 +403,24 @@ public class ModelExecuteStatusController {
 	 * @param scenarinoType
 	 * @return   
 	 * String []  
+	 * @throws UnsupportedEncodingException 
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年6月5日 下午1:55:04
 	 */
-	private String[] getmoduleType(Integer scenarinoType) {
+	private String[] getmoduleType(Integer scenarinoType)  {
 		String[] split = null;
 		switch (scenarinoType) {
 		case 1:
 		case 2:	
-			String tasksArray2 = configUtil.getTasksArray2();
+			String tasksArray2="人为源排放,CMAQ,排放后处理,化学后处理";
+//			String tasksArray2 = configUtil.getTasksArray2();
 			split = tasksArray2.split(",");
 			break;
 		case 3:
 		case 4:	
-			String tasksArray1 = configUtil.getTasksArray1();
+			String tasksArray1="气象模拟,气象格式转换,气象后处理,天然源排放,人为源排放,CMAQ,排放后处理,化学后处理";
+//			String tasksArray1 = configUtil.getTasksArray1();
 			split = tasksArray1.split(",");
 			break;
 		default:
