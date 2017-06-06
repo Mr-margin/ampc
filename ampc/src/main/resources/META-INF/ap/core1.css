@@ -1162,6 +1162,10 @@ dl, dd {
   border-width: 1px 1px 1px 1px;
   border-color: #EAF8FF;
 }
+/* 错误任务行的效果，先取消，勿删 */
+/* #rwgltablebox .datagrid-body>.datagrid-btable>tbody>tr.datagrid-row.haserror{
+	background:#FFCC99
+} */
 #rwgltablebox .datagrid-body>.datagrid-btable>tbody>tr.treegrid-tr-tree>td{
   padding-bottom: 15px;
 }
@@ -1175,6 +1179,10 @@ dl, dd {
 #rwgltablebox .rwdetail{
   color: #DAEEF5;
 }
+/* 错误任务行的效果，先取消，勿删 */
+/* #rwgltablebox .haserror .rwdetail{
+	color:#FFCC99
+} */
 #rwgltablebox .datagrid-row-clicked .rwdetail{
   color: white;
 }

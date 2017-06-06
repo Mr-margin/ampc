@@ -146,8 +146,8 @@ var msg = {
         checkOnSelect: false,
         fitColumns: true,
         rowStyler:function(obj){
-        	console.log(obj);
-        	if(typeof obj=='object'&&obj.missionErrorCount>0){
+        	console.log(typeof obj.expend4!='undefined');
+        	if(typeof obj=='object'&&typeof obj.expand4!='undefined'){
         		console.log(1);
         		return {class:'haserror'};
         	}
@@ -1502,13 +1502,42 @@ function getQD() {
 function showErrorMission(){
 	//运行出错的查看需要更换treegrid接口
 	var url='new_mission/get_errormission_list';
-	$('#rwgltable').treegrid({
-		url:url,
-		ueryParams:{
-        	"page":1,
-        	"rows":10,
-            "sort": '',
-            "userId": userId
-        }
-	});
+	//存储正常查看treegrid的接口
+	var url1='new_mission/get_mission_list';
+	//判断是否点击过
+	if($("#showErrorBtn").hasClass('active')){
+		//判断为已经查看了错误的情景，此时需要返回正常查看
+		$('#rwgltable').treegrid({
+			url:url1,
+			queryParams:{
+	        	"page":1,
+	        	"rows":10,
+	        	"queryName": '',
+	            "missionStatus": '',
+	            "sort": '',
+	            "userId": userId
+	        }
+		});
+		//将按钮内容修改为查看全部
+		$("#showErrorBtn .l-btn-text").html('<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> 执行错误 (<span id="showErrorBtnNum">0</span>)');
+		$("#showErrorBtn").removeClass('active');
+		$('#selectTypeBtn').menubutton('enable');
+		$('#searchqd').searchbox('enable');
+		
+	}else{
+		$("#showErrorBtn .l-btn-text").html('<i class="fa fa-eye" aria-hidden="true"></i> 查看全部');
+		$('#rwgltable').treegrid({
+			url:url,
+			queryParams:{
+	        	"page":1,
+	        	"rows":10,
+	            "sort": '',
+	            "userId": userId
+	        }
+		});		
+		$("#showErrorBtn").addClass('active');
+		$('#selectTypeBtn').menubutton('disable');
+		$('#searchqd').searchbox('disable');
+	}
+	
 }
