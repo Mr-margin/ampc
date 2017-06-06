@@ -26,11 +26,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class ConfigUtil {
 	// 减排Url
-	@Value("${jpURL}")
-	private String jpURL;
+	@Value("${yunURL}")
+	private String yunURL;
 	
-	public String getJpURL() {
-		return jpURL;
+	
+
+	public String getYunURL() {
+		return yunURL;
 	}
 
 	// 措施的减排分析Url
@@ -63,12 +65,7 @@ public class ConfigUtil {
 	@Value("${sendmessage.log}")
 	private String sendMessageLog;
 	
-	@Value("${exqd}")
-	private String exqd;
 
-	public String getExqd() {
-		return exqd;
-	}
 	//微信路径url
 	@Value("${weixin.serverURL}")
 	private String weixinServerURL;

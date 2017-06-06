@@ -111,6 +111,21 @@
      			  </if>
   </select>
   
+   <!-- 根据条件查询措施id信息 -->
+   <select id="selectPMIDByQuery" resultType="java.lang.Long" parameterType="hashMap" >
+		SELECT PLAN_MEASURE_ID
+			FROM T_PLAN_MEASURE 
+				WHERE  IS_EFFECTIVE='1' 
+				 <if test="planId != null" >
+        				AND PLAN_ID=#{planId,jdbcType=OTHER}
+     			 </if>
+				  <if test="userId != null" >
+        				AND USER_ID=#{userId,jdbcType=OTHER}
+     			 </if>
+				  <if test="sectorName != null" >
+       					 AND SECTOR_NAME=#{sectorName,jdbcType=OTHER}
+     			  </if>
+  </select>
   <!-- 根据条件查询措施id信息 -->
    <select id="selectIdByMap" resultType="java.lang.Long" parameterType="hashMap" >
 		SELECT PLAN_MEASURE_ID
