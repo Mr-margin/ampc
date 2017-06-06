@@ -529,14 +529,14 @@ function saveAllId(){ //选好清单以后进行保存
         if($(".selectQd").eq(i).val()!="w_0"){
             if($(".selectQd").eq(i).val()=="qg_1"){//选择了全国清单
                 globelCheckedQd.push({
-                    "meicCityId":checkQgQd.esNationId,
-                    "regionId":cityCurren.cityId,
+                    "meicCityId":JSON.stringify(checkQgQd.esNationId),
+                    "regionId":(cityCurren.cityId).substring(0,4) ,
                     "sectorName":industryData[i].industryNames
                 })
             }else{//选择的本地清单
                 globelCheckedQd.push({
-                    "meicCityId":parseInt($(".selectQd").eq(i).val()),
-                    "regionId":cityCurren.cityId,
+                    "meicCityId":$(".selectQd").eq(i).val(),
+                    "regionId":(cityCurren.cityId).substring(0,4),
                     "sectorName":industryData[i].industryNames
                 })
             }

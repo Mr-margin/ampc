@@ -1680,6 +1680,7 @@ dl, dd {
 }
 /*//批量选择*/
 #citySelect #cityOption{overflow: hidden;padding: 20px;}
+#citySelect #cityOption #industryDataTable{width: 100%;}
 #citySelect #cityOption span{float: left;margin-right:30px!important;margin-bottom: 10px;}
 #citySelect #cityOption span *{float: left;}
 /*预案编辑的样式*/
