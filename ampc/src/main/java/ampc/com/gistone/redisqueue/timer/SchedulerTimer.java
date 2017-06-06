@@ -39,10 +39,13 @@ import java.util.Map;
 
 
 
-import net.sf.json.JSONObject;
 
-import org.apache.ibatis.annotations.Select;
-import org.apache.log4j.Logger;
+
+
+
+
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -56,11 +59,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ampc.com.gistone.database.inter.TDomainMissionMapper;
 import ampc.com.gistone.database.inter.TGlobalSettingMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
-import ampc.com.gistone.database.inter.TScenarinoAreaMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.inter.TUngribMapper;
-import ampc.com.gistone.database.model.TDomainMissionWithBLOBs;
 import ampc.com.gistone.database.model.TGlobalSetting;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
@@ -68,13 +69,10 @@ import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.database.model.TUngrib;
 import ampc.com.gistone.redisqueue.ReadyData;
 import ampc.com.gistone.redisqueue.ToDataUngribUtil;
-import ampc.com.gistone.redisqueue.entity.DomainParams;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.DateUtil;
-import ampc.com.gistone.util.JsonUtil;
 import ampc.com.gistone.util.LogUtil;
-import ampc.com.gistone.util.RegUtil;
 
 /**  
  * @Title: RealForecastTimer.java
@@ -361,6 +359,8 @@ public class SchedulerTimer<V> {
 				} catch (Exception e) {
 					LogUtil.getLogger().error("系统错误！同一天的实时预报存在多条数据！");
 				}
+				
+				
 				//调用方法获取meiccityconfig
 				String emisParamesURL = configUtil.getYunURL()+"/summary/info";
 				String getResult=ClientUtil.doPost(emisParamesURL,scenarinoId.toString());
@@ -373,11 +373,10 @@ public class SchedulerTimer<V> {
 						Map map = (Map) mapResult.get("data");
 						String controlfile = map.get("controlfile").toString();
 						String meiccityconfig = map.get("meiccityconfig").toString();
-//						int flag = 1;//表示不需要减排系数
-//						Map<String, String> emis = getEmisData(esCouplingId,scenarinoId,flag);
 						TTasksStatus tTasksStatus2 = new TTasksStatus();
 						tTasksStatus2.setTasksScenarinoId(scenarinoId);
 						tTasksStatus2.setSourceid(esCouplingId.toString());
+						
 						//设置calctype是系统设置 目前定义为server
 						tTasksStatus2.setCalctype("server");
 						tTasksStatus2.setPsal("");
@@ -391,7 +390,7 @@ public class SchedulerTimer<V> {
 						//添加该情景到tasksstatus表
 						i = tTasksStatusMapper.updateEmisData(tTasksStatus2);
 						if (i>0) {
-							LogUtil.getLogger().info("添加预报emisData到tasks表成功！");
+							LogUtil.getLogger().info("SchedulerTimer 添加预报emisData到tasks表成功！");
 						}else {
 							throw new SQLException("SchedulerTimer  添加预报emisData到tasks表失败!");
 						}
@@ -429,6 +428,7 @@ public class SchedulerTimer<V> {
 			LogUtil.getLogger().info("定时器空执行！");
 		}
 	}
+	
 	/**
 	 * 
 	 * @Description: 发送实时预报的定时器
@@ -512,35 +512,87 @@ public class SchedulerTimer<V> {
 	}
 	
 	/**
-	 * @Description: 检查该情景的运行状态
-	 
-	 * @param scen_detail   
-	 * void  
+	 * 
+	 * @Description: 发送实时预报的定时器
+	 * 1.由ungrib的成与否
+	 * 2.基础情景是否满足
+	 * 来触发当天的数据 每天十点之后 没隔十分钟触发一次 
+	 * 
 	 * @throws
 	 * @author yanglei
-	 * @date 2017年4月20日 上午11:02:42
+	 * @date 2017年4月21日 下午7:39:01
 	 */
-	public void chackRunningStatus(TScenarinoDetail scen_detail) {
-		Long scenarinoId = scen_detail.getScenarinoId();
-		TTasksStatus tTasksStatus = tTasksStatusMapper.selectendByscenarinoId(scenarinoId);
-		String errorStatus = tTasksStatus.getModelErrorStatus();
-		if (null!=errorStatus) {
-			//出错了的情况
-			Date tasksEndDate = DateUtil.DateToDate(tTasksStatus.getTasksEndDate(), "yyyyMMdd");
-			Date scenarinoStartDate = DateUtil.DateToDate(tTasksStatus.getTasksScenarinoStartDate(), "yyyyMMdd");
-			String goingtime = tTasksStatus.getBeizhu2();
-			Long userId = scen_detail.getUserId();
-			Calendar cal = Calendar.getInstance();
-			long day = (tasksEndDate.getTime()-scenarinoStartDate.getTime())/(24*60*60*1000);
-			if (day==0) {
-				//表示fnl出错  需要重新启动模式
-				//readyData.readyRealMessageDataFirst(scenarinoId,null,userId);
-				
+//	@Scheduled(fixedRate = 5000)
+//	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
+//	@Scheduled(cron="0 30 10 * * ?")
+	/*public void  sendMessageOnRealprediction() {
+		boolean runningSetting = configUtil.isRunningSetting();
+		LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:runningSetting:"+runningSetting);
+		if (runningSetting) {
+			LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:开始检测ungrib的数据");
+			 try {
+				//获取最新的ungrib 
+				 TUngrib tUngrib = tUngribMapper.getlastungrib();
+					if (null==tUngrib) {
+						LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:没有ungrib数据,系统第一次启动预报！");
+					}else {
+						//最新的pathdate（年月日）
+						Date pathdate = tUngrib.getPathDate();
+						 //当天时间
+						Date pathdatetoday = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+						int length = toDataUngribUtil.UpdateORNo(tUngrib);
+						//查找当天所有的用户的实时预报的状态
+						Map map = new HashMap();
+						String scenType = "4";
+						map.put("pathDate", pathdatetoday);
+						map.put("scenType", scenType);
+						List<TScenarinoDetail>  list = tScenarinoDetailMapper.selectAllByPathdateAndtype(map);
+						for (TScenarinoDetail tScenarinoDetail : list) {
+							//检查排放数据参数是否存在
+							TTasksStatus selectEmisDataByScenId = tTasksStatusMapper.selectEmisDataByScenId(tScenarinoDetail.getScenarinoId());
+							if (0==(selectEmisDataByScenId.getTasksExpand1())) {
+								Long userId = tScenarinoDetail.getUserId();
+								Long rangeDay = tScenarinoDetail.getRangeDay();
+								LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:rangeDay的长度是："+rangeDay);
+								if (length>=2) {
+									//查找中断的预报时间
+									Date lastpathdate = tScenarinoDetailMapper.getlastrunstatus(userId);
+									//如果基础情景不满足 则续跑该基础情景
+									String lastungrib = readyData.pivot(userId, lastpathdate, pathdate);
+									if (null!=lastungrib) {
+										readyData.readyRealMessageDataFirst(tScenarinoDetail, lastungrib);
+										//修改状态为执行中
+										boolean updateScenStatusUtil = readyData.updateScenStatusUtil(6l, tScenarinoDetail.getScenarinoId());
+										if (updateScenStatusUtil) {
+											LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:修改预报情景状态成功！");
+										}else {
+											LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:修改预报情景状态失败！");
+										}
+									}else {
+										LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:lastungrib对应的实时预报已经发送过了或者当天的ungrib还未更新！");
+									}
+								}else {
+									LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:ungrib条件为满足！");
+								}
+							}else {
+								//重新请求一次emis排放数据
+								boolean emisParams = readyData.getEmisParams(tScenarinoDetail.getScenarinoId());
+								if (emisParams) {
+									LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:重新请求实时预报的emisdata参数成功！");
+								}else {
+									LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:重新请求实时预报的emisdata参数失败！");
+								}
+							}	
+						}
+					}	
+			} catch (Exception e) {
+				LogUtil.getLogger().error("定时器 sendMessageOnRealprediction 出错！",e);
 			}
-			
+		}else {
+			LogUtil.getLogger().info("sendMessageOnRealprediction:定时器空运行！");
 		}
 	}
-
+	*/
 
 	
 	/**
@@ -649,56 +701,7 @@ public class SchedulerTimer<V> {
 	
 
 
-	/**
-	 * 
-	 * @Description: 
-	 * void  
-	 * @throws
-	 * @author yanglei
-	 * @date 2017年4月8日 上午10:19:16
-	 */
-//	@Scheduled(fixedRate = 5000)
-//	@Scheduled(cron="0 48 17 * * ?")
-	public void  test1() {
-		/*String url="http://192.168.1.10:8082/ampc/saveEmis";
-		HashMap<String,String> hashMap = new HashMap<String, String>();
-		hashMap.put("sourceid", "sourceid");
-		hashMap.put("psal", "psal-----");
-		hashMap.put("meiccityconfig", "meiccityconfig-----");
-		hashMap.put("scenarioid", "10000");
-		hashMap.put("calctype", "10000");
-		hashMap.put("ssal", "10000---");
-		JSONObject jsonObject = JSONObject.fromObject(hashMap);
-		String getResult=ClientUtil.doPost(url,jsonObject.toString());
-		System.out.println(getResult);*/
-		/*System.out.println("aaaaaaaa--------");
-//		TTasksStatus tasksStatus = tTasksStatusMapper.selectEmisDataByScenId(642l);
-		TTasksStatus selectStatus = tTasksStatusMapper.selectStatus(730l);
-		System.out.println(selectStatus);*/
-//		if (null==tasksStatus) {
-//			LogUtil.getLogger().info("没有收到减排系数");
-//		}else {
-//			System.out.println("123------");
-//		}
-//		Date lastpathdate = tScenarinoDetailMapper.getlastrunstatus(1l);
-//		System.out.println(lastpathdate.toString());
-//		TTasksStatus tasksStatus = tTasksStatusMapper.selectEmisDataByScenId(755l);
-//		System.out.println(tasksStatus.getTasksExpand3()+"-----------------");
-//		 String jpParams = readyData.JPParams(753l,1l);
-		
-		/*DomainParams domainParams=null;
-		Long domainId = 4l;
-		TDomainMissionWithBLOBs selectByPrimaryKey=null;
-		try {
-			selectByPrimaryKey = tDomainMissionMapper.selectByPrimaryKey(domainId);
-			String domainInfo = selectByPrimaryKey.getDomainInfo();
-			domainParams = JsonUtil.jsonToObj(domainInfo, DomainParams.class);
-		} catch (Exception e) {
-			LogUtil.getLogger().error("CreateDomainJsonData--getDomainDataCommon：查询domain数据出错！",e);
-		}*/
-		
-		
-	}
+	
 	/**
 	 * 
 	 * @Description:  发送实时预报gfs的定时器
@@ -707,7 +710,9 @@ public class SchedulerTimer<V> {
 	 * @author yanglei
 	 * @date 2017年6月1日 上午11:45:39
 	 */
-	
+//	@Scheduled(fixedRate = 5000)
+//	@Scheduled(cron="0 0/8 * * * ?")   //隔8分钟定时检查一次实时预报的gfs发送情况---服务器配置
+//	@Scheduled(cron="0 30 10 * * ?")
 	public void sendGFSMessageONRealPrediction() {
 		boolean runningSetting = configUtil.isRunningSetting();
 		LogUtil.getLogger().info("定时器 sendGFSMessageONRealPrediction:runningSetting:"+runningSetting);
@@ -723,54 +728,56 @@ public class SchedulerTimer<V> {
 						Date pathdate = tUngrib.getPathDate();
 						 //当天时间
 						Date pathdatetoday = DateUtil.DateToDate(new Date(), "yyyyMMdd");
-						int length = toDataUngribUtil.UpdateORNo(tUngrib);
-						//查找当天所有的用户的实时预报的状态
-						Map map = new HashMap();
-						String scenType = "4";
-						map.put("pathDate", pathdatetoday);
-						map.put("scenType", scenType);
-						List<TScenarinoDetail>  list = tScenarinoDetailMapper.selectAllByPathdateAndtype(map);
-						for (TScenarinoDetail tScenarinoDetail : list) {
-							//检查排放数据参数是否存在
-							TTasksStatus selectEmisDataByScenId = tTasksStatusMapper.selectEmisDataByScenId(tScenarinoDetail.getScenarinoId());
-							if (0==(selectEmisDataByScenId.getTasksExpand1())) {
-								Long userId = tScenarinoDetail.getUserId();
-								Long rangeDay = tScenarinoDetail.getRangeDay();
-								LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:rangeDay的长度是："+rangeDay);
-								if (length>=rangeDay) {
-									//查找中断的预报时间
-									Date lastpathdate = tScenarinoDetailMapper.getlastrunstatus(userId);
-									//如果基础情景不满足 则续跑该基础情景
-									String lastungrib = readyData.pivot(userId, lastpathdate, pathdate);
-									if (null!=lastungrib) {
-										readyData.readyRealMessageDataFirst(tScenarinoDetail, lastungrib);
-										//修改状态为执行中
-										boolean updateScenStatusUtil = readyData.updateScenStatusUtil(6l, tScenarinoDetail.getScenarinoId());
-										if (updateScenStatusUtil) {
-											LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:修改预报情景状态成功！");
-										}else {
-											LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:修改预报情景状态失败！");
+						int compareTo = pathdate.compareTo(pathdatetoday);
+						if (compareTo==0) {
+							int length = toDataUngribUtil.UpdateORNo(tUngrib);
+							//查找当天所有的用户正在执行的的实时预报
+							Map map = new HashMap();
+							String scenType = "4";
+							map.put("pathDate", pathdatetoday);
+							map.put("scenType", scenType);
+							List<TScenarinoDetail>  list = tScenarinoDetailMapper.selectAllOnExecByPathdateAndtype(map);
+							for (TScenarinoDetail tScenarinoDetail : list) {
+								//查询情景对应的执行状态
+								TTasksStatus selectStatus = tTasksStatusMapper.selectStatus(tScenarinoDetail.getScenarinoId());
+								String beizhu2 = selectStatus.getBeizhu2();
+								Long stepindex = selectStatus.getStepindex();
+								String modelErrorStatus = selectStatus.getModelErrorStatus();
+								Date tasksEndDate =  DateUtil.DateToDate(selectStatus.getTasksEndDate(), "yyyyMMdd");
+								if (null!=modelErrorStatus&&!"".equals(modelErrorStatus)) {
+									if (null!=beizhu2&&!"".equals(beizhu2)) {
+										Date fnlDate = DateUtil.StrtoDateYMD(beizhu2, "yyyyMMdd");
+										Date scenarinoStartDate = DateUtil.DateToDate(tScenarinoDetail.getScenarinoStartDate(), "yyyyMMdd");
+										int compareTo1 = fnlDate.compareTo(scenarinoStartDate);
+										if (compareTo1==0) {
+											if (stepindex==8) {
+												int compareTo2 = tasksEndDate.compareTo(scenarinoStartDate);
+												if (compareTo2==0) {
+													Long rangeDay = tScenarinoDetail.getRangeDay();
+													if (length>=rangeDay) {
+														//开始发送gfs的消息
+										    			boolean sendqueueRealDataThen = readyData.sendqueueRealDataThen(tasksEndDate,tScenarinoDetail.getScenarinoId());
+										    			if (sendqueueRealDataThen) {
+															LogUtil.getLogger().info("sendGFSMessageONRealPrediction：发送gfs消息成功！");
+														}else {
+															LogUtil.getLogger().info("sendGFSMessageONRealPrediction：发送gfs消息失败！");
+														}
+													}
+												}
+											}
 										}
-									}else {
-										LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:lastungrib对应的实时预报已经发送过了或者当天的ungrib还未更新！");
 									}
-								}else {
-									LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:ungrib条件为满足！");
 								}
-							}else {
-								//重新请求一次emis排放数据
-								boolean emisParams = readyData.getEmisParams(tScenarinoDetail.getScenarinoId());
-								if (emisParams) {
-									LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:重新请求实时预报的emisdata参数成功！");
-								}else {
-									LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:重新请求实时预报的emisdata参数失败！");
-								}
-							}	
+							}
+						}else {
+							LogUtil.getLogger().info("sendGFSMessageONRealPrediction:不是当天的ungrib");
 						}
 					}	
 			} catch (Exception e) {
-				// TODO: handle exception
+				LogUtil.getLogger().error("sendGFSMessageONRealPrediction：触发gfs的定时器出错！",e.getMessage(),e);
 			}
+		}else {
+			LogUtil.getLogger().info("sendGFSMessageONRealPrediction:定时器空运行！");
 		}
 	
 	}
