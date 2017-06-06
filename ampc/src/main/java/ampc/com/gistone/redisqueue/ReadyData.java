@@ -127,6 +127,7 @@ import java.util.UUID;
 
 
 
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -306,13 +307,14 @@ public class ReadyData {
 	 * @param cores
 	 * @param scenarinoType
 	 * @param missionType
+	 * @param sourceId 
 	 * @return   
 	 * String  
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年4月6日 下午2:37:25
 	 */
-	public String branchPredict(Long scenarinoId,Integer scenarinoType,Integer missionType,Long missionId,Long userId) {
+	public String branchPredict(Long scenarinoId,Integer scenarinoType,Integer missionType,Long missionId,Long userId, Long sourceId) {
 		String str = null;
 		if (scenarinoType==4&&missionType==1) {
 			//准备实时预报的数据(自己测试用的）
@@ -345,14 +347,12 @@ public class ReadyData {
 			//预评估任务的预评估情景
 			//readyPreEvaluationSituationDataFirst(scenarinoId,cores);
 			LogUtil.getLogger().info("预评估任务的预评估情景模式开始！");
-//			str="ok";
-			str = JPParams(scenarinoId,userId);
+			str = JPParams(scenarinoId,userId,sourceId);
 		}
 		if (scenarinoType==2&&missionType==2) {
 			//预评估任务的后评估情景  
 			LogUtil.getLogger().info("预评估任务的后评估情景模式开始！");
-//			readyPrePostEvaluationSituationData(scenarinoId,false);
-			str = JPParams(scenarinoId,userId);
+			str = JPParams(scenarinoId,userId,sourceId);
 		}
 		if (scenarinoType==2&&missionType==3) {
 			try {
@@ -384,7 +384,7 @@ public class ReadyData {
 					Date end = tScenarinoDetail.getScenarinoEndDate();
 					String endDate = DateUtil.DATEtoString(end, "yyyy-MM-dd HH:mm:ss");
 					//获取减排的json串
-					String jpjson = planAndMeasureController.JPUtil(scenarinoId, userId, startDate, endDate);
+					String jpjson = planAndMeasureController.JPUtil(scenarinoId, userId, startDate, endDate,sourceId);
 					if (null!=jpjson) {
 						//发送actionlist请求
 						String actionlistURL = configUtil.getYunURL()+"/calc/submit/actionList?jobId="+scenarinoId;
@@ -400,7 +400,7 @@ public class ReadyData {
 					}
 				}else {
 					str = "false";
-					LogUtil.getLogger().info("基准情景尚未运行完毕");
+					LogUtil.getLogger().info("branchPredict 基准情景尚未运行完毕");
 				}
 			
 			} catch (IOException e) {
@@ -704,7 +704,7 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年3月29日 下午3:49:58
 	 */
-	public void sendqueueRealDataThen(Date tasksEndDate, Long tasksScenarinoId) {
+	public boolean sendqueueRealDataThen(Date tasksEndDate, Long tasksScenarinoId) {
 		LogUtil.getLogger().info("sendqueueRealDataThen：发实时预报gfs的数据");
 		//消息的time的内容
 		String time = DateUtil.changeDate(tasksEndDate, "yyyyMMdd", 1);
@@ -736,7 +736,8 @@ public class ReadyData {
 		LogUtil.getLogger().info("sendqueueRealDataThen   实时预报对应的lastungrib："+lastungrib);
 		//准备实时预报的参数
 		QueueData queueData = readyRealMessageData(scenarinoDetailMSG, time, firsttime, datatype, scenarinoId, lastungrib,false,null);
-		sendQueueData.toJson(queueData, scenarinoId,time);
+		boolean json = sendQueueData.toJson(queueData, scenarinoId,time);
+		return json;
 	}
 	
 	/**
@@ -1771,6 +1772,7 @@ public class ReadyData {
 				tTasksStatus.setTasksScenarinoId(scenarinoId);
 				//获取emis数据成功
 				tTasksStatus.setTasksExpand1(0l);
+				//系统内置
 				tTasksStatus.setCalctype("server");
 				tTasksStatus.setSourceid("1");
 				int	i = tTasksStatusMapper.updateEmisData(tTasksStatus);
@@ -1800,7 +1802,7 @@ public class ReadyData {
 	 * @author yanglei
 	 * @date 2017年5月10日 下午3:58:22
 	 */
-	public String JPParams(Long scenarinoId,Long userId) {
+	public String JPParams(Long scenarinoId,Long userId,Long sourceId) {
 		String str = null ;
 		try {
 			//预评估任务的预评估情景
@@ -1813,7 +1815,7 @@ public class ReadyData {
 			Date end = tScenarinoDetail.getScenarinoEndDate();
 			String endDate = DateUtil.DATEtoString(end, "yyyy-MM-dd HH:mm:ss");
 			//获取减排的json串
-			String jpjson = planAndMeasureController.JPUtil(scenarinoId, userId, startDate, endDate);
+			String jpjson = planAndMeasureController.JPUtil(scenarinoId, userId, startDate, endDate,sourceId);
 			if (null!=jpjson) {
 				//发送actionlist请求
 				String actionlistURL = configUtil.getYunURL()+"/calc/submit/actionList?jobId="+scenarinoId;
