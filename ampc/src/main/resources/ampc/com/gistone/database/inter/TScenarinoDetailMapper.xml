@@ -136,7 +136,7 @@
   <sql id="scenarino_Column_List" >
   	SCENARINO_ID,SCENARINO_NAME,SCENARINO_START_DATE,SCENARINO_END_DATE,SCENARINO_STATUS,
    SCENARINO_STATU_NAME,SCENARINO_ADD_TIME,BASIS_SCENARINO_ID,BASIS_TIME,CONTRAST_SCENARINO_ID,SCEN_TYPE,
-   PATH_DATE,SPINUP
+   PATH_DATE,SPINUP,EXPAND4
   </sql>
   
   <!-- 返回情景复制列表的数据 -->
@@ -867,7 +867,7 @@ AND IS_EFFECTIVE = '1'
        <if test="contrastScenarinoId != null" >
        and CONTRAST_SCENARINO_ID = #{contrastScenarinoId,jdbcType=DECIMAL}
       </if>
-       <if test="scenType != null and scenType !=''" >
+       <if test="scenType != null " >
        and SCEN_TYPE = #{scenType,jdbcType=VARCHAR}
       </if>
        <if test="pathDate != null" >
