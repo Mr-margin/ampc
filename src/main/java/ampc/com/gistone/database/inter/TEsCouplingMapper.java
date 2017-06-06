@@ -11,7 +11,7 @@ public interface TEsCouplingMapper {
 	 * @param couplingMap
 	 * @return
 	 */
-	int selectTIdByCId(Map couplingMap);
+	Long selectTIdByCId(Map couplingMap);
 	List<Map> selectAllCoupling(Map couplingMap);
 	
 	int selectTotalCoupling(Long userId);
