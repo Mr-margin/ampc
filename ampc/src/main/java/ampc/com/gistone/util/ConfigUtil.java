@@ -72,6 +72,14 @@ public class ConfigUtil {
 	//微信路径url
 	@Value("${weixin.serverURL}")
 	private String weixinServerURL;
+	
+	//模式执行task任务
+	@Value("${tasksArray1}")
+	private String tasksArray1;
+	//模式执行task任务2
+	@Value("${tasksArray2}")
+	private String tasksArray2;
+	
 			//redisIP地址
 			@Value("${spring.redis.host}")
 			private String redisHost;
@@ -87,72 +95,6 @@ public class ConfigUtil {
 			//redis 接受消息队列的名称
 			@Value("${redis.send.queue.name}")
 			private String redisQueueAcceptName;
-			//redis 连接池中的最大空闲连接
-//			@Value("${spring.redis.pool.max-idle}")
-//			private int maxIdle;
-//			//redis 连接池中的最小空闲连接
-//			@Value("${spring.redis.pool.min-idle}")
-//			private int minidle;
-//			//redis 连接池最大连接数（使用负值表示没有限制
-//			@Value("${spring.redis.pool.max-active}")
-//			private String maxActive;
-//			//redis 连接池最大阻塞等待时间（使用负值表示没有限制)
-//			@Value("${spring.redis.pool.max-wait}")
-//			private Long maxWait;
-//		    //连接超时时间（毫秒）
-//			@Value("${spring.redis.timeout}")
-//			private int timeout;
-//	
-//		    @Bean
-//		    public JedisPool redisPoolFactory() {
-//		        LogUtil.getLogger().info("JedisPool注入成功！！");
-//		        LogUtil.getLogger().info("redis地址：" + redisHost + ":" + redisPort);
-//		        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-//		        jedisPoolConfig.setMaxIdle(maxIdle);
-//		        jedisPoolConfig.setMaxWaitMillis(maxWait);
-//		        JedisPool jedisPool = new JedisPool(jedisPoolConfig, redisHost, redisPort, timeout, redisPassWord);
-//		        return jedisPool;
-//		    }
-//	
-//	    
-//			@Bean
-//	        public RedisConnectionFactory redisConnectionFactory() {
-//	            JedisConnectionFactory cf = new JedisConnectionFactory();  
-//	            cf.setHostName(redisHost);  
-//	            cf.setPort(redisPort); 
-//	            cf.setPassword(redisPassWord);
-//	            cf.afterPropertiesSet();  
-//	            return cf;  
-//	        }
-//			
-//
-//
-//			public int getTimeout() {
-//				return timeout;
-//			}
-//
-//
-//			public void setMaxIdle(int maxIdle) {
-//				this.maxIdle = maxIdle;
-//			}
-//
-//
-//
-//
-//			public int getMinidle() {
-//				return minidle;
-//			}
-//
-//
-//
-//			public String getMaxActive() {
-//				return maxActive;
-//			}
-//
-//
-//			public Long getMaxWait() {
-//				return maxWait;
-//			}
 
 
 
@@ -181,6 +123,20 @@ public class ConfigUtil {
 
 			
 			
+
+	/**
+	 * @return the tasksArray2
+	 */
+	public String getTasksArray2() {
+		return tasksArray2;
+	}
+
+	/**
+	 * @return the tasksArray1
+	 */
+	public String getTasksArray1() {
+		return tasksArray1;
+	}
 
 	public String getWeixinServerURL() {
 				return weixinServerURL;
