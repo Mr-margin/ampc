@@ -35,4 +35,6 @@ public interface TEsCouplingMapper {
     int updateByPrimaryKeySelective(TEsCoupling record);
 
     int updateByPrimaryKey(TEsCoupling record);
+    
+	int updateStatusByPrimaryKey(TEsCoupling tEsCoupling);
 }

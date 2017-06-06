@@ -319,4 +319,12 @@
     from T_ES_COUPLING
     where ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL} and USER_ID = #{userId,jdbcType=DECIMAL}
   </select>
+  <!-- 更新耦合清单状态为成功 -->
+  <update id="updateStatusByPrimaryKey" parameterType="ampc.com.gistone.database.model.TEsCoupling" >
+	  UPDATE T_ES_COUPLING
+		SET ES_COUPLING_STATUS = 3
+		WHERE
+			ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL}
+  </update>
+  
 </mapper>
