@@ -367,7 +367,17 @@
 		FROM
 			"AMPC"."T_SECTOR_EXCEL"
 		WHERE
-			DETAILED_LIST_ID = #{nationTpId,jdbcType=DECIMAL} GROUP BY SECTOR_EXCEL_NAME
+			DETAILED_LIST_ID = #{nationTpId,jdbcType=DECIMAL} AND IS_EFFECTIVE=1 GROUP BY SECTOR_EXCEL_NAME
+  </select>
+  
+  <select id="selectVersionsExcelId" resultType="java.lang.String" parameterType="ampc.com.gistone.database.model.TSectorExcel" >
+	  SELECT DISTINCT
+		(VERSION_EXCEL_ID)
+	FROM
+		"AMPC"."T_SECTOR_EXCEL"
+	WHERE
+		DETAILED_LIST_ID = #{detailedListId,jdbcType=DECIMAL}
+	AND IS_EFFECTIVE = 1
   </select>
   
 </mapper>
