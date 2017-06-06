@@ -332,4 +332,15 @@ public interface TScenarinoDetailMapper {
 	TScenarinoDetail selectbysid(Map tscdetail);
 	Date selectmaxpathdate();
 	Date selectminpathdate();
+
+	/**
+	 * @Description: 查找所用用户正在执行的实时预报
+	 * @param map
+	 * @return   
+	 * List<TScenarinoDetail>  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月2日 下午7:33:20
+	 */
+	List<TScenarinoDetail> selectAllOnExecByPathdateAndtype(Map map);
 }
