@@ -187,14 +187,14 @@ public class ModelExecuteStatusController {
 					String json = jsonObject.toString();
 					return AmpcResult.ok(json);
 				}else {
-					return AmpcResult.build(1005, "该情景执行状态不存在！请联系管理员！");
+					return AmpcResult.build(1005, "未查到该信息！请联系管理员！");
 				}
 			}else {
-				return AmpcResult.build(1005, "该情景不存在！请联系管理员！");
+				return AmpcResult.build(1005, "未查到该信息！请联系管理员！");
 			}
 		} catch (UnsupportedEncodingException e) {
 			LogUtil.getLogger().error("ModelExecuteStatusController getModelexecuteStatus",e);
-			return AmpcResult.build(1001, "查询模式运行进度异常！");
+			return AmpcResult.build(1001, "系统异常！");
 		}
 	}
 
