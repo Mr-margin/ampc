@@ -524,7 +524,7 @@ function saveAllId(){ //选好清单以后进行保存
                 })
             }else{//选择的本地清单
                 globelCheckedQd.push({
-                    "meicCityId":$(".selectQd").eq(i).val(),
+                    "meicCityId":parseInt($(".selectQd").eq(i).val()),
                     "regionId":cityCurren.cityId,
                     "sectorName":industryData[i].industryNames
                 })
