@@ -222,4 +222,29 @@ public class TMessageLog {
     public void setExpand5(String expand5) {
         this.expand5 = expand5 == null ? null : expand5.trim();
     }
+
+	/* (非 Javadoc) 
+	* <p>Title: toString</p> 
+	* <p>Description: </p> 
+	* @return 
+	* @see java.lang.Object#toString() 
+	*/ 
+	
+	@Override
+	public String toString() {
+		return "TMessageLog [messageLogId=" + messageLogId + ", messageUuid="
+				+ messageUuid + ", messageTime=" + messageTime
+				+ ", messageType=" + messageType + ", scenarinoId="
+				+ scenarinoId + ", messageIndex=" + messageIndex
+				+ ", tasksEndDate=" + tasksEndDate + ", resultDesc="
+				+ resultDesc + ", resultCode=" + resultCode + ", addTime="
+				+ addTime + ", userId=" + userId + ", domainId=" + domainId
+				+ ", ungribPathDate=" + ungribPathDate + ", ungribFnl="
+				+ ungribFnl + ", ungribGfs=" + ungribGfs + ", fnlDesc="
+				+ fnlDesc + ", gfsDesc=" + gfsDesc + ", expand1=" + expand1
+				+ ", expand2=" + expand2 + ", expand3=" + expand3
+				+ ", expand4=" + expand4 + ", expand5=" + expand5 + "]";
+	}
+    
+	
 }
