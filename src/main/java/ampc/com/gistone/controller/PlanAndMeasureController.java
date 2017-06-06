@@ -1537,7 +1537,7 @@ public class PlanAndMeasureController {
 			tSectorExcel.setUserId(userId);
 			tSectorExcel.setDetailedListId(templateId);
 			String version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
-			if(version.equals("")||version==null){
+			if(version==null||version.equals("")){
 				 tSectorExcel=new TSectorExcel();
 				 tSectorExcel.setDetailedListId(templateId);
 				 version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
@@ -1642,14 +1642,14 @@ public class PlanAndMeasureController {
 			String smallIndex = param.toString();
 			
 			//companyId 企业ID
-			param=data.get("smallIndex");
+			param=data.get("companyId");
 			//进行参数判断
-			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
 				LogUtil.getLogger().error("PlanAndMeasureController companyId为空或出现非法字符!");
 				return AmpcResult.build(1003, "companyId为空或出现非法字符!");
 			}
 			// companyId
-			Long companyId = Long.parseLong(param.toString());
+			String companyId = param.toString();
 			
 			//planId 预案ID
 			param=data.get("planId");
@@ -1670,7 +1670,7 @@ public class PlanAndMeasureController {
 			tSectorExcel.setUserId(userId);
 			tSectorExcel.setDetailedListId(templateId);
 			String version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
-			if(version.equals("")||version==null){
+			if(version==null||version.equals("")){
 				 tSectorExcel=new TSectorExcel();
 				 tSectorExcel.setDetailedListId(templateId);
 				 version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
@@ -2071,7 +2071,7 @@ public class PlanAndMeasureController {
 			tSectorExcel.setUserId(userId);
 			tSectorExcel.setDetailedListId(templateId);
 			String version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
-			if(version.equals("")||version==null){
+			if(version==null||version.equals("")){
 				 tSectorExcel=new TSectorExcel();
 				 tSectorExcel.setDetailedListId(templateId);
 				 version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
@@ -2212,7 +2212,7 @@ public class PlanAndMeasureController {
 				tSectorExcel.setUserId(userId);
 				tSectorExcel.setDetailedListId(templateId);
 				String version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
-				if(version.equals("")||version==null){
+				if(version==null||version.equals("")){
 					 tSectorExcel=new TSectorExcel();
 					 tSectorExcel.setDetailedListId(templateId);
 					 version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
@@ -2606,7 +2606,7 @@ public class PlanAndMeasureController {
 			tSectorExcel.setUserId(userId);
 			tSectorExcel.setDetailedListId(templateId);
 			String version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
-			if(version.equals("")||version==null){
+			if(version==null||version.equals("")){
 				 tSectorExcel=new TSectorExcel();
 				 tSectorExcel.setDetailedListId(templateId);
 				 version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);

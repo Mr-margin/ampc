@@ -375,7 +375,7 @@ public class ExcelToDateController {
 			tSectorExcel.setUserId(userId);
 			tSectorExcel.setDetailedListId(templateId);
 			String version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
-			if(version.equals("")||version==null){
+			if(version==null||version.equals("")){
 				 tSectorExcel=new TSectorExcel();
 				 tSectorExcel.setDetailedListId(templateId);
 				 version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
