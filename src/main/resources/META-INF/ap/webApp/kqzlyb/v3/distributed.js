@@ -36,7 +36,8 @@ var changeMsg = {
     GPserver_type: [],//
     layer: 1,
     rows: 350,
-    cols: 350
+    cols: 350,
+    pointNums:30//参数在点击两点之后获取
 }
 
 /*不同时间分辨率下，不同的污染物*/
@@ -328,13 +329,20 @@ function initialize() {
  * @param evt
  */
 function addToMap(evt) {
+    app.map.graphics.clear();
 	var symbol = new dong.SimpleFillSymbol();
 	app.toolbar.deactivate();
 	app.map.showZoomSlider();
 	var graphic = new dong.Graphic(evt.geometry, symbol);
 	app.map.graphics.add(graphic);
-	
-//	graphic.geometry.paths[0]
+
+	var xi = graphic.geometry.paths[0][0][0];
+	var yi = graphic.geometry.paths[0][0][1];
+	var xa = graphic.geometry.paths[0][1][0];
+	var ya = graphic.geometry.paths[0][1][1]
+
+    getVerticalImg(xa,xi,ya,yi);
+//	graphic.geometry.paths[0][0]
 
 }
 
@@ -823,4 +831,61 @@ function showTitleFun() {
     }else{
         $('#showTitle .dateName').html("<span  class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+dataState).css({"margin-right":"40px"});
     }
+}
+
+/**
+ * 获取垂直剖面图片地址
+ */
+function getVerticalImg(xa,xi,ya,yi) {
+    var url = '/extract/vertical';
+    /*请求参数*/
+    var par = {
+        calcType:changeMsg.calcType,//计算类型，当前只有show
+        showType:'concn',//表现类型，当前只有浓度concn
+        userId:userId,//用户id
+        domainId:changeMsg.domainId,//domain范围id
+        domain:changeMsg.domain,//domain范围
+        missionId:changeMsg.missionId,//任务id
+        scenarioId1:changeMsg.qj1Id,//情景id
+        timePoint:changeMsg.rms,//时间分辨率d/h
+        species:(function () { //污染物数组，暂且只有一个
+            var arr = [];
+            for(var i=0;i<changeMsg.species.length;i++){
+                arr.push(speciesObj[changeMsg.species[i]])
+            }
+            return arr;
+        })(),
+        pointNums:changeMsg.pointNums,//参数在点击两点之后获取
+        xmax:xa,
+        xmin:xi,
+        ymax:ya,
+        ymin:yi,
+    }
+
+    if (changeMsg.rms == 'd') {
+        par.day = moment(changeMsg.YBDate).format('YYYYMMDD');//格式化请求参数时间
+    } else if (changeMsg.rms == 'h') {
+        par.day = moment(changeMsg.YBDate).format('YYYYMMDD');
+        par.hour = changeMsg.YBHour;
+    }
+    $('.showImg').css('display','block');
+    ajaxPost(url,par).success(function (res) {
+        $('.showImg').css('display','block');
+        console.log(res);
+    })
+
+}
+
+
+function openImg() {
+    $('.showImg').css('width','60%');
+}
+
+function smallImg() {
+    $('.showImg').css('width','30%');
+}
+
+function closeImg() {
+    app.map.graphics.clear();
+    $('.showImg').css('display','none');
 }

@@ -29,6 +29,33 @@
 	.openness label {
 		margin: 12px 0;
 	}
+
+    .charContent{
+      position: relative;
+    }
+
+  .showImg{
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 30%;
+    /*height: 200px;*/
+    overflow: hidden;
+    background-color: #fff;
+  }
+  .showImg button{
+    position: absolute;
+    top: 10px;
+  }
+  .openImg{
+    right: 10px;
+  }
+  .smallImg{
+    right: 50px;
+  }
+  .closeImg{
+    right: 90px;
+  }
 </style>
 
 <div class="cloudui" style="width: 100%;height:100%;">
@@ -178,6 +205,13 @@
           <div class="distributed_toolRight">
 
           </div>
+        </div>
+
+        <div class="showImg " style="display: none">
+          <img src="img/ceshi.png" alt="" style="width: 100%;height:100%;margin-top: 40px">
+          <button class="btn btn-outline btn-success openImg" onclick="openImg()">放大</button>
+          <button class="btn btn-outline btn-success smallImg" onclick="smallImg()">缩小</button>
+          <button class="btn btn-outline btn-success closeImg" onclick="closeImg()">清除</button>
         </div>
       </div>
     </div>
