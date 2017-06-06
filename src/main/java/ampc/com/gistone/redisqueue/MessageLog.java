@@ -131,7 +131,6 @@ public class MessageLog {
 				throw new SQLException("更新消息日志失败！！");
 			}
 		} catch (IOException | SQLException e) {
-			// TODO Auto-generated catch block
 			LogUtil.getLogger().error("更新消息日志失败！！"+e);
 		}catch (Exception e) {
 			// TODO: handle exception
@@ -254,11 +253,6 @@ public class MessageLog {
 			String id = message.getId();
 			Date time = message.getTime();
 			String type = message.getType();
-		/*	if (type.equals("model.start.result")) {
-				LogUtil.getLogger().info("savesatrtModelMessagelog：model.start.result 消息");
-			}else if (type.equals("model.continue.result")) {
-				LogUtil.getLogger().info("savesatrtModelMessagelog：model.continue.result 消息");
-			}*/
 			Map body = (Map) message.getBody();
 			Long scenarioid = Long.parseLong(body.get("scenarioid").toString());
 			Integer index = Integer.parseInt(body.get("index").toString());
