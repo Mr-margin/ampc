@@ -1126,6 +1126,7 @@ public class MissionAndScenarinoController {
 					forobj.put("scenarinoStartDate", formatter.format(tsc.getScenarinoStartDate()));
 					forobj.put("ScenType", tsc.getScenType());
 					forobj.put("scenarinoEndDate", formatter.format(tsc.getPathDate()));
+					forobj.put("theDate", formatter.format(tsc.getScenarinoStartDate()));
 					forobj.put("pathDate", formatter.format(tsc.getPathDate()));
 					arr.add(forobj);	
 					}
