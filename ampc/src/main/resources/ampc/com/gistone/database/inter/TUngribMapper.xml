@@ -253,7 +253,12 @@
  	 <include refid="Base_Column_List" />
     from T_UNGRIB where PATH_DATE=(select MAX(PATH_DATE) from T_UNGRIB)
   </select>
-  
+  <!--根据pathdate查询ungeib  -->
+  <select id="getNowUngrib" resultMap="BaseResultMap" parameterType="java.util.Date">
+  select 
+   <include refid="Base_Column_List" />
+    from T_UNGRIB where PATH_DATE = #{pathDate,jdbcType=TIMESTAMP}
+  </select>
   <!--出现中断的情况下 查询最新的fnl  -->
   <select id="getinterruptlastFnl" resultType="java.util.Date" parameterType="java.lang.Integer">
   select MAX(PATH_DATE)
