@@ -31,6 +31,7 @@ public class VerticalController {
 			params = (Map) requestParams.get("data");
 			String calcType = String.valueOf(params.get("calcType"));
 			String showType = String.valueOf(params.get("showType"));
+			//此处的最大和最小不是实际的大小，min是划线起始点，max划线结束点
 			Double xmin = Double.valueOf(String.valueOf(params.get("xmin")));
 			Double ymin = Double.valueOf(String.valueOf(params.get("ymin")));
 			Double xmax = Double.valueOf(String.valueOf(params.get("xmax")));
