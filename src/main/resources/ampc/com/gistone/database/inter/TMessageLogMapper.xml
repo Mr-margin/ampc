@@ -291,4 +291,12 @@
       EXPAND5 = #{expand5,jdbcType=VARCHAR}
     where MESSAGE_LOG_ID = #{messageLogId,jdbcType=DECIMAL}
   </update>
+  
+  <!--通过情景ID查找情景执行的情况  -->
+<select id="selectListByscenarinoId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List" />
+    from T_MESSAGE_LOG
+    where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL} ORDER BY MESSAGE_LOG_ID ASC
+  </select>
 </mapper>
