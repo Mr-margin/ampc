@@ -111,6 +111,21 @@ var msg = {
     		  })
     	}
     }));
+    /*模式运行状态查看弹框渲染*/
+    $('#modelstatus').window($.extend({},defaultwindowoption,{
+    	title:'模式运行状态',
+    	onOpen:function(){
+    		ajaxPost("/ModelExecuteStatus",{
+    			missionId:msg.content.rwId,
+    		   	userId:userId,
+    		    scenarinoType:msg.content.SCEN_TYPE,
+    		    missionType:msg.content.rwType,
+    		    scenarinoId:msg.content.qjId
+    		}).success(function(data){
+    			console.log();
+    		})
+    	}
+    }))
     /*页面中间的任务列表部分的滚动条*/
     $("#rwgltablebox").slimScroll({
         height: '100%',
@@ -322,7 +337,11 @@ function requestQJData(res) {
 function missionNameFormatter(value, row, index) {
     if (typeof row.missionName === 'undefined') {
         if (typeof row.scenarinoNameTitle === 'undefined') {
-            return row.scenType == 3 ? '<h3 title="创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '">' + row.scenarinoName + '</h3>' : '<h3  title="' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '"><a href="#/yabj" style="text-decoration: underline">' + row.scenarinoName + '</a></h3>';
+        	if(row.expand4){
+        		return row.scenType == 3 ? '<h3 title="创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '">' + row.scenarinoName + ' <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color:#FF0000"></i></h3>' : '<h3  title="' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '"><a href="#/yabj" style="text-decoration: underline">' + row.scenarinoName + ' <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color:#FF0000"></i></a></h3>';
+        	}else{
+        		return row.scenType == 3 ? '<h3 title="创建时间：' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '">' + row.scenarinoName + '</h3>' : '<h3  title="' + moment(row.scenarinoAddTime).format('YYYY-MM-DD HH:mm:ss') + '"><a href="#/yabj" style="text-decoration: underline">' + row.scenarinoName + '</a></h3>';
+        	}
         }
         return row.scenarinoNameTitle;
     }
@@ -382,9 +401,14 @@ function missionAddTimeFormatter(value, row, index) {
     if (typeof row.missionAddTime === 'undefined') {
         if (typeof row.scenarinoStatusTitle === 'undefined') {
             if (row.scenarinoStatus == 3 || row.scenarinoStatus == 6) {
-                return '<a href="javascript:" class="statusType">' + row.scenarinoStatuName + '</a>'
+                return '<a href="javascript:showModelStatusWindow()" class="statusType">' + row.scenarinoStatuName + '</a>'
             } else {
-                return row.scenarinoStatuName
+            	if(row.expand4){
+            		return row.scenarinoStatuName+'<span style="color:red">('+row.expand4+')</span>';
+            	}else{
+            		return row.scenarinoStatuName;
+            	}
+                
             }
         }
         return row.scenarinoStatusTitle;
@@ -1063,7 +1087,7 @@ function setSelectDate(qjS, qjE, pathD) {
     if (pathD) {
         var p = moment(pathD);
         //while (!(p.isBefore(moment(qjS),'d'))) {
-        while (!p.isBefore(moment(qjS), 'd')) {
+        while (moment(qjS).isBefore(p, 'd')) {
             dateArr.push(p.subtract(1, 'd').format('YYYY-MM-DD'));
         }
     } else {
@@ -1354,7 +1378,8 @@ function subStartUp() {
         			"queryName": '',
         			"missionStatus": '',
         			"sort": '',
-        			"userId": userId
+        			"userId": userId,
+        			"bigIndex":selectRW.esCouplingId
         		}	
         	})
 	      $('#startUp').window('close');
@@ -1459,7 +1484,8 @@ function continueBtn(){
 			missionType:selectRW.missionStatus,
 			scenarinoType:msg.content.SCEN_TYPE,
 			scenarinoId:msg.content.qjId,
-			missionId:selectRW.missionId
+			missionId:selectRW.missionId,
+			bigIndex:selectRW.esCouplingId
 	},
 	url='/ModelType/continueModel';
 	ajaxPost(url,params).success(function(res){
@@ -1519,7 +1545,7 @@ function showErrorMission(){
 	        }
 		});
 		//将按钮内容修改为查看全部
-		$("#showErrorBtn .l-btn-text").html('<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> 执行错误 (<span id="showErrorBtnNum">0</span>)');
+		$("#showErrorBtn .l-btn-text").html('<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> 运行出错 (<span id="showErrorBtnNum">0</span>)');
 		$("#showErrorBtn").removeClass('active');
 		$('#selectTypeBtn').menubutton('enable');
 		$('#searchqd').searchbox('enable');
@@ -1540,4 +1566,610 @@ function showErrorMission(){
 		$('#searchqd').searchbox('disable');
 	}
 	
+}
+/*定义一个用于绘画出逐列执行的函数
+ * parameter:startTime、endTime、stopTime、stopData、xAxisData、stopMessage
+ * startTime:时间戳，模拟进度开始的日期
+ * endTime:时间戳，模拟进度结束的日期
+ * stopTime:时间戳，模拟进的的停止时间
+ * stopData:字符串，模拟进度的停止时的类型
+ * xAxixData:数组，模拟进度的类型集合
+ * stopMessage:字符串，模拟进度的停止信息
+ * stopType:数字，停止原因的类型码
+ * excutionMessage:数组，已经执行过的信息
+ * */
+function moduleSimulationScheduleVertical(startTime, endTime, stopTime, stopData, xAxisData, stopMessage, stopType, excutionMessage) {
+
+//  默认的echarts配置项，并且作为返回的对象
+  var _option = {},
+    _temp = {},//作为一个临时存储对象
+    _tempTime = moment(startTime, 'x'), //作为一个用于生成时间轴坐标的操作用时间戳
+    _stopFlag = false;
+
+  _temp.yAxislabel = []; //用于存储时间轴坐标刻度
+  _temp.xAxislabel = []; //用于存储模块轴坐标刻度
+  _temp.straightLineSuccess = []; //用于存储成功的直线
+  _temp.straightLineFail = []; //用于存储未执行的虚线
+  _temp.successPoint = [];  //模式成功的点的集合
+  _temp.failPoint = [];  //未执行模式的点的集合
+  _temp.stopPoint = []; //停止点的坐标
+  _temp.dashLine = []; //虚线点的集合
+  _temp.dashLineEndPoint = [];  //虚线末尾的箭头点集合
+  _temp.straightLineSuccessArrow = []; //执行完成后实线的箭头
+  _temp.straightLineFailArrow = [];  //未执行实线的箭头
+
+//  先计算出两条坐标轴的刻度
+
+//  计算Y轴坐标刻度
+  do {
+    _temp.yAxislabel.push(_tempTime.format("YYYY-M-D"));
+    _tempTime.add(1, 'd');
+  } while (!_tempTime.isAfter(moment(endTime, 'x'), 'day'));
+
+//  计算X轴坐标刻度
+  $.each(xAxisData, function (i, n) {
+    _temp.xAxislabel.push(n)
+    if (i < xAxisData.length - 1) {
+      _temp.xAxislabel.push(n + "1")
+    }
+  });
+
+//  计算从开始到执行停止的实线和到结束的实线
+//  计算执行过的点、停止的点和结束的点
+  for (var i = 0; i < _temp.xAxislabel.length; i += 2) {
+    if (_stopFlag) {
+      _temp.straightLineFail.push([]);
+    } else {
+      _temp.straightLineSuccess.push([]);
+    }
+    for (var j = 0; j < _temp.yAxislabel.length; j++) {
+      if (moment(stopTime, 'x').isSame(moment(_temp.yAxislabel[j], "YYYY-M-D"), 'day') && _temp.xAxislabel[i] == stopData) {
+        _stopFlag = true;
+        _temp.straightLineSuccess[_temp.straightLineSuccess.length - 1].push([_temp.xAxislabel[i], _temp.yAxislabel[j]]);
+        _temp.straightLineFail.push([]);
+      }
+      if (_stopFlag) {
+        _temp.straightLineFail[_temp.straightLineFail.length - 1].push([_temp.xAxislabel[i], _temp.yAxislabel[j]]);
+        if (_temp.stopPoint.length > 0) {
+          _temp.failPoint.push([_temp.xAxislabel[i], _temp.yAxislabel[j]]);
+        } else {
+          _temp.stopPoint = [_temp.xAxislabel[i], _temp.yAxislabel[j]];
+        }
+
+      } else {
+        _temp.straightLineSuccess[_temp.straightLineSuccess.length - 1].push([_temp.xAxislabel[i], _temp.yAxislabel[j]]);
+        _temp.successPoint.push([_temp.xAxislabel[i], _temp.yAxislabel[j]]);
+      }
+    }
+    if (_stopFlag) {
+      _temp.straightLineFailArrow.push([_temp.xAxislabel[i], _temp.yAxislabel[j - 1]]);
+    } else {
+      _temp.straightLineSuccessArrow.push([_temp.xAxislabel[i], _temp.yAxislabel[j - 1]]);
+    }
+
+  }
+  console.log(_temp.stopPoint);
+//  计算表示流程进行的虚线和箭头
+  for (var i = 0; i < xAxisData.length - 1; i++) {
+    _temp.dashLineEndPoint.push([_temp.xAxislabel[i * 2 + 2], _temp.yAxislabel[0]]);
+    _temp.dashLine.push([[_temp.xAxislabel[i * 2 + 2], _temp.yAxislabel[0]]]);
+    for (var j = 0; j < _temp.yAxislabel.length; j++) {
+      _temp.dashLine[i].push([_temp.xAxislabel[i * 2 + 1], _temp.yAxislabel[j]]);
+    }
+    _temp.dashLine[i].push([_temp.xAxislabel[i * 2], _temp.yAxislabel[j - 1]]);
+
+  }
+
+//  修改_option
+  _option = {
+    xAxis: {
+      position: 'top',
+      axisLine: {
+        show: false
+      },
+      data: _temp.xAxislabel,
+      axisLabel: {
+        interval: function (index, value) {
+          if (index % 2 == 0) {
+            return true
+          }
+          return false
+        }
+      },
+      boundaryGap: true,
+      axisTick: {
+        show: false,
+        alignWithLabel: true
+      }
+    },
+    yAxis: {
+      type: 'category',
+      axisLine: {
+        show: false
+      },
+      boundaryGap: false,
+      inverse: true,
+      data: _temp.yAxislabel,
+      axisTick: {
+        show: false
+      }
+    },
+    dataZoom: [{
+      type: 'inside',
+      yAxisIndex: [0],
+      startValue: 0,
+      endValue: 6
+    }, {
+      type: 'slider',
+      yAxisIndex: 0,
+      startValue: 0,
+      endValue: 6,
+    }],
+    tooltip: {
+      trigger: 'item'
+    },
+    series: (function () {
+      var _seriesData = [];
+      for (var i = 0; i < _temp.straightLineSuccess.length; i++) {
+        _seriesData.push({
+          type: 'line',
+          symbol: 'none',
+          lineStyle: {
+            normal: {
+              color: '#000033'
+            }
+          },
+          data: _temp.straightLineSuccess[i]
+        })
+      }
+      for (var i = 0; i < _temp.straightLineFail.length; i++) {
+        _seriesData.push({
+          type: 'line',
+          symbol: 'none',
+          lineStyle: {
+            normal: {
+              color: '#dddddd',
+              type: 'solid'
+            }
+          },
+          data: _temp.straightLineFail[i]
+        })
+      }
+      for (var i = 0; i < _temp.dashLine.length; i++) {
+        _seriesData.push({
+          type: 'line',
+          symbol: 'none',
+          lineStyle: {
+            normal: {
+              color: '#FFC513',
+              type: 'dashed'
+            }
+          },
+          data: _temp.dashLine[i]
+        });
+      }
+      _seriesData.push({
+        type: 'scatter',
+        symbol: 'arrow',
+        symbolRotate: 180,
+        legendHoverLink: false,
+        hoverAnimation: false,
+        symbolOffset: [0, -7],
+        itemStyle: {
+          normal: {
+            color: '#2F4554'
+          }
+        },
+        coordinateSystem: 'cartesian2d',
+        data: _temp.straightLineSuccessArrow
+      });
+      _seriesData.push({
+        type: 'scatter',
+        symbol: 'arrow',
+        symbolRotate: 180,
+        legendHoverLink: false,
+        hoverAnimation: false,
+        symbolOffset: [0, -7],
+        itemStyle: {
+          normal: {
+            color: '#dddddd'
+          }
+        },
+        coordinateSystem: 'cartesian2d',
+        data: _temp.straightLineFailArrow
+      });
+      _seriesData.push({
+        type: 'scatter',
+        symbol: 'arrow',
+        symbolRotate: -90,
+        legendHoverLink: false,
+        hoverAnimation: false,
+        symbolOffset: [-7, 0],
+        itemStyle: {
+          normal: {
+            color: '#FFC513'
+          }
+        },
+        data: _temp.dashLineEndPoint,
+        coordinateSystem: 'cartesian2d',
+        hoverAnimation: false,
+        legendHoverLink: false,
+        tooltip: {
+          backgroundColor: 'transparent',
+          formatter: " "
+        }
+      });
+      _seriesData.push({
+        type: 'scatter',
+        coordinateSystem: 'cartesian2d',
+        symbolSize: 14,
+        itemStyle: {
+          normal: {
+            color: "#00CC33",
+            opacity: 1
+          }
+        },
+        data: _temp.successPoint,
+        tooltip: {
+          formatter: function (obj) {
+            var x = $.inArray(obj.data[0], xAxisData);
+            var y = $.inArray(obj.data[1], _temp.yAxislabel);
+            return excutionMessage[x][y]
+          }
+        }
+      });
+      _seriesData.push({
+        type: 'scatter',
+        symbol: (function () {
+          return stopType == 1 ? 'triangle' : stopType == 2 ? "roundRect" : "roundRect"
+        })(),
+        symbolSize: 14,
+        symbolRotate: 180,
+        coordinateSystem: 'cartesian2d',
+        itemStyle: {
+          normal: {
+            color: function () {
+              return stopType == 1 ? '#0099FF' : stopType == 2 ? "#666699" : "#FF0000"
+            },
+            opacity: 1
+          }
+        },
+        data: [_temp.stopPoint],
+        tooltip: {
+          formatter: function () {
+            return stopMessage;
+          }
+        }
+      });
+      _seriesData.push({
+        type: 'scatter',
+        symbol: 'emptyCircle',
+        symbolSize: 14,
+        coordinateSystem: 'cartesian2d',
+        itemStyle: {
+          normal: {
+            color: '#666666',
+            opacity: 1
+          }
+        },
+        data: _temp.failPoint,
+        hoverAnimation: false,
+        legendHoverLink: false,
+        tooltip: {
+          backgroundColor: 'transparent',
+          formatter: " "
+        }
+      });
+      return _seriesData
+    })()
+  };
+
+  mychart.setOption(_option);
+}
+/*定义一个用于绘画出逐列执行的函数
+ * parameter:startTime、endTime、stopTime、stopData、xAxisData、stopMessage
+ * startTime:时间戳，模拟进度开始的日期
+ * endTime:时间戳，模拟进度结束的日期
+ * stopTime:时间戳，模拟进的的停止时间
+ * stopData:字符串，模拟进度的停止时的类型
+ * xAxixData:数组，模拟进度的类型集合
+ * stopMessage:字符串，模拟进度的停止信息
+ * stopType:数字，停止原因的类型码
+ * excutionMessage:数组，已经执行过的信息
+ * */
+function moduleSimulationScheduleHorizontal(startTime, endTime, stopTime, stopData, xAxisData, stopMessage, stopType, excutionMessage) {
+
+  //    默认的echarts配置项，并且作为返回的对象
+  var _option = {},
+    _temp = {},//作为一个临时存储对象
+    _tempTime = moment(startTime, 'x'), //作为一个用于生成时间轴坐标的操作用时间戳
+    _stopFlag = false;
+
+  _temp.yAxislabel = []; //用于存储时间轴坐标刻度
+  _temp.xAxislabel = []; //用于存储模块轴坐标刻度
+  _temp.straightLineSuccess = []; //用于存储成功的直线
+  _temp.straightLineFail = []; //用于存储未执行的虚线
+  _temp.successPoint = [];  //模式成功的点的集合
+  _temp.failPoint = [];  //未执行模式的点的集合
+  _temp.stopPoint = []; //停止点的坐标
+  _temp.dashLine = []; //虚线点的集合
+  _temp.dashLineEndPoint = [];  //虚线末尾的箭头点集合
+  _temp.straightLineSuccessArrow = []; //执行完成后实线的箭头
+  _temp.straightLineFailArrow = [];  //未执行实线的箭头
+
+//  先计算出两条坐标轴的刻度
+
+//  X轴坐标刻度
+  _temp.xAxislabel = xAxisData;
+
+//  计算Y轴坐标刻度
+//  先计算出每一天，因为Y轴是类目项要在每两天之间增加一个虚拟天，用于绘制虚线
+  do {
+    _temp.yAxislabel.push(_tempTime.format("YYYY-M-D"));
+    _temp.yAxislabel.push(_tempTime.format("YYYY-M-D") + " ");
+    _tempTime.add(1, 'd');
+  } while (_tempTime.isBefore(moment(endTime, 'x'), "day"));
+  _temp.yAxislabel.push(_tempTime.format("YYYY-M-D"));
+
+//  计算从开始到执行停止的实线和到结束的实线
+//  计算执行过的点、停止的点和结束的点
+  for (var i = 0; i < _temp.yAxislabel.length; i++) {
+    if (_stopFlag) {
+      _temp.straightLineFail.push([]);
+    } else {
+      _temp.straightLineSuccess.push([]);
+    }
+
+    for (var j = 0; j < _temp.xAxislabel.length; j++) {
+      if (i % 2 == 0) {
+//      用于计算表示流程方向的实线和箭头，执行完成的点和未执行的点，停止的点
+        if (moment(_temp.yAxislabel[i], "YYYY-M-D").isSame(moment(stopTime, 'x'), 'day') && _temp.xAxislabel[j] == stopData) {
+          _stopFlag = true;
+          _temp.straightLineSuccess[_temp.straightLineSuccess.length - 1].push([_temp.xAxislabel[j], _temp.yAxislabel[i]]);
+          _temp.straightLineFail.push([]);
+        }
+        if (_stopFlag) {
+          _temp.straightLineFail[_temp.straightLineFail.length - 1].push([_temp.xAxislabel[j], _temp.yAxislabel[i]]);
+          if (_temp.stopPoint.length > 0) {
+            _temp.failPoint.push([_temp.xAxislabel[j], _temp.yAxislabel[i]]);
+          } else {
+            _temp.stopPoint = [_temp.xAxislabel[j], _temp.yAxislabel[i]];
+          }
+        } else {
+          _temp.straightLineSuccess[_temp.straightLineSuccess.length - 1].push([_temp.xAxislabel[j], _temp.yAxislabel[i]]);
+          _temp.successPoint.push([_temp.xAxislabel[j], _temp.yAxislabel[i]]);
+        }
+        if (j == _temp.xAxislabel.length - 1) {
+          if (_stopFlag) {
+            _temp.straightLineFailArrow.push([_temp.xAxislabel[j], _temp.yAxislabel[i]]);
+          } else {
+            _temp.straightLineSuccessArrow.push([_temp.xAxislabel[j], _temp.yAxislabel[i]]);
+          }
+        }
+      } else {
+//      用于计算表示流程方向的虚线和箭头
+        if (j == 0) {
+          _temp.dashLine.push([[_temp.xAxislabel[j], _temp.yAxislabel[i + 1]]]);
+          _temp.dashLineEndPoint.push([_temp.xAxislabel[j], _temp.yAxislabel[i + 1]]);
+        }
+        _temp.dashLine[_temp.dashLine.length - 1].push([_temp.xAxislabel[j], _temp.yAxislabel[i]]);
+        if (j == _temp.xAxislabel.length - 1) {
+          _temp.dashLine[_temp.dashLine.length - 1].push([_temp.xAxislabel[j], _temp.yAxislabel[i - 1]]);
+        }
+      }
+
+    }
+
+
+  }
+
+//  修改_option
+  _option = {
+    xAxis: {
+      position: 'top',
+      axisLine: {
+        show: false
+      },
+      data: _temp.xAxislabel,
+      boundaryGap: true,
+      axisTick: {
+        show: false,
+        alignWithLabel: true
+      }
+    },
+    yAxis: {
+      type: 'category',
+      axisLine: {
+        show: false
+      },
+      boundaryGap: false,
+      inverse: true,
+      data: _temp.yAxislabel,
+      axisLabel: {
+        interval: function (index, value) {
+          if (index % 2 == 0) {
+            return true
+          }
+          return false
+        }
+      },
+      axisTick: {
+        show: false
+      }
+    },
+    dataZoom: [{
+      type: 'inside',
+      yAxisIndex: [0],
+      startValue: 0,
+      endValue: 6
+    }, {
+      type: 'slider',
+      yAxisIndex: 0,
+      startValue: 0,
+      endValue: 6,
+    }],
+    tooltip: {
+      trigger: 'item'
+    },
+    series: (function () {
+      var _seriesData = [];
+      for (var i = 0; i < _temp.straightLineSuccess.length; i++) {
+        _seriesData.push({
+          type: 'line',
+          symbol: 'none',
+          lineStyle: {
+            normal: {
+              color: '#000033',
+              width:10
+            }
+          },
+          data: _temp.straightLineSuccess[i]
+        })
+      }
+      for (var i = 0; i < _temp.straightLineFail.length; i++) {
+        _seriesData.push({
+          type: 'line',
+          symbol: 'none',
+          lineStyle: {
+            normal: {
+              color: '#dddddd',
+              type: 'solid'
+            }
+          },
+          data: _temp.straightLineFail[i]
+        })
+      }
+      for (var i = 0; i < _temp.dashLine.length; i++) {
+        _seriesData.push({
+          type: 'line',
+          symbol: 'none',
+          lineStyle: {
+            normal: {
+              color: '#FFC513',
+              type: 'dashed'
+            }
+          },
+          data: _temp.dashLine[i]
+        });
+      }
+      _seriesData.push({
+        type: 'scatter',
+        symbol: 'arrow',
+        symbolRotate: -90,
+        legendHoverLink: false,
+        hoverAnimation: false,
+        symbolOffset: [-7, 0],
+        itemStyle: {
+          normal: {
+            color: '#2F4554'
+          }
+        },
+        coordinateSystem: 'cartesian2d',
+        data: _temp.straightLineSuccessArrow
+      });
+      _seriesData.push({
+        type: 'scatter',
+        symbol: 'arrow',
+        symbolRotate: -90,
+        legendHoverLink: false,
+        hoverAnimation: false,
+        symbolOffset: [-7, 0],
+        itemStyle: {
+          normal: {
+            color: '#dddddd'
+          }
+        },
+        coordinateSystem: 'cartesian2d',
+        data: _temp.straightLineFailArrow
+      });
+      _seriesData.push({
+        type: 'scatter',
+        symbol: 'arrow',
+        symbolRotate: 180,
+        legendHoverLink: false,
+        hoverAnimation: false,
+        symbolOffset: [0, -7],
+        itemStyle: {
+          normal: {
+            color: '#FFC513'
+          }
+        },
+        data: _temp.dashLineEndPoint,
+        coordinateSystem: 'cartesian2d',
+        hoverAnimation: false,
+        legendHoverLink: false,
+        tooltip: {
+          backgroundColor: 'transparent',
+          formatter: " "
+        }
+      });
+      _seriesData.push({
+        type: 'scatter',
+        coordinateSystem: 'cartesian2d',
+        symbolSize: 14,
+        itemStyle: {
+          normal: {
+            color: "#00CC33",
+            opacity: 1
+          }
+        },
+        data: _temp.successPoint,
+        tooltip: {
+          formatter: function (obj) {
+            var y = $.inArray(obj.data[0], xAxisData);
+            var x = $.inArray(obj.data[1], _temp.yAxislabel)/2;
+            return excutionMessage[x][y]
+          }
+        }
+      });
+      _seriesData.push({
+        type: 'scatter',
+        symbol: (function () {
+          return stopType == 1 ? 'triangle' : stopType == 2 ? "roundRect" : "roundRect"
+        })(),
+        symbolSize: 14,
+        symbolRotate: 180,
+        coordinateSystem: 'cartesian2d',
+        itemStyle: {
+          normal: {
+            color: function () {
+              return stopType == 1 ? '#0099FF' : stopType == 2 ? "#666699" : "#FF0000"
+            },
+            opacity: 1
+          }
+        },
+        data: [_temp.stopPoint],
+        tooltip: {
+          formatter: function () {
+            return stopMessage;
+          }
+        }
+      });
+      _seriesData.push({
+        type: 'scatter',
+        symbol: 'emptyCircle',
+        symbolSize: 14,
+        coordinateSystem: 'cartesian2d',
+        itemStyle: {
+          normal: {
+            color: '#666666',
+            opacity: 1
+          }
+        },
+        data: _temp.failPoint,
+        hoverAnimation: false,
+        legendHoverLink: false,
+        tooltip: {
+          backgroundColor: 'transparent',
+          formatter: " "
+        }
+      });
+      return _seriesData
+    })()
+  };
+  mychart.setOption(_option);
+}
+/*模式查看打开框函数*/
+function showModelStatusWindow(){
+	$("#modelstatus").window('open');
 }

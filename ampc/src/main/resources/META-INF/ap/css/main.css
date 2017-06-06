@@ -1009,17 +1009,7 @@ abbr,acronym {
     color: #ffffff;
 }
 
-/* ------------------ Icons in header tags --------------------*/
-h1 i,
-h2 i,
-h3 i,
-h4 i,
-h5 i,
-h6 i {
-    float: left;
-    margin-top: -1px;
-    margin-right: 5px;
-}
+
 
 /* ------------------ Input sizes --------------------*/
 /*.input-mini {*/
