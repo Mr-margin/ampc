@@ -2,6 +2,8 @@ package ampc.com.gistone.controller;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -155,8 +157,26 @@ public class DomainController {
 			dys[0]=Long.valueOf(common.get("dy").toString());
 			dys[1]=dxs[0]/3;
 			dys[2]=dxs[1]/3;
-		    common.put("dx", dxs[0]+","+dxs[1]+","+dxs[2]);//添加dx
-		    common.put("dy", dys[0]+","+dys[1]+","+dys[2]);//添加dy
+			 String db="";
+			  for(int x=0;x<dxs.length;x++){
+				  if(x==dxs.length){
+					  db+=dxs[x];
+				  }else{
+					  db+=dys[x]; 
+					  db+=",";
+				  }
+			  }
+			 String ds="";
+			  for(int x=0;x<dys.length;x++){
+				  if(x==dys.length){
+					  ds+=dys[x];
+				  }else{
+					  ds+=dys[x]; 
+					  ds+=",";
+				  }
+			  }
+		    common.put("dx", db);//添加dx
+		    common.put("dy", ds);//添加dy
 		  //添加Coord_Name
 		    common.put("Coord_Name", "LAM_"+Math.round(Float.valueOf(common.get("stand_lat1").toString()))+"_"+Math.round(Float.valueOf(common.get("stand_lat2").toString()))+"_"+Math.round(Float.valueOf(common.get("ref_lat").toString()))+"_"+Math.round(Float.valueOf(common.get("ref_lon").toString())));
 			//cmaq数据域填充
@@ -166,53 +186,134 @@ public class DomainController {
 		   cmaq.put("mech_aero", "aero6");//添加mech_aero
 		  //获取e_we数据
 		   String e_we=wrf.get("e_we").toString();
-		   String[] arr = e_we.split(",");
+		  List<String> arr = Arrays.asList(e_we.split(","));
 		   //计算nx数据
-		   Long[] nx=new Long[3];
-		   nx[0]=(Long.valueOf(arr[0])-((btrim+1))*2)-1;
-		   nx[1]=(Long.valueOf(arr[1])-((btrim+1))*2)-1;
-		   nx[2]=(Long.valueOf(arr[2])-((btrim+1))*2)-1;
-		   cmaq.put("nx", nx[0]+","+nx[1]+","+nx[2]);
+		   List<Long> nx=new ArrayList();
+		   nx.add((Long.valueOf(arr.get(0))-((btrim+1))*2)-1);
+		   if(arr.size()>=2){
+			   nx.add((Long.valueOf(arr.get(1))-((btrim+1))*2)-1);
+		   }
+		   if(arr.size()>=3){
+			   nx.add((Long.valueOf(arr.get(2))-((btrim+1))*2)-1);   
+		   }
+		   String n="";
+		  for(int x=1;x<=nx.size();x++){
+			  if(x==nx.size()){
+			  n+=nx.get(x-1);
+			  }else{
+				  n+=nx.get(x-1); 
+				  n+=",";
+			  }
+		  }
+		   
+		   cmaq.put("nx", n);
 		   //获取e_sn数据
 		   String e_sn=wrf.get("e_sn").toString();
-		   String[] arr2 = e_sn.split(",");
+		   List<String> arr2 = Arrays.asList(e_sn.split(","));
 		   //获取i_parent_start数据
 		   String i_parent_start=wrf.get("i_parent_start").toString();
-		   String[] i_parent_starts = i_parent_start.split(",");
+		   List<String> i_parent_starts = Arrays.asList(i_parent_start.split(","));
 		   //获取j_parent_start数据
 		   String j_parent_start=wrf.get("j_parent_start").toString();
-		   String[] j_parent_starts = j_parent_start.split(",");
+		   List<String> j_parent_starts =  Arrays.asList(j_parent_start.split(","));
 		 //为wrf中的i_parent_start添加默认数据
-		   Long[] i=new Long[3];
-		   i[0]=1l;
-		   i[1]=Long.valueOf(i_parent_starts[0]);
-		   i[2]=Long.valueOf(i_parent_starts[1]);
+		   List<Long> i=new ArrayList();
+		   i.add(1l);
+		   i.add(Long.valueOf(i_parent_starts.get(0)));
+		   if(i_parent_starts.size()>=2){
+			i.add(Long.valueOf(i_parent_starts.get(1)));      
+		   }
 		 //为wrf中的j_parent_start添加默认数据
-		   Long[] j=new Long[3];
-		   j[0]=1l;
-		   j[1]=Long.valueOf(j_parent_starts[0]);
-		   j[2]=Long.valueOf(j_parent_starts[1]);
-		   wrf.put("j_parent_start", j[0]+","+j[1]+","+j[2]);
-		   wrf.put("i_parent_start", i[0]+","+i[1]+","+i[2]);
+		   List<Long> j=new ArrayList();
+		   j.add(1l);
+		   j.add(Long.valueOf(j_parent_starts.get(0)));
+		   if(j_parent_starts.size()>=2){
+		   j.add(Long.valueOf(j_parent_starts.get(1)));
+		   }
+		   String js="";
+			  for(int x=1;x<=j.size();x++){
+				  if(x==j.size()){
+					  js+=j.get(x-1);
+				  }else{
+					  js+=j.get(x-1); 
+					  js+=",";
+				  }
+			  }
+			  String is="";
+			  for(int x=1;x<=i.size();x++){
+				  if(x==i.size()){
+					  is+=i.get(x-1);
+				  }else{
+					  is+=i.get(x-1); 
+					  is+=",";
+				  }
+			  }
+		   wrf.put("j_parent_start", js);  
+		   wrf.put("i_parent_start", is);  
+		   
 		   //计算ny数据
-		   Long[] ny=new Long[3];
-		   ny[0]=(Long.valueOf(arr2[0])-(btrim+1))*2-1;
-		   ny[1]=(Long.valueOf(arr2[1])-(btrim+1))*2-1;
-		   ny[2]=(Long.valueOf(arr2[2])-(btrim+1))*2-1;
-		   cmaq.put("ny", ny[0]+","+ny[1]+","+ny[2]);
+		   List<Long> ny=new ArrayList();
+		   ny.add((Long.valueOf(arr2.get(0))-(btrim+1))*2-1);
+		   if(arr2.size()>=2){
+			   ny.add((Long.valueOf(arr2.get(1))-(btrim+1))*2-1);  
+		   }
+		 
+		   if(arr2.size()>=3){
+			   ny.add((Long.valueOf(arr2.get(2))-(btrim+1))*2-1);  
+		   }
+		   String nys="";
+			  for(int x=1;x<=ny.size();x++){
+				  if(x==ny.size()){
+					  nys+=ny.get(x-1);
+				  }else{
+					  nys+=ny.get(x-1); 
+					  nys+=",";
+				  }
+			  }
+		   cmaq.put("ny", nys);
 		   
 		   //计算xorig数据
-		   Long[] xorig=new Long[3];
-		   xorig[0]=(-dxs[0]*(Long.valueOf(arr[0])-1)/2)+(dxs[0]*(btrim+1));
-		   xorig[1]=(-dxs[0]*(Long.valueOf(arr[0])-1)/2)+(dxs[0]*(i[1]-1)) + (dxs[1]*(btrim+1)); 
-		   xorig[2]=(-dxs[0]*(Long.valueOf(arr[0])-1)/2)+(dxs[0]*(i[1]-1))+(dxs[1]*(i[2])-1) +(dxs[2]*(btrim+1));
-		   cmaq.put("xorig", xorig[0]+","+xorig[1]+","+xorig[2]);
+		   List<Long> xorig=new ArrayList();
+		   xorig.add((-dxs[0]*(Long.valueOf(arr.get(0))-1)/2)+(dxs[0]*(btrim+1)));
+		   if(arr.size()>=1&&i.size()>=2){
+		   xorig.add((-dxs[0]*(Long.valueOf(arr.get(0))-1)/2)+(dxs[0]*(i.get(1)-1)) + (dxs[1]*(btrim+1)));  
+		   }
+		   if(arr.size()>=1&&i.size()==3){
+			 xorig.add((-dxs[0]*(Long.valueOf(arr.get(0))-1)/2)+(dxs[0]*(i.get(1)-1))+(dxs[1]*(i.get(2))-1) +(dxs[2]*(btrim+1)));
+		   }
+		   
+		   String xorigs="";
+			  for(int x=1;x<=xorig.size();x++){
+				  if(x==xorig.size()){
+					  xorigs+=xorig.get(x-1);
+				  }else{
+					  xorigs+=xorig.get(x-1); 
+					  xorigs+=",";
+				  }
+			  }
+		   
+		   cmaq.put("xorig", xorigs);
 		   //计算yorig数据
-		   Long[] yorig=new Long[3];
-		   yorig[0]=(-dys[0]*(Long.valueOf(arr2[0])-1)/2)+(dys[0]*(btrim+1));
-		   yorig[1]=(-dys[0]*(Long.valueOf(arr2[0])-1)/2)+(dys[0]*(j[1]-1)) + (dys[1]*(btrim+1)); 
-		   yorig[2]=(-dys[0]*(Long.valueOf(arr2[0])-1)/2)+(dys[0]*(j[1]-1))+(dys[1]*(j[2]-1)) +(dys[2]*(btrim+1));
-		   cmaq.put("yorig", yorig[0]+","+yorig[1]+","+yorig[2]);
+		   List<Long> yorig=new ArrayList();
+		   yorig.add((-dys[0]*(Long.valueOf(arr2.get(0))-1)/2)+(dys[0]*(btrim+1)));
+		   
+		   if(arr2.size()>=1&&j.size()>=2){
+			   yorig.add((-dys[0]*(Long.valueOf(arr2.get(0))-1)/2)+(dys[0]*(j.get(1)-1)) + (dys[1]*(btrim+1))); 
+			   }
+		   if(arr2.size()>=1&&j.size()==3){
+			   yorig.add((-dys[0]*(Long.valueOf(arr2.get(0))-1)/2)+(dys[0]*(j.get(1)-1))+(dys[1]*(j.get(2)-1)) +(dys[2]*(btrim+1)));
+			   }
+		   
+		   String yorigs="";
+			  for(int x=1;x<=yorig.size();x++){
+				  if(x==yorig.size()){
+					  yorigs+=yorig.get(x-1);
+				  }else{
+					  yorigs+=yorig.get(x-1); 
+					  yorigs+=",";
+				  }
+			  }
+		   cmaq.put("yorig", yorigs);
 		   
 		   //因为domainInfo中没有cmaq因此要添加进去
 		   domainInfo.put("cmaq", cmaq); 
@@ -284,7 +385,7 @@ public class DomainController {
 		   JSONObject cmobj=new JSONObject();
 		   cmobj.put("cmaq", JSONObject.fromObject(cmaq));
 		   
-		   String domainCode=calculateCityService.getCityResult((double) xorig[2], (double) yorig[2], (double)dxs[2], (double)dys[2], Integer.valueOf(ny[2].toString()), Integer.valueOf(nx[2].toString()), Double.valueOf(common.get("stand_lat1").toString()), Double.valueOf(common.get("stand_lat2").toString()), Double.valueOf(common.get("ref_lon").toString()), Double.valueOf(common.get("ref_lat").toString()));
+		   String domainCode=calculateCityService.getCityResult((double) xorig.get(xorig.size()-1), (double) yorig.get(yorig.size()-1), (double)dxs[dxs.length-1], (double)dys[dys.length-1], Integer.valueOf(ny.get(ny.size()-1).toString()), Integer.valueOf(nx.get(nx.size()-1).toString()), Double.valueOf(common.get("stand_lat1").toString()), Double.valueOf(common.get("stand_lat2").toString()), Double.valueOf(common.get("ref_lon").toString()), Double.valueOf(common.get("ref_lat").toString()));
 		   
 		   
 		   //将需要修改的数据添入对象
