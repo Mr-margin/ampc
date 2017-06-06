@@ -1,5 +1,8 @@
 package ampc.com.gistone.database.inter;
 
+
+import java.util.List;
+
 import ampc.com.gistone.database.model.TMessageLog;
 
 public interface TMessageLogMapper {
@@ -14,4 +17,15 @@ public interface TMessageLogMapper {
     int updateByPrimaryKeySelective(TMessageLog record);
 
     int updateByPrimaryKey(TMessageLog record);
+
+	/**
+	 * @Description: 查找情景的运行日志
+	 * @param scenarinoId
+	 * @return   
+	 * List<TMessageLog>  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月5日 上午11:59:03
+	 */
+	List<TMessageLog> selectListByscenarinoId(Long scenarinoId);
 }
