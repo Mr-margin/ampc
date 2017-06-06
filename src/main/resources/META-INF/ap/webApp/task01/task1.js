@@ -8,6 +8,7 @@ var rwEndDate;
 var basisArr, qjType;
 var qjType = 0;
 var __dsp = {};//用于存储请求信息，做Promise存储
+var modelstatusechart = echarts.init(document.getElementById("modelstatusechart"));
 var msg = {
     'id': 'qjMessage',
     'content': {
@@ -116,13 +117,23 @@ var msg = {
     	title:'模式运行状态',
     	onOpen:function(){
     		ajaxPost("/ModelExecuteStatus",{
-    			missionId:msg.content.rwId,
-    		   	userId:userId,
-    		    scenarinoType:msg.content.SCEN_TYPE,
-    		    missionType:msg.content.rwType,
-    		    scenarinoId:msg.content.qjId
-    		}).success(function(data){
-    			console.log();
+//    			missionId:msg.content.rwId,
+//    		   	userId:userId,
+//    		    scenarinoType:msg.content.SCEN_TYPE,
+//    		    missionType:msg.content.rwType,
+//    		    scenarinoId:msg.content.qjId
+    			/*测试数据*/
+    			    "missionId":353,
+    			   	"userId":1,
+    			    "scenarinoType":4,
+    			    "missionType":1,
+    			    "scenarinoId":852
+    		}).success(function(res){
+    			var data=res.data;
+    			console.log(data);
+    			if(data.execModel==1){
+    				moduleSimulationScheduleHorizontal(data.startTime, data.endTime, data.stopTime, data.stopData, data.moduleType, data.stopMessage, data.stopType, data.excutionMessage)
+    			}
     		})
     	}
     }))
@@ -1864,7 +1875,7 @@ function moduleSimulationScheduleVertical(startTime, endTime, stopTime, stopData
     })()
   };
 
-  mychart.setOption(_option);
+  modelstatusechart.setOption(_option);
 }
 /*定义一个用于绘画出逐列执行的函数
  * parameter:startTime、endTime、stopTime、stopData、xAxisData、stopMessage
@@ -2167,7 +2178,7 @@ function moduleSimulationScheduleHorizontal(startTime, endTime, stopTime, stopDa
       return _seriesData
     })()
   };
-  mychart.setOption(_option);
+  modelstatusechart.setOption(_option);
 }
 /*模式查看打开框函数*/
 function showModelStatusWindow(){
