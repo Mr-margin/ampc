@@ -1498,3 +1498,17 @@ function getQD() {
     })
     //$('#qd').append($('<option value="1">jjj</option>'))
 }
+/*查看有运行出错的任务*/
+function showErrorMission(){
+	//运行出错的查看需要更换treegrid接口
+	var url='new_mission/get_errormission_list';
+	$('#rwgltable').treegrid({
+		url:url,
+		ueryParams:{
+        	"page":1,
+        	"rows":10,
+            "sort": '',
+            "userId": userId
+        }
+	});
+}
