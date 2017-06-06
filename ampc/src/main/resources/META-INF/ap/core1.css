@@ -1679,8 +1679,8 @@ dl, dd {
   margin-top:20px;
 }
 /*//批量选择*/
-
-#citySelect #cityOption span{float: left;width: 100px;}
+#citySelect #cityOption{overflow: hidden;padding: 20px;}
+#citySelect #cityOption span{float: left;margin-right:30px!important;margin-bottom: 10px;}
 #citySelect #cityOption span *{float: left;}
 /*预案编辑的样式*/
 /*新增、编辑区域弹框的样式*/
