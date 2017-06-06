@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import oracle.net.aso.i;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -278,6 +279,7 @@ public class ModelExecuteStatusController {
 		String  tempdate = null;
 		//临时变量 用于计算该条消息是否属于该次数组
 		int i = 0,j = 0,k = 0;
+		
 		for (TMessageLog tMessageLog : tMessageLoglist) {
 			String tasksEndDate = tMessageLog.getTasksEndDate();
 			String messageType = tMessageLog.getMessageType();
@@ -327,6 +329,7 @@ public class ModelExecuteStatusController {
 									}
 									j=i;
 								}
+								
 							}else {
 								LogUtil.getLogger().info("ModelExecuteStatusController getexcutionMessagedetail 消息时间不在情景开始结束时间范围之内！");
 							}
@@ -341,6 +344,8 @@ public class ModelExecuteStatusController {
 				}
 			}
 		}
+		System.out.println(i);
+		outerArray[i-1] = execDetailMsg;
 		return outerArray;
 	}
 
