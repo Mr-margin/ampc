@@ -356,8 +356,9 @@ public class DomainController {
 		td.setUserId(userId);
 		//操作数据库添加数据
 		int s=tDomainMissionMapper.insertSelective(td);
+		TDomainMissionWithBLOBs TS=tDomainMissionMapper.selectbynameanddoc(td);
 		if(s!=0){
-			return AmpcResult.ok();
+			return AmpcResult.ok(TS.getDomainId());
 		}
 		LogUtil.getLogger().error("save_domain Domain创建数据库操作异常！");
 		return AmpcResult.build(1000, "Domain创建数据库操作异常！");	
