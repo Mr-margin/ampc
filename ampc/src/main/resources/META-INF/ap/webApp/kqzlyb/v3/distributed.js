@@ -221,10 +221,12 @@ $('#sTime-h').on('change', function (e) {//选择时间
 require(
     [
         "esri/map", "esri/graphic", "esri/layers/GraphicsLayer", "esri/geometry/Extent", "tdlib/gaodeLayer", "esri/SpatialReference", "esri/symbols/PictureMarkerSymbol",
-        "esri/symbols/PictureFillSymbol", "esri/layers/MapImageLayer", "esri/layers/MapImage", "esri/geometry/Point", "dojo/domReady!"
+        "esri/symbols/PictureFillSymbol", "esri/layers/MapImageLayer", "esri/layers/MapImage", "esri/geometry/Point", "dijit/registry", "esri/toolbars/draw", 
+        "esri/symbols/SimpleFillSymbol", "dojo/parser", "dijit/layout/ContentPane", 
+        "dojo/domReady!"
     ],
     function (Map, Graphic,  GraphicsLayer, Extent, gaodeLayer, SpatialReference, PictureMarkerSymbol, 
-    		PictureFillSymbol, MapImageLayer, MapImage, Point) {
+    		PictureFillSymbol, MapImageLayer, MapImage, Point, registry, Draw, SimpleFillSymbol, parser) {
 
     	dong.GraphicsLayer = GraphicsLayer;//画布层，用于加点，标线等等
     	dong.Extent = Extent;//空间范围
@@ -236,11 +238,15 @@ require(
         dong.MapImage = MapImage;//
         dong.Point = Point;
         dong.Graphic = Graphic;
+        dong.Draw = Draw;
+        dong.SimpleFillSymbol = SimpleFillSymbol;
 
         //arcgis代理，在GP服务时使用
 //      esri.config.defaults.io.proxyUrl = ArcGisUrl + "/Java/proxy.jsp";
 //      esri.config.defaults.io.alwaysUseProxy = false;
 
+        parser.parse();
+        
         app.map = new Map("map_in", {
             logo: false,
             center: [stat.cPointx, stat.cPointy],
@@ -263,7 +269,13 @@ require(
         app.mapimagelayer.setOpacity(changeMsg.opt);
 
 
-        app.map.on("load", initialize);//启动后立即执行获取数据
+//        app.map.on("load", createToolbar);//启动后立即执行获取数据
+        
+        registry.forEach(function(d) {
+        	if ( d.declaredClass === "dijit.form.Button" ) {
+        		d.on("click", activateTool);
+        	}
+        });
 
         //地图显示区域改变后触发事件
         app.map.on("extent-change", function (event) {
@@ -272,7 +284,15 @@ require(
         });
 
         initialize();//初始化函数
+        
+        function activateTool() {
+        	app.toolbar.activate(dong.Draw.LINE);
+        	app.map.hideZoomSlider();
+        }
+        
     });
+
+
 
 
 /*初始化函数*/
@@ -280,6 +300,11 @@ require(
  * 添加或修改物种选择框，同时关联计算最大最小日期并初始化日期控件
  */
 function initialize() {
+	
+	//实例化地图控件
+	app.toolbar = new dong.Draw(app.map, { showTooltips: true });
+	app.toolbar.on("draw-end", addToMap);
+	
     $('#species').empty();//清空物种分辨率，根据默认参数，添加物种分辨率的内容
     for (var i = 0; i < speciesArr[changeMsg.rms].length; i++) {
         $('#species').append($('<option>' + speciesArr[changeMsg.rms][i] + '</option>'))
@@ -297,6 +322,22 @@ function initialize() {
     //当时间获取完成，开始请求数据
 
 }
+
+/**
+ * 垂直剖面地图标线
+ * @param evt
+ */
+function addToMap(evt) {
+	var symbol = new dong.SimpleFillSymbol();
+	app.toolbar.deactivate();
+	app.map.showZoomSlider();
+	var graphic = new dong.Graphic(evt.geometry, symbol);
+	app.map.graphics.add(graphic);
+	
+//	graphic.geometry.paths[0]
+
+}
+
 
 /*请求可选日期范围*/
 function requestDate() {
