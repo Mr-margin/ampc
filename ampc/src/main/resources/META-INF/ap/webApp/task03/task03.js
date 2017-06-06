@@ -426,6 +426,7 @@ function getMapPoint(sector) {
         planId:qjMsg.planId,
         species:$('#hz_wrw').val(),
         sector:sector||'',
+        bigIndex:qjMsg.esCouplingId
     }
 
     ajaxPost_w(jianpaiUrl+'/search/companyPoint',parameter).success(function (res) {
@@ -518,7 +519,7 @@ function jianpaijisuan() {
 //  console.log(1);
     // $("#zhezhao").show();//计算中
     // $("#zhezhao_title").show();
-    ajaxPost('/jp/pmjp', {"planMeasureIds": planMeasureIds.substring(0, planMeasureIds.length - 1)}).success(function (res) {
+    ajaxPost('/jp/pmjp', {bigIndex:qjMsg.esCouplingId,"planMeasureIds": planMeasureIds.substring(0, planMeasureIds.length - 1)}).success(function (res) {
 //		console.log(JSON.stringify(res));
         metTable_hj_info();
         // $("#zhezhao").hide();//计算中
@@ -672,9 +673,11 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
         
         app.infoTemplate = new InfoTemplate();
         app.infoTemplate.setTitle("企业排放信息");
-        app.infoTemplate.setContent("<b>企业名称: </b>${companyname}<br/>" +
-					                "<b>当前行业: </b>${smallIndex}<br/><br/> +" +
-					                "<table></table>");
+        app.infoTemplate.setContent("<b>企业名称: </b>${companyname}<br/><br/>" +
+					                "<b>当前行业: </b>${smallIndex}<br/><br/>" +
+                                    "<b>控制量: </b>${controlNum}<br/><br/>" +
+                                    "<b>减排量: </b>${jianpaiNum}<br/><br/>");
+
         
 
         for (var i = 0; i < 1; i++) {
@@ -780,8 +783,9 @@ function add_point(col) {
                     point.smallIndex = vol.smallIndex;
                     
                     var attr = { "companyname": vol.companyname,
-                    			 "smallIndex": vol.smallIndex};
-                    
+                    			 "smallIndex": vol.smallIndex,
+                                "controlNum":'',
+                                "jianpaiNum":''};
                     var graphic = new dong.Graphic(point, createSymbol(vol.smallIndex), attr, app.infoTemplate);
                     app.gLyr.add(graphic);
                     
@@ -809,10 +813,24 @@ function createSymbol(smallIndex){
  * 企业点的事件
  */
 function capitalclick(){
-	var pt=event.graphic.geometry;//当前点击的marker点
-	
+    var pt=event.graphic.geometry;//当前点击的marker点
 //	event.graphic.attributes.companyname = "111111";
-	
+    var url = '';
+    var par = {
+        userId:userId,
+        bigIndex:qjMsg.esCouplingId,
+        planId:qjMsg.planId,
+        smallIndex:pt.smallIndex,
+        companyId:pt.companyId
+    }
+
+    ajaxPost(url,par).success(function (res) {
+        console.log(res);
+        event.graphic.attributes.controlNum = 100;//控制量
+        event.graphic.attributes.jianpaiNum = 0.5;//减排量
+    })
+    event.graphic.attributes.controlNum = 10000;//控制量
+    event.graphic.attributes.jianpaiNum = 0.005;//减排量
 	
 	
 	app.mapList[0].infoWindow.show(pt);//显示气泡框
@@ -996,6 +1014,7 @@ function doSearch(){
         toolbar: '#searchTool',
         queryParams:function (params) { //ajax 传递的参数  分页
             var data = {};
+            data.bigIndex = qjMsg.esCouplingId;
             data.userId = userId;
             data.planId = qjMsg.planId;
             data.species = $("#hz_wrw").val();
@@ -1047,6 +1066,7 @@ function initConpamyTable(){
         toolbar: '#searchTool',
         queryParams:function (params) { //ajax 传递的参数  分页
             var data = {};
+            data.bigIndex = qjMsg.esCouplingId;
             data.userId = userId;
             data.planId = qjMsg.planId;
             data.species = $("#hz_wrw").val();
@@ -1069,95 +1089,3 @@ function showDetail(){
 $("#close_scene").click(function(){
     $("#detalMsg").window("close")
 })
-
-
-var colorArr = [
-    [0, 0, 255,0.9], [0, 21, 255,0.9], [0, 43, 255,0.9], [0, 64, 255,0.9], [0, 85, 255,0.9], [0, 106, 255,0.9], [0, 128, 255,0.9], [0, 149, 255,0.9], [0, 170, 255,0.9], [0, 191, 255,0.9], [0, 213, 255,0.9], [0, 234, 255,0.9], [
-        0, 255, 255,0.9], [
-        12, 255, 255,0.9], [
-        24, 255, 255,0.9], [
-        35, 255, 255,0.9], [
-        47, 255, 255,0.9], [
-        59, 255, 255,0.9], [
-        71, 255, 255,0.9], [
-        82, 255, 255,0.9], [
-        94, 255, 255,0.9], [
-        106, 255, 255,0.9], [
-        118, 255, 255,0.9], [
-        129, 255, 255,0.9], [
-        141, 255, 255,0.9], [
-        153, 255, 255,0.9], [
-        140, 255, 234,0.9], [
-        128, 255, 213,0.9], [
-        115, 255, 191,0.9], [
-        102, 255, 170,0.9], [
-        89, 255, 149,0.9], [
-        77, 255, 128,0.9], [
-        64, 255, 106,0.9], [
-        51, 255, 85,0.9], [
-        38, 255, 64,0.9], [
-        26, 255, 43,0.9], [
-        13, 255, 21,0.9], [
-        0, 255, 0,0.9], [
-        16, 255, 0,0.9], [
-        31, 255, 0,0.9], [
-        47, 255, 0,0.9], [
-        63, 255, 0,0.9], [
-        78, 255, 0,0.9], [
-        94, 255, 0,0.9], [
-        110, 255, 0,0.9], [
-        126, 255, 0,0.9], [
-        141, 255, 0,0.9], [
-        157, 255, 0,0.9], [
-        173, 255, 0,0.9], [
-        188, 255, 0,0.9], [
-        204, 255, 0,0.9], [
-        207, 255, 0,0.9], [
-        210, 255, 0,0.9], [
-        214, 255, 0,0.9], [
-        217, 255, 0,0.9], [
-        220, 255, 0,0.9], [
-        223, 255, 0,0.9], [
-        226, 255, 0,0.9], [
-        230, 255, 0,0.9], [
-        233, 255, 0,0.9], [
-        236, 255, 0,0.9], [
-        239, 255, 0,0.9], [
-        242, 255, 0,0.9], [
-        245, 255, 0,0.9], [
-        249, 255, 0,0.9], [
-        252, 255, 0,0.9], [
-        255, 255, 0,0.9], [
-        255, 248, 0,0.9], [
-        255, 240, 0,0.9], [
-        255, 233, 0,0.9], [
-        255, 225, 0,0.9], [
-        255, 218, 0,0.9], [
-        255, 210, 0,0.9], [
-        255, 203, 0,0.9], [
-        255, 195, 0,0.9], [
-        255, 188, 0,0.9], [
-        255, 180, 0,0.9], [
-        255, 173, 0,0.9], [
-        255, 165, 0,0.9], [
-        255, 158, 0,0.9], [
-        255, 150, 0,0.9], [
-        255, 143, 0,0.9], [
-        255, 135, 0,0.9], [
-        255, 128, 0,0.9], [
-        255, 120, 0,0.9], [
-        255, 112, 0,0.9], [
-        255, 104, 0,0.9], [
-        255, 96, 0,0.9], [
-        255, 88, 0,0.9], [
-        255, 80, 0,0.9], [
-        255, 72, 0,0.9], [
-        255, 64, 0,0.9], [
-        255, 56, 0,0.9], [
-        255, 48, 0,0.9], [
-        255, 40, 0,0.9], [
-        255, 32, 0,0.9], [
-        255, 24, 0,0.9], [
-        255, 16, 0,0.9], [
-        255, 8, 0,0.9], [
-        255, 0, 0,0.9]];
