@@ -247,4 +247,13 @@
     set ID_EFFECTIVE ='0'
     where DOMAIN_ID = #{domainId,jdbcType=DECIMAL}
   </update>
+  <select id="selectbynameanddoc" resultMap="ResultMapWithBLOBs" parameterType="ampc.com.gistone.database.model.TDomainMissionWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from T_DOMAIN_MISSION
+    where ID_EFFECTIVE ='1' AND USER_ID = #{userId,jdbcType=DECIMAL} AND DOMAIN_NAME = #{domainName,jdbcType=OTHER} AND DOMAIN_DOC = #{domainDoc,jdbcType=OTHER}
+  	AND CREATE_STATUS = #{createStatus,jdbcType=OTHER}
+  </select>
 </mapper>
