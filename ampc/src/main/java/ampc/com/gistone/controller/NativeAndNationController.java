@@ -45,6 +45,7 @@ import ampc.com.gistone.extract.ExtractConfig;
 import ampc.com.gistone.extract.ResultPathUtil;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
+import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.LogUtil;
 import ampc.com.gistone.util.RegUtil;
 
@@ -73,14 +74,17 @@ public class NativeAndNationController {
 	@Autowired
 	public TAddressMapper	tAddressMapper;
 	
+	//读取路径的帮助类
+	@Autowired
+	private ConfigUtil configUtil;
+	
 	private TEsNative tEsNative;
 	
 	//定义公用的jackson帮助类
 	private ObjectMapper mapper=new ObjectMapper();
 	
-//	private TEsNativeTp tEsNativeTp;
-	
 	private final static Logger logger = LoggerFactory.getLogger(ResultPathUtil.class);
+	
 	private ExtractConfig extractConfig;
 	
 	/**
@@ -1733,14 +1737,23 @@ public class NativeAndNationController {
 			//模板ID
 			couplingMap.put("templateId", nativeTpId);
 			//返回结果的路径
+			//读取config.properties配置文件的url
+			String  resultUrl = configUtil.getYunURL()+"summary/regions";
+			
 			couplingMap.put("serverPath", "返回结果的路径");
 			//设置参数查询行业版本
 			TSectorExcel tSectorExcel = new TSectorExcel();
+			tSectorExcel.setUserId(userId);
 			//模板ID参数
 			tSectorExcel.setDetailedListId(nativeTpId);
 			//版本号参数
 			//查询得到版本号
 			String versionNumber = tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
+			if(versionNumber.equals("")||versionNumber==null){
+				 tSectorExcel=new TSectorExcel();
+				 tSectorExcel.setDetailedListId(nativeTpId);
+				 versionNumber=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
+			}
 			//行业版本
 			couplingMap.put("versionExcelId", versionNumber);
 //			couplingMap.put("meicCityConfig", "[{"meicCityId":"清单数据ID","regionId":"单一行政区划4位","sectorName":"行业名称"},{},{}]");
