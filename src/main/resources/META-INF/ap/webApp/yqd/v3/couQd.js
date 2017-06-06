@@ -262,7 +262,6 @@ function coupSetQd(coupId) {
     $("#prevCoup").hide();//上一步按钮
     $(".navRight").hide();
 }
-var cityList='';
 var checkCity=[];
 var cityData=[];
 var industryData=[];
@@ -289,6 +288,12 @@ function nextCoup(){//点击下一步按钮
         for(var i=0;i<localQd.length;i++){
             localQdId.push(localQd[i].esNativeId)
         }
+        if(cityData.length>0){
+            cityData=[]
+        }
+        if(industryData.length>0){
+            industryData=[]
+        }
         if(localQd!=''&&localQd!=null&&localQd!=undefined){
             $(".cloudui .coupSetTitleList").children("li").eq(1).removeClass("active");
             $(".cloudui .coupSetTitleList").children("li").eq(2).addClass("active");
@@ -303,7 +308,7 @@ function nextCoup(){//点击下一步按钮
                    var cityNames=res.data.data.cityNames;
                    var industryNames=res.data.data.industryNames;
 
-                   //城市数据添加到数组中
+                    //城市数据添加到数组中
                     $.each(cityNames, function (id, cityNames) {
                         cityData.push({
                             "cityId":id,
@@ -318,6 +323,8 @@ function nextCoup(){//点击下一步按钮
                         });
                     });
                     //城市数据添加到弹窗中
+                    $("#cityOption span").remove()
+                    var cityList="";
                     for(var i=0;i<cityData.length;i++){
                         cityList+="<span><input type='radio' name='cityName' value=\'"+cityData[i].cityId+"\' /><label>"+cityData[i].cityName+"</label></span>";
                     }
@@ -337,6 +344,7 @@ function nextCoup(){//点击下一步按钮
 //选择城市进行提交
 var cityCurren={};
 function submitCity(){
+    // $("input[name=cityName]").removeAttr("checked");
     for(var i=0;i<cityData.length;i++){
         if($('input[name=cityName]').eq(i).is(":checked")){
             checkCity.push({
@@ -346,6 +354,7 @@ function submitCity(){
             cityCurren.cityId=$('input[name=cityName]').eq(i).val();
             cityCurren.cityName=cityData[i].cityName;
             //点击过的input radio 再不可选
+            $('#citySelect #cityOption span').eq(i).children("i"). remove()
             $('#citySelect #cityOption span').eq(i).append("<i class='en-checkmark' style='color:#d8453d'></i>")
         }
     }
@@ -509,10 +518,12 @@ Array.prototype.unique = function(){
     }
     return res;
 }
+
 //点击保存按钮保存耦合清单 全国清单 本地清单 企业 行业 等信息
 var globelCheckedCity=[];//耦合后涉及的城市信息
 var globelCheckedQd=[];//保存选择的 行政-行业-清单 一一对应
 var allCity=[];//只要选择了清单 获取的所有城市的信息 包括重复的
+var singleCheckCity=[];
 function saveAllId(){ //选好清单以后进行保存
     for(var i=0;i<industryData.length;i++){
         if($(".selectQd").eq(i).val()!="w_0"){
@@ -537,10 +548,16 @@ function saveAllId(){ //选好清单以后进行保存
     globelCheckedCity=allCity.unique()//对所有耦合涉及的城市进行去重
 
     var localQdId=[];
+
     for(var m=0;m<localQd.length;m++){ //获取第二步选择的本地清单的ID
         localQdId.push(localQd[m].esNativeId)
     }
-    if(checkCity.length<cityData.length){//所有的城市如果未选择完成 则继续选择城市进行选择清单
+    var checkCityName=[];
+    for(var nm=0;nm<checkCity.length;nm++){
+        checkCityName.push(checkCity[nm].cityId)
+    }
+    singleCheckCity=checkCityName.unique()//去重
+    if(singleCheckCity.length<cityData.length){//所有的城市如果未选择完成 则继续选择城市进行选择清单
         $("#citySelect").window("open");
     }else{//所有城市清单选择完成 进行所有选择数据的提交
         meicCityConfig=globelCheckedQd;//城市 行业 清单
