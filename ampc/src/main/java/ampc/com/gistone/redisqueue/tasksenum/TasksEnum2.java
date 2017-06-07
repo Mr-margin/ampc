@@ -39,7 +39,7 @@ public enum TasksEnum2 {
 		this.index = index;
 	}
 	public static String getname2(int index) {
-		for (TasksEnum1 c : TasksEnum1.values()) {
+		for (TasksEnum2 c : TasksEnum2.values()) {
 			if (c.getIndex()==index) {
 				return c.getName();
 			}
