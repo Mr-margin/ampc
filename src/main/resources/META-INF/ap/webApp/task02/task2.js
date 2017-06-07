@@ -800,7 +800,6 @@ function showTimeline(data) {
         var pointInPixel = [params.offsetX, params.offsetY];
         var pointInGrid = plancharts.convertFromPixel('grid', pointInPixel);
         var labelIndex = Math.floor(pointInGrid[1] / 3);
-        console.log(allData[labelIndex].cityCodes.length > 0 || allData[labelIndex].countyCodes.length > 0 || allData[labelIndex].provinceCodes.length > 0);
         if (allData[labelIndex].cityCodes.length == 0 && allData[labelIndex].countyCodes.length == 0 && allData[labelIndex].provinceCodes.length == 0) {
             areaIndex=labelIndex;
             $('#settingqjbox').window('open').window('center').find('.step1 button').attr('data-qjid', allData[labelIndex].areaId);
@@ -1297,7 +1296,7 @@ function modal_Result(featureSet) {
 }
 
 /**********************************任务管理进来地图*****************************************************/
-
+var qnumber = 0;//记录有效的需要查询的次数
 //根据区域在地图上显示
 function app2() {
     if (app.map1 == "" || app.map1 == null || app.map1 == undefined) {
@@ -1305,18 +1304,22 @@ function app2() {
     }
     if (allData != "" && allData != null && allData != undefined) {
         app.gLyr1.clear();
-        var extent = new dong.Extent();
+        app.extent = new dong.Extent();
         var tthg = true;
 
         var query = new dong.Query();
+        
+        var qwhere = [];//转换查询条件，将行政区划转换为查询的编码
         $.each(allData, function (k, item) {
-            var symbol = new dong.SimpleFillSymbol("solid", app.outline, new dong.Color(sz_corlor[k]));
-            var t1 = "", t2 = "", t3 = "";
+        	var obj = {};
+        	obj.symbol = new dong.SimpleFillSymbol("solid", app.outline, new dong.Color(sz_corlor[k]));
+        	
+        	obj.t1 = "", obj.t2 = "", obj.t3 = "";
             if (item.provinceCodes != "" && item.provinceCodes != null && item.provinceCodes != undefined) {
                 if (item.provinceCodes.length > 0) {//省
                     $.each(item.provinceCodes, function (i, vol) {
                         $.each(vol, function (m, col) {
-                            t1 += "'" + m + "',";
+                        	obj.t1 += "'" + m + "',";
                         });
                     });
                 }
@@ -1325,7 +1328,7 @@ function app2() {
                 if (item.cityCodes.length > 0) {
                     $.each(item.cityCodes, function (i, vol) {
                         $.each(vol, function (m, col) {
-                            t2 += "'" + m + "',";
+                        	obj.t2 += "'" + m + "',";
                         });
                     });
                 }
@@ -1334,64 +1337,92 @@ function app2() {
                 if (item.countyCodes.length > 0) {
                     $.each(item.countyCodes, function (i, vol) {
                         $.each(vol, function (m, col) {
-                            t3 += "'" + m + "',";
+                        	obj.t3 += "'" + m + "',";
                         });
                     });
                 }
             }
-            if (t1 != "") {
-                query.where = "ADMINCODE IN (" + t1.substring(0, t1.length - 1) + ")";
+            if (obj.t1 != "") {
+            	qnumber++;
+            }
+            if (obj.t2 != "") {
+            	qnumber++;
+            }
+            if (obj.t3 != "") {
+            	qnumber++;
+            }
+            qwhere.push(obj);
+        });
+        
+        
+        var hkj = 0;//记录每个有效的查询
+        $.each(qwhere, function (k, item) {
+            if (item.t1 != "") {
+                query.where = "ADMINCODE IN (" + item.t1.substring(0, item.t1.length - 1) + ")";
                 app.featureLayer1.queryFeatures(query, function (featureSet) {
                     for (var i = 0, il = featureSet.features.length; i < il; i++) {
                         var graphic = featureSet.features[i];
                         if (tthg) {
-                            extent = graphic.geometry.getExtent();
+                        	app.extent = graphic.geometry.getExtent();
                             tthg = false;
                         } else {
-                            extent = extent.union(graphic.geometry.getExtent());
+                        	app.extent = app.extent.union(graphic.geometry.getExtent());
                         }
-                        app.gLyr1.add(new dong.Graphic(graphic.geometry, symbol));
+                        app.gLyr1.add(new dong.Graphic(graphic.geometry, item.symbol));
                     }
-                    app.map1.setExtent(extent.expand(1.5));
+                    hkj++;
+                    setExtent_z(hkj);
                 });
             }
 
-            if (t2 != "") {
-                query.where = "ADMINCODE IN (" + t2.substring(0, t2.length - 1) + ")";
+            if (item.t2 != "") {
+                query.where = "ADMINCODE IN (" + item.t2.substring(0, item.t2.length - 1) + ")";
                 app.featureLayer2.queryFeatures(query, function (featureSet) {
                     for (var i = 0, il = featureSet.features.length; i < il; i++) {
                         var graphic = featureSet.features[i];
                         if (tthg) {
-                            extent = graphic.geometry.getExtent();
+                        	app.extent = graphic.geometry.getExtent();
                             tthg = false;
                         } else {
-                            extent = extent.union(graphic.geometry.getExtent());
+                        	app.extent = app.extent.union(graphic.geometry.getExtent());
                         }
-                        app.gLyr1.add(new dong.Graphic(graphic.geometry, symbol));
+                        app.gLyr1.add(new dong.Graphic(graphic.geometry, item.symbol));
                     }
-                    app.map1.setExtent(extent.expand(1.5));
+                    hkj++;
+                    setExtent_z(hkj);
                 });
             }
 
-            if (t3 != "") {
-                query.where = "ADMINCODE IN (" + t3.substring(0, t3.length - 1) + ")";
+            if (item.t3 != "") {
+                query.where = "ADMINCODE IN (" + item.t3.substring(0, item.t3.length - 1) + ")";
                 app.featureLayer3.queryFeatures(query, function (featureSet) {
                     for (var i = 0, il = featureSet.features.length; i < il; i++) {
                         var graphic = featureSet.features[i];
                         if (tthg) {
-                            extent = graphic.geometry.getExtent();
+                        	app.extent = graphic.geometry.getExtent();
                             tthg = false;
                         } else {
-                            extent = extent.union(graphic.geometry.getExtent());
+                        	app.extent = app.extent.union(graphic.geometry.getExtent());
                         }
-                        app.gLyr1.add(new dong.Graphic(graphic.geometry, symbol));
+                        app.gLyr1.add(new dong.Graphic(graphic.geometry, item.symbol));
                     }
-                    app.map1.setExtent(extent.expand(1.5));
+                    hkj++;
+                    setExtent_z(hkj);
                 });
             }
 
         });
     }
+}
+
+/**
+ * 每次查询都执行一下定位，只有最后一次查询才开始真的定位
+ * @param ttpye
+ */
+function setExtent_z(ttpye){
+	if(ttpye == qnumber){
+		app.map1.setExtent(app.extent.expand(1.5));
+	}
 }
 
 /*---------------------------------------------------以上是地图部分----------------------------------------------------------*/
