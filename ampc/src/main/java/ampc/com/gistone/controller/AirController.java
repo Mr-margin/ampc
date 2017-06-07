@@ -124,7 +124,9 @@ public class AirController {
 		    TScenarinoDetail tScenarinoDetail = this.tScenarinoDetailMapper.selectendStart(tsMap);
 		    //结束时间
 		    if(tScenarinoDetail==null){
-		    	return AmpcResult.ok("数据库未查询到最近一次预报情景的结束日期");
+		    	obj.put("msg", false);
+		    	obj.put("msgContent", "数据库未查询到最近一次预报情景的结束日期");
+		    	return AmpcResult.ok(obj);
 		    }else{
 		    	endDate=tScenarinoDetail.getScenarinoEndDate();
 		    }
@@ -145,6 +147,7 @@ public class AirController {
 		    	obj.put("mintime", tScenarinoDetail.getScenarinoStartDate());//开始时间
 		    }
 		    obj.put("nowtime", date.getTime());
+		    obj.put("msg", true);
 			LogUtil.getLogger().info("空气质量预报时间查询成功");
 			return AmpcResult.ok(obj);
 		}catch(Exception e){
