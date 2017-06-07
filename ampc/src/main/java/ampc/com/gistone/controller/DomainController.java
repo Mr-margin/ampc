@@ -435,10 +435,6 @@ public class DomainController {
 		}
 		Long userId=Long.valueOf(data.get("userId").toString());
 		//获取domainDoc(分层描述)
-		if(!RegUtil.CheckParameter(data.get("domainDoc"), null, null, false)){
-			LogUtil.getLogger().error("save_domain  domainDoc为空!");
-			return AmpcResult.build(1003, "domainDoc为空!");
-		}
 		Object domainDoc=data.get("domainDoc");
 		//获取domainName(domain名称)
 		if(!RegUtil.CheckParameter(data.get("domainName"), null, null, false)){
