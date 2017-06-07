@@ -321,6 +321,18 @@ function ajaxPost(url, parameter) {
     })
 }
 
+function ajaxPost_async_false(url, parameter) {
+    parameterPar.data = parameter;
+    var p = JSON.stringify(parameterPar);
+    return $.ajax('/ampc'+url, {
+        contentType: "application/json",
+        type: "POST",
+        async: true,
+        dataType: 'JSON',
+        data: p
+    })
+}
+
 //function ajaxPost_w(url, parameter) {
 //	parameterPar.data = parameter;
 //    var p = JSON.stringify(parameterPar);
