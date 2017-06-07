@@ -348,13 +348,18 @@ function submitCity(){
     // $("input[name=cityName]").removeAttr("checked");
     var row=$("#cityOptionTable").datagrid("getSelected");
     //选择的城市添加到数组
-    checkCity.push({
-                    "cityId":row.cityId,
-                    "cityName":row.cityName
-                })
-    //当前选择的城市
-    cityCurren.cityId=row.cityId;
-    cityCurren.cityName=row.cityName;
+    if(row){
+        checkCity.push({
+            "cityId":row.cityId,
+            "cityName":row.cityName
+        })
+        //当前选择的城市
+        cityCurren.cityId=row.cityId;
+        cityCurren.cityName=row.cityName;
+    }else{
+        swal("请选择城市","erro")
+    }
+
     // for(var i=0;i<cityData.length;i++){
     //     if($('input[name=cityName]').eq(i).is(":checked")){
     //         checkCity.push({
@@ -384,6 +389,7 @@ function prevCoup(){
         $(".coupSetCon").eq(0).hide();//隐藏其他步骤
         $(".coupSetCon").eq(1).show();
         $(".coupSetCon").eq(2).hide();
+        localQdId=[];
         // $(".coupSetConSecond").layout()//耦合第二步进行渲染
         // mbSelect()
     }else if(conText=="第二步"){
@@ -394,6 +400,7 @@ function prevCoup(){
         $(".coupSetCon").eq(0).show();//隐藏其他步骤
         $(".coupSetCon").eq(1).hide();
         $(".coupSetCon").eq(2).hide();
+        // checkQgQd={};
     }
 }
 
@@ -506,6 +513,7 @@ function coupCity(cityCurren,industryData) {
 //城市选择窗口
 $("#citySelect").window({
     width:600,  //easyui 窗口宽度
+    height:400,
     collapsible:false, //easyui 自带的折叠按钮
     maximizable:false,//easyui 自带的最大按钮
     minimizable:false,//easyui 自带的最小按钮
@@ -600,7 +608,7 @@ function cityTable(cityData,checkRow) {
                         return "<span><i class='en-checkmark' style='color:red;'></i></span>";
                     }
                 }
-            }}
+            },width:100}
         ]],
         data:cityData,
         singleSelect:'true'
@@ -622,7 +630,7 @@ function submitCheckQd() {
             console.log("失败")
         }
     })
-    $("#citySelect").window("close")
+    // $("#citySelect").window("close")
     // $(".tableBox").show();//点击提交以后页面返回首页
     // $(".coupSet").hide();
     // $(".navRight").show();
