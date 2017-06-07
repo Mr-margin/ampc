@@ -26,8 +26,6 @@ public class CLIHelper {
 		} catch (Exception e) {
 			logger.debug("[CLIHelper | process]", e);
 			return false;
-		}finally {
-			process.destroy();
 		}
 	}
 
