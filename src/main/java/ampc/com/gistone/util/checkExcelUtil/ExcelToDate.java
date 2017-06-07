@@ -408,10 +408,8 @@ public class ExcelToDate {
 	public List<TSectordocExcel> ReadSectorDOC(String fileName,Long versionId,Long userId,List<String> msg,String outPath,Long templateId){ 
 		//定义结果  默认false 
 	    boolean isError=false;
-		//String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_1描述文件.xlsx";
-		//String path="C:\\Users\\Mr_Wang\\Desktop\\应急系统新_1描述文件.xlsx";
 		//获取文件名称
-		String file=fileName.substring(fileName.lastIndexOf("\\")+1);
+		String file=fileName.substring(fileName.lastIndexOf("/")+1);
 		//返回结果的集合
 		List<TSectordocExcel> sectorDocList=new ArrayList<TSectordocExcel>();
 		//生成校验清单文件的数据集合
@@ -867,13 +865,11 @@ public class ExcelToDate {
 	* @param path  
 	*/
 	public List<TQueryExcel> ReadQuery(String fileName,Long versionId,Long userId,List<String> msg,String outPath,Long templateId){  
-		//String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_2筛选逻辑.xlsx";
 		//定义结果  默认false 
 	    boolean isError=false;
-		//String path="C:\\Users\\Mr_Wang\\Desktop\\应急系统新_2筛选逻辑.xlsx";
 		List<TQueryExcel> queryList=new ArrayList<TQueryExcel>();
 		//获取文件名称
-		String file=fileName.substring(fileName.lastIndexOf("\\")+1);
+		String file=fileName.substring(fileName.lastIndexOf("/")+1);
 		//初始化错误类型Map
 		errorMap=new HashMap();
 		try {  
@@ -1070,13 +1066,11 @@ public class ExcelToDate {
 	* @param path  
 	*/
 	public List<TSectorExcel> ReadSector(String fileName,String versionId,Long userId,List<String> msg,String outPath,Long templateId){  
-		//String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_4行业匹配.xlsx";
 		List<TSectorExcel> sectorList=new ArrayList<TSectorExcel>();
 		//定义结果  默认false 
 	    boolean isError=false;
-		//String path="C:\\Users\\Mr_Wang\\Desktop\\应急系统新_4行业匹配.xlsx";
 		//获取文件名称
-		String file=fileName.substring(fileName.lastIndexOf("\\")+1);
+		String file=fileName.substring(fileName.lastIndexOf("/")+1);
 		//初始化错误类型Map
 		errorMap=new HashMap();
         try {  
@@ -1285,12 +1279,10 @@ public class ExcelToDate {
 	* @param path  
 	*/
 	public boolean CheckNative(String fileName,List<String> msg,String outPath){  
-		//String path="E:\\项目检出\\curr\\docs\\02.应急系统设计文档\\07.行业划分和筛选条件\\应急系统新_4行业匹配.xlsx";
 		//定义结果  默认false 
 	    boolean isError=false;
-		//String path="C:\\Users\\Mr_Wang\\Desktop\\应急系统新_3清单数据.xlsx";
 		//获取文件名称
-		String file=fileName.substring(fileName.lastIndexOf("\\")+1);
+		String file=fileName.substring(fileName.lastIndexOf("/")+1);
 		//初始化错误类型Map
 		errorMap=new HashMap();
         try {  
