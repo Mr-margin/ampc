@@ -117,17 +117,17 @@ var msg = {
     	title:'模式运行状态',
     	onOpen:function(){
     		ajaxPost("/ModelExecuteStatus",{
-//    			missionId:msg.content.rwId,
-//    		   	userId:userId,
-//    		    scenarinoType:msg.content.SCEN_TYPE,
-//    		    missionType:msg.content.rwType,
-//    		    scenarinoId:msg.content.qjId
+    			missionId:msg.content.rwId,
+    		   	userId:userId,
+    		    scenarinoType:msg.content.SCEN_TYPE,
+    		    missionType:msg.content.rwType,
+    		    scenarinoId:msg.content.qjId
     			/*测试数据*/
-    			    "missionId":353,
+/*    			    "missionId":353,
     			   	"userId":1,
     			    "scenarinoType":4,
     			    "missionType":1,
-    			    "scenarinoId":852
+    			    "scenarinoId":852*/
     		}).success(function(res){
     			var data=res.data;
     			console.log(data);
@@ -415,9 +415,11 @@ function esCouplingNameFormatter(value, row, index) {
 function missionAddTimeFormatter(value, row, index) {
     if (typeof row.missionAddTime === 'undefined') {
         if (typeof row.scenarinoStatusTitle === 'undefined') {
-            if (row.scenarinoStatus == 3 || row.scenarinoStatus == 6) {
-                return '<a href="javascript:showModelStatusWindow()" class="statusType">' + row.scenarinoStatuName + '</a>'
-            } else {
+            if (row.scenarinoStatus == 3) {
+                return '<a href="javascript:" class="statusType">' + row.scenarinoStatuName + '</a>'
+            } else if(row.scenarinoStatus == 6){
+            	return '<a href="javascript:showModelStatusWindow()" class="statusType">' + row.scenarinoStatuName + '</a>'
+            }else {
             	if(row.expand4){
             		return row.scenarinoStatuName+'<span style="color:red">('+row.expand4+')</span>';
             	}else{
