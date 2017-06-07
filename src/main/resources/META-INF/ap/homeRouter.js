@@ -102,7 +102,7 @@ $.when(dps_um).then(function(){
             view: '.ui-view',// 页面路由的div
             router: {
                 '/sy': {        //首页
-                    templateUrl: 'a.html',
+                    templateUrl: 'main.html',
                     controller: ''
                 },
                 '/yqd_v1': {       //源清单-全国清单
