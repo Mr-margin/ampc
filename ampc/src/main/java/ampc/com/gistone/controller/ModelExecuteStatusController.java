@@ -287,76 +287,49 @@ public class ModelExecuteStatusController<E> {
 		String  tempdate = null;
 		//临时变量 用于计算该条消息是否属于该次数组
 		int i = 0,j = 0,k = 0;
-		
-		for (TMessageLog tMessageLog : tMessageLoglist) {
+		for (TMessageLog tMessageLog : newtMessageLoglist) {
 			String tasksEndDate = tMessageLog.getTasksEndDate();
 			String messageType = tMessageLog.getMessageType();
 			String resultDesc = tMessageLog.getResultDesc();
 			String resultCode = tMessageLog.getResultCode();
-			if ("model.start.result".equals(messageType.trim())) {
-				if (tasksEndDate!=null) {
-					try {
-						Date taskDate = DateUtil.StrtoDateYMD(tasksEndDate, pattern);
-						//与情景开始时间比较
-						int compareTo = taskDate.compareTo(tasksScenarinoStartDate);
-						//与情景结束时间比较
-						int compareTo2 = taskDate.compareTo(tasksScenarinoEndDate);
-						
-						if (resultDesc==null&&"0".equals(resultCode.trim())) {
-							if (compareTo>=0&&compareTo2<=0) {
-								if (map.get(tasksEndDate)!=null) {
-									map.put(tasksEndDate, i);
-									if (j==i) {
-										Date messageTime = tMessageLog.getMessageTime();
-										String indextime = DateUtil.DATEtoString(messageTime, "yyyy-MM-dd HH:mm:ss");
-										if (0==k) {
-											String str = (tempdate+"\r\n"+ indextime).toString();
-											execDetailMsg[k] = str;
-											tempdate = indextime;
-										}else {
-											String str = (tempdate+"\r\n"+ indextime).toString();
-											execDetailMsg[k] = str;
-											tempdate = indextime;
-										}
-										k++;
-									}
-								}else {
-									map.put(tasksEndDate, i);
-									i++;
-									Date messageTime = tMessageLog.getMessageTime();
-									String indextime = DateUtil.DATEtoString(messageTime, "yyyy-MM-dd HH:mm:ss");
-									Integer messageIndex = tMessageLog.getMessageIndex();
-									if (0==messageIndex) {
-										tempdate = indextime;
-									}
-									k=0;
-									if (j>=1) {
-										outerArray[i-2] = execDetailMsg;
-										//清空数组
-										execDetailMsg = new String[tasksLength];
-									}
-									j=i;
-								}
-								
-							}else {
-								LogUtil.getLogger().info("ModelExecuteStatusController getexcutionMessagedetail 消息时间不在情景开始结束时间范围之内！");
-							}
-						}else {
-							LogUtil.getLogger().info("ModelExecuteStatusController getexcutionMessagedetail 该条消息不可用！tMessageLog："+tMessageLog);
-						}
-					} catch (Exception e) {
-						LogUtil.getLogger().error("ModelExecuteStatusController getexcutionMessagedetail tasksendDate转为时间出错！",e.getMessage());
+			Integer messageIndex = tMessageLog.getMessageIndex();
+			if (map.get(tasksEndDate)!=null) {
+				map.put(tasksEndDate, i);
+				if (j==i) {
+					Date messageTime = tMessageLog.getMessageTime();
+					String indextime = DateUtil.DATEtoString(messageTime, "yyyy-MM-dd HH:mm:ss");
+					if (0==k) {
+						String str = (tempdate+"\r\n"+ indextime).toString();
+						execDetailMsg[k] = str;
+						tempdate = indextime;
+					}else {
+						String str = (tempdate+"\r\n"+ indextime).toString();
+						execDetailMsg[k] = str;
+						tempdate = indextime;
 					}
-				}else {
-					LogUtil.getLogger().info("ModelExecuteStatusController getexcutionMessagedetail 该条消息不可用！tMessageLog："+tMessageLog);
+					k++;
 				}
+			}else {
+				map.put(tasksEndDate, i);
+				i++;
+				Date messageTime = tMessageLog.getMessageTime();
+				String indextime = DateUtil.DATEtoString(messageTime, "yyyy-MM-dd HH:mm:ss");
+				if (0==messageIndex) {
+					tempdate = indextime;
+				}
+				k=0;
+				if (j>=1) {
+					outerArray[i-2] = execDetailMsg;
+					//清空数组
+					execDetailMsg = new String[tasksLength];
+				}
+				j=i;
+			}
+			if (i>=1) {
+				outerArray[i-1] = execDetailMsg;
 			}
 		}
-		if (i>=1) {
-			outerArray[i-1] = execDetailMsg;
-		}
-//		return outerArray;
-		return null;
+	return outerArray;
 	}
 
 	/**
@@ -372,11 +345,13 @@ public class ModelExecuteStatusController<E> {
 	private List<TMessageLog> getnewMessageLogList(
 			List<TMessageLog> tMessageLoglist, TTasksStatus selectStatus) {
 		List<TMessageLog> arrayList = new ArrayList<TMessageLog>();
-		Map<Integer,TMessageLog> hashMap = new LinkedHashMap<Integer, TMessageLog>();
+		Map<String,TMessageLog> hashMap = new LinkedHashMap<String, TMessageLog>();
 		String pattern="yyyyMMdd";
 		Date tasksScenarinoStartDate = DateUtil.DateToDate(selectStatus.getTasksScenarinoStartDate(), pattern);
 		Date tasksScenarinoEndDate = DateUtil.DateToDate(selectStatus.getTasksScenarinoEndDate(), pattern);
-		Integer tempindex = null;
+		String tempindex = null;
+		//临时变量 用于计算该条消息是否属于该次数组
+		int i = 0,j = 0,k = 0;
 		for (TMessageLog tMessageLog : tMessageLoglist) {
 			String tasksEndDate = tMessageLog.getTasksEndDate();
 			String messageType = tMessageLog.getMessageType();
@@ -398,8 +373,13 @@ public class ModelExecuteStatusController<E> {
 						} catch (Exception e) {
 							LogUtil.getLogger().error("ModelExecuteStatusController getnewMessageLogList tasksendDate转为时间出错！",e.getMessage());
 						}
+						String key = tasksEndDate+"-"+messageIndex;
 						if (compareTo>=0&&compareTo2<=0) {
-							hashMap.put(messageIndex, tMessageLog);//buxing 
+							if (hashMap.get(key)!=null) {
+								hashMap.put(key, tMessageLog);
+							}else {
+								hashMap.put(key, tMessageLog);
+							}
 						}else {
 							LogUtil.getLogger().info("ModelExecuteStatusController getnewMessageLogList 消息时间不在情景开始结束时间范围之内！");
 						}
@@ -407,7 +387,10 @@ public class ModelExecuteStatusController<E> {
 				}
 			}
 		}
-		return null;
+		for (TMessageLog tMessageLog : hashMap.values()) {
+			arrayList.add(tMessageLog);
+		}
+		return arrayList;
 	}
 
 	/**
