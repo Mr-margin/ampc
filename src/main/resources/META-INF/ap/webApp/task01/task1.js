@@ -112,6 +112,13 @@ var msg = {
     		  })
     	}
     }));
+//  状态查看的窗口渲染
+    $('#jpzt1').window($.extend({},defaultwindowoption,{
+        title:'减排计算状态',
+        onOpen:function () {
+            jpztckBtn1();
+        }
+    }));
     /*模式运行状态查看弹框渲染*/
     $('#modelstatus').window($.extend({},defaultwindowoption,{
     	title:'模式运行状态',
@@ -2192,4 +2199,57 @@ function moduleSimulationScheduleHorizontal(startTime, endTime, stopTime, stopDa
 /*模式查看打开框函数*/
 function showModelStatusWindow(){
 	$("#modelstatus").window('open');
+}
+/*减排状态查看*/
+function jpztckBtn(t) {
+    var url = '/jp/areaStatusJp';
+    var params = {
+        bigIndex:selectRW.esCouplingId,
+        scenarinoId: msg.qjId,
+        userId: userId,
+        areaAndPlanIds: ''
+    }
+    ajaxPost(url, params).success(function (res) {
+
+        if (res.status == 0) {
+            if (res.data.type == 0) {
+                var jsjd = (Math.round(res.data.percent * 10000)) / 100 + '%';
+                var yys = moment(res.data.time * 1000).subtract(8, 'h').format('HH时mm分ss秒');
+                var sysj = moment((res.data.time / res.data.percent - res.data.time) * 1000).subtract(8, 'h').format('HH时mm分ss秒');
+
+                $('.jsjd').empty().html(jsjd);
+                $('.yys').empty().html(yys);
+                $('.sysj').empty().html(sysj);
+
+            } else if (res.data.type == 1) {
+                $('#jpzt1').window('close');
+                console.log('重新计算中！！！');
+                window.setTimeout(function () {
+                    swal({
+                        title: '重新计算中!',
+                        type: 'warning',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                }, 50)
+            } else if (res.data.type == 2) {
+                $('#jpzt1').window('close');
+                console.log('计算排队中');
+                window.setTimeout(function () {
+                    swal({
+                        title: '计算排队中!',
+                        type: 'warning',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                }, 50)
+            } else {
+                console.log('计算接口异常')
+            }
+        } else {
+            console.log('接口故障')
+        }
+
+    })
+    //}
 }
