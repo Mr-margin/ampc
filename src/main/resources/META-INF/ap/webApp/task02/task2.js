@@ -1521,6 +1521,8 @@ function updataCodeList() {
             }
         }
     }
+    addLayer(data);
+    
     $('.codeTree').hide();
     $('.adcodeList').show();
 }
