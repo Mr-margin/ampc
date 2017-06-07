@@ -87,7 +87,7 @@ public class DomainController {
 			obj.put("domainName", td.getDomainName());//domain名称
 			obj.put("domainDoc", td.getDomainDoc());//备注
 			if(td.getDomainInfo()==null){
-				obj.put("domainInfo",null);	
+				obj.put("domainInfo",td.getDomainInfo());	
 			}else{
 			obj.put("domainInfo", td.getDomainInfo().replaceAll(" ", ""));
 			}
