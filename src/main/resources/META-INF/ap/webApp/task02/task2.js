@@ -280,7 +280,7 @@ var zTreeSetting = {
                     if (res.data) {
                         /*设置显示已选code*/
                         setShowCode(res.data);
-//                            addLayer(showCode);
+                            addLayer(showCode);
                     }
                     updataCodeList();
                 });
@@ -1521,7 +1521,7 @@ function updataCodeList() {
             }
         }
     }
-    addLayer(data);
+    addLayer(showCode);
     
     $('.codeTree').hide();
     $('.adcodeList').show();
