@@ -17,9 +17,11 @@ package ampc.com.gistone.redisqueue.tasksenum;
  * @version 1.0
  */
 public enum TasksEnum1 {
-	WRF("wrf",1),mcip("mcip",2),dp_met("dp_met",3),megan("megan",4),
-	meic("meic",5),cmaq("cmaq",6),dp_emis("dp_emis",7),dp_chem("dp_chem",8);
+	/*WRF("wrf",1),mcip("mcip",2),dp_met("dp_met",3),megan("megan",4),
+	meic("meic",5),cmaq("cmaq",6),dp_emis("dp_emis",7),dp_chem("dp_chem",8);*/
 
+	WRF("气象模拟",1),mcip("气象格式转换",2),dp_met("气象后处理",3),megan("天然源排放",4),
+	meic("人为源排放",5),cmaq("CMAQ",6),dp_emis("排放后处理",7),dp_chem("化学后处理",8);
 	private String name ;
 	
 	private int index ;
