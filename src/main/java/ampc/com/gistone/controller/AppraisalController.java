@@ -1300,9 +1300,17 @@ public class AppraisalController {
 			String cityStation;
 			if("city".equals(mode)){
 				//检测站点具体值
-				 cityStation=data.get("cityStation").toString().substring(0, 4);	
+				 cityStation=data.get("cityStation").toString().substring(0, 4);
+				 if("".equals(cityStation)||cityStation==null){
+					 LogUtil.getLogger().error("AppraisalController  站点值为空或出现非法字符!");
+					 return AmpcResult.build(1003, "站点值为空或出现非法字符!");
+				 }
 			}else{
-				 cityStation=data.get("cityStation").toString();					
+				 cityStation=data.get("cityStation").toString();
+				 if("".equals(cityStation)||cityStation==null){
+					 LogUtil.getLogger().error("AppraisalController  站点值为空或出现非法字符!");
+					 return AmpcResult.build(1003, "站点值为空或出现非法字符!");
+				 }
 			}
 			//空间分辨率
 			param=data.get("domain");
