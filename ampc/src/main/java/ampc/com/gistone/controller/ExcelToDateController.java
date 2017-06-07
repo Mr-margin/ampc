@@ -164,8 +164,12 @@ public class ExcelToDateController {
 	 * TODO 行业描述
 	 */
 	public Map update_SectorDocExcelData(Long userId,Long templateId,String filePath,String outPath) {
+		//Ftp路径
+		filePath=configUtil.getFtpURL()+filePath;
 		//出错的文件保存路径
-		outPath=outPath+"\\checkDoc.xlsx";
+		String newoutPath=configUtil.getFtpURL()+outPath+"/checkData.xlsx";
+		//出错的文件保存路径
+		outPath=outPath+"/checkDoc.xlsx";
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
@@ -181,7 +185,7 @@ public class ExcelToDateController {
 			}
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			ExcelToDate ed=new ExcelToDate();
-			List<TSectordocExcel> tse = ed.ReadSectorDOC(filePath,versionId,userId,msg,outPath,templateId);
+			List<TSectordocExcel> tse = ed.ReadSectorDOC(filePath,versionId,userId,msg,newoutPath,templateId);
 			//如果错误信息大于0 则证明出错了
 			if(msg.size()>0||tse==null){
 				LogUtil.getLogger().error("读取行业描述Excel出错!");
@@ -190,10 +194,10 @@ public class ExcelToDateController {
 				return map;
 			}
 			for (TSectordocExcel tsd : tse) {
-//				int result=tSectordocExcelMapper.insertSelective(tsd);
-//				if(result<1){
-//					throw new SQLException("ExcelToDateController 保存行业描述信息失败,数据库添加失败。");
-//				}
+				int result=tSectordocExcelMapper.insertSelective(tsd);
+				if(result<1){
+					throw new SQLException("ExcelToDateController 保存行业描述信息失败,数据库添加失败。");
+				}
 			}
 			filePath=URLEncoder.encode(filePath, "utf-8");
 			// 调用外部保存接口 并获取结果Json
@@ -212,12 +216,12 @@ public class ExcelToDateController {
 				map.put("outPath", outPath);
 				return map;
 			}
-//		}catch(SQLException e){
-//			LogUtil.getLogger().error(e.getMessage(),e);
-//			msg.add("保存行业描述信息失败,数据库添加失败。");
-//			map.put("errorMsg",msg);
-//			map.put("outPath", outPath);
-//			return map;
+		}catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			msg.add("保存行业描述信息失败,数据库添加失败。");
+			map.put("errorMsg",msg);
+			map.put("outPath", outPath);
+			return map;
 		} catch (Exception e) {
 			LogUtil.getLogger().error("ExcelToDateController 保存行业描述信息异常!",e);
 			msg.add("保存行业描述信息异常!");
@@ -239,8 +243,12 @@ public class ExcelToDateController {
 	 * TODO 条件
 	 */
 	public Map update_QueryExcelData(Long userId,Long templateId,String filePath,String outPath) {
+		//Ftp路径
+		filePath=configUtil.getFtpURL()+filePath;
 		//出错的文件保存路径
-		outPath=outPath+"\\checkQuery.xlsx";
+		String newoutPath=configUtil.getFtpURL()+outPath+"/checkData.xlsx";
+		//出错的文件保存路径
+		outPath=outPath+"/checkQuery.xlsx";
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
@@ -256,7 +264,7 @@ public class ExcelToDateController {
 			}
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			ExcelToDate ed=new ExcelToDate();
-			List<TQueryExcel> tqe = ed.ReadQuery(filePath,versionId,userId,msg,outPath,templateId);
+			List<TQueryExcel> tqe = ed.ReadQuery(filePath,versionId,userId,msg,newoutPath,templateId);
 			//如果错误信息大于0 则证明出错了
 			if(msg.size()>0||tqe==null){
 				LogUtil.getLogger().error("读取行业筛选条件Excel出错!");
@@ -265,19 +273,19 @@ public class ExcelToDateController {
 				return map;
 			}
 			for (TQueryExcel t : tqe) {
-//				int result=tQueryExcelMapper.insertSelective(t);
-//				if(result<1){
-//					throw new SQLException("ExcelToDateController 保存行业筛选条件失败,数据库添加失败。");
-//				}
+				int result=tQueryExcelMapper.insertSelective(t);
+				if(result<1){
+					throw new SQLException("ExcelToDateController 保存行业筛选条件失败,数据库添加失败。");
+				}
 			}
 			LogUtil.getLogger().info("ExcelToDateController 保存行业筛选条件成功!");
 			return null;
-//		}catch(SQLException e){
-//			LogUtil.getLogger().error(e.getMessage(),e);
-//			msg.add("保存行业筛选条件失败,数据库添加失败。");
-//			map.put("errorMsg",msg);
-//			map.put("outPath", outPath);
-//			return map;
+		}catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			msg.add("保存行业筛选条件失败,数据库添加失败。");
+			map.put("errorMsg",msg);
+			map.put("outPath", outPath);
+			return map;
 		} catch (Exception e) {
 			LogUtil.getLogger().error("ExcelToDateController 保存行业筛选条件异常!",e);
 			msg.add("保存行业描述信息异常!");
@@ -296,8 +304,12 @@ public class ExcelToDateController {
 	 * @return 返回响应结果对象
 	 */
 	public Map update_SectorData(Long userId,Long templateId,String filePath,String outPath) {
+		//Ftp路径
+		filePath=configUtil.getFtpURL()+filePath;
 		//出错的文件保存路径
-		outPath=outPath+"checkSector.xlsx";
+		String newoutPath=configUtil.getFtpURL()+outPath+"/checkData.xlsx";
+		//出错的文件保存路径
+		outPath=outPath+"/checkSector.xlsx";
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
@@ -308,7 +320,7 @@ public class ExcelToDateController {
 			String versionId="行业文件"+time;
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			ExcelToDate ed=new ExcelToDate();
-			List<TSectorExcel> readSector = ed.ReadSector(filePath,versionId,userId,msg,outPath,templateId);
+			List<TSectorExcel> readSector = ed.ReadSector(filePath,versionId,userId,msg,newoutPath,templateId);
 			//如果错误信息大于0 则证明出错了
 			if(msg.size()>0||readSector==null){
 				LogUtil.getLogger().error("读取行业Excel出错!");
@@ -317,19 +329,19 @@ public class ExcelToDateController {
 				return map;
 			}
 			for (TSectorExcel tSector : readSector) {
-//				int result=tSectorExcelMapper.insertSelective(tSector);
-//				if(result<1){
-//					throw new SQLException("ExcelToDateController 保存行业信息失败,数据库添加失败。");
-//				}
+				int result=tSectorExcelMapper.insertSelective(tSector);
+				if(result<1){
+					throw new SQLException("ExcelToDateController 保存行业信息失败,数据库添加失败。");
+				}
 			}
 			LogUtil.getLogger().info("ExcelToDateController 保存行业信息成功!");
 			return null;
-//		} catch(SQLException e){
-//			LogUtil.getLogger().error(e.getMessage(),e);
-//			msg.add("保存行业信息失败,数据库添加失败。");
-//			map.put("errorMsg",msg);
-//			map.put("outPath", outPath);
-//			return map;
+		} catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			msg.add("保存行业信息失败,数据库添加失败。");
+			map.put("errorMsg",msg);
+			map.put("outPath", outPath);
+			return map;
 		} catch (Exception e) {
 			LogUtil.getLogger().error("ExcelToDateController 保存行业信息异常!",e);
 			msg.add("保存行业信息异常!");
@@ -350,8 +362,11 @@ public class ExcelToDateController {
 	 */
 	@RequestMapping("excel/checkNative")
 	public Map check_nativeExcelData(Long userId,Long templateId,Long qdId,String filePath,String outPath) {
+		//Ftp路径
+		filePath=configUtil.getFtpURL()+filePath;
 		//出错的文件保存路径
-		outPath=outPath+"\\checkData.xlsx";
+		String newoutPath=configUtil.getFtpURL()+outPath+"/checkData.xlsx";
+		outPath=outPath+"/checkData.xlsx";
 		//错误信息的数据集合
 		List<String> msg=new ArrayList();
 		//结果Map
@@ -360,7 +375,7 @@ public class ExcelToDateController {
 		try {
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			ExcelToDate ed=new ExcelToDate();
-			boolean isTrue = ed.CheckNative(filePath,msg,outPath);
+			boolean isTrue = ed.CheckNative(filePath,msg,newoutPath);
 			//如果错误信息大于0 则证明出错了
 			if(!isTrue){
 				LogUtil.getLogger().error("验证清单数据Excel出错!");
