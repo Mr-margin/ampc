@@ -401,6 +401,7 @@ public class DomainController {
 			td.setDomainId(domainId);
 			td.setDomainCode(domainCode);
 			int s=tDomainMissionMapper.updateByPrimaryKeySelective(td);
+			
 			//判断修改数据是否成功
 			if(s>0){
 				return AmpcResult.ok();
@@ -513,11 +514,15 @@ public class DomainController {
 		td.setDomainId(domainId);
 		//操作数据库保存数据
 		int s=tDomainMissionMapper.updateByPrimaryKeySelective(td);
+		JSONObject obj=new JSONObject();
+		obj.put("domainDoc", domainDoc);
+		obj.put("domainName", domainName);
+		obj.put("domainId", domainId);
 		if(s==0){
 			LogUtil.getLogger().error("updateNameAndDoc 数据库修改Name及Doc操作异常！");
 			return AmpcResult.build(1000, "数据库修改Name及Doc操作异常！");
 		}
-		return AmpcResult.ok();
+		return AmpcResult.ok(obj);
 	}catch(Exception e){
 		LogUtil.getLogger().error("updateNameAndDoc 修改Name及Doc异常！",e);
 		return AmpcResult.build(1001, "修改Name及Doc异常！");
