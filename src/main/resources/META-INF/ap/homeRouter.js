@@ -327,7 +327,7 @@ function ajaxPost_async_false(url, parameter) {
     return $.ajax('/ampc'+url, {
         contentType: "application/json",
         type: "POST",
-        async: true,
+        async: false,
         dataType: 'JSON',
         data: p
     })
