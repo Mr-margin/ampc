@@ -102,8 +102,8 @@ function updatePull(value){
 	var dom = '';
 	dom += '<tr class="tr'+value.domainId+'">';
 	dom +='<td><input class="choose" domain_id="'+value.domainId+'" type="radio" name="update"></td>';
-	dom += '<td class="d_name_'+value.domainId+' col-4">'+value.domainName+'</td>';
-	dom += '<td class="d_doc_'+value.domainId+' col-4">'+value.domainDoc+'</td>';
+	dom += '<td class="name d_name_'+value.domainId+' col-4">'+value.domainName+'</td>';
+	dom += '<td class="doc d_doc_'+value.domainId+' col-4">'+value.domainDoc+'</td>';
 	dom += '<td class="u_d_n btn-blue" onclick="updateDomainName(this);">修改</td>';
 	dom += '</tr>';
 	$('#update_Domain table').append(dom);
@@ -116,8 +116,8 @@ function updatePull(value){
 function updateDomainName(val){
 	$("#update_Domain_name").window('open');
 	var domain_id = $(val).siblings().children('.choose').attr('domain_id');
-	var domainDoc = $(val).siblings('.d_name').text();
-	var domainName = $(val).siblings('.d_doc').text();
+	var domainDoc = $(val).siblings('.name').text();
+	var domainName = $(val).siblings('.doc').text();
 	$('.u_domainDoc').val(domainDoc);
 	$('.u_domainName').val(domainDoc);
 	$('.u_domainName').attr('domain_id',domain_id);
