@@ -133,6 +133,8 @@ var msg = {
     			console.log(data);
     			if(data.execModel==1){
     				moduleSimulationScheduleHorizontal(data.startTime, data.endTime, data.stopTime, data.stopData, data.moduleType, data.stopMessage, data.stopType, data.excutionMessage)
+    			}else if(data.execModel==2){
+    				moduleSimulationScheduleVertical(data.startTime, data.endTime, data.stopTime, data.stopData, data.moduleType, data.stopMessage, data.stopType, data.excutionMessage);
     			}
     		})
     	}
@@ -1385,7 +1387,8 @@ function subStartUp() {
 	    missionId: msg.content.rwId,
 	    missionType: msg.content.rwType,
 	    scenarinoType: msg.content.SCEN_TYPE,
-	    cores: $('input[name=cpuNum]:checked').val()
+	    cores: $('input[name=cpuNum]:checked').val(),
+	    bigIndex:selectRW.esCouplingId
 	  }).success(function (res) {
 	    if (res.status == 0) {
 	    	$('#rwgltable').treegrid({
@@ -1396,7 +1399,7 @@ function subStartUp() {
         			"missionStatus": '',
         			"sort": '',
         			"userId": userId,
-        			"bigIndex":selectRW.esCouplingId
+        			
         		}	
         	})
 	      $('#startUp').window('close');
