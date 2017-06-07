@@ -425,7 +425,7 @@ function missionAddTimeFormatter(value, row, index) {
     if (typeof row.missionAddTime === 'undefined') {
         if (typeof row.scenarinoStatusTitle === 'undefined') {
             if (row.scenarinoStatus == 3) {
-                return '<a href="javascript:" class="statusType">' + row.scenarinoStatuName + '</a>'
+                return '<a href="javascript:$(\'#jpzt1\').window(\'open\')" class="statusType">' + row.scenarinoStatuName + '</a>'
             } else if(row.scenarinoStatus == 6){
             	return '<a href="javascript:showModelStatusWindow()" class="statusType">' + row.scenarinoStatuName + '</a>'
             }else {
@@ -2205,11 +2205,11 @@ function showModelStatusWindow(){
 	$("#modelstatus").window('open');
 }
 /*减排状态查看*/
-function jpztckBtn(t) {
+function jpztckBtn1(t) {
     var url = '/jp/areaStatusJp';
     var params = {
         bigIndex:selectRW.esCouplingId,
-        scenarinoId: msg.qjId,
+        scenarinoId: msg.content.qjId,
         userId: userId,
         areaAndPlanIds: ''
     }
