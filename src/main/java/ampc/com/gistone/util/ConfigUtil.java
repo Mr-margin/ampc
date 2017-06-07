@@ -35,6 +35,15 @@ public class ConfigUtil {
 		return yunURL;
 	}
 
+	// 减排Url
+	@Value("${ftpURL}")
+	private String ftpURL;
+	
+	
+	public String getFtpURL() {
+		return ftpURL;
+	}
+
 	// 措施的减排分析Url
 	@Value("${jp.serverPath}")
 	private String serverPath;
