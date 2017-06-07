@@ -265,6 +265,7 @@ function coupSetQd(coupId) {
 var checkCity=[];
 var cityData=[];
 var industryData=[];
+var localQdId=[];
 function nextCoup(){//点击下一步按钮
     var conText=$(".coupSetTitle .coupSetTitleList .active div").text()
     if(conText=="第一步"){
@@ -284,9 +285,8 @@ function nextCoup(){//点击下一步按钮
         }
     }else if(conText=="第二步"){
         localQd=$("#localTable").datagrid("getSelections");
-        var localQdId=[];
         for(var i=0;i<localQd.length;i++){
-            localQdId.push(localQd[i].esNativeId)
+            localQdId.push(JSON.stringify(localQd[i].esNativeId));
         }
         if(cityData.length>0){
             cityData=[]
@@ -307,7 +307,6 @@ function nextCoup(){//点击下一步按钮
                 if(res.status==0){
                    var cityNames=res.data.data.cityNames;
                    var industryNames=res.data.data.industryNames;
-
                     //城市数据添加到数组中
                     $.each(cityNames, function (id, cityNames) {
                         cityData.push({
@@ -323,14 +322,15 @@ function nextCoup(){//点击下一步按钮
                         });
                     });
                     //城市数据添加到弹窗中
-                    $("#cityOption span").remove()
-                    var cityList="";
-                    for(var i=0;i<cityData.length;i++){
-                        cityList+="<span><input type='radio' name='cityName' value=\'"+cityData[i].cityId+"\' /><label>"+cityData[i].cityName+"</label></span>";
-                    }
-                    $("#cityOption").append(cityList);
+                    // $("#cityOption span").remove()
+                    // var cityList="";
+                    // for(var i=0;i<cityData.length;i++){
+                    //     cityList+="<span><input type='radio' name='cityName' value=\'"+cityData[i].cityId+"\' /><label>"+cityData[i].cityName+"</label></span>";
+                    // }
+                    // $("#cityOption").append(cityList);
                     //打开城市选择窗口
                     $("#citySelect").window('open')
+                    cityTable(cityData,0)
                     // coupCity(cityData,industryData)
                 }else{
                     swal('参数错误', '', 'error');
@@ -345,20 +345,29 @@ function nextCoup(){//点击下一步按钮
 var cityCurren={};
 function submitCity(){
     // $("input[name=cityName]").removeAttr("checked");
-    for(var i=0;i<cityData.length;i++){
-        if($('input[name=cityName]').eq(i).is(":checked")){
-            checkCity.push({
-                "cityId":$('input[name=cityName]').eq(i).val(),
-                "cityName":cityData[i].cityName
-            })
-            cityCurren.cityId=$('input[name=cityName]').eq(i).val();
-            cityCurren.cityName=cityData[i].cityName;
-            //点击过的input radio 再不可选
-            $('#citySelect #cityOption span').eq(i).children("i"). remove()
-            $('#citySelect #cityOption span').eq(i).append("<i class='en-checkmark' style='color:#d8453d'></i>")
-        }
-    }
-
+    var row=$("#cityOptionTable").datagrid("getSelected");
+    //选择的城市添加到数组
+    checkCity.push({
+                    "cityId":row.cityId,
+                    "cityName":row.cityName
+                })
+    //当前选择的城市
+    cityCurren.cityId=row.cityId;
+    cityCurren.cityName=row.cityName;
+    // for(var i=0;i<cityData.length;i++){
+    //     if($('input[name=cityName]').eq(i).is(":checked")){
+    //         checkCity.push({
+    //             "cityId":$('input[name=cityName]').eq(i).val(),
+    //             "cityName":cityData[i].cityName
+    //         })
+    //         cityCurren.cityId=$('input[name=cityName]').eq(i).val();
+    //         cityCurren.cityName=cityData[i].cityName;
+    //         //点击过的input radio 再不可选
+    //         $('#citySelect #cityOption span').eq(i).children("i"). remove()
+    //         $('#citySelect #cityOption span').eq(i).append("<i class='en-checkmark' style='color:#d8453d'></i>")
+    //     }
+    // }
+    cityTable(cityData,row)
     coupCity(cityCurren,industryData)
     $("#citySelect").window("close");
 }
@@ -524,6 +533,9 @@ var globelCheckedCity=[];//耦合后涉及的城市信息
 var globelCheckedQd=[];//保存选择的 行政-行业-清单 一一对应
 var allCity=[];//只要选择了清单 获取的所有城市的信息 包括重复的
 var singleCheckCity=[];
+var localQdId=[];
+var checkCityName=[];
+var meicCityConfig=[]
 function saveAllId(){ //选好清单以后进行保存
     for(var i=0;i<industryData.length;i++){
         if($(".selectQd").eq(i).val()!="w_0"){
@@ -542,38 +554,71 @@ function saveAllId(){ //选好清单以后进行保存
             }
             allCity.push(cityCurren.cityId)//获取选择了清单所有的城市，包含重复的
         }
-
     }
 
     globelCheckedCity=allCity.unique()//对所有耦合涉及的城市进行去重
 
-    var localQdId=[];
 
-    for(var m=0;m<localQd.length;m++){ //获取第二步选择的本地清单的ID
-        localQdId.push(localQd[m].esNativeId)
-    }
-    var checkCityName=[];
     for(var nm=0;nm<checkCity.length;nm++){
-        checkCityName.push(checkCity[nm].cityId)
+        checkCityName.push(checkCity[nm].cityId);
     }
     singleCheckCity=checkCityName.unique()//去重
-    if(singleCheckCity.length<cityData.length){//所有的城市如果未选择完成 则继续选择城市进行选择清单
-        $("#citySelect").window("open");
-    }else{//所有城市清单选择完成 进行所有选择数据的提交
-        meicCityConfig=globelCheckedQd;//城市 行业 清单
-        ajaxPost('/NativeAndNation/doPost',{"userId":userId,
-                                                "method":'saveCoupling',
-                                                "nationId":checkQgQd.esNationId, //第一步全国清单ID
-                                                "nativesId":localQdId, //第二步本地清单ID
-                                                "CouplingCity":globelCheckedCity, //耦合涉及的城市
-                                                "nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId,//第二步模板ID
-                                                "couplingId":coupingQd.esCouplingId,//耦合清单的ID
-                                                "meicCityConfig":JSON.stringify(meicCityConfig),}).success(function (res) {
-            if(res.status==0){
-                console.log("成功")
-            }else{
-                console.log("失败")
-            }
-        })
-    }
+    meicCityConfig=globelCheckedQd
+    $("#citySelect").window("open");
+    // if(singleCheckCity.length<cityData.length){//所有的城市如果未选择完成 则继续选择城市进行选择清单
+    //     $("#citySelect").window("open");
+    // }else{//所有城市清单选择完成 进行所有选择数据的提交
+    //     meicCityConfig=globelCheckedQd;//城市 行业 清单
+    //     // ajaxPost('/NativeAndNation/doPost',{"userId":userId,
+    //     //                                         "method":'saveCoupling',
+    //     //                                         "nationId":checkQgQd.esNationId, //第一步全国清单ID
+    //     //                                         "nativesId":localQdId, //第二步本地清单ID
+    //     //                                         "CouplingCity":globelCheckedCity, //耦合涉及的城市
+    //     //                                         "nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId,//第二步模板ID
+    //     //                                         "couplingId":coupingQd.esCouplingId,//耦合清单的ID
+    //     //                                         "meicCityConfig":JSON.stringify(meicCityConfig),}).success(function (res) {
+    //     //     if(res.status==0){
+    //     //         console.log("成功")
+    //     //     }else{
+    //     //         console.log("失败")
+    //     //     }
+    //     // })
+    // }
+}
+//城市表格生成
+var allCheckRow=[]
+function cityTable(cityData,checkRow) {
+    allCheckRow.push(checkRow)
+    $("#cityOptionTable").datagrid({
+        columns:[[
+            {field:"ck",checkbox:true},
+            {field:"cityName",title:"名字"},
+            {field:"zt",title:"状态",formatter:function (value,row,index) {
+                for(var i=0;i<allCheckRow.length;i++){
+                    if(allCheckRow[i]==row){
+                        return "<span><i class='en-checkmark' style='color:red;'></i></span>";
+                    }
+                }
+            }}
+        ]],
+        data:cityData,
+        singleSelect:'true'
+    })
+}
+//点击数据进行提交
+function submitCheckQd() {
+    ajaxPost('/NativeAndNation/doPost',{"userId":userId,
+        "method":'saveCoupling',
+        "nationId":checkQgQd.esNationId, //第一步全国清单ID
+        "nativesId":localQdId, //第二步本地清单ID
+        "CouplingCity":globelCheckedCity, //耦合涉及的城市
+        "nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId,//第二步模板ID
+        "couplingId":coupingQd.esCouplingId,//耦合清单的ID
+        "meicCityConfig":JSON.stringify(meicCityConfig),}).success(function (res) {
+        if(res.status==0){
+            console.log("成功")
+        }else{
+            console.log("失败")
+        }
+    })
 }
