@@ -260,6 +260,7 @@ function coupSetQd(coupId) {
     $(".coupSetCon").eq(2).hide();
     window.setTimeout(qgqdTable(),100)
     $("#prevCoup").hide();//上一步按钮
+    $("#nextCoup").show();//下一步按钮
     $(".navRight").hide();
 }
 var checkCity=[];
@@ -621,4 +622,9 @@ function submitCheckQd() {
             console.log("失败")
         }
     })
+    $("#citySelect").window("close")
+    // $(".tableBox").show();//点击提交以后页面返回首页
+    // $(".coupSet").hide();
+    // $(".navRight").show();
+    // innitdata()
 }
