@@ -2221,9 +2221,9 @@ function jpztckBtn(t) {
                 var yys = moment(res.data.time * 1000).subtract(8, 'h').format('HH时mm分ss秒');
                 var sysj = moment((res.data.time / res.data.percent - res.data.time) * 1000).subtract(8, 'h').format('HH时mm分ss秒');
 
-                $('.jsjd').empty().html(jsjd);
-                $('.yys').empty().html(yys);
-                $('.sysj').empty().html(sysj);
+                $('.jsjd1').empty().html(jsjd);
+                $('.yys1').empty().html(yys);
+                $('.sysj1').empty().html(sysj);
 
             } else if (res.data.type == 1) {
                 $('#jpzt1').window('close');
