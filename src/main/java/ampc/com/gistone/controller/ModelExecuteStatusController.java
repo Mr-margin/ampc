@@ -10,12 +10,15 @@ package ampc.com.gistone.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,11 +58,12 @@ import ampc.com.gistone.util.RegUtil;
  * @author yanglei
  * @date 2017年3月28日 上午9:46:23
  * @version 1.0
+ * @param <E>
  */
 
 @RestController
 @RequestMapping
-public class ModelExecuteStatusController {
+public class ModelExecuteStatusController<E> {
 	
 	@Autowired
 	private TTasksStatusMapper tasksStatusMapper;
@@ -179,6 +183,7 @@ public class ModelExecuteStatusController {
 					//模式执行的详细内容数组
 					Object[] excutionMessageDetail = getexcutionMessagedetail(tMessageLoglist,selectStatus,scenarinoType);
 					modelExecuJson.setExcutionMessage(excutionMessageDetail);
+					
 					//模式运行出错的消息描述信息
 					String modelErrorStatus = selectStatus.getModelErrorStatus();
 					modelExecuJson.setStopMessage(modelErrorStatus);
@@ -192,10 +197,10 @@ public class ModelExecuteStatusController {
 //					return AmpcResult.ok(json);
 					return AmpcResult.build(0, "successs",modelExecuJson);
 				}else {
-					return AmpcResult.build(1005, "未查到该信息！请联系管理员！");
+					return AmpcResult.build(1005, "未查到运行状态信息！请联系管理员！");
 				}
 			}else {
-				return AmpcResult.build(1005, "未查到该信息！请联系管理员！");
+				return AmpcResult.build(1005, "未查到情景信息！请联系管理员！");
 			}
 		} catch (UnsupportedEncodingException e) {
 			LogUtil.getLogger().error("ModelExecuteStatusController getModelexecuteStatus",e);
@@ -268,6 +273,9 @@ public class ModelExecuteStatusController {
 		String pattern="yyyyMMdd";
 		Date tasksScenarinoStartDate = DateUtil.DateToDate(selectStatus.getTasksScenarinoStartDate(), pattern);
 		Date tasksScenarinoEndDate = DateUtil.DateToDate(selectStatus.getTasksScenarinoEndDate(), pattern);
+		//初始化本次tMessageLoglist的方法
+		List< TMessageLog> newtMessageLoglist = getnewMessageLogList(tMessageLoglist,selectStatus); 
+		
 		//外部数组-长度是情景的运行时间段
 		Long tasksRangeDay = selectStatus.getTasksRangeDay();
 		int outlength = Integer.parseInt(tasksRangeDay.toString());
@@ -344,9 +352,62 @@ public class ModelExecuteStatusController {
 				}
 			}
 		}
-		System.out.println(i);
-		outerArray[i-1] = execDetailMsg;
-		return outerArray;
+		if (i>=1) {
+			outerArray[i-1] = execDetailMsg;
+		}
+//		return outerArray;
+		return null;
+	}
+
+	/**
+	 * @Description:初始化日志消息
+	 * @param tMessageLoglist
+	 * @param selectStatus 
+	 * @return   
+	 * List<TMessageLog>  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月7日 下午3:00:31
+	 */
+	private List<TMessageLog> getnewMessageLogList(
+			List<TMessageLog> tMessageLoglist, TTasksStatus selectStatus) {
+		List<TMessageLog> arrayList = new ArrayList<TMessageLog>();
+		Map<Integer,TMessageLog> hashMap = new LinkedHashMap<Integer, TMessageLog>();
+		String pattern="yyyyMMdd";
+		Date tasksScenarinoStartDate = DateUtil.DateToDate(selectStatus.getTasksScenarinoStartDate(), pattern);
+		Date tasksScenarinoEndDate = DateUtil.DateToDate(selectStatus.getTasksScenarinoEndDate(), pattern);
+		Integer tempindex = null;
+		for (TMessageLog tMessageLog : tMessageLoglist) {
+			String tasksEndDate = tMessageLog.getTasksEndDate();
+			String messageType = tMessageLog.getMessageType();
+			String resultDesc = tMessageLog.getResultDesc();
+			String resultCode = tMessageLog.getResultCode();
+			Integer messageIndex = tMessageLog.getMessageIndex();
+			if ("model.start.result".equals(messageType.trim())) {
+				if (resultDesc==null&&"0".equals(resultCode.trim())) {
+					if (tasksEndDate!=null) {
+						Date taskDate = null ;
+						Integer compareTo = null ;
+						Integer compareTo2 = null;
+						try {
+							taskDate = DateUtil.StrtoDateYMD(tasksEndDate, pattern);
+							//与情景开始时间比较
+							compareTo = taskDate.compareTo(tasksScenarinoStartDate);
+							//与情景结束时间比较
+							compareTo2 = taskDate.compareTo(tasksScenarinoEndDate);
+						} catch (Exception e) {
+							LogUtil.getLogger().error("ModelExecuteStatusController getnewMessageLogList tasksendDate转为时间出错！",e.getMessage());
+						}
+						if (compareTo>=0&&compareTo2<=0) {
+							hashMap.put(messageIndex, tMessageLog);//buxing 
+						}else {
+							LogUtil.getLogger().info("ModelExecuteStatusController getnewMessageLogList 消息时间不在情景开始结束时间范围之内！");
+						}
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	/**
