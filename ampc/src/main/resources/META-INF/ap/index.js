@@ -139,3 +139,22 @@ function ajaxPost(url, parameter) {
     data: p
   })
 }
+changeCity();
+function changeCity(){
+  var city = '四川';
+  var title = '';
+  var english = '';
+  if(city == '四川'){
+    console.log('1123');
+    title = '成都市重污染应急管理评估系统';
+    english = 'Heavy Air Pollution Emergency Response Evaluation System for Chengdu';
+    Copyrights = 'Copyrights: 北京美科思远环境科技有限公司';
+  }else{
+    title = '环境空气质量管理评估系统';
+    english = 'Research on Ambient Air Quality Evaluation System';
+    Copyrights = 'Copyrights (c) 版权所有信息';
+  }
+  $('.hdtx1').html(title);
+  $('.hdtx2').html(english);
+  $('.Copyrights').text(Copyrights);
+}
