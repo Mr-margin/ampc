@@ -417,7 +417,7 @@ function updata() {
                         res.data[speciesObj[y]] = ooo;
                     }
                     swal({
-                        title: res.msg,
+                        title: '暂无数据！',
                         type: 'error',
                         timer: 1000,
                         showConfirmButton: false
