@@ -498,10 +498,6 @@ public class DomainController {
 		}
 		Long domainId=Long.valueOf(data.get("domainId").toString());
 		//获取domainDoc(分层描述)
-		if(!RegUtil.CheckParameter(data.get("domainDoc"), null, null, false)){
-			LogUtil.getLogger().error("updateRangeAndCode  domainDoc为空!");
-			return AmpcResult.build(1003, "domainDoc为空!");
-		}
 		Object domainDoc=data.get("domainDoc");
 		//获取domainName(domain名称)
 		if(!RegUtil.CheckParameter(data.get("domainName"), null, null, false)){
