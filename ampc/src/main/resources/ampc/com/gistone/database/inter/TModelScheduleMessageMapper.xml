@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ampc.com.gistone.database.inter.TModelScheduleMessageMapper" >
+  <resultMap id="BaseResultMap" type="ampc.com.gistone.database.model.TModelScheduleMessage" >
+    <id column="EXECUTE_SCHEDULE_ID" property="executeScheduleId" jdbcType="DECIMAL" />
+    <result column="EXE_MESSAGE_INDEX" property="exeMessageIndex" jdbcType="DECIMAL" />
+    <result column="EXE_MESSAGE_TIME" property="exeMessageTime" jdbcType="TIMESTAMP" />
+    <result column="EXE_MESSAGE_TASKSDATE" property="exeMessageTasksdate" jdbcType="VARCHAR" />
+    <result column="EXE_MESSAGE_DESC" property="exeMessageDesc" jdbcType="VARCHAR" />
+    <result column="EXE_SCENARINO_ID" property="exeScenarinoId" jdbcType="DECIMAL" />
+    <result column="EXE_MESSAGE_TYPE" property="exeMessageType" jdbcType="VARCHAR" />
+    <result column="EXE_MESSAGE_CODE" property="exeMessageCode" jdbcType="DECIMAL" />
+    <result column="MESSAGE_ADD_TIME" property="messageAddTime" jdbcType="TIMESTAMP" />
+    <result column="MESSSAGE_UPDATE_TIME" property="messsageUpdateTime" jdbcType="TIMESTAMP" />
+    <result column="MESSAGE_EXPEND1" property="messageExpend1" jdbcType="VARCHAR" />
+    <result column="MESSAGE_EXPEND2" property="messageExpend2" jdbcType="DECIMAL" />
+    <result column="MESSAGE_EXPEND3_TIME" property="messageExpend3Time" jdbcType="TIMESTAMP" />
+    <result column="MESSAGE_EXPEND4" property="messageExpend4" jdbcType="VARCHAR" />
+    <result column="MESSAGE_EXPEND5" property="messageExpend5" jdbcType="VARCHAR" />
+    <result column="MESSAGE_EXPEND6" property="messageExpend6" jdbcType="VARCHAR" />
+    <result column="MESSAGE_EXPEND7" property="messageExpend7" jdbcType="VARCHAR" />
+    <result column="MESSAGE_EXPEND8" property="messageExpend8" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    EXECUTE_SCHEDULE_ID, EXE_MESSAGE_INDEX, EXE_MESSAGE_TIME, EXE_MESSAGE_TASKSDATE, 
+    EXE_MESSAGE_DESC, EXE_SCENARINO_ID, EXE_MESSAGE_TYPE, EXE_MESSAGE_CODE, MESSAGE_ADD_TIME, 
+    MESSSAGE_UPDATE_TIME, MESSAGE_EXPEND1, MESSAGE_EXPEND2, MESSAGE_EXPEND3_TIME, MESSAGE_EXPEND4, 
+    MESSAGE_EXPEND5, MESSAGE_EXPEND6, MESSAGE_EXPEND7, MESSAGE_EXPEND8
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_MODEL_SCHEDULE_MESSAGE
+    where EXECUTE_SCHEDULE_ID = #{executeScheduleId,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from T_MODEL_SCHEDULE_MESSAGE
+    where EXECUTE_SCHEDULE_ID = #{executeScheduleId,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="ampc.com.gistone.database.model.TModelScheduleMessage" >
+    insert into T_MODEL_SCHEDULE_MESSAGE (EXECUTE_SCHEDULE_ID, EXE_MESSAGE_INDEX, 
+      EXE_MESSAGE_TIME, EXE_MESSAGE_TASKSDATE, 
+      EXE_MESSAGE_DESC, EXE_SCENARINO_ID, EXE_MESSAGE_TYPE, 
+      EXE_MESSAGE_CODE, MESSAGE_ADD_TIME, MESSSAGE_UPDATE_TIME, 
+      MESSAGE_EXPEND1, MESSAGE_EXPEND2, MESSAGE_EXPEND3_TIME, 
+      MESSAGE_EXPEND4, MESSAGE_EXPEND5, MESSAGE_EXPEND6, 
+      MESSAGE_EXPEND7, MESSAGE_EXPEND8)
+    values (#{executeScheduleId,jdbcType=DECIMAL}, #{exeMessageIndex,jdbcType=DECIMAL}, 
+      #{exeMessageTime,jdbcType=TIMESTAMP}, #{exeMessageTasksdate,jdbcType=VARCHAR}, 
+      #{exeMessageDesc,jdbcType=VARCHAR}, #{exeScenarinoId,jdbcType=DECIMAL}, #{exeMessageType,jdbcType=VARCHAR}, 
+      #{exeMessageCode,jdbcType=DECIMAL}, #{messageAddTime,jdbcType=TIMESTAMP}, #{messsageUpdateTime,jdbcType=TIMESTAMP}, 
+      #{messageExpend1,jdbcType=VARCHAR}, #{messageExpend2,jdbcType=DECIMAL}, #{messageExpend3Time,jdbcType=TIMESTAMP}, 
+      #{messageExpend4,jdbcType=VARCHAR}, #{messageExpend5,jdbcType=VARCHAR}, #{messageExpend6,jdbcType=VARCHAR}, 
+      #{messageExpend7,jdbcType=VARCHAR}, #{messageExpend8,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TModelScheduleMessage" >
+    insert into T_MODEL_SCHEDULE_MESSAGE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="executeScheduleId != null" >
+        EXECUTE_SCHEDULE_ID,
+      </if>
+      <if test="exeMessageIndex != null" >
+        EXE_MESSAGE_INDEX,
+      </if>
+      <if test="exeMessageTime != null" >
+        EXE_MESSAGE_TIME,
+      </if>
+      <if test="exeMessageTasksdate != null" >
+        EXE_MESSAGE_TASKSDATE,
+      </if>
+      <if test="exeMessageDesc != null" >
+        EXE_MESSAGE_DESC,
+      </if>
+      <if test="exeScenarinoId != null" >
+        EXE_SCENARINO_ID,
+      </if>
+      <if test="exeMessageType != null" >
+        EXE_MESSAGE_TYPE,
+      </if>
+      <if test="exeMessageCode != null" >
+        EXE_MESSAGE_CODE,
+      </if>
+      <if test="messageAddTime != null" >
+        MESSAGE_ADD_TIME,
+      </if>
+      <if test="messsageUpdateTime != null" >
+        MESSSAGE_UPDATE_TIME,
+      </if>
+      <if test="messageExpend1 != null" >
+        MESSAGE_EXPEND1,
+      </if>
+      <if test="messageExpend2 != null" >
+        MESSAGE_EXPEND2,
+      </if>
+      <if test="messageExpend3Time != null" >
+        MESSAGE_EXPEND3_TIME,
+      </if>
+      <if test="messageExpend4 != null" >
+        MESSAGE_EXPEND4,
+      </if>
+      <if test="messageExpend5 != null" >
+        MESSAGE_EXPEND5,
+      </if>
+      <if test="messageExpend6 != null" >
+        MESSAGE_EXPEND6,
+      </if>
+      <if test="messageExpend7 != null" >
+        MESSAGE_EXPEND7,
+      </if>
+      <if test="messageExpend8 != null" >
+        MESSAGE_EXPEND8,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="executeScheduleId != null" >
+        #{executeScheduleId,jdbcType=DECIMAL},
+      </if>
+      <if test="exeMessageIndex != null" >
+        #{exeMessageIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="exeMessageTime != null" >
+        #{exeMessageTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="exeMessageTasksdate != null" >
+        #{exeMessageTasksdate,jdbcType=VARCHAR},
+      </if>
+      <if test="exeMessageDesc != null" >
+        #{exeMessageDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="exeScenarinoId != null" >
+        #{exeScenarinoId,jdbcType=DECIMAL},
+      </if>
+      <if test="exeMessageType != null" >
+        #{exeMessageType,jdbcType=VARCHAR},
+      </if>
+      <if test="exeMessageCode != null" >
+        #{exeMessageCode,jdbcType=DECIMAL},
+      </if>
+      <if test="messageAddTime != null" >
+        #{messageAddTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="messsageUpdateTime != null" >
+        #{messsageUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="messageExpend1 != null" >
+        #{messageExpend1,jdbcType=VARCHAR},
+      </if>
+      <if test="messageExpend2 != null" >
+        #{messageExpend2,jdbcType=DECIMAL},
+      </if>
+      <if test="messageExpend3Time != null" >
+        #{messageExpend3Time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="messageExpend4 != null" >
+        #{messageExpend4,jdbcType=VARCHAR},
+      </if>
+      <if test="messageExpend5 != null" >
+        #{messageExpend5,jdbcType=VARCHAR},
+      </if>
+      <if test="messageExpend6 != null" >
+        #{messageExpend6,jdbcType=VARCHAR},
+      </if>
+      <if test="messageExpend7 != null" >
+        #{messageExpend7,jdbcType=VARCHAR},
+      </if>
+      <if test="messageExpend8 != null" >
+        #{messageExpend8,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TModelScheduleMessage" >
+    update T_MODEL_SCHEDULE_MESSAGE
+    <set >
+      <if test="exeMessageIndex != null" >
+        EXE_MESSAGE_INDEX = #{exeMessageIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="exeMessageTime != null" >
+        EXE_MESSAGE_TIME = #{exeMessageTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="exeMessageTasksdate != null" >
+        EXE_MESSAGE_TASKSDATE = #{exeMessageTasksdate,jdbcType=VARCHAR},
+      </if>
+      <if test="exeMessageDesc != null" >
+        EXE_MESSAGE_DESC = #{exeMessageDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="exeScenarinoId != null" >
+        EXE_SCENARINO_ID = #{exeScenarinoId,jdbcType=DECIMAL},
+      </if>
+      <if test="exeMessageType != null" >
+        EXE_MESSAGE_TYPE = #{exeMessageType,jdbcType=VARCHAR},
+      </if>
+      <if test="exeMessageCode != null" >
+        EXE_MESSAGE_CODE = #{exeMessageCode,jdbcType=DECIMAL},
+      </if>
+      <if test="messageAddTime != null" >
+        MESSAGE_ADD_TIME = #{messageAddTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="messsageUpdateTime != null" >
+        MESSSAGE_UPDATE_TIME = #{messsageUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="messageExpend1 != null" >
+        MESSAGE_EXPEND1 = #{messageExpend1,jdbcType=VARCHAR},
+      </if>
+      <if test="messageExpend2 != null" >
+        MESSAGE_EXPEND2 = #{messageExpend2,jdbcType=DECIMAL},
+      </if>
+      <if test="messageExpend3Time != null" >
+        MESSAGE_EXPEND3_TIME = #{messageExpend3Time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="messageExpend4 != null" >
+        MESSAGE_EXPEND4 = #{messageExpend4,jdbcType=VARCHAR},
+      </if>
+      <if test="messageExpend5 != null" >
+        MESSAGE_EXPEND5 = #{messageExpend5,jdbcType=VARCHAR},
+      </if>
+      <if test="messageExpend6 != null" >
+        MESSAGE_EXPEND6 = #{messageExpend6,jdbcType=VARCHAR},
+      </if>
+      <if test="messageExpend7 != null" >
+        MESSAGE_EXPEND7 = #{messageExpend7,jdbcType=VARCHAR},
+      </if>
+      <if test="messageExpend8 != null" >
+        MESSAGE_EXPEND8 = #{messageExpend8,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where EXECUTE_SCHEDULE_ID = #{executeScheduleId,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TModelScheduleMessage" >
+    update T_MODEL_SCHEDULE_MESSAGE
+    set EXE_MESSAGE_INDEX = #{exeMessageIndex,jdbcType=DECIMAL},
+      EXE_MESSAGE_TIME = #{exeMessageTime,jdbcType=TIMESTAMP},
+      EXE_MESSAGE_TASKSDATE = #{exeMessageTasksdate,jdbcType=VARCHAR},
+      EXE_MESSAGE_DESC = #{exeMessageDesc,jdbcType=VARCHAR},
+      EXE_SCENARINO_ID = #{exeScenarinoId,jdbcType=DECIMAL},
+      EXE_MESSAGE_TYPE = #{exeMessageType,jdbcType=VARCHAR},
+      EXE_MESSAGE_CODE = #{exeMessageCode,jdbcType=DECIMAL},
+      MESSAGE_ADD_TIME = #{messageAddTime,jdbcType=TIMESTAMP},
+      MESSSAGE_UPDATE_TIME = #{messsageUpdateTime,jdbcType=TIMESTAMP},
+      MESSAGE_EXPEND1 = #{messageExpend1,jdbcType=VARCHAR},
+      MESSAGE_EXPEND2 = #{messageExpend2,jdbcType=DECIMAL},
+      MESSAGE_EXPEND3_TIME = #{messageExpend3Time,jdbcType=TIMESTAMP},
+      MESSAGE_EXPEND4 = #{messageExpend4,jdbcType=VARCHAR},
+      MESSAGE_EXPEND5 = #{messageExpend5,jdbcType=VARCHAR},
+      MESSAGE_EXPEND6 = #{messageExpend6,jdbcType=VARCHAR},
+      MESSAGE_EXPEND7 = #{messageExpend7,jdbcType=VARCHAR},
+      MESSAGE_EXPEND8 = #{messageExpend8,jdbcType=VARCHAR}
+    where EXECUTE_SCHEDULE_ID = #{executeScheduleId,jdbcType=DECIMAL}
+  </update>
+</mapper>
