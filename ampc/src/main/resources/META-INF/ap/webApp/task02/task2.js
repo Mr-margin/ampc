@@ -340,19 +340,19 @@ function initialize() {
     var ls = window.sessionStorage;
     qjMsg = vipspa.getMessage('qjMessage').content;
     if (!qjMsg) {
-        var url = '/scenarino/find_Scenarino_status';
         qjMsg = JSON.parse(ls.getItem('qjMsg'));
-        ajaxPost(url, {
-            userId: userId,
-            scenarinoId: qjMsg.qjId
-        }).success(function (res) {
-            qjMsg.scenarinoStatus = res.data.scenarinoStatus;
-            scenarinoType(qjMsg.scenarinoStatus);
-        })
+        
     } else {
         ls.setItem('qjMsg', JSON.stringify(qjMsg));
         scenarinoType(qjMsg.scenarinoStatus)
     }
+    ajaxPost_async_false('/scenarino/find_Scenarino_status', {
+        userId: userId,
+        scenarinoId: qjMsg.qjId
+    }).success(function (res) {
+        qjMsg.scenarinoStatus = res.data.scenarinoStatus;
+        scenarinoType(qjMsg.scenarinoStatus);
+    })
     $('.qyCon').removeClass('disNone');
     $('.qyCon .nowRw span').html(qjMsg.rwName);
     $('.qyCon .nowQj span').html(qjMsg.qjName);
@@ -2330,7 +2330,7 @@ function jpjsBtn() {
                     scenarinoType(3);
                     qjMsg.scenarinoStatus = 3;
                     window.clearTimeout(jpztSetTimeOut);
-                    //jpztckBtn(60000);
+                    jpztckBtn(60000);
                 } else {
                     console.log('计算异常')
                 }
@@ -2368,8 +2368,8 @@ function initJPJS() {
         scenarinoId: qjMsg.qjId
     }).success(function (res) {
         if (res.status == 0) {
-            /*window.clearTimeout(jpztSetTimeOut);
-            jpztckBtn(3000);*/
+            window.clearTimeout(jpztSetTimeOut);
+            jpztckBtn(3000);
         } else {
             console.log(url + '故障')
         }
@@ -2404,9 +2404,9 @@ function jpztckBtn(t) {
                     findQJstatus();
                 } else {
                     /*如果减排计算未完成，则递归函数，反复查看，直到减排计算完成，t为等候时间，模态框打开时为3s，模态框关闭时为1min*/
-                    /*jpztSetTimeOut = window.setTimeout(function () {
+                    jpztSetTimeOut = window.setTimeout(function () {
                         jpztckBtn(t)
-                    }, t)*/
+                    }, t)
                 }
             } else if (res.data.type == 1) {
                 $('#jpzt').window('close');
