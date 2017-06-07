@@ -545,9 +545,8 @@ function load_gis(p) {
 	
     var v1 = new Date().getTime();
     
-    console.log(par);
     ajaxPost('/extract/png', par).success(function (data) {
-    	console.log(JSON.stringify(data));
+    	// console.log(JSON.stringify(data));
     	
         if(data.status == 0){
 //			app.mapimagelayer.removeAllImages();//删除全部的图片图层
@@ -555,7 +554,7 @@ function load_gis(p) {
 //			console.log(data.data.imagePath);
 			
 			var imageURL = pngUrl + "/ampc/"+data.data.imagePath+"?t="+Math.random();
-			console.log(imageURL);
+			// console.log(imageURL);
 			
 			var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
             var mapImage = new dong.MapImage({
@@ -567,7 +566,7 @@ function load_gis(p) {
             
             $('#colorBar').html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
             zmblockUI1("#map_in", "end");//打开锁屏控制
-            console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
+            // console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
 	
 		}else{
 			zmblockUI1("#map_in", "end");//打开锁屏控制
@@ -738,7 +737,7 @@ function fengchang(p){
             app.gLyr.add(graphic);
             app.gLyr.setOpacity(fxOpacity);
         });
-        console.log((new Date().getTime() - v1) + "num:" +g_num);
+        // console.log((new Date().getTime() - v1) + "num:" +g_num);
     }).error(function (res) {
         swal('风场抽数，内部错误', '', 'error');
     });
@@ -840,6 +839,11 @@ function getVerticalImg(xa,xi,ya,yi) {
     var url = '/extract/vertical';
     /*请求参数*/
     var par = {
+
+        /*测试*/
+        // "domainId": 1,"missionId": 353,"domain": 3,"scenarioId1": 806,day: 20170523,
+        /*测试 end*/
+
         calcType:changeMsg.calcType,//计算类型，当前只有show
         showType:'concn',//表现类型，当前只有浓度concn
         userId:userId,//用户id
@@ -868,11 +872,17 @@ function getVerticalImg(xa,xi,ya,yi) {
         par.day = moment(changeMsg.YBDate).format('YYYYMMDD');
         par.hour = changeMsg.YBHour;
     }
-    $('.showImg').css('display','block');
-    ajaxPost(url,par).success(function (res) {
-        $('.showImg').css('display','block');
-        console.log(res);
-    })
+     // $('.showImg').css('display','block');
+    // ajaxPost_w('http://166.111.42.85:9080/ampc'+url,{token:'',data:par}).success(function (res) {
+    //     $('.showImg').css('display','block');
+    //     $('.showImg img').attr('src','http://166.111.42.85:9080/ampc/verticalPath/'+res.data);
+    //     console.log(res);
+    // })
+   ajaxPost(url,par).success(function (res) {
+       $('.showImg').css('display','block');
+       $('.showImg').css('width','30%');
+       $('.showImg img').attr('src','verticalPath/'+res.data);
+   })
 
 }
 

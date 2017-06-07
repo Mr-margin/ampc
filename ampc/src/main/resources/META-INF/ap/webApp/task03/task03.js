@@ -675,8 +675,8 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
         app.infoTemplate.setTitle("企业排放信息");
         app.infoTemplate.setContent("<b>企业名称: </b>${companyname}<br/><br/>" +
 					                "<b>当前行业: </b>${smallIndex}<br/><br/>" +
-                                    "<b>控制量: </b>${controlNum}<br/><br/>" +
-                                    "<b>减排量: </b>${jianpaiNum}<br/><br/>");
+                                    "<b>基准排放: </b><span id='controlNum'>${controlNum}</span><br/><br/>" +
+                                    "<b>减&nbsp;&nbsp;排&nbsp;&nbsp;量: </b><span id='jianpaiNum'>${jianpaiNum}</span><br/><br/>");
 
         
 
@@ -809,13 +809,16 @@ function createSymbol(smallIndex){
   return style;
 }
 
+/*存储点数据key值为{companyId_smallIndex},数据中存储全物种的数值*/
+var pointNum = {};
+var markerPoint;
 /**
  * 企业点的事件
  */
 function capitalclick(){
     var pt=event.graphic.geometry;//当前点击的marker点
-//	event.graphic.attributes.companyname = "111111";
-    var url = '';
+    markerPoint = event.graphic;
+    var url = '/select/companyInfo';
     var par = {
         userId:userId,
         bigIndex:qjMsg.esCouplingId,
@@ -823,17 +826,41 @@ function capitalclick(){
         smallIndex:pt.smallIndex,
         companyId:pt.companyId
     }
+    var s = $('#hz_wrw').val();
 
-    ajaxPost(url,par).success(function (res) {
-        console.log(res);
-        event.graphic.attributes.controlNum = 100;//控制量
-        event.graphic.attributes.jianpaiNum = 0.5;//减排量
-    })
-    event.graphic.attributes.controlNum = 10000;//控制量
-    event.graphic.attributes.jianpaiNum = 0.005;//减排量
-	
-	
-	app.mapList[0].infoWindow.show(pt);//显示气泡框
+    var con = event.graphic.attributes;
+
+    if(!pointNum[pt.companyId+'_'+pt.smallIndex]){
+        if(con.controlNum == ""){
+            ajaxPost_async_false(url,par).success(function (res) {
+
+                if(res.status == 0){
+                    pointNum[pt.companyId+'_'+pt.smallIndex] = res.data;
+                    con.controlNum = (Math.round((res.data.pfl[s])*100))/100;//控制量
+                    con.jianpaiNum =(Math.round((res.data.jpl[s])*100))/100;//减排量
+
+                    window.setTimeout(function () {
+                        app.mapList[0].infoWindow.show(pt);//显示气泡框
+                    },300)
+                }else{
+                    swal({
+                        title: res.msg,
+                        type:'error',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                }
+
+            })
+        }
+    }else{
+        con.controlNum = (Math.round((pointNum[pt.companyId+'_'+pt.smallIndex].pfl[s])*100))/100;//控制量
+        con.jianpaiNum =(Math.round((pointNum[pt.companyId+'_'+pt.smallIndex].jpl[s])*100))/100;//减排量
+
+        window.setTimeout(function () {
+            app.mapList[0].infoWindow.show(pt);//显示气泡框
+        },300)
+    }
 }
 
 /**
@@ -1088,4 +1115,17 @@ function showDetail(){
 //点击详细信息关闭按钮
 $("#close_scene").click(function(){
     $("#detalMsg").window("close")
+})
+
+$('#hz_wrw').on('change',function (e) {
+
+    var s = e.target.value
+    var pt = markerPoint.geometry;
+    if(pointNum[pt.companyId+'_'+pt.smallIndex]){
+        $('#controlNum').html((Math.round((pointNum[pt.companyId+'_'+pt.smallIndex].pfl[s])*100))/100);//控制量
+        $('#jianpaiNum').html((Math.round((pointNum[pt.companyId+'_'+pt.smallIndex].jpl[s])*100))/100);//减排量
+        markerPoint.attributes.controlNum = (Math.round((pointNum[pt.companyId+'_'+pt.smallIndex].pfl[s])*100))/100;
+        markerPoint.attributes.jianpaiNum = (Math.round((pointNum[pt.companyId+'_'+pt.smallIndex].jpl[s])*100))/100;
+    }
+    metTable_hj_info();
 })
