@@ -1814,7 +1814,7 @@ public class NativeAndNationController {
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Map<String, Object> data = (Map) requestDate.get("data");
-			
+			//判断状态是否成功
 //			Object param=data.get("status");
 //			//进行参数判断
 //			if(!RegUtil.CheckParameter(param, "Long", null, false)){
