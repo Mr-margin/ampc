@@ -1136,25 +1136,29 @@ function setOption(ele, res) {
 
 function checkedDB(t) {
     if ($(t)[0].checked) {
-        $('#dbqj').removeAttr('disabled');
-        $('#jcqj').attr('disabled', true);
-        $('#jcdate').attr('disabled', true);
-        $('#yEndDate').attr('disabled', true);
+        $('#dbqj').removeAttr('disabled').removeClass('disabled');
+        $('#jcqj').attr('disabled', true).addClass('disabled');
+        $('#jcdate').attr('disabled', true).addClass('disabled');
+        $('#yStartDate').attr('disabled', true).addClass('disabled');
+        $('#yEndDate').attr('disabled', true).addClass('disabled');
 
-        $('#dbqj1').removeAttr('disabled');
-        $('#jcqj1').attr('disabled', true);
-        $('#jcdate1').attr('disabled', true);
-        $('#hEndDate').attr('disabled', true);
+        $('#dbqj1').removeAttr('disabled').removeClass('disabled');
+        $('#jcqj1').attr('disabled', true).addClass('disabled');
+        $('#jcdate1').attr('disabled', true).addClass('disabled');
+        $('#hStartDate').attr('disabled', true).addClass('disabled');
+        $('#hEndDate').attr('disabled', true).addClass('disabled');
     } else {
-        $('#dbqj').attr('disabled', true);
-        $('#jcqj').removeAttr('disabled');
-        $('#jcdate').removeAttr('disabled');
-        $('#yEndDate').removeAttr('disabled');
+        $('#dbqj').attr('disabled', true).addClass('disabled');
+        $('#jcqj').removeAttr('disabled').removeClass('disabled');
+        $('#jcdate').removeAttr('disabled').removeClass('disabled');
+        $('#yStartDate').removeAttr('disabled').removeClass('disabled');
+        $('#yEndDate').removeAttr('disabled').removeClass('disabled');
 
-        $('#dbqj1').attr('disabled', true);
-        $('#jcqj1').removeAttr('disabled');
-        $('#jcdate1').removeAttr('disabled');
-        $('#hEndDate').removeAttr('disabled');
+        $('#dbqj1').attr('disabled', true).addClass('disabled');
+        $('#jcqj1').removeAttr('disabled').removeClass('disabled');
+        $('#jcdate1').removeAttr('disabled').removeClass('disabled');
+        $('#hStartDate').removeAttr('disabled').removeClass('disabled');
+        $('#hEndDate').removeAttr('disabled').removeClass('disabled');
     }
 }
 
