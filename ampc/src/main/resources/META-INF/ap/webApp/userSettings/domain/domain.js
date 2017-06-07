@@ -15,8 +15,11 @@ $(document).ready(function(){
 	});
 	$('.hade').click(function(){
 		$('.d02').hide();
+		$('.d02 input').val('');
 		$('.d03').hide();
+		$('.d03 input').val('');
 		$('.d04').hide();
+		$('.d04 input').val('');
 	});
 	$('.add_two2').click(function(){
 		$('.d03').show();
@@ -25,7 +28,9 @@ $(document).ready(function(){
 	});
 	$('.hade2').click(function(){
 		$('.d03').hide();
+		$('.d03 input').val('');
 		$('.d04').hide();
+		$('.d04 input').val('');
 		$('.box-body').attr('max_dom','1');
 	});
 	$('.add_two3').click(function(){ 
@@ -35,6 +40,7 @@ $(document).ready(function(){
 	}); 
 	$('.hade3').click(function(){
 		$('.d04').hide();
+		$('.d04 input').val('');
 		$('.box-body').attr('max_dom','2');
 	});
 	$("select").change(function(){
@@ -127,16 +133,6 @@ function updateDomainName(val){
 function updateChoose(){
 	$("#update_Domain").window('close');
 	var domain_id = $('#update_Domain input[name="update"]:checked ').attr('domain_id');
-	$('.box-body').show();
-	$('.box-body').attr('domain_id',domain_id);
-	$('.box-body input').attr('readonly',false);
-	$('.i_parent_start1').attr('readonly',true);
-	$('.j_parent_start1').attr('readonly',true);
-	$('.dx1').attr('readonly',true);
-	$('.dx2').attr('readonly',true);
-	$('.i_parent_start1').val('1');
-	$('.j_parent_start1').val('1');
-	$('.fa-times').hide();
 	var  url = '/Domain/findAll';
 	ajaxPost(url, {
 		userId: userId
@@ -147,6 +143,15 @@ function updateChoose(){
 				pullPage(value);
 				$('.add_two,.add_two2,.add_two3').show();
 				$('.del_domain').show();
+				$('.box-body').show();
+				$('.box-body').attr('domain_id',domain_id);
+				$('.box-body input').attr('readonly',false);
+				$('.i_parent_start1').attr('readonly',true);
+				$('.j_parent_start1').attr('readonly',true);
+				$('.dx1').attr('readonly',true);
+				$('.dx2').attr('readonly',true);
+				$('.i_parent_start1').val('1');
+				$('.j_parent_start1').val('1');
 			}
 		});
     });
@@ -265,6 +270,8 @@ function pullPage(value){
 		$('select').find("option[value='0']").attr('selected','selected');
 		$('.box-body').attr('domain_id',domain_id);
 		$('.del_domain').attr('domain_id',domain_id);
+		$('.i_parent_start1').val('1');
+		$('.j_parent_start1').val('1');
 	}else{
 		var arr_we = value.domainInfo.wrf.e_we.split(',');
 		var arr_sn = value.domainInfo.wrf.e_sn.split(',');
@@ -388,7 +395,7 @@ function submitSave(){
 	var data = {
 		'userId':userId,
 		'domainInfo':domainInfo,
-		'domainyu':domainRange,
+		'domainRange':domainRange,
 		'domainId':domainId
 	}
 	return data;
@@ -401,7 +408,7 @@ function postSubmit(){
 	ajaxPost(url,{
 		'userId':data.userId,
 		'domainInfo':data.domainInfo,
-		'domainyu':data.domainyu,
+		'domainRange':data.domainRange,
 		'domainId':data.domainId,
 	}).success(function(res){
 	});
