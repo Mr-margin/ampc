@@ -146,8 +146,8 @@ public class EMissionController {
 							temission.setScenarinoId(scenarionId);
 							
 							
-							JSONObject jsod=JSONObject.fromObject(lastMap.get("category").toString());
-							 Map<String,Map<String,Object>> addmaps= (Map<String, Map<String,Object>>)jsod;
+//							JSONObject jsod=JSONObject.fromObject(lastMap.get("category").toString());
+							 Map<String,Map<String,Object>> addmaps= (Map<String, Map<String,Object>>) lastMap.get("category");
 							 Iterator<Entry<String,Map<String,Object>>> iters=addmaps.entrySet().iterator(); 
 							 Map<String, Object> spcse=new HashMap();
 							 Map<String,Map<String,Object>> Lastmaps= new HashMap();
@@ -197,8 +197,8 @@ public class EMissionController {
 							 JSONObject ssds=JSONObject.fromObject(Lastmaps);
 							 temission.setEmissionDetails(ssds.toString());
 
-							 JSONObject ops=JSONObject.fromObject(lastMap.get("op").toString());
-							 Map<String,Map<String,Object>>opmapss= (Map<String, Map<String,Object>>)ops;
+							 //JSONObject ops=JSONObject.fromObject(lastMap.get("op").toString());
+							 Map<String,Map<String,Object>>opmapss= (Map<String, Map<String,Object>>) lastMap.get("op");
 							 Iterator<Entry<String,Map<String,Object>>> opitr=opmapss.entrySet().iterator(); 
 							 Map<String,Map<String,Object>> Lastmapss= new HashMap();
 							 while(opitr.hasNext()){
@@ -232,8 +232,8 @@ public class EMissionController {
 						return AmpcResult.build(1000, "error", "无情景id");
 					}
 					if (s != 0) {
-						
-						return AmpcResult.build(0, "success");
+						LogUtil.getLogger().info("save_emission 保存减排计算结果成功");
+						return AmpcResult.ok();
 					}
 				}
 				TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
@@ -493,11 +493,12 @@ public class EMissionController {
 				LogUtil.getLogger().error("find_baseEmission  污染物为空!");
 				return AmpcResult.build(1003, "污染物为空!");
 			}
-			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());//情景id
-			if(!RegUtil.CheckParameter(scenarinoId, "Long", null, false)){
+			if(null==data.get("scenarinoId")||"".equals(data.get("scenarinoId"))){
 				LogUtil.getLogger().error("find_baseEmission  情景id为空!");
 				return AmpcResult.build(1003, "情景id为空!");
 			}
+			Long scenarinoId=Long.valueOf(data.get("scenarinoId").toString());//情景id
+			
 			String level=data.get("codeLevel").toString();	//code级别
 			if(!RegUtil.CheckParameter(level, "String", null, false)){
 				LogUtil.getLogger().error("find_baseEmission  code级别为空!");
@@ -696,9 +697,9 @@ public class EMissionController {
 		Map obj=JsonUtil.read("C:\\Users\\Administrator\\Desktop\\result.json", Map.class);
 		LogUtil.getLogger().error("完成数据读取"+new Date());
 		Map map=(Map) obj.get("data");
-	     List sse= BaseSaveUtil.save_baseemission(map);
-	     JdbcInsert.main(sse);
-	     LogUtil.getLogger().error("数据添加完成时间"+new Date());
+		List sse= BaseSaveUtil.save_baseemission(map);
+		JdbcInsert.main(sse);
+		LogUtil.getLogger().error("数据添加完成时间"+new Date());
 		return sse;
 	}
 }
