@@ -183,7 +183,9 @@ function setStation(id) {
 	    userId: userId,
 	    missionId: id
 	  }).success(function (res) {
-	    if (res.status == 0) {
+//		  console.log($.isEmptyObject(res.data));true
+		//判断是否为0并且为false($.isEmptyObject({})结果为true)
+	    if (res.status == 0&&$.isEmptyObject(res.data)==false) {
 	    	allCode = res.data;
 	      for (var pro in allCode) {
 	        $('#proStation').append($('<option value="'+ pro + '">' + allCode[pro].name + '</option>'))
@@ -200,7 +202,7 @@ function setStation(id) {
 	      findStation(changeMsg.city);
 	      //changeMsg.station = $('#station').val();
 	    } else {
-//	      console.log('站点请求故障！！！')
+	      console.log('站点请求故障！！！')
 	    }
 	  });
 	}
