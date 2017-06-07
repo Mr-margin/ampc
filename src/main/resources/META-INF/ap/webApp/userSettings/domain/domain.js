@@ -52,21 +52,6 @@ $(document).ready(function(){
 /**创建**/
 function creat(){
 	$("#creat_Domain").window('open');
-	$('.d02').hide();
-	$('.d03').hide();
-	$('.d04').hide();
-	$('.box-body').show();
-	$('.box-body input').val('');
-	$('.add_two,.add_two2,.add_two3').show();
-	$('select').find("option[value='0']").attr('selected','selected');
-
-	$('.box-body input').attr('readonly',false);
-	$('.i_parent_start1').attr('readonly',true);
-	$('.j_parent_start1').attr('readonly',true);
-	$('.dx1').attr('readonly',true);
-	$('.dx2').attr('readonly',true);
-	$('.i_parent_start1').val('1');
-	$('.j_parent_start1').val('1');
 
 	if($('.domainName').val() == ''){
 		$('#creat_Domain button').attr("disabled", true);
@@ -86,7 +71,6 @@ $("#creat_Domain input").change(function(){
 function update(){
 	$("#update_Domain").window('open');
 	$('#update_Domain table tr').remove();
-	$('.add_two,.add_two2,.add_two3').show();
 	var  url = '/Domain/findAll';
 	ajaxPost(url, {
 		userId: userId
@@ -161,6 +145,8 @@ function updateChoose(){
 		$.each(res.data,function(key,value){
 			if(value.domainId == domain_id){
 				pullPage(value);
+				$('.add_two,.add_two2,.add_two3').show();
+				$('.del_domain').show();
 			}
 		});
     });
@@ -180,6 +166,21 @@ function domainPost(){
 		$("#creat_Domain").window('close');
 		$('.panel-title').text(domainName);
 		$('.box-body').attr('domain_id',domain_id);
+		$('.box-body').show();
+		$('.box-body input').val('');
+		$('.add_two,.add_two2,.add_two3').show();
+		$('select').find("option[value='0']").attr('selected','selected');
+		$('.del_domain').show();
+		$('.box-body input').attr('readonly',false);
+		$('.i_parent_start1').attr('readonly',true);
+		$('.j_parent_start1').attr('readonly',true);
+		$('.dx1').attr('readonly',true);
+		$('.dx2').attr('readonly',true);
+		$('.i_parent_start1').val('1');
+		$('.j_parent_start1').val('1');
+		$('.d02').hide();
+		$('.d03').hide(); 
+		$('.d04').hide();
 	});
 }
 
@@ -243,6 +244,7 @@ function getInfo(){
 				$('.box-body input').attr('readonly',true);
 				$('.fa-times').hide();
 				$('.add_two,.add_two2,.add_two3').hide();
+				$('.del_domain').hide();
 				pullPage(value);
 			}
 		});
@@ -252,8 +254,10 @@ function getInfo(){
 
 /**数据导入页面**/
 function pullPage(value){
+	console.log(value);
 	var domain_id = value.domainId;
 	if(JSON.stringify(value.domainInfo) == "{}"){
+		$('.panel-title').text(value.domainName);
 		$('.box-body input').val('');
 		$('.d02').hide();
 		$('.d03').hide(); 
