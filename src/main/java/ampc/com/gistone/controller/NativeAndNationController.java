@@ -340,12 +340,12 @@ public class NativeAndNationController {
 			}
 			int total=tEsNativeTpMapper.selectTotalNativeTp(userId);
 			
-			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的本地清单信息成功!");
-			
 			Map nativeTpMap=new HashMap();
 			nativeTpMap.put("rows", listTp);
 			nativeTpMap.put("total", total);
 			nativeTpMap.put("page", pageNum);
+			
+			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的本地清单信息成功!");
 			return AmpcResult.ok(nativeTpMap);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("NativeAndNationController 查询当前用户下的本地清单信息异常!",e);
@@ -411,13 +411,14 @@ public class NativeAndNationController {
 			//插入数据
 			int total=tEsNationMapper.insertSelective(tEsNation);
 			Map msgMap=new HashMap();
-			if(total==1){
-				
+			if(total>0){
 				msgMap.put("msg", true);
+				LogUtil.getLogger().info("NativeAndNationController 创建全国清单信息成功!");
 			}else{
 				msgMap.put("msg", false);
+				LogUtil.getLogger().info("NativeAndNationController 创建全国清单信息失败!");
 			}
-			LogUtil.getLogger().info("NativeAndNationController 创建全国清单信息成功!");
+			
 			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -494,12 +495,14 @@ public class NativeAndNationController {
 			//更新数据
 			int total=tEsNationMapper.updateByIdSelective(tEsNation);
 			Map msgMap=new HashMap();
-			if(total==1){
+			if(total>0){
 				msgMap.put("msg", true);
+				LogUtil.getLogger().info("NativeAndNationController 编辑全国清单信息成功!");
 			}else{
 				msgMap.put("msg", false);
+				LogUtil.getLogger().info("NativeAndNationController 编辑全国清单信息失败!");
 			}
-			LogUtil.getLogger().info("NativeAndNationController 编辑全国清单信息成功!");
+			
 			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -532,14 +535,16 @@ public class NativeAndNationController {
 			Long nationId = Long.parseLong(param.toString());
 			int total=tEsNationMapper.deleteByPrimaryKey(nationId);
 			Map msgMap=new HashMap();
-			if(total==1){
+			if(total>0){
 				//成功
-				msgMap.put("msg", true);	
+				msgMap.put("msg", true);
+				LogUtil.getLogger().info("NativeAndNationController 删除全国清单信息成功!");
 			}else{
 				//失败
 				msgMap.put("msg", false);
+				LogUtil.getLogger().info("NativeAndNationController 删除全国清单信息失败!");
 			}
-			LogUtil.getLogger().info("NativeAndNationController 删除全国清单信息成功!");
+			
 			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -667,7 +672,7 @@ public class NativeAndNationController {
 			int total=tEsNativeTpMapper.insertSelective(tEsNativeTp);
 			Map msgMap=new HashMap();
 			//清单模板数据成功入库
-			if(total==1){
+			if(total>0){
 				Map nativeTpMap=new HashMap();
 				nativeTpMap.put("userId", userId);
 				nativeTpMap.put("nativeTpName", nativeTpName);
@@ -679,11 +684,13 @@ public class NativeAndNationController {
 				msgMap.put("msg", true);
 				msgMap.put("filePath", nativefilePath);
 				msgMap.put("nativeTpId","mb_"+nativeTp.getEsNativeTpId());
+				LogUtil.getLogger().info("NativeAndNationController 创建本地清单模板信息成功!");
 			}else{
 				//清单模板数据入库失败
 				msgMap.put("msg", false);
+				LogUtil.getLogger().info("NativeAndNationController 创建本地清单模板信息失败!");
 			}
-			LogUtil.getLogger().info("NativeAndNationController 创建本地清单模板信息成功!");
+			
 			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -756,12 +763,14 @@ public class NativeAndNationController {
 			//更新数据
 			int total=tEsNativeTpMapper.updateByIdSelective(tEsNativeTp);
 			Map msgMap=new HashMap();
-			if(total==1){
+			if(total>0){
 				msgMap.put("msg", true);
+				LogUtil.getLogger().info("NativeAndNationController 编辑全国清单信息成功!");
 			}else{
 				msgMap.put("msg", false);
+				LogUtil.getLogger().info("NativeAndNationController 编辑全国清单信息失败!");
 			}
-			LogUtil.getLogger().info("NativeAndNationController 编辑全国清单信息成功!");
+			
 			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -790,14 +799,16 @@ public class NativeAndNationController {
 			Long nativeTpId = Long.parseLong(param.toString());
 			int total=tEsNativeTpMapper.deleteByPrimaryKey(nativeTpId);
 			Map msgMap=new HashMap();
-			if(total==1){
+			if(total>0){
 				//成功
-				msgMap.put("msg", true);	
+				msgMap.put("msg", true);
+				LogUtil.getLogger().info("NativeAndNationController 删除全国清单信息成功!");
 			}else{
 				//失败
 				msgMap.put("msg", false);
+				LogUtil.getLogger().info("NativeAndNationController 删除全国清单信息失败!");
 			}
-			LogUtil.getLogger().info("NativeAndNationController 删除全国清单信息成功!");
+			
 			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -923,12 +934,14 @@ public class NativeAndNationController {
 			//插入数据
 			int total=tEsNativeMapper.insertSelective(tEsNative);
 			Map msgMap=new HashMap();
-			if(total==1){
+			if(total>0){
 				msgMap.put("msg", true);
+				LogUtil.getLogger().info("NativeAndNationController 创建本地清单模板信息成功!");
 			}else{
 				msgMap.put("msg", false);
+				LogUtil.getLogger().info("NativeAndNationController 创建本地清单模板信息失败!");
 			}
-			LogUtil.getLogger().info("NativeAndNationController 创建本地清单模板信息成功!");
+			
 			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -1045,49 +1058,29 @@ public class NativeAndNationController {
 						TEsNativeTp	tEsNativeTp=new TEsNativeTp();
 						tEsNativeTp.setUserId(userId);
 						tEsNativeTp.setEsNativeTpId(nativeTpId);
+						//修改为1表示已校验
 						tEsNativeTp.setIsVerify("1");
 						int total=tEsNativeTpMapper.updateByIdSelective(tEsNativeTp);
 						if(total==1){
 							msgMap.put("msg", true);
-							LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息成功!");
+							LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息数据更新成功!");
 						}else{
 							msgMap.put("msg", false);
+							LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息数据更新失败!");
 						}
 					}else{
+						LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息失败!");
 						return AmpcResult.ok(sector);
 					}
 				}else{
+					LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息失败!");
 					return AmpcResult.ok(queryExcel);
 				}
 			}else{
+				LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息失败!");
 				return AmpcResult.ok(sectorDocExcel);
 			}
 			
-			
-//			Map  sectorDocExcel =excelToDateController.update_SectorDocExcelData(userId,nativeTpId,nativefilePath+ "/"+"应急系统新_1描述文件.xlsx");
-//			if(sectorDocExcel==null){
-//				Map  queryExcel =excelToDateController.update_QueryExcelData(userId,nativeTpId,nativefilePath+ "/"+"应急系统新_2筛选逻辑.xlsx");
-//				if(queryExcel==null){
-//					Map  sector =excelToDateController.update_SectorData(userId,nativeTpId,nativefilePath+ "/"+"应急系统新_4行业匹配.xlsx");
-//					if(sector==null){
-//						Map  nativeExcel =excelToDateController.check_nativeExcelData(userId, templateId, qdId, filePath)(nativefilePath+ "/"+"应急系统新_3清单数据_hb_ywjv11_QY3_CPH1.xlsx");
-//						if(nativeExcel==null){
-//							return AmpcResult.ok(nativeExcel);
-//						}else{
-//							return AmpcResult.ok(nativeExcel);
-//						}
-//					}else{
-//						return AmpcResult.ok(sector);
-//					}
-//				}else{
-//					return AmpcResult.ok(queryExcel);
-//				}
-//			}else{
-//				return AmpcResult.ok(sectorDocExcel);
-//			}
-			
-			
-//			return AmpcResult.ok();
 			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -1214,18 +1207,21 @@ public class NativeAndNationController {
 				int total=tEsNativeMapper.updateByPrimaryKeySelective(tEsNative);
 				if(total==1){
 					msgMap.put("msg", true);
-					LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息成功!");
+					LogUtil.getLogger().info("NativeAndNationController 校验本地清单信息数据更新成功!");
 				}else{
 					msgMap.put("msg", false);
+					LogUtil.getLogger().info("NativeAndNationController 校验本地清单信息数据更新失败!");
 				}
 			}else{
+				LogUtil.getLogger().info("NativeAndNationController 校验本地清单信息失败!");
 				return AmpcResult.ok(nativeExcel);
 			}
+				
 			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
-			LogUtil.getLogger().error("NativeAndNationController 校验本地清单模板异常!",e);
-			return AmpcResult.build(1001, "NativeAndNationController 校验本地清单模板异常!");
+			LogUtil.getLogger().error("NativeAndNationController 校验本地清单异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 校验本地清单异常!");
 		}
 	}
 	
@@ -1337,12 +1333,14 @@ public class NativeAndNationController {
 			//插入数据
 			int total=tEsCouplingMapper.insertSelective(tEsCoupling);
 			Map msgMap=new HashMap();
-			if(total==1){
+			if(total>0){
 				msgMap.put("msg", true);
+				LogUtil.getLogger().info("NativeAndNationController 创建耦合清单信息成功!");
 			}else{
 				msgMap.put("msg", false);
+				LogUtil.getLogger().info("NativeAndNationController 创建耦合清单信息失败!");
 			}
-			LogUtil.getLogger().info("NativeAndNationController 创建耦合清单信息成功!");
+			
 			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -1413,12 +1411,14 @@ public class NativeAndNationController {
 			//更新数据
 			int total=tEsCouplingMapper.updateByIdSelective(tEsCoupling);
 			Map msgMap=new HashMap();
-			if(total==1){
+			if(total>0){
 				msgMap.put("msg", true);
+				LogUtil.getLogger().info("NativeAndNationController 编辑耦合清单信息成功!");
 			}else{
 				msgMap.put("msg", false);
+				LogUtil.getLogger().info("NativeAndNationController 编辑耦合清单信息失败!");
 			}
-			LogUtil.getLogger().info("NativeAndNationController 编辑耦合清单信息成功!");
+			
 			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -1448,14 +1448,16 @@ public class NativeAndNationController {
 			Long couplingId = Long.parseLong(param.toString());
 			int total=tEsCouplingMapper.deleteByPrimaryKey(couplingId);
 			Map msgMap=new HashMap();
-			if(total==1){
+			if(total>0){
 				//成功
-				msgMap.put("msg", true);	
+				msgMap.put("msg", true);
+				LogUtil.getLogger().info("NativeAndNationController 删除耦合清单信息成功!");
 			}else{
 				//失败
 				msgMap.put("msg", false);
+				LogUtil.getLogger().info("NativeAndNationController 删除耦合清单信息失败!");
 			}
-			LogUtil.getLogger().info("NativeAndNationController 删除耦合清单信息成功!");
+			
 			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -1731,7 +1733,9 @@ public class NativeAndNationController {
 			//用户id
 			couplingMap.put("userId", userId);
 			//全国清单ID
-			couplingMap.put("meicId", nationId);
+//			couplingMap.put("meicId", nationId);
+			//先写死
+			couplingMap.put("meicId", "MEIC-2013");
 			//固定前缀
 			couplingMap.put("prefix", "MC");
 			//耦合后的清单ID
@@ -1780,15 +1784,18 @@ public class NativeAndNationController {
 				if(result>0){
 					//更新成功
 					messageMap.put("msg", true);
+					LogUtil.getLogger().info("NativeAndNationController 保存耦合配置信息数据更新成功!");
 				}else{
 					//更新失败
 					messageMap.put("msg", false);
+					LogUtil.getLogger().info("NativeAndNationController 保存耦合配置信息数据更新失败!");
 				}
 			}else{
+				//调用晓东接口失败
 				messageMap.put("msg", false);
+				LogUtil.getLogger().info("NativeAndNationController 保存耦合配置信息失败!");
 			}
 			
-			LogUtil.getLogger().info("NativeAndNationController 保存耦合配置信息成功!");
 			return AmpcResult.ok(messageMap);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("NativeAndNationController 保存耦合配置信息异常!",e);
@@ -1807,8 +1814,23 @@ public class NativeAndNationController {
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Map<String, Object> data = (Map) requestDate.get("data");
+			
+//			Object param=data.get("status");
+//			//进行参数判断
+//			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+//				LogUtil.getLogger().error("NativeAndNationController 耦合清单ID为空或出现非法字符!");
+//				return AmpcResult.build(1003, "耦合清单ID为空或出现非法字符!");
+//			}
+//			String status = param.toString();
+//			if("success".equals(status)){
+//				//请求成功
+//			}else{
+//				//请求失败
+//			}
+			
 			//获取耦合清单D
-			Object param=data.get("tEsCouplingId");
+			Object param=data.get("destId");
+//			param=data.get("destId");
 			//进行参数判断
 			if(!RegUtil.CheckParameter(param, "Long", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 耦合清单ID为空或出现非法字符!");
@@ -1819,19 +1841,20 @@ public class NativeAndNationController {
 			//添加更新所需耦合清单id参数
 			TEsCoupling tEsCoupling = new TEsCoupling();
 			tEsCoupling.setEsCouplingId(tEsCouplingId);
-			//更新耦合清单状态为成功
+			//更新耦合清单状态为3成功
 			int result = tEsCouplingMapper.updateStatusByPrimaryKey(tEsCoupling);
 			//返回调用者的信息
 			Map messageMap = new HashMap<String, Object>();
 			if(result>0){
 				//更新成功
 				messageMap.put("msg", true);
+				LogUtil.getLogger().info("NativeAndNationController 更新耦合配置状态数据更新成功!");
 			}else{
 				//更新失败
 				messageMap.put("msg", false);
+				LogUtil.getLogger().info("NativeAndNationController 更新耦合配置状态数据更新失败!");
 			}
 			
-			LogUtil.getLogger().info("NativeAndNationController 更新耦合配置状态成功!");
 			return AmpcResult.ok(messageMap);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("NativeAndNationController 更新耦合配置状态异常!",e);
