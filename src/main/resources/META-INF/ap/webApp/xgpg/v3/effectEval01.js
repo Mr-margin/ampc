@@ -202,7 +202,8 @@ function setStation(id) {
 	      findStation(changeMsg.city);
 	      //changeMsg.station = $('#station').val();
 	    } else {
-	      console.log('站点请求故障！！！')
+	      console.log('站点请求故障！！！');
+	      swal("未查询到数据", '', 'error');
 	    }
 	  });
 	}

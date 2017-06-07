@@ -339,7 +339,8 @@ function requestRegion() {
         $('.proStation').empty();
         $('.cityStation').empty();
         $('.station').empty();
-        if (res.status == 0) {
+        
+        if (res.status == 0&&$.isEmptyObject(res.data)==false) {
             allCode = res.data;
             for (var pro in allCode) {
                 $('.proStation').append($('<option value="' + pro + '">' + allCode[pro].name + '</option>'))
@@ -356,7 +357,8 @@ function requestRegion() {
                 dps_Station[changeMsg.city + changeMsg.type] = setStation(changeMsg.city, changeMsg.type);
             }
         } else {
-            console.log('站点请求故障！！！')
+            console.log('站点请求故障！！！');
+            swal("未查询到数据", '', 'error');
         }
 
     })
