@@ -18,7 +18,9 @@ package ampc.com.gistone.redisqueue.tasksenum;
  */
 public enum TasksEnum2 {
 	
-	meic("meic",1),cmaq("cmaq",2),dp_emis("dp_emis",3),dp_chem("dp_chem",4);
+	/*meic("meic",1),cmaq("cmaq",2),dp_emis("dp_emis",3),dp_chem("dp_chem",4);*/
+
+	meic("人为源排放",1),cmaq("CMAQ",2),dp_emis("排放后处理",3),dp_chem("化学后处理",4);
 
 	private String name ;
 	
