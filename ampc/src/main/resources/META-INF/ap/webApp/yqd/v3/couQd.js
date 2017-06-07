@@ -12,14 +12,14 @@ function innitdata(){  //全国清单的初始化
         dataType: "json",
         columns:[[  //表头
             {field:"ck",checkbox:true},
-            {field:"esCouplingName",title:"清单名称",width:100,align:'cneter'},
+            {field:"esCouplingName",title:"清单名称",width:160,align:'cneter'},
             {field:"esCouplingDesc",title:"清单描述",width:400,align:'cneter'},
             {field:"publishTime",title:"本地清单",width:100},
             {field:"nationRemark",title:"全国清单",width:100},
             {field:"esCouplingYear",title:"年份",width:80},
             {field:"addTime",title:"创建时间",formatter:function(value,row,index){
                 return  moment(value).format("YYYY-MM-DD");
-            },align:'cneter',width:80},
+            },align:'cneter',width:120},
             {field:"historyCoupling",title:"使用历史",width:100},
             {field:"coupingSet",title:"配置",formatter:function(value,row,index){
                 var coupId=row.esCouplingId
