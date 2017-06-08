@@ -269,7 +269,7 @@ var zTreeSetting = {
                 $('#areaName').val('').removeAttr('data-id');
                 showCode = [{}, {}, {}];
 //                    $('.adcodeList.mt20').empty();
-//                    app.gLyr.clear();
+                    app.gLyr.clear();
             } else {
                 findUrl = '/area/get_areaList';
                 areaId = $('#settingqjbox .step1>button').attr('data-qjid');//获取当前区域id
