@@ -297,6 +297,9 @@ function nextCoup(){//点击下一步按钮
         if(industryData.length>0){
             industryData=[]
         }
+        globelCheckedQd=[];//点击下一步 进行第三步 所有数据清空
+        allCity=[];
+        globelCheckedCity=[];
         if(localQd!=''&&localQd!=null&&localQd!=undefined){
             $(".cloudui .coupSetTitleList").children("li").eq(1).removeClass("active");
             $(".cloudui .coupSetTitleList").children("li").eq(2).addClass("active");
