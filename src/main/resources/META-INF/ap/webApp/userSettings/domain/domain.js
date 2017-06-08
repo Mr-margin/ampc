@@ -95,7 +95,7 @@ function deleteDomain(){
 	var domain_id = $('.del_domain').attr('domain_id');
 	$('.box-body').hide();
 	$('box-body input').val('');
-	$('select').find("option[value='0']").attr('selected','selected');
+	$('.domain_select').find("option[value='0']").attr('selected','selected');
 	ajaxPost(url,{
 		'userId':userId,
 		'domainId':domain_id
@@ -174,7 +174,7 @@ function domainPost(){
 		$('.box-body').show();
 		$('.box-body input').val('');
 		$('.add_two,.add_two2,.add_two3').show();
-		$('select').find("option[value='0']").attr('selected','selected');
+		$('.domain_select').find("option[value='0']").attr('selected','selected');
 		$('.del_domain').show();
 		$('.box-body input').attr('readonly',false);
 		$('.i_parent_start1').attr('readonly',true);
@@ -267,7 +267,7 @@ function pullPage(value){
 		$('.d02').hide();
 		$('.d03').hide(); 
 		$('.d04').hide();
-		$('select').find("option[value='0']").attr('selected','selected');
+		$('.domain_select').find("option[value='0']").attr('selected','selected');
 		$('.box-body').attr('domain_id',domain_id);
 		$('.del_domain').attr('domain_id',domain_id);
 		$('.i_parent_start1').val('1');
@@ -300,9 +300,9 @@ function pullPage(value){
 		$('.box-body').attr('domain_id',domain_id);
 		$('.del_domain').attr('domain_id',domain_id);
 		if(arr_dx[0] == '27000'){
-			$('select').find("option[value='2']").attr('selected','selected');
+			$('.domain_select').find("option[value='2']").attr('selected','selected');
 		}else{
-			$('select').find("option[value='3']").attr('selected','selected');
+			$('.domain_select').find("option[value='3']").attr('selected','selected');
 		}
 		$('.dx1').val(arr_dx[1]);
 		$('.dx2').val(arr_dx[2]);
@@ -353,7 +353,7 @@ function submitSave(){
 	var j_parent_start1 = $('.j_parent_start1').val();
 	var j_parent_start2 = $('.j_parent_start2').val();
 	var j_parent_start3 = $('.j_parent_start3').val();
-	var dx = $("select").find("option:selected").text();
+	var dx = $(".domain_select").find("option:selected").text();
 
 	arr_we.push(e_we1,e_we2,e_we3);
 	arr_sn.push(e_sn1,e_sn2,e_sn3);
