@@ -5,7 +5,7 @@ $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">用户�
 
 
 $(document).ready(function(){
-	$('.d02').hide();
+
 	$('.d03').hide(); 
 	$('.d04').hide();
 	$('.add_two').click(function(){
@@ -14,7 +14,6 @@ $(document).ready(function(){
 		$('.fa-times').show();
 	});
 	$('.hade').click(function(){
-		$('.d02').hide();
 		$('.d02 input').val('');
 		$('.d03').hide();
 		$('.d03 input').val('');
@@ -49,10 +48,12 @@ $(document).ready(function(){
 	});
 	$('input').change(function(){
 		submitSave();
+		resolution();
 	});
 	getInfo();
 	resolution();
 });
+
 
 
 /**创建**/
@@ -64,6 +65,7 @@ function creat(){
 	}else{
 		$('#creat_Domain button').attr('disabled',false);
 	}
+
 }
 $("#creat_Domain input").change(function(){
 	if($('.domainName').val() == ''){
@@ -141,17 +143,11 @@ function updateChoose(){
 		$.each(res.data,function(key,value){
 			if(value.domainId == domain_id){
 				pullPage(value);
-				$('.add_two,.add_two2,.add_two3').show();
+				$('.add_two2,.add_two3').show();
 				$('.del_domain').show();
 				$('.box-body').show();
 				$('.box-body').attr('domain_id',domain_id);
-				$('.box-body input').attr('readonly',false);
-				$('.i_parent_start1').attr('readonly',true);
-				$('.j_parent_start1').attr('readonly',true);
-				$('.dx1').attr('readonly',true);
-				$('.dx2').attr('readonly',true);
-				$('.i_parent_start1').val('1');
-				$('.j_parent_start1').val('1');
+				inputDis();
 			}
 		});
     });
@@ -176,16 +172,9 @@ function domainPost(){
 		$('.add_two,.add_two2,.add_two3').show();
 		$('.domain_select').find("option[value='0']").attr('selected','selected');
 		$('.del_domain').show();
-		$('.box-body input').attr('readonly',false);
-		$('.i_parent_start1').attr('readonly',true);
-		$('.j_parent_start1').attr('readonly',true);
-		$('.dx1').attr('readonly',true);
-		$('.dx2').attr('readonly',true);
-		$('.i_parent_start1').val('1');
-		$('.j_parent_start1').val('1');
-		$('.d02').hide();
 		$('.d03').hide(); 
 		$('.d04').hide();
+		inputDis();
 	});
 }
 
@@ -247,6 +236,9 @@ function getInfo(){
 		$.each(res.data,function(key,value){
 			if(value.haveMission == '已使用'){
 				$('.box-body input').attr('readonly',true);
+				if($('input[readonly = readonly]')){
+					$('input').css('background-color','#f7f7f7');
+				}
 				$('.fa-times').hide();
 				$('.add_two,.add_two2,.add_two3').hide();
 				$('.del_domain').hide();
@@ -259,12 +251,10 @@ function getInfo(){
 
 /**数据导入页面**/
 function pullPage(value){
-	console.log(value);
 	var domain_id = value.domainId;
 	if(JSON.stringify(value.domainInfo) == "{}"){
 		$('.panel-title').text(value.domainName);
 		$('.box-body input').val('');
-		$('.d02').hide();
 		$('.d03').hide(); 
 		$('.d04').hide();
 		$('.domain_select').find("option[value='0']").attr('selected','selected');
@@ -291,6 +281,7 @@ function pullPage(value){
 		$('.e_we3').val(arr_we[2]);
 		$('.e_sn3').val(arr_sn[2]);
 		$('.btrim').val(value.domainInfo.mcip.btrim);
+		$('.btrims').val(value.domainInfo.mcip.btrim);
 		$('.i_parent_start1').val(arr_i_parent_start[0]);
 		$('.i_parent_start2').val(arr_i_parent_start[1]);
 		$('.i_parent_start3').val(arr_i_parent_start[2]);
@@ -299,6 +290,7 @@ function pullPage(value){
 		$('.j_parent_start3').val(arr_j_parent_start[2]);
 		$('.box-body').attr('domain_id',domain_id);
 		$('.del_domain').attr('domain_id',domain_id);
+
 		if(arr_dx[0] == '27000'){
 			$('.domain_select').find("option[value='2']").attr('selected','selected');
 		}else{
@@ -322,6 +314,10 @@ function pullPage(value){
 /**分辨率选择**/
 function resolution(){
 	var checkValue=$("select").val();
+	var btrim = $('.btrim').val();
+	var stand_lon = $('.stand_lon').val();
+	$('.btrims').val(btrim);
+	$('.ref_lon').val(stand_lon);
 	if(checkValue == '2'){
 		$('.dx1').val('9000');
 		$('.dx2').val('3000');
@@ -331,6 +327,7 @@ function resolution(){
 	}else if(checkValue == '0'){
 		$('.dx1').val('');
 		$('.dx2').val('');
+
 	}
 }
 
@@ -411,6 +408,11 @@ function postSubmit(){
 		'domainRange':data.domainRange,
 		'domainId':data.domainId,
 	}).success(function(res){
+		if(res.msg == 'success'){
+			swal("保存成功");
+		}else{
+			swal("保存失败");
+		}
 	});
 }
 
@@ -432,3 +434,16 @@ function namePost(){
 	});
 }
 
+function inputDis(){
+	$('.box-body input').attr('readonly',false);
+	$('.box-body input').css('background-color','white')
+	$('.i_parent_start1').attr('readonly',true);
+	$('.j_parent_start1').attr('readonly',true);
+	$('.dx1').attr('readonly',true);
+	$('.dx2').attr('readonly',true);
+	$('.btrims').attr('readonly',true);
+	$('.ref_lon').attr('readonly',true);
+	$('.i_parent_start1').val('1');
+	$('.j_parent_start1').val('1');
+	$('input[readonly = readonly]').css('background-color','#f7f7f7');
+}
