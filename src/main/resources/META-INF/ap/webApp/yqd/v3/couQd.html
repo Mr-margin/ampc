@@ -116,6 +116,31 @@
 <!--耦合清单详细信息-->
 <div id="coupDetail">
     <div id="CoupDetailCon">
+        <div id="coupQdDetail">
+            <table class="easyui-datagrid">
+                <tr>
+                    <th>清单名称</th>
+                    <td><span id="coupName"></span></td>
+                    <th>年份</th>
+                    <td><span id="coupYear"></span></td>
+                </tr>
+                <tr>
+                    <th>耦合清单描述</th>
+                    <td><span id="coupDes"></span></td>
+                    <th>创建时间</th>
+                    <td><span id="coupDate"></span></td>
+                </tr>
+                <tr>
+                    <th>本地清单</th>
+                    <td><span id="coupLocal"></span></td>
+                    <th>全国清单</th>
+                    <td><span id="coupNation"></span></td>
+                </tr>
+            </table>
+        </div>
+        <div id="coupMeic">
+            <table id="coupMeicTable"></table>
+        </div>
     </div>
     <div class="dlogFooter" >
         <button type="button" class="btn btn-primary createQdBtn" onclick="closeDetail()">关闭</button>
