@@ -123,6 +123,7 @@ var msg = {
     $('#modelstatus').window($.extend({},defaultwindowoption,{
     	title:'模式运行状态',
     	onOpen:function(){
+    		modelstatusechart = echarts.init(document.getElementById("modelstatusechart"));
     		ajaxPost("/ModelExecuteStatus",{
     			missionId:msg.content.rwId,
     		   	userId:userId,
@@ -135,9 +136,8 @@ var msg = {
     			    "scenarinoType":4,
     			    "missionType":1,
     			    "scenarinoId":852*/
-    		}).success(function(res){
+    		}).success(function(res){    			
     			var data=res.data;
-    			console.log(data);
     			if(data.execModel==1){
     				moduleSimulationScheduleHorizontal(data.startTime, data.endTime, data.stopTime, data.stopData, data.moduleType, data.stopMessage, data.stopType, data.excutionMessage)
     			}else if(data.execModel==2){
@@ -1736,6 +1736,8 @@ function moduleSimulationScheduleVertical(startTime, endTime, stopTime, stopData
       startValue: 0,
       endValue: 6,
     }],
+    animation:false,
+    progressive:0,
     tooltip: {
       trigger: 'item'
     },
@@ -2042,6 +2044,8 @@ function moduleSimulationScheduleHorizontal(startTime, endTime, stopTime, stopDa
     tooltip: {
       trigger: 'item'
     },
+    animation:false,
+    progressive:0,
     series: (function () {
       var _seriesData = [];
       for (var i = 0; i < _temp.straightLineSuccess.length; i++) {
@@ -2050,8 +2054,7 @@ function moduleSimulationScheduleHorizontal(startTime, endTime, stopTime, stopDa
           symbol: 'none',
           lineStyle: {
             normal: {
-              color: '#000033',
-              width:10
+              color: '#000033'
             }
           },
           data: _temp.straightLineSuccess[i]
