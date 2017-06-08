@@ -34,6 +34,7 @@ import ampc.com.gistone.database.inter.TEsCouplingMapper;
 import ampc.com.gistone.database.inter.TEsNationMapper;
 import ampc.com.gistone.database.inter.TEsNativeMapper;
 import ampc.com.gistone.database.inter.TEsNativeTpMapper;
+import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TSectorExcelMapper;
 import ampc.com.gistone.database.model.TAddress;
 import ampc.com.gistone.database.model.TEsCoupling;
@@ -73,6 +74,8 @@ public class NativeAndNationController {
 	public TSectorExcelMapper	tSectorExcelMapper;
 	@Autowired
 	public TAddressMapper	tAddressMapper;
+	@Autowired
+	public TMissionDetailMapper	tMissionDetailMapper;
 	
 	//读取路径的帮助类
 	@Autowired
@@ -140,6 +143,8 @@ public class NativeAndNationController {
 					listTps = saveCoupling(requestDate,request,response);
 				}else if("resultCouplingMessage".equals(param)){
 					listTps = resultCouplingMessage(requestDate,request,response);
+				}else if("lookByCouplingId".equals(param)){
+					listTps = lookByCouplingId(requestDate,request,response);
 				}
 				else if("".equals(param)){
 					return AmpcResult.build(1001, "NativeAndNationController 请求方法参数异常!");
@@ -1320,6 +1325,10 @@ public class NativeAndNationController {
 			couplingsMap.put("rows", list);
 			couplingsMap.put("total", total);
 			couplingsMap.put("page", pageNumber);
+			
+//			tMissionDetailMapper
+			
+			
 			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的全国清单信息成功!");
 			return AmpcResult.ok(couplingsMap);
 		} catch (Exception e) {
@@ -1906,6 +1915,80 @@ public class NativeAndNationController {
 		} catch (Exception e) {
 			LogUtil.getLogger().error("NativeAndNationController 更新耦合配置状态异常!",e);
 			return AmpcResult.build(1001, "NativeAndNationController 更新耦合配置状态异常!");
+		}
+	}
+	
+	/**
+	 * 查看耦合清单详细信息
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public AmpcResult lookByCouplingId(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			Long userId = Long.parseLong(param.toString());
+			
+			param=data.get("couplingId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 耦合清单ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "耦合清单ID为空或出现非法字符!");
+			}
+			Long couplingId = Long.parseLong(param.toString());
+			
+			param=data.get("nationId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 全国清单ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "全国清单ID为空或出现非法字符!");
+			}
+			Long nationId = Long.parseLong(param.toString());
+			
+			param=data.get("nativeTpId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 清单模板ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单模板ID为空或出现非法字符!");
+			}
+			Long nativeTpId = Long.parseLong(param.toString());
+			
+			param=data.get("nativesId");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单ID为空或出现非法字符!");
+			}
+			String nativesId = param.toString();
+			
+			param=data.get("meicCityConfig");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 清单数据、行政区划、行业名称参数信息为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单数据、行政区划、行业名称参数信息为空或出现非法字符!");
+			}
+			String  meicCityConfig = param.toString();
+			//根据耦合ID查询信息
+			Map tEsCouplingMap = tEsCouplingMapper.selectCouplingByPrimaryKey(couplingId);
+			//查询全国清单名称
+			TEsNation tEsNation = tEsNationMapper.selectByPrimaryKey(nationId);
+			//查询本地清单名称
+			TEsNativeTp tEsNativeTp  =tEsNativeTpMapper.selectByPrimaryKey(nativeTpId);
+			//添加全国清单名称
+			tEsCouplingMap.put("nationName", tEsNation.getEsNationName().toString());
+			//添加本地清单名称
+			tEsCouplingMap.put("nativeTpName", tEsNativeTp.getEsNativeTpName());
+			
+			
+			LogUtil.getLogger().info("NativeAndNationController 查询耦合清单详细信息成功!");
+			return AmpcResult.ok(tEsCouplingMap);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("NativeAndNationController 查询耦合清单详细信息状态异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 查询耦合清单详细信息状态异常!");
 		}
 	}
 }
