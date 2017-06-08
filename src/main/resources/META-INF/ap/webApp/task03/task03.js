@@ -1106,7 +1106,7 @@ function initConpamyTable(){
 }
 //详细信息弹窗
 function showDetail(){
-    var downLoadUrl="<a href='"+jianpaiUrl+"/search/exportCompany?userId="+userId+"&planId="+qjMsg.planId+"'>下载</a>"
+    var downLoadUrl="<a href='"+jianpaiUrl+"/search/exportCompany?bigIndex="+ qjMsg.esCouplingId +"&userId="+userId+"&planId="+qjMsg.planId+"'>下载</a>"
     document.getElementById("detailDownload").innerHTML=downLoadUrl;
     $("#detalMsg").window("open")
     window.setTimeout(initConpamyTable(),100)
