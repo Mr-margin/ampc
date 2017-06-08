@@ -423,14 +423,16 @@ function sceneTable() {
                 return JSON.stringify({"token": "", "data": data});
             },
             onLoadSuccess:function(data){
-                var truedData=sceneInitialization.data;
-                for(var i=0;i<truedData.length;i++){
-                    if(data){
-                        $.each(data.rows, function(index, item){
-                            if(truedData[i].scenarinoId==item.scenarinoId){
-                                $('#sceneTableId').datagrid('checkRow', index);
-                            }
-                        });
+                if(sceneInitialization!=null&&sceneInitialization!=""&&sceneInitialization!=undefined){
+                    var truedData=sceneInitialization.data;
+                    for(var i=0;i<truedData.length;i++){
+                        if(data){
+                            $.each(data.rows, function(index, item){
+                                if(truedData[i].scenarinoId==item.scenarinoId){
+                                    $('#sceneTableId').datagrid('checkRow', index);
+                                }
+                            });
+                        }
                     }
                 }
             }

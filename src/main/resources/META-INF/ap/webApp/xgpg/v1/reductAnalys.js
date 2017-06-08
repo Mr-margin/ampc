@@ -90,7 +90,7 @@ function sceneTable() {
                 return JSON.stringify({"token": "", "data": data});
             },
             onLoadSuccess:function(data){
-                if(sceneInitialization!=null){
+                if(sceneInitialization!=null&&sceneInitialization!=""&&sceneInitialization!=undefined){
                     var truedData=sceneInitialization.data;
                     for(var i=0;i<truedData.length;i++){
                         if(data){
