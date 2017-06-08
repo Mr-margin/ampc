@@ -1822,6 +1822,7 @@ public class NativeAndNationController {
 			//版本号参数
 			//查询得到版本号
 			String versionNumber = tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
+			//如果查询结果为空去除用户id参数再进行查询
 			if(versionNumber.equals("")||versionNumber==null){
 				 tSectorExcel=new TSectorExcel();
 				 tSectorExcel.setDetailedListId(nativeTpId);
@@ -1846,7 +1847,7 @@ public class NativeAndNationController {
 				tEsCoupling.setEsCouplingNativetpId(nativeTpId);
 				tEsCoupling.setEsCouplingNationId(nationId);
 				//该字段类型需修改为String类型
-				tEsCoupling.setEsCouplingNativeId(Long.valueOf("60"));
+				tEsCoupling.setEsCouplingNativeId(nativesId);
 				//更新耦合清单数据
 				int result= tEsCouplingMapper.updateDataByPrimaryKey(tEsCoupling);
 				if(result>0){
