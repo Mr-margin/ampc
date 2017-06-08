@@ -247,7 +247,7 @@
     where USER_ID = #{userId,jdbcType=DECIMAL} AND IS_EFFECTIVE=1 AND ES_COUPLING_STATUS=3
   </select>
   <!-- 根据用户Id查询全国清单 -->
-  <select id="selectAllCoupling" resultMap="BaseResultMap" parameterType="hashMap" >
+  <select id="selectAllCoupling" resultMap="selectCouplingMap" parameterType="hashMap" >
     SELECT
 	*
 	FROM
