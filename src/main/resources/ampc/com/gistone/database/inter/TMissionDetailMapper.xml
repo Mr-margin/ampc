@@ -424,4 +424,14 @@ AND M.IS_EFFECTIVE = '1' AND M.MISSION_STATUS = '1'
   FROM T_MISSION_DETAIL m,T_DOMAIN_MISSION d 
   WHERE m.MISSION_DOMAIN_ID=d.DOMAIN_ID AND m.MISSION_ID = #{missionId,jdbcType=DECIMAL}
   </select>
+  
+  <select id="selectTtotalByCouplingId"  parameterType="java.lang.Long" resultType="int">
+    SELECT
+		"COUNT"(*)
+	FROM
+		"AMPC"."T_MISSION_DETAIL"
+	WHERE
+		ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL}
+  </select>
+  
 </mapper>

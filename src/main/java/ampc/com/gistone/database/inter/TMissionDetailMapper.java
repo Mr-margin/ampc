@@ -157,4 +157,10 @@ public interface TMissionDetailMapper {
 	 * @return
 	 */
 	String findCityListByMissionId(Long missionId);
+	/**
+	 * 
+	 * @param valueOf
+	 * @return
+	 */
+	int selectTtotalByCouplingId(Long valueOf);
 }
