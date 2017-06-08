@@ -39,4 +39,6 @@ public interface TEsCouplingMapper {
 	int updateStatusByPrimaryKey(TEsCoupling tEsCoupling);
 	
 	int updateDataByPrimaryKey(TEsCoupling tEsCoupling);
+	
+	Map selectCouplingByPrimaryKey(Long couplingId);
 }
