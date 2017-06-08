@@ -6,7 +6,8 @@ import java.util.Map;
 import ampc.com.gistone.database.model.TEsCoupling;
 
 public interface TEsCouplingMapper {
-	/**
+
+/**
 	 * 查询模板Id
 	 * @param couplingMap
 	 * @return
@@ -38,6 +39,8 @@ public interface TEsCouplingMapper {
     TEsCoupling selectByPrimaryKey(Long esCouplingId);
 
     int updateByPrimaryKeySelective(TEsCoupling record);
+
+    int updateByPrimaryKeyWithBLOBs(TEsCoupling record);
 
     int updateByPrimaryKey(TEsCoupling record);
 }
