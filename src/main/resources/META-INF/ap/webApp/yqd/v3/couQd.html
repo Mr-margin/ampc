@@ -116,27 +116,51 @@
 <!--耦合清单详细信息-->
 <div id="coupDetail">
     <div id="CoupDetailCon">
-        <div id="coupQdDetail">
-            <table class="easyui-datagrid">
-                <tr>
-                    <th>清单名称</th>
-                    <td><span id="coupName"></span></td>
-                    <th>年份</th>
-                    <td><span id="coupYear"></span></td>
-                </tr>
-                <tr>
-                    <th>耦合清单描述</th>
-                    <td><span id="coupDes"></span></td>
-                    <th>创建时间</th>
-                    <td><span id="coupDate"></span></td>
-                </tr>
-                <tr>
-                    <th>本地清单</th>
-                    <td><span id="coupLocal"></span></td>
-                    <th>全国清单</th>
-                    <td><span id="coupNation"></span></td>
-                </tr>
-            </table>
+        <div id="coupQdDetail" class="col-12">
+            <ul class="col-6">
+                <li>
+                    <div class="col-4 no-padding">清单名称：</div>
+                    <div class="input-group col-8 no-padding"><span ></span>
+                        <input id="coupName" class=" form-control ref_lon" type="text" disabled />
+                    </div>
+                </li>
+                <li>
+                    <div class="col-4 no-padding">创建时间：</div>
+                    <div class="input-group col-8 no-padding">
+                        <input id="coupDate" class=" form-control ref_lon" type="text" disabled />
+                    </div>
+                </li>
+                <li>
+                    <div class="col-4 no-padding">全国清单：</div>
+                    <div class="input-group col-8 no-padding">
+                        <input id="coupNation" class=" form-control ref_lon" type="text" disabled />
+                    </div>
+                </li>
+            </ul>
+            <ul class="col-6">
+                <li>
+                    <div class="col-4 no-padding">年份：</div>
+                    <div class="input-group col-8 no-padding">
+                        <input id="coupYear" class=" form-control ref_lon" type="text" disabled />
+                    </div>
+                </li>
+                <li>
+                    <div class="col-4 no-padding">本地清单：</div>
+                    <div class="input-group col-8 no-padding">
+                        <input id="coupLocal" class=" form-control ref_lon" type="text" disabled />
+                    </div>
+                </li>
+            </ul>
+
+
+            <div class="col-12">
+                <div class="col-2 no-padding">耦合清单描述：</div>
+                <div class="col-10 no-padding input-group">
+                    <input id="coupDes" class=" form-control ref_lon" type="text" disabled />
+                </div>
+
+            </div>
+
         </div>
         <div id="coupMeic">
             <table id="coupMeicTable"></table>

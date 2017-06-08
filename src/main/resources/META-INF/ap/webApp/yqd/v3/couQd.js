@@ -253,7 +253,6 @@ function coupDelete(){
 //查看详情的窗口
 $("#coupDetail").window({
     width:600,  //easyui 窗口宽度
-    height:400,
     collapsible:false, //easyui 自带的折叠按钮
     maximizable:false,//easyui 自带的最大按钮
     minimizable:false,//easyui 自带的最小按钮
@@ -264,6 +263,9 @@ $("#coupDetail").window({
     closed:true,
     cls:"cloudui"
 })
+function closeDetail() {
+    $("#coupDetail").window("close")
+}
 //点击查看耦合清单详细信息
 function viewDetail(coupId) {
     $("#coupDetail").window("open")
@@ -289,12 +291,17 @@ function viewDetail(coupId) {
         ajaxPost('/NativeAndNation/doPost',param).success(function (res) {
             if(res.status==0){
                 var data=res.data.data;
-                $("#coupName").html(data.esCouplingName)
-                $("#coupYear").html(data.esCouplingYear)
-                $("#coupDes").html(data.esCouplingDesc)
-                $("#coupDate").html(moment(data.addTime).format("YYYY-MM-DD"))
-                $("#coupLocal").html(data.nativeTpName)
-                $("#coupNation").html(data.nationName)
+                $("#coupName").val(data.esCouplingName)
+                $("#coupName").attr('title',data.esCouplingName)
+                $("#coupYear").val(data.esCouplingYear)
+                $("#coupYear").attr('title',data.esCouplingYear)
+                $("#coupDes").val(data.esCouplingDesc)
+                $("#coupDate").val(moment(data.addTime).format("YYYY-MM-DD"))
+                $("#coupDate").attr('title',moment(data.addTime).format("YYYY-MM-DD"))
+                $("#coupLocal").val(data.nativeTpName)
+                $("#coupLocal").attr('title',data.nativeTpName)
+                $("#coupNation").val(data.nationName)
+                $("#coupNation").attr('title',data.nationName)
             }else{
                 console.log("没有")
             }
@@ -473,7 +480,9 @@ function prevCoup(){
 var mbArray
 function mbSelect() {
     ajaxPost("/NativeAndNation/doPost",{"userId":userId,"method":"find_couplingNativeTp"}).success(function (res) {
+        mbArray=[];
         mbArray=res.data.data.rows;
+        $(".cloudui .coupSetCon .coupSetMb option").remove()
         if(res.status==0){
             for(var i=0;i<mbArray.length;i++){
                 var mbDiv= $('<option value="'+i+'">'+mbArray[i].esNativeTpName+'</option>');
@@ -544,13 +553,13 @@ $(".cloudui .rwCon .qdContent .qdYear").focus(function () {//年份获取焦点
 $(".cloudui .rwCon .qdContent .qdName").blur(function () {//名称失去焦点
     if($(this).val()==""){
         $(this).val("请输入长度不超过20的名称")
-        $(this).css({"color":"#a9a9a9"})
+        $(this).css({"color":"#757575"})
     }
 })
 $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
     if($(this).val()==""){
         $(this).val("请输入1990-2100之间的年份")
-        $(this).css({"color":"#a9a9a9"})
+        $(this).css({"color":"#757575"})
     }
 })
 //耦合第三步 参数是当前选择的城市和所有行业 根据这些生成表格

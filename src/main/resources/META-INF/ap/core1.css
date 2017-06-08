@@ -1678,6 +1678,13 @@ dl, dd {
   box-sizing: border-box;
   margin-top:20px;
 }
+/*查看耦合清单详细信息*/
+#coupDetail #CoupDetailCon{overflow: hidden}
+#coupDetail #CoupDetailCon #coupQdDetail{width: 100%;}
+#coupDetail #CoupDetailCon #coupQdDetail .col-4,#coupDetail #CoupDetailCon #coupQdDetail .col-8{margin-top:10px;margin-bottom:10px;}
+#coupDetail #CoupDetailCon #coupQdDetail .col-2,#coupDetail #CoupDetailCon #coupQdDetail .col-10{margin-top:10px;margin-bottom:10px;}
+#coupDetail #CoupDetailCon #coupQdDetail .no-padding{padding-left:0;padding-right: 0}
+#coupDetail #CoupDetailCon #coupQdDetail .form-control{padding: 3px 12px;}
 /*//批量选择*/
 #citySelect #cityOption{overflow: hidden;padding: 20px;}
 #citySelect #cityOption #industryDataTable{width: 100%;}

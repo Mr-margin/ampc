@@ -200,12 +200,12 @@ $(".cloudui .rwCon .qdContent .qdYear").focus(function () {//年份获取焦点
 $(".cloudui .rwCon .qdContent .qdName").blur(function () {//名称失去焦点
     if($(this).val()==""){
         $(this).val("请输入长度不超过20的名称")
-        $(this).css({"color":"#a9a9a9"})
+        $(this).css({"color":"#757575"})
     }
 })
 $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
     if($(this).val()==""){
         $(this).val("请输入1990-2100之间的年份")
-        $(this).css({"color":"#a9a9a9"})
+        $(this).css({"color":"#757575"})
     }
 })
