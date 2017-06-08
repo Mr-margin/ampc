@@ -630,9 +630,9 @@ function submitCheckQd() {
             console.log("失败")
         }
     })
-    // $("#citySelect").window("close")
-    // $(".tableBox").show();//点击提交以后页面返回首页
-    // $(".coupSet").hide();
-    // $(".navRight").show();
-    // innitdata()
+    $("#citySelect").window("close")
+    $(".tableBox").show();//点击提交以后页面返回首页
+    $(".coupSet").hide();
+    $(".navRight").show();
+    innitdata()
 }
