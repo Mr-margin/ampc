@@ -373,7 +373,7 @@ public class DomainController {
 		   megan.put("shutdown",false);
 		   //通过判断version为model添加sunmodel数据
 		   if(cmaq.get("version").equals("CMAQv5.0.1")||cmaq.get("version").equals("CMAQv5.1")){
-			   model.put("submodel","cmaq-5.0");     
+			   model.put("submodel","cmaq-5.0");
 		   }else if(cmaq.get("version").equals("CMAQv4.7.1")){
 			   model.put("submodel","cmaq-4.7");
 		   }
@@ -412,7 +412,7 @@ public class DomainController {
 			
 		}catch(Exception e){
 			LogUtil.getLogger().error("updateRangeAndCode Domain修改异常！",e);
-			return AmpcResult.build(1001, "Domain修改异常！");	
+			return AmpcResult.build(1001, "Domain修改异常！");
 			
 		}
 	}
@@ -557,12 +557,12 @@ public class DomainController {
 			int a=tDomainMissionMapper.deletebyid(domainId);
 			if(a==0){
 				LogUtil.getLogger().error("deleteDomain 数据库删除domain操作异常！");
-				return AmpcResult.build(1000, "数据库删除domain操作异常！");	
+				return AmpcResult.build(1000, "数据库删除domain操作异常！");
 			}
 		return AmpcResult.ok();
 		}catch(Exception e){
 			LogUtil.getLogger().error("deleteDomain 删除domain异常！",e);
-			return AmpcResult.build(1001, "删除domain异常！");	
+			return AmpcResult.build(1001, "删除domain异常！");
 		}
 	}
 }
