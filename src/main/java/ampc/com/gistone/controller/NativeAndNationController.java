@@ -1337,7 +1337,6 @@ public class NativeAndNationController {
 			
 			//返回页面的数据
 			Map couplingsMap=new HashMap();
-//			couplingsMap.put("rows", list);
 			couplingsMap.put("rows", couplingList);
 			couplingsMap.put("total", total);
 			couplingsMap.put("page", pageNumber);
