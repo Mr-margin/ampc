@@ -505,7 +505,7 @@ function missionStatusFormatter(value, row, index) {
 function missionmanage(value, row, index) {
     if (typeof row.missionStatus === 'undefined') {
         if (typeof row.settingTitle === 'undefined') {
-            return '<div class="dropdownmenu"><a href="javascript:"><i class="fa fa-caret-down" aria-hidden="true"></i></a><ul style="display: none"><li><a href="javascript:">修改情景名</a></li><li><a href="javascript:">删除</a></li></ul></div>'
+            return '<div class="dropdownmenu"><a href="javascript:"><i class="fa fa-caret-down" aria-hidden="true"></i></a><ul style="display: none"><li><a href="javascript:rename(\'qj\')">修改情景名</a></li><li><a href="javascript:deleteQJ()">删除</a></li></ul></div>'
         }
         return '设置'
     }
@@ -758,16 +758,8 @@ function formVerify() {
 }
 /*刷新datagrid的数据*/
 function reloadTreegrid() {
-	$('#rwgltable').treegrid({
-		queryParams:{
-			"page":1,
-			"rows":10,
-			"queryName": $('#searchqd').searchbox('getValue'),
-			"missionStatus": '',
-			"sort": '',
-			"userId": userId
-		}	
-	})
+
+	$('#rwpagination').pagination('select');
 }
 /*delete 函数*/
 function deleteFun(type) {
@@ -2368,4 +2360,165 @@ function reloadModelStatusChart(){
 			moduleSimulationScheduleVertical(data.startTime, data.endTime, data.stopTime, data.stopData, data.moduleType, data.stopMessage, data.stopType, data.excutionMessage);
 		}
 	})
+}
+/*删除情景函数*/
+/*delete 函数*/
+function deleteQJ() {
+  var params = {userId: userId};
+  var delList = '', url;
+  params.scenarinoIds = msg.content.qjId;
+  url = '/scenarino/delete_scenarino';
+
+  swal({
+      title: "确定要删除?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "删除",
+      cancelButtonText: "取消",
+      closeOnConfirm: false
+    },
+    function(){
+    	ajaxPost(url, params).success(function (res) {
+            if (res.status == 0) {
+              reloadTreegrid()
+              swal({
+                title: '已删除!',
+                type: 'success',
+                timer: 1000,
+                showConfirmButton: false
+              });
+
+            } else if (res.status == 9999) {
+              swal({
+                title: '删除失败!',
+                text: "此情景为其他情景的基础情景",
+                type: 'error',
+                timer: 1500,
+                showConfirmButton: false
+              });
+            } else {
+              swal({
+                title: '删除失败!',
+                type: 'error',
+                timer: 1000,
+                showConfirmButton: false
+              });
+            }
+          }).error(function () {
+            swal({
+              title: '删除失败!',
+              type: 'error',
+              timer: 1000,
+              showConfirmButton: false
+            });
+          })
+    }
+      
+
+    );
+}
+/*修改名称*/
+function rename(type) {
+//    var url = 'rw.json';
+  var url, urlName;
+  var params = {userId: userId};
+  var paramsName = {userId: userId};
+  if (type == 'rw') {
+    params.missionId = id;
+    url = '/mission/update_mission';
+    urlName = '/mission/check_missioname';
+  } else {
+    params.scenarinoId = msg.content.qjId;
+    paramsName.missionId = selectRW.missionId;
+    params.state = -1;
+    url = '/scenarino/updat_scenarino';
+    urlName = '/scenarino/check_scenarinoname';
+  }
+
+  swal({
+      title: "名称修改",
+//          text: "请输入新名称:",
+      type: "input",
+      showCancelButton: true,
+      closeOnConfirm: false,
+      confirmButtonText: "修改",
+      cancelButtonText: "取消",
+      animation: "slide-from-top",
+      inputPlaceholder: "请输入新名称:",
+      showLoaderOnConfirm: true
+    },
+    function (inputValue) {
+      if (inputValue === false) return false;
+
+      if (inputValue === "") {
+        swal.showInputError("请输入内容!");
+        return false
+      }
+
+      if (type == 'rw') {
+        params.missionName = inputValue;
+      } else {
+        params.scenarinoName = inputValue;
+        paramsName.scenarinoName = inputValue;
+      }
+      ajaxPost(urlName, type == 'rw' ? params : paramsName).success(function (res) {
+        if (res.data) {
+          ajaxPost(url, params).success(function () {
+            if (type == 'rw') {
+              $('#rwTable').bootstrapTable('destroy');
+              initRwTable();
+            } else {
+              reloadTreegrid();
+            }
+
+            swal({
+              title: '已修改!',
+              text: "修改名称为：" + inputValue,
+              type: 'success',
+              timer: 1000,
+              showConfirmButton: false
+            });
+            //swal("已修改!", "修改名称为：" + inputValue, "success");
+          }).error(function () {
+            swal({
+              title: '修改失败!',
+              text: "修改名称为：" + inputValue,
+              type: 'error',
+              timer: 1000,
+              showConfirmButton: false
+            });
+            //swal("修改失败!", "名称未修改为：" + inputValue, "error");
+          }).error(function () {
+            $('#createModal').modal('hide');
+            swal({
+              title: '添加失败!',
+              type: 'error',
+              timer: 1000,
+              showConfirmButton: false
+            });
+            //swal('添加失败', '', 'error')
+          })
+        } else {
+          swal({
+            title: '名称重复!',
+            type: 'error',
+            timer: 1000,
+            showConfirmButton: false
+          });
+          //swal('名称重复', '', 'error')
+          subBtn = true;
+        }
+      }).error(function () {
+        swal({
+          title: '校验失败!',
+          type: 'error',
+          timer: 1000,
+          showConfirmButton: false
+        });
+        //swal('校验失败', '', 'error')
+        subBtn = true;
+      })
+    });
+
 }

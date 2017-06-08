@@ -26,7 +26,16 @@
           $('#searchqd').searchbox({
           	prompt: '输入任务名称',
           	searcher:function(value,name){
-          		reloadTreegrid();
+          		$('#rwgltable').treegrid({
+					queryParams:{
+						page:1,
+						rows:10,
+						queryName: $('#searchqd').searchbox('getValue'),
+						missionStatus: '',
+						sort: '',
+						userId: userId
+					}	
+				})
           	}
           });
           $('#selectTypeBtn').menubutton({
