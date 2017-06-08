@@ -899,6 +899,7 @@ dl, dd {
 .cloudui .switchBtn label{float: left;line-height: 28px;height:28px;}
 /*设置时间模态框*/
 .cloudui.window {
+  opacity: 1!important;
   background: none;
   background-color: #0275D8;
   border-radius: 2px;
