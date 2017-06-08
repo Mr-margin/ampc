@@ -850,7 +850,6 @@ function showTimeline(data) {
         var pointInPixel = [params.offsetX, params.offsetY];
         var pointInGrid = plancharts.convertFromPixel('grid', pointInPixel);
         var labelIndex = Math.floor(pointInGrid[1] / 3);
-        console.log(pointInGrid[0]>qjMsg.qjEndDate||pointInGrid[0]<qjMsg.qjStartDate||pointInGrid[1]<0||pointInGrid[1]>allData.length*3-1);
         if(pointInGrid[0]>qjMsg.qjEndDate||pointInGrid[0]<qjMsg.qjStartDate||pointInGrid[1]<0||pointInGrid[1]>allData.length*3-1){
         	var _series=plancharts.getOption().series;
         	var _line=[];
