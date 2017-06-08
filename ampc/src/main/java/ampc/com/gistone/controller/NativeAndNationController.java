@@ -1320,14 +1320,27 @@ public class NativeAndNationController {
 			List<Map> list=tEsCouplingMapper.selectAllCoupling(couplingMap);
 			//查询总条数
 			int total=tEsCouplingMapper.selectTotalCoupling(userId);
+			
+			List couplingList = new ArrayList();
+			for(int i=0;i<list.size();i++){
+				Map tEsCouplingMap = list.get(i);
+				int result = tMissionDetailMapper.selectTtotalByCouplingId(Long.valueOf(tEsCouplingMap.get("esCouplingId").toString()));
+				if(result>0){
+					//已经被使用
+					tEsCouplingMap.put("employ", 1);
+				}else{
+					//未使用
+					tEsCouplingMap.put("employ", 0);
+				}
+				couplingList.add(tEsCouplingMap);
+			}
+			
 			//返回页面的数据
 			Map couplingsMap=new HashMap();
-			couplingsMap.put("rows", list);
+//			couplingsMap.put("rows", list);
+			couplingsMap.put("rows", couplingList);
 			couplingsMap.put("total", total);
 			couplingsMap.put("page", pageNumber);
-			
-//			tMissionDetailMapper
-			
 			
 			LogUtil.getLogger().info("NativeAndNationController 查询当前用户下的全国清单信息成功!");
 			return AmpcResult.ok(couplingsMap);
