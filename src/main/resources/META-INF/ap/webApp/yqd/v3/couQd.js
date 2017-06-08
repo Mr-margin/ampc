@@ -489,6 +489,7 @@ $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
     }
 })
 //耦合第三步 参数是当前选择的城市和所有行业 根据这些生成表格
+var checkQd=[];
 function coupCity(cityCurren,industryData) {
     $("#coupCityTable").empty()//每次选择新的城市生成的表格  必须先清空以前的数据
     var coupFirst="";
@@ -511,22 +512,42 @@ function coupCity(cityCurren,industryData) {
     industrySelect+="</select>";
     $(".industryQd").append(industrySelect);
     //判断现在选择的是不是已经保存过清单了
-
-
-
-    for(var n=0;n<globelCheckedQd.length;n++){
-        if((globelCheckedQd[n].regionId)==(cityCurren.cityId)){
-            for(var ind=0;ind<industryData.length;ind++){
-                if(globelCheckedQd[n].sectorName==industryData[ind].industryNames){
-                    if(globelCheckedQd[n].meicCityId==''){
-                        $(".selectQd").eq(ind).val('w_0')
+    // if(globelCheckedQd.length>0){
+    //     for(var ind=0;ind<industryData.length;ind++){
+    //         if((globelCheckedQd[0].sectorName)==(industryData[ind].industryNames)){
+    //             if(globelCheckedQd[0].meicCityId==""){
+    //                 $(".selectQd").eq(ind).val('w_0')
+    //             }else if(!isNaN(globelCheckedQd[0].meicCityId)){
+    //                 $(".selectQd").eq(ind).val(globelCheckedQd[0].meicCityId)
+    //             }
+    //         }
+    //     }
+    // }
+    //
+    if(globelCheckedCity.length>0){
+        //如果点击的是已经选择过得城市  把已经选择的结果整合在一起
+        for(var n=0;n<globelCheckedQd.length;n++){
+            if((globelCheckedQd[n].regionId)==(cityCurren.cityId).substring(0,4)){
+                checkQd.push({
+                    industry:globelCheckedQd[n].sectorName,
+                    qd:globelCheckedQd[n].meicCityId
+                })
+            }
+        }
+        for(var q=0;q<industryData.length;q++){
+            $(".selectQd").eq(q).val('qg_1')
+            for(var l=0;l<checkQd.length;l++){
+                if((industryData[q].industryNames)==(checkQd[l].industry)){
+                    if(checkQd[l].qd===""){
+                        $(".selectQd").eq(q).val('w_0')
                     }else{
-                        $(".selectQd").eq(ind).val(globelCheckedQd[n].meicCityId)
+                        $(".selectQd").eq(q).val(checkQd[l].qd)
                     }
                 }
             }
         }
     }
+
 }
 //城市选择窗口
 $("#citySelect").window({
@@ -565,15 +586,15 @@ var checkCityName=[];
 var meicCityConfig=[]
 function saveAllId(){ //选好清单以后进行保存
     for(var i=0;i<industryData.length;i++){
-        if($(".selectQd").eq(i).val()=="w_0"){
-            globelCheckedQd.push({
-                "meicCityId":'',
-                //"regionId":(cityCurren.cityId).substring(0,4) ,
-                "regionId":cityCurren.cityId,
-                "sectorName":industryData[i].industryNames
-            })
-        }else{
-            if($(".selectQd").eq(i).val()!="qg_1"){
+        if($(".selectQd").eq(i).val()!="qg_1"){
+            if($(".selectQd").eq(i).val()=="w_0"){
+                globelCheckedQd.push({
+                    "meicCityId":'',
+                    //"regionId":(cityCurren.cityId).substring(0,4) ,
+                    "regionId":(cityCurren.cityId).substring(0,4),
+                    "sectorName":industryData[i].industryNames
+                })
+            }else{
                 globelCheckedQd.push({
                     "meicCityId":$(".selectQd").eq(i).val(),
                     "regionId":(cityCurren.cityId).substring(0,4),
@@ -581,8 +602,8 @@ function saveAllId(){ //选好清单以后进行保存
                     "sectorName":industryData[i].industryNames
                 })
             }
+            allCity.push(cityCurren.cityId)//获取选择了清单所有的城市，包含重复的
         }
-        allCity.push(cityCurren.cityId)//获取选择了清单所有的城市，包含重复的
 
     }
 
