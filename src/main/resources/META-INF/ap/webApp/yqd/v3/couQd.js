@@ -255,6 +255,8 @@ function coupSetQd(coupId) {
     coupingQd=checkRow;
     $(".tableBox").hide();
     $(".coupSet").show();
+    $(".cloudui .coupSetTitleList").children("li").removeClass("active");
+    $(".cloudui .coupSetTitleList").children("li").eq(0).addClass("active");
     $(".coupSetCon").eq(0).show();//隐藏其他步骤
     $(".coupSetCon").eq(1).hide();
     $(".coupSetCon").eq(2).hide();
@@ -511,40 +513,36 @@ function coupCity(cityCurren,industryData) {
     }
     industrySelect+="</select>";
     $(".industryQd").append(industrySelect);
-    //判断现在选择的是不是已经保存过清单了
-    // if(globelCheckedQd.length>0){
-    //     for(var ind=0;ind<industryData.length;ind++){
-    //         if((globelCheckedQd[0].sectorName)==(industryData[ind].industryNames)){
-    //             if(globelCheckedQd[0].meicCityId==""){
-    //                 $(".selectQd").eq(ind).val('w_0')
-    //             }else if(!isNaN(globelCheckedQd[0].meicCityId)){
-    //                 $(".selectQd").eq(ind).val(globelCheckedQd[0].meicCityId)
-    //             }
-    //         }
-    //     }
-    // }
-    //
-    if(globelCheckedCity.length>0){
-        //如果点击的是已经选择过得城市  把已经选择的结果整合在一起
-        for(var n=0;n<globelCheckedQd.length;n++){
-            if((globelCheckedQd[n].regionId)==(cityCurren.cityId).substring(0,4)){
-                checkQd.push({
-                    industry:globelCheckedQd[n].sectorName,
-                    qd:globelCheckedQd[n].meicCityId
-                })
+
+    for(var a=0;a<industryData.length;a++){//初始化 所有下拉菜单默认无清单
+        $(".selectQd").eq(a).val('w_0')
+    }
+    for(var b=0;b<globelCheckedCity.length;b++){
+        if(globelCheckedCity[b]==cityCurren.cityId){//判断点击城市是否是已经选过的城市
+            //如果点击的是已经选择过得城市  把已经选择的结果整合在一起
+            checkQd=[];
+            for(var n=0;n<globelCheckedQd.length;n++){
+                if((globelCheckedQd[n].regionId)==(cityCurren.cityId).substring(0,4)){
+                    checkQd.push({
+                        industry:globelCheckedQd[n].sectorName,
+                        qd:globelCheckedQd[n].meicCityId
+                    })
+
+                }
             }
-        }
-        for(var q=0;q<industryData.length;q++){
-            $(".selectQd").eq(q).val('qg_1')
-            for(var l=0;l<checkQd.length;l++){
-                if((industryData[q].industryNames)==(checkQd[l].industry)){
-                    if(checkQd[l].qd===""){
-                        $(".selectQd").eq(q).val('w_0')
-                    }else{
-                        $(".selectQd").eq(q).val(checkQd[l].qd)
+            for(var q=0;q<industryData.length;q++){
+                $(".selectQd").eq(q).val('qg_1')
+                for(var l=0;l<checkQd.length;l++){
+                    if((industryData[q].industryNames)==(checkQd[l].industry)){
+                        if(checkQd[l].qd===""){
+                            $(".selectQd").eq(q).val('w_0')
+                        }else{
+                            $(".selectQd").eq(q).val(checkQd[l].qd)
+                        }
                     }
                 }
             }
+            break;
         }
     }
 
