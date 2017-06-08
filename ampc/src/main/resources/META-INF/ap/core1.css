@@ -297,7 +297,7 @@ label#lblSelect::after
 }
 .cloudui .pagination table {
   height: 44px;
-  line-height: 44px;
+  /*line-height: 44px;*/
   float: right;
 }
 .cloudui .pagination-info {

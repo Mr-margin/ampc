@@ -21,10 +21,14 @@ function innitdata(){  //耦合清单的初始化
                 return  moment(value).format("YYYY-MM-DD");
             },align:'cneter',width:120},
             {field:"historyCoupling",title:"使用历史",width:100},
-            {field:"coupingSet",title:"配置",formatter:function(value,row,index){
-                var coupId=row.esCouplingId
-                var coupSetBtn="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='coupSetQd("+coupId+")'>耦合配置</button>"
-                return  coupSetBtn;
+            {field:"employ",title:"配置",formatter:function(value,row,index){
+                if(value==1){
+                    return "<span>正在使用</span>"
+                }else{
+                    var coupId=row.esCouplingId
+                    var coupSetBtn="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='coupSetQd("+coupId+")'>耦合配置</button>"
+                    return  coupSetBtn;
+                }
             },align:'cneter',width:120},
             {field:"viewDetail",title:"查看",formatter:function(value,row,index){
                 var coupId=row.esCouplingId
@@ -246,8 +250,23 @@ function coupDelete(){
         })
     });
 }
+//查看详情的窗口
+$("#coupDetail").window({
+    width:600,  //easyui 窗口宽度
+    height:400,
+    collapsible:false, //easyui 自带的折叠按钮
+    maximizable:false,//easyui 自带的最大按钮
+    minimizable:false,//easyui 自带的最小按钮
+    modal:true,
+    shadow:false,
+    title:'详细信息',
+    border:false,
+    closed:true,
+    cls:"cloudui"
+})
 //点击查看耦合清单详细信息
 function viewDetail(coupId) {
+    $("#coupDetail").window("open")
     var rowsAll=$("#couqd").datagrid("getRows");
     var checkRow;
     if(coupId){
@@ -267,10 +286,15 @@ function viewDetail(coupId) {
         param.nativesId=checkRow.esCouplingNativeId,
         param.nativeTpId=checkRow.esCouplingNativetpId,
         param.meicCityConfig='',
-
         ajaxPost('/NativeAndNation/doPost',param).success(function (res) {
             if(res.status==0){
-                console.log("数据过来了")
+                var data=res.data.data;
+                $("#coupName").html(data.esCouplingName)
+                $("#coupYear").html(data.esCouplingYear)
+                $("#coupDes").html(data.esCouplingDesc)
+                $("#coupDate").html(moment(data.addTime).format("YYYY-MM-DD"))
+                $("#coupLocal").html(data.nativeTpName)
+                $("#coupNation").html(data.nationName)
             }else{
                 console.log("没有")
             }
