@@ -122,6 +122,7 @@ var msg = {
     /*模式运行状态查看弹框渲染*/
     $('#modelstatus').window($.extend({},defaultwindowoption,{
     	title:'模式运行状态',
+    	width:900,
     	onOpen:function(){
     		modelstatusechart = echarts.init(document.getElementById("modelstatusechart"));
     		ajaxPost("/ModelExecuteStatus",{
@@ -1705,7 +1706,8 @@ function moduleSimulationScheduleVertical(startTime, endTime, stopTime, stopData
             return true
           }
           return false
-        }
+        },
+        margin:12
       },
       boundaryGap: true,
       axisTick: {
@@ -1723,13 +1725,17 @@ function moduleSimulationScheduleVertical(startTime, endTime, stopTime, stopData
       data: _temp.yAxislabel,
       axisTick: {
         show: false
+      },
+      axisLabel:{
+    	  margin:2
       }
     },
     dataZoom: [{
       type: 'inside',
       yAxisIndex: [0],
       startValue: 0,
-      endValue: 6
+      endValue: 6,
+      zoomLock:true
     }, {
       type: 'slider',
       yAxisIndex: 0,
@@ -1794,7 +1800,11 @@ function moduleSimulationScheduleVertical(startTime, endTime, stopTime, stopData
           }
         },
         coordinateSystem: 'cartesian2d',
-        data: _temp.straightLineSuccessArrow
+        data: _temp.straightLineSuccessArrow,
+        tooltip: {
+            backgroundColor: 'transparent',
+            formatter: " "
+          }
       });
       _seriesData.push({
         type: 'scatter',
@@ -1809,7 +1819,11 @@ function moduleSimulationScheduleVertical(startTime, endTime, stopTime, stopData
           }
         },
         coordinateSystem: 'cartesian2d',
-        data: _temp.straightLineFailArrow
+        data: _temp.straightLineFailArrow,
+        tooltip: {
+            backgroundColor: 'transparent',
+            formatter: " "
+          }
       });
       _seriesData.push({
         type: 'scatter',
@@ -1854,7 +1868,23 @@ function moduleSimulationScheduleVertical(startTime, endTime, stopTime, stopData
       _seriesData.push({
         type: 'scatter',
         symbol: (function () {
-          return stopType == 1 ? 'triangle' : stopType == 2 ? "roundRect" : "roundRect"
+        	switch(stopType){
+        	case 6:
+        		return "triangle";
+        		break;
+        	case 7:
+        		return "roundRect";
+        		break;
+        	case 8:
+        		return "circle";
+        		break;
+        	case 9:
+        		return "#rect";
+        		break;
+        		default:
+        			break;
+        			
+        	}
         })(),
         symbolSize: 14,
         symbolRotate: 180,
@@ -1862,7 +1892,23 @@ function moduleSimulationScheduleVertical(startTime, endTime, stopTime, stopData
         itemStyle: {
           normal: {
             color: function () {
-              return stopType == 1 ? '#0099FF' : stopType == 2 ? "#666699" : "#FF0000"
+            	switch(stopType){
+            	case 6:
+            		return "#0099ff";
+            		break;
+            	case 7:
+            		return "#666699";
+            		break;
+            	case 8:
+            		return "#0099ff";
+            		break;
+            	case 9:
+            		return "#ff0000";
+            		break;
+            		default:
+            			break;
+            			
+            	}
             },
             opacity: 1
           }
@@ -2008,6 +2054,9 @@ function moduleSimulationScheduleHorizontal(startTime, endTime, stopTime, stopDa
       axisTick: {
         show: false,
         alignWithLabel: true
+      },
+      axisLabel:{
+    	  margin:12
       }
     },
     yAxis: {
@@ -2024,7 +2073,8 @@ function moduleSimulationScheduleHorizontal(startTime, endTime, stopTime, stopDa
             return true
           }
           return false
-        }
+        },
+        margin:2
       },
       axisTick: {
         show: false
@@ -2034,12 +2084,13 @@ function moduleSimulationScheduleHorizontal(startTime, endTime, stopTime, stopDa
       type: 'inside',
       yAxisIndex: [0],
       startValue: 0,
-      endValue: 6
+      endValue: 6,
+      zoomLock:true
     }, {
       type: 'slider',
       yAxisIndex: 0,
       startValue: 0,
-      endValue: 6,
+      endValue: 11,
     }],
     tooltip: {
       trigger: 'item'
@@ -2099,7 +2150,11 @@ function moduleSimulationScheduleHorizontal(startTime, endTime, stopTime, stopDa
           }
         },
         coordinateSystem: 'cartesian2d',
-        data: _temp.straightLineSuccessArrow
+        data: _temp.straightLineSuccessArrow,
+        tooltip: {
+            backgroundColor: 'transparent',
+            formatter: " "
+          }
       });
       _seriesData.push({
         type: 'scatter',
@@ -2114,7 +2169,11 @@ function moduleSimulationScheduleHorizontal(startTime, endTime, stopTime, stopDa
           }
         },
         coordinateSystem: 'cartesian2d',
-        data: _temp.straightLineFailArrow
+        data: _temp.straightLineFailArrow,
+        tooltip: {
+            backgroundColor: 'transparent',
+            formatter: " "
+        }
       });
       _seriesData.push({
         type: 'scatter',
@@ -2159,7 +2218,23 @@ function moduleSimulationScheduleHorizontal(startTime, endTime, stopTime, stopDa
       _seriesData.push({
         type: 'scatter',
         symbol: (function () {
-          return stopType == 1 ? 'triangle' : stopType == 2 ? "roundRect" : "roundRect"
+        	switch(stopType){
+        	case 6:
+        		return "triangle";
+        		break;
+        	case 7:
+        		return "roundRect";
+        		break;
+        	case 8:
+        		return "circle";
+        		break;
+        	case 9:
+        		return "#rect";
+        		break;
+        		default:
+        			break;
+        			
+        	}
         })(),
         symbolSize: 14,
         symbolRotate: 180,
@@ -2167,7 +2242,23 @@ function moduleSimulationScheduleHorizontal(startTime, endTime, stopTime, stopDa
         itemStyle: {
           normal: {
             color: function () {
-              return stopType == 1 ? '#0099FF' : stopType == 2 ? "#666699" : "#FF0000"
+            	switch(stopType){
+            	case 6:
+            		return "#0099ff";
+            		break;
+            	case 7:
+            		return "#666699";
+            		break;
+            	case 8:
+            		return "#0099ff";
+            		break;
+            	case 9:
+            		return "#ff0000";
+            		break;
+            		default:
+            			break;
+            			
+            	}
             },
             opacity: 1
           }
@@ -2259,4 +2350,22 @@ function jpztckBtn1(t) {
 
     })
     //}
+}
+/*模式执行查看的刷新函数*/
+function reloadModelStatusChart(){
+	ajaxPost("/ModelExecuteStatus",{
+		missionId:msg.content.rwId,
+	   	userId:userId,
+	    scenarinoType:msg.content.SCEN_TYPE,
+	    missionType:msg.content.rwType,
+	    scenarinoId:msg.content.qjId
+	}).success(function(res){
+		modelstatusechart = echarts.init(document.getElementById("modelstatusechart"));
+		var data=res.data;
+		if(data.execModel==1){
+			moduleSimulationScheduleHorizontal(data.startTime, data.endTime, data.stopTime, data.stopData, data.moduleType, data.stopMessage, data.stopType, data.excutionMessage)
+		}else if(data.execModel==2){
+			moduleSimulationScheduleVertical(data.startTime, data.endTime, data.stopTime, data.stopData, data.moduleType, data.stopMessage, data.stopType, data.excutionMessage);
+		}
+	})
 }

@@ -282,7 +282,11 @@
   </div>
 </div>
 <div id='modelstatus' style='display:none'>
-	<div id='modelstatusechart' style="height:600px;width:580px">
+	<div id='modelstatusechart' style="height:600px;width:100%">
+	</div>
+	<div class="dlogFooter">
+		<button class="btn btn-success" onclick="reloadModelStatusChart()"><i class="fa fa-refresh" aria-hidden="true"></i> 刷新</button>
+		<button class="btn btn-success" onclick="$('#modelstatus').window('close')">返回</button>
 	</div>
 </div>
 <div id="jpzt1" class="zm" style="display: none">

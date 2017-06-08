@@ -849,7 +849,7 @@ dl, dd {
 .cloudui .delete-btn{border: 1px solid #7a332d;background-color:#d8453d;color: #fff;}
 .cloudui .edit-btn{border: 1px solid #3b694d;background-color:#119e59;color: #fff;}
 .cloudui .btn-success i{margin-right:2px;}
-.cloudui .btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success.active, .open .dropdown-toggle.btn-success {
+.cloudui .btn-success:hover, .btn-success:active, .btn-success.active, .open .dropdown-toggle.btn-success {
   display: inline-block;
   height: 28px;
   line-height: 28px;
