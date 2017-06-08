@@ -13,7 +13,7 @@ public class TEsCoupling {
 
     private Long esCouplingNationId;
 
-    private Object esCouplingNativeId;
+    private String esCouplingNativeId;
 
     private Long esCoupingRelationId;
 
@@ -36,6 +36,8 @@ public class TEsCoupling {
     private String esVersion;
 
     private Long esCouplingNativetpId;
+
+    private String esCouplingMeiccityconfig;
 
     public Long getEsCouplingId() {
         return esCouplingId;
@@ -77,12 +79,12 @@ public class TEsCoupling {
         this.esCouplingNationId = esCouplingNationId;
     }
 
-    public Object getEsCouplingNativeId() {
+    public String getEsCouplingNativeId() {
         return esCouplingNativeId;
     }
 
-    public void setEsCouplingNativeId(Object esCouplingNativeId) {
-        this.esCouplingNativeId = esCouplingNativeId;
+    public void setEsCouplingNativeId(String esCouplingNativeId) {
+        this.esCouplingNativeId = esCouplingNativeId == null ? null : esCouplingNativeId.trim();
     }
 
     public Long getEsCoupingRelationId() {
@@ -171,5 +173,13 @@ public class TEsCoupling {
 
     public void setEsCouplingNativetpId(Long esCouplingNativetpId) {
         this.esCouplingNativetpId = esCouplingNativetpId;
+    }
+
+    public String getEsCouplingMeiccityconfig() {
+        return esCouplingMeiccityconfig;
+    }
+
+    public void setEsCouplingMeiccityconfig(String esCouplingMeiccityconfig) {
+        this.esCouplingMeiccityconfig = esCouplingMeiccityconfig == null ? null : esCouplingMeiccityconfig.trim();
     }
 }

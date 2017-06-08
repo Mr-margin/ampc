@@ -7,7 +7,7 @@
     <result column="ES_COUPLING_DESC" property="esCouplingDesc" jdbcType="OTHER" />
     <result column="ES_COUPLING_YEAR" property="esCouplingYear" jdbcType="DECIMAL" />
     <result column="ES_COUPLING_NATION_ID" property="esCouplingNationId" jdbcType="DECIMAL" />
-    <result column="ES_COUPLING_NATIVE_ID" property="esCouplingNativeId" jdbcType="OTHER" />
+    <result column="ES_COUPLING_NATIVE_ID" property="esCouplingNativeId" jdbcType="VARCHAR" />
     <result column="ES_COUPING_RELATION_ID" property="esCoupingRelationId" jdbcType="DECIMAL" />
     <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
     <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
@@ -19,12 +19,13 @@
     <result column="ES_COUPLING_STATUS" property="esCouplingStatus" jdbcType="VARCHAR" />
     <result column="ES_VERSION" property="esVersion" jdbcType="VARCHAR" />
     <result column="ES_COUPLING_NATIVETP_ID" property="esCouplingNativetpId" jdbcType="DECIMAL" />
+    <result column="ES_COUPLING_MEICCITYCONFIG" property="esCouplingMeiccityconfig" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ES_COUPLING_ID, ES_COUPLING_NAME, ES_COUPLING_DESC, ES_COUPLING_YEAR, ES_COUPLING_NATION_ID, 
     ES_COUPLING_NATIVE_ID, ES_COUPING_RELATION_ID, ADD_TIME, UPDATE_TIME, USER_ID, IS_EFFECTIVE, 
     DELETE_TIME, HISTORY_COUPLING, ES_COUPLING_CITY, ES_COUPLING_STATUS, ES_VERSION, 
-    ES_COUPLING_NATIVETP_ID
+    ES_COUPLING_NATIVETP_ID, ES_COUPLING_MEICCITYCONFIG
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -42,13 +43,15 @@
       ES_COUPING_RELATION_ID, ADD_TIME, UPDATE_TIME, 
       USER_ID, IS_EFFECTIVE, DELETE_TIME, 
       HISTORY_COUPLING, ES_COUPLING_CITY, ES_COUPLING_STATUS, 
-      ES_VERSION, ES_COUPLING_NATIVETP_ID)
+      ES_VERSION, ES_COUPLING_NATIVETP_ID, ES_COUPLING_MEICCITYCONFIG
+      )
     values (#{esCouplingId,jdbcType=DECIMAL}, #{esCouplingName,jdbcType=OTHER}, #{esCouplingDesc,jdbcType=OTHER}, 
-      #{esCouplingYear,jdbcType=DECIMAL}, #{esCouplingNationId,jdbcType=DECIMAL}, #{esCouplingNativeId,jdbcType=OTHER}, 
+      #{esCouplingYear,jdbcType=DECIMAL}, #{esCouplingNationId,jdbcType=DECIMAL}, #{esCouplingNativeId,jdbcType=VARCHAR}, 
       #{esCoupingRelationId,jdbcType=DECIMAL}, #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{userId,jdbcType=DECIMAL}, #{isEffective,jdbcType=VARCHAR}, #{deleteTime,jdbcType=TIMESTAMP}, 
       #{historyCoupling,jdbcType=VARCHAR}, #{esCouplingCity,jdbcType=VARCHAR}, #{esCouplingStatus,jdbcType=VARCHAR}, 
-      #{esVersion,jdbcType=VARCHAR}, #{esCouplingNativetpId,jdbcType=DECIMAL})
+      #{esVersion,jdbcType=VARCHAR}, #{esCouplingNativetpId,jdbcType=DECIMAL}, #{esCouplingMeiccityconfig,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TEsCoupling" >
     insert into T_ES_COUPLING
@@ -104,6 +107,9 @@
       <if test="esCouplingNativetpId != null" >
         ES_COUPLING_NATIVETP_ID,
       </if>
+      <if test="esCouplingMeiccityconfig != null" >
+        ES_COUPLING_MEICCITYCONFIG,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="esCouplingId != null" >
@@ -122,7 +128,7 @@
         #{esCouplingNationId,jdbcType=DECIMAL},
       </if>
       <if test="esCouplingNativeId != null" >
-        #{esCouplingNativeId,jdbcType=OTHER},
+        #{esCouplingNativeId,jdbcType=VARCHAR},
       </if>
       <if test="esCoupingRelationId != null" >
         #{esCoupingRelationId,jdbcType=DECIMAL},
@@ -157,6 +163,9 @@
       <if test="esCouplingNativetpId != null" >
         #{esCouplingNativetpId,jdbcType=DECIMAL},
       </if>
+      <if test="esCouplingMeiccityconfig != null" >
+        #{esCouplingMeiccityconfig,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="ampc.com.gistone.database.model.TEsCoupling" >
@@ -175,7 +184,7 @@
         ES_COUPLING_NATION_ID = #{esCouplingNationId,jdbcType=DECIMAL},
       </if>
       <if test="esCouplingNativeId != null" >
-        ES_COUPLING_NATIVE_ID = #{esCouplingNativeId,jdbcType=OTHER},
+        ES_COUPLING_NATIVE_ID = #{esCouplingNativeId,jdbcType=VARCHAR},
       </if>
       <if test="esCoupingRelationId != null" >
         ES_COUPING_RELATION_ID = #{esCoupingRelationId,jdbcType=DECIMAL},
@@ -210,6 +219,9 @@
       <if test="esCouplingNativetpId != null" >
         ES_COUPLING_NATIVETP_ID = #{esCouplingNativetpId,jdbcType=DECIMAL},
       </if>
+      <if test="esCouplingMeiccityconfig != null" >
+        ES_COUPLING_MEICCITYCONFIG = #{esCouplingMeiccityconfig,jdbcType=VARCHAR},
+      </if>
     </set>
     where ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL}
   </update>
@@ -219,7 +231,7 @@
       ES_COUPLING_DESC = #{esCouplingDesc,jdbcType=OTHER},
       ES_COUPLING_YEAR = #{esCouplingYear,jdbcType=DECIMAL},
       ES_COUPLING_NATION_ID = #{esCouplingNationId,jdbcType=DECIMAL},
-      ES_COUPLING_NATIVE_ID = #{esCouplingNativeId,jdbcType=OTHER},
+      ES_COUPLING_NATIVE_ID = #{esCouplingNativeId,jdbcType=VARCHAR},
       ES_COUPING_RELATION_ID = #{esCoupingRelationId,jdbcType=DECIMAL},
       ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
       UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
@@ -230,10 +242,11 @@
       ES_COUPLING_CITY = #{esCouplingCity,jdbcType=VARCHAR},
       ES_COUPLING_STATUS = #{esCouplingStatus,jdbcType=VARCHAR},
       ES_VERSION = #{esVersion,jdbcType=VARCHAR},
-      ES_COUPLING_NATIVETP_ID = #{esCouplingNativetpId,jdbcType=DECIMAL}
+      ES_COUPLING_NATIVETP_ID = #{esCouplingNativetpId,jdbcType=DECIMAL},
+      ES_COUPLING_MEICCITYCONFIG = #{esCouplingMeiccityconfig,jdbcType=VARCHAR}
     where ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL}
   </update>
-   <!-- 根据用户Id查询所有清单 -->
+  <!-- 根据用户Id查询所有清单 -->
    <resultMap id="selectAllMap" type="hashMap" >
     <id column="ES_COUPLING_ID" property="esCouplingId" jdbcType="DECIMAL" />
     <result column="ES_COUPLING_NAME" property="esCouplingName" jdbcType="OTHER" />
@@ -377,5 +390,4 @@
     from T_ES_COUPLING
     where ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL}
   </select>
-  
 </mapper>

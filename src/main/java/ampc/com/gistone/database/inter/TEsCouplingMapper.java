@@ -18,6 +18,11 @@ public interface TEsCouplingMapper {
 	
 	int updateByIdSelective(TEsCoupling tEsCoupling);
 	
+	int updateStatusByPrimaryKey(TEsCoupling tEsCoupling);
+	
+	int updateDataByPrimaryKey(TEsCoupling tEsCoupling);
+	
+	Map selectCouplingByPrimaryKey(Long couplingId);
 	/**
 	 * 根据用户Id查询所有清单 
 	 * @param userId
@@ -35,10 +40,4 @@ public interface TEsCouplingMapper {
     int updateByPrimaryKeySelective(TEsCoupling record);
 
     int updateByPrimaryKey(TEsCoupling record);
-    
-	int updateStatusByPrimaryKey(TEsCoupling tEsCoupling);
-	
-	int updateDataByPrimaryKey(TEsCoupling tEsCoupling);
-	
-	Map selectCouplingByPrimaryKey(Long couplingId);
 }
