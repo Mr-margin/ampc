@@ -25,7 +25,12 @@ function innitdata(){  //耦合清单的初始化
                 var coupId=row.esCouplingId
                 var coupSetBtn="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='coupSetQd("+coupId+")'>耦合配置</button>"
                 return  coupSetBtn;
-            },align:'cneter',width:120}
+            },align:'cneter',width:120},
+            {field:"viewDetail",title:"查看",formatter:function(value,row,index){
+                var coupId=row.esCouplingId
+                var coupSetBtn="<button style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='viewDetail("+coupId+")'>查看</button>"
+               return coupSetBtn;
+            }}
 
         ]],
         loadFilter:function (data) { //过滤数据，转换成符合格式的数据
@@ -133,7 +138,7 @@ function submitCoup(){
     //判断新建清单的年份是否在1990-2100之间
     var myYear=$("#creatCoupQd #coupQdYear").val()
     if(myYear>=1990&&myYear<2100){    //判断年份
-        $("#couqd").submit(
+        $("#formCoup").submit(
             ajaxPost('/NativeAndNation/doPost',param).success(function(res){
                 if(res.status==0){
                     $("#couqd").datagrid('insertRow',{ //在表格中插入新建清单
@@ -241,6 +246,37 @@ function coupDelete(){
         })
     });
 }
+//点击查看耦合清单详细信息
+function viewDetail(coupId) {
+    var rowsAll=$("#couqd").datagrid("getRows");
+    var checkRow;
+    if(coupId){
+        for(var i=0;i<rowsAll.length;i++){
+            if(rowsAll[i].esCouplingId==coupId){
+                checkRow=rowsAll[i];
+            }
+        }
+    }
+
+    var param={};
+    param.userId=userId;
+    param.method="lookByCouplingId";
+    param.couplingId=checkRow.esCouplingId,
+        param.nationId=checkRow.esCouplingNationId,
+
+        param.nativesId=checkRow.esCouplingNativeId,
+        param.nativeTpId=checkRow.esCouplingNativetpId,
+        param.meicCityConfig='',
+
+        ajaxPost('/NativeAndNation/doPost',param).success(function (res) {
+            if(res.status==0){
+                console.log("数据过来了")
+            }else{
+                console.log("没有")
+            }
+        })
+}
+
 //点击耦合清单
 function coupSetQd(coupId) {
     var rowsAll=$("#couqd").datagrid("getRows");
