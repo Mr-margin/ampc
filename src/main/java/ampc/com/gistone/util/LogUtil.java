@@ -7,7 +7,7 @@ import ampc.com.gistone.extract.ExtractDataService;
 
 public class LogUtil {
 	//定义日志类
-	private final static Logger logger = LoggerFactory.getLogger(ExtractDataService.class);
+	private final static Logger logger = LoggerFactory.getLogger(LogUtil.class);
 	public static Logger getLogger(){
 		return logger;
 	}
