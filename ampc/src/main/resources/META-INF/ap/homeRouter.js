@@ -17,6 +17,33 @@ $('#user-center').menubutton({
 	duration:10
 });
 
+/*修改密码的窗口渲染*/
+$('#revisePasswordBox').window($.extend({},defaultwindowoption,{
+	title:'修改密码'
+}));
+
+/*修改密码的表单验证*/
+$('#revisePasswordForm').validate({
+	debug: true,
+    rules: {
+    	oldPassword: {
+            required: true
+        },
+        newPassword: {
+            required: true
+        }
+    },
+    messages: {
+    	oldPassword: {
+            required: '请填写旧密码'
+        },
+        newPassword: {
+            required: '请填写新密码'
+        }
+    }
+})
+
+
 $.when(dps_um).then(function(){
   if(!userMsg){
     window.location.href="index.html";
@@ -235,7 +262,13 @@ function dengluOut() {
 function getSessionMsg() {
     var url = '/user/get_sessionInfo';
     return ajaxPost(url, {}).success(function (res) {
-        userMsg = res.data;
+    	if(res.status==0){
+    		userMsg = res.data;
+            $('#user-name').html(res.data.userName)
+    	}else{
+    		window.location.href = "index.html";
+    	}
+        
     })
 }
 
@@ -383,6 +416,49 @@ Array.prototype.quickSort = function() {
 /*用户取消登录的函数*/
 function exitSystem(){
 	ajaxPost('/user/loginOut').success(function(res){
-		
+		if(res.status==0){
+			vipspa.clearMessage();
+			location.href='index.html';
+		}else{
+			swal({
+                title: '用户退出失败!',
+                type: 'error',
+                timer: 1000,
+                showConfirmButton: false
+            });
+		}
+	}).error(function(){
+		swal({
+            title: '用户退出请求失败!',
+            type: 'error',
+            timer: 1000,
+            showConfirmButton: false
+        });
 	})
+}
+/*修改密码的函数*/
+function resivePassword(){
+	if ($('#revisePasswordForm').valid()){
+		ajaxPost('/user/updatePassword',{
+			userId:userId,
+			oldPassword:$("#oldPassword").val(),
+			newPassword:$("#newPassword").val()
+		}).success(function(res){
+			if(res.status==0){
+				swal({
+                    title: '修改成功!',
+                    type: 'success',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+			}else{
+				swal({
+		            title: res.msg,
+		            type: 'error',
+		            timer: 1000,
+		            showConfirmButton: false
+		        });
+			}
+		})
+	}
 }
