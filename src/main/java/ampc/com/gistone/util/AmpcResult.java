@@ -1,6 +1,8 @@
 package ampc.com.gistone.util;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -10,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @version v.0.1
  * @date 2017年2月22日
  */
+@JsonIgnoreProperties
 public class AmpcResult {
 
 	// 定义jackson对象
