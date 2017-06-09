@@ -2048,12 +2048,12 @@ public class NativeAndNationController {
 			}
 			Long userId = Long.parseLong(param.toString());
 			
-			param=data.get("couplingId");
+			param=data.get("nationName");
 			if(!RegUtil.CheckParameter(param, "Long", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 耦合清单ID为空或出现非法字符!");
 				return AmpcResult.build(1003, "耦合清单ID为空或出现非法字符!");
 			}
-			Long couplingId = Long.parseLong(param.toString());
+			Long nationName = Long.parseLong(param.toString());
 			
 			
 			
@@ -2086,12 +2086,12 @@ public class NativeAndNationController {
 			}
 			Long userId = Long.parseLong(param.toString());
 			
-			param=data.get("nationName");
+			param=data.get("nativeTpName");
 			if(!RegUtil.CheckParameter(param, "Long", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 耦合清单ID为空或出现非法字符!");
 				return AmpcResult.build(1003, "耦合清单ID为空或出现非法字符!");
 			}
-			Long nationName = Long.parseLong(param.toString());
+			Long nativeTpName = Long.parseLong(param.toString());
 			
 			
 			
