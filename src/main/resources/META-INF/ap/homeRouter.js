@@ -9,6 +9,13 @@ var userId;
 
 var dps_um = getSessionMsg();
 
+/*用户按钮的下拉窗口*/
+$('#user-center').menubutton({
+	menu:'#user-menu',
+//	menuAlign:'right',
+	hasDownArrow:false,
+	duration:10
+});
 
 $.when(dps_um).then(function(){
   if(!userMsg){

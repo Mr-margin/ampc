@@ -79,9 +79,57 @@ abbr,acronym {
     font-size: 18px;
     height: 50px;
 }*/
-.user-center{
-    position: absolute;
+#user-center{
+    float:right;
+    height:100%;
+    line-height:50px;
+    color:#C3CCD6;    
+	border-radius:0
 
+}
+#user-center a{
+	display:inline-block;
+	height:100%;
+	line-height:50px;
+	text-decoration:none;
+	padding:0 10px
+}
+#user-center a:hover{
+	text-decoration:none;
+	background:#EAEDF1
+}
+#user-center a>.user-icon{
+	font-size:30px;
+	vertical-align:middle;
+	margin-right:15px;
+	color:#C3CCD6
+}
+#user-name{
+	font-size:13px;
+	color:#333;
+}
+#user-center.m-btn-plain-active{
+	background:#EAEDF1;
+	border:none;
+	padding:1px;
+}
+#user-menu{
+	background:white;
+	padding:0;
+}
+#user-menu .menu-item{
+	font-size:13px;
+}
+#user-menu .menu-line{
+	display:none
+}
+#user-menu .menu-sep{
+	margin:3px 0 3px 0;
+}
+#user-menu .menu-active{
+	border-radius:0;
+	background:#F5F5F5;
+	border-color:transparent
 }
 /* -----------------------------------------
    Sidebar styles
