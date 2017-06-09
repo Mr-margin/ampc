@@ -1335,14 +1335,17 @@ public class NativeAndNationController {
 					//未使用
 					tEsCouplingMap.put("employ", 0);
 				}
-				
+				//获取clob类型
 				Clob clob = (Clob) tEsCouplingMap.get("esCouplingMeiccityconfig");
 				String detailinfo = "";
+				//判断是否为空
 			    if(clob != null){
-			     detailinfo = clob.getSubString((long)1,(int)clob.length());
+			    	//进行格式转换
+			    	detailinfo = clob.getSubString((long)1,(int)clob.length());
 			    }
+			    //覆盖键值重新添加数据
 				tEsCouplingMap.put("esCouplingMeiccityconfig", detailinfo);
-				
+				//添加到集合中
 				couplingList.add(tEsCouplingMap);
 			}
 			
