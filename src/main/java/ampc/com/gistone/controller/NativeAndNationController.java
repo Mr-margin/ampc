@@ -1105,7 +1105,7 @@ public class NativeAndNationController {
 			
 			Map msgMap = new HashMap();
 			//调用校验数据函数
-			Map  sectorDocExcel =excelToDateController.update_SectorDocExcelData(userId,nativeTpId,native_filePath+ "/"+"应急系统新_1描述文件.xlsx",esNativeTpOutPath);
+			Map  sectorDocExcel =excelToDateController.update_SectorDocExcelData(userId,nativeTpId,native_filePath+ "/"+"应急系统新_1描述文件_.xlsx",esNativeTpOutPath);
 			if(sectorDocExcel==null){
 				Map  queryExcel =excelToDateController.update_QueryExcelData(userId,nativeTpId,native_filePath+ "/"+"应急系统新_2筛选逻辑.xlsx",esNativeTpOutPath);
 				if(queryExcel==null){
@@ -2049,20 +2049,31 @@ public class NativeAndNationController {
 			Long userId = Long.parseLong(param.toString());
 			
 			param=data.get("nationName");
-			if(!RegUtil.CheckParameter(param, "Long", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 耦合清单ID为空或出现非法字符!");
-				return AmpcResult.build(1003, "耦合清单ID为空或出现非法字符!");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 全国清单名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "全国清单名称为空或出现非法字符!");
 			}
-			Long nationName = Long.parseLong(param.toString());
+			String nationName = param.toString();
 			
+			TEsNation tEsNation = new TEsNation();
+			tEsNation.setEsNationName(nationName);
+			int result = tEsNationMapper.verifyNationName(tEsNation);
+			//返回调用者的信息
+			Map messageMap = new HashMap<String, Object>();
+			if(result>0){
+				//名称已被使用
+				messageMap.put("msg", true);
+				LogUtil.getLogger().info("NativeAndNationController 全国清单名称已被使用!");
+			}else{
+				//未查询到该名称的数据
+				messageMap.put("msg", false);
+				LogUtil.getLogger().info("NativeAndNationController 全国清单名称未被使用!");
+			}
 			
-			
-			
-			LogUtil.getLogger().info("NativeAndNationController 查询耦合清单详细信息成功!");
-			return AmpcResult.ok();
+			return AmpcResult.ok(messageMap);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("NativeAndNationController 查询耦合清单详细信息状态异常!",e);
-			return AmpcResult.build(1001, "NativeAndNationController 查询耦合清单详细信息状态异常!");
+			LogUtil.getLogger().error("NativeAndNationController 校验全国清单名称异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 校验全国清单名称异常!");
 		}
 	}
 	
@@ -2087,20 +2098,31 @@ public class NativeAndNationController {
 			Long userId = Long.parseLong(param.toString());
 			
 			param=data.get("nativeTpName");
-			if(!RegUtil.CheckParameter(param, "Long", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 耦合清单ID为空或出现非法字符!");
-				return AmpcResult.build(1003, "耦合清单ID为空或出现非法字符!");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单模板名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单模板名称为空或出现非法字符!");
 			}
-			Long nativeTpName = Long.parseLong(param.toString());
+			String nativeTpName = param.toString();
 			
+			TEsNativeTp tEsNativeTp = new TEsNativeTp();
+			tEsNativeTp.setEsNativeTpName(nativeTpName);
+			int result = tEsNativeTpMapper.verifyNativeTpName(tEsNativeTp);
+			//返回调用者的信息
+			Map messageMap = new HashMap<String, Object>();
+			if(result>0){
+				//名称已被使用
+				messageMap.put("msg", true);
+				LogUtil.getLogger().info("NativeAndNationController 本地清单模板名称已被使用!");
+			}else{
+				//未查询到该名称的数据
+				messageMap.put("msg", false);
+				LogUtil.getLogger().info("NativeAndNationController 本地清单模板名称未被使用!");
+			}
 			
-			
-			
-			LogUtil.getLogger().info("NativeAndNationController 查询耦合清单详细信息成功!");
-			return AmpcResult.ok();
+			return AmpcResult.ok(messageMap);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("NativeAndNationController 查询耦合清单详细信息状态异常!",e);
-			return AmpcResult.build(1001, "NativeAndNationController 查询耦合清单详细信息状态异常!");
+			LogUtil.getLogger().error("NativeAndNationController 校验本地清单模板名称异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 校验本地清单模板名称异常!");
 		}
 	}
 	
@@ -2125,20 +2147,81 @@ public class NativeAndNationController {
 			Long userId = Long.parseLong(param.toString());
 			
 			param=data.get("nativeName");
-			if(!RegUtil.CheckParameter(param, "Long", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 耦合清单ID为空或出现非法字符!");
-				return AmpcResult.build(1003, "耦合清单ID为空或出现非法字符!");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单名称为空或出现非法字符!");
 			}
-			Long nativeName = Long.parseLong(param.toString());
+			String nativeName = param.toString();
 			
+			TEsNative tEsNative = new TEsNative();
+			tEsNative.setEsNativeName(nativeName);
+			int result = tEsNativeMapper.verifyNativeName(tEsNative);
+			//返回调用者的信息
+			Map messageMap = new HashMap<String, Object>();
+			if(result>0){
+				//名称已被使用
+				messageMap.put("msg", true);
+				LogUtil.getLogger().info("NativeAndNationController 本地清单名称已被使用!");
+			}else{
+				//未查询到该名称的数据
+				messageMap.put("msg", false);
+				LogUtil.getLogger().info("NativeAndNationController 本地清单名称未被使用!");
+			}
 			
-			
-			
-			LogUtil.getLogger().info("NativeAndNationController 查询耦合清单详细信息成功!");
-			return AmpcResult.ok();
+			return AmpcResult.ok(messageMap);
 		} catch (Exception e) {
-			LogUtil.getLogger().error("NativeAndNationController 查询耦合清单详细信息状态异常!",e);
-			return AmpcResult.build(1001, "NativeAndNationController 查询耦合清单详细信息状态异常!");
+			LogUtil.getLogger().error("NativeAndNationController 校验本地清单名称异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 校验本地清单名称异常!");
 		}
 	}
+	
+	/**
+	 * 校验耦合清单名称
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public AmpcResult verifyByCouplingName(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			Long userId = Long.parseLong(param.toString());
+			
+			param=data.get("couplingName");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 耦合清单名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "耦合清单名称为空或出现非法字符!");
+			}
+			String couplingName = param.toString();
+			
+			TEsCoupling tEsCoupling = new TEsCoupling();
+			tEsCoupling.setEsCouplingName(couplingName);
+			int result = tEsCouplingMapper.verifyCouplingName(tEsCoupling);
+			//返回调用者的信息
+			Map messageMap = new HashMap<String, Object>();
+			if(result>0){
+				//名称已被使用
+				messageMap.put("msg", true);
+				LogUtil.getLogger().info("NativeAndNationController 耦合清单名称已被使用!");
+			}else{
+				//未查询到该名称的数据
+				messageMap.put("msg", false);
+				LogUtil.getLogger().info("NativeAndNationController 耦合清单名称未被使用!");
+			}
+			
+			return AmpcResult.ok(messageMap);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("NativeAndNationController 校验耦合清单名称异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 校验耦合清单名称异常!");
+		}
+	}
+	
 }

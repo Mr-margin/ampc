@@ -30,6 +30,8 @@ public interface TEsNativeMapper {
 	List<Map> selectByNativeTpAllNative(Map nativeMap);
 
 	int selectTotalNative(TEsNative tEsNative);
+
+	int verifyNativeName(TEsNative tEsNative);
     
     
     

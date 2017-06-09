@@ -43,4 +43,6 @@ public interface TEsCouplingMapper {
     int updateByPrimaryKeyWithBLOBs(TEsCoupling record);
 
     int updateByPrimaryKey(TEsCoupling record);
+    
+	int verifyCouplingName(TEsCoupling tEsCoupling);
 }

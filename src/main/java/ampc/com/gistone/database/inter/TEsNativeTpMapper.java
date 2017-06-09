@@ -28,4 +28,6 @@ public interface TEsNativeTpMapper {
 	int selectTotalNativeTp(Long userId);
 
 	TEsNativeTp selectByKey(Map nativeTpMap);
+
+	int verifyNativeTpName(TEsNativeTp tEsNativeTp);
 }

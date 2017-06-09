@@ -257,4 +257,13 @@
 	"AMPC"."T_ES_NATIVE" T  WHERE USER_ID=#{userId,jdbcType=DECIMAL} AND 
 	ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL}
   </select>
+  <!-- 校验本地清单名称 -->
+  <select id="verifyNativeName"  parameterType="ampc.com.gistone.database.model.TEsNative" >
+    SELECT
+	"COUNT"(*)
+	FROM
+		"AMPC"."T_ES_NATIVE"
+	WHERE
+		ES_NATIVE_NAME = #{esNativeName,jdbcType=OTHER}
+  </select>
 </mapper>
