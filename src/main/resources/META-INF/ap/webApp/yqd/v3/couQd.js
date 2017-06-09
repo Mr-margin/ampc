@@ -3,6 +3,7 @@
  */
 // 导航
 $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><a href="#/yqd_v3" style="padding-left: 15px;padding-right: 15px;font-size:14px;color:#333;text-decoration: none" >耦合清单</a><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatCoupQd()">新建</button><button class="qdEdit" onclick="editCoupQd()">编辑</button><button class="qdDelet" onclick="coupDelete()">删除</button></span>');
+
 var coupingQd,checkQgQd,localQd;
 $(".coupSet").layout();// 耦合设置面板
 function innitdata(){  //耦合清单的初始化
@@ -616,7 +617,6 @@ function coupCity(cityCurren,industryData) {
 //城市选择窗口
 $("#citySelect").window({
     width:600,  //easyui 窗口宽度
-    height:400,
     collapsible:false, //easyui 自带的折叠按钮
     maximizable:false,//easyui 自带的最大按钮
     minimizable:false,//easyui 自带的最小按钮
