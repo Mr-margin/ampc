@@ -16,6 +16,8 @@ import javax.servlet.http.HttpSession;
 
 
 
+import net.sf.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -97,6 +99,9 @@ public class UserController {
 					map.put("passWord", passWord);
 					//查询所有的用户基本信息
 					Map userMap=tUserMapper.login(map);
+					JSONObject obj=new JSONObject();
+					obj.put("userId", userMap.get("userId"));
+					obj.put("userName", userMap.get("userName"));
 					//如果用户账号和密码匹配
 					if(userMap!=null){
 						//将用户的一些基本信息 放到session
@@ -104,8 +109,9 @@ public class UserController {
 						session.setAttribute("user", userMap);
 						//添加Log
 						LogUtil.getLogger().info("UserController  登录成功！");
+						
 						//返回结果
-						return AmpcResult.ok(1);
+						return AmpcResult.ok(obj);
 					}else{
 						throw new SQLException("UserController  用户和密码不匹配!");
 					}
