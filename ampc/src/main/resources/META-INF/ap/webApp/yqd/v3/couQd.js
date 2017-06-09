@@ -128,9 +128,15 @@ $("#creatCoupQd").window({
 //点击新建按钮 打开窗口
 function creatCoupQd(){
     $("#formCoup").form("clear")
-    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称");
-    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份");
+    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称").css({"color":"#757575"});
+    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份").css({"color":"#757575"});
     $("#creatCoupQd").window("open");
+}
+// 清除已经写入的数据
+function clearCoup() {
+    $("#formCoup").form("clear")
+    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称").css({"color":"#757575"});
+    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份").css({"color":"#757575"});
 }
 //点击新建窗口提交按钮进行耦合清单创建
 function submitCoup(){
@@ -142,7 +148,7 @@ function submitCoup(){
     param.couplingDesc = $("#creatCoupQd #coupQdMark").val();//清单备注
     //判断新建清单的年份是否在1990-2100之间
     var myYear=$("#creatCoupQd #coupQdYear").val()
-    if(myYear>=1990&&myYear<2100){    //判断年份
+    if(myYear>=1990&&myYear<=2100){    //判断年份
         $("#formCoup").submit(
             ajaxPost('/NativeAndNation/doPost',param).success(function(res){
                 if(res.status==0){
@@ -234,12 +240,13 @@ function coupDelete(){
     var rowIndex = $('#couqd').datagrid('getRowIndex', row);
     swal({
         title: "您确定要删除吗？",
-        text: "您确定要删除这条数据？",
+        // text: "您确定要删除这条数据？",
         type: "warning",
         animation:"slide-from-top",
         showCancelButton: true,
         closeOnConfirm: true,
-        confirmButtonText: "是的，我要删除",
+        confirmButtonText: "确定",
+        cancelButtonText:"取消"
     }, function() {
         ajaxPost('/NativeAndNation/doPost',{"couplingId":row.esCouplingId,"method":"delete_coupling"}).success(function(res){
             if(res.status==0){

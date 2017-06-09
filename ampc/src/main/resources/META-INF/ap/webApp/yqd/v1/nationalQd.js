@@ -47,8 +47,8 @@ function innitdata(){
 }
 function creatQd(){ // 点击创建清单按钮 弹出创建窗口
     $("#formQd").form('clear');//打开窗口清空输入框数据
-    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称");
-    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份");
+    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称（必填）").css({"color":"#757575"});
+    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份").css({"color":"#757575"});
     $("#creatQd").window('open');
 }
 $("#creatQd").window({  //创建全国清单窗口
@@ -71,31 +71,39 @@ function submitQd(){ //点击提交按钮进行新建清单数据的提交
     param.nationRemark = $("#creatQd #esNationMark").val();//清单备注
     //判断新建清单的年份是否在1990-2100之间
     var myYear=$("#creatQd #esNationYear").val()
-    if(myYear>=1990&&myYear<2100){    //判断年份
-        $("#formQd").submit(
-            ajaxPost('/NativeAndNation/add_nation',param).success(function(res){
-                if(res.status==0){
-                    $("#qgqd").datagrid('insertRow',{ //在表格中插入新建清单
-                        index: 0,	// 索引从0开始
-                        row: {
-                            esNationName: param.nationName, //新建清单的名字
-                            esNationYear: param.nationYear,//新建清单的年份
-                            nationRemark:param.nationRemark //新建清单的备注
-                        }
-                    })
-                }else{
-                    swal('参数错误', '', 'error');
-                }
+    var myName=$("#creatQd #esNationName").val()
+    if(myName.length>0 && myName.length<=20){
+        if(myYear>=1990&&myYear<=2100){    //判断年份
+            $("#formQd").submit(
+                ajaxPost('/NativeAndNation/add_nation',param).success(function(res){
+                    if(res.status==0){
+                        $("#qgqd").datagrid('insertRow',{ //在表格中插入新建清单
+                            index: 0,	// 索引从0开始
+                            row: {
+                                esNationName: param.nationName, //新建清单的名字
+                                esNationYear: param.nationYear,//新建清单的年份
+                                nationRemark:param.nationRemark //新建清单的备注
+                            }
+                        })
+                    }else{
+                        swal('参数错误', '', 'error');
+                    }
 
-            })
-        )
-        $("#creatQd").window('close');
+                })
+            )
+            $("#creatQd").window('close');
+        }else{
+            swal('清单年份获取错误', '', 'error');
+        }
     }else{
-        swal('清单年份获取错误', '', 'error');
+        swal('请输入符合要求的名称', '', 'error');
     }
+
 }
 function claearQd(){ //点击窗口清空按钮 对表单输入框进行数据清空
     $("#formQd").form('clear');
+    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称（必填）").css({"color":"#757575"});
+    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份").css({"color":"#757575"});
 }
 
 function editQd(){ // 编辑全国清单
@@ -135,41 +143,48 @@ function editSubmitQd(){//点击提交按钮进行编辑数据提交
     param.nationId = row.esNationId;
     param.nationRemark = qdMark;
     param.nationYear = qdYear;
-    var myYear=$("#esNationYear_edit").val()
-    if(myYear>=1990&&myYear<2100){//判断年份是否符合要求 符合提交编辑后数据
-        $("#formQd").submit(
-            ajaxPost('/NativeAndNation/update_nation',param).success(function(res){
-                if(res.status==0){
-                    $("#qgqd").datagrid('updateRow',{//更新清单列表编辑后的数据
-                        index: rowIndex,
-                        row: {
-                            esNationName: qdName,
-                            esNationYear:qdYear,
-                            nationRemark:qdMark
-                        }
+    var myYear=$("#esNationYear_edit").val();
+    var myName=$("#editQd #esNationName_edit").val()
+    if(myName.length>0 && myName.length<=20){
+        if(myYear>=1990&&myYear<2100){//判断年份是否符合要求 符合提交编辑后数据
+            $("#formQd").submit(
+                ajaxPost('/NativeAndNation/update_nation',param).success(function(res){
+                    if(res.status==0){
+                        $("#qgqd").datagrid('updateRow',{//更新清单列表编辑后的数据
+                            index: rowIndex,
+                            row: {
+                                esNationName: qdName,
+                                esNationYear:qdYear,
+                                nationRemark:qdMark
+                            }
 
-                    })
-                }else{
-                    swal('参数错误', '', 'error');
-                }
-            })
-        )
-        $("#editQd").window('close');
+                        })
+                    }else{
+                        swal('参数错误', '', 'error');
+                    }
+                })
+            )
+            $("#editQd").window('close');
+        }else{
+            swal('年份错误', '', 'error');
+        }
     }else{
-        swal('年份错误', '', 'error');
+        swal('请输入符合要求的名称', '', 'error');
     }
+
 }
 // 删除清单
 function delectQd(){
     var row = $('#qgqd').datagrid('getSelected');//获取所有选中的清单数据
     swal({
         title: "您确定要删除吗？",
-        text: "您确定要删除这条数据？",
+        // text: "您确定要删除这条数据？",
         type: "warning",
         animation:"slide-from-top",
         showCancelButton: true,
-        closeOnConfirm: true,
-        confirmButtonText: "是的，我要删除",
+        closeOnConfirm:true,
+        confirmButtonText: "确定",
+        cancelButtonText:"取消"
     }, function() {
         ajaxPost('/NativeAndNation/delete_nation',{"nationId":row.esNationId}).success(function(res){
             if(res.status==0){
@@ -184,7 +199,7 @@ function delectQd(){
 }
 // 创建 输入框获得焦点
 $(".cloudui .rwCon .qdContent .qdName").focus(function () {//名称获取焦点
-    if($(this).val()=="请输入长度不超过20的名称"){
+    if($(this).val()=="请输入长度不超过20的名称（必填）"){
         $(this).val("");
         $(this).css({"color":"black"})
     }
@@ -199,7 +214,7 @@ $(".cloudui .rwCon .qdContent .qdYear").focus(function () {//年份获取焦点
 //创建 输入框失去焦点
 $(".cloudui .rwCon .qdContent .qdName").blur(function () {//名称失去焦点
     if($(this).val()==""){
-        $(this).val("请输入长度不超过20的名称")
+        $(this).val("请输入长度不超过20的名称（必填）")
         $(this).css({"color":"#757575"})
     }
 })

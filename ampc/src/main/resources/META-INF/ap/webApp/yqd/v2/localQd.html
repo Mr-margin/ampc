@@ -18,7 +18,7 @@
         <div class="rwCon">
             <div class="qdContent">
                 <label for="esNationName" class="qdTitle">名称：</label>
-                <input class="easyui-validatebox qdCon qdName" type="text" name="esNationName" data-options="required:true" id="esNationName" style="color: #757575" />
+                <input class="easyui-validatebox qdCon qdName" type="text" name="esNationName" data-options="required:true" maxlength="20" id="esNationName" style="color: #757575" />
             </div>
             <div class="qdContent">
                 <label for="esNationYear" class="qdTitle">年份：</label>
@@ -44,11 +44,11 @@
         <div class="rwCon">
             <div class="qdContent">
                 <label for="esNationName" class="qdTitle">名称：</label>
-                <input class="easyui-validatebox qdCon" type="text" name="esNationName" data-options="required:true" id="esLocalEditName" />
+                <input class="easyui-validatebox qdCon qdName" type="text" name="esNationName" maxlength="20" data-options="required:true" id="esLocalEditName" />
             </div>
             <div class="qdContent">
                 <label for="esNationYear" class="qdTitle">年份：</label>
-                <input class="easyui-validatebox qdCon" type="text" name="esNationYear" data-options="required:true" id="esLocalEditYear" />
+                <input class="easyui-validatebox qdCon qdYear" type="text" name="esNationYear" data-options="required:true" id="esLocalEditYear" />
             </div>
         </div>
         <div class="rwCon">
@@ -70,7 +70,7 @@
         <div class="rwCon">
             <div class="qdContent">
                 <label for="esLocalQdName" class="qdTitle">名称：</label>
-                <input class="easyui-validatebox qdCon qdName" type="text" name="esNationName" data-options="required:true" id="esLocalQdName" style="color: #757575" />
+                <input class="easyui-validatebox qdCon qdName" type="text" name="esNationName" maxlength="20" data-options="required:true" id="esLocalQdName" style="color: #757575" />
             </div>
             <div class="qdContent">
                 <label for="esLocalQdYear" class="qdTitle">年份：</label>
@@ -87,6 +87,6 @@
     </form>
     <div class="dlogFooter" >
         <button type="button" class="btn btn-primary createQdBtn" onclick="innitdata('add_native')">提交</button>
-        <button type="button" class="btn btn-default claearQdBtn" onclick="claearTemp()">清除</button>
+        <button type="button" class="btn btn-default claearQdBtn" onclick="claearTempQd()">清除</button>
     </div>
 </div>
