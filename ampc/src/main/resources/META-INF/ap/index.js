@@ -60,7 +60,7 @@ function loadIngFun(){
     userAccount:name,
     passWord:pas
   }).success(function(res){
-    if(res.data == 1){
+    if(res.status == 0){
 
       $('#name').val('');
       $('#passwordIndex').val('');

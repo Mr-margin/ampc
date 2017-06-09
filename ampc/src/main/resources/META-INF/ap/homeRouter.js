@@ -380,3 +380,9 @@ Array.prototype.quickSort = function() {
     }
     return left.quickSort().concat([pivot], right.quickSort());
 };
+/*用户取消登录的函数*/
+function exitSystem(){
+	ajaxPost('/user/loginOut').success(function(res){
+		
+	})
+}
