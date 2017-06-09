@@ -221,6 +221,14 @@
 	FROM
 	"AMPC"."T_ES_NATION" T  WHERE USER_ID=#{userId,jdbcType=DECIMAL}
   </select>
-  
+  <!-- 校验全国清单名称 -->
+  <select id="verifyNationName"  parameterType="ampc.com.gistone.database.model.TEsNation" >
+    SELECT
+	"COUNT"(*)
+	FROM
+		"AMPC"."T_ES_NATION"
+	WHERE
+		ES_NATION_NAME = #{esNationName,jdbcType=OTHER}
+  </select>
   
 </mapper>

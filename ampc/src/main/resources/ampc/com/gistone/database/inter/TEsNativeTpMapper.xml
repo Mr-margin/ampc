@@ -315,4 +315,13 @@
     AND ES_NATIVE_TP_NAME = #{nativeTpName,jdbcType=VARCHAR} AND ES_NATIVE_TP_YEAR = #{nativeTpYear,jdbcType=DECIMAL}
      AND ES_COMMENT = #{nativeTpRemark,jdbcType=VARCHAR}
   </select>
+  <!-- 校验清单模板名称 -->
+  <select id="verifyNativeTpName"  parameterType="ampc.com.gistone.database.model.TEsNativeTp" >
+    SELECT
+	"COUNT"(*)
+	FROM
+		"AMPC"."T_ES_NATIVE_TP"
+	WHERE
+		ES_NATIVE_TP_NAME = #{esNativeTpName,jdbcType=VARCHAR}
+  </select>
 </mapper>

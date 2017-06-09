@@ -421,4 +421,13 @@
     from T_ES_COUPLING
     where ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL}
   </select>
+  <!-- 校验耦合清单名称 -->
+  <select id="verifyCouplingName"  parameterType="ampc.com.gistone.database.model.TEsCoupling" >
+    SELECT
+	"COUNT"(*)
+	FROM
+		"AMPC"."T_ES_COUPLING"
+	WHERE
+		ES_COUPLING_NAME = '#{esCouplingName,jdbcType=OTHER}
+  </select>
 </mapper>

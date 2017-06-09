@@ -24,4 +24,6 @@ public interface TEsNationMapper {
     int updateByIdSelective(TEsNation record);
     //查询总条数
 	int selectTotalNation(Long userId);
+
+	int verifyNationName(TEsNation tEsNation);
 }
