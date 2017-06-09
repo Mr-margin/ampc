@@ -148,6 +148,12 @@ public class NativeAndNationController {
 					listTps = resultCouplingMessage(requestDate,request,response);
 				}else if("lookByCouplingId".equals(param)){
 					listTps = lookByCouplingId(requestDate,request,response);
+				}else if("verifyByNationName".equals(param)){
+					listTps = verifyByNationName(requestDate,request,response);
+				}else if("verifyByNativeTpName".equals(param)){
+					listTps = verifyByNativeTpName(requestDate,request,response);
+				}else if("verifyByNativeName".equals(param)){
+					listTps = verifyByNativeName(requestDate,request,response);
 				}
 				else if("".equals(param)){
 					return AmpcResult.build(1001, "NativeAndNationController 请求方法参数异常!");
@@ -629,8 +635,10 @@ public class NativeAndNationController {
 //			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName;
 //			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/";
 			
-			String nativefilePath =configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName;
-			String nativesfilePath = configUtil.getFtpURL()+"/"+userId+"/";
+//			String nativefilePath = configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName;
+//			String nativesfilePath = configUtil.getFtpURL()+"/"+userId+"/";
+			String nativefilePath = new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName).toString().getBytes("iso-8859-1"),"utf-8");
+			String nativesfilePath = new String(( configUtil.getFtpURL()+"/"+userId+"/").toString().getBytes("iso-8859-1"),"utf-8");
 			//用于展示给用户的路径
 			String native_filePath = "/"+userId+"/"+nativeTpName;
 			
@@ -2014,6 +2022,120 @@ public class NativeAndNationController {
 			
 			LogUtil.getLogger().info("NativeAndNationController 查询耦合清单详细信息成功!");
 			return AmpcResult.ok(tEsCouplingMap);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("NativeAndNationController 查询耦合清单详细信息状态异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 查询耦合清单详细信息状态异常!");
+		}
+	}
+	
+	/**
+	 * 校验全国清单名称
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public AmpcResult verifyByNationName(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			Long userId = Long.parseLong(param.toString());
+			
+			param=data.get("couplingId");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 耦合清单ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "耦合清单ID为空或出现非法字符!");
+			}
+			Long couplingId = Long.parseLong(param.toString());
+			
+			
+			
+			
+			LogUtil.getLogger().info("NativeAndNationController 查询耦合清单详细信息成功!");
+			return AmpcResult.ok();
+		} catch (Exception e) {
+			LogUtil.getLogger().error("NativeAndNationController 查询耦合清单详细信息状态异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 查询耦合清单详细信息状态异常!");
+		}
+	}
+	
+	/**
+	 * 校验本地清单模板名称
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public AmpcResult verifyByNativeTpName(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			Long userId = Long.parseLong(param.toString());
+			
+			param=data.get("nationName");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 耦合清单ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "耦合清单ID为空或出现非法字符!");
+			}
+			Long nationName = Long.parseLong(param.toString());
+			
+			
+			
+			
+			LogUtil.getLogger().info("NativeAndNationController 查询耦合清单详细信息成功!");
+			return AmpcResult.ok();
+		} catch (Exception e) {
+			LogUtil.getLogger().error("NativeAndNationController 查询耦合清单详细信息状态异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 查询耦合清单详细信息状态异常!");
+		}
+	}
+	
+	/**
+	 * 校验本地清单名称
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public AmpcResult verifyByNativeName(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			Long userId = Long.parseLong(param.toString());
+			
+			param=data.get("nativeName");
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 耦合清单ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "耦合清单ID为空或出现非法字符!");
+			}
+			Long nativeName = Long.parseLong(param.toString());
+			
+			
+			
+			
+			LogUtil.getLogger().info("NativeAndNationController 查询耦合清单详细信息成功!");
+			return AmpcResult.ok();
 		} catch (Exception e) {
 			LogUtil.getLogger().error("NativeAndNationController 查询耦合清单详细信息状态异常!",e);
 			return AmpcResult.build(1001, "NativeAndNationController 查询耦合清单详细信息状态异常!");
