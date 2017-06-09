@@ -14,6 +14,8 @@ import javax.servlet.http.HttpSession;
 
 
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ampc.com.gistone.database.inter.TUserMapper;
+import ampc.com.gistone.database.model.TUser;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.CaptchaUtil;
 import ampc.com.gistone.util.ClientUtil;
@@ -263,5 +266,111 @@ public class UserController {
 			return AmpcResult.build(1001,"查询用户列表信息异常!");
 		}
 	}
-	
+	/**
+	 * 
+	 * @Description: 修改用户密码
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception   
+	 * AmpcResult  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月9日 上午9:12:30
+	 */
+	@RequestMapping("/user/updatePassword")
+	public AmpcResult updatePassword(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request , HttpServletResponse response) throws Exception {  
+		try {
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//定义账号的正则表达式
+			String regEx = "^[a-zA-Z]+[a-zA-Z0-9_]{5,14}$";
+			//获取账号参数
+			Object param=data.get("userAccount");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", regEx, false)){
+				LogUtil.getLogger().error("UserController-updatePassword  账号为空或出现非法字符!");
+				return AmpcResult.build(1003, "账号为空或出现非法字符!");
+			}
+			//用户账号
+			String userAccount=param.toString();
+			//获取密码参数
+			param=data.get("oldPassword");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("UserController-updatePassword  旧密码为空或出现非法字符!");
+				return AmpcResult.build(1003, "旧密码为空或出现非法字符!");
+			}
+			//用户输入的旧密码
+			String oldPassword= param.toString();
+			
+			param = data.get("newPassword");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("UserController-updatePassword  新密码为空或出现非法字符!");
+				return AmpcResult.build(1003, "新密码为空或出现非法字符!");
+			}
+			//用户输入的新密码
+			String newPassword = param.toString();
+			
+			//查看当前账号是否存在
+			TUser tUser =null;
+			try {
+				tUser = tUserMapper.getUserAccount(userAccount);
+			} catch (Exception e) {
+				LogUtil.getLogger().error(e.getMessage(),e);
+				return AmpcResult.build(1000,e.getMessage());
+			}
+			//判断如果存在
+			if(tUser!=null){
+				//判断账户是否有效
+				Integer isOn=null;
+				try {
+					isOn = tUserMapper.checkUserIsON(userAccount);
+				} catch (Exception e) {
+					LogUtil.getLogger().error(e.getMessage(),e);
+					return AmpcResult.build(1000,e.getMessage());
+				}
+				//判断用户是否有效
+				if(isOn>0){
+					String passwordbyDB = tUser.getPassword().toString();
+					//进行MD5加密
+					oldPassword = Tool.md5(oldPassword);
+					oldPassword=Tool.convertMD5(oldPassword);
+					//验证旧密码
+					if (oldPassword.equals(passwordbyDB)) {
+						//新密码加密
+						newPassword = Tool.md5(newPassword);
+						newPassword=Tool.convertMD5(newPassword);
+						TUser tUserAccount = new TUser();
+						tUserAccount.setUserAccount(userAccount);
+						tUserAccount.setPassword(newPassword);
+						//修改密码
+						int a = tUserMapper.updatePassword(tUserAccount);
+						if (a>0) {
+							return AmpcResult.ok("success");
+						}else {
+							LogUtil.getLogger().info("修改密码失败！");
+							throw new SQLException("UserController-updatePassword  修改密码失败");
+						}
+					}else {
+						return AmpcResult.build(1002,"旧密码不正确");
+					}
+				}else {
+					return AmpcResult.build(1002,"用户已失效");
+				}
+			}else {
+				return AmpcResult.build(1002,"用户不存在");
+			}
+		}catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
+		} catch (Exception e) {
+			LogUtil.getLogger().error("UserController-updatePassword 系统异常！",e);
+			return AmpcResult.build(1001,"系统异常！");
+		}
+    }  
 }
