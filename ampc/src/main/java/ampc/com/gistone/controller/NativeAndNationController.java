@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.sql.Clob;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ampc.com.gistone.database.inter.TAddressMapper;
@@ -58,6 +60,7 @@ import ampc.com.gistone.util.RegUtil;
  */
 @RestController
 @RequestMapping
+@JsonIgnoreProperties
 public class NativeAndNationController {
 
 	@Autowired
@@ -1332,6 +1335,14 @@ public class NativeAndNationController {
 					//未使用
 					tEsCouplingMap.put("employ", 0);
 				}
+				
+				Clob clob = (Clob) tEsCouplingMap.get("esCouplingMeiccityconfig");
+				String detailinfo = "";
+			    if(clob != null){
+			     detailinfo = clob.getSubString((long)1,(int)clob.length());
+			    }
+				tEsCouplingMap.put("esCouplingMeiccityconfig", detailinfo);
+				
 				couplingList.add(tEsCouplingMap);
 			}
 			
@@ -1848,6 +1859,7 @@ public class NativeAndNationController {
 				tEsCoupling.setEsCouplingNationId(nationId);
 				//该字段类型需修改为String类型
 				tEsCoupling.setEsCouplingNativeId(nativesId);
+//				tEsCoupling.setEsCouplingMeiccityconfig(meicCityConfig);xing
 				//更新耦合清单数据
 				int result= tEsCouplingMapper.updateDataByPrimaryKey(tEsCoupling);
 				if(result>0){
