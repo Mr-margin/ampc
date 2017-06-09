@@ -2398,7 +2398,11 @@ public class AirController {
 					tables+=nowTime;
 					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 					scenarinoEntity.setCity_station(cityStation);
+					if(mode.equals("point")){
+						scenarinoEntity.setMode("station");	
+					}else{
 					scenarinoEntity.setMode(mode);
+					}
 					Calendar cal = Calendar.getInstance();
 					cal.setTime(thedate);
 					cal.add(Calendar.DATE, how);
@@ -2414,7 +2418,11 @@ public class AirController {
 						tables+=nowTime;
 						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
 						scenarinoEntity.setCity_station(cityStation);
+						if(mode.equals("point")){
+							scenarinoEntity.setMode("station");	
+						}else{
 						scenarinoEntity.setMode(mode);
+						}
 						Calendar cal = Calendar.getInstance();
 						cal.setTime(thedate);
 						cal.add(Calendar.DATE, how);
