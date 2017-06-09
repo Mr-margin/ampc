@@ -67,8 +67,6 @@ public class AirController {
 	
 	@Autowired
 	private GetBySqlMapper getBySqlMapper;
-	@Autowired
-	private FindCode findCode;
 	
 	private int went=7;
 	
@@ -3317,20 +3315,4 @@ public class AirController {
 		}
 	}
 	
-	@RequestMapping("/find/findcode")	
-	public Map findcode(HttpServletRequest request, HttpServletResponse response ){
-	  List<Long> list=new ArrayList();
-	  list.add(1l);
-	  
-	  Map<Long,List> map=findCode.Findcode(list);
-	  return map;
-	}
-	@RequestMapping("/find/findcode2")	
-	public Map findcode2(HttpServletRequest request, HttpServletResponse response ){
-	  List<Long> list=new ArrayList();
-	
-	  list.add(2l);
-	  Map<Long,List> map=findCode.Findcode(list);
-	  return map;
-	}
 }
