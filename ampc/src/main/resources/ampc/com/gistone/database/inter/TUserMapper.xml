@@ -77,7 +77,7 @@
    update T_USER
     set 
       PASSWORD = #{password,jdbcType=OTHER}
-    where USER_ACCOUNT = #{userAccount,jdbcType=VARCHAR}
+    where USER_ID = #{userId,jdbcType=DECIMAL}
   </update>
   
   
