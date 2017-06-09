@@ -92,13 +92,15 @@ function initWrwDate(s, e, start, end) {
             firstDay: 1
         },
         startDate: start,
-        endDate: end,
+        endDate: start,
         opens: "right"
     }, function (start, end, label) {
         changeMsg.startD = start.format('YYYY-MM-DD');
         // changeMsg.endD = end.format('YYYY-MM-DD');
         if(moment(changeMsg.startD).isAfter(moment($("#wrwEndDate").val()))){
-            $("#wrwEndDate").val(changeMsg.startD)
+            // $("#wrwEndDate").val(changeMsg.startD);
+            $('#wrwEndDate').data('daterangepicker').setStartDate(changeMsg.startD);
+            $('#wrwEndDate').data('daterangepicker').setEndDate(changeMsg.startD);
             changeMsg.endD=changeMsg.startD;
         }
         updata(true);
@@ -129,14 +131,16 @@ function initWrwDate(s, e, start, end) {
             ],
             firstDay: 1
         },
-        startDate: start,
+        startDate: end,
         endDate: end,
         opens: "right"
     }, function (start, end, label) {
         // changeMsg.startD = start.format('YYYY-MM-DD');
         changeMsg.endD = end.format('YYYY-MM-DD');
         if(moment(changeMsg.endD).isBefore(moment($("#wrwStartDate").val()))){
-            $("#wrwStartDate").val(changeMsg.endD);
+            // $("#wrwStartDate").val(changeMsg.endD);
+            $('#wrwStartDate').data('daterangepicker').setStartDate(changeMsg.endD);
+            $('#wrwStartDate').data('daterangepicker').setEndDate(changeMsg.endD);
             changeMsg.startD= changeMsg.endD
         }
         updata(true);
@@ -216,10 +220,13 @@ function initQxysDate(s, e, start, end) {
     }, function (start, end, label) {
         changeMsg.startD = start.format('YYYY-MM-DD');
         // changeMsg.endD = end.format('YYYY-MM-DD');
+
         if(moment(changeMsg.startD).isAfter(moment($("#qxysEndDate").val()))){
-            $("#qxysEndDate").val(changeMsg.startD)
+            // $("#wrwEndDate").val(changeMsg.startD);
+            $('#qxysEndDate').data('daterangepicker').setStartDate(changeMsg.startD);
+            $('#qxysEndDate').data('daterangepicker').setEndDate(changeMsg.startD);
+            changeMsg.endD=changeMsg.startD;
         }
-        changeMsg.endD=moment($("#qxysEndDate").val()).format('YYYY-MM-DD');
         updata(true);
     });
     var ds = $('#qxysStartDate').data('daterangepicker');
@@ -254,10 +261,13 @@ function initQxysDate(s, e, start, end) {
     }, function (start, end, label) {
         // changeMsg.startD = start.format('YYYY-MM-DD');
         changeMsg.endD = end.format('YYYY-MM-DD');
+
         if(moment(changeMsg.endD).isBefore(moment($("#qxysStartDate").val()))){
-            $("#qxysStartDate").val(changeMsg.endD);
+            // $("#wrwStartDate").val(changeMsg.endD);
+            $('#qxysStartDate').data('daterangepicker').setStartDate(changeMsg.endD);
+            $('#qxysStartDate').data('daterangepicker').setEndDate(changeMsg.endD);
+            changeMsg.startD= changeMsg.endD
         }
-        changeMsg.startD= changeMsg.endD
         updata(true);
     });
     var de = $('#qxysEndDate').data('daterangepicker');
