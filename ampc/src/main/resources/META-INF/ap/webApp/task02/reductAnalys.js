@@ -893,68 +893,132 @@ function table_show(cod1, level1){
 	d_Level = level1;
 	
 	$('#listModal_table').bootstrapTable('destroy');
-	$('#listModal_table').bootstrapTable({
-		height : $("#listModal").height()-51,
-		method : 'POST',
-		url : '/ampc/echarts/get_radioList',
-		dataType : "json",
-		iconSize : "outline",
-		clickToSelect : true,// 点击选中行
-		pagination : false, // 在表格底部显示分页工具栏
-		striped : true, // 使表格带有条纹
-		queryParams : function(params) {
-			var data = {};
-			
-			data.code = cod1;
-			data.addressLevle = level1;
-			data.scenarinoId = qjMsg.qjId;//情景id
-			
-//			console.log(JSON.stringify(data));
-			return JSON.stringify({"token": "","data": data});
-		},
-		responseHandler: function (res) {
-//			console.log(JSON.stringify(res));
-			
-			if(res.status == 0){
-				if(res.data.length>0){
-					
-					$.each(res.data, function(i, col) {
-						$.each(col, function(k, vol) {
-							if(vol == '-9999'){
-								res.data[i][k] = "-";
-							}
-						});
-						
-						if(col.type == "1"){
-							res.data[i].name = '<a onClick="table_show(\''+col.code+'\',\''+(parseInt(d_Level)+1)+'\');">'+col.name+'</a>';
-						}
-						
-					});
-					return res.data;
-				}
-			}else if(res.status == ''){
-				return "";
-			}
-			
-		},
-		queryParamsType : "limit", // 参数格式,发送标准的RESTFul类型的参数请求
-		silent : true, // 刷新事件必须设置
-		contentType : "application/json", // 请求远程数据的内容类型。
-		onClickRow : function(row, $element) {
-			$('.success').removeClass('success');
-			$($element).addClass('success');
-		},
-		icons : {
-			refresh : "glyphicon-repeat",
-			toggle : "glyphicon-list-alt",
-			columns : "glyphicon-list"
-		},
-		onLoadSuccess : function(data){
-//			console.log(data);
-		},
-		onLoadError : function(){
-			swal('连接错误', '', 'error');
-		}
-	});
-}
 
+    ajaxPost('/echarts/get_radioList',{
+        "code": cod1,
+        "addressLevle":level1,
+        "scenarinoId":qjMsg.qjId
+    }).success(function(data){
+        $("#listModal_table").datagrid({
+            height: $("#listModal").height() - 36,
+            striped:true,
+            data:data.data,
+            columns:[[
+                {field:"name",title:"行政区"},
+                {field:"pm25",title:"PM<sub>2.5</sub>"},
+                {field:"pm10",title:"PM<sub>10</sub>"},
+                {field:"so2",title:"SO<sub>2</sub>"},
+                {field:"nox",title:"NO<sub>x</sub>"},
+                {field:"voc",title:"VOC"},
+                {field:"co",title:"CO"},
+                {field:"nh3",title:"NH<sub>3</sub>"},
+                {field:"bc",title:"BC"},
+                {field:"oc",title:"OC"},
+                {field:"pmfine",title:"PMFINE"},
+                {field:"pmc",title:"PMC"},
+            ]],
+            clickToSelect: true,// 点击选中行
+            pagination: false, // 在表格底部显示分页工具栏
+            striped: true, // 使表格带有条纹
+            queryParams: function (params) {
+                var data = {};
+                data.code = cod1;
+                data.addressLevle = level1;
+                data.scenarinoId = qjMsg.qjId;//情景id
+
+                //			console.log(JSON.stringify(data));
+                return JSON.stringify({"token": "", "data": data});
+            },
+            loadFilter:function(data){
+                if (data.d){
+
+                    return data.d;
+
+                } else {
+                    return data;
+                }
+            },
+            loadFilter:function(data){
+                //过滤数据
+                var value={
+                    total:data.total,
+                    rows:[]
+                };
+                if (data.length > 0) {
+                    $.each(data, function (i, col) {
+                        if (col.type == "1") {
+                            data[i].name= '<a style="text-decoration:underline;color: #0275d8;cursor:pointer;" onClick="table_show(\'' + col.code + '\',\'' + (parseInt(d_Level) + 1) + '\');">' + col.name + '</a>';
+                        }
+                    });
+                    return data;
+                }
+            }
+        })
+    })
+
+// 	$('#listModal_table').bootstrapTable({
+// 		height : $("#listModal").height()-51,
+// 		method : 'POST',
+// 		url : '/ampc/echarts/get_radioList',
+// 		dataType : "json",
+// 		iconSize : "outline",
+// 		clickToSelect : true,// 点击选中行
+// 		pagination : false, // 在表格底部显示分页工具栏
+// 		striped : true, // 使表格带有条纹
+// 		queryParams : function(params) {
+// 			var data = {};
+//
+// 			data.code = cod1;
+// 			data.addressLevle = level1;
+// 			data.scenarinoId = qjMsg.qjId;//情景id
+//
+// //			console.log(JSON.stringify(data));
+// 			return JSON.stringify({"token": "","data": data});
+// 		},
+// 		responseHandler: function (res) {
+// //			console.log(JSON.stringify(res));
+//
+// 			if(res.status == 0){
+// 				if(res.data.length>0){
+//
+// 					$.each(res.data, function(i, col) {
+// 						$.each(col, function(k, vol) {
+// 							if(vol == '-9999'){
+// 								res.data[i][k] = "-";
+// 							}
+// 						});
+//
+// 						if(col.type == "1"){
+// 							res.data[i].name = '<a onClick="table_show(\''+col.code+'\',\''+(parseInt(d_Level)+1)+'\');">'+col.name+'</a>';
+// 						}
+//
+// 					});
+// 					return res.data;
+// 				}
+// 			}else if(res.status == ''){
+// 				return "";
+// 			}
+//
+// 		},
+// 		queryParamsType : "limit", // 参数格式,发送标准的RESTFul类型的参数请求
+// 		silent : true, // 刷新事件必须设置
+// 		contentType : "application/json", // 请求远程数据的内容类型。
+// 		onClickRow : function(row, $element) {
+// 			$('.success').removeClass('success');
+// 			$($element).addClass('success');
+// 		},
+// 		icons : {
+// 			refresh : "glyphicon-repeat",
+// 			toggle : "glyphicon-list-alt",
+// 			columns : "glyphicon-list"
+// 		},
+// 		onLoadSuccess : function(data){
+// //			console.log(data);
+// 		},
+// 		onLoadError : function(){
+// 			swal('连接错误', '', 'error');
+// 		}
+// 	});
+}
+//添加
+$("#jpfxRight").layout();
