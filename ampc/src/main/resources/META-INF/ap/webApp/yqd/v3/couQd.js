@@ -437,19 +437,6 @@ function submitCity(){
         swal("请选择城市","erro")
     }
 
-    // for(var i=0;i<cityData.length;i++){
-    //     if($('input[name=cityName]').eq(i).is(":checked")){
-    //         checkCity.push({
-    //             "cityId":$('input[name=cityName]').eq(i).val(),
-    //             "cityName":cityData[i].cityName
-    //         })
-    //         cityCurren.cityId=$('input[name=cityName]').eq(i).val();
-    //         cityCurren.cityName=cityData[i].cityName;
-    //         //点击过的input radio 再不可选
-    //         $('#citySelect #cityOption span').eq(i).children("i"). remove()
-    //         $('#citySelect #cityOption span').eq(i).append("<i class='en-checkmark' style='color:#d8453d'></i>")
-    //     }
-    // }
     cityTable(cityData,row);//根据点击过的城市 再次生成城市表单信息
     coupCity(cityCurren,industryData)//根据选择的城市 行业生成耦合表格
     $("#citySelect").window("close");
@@ -467,8 +454,6 @@ function prevCoup(){
         $(".coupSetCon").eq(1).show();
         $(".coupSetCon").eq(2).hide();
         localQdId=[];
-        // $(".coupSetConSecond").layout()//耦合第二步进行渲染
-        // mbSelect()
     }else if(conText=="第二步"){
         $(".cloudui .coupSetTitleList").children("li").eq(1).removeClass("active");
         $(".cloudui .coupSetTitleList").children("li").eq(0).addClass("active");
@@ -695,25 +680,6 @@ function saveAllId(){ //选好清单以后进行保存
     singleCheckCity=checkCityName.unique()//去重
     meicCityConfig=globelCheckedQd
     $("#citySelect").window("open");
-    // if(singleCheckCity.length<cityData.length){//所有的城市如果未选择完成 则继续选择城市进行选择清单
-    //     $("#citySelect").window("open");
-    // }else{//所有城市清单选择完成 进行所有选择数据的提交
-    //     meicCityConfig=globelCheckedQd;//城市 行业 清单
-    //     // ajaxPost('/NativeAndNation/doPost',{"userId":userId,
-    //     //                                         "method":'saveCoupling',
-    //     //                                         "nationId":checkQgQd.esNationId, //第一步全国清单ID
-    //     //                                         "nativesId":localQdId, //第二步本地清单ID
-    //     //                                         "CouplingCity":globelCheckedCity, //耦合涉及的城市
-    //     //                                         "nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId,//第二步模板ID
-    //     //                                         "couplingId":coupingQd.esCouplingId,//耦合清单的ID
-    //     //                                         "meicCityConfig":JSON.stringify(meicCityConfig),}).success(function (res) {
-    //     //     if(res.status==0){
-    //     //         console.log("成功")
-    //     //     }else{
-    //     //         console.log("失败")
-    //     //     }
-    //     // })
-    // }
 }
 //城市表格生成
 var allCheckRow=[]
@@ -748,7 +714,6 @@ function submitCheckQd() {
         "meicCityConfig":JSON.stringify(meicCityConfig),}).success(function (res) {
         if(res.status==0){
             if(res.data.data){
-                console.log(res.data.data.msg)
                 if(res.data.data.msg='true'){
                     swal('耦合成功', '', 'success');
                 }else{
