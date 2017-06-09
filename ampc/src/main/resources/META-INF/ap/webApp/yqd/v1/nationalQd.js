@@ -43,6 +43,10 @@ function innitdata(){
             data.pageNumber=params.pageNumber  //初始化页面的页码
             return {"token": "", "data": data};
         },
+        onClickRow:function (index,row) {
+            console.log("行数据")
+            console.log(row)
+        }
     })
 }
 function creatQd(){ // 点击创建清单按钮 弹出创建窗口
