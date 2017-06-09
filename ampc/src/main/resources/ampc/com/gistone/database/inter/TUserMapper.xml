@@ -65,8 +65,20 @@
 			FROM T_USER 
 				WHERE  USER_ACCOUNT=#{_parameter,jdbcType=VARCHAR} AND USER_VALIDITY>sysdate
   </select>
-  
-  
+  <!--查找用户账户  -->
+  <select id="getUserAccount" parameterType="java.lang.String" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List" />
+  from T_USER
+    where USER_ACCOUNT = #{userAccount,jdbcType=VARCHAR}
+  </select>
+  <!--修改密码  -->
+  <update id="updatePassword" parameterType="ampc.com.gistone.database.model.TUser" >
+   update T_USER
+    set 
+      PASSWORD = #{password,jdbcType=OTHER}
+    where USER_ACCOUNT = #{userAccount,jdbcType=VARCHAR}
+  </update>
   
   
   
