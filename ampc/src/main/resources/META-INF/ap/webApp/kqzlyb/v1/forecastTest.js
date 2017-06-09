@@ -99,8 +99,8 @@ function initWrwDate(s, e, start, end) {
         // changeMsg.endD = end.format('YYYY-MM-DD');
         if(moment(changeMsg.startD).isAfter(moment($("#wrwEndDate").val()))){
             $("#wrwEndDate").val(changeMsg.startD)
+            changeMsg.endD=changeMsg.startD;
         }
-        changeMsg.endD=moment($("#wrwEndDate").val()).format('YYYY-MM-DD');
         updata(true);
     });
     var ds = $('#wrwStartDate').data('daterangepicker');
@@ -137,8 +137,8 @@ function initWrwDate(s, e, start, end) {
         changeMsg.endD = end.format('YYYY-MM-DD');
         if(moment(changeMsg.endD).isBefore(moment($("#wrwStartDate").val()))){
             $("#wrwStartDate").val(changeMsg.endD);
+            changeMsg.startD= changeMsg.endD
         }
-        changeMsg.startD= changeMsg.endD
         updata(true);
     });
     var de = $('#wrwEndDate').data('daterangepicker');
