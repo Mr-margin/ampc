@@ -1,6 +1,7 @@
 package ampc.com.gistone.controller;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 
 
 
@@ -292,7 +294,7 @@ public class UserController {
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			//定义账号的正则表达式
+		/*	//定义账号的正则表达式
 			String regEx = "^[a-zA-Z]+[a-zA-Z0-9_]{5,14}$";
 			//获取账号参数
 			Object param=data.get("userAccount");
@@ -302,7 +304,17 @@ public class UserController {
 				return AmpcResult.build(1003, "账号为空或出现非法字符!");
 			}
 			//用户账号
-			String userAccount=param.toString();
+			String userAccount=param.toString();*/
+			//获取用户ID参数
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("UserController-updatePassword  用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			//用户ID
+			Long userId = Long.parseLong(param.toString());
+			
 			//获取密码参数
 			param=data.get("oldPassword");
 			//进行参数判断
@@ -325,7 +337,7 @@ public class UserController {
 			//查看当前账号是否存在
 			TUser tUser =null;
 			try {
-				tUser = tUserMapper.getUserAccount(userAccount);
+				tUser = tUserMapper.selectByPrimaryKey(userId);
 			} catch (Exception e) {
 				LogUtil.getLogger().error(e.getMessage(),e);
 				return AmpcResult.build(1000,e.getMessage());
@@ -333,15 +345,10 @@ public class UserController {
 			//判断如果存在
 			if(tUser!=null){
 				//判断账户是否有效
-				Integer isOn=null;
-				try {
-					isOn = tUserMapper.checkUserIsON(userAccount);
-				} catch (Exception e) {
-					LogUtil.getLogger().error(e.getMessage(),e);
-					return AmpcResult.build(1000,e.getMessage());
-				}
+				Date userValidity = tUser.getUserValidity();
+				int compareTo = userValidity.compareTo(new Date());
 				//判断用户是否有效
-				if(isOn>0){
+				if(compareTo>0){
 					String passwordbyDB = tUser.getPassword().toString();
 					//进行MD5加密
 					oldPassword = Tool.md5(oldPassword);
@@ -352,7 +359,7 @@ public class UserController {
 						newPassword = Tool.md5(newPassword);
 						newPassword=Tool.convertMD5(newPassword);
 						TUser tUserAccount = new TUser();
-						tUserAccount.setUserAccount(userAccount);
+						tUserAccount.setUserId(userId);
 						tUserAccount.setPassword(newPassword);
 						//修改密码
 						int a = tUserMapper.updatePassword(tUserAccount);
