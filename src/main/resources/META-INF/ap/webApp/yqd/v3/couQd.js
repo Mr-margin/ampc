@@ -274,42 +274,42 @@ function viewDetail(coupId) {
     if(coupId){
         for(var i=0;i<rowsAll.length;i++){
             if(rowsAll[i].esCouplingId==coupId){
-                checkRow=rowsAll[i];
+                checkRow=rowsAll[i];//获取选择的耦合清单的数据
             }
         }
     }
-
-    var param={};
+    var param={};//详细信息接口的参数
     param.userId=userId;
     param.method="lookByCouplingId";
     param.couplingId=checkRow.esCouplingId,
-        param.nationId=checkRow.esCouplingNationId,
-
-        param.nativesId=checkRow.esCouplingNativeId,
-        param.nativeTpId=checkRow.esCouplingNativetpId,
-        param.meicCityConfig='',
+    param.nationId=checkRow.esCouplingNationId,
+    param.nativesId=checkRow.esCouplingNativeId,
+    param.nativeTpId=checkRow.esCouplingNativetpId,
+    param.meicCityConfig='',
         ajaxPost('/NativeAndNation/doPost',param).success(function (res) {
             if(res.status==0){
                 var data=res.data.data;
-                $("#coupName").val(data.esCouplingName)
-                $("#coupName").attr('title',data.esCouplingName)
-                $("#coupYear").val(data.esCouplingYear)
-                $("#coupYear").attr('title',data.esCouplingYear)
-                $("#coupDes").val(data.esCouplingDesc)
-                $("#coupDate").val(moment(data.addTime).format("YYYY-MM-DD"))
-                $("#coupDate").attr('title',moment(data.addTime).format("YYYY-MM-DD"))
-                $("#coupLocal").val(data.nativeTpName)
-                $("#coupLocal").attr('title',data.nativeTpName)
-                $("#coupNation").val(data.nationName)
-                $("#coupNation").attr('title',data.nationName)
+                //获取耦合清单的详细信息并且渲染在页面上面
+                $("#coupName").val(data.esCouplingName);
+                $("#coupName").attr('title',data.esCouplingName);
+                $("#coupYear").val(data.esCouplingYear);
+                $("#coupYear").attr('title',data.esCouplingYear);
+                $("#coupDes").val(data.esCouplingDesc);
+                $("#coupDate").val(moment(data.addTime).format("YYYY-MM-DD"));
+                $("#coupDate").attr('title',moment(data.addTime).format("YYYY-MM-DD"));
+                $("#coupLocal").val(data.nativeTpName);
+                $("#coupLocal").attr('title',data.nativeTpName);
+                $("#coupNation").val(data.nationName);
+                $("#coupNation").attr('title',data.nationName);
             }else{
-                console.log("没有")
+                swal("参数错误",'',"erro")
             }
         })
 }
 
 //点击耦合清单
 function coupSetQd(coupId) {
+    //点击耦合配置按钮，获取所选的耦合配置信息
     var rowsAll=$("#couqd").datagrid("getRows");
     var checkRow;
     if(coupId){
@@ -320,6 +320,7 @@ function coupSetQd(coupId) {
         }
     }
     coupingQd=checkRow;
+    //隐藏耦合列表 此案是耦合过程的第一步
     $(".tableBox").hide();
     $(".coupSet").show();
     $(".cloudui .coupSetTitleList").children("li").removeClass("active");
@@ -354,6 +355,7 @@ function nextCoup(){//点击下一步按钮
             swal('请先选择全国清单', '', 'error');
         }
     }else if(conText=="第二步"){
+        //获取所有选择的本地清单
         localQd=$("#localTable").datagrid("getSelections");
         for(var i=0;i<localQd.length;i++){
             localQdId.push(JSON.stringify(localQd[i].esNativeId));
@@ -367,7 +369,9 @@ function nextCoup(){//点击下一步按钮
         globelCheckedQd=[];//点击下一步 进行第三步 所有数据清空
         allCity=[];
         globelCheckedCity=[];
+
         if(localQd!=''&&localQd!=null&&localQd!=undefined){
+            //耦合过程中各个按钮的样式
             $(".cloudui .coupSetTitleList").children("li").eq(1).removeClass("active");
             $(".cloudui .coupSetTitleList").children("li").eq(2).addClass("active");
             $("#prevCoup").show();//最后一步 上一步按钮
@@ -375,21 +379,21 @@ function nextCoup(){//点击下一步按钮
             $(".coupSetCon").eq(0).hide();//隐藏其他步骤
             $(".coupSetCon").eq(1).hide();
             $(".coupSetCon").eq(2).show();
-            //获得选择全国清单个本地清单的ID
+            //通过选择全国清单个本地清单的ID  获取耦合的城市和行业信息
             ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"findCityAndIndustryById","nationId":checkQgQd.esNationId,"nativesId":localQdId,"nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId}).success(function (res) {
                 if(res.status==0){
                    var cityNames=res.data.data.cityNames;
                    var industryNames=res.data.data.industryNames;
                     //城市数据添加到数组中
                     $.each(cityNames, function (id, cityNames) {
-                        cityData.push({
+                        cityData.push({                         //获取城市名称、编码
                             "cityId":id,
                             "cityName":cityNames,
                         });
                     });
                     //行业数组添加到数组中
                     $.each(industryNames, function (id, industryNames) {
-                        industryData.push({
+                        industryData.push({               //获取行业信息
                             "industryNamesId":id,
                             "industryNames":industryNames,
                         });
@@ -403,7 +407,7 @@ function nextCoup(){//点击下一步按钮
                     // $("#cityOption").append(cityList);
                     //打开城市选择窗口
                     $("#citySelect").window('open')
-                    cityTable(cityData,0)
+                    cityTable(cityData,0)//初始化耦合列表
                     // coupCity(cityData,industryData)
                 }else{
                     swal('参数错误', '', 'error');
@@ -421,6 +425,7 @@ function submitCity(){
     var row=$("#cityOptionTable").datagrid("getSelected");
     //选择的城市添加到数组
     if(row){
+        //获取选择的城市的信息
         checkCity.push({
             "cityId":row.cityId,
             "cityName":row.cityName
@@ -445,8 +450,8 @@ function submitCity(){
     //         $('#citySelect #cityOption span').eq(i).append("<i class='en-checkmark' style='color:#d8453d'></i>")
     //     }
     // }
-    cityTable(cityData,row)
-    coupCity(cityCurren,industryData)
+    cityTable(cityData,row);//根据点击过的城市 再次生成城市表单信息
+    coupCity(cityCurren,industryData)//根据选择的城市 行业生成耦合表格
     $("#citySelect").window("close");
 }
 
@@ -480,7 +485,7 @@ function prevCoup(){
 var mbArray
 function mbSelect() {
     ajaxPost("/NativeAndNation/doPost",{"userId":userId,"method":"find_couplingNativeTp"}).success(function (res) {
-        mbArray=[];
+        mbArray=[];//每次点击下一步 都对本地模板进行初始化
         mbArray=res.data.data.rows;
         $(".cloudui .coupSetCon .coupSetMb option").remove()
         if(res.status==0){
@@ -492,6 +497,7 @@ function mbSelect() {
             swal('参数故障', '', 'error')
         }
         var mbIndex=$(".cloudui .coupSetCon #coupSetMb").val();
+        //根据模板信息 生成本地清单信息
         window.setTimeout(localTable(mbIndex),100);
     })
 }
@@ -567,6 +573,7 @@ var checkQd=[];
 function coupCity(cityCurren,industryData) {
     $("#coupCityTable").empty()//每次选择新的城市生成的表格  必须先清空以前的数据
     var coupFirst="";
+    //根据城市信息 生成表单
     coupFirst+="<tr><td class='cityName' rowspan=\'"+industryData.length+"\'>"+cityCurren.cityName+"</td><td class='industryName'>"+industryData[0].industryNames+"</td><td class='industryQd'></td></tr>"
     if(industryData.length>1){
         for(var i=1;i<industryData.length;i++){
@@ -589,6 +596,7 @@ function coupCity(cityCurren,industryData) {
     for(var a=0;a<industryData.length;a++){//初始化 所有下拉菜单默认无清单
         $(".selectQd").eq(a).val('w_0')
     }
+    //根据选择的城市 如果当前城市未选择的 则初始化表单 如果当前选择的城市是已经选择过的 则根据以前选择的对应的行业 清单 对表单进行初始化
     for(var b=0;b<globelCheckedCity.length;b++){
         if(globelCheckedCity[b]==cityCurren.cityId){//判断点击城市是否是已经选过的城市
             //如果点击的是已经选择过得城市  把已经选择的结果整合在一起
@@ -602,6 +610,7 @@ function coupCity(cityCurren,industryData) {
 
                 }
             }
+            //根据前面多次的选择  对生成的表格清单进行数据初始化
             for(var q=0;q<industryData.length;q++){
                 $(".selectQd").eq(q).val('qg_1')
                 for(var l=0;l<checkQd.length;l++){
@@ -710,13 +719,14 @@ function saveAllId(){ //选好清单以后进行保存
 var allCheckRow=[]
 function cityTable(cityData,checkRow) {
     allCheckRow.push(checkRow)
+    //生成城市选择表格
     $("#cityOptionTable").datagrid({
         columns:[[
             {field:"ck",checkbox:true},
             {field:"cityName",title:"城市"},
             {field:"zt",title:"状态",formatter:function (value,row,index) {
                 for(var i=0;i<allCheckRow.length;i++){
-                    if(allCheckRow[i]==row){
+                    if(allCheckRow[i]==row){//根据选过的城市信息 初始化表格的状态栏
                         return "<span><i class='en-checkmark' style='color:red;'></i></span>";
                     }
                 }
@@ -749,9 +759,10 @@ function submitCheckQd() {
             swal('参数错误', '', 'error');
         }
     })
+    //点击提交以后页面回到初始化界面
     $("#citySelect").window("close")
     $(".tableBox").show();//点击提交以后页面返回首页
     $(".coupSet").hide();
     $(".navRight").show();
-    innitdata()
+    innitdata();
 }
