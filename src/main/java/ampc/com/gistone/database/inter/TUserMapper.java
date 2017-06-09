@@ -40,6 +40,27 @@ public interface TUserMapper {
 	 * @return
 	 */
 	Integer checkUserIsON(String account);
+	/**
+	 * @Description: 查找用户账户密码
+	 * @param userAccount
+	 * @return   
+	 * TUser  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月9日 上午9:36:21
+	 */
+	TUser getUserAccount(String userAccount);
+	/**
+	 * @Description: 修改密码
+	 * @param tUserAccount
+	 * @return   
+	 * int  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月9日 上午10:02:16
+	 */
+	int updatePassword(TUser tUserAccount);
+	
     int deleteByPrimaryKey(Long userId);
 
     int insert(TUser record);
@@ -51,4 +72,9 @@ public interface TUserMapper {
     int updateByPrimaryKeySelective(TUser record);
 
     int updateByPrimaryKey(TUser record);
+
+	
+
+
+	
 }
