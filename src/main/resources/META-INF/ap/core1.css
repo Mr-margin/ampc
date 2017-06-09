@@ -1413,19 +1413,19 @@ dl, dd {
   box-shadow: none;}
 /*滚动条*/
   /*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
-.verticalChar::-webkit-scrollbar,.charContent::-webkit-scrollbar,.cloudui .coupSetConThird .coupSetConThirdTable::-webkit-scrollbar{
+.verticalChar::-webkit-scrollbar,.charContent::-webkit-scrollbar,.cloudui .coupSetConThird .coupSetConThirdTable::-webkit-scrollbar,#citySelect #cityOption::-webkit-scrollbar{
   width: 10px;
   height: 16px;
   background-color: #f5f5f5;
 }
 /*定义滚动条的轨道，内阴影及圆角*/
-.verticalChar::-webkit-scrollbar-track.charContent::-webkit-scrollbar-track,.cloudui .coupSetConThird .coupSetConThirdTable::-webkit-scrollbar-track{
+.verticalChar::-webkit-scrollbar-track.charContent::-webkit-scrollbar-track,.cloudui .coupSetConThird .coupSetConThirdTable::-webkit-scrollbar-track,#citySelect #cityOption::-webkit-scrollbar-track{
   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
   border-radius: 10px;
   background-color: #f5f5f5;
 }
 /*定义滑块，内阴影及圆角*/
-.verticalChar::-webkit-scrollbar-thumb,.charContent::-webkit-scrollbar-thumb,.cloudui .coupSetConThird .coupSetConThirdTable::-webkit-scrollbar-thumb{
+.verticalChar::-webkit-scrollbar-thumb,.charContent::-webkit-scrollbar-thumb,.cloudui .coupSetConThird .coupSetConThirdTable::-webkit-scrollbar-thumb,#citySelect #cityOption::-webkit-scrollbar-thumb{
   /*width: 10px;*/
   height: 20px;
   border-radius: 10px;
@@ -1689,7 +1689,7 @@ dl, dd {
 #coupDetail #CoupDetailCon #coupQdDetail .no-padding{padding-left:0;padding-right: 0}
 #coupDetail #CoupDetailCon #coupQdDetail .form-control{padding: 3px 12px;}
 /*//批量选择*/
-#citySelect #cityOption{overflow: hidden;padding: 20px;}
+#citySelect #cityOption{overflow: auto;padding: 20px;max-height: 200px;}
 #citySelect #cityOption #industryDataTable{width: 100%;}
 #citySelect #cityOption span{float: left;margin-right:30px!important;margin-bottom: 10px;}
 #citySelect #cityOption span *{float: left;}
