@@ -55,7 +55,7 @@
         <div class="rwCon">
             <div class="qdContent">
                 <label for="coupQdName" class="qdTitle">名称：</label>
-                <input class="easyui-validatebox qdCon qdName" type="text" name="esNationName" data-options="required:true" id="coupQdName" style="color:#757575" />
+                <input class="easyui-validatebox qdCon qdName" type="text" name="esNationName" maxlength="20" data-options="required:true" id="coupQdName" style="color:#757575" />
             </div>
             <div class="qdContent">
                 <label for="coupQdYear" class="qdTitle">年份：</label>
@@ -72,7 +72,7 @@
     </form>
     <div class="dlogFooter" >
         <button type="button" class="btn btn-primary createQdBtn" onclick="submitCoup()">提交</button>
-        <button type="button" class="btn btn-default claearQdBtn" onclick="">清除</button>
+        <button type="button" class="btn btn-default claearQdBtn" onclick="clearCoup()" >清除</button>
     </div>
 </div>
 <!--编辑耦合清单-->
@@ -81,7 +81,7 @@
         <div class="rwCon">
             <div class="qdContent">
                 <label for="coupEditQdName" class="qdTitle">名称：</label>
-                <input class="easyui-validatebox qdCon" type="text" name="esNationName" data-options="required:true" id="coupEditQdName" />
+                <input class="easyui-validatebox qdCon" type="text" name="esNationName" maxlength="20" data-options="required:true" id="coupEditQdName" />
             </div>
             <div class="qdContent">
                 <label for="coupEditQdYear" class="qdTitle">年份：</label>
@@ -98,7 +98,7 @@
     </form>
     <div class="dlogFooter" >
         <button type="button" class="btn btn-primary createQdBtn" onclick="submitEditCoup()">提交</button>
-        <button type="button" class="btn btn-default claearQdBtn" onclick="" style="display: none;">清除</button>
+        <button type="button" class="btn btn-default claearQdBtn" style="display: none;">清除</button>
     </div>
 </div>
 <!--城市选择-->

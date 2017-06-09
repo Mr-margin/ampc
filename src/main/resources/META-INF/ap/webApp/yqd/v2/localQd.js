@@ -152,19 +152,24 @@ function innitdata(active){
         param.nativeTpRemark = $("#creatTemp #esNationMark").val();//清单备注
         //判断新建清单的年份是否在1990-2100之间
         var myYear=$("#creatTemp #esNationYear").val()
-        if(myYear>=1990&&myYear<2100){    //判断年份
-            $("#formQd").submit(
-                ajaxPost('/NativeAndNation/doPost',param).success(function(res){
-                    if(res.status==0){
-                        innitdata("find_natives");
-                    }else{
-                        swal('参数错误', '', 'error');
-                    }
-                })
-            )
-            $("#creatTemp").window('close');
+        var myName=$("#creatTemp #esNationName").val()
+        if(myName.length>0 && myName.length<=20){
+            if(myYear>=1990&&myYear<=2100){    //判断年份
+                $("#formQd").submit(
+                    ajaxPost('/NativeAndNation/doPost',param).success(function(res){
+                        if(res.status==0){
+                            innitdata("find_natives");
+                        }else{
+                            swal('参数错误', '', 'error');
+                        }
+                    })
+                )
+                $("#creatTemp").window('close');
+            }else{
+                swal('清单年份获取错误', '', 'error');
+            }
         }else{
-            swal('清单年份获取错误', '', 'error');
+            swal('请输入符合要求的名称', '', 'error');
         }
     }else if(active=="updata_nativeTp"){
         var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
@@ -180,39 +185,46 @@ function innitdata(active){
         param.nativeTpId  = row.esNativeTpId;
         param.nativeTpRemark = tempMark;
         var myYear=$("#esLocalEditYear").val()
-        if(myYear>=1990&&myYear<2100){//判断年份是否符合要求 符合提交编辑后数据
-            $("#formQd").submit(
-                ajaxPost('/NativeAndNation/doPost',param).success(function(res){
-                    if(res.status==0){
-                        $("#localqd").treegrid('update',{//更新清单列表编辑后的数据
-                            id: rowIndex,
-                            row: {
-                                esNativeTpName: param.nativeTpName,
-                                esNativeTpYear:tempYear,
-                                esComment:tempMark
-                            }
+        var myName=$("#editTemp #esLocalEditName").val()
+        if(myName.length>0 && myName.length<=20){
+            if(myYear>=1990&&myYear<=2100){//判断年份是否符合要求 符合提交编辑后数据
+                $("#formQd").submit(
+                    ajaxPost('/NativeAndNation/doPost',param).success(function(res){
+                        if(res.status==0){
+                            $("#localqd").treegrid('update',{//更新清单列表编辑后的数据
+                                id: rowIndex,
+                                row: {
+                                    esNativeTpName: param.nativeTpName,
+                                    esNativeTpYear:tempYear,
+                                    esComment:tempMark
+                                }
 
-                        })
-                        innitdata("find_natives")
-                    }else{
-                        swal('参数错误', '', 'error');
-                    }
-                })
-            )
-            $("#editTemp").window('close');
+                            })
+                            innitdata("find_natives")
+                        }else{
+                            swal('参数错误', '', 'error');
+                        }
+                    })
+                )
+                $("#editTemp").window('close');
+            }else{
+                swal('年份错误', '', 'error');
+            }
         }else{
-            swal('年份错误', '', 'error');
+            swal('请输入符合要求的名称', '', 'error');
         }
+
     }else if(active=="delete_nativeTp"){
         var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
         swal({
             title: "您确定要删除吗？",
-            text: "您确定要删除这条数据？",
+            // text: "您确定要删除这条数据？",
             type: "warning",
             animation:"slide-from-top",
             showCancelButton: true,
             closeOnConfirm: true,
-            confirmButtonText: "是的，我要删除",
+            confirmButtonText: "确定",
+            cancelButtonText:"取消"
         }, function() {
             ajaxPost('/NativeAndNation/doPost',{"nativeTpId":row.esNativeTpId,"method":"delete_nativeTp"}).success(function(res){
                 if(res.status==0){
@@ -230,15 +242,24 @@ function innitdata(active){
         var qdYear=$("#esLocalQdYear").val();
         var qdRemark=$("#esLocalQdMark").val();
         if(rowDiv){
-            ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark,"nativeTpId":rowDiv.esNativeTpId,"nativeTpName":rowDiv.esNativeTpName}).success(function(res){
-                if(res.status==0){
-                    innitdata("find_natives");
-                    $("#localqd").treegrid("expand",creatQd);
-                    $("#editTempQd").window('close');
+            if(qdName.length>0 && qdName.length<=20){
+                if(myYear>=1990&&myYear<=2100){
+                    ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark,"nativeTpId":rowDiv.esNativeTpId,"nativeTpName":rowDiv.esNativeTpName}).success(function(res){
+                        if(res.status==0){
+                            innitdata("find_natives");
+                            $("#localqd").treegrid("expand",creatQd);
+                            $("#editTempQd").window('close');
+                        }else{
+                            swal('参数错误', '', 'error');
+                        }
+                    })
                 }else{
-                    swal('参数错误', '', 'error');
+                    swal('年份错误', '', 'error');
                 }
-            })
+            }else{
+                swal('请输入符合要求的年份', '', 'error');
+            }
+
         }
     }
 }
@@ -260,13 +281,21 @@ $("#creatTemp").window({
 })
 function creatTemp(){
     $("#creatTemp #formQd").form("clear");
-    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称");
-    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份");
+    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称（必填）").css({"color":"#757575"});
+    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份").css({"color":"#757575"});
     $("#creatTemp").window("open");
 }
 //清空弹窗输入框内容
 function claearTemp() {
     $("#creatTemp #formQd").form("clear");
+    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称（必填）").css({"color":"#757575"});
+    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份").css({"color":"#757575"});
+}
+//清空新建清单弹窗输入框内容
+function claearTempQd() {
+    $("#creatTemp #formTempQd").form("clear");
+    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称（必填）").css({"color":"#757575"});
+    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份").css({"color":"#757575"});
 }
 // 编辑模板模态框
 //创建模板窗口
@@ -315,8 +344,8 @@ function adgQdBtn(rowId){
     var e = e || window.event;
     e.stopPropagation();//防止出现下拉
     $("#formTempQd").form("clear");
-    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称");
-    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份");
+    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称（必填）").css({"color":"#757575"});
+    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份").css({"color":"#757575"});
     $("#editTempQd").window("open");
 }
 //防止树形表单子节点点击出现下拉效果
@@ -365,7 +394,7 @@ function checkData(rowId) {
 }
 // 创建 输入框获得焦点
 $(".cloudui .rwCon .qdContent .qdName").focus(function () {//名称获取焦点
-    if($(this).val()=="请输入长度不超过20的名称"){
+    if($(this).val()=="请输入长度不超过20的名称（必填）"){
         $(this).val("");
         $(this).css({"color":"black"})
     }
@@ -380,7 +409,7 @@ $(".cloudui .rwCon .qdContent .qdYear").focus(function () {//年份获取焦点
 //创建 输入框失去焦点
 $(".cloudui .rwCon .qdContent .qdName").blur(function () {//名称失去焦点
     if($(this).val()==""){
-        $(this).val("请输入长度不超过20的名称")
+        $(this).val("请输入长度不超过20的名称（必填）")
         $(this).css({"color":"#757575"})
     }
 })
