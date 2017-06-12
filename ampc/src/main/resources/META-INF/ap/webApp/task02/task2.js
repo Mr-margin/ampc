@@ -1031,7 +1031,7 @@ function delArea(e) {
                             }
                         }
                     }
-
+                    app2();
                     //$('.areaTitle_con').eq(areaIndex).remove();
                     swal({
                         title: '已删除!',
