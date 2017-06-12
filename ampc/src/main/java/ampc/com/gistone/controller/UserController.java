@@ -111,7 +111,7 @@ public class UserController {
 						//返回结果
 						return AmpcResult.ok(userMap);
 					}else{
-						throw new SQLException("用户和密码不匹配!");
+						throw new SQLException("密码不正确!");
 					}
 				}else{
 					throw new SQLException("该用户已失效！");
