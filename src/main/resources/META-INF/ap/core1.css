@@ -334,7 +334,7 @@ label#lblSelect::after
   /*设置文本超过单元格的宽度做溢行处理*/
   overflow: hidden;text-overflow:ellipsis;white-space: nowrap;
 }
-.cloudui .treeTable .datagrid-view2  .datagrid-body .datagrid-cell span{display: none}
+/*.cloudui .treeTable .datagrid-view2  .datagrid-body .datagrid-cell span{display: none}*/
 .cloudui .treeTable .datagrid-view2  .datagrid-body .datagrid-cell span:last-child{
   /*width: 120px;*/
   width: 100%;
@@ -945,7 +945,7 @@ dl, dd {
 .cloudui.window .window-body .rwCon .rwdlgTop .rwdlgTopTitle {
   float: left;
   line-height: 40px;
-  font-family: "黑体";
+  /*font-family: "黑体";*/
   font-size: 14px;
   font-weight: bold;
   color: #666;
@@ -1507,7 +1507,7 @@ dl, dd {
 .cloudui #creatQd .rwCon .qdTitle,.cloudui #editQd .rwCon .qdTitle,.cloudui #creatTemp .rwCon .qdTitle,.cloudui #editTemp .rwCon .qdTitle,.cloudui #editTempQd .rwCon .qdTitle{
   float: left;
   line-height: 30px;
-  font-family: 黑体;
+  /*font-family: 黑体;*/
   font-size: 14px;
   font-weight: bold;
   color: rgb(102, 102, 102);
@@ -1540,7 +1540,6 @@ dl, dd {
 .cloudui .rwCon .qdMark textarea{
   text-align: left;
 }
-
 /*清单耦合设计*/
 .cloudui #creatCoupQd .rwCon,.cloudui #editCoupQd .rwCon{overflow: hidden!important; }
 .cloudui #creatCoupQd .qdContent,.cloudui #editCoupQd .qdContent{
@@ -1553,7 +1552,7 @@ dl, dd {
 .cloudui #creatCoupQd .rwCon .qdTitle,.cloudui #editCoupQd .rwCon .qdTitle{
   float: left;
   line-height: 30px;
-  font-family: 黑体;
+  /*font-family: 黑体;*/
   font-size: 14px;
   font-weight: bold;
   color: rgb(102, 102, 102);
