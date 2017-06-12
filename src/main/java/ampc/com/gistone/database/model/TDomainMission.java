@@ -24,8 +24,69 @@ public class TDomainMission {
     private String version;
 
     private Object createStatus;
+    
+    private String disposeStatus;
+    
+    private String employStatus;
+    
+    private String validStatus;
+    
+    private String domainResultType;
+    
+    private String domainResultDesc;
+    
+    private Date domainResultTime;
+    
+    public Date getDomainResultTime() {
+		return domainResultTime;
+	}
 
-    public Long getDomainId() {
+	public void setDomainResultTime(Date domainResultTime) {
+		this.domainResultTime = domainResultTime;
+	}
+
+	public String getDisposeStatus() {
+		return disposeStatus;
+	}
+
+	public void setDisposeStatus(String disposeStatus) {
+		this.disposeStatus = disposeStatus;
+	}
+
+	public String getEmployStatus() {
+		return employStatus;
+	}
+
+	public void setEmployStatus(String employStatus) {
+		this.employStatus = employStatus;
+	}
+
+	public String getValidStatus() {
+		return validStatus;
+	}
+
+	public void setValidStatus(String validStatus) {
+		this.validStatus = validStatus;
+	}
+
+	public String getDomainResultType() {
+		return domainResultType;
+	}
+
+	public void setDomainResultType(String domainResultType) {
+		this.domainResultType = domainResultType;
+	}
+
+	public String getDomainResultDesc() {
+		return domainResultDesc;
+	}
+
+	public void setDomainResultDesc(String domainResultDesc) {
+		this.domainResultDesc = domainResultDesc;
+	}
+
+
+	public Long getDomainId() {
         return domainId;
     }
 
