@@ -147,29 +147,35 @@ function submitCoup(){
     param.couplingYear = $("#creatCoupQd #coupQdYear").val(); //清单年份
     param.couplingDesc = $("#creatCoupQd #coupQdMark").val();//清单备注
     //判断新建清单的年份是否在1990-2100之间
-    var myYear=$("#creatCoupQd #coupQdYear").val()
-    if(myYear>=1990&&myYear<=2100){    //判断年份
-        $("#formCoup").submit(
-            ajaxPost('/NativeAndNation/doPost',param).success(function(res){
-                if(res.status==0){
-                    $("#couqd").datagrid('insertRow',{ //在表格中插入新建清单
-                        index: 0,	// 索引从0开始
-                        row: {
-                            esCouplingName: param.couplingName, //新建清单的名字
-                            esCouplingYear: param.couplingYear,//新建清单的年份
-                            esCouplingDesc:param.couplingDesc //新建清单的描述
-                        }
-                    })
-                    innitdata();
-                }else{
-                    swal('参数错误', '', 'error');
-                }
-            })
-        )
-        $("#creatCoupQd").window('close');
+    var myYear=$("#creatCoupQd #coupQdYear").val();
+    var myName=$("#creatCoupQd #coupQdName").val()
+    if(myName.length>0 && myName.length<=20){
+        if(myYear>=1990&&myYear<=2100){    //判断年份
+            $("#formCoup").submit(
+                ajaxPost('/NativeAndNation/doPost',param).success(function(res){
+                    if(res.status==0){
+                        $("#couqd").datagrid('insertRow',{ //在表格中插入新建清单
+                            index: 0,	// 索引从0开始
+                            row: {
+                                esCouplingName: param.couplingName, //新建清单的名字
+                                esCouplingYear: param.couplingYear,//新建清单的年份
+                                esCouplingDesc:param.couplingDesc //新建清单的描述
+                            }
+                        })
+                        innitdata();
+                    }else{
+                        swal('参数错误', '', 'error');
+                    }
+                })
+            )
+            $("#creatCoupQd").window('close');
+        }else{
+            swal('清单年份获取错误', '', 'error');
+        }
     }else{
-        swal('清单年份获取错误', '', 'error');
+        swal('请输入符合要求的名称', '', 'error');
     }
+
 }
 //打开编辑清单窗口
 $("#editCoupQd").window({
@@ -214,27 +220,32 @@ function submitEditCoup() {
     param.couplingYear = qdYear;
     param.method="update_coupling";
     var myYear=$("#editCoupQd #coupEditQdYear").val()
-    if(myYear>=1990&&myYear<=2100){//判断年份是否符合要求 符合提交编辑后数据
-        $("#formQd").submit(
-            ajaxPost('/NativeAndNation/doPost',param).success(function(res){
-                if(res.status==0){
-                    $("#couqd").datagrid('updateRow',{//更新清单列表编辑后的数据
-                        index: rowIndex,
-                        row: {
-                            esCouplingName:qdName,
-                            esCouplingYear:qdYear,
-                            esCouplingDesc:qdMark
-                        }
-                    })
-                    innitdata()
-                }else{
-                    swal('参数错误', '', 'error');
-                }
-            })
-        )
-        $("#editCoupQd").window('close');
+    var myName=$("#editCoupQd #coupEditQdYear").val()
+    if(myName.length>0 && myName.length<=20){
+        if(myYear>=1990&&myYear<=2100){//判断年份是否符合要求 符合提交编辑后数据
+            $("#formQd").submit(
+                ajaxPost('/NativeAndNation/doPost',param).success(function(res){
+                    if(res.status==0){
+                        $("#couqd").datagrid('updateRow',{//更新清单列表编辑后的数据
+                            index: rowIndex,
+                            row: {
+                                esCouplingName:qdName,
+                                esCouplingYear:qdYear,
+                                esCouplingDesc:qdMark
+                            }
+                        })
+                        innitdata()
+                    }else{
+                        swal('参数错误', '', 'error');
+                    }
+                })
+            )
+            $("#editCoupQd").window('close');
+        }else{
+            swal('年份错误', '', 'error');
+        }
     }else{
-        swal('年份错误', '', 'error');
+        swal('请输入符合要求的名称', '', 'error');
     }
 }
 //删除选中的耦合清单
