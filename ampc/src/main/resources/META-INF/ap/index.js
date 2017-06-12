@@ -56,72 +56,72 @@ function loadIngFun(){
     return;
   }
 
-  ajaxPost("/ampc/user/login",{
-    userAccount:name,
-    passWord:pas
-  }).success(function(res){
-    if(res.status == 0){
+//   ajaxPost("/ampc/user/login",{
+//     userAccount:name,
+//     passWord:pas
+//   }).success(function(res){
+//     if(res.status == 0){
+//
+//       $('#name').val('');
+//       $('#passwordIndex').val('');
+//       $('#verify').val('');
+//       window.location.href="home.html"
+//     }else{
+// //      console.log(res.msg);
+//       swal({
+//         title: res.msg+'!',
+//         type: 'error',
+//         timer: 1000,
+//         showConfirmButton: false
+//       });
+//     }
+//   });
 
-      $('#name').val('');
-      $('#passwordIndex').val('');
-      $('#verify').val('');
-      window.location.href="home.html"
-    }else{
-//      console.log(res.msg);
-      swal({
-        title: res.msg+'!',
-        type: 'error',
-        timer: 1000,
-        showConfirmButton: false
-      });
-    }
+
+  var verify = $('#verify').val();
+  if(!verify){
+   console.log('请填写验证码');
+   swal({
+     title: '请填写验证码!',
+     type: 'error',
+     timer: 1000,
+     showConfirmButton: false
+   });
+   return;
+  }
+  //window.location.href="home.html";
+  ajaxPost("/ampc/user/checkyzm",{yzm:verify}).success(function(res){
+   if(res.data == 1){
+     ajaxPost("/ampc/user/login",{
+   	userAccount:name,
+       passWord:pas
+     }).success(function(res){
+       if(res.status == 0){
+
+         $('#name').val('');
+         $('#passwordIndex').val('');
+         $('#verify').val('');
+         window.location.href="home.html"
+       }else{
+         console.log(res.msg);
+         swal({
+           title: res.msg+'!',
+           type: 'error',
+           timer: 1000,
+           showConfirmButton: false
+         });
+       }
+     });
+   }else{
+     console.log('验证码错误');
+     swal({
+       title: res.msg+'!',
+       type: 'error',
+       timer: 1000,
+       showConfirmButton: false
+     });
+   }
   });
-
-
-  //var verify = $('#verify').val();
-  //if(!verify){
-  //  console.log('请填写验证码');
-  //  swal({
-  //    title: '请填写验证码!',
-  //    type: 'error',
-  //    timer: 1000,
-  //    showConfirmButton: false
-  //  });
-  //  return;
-  //}
-  ////window.location.href="home.html";
-  //ajaxPost("/user/checkyzm",{yzm:verify}).success(function(res){
-  //  if(res.data == 1){
-  //    ajaxPost("/user/login",{
-  //  	userAccount:name,
-  //      passWord:pas
-  //    }).success(function(res){
-  //      if(res.data == 1){
-  //
-  //        $('#name').val('');
-  //        $('#passwordIndex').val('');
-  //        $('#verify').val('');
-  //        window.location.href="home.html"
-  //      }else{
-  //        console.log(res.msg);
-  //        swal({
-  //          title: res.msg+'!',
-  //          type: 'error',
-  //          timer: 1000,
-  //          showConfirmButton: false
-  //        });
-  //      }
-  //    });
-  //  }else{
-  //    console.log('验证码错误');
-  //    swal({
-  //      title: res.msg+'!',
-  //      type: 'error',
-  //      timer: 1000,
-  //      showConfirmButton: false
-  //    });
-  //  }
-  //});
 }
 
 
