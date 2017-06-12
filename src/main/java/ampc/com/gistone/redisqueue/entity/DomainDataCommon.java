@@ -39,7 +39,7 @@ public class DomainDataCommon {
 	//y向分辨率（单位m）
 	private String dy;
 	 @JsonProperty("Coord_Name")
-	private String coord_Name;
+	private String Coord_Names;
 	 
 	 
 	public String getMap_proj() {
@@ -96,11 +96,17 @@ public class DomainDataCommon {
 	public void setDy(String dy) {
 		this.dy = dy;
 	}
-	public String getCoord_Name() {
-		return coord_Name;
+	/**
+	 * @return the coord_Names
+	 */
+	public String getCoord_Names() {
+		return Coord_Names;
 	}
-	public void setCoord_Name(String coord_Name) {
-		this.coord_Name = coord_Name;
+	/**
+	 * @param coord_Names the coord_Names to set
+	 */
+	public void setCoord_Names(String coord_Names) {
+		Coord_Names = coord_Names;
 	}
 
 	
