@@ -228,3 +228,16 @@ $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
         $(this).css({"color":"#757575"})
     }
 })
+
+//校验名字是否冲突
+$("#creatQd #esNationName").blur(
+
+    function () {
+        ajaxPost('/NativeAndNation/doPost',{
+            "userId":userId,
+            "method":'verifyByNationName',
+            "nationName":$("#creatQd #esNationName").val()
+        }).success(function (res) {
+        })
+    }
+)
