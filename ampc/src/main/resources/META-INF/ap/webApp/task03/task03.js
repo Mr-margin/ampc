@@ -291,7 +291,7 @@ function metTable_hj_info(pa_name) {
     });
 
     var columnsw = [[]];
-    columnsw[0].push({field: 's1', title: '', align: 'center', checkbox: true});
+    // columnsw[0].push({field: 's1', title: '', align: 'center', checkbox: true});
     columnsw[0].push({field: 'sectorName', title: '行业', align: 'center'});
     columnsw[0].push({field: 'measureName', title: '措施', align: 'center'});
     columnsw[0].push({field: 'implementationScope', title: '点源实际范围', align: 'center'});
@@ -329,7 +329,7 @@ function metTable_hj_info(pa_name) {
             selectOnCheck:true,
             clickToSelect: true,// 点击选中行
             pagination: false, // 在表格底部显示分页工具栏
-            singleSelect: true,//设置True 将禁止多选
+            // singleSelect: true,//设置True 将禁止多选
             striped: false, // 使表格带有条纹
             silent: true, // 刷新事件必须设置
             contentType: "application/json",
@@ -385,22 +385,43 @@ function metTable_hj_info(pa_name) {
 
 
             },
+            onClickRow:function (index,row) {
+                if($(this).datagrid('getSelected')){
+                    checkeded = row.planMeasureId;
+                    $("#hz_de").show();
+                    $("#hz_up").show();
+                }else{
+                    checkeded = '-1';
+                    $('#metTable_hj').datagrid('clearChecked');
+                    $("#hz_de").hide();
+                    $("#hz_up").hide();
+                }
+                // 用于作为单选行的操作，当点击一行后，其他行取消选中，在datagrid中需要把singleSelect取消
+                var rowNum=$(this).datagrid('getRows').length;
+                for(var i=0;i<rowNum;i++){
+                    if(i!=index){
+                        $(this).datagrid('uncheckRow',i)
+                    }
+                }
+
+
+            },
             onLoadSuccess: function (data) {
                 if (data.rows.length > 0) {
                     $("#jianpaijisuan").show();
                 }
             },
             onCheck: function (index,row) {
-                if (row.planMeasureId != checkeded) {//如果被选中
-                    checkeded = row.planMeasureId;
-                    $("#hz_de").show();
-                    $("#hz_up").show();
-                } else {
-                    checkeded = '-1';
-                    $('#metTable_hj').datagrid('clearChecked');
-                    $("#hz_de").hide();
-                    $("#hz_up").hide();
-                }
+                // if (row.planMeasureId != checkeded) {//如果被选中
+                //     checkeded = row.planMeasureId;
+                //     $("#hz_de").show();
+                //     $("#hz_up").show();
+                // } else {
+                //     checkeded = '-1';
+                //     $('#metTable_hj').datagrid('clearChecked');
+                //     $("#hz_de").hide();
+                //     $("#hz_up").hide();
+                // }
             },
         });
       

@@ -423,16 +423,16 @@ function open_cs(sectorsName, measureame, mid, planMeasureId) {
             //}
 
             //子措施列表的表头
-            columns.push({
-                field: 'state', title: '', align: 'center', checkbox: true, formatter: function (value, row, index) {
-                    if (index === 0) {
-                        return {
-                            disabled: true
-                        }
-                    }
-                    return value;
-                }
-            });
+            // columns.push({
+            //     field: 'state', title: '', align: 'center', checkbox: true, formatter: function (value, row, index) {
+            //         if (index === 0) {
+            //             return {
+            //                 disabled: true
+            //             }
+            //         }
+            //         return value;
+            //     }
+            // });
             columns.push({field: 'f1', title: '措施', align: 'center'});
             columns.push({field: 'f2', title: '点源实施范围', align: 'center'});
             $.each(res.data.measureColumn, function (i, vol) {
@@ -531,7 +531,7 @@ function show_zicuoshi_table(columns, b_data) {
         detailView: true,//显示详细页面模式
         pagination: false, // 在表格底部显示分页工具栏
         clickToSelect: true,//设置true 将在点击行时，自动选择rediobox 和 checkbox
-        singleSelect: true,//设置True 将禁止多选
+        // singleSelect: true,//设置True 将禁止多选
         fit:true,
         showGroup: true,
         scrollbarSize: 0,
@@ -549,13 +549,20 @@ function show_zicuoshi_table(columns, b_data) {
                 return row.tiaojian;
             }
         },
-        onClickRow: function (row, $element) {},
-        onCheck: function (index,row) {
+        onClickRow: function (index,row) {
             $("#zicuoshi_tools_de").hide();
             $("#zicuoshi_tools_up").hide();
             $("#zicuoshi_tools_see").hide();
             $('#returnSxTable').show();
-            if ((row.f1+index) != checkeded) {//如果被选中
+            var rowNum=$(this).datagrid('getRows').length;
+            for(var i=0;i<rowNum;i++){
+                if(i!=index){
+                    $(this).datagrid('uncheckRow',i)
+                }
+            }
+
+
+            if($(this).datagrid('getSelected')){
                 checkeded = (row.f1+index);
                 if (row.f1 != "剩余点源" && row.f1 != "面源" && row.f1 != "汇总") {
                     $("#zicuoshi_tools_de").show();
@@ -566,7 +573,7 @@ function show_zicuoshi_table(columns, b_data) {
                     $('#returnSxTable').hide();
                 }
                 zicuoshi_up_index = index
-            } else {
+            }else {
                 checkeded = '-1';
                 zicuoshi_up_index = '';
                 $('#show_zicuoshi_table').datagrid('clearChecked');
@@ -574,7 +581,35 @@ function show_zicuoshi_table(columns, b_data) {
                 $("#zicuoshi_tools_up").hide();
                 $("#zicuoshi_tools_see").hide();
             }
+            // 用于作为单选行的操作，当点击一行后，其他行取消选中，在datagrid中需要把singleSelect取消
+
+
         },
+        // onCheck: function (index,row) {
+        //     $("#zicuoshi_tools_de").hide();
+        //     $("#zicuoshi_tools_up").hide();
+        //     $("#zicuoshi_tools_see").hide();
+        //     $('#returnSxTable').show();
+        //     if ((row.f1+index) != checkeded) {//如果被选中
+        //         checkeded = (row.f1+index);
+        //         if (row.f1 != "剩余点源" && row.f1 != "面源" && row.f1 != "汇总") {
+        //             $("#zicuoshi_tools_de").show();
+        //             $("#zicuoshi_tools_up").hide();
+        //             $("#zicuoshi_tools_see").show();
+        //         }else if(row.f1 != "剩余点源" && row.f1 != "汇总"){
+        //             $("#zicuoshi_tools_up").show();
+        //             $('#returnSxTable').hide();
+        //         }
+        //         zicuoshi_up_index = index
+        //     } else {
+        //         checkeded = '-1';
+        //         zicuoshi_up_index = '';
+        //         $('#show_zicuoshi_table').datagrid('clearChecked');
+        //         $("#zicuoshi_tools_de").hide();
+        //         $("#zicuoshi_tools_up").hide();
+        //         $("#zicuoshi_tools_see").hide();
+        //     }
+        // },
         onUncheck: function (index,row) {
             $("#zicuoshi_tools_de").hide();
             $("#zicuoshi_tools_up").hide();
