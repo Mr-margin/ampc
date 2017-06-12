@@ -1661,7 +1661,13 @@ function createEditArea() {
     var checkUrl = '/area/check_areaname';//新增区域时检查区域名称是否重复的
     var areaName = $('#areaName').val();//存储修改的区域名称
     if (!areaName) { //判断区域名称是否为空
-        alert('kong')
+        // alert('kong')
+        swal({
+            title: '名称为空！！',
+            type: 'error',
+            timer: 1000,
+            showConfirmButton: false
+        });
         return;
     }
 
@@ -1706,7 +1712,13 @@ function createEditArea() {
     obj.countyCodes = JSON.stringify(crArr);
 
     if (pArr.length == 0 && ctArr.length == 0 && crArr.length == 0) {  //如果一个区域没有选择任何地区则不允许创建或修改
-        alert("请选择范围");
+        // alert("请选择范围");
+        swal({
+            title: '请选择范围！！',
+            type: 'error',
+            timer: 1000,
+            showConfirmButton: false
+        });
         return;
     }
 
