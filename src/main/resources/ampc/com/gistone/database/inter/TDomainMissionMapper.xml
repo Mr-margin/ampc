@@ -13,6 +13,12 @@
     <result column="DOMAIN_DOC" property="domainDoc" jdbcType="OTHER" />
     <result column="VERSION" property="version" jdbcType="VARCHAR" />
     <result column="CREATE_STATUS" property="createStatus" jdbcType="OTHER" />
+    <result column="DISPOSE_STATUS" property="disposeStatus" jdbcType="VARCHAR" />
+    <result column="EMPLOY_STATUS" property="employStatus" jdbcType="VARCHAR" />
+    <result column="VALID_STATUS" property="validStatus" jdbcType="VARCHAR" />
+    <result column="DOMAIN_RESULT_TYPE" property="domainResultType" jdbcType="VARCHAR" />
+    <result column="DOMAIN_RESULT_DESC" property="domainResultDesc" jdbcType="VARCHAR" />
+    <result column="DOMAIN_RESULT_TIME" property="domainResultTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.database.model.TDomainMissionWithBLOBs" extends="BaseResultMap" >
     <result column="DOMAIN_CODE" property="domainCode" jdbcType="CLOB" />
@@ -22,7 +28,8 @@
   </resultMap>
   <sql id="Base_Column_List" >
     DOMAIN_ID, DOMAIN_NAME, ADD_TIME, UPDATE_TIME, USER_ID, ID_EFFECTIVE, DELETE_TIME, 
-    DOMAIN_RANGE, DOMAIN_DOC, VERSION, CREATE_STATUS
+    DOMAIN_RANGE, DOMAIN_DOC, VERSION, CREATE_STATUS,DISPOSE_STATUS,EMPLOY_STATUS,VALID_STATUS,
+    DOMAIN_RESULT_TYPE,DOMAIN_RESULT_DESC,DOMAIN_RESULT_TIME
   </sql>
   <sql id="Blob_Column_List" >
     DOMAIN_CODE, DOMAIN_INFO, COMMON, CMAP
@@ -43,12 +50,15 @@
     insert into T_DOMAIN_MISSION (DOMAIN_ID, DOMAIN_NAME, ADD_TIME, 
       UPDATE_TIME, USER_ID, ID_EFFECTIVE, 
       DELETE_TIME, DOMAIN_RANGE, DOMAIN_DOC, 
-      VERSION, CREATE_STATUS, DOMAIN_CODE, 
+      VERSION, CREATE_STATUS,DISPOSE_STATUS,EMPLOY_STATUS,VALID_STATUS,
+    DOMAIN_RESULT_TYPE,DOMAIN_RESULT_DESC,DOMAIN_RESULT_TIME, DOMAIN_CODE, 
       DOMAIN_INFO, COMMON, CMAP)
     values (#{domainId,jdbcType=DECIMAL}, #{domainName,jdbcType=OTHER}, #{addTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=DECIMAL}, #{idEffective,jdbcType=VARCHAR}, 
       #{deleteTime,jdbcType=TIMESTAMP}, #{domainRange,jdbcType=VARCHAR}, #{domainDoc,jdbcType=OTHER}, 
-      #{version,jdbcType=VARCHAR}, #{createStatus,jdbcType=OTHER}, #{domainCode,jdbcType=CLOB}, 
+      #{version,jdbcType=VARCHAR}, #{createStatus,jdbcType=OTHER}, #{disposeStatus,jdbcType=VARCHAR},
+      #{employStatus,jdbcType=VARCHAR},#{validStatus,jdbcType=VARCHAR},#{domainResultType,jdbcType=VARCHAR},
+      #{domainResultDesc,jdbcType=VARCHAR},#{domainResultTime,jdbcType=TIMESTAMP},#{domainCode,jdbcType=CLOB}, 
       #{domainInfo,jdbcType=CLOB}, #{common,jdbcType=CLOB}, #{cmap,jdbcType=CLOB})
   </insert>
   <insert id="insertSelective" parameterType="ampc.com.gistone.database.model.TDomainMissionWithBLOBs" >
@@ -86,6 +96,24 @@
       </if>
       <if test="createStatus != null" >
         CREATE_STATUS,
+      </if>
+       <if test="disposeStatus != null" >
+        DISPOSE_STATUS,
+      </if>
+       <if test="employStatus != null" >
+        EMPLOY_STATUS,
+      </if>
+       <if test="validStatus != null" >
+        VALID_STATUS,
+      </if>
+       <if test="domainResultType != null" >
+        DOMAIN_RESULT_TYPE,
+      </if>
+       <if test="domainResultDesc != null" >
+        DOMAIN_RESULT_DESC,
+      </if>
+       <if test="domainResultTime != null" >
+        DOMAIN_RESULT_TIME,
       </if>
       <if test="domainCode != null" >
         DOMAIN_CODE,
@@ -134,6 +162,24 @@
       <if test="createStatus != null" >
         #{createStatus,jdbcType=OTHER},
       </if>
+       <if test="disposeStatus != null" >
+        #{disposeStatus,jdbcType=VARCHAR},
+      </if>
+       <if test="employStatus != null" >
+         #{employStatus,jdbcType=VARCHAR},
+      </if>
+       <if test="validStatus != null" >
+        #{validStatus,jdbcType=VARCHAR},
+      </if>
+       <if test="domainResultType != null" >
+         #{domainResultType,jdbcType=VARCHAR},
+      </if>
+       <if test="domainResultDesc != null" >
+        #{domainResultDesc,jdbcType=VARCHAR},
+      </if>
+       <if test="domainResultTime != null" >
+        #{domainResultTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="domainCode != null" >
         #{domainCode,jdbcType=CLOB},
       </if>
@@ -181,6 +227,24 @@
       <if test="createStatus != null" >
         CREATE_STATUS = #{createStatus,jdbcType=OTHER},
       </if>
+        <if test="disposeStatus != null" >
+        DISPOSE_STATUS =#{disposeStatus,jdbcType=VARCHAR},
+      </if>
+       <if test="employStatus != null" >
+        EMPLOY_STATUS =#{employStatus,jdbcType=VARCHAR},
+      </if>
+       <if test="validStatus != null" >
+        VALID_STATUS =#{validStatus,jdbcType=VARCHAR},
+      </if>
+       <if test="domainResultType != null" >
+        DOMAIN_RESULT_TYPE =#{domainResultType,jdbcType=VARCHAR},
+      </if>
+       <if test="domainResultDesc != null" >
+        DOMAIN_RESULT_DESC =#{domainResultDesc,jdbcType=VARCHAR},
+      </if>
+       <if test="domainResultTime != null" >
+        DOMAIN_RESULT_TIME =#{domainResultTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="domainCode != null" >
         DOMAIN_CODE = #{domainCode,jdbcType=CLOB},
       </if>
@@ -208,6 +272,13 @@
       DOMAIN_DOC = #{domainDoc,jdbcType=OTHER},
       VERSION = #{version,jdbcType=VARCHAR},
       CREATE_STATUS = #{createStatus,jdbcType=OTHER},
+      CREATE_STATUS = #{createStatus,jdbcType=OTHER},
+      DISPOSE_STATUS =#{disposeStatus,jdbcType=VARCHAR},
+      EMPLOY_STATUS =#{employStatus,jdbcType=VARCHAR},
+      VALID_STATUS =#{validStatus,jdbcType=VARCHAR},
+      DOMAIN_RESULT_TYPE =#{domainResultType,jdbcType=VARCHAR},
+      DOMAIN_RESULT_DESC =#{domainResultDesc,jdbcType=VARCHAR},
+      DOMAIN_RESULT_TIME =#{domainResultTime,jdbcType=TIMESTAMP},
       DOMAIN_CODE = #{domainCode,jdbcType=CLOB},
       DOMAIN_INFO = #{domainInfo,jdbcType=CLOB},
       COMMON = #{common,jdbcType=CLOB},
@@ -225,7 +296,13 @@
       DOMAIN_RANGE = #{domainRange,jdbcType=VARCHAR},
       DOMAIN_DOC = #{domainDoc,jdbcType=OTHER},
       VERSION = #{version,jdbcType=VARCHAR},
-      CREATE_STATUS = #{createStatus,jdbcType=OTHER}
+      CREATE_STATUS = #{createStatus,jdbcType=OTHER},
+       DISPOSE_STATUS =#{disposeStatus,jdbcType=VARCHAR},
+      EMPLOY_STATUS =#{employStatus,jdbcType=VARCHAR},
+      VALID_STATUS =#{validStatus,jdbcType=VARCHAR},
+      DOMAIN_RESULT_TYPE =#{domainResultType,jdbcType=VARCHAR},
+      DOMAIN_RESULT_DESC =#{domainResultDesc,jdbcType=VARCHAR},
+      DOMAIN_RESULT_TIME =#{domainResultTime,jdbcType=TIMESTAMP}
     where DOMAIN_ID = #{domainId,jdbcType=DECIMAL}
   </update>
   <select id="selectAll" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long">
