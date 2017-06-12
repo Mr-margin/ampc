@@ -111,16 +111,16 @@ public class UserController {
 						//返回结果
 						return AmpcResult.ok(userMap);
 					}else{
-						throw new SQLException("UserController  用户和密码不匹配!");
+						throw new SQLException("用户和密码不匹配!");
 					}
 				}else{
-					throw new SQLException("UserController 该用户已失效！");
+					throw new SQLException("该用户已失效！");
 				}
 			}else{
-				throw new SQLException("UserController 用户名不存在");
+				throw new SQLException("用户名不存在");
 			}
 		}catch(SQLException e){
-			LogUtil.getLogger().error(e.getMessage(),e);
+			LogUtil.getLogger().error("UserController"+e.getMessage(),e);
 			return AmpcResult.build(1000,e.getMessage());
 		} catch (Exception e) {
 			LogUtil.getLogger().error("UserController 用户登录异常！",e);
