@@ -1504,7 +1504,7 @@ function updataCodeList() {
                         break;
                     }
                 }
-                $('#adcodeListBox .adcodeListBox-city').append('<p>' + zTreeData[j].name + '</p><div class="province-city city' + zTreeData[j].code + '"></div>');
+                $('#adcodeListBox .adcodeListBox-city').append('<p>' + zTreeData[j].name + '所选城市：</p><div class="province-city city' + zTreeData[j].code + '"></div>');
                 for (var add in showCode[i][ad]) {
                     $('#adcodeListBox .city' + zTreeData[j].code).append('<span class="alb-cn">' + showCode[i][ad][add] + '</span>')
                 }
@@ -1514,7 +1514,7 @@ function updataCodeList() {
                         break;
                     }
                 }
-                $('#adcodeListBox .adcodeListBox-county').append('<p>' + zTreeData[j].name + '</p><div class="city-county county' + zTreeData[j].code + '"></div>');
+                $('#adcodeListBox .adcodeListBox-county').append('<p>' + zTreeData[j].name + '所选区县：</p><div class="city-county county' + zTreeData[j].code + '"></div>');
                 for (var add in showCode[i][ad]) {
                     $('#adcodeListBox .county' + zTreeData[j].code).append('<span class="alb-cn">' + showCode[i][ad][add] + '</span>')
                 }
