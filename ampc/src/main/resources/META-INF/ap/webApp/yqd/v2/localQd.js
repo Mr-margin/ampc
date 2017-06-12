@@ -247,7 +247,6 @@ function innitdata(active){
                     ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark,"nativeTpId":rowDiv.esNativeTpId,"nativeTpName":rowDiv.esNativeTpName}).success(function(res){
                         if(res.status==0){
                             innitdata("find_natives");
-                            $("#localqd").treegrid("expand",creatQd);
                             $("#editTempQd").window('close');
                         }else{
                             swal('参数错误', '', 'error');
@@ -319,6 +318,7 @@ function editTemp() {
         document.getElementById("esLocalEditName").value=editTempName; //编辑窗口打开后 名称输入框显示所选数据的名称
         document.getElementById("esLocalEditYear").value=editTempYear;//编辑窗口打开后 年份输入框显示所选数据的名称
         document.getElementById("esLocalEditMark").value=editMark;//编辑窗口打开后 备注输入框显示所选数据的名称
+        $("#editTemp input").css({"color":"black"})
         $("#editTemp").window('open');
     }else{
         swal('请先选择编辑清单', '', 'error');
