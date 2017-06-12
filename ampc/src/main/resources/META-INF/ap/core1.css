@@ -360,6 +360,9 @@ label#lblSelect::after
 .cloudui .datagrid-body td {
   background: white;
 }
+.cloudui .datagrid-body .datagrid-row-selected>td{
+	background:#cce6ff
+}
 .cloudui .datagrid-pager{
   background: transparent;
 }
@@ -1181,7 +1184,7 @@ dl, dd {
 #rwgltablebox .rwdetail{
   color: #DAEEF5;
 }
-#rwgltablebox .haserror,#rwgltablebox table>tbody>tr.datagrid-row-over.haserror{
+#rwgltablebox .haserror,#rwgltablebox table>tbody>tr.datagrid-row-over.haserror,#rwgltablebox table>tbody>tr.datagrid-row-selected.haserror{
 	background:#FFFFCC
 }
 #rwgltablebox .datagrid-row-clicked .rwdetail{

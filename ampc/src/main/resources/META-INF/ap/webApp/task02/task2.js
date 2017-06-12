@@ -112,6 +112,7 @@ var zTreeSetting = {
     $('#timePlan').window($.extend({}, defaultwindowoption, {
         title: '时段编辑',
         top: 10,
+        width:900,
         onOpen: function () {
             areaIndex = selectedTimes.index;
             timeIndex = selectedTimes.indexNum;
@@ -2224,10 +2225,7 @@ function initCopyPlanTable() {
         loadFilter: function (res) {
             return res.data
         },
-        columns: [[{
-            checkbox: true,
-            field: 'cb'
-        }, {
+        columns: [[ {
             field: 'planReuseName',
             title: '预案名称',
             width: 150
@@ -2249,7 +2247,7 @@ function initCopyPlanTable() {
             width: 120,
             formatter:copyPlanAddTime
         }]],
-        onCheck:function (index,row) {
+        onSelect:function (index,row) {
             selectCopyPlan = row;
 
         }
