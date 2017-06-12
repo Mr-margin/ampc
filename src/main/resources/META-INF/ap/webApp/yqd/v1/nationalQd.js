@@ -23,18 +23,18 @@ function innitdata(){
         loadFilter:function (data) { //过滤数据，转换成符合格式的数据
             return data.data;
         },
-        selectOnCheck:true, //true，单击复选框将永远选择行 false，选择行将不选中复选框。
-        singleSelect: true,//设置True 将禁止多选
-        checkOnSelect:true,//true，当用户点击行的时候该复选框就会被选中或取消选中。false，当用户仅在点击该复选框的时候才会呗选中或取消。
-        fitColumns:true,//真正的自动展开/收缩列的大小，以适应网格的宽度，防止水平滚动。
-        clickToSelect: true,// 点击选中行
+        // selectOnCheck:true, //true，单击复选框将永远选择行 false，选择行将不选中复选框。
+        // singleSelect: true,//设置True 将禁止多选
+        // checkOnSelect:true,//true，当用户点击行的时候该复选框就会被选中或取消选中。false，当用户仅在点击该复选框的时候才会呗选中或取消。
+        // fitColumns:true,//真正的自动展开/收缩列的大小，以适应网格的宽度，防止水平滚动。
+        // clickToSelect: true,// 点击选中行
         pagination: true, // 在表格底部显示分页工具栏
         pageSize:20,  //页面里面显示数据的行数
         pageNumber: 1, // 页数
         pageList: [20, 30,40], //页面可以进行选择的数据行数
         height:'100%',
         striped: false, // 使表格带有条纹
-        silent: true, // 刷新事件必须设置
+        // silent: true, // 刷新事件必须设置
         contentType: "application/json",
         queryParams:function (params) { //ajax 传递的参数  分页
             var data = {};
