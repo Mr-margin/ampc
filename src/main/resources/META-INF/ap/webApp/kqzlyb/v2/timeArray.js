@@ -115,12 +115,13 @@ initialize();
 /*初始化函数*/
 function initialize() {
     dps_City = requestRegion();//请求省市区code
-    dps_Date = requestDate();//请求可选日期范围
+//    dps_Date = requestDate();//请求可选日期范围
 
     //当时间和code全部完成时，开始组织查询条件，进行第一次查询
-    $.when(dps_Date, dps_City).then(function () {
+    $.when(dps_City).then(function () {
     	window.setTimeout(function () {
-            updata();
+//            updata();
+            requestDate();
         },50);
     })
 }
@@ -459,7 +460,8 @@ function requestDate() {
 	        			
 	        		}
 	        	}
-	        	
+	        	//更新数据
+	        	updata();
         	}else{
         		swal(res.data.msgContent, '', 'error');
         	}
@@ -933,7 +935,7 @@ function initEcharts() {
 				    	axisLabel:{
 				    		interval:71
 				    	},
-				    	data: xdataName						//修改数据排序
+				    	data: xdataName						
 				    });
 			}else if(xAarr.length>=11){
 			    		 option.xAxis = [];
@@ -941,7 +943,7 @@ function initEcharts() {
 					    	axisLabel:{
 					    		interval:47
 					    	},
-					    	data: xdataName						//修改数据排序
+					    	data: xdataName						
 					    });
 			}else if(xAarr.length>5){
 				 option.xAxis = [];
@@ -949,7 +951,7 @@ function initEcharts() {
 				    	axisLabel:{
 				    		interval:23
 				    	},
-				    	data: xdataName						//修改数据排序
+				    	data: xdataName						
 				    });
 			}else if(xAarr.length<=5){
 				 option.xAxis = [];
@@ -957,7 +959,7 @@ function initEcharts() {
 				    	axisLabel:{
 				    		interval:11
 				    	},
-				    	data: xdataName						//修改数据排序
+				    	data: xdataName						
 				    });
 			}
         }
