@@ -25,7 +25,7 @@ public class DomainDataMcip {
 	private int ctm_vert;
 	// 同CTM一致的垂直分层    "1.000, 0.995, 0.988, 0.980, 0.970, 0.956, 0.938, 0.893, 0.839, 0.777, 0.702, 0.582, 0.400, 0.200, 0.000"
 	@JsonProperty("CTMLAYS")
-	private String ctmlays;
+	private String CTMLAYS;
 	
 	
 	public int getBtrim() {
@@ -40,11 +40,17 @@ public class DomainDataMcip {
 	public void setCtm_vert(int ctm_vert) {
 		this.ctm_vert = ctm_vert;
 	}
-	public String getCtmlays() {
-		return ctmlays;
+	/**
+	 * @return the cTMLAYS
+	 */
+	public String getCTMLAYS() {
+		return CTMLAYS;
 	}
-	public void setCtmlays(String ctmlays) {
-		this.ctmlays = ctmlays;
+	/**
+	 * @param cTMLAYS the cTMLAYS to set
+	 */
+	public void setCTMLAYS(String cTMLAYS) {
+		CTMLAYS = cTMLAYS;
 	}
 	
 	
