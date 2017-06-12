@@ -1204,6 +1204,37 @@ function changeJcDate(t) {
         }
     }
 }
+/*基础情景改变的时候，基础日期随之改变*/
+function changeJcqj1(t) {
+  var index = $(t).val();
+  var selectJcqj = basisArr[index];
+  var dateArr = setSelectDate(selectJcqj.scenarinoStartDate, moment(selectRW.missionEndDate).subtract(2, 'd').format('YYYY-MM-DD'));
+  dateArr = dateArr.reverse();
+  $('#jcdate1').empty();
+  for (var i = 0; i < dateArr.length; i++) {
+    $('#jcdate1').append($('<option value="' + dateArr[i] + '">' + dateArr[i] + '</option>'))
+  }
+  var startD = moment(moment(dateArr[0])).add(1, 'd').format('YYYY-MM-DD');
+  $('#hStartDate').empty().append($('<option value="' + startD + '">' + startD + '</option>'));
+
+  var endDateArr = setSelectDate($('#hStartDate').val(), moment(selectRW.missionEndDate).format('YYYY-MM-DD'));
+  $('#hEndDate').empty();
+  for (var i = 0; i < endDateArr.length; i++) {
+    $('#hEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
+  }
+}
+function changeJcDate1(t) {
+	  var date = $(t).val();
+	  var startD = moment(moment(date)).add(1, 'd').format('YYYY-MM-DD');
+	  $('#hStartDate').empty().append($('<option value="' + startD + '">' + startD + '</option>'));
+
+	  var endDateArr = setSelectDate($('#hStartDate').val(), moment(selectRW.missionEndDate).format('YYYY-MM-DD'));
+	  $('#hEndDate').empty();
+	  for (var i = 0; i < endDateArr.length; i++) {
+	    $('#hEndDate').append($('<option value="' + endDateArr[i] + '">' + endDateArr[i] + '</option>'))
+	  }
+	}
+
 /*新改情景创建*/
 function createQj(type) {
     if (!subBtn)return;
