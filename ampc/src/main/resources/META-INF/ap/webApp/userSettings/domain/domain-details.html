@@ -1,0 +1,197 @@
+<div class="cloudui">
+    <div class="yqdTable easyui-layout">
+        <div data-options="region:'center',border:false">
+				<div class="panel panel-default box-body col-5 no-padding" domain_id="" max_dom="">
+					<div class="panel-heading" role="tab" id="headingOne">
+						<h4 class="panel-title">
+							<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+								点击展开
+							</a>
+						</h4> 
+						<h4 class="del_domain" domain_id="">
+							<a class="btn-red" type="button" onclick="postSubmit()">保存</a>
+						</h4>
+					</div>
+					<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+					<div class="col-12 d01">
+						<h4 class="col-12 Dtitle box">投影</h4> 
+						<ul class="col-6">
+							<li>
+								<p class="col-7 no-padding">第一标准纬度</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control stand_lat1" placeholder="" aria-describedby="basic-addon1"></p>
+								</div>
+							</li> 
+							<li>
+								<p class="col-7 no-padding">标准经度</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control stand_lon" placeholder="" aria-describedby="basic-addon1"></p>
+								</div>
+							</li>
+							<li> 
+								<p class="col-7 no-padding">中心经度</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class=" form-control ref_lon" placeholder="" aria-describedby="basic-addon1"></p>
+								</div>
+							</li>
+						</ul>
+						<ul class="col-6">
+							<li>
+								<p class="col-7 no-padding">第二标准纬度</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control stand_lat2" placeholder="" aria-describedby="basic-addon1"></p>
+								</div>
+							</li>
+							<li>
+								<p class="col-7 no-padding">中心纬度</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class=" form-control ref_lat" placeholder="" aria-describedby="basic-addon1"></p>
+								</div>
+							</li> 
+						</ul>
+					</div>
+					<div class="col-12 d02">
+						<h4 class="col-12 Dtitle box">第一层<a class="pull-right hade"><i class="fa fa-times" aria-hidden="true"></i></a></h4>
+						<ul class="col-6">
+							<li>
+								<p class="col-7 no-padding">x,y向分辨率(m)</p>
+								<div class="input-group col-5 no-padding">
+									<select class="form-control domain_select">
+										<option value='0'>请选择</option>
+									 	<option value ="2">27000</option>
+									 	<option value ="3">36000</option>
+									</select>
+								</div>
+							</li>
+							<li>
+								<p class="col-7 no-padding">x方向起始位置</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control i_parent_start1" readonly="true"></p>
+								</div>
+							</li>
+							<li>
+								<p class="col-7 no-padding">x方向网格边数</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control e_we1">
+								</div>
+							</li>
+						</ul>
+						<ul class="col-6">
+							<li>
+								<p class="col-7 no-padding">x,y向裁剪网格数</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control btrim" placeholder="" aria-describedby="basic-addon1"></p>
+								</div>
+							</li>
+							<li>
+								<p class="col-7 no-padding">y方向起始位置</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control j_parent_start1" readonly="true"></p>
+								</div>
+							</li>
+							<li>
+								<p class="col-7 no-padding">y方向网格边数</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control e_sn1" placeholder="" aria-describedby="basic-addon1"></p>
+								</div>
+							</li>
+						</ul>
+						<div class="col-12 text-center">
+							<button class="btn-blue add_two2" type="button">增加下一层</button>
+						</div>
+					</div>
+					<div class="col-12 d03">
+						<h4 class="col-12 Dtitle box">第二层<a class="pull-right hade2"><i class="fa fa-times" aria-hidden="true"></i></a></h4>
+						<ul class="col-6">
+							<li>
+								<p class="col-7 no-padding">x,y向分辨率</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control dx1" readonly="true"></p>
+								</div>
+							</li>
+							<li>
+								<p class="col-7 no-padding">x方向起始位置</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control i_parent_start2"></p>
+								</div>
+							</li>
+							<li>
+								<p class="col-7 no-padding">x方向网格边数</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control e_we2" placeholder="" aria-describedby="basic-addon1"></p>
+								</div>
+							</li>
+						</ul>
+						<ul class="col-6">
+							<li>
+								<p class="col-7 no-padding">x,y向裁剪网格数</p>
+								<div class="input-group col-5  no-padding">
+									<p type="text" class="form-control btrims" placeholder="" aria-describedby="basic-addon1"></p>
+								</div>
+							</li>
+							<li>
+								<p class="col-7 no-padding">y方向起始位置</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control j_parent_start2"></p>
+								</div>
+							</li>
+							<li>
+								<p class="col-7 no-padding">y方向网格边数</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control e_sn2" placeholder="" aria-describedby="basic-addon1"></p>
+								</div>
+							</li>
+						</ul>
+						<div class="col-12 text-center">
+							<button class="btn-blue add_two3" type="button">增加下一层</button>
+						</div>
+					</div>
+					<div class="col-12 d04">
+						<h4 class="col-12 Dtitle box">第三层<a class="pull-right hade3"><i class="fa fa-times" aria-hidden="true"></i></a></h4>
+						<ul class="col-6">
+							<li>
+								<p class="col-7 no-padding">x,y向分辨率</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control dx2" readonly="true"></p>
+								</div>
+							</li>
+							<li>
+								<p class="col-7 no-padding">x方向起始位置</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control i_parent_start3"></p>
+								</div>
+							</li>
+							<li>
+								<p class="col-7 no-padding">x方向网格边数</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control e_we3" placeholder="" aria-describedby="basic-addon1"></p>
+								</div>
+							</li>
+						</ul>
+						<ul class="col-6">
+							<li>
+								<p class="col-7 no-padding">x,y向裁剪网格数</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control btrims" placeholder="" aria-describedby="basic-addon1"></p>
+								</div>
+							</li>
+							<li>
+								<p class="col-7 no-padding">y方向起始位置</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control j_parent_start3"></p>
+								</div>
+							</li>
+							<li>
+								<p class="col-7 no-padding">y方向网格边数</p>
+								<div class="input-group col-5 no-padding">
+									<p type="text" class="form-control  e_sn3" placeholder="" aria-describedby="basic-addon1"></p>
+								</div>
+							</li>
+						</ul>
+					</div>
+					</div>
+				</div>
+            <!-- <table id="qgqd" class="esyui-datagrid"></table> -->
+        </div> 
+    </div> 
+</div> 
