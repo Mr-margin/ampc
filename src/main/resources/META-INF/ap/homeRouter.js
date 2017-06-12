@@ -462,3 +462,8 @@ function resivePassword(){
 		})
 	}
 }
+/*打开用户设置的页面*/
+function openUserSettings(){
+	sessionStorage.setItem('userId',userId);
+	window.open('userSettings.html');
+}
