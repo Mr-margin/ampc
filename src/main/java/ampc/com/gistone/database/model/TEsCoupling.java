@@ -13,7 +13,7 @@ public class TEsCoupling {
 
     private Long esCouplingNationId;
 
-    private String esCouplingNativeId;
+    private Object esCouplingNativeId;
 
     private Long esCoupingRelationId;
 
@@ -79,12 +79,12 @@ public class TEsCoupling {
         this.esCouplingNationId = esCouplingNationId;
     }
 
-    public String getEsCouplingNativeId() {
+    public Object getEsCouplingNativeId() {
         return esCouplingNativeId;
     }
 
-    public void setEsCouplingNativeId(String esCouplingNativeId) {
-        this.esCouplingNativeId = esCouplingNativeId == null ? null : esCouplingNativeId.trim();
+    public void setEsCouplingNativeId(Object esCouplingNativeId) {
+        this.esCouplingNativeId = esCouplingNativeId;
     }
 
     public Long getEsCoupingRelationId() {
