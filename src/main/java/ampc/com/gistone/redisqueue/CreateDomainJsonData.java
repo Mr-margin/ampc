@@ -60,7 +60,7 @@ public class CreateDomainJsonData {
 	 * @author yanglei
 	 * @date 2017年5月22日 下午4:33:46
 	 */
-	public void readyDomainData(Long userId,Long domainId){
+	public boolean readyDomainData(Long userId,Long domainId){
 		//消息头部的参数
 		QueueData queueData = getHeadParameter("domain.create");
 		//消息体参数
@@ -77,6 +77,7 @@ public class CreateDomainJsonData {
 		}else {
 			LogUtil.getLogger().info("");
 		}
+		return senddoamindata;
 	}
 	
 	
