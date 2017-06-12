@@ -222,7 +222,7 @@
 	"AMPC"."T_ES_NATION" T  WHERE USER_ID=#{userId,jdbcType=DECIMAL}
   </select>
   <!-- 校验全国清单名称 -->
-  <select id="verifyNationName"  parameterType="ampc.com.gistone.database.model.TEsNation" >
+  <select id="verifyNationName"  parameterType="ampc.com.gistone.database.model.TEsNation" resultType="int">
     SELECT
 	"COUNT"(*)
 	FROM

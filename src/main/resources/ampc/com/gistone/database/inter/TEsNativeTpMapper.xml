@@ -316,7 +316,7 @@
      AND ES_COMMENT = #{nativeTpRemark,jdbcType=VARCHAR}
   </select>
   <!-- 校验清单模板名称 -->
-  <select id="verifyNativeTpName"  parameterType="ampc.com.gistone.database.model.TEsNativeTp" >
+  <select id="verifyNativeTpName"  parameterType="ampc.com.gistone.database.model.TEsNativeTp" resultType="int">
     SELECT
 	"COUNT"(*)
 	FROM

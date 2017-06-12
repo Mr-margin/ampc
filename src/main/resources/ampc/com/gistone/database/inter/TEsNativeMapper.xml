@@ -258,7 +258,7 @@
 	ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL}
   </select>
   <!-- 校验本地清单名称 -->
-  <select id="verifyNativeName"  parameterType="ampc.com.gistone.database.model.TEsNative" >
+  <select id="verifyNativeName"  parameterType="ampc.com.gistone.database.model.TEsNative" resultType="int">
     SELECT
 	"COUNT"(*)
 	FROM
