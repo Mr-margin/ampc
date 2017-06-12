@@ -162,12 +162,12 @@ var msg = {
     });
 
     var columnsRW = [[]];
-    columnsRW[0].push({field: 'missionName', title: '任务名称', formatter: missionNameFormatter, width: 200});
+    columnsRW[0].push({field: 'missionName', title: '任务名称', formatter: missionNameFormatter, width: 250});
     columnsRW[0].push({field: 'missionId', title: 'ID', formatter: missionIdFormatter, width: 80});
     columnsRW[0].push({field: 'domainName', title: '模拟范围', formatter: domainNameFormatter, width: 200});
     columnsRW[0].push({field: 'esCouplingName', title: '清单', width: 200, formatter: esCouplingNameFormatter});
     columnsRW[0].push({field: 'missionAddTime', title: '创建时间', width: 250, formatter: missionAddTimeFormatter});
-    columnsRW[0].push({field: 'missionStartDate', title: '开始日期', width: 250, formatter: missionDateFormatter});
+    columnsRW[0].push({field: 'missionStartDate', title: '开始日期', width: 200, formatter: missionDateFormatter});
     columnsRW[0].push({field: 'missionStatus', title: '类型', width: 90, formatter: missionStatusFormatter});
     columnsRW[0].push({field: 'missionEndDate', title: '操作', width: 80, formatter: missionmanage});
     //页面布局的渲染
