@@ -70,8 +70,8 @@ public class UserController {
 			Object param=data.get("userAccount");
 			//进行参数判断
 			if(!RegUtil.CheckParameter(param, "String", regEx, false)){
-				LogUtil.getLogger().error("UserController  账号为空或出现非法字符!");
-				return AmpcResult.build(1003, "账号为空或出现非法字符!");
+				LogUtil.getLogger().error("UserController  该用户不存在!");
+				return AmpcResult.build(1003, "该用户不存在!");
 			}
 			//用户账号
 			String userAccount=param.toString();
