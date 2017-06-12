@@ -269,6 +269,7 @@ var zTreeSetting = {
                 $('#areaName').val('').removeAttr('data-id');
                 showCode = [{}, {}, {}];
 //                    $('.adcodeList.mt20').empty();
+                	revise();
                     app.gLyr.clear();
             } else {
                 findUrl = '/area/get_areaList';
@@ -1792,7 +1793,9 @@ function setShowCode(data) {
     showCode[0] = {};
     showCode[1] = {};
     showCode[2] = {};
-
+    if(proNum==0&&cityNum==0&&countyNum==0){
+    	revise();
+    }
     if (proNum == 0) {
         showCode[0] = {};
     } else {
