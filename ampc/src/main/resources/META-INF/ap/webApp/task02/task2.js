@@ -2211,7 +2211,6 @@ function initCopyPlanTable() {
         url: '/ampc/plan/copy_plan_list',
         dataType: "json",
         fit:true,
-        singleSelect: true,
         contentType: "application/json", // 请求远程数据的内容类型。
         queryParams: function (m) {
             var json = {
@@ -2247,10 +2246,16 @@ function initCopyPlanTable() {
             width: 120,
             formatter:copyPlanAddTime
         }]],
-        onSelect:function (index,row) {
-            selectCopyPlan = row;
-
+        onClickRow:function (index,row) {
+            var rowNum=$(this).datagrid('getRows').length;
+            for(var i=0;i<rowNum;i++){
+            	if(i!=index){
+            		$(this).datagrid('uncheckRow',i)
+            	}
+            }
+            selectCopyPlan = $(this).datagrid('getChecked')[0];
         }
+        
     });
 
 }
