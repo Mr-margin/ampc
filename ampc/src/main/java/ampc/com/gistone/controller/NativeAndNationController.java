@@ -1865,7 +1865,7 @@ public class NativeAndNationController {
 				//添加所需参数更新耦合配置信息
 				TEsCoupling tEsCoupling = new TEsCoupling();
 				tEsCoupling.setEsCouplingId(couplingId);
-				tEsCoupling.setEsCouplingCity(CouplingCity);
+				tEsCoupling.setEsCouplingCity(CouplingCity.substring(1, CouplingCity.length()-1));
 				tEsCoupling.setEsCouplingNativetpId(nativeTpId);
 				tEsCoupling.setEsCouplingNationId(nationId);
 				//该字段类型需修改为String类型

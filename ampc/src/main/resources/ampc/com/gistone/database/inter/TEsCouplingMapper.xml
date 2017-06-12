@@ -422,7 +422,7 @@
     where ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL}
   </select>
   <!-- 校验耦合清单名称 -->
-  <select id="verifyCouplingName"  parameterType="ampc.com.gistone.database.model.TEsCoupling" >
+  <select id="verifyCouplingName"  parameterType="ampc.com.gistone.database.model.TEsCoupling" resultType="int">
     SELECT
 	"COUNT"(*)
 	FROM
