@@ -9,7 +9,6 @@
 							</a>
 						</h4> 
 						<h4 class="del_domain" domain_id="">
-							<a class="btn-blue" role="button" onclick="deleteDomain();">删除</a>
 							<a class="btn-red" type="button" onclick="postSubmit()">保存</a>
 						</h4>
 					</div>
@@ -52,7 +51,7 @@
 						</ul>
 					</div>
 					<div class="col-12 d02">
-						<h4 class="col-12 Dtitle box">一、D01<a class="pull-right hade"><i class="fa fa-times" aria-hidden="true"></i></a></h4>
+						<h4 class="col-12 Dtitle box">第一层<a class="pull-right hade"><i class="fa fa-times" aria-hidden="true"></i></a></h4>
 						<ul class="col-6">
 							<li>
 								<p class="col-7 no-padding">x,y向分辨率(m)</p>
@@ -102,7 +101,7 @@
 						</div>
 					</div>
 					<div class="col-12 d03">
-						<h4 class="col-12 Dtitle box">二、D02<a class="pull-right hade2"><i class="fa fa-times" aria-hidden="true"></i></a></h4>
+						<h4 class="col-12 Dtitle box">第二层<a class="pull-right hade2"><i class="fa fa-times" aria-hidden="true"></i></a></h4>
 						<ul class="col-6">
 							<li>
 								<p class="col-7 no-padding">x,y向分辨率</p>
@@ -148,7 +147,7 @@
 						</div>
 					</div>
 					<div class="col-12 d04">
-						<h4 class="col-12 Dtitle box">三、D03<a class="pull-right hade3"><i class="fa fa-times" aria-hidden="true"></i></a></h4>
+						<h4 class="col-12 Dtitle box">第三层<a class="pull-right hade3"><i class="fa fa-times" aria-hidden="true"></i></a></h4>
 						<ul class="col-6">
 							<li>
 								<p class="col-7 no-padding">x,y向分辨率</p>
@@ -196,34 +195,3 @@
         </div> 
     </div> 
 </div> 
-<div id="creat_Domain">
-    <div class="box_name">
-    	<h4>名称：</h4>
-    	<input type="text" class="domainName">
-    </div>
-    <div class="box_doc">
-    	<h4>备注：</h4>
-    	<textarea rows="3" class="easyui-validatebox domainDoc" type="text"></textarea>
-    </div>
-    <button type="button" class="btn-blue col-2" onclick="domainPost()">提交</button>
-    <button type="button" class="btn-red col-2" onclick="domainClear()">清除</button>
-</div>
-<div id="update_Domain_name">
-    <div class="box_name">
-    	<h4>名称：</h4>
-    	<input type="text" class="u_domainName" domain_id="">
-    </div>
-    <div class="box_doc">
-    	<h4>备注：</h4>
-    	<textarea rows="3" class="easyui-validatebox u_domainDoc" type="text"></textarea>
-    </div>
-    <button type="button" class="btn-blue col-2" onclick="namePost()">提交</button>
-    <button type="button" class="btn-red col-2" onclick="domainClear()">清除</button>
-</div>
-
-<div id="update_Domain">
-    <table class="col-12">
-    </table>
-    <button type="button" class="btn-blue col-2" onclick="updateChoose()">确定</button>
-    <button type="button" class="btn-red col-2">取消</button>
-</div>
