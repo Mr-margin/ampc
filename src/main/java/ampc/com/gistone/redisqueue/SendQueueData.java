@@ -226,7 +226,7 @@ public class SendQueueData {
 	}
 	
 	/**
-	 * @Description: TODO
+	 * @Description: 发送消息到消息队列
 	 * @param json   
 	 * void  
 	 * @throws
@@ -302,9 +302,12 @@ public class SendQueueData {
 	 * @date 2017年5月22日 下午4:31:54
 	 */
 	public boolean sendDomainDatajson(QueueData queueData) {
-		String domainDatajson = null;
+		JSONObject jsonObject = JSONObject.fromObject(queueData);
+		String domainDatajson = jsonObject.toString();
+		LogUtil.getLogger().info("sendDomainDatajson:发送domainjson:"+domainDatajson );
 		sendmessagelogfile(domainDatajson);
-		return false;
+		boolean sendData = sendQueueData.sendData(domainDatajson);
+		return sendData;
 	}
 
 
