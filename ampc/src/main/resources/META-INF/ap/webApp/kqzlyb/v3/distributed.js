@@ -146,6 +146,19 @@ $(".cloudui .verticalCon .searchT .upDown").hover(function(){
 })
 
 
+//修改easyui 下拉菜单按钮样式
+$(".cloudui .distributed_map #dropdownMenu1 .l-btn-left span").removeClass("m-btn-downarrow")
+$(".cloudui .distributed_map #dropdownMenu1").hover(function(){
+  $(this).removeClass("m-btn-plain-active");
+},function(){
+  $(this).removeClass("m-btn-plain-active")
+})
+
+
+
+
+
+
 /**
  * 页面事件定义
  */
@@ -886,17 +899,3 @@ function closeImg() {
     app.map.graphics.clear();
     $('.showImg').css('display','none');
 }
-
-//下拉菜单
-$("#dropMenuDown").hide();
-$("#dropMenu_1").hover(function () {
-    $("#dropMenuDown").show();
-},function () {
-    $("#dropMenuDown").hide();
-})
-$("#dropMenu_1 div").hover(function () {
-    $("#dropMenu_1 div").css({"background-color":"#f3f3f3"});
-    $(this).css({"background-color":"white"})
-},function () {
-    $("#dropMenu_1 div").css({"background-color":"#f3f3f3"});
-})
