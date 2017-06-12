@@ -122,7 +122,7 @@
                         <button type="button" class="btn btn-primary" data-dismiss="modal"
                                 onclick="delTimes()"><i class="fa fa-check" aria-hidden="true"></i> 确定删除
                         </button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> 取消
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#timePlan').window('close')"><i class="fa fa-times" aria-hidden="true"></i> 取消
                         </button>
                     </div>
                 </div>
@@ -173,7 +173,7 @@
                         <button type="button" class="btn btn-primary" data-dismiss="modal"
                                 onclick="sunEditTimeDate()"><i class="fa fa-check" aria-hidden="true"></i> 确定
                         </button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> 取消
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#timePlan').window('close')"><i class="fa fa-times" aria-hidden="true"></i> 取消
                         </button>
                     </div>
                 </div>
@@ -198,7 +198,7 @@
                         <button type="button" class="btn btn-primary" data-dismiss="modal"
                                 onclick="addPlan(true)"><i class="fa fa-check" aria-hidden="true"></i> 确定添加
                         </button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> 取消
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#timePlan').window('close')"><i class="fa fa-times" aria-hidden="true"></i> 取消
                         </button>
                     </div>
                 </div>
@@ -218,7 +218,7 @@
                         <button type="button" class="btn btn-primary" data-dismiss="modal"
                                 onclick="addPlan(false)"><i class="fa fa-check" aria-hidden="true"></i> 确定添加
                         </button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-check" aria-hidden="true"></i> 取消
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#timePlan').window('close')"><i class="fa fa-times" aria-hidden="true"></i> 取消
                         </button>
                     </div>
                 </div>
@@ -277,15 +277,16 @@
         </div>
         <div class="modal-footer ">
             <div class="footerShow">
-                <div class='col-3 rw'>
+                <div class='col-4 rw'>
                     <h5>当前任务：<span></span></h5>
                 </div>
-                <div class='col-3 qj'>
+                <div class='col-4 qj'>
                     <h5>当前情景：<span></span></h5>
                 </div>
-                <div class="col-6" style="text-align: right">
+                <div class="col-4" style="text-align: right">
                     <button type="button" class="btn btn-primary" onclick="createEditArea()"><i class="fa fa-check" aria-hidden="true"></i> 确定</button>
                     <button type="button" class="btn btn-primary" onclick="$('#editArea').window('close')"><i class="fa fa-times" aria-hidden="true"></i> 取消</button>
+
                 </div>
             </div>
         </div>
