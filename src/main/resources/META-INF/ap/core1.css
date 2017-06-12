@@ -1172,8 +1172,11 @@ dl, dd {
   border:1px solid #9CC8F7;
   border-top:0px;
 }
-#rwgltablebox .datagrid-row>td>div>.tree-indent,#rwgltablebox .datagrid-row>td>div>.tree-hit,#rwgltablebox .datagrid-row>td>div>.tree-icon{
+#rwgltablebox .datagrid-row>td>div>.tree-indent,#rwgltablebox .datagrid-row>td>div>.tree-hit{
   visibility: hidden;
+}
+#rwgltablebox .datagrid-row>td>div>.tree-icon{
+	display:none
 }
 #rwgltablebox .rwdetail{
   color: #DAEEF5;
@@ -1246,7 +1249,7 @@ dl, dd {
   z-index: 1000;
   border-radius: 2px;
   background: #fff;
-  box-shadow: 0 0 3px rgba(86,96,117,.3);
+  box-shadow: 0 0 3px rgba(86,96,117,.6);
 }
 #rwgltablebox .dropdownmenu>ul>li>a{
   display: block;
@@ -1263,7 +1266,7 @@ dl, dd {
   text-decoration: none;
   background-color: #f5f6f7;
 }
-#rwgltablebox tr.treegrid-tr-tree td>div{
+#rwgltablebox tr.treegrid-tr-tree td[field=missionEndDate]>div{
   overflow: inherit;
 }
 #startUp .col-3{
