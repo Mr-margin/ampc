@@ -43,10 +43,6 @@ function innitdata(){
             data.pageNumber=params.pageNumber  //初始化页面的页码
             return {"token": "", "data": data};
         },
-        onClickRow:function (index,row) {
-            console.log("行数据")
-            console.log(row)
-        }
     })
 }
 function creatQd(){ // 点击创建清单按钮 弹出创建窗口
@@ -88,7 +84,8 @@ function submitQd(){ //点击提交按钮进行新建清单数据的提交
                                 esNationYear: param.nationYear,//新建清单的年份
                                 nationRemark:param.nationRemark //新建清单的备注
                             }
-                        })
+                        });
+                        innitdata()
                     }else{
                         swal('参数错误', '', 'error');
                     }
@@ -118,6 +115,7 @@ function editQd(){ // 编辑全国清单
         document.getElementById("esNationName_edit").value=editQdName; //编辑窗口打开后 名称输入框显示所选数据的名称
         document.getElementById("esNationYear_edit").value=editQdYear;//编辑窗口打开后 年份输入框显示所选数据的名称
         document.getElementById("esNationMark_edit").value=editMark;//编辑窗口打开后 备注输入框显示所选数据的名称
+        $("#editQd input").css({"color":"black"})
         $("#editQd").window('open');
     }else{
         swal('请先选择编辑清单', '', 'error');
@@ -150,7 +148,7 @@ function editSubmitQd(){//点击提交按钮进行编辑数据提交
     var myYear=$("#esNationYear_edit").val();
     var myName=$("#editQd #esNationName_edit").val()
     if(myName.length>0 && myName.length<=20){
-        if(myYear>=1990&&myYear<2100){//判断年份是否符合要求 符合提交编辑后数据
+        if(myYear>=1990&&myYear<=2100){//判断年份是否符合要求 符合提交编辑后数据
             $("#formQd").submit(
                 ajaxPost('/NativeAndNation/update_nation',param).success(function(res){
                     if(res.status==0){
@@ -163,6 +161,7 @@ function editSubmitQd(){//点击提交按钮进行编辑数据提交
                             }
 
                         })
+                        innitdata()
                     }else{
                         swal('参数错误', '', 'error');
                     }
@@ -187,8 +186,9 @@ function delectQd(){
         animation:"slide-from-top",
         showCancelButton: true,
         closeOnConfirm:true,
-        confirmButtonText: "确定",
-        cancelButtonText:"取消"
+        cancelButtonText:"取消",
+        confirmButtonText: "确定"
+
     }, function() {
         ajaxPost('/NativeAndNation/delete_nation',{"nationId":row.esNationId}).success(function(res){
             if(res.status==0){
@@ -231,7 +231,6 @@ $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
 
 //校验名字是否冲突
 $("#creatQd #esNationName").blur(
-
     function () {
         ajaxPost('/NativeAndNation/doPost',{
             "userId":userId,

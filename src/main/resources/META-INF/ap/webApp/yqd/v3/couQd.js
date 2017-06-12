@@ -160,6 +160,7 @@ function submitCoup(){
                             esCouplingDesc:param.couplingDesc //新建清单的描述
                         }
                     })
+                    innitdata();
                 }else{
                     swal('参数错误', '', 'error');
                 }
@@ -192,6 +193,7 @@ function editCoupQd(){
         document.getElementById("coupEditQdName").value=editQdName; //编辑窗口打开后 名称输入框显示所选数据的名称
         document.getElementById("coupEditQdYear").value=editQdYear;//编辑窗口打开后 年份输入框显示所选数据的名称
         document.getElementById("coupEditQdMark").value=editMark;//编辑窗口打开后 备注输入框显示所选数据的名称
+        $("#editCoupQd input").css({"color":"black"})
         $("#editCoupQd").window('open');
     }else{
         swal('请先选择编辑清单', '', 'error');
@@ -212,7 +214,7 @@ function submitEditCoup() {
     param.couplingYear = qdYear;
     param.method="update_coupling";
     var myYear=$("#editCoupQd #coupEditQdYear").val()
-    if(myYear>=1990&&myYear<2100){//判断年份是否符合要求 符合提交编辑后数据
+    if(myYear>=1990&&myYear<=2100){//判断年份是否符合要求 符合提交编辑后数据
         $("#formQd").submit(
             ajaxPost('/NativeAndNation/doPost',param).success(function(res){
                 if(res.status==0){
@@ -224,6 +226,7 @@ function submitEditCoup() {
                             esCouplingDesc:qdMark
                         }
                     })
+                    innitdata()
                 }else{
                     swal('参数错误', '', 'error');
                 }
