@@ -15,6 +15,12 @@ $('#rwpagination').pagination({
         innitdata("find_natives");
     }
 });
+//点击显示路径
+function showPath(value) {
+    var e = e || window.event;
+    e.stopPropagation();//防止出现下拉
+    swal("请您到以下地址上传清单：", value)
+}
 function innitdata(active){
     if(active=="find_natives"){
 
@@ -97,8 +103,6 @@ function innitdata(active){
         //         }
         //     },
         //     onLoadSuccess:function (row, data) {
-        //         console.log("hang")
-        //         console.log(data);
         //         $('#rwpagination').pagination({
         //             total:data.data.data.total
         //         });
@@ -114,7 +118,7 @@ function innitdata(active){
             //给每个子节点添加标题
             var rowDate=data.data.data.rows;
             for(var i=0;i<rowDate.length;i++){
-                rowDate[i].children.unshift({esNativeTpName:"清单名称",esNativeTpYear:"年份",updateTime:"创建时间",filePath:"路径",esComment:"备注",his:"使用状态",isVerify:"状态",actor:"操作",id:rowDate[i].id+"title"})
+                rowDate[i].children.unshift({esNativeTpName:"清单名称",esNativeTpYear:"年份",addTime:"创建时间",esUploadTpTime:"上传时间",filePath:"路径",esComment:"备注",his:"使用状态",isVerify:"状态",actor:"操作",id:rowDate[i].id+"title"})
             }
             $("#localqd").treegrid({
                 idField:'id',//通过id区分子节点父节点
@@ -123,16 +127,34 @@ function innitdata(active){
                 lines:false,
                 showHeader: false,
                 animate:true,
+                checkbox:true,
                 columns:[[  //表头
-                    {field:"ck",checkbox:true},
+                    // {field:"ck",checkbox:true},
                     {field:"esNativeTpName",title:"清单模板名称",width:160,formatter: function (value) {
                         return "<span title='" + value + "'>" + value + "</span>";}},
                     {field:"esNativeTpYear",title:"年份",width:80},
-                    {field:"updateTime",title:"创建时间",formatter:function(value,row,index){
-                        return  moment(value).format("YYYY-MM-DD");
+                    {field:"addTime",title:"创建时间",formatter:function(value,row,index){
+                        if(isNaN(value)){
+                            return "<span>创建时间</span>";
+                        }else{
+                            return  moment(value).format("YYYY-MM-DD");
+                        }
+                    },width :100,},
+                    {field:"esUploadTpTime",title:"上传时间",formatter:function(value,row,index){
+                        if(isNaN(value)){
+                            return "<span>上传时间</span>";
+                        }else{
+                            return  moment(value).format("YYYY-MM-DD");
+                        }
                     },width :100,},
                     {field:"filePath",title:"路径",width:120,formatter: function (value) {
-                return "<span style='width:120px;' class='localPath' title='" + value + "'>" + value + "</span>";}},
+                        if(value=="路径"){
+                            return "<span>路径</span>"
+                        }else{
+                            var swalDiv="<span class='localPath' style='text-decoration: underline' onclick=showPath(\'"+value+"\')>查看路径</span>"
+                            return swalDiv;
+                        }
+                     }},
                     {field:"esComment",title:"备注",width:200},
                     {field:"his",title:"使用状态",width:100},
                     {field:"isVerify",title:"状态",width:100,formatter:function(value,row,index){

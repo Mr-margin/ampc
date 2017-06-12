@@ -467,3 +467,9 @@ function openUserSettings(){
 	sessionStorage.setItem('userId',userId);
 	window.open('userSettings.html');
 }
+//如果如果用户是管理员 就可以看见全国清单 如果是普通用户 就不能看见全国清单
+
+if(userId==2){
+    $("#yqd a").eq(0).hide();
+    console.log()
+}

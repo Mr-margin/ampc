@@ -24,7 +24,7 @@ function innitdata(){
             return data.data;
         },
         // selectOnCheck:true, //true，单击复选框将永远选择行 false，选择行将不选中复选框。
-        // singleSelect: true,//设置True 将禁止多选
+        singleSelect: true,//设置True 将禁止多选
         // checkOnSelect:true,//true，当用户点击行的时候该复选框就会被选中或取消选中。false，当用户仅在点击该复选框的时候才会呗选中或取消。
         // fitColumns:true,//真正的自动展开/收缩列的大小，以适应网格的宽度，防止水平滚动。
         // clickToSelect: true,// 点击选中行
@@ -43,6 +43,15 @@ function innitdata(){
             data.pageNumber=params.pageNumber  //初始化页面的页码
             return {"token": "", "data": data};
         },
+        onClickRow:function (index,row) {
+            //用于作为单选行的操作，当点击一行后，其他行取消选中，在datagrid中需要把singleSelect取消
+            var rowNum=$(this).datagrid('getRows').length;
+            for(var i=0;i<rowNum;i++){
+                if(i!=index){
+                    $(this).datagrid('uncheckRow',i)
+                }
+            }
+        }
     })
 }
 function creatQd(){ // 点击创建清单按钮 弹出创建窗口

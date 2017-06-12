@@ -33,8 +33,14 @@ function innitdata(){  //耦合清单的初始化
             },align:'cneter',width:120},
             {field:"viewDetail",title:"查看",formatter:function(value,row,index){
                 var coupId=row.esCouplingId
-                var coupSetBtn="<button style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='viewDetail("+coupId+")'>查看</button>"
-               return coupSetBtn;
+                var coupSetBtn;
+               if(row.employ==1){
+                   var coupSetBtn="<button style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='viewDetail("+coupId+")'>查看</button>"
+                   return coupSetBtn;
+               }else{
+                   var coupSetBtn="<button style='cursor:pointer;width:76px;height:20px;background-color: #D9D9D9;border:1px solid #666;color: white;border-radius:2px;box-sizing:border-box'>查看</button>"
+                   return coupSetBtn;
+               }
             }}
 
         ]],
@@ -42,7 +48,7 @@ function innitdata(){  //耦合清单的初始化
             return data.data.data.rows;
         },
         // selectOnCheck:true, //true，单击复选框将永远选择行 false，选择行将不选中复选框。
-        // singleSelect: true,//设置True 将禁止多选
+        singleSelect: true,//设置True 将禁止多选
         // checkOnSelect:true,//true，当用户点击行的时候该复选框就会被选中或取消选中。false，当用户仅在点击该复选框的时候才会呗选中或取消。
         // fitColumns:true,//真正的自动展开/收缩列的大小，以适应网格的宽度，防止水平滚动。
         // clickToSelect: true,// 点击选中行
@@ -62,6 +68,16 @@ function innitdata(){  //耦合清单的初始化
             data.pageNumber=params.pageNumber  //初始化页面的页码
             return {"token": "", "data": data};
         },
+        onClickRow:function (index,row) {
+            //用于作为单选行的操作，当点击一行后，其他行取消选中，在datagrid中需要把singleSelect取消
+            var rowNum=$(this).datagrid('getRows').length;
+            for(var i=0;i<rowNum;i++){
+                if(i!=index){
+                    $(this).datagrid('uncheckRow',i)
+                }
+            }
+
+        }
     })
 }
 //全国清单生成
@@ -290,6 +306,7 @@ function closeDetail() {
 }
 //点击查看耦合清单详细信息
 function viewDetail(coupId) {
+    $("#coupDetail input").innerText="";
     $("#coupDetail").window("open")
     var rowsAll=$("#couqd").datagrid("getRows");
     var checkRow;
