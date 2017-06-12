@@ -1711,7 +1711,7 @@ function createEditArea() {
         }
     }
     obj.countyCodes = JSON.stringify(crArr);
-
+    
     if (pArr.length == 0 && ctArr.length == 0 && crArr.length == 0) {  //如果一个区域没有选择任何地区则不允许创建或修改
         // alert("请选择范围");
         swal({
@@ -1779,6 +1779,17 @@ function createEditArea() {
             allData[areaIndex].countyCodes = crArr;
 //                $('#' + $('#areaName').attr('data-id')).find('b').html(areaName);
             $('#editArea').window('close'); //关闭编辑弹出框
+            
+            //当用户名修改后进行修改allData
+            for(var i=0;i<allData.length;i++){
+            	if(allData[i].areaId==$('#areaName').attr('data-id')){
+            		if(!(allData[i].areaName==$('#areaName').val())){
+            			allData[i].areaName=$('#areaName').val();
+            			//修改allData之后进行重绘timeline
+            			showTimeline(allData);
+            		}
+            	}
+            }
             app2();
         })
     }
