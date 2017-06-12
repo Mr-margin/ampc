@@ -86,7 +86,7 @@ function innitdata(active){
                     {field:"esNativeTpName",title:"清单模板名称",width:160,formatter: function (value) {
                         return "<span title='" + value + "'>" + value + "</span>";}},
                     {field:"esNativeTpYear",title:"年份",width:80},
-                    {field:"esUploadTpTime",title:"创建时间",formatter:function(value,row,index){
+                    {field:"updateTime",title:"创建时间",formatter:function(value,row,index){
                         return  moment(value).format("YYYY-MM-DD");
                     },width :100,},
                     {field:"filePath",title:"路径",width:120,formatter: function (value) {
