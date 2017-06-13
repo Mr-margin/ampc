@@ -128,6 +128,7 @@ import java.util.UUID;
 
 
 
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -846,6 +847,9 @@ public class ReadyData {
 				lastungrib=null;
 			}else {
 				LogUtil.getLogger().info("pivot方法日志:实时预报的基础情景满足条件！ScenarinoId："+scenarinoDetailMSG.getScenarinoId());
+				//补发之前先检查排放系数是否存在
+				TTasksStatus selectEmisDataByScenId = tTasksStatusMapper.selectEmisDataByScenId(scenarinoDetailMSG.getScenarinoId());
+				Long emisDataStatus = selectEmisDataByScenId.getTasksExpand1();//排放或者减排系数获取成功与否
 				if (i==0&&compareTo==0) {
 					//今天等于最新的ungrib 没有出现断层的情况--正常情况下
 					lastungrib = DateUtil.DATEtoString(pathdate, "yyyyMMdd");
@@ -853,19 +857,39 @@ public class ReadyData {
 				if (i==0&&compareTo<0) {
 					//出现断层的情况 中间存在几天没跑的情况 但是ungrib是最新的 ungrib=today
 					lastungrib = DateUtil.DATEtoString(pathdate, "yyyyMMdd");
-					bufamessage(scenarinoDetailMSG,lastungrib);
-					LogUtil.getLogger().info("pivot方法日志:补发了ID为"+scenarinoDetailMSG.getScenarinoId()+"的情景！");
-					//修改情景状态
-					updateScenStatusUtil(6l, scenarinoDetailMSG.getScenarinoId());
+					if (0==emisDataStatus) {
+						bufamessage(scenarinoDetailMSG,lastungrib);
+						LogUtil.getLogger().info("pivot方法日志:补发了ID为"+scenarinoDetailMSG.getScenarinoId()+"的情景！");
+						//修改情景状态
+						updateScenStatusUtil(6l, scenarinoDetailMSG.getScenarinoId());
+					}else {
+						//重新获取参数
+						boolean emisParams = getEmisParams(scenarinoDetailMSG.getScenarinoId());
+						if (emisParams) {
+							LogUtil.getLogger().info("补发预报：重新请求实时预报的emisdata参数成功！");
+						}else {
+							LogUtil.getLogger().info("补发预报:重新请求实时预报的emisdata参数失败！");
+						}
+					}
 					lastungrib=null;
 				}
 				if (i<0&&compareungrib<=0) {
 					//最新的ungrib不是最新， 同时最早未运行的情景小于最新的等于ungrib 表示跟新了中间的几个断层
 					lastungrib = DateUtil.DATEtoString(pathdate, "yyyyMMdd");
-					bufamessage(scenarinoDetailMSG,lastungrib);
-					LogUtil.getLogger().info("pivot方法日志:补发了ID为"+scenarinoDetailMSG.getScenarinoId()+"的情景！");
-					//修改情景状态
-					updateScenStatusUtil(6l, scenarinoDetailMSG.getScenarinoId());
+					if (0==emisDataStatus) {
+						bufamessage(scenarinoDetailMSG,lastungrib);
+						LogUtil.getLogger().info("pivot方法日志:补发了ID为"+scenarinoDetailMSG.getScenarinoId()+"的情景！");
+						//修改情景状态
+						updateScenStatusUtil(6l, scenarinoDetailMSG.getScenarinoId());
+					}else {
+						//重新获取参数
+						boolean emisParams = getEmisParams(scenarinoDetailMSG.getScenarinoId());
+						if (emisParams) {
+							LogUtil.getLogger().info("补发预报：重新请求实时预报的emisdata参数成功！");
+						}else {
+							LogUtil.getLogger().info("补发预报:重新请求实时预报的emisdata参数失败！");
+						}
+					}
 					lastungrib=null;
 				}
 				if (i<0&&compareTo==0&&compareungrib>0) {
@@ -1774,7 +1798,7 @@ public class ReadyData {
 				tTasksStatus.setTasksExpand1(0l);
 				//系统内置
 				tTasksStatus.setCalctype("server");
-				tTasksStatus.setSourceid("1");
+				tTasksStatus.setSourceid("2");
 				int	i = tTasksStatusMapper.updateEmisData(tTasksStatus);
 				if (i>0) {
 					flag=true;
