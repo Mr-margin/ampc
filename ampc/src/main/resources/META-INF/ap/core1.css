@@ -1505,7 +1505,7 @@ dl, dd {
   width: 50%;
   height: 50px;
 }
-.cloudui .tipRepeat{
+.cloudui .tipNameRepeat,.cloudui .tipYearRepeat{
   clear: both;
   margin-left: 80px;
   height: 30px;
@@ -1552,9 +1552,10 @@ dl, dd {
 .cloudui #creatCoupQd .qdContent,.cloudui #editCoupQd .qdContent{
   float: left;
   overflow: hidden;
-  height: 30px;
-  margin-bottom:10px;
+  /*height: 30px;*/
+  /*margin-bottom:10px;*/
   width: 50%;
+  height:50px;
 }
 .cloudui #creatCoupQd .rwCon .qdTitle,.cloudui #editCoupQd .rwCon .qdTitle{
   float: left;
