@@ -147,15 +147,17 @@ $(".cloudui .verticalCon .searchT .upDown").hover(function(){
 
 
 //修改easyui 下拉菜单按钮样式
-$(".cloudui .distributed_map #dropdownMenu1 .l-btn-left span").removeClass("m-btn-downarrow")
-$(".cloudui .distributed_map #dropdownMenu1").hover(function(){
-  $(this).removeClass("m-btn-plain-active");
-},function(){
-  $(this).removeClass("m-btn-plain-active")
+$(".dropdownCon").hover(function () {
+    $(".vidioDown").css({"display":"block"})
+},function () {
+    $(".vidioDown").css({"display":"none"})
 })
-
-
-
+$(".vidioDown div").hover(function () {
+    $(".vidioDown div").css({"background-color":"transparent"})
+    $(this).css({"background-color":"#e4e9eb"})
+},function () {
+    $(".vidioDown div").css({"background-color":"transparent"})
+})
 
 
 
