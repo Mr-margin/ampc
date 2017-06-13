@@ -799,3 +799,18 @@ function submitCheckQd() {
     $(".navRight").show();
     innitdata();
 }
+//新建清单名字校验
+$("#creatCoupQd #coupQdName").blur(
+    function () {
+        ajaxPost('/NativeAndNation/doPost',{
+            "userId":userId,
+            "method":'verifyByCouplingName',
+            "couplingName":$("#creatCoupQd #coupQdName").val()
+        }).success(function (res) {
+            if(res.data.data.msg==true){
+                $("#creatCoupQd .tipNameRepeat span").remove();
+                $("#creatCoupQd .tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>该名称已被使用</span>");
+            }
+        })
+    }
+)
