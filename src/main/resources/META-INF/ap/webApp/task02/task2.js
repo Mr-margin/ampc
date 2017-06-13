@@ -724,12 +724,15 @@ function showTimeline(data) {
     };
     plancharts.setOption(_option);
     plancharts.on('click', function (params) {
-        /*            if (isMouseDrag = 1) {
-         isMouseDrag = 3;
-         }
-         if (isMouseDrag = 2) {
-         isMouseDrag = 3;
-         }*/
+    	if(!(qjMsg.scenarinoStatus==1||qjMsg.scenarinoStatus==2||qjMsg.scenarinoStatus==4||qjMsg.scenarinoStatus==5)){
+    		swal({
+    			title:"当前情景模式不能进行编辑",
+    			type:"info",
+    			timer:1000,
+    			showConfirmButton:false    			
+    		});
+    		return
+    	}
         if (params.componentType == 'yAxis') {
             console.log(params);
             // areaIndex = obj.index;
@@ -807,12 +810,15 @@ function showTimeline(data) {
             $('#settingqjbox').window('open').window('center').find('.step1 button').attr('data-qjid', allData[labelIndex].areaId);
             return
         }
-        if (qjMsg.scenarinoStatus == 3)return;
-        if (qjMsg.scenarinoStatus == 4)return;
-        if (qjMsg.scenarinoStatus == 6)return;
-        if (qjMsg.scenarinoStatus == 7)return;
-        if (qjMsg.scenarinoStatus == 8)return;
-        if (qjMsg.scenarinoStatus == 9)return;
+        if(!(qjMsg.scenarinoStatus==1||qjMsg.scenarinoStatus==2||qjMsg.scenarinoStatus==4||qjMsg.scenarinoStatus==5)){
+    		swal({
+    			title:"当前情景模式不能进行编辑",
+    			type:"info",
+    			timer:1000,
+    			showConfirmButton:false    			
+    		});
+    		return
+    	}
         for (var i = 0; i < allData[labelIndex].timeItems.length; i++) {
 //                if(Math.floor(pointInGrid[1]/3))
             console.log((i-1<0?allData[labelIndex].timeItems[i].timeEndDate:allData[labelIndex].timeItems[i-1].timeStartDate) < pointInGrid[0] && allData[labelIndex].timeItems[i].timeEndDate > pointInGrid[0]);
@@ -1429,6 +1435,15 @@ function setExtent_z(ttpye){
 /*---------------------------------------------------以上是地图部分----------------------------------------------------------*/
 /*检测是否超过最大区域数量*/
 function createNewAreaBtn() {
+	if(!(qjMsg.scenarinoStatus==1||qjMsg.scenarinoStatus==2||qjMsg.scenarinoStatus==4||qjMsg.scenarinoStatus==5)){
+		swal({
+			title:"当前情景模式不能进行编辑",
+			type:"info",
+			timer:1000,
+			showConfirmButton:false    			
+		});
+		return
+	}
     if (allData.length >= maxAreaNum) {
         cnArea = false;
         swal({
@@ -2247,6 +2262,7 @@ function initCopyPlanTable() {
             formatter:copyPlanAddTime
         }]],
         onClickRow:function (index,row) {
+        	//用于作为单选行的操作，当点击一行后，其他行取消选中，在datagrid中需要把singleSelect取消
             var rowNum=$(this).datagrid('getRows').length;
             for(var i=0;i<rowNum;i++){
             	if(i!=index){
