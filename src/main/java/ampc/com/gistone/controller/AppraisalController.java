@@ -1377,6 +1377,9 @@ public class AppraisalController {
 			Date start_date=sdf.parse(start_Date);
 			Date end_date=sdf.parse(end_Date);
 			differenceVal = (int) ((end_date.getTime() - start_date.getTime()) / (1000*3600*24));
+			
+			int differenceObs = (int) (( (sdf.parse(end_Date)).getTime() - (sdf.parse(start_Date)).getTime() ) / (1000*3600*24));
+			Object[] speciesArr={"NO2","PM2_5","O3","SO2","PM10","AQI","O3_8h","CO"};
 			//如果情景不为空
 			if(tScenarinoDetaillist!=null){
 				//时间分辨率--逐日开始
@@ -1478,6 +1481,7 @@ public class AppraisalController {
 						}
 					}	/**查询基准数据结束*/
 					//查询观测数据开始
+					
 					HashMap<String, Object> obsBeanobj=new HashMap<String, Object>();	
 					//站点信息
 					obsBeanobj.put("city_station",cityStation);
@@ -1506,68 +1510,94 @@ public class AppraisalController {
 					//查询的表格
 					obsBeanobj.put("tableName",tables_obs);
 					//查询数据
-					List<ObsBean> obsBeans=tObsMapper.queryObservationResult(obsBeanobj);	
-					//获取json
-					String contentstr=obsBeans.get(0).getContent();
-					//读取数据
-					Map contentmap=mapper.readValue(contentstr, Map.class);
+					List<ObsBean> obsBeans=tObsMapper.queryObservationResult(obsBeanobj);
 					//存放所有的物种
 					Map contentobj=new HashMap();
-					//循环所有的物种key
-					for(Object contentmapkey:contentmap.keySet()){	
-						//记录数据
-						Map contentobj_on=new HashMap();
-						//循环结果集合
-						for(int i=0;i<obsBeans.size();i++){
-							//获取日期
-							String contentobj_on_time=DateUtil.DATEtoString(obsBeans.get(i).getDate(), "yyyy-MM-dd");
-							//获取json数据
-							String contentobj_on_str=obsBeans.get(i).getContent();
-							Map contentobj_on_map=mapper.readValue(contentobj_on_str, Map.class);
-							//循环结果
-							for(Object contentobj_on_key:contentobj_on_map.keySet()){
-								//判断结果
-								if(contentmapkey.equals(contentobj_on_key)){
-									//判断结果写入对应结果
-									if("CO".equals(contentmapkey)){
-										String speciesval=contentobj_on_map.get(contentobj_on_key).toString();
-										if(speciesval==null||"null".equals(speciesval)||"".equals(speciesval)){
-											contentobj_on.put(contentobj_on_time,"-");
-											break;
-										}else{
-											BigDecimal bd=(new BigDecimal(speciesval)).setScale(2, BigDecimal.ROUND_HALF_UP);
-											contentobj_on.put(contentobj_on_time,bd);
-											break;
-										}
-									}else{
-										if("null".equals(contentobj_on_map.get(contentobj_on_key))||"NULL".equals(contentobj_on_map.get(contentobj_on_key))||"".equals(contentobj_on_map.get(contentobj_on_key))||contentobj_on_map.get(contentobj_on_key)==null){
-											contentobj_on.put(contentobj_on_time,"-");
-											break;
-										}else{
-											String speciesval=contentobj_on_map.get(contentobj_on_key).toString();
-											BigDecimal bd=(new BigDecimal(speciesval)).setScale(1, BigDecimal.ROUND_HALF_UP);
-											contentobj_on.put(contentobj_on_time,bd);
-											break;
-										}
-										
-									}
-								}
-								
+					//查询数据为空赋值"-"处理
+					if("[]".equals(obsBeans.toString())||obsBeans==null){
+						for(int k=0;k<speciesArr.length;k++){
+							Map contentobj_on=new HashMap();
+							for(int m=0;m<=differenceObs;m++){
+								calendar.setTime(sdf.parse(start_Date));
+								calendar.add(Calendar.DAY_OF_MONTH, +m);
+								calDate = calendar.getTime();
+								calDateStr=sdf.format(calDate);
+								contentobj_on.put(calDateStr,"-" );
+							}
+							//修改名称
+							if("PM2_5".equals(speciesArr[k].toString())){	
+								contentobj.put("PM25", contentobj_on);
+							}else if("O3".equals(speciesArr[k].toString())){
+								contentobj.put("O3_AVG", contentobj_on);
+							}else if("O3_8h".equals(speciesArr[k].toString())){
+								contentobj.put("O3_8_MAX", contentobj_on);
+							}else{
+								contentobj.put(speciesArr[k].toString(), contentobj_on);
 							}
 						}
-						//修改污染物  写入结果
-						String contentmapkey_new;
-						if("PM2_5".equals(contentmapkey)){	//修改名称
-							contentmapkey_new="PM25";
-							contentobj.put(contentmapkey_new, contentobj_on);
-						}else if("O3".equals(contentmapkey)){
-							contentmapkey_new="O3_AVG";
-							contentobj.put(contentmapkey_new, contentobj_on);
-						}else if("O3_8h".equals(contentmapkey)){
-							contentmapkey_new="O3_8_MAX";
-							contentobj.put(contentmapkey_new, contentobj_on);
-						}else{
-							contentobj.put(contentmapkey, contentobj_on);
+					}else{
+						//获取json
+						String contentstr=obsBeans.get(0).getContent();
+						//读取数据
+						Map contentmap=mapper.readValue(contentstr, Map.class);
+						
+						//循环所有的物种key
+						for(Object contentmapkey:contentmap.keySet()){	
+							//记录数据
+							Map contentobj_on=new HashMap();
+							//循环结果集合
+							for(int i=0;i<obsBeans.size();i++){
+								//获取日期
+								String contentobj_on_time=DateUtil.DATEtoString(obsBeans.get(i).getDate(), "yyyy-MM-dd");
+								//获取json数据
+								String contentobj_on_str=obsBeans.get(i).getContent();
+								Map contentobj_on_map=mapper.readValue(contentobj_on_str, Map.class);
+								//循环结果
+								for(Object contentobj_on_key:contentobj_on_map.keySet()){
+									//判断结果
+									if(contentmapkey.equals(contentobj_on_key)){
+										//判断结果写入对应结果
+										if("CO".equals(contentmapkey)){
+											String speciesval=contentobj_on_map.get(contentobj_on_key).toString();
+											if(speciesval==null||"null".equals(speciesval)||"".equals(speciesval)){
+												contentobj_on.put(contentobj_on_time,"-");
+												break;
+											}else{
+												BigDecimal bd=(new BigDecimal(speciesval)).setScale(2, BigDecimal.ROUND_HALF_UP);
+												contentobj_on.put(contentobj_on_time,bd);
+												break;
+											}
+										}else{
+											if("null".equals(contentobj_on_map.get(contentobj_on_key))||"NULL".equals(contentobj_on_map.get(contentobj_on_key))||"".equals(contentobj_on_map.get(contentobj_on_key))||contentobj_on_map.get(contentobj_on_key)==null){
+												contentobj_on.put(contentobj_on_time,"-");
+												break;
+											}else{
+												String speciesval=contentobj_on_map.get(contentobj_on_key).toString();
+												BigDecimal bd=(new BigDecimal(speciesval)).setScale(1, BigDecimal.ROUND_HALF_UP);
+												contentobj_on.put(contentobj_on_time,bd);
+												break;
+											}
+											
+										}
+									}
+									
+								}
+							}
+							//修改污染物  写入结果
+							String contentmapkey_new;
+							//修改名称
+							if("PM2_5".equals(contentmapkey)){	
+								contentmapkey_new="PM25";
+								contentobj.put(contentmapkey_new, contentobj_on);
+							}else if("O3".equals(contentmapkey)){
+								contentmapkey_new="O3_AVG";
+								contentobj.put(contentmapkey_new, contentobj_on);
+							}else if("O3_8h".equals(contentmapkey)){
+								contentmapkey_new="O3_8_MAX";
+								contentobj.put(contentmapkey_new, contentobj_on);
+							}else{
+								contentobj.put(contentmapkey, contentobj_on);
+							}
 						}
 					}
 					//储存结果数据
@@ -1707,83 +1737,110 @@ public class AppraisalController {
 					//查询的表格
 					obsBeanobj.put("tableName",tables_obs);				
 					//查询观测数据
-					List<ObsBean> obsBeans=tObsMapper.queryObservationResult(obsBeanobj);	
-					String contentstr=obsBeans.get(0).getContent();
-					Map contentmap=mapper.readValue(contentstr, Map.class);
+					List<ObsBean> obsBeans=tObsMapper.queryObservationResult(obsBeanobj);
 					//存放所有的物种
-					Map contentobj=new HashMap();			
-					//循环所有的物种key开始
-					for(Object contentmapkey:contentmap.keySet()){
-						Map contentobj_on=new HashMap();
-						//去除O3_8h的数据
-						if(!"O3_8h".equals(contentmapkey.toString())){			
-							//循环结果
-							for(int i=0;i<obsBeans.size();i++){
-								//获取日期
-								String contentobj_on_time=DateUtil.DATEtoString(obsBeans.get(i).getDate(), "yyyy-MM-dd");
-								//获取json
-								String contentobj_on_str=obsBeans.get(i).getContent();
-								Map contentobj_on_map=mapper.readValue(contentobj_on_str, Map.class);
+					Map contentobj=new HashMap();
+					//查询数据为空赋值"-"处理
+					if("[]".equals(obsBeans.toString())||obsBeans==null){
+						for(int k=0;k<speciesArr.length;k++){
+							Map contentobj_on=new HashMap();
+							for(int m=0;m<=differenceObs;m++){
+								calendar.setTime(sdf.parse(start_Date));
+								calendar.add(Calendar.DAY_OF_MONTH, +m);
+								calDate = calendar.getTime();
+								calDateStr=sdf.format(calDate);
+								contentobj_on.put(calDateStr,"-" );
+							}
+							//修改名称
+							if("PM2_5".equals(speciesArr[k].toString())){	
+								contentobj.put("PM25", contentobj_on);
+							}else if("O3".equals(speciesArr[k].toString())){
+								contentobj.put("O3_AVG", contentobj_on);
+							}else if("O3_8h".equals(speciesArr[k].toString())){
+								contentobj.put("O3_8_MAX", contentobj_on);
+							}else{
+								contentobj.put(speciesArr[k].toString(), contentobj_on);
+							}
+						}
+					}else{
+						
+						String contentstr=obsBeans.get(0).getContent();
+						Map contentmap=mapper.readValue(contentstr, Map.class);
+									
+						//循环所有的物种key开始
+						for(Object contentmapkey:contentmap.keySet()){
+							Map contentobj_on=new HashMap();
+							//去除O3_8h的数据
+							if(!"O3_8h".equals(contentmapkey.toString())){			
 								//循环结果
-								for(Object contentobj_on_key:contentobj_on_map.keySet()){
-									//判断是否是相同的
-									if(contentmapkey.equals(contentobj_on_key.toString())){
-										//判断污染物
-										if("CO".equals(contentmapkey)){
-											List contentobj_on_key_arrco=(List)contentobj_on_map.get(contentobj_on_key);
-											Map contentobj_on_key_val=new HashMap();
-											//循环结果集合
-											for(int m=0;m<contentobj_on_key_arrco.size();m++){				//循环添加值
-												//判断类型存放对英结果
-												String observe_coval=contentobj_on_key_arrco.get(m).toString();
-												if("-".equals(observe_coval)||"".equals(observe_coval)||"null".equals(observe_coval)||"NULL".equals(observe_coval)||null==observe_coval){	//判断某个值为-时，不进行保留位数操作
-													contentobj_on_key_val.put(m, "-");
-												}else{
-													BigDecimal bd=(new BigDecimal(observe_coval)).setScale(2, BigDecimal.ROUND_HALF_UP);
-													contentobj_on_key_val.put(m, bd);
+								for(int i=0;i<obsBeans.size();i++){
+									//获取日期
+									String contentobj_on_time=DateUtil.DATEtoString(obsBeans.get(i).getDate(), "yyyy-MM-dd");
+									//获取json
+									String contentobj_on_str=obsBeans.get(i).getContent();
+									Map contentobj_on_map=mapper.readValue(contentobj_on_str, Map.class);
+									//循环结果
+									for(Object contentobj_on_key:contentobj_on_map.keySet()){
+										//判断是否是相同的
+										if(contentmapkey.equals(contentobj_on_key.toString())){
+											//判断污染物
+											if("CO".equals(contentmapkey)){
+												List contentobj_on_key_arrco=(List)contentobj_on_map.get(contentobj_on_key);
+												Map contentobj_on_key_val=new HashMap();
+												//循环结果集合
+												for(int m=0;m<contentobj_on_key_arrco.size();m++){				//循环添加值
+													//判断类型存放对英结果
+													String observe_coval=contentobj_on_key_arrco.get(m).toString();
+													if("-".equals(observe_coval)||"".equals(observe_coval)||"null".equals(observe_coval)||"NULL".equals(observe_coval)||null==observe_coval){	//判断某个值为-时，不进行保留位数操作
+														contentobj_on_key_val.put(m, "-");
+													}else{
+														BigDecimal bd=(new BigDecimal(observe_coval)).setScale(2, BigDecimal.ROUND_HALF_UP);
+														contentobj_on_key_val.put(m, bd);
+													}
+													
 												}
-												
-											}
-											contentobj_on.put(contentobj_on_time,contentobj_on_key_val);
-											break;
-										}else{
-											List contentobj_on_key_arr=(List)contentobj_on_map.get(contentobj_on_key);
-											Map contentobj_on_key_val=new HashMap();
-											for(int m=0;m<contentobj_on_key_arr.size();m++){
-												
-												String observeval=contentobj_on_key_arr.get(m).toString();
-												if("-".equals(observeval)||"".equals(observeval)||"null".equals(observeval)||"NULL".equals(observeval)||null==observeval){
-													contentobj_on_key_val.put(m, "-");
-												}else{
-													BigDecimal bd=(new BigDecimal(observeval)).setScale(1, BigDecimal.ROUND_HALF_UP);
-													contentobj_on_key_val.put(m, bd);
+												contentobj_on.put(contentobj_on_time,contentobj_on_key_val);
+												break;
+											}else{
+												List contentobj_on_key_arr=(List)contentobj_on_map.get(contentobj_on_key);
+												Map contentobj_on_key_val=new HashMap();
+												for(int m=0;m<contentobj_on_key_arr.size();m++){
+													
+													String observeval=contentobj_on_key_arr.get(m).toString();
+													if("-".equals(observeval)||"".equals(observeval)||"null".equals(observeval)||"NULL".equals(observeval)||null==observeval){
+														contentobj_on_key_val.put(m, "-");
+													}else{
+														BigDecimal bd=(new BigDecimal(observeval)).setScale(1, BigDecimal.ROUND_HALF_UP);
+														contentobj_on_key_val.put(m, bd);
+													}
+													
 												}
-												
+												//写入结果
+												contentobj_on.put(contentobj_on_time,contentobj_on_key_val);
+												break;
 											}
-											//写入结果
-											contentobj_on.put(contentobj_on_time,contentobj_on_key_val);
-											break;
 										}
 									}
 								}
-							}
-							//新污染物
-							String contentmapkey_new;
-							//判断污染物存入对应结果
-							if("PM2_5".equals(contentmapkey)){
-								contentmapkey_new="PM25";
-								contentobj.put(contentmapkey_new, contentobj_on);
-							}else if("O3".equals(contentmapkey)){
-								contentmapkey_new="O3_AVG";
-								contentobj.put(contentmapkey_new, contentobj_on);
-							}else if("O3_8h".equals(contentmapkey)){
-								contentmapkey_new="O3_8_MAX";
-								contentobj.put(contentmapkey_new, contentobj_on);
-							}else{
-								contentobj.put(contentmapkey, contentobj_on);
-							}
-						}	
-					}	//循环所有物种的key结束
+								//新污染物
+								String contentmapkey_new;
+								//判断污染物存入对应结果
+								if("PM2_5".equals(contentmapkey)){
+									contentmapkey_new="PM25";
+									contentobj.put(contentmapkey_new, contentobj_on);
+								}else if("O3".equals(contentmapkey)){
+									contentmapkey_new="O3_AVG";
+									contentobj.put(contentmapkey_new, contentobj_on);
+								}else if("O3_8h".equals(contentmapkey)){
+									contentmapkey_new="O3_8_MAX";
+									contentobj.put(contentmapkey_new, contentobj_on);
+								}else{
+									contentobj.put(contentmapkey, contentobj_on);
+								}
+							}	
+						}	//循环所有物种的key结束
+					}
+					
 					Map standardData=new HashMap();
 					//观测数据
 					standardData.put("观测数据", contentobj);	
