@@ -442,27 +442,27 @@ function bianji(type, g_num, p , wind) {
 //        	console.log(JSON.stringify(par));
         	ajaxPost('/extract/png', par).success(function (data) {
 //        		console.log(JSON.stringify(data));
-        		
+
         		if(data.status == 0){
 //        			app.mapimagelayer[g_num].removeAllImages();//删除全部的图片图层
-        			
+
 //        			console.log(data.data.imagePath);
-        			
+
         			var imageURL = pngUrl + "/ampc/"+data.data.imagePath+"?t="+Math.random();
         			console.log(imageURL);
-        			
+
         			var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
                     var mapImage = new dong.MapImage({
                         'extent': initE,
                         'href': imageURL
                     });
-                    
-                    
+
+
                     app.mapimagelayer[g_num].addImage(mapImage);//将新的图片图层添加到地图
-                    
+
                     $('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
                     zmblockUI1("#mapDiv"+g_num, "end");//打开锁屏控制
-                    
+
 //                    $.each(data.data, function (i, col) {
 //                    	$.each(col, function (k, vvol) {
 //                    		if (vvol.value != "-9999.0") {
@@ -471,13 +471,53 @@ function bianji(type, g_num, p , wind) {
 //                        		app.gLyr[g_num].add(graphic);
 //                        	}
 //                    	});
-//                    }); 
-                    
-                    
+//                    });
+
+                    judgmentObj.push(g_num)
+                    judgment();
                     console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
-        	
+
         		}
         	});
+
+ /*           ajaxPost_w('http://166.111.42.85:8300/ampc/extract/png', {token:'',data:par}).success(function (data) {
+//        		console.log(JSON.stringify(data));
+
+                if(data.status == 0){
+//        			app.mapimagelayer[g_num].removeAllImages();//删除全部的图片图层
+
+//        			console.log(data.data.imagePath);
+
+                    var imageURL = pngUrl + "/ampc/"+data.data.imagePath+"?t="+Math.random();
+                    console.log(imageURL);
+
+                    var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
+                    var mapImage = new dong.MapImage({
+                        'extent': initE,
+                        'href': imageURL
+                    });
+
+
+                    app.mapimagelayer[g_num].addImage(mapImage);//将新的图片图层添加到地图
+
+                    $('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
+                    zmblockUI1("#mapDiv"+g_num, "end");//打开锁屏控制
+
+//                    $.each(data.data, function (i, col) {
+//                    	$.each(col, function (k, vvol) {
+//                    		if (vvol.value != "-9999.0") {
+//                        		var point = new dong.Point(vvol.x, vvol.y, new dong.SpatialReference({wkid: 3857}));
+//                        		var graphic = new dong.Graphic(point,app.pointSymbol1);
+//                        		app.gLyr[g_num].add(graphic);
+//                        	}
+//                    	});
+//                    });
+                    judgmentObj.push(g_num)
+                    judgment();
+                    console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
+
+                }
+            });*/
         	
         	
         	
@@ -707,6 +747,108 @@ function bianji(type, g_num, p , wind) {
 //            	zmblockUI("#mapDiv"+g_num, "end");
                 swal('风场抽数，内部错误', '', 'error');
             });
+
+            /*ajaxPost_w('http://166.111.42.85:8300/ampc//extract/data', {token:'',data:par}).success(function (data) {
+                if (!data.data) {
+                    console.log("data.data-null");
+                    swal('获取当前范围风场数据失败', '', 'error');
+                    return;
+                }
+                if (data.data.length == 0) {
+                    console.log("length-null");
+                    swal('当前范围缺少风场数据', '', 'error');
+                    return;
+                }
+                $.each(data.data, function (i, col) {
+
+                    if (typeof col.x == "undefined") {
+                        console.log("x-null");
+                        return;
+                    }
+                    if (typeof col.y == "undefined") {
+                        console.log("y-null");
+                        return;
+                    }
+
+                    var p_url = "img/"+lujing+"/"+col.WSPD+".png";
+                    var angle = 0;
+                    switch (col.WDIR) {
+                        case "N" :
+                            angle = 0;
+                            break;
+                        case "NNE" :
+                            angle = 22.5;
+                            break;
+                        case "NE" :
+                            angle = 45;
+                            break;
+                        case "ENE" :
+                            angle = 67.5;
+                            break;
+                        case "E" :
+                            angle = 90;
+                            break;
+                        case "ESE" :
+                            angle = 112.5;
+                            break;
+                        case "SE" :
+                            angle = 135;
+                            break;
+                        case "SSE" :
+                            angle = 157.5;
+                            break;
+                        case "S" :
+                            angle = 180;
+                            break;
+                        case "SSW" :
+                            angle = 202.5;
+                            break;
+                        case "SW" :
+                            angle = 225;
+                            break;
+                        case "WSW" :
+                            angle = 247.5;
+                            break;
+                        case "W" :
+                            angle = 270;
+                            break;
+                        case "WNW" :
+                            angle = 292.5;
+                            break;
+                        case "NW" :
+                            angle = 315;
+                            break;
+                        case "NNW" :
+                            angle = 337.5;
+                            break;
+                        default :
+                            angle = 0;
+                    }
+
+                    var symbol = new dong.PictureMarkerSymbol(p_url,20,20);
+                    symbol.setOffset(-10,18);
+                    symbol.setAngle(angle);
+                    var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
+                    var graphic = new dong.Graphic(point, symbol);
+
+                    app.gLyr[g_num].add(graphic);
+                    app.gLyr[g_num].setOpacity(fxOpacity);
+
+//                    if(g_num == 0){
+//                        app.gLyr1.add(graphic);
+//                        app.gLyr1.setOpacity(fxOpacity);
+//                    }else if(g_num == 1){
+//                        app.gLyr2.add(graphic);
+//                        app.gLyr2.setOpacity(fxOpacity);
+//                    }
+                });
+//                zmblockUI("#mapDiv0", "end");
+//                zmblockUI("#mapDiv1", "end");
+                console.log((new Date().getTime() - v1) + "num:" +g_num);
+            }).error(function (res) {
+//            	zmblockUI("#mapDiv"+g_num, "end");
+                swal('风场抽数，内部错误', '', 'error');
+            });*/
         }
     }
 
@@ -1226,14 +1368,15 @@ function setVideoPlayTime() {
 var judgmentObj = [];
 /*判断是否可以调用视频播放函数*/
 function judgment() {
+    console.log(judgmentObj)
     if(changeMsg.showWind == -1){
-        if(judgmentObj.length == 2){
+        if(judgmentObj.length == 1){
             window.setTimeout(function () {
                 videoPlay();
             },2000)
         }
     }else{
-        if(judgmentObj.length == 4){
+        if(judgmentObj.length == 1){
             window.setTimeout(function () {
                 videoPlay();
             },2000)
