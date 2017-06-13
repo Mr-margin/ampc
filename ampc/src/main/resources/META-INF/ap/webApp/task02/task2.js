@@ -138,6 +138,13 @@ var zTreeSetting = {
                     }
                 }
             });
+            //预案操作被渲染后，生成预案的datagrid
+            $('#planpanel').tabs('getTab','编辑现预案').panel({
+            	onOpen:function(){
+            		editPlanTableFun();
+            		console.log(212);
+            	}
+            });
             //当当前区域只有一个时段的时候，时段不能删除和进行编辑
             if (allData[areaIndex].timeItems.length <= 1) {
                 $('#timepanel').tabs('disableTab', '时段删除');
@@ -2533,4 +2540,44 @@ function findQJstatus() {
             scenarinoType(qjMsg.scenarinoStatus);
         }
     })
+}
+/*生成编辑预案的表格*/
+function editPlanTableFun(){
+	//把其中的id为-1的假预案清楚掉
+	var _tempPlan=$.grep(allData[selectedTimes.index].timeItems,function(n,i){
+		return n.planId>0;
+	});
+	$('#editPlanTable').datagrid({
+		data:_tempPlan,
+		fit:true,
+		columns:[[{
+			field:'planId',
+			title:'ID',
+			width:100
+		},{
+			field:'planName',
+			title:'预案名称',
+			width:100
+		},{
+			field:'timeStartDate',
+			title:'开始时间',
+			width:150,
+/*			formatter:function(){
+				
+			}*/
+		},{
+			field:'timeEndDate',
+			title:'结束时间',
+			width:150
+		}]],
+		onClickRow:function (index,row) {
+        	//用于作为单选行的操作，当点击一行后，其他行取消选中，在datagrid中需要把singleSelect取消
+            var rowNum=$(this).datagrid('getRows').length;
+            for(var i=0;i<rowNum;i++){
+            	if(i!=index){
+            		$(this).datagrid('uncheckRow',i)
+            	}
+            }
+        }
+	});
 }
