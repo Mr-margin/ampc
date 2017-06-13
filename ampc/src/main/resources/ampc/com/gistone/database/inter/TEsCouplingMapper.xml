@@ -428,6 +428,6 @@
 	FROM
 		"AMPC"."T_ES_COUPLING"
 	WHERE
-		ES_COUPLING_NAME = '#{esCouplingName,jdbcType=OTHER}
+		ES_COUPLING_NAME = #{esCouplingName,jdbcType=OTHER}
   </select>
 </mapper>
