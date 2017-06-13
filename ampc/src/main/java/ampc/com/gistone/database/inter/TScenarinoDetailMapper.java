@@ -343,4 +343,26 @@ public interface TScenarinoDetailMapper {
 	 * @date 2017年6月2日 下午7:33:20
 	 */
 	List<TScenarinoDetail> selectAllOnExecByPathdateAndtype(Map map);
+
+	/**
+	 * @Description: 修改情景执行的错误描述
+	 * @param errormsgMap
+	 * @return   
+	 * int  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月8日 下午8:12:33
+	 */
+	int updateModelErrorMSG(Map errormsgMap);
+
+	/**
+	 * @Description: 查找对最大的实时预报情景
+	 * @param userId
+	 * @return   
+	 * Date  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月12日 下午7:19:41
+	 */
+	Date getmaxRealpreiction(Long userId);
 }
