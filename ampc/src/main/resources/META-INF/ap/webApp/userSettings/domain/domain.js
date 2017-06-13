@@ -58,17 +58,20 @@ $(document).ready(function(){
 /**查询接口**/
 function getInfo(){
 	var  url = '/Domain/findAll';
+	var domain_id = vipspa.getMessage('domain');
+	console.log(domain_id.content.domain_id);
 	ajaxPost(url,{
 		'userId': userId
 	}).success(function (res) {
 		$.each(res.data,function(key,value){
-			if(value.haveMission == '已使用'){
+			if(value.domainId == domain_id.content.domain_id){
+				console.log(value);
 				pullPage(value);
 			}
 		});
         
     });
-}  
+}   
 
 /**数据导入页面**/
 function pullPage(value){

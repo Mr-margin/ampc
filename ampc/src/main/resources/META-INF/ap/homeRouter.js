@@ -231,6 +231,14 @@ $.when(dps_um).then(function(){
                     templateUrl: 'webApp/userSettings/domain/domain.html',
                     controller: 'webApp/userSettings/domain/domain.js'
                 },
+                '/domain_table': {//domain设置
+                    templateUrl: 'webApp/userSettings/domain/domain-table.html',
+                    controller: 'webApp/userSettings/domain/domain-table.js'
+                },
+                '/domain_details': {//domain设置
+                    templateUrl: 'webApp/userSettings/domain/domain-details.html',
+                    controller: 'webApp/userSettings/domain/domain-details.js'
+                },
                 '/sjkj': {      //数据空间
                     templateUrl: 'a.html',
                     controller: ''

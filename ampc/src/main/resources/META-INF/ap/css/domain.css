@@ -121,6 +121,54 @@
     border-color: #ff3d3d;
     margin:auto;
 }
+.btn-yellow {
+    display: block;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #f0ad4e;
+    border-color: #f0ad4e;
+    margin:auto;
+}
+.btn-green {
+    display: block;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #5cb85c;
+    margin:auto;
+}
 ::-webkit-scrollbar  
 {  
     width: 10px;  
@@ -223,4 +271,49 @@ background: rgba(0,0,0,0.4);
 	padding:0 10px !important;
 	margin-top: 5px;
 	margin-bottom: 5px;
+}
+
+.domain_box table{
+    font-size: 14px;
+	width: 100%;
+	border-top:  2px solid #ddd;
+    border-bottom: 2px solid #ddd;
+}
+.domain_box table th{
+	vertical-align: bottom;
+    border-bottom: 2px solid #ddd;
+    height: 30px;
+    line-height: 30px;
+    font-weight: bold;
+}
+.domain_box table tr{
+	display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+    border-top-color: inherit;
+    height: 30px;
+    line-height: 30px;
+}
+.domain_box table td{
+	padding: 8px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    border-top: 1px solid #ddd;
+    height: 30px;
+    line-height: 30px;
+}
+.domain_box table td button{
+	float: left;
+	margin-right: 10px;
+}
+#creat_domain input{
+    height: 30px !important;
+    line-height: 30px !important;
+    width: 100% !important;
+} 
+#creat_domain textarea{
+    width: 100% !important;
+}
+.domain_content{
+    margin: 20px;
 }
