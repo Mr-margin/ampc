@@ -64,7 +64,7 @@ function findPull(value){
 	dom += '<td class="col-3">';
 	dom += '<button class="btn-blue" onclick="examine(this)" domain_id="'+value.domainId+'">查看</button>';
 	dom += '<button class="btn-green" onclick="update(this)" domain_id="'+value.domainId+'">编辑</button> ';
-	dom += '<button class="btn-yellow" onclick="" domain_id="'+value.domainId+'">开启</button> ';
+	dom += '<button class="btn-yellow default" onclick="defaultSelect(this)" domain_id="'+value.domainId+'">开启</button> ';
 	dom += '<button class="btn-red" onclick="delDomain(this)" domain_id="'+value.domainId+'">删除</button>';
 	dom += '</td>';
 	dom += '</tr>';
@@ -150,3 +150,22 @@ function delDomain(th){
 	});
 }
 
+function defaultSelect(th){
+	var url = '/Domain/Valid';
+	var domain_id = $(th).attr('domain_id');
+	ajaxPost(url,{
+		'userId':userId,
+		'domainId':domain_id
+	}).success(function(){
+		if($(th).text() == '开启'){
+			$('.default').text('开启')
+			$(th).text('停用');
+			$('.default').css('background-color','#f0ad4e');
+			$(th).css('background-color','#ff8002');
+			swal("启用成功");
+		}else{
+			$(th).text('开启');
+			$(th).css('background-color','#f0ad4e');
+		}
+	});
+}
