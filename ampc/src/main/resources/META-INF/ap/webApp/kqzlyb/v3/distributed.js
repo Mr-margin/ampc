@@ -37,7 +37,11 @@ var changeMsg = {
     layer: 1,
     rows: 350,
     cols: 350,
-    pointNums:30//参数在点击两点之后获取
+    pointNums:30,//参数在点击两点之后获取
+    xi:'',
+    yi:'',
+    xa:'',
+    ya:''
 }
 
 /*不同时间分辨率下，不同的污染物*/
@@ -346,7 +350,12 @@ function addToMap(evt) {
 	var xa = graphic.geometry.paths[0][1][0];
 	var ya = graphic.geometry.paths[0][1][1]
 
-    getVerticalImg(xa,xi,ya,yi);
+    changeMsg.xi = xi;
+    changeMsg.yi = yi;
+    changeMsg.xa = xa;
+    changeMsg.ya = ya;
+
+    getVerticalImg(changeMsg.xa,changeMsg.xi,changeMsg.ya,changeMsg.yi);
 //	graphic.geometry.paths[0][0]
 
 }
@@ -497,6 +506,9 @@ function showDate(type) {
  */
 function updata() {
 	zmblockUI1("#map_in", "start");
+    if($('.showImg').css('display') == 'block'){
+        getVerticalImg(changeMsg.xa,changeMsg.xi,changeMsg.ya,changeMsg.yi);
+    }
     var parameter = {
         calcType: 'show',//请求类型 show：当前情景，还有相对变化绝对变化，此处只需要show
         showType: 'concn',//请求类型 concn：浓度，还有风场排放，此处只需要concn
@@ -553,7 +565,7 @@ function load_gis(p) {
 	
     var v1 = new Date().getTime();
     
-    /*ajaxPost('/extract/png', par).success(function (data) {
+    ajaxPost('/extract/png', par).success(function (data) {
     	// console.log(JSON.stringify(data));
     	
         if(data.status == 0){
@@ -586,9 +598,9 @@ function load_gis(p) {
     }).error(function (res) {
         zmblockUI1("#map_in", "end");
         swal('抽数，内部错误', '', 'error');
-    });*/
+    });
 
-    ajaxPost_w('http://166.111.42.85:8300/ampc/extract/png', {token:'',data:par}).success(function (data) {
+    /*ajaxPost_w('http://166.111.42.85:8300/ampc/extract/png', {token:'',data:par}).success(function (data) {
         // console.log(JSON.stringify(data));
 
         if(data.status == 0){
@@ -621,7 +633,7 @@ function load_gis(p) {
     }).error(function (res) {
         zmblockUI1("#map_in", "end");
         swal('抽数，内部错误', '', 'error');
-    });
+    });*/
 }
 
 
@@ -1000,6 +1012,7 @@ function videoPlay() {
         if(changeMsg.showWind !=-1){
             updataWind();
         }
+
     }
 }
 
