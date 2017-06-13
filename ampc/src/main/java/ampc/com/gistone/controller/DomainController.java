@@ -138,7 +138,6 @@ public class DomainController {
 			}
 			Long domainId=Long.valueOf(data.get("domainId").toString());
 			
-			
 			Map<String,Object> common=domainInfo.get("common");//获取domainInfo中的common模块数据
 			Map<String,Object> wrf=domainInfo.get("wrf");//获取domainInfo中的wrf模块数据
 			Map<String,Object> mcip=domainInfo.get("mcip");//获取domainInfo中的mcip模块数据
@@ -149,16 +148,32 @@ public class DomainController {
 			//common数据填充
 			common.put("map_proj", "lambert");//添加map_proj
 			common.put("stand_lon", common.get("ref_lon"));//添加stand_lon
+			int tier=Integer.valueOf(common.get("max_dom").toString());
 			//计算dx数据
-			Long[] dxs=new Long[3];
-			dxs[0]=Long.valueOf(common.get("dx").toString());
+			Long[] dxs=new Long[tier];
+			if(tier==1){
+				dxs[0]=Long.valueOf(common.get("dx").toString());	
+			}else if(tier==2){
+				dxs[0]=Long.valueOf(common.get("dx").toString());
+				dxs[1]=dxs[0]/3;
+			}else if(tier==3){
+				dxs[0]=Long.valueOf(common.get("dx").toString());
 			dxs[1]=dxs[0]/3;
 			dxs[2]=dxs[1]/3;
+			}
 			//计算dy数据
-			Long[] dys=new Long[3]; 
-			dys[0]=Long.valueOf(common.get("dy").toString());
-			dys[1]=dxs[0]/3;
-			dys[2]=dxs[1]/3;
+			Long[] dys=new Long[tier]; 
+			if(tier==1){
+				dys[0]=Long.valueOf(common.get("dy").toString());
+				
+			}else if(tier==2){
+				dys[0]=Long.valueOf(common.get("dy").toString());
+				dys[1]=dxs[0]/3;
+			}else if(tier==3){
+				dys[0]=Long.valueOf(common.get("dy").toString());
+				dys[1]=dxs[0]/3;
+				dys[2]=dxs[1]/3;
+			}
 			 String db="";
 			  for(int x=0;x<dxs.length;x++){
 				  if(x==dxs.length){
@@ -190,14 +205,24 @@ public class DomainController {
 		   String e_we=wrf.get("e_we").toString();
 		  List<String> arr = Arrays.asList(e_we.split(","));
 		   //计算nx数据
-		   List<Long> nx=new ArrayList();
-		   nx.add((Long.valueOf(arr.get(0))-((btrim+1))*2)-1);
-		   if(arr.size()>=2){
-			   nx.add((Long.valueOf(arr.get(1))-((btrim+1))*2)-1);
-		   }
-		   if(arr.size()>=3){
-			   nx.add((Long.valueOf(arr.get(2))-((btrim+1))*2)-1);   
-		   }
+		  List<Long> nx=new ArrayList();
+		  if(tier==1){
+			  nx.add((Long.valueOf(arr.get(0))-((btrim+1))*2)-1); 
+			  
+		  }else if(tier==2){
+			  nx.add((Long.valueOf(arr.get(0))-((btrim+1))*2)-1);
+			   if(arr.size()>=2){
+				   nx.add((Long.valueOf(arr.get(1))-((btrim+1))*2)-1);
+			   }  
+		  }else if(tier==3){
+			  nx.add((Long.valueOf(arr.get(0))-((btrim+1))*2)-1);
+			   if(arr.size()>=2){
+				   nx.add((Long.valueOf(arr.get(1))-((btrim+1))*2)-1);
+			   } 
+			   if(arr.size()>=3){
+				   nx.add((Long.valueOf(arr.get(2))-((btrim+1))*2)-1);   
+			   }
+		  }
 		   String n="";
 		  for(int x=1;x<=nx.size();x++){
 			  if(x==nx.size()){
@@ -220,17 +245,42 @@ public class DomainController {
 		   List<String> j_parent_starts =  Arrays.asList(j_parent_start.split(","));
 		 //为wrf中的i_parent_start添加默认数据
 		   List<Long> i=new ArrayList();
-		   i.add(1l);
-		   i.add(Long.valueOf(i_parent_starts.get(0)));
-		   if(i_parent_starts.size()>=2){
-			i.add(Long.valueOf(i_parent_starts.get(1)));      
+		   if(tier==1){
+			   i.add(Long.valueOf(i_parent_starts.get(0)));   
+		   }else if(tier==2){
+			   i.add(Long.valueOf(i_parent_starts.get(0)));
+			   if(i_parent_starts.size()>=2){
+			   i.add(Long.valueOf(i_parent_starts.get(1)));
+			   }
+		   }else if(tier==3){
+			   i.add(Long.valueOf(i_parent_starts.get(0)));
+			   if(i_parent_starts.size()>=2){
+			   i.add(Long.valueOf(i_parent_starts.get(1)));
+			   }
+			   if(i_parent_starts.size()>=3){
+				i.add(Long.valueOf(i_parent_starts.get(2)));      
+			   }  
 		   }
+		
 		 //为wrf中的j_parent_start添加默认数据
 		   List<Long> j=new ArrayList();
-		   j.add(1l);
-		   j.add(Long.valueOf(j_parent_starts.get(0)));
-		   if(j_parent_starts.size()>=2){
-		   j.add(Long.valueOf(j_parent_starts.get(1)));
+		   
+		   
+		   if(tier==1){
+			   j.add(Long.valueOf(j_parent_starts.get(0))); 
+		   }else if(tier==2){
+			   j.add(Long.valueOf(j_parent_starts.get(0)));
+			   if(j_parent_starts.size()>=2){
+			   j.add(Long.valueOf(j_parent_starts.get(1)));
+			   } 
+		   }else if(tier==3){
+			   j.add(Long.valueOf(j_parent_starts.get(0)));
+			   if(j_parent_starts.size()>=2){
+			   j.add(Long.valueOf(j_parent_starts.get(1)));
+			   }
+			   if(j_parent_starts.size()>=3){
+			   j.add(Long.valueOf(j_parent_starts.get(2)));
+			   } 
 		   }
 		   String js="";
 			  for(int x=1;x<=j.size();x++){
@@ -255,14 +305,25 @@ public class DomainController {
 		   
 		   //计算ny数据
 		   List<Long> ny=new ArrayList();
-		   ny.add((Long.valueOf(arr2.get(0))-(btrim+1))*2-1);
-		   if(arr2.size()>=2){
-			   ny.add((Long.valueOf(arr2.get(1))-(btrim+1))*2-1);  
+		   if(tier==1){
+			   ny.add((Long.valueOf(arr2.get(0))-(btrim+1))*2-1); 
+			   
+		   }else if(tier==2){
+			   ny.add((Long.valueOf(arr2.get(0))-(btrim+1))*2-1);
+			   if(arr2.size()>=2){
+				   ny.add((Long.valueOf(arr2.get(1))-(btrim+1))*2-1);  
+			   }    
+		   }else if(tier==3){
+			   ny.add((Long.valueOf(arr2.get(0))-(btrim+1))*2-1);
+			   if(arr2.size()>=2){
+				   ny.add((Long.valueOf(arr2.get(1))-(btrim+1))*2-1);  
+			   }
+			 
+			   if(arr2.size()>=3){
+				   ny.add((Long.valueOf(arr2.get(2))-(btrim+1))*2-1);  
+			   }   
 		   }
-		 
-		   if(arr2.size()>=3){
-			   ny.add((Long.valueOf(arr2.get(2))-(btrim+1))*2-1);  
-		   }
+		  
 		   String nys="";
 			  for(int x=1;x<=ny.size();x++){
 				  if(x==ny.size()){
@@ -276,14 +337,23 @@ public class DomainController {
 		   
 		   //计算xorig数据
 		   List<Long> xorig=new ArrayList();
-		   xorig.add((-dxs[0]*(Long.valueOf(arr.get(0))-1)/2)+(dxs[0]*(btrim+1)));
-		   if(arr.size()>=1&&i.size()>=2){
-		   xorig.add((-dxs[0]*(Long.valueOf(arr.get(0))-1)/2)+(dxs[0]*(i.get(1)-1)) + (dxs[1]*(btrim+1)));  
+		   if(tier==1){
+			   xorig.add((-dxs[0]*(Long.valueOf(arr.get(0))-1)/2)+(dxs[0]*(btrim+1)));  
+			   
+		   }else if(tier==2){
+			   xorig.add((-dxs[0]*(Long.valueOf(arr.get(0))-1)/2)+(dxs[0]*(btrim+1)));
+			   if(arr.size()>=1&&i.size()>=2){
+			   xorig.add((-dxs[0]*(Long.valueOf(arr.get(0))-1)/2)+(dxs[0]*(i.get(1)-1)) + (dxs[1]*(btrim+1)));  
+			   } 
+		   }else if(tier==3){
+			   xorig.add((-dxs[0]*(Long.valueOf(arr.get(0))-1)/2)+(dxs[0]*(btrim+1)));
+			   if(arr.size()>=1&&i.size()>=2){
+			   xorig.add((-dxs[0]*(Long.valueOf(arr.get(0))-1)/2)+(dxs[0]*(i.get(1)-1)) + (dxs[1]*(btrim+1)));  
+			   }
+			   if(arr.size()>=1&&i.size()==3){
+				 xorig.add((-dxs[0]*(Long.valueOf(arr.get(0))-1)/2)+(dxs[0]*(i.get(1)-1))+(dxs[1]*(i.get(2))-1) +(dxs[2]*(btrim+1)));
+			   }     
 		   }
-		   if(arr.size()>=1&&i.size()==3){
-			 xorig.add((-dxs[0]*(Long.valueOf(arr.get(0))-1)/2)+(dxs[0]*(i.get(1)-1))+(dxs[1]*(i.get(2))-1) +(dxs[2]*(btrim+1)));
-		   }
-		   
 		   String xorigs="";
 			  for(int x=1;x<=xorig.size();x++){
 				  if(x==xorig.size()){
@@ -297,15 +367,22 @@ public class DomainController {
 		   cmaq.put("xorig", xorigs);
 		   //计算yorig数据
 		   List<Long> yorig=new ArrayList();
-		   yorig.add((-dys[0]*(Long.valueOf(arr2.get(0))-1)/2)+(dys[0]*(btrim+1)));
-		   
-		   if(arr2.size()>=1&&j.size()>=2){
-			   yorig.add((-dys[0]*(Long.valueOf(arr2.get(0))-1)/2)+(dys[0]*(j.get(1)-1)) + (dys[1]*(btrim+1))); 
-			   }
-		   if(arr2.size()>=1&&j.size()==3){
-			   yorig.add((-dys[0]*(Long.valueOf(arr2.get(0))-1)/2)+(dys[0]*(j.get(1)-1))+(dys[1]*(j.get(2)-1)) +(dys[2]*(btrim+1)));
-			   }
-		   
+		   if(tier==1){
+			   yorig.add((-dys[0]*(Long.valueOf(arr2.get(0))-1)/2)+(dys[0]*(btrim+1)));
+		   }else if(tier==2){
+			   yorig.add((-dys[0]*(Long.valueOf(arr2.get(0))-1)/2)+(dys[0]*(btrim+1))); 
+			   if(arr2.size()>=1&&j.size()>=2){
+				   yorig.add((-dys[0]*(Long.valueOf(arr2.get(0))-1)/2)+(dys[0]*(j.get(1)-1)) + (dys[1]*(btrim+1))); 
+				   }  
+		   }else if(tier==3){
+			   yorig.add((-dys[0]*(Long.valueOf(arr2.get(0))-1)/2)+(dys[0]*(btrim+1))); 
+			   if(arr2.size()>=1&&j.size()>=2){
+				   yorig.add((-dys[0]*(Long.valueOf(arr2.get(0))-1)/2)+(dys[0]*(j.get(1)-1)) + (dys[1]*(btrim+1))); 
+				   }
+			   if(arr2.size()>=1&&j.size()==3){
+				   yorig.add((-dys[0]*(Long.valueOf(arr2.get(0))-1)/2)+(dys[0]*(j.get(1)-1))+(dys[1]*(j.get(2)-1)) +(dys[2]*(btrim+1)));
+				   }   
+		   } 
 		   String yorigs="";
 			  for(int x=1;x<=yorig.size();x++){
 				  if(x==yorig.size()){
@@ -320,10 +397,30 @@ public class DomainController {
 		   //因为domainInfo中没有cmaq因此要添加进去
 		   domainInfo.put("cmaq", cmaq); 
 		   //wrf添加默认数据
-		   wrf.put("version", "WRF3.7"); 
-		   wrf.put("parent_id",  "1,1,2");
-		   wrf.put("parent_grid_ratio", "1,3,3");
-		   wrf.put("parent_time_step_ratio", "1,3,3");
+		   wrf.put("version", "WRF3.7");
+		   if(tier==1){
+			   wrf.put("parent_id",  "1");
+		   }else if(tier==2){
+			   wrf.put("parent_id",  "1,1");
+		   }else if(tier==3){
+			   wrf.put("parent_id",  "1,1,2");   
+		   }
+		  
+           if(tier==1){
+        	   wrf.put("parent_grid_ratio", "1");
+		   }else if(tier==2){
+			   wrf.put("parent_grid_ratio", "1,3");   
+		   }else if(tier==3){
+			   wrf.put("parent_grid_ratio", "1,3,3");
+		   }
+           if(tier==1){
+        	   wrf.put("parent_time_step_ratio", "1");  
+		   }else if(tier==2){
+			   wrf.put("parent_time_step_ratio", "1,3");
+		   }else if(tier==3){
+			   wrf.put("parent_time_step_ratio", "1,3,3");
+		   }
+		  
 		   wrf.put("e_vert", "24");
 		   wrf.put("eta_levels", "1.000,0.995,0.988,0.980,0.970,0.956,0.938,0.916,0.893,0.868,0.839,0.808,0.777,0.744,0.702,0.648,0.582,0.500,0.400,0.300,0.200,0.120,0.052,0.000");
 		   wrf.put("mp_physics", "6");
