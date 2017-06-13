@@ -45,7 +45,6 @@ function examine(th){
 	    }
 	};
 	vipspa.setMessage(msg);
-	$.session.set('domain_id', domain_id);
 	location.hash = '#/domain_details';
 }
 
@@ -58,7 +57,6 @@ function update(th){
 	    }
 	};
 	vipspa.setMessage(msg);
-	$.session.set('domain_id', domain_id);
 	location.hash = '#/domain';
 }
 
