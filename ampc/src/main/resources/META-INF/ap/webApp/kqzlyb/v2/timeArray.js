@@ -32,8 +32,9 @@ var speciesArr = {
 var meteorArr = {
 //    day: ["TEMP","PRSFC","PT","RH","WSPD"],
 //    hour: ["TEMP","PRSFC","PT","RH","WSPD"]
-		day: ["温度","湿度","风速","气压","降水"],
-	    hour: ["温度","湿度","风速","气压","降水"]
+		day: ["气压","温度","湿度","降水","风速"],
+		hour: ["气压","温度","湿度","降水","风速"]
+	    
 };
 
 
@@ -147,7 +148,7 @@ function changeType(type) {
             dps_Station[changeMsg.city + changeMsg.type] = setStation(changeMsg.city, changeMsg.type);
         }
         requestDate();
-        updata();
+//        updata();
     }
 
 }
@@ -184,15 +185,18 @@ function initWrwDate(s, e, start, end) {
             firstDay: 1
         },
         startDate: start,
-        endDate: end,
+        endDate: start,
         opens: "right"
     }, function (start, end, label) {
         changeMsg.startD = start.format('YYYY-MM-DD');
         // changeMsg.endD = end.format('YYYY-MM-DD');
         if(moment(changeMsg.startD).isAfter(moment($("#wrwEndDate").val()))){
-            $("#wrwEndDate").val(changeMsg.startD)
+//            $("#wrwEndDate").val(changeMsg.startD);
+        	$('#wrwEndDate').data('daterangepicker').setStartDate(changeMsg.startD);
+            $('#wrwEndDate').data('daterangepicker').setEndDate(changeMsg.startD);
+            changeMsg.endD=changeMsg.startD;
         }
-        changeMsg.endD=moment($("#wrwEndDate").val()).format('YYYY-MM-DD');
+//        changeMsg.endD=moment($("#wrwEndDate").val()).format('YYYY-MM-DD');
         updata(true);
     });
     var ds = $('#wrwStartDate').data('daterangepicker');
@@ -221,16 +225,18 @@ function initWrwDate(s, e, start, end) {
             ],
             firstDay: 1
         },
-        startDate: start,
+        startDate: end,
         endDate: end,
         opens: "right"
     }, function (start, end, label) {
         // changeMsg.startD = start.format('YYYY-MM-DD');
         changeMsg.endD = end.format('YYYY-MM-DD');
         if(moment(changeMsg.endD).isBefore(moment($("#wrwStartDate").val()))){
-            $("#wrwStartDate").val(changeMsg.endD);
+//            $("#wrwStartDate").val(changeMsg.endD);
+            $('#wrwStartDate').data('daterangepicker').setStartDate(changeMsg.endD);
+            $('#wrwStartDate').data('daterangepicker').setEndDate(changeMsg.endD);
+            changeMsg.startD= changeMsg.endD;
         }
-        changeMsg.startD= changeMsg.endD
         updata(true);
     });
     var de = $('#wrwEndDate').data('daterangepicker');
@@ -303,15 +309,18 @@ function initQxysDate(s, e, start, end) {
             firstDay: 1
         },
         startDate: start,
-        endDate: end,
+        endDate: start,
         opens: "right"
     }, function (start, end, label) {
         changeMsg.startD = start.format('YYYY-MM-DD');
         // changeMsg.endD = end.format('YYYY-MM-DD');
         if(moment(changeMsg.startD).isAfter(moment($("#qxysEndDate").val()))){
-            $("#qxysEndDate").val(changeMsg.startD)
+//            $("#qxysEndDate").val(changeMsg.startD);
+        	$('#qxysEndDate').data('daterangepicker').setStartDate(changeMsg.startD);
+            $('#qxysEndDate').data('daterangepicker').setEndDate(changeMsg.startD);
+            changeMsg.endD=changeMsg.startD;
         }
-        changeMsg.endD=moment($("#qxysEndDate").val()).format('YYYY-MM-DD');
+//        changeMsg.endD=moment($("#qxysEndDate").val()).format('YYYY-MM-DD');
         updata(true);
     });
     var ds = $('#qxysStartDate').data('daterangepicker');
@@ -340,16 +349,19 @@ function initQxysDate(s, e, start, end) {
             ],
             firstDay: 1
         },
-        startDate: start,
+        startDate: end,
         endDate: end,
         opens: "right"
     }, function (start, end, label) {
         // changeMsg.startD = start.format('YYYY-MM-DD');
         changeMsg.endD = end.format('YYYY-MM-DD');
+        
         if(moment(changeMsg.endD).isBefore(moment($("#qxysStartDate").val()))){
-            $("#qxysStartDate").val(changeMsg.endD);
+//            $("#qxysStartDate").val(changeMsg.endD);
+        	$('#qxysStartDate').data('daterangepicker').setStartDate(changeMsg.endD);
+            $('#qxysStartDate').data('daterangepicker').setEndDate(changeMsg.endD);
+            changeMsg.startD= changeMsg.endD;
         }
-        changeMsg.startD= changeMsg.endD
         updata(true);
     });
     var de = $('#qxysEndDate').data('daterangepicker');
@@ -998,15 +1010,9 @@ function initEcharts() {
 			            },//去除网格线
     			 });
         		}
-        		
         	}
+        	
         }
-
-//		var es = echarts.init(document.getElementById(tname[i]));
-//		es.group = 'group1';
-//		echarts.connect([es]);
-//	    es.setOption(option);
-//	    $(window).resize(es.resize);
 
         if("AQI"!=tname[i]){
             var es = echarts.init(document.getElementById(tname[i]));

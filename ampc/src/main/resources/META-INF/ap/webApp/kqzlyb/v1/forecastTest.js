@@ -141,7 +141,7 @@ function initWrwDate(s, e, start, end) {
             // $("#wrwStartDate").val(changeMsg.endD);
             $('#wrwStartDate').data('daterangepicker').setStartDate(changeMsg.endD);
             $('#wrwStartDate').data('daterangepicker').setEndDate(changeMsg.endD);
-            changeMsg.startD= changeMsg.endD
+            changeMsg.startD= changeMsg.endD;
         }
         updata(true);
     });
@@ -266,7 +266,7 @@ function initQxysDate(s, e, start, end) {
             // $("#wrwStartDate").val(changeMsg.endD);
             $('#qxysStartDate').data('daterangepicker').setStartDate(changeMsg.endD);
             $('#qxysStartDate').data('daterangepicker').setEndDate(changeMsg.endD);
-            changeMsg.startD= changeMsg.endD
+            changeMsg.startD= changeMsg.endD;
         }
         updata(true);
     });
