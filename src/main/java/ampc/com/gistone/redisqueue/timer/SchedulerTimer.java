@@ -46,6 +46,11 @@ import java.util.Map;
 
 
 
+
+
+
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -62,6 +67,7 @@ import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.inter.TUngribMapper;
+import ampc.com.gistone.database.model.TDomainMissionWithBLOBs;
 import ampc.com.gistone.database.model.TGlobalSetting;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
@@ -115,9 +121,9 @@ public class SchedulerTimer<V> {
 	@Autowired
 	private ToDataUngribUtil toDataUngribUtil;
 	
-	//domain信息表映射(ceshi)
-		@Autowired
-		private TDomainMissionMapper tDomainMissionMapper;	
+	//domain信息表映射
+	@Autowired
+	private TDomainMissionMapper tDomainMissionMapper;	
 	public SchedulerTimer() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -135,300 +141,363 @@ public class SchedulerTimer<V> {
 	 */
 //	@Scheduled(cron="0 0 11 * * ?")
 	@Scheduled(cron="0 30 09 * * ?")   //每天9:30定时触发创建实时预报任务---服务器配置
-//	@Scheduled(fixedRate = 50000)
+//	@Scheduled(fixedRate = 5000)
 	public void realForTimer() {
 		boolean runningSetting = configUtil.isRunningSetting();
 		LogUtil.getLogger().info("realForTimer:runningSetting:"+runningSetting);
 		if (runningSetting) {
-			//Date date = new Date();
 			LogUtil.getLogger().info("realForTimer：创建实时预报任务开始");
-		//	logger.info("我每天中午12点开始执行");
-			Long scenarinoId = null;
 			Long cores = null;
 			int  i = 0;
-			int insertSelective = 0;
 			//查找实时时预报任务并修改任务为最新的时间状态 
 			List<TGlobalSetting>  list = tGlobalSettingMapper.selectAll();
-			for (TGlobalSetting tGlobalSetting : list) {
-				Long userId = tGlobalSetting.getUserid();
-				Integer spinup = tGlobalSetting.getSpinup();
-				cores = Long.parseLong(tGlobalSetting.getCores().toString());
-				Integer rangeday = tGlobalSetting.getRangeday();
-				Long domainId = tGlobalSetting.getDomainId();
-				Long esCouplingId = tGlobalSetting.getEsCouplingId();
-				//创建任务对象
-				TMissionDetail MissionDetail = new TMissionDetail();
-				MissionDetail.setMissionName("实时预报任务"+userId);
-				LogUtil.getLogger().info("创建了用户"+userId+"实时预报任务");
-				MissionDetail.setMissionDomainId(domainId);
-				MissionDetail.setEsCouplingId(esCouplingId);
-				MissionDetail.setUserId(userId);
-				//MissionDetail.setMissionAddTime(DateUtil.DateToDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-			//	MissionDetail.setIsEffective("1");
-				MissionDetail.setMissionStatus("1");
-				//第一次需要创建任务 后面的则是修改 
-				List<TMissionDetail> missionlist = tMissionDetailMapper.selectMissionDetail(userId);
-				Long missionId = null ;
-				
-				if (missionlist.isEmpty()) {
-					//没有则创建实时预报任务 没有时间段
-					//设置任务开始时间
-					Date missionStartDate = DateUtil.DateToDate(new Date(), "yyyy-MM-dd");
-					//设置开始时间
-					MissionDetail.setMissionStartDate(missionStartDate);
-					//添加一个新的任务
-					int insert = tMissionDetailMapper.insertSelective(MissionDetail);
-				    //得到相应的任务ID
-					 List<TMissionDetail> selectByEntity = tMissionDetailMapper.selectByEntity(MissionDetail);
-					 missionId = selectByEntity.get(0).getMissionId();
-					 LogUtil.getLogger().info("创建了一个新的实时预报任务"+missionId);
-				}
-				
-				else {
-					//如果不为空 表示至少有一个实时预报任务
-					boolean flag = false;
-					Long oldMissionid = null;
-					boolean escouplingflag = false; 
-					Date oldmissionDate = null;
-					//清单不一样的时候的旧的任务的ID
-					Long oldMissionid_ecgouplingId = null ;
-					for (TMissionDetail tMissionDetail : missionlist) {
-						//得到所有的该用户下的domain创建的实时预报的任务
-						Long missionDomainId = tMissionDetail.getMissionDomainId();
-						Long oldesCouplingId = tMissionDetail.getEsCouplingId();
-						if (domainId==missionDomainId) {
-							if (esCouplingId==oldesCouplingId) {
-								//没有跟换domainid同时也没有换清单的情况下 修改任务或者覆盖一次
-								//设置任务的修改时间 数据库自己添加
-								//得到相应的任务ID
-								missionId = tMissionDetail.getMissionId();
-								MissionDetail.setMissionId(missionId);
-								LogUtil.getLogger().info(missionId+"任务开启了");
-								int update = tMissionDetailMapper.updateByPrimaryKeySelective(MissionDetail);
-								flag = true;
-								escouplingflag= true;
-								break;
-							}
-							if (esCouplingId!=oldesCouplingId) {
-								//没有跟换domainid同时更换清单的情况下 新建一个任务
-								//旧的任务ID
-								oldMissionid_ecgouplingId = tMissionDetail.getMissionId();
-								flag = true;
-							}
-							flag = true;
-						}
-						else {
-							//domainID不一致的时候 记录当条任务ID  domainid 不一样是时候 会让判断清单ID的flag为true 
-							escouplingflag = true;
-							oldMissionid = tMissionDetail.getMissionId();
-						}
-					}
-					//清单不一致的时候穿件新的任务
-					if (escouplingflag==false) {
-						String missionend = DateUtil.DATEtoString(new Date(), "yyyy-MM-dd");
-						missionend = missionend+" "+"23:59:59";
-						Date oldmissionenddate = DateUtil.StrtoDateYMD(missionend, "yyyy-MM-dd HH:mm:ss");
+			if (null!=list) {
+				for (TGlobalSetting tGlobalSetting : list) {
+					Long userId = tGlobalSetting.getUserid();
+					Integer spinup = tGlobalSetting.getSpinup();
+					cores = Long.parseLong(tGlobalSetting.getCores().toString());
+					Integer rangeday = tGlobalSetting.getRangeday();
+					Long domainId = tGlobalSetting.getDomainId();
+					Long esCouplingId = tGlobalSetting.getEsCouplingId();
+					//前置操作-获取最大的预报起报时间
+					Date preHandledate= preHandle(userId,domainId);
+					//创建任务对象
+					TMissionDetail MissionDetail = new TMissionDetail();
+					MissionDetail.setMissionName("实时预报任务"+userId);
+					LogUtil.getLogger().info("创建了用户"+userId+"实时预报任务");
+					MissionDetail.setMissionDomainId(domainId);
+					MissionDetail.setEsCouplingId(esCouplingId);
+					MissionDetail.setUserId(userId);
+					//MissionDetail.setMissionAddTime(DateUtil.DateToDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+				//	MissionDetail.setIsEffective("1");
+					MissionDetail.setMissionStatus("1");
+					//第一次需要创建任务 后面的则是修改 
+					List<TMissionDetail> missionlist = tMissionDetailMapper.selectMissionDetail(userId);
+					Long missionId = null ;
+					if (missionlist.isEmpty()) {
+						//没有则创建实时预报任务 没有时间段
+						//设置任务开始时间
+						Date missionStartDate = DateUtil.DateToDate(new Date(), "yyyy-MM-dd");
 						//设置开始时间
-						TMissionDetail updateOlDetail = new TMissionDetail();
-						updateOlDetail.setMissionEndDate(oldmissionenddate);
-						updateOlDetail.setMissionId(oldMissionid_ecgouplingId);
-						updateOlDetail.setIsEffective("0");
-						//修改旧任务 相当于删除
-						int update = tMissionDetailMapper.updateByPrimaryKeySelective(updateOlDetail);
-						//添加新任务
-						Date missionDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
-						MissionDetail.setMissionStartDate(missionDate);
-						int insertSelec = tMissionDetailMapper.insertSelective(MissionDetail);
-						//获取新任务的任务ID
-						missionId = tMissionDetailMapper.getmissionidbyMission(MissionDetail);
-						LogUtil.getLogger().info("创建了一个新的实时预报任务"+missionId);
+						MissionDetail.setMissionStartDate(missionStartDate);
+						//添加一个新的任务
+						int insert = tMissionDetailMapper.insertSelective(MissionDetail);
+					    //得到相应的任务ID
+						 List<TMissionDetail> selectByEntity = tMissionDetailMapper.selectByEntity(MissionDetail);
+						 missionId = selectByEntity.get(0).getMissionId();
+						 LogUtil.getLogger().info("创建了一个新的实时预报任务"+missionId);
 					}
 					
-					if (flag==false) {
-						//用户更改了domainid 需要新建一个新的实时预报任务
-						String missionend = DateUtil.DATEtoString(new Date(), "yyyy-MM-dd");
-						missionend = missionend+" "+"23:59:59";
-						Date oldmissionenddate = DateUtil.StrtoDateYMD(missionend, "yyyy-MM-dd HH:mm:ss");
-						//设置开始时间
-						//查找该用户 该domain 该清单的情况下只能有一个实时预报任务
-						TMissionDetail updateOlDetail = new TMissionDetail();
-						//添加旧任务的结束时间
-						updateOlDetail.setMissionEndDate(oldmissionenddate);
-						updateOlDetail.setMissionId(oldMissionid);
-						updateOlDetail.setIsEffective("0");
-						//修改旧任务 相当于删除
-						try {
-							int update = tMissionDetailMapper.updateByPrimaryKeySelective(updateOlDetail);
-						} catch (Exception e) {
-							// TODO: handle exception
-							LogUtil.getLogger().error("修改实时预报任务出现异常！该任务的ID是"+oldMissionid);
-						}
-						Date missionDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
-						MissionDetail.setMissionStartDate(missionDate);
-						//添加新任务
-						try {
-							int insertSelec = tMissionDetailMapper.insertSelective(MissionDetail);
-							missionId = tMissionDetailMapper.getmissionidbyMission(MissionDetail);
-							if (insertSelec>0) {
-								LogUtil.getLogger().info("创建了一个新的实时预报任务"+missionId);
+					else {
+						//如果不为空 表示至少有一个实时预报任务
+						boolean flag = false;
+						Long oldMissionid = null;
+						boolean escouplingflag = false; 
+						Date oldmissionDate = null;
+						//清单不一样的时候的旧的任务的ID
+						Long oldMissionid_ecgouplingId = null ;
+						for (TMissionDetail tMissionDetail : missionlist) {
+							//得到所有的该用户下的domain创建的实时预报的任务
+							Long missionDomainId = tMissionDetail.getMissionDomainId();
+							Long oldesCouplingId = tMissionDetail.getEsCouplingId();
+							if (domainId==missionDomainId) {
+								if (esCouplingId==oldesCouplingId) {
+									//没有跟换domainid同时也没有换清单的情况下 修改任务或者覆盖一次
+									//设置任务的修改时间 数据库自己添加
+									//得到相应的任务ID
+									missionId = tMissionDetail.getMissionId();
+									MissionDetail.setMissionId(missionId);
+									LogUtil.getLogger().info(missionId+"任务开启了");
+									int update = tMissionDetailMapper.updateByPrimaryKeySelective(MissionDetail);
+									flag = true;
+									escouplingflag= true;
+									break;
+								}
+								if (esCouplingId!=oldesCouplingId) {
+									//没有跟换domainid同时更换清单的情况下 新建一个任务
+									//旧的任务ID
+									oldMissionid_ecgouplingId = tMissionDetail.getMissionId();
+									flag = true;
+								}
+								flag = true;
 							}
-						} catch (Exception e) {
-							// TODO: handle exception
-							LogUtil.getLogger().error("创建新的实时预报任务出现异常！",e);
+							else {
+								//domainID不一致的时候 记录当条任务ID  domainid 不一样是时候 会让判断清单ID的flag为true 
+								escouplingflag = true;
+								oldMissionid = tMissionDetail.getMissionId();
+							}
 						}
-						//获取新任务的任务ID
-					}
-				}
-				
-				//创建实时预报情景
-				TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
-				tScenarinoDetail.setScenarinoAddTime(new Date());
-				tScenarinoDetail.setScenarinoName("实时预报情景"+DateUtil.DATEtoString(new Date(), "yyyyMMdd"));
-				//系统的头一天为情景开始时间
-				Date scenarinoStartDate = DateUtil.DateToDate(DateUtil.ChangeDay(new Date(), -1), "yyyyMMdd"); 
-				tScenarinoDetail.setScenarinoStartDate(scenarinoStartDate);
-				//系统加上rangeday-2为情景结束时间
-				int rang = rangeday-2;
-				Date scenarinoEndDate = DateUtil.DateToDate( DateUtil.ChangeDay(new Date(), rang),"yyyyMMdd");
-				String end = DateUtil.DATEtoString(scenarinoEndDate, "yyyy-MM-dd");
-				end = end+" "+"23:59:59";
-				scenarinoEndDate = DateUtil.StrtoDateYMD(end, "yyyy-MM-dd HH:mm:ss");
-				tScenarinoDetail.setScenarinoEndDate(scenarinoEndDate);
-				//设置pathdate
-				Date pathDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
-				tScenarinoDetail.setPathDate(pathDate);
-				tScenarinoDetail.setScenarinoType((long)4);
-				//设置状态 5 表示可执行
-				tScenarinoDetail.setScenarinoStatus((long)5);
-				tScenarinoDetail.setMissionId(missionId);
-				tScenarinoDetail.setUserId(userId);
-				tScenarinoDetail.setIsEffective("1");
-				//基础日期9
-				Date basisTime = DateUtil.ChangeDay(pathDate, -2);
-				tScenarinoDetail.setBasisTime(basisTime);
-				Map Parmap = new HashMap();
-				Parmap.put("userId", userId);
-				Parmap.put("pathDate", pathDate);
-				//查询当天的情景是否被创建（测试时候定时器时间间隔比较小测试用）
-				TScenarinoDetail scen_detail = tScenarinoDetailMapper.getForecastScenID(Parmap);
-				if (null!=scen_detail) {
-					LogUtil.getLogger().info("实时预报情景已经建立了");
-					//检查该情景的运行状态，如果运行fnl出错，则重新运行，如果gfs运行出错，和运行正常，则跳出循环
-					//chackRunningStatus(scen_detail);
-					break;
-				}
-				//查询上一天的实时预报情景ID 作为当天的实时预报基础情景
-				Date yesDate = DateUtil.ChangeDay(pathDate, -1);
-				Long basisScenarinoId = tScenarinoDetailMapper.selectBasisId(yesDate);
-				if (null==basisScenarinoId) {
-					LogUtil.getLogger().info("系统第一次创建实时预报情景");
-				}
-				tScenarinoDetail.setBasisScenarinoId(basisScenarinoId);
-				tScenarinoDetail.setScenType("4");
-				tScenarinoDetail.setSpinup((long)spinup);
-				tScenarinoDetail.setRangeDay((long)rangeday);
-				tScenarinoDetail.setExpand3(cores.toString());
-				try {
-					//创建新的情景
-					insertSelective = tScenarinoDetailMapper.insertSelective(tScenarinoDetail);
-					if (insertSelective>0) {
-						LogUtil.getLogger().info("创建了新的实时预报");
-					}else {
-						throw new SQLException("SchedulerTimer  创建了新的实时预报出错!");
-					}
-				} catch (Exception e) {
-					LogUtil.getLogger().error("SchedulerTimer realForTimer  创建了新的实时预报出错!",e);
-				}
-				
-				//创建情景对应的tasksstatus
-				TTasksStatus tTasksStatus = new TTasksStatus();
-				try {
-					//得到刚新建的情景ID
-					scenarinoId = tScenarinoDetailMapper.selectforecastid(tScenarinoDetail);
-					tTasksStatus.setTasksScenarinoId(scenarinoId);
-					tTasksStatus.setTasksScenarinoStartDate(scenarinoStartDate);
-					tTasksStatus.setTasksScenarinoEndDate(scenarinoEndDate);
-					tTasksStatus.setTasksRangeDay((long)rangeday);
-					//添加该情景到tasksstatus表
-					i = tTasksStatusMapper.insertSelective(tTasksStatus);
-					if (i>0) {
-						LogUtil.getLogger().info("添加预报到tasks表成功！");
-					}else {
-						throw new SQLException("SchedulerTimer  添加预报到tasks表失败!");
-					}
-				} catch (Exception e) {
-					LogUtil.getLogger().error("系统错误！同一天的实时预报存在多条数据！");
-				}
-				
-				
-				//调用方法获取meiccityconfig
-				String emisParamesURL = configUtil.getYunURL()+"/summary/info";
-				String getResult=ClientUtil.doPost(emisParamesURL,scenarinoId.toString());
-				LogUtil.getLogger().info(getResult+"emisdata params，情景ID："+scenarinoId);
-				Map mapResult;
-				try {
-					mapResult = mapper.readValue(getResult, Map.class);
-					LogUtil.getLogger().info(mapResult+"返回值");
-					if(mapResult.get("status").toString().equals("success")){
-						Map map = (Map) mapResult.get("data");
-						String controlfile = map.get("controlfile").toString();
-						String meiccityconfig = map.get("meiccityconfig").toString();
-						TTasksStatus tTasksStatus2 = new TTasksStatus();
-						tTasksStatus2.setTasksScenarinoId(scenarinoId);
-						tTasksStatus2.setSourceid(esCouplingId.toString());
+						//清单不一致的时候穿件新的任务
+						if (escouplingflag==false) {
+							String missionend = DateUtil.DATEtoString(new Date(), "yyyy-MM-dd");
+							missionend = missionend+" "+"23:59:59";
+							Date oldmissionenddate = DateUtil.StrtoDateYMD(missionend, "yyyy-MM-dd HH:mm:ss");
+							//设置开始时间
+							TMissionDetail updateOlDetail = new TMissionDetail();
+							updateOlDetail.setMissionEndDate(oldmissionenddate);
+							updateOlDetail.setMissionId(oldMissionid_ecgouplingId);
+							updateOlDetail.setIsEffective("0");
+							//修改旧任务 相当于删除
+							int update = tMissionDetailMapper.updateByPrimaryKeySelective(updateOlDetail);
+							//添加新任务
+							Date missionDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+							MissionDetail.setMissionStartDate(missionDate);
+							int insertSelec = tMissionDetailMapper.insertSelective(MissionDetail);
+							//获取新任务的任务ID
+							missionId = tMissionDetailMapper.getmissionidbyMission(MissionDetail);
+							LogUtil.getLogger().info("创建了一个新的实时预报任务"+missionId);
+						}
 						
-						//设置calctype是系统设置 目前定义为server
-						tTasksStatus2.setCalctype("server");
-						tTasksStatus2.setPsal("");
-						tTasksStatus2.setSsal("");
-						//目前的死数据
-						tTasksStatus2.setTasksExpand1(0l);
-//						tTasksStatus.setExpand3("/work/modelcloud/lixin_meic/hebei/cf/cf_zero.csv");
-//						tTasksStatus.setMeiccityconfig("/work/modelcloud/meic_tool/meic-city.conf");
-						tTasksStatus2.setTasksExpand3(controlfile);
-						tTasksStatus2.setMeiccityconfig(meiccityconfig);
-						//添加该情景到tasksstatus表
-						i = tTasksStatusMapper.updateEmisData(tTasksStatus2);
-						if (i>0) {
-							LogUtil.getLogger().info("SchedulerTimer 添加预报emisData到tasks表成功！");
-						}else {
-							throw new SQLException("SchedulerTimer  添加预报emisData到tasks表失败!");
+						if (flag==false) {
+							//用户更改了domainid 需要新建一个新的实时预报任务
+							String missionend = DateUtil.DATEtoString(new Date(), "yyyy-MM-dd");
+							missionend = missionend+" "+"23:59:59";
+							Date oldmissionenddate = DateUtil.StrtoDateYMD(missionend, "yyyy-MM-dd HH:mm:ss");
+							//设置开始时间
+							//查找该用户 该domain 该清单的情况下只能有一个实时预报任务
+							TMissionDetail updateOlDetail = new TMissionDetail();
+							//添加旧任务的结束时间
+							updateOlDetail.setMissionEndDate(oldmissionenddate);
+							updateOlDetail.setMissionId(oldMissionid);
+							updateOlDetail.setIsEffective("0");
+							//修改旧任务 相当于删除
+							try {
+								int update = tMissionDetailMapper.updateByPrimaryKeySelective(updateOlDetail);
+							} catch (Exception e) {
+								LogUtil.getLogger().error("修改实时预报任务出现异常！该任务的ID是"+oldMissionid,e);
+							}
+							Date missionDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+							MissionDetail.setMissionStartDate(missionDate);
+							//添加新任务
+							try {
+								int insertSelec = tMissionDetailMapper.insertSelective(MissionDetail);
+								missionId = tMissionDetailMapper.getmissionidbyMission(MissionDetail);
+								if (insertSelec>0) {
+									LogUtil.getLogger().info("创建了一个新的实时预报任务"+missionId);
+								}
+							} catch (Exception e) {
+								// TODO: handle exception
+								LogUtil.getLogger().error("创建新的实时预报任务出现异常！",e);
+							}
+							//获取新任务的任务ID
 						}
 					}
-				} catch (IOException e) {
-					e.printStackTrace();
-					LogUtil.getLogger().error("获取emis参数出错！预报情景ID为："+scenarinoId,e);
-				} catch (SQLException e) {
-					e.printStackTrace();
+					
+					//创建实时预报情景--如果存在中断的情景，则自动补上中断的情景
+					Date todayDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+					//比较当天的时间和最大的预报pathdate
+					int compareTo = preHandledate.compareTo(todayDate);
+					//预报情景的pathdate
+					Date pathdate = null;
+					if (compareTo<=0) {
+						long day = (todayDate.getTime()-preHandledate.getTime())/(24*60*60*1000);
+						//需要循环创建中断的预报情景
+						if (0==day) {
+							//没有出现中断的情况-创建预报情景
+							pathdate = preHandledate;
+							createRealpreiction(pathdate,rangeday,missionId,userId,spinup,cores,esCouplingId);
+						}else {
+							for (int j = 0; j <= day; j++) {
+								pathdate = DateUtil.ChangeDay(preHandledate, j);
+								//循环创建
+								createRealpreiction(pathdate,rangeday,missionId,userId,spinup,cores,esCouplingId);
+							}
+						}
+					}
 				}
-				
-				/*boolean emisParams = readyData.getEmisParams(scenarinoId);
-				if (emisParams) {
-					LogUtil.getLogger().info("实时预报情景请求meiccityconfig参数成功！");
-				}else {
-					LogUtil.getLogger().info("实时预报情景请求meiccityconfig参数失败！");
-				}*/
-		/*		if (i>0) {
-					//根据情景调动实时预报接口开始实时预报
-					readyData.readyRealMessageDataFirst(scenarinoId,cores,userId);
-					LogUtil.getLogger().info("实时预报模式启动！");
-				}
-				
-				//修改情景状态为执行模式
-				Map map = new HashMap();
-				map.put("scenarinoStatus", (long)6);
-				map.put("scenarinoId", scenarinoId);
-				int updateScenType = tScenarinoDetailMapper.updateScenType(map);
-				if(updateScenType>0){
-					LogUtil.getLogger().info("实时预报修改执行状态");
-				}*/
+			}else {
+				LogUtil.getLogger().info("用户尚未设置实时预报的基本配置！");
 			}
-			
 		}else {
 			LogUtil.getLogger().info("定时器空执行！");
 		}
 	}
 	
+	/**
+	 * @Description: 创建实时预报情景
+	 * @param pathdate
+	 * @param rangeday
+	 * @param missionId
+	 * @param userId
+	 * @param spinup   
+	 * void  
+	 * @param cores 
+	 * @param esCouplingId 
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月13日 上午11:34:59
+	 */
+	private void createRealpreiction(Date pathdate, Integer rangeday,
+			Long missionId, Long userId, Integer spinup, Long cores, Long esCouplingId) {
+		Long scenarinoId = null;
+		TScenarinoDetail tScenarinoDetail = new TScenarinoDetail();
+		tScenarinoDetail.setScenarinoAddTime(new Date());
+		tScenarinoDetail.setScenarinoName("实时预报情景"+DateUtil.DATEtoString(pathdate, "yyyyMMdd"));
+		//系统的头一天为情景开始时间
+		Date scenarinoStartDate = DateUtil.DateToDate(DateUtil.ChangeDay(pathdate, -1), "yyyyMMdd"); 
+		tScenarinoDetail.setScenarinoStartDate(scenarinoStartDate);
+		//系统加上rangeday-2为情景结束时间
+		int rang = rangeday-2;
+		Date scenarinoEndDate = DateUtil.DateToDate( DateUtil.ChangeDay(pathdate, rang),"yyyyMMdd");
+		String end = DateUtil.DATEtoString(scenarinoEndDate, "yyyy-MM-dd");
+		end = end+" "+"23:59:59";
+		scenarinoEndDate = DateUtil.StrtoDateYMD(end, "yyyy-MM-dd HH:mm:ss");
+		tScenarinoDetail.setScenarinoEndDate(scenarinoEndDate);
+		//设置pathdate
+//		Date pathDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+		tScenarinoDetail.setPathDate(pathdate);
+		tScenarinoDetail.setScenarinoType((long)4);
+		//设置状态 5 表示可执行
+		tScenarinoDetail.setScenarinoStatus((long)5);
+		tScenarinoDetail.setMissionId(missionId);
+		tScenarinoDetail.setUserId(userId);
+		tScenarinoDetail.setIsEffective("1");
+		//基础日期9
+		Date basisTime = DateUtil.ChangeDay(pathdate, -2);
+		tScenarinoDetail.setBasisTime(basisTime);
+		Map Parmap = new HashMap();
+		Parmap.put("userId", userId);
+		Parmap.put("pathDate", pathdate);
+		//查询当天的情景是否被创建（测试时候定时器时间间隔比较小测试用）
+		TScenarinoDetail scen_detail = tScenarinoDetailMapper.getForecastScenID(Parmap);
+		if (null!=scen_detail) {
+			LogUtil.getLogger().info("实时预报情景已经建立了");
+			//检查该情景的运行状态，如果运行fnl出错，则重新运行，如果gfs运行出错，和运行正常，则跳出循环
+			//chackRunningStatus(scen_detail);
+		}else {
+			//查询上一天的实时预报情景ID 作为当天的实时预报基础情景
+			Date yesDate = DateUtil.ChangeDay(pathdate, -1);
+			Long basisScenarinoId = tScenarinoDetailMapper.selectBasisId(yesDate);
+			if (null==basisScenarinoId) {
+				LogUtil.getLogger().info("系统第一次创建实时预报情景");
+			}
+			tScenarinoDetail.setBasisScenarinoId(basisScenarinoId);
+			tScenarinoDetail.setScenType("4");
+			tScenarinoDetail.setSpinup((long)spinup);
+			tScenarinoDetail.setRangeDay((long)rangeday);
+			tScenarinoDetail.setExpand3(cores.toString());
+			try {
+				//创建新的情景
+			int insertSelective = tScenarinoDetailMapper.insertSelective(tScenarinoDetail);
+				if (insertSelective>0) {
+					LogUtil.getLogger().info("创建了新的实时预报");
+				}else {
+					throw new SQLException("SchedulerTimer  创建了新的实时预报出错!");
+				}
+			} catch (Exception e) {
+				LogUtil.getLogger().error("SchedulerTimer realForTimer  创建了新的实时预报出错!",e);
+			}
+			
+			//创建情景对应的tasksstatus
+			TTasksStatus tTasksStatus = new TTasksStatus();
+			try {
+				//得到刚新建的情景ID
+				scenarinoId = tScenarinoDetailMapper.selectforecastid(tScenarinoDetail);
+				tTasksStatus.setTasksScenarinoId(scenarinoId);
+				tTasksStatus.setTasksScenarinoStartDate(scenarinoStartDate);
+				tTasksStatus.setTasksScenarinoEndDate(scenarinoEndDate);
+				tTasksStatus.setTasksRangeDay((long)rangeday);
+				//添加该情景到tasksstatus表
+				int i = tTasksStatusMapper.insertSelective(tTasksStatus);
+				if (i>0) {
+					LogUtil.getLogger().info("添加预报到tasks表成功！");
+				}else {
+					throw new SQLException("SchedulerTimer  添加预报到tasks表失败!");
+				}
+			} catch (Exception e) {
+				LogUtil.getLogger().error("系统错误！同一天的实时预报存在多条数据！");
+			}
+			
+			//调用方法获取meiccityconfig
+			String emisParamesURL = configUtil.getYunURL()+"/summary/info";
+			String getResult=ClientUtil.doPost(emisParamesURL,scenarinoId.toString());
+			LogUtil.getLogger().info(getResult+"emisdata params，情景ID："+scenarinoId);
+			Map mapResult;
+			try {
+				mapResult = mapper.readValue(getResult, Map.class);
+				LogUtil.getLogger().info(mapResult+"返回值");
+				if(mapResult.get("status").toString().equals("success")){
+					Map map = (Map) mapResult.get("data");
+					String controlfile = map.get("controlfile").toString();
+					String meiccityconfig = map.get("meiccityconfig").toString();
+					TTasksStatus tTasksStatus2 = new TTasksStatus();
+					tTasksStatus2.setTasksScenarinoId(scenarinoId);
+					tTasksStatus2.setSourceid(esCouplingId.toString());
+					
+					//设置calctype是系统设置 目前定义为server
+					tTasksStatus2.setCalctype("server");
+					tTasksStatus2.setPsal("");
+					tTasksStatus2.setSsal("");
+					//目前的死数据
+					tTasksStatus2.setTasksExpand1(0l);
+//					tTasksStatus.setExpand3("/work/modelcloud/lixin_meic/hebei/cf/cf_zero.csv");
+//					tTasksStatus.setMeiccityconfig("/work/modelcloud/meic_tool/meic-city.conf");
+					tTasksStatus2.setTasksExpand3(controlfile);
+					tTasksStatus2.setMeiccityconfig(meiccityconfig);
+					//添加该情景到tasksstatus表
+					int i = tTasksStatusMapper.updateEmisData(tTasksStatus2);
+					if (i>0) {
+						LogUtil.getLogger().info("SchedulerTimer 添加预报emisData到tasks表成功！");
+					}else {
+						throw new SQLException("SchedulerTimer  添加预报emisData到tasks表失败!");
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+				LogUtil.getLogger().error("获取emis参数出错！预报情景ID为："+scenarinoId,e);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+
+	/**
+	 * @Description: 预报的前置处理 返回最新的该创建实时预报的pathdate
+	 * @param domainId   
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月12日 下午6:57:33
+	 */
+	private Date preHandle(Long userId ,Long domainId) {
+		TDomainMissionWithBLOBs domianDetailMsg = null;
+		Date pathDate = null;
+		try {
+			domianDetailMsg = tDomainMissionMapper.selectByPrimaryKey(domainId);
+			if (null!=domianDetailMsg) {
+				Date domainResultTime = domianDetailMsg.getDomainResultTime();
+				Date todayDate = DateUtil.DateToDate(new Date(), "yyyyMMdd");
+				Date yesDate = DateUtil.ChangeDay(todayDate, -1);
+				int compareTo = new Date().compareTo(domainResultTime);
+				//查找中断的情景-
+				Date interruptpathdate = tScenarinoDetailMapper.getmaxRealpreiction(userId);
+				if (null!=interruptpathdate) {
+					int compareTointerupt = interruptpathdate.compareTo(yesDate);
+					if (compareTointerupt<=0) {
+						pathDate = DateUtil.ChangeDay(interruptpathdate, 1);
+					}else {
+						LogUtil.getLogger().info("已经创建了最新的实时预报了！");
+						//等于当天
+						pathDate = interruptpathdate;
+					}
+				}else {
+					LogUtil.getLogger().info("尚未创建过实时预报情景！");
+					pathDate = todayDate;
+				}
+			}else {
+				LogUtil.getLogger().info("preHandle 查询domain基本信息失败！");
+				throw new SQLException("preHandle domainid："+domainId);
+			}
+		} catch (Exception e) {
+			LogUtil.getLogger().error("preHandle ,出现异常！",e.getMessage());
+		}
+		return pathDate;
+	}
+
+
+
 	/**
 	 * 
 	 * @Description: 发送实时预报的定时器
@@ -441,9 +510,9 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月21日 下午7:39:01
 	 */
 //	@Scheduled(fixedRate = 5000)
-	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
+//	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
 //	@Scheduled(cron="0 30 10 * * ?")
-	public void  sendMessageOnRealprediction() {
+	/*public void  sendMessageOnRealprediction() {
 		boolean runningSetting = configUtil.isRunningSetting();
 		LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:runningSetting:"+runningSetting);
 		if (runningSetting) {
@@ -509,7 +578,7 @@ public class SchedulerTimer<V> {
 		}else {
 			LogUtil.getLogger().info("sendMessageOnRealprediction:定时器空运行！");
 		}
-	}
+	}*/
 	
 	/**
 	 * 
@@ -523,9 +592,9 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月21日 下午7:39:01
 	 */
 //	@Scheduled(fixedRate = 5000)
-//	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
+	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
 //	@Scheduled(cron="0 30 10 * * ?")
-	/*public void  sendMessageOnRealprediction() {
+	public void  sendMessageOnRealprediction() {
 		boolean runningSetting = configUtil.isRunningSetting();
 		LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:runningSetting:"+runningSetting);
 		if (runningSetting) {
@@ -592,7 +661,7 @@ public class SchedulerTimer<V> {
 			LogUtil.getLogger().info("sendMessageOnRealprediction:定时器空运行！");
 		}
 	}
-	*/
+	
 
 	
 	/**
@@ -711,7 +780,7 @@ public class SchedulerTimer<V> {
 	 * @date 2017年6月1日 上午11:45:39
 	 */
 //	@Scheduled(fixedRate = 5000)
-//	@Scheduled(cron="0 0/8 * * * ?")   //隔8分钟定时检查一次实时预报的gfs发送情况---服务器配置
+	@Scheduled(cron="0 0/8 * * * ?")   //隔8分钟定时检查一次实时预报的gfs发送情况---服务器配置
 //	@Scheduled(cron="0 30 10 * * ?")
 	public void sendGFSMessageONRealPrediction() {
 		boolean runningSetting = configUtil.isRunningSetting();
