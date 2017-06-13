@@ -1482,10 +1482,13 @@ dl, dd {
 .cloudui .l-btn-plain{padding: 0;}
   /*水平分布*/
 .cloudui .distributed_map .tool_in{background: rgba(200,200,200,0.5);overflow: visible;}
-.cloudui .clearfix,.cloudui .speed,.cloudui .field{overflow: hidden;}
+.cloudui .speed,.cloudui .field{overflow: hidden;}
 .cloudui .openness .title_{margin:12px 0 8px 0;}
 .cloudui .distributed_map .tool_in #dropdownMenu1{text-align: center;}
 .clearfix:after {clear:both;content:'.';display:block;width: 0;height: 0;visibility:hidden;}
+.vidioDown {width: 110px;min-width: 110px!important;}
+.vidioDown div{width: 100%}
+.vidioDown a{text-align: center;padding-left: 5px;}
 /*源清单-全国清单*/
 .cloudui .yqdTable{width: 100%;height:100%;}
 .cloudui .yqdTable .tableBox{width: 100%;height: 100%;}
