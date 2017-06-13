@@ -15,12 +15,24 @@ function getInfo(){
 	ajaxPost(url,{
 		'userId': userId
 	}).success(function (res) {
+		console.log(res);
+		var 
 		$.each(res.data,function(key,value){
-			console.log(value);
 			findPull(value);
+		});
+		$('#pp').pagination({
+		    total:res.data.length,
+		    pageSize:10,
+		    onSelectPage:function(pageNumber, pageSize){
+
+		    }
 		});
     });
 }  
+
+function selectPage(){
+
+}
 
 function findPull(value){
 	var employStatus = value.employStatus
@@ -32,10 +44,10 @@ function findPull(value){
 	}
 	var dom = '';
 	dom += '<tr class="tr_'+value.domainId+'">';
-	dom += '<td>'+value.domainName+'</td>';
-	dom += '<td>'+value.domainDoc+'</td>';
-	dom += '<td>'+world+'</td>';
-	dom += '<td>';
+	dom += '<td class="col-3">'+value.domainName+'</td>';
+	dom += '<td class="col-4">'+value.domainDoc+'</td>';
+	dom += '<td class="col-2">'+world+'</td>';
+	dom += '<td class="col-3">';
 	dom += '<button class="btn-blue" onclick="examine(this)" domain_id="'+value.domainId+'">查看</button>';
 	dom += '<button class="btn-green" onclick="update(this)" domain_id="'+value.domainId+'">编辑</button> ';
 	dom += '<button class="btn-yellow" onclick="" domain_id="'+value.domainId+'">开启</button> ';
@@ -123,3 +135,4 @@ function delDomain(th){
 		swal("删除成功");
 	});
 }
+
