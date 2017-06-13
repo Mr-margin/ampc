@@ -23,8 +23,7 @@ public class DomainParams {
 	private DomainDataWrf wrf; // wrf 参数
 	private DomainDataMcip mcip; // mcip 参数
 	private DomainDataMeic meic;
-	
-//	private MeganParams megan;
+	private DomainDataMegan megan;//megan 参数
 	
 
 	public DomainDataCommon getCommon() {
@@ -67,14 +66,20 @@ public class DomainParams {
 		this.meic = meic;
 	}
 
-//	public MeganParams getMegan() {
-//		return megan;
-//	}
-//
-//	public void setMegan(MeganParams megan) {
-//		this.megan = megan;
-//	}
-//	
+	/**
+	 * @return the megan
+	 */
+	public DomainDataMegan getMegan() {
+		return megan;
+	}
+
+	/**
+	 * @param megan the megan to set
+	 */
+	public void setMegan(DomainDataMegan megan) {
+		this.megan = megan;
+	}
+
 	
 	
 
