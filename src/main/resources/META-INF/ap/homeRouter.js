@@ -8,7 +8,6 @@ var parameterPar = {token: '', data: {}};
 var userId;
 
 var dps_um = getSessionMsg();
-
 /*用户按钮的下拉窗口*/
 $('#user-center').menubutton({
 	menu:'#user-menu',
@@ -466,10 +465,4 @@ function resivePassword(){
 function openUserSettings(){
 	sessionStorage.setItem('userId',userId);
 	window.open('userSettings.html');
-}
-//如果如果用户是管理员 就可以看见全国清单 如果是普通用户 就不能看见全国清单
-
-if(userId==2){
-    $("#yqd a").eq(0).hide();
-    console.log()
 }

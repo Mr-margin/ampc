@@ -483,3 +483,17 @@ $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
         $(this).css({"color":"#757575"})
     }
 })
+//名字去重
+$("#creatTemp #esNationName").blur(
+    function () {
+        ajaxPost('/NativeAndNation/doPost',{
+            "userId":userId,
+            "method":'verifyByNativeTpName',
+            "nationName":$("#creatTemp #esNationName").val()
+        }).success(function (res) {
+            if(res.data.data.msg==true){
+                $(".tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>该名称已被使用</span>");
+            }
+        })
+    }
+)
