@@ -95,6 +95,9 @@ var speciesObj = {
     'O₃': 'O3'
 };
 
+var videoPlayScale = [];
+var playDay = '',playHour = '',play = false;
+
 var stat = {cPointx: 106, cPointy: 35}, app = {}, dong = {};
 var dojoConfig = {
     async: true,
@@ -435,6 +438,7 @@ function initSPDate(s, e, start, end) {
  * 设置时间下拉框内容
  */
 function setYBdate() {
+    videoPlayScale = [];
     return ajaxPost('/Air/times', {
         userId: userId,
         date: changeMsg.time
@@ -447,8 +451,10 @@ function setYBdate() {
 
             for (var i = 0; i < res.data.timearr.length; i++) {
                 $('#sTime-d').append($('<option>' + moment(res.data.timearr[i]).format('YYYY-MM-DD') + '</option>'))
+                videoPlayScale.push(moment(res.data.timearr[i]).format('YYYY-MM-DD'));
             }
             changeMsg.YBDate = $('#sTime-d').val();
+            initVideoPlay();
 
         } else {
             swal({
@@ -547,7 +553,7 @@ function load_gis(p) {
 	
     var v1 = new Date().getTime();
     
-    ajaxPost('/extract/png', par).success(function (data) {
+    /*ajaxPost('/extract/png', par).success(function (data) {
     	// console.log(JSON.stringify(data));
     	
         if(data.status == 0){
@@ -569,10 +575,47 @@ function load_gis(p) {
             $('#colorBar').html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
             zmblockUI1("#map_in", "end");//打开锁屏控制
             // console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
+            judgmentObj.push('true')
+            judgment()
 	
 		}else{
 			zmblockUI1("#map_in", "end");//打开锁屏控制
 		}
+
+
+    }).error(function (res) {
+        zmblockUI1("#map_in", "end");
+        swal('抽数，内部错误', '', 'error');
+    });*/
+
+    ajaxPost_w('http://166.111.42.85:8300/ampc/extract/png', {token:'',data:par}).success(function (data) {
+        // console.log(JSON.stringify(data));
+
+        if(data.status == 0){
+//			app.mapimagelayer.removeAllImages();//删除全部的图片图层
+//
+//			console.log(data.data.imagePath);
+
+            var imageURL = pngUrl + "/ampc/"+data.data.imagePath+"?t="+Math.random();
+            // console.log(imageURL);
+
+            var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
+            var mapImage = new dong.MapImage({
+                'extent': initE,
+                'href': imageURL
+            });
+
+            app.mapimagelayer.addImage(mapImage);//将新的图片图层添加到地图
+
+            $('#colorBar').html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
+            zmblockUI1("#map_in", "end");//打开锁屏控制
+            // console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
+            judgmentObj.push('true')
+            judgment()
+
+        }else{
+            zmblockUI1("#map_in", "end");//打开锁屏控制
+        }
 
 
     }).error(function (res) {
@@ -935,9 +978,9 @@ function videoPlay() {
     if(index == -1){
         return;
     }
-    changeMsg.sTimeD = moment(playDay).format("YYYY-MM-DD");
+    changeMsg.YBDate = moment(playDay).format("YYYY-MM-DD");
     if(changeMsg.rms == 'h'){
-        changeMsg.sTimeH = playHour;
+        changeMsg.YBHour = playHour;
     }
     if(play){
 
@@ -955,7 +998,7 @@ function videoPlay() {
         setVideoPlayTime();
         updata();
         if(changeMsg.showWind !=-1){
-            updata('wind');
+            updataWind();
         }
     }
 }
