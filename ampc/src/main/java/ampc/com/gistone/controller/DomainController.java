@@ -29,6 +29,7 @@ import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.model.TDomainMissionWithBLOBs;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.preprocess.core.CalculateCityService;
+import ampc.com.gistone.redisqueue.CreateDomainJsonData;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.LogUtil;
@@ -45,6 +46,8 @@ public class DomainController {
 	
 	@Autowired
 	private CalculateCityService calculateCityService;
+	@Autowired
+	private CreateDomainJsonData createDomainJsonData;
 	
 	//定义公用的jackson帮助类
 		private ObjectMapper mapper=new ObjectMapper();
@@ -400,11 +403,24 @@ public class DomainController {
 			td.setDomainRange(domainRange);
 			td.setDomainId(domainId);
 			td.setDomainCode(domainCode);
+			td.setDisposeStatus("2");
 			int s=tDomainMissionMapper.updateByPrimaryKeySelective(td);
 			
 			//判断修改数据是否成功
 			if(s>0){
+				boolean b=createDomainJsonData.readyDomainData(td.getUserId(), td.getDomainId());
+				if(b){
 				return AmpcResult.ok();
+				}else{
+				td.setDisposeStatus("4");
+				td.setDomainResultDesc("send fail");
+				int a=tDomainMissionMapper.updateByPrimaryKeySelective(td);
+				if(a>0){
+				return AmpcResult.ok("保存成功，处理失败,请联系管理员！");	
+				}else{
+					return AmpcResult.ok("保存成功，处理失败,请联系管理员！");
+					}
+				}
 			}else{
 				LogUtil.getLogger().error("updateRangeAndCode 数据库修改异常！");
 				return AmpcResult.build(1000, "数据库修改异常！");
@@ -546,7 +562,7 @@ public class DomainController {
 				LogUtil.getLogger().error("updateRangeAndCode  userId为空!");
 				return AmpcResult.build(1003, "userId为空!");
 			}
-			Long userId=Long.valueOf(data.get("domainId").toString());
+			Long userId=Long.valueOf(data.get("userId").toString());
 			//获取userId
 			if(!RegUtil.CheckParameter(data.get("domainId"), null, null, false)){
 				LogUtil.getLogger().error("updateRangeAndCode  domainId为空!");
@@ -554,12 +570,64 @@ public class DomainController {
 			}
 			Long domainId=Long.valueOf(data.get("domainId").toString());
 			//根据domainId逻辑删除数据
-			int a=tDomainMissionMapper.deletebyid(domainId);
+			TDomainMissionWithBLOBs selectByPrimaryKey = tDomainMissionMapper.selectByPrimaryKey(domainId);
+			int a=0;
+			if(!selectByPrimaryKey.getValidStatus().equals("1")||!selectByPrimaryKey.getEmployStatus().equals("1")){
+			a=tDomainMissionMapper.deletebyid(domainId);
+			}else{
+				LogUtil.getLogger().error("该domain为生效状态或该domain已使用，无法删除！");
+				return AmpcResult.build(1003, "该domain为生效状态或该domain已使用，无法删除！");
+				
+			}
 			if(a==0){
 				LogUtil.getLogger().error("deleteDomain 数据库删除domain操作异常！");
 				return AmpcResult.build(1000, "数据库删除domain操作异常！");
 			}
 		return AmpcResult.ok();
+		}catch(Exception e){
+			LogUtil.getLogger().error("deleteDomain 删除domain异常！",e);
+			return AmpcResult.build(1001, "删除domain异常！");
+		}
+	}
+	/**
+	 * 修改生效状态
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/Domain/Valid")	
+	public AmpcResult Valid(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response ){
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+			//获取前端参数
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//获取userId
+			if(!RegUtil.CheckParameter(data.get("userId"), null, null, false)){
+				LogUtil.getLogger().error("updateRangeAndCode  userId为空!");
+				return AmpcResult.build(1003, "userId为空!");
+			}
+			Long userId=Long.valueOf(data.get("userId").toString());
+			//获取userId
+			if(!RegUtil.CheckParameter(data.get("domainId"), null, null, false)){
+				LogUtil.getLogger().error("updateRangeAndCode  domainId为空!");
+				return AmpcResult.build(1003, "domainId为空!");
+			}
+			Long domainId=Long.valueOf(data.get("domainId").toString());
+			
+			int a=tDomainMissionMapper.updateByValidtwo(userId);
+			if(a>0){
+			int b=tDomainMissionMapper.updateByValid(domainId);
+			if(b>0){
+				return AmpcResult.ok();
+			}else{
+				LogUtil.getLogger().error("deleteDomain 设置生效状态异常！");
+				return AmpcResult.build(1000, "设置生效状态异常！");
+			}
+			}else{
+				LogUtil.getLogger().error("deleteDomain 设置生效状态异常！");
+				return AmpcResult.build(1000, "设置生效状态异常！");
+			}
 		}catch(Exception e){
 			LogUtil.getLogger().error("deleteDomain 删除domain异常！",e);
 			return AmpcResult.build(1001, "删除domain异常！");
