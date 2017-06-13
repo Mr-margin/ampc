@@ -577,3 +577,18 @@ when (new.MESSAGE_LOG_ID is null)
 begin
 select T_MESSAGE_LOG_SEQ.nextval into :new.MESSAGE_LOG_ID from dual;
 end;
+
+------T_MODEL_SCHEDULE_MESSAGE 模式消息进度表----
+CREATE SEQUENCE T_MODEL_SCHEDULE_MESSAGE  
+INCREMENT BY 1   
+START WITH 1      
+NOMAXVALUE        
+NOCYCLE               
+CACHE 20;
+
+CREATE OR REPLACE TRIGGER T_MODEL_SCHEDULE_MESSAGE_REP before insert on T_MODEL_SCHEDULE_MESSAGE
+FOR EACH ROW
+when (new.EXECUTE_SCHEDULE_ID is null)
+begin
+select T_MODEL_SCHEDULE_MESSAGE_SEQ.nextval into :new.EXECUTE_SCHEDULE_ID from dual;
+end;
