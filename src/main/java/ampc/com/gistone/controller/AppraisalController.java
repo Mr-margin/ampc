@@ -156,6 +156,10 @@ public class AppraisalController {
 			Calendar calendar = Calendar.getInstance(); 
 			Date calDate ;
 			String calDateStr;
+			//污染物--逐日模拟数据
+			Object[] simulationDay={"BC","PM25","CO","O3_1_MAX","NO2","NO3","PMFINE","SO2","PM10","SO4","AQI","O3_8_MAX","NH4","O3_AVG","OM"};
+			//污染物--逐小时模拟数据
+			Object[] simulationHour={"BC","O3","PM25","CO","NO2","NO3","OC","PMFINE","SO2","PM10","SO4","AQI","NH4","OM"};
 			
 			sdf=new SimpleDateFormat("yyyy-MM-dd");
 			Date start_date=sdf.parse(start_Date);
@@ -291,6 +295,53 @@ public class AppraisalController {
 				}
 				//如果没有信息直接返回
 				if(sclist.isEmpty()){
+					//逐日
+					if(datetype.equals("day")){
+						//查询逐小时数据为空
+						String[] scenarinoIdsArr= scenarinoIds.split(",");
+						for(int i=0;i<scenarinoIdsArr.length;i++){
+							Map speciesMap=new HashMap();
+							//循环全部物种
+							for(int k=0;k<simulationHour.length;k++){
+								Map contentobj_on=new HashMap();
+								//循环全部日期
+								for(int m=0;m<=differenceVal;m++){
+									calendar.setTime(sdf.parse(start_Date));
+									calendar.add(Calendar.DAY_OF_MONTH, +m);
+									calDate = calendar.getTime();
+									calDateStr=sdf.format(calDate);
+									
+									contentobj_on.put(calDateStr,"-");
+								}
+								speciesMap.put(simulationHour[k].toString(), contentobj_on);
+							}
+							scmap.put(scenarinoIdsArr[i].toString(), speciesMap);
+						}
+					}else{
+						//查询逐小时数据为空
+						String[] scenarinoIdsArr= scenarinoIds.split(",");
+						for(int i=0;i<scenarinoIdsArr.length;i++){
+							Map speciesMap=new HashMap();
+							//循环全部物种
+							for(int k=0;k<simulationHour.length;k++){
+								Map contentobj_on=new HashMap();
+								//循环全部日期
+								for(int m=0;m<=differenceVal;m++){
+									calendar.setTime(sdf.parse(start_Date));
+									calendar.add(Calendar.DAY_OF_MONTH, +m);
+									calDate = calendar.getTime();
+									calDateStr=sdf.format(calDate);
+									Map contentobj_on_key_val=new HashMap();
+									for(int h=0;h<24;h++){
+										contentobj_on_key_val.put(h, "-");
+									}
+									contentobj_on.put(calDateStr,contentobj_on_key_val );
+								}
+								speciesMap.put(simulationHour[k].toString(), contentobj_on);
+							}
+							scmap.put(scenarinoIdsArr[i].toString(), speciesMap);
+						}
+					}
 					return	AmpcResult.build(0, "success",scmap);
 				}
 				//如果是逐小时
@@ -1379,13 +1430,23 @@ public class AppraisalController {
 			differenceVal = (int) ((end_date.getTime() - start_date.getTime()) / (1000*3600*24));
 			
 			int differenceObs = (int) (( (sdf.parse(end_Date)).getTime() - (sdf.parse(start_Date)).getTime() ) / (1000*3600*24));
+			//观测数据
 			Object[] speciesArr={"NO2","PM2_5","O3","SO2","PM10","AQI","O3_8h","CO"};
+			//污染物--逐日模拟数据
+			Object[] simulationDay={"BC","PM25","CO","O3_1_MAX","NO2","NO3","PMFINE","SO2","PM10","SO4","AQI","O3_8_MAX","NH4","O3_AVG","OM"};
+			//污染物--逐小时模拟数据
+			Object[] simulationHour={"BC","O3","PM25","CO","NO2","NO3","OC","PMFINE","SO2","PM10","SO4","AQI","NH4","OM"};
+			//存放基准和观测数据
+			Map standardData=new HashMap();
+			//存放基准集合
+			Map spcmapobj=new HashMap();
+			//存放观测数据
+			Map contentobj=new HashMap();
 			//如果情景不为空
 			if(tScenarinoDetaillist!=null){
 				//时间分辨率--逐日开始
 				if(datetype.equals("day")){
-					//所有物种集合
-					Map spcmapobj=new HashMap();
+					
 					//查询基准数据开始
 					String tables="T_SCENARINO_DAILY_";
 					//获取情景添加时间
@@ -1405,7 +1466,7 @@ public class AppraisalController {
 					scenarinoEntity.setTableName(tables);
 					//查询结果
 					List<ScenarinoEntity> Lsclist=tPreProcessMapper.selectBysome(scenarinoEntity);
-					//如果为空
+					//查询结果不为空
 					if(!Lsclist.isEmpty()){
 						//获取数据Json串
 						String content=Lsclist.get(0).getContent();
@@ -1479,9 +1540,25 @@ public class AppraisalController {
 							}//物种名称结束
 //							break;
 						}
-					}	/**查询基准数据结束*/
-					//查询观测数据开始
+					}else{
+						//查询数据为空
+						//循环全部物种
+						for(int k=0;k<simulationDay.length;k++){
+							Map contentobj_on=new HashMap();
+							//循环全部日期
+							for(int m=0;m<=differenceObs;m++){
+								calendar.setTime(sdf.parse(start_Date));
+								calendar.add(Calendar.DAY_OF_MONTH, +m);
+								calDate = calendar.getTime();
+								calDateStr=sdf.format(calDate);
+								contentobj_on.put(calDateStr,"-" );
+							}
+							spcmapobj.put(simulationDay[k].toString(), contentobj_on);
+						}
+					}
 					
+					/**查询基准数据结束*/
+					//查询观测数据开始
 					HashMap<String, Object> obsBeanobj=new HashMap<String, Object>();	
 					//站点信息
 					obsBeanobj.put("city_station",cityStation);
@@ -1512,7 +1589,7 @@ public class AppraisalController {
 					//查询数据
 					List<ObsBean> obsBeans=tObsMapper.queryObservationResult(obsBeanobj);
 					//存放所有的物种
-					Map contentobj=new HashMap();
+//					Map contentobj=new HashMap();
 					//查询数据为空赋值"-"处理
 					if("[]".equals(obsBeans.toString())||obsBeans==null){
 						for(int k=0;k<speciesArr.length;k++){
@@ -1601,7 +1678,7 @@ public class AppraisalController {
 						}
 					}
 					//储存结果数据
-					Map standardData=new HashMap();
+//					Map standardData=new HashMap();
 					//观测数据
 					standardData.put("观测数据", contentobj);	
 					standardData.put("基准数据", spcmapobj);
@@ -1614,7 +1691,7 @@ public class AppraisalController {
 					//时间分辨率--逐日结束
 				}else{	//---------------------------时间分辨率---逐小时开始-------------------------------//
 					//定义结果集合
-					Map spcmapobj=new HashMap();
+//					Map spcmapobj=new HashMap();
 					//表名Title
 					String tables="T_SCENARINO_HOURLY_";
 					//情景添加时间
@@ -1711,8 +1788,30 @@ public class AppraisalController {
 							}	//物种名称结束
 							break;
 						}
-					}	//基准数结束
-					HashMap obsBeanobj=new HashMap();	//查询观测数据开始
+					}else{
+						//查询数据为空
+						//循环全部物种
+						for(int k=0;k<simulationHour.length;k++){
+							Map contentobj_on=new HashMap();
+							//循环全部日期
+							for(int m=0;m<=differenceObs;m++){
+								calendar.setTime(sdf.parse(start_Date));
+								calendar.add(Calendar.DAY_OF_MONTH, +m);
+								calDate = calendar.getTime();
+								calDateStr=sdf.format(calDate);
+								Map contentobj_on_key_val=new HashMap();
+								for(int h=0;h<24;h++){
+									contentobj_on_key_val.put(h, "-");
+								}
+								contentobj_on.put(calDateStr,contentobj_on_key_val );
+							}
+							spcmapobj.put(simulationHour[k].toString(), contentobj_on);
+						}
+					}
+					//基准数结束
+					
+					//-------------------------查询观测数据开始--------------------//
+					HashMap obsBeanobj=new HashMap();	
 					obsBeanobj.put("city_station",cityStation);
 					//所选任务的开始时间
 //					obsBeanobj.put("startDate", missionStartDatestr);
@@ -1739,7 +1838,7 @@ public class AppraisalController {
 					//查询观测数据
 					List<ObsBean> obsBeans=tObsMapper.queryObservationResult(obsBeanobj);
 					//存放所有的物种
-					Map contentobj=new HashMap();
+//					Map contentobj=new HashMap();
 					//查询数据为空赋值"-"处理
 					if("[]".equals(obsBeans.toString())||obsBeans==null){
 						for(int k=0;k<speciesArr.length;k++){
@@ -1749,7 +1848,11 @@ public class AppraisalController {
 								calendar.add(Calendar.DAY_OF_MONTH, +m);
 								calDate = calendar.getTime();
 								calDateStr=sdf.format(calDate);
-								contentobj_on.put(calDateStr,"-" );
+								Map contentobj_on_key_val=new HashMap();
+								for(int h=0;h<24;h++){
+									contentobj_on_key_val.put(h, "-");
+								}
+								contentobj_on.put(calDateStr,contentobj_on_key_val);
 							}
 							//修改名称
 							if("PM2_5".equals(speciesArr[k].toString())){	
@@ -1841,7 +1944,7 @@ public class AppraisalController {
 						}	//循环所有物种的key结束
 					}
 					
-					Map standardData=new HashMap();
+//					Map standardData=new HashMap();
 					//观测数据
 					standardData.put("观测数据", contentobj);	
 					standardData.put("基准数据", spcmapobj);		//基准数据
