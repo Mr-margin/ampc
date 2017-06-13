@@ -274,9 +274,9 @@ public class MessageLog {
 			}
 			int insertSelective = tMessageLogMapper.insertSelective(tMessageLog);
 			if (insertSelective>0) {
-				LogUtil.getLogger().info("更新model.start.result消息日志成功！");
+				LogUtil.getLogger().info("savesatrtModelMessagelog:更新model.start.result消息日志成功！");
 			}else {
-				LogUtil.getLogger().error("更新model.start.result消息日志失败！！");
+				LogUtil.getLogger().error("savesatrtModelMessagelog:更新model.start.result消息日志失败！！");
 				throw new SQLException("更新model.start.result消息日志失败！！");
 			}
 		} catch (IOException | SQLException e) {
