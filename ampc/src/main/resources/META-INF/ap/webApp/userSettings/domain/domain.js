@@ -59,7 +59,7 @@ $(document).ready(function(){
 function getInfo(){
 	var  url = '/Domain/findAll';
 	var domain_id = vipspa.getMessage('domain');
-	console.log(domain_id.content.domain_id);
+//	console.log(domain_id.content.domain_id);
 	ajaxPost(url,{
 		'userId': userId
 	}).success(function (res) {
@@ -256,11 +256,36 @@ var dojoConfig = {
 };
 require(
     [
-        "esri/map", "esri/tasks/Geoprocessor", "esri/layers/ImageParameters", "esri/layers/DynamicLayerInfo", "esri/layers/RasterDataSource", "esri/layers/TableDataSource",
-        "esri/layers/LayerDataSource", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "esri/layers/LayerDrawingOptions", "esri/symbols/SimpleFillSymbol",
-        "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleMarkerSymbol", "esri/geometry/Multipoint", "esri/geometry/Point", "esri/geometry/Extent",
-        "esri/renderers/SimpleRenderer", "esri/graphic", "esri/lang", "dojo/_base/Color", "dojo/_base/array", "dojo/number", "dojo/dom-style", "dijit/TooltipDialog",
-        "dijit/popup", "dojox/widget/ColorPicker", "esri/layers/RasterLayer", "tdlib/gaodeLayer", "esri/tasks/FeatureSet", "esri/SpatialReference", "esri/symbols/PictureMarkerSymbol",
+        "esri/map",
+        "esri/tasks/Geoprocessor", 
+        "esri/layers/ImageParameters", 
+        "esri/layers/DynamicLayerInfo", 
+        "esri/layers/RasterDataSource", 
+        "esri/layers/TableDataSource",
+        "esri/layers/LayerDataSource", 
+        "esri/layers/FeatureLayer", 
+        "esri/layers/GraphicsLayer", 
+        "esri/layers/LayerDrawingOptions", 
+        "esri/symbols/SimpleFillSymbol",
+        "esri/symbols/SimpleLineSymbol", 
+        "esri/symbols/SimpleMarkerSymbol", 
+        "esri/geometry/Multipoint", 
+        "esri/geometry/Point", 
+        "esri/geometry/Extent",
+        "esri/renderers/SimpleRenderer", 
+        "esri/graphic", 
+        "esri/lang", 
+        "dojo/_base/Color", 
+        "dojo/_base/array", 
+        "dojo/number", 
+        "dojo/dom-style", 
+        "dijit/TooltipDialog",
+        "dijit/popup", 
+        "dojox/widget/ColorPicker", 
+        "esri/layers/RasterLayer", 
+        "tdlib/gaodeLayer", 
+        "esri/tasks/FeatureSet", 
+        "esri/SpatialReference", "esri/symbols/PictureMarkerSymbol",
         "esri/layers/MapImageLayer", "esri/layers/MapImage", "dojo/domReady!"
     ],
     function (Map, Geoprocessor, ImageParameters, DynamicLayerInfo, RasterDataSource, TableDataSource, LayerDataSource, FeatureLayer, GraphicsLayer, LayerDrawingOptions,
@@ -270,21 +295,10 @@ require(
         dong.gaodeLayer = gaodeLayer;
         dong.Geoprocessor = Geoprocessor;
         dong.Graphic = Graphic;
-        dong.Point = Point;
         dong.FeatureSet = FeatureSet;
         dong.GraphicsLayer = GraphicsLayer;
         dong.SpatialReference = SpatialReference;
-        dong.PictureMarkerSymbol = PictureMarkerSymbol;
-        
-        dong.MapImageLayer = MapImageLayer;//
         dong.Extent = Extent;//
-        dong.MapImage = MapImage;//
-        
-        dong.SimpleMarkerSymbol = SimpleMarkerSymbol;//
-        dong.SimpleLineSymbol = SimpleLineSymbol;//
-
-        esri.config.defaults.io.proxyUrl = ArcGisUrl + "/Java/proxy.jsp";
-        esri.config.defaults.io.alwaysUseProxy = false;
 
         app.baselayerList = new dong.gaodeLayer();//默认加载矢量 new gaodeLayer({layertype:"road"});也可以
         app.stlayerList = new dong.gaodeLayer({layertype: "st"});//加载卫星图
@@ -309,8 +323,8 @@ require(
             zoom: 4
         });
 
-        app.map.addLayer(app.baselayerList[i]);//添加高德地图到map容器
-        app.map.addLayers([app.baselayerList[i]]);//添加高德地图到map容器
+        app.map.addLayer(app.baselayerList);//添加高德地图到map容器
+        app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
     });
 
 
