@@ -351,9 +351,6 @@ public class ModelExecuteStatusController<E> {
 		String pattern="yyyyMMdd";
 		Date tasksScenarinoStartDate = DateUtil.DateToDate(selectStatus.getTasksScenarinoStartDate(), pattern);
 		Date tasksScenarinoEndDate = DateUtil.DateToDate(selectStatus.getTasksScenarinoEndDate(), pattern);
-		String tempindex = null;
-		//临时变量 用于计算该条消息是否属于该次数组
-		int i = 0,j = 0,k = 0;
 		for (TMessageLog tMessageLog : tMessageLoglist) {
 			String tasksEndDate = tMessageLog.getTasksEndDate();
 			String messageType = tMessageLog.getMessageType();
