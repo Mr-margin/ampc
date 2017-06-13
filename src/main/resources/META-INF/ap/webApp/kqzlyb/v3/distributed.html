@@ -21,7 +21,7 @@
 	.tool_in {
 		position: absolute;
 		left: 0;
-		bottom: 15px;
+		bottom: 65px;
 		width: 250px;
 		padding: 5px;
 	}
@@ -57,6 +57,119 @@
   .closeImg{
     right: 90px;
   }
+    /*视频播放*/
+    .videoBar{
+      position:absolute;
+      left: 0;bottom: 0;
+    }
+
+    .videoS{
+      position:absolute;
+      height:50px;
+      width:50px;
+    }
+
+    .videoBox{
+      position:absolute;
+      left:50px;
+      height:50px;
+      width:calc(100% - 50px)
+    }
+    .videoT{
+      width:98%;
+      height:10px;
+      position:absolute;
+      border-radius:5px;
+      top:20px;
+      left:1%;
+      border: 1px solid #333;
+    }
+    .videoK{
+      width:6px;
+      height:20px;
+      position:absolute;
+      top:-5px;
+      background-color:#8a8484;
+      left:calc(0% - 3px);
+      /*left:0;*/
+      z-index:99;
+      transition: left 0.2s linear;
+    }
+    .videoShow{
+      height:10px;
+      width:0;
+      border-bottom-left-radius:5px;
+      border-top-left-radius:5px;
+      background-color:#aaa;
+      position:absolute;
+      top: -1px;
+      left: -1px;
+      transition: width 0.2s linear;
+    }
+
+    .videoS_in{
+      position:absolute;
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      border:1px solid #333;
+      left:5px;
+      top:5px;
+      overflow:hidden;
+    }
+    .videoS_in:hover{
+      cursor: pointer;
+    }
+    .startV:after{
+      content:'';
+      display:block;
+      position:absolute;
+      left: 13px;
+      top: 6px;
+      width:0;
+      height:0;
+      border-left:20px solid #333;
+      border-top:13px solid transparent;
+      border-bottom:13px solid transparent;
+    }
+    .stopV:after{
+      content:'';
+      display:block;
+      position:absolute;
+      left:9px;
+      top:7px;
+      width:20px;
+      height:24px;
+      border-left:6px solid #333;
+      border-right:6px solid #333;
+    }
+
+    .xhV:after{
+      content:'';
+      display:block;
+      position:absolute;
+      left:6px;
+      top:6px;
+      width:26px;
+      height:26px;
+      border:4px solid #333;
+      border-radius:50%;
+      border-right-color:transparent;
+    }
+    .xhV:before{
+      content:'';
+      display:block;
+      position:absolute;
+      left:21px;
+      top:18px;
+      width:0;
+      height:0;
+      border-bottom:10px solid #333;
+      border-left:8px solid transparent;
+      border-right:8px solid transparent;
+      transform:rotate(45deg);
+
+    }
 </style>
 
 <div class="cloudui" style="width: 100%;height:100%;">
@@ -158,8 +271,8 @@
       </div>
       <div class="charContent">
         <div class="distributed">
-          <div class="distributed_map">
-            <div class="map_in" style="height:100%;" id="map_in"></div>
+          <div class="distributed_map" style="border: none">
+            <div class="map_in" style="height:calc(100% - 50px);border:1px solid #D9D9D9" id="map_in"></div>
             <div class="tool_in">
               <div class="clearfix">
                 <div class="dropdownCon" style="margin: 12px 10px 0 0;float: left;position: relative;" >
@@ -202,6 +315,19 @@
                 </div>
               </div>
             </div>
+            <!--播放部分 开始-->
+            <div class="videoBar">
+              <div class="videoS">
+                <div class="videoS_in startV"></div>
+              </div>
+              <div class="videoBox">
+                <div class="videoT">
+                  <div class="videoK"></div>
+                  <div class="videoShow"></div>
+                </div>
+              </div>
+            </div>
+            <!--播放结束-->
           </div>
           <div class="distributed_toolRight">
 

@@ -901,3 +901,104 @@ function closeImg() {
     app.map.graphics.clear();
     $('.showImg').css('display','none');
 }
+//视频播放相关
+
+$('.videoS_in').on('click',function (e) {
+    if($(e.target).hasClass('startV')){
+        play = true;
+        $(e.target).removeClass('startV').addClass('stopV');
+        videoPlay();
+    }else if($(e.target).hasClass('stopV')){
+        play = false;
+        $(e.target).removeClass('stopV').addClass('startV');
+    }else if($(e.target).hasClass('xhV')){
+        play = true;
+        initVideoPlay();
+        videoPlay();
+        $(e.target).removeClass('xhV').removeClass('startV').addClass('stopV');
+    }
+
+});
+
+function initVideoPlay() {
+    playDay = videoPlayScale[0];
+    playHour = 0;
+    $('.videoK').css('left','calc(0% - 3px)');
+    $('.videoShow').css('width','0');
+    $('.videoS_in').removeClass('stopV').removeClass('xhV').addClass('startV')
+}
+
+/*视频播放处理*/
+function videoPlay() {
+    judgmentObj = [];
+    var index = videoPlayScale.indexOf(playDay);
+    if(index == -1){
+        return;
+    }
+    changeMsg.sTimeD = moment(playDay).format("YYYY-MM-DD");
+    if(changeMsg.rms == 'h'){
+        changeMsg.sTimeH = playHour;
+    }
+    if(play){
+
+        var num = '';
+
+        if(changeMsg.rms == 'd'){
+            num = index/(videoPlayScale.length-1)*100;
+        }else{
+            num = (index/(videoPlayScale.length)*100) + (playHour/23/(videoPlayScale.length)*100);
+        }
+
+        $('.videoK').css('left','calc('+ num +'% - 3px)');
+        $('.videoShow').css('width',num +'%');
+        console.log(playDay,playHour);
+        setVideoPlayTime();
+        updata();
+        if(changeMsg.showWind !=-1){
+            updata('wind');
+        }
+    }
+}
+
+/*时间加一天加一小时处理*/
+function setVideoPlayTime() {
+    var index = videoPlayScale.indexOf(playDay);
+    if(changeMsg.rms == 'd'){
+        playDay = videoPlayScale[index+1];
+        if(!playDay){
+            play = false;
+            playDay = videoPlayScale[0];
+            $('.videoS_in').removeClass('stopV').removeClass('startV').addClass('xhV')
+        }
+    }else{
+        playHour++;
+        if(playHour == 24){
+            playHour = 0;
+            playDay = videoPlayScale[index+1];
+            if(!playDay){
+                play = false;
+                playDay = videoPlayScale[0];
+                $('.videoS_in').removeClass('stopV').removeClass('startV').addClass('xhV')
+            }
+        }
+    }
+}
+
+var judgmentObj = [];
+/*判断是否可以调用视频播放函数*/
+function judgment() {
+    console.log(judgmentObj)
+    if(changeMsg.showWind == -1){
+        if(judgmentObj.length == 1){
+            window.setTimeout(function () {
+                videoPlay();
+            },2000)
+        }
+    }else{
+        if(judgmentObj.length == 1){
+            window.setTimeout(function () {
+                videoPlay();
+            },2000)
+        }
+    }
+}
