@@ -333,4 +333,17 @@
     where ID_EFFECTIVE ='1' AND USER_ID = #{userId,jdbcType=DECIMAL} AND DOMAIN_NAME = #{domainName,jdbcType=OTHER} AND DOMAIN_DOC = #{domainDoc,jdbcType=OTHER}
   	AND CREATE_STATUS = #{createStatus,jdbcType=OTHER}
   </select>
+  
+  
+   <update id="updateByValid" parameterType="java.lang.Long" >
+    update T_DOMAIN_MISSION
+    set VALID_STATUS ='1'
+    where DOMAIN_ID = #{domainId,jdbcType=DECIMAL}
+  </update>
+  
+   <update id="updateByValidtwo" parameterType="java.lang.Long" >
+    update T_DOMAIN_MISSION
+    set VALID_STATUS ='2'
+    where USER_ID = #{userId,jdbcType=DECIMAL}
+  </update>
 </mapper>
