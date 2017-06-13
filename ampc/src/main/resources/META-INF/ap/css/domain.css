@@ -1,8 +1,14 @@
+.domain_bigbox{
+    position: relative;
+}
 .box-body{
 	border-radius:5px !important;
 	box-shadow: 0 0 10px #777777 !important;
 	margin: 10px !important;
 	width: 40%;
+    position: absolute !important;
+    left: 10px;
+    top: 10px;
 }
 .body-body a{
 	cursor:pointer;
