@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import net.sf.json.JSONObject;
+import oracle.net.aso.q;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -62,12 +63,20 @@ import org.springframework.stereotype.Component;
 
 
 
+
+
+
+
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.redisqueue.entity.QueueData;
 import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.DateUtil;
+import ampc.com.gistone.util.JsonUtil;
 import ampc.com.gistone.util.LogUtil;
 
 
@@ -302,8 +311,15 @@ public class SendQueueData {
 	 * @date 2017年5月22日 下午4:31:54
 	 */
 	public boolean sendDomainDatajson(QueueData queueData) {
-		JSONObject jsonObject = JSONObject.fromObject(queueData);
-		String domainDatajson = jsonObject.toString();
+//		JSONObject jsonObject = JSONObject.fromObject(queueData);
+//		String domainDatajson = jsonObject.toString();
+		String domainDatajson = null;
+		try {
+			domainDatajson = JsonUtil.objToJson(queueData);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		LogUtil.getLogger().info("sendDomainDatajson:发送domainjson:"+domainDatajson );
 		sendmessagelogfile(domainDatajson);
 		boolean sendData = sendQueueData.sendData(domainDatajson);
