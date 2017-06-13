@@ -154,7 +154,10 @@ public class NativeAndNationController {
 					listTps = verifyByNativeTpName(requestDate,request,response);
 				}else if("verifyByNativeName".equals(param)){
 					listTps = verifyByNativeName(requestDate,request,response);
+				}else if("verifyByCouplingName".equals(param)){
+					listTps = verifyByCouplingName(requestDate,request,response);
 				}
+				
 				else if("".equals(param)){
 					return AmpcResult.build(1001, "NativeAndNationController 请求方法参数异常!");
 				}
