@@ -4,18 +4,15 @@
 $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">用户设置</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">domain设置</span><span class="navRight qdnavRight">');
 getInfo();
 /**查询接口**/
+var Storage = localStorage;
 function getInfo(){
-	var  url = '/Domain/findAll';
-	var domain = vipspa.getMessage('domain_update');
-	var domain_id = domain.content.domain_id;
-	var domainId =  $.session.get('domain_id');
-	console.log(domainId);
+	var url = '/Domain/findAll';
+	var domain_id = Storage.getItem('domain_id');
 	ajaxPost(url,{
 		'userId': userId
 	}).success(function (res) {
 		$.each(res.data,function(key,value){
 			if(value.domainId == domain_id){
-				console.log(value);
 				pullPage(value);
 			}
 		});
