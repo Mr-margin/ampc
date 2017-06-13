@@ -521,13 +521,28 @@ $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
         $(".tipYearRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入正确清单年份</span>");
     }
 })
-//模板名字去重
+//本地清单模板名字校验
 $("#creatTemp #esNationName").blur(
     function () {
         ajaxPost('/NativeAndNation/doPost',{
             "userId":userId,
             "method":'verifyByNativeTpName',
             "nativeTpName":$("#creatTemp #esNationName").val()
+        }).success(function (res) {
+            if(res.data.data.msg==true){
+                $("#creatTemp .tipNameRepeat span").remove();
+                $("#creatTemp .tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>该名称已被使用</span>");
+            }
+        })
+    }
+)
+//本地清单名称校验
+$("#editTempQd #esLocalQdName").blur(
+    function () {
+        ajaxPost('/NativeAndNation/doPost',{
+            "userId":userId,
+            "method":'verifyByNativeName',
+            "nativeName":$("#editTempQd #esLocalQdName").val()
         }).success(function (res) {
             if(res.data.data.msg==true){
                 $("#creatTemp .tipNameRepeat span").remove();
