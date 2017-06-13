@@ -135,9 +135,78 @@ var zTreeSetting = {
                             setTimeout(copyPlan,500);
                         }
                     }
+                    console.log(title);
                 }
             });
-            
+            $('#planpanel').tabs('getTab','编辑现预案').panel({
+            	onOpen:function(){
+            		$('#editPlanTable').datagrid({
+            			data:[],
+            			fit:true,
+            			columns:[[{
+            				field:'planId',
+            				title:'ID',
+            				width:100
+            			},{
+            				field:'planName',
+            				title:'预案名称',
+            				width:100
+            			},{
+            				field:'timeStartDate',
+            				title:'开始时间',
+            				width:150,
+            				formatter:function(value){
+            					return moment(value,'x').format('YYYY-M-D H:mm:ss');
+            				}
+            			},{
+            				field:'timeEndDate',
+            				title:'结束时间',
+            				width:150,
+            				formatter:function(value){
+            					return moment(value,'x').format('YYYY-M-D H:mm:ss');
+            				}
+            			}]],
+            			onClickRow:function (index,row) {
+            	        	//用于作为单选行的操作，当点击一行后，其他行取消选中，在datagrid中需要把singleSelect取消
+            	            var rowNum=$(this).datagrid('getRows').length;
+            	            for(var k=0;k<rowNum;k++){
+            	            	if(k!=index){
+            	            		$(this).datagrid('uncheckRow',k)
+            	            	}else{
+            	            		
+            	            	}
+            	            }
+            	            var _tempPlanId = $(this).datagrid('getChecked')[0];
+            	            if(typeof _tempPlanId=='undefined'){
+            	            	selectedTimes ={};
+            	            	return
+            	            }
+            	            outloop:
+            	            for(var i=0;i<allData.length;i++){
+            	            	for(var j=0;j<allData[i].timeItems.length;j++){
+            	            		if(_tempPlanId.planId==allData[i].timeItems[j].planId){
+            	            			break outloop;
+            	            		}
+            	            	}
+            	            }
+            	            selectedTimes = {
+            	                    areaId: allData[i].areaId,
+            	                    areaName: allData[i].areaName,
+            	                    cityCodes: allData[i].cityCodes,
+            	                    countyCodes: allData[i].countyCodes,
+            	                    endTime: allData[i].timeItems[j].timeEndDate,
+            	                    index: i,
+            	                    indexNum: j,
+            	                    planId: allData[i].timeItems[j].planId,
+            	                    planName: allData[i].timeItems[j].planName,
+            	                    provinceCodes: allData[i].provinceCodes,
+            	                    startTime: allData[i].timeItems[j].timeStartDate,
+            	                    timeId: allData[i].timeItems[j].timeId
+            	                };
+            	        }
+            		});
+            	}
+            })
             //当当前区域只有一个时段的时候，时段不能删除和进行编辑
             if (allData[areaIndex].timeItems.length <= 1) {
                 $('#timepanel').tabs('disableTab', '时段删除');
@@ -159,14 +228,14 @@ var zTreeSetting = {
                 $('#planpanel').tabs('enableTab', '编辑现预案');
                 $('#planpanel').tabs('select', '编辑现预案');
               //预案操作被渲染后，生成预案的datagrid
-                editPlanTableFun();
-                var _rows=$('#editPlanTable').datagrid('getRows');
-                for(var i=0;i<_rows.length;i++){
-                	if(selectedTimes.planId==_rows[i].planId){
-                		$('#editPlanTable').datagrid('uncheckAll').datagrid('checkRow',i);
-                	}
-                	break ;
-                }
+//                editPlanTableFun();
+//                var _rows=$('#editPlanTable').datagrid('getRows');
+//                for(var i=0;i<_rows.length;i++){
+//                	if(selectedTimes.planId==_rows[i].planId){
+//                		$('#editPlanTable').datagrid('uncheckAll').datagrid('checkRow',i);
+//                	}
+//                	break ;
+//                }
             }
             
             $('#timeorplan').tabs('select','预案操作');
@@ -191,6 +260,15 @@ var zTreeSetting = {
 
             /*删除时段 start*/
             editHtml('delTime');
+            editPlanTableFun();
+	          var _rows=$('#editPlanTable').datagrid('getRows');
+	          for(var i=0;i<_rows.length;i++){
+	          	if(selectedTimes.planId==_rows[i].planId){
+	          		$('#editPlanTable').datagrid('uncheckAll').datagrid('checkRow',i);
+	          		break ;
+	          	}
+	          	
+	          }
             
             if (allData[areaIndex].timeItems.length > 1) {
                 $('.delTimeLi').removeClass('disNone');
@@ -1066,22 +1144,26 @@ function delArea(e) {
 }
 
 /*编辑预案*/
-function editPlan(t) {
-    if (!t) {
-        t = selectedTimes;
-    } else {
-        selectedTimes = t;
-    }
-    areaIndex = t.index;
-    timeIndex = t.indexNum;
+function editPlan() {
+	if(JSON.stringify(selectedTimes) == "{}"){
+		swal({
+			title:"请选择编辑预案",
+			type:"info",
+			timer:1000,
+			showConfirmButton:false
+		});
+		return ;
+	}
+    areaIndex = selectedTimes.index;
+    timeIndex = selectedTimes.indexNum;
 
     msg.content.areaId = allData[areaIndex].areaId;
     msg.content.areaName = allData[areaIndex].areaName;
     msg.content.timeId = allData[areaIndex].timeItems[timeIndex].timeId;
     //msg.content.timeEndDate = allData[areaIndex].timeItems[timeIndex].timeEndDate;
-    msg.content.timeEndDate = t.endTime;
+    msg.content.timeEndDate = selectedTimes.endTime;
     //msg.content.timeStartDate = allData[areaIndex].timeItems[timeIndex].timeStartDate;
-    msg.content.timeStartDate = t.startTime;
+    msg.content.timeStartDate = selectedTimes.startTime;
     msg.content.planId = allData[areaIndex].timeItems[timeIndex].planId;
     msg.content.planName = allData[areaIndex].timeItems[timeIndex].planName;
     msg.content.cityCodes = allData[areaIndex].cityCodes;
@@ -2532,7 +2614,7 @@ function findQJstatus() {
     })
 }
 /*生成编辑预案的表格*/
-function editPlanTableFun(){
+/*function editPlanTableFun(){
 	//把其中的id为-1的假预案清楚掉
 	var _tempPlan=$.grep(allData[selectedTimes.index].timeItems,function(n,i){
 		return n.planId>0;
@@ -2595,5 +2677,14 @@ function editPlanTableFun(){
                     timeId: allData[i].timeItems[j].timeId
                 };
         }
+	});
+}*/
+function editPlanTableFun(){
+	//把其中的id为-1的假预案清楚掉
+	var _tempPlan=$.grep(allData[selectedTimes.index].timeItems,function(n,i){
+		return n.planId>0;
+	});
+	$('#editPlanTable').datagrid({
+		data:_tempPlan		
 	});
 }
