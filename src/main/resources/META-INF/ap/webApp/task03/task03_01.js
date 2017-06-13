@@ -392,34 +392,29 @@ function open_cs(sectorsName, measureame, mid, planMeasureId) {
                 $("#xishuMO").html(xishuMO);
             }
 
-            zongdianyaun = [];
 
             //if(res.data.query.length>0){//返回筛选条件，说明有点源可以筛选
-            ajaxPost_w(jianpaiUrl + '/search/companyCount', {
-                "bigIndex": csMsg.esCouplingId, "smallIndex": sectorsName, "regionIds": Codes
-            }).success(function (res) {
-//					console.log(JSON.stringify(res));
-                if (res.status == 'success') {
-                    $("#dianyaunzushu").html("点源总数：" + res.data.count);
-                    if (res.data.count == 0) {
-                        $("#se_bu").hide();//筛选按钮关闭
-                        $("#se_bu_na").hide();//筛选按钮关闭
-                        $("#se_name").hide();//企业名称输入关闭
-                    } else {
-                        $("#se_bu").show();
-                        $("#se_bu_na").show();
-                        $("#se_name").show();
-                    }
-                    $("#xiangxizhibiao").html("点源排放占比:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SO<sub>2</sub>:" + res.data.rate.SO2 + "%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO<sub>x</sub>:" + res.data.rate.NOx + "%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PM<sub>2.5</sub>:" + res.data.rate.PM25 + "%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VOCs:" + res.data.rate.VOC + "%");
-                    add_point(res.data.company);
-
-                    point_z = res.data.company;//记录点源总数
-
-                    zongdianyaun = res.data.company;//复制总点源数据以后备用
-                } else {
-                    swal('连接错误search/companyCount', '', 'error');
-                }
-            });
+//             ajaxPost_w(jianpaiUrl + '/search/companyCount', {
+//                 "bigIndex": csMsg.esCouplingId, "smallIndex": sectorsName, "regionIds": Codes
+//             }).success(function (res) {
+// //					console.log(JSON.stringify(res));
+//                 if (res.status == 'success') {
+//                     if (res.data.count == 0) {
+//                         $("#se_bu").hide();//筛选按钮关闭
+//                         $("#se_bu_na").hide();//筛选按钮关闭
+//                         $("#se_name").hide();//企业名称输入关闭
+//                     } else {
+//                         $("#se_bu").show();
+//                         $("#se_bu_na").show();
+//                         $("#se_name").show();
+//                     }
+//
+//                     point_z = res.data.company;//记录点源总数
+//
+//                 } else {
+//                     swal('连接错误search/companyCount', '', 'error');
+//                 }
+//             });
             //}
 
             //子措施列表的表头
@@ -478,6 +473,13 @@ function open_cs(sectorsName, measureame, mid, planMeasureId) {
                 }).success(function (da) {
 //					console.log(JSON.stringify(da));
                     if (da.status == 'success') {
+
+                        if (da.data.P[0].count == 0) {
+                            $("#se_bu").hide();//筛选按钮关闭
+                        } else {
+                            $("#se_bu").show();
+                        }
+
                         var zz = {"f1": "汇总", "f2": "0/" + da.data.P[0].count},
                             pp = {"f1": "剩余点源", "f2": da.data.P[0].count},
                             ss = {"f1": "面源", "f2": "0"};
