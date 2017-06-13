@@ -67,6 +67,8 @@ public class AirController {
 	
 	@Autowired
 	private GetBySqlMapper getBySqlMapper;
+	@Autowired
+	private FindCode findCode;
 	
 	private int went=7;
 	
@@ -2603,14 +2605,29 @@ public class AirController {
 				while(dateiter.hasNext()){
 					Entry<Date,Object> dates=dateiter.next();
 					Date date=dates.getKey();
-					
+					ScenarinoEntity se=(ScenarinoEntity)odMap.get(num).get(date);
+					JSONObject boj=JSONObject.fromObject(se.getContent());
+					Map<String,Object> observeMap=(Map) boj;
+					if(!observeMap.isEmpty()){
 					if(null!=pdMap.get(num)){
 						if(null!=pdMap.get(num).get(date)){
+							ScenarinoEntity ses=(ScenarinoEntity)pdMap.get(num).get(date);
+							JSONObject bj=JSONObject.fromObject(ses.getContent());
+							Map<String,Object> obsMap=(Map) bj;
+							if(!obsMap.isEmpty()){
 							om.put(date, dates.getValue());
 							pm.put(date, pdMap.get(num).get(date));
+							}
+						}else{
+							pdaslist.add(date);
+							daslist.add(date);
 						}
 						
 					}else{
+						pdaslist.add(date);
+						daslist.add(date);
+					}
+				}else{
 						pdaslist.add(date);
 						daslist.add(date);
 					}
@@ -3322,5 +3339,14 @@ public class AirController {
 			return AmpcResult.build(1001, "查询最大和最小起报日期！");	
 		}
 	}
-	
+	 
+	@RequestMapping("/code/finds")	
+	public AmpcResult findcodes(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response ){
+		List<Long> idlist =new ArrayList<Long>();
+		idlist.add(1l);
+		idlist.add(2l);
+		idlist.add(22l);
+		Map map=findCode.Findcode(idlist);
+		return AmpcResult.ok(map);
+	 }
 }
