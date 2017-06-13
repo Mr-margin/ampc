@@ -755,11 +755,11 @@ function getdata() {
 	ajaxPost(url, paramsName).success(function (res) {
 	    if (res.status == 0) {
 	    	echartsData = res.data;
-	    	if (JSON.stringify(echartsData) == '{}' || echartsData == null) {
-	    		swal('暂无数据', '', 'error')
-	    	} else {
+//	    	if (JSON.stringify(echartsData) == '{}' || echartsData == null) {
+//	    		swal('暂无选择的情景数据', '', 'error')
+//	    	} else {
 	    		initEcharts();
-	    	}
+//	    	}
 	    } else {
 	      swal(res.msg, '', 'error')
 	    }
@@ -814,7 +814,7 @@ function find_standard(){
 	    	observation.scenarinoId=res.data.observationId;
 	    	observation.scenarinoName=res.data.observationName;
 	    	if (JSON.stringify(standardData) == '{}' || standardData == null||standardData==undefined||standardData=='') {
-	    	  swal('暂无基准匹配数据', '', 'error')
+	    	  swal('暂无基准和观测数据', '', 'error')
 	    	} else {
 	    	  
 	    	}
