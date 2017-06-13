@@ -9,7 +9,6 @@
 package ampc.com.gistone.redisqueue.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**  
  * @Title: DomainDataCommon.java
  * @Package ampc.com.gistone.redisqueue.entity
@@ -38,9 +37,9 @@ public class DomainDataCommon {
 	private String dx;
 	//y向分辨率（单位m）
 	private String dy;
-	 @JsonProperty("Coord_Name")
-	private String Coord_Names;
-	 
+//	private String Coord_Names;
+	@JsonProperty(value = "Coord_Name")
+	 private String coord_Name;
 	 
 	public String getMap_proj() {
 		return map_proj;
@@ -97,17 +96,19 @@ public class DomainDataCommon {
 		this.dy = dy;
 	}
 	/**
-	 * @return the coord_Names
+	 * @return the coord_Name
 	 */
-	public String getCoord_Names() {
-		return Coord_Names;
+	public String getCoord_Name() {
+		return coord_Name;
 	}
 	/**
-	 * @param coord_Names the coord_Names to set
+	 * @param coord_Name the coord_Name to set
 	 */
-	public void setCoord_Names(String coord_Names) {
-		Coord_Names = coord_Names;
+	public void setCoord_Name(String coord_Name) {
+		this.coord_Name = coord_Name;
 	}
+	
+	
 
 	
 	
