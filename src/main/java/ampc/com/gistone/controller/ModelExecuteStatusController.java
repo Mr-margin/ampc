@@ -163,7 +163,9 @@ public class ModelExecuteStatusController<E> {
 					//情景结束时间
 					modelExecuJson.setEndTime(selectByPrimaryKey.getScenarinoEndDate());
 					//模式运行截止位置的时间
-					modelExecuJson.setStopTime(selectStatus.getTasksEndDate());
+					Date tasksEndDate = selectStatus.getTasksEndDate();
+//					tasksEndDate = tasksEndDate ==null?selectByPrimaryKey.getScenarinoStartDate():tasksEndDate;
+					modelExecuJson.setStopTime(tasksEndDate);
 					//模式运行截止到目前的状态对应的tasks的名称
 					String stopData = getnowTasksName(scenarinoType,selectStatus);
 					modelExecuJson.setStopData(stopData);
@@ -299,11 +301,11 @@ public class ModelExecuteStatusController<E> {
 					Date messageTime = tMessageLog.getMessageTime();
 					String indextime = DateUtil.DATEtoString(messageTime, "yyyy-MM-dd HH:mm:ss");
 					if (0==k) {
-						String str = (tempdate+"\r\n"+ indextime).toString();
+						String str = (tempdate+"<br/>"+ indextime).toString();
 						execDetailMsg[k] = str;
 						tempdate = indextime;
 					}else {
-						String str = (tempdate+"\r\n"+ indextime).toString();
+						String str = (tempdate+"<br/>"+ indextime).toString();
 						execDetailMsg[k] = str;
 						tempdate = indextime;
 					}
