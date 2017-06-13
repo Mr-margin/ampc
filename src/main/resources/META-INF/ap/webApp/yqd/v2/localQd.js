@@ -195,6 +195,15 @@ function innitdata(active){
                                 $(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree .datagrid-row").removeClass('datagrid-row-clicked');
                                 $('#localqd').treegrid('collapseAll').treegrid('expand',rowId);
                             }
+                        }else if(row.children.length==1){
+                            var rowId=row.id
+                            if ($('[node-id="' + rowId + '"]').hasClass('datagrid-row-clicked')) {
+                                $('[node-id="' + rowId + '"]').removeClass('datagrid-row-clicked');
+                                $(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree .datagrid-row").removeClass('datagrid-row-clicked');
+                            } else {
+                                $('[node-id="' + rowId + '"]').addClass('datagrid-row-clicked').siblings().removeClass('datagrid-row-clicked');
+                                $(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree .datagrid-row").removeClass('datagrid-row-clicked');
+                            }
                         }
                     }
                 },
@@ -430,7 +439,6 @@ $(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree tr").click(function(){
 //校验
 function checkData(rowId) {
     var rowDiv=$("#localqd").treegrid('find',rowId);
-
     var parentId=rowDiv._parentId;
     var parentRowDiv=$("#localqd").treegrid('find',parentId);
     if(rowId.indexOf("mb")==0){
