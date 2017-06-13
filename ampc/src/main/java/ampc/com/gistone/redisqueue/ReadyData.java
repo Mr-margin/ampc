@@ -129,6 +129,8 @@ import java.util.UUID;
 
 
 
+
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -210,6 +212,8 @@ public class ReadyData {
 	//引入发送消息的工具类
 	@Autowired
 	private SendQueueData sendQueueData;
+	@Autowired
+	private ToDataUngribUtil toDataUngribUtil;
 	
 	/**
 	 * @Description: 根据减排计算的结果触发发送数据是
@@ -318,15 +322,27 @@ public class ReadyData {
 	public String branchPredict(Long scenarinoId,Integer scenarinoType,Integer missionType,Long missionId,Long userId, Long sourceId) {
 		String str = null;
 		if (scenarinoType==4&&missionType==1) {
-			//准备实时预报的数据(自己测试用的）
-/*			TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
-			String lastungrib = readyLastUngrib(userId);
+			/*//准备实时预报的数据(自己测试用的）
+			TScenarinoDetail tScenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+			
+			Date lastpathdate = tScenarinoDetailMapper.getlastrunstatus(userId);
+			//如果基础情景不满足 则续跑该基础情景
+			//获取最新的ungrib 
+			 TUngrib tUngrib = tUngribMapper.getlastungrib();
+			 int length = toDataUngribUtil.UpdateORNo(tUngrib);
+			//最新的pathdate（年月日）
+			Date pathdate = tUngrib.getPathDate();
+			String lastungrib = pivot(userId, lastpathdate, pathdate);
 			if (null!=lastungrib) {
-				readyRealMessageDataFirst(tScenarinoDetail, lastungrib);
+				if (length>2) {
+					readyRealMessageDataFirst(tScenarinoDetail, lastungrib);
+				}else {
+					LogUtil.getLogger().info("当天的实时预报已经发送过了！");
+				}
 			}else {
-				LogUtil.getLogger().info("当天的实时预报已经发送过了！");
-			}*/
-			str="ok";
+				
+			}
+			str="ok";*/
 		}
 		if (scenarinoType==3&&missionType==3) {
 			//基准情景
