@@ -246,4 +246,69 @@
       MESSAGE_EXPEND8 = #{messageExpend8,jdbcType=VARCHAR}
     where EXECUTE_SCHEDULE_ID = #{executeScheduleId,jdbcType=DECIMAL}
   </update>
+  <!-- 查询旧的index消息  -->
+  <select id="selectByscenIdAndIndex" parameterType="hashMap" resultMap="BaseResultMap">
+  select 
+    <include refid="Base_Column_List" />
+    from T_MODEL_SCHEDULE_MESSAGE
+    where EXE_SCENARINO_ID = #{exeScenarinoId,jdbcType=DECIMAL} and EXE_MESSAGE_TASKSDATE = #{exeMessageTasksdate,jdbcType=VARCHAR} and EXE_MESSAGE_INDEX = #{exeMessageIndex,jdbcType=DECIMAL}
+  </select>
+  <!--修改index相同的记录  -->
+  <update id="updateByscenIdAndIndex" parameterType="ampc.com.gistone.database.model.TModelScheduleMessage">
+  update T_MODEL_SCHEDULE_MESSAGE
+    <set >
+      <if test="exeMessageIndex != null" >
+        EXE_MESSAGE_INDEX = #{exeMessageIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="exeMessageTime != null" >
+        EXE_MESSAGE_TIME = #{exeMessageTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="exeMessageTasksdate != null" >
+        EXE_MESSAGE_TASKSDATE = #{exeMessageTasksdate,jdbcType=VARCHAR},
+      </if>
+      <if test="exeMessageDesc != null" >
+        EXE_MESSAGE_DESC = #{exeMessageDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="exeScenarinoId != null" >
+        EXE_SCENARINO_ID = #{exeScenarinoId,jdbcType=DECIMAL},
+      </if>
+      <if test="exeMessageType != null" >
+        EXE_MESSAGE_TYPE = #{exeMessageType,jdbcType=VARCHAR},
+      </if>
+      <if test="exeMessageCode != null" >
+        EXE_MESSAGE_CODE = #{exeMessageCode,jdbcType=DECIMAL},
+      </if>
+      <if test="messageAddTime != null" >
+        MESSAGE_ADD_TIME = #{messageAddTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="messsageUpdateTime != null" >
+        MESSSAGE_UPDATE_TIME = #{messsageUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="messageExpend1 != null" >
+        MESSAGE_EXPEND1 = #{messageExpend1,jdbcType=VARCHAR},
+      </if>
+      <if test="messageExpend2 != null" >
+        MESSAGE_EXPEND2 = #{messageExpend2,jdbcType=DECIMAL},
+      </if>
+      <if test="messageExpend3Time != null" >
+        MESSAGE_EXPEND3_TIME = #{messageExpend3Time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="messageExpend4 != null" >
+        MESSAGE_EXPEND4 = #{messageExpend4,jdbcType=VARCHAR},
+      </if>
+      <if test="messageExpend5 != null" >
+        MESSAGE_EXPEND5 = #{messageExpend5,jdbcType=VARCHAR},
+      </if>
+      <if test="messageExpend6 != null" >
+        MESSAGE_EXPEND6 = #{messageExpend6,jdbcType=VARCHAR},
+      </if>
+      <if test="messageExpend7 != null" >
+        MESSAGE_EXPEND7 = #{messageExpend7,jdbcType=VARCHAR},
+      </if>
+      <if test="messageExpend8 != null" >
+        MESSAGE_EXPEND8 = #{messageExpend8,jdbcType=VARCHAR},
+      </if>
+    </set>
+   where EXE_SCENARINO_ID = #{exeScenarinoId,jdbcType=DECIMAL} and EXE_MESSAGE_TASKSDATE = #{exeMessageTasksdate,jdbcType=VARCHAR} and EXE_MESSAGE_INDEX = #{exeMessageIndex,jdbcType=DECIMAL}
+  </update>
 </mapper>
