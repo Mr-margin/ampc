@@ -1678,7 +1678,13 @@ public class AirController {
 									//单个物种数据
 									Object speciesOne=speciesMap.get(meteormnArr[s].toString());	
 									Map speciesOneMap=(Map)speciesOne;
-									String speciesOneVal=speciesOneMap.get("0").toString();
+//									String speciesOneVal=speciesOneMap.get("0").toString();
+									String speciesOneVal;
+									if(speciesOneMap==null||"".equals(speciesOneMap)){
+										 speciesOneVal="-";
+									}else{
+										 speciesOneVal=speciesOneMap.get("0").toString();
+									}
 									if("CO".equals(meteormnArr[s])){
 										if("".equals(speciesOneVal)||speciesOneVal==null||"-".equals(speciesOneVal)){		//判断是否有值
 											speciesDayData.put(dayKey,"-");
@@ -1775,9 +1781,22 @@ public class AirController {
 							scenarinoEntity.setTableName(tables);
 							scenarinoEntity=tPreProcessMapper.selectBysomes(scenarinoEntity);   
 							//获取模拟数据
-							contents=scenarinoEntity.getContent();
-							//模拟父数据
-							contentmapData=mapper.readValue(contents, Map.class);	
+//							contents=scenarinoEntity.getContent();
+//							//模拟父数据
+//							contentmapData=mapper.readValue(contents, Map.class);
+							
+							if(scenarinoEntity!=null){
+								//获取模拟数据
+								contents=scenarinoEntity.getContent();
+								//模拟父数据
+								contentmapData=mapper.readValue(contents, Map.class);
+							}else{
+								//获取模拟数据为空时赋值"{}"
+								contents="{}";
+								//模拟父数据
+								contentmapData=mapper.readValue(contents, Map.class);
+							}
+							
 							//该方法返回一个日历Calendar
 							Calendar calendar1 = Calendar.getInstance();
 							//当天日期减2
@@ -1815,7 +1834,13 @@ public class AirController {
 								scenarinoEntity.setTableName(tables);
 								scenarinoEntity=tPreProcessMapper.selectBysomesFnl(scenarinoEntity);
 								//循环添加到map中
-								contentmapData.put(sdfNow.format(calDate), mapper.readValue(scenarinoEntity.getContent(), Map.class));
+//								contentmapData.put(sdfNow.format(calDate), mapper.readValue(scenarinoEntity.getContent(), Map.class));
+								
+								if(scenarinoEntity==null){
+									contentmapData.put(sdfNow.format(calDate), "{}");
+								}else{
+									contentmapData.put(sdfNow.format(calDate), mapper.readValue(scenarinoEntity.getContent(), Map.class));
+								}
 							}
 							
 					    }else{
