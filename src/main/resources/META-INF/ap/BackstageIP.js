@@ -1,10 +1,10 @@
-//var ArcGisUrl = "http://166.111.42.46:8080";//ArcGis服务器javascript API地址
-//var ArcGisServerUrl = "http://166.111.42.46:6080";//ArcGis地图服务器地址
+var ArcGisUrl = "http://166.111.42.46:8080";//ArcGis服务器javascript API地址
+var ArcGisServerUrl = "http://166.111.42.46:6080";//ArcGis地图服务器地址
 //var jianpaiUrl = "http://166.111.42.85:8090";//减排计算的地址
 //var pngUrl = "";//png图片的服务器路径
 
-var ArcGisUrl = "http://192.168.1.103:18080";//ArcGis服务器javascript API地址
-var ArcGisServerUrl = "http://192.168.1.103:6080";//ArcGis地图服务器地址
+// var ArcGisUrl = "http://192.168.1.103:18080";//ArcGis服务器javascript API地址
+// var ArcGisServerUrl = "http://192.168.1.103:6080";//ArcGis地图服务器地址
 // var jianpaiUrl = "http://192.168.6.191:8089";//减排计算的地址
 var jianpaiUrl = "http://192.168.1.128:8080/erp-2.0.0"
 var pngUrl = "http://192.168.4.214:8091/Java";//png图片的本地路径

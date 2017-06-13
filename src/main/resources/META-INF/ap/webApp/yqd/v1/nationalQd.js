@@ -9,7 +9,7 @@ function innitdata(){
         url: "/ampc/NativeAndNation/find_nation", //请求数据
         dataType: "json",
         columns:[[  //表头
-                    {field:"ck",checkbox:true},
+                    // {field:"ck",checkbox:true},
                     {field:"esNationName",title:"全国清单",width:200,align:'cneter'},
                     {field:"esNationYear",title:"年份",width:80,align:'cneter'},
                     {field:"publishTime",title:"创建时间",formatter:function(value,row,index){
@@ -276,7 +276,8 @@ $("#creatQd #esNationName").blur(
             "nationName":$("#creatQd #esNationName").val()
         }).success(function (res) {
             if(res.data.data.msg==true){
-                $(".tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>该名称已被使用</span>");
+                $("#creatQd .tipNameRepeat span").remove();
+                $("#creatQd .tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>该名称已被使用</span>");
             }
         })
     }

@@ -12,7 +12,7 @@ function innitdata(){  //耦合清单的初始化
         url: "/ampc/NativeAndNation/doPost", //请求数据
         dataType: "json",
         columns:[[  //表头
-            {field:"ck",checkbox:true},
+            // {field:"ck",checkbox:true},
             {field:"esCouplingName",title:"清单名称",width:160,align:'cneter'},
             {field:"esCouplingDesc",title:"清单描述",width:400,align:'cneter'},
             {field:"publishTime",title:"本地清单",width:100},
@@ -144,14 +144,16 @@ $("#creatCoupQd").window({
 //点击新建按钮 打开窗口
 function creatCoupQd(){
     $("#formCoup").form("clear")
-    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称").css({"color":"#757575"});
+    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称（必填）").css({"color":"#757575"});
     $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份").css({"color":"#757575"});
+    $("#creatCoupQd .tipYearRepeat span").remove();
+    $("#creatCoupQd .tipNameRepeat span").remove();
     $("#creatCoupQd").window("open");
 }
 // 清除已经写入的数据
 function clearCoup() {
     $("#formCoup").form("clear")
-    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称").css({"color":"#757575"});
+    $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称（必填）").css({"color":"#757575"});
     $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份").css({"color":"#757575"});
 }
 //点击新建窗口提交按钮进行耦合清单创建
@@ -186,10 +188,12 @@ function submitCoup(){
             )
             $("#creatCoupQd").window('close');
         }else{
-            swal('清单年份获取错误', '', 'error');
+            $("#creatCoupQd .tipYearRepeat span").remove();
+            $("#creatCoupQd .tipYearRepeat").append("<span><i class='im-warning' style='color:red'></i>请输入符合要求的年份</span>");
         }
     }else{
-        swal('请输入符合要求的名称', '', 'error');
+        $("#creatCoupQd .tipNameRepeat span").remove();
+        $("#creatCoupQd .tipNameRepeat").append("<span><i class='im-warning' style='color:red'></i>请输入符合要求的名称</span>");
     }
 
 }
@@ -215,7 +219,9 @@ function editCoupQd(){
         document.getElementById("coupEditQdName").value=editQdName; //编辑窗口打开后 名称输入框显示所选数据的名称
         document.getElementById("coupEditQdYear").value=editQdYear;//编辑窗口打开后 年份输入框显示所选数据的名称
         document.getElementById("coupEditQdMark").value=editMark;//编辑窗口打开后 备注输入框显示所选数据的名称
-        $("#editCoupQd input").css({"color":"black"})
+        $("#editCoupQd input").css({"color":"black"});
+        $("#editCoupQd .tipYearRepeat span").remove();
+        $("#editCoupQd .tipNameRepeat span").remove();
         $("#editCoupQd").window('open');
     }else{
         swal('请先选择编辑清单', '', 'error');
@@ -258,10 +264,14 @@ function submitEditCoup() {
             )
             $("#editCoupQd").window('close');
         }else{
-            swal('年份错误', '', 'error');
+            // swal('年份错误', '', 'error');
+            $("#editCoupQd .tipYearRepeat span").remove();
+            $("#editCoupQd .tipYearRepeat").append("<span><i class='im-warning' style='color:red'></i>请输入符合要求的年份</span>");
         }
     }else{
-        swal('请输入符合要求的名称', '', 'error');
+        // swal('请输入符合要求的名称', '', 'error');
+        $("#editCoupQd .tipNameRepeat span").remove();
+        $("#editCoupQd .tipNameRepeat").append("<span><i class='im-warning' style='color:red'></i>请输入符合要求的名称</span>");
     }
 }
 //删除选中的耦合清单
@@ -567,7 +577,7 @@ function  localTable(value) {
 }
 // 创建 输入框获得焦点
 $(".cloudui .rwCon .qdContent .qdName").focus(function () {//名称获取焦点
-    if($(this).val()=="请输入长度不超过20的名称"){
+    if($(this).val()=="请输入长度不超过20的名称（必填）"){
         $(this).val("");
         $(this).css({"color":"black"})
     }
@@ -582,14 +592,34 @@ $(".cloudui .rwCon .qdContent .qdYear").focus(function () {//年份获取焦点
 //创建 输入框失去焦点
 $(".cloudui .rwCon .qdContent .qdName").blur(function () {//名称失去焦点
     if($(this).val()==""){
-        $(this).val("请输入长度不超过20的名称")
+        $(this).val("请输入长度不超过20的名称（必填）")
         $(this).css({"color":"#757575"})
+    }
+
+    if($(this).val().length==0||$(this).val().length>20){
+        $(".tipNameRepeat span").remove();
+        $(".tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>名称的长度不符合要求</span>");
+    }else if($(this).val()=="请输入长度不超过20的名称（必填）"){
+        $(".tipNameRepeat span").remove();
+        $(".tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入正确清单名称</span>");
+    }else {
+        $(".tipNameRepeat span").remove();
     }
 })
 $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
     if($(this).val()==""){
         $(this).val("请输入1990-2100之间的年份")
         $(this).css({"color":"#757575"})
+    }
+
+    if($(this).val()=="请输入1990-2100之间的年份"){
+        $(".tipYearRepeat span").remove();
+        $(".tipYearRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入正确清单年份</span>");
+    }else if($(this).val()>=1990&&$(this).val()<=2100){
+        $(".tipYearRepeat span").remove();
+    }else{
+        $(".tipYearRepeat span").remove();
+        $(".tipYearRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入正确清单年份</span>");
     }
 })
 //耦合第三步 参数是当前选择的城市和所有行业 根据这些生成表格

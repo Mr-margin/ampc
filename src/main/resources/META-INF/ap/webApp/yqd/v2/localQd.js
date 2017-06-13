@@ -127,7 +127,7 @@ function innitdata(active){
                 lines:false,
                 showHeader: false,
                 animate:true,
-                checkbox:true,
+                // checkbox:true,
                 columns:[[  //表头
                     // {field:"ck",checkbox:true},
                     {field:"esNativeTpName",title:"清单模板名称",width:160,formatter: function (value) {
@@ -230,10 +230,14 @@ function innitdata(active){
                 )
                 $("#creatTemp").window('close');
             }else{
-                swal('清单年份获取错误', '', 'error');
+                // swal('清单年份获取错误', '', 'error');
+                $("#creatTemp .tipYearRepeat span").remove();
+                $("#creatTemp .tipYearRepeat").append("<span><i class='im-warning' style='color:red'></i>请输入符合要求的名称</span>");
             }
         }else{
-            swal('请输入符合要求的名称', '', 'error');
+            // swal('请输入符合要求的名称', '', 'error');
+            $("#creatTemp .tipNameRepeat span").remove();
+            $("#creatTemp .tipNameRepeat").append("<span><i class='im-warning' style='color:red'></i>请输入符合要求的名称</span>");
         }
     }else if(active=="updata_nativeTp"){
         var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
@@ -346,6 +350,8 @@ function creatTemp(){
     $("#creatTemp #formQd").form("clear");
     $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称（必填）").css({"color":"#757575"});
     $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份").css({"color":"#757575"});
+    $("#creatTemp .tipNameRepeat span").remove();
+    $("#creatTemp .tipYearRepeat span").remove();
     $("#creatTemp").window("open");
 }
 //清空弹窗输入框内容
@@ -382,7 +388,9 @@ function editTemp() {
         document.getElementById("esLocalEditName").value=editTempName; //编辑窗口打开后 名称输入框显示所选数据的名称
         document.getElementById("esLocalEditYear").value=editTempYear;//编辑窗口打开后 年份输入框显示所选数据的名称
         document.getElementById("esLocalEditMark").value=editMark;//编辑窗口打开后 备注输入框显示所选数据的名称
-        $("#editTemp input").css({"color":"black"})
+        $("#editTemp input").css({"color":"black"});
+        $("#editTemp .tipNameRepeat span").remove();
+        $("#editTemp .tipYearRepeat span").remove();
         $("#editTemp").window('open');
     }else{
         swal('请先选择编辑清单', '', 'error');
@@ -410,6 +418,8 @@ function adgQdBtn(rowId){
     $("#formTempQd").form("clear");
     $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称（必填）").css({"color":"#757575"});
     $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份").css({"color":"#757575"});
+    $("#editTempQd .tipYearRepeat span").remove();
+    $("#editTempQd .tipNameRepeat span").remove();
     $("#editTempQd").window("open");
 }
 //防止树形表单子节点点击出现下拉效果
@@ -476,11 +486,31 @@ $(".cloudui .rwCon .qdContent .qdName").blur(function () {//名称失去焦点
         $(this).val("请输入长度不超过20的名称（必填）")
         $(this).css({"color":"#757575"})
     }
+
+    if($(this).val().length==0||$(this).val().length>20){
+        $(".tipNameRepeat span").remove();
+        $(".tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>名称的长度不符合要求</span>");
+    }else if($(this).val()=="请输入长度不超过20的名称（必填）"){
+        $(".tipNameRepeat span").remove();
+        $(".tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入正确清单名称</span>");
+    }else {
+        $(".tipNameRepeat span").remove();
+    }
 })
 $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
     if($(this).val()==""){
         $(this).val("请输入1990-2100之间的年份")
         $(this).css({"color":"#757575"})
+    }
+
+    if($(this).val()=="请输入1990-2100之间的年份"){
+        $(".tipYearRepeat span").remove();
+        $(".tipYearRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入正确清单年份</span>");
+    }else if($(this).val()>=1990&&$(this).val()<=2100){
+        $(".tipYearRepeat span").remove();
+    }else{
+        $(".tipYearRepeat span").remove();
+        $(".tipYearRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入正确清单年份</span>");
     }
 })
 //名字去重
@@ -492,7 +522,8 @@ $("#creatTemp #esNationName").blur(
             "nationName":$("#creatTemp #esNationName").val()
         }).success(function (res) {
             if(res.data.data.msg==true){
-                $(".tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>该名称已被使用</span>");
+                $("#creatTemp .tipNameRepeat span").remove();
+                $("#creatTemp .tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>该名称已被使用</span>");
             }
         })
     }
