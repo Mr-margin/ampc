@@ -545,8 +545,8 @@ $("#editTempQd #esLocalQdName").blur(
             "nativeName":$("#editTempQd #esLocalQdName").val()
         }).success(function (res) {
             if(res.data.data.msg==true){
-                $("#creatTemp .tipNameRepeat span").remove();
-                $("#creatTemp .tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>该名称已被使用</span>");
+                $("#editTempQd .tipNameRepeat span").remove();
+                $("#editTempQd .tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>该名称已被使用</span>");
             }
         })
     }
