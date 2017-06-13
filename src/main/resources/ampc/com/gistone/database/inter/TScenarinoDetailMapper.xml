@@ -1051,40 +1051,18 @@ AND S.IS_EFFECTIVE ='1'
   	select SCENARINO_STATUS from T_SCENARINO_DETAIL where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
   </select>
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <!--查找最大的预报情景  -->
+  <select id="getmaxRealpreiction" parameterType="java.lang.Long" resultType="java.util.Date">
+  select max(PATH_DATE)
+   FROM T_SCENARINO_DETAIL WHERE SCEN_TYPE='4' AND USER_ID=#{userId,jdbcType=DECIMAL}
+  </select>
+  <!--修改情景运行的错误状态  -->
+  <update id="updateModelErrorMSG" parameterType="hashMap">
+   update T_SCENARINO_DETAIL
+   set
+   	EXPAND4 = #{expand4,jdbcType=VARCHAR}
+   where SCENARINO_ID = #{scenarinoId,jdbcType=DECIMAL}
+  </update>
   <!-- 返回情景查询列表的数据 -->
   <resultMap id="scenarinoListMapNew" type="hashMap" >
     <id column="SCENARINO_ID" property="scenarinoId" jdbcType="DECIMAL" />
