@@ -8,8 +8,10 @@
  */
 package ampc.com.gistone.redisqueue;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ampc.com.gistone.database.inter.TDomainMissionMapper;
+import ampc.com.gistone.database.model.TDomainMission;
 import ampc.com.gistone.database.model.TDomainMissionWithBLOBs;
 import ampc.com.gistone.redisqueue.entity.DomainBodyData;
 import ampc.com.gistone.redisqueue.entity.DomainDataCmaq;
@@ -27,8 +30,10 @@ import ampc.com.gistone.redisqueue.entity.DomainDataMeic;
 import ampc.com.gistone.redisqueue.entity.DomainDataWrf;
 import ampc.com.gistone.redisqueue.entity.DomainParams;
 import ampc.com.gistone.redisqueue.entity.QueueData;
+import ampc.com.gistone.redisqueue.result.Message;
 import ampc.com.gistone.util.JsonUtil;
 import ampc.com.gistone.util.LogUtil;
+import ampc.com.gistone.util.RegUtil;
 
 /**  
  * @Title: DomainData.java
@@ -315,6 +320,75 @@ public class CreateDomainJsonData {
 		queueData.setTime(time);//设置消息时间
 		queueData.setType(type);
 		return queueData;
+	}
+
+
+
+
+	/**
+	 * @Description: 更新domain信息返回的结果
+	 * @param rpop   
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月12日 下午5:15:07
+	 */
+	public void updateDomainResult(String rpop) {
+		Message Domainmessage = null;
+		String disposeStatus = null;
+		try {
+			Domainmessage  = JsonUtil.jsonToObj(rpop, Message.class);
+			Date time = Domainmessage.getTime();
+			String type = Domainmessage.getType();
+			Map body = (Map) Domainmessage.getBody();
+			Object userIdObject = body.get("userid");
+			//验证userId
+			if (RegUtil.CheckParameter(userIdObject, "Long", null, false)) {
+				Long userId = Long.parseLong(userIdObject.toString());
+				//验证domainID
+				Object domainIdObject = body.get("domainid");
+				if (RegUtil.CheckParameter(domainIdObject, "Integer", null, false)) {
+					Long domainId = Long.parseLong(domainIdObject.toString());
+					//验证code
+					Object codeobject = body.get("code");
+					if (RegUtil.CheckParameter(codeobject, "Integer", null, false)) {
+						Integer code = Integer.parseInt(codeobject.toString());
+						//获取描述信息
+						String desc = body.get("desc").toString();
+						//domain信息对象
+						TDomainMissionWithBLOBs tDomainMission = new TDomainMissionWithBLOBs();
+						if (0!=code) {
+							disposeStatus = "4";
+						}else {
+							disposeStatus = "3";
+						}
+						tDomainMission.setDomainResultType(type);
+						tDomainMission.setDomainResultTime(time);
+						tDomainMission.setDomainId(domainId);
+						tDomainMission.setUserId(userId);
+						tDomainMission.setDomainResultDesc(desc);
+						//domain的处理状态
+						tDomainMission.setDisposeStatus(disposeStatus);
+						int updateByPrimaryKeySelective = tDomainMissionMapper.updateByPrimaryKeySelective(tDomainMission);
+						if (updateByPrimaryKeySelective>0) {
+							LogUtil.getLogger().info("updateDomainResult：更新domain-result成功！domainid:"+domainId);
+						}else {
+							LogUtil.getLogger().info("updateDomainResult：更新domain-result失败！domainid:"+domainId);
+						}
+					}else {
+						LogUtil.getLogger().info("updateDomainResult：code参数错误！code:"+codeobject);
+					}
+				}else {
+					LogUtil.getLogger().info("updateDomainResult：domainid参数错误！domainid： "+domainIdObject);
+				}
+			}else {
+				LogUtil.getLogger().info("updateDomainResult：userid参数错误。userId："+userIdObject);
+			}
+		} catch (IOException e) {
+			LogUtil.getLogger().error("updateDomainResult:domain-result 转化失败！",e.getMessage());
+		}
+		
+		
 	}
 
 }
