@@ -16,6 +16,7 @@ function getInfo(){
 		'userId': userId
 	}).success(function (res) {
 		$.each(res.data,function(key,value){
+			console.log(value);
 			findPull(value);
 		});
     });
