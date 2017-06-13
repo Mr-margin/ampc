@@ -410,7 +410,7 @@ public class DomainController {
 			
 			//判断修改数据是否成功
 			if(s>0){
-				boolean b=createDomainJsonData.readyDomainData(td.getUserId(), td.getDomainId());
+				boolean b=createDomainJsonData.readyDomainData(userId, domainId);
 				if(b){
 				return AmpcResult.ok();
 				}else{
