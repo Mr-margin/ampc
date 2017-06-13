@@ -7,7 +7,8 @@ var Storage = localStorage;
 $(document).ready(function(){
 	getInfo();
 });
-     
+
+var domainData=[]//用于 存储domain列表数据
 
 /**查询接口**/
 function getInfo(){
@@ -16,15 +17,28 @@ function getInfo(){
 		'userId': userId
 	}).success(function (res) {
 		console.log(res);
-		var 
-		$.each(res.data,function(key,value){
+		domainData=res.data;
+		var _temp=domainData.slice(0,10);
+		$.each(_temp,function(key,value){
 			findPull(value);
 		});
 		$('#pp').pagination({
 		    total:res.data.length,
 		    pageSize:10,
 		    onSelectPage:function(pageNumber, pageSize){
-
+		    	$(".domain_box tbody").empty();
+		    	if(pageNumber*pageSize<domainData.length){
+		    		var _temp=domainData.slice((pageNumber-1)*pageSize);
+		    		$.each(_temp,function(key,value){
+		    			findPull(value);
+		    		});
+		    	}else{
+		    		var _temp=domainData.slice((pageNumber-1)*pageSize,pageNumber*pageSize);
+		    		$.each(_temp,function(key,value){
+		    			findPull(value);
+		    		});
+		    	}
+		    	
 		    }
 		});
     });
