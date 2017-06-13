@@ -524,8 +524,11 @@ function mbSelect() {
         $(".cloudui .coupSetCon .coupSetMb option").remove()
         if(res.status==0){
             for(var i=0;i<mbArray.length;i++){
-                var mbDiv= $('<option value="'+i+'">'+mbArray[i].esNativeTpName+'</option>');
-                $(".cloudui .coupSetCon .coupSetMb").append(mbDiv);
+                var mbDiv;
+                if(mbArray[i].isVerify==1){
+                    mbDiv= $('<option value="'+i+'">'+mbArray[i].esNativeTpName+'</option>');
+                    $(".cloudui .coupSetCon .coupSetMb").append(mbDiv);
+                }
             }
         }else{
             swal('参数故障', '', 'error')
