@@ -372,7 +372,6 @@ public class DomainController {
 		   Map<String,Object> megan=new HashMap();//创建mcip中的megan模块
 		   //model中添加默认数据
 		   model.put("name","cmaq");
-		   megan.put("version","MEGANv2.10");
 		   megan.put("shutdown",false);
 		   //通过判断version为model添加sunmodel数据
 		   if(cmaq.get("version").equals("CMAQv5.0.1")||cmaq.get("version").equals("CMAQv5.1")){
@@ -385,6 +384,9 @@ public class DomainController {
 		   meic.put("megan", megan);
 		   //将meic插入DOMAIN_INFO
 		   domainInfo.put("meic", meic);
+		   Map version=new HashMap();
+		   version.put("version", "MEGANv2.10");
+		   domainInfo.put("megan",version);
 		   //DOMAIN_INFO转换为JSONObject
 		   JSONObject obj=JSONObject.fromObject(domainInfo);
 		   JSONObject obs=new JSONObject();
@@ -416,7 +418,7 @@ public class DomainController {
 				td.setDomainResultDesc("send fail");
 				int a=tDomainMissionMapper.updateByPrimaryKeySelective(td);
 				if(a>0){
-				return AmpcResult.ok("保存成功，处理失败,请联系管理员！");	
+				return AmpcResult.ok("保存成功，处理失败,请联系管理员！");
 				}else{
 					return AmpcResult.ok("保存成功，处理失败,请联系管理员！");
 					}
