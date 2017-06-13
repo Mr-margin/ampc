@@ -67,8 +67,8 @@ public class AirController {
 	
 	@Autowired
 	private GetBySqlMapper getBySqlMapper;
-	@Autowired
-	private FindCode findCode;
+//	@Autowired
+//	private FindCode findCode;
 	
 	private int went=7;
 	
@@ -3340,13 +3340,13 @@ public class AirController {
 		}
 	}
 	 
-	@RequestMapping("/code/finds")	
-	public AmpcResult findcodes(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response ){
-		List<Long> idlist =new ArrayList<Long>();
-		idlist.add(1l);
-		idlist.add(2l);
-		idlist.add(22l);
-		Map map=findCode.Findcode(idlist);
-		return AmpcResult.ok(map);
-	 }
+//	@RequestMapping("/code/finds")	
+//	public AmpcResult findcodes(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response ){
+//		List<Long> idlist =new ArrayList<Long>();
+//		idlist.add(1l);
+//		idlist.add(2l);
+//		idlist.add(22l);
+//		Map map=findCode.Findcode(idlist);
+//		return AmpcResult.ok(map);
+//	 }
 }
