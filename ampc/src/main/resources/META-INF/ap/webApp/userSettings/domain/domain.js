@@ -70,7 +70,7 @@ function getInfo(){
 		});
         
     });
-}   
+}  
 
 /**数据导入页面**/
 function pullPage(value){
@@ -257,40 +257,45 @@ require(
     [
         "esri/map",
         "esri/tasks/Geoprocessor", 
-        "esri/layers/ImageParameters", 
         "esri/layers/DynamicLayerInfo", 
-        "esri/layers/RasterDataSource", 
         "esri/layers/TableDataSource",
         "esri/layers/LayerDataSource", 
         "esri/layers/FeatureLayer", 
         "esri/layers/GraphicsLayer", 
         "esri/layers/LayerDrawingOptions", 
-        "esri/symbols/SimpleFillSymbol",
-        "esri/symbols/SimpleLineSymbol", 
-        "esri/symbols/SimpleMarkerSymbol", 
-        "esri/geometry/Multipoint", 
-        "esri/geometry/Point", 
         "esri/geometry/Extent",
         "esri/renderers/SimpleRenderer", 
         "esri/graphic", 
-        "esri/lang", 
-        "dojo/_base/Color", 
-        "dojo/_base/array", 
-        "dojo/number", 
-        "dojo/dom-style", 
-        "dijit/TooltipDialog",
-        "dijit/popup", 
-        "dojox/widget/ColorPicker", 
-        "esri/layers/RasterLayer", 
         "tdlib/gaodeLayer", 
         "esri/tasks/FeatureSet", 
-        "esri/SpatialReference", "esri/symbols/PictureMarkerSymbol",
-        "esri/layers/MapImageLayer", "esri/layers/MapImage", "dojo/domReady!"
+        "esri/SpatialReference", 
+        "esri/symbols/PictureMarkerSymbol",
+        "esri/layers/MapImageLayer", 
+        "esri/layers/MapImage", 
+        "esri/layers/ArcGISDynamicMapServiceLayer",
+        "dojo/domReady!"
     ],
-    function (Map, Geoprocessor, ImageParameters, DynamicLayerInfo, RasterDataSource, TableDataSource, LayerDataSource, FeatureLayer, GraphicsLayer, LayerDrawingOptions,
-              SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Multipoint, Point, Extent, SimpleRenderer, Graphic, esriLang, Color, array, number, domStyle,
-              TooltipDialog, dijitPopup, ColorPicker, RasterLayer, gaodeLayer, FeatureSet, SpatialReference, PictureMarkerSymbol, MapImageLayer, MapImage) {
+    function (Map, 
+    		Geoprocessor, 
+    		DynamicLayerInfo, 
+    		TableDataSource, 
+    		LayerDataSource, 
+    		FeatureLayer, 
+    		GraphicsLayer, 
+    		LayerDrawingOptions,
+            Extent, 
+            SimpleRenderer, 
+            Graphic, 
+            gaodeLayer, 
+            FeatureSet, 
+            SpatialReference, 
+            PictureMarkerSymbol, 
+            MapImageLayer, 
+            MapImage,
+            ArcGISDynamicMapServiceLayer) {
 
+    	dong.Map = Map;
+    	
         dong.gaodeLayer = gaodeLayer;
         dong.Geoprocessor = Geoprocessor;
         dong.Graphic = Graphic;
@@ -298,33 +303,64 @@ require(
         dong.GraphicsLayer = GraphicsLayer;
         dong.SpatialReference = SpatialReference;
         dong.Extent = Extent;//
+        dong.ArcGISDynamicMapServiceLayer = ArcGISDynamicMapServiceLayer;//
 
         app.baselayerList = new dong.gaodeLayer();//默认加载矢量 new gaodeLayer({layertype:"road"});也可以
         app.stlayerList = new dong.gaodeLayer({layertype: "st"});//加载卫星图
         app.labellayerList = new dong.gaodeLayer({layertype: "label"});//加载标注图
         
-//        app.spatialReference = new esri.SpatialReference({
-//			"wkt" : 'PROJCS["Lambert_Conformal_Conic_China",GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic"],PARAMETER["False_Easting",0.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",110.0],PARAMETER["Standard_Parallel_1",25.0],PARAMETER["Standard_Parallel_2",40.0],PARAMETER["Scale_Factor",1.0],PARAMETER["Latitude_Of_Origin",34.0],UNIT["Meter",1.0]]'
-//		});
-//        //中央经线：110
-//        //标准纬线1：25
-//        //标准纬线2:40
-//        //起始原点：34
-//        
-//		app.map = new esri.Map("mapDiv");
-//		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer(app.url);// 创建动态地图
 
-        app.map = new Map("mapDiv", {
-            logo: false,
-            center: [stat.cPointx, stat.cPointy],
-            minZoom: 4,
-            maxZoom: 13,
-            zoom: 4
-        });
 
-        app.map.addLayer(app.baselayerList);//添加高德地图到map容器
-        app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
+        
+        
+//        app.map = new Map("mapDiv", {
+//            logo: false,
+//            center: [stat.cPointx, stat.cPointy],
+//            minZoom: 4,
+//            maxZoom: 13,
+//            sliderPosition: 'bottom-right',
+//            zoom: 4
+//        });
+//
+//        app.map.addLayer(app.baselayerList);//添加高德地图到map容器
+//        app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
+        
+        setMapExtent(110,25,40,34);
     });
+
+
+/**
+ * 设置地图的底图，根据参数改变地图投影
+ * @param Central_Meridian：中央经线
+ * @param Standard_Parallel_1：标准纬线1
+ * @param Standard_Parallel_2：标准纬线2
+ * @param Latitude_Of_Origin：起始原点
+ */
+function setMapExtent(Central_Meridian, Standard_Parallel_1, Standard_Parallel_2, Latitude_Of_Origin){
+	
+	if(app.map){
+    	app.map.destroy();
+    }
+	
+	app.spatialReference = new esri.SpatialReference({
+		"wkt" : 'PROJCS["Lambert_Conformal_Conic_China",GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic"],PARAMETER["False_Easting",0.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",'+Central_Meridian+'],PARAMETER["Standard_Parallel_1",'+Standard_Parallel_1+'],PARAMETER["Standard_Parallel_2",'+Standard_Parallel_2+'],PARAMETER["Scale_Factor",1.0],PARAMETER["Latitude_Of_Origin",'+Latitude_Of_Origin+'],UNIT["Meter",1.0]]'
+	});
+
+	app.map = new dong.Map("mapDiv", {
+        logo: false,
+        center: [stat.cPointx, stat.cPointy],
+        minZoom: 4,
+        maxZoom: 13,
+        sliderPosition: 'top-right',
+        zoom: 4
+    });
+	app.map.spatialReference = app.spatialReference;
+	app.layer = new dong.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/ampc/la_cms/MapServer");// 创建动态地图
+	app.layer.spatialReference = app.spatialReference;
+	
+	app.map.addLayer(app.layer);
+	
+}
 
 
 
