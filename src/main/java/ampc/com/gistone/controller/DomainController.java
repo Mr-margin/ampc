@@ -77,12 +77,7 @@ public class DomainController {
 		for(TDomainMissionWithBLOBs td:tdlist){
 			JSONObject obj=new JSONObject();
 			//查看当前domain是否用来创建了任务
-			List<TMissionDetail> Tmlist=tMissionDetailMapper.selectDomain(td.getDomainId());
-			if(!Tmlist.isEmpty()){
-				obj.put("haveMission", "已使用");	
-			}else{
-				obj.put("haveMission", "未使用");	
-			}
+			obj.put("employStatus", td.getEmployStatus());
 			obj.put("domainId", td.getDomainId());
 			obj.put("userId", td.getUserId());
 			obj.put("addTime", td.getAddTime().getTime());//创建时间
