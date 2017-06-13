@@ -239,3 +239,88 @@ function postSubmit(){
 		}
 	});
 }
+
+
+
+var stat = {cPointx: 106, cPointy: 35}, app = {}, dong = {};
+var dojoConfig = {
+    async: true,
+    parseOnLoad: true,
+    packages: [{
+        name: 'tdlib',
+        location: "/js/tdlib"
+    }],
+    paths: {
+        extras: location.pathname.replace(/\/[^/]+$/, '') + "/js/extras"
+    }
+};
+require(
+    [
+        "esri/map", "esri/tasks/Geoprocessor", "esri/layers/ImageParameters", "esri/layers/DynamicLayerInfo", "esri/layers/RasterDataSource", "esri/layers/TableDataSource",
+        "esri/layers/LayerDataSource", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "esri/layers/LayerDrawingOptions", "esri/symbols/SimpleFillSymbol",
+        "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleMarkerSymbol", "esri/geometry/Multipoint", "esri/geometry/Point", "esri/geometry/Extent",
+        "esri/renderers/SimpleRenderer", "esri/graphic", "esri/lang", "dojo/_base/Color", "dojo/_base/array", "dojo/number", "dojo/dom-style", "dijit/TooltipDialog",
+        "dijit/popup", "dojox/widget/ColorPicker", "esri/layers/RasterLayer", "tdlib/gaodeLayer", "esri/tasks/FeatureSet", "esri/SpatialReference", "esri/symbols/PictureMarkerSymbol",
+        "esri/layers/MapImageLayer", "esri/layers/MapImage", "dojo/domReady!"
+    ],
+    function (Map, Geoprocessor, ImageParameters, DynamicLayerInfo, RasterDataSource, TableDataSource, LayerDataSource, FeatureLayer, GraphicsLayer, LayerDrawingOptions,
+              SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Multipoint, Point, Extent, SimpleRenderer, Graphic, esriLang, Color, array, number, domStyle,
+              TooltipDialog, dijitPopup, ColorPicker, RasterLayer, gaodeLayer, FeatureSet, SpatialReference, PictureMarkerSymbol, MapImageLayer, MapImage) {
+
+        dong.gaodeLayer = gaodeLayer;
+        dong.Geoprocessor = Geoprocessor;
+        dong.Graphic = Graphic;
+        dong.Point = Point;
+        dong.FeatureSet = FeatureSet;
+        dong.GraphicsLayer = GraphicsLayer;
+        dong.SpatialReference = SpatialReference;
+        dong.PictureMarkerSymbol = PictureMarkerSymbol;
+        
+        dong.MapImageLayer = MapImageLayer;//
+        dong.Extent = Extent;//
+        dong.MapImage = MapImage;//
+        
+        dong.SimpleMarkerSymbol = SimpleMarkerSymbol;//
+        dong.SimpleLineSymbol = SimpleLineSymbol;//
+
+        esri.config.defaults.io.proxyUrl = ArcGisUrl + "/Java/proxy.jsp";
+        esri.config.defaults.io.alwaysUseProxy = false;
+
+        app.baselayerList = new dong.gaodeLayer();//默认加载矢量 new gaodeLayer({layertype:"road"});也可以
+        app.stlayerList = new dong.gaodeLayer({layertype: "st"});//加载卫星图
+        app.labellayerList = new dong.gaodeLayer({layertype: "label"});//加载标注图
+        
+//        app.spatialReference = new esri.SpatialReference({
+//			"wkt" : 'PROJCS["Lambert_Conformal_Conic_China",GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic"],PARAMETER["False_Easting",0.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",110.0],PARAMETER["Standard_Parallel_1",25.0],PARAMETER["Standard_Parallel_2",40.0],PARAMETER["Scale_Factor",1.0],PARAMETER["Latitude_Of_Origin",34.0],UNIT["Meter",1.0]]'
+//		});
+//        //中央经线：110
+//        //标准纬线1：25
+//        //标准纬线2:40
+//        //起始原点：34
+//        
+//		app.map = new esri.Map("mapDiv");
+//		app.layer = new esri.layers.ArcGISDynamicMapServiceLayer(app.url);// 创建动态地图
+
+        app.map = new Map("mapDiv", {
+            logo: false,
+            center: [stat.cPointx, stat.cPointy],
+            minZoom: 4,
+            maxZoom: 13,
+            zoom: 4
+        });
+
+        app.map.addLayer(app.baselayerList[i]);//添加高德地图到map容器
+        app.map.addLayers([app.baselayerList[i]]);//添加高德地图到map容器
+    });
+
+
+
+
+
+
+
+
+
+
+
+
