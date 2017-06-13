@@ -411,7 +411,7 @@ function domainNameFormatter(value, row, index) {
 function esCouplingNameFormatter(value, row, index) {
     if (typeof row.esCouplingName === 'undefined') {
         if (typeof row.adminTitle === 'undefined') {
-            if (row.scenarinoStatus == 6 || row.scenarinoStatus == 7) {
+            if (row.scenarinoStatus == 6 || row.scenarinoStatus == 7|| row.scenarinoStatus == 9) {
                 return "<a href='javascript:stopBtn()' style='color: #9CC8F7'><i class='im-stop'> 终止</i></a>"
             } else {
                 return "<i class='im-stop'style='color: #ccc'> 终止</i>";

@@ -131,20 +131,13 @@ var zTreeSetting = {
                 narrow:true,
                 onSelect:function (title,index) {
                     if(title=='复制旧预案'){
-                        console.log(selectedTimes);
                         if (selectedTimes.planId == -1) {                           
                             setTimeout(copyPlan,500);
                         }
                     }
                 }
             });
-            //预案操作被渲染后，生成预案的datagrid
-            $('#planpanel').tabs('getTab','编辑现预案').panel({
-            	onOpen:function(){
-            		editPlanTableFun();
-            		console.log(212);
-            	}
-            });
+            
             //当当前区域只有一个时段的时候，时段不能删除和进行编辑
             if (allData[areaIndex].timeItems.length <= 1) {
                 $('#timepanel').tabs('disableTab', '时段删除');
@@ -165,6 +158,15 @@ var zTreeSetting = {
                 $('#planpanel').tabs('disableTab', '复制旧预案');
                 $('#planpanel').tabs('enableTab', '编辑现预案');
                 $('#planpanel').tabs('select', '编辑现预案');
+              //预案操作被渲染后，生成预案的datagrid
+                editPlanTableFun();
+                var _rows=$('#editPlanTable').datagrid('getRows');
+                for(var i=0;i<_rows.length;i++){
+                	if(selectedTimes.planId==_rows[i].planId){
+                		$('#editPlanTable').datagrid('uncheckAll').datagrid('checkRow',i);
+                	}
+                	break ;
+                }
             }
             
             $('#timeorplan').tabs('select','预案操作');
@@ -211,7 +213,6 @@ var zTreeSetting = {
                     redio.find('input').val('down');
                     $('.delTimeDiv').find('.delSelect').append(redio2);
                 }
-                console.log(redio);
                 $('.delTimeDiv').find('.delSelect').append(redio);
                 redio.find('input').attr('checked', 'checked');
 
@@ -629,7 +630,6 @@ function showTimeline(data) {
             _temp.seriesData[_temp.seriesData.length - 1].push(_temparr.concat(_temparr1));
         }
     }
-    console.log(_temp.seriesLabel);
     plancharts = echarts.init(document.getElementById('plancharts'));
     var _option = {
 //            dataZoom: [{
@@ -741,7 +741,6 @@ function showTimeline(data) {
     		return
     	}
         if (params.componentType == 'yAxis') {
-            console.log(params);
             // areaIndex = obj.index;
             for(var i=0;i<allData.length;i++){
                 if(params.value==allData[i].areaId.toString()){
@@ -757,7 +756,6 @@ function showTimeline(data) {
             } else {
                 out:
                     for (var i = 0; i < allData.length; i++) {
-                        console.log(allData);
                         for (var j = 0; j < allData[i].timeItems.length; j++) {
                             if (allData[i].timeItems[j].planId == params.seriesName) {
                                 break out;
@@ -778,7 +776,6 @@ function showTimeline(data) {
                     startTime: allData[i].timeItems[j].timeStartDate,
                     timeId: allData[i].timeItems[j].timeId
                 };
-                console.log(selectedTimes);
                 areaIndex = selectedTimes.index;
                 timeIndex = selectedTimes.indexNum;
 
@@ -801,11 +798,9 @@ function showTimeline(data) {
             ;
         }
 //            _onmouseover();
-        console.log(params);
     });
     var zr = plancharts.getZr();
     zr.on('click', function (params) {
-        console.log(params);
         if (typeof params.target !== 'undefined') {
             return
         }
@@ -828,7 +823,6 @@ function showTimeline(data) {
     	}
         for (var i = 0; i < allData[labelIndex].timeItems.length; i++) {
 //                if(Math.floor(pointInGrid[1]/3))
-            console.log((i-1<0?allData[labelIndex].timeItems[i].timeEndDate:allData[labelIndex].timeItems[i-1].timeStartDate) < pointInGrid[0] && allData[labelIndex].timeItems[i].timeEndDate > pointInGrid[0]);
             if (allData[labelIndex].timeItems[i].timeStartDate < pointInGrid[0]  && allData[labelIndex].timeItems[i].timeEndDate > pointInGrid[0]) {
                 selectedTimes = {
                     areaId: allData[labelIndex].areaId,
@@ -994,11 +988,9 @@ function showTimeline(data) {
 }
 /*删除区域*/
 function delArea(e) {
-    console.log(e);
     for (var i = 0; i < allData.length; i++) {
         if ($(e).attr('data-qjid') == allData[i].areaId) {
             var areaIndex = i;
-            console.log(i);
             break;
         }
     }
@@ -1022,7 +1014,6 @@ function delArea(e) {
             closeOnConfirm: false
         },
         function () {
-            console.log(params);
             ajaxPost(url, params).success(function (res) {
                 $('#settingqjbox').window('close');
                 if (res.status == 0) {
@@ -1123,7 +1114,6 @@ var selectedTimes;
 
 function ontTimes(data) {
     selectedTimes = data;
-    console.log(selectedTimes);
     //if (data.planId != -1) {
     //  $('.yacz').attr('disabled', true);
     //} else {
@@ -2562,13 +2552,16 @@ function editPlanTableFun(){
 			field:'timeStartDate',
 			title:'开始时间',
 			width:150,
-/*			formatter:function(){
-				
-			}*/
+			formatter:function(value){
+				return moment(value,'x').format('YYYY-M-D H:mm:ss');
+			}
 		},{
 			field:'timeEndDate',
 			title:'结束时间',
-			width:150
+			width:150,
+			formatter:function(value){
+				return moment(value,'x').format('YYYY-M-D H:mm:ss');
+			}
 		}]],
 		onClickRow:function (index,row) {
         	//用于作为单选行的操作，当点击一行后，其他行取消选中，在datagrid中需要把singleSelect取消
@@ -2578,6 +2571,29 @@ function editPlanTableFun(){
             		$(this).datagrid('uncheckRow',i)
             	}
             }
+            var _tempPlanId = $(this).datagrid('getChecked')[0];
+            outloop:
+            for(var i=0;i<allData.length;i++){
+            	for(var j=0;j<allData[i].timeItems.length;j++){
+            		if(_tempPlanId.planId==allData[i].timeItems[j].planId){
+            			break outloop;
+            		}
+            	}
+            }
+            selectedTimes = {
+                    areaId: allData[i].areaId,
+                    areaName: allData[i].areaName,
+                    cityCodes: allData[i].cityCodes,
+                    countyCodes: allData[i].countyCodes,
+                    endTime: allData[i].timeItems[j].timeEndDate,
+                    index: i,
+                    indexNum: j,
+                    planId: allData[i].timeItems[j].planId,
+                    planName: allData[i].timeItems[j].planName,
+                    provinceCodes: allData[i].provinceCodes,
+                    startTime: allData[i].timeItems[j].timeStartDate,
+                    timeId: allData[i].timeItems[j].timeId
+                };
         }
 	});
 }
