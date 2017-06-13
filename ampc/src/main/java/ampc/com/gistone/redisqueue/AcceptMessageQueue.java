@@ -45,7 +45,8 @@ public class AcceptMessageQueue implements Runnable{
 	//加载持久tasksStatus数据的工具类
 	@Autowired
 	private ToDataTasksUtil toDataTasksUtil;
-	
+	@Autowired
+	private CreateDomainJsonData  createDomainJsonData;
 	@Autowired
 	private MessageLog messageLog;
 	
@@ -67,7 +68,7 @@ public class AcceptMessageQueue implements Runnable{
 		if (runningSetting) {
 			while (true) {
 				try {
-					System.out.println("队列接受数据");
+					System.out.println("AcceptMessageQueue:队列接受数据");
 					String acceptName = configUtil.getRedisQueueAcceptName();
 					String rpop = redisUtilServer.brpop(acceptName);//send_queue_name
 					if (null==rpop) {
@@ -105,6 +106,12 @@ public class AcceptMessageQueue implements Runnable{
 							LogUtil.getLogger().info("暂停模式处理开始："+new Date()+":"+rpop);
 							messageLog.savepauseMessagelog(rpop);
 							toDataTasksUtil.pauseModelresult(rpop);
+							LogUtil.getLogger().info("暂停模式处理完毕："+new Date());
+							break;
+						case "domain.create.result":
+							LogUtil.getLogger().info("domain-result处理开始："+new Date()+":"+rpop);
+							messageLog.saveDomainlog(rpop);
+							createDomainJsonData.updateDomainResult(rpop);
 							LogUtil.getLogger().info("暂停模式处理完毕："+new Date());
 							break;
 						default:
