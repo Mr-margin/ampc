@@ -1266,21 +1266,7 @@ function updata(t) {
 }
 
 
-// /*视频播放*/
-// var progress = $("#container").videodate({startTime: '2017-3-26', endTime: '2017-5-1', playbutton: fun1});
-// function fun1() {
-//     var ben = this;
-//     console.log(ben);
-//     setInterval(function () {
-//         ben.add(1)
-//     }, 2000);
-// }
-
-
 /*视频播放相关*/
-(function () {
-
-})()
 var b;
 $('.videoS_in').on('click',function (e) {
     if($(e.target).hasClass('startV')){
