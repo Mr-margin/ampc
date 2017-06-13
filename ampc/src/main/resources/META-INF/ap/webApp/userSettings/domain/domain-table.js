@@ -3,7 +3,7 @@
  */
 $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">用户设置</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">domain设置</span><span class="navRight qdnavRight"><span class="navRight qdnavRight"><button class="qdCreat" onclick="creat()">新建</button></span>');
 
-
+var Storage = localStorage;
 $(document).ready(function(){
 	getInfo();
 });
@@ -23,16 +23,23 @@ function getInfo(){
 }  
 
 function findPull(value){
+	var employStatus = value.employStatus
+	var world = '';
+	if(employStatus == 1){
+		world = '已使用';
+	}else if(employStatus == 2){
+		world = '未使用'; 
+	}
 	var dom = '';
-	dom += '<tr>';
+	dom += '<tr class="tr_'+value.domainId+'">';
 	dom += '<td>'+value.domainName+'</td>';
 	dom += '<td>'+value.domainDoc+'</td>';
-	dom += '<td>'+value.haveMission+'</td>';
+	dom += '<td>'+world+'</td>';
 	dom += '<td>';
 	dom += '<button class="btn-blue" onclick="examine(this)" domain_id="'+value.domainId+'">查看</button>';
 	dom += '<button class="btn-green" onclick="update(this)" domain_id="'+value.domainId+'">编辑</button> ';
 	dom += '<button class="btn-yellow" onclick="" domain_id="'+value.domainId+'">开启</button> ';
-	dom += '<button class="btn-red" onclick="" domain_id="'+value.domainId+'">删除</button>';
+	dom += '<button class="btn-red" onclick="delDomain(this)" domain_id="'+value.domainId+'">删除</button>';
 	dom += '</td>';
 	dom += '</tr>';
 	$('.domain_box table tbody').append(dom);
@@ -46,6 +53,7 @@ function examine(th){
 	    }
 	};
 	vipspa.setMessage(msg);
+	Storage.setItem('domain_id',domain_id);
 	location.hash = '#/domain_details';
 }
 
@@ -58,6 +66,7 @@ function update(th){
 	    }
 	};
 	vipspa.setMessage(msg);
+	Storage.setItem('domain_id_up',domain_id);
 	location.hash = '#/domain';
 }
 
@@ -101,4 +110,16 @@ function submitCreat(){
 function domainClaear(){
 	$('.domain_name').val('');
 	$('.domain_doc').val('');
+}
+
+function delDomain(th){
+	var url = "/Domain/deleteDomain";
+	var domain_id = $(th).attr('domain_id');
+	ajaxPost(url,{
+		'userId':userId,
+		'domainId':domain_id
+	}).success(function(){
+		$('.tr_'+domain_id).remove();
+		swal("删除成功");
+	});
 }

@@ -3,7 +3,7 @@
  */
 $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">用户设置</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">domain设置</span><span class="navRight qdnavRight">');
 
-
+var Storage = localStorage;
 $(document).ready(function(){
 
 	$('.d03').hide(); 
@@ -58,13 +58,12 @@ $(document).ready(function(){
 /**查询接口**/
 function getInfo(){
 	var  url = '/Domain/findAll';
-	var domain_id = vipspa.getMessage('domain');
-//	console.log(domain_id.content.domain_id);
+	var domain_id = Storage.getItem('domain_id_up');
 	ajaxPost(url,{
 		'userId': userId
 	}).success(function (res) {
 		$.each(res.data,function(key,value){
-			if(value.domainId == domain_id.content.domain_id){
+			if(value.domainId == domain_id){
 				console.log(value);
 				pullPage(value);
 			}
