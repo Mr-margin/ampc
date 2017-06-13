@@ -112,7 +112,7 @@ public class AcceptMessageQueue implements Runnable{
 							LogUtil.getLogger().info("domain-result处理开始："+new Date()+":"+rpop);
 							messageLog.saveDomainlog(rpop);
 							createDomainJsonData.updateDomainResult(rpop);
-							LogUtil.getLogger().info("暂停模式处理完毕："+new Date());
+							LogUtil.getLogger().info("创建domain处理完毕："+new Date());
 							break;
 						default:
 							break;
