@@ -1503,6 +1503,7 @@ dl, dd {
 .qdnavRight button.qdCreat{background-color:#119e59;border:1px solid #3b694d;}
 .qdnavRight button.qdEdit{background-color:#4783f3;border:1px solid #4a6696;}
 .qdnavRight button.qdDelet{background-color:#d8453d;border:1px solid #7a332d;}
+.cloudui .rwCon input{background-color: #fff!important;}
 .cloudui #creatQd .rwCon,.cloudui #editQd .rwCon,.cloudui #creatTemp .rwCon,.cloudui #editTemp .rwCon,.cloudui #editTempQd .rwCon{overflow: hidden!important; }
 .cloudui #creatQd .qdContent,.cloudui #editQd .qdContent,.cloudui #creatTemp .qdContent,.cloudui #editTemp .qdContent,.cloudui #editTempQd .qdContent{
   float: left;

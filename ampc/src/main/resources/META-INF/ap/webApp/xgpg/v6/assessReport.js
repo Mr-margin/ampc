@@ -472,6 +472,19 @@ function updata() {
                         $("#PM10").html(allData.PM10)
                     } else {
                         swal(res.msg, '', 'error');
+                        $("#PM25_jp").html("暂无")
+                        $("#SO2_jp").html("暂无")
+                        $("#NOx_jp").html("暂无")
+                        $("#VOC_jp").html("暂无")
+                        $("#PM25").html("暂无");
+                        $("#SO4").html("暂无");
+                        $("#NH4").html("暂无");
+                        $("#NO3").html("暂无")
+                        $("#CO").html("暂无");
+                        $("#NO2").html("暂无")
+                        $("#SO2").html("暂无")
+                        $("#O3_8_MAX").html("暂无")
+                        $("#PM10").html("暂无")
                     }
     })
 }
