@@ -600,7 +600,7 @@ function load_gis(p) {
         swal('抽数，内部错误', '', 'error');
     });
 
-    /*ajaxPost_w('http://166.111.42.85:8300/ampc/extract/png', {token:'',data:par}).success(function (data) {
+/*    ajaxPost_w('http://166.111.42.85:8300/ampc/extract/png', {token:'',data:par}).success(function (data) {
         // console.log(JSON.stringify(data));
 
         if(data.status == 0){
@@ -931,11 +931,11 @@ function getVerticalImg(xa,xi,ya,yi) {
         par.hour = changeMsg.YBHour;
     }
      // $('.showImg').css('display','block');
-    // ajaxPost_w('http://166.111.42.85:9080/ampc'+url,{token:'',data:par}).success(function (res) {
-    //     $('.showImg').css('display','block');
-    //     $('.showImg img').attr('src','http://166.111.42.85:9080/ampc/verticalPath/'+res.data);
-    //     console.log(res);
-    // })
+/*    ajaxPost_w('http://166.111.42.85:8300/ampc'+url,{token:'',data:par}).success(function (res) {
+        $('.showImg').css('display','block');
+        $('.showImg img').attr('src','http://166.111.42.85:8300/ampc/verticalPath/'+res.data);
+        console.log(res);
+    })*/
    ajaxPost(url,par).success(function (res) {
        $('.showImg').css('display','block');
        $('.showImg').css('width','30%');
