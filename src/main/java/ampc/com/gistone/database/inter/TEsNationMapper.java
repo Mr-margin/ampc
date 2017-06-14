@@ -23,7 +23,7 @@ public interface TEsNationMapper {
     //编辑更新清单信息
     int updateByIdSelective(TEsNation record);
     //查询总条数
-	int selectTotalNation(Long userId);
+	int selectTotalNation(Map nationMap);
 
 	int verifyNationName(TEsNation tEsNation);
 }
