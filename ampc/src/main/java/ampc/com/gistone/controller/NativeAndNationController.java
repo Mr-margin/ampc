@@ -638,8 +638,6 @@ public class NativeAndNationController {
 //			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName;
 //			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/";
 			
-//			String nativefilePath = configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName;
-//			String nativesfilePath = configUtil.getFtpURL()+"/"+userId+"/";
 			String nativefilePath = new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName).toString().getBytes("iso-8859-1"),"utf-8");
 			String nativesfilePath = new String(( configUtil.getFtpURL()+"/"+userId+"/").toString().getBytes("iso-8859-1"),"utf-8");
 			//用于展示给用户的路径
@@ -684,7 +682,7 @@ public class NativeAndNationController {
 			File outPaths =new File(nativesfilePath);
 			//目录已经存在
 			if(outPath.exists()){
-				System.out.println("目录已经存在!");
+				System.out.println("输出目录已经存在!");
 				//判断是否包含该文件模板
 			}else{
 				//不存在进行创建目录
