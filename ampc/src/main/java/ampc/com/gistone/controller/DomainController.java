@@ -504,7 +504,8 @@ public class DomainController {
 			if(s>0){
 				boolean b=createDomainJsonData.readyDomainData(userId, domainId);
 				if(b){
-				return AmpcResult.ok();
+					TDomainMissionWithBLOBs ts=tDomainMissionMapper.selectByPrimaryKey(domainId);
+				return AmpcResult.ok(ts);
 				}else{
 				td.setDisposeStatus("4");
 				td.setDomainResultDesc("send fail");
@@ -569,11 +570,10 @@ public class DomainController {
 		//操作数据库添加数据
 		int s=tDomainMissionMapper.insertSelective(td);
 		TDomainMissionWithBLOBs TS=tDomainMissionMapper.selectbynameanddoc(td);
-		Long DomainId=TS.getDomainId();
-		JSONObject obj=new JSONObject();
-		obj.put("DomainId", DomainId);
+
 		if(s!=0){
-			return AmpcResult.ok(obj);
+			
+			return AmpcResult.ok(TS);
 		}
 		
 		LogUtil.getLogger().error("save_domain Domain创建数据库操作异常！");
@@ -624,15 +624,12 @@ public class DomainController {
 		td.setDomainId(domainId);
 		//操作数据库保存数据
 		int s=tDomainMissionMapper.updateByPrimaryKeySelective(td);
-		JSONObject obj=new JSONObject();
-		obj.put("domainDoc", domainDoc);
-		obj.put("domainName", domainName);
-		obj.put("domainId", domainId);
+		TDomainMissionWithBLOBs ts=tDomainMissionMapper.selectByPrimaryKey(domainId);
 		if(s==0){
 			LogUtil.getLogger().error("updateNameAndDoc 数据库修改Name及Doc操作异常！");
 			return AmpcResult.build(1000, "数据库修改Name及Doc操作异常！");
 		}
-		return AmpcResult.ok(obj);
+		return AmpcResult.ok(ts);
 	}catch(Exception e){
 		LogUtil.getLogger().error("updateNameAndDoc 修改Name及Doc异常！",e);
 		return AmpcResult.build(1001, "修改Name及Doc异常！");
@@ -713,7 +710,8 @@ public class DomainController {
 			if(a>0){
 			int b=tDomainMissionMapper.updateByValid(domainId);
 			if(b>0){
-				return AmpcResult.ok();
+				TDomainMissionWithBLOBs ts=tDomainMissionMapper.selectByPrimaryKey(domainId);
+				return AmpcResult.ok(ts);
 			}else{
 				LogUtil.getLogger().error("deleteDomain 设置生效状态异常！");
 				return AmpcResult.build(1000, "设置生效状态异常！");
