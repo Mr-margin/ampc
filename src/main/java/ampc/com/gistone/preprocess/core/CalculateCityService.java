@@ -173,11 +173,11 @@ public class CalculateCityService {
 		}
 	}
 
-	public Map getStations() {
-		String[] cities = { "1101", "1201", "1301", "1302", "1303", "1304", "1305", "1306", "1307", "1308", "1309",
-				"1310", "1311", "1402", "1403", "1404", "1407", "1409", "1504", "1509", "3701", "3703", "3705", "3707",
-				"3709", "3712", "3714", "3715", "3716", "4105", "4106", "4109" };
-		List<String> citesList = Arrays.asList(cities);
+	public Map getStations(List<String> citesList) {
+//		String[] cities = { "1101", "1201", "1301", "1302", "1303", "1304", "1305", "1306", "1307", "1308", "1309",
+//				"1310", "1311", "1402", "1403", "1404", "1407", "1409", "1504", "1509", "3701", "3703", "3705", "3707",
+//				"3709", "3712", "3714", "3715", "3716", "4105", "4106", "4109" };
+//		List<String> citesList = Arrays.asList(cityties);
 		Map<String, ArrayList<TSite>> map = new HashMap<String, ArrayList<TSite>>(); // TODO
 																						// update
 		List<String> stationIds = new ArrayList<String>();
@@ -206,9 +206,9 @@ public class CalculateCityService {
 		return map;
 	}
 
-	public File getRangeStation() throws JsonProcessingException, IOException {
+	public File getRangeStation(List<String> citesList) throws JsonProcessingException, IOException {
 
-		Map<String, ArrayList<TSite>> map = getStations();
+		Map<String, ArrayList<TSite>> map = getStations(citesList);
 		ObjectMapper mapper = new ObjectMapper();
 		File file = saveFile("station-concn.json", Jsons.objToJson(map));
 		return file;
