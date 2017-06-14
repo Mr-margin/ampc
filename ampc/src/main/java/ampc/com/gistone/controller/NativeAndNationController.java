@@ -1584,6 +1584,23 @@ public class NativeAndNationController {
 			//查询本地清单模板
 			List<Map> listTp=tEsNativeTpMapper.selecttesNativeTp(tEsNativeTp);
 			
+			for(int i=0;i<listTp.size();i++){
+				Map NativeTpMap= listTp.get(i);
+				
+				TEsNative tEsNative = new TEsNative();
+				tEsNative.setEsNativeTpId(Long.valueOf(NativeTpMap.get("esNativeTpId").toString()));
+				tEsNative.setUserId(userId);
+				//查询总条数
+				int total=tEsNativeMapper.selectTotalNative(tEsNative);
+				//有效
+				if(total>0){
+					
+				}else{
+					//无效
+					listTp.remove(i);
+				}
+			}
+			
 			Map nativeTpMap=new HashMap();
 			nativeTpMap.put("rows", listTp);
 			
