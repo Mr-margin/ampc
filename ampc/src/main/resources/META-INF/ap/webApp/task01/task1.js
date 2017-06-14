@@ -171,6 +171,7 @@ var msg = {
     columnsRW[0].push({field: 'missionStatus', title: '类型', width: 90, formatter: missionStatusFormatter});
     columnsRW[0].push({field: 'missionEndDate', title: '操作', width: 80, formatter: missionmanage});
     //页面布局的渲染
+    console.log(JSON.stringify(columnsRW));
     $('#rwglpanle').layout();
     $('#rwgltable').treegrid({
     	url: '/ampc/new_mission/get_mission_list',
@@ -180,6 +181,7 @@ var msg = {
         animate: true,
         border: false,
         checkOnSelect: false,
+        loadMsg:null,
         fitColumns: true,
         rowStyler:function(obj){
         	if(typeof obj=='object'&&typeof obj.expand4!='undefined'){
