@@ -144,7 +144,7 @@ function save_scene() {
         sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
         $("#close_scene").click();
         //查询任务的开始时间和结束时间
-        var url='/Appraisal/showTime';
+        var url='/Appraisal/show_Times';
         var paramsName = {
             "missionId":sceneInitialization.taskID,				//任务ID
         };

@@ -558,7 +558,7 @@ function save_scene() {
         console.log(data);
         sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
         $("#close_scene").click();
-        var url='/Appraisal/showTime';
+        var url='/Appraisal/show_Times';
         var paramsName = {
             "missionId":sceneInitialization.taskID,				//任务ID
         };

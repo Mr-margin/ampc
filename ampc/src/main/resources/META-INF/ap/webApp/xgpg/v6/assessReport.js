@@ -177,6 +177,7 @@ function setTime(s, e) {
     e = moment(e - 0);
 
     $('#sTime-d').empty();
+    $('#eTime').empty();
     while (true) {
         $('#sTime-d').append($('<option>' + s.format('YYYY-MM-DD') + '</option>'));
         $('#eTime').append($('<option>' + s.format('YYYY-MM-DD') + '</option>'));
@@ -340,7 +341,7 @@ function save_scene() {
         vipspa.setMessage(mag);
         ls.setItem('SI', JSON.stringify(mag));
         sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
-        var url='/Appraisal/showTime';
+        var url='/Appraisal/show_Times';
         var paramsName = {
             "missionId":sceneInitialization.taskID,				//任务ID
         };
