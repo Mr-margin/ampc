@@ -2,6 +2,7 @@ package ampc.com.gistone.preprocess.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,11 +58,13 @@ public class CalculateCityController {
 
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/download")
-	public @ResponseBody FileSystemResource downloadStation(HttpServletResponse response) {
+	@RequestMapping(method = RequestMethod.POST, value = "/download")
+	public @ResponseBody FileSystemResource downloadStation(@RequestBody Map<String, Object> requestData, HttpServletRequest request,
+			HttpServletResponse response) {
+		Map<String, Object> data = (Map<String, Object>) requestData.get("data");
 		File file;
 		try {
-			file = calculateCityService.getRangeStation();
+			file = calculateCityService.getRangeStation((List<String>)data.get("cities"));
 			FileSystemResource fileSystemResource = new FileSystemResource(file);
 			response.setHeader("Content-Disposition", "attachment;filename=" + file.getName());
 			return fileSystemResource;

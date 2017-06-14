@@ -85,8 +85,8 @@ public class CityWorkerV2 {
 			Long scenarioId = params.getScenarioId();
 			int domain = params.getDomain();
 			List<String> dates = params.getDate();
-			stationMap = calculateCityService.getStations();
-			// this.Cities(filter);
+			stationMap = calculateCityService.getStations(filter);
+			//this.Cities(filter);
 			result = new LinkedHashMap<>();
 			extractConfig = resultPathUtil.getExtractConfig();
 
