@@ -874,6 +874,7 @@ $document.on('click', '#js-example-destroy button[data-behaviour="destroy"]', fu
  */
 function showTitleFun() {
     $('#showTitle span').empty();
+    $('#showTitle span').css({"margin-right":"0px"});
     var sData=moment($("#SPDate").val(),"YYYYMMDD").format("YYYY-MM-DD");
     var dataT=moment($("#sTime-d").val(),"YYYYMMDD").format("YYYY-MM-DD");
     var dataState=moment($("#sTime-d").val()+$("#sTime-h").val(),"YYYYMMDDH").format("YYYY-MM-DD H");
