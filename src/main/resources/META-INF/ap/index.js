@@ -114,6 +114,8 @@ function loadIngFun(){
      });
    }else{
      console.log('验证码错误');
+     $('#captchaImage').click();
+     $('#verify').val('');
      swal({
        title: res.msg+'!',
        type: 'error',
