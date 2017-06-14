@@ -346,4 +346,12 @@
     set VALID_STATUS ='2'
     where USER_ID = #{userId,jdbcType=DECIMAL}
   </update>
+   <select id="selectbyname" resultMap="ResultMapWithBLOBs" parameterType="ampc.com.gistone.database.model.TDomainMissionWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from T_DOMAIN_MISSION
+    where USER_ID = #{userId,jdbcType=DECIMAL} AND DOMAIN_NAME = #{domainName,jdbcType=OTHER}
+  </select>
 </mapper>
