@@ -46,10 +46,47 @@ $(document).ready(function(){
 	
 	$('input').change(function(){
 		resolution();
+		var number = $(this).val();
+		if(!isNaN(number)){
+			numbers = parseFloat(number).toFixed(8);
+			$(this).val(numbers);
+		}
 	});
 	getInfo();//数据初始化
 });
-     
+
+/**
+ * 输入数据验证
+ */
+$('.ref_lon').blur(function(){
+	var Central_Meridian = $('.ref_lon').val();
+	if(Central_Meridian < 75 || Central_Meridian > 150){
+ 		swal("请输入75~150之间的数字");
+ 		$('.ref_lon').val('');
+ 	}
+});
+$('.stand_lat1').blur(function(){
+	var Standard_Parallel_1 = $('.stand_lat1').val();
+	if(Standard_Parallel_1 < 0 || Standard_Parallel_1 > 90){
+ 		swal("请输入0~90之间的数字");
+ 		$('.stand_lat1').val('');
+ 	}
+});
+$('.stand_lat2').blur(function(){
+	var Standard_Parallel_2 = $('.stand_lat2').val();
+	if(Standard_Parallel_2 < 0 || Standard_Parallel_2 > 90){
+ 		swal("请输入0~90之间的数字");
+ 		$('.stand_lat2').val('');
+ 	}
+});
+$('.ref_lat').blur(function(){
+	var Latitude_Of_Origin = $('.ref_lat').val();
+	if(Latitude_Of_Origin < 15 || Latitude_Of_Origin > 55){
+ 		swal("请输入15~55之间的数字");
+ 		$('.ref_lat').val('');
+ 	}
+});
+
 
 /**
  * 查询已有数据
@@ -75,9 +112,10 @@ function getInfo(){
  * @param value:数据库获取到的domain数据
  */
 function pullPage(value){
+	console.log(value);
 	var domain_id = value.domainId;
 	if(JSON.stringify(value.domainInfo) == "{}"){
-		$('.panel-title').text(value.domainName);
+		$('.panel-title a').text(value.domainName);
 		$('.box-body input').val('');
 		$('.d03').hide(); 
 		$('.d04').hide();
@@ -85,15 +123,15 @@ function pullPage(value){
 		$('.box-body').attr('domain_id',domain_id);
 		$('.box-body').attr('max_dom',value.domainInfo.common.max_dom);
 		$('.del_domain').attr('domain_id',domain_id);
-		$('.i_parent_start1').val('1');
-		$('.j_parent_start1').val('1');
+		$('.i_parent_start1').text('1');
+		$('.j_parent_start1').text('1');
 	}else{
 		var arr_we = value.domainInfo.wrf.e_we.split(',');
 		var arr_sn = value.domainInfo.wrf.e_sn.split(',');
 		var arr_dx = value.domainInfo.common.dx.split(',');
 		var arr_i_parent_start = value.domainInfo.wrf.i_parent_start.split(',');
 		var arr_j_parent_start = value.domainInfo.wrf.j_parent_start.split(',');
-		$('.panel-title').text(value.domainName);
+		$('.panel-title a').text(value.domainName);
 		$('.ref_lat').val(value.domainInfo.common.ref_lat);
 		$('.ref_lon').val(value.domainInfo.common.ref_lon);
 		$('.stand_lat1').val(value.domainInfo.common.stand_lat1);
@@ -106,11 +144,11 @@ function pullPage(value){
 		$('.e_we3').val(arr_we[2]);
 		$('.e_sn3').val(arr_sn[2]);
 		$('.btrim').val(value.domainInfo.mcip.btrim);
-		$('.btrims').val(value.domainInfo.mcip.btrim);
-		$('.i_parent_start1').val(arr_i_parent_start[0]);
+		$('.btrims').text(value.domainInfo.mcip.btrim);
+		$('.i_parent_start1').text(arr_i_parent_start[0]);
 		$('.i_parent_start2').val(arr_i_parent_start[1]);
 		$('.i_parent_start3').val(arr_i_parent_start[2]);
-		$('.j_parent_start1').val(arr_j_parent_start[0]);
+		$('.j_parent_start1').text(arr_j_parent_start[0]);
 		$('.j_parent_start2').val(arr_j_parent_start[1]);
 		$('.j_parent_start3').val(arr_j_parent_start[2]);
 		$('.box-body').attr('domain_id',domain_id);
@@ -122,8 +160,8 @@ function pullPage(value){
 		}else{
 			$('.domain_select').find("option[value='3']").attr('selected','selected');
 		}
-		$('.dx1').val(arr_dx[1]);
-		$('.dx2').val(arr_dx[2]);
+		$('.dx1').text(arr_dx[1]);
+		$('.dx2').text(arr_dx[2]);
 		if(value.domainInfo.common.max_dom =='3'){
 			$('.d02').show();
 			$('.d03').show(); 
@@ -144,17 +182,17 @@ function resolution(){
 	var checkValue=$("select").val();
 	var btrim = $('.btrim').val();
 	var stand_lon = $('.ref_lon').val();
-	$('.btrims').val(btrim);
+	$('.btrims').text(btrim);
 //	$('.ref_lon').val(stand_lon);
 	if(checkValue == '2'){
-		$('.dx1').val('9000');
-		$('.dx2').val('3000');
+		$('.dx1').text('9000');
+		$('.dx2').text('3000');
 	}else if(checkValue == '3'){
-		$('.dx1').val('12000');
-		$('.dx2').val('4000');
+		$('.dx1').text('12000');
+		$('.dx2').text('4000');
 	}else if(checkValue == '0'){
-		$('.dx1').val('');
-		$('.dx2').val('');
+		$('.dx1').text('');
+		$('.dx2').text('');
 
 	}
 }

@@ -2,9 +2,9 @@
  * Created by shanhaichushi on 2017/5/19.
  */
 $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">用户设置</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">domain设置</span><span class="navRight qdnavRight">');
+var Storage = localStorage;
 getInfo();
 /**查询接口**/
-var Storage = localStorage;
 function getInfo(){
 	var url = '/Domain/findAll';
 	var domain_id = Storage.getItem('domain_id');
