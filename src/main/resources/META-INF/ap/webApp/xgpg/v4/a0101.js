@@ -440,7 +440,7 @@ function bianji(type, g_num, p , wind) {
         	par.borderType = 1;
         	
 //        	console.log(JSON.stringify(par));
-        	ajaxPost('/extract/png', par).success(function (data) {
+            /*       	ajaxPost('/extract/png', par).success(function (data) {
 //        		console.log(JSON.stringify(data));
 
         		if(data.status == 0){
@@ -478,9 +478,9 @@ function bianji(type, g_num, p , wind) {
                     console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
 
         		}
-        	});
+        	});*/
 
- /*           ajaxPost_w('http://166.111.42.85:8300/ampc/extract/png', {token:'',data:par}).success(function (data) {
+            ajaxPost_w('http://166.111.42.85:8300/ampc/extract/png', {token:'',data:par}).success(function (data) {
 //        		console.log(JSON.stringify(data));
 
                 if(data.status == 0){
@@ -517,7 +517,7 @@ function bianji(type, g_num, p , wind) {
                     console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
 
                 }
-            });*/
+            });
         	
         	
         	
