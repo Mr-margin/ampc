@@ -2,7 +2,7 @@
  * Created by shanhaichushi on 2017/5/21.
  */
 // 导航
-$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><a href="#/yqd_v3" style="padding-left: 15px;padding-right: 15px;font-size:14px;color:#333;text-decoration: none" >耦合清单</a><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatCoupQd()">新建</button><button class="qdEdit" onclick="editCoupQd()">编辑</button><button class="qdDelet" onclick="coupDelete()">删除</button></span>');
+$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span href="#/yqd_v3" style="padding-left: 15px;padding-right: 15px;" >耦合清单</span><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatCoupQd()">新建</button><button class="qdEdit" onclick="editCoupQd()">编辑</button><button class="qdDelet" onclick="coupDelete()">删除</button></span>');
 
 var coupingQd,checkQgQd,localQd;
 $(".coupSet").layout();// 耦合设置面板
@@ -655,7 +655,7 @@ function coupCity(cityCurren,industryData) {
     }
     //根据选择的城市 如果当前城市未选择的 则初始化表单 如果当前选择的城市是已经选择过的 则根据以前选择的对应的行业 清单 对表单进行初始化
     for(var b=0;b<globelCheckedCity.length;b++){
-        if(globelCheckedCity[b]==cityCurren.cityId){//判断点击城市是否是已经选过的城市
+        if(globelCheckedCity[b]==(cityCurren.cityId).substring(0,4)){//判断点击城市是否是已经选过的城市
             //如果点击的是已经选择过得城市  把已经选择的结果整合在一起
             checkQd=[];
             for(var n=0;n<globelCheckedQd.length;n++){
