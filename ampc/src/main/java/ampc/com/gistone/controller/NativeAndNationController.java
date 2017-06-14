@@ -1324,6 +1324,9 @@ public class NativeAndNationController {
 				return AmpcResult.build(1003, "每页条数为空或出现非法字符!");
 			}
 			int pageSize = Integer.valueOf(param.toString());
+			
+			String queryName = data.get("queryName").toString();
+			
 			//添加查询参数
 			Map couplingMap=new HashMap();
 			couplingMap.put("userId", userId);
@@ -1331,10 +1334,11 @@ public class NativeAndNationController {
 			couplingMap.put("startTotal", (pageNumber*pageSize)-pageSize+1);
 			//分页结束条数
 			couplingMap.put("endTotal",pageNumber*pageSize);
+			couplingMap.put("queryName",queryName);
 			//查询分页数据
 			List<Map> list=tEsCouplingMapper.selectAllCoupling(couplingMap);
 			//查询总条数
-			int total=tEsCouplingMapper.selectTotalCoupling(userId);
+			int total=tEsCouplingMapper.selectTotalCoupling(couplingMap);
 			
 			List couplingList = new ArrayList();
 			for(int i=0;i<list.size();i++){

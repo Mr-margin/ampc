@@ -298,18 +298,25 @@
 			FROM
 				"AMPC"."T_ES_COUPLING" T
 			WHERE
-				USER_ID = #{userId,jdbcType=DECIMAL} order by ES_COUPLING_ID DESC
+				USER_ID = #{userId,jdbcType=DECIMAL}
+				<if test="queryName!=null and queryName!=''" >
+			        AND (ES_COUPLING_NAME LIKE '%${queryName}%' OR ES_COUPLING_YEAR LIKE '%${queryName}%')
+			    </if>
+				 order by ES_COUPLING_ID DESC
 		)
 	WHERE
 		rn >= #{startTotal,jdbcType=OTHER}
 	AND rn <![CDATA[<=]]> #{endTotal,jdbcType=OTHER}
   </select>
   <!-- 查询总条数 -->
-  <select id="selectTotalCoupling"  parameterType="java.lang.Long" resultType="int">
+  <select id="selectTotalCoupling"  parameterType="hashMap" resultType="int">
     SELECT
 	"COUNT" (ROWNUM)
 	FROM
 	"AMPC"."T_ES_COUPLING" T  WHERE USER_ID=#{userId,jdbcType=DECIMAL}
+	<if test="queryName!=null and queryName!=''" >
+        AND ES_COUPLING_NAME LIKE '%${queryName}%' OR ES_COUPLING_YEAR LIKE '%${queryName}%'
+    </if>
   </select>
   <!-- 编辑耦合清单 -->
   <update id="updateByIdSelective" parameterType="ampc.com.gistone.database.model.TEsCoupling" >
