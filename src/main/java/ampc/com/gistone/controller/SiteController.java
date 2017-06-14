@@ -154,8 +154,8 @@ public class SiteController {
 		try{
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
-			if(null!=data.get("MissionId")&&data.get("MissionId")!=""){
-				Long MissionId=Long.valueOf(data.get("MissionId").toString());
+			if(null!=data.get("missionId")&&data.get("missionId")!=""){
+				Long MissionId=Long.valueOf(data.get("missionId").toString());
 				TMissionDetail tMissionDetail=new TMissionDetail();
 				tMissionDetail.setMissionId(MissionId);
 				List<TMissionDetail>  tmlist=tMissionDetailMapper.selectByEntity(tMissionDetail);
