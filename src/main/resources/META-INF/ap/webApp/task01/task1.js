@@ -171,7 +171,6 @@ var msg = {
     columnsRW[0].push({field: 'missionStatus', title: '类型', width: 90, formatter: missionStatusFormatter});
     columnsRW[0].push({field: 'missionEndDate', title: '操作', width: 80, formatter: missionmanage});
     //页面布局的渲染
-    console.log(JSON.stringify(columnsRW));
     $('#rwglpanle').layout();
     $('#rwgltable').treegrid({
     	url: '/ampc/new_mission/get_mission_list',
@@ -211,7 +210,6 @@ var msg = {
         treeField: 'missionName',
         columns: columnsRW,
         onClickRow: function (row) {
-        	console.log(row);
             if (typeof row.children === 'undefined') {
                 msg.content.qjName = row.scenarinoName;
                 msg.content.qjId = row.scenarinoId;
@@ -1408,7 +1406,6 @@ function createQj(type) {
 }
 /*打开模式启动模态框*/
 function startBtn(){
-	console.log(msg);
 	setTimeout(function(){
 		$("#startUp").window('open').window('center');
 	},1)	
@@ -1705,7 +1702,6 @@ function moduleSimulationScheduleVertical(startTime, endTime, stopTime, stopData
     }
 
   }
-  console.log(_temp.stopPoint);
 //  计算表示流程进行的虚线和箭头
   for (var i = 0; i < xAxisData.length - 1; i++) {
     _temp.dashLineEndPoint.push([_temp.xAxislabel[i * 2 + 2], _temp.yAxislabel[0]]);
