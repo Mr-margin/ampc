@@ -19,7 +19,11 @@ $('#rwpagination').pagination({
 function showPath(value) {
     var e = e || window.event;
     e.stopPropagation();//防止出现下拉
-    swal("请您到以下地址上传清单：", value)
+    if(value!=undefined||value!=null||value!=""){
+        swal("请您到以下地址上传清单：", value);
+    }else{
+        swal('信息创建失败', '', 'error');
+    }
 }
 function innitdata(active){
     if(active=="find_natives"){
@@ -319,8 +323,8 @@ function innitdata(active){
         var qdYear=$("#esLocalQdYear").val();
         var qdRemark=$("#esLocalQdMark").val();
         if(rowDiv){
-            if(qdName.length>0 && qdName.length<=20){
-                if(myYear>=1990&&myYear<=2100){
+            if(qdName.length>0 && qdName.length<=20 && qdName!="请输入长度不超过20的名称（必填）"){
+                if(qdYear>=1990&&qdYear<=2100){
                     ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark,"nativeTpId":rowDiv.esNativeTpId,"nativeTpName":rowDiv.esNativeTpName}).success(function(res){
                         if(res.status==0){
                             innitdata("find_natives");
@@ -330,10 +334,14 @@ function innitdata(active){
                         }
                     })
                 }else{
-                    swal('年份错误', '', 'error');
+                    // swal('年份错误', '', 'error');
+                    $("#editTempQd .tipYearRepeat span").remove();
+                    $("#editTempQd .tipYearRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入符合要求的年份</span>");
                 }
             }else{
-                swal('请输入符合要求的年份', '', 'error');
+                // swal('请输入符合要求的年份', '', 'error');
+                $("#editTempQd .tipNameRepeat span").remove();
+                $("#editTempQd .tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入符合要求的名称</span>");
             }
 
         }
