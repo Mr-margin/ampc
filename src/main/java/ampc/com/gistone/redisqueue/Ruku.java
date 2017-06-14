@@ -48,7 +48,7 @@ public class Ruku {
 	@Autowired
 	private ReadyData readyData;
 	/**
-	 * @Description: TODO
+	 * @Description: 基准情景入库
 	 * @param tasksScenarinoId   
 	 * void  
 	 * @param oldStatus 
