@@ -141,7 +141,7 @@ $.when(dps_um).then(function(){
             router: {
                 '/sy': {        //首页
                     templateUrl: 'main.html',
-                    controller: ''
+                    controller: 'main.js'
                 },
                 '/yqd_v1': {       //源清单-全国清单
                     templateUrl: 'webApp/yqd/v1/nationalQd.html',
