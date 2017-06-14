@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.druid.support.logging.Log;
 
@@ -36,6 +37,7 @@ import ampc.com.gistone.util.LogUtil;
  * @version 1.0
  */
 @Component
+@Transactional
 public class MessageLog {
 	//日志映射
 	@Autowired
@@ -76,7 +78,9 @@ public class MessageLog {
 			tMessageLog.setTasksEndDate(taskenddate);
 			tMessageLog.setResultDesc(desc);
 			tMessageLog.setResultCode(code);
+			LogUtil.getLogger().info("准备插入日志数据库！");
 			int insertSelective = tMessageLogMapper.insertSelective(tMessageLog);
+			LogUtil.getLogger().info("插入日志数据操作完毕！");
 			if (insertSelective>0) {
 				LogUtil.getLogger().info("更新domain消息日志成功！");
 			}else {
@@ -87,7 +91,7 @@ public class MessageLog {
 			// TODO Auto-generated catch block
 			LogUtil.getLogger().error("更新domain消息日志失败！！"+e);
 		}catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 		
 	}
@@ -133,7 +137,7 @@ public class MessageLog {
 		} catch (IOException | SQLException e) {
 			LogUtil.getLogger().error("更新消息日志失败！！"+e);
 		}catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 
@@ -182,7 +186,7 @@ public class MessageLog {
 		} catch (IOException | SQLException e) {
 			LogUtil.getLogger().error(" 更新model.stop消息日志失败！！",e);
 		}catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 		
 	}
@@ -232,7 +236,7 @@ public class MessageLog {
 		} catch (IOException | SQLException e) {
 			LogUtil.getLogger().error(" 更新model.stop.pause消息日志失败！！",e);
 		}catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 		
 	}
@@ -277,12 +281,13 @@ public class MessageLog {
 				LogUtil.getLogger().info("savesatrtModelMessagelog:更新model.start.result消息日志成功！");
 			}else {
 				LogUtil.getLogger().error("savesatrtModelMessagelog:更新model.start.result消息日志失败！！");
-				throw new SQLException("更新model.start.result消息日志失败！！");
+				throw new SQLException("savesatrtModelMessagelog:更新model.start.result消息日志失败！！");
 			}
 		} catch (IOException | SQLException e) {
-			LogUtil.getLogger().error(" 更新model.start.result消息日志失败！！",e);
+			LogUtil.getLogger().error(" savesatrtModelMessagelog:更新model.start.result消息日志失败！！",e);
 		}catch (Exception e) {
-			// TODO: handle exception
+			LogUtil.getLogger().error("savesatrtModelMessagelog: 更新model.start.result消息日志失败！！",e.getMessage());
+			e.printStackTrace();
 		}
 		
 	}
