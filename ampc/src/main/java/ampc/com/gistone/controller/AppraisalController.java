@@ -530,7 +530,7 @@ public class AppraisalController {
 			tScenarino.setMissionId(missionId);
 			tScenarino.setScenType("3");
 			List<TScenarinoDetail> jztScenarinoDetail=tScenarinoDetailMapper.selectByEntity(tScenarino);
-			TScenarinoDetail jztScenarino=jztScenarinoDetail.get(0);
+//			TScenarinoDetail jztScenarino=jztScenarinoDetail.get(0);
 			//预评估任务
 			if(tMissionDetail.getMissionStatus().equals("2")){//任务类型
 				if(4<5){//任务开始时间与系统开始时间对比
