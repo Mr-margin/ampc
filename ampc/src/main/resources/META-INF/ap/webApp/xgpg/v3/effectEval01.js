@@ -5,7 +5,7 @@ $(function () {
     /**
      *设置导航条信息
      */
-    $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">时间序列</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
+    $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">时间序列</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a> <span style="padding-left: 15px;padding-right: 15px;float:right;" id="missionName"></span>');
 
 });
 
@@ -1009,7 +1009,7 @@ function save_scene() {
 			arrId.push({"id": mag.data[i].scenarinoId});
 		}
 		$("#close_scene").click();
-		
+		$("#missionName").text($("#task :selected").text());
 		set_sce();
 //    	find_standard();
 		initNowSession();
