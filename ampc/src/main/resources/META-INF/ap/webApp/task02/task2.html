@@ -1,6 +1,6 @@
 <div class="easyui-layout zm" data-options="fit:true" id="task2content">
     <div  data-options="region:'center',split:true,onResize:function(){if(typeof plancharts!='undefined')plancharts.resize();}" style="position: relative">
-        <button class="btn btn-primary" style="position: absolute;top: 10px;left: 10px;z-index: 1" onclick="createNewAreaBtn()"><i class="fa fa-plus-circle" aria-hidden="true"></i> 添加区域</button>
+        <button class="zmbtn zmbtn-primary" style="position: absolute;top: 4px;left: 4px;z-index: 1" onclick="createNewAreaBtn()"><i class="fa fa-plus-circle" aria-hidden="true"></i> 添加区域</button>
         <div id="plancharts" style="height: 100%;border: 1px solid #ccc">
 
         </div>
@@ -9,7 +9,7 @@
         <div id="mapDiv1" class="showMap" style="width:100%;height:100%;border: 1px solid #ccc"></div>
     </div>
 </div>
-<div id="selectCreateQj" class="easyui-window zm" style="display: none">
+<div id="selectCreateQj" class="easyui-window" style="display: none">
     <div class="step1 selectCQJbtn">
         <button onclick="selectCopy(false)" class="cjhpgqj"><img src="img/newQJ.png" alt=""></button>
         <button onclick="selectCopy(true)" class="cjxjzqj"><img src="img/copyQJ.png" alt=""></button>
@@ -17,17 +17,17 @@
     <div class="step2 selectCopyQj">
         <div id="rwToolbar" style="height: 40px" class="btn-group">
             <div class="col-8 bigP">
-                <button type="button" class="btn btn-success statusRw" onclick="statusRWfun('',this)">
+                <button type="button" class="zmbtn zmbtn-success statusRw" onclick="statusRWfun('',this)">
                     <i class="im-folder-open"></i> 全部
                 </button>
-                <button type="button" class="btn btn-success statusRw" onclick="statusRWfun('1',this)">
+                <button type="button" class="zmbtn zmbtn-success statusRw" onclick="statusRWfun('1',this)">
                     <i class="st-folder-settings"></i> 预评估
                 </button>
-                <button type="button" class="btn btn-success statusRw" onclick="statusRWfun('2',this)">
+                <button type="button" class="zmbtn zmbtn-success statusRw" onclick="statusRWfun('2',this)">
                     <i class="im-paste2"></i> 后评估
                 </button>
             </div>
-            <div class="input-group col-4">
+            <div class="input-group col-4" style="padding-top:5px">
                 <!--<input type="text" class="form-control copyQjsearch " placeholder="输入情景名称或字段">-->
                 <!--<span class="input-group-btn">-->
                   <!--<button class="btn btn-default " type="button" onclick="search()"><i class="ec-search"></i>-->
@@ -38,7 +38,7 @@
                     $('#searchqd').searchbox({
                         prompt: '输入任务或情景名称',
                         searcher:function (value,name) {
-                            
+                            search();
                         }
                     });
                 </script>
@@ -51,9 +51,9 @@
         </div>
 
 
-        <div class="modal-footer">
-            <button type="button" class="btn btn-success" data-dismiss="modal" onclick="subCopyQJ()"><i class="fa fa-check" aria-hidden="true"></i> 确定</button>
-            <button type="button" class="btn btn-default" onclick="previous()"><i class="fa fa-times" aria-hidden="true"></i> 上一步</button>
+        <div class="dlogFooter">
+            <button type="button" class="btn btn-success" data-dismiss="modal" onclick="subCopyQJ()">确定</button>
+            <button type="button" class="btn btn-default" onclick="previous()">上一步</button>
         </div>
     </div>
 </div>
@@ -88,10 +88,10 @@
                             <input type="text" class="form-control" id="qyTimePoint" name="qyTimePoint">
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="addTimes()"><i class="fa fa-check" aria-hidden="true"></i> 确认添加
+                    <div class="dlogFooter" style="position:absolute;bottom:0;right:0;left:0">
+                        <button type="button" class="btn btn-primary" onclick="addTimes()">确认添加
                         </button>
-                        <button type="button" class="btn btn-primary" onclick="$('#timePlan').window('close')"><i class="fa fa-times" aria-hidden="true"></i> 取消</button>
+                        <button type="button" class="btn btn-primary" onclick="$('#timePlan').window('close')">取消</button>
                     </div>
                 </div>
                 <div title="时段删除" class="delTimeDiv" id="delTime" style="padding: 8px">
@@ -118,11 +118,11 @@
                     <h4 style="color: #990000"> 注：删除时段会同时删除时段上预案，请谨慎选择删除的时段</h4>
 
                     <div class="delSelect"></div>
-                    <div class="modal-footer">
+                    <div class="dlogFooter" style="position:absolute;bottom:0;right:0;left:0">
                         <button type="button" class="btn btn-primary" data-dismiss="modal"
-                                onclick="delTimes()"><i class="fa fa-check" aria-hidden="true"></i> 确定删除
+                                onclick="delTimes()">确定删除
                         </button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#timePlan').window('close')"><i class="fa fa-times" aria-hidden="true"></i> 取消
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#timePlan').window('close')">取消
                         </button>
                     </div>
                 </div>
@@ -169,11 +169,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="dlogFooter" style="position:absolute;bottom:0;right:0;left:0">
                         <button type="button" class="btn btn-primary" data-dismiss="modal"
-                                onclick="sunEditTimeDate()"><i class="fa fa-check" aria-hidden="true"></i> 确定
+                                onclick="sunEditTimeDate()">确定
                         </button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#timePlan').window('close')"><i class="fa fa-times" aria-hidden="true"></i> 取消
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#timePlan').window('close')">取消
                         </button>
                     </div>
                 </div>
@@ -194,11 +194,11 @@
                             <span>（限15字以内）</span>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div  class="dlogFooter" style="position:absolute;bottom:0;right:0;left:0">
                         <button type="button" class="btn btn-primary" data-dismiss="modal"
-                                onclick="addPlan(true)"><i class="fa fa-check" aria-hidden="true"></i> 确定添加
+                                onclick="addPlan(true)">确定添加
                         </button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#timePlan').window('close')"><i class="fa fa-times" aria-hidden="true"></i> 取消
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#timePlan').window('close')">取消
                         </button>
                     </div>
                 </div>
@@ -214,21 +214,21 @@
                     <!--<select class="form-control mb25" id="copyPlan">-->
                     <!--</select>-->
                     <!--</div>-->
-                    <div class="modal-footer">
+                    <div  class="dlogFooter" style="position:absolute;bottom:0;right:0;left:0">
                         <button type="button" class="btn btn-primary" data-dismiss="modal"
-                                onclick="addPlan(false)"><i class="fa fa-check" aria-hidden="true"></i> 确定添加
+                                onclick="addPlan(false)">确定添加
                         </button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#timePlan').window('close')"><i class="fa fa-times" aria-hidden="true"></i> 取消
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#timePlan').window('close')">取消
                         </button>
                     </div>
                 </div>
                 <div title="编辑现预案" id="editPlan">
-                	<div style="height:303px">
+                	<div style="height:322px">
                 		<table id='editPlanTable'>
                 		</table>
                 	</div>                	
-                    <div style="text-align: center">
-                        <button class="btn btn-success" onclick="editPlan()" style="margin-top: 30px"><i class="fa fa-tasks" aria-hidden="true"></i> 编辑预案</button>
+                    <div class="dlogFooter" style="text-align: center">
+                        <button class="btn btn-success" onclick="editPlan()"><i class="fa fa-tasks" aria-hidden="true"></i> 编辑预案</button>
                     </div>
                 </div>
 <!--                <div title="删除现预案" id="delPlan">
@@ -257,7 +257,7 @@
                     </ul>
                     <!--当点击确定按钮后将ztree选择的区域在id为adcodelistbox的div中显示-->
                     <div class="adcodeTreeBtn">
-                        <button class="btn btn-info" onclick="updataCodeList()"><i class="fa fa-check-square-o" aria-hidden="true"></i> 确定</button>
+                        <button class="zmbtn zmbtn-info" onclick="updataCodeList()"><i class="fa fa-check-square-o" aria-hidden="true"></i> 确定</button>
                     </div>
                 </div>
                 <!--作为选择区域的回显div-->
@@ -266,7 +266,7 @@
 
                     </div>
                     <div class="adcodeTreeBtn">
-                        <button class="btn btn-info" onclick="revise()"><i class="fa fa-cog" aria-hidden="true"></i> 修改</button>
+                        <button class="zmbtn zmbtn-info" onclick="revise()"><i class="fa fa-cog" aria-hidden="true"></i> 修改</button>
                     </div>
                 </div>
             </div>
@@ -276,7 +276,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal-footer ">
+        <div class="dlogFooter ">
             <div class="footerShow">
                 <div class='col-4 rw'>
                     <h5>当前任务：<span></span></h5>
@@ -285,8 +285,8 @@
                     <h5>当前情景：<span></span></h5>
                 </div>
                 <div class="col-4" style="text-align: right">
-                    <button type="button" class="btn btn-primary" onclick="createEditArea()"><i class="fa fa-check" aria-hidden="true"></i> 确定</button>
-                    <button type="button" class="btn btn-primary" onclick="$('#editArea').window('close')"><i class="fa fa-times" aria-hidden="true"></i> 取消</button>
+                    <button type="button" class="btn btn-primary" onclick="createEditArea()">确定</button>
+                    <button type="button" class="btn btn-primary" onclick="$('#editArea').window('close')">取消</button>
 
                 </div>
             </div>

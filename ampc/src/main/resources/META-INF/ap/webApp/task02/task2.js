@@ -481,7 +481,7 @@ function initialize() {
             }
         }
         if (res.data[res.data.length - 1].isnew) {
-            $('#selectCreateQj').window('open');
+            $('#selectCreateQj').window('open').window('center');
         } else {
             selectCopy(false);
         }
@@ -498,8 +498,9 @@ function selectCopy(t) {
 
         $('#selectCreateQj .selectCQJbtn').hide();
         $('#selectCreateQj .selectCopyQj').show();
-        $('#selectCreateQj .modal-footer').show();
+        $('#selectCreateQj .modal-footer').show();        
         initCoptTable();
+        $('#selectCreateQj').window('center');
     } else {
         allData = allData1;
         allData1 = null;
@@ -530,6 +531,7 @@ function initCoptTable() {
         url: '/ampc/scenarino/get_CopyScenarinoList',
         dataType: "json",
         singleSelect: true,
+        fitColumns:false,
         contentType: "application/json", // 请求远程数据的内容类型。
         queryParams: function (m) {
             var json = {
@@ -630,6 +632,7 @@ function previous() {
     $('#selectCreateQj .step1').show();
     $('#selectCreateQj .step2').hide();
     //    $('#selectCreateQj').window('open');
+    $('#selectCreateQj').window('center');
 }
 /**
  * 情景计算状态
@@ -2687,4 +2690,27 @@ function editPlanTableFun(){
 	$('#editPlanTable').datagrid({
 		data:_tempPlan		
 	});
+}
+/*筛选*/
+function statusRWfun(status, t) {
+    statusRW = status;
+    search('rw');    
+}
+/*搜索事件*/
+function search() {   
+    $('#copyQJ').datagrid({queryParams: function (m) {
+            var json = {
+                "token": "",
+                "data": {
+                    "scenarinoId": qjMsg.qjId,
+                    "queryName": $('#searchqd').searchbox('getValue'),
+                    "missionStatus": statusRW,
+                    "pageNum": m.pageNumber,
+                    "pageSize": m.pageSize,
+                    "sort": '',
+                    "userId": 1
+                }
+            };
+            return json;
+        }});
 }
