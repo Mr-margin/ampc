@@ -157,7 +157,6 @@ public class NativeAndNationController {
 				}else if("verifyByCouplingName".equals(param)){
 					listTps = verifyByCouplingName(requestDate,request,response);
 				}
-				
 				else if("".equals(param)){
 					return AmpcResult.build(1001, "NativeAndNationController 请求方法参数异常!");
 				}
@@ -239,6 +238,9 @@ public class NativeAndNationController {
 				return AmpcResult.build(1003, "每页条数为空或出现非法字符!");
 			}
 			int pageSize = Integer.valueOf(param.toString());
+			
+			String queryName = data.get("queryName").toString();
+			
 			//添加查询参数
 			Map nationMap=new HashMap();
 			nationMap.put("userId", userId);
@@ -246,10 +248,11 @@ public class NativeAndNationController {
 			nationMap.put("startTotal", (pageNumber*pageSize)-pageSize+1);
 			//分页结束条数
 			nationMap.put("endTotal",pageNumber*pageSize);
+			nationMap.put("queryName",queryName);
 			//查询分页数据
 			List<Map> list=tEsNationMapper.selectAllNation(nationMap);
 			//查询总条数
-			int total=tEsNationMapper.selectTotalNation(userId);
+			int total=tEsNationMapper.selectTotalNation(nationMap);
 			//返回页面的数据
 			Map nationsMap=new HashMap();
 			nationsMap.put("rows", list);

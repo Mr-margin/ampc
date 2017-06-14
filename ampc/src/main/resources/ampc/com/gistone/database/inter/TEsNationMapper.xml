@@ -173,7 +173,11 @@
 			FROM
 				"AMPC"."T_ES_NATION" T
 			WHERE
-				USER_ID = #{userId,jdbcType=DECIMAL} order by ES_NATION_ID DESC
+				USER_ID = #{userId,jdbcType=DECIMAL}
+				<if test="queryName != null" >
+			        AND (ES_NATION_NAME LIKE #{queryName,jdbcType=OTHER} OR ES_NATION_YEAR LIKE #{queryName,jdbcType=DECIMAL})
+			    </if>
+				 order by ES_NATION_ID DESC
 		)
 	WHERE
 		rn >= #{startTotal,jdbcType=OTHER}
@@ -215,11 +219,14 @@
     	USER_ID = #{userId,jdbcType=DECIMAL}
   </update>
   <!-- 查询总条数 -->
-  <select id="selectTotalNation"  parameterType="java.lang.Long" resultType="int">
+  <select id="selectTotalNation"  parameterType="hashMap" resultType="int">
     SELECT
 	"COUNT" (ROWNUM)
 	FROM
 	"AMPC"."T_ES_NATION" T  WHERE USER_ID=#{userId,jdbcType=DECIMAL}
+	<if test="queryName != null" >
+        AND (ES_NATION_NAME LIKE #{queryName,jdbcType=OTHER} OR ES_NATION_YEAR LIKE #{queryName,jdbcType=DECIMAL})
+    </if>
   </select>
   <!-- 校验全国清单名称 -->
   <select id="verifyNationName"  parameterType="ampc.com.gistone.database.model.TEsNation" resultType="int">
