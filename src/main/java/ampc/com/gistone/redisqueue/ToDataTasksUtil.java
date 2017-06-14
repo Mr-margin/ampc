@@ -149,18 +149,16 @@ public class ToDataTasksUtil {
 									    	//查找上一次消息的结束时间
 									    	oldStatus = tasksStatusMapper.selectendByscenarinoId(tasksScenarinoId);   //经常出问题的地方
 										} catch (Exception e) {
-											LogUtil.getLogger().error("");
+											LogUtil.getLogger().error("updateDB-model.start.result：查找上一次的消息出错！");
 										}
 									    
 									    // 跟新数据库
 									    int i = tasksStatusMapper.updateStatus(tasksStatus);
-									    //跟新情景表的情景运行错误描述
-									    updateModelErrorMsg(tasksScenarinoId,errorStatus);
 									    LogUtil.getLogger().info("tasksstatus："+tasksStatus);
 									    if (i>0) {
 									    	//添加消息到消息执行进度的表中
 									    	insertintoMessageSchule(message);
-									    	LogUtil.getLogger().info("更新tasksstatus成功，情景ID："+tasksScenarinoId);
+									    	LogUtil.getLogger().info("更新tasksstatus成功，情景ID："+tasksScenarinoId+",index:"+stepindex);
 									    	if (code!=0||!"".equals(errorStatus)) {
 									    		//出现错误，模式变为出错
 									    		//更新情景状态
@@ -328,42 +326,9 @@ public class ToDataTasksUtil {
 											    		tasksStatusMapper.updateRunstatus(tasksStatus2);
 													}
 												}
-	//-------------------------------------	入库处理---------------------------------------------								    	
-										    	
+	//-------------------------------------	入库处理---------------------------------------------	
 												if (code==0) {
-													//基准情景
-													if ("3".equals(scentype)) {
-														//基准入库
-														if (stepindex==3) {
-															//气象入库
-															ruku.readyRukuparamsBasis(stepindex,tasksScenarinoId,tasksEndDate,oldStatus,1);
-														}
-														if (stepindex==8) {
-															//浓度入库
-															ruku.readyRukuparamsBasis(stepindex,tasksScenarinoId,tasksEndDate,oldStatus,0);
-														}
-													}
-													//实时预报
-													if ("4".equals(scentype)) {
-														if (stepindex==3) {
-															//气象入库
-															ruku.readyRukuparamsRealPredict(stepindex,tasksScenarinoId,tasksEndDate,1);
-														}
-														if (stepindex==8) {
-															//浓度入库
-															ruku.readyRukuparamsRealPredict(stepindex,tasksScenarinoId,tasksEndDate,0);
-														}
-													}
-													//预评估任务的预评估情景
-													if ("1".equals(scentype)&&stepindex==4) {
-														//浓度入库
-														ruku.readyRukuparamsRrePredict(tasksScenarinoId,tasksEndDate);
-													}
-													//后评估评估情景
-													if ("2".equals(scentype)&&stepindex==4) {
-														//浓度入库
-														ruku.readyRukuparamspostPevtion(tasksScenarinoId,tasksEndDate,oldStatus);
-													}
+													modelDataRukuMethod(scentype,stepindex,tasksScenarinoId,tasksEndDate,oldStatus);
 												}
 											}
 										}else {
@@ -401,6 +366,57 @@ public class ToDataTasksUtil {
 	} 
 
 	
+
+	/**
+	 * @Description: 模式入库处理
+	 * @param scentype
+	 * @param stepindex
+	 * @param tasksScenarinoId
+	 * @param tasksEndDate
+	 * @param oldStatus   
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月14日 下午5:34:22
+	 */
+	private void modelDataRukuMethod(String scentype, Integer stepindex,
+			Long tasksScenarinoId, Date tasksEndDate, TTasksStatus oldStatus) {
+		//基准情景
+		if ("3".equals(scentype)) {
+			//基准入库
+			if (stepindex==3) {
+				//气象入库
+				ruku.readyRukuparamsBasis(stepindex,tasksScenarinoId,tasksEndDate,oldStatus,1);
+			}
+			if (stepindex==8) {
+				//浓度入库
+				ruku.readyRukuparamsBasis(stepindex,tasksScenarinoId,tasksEndDate,oldStatus,0);
+			}
+		}
+		//实时预报
+		if ("4".equals(scentype)) {
+			if (stepindex==3) {
+				//气象入库
+				ruku.readyRukuparamsRealPredict(stepindex,tasksScenarinoId,tasksEndDate,1);
+			}
+			if (stepindex==8) {
+				//浓度入库
+				ruku.readyRukuparamsRealPredict(stepindex,tasksScenarinoId,tasksEndDate,0);
+			}
+		}
+		//预评估任务的预评估情景
+		if ("1".equals(scentype)&&stepindex==4) {
+			//浓度入库
+			ruku.readyRukuparamsRrePredict(tasksScenarinoId,tasksEndDate);
+		}
+		//后评估评估情景
+		if ("2".equals(scentype)&&stepindex==4) {
+			//浓度入库
+			ruku.readyRukuparamspostPevtion(tasksScenarinoId,tasksEndDate,oldStatus);
+		}
+	}
+
+
 
 	/**
 	 * @Description: TODO
@@ -441,7 +457,6 @@ public class ToDataTasksUtil {
 	 */
 	private void insertintoMessageSchule(Message message) {
 		TModelScheduleMessage tModelScheduleMessage = new TModelScheduleMessage();
-		System.out.println(message);
 		String type = message.getType();
 		Date time = message.getTime();
 		Map map = (Map) message.getBody();
@@ -518,7 +533,6 @@ public class ToDataTasksUtil {
 			Integer stepindex, String endtime, String errorStatus) {
 		//模式运行出错，修改情景状态
 		readyData.updateScenStatusUtil(9l, tasksScenarinoId);
-		updateModelErrorMsg(tasksScenarinoId,errorStatus);
 		String weixinServerURL = configUtil.getWeixinServerURL();
 		switch (code) {
 		case 9999:
@@ -577,6 +591,8 @@ public class ToDataTasksUtil {
 		    	Object scenarioid = map.get("scenarioid");
 		    	if (RegUtil.CheckParameter(scenarioid, "Long", null, false)) {
 			    	Long tasksScenarinoId = Long.parseLong(map.get("scenarioid").toString());
+			    	//终止失败的描述信息
+			    	String errorStatus = map.get("desc").toString();
 				    TTasksStatus tTasksStatus = new TTasksStatus();
 				    tTasksStatus.setTasksScenarinoId(tasksScenarinoId);
 				    tTasksStatus.setStopStatus(code.toString());
@@ -584,6 +600,8 @@ public class ToDataTasksUtil {
 				    try {
 				    	//更新tasks状态
 				    	int i = tasksStatusMapper.updatestopstatus(tTasksStatus);
+				    	//跟新情景表的情景终止失败描述
+					    updateModelErrorMsg(tasksScenarinoId,errorStatus);
 				    	if (i>0) {
 				    		LogUtil.getLogger().info("ToDataTasksUtil-stopModelresult：停止模式的消息更新数据库成功！");
 						}else {
@@ -678,10 +696,14 @@ public class ToDataTasksUtil {
 		    	Object scenarioid = map.get("scenarioid");
 		    	if (RegUtil.CheckParameter(scenarioid, "Long", null, false)) {
 		    		Long tasksScenarinoId = Long.parseLong(map.get("scenarioid").toString());
+		    		//暂停失败的描述信息
+			    	String errorStatus = map.get("desc").toString();
 				    TTasksStatus tTasksStatus = new TTasksStatus();
 				    tTasksStatus.setTasksScenarinoId(tasksScenarinoId);
 					tTasksStatus.setPauseStatus(code.toString());
 				    int updatepausestatus = tasksStatusMapper.updatepausestatus(tTasksStatus);
+				    //跟新情景表的情景暂停描述
+				    updateModelErrorMsg(tasksScenarinoId,errorStatus);
 		    		if (updatepausestatus>0) {
 						LogUtil.getLogger().info("ToDataTasksUtil-pauseModelresult：更新暂停模式返回的结果成功！");
 					}else {
