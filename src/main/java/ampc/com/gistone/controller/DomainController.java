@@ -75,13 +75,23 @@ public class DomainController {
 		JSONArray arr=new JSONArray();
 		//遍历查询到的Domain集合，并添加到返回的json中
 		for(TDomainMissionWithBLOBs td:tdlist){
-		
+			JSONObject obj=new JSONObject();
+			//查看当前domain是否用来创建了任务
+			obj.put("employStatus", td.getEmployStatus());
+			obj.put("domainId", td.getDomainId());
+			obj.put("userId", td.getUserId());
+			obj.put("addTime", td.getAddTime().getTime());//创建时间
+			obj.put("createStatus", td.getCreateStatus().toString());//状态（用来区分当前还是历史）
+			obj.put("domainName", td.getDomainName());//domain名称
+			obj.put("domainDoc", td.getDomainDoc());//备注
+			obj.put("disposeStatus", td.getDisposeStatus());
+			obj.put("validStatus", td.getValidStatus());
 			if(td.getDomainInfo()==null){
-				td.setDomainInfo("{}");	
+				obj.put("domainInfo",new HashMap());	
 			}else{
-				td.setDomainInfo(td.getDomainInfo().replaceAll(" ", ""));
+			obj.put("domainInfo", td.getDomainInfo().replaceAll(" ", ""));
 			}
-			arr.add(td);
+			arr.add(obj);
 			
 		}
 		return AmpcResult.ok(arr);
@@ -497,7 +507,23 @@ public class DomainController {
 				boolean b=createDomainJsonData.readyDomainData(userId, domainId);
 				if(b){
 					TDomainMissionWithBLOBs ts=tDomainMissionMapper.selectByPrimaryKey(domainId);
-				return AmpcResult.ok(ts);
+					JSONObject objs=new JSONObject();
+					//查看当前domain是否用来创建了任务
+					objs.put("employStatus", ts.getEmployStatus());
+					objs.put("domainId", ts.getDomainId());
+					objs.put("userId", ts.getUserId());
+					objs.put("addTime", ts.getAddTime().getTime());//创建时间
+					objs.put("createStatus", ts.getCreateStatus().toString());//状态（用来区分当前还是历史）
+					objs.put("domainName", ts.getDomainName());//domain名称
+					objs.put("domainDoc", ts.getDomainDoc());//备注
+					objs.put("disposeStatus", ts.getDisposeStatus());
+					objs.put("validStatus", ts.getValidStatus());
+					if(td.getDomainInfo()==null){
+						obj.put("domainInfo",new HashMap());	
+					}else{
+					obj.put("domainInfo", td.getDomainInfo().replaceAll(" ", ""));
+					}
+					return AmpcResult.ok(objs);
 				}else{
 				td.setDisposeStatus("4");
 				td.setDomainResultDesc("send fail");
@@ -562,10 +588,20 @@ public class DomainController {
 		//操作数据库添加数据
 		int s=tDomainMissionMapper.insertSelective(td);
 		TDomainMissionWithBLOBs TS=tDomainMissionMapper.selectbynameanddoc(td);
-
+		JSONObject objs=new JSONObject();
+		//查看当前domain是否用来创建了任务
+		objs.put("employStatus", TS.getEmployStatus());
+		objs.put("domainId", TS.getDomainId());
+		objs.put("userId", TS.getUserId());
+		objs.put("addTime", TS.getAddTime().getTime());//创建时间
+		objs.put("createStatus", TS.getCreateStatus().toString());//状态（用来区分当前还是历史）
+		objs.put("domainName", TS.getDomainName());//domain名称
+		objs.put("domainDoc", TS.getDomainDoc());//备注
+		objs.put("disposeStatus", TS.getDisposeStatus());
+		objs.put("validStatus", TS.getValidStatus());
 		if(s!=0){
 			
-			return AmpcResult.ok(TS);
+			return AmpcResult.ok(objs);
 		}
 		
 		LogUtil.getLogger().error("save_domain Domain创建数据库操作异常！");
@@ -617,11 +653,21 @@ public class DomainController {
 		//操作数据库保存数据
 		int s=tDomainMissionMapper.updateByPrimaryKeySelective(td);
 		TDomainMissionWithBLOBs ts=tDomainMissionMapper.selectByPrimaryKey(domainId);
+		JSONObject objs=new JSONObject();
+		objs.put("employStatus", ts.getEmployStatus());
+		objs.put("domainId", ts.getDomainId());
+		objs.put("userId", ts.getUserId());
+		objs.put("addTime", ts.getAddTime().getTime());//创建时间
+		objs.put("createStatus", ts.getCreateStatus().toString());//状态（用来区分当前还是历史）
+		objs.put("domainName", ts.getDomainName());//domain名称
+		objs.put("domainDoc", ts.getDomainDoc());//备注
+		objs.put("disposeStatus", ts.getDisposeStatus());
+		objs.put("validStatus", ts.getValidStatus());
 		if(s==0){
 			LogUtil.getLogger().error("updateNameAndDoc 数据库修改Name及Doc操作异常！");
 			return AmpcResult.build(1000, "数据库修改Name及Doc操作异常！");
 		}
-		return AmpcResult.ok(ts);
+		return AmpcResult.ok(objs);
 	}catch(Exception e){
 		LogUtil.getLogger().error("updateNameAndDoc 修改Name及Doc异常！",e);
 		return AmpcResult.build(1001, "修改Name及Doc异常！");
@@ -703,7 +749,17 @@ public class DomainController {
 			int b=tDomainMissionMapper.updateByValid(domainId);
 			if(b>0){
 				TDomainMissionWithBLOBs ts=tDomainMissionMapper.selectByPrimaryKey(domainId);
-				return AmpcResult.ok(ts);
+				JSONObject objs=new JSONObject();
+				objs.put("employStatus", ts.getEmployStatus());
+				objs.put("domainId", ts.getDomainId());
+				objs.put("userId", ts.getUserId());
+				objs.put("addTime", ts.getAddTime().getTime());//创建时间
+				objs.put("createStatus", ts.getCreateStatus().toString());//状态（用来区分当前还是历史）
+				objs.put("domainName", ts.getDomainName());//domain名称
+				objs.put("domainDoc", ts.getDomainDoc());//备注
+				objs.put("disposeStatus", ts.getDisposeStatus());
+				objs.put("validStatus", ts.getValidStatus());
+				return AmpcResult.ok(objs);
 			}else{
 				LogUtil.getLogger().error("deleteDomain 设置生效状态异常！");
 				return AmpcResult.build(1000, "设置生效状态异常！");
