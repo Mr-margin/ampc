@@ -1771,7 +1771,7 @@ dl, dd {
   content: '、';
 }
 .footerShow{
-  padding: 4px 0;
+  //padding: 4px 0;
 }
 .footerShow:after{
   content: '';
@@ -1779,7 +1779,7 @@ dl, dd {
   clear: both;
 }
 .footerShow h5{
-  line-height: 34px;
+  line-height: 25px;
 }
 /*时段编辑弹框样式*/
 #timeorplan>.tabs-header>.tabs-wrap>ul{
@@ -1788,12 +1788,7 @@ dl, dd {
 #timepanel>.tabs-panels>div>div,#planpanel>.tabs-panels>div>div{
   position: relative;
 }
-#timepanel>.tabs-panels>div>div>.modal-footer,#planpanel>.tabs-panels>div>div>.modal-footer{
-  position: absolute;
-  left: 8px;
-  right: 8px;
-  bottom: 8px;
-}
+
 #addTime1>div:first-child>div,#delTime>div:first-child>div,#editTime1>div:first-child>div{
   padding-top: 10px;
   height: 90px;
@@ -1826,7 +1821,7 @@ dl, dd {
 .cloudui .tiaojian .tiaojian-title{text-align: right;}
 
 /*button样式*/
-.zm .btn{
+.zmbtn{
   display: inline-block;
   padding: 6px 12px;
   margin-bottom: 0;
@@ -1847,120 +1842,120 @@ dl, dd {
   border: 1px solid transparent;
   border-radius: 4px;
 }
-.zm .btn:hover{
+.zmbtn:hover{
   color: #333;
   text-decoration: none;
 }
-.zm .btn:active{
+.zmbtn:active{
   background-image: none;
   outline: 0;
   -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
   box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
 }
-.zm .btn[disabled]{
+.zmbtn[disabled]{
   cursor: not-allowed;
   filter: alpha(opacity=65);
   -webkit-box-shadow: none;
   box-shadow: none;
   opacity: .65;
 }
-.zm .btn-default{
+.zmbtn-default{
   color:#333;
   background-color:#fff;
   border-color: #ccc;
 }
-.zm .btn-default:hover{
+.zmbtn-default:hover{
   color: #333;
   background-color: #e6e6e6;
   border-color: #adadad;
 }
-.zm .btn-default:active{
+.zmbtn-default:active{
   color: #333;
   background-color: #e6e6e6;
   border-color: #adadad;
 }
-.zm .btn-primary{
+.zmbtn-primary{
   color: #fff;
   background-color: #4284F5;
   border-color:#2D5EB2;
 }
-.zm .btn-primary:hover{
+.zmbtn-primary:hover{
   color: #fff;
   background-color: #286090;
   border-color:#204d74
 }
-.zm .btn-primary:active{
+.zmbtn-primary:active{
   color: #fff;
   background-color: #286090;
   border-color:#204d74
 }
-.zm .btn-success{
+.zmbtn-success{
   color:#fff;
   background-color:#119E5A;
   border-color:#1F955B;
 }
-.zm .btn-success:hover{
+.zmbtn-success:hover{
   color:#fff;
   background-color: #449d44;
   border-color: #398439;
 }
-.zm .btn-success:active{
+.zmbtn-success:active{
   color: #fff;
   background-color: #449d44;
   border-color: #398439;
 }
-.zm .btn-info{
+.zmbtn-info{
   color:#fff;
   background-color: #5bc0de;
   border-color:#46b8da;
 }
-.zm .btn-info:hover{
+.zmbtn-info:hover{
   color: #fff;
   background-color: #31b0d5;
   border-color: #269abc;
 }
-.zm .btn-info:active{
+.zmbtn-info:active{
   color:#fff;
   background-color: #31b0d5;
   border-color: #269abc;
 }
-.zm .btn-waring{
+.zmbtn-waring{
   color:#fff;
   background-color:#F5B401;
   border-color: #DEA300;
 }
-.zm .btn-waring:hover{
+.zmbtn-waring:hover{
   color: #fff;
   background-color: #ec971f;
   border-color: #d58512;
 }
-.zm .btn-waring:active{
+.zmbtn-waring:active{
   color:#fff;
   background-color: #ec971f;
   border-color: #d58512;
 }
-.zm .btn-danger{
+.zmbtn-danger{
   color:#fff;
   background-color: #D94436;
   border-color: #C72F1F;
 }
-.zm .btn-danger:hover{
+.zmbtn-danger:hover{
   color: #fff;
   background-color: #c9302c;
   border-color: #ac2925;
 }
-.zm .btn-danger:active{
+.zmbtn-danger:active{
   color: #fff;
   background-color: #c9302c;
   border-color: #ac2925;
 }
-.zm .btn-sm{
+.zmbtn-sm{
   padding: 5px 10px;
   font-size: 12px;
   line-height: 1.5;
   border-radius: 3px;
 }
-.zm .btn-xs{
+.zmbtn-xs{
   padding: 1px 5px;
   font-size: 12px;
   line-height: 1.5;
