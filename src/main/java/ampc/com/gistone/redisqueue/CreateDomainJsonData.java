@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -333,6 +334,7 @@ public class CreateDomainJsonData {
 	 * @author yanglei
 	 * @date 2017年6月12日 下午5:15:07
 	 */
+	@Transactional
 	public void updateDomainResult(String rpop) {
 		Message Domainmessage = null;
 		String disposeStatus = null;
