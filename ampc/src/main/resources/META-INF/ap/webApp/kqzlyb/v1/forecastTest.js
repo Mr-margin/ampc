@@ -647,6 +647,7 @@ $(".cloudui .verticalCon .searchT .upDown").hover(function(){
 })
 function showTitleFun() {
     $('#showTitle span').empty();
+    $('#showTitle span').css({"margin-right":"0px"});
     if (zhiCity.indexOf(changeMsg.pro) == -1) {
         if (changeMsg.station == 'avg') {
             $('#showTitle .proName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+proStation);
