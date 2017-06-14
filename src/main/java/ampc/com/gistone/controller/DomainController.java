@@ -75,21 +75,13 @@ public class DomainController {
 		JSONArray arr=new JSONArray();
 		//遍历查询到的Domain集合，并添加到返回的json中
 		for(TDomainMissionWithBLOBs td:tdlist){
-			JSONObject obj=new JSONObject();
-			//查看当前domain是否用来创建了任务
-			obj.put("employStatus", td.getEmployStatus());
-			obj.put("domainId", td.getDomainId());
-			obj.put("userId", td.getUserId());
-			obj.put("addTime", td.getAddTime().getTime());//创建时间
-			obj.put("createStatus", td.getCreateStatus().toString());//状态（用来区分当前还是历史）
-			obj.put("domainName", td.getDomainName());//domain名称
-			obj.put("domainDoc", td.getDomainDoc());//备注
+		
 			if(td.getDomainInfo()==null){
-				obj.put("domainInfo",new HashMap());	
+				td.setDomainInfo("{}");	
 			}else{
-			obj.put("domainInfo", td.getDomainInfo().replaceAll(" ", ""));
+				td.setDomainInfo(td.getDomainInfo().replaceAll(" ", ""));
 			}
-			arr.add(obj);
+			arr.add(td);
 			
 		}
 		return AmpcResult.ok(arr);
@@ -723,6 +715,47 @@ public class DomainController {
 		}catch(Exception e){
 			LogUtil.getLogger().error("deleteDomain 删除domain异常！",e);
 			return AmpcResult.build(1001, "删除domain异常！");
+		}
+	}
+	
+	/**
+	 * 查询是否重名
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/Domain/nameLike")	
+	public AmpcResult nameLike(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response ){
+		try{
+			ClientUtil.SetCharsetAndHeader(request, response);
+			//获取前端参数
+			Map<String,Object> data=(Map)requestDate.get("data");
+			//获取userId
+			if(!RegUtil.CheckParameter(data.get("userId"), null, null, false)){
+				LogUtil.getLogger().error("nameLike  userId为空!");
+				return AmpcResult.build(1003, "userId为空!");
+			}
+			Long userId=Long.valueOf(data.get("userId").toString());
+			if(!RegUtil.CheckParameter(data.get("domainName"), null, null, false)){
+				LogUtil.getLogger().error("updateRangeAndCode  domainName为空!");
+				return AmpcResult.build(1003, "domainName为空!");
+			}
+			String domainName=data.get("domainName").toString();
+			TDomainMissionWithBLOBs ts=new TDomainMissionWithBLOBs();
+			ts.setUserId(userId);
+			ts.setDomainName(domainName);
+			TDomainMissionWithBLOBs what=tDomainMissionMapper.selectbyname(ts);
+			if(what==null){
+			return AmpcResult.ok();
+				
+			}else{
+				return AmpcResult.ok("名称重复");
+				
+			}
+		}catch(Exception e){
+			LogUtil.getLogger().error("nameLike 查询重名异常！",e);
+			return AmpcResult.build(1001, "查询重名异常！");
 		}
 	}
 }
