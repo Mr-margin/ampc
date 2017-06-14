@@ -86,9 +86,10 @@
 } 
 .btn-blue {
     display: block;
-    padding: 6px 12px;
-    font-size: 14px;
+    padding: 0px 12px;
+    font-size: 12px;
     font-weight: 400;
+    height:20px;
     line-height: 1.42857143;
     text-align: center;
     white-space: nowrap;
@@ -110,8 +111,10 @@
 }
 .btn-red {
     display: block;
-    padding: 6px 12px;
-    font-size: 14px;
+    /*padding: 6px 12px;*/
+    width:54px;
+    height:20px;
+    font-size: 12px;
     font-weight: 400;
     line-height: 1.42857143;
     text-align: center;
@@ -134,9 +137,11 @@
 }
 .btn-yellow {
     display: block;
-    padding: 6px 12px;
-    font-size: 14px;
+    /*padding: 6px 12px;*/
+    font-size: 12px;
     font-weight: 400;
+    width:54px;
+    height:20px;
     line-height: 1.42857143;
     text-align: center;
     white-space: nowrap;
@@ -158,10 +163,12 @@
 }
 .btn-green {
     display: block;
-    padding: 6px 12px;
-    font-size: 14px;
+    /*padding: 6px 12px;*/
+    font-size: 12px;
     font-weight: 400;
     line-height: 1.42857143;
+    height:20px;
+    width:54px;
     text-align: center;
     white-space: nowrap;
     vertical-align: middle;
@@ -336,6 +343,6 @@ background: rgba(0,0,0,0.4);
 }
 
 .domain_box table button{
-    padding: 2px 12px !important;
+    /*padding: 2px 12px !important;*/
     margin-top: 5px;
 }

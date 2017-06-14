@@ -2,7 +2,7 @@
  * Created by shanhaichushi on 2017/5/21.
  */
 // 导航
-$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span href="#/yqd_v3" style="padding-left: 15px;padding-right: 15px;" >耦合清单</span><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatCoupQd()">新建</button><button class="qdEdit" onclick="editCoupQd()">编辑</button><button class="qdDelet" onclick="coupDelete()">删除</button></span>');
+$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><a href="#/yqd_v3" style="padding-left: 15px;padding-right: 15px;color:#333;text-decoration: none" >耦合清单</a><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatCoupQd()">新建</button><button class="qdEdit" onclick="editCoupQd()">编辑</button><button class="qdDelet" onclick="coupDelete()">删除</button></span>');
 
 var coupingQd,checkQgQd,localQd;
 $(".coupSet").layout();// 耦合设置面板
