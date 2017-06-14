@@ -20,6 +20,7 @@ function getInfo(){
 		domainData=res.data;
 		var _temp=domainData.slice(0,10);
 		$.each(_temp,function(key,value){
+			console.log(value);
 			findPull(value);
 		});
 		$('#pp').pagination({
@@ -49,12 +50,12 @@ function selectPage(){
 }
 
 function findPull(value){
-	var employStatus = value.employStatus
+	var disposeStatus = value.disposeStatus
 	var world = '';
-	if(employStatus == 1){
-		world = '已使用';
-	}else if(employStatus == 2){
-		world = '未使用'; 
+	if(disposeStatus == 1){
+		world = '待编辑';
+	}else if(disposeStatus == 2){
+		world = '处理中'; 
 	}
 	var dom = '';
 	dom += '<tr class="tr_'+value.domainId+'">';
@@ -117,18 +118,29 @@ function submitCreat(){
 	var domainName = $('.domain_name').val();
 	var domainDoc = $('.domain_doc').val();
 	var url = '/Domain/save_domain';
+	var url1 = '/Domain/nameLike';
 	if(domainName == ''){
 		swal("请填写名称");
 	}else if(domainDoc == ''){
 		swal("请填写备注");
 	}else{
-		ajaxPost(url,{
-			'userId':userId,
-			'domainName':domainName,
-			'domainDoc':domainDoc
-		}).success(function(){
-			$("#creat_domain").window('close');
-			swal("创建成功");
+		ajaxPost(url1,{
+			"domainName": domainName,
+ 			"userId":userId
+		}).success(function(res){
+			console.log(res);
+			if(res.data == '名称重复'){
+				swal("名称重复");
+			}else{
+				ajaxPost(url,{
+					'userId':userId,
+					'domainName':domainName,
+					'domainDoc':domainDoc
+				}).success(function(){
+					$("#creat_domain").window('close');
+					swal("创建成功");
+				});
+			}
 		});
 	}
 }
