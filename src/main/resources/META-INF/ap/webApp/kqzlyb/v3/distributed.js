@@ -46,8 +46,8 @@ var changeMsg = {
 
 /*不同时间分辨率下，不同的污染物*/
 var speciesArr = {
-    d: ['PM₂.₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NO₂', 'CO', 'SO₄²¯', 'NO₃¯', 'NH₄⁺', 'BC', 'OM', 'PMFINE'],
-    h: ['PM₂.₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄²¯', 'NO₃¯', 'NH₄⁺', 'BC', 'OM', 'PMFINE']
+    d: ['PM₂.₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NO₂', 'CO', 'SO₄²⁻', 'NO₃⁻', 'NH₄⁺', 'BC', 'OM', 'PMFINE'],
+    h: ['PM₂.₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄²⁻', 'NO₃⁻', 'NH₄⁺', 'BC', 'OM', 'PMFINE']
 };
 var mappingSpecies = {
     d: {
@@ -59,8 +59,8 @@ var mappingSpecies = {
         'SO₂': 'so2_daily',
         'NO₂': 'no2_daily',
         'CO': 'co_daily',
-        'SO₄²¯': 'PM25',
-        'NO₃¯': 'PM25',
+        'SO₄²⁻': 'PM25',
+        'NO₃⁻': 'PM25',
         'NH₄⁺': 'PM25',
         'BC': 'PM25',
         'OM': 'PM25',
@@ -73,8 +73,8 @@ var mappingSpecies = {
         'SO₂': 'so2_hourly',
         'NO₂': 'no2_hourly',
         'CO': 'co_hourly',
-        'SO₄²¯': 'PM25',
-        'NO₃¯': 'PM25',
+        'SO₄²⁻': 'PM25',
+        'NO₃⁻': 'PM25',
         'NH₄⁺': 'PM25',
         'BC': 'PM25',
         'OM': 'PM25',
@@ -90,8 +90,8 @@ var speciesObj = {
     'SO₂': 'SO2',
     'NO₂': 'NO2',
     'CO': 'CO',
-    'SO₄²¯': 'SO4',
-    'NO₃¯': 'NO3',
+    'SO₄²⁻': 'SO4',
+    'NO₃⁻': 'NO3',
     'NH₄⁺': 'NH4',
     'BC': 'BC',
     'OM': 'OM',
