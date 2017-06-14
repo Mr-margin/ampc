@@ -1940,7 +1940,16 @@ public class MissionAndScenarinoController {
 				String codestr="";
 				for(int x=1;x<=citylist.size();x++){
 					TEsNative tEsNative = tEsNativeMapper.selectByPrimaryKey(Long.valueOf(citylist.get(x-1)));
-					String s=tEsNative.getEsCodeRange();
+					if(tEsNative==null){
+						continue;
+					}
+					String s="";
+					if(null!=tEsNative.getEsCodeRange()&&tEsNative.getEsCodeRange()!=""){
+						s=tEsNative.getEsCodeRange();
+					}else{
+						continue;
+					}
+							
 						  if(x==citylist.size()){
 							  codestr=s;
 						  }else{
