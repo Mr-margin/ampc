@@ -79,37 +79,37 @@ public class AcceptMessageQueue implements Runnable{
 						String key = message.getType();
 						switch (key) {
 						case "model.start.result":
-							LogUtil.getLogger().info("start tasks"+new Date()+":"+rpop);
+							LogUtil.getLogger().info("start tasks-时间："+new Date()+"，内容:"+rpop);
 							messageLog.savesatrtModelMessagelog(rpop);
 							toDataTasksUtil.updateDB(rpop);
 							LogUtil.getLogger().info("end tasks"+new Date());
 							break;
 						case "model.continue.result":
-							LogUtil.getLogger().info("model.continue.result tasks"+new Date()+":"+rpop);
+							LogUtil.getLogger().info("model.continue.result tasks-时间："+new Date()+"，内容:"+rpop);
 							messageLog.savesatrtModelMessagelog(rpop);
 							toDataTasksUtil.updateDB(rpop);
-							LogUtil.getLogger().info("model.continue.result end tasks"+new Date());
+							LogUtil.getLogger().info("model.continue.result end tasks，"+new Date());
 							break;
 						case "ungrib.result":
-							LogUtil.getLogger().info("接受ungrib数据："+new Date()+":"+rpop);
+							LogUtil.getLogger().info("接受ungrib数据："+new Date()+"，内容:"+rpop);
 							messageLog.saveUngribMessagelog(rpop);
 							toDataUngribUtil.updateUngrib(rpop);
 							LogUtil.getLogger().info("ungrib处理完毕："+new Date());
 							break;
 						case "model.stop.result":
-							LogUtil.getLogger().info("停止模式处理开始："+new Date()+":"+rpop);
+							LogUtil.getLogger().info("停止模式处理开始："+new Date()+"，内容:"+rpop);
 							messageLog.savestopMessagelog(rpop);
 							toDataTasksUtil.stopModelresult(rpop);
 							LogUtil.getLogger().info("停止模式处理完毕："+new Date());
 							break;
 						case "model.stop.pause":
-							LogUtil.getLogger().info("暂停模式处理开始："+new Date()+":"+rpop);
+							LogUtil.getLogger().info("暂停模式处理开始："+new Date()+"，内容:"+rpop);
 							messageLog.savepauseMessagelog(rpop);
 							toDataTasksUtil.pauseModelresult(rpop);
 							LogUtil.getLogger().info("暂停模式处理完毕："+new Date());
 							break;
 						case "domain.create.result":
-							LogUtil.getLogger().info("domain-result处理开始："+new Date()+":"+rpop);
+							LogUtil.getLogger().info("domain-result处理开始："+new Date()+"，内容:"+rpop);
 							messageLog.saveDomainlog(rpop);
 							createDomainJsonData.updateDomainResult(rpop);
 							LogUtil.getLogger().info("创建domain处理完毕："+new Date());
