@@ -491,6 +491,7 @@ function updata() {
 
 function showTitleFun() {
     $('#showTitle span').empty();
+    $('#showTitle span').css({"margin-right":"0px"});
     $('#showTitle .qjName').html("<span class='titleTab'><i class='br-calendar'></i>"+"&nbsp;情景：</span>"+changeMsg.qjName).css({"margin-right":"40px"});
     var timeTwoFor=moment(changeMsg.sTimeD+"-"+changeMsg.eTime,"YYYYMMDD-YYYYMMDD").format("YYYY年MM月DD日-YYYY年MM月DD日");
     $('#showTitle .dateStartName').html("<span class='titleTab'><i class='br-calendar'></i>"+"&nbsp;开始时间：</span>"+changeMsg.sTimeD+"至"+changeMsg.eTime).css({"margin-right":"40px"});

@@ -1396,6 +1396,8 @@ $(".cloudui .verticalCon .ibox-content .searchT .upDown").hover(function(){
 })
 //增加标题
 function showTitleFun() {
+    $('#showTitle span').empty();
+    $('#showTitle span').css({"margin-right":"0px"});
     var timeStartFor=moment(changeMsg.sTimeD,"YYYYMMDD").format("YYYY-MM-DD");
     var stateFor=moment(changeMsg.sTimeD+changeMsg.sTimeH,"YYYYMMDDH").format("YYYY-MM-DD HH");
     var timeTwoFor=moment(changeMsg.sTimeD+"-"+changeMsg.eTime,"YYYYMMDD-YYYYMMDD").format("YYYY-MM-DD-YYYY-MM-DD");

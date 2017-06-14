@@ -1216,6 +1216,7 @@ $(".cloudui .upDown").hover(function () {
 //标题
 function showTitleFun() {
     $('#showTitle span').empty();
+    $('#showTitle span').css({"margin-right":"0px"});
     $('#showTitle .compName').html("<span class='titleTab'><i class='en-tag'></i>"+"&nbsp;比较：</span>"+(changeType=="1"?"绝对量比较":"相对变化")).css({"margin-right":"40px"});
     $('#showTitle .dataName').html("<span class='titleTab'><i class='br-calendar'></i>"+"&nbsp;日期：</span>"+changeMsg.startD+"至"+changeMsg.endD).css({"margin-right":"40px"});
     if (zhiCity.indexOf(changeMsg.pro) == -1) {
