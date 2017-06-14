@@ -1099,6 +1099,7 @@ function updata(t) {
 
 function showTitleFun() {
     $('#showTitle span').empty();
+    $('#showTitle span').css({"margin-right":"0px"});
     var timeStartFor=moment(changeMsg.sTimeD,"YYYY-MM-DD").format("YYYY-MM-DD");
     var stateFor=moment(changeMsg.sTimeD+changeMsg.sTimeH,"YYYY-MM-DDH").format("YYYY-MM-DD HH");
     var timeTwoFor=moment(changeMsg.sTimeD).format("YYYY-MM-DD")+"至"+moment(changeMsg.eTime).format("YYYY-MM-DD");
