@@ -6,6 +6,8 @@ $(function () {
 });
 /*存储全局改变量*/
 var dps_codeStation, dps_station, dps_Date;
+var czData;//用于存储echarts图表数据
+var allCode = {};//用于存储所有的站点信息
 var ooo = [['-', 0], ['-', 50], ['-', 100], ['-', 200], ['-', 300], ['-', 400], ['-', 500], ['-', 700], ['-', 1000], ['-', 1500], ['-', 2000], ['-', 3000]];
 var heightArr = [0, 50, 100, 200, 300, 400, 500, 700, 1000, 1500, 2000, 3000];
 var changeMsg = {
@@ -22,7 +24,7 @@ var changeMsg = {
     scenarinoName: [],//选择的情景名称数组
     nowT:''
 };
-var zhiCity = ['11', '12', '31', '50'];
+var zhiCity = ['11', '12', '31', '50'];//用于区分直辖市
 $('.day').css('display', 'block');
 $('.hour').css('display', 'none');
 var speciesArr = {
@@ -111,23 +113,18 @@ var optionAll = {
     animation: false
 };
 
-initialize();
-
-
 /*初始化页面数据,在缓存中有数据的情况下*/
 function initialize() {
-
     setStation();
     setTime();
     $.when(dps_Date, dps_station, dps_codeStation).then(function () {
         updata();
     });
-
 }
 
-var allCode = {};//用于存储所有的站点信息
 /*设置站点*/
 function setStation(id) {
+    //清空省市县下拉框内容
     $('#proStation').empty();
     $('#cityStation').empty();
     $('#station').empty();
@@ -137,7 +134,7 @@ function setStation(id) {
         //missionId: id
     }).success(function (res) {
         if (res.status == 0) {
-            allCode = res.data;
+            allCode = res.data; //allCode用于存储所有省市的行政区划代码
             for (var pro in allCode) {
                 $('#proStation').append($('<option value="' + pro + '">' + allCode[pro].name + '</option>'))
             }
@@ -146,11 +143,7 @@ function setStation(id) {
                 $('#cityStation').append($('<option value="' + city + '">' + cityStation[city] + '</option>'))
             }
 
-            //var station = cityStation[$('#cityStation').val()].station;
-            //for (var s in station) {
-            //  $('#station').append($('<option value="' + station[s].code + '">' + station[s].name + '</option>'))
-            //}
-
+            //向changeMsg中赋默认值
             changeMsg.pro = $('#proStation').val();
             changeMsg.proName = allCode[changeMsg.pro].name;
             changeMsg.city = $('#cityStation').val();
@@ -162,7 +155,11 @@ function setStation(id) {
         }
     })
 }
-/*查询站点*/
+
+/**
+ * 查询站点
+ * @param code 市行政区划代码
+ */
 function findStation(code) {
     dps_station = ajaxPost('/Site/find_Site', {
         userId: userId,
@@ -173,6 +170,7 @@ function findStation(code) {
         for (var i = 0; i < res.data.length; i++) {
             $('#station').append($('<option value="' + res.data[i].stationId + '">' + res.data[i].stationName + '</option>'))
         }
+        /*赋默认值*/
         changeMsg.station = $('#station').val();
         changeMsg.stationName = '平均';
     })
@@ -187,88 +185,24 @@ function setTime() {
     }).success(function (res) {
 
         if (res.status == 0) {
-          /*这里要初始化时间*/
-
+            /*这里赋初始化时间*/
             changeMsg.minDate = res.data.mintime;
             changeMsg.maxDate = res.data.maxtime;
             changeMsg.nowT = moment(res.data.nowTime).format('HH');
 
+            /*如果最大时间在当前时间之后，使用当前时间，否则使用最大时间*/
             if(!(moment(res.data.maxtime).isBefore(moment()))){
                 changeMsg.startD = moment().format('YYYY-MM-DD');
             }else{
                 changeMsg.startD = moment(res.data.maxtime).format('YYYY-MM-DD');
             }
-            // if (!(moment(res.data.maxtime).add(-7, 'd').isBefore(moment(res.data.mintime)))) {
-            //     changeMsg.startD = moment(res.data.maxtime).add(-7, 'd').format('YYYY-MM-DD')
-            // } else {
-            //     changeMsg.startD = moment(res.data.mintime).format('YYYY-MM-DD')
-            // }
             changeMsg.endD = changeMsg.startD;
             changeMsg.time = moment(changeMsg.startD).format('YYYY-MM-DD HH');
 
-
-          // /*测试使用*/
-          //   changeMsg.minDate = '2017-04-27';
-          //   changeMsg.maxDate = '2017-05-03';
-          //   changeMsg.startD = '2017-04-27';
-          //   changeMsg.endD = '2017-04-27';
-          //   changeMsg.time = moment(changeMsg.startD).format('YYYY-MM-DD HH');
-          // /*测试使用 end*/
             initCZDate(changeMsg.minDate, changeMsg.maxDate, changeMsg.startD, changeMsg.endD);
         }
 
     })
-}
-
-
-function initEcharts() {
-    if (changeMsg.rms == 'day') {
-        $('.hour').css('display', 'none');
-        $('.day').css('display', 'block');
-    } else {
-        $('.day').css('display', 'none');
-        $('.hour').css('display', 'block');
-    }
-    var data = czData;
-    var species = speciesArr[changeMsg.rms];
-    for (var i = 0; i < species.length; i++) {
-        echarts.dispose(document.getElementById(species[i]));
-        var es = echarts.init(document.getElementById(species[i]));
-        var option = $.extend(true, {}, optionAll);
-
-        //option.legend.data = ['模拟数据'];
-        if (species[i] != 'CO') {
-
-            switch (species[i]) {
-                case 'SO₄':
-                    option.title.text = species[i] + "²¯ (μg/m³)";
-                    break;
-                case 'NO₃':
-                    option.title.text = species[i] + "¯ (μg/m³)";
-                    break;
-                case 'NH₄':
-                    option.title.text = species[i] + "⁺ (μg/m³)";
-                    break;
-                default:
-                    option.title.text = species[i] + " (μg/m³)";
-            }
-
-        } else {
-            //option.xAxis.name = 'mg/m³';
-            option.title.text = species[i] + '（mg/m³）';
-        }
-        option.series = [];
-
-
-        option.series.push({
-            name: '模拟数据', //可变，存储情景名称
-            type: 'line',
-            smooth: true,
-            symbolSize: 5,
-            data: data[speciesObj[species[i]]].slice(0, $('#height').val())  //可变，存储情景数据
-        })
-        es.setOption(option);
-    }
 }
 
 /**
@@ -304,7 +238,6 @@ function initCZDate(s, e, start, end) {
         "endDate": changeMsg.rms == 'day'?end:(moment(end).format('YYYY-MM-DD') + ' '+changeMsg.nowT),
         "opens": "left"
     }, function (start, end, label) {
-
         changeMsg.time = start.format('YYYY-MM-DD HH');
         updata(true);
     })
@@ -327,78 +260,6 @@ function showDate(type) {
     d.toggle();
 }
 
-
-$('input[name=rms]').on('change', function (e) { //时间分辨率选择
-    var rms = $(e.target).val();
-    changeMsg.rms = rms;
-    console.log(rms);
-    $('#species').empty();
-    for (var i = 0; i < speciesArr[rms].length; i++) {
-        $('#species').append($('<option>' + speciesArr[rms][i] + '</option>'))
-    }
-
-    initCZDate(changeMsg.minDate, changeMsg.maxDate, changeMsg.startD, changeMsg.endD);
-
-    updata();
-});
-
-/*站点改变事件*/
-$('#proStation').on('change', function (e) {
-    var pro = $(e.target).val();
-    changeMsg.pro = pro;
-    changeMsg.proName = allCode[pro].name;
-    $('#cityStation').empty();
-    var cityStation = allCode[pro].city;
-    for (var city in cityStation) {
-        $('#cityStation').append($('<option value="' + city + '">' + cityStation[city] + '</option>'))
-    }
-    changeMsg.city = $('#cityStation').val();
-    changeMsg.cityName = allCode[changeMsg.pro].city[changeMsg.city];
-    findStation(changeMsg.city);
-    updata();
-});
-
-$('#cityStation').on('change', function (e) {
-    var city = $(e.target).val();
-    changeMsg.city = city;
-    changeMsg.cityName = allCode[changeMsg.pro].city[city];
-    findStation(changeMsg.city);
-
-    updata();
-});
-
-$('#station').on('change', function (e) {
-    var station = $(e.target).val();
-    changeMsg.station = station;
-    changeMsg.stationName = $(e.target)[0].selectedOptions[0].innerHTML;
-    updata();
-});
-
-$('#sTime-d').on('change', function (e) {
-    var time_d = $(e.target).val();
-    var time_h = $('#sTime-h').val('00').val();
-
-    changeMsg.time = time_d + ' ' + time_h;
-    updata();
-});
-
-$('#sTime-h').on('change', function (e) {
-    var time_h = $(e.target).val();
-    var time_d = $('#sTime-d').val();
-
-    changeMsg.time = time_d + ' ' + time_h;
-    updata();
-});
-
-$('#height').on('change', function (e) {
-    var height = $(e.target).val();
-    changeMsg.height = height;
-    showTitleFun();
-    initEcharts();
-    //updata();
-});
-
-var czData;
 /*设置echarts图表*/
 function updata() {
     $.when(dps_station).then(function () {
@@ -411,6 +272,7 @@ function updata() {
             datetype: changeMsg.rms
         }).success(function (res) {
             if ((res.status == 0)) {
+                /*判断返回是否有数据，在无数据的情况下默认赋值"-"*/
                 if($.isEmptyObject(res.data)||!res.data){
                     res.data = {};
                     for (var y in speciesObj) {
@@ -424,6 +286,7 @@ function updata() {
                     });
                 }else{
                     for (var y in speciesObj) {
+                        /*循环查看数据是否存在空数组，有则赋默认值"-"*/
                         if ((!res.data[speciesObj[y]]) || (res.data[speciesObj[y]].length == 0)) {
                             res.data[speciesObj[y]] = ooo;
                         }
@@ -432,11 +295,11 @@ function updata() {
                 var obj = {};
                 $.extend(obj, res.data);
                 czData = obj;
-              /*修改显示头 */
+                /*修改显示头 */
 
                 showTitleFun();
 
-              /*修改显示头 end*/
+                /*修改显示头 end*/
                 initEcharts();
             } else {
                 swal({
@@ -446,6 +309,7 @@ function updata() {
                     showConfirmButton: false
                 });
                 res.data = {};
+                /*在接口错误返回的情况下默认赋值"-"，不会导致打开页面空白*/
                 for (var y in speciesObj) {
                     res.data[speciesObj[y]] = ooo;
                 }
@@ -458,7 +322,6 @@ function updata() {
 
                 /*修改显示头 end*/
                 initEcharts();
-                console.log(res.msg)
             }
         }).error( function () {
             swal({
@@ -470,6 +333,57 @@ function updata() {
             console.log('接口故障！！！')
         })
     });
+}
+
+function initEcharts() {
+    if (changeMsg.rms == 'day') {
+        $('.hour').css('display', 'none');
+        $('.day').css('display', 'block');
+    } else {
+        $('.day').css('display', 'none');
+        $('.hour').css('display', 'block');
+    }
+    var data = czData;
+    var species = speciesArr[changeMsg.rms];
+    /*循环所有污染物，生成图表*/
+    for (var i = 0; i < species.length; i++) {
+        echarts.dispose(document.getElementById(species[i]));
+        var es = echarts.init(document.getElementById(species[i]));
+        var option = $.extend(true, {}, optionAll);
+
+        /*判断不同污染物用的不同名称及角标*/
+        if (species[i] != 'CO') {
+
+            switch (species[i]) {
+                case 'SO₄':
+                    option.title.text = species[i] + "²¯ (μg/m³)";
+                    break;
+                case 'NO₃':
+                    option.title.text = species[i] + "¯ (μg/m³)";
+                    break;
+                case 'NH₄':
+                    option.title.text = species[i] + "⁺ (μg/m³)";
+                    break;
+                default:
+                    option.title.text = species[i] + " (μg/m³)";
+            }
+
+        } else {
+            //option.xAxis.name = 'mg/m³';
+            option.title.text = species[i] + '（mg/m³）';
+        }
+        option.series = [];
+
+
+        option.series.push({
+            name: '模拟数据', //可变，存储情景名称
+            type: 'line',
+            smooth: true,
+            symbolSize: 5,
+            data: data[speciesObj[species[i]]].slice(0, $('#height').val())  //可变，存储情景数据
+        })
+        es.setOption(option);
+    }
 }
 
 function showTitleFun() {
@@ -543,4 +457,83 @@ $(".cloudui .verticalCon .ibox-content .searchT .upDown").hover(function(){
 })
 
 
+/**
+ * 所有改变事件处理
+ */
+/*时间分辨率切换*/
+$('input[name=rms]').on('change', function (e) { //时间分辨率选择
+    var rms = $(e.target).val();
+    changeMsg.rms = rms;
+    $('#species').empty();
+    /*不同时间分辨率下使用不同污染物组*/
+    for (var i = 0; i < speciesArr[rms].length; i++) {
+        $('#species').append($('<option>' + speciesArr[rms][i] + '</option>'))
+    }
 
+    /*时间分辨率改变，重新加载时间插件*/
+    initCZDate(changeMsg.minDate, changeMsg.maxDate, changeMsg.startD, changeMsg.endD);
+
+    updata();
+});
+
+/*站点改变事件——省*/
+$('#proStation').on('change', function (e) {
+    var pro = $(e.target).val();
+    changeMsg.pro = pro;
+    changeMsg.proName = allCode[pro].name;
+    $('#cityStation').empty();
+    var cityStation = allCode[pro].city;
+    for (var city in cityStation) {
+        $('#cityStation').append($('<option value="' + city + '">' + cityStation[city] + '</option>'))
+    }
+    changeMsg.city = $('#cityStation').val();
+    changeMsg.cityName = allCode[changeMsg.pro].city[changeMsg.city];
+    findStation(changeMsg.city);
+    updata();
+});
+
+/*站点改变事件——市*/
+$('#cityStation').on('change', function (e) {
+    var city = $(e.target).val();
+    changeMsg.city = city;
+    changeMsg.cityName = allCode[changeMsg.pro].city[city];
+    findStation(changeMsg.city);
+
+    updata();
+});
+
+/*站点改变事件——站点*/
+$('#station').on('change', function (e) {
+    var station = $(e.target).val();
+    changeMsg.station = station;
+    changeMsg.stationName = $(e.target)[0].selectedOptions[0].innerHTML;
+    updata();
+});
+//
+// $('#sTime-d').on('change', function (e) {
+//     var time_d = $(e.target).val();
+//     var time_h = $('#sTime-h').val('00').val();
+//
+//     changeMsg.time = time_d + ' ' + time_h;
+//     updata();
+// });
+//
+// $('#sTime-h').on('change', function (e) {
+//     var time_h = $(e.target).val();
+//     var time_d = $('#sTime-d').val();
+//
+//     changeMsg.time = time_d + ' ' + time_h;
+//     updata();
+// });
+
+/*高度改变事件*/
+$('#height').on('change', function (e) {
+    var height = $(e.target).val();
+    changeMsg.height = height;
+    showTitleFun();
+    initEcharts();
+    //updata();
+});
+
+/*初始化方法执行*/
+initialize();
