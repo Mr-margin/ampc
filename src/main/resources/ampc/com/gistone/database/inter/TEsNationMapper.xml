@@ -174,8 +174,8 @@
 				"AMPC"."T_ES_NATION" T
 			WHERE
 				USER_ID = #{userId,jdbcType=DECIMAL}
-				<if test="queryName != null" >
-			        AND (ES_NATION_NAME LIKE #{queryName,jdbcType=OTHER} OR ES_NATION_YEAR LIKE #{queryName,jdbcType=DECIMAL})
+				<if test="queryName!=null and queryName!=''" >
+			        AND (ES_NATION_NAME LIKE '%${queryName}%' OR ES_NATION_YEAR LIKE '%${queryName}%')
 			    </if>
 				 order by ES_NATION_ID DESC
 		)
@@ -224,8 +224,8 @@
 	"COUNT" (ROWNUM)
 	FROM
 	"AMPC"."T_ES_NATION" T  WHERE USER_ID=#{userId,jdbcType=DECIMAL}
-	<if test="queryName != null" >
-        AND (ES_NATION_NAME LIKE #{queryName,jdbcType=OTHER} OR ES_NATION_YEAR LIKE #{queryName,jdbcType=DECIMAL})
+	<if test="queryName!=null and queryName!=''" >
+        AND ES_NATION_NAME LIKE '%${queryName}%' OR ES_NATION_YEAR LIKE '%${queryName}%'
     </if>
   </select>
   <!-- 校验全国清单名称 -->
