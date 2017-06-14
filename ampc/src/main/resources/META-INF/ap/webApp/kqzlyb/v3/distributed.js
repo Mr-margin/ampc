@@ -506,8 +506,10 @@ function showDate(type) {
  */
 function updata() {
 	zmblockUI1("#map_in", "start");
-    if($('.showImg').css('display') == 'block'){
-        getVerticalImg(changeMsg.xa,changeMsg.xi,changeMsg.ya,changeMsg.yi);
+	if(oldMsg.YBDate != changeMsg.YBDate || oldMsg.YBHour != changeMsg.YBHour || oldMsg.domain != changeMsg.domain || oldMsg.rms != changeMsg.rms || oldMsg.species[0] != changeMsg.species[0] || oldMsg.xa != changeMsg.xa || oldMsg.ya != changeMsg.ya){
+        if($('.showImg').css('display') == 'block'){
+            getVerticalImg(changeMsg.xa,changeMsg.xi,changeMsg.ya,changeMsg.yi);
+        }
     }
     var parameter = {
         calcType: 'show',//请求类型 show：当前情景，还有相对变化绝对变化，此处只需要show
@@ -566,39 +568,39 @@ function load_gis(p) {
     var v1 = new Date().getTime();
     
     ajaxPost('/extract/png', par).success(function (data) {
-    	// console.log(JSON.stringify(data));
-    	
-        if(data.status == 0){
-//			app.mapimagelayer.removeAllImages();//删除全部的图片图层
-//			
-//			console.log(data.data.imagePath);
-			
-			var imageURL = pngUrl + "/ampc/"+data.data.imagePath+"?t="+Math.random();
-			// console.log(imageURL);
-			
-			var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
-            var mapImage = new dong.MapImage({
-                'extent': initE,
-                'href': imageURL
-            });
-            
-            app.mapimagelayer.addImage(mapImage);//将新的图片图层添加到地图
-            
-            $('#colorBar').html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
-            zmblockUI1("#map_in", "end");//打开锁屏控制
-            // console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
-            judgmentObj.push('true')
-            judgment()
-	
-		}else{
-			zmblockUI1("#map_in", "end");//打开锁屏控制
-		}
+     // console.log(JSON.stringify(data));
+
+     if(data.status == 0){
+     //			app.mapimagelayer.removeAllImages();//删除全部的图片图层
+     //
+     //			console.log(data.data.imagePath);
+
+     var imageURL = pngUrl + "/ampc/"+data.data.imagePath+"?t="+Math.random();
+     // console.log(imageURL);
+
+     var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
+     var mapImage = new dong.MapImage({
+     'extent': initE,
+     'href': imageURL
+     });
+
+     app.mapimagelayer.addImage(mapImage);//将新的图片图层添加到地图
+
+     $('#colorBar').html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
+     zmblockUI1("#map_in", "end");//打开锁屏控制
+     // console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
+     judgmentObj.push('true')
+     judgment()
+
+     }else{
+     zmblockUI1("#map_in", "end");//打开锁屏控制
+     }
 
 
-    }).error(function (res) {
-        zmblockUI1("#map_in", "end");
-        swal('抽数，内部错误', '', 'error');
-    });
+     }).error(function (res) {
+     zmblockUI1("#map_in", "end");
+     swal('抽数，内部错误', '', 'error');
+     });
 
 /*    ajaxPost_w('http://166.111.42.85:8300/ampc/extract/png', {token:'',data:par}).success(function (data) {
         // console.log(JSON.stringify(data));
@@ -890,6 +892,7 @@ function showTitleFun() {
     }
 }
 
+var oldMsg = {};//用于确定变量是否被改变
 /**
  * 获取垂直剖面图片地址
  */
@@ -931,14 +934,24 @@ function getVerticalImg(xa,xi,ya,yi) {
         par.hour = changeMsg.YBHour;
     }
      // $('.showImg').css('display','block');
-/*    ajaxPost_w('http://166.111.42.85:8300/ampc'+url,{token:'',data:par}).success(function (res) {
+
+    if($('.showImg').css('display') == 'none'){
         $('.showImg').css('display','block');
+        $('.showImg').css('width','30%');
+        $('.showImg img').attr('src','img/Loading.gif');
+    }else{
+        $('.showImg img').attr('src','img/Loading.gif');
+    }
+
+/*    ajaxPost_w('http://166.111.42.85:8300/ampc'+url,{token:'',data:par}).success(function (res) {
+        oldMsg = $.extend(true,{},changeMsg);
         $('.showImg img').attr('src','http://166.111.42.85:8300/ampc/verticalPath/'+res.data);
         console.log(res);
     })*/
+
    ajaxPost(url,par).success(function (res) {
-       $('.showImg').css('display','block');
-       $('.showImg').css('width','30%');
+       // $('.showImg').css('display','block');
+       // $('.showImg').css('width','30%');
        $('.showImg img').attr('src','verticalPath/'+res.data);
    })
 
