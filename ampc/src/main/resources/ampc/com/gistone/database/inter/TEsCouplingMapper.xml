@@ -21,7 +21,7 @@
     <result column="ES_COUPLING_NATIVETP_ID" property="esCouplingNativetpId" jdbcType="DECIMAL" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="ampc.com.gistone.database.model.TEsCoupling" extends="BaseResultMap" >
-    <result column="ES_COUPLING_MEICCITYCONFIG " property="esCouplingMeiccityconfig" jdbcType="CLOB" />
+    <result column="ES_COUPLING_MEICCITYCONFIG" property="esCouplingMeiccityconfig" jdbcType="CLOB" />
   </resultMap>
   <sql id="Base_Column_List" >
     ES_COUPLING_ID, ES_COUPLING_NAME, ES_COUPLING_DESC, ES_COUPLING_YEAR, ES_COUPLING_NATION_ID, 
@@ -30,7 +30,7 @@
     ES_COUPLING_NATIVETP_ID
   </sql>
   <sql id="Blob_Column_List" >
-    "ES_COUPLING_MEICCITYCONFIG "
+    "ES_COUPLING_MEICCITYCONFIG"
   </sql>
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
@@ -50,7 +50,7 @@
       ES_COUPING_RELATION_ID, ADD_TIME, UPDATE_TIME, 
       USER_ID, IS_EFFECTIVE, DELETE_TIME, 
       HISTORY_COUPLING, ES_COUPLING_CITY, ES_COUPLING_STATUS, 
-      ES_VERSION, ES_COUPLING_NATIVETP_ID, "ES_COUPLING_MEICCITYCONFIG "
+      ES_VERSION, ES_COUPLING_NATIVETP_ID, "ES_COUPLING_MEICCITYCONFIG"
       )
     values (#{esCouplingId,jdbcType=DECIMAL}, #{esCouplingName,jdbcType=OTHER}, #{esCouplingDesc,jdbcType=OTHER}, 
       #{esCouplingYear,jdbcType=DECIMAL}, #{esCouplingNationId,jdbcType=DECIMAL}, #{esCouplingNativeId,jdbcType=OTHER}, 
@@ -115,7 +115,7 @@
         ES_COUPLING_NATIVETP_ID,
       </if>
       <if test="esCouplingMeiccityconfig != null" >
-        "ES_COUPLING_MEICCITYCONFIG ",
+        "ES_COUPLING_MEICCITYCONFIG",
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -227,7 +227,7 @@
         ES_COUPLING_NATIVETP_ID = #{esCouplingNativetpId,jdbcType=DECIMAL},
       </if>
       <if test="esCouplingMeiccityconfig != null" >
-        "ES_COUPLING_MEICCITYCONFIG " = #{esCouplingMeiccityconfig,jdbcType=CLOB},
+        "ES_COUPLING_MEICCITYCONFIG" = #{esCouplingMeiccityconfig,jdbcType=CLOB},
       </if>
     </set>
     where ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL}
@@ -250,7 +250,7 @@
       ES_COUPLING_STATUS = #{esCouplingStatus,jdbcType=VARCHAR},
       ES_VERSION = #{esVersion,jdbcType=VARCHAR},
       ES_COUPLING_NATIVETP_ID = #{esCouplingNativetpId,jdbcType=DECIMAL},
-      "ES_COUPLING_MEICCITYCONFIG " = #{esCouplingMeiccityconfig,jdbcType=CLOB}
+      "ES_COUPLING_MEICCITYCONFIG" = #{esCouplingMeiccityconfig,jdbcType=CLOB}
     where ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL}
   </update>
   <update id="updateByPrimaryKey" parameterType="ampc.com.gistone.database.model.TEsCoupling" >
@@ -412,7 +412,7 @@
   </resultMap>
   
   <resultMap id="ResultMapWithBLOBsAll" type="hashMap" extends="selectCouplingMap" >
-    <result column="ES_COUPLING_MEICCITYCONFIG " property="esCouplingMeiccityconfig" jdbcType="CLOB" />
+    <result column="ES_COUPLING_MEICCITYCONFIG" property="esCouplingMeiccityconfig" jdbcType="CLOB" />
   </resultMap>
   
   <select id="selectCouplingByPrimaryKey" resultMap="selectCouplingMap" parameterType="java.lang.Long" >
