@@ -242,7 +242,7 @@
 				"AMPC"."T_ES_NATIVE" T
 			WHERE
 				USER_ID = #{userId,jdbcType=DECIMAL} AND
-				ES_NATIVE_TP_ID = #{nativeTpId,jdbcType=DECIMAL}
+				ES_NATIVE_TP_ID = #{nativeTpId,jdbcType=DECIMAL} AND IS_VERIFY = 1
 				 order by ES_NATIVE_ID DESC
 		)
 	WHERE
@@ -255,7 +255,7 @@
 	"COUNT" (ROWNUM)
 	FROM
 	"AMPC"."T_ES_NATIVE" T  WHERE USER_ID=#{userId,jdbcType=DECIMAL} AND 
-	ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL}
+	ES_NATIVE_TP_ID = #{esNativeTpId,jdbcType=DECIMAL} AND IS_VERIFY = 1
   </select>
   <!-- 校验本地清单名称 -->
   <select id="verifyNativeName"  parameterType="ampc.com.gistone.database.model.TEsNative" resultType="int">

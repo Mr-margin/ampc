@@ -1581,7 +1581,6 @@ public class NativeAndNationController {
 			//查询本地清单模板前添加参数
 			TEsNativeTp tEsNativeTp = new TEsNativeTp();
 			tEsNativeTp.setUserId(userId);
-			
 			//查询本地清单模板
 			List<Map> listTp=tEsNativeTpMapper.selecttesNativeTp(tEsNativeTp);
 			
