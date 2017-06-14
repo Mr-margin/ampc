@@ -25,4 +25,6 @@ public interface TDomainMissionMapper {
     TDomainMissionWithBLOBs selectbynameanddoc(TDomainMissionWithBLOBs record);
     int updateByValid(Long domainId);
     int updateByValidtwo(Long userId);
+    TDomainMissionWithBLOBs selectbyname(TDomainMissionWithBLOBs record);
+    
 }
