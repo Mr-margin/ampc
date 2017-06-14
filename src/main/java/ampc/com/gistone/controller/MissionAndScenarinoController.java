@@ -3,6 +3,7 @@ package ampc.com.gistone.controller;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TDomainMissionMapper;
+import ampc.com.gistone.database.inter.TEsCouplingMapper;
+import ampc.com.gistone.database.inter.TEsNativeMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TPlanMapper;
 import ampc.com.gistone.database.inter.TPlanMeasureMapper;
@@ -35,6 +38,9 @@ import ampc.com.gistone.database.inter.TTimeMapper;
 import ampc.com.gistone.database.inter.TUserMapper;
 import ampc.com.gistone.database.inter.TUserSettingMapper;
 import ampc.com.gistone.database.model.TDomainMission;
+import ampc.com.gistone.database.model.TDomainMissionWithBLOBs;
+import ampc.com.gistone.database.model.TEsCoupling;
+import ampc.com.gistone.database.model.TEsNative;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TPlan;
 import ampc.com.gistone.database.model.TScenarinoAreaWithBLOBs;
@@ -97,6 +103,12 @@ public class MissionAndScenarinoController {
 	
 	@Autowired
 	private TDomainMissionMapper tDomainMissionMapper;
+	
+	@Autowired
+	private TEsCouplingMapper tEsCouplingMapper;
+	
+	@Autowired
+	private TEsNativeMapper tEsNativeMapper;
 	/**
 	 * 任务查询方法
 	 * @param request 请求
@@ -239,22 +251,20 @@ public class MissionAndScenarinoController {
 			int result=this.tMissionDetailMapper.insertSelective(mission);
 			//判断添加结果
 			if(result>0){
-				//判断添加类型
-//				if(createType==2){
-//					/**
-//					 * TODO 更改基准情景的执行状态
-//					 */
-//					
-//					
-//					
-//					return AmpcResult.ok(result);
-//				}else{
-					//只创建任务
+				TDomainMissionWithBLOBs tDomainMission=new TDomainMissionWithBLOBs();
+				tDomainMission.setEmployStatus("1");
+				tDomainMission.setDomainId(Long.parseLong(data.get("missionDomainId").toString()));
+				int a = tDomainMissionMapper.updateByPrimaryKeySelective(tDomainMission);
+				if(a>0){
 					return AmpcResult.ok(result);
-				//}
+				}else{
+					LogUtil.getLogger().info("save_mission domain状态修改失败");
+					return AmpcResult.build(1000, "domain状态修改失败",null);
+				}
+	
 			}
 			//添加失败
-			LogUtil.getLogger().info("save_mission 任务创建成功");
+			LogUtil.getLogger().info("save_mission 保存数据失败");
 			return AmpcResult.build(1000, "保存数据失败",null);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("save_mission 任务创建方法异常",e);
@@ -1924,6 +1934,22 @@ public class MissionAndScenarinoController {
 			List<Map> list = this.tMissionDetailMapper.selectAllOrByQueryName(map);
 			//循环结果集合
 			for(Map ss:list){
+				TEsCoupling selectByPrimaryKey = tEsCouplingMapper.selectByPrimaryKey(Long.valueOf(ss.get("esCouplingId").toString()));
+				String NativeId=selectByPrimaryKey.getEsCouplingNativeId().toString();
+				List<String> citylist=Arrays.asList(NativeId.split(","));
+				String codestr="";
+				for(int x=1;x<=citylist.size();x++){
+					TEsNative tEsNative = tEsNativeMapper.selectByPrimaryKey(Long.valueOf(citylist.get(x-1)));
+					String s=tEsNative.getEsCodeRange();
+						  if(x==citylist.size()){
+							  codestr=s;
+						  }else{
+							  codestr=s+",";
+						  }
+					  
+					
+				}
+				ss.put("esCodeRange", codestr);
 				//获取到范围ID
 				Long missionDomainId=Long.valueOf(ss.get("missionDomainId").toString());
 				//获取任务ID
