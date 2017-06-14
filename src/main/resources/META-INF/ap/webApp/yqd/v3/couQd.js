@@ -407,7 +407,7 @@ function nextCoup(){//点击下一步按钮
         //获取所有选择的本地清单
         localQd=$("#localTable").datagrid("getSelections");
         for(var i=0;i<localQd.length;i++){
-            localQdId.push(JSON.stringify(localQd[i].esNativeId));
+            localQdId.push(localQd[i].esNativeId);
         }
         if(cityData.length>0){
             cityData=[]
@@ -429,7 +429,7 @@ function nextCoup(){//点击下一步按钮
             $(".coupSetCon").eq(1).hide();
             $(".coupSetCon").eq(2).show();
             //通过选择全国清单个本地清单的ID  获取耦合的城市和行业信息
-            ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"findCityAndIndustryById","nationId":checkQgQd.esNationId,"nativesId":localQdId,"nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId}).success(function (res) {
+            ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"findCityAndIndustryById","nationId":checkQgQd.esNationId,"nativesId":JSON.stringify(localQdId),"nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId}).success(function (res) {
                 if(res.status==0){
                     if(res.data.status==0){
                         var cityNames=res.data.data.cityNames;
