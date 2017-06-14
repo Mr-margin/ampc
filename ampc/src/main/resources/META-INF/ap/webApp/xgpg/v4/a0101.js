@@ -24,9 +24,9 @@ var changeMsg = {
 };
 var playDay = '',playHour = '',play = false;
 var speciesArr = {
-    d: ['PM₂.₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NO₂', 'CO', 'SO₄²¯', 'NO₃¯', 'NH₄⁺', 'BC', 'OM', 'PMFINE'],
-    a: ['PM₂.₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NO₂', 'CO', 'SO₄²¯', 'NO₃¯', 'NH₄⁺', 'BC', 'OM', 'PMFINE'],
-    h: ['PM₂.₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄²¯', 'NO₃¯', 'NH₄⁺', 'BC', 'OM', 'PMFINE']
+    d: ['PM₂.₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NO₂', 'CO', 'SO₄²⁻', 'NO₃⁻', 'NH₄⁺', 'BC', 'OM', 'PMFINE'],
+    a: ['PM₂.₅', 'PM₁₀', 'O₃_8_max', 'O₃_1_max', 'O₃_avg', 'SO₂', 'NO₂', 'CO', 'SO₄²⁻', 'NO₃⁻', 'NH₄⁺', 'BC', 'OM', 'PMFINE'],
+    h: ['PM₂.₅', 'PM₁₀', 'O₃', 'SO₂', 'NO₂', 'CO', 'SO₄²⁻', 'NO₃⁻', 'NH₄⁺', 'BC', 'OM', 'PMFINE']
 };
 
 var mappingSpecies = {
@@ -39,8 +39,8 @@ var mappingSpecies = {
         'SO₂': 'so2_daily',
         'NO₂': 'no2_daily',
         'CO': 'co_daily',
-        'SO₄²¯': 'PM25',
-        'NO₃¯': 'PM25',
+        'SO₄²⁻': 'PM25',
+        'NO₃⁻': 'PM25',
         'NH₄⁺': 'PM25',
         'BC': 'PM25',
         'OM': 'PM25',
@@ -55,8 +55,8 @@ var mappingSpecies = {
         'SO₂': 'so2_daily',
         'NO₂': 'no2_daily',
         'CO': 'co_daily',
-        'SO₄²¯': 'PM25',
-        'NO₃¯': 'PM25',
+        'SO₄²⁻': 'PM25',
+        'NO₃⁻': 'PM25',
         'NH₄⁺': 'PM25',
         'BC': 'PM25',
         'OM': 'PM25',
@@ -69,8 +69,8 @@ var mappingSpecies = {
         'SO2': 'so2_hourly',
         'NO2': 'no2_hourly',
         'CO': 'co_hourly',
-        'SO₄²¯': 'PM25',
-        'NO₃¯': 'PM25',
+        'SO₄²⁻': 'PM25',
+        'NO₃⁻': 'PM25',
         'NH₄⁺': 'PM25',
         'BC': 'PM25',
         'OM': 'PM25',

@@ -272,10 +272,10 @@ function initEcharts() {
 
             switch (species[i]) {
                 case 'SO₄':
-                    option.title.text = species[i] + "²¯ (μg/m³)";
+                    option.title.text = species[i] + "²⁻ (μg/m³)";
                     break;
                 case 'NO₃':
-                    option.title.text = species[i] + "¯ (μg/m³)";
+                    option.title.text = species[i] + "⁻ (μg/m³)";
                     break;
                 case 'NH₄':
                     option.title.text = species[i] + "⁺ (μg/m³)";
