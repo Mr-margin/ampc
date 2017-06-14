@@ -82,6 +82,7 @@ function pullPage(value){
 		$('.d04').hide();
 		$('.domain_select').find("option[value='0']").attr('selected','selected');
 		$('.box-body').attr('domain_id',domain_id);
+		$('.box-body').attr('max_dom',value.domainInfo.common.max_dom);
 		$('.del_domain').attr('domain_id',domain_id);
 		$('.i_parent_start1').val('1');
 		$('.j_parent_start1').val('1');
@@ -112,6 +113,7 @@ function pullPage(value){
 		$('.j_parent_start2').val(arr_j_parent_start[1]);
 		$('.j_parent_start3').val(arr_j_parent_start[2]);
 		$('.box-body').attr('domain_id',domain_id);
+		$('.box-body').attr('max_dom',value.domainInfo.common.max_dom);
 		$('.del_domain').attr('domain_id',domain_id);
 
 		if(arr_dx[0] == '27000'){
@@ -231,6 +233,7 @@ function postSubmit(){
 		'domainRange':data.domainRange,
 		'domainId':data.domainId,
 	}).success(function(res){
+		console.log(res);
 		if(res.msg == 'success'){
 			swal("保存成功");
 		}else{
