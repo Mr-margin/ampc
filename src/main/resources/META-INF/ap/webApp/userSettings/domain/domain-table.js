@@ -16,11 +16,9 @@ function getInfo(){
 	ajaxPost(url,{
 		'userId': userId
 	}).success(function (res) {
-		console.log(res);
 		domainData=res.data;
 		var _temp=domainData.slice(0,10);
 		$.each(_temp,function(key,value){
-			console.log(value);
 			findPull(value);
 		});
 		$('#pp').pagination({
@@ -44,10 +42,6 @@ function getInfo(){
 		});
     });
 }  
-
-function selectPage(){
-
-}
 
 function findPull(value){
 	var disposeStatus = value.disposeStatus
@@ -139,6 +133,8 @@ function submitCreat(){
 				}).success(function(){
 					$("#creat_domain").window('close');
 					swal("创建成功");
+					$('tbody tr').remove();
+					getInfo();
 				});
 			}
 		});
