@@ -229,7 +229,7 @@
     select 
     <include refid="Base_Column_List" />
     from T_ES_NATIVE_TP
-    where USER_ID = #{userId,jdbcType=DECIMAL}
+    where USER_ID = #{userId,jdbcType=DECIMAL} AND	IS_VERIFY = 1
   </select>
   <!-- 编辑本地清单模板 -->
   <update id="updateByIdSelective" parameterType="ampc.com.gistone.database.model.TEsNativeTp" >
@@ -293,7 +293,8 @@
 			FROM
 				"AMPC"."T_ES_NATIVE_TP" T
 			WHERE
-				USER_ID = #{userId,jdbcType=DECIMAL} order by ES_NATIVE_TP_ID DESC
+				USER_ID = #{userId,jdbcType=DECIMAL}
+				order by ES_NATIVE_TP_ID DESC
 		)
 	WHERE
 		rn >= #{startTotal,jdbcType=OTHER}
