@@ -478,6 +478,6 @@ function resivePassword(){
 function openUserSettings(){
     if(location.pathname.indexOf('userSettings') == -1){
         sessionStorage.setItem('userId',userId);
-        window.open('userSettings.html#/domain');
+        window.open('userSettings.html#/domain_table');
     }
 }
