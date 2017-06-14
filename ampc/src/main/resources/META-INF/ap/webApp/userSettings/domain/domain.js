@@ -5,26 +5,17 @@ $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">用户�
 
 var Storage = localStorage;
 $(document).ready(function(){
-
 	$('.d03').hide(); 
 	$('.d04').hide();
-	$('.add_two').click(function(){
-		$('.d02').show();
-		$('.box-body').attr('max_dom','1');
-		$('.fa-times').show();
-	});
-	$('.hade').click(function(){
-		$('.d02 input').val('');
-		$('.d03').hide();
-		$('.d03 input').val('');
-		$('.d04').hide();
-		$('.d04 input').val('');
-	});
+	
+	//增加第二层
 	$('.add_two2').click(function(){
 		$('.d03').show();
 		$('.box-body').attr('max_dom','2');
 		$('.fa-times').show();
 	});
+	
+	//删除第二层
 	$('.hade2').click(function(){
 		$('.d03').hide();
 		$('.d03 input').val('');
@@ -32,30 +23,37 @@ $(document).ready(function(){
 		$('.d04 input').val('');
 		$('.box-body').attr('max_dom','1');
 	});
+	
+	//增加第三层
 	$('.add_two3').click(function(){ 
 		$('.d04').show();
 		$('.box-body').attr('max_dom','3');
 		$('.fa-times').show();
 	}); 
+	
+	//删除第三层
 	$('.hade3').click(function(){
 		$('.d04').hide();
 		$('.d04 input').val('');
 		$('.box-body').attr('max_dom','2');
 	});
+	
+	//分辨率发生变化
 	$("select").change(function(){
-		resolution();
-		submitSave();
+		resolution();//分辨率选择，改变多层分辨率
 	});
+	
+	
 	$('input').change(function(){
-		submitSave();
 		resolution();
 	});
-	getInfo();
-	resolution();
+	getInfo();//数据初始化
 });
      
 
-/**查询接口**/
+/**
+ * 查询已有数据
+ */
 function getInfo(){
 	var  url = '/Domain/findAll';
 	var domain_id = Storage.getItem('domain_id_up');
@@ -64,15 +62,18 @@ function getInfo(){
 	}).success(function (res) {
 		$.each(res.data,function(key,value){
 			if(value.domainId == domain_id){
-				console.log(value);
+//				console.log(value);
 				pullPage(value);
 			}
 		});
-        
+		resolution();//分辨率选择，改变多层分辨率
     });
 }  
 
-/**数据导入页面**/
+/**
+ * 打开编辑页面的时候初始化数据
+ * @param value:数据库获取到的domain数据
+ */
 function pullPage(value){
 	var domain_id = value.domainId;
 	if(JSON.stringify(value.domainInfo) == "{}"){
@@ -97,7 +98,7 @@ function pullPage(value){
 		$('.ref_lon').val(value.domainInfo.common.ref_lon);
 		$('.stand_lat1').val(value.domainInfo.common.stand_lat1);
 		$('.stand_lat2').val(value.domainInfo.common.stand_lat2);
-		$('.stand_lon').val(value.domainInfo.common.stand_lon);
+		$('.stand_lon').val(value.domainInfo.common.ref_lon);
 		$('.e_we1').val(arr_we[0]);
 		$('.e_sn1').val(arr_sn[0]);
 		$('.e_we2').val(arr_we[1]);
@@ -136,13 +137,15 @@ function pullPage(value){
 	}
 }
 
-/**分辨率选择**/
+/**
+ * 分辨率选择，改变多层分辨率
+ */
 function resolution(){
 	var checkValue=$("select").val();
 	var btrim = $('.btrim').val();
-	var stand_lon = $('.stand_lon').val();
+	var stand_lon = $('.ref_lon').val();
 	$('.btrims').val(btrim);
-	$('.ref_lon').val(stand_lon);
+//	$('.ref_lon').val(stand_lon);
 	if(checkValue == '2'){
 		$('.dx1').val('9000');
 		$('.dx2').val('3000');
@@ -312,22 +315,6 @@ require(
         app.stlayerList = new dong.gaodeLayer({layertype: "st"});//加载卫星图
         app.labellayerList = new dong.gaodeLayer({layertype: "label"});//加载标注图
         
-
-
-        
-        
-//        app.map = new Map("mapDiv", {
-//            logo: false,
-//            center: [stat.cPointx, stat.cPointy],
-//            minZoom: 4,
-//            maxZoom: 13,
-//            sliderPosition: 'bottom-right',
-//            zoom: 4
-//        });
-//
-//        app.map.addLayer(app.baselayerList);//添加高德地图到map容器
-//        app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
-        
         setMapExtent(110,25,40,34);
     });
 
@@ -351,11 +338,11 @@ function setMapExtent(Central_Meridian, Standard_Parallel_1, Standard_Parallel_2
 
 	app.map = new dong.Map("mapDiv", {
         logo: false,
-        center: [stat.cPointx, stat.cPointy],
+        center: [Central_Meridian, Latitude_Of_Origin],
         minZoom: 4,
         maxZoom: 13,
         sliderPosition: 'top-right',
-        zoom: 4
+        zoom: 3
     });
 	app.map.spatialReference = app.spatialReference;
 	app.layer = new dong.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/ampc/la_cms/MapServer");// 创建动态地图
