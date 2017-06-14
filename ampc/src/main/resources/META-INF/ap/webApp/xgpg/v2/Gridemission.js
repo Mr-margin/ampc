@@ -320,8 +320,6 @@ function sceneTable() {
                     for(var i=0;i<truedData.length;i++){
                         if(data){
                             $.each(data.rows, function(index, item){
-                                console.log(index);
-                                console.log(item);
                                 if(truedData[i].scenarinoId==item.scenarinoId){
                                     $('#sceneTableId').datagrid('checkRow', index);
                                 }
@@ -361,7 +359,6 @@ function save_scene() {
         mag.data = data;
         vipspa.setMessage(mag);
         ls.setItem('SI', JSON.stringify(mag));
-        console.log(data);
         sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
         setQjSelectBtn(data);
         $("#close_scene").click();
@@ -405,11 +402,9 @@ function bianji_wanggepafang(type, g_num, p , wind){
         var par = p;
         var v1 = new Date().getTime();
         
-        console.log(JSON.stringify(par));
 //        ajaxPost_w('http://166.111.42.85:8300/ampc/extract/tiff', par).success(function (data) {
         ajaxPost('/extract/tiff', par).success(function (data) {
-        	console.log(JSON.stringify(data));
-        	
+
     		if(data.status == 0){
     			
     			app.dynamicData[g_num].show();
@@ -494,23 +489,23 @@ function bianji(type, g_num, p , wind) {
             
             ajaxPost('/extract/data', par).success(function (data) {
                 if (!data.data) {
-                    console.log("data.data-null");
+                    // console.log("data.data-null");
                     swal('获取当前范围风场数据失败', '', 'error');
                     return;
                 }
                 if (data.data.length == 0) {
-                    console.log("length-null");
+                    // console.log("length-null");
                     swal('当前范围缺少风场数据', '', 'error');
                     return;
                 }
                 $.each(data.data, function (i, col) {
 
                     if (typeof col.x == "undefined") {
-                        console.log("x-null");
+                        // console.log("x-null");
                         return;
                     }
                     if (typeof col.y == "undefined") {
-                        console.log("y-null");
+                        // console.log("y-null");
                         return;
                     }
 
@@ -581,7 +576,7 @@ function bianji(type, g_num, p , wind) {
                         app.gLyr2.setOpacity(fxOpacity);
                     }
                 });
-                console.log((new Date().getTime() - v1) + "num:" +g_num);
+                // console.log((new Date().getTime() - v1) + "num:" +g_num);
             }).error(function (res) {
                 swal('风场抽数，内部错误', '', 'error');
             });
@@ -907,7 +902,6 @@ $('#qjBtn1').on('change', 'input', function (e) {//改变左侧情景
 
 $('#qjBtn2').on('change', 'input', function (e) {//改变右侧情景
     var qjId = $(e.target).val();
-    console.log(qjId);
 
     var s2 = $(e.target).attr('data-sDate');
     var e2 = $(e.target).attr('data-eDate');
@@ -1107,7 +1101,9 @@ function showTitleFun() {
     $('#showTitle span').empty();
     var timeStartFor=moment(changeMsg.sTimeD,"YYYY-MM-DD").format("YYYY-MM-DD");
     var stateFor=moment(changeMsg.sTimeD+changeMsg.sTimeH,"YYYY-MM-DDH").format("YYYY-MM-DD HH");
-    var timeTwoFor=moment(changeMsg.sTimeD+"-"+changeMsg.eTime,"YYYY-MM-DD-YYYY-MM-DD").format("YYYY-MM-DD-YYYY-MM-DD");
+    var timeTwoFor=moment(changeMsg.sTimeD).format("YYYY-MM-DD")+"至"+moment(changeMsg.eTime).format("YYYY-MM-DD");
+
+    // var timeTwoFor=moment(changeMsg.sTimeD+"-"+changeMsg.eTime,"YYYY-MM-DD-YYYY-MM-DD").format("YYYY-MM-DD-YYYY-MM-DD");
     $('#showTitle .specieName').html("<span class='titleTab'><i class='en-layout' style='font-size: 16px;'></i>"+"&nbsp;物种：</span>"+changeMsg.species).css({"margin-right":"40px"});
     $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(changeMsg.domain=='1'?'3KM':(changeMsg.domain=='2'?'9KM':'27km'))).css({"margin-right":"40px"});
     if(changeMsg.rms=='d'){
@@ -1116,7 +1112,7 @@ function showTitleFun() {
     }else  if(changeMsg.rms=='h'){
         $('#showTitle .timeName').html("<span  class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'逐时').css({"margin-right":"40px"});
         $('#showTitle .dateStartName').html("<span  class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+stateFor).css({"margin-right":"40px"});
-    }else {
+    }else if(changeMsg.rms=='a'){
         $('#showTitle .timeName').html("<span  class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'平均').css({"margin-right":"40px"});
         $('#showTitle .dateEndName').html("<span  class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+timeTwoFor).css({"margin-right":"40px"});
     }
@@ -1125,7 +1121,6 @@ function showTitleFun() {
 $(".upDownBtn").append("<i class='en-arrow-up7'></i>")
 $(".toolAll").hide();
 $(".upDownBtn").click(function(){
-    console.log($(".upDownBtn").val());
     if($(".upDownBtn").text()=="收起"){
         $(".upDownBtn").text("更多搜索条件");
         $(".toolAll").hide();
