@@ -645,7 +645,7 @@ public class ReadyData {
 	 * @date 2017年3月29日 下午4:32:34
 	 */
 	public void readyRealMessageDataFirst(TScenarinoDetail scenarinoDetailMSG,String lastungrib) {
-		LogUtil.getLogger().info("开始准备第一次的预报数据:第一天的预报数据，类型是fnl");
+		LogUtil.getLogger().info("readyRealMessageDataFirst：开始准备第一次的预报数据:第一天的预报数据，类型是fnl");
 		Long scenarinoId = scenarinoDetailMSG.getScenarinoId();
 		Date startDate = scenarinoDetailMSG.getScenarinoStartDate();
 		//第一条预报数据的时间
