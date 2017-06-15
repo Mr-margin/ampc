@@ -36,9 +36,11 @@ import com.sun.tools.classfile.StackMapTable_attribute.verification_type_info;
 
 import ampc.com.gistone.database.inter.TMessageLogMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
+import ampc.com.gistone.database.inter.TModelScheduleMessageMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.inter.TTasksStatusMapper;
 import ampc.com.gistone.database.model.TMessageLog;
+import ampc.com.gistone.database.model.TModelScheduleMessage;
 import ampc.com.gistone.database.model.TScenarinoDetail;
 import ampc.com.gistone.database.model.TTasksStatus;
 import ampc.com.gistone.redisqueue.entity.ModelExecuJson;
@@ -73,6 +75,8 @@ public class ModelExecuteStatusController<E> {
 	private TMissionDetailMapper tMissionDetailMapper;
 	@Autowired
 	private TMessageLogMapper tMessageLogMapper;
+	@Autowired
+	private TModelScheduleMessageMapper tModelScheduleMessageMapper;
 	@Autowired
 	private ConfigUtil configUtil;
 	/**
@@ -151,8 +155,10 @@ public class ModelExecuteStatusController<E> {
 				}
 				if (selectStatus!=null) {
 					List<TMessageLog> tMessageLoglist = null;
+					List<TModelScheduleMessage> tModelScheduleMessageslist = null;
 					try {
 						tMessageLoglist = tMessageLogMapper.selectListByscenarinoId(scenarinoId);
+						tModelScheduleMessageslist = tModelScheduleMessageMapper.selectListByscenarinoId(scenarinoId);
 					} catch (Exception e) {
 						LogUtil.getLogger().error("ModelExecuteStatusController getModelexecuteStatus:查询该情景的情景状态表异常！selectListByscenarinoId scenarinoId："+scenarinoId,e.getMessage());
 						return AmpcResult.build(1000, "查询情景执行信息出现异常！");
@@ -183,8 +189,9 @@ public class ModelExecuteStatusController<E> {
 					Integer execModel = getexecModel(scenarinoType);
 					modelExecuJson.setExecModel(execModel);
 					//模式执行的详细内容数组
-					Object[] excutionMessageDetail = getexcutionMessagedetail(tMessageLoglist,selectStatus,scenarinoType);
-					modelExecuJson.setExcutionMessage(excutionMessageDetail);
+//					Object[] excutionMessageDetail = getexcutionMessagedetail(tMessageLoglist,selectStatus,scenarinoType);
+					Object[] excutionMessageDetail2 = getexecutionMessagedetailData(tModelScheduleMessageslist,selectStatus,scenarinoType,execModel);
+					modelExecuJson.setExcutionMessage(excutionMessageDetail2);
 					
 					//模式运行出错的消息描述信息
 					String modelErrorStatus = selectStatus.getModelErrorStatus();
@@ -208,6 +215,126 @@ public class ModelExecuteStatusController<E> {
 			LogUtil.getLogger().error("ModelExecuteStatusController getModelexecuteStatus",e);
 			return AmpcResult.build(1001, "系统异常！");
 		}
+	}
+
+	/**
+	 * @Description: 获取模式执行的详细信息
+	 * @param tModelScheduleMessageslist
+	 * @param selectStatus
+	 * @param scenarinoType
+	 * @param execModel 
+	 * @return   
+	 * Object []  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月15日 下午2:36:23
+	 */
+	private Object[] getexecutionMessagedetailData(
+			List<TModelScheduleMessage> tModelScheduleMessageslist,
+			TTasksStatus selectStatus, Integer scenarinoType, Integer execModel) {
+		Map map = new LinkedHashMap();
+		String pattern="yyyyMMdd";
+		Date tasksScenarinoStartDate = DateUtil.DateToDate(selectStatus.getTasksScenarinoStartDate(), pattern);
+		Date tasksScenarinoEndDate = DateUtil.DateToDate(selectStatus.getTasksScenarinoEndDate(), pattern);
+		Object[] outerArray = null;
+		String[] execDetailMsg = null;
+		Long tasksRangeDay = selectStatus.getTasksRangeDay();
+		int daylength = Integer.parseInt(tasksRangeDay.toString());
+		int tasksLength = getmodeltasksLength(scenarinoType);
+		//临时时间  用于组织时间对
+		String  tempdate = null;
+		//临时变量index 
+		Integer tempIndex = null;
+		//临时变量 用于计算该条消息是否属于该次数组
+		int i = 0,j = 0,k = 0;
+		if (1==execModel) {
+			//逐日执行的数据
+			//外部数组-长度是情景的运行时间段
+			outerArray = new Object[daylength];
+			//内部数组--长度是tasks的长度
+			execDetailMsg = new String[tasksLength];
+			for (TModelScheduleMessage tModelScheduleMessage : tModelScheduleMessageslist) {
+				String tasksEndDate = tModelScheduleMessage.getExeMessageTasksdate();
+				String messageType = tModelScheduleMessage.getExeMessageType();
+				String resultDesc = tModelScheduleMessage.getExeMessageDesc();
+				int resultCode = tModelScheduleMessage.getExeMessageCode();
+				Integer messageIndex = tModelScheduleMessage.getExeMessageIndex();
+				if (map.get(tasksEndDate)!=null) {
+					map.put(tasksEndDate, i);
+					if (j==i) {
+						Date messageTime = tModelScheduleMessage.getExeMessageTime();
+						String indextime = DateUtil.DATEtoString(messageTime, "yyyy-MM-dd HH:mm:ss");
+						if (0==k) {
+							String str = (tempdate+"<br/>"+ indextime).toString();
+							execDetailMsg[k] = str;
+							tempdate = indextime;
+						}else {
+							String str = (tempdate+"<br/>"+ indextime).toString();
+							execDetailMsg[k] = str;
+							tempdate = indextime;
+						}
+						k++;
+					}
+				}else {
+					map.put(tasksEndDate, i);
+					i++;
+					Date messageTime = tModelScheduleMessage.getExeMessageTime();
+					String indextime = DateUtil.DATEtoString(messageTime, "yyyy-MM-dd HH:mm:ss");
+					if (0==messageIndex) {
+						tempdate = indextime;
+						tempIndex = messageIndex;
+					}else {
+						//index =0 的消息丢失
+						tempdate = "未获取到时间！";
+						tempIndex = messageIndex;
+					}
+					k=0;
+					if (j>=1) {
+						outerArray[i-2] = execDetailMsg;
+						//清空数组
+						execDetailMsg = new String[tasksLength];
+					}
+					j=i;
+				}
+				if (i>=1) {
+					outerArray[i-1] = execDetailMsg;
+				}
+			}	
+		}else if(2==execModel){
+			//逐模块执行的数据
+			//外部数组
+			outerArray = new Object[tasksLength];
+			//内部数组
+			execDetailMsg = new String[daylength];
+			for (TModelScheduleMessage tModelScheduleMessage : tModelScheduleMessageslist) {
+				String tasksEndDate = tModelScheduleMessage.getExeMessageTasksdate();
+				String messageType = tModelScheduleMessage.getExeMessageType();
+				String resultDesc = tModelScheduleMessage.getExeMessageDesc();
+				int resultCode = tModelScheduleMessage.getExeMessageCode();
+				Integer messageIndex = tModelScheduleMessage.getExeMessageIndex();
+				Date messageTime = tModelScheduleMessage.getExeMessageTime();
+				String indextime = DateUtil.DATEtoString(messageTime, "yyyy-MM-dd HH:mm:ss");
+				if (0==messageIndex) {
+					tempdate = indextime;
+					tempIndex = messageIndex;
+				}else {
+					if (map.get(messageIndex)!=null) {
+						k++;
+						String str = (tempdate+"<br/>"+ indextime).toString();
+						execDetailMsg[k] = str;
+					}else {
+						map.put(messageIndex, tasksEndDate);
+						i++;
+						String str = (tempdate+"<br/>"+ indextime).toString();
+						execDetailMsg[k] = str;
+						tempdate = indextime;
+					}
+				}
+			}
+		}
+		
+	
+		return outerArray;
 	}
 
 	/**
@@ -256,8 +383,8 @@ public class ModelExecuteStatusController<E> {
 		}
 		return tips;
 	}
-
-	/**
+/*
+	*//**
 	 * @Description: 获取详细信息
 	 * @param tMessageLoglist
 	 * @param selectStatus
@@ -268,7 +395,7 @@ public class ModelExecuteStatusController<E> {
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年6月5日 下午2:36:09
-	 */
+	 *//*
 	private Object[] getexcutionMessagedetail(
 			List<TMessageLog> tMessageLoglist, TTasksStatus selectStatus, Integer scenarinoType) {
 		Map map = new LinkedHashMap();
@@ -334,7 +461,7 @@ public class ModelExecuteStatusController<E> {
 	return outerArray;
 	}
 
-	/**
+	*//**
 	 * @Description:初始化日志消息
 	 * @param tMessageLoglist
 	 * @param selectStatus 
@@ -343,7 +470,7 @@ public class ModelExecuteStatusController<E> {
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年6月7日 下午3:00:31
-	 */
+	 *//*
 	private List<TMessageLog> getnewMessageLogList(
 			List<TMessageLog> tMessageLoglist, TTasksStatus selectStatus) {
 		List<TMessageLog> arrayList = new ArrayList<TMessageLog>();
@@ -391,7 +518,7 @@ public class ModelExecuteStatusController<E> {
 		}
 		return arrayList;
 	}
-
+*/
 	/**
 	 * @Description:获取task的长度
 	 * @param scenarinoType
