@@ -66,12 +66,12 @@
 								</select>
 							</div>
 						</li>
-						<li>
+				<!-- 		<li>
 							<p class="col-7 no-padding">x方向起始位置</p>
 							<div class="input-group col-5 no-padding">
 								<p type="text" class=" i_parent_start1" readonly="true"></p>
 							</div>
-						</li>
+						</li> -->
 						<li>
 							<p class="col-7 no-padding">x方向网格边数</p>
 							<div class="input-group col-5 no-padding">
@@ -83,15 +83,22 @@
 						<li>
 							<p class="col-7 no-padding">x,y向裁剪网格数</p>
 							<div class="input-group col-5 no-padding">
-								<input type="text" class="form-control btrim" placeholder="" aria-describedby="basic-addon1" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
+								<select class="form-control btrim_select">
+									<option value='0'>请选择</option>
+								 	<option value ="1">1</option>
+								 	<option value ="2">2</option>
+								 	<option value ="3">3</option>
+								 	<option value ="4">4</option>
+								 	<option value ="5">5</option>
+								</select>
 							</div>
 						</li>
-						<li>
+						<!-- <li>
 							<p class="col-7 no-padding">y方向起始位置</p>
 							<div class="input-group col-5 no-padding">
 								<p type="text" class=" j_parent_start1" readonly="true"></p>
 							</div>
-						</li>
+						</li> -->
 						<li>
 							<p class="col-7 no-padding">y方向网格边数</p>
 							<div class="input-group col-5 no-padding">
@@ -121,7 +128,7 @@
 						<li>
 							<p class="col-7 no-padding">x方向网格边数</p>
 							<div class="input-group col-5 no-padding">
-								<input type="text" class="form-control e_we2" placeholder="" aria-describedby="basic-addon1" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
+								<input type="text" class="form-control e_we2 e_reolace" placeholder="" aria-describedby="basic-addon1" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
 							</div>
 						</li>
 					</ul>
@@ -141,7 +148,7 @@
 						<li>
 							<p class="col-7 no-padding">y方向网格边数</p>
 							<div class="input-group col-5 no-padding">
-								<input type="text" class="form-control e_sn2" placeholder="" aria-describedby="basic-addon1" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
+								<input type="text" class="form-control e_sn2 e_reolace" placeholder="" aria-describedby="basic-addon1" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
 							</div>
 						</li>
 					</ul>
@@ -167,7 +174,7 @@
 						<li>
 							<p class="col-7 no-padding">x方向网格边数</p> 
 							<div class="input-group col-5 no-padding">
-								<input type="text" class="form-control e_we3" placeholder="" aria-describedby="basic-addon1" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
+								<input type="text" class="form-control e_we3 e_reolace" placeholder="" aria-describedby="basic-addon1" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
 							</div>
 						</li>
 					</ul>
@@ -187,7 +194,7 @@
 						<li>
 							<p class="col-7 no-padding">y方向网格边数</p>
 							<div class="input-group col-5 no-padding">
-								<input type="text" class="form-control  e_sn3" placeholder="" aria-describedby="basic-addon1" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
+								<input type="text" class="form-control  e_sn3 e_reolace" placeholder="" aria-describedby="basic-addon1" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
 							</div>
 						</li>
 					</ul>
