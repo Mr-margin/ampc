@@ -510,9 +510,9 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月21日 下午7:39:01
 	 */
 //	@Scheduled(fixedRate = 5000)
-	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
+//	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
 //	@Scheduled(cron="0 30 10 * * ?")
-	public void  sendMessageOnRealprediction() {
+	/*public void  sendMessageOnRealprediction() {
 		boolean runningSetting = configUtil.isRunningSetting();
 		LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:runningSetting:"+runningSetting);
 		if (runningSetting) {
@@ -578,7 +578,7 @@ public class SchedulerTimer<V> {
 		}else {
 			LogUtil.getLogger().info("sendMessageOnRealprediction:定时器空运行！");
 		}
-	}
+	}*/
 	
 	/**
 	 * 
@@ -591,10 +591,10 @@ public class SchedulerTimer<V> {
 	 * @author yanglei
 	 * @date 2017年4月21日 下午7:39:01
 	 */
-//	@Scheduled(fixedRate = 5000)
-//	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
+//	@Scheduled(fixedRate = 50000)
+	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
 //	@Scheduled(cron="0 30 10 * * ?")
-	/*public void  sendMessageOnRealprediction() {
+	public void  sendMessageOnRealprediction() {
 		boolean runningSetting = configUtil.isRunningSetting();
 		LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:runningSetting:"+runningSetting);
 		if (runningSetting) {
@@ -654,14 +654,14 @@ public class SchedulerTimer<V> {
 							}	
 						}
 					}
-					sendGFSMessageONRealPrediction();
+//					sendGFSMessageONRealPrediction();
 			} catch (Exception e) {
 				LogUtil.getLogger().error("定时器 sendMessageOnRealprediction 出错！",e);
 			}
 		}else {
 			LogUtil.getLogger().info("sendMessageOnRealprediction:定时器空运行！");
 		}
-	}*/
+	}
 	
 
 	
@@ -781,7 +781,7 @@ public class SchedulerTimer<V> {
 	 * @date 2017年6月1日 上午11:45:39
 	 */
 //	@Scheduled(fixedRate = 5000)
-//	@Scheduled(cron="0 0/8 * * * ?")   //隔8分钟定时检查一次实时预报的gfs发送情况---服务器配置
+	@Scheduled(cron="0 0/8 * * * ?")   //隔8分钟定时检查一次实时预报的gfs发送情况---服务器配置
 //	@Scheduled(cron="0 30 10 * * ?")
 	public void sendGFSMessageONRealPrediction() {
 		boolean runningSetting = configUtil.isRunningSetting();
@@ -817,6 +817,8 @@ public class SchedulerTimer<V> {
 								if (null!=tasksEndDate) {
 									tasksEndDate =  DateUtil.DateToDate(selectStatus.getTasksEndDate(), "yyyyMMdd");
 									if (null!=modelErrorStatus&&!"".equals(modelErrorStatus)) {
+										LogUtil.getLogger().info("sendGFSMessageONRealPrediction：模式执行出错！");
+									}else {
 										if (null!=beizhu2&&!"".equals(beizhu2)) {
 											Date fnlDate = DateUtil.StrtoDateYMD(beizhu2, "yyyyMMdd");
 											Date scenarinoStartDate = DateUtil.DateToDate(tScenarinoDetail.getScenarinoStartDate(), "yyyyMMdd");
@@ -834,8 +836,14 @@ public class SchedulerTimer<V> {
 															}else {
 																LogUtil.getLogger().info("sendGFSMessageONRealPrediction：发送gfs消息失败！");
 															}
+														}else {
+															LogUtil.getLogger().info("sendGFSMessageONRealPrediction： 不满足发送gfs的条件！");
 														}
+													}else {
+														LogUtil.getLogger().info("sendGFSMessageONRealPrediction： 不满足发送gfs的条件！");
 													}
+												}else {
+													LogUtil.getLogger().info("sendGFSMessageONRealPrediction:fnl未执行完毕！");
 												}
 											}
 										}
