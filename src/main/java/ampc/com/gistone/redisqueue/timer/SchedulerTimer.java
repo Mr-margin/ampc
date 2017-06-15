@@ -510,9 +510,9 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月21日 下午7:39:01
 	 */
 //	@Scheduled(fixedRate = 5000)
-//	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
+	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
 //	@Scheduled(cron="0 30 10 * * ?")
-	/*public void  sendMessageOnRealprediction() {
+	public void  sendMessageOnRealprediction() {
 		boolean runningSetting = configUtil.isRunningSetting();
 		LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:runningSetting:"+runningSetting);
 		if (runningSetting) {
@@ -578,7 +578,7 @@ public class SchedulerTimer<V> {
 		}else {
 			LogUtil.getLogger().info("sendMessageOnRealprediction:定时器空运行！");
 		}
-	}*/
+	}
 	
 	/**
 	 * 
@@ -592,9 +592,9 @@ public class SchedulerTimer<V> {
 	 * @date 2017年4月21日 下午7:39:01
 	 */
 //	@Scheduled(fixedRate = 5000)
-	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
+//	@Scheduled(cron="0 0/10 * * * ?")   //隔10分钟定时检查一次实时预报的发送情况---服务器配置
 //	@Scheduled(cron="0 30 10 * * ?")
-	public void  sendMessageOnRealprediction() {
+	/*public void  sendMessageOnRealprediction() {
 		boolean runningSetting = configUtil.isRunningSetting();
 		LogUtil.getLogger().info("定时器 sendMessageOnRealprediction:runningSetting:"+runningSetting);
 		if (runningSetting) {
@@ -661,7 +661,7 @@ public class SchedulerTimer<V> {
 		}else {
 			LogUtil.getLogger().info("sendMessageOnRealprediction:定时器空运行！");
 		}
-	}
+	}*/
 	
 
 	
