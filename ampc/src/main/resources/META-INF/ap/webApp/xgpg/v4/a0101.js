@@ -446,7 +446,7 @@ function bianji(type, g_num, p , wind) {
         		if(data.status == 0){
 //        			app.mapimagelayer[g_num].removeAllImages();//删除全部的图片图层
 
-//        			console.log(data.data.imagePath);
+        			console.log(data.data.imagePath);
 
         			var imageURL = pngUrl + "/ampc/"+data.data.imagePath+"?t="+Math.random();
         			console.log(imageURL);
