@@ -46,11 +46,6 @@ $(document).ready(function(){
 	
 	$('input').change(function(){
 		resolution();
-		var number = $(this).val();
-		if(!isNaN(number)){
-			numbers = parseFloat(number).toFixed(8);
-			$(this).val(numbers);
-		}
 	});
 	getInfo();//数据初始化
 });
@@ -59,28 +54,44 @@ $(document).ready(function(){
  * 输入数据验证
  */
 $('.ref_lon').blur(function(){
-	var Central_Meridian = $('.ref_lon').val();
+	var Central_Meridian = $(this).val();
+	if(!isNaN(Central_Meridian)){
+		numbers = parseFloat(number).toFixed(8);
+		$(this).val(Central_Meridian);
+	}
 	if(Central_Meridian < 75 || Central_Meridian > 150){
  		swal("请输入75~150之间的数字");
  		$('.ref_lon').val('');
  	}
 });
 $('.stand_lat1').blur(function(){
-	var Standard_Parallel_1 = $('.stand_lat1').val();
+	var Standard_Parallel_1 = $(this).val();
+	if(!isNaN(Standard_Parallel_1)){
+		numbers = parseFloat(Standard_Parallel_1).toFixed(8);
+		$(this).val(Standard_Parallel_1);
+	}
 	if(Standard_Parallel_1 < 0 || Standard_Parallel_1 > 90){
  		swal("请输入0~90之间的数字");
  		$('.stand_lat1').val('');
  	}
 });
 $('.stand_lat2').blur(function(){
-	var Standard_Parallel_2 = $('.stand_lat2').val();
+	var Standard_Parallel_2 = $(this).val();
+	if(!isNaN(Standard_Parallel_2)){
+		numbers = parseFloat(Standard_Parallel_2).toFixed(8);
+		$(this).val(Standard_Parallel_2);
+	}
 	if(Standard_Parallel_2 < 0 || Standard_Parallel_2 > 90){
  		swal("请输入0~90之间的数字");
  		$('.stand_lat2').val('');
  	}
 });
 $('.ref_lat').blur(function(){
-	var Latitude_Of_Origin = $('.ref_lat').val();
+	var Latitude_Of_Origin = $(this).val();
+	if(!isNaN(Latitude_Of_Origin)){
+		numbers = parseFloat(Latitude_Of_Origin).toFixed(8);
+		$(this).val(Latitude_Of_Origin);
+	}
 	if(Latitude_Of_Origin < 15 || Latitude_Of_Origin > 55){
  		swal("请输入15~55之间的数字");
  		$('.ref_lat').val('');
