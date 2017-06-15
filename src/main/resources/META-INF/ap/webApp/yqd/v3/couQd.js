@@ -121,6 +121,7 @@ function qgqdTable() {
             data.userId = userId;
             data.pageSize=params.pageSize; //初始化页面上面表单的数据行数
             data.pageNumber=params.pageNumber  //初始化页面的页码
+            data.queryName="";
             return {"token": "", "data": data};
         },
     })
