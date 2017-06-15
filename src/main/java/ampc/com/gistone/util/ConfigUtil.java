@@ -73,7 +73,8 @@ public class ConfigUtil {
 	//记录发送的消息生成的文件的路径
 	@Value("${sendmessage.log}")
 	private String sendMessageLog;
-	
+	@Value("${model.calctype}")
+	private String calctype;
 
 	//微信路径url
 	@Value("${weixin.serverURL}")
@@ -129,6 +130,13 @@ public class ConfigUtil {
 
 			
 			
+
+	/**
+	 * @return the calctype
+	 */
+	public String getCalctype() {
+		return calctype;
+	}
 
 	/**
 	 * @return the tasksArray2
