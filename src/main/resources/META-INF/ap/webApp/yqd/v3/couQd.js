@@ -48,6 +48,7 @@ function innitdata(){  //耦合清单的初始化
             return data.data.data.rows;
         },
         // selectOnCheck:true, //true，单击复选框将永远选择行 false，选择行将不选中复选框。
+        toolbar: '#searchTool',
         singleSelect: true,//设置True 将禁止多选
         // checkOnSelect:true,//true，当用户点击行的时候该复选框就会被选中或取消选中。false，当用户仅在点击该复选框的时候才会呗选中或取消。
         // fitColumns:true,//真正的自动展开/收缩列的大小，以适应网格的宽度，防止水平滚动。
@@ -66,6 +67,7 @@ function innitdata(){  //耦合清单的初始化
             data.method="find_coupling";
             data.pageSize=params.pageSize; //初始化页面上面表单的数据行数
             data.pageNumber=params.pageNumber  //初始化页面的页码
+            data.queryName=$("#companyname").val();
             return {"token": "", "data": data};
         },
         onClickRow:function (index,row) {
