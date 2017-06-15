@@ -221,7 +221,8 @@ $('#sTime-d').on('change', function (e) {//选择日期
 
 $('#sTime-h').on('change', function (e) {//选择时间
     var date = $(e.target).val();
-    changeMsg.YBHour = date - 0;
+    // changeMsg.YBHour = date - 0;
+    changeMsg.YBHour = date;
     updata();
 });
 
@@ -505,6 +506,7 @@ function showDate(type) {
  * 排放数据更新并加载
  */
 function updata() {
+    // console.log(changeMsg.YBHour,"updata")
 	zmblockUI1("#map_in", "start");
 	if(oldMsg.YBDate != changeMsg.YBDate || oldMsg.YBHour != changeMsg.YBHour || oldMsg.domain != changeMsg.domain || oldMsg.rms != changeMsg.rms || oldMsg.species[0] != changeMsg.species[0] || oldMsg.xa != changeMsg.xa || oldMsg.ya != changeMsg.ya){
         if($('.showImg').css('display') == 'block'){
@@ -602,40 +604,40 @@ function load_gis(p) {
      swal('抽数，内部错误', '', 'error');
      });
 
-/*    ajaxPost_w('http://166.111.42.85:8300/ampc/extract/png', {token:'',data:par}).success(function (data) {
-        // console.log(JSON.stringify(data));
-
-        if(data.status == 0){
-//			app.mapimagelayer.removeAllImages();//删除全部的图片图层
+//     ajaxPost_w('http://166.111.42.85:8300/ampc/extract/png', {token:'',data:par}).success(function (data) {
+//         // console.log(JSON.stringify(data));
 //
-//			console.log(data.data.imagePath);
-
-            var imageURL = pngUrl + "/ampc/"+data.data.imagePath+"?t="+Math.random();
-            // console.log(imageURL);
-
-            var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
-            var mapImage = new dong.MapImage({
-                'extent': initE,
-                'href': imageURL
-            });
-
-            app.mapimagelayer.addImage(mapImage);//将新的图片图层添加到地图
-
-            $('#colorBar').html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
-            zmblockUI1("#map_in", "end");//打开锁屏控制
-            // console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
-            judgmentObj.push('true')
-            judgment()
-
-        }else{
-            zmblockUI1("#map_in", "end");//打开锁屏控制
-        }
-
-
-    }).error(function (res) {
-        zmblockUI1("#map_in", "end");
-        swal('抽数，内部错误', '', 'error');
-    });*/
+//         if(data.status == 0){
+// //			app.mapimagelayer.removeAllImages();//删除全部的图片图层
+// //
+// //			console.log(data.data.imagePath);
+//
+//             var imageURL = pngUrl + "/ampc/"+data.data.imagePath+"?t="+Math.random();
+//             // console.log(imageURL);
+//
+//             var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
+//             var mapImage = new dong.MapImage({
+//                 'extent': initE,
+//                 'href': imageURL
+//             });
+//
+//             app.mapimagelayer.addImage(mapImage);//将新的图片图层添加到地图
+//
+//             $('#colorBar').html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
+//             zmblockUI1("#map_in", "end");//打开锁屏控制
+//             // console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
+//             judgmentObj.push('true')
+//             judgment()
+//
+//         }else{
+//             zmblockUI1("#map_in", "end");//打开锁屏控制
+//         }
+//
+//
+//     }).error(function (res) {
+//         zmblockUI1("#map_in", "end");
+//         swal('抽数，内部错误', '', 'error');
+//     });
 }
 
 
@@ -877,6 +879,14 @@ $document.on('click', '#js-example-destroy button[data-behaviour="destroy"]', fu
 function showTitleFun() {
     $('#showTitle span').empty();
     $('#showTitle span').css({"margin-right":"0px"});
+    $("#sTime-d").val(changeMsg.YBDate)
+    // $("#sTime-h").val(changeMsg.YBHour)
+
+    if(changeMsg.YBHour<10){
+        $("#sTime-h").val("0"+changeMsg.YBHour)
+    }else{
+        $("#sTime-h").val(changeMsg.YBHour)
+    }
     var sData=moment($("#SPDate").val(),"YYYYMMDD").format("YYYY-MM-DD");
     var dataT=moment($("#sTime-d").val(),"YYYYMMDD").format("YYYY-MM-DD");
     var dataState=moment($("#sTime-d").val()+$("#sTime-h").val(),"YYYYMMDDH").format("YYYY-MM-DD H");
@@ -884,11 +894,10 @@ function showTitleFun() {
     $("#showTitle .rmsName").html("<span class='titleTab'><i class='en-flow-parallel'></i>"+"&nbsp;时间分辨率：</span>"+($('input[name=rms]:checked').val()=="h"?"逐小时":"逐日")).css({"margin-right":"40px"});
     $("#showTitle .speciesName").html("<span class='titleTab'><i class='en-flow-parallel'></i>"+"&nbsp;物种分辨率：</span>"+$("#species").val()).css({"margin-right":"40px"});
     $("#showTitle .sDateName").html("<span class='titleTab'><i class='br-calendar'></i>"+"&nbsp;起报日期：</span>"+sData).css({"margin-right":"40px"});
-
     if($('input[name=rms]:checked').val()=='d'){
-        $('#showTitle .dateName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+dataT).css({"margin-right":"40px"});
+        $('#showTitle .dateName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+changeMsg.YBDate).css({"margin-right":"40px"});
     }else{
-        $('#showTitle .dateName').html("<span  class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+dataState).css({"margin-right":"40px"});
+        $('#showTitle .dateName').html("<span  class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+changeMsg.YBDate+" "+changeMsg.YBHour).css({"margin-right":"40px"});
     }
 }
 
@@ -943,11 +952,11 @@ function getVerticalImg(xa,xi,ya,yi) {
         $('.showImg img').attr('src','img/Loading.gif');
     }
 
-/*    ajaxPost_w('http://166.111.42.85:8300/ampc'+url,{token:'',data:par}).success(function (res) {
-        oldMsg = $.extend(true,{},changeMsg);
-        $('.showImg img').attr('src','http://166.111.42.85:8300/ampc/verticalPath/'+res.data);
-        console.log(res);
-    })*/
+    // ajaxPost_w('http://166.111.42.85:8300/ampc'+url,{token:'',data:par}).success(function (res) {
+    //     oldMsg = $.extend(true,{},changeMsg);
+    //     $('.showImg img').attr('src','http://166.111.42.85:8300/ampc/verticalPath/'+res.data);
+    //     console.log(res);
+    // })
 
    ajaxPost(url,par).success(function (res) {
        // $('.showImg').css('display','block');
