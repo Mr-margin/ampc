@@ -274,7 +274,7 @@ function postSubmit(){
 		'domainRange':data.domainRange,
 		'domainId':data.domainId,
 	}).success(function(res){
-		console.log(res);
+//		console.log(res);
 		if(res.msg == 'success'){
 			swal("保存成功");
 		}else{
@@ -300,6 +300,7 @@ var dojoConfig = {
 require(
     [
         "esri/map",
+        "esri/Color",
         "esri/tasks/Geoprocessor", 
         "esri/layers/DynamicLayerInfo", 
         "esri/layers/TableDataSource",
@@ -317,9 +318,11 @@ require(
         "esri/layers/MapImageLayer", 
         "esri/layers/MapImage", 
         "esri/layers/ArcGISDynamicMapServiceLayer",
+        "esri/symbols/SimpleLineSymbol",
         "dojo/domReady!"
     ],
     function (Map, 
+    		Color,
     		Geoprocessor, 
     		DynamicLayerInfo, 
     		TableDataSource, 
@@ -336,9 +339,11 @@ require(
             PictureMarkerSymbol, 
             MapImageLayer, 
             MapImage,
-            ArcGISDynamicMapServiceLayer) {
+            ArcGISDynamicMapServiceLayer,
+            SimpleLineSymbol) {
 
     	dong.Map = Map;
+    	dong.Color = Color;
     	
         dong.gaodeLayer = gaodeLayer;
         dong.Geoprocessor = Geoprocessor;
@@ -348,12 +353,12 @@ require(
         dong.SpatialReference = SpatialReference;
         dong.Extent = Extent;//
         dong.ArcGISDynamicMapServiceLayer = ArcGISDynamicMapServiceLayer;//
-
-        app.baselayerList = new dong.gaodeLayer();//默认加载矢量 new gaodeLayer({layertype:"road"});也可以
-        app.stlayerList = new dong.gaodeLayer({layertype: "st"});//加载卫星图
-        app.labellayerList = new dong.gaodeLayer({layertype: "label"});//加载标注图
+        dong.SimpleLineSymbol = SimpleLineSymbol;//
+        
+        app.gp = new dong.Geoprocessor(ArcGisServerUrl+"/arcgis/rest/services/ampc/FishingNets/GPServer/FishingNets");
         
         setMapExtent(110,25,40,34);
+        generateFishingNets();
     });
 
 
@@ -385,11 +390,93 @@ function setMapExtent(Central_Meridian, Standard_Parallel_1, Standard_Parallel_2
 	app.map.spatialReference = app.spatialReference;
 	app.layer = new dong.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/ampc/la_cms/MapServer");// 创建动态地图
 	app.layer.spatialReference = app.spatialReference;
-	
 	app.map.addLayer(app.layer);
+	
+	app.gLyr = new dong.GraphicsLayer({"id":"gLyr"});
+	app.map.addLayer(app.gLyr);
+	
+	
 	
 }
 
+
+/**
+ * 生成渔网
+ */
+function generateFishingNets(){
+	var data = submitSave();//获取到当前的值
+	console.log(data);
+	
+	gp_server();//重新定义投影
+	
+	//循环生成多层domain
+	
+}
+
+/**
+ * GP服务调用，生成单层渔网
+ */
+function gp_server(){
+	var myDate = new Date();
+	var v1 = myDate.getTime();
+	
+	var rows = 100;//行数
+	var columns = 100;//列数
+	var height = 27000;
+	var width = 27000;
+	
+	var x1 = -(rows/2*width);
+	var x2 = -(rows/2*width);
+	
+	var y1 = -(columns/2*height);
+	var y2 = (-(columns/2*height))+10;
+	
+	
+//	渔网原点坐标：
+//		x:左侧坐标
+//		y:下方坐标
+//	Y轴坐标：
+//		x:左侧坐标
+//		y:下方坐标+10
+//	像元宽度：
+//	像元高度：
+//	行数：
+//	列数：
+	
+	var parms = {
+			"1" : x1+" "+y1,
+			"2" : x2+" "+y2,
+			"width" : width,
+			"height" : height,
+			"rows" : rows,
+			"columns" : columns,
+			"out" : "out_raster_layer"
+		};
+	app.gp.submitJob(parms, function(jobInfo){
+		var jobId = jobInfo.jobId;
+		var status = jobInfo.jobStatus;
+		if(status === esri.tasks.JobInfo.STATUS_SUCCEEDED) {
+			app.gp.getResultData(jobId, "out", function(results){
+				var features = results.value.features;
+				for(var i = 0, length = features.length; i != length; ++i) {
+					var feature = features[i];
+					var polySymbolRed = new dong.SimpleLineSymbol(dong.SimpleLineSymbol.STYLE_SOLID, new dong.Color([255,0,0]), 0.5);
+					feature.setSymbol(polySymbolRed);
+					app.map.graphics.add(feature);
+				}
+			});
+		}
+		
+		var myDate2 = new Date();
+		var v2 = myDate2.getTime();
+		console.log(v2-v1);
+		
+	}, function(jobinfo){
+		
+	}, function(error){
+		console.log(error);
+	});
+}
 
 
 
