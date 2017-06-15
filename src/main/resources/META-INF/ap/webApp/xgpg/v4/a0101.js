@@ -1407,9 +1407,16 @@ function showTitleFun() {
     if(changeMsg.rms=='d'){
         $('#showTitle .timeName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'逐日').css({"margin-right":"40px"});
         $('#showTitle .dateStartName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+timeStartFor).css({"margin-right":"40px"});
+        $("#sTime-d").val(changeMsg.sTimeD);
     }else  if(changeMsg.rms=='h'){
         $('#showTitle .timeName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'逐时').css({"margin-right":"40px"});
         $('#showTitle .dateStartName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+stateFor).css({"margin-right":"40px"});
+        $("#sTime-d").val(changeMsg.sTimeD);
+        if(changeMsg.sTimeH<10){
+            $("#sTime-h").val("0"+changeMsg.sTimeH);
+        }else{
+            $("#sTime-h").val(changeMsg.sTimeH);
+        }
     }else {
         $('#showTitle .timeName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'平均').css({"margin-right":"40px"});
         $('#showTitle .dateEndName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+timeTwoFor).css({"margin-right":"40px"});
