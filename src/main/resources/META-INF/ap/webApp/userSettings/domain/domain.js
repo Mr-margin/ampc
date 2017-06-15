@@ -382,7 +382,7 @@ require(
  */
 function getFishingNets(){
 	var data = submitSave();//获取到当前的值
-	console.log(data);
+//	console.log(data);
 	setMapExtent(data);
 }
 
@@ -404,12 +404,10 @@ function setMapExtent(data){
 	if(app.map){
     	app.map.destroy();
     }
-	
 	app.spatialReference = new dong.SpatialReference({
 		"wkt" : 'PROJCS["Lambert_Conformal_Conic_China",GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic"],PARAMETER["False_Easting",0.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",'+Central_Meridian+'],PARAMETER["Standard_Parallel_1",'+Standard_Parallel_1+'],PARAMETER["Standard_Parallel_2",'+Standard_Parallel_2+'],PARAMETER["Scale_Factor",1.0],PARAMETER["Latitude_Of_Origin",'+Latitude_Of_Origin+'],UNIT["Meter",1.0]]'
 	});
 	app.customExtentAndSR = new dong.Extent(-3095608.299999997, -1761039.3040000014, 1901303.5966000035, 2272060.6185000017, app.spatialReference);
-
 	app.map = new dong.Map("mapDiv", {
         logo: false,
         center: [Central_Meridian, Latitude_Of_Origin],
@@ -419,18 +417,8 @@ function setMapExtent(data){
         extent: app.customExtentAndSR,
         zoom: 3
     });
-	
-	console.log(app.map.spatialReference);
-	
-//	app.map.spatialReference = app.spatialReference;
 	app.layer = new dong.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/ampc/la_cms/MapServer");// 创建动态地图
-//	app.layer.spatialReference = app.spatialReference;
 	app.map.addLayer(app.layer);
-	
-	app.gLyr = new dong.GraphicsLayer({"id":"gLyr"});
-	app.map.addLayer(app.gLyr);
-	
-	
 	generateFishingNets(data);
 }
 
@@ -441,15 +429,18 @@ var jisuanNUM = {};//存储计算用的多层坐标
  */
 function generateFishingNets(data){
 	jisuanNUM = {};//每次生成渔网的时候，清空上次计算的结果，计算结果只在循环内使用
-//	data.domainInfo.mcip.btrim;//裁剪网格数
-//	data.domainInfo.common.max_dom;//层数
-//	data.domainRange;//像元大小
-	
-	
+
 	var rows = new Array();//行数
 	rows = data.domainInfo.wrf.e_sn.split(",");
 	var columns = new Array();//列数
 	columns = data.domainInfo.wrf.e_we.split(",");
+	
+	var i_parent_start = new Array();
+	var j_parent_start = new Array();
+	
+	i_parent_start = data.domainInfo.wrf.i_parent_start.split(",");
+	j_parent_start = data.domainInfo.wrf.j_parent_start.split(",");
+	
 	var height = [];
 	var width = []
 	//判断分辨率，确定每一层domain的分辨率
@@ -470,11 +461,40 @@ function generateFishingNets(data){
 			var y1 = -((columns[i]-1)/2*height[i]);
 			var y2 = -((columns[i]-1)/2*height[i]);
 			
-			gp_server(rows[i]-1, columns[i]-1, width[i], height[i], y1+" "+x1, y2+" "+x2);
+			jisuanNUM.x1 = x1;
+			jisuanNUM.x2 = x2;
+			jisuanNUM.y1 = y1;
+			jisuanNUM.y2 = y2;
+			
+			gp_server(rows[i]-1, columns[i]-1, width[i], height[i], y1+" "+x1, y2+" "+x2, 0);
 			
 		}else if(i == 1){
 			
+			var x1 = jisuanNUM.x1 + ((i_parent_start[i]-1)*width[i-1]);
+			var x2 = jisuanNUM.x2 + ((i_parent_start[i]-1)*width[i-1]);
+			var y1 = jisuanNUM.y1 + ((j_parent_start[i]-1)*height[i-1]);
+			var y2 = jisuanNUM.y2 + ((j_parent_start[i]-1)*height[i-1]);
+			
+			jisuanNUM.xx1 = x1;
+			jisuanNUM.xx2 = x2;
+			jisuanNUM.yy1 = y1;
+			jisuanNUM.yy2 = y2;
+			
+			gp_server(rows[i]-1, columns[i]-1, width[i], height[i], y1+" "+x1, y2+" "+x2, 1);
+			
 		}else if(i == 2){
+			
+			var x1 = jisuanNUM.xx1 + ((i_parent_start[i]-1)*width[i-1]);
+			var x2 = jisuanNUM.xx2 + ((i_parent_start[i]-1)*width[i-1]);
+			var y1 = jisuanNUM.yy1 + ((j_parent_start[i]-1)*height[i-1]);
+			var y2 = jisuanNUM.yy2 + ((j_parent_start[i]-1)*height[i-1]);
+			
+			jisuanNUM.xxx1 = x1;
+			jisuanNUM.xxx2 = x2;
+			jisuanNUM.yyy1 = y1;
+			jisuanNUM.yyy2 = y2;
+			
+			gp_server(rows[i]-1, columns[i]-1, width[i], height[i], y1+" "+x1, y2+" "+x2, 2);
 			
 		}
 	}
@@ -483,23 +503,12 @@ function generateFishingNets(data){
 /**
  * GP服务调用，生成单层渔网
  */
-function gp_server(rows, columns, width, height, zuobiao1, zuobiao12){
+function gp_server(rows, columns, width, height, zuobiao1, zuobiao12, type){
 	var myDate = new Date();
 	var v1 = myDate.getTime();
 	
-	
-	
-	
-//	渔网原点坐标：
-//		x:左侧坐标
-//		y:下方坐标
-//	Y轴坐标：
-//		x:左侧坐标
-//		y:下方坐标+10
-//	像元宽度：
-//	像元高度：
-//	行数：
-//	列数：
+	//三层domain的颜色
+	var colos = [[255,0,0],[255,255,0],[0,150,255]]
 	
 	var parms = {
 			"1" : zuobiao1,
