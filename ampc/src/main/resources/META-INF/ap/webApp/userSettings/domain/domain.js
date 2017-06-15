@@ -47,7 +47,6 @@ $(document).ready(function(){
 	$('input').change(function(){
 		resolution();
 	});
-	getInfo();//数据初始化
 });
 
 /**
@@ -115,6 +114,7 @@ function getInfo(){
 			}
 		});
 		resolution();//分辨率选择，改变多层分辨率
+		setMapExtent(submitSave());
     });
 }  
 
@@ -368,9 +368,19 @@ require(
         
         app.gp = new dong.Geoprocessor(ArcGisServerUrl+"/arcgis/rest/services/ampc/FishingNets/GPServer/FishingNets");
         
-        setMapExtent(110,25,40,34);
-        generateFishingNets();
+        getInfo();//数据初始化
     });
+
+
+/**
+ * 生成渔网按钮
+ */
+function getFishingNets(){
+	var data = submitSave();//获取到当前的值
+	console.log(data);
+	setMapExtent(data);
+}
+
 
 
 /**
@@ -380,15 +390,20 @@ require(
  * @param Standard_Parallel_2：标准纬线2
  * @param Latitude_Of_Origin：起始原点
  */
-function setMapExtent(Central_Meridian, Standard_Parallel_1, Standard_Parallel_2, Latitude_Of_Origin){
+function setMapExtent(data){
+	var Central_Meridian = data.domainInfo.common.ref_lon;
+	var Standard_Parallel_1 = data.domainInfo.common.stand_lat1;
+	var Standard_Parallel_2 = data.domainInfo.common.stand_lat2;
+	var Latitude_Of_Origin = data.domainInfo.common.ref_lat;
 	
 	if(app.map){
     	app.map.destroy();
     }
 	
-	app.spatialReference = new esri.SpatialReference({
+	app.spatialReference = new dong.SpatialReference({
 		"wkt" : 'PROJCS["Lambert_Conformal_Conic_China",GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic"],PARAMETER["False_Easting",0.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",'+Central_Meridian+'],PARAMETER["Standard_Parallel_1",'+Standard_Parallel_1+'],PARAMETER["Standard_Parallel_2",'+Standard_Parallel_2+'],PARAMETER["Scale_Factor",1.0],PARAMETER["Latitude_Of_Origin",'+Latitude_Of_Origin+'],UNIT["Meter",1.0]]'
 	});
+	app.customExtentAndSR = new dong.Extent(-3095608.299999997, -1761039.3040000014, 1901303.5966000035, 2272060.6185000017, app.spatialReference);
 
 	app.map = new dong.Map("mapDiv", {
         logo: false,
@@ -396,51 +411,78 @@ function setMapExtent(Central_Meridian, Standard_Parallel_1, Standard_Parallel_2
         minZoom: 4,
         maxZoom: 13,
         sliderPosition: 'top-right',
+        extent: app.customExtentAndSR,
         zoom: 3
     });
-	app.map.spatialReference = app.spatialReference;
+	
+	console.log(app.map.spatialReference);
+	
+//	app.map.spatialReference = app.spatialReference;
 	app.layer = new dong.ArcGISDynamicMapServiceLayer(ArcGisServerUrl+"/arcgis/rest/services/ampc/la_cms/MapServer");// 创建动态地图
-	app.layer.spatialReference = app.spatialReference;
+//	app.layer.spatialReference = app.spatialReference;
 	app.map.addLayer(app.layer);
 	
 	app.gLyr = new dong.GraphicsLayer({"id":"gLyr"});
 	app.map.addLayer(app.gLyr);
 	
 	
-	
+	generateFishingNets(data);
 }
 
 
+var jisuanNUM = {};//存储计算用的多层坐标
 /**
  * 生成渔网
  */
-function generateFishingNets(){
-	var data = submitSave();//获取到当前的值
-	console.log(data);
+function generateFishingNets(data){
+	jisuanNUM = {};//每次生成渔网的时候，清空上次计算的结果，计算结果只在循环内使用
+//	data.domainInfo.mcip.btrim;//裁剪网格数
+//	data.domainInfo.common.max_dom;//层数
+//	data.domainRange;//像元大小
 	
-	gp_server();//重新定义投影
+	
+	var rows = new Array();//行数
+	rows = data.domainInfo.wrf.e_sn.split(",");
+	var columns = new Array();//列数
+	columns = data.domainInfo.wrf.e_we.split(",");
+	var height = [];
+	var width = []
+	//判断分辨率，确定每一层domain的分辨率
+	if(data.domainRange == 27000){
+		height = [27000, 9000, 3000];
+		width = [27000, 9000, 3000];
+	}else if(data.domainRange == 36000){
+		height = [36000, 12000, 4000];
+		width = [36000, 12000, 4000];
+	}
 	
 	//循环生成多层domain
-	
+	for(var i = 0; i<data.domainInfo.common.max_dom; i++){
+		if(i == 0){
+			
+			var x1 = -((rows[i]-1)/2*width[i]);
+			var x2 = (-((rows[i]-1)/2*width[i]))+10;
+			var y1 = -((columns[i]-1)/2*height[i]);
+			var y2 = -((columns[i]-1)/2*height[i]);
+			
+			gp_server(rows[i]-1, columns[i]-1, width[i], height[i], y1+" "+x1, y2+" "+x2);
+			
+		}else if(i == 1){
+			
+		}else if(i == 2){
+			
+		}
+	}
 }
 
 /**
  * GP服务调用，生成单层渔网
  */
-function gp_server(){
+function gp_server(rows, columns, width, height, zuobiao1, zuobiao12){
 	var myDate = new Date();
 	var v1 = myDate.getTime();
 	
-	var rows = 100;//行数
-	var columns = 100;//列数
-	var height = 27000;
-	var width = 27000;
 	
-	var x1 = -(rows/2*width);
-	var x2 = -(rows/2*width);
-	
-	var y1 = -(columns/2*height);
-	var y2 = (-(columns/2*height))+10;
 	
 	
 //	渔网原点坐标：
@@ -455,8 +497,8 @@ function gp_server(){
 //	列数：
 	
 	var parms = {
-			"1" : x1+" "+y1,
-			"2" : x2+" "+y2,
+			"1" : zuobiao1,
+			"2" : zuobiao12,
 			"width" : width,
 			"height" : height,
 			"rows" : rows,
@@ -483,7 +525,19 @@ function gp_server(){
 		console.log(v2-v1);
 		
 	}, function(jobinfo){
-		
+		var jobstatus = '';
+	    switch (jobinfo.jobStatus) {
+	      case 'esriJobSubmitted':
+	        jobstatus = '图一正在提交...';
+	        break;
+	      case 'esriJobExecuting':
+	        jobstatus = '图一处理中...';
+	        break;
+	      case 'esriJobSucceeded':
+	    	jobstatus = '图一处理完成...';
+	        break;
+	    }
+	    console.log(jobstatus);
 	}, function(error){
 		console.log(error);
 	});
