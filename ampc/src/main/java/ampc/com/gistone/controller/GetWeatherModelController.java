@@ -238,8 +238,6 @@ public class GetWeatherModelController {
 		try {
 			ClientUtil.SetCharsetAndHeader(request, response);
 //			String sourceid = requestDate.get("sourceid").toString();
-			//通过情景ID获取清单ID
-		//	Long sourceid = tMissionDetailMapper.getsourceid(missionId);
 			Object param = requestDate.get("psal");
 			if (!RegUtil.CheckParameter(param, "String", null, false)) {
 				LogUtil.getLogger().error("GetWeatherModelController--saveEmis  psal为空或出现非法字符!");
@@ -272,7 +270,10 @@ public class GetWeatherModelController {
 			String meiccityconfig = requestDate.get("meiccityconfig").toString();
 			Long scenarinoId = Long.parseLong(requestDate.get("scenarioid").toString());
 			TTasksStatus tTasksStatus = new TTasksStatus();
-			tTasksStatus.setSourceid("1");//清单ID
+			Long missionId = tScenarinoDetailMapper.selectMissionidByID(scenarinoId);
+			//通过情景ID获取清单ID
+			Long sourceid = tMissionDetailMapper.getsourceid(missionId);
+			tTasksStatus.setSourceid(sourceid.toString());//清单ID
 			tTasksStatus.setCalctype("server");//计算方式
 			//减排系数路径
 			tTasksStatus.setPsal(psal);
