@@ -311,4 +311,11 @@
     </set>
    where EXE_SCENARINO_ID = #{exeScenarinoId,jdbcType=DECIMAL} and EXE_MESSAGE_TASKSDATE = #{exeMessageTasksdate,jdbcType=VARCHAR} and EXE_MESSAGE_INDEX = #{exeMessageIndex,jdbcType=DECIMAL}
   </update>
+  <!--查找情景执行的进度列表  scenarinoId -->
+  <select id="selectListByscenarinoId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  select 
+  <include refid="Base_Column_List" />
+    from T_MODEL_SCHEDULE_MESSAGE
+    where EXE_SCENARINO_ID = #{exeScenarinoId,jdbcType=DECIMAL} ORDER BY EXE_MESSAGE_TIME ASC
+  </select>
 </mapper>
