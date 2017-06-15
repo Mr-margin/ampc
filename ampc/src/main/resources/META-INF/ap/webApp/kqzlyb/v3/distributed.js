@@ -598,7 +598,6 @@ function load_gis(p) {
      zmblockUI1("#map_in", "end");//打开锁屏控制
      }
 
-
      }).error(function (res) {
      zmblockUI1("#map_in", "end");
      swal('抽数，内部错误', '', 'error');
