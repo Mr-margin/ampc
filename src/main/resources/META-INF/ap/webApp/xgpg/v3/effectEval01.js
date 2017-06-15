@@ -806,7 +806,7 @@ function find_standard(){
 			"startDate":changeMsg.startD,
 			"endDate":changeMsg.endD
 		  };
-	ajaxPost(url, paramsName).success(function (res) {
+	ajaxPost_sy(url, paramsName).success(function (res) {
 	    if (res.status == 0) {
 	    	standardData = res.data.data;	//放置基准数据
 	    	scenarino.scenarinoId=res.data.scenarinoId;
