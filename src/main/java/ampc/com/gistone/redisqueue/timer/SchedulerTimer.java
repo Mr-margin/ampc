@@ -51,6 +51,7 @@ import java.util.Map;
 
 
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -425,7 +426,8 @@ public class SchedulerTimer<V> {
 					tTasksStatus2.setSourceid(esCouplingId.toString());
 					
 					//设置calctype是系统设置 目前定义为server
-					tTasksStatus2.setCalctype("server");
+					String calctype = configUtil.getCalctype();
+					tTasksStatus2.setCalctype(calctype);
 					tTasksStatus2.setPsal("");
 					tTasksStatus2.setSsal("");
 					//目前的死数据
