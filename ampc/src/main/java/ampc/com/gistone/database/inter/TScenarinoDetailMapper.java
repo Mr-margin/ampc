@@ -365,4 +365,6 @@ public interface TScenarinoDetailMapper {
 	 * @date 2017年6月12日 下午7:19:41
 	 */
 	Date getmaxRealpreiction(Long userId);
+	
+	int selectAllcountOrByQueryName2(Map map);
 }
