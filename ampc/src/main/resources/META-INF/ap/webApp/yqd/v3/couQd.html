@@ -2,6 +2,12 @@
     <div class="yqdTable" style="width:100%;">
         <!--耦合清单-->
         <div class="tableBox">
+            <!--搜索工具栏-->
+            <div id="searchTool" class="textbox searchbox" style="margin-bottom: 10px;">
+                <input id="companyname" class="textbox-text validatebox-text textbox-prompt">
+                <span class="textbox-addon textbox-addon-right" style="right: 0px; top: 0px;" onclick="innitdata()"><a href="javascript:;" class="textbox-icon searchbox-button" icon-index="0" tabindex="-1" style="width: 18px; height: 29px;"></a></span>
+                <!--<button plain="true" onclick="doSearch()" style="border:1px solid #ccc;background-color: #fff;padding: "><i class="im-search" style="color: #666;font-size:16px;line-height:26px;"></i>搜索</button>-->
+            </div>
             <table id="couqd" class="esyui-datagrid">
             </table>
         </div>
