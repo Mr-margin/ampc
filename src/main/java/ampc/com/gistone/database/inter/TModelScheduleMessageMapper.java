@@ -1,5 +1,6 @@
 package ampc.com.gistone.database.inter;
 
+import java.util.List;
 import java.util.Map;
 
 import ampc.com.gistone.database.model.TModelScheduleMessage;
@@ -37,4 +38,15 @@ public interface TModelScheduleMessageMapper {
 	 * @date 2017年6月8日 下午3:51:01
 	 */
 	int updateByscenIdAndIndex(TModelScheduleMessage tModelScheduleMessage);
+
+	/**
+	 * @Description: 获取情景执行的进度的列表
+	 * @param scenarinoId
+	 * @return   
+	 * List<TModelScheduleMessage>  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月15日 下午12:48:52
+	 */
+	List<TModelScheduleMessage> selectListByscenarinoId(Long scenarinoId);
 }
