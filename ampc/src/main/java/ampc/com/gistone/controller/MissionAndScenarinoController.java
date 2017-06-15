@@ -606,17 +606,14 @@ public class MissionAndScenarinoController {
 			if(null!=queryName&&!queryName.equals("")){
 				String name="%"+queryName+"%";
 				map.put("queryName",name);
-			}else{
-				map.put("queryName",null);
 			}
 			//判断任务状态 预评估还是后评估
 			if(null!=missionStatus&&!missionStatus.equals("")){
 				map.put("missionStatus",missionStatus);
-			}else{
-				map.put("missionStatus",null);
 			}
 			//查询全部 写入结果集 返回
 			List<Map> list = this.tScenarinoDetailMapper.selectAllOrByQueryName2(map);
+			int a=tScenarinoDetailMapper.selectAllcountOrByQueryName2(map);
 			List<Map> newlist=new ArrayList<Map>();
 			int sss=0;
 			for(Map s:list){
@@ -626,7 +623,7 @@ public class MissionAndScenarinoController {
 					sss++;
 				}
 			}
-			mapResult.put("total", sss);
+			mapResult.put("total", a);
 			mapResult.put("rows",newlist);
 			return AmpcResult.ok(mapResult);
 		} catch (Exception e) {
