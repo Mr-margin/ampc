@@ -239,8 +239,13 @@ public class NativeAndNationController {
 			}
 			int pageSize = Integer.valueOf(param.toString());
 			
-			String queryName = data.get("queryName").toString();
-			
+			String queryNames = data.get("queryName").toString();
+			String queryName;
+			if(queryNames==null){
+				queryName="";
+			}else{
+				queryName=queryNames;
+			}
 			//添加查询参数
 			Map nationMap=new HashMap();
 			nationMap.put("userId", userId);
@@ -1263,7 +1268,8 @@ public class NativeAndNationController {
 			}
 			
 			Map msgMap = new HashMap();
-			String esNativeTpOutPathre = esNativeTpOutPath.replace("/", "\\");
+//			String esNativeTpOutPathre = esNativeTpOutPath.replace("/", "\\");
+			String esNativeTpOutPathre = esNativeTpOutPath;
 			//调用校验数据函数
 			Map  nativeExcel =excelToDateController.check_nativeExcelData(userId, nativeTpId, nativeId, native_filePath+ "/"+"应急系统新_3清单数据_测试.xlsx",esNativeTpOutPathre);
 				if(nativeExcel==null){

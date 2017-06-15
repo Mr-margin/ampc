@@ -1397,11 +1397,11 @@ public class AppraisalController {
 			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
 			tScenarinoDetail.setUserId(userId);
 			tScenarinoDetail.setMissionId(missionId);
-			//进行数据查询
+			//进行基准情景数据查询
 			TScenarinoDetail tScenarinoDetaillist=tScenarinoDetailMapper.selectBystandard(tScenarinoDetail);
-			//获取情景开始时间
+			//获取基准情景开始时间
 			String startDate= DateUtil.DATEtoString(tScenarinoDetaillist.getScenarinoStartDate(), "yyyy-MM-dd");	
-			//获取情景结束时间
+			//获取基准情景结束时间
 			String endDate= DateUtil.DATEtoString(tScenarinoDetaillist.getScenarinoEndDate(), "yyyy-MM-dd");
 			//该任务下的所有数据
 			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);	
