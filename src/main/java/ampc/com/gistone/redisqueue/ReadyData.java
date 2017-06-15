@@ -131,6 +131,8 @@ import java.util.UUID;
 
 
 
+
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -1726,7 +1728,8 @@ public class ReadyData {
 		//设置sourceid
 		DataEmis.setSourceid(sourceid.toString());
 		//设置Calctype 计算方式
-		DataEmis.setCalctype("server");//cache
+		String calctype = configUtil.getCalctype();
+		DataEmis.setCalctype(calctype);//cache
 		//实时预报和基准情景不需要取减排系数 设置为空
 		if ("3".equals(scenarinoType.trim())) {
 			//
