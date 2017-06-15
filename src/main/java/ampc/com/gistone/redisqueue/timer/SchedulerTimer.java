@@ -653,7 +653,8 @@ public class SchedulerTimer<V> {
 								}
 							}	
 						}
-					}	
+					}
+					sendGFSMessageONRealPrediction();
 			} catch (Exception e) {
 				LogUtil.getLogger().error("定时器 sendMessageOnRealprediction 出错！",e);
 			}
@@ -780,7 +781,7 @@ public class SchedulerTimer<V> {
 	 * @date 2017年6月1日 上午11:45:39
 	 */
 //	@Scheduled(fixedRate = 5000)
-	@Scheduled(cron="0 0/8 * * * ?")   //隔8分钟定时检查一次实时预报的gfs发送情况---服务器配置
+//	@Scheduled(cron="0 0/8 * * * ?")   //隔8分钟定时检查一次实时预报的gfs发送情况---服务器配置
 //	@Scheduled(cron="0 30 10 * * ?")
 	public void sendGFSMessageONRealPrediction() {
 		boolean runningSetting = configUtil.isRunningSetting();
@@ -812,30 +813,35 @@ public class SchedulerTimer<V> {
 								String beizhu2 = selectStatus.getBeizhu2();
 								Long stepindex = selectStatus.getStepindex();
 								String modelErrorStatus = selectStatus.getModelErrorStatus();
-								Date tasksEndDate =  DateUtil.DateToDate(selectStatus.getTasksEndDate(), "yyyyMMdd");
-								if (null!=modelErrorStatus&&!"".equals(modelErrorStatus)) {
-									if (null!=beizhu2&&!"".equals(beizhu2)) {
-										Date fnlDate = DateUtil.StrtoDateYMD(beizhu2, "yyyyMMdd");
-										Date scenarinoStartDate = DateUtil.DateToDate(tScenarinoDetail.getScenarinoStartDate(), "yyyyMMdd");
-										int compareTo1 = fnlDate.compareTo(scenarinoStartDate);
-										if (compareTo1==0) {
-											if (stepindex==8) {
-												int compareTo2 = tasksEndDate.compareTo(scenarinoStartDate);
-												if (compareTo2==0) {
-													Long rangeDay = tScenarinoDetail.getRangeDay();
-													if (length>=rangeDay) {
-														//开始发送gfs的消息
-										    			boolean sendqueueRealDataThen = readyData.sendqueueRealDataThen(tasksEndDate,tScenarinoDetail.getScenarinoId());
-										    			if (sendqueueRealDataThen) {
-															LogUtil.getLogger().info("sendGFSMessageONRealPrediction：发送gfs消息成功！");
-														}else {
-															LogUtil.getLogger().info("sendGFSMessageONRealPrediction：发送gfs消息失败！");
+								Date tasksEndDate = selectStatus.getTasksEndDate();
+								if (null!=tasksEndDate) {
+									tasksEndDate =  DateUtil.DateToDate(selectStatus.getTasksEndDate(), "yyyyMMdd");
+									if (null!=modelErrorStatus&&!"".equals(modelErrorStatus)) {
+										if (null!=beizhu2&&!"".equals(beizhu2)) {
+											Date fnlDate = DateUtil.StrtoDateYMD(beizhu2, "yyyyMMdd");
+											Date scenarinoStartDate = DateUtil.DateToDate(tScenarinoDetail.getScenarinoStartDate(), "yyyyMMdd");
+											int compareTo1 = fnlDate.compareTo(scenarinoStartDate);
+											if (compareTo1==0) {
+												if (stepindex==8) {
+													int compareTo2 = tasksEndDate.compareTo(scenarinoStartDate);
+													if (compareTo2==0) {
+														Long rangeDay = tScenarinoDetail.getRangeDay();
+														if (length>=rangeDay) {
+															//开始发送gfs的消息
+											    			boolean sendqueueRealDataThen = readyData.sendqueueRealDataThen(tasksEndDate,tScenarinoDetail.getScenarinoId());
+											    			if (sendqueueRealDataThen) {
+																LogUtil.getLogger().info("sendGFSMessageONRealPrediction：发送gfs消息成功！");
+															}else {
+																LogUtil.getLogger().info("sendGFSMessageONRealPrediction：发送gfs消息失败！");
+															}
 														}
 													}
 												}
 											}
 										}
 									}
+								}else {
+									LogUtil.getLogger().info("sendGFSMessageONRealPrediction:tasksEndDate为空！");
 								}
 							}
 						}else {
