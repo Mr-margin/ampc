@@ -55,7 +55,7 @@ $(document).ready(function(){
 $('.ref_lon').blur(function(){
 	var Central_Meridian = $(this).val();
 	if(!isNaN(Central_Meridian)){
-		numbers = parseFloat(number).toFixed(8);
+		Central_Meridian = parseFloat(Central_Meridian).toFixed(6)*1;
 		$(this).val(Central_Meridian);
 	}
 	if(Central_Meridian < 75 || Central_Meridian > 150){
@@ -66,7 +66,7 @@ $('.ref_lon').blur(function(){
 $('.stand_lat1').blur(function(){
 	var Standard_Parallel_1 = $(this).val();
 	if(!isNaN(Standard_Parallel_1)){
-		numbers = parseFloat(Standard_Parallel_1).toFixed(8);
+		Standard_Parallel_1 = parseFloat(Standard_Parallel_1).toFixed(6)*1;
 		$(this).val(Standard_Parallel_1);
 	}
 	if(Standard_Parallel_1 < 0 || Standard_Parallel_1 > 90){
@@ -77,7 +77,7 @@ $('.stand_lat1').blur(function(){
 $('.stand_lat2').blur(function(){
 	var Standard_Parallel_2 = $(this).val();
 	if(!isNaN(Standard_Parallel_2)){
-		numbers = parseFloat(Standard_Parallel_2).toFixed(8);
+		Standard_Parallel_2 = parseFloat(Standard_Parallel_2).toFixed(6)*1;
 		$(this).val(Standard_Parallel_2);
 	}
 	if(Standard_Parallel_2 < 0 || Standard_Parallel_2 > 90){
@@ -88,7 +88,7 @@ $('.stand_lat2').blur(function(){
 $('.ref_lat').blur(function(){
 	var Latitude_Of_Origin = $(this).val();
 	if(!isNaN(Latitude_Of_Origin)){
-		numbers = parseFloat(Latitude_Of_Origin).toFixed(8);
+		numbers = parseFloat(Latitude_Of_Origin).toFixed(6)*1;
 		$(this).val(Latitude_Of_Origin);
 	}
 	if(Latitude_Of_Origin < 15 || Latitude_Of_Origin > 55){
@@ -96,7 +96,13 @@ $('.ref_lat').blur(function(){
  		$('.ref_lat').val('');
  	}
 });
-
+$('.e_reolace').blur(function(){
+	var num = $(this).val();
+	if((num-1)%3 !== 0){
+		swal("请输入3的倍数+1的数字");
+		$(this).val('');
+	}
+});
 
 /**
  * 查询已有数据
@@ -134,14 +140,15 @@ function pullPage(value){
 		$('.box-body').attr('domain_id',domain_id);
 		$('.box-body').attr('max_dom',value.domainInfo.common.max_dom);
 		$('.del_domain').attr('domain_id',domain_id);
-		$('.i_parent_start1').text('1');
-		$('.j_parent_start1').text('1');
+		//$('.i_parent_start1').text('1');
+		//$('.j_parent_start1').text('1');
 	}else{
 		var arr_we = value.domainInfo.wrf.e_we.split(',');
 		var arr_sn = value.domainInfo.wrf.e_sn.split(',');
 		var arr_dx = value.domainInfo.common.dx.split(',');
 		var arr_i_parent_start = value.domainInfo.wrf.i_parent_start.split(',');
 		var arr_j_parent_start = value.domainInfo.wrf.j_parent_start.split(',');
+		var btrim = value.domainInfo.mcip.btrim;
 		$('.panel-title a').text(value.domainName);
 		$('.ref_lat').val(value.domainInfo.common.ref_lat);
 		$('.ref_lon').val(value.domainInfo.common.ref_lon);
@@ -154,18 +161,16 @@ function pullPage(value){
 		$('.e_sn2').val(arr_sn[1]);
 		$('.e_we3').val(arr_we[2]);
 		$('.e_sn3').val(arr_sn[2]);
-		$('.btrim').val(value.domainInfo.mcip.btrim);
-		$('.btrims').text(value.domainInfo.mcip.btrim);
-		$('.i_parent_start1').text(arr_i_parent_start[0]);
+		//$('.i_parent_start1').text(arr_i_parent_start[0]);
 		$('.i_parent_start2').val(arr_i_parent_start[1]);
 		$('.i_parent_start3').val(arr_i_parent_start[2]);
-		$('.j_parent_start1').text(arr_j_parent_start[0]);
+		//$('.j_parent_start1').text(arr_j_parent_start[0]);
 		$('.j_parent_start2').val(arr_j_parent_start[1]);
 		$('.j_parent_start3').val(arr_j_parent_start[2]);
 		$('.box-body').attr('domain_id',domain_id);
 		$('.box-body').attr('max_dom',value.domainInfo.common.max_dom);
 		$('.del_domain').attr('domain_id',domain_id);
-
+		$('.btrim_select').find("option[value="+btrim+"]").attr('selected','selected');
 		if(arr_dx[0] == '27000'){
 			$('.domain_select').find("option[value='2']").attr('selected','selected');
 		}else{
@@ -190,8 +195,8 @@ function pullPage(value){
  * 分辨率选择，改变多层分辨率
  */
 function resolution(){
-	var checkValue=$("select").val();
-	var btrim = $('.btrim').val();
+	var checkValue=$(".domain_select").val();
+	var btrim = $('.btrim_select').val();;
 	var stand_lon = $('.ref_lon').val();
 	$('.btrims').text(btrim);
 //	$('.ref_lon').val(stand_lon);
@@ -221,10 +226,10 @@ function submitSave(){
 	var e_sn1 = $('.e_sn1').val(); 
 	var e_sn2 = $('.e_sn2').val(); 
 	var e_sn3 = $('.e_sn3').val(); 
-	var i_parent_start1 = $('.i_parent_start1').val();
+	var i_parent_start1 = 1;
 	var i_parent_start2 = $('.i_parent_start2').val();
 	var i_parent_start3 = $('.i_parent_start3').val();
-	var j_parent_start1 = $('.j_parent_start1').val();
+	var j_parent_start1 = 1;
 	var j_parent_start2 = $('.j_parent_start2').val();
 	var j_parent_start3 = $('.j_parent_start3').val();
 	var dx = $(".domain_select").find("option:selected").text();
