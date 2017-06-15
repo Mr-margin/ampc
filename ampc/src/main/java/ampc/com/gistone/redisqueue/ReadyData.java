@@ -829,6 +829,7 @@ public class ReadyData {
 			//基础情景是否满足
 			//beizhu =0 表示该条预报情景第一天的数据尚未执行完毕  不可发送 
 			Integer beizhu = Integer.parseInt(selectStatus.getBeizhu());
+			System.out.println(selectStatus.getTasksScenarinoId()+":"+beizhu);
 			String beizhu2 = selectStatus.getBeizhu2();
 			if (beizhu==0&&!"0".equals(beizhu2.trim())) {
 				LogUtil.getLogger().info("pivot方法日志:实时预报的基础情景条件不满足！basisScenarinoId："+basisScenarinoId);
