@@ -322,13 +322,25 @@ public class ModelExecuteStatusController<E> {
 						k++;
 						String str = (tempdate+"<br/>"+ indextime).toString();
 						execDetailMsg[k] = str;
+						tempdate = indextime;
 					}else {
 						map.put(messageIndex, tasksEndDate);
 						i++;
+						k=0;
 						String str = (tempdate+"<br/>"+ indextime).toString();
 						execDetailMsg[k] = str;
 						tempdate = indextime;
+						if (j>=1) {
+							outerArray[i-2] = execDetailMsg;
+							//清空数组
+							execDetailMsg = new String[daylength];
+						}
+						j=i;
 					}
+				}
+				if (j>1) {
+					//给最后一个赋值
+					outerArray[i-1] = execDetailMsg;
 				}
 			}
 		}
