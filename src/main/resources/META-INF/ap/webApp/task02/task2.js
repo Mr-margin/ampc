@@ -549,7 +549,7 @@ function initCoptTable() {
             return json;
         },
         loadFilter: function (res) {
-            return res.data.rows
+            return res.data
         },
         columns: [[{
             checkbox: true,
