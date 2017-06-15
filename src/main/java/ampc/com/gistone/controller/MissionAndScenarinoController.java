@@ -1234,6 +1234,7 @@ public class MissionAndScenarinoController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			SimpleDateFormat sdf2=new SimpleDateFormat("yyyy-MM-dd");
 			Long missionId=Long.valueOf(data.get("missionId").toString());//任务id
 			if(!RegUtil.CheckParameter(missionId, "Long", null, false)){
 				LogUtil.getLogger().error("save_scenarino  任务id为空!");
@@ -1261,7 +1262,7 @@ public class MissionAndScenarinoController {
 			}
 			Date pathDate1=new Date();
 			String pathdate2=sdf.format(pathDate1);
-			Date pathDate=sdf.parse(pathdate2);
+			Date pathDate=sdf2.parse(pathdate2);
 //			Calendar cal = Calendar.getInstance();
 //			cal.setTime(date);
 //			cal.add(Calendar.DATE, -1);
@@ -1286,17 +1287,7 @@ public class MissionAndScenarinoController {
 					Date basisTime=sdf.parse(baTime);
 				TScenarinoDetail tsd=new TScenarinoDetail();
 				
-//				TScenarinoDetail tsd=new TScenarinoDetail();
-//				
-//				tsd.setBasisScenarinoId(basisScenarinoId);
-//				tsd.setBasisTime(basisTime);
-//				tsd.setScenarinoName(scenarinoName);
-//				tsd.setScenarinoStartDate(scenarinoStartDate);
-//				tsd.setScenarinoEndDate(scenarinoEndDate);
-//				tsd.setScenType(scenType);
-//				tsd.setMissionId(missionId);
-//				tsd.setUserId(userId);
-//				tsd.setIsEffective("1");
+
 				tsd.setBasisScenarinoId(basisScenarinoId);
 				tsd.setBasisTime(basisTime);
 				tsd.setScenarinoName(scenarinoName);
@@ -1729,6 +1720,7 @@ public class MissionAndScenarinoController {
 			}
 			TMissionDetail tMissionDetail=new TMissionDetail();
 			tMissionDetail.setUserId(userId);
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 			List<TMissionDetail> missionlist=tMissionDetailMapper.selectByEntity2(tMissionDetail);
 			JSONArray arr=new JSONArray();
 			if(!missionlist.isEmpty()){
@@ -1743,19 +1735,45 @@ public class MissionAndScenarinoController {
 				
 			}
 				if(b!=0){
-					
+				JSONObject os=new JSONObject();
 				JSONObject obj=new JSONObject();
 				for(TScenarinoDetail ts:tScenarinoDetaillist){
 					if(ts.getScenType().equals("3")){
 						obj.put("jzqjid",ts.getScenarinoId());	
 					}
+					if(mission.getMissionStatus().equals("2")){
+						if(ts.getScenType().equals("1")){
+							TScenarinoDetail st=new TScenarinoDetail();
+							String pate=sdf.format(ts.getPathDate());
+							Date sss=sdf.parse(pate);
+							st.setPathDate(sss);
+							st.setScenType("4");
+							List<TScenarinoDetail> byEntity = tScenarinoDetailMapper.selectByEntity(st);
+							TScenarinoDetail ce=new TScenarinoDetail();
+							if(!byEntity.isEmpty()){
+							 ce=byEntity.get(0);
+							 os.put(ce.getScenarinoId(),sss.getTime());
+							}
+							
+							
+							
+						}else if(ts.getScenType().equals("2")){
+							os.put("-1", "99999999999");	
+						}
+						
+						
+						
+					}
+					
 					
 				}
+				obj.put("pathdates", os);
 				obj.put("missionId", mission.getMissionId());
 				obj.put("missionName", mission.getMissionName());
 				obj.put("missionStartDate", mission.getMissionStartDate().getTime());
 				obj.put("missionEndDate", mission.getMissionEndDate().getTime());
 				obj.put("domainId", mission.getMissionDomainId());
+				obj.put("missionStatus", mission.getMissionStatus());
 				arr.add(obj);
 				}
 			}
