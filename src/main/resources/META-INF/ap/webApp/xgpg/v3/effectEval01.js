@@ -6,7 +6,7 @@ $(function () {
      *设置导航条信息
      */
     $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">时间序列</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a> <span style="padding-left: 15px;padding-right: 15px;float:right;" id="missionName"></span>');
-
+    
 });
 
 /**
@@ -163,6 +163,7 @@ function initNowSession(){
 	}
     dps_Date = requestDate();
 	setStation(sceneInitialization.taskID);
+	$("#missionName").text(sceneInitialization.missionName);
 	setTime(sceneInitialization.s, sceneInitialization.e);
 	$.when(dps_codeStation,dps_station).then(function () {
 		getdata();
@@ -991,6 +992,7 @@ function save_scene() {
 		var mag = {};
 		mag.id = "sceneInitialization";
 		mag.taskID = $("#task").val();
+		mag.missionName = $("#task :selected").text();
 		mag.domainId = allMission[mag.taskID].domainId;
 		mag.s = allMission[mag.taskID].missionStartDate;
 		mag.e = allMission[mag.taskID].missionEndDate;
@@ -1009,7 +1011,9 @@ function save_scene() {
 			arrId.push({"id": mag.data[i].scenarinoId});
 		}
 		$("#close_scene").click();
-		$("#missionName").text($("#task :selected").text());
+		//添加任务名称
+		$("#missionName").text(sceneInitialization.missionName);
+		
 		set_sce();
 //    	find_standard();
 		initNowSession();
