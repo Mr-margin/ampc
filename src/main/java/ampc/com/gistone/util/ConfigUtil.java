@@ -25,6 +25,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author WangShanxi
  */
 public class ConfigUtil {
+	//服务器excel验证文件路径
+	@Value("${chexcExcelUrl}")
+	private String chexcExcelUrl;
+	
+	
+	public String getChexcExcelUrl() {
+		return chexcExcelUrl;
+	}
+
 	// 减排Url
 	@Value("${yunURL}")
 	private String yunURL;
@@ -35,7 +44,7 @@ public class ConfigUtil {
 		return yunURL;
 	}
 
-	// 减排Url
+	// ftpUrl
 	@Value("${ftpURL}")
 	private String ftpURL;
 	
@@ -44,6 +53,7 @@ public class ConfigUtil {
 		return ftpURL;
 	}
 
+	
 	// 措施的减排分析Url
 	@Value("${jp.serverPath}")
 	private String serverPath;
