@@ -1,7 +1,13 @@
 /**
  * Created by shanhaichushi on 2017/5/19.
  */
-$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">全国清单</span><span class="navRight qdnavRight" style="display: none"><button class="qdCreat" onclick="creatQd()">新建</button><button class="qdEdit" onclick="editQd()">编辑</button><button class="qdDelet" onclick="delectQd()">删除</button></span>');
+$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">全国清单</span><span class="navRight qdnavRight qdnavRightNation"><button class="qdCreat" onclick="creatQd()">新建</button><button class="qdEdit" onclick="editQd()">编辑</button><button class="qdDelet" onclick="delectQd()">删除</button></span>');
+
+//普通用户无法看见全国清单 管理员可以看见全国清单
+if(userId==2){
+    $(".qdnavRightNation").css({"display":"none"})
+}
+
 innitdata()//全国清单表单初始化
 function innitdata(){
     $("#qgqd").datagrid({
@@ -60,8 +66,8 @@ function creatQd(){ // 点击创建清单按钮 弹出创建窗口
     $("#formQd").form('clear');//打开窗口清空输入框数据
     $(".cloudui .rwCon .qdContent .qdName").val("请输入长度不超过20的名称（必填）").css({"color":"#757575"});
     $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份").css({"color":"#757575"});
-    $("#creatQd .tipYearRepeat span").remove();
-    $("#creatQd .tipNameRepeat span").remove();
+    // $("#creatQd .tipYearRepeat span").remove();
+    // $("#creatQd .tipNameRepeat span").remove();
     $("#creatQd").window('open');
 }
 $("#creatQd").window({  //创建全国清单窗口
@@ -107,14 +113,14 @@ function submitQd(){ //点击提交按钮进行新建清单数据的提交
             )
             $("#creatQd").window('close');
         }else{
-            // swal('清单年份获取错误', '', 'error');
-            $("#creatQd .tipYearRepeat span").remove();
-            $("#creatQd .tipYearRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入符合要求的年份</span>");
+            swal('清单年份获取错误', '', 'error');
+            // $("#creatQd .tipYearRepeat span").remove();
+            // $("#creatQd .tipYearRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入符合要求的年份</span>");
         }
     }else{
-        // swal('请输入符合要求的名称', '', 'error');
-        $("#creatQd .tipNameRepeat span").remove();
-        $("#creatQd .tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入符合要求的名称</span>");
+        swal('请输入符合要求的名称', '', 'error');
+        // $("#creatQd .tipNameRepeat span").remove();
+        // $("#creatQd .tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入符合要求的名称</span>");
     }
 
 }
@@ -133,8 +139,8 @@ function editQd(){ // 编辑全国清单
         document.getElementById("esNationYear_edit").value=editQdYear;//编辑窗口打开后 年份输入框显示所选数据的名称
         document.getElementById("esNationMark_edit").value=editMark;//编辑窗口打开后 备注输入框显示所选数据的名称
         $("#editQd input").css({"color":"black"})
-        $("#editQd .tipYearRepeat span").remove();
-        $("#editQd .tipNameRepeat span").remove();
+        // $("#editQd .tipYearRepeat span").remove();
+        // $("#editQd .tipNameRepeat span").remove();
         $("#editQd").window('open');
     }else{
         swal('请先选择编辑清单', '', 'error');
@@ -188,12 +194,14 @@ function editSubmitQd(){//点击提交按钮进行编辑数据提交
             )
             $("#editQd").window('close');
         }else{
-            $("#editQd .tipYearRepeat span").remove();
-            $("#editQd .tipYearRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入符合要求的年份</span>");
+            swal('清单年份获取错误', '', 'error');
+            // $("#editQd .tipYearRepeat span").remove();
+            // $("#editQd .tipYearRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入符合要求的年份</span>");
         }
     }else{
-        $("#editQd .tipNameRepeat span").remove();
-        $("#editQd .tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入符合要求的名称</span>");
+        swal('请输入符合要求的名称', '', 'error');
+        // $("#editQd .tipNameRepeat span").remove();
+        // $("#editQd .tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入符合要求的名称</span>");
     }
 
 }
@@ -244,13 +252,13 @@ $(".cloudui .rwCon .qdContent .qdName").blur(function () {//名称失去焦点
         $(this).css({"color":"#757575"})
     }
     if($(this).val().length==0||$(this).val().length>20){
-        $(".tipNameRepeat span").remove();
-        $(".tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>名称的长度不符合要求</span>");
+        swal('清单名称长度不符合要求', '', 'error');
+        // $(".tipNameRepeat span").remove();
+        // $(".tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>名称的长度不符合要求</span>");
     }else if($(this).val()=="请输入长度不超过20的名称（必填）"){
-        $(".tipNameRepeat span").remove();
-        $(".tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入正确清单名称</span>");
-    }else {
-        $(".tipNameRepeat span").remove();
+        swal('请输入正确清单名称', '', 'error');
+        // $(".tipNameRepeat span").remove();
+        // $(".tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入正确清单名称</span>");
     }
 })
 $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
@@ -259,13 +267,12 @@ $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
         $(this).css({"color":"#757575"})
     }
     if($(this).val()=="请输入1990-2100之间的年份"){
-        $(".tipYearRepeat span").remove();
-        $(".tipYearRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入正确清单年份</span>");
-    }else if($(this).val()>=1990&&$(this).val()<=2100){
-        $(".tipYearRepeat span").remove();
-    }else{
-        $(".tipYearRepeat span").remove();
-        $(".tipYearRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入正确清单年份</span>");
+        swal('请输入正确清单年份', '', 'error');
+        // $(".tipYearRepeat span").remove();
+        // $(".tipYearRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入正确清单年份</span>");
+    }else if($(this).val()<1990||$(this).val()>2100){
+        swal('请输入1990-2100之间的清单年份', '', 'error');
+        // $(".tipYearRepeat span").remove();
     }
 })
 
@@ -278,8 +285,9 @@ $("#creatQd #esNationName").blur(
             "nationName":$("#creatQd #esNationName").val()
         }).success(function (res) {
             if(res.data.data.msg==true){
-                $("#creatQd .tipNameRepeat span").remove();
-                $("#creatQd .tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>该名称已被使用</span>");
+                // $("#creatQd .tipNameRepeat span").remove();
+                // $("#creatQd .tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>该名称已被使用</span>");
+                swal('清单名称重复，请再次输入名称', '', 'error');
             }
         })
     }
