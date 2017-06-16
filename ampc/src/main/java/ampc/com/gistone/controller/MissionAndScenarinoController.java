@@ -1736,6 +1736,7 @@ public class MissionAndScenarinoController {
 			}
 				if(b!=0){
 				JSONObject os=new JSONObject();
+				JSONObject ms=new JSONObject();
 				JSONObject obj=new JSONObject();
 				for(TScenarinoDetail ts:tScenarinoDetaillist){
 					//判断情景是否为以执行完的基准情景
@@ -1756,6 +1757,7 @@ public class MissionAndScenarinoController {
 							if(!byEntity.isEmpty()){
 							 ce=byEntity.get(0);
 							 os.put(ce.getScenarinoId(),sss.getTime());
+							 ms.put(ce.getScenarinoId(), ce.getMissionId());
 							}
 						}
 					}
@@ -1765,6 +1767,7 @@ public class MissionAndScenarinoController {
 					}
 					
 				}
+				obj.put("pathmission",ms);
 				obj.put("pathdates", os);
 				obj.put("missionId", mission.getMissionId());
 				obj.put("missionName", mission.getMissionName());
@@ -2203,6 +2206,7 @@ public class MissionAndScenarinoController {
 			}
 			JSONObject obj=new JSONObject();
 			obj.put("scenarinoId", tScenarinoDetail.getScenarinoId());
+			obj.put("mission", tScenarinoDetail.getMissionId());
 			 return AmpcResult.ok(obj);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("findby_pathdate 根据pathdate查询实时预报情景异常",e);
