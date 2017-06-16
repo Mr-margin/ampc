@@ -211,6 +211,7 @@ var zTreeSetting = {
             if (allData[areaIndex].timeItems.length <= 1) {
                 $('#timepanel').tabs('disableTab', '时段删除');
                 $('#timepanel').tabs('disableTab', '时段编辑');
+                $('#timepanel').tabs('select', '时段添加');
             }else {
                 $('#timepanel').tabs('enableTab', '时段删除');
                 $('#timepanel').tabs('enableTab', '时段编辑');
@@ -239,6 +240,7 @@ var zTreeSetting = {
             }
             
             $('#timeorplan').tabs('select','预案操作');
+            
 //                全局变量变量的存储
 
             var timeStart = moment(selectedTimes.startTime);
@@ -255,8 +257,17 @@ var zTreeSetting = {
             msg.content.provinceCodes = allData[areaIndex].provinceCodes;
 
             /*添加时段 start*/
-            initDate(timeStart.add(2, 'h'), timeEnd1);
-            editHtml('addTime1');
+            /*判断当前时段时长是否超过*/
+            if((allData[areaIndex].timeItems[timeIndex].timeEndDate-allData[areaIndex].timeItems[timeIndex].timeStartDate)>1000*60*60*2){
+            	initDate(timeStart.add(2, 'h'), timeEnd1);
+                editHtml('addTime1');
+                $('#qyTimePoint').attr('disabled',false).css({'opacity':1,'cursor':'pointer'});
+            	$('#addTimesBtn').attr('disabled',false).css({'opacity':1,'cursor':'pointer'});
+            }else{
+            	$('#qyTimePoint').attr('disabled',true).css({'opacity':0.5,'cursor':'no-drop'});
+            	$('#addTimesBtn').attr('disabled',true).css({'opacity':0.5,'cursor':'no-drop'});
+            }
+            
 
             /*删除时段 start*/
             editHtml('delTime');
@@ -1621,8 +1632,8 @@ function updataCodeList() {
     }
     addLayer(showCode);
     
-    $('.codeTree').hide();
-    $('.adcodeList').show();
+//    $('.codeTree').hide();
+//    $('.adcodeList').show();
 }
 
 /*在选中地区的面板进行修改选中的区域时的函数，重新跳出ztree*/
@@ -1904,6 +1915,9 @@ function setShowCode(data) {
     showCode[2] = {};
     if(proNum==0&&cityNum==0&&countyNum==0){
     	revise();
+    }else{
+    	$('.adcodeList').show();
+        $('.codeTree').hide();
     }
     if (proNum == 0) {
         showCode[0] = {};
@@ -2183,6 +2197,7 @@ function initEditTimeDate(s, e) {
 
 /*添加时间段*/
 function addTimes() {
+//	获取插入的时间点
     addTimePoint = $('#qyTimePoint').val();
     var timePoint = moment(addTimePoint).format('YYYY-MM-DD HH:mm:ss');
     var timeFrame = allData[areaIndex].timeFrame;
