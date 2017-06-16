@@ -71,8 +71,8 @@ public class AcceptMessageQueue implements Runnable{
 					System.out.println("AcceptMessageQueue:队列接受数据");
 					String acceptName = configUtil.getRedisQueueAcceptName();
 					String rpop = redisUtilServer.brpop(acceptName);//send_queue_name
+					System.out.println(rpop+"刚取出来的");
 					if (null==rpop) {
-						System.out.println(rpop+"刚取出来的");
 						LogUtil.getLogger().info("队列里面没有数据了！");
 					}else {
 						Message message = JsonUtil.jsonToObj(rpop, Message.class);
