@@ -1149,7 +1149,7 @@ AND S.IS_EFFECTIVE ='1'
 <!--   </select> -->
   <select id="selectendStart" resultMap="BaseResultMap" parameterType="hashMap">
   select <include refid="Base_Column_List" /> 
-  from T_SCENARINO_DETAIL where PATH_DATE = "TO_DATE"(#{pathDate,jdbcType=TIMESTAMP},'yyyy-MM-dd') and IS_EFFECTIVE = '1' and USER_ID = #{userId,jdbcType=DECIMAL}
+  from T_SCENARINO_DETAIL where PATH_DATE = "TO_DATE"(#{pathDate,jdbcType=TIMESTAMP},'yyyy-MM-dd') and IS_EFFECTIVE = '1' and USER_ID = #{userId,jdbcType=DECIMAL} AND SCENARINO_STATUS=8
   </select>
   
   <select id="selectbysid" resultMap="BaseResultMap" parameterType="hashMap">
