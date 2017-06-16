@@ -29,7 +29,20 @@ var delSxRow = [];//存储被删除的点源
 var temp_val_v1 = {};//单次查询的缓存
 var delSXtableRow = [];//记录本次筛选，删除了哪些点源
 var isNew = true;//判断是否是新创建措施
-
+var mappingSpecies = {
+    'PM25':'PM₂.₅',
+    'PM10':'PM₁₀',
+    'SO2':'SO₂',
+    'NOx':'NOx',
+    'NO2':'NO₂',
+    'VOC':'VOC',
+    'CO':'CO',
+    'NH3':'NH₃',
+    'BC':'BC',
+    'OC':'OC',
+    'PMFINE': 'PMFINE',
+    'PMC':'PMC'
+}
 
 var ls = window.sessionStorage;
 var csMsg = vipspa.getMessage('csMessage').content;
@@ -431,7 +444,14 @@ function open_cs(sectorsName, measureame, mid, planMeasureId) {
             columns.push({field: 'f1', title: '措施', align: 'center'});
             columns.push({field: 'f2', title: '点源实施范围', align: 'center'});
             $.each(res.data.measureColumn, function (i, vol) {
-                columns.push({field: vol.sectordocEtitle, title: vol.sectordocCtitle, align: 'center'});
+                columns.push({field: vol.sectordocEtitle, title: (function () {
+
+                    if(mappingSpecies[vol.sectordocEtitle]){
+                        return vol.sectordocCtitle.replace(vol.sectordocEtitle,mappingSpecies[vol.sectordocEtitle])
+                    }else{
+                        return vol.sectordocCtitle
+                    }
+                })(), align: 'center'});
             });
             $.each(res.data.measureList, function (i, col) {
                 columns.push({field: "psl_" + col.nameen, title: col.namech, align: 'center'});
