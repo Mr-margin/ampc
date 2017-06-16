@@ -768,10 +768,11 @@ function deleteFun(type) {
     var delList = '', url;
     var delRWid = {}, delQJid = {};
     var data = $('#rwgltable').treegrid('getData');
+    console.log(data);
     for (var i = 0; i < data.length; i++) {
         if (data[i].checkState == 'checked') {
             delRWid[data[i].missionId] = true;
-        } else if (data[i].checkState == 'indeterminate') {
+        } else  {
             for (var j = 1; j < data[i].children.length; j++) {
                 if (data[i].children[j].checkState == "checked") {
                     delQJid[data[i].children[j].scenarinoId] = true;
@@ -780,6 +781,7 @@ function deleteFun(type) {
         }
     }
 //    if (type == 'rw') {
+
     for (var i in delRWid) {
         delList += i + ',';
     }
@@ -791,8 +793,19 @@ function deleteFun(type) {
     for (var ii in delQJid) {
         delList += ii + ',';
     }
+    
     delList = delList.substr(0, delList.length - 1);
     params1.scenarinoIds = delList;
+//  当没有选择任何任务和情景的时候，进行删除拦截
+    if(params.missionIds==""&&params1.scenarinoIds==""){
+    	swal({
+            title: '请选择需要删除的任务或情景',
+            type: 'info',
+            timer: 1000,
+            showConfirmButton: false
+        });
+    	return
+    }
     url1 = '/scenarino/delete_scenarino'
 //    }
 
@@ -1542,7 +1555,7 @@ function continueBtn(){
 			bigIndex:selectRW.esCouplingId
 	},
 	url='/ModelType/continueModel';
-	ajaxPost(url,params).success(function(res){
+	ajaxPost(url,param).success(function(res){
 		if(res.status==0){
 			swal({
 		        title: res.msg,
