@@ -2210,4 +2210,33 @@ public class MissionAndScenarinoController {
 			return AmpcResult.build(1001, "系统异常",null);
 		}
 	}
+	/**
+	 * 查询默认domain接口
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("scenarino/find_Domain")
+	public AmpcResult find_Domain(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+	    //添加异常捕捉
+		try {
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			Long userId=Long.valueOf(data.get("userId").toString());
+			TDomainMissionWithBLOBs td=new TDomainMissionWithBLOBs();
+			td.setUserId(userId);
+			td.setValidStatus("1");
+			TDomainMissionWithBLOBs selectByuserIdandValtd = tDomainMissionMapper.selectByuserIdandValtd(td);
+			JSONObject obj=new JSONObject();
+			obj.put("domainId", selectByuserIdandValtd.getDomainId());
+			obj.put("domainName", selectByuserIdandValtd.getDomainName());
+			 return AmpcResult.ok(obj);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("find_Domain 查询默认domain异常",e);
+			//返回错误信息
+			return AmpcResult.build(1001, "查询默认domain异常",null);
+		}
+	}
 }
