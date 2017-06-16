@@ -196,7 +196,7 @@ function pullPage(value){
  */
 function resolution(){
 	var checkValue=$(".domain_select").val();
-	var btrim = $('.btrim_select').val();;
+	var btrim = $('.btrim_select').val();
 	var stand_lon = $('.ref_lon').val();
 	$('.btrims').text(btrim);
 //	$('.ref_lon').val(stand_lon);
@@ -244,7 +244,7 @@ function submitSave(){
 	var stand_lat1 = $('.stand_lat1').val();
 	var stand_lat2 = $('.stand_lat2').val();
 	var max_dom = $('.box-body').attr('max_dom');
-	var btrim = $('.btrim').val();
+	var btrim = $('.btrim_select').val();
 	var i_parent_start = arr_i_parent_start.join(',');
 	var j_parent_start = arr_j_parent_start.join(',');
 	var e_we = arr_we.join(',');
@@ -290,7 +290,7 @@ function postSubmit(){
 		'domainRange':data.domainRange,
 		'domainId':data.domainId,
 	}).success(function(res){
-//		console.log(res);
+		console.log(res);
 		if(res.msg == 'success'){
 			swal("保存成功");
 		}else{
