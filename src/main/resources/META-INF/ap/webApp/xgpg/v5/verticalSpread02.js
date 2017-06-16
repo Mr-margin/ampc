@@ -381,8 +381,7 @@ function sceneInittion() {
                 if(!$.isEmptyObject(allMission)){
                     var id = $("#task").val();
                     if(allMission[id].missionStatus == '2'){
-                        $('#task').css('width','60%');
-                        $('#pathD').css('display','block');
+                        $('#pathDdiv').css('display','block');
                         $('#pathD').html('');
 
                         for(var ids in allMission[id].pathdates){
@@ -394,7 +393,7 @@ function sceneInittion() {
 
                         }
                     }else{
-                        $('#task').css('width','100%');
+                        $('#pathDdiv').css('display','none');
                         $('#pathD').html('');
                     }
                 }
@@ -420,15 +419,14 @@ function sceneInittion() {
 function selectRwId() {
     var id = $("#task").val();
     if(allMission[id].missionStatus == '2'){
-        $('#task').css('width','60%');
-        $('#pathD').css('display','block');
+        $('#pathDdiv').css('display','block');
         $('#pathD').empty();
 
         for(var ids in allMission[id].pathdates){
             $('#pathD').append($('<option value="'+ ids +'">'+ (ids == -1?"无":moment(allMission[id].pathdates[ids]).format('YYYY-MM-DD')) +'</option>'))
         }
     }else{
-        $('#task').css('width','100%');
+        $('#pathDdiv').css('display','none');
         $('#pathD').empty();
     }
     sceneTable();
