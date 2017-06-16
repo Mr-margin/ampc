@@ -472,7 +472,7 @@ function nextCoup(){//点击下一步按钮
                         cityTable(cityData,0)//初始化耦合列表
                         // coupCity(cityData,industryData)
                     }else{
-                        swal('数据获取失败', '', 'error');
+                        swal(res.data.msg, '', 'error');
                     }
                 }else{
                     swal('参数错误', '', 'error');
