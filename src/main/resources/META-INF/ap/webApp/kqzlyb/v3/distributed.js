@@ -931,6 +931,7 @@ function getVerticalImg(xa,xi,ya,yi) {
     // })
 
    ajaxPost(url,par).success(function (res) {
+       oldMsg = $.extend(true,{},changeMsg);
        // $('.showImg').css('display','block');
        // $('.showImg').css('width','30%');
        $('.showImg img').attr('src','verticalPath/'+res.data);
