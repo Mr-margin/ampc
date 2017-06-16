@@ -1,3 +1,7 @@
+/**
+ *设置导航条信息
+ */
+$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="sceneInittion()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a><span style="padding-left: 15px;padding-right: 15px;float:right;" id="missionName"></span>');
 var ls = window.sessionStorage;
 var qjid_dq;//当前的情景ID
 var qjname_dq;//当前情景的name
@@ -162,6 +166,8 @@ function save_scene() {
             }
 
         });
+        //选择清单以后把任务名称显示在页面上
+        $("#missionName").text(sceneInitialization.missionName);
         shoe_data_start();
     }
 }
@@ -192,10 +198,7 @@ $('#qjBtn1').on('change', 'input', function (e) {
 })
 
 
-/**
- *设置导航条信息
- */
-$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="sceneInittion()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a><span style="padding-left: 15px;padding-right: 15px;float:right;" id="missionName"></span>');
+
 var gis_paramsName = {};//地图请求的参数，第一次加载地图时初始化，每次更改地图比例尺时修改codeLevel
 
 var tj_paramsName = {};//统计图用的参数
