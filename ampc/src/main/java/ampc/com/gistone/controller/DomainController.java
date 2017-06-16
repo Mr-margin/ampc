@@ -150,6 +150,7 @@ public class DomainController {
 			//common数据填充
 			common.put("map_proj", "lambert");//添加map_proj
 			common.put("stand_lon", common.get("ref_lon"));//添加stand_lon
+			System.out.println(common.get("max_dom"));
 			int tier=Integer.valueOf(common.get("max_dom").toString());
 			//计算dx数据
 			Long[] dxs=new Long[tier];
@@ -487,7 +488,8 @@ public class DomainController {
 		   obs.put("common", JSONObject.fromObject(common));
 		   JSONObject cmobj=new JSONObject();
 		   cmobj.put("cmaq", JSONObject.fromObject(cmaq));
-		   
+		   System.out.println(xorig.size()-1);
+		   System.out.println(xorig.get(xorig.size()-1));
 		   String domainCode=calculateCityService.getCityResult((double) xorig.get(xorig.size()-1), (double) yorig.get(yorig.size()-1), (double)dxs[dxs.length-1], (double)dys[dys.length-1], Integer.valueOf(ny.get(ny.size()-1).toString()), Integer.valueOf(nx.get(nx.size()-1).toString()), Double.valueOf(common.get("stand_lat1").toString()), Double.valueOf(common.get("stand_lat2").toString()), Double.valueOf(common.get("ref_lon").toString()), Double.valueOf(common.get("ref_lat").toString()));
 		   
 		   
@@ -702,7 +704,7 @@ public class DomainController {
 			TDomainMissionWithBLOBs selectByPrimaryKey = tDomainMissionMapper.selectByPrimaryKey(domainId);
 			int a=0;
 			if(!selectByPrimaryKey.getValidStatus().equals("1")||!selectByPrimaryKey.getEmployStatus().equals("1")){
-			a=tDomainMissionMapper.deletebyid(domainId);
+			a=tDomainMissionMapper.deleteByPrimaryKey(domainId);
 			}else{
 				LogUtil.getLogger().error("该domain为生效状态或该domain已使用，无法删除！");
 				return AmpcResult.build(1003, "该domain为生效状态或该domain已使用，无法删除！");
