@@ -1816,7 +1816,9 @@ public class MissionAndScenarinoController {
 			if(date!=null&&date!=""){
 				Date ds=sdf.parse(date);
 				tScenarinoDetail.setPathDate(ds);
-				tScenarinoDetail.setScenType("");
+				tScenarinoDetail.setScenType("1");
+			}else{
+				tScenarinoDetail.setScenType("2");
 			}
 			
 			tScenarinoDetail.setUserId(userId);
