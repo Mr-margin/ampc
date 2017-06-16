@@ -1288,7 +1288,8 @@ dl, dd {
 .cloudui .verticalCon{width:100%;height:100%;}
 .cloudui .verticalCon .ibox{width:100%;height:100%;}
 .cloudui .verticalCon .xgpgShow{width: 100%;height:100%;overflow-y: auto;position: relative;}
-.cloudui .verticalCon .searchT{position:absolute;left:0px;right:0px;top:0;z-index:10;}
+/*.cloudui .verticalCon .searchT{position:absolute;left:0px;right:0px;top:0;z-index:10;}*/
+.cloudui .verticalCon .searchT{position:relative;z-index:10;}
 .cloudui .verticalCon .verticalChar{position:absolute;top:60px;left:0;right:0;bottom: 0;z-index:0;overflow-y: auto;}
 .cloudui .verticalCon .verticalChar #initEcharts{height: auto;overflow: hidden;width:100%;}
 .cloudui .verticalCon .verticalChar #initEcharts .echartsCZ{float: left;width: 25%;}
@@ -1305,7 +1306,8 @@ dl, dd {
 /*.cloudui .verticalCon .toolContent .selectTool_con .pgbaQj label{float: left!important;}*/
 /*.cloudui .verticalCon .toolContent .selectTool_con .pgbaQj .btn-group{overflow: hidden;width:auto!important;height: auto ;}*/
 /*效果评估图表展示*/
-.cloudui .verticalCon .charContent{position:absolute;top:60px;left:0;right:0;bottom: 0;z-index:0;overflow-y: auto;}
+.cloudui .verticalCon .charContent{position:absolute;left:0;right:0;bottom: 0;z-index:0;overflow-y: auto;}
+
 /*搜索条件*/
 .cloudui .xgpgShow .searchT .toolAll .toolContent{overflow: hidden;background-color: #fff;}
 .cloudui .xgpgShow .searchT .toolAll .selectTool{float: left;padding-top:10px;padding-bottom: 10px;margin-right:30px;}
