@@ -1741,12 +1741,25 @@ public class MissionAndScenarinoController {
 					if(ts.getScenType().equals("3")){
 						obj.put("jzqjid",ts.getScenarinoId());	
 					}
-					
-					if(ts.getScenType().equals("1")){
-						os.put(ts.getScenarinoId(),ts.getPathDate().getTime());
-					}else if(ts.getScenType().equals("2")){
+					if(mission.getMissionStatus().equals("2")){
+						if(ts.getScenType().equals("1")){
+							TScenarinoDetail st=new TScenarinoDetail();
+							String pate=sdf.format(ts.getPathDate());
+							Date sss=sdf.parse(pate);
+							st.setPathDate(sss);
+							st.setScenType("4");
+							List<TScenarinoDetail> byEntity = tScenarinoDetailMapper.selectByEntity(st);
+							TScenarinoDetail ce=new TScenarinoDetail();
+							if(!byEntity.isEmpty()){
+							 ce=byEntity.get(0);
+							 os.put(ce.getScenarinoId(),sss.getTime());
+							}
+						}
+					}
+					if(ts.getScenType().equals("2")){
 						os.put("-1", "99999999999");	
-					}		
+					}
+					
 				}
 				obj.put("pathdates", os);
 				obj.put("missionId", mission.getMissionId());
@@ -1797,18 +1810,19 @@ public class MissionAndScenarinoController {
 			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 			String date="";
 			if(data.get("pathDate")!=null&&data.get("pathDate")!=""){
-			date=sdf.format(data.get("pathDate").toString());
+			date=data.get("pathDate").toString();
 			}
 			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
 			if(date!=null&&date!=""){
 				Date ds=sdf.parse(date);
 				tScenarinoDetail.setPathDate(ds);
+				tScenarinoDetail.setScenType("");
 			}
 			
 			tScenarinoDetail.setUserId(userId);
 			tScenarinoDetail.setMissionId(missionId);
 			
-			List<TScenarinoDetail> tScenarinoDetaillist=tScenarinoDetailMapper.selectByEntity2(tScenarinoDetail);
+			List<TScenarinoDetail> tScenarinoDetaillist=tScenarinoDetailMapper.selectByEntity(tScenarinoDetail);
 			JSONArray arr=new JSONArray();
 			JSONObject objsed=new JSONObject();
 			if(!tScenarinoDetaillist.isEmpty()){
