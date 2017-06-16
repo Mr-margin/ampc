@@ -437,22 +437,30 @@ function nextCoup(){//点击下一步按钮
             ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"findCityAndIndustryById","nationId":checkQgQd.esNationId,"nativesId":JSON.stringify(localQdId),"nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId}).success(function (res) {
                 if(res.status==0){
                     if(res.data.status==0){
-                        var cityNames=res.data.data.cityNames;
-                        var industryNames=res.data.data.industryNames;
-                        //城市数据添加到数组中
-                        $.each(cityNames, function (id, cityNames) {
-                            cityData.push({                         //获取城市名称、编码
-                                "cityId":id,
-                                "cityName":cityNames,
+                        if(res.data.data.cityNames==""&&res.data.data.cityNames==null&&res.data.data.cityNames==undefined){
+                            var cityNames=res.data.data.cityNames;
+                            //城市数据添加到数组中
+                            $.each(cityNames, function (id, cityNames) {
+                                cityData.push({                         //获取城市名称、编码
+                                    "cityId":id,
+                                    "cityName":cityNames,
+                                });
                             });
-                        });
-                        //行业数组添加到数组中
-                        $.each(industryNames, function (id, industryNames) {
-                            industryData.push({               //获取行业信息
-                                "industryNamesId":id,
-                                "industryNames":industryNames,
+                        }else{
+                            swal('该清单下面无城市数据，请您重新选择本地清单', '', 'error');
+                        }
+                        if(res.data.data.industryNames==""&&res.data.data.industryNames==null&&res.data.data.industryNames==undefined){
+                            var industryNames=res.data.data.industryNames;
+                            //行业数组添加到数组中
+                            $.each(industryNames, function (id, industryNames) {
+                                industryData.push({               //获取行业信息
+                                    "industryNamesId":id,
+                                    "industryNames":industryNames,
+                                });
                             });
-                        });
+                        }else{
+                            swal('该清单下面无行业数据，请您重新选择本地清单', '', 'error');
+                        }
                         //城市数据添加到弹窗中
                         // $("#cityOption span").remove()
                         // var cityList="";
@@ -464,6 +472,8 @@ function nextCoup(){//点击下一步按钮
                         $("#citySelect").window('open')
                         cityTable(cityData,0)//初始化耦合列表
                         // coupCity(cityData,industryData)
+                    }else{
+                        swal('数据获取失败', '', 'error');
                     }
                 }else{
                     swal('参数错误', '', 'error');
