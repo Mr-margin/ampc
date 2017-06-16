@@ -1738,11 +1738,11 @@ public class MissionAndScenarinoController {
 				JSONObject os=new JSONObject();
 				JSONObject obj=new JSONObject();
 				for(TScenarinoDetail ts:tScenarinoDetaillist){
-					if(ts.getScenType().equals("3")){
+					if(ts.getScenarinoStatus()==8 &&ts.getScenType().equals("3")){
 						obj.put("jzqjid",ts.getScenarinoId());	
 					}
 					if(mission.getMissionStatus().equals("2")){
-						if(ts.getScenType().equals("1")){
+						if(ts.getScenarinoStatus()==8 &&ts.getScenType().equals("1")){
 							TScenarinoDetail st=new TScenarinoDetail();
 							String pate=sdf.format(ts.getPathDate());
 							Date sss=sdf.parse(pate);
@@ -1756,7 +1756,7 @@ public class MissionAndScenarinoController {
 							}
 						}
 					}
-					if(ts.getScenType().equals("2")){
+					if(ts.getScenarinoStatus()==8 &&ts.getScenType().equals("2")){
 						os.put("-1", "99999999999");	
 					}
 					
