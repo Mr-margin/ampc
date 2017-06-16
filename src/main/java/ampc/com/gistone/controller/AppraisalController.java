@@ -2075,7 +2075,17 @@ public class AppraisalController {
 			tScenarinoDetail.setUserId(userId);
 			tScenarinoDetail.setMissionId(missionId);
 			//进行数据查询
-			TScenarinoDetail tScenarinoDetaillist=tScenarinoDetailMapper.selectBystandard(tScenarinoDetail);
+			TScenarinoDetail tScenarinoDetaillist=new TScenarinoDetail();
+			if(tScenarinoDetailMapper.selectBystandard(tScenarinoDetail)!=null){
+			tScenarinoDetaillist=tScenarinoDetailMapper.selectBystandard(tScenarinoDetail);
+			}else{
+				TScenarinoDetail scenarinoDetail = tScenarinoDetailMapper.selectByPrimaryKey(scenarinoId);
+				TScenarinoDetail tsc=new TScenarinoDetail();
+				tsc.setPathDate(scenarinoDetail.getPathDate());
+				tsc.setScenType("4");
+				List<TScenarinoDetail> selectByEntity = tScenarinoDetailMapper.selectByEntity(tsc);
+				tScenarinoDetaillist=selectByEntity.get(0);
+			}
 			//获取情景开始时间
 			String startDate= DateUtil.DATEtoString(tScenarinoDetaillist.getScenarinoStartDate(), "yyyy-MM-dd");	
 			//获取情景结束时间
@@ -2213,6 +2223,7 @@ public class AppraisalController {
 			Map spr=(Map)scmap.get("减排情景");
 			Map jzsp=(Map)scmap.get("基准情景");
 			Map<String,String> concentration=new HashMap();
+			if(spr!=null){
 			for(Object sp:spr.keySet()){
 				BigDecimal jp=new BigDecimal(spr.get(sp).toString());
 				BigDecimal jz=new BigDecimal(jzsp.get(sp).toString());
@@ -2233,6 +2244,11 @@ public class AppraisalController {
 					concentration.put(sp.toString(), updown);	
 				}
 			}
+			}else{
+				LogUtil.getLogger().error("MissionAndScenarinoController 所选情景无减排数据");
+				return AmpcResult.build(1000, "所选情景无减排数据",null);
+				
+			}
 			Map<String,BigDecimal> jpmap=new HashMap();
 			TEmissionDetailWithBLOBs tEmission=new TEmissionDetailWithBLOBs();
 			tEmission.setScenarinoId(scenarinoId);
@@ -2241,8 +2257,9 @@ public class AppraisalController {
 			List<TEmissionDetailWithBLOBs> tEmissions=tEmissionDetailMapper.selectByEntity(tEmission);
 			for(TEmissionDetailWithBLOBs emission:tEmissions){
 			if(datelist.contains(emission.getEmissionDate())){
-				Object detail=emission.getEmissionDetails();
-				Map<String,Object> details=(Map)detail;
+				String detail=emission.getEmissionDetails();
+				JSONObject js=JSONObject.fromObject(detail);
+				Map<String,Object> details=(Map)js;
 				for(String industry:details.keySet()){
 					Map<String,Object> num=(Map) details.get(industry);
 					for(String spe:num.keySet()){
