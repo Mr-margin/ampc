@@ -272,10 +272,11 @@ require(
             ls.setItem('SI', JSON.stringify(sceneInitialization));
         }
 //console.log(JSON.stringify(sceneInitialization));
-        $("#missionName").text("任务:"+sceneInitialization.missionName);
+
         if (!sceneInitialization) {
             sceneInittion();
         } else {
+            $("#missionName").text("任务:"+sceneInitialization.missionName);
             setQjSelectBtn(sceneInitialization.data);
         }
       /*这段代码需要在初始化中*/
@@ -460,10 +461,10 @@ function save_scene() {
         mag.data = data;
         vipspa.setMessage(mag);
         ls.setItem('SI', JSON.stringify(mag));
-        //添加任务名称
-        $("#missionName").text("任务:"+sceneInitialization.missionName);
         console.log(data);
         sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
+        //添加任务名称
+        $("#missionName").text("任务:"+sceneInitialization.missionName);
         setQjSelectBtn(data);
         $("#close_scene").click();
 
