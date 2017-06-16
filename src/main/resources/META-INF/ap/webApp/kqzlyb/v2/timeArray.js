@@ -84,7 +84,7 @@ var optionAll = {
 	        show: true,
 	        left: '3%',
 	        right: '3%',
-	        bottom: '30%',
+	        bottom: '20%',
 	    },
 	    calculable: false,
 	    xAxis: [
@@ -734,9 +734,9 @@ function initEcharts() {
             if("PM25"==tname[i]){
                 option.title.text = "PM₂.₅"+('(μg/m³)');
             }else if("SO4"==tname[i]){
-                option.title.text = "SO₄²¯"+('(μg/m³)');
+                option.title.text = "SO₄²⁻"+('(μg/m³)');
             }else if("NO3"==tname[i]){
-                option.title.text = "NO₃¯"+('(μg/m³)');
+                option.title.text = "NO₃⁻"+('(μg/m³)');
             }else if("NH4"==tname[i]){
                 option.title.text = "NH₄⁺"+('(μg/m³)');
             }else if("PM10"==tname[i]){
