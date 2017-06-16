@@ -228,6 +228,7 @@ public class SendQueueData {
 			}else {
 				LogUtil.getLogger().info("更新发送停止模式的状态失败！");
 			}*/
+			sendmessagelogfile(json);
 			//修改情景状态为---模式处理中
 			readyData.updateScenStatusUtil(10l, scenarinoId);
 		}
@@ -288,10 +289,10 @@ public class SendQueueData {
 	public boolean pausetoJson(QueueData queueData, Long scenarinoId) {
 		JSONObject jsonObject = JSONObject.fromObject(queueData);
 		String json = jsonObject.toString();
-		
 		LogUtil.getLogger().info("SendQueueData--pausetoJson方法：发送了暂停的指令:"+json);
 		boolean flag = sendQueueData.sendData(json);
 		if (flag) {
+			sendmessagelogfile(json);
 			//暂停状态
 			readyData.updateScenStatusUtil(10l, scenarinoId);
 		}
@@ -323,6 +324,9 @@ public class SendQueueData {
 		LogUtil.getLogger().info("sendDomainDatajson:发送domainjson:"+domainDatajson );
 		sendmessagelogfile(domainDatajson);
 		boolean sendData = sendQueueData.sendData(domainDatajson);
+		if (sendData) {
+			sendmessagelogfile(domainDatajson);
+		}
 		return sendData;
 	}
 
