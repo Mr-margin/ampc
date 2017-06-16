@@ -1746,7 +1746,7 @@ public class NativeAndNationController {
 			String str = json.toString();
 			
 			//此处会有调用晓东的接口，根据参数为清单id查询涉及到的城市id
-			String getResult=ClientUtil.doPost("http://192.168.1.128:8089/summary/regions",str);
+			String getResult=ClientUtil.doPost("http://166.111.42.85:8090/summary/regions",str);
 			Map contentMap=mapper.readValue(getResult, Map.class);
 			String cityStr = contentMap.get("data").toString();
 			JSONObject obj = new JSONObject();
@@ -1864,7 +1864,7 @@ public class NativeAndNationController {
 			couplingMap.put("templateId", nativeTpId);
 			//返回结果的路径
 			//读取config.properties配置文件的url
-			String  resultUrl = "http://192.168.7.150:8082/ampc/NativeAndNation/doPost";
+			String  resultUrl = "http://166.111.42.85:8300/ampc/NativeAndNation/doPost";
 			couplingMap.put("serverPath", resultUrl);
 			//设置参数查询行业版本
 			TSectorExcel tSectorExcel = new TSectorExcel();
@@ -1887,7 +1887,7 @@ public class NativeAndNationController {
 			//转化为json对象
 			JSONObject json = JSONObject.fromObject(couplingMap);
 			//调用晓东的接口
-			String getResult=ClientUtil.doPost("http://192.168.1.128:8089/coupling/submit",json.toString());
+			String getResult=ClientUtil.doPost("http://166.111.42.85:8090/coupling/submit",json.toString());
 			Map detamap=mapper.readValue(getResult, Map.class);
 			Map messageMap = new HashMap<String, Object>();
 			//如果状态执行成功
