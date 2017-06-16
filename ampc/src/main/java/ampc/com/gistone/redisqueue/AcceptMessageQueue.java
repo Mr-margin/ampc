@@ -88,7 +88,8 @@ public class AcceptMessageQueue implements Runnable{
 						case "model.continue.result":
 							LogUtil.getLogger().info("model.continue.result tasks-时间："+new Date()+"，内容:"+rpop);
 							messageLog.savesatrtModelMessagelog(rpop);
-							toDataTasksUtil.updateDB(rpop);
+							toDataTasksUtil.cheakModelResult(rpop);
+//							toDataTasksUtil.updateDB(rpop);
 							LogUtil.getLogger().info("model.continue.result end tasks，"+new Date());
 							break;
 						case "ungrib.result":
