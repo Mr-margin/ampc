@@ -1738,10 +1738,13 @@ public class MissionAndScenarinoController {
 				JSONObject os=new JSONObject();
 				JSONObject obj=new JSONObject();
 				for(TScenarinoDetail ts:tScenarinoDetaillist){
+					//判断情景是否为以执行完的基准情景
 					if(ts.getScenarinoStatus()==8 &&ts.getScenType().equals("3")){
 						obj.put("jzqjid",ts.getScenarinoId());	
 					}
+					//判断是否为预评估任务
 					if(mission.getMissionStatus().equals("2")){
+						//判断是否为已经执行完的预评估情景是的话根据情景起报日期查询实时预报情景
 						if(ts.getScenarinoStatus()==8 &&ts.getScenType().equals("1")){
 							TScenarinoDetail st=new TScenarinoDetail();
 							String pate=sdf.format(ts.getPathDate());
@@ -1756,6 +1759,7 @@ public class MissionAndScenarinoController {
 							}
 						}
 					}
+					//判断情景是否为以执行完的后评估情景
 					if(ts.getScenarinoStatus()==8 &&ts.getScenType().equals("2")){
 						os.put("-1", "99999999999");	
 					}
@@ -1813,6 +1817,7 @@ public class MissionAndScenarinoController {
 			date=data.get("pathDate").toString();
 			}
 			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
+			//判断起报日期是否为空，不为空是预评估情景，不是的话为后评估情景
 			if(date!=null&&date!=""){
 				Date ds=sdf.parse(date);
 				tScenarinoDetail.setPathDate(ds);
