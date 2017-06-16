@@ -2282,10 +2282,14 @@ public class AppraisalController {
 					BigDecimal yesd=num.setScale(0,BigDecimal.ROUND_HALF_UP);
 					String ye="减少"+yesd+"吨";
 					concentration.put(sp.toString()+"_jp", ye);
-				}else{
+				}else if(num.doubleValue()<0){
 					BigDecimal yesd=num.setScale(0,BigDecimal.ROUND_HALF_UP);
 					String ser=yesd.toString().substring(1);
 					String updown="增加"+ser+"%";
+					concentration.put(sp.toString()+"_jp", updown);
+				}
+				else if(num.doubleValue()==0){
+					String updown="增加"+num+"%";
 					concentration.put(sp.toString()+"_jp", updown);
 				}
 			}
