@@ -335,7 +335,7 @@ function zmblockUI(selector, method) {
 }
 
 //上面方法的复制
-function zmblockUI1(selector, method) {
+/*function zmblockUI1(selector, method) {
     if ($(selector).length == 0) {
         console.info(selector + "没有匹配dom元素,无法执行加载动画");
         return
@@ -348,6 +348,34 @@ function zmblockUI1(selector, method) {
         $(selector).block({
             message: '<div class="loading-message-boxed"><img src="images/loading-spinner-blue.gif"><span>&nbsp;&nbsp;努力加载中…</span></div>',
             css:{border:0,backgroundColor:'transparent'},
+            overlayCSS:{opacity:0}
+        });
+    }else if(method==='end'){
+        $(selector).unblock();
+    }
+}*/
+
+//上面方法的复制
+function zmblockUI1(selector, method) {
+    if ($(selector).length == 0) {
+        console.info(selector + "没有匹配dom元素,无法执行加载动画");
+        return
+    }
+    if (typeof method === undefined || ["start", "end"].toString().indexOf(method) == -1) {
+        console.info(selector + "的加载动画的method参数有误！");
+        return
+    }
+    if (method === "start") {
+        $(selector).block({
+            message: '<div class="loading-message-boxed lmb"><img src="images/loading-spinner-blue.gif"><span>&nbsp;&nbsp;努力加载中…</span></div>',
+            css:{
+            	border:0,
+            	backgroundColor:'transparent',
+            	textAlign:'right',
+            	bottom:0,
+            	left:0,
+            	width:'100%'
+            	},
             overlayCSS:{opacity:0}
         });
     }else if(method==='end'){
