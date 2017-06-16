@@ -84,7 +84,7 @@ var optionAll = {
 			show: true,
 			left: '3%',
 			right: '3%',
-			bottom: '30%',
+			bottom: '20%',
 		 },
 //		 dataZoom:[
 //		           {
@@ -355,9 +355,9 @@ function initEcharts() {
 			if("PM25"==tname[i]){
 				option.title.text = mesage +"PM₂.₅ "+('(μg/m³)');
 			}else if("SO4"==tname[i]){
-				option.title.text = mesage +"SO₄²¯ "+('(μg/m³)');
+				option.title.text = mesage +"SO₄²⁻ "+('(μg/m³)');
 			}else if("NO3"==tname[i]){
-				option.title.text = mesage +"NO₃¯ "+('(μg/m³)');
+				option.title.text = mesage +"NO₃⁻ "+('(μg/m³)');
 			}else if("NH4"==tname[i]){
 				option.title.text = mesage +"NH₄⁺ "+('(μg/m³)');
 			}else if("PM10"==tname[i]){
