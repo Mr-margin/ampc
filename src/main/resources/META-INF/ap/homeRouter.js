@@ -50,11 +50,6 @@ $.when(dps_um).then(function(){
   }
   userId = userMsg.userId;
 // userId = 1;
-    //普通用户无法看见全国清单 管理员可以看见全国清单
-    if(userId==2){
-        console.log(userId)
-        $("#yqd a:first").css({"display":"none"})
-    }
 
       if (!userId) {
         window.location.href = "index.html";
