@@ -464,7 +464,7 @@ function checkData(rowId) {
 
                 }
             }else{
-
+                swal('参数错误', '', 'error');
             }
         })
     }else  if(rowId.indexOf("qd")==0){
@@ -478,9 +478,13 @@ function checkData(rowId) {
             "esNativeTpOutPath":parentRowDiv.esNativeTpOutPath
         }).success(function (res) {
             if(res.status==0){
+                if(rowDiv.isVerify==0){
+                    var hisCon=res.data.data.errorMsg[0];
+                    $('[node-id="' + rowId + '"]').children("td[field=his]").html("<div style='width:200px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;color:#333;' title='"+hisCon+"'>"+hisCon+"</div>");
 
+                }
             }else{
-
+                swal('参数错误', '', 'error');
             }
         })
     }
