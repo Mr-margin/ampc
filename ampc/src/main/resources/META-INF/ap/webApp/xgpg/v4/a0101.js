@@ -267,12 +267,10 @@ require(
             ls.setItem('SI', JSON.stringify(sceneInitialization));
         }
 //console.log(JSON.stringify(sceneInitialization));
-
+        $("#missionName").text(sceneInitialization.missionName);
         if (!sceneInitialization) {
             sceneInittion();
         } else {
-        	$("#missionName").empty();
-        	$("#missionName").text(sceneInitialization.missionName);
             setQjSelectBtn(sceneInitialization.data);
         }
       /*这段代码需要在初始化中*/
