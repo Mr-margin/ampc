@@ -6,6 +6,20 @@ var ls = window.sessionStorage;
 var qjid_dq;//当前的情景ID
 var qjname_dq;//当前情景的name
 
+var mappingSpecies = {
+    'PM25':'PM₂.₅',
+    'PM10':'PM₁₀',
+    'SO2':'SO₂',
+    'NOx':'NOx',
+    'VOC':'VOC',
+    'CO':'CO',
+    'NH3':'NH₃',
+    'BC':'BC',
+    'OC':'OC',
+    'PMFINE': 'PMFINE',
+    'PMC':'PMC'
+}
+
 var sceneInitialization = vipspa.getMessage('sceneInitialization').content;//从路由中取到情景范围
 if (!sceneInitialization) {//判断路由里面有没有
     sceneInitialization = JSON.parse(ls.getItem('SI'));//从seesion取数据
@@ -748,7 +762,7 @@ function bar() {
 
                 var option = {
                     title: {
-                        text: tj_paramsName.name + "-" + tj_paramsName.wz + '-减排分析',
+                        text: tj_paramsName.name + "-" + mappingSpecies[tj_paramsName.wz] + '-减排分析',
                         left:'50%',
                         top:'1%',
                         textAlign:'center'
@@ -954,7 +968,7 @@ function pie() {
                 var myhycsChart = echarts.init(document.getElementById('hycsDiv1'),'shine');
                 var optionPie = {
                     title: {
-                        text: tj_paramsName.name + '-' + (tj_paramsName.type == "1" ? "分行业" : "分措施") + "-" + tj_paramsName.wz + '-减排分析',
+                        text: tj_paramsName.name + '-' + (tj_paramsName.type == "1" ? "分行业" : "分措施") + "-" + mappingSpecies[tj_paramsName.wz] + '-减排分析',
                         subtext: '全部' + (tj_paramsName.type == "1" ? "行业" : "措施") + '合计减排：' + sum_value.toFixed(2),
                         left:'50%',
                         top:'1%',
