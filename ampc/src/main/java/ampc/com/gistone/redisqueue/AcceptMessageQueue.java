@@ -104,7 +104,7 @@ public class AcceptMessageQueue implements Runnable{
 							toDataTasksUtil.stopModelresult(rpop);
 							LogUtil.getLogger().info("停止模式处理完毕："+new Date());
 							break;
-						case "model.stop.pause":
+						case "model.pause.result":
 							LogUtil.getLogger().info("暂停模式处理开始："+new Date()+"，内容:"+rpop);
 							messageLog.savepauseMessagelog(rpop);
 							toDataTasksUtil.pauseModelresult(rpop);
