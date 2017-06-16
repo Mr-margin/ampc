@@ -170,7 +170,7 @@ function submitCoup(){
     //判断新建清单的年份是否在1990-2100之间
     var myYear=$("#creatCoupQd #coupQdYear").val();
     var myName=$("#creatCoupQd #coupQdName").val()
-    if(myName.length>0 && myName.length<=20){
+    if(myName.length>0 && myName.length<=20&&myName!="请输入长度不超过20的名称（必填）"){
         if(myYear>=1990&&myYear<=2100){    //判断年份
             $("#formCoup").submit(
                 ajaxPost('/NativeAndNation/doPost',param).success(function(res){
