@@ -115,7 +115,7 @@ function getInfo(){
 	}).success(function (res) {
 		$.each(res.data,function(key,value){
 			if(value.domainId == domain_id){
-//				console.log(value);
+				console.log(value);
 				pullPage(value);
 			}
 		});
@@ -401,7 +401,26 @@ require(
 function getFishingNets(){
 	var data = submitSave();//获取到当前的值
 //	console.log(data);
-	setMapExtent(data);
+	if(data.domainInfo.common.ref_lat == ''){
+		swal("请输入Latitude_Of_Origin");
+	}else if(data.domainInfo.common.ref_lon == ''){
+		swal("请输入Central_Meridian");
+	}else if(data.domainInfo.common.stand_lat1 == ''){
+		swal("请输入Standard_Parallel_1");
+	}else if(data.domainInfo.common.stand_lat2 == ''){
+		swal("请输入Standard_Parallel_2");
+	}else if($('.e_we1').val() == ''){
+		swal("请输入x方向网格边数");
+	}else if($('.e_sn1').val() == ''){
+		swal("请输入y方向网格边数");
+	}else if($('.btrim_select').find("option:selected").val() == '0'){
+		swal("请选择x,y向裁剪网格数");
+	}else if($('.domain_select').find("option:selected").text() == '请选择'){
+		swal("请选择x,y向分辨率(m)");
+	}else{
+		setMapExtent(data);
+	}
+	
 }
 
 
