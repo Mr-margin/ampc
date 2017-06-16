@@ -298,14 +298,13 @@ function innitdata(active){
     }else if(active=="delete_nativeTp"){
         var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
         swal({
-            title: "您确定要删除吗？",
-            // text: "您确定要删除这条数据？",
+            title: "确定要删除?",
             type: "warning",
-            animation:"slide-from-top",
             showCancelButton: true,
-            closeOnConfirm: true,
-            confirmButtonText: "确定",
-            cancelButtonText:"取消"
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "删除",
+            cancelButtonText: "取消",
+            closeOnConfirm: false
         }, function() {
             ajaxPost('/NativeAndNation/doPost',{"nativeTpId":row.esNativeTpId,"method":"delete_nativeTp"}).success(function(res){
                 if(res.status==0){
