@@ -1307,6 +1307,8 @@ function showTitleFun() {
 //easyui 添加
 $(".upDownBtn").append("<i class='en-arrow-up7'></i>")
 $(".toolAll").hide();
+var headerH=$(".cloudui .searchT").height();
+$(".charContent").css({"top":headerH+"px"})
 $(".upDownBtn").click(function(){
     if($(".upDownBtn").text()=="收起"){
         $(".upDownBtn").text("更多搜索条件");
@@ -1314,15 +1316,15 @@ $(".upDownBtn").click(function(){
         $(".upDownBtn i").remove();
         $(".upDownBtn").append("<i class='en-arrow-down8'></i>")
         $(".upDownBtn i").attr("class","en-arrow-down8")
-        //headerH=$(".cloudui .searchT").height();
-        //$(".charContent").css({"top":headerH+"px"})
+        headerH=$(".cloudui .searchT").height();
+        $(".charContent").css({"top":headerH+"px"})
     }else{
         $(".upDownBtn").text("收起");
         $(".toolAll").show();
-        //headerH=$(".cloudui .searchT").height();
+        headerH=$(".cloudui .searchT").height();
         $(".upDownBtn i").remove();
         $(".upDownBtn").append("<i class='en-arrow-up7'></i>");
-        //$(".charContent").css({"top":headerH+"px"});
+        $(".charContent").css({"top":headerH+"px"});
     }
 })
 $(".cloudui .verticalCon .ibox-content .searchT .upDown").hover(function(){

@@ -588,19 +588,25 @@ function shownPgbg(){
 }
 //easyui 添加
 $(".toolAll").hide();
-$(".upDownBtn").append("<i class='en-arrow-up7'></i>")
+$(".upDownBtn").append("<i class='en-arrow-up7'></i>");
+var headerH = $(".cloudui .searchT").height();
+$(".verticalChar").css({"top": headerH + "px"});
 $(".upDownBtn").click(function(){
     if($(".upDownBtn").text()=="收起"){
         $(".upDownBtn").text("更多搜索条件");
         $(".toolAll").hide();
         $(".upDownBtn i").remove();
         $(".upDownBtn").append("<i class='en-arrow-down8'></i>")
-        $(".upDownBtn i").attr("class","en-arrow-down8")
+        $(".upDownBtn i").attr("class","en-arrow-down8");
+        headerH=$(".cloudui .searchT").height();
+        $(".verticalChar").css({"top":headerH+"px"})
     }else{
         $(".upDownBtn").text("收起");
         $(".toolAll").show();
         $(".upDownBtn i").remove();
         $(".upDownBtn").append("<i class='en-arrow-up7'></i>");
+        headerH=$(".cloudui .searchT").height();
+        $(".verticalChar").css({"top":headerH+"px"})
     }
 })
 $(".cloudui .verticalCon .ibox-content .searchT .upDown").hover(function(){
