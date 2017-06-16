@@ -26,12 +26,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class ConfigUtil {
 	//服务器excel验证文件路径
-	@Value("${chexcExcelUrl}")
-	private String chexcExcelUrl;
+	@Value("${checkExcelURL}")
+	private String checkExcelURL;
 	
 	
-	public String getChexcExcelUrl() {
-		return chexcExcelUrl;
+
+	public String getCheckExcelURL() {
+		return checkExcelURL;
 	}
 
 	// 减排Url
