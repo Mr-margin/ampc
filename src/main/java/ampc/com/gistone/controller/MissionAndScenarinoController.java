@@ -1741,31 +1741,12 @@ public class MissionAndScenarinoController {
 					if(ts.getScenType().equals("3")){
 						obj.put("jzqjid",ts.getScenarinoId());	
 					}
-					if(mission.getMissionStatus().equals("2")){
-						if(ts.getScenType().equals("1")){
-							TScenarinoDetail st=new TScenarinoDetail();
-							String pate=sdf.format(ts.getPathDate());
-							Date sss=sdf.parse(pate);
-							st.setPathDate(sss);
-							st.setScenType("4");
-							List<TScenarinoDetail> byEntity = tScenarinoDetailMapper.selectByEntity(st);
-							TScenarinoDetail ce=new TScenarinoDetail();
-							if(!byEntity.isEmpty()){
-							 ce=byEntity.get(0);
-							 os.put(ce.getScenarinoId(),sss.getTime());
-							}
-							
-							
-							
-						}else if(ts.getScenType().equals("2")){
-							os.put("-1", "99999999999");	
-						}
-						
-						
-						
-					}
 					
-					
+					if(ts.getScenType().equals("1")){
+						os.put(ts.getScenarinoId(),ts.getPathDate().getTime());
+					}else if(ts.getScenType().equals("2")){
+						os.put("-1", "99999999999");	
+					}		
 				}
 				obj.put("pathdates", os);
 				obj.put("missionId", mission.getMissionId());
