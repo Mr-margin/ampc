@@ -811,7 +811,7 @@ function bar() {
                             type: 'value',
                             name: '吨',
                             boundaryGap: [0, 0.1],
-                            splitArea: {show: true},
+                            splitArea: {show: false},
                             show: true
                         }
                     ],
@@ -823,10 +823,10 @@ function bar() {
                             barCategoryGap: '50%',
                             itemStyle: {
                                 normal: {
-                                    color: 'tomato',
-                                    barBorderColor: 'tomato',
-                                    barBorderWidth: 4,
-                                    barBorderRadius: 0
+                                    color: '#4EA397',
+                                    barBorderColor: '#333',
+                                    barBorderWidth: 1,
+                                    barBorderRadius:0
                                 }
                             },
                             //data:res.data.pflResult
@@ -838,10 +838,10 @@ function bar() {
                             stack: 'sum',
                             itemStyle: {
                                 normal: {
-                                    color: '#fff',
-                                    barBorderColor: 'tomato',
-                                    barBorderWidth: 4,
-                                    barBorderRadius: 0,
+                                    color: '#B8D2C7',
+                                    barBorderColor: '#333',
+                                    barBorderWidth: 1,
+                                    barBorderRadius:0,
                                     label: {
                                       /*show: true,
                                        position: 'top',*/
@@ -987,7 +987,8 @@ function pie() {
                                 }
                             }
                         }
-                    ]
+                    ],
+                    color:['#0072BE', '#D35319', '#EEB233', '#7E2F8E', '#77AD30', '#4DBFEF', '#A3142F', '#405A5A', '#4E00CD', '#017B1A']
                 };
 
                 //行业措施分担饼状图
