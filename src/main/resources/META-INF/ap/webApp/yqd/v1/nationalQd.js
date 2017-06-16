@@ -209,15 +209,13 @@ function editSubmitQd(){//点击提交按钮进行编辑数据提交
 function delectQd(){
     var row = $('#qgqd').datagrid('getSelected');//获取所有选中的清单数据
     swal({
-        title: "您确定要删除吗？",
-        // text: "您确定要删除这条数据？",
+        title: "确定要删除?",
         type: "warning",
-        animation:"slide-from-top",
         showCancelButton: true,
-        closeOnConfirm:true,
-        cancelButtonText:"取消",
-        confirmButtonText: "确定"
-
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "删除",
+        cancelButtonText: "取消",
+        closeOnConfirm: false
     }, function() {
         ajaxPost('/NativeAndNation/delete_nation',{"nationId":row.esNationId}).success(function(res){
             if(res.status==0){

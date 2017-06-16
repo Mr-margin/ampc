@@ -284,14 +284,13 @@ function coupDelete(){
     var row = $('#couqd').datagrid('getSelected');//获取所有选中的清单数据
     var rowIndex = $('#couqd').datagrid('getRowIndex', row);
     swal({
-        title: "您确定要删除吗？",
-        // text: "您确定要删除这条数据？",
+        title: "确定要删除?",
         type: "warning",
-        animation:"slide-from-top",
         showCancelButton: true,
-        closeOnConfirm: true,
-        confirmButtonText: "确定",
-        cancelButtonText:"取消"
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "删除",
+        cancelButtonText: "取消",
+        closeOnConfirm: false
     }, function() {
         ajaxPost('/NativeAndNation/doPost',{"couplingId":row.esCouplingId,"method":"delete_coupling"}).success(function(res){
             if(res.status==0){
