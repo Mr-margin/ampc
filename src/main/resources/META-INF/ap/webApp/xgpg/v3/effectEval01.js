@@ -5,7 +5,7 @@ $(function () {
     /**
      *设置导航条信息
      */
-    $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">时间序列</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a> <span style="padding-left: 15px;padding-right: 15px;float:right;" id="missionName"></span>');
+    $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">时间序列</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a> <div style="width:250px;height:17px;float:right;"><span style="padding-left: 15px;padding-right: 15px;float:left;" id="missionName"></span></div>');
     
 });
 
@@ -163,7 +163,7 @@ function initNowSession(){
 	}
     dps_Date = requestDate();
 	setStation(sceneInitialization.taskID);
-	$("#missionName").text(sceneInitialization.missionName);
+	$("#missionName").text("任务:"+sceneInitialization.missionName);
 	setTime(sceneInitialization.s, sceneInitialization.e);
 	$.when(dps_codeStation,dps_station).then(function () {
 		getdata();
@@ -1063,7 +1063,7 @@ function save_scene() {
 		}
 		$("#close_scene").click();
 		//添加任务名称
-		$("#missionName").text(sceneInitialization.missionName);
+		$("#missionName").text("任务:"+sceneInitialization.missionName);
 
 		set_sce();
 //    	find_standard();

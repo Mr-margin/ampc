@@ -2,7 +2,7 @@ $(function () {
     /**
      *设置导航条信息
      */
-    $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">垂直廓线</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a><span style="padding-left: 15px;padding-right: 15px;float:right;" id="missionName"></span>');
+    $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">垂直廓线</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a><div style="width:250px;height:17px;float:right;"><span style="padding-left: 15px;padding-right: 15px;float:left;" id="missionName"></span></div>');
     //全选复选框
     //initTableCheckbox();
 
@@ -143,7 +143,7 @@ function initialize() {
     //changeMsg.scenarinoName.unshift('基准');
 
     setStation(sceneInitialization.taskID);
-    $("#missionName").text(sceneInitialization.missionName);
+    $("#missionName").text("任务:"+sceneInitialization.missionName);
     setTime(sceneInitialization.s, sceneInitialization.e);
     $.when(dps_codeStation, dps_station).then(function () {
         updata();
@@ -614,7 +614,7 @@ function save_scene() {
         sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
         $("#close_scene").click();
         //添加任务名称
-		$("#missionName").text(sceneInitialization.missionName);
+		$("#missionName").text("任务:"+sceneInitialization.missionName);
         var url='/Appraisal/show_Times';
         var paramsName = {
             "missionId":sceneInitialization.taskID,				//任务ID

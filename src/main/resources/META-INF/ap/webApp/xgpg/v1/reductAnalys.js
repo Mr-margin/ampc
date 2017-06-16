@@ -1,7 +1,7 @@
 /**
  *设置导航条信息
  */
-$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="sceneInittion()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a><span style="padding-left: 15px;padding-right: 15px;float:right;" id="missionName"></span>');
+$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">减排分析</span><a onclick="sceneInittion()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a><div style="width:250px;height:17px;float:right;"><span style="padding-left: 15px;padding-right: 15px;float:left;" id="missionName"></span></div>');
 var ls = window.sessionStorage;
 var qjid_dq;//当前的情景ID
 var qjname_dq;//当前情景的name
@@ -29,7 +29,7 @@ if (!sceneInitialization) {//判断路由里面有没有
 if (!sceneInitialization) {//判断里面有没有数据
     sceneInittion();
 } else {
-	$("#missionName").text(sceneInitialization.missionName);
+	$("#missionName").text("任务:"+sceneInitialization.missionName);
     setQjSelectBtn(sceneInitialization.data);//加载地图上的情景按钮
 }
 var allMission = {};
@@ -215,7 +215,7 @@ function save_scene() {
         sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
         $("#close_scene").click();
         //添加任务名称
-		$("#missionName").text(sceneInitialization.missionName);
+		$("#missionName").text("任务:"+sceneInitialization.missionName);
         //查询任务的开始时间和结束时间
         var url='/Appraisal/show_Times';
         var paramsName = {
@@ -232,7 +232,7 @@ function save_scene() {
 
         });
         //选择清单以后把任务名称显示在页面上
-        $("#missionName").text(sceneInitialization.missionName);
+        $("#missionName").text("任务:"+sceneInitialization.missionName);
         shoe_data_start();
     }
 }

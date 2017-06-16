@@ -2,7 +2,7 @@ $(function () {
     /**
      *设置导航条信息
      */
-    $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">评估报告</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a><span style="padding-left: 15px;padding-right: 15px;float:right;" id="missionName"></span>');
+    $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">评估报告</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a><div style="width:250px;height:17px;float:right;"><span style="padding-left: 15px;padding-right: 15px;float:left;" id="missionName"></span></div>');
     //全选复选框
     //initTableCheckbox();
 
@@ -96,7 +96,7 @@ function initialize() {
     //changeMsg.scenarinoId.unshift('-1');
     //changeMsg.scenarinoName.unshift('基准');
     dps_station = setStation(sceneInitialization.taskID);
-    $("#missionName").text(sceneInitialization.missionName);
+    $("#missionName").text("任务:"+sceneInitialization.missionName);
     setTime(sceneInitialization.data[$("#qjbtnCon").val()].scenarinoStartDate,sceneInitialization.data[$("#qjbtnCon").val()].scenarinoEndDate);
     console.log(sceneInitialization.data[$("#qjbtnCon").val()].scenarinoStartDate)
     $.when(dps_codeStation, dps_station).done(function () {
@@ -412,7 +412,7 @@ function save_scene() {
         });
 
         $("#close_scene").click();
-        $("#missionName").text(sceneInitialization.missionName);
+        $("#missionName").text("任务:"+sceneInitialization.missionName);
         /*数据准备完毕，进行初始化页面*/
         setQjSelectBtn(data);//添加情景选择按钮
         initialize();
