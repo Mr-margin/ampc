@@ -1103,7 +1103,9 @@ function initEcharts() {
 //easyui 添加
 $(".toolAll").hide();
 $(".searchT .upDownBtn").text("更多搜索条件");
-$(".searchT .upDownBtn").append("<i class='en-arrow-up7'></i>")
+$(".searchT .upDownBtn").append("<i class='en-arrow-up7'></i>");
+var headerH=$(".cloudui .searchT").height();
+$(".charContent").css({"top":headerH+"px"});
 $(".searchT .upDownBtn").click(function(){
     if($(".searchT .upDownBtn").text()=="收起"){
         $(".searchT .upDownBtn").text("更多搜索条件");
@@ -1111,15 +1113,15 @@ $(".searchT .upDownBtn").click(function(){
         $(".searchT .upDownBtn i").remove();
         $(".searchT .upDownBtn").append("<i class='en-arrow-down8'></i>")
         $(".searchT .upDownBtn i").attr("class","en-arrow-down8")
-        // headerH=$(".cloudui .searchT").height();
-        // $(".charContent").css({"top":headerH+"px"})
+        headerH=$(".cloudui .searchT").height();
+        $(".charContent").css({"top":headerH+"px"})
     }else{
         $(".searchT .upDownBtn").text("收起");
         $(".searchT .toolAll").show();
-        // headerH=$(".cloudui .searchT").height();
+        headerH=$(".cloudui .searchT").height();
         $(".searchT .upDownBtn i").remove();
         $(".searchT .upDownBtn").append("<i class='en-arrow-up7'></i>");
-        // $(".charContent").css({"top":headerH+"px"});
+        $(".charContent").css({"top":headerH+"px"});
     }
 })
 $(".cloudui .verticalCon .searchT .upDown").hover(function(){
