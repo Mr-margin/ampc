@@ -1038,7 +1038,7 @@ public class MissionAndScenarinoController {
 			map.put("endDate", tMission.getMissionEndDate());
 			if(tMission.getMissionStatus().equals("3")){
 			if(scenarlist.isEmpty()){
-				if(false){
+				if(tScenarinoDetailMapper.selectminpathdate()!=null){
 				
 				sslist=tScenarinoDetailMapper.selectBytype4(map);
 				}
@@ -1813,9 +1813,20 @@ public class MissionAndScenarinoController {
 				LogUtil.getLogger().error("find_All_scenarino  任务id为空!");
 				return AmpcResult.build(1003, "任务id为空!");
 			}
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+			String date="";
+			if(data.get("pathDate")!=null&&data.get("pathDate")!=""){
+			date=sdf.format(data.get("pathDate").toString());
+			}
 			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
+			if(date!=null&&date!=""){
+				Date ds=sdf.parse(date);
+				tScenarinoDetail.setPathDate(ds);
+			}
+			
 			tScenarinoDetail.setUserId(userId);
 			tScenarinoDetail.setMissionId(missionId);
+			
 			List<TScenarinoDetail> tScenarinoDetaillist=tScenarinoDetailMapper.selectByEntity2(tScenarinoDetail);
 			JSONArray arr=new JSONArray();
 			JSONObject objsed=new JSONObject();
@@ -2149,5 +2160,52 @@ public class MissionAndScenarinoController {
 			return AmpcResult.build(1001, "系统异常",null);
 		}
 	}
-	
+	/**
+	 * 根据pathdate查询实时预报情景
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("scenarino/findby_pathdate")
+	public AmpcResult findbypathdate(@RequestBody Map<String,Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+	    //添加异常捕捉
+		try {
+			//设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String,Object> data=(Map)requestDate.get("data");
+			String date=data.get("pathDate").toString();
+			SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");
+			Date theDate=formatter.parse(date);
+			Long userId=Long.valueOf(data.get("userId").toString());
+			TScenarinoDetail tsd=new TScenarinoDetail();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(theDate);
+			cal.add(Calendar.DATE, 1);
+			String pthhDate =formatter.format(cal.getTime());
+			Date pathDate=formatter.parse(pthhDate);
+			
+			tsd.setUserId(userId);
+			tsd.setPathDate(pathDate);
+			tsd.setScenType("4");
+			List<TScenarinoDetail> entity = tScenarinoDetailMapper.selectByEntity(tsd);
+			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
+			if(!entity.isEmpty()){
+				tScenarinoDetail=entity.get(0);
+			}else{
+				LogUtil.getLogger().error("findby_pathdate 当前时间无实时预报情景");
+				return AmpcResult.build(1003, "当前时间无实时预报情景");	
+			}
+			if(tScenarinoDetail==null){
+				LogUtil.getLogger().error("findby_pathdate 当前时间无实时预报情景");
+				return AmpcResult.build(1003, "当前时间无实时预报情景");
+			}
+			JSONObject obj=new JSONObject();
+			obj.put("scenarinoId", tScenarinoDetail.getScenarinoId());
+			 return AmpcResult.ok(obj);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("findby_pathdate 根据pathdate查询实时预报情景异常",e);
+			//返回错误信息
+			return AmpcResult.build(1001, "系统异常",null);
+		}
+	}
 }
