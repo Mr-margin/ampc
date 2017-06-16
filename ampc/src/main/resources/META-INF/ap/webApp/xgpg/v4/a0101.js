@@ -503,7 +503,7 @@ function bianji(type, g_num, p , wind) {
 //        		console.log(JSON.stringify(data));
 
         		if(data.status == 0){
-//        			app.mapimagelayer[g_num].removeAllImages();//删除全部的图片图层
+        			app.mapimagelayer[g_num].removeAllImages();//删除全部的图片图层
 
         			console.log(data.data.imagePath);
 
@@ -536,7 +536,16 @@ function bianji(type, g_num, p , wind) {
                     judgment();
                     console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
 
-        		}
+        		}else{
+                    app.mapimagelayer[g_num].removeAllImages()
+                    zmblockUI1("#mapDiv"+g_num, "end");//打开锁屏控制
+                    swal({
+                        title: g_num+'--暂无数据！',
+                        type: 'error',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                }
         	});
 
            /* ajaxPost_w('http://166.111.42.85:8300/ampc/extract/png', {token:'',data:par}).success(function (data) {
