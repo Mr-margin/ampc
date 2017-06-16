@@ -556,87 +556,52 @@ function updata() {
  */
 function load_gis(p) {
 
-    //获取屏幕显示的地图范围
-    var par = p;
-    par.xmax = app.map.extent.xmax;
-    par.xmin = app.map.extent.xmin;
-    par.ymax = app.map.extent.ymax;
-    par.ymin = app.map.extent.ymin;
+	//获取屏幕显示的地图范围
+	var par = p;
+	par.xmax = app.map.extent.xmax;
+	par.xmin = app.map.extent.xmin;
+	par.ymax = app.map.extent.ymax;
+	par.ymin = app.map.extent.ymin;
 
-    par.width = $("#map_in").css("width").replace("px","")-2;
+	par.width = $("#map_in").css("width").replace("px","")-2;
 	par.height = $("#map_in").css("height").replace("px","")-2;
 	par.borderType = 1;
-	
-    var v1 = new Date().getTime();
-    
-    ajaxPost('/extract/png', par).success(function (data) {
-     // console.log(JSON.stringify(data));
 
-     if(data.status == 0){
-     //			app.mapimagelayer.removeAllImages();//删除全部的图片图层
-     //
-     //			console.log(data.data.imagePath);
+	var v1 = new Date().getTime();
 
-     var imageURL = pngUrl + "/ampc/"+data.data.imagePath+"?t="+Math.random();
-     // console.log(imageURL);
+	ajaxPost('/extract/png', par).success(function (data) {
+		// console.log(JSON.stringify(data));
 
-     var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
-     var mapImage = new dong.MapImage({
-     'extent': initE,
-     'href': imageURL
-     });
+		if(data.status == 0){
+			//			app.mapimagelayer.removeAllImages();//删除全部的图片图层
+			//
+			//			console.log(data.data.imagePath);
 
-     app.mapimagelayer.addImage(mapImage);//将新的图片图层添加到地图
+			var imageURL = pngUrl + "/ampc/"+data.data.imagePath+"?t="+Math.random();
+			// console.log(imageURL);
 
-     $('#colorBar').html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
-     zmblockUI1("#map_in", "end");//打开锁屏控制
-     // console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
-     judgmentObj.push('true')
-     judgment()
+			var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
+			var mapImage = new dong.MapImage({
+				'extent': initE,
+				'href': imageURL
+			});
 
-     }else{
-     zmblockUI1("#map_in", "end");//打开锁屏控制
-     }
+			app.mapimagelayer.addImage(mapImage);//将新的图片图层添加到地图
 
-     }).error(function (res) {
-     zmblockUI1("#map_in", "end");
-     swal('抽数，内部错误', '', 'error');
-     });
+			$('#colorBar').html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
+			zmblockUI1("#map_in", "end");//打开锁屏控制
+			// console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
+			judgmentObj.push('true')
+			judgment()
 
-//     ajaxPost_w('http://166.111.42.85:8300/ampc/extract/png', {token:'',data:par}).success(function (data) {
-//         // console.log(JSON.stringify(data));
-//
-//         if(data.status == 0){
-// //			app.mapimagelayer.removeAllImages();//删除全部的图片图层
-// //
-// //			console.log(data.data.imagePath);
-//
-//             var imageURL = pngUrl + "/ampc/"+data.data.imagePath+"?t="+Math.random();
-//             // console.log(imageURL);
-//
-//             var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
-//             var mapImage = new dong.MapImage({
-//                 'extent': initE,
-//                 'href': imageURL
-//             });
-//
-//             app.mapimagelayer.addImage(mapImage);//将新的图片图层添加到地图
-//
-//             $('#colorBar').html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
-//             zmblockUI1("#map_in", "end");//打开锁屏控制
-//             // console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
-//             judgmentObj.push('true')
-//             judgment()
-//
-//         }else{
-//             zmblockUI1("#map_in", "end");//打开锁屏控制
-//         }
-//
-//
-//     }).error(function (res) {
-//         zmblockUI1("#map_in", "end");
-//         swal('抽数，内部错误', '', 'error');
-//     });
+		}else{
+			zmblockUI1("#map_in", "end");//打开锁屏控制
+		}
+
+	}).error(function (res) {
+		zmblockUI1("#map_in", "end");
+		swal('抽数，内部错误', '', 'error');
+	});
 }
 
 
@@ -674,7 +639,7 @@ function updataWind() {
 //    for (var i = 0; i < changeMsg.species.length; i++) {
 //        p1.GPserver_type.push(mappingSpecies[changeMsg.rms][changeMsg.species[i]]);
 //    }
-    app.gLyr.clear();
+    
     if(changeMsg.field > 0){
     	fengchang(p1);
     }
@@ -709,6 +674,7 @@ function fengchang(p){
     par.cols = 20;
 
     par.species = ['WSPD','WDIR'];
+    app.gLyr.clear();
     
     ajaxPost('/extract/data', par).success(function (data) {
         if (!data.data) {
