@@ -848,6 +848,8 @@ function showTitleFun() {
 //easyui 添加
 $(".toolAll").hide();
 $(".upDownBtn").append("<i class='en-arrow-up7'></i>")
+var headerH = $(".cloudui .searchT").height();
+$(".verticalChar").css({"top": headerH + "px"});
 $(".upDownBtn").click(function(){
     console.log($(".upDownBtn").val());
     if($(".upDownBtn").text()=="收起"){
@@ -856,15 +858,15 @@ $(".upDownBtn").click(function(){
         $(".upDownBtn i").remove();
         $(".upDownBtn").append("<i class='en-arrow-down8'></i>")
         $(".upDownBtn i").attr("class","en-arrow-down8")
-        //headerH=$(".cloudui .searchT").height();
-       // $(".verticalChar").css({"top":headerH+"px"})
+        headerH=$(".cloudui .searchT").height();
+       $(".verticalChar").css({"top":headerH+"px"})
     }else{
         $(".upDownBtn").text("收起");
         $(".toolAll").show();
-      //  headerH=$(".cloudui .searchT").height();
+       headerH=$(".cloudui .searchT").height();
         $(".upDownBtn i").remove();
         $(".upDownBtn").append("<i class='en-arrow-up7'></i>");
-        //$(".verticalChar").css({"top":headerH+"px"});
+        $(".verticalChar").css({"top":headerH+"px"});
     }
 })
 $(".cloudui .verticalCon .ibox-content .searchT .upDown").hover(function(){
