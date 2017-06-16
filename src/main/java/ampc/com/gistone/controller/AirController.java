@@ -2835,21 +2835,14 @@ public class AirController {
 						}
 					
 						BigDecimal p=new BigDecimal(ite.getValue().get("0").toString());
-//						String ps=LevelUtil.Level(p);
-//						String os=LevelUtil.Level(num);
+
 						if(psumMap.get(spcs)==null){
 							psumMap.put(spcs, p);
 						}else{
 							psumMap.put(spcs, psumMap.get(spcs).add(p));
 							
 						}
-//						if(ps.equals(os)){
-//							if(spcexactMap.get(spcs)==null){
-//								spcexactMap.put(spcs, 1);
-//							}else{
-//								spcexactMap.put(spcs, spcexactMap.get(spcs)+1);							
-//							}
-//						}
+
 						odayspcMaps.put(spcs, p);
 					}
 				}else{//逐日
@@ -3365,13 +3358,5 @@ public class AirController {
 		}
 	}
 	 
-//	@RequestMapping("/code/finds")	
-//	public AmpcResult findcodes(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response ){
-//		List<Long> idlist =new ArrayList<Long>();
-//		idlist.add(1l);
-//		idlist.add(2l);
-//		idlist.add(22l);
-//		Map map=findCode.Findcode(idlist);
-//		return AmpcResult.ok(map);
-//	 }
+
 }
