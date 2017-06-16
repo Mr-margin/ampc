@@ -31,6 +31,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,6 +41,7 @@ import ampc.com.gistone.database.model.TQueryExcel;
 import ampc.com.gistone.database.model.TSectorExcel;
 import ampc.com.gistone.database.model.TSectordocExcel;
 import ampc.com.gistone.util.AmpcResult;
+import ampc.com.gistone.util.ConfigUtil;
 import ampc.com.gistone.util.JsonUtil;
 import ampc.com.gistone.util.LogUtil;
 import ampc.com.gistone.util.RegUtil;
@@ -66,6 +68,9 @@ public class ExcelToDate {
 	public CellStyle yellowStyle;
     //存放验证信息的Map
     public LinkedHashMap checkMap=null;
+    //配置文件帮助类
+    @Autowired
+    public ConfigUtil configUtil;
     /**
      * 用来存放错误信息的集合
      * 0.sheetName长度不匹配
@@ -173,9 +178,16 @@ public class ExcelToDate {
 	 */
 	public LinkedHashMap readCheckJson(String jsonName){  
 		try {
+			/**
+  			 * TODO 本地配置
+  			 */
 			//获取校验文件
-			File directory = new File("");
-			String path= directory.getCanonicalPath()+"\\src\\main\\resources\\checkFile\\"+jsonName;
+			//File directory = new File("");
+			//String path= directory.getCanonicalPath()+"\\src\\main\\resources\\checkFile\\"+jsonName;
+			/**
+			 * TODO外网配置
+			 */
+			String path=configUtil.getChexcExcelUrl()+"\\"+jsonName;
 			//解析文件获取解析信息
 			LinkedHashMap map=JsonUtil.readObjFromJsonFile(path, LinkedHashMap.class);
 			//返回信息
@@ -826,9 +838,16 @@ public class ExcelToDate {
   		    ObjectMapper mapper=new ObjectMapper();
   			String info= mapper.writeValueAsString(resultMap);
   		   //获取校验文件
-     	   File directory = new File("");
-     	   String qdPath= directory.getCanonicalPath()+"\\src\\main\\resources\\checkFile\\应急系统新_3清单数据.json";
-     	   File txt=new File(qdPath);
+  			/**
+  			 * TODO 本地配置
+  			 */
+     	  // File directory = new File("");
+     	  // String qdPath= directory.getCanonicalPath()+"\\src\\main\\resources\\checkFile\\应急系统新_3清单数据.json";
+     	  /**
+     	   * TODO 外网配置
+     	   */
+  			String qdPath=configUtil.getChexcExcelUrl()+"\\应急系统新_3清单数据.json";
+  			File txt=new File(qdPath);
             //保存清单校验文件
             if(!saveCheckFile(info,txt)){
             	msg.add("创建清单校验文件失败!");
