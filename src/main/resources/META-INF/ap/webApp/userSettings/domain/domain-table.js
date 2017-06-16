@@ -21,6 +21,7 @@ function getInfo(){
 		$.each(_temp,function(key,value){
 			findPull(value);
 		});
+		status();
 		$('#pp').pagination({
 		    total:res.data.length,
 		    pageSize:10,
@@ -30,11 +31,13 @@ function getInfo(){
 		    		var _temp=domainData.slice((pageNumber-1)*pageSize);
 		    		$.each(_temp,function(key,value){
 		    			findPull(value);
+		    			status();
 		    		});
 		    	}else{
 		    		var _temp=domainData.slice((pageNumber-1)*pageSize,pageNumber*pageSize);
 		    		$.each(_temp,function(key,value){
 		    			findPull(value);
+		    			status();
 		    		});
 		    	}
 		    	
@@ -44,27 +47,47 @@ function getInfo(){
 }  
 
 function findPull(value){
-	var disposeStatus = value.disposeStatus
+	$('.todo,.default,.b_del').show();
+	var disposeStatus = value.disposeStatus;
+	var employStatus = value.employStatus; 
+	var domain_id = value.domainId;
 	var world = '';
-	if(disposeStatus == 1){
-		world = '待编辑';
-	}else if(disposeStatus == 2){
-		world = '处理中'; 
+	var domain_work = '';
+	if(employStatus == '1'){
+		domain_work = '使用过';
+	} 
+	if(employStatus == '2'){
+		domain_work = '未使用'; 
 	}
+	if(disposeStatus == '1'){
+		world = '待编辑';
+	}
+	if(disposeStatus == '2'){
+		world = '处理中'; 
+	} 
+	if(disposeStatus == '3'){
+		world = '处理成功'; 
+	} 
+	if(disposeStatus == '4'){
+		world = '处理失败'; 
+	}
+
 	var dom = '';
 	dom += '<tr class="tr_'+value.domainId+'">';
 	dom += '<td class="col-3">'+value.domainName+'</td>';
 	dom += '<td class="col-4">'+value.domainDoc+'</td>';
-	dom += '<td class="col-2">'+world+'</td>';
-	dom += '<td class="col-3">';
-	dom += '<button class="btn-blue" onclick="examine(this)" domain_id="'+value.domainId+'">查看</button>';
-	dom += '<button class="btn-green" onclick="update(this)" domain_id="'+value.domainId+'">编辑</button> ';
+	dom += '<td class="col-1 status_domain">'+domain_work+'</td>';
+	dom += '<td class="col-1 do_domain">'+world+'</td>';
+	dom += '<td class="col-3 buttonclick">';
+	dom += '<button class="btn-blue look" onclick="examine(this)" domain_id="'+value.domainId+'">查看</button>';
+	dom += '<button class="btn-green todo" onclick="update(this)" domain_id="'+value.domainId+'">编辑</button> ';
 	dom += '<button class="btn-yellow default" onclick="defaultSelect(this)" domain_id="'+value.domainId+'">开启</button> ';
-	dom += '<button class="btn-red" onclick="delDomain(this)" domain_id="'+value.domainId+'">删除</button>';
+	dom += '<button class="btn-red b_del" onclick="delDomain(this)" domain_id="'+value.domainId+'">删除</button>';
 	dom += '</td>';
 	dom += '</tr>';
 	$('.domain_box table tbody').append(dom);
 }
+
 function examine(th){
 	var domain_id = $(th).attr('domain_id');
 	var msg = {
@@ -175,5 +198,27 @@ function defaultSelect(th){
 			$(th).text('开启');
 			$(th).css('background-color','#f0ad4e');
 		}
+	});
+}
+
+function status(){
+	var domainStatus = '';
+	var domainDo = '';
+	$('tbody tr').each(function(key,value){
+		domainStatus = $(value).children('.status_domain').text();
+		domainDo = $(value).children('.do_domain').text();
+		if(domainStatus == '已使用'){
+			$(value).children().children('.todo,.b_del').hide();
+		}
+		if(domainDo == '处理中'){
+			$(value).children().children('.todo,.default,.b_del').hide();
+		}
+		if(domainDo == '处理失败'){
+			$(value).children().children('.default').hide();
+		}
+		if(domainDo == '待编辑'){
+			$(value).children().children('.default').hide();
+		}
+		console.log(domainStatus);
 	});
 }
