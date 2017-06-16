@@ -651,6 +651,8 @@ public class GetWeatherModelController {
 						 if (scenarinoStatus==7&&!sendtime.equals("0")) {
 							 boolean continueModelByError = readyData.continuePredict(scenarinoId, scenarinoType, missionType, missionId, userId);
 							if (continueModelByError) {
+								//修改情景状态
+								readyData.updateScenStatusUtil(6l, scenarinoId);
 								return AmpcResult.build(0, "续跑成功！");
 							}else {
 								return AmpcResult.build(1004, "续跑失败！");
@@ -660,6 +662,8 @@ public class GetWeatherModelController {
 						 if (scenarinoStatus==9&&!sendtime.equals("0")) {
 							 boolean continueModelByError = readyData.continuePredict(scenarinoId, scenarinoType, missionType, missionId, userId);
 							 if (continueModelByError) {
+								//修改情景状态
+								readyData.updateScenStatusUtil(6l, scenarinoId);
 								 return AmpcResult.build(0, "续跑成功！");
 							 }else {
 								 return AmpcResult.build(1004, "续跑失败！");
@@ -669,6 +673,8 @@ public class GetWeatherModelController {
 							//3.消息一次都没发的续跑（发送到消息队列出错的时候）
 							 String branchPredict = readyData.branchPredict(scenarinoId, scenarinoType, missionType, missionId, userId,sourceId);
 							if (branchPredict.equals("")) {
+								//修改情景状态
+								readyData.updateScenStatusUtil(6l, scenarinoId);
 								return AmpcResult.build(0, "续跑成功！");
 							}else {
 								return AmpcResult.build(1004, "续跑失败！");
