@@ -1,6 +1,18 @@
 var ls = window.sessionStorage;
 var qjMsg = vipspa.getMessage('yaMessage').content;
-
+var mappingSpecies = {
+    'PM25':'PM₂.₅',
+    'PM10':'PM₁₀',
+    'SO2':'SO₂',
+    'NOx':'NOx',
+    'VOC':'VOC',
+    'CO':'CO',
+    'NH3':'NH₃',
+    'BC':'BC',
+    'OC':'OC',
+    'PMFINE': 'PMFINE',
+    'PMC':'PMC'
+}
 if(!qjMsg){
   qjMsg = JSON.parse(ls.getItem('yaMsg'));
 }else{
@@ -547,7 +559,7 @@ function bar() {
 				var myPfChart = echarts.init(document.getElementById('pfDiv1'));
 				var option = {
 					    title : {
-					        text: tj_paramsName.name +"-"+tj_paramsName.wz+'-减排分析',
+					        text: tj_paramsName.name +"-"+mappingSpecies[tj_paramsName.wz]+'-减排分析',
 					        left:'50%',
 	                        top:'1%',
 	                        textAlign:'center'
@@ -758,7 +770,7 @@ function  pie(){
 				var myhycsChart = echarts.init(document.getElementById('hycsDiv1'));
 				var optionPie = {
 					    title : {
-					        text: tj_paramsName.name +'-'+(tj_paramsName.type == "1" ? "分行业" : "分措施")+"-"+tj_paramsName.wz+'-减排分析',
+					        text: tj_paramsName.name +'-'+(tj_paramsName.type == "1" ? "分行业" : "分措施")+"-"+mappingSpecies[tj_paramsName.wz]+'-减排分析',
 					        subtext: '全部'+(tj_paramsName.type == "1" ? "行业" : "措施")+'合计减排：'+sum_value.toFixed(2),
 					        left:'50%',
 	                        top:'1%',
