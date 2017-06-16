@@ -1005,7 +1005,7 @@ function videoPlay() {
         console.log(playDay,playHour);
         setVideoPlayTime();
         updata();
-        if(changeMsg.showWind !=-1){
+        if(changeMsg.field !=-0){
             updataWind();
         }
 
