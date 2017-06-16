@@ -1238,10 +1238,10 @@ $('input[name=domain]').on('change', function (e) {
 	getdata();
 });
 //easyui 添加
-//var headerH = $(".cloudui .searchT").height();
-//$(".charContent").css({"top": headerH + "px"});
 $(".toolAll").hide();
 $(".cloudui .searchT  .upDownBtn").append("<i class='en-arrow-up7'></i>")
+var headerH = $(".cloudui .searchT").height();
+$(".charContent").css({"top": headerH + "px"});
 $(".cloudui .searchT .upDownBtn").click(function () {
     if ($(".cloudui .searchT .upDownBtn").text() == "收起") {
         $(".cloudui .searchT .upDownBtn").text("更多搜索条件");
@@ -1249,15 +1249,15 @@ $(".cloudui .searchT .upDownBtn").click(function () {
         $(".cloudui .searchT .upDownBtn i").remove();
         $(".cloudui .searchT .upDownBtn").append("<i class='en-arrow-down8'></i>")
         $(".cloudui .searchT .upDownBtn i").attr("class", "en-arrow-down8")
-        //headerH = $(".cloudui .searchT").height();
-       // $(".charContent").css({"top": headerH + "px"})
+        headerH = $(".cloudui .searchT").height();
+       $(".charContent").css({"top": headerH + "px"})
     } else {
         $(".cloudui .searchT .upDownBtn").text("收起");
         $(".toolAll").show();
-       // headerH = $(".cloudui .searchT").height();
+       headerH = $(".cloudui .searchT").height();
         $(".cloudui .searchT .upDownBtn i").remove();
         $(".cloudui .searchT .upDownBtn").append("<i class='en-arrow-up7'></i>");
-       // $(".charContent").css({"top": headerH + "px"});
+       $(".charContent").css({"top": headerH + "px"});
     }
 })
 $(".cloudui .upDown").hover(function () {
