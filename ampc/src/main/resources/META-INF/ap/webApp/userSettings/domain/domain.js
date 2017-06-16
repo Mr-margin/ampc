@@ -54,7 +54,7 @@ $(document).ready(function(){
  */
 $('.ref_lon').blur(function(){
 	var Central_Meridian = $(this).val();
-	if(!isNaN(Central_Meridian)){
+	if(Central_Meridian){
 		Central_Meridian = parseFloat(Central_Meridian).toFixed(6)*1;
 		$(this).val(Central_Meridian);
 	}
@@ -65,7 +65,7 @@ $('.ref_lon').blur(function(){
 });
 $('.stand_lat1').blur(function(){
 	var Standard_Parallel_1 = $(this).val();
-	if(!isNaN(Standard_Parallel_1)){
+	if(Standard_Parallel_1){
 		Standard_Parallel_1 = parseFloat(Standard_Parallel_1).toFixed(6)*1;
 		$(this).val(Standard_Parallel_1);
 	}
@@ -76,7 +76,7 @@ $('.stand_lat1').blur(function(){
 });
 $('.stand_lat2').blur(function(){
 	var Standard_Parallel_2 = $(this).val();
-	if(!isNaN(Standard_Parallel_2)){
+	if(Standard_Parallel_2){
 		Standard_Parallel_2 = parseFloat(Standard_Parallel_2).toFixed(6)*1;
 		$(this).val(Standard_Parallel_2);
 	}
@@ -87,7 +87,7 @@ $('.stand_lat2').blur(function(){
 });
 $('.ref_lat').blur(function(){
 	var Latitude_Of_Origin = $(this).val();
-	if(!isNaN(Latitude_Of_Origin)){
+	if(Latitude_Of_Origin){
 		numbers = parseFloat(Latitude_Of_Origin).toFixed(6)*1;
 		$(this).val(Latitude_Of_Origin);
 	}
@@ -244,7 +244,7 @@ function submitSave(){
 	var stand_lat1 = $('.stand_lat1').val();
 	var stand_lat2 = $('.stand_lat2').val();
 	var max_dom = $('.box-body').attr('max_dom');
-	var btrim = $('.btrim_select').val();
+	var btrim = $('.btrim_select').find("option:selected").val();
 	var i_parent_start = arr_i_parent_start.join(',');
 	var j_parent_start = arr_j_parent_start.join(',');
 	var e_we = arr_we.join(',');
@@ -284,19 +284,37 @@ function submitSave(){
 function postSubmit(){
 	var url = '/Domain/updateRangeAndCode';
 	var data = submitSave();
-	ajaxPost(url,{
-		'userId':data.userId,
-		'domainInfo':data.domainInfo,
-		'domainRange':data.domainRange,
-		'domainId':data.domainId,
-	}).success(function(res){
-		console.log(res);
-		if(res.msg == 'success'){
-			swal("保存成功");
-		}else{
-			swal("保存失败");
-		}
-	});
+	if(data.domainInfo.common.ref_lat == ''){
+		swal("请输入Latitude_Of_Origin");
+	}else if(data.domainInfo.common.ref_lon == ''){
+		swal("请输入Central_Meridian");
+	}else if(data.domainInfo.common.stand_lat1 == ''){
+		swal("请输入Standard_Parallel_1");
+	}else if(data.domainInfo.common.stand_lat2 == ''){
+		swal("请输入Standard_Parallel_2");
+	}else if($('.e_we1').val() == ''){
+		swal("请输入x方向网格边数");
+	}else if($('.e_sn1').val() == ''){
+		swal("请输入y方向网格边数");
+	}else if($('.btrim_select').find("option:selected").val() == '0'){
+		swal("请选择x,y向裁剪网格数");
+	}else if($('.domain_select').find("option:selected").text() == '请选择'){
+		swal("请选择x,y向分辨率(m)");
+	}else{
+		ajaxPost(url,{
+			'userId':data.userId,
+			'domainInfo':data.domainInfo,
+			'domainRange':data.domainRange,
+			'domainId':data.domainId,
+		}).success(function(res){
+			console.log(res);
+			if(res.msg == 'success'){
+				swal("保存成功");
+			}else{
+				swal("保存失败");
+			}
+		});
+	}
 }
 
 
