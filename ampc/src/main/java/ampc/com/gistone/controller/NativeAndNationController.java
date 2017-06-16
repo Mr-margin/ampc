@@ -10,9 +10,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -1746,7 +1748,8 @@ public class NativeAndNationController {
 			String str = json.toString();
 			
 			//此处会有调用晓东的接口，根据参数为清单id查询涉及到的城市id
-			String getResult=ClientUtil.doPost("http://166.111.42.85:8090/summary/regions",str);
+			String yunURL=configUtil.getYunURL()+"/summary/regions";
+			String getResult=ClientUtil.doPost(yunURL,str);
 			Map contentMap=mapper.readValue(getResult, Map.class);
 			String cityStr = contentMap.get("data").toString();
 			JSONObject obj = new JSONObject();
@@ -1754,23 +1757,23 @@ public class NativeAndNationController {
 			//得到城市集合
 			Map cityMap=mapper.readValue(objs.toString(), Map.class);
 			//遍历每个清单id下的城市
-			String[] cityIdArray = null;
+			Set<String> cityIdArray = new HashSet<String>();
 			for(Object cityKey:cityMap.keySet()){
-				String cityStrs = cityMap.get(cityKey).toString();
-				String cityIdStrs = cityStrs.substring(1, cityStrs.length() -1);
-				cityIdArray = cityIdStrs.split(",");
+				List cityStrs = (List)cityMap.get(cityKey);
+				for (Object object : cityStrs) {
+					String code=object.toString();
+					code=code.substring(0,4);
+					cityIdArray.add(code);
+				}
 			}
 			
 			//查询到的城市添加到Map集合中
 			Map cityNameMap = new HashMap<String, Object>();
-			//循环全部城市ID
-			for(int i=0; i<cityIdArray.length; i++){
-				//根据城市id查询涉及到的城市名称
-				String addressCode = cityIdArray[i];
-				String tAddressName=tAddressMapper.selectCityNameById(addressCode);
-				cityNameMap.put(cityIdArray[i].trim(), tAddressName);
+			for (String string : cityIdArray) {
+				String tAddressName=tAddressMapper.selectCityNameById(string+"00");
+				cityNameMap.put(string, tAddressName);
 			}
-			
+			//循环全部城市ID
 			//根据本地清单模板id查询涉及到的行业
 			List<String> listTSectorExcel=tSectorExcelMapper.selectIndustryById(nativeTpId);
 			
@@ -1864,7 +1867,8 @@ public class NativeAndNationController {
 			couplingMap.put("templateId", nativeTpId);
 			//返回结果的路径
 			//读取config.properties配置文件的url
-			String  resultUrl = "http://166.111.42.85:8300/ampc/NativeAndNation/doPost";
+			String serverPath=configUtil.getServerPath()+"/NativeAndNation/doPost";
+			String  resultUrl = serverPath;
 			couplingMap.put("serverPath", resultUrl);
 			//设置参数查询行业版本
 			TSectorExcel tSectorExcel = new TSectorExcel();
@@ -1887,7 +1891,8 @@ public class NativeAndNationController {
 			//转化为json对象
 			JSONObject json = JSONObject.fromObject(couplingMap);
 			//调用晓东的接口
-			String getResult=ClientUtil.doPost("http://166.111.42.85:8090/coupling/submit",json.toString());
+			String yunURL=configUtil.getYunURL()+"/coupling/submit";
+			String getResult=ClientUtil.doPost(yunURL,json.toString());
 			Map detamap=mapper.readValue(getResult, Map.class);
 			Map messageMap = new HashMap<String, Object>();
 			//如果状态执行成功
