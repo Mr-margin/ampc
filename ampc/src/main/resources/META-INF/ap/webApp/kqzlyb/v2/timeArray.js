@@ -32,8 +32,10 @@ var speciesArr = {
 var meteorArr = {
 //    day: ["TEMP","PRSFC","PT","RH","WSPD"],
 //    hour: ["TEMP","PRSFC","PT","RH","WSPD"]
-		day: ["气压","温度","湿度","降水","风速"],
-		hour: ["气压","温度","湿度","降水","风速"]
+		day: ["PRSFC","TEMP","RH","PT","WSPD"],
+	    hour: ["PRSFC","TEMP","RH","PT","WSPD"]
+//		day: ["气压","温度","湿度","降水","风速"],
+//		hour: ["气压","温度","湿度","降水","风速"]
 	    
 };
 
@@ -747,16 +749,16 @@ function initEcharts() {
                 option.title.text = "SO₂"+('(μg/m³)');
             }else if("NO2"==tname[i]){
                 option.title.text = "NO₂"+('(μg/m³)');
-            }else if("温度"==tname[i]){
-                option.title.text = tname[i]+('(℃)');
-            }else if("气压"==tname[i]){
-                option.title.text = tname[i]+('(hPa)');
-            }else if("降水"==tname[i]){
-                option.title.text = tname[i]+('(mm)');
-            }else if("湿度"==tname[i]){
-                option.title.text = tname[i]+('(%)');
-            }else if("风速"==tname[i]){
-                option.title.text = tname[i]+('(m/s)');
+            }else if("PRSFC"==tname[i]){
+                option.title.text = "气压"+('(℃)');
+            }else if("TEMP"==tname[i]){
+                option.title.text = "温度"+('(hPa)');
+            }else if("RH"==tname[i]){
+                option.title.text = "湿度"+('(mm)');
+            }else if("PT"==tname[i]){
+                option.title.text = "降水"+('(%)');
+            }else if("WSPD"==tname[i]){
+                option.title.text = "风速"+('(m/s)');
             }
             else{
                 option.title.text = tname[i]+('(μg/m³)');
