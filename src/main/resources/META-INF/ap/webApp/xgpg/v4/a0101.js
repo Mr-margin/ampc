@@ -1,8 +1,3 @@
-/**
- *设置导航条信息
- */
-$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">水平分布</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a>');
-
 var opacity = 0.7;//默认的图层透明度
 var ls, sceneInitialization, qjMsg;
 var videoPlayScale = [];
@@ -13,7 +8,7 @@ var changeMsg = {
     calcType: 'show',//"show"当前情景，"diff"差值，"ratio"比例
     species: ['PM₂.₅'],//物种
     missionId: '',//任务ID
-    domain: 1,//模拟范围
+    domain: 3,//模拟范围
     domainId: '',//模拟范围ID
     rms: 'd',//时间分辨率
     qj1Id: '',//左边情景ID
@@ -276,6 +271,8 @@ require(
         if (!sceneInitialization) {
             sceneInittion();
         } else {
+        	$("#missionName").empty();
+        	$("#missionName").text(sceneInitialization.missionName);
             setQjSelectBtn(sceneInitialization.data);
         }
       /*这段代码需要在初始化中*/
@@ -285,18 +282,22 @@ require(
         }
     });
 
+/**
+ *设置导航条信息
+ */
+$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果评估</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">水平分布</span><a onclick="exchangeModal()" class="nav_right" style="padding-left: 15px;padding-right: 15px;float:right;">切换情景范围</a><span style="padding-left: 15px;padding-right: 15px;float:right;" id="missionName"></span>');
 
 var allMission = {};
 /**
  * 初始化模态框显示
  */
 function sceneInittion() {
-    $("#task").html("");
+    $("#task").empty();
     var paramsName = {};
     paramsName.userId = userId;
-    console.log(JSON.stringify(paramsName));
+   // console.log(JSON.stringify(paramsName));
     ajaxPost('/mission/find_All_mission', paramsName).success(function (res) {
-        console.log(JSON.stringify(res));
+     //   console.log(JSON.stringify(res));
         if (res.status == 0) {
             if (res.data || res.data.length > 0) {
                 var task = "";
@@ -313,6 +314,28 @@ function sceneInittion() {
                     }
                 });
                 $("#task").html(task);
+
+                if(!$.isEmptyObject(allMission)){
+                    var id = $("#task").val();
+                    if(allMission[id].missionStatus == '2'){
+                        $('#task').css('width','60%');
+                        $('#pathD').css('display','block');
+                        $('#pathD').html('');
+
+                        for(var ids in allMission[id].pathdates){
+                            if(ids == sceneInitialization.pathdate){
+                                $('#pathD').append($('<option selected="selected" value="'+ ids +'">'+ (ids==-1?'无':moment(allMission[id].pathdates[ids]).format('YYYY-MM-DD')) +'</option>'))
+                            }else{
+                                $('#pathD').append($('<option value="'+ ids +'">'+ (ids==-1?'无':moment(allMission[id].pathdates[ids]).format('YYYY-MM-DD')) +'</option>'))
+                            }
+
+                        }
+                    }else{
+                        $('#task').css('width','100%');
+                        $('#pathD').html('');
+                    }
+                }
+
                // $("#Initialization").modal();//初始化模态框显示
                 $("#Initialization").window("open");
                 sceneTable();
@@ -328,12 +351,45 @@ function sceneInittion() {
 }
 
 /**
+ * 选择任务时候判断是否为预评估任务进行pathDate选择
+ */
+function selectRwId() {
+    var id = $("#task").val();
+    if(allMission[id].missionStatus == '2'){
+        $('#task').css('width','60%');
+        $('#pathD').css('display','block');
+        $('#pathD').empty();
+
+        for(var ids in allMission[id].pathdates){
+            $('#pathD').append($('<option value="'+ ids +'">'+ (ids == -1?"无":moment(allMission[id].pathdates[ids]).format('YYYY-MM-DD')) +'</option>'))
+        }
+    }else{
+        $('#task').css('width','100%');
+        $('#pathD').empty();
+    }
+    sceneTable();
+}
+
+
+
+/**
  * 根据任务ID，获取情景列表用于选择情景范围
  */
 function sceneTable() {
     $("#sceneTableId").bootstrapTable('destroy');//销毁现有表格数据
 //表格交互 easyui
     ajaxPost('/scenarino/find_All_scenarino',{
+        "pathDate":(function () {
+            if(allMission[$('#task').val()].missionStatus == '2'){
+                if($('#pathD').val() != -1){
+                    return moment(allMission[$('#task').val()].pathdates[$('#pathD').val()]).format('YYYY-MM-DD')
+                }else{
+                    return ''
+                }
+            }else{
+                return ''
+            }
+        })(),
         "userId": userId,
         "missionId":$("#task").val()
     }).success(function(data){
@@ -389,10 +445,12 @@ function save_scene() {
         var mag = {};
         mag.id = "sceneInitialization";
         mag.taskID = $("#task").val();
+        mag.missionName = $("#task :selected").text();
+        mag.pathdate = $('#pathD').val();
         mag.domainId = allMission[mag.taskID].domainId;
         mag.s = allMission[mag.taskID].missionStartDate;
         mag.e = allMission[mag.taskID].missionEndDate;
-        mag.jzID = allMission[mag.taskID].jzqjid;
+        mag.jzID = allMission[mag.taskID].missionStatus == '2'?$('#pathD').val():allMission[mag.taskID].jzqjid;
         var data = [];
         $.each(row, function (i, col) {
             data.push({
@@ -405,6 +463,8 @@ function save_scene() {
         mag.data = data;
         vipspa.setMessage(mag);
         ls.setItem('SI', JSON.stringify(mag));
+        //添加任务名称
+        $("#missionName").text(sceneInitialization.missionName);
         console.log(data);
         sceneInitialization = jQuery.extend(true, {}, mag);//复制数据
         setQjSelectBtn(data);
@@ -441,7 +501,7 @@ function bianji(type, g_num, p , wind) {
         	par.borderType = 1;
         	
 //        	console.log(JSON.stringify(par));
-            ajaxPost('/extract/png', par).success(function (data) {
+                   	ajaxPost('/extract/png', par).success(function (data) {
 //        		console.log(JSON.stringify(data));
 
         		if(data.status == 0){
@@ -481,6 +541,154 @@ function bianji(type, g_num, p , wind) {
         		}
         	});
 
+           /* ajaxPost_w('http://166.111.42.85:8300/ampc/extract/png', {token:'',data:par}).success(function (data) {
+//        		console.log(JSON.stringify(data));
+
+                if(data.status == 0){
+//        			app.mapimagelayer[g_num].removeAllImages();//删除全部的图片图层
+
+//        			console.log(data.data.imagePath);
+
+                    var imageURL = pngUrl + "/ampc/"+data.data.imagePath+"?t="+Math.random();
+                    console.log(imageURL);
+
+                    var initE = new dong.Extent({ 'xmin': par.xmin, 'ymin': par.ymin, 'xmax': par.xmax, 'ymax': par.ymax, 'spatialReference': { 'wkid': 3857 }});
+                    var mapImage = new dong.MapImage({
+                        'extent': initE,
+                        'href': imageURL
+                    });
+
+
+                    app.mapimagelayer[g_num].addImage(mapImage);//将新的图片图层添加到地图
+
+                    $('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
+                    zmblockUI1("#mapDiv"+g_num, "end");//打开锁屏控制
+
+//                    $.each(data.data, function (i, col) {
+//                    	$.each(col, function (k, vvol) {
+//                    		if (vvol.value != "-9999.0") {
+//                        		var point = new dong.Point(vvol.x, vvol.y, new dong.SpatialReference({wkid: 3857}));
+//                        		var graphic = new dong.Graphic(point,app.pointSymbol1);
+//                        		app.gLyr[g_num].add(graphic);
+//                        	}
+//                    	});
+//                    });
+                    judgmentObj.push(g_num)
+                    judgment();
+                    console.log((new Date().getTime() - v1) + "处理完成");//记录处理时间
+
+                }
+            });*/
+        	
+        	
+        	
+
+//            var GPserver_type = par.GPserver_type[sp];
+//            var GPserver_url = ArcGisServerUrl + "/arcgis/rest/services/ampc_zrly/" + GPserver_type + "/GPServer/" + GPserver_type;
+//
+//            var pftype = par.species[sp];
+//
+//            ajaxPost('/extract/data', par).success(function (data) {
+//
+//                if (!data.data) {
+//                    console.log("data.data-null");
+//
+//                    zmblockUI("#mapDiv"+g_num, "end");
+//                    swal('获取当前范围数据失败', '', 'error');
+//                    return;
+//                }
+//                if (data.data.length == 0) {
+//                    console.log("length-null");
+//                    zmblockUI("#mapDiv"+g_num, "end");
+//                    swal('当前范围缺少数据', '', 'error');
+//                    return;
+//                }
+//                console.log(g_num + '~~~' + data.data.length);
+//                var features = [];
+//                $.each(data.data, function (i, col) {
+//
+//                    if (typeof col.x == "undefined") {
+//                        console.log("x-null");
+//                        return;
+//                    }
+//                    if (typeof col.y == "undefined") {
+//                        console.log("y-null");
+//                        return;
+//                    }
+//                    var point = new dong.Point(col.x, col.y, new dong.SpatialReference({wkid: 3857}));
+//                    var attr = {};
+//                    attr["FID"] = i;
+//                    attr["dqvalue"] = col[pftype];
+//                    var graphic = new dong.Graphic(point);
+//                    graphic.setAttributes(attr);
+//                    features.push(graphic);
+//                });
+//
+//                var featureset = new dong.FeatureSet();
+//                featureset.fields = [{
+//                    "name": "dqvalue",
+//                    "type": "esriFieldTypeSingle",
+//                    "alias": "dqvalue"
+//                }, {
+//                    "name": "FID",
+//                    "type": "esriFieldTypeOID",
+//                    "alias": "FID"
+//                }];
+//                featureset.fieldAliases = {"dqvalue": "dqvalue", "FID": "FID"};
+//                featureset.spatialReference = new dong.SpatialReference({wkid: 3857});
+//                featureset.features = features;
+//                featureset.exceededTransferLimit = false;
+//
+////	        console.log(JSON.stringify(featureset));
+////	        console.log((new Date().getTime() - v1) + "生成数据");
+//                app.gp = new esri.tasks.Geoprocessor(GPserver_url);
+//                var parms = {
+//                    "imp": featureset,
+//                    "out": "out_raster_layer"
+//                };
+//                app.gp.submitJob(parms, function (jobInfo) {
+//                    var gpResultLayer = app.gp.getResultImageLayer(jobInfo.jobId, "out");//这里的名字是跟着返回图层的变量名走的，不一样的话是不出图的
+//                    //需要判断一下是否已经添加过图层，先移除，再添加
+//                    gpResultLayer.id = "out_raster_layer";
+//                    gpResultLayer.setOpacity(opacity);
+//
+//                    var out_raster_layer = app.mapList[g_num].getLayer('out_raster_layer');
+//                    if (out_raster_layer) {
+//                        app.mapList[g_num].removeLayer(out_raster_layer);
+//                    }
+//                    app.mapList[g_num].addLayer(gpResultLayer);
+//
+//                    //添加图例
+//                    $('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");
+//
+//                    //console.log(new Date().getTime() - v1);
+//                }, function (jobinfo) {
+//                    var jobstatus = '';
+//                    switch (jobinfo.jobStatus) {
+//                        case 'esriJobSubmitted':
+//                            //jobstatus = type + '正在提交...';
+//                            break;
+//                        case 'esriJobExecuting':
+//                            //jobstatus = type + '处理中...';
+//                            break;
+//                        case 'esriJobSucceeded':
+//                            judgmentObj.push(g_num);
+//                            judgment();
+//                            jobstatus = '--' + g_num + '--处理完成...';
+//                            console.log((new Date().getTime() - v1) + jobstatus);
+//                            zmblockUI("#mapDiv"+g_num, "end");
+//                            break;
+//                    }
+//                }, function (error) {
+//                    console.log(error);
+//                    zmblockUI("#mapDiv"+g_num, "end");
+//                    swal('GIS，内部错误', '', 'error');
+//                });
+//
+//            }).error(function (res) {
+//                zmblockUI("#mapDiv"+g_num, "end");
+//                swal('抽数，内部错误', '', 'error');
+//            });
         }else{//风场
             var lujing = "";
             var fxOpacity = 0;
@@ -501,23 +709,23 @@ function bianji(type, g_num, p , wind) {
             app.gLyr[1].clear();
             ajaxPost('/extract/data', par).success(function (data) {
                 if (!data.data) {
-                    console.log("data.data-null");
+                    // console.log("data.data-null");
                     swal('获取当前范围风场数据失败', '', 'error');
                     return;
                 }
                 if (data.data.length == 0) {
-                    console.log("length-null");
+                    // console.log("length-null");
                     swal('当前范围缺少风场数据', '', 'error');
                     return;
                 }
                 $.each(data.data, function (i, col) {
 
                     if (typeof col.x == "undefined") {
-                        console.log("x-null");
+                        // console.log("x-null");
                         return;
                     }
                     if (typeof col.y == "undefined") {
-                        console.log("y-null");
+                        // console.log("y-null");
                         return;
                     }
 
@@ -750,7 +958,33 @@ function setQjSelectBtn(data) {
         $('#qjBtn2 .btn-group').append(btn2);
     }
     setDate(s1, e1, s2, e2);
-    updata();
+    if(changeMsg.qj1Id == -1){
+        ajaxPost('/scenarino/findby_pathdate',{
+            userId:userId,
+            pathDate:$('#sTime-d').val()
+        }).success(function (res) {
+            if(res.status == 0){
+                changeMsg.qj1Id = res.data.scenarinoId;
+                updata();
+            }else{
+                swal({
+                    title: res.msg,
+                    type: 'error',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            }
+        }).error(function () {
+            swal({
+                title: '接口故障',
+                type: 'error',
+                timer: 1000,
+                showConfirmButton: false
+            });
+        })
+    }else{
+        updata();
+    }
 }
 
 var rmsType = 'd';
@@ -848,7 +1082,7 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择
     var rms = $(e.target).val();
     changeMsg.dates = [];
     rmsType = rms;
-    console.log(rms);
+   // console.log(rms);
     $('#species').empty();
     for (var i = 0; i < speciesArr[rms].length; i++) {
         $('#species').append($('<option>' + speciesArr[rms][i] + '</option>'))
@@ -906,7 +1140,6 @@ $('input[name=showWind]').on('change', function (e) { //地图风场类型
 
 $('#qjBtn1').on('change', 'input', function (e) {//改变左侧情景
     var qjId = $(e.target).val();
-    console.log(qjId)
     var index = $('input[name=qjBtn1]').index($(e.target));
     $('#qjBtn2 .disabled').removeClass('disabled');
     $('#qjBtn2 .active').removeClass('active');
@@ -923,28 +1156,77 @@ $('#qjBtn1').on('change', 'input', function (e) {//改变左侧情景
 
     var s2 = $('#qjBtn2 label.active input').attr('data-sDate');
     var e2 = $('#qjBtn2 label.active input').attr('data-eDate');
-
-
-    changeMsg.qj1Id = qjId;
     changeMsg.qj2Id = $('#qjBtn2 label.active').find('input').val();
-    //changeMsg.qj2Id = $('input[name=qjBtn2]').val();
     setDate(s1, e1, s2, e2);
-    updata();
+    if(qjId == -1){
+        ajaxPost('/scenarino/findby_pathdate',{
+            userId:userId,
+            pathDate:$('#sTime-d').val()
+        }).success(function (res) {
+            if(res.status == 0){
+                qjId = res.data.scenarinoId
+                changeMsg.qj1Id = qjId;
+                updata();
+            }else{
+                swal({
+                    title: res.msg,
+                    type: 'error',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            }
+        }).error(function () {
+            swal({
+                title: '接口故障',
+                type: 'error',
+                timer: 1000,
+                showConfirmButton: false
+            });
+        })
+    }else{
+        changeMsg.qj1Id = qjId;
+        updata();
+    }
+
 });
 
 $('#qjBtn2').on('change', 'input', function (e) {//改变右侧情景
     var qjId = $(e.target).val();
-    console.log(qjId);
-
     var s2 = $(e.target).attr('data-sDate');
     var e2 = $(e.target).attr('data-eDate');
 
     var s1 = $('#qjBtn1 label.active input').attr('data-sDate');
     var e1 = $('#qjBtn1 label.active input').attr('data-eDate');
-
-    changeMsg.qj2Id = qjId;
     setDate(s1, e1, s2, e2);
-    updata(true);
+    if(qjId == -1){
+        ajaxPost('/scenarino/findby_pathdate',{
+            userId:userId,
+            pathDate:$('#sTime-d').val()
+        }).success(function (res) {
+            if(res.status == 0){
+                qjId = res.data.scenarinoId
+                changeMsg.qj2Id = qjId;
+                updata();
+            }else{
+                swal({
+                    title: res.msg,
+                    type: 'error',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            }
+        }).error(function () {
+            swal({
+                title: '接口故障',
+                type: 'error',
+                timer: 1000,
+                showConfirmButton: false
+            });
+        })
+    }else{
+        changeMsg.qj2Id = qjId;
+        updata(true);
+    }
 });
 
 $('#sTime-d').on('change', function (e) {//选择日期
@@ -961,6 +1243,9 @@ $('#sTime-d').on('change', function (e) {//选择日期
             }
         }
     }
+    changeMsg.qj1Id = $('input[name=qjBtn1]').parents('.active').find('input').attr('value');
+    changeMsg.qj2Id = $('input[name=qjBtn2]').parents('.active').find('input').attr('value');
+
     updata();
 });
 
@@ -1008,114 +1293,168 @@ function updata(t) {
         timePoint: changeMsg.rms,
         borderType: "0"
     };
-    var p1 = $.extend({
-        scenarioId1: changeMsg.qj1Id,
-        calcType: 'show'
-    }, parameter);
 
-    if(changeMsg.calcType == 'show'){
-        var p2 = $.extend({
-            scenarioId1: changeMsg.qj2Id
-        }, parameter);
+    if(changeMsg.qj1Id == -1){
+        ajaxPost('/scenarino/findby_pathdate',{
+            userId:userId,
+            pathDate:$('#sTime-d').val()
+        }).success(function (res) {
+            if(res.status == 0){
+                changeMsg.qj1Id = res.data.scenarinoId;
+                ajaxPar();
+            }else{
+                swal({
+                    title: res.msg,
+                    type: 'error',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            }
+        }).error(function () {
+            swal({
+                title: '接口故障',
+                type: 'error',
+                timer: 1000,
+                showConfirmButton: false
+            });
+        })
+    }else if(changeMsg.qj2Id == -1){
+        ajaxPost('/scenarino/findby_pathdate',{
+            userId:userId,
+            pathDate:$('#sTime-d').val()
+        }).success(function (res) {
+            if(res.status == 0){
+                changeMsg.qj2Id = res.data.scenarinoId;
+                ajaxPar();
+            }else{
+                swal({
+                    title: res.msg,
+                    type: 'error',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            }
+        }).error(function () {
+            swal({
+                title: '接口故障',
+                type: 'error',
+                timer: 1000,
+                showConfirmButton: false
+            });
+        })
     }else{
-        var p2 = $.extend({
+        ajaxPar();
+    }
+
+    function ajaxPar() {
+        var p1 = $.extend({
             scenarioId1: changeMsg.qj1Id,
-            scenarioId2: changeMsg.qj2Id
+            calcType: 'show'
         }, parameter);
-    }
+
+        if(changeMsg.calcType == 'show'){
+            var p2 = $.extend({
+                scenarioId1: changeMsg.qj2Id
+            }, parameter);
+        }else{
+            var p2 = $.extend({
+                scenarioId1: changeMsg.qj1Id,
+                scenarioId2: changeMsg.qj2Id
+            }, parameter);
+        }
 
 
-    if (changeMsg.rms == 'd') {
-        p1.day = moment(changeMsg.sTimeD,'YYYYMMDD').format('YYYY-MM-DD');
-        p2.day = moment(changeMsg.sTimeD,'YYYYMMDD').format('YYYY-MM-DD');
+        if (changeMsg.rms == 'd') {
+            p1.day = moment(changeMsg.sTimeD,'YYYYMMDD').format('YYYY-MM-DD');
+            p2.day = moment(changeMsg.sTimeD,'YYYYMMDD').format('YYYY-MM-DD');
 
-    } else if (changeMsg.rms == 'h') {
-        p1.day = moment(changeMsg.sTimeD,'YYYYMMDD').format('YYYY-MM-DD');
-        p2.day = moment(changeMsg.sTimeD,'YYYYMMDD').format('YYYY-MM-DD');
-        p1.hour = changeMsg.sTimeH;
-        p2.hour = changeMsg.sTimeH;
-    } else {
-        p1.dates = changeMsg.dates;
-        p2.dates = changeMsg.dates;
-    }
-    p1.GPserver_type = [];
-    p2.GPserver_type = [];
-    for(var i=0;i<changeMsg.species.length;i++){
-        p1.GPserver_type.push(mappingSpecies[changeMsg.rms][changeMsg.species[i]]);
-        p2.GPserver_type.push(mappingSpecies[changeMsg.rms][changeMsg.species[i]]);
-    }
-
-
+        } else if (changeMsg.rms == 'h') {
+            p1.day = moment(changeMsg.sTimeD,'YYYYMMDD').format('YYYY-MM-DD');
+            p2.day = moment(changeMsg.sTimeD,'YYYYMMDD').format('YYYY-MM-DD');
+            p1.hour = changeMsg.sTimeH;
+            p2.hour = changeMsg.sTimeH;
+        } else {
+            p1.dates = changeMsg.dates;
+            p2.dates = changeMsg.dates;
+        }
+        p1.GPserver_type = [];
+        p2.GPserver_type = [];
+        for(var i=0;i<changeMsg.species.length;i++){
+            p1.GPserver_type.push(mappingSpecies[changeMsg.rms][changeMsg.species[i]]);
+            p2.GPserver_type.push(mappingSpecies[changeMsg.rms][changeMsg.species[i]]);
+        }
 
 
-    if(t == 'wind'){
-        p1.showType = t;
 
-      /*执行方法，进行左图添加*/
-        bianji("1", 0, p1,changeMsg.showWind);
-      /*执行方法，进行左图添加 end*/
 
-        p2.calcType = changeMsg.calcType;
-        p2.showType = t;
-        //console.log('p2',$.extend({},p2),p2.showType);
+        if(t == 'wind'){
+            p1.showType = t;
 
-      /*执行方法，进行右图添加*/
-        bianji("1", 1, p2,changeMsg.showWind);
-      /*执行方法，进行右图添加 end*/
-    }else if (t) {
+            /*执行方法，进行左图添加*/
+            bianji("1", 0, p1,changeMsg.showWind);
+            /*执行方法，进行左图添加 end*/
+
+            p2.calcType = changeMsg.calcType;
+            p2.showType = t;
+            //console.log('p2',$.extend({},p2),p2.showType);
+
+            /*执行方法，进行右图添加*/
+            bianji("1", 1, p2,changeMsg.showWind);
+            /*执行方法，进行右图添加 end*/
+        }else if (t) {
 //    	zmblockUI("#mapDiv0", "start");
 
 
-        for (var x = 0; x < changeMsg.showType.length; x++) {
-            p2.calcType = changeMsg.calcType;
-            p2.showType = changeMsg.showType[x];
-            //console.log('p2',$.extend({},p2),p2.showType);
+            for (var x = 0; x < changeMsg.showType.length; x++) {
+                p2.calcType = changeMsg.calcType;
+                p2.showType = changeMsg.showType[x];
+                //console.log('p2',$.extend({},p2),p2.showType);
 
-            zmblockUI1("#mapDiv1", "start");
-          /*执行方法，进行右图添加*/
-            bianji("1", 1, p2);
-          /*执行方法，进行右图添加 end*/
+                zmblockUI1("#mapDiv1", "start");
+                /*执行方法，进行右图添加*/
+                bianji("1", 1, p2);
+                /*执行方法，进行右图添加 end*/
 
-        }
-    } else {
+            }
+        } else {
 //    	zmblockUI("#mapDiv0", "start");
 //        zmblockUI("#mapDiv1", "start");
 
-        for (var i = 0; i < changeMsg.showType.length; i++) {
-            p1.showType = changeMsg.showType[i];
+            for (var i = 0; i < changeMsg.showType.length; i++) {
+                p1.showType = changeMsg.showType[i];
 
 
 
-            p2.calcType = changeMsg.calcType;
-            p2.showType = changeMsg.showType[i];
-            //console.log('p2',$.extend({},p2),p2.showType);
+                p2.calcType = changeMsg.calcType;
+                p2.showType = changeMsg.showType[i];
+                //console.log('p2',$.extend({},p2),p2.showType);
 
 
 
-            if(i==0){
-              /*执行方法，进行左图添加*/
-                zmblockUI1("#mapDiv0", "start");
-                bianji("1", 0, p1);
-              /*执行方法，进行左图添加 end*/
+                if(i==0){
+                    /*执行方法，进行左图添加*/
+                    zmblockUI1("#mapDiv0", "start");
+                    bianji("1", 0, p1);
+                    /*执行方法，进行左图添加 end*/
 
-              /*执行方法，进行右图添加*/
-                zmblockUI1("#mapDiv1", "start");
-                bianji("1", 1, p2);
-              /*执行方法，进行右图添加 end*/
-            }else{
-              /*执行方法，进行左图添加*/
-                zmblockUI1("#mapDiv0", "start");
-                bianji("1", 0, p1,changeMsg.showWind);
-              /*执行方法，进行左图添加 end*/
+                    /*执行方法，进行右图添加*/
+                    zmblockUI1("#mapDiv1", "start");
+                    bianji("1", 1, p2);
+                    /*执行方法，进行右图添加 end*/
+                }else{
+                    /*执行方法，进行左图添加*/
+                    zmblockUI1("#mapDiv0", "start");
+                    bianji("1", 0, p1,changeMsg.showWind);
+                    /*执行方法，进行左图添加 end*/
 
-              /*执行方法，进行右图添加*/
-                zmblockUI1("#mapDiv1", "start");
-                bianji("1", 1, p2,changeMsg.showWind);
-              /*执行方法，进行右图添加 end*/
+                    /*执行方法，进行右图添加*/
+                    zmblockUI1("#mapDiv1", "start");
+                    bianji("1", 1, p2,changeMsg.showWind);
+                    /*执行方法，进行右图添加 end*/
+                }
             }
         }
     }
-
 }
 
 
@@ -1256,7 +1595,7 @@ function showTitleFun() {
     var timeTwoFor=moment(changeMsg.sTimeD+"-"+changeMsg.eTime,"YYYYMMDD-YYYYMMDD").format("YYYY-MM-DD-YYYY-MM-DD");
     $('#showTitle span').empty();
     $('#showTitle .specieName').html("<span class='titleTab'><i class='en-layout' style='font-size: 16px;'></i>"+"&nbsp;物种：</span>"+changeMsg.species).css({"margin-right":"40px"});
-    $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(changeMsg.domain=='1'?'3KM':(changeMsg.domain=='2'?'9KM':'27km'))).css({"margin-right":"40px"});
+    $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(changeMsg.domain=='3'?'3KM':(changeMsg.domain=='2'?'9KM':'27km'))).css({"margin-right":"40px"});
     if(changeMsg.rms=='d'){
         $('#showTitle .timeName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'逐日').css({"margin-right":"40px"});
         $('#showTitle .dateStartName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+timeStartFor).css({"margin-right":"40px"});

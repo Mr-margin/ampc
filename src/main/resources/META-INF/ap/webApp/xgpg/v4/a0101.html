@@ -211,7 +211,7 @@
 									<div class="btn-group headerSwitch switchBtn" data-toggle="buttons" style="margin: 2px auto;padding: 0;width: 100%;">
 										<label class="col-md-4 btn btn-outline btn-success btn-sm"><input type="radio" name="rms" value="h">逐时</label>
 										<label class="col-md-4 btn btn-outline btn-success btn-sm active"><input checked type="radio" name="rms" value="d">逐日</label>
-										<label class="col-md-4 btn btn-outline btn-success btn-sm"><input class="p" type="radio" name="rms" value="a">平均</label>
+										<label class="col-md-4 btn btn-outline btn-success btn-sm disNone"><input class="p" type="radio" name="rms" value="a">平均</label>
 									</div>
 								</div>
 							</div>
@@ -265,9 +265,9 @@
 								<h5>空间分辨率：</h5>
 								<div class="selectTool_con">
 									<div class="btn-group headerSwitch switchBtn" data-toggle="buttons" style="margin-top: 3px;width: 100%">
-										<label class="col-md-4 btn btn-outline btn-success btn-sm active"><input checked type="radio" name="domain" value="1">3km</label>
+										<label class="col-md-4 btn btn-outline btn-success btn-sm active"><input checked type="radio" name="domain" value="3">3km</label>
 										<label class="col-md-4 btn btn-outline btn-success btn-sm"><input type="radio" name="domain" value="2">9km</label>
-										<label class="col-md-4 btn btn-outline btn-success btn-sm"><input type="radio" name="domain" value="3">27km</label>
+										<label class="col-md-4 btn btn-outline btn-success btn-sm"><input type="radio" name="domain" value="1">27km</label>
 									</div>
 								</div>
 							</div>
@@ -370,7 +370,8 @@
 						<label for="task" class="col-md-2 control-label lh29 rwdlgTopTitle">任务名称</label>
 
 						<div class="col-md-10 rwdlgTopCon">
-							<select class="form-control" id="task" name="task" onchange="sceneTable()"></select>
+							<select style="float: left" class="form-control" id="task" name="task" onchange="selectRwId()"></select>
+							<select style="float: left;width: 40%;display: none" class="form-control" id="pathD" name="pathD" onchange="sceneTable()"></select>
 						</div>
 					</div>
 					<div class="qjdlg easyui-layout form-group mt10 clearfix"><!-- id="tableId" style="display: none;" -->
@@ -404,7 +405,7 @@
         minimizable:false,
         modal:true,
         shadow:false,
-        title:'创建情景',
+        title:'情景选择',
         border:false,
         buttons:'#dlg_jpBtn',
         modal: true,

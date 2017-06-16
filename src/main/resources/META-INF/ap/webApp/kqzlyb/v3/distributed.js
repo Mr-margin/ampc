@@ -172,6 +172,7 @@ $(".vidioDown div").hover(function () {
  * 页面事件定义
  */
 $('input[name=rms]').on('change', function (e) { //时间分辨率选择，逐日还是逐小时
+    app.mapimagelayer.removeAllImages();//删除全部的图片图层
     var rms = $(e.target).val();//获取当前选择的时间分辨率
     changeMsg.rms = rms;
     $('#species').empty();//移除物种分辨率下拉框的所有内容，准备添加新的内容
@@ -189,6 +190,7 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择，逐�
 });
 
 $('input[name=domain]').on('change', function (e) {//地域范围选择   1:中国       2:中国东部       3:河北省
+    app.mapimagelayer.removeAllImages();//删除全部的图片图层
     var domain = $(e.target).val();
     changeMsg.domain = domain;
     updata();
@@ -207,6 +209,7 @@ $('input[name=field]').on('change', function (e) {//风场     0：无       1�
 });
 
 $('#species').on('change', function (e) {//物种分辨率
+    app.mapimagelayer.removeAllImages();//删除全部的图片图层
     var species = $(e.target).val();
     changeMsg.species = [];
     changeMsg.species.push(species);
@@ -214,12 +217,14 @@ $('#species').on('change', function (e) {//物种分辨率
 });
 
 $('#sTime-d').on('change', function (e) {//选择日期
+    app.mapimagelayer.removeAllImages();//删除全部的图片图层
     var date = $(e.target).val();
     changeMsg.YBDate = moment(date).format('YYYY-MM-DD');
     updata();
 });
 
 $('#sTime-h').on('change', function (e) {//选择时间
+    app.mapimagelayer.removeAllImages();//删除全部的图片图层
     var date = $(e.target).val();
     // changeMsg.YBHour = date - 0;
     changeMsg.YBHour = date;
