@@ -138,7 +138,7 @@ function pullPage(value){
 		$('.d04').hide();
 		$('.domain_select').find("option[value='0']").attr('selected','selected');
 		$('.box-body').attr('domain_id',domain_id);
-		$('.box-body').attr('max_dom',value.domainInfo.common.max_dom);
+		//$('.box-body').attr('max_dom',value.domainInfo.common.max_dom);
 		$('.del_domain').attr('domain_id',domain_id);
 		//$('.i_parent_start1').text('1');
 		//$('.j_parent_start1').text('1');
