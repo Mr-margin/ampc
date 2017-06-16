@@ -1,4 +1,4 @@
-   package ampc.com.gistone.util.checkExcelUtil;
+package ampc.com.gistone.util.checkExcelUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +17,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -32,7 +35,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -52,6 +57,8 @@ import ampc.com.gistone.util.RegUtil;
  * @version v.0.1
  * @date 2017年3月9日
  */
+@RestController
+@RequestMapping
 public class ExcelToDate {
 	//工作簿对象
 	public Workbook wb  = null;  
@@ -86,8 +93,7 @@ public class ExcelToDate {
     //SheetName错误信息
     public static final String SHEETNAME_ERROR="SheetName名称超过规定长度(要求在10个字符以内)!";
     
-    
-    
+   
     /**
      * 初始化Excel信息方法
      * @param path 要解析的路径
@@ -187,7 +193,7 @@ public class ExcelToDate {
 			/**
 			 * TODO外网配置
 			 */
-			String path=configUtil.getChexcExcelUrl()+"\\"+jsonName;
+			String path=configUtil.getChexcExcelUrl()+"/"+jsonName;
 			//解析文件获取解析信息
 			LinkedHashMap map=JsonUtil.readObjFromJsonFile(path, LinkedHashMap.class);
 			//返回信息
@@ -846,7 +852,7 @@ public class ExcelToDate {
      	  /**
      	   * TODO 外网配置
      	   */
-  			String qdPath=configUtil.getChexcExcelUrl()+"\\应急系统新_3清单数据.json";
+  			String qdPath=configUtil.getChexcExcelUrl()+"/应急系统新_3清单数据.json";
   			File txt=new File(qdPath);
             //保存清单校验文件
             if(!saveCheckFile(info,txt)){
