@@ -424,7 +424,10 @@ label#lblSelect::after
   border-radius: 0;
   z-index: 2;
 }
-.cloudui .ibox-tools .wzGroup  .easyui-combobox:hover{background-color:#0275D8;color: #fff; border: 1px solid #0275D8;}
+.cloudui .ibox-tools .wzGroup  .easyui-combobox:hover{
+  /*background-color:#0275D8;*/
+  /*color: #fff;*/
+  border: 1px solid #0275D8;}
 .cloudui .ibox-tools .wzGroup  .easyui-combobox option{
   background-color:#ecf0f1;
   border:none;
