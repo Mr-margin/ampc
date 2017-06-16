@@ -50,9 +50,11 @@ function findPull(value){
 	$('.todo,.default,.b_del').show();
 	var disposeStatus = value.disposeStatus;
 	var employStatus = value.employStatus; 
+	var validStatus = value.validStatus;
 	var domain_id = value.domainId;
 	var world = '';
 	var domain_work = '';
+	var default_status = '';
 	if(employStatus == '1'){
 		domain_work = '使用过';
 	} 
@@ -71,6 +73,13 @@ function findPull(value){
 	if(disposeStatus == '4'){
 		world = '处理失败'; 
 	}
+	if(validStatus == '1'){
+		default_status = '停用';
+	}
+	if(validStatus == '2'){
+		default_status = '开启';
+	}
+
 
 	var dom = '';
 	dom += '<tr class="tr_'+value.domainId+'">';
@@ -81,7 +90,7 @@ function findPull(value){
 	dom += '<td class="col-3 buttonclick">';
 	dom += '<button class="btn-blue look" onclick="examine(this)" domain_id="'+value.domainId+'">查看</button>';
 	dom += '<button class="btn-green todo" onclick="update(this)" domain_id="'+value.domainId+'">编辑</button> ';
-	dom += '<button class="btn-yellow default" onclick="defaultSelect(this)" domain_id="'+value.domainId+'">开启</button> ';
+	dom += '<button class="btn-yellow default" onclick="defaultSelect(this)" domain_id="'+value.domainId+'">'+default_status+'</button> ';
 	dom += '<button class="btn-red b_del" onclick="delDomain(this)" domain_id="'+value.domainId+'">删除</button>';
 	dom += '</td>';
 	dom += '</tr>';
@@ -145,7 +154,6 @@ function submitCreat(){
 			"domainName": domainName,
  			"userId":userId
 		}).success(function(res){
-			console.log(res);
 			if(res.data == '名称重复'){
 				swal("名称重复");
 			}else{
@@ -193,11 +201,11 @@ function defaultSelect(th){
 			$(th).text('停用');
 			$('.default').css('background-color','#f0ad4e');
 			$(th).css('background-color','#ff8002');
+			$('tr').css('background-color','#ffffff');
+			$(th).parent().parent().css('background-color','#b9ffbb');
 			swal("启用成功");
-		}else{
-			$(th).text('开启');
-			$(th).css('background-color','#f0ad4e');
 		}
+		status();
 	});
 }
 
@@ -207,6 +215,10 @@ function status(){
 	$('tbody tr').each(function(key,value){
 		domainStatus = $(value).children('.status_domain').text();
 		domainDo = $(value).children('.do_domain').text();
+		domainbutton = $(value).children().children('.default').text();
+		if(domainbutton == '开启'){
+			$(value).children().children('.b_del').show();
+		}
 		if(domainStatus == '已使用'){
 			$(value).children().children('.todo,.b_del').hide();
 		}
@@ -219,6 +231,10 @@ function status(){
 		if(domainDo == '待编辑'){
 			$(value).children().children('.default').hide();
 		}
-		console.log(domainStatus);
+		if(domainbutton == '停用'){
+			$(value).children().children('.b_del').hide();
+			$(value).children().children('.default').css('background-color','#ff8002');
+			$(value).css('background-color','#b9ffbb');
+		}
 	});
 }
