@@ -378,7 +378,7 @@
 	WHERE
 		DETAILED_LIST_ID = #{detailedListId,jdbcType=DECIMAL}
 		<if test="userId != null" >
-         AND USER_ID = #{userId,jdbcType=DECIMAL},
+         AND USER_ID = #{userId,jdbcType=DECIMAL}
       </if>
 	AND IS_EFFECTIVE = 1
   </select>
