@@ -193,7 +193,7 @@ public class ExcelToDate {
 			/**
 			 * TODO外网配置
 			 */
-			String path=configUtil.getCheckExcelURL()+"/"+jsonName;
+			String path="/home/xulili/apache-tomcat-8.5.13/webapps/ampc/WEB-INF/classes/checkFile/"+jsonName;
 			//解析文件获取解析信息
 			LinkedHashMap map=JsonUtil.readObjFromJsonFile(path, LinkedHashMap.class);
 			//返回信息
@@ -852,7 +852,7 @@ public class ExcelToDate {
      	  /**
      	   * TODO 外网配置
      	   */
-  			String qdPath=configUtil.getCheckExcelURL()+"/应急系统新_3清单数据.json";
+  			String qdPath="/home/xulili/apache-tomcat-8.5.13/webapps/ampc/WEB-INF/classes/checkFile/应急系统新_3清单数据.json";
   			File txt=new File(qdPath);
             //保存清单校验文件
             if(!saveCheckFile(info,txt)){
