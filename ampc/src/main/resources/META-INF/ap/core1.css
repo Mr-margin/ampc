@@ -1508,17 +1508,17 @@ dl, dd {
 .cloudui #creatQd .qdContent,.cloudui #editQd .qdContent,.cloudui #creatTemp .qdContent,.cloudui #editTemp .qdContent,.cloudui #editTempQd .qdContent{
   float: left;
   overflow: hidden;
-  /*height: 30px;*/
-  /*margin-bottom:10px;*/
-  width: 50%;
-  height: 50px;
-}
-.cloudui .tipNameRepeat,.cloudui .tipYearRepeat{
-  clear: both;
-  margin-left: 80px;
   height: 30px;
-  line-height: 30px;
+  margin-bottom:10px;
+  width: 50%;
+  /*height: 50px;*/
 }
+/*.cloudui .tipNameRepeat,.cloudui .tipYearRepeat{*/
+  /*clear: both;*/
+  /*margin-left: 80px;*/
+  /*height: 30px;*/
+  /*line-height: 30px;*/
+/*}*/
 .cloudui #creatQd .rwCon .qdTitle,.cloudui #editQd .rwCon .qdTitle,.cloudui #creatTemp .rwCon .qdTitle,.cloudui #editTemp .rwCon .qdTitle,.cloudui #editTempQd .rwCon .qdTitle{
   float: left;
   line-height: 30px;
