@@ -330,7 +330,8 @@
 						<label class="col-md-2 control-label lh29 rwdlgTopTitle">任务名称</label>
 
 						<div class="col-md-10 rwdlgTopCon">
-							<select class="form-control" id="task" name="task" onchange="sceneTable()"></select>
+							<select style="float: left" class="form-control" id="task" name="task" onchange="selectRwId()"></select>
+							<select style="float: left;width: 40%;display: none" class="form-control" id="pathD" name="pathD" onchange="sceneTable()"></select>
 						</div>
 					</div>
 					<div class="qjdlg easyui-layout form-group mt10 clearfix"><!-- id="tableId" style="display: none;" -->
@@ -365,7 +366,7 @@
         minimizable:false,
         modal:true,
         shadow:false,
-        title:'创建情景',
+        title:'情景选择',
         border:false,
         buttons:'#dlg_jpBtn',
         modal: true,

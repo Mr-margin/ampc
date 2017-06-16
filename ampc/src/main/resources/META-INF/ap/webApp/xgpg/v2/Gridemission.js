@@ -12,7 +12,7 @@ var changeMsg = {
     calcType: 'show',//"show"当前情景，"diff"差值，"ratio"比例
     species: ['PM₂.₅'],//物种
     missionId: '',//任务ID
-    domain: 1,//模拟范围、空间分辨率
+    domain: 3,//模拟范围
     domainId: '',//模拟范围ID
     rms: 'd',//时间分辨率
     qj1Id: '',//左边情景ID
@@ -271,6 +271,28 @@ function sceneInittion() {
                     }
                 });
                 $("#task").html(task);
+
+                if(!$.isEmptyObject(allMission)){
+                    var id = $("#task").val();
+                    if(allMission[id].missionStatus == '2'){
+                        $('#task').css('width','60%');
+                        $('#pathD').css('display','block');
+                        $('#pathD').html('');
+
+                        for(var ids in allMission[id].pathdates){
+                            if(ids == sceneInitialization.pathdate){
+                                $('#pathD').append($('<option selected="selected" value="'+ ids +'">'+ (ids==-1?'无':moment(allMission[id].pathdates[ids]).format('YYYY-MM-DD')) +'</option>'))
+                            }else{
+                                $('#pathD').append($('<option value="'+ ids +'">'+ (ids==-1?'无':moment(allMission[id].pathdates[ids]).format('YYYY-MM-DD')) +'</option>'))
+                            }
+
+                        }
+                    }else{
+                        $('#task').css('width','100%');
+                        $('#pathD').html('');
+                    }
+                }
+
                 //$("#Initialization").modal();//初始化模态框显示
                 $("#Initialization").window('open')
                 sceneTable();
@@ -286,12 +308,43 @@ function sceneInittion() {
 }
 
 /**
+ * 选择任务时候判断是否为预评估任务进行pathDate选择
+ */
+function selectRwId() {
+    var id = $("#task").val();
+    if(allMission[id].missionStatus == '2'){
+        $('#task').css('width','60%');
+        $('#pathD').css('display','block');
+        $('#pathD').empty();
+
+        for(var ids in allMission[id].pathdates){
+            $('#pathD').append($('<option value="'+ ids +'">'+ (ids == -1?"无":moment(allMission[id].pathdates[ids]).format('YYYY-MM-DD')) +'</option>'))
+        }
+    }else{
+        $('#task').css('width','100%');
+        $('#pathD').empty();
+    }
+    sceneTable();
+}
+
+/**
  * 根据任务ID，获取情景列表用于选择情景范围
  */
 function sceneTable() {
     $("#sceneTableId").bootstrapTable('destroy');//销毁现有表格数据
     //表格交互 easyui
     ajaxPost('/scenarino/find_All_scenarino',{
+        "pathDate":(function () {
+            if(allMission[$('#task').val()].missionStatus == '2'){
+                if($('#pathD').val() != -1){
+                    return moment(allMission[$('#task').val()].pathdates[$('#pathD').val()]).format('YYYY-MM-DD')
+                }else{
+                    return ''
+                }
+            }else{
+                return ''
+            }
+        })(),
         "userId": userId,
         "missionId":$("#task").val()
     }).success(function(data){
@@ -346,10 +399,11 @@ function save_scene() {
         mag.id = "sceneInitialization";
         mag.taskID = $("#task").val();
         mag.missionName = $("#task :selected").text();
+        mag.pathdate = $('#pathD').val();
         mag.domainId = allMission[mag.taskID].domainId;
         mag.s = allMission[mag.taskID].missionStartDate;
         mag.e = allMission[mag.taskID].missionEndDate;
-        mag.jzID = allMission[mag.taskID].jzqjid;
+        mag.jzID = allMission[mag.taskID].missionStatus == '2'?$('#pathD').val():allMission[mag.taskID].jzqjid;
         var data = [];
         $.each(row, function (i, col) {
             data.push({
@@ -368,7 +422,7 @@ function save_scene() {
         $("#close_scene").click();
         $("#missionName").text(sceneInitialization.missionName);
         //查询任务的开始时间和结束时间
-        var url='/Appraisal/showTime';
+        var url='/Appraisal/show_Times';
         var paramsName = {
             "missionId":sceneInitialization.taskID,				//任务ID
         };
@@ -634,7 +688,33 @@ function setQjSelectBtn(data) {
     }
     setDate(s1, e1, s2, e2, rmsType);
     app.tuodong = true;
-    updata();
+    if(changeMsg.qj1Id == -1){
+        ajaxPost('/scenarino/findby_pathdate',{
+            userId:userId,
+            pathDate:$('#sTime-d').val()
+        }).success(function (res) {
+            if(res.status == 0){
+                changeMsg.qj1Id = res.data.scenarinoId;
+                updata();
+            }else{
+                swal({
+                    title: res.msg,
+                    type: 'error',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            }
+        }).error(function () {
+            swal({
+                title: '接口故障',
+                type: 'error',
+                timer: 1000,
+                showConfirmButton: false
+            });
+        })
+    }else{
+        updata();
+    }
 }
 
 var rmsType = 'd';
@@ -895,14 +975,38 @@ $('#qjBtn1').on('change', 'input', function (e) {//改变左侧情景
 
     var s2 = $('#qjBtn2 label.active input').attr('data-sDate');
     var e2 = $('#qjBtn2 label.active input').attr('data-eDate');
-
-
-    changeMsg.qj1Id = qjId;
     changeMsg.qj2Id = $('#qjBtn2 label.active').find('input').val();
-    //changeMsg.qj2Id = $('input[name=qjBtn2]').val();
     setDate(s1, e1, s2, e2, rmsType);
     app.tuodong = true;
-    updata();
+    if(qjId == -1){
+        ajaxPost('/scenarino/findby_pathdate',{
+            userId:userId,
+            pathDate:$('#sTime-d').val()
+        }).success(function (res) {
+            if(res.status == 0){
+                qjId = res.data.scenarinoId
+                changeMsg.qj1Id = qjId;
+                updata();
+            }else{
+                swal({
+                    title: res.msg,
+                    type: 'error',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            }
+        }).error(function () {
+            swal({
+                title: '接口故障',
+                type: 'error',
+                timer: 1000,
+                showConfirmButton: false
+            });
+        })
+    }else{
+        changeMsg.qj1Id = qjId;
+        updata();
+    }
 });
 
 $('#qjBtn2').on('change', 'input', function (e) {//改变右侧情景
@@ -913,11 +1017,37 @@ $('#qjBtn2').on('change', 'input', function (e) {//改变右侧情景
 
     var s1 = $('#qjBtn1 label.active input').attr('data-sDate');
     var e1 = $('#qjBtn1 label.active input').attr('data-eDate');
-
-    changeMsg.qj2Id = qjId;
     setDate(s1, e1, s2, e2, rmsType);
     app.tuodong = true;
-    updata(true);
+    if(qjId == -1){
+        ajaxPost('/scenarino/findby_pathdate',{
+            userId:userId,
+            pathDate:$('#sTime-d').val()
+        }).success(function (res) {
+            if(res.status == 0){
+                qjId = res.data.scenarinoId
+                changeMsg.qj2Id = qjId;
+                updata();
+            }else{
+                swal({
+                    title: res.msg,
+                    type: 'error',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            }
+        }).error(function () {
+            swal({
+                title: '接口故障',
+                type: 'error',
+                timer: 1000,
+                showConfirmButton: false
+            });
+        })
+    }else{
+        changeMsg.qj2Id = qjId;
+        updata(true);
+    }
 });
 
 $('#sTime-d').on('change', function (e) {//选择日期
@@ -987,119 +1117,170 @@ function updata(t) {
         timePoint: changeMsg.rms,
         borderType: "0"
     };
-    var p1 = $.extend({
-        scenarioId1: changeMsg.qj1Id,
-        calcType: 'show'
-    }, parameter);
 
-    var p2 = $.extend({
-        scenarioId1: changeMsg.qj2Id
-    }, parameter);
-
-    if (changeMsg.rms == 'd') {
-        p1.day = changeMsg.sTimeD;
-        p2.day = changeMsg.sTimeD;
-
-        //p1.day = '2016322';
-        //p2.day = '2016322';
-    } else if (changeMsg.rms == 'h') {
-        p1.day = changeMsg.sTimeD;
-        p2.day = changeMsg.sTimeD;
-        p1.hour = changeMsg.sTimeH;
-        p2.hour = changeMsg.sTimeH;
-    } else {
-        p1.dates = changeMsg.dates;
-        p2.dates = changeMsg.dates;
+    if(changeMsg.qj1Id == -1){
+        ajaxPost('/scenarino/findby_pathdate',{
+            userId:userId,
+            pathDate:$('#sTime-d').val()
+        }).success(function (res) {
+            if(res.status == 0){
+                changeMsg.qj1Id = res.data.scenarinoId;
+                ajaxPar();
+            }else{
+                swal({
+                    title: res.msg,
+                    type: 'error',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            }
+        }).error(function () {
+            swal({
+                title: '接口故障',
+                type: 'error',
+                timer: 1000,
+                showConfirmButton: false
+            });
+        })
+    }else if(changeMsg.qj2Id == -1){
+        ajaxPost('/scenarino/findby_pathdate',{
+            userId:userId,
+            pathDate:$('#sTime-d').val()
+        }).success(function (res) {
+            if(res.status == 0){
+                changeMsg.qj2Id = res.data.scenarinoId;
+                ajaxPar();
+            }else{
+                swal({
+                    title: res.msg,
+                    type: 'error',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            }
+        }).error(function () {
+            swal({
+                title: '接口故障',
+                type: 'error',
+                timer: 1000,
+                showConfirmButton: false
+            });
+        })
+    }else{
+        ajaxPar();
     }
-    p1.GPserver_type = [];
-    p2.GPserver_type = [];
-    for(var i=0;i<changeMsg.species.length;i++){
-        p1.GPserver_type.push(mappingSpecies[changeMsg.rms][changeMsg.species[i]]);
-        p2.GPserver_type.push(mappingSpecies[changeMsg.rms][changeMsg.species[i]]);
-    }
+
+    function ajaxPar() {
+        var p1 = $.extend({
+            scenarioId1: changeMsg.qj1Id,
+            calcType: 'show'
+        }, parameter);
+
+        var p2 = $.extend({
+            scenarioId1: changeMsg.qj2Id
+        }, parameter);
+
+        if (changeMsg.rms == 'd') {
+            p1.day = changeMsg.sTimeD;
+            p2.day = changeMsg.sTimeD;
+
+            //p1.day = '2016322';
+            //p2.day = '2016322';
+        } else if (changeMsg.rms == 'h') {
+            p1.day = changeMsg.sTimeD;
+            p2.day = changeMsg.sTimeD;
+            p1.hour = changeMsg.sTimeH;
+            p2.hour = changeMsg.sTimeH;
+        } else {
+            p1.dates = changeMsg.dates;
+            p2.dates = changeMsg.dates;
+        }
+        p1.GPserver_type = [];
+        p2.GPserver_type = [];
+        for (var i = 0; i < changeMsg.species.length; i++) {
+            p1.GPserver_type.push(mappingSpecies[changeMsg.rms][changeMsg.species[i]]);
+            p2.GPserver_type.push(mappingSpecies[changeMsg.rms][changeMsg.species[i]]);
+        }
 
 
+        if (t == 'wind') {
+            p1.showType = t;
 
+            /*执行方法，进行左图添加*/
+            bianji("1", 0, p1, changeMsg.showWind);
+            /*执行方法，进行左图添加 end*/
 
-    if(t == 'wind'){
-        p1.showType = t;
-
-        /*执行方法，进行左图添加*/
-        bianji("1", 0, p1,changeMsg.showWind);
-        /*执行方法，进行左图添加 end*/
-
-        p2.calcType = changeMsg.calcType;
-        p2.showType = t;
-        //console.log('p2',$.extend({},p2),p2.showType);
-
-        /*执行方法，进行右图添加*/
-        bianji("1", 1, p2,changeMsg.showWind);
-        /*执行方法，进行右图添加 end*/
-    }else if (t) {
-        for (var x = 0; x < changeMsg.showType.length; x++) {
             p2.calcType = changeMsg.calcType;
-            p2.showType = changeMsg.showType[x];
+            p2.showType = t;
             //console.log('p2',$.extend({},p2),p2.showType);
 
             /*执行方法，进行右图添加*/
-            zmblockUI("#mapDiv1", "start");
-            bianji("1", 1, p2);
-            bianji_wanggepafang("1", 1, p2);
+            bianji("1", 1, p2, changeMsg.showWind);
             /*执行方法，进行右图添加 end*/
-
-        }
-    } else {
-        for (var i = 0; i < changeMsg.showType.length; i++) {
-            p1.showType = changeMsg.showType[i];
-
-
-
-            p2.calcType = changeMsg.calcType;
-            p2.showType = changeMsg.showType[i];
-            //console.log('p2',$.extend({},p2),p2.showType);
-
-            if(i==0){
-                /*执行方法，进行左图添加*/
-
-                bianji("1", 0, p1);
-                if(app.tuodong){
-                    zmblockUI("#mapDiv0", "start");
-                    bianji_wanggepafang("1", 0, p1);
-                }
-
-                /*执行方法，进行左图添加 end*/
+        } else if (t) {
+            for (var x = 0; x < changeMsg.showType.length; x++) {
+                p2.calcType = changeMsg.calcType;
+                p2.showType = changeMsg.showType[x];
+                //console.log('p2',$.extend({},p2),p2.showType);
 
                 /*执行方法，进行右图添加*/
+                zmblockUI("#mapDiv1", "start");
                 bianji("1", 1, p2);
-
-                if(app.tuodong){
-                    zmblockUI("#mapDiv1", "start");
-                    bianji_wanggepafang("1", 1, p2);
-                }
+                bianji_wanggepafang("1", 1, p2);
                 /*执行方法，进行右图添加 end*/
-            }else{
-                /*执行方法，进行左图添加*/
-                bianji("1", 0, p1,changeMsg.showWind);
 
-                if(app.tuodong){
-                    zmblockUI("#mapDiv0", "start");
-                    bianji_wanggepafang("1", 0, p1,changeMsg.showWind);
-                }
-                /*执行方法，进行左图添加 end*/
-
-                /*执行方法，进行右图添加*/
-                bianji("1", 1, p2,changeMsg.showWind);
-
-                if(app.tuodong){
-                    zmblockUI("#mapDiv1", "start");
-                    bianji_wanggepafang("1", 1, p2,changeMsg.showWind);
-                }
-                /*执行方法，进行右图添加 end*/
             }
+        } else {
+            for (var i = 0; i < changeMsg.showType.length; i++) {
+                p1.showType = changeMsg.showType[i];
 
+
+                p2.calcType = changeMsg.calcType;
+                p2.showType = changeMsg.showType[i];
+                //console.log('p2',$.extend({},p2),p2.showType);
+
+                if (i == 0) {
+                    /*执行方法，进行左图添加*/
+
+                    bianji("1", 0, p1);
+                    if (app.tuodong) {
+                        zmblockUI("#mapDiv0", "start");
+                        bianji_wanggepafang("1", 0, p1);
+                    }
+
+                    /*执行方法，进行左图添加 end*/
+
+                    /*执行方法，进行右图添加*/
+                    bianji("1", 1, p2);
+
+                    if (app.tuodong) {
+                        zmblockUI("#mapDiv1", "start");
+                        bianji_wanggepafang("1", 1, p2);
+                    }
+                    /*执行方法，进行右图添加 end*/
+                } else {
+                    /*执行方法，进行左图添加*/
+                    bianji("1", 0, p1, changeMsg.showWind);
+
+                    if (app.tuodong) {
+                        zmblockUI("#mapDiv0", "start");
+                        bianji_wanggepafang("1", 0, p1, changeMsg.showWind);
+                    }
+                    /*执行方法，进行左图添加 end*/
+
+                    /*执行方法，进行右图添加*/
+                    bianji("1", 1, p2, changeMsg.showWind);
+
+                    if (app.tuodong) {
+                        zmblockUI("#mapDiv1", "start");
+                        bianji_wanggepafang("1", 1, p2, changeMsg.showWind);
+                    }
+                    /*执行方法，进行右图添加 end*/
+                }
+
+            }
         }
     }
-
 }
 
 function showTitleFun() {

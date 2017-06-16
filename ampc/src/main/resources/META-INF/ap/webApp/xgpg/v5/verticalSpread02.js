@@ -377,6 +377,28 @@ function sceneInittion() {
                     }
                 });
                 $("#task").html(task);
+
+                if(!$.isEmptyObject(allMission)){
+                    var id = $("#task").val();
+                    if(allMission[id].missionStatus == '2'){
+                        $('#task').css('width','60%');
+                        $('#pathD').css('display','block');
+                        $('#pathD').html('');
+
+                        for(var ids in allMission[id].pathdates){
+                            if(ids == sceneInitialization.pathdate){
+                                $('#pathD').append($('<option selected="selected" value="'+ ids +'">'+ (ids==-1?'无':moment(allMission[id].pathdates[ids]).format('YYYY-MM-DD')) +'</option>'))
+                            }else{
+                                $('#pathD').append($('<option value="'+ ids +'">'+ (ids==-1?'无':moment(allMission[id].pathdates[ids]).format('YYYY-MM-DD')) +'</option>'))
+                            }
+
+                        }
+                    }else{
+                        $('#task').css('width','100%');
+                        $('#pathD').html('');
+                    }
+                }
+
 //      $("#Initialization").modal();//初始化模态框显示
                /*$("#Initialization").modal({backdrop: 'static', keyboard: false});*/
                 $("#Initialization").window('open');
@@ -391,13 +413,46 @@ function sceneInittion() {
         swal('服务未连接', '', 'error')
     });
 }
+
+/**
+ * 选择任务时候判断是否为预评估任务进行pathDate选择
+ */
+function selectRwId() {
+    var id = $("#task").val();
+    if(allMission[id].missionStatus == '2'){
+        $('#task').css('width','60%');
+        $('#pathD').css('display','block');
+        $('#pathD').empty();
+
+        for(var ids in allMission[id].pathdates){
+            $('#pathD').append($('<option value="'+ ids +'">'+ (ids == -1?"无":moment(allMission[id].pathdates[ids]).format('YYYY-MM-DD')) +'</option>'))
+        }
+    }else{
+        $('#task').css('width','100%');
+        $('#pathD').empty();
+    }
+    sceneTable();
+}
+
 /**
  * 根据任务ID，获取情景列表用于选择情景范围
  */
 function sceneTable() {
     $("#sceneTableId").bootstrapTable('destroy');//销毁现有表格数据
     //表格交互 easyui
-    ajaxPost('/scenarino/find_All_scenarino',{ "userId": userId,
+    ajaxPost('/scenarino/find_All_scenarino',{
+        "pathDate":(function () {
+            if(allMission[$('#task').val()].missionStatus == '2'){
+                if($('#pathD').val() != -1){
+                    return moment(allMission[$('#task').val()].pathdates[$('#pathD').val()]).format('YYYY-MM-DD')
+                }else{
+                    return ''
+                }
+            }else{
+                return ''
+            }
+        })(),
+        "userId": userId,
         "missionId":$("#task").val()
     }).success(function(data){
         $("#sceneTableId").datagrid({
@@ -539,10 +594,11 @@ function save_scene() {
         mag.id = "sceneInitialization";
         mag.taskID = $("#task").val();
         mag.missionName = $("#task :selected").text();
+        mag.pathdate = $('#pathD').val();
         mag.domainId = allMission[mag.taskID].domainId;
         mag.s = allMission[mag.taskID].missionStartDate;
         mag.e = allMission[mag.taskID].missionEndDate;
-        mag.jzID = allMission[mag.taskID].jzqjid;
+        mag.jzID = allMission[mag.taskID].missionStatus == '2'?$('#pathD').val():allMission[mag.taskID].jzqjid;
         var data = [];
         $.each(row, function (i, col) {
             data.push({
