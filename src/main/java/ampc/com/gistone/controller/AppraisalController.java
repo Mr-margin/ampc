@@ -846,6 +846,7 @@ public class AppraisalController {
 				tslist=tScenarinoDetailMapper.selectByEntity(tScenarinoDetail);
 			}
 			Map<String,Object> scmap=new HashMap();
+			if(!tslist.isEmpty()){
 			for(TScenarinoDetail ScenarinoDetail:tslist){
 				Date startdate=ScenarinoDetail.getScenarinoStartDate();
 				String start=daysdf.format(startdate);
@@ -943,6 +944,41 @@ public class AppraisalController {
 					continue;
 				}	
 			}
+			}
+			}else{
+				if(datetype.equals("day")){//逐天
+					String tables="";
+					
+					tables="T_SCENARINO_FNL_DAILY_";
+     				DateFormat df = new SimpleDateFormat("yyyy");
+					String nowTime= df.format(times);
+					tables+=nowTime+"_";
+					tables+=userId;
+					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+					scenarinoEntity.setCity_station(cityStation);
+					scenarinoEntity.setDomain(3);
+					scenarinoEntity.setDay(times);
+					scenarinoEntity.setDomainId(domainId);
+					scenarinoEntity.setMode(mode);
+					scenarinoEntity.setTableName(tables);
+					sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+					}else{//逐小时
+						String tables="";
+						tables="T_SCENARINO_FNL_HOURLY_";
+						 DateFormat df = new SimpleDateFormat("yyyy");
+						String nowTime= df.format(times);
+						tables+=nowTime+"_";
+						tables+=userId.toString();
+						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+						scenarinoEntity.setCity_station(cityStation);
+						scenarinoEntity.setDomain(3);
+						scenarinoEntity.setDomainId(domainId);
+						scenarinoEntity.setDay(times);
+						scenarinoEntity.setMode(mode);
+						scenarinoEntity.setTableName(tables);
+						sclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+					}//时间分布判断
+				
 			}
 			if(datetype.equals("hour")){
 				for(ScenarinoEntity sc:sclist){
@@ -2008,7 +2044,7 @@ public class AppraisalController {
 			String end=data.get("enddate").toString();
 			Date enddate=DateUtil.StrToDate(end);
 			Long betweenDays = (long)((enddate.getTime() - startdate.getTime()) / (1000 * 60 * 60 *24) + 0.5);
-			List<Date> datelist=new ArrayList();	
+			List<Date> datelist=new ArrayList();
 			SimpleDateFormat daysdf=new SimpleDateFormat("yyyy-MM-dd");
 			for(int a=0;a<=betweenDays;a++){
 				Calendar cal = Calendar.getInstance();
@@ -2275,5 +2311,5 @@ public class AppraisalController {
 			LogUtil.getLogger().error("AppraisalController 查询任务的开始时间和结束有异常",e);
 			return AmpcResult.build(1000, "参数错误",null);
 		}
-	} 
+	}
 }
