@@ -282,9 +282,8 @@ public class AreaAndTimeController {
 						return AmpcResult.build(1000, "情景状态转换失败",null);
 					}
 					}else{
-						LogUtil.getLogger().error("update_TIME 情景状态修改失败！");
-						 return AmpcResult.build(1000, "情景状态修改失败");
-					}	
+						return AmpcResult.ok();	
+					}
 			}else{
 				LogUtil.getLogger().error("update_TIME 后一个时段的开始时间修改失败！");
 				return AmpcResult.build(1000, "后一个时段的开始时间修改失败");
