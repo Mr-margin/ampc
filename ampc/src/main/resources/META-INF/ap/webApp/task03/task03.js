@@ -62,6 +62,7 @@ function Deposit_Reserve_plan() {
     var paramsName = {};
     paramsName.userId = userId;
     paramsName.planId = qjMsg.planId;
+    paramsName.bigIndex = qjMsg.esCouplingId;
 
     ajaxPost('/plan/iscopy_plan', paramsName).success(function (res) {//设置可复用预案
 //    console.log(JSON.stringify(res));
@@ -186,6 +187,7 @@ function getLocalTime(nS) {
  */
 function hyc() {
     var paramsName = {};
+    paramsName.bigIndex = qjMsg.esCouplingId;
     paramsName.userId = userId;
     paramsName.planId = qjMsg.planId;
     paramsName.timeId = qjMsg.timeId;
@@ -337,6 +339,7 @@ function metTable_hj_info(pa_name) {
                 var data = {};
                 data.planId = qjMsg.planId;
                 data.userId = userId;
+                data.bigIndex = qjMsg.esCouplingId;
                 data.stainType = $('#hz_wrw').val();
                 if (hangyede_type == "dq") {
                     data.sectorName = hangye;
@@ -519,6 +522,7 @@ function hz_de() {
         paramsName.planId = row[0].planId;
         paramsName.userId = userId;
         paramsName.scenarinoId = qjMsg.qjId;
+        paramsName.bigIndex = qjMsg.esCouplingId;
 
         ajaxPost('/measure/delete_measure', paramsName).success(function (res) {
             metTable_hj_info();
