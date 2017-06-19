@@ -189,6 +189,7 @@ $('input[name=rms]').on('change', function (e) { //时间分辨率选择，逐�
         $('#sTime-h').removeClass('disNone');
     }
     updata();
+    updataWind();
 });
 
 $('input[name=domain]').on('change', function (e) {//地域范围选择   1:中国       2:中国东部       3:河北省
@@ -196,12 +197,14 @@ $('input[name=domain]').on('change', function (e) {//地域范围选择   1:中�
     var domain = $(e.target).val();
     changeMsg.domain = domain;
     updata();
+    updataWind();
 });
 
 $('input[name=speed]').on('change', function (e) {//动画速度    1:快速      2:中速      3:慢速
     var speed = $(e.target).val();
     changeMsg.speed = speed;
     updata();
+    updataWind();
 });
 
 $('input[name=field]').on('change', function (e) {//风场     0：无       1：箭头         2：F
@@ -216,6 +219,7 @@ $('#species').on('change', function (e) {//物种分辨率
     changeMsg.species = [];
     changeMsg.species.push(species);
     updata();
+    updataWind();
 });
 
 $('#sTime-d').on('change', function (e) {//选择日期
@@ -223,6 +227,7 @@ $('#sTime-d').on('change', function (e) {//选择日期
     var date = $(e.target).val();
     changeMsg.YBDate = moment(date).format('YYYY-MM-DD');
     updata();
+    updataWind();
 });
 
 $('#sTime-h').on('change', function (e) {//选择时间
@@ -231,6 +236,7 @@ $('#sTime-h').on('change', function (e) {//选择时间
     // changeMsg.YBHour = date - 0;
     changeMsg.YBHour = date;
     updata();
+    updataWind();
 });
 
 
