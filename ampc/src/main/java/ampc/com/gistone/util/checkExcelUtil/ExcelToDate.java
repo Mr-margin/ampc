@@ -100,7 +100,7 @@ public class ExcelToDate {
      */
 	public boolean init(String path,StringBuilder msg){
 		try{
-			String p=path.substring(path.indexOf(".")+1);
+			String p=path.substring(path.lastIndexOf(".")+1);
 			if(!p.equals("xlsx")){
 				msg.append("上传文件不是Excel类型文件。");
 				return false;
