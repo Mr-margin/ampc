@@ -6,10 +6,10 @@
       <a href="javascript:void(0)" id="selectTypeBtn">全部</a>
       <div id="selectTypeMenu" style="width:160px">
         <ul>
-          <li onclick="statusRWfun(this,'')" class="selected"><i class="fa fa-check"
+          <li onclick="statusRWfun(this,'')" class="selected" data-value=""><i class="fa fa-check"
                                                                  aria-hidden="true"></i><span>全部</span></li>
-          <li onclick="statusRWfun(this,'2')"><i class="fa fa-check" aria-hidden="true"></i><span>预评估</span></li>
-          <li onclick="statusRWfun(this,'3')"><i class="fa fa-check" aria-hidden="true"></i><span>后评估</span></li>
+          <li onclick="statusRWfun(this,'2')"  data-value="2"><i class="fa fa-check" aria-hidden="true"></i><span>预评估</span></li>
+          <li onclick="statusRWfun(this,'3')" data-value="3"><i class="fa fa-check" aria-hidden="true"></i><span>后评估</span></li>
         </ul>
       </div>
 	  
@@ -31,7 +31,7 @@
 						page:1,
 						rows:10,
 						queryName: $('#searchqd').searchbox('getValue'),
-						missionStatus: '',
+						missionStatus: $('#selectTypeMenu ul').find('.selected').attr('data-value'),
 						sort: '',
 						userId: userId
 					}	
