@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,9 +33,12 @@ import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TObsMapper;
 import ampc.com.gistone.database.inter.TPreProcessMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
+import ampc.com.gistone.database.inter.TSiteMapper;
+import ampc.com.gistone.database.model.TEmissionDetail;
 import ampc.com.gistone.database.model.TEmissionDetailWithBLOBs;
 import ampc.com.gistone.database.model.TMissionDetail;
 import ampc.com.gistone.database.model.TScenarinoDetail;
+import ampc.com.gistone.database.model.TSite;
 import ampc.com.gistone.preprocess.concn.ScenarinoEntity;
 import ampc.com.gistone.preprocess.obs.entity.ObsBean;
 import ampc.com.gistone.util.AmpcResult;
@@ -61,6 +66,8 @@ public class AppraisalController {
 	
 	@Autowired
 	private TObsMapper tObsMapper;
+	@Autowired
+	private TSiteMapper tSiteMapper;
 	
 	//定义公用的jackson帮助类
 	private ObjectMapper mapper=new ObjectMapper();
@@ -2161,6 +2168,8 @@ public class AppraisalController {
 							}//物种名称结束
 						}
 						}
+					}else{
+						return AmpcResult.build(1000, "未查询到当基准数据",null);
 					}	/**查询基准数据结束*/
 					
 					String tabless="T_SCENARINO_DAILY_";
@@ -2212,12 +2221,12 @@ public class AppraisalController {
 						}
 					}
 			}else{
-				return AmpcResult.build(1000, "该任务没有创建情景",null);
+				return AmpcResult.build(1000, "该任务没有创建情景1",null);
 			}
 			
 			}else{
 				//没有情景
-				return AmpcResult.build(1000, "该任务没有创建情景",null);
+				return AmpcResult.build(1000, "该任务没有创建情景2",null);
 			}
 			
 			Map spr=(Map)scmap.get("减排情景");
@@ -2229,7 +2238,8 @@ public class AppraisalController {
 				BigDecimal jz=new BigDecimal(jzsp.get(sp).toString());
 				BigDecimal jpavg=jp.divide(new BigDecimal(datelist.size()), 6, BigDecimal.ROUND_HALF_UP);
 				BigDecimal jzavg=jz.divide(new BigDecimal(datelist.size()), 6, BigDecimal.ROUND_HALF_UP);
-				BigDecimal jg=(jzavg.subtract(jpavg)).divide(jzavg, 6, BigDecimal.ROUND_HALF_UP);
+				BigDecimal p_z=jpavg.subtract(jzavg);
+				BigDecimal jg=(jpavg.subtract(jzavg)).divide(jzavg, 6, BigDecimal.ROUND_HALF_UP);
 				Double con=jg.doubleValue();
 				if(con<0){
 				Double co=con*100;	
@@ -2285,11 +2295,11 @@ public class AppraisalController {
 				}else if(num.doubleValue()<0){
 					BigDecimal yesd=num.setScale(0,BigDecimal.ROUND_HALF_UP);
 					String ser=yesd.toString().substring(1);
-					String updown="增加"+ser+"%";
+					String updown="增加"+ser+"吨";
 					concentration.put(sp.toString()+"_jp", updown);
 				}
 				else if(num.doubleValue()==0){
-					String updown="增加"+num+"%";
+					String updown="增加"+num+"吨";
 					concentration.put(sp.toString()+"_jp", updown);
 				}
 			}
@@ -2333,4 +2343,5 @@ public class AppraisalController {
 			return AmpcResult.build(1000, "参数错误",null);
 		}
 	}
+	
 }
