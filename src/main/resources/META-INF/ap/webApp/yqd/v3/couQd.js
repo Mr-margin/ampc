@@ -34,7 +34,10 @@ function innitdata(){  //耦合清单的初始化
             {field:"viewDetail",title:"查看",formatter:function(value,row,index){
                 var coupId=row.esCouplingId
                 var coupSetBtn;
-               if(row.employ==1&&row.esCouplingStatus==2){
+               if(row.employ==1){
+                   var coupSetBtn="<button style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='viewDetail("+coupId+")'>查看</button>"
+                   return coupSetBtn;
+               }else if(row.esCouplingStatus!=1){
                    var coupSetBtn="<button style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='viewDetail("+coupId+")'>查看</button>"
                    return coupSetBtn;
                }else{
