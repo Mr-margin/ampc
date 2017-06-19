@@ -204,6 +204,7 @@ function open_cs(sectorsName, measureame, mid, planMeasureId) {
     paramsName.measureId = mid;
     paramsName.planId = csMsg.planId;
     paramsName.planMeasureId = planMeasureId;
+    paramsName.bigIndex = csMsg.esCouplingId;
 
     sc_val = {};//初始化缓存
     sc_val.bigIndex = csMsg.esCouplingId;
@@ -1623,6 +1624,7 @@ function create() {
         paramsName.planMeasureId = m_planMeasureId;
         paramsName.measureContent = JSON.stringify(sc_v1);
         paramsName.scenarinoId = csMsg.qjId;
+        paramsName.bigIndex = csMsg.esCouplingId;
 
         ajaxPost('/measure/addOrUpdate_measure', paramsName).success(function (res) {
 //			console.log(JSON.stringify(res));
