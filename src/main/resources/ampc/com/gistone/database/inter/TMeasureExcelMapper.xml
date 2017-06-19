@@ -65,6 +65,9 @@
         <if test="measureVersion != null" >
         	And MEASURE_EXCEL_VERSION=#{measureVersion,jdbcType=OTHER} 
         </if> 
+        <if test="userId == null" >
+        	And USER_ID is null
+        </if>
     ORDER BY MEASURE_EXCEL_ID
   </select>
  

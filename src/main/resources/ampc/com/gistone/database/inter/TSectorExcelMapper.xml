@@ -47,6 +47,9 @@
         <if test="templateId != null" >
         	And DETAILED_LIST_ID=#{templateId,jdbcType=DECIMAL} 
         </if> 
+        <if test="userId == null" >
+        	And USER_ID is null
+        </if> 
       ORDER BY SECTOR_EXCEL_ID
   </select>
   
