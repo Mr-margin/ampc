@@ -753,6 +753,9 @@ public class ToDataTasksUtil {
 		    	Object scenarioid = map.get("scenarioid");
 		    	if (RegUtil.CheckParameter(scenarioid, "Long", null, false)) {
 			    	Long tasksScenarinoId = Long.parseLong(map.get("scenarioid").toString());
+			    	//查找情景之前的状态
+			    	String scenstatus  = tasksStatusMapper.selectRecordStatus(tasksScenarinoId);
+			    	Long scenStatusLong  =Long.parseLong(scenstatus);
 			    	//终止失败的描述信息
 			    	String errorStatus = map.get("desc").toString();
 				    TTasksStatus tTasksStatus = new TTasksStatus();
@@ -782,6 +785,8 @@ public class ToDataTasksUtil {
 							}
 						}else {
 							//停止失败---失败的处理
+							//返回原来的状态
+							readyData.updateScenStatusUtil(scenStatusLong, tasksScenarinoId);
 							//跟新情景表的情景终止失败描述
 						    updateModelErrorMsg(tasksScenarinoId,errorStatus);
 							LogUtil.getLogger().info("ToDataTasksUtil-stopModelresult：情景："+tasksScenarinoId+"停止失败！");
@@ -858,6 +863,9 @@ public class ToDataTasksUtil {
 		    	Object scenarioid = map.get("scenarioid");
 		    	if (RegUtil.CheckParameter(scenarioid, "Long", null, false)) {
 		    		Long tasksScenarinoId = Long.parseLong(map.get("scenarioid").toString());
+		    		//查找情景之前的状态
+			    	String scenstatus  = tasksStatusMapper.selectRecordStatus(tasksScenarinoId);
+			    	Long scenStatusLong  =Long.parseLong(scenstatus);
 		    		//暂停失败的描述信息
 			    	String errorStatus = map.get("desc").toString();
 				    TTasksStatus tTasksStatus = new TTasksStatus();
@@ -879,6 +887,8 @@ public class ToDataTasksUtil {
 						}
 					}else {
 						//暂停失败---失败的处理
+						//返回情景之前的状态
+						readyData.updateScenStatusUtil(scenStatusLong, tasksScenarinoId);
 						//跟新情景表的情景暂停描述
 					    updateModelErrorMsg(tasksScenarinoId,errorStatus);
 						LogUtil.getLogger().info("ToDataTasksUtil-spauseModelresult:情景："+tasksScenarinoId+"暂停处理失败！");
