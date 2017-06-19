@@ -418,6 +418,7 @@ public class AppraisalController {
 						scmap.put(scid, speciesMap);
 					}
 				}else{
+					Object[] speciesArr={"BC","O3","PM25","CO","NO2","NO3","OC","PMFINE","SO2","PM10","SO4","AQI","NH4","OM"};
 					for(ScenarinoEntity sc:sclist){
 						String scid=String.valueOf(sc.getsId());
 						Object content=sc.getContent();
@@ -430,30 +431,56 @@ public class AppraisalController {
 							calDate = calendar.getTime();
 							calDateStr=sdf.format(calDate);
 							Object sp=detamap.get(calDateStr);
+							Map<String,Object> spmap = new HashMap<String, Object>();
+							if(sp!=null){
+								spmap=(Map)sp;
+							}else{
+								for(int i=0; i<speciesArr.length;i++){
+									Map hashmap=new HashMap();
+									hashmap.put("0", "-");
+									spmap.put(speciesArr[i].toString(), hashmap);
+								}
+							}
 							
-							Map<String,Object> spmap=(Map)sp;
 							for(String spr:spmap.keySet()){
 								Map<String,Object> spcmap=new HashMap();
 								Object height=spmap.get(spr);
 								Map<String,Object> heightmap=(Map)height;
 								Map<String,Object> hourcmap=new HashMap();
+								String heightOneVal=heightmap.get("0").toString();
 								if(spr.equals("CO")){
-									BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
-									spcmap.put(calDateStr, bd);
+									if("".equals(heightOneVal)||heightOneVal==null||"-".equals(heightOneVal)){		
+										spcmap.put(calDateStr, "-");
 									}else{
-									BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
-									spcmap.put(calDateStr, bd);
+										BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+										spcmap.put(calDateStr, bd);
 									}
+								}else{
+									if("".equals(heightOneVal)||heightOneVal==null||"-".equals(heightOneVal)){		
+										spcmap.put(calDateStr, "-");
+									}else{	
+										BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+										spcmap.put(calDateStr, bd);
+									}
+								}
 								if(datemap.get(spr)!=null){
 									Object maps=datemap.get(spr);
 									Map<String,Object> des=(Map)maps;
 									if(spr.equals("CO")){
-										BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
-										des.put(calDateStr, bd);
+										if("".equals(heightOneVal)||heightOneVal==null||"-".equals(heightOneVal)){		
+											des.put(calDateStr, "-");
 										}else{
-										BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
-										des.put(calDateStr, bd);
+											BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(2, BigDecimal.ROUND_HALF_UP);
+											des.put(calDateStr, bd);
 										}
+									}else{
+										if("".equals(heightOneVal)||heightOneVal==null||"-".equals(heightOneVal)){		
+											des.put(calDateStr, "-");
+										}else{	
+											BigDecimal bd=(new BigDecimal(heightmap.get("0").toString())).setScale(1, BigDecimal.ROUND_HALF_UP);
+											des.put(calDateStr, bd);
+										}
+									}
 									
 									datemap.put(spr, des);
 								}else{
@@ -1436,26 +1463,6 @@ public class AppraisalController {
 			}
 			String end_Date=param.toString();
 			
-			//定义情景查询对象
-			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
-			tScenarinoDetail.setUserId(userId);
-			tScenarinoDetail.setMissionId(missionId);
-			//进行基准情景数据查询
-			TScenarinoDetail tScenarinoDetaillist=tScenarinoDetailMapper.selectBystandard(tScenarinoDetail);
-			//获取基准情景开始时间
-			String startDate= DateUtil.DATEtoString(tScenarinoDetaillist.getScenarinoStartDate(), "yyyy-MM-dd");	
-			//获取基准情景结束时间
-			String endDate= DateUtil.DATEtoString(tScenarinoDetaillist.getScenarinoEndDate(), "yyyy-MM-dd");
-			//该任务下的所有数据
-			TMissionDetail tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);	
-			//获取domainId
-			Long domainId=tMissionDetail.getMissionDomainId();
-			//任务开始时间
-			Date missionStartDate=tMissionDetail.getMissionStartDate();
-			String missionStartDatestr=DateUtil.DATEtoString(missionStartDate, "yyyy-MM-dd HH:mm:ss");
-			//任务结束时间
-			Date missionEndDate=tMissionDetail.getMissionEndDate();		
-			String missionEndDatestr=DateUtil.DATEtoString(missionEndDate, "yyyy-MM-dd HH:mm:ss");
 			//定义结果集合
 			Map objsed=new HashMap();
 			//格式化日期变量
@@ -1485,107 +1492,173 @@ public class AppraisalController {
 			Map spcmapobj=new HashMap();
 			//存放观测数据
 			Map contentobj=new HashMap();
+			
+			//查询的基准情景信息
+			TScenarinoDetail tScenarinoDetaillist;
+			//获取基准情景开始时间
+			String startDate;
+			//获取基准情景结束时间
+			String endDate;
+			//该任务下的所有数据
+			TMissionDetail tMissionDetail;
+			//获取domainId
+			Long domainId = null;
+			//任务开始时间
+			Date missionStartDate = null;
+			String missionStartDatestr;
+			//任务结束时间
+			Date missionEndDate;
+			String missionEndDatestr;
+			
+			//定义情景查询对象
+			TScenarinoDetail tScenarinoDetail=new TScenarinoDetail();
+			tScenarinoDetail.setUserId(userId);
+			tScenarinoDetail.setMissionId(missionId);
+			//后评估情景类型参数3
+			tScenarinoDetail.setScenType("3");
+			//进行基准情景数据查询
+			tScenarinoDetaillist=tScenarinoDetailMapper.selectBystandard(tScenarinoDetail);
+			if(tScenarinoDetaillist==null){
+				//如果为空,查询情景类型参数为4的实时预报情景
+				tScenarinoDetail.setScenType("4");
+				//查询预评估任务下的实时预报情景
+				tScenarinoDetaillist=tScenarinoDetailMapper.selectBystandard(tScenarinoDetail);
+			}
+			
 			//如果情景不为空
 			if(tScenarinoDetaillist!=null){
+				
+				//获取基准情景开始时间
+				startDate= DateUtil.DATEtoString(tScenarinoDetaillist.getScenarinoStartDate(), "yyyy-MM-dd");	
+				//获取基准情景结束时间
+				endDate= DateUtil.DATEtoString(tScenarinoDetaillist.getScenarinoEndDate(), "yyyy-MM-dd");
+				//该任务下的所有数据
+				tMissionDetail=tMissionDetailMapper.selectByPrimaryKey(missionId);	
+				//获取domainId
+				domainId=tMissionDetail.getMissionDomainId();
+				//任务开始时间
+				missionStartDate=tMissionDetail.getMissionStartDate();
+				missionStartDatestr=DateUtil.DATEtoString(missionStartDate, "yyyy-MM-dd HH:mm:ss");
+				//任务结束时间
+				missionEndDate=tMissionDetail.getMissionEndDate();		
+				missionEndDatestr=DateUtil.DATEtoString(missionEndDate, "yyyy-MM-dd HH:mm:ss");
+			}
+					
 				//时间分辨率--逐日开始
 				if(datetype.equals("day")){
-					
-					//查询基准数据开始
-					String tables="T_SCENARINO_DAILY_";
-					//获取情景添加时间
-					Date tims=tScenarinoDetaillist.getScenarinoAddTime();
-					//转换获取年份 拼接表名
-					String nowTime= DateUtil.DATEtoString(tims,"yyyy");
-					tables+=nowTime+"_";
-					tables+=userId;
-					//定义查询实体类
-					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
-					scenarinoEntity.setCity_station(cityStation);
-					//空间分辨率--需要时替换即可,数据库中目前只有为3的数据
-					scenarinoEntity.setDomain(domain);		
-					scenarinoEntity.setMode(mode);
-					scenarinoEntity.setDomainId(domainId);
-					scenarinoEntity.setsId(tScenarinoDetaillist.getScenarinoId());
-					scenarinoEntity.setTableName(tables);
-					//查询结果
-					List<ScenarinoEntity> Lsclist=tPreProcessMapper.selectBysome(scenarinoEntity);
-					//查询结果不为空
-					if(!Lsclist.isEmpty()){
-						//获取数据Json串
-						String content=Lsclist.get(0).getContent();
-						//总数据
-						Map standard=mapper.readValue(content, Map.class);
-						//循环数据集合       最外层的日期
-//						for(Object key : standard.keySet()){
-						for(int i=0; i<=differenceVal;i++){
-							calendar.setTime(sdf.parse(end_Date));
-							calendar.add(Calendar.DAY_OF_MONTH, -i);
-							calDate = calendar.getTime();
-							calDateStr=sdf.format(calDate);
-							
-							//值     根据日期获取当前日期下的所有值
-//							Object species=standard.get(key);
-							Object species=standard.get(calDateStr);
-							Map spcmap= (Map)species;
-							//循环当前时间的所有物种名称
-							for(Object  spcmapkey : spcmap.keySet()){ 	
-								//单个物种所有时间数据
-								Map standardobj=new HashMap();
-								//物种名称
-								String spcmapkeyw=spcmapkey.toString();
-								//为了拼接需要的数据格式  再次循环收到的数据集  键为日期
-//								for(Object standard_Time:standard.keySet()){	
-//									//获取对应年份下的所有信息
-//									Object standard_Times=standard.get(standard_Time);
-								for(int j=0; j<=differenceVal;j++){
-									calendar.setTime(sdf.parse(end_Date));
-									calendar.add(Calendar.DAY_OF_MONTH, -j);
-									calDate = calendar.getTime();
-									calDateStr=sdf.format(calDate);	
-									//获取对应年份下的所有信息
-									Object standard_Times=standard.get(calDateStr);
-									//转化信息格式
-									Map speciesmap= (Map)standard_Times;
-									//再次循环当前时间的所有物种名称
-									for(Object speciesmap_key:speciesmap.keySet()){
-										//物种名称
-										String speciesmap_keyn=speciesmap_key.toString();
-										if(!speciesmap_keyn.equals(spcmapkeyw)) continue;
-										//判断
-										if(speciesmap_keyn.equals(spcmapkeyw)&&"CO".equals(spcmapkeyw)){
-											//对应污染物结果
-											Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
-											Map speciesmapval= (Map)speciesmap_keyval;
-											String standardval=speciesmapval.get("0").toString();
-											//判断结果  写入对应结果
-											if("".equals(standardval)||"null".equals(standardval)||"NULL".equals(standardval)||null==standardval){
-												standardobj.put((String)calDateStr, "-");
+					if(tScenarinoDetaillist!=null){
+						
+						//查询基准数据开始
+						String tables="T_SCENARINO_DAILY_";
+						//获取情景添加时间
+						Date tims=tScenarinoDetaillist.getScenarinoAddTime();
+						//转换获取年份 拼接表名
+						String nowTime= DateUtil.DATEtoString(tims,"yyyy");
+						tables+=nowTime+"_";
+						tables+=userId;
+						//定义查询实体类
+						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+						scenarinoEntity.setCity_station(cityStation);
+						//空间分辨率--需要时替换即可,数据库中目前只有为3的数据
+						scenarinoEntity.setDomain(domain);		
+						scenarinoEntity.setMode(mode);
+						scenarinoEntity.setDomainId(domainId);
+						scenarinoEntity.setsId(tScenarinoDetaillist.getScenarinoId());
+						scenarinoEntity.setTableName(tables);
+						//查询结果
+						List<ScenarinoEntity> Lsclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+						//查询结果不为空
+						if(!Lsclist.isEmpty()){
+							//获取数据Json串
+							String content=Lsclist.get(0).getContent();
+							//总数据
+							Map standard=mapper.readValue(content, Map.class);
+							//循环数据集合       最外层的日期
+	//						for(Object key : standard.keySet()){
+							for(int i=0; i<=differenceVal;i++){
+								calendar.setTime(sdf.parse(end_Date));
+								calendar.add(Calendar.DAY_OF_MONTH, -i);
+								calDate = calendar.getTime();
+								calDateStr=sdf.format(calDate);
+								
+								//值     根据日期获取当前日期下的所有值
+	//							Object species=standard.get(key);
+								Object species=standard.get(calDateStr);
+								Map spcmap= (Map)species;
+								//循环当前时间的所有物种名称
+								for(Object  spcmapkey : spcmap.keySet()){ 	
+									//单个物种所有时间数据
+									Map standardobj=new HashMap();
+									//物种名称
+									String spcmapkeyw=spcmapkey.toString();
+									//为了拼接需要的数据格式  再次循环收到的数据集  键为日期
+	//								for(Object standard_Time:standard.keySet()){	
+	//									//获取对应年份下的所有信息
+	//									Object standard_Times=standard.get(standard_Time);
+									for(int j=0; j<=differenceVal;j++){
+										calendar.setTime(sdf.parse(end_Date));
+										calendar.add(Calendar.DAY_OF_MONTH, -j);
+										calDate = calendar.getTime();
+										calDateStr=sdf.format(calDate);	
+										//获取对应年份下的所有信息
+										Object standard_Times=standard.get(calDateStr);
+										//转化信息格式
+										Map speciesmap= (Map)standard_Times;
+										//再次循环当前时间的所有物种名称
+										for(Object speciesmap_key:speciesmap.keySet()){
+											//物种名称
+											String speciesmap_keyn=speciesmap_key.toString();
+											if(!speciesmap_keyn.equals(spcmapkeyw)) continue;
+											//判断
+											if(speciesmap_keyn.equals(spcmapkeyw)&&"CO".equals(spcmapkeyw)){
+												//对应污染物结果
+												Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
+												Map speciesmapval= (Map)speciesmap_keyval;
+												String standardval=speciesmapval.get("0").toString();
+												//判断结果  写入对应结果
+												if("".equals(standardval)||"null".equals(standardval)||"NULL".equals(standardval)||null==standardval){
+													standardobj.put((String)calDateStr, "-");
+												}else{
+													BigDecimal bd=(new BigDecimal(standardval)).setScale(2, BigDecimal.ROUND_HALF_UP);
+													standardobj.put((String)calDateStr, bd);
+												}
+												
 											}else{
-												BigDecimal bd=(new BigDecimal(standardval)).setScale(2, BigDecimal.ROUND_HALF_UP);
-												standardobj.put((String)calDateStr, bd);
-											}
-											
-										}else{
-											Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
-											Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
-											String standardval=speciesmapval.get("0").toString();
-											if("".equals(standardval)||"null".equals(standardval)||"NULL".equals(standardval)||null==standardval){
-												standardobj.put((String)calDateStr, "-");
-											}else{
-												BigDecimal bd=(new BigDecimal(standardval)).setScale(1, BigDecimal.ROUND_HALF_UP);
-												standardobj.put((String)calDateStr, bd);
+												Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
+												Map<String,Object> speciesmapval= (Map)speciesmap_keyval;
+												String standardval=speciesmapval.get("0").toString();
+												if("".equals(standardval)||"null".equals(standardval)||"NULL".equals(standardval)||null==standardval){
+													standardobj.put((String)calDateStr, "-");
+												}else{
+													BigDecimal bd=(new BigDecimal(standardval)).setScale(1, BigDecimal.ROUND_HALF_UP);
+													standardobj.put((String)calDateStr, bd);
+												}
 											}
 										}
-									}
-								} 
-								//写入结果集
-								spcmapobj.put((String)spcmapkey, standardobj);
-							}//物种名称结束
-//							break;
+									} 
+									//写入结果集
+									spcmapobj.put((String)spcmapkey, standardobj);
+								}//物种名称结束
+	//							break;
+							}
+						}else{
+							//查询数据为空
+							//循环全部物种
+							for(int k=0;k<simulationDay.length;k++){
+								Map contentobj_on=new HashMap();
+								//循环全部日期
+								for(int m=0;m<=differenceObs;m++){
+									calendar.setTime(sdf.parse(start_Date));
+									calendar.add(Calendar.DAY_OF_MONTH, +m);
+									calDate = calendar.getTime();
+									calDateStr=sdf.format(calDate);
+									contentobj_on.put(calDateStr,"-" );
+								}
+								spcmapobj.put(simulationDay[k].toString(), contentobj_on);
+							}
 						}
+						/**查询基准数据结束*/
 					}else{
-						//查询数据为空
-						//循环全部物种
 						for(int k=0;k<simulationDay.length;k++){
 							Map contentobj_on=new HashMap();
 							//循环全部日期
@@ -1600,7 +1673,6 @@ public class AppraisalController {
 						}
 					}
 					
-					/**查询基准数据结束*/
 					//查询观测数据开始
 					HashMap<String, Object> obsBeanobj=new HashMap<String, Object>();	
 					//站点信息
@@ -1625,7 +1697,13 @@ public class AppraisalController {
 					//表名title
 					String tables_obs="T_OBS_DAILY_";
 					//截取该任务的开始时间来改变查询的表格
-					String nowTime_obs= DateUtil.DATEtoString(missionStartDate, "yyyy");	
+					String nowTime_obs;
+					if(missionStartDate!=null){
+						nowTime_obs= DateUtil.DATEtoString(missionStartDate, "yyyy");
+					}else{
+						nowTime_obs= DateUtil.DATEtoString(sdf.parse(start_Date), "yyyy");
+					}
+						
 					tables_obs+=nowTime_obs;
 					//查询的表格
 					obsBeanobj.put("tableName",tables_obs);
@@ -1720,8 +1798,7 @@ public class AppraisalController {
 							}
 						}
 					}
-					//储存结果数据
-//					Map standardData=new HashMap();
+					
 					//观测数据
 					standardData.put("观测数据", contentobj);	
 					standardData.put("基准数据", spcmapobj);
@@ -1735,105 +1812,125 @@ public class AppraisalController {
 				}else{	//---------------------------时间分辨率---逐小时开始-------------------------------//
 					//定义结果集合
 //					Map spcmapobj=new HashMap();
-					//表名Title
-					String tables="T_SCENARINO_HOURLY_";
-					//情景添加时间
-					Date tims=tScenarinoDetaillist.getScenarinoAddTime();
-					String nowTime=DateUtil.DATEtoString(tims, "yyyy");
-					tables+=nowTime+"_";
-					tables+=userId;
-					//定义查询对象
-					ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
-					scenarinoEntity.setCity_station(cityStation);
-					//空间分辨率--需要时替换即可,数据库中目前只有为3的数据
-					scenarinoEntity.setDomain(domain);		
-					scenarinoEntity.setMode(mode);
-					scenarinoEntity.setDomainId(domainId);
-					scenarinoEntity.setsId(tScenarinoDetaillist.getScenarinoId());
-					scenarinoEntity.setTableName(tables);
-					//执行查询
-					List<ScenarinoEntity> Lsclist=tPreProcessMapper.selectBysome(scenarinoEntity);
-					if(!Lsclist.isEmpty()){			//查询基准数据开始
-						String content=Lsclist.get(0).getContent().toString();
-						//总数据
-						Map standard=mapper.readValue(content,Map.class);
-						
-						//循环数据-key=日期
-//						for(Object  key : standard.keySet()){
-						for(int s=0; s<=differenceVal;s++){
-							calendar.setTime(sdf.parse(end_Date));
-							calendar.add(Calendar.DAY_OF_MONTH, -s);
-							calDate = calendar.getTime();
-							calDateStr=sdf.format(calDate);	
-							//值
-//							Object species=standard.get(key);
-							Object species=standard.get(calDateStr);
-							Map spcmap= (Map)species;			
-							//物种名称开始							
-							for(Object  spcmapkey : spcmap.keySet()){ 
-								Map standardobj=new HashMap();
-								String spcmapkeyw=spcmapkey.toString();
-								//键为年份	
-//								for(Object standard_Time:standard.keySet()){
-								for(int t=0; t<=differenceVal;t++){
-									calendar.setTime(sdf.parse(end_Date));
-									calendar.add(Calendar.DAY_OF_MONTH, -t);
-									calDate = calendar.getTime();
-									calDateStr=sdf.format(calDate);	
-									
-//									Object standard_Times=standard.get(standard_Time);
-									Object standard_Times=standard.get(calDateStr);
-									Map speciesmap= (Map)standard_Times;
-									//循环年份数据
-									for(Object speciesmap_key:speciesmap.keySet()){
-										//存放结果
-										Map standardobjdata=new HashMap();
-										String speciesmap_keyn=speciesmap_key.toString();
-										if(!speciesmap_keyn.equals(spcmapkeyw)) continue;
-										//判断结果类型 存入对应结果
-										if(speciesmap_keyn.equals(spcmapkeyw)&&"CO".equals(spcmapkeyw)){													
-											Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
-											Map speciesmapval= (Map)speciesmap_keyval;
-											List qq= (List) speciesmapval.get("0");
-											for(int i=0;i<qq.size();i++){
-												String standardval=qq.get(i).toString();
-												if("".equals(standardval)||"null".equals(standardval)||"NULL".equals(standardval)||null==standardval){
-													standardobjdata.put(i, "-");
-												}else{
-													BigDecimal bd=(new BigDecimal(standardval)).setScale(2, BigDecimal.ROUND_HALF_UP);
-													standardobjdata.put(i,bd);
-												}
-											}					
-//											standardobj.put((String)standard_Time, standardobjdata);
-											standardobj.put(calDateStr, standardobjdata);
-										}else {
-											Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
-											Map speciesmapval= (Map)speciesmap_keyval;
-											List qq= (List) speciesmapval.get("0");
-											for(int i=0;i<qq.size();i++){
-												String standardval=qq.get(i).toString();
-												if("".equals(standardval)||"null".equals(standardval)||"NULL".equals(standardval)||null==standardval){
-													standardobjdata.put(i, "-");
-												}else{
-													BigDecimal bd=(new BigDecimal(standardval)).setScale(2, BigDecimal.ROUND_HALF_UP);
-													standardobjdata.put(i,bd);
-												}
-												
-											}	
-											//写入结果
-//											standardobj.put(standard_Time.toString(), standardobjdata);
-											standardobj.put(calDateStr, standardobjdata);
+					if(tScenarinoDetaillist!=null){
+						//表名Title
+						String tables="T_SCENARINO_HOURLY_";
+						//情景添加时间
+						Date tims=tScenarinoDetaillist.getScenarinoAddTime();
+						String nowTime=DateUtil.DATEtoString(tims, "yyyy");
+						tables+=nowTime+"_";
+						tables+=userId;
+						//定义查询对象
+						ScenarinoEntity scenarinoEntity=new ScenarinoEntity();
+						scenarinoEntity.setCity_station(cityStation);
+						//空间分辨率--需要时替换即可,数据库中目前只有为3的数据
+						scenarinoEntity.setDomain(domain);		
+						scenarinoEntity.setMode(mode);
+						scenarinoEntity.setDomainId(domainId);
+						scenarinoEntity.setsId(tScenarinoDetaillist.getScenarinoId());
+						scenarinoEntity.setTableName(tables);
+						//执行查询
+						List<ScenarinoEntity> Lsclist=tPreProcessMapper.selectBysome(scenarinoEntity);
+						if(!Lsclist.isEmpty()){			//查询基准数据开始
+							String content=Lsclist.get(0).getContent().toString();
+							//总数据
+							Map standard=mapper.readValue(content,Map.class);
+							
+							//循环数据-key=日期
+	//						for(Object  key : standard.keySet()){
+							for(int s=0; s<=differenceVal;s++){
+								calendar.setTime(sdf.parse(end_Date));
+								calendar.add(Calendar.DAY_OF_MONTH, -s);
+								calDate = calendar.getTime();
+								calDateStr=sdf.format(calDate);	
+								//值
+	//							Object species=standard.get(key);
+								Object species=standard.get(calDateStr);
+								Map spcmap= (Map)species;			
+								//物种名称开始							
+								for(Object  spcmapkey : spcmap.keySet()){ 
+									Map standardobj=new HashMap();
+									String spcmapkeyw=spcmapkey.toString();
+									//键为年份	
+	//								for(Object standard_Time:standard.keySet()){
+									for(int t=0; t<=differenceVal;t++){
+										calendar.setTime(sdf.parse(end_Date));
+										calendar.add(Calendar.DAY_OF_MONTH, -t);
+										calDate = calendar.getTime();
+										calDateStr=sdf.format(calDate);	
+										
+	//									Object standard_Times=standard.get(standard_Time);
+										Object standard_Times=standard.get(calDateStr);
+										Map speciesmap= (Map)standard_Times;
+										//循环年份数据
+										for(Object speciesmap_key:speciesmap.keySet()){
+											//存放结果
+											Map standardobjdata=new HashMap();
+											String speciesmap_keyn=speciesmap_key.toString();
+											if(!speciesmap_keyn.equals(spcmapkeyw)) continue;
+											//判断结果类型 存入对应结果
+											if(speciesmap_keyn.equals(spcmapkeyw)&&"CO".equals(spcmapkeyw)){													
+												Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
+												Map speciesmapval= (Map)speciesmap_keyval;
+												List qq= (List) speciesmapval.get("0");
+												for(int i=0;i<qq.size();i++){
+													String standardval=qq.get(i).toString();
+													if("".equals(standardval)||"null".equals(standardval)||"NULL".equals(standardval)||null==standardval){
+														standardobjdata.put(i, "-");
+													}else{
+														BigDecimal bd=(new BigDecimal(standardval)).setScale(2, BigDecimal.ROUND_HALF_UP);
+														standardobjdata.put(i,bd);
+													}
+												}					
+	//											standardobj.put((String)standard_Time, standardobjdata);
+												standardobj.put(calDateStr, standardobjdata);
+											}else {
+												Object speciesmap_keyval=speciesmap.get(speciesmap_key);				
+												Map speciesmapval= (Map)speciesmap_keyval;
+												List qq= (List) speciesmapval.get("0");
+												for(int i=0;i<qq.size();i++){
+													String standardval=qq.get(i).toString();
+													if("".equals(standardval)||"null".equals(standardval)||"NULL".equals(standardval)||null==standardval){
+														standardobjdata.put(i, "-");
+													}else{
+														BigDecimal bd=(new BigDecimal(standardval)).setScale(2, BigDecimal.ROUND_HALF_UP);
+														standardobjdata.put(i,bd);
+													}
+													
+												}	
+												//写入结果
+	//											standardobj.put(standard_Time.toString(), standardobjdata);
+												standardobj.put(calDateStr, standardobjdata);
+											}
 										}
 									}
+									//写入结果
+									spcmapobj.put(spcmapkey.toString(), standardobj);
+								}	//物种名称结束
+								break;
+							}
+						}else{
+							//查询数据为空
+							//循环全部物种
+							for(int k=0;k<simulationHour.length;k++){
+								Map contentobj_on=new HashMap();
+								//循环全部日期
+								for(int m=0;m<=differenceObs;m++){
+									calendar.setTime(sdf.parse(start_Date));
+									calendar.add(Calendar.DAY_OF_MONTH, +m);
+									calDate = calendar.getTime();
+									calDateStr=sdf.format(calDate);
+									Map contentobj_on_key_val=new HashMap();
+									for(int h=0;h<24;h++){
+										contentobj_on_key_val.put(h, "-");
+									}
+									contentobj_on.put(calDateStr,contentobj_on_key_val );
 								}
-								//写入结果
-								spcmapobj.put(spcmapkey.toString(), standardobj);
-							}	//物种名称结束
-							break;
+								spcmapobj.put(simulationHour[k].toString(), contentobj_on);
+							}
 						}
+						//基准数结束
 					}else{
-						//查询数据为空
-						//循环全部物种
 						for(int k=0;k<simulationHour.length;k++){
 							Map contentobj_on=new HashMap();
 							//循环全部日期
@@ -1851,7 +1948,6 @@ public class AppraisalController {
 							spcmapobj.put(simulationHour[k].toString(), contentobj_on);
 						}
 					}
-					//基准数结束
 					
 					//-------------------------查询观测数据开始--------------------//
 					HashMap obsBeanobj=new HashMap();	
@@ -1998,10 +2094,11 @@ public class AppraisalController {
 					objsed.put("observationId","观测数据");
 					objsed.put("observationName","观测数据");
 				}//时间分辨率---逐小时结束
-			}else{
-				//没有情景
-				return AmpcResult.build(1000, "该任务没有创建情景",null);
-			}
+//			}else{
+//				
+//				//没有情景
+//				return AmpcResult.build(1000, "该任务没有创建情景",null);
+//			}
 			//返回结果
 			return AmpcResult.build(0, "success",objsed);
 		}catch(Exception e){
