@@ -125,6 +125,8 @@ function update(th){
 
 function creat(){
     $("#creat_domain").window('open');
+    $("#creat_domain input").val('');
+    $("#creat_domain textarea").val('');
 }
 
 $("#creat_domain").window({

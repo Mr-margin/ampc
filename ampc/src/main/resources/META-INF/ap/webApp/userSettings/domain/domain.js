@@ -192,6 +192,28 @@ function pullPage(value){
 	}
 }
 
+
+
+/**
+ * 返回上一界面
+ */
+function back(){
+	swal({
+	  title: "确定返回?",
+	  text: "请您确定数据以保存!",
+	  type: "warning",
+	  showCancelButton: true,
+	  confirmButtonColor: "#DD6B55",
+	  confirmButtonText: "确定",
+	  closeOnConfirm: false
+	},
+	function(){
+		$('.sweet-overlay').hide();
+		$('.visible').hide();
+	    history.back(-1);
+	});
+}
+
 /**
  * 分辨率选择，改变多层分辨率
  */
