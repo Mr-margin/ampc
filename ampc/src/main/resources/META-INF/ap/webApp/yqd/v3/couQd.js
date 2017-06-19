@@ -34,7 +34,7 @@ function innitdata(){  //耦合清单的初始化
             {field:"viewDetail",title:"查看",formatter:function(value,row,index){
                 var coupId=row.esCouplingId
                 var coupSetBtn;
-               if(row.employ==1){
+               if(row.employ==1&&row.esCouplingStatus==2){
                    var coupSetBtn="<button style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='viewDetail("+coupId+")'>查看</button>"
                    return coupSetBtn;
                }else{
@@ -447,7 +447,7 @@ function nextCoup(){//点击下一步按钮
                             var cityNames=res.data.data.cityNames;
                             // cityData=[{cityId:3,cityName:"城市一"},{cityId:1,cityName:"城市1"},{cityId:2,cityName:"城市2"}];
 
-                            城市数据添加到数组中
+                            // 城市数据添加到数组中
                             $.each(cityNames, function (id, cityNames) {
                                 cityData.push({                         //获取城市名称、编码
                                     "cityId":id,
