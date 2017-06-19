@@ -38,11 +38,14 @@
   
   
   <!--获取到所有的行业信息-->
-  <select id="selectAll"  parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectAll"  parameterType="hashMap" resultMap="BaseResultMap">
   	select <include refid="Base_Column_List" />
     from T_SECTOR_EXCEL where IS_EFFECTIVE='1' 
-    	<if test="_parameter != null" >
-        	And USER_ID=#{_parameter,jdbcType=DECIMAL} 
+    	<if test="userId != null" >
+        	And USER_ID=#{userId,jdbcType=DECIMAL} 
+        </if> 
+        <if test="templateId != null" >
+        	And DETAILED_LIST_ID=#{templateId,jdbcType=DECIMAL} 
         </if> 
       ORDER BY SECTOR_EXCEL_ID
   </select>

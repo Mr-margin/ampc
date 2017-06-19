@@ -1,6 +1,7 @@
 package ampc.com.gistone.database.inter;
 
 import java.util.List;
+import java.util.Map;
 
 import ampc.com.gistone.database.model.TSectorExcel;
 
@@ -17,7 +18,7 @@ public interface TSectorExcelMapper {
 	 * 获取到所有的行业信息
 	 * @return
 	 */
-	List<TSectorExcel> selectAll(Long userId);
+	List<TSectorExcel> selectAll(Map map);
 	
 	 /**
      * 修改行业是否有效

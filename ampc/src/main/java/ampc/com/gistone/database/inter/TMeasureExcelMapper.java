@@ -1,6 +1,7 @@
 package ampc.com.gistone.database.inter;
 
 import java.util.List;
+import java.util.Map;
 
 import ampc.com.gistone.database.model.TMeasureExcel;
 
@@ -18,7 +19,7 @@ public interface TMeasureExcelMapper {
 	 * @param sectorExcelId
 	 * @return
 	 */
-	List<TMeasureExcel> selectAll(Long userId);
+	List<TMeasureExcel> selectAll(Map map);
 	
 	/**
      * 修改措施是否有效

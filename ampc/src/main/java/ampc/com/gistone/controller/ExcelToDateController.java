@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ampc.com.gistone.database.config.GetBySqlMapper;
 import ampc.com.gistone.database.inter.TMeasureExcelMapper;
 import ampc.com.gistone.database.inter.TMeasureSectorExcelMapper;
 import ampc.com.gistone.database.inter.TPlanMeasureMapper;
@@ -53,9 +52,7 @@ import ampc.com.gistone.util.checkExcelUtil.ExcelToDate;
 @RequestMapping
 public class ExcelToDateController {
 
-	// 默认映射
-	@Autowired
-	private GetBySqlMapper getBySqlMapper;
+
 	//行业Excel映射
 	@Autowired
 	private TSectorExcelMapper tSectorExcelMapper;
@@ -101,42 +98,23 @@ public class ExcelToDateController {
 	 * 中间表保存
 	 * 保存到措施模版表
 	 */
-	@RequestMapping("excel/save_ms")
-	public AmpcResult save_MS(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+	public Map save_MS(Long userId,Long templateId,String measureVersion){
+		//错误信息的数据集合
+		List<String> msg=new ArrayList();
+		//结果Map
+		Map map=new HashMap();
 		// 添加异常捕捉
 		try {
-			// 获取到颜色集合
-			//List<ColorUtil> colorUtil=ColorUtil.getColor();   暂时不添加颜色
 			// 设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
-			Map<String, Object> data = (Map) requestDate.get("data");
-			// 用户的id 确定当前用户
-			Long userId = null;
-			if (data.get("userId") != null) {
-				//获取用户ID
-				Object param=data.get("userId");
-				//进行参数判断
-				if(!RegUtil.CheckParameter(param, "Long", null, false)){
-					LogUtil.getLogger().error("ExcelToDateController 用户ID为空或出现非法字符!");
-					return AmpcResult.build(1003, "ExcelToDateController 用户ID为空或出现非法字符!");
-				}
-				// 用户id
-				userId = Long.parseLong(param.toString());
-			}
 			Long time=new Date().getTime();
 			String versionId="中间表"+time;
 			//获取到筛选后的数据
-			LinkedHashSet<TMeasureSectorExcel> ms=checkInfo(versionId,userId,1L,"耦合清单");
+			LinkedHashSet<TMeasureSectorExcel> ms=checkInfo(versionId,userId,templateId,"本地清单模板",measureVersion);
 			Iterator<TMeasureSectorExcel> iterator = ms.iterator();
 			int i=0;
 			//循环添加  并补充颜色
 			while(iterator.hasNext()){
 				TMeasureSectorExcel tmse =iterator.next();
-//				if(i==colorUtil.size()){
-//					i=0;
-//				}
-//				tmse.setColorcode(colorUtil.get(i).getColorCode());    暂时不添加颜色
-//				tmse.setColorname(colorUtil.get(i).getColorName());
 				int result=tMeasureSectorExcelMapper.insertSelective(tmse);
 				if(result<1){
 					throw new SQLException("ExcelToDateController 保存行业措施中间表失败");
@@ -144,14 +122,18 @@ public class ExcelToDateController {
 				i++;
 			}
 			LogUtil.getLogger().info("ExcelToDateController 保存行业措施中间表成功!");
-			return AmpcResult.ok("更新成功");
+			return null;
 		} catch(SQLException e){
 			LogUtil.getLogger().error(e.getMessage(),e);
-			return AmpcResult.build(1000,e.getMessage());
+			msg.add("保存行业措施数据失败,数据库添加失败。");
+			map.put("errorMsg",msg);
+			return map;
 		}catch (Exception e) {
 			LogUtil.getLogger().error("ExcelToDateController 保存行业措施中间表异常!",e);
+			msg.add("保存行业措施数据异常!");
+			map.put("errorMsg",msg);
 			// 返回错误信息
-			return AmpcResult.build(1001, "ExcelToDateController 保存行业措施中间表异常!");
+			return map;
 		}
 	}
 	
@@ -681,18 +663,24 @@ public class ExcelToDateController {
 	 * TODO
 	 * 验证L4s
 	 */
-	public LinkedHashSet<TMeasureSectorExcel> checkInfo(String vid,Long uid,Long qdId,String qdType){
+	public LinkedHashSet<TMeasureSectorExcel> checkInfo(String vid,Long uid,Long templateId,String qdType,String measureVersion){
 		try{
-			
 		//创建一个满足条件的
 		LinkedHashSet<TMeasureSectorExcel> ms = new LinkedHashSet<TMeasureSectorExcel>();
+		//创建条件
+		Map map=new HashMap();
+		map.put("userId", uid);
+		map.put("templateId", templateId);
 		//获取所有的行业信息
-		List<TSectorExcel> tseList=tSectorExcelMapper.selectAll(uid);
+		List<TSectorExcel> tseList=tSectorExcelMapper.selectAll(map);
+		//如果没有则查询系统内置的行业信息
 		if(tseList.size()==0){
-			tseList=tSectorExcelMapper.selectAll(null);
+			map.put("userId", null);
+			map.put("templateId", null);
+			tseList=tSectorExcelMapper.selectAll(map);
 		}
 		//所有措施中的匹配数据
-		List<CheckUtil1> checkUtil1=getMeasure(uid);
+		List<CheckUtil1> checkUtil1=getMeasure(uid,measureVersion);
 		//循环所有的行业信息
 		for (TSectorExcel tse : tseList) {
 			//先获取l4s的值
@@ -717,7 +705,7 @@ public class ExcelToDateController {
 					if(cu1.getMethod().equals("or")){
 						//如果为or 则满足一个就可以 如果为true 
 						if(id1==cu1.getNum1()||id1==cu1.getNum2()){
-							String result=c1(ms,cu11,tse,id1,id2,id3,id4,vid,uid,qdId,qdType);
+							String result=c1(ms,cu11,tse,id1,id2,id3,id4,vid,uid,templateId,qdType);
 							if(result.equals("ok")){
 								 break CU1;
 							}
@@ -727,7 +715,7 @@ public class ExcelToDateController {
 					}else if(cu1.getMethod().equals("between")){
 						//如果为between;规定数字在两个数之间 
 						if(cu1.getNum1()<=id1&&id1<=cu1.getNum2()){
-							String result=c1(ms,cu11,tse,id1,id2,id3,id4,vid,uid,qdId,qdType);
+							String result=c1(ms,cu11,tse,id1,id2,id3,id4,vid,uid,templateId,qdType);
 							if(result.equals("ok")){
 								 break CU1;
 							}
@@ -737,7 +725,7 @@ public class ExcelToDateController {
 					}else if(cu1.getMethod().equals("and")){
 						//and规定数字和第一个数字==为true
 						if(cu1.getNum1()==id1){
-							String result=c1(ms,cu11,tse,id1,id2,id3,id4,vid,uid,qdId,qdType);
+							String result=c1(ms,cu11,tse,id1,id2,id3,id4,vid,uid,templateId,qdType);
 							if(result.equals("ok")){
 								 break CU1;
 							}
@@ -761,14 +749,18 @@ public class ExcelToDateController {
 	 * 将每一条措施中的L4s进行拆分 得到一个条件的结果集
 	 * @return
 	 */
-	public List<CheckUtil1> getMeasure(Long userId){
+	public List<CheckUtil1> getMeasure(Long userId,String measureVersion){
 		//创建l4s分段条件类集合
 		List<CheckUtil1> reg=new ArrayList<CheckUtil1>();
+		Map map=new HashMap();
+		map.put("userId", userId);
+		map.put("measureVersion",measureVersion);
 		//获取到所有措施
-		List<TMeasureExcel> tmeList=tMeasureExcelMapper.selectAll(userId);
+		List<TMeasureExcel> tmeList=tMeasureExcelMapper.selectAll(map);
 		//如果没有获取默认的
 		if(tmeList.size()==0){
-			tmeList=tMeasureExcelMapper.selectAll(null);
+			map.put("userId", null);
+			tmeList=tMeasureExcelMapper.selectAll(map);
 		}
 		//循环所有的措施
 		for (TMeasureExcel tme : tmeList) {
