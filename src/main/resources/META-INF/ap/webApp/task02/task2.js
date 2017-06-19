@@ -382,6 +382,15 @@ var zTreeSetting = {
                             addLayer(showCode);
                     }
                     updataCodeList();
+                    var proNum = res.data.provinceCodes.length;
+                    var cityNum = res.data.cityCodes.length;
+                    var countyNum = res.data.countyCodes.length;
+                    if(proNum==0&&cityNum==0&&countyNum==0){
+                    	revise();
+                    }else{
+                    	$('.adcodeList').show();
+                        $('.codeTree').hide();
+                    }
                 });
                 $('#areaName').attr('data-id', areaId);
                 $.each(allData, function (i, n) {
@@ -1632,8 +1641,8 @@ function updataCodeList() {
     }
     addLayer(showCode);
     
-//    $('.codeTree').hide();
-//    $('.adcodeList').show();
+    $('.codeTree').hide();
+    $('.adcodeList').show();
 }
 
 /*在选中地区的面板进行修改选中的区域时的函数，重新跳出ztree*/
@@ -1907,9 +1916,9 @@ function createEditArea() {
 /*显示已选择code,并进行checked*/
 function setShowCode(data) {
     var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
-    proNum = data.provinceCodes.length;
-    cityNum = data.cityCodes.length;
-    countyNum = data.countyCodes.length;
+    var proNum = data.provinceCodes.length;
+    var cityNum = data.cityCodes.length;
+    var countyNum = data.countyCodes.length;
     showCode[0] = {};
     showCode[1] = {};
     showCode[2] = {};
