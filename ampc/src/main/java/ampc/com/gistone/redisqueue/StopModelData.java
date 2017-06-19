@@ -61,8 +61,14 @@ public class StopModelData {
 		stopModelBean.setUserid(userId.toString());
 		stopModelBean.setScenarioid(scenarinoId.toString());
 		queueData.setBody(stopModelBean);
+		Long selectScenStatus = null;
+		try {
+			selectScenStatus = tScenarinoDetailMapper.selectScenExecStatus(scenarinoId);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("StopModel：查找情景状态失败！");
+		}
 		LogUtil.getLogger().info("StopModel:开始发送终止模式的消息，该情景id是："+scenarinoId);
-		boolean stoptoJson = sendQueueData.stoptoJson(queueData,scenarinoId);
+		boolean stoptoJson = sendQueueData.stoptoJson(queueData,scenarinoId,selectScenStatus);
 		return stoptoJson;
 	}
 	
@@ -108,8 +114,14 @@ public class StopModelData {
 		stopModelBean.setUserid(userId.toString());
 		stopModelBean.setScenarioid(scenarinoId.toString());
 		queueData.setBody(stopModelBean);
+		Long selectScenStatus = null;
+		try {
+			selectScenStatus = tScenarinoDetailMapper.selectScenExecStatus(scenarinoId);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("StopModel：查找情景状态失败！");
+		}
 		LogUtil.getLogger().info("开始发送暂停模式的消息，该情景id是："+scenarinoId);
-		boolean pausetoJson = sendQueueData.pausetoJson(queueData,scenarinoId);
+		boolean pausetoJson = sendQueueData.pausetoJson(queueData,scenarinoId,selectScenStatus);
 		return pausetoJson;
 	}
 
