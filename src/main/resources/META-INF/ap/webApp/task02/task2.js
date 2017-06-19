@@ -321,6 +321,7 @@ var zTreeSetting = {
                 // $('.editTimeLi').removeClass('disNone');
 
                 clearTimeDate();
+                $('#selectEditPoint').empty();
                 updatetimeSow();
                 editTimeDateObj.type = $('#selectEditPoint').val();
             } else {
@@ -2122,7 +2123,12 @@ function updatetimeSow() {
     $('#editTime1 .showTimes .col-4 p').eq(0).empty();
     $('#editTime1 .showTimes .col-4 p').eq(1).empty();
     $('#editTime1 .showTimes .col-4 p').eq(2).empty();
-    $('#selectEditPoint').empty();
+    var _flag=true;
+    if($('#selectEditPoint').html()==''){
+    	_flag=false;
+    }else{
+    	_flag=true;
+    }
     var s, e;
     s = editTimeDateObj.s;
     e = editTimeDateObj.e;
@@ -2132,7 +2138,10 @@ function updatetimeSow() {
             .html('<h4>无时段</h4>');
         $('#editTime1 .showTimes .col-4 p').eq(2)
             .html(editTimeDateObj.afterS + '<br />至<br/>' + editTimeDateObj.afterE);
-        $('#selectEditPoint').append($('<option value="end">结束时间</option>'))
+        if(!_flag){
+        	$('#selectEditPoint').append($('<option value="end">结束时间</option>'))
+        }
+        
         //editTimeDateObj.type = 'end'
     } else if (timeIndex == allData[areaIndex].timeItems.length - 1) {
         s = editTimeDateObj.beforeS;
@@ -2140,12 +2149,17 @@ function updatetimeSow() {
             .html('<h4>无时段</h4>');
         $('#editTime1 .showTimes .col-4 p').eq(0)
             .html(editTimeDateObj.beforeS + '<br />至<br/>' + editTimeDateObj.beforeE);
-        $('#selectEditPoint').append($('<option value="start">开始时间</option>'))
+        if(!_flag){
+        	$('#selectEditPoint').append($('<option value="start">开始时间</option>'))
+        }
+        
         //editTimeDateObj.type = 'start'
     } else {
         s = editTimeDateObj.beforeS;
-        $('#selectEditPoint').append($('<option value="start">开始时间</option>'));
-        $('#selectEditPoint').append($('<option value="end">结束时间</option>'));
+        if(!_flag){
+        	$('#selectEditPoint').append($('<option value="start">开始时间</option>'));
+            $('#selectEditPoint').append($('<option value="end">结束时间</option>'));
+        }        
         $('#editTime1 .showTimes .col-4 p').eq(0)
             .html(editTimeDateObj.beforeS + '<br />至<br/>' + editTimeDateObj.beforeE);
         $('#editTime1 .showTimes .col-4 p').eq(2)
@@ -2202,6 +2216,23 @@ function initEditTimeDate(s, e) {
         }
         updatetimeSow();
     })
+}
+/*选择修改时段开始时间或结束时间*/
+function selectEditPoint(t) {
+    var s, e;
+    if ($(t).val() == 'start') {
+        s = editTimeDateObj.beforeS;
+        e = editTimeDateObj.e;
+        editTimeDateObj.type = 'start'
+    } else {
+        s = editTimeDateObj.s;
+        e = editTimeDateObj.afterE;
+        editTimeDateObj.type = 'end'
+    }
+
+    /*初始化方法执行两遍，否则有问题*/
+    initEditTimeDate(s, e);
+    initEditTimeDate(s, e);
 }
 
 /*添加时间段*/
@@ -2470,9 +2501,9 @@ function sunEditTimeDate() {
             //在前端将allData进行更新，省去在请求一遍areaAndTimeList接口
             if (editTimeDateObj.type == 'start') {
                 allData[areaIndex].timeItems[timeIndex].timeStartDate = moment(date).format('x') - 0;
-                allData[areaIndex].timeItems[timeIndex - 1].timeEndDate = moment(editTimeDateObj.beforeE).format('x') - 0;
+                allData[areaIndex].timeItems[timeIndex - 1].timeEndDate = moment(editTimeDateObj.beforeE).add(59,'m').add(59,'s').format('x') - 0;
             } else {
-                allData[areaIndex].timeItems[timeIndex].timeEndDate = moment(editTimeDateObj.e).format('x') - 0;
+                allData[areaIndex].timeItems[timeIndex].timeEndDate = moment(editTimeDateObj.e).add(59,'m').add(59,'s').format('x') - 0;
                 allData[areaIndex].timeItems[timeIndex + 1].timeStartDate = moment(editTimeDateObj.afterS).format('x') - 0;
             }
             showTimeline(allData);
