@@ -1,6 +1,5 @@
 package ampc.com.gistone.controller;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.Clob;
 import java.sql.SQLException;
@@ -17,7 +16,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,10 +39,8 @@ import ampc.com.gistone.database.inter.TSectordocExcelMapper;
 import ampc.com.gistone.database.inter.TTimeMapper;
 import ampc.com.gistone.database.model.TMeasureExcel;
 import ampc.com.gistone.database.model.TPlan;
-import ampc.com.gistone.database.model.TPlanMeasure;
 import ampc.com.gistone.database.model.TPlanMeasureReuseWithBLOBs;
 import ampc.com.gistone.database.model.TPlanMeasureWithBLOBs;
-import ampc.com.gistone.database.model.TPlanReuse;
 import ampc.com.gistone.database.model.TPlanReuseWithBLOBs;
 import ampc.com.gistone.database.model.TQueryExcel;
 import ampc.com.gistone.database.model.TScenarinoDetail;
