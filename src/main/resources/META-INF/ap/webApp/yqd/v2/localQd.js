@@ -179,7 +179,7 @@ function innitdata(active){
                                 return "<span>校验成功</span>"
                             }
                         }else if(row.isVerify==0){
-                            var checkDiv="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkData(\""+row.id+"\");$(this).attr(\"disabled\",\"disabled\");'>校验</button>"
+                            var checkDiv="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='$(this).attr(\"disabled\",\"disabled\");$(this).css({\"background-color\":\"#D9D9D9\",\"border\":\"1px solid #666\"});checkData(\""+row.id+"\");'>校验</button>"
                             return checkDiv
                         }else {
                             return value;
