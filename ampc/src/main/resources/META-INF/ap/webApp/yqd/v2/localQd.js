@@ -179,7 +179,7 @@ function innitdata(active){
                                 return "<span>校验成功</span>"
                             }
                         }else if(row.isVerify==0){
-                            var checkDiv="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkData(\""+row.id+"\")'>校验</button>"
+                            var checkDiv="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='checkData(\""+row.id+"\");$(this).attr(\"disabled\",\"disabled\");'>校验</button>"
                             return checkDiv
                         }else {
                             return value;
@@ -463,7 +463,6 @@ function checkData(rowId) {
             "esNativeTpOutPath":rowDiv.esNativeTpOutPath
         }).success(function (res) {
             if(res.status==0){
-                console.log($(this).text(),"按钮")
                 if(rowDiv.isVerify==0){
                     var hisCon=res.data.data.errorMsg[0];
                     $('[node-id="' + rowId + '"]').children("td[field=his]").html("<div style='width:200px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;color:#333;' title='"+hisCon+"'>"+hisCon+"</div>");
@@ -484,7 +483,6 @@ function checkData(rowId) {
             "esNativeTpOutPath":parentRowDiv.esNativeTpOutPath
         }).success(function (res) {
             if(res.status==0){
-                console.log($(this).text(),"按钮")
                 if(rowDiv.isVerify==0){
                     var hisConQd=res.data.data.errorMsg;
                     var re;
@@ -500,7 +498,6 @@ function checkData(rowId) {
             }
         })
     }
-
 }
 // 创建 输入框获得焦点
 $(".cloudui .rwCon .qdContent .qdName").focus(function () {//名称获取焦点
@@ -577,6 +574,7 @@ $("#editTempQd #esLocalQdName").blur(
                 // $("#editTempQd .tipNameRepeat span").remove();
                 // $("#editTempQd .tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>该名称已被使用</span>");
             }
+
         })
     }
 )
