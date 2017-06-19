@@ -630,6 +630,18 @@ function createRw() {
             } else {
                 $('.rwDateTip').hide();
             }
+            if((moment(rwEndDate).valueOf()-new Date().getTime())<1000*60*60*24*14){
+        		swal({
+                    title: '结束日期应晚于今天十四天!',
+                    type: 'info',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+        		subBtn = true;
+        		return
+        	}
+        }else{
+        	
         }
 
         ajaxPost(urlName, paramsName).success(function (res) {
@@ -865,7 +877,7 @@ function search(type) {
 		queryParams:{
 			"page":1,
 			"rows":10,
-			"queryName": '',
+			"queryName": $('#searchqd').searchbox('getValue'),
 			"missionStatus": statusRW,
 			"sort": '',
 			"userId": userId
@@ -1090,6 +1102,8 @@ function selectQJtype(type) {
 //            $('.hpgQJCon').css('display', 'block');
 //            $('.createQjBtn').css('display', 'inline-block');
 //            $('.return_S_qj').css('display', 'inline-block');
+                    $("#addHQJ").panel({title: '创建情景（基准情景）'});
+                    $("#addHQJ .step1").hide().siblings().show();
                     $('.diffNo').css('display', 'none');
                     $('.spinup').css('display', 'block');
                     $('#hEndDate').attr('disabled', true);
