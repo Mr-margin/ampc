@@ -68,10 +68,10 @@ public class AcceptMessageQueue implements Runnable{
 		if (runningSetting) {
 			while (true) {
 				try {
-					System.out.println("AcceptMessageQueue:队列接受数据");
+					LogUtil.getLogger().info("AcceptMessageQueue:队列接受数据");
 					String acceptName = configUtil.getRedisQueueAcceptName();
 					String rpop = redisUtilServer.brpop(acceptName);//send_queue_name
-					System.out.println(rpop+"刚取出来的");
+					LogUtil.getLogger().info(rpop+"刚取出来的");
 					if (null==rpop) {
 						LogUtil.getLogger().info("队列里面没有数据了！");
 					}else {
