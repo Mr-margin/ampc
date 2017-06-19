@@ -1622,8 +1622,6 @@ public class ExcelToDate {
                 //写入版本等信息
                 measure.setMeasureExcelVersion(versionId);
                 measure.setUserId(userId);
-                measure.setDetailedListId(1L);
-                measure.setDetailedListType("本地清单");
                 measureList.add(measure);
             }  
         	LogUtil.getLogger().info("ExcelToDateController 读取措施数据Excel成功!");
