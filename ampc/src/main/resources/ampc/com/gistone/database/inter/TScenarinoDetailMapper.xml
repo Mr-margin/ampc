@@ -1036,11 +1036,12 @@ AND IS_EFFECTIVE = '1'
   <select id="selectBystandard" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TScenarinoDetail">
   	 SELECT *
   		FROM T_SCENARINO_DETAIL  
-			 WHERE IS_EFFECTIVE ='1'  and SCEN_TYPE ='3' 
-       and MISSION_ID = #{missionId,jdbcType=DECIMAL}
-       and USER_ID = #{userId,jdbcType=DECIMAL}
-       and ROWNUM=1
-    
+			 WHERE IS_EFFECTIVE ='1'  
+		       and SCEN_TYPE = #{scenType,jdbcType=VARCHAR}
+<!-- 			  SCEN_TYPE ='3'  -->
+		       and MISSION_ID = #{missionId,jdbcType=DECIMAL}
+		       and USER_ID = #{userId,jdbcType=DECIMAL}
+		       and ROWNUM=1
   </select>
    <select id="selectByrealmax" parameterType="java.lang.Long" resultMap="BaseResultMap" >
      SELECT * FROM T_SCENARINO_DETAIL S 

@@ -393,6 +393,7 @@
 		, ES_COUPLING_NATIVETP_ID = #{esCouplingNativetpId,jdbcType=DECIMAL}
 		, ES_COUPLING_NATIVE_ID = #{esCouplingNativeId,jdbcType=OTHER}
 		, ES_COUPLING_CITY = #{esCouplingCity,jdbcType=VARCHAR}
+		, "ES_COUPLING_MEICCITYCONFIG" = #{esCouplingMeiccityconfig,jdbcType=CLOB}
 		, ES_COUPLING_STATUS = 2
 		WHERE
 			ES_COUPLING_ID = #{esCouplingId,jdbcType=DECIMAL}
