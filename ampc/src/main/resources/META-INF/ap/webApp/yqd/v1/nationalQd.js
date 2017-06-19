@@ -222,6 +222,12 @@ function delectQd(){
                 var rowIndex = $('#qgqd').datagrid('getRowIndex', row);
                 $('#qgqd').datagrid('deleteRow', rowIndex);
                 $('#qgqd').datagrid('reload');//删除后重新加载下
+                swal({
+                    title: '已删除!',
+                    type: 'success',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
             }else{
                 swal('参数错误', '', 'error');
             }
