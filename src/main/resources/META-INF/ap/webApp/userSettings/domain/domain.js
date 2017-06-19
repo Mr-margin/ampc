@@ -46,6 +46,7 @@ $(document).ready(function(){
 	
 	$('input').change(function(){
 		resolution();
+		$('.save').attr('disabled',false);
 	});
 });
 
@@ -310,6 +311,7 @@ function postSubmit(){
 			console.log(res);
 			if(res.msg == 'success'){
 				swal("保存成功");
+				$('.save').attr('disabled',true);
 			}else{
 				swal("保存失败");
 			}

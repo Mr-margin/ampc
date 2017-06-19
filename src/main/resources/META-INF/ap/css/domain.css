@@ -278,7 +278,7 @@ background: rgba(0,0,0,0.4);
 	margin:5px;
 	float: right !important;
 }
-.del_domain a{
+.del_domain button{
 	float: right;
 	margin-right: 10px;
 }
