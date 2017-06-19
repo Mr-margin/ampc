@@ -810,7 +810,7 @@ public class PlanAndMeasureController {
 				SMUtil sm = new SMUtil();
 				// 创建条件
 				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("sectorsName", name);
+				map.put("sectorName", name);
 				map.put("userId", userId);
 				map.put("templateId", templateId);
 				sm.setSectorsName(name);
