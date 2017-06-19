@@ -583,6 +583,18 @@ select START_MODEL_RESULT from T_TASKS_STATUS where TASKS_SCENARINO_ID = #{tasks
    </set>
    where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
   </update>
+  <!--记录发送指令之前的情景状态  -->
+  <update id="updateRecordStatus" parameterType="ampc.com.gistone.database.model.TTasksStatus">
+  update T_TASKS_STATUS
+    set TASKS_EXPAND4 = #{tasksExpand4,jdbcType=VARCHAR}
+  	where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
+  </update>
+  <!--查找记录发送指令之前的情景状态  -->
+  <select id="selectRecordStatus" parameterType="java.lang.Long" resultType="java.lang.String">
+  select TASKS_EXPAND4 
+  from T_TASKS_STATUS
+  where TASKS_SCENARINO_ID = #{tasksScenarinoId,jdbcType=DECIMAL}
+  </select>
   <!-- 修改模式停止的状态 -->
   <update id="updatestopstatus" parameterType="ampc.com.gistone.database.model.TTasksStatus">
    update T_TASKS_STATUS
