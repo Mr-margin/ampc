@@ -203,4 +203,26 @@ public interface TTasksStatusMapper {
 	 * @date 2017年5月12日 上午11:11:41
 	 */
 	List<TTasksStatus> selectTasksstatusByPathdateandtype(Map map);
+
+	/**
+	 * @Description: 记录情景发送指令之前的情景状态
+	 * @param tTasksStatus
+	 * @return   
+	 * int  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月19日 下午3:47:47
+	 */
+	int updateRecordStatus(TTasksStatus tTasksStatus);
+
+	/**
+	 * @Description: 查找情景之前的状态
+	 * @param tasksScenarinoId
+	 * @return   
+	 * String  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月19日 下午3:57:44
+	 */
+	String selectRecordStatus(Long tasksScenarinoId);
 }
