@@ -785,7 +785,7 @@ public class ExcelToDate {
                             //写入版本等信息
                             sectorDoc.setSectordocVersion(versionId);
                             sectorDoc.setDetailedListId(templateId);
-                            sectorDoc.setDetailedListType("本地清单");
+                            sectorDoc.setDetailedListType("本地清单模板");
                             sectorDoc.setUserId(userId);
                             sectorDocList.add(sectorDoc);
                     	}
@@ -1044,7 +1044,7 @@ public class ExcelToDate {
                     //写入版本等信息
                     query.setQueryVersion(versionId);
                     query.setDetailedListId(templateId);
-                    query.setDetailedListType("本地清单");
+                    query.setDetailedListType("本地清单模板");
                     query.setUserId(userId);
                     queryList.add(query);
                 }  
@@ -1256,7 +1256,7 @@ public class ExcelToDate {
                     sector.setVersionExcelId(versionId);
                     sector.setUserId(userId);
                     sector.setDetailedListId(templateId);
-                    sector.setDetailedListType("本地清单");
+                    sector.setDetailedListType("本地清单模板");
                     sectorList.add(sector);
                 }  
             }
