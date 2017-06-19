@@ -463,6 +463,7 @@ function checkData(rowId) {
             "esNativeTpOutPath":rowDiv.esNativeTpOutPath
         }).success(function (res) {
             if(res.status==0){
+                console.log($(this).text(),"按钮")
                 if(rowDiv.isVerify==0){
                     var hisCon=res.data.data.errorMsg[0];
                     $('[node-id="' + rowId + '"]').children("td[field=his]").html("<div style='width:200px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;color:#333;' title='"+hisCon+"'>"+hisCon+"</div>");
@@ -483,10 +484,16 @@ function checkData(rowId) {
             "esNativeTpOutPath":parentRowDiv.esNativeTpOutPath
         }).success(function (res) {
             if(res.status==0){
+                console.log($(this).text(),"按钮")
                 if(rowDiv.isVerify==0){
-                    var hisCon=res.data.data.errorMsg[0];
-                    $('[node-id="' + rowId + '"]').children("td[field=his]").html("<div style='width:200px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;color:#333;' title='"+hisCon+"'>"+hisCon+"</div>");
-                    swal(hisCon, '', 'error');
+                    var hisConQd=res.data.data.errorMsg;
+                    var re;
+                    for(var i=0;i<hisConQd.length;i++){
+                        re+=hisConQd[i];
+                    }
+                    $('[node-id="' + rowId + '"]').children("td[field=his]").html("<div style='width:200px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;color:#333;' title='"+re+"'>"+re+"</div>");
+
+                    swal(re, '', 'error');
                 }
             }else{
                 swal('参数错误', '', 'error');
