@@ -18,7 +18,7 @@ public interface TQueryExcelMapper {
 	 * @param userId
 	 * @return
 	 */
-	List<String> selectName(Long userId);
+	List<String> selectName(Map map);
 	
 	/**
 	 * 获取到所有的行业信息
