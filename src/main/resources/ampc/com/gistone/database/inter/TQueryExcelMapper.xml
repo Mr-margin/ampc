@@ -44,18 +44,36 @@
   <!--获取所有-->
   <select id="selectByMap" parameterType="hashMap"  resultMap="BaseResultMap" >
   	select <include refid="Base_Column_List" /> from T_QUERY_EXCEL 
-  	   WHERE IS_EFFECTIVE='1' and SECTOR_NAME= #{sectorName,jdbcType=OTHER} 
+  	   WHERE IS_EFFECTIVE='1' 
+  	   <if test="sectorName != null" >
+         and SECTOR_NAME= #{sectorName,jdbcType=OTHER} 
+      </if> 
+  	    <if test="userId != null" >
+        and USER_ID=#{userId,jdbcType=DECIMAL} 
+      </if> 
+      <if test="templateId != null" >
+        and DETAILED_LIST_ID=#{templateId,jdbcType=DECIMAL} 
+      </if> 
+      <if test="userId == null" >
+        and USER_ID is null
+      </if>
   	   ORDER BY QUERY_ID
   </select>
   
  <!--获取所有-->
-  <select id="selectName" parameterType="java.lang.Long" resultType="java.lang.String" >
+  <select id="selectName" parameterType="hashMap" resultType="java.lang.String" >
   	select sector_name sectorname from(  
     select ss.*,row_number() over (partition by sector_name order by query_id) rid from T_QUERY_EXCEL ss   
 	where IS_EFFECTIVE='1' 
-  	  <if test="_parameter != null" >
-        and USER_ID=#{_parameter,jdbcType=DECIMAL} 
+  	  <if test="userId != null" >
+        and USER_ID=#{userId,jdbcType=DECIMAL} 
       </if> 
+      <if test="templateId != null" >
+        and DETAILED_LIST_ID=#{templateId,jdbcType=DECIMAL} 
+      </if> 
+      <if test="userId == null" >
+        and USER_ID is null
+      </if>
 	) a where rid=1  ORDER BY query_id
   </select>
  

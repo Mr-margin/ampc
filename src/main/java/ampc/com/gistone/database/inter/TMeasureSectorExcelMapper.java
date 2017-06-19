@@ -31,7 +31,7 @@ public interface TMeasureSectorExcelMapper {
 	 * @param msExcelId
 	 * @return
 	 */
-	List<String> getSectorInfo(Long userId);
+	List<String> getSectorInfo(Map map);
 	
 	/**
 	 * 根据条件查询对应的措施

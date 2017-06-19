@@ -751,16 +751,42 @@ public class PlanAndMeasureController {
 				// 用户id
 				userId = Long.parseLong(param.toString());
 			}
-			// 根据UserId查询所有的行业名称
-			List<String> nameList = this.tMeasureSectorExcelMapper.getSectorInfo(userId);
-			if (nameList.size() == 0) {
-				nameList = this.tMeasureSectorExcelMapper.getSectorInfo(null);
+			//bigIndex
+			param=data.get("bigIndex");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController bigIndex为空或出现非法字符!");
+				return AmpcResult.build(1003, "bigIndex为空或出现非法字符!");
 			}
+			// bigIndex
+			Long bigIndex = Long.parseLong(param.toString());
+			//查询行业版本
+			Map qmap=new HashMap();
+			qmap.put("userId", userId);
+			qmap.put("esCouplingId", bigIndex);
+			Long templateId=tEsCouplingMapper.selectTIdByCId(qmap);
+			//定义筛选条件查询的条件
+			Map mapQuery=new HashMap();
+			mapQuery.put("userId", userId);
+			mapQuery.put("templateId", templateId);
 			// 根据UserId查询所有的带有条件的行业名称 因为要优先显示
-			List<String> queryList = this.tQueryExcelMapper.selectName(userId);
+			List<String> queryList = this.tQueryExcelMapper.selectName(mapQuery);
 			//如果为空就查询系统默认的
 			if (queryList.size() == 0) {
-				queryList = this.tQueryExcelMapper.selectName(null);
+				mapQuery.put("userId", null);
+				mapQuery.put("templateId", null);
+				queryList = this.tQueryExcelMapper.selectName(mapQuery);
+			}
+			//编写条件查询
+			Map map1=new HashMap();
+			map1.put("userId", userId);
+			map1.put("templateId", templateId);
+			// 根据UserId查询所有的行业名称
+			List<String> nameList = this.tMeasureSectorExcelMapper.getSectorInfo(map1);
+			if (nameList.size() == 0) {
+				map1.put("userId", null);
+				map1.put("templateId", null);
+				nameList = this.tMeasureSectorExcelMapper.getSectorInfo(map1);
 			}
 			//创建中间集合
 			List<String> nameSet=new ArrayList<String>();
@@ -790,11 +816,13 @@ public class PlanAndMeasureController {
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("sectorsName", name);
 				map.put("userId", userId);
+				map.put("templateId", templateId);
 				sm.setSectorsName(name);
 				// 查询当前名称下有几个措施
 				List<Map> list = this.tMeasureSectorExcelMapper.getMeasureInfo(map);
 				if (list.size() == 0) {
 					map.put("userId", null);
+					map.put("templateId", null);
 					list = this.tMeasureSectorExcelMapper.getMeasureInfo(map);
 				}
 				sm.setMeasureItems(list);
@@ -1078,23 +1106,48 @@ public class PlanAndMeasureController {
 				// 用户id
 				userId = Long.parseLong(param.toString());
 			}
+			//bigIndex
+			param=data.get("bigIndex");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("PlanAndMeasureController bigIndex为空或出现非法字符!");
+				return AmpcResult.build(1003, "bigIndex为空或出现非法字符!");
+			}
+			// bigIndex
+			Long bigIndex = Long.parseLong(param.toString());
+			//查询行业版本
+			Map qmap=new HashMap();
+			qmap.put("userId", userId);
+			qmap.put("esCouplingId", bigIndex);
+			Long templateId=tEsCouplingMapper.selectTIdByCId(qmap);
 			// 添加信息到参数中
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("planId", planId);
 			map.put("sectorName", sectorName);
 			map.put("userId", userId);
+			map.put("templateId", templateId);
 			// 查询条件
 			List<TQueryExcel> tqeList = tQueryExcelMapper.selectByMap(map);
+			if(tqeList.size()==0){
+				map.put("userId", null);
+				map.put("templateId", null);
+				tqeList = tQueryExcelMapper.selectByMap(map);
+			}
+			// 添加信息到参数中
+			Map<String, Object> map1 = new HashMap<String, Object>();
+			map1.put("sectorName", sectorName);
+			map1.put("userId", userId);
+			map1.put("templateId", templateId);
 			// 获取所有和当前用户相关的行业描述 右下角1 
-			List<Map> sdMap = tSectordocExcelMapper.selectByUserId(map);
+			List<Map> sdMap = tSectordocExcelMapper.selectByUserId(map1);
 			// 如果没有就给默认的行业描述
 			if (sdMap.size() == 0) {
-				map.put("userId", null);
-				sdMap = tSectordocExcelMapper.selectByUserId(map);
+				map1.put("userId", null);
+				map1.put("templateId", null);
+				sdMap = tSectordocExcelMapper.selectByUserId(map1);
 			}
 			if(sdMap.size()==0){
-				map.put("sectorName", "面源");
-				sdMap = tSectordocExcelMapper.selectByUserId(map);
+				map1.put("sectorName", "面源");
+				sdMap = tSectordocExcelMapper.selectByUserId(map1);
 			}
 			List<MeasureUtil> mlist = new ArrayList<MeasureUtil>();
 			MeasureUtil mu = null;

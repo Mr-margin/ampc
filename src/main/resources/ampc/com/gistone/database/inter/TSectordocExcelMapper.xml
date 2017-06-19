@@ -45,9 +45,18 @@
  <!--获取etitle-->
   <select id="selectByUserId"  resultMap="mapSelect" parameterType="hashMap">
   	select sectordoc_etitle,SECTORDOC_CTITLE from T_SECTORDOC_EXCEL WHERE 
-  	 IS_EFFECTIVE='1' and SECTORDOC_DISNAME=#{sectorName,jdbcType=OTHER} 
-  		<if test="userId != null" >
-        AND USER_ID=#{userId,jdbcType=OTHER} 
+  	 IS_EFFECTIVE='1'
+  	 <if test="sectorName != null" >
+         and SECTORDOC_DISNAME= #{sectorName,jdbcType=OTHER} 
+      </if> 
+  	    <if test="userId != null" >
+        and USER_ID=#{userId,jdbcType=DECIMAL} 
+      </if> 
+      <if test="templateId != null" >
+        and DETAILED_LIST_ID=#{templateId,jdbcType=DECIMAL} 
+      </if> 
+      <if test="userId == null" >
+        and USER_ID is null
       </if> 
   </select>
   
