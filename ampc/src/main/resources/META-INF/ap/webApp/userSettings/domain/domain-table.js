@@ -219,7 +219,7 @@ function status(){
 		if(domainbutton == '开启'){
 			$(value).children().children('.b_del').show();
 		}
-		if(domainStatus == '已使用'){
+		if(domainStatus == '使用过'){
 			$(value).children().children('.todo,.b_del').hide();
 		}
 		if(domainDo == '处理中'){
