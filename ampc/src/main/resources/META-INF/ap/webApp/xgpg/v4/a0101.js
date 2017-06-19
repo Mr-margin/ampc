@@ -370,8 +370,6 @@ function selectRwId() {
     sceneTable();
 }
 
-
-
 /**
  * 根据任务ID，获取情景列表用于选择情景范围
  */
@@ -473,7 +471,8 @@ function save_scene() {
                 "scenarinoId": col.scenarinoId,
                 "scenarinoName": col.scenarinoName,
                 "scenarinoStartDate": col.scenarinoStartDate,
-                "scenarinoEndDate": col.scenarinoEndDate
+                "scenarinoEndDate": col.scenarinoEndDate,
+                "scenType":col.scenType
             });
         });
         mag.data = data;
@@ -1215,7 +1214,6 @@ $('#qjBtn1').on('change', 'input', function (e) {//改变左侧情景
         changeMsg.qj1Id = qjId;
         updata();
     }
-
 });
 
 $('#qjBtn2').on('change', 'input', function (e) {//改变右侧情景
