@@ -311,6 +311,12 @@ function innitdata(active){
                     var row_id=row.id;
                     $("#localqd").treegrid("remove",row_id);
                     innitdata("find_natives")
+                    swal({
+                        title: '已删除!',
+                        type: 'success',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
                 }else{
                     swal('参数错误', '', 'error');
                 }
@@ -480,6 +486,7 @@ function checkData(rowId) {
                 if(rowDiv.isVerify==0){
                     var hisCon=res.data.data.errorMsg[0];
                     $('[node-id="' + rowId + '"]').children("td[field=his]").html("<div style='width:200px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;color:#333;' title='"+hisCon+"'>"+hisCon+"</div>");
+                    swal(hisCon, '', 'error');
                 }
             }else{
                 swal('参数错误', '', 'error');
