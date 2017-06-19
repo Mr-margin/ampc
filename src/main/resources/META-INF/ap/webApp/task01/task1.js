@@ -595,6 +595,17 @@ function addRWWindow() {
     $("#addRW").window("open").window('center');
     $('#addRW .step1').css('display', 'flex').siblings().css('display', 'none');
 }
+getDomain();
+function getDomain(){
+    var url = '/scenarino/find_Domain';
+    ajaxPost(url,{
+        "userId": userId
+    }).success(function(res){
+        // console.log(res);
+        $('#mnfw').val(res.data.domainName);
+        $('#mnfw').attr('domain_id',res.data.domainId);
+    });
+}
 /*新改任务创建*/
 function createRw() {
     if ($('#rwForm').valid()) {
@@ -605,7 +616,7 @@ function createRw() {
         var params = {};
         var paramsName = {};
         params.missionName = paramsName.missionName = $('#rwName').val();
-        params.missionDomainId = $('#mnfw').val();
+        params.missionDomainId = $('#mnfw').attr('domain_id');
         params.esCouplingId = $('#qd').val();
         params.missionStartDate = moment(rwStartDate).format('YYYY-MM-DD HH:mm:ss');
         params.missionEndDate = moment(rwEndDate).add(1, 'd').subtract(1, 's').format('YYYY-MM-DD HH:mm:ss');
@@ -2562,5 +2573,4 @@ function rename(type) {
         subBtn = true;
       })
     });
-
 }
