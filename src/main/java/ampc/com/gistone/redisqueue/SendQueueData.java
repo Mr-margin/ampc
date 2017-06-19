@@ -68,6 +68,8 @@ import org.springframework.stereotype.Component;
 
 
 
+
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
@@ -205,6 +207,7 @@ public class SendQueueData {
 	/**
 	 * @Description: 停止模式的消息
 	 * @param queueData
+	 * @param selectScenStatus 
 	 * @param object
 	 * @param object2   
 	 * void  
@@ -212,22 +215,22 @@ public class SendQueueData {
 	 * @author yanglei
 	 * @date 2017年4月26日 下午3:56:36
 	 */
-	public boolean stoptoJson(QueueData queueData,Long scenarinoId) {
+	public boolean stoptoJson(QueueData queueData,Long scenarinoId, Long selectScenStatus) {
 		JSONObject jsonObject = JSONObject.fromObject(queueData);
 		String json = jsonObject.toString();
 		LogUtil.getLogger().info("SendQueueData-stoptoJson：停止的指令:"+json);
 		boolean flag = sendQueueData.sendData(json);
 		if (flag) {
 			//修改状态表示发送了停止的消息
-			/*TTasksStatus tTasksStatus = new TTasksStatus();
+			TTasksStatus tTasksStatus = new TTasksStatus();
 			tTasksStatus.setTasksScenarinoId(scenarinoId);
-			tTasksStatus.setStopStatus("2");
-			int i = tTasksStatusMapper.updatestopstatus(tTasksStatus);
+			tTasksStatus.setTasksExpand4(selectScenStatus.toString());
+			int i = tTasksStatusMapper.updateRecordStatus(tTasksStatus);
 			if (i>0) {
-				LogUtil.getLogger().info("更新发送停止模式的状态成功！");
+				LogUtil.getLogger().info("更新记录情景发指令之前的状态成功！");
 			}else {
-				LogUtil.getLogger().info("更新发送停止模式的状态失败！");
-			}*/
+				LogUtil.getLogger().info("更新记录情景发指令之前的状态失败！");
+			}
 			sendmessagelogfile(json);
 			//修改情景状态为---模式处理中
 			readyData.updateScenStatusUtil(10l, scenarinoId);
@@ -280,18 +283,29 @@ public class SendQueueData {
 	 * @Description: 模式暂停
 	 * @param queueData
 	 * @param scenarinoId
+	 * @param selectScenStatus 
 	 * @return   
 	 * boolean  
 	 * @throws
 	 * @author yanglei
 	 * @date 2017年4月28日 上午10:18:55
 	 */
-	public boolean pausetoJson(QueueData queueData, Long scenarinoId) {
+	public boolean pausetoJson(QueueData queueData, Long scenarinoId, Long selectScenStatus) {
 		JSONObject jsonObject = JSONObject.fromObject(queueData);
 		String json = jsonObject.toString();
 		LogUtil.getLogger().info("SendQueueData--pausetoJson方法：发送了暂停的指令:"+json);
 		boolean flag = sendQueueData.sendData(json);
 		if (flag) {
+			//修改状态表示发送了暂停的消息
+			TTasksStatus tTasksStatus = new TTasksStatus();
+			tTasksStatus.setTasksScenarinoId(scenarinoId);
+			tTasksStatus.setTasksExpand4(selectScenStatus.toString());
+			int i = tTasksStatusMapper.updateRecordStatus(tTasksStatus);
+			if (i>0) {
+				LogUtil.getLogger().info("更新记录情景发指令之前的状态成功！");
+			}else {
+				LogUtil.getLogger().info("更新记录情景发指令之前的状态失败！");
+			}
 			sendmessagelogfile(json);
 			//暂停状态
 			readyData.updateScenStatusUtil(10l, scenarinoId);
