@@ -160,7 +160,7 @@ public class NativeAndNationController {
 					listTps = verifyByCouplingName(requestDate,request,response);
 				}
 				else if("".equals(param)){
-					return AmpcResult.build(1001, "NativeAndNationController 请求方法参数异常!");
+					return AmpcResult.build(1003, "NativeAndNationController 请求方法参数异常!");
 				}
 				
 				return AmpcResult.ok(listTps);
@@ -948,25 +948,26 @@ public class NativeAndNationController {
 			File file =new File(nativefilePath);
 			//目录已经存在
 			if(files.exists()){
-				System.out.println("目录已经存在!");
+				LogUtil.getLogger().info("NativeAndNationController 本地清单目录已存在!");
 				//判断是否包含该文件模板
-				if(file.exists()){
-					System.out.println("该模板已经存在");
-				}else{
-					//模板文件夹不存在,进行创建
-					file.mkdir();
-				}
+//				if(file.exists()){
+//					System.out.println("该模板已经存在");
+//				}else{
+//					//模板文件夹不存在,进行创建
+//					file.mkdir();
+//				}
 			}else{
 				//不存在进行创建目录
-				files.mkdirs();
-				if(file.exists()){
-					System.out.println("文件已存在");
-				}else{
-					//不存在创建文件
-					//模板文件夹创建完成
-					file.mkdir();
-					System.out.println("模板文件夹创建完成");
-				}
+				files.mkdir();
+				LogUtil.getLogger().info("NativeAndNationController 本地清单目录已创建!");
+//				if(file.exists()){
+//					System.out.println("文件已存在");
+//				}else{
+//					//不存在创建文件
+//					//模板文件夹创建完成
+//					file.mkdir();
+//					System.out.println("模板文件夹创建完成");
+//				}
 			}
 			
 			//添加数据
