@@ -5,6 +5,7 @@ $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">效果�
 
 var opacity = 0.7;//默认的图层透明度
 var ls, sceneInitialization, qjMsg;
+var missionYBid = '';
 var videoPlayScale = [];
 var changeMsg = {
     borderType:1,//生成点位是否规整，png格式必须为1
@@ -288,6 +289,7 @@ require(
 
 
 var allMission = {};
+var ybMissionId = {};
 /**
  * 初始化模态框显示
  */
@@ -449,6 +451,22 @@ function save_scene() {
         mag.s = allMission[mag.taskID].missionStartDate;
         mag.e = allMission[mag.taskID].missionEndDate;
         mag.jzID = allMission[mag.taskID].missionStatus == '2'?$('#pathD').val():allMission[mag.taskID].jzqjid;
+        mag.pathMission = (function () {
+            return JSON.stringify(allMission[mag.taskID].pathmission);
+            /*if(allMission[mag.taskID].missionStatus == '2'){
+                if(allMission[mag.taskID].pathmission[mag.jzID] == '-1'){
+                    return '-1'
+                }else{
+                    return allMission[mag.taskID].pathmission[mag.jzID]
+                }
+            }else{
+                if(allMission[mag.taskID].jzqjid){
+                    return mag.taskID
+                }else{
+                    return -1
+                }
+            }*/
+        })();
         var data = [];
         $.each(row, function (i, col) {
             data.push({
@@ -925,6 +943,7 @@ function bianji(type, g_num, p , wind) {
 
 /*添加情景选择按钮*/
 function setQjSelectBtn(data) {
+    missionYBid = '';
     changeMsg.missionId = sceneInitialization.taskID;
     changeMsg.domainId = sceneInitialization.domainId;
     changeMsg.qj1Id = sceneInitialization.jzID;
@@ -972,6 +991,7 @@ function setQjSelectBtn(data) {
         }).success(function (res) {
             if(res.status == 0){
                 changeMsg.qj1Id = res.data.scenarinoId;
+                missionYBid = res.data.mission;
                 updata();
             }else{
                 swal({
@@ -1171,7 +1191,8 @@ $('#qjBtn1').on('change', 'input', function (e) {//改变左侧情景
             pathDate:$('#sTime-d').val()
         }).success(function (res) {
             if(res.status == 0){
-                qjId = res.data.scenarinoId
+                qjId = res.data.scenarinoId;
+                missionYBid = res.data.mission;
                 changeMsg.qj1Id = qjId;
                 updata();
             }else{
@@ -1212,6 +1233,7 @@ $('#qjBtn2').on('change', 'input', function (e) {//改变右侧情景
         }).success(function (res) {
             if(res.status == 0){
                 qjId = res.data.scenarinoId
+                missionYBid = res.data.mission;
                 changeMsg.qj2Id = qjId;
                 updata();
             }else{
@@ -1308,6 +1330,7 @@ function updata(t) {
         }).success(function (res) {
             if(res.status == 0){
                 changeMsg.qj1Id = res.data.scenarinoId;
+                missionYBid = res.data.mission;
                 ajaxPar();
             }else{
                 swal({
@@ -1332,6 +1355,7 @@ function updata(t) {
         }).success(function (res) {
             if(res.status == 0){
                 changeMsg.qj2Id = res.data.scenarinoId;
+                missionYBid = res.data.mission;
                 ajaxPar();
             }else{
                 swal({
@@ -1354,6 +1378,9 @@ function updata(t) {
     }
 
     function ajaxPar() {
+        var pathMission = JSON.parse(sceneInitialization.pathMission);
+
+
         var p1 = $.extend({
             scenarioId1: changeMsg.qj1Id,
             calcType: 'show'
@@ -1368,6 +1395,21 @@ function updata(t) {
                 scenarioId1: changeMsg.qj1Id,
                 scenarioId2: changeMsg.qj2Id
             }, parameter);
+        }
+
+        if(missionYBid == ''){
+            if(pathMission[changeMsg.qj1Id]){
+                p1.missionId = pathMission[changeMsg.qj1Id];
+            }
+            if(pathMission[changeMsg.qj2Id]){
+                p2.missionId = pathMission[changeMsg.qj2Id];
+            }
+        }else{
+            if($('#qjBtn1').find('.active input').val() == '-1'){
+                p1.missionId = missionYBid;
+            }else if($('#qjBtn2').find('.active input').val() == '-1'){
+                p2.missionId = missionYBid;
+            }
         }
 
 
