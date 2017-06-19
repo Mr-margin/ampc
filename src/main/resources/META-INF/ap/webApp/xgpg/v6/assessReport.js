@@ -378,6 +378,22 @@ function save_scene() {
         mag.taskID = $("#task").val();
         mag.missionName = $("#task :selected").text();
         mag.pathdate = $('#pathD').val();
+        mag.pathMission = (function () {
+            return JSON.stringify(allMission[mag.taskID].pathmission);
+            /*if(allMission[mag.taskID].missionStatus == '2'){
+             if(allMission[mag.taskID].pathmission[mag.jzID] == '-1'){
+             return '-1'
+             }else{
+             return allMission[mag.taskID].pathmission[mag.jzID]
+             }
+             }else{
+             if(allMission[mag.taskID].jzqjid){
+             return mag.taskID
+             }else{
+             return -1
+             }
+             }*/
+        })();
         mag.domainId = allMission[mag.taskID].domainId;
         mag.s = allMission[mag.taskID].missionStartDate;
         mag.e = allMission[mag.taskID].missionEndDate;
