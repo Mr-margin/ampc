@@ -1019,8 +1019,8 @@ public class NativeAndNationController {
 			
 			param=data.get("nativeTpId");
 			if(!RegUtil.CheckParameter(param, "Long", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 清单ID为空或出现非法字符!");
-				return AmpcResult.build(1003, "清单ID为空或出现非法字符!");
+				LogUtil.getLogger().error("NativeAndNationController 清单模板ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单模板ID为空或出现非法字符!");
 			}
 			Long nativeTpId = Long.parseLong(param.toString());
 			
@@ -1122,20 +1122,29 @@ public class NativeAndNationController {
 				if(queryExcel==null){
 					Map  sector =excelToDateController.update_SectorData(userId,nativeTpId,native_filePath+ "/"+"应急系统新_4行业匹配.xlsx",esNativeTpOutPath);
 					if(sector==null){
-						//修改清单模板
-						TEsNativeTp	tEsNativeTp=new TEsNativeTp();
-						tEsNativeTp.setUserId(userId);
-						tEsNativeTp.setEsNativeTpId(nativeTpId);
-						//修改为1表示已校验
-						tEsNativeTp.setIsVerify("1");
-						int total=tEsNativeTpMapper.updateByIdSelective(tEsNativeTp);
-						if(total==1){
-							msgMap.put("msg", true);
-							LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息数据更新成功!");
-						}else{
-							msgMap.put("msg", false);
-							LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息数据更新失败!");
-						}
+						//用户id,模板id,措施id
+//						Map save_MS=excelToDateController.save_MS(userId,nativeTpId,"系统内置");
+//						if(save_MS==null){
+							//成功
+							//修改清单模板
+							TEsNativeTp	tEsNativeTp=new TEsNativeTp();
+							tEsNativeTp.setUserId(userId);
+							tEsNativeTp.setEsNativeTpId(nativeTpId);
+							//修改为1表示已校验
+							tEsNativeTp.setIsVerify("1");
+							int total=tEsNativeTpMapper.updateByIdSelective(tEsNativeTp);
+							if(total==1){
+								msgMap.put("msg", true);
+								LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息数据更新成功!");
+							}else{
+								msgMap.put("msg", false);
+								LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息数据更新失败!");
+							}
+//						}else{
+//							//失败
+//							msgMap.put("msg", "保存到措施模版表失败!");
+//							LogUtil.getLogger().info("NativeAndNationController 保存到措施模版表失败!");
+//						}
 					}else{
 						LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息失败!");
 						return AmpcResult.ok(sector);
@@ -1756,14 +1765,16 @@ public class NativeAndNationController {
 			JSONObject objs= obj.fromObject(cityStr);
 			//得到城市集合
 			Map cityMap=mapper.readValue(objs.toString(), Map.class);
-			//遍历每个清单id下的城市
+			
 			Set<String> cityIdArray = new HashSet<String>();
+			//遍历每个清单id下的城市
 			for(Object cityKey:cityMap.keySet()){
 				List cityStrs = (List)cityMap.get(cityKey);
 				for (Object object : cityStrs) {
 					String code=object.toString();
 					code=code.substring(0,4);
 					cityIdArray.add(code);
+					
 				}
 			}
 			
