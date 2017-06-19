@@ -538,38 +538,43 @@ public class ToDataTasksUtil {
 	 */
 	private void modelDataRukuMethod(String scentype, Integer stepindex,
 			Long tasksScenarinoId, Date tasksEndDate, TTasksStatus oldStatus) {
-		//基准情景
-		if ("3".equals(scentype)) {
-			//基准入库
-			if (stepindex==3) {
-				//气象入库
-				ruku.readyRukuparamsBasis(stepindex,tasksScenarinoId,tasksEndDate,oldStatus,1);
+		try {
+			//基准情景
+			if ("3".equals(scentype)) {
+				//基准入库
+				if (stepindex==3) {
+					//气象入库
+					ruku.readyRukuparamsBasis(stepindex,tasksScenarinoId,tasksEndDate,oldStatus,1);
+				}
+				if (stepindex==8) {
+					//浓度入库
+					ruku.readyRukuparamsBasis(stepindex,tasksScenarinoId,tasksEndDate,oldStatus,0);
+				}
 			}
-			if (stepindex==8) {
+			//实时预报
+			if ("4".equals(scentype)) {
+				if (stepindex==3) {
+					//气象入库
+					ruku.readyRukuparamsRealPredict(stepindex,tasksScenarinoId,tasksEndDate,1);
+				}
+				if (stepindex==8) {
+					//浓度入库
+					ruku.readyRukuparamsRealPredict(stepindex,tasksScenarinoId,tasksEndDate,0);
+				}
+			}
+			//预评估任务的预评估情景
+			if ("1".equals(scentype)&&stepindex==4) {
 				//浓度入库
-				ruku.readyRukuparamsBasis(stepindex,tasksScenarinoId,tasksEndDate,oldStatus,0);
+				ruku.readyRukuparamsRrePredict(tasksScenarinoId,tasksEndDate);
 			}
-		}
-		//实时预报
-		if ("4".equals(scentype)) {
-			if (stepindex==3) {
-				//气象入库
-				ruku.readyRukuparamsRealPredict(stepindex,tasksScenarinoId,tasksEndDate,1);
-			}
-			if (stepindex==8) {
+			//后评估评估情景
+			if ("2".equals(scentype)&&stepindex==4) {
 				//浓度入库
-				ruku.readyRukuparamsRealPredict(stepindex,tasksScenarinoId,tasksEndDate,0);
+				ruku.readyRukuparamspostPevtion(tasksScenarinoId,tasksEndDate,oldStatus);
 			}
-		}
-		//预评估任务的预评估情景
-		if ("1".equals(scentype)&&stepindex==4) {
-			//浓度入库
-			ruku.readyRukuparamsRrePredict(tasksScenarinoId,tasksEndDate);
-		}
-		//后评估评估情景
-		if ("2".equals(scentype)&&stepindex==4) {
-			//浓度入库
-			ruku.readyRukuparamspostPevtion(tasksScenarinoId,tasksEndDate,oldStatus);
+		} catch (Exception e) {
+			LogUtil.getLogger().error("modelDataRukuMethod:调用模式入库处理方法！",e.getMessage(),e);
+			e.getStackTrace();
 		}
 	}
 
