@@ -530,7 +530,7 @@ function submitCity(){
         cityCurren.cityId=row.cityId;
         cityCurren.cityName=row.cityName;
     }else{
-        swal("请选择城市","erro")
+        swal("请选择城市","","error");
     }
 
     cityTable(cityData,row);//根据点击过的城市 再次生成城市表单信息
