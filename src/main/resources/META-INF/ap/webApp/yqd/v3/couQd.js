@@ -843,9 +843,9 @@ function submitCheckQd() {
         if(res.status==0){
             if(res.data.data){
                 if(res.data.data.msg='true'){
-                    swal('耦合成功', '', 'success');
+                    swal('耦合数据提交成功', '', 'success');
                 }else{
-                    swal('耦合失败', '', 'error');
+                    swal('耦合数据提交失败', '', 'error');
                 }
             }
         }else{

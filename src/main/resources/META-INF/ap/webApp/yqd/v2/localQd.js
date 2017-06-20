@@ -482,50 +482,59 @@ function checkData(rowId) {
     var rowDiv=$("#localqd").treegrid('find',rowId);
     var parentId=rowDiv._parentId;
     var parentRowDiv=$("#localqd").treegrid('find',parentId);
-    if(rowId.indexOf("mb")==0){
-        ajaxPost('/NativeAndNation/doPost',{
-            "userId":userId,
-            "method":"checkNativeTp",
-            "nativeTpId":rowDiv.esNativeTpId,
-            "nativeTpName":rowDiv.esNativeTpName,
-            "esNativeTpOutPath":rowDiv.esNativeTpOutPath
-        }).success(function (res) {
-            if(res.status==0){
-                if(rowDiv.isVerify==0){
-                    var hisCon=res.data.data.errorMsg[0];
-                    $('[node-id="' + rowId + '"]').children("td[field=his]").html("<div style='width:200px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;color:#333;' title='"+hisCon+"'>"+hisCon+"</div>");
-                    swal(hisCon, '', 'error');
-                }
-            }else{
-                swal('参数错误', '', 'error');
-            }
-        })
-    }else  if(rowId.indexOf("qd")==0){
-        ajaxPost('/NativeAndNation/doPost',{
-            "userId":userId,
-            "method":"checkNative",
-            "nativeTpId":parentRowDiv.esNativeTpId,
-            "nativeId":rowDiv.esNativeId,
-            "nativeName":rowDiv.esNativeTpName,
-            "nativeTpName":parentRowDiv.esNativeTpName,
-            "esNativeTpOutPath":parentRowDiv.esNativeTpOutPath
-        }).success(function (res) {
-            if(res.status==0){
-                if(rowDiv.isVerify==0){
-                    var hisConQd=res.data.data.errorMsg;
-                    var re;
-                    for(var i=0;i<hisConQd.length;i++){
-                        re+=hisConQd[i];
+        if(rowId.indexOf("mb")==0){
+            ajaxPost('/NativeAndNation/doPost',{
+                "userId":userId,
+                "method":"checkNativeTp",
+                "nativeTpId":rowDiv.esNativeTpId,
+                "nativeTpName":rowDiv.esNativeTpName,
+                "esNativeTpOutPath":rowDiv.esNativeTpOutPath
+            }).success(function (res) {
+                if(res.status==0){
+                    if(rowDiv.isVerify==0){
+                        if(res.data.data.msg==true){
+                            swal("校验成功");
+                        }else if(res.data.data.errorMsg){
+                            var hisCon=res.data.data.errorMsg[0];
+                            $('[node-id="' + rowId + '"]').children("td[field=his]").html("<div style='width:200px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;color:#333;' title='"+hisCon+"'>"+hisCon+"</div>");
+                            swal(hisCon, '', 'error');
+                        }
                     }
-                    $('[node-id="' + rowId + '"]').children("td[field=his]").html("<div style='width:200px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;color:#333;' title='"+re+"'>"+re+"</div>");
-
-                    swal(re, '', 'error');
+                }else{
+                    swal('接口错误', '', 'error');
                 }
-            }else{
-                swal('参数错误', '', 'error');
-            }
-        })
-    }
+            })
+        }else  if(rowId.indexOf("qd")==0){
+            ajaxPost('/NativeAndNation/doPost',{
+                "userId":userId,
+                "method":"checkNative",
+                "nativeTpId":parentRowDiv.esNativeTpId,
+                "nativeId":rowDiv.esNativeId,
+                "nativeName":rowDiv.esNativeTpName,
+                "nativeTpName":parentRowDiv.esNativeTpName,
+                "esNativeTpOutPath":parentRowDiv.esNativeTpOutPath
+            }).success(function (res) {
+                if(res.status==0){
+                    if(rowDiv.isVerify==0){
+                        if(res.data.data.errorMsg){
+                            var hisConQd=res.data.data.errorMsg;
+                            var re;
+                            for(var i=0;i<hisConQd.length;i++){
+                                re+=hisConQd[i];
+                            }
+                            $('[node-id="' + rowId + '"]').children("td[field=his]").html("<div style='width:200px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;color:#333;' title='"+re+"'>"+re+"</div>");
+
+                            swal(re, '', 'error');
+                        }else if(res.data.data.msg==true){
+                            swal("校验成功！")
+                        }
+                    }
+                }else{
+                    swal('参数错误', '', 'error');
+                }
+            })
+        }
+
 }
 // 创建 输入框获得焦点
 $(".cloudui .rwCon .qdContent .qdName").focus(function () {//名称获取焦点
