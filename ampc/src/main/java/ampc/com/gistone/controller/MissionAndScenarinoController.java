@@ -361,14 +361,26 @@ public class MissionAndScenarinoController {
 			//统计时段的所有ID
 			List<Long> timeIdss=new ArrayList<Long>();
 			//记录情景的所有ID
+             int a=0;
 			for (Integer missionId : list) {
 				Map map=new HashMap();
 				map.put("userId", userId);
 				map.put("missionId", missionId);
 				List<Long> scenarinoIds=this.tScenarinoDetailMapper.selectByMissionId(map);
+				List<TScenarinoDetail> selectAllByMissionId = tScenarinoDetailMapper.selectAllByMissionId(Long.valueOf(missionId));
+				for(TScenarinoDetail ss:selectAllByMissionId){
+					if(ss.getScenarinoStatus()>5){
+					a++;	
+					}
+					
+				}
 				for (Long scenarinoId : scenarinoIds) {
 					scenarinoIdss.add(scenarinoId);
 				}
+			}
+			if(a!=0){
+				LogUtil.getLogger().error("MissionAndScenarinoController 包含已运行情景的任务不可删除");
+				return AmpcResult.build(1002, "包含已运行情景的任务不可删除");
 			}
 			//记录区域的所有ID
 			for (Long scenarinoId: scenarinoIdss) {
@@ -387,26 +399,7 @@ public class MissionAndScenarinoController {
 					timeIdss.add(timeId.getTimeId());
 				}
 			}
-			//执行时段级联删除方法
-//			for(Long timeId:timeIdss){
-//				int a=tTimeMapper.updateByisEffective(timeId);
-//				TTime times=this.tTimeMapper.selectByPrimaryKey(152l);
-//				if(a!=0){
-//					if(times.getPlanId()!=null && times.getPlanId()!=-1){
-//						TPlan tPlan=tPlanMapper.selectByPrimaryKey(times.getPlanId());
-//						if(tPlan.getCopyPlan().equals("0")){
-//							//修改预案为无效状态
-//							tPlan.setIsEffective("0");
-//							int up_status=tPlanMapper.updateByPrimaryKeySelective(tPlan);
-//							if(up_status!=0){
-//								//删除预案的措施
-//								int del_status=tPlanMeasureMapper.deleteByPlanId(tPlan.getPlanId());						
-//							}
-//							
-//						}
-//						}
-//				}
-//			}
+
 			Map res=atc.delete_times(timeIdss);
 			String str=res.get("result").toString();
 			//判断时段级联方法是否执行成功  -1 不成功  1成功
@@ -855,17 +848,19 @@ public class MissionAndScenarinoController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//要删除的任务集合
-			String scenarinoIds=data.get("scenarinoIds").toString();
-			if(!RegUtil.CheckParameter(scenarinoIds, "String", null, false)){
-				LogUtil.getLogger().error("delete_scenarino  要删除的任务为空!");
-				return AmpcResult.build(1003, "要删除的任务为空!");
+			
+			if(!RegUtil.CheckParameter(data.get("scenarinoIds"), null, null, false)){
+				LogUtil.getLogger().error("delete_scenarino  要删除的情景为空!");
+				return AmpcResult.build(1003, "要删除的情景为空!");
 			}
+			String scenarinoIds=data.get("scenarinoIds").toString();
 			//用户的id  确定当前用户
 			Integer userId=Integer.valueOf(data.get("userId").toString());
 			if(!RegUtil.CheckParameter(userId, "Integer", null, false)){
 				LogUtil.getLogger().error("delete_scenarino  用户的id为空!");
 				return AmpcResult.build(1003, "用户的id为空!");
 			}
+			int a=0;
 			//将得到的数据拆分 放入集合中
 			String[] idss=scenarinoIds.split(",");
 			List<Long> scenarinoIdss=new ArrayList<Long>();
@@ -875,6 +870,9 @@ public class MissionAndScenarinoController {
 			int sure=0;
 			for(String scenarinoId:idss){
 			TScenarinoDetail tSDetail=tScenarinoDetailMapper.selectByPrimaryKey(Long.valueOf(scenarinoId));
+			if(tSDetail.getScenarinoStatus()>5){
+				a++;	
+				}
 			List<TScenarinoDetail> tslist=tScenarinoDetailMapper.selectAllByMissionId(tSDetail.getMissionId());
 			for(TScenarinoDetail ts:tslist){
 				String bsid="";
@@ -885,6 +883,10 @@ public class MissionAndScenarinoController {
 					sure+=1;
 				}
 			}	
+			}
+			if(a!=0){
+				LogUtil.getLogger().error("delete_scenarino 已运行情景无法删除");
+				return AmpcResult.build(1002, "已运行情景无法删除");
 			}
 			if(sure!=0){
 				return AmpcResult.build(9999, "error");
