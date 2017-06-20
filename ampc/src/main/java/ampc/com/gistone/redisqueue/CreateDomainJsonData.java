@@ -423,7 +423,7 @@ public class CreateDomainJsonData {
 				Integer missionType = integers[0];
 				Integer scenType = integers[1];
 				TCoresTimes tCoresTimes = new TCoresTimes();
-				tCoresTimes.setAvgTime(4.0);
+				tCoresTimes.setAvgTime(3.0);
 				tCoresTimes.setCores(integer);
 				tCoresTimes.setCoresMissionType(missionType);
 				tCoresTimes.setCoresScenarinoType(scenType);
