@@ -8,15 +8,20 @@
  */
 package ampc.com.gistone.redisqueue;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import oracle.net.aso.s;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ampc.com.gistone.database.inter.TDomainMissionMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TScenarinoDetailMapper;
 import ampc.com.gistone.database.model.TScenarinoDetail;
@@ -42,6 +47,10 @@ public class Ruku {
 	@Autowired
 	private TMissionDetailMapper tMissionDetailMapper;
 	@Autowired
+	private TDomainMissionMapper tDomainMissionMapper;
+	
+	private ObjectMapper mapper=new ObjectMapper();
+	@Autowired
 	private ConcnService concnService;
 	@Autowired
 	private MeteorService meteorService;
@@ -63,7 +72,17 @@ public class Ruku {
 		Long missionId = scenarinoDetail.getMissionId();
 		Long domainId = tMissionDetailMapper.selectDomainid(missionId);
 		//domain的层数 
-		int domain = 3;
+		String common = tDomainMissionMapper.selectCommonData(domainId);
+		Map readValue;
+		Object max_dom = null;
+		try {
+			readValue = mapper.readValue(common, Map.class);
+			Map map = (Map) readValue.get("common");
+			max_dom = map.get("max_dom");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		int domain = Integer.parseInt(max_dom.toString());
 		//tasksenddate 情景tasks的结束时间
 		Date endDate = DateUtil.DateToDate(tasksEndDate, "yyyy-MM-dd");
 		//情景开始时间
@@ -187,7 +206,19 @@ public class Ruku {
 		Long userId = scenarinoDetail.getUserId();
 		Long missionId = scenarinoDetail.getMissionId();
 		Long domainId = tMissionDetailMapper.selectDomainid(missionId);
-		int domains = 3;
+		//domain的层数 
+		String common = tDomainMissionMapper.selectCommonData(domainId);
+		Map readValue;
+		Object max_dom = null;
+		try {
+			readValue = mapper.readValue(common, Map.class);
+			Map map = (Map) readValue.get("common");
+			max_dom = map.get("max_dom");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		int domains = Integer.parseInt(max_dom.toString());
+//		int domains = 3;
 		Date endDate = DateUtil.DateToDate(tasksEndDate, "yyyy-MM-dd");
 		//情景开始时间
 		Date scenStartDate =  DateUtil.DateToDate( scenarinoDetail.getScenarinoStartDate(),"yyyy-MM-dd");
@@ -268,7 +299,19 @@ public class Ruku {
 		Long userId = scenarinoDetail.getUserId();
 		Long missionId = scenarinoDetail.getMissionId();
 		Long domainId = tMissionDetailMapper.selectDomainid(missionId);
-		int domain = 3;
+		//domain的层数 
+		String common = tDomainMissionMapper.selectCommonData(domainId);
+		Map readValue;
+		Object max_dom = null;
+		try {
+			readValue = mapper.readValue(common, Map.class);
+			Map map = (Map) readValue.get("common");
+			max_dom = map.get("max_dom");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		int domain = Integer.parseInt(max_dom.toString());
+//		int domain = 3;
 		Date endDate = DateUtil.DateToDate(tasksEndDate, "yyyy-MM-dd");
 		//情景结束时间
 		Date scenEndDate =  DateUtil.DateToDate( scenarinoDetail.getScenarinoEndDate(),"yyyy-MM-dd");
@@ -343,7 +386,19 @@ public class Ruku {
 		Long userId = scenarinoDetail.getUserId();
 		Long missionId = scenarinoDetail.getMissionId();
 		Long domainId = tMissionDetailMapper.selectDomainid(missionId);
-		int domain = 3;
+		//domain的层数 
+		String common = tDomainMissionMapper.selectCommonData(domainId);
+		Map readValue;
+		Object max_dom = null;
+		try {
+			readValue = mapper.readValue(common, Map.class);
+			Map map = (Map) readValue.get("common");
+			max_dom = map.get("max_dom");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		int domain = Integer.parseInt(max_dom.toString());
+//		int domain = 3;
 		Date endDate = DateUtil.DateToDate(tasksEndDate, "yyyy-MM-dd");
 		//情景开始时间
 		Date scenStartDate =  DateUtil.DateToDate( scenarinoDetail.getScenarinoStartDate(),"yyyy-MM-dd");
