@@ -362,4 +362,8 @@
     from T_DOMAIN_MISSION
     where USER_ID = #{userId,jdbcType=DECIMAL} AND  VALID_STATUS =#{validStatus,jdbcType=VARCHAR}
   </select>
+   <!-- 查找domain信息的common的数据 -->
+  <select id="selectCommonData" resultType="java.lang.String" parameterType="java.lang.Long">
+  select COMMON from T_DOMAIN_MISSION where DOMAIN_ID = #{domainId,jdbcType=DECIMAL}
+  </select>
 </mapper>
