@@ -1718,7 +1718,6 @@ dl, dd {
 /*//批量选择*/
 #citySelect #cityOption{overflow: auto;padding: 20px;max-height: 200px;}
 #citySelect #cityOption #industryDataTable{width: 100%;}
-#citySelect #cityOption span{float: left;margin-right:30px!important;margin-bottom: 10px;}
 #citySelect #cityOption span *{float: left;}
 /*预案编辑的样式*/
 /*新增、编辑区域弹框的样式*/
