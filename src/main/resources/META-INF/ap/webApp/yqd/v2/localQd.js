@@ -141,7 +141,7 @@ function innitdata(active){
                         if(isNaN(value)){
                             return "<span>创建时间</span>";
                         }else{
-                            var val=moment(value).format('YYYY-MM-DD hh:mm:ss');
+                            var val=moment(value).format('YYYY-MM-DD HH:mm:ss');
                             return "<div title=\'"+val+"\'>"+val+"</div>";
                         }
                     },width :160},
