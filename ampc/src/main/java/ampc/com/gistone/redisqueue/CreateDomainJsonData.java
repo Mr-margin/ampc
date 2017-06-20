@@ -18,9 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.druid.support.logging.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ampc.com.gistone.database.inter.TCoresTimesMapper;
 import ampc.com.gistone.database.inter.TDomainMissionMapper;
+import ampc.com.gistone.database.model.TCoresTimes;
 import ampc.com.gistone.database.model.TDomainMission;
 import ampc.com.gistone.database.model.TDomainMissionWithBLOBs;
 import ampc.com.gistone.redisqueue.entity.DomainBodyData;
@@ -55,6 +58,8 @@ public class CreateDomainJsonData {
 	//domain信息表映射
 	@Autowired
 	private TDomainMissionMapper tDomainMissionMapper;
+	@Autowired
+	private TCoresTimesMapper tCoresTimesMapper;
 	
 	/**
 	 * 
@@ -374,9 +379,14 @@ public class CreateDomainJsonData {
 						int updateByPrimaryKeySelective = tDomainMissionMapper.updateByPrimaryKeySelective(tDomainMission);
 						if (updateByPrimaryKeySelective>0) {
 							LogUtil.getLogger().info("updateDomainResult：更新domain-result成功！domainid:"+domainId);
+							if (disposeStatus.equals("3")) {
+								//给coretimes表里面添加domain的信息的计算时间
+								addcoretimesBYuserIdAndDomainId(userId,domainId);
+							}
 						}else {
 							LogUtil.getLogger().info("updateDomainResult：更新domain-result失败！domainid:"+domainId);
 						}
+					
 					}else {
 						LogUtil.getLogger().info("updateDomainResult：code参数错误！code:"+codeobject);
 					}
@@ -391,6 +401,61 @@ public class CreateDomainJsonData {
 		}
 		
 		
+	}
+
+
+
+
+	/**
+	 * @Description: 添加计算核数时间到计算核数表中
+	 * @param userId
+	 * @param domainId   
+	 * void  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月20日 上午10:29:27
+	 */
+	private void addcoretimesBYuserIdAndDomainId(Long userId, Long domainId) {
+		Integer[] i = {16,32,48};//计算核数数组
+		Integer[][] j = {{1,4},{2,1},{2,2},{3,3},{3,2}};//任务情景类型数组
+		for (Integer integer : i ) {
+			for (Integer[] integers : j) {
+				Integer missionType = integers[0];
+				Integer scenType = integers[1];
+				TCoresTimes tCoresTimes = new TCoresTimes();
+				tCoresTimes.setAvgTime(4.0);
+				tCoresTimes.setCores(integer);
+				tCoresTimes.setCoresMissionType(missionType);
+				tCoresTimes.setCoresScenarinoType(scenType);
+				tCoresTimes.setUserId(userId);
+				tCoresTimes.setCoresDomainId(domainId);
+				//检查该条记录是否存在，存在则是修改，不存在则是添加
+				TCoresTimes  oldCoresTimes = tCoresTimesMapper.selectByRecord(tCoresTimes);
+				if (null!=oldCoresTimes) {
+					//修改
+					tCoresTimes.setCoresTimeId(oldCoresTimes.getCoresTimeId());
+					int updateByPrimaryKeySelective = tCoresTimesMapper.updateByPrimaryKeySelective(tCoresTimes);
+					if (updateByPrimaryKeySelective>0) {
+						LogUtil.getLogger().info("addcoretimesBYuserIdAndDomainId:修改计算核数时间表成功！");
+					}else {
+						LogUtil.getLogger().info("addcoretimesBYuserIdAndDomainId:修改计算核数时间表失败！");
+					}
+				}else {
+					//添加
+					Integer insertSelective = null;
+					try {
+						insertSelective= tCoresTimesMapper.insertSelective(tCoresTimes);
+						if (insertSelective>0) {
+							LogUtil.getLogger().info("addcoretimesBYuserIdAndDomainId：添加成功！");
+						}else {
+							LogUtil.getLogger().info("addcoretimesBYuserIdAndDomainId:添加失败！");
+						}
+					} catch (Exception e) {
+						LogUtil.getLogger().error("添加计算核数的数据时间数据到计算核数表出现异常!",e.getMessage(),e);
+					}
+				}
+			}
+		}		
 	}
 
 }
