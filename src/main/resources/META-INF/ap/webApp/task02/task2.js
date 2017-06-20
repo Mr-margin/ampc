@@ -423,6 +423,23 @@ var zTreeSetting = {
             jpztckBtn(60000);
         }
     }));
+    
+    $("#yaNameForm").validate({
+        debug: true,
+        rules: {
+        	yaName: {
+                required: true,
+                maxlength: 15
+            }
+        },
+        messages: {
+        	yaName: {
+                required: '请填写情景名称',
+                maxlength: '不可超过15个字符'
+            }
+        }
+
+    });
 
     // window.setTimeout(function () {
     //     $('#timepanel').tabs({
@@ -2299,25 +2316,30 @@ function addPlan(e) {
     //添加预案时判断是新建的预案还是copy的预案
     newPlan = e;
     if (newPlan) {
-        var url = '/plan/add_plan';
-        var params = {
-            timeId: msg.content.timeId,
-            userId: userId,
-            missionId: msg.content.rwId,
-            scenarioId: msg.content.qjId,
-            areaId: msg.content.areaId,
-            timeStartTime: moment(msg.content.timeStartDate).format('YYYY-MM-DD HH'),
-            timeEndTime: moment(msg.content.timeEndDate).format('YYYY-MM-DD HH'),
-            planName: $('#yaName').val(),
-            scenarinoStatus: qjMsg.scenarinoStatus,
-        };
-        ajaxPost(url, params).success(function (res) {
-            msg.content.planId = res.data;
-            msg.content.planName = $('#yaName').val();
-            vipspa.setMessage(msg);
-            createNewPlan();
-            $('#yaName').val('');
-        });
+    	if($('#yaNameForm').valid()){
+    		var url = '/plan/add_plan';
+            var params = {
+                timeId: msg.content.timeId,
+                userId: userId,
+                missionId: msg.content.rwId,
+                scenarioId: msg.content.qjId,
+                areaId: msg.content.areaId,
+                timeStartTime: moment(msg.content.timeStartDate).format('YYYY-MM-DD HH'),
+                timeEndTime: moment(msg.content.timeEndDate).format('YYYY-MM-DD HH'),
+                planName: $('#yaName').val(),
+                scenarinoStatus: qjMsg.scenarinoStatus,
+            };
+            ajaxPost(url, params).success(function (res) {
+                msg.content.planId = res.data;
+                msg.content.planName = $('#yaName').val();
+                vipspa.setMessage(msg);
+                createNewPlan();
+                $('#yaName').val('');
+            });
+    	}else{
+    		return
+    	}
+        
     } else {
         if (!selectCopyPlan) {
             swal({
