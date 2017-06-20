@@ -64,7 +64,7 @@ public class MessageLog {
 			Map body = (Map) message.getBody();//messagebody
 			Long userid = Long.parseLong(body.get("userid").toString());
 			Long domainid = Long.valueOf(body.get("domainid").toString());
-			String taskenddate = body.get("date").toString();
+//			String taskenddate = body.get("date").toString();
 			String desc = body.get("desc").toString();
 			String code = body.get("code").toString();
 			TMessageLog tMessageLog = new TMessageLog();
@@ -75,7 +75,7 @@ public class MessageLog {
 			
 			tMessageLog.setUserId(userid);
 			tMessageLog.setDomainId(domainid);
-			tMessageLog.setTasksEndDate(taskenddate);
+//			tMessageLog.setTasksEndDate(taskenddate);
 			tMessageLog.setResultDesc(desc);
 			tMessageLog.setResultCode(code);
 			LogUtil.getLogger().info("准备插入日志数据库！");
