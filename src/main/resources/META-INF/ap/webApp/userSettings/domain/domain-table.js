@@ -206,6 +206,12 @@ function defaultSelect(th){
 			$('tr').css('background-color','#ffffff');
 			$(th).parent().parent().css('background-color','#b9ffbb');
 			swal("启用成功");
+		}else{
+			$('.default').text('开启')
+			$('.default').css('background-color','#f0ad4e');
+			$(th).css('background-color','#f0ad4e');
+			$('tr').css('background-color','#ffffff');
+			swal("停止使用");
 		}
 		status();
 	});
