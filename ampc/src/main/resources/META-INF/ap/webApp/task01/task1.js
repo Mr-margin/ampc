@@ -428,7 +428,12 @@ function missionAddTimeFormatter(value, row, index) {
             if (row.scenarinoStatus == 3) {
                 return '<a href="javascript:$(\'#jpzt1\').window(\'open\')" class="statusType">' + row.scenarinoStatuName + '</a>'
             } else if(row.scenarinoStatus == 6){
-            	return '<a href="javascript:showModelStatusWindow()" class="statusType">' + row.scenarinoStatuName + '</a>'
+            	if(row.expand4){
+            		return '<a href="javascript:showModelStatusWindow()" class="statusType">' + row.scenarinoStatuName + '</a><span style="color:red">('+row.expand4+')</span>'
+            	}else{
+            		return '<a href="javascript:showModelStatusWindow()" class="statusType">' + row.scenarinoStatuName + '</a>'
+            	}
+            	
             }else {
             	if(row.expand4){
             		return row.scenarinoStatuName+'<span style="color:red">('+row.expand4+')</span>';
@@ -1703,7 +1708,7 @@ function getQD() {
     })
     //$('#qd').append($('<option value="1">jjj</option>'))
 }
-/*查看有运行出错的任务*/
+/*查看有操作出错的任务*/
 function showErrorMission(){
 	//运行出错的查看需要更换treegrid接口
 	var url='new_mission/get_errormission_list';
@@ -1724,7 +1729,7 @@ function showErrorMission(){
 	        }
 		});
 		//将按钮内容修改为查看全部
-		$("#showErrorBtn .l-btn-text").html('<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> 运行出错 (<span id="showErrorBtnNum">0</span>)');
+		$("#showErrorBtn .l-btn-text").html('<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> 操作出错 (<span id="showErrorBtnNum">0</span>)');
 		$("#showErrorBtn").removeClass('active');
 		$('#selectTypeBtn').menubutton('enable');
 		$('#searchqd').searchbox('enable');
