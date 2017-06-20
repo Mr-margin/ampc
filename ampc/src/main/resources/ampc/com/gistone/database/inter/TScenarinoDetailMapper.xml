@@ -409,6 +409,7 @@ WHERE
 	SCEN_TYPE = '4'
 AND IS_EFFECTIVE = '1')
 AND IS_EFFECTIVE = '1'
+ AND SCEN_TYPE = '4'
   </select>
   <select id="selectid" resultMap="BaseResultMap" parameterType="ampc.com.gistone.database.model.TScenarinoDetail" >
    	 SELECT 
