@@ -104,7 +104,6 @@ public class ExcelToDateController {
 		// 添加异常捕捉
 		try {
 			// 获取到颜色集合
-			//List<ColorUtil> colorUtil=ColorUtil.getColor();   暂时不添加颜色
 			// 设置跨域
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
@@ -124,17 +123,12 @@ public class ExcelToDateController {
 			Long time=new Date().getTime();
 			String versionId="中间表"+time;
 			//获取到筛选后的数据
-			LinkedHashSet<TMeasureSectorExcel> ms=checkInfo(versionId,userId,null,null,null);
+			LinkedHashSet<TMeasureSectorExcel> ms=checkInfo("系统内置",userId,null,null,"系统内置");
 			Iterator<TMeasureSectorExcel> iterator = ms.iterator();
 			int i=0;
 			//循环添加  并补充颜色
 			while(iterator.hasNext()){
 				TMeasureSectorExcel tmse =iterator.next();
-//				if(i==colorUtil.size()){
-//					i=0;
-//				}
-//				tmse.setColorcode(colorUtil.get(i).getColorCode());    暂时不添加颜色
-//				tmse.setColorname(colorUtil.get(i).getColorName());
 				int result=tMeasureSectorExcelMapper.insertSelective(tmse);
 				if(result<1){
 					throw new SQLException("ExcelToDateController 保存行业措施中间表失败");
