@@ -875,7 +875,7 @@ $("#creatCoupQd #coupQdName").blur(
         })
     }
 )
-$().ready(function () {
+
     $("#formCoup").validate({
         rules: {
             esNationName: {
@@ -922,4 +922,3 @@ $().ready(function () {
         }
 
     });
-})
