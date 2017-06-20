@@ -40,6 +40,8 @@ import org.springframework.stereotype.Component;
 
 import org.springframework.util.StringUtils;
 
+import redis.clients.jedis.params.Params;
+
 import com.sun.tools.classfile.StackMapTable_attribute.chop_frame;
 
 import ampc.com.gistone.database.inter.TModelScheduleMessageMapper;
@@ -856,7 +858,7 @@ public class ToDataTasksUtil {
 
 
 	/**
-	 * @Description: TODO
+	 * @Description: 用于暂停和终止的操作的错误信息描述
 	 * @param tasksScenarinoId
 	 * @param errorStatus   
 	 * void  
@@ -1060,6 +1062,7 @@ public class ToDataTasksUtil {
 							}
 						}else {
 							//停止失败---失败的处理
+							errorStatus = geterrorExplain(code,errorStatus);
 							//返回原来的状态
 							readyData.updateScenStatusUtil(scenStatusLong, tasksScenarinoId);
 							//跟新情景表的情景终止失败描述
@@ -1162,6 +1165,7 @@ public class ToDataTasksUtil {
 						}
 					}else {
 						//暂停失败---失败的处理
+						errorStatus = geterrorExplain(code,errorStatus);
 						//返回情景之前的状态
 						readyData.updateScenStatusUtil(scenStatusLong, tasksScenarinoId);
 						//跟新情景表的情景暂停描述
@@ -1181,5 +1185,76 @@ public class ToDataTasksUtil {
 		}catch (Exception e) {
 			// TODO: handle exception
 		}
+	}
+
+
+
+	/**
+	 * @param code 
+	 * @Description: 错误信息汉语化
+	 * @param errorStatus
+	 * @return   
+	 * String  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月20日 下午5:14:00
+	 */
+	private String geterrorExplain(Integer code, String errorStatus) {
+		if (null!=errorStatus&&!"".equals(errorStatus)) {
+			switch (code) {
+			case 9999:
+				errorStatus = "系统异常";
+				break;
+			case 1001:
+				errorStatus = "参数无效";
+				break;
+			case 1002:
+				errorStatus = "系统异常";
+				break;
+			case 1003:
+				errorStatus = "无效的开始或者结束时间";
+				break;
+			case 1004:
+				errorStatus = "系统异常";
+				break;
+			case 1005:
+				errorStatus = "计算核数参数无效";
+				break;
+			case 1006:
+				errorStatus = "无效的起报时间";
+				break;
+			case 1007:
+				errorStatus = "系统异常";
+				break;
+			default:
+				break;
+			}
+			/*if (errorStatus.contains("system exception")) {
+				errorStatus = "系统异常";
+			}
+			if (errorStatus.contains("params invalid")) {
+				errorStatus = "参数无效";
+			}
+			if (errorStatus.contains("commit job failed")) {
+				errorStatus = "提交作业无效";
+			}
+			if (errorStatus.contains("start date or end date invalid")) {
+				errorStatus = "无效的开始或者结束时间";
+			}
+			if (errorStatus.contains("spinup invalid")) {
+				errorStatus = "spinup参数无效";
+			}
+			if (errorStatus.contains("cores invalid")) {
+				errorStatus = "计算核数参数无效";
+			}
+			if (errorStatus.contains("invalid path date")) {
+				errorStatus = "无效的起报时间";
+			}
+			if (errorStatus.contains("job not exist")) {
+				errorStatus = "作业不存在";
+			}*/
+			
+		}
+		return errorStatus;
 	}
 }
