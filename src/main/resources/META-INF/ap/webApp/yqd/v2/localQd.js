@@ -265,6 +265,8 @@ function innitdata(active){
         param.nativeTpYear=tempYear;
         param.nativeTpId  = row.esNativeTpId;
         param.nativeTpRemark = tempMark;
+        param.fielPath = row.filePath;
+        param.nativeTpoutPath=row.esNativeTpOutPath;
         var myYear=$("#esLocalEditYear").val()
         var myName=$("#editTemp #esLocalEditName").val()
         if(myName.length>0 && myName.length<=20 &&  myName!="请输入长度不超过20的名称（必填）"){
