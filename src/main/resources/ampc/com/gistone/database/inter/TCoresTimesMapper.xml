@@ -39,7 +39,17 @@
   	CORES_MISSION_TYPE = #{coresMissionType,jdbcType=DECIMAL} and
     CORES_SCENARINO_TYPE = #{coresScenarinoType,jdbcType=DECIMAL}
   </select>
-  
+  <!--查找该记录是否存在  -->
+  <select id="selectByRecord" parameterType="ampc.com.gistone.database.model.TCoresTimes" resultMap="BaseResultMap">
+  select 
+  <include refid="Base_Column_List" />
+  from T_CORES_TIMES 
+  where CORES_DOMAIN_ID = #{coresDomainId,jdbcType=DECIMAL} AND
+  USER_ID = #{userId,jdbcType=DECIMAL} AND
+  CORES_MISSION_TYPE = #{coresMissionType,jdbcType=DECIMAL} AND
+  CORES_SCENARINO_TYPE = #{coresScenarinoType,jdbcType=DECIMAL} AND
+  CORES = #{cores,jdbcType=DECIMAL}
+  </select>
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -187,9 +197,9 @@
       <if test="beuzhu2 != null" >
         BEUZHU2 = #{beuzhu2,jdbcType=DECIMAL},
       </if>
-      <if test="beizhu3 != null" >
-        BEIZHU3 = #{beizhu3,jdbcType=TIMESTAMP},
-      </if>
+      <!-- <if test="beizhu3 != null" > -->
+        BEIZHU3 = (select sysdate from dual),
+     <!--  </if> -->
       <if test="beizhu4 != null" >
         BEIZHU4 = #{beizhu4,jdbcType=DECIMAL},
       </if>
