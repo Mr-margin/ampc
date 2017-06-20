@@ -1757,12 +1757,16 @@ public class MissionAndScenarinoController {
 							TScenarinoDetail ce=new TScenarinoDetail();
 							if(!byEntity.isEmpty()){
 							 ce=byEntity.get(0);
+							 TMissionDetail selectByPrimaryKey = tMissionDetailMapper.selectByPrimaryKey(ce.getMissionId());
 							 JSONObject tha=new JSONObject();
+							 JSONObject thm=new JSONObject();
 							 tha.put("pathDate", ce.getPathDate().getTime());
 							 tha.put("startDate", ce.getScenarinoStartDate().getTime());
 							 tha.put("endDate", ce.getScenarinoEndDate().getTime());
 							 os.put(ce.getScenarinoId(),tha);
-							 ms.put(ce.getScenarinoId(), ce.getMissionId());
+							 thm.put("missionId", selectByPrimaryKey.getMissionId());
+							 thm.put("domainId", selectByPrimaryKey.getMissionDomainId());
+							 ms.put(ce.getScenarinoId(), thm);
 							}
 						}
 					}
