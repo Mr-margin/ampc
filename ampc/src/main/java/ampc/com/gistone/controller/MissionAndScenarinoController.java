@@ -1741,7 +1741,8 @@ public class MissionAndScenarinoController {
 				for(TScenarinoDetail ts:tScenarinoDetaillist){
 					//判断情景是否为以执行完的基准情景
 					if(ts.getScenarinoStatus()==8 &&ts.getScenType().equals("3")){
-						obj.put("jzqjid",ts.getScenarinoId());	
+						obj.put("jzqjid",ts.getScenarinoId());
+						
 					}
 					//判断是否为预评估任务
 					if(mission.getMissionStatus().equals("2")){
@@ -1756,14 +1757,22 @@ public class MissionAndScenarinoController {
 							TScenarinoDetail ce=new TScenarinoDetail();
 							if(!byEntity.isEmpty()){
 							 ce=byEntity.get(0);
-							 os.put(ce.getScenarinoId(),sss.getTime());
+							 JSONObject tha=new JSONObject();
+							 tha.put("pathDate", ce.getPathDate().getTime());
+							 tha.put("startDate", ce.getScenarinoStartDate().getTime());
+							 tha.put("endDate", ce.getScenarinoEndDate().getTime());
+							 os.put(ce.getScenarinoId(),tha);
 							 ms.put(ce.getScenarinoId(), ce.getMissionId());
 							}
 						}
 					}
 					//判断情景是否为以执行完的后评估情景
 					if(ts.getScenarinoStatus()==8 &&ts.getScenType().equals("2")){
-						os.put("-1", "99999999999");	
+						JSONObject th=new JSONObject();
+						th.put("pathDate", "99999999999");
+						th.put("startDate", ts.getScenarinoStartDate().getTime());
+						th.put("endDate", ts.getScenarinoEndDate().getTime());
+						os.put("-1", th);	
 					}
 					
 				}
@@ -2232,7 +2241,12 @@ public class MissionAndScenarinoController {
 			TDomainMissionWithBLOBs td=new TDomainMissionWithBLOBs();
 			td.setUserId(userId);
 			td.setValidStatus("1");
-			TDomainMissionWithBLOBs selectByuserIdandValtd = tDomainMissionMapper.selectByuserIdandValtd(td);
+			TDomainMissionWithBLOBs selectByuserIdandValtd=new TDomainMissionWithBLOBs();
+			if(tDomainMissionMapper.selectByuserIdandValtd(td)!=null){
+			selectByuserIdandValtd = tDomainMissionMapper.selectByuserIdandValtd(td);	
+			}else{
+				return AmpcResult.build(1000, "无默认domain",null);	
+			}
 			JSONObject obj=new JSONObject();
 			obj.put("domainId", selectByuserIdandValtd.getDomainId());
 			obj.put("domainName", selectByuserIdandValtd.getDomainName());
