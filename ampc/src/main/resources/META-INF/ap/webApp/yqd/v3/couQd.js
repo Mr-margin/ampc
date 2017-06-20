@@ -225,7 +225,12 @@ function editCoupQd(){
     var row = $('#couqd').datagrid('getSelected');//获取所有选中的清单数据
     if(row!=''&&row!=null&&row!=undefined){ //所选数据不为空
         var editQdName,editQdYear,editMark,editId;
-        editQdName=row.esCouplingName,editQdYear=row.esCouplingYear,editMark=row.esCouplingDesc,editId=row.esCouplingId;
+        editQdName=row.esCouplingName,editQdYear=row.esCouplingYear,editId=row.esCouplingId;
+        if(row.esCouplingDesc!="undefined"){
+            editMark=row.esCouplingDesc;
+        }else{
+            editMark="";
+        }
         document.getElementById("coupEditQdName").value=editQdName; //编辑窗口打开后 名称输入框显示所选数据的名称
         document.getElementById("coupEditQdYear").value=editQdYear;//编辑窗口打开后 年份输入框显示所选数据的名称
         document.getElementById("coupEditQdMark").value=editMark;//编辑窗口打开后 备注输入框显示所选数据的名称
