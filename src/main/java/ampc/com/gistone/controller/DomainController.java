@@ -746,8 +746,16 @@ public class DomainController {
 			}
 			Long domainId=Long.valueOf(data.get("domainId").toString());
 			
+			
+			if(!RegUtil.CheckParameter(data.get("type"), null, null, false)){
+				LogUtil.getLogger().error("updateRangeAndCode  type为空!");
+				return AmpcResult.build(1003, "type为空!");
+			}
+			String type=data.get("type").toString();
+			
 			int a=tDomainMissionMapper.updateByValidtwo(userId);
 			if(a>0){
+				if(type.equals("default")){
 			int b=tDomainMissionMapper.updateByValid(domainId);
 			if(b>0){
 				TDomainMissionWithBLOBs ts=tDomainMissionMapper.selectByPrimaryKey(domainId);
@@ -767,10 +775,25 @@ public class DomainController {
 				return AmpcResult.build(1000, "设置生效状态异常！");
 			}
 			}else{
+				TDomainMissionWithBLOBs ts=tDomainMissionMapper.selectByPrimaryKey(domainId);
+				JSONObject objs=new JSONObject();
+				objs.put("employStatus", ts.getEmployStatus());
+				objs.put("domainId", ts.getDomainId());
+				objs.put("userId", ts.getUserId());
+				objs.put("addTime", ts.getAddTime().getTime());//创建时间
+				objs.put("createStatus", ts.getCreateStatus().toString());//状态（用来区分当前还是历史）
+				objs.put("domainName", ts.getDomainName());//domain名称
+				objs.put("domainDoc", ts.getDomainDoc());//备注
+				objs.put("disposeStatus", ts.getDisposeStatus());
+				objs.put("validStatus", ts.getValidStatus());
+				return AmpcResult.ok(objs);
+			}
+			}else{
 				LogUtil.getLogger().error("deleteDomain 设置生效状态异常！");
 				return AmpcResult.build(1000, "设置生效状态异常！");
 			}
-		}catch(Exception e){
+		}
+		catch(Exception e){
 			LogUtil.getLogger().error("deleteDomain 删除domain异常！",e);
 			return AmpcResult.build(1001, "删除domain异常！");
 		}
