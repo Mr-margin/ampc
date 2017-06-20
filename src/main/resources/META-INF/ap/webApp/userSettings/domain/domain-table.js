@@ -194,9 +194,17 @@ function delDomain(th){
 function defaultSelect(th){
 	var url = '/Domain/Valid';
 	var domain_id = $(th).attr('domain_id');
+	var type = '';
+	if($(th).text() == '开启'){
+		type = 'default';
+	}else{
+		type = 'cancel';
+	}
+	console.log(type);
 	ajaxPost(url,{
 		'userId':userId,
-		'domainId':domain_id
+		'domainId':domain_id,
+		'type':type
 	}).success(function(){
 		if($(th).text() == '开启'){
 			$('.default').text('开启')
