@@ -135,7 +135,12 @@ function editQd(){ // 编辑全国清单
     var row = $('#qgqd').datagrid('getSelected');//获取所有选中的清单数据
     if(row!=''&&row!=null&&row!=undefined){ //所选数据不为空
         var editQdName,editQdYear,editMark,editId;
-        editQdName=row.esNationName,editQdYear=row.esNationYear,editMark=row.nationRemark,editId=row.esNationId;
+        editQdName=row.esNationName,editQdYear=row.esNationYear,editId=row.esNationId;
+        if(row.nationRemark!="undefined"){
+            editMark=row.nationRemark;
+        }else{
+            editMark="";
+        }
         document.getElementById("esNationName_edit").value=editQdName; //编辑窗口打开后 名称输入框显示所选数据的名称
         document.getElementById("esNationYear_edit").value=editQdYear;//编辑窗口打开后 年份输入框显示所选数据的名称
         document.getElementById("esNationMark_edit").value=editMark;//编辑窗口打开后 备注输入框显示所选数据的名称
