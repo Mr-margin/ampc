@@ -983,17 +983,17 @@ public class NativeAndNationController {
 			Map msgMap=new HashMap();
 			if(total>0){
 				msgMap.put("msg", true);
-				LogUtil.getLogger().info("NativeAndNationController 创建本地清单模板信息成功!");
+				LogUtil.getLogger().info("NativeAndNationController 创建本地清单信息成功!");
 			}else{
 				msgMap.put("msg", false);
-				LogUtil.getLogger().info("NativeAndNationController 创建本地清单模板信息失败!");
+				LogUtil.getLogger().info("NativeAndNationController 创建本地清单信息失败!");
 			}
 			
 			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
-			LogUtil.getLogger().error("NativeAndNationController 创建本地清单模板异常!",e);
-			return AmpcResult.build(1001, "NativeAndNationController 创建本地清单模板异常!");
+			LogUtil.getLogger().error("NativeAndNationController 创建本地清单异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 创建本地清单异常!");
 		}
 	}
 	
@@ -1124,8 +1124,8 @@ public class NativeAndNationController {
 					Map  sector =excelToDateController.update_SectorData(userId,nativeTpId,native_filePath+ "/"+"应急系统新_4行业匹配.xlsx",esNativeTpOutPath);
 					if(sector==null){
 						//用户id,模板id,措施id
-//						Map save_MS=excelToDateController.save_MS(userId,nativeTpId,"系统内置");
-//						if(save_MS==null){
+						Map save_MS=excelToDateController.save_MS(userId,nativeTpId,"系统内置");
+						if(save_MS==null){
 							//成功
 							//修改清单模板
 							TEsNativeTp	tEsNativeTp=new TEsNativeTp();
@@ -1141,11 +1141,11 @@ public class NativeAndNationController {
 								msgMap.put("msg", false);
 								LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息数据更新失败!");
 							}
-//						}else{
-//							//失败
-//							msgMap.put("msg", "保存到措施模版表失败!");
-//							LogUtil.getLogger().info("NativeAndNationController 保存到措施模版表失败!");
-//						}
+						}else{
+							//失败
+							msgMap.put("msg", "保存到措施模版表失败!");
+							LogUtil.getLogger().info("NativeAndNationController 保存到措施模版表失败!");
+						}
 					}else{
 						LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息失败!");
 						return AmpcResult.ok(sector);
