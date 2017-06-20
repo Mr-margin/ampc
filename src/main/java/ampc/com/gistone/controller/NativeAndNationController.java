@@ -2,6 +2,7 @@ package ampc.com.gistone.controller;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -51,6 +52,7 @@ import ampc.com.gistone.extract.ResultPathUtil;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.ConfigUtil;
+import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.LogUtil;
 import ampc.com.gistone.util.RegUtil;
 
@@ -618,30 +620,6 @@ public class NativeAndNationController {
 			String nativeTpRemark=param.toString();
 			
 			//读取配置文件路径
-//			String config = "/extract.properties";
-//			InputStream ins = getClass().getResourceAsStream(config);
-//			Properties pro = new Properties();
-//			try {
-//				pro.load(ins);
-//				extractConfig = new ExtractConfig();
-//				extractConfig.setLocalListingFilePath((String) pro.get("LocalListingFilePath"));
-//			} catch (FileNotFoundException e) {
-//				logger.error(config + " file does not exits!", e);
-//			} catch (IOException e) {
-//				logger.error("load " + config + " file error!", e);
-//			}
-//			//关闭输入流
-//			try {
-//				if (ins != null)
-//					ins.close();
-//			} catch (IOException e) {
-//				logger.error("close " + config + " file error!", e);
-//			}
-			
-//			//获取路径
-//			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName;
-//			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/";
-			
 			String nativefilePath = new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName).toString().getBytes("iso-8859-1"),"utf-8");
 			String nativesfilePath = new String(( configUtil.getFtpURL()+"/"+userId+"/").toString().getBytes("iso-8859-1"),"utf-8");
 			//用于展示给用户的路径
@@ -652,10 +630,10 @@ public class NativeAndNationController {
 			File file =new File(nativefilePath);
 			//目录已经存在
 			if(files.exists()){
-				System.out.println("目录已经存在!");
+				LogUtil.getLogger().info(files+"该模板目录已经存在");
 				//判断是否包含该文件模板
 				if(file.exists()){
-					System.out.println("该模板已经存在");
+					LogUtil.getLogger().info(file+"该模板父级目录已经存在");
 				}else{
 					//模板文件夹不存在,进行创建
 					file.mkdir();
@@ -664,19 +642,16 @@ public class NativeAndNationController {
 				//不存在进行创建目录
 				files.mkdirs();
 				if(file.exists()){
-					System.out.println("文件已存在");
+					LogUtil.getLogger().info(files+"文件已存在!");
 				}else{
 					//不存在创建文件
 					//模板文件夹创建完成
 					file.mkdir();
-					System.out.println("模板文件夹创建完成");
+					LogUtil.getLogger().info(files+"模板文件夹创建完成!");
 				}
 			}
 			
-//			//文件输出路径
-//			String nativeOutPath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName+"/outPath";
-//			String nativesOutPath = pro.get("LocalListingFilePath")+""+userId+"/";
-			
+			//文件输出路径
 			String nativeOutPath = configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName+"/outPath";
 			//用于展示给用户的路径
 			String nativesOutPath = "/"+userId+"/"+nativeTpName+"/outPath";
@@ -686,7 +661,7 @@ public class NativeAndNationController {
 			File outPaths =new File(nativesfilePath);
 			//目录已经存在
 			if(outPath.exists()){
-				System.out.println("输出目录已经存在!");
+				LogUtil.getLogger().info(outPath+"输出目录已经存在!");
 				//判断是否包含该文件模板
 			}else{
 				//不存在进行创建目录
@@ -806,11 +781,15 @@ public class NativeAndNationController {
 			String newNativeTpName=param.toString();
 			
 			//修改FTP中对应文件夹的名称
-			File file=new File(configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName);
+//			File file=new File(configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName);
+			File file=new File(new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName).toString().getBytes("iso-8859-1"),"utf-8"));
 			//判断之前创建的文件夹是否存在
 			if(file.exists()){
 				//如果存在修改文件夹名称为修改后的新名称
-				file.renameTo(new File(configUtil.getFtpURL()+"/"+userId+"/"+newNativeTpName));
+//				File newfile=new File(configUtil.getFtpURL()+"/"+userId+"/"+newNativeTpName);
+				File newfile=new File(new String((configUtil.getFtpURL()+"/"+userId+"/"+newNativeTpName).toString().getBytes("iso-8859-1"),"utf-8"));
+				boolean bool=file.renameTo(newfile);
+				LogUtil.getLogger().info(String.valueOf(bool)+"true为清单模板文件夹名称修改成功");
 			}
 			
 			//添加数据
@@ -940,60 +919,52 @@ public class NativeAndNationController {
 			}
 			String nativeTpName=param.toString();
 			
-			//读取本地配置文件路径
-//			String config = "/extract.properties";
-//			InputStream ins = getClass().getResourceAsStream(config);
-//			Properties pro = new Properties();
-//			try {
-//				pro.load(ins);
-//				extractConfig = new ExtractConfig();
-//				extractConfig.setLocalListingFilePath((String) pro.get("LocalListingFilePath"));
-//			} catch (FileNotFoundException e) {
-//				logger.error(config + " file does not exits!", e);
-//			} catch (IOException e) {
-//				logger.error("load " + config + " file error!", e);
-//			}
-//			//关闭输入流
-//			try {
-//				if (ins != null)
-//					ins.close();
-//			} catch (IOException e) {
-//				logger.error("close " + config + " file error!", e);
-//			}
-//			//获取路径
-//			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName+"/"+nativeName;
-//			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName+"/"+nativeName;
-			
 			//服务器配置路径
-			String nativefilePath = new String((configUtil.getFtpURL()+""+userId+"/"+nativeTpName+"/"+nativeName).toString().getBytes("iso-8859-1"),"utf-8");
-			String nativesfilePath = new String((configUtil.getFtpURL()+""+userId+"/"+nativeTpName+"/"+nativeName).toString().getBytes("iso-8859-1"),"utf-8");
+//			String nativefilePath = new String((configUtil.getFtpURL()+""+userId+"/"+nativeTpName+"/"+nativeName).toString().getBytes("iso-8859-1"),"utf-8");
+//			String nativesfilePath = new String((configUtil.getFtpURL()+""+userId+"/"+nativeTpName+"/"+nativeName).toString().getBytes("iso-8859-1"),"utf-8");
+//			String natives_filePath = "/"+userId+"/"+nativeTpName+"/"+nativeName;
+//			
+//			//获取file对象
+//			File files =new File(nativesfilePath);
+//			File file =new File(nativefilePath);
+//			//目录已经存在
+//			if(files.exists()){
+//				LogUtil.getLogger().info("NativeAndNationController 本地清单目录已存在!");
+//				//判断是否包含该文件模板
+////				if(file.exists()){
+////					System.out.println("该模板已经存在");
+////				}else{
+////					//模板文件夹不存在,进行创建
+////					file.mkdir();
+////				}
+//			}else{
+//				//不存在进行创建目录
+//				files.mkdir();
+//				LogUtil.getLogger().info("NativeAndNationController 本地清单目录已创建!");
+////				if(file.exists()){
+////					System.out.println("文件已存在");
+////				}else{
+////					//不存在创建文件
+////					//模板文件夹创建完成
+////					file.mkdir();
+////					System.out.println("模板文件夹创建完成");
+////				}
+//			}
+			
+			String nativesfilePath = new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName+"/"+nativeName).toString().getBytes("iso-8859-1"),"utf-8");
+			LogUtil.getLogger().info(nativesfilePath);
+			//调用接口所需参数
 			String natives_filePath = "/"+userId+"/"+nativeTpName+"/"+nativeName;
 			
 			//获取file对象
 			File files =new File(nativesfilePath);
-			File file =new File(nativefilePath);
 			//目录已经存在
 			if(files.exists()){
-				LogUtil.getLogger().info("NativeAndNationController 本地清单目录已存在!");
-				//判断是否包含该文件模板
-//				if(file.exists()){
-//					System.out.println("该模板已经存在");
-//				}else{
-//					//模板文件夹不存在,进行创建
-//					file.mkdir();
-//				}
+				LogUtil.getLogger().info(files+"本地清单文件夹已经存在!");
 			}else{
 				//不存在进行创建目录
 				files.mkdir();
-				LogUtil.getLogger().info("NativeAndNationController 本地清单目录已创建!");
-//				if(file.exists()){
-//					System.out.println("文件已存在");
-//				}else{
-//					//不存在创建文件
-//					//模板文件夹创建完成
-//					file.mkdir();
-//					System.out.println("模板文件夹创建完成");
-//				}
+				LogUtil.getLogger().info(files+"本地清单文件夹创建成功");
 			}
 			
 			//添加数据
@@ -1067,48 +1038,6 @@ public class NativeAndNationController {
 			String esNativeTpOutPath = param.toString();
 			
 			//读取配置文件路径
-//			String config = "/extract.properties";
-//			InputStream ins = getClass().getResourceAsStream(config);
-//			Properties pro = new Properties();
-//			try {
-//				pro.load(ins);
-//				extractConfig = new ExtractConfig();
-//				extractConfig.setLocalListingFilePath((String) pro.get("LocalListingFilePath"));
-//			} catch (FileNotFoundException e) {
-//				logger.error(config + " file does not exits!", e);
-//			} catch (IOException e) {
-//				logger.error("load " + config + " file error!", e);
-//			}
-			
-			//获取路径
-//			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName;
-//			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/";
-			
-			//获取file对象
-//			File files =new File(nativesfilePath);
-//			File file =new File(nativefilePath);
-//			//目录已经存在
-//			if(files.exists()){
-//				System.out.println("目录已经存在!");
-//				//判断是否包含该文件模板
-//				if(file.exists()){
-//					System.out.println("该模板已经存在");
-//				}else{
-//					//模板文件夹不存在,进行创建
-//					file.mkdir();
-//				}
-//			}else{
-//				//不存在进行创建目录
-//				files.mkdirs();
-//				if(file.exists()){
-//					System.out.println("文件已存在");
-//				}else{
-//					//不存在创建文件
-//					//模板文件夹创建完成
-//					file.mkdir();
-//					System.out.println("模板文件夹创建完成");
-//				}
-//			}
 			String nativefilePath = new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName).toString().getBytes("iso-8859-1"),"utf-8");
 			String nativesfilePath = new String((configUtil.getFtpURL()+"/"+userId+"/").toString().getBytes("iso-8859-1"),"utf-8");
 			//调用接口所需参数
@@ -1142,46 +1071,52 @@ public class NativeAndNationController {
 			
 			Map msgMap = new HashMap();
 			//调用校验数据函数
-			Map  sectorDocExcel =excelToDateController.update_SectorDocExcelData(userId,nativeTpId,native_filePath+ "/"+"应急系统新_1描述文件.xlsx",esNativeTpOutPath);
-			if(sectorDocExcel==null){
-				Map  queryExcel =excelToDateController.update_QueryExcelData(userId,nativeTpId,native_filePath+ "/"+"应急系统新_2筛选逻辑.xlsx",esNativeTpOutPath);
-				if(queryExcel==null){
-					Map  sector =excelToDateController.update_SectorData(userId,nativeTpId,native_filePath+ "/"+"应急系统新_4行业匹配.xlsx",esNativeTpOutPath);
-					if(sector==null){
-						//用户id,模板id,措施id
-						Map save_MS=excelToDateController.save_MS(userId,nativeTpId,"系统内置");
-						if(save_MS==null){
-							//成功
-							//修改清单模板
-							TEsNativeTp	tEsNativeTp=new TEsNativeTp();
-							tEsNativeTp.setUserId(userId);
-							tEsNativeTp.setEsNativeTpId(nativeTpId);
-							//修改为1表示已校验
-							tEsNativeTp.setIsVerify("1");
-							int total=tEsNativeTpMapper.updateByIdSelective(tEsNativeTp);
-							if(total==1){
-								msgMap.put("msg", true);
-								LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息数据更新成功!");
+			boolean bool=excelToDateController.deleteExcelData(nativeTpId, userId);
+			if(bool==true){
+				Map  sectorDocExcel =excelToDateController.update_SectorDocExcelData(userId,nativeTpId,native_filePath+ "/"+"应急系统新_1描述文件.xlsx",esNativeTpOutPath);
+				if(sectorDocExcel==null){
+					Map  queryExcel =excelToDateController.update_QueryExcelData(userId,nativeTpId,native_filePath+ "/"+"应急系统新_2筛选逻辑.xlsx",esNativeTpOutPath);
+					if(queryExcel==null){
+						Map  sector =excelToDateController.update_SectorData(userId,nativeTpId,native_filePath+ "/"+"应急系统新_4行业匹配.xlsx",esNativeTpOutPath);
+						if(sector==null){
+							//用户id,模板id,措施id
+							Map save_MS=excelToDateController.save_MS(userId,nativeTpId,"系统内置");
+							if(save_MS==null){
+								//成功
+								//修改清单模板
+								TEsNativeTp	tEsNativeTp=new TEsNativeTp();
+								tEsNativeTp.setUserId(userId);
+								tEsNativeTp.setEsNativeTpId(nativeTpId);
+								//修改为1表示已校验
+								tEsNativeTp.setIsVerify("1");
+								int total=tEsNativeTpMapper.updateByIdSelective(tEsNativeTp);
+								if(total==1){
+									msgMap.put("msg", true);
+									LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息数据更新成功!");
+								}else{
+									msgMap.put("msg", false);
+									LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息数据更新失败!");
+								}
 							}else{
-								msgMap.put("msg", false);
-								LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息数据更新失败!");
+								//失败
+								msgMap.put("msg", "保存到措施模版表失败!");
+								LogUtil.getLogger().info("NativeAndNationController 保存到措施模版表失败!");
 							}
 						}else{
-							//失败
-							msgMap.put("msg", "保存到措施模版表失败!");
-							LogUtil.getLogger().info("NativeAndNationController 保存到措施模版表失败!");
+							LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息失败!");
+							return AmpcResult.ok(sector);
 						}
 					}else{
 						LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息失败!");
-						return AmpcResult.ok(sector);
+						return AmpcResult.ok(queryExcel);
 					}
 				}else{
 					LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息失败!");
-					return AmpcResult.ok(queryExcel);
+					return AmpcResult.ok(sectorDocExcel);
 				}
 			}else{
-				LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息失败!");
-				return AmpcResult.ok(sectorDocExcel);
+				LogUtil.getLogger().info("NativeAndNationController 删除Excel信息失败!");
+				return AmpcResult.build(1001, "删除Excel信息失败!");
 			}
 			
 			return AmpcResult.ok(msgMap);
@@ -1250,29 +1185,6 @@ public class NativeAndNationController {
 			String esNativeTpOutPath = param.toString();
 			
 			//读取配置文件路径
-//			String config = "/extract.properties";
-//			InputStream ins = getClass().getResourceAsStream(config);
-//			Properties pro = new Properties();
-//			try {
-//				pro.load(ins);
-//				extractConfig = new ExtractConfig();
-//				extractConfig.setLocalListingFilePath((String) pro.get("LocalListingFilePath"));
-//			} catch (FileNotFoundException e) {
-//				logger.error(config + " file does not exits!", e);
-//			} catch (IOException e) {
-//				logger.error("load " + config + " file error!", e);
-//			}
-//			//关闭输入流
-//			try {
-//				if (ins != null)
-//					ins.close();
-//			} catch (IOException e) {
-//				logger.error("close " + config + " file error!", e);
-//			}
-//			//获取路径
-//			String nativefilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName+"/"+nativeName;
-//			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName+"/"+nativeName;
-			
 			String nativefilePath = configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName+"/"+nativeName;
 			String nativesfilePath = configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName+"/"+nativeName;
 			//调用接口所需参数
