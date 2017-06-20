@@ -192,6 +192,51 @@ public class ExcelToDateController {
 	}
 	
 	/**
+	 * 删除模板和行业匹配的信息
+	 * @param templateId
+	 * @param userId
+	 * @return
+	 */
+	public boolean deleteExcelData(Long templateId,Long userId){
+		try {
+			//定义条件
+			Map map=new HashMap();
+			map.put("userId", userId);
+			map.put("templateId", templateId);
+			int result=tSectordocExcelMapper.deleteByQuery(map);
+			if(result>=0){
+				result=tQueryExcelMapper.deleteByQuery(map);
+				if(result>=0){
+					result=tSectorExcelMapper.deleteByQuery(map);
+					if(result>=0){
+						result=tMeasureSectorExcelMapper.deleteByQuery(map);
+						if(result>=0){
+							LogUtil.getLogger().info("ExcelToDateController 删除行Excel数据成功!");
+							return true;
+						}else{
+							LogUtil.getLogger().error("ExcelToDateController 删除行业措施数据异常!");
+							return false;
+						}
+					}else{
+						LogUtil.getLogger().error("ExcelToDateController 删除行业匹配数据异常!");
+						return false;
+					}
+				}else{
+					LogUtil.getLogger().error("ExcelToDateController 删除条件逻辑数据异常!");
+					return false;
+				}
+			}else{
+				LogUtil.getLogger().error("ExcelToDateController 删除行业描述数据异常!");
+				return false;
+			}
+		} catch (Exception e) {
+			LogUtil.getLogger().error("ExcelToDateController 删除Excel数据异常!",e);
+			// 返回错误信息
+			return false;
+		}
+		
+	}
+	/**
 	 * 行业描述Excel
 	 * 根据Excel更改行业描述Excel表中数据
 	 * @param request     请求
