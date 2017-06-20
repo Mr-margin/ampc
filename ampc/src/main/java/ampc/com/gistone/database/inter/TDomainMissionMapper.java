@@ -27,4 +27,15 @@ public interface TDomainMissionMapper {
     int updateByValidtwo(Long userId);
     TDomainMissionWithBLOBs selectbyname(TDomainMissionWithBLOBs record);
     TDomainMissionWithBLOBs selectByuserIdandValtd(TDomainMissionWithBLOBs record);
+
+	/**
+	 * @Description: 获取domain-common的数据
+	 * @param domainId
+	 * @return   
+	 * String  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月20日 下午7:29:25
+	 */
+	String selectCommonData(Long domainId);
 }
