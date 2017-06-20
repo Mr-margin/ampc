@@ -2216,6 +2216,10 @@ public class MissionAndScenarinoController {
 			JSONObject obj=new JSONObject();
 			obj.put("scenarinoId", tScenarinoDetail.getScenarinoId());
 			obj.put("mission", tScenarinoDetail.getMissionId());
+			obj.put("pathDate", tScenarinoDetail.getPathDate().getTime());
+			obj.put("endDate", tScenarinoDetail.getScenarinoStartDate().getTime());
+			obj.put("mission", tScenarinoDetail.getScenarinoEndDate().getTime());
+			
 			 return AmpcResult.ok(obj);
 		} catch (Exception e) {
 			LogUtil.getLogger().error("findby_pathdate 根据pathdate查询实时预报情景异常",e);
