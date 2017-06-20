@@ -936,8 +936,18 @@ function deleteFun(type) {
 
 
         $.when(ajaxPost(url, params), ajaxPost(url1, params1))
-            .done(function (ajaxArgs) {
+            .done(function (ajaxArgs,ajaxArgs1) {
+            	if(ajaxArgs1[0].status==1003){
+            		swal({
+                        title: '所选情景中有正在执行，删除操作已取消！',
+                        type: 'warning',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+            		return ;
+            	}
             	console.log(ajaxArgs);
+            	console.log(ajaxArgs1);
                 swal({
                     title: '已删除!',
                     type: 'success',
@@ -1339,7 +1349,7 @@ function changeJcDate(t) {
 function changeJcqj1(t) {
   var index = $(t).val();
   var selectJcqj = basisArr[index];
-  var dateArr = setSelectDate(selectJcqj.scenarinoStartDate, moment(selectRW.missionEndDate).subtract(2, 'd').format('YYYY-MM-DD'));
+  var dateArr = setSelectDate(selectJcqj.scenarinoStartDate, moment(selectRW.missionEndDate).subtract(1, 'd').format('YYYY-MM-DD'));
   dateArr = dateArr.reverse();
   $('#jcdate1').empty();
   for (var i = 0; i < dateArr.length; i++) {
@@ -2557,6 +2567,13 @@ function deleteQJ() {
                 timer: 1500,
                 showConfirmButton: false
               });
+            }else if(res.status == 1002){
+            	swal({
+                    title: '所选情景中有正在执行，删除操作已取消！',
+                    type: 'warning',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
             } else {
               swal({
                 title: '删除失败!',
