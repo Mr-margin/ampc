@@ -14,13 +14,13 @@ function innitdata(){  //耦合清单的初始化
         columns:[[  //表头
             // {field:"ck",checkbox:true},
             {field:"esCouplingName",title:"清单名称",width:160,align:'cneter'},
-            {field:"esCouplingDesc",title:"清单描述",width:400,align:'cneter'},
+            {field:"esCouplingDesc",title:"清单描述",width:200,align:'cneter'},
             {field:"publishTime",title:"本地清单",width:100},
             {field:"nationRemark",title:"全国清单",width:100},
             {field:"esCouplingYear",title:"年份",width:80},
             {field:"addTime",title:"创建时间",formatter:function(value,row,index){
             	var val=moment(value).format('YYYY-MM-DD hh:mm:ss');
-            	return "<span title=\'"+val+"\'>"+val+"</span>";
+            	return "<span title=\'"+val+"\'>"+val+"</sapn>";
 //                return  moment(value).format("YYYY-MM-DD hh:mm:ss");
             },align:'cneter',width:160},
             {field:"historyCoupling",title:"使用历史",width:100},

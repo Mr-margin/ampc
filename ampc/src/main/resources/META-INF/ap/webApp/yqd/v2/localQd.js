@@ -161,7 +161,6 @@ function innitdata(active){
                         }
                      }},
                     {field:"esComment",title:"备注",width:200},
-                    {field:"his",title:"使用状态",width:200},
                     {field:"isVerify",title:"状态",width:100,formatter:function(value,row,index){
                         if(value=="1"){
                             return "<span style='color: #009943'>已校验</span>"
