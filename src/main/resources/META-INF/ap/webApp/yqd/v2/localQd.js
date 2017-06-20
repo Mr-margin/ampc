@@ -482,6 +482,12 @@ function checkData(rowId) {
     var rowDiv=$("#localqd").treegrid('find',rowId);
     var parentId=rowDiv._parentId;
     var parentRowDiv=$("#localqd").treegrid('find',parentId);
+    swal({
+        title: "校验中，请勿进行其他操作！",
+        type: "warning",
+        showConfirmButton: false,
+        showCancelButton:false,
+    })
         if(rowId.indexOf("mb")==0){
             ajaxPost('/NativeAndNation/doPost',{
                 "userId":userId,
@@ -490,10 +496,16 @@ function checkData(rowId) {
                 "nativeTpName":rowDiv.esNativeTpName,
                 "esNativeTpOutPath":rowDiv.esNativeTpOutPath
             }).success(function (res) {
+                swal.close();
                 if(res.status==0){
                     if(rowDiv.isVerify==0){
                         if(res.data.data.msg==true){
-                            swal("校验成功");
+                            swal({
+                                title: '校验成功!',
+                                type: 'success',
+                                timer: 500,
+                                showConfirmButton: false
+                            });
                         }else if(res.data.data.errorMsg){
                             var hisCon=res.data.data.errorMsg[0];
                             $('[node-id="' + rowId + '"]').children("td[field=his]").html("<div style='width:200px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;color:#333;' title='"+hisCon+"'>"+hisCon+"</div>");
@@ -503,6 +515,8 @@ function checkData(rowId) {
                 }else{
                     swal('接口错误', '', 'error');
                 }
+            }).error(function () {
+                swal("接口错误","","error")
             })
         }else  if(rowId.indexOf("qd")==0){
             ajaxPost('/NativeAndNation/doPost',{
@@ -514,6 +528,7 @@ function checkData(rowId) {
                 "nativeTpName":parentRowDiv.esNativeTpName,
                 "esNativeTpOutPath":parentRowDiv.esNativeTpOutPath
             }).success(function (res) {
+                swal.close()
                 if(res.status==0){
                     if(rowDiv.isVerify==0){
                         if(res.data.data.errorMsg){
@@ -523,17 +538,25 @@ function checkData(rowId) {
                                 re+=hisConQd[i];
                             }
                             $('[node-id="' + rowId + '"]').children("td[field=his]").html("<div style='width:200px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;color:#333;' title='"+re+"'>"+re+"</div>");
-
                             swal(re, '', 'error');
                         }else if(res.data.data.msg==true){
-                            swal("校验成功！")
+                            swal({
+                                title: '校验成功!',
+                                type: 'success',
+                                timer: 500,
+                                showConfirmButton: false
+                            });
                         }
                     }
                 }else{
                     swal('参数错误', '', 'error');
                 }
+            }).error(function () {
+                swal("接口错误","","error")
             })
         }
+    
+
 
 }
 // 创建 输入框获得焦点
