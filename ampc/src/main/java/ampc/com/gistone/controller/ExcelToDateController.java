@@ -94,6 +94,66 @@ public class ExcelToDateController {
 		}
 	}
 	
+	
+	/**
+	 * 中间表保存
+	 * 保存到措施模版表
+	 */
+	@RequestMapping("excel/save_ms")
+	public AmpcResult save_MS1(@RequestBody Map<String, Object> requestDate,HttpServletRequest request, HttpServletResponse response){
+		// 添加异常捕捉
+		try {
+			// 获取到颜色集合
+			//List<ColorUtil> colorUtil=ColorUtil.getColor();   暂时不添加颜色
+			// 设置跨域
+			ClientUtil.SetCharsetAndHeader(request, response);
+			Map<String, Object> data = (Map) requestDate.get("data");
+			// 用户的id 确定当前用户
+			Long userId = null;
+			if (data.get("userId") != null) {
+				//获取用户ID
+				Object param=data.get("userId");
+				//进行参数判断
+				if(!RegUtil.CheckParameter(param, "Long", null, false)){
+					LogUtil.getLogger().error("ExcelToDateController 用户ID为空或出现非法字符!");
+					return AmpcResult.build(1003, "ExcelToDateController 用户ID为空或出现非法字符!");
+				}
+				// 用户id
+				userId = Long.parseLong(param.toString());
+			}
+			Long time=new Date().getTime();
+			String versionId="中间表"+time;
+			//获取到筛选后的数据
+			LinkedHashSet<TMeasureSectorExcel> ms=checkInfo(versionId,userId,null,null,null);
+			Iterator<TMeasureSectorExcel> iterator = ms.iterator();
+			int i=0;
+			//循环添加  并补充颜色
+			while(iterator.hasNext()){
+				TMeasureSectorExcel tmse =iterator.next();
+//				if(i==colorUtil.size()){
+//					i=0;
+//				}
+//				tmse.setColorcode(colorUtil.get(i).getColorCode());    暂时不添加颜色
+//				tmse.setColorname(colorUtil.get(i).getColorName());
+				int result=tMeasureSectorExcelMapper.insertSelective(tmse);
+				if(result<1){
+					throw new SQLException("ExcelToDateController 保存行业措施中间表失败");
+				}
+				i++;
+			}
+			LogUtil.getLogger().info("ExcelToDateController 保存行业措施中间表成功!");
+			return AmpcResult.ok("更新成功");
+		} catch(SQLException e){
+			LogUtil.getLogger().error(e.getMessage(),e);
+			return AmpcResult.build(1000,e.getMessage());
+		}catch (Exception e) {
+			LogUtil.getLogger().error("ExcelToDateController 保存行业措施中间表异常!",e);
+			// 返回错误信息
+			return AmpcResult.build(1001, "ExcelToDateController 保存行业措施中间表异常!");
+		}
+	}
+	
+	
 	/**
 	 * 中间表保存
 	 * 保存到措施模版表
