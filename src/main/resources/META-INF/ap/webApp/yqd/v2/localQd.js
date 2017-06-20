@@ -261,7 +261,8 @@ function innitdata(active){
         var param={};//设置接口参数
         param.userId=userId;
         param.method="updata_nativeTp";
-        param.nativeTpName =tempName;
+        param.newNativeTpName =tempName;
+        param.nativeTpName =tempNameOld;
         param.nativeTpYear=tempYear;
         param.nativeTpId  = row.esNativeTpId;
         param.nativeTpRemark = tempMark;
@@ -404,6 +405,7 @@ $("#editTemp").window({
     closed:true,
     cls:"cloudui"
 })
+var tempNameOld;
 function editTemp() {
     var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
     if(row!=''&&row!=null&&row!=undefined){ //所选数据不为空
@@ -414,6 +416,7 @@ function editTemp() {
         }else{
             editMark="";
         }
+        tempNameOld=editTempName;
         document.getElementById("esLocalEditName").value=editTempName; //编辑窗口打开后 名称输入框显示所选数据的名称
         document.getElementById("esLocalEditYear").value=editTempYear;//编辑窗口打开后 年份输入框显示所选数据的名称
         document.getElementById("esLocalEditMark").value=editMark;//编辑窗口打开后 备注输入框显示所选数据的名称
