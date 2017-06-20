@@ -29,4 +29,15 @@ public interface TCoresTimesMapper {
     int updateByPrimaryKeySelective(TCoresTimes record);
 
     int updateByPrimaryKey(TCoresTimes record);
+
+	/**
+	 * @Description: 查找记录的条数
+	 * @param tCoresTimes
+	 * @return   
+	 * Integer  
+	 * @throws
+	 * @author yanglei
+	 * @date 2017年6月20日 上午11:42:19
+	 */
+	TCoresTimes selectByRecord(TCoresTimes tCoresTimes);
 }
