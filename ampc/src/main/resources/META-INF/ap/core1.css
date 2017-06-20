@@ -1514,7 +1514,7 @@ dl, dd {
 .cloudui #creatQd .qdContent,.cloudui #editQd .qdContent,.cloudui #creatTemp .qdContent,.cloudui #editTemp .qdContent,.cloudui #editTempQd .qdContent{
   float: left;
   overflow: hidden;
-  height: 30px;
+  /*height: 30px;*/
   margin-bottom:10px;
   width: 50%;
   /*height: 50px;*/
@@ -1569,7 +1569,7 @@ dl, dd {
   /*height: 30px;*/
   /*margin-bottom:10px;*/
   width: 50%;
-  height:50px;
+  /*height:50px;*/
 }
 .cloudui #creatCoupQd .rwCon .qdTitle,.cloudui #editCoupQd .rwCon .qdTitle{
   float: left;
