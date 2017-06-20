@@ -407,10 +407,10 @@ function editTemp() {
     if(row!=''&&row!=null&&row!=undefined){ //所选数据不为空
         var editTempName,editTempYear,editMark,editId;
         editTempName=row.esNativeTpName,editTempYear=row.esNativeTpYear;
-        if(row.esComment==null&&row.esComment==undefined&&row.esComment==""){
-            editMark="";
+        if(row.esComment!="undefined"){
+            editMark=row.esComment;
         }else{
-            editMark=row.esComment
+            editMark="";
         }
         document.getElementById("esLocalEditName").value=editTempName; //编辑窗口打开后 名称输入框显示所选数据的名称
         document.getElementById("esLocalEditYear").value=editTempYear;//编辑窗口打开后 年份输入框显示所选数据的名称
