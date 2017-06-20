@@ -333,11 +333,16 @@ public class MissionAndScenarinoController {
 			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String,Object> data=(Map)requestDate.get("data");
 			//要删除的任务集合
-			String missionIds=data.get("missionIds").toString();
-			if(!RegUtil.CheckParameter(missionIds, "String", null, false)){
+			
+			if(!RegUtil.CheckParameter(data.get("missionIds"), null, null, false)){
 				LogUtil.getLogger().error("delete_mission  要删除的任务集合为空!");
 				return AmpcResult.build(1003, "要删除的任务集合为空!");
 			}
+			if(data.get("missionIds").equals("")){
+				LogUtil.getLogger().error("delete_mission  要删除的任务集合为空!");
+				return AmpcResult.build(1003, "要删除的任务集合为空!");
+			}
+			String missionIds=data.get("missionIds").toString();
 			//用户的id  确定当前用户
 			Integer userId=Integer.valueOf(data.get("userId").toString());
 			if(!RegUtil.CheckParameter(userId, "Integer", null, false)){
@@ -850,6 +855,10 @@ public class MissionAndScenarinoController {
 			//要删除的任务集合
 			
 			if(!RegUtil.CheckParameter(data.get("scenarinoIds"), null, null, false)){
+				LogUtil.getLogger().error("delete_scenarino  要删除的情景为空!");
+				return AmpcResult.build(1003, "要删除的情景为空!");
+			}
+			if(data.get("scenarinoIds").equals("")){
 				LogUtil.getLogger().error("delete_scenarino  要删除的情景为空!");
 				return AmpcResult.build(1003, "要删除的情景为空!");
 			}
