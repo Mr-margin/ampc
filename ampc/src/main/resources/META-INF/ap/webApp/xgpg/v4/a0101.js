@@ -325,9 +325,9 @@ function sceneInittion() {
 
                         for(var ids in allMission[id].pathdates){
                             if(ids == sceneInitialization.pathdate){
-                                $('#pathD').append($('<option selected="selected" value="'+ ids +'">'+ (ids==-1?'无':moment(allMission[id].pathdates[ids]).format('YYYY-MM-DD')) +'</option>'))
+                                $('#pathD').append($('<option selected="selected" value="'+ ids +'">'+ (ids==-1?'无':moment(allMission[id].pathdates[ids].pathDate).format('YYYY-MM-DD')) +'</option>'))
                             }else{
-                                $('#pathD').append($('<option value="'+ ids +'">'+ (ids==-1?'无':moment(allMission[id].pathdates[ids]).format('YYYY-MM-DD')) +'</option>'))
+                                $('#pathD').append($('<option value="'+ ids +'">'+ (ids==-1?'无':moment(allMission[id].pathdates[ids].pathDate).format('YYYY-MM-DD')) +'</option>'))
                             }
 
                         }
@@ -361,7 +361,7 @@ function selectRwId() {
         $('#pathD').empty();
 
         for(var ids in allMission[id].pathdates){
-            $('#pathD').append($('<option value="'+ ids +'">'+ (ids == -1?"无":moment(allMission[id].pathdates[ids]).format('YYYY-MM-DD')) +'</option>'))
+            $('#pathD').append($('<option value="'+ ids +'">'+ (ids == -1?"无":moment(allMission[id].pathdates[ids].pathDate).format('YYYY-MM-DD')) +'</option>'))
         }
     }else{
         $('#pathDdiv').css('display','none');
@@ -380,7 +380,7 @@ function sceneTable() {
         "pathDate":(function () {
             if(allMission[$('#task').val()].missionStatus == '2'){
                 if($('#pathD').val() != -1){
-                    return moment(allMission[$('#task').val()].pathdates[$('#pathD').val()]).format('YYYY-MM-DD')
+                    return moment(allMission[$('#task').val()].pathdates[$('#pathD').val()].pathDate).format('YYYY-MM-DD')
                 }else{
                     return ''
                 }
@@ -449,6 +449,8 @@ function save_scene() {
         mag.s = allMission[mag.taskID].missionStartDate;
         mag.e = allMission[mag.taskID].missionEndDate;
         mag.jzID = allMission[mag.taskID].missionStatus == '2'?$('#pathD').val():allMission[mag.taskID].jzqjid;
+        mag.jzS = allMission[mag.taskID].pathdates[mag.jzID]?allMission[mag.taskID].pathdates[mag.jzID].startDate:mag.s;
+        mag.jzE = allMission[mag.taskID].pathdates[mag.jzID]?allMission[mag.taskID].pathdates[mag.jzID].endDate:mag.e;
         mag.pathMission = (function () {
             return JSON.stringify(allMission[mag.taskID].pathmission);
             /*if(allMission[mag.taskID].missionStatus == '2'){
@@ -958,14 +960,14 @@ function setQjSelectBtn(data) {
         var btn1 = $('<label class="btn btn-outline btn-success bgw"><input type="radio" name="qjBtn1"><span></span></label><br/>');
         var btn2 = $('<label class="btn btn-outline btn-success bgw"><input type="radio" name="qjBtn2"><span></span></label><br/>');
         if(i==0){
-            btn1.attr('title', '基准').find('input').attr('value', sceneInitialization.jzID).attr('data-sDate', sceneInitialization.s).attr('data-eDate', sceneInitialization.e);
+            btn1.attr('title', '基准').find('input').attr('value', sceneInitialization.jzID).attr('data-sDate', sceneInitialization.jzS).attr('data-eDate', sceneInitialization.jzE);
             btn1.find('span').html('基准');
-            btn2.attr('title', '基准').find('input').attr('value', sceneInitialization.jzID).attr('data-sDate', sceneInitialization.s).attr('data-eDate', sceneInitialization.e);
+            btn2.attr('title', '基准').find('input').attr('value', sceneInitialization.jzID).attr('data-sDate', sceneInitialization.jzS).attr('data-eDate', sceneInitialization.jzE);
             btn2.find('span').html('基准');
             btn1.addClass('active').find('input').attr('checked', true);
             btn2.addClass('disabled');
-            s1 = sceneInitialization.s;
-            e1 = sceneInitialization.e;
+            s1 = sceneInitialization.jzS;
+            e1 = sceneInitialization.jzE;
 
         }else{
             btn1.attr('title', data[i-1].scenarinoName).find('input').attr('value', data[i-1].scenarinoId).attr('data-sDate', data[i-1].scenarinoStartDate).attr('data-eDate', data[i-1].scenarinoEndDate);
