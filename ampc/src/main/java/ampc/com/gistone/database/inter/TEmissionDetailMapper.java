@@ -27,4 +27,5 @@ public interface TEmissionDetailMapper {
     int updateByPrimaryKeyWithBLOBs(TEmissionDetailWithBLOBs record);
 
     int updateByPrimaryKey(TEmissionDetail record);
+    List<TEmissionDetailWithBLOBs> selectBycode(TEmissionDetail record);
 }
