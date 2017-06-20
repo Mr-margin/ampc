@@ -84,7 +84,8 @@
           </select>
         </div>
       </div>
-      <div class="form-group">
+      <!-- 将结束日期和开始日期分开处理 -->
+      <!-- <div class="form-group">
         <label class="col-2 control-label">日期范围</label>
         <div class="col-10">
           <input type="text" class="form-control" id="rwDate" name="rwStartDate" readonly placeholder="请选择日期···">
@@ -93,6 +94,18 @@
         </div>
         <div class="col-10 col-offset-2" style="display: none">
           <span class="rwDateTip" style="color: red">预评估任务结束日期不应小于当前日期</span>
+        </div>
+      </div> -->
+      <div class="form-group">
+      	<label class="col-2 control-label">开始日期</label>
+        <div class="col-10">
+          <input name="RWStartDate" id="RWStartDate" class="form-control">
+        </div>
+      </div>
+      <div class="form-group">
+      	<label class="col-2 control-label">结束日期</label>
+        <div class="col-10">
+          <input name="RWEndDate" id="RWEndDate" class="form-control">
         </div>
       </div>
     </form>

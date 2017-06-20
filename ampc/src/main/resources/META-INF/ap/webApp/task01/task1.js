@@ -519,35 +519,131 @@ function stop(t) {
 }
 /*初始化日期插件*/
 function initRwDate(s, e, start, end) {
-    $('#rwDate').daterangepicker({
-        singleDatePicker: false,  //显示单个日历
-        timePicker: false,  //允许选择时间
-        timePicker24Hour: true, //时间24小时制
-        minDate: s,//最早可选日期
-        maxDate: e,//最大可选日期
-        locale: {
-            format: "YYYY-MM-DD",
-            separator: " 至 ",
-            applyLabel: "确定", //按钮文字
-            cancelLabel: "取消",//按钮文字
-            weekLabel: "W",
-            daysOfWeek: [
-                "日", "一", "二", "三", "四", "五", "六"
-            ],
-            monthNames: [
-                "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"
-            ],
-            firstDay: 1
-        },
-        "startDate": start,
-        "endDate": end,
-        "opens": "right"
-    }, function (start, end, label) {
-        rwStartDate = start.format('YYYY-MM-DD');
-        rwEndDate = end.format('YYYY-MM-DD');
-    })
-    var d = $('#rwDate').data('daterangepicker');
-    d.element.off();
+//    $('#rwDate').daterangepicker({
+//        singleDatePicker: false,  //显示单个日历
+//        timePicker: false,  //允许选择时间
+//        timePicker24Hour: true, //时间24小时制
+//        minDate: s,//最早可选日期
+//        maxDate: e,//最大可选日期
+//        locale: {
+//            format: "YYYY-MM-DD",
+//            separator: " 至 ",
+//            applyLabel: "确定", //按钮文字
+//            cancelLabel: "取消",//按钮文字
+//            weekLabel: "W",
+//            daysOfWeek: [
+//                "日", "一", "二", "三", "四", "五", "六"
+//            ],
+//            monthNames: [
+//                "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"
+//            ],
+//            firstDay: 1
+//        },
+//        "startDate": start,
+//        "endDate": end,
+//        "opens": "right"
+//    }, function (start, end, label) {
+//        rwStartDate = start.format('YYYY-MM-DD');
+//        rwEndDate = end.format('YYYY-MM-DD');
+//    })
+//    var d = $('#rwDate').data('daterangepicker');
+//    d.element.off();
+	
+	/*分开对任务的开始时间和结束时间进行配置*/
+	/*根据选择任务的类型不同进行不同的配置*/
+	if(rwSelectType=="2"){
+		$('#RWStartDate').daterangepicker({
+			singleDatePicker:true,
+			minDate:s,
+			locale: {
+	            format: "YYYY-MM-DD",
+	            separator: " 至 ",
+	            applyLabel: "确定", //按钮文字
+	            cancelLabel: "取消",//按钮文字
+	            weekLabel: "W",
+	            daysOfWeek: [
+	                "日", "一", "二", "三", "四", "五", "六"
+	            ],
+	            monthNames: [
+	                "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"
+	            ],
+	            firstDay: 1
+	        },
+			maxDate:moment().subtract(2, 'd').format('YYYY-MM-DD'),
+			startDate:start
+		},function(start, end, label){
+			rwStartDate = start.format('YYYY-MM-DD');
+		});
+		$('#RWEndDate').daterangepicker({
+			singleDatePicker:true,
+			minDate:moment().add(14, 'd').format('YYYY-MM-DD'),
+			maxDate:e,
+			locale: {
+	            format: "YYYY-MM-DD",
+	            separator: " 至 ",
+	            applyLabel: "确定", //按钮文字
+	            cancelLabel: "取消",//按钮文字
+	            weekLabel: "W",
+	            daysOfWeek: [
+	                "日", "一", "二", "三", "四", "五", "六"
+	            ],
+	            monthNames: [
+	                "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"
+	            ],
+	            firstDay: 1
+	        },
+			startDate:end
+		},function(start, end, label){
+			rwEndDate = start.format('YYYY-MM-DD');
+		});
+	}else if(rwSelectType=="3"){
+		$('#RWStartDate').daterangepicker({
+			singleDatePicker:true,
+			minDate:s,
+			locale: {
+	            format: "YYYY-MM-DD",
+	            separator: " 至 ",
+	            applyLabel: "确定", //按钮文字
+	            cancelLabel: "取消",//按钮文字
+	            weekLabel: "W",
+	            daysOfWeek: [
+	                "日", "一", "二", "三", "四", "五", "六"
+	            ],
+	            monthNames: [
+	                "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"
+	            ],
+	            firstDay: 1
+	        },
+			maxDate:moment().subtract(3, 'd').format('YYYY-MM-DD'),
+			startDate:start
+		},function(start, end, label){
+			rwStartDate = start.format('YYYY-MM-DD');
+			$('#RWEndDate').data('daterangepicker').minDate=moment(rwStartDate,'YYYY-MM-DD').add(1,'d');
+		});
+		$('#RWEndDate').daterangepicker({
+			singleDatePicker:true,
+			minDate:s,
+			maxDate:e,
+			locale: {
+	            format: "YYYY-MM-DD",
+	            separator: " 至 ",
+	            applyLabel: "确定", //按钮文字
+	            cancelLabel: "取消",//按钮文字
+	            weekLabel: "W",
+	            daysOfWeek: [
+	                "日", "一", "二", "三", "四", "五", "六"
+	            ],
+	            monthNames: [
+	                "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"
+	            ],
+	            firstDay: 1
+	        },
+			startDate:end
+		},function(start, end, label){
+			rwEndDate = start.format('YYYY-MM-DD');
+			$('#RWStartDate').data('daterangepicker').maxDate=moment(rwEndDate,'YYYY-MM-DD').subtract(1,'d');
+		});
+	}
 }
 /*按钮打开日期*/
 function showRwDate() {
@@ -630,16 +726,7 @@ function createRw() {
             } else {
                 $('.rwDateTip').hide();
             }
-            if((moment(rwEndDate).valueOf()-new Date().getTime())<1000*60*60*24*14){
-        		swal({
-                    title: '结束日期应晚于今天十四天!',
-                    type: 'info',
-                    timer: 1000,
-                    showConfirmButton: false
-                });
-        		subBtn = true;
-        		return
-        	}
+            
         }else{
         	
         }
