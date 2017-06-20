@@ -506,10 +506,12 @@ function checkData(rowId) {
                                 timer: 500,
                                 showConfirmButton: false
                             });
+                            innitdata("find_natives");
                         }else if(res.data.data.errorMsg){
                             var hisCon=res.data.data.errorMsg[0];
                             $('[node-id="' + rowId + '"]').children("td[field=his]").html("<div style='width:200px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;color:#333;' title='"+hisCon+"'>"+hisCon+"</div>");
                             swal(hisCon, '', 'error');
+                            innitdata("find_natives");
                         }
                     }
                 }else{
@@ -539,6 +541,7 @@ function checkData(rowId) {
                             }
                             $('[node-id="' + rowId + '"]').children("td[field=his]").html("<div style='width:200px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;color:#333;' title='"+re+"'>"+re+"</div>");
                             swal(re, '', 'error');
+                            innitdata("find_natives");
                         }else if(res.data.data.msg==true){
                             swal({
                                 title: '校验成功!',
@@ -546,6 +549,7 @@ function checkData(rowId) {
                                 timer: 500,
                                 showConfirmButton: false
                             });
+                            innitdata("find_natives");
                         }
                     }
                 }else{
