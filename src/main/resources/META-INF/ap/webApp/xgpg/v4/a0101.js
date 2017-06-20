@@ -1399,10 +1399,10 @@ function updata(t) {
 
         if(missionYBid == ''){
             if(pathMission[changeMsg.qj1Id]){
-                p1.missionId = pathMission[changeMsg.qj1Id];
+                p1.missionId = pathMission[changeMsg.qj1Id].missionId;
             }
             if(pathMission[changeMsg.qj2Id]){
-                p2.missionId = pathMission[changeMsg.qj2Id];
+                p2.missionId = pathMission[changeMsg.qj2Id].missionId;
             }
         }else{
             if($('#qjBtn1').find('.active input').val() == '-1'){
