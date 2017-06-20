@@ -426,9 +426,6 @@ public class NativeAndNationController {
 			}
 			String nationRemark=param.toString();
 			
-			//日期格式
-			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date date=new Date();
 			//添加数据
 			TEsNation tEsNation=new TEsNation();
 			tEsNation.setUserId(userId);
@@ -509,9 +506,6 @@ public class NativeAndNationController {
 			}
 			String nationRemark=param.toString();
 			
-			//日期格式
-			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date date=new Date();
 			//添加数据
 			TEsNation tEsNation=new TEsNation();
 			tEsNation.setUserId(userId);
@@ -762,44 +756,76 @@ public class NativeAndNationController {
 			//获取清单ID
 			param=data.get("nativeTpId");
 			if(!RegUtil.CheckParameter(param, "Long", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 清单Id为空或出现非法字符!");
-				return AmpcResult.build(1003, "清单Id为空或出现非法字符!");
+				LogUtil.getLogger().error("NativeAndNationController 清单模板d为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单模板Id为空或出现非法字符!");
 			}
 			Long nativeTpId = Long.parseLong(param.toString());
 			
 			//获取清单名称
 			param=data.get("nativeTpName");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 清单名称为空或出现非法字符!");
-				return AmpcResult.build(1003, "清单名称为空或出现非法字符!");
+				LogUtil.getLogger().error("NativeAndNationController 清单模板名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单模板名称为空或出现非法字符!");
 			}
 			String nativeTpName = param.toString();
 			
 			//获取清单年份
 			param=data.get("nativeTpYear");
 			if(!RegUtil.CheckParameter(param, "Short", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
-				return AmpcResult.build(1003, "清单年份为空或出现非法字符!");
+				LogUtil.getLogger().error("NativeAndNationController 清单模板年份为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单模板年份为空或出现非法字符!");
 			}
 			Short nativeTpYear=Short.valueOf(param.toString());
 			//获取清单备注
 			param=data.get("nativeTpRemark");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
-				LogUtil.getLogger().error("NativeAndNationController 清单年份为空或出现非法字符!");
-				return AmpcResult.build(1003, "清单备注为空或出现非法字符!");
+				LogUtil.getLogger().error("NativeAndNationController 清单模板备注为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单模板备注为空或出现非法字符!");
 			}
 			String nativeTpRemark=param.toString();
 			
-			//日期格式
-			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date date=new Date();
+			param=data.get("filePath");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 清单模板上传路径为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单模板上传路径为空或出现非法字符!");
+			}
+			String filePath=param.toString();
+			
+			param=data.get("nativeTpoutPath");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 清单模板错误输出路径路径为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单模板错误输出路径为空或出现非法字符!");
+			}
+			String nativeTpoutPath=param.toString();
+			
+			param=data.get("newNativeTpName");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 清单模板错误输出路径路径为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单模板错误输出路径为空或出现非法字符!");
+			}
+			String newNativeTpName=param.toString();
+			
+			//修改FTP中对应文件夹的名称
+			File file=new File(configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName);
+			//判断之前创建的文件夹是否存在
+			if(file.exists()){
+				//如果存在修改文件夹名称为修改后的新名称
+				file.renameTo(new File(configUtil.getFtpURL()+"/"+userId+"/"+newNativeTpName));
+			}
+			
 			//添加数据
 			TEsNativeTp tEsNativeTp=new TEsNativeTp();
 			tEsNativeTp.setUserId(userId);
-			tEsNativeTp.setEsNativeTpName(nativeTpName);
+			tEsNativeTp.setEsNativeTpName(newNativeTpName);
 			tEsNativeTp.setEsNativeTpYear(nativeTpYear);
 			tEsNativeTp.setEsComment(nativeTpRemark);
 			tEsNativeTp.setEsNativeTpId(nativeTpId);
+			//修改文件上传路径
+			String filePathStr = "/"+userId+"/"+newNativeTpName;
+			//修改文件输出路径
+			String outPathStr = "/"+userId+"/"+newNativeTpName+"/outPath";
+			tEsNativeTp.setFilePath(filePathStr);
+			tEsNativeTp.setEsNativeTpOutPath(outPathStr);
 			//更新数据
 			int total=tEsNativeTpMapper.updateByIdSelective(tEsNativeTp);
 			Map msgMap=new HashMap();
@@ -939,8 +965,8 @@ public class NativeAndNationController {
 //			String nativesfilePath = pro.get("LocalListingFilePath")+""+userId+"/"+nativeTpName+"/"+nativeName;
 			
 			//服务器配置路径
-			String nativefilePath = configUtil.getFtpURL()+""+userId+"/"+nativeTpName+"/"+nativeName;
-			String nativesfilePath = configUtil.getFtpURL()+""+userId+"/"+nativeTpName+"/"+nativeName;
+			String nativefilePath = new String((configUtil.getFtpURL()+""+userId+"/"+nativeTpName+"/"+nativeName).toString().getBytes("iso-8859-1"),"utf-8");
+			String nativesfilePath = new String((configUtil.getFtpURL()+""+userId+"/"+nativeTpName+"/"+nativeName).toString().getBytes("iso-8859-1"),"utf-8");
 			String natives_filePath = "/"+userId+"/"+nativeTpName+"/"+nativeName;
 			
 			//获取file对象
@@ -1083,9 +1109,8 @@ public class NativeAndNationController {
 //					System.out.println("模板文件夹创建完成");
 //				}
 //			}
-			
-			String nativefilePath = configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName;
-			String nativesfilePath = configUtil.getFtpURL()+"/"+userId+"/";
+			String nativefilePath = new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName).toString().getBytes("iso-8859-1"),"utf-8");
+			String nativesfilePath = new String((configUtil.getFtpURL()+"/"+userId+"/").toString().getBytes("iso-8859-1"),"utf-8");
 			//调用接口所需参数
 			String native_filePath = "/"+userId+"/"+nativeTpName;
 			
