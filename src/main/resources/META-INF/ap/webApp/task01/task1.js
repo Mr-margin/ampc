@@ -936,7 +936,8 @@ function deleteFun(type) {
 
 
         $.when(ajaxPost(url, params), ajaxPost(url1, params1))
-            .done(function () {
+            .done(function (ajaxArgs) {
+            	console.log(ajaxArgs);
                 swal({
                     title: '已删除!',
                     type: 'success',
