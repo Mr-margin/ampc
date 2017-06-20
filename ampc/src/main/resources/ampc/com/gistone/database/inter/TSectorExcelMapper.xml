@@ -63,7 +63,12 @@
         where USER_ID=#{_parameter,jdbcType=DECIMAL} 
       </if> 
   </update>
-  
+  <!-- 根据模板ID和用户ID删除对应的行业描述数据 -->
+ <delete id="deleteByQuery" parameterType="hashMap" >
+    delete from T_SECTOR_EXCEL
+    where USER_ID=#{userId,jdbcType=DECIMAL} 
+     and DETAILED_LIST_ID=#{templateId,jdbcType=DECIMAL} 
+  </delete>
   
   
   

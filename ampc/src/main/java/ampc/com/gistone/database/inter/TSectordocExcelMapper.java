@@ -28,6 +28,14 @@ public interface TSectordocExcelMapper {
      * @return
      */
     int updateIsEffeByIds(Long userId);
+    
+    /**
+     * 根据模板ID和用户ID删除对应的行业描述数据
+     * @param map
+     * @return
+     */
+    int deleteByQuery(Map map);
+    
     int deleteByPrimaryKey(Long sectordocId);
 
     int insert(TSectordocExcel record);
