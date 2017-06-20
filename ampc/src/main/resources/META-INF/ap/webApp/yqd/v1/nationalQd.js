@@ -19,7 +19,8 @@ function innitdata(){
                     {field:"esNationName",title:"全国清单",width:200,align:'cneter'},
                     {field:"esNationYear",title:"年份",width:80,align:'cneter'},
                     {field:"publishTime",title:"创建时间",formatter:function(value,row,index){
-                        return  moment(value).format("YYYY-MM-DD");
+                        var val=moment(value).format('YYYY-MM-DD hh:mm:ss');
+                        return "<div title=\'"+val+"\'>"+val+"</div>";
                     },align:'cneter'},
                     {field:"nationRemark",title:"备注",width:400,align:'cneter'},
                     {field:"qgqdCheck",title:"状态",align:'cneter',width:100},//新建（校验按钮）   正常（校验成功） 错误（校验错误）

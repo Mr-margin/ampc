@@ -141,9 +141,10 @@ function innitdata(active){
                         if(isNaN(value)){
                             return "<span>创建时间</span>";
                         }else{
-                            return  moment(value).format("YYYY-MM-DD");
+                            var val=moment(value).format('YYYY-MM-DD hh:mm:ss');
+                            return "<div title=\'"+val+"\'>"+val+"</div>";
                         }
-                    },width :100,},
+                    },width :160},
                     {field:"esUploadTpTime",title:"上传时间",formatter:function(value,row,index){
                         if(isNaN(value)){
                             return "<span>上传时间</span>";
