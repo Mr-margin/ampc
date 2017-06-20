@@ -625,8 +625,8 @@ $("#editTempQd #esLocalQdName").blur(
         })
     }
 )
-$().ready(function () {
-    $("#formQd").validate({
+
+    $("#creatTemp #formQd").validate({
         rules: {
             esNationName: {
                 required: true,
@@ -695,4 +695,4 @@ $().ready(function () {
         }
 
     });
-})
+

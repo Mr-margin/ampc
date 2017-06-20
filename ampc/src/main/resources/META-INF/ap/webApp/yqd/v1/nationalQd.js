@@ -298,8 +298,30 @@ $("#creatQd #esNationName").blur(
     }
 )
 
-$().ready(function () {
-    $("#formQd").validate({
+
+    $("#creatQd #formQd").validate({
+        rules: {
+            esNationName: {
+                required: true,
+                maxlength: 15,
+                minlength: 1
+            },
+            esNationYear: {
+                number:true,
+                range:[1990,2100]
+            },
+        },
+        messages: {
+            esNationName: {
+                required: '请填写清单名称',
+                maxlength: '不可超过15个字符'
+            },
+            esNationYear: {
+                number: '请填写年份',
+            },
+        }
+    });
+    $("#editQd #editQdForm").validate({
         rules: {
             esNationName: {
                 required: true,
@@ -322,29 +344,4 @@ $().ready(function () {
         }
 
     });
-})
-$().ready(function () {
-    $("#editQdForm").validate({
-        rules: {
-            esNationName: {
-                required: true,
-                maxlength: 15,
-                minlength: 1
-            },
-            esNationYear: {
-                number:true,
-               range:[1990,2100]
-            },
-        },
-        messages: {
-            esNationName: {
-                required: '请填写清单名称',
-                maxlength: '不可超过15个字符'
-            },
-            esNationYear: {
-                number: '请填写年份',
-            },
-        }
 
-    });
-})
