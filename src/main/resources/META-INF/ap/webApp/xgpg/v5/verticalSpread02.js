@@ -386,9 +386,9 @@ function sceneInittion() {
 
                         for(var ids in allMission[id].pathdates){
                             if(ids == sceneInitialization.pathdate){
-                                $('#pathD').append($('<option selected="selected" value="'+ ids +'">'+ (ids==-1?'无':moment(allMission[id].pathdates[ids]).format('YYYY-MM-DD')) +'</option>'))
+                                $('#pathD').append($('<option selected="selected" value="'+ ids +'">'+ (ids==-1?'无':moment(allMission[id].pathdates[ids].pathDate).format('YYYY-MM-DD')) +'</option>'))
                             }else{
-                                $('#pathD').append($('<option value="'+ ids +'">'+ (ids==-1?'无':moment(allMission[id].pathdates[ids]).format('YYYY-MM-DD')) +'</option>'))
+                                $('#pathD').append($('<option value="'+ ids +'">'+ (ids==-1?'无':moment(allMission[id].pathdates[ids].pathDate).format('YYYY-MM-DD')) +'</option>'))
                             }
 
                         }
@@ -423,7 +423,7 @@ function selectRwId() {
         $('#pathD').empty();
 
         for(var ids in allMission[id].pathdates){
-            $('#pathD').append($('<option value="'+ ids +'">'+ (ids == -1?"无":moment(allMission[id].pathdates[ids]).format('YYYY-MM-DD')) +'</option>'))
+            $('#pathD').append($('<option value="'+ ids +'">'+ (ids == -1?"无":moment(allMission[id].pathdates[ids].pathDate).format('YYYY-MM-DD')) +'</option>'))
         }
     }else{
         $('#pathDdiv').css('display','none');
@@ -442,7 +442,7 @@ function sceneTable() {
         "pathDate":(function () {
             if(allMission[$('#task').val()].missionStatus == '2'){
                 if($('#pathD').val() != -1){
-                    return moment(allMission[$('#task').val()].pathdates[$('#pathD').val()]).format('YYYY-MM-DD')
+                    return moment(allMission[$('#task').val()].pathdates[$('#pathD').val()].pathDate).format('YYYY-MM-DD')
                 }else{
                     return ''
                 }
@@ -613,6 +613,8 @@ function save_scene() {
         mag.s = allMission[mag.taskID].missionStartDate;
         mag.e = allMission[mag.taskID].missionEndDate;
         mag.jzID = allMission[mag.taskID].missionStatus == '2'?$('#pathD').val():allMission[mag.taskID].jzqjid;
+        mag.jzS = allMission[mag.taskID].pathdates[mag.jzID]?allMission[mag.taskID].pathdates[mag.jzID].startDate:mag.s;
+        mag.jzE = allMission[mag.taskID].pathdates[mag.jzID]?allMission[mag.taskID].pathdates[mag.jzID].endDate:mag.e;
         var data = [];
         $.each(row, function (i, col) {
             data.push({
