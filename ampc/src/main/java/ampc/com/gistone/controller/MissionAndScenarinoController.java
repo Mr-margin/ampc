@@ -1030,14 +1030,19 @@ public class MissionAndScenarinoController {
 			//根据id查询任务
 			TMissionDetail tMission=tMissionDetailMapper.selectByPrimaryKey(missionId);
 			List<TScenarinoDetail> sslist=new ArrayList();
-			
+			int a=1;
 			//根据任务id查询所有情景
 			List<TScenarinoDetail> scenarlist=tScenarinoDetailMapper.selectAllByMissionId(missionId);
+			for(TScenarinoDetail trs:scenarlist){
+				if(trs.getScenType().equals("3")){
+					a=0;
+				}
+			}
 			Map<String,Date> map=new HashMap();
 			map.put("startDate", tMission.getMissionStartDate());
 			map.put("endDate", tMission.getMissionEndDate());
 			if(tMission.getMissionStatus().equals("3")){
-			if(scenarlist.isEmpty()){
+			if(scenarlist.isEmpty()||a==1){
 				if(tScenarinoDetailMapper.selectminpathdate()!=null){
 				
 				sslist=tScenarinoDetailMapper.selectBytype4(map);
