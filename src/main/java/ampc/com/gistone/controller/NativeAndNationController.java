@@ -1853,7 +1853,7 @@ public class NativeAndNationController {
 				tEsCoupling.setEsCouplingNativetpId(nativeTpId);
 				tEsCoupling.setEsCouplingNationId(nationId);
 				//该字段类型需修改为String类型
-				tEsCoupling.setEsCouplingNativeId(nativesId);
+				tEsCoupling.setEsCouplingNativeId(nativesId.substring(1, nativesId.length()-1));
 				tEsCoupling.setEsCouplingMeiccityconfig(meicCityConfig);
 				//更新耦合清单数据
 				int result= tEsCouplingMapper.updateDataByPrimaryKey(tEsCoupling);
