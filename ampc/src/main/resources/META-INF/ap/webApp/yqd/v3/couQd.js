@@ -790,7 +790,7 @@ function saveAllId(){ //选好清单以后进行保存
                         "sectorName":industryData[i].industryNames
                     })
                 }
-                allCity.push(cityCurren.cityId)//获取选择了清单所有的城市，包含重复的
+                allCity.push(cityCurren[cn].cityId)//获取选择了清单所有的城市，包含重复的
             }
         }
         if(!globelCheckedQd[0]){
