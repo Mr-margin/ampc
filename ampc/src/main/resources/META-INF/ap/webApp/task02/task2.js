@@ -261,11 +261,17 @@ var zTreeSetting = {
             if((allData[areaIndex].timeItems[timeIndex].timeEndDate-allData[areaIndex].timeItems[timeIndex].timeStartDate)>(1000*60*60*2-2000)){
             	initDate(timeStart.add(1, 'h'), timeEnd1);
                 editHtml('addTime1');
-                $('#timepanel').tabs('enableTab', '时段添加').tabs('select', '时段添加');
+                $('#timepanel').tabs('enableTab', '时段添加');
+                $('#timeorplan').tabs('select','时段操作');
+                $('#timepanel').tabs('select', '时段添加');
+                $('#timeorplan').tabs('select','预案操作');
                 $('#qyTimePoint').attr('disabled',false).css({'opacity':1,'cursor':'pointer'});
             	$('#addTimesBtn').attr('disabled',false).css({'opacity':1,'cursor':'pointer'});
             }else{
-            	$('#timepanel').tabs('disableTab', '时段添加').tabs('select', '时段删除');
+            	$('#timepanel').tabs('disableTab', '时段添加');
+            	$('#timeorplan').tabs('select','时段操作');
+            	$('#timepanel').tabs('select', '时段删除');
+            	$('#timeorplan').tabs('select','预案操作');
             	$('#qyTimePoint').attr('disabled',true).css({'opacity':0.5,'cursor':'no-drop'});
             	$('#addTimesBtn').attr('disabled',true).css({'opacity':0.5,'cursor':'no-drop'});
             }
