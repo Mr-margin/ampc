@@ -1328,9 +1328,9 @@ public class NativeAndNationController {
 			    //查询全国清单名称
 				TEsNation tEsNation = tEsNationMapper.selectByPrimaryKey(Long.valueOf(tEsCouplingMap.get("esCouplingNationId").toString()));
 				//查询本地清单名称
-				TEsNativeTp tEsNativeTp  =tEsNativeTpMapper.selectByPrimaryKey(Long.valueOf(tEsCouplingMap.get("esCouplingNativeId").toString()));
+//				TEsNativeTp tEsNativeTp  =tEsNativeTpMapper.selectByPrimaryKey(Long.valueOf(tEsCouplingMap.get("esCouplingNativeId").toString()));
 			    tEsCouplingMap.put("esCouplingNationId", tEsNation);
-			    tEsCouplingMap.put("esCouplingNativeId", tEsNativeTp);
+//			    tEsCouplingMap.put("esCouplingNativeId", tEsNativeTp);
 				tEsCouplingMap.put("esCouplingMeiccityconfig", detailinfo);
 				//添加到集合中
 				couplingList.add(tEsCouplingMap);
