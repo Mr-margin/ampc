@@ -163,7 +163,7 @@ $("#creatCoupQd").window({
 function creatCoupQd(){
     $("#formCoup").form("clear")
     $(".cloudui .rwCon .qdContent .qdName").val("不可超过15个字符（必填）").css({"color":"#757575"});
-    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份").css({"color":"#757575"});
+    $(".cloudui .rwCon .qdContent .qdYear").val("1990-2100（必填）").css({"color":"#757575"});
     // $("#creatCoupQd .tipYearRepeat span").remove();
     // $("#creatCoupQd .tipNameRepeat span").remove();
     var labelDiv=$("#formCoup label");
@@ -178,7 +178,7 @@ function creatCoupQd(){
 function clearCoup() {
     $("#formCoup").form("clear")
     $(".cloudui .rwCon .qdContent .qdName").val("不可超过15个字符（必填）").css({"color":"#757575"});
-    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份").css({"color":"#757575"});
+    $(".cloudui .rwCon .qdContent .qdYear").val("1990-2100（必填）").css({"color":"#757575"});
 }
 //点击新建窗口提交按钮进行耦合清单创建
 function submitCoup(){
@@ -666,7 +666,7 @@ $(".cloudui .rwCon .qdContent .qdName").focus(function () {//名称获取焦点
     }
 })
 $(".cloudui .rwCon .qdContent .qdYear").focus(function () {//年份获取焦点
-    if($(this).val()=="请输入1990-2100之间的年份"){
+    if($(this).val()=="1990-2100（必填）"){
         $(this).val("");
         $(this).css({"color":"black"})
     }
@@ -681,7 +681,7 @@ $(".cloudui .rwCon .qdContent .qdName").blur(function () {//名称失去焦点
 })
 $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
     if($(this).val()==""){
-        $(this).val("请输入1990-2100之间的年份")
+        $(this).val("1990-2100（必填）")
         $(this).css({"color":"#757575"})
     }
 })

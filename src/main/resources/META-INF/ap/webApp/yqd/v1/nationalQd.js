@@ -66,7 +66,7 @@ function innitdata(){
 function creatQd(){ // 点击创建清单按钮 弹出创建窗口
     $("#formQd").form('clear');//打开窗口清空输入框数据
     $(".cloudui .rwCon .qdContent .qdName").val("不可超过15个字符（必填）").css({"color":"#757575"});
-    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份").css({"color":"#757575"});
+    $(".cloudui .rwCon .qdContent .qdYear").val("1990-2100（必填）").css({"color":"#757575"});
     // $("#creatQd .tipYearRepeat span").remove();
     // $("#creatQd .tipNameRepeat span").remove();
     var labelDiv=$("#creatQd label");
@@ -134,7 +134,7 @@ function submitQd(){ //点击提交按钮进行新建清单数据的提交
 function claearQd(){ //点击窗口清空按钮 对表单输入框进行数据清空
     $("#formQd").form('clear');
     $(".cloudui .rwCon .qdContent .qdName").val("不可超过15个字符（必填）").css({"color":"#757575"});
-    $(".cloudui .rwCon .qdContent .qdYear").val("请输入1990-2100之间的年份").css({"color":"#757575"});
+    $(".cloudui .rwCon .qdContent .qdYear").val("1990-2100（必填）").css({"color":"#757575"});
 }
 
 function editQd(){ // 编辑全国清单
@@ -261,7 +261,7 @@ $(".cloudui .rwCon .qdContent .qdName").focus(function () {//名称获取焦点
     }
 })
 $(".cloudui .rwCon .qdContent .qdYear").focus(function () {//年份获取焦点
-    if($(this).val()=="请输入1990-2100之间的年份"){
+    if($(this).val()=="1990-2100（必填）"){
         $(this).val("");
         $(this).css({"color":"black"})
     }
@@ -276,7 +276,7 @@ $(".cloudui .rwCon .qdContent .qdName").blur(function () {//名称失去焦点
 })
 $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
     if($(this).val()==""){
-        $(this).val("请输入1990-2100之间的年份")
+        $(this).val("1990-2100（必填）")
         $(this).css({"color":"#757575"})
     }
 })
