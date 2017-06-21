@@ -93,8 +93,7 @@ public class ExcelToDate {
     //SheetName错误信息
     public static final String SHEETNAME_ERROR="SheetName名称超过规定长度(要求在10个字符以内)!";
     
-    //服务器访问验证文件的路径
-   public String checkExcelURL= "/home/xulili/apache-tomcat-8.5.13/webapps/ampc/WEB-INF/classes/checkFile/";
+   
     
     /**
      * 初始化Excel信息方法
@@ -184,7 +183,7 @@ public class ExcelToDate {
 	 * @param jsonName 校验规则文件
 	 * @return 校验规则Map
 	 */
-	public LinkedHashMap readCheckJson(String jsonName){  
+	public LinkedHashMap readCheckJson(String jsonName,String checkExcelURL){  
 		try {
 			/**
   			 * TODO 本地配置
@@ -425,7 +424,7 @@ public class ExcelToDate {
 	* 读取excel描述数据   读取行业描述Excel表
 	* @param path  
 	*/
-	public List<TSectordocExcel> ReadSectorDOC(String fileName,Long versionId,Long userId,List<String> msg,String outPath,Long templateId){ 
+	public List<TSectordocExcel> ReadSectorDOC(String fileName,Long versionId,Long userId,List<String> msg,String outPath,Long templateId,String checkExcelURL){ 
 		//定义结果  默认false 
 	    boolean isError=false;
 		//获取文件名称
@@ -445,7 +444,7 @@ public class ExcelToDate {
         		return null;
         	}
         	//获取验证集合
-        	checkMap=readCheckJson("应急系统新_1描述文件.json");
+        	checkMap=readCheckJson("应急系统新_1描述文件.json",checkExcelURL);
         	if(checkMap==null){
         		msg.add(file+":读取系统内置校验文件出现异常!");
         		return null;
@@ -891,7 +890,7 @@ public class ExcelToDate {
 	* 读取excel筛选逻辑数据   读取筛选逻辑Excel表
 	* @param path  
 	*/
-	public List<TQueryExcel> ReadQuery(String fileName,Long versionId,Long userId,List<String> msg,String outPath,Long templateId){  
+	public List<TQueryExcel> ReadQuery(String fileName,Long versionId,Long userId,List<String> msg,String outPath,Long templateId,String checkExcelURL){  
 		//定义结果  默认false 
 	    boolean isError=false;
 		List<TQueryExcel> queryList=new ArrayList<TQueryExcel>();
@@ -908,7 +907,7 @@ public class ExcelToDate {
         		return null;
         	}
         	//获取验证集合
-        	checkMap=readCheckJson("应急系统新_2筛选文件.json");
+        	checkMap=readCheckJson("应急系统新_2筛选文件.json",checkExcelURL);
         	if(checkMap==null){
         		msg.add(file+":读取系统内置校验文件出现异常!");
         		return null;
@@ -1092,7 +1091,7 @@ public class ExcelToDate {
 	* 读取excel数据   读取行业Excel表
 	* @param path  
 	*/
-	public List<TSectorExcel> ReadSector(String fileName,String versionId,Long userId,List<String> msg,String outPath,Long templateId){  
+	public List<TSectorExcel> ReadSector(String fileName,String versionId,Long userId,List<String> msg,String outPath,Long templateId,String checkExcelURL){  
 		List<TSectorExcel> sectorList=new ArrayList<TSectorExcel>();
 		//定义结果  默认false 
 	    boolean isError=false;
@@ -1109,7 +1108,7 @@ public class ExcelToDate {
         		return null;
         	}
         	//获取验证集合
-        	checkMap=readCheckJson("应急系统新_4行业匹配.json");
+        	checkMap=readCheckJson("应急系统新_4行业匹配.json",checkExcelURL);
         	if(checkMap==null){
         		msg.add(file+":读取系统内置校验文件出现异常!");
         		return null;
@@ -1305,7 +1304,7 @@ public class ExcelToDate {
 	* 读取excel数据   
 	* @param path  
 	*/
-	public boolean CheckNative(String fileName,List<String> msg,String outPath){  
+	public boolean CheckNative(String fileName,List<String> msg,String outPath,String checkExcelURL){  
 		//定义结果  默认false 
 	    boolean isError=false;
 		//获取文件名称
@@ -1321,7 +1320,7 @@ public class ExcelToDate {
         		return false;
         	}
         	//获取验证集合
-        	checkMap=readCheckJson("应急系统新_3清单数据.json");
+        	checkMap=readCheckJson("应急系统新_3清单数据.json",checkExcelURL);
         	if(checkMap==null){
         		msg.add(file+":读取系统内置校验文件出现异常!");
         		return false;
