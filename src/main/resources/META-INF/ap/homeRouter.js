@@ -486,6 +486,7 @@ function resivePassword(){
                     timer: 1000,
                     showConfirmButton: false
                 });
+				$('#revisePasswordBox').window('close');
 			}else{
 				swal({
 		            title: res.msg,

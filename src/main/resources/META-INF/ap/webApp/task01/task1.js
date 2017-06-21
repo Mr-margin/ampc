@@ -396,11 +396,11 @@ function domainNameFormatter(value, row, index) {
     if (typeof row.domainName === 'undefined') {
         if (typeof row.operationTitle === 'undefined') {
             if (row.scenarinoStatus == 5) {
-                return "<a href='javascript:' onclick='startBtn()' style='color: #9CC8F7'><i class='im-play2'> 启动</i></a>";
+                return "<a href='javascript:' onclick='startBtn()' style='color: #377ab7'><i class='im-play2'> 启动</i></a>";
             } else if (row.scenarinoStatus == 6) {
-                return "<a href='javascript:pauseBtn()'  style='color: #9CC8F7'><i class='im-pause'> 暂停</i></a>";
+                return "<a href='javascript:pauseBtn()'  style='color: #377ab7'><i class='im-pause'> 暂停</i></a>";
             } else if (row.scenarinoStatus == 7) {
-                return "<a href='javascript:continueBtn()' style='color: #9CC8F7'><i class='im-play2'> 续跑</i></a>";
+                return "<a href='javascript:continueBtn()' style='color: #377ab7'><i class='im-play2'> 续跑</i></a>";
             }
         }
         return row.operationTitle;
@@ -412,7 +412,7 @@ function esCouplingNameFormatter(value, row, index) {
     if (typeof row.esCouplingName === 'undefined') {
         if (typeof row.adminTitle === 'undefined') {
             if (row.scenarinoStatus == 6 || row.scenarinoStatus == 7|| row.scenarinoStatus == 9) {
-                return "<a href='javascript:stopBtn()' style='color: #9CC8F7'><i class='im-stop'> 终止</i></a>"
+                return "<a href='javascript:stopBtn()' style='color: #377ab7'><i class='im-stop'> 终止</i></a>"
             } else {
                 return "<i class='im-stop'style='color: #ccc'> 终止</i>";
             }
