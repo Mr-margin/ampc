@@ -120,7 +120,15 @@ public class NativeAndNationController {
 				//获取请求方法
 				Object param=data.get("method");
 				//根据参数值判断执行对应的处理方法
-				if("find_natives".equals(param)){
+				if("find_nation".equals(param)){
+					listTps = find_nation(requestDate,request,response);
+				}else if("add_nation".equals(param)){
+					listTps = add_nation(requestDate,request,response);
+				}else if("update_nation".equals(param)){
+					listTps = update_nation(requestDate,request,response);
+				}else if("delete_nation".equals(param)){
+					listTps = delete_nation(requestDate,request,response);
+				}else if("find_natives".equals(param)){
 					listTps = find_natives(requestDate,request,response);
 				}else if("add_nativeTp".equals(param)){
 					listTps = add_nationTp(requestDate,request,response);
@@ -216,7 +224,7 @@ public class NativeAndNationController {
 	 * @param response 响应
 	 * @return 返回响应结果对象
 	 */
-	@RequestMapping("/NativeAndNation/find_nation")
+//	@RequestMapping("/NativeAndNation/find_nation")
 	public AmpcResult find_nation(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -391,7 +399,6 @@ public class NativeAndNationController {
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping("/NativeAndNation/add_nation")
 	public AmpcResult add_nation(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -462,7 +469,6 @@ public class NativeAndNationController {
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping("/NativeAndNation/update_nation")
 	public AmpcResult update_nation(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -543,7 +549,6 @@ public class NativeAndNationController {
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping("/NativeAndNation/delete_nation")
 	public AmpcResult delete_nation(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -1081,7 +1086,6 @@ public class NativeAndNationController {
 					if(queryExcel==null){
 						Map  sectorDocExcel =excelToDateController.update_SectorDocExcelData(userId,nativeTpId,native_filePath+ "/"+"应急系统新_1描述文件.xlsx",esNativeTpOutPath,configUtil.getCheckExcelURL());
 						if(sectorDocExcel==null){
-							
 							//用户id,模板id,措施id
 							Map save_MS=excelToDateController.save_MS(userId,nativeTpId,"系统内置");
 							if(save_MS==null){
