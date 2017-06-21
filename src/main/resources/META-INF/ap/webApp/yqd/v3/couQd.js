@@ -1,6 +1,16 @@
 /**
  * Created by shanhaichushi on 2017/5/21.
  */
+var globelCheckedCity=[];//耦合后涉及的城市信息
+var globelCheckedQd=[];//保存选择的 行政-行业-清单 一一对应
+var allCity=[];//只要选择了清单 获取的所有城市的信息 包括重复的
+var singleCheckCity=[];
+var localQdId=[];
+var checkCityName=[];
+var meicCityConfig=[];
+var globelCheckedQdCurr=[];
+var allCityCheck="";
+
 // 导航
 $("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><a href="#/yqd_v3" style="padding-left: 15px;padding-right: 15px;color:#333;text-decoration: none" >耦合清单</a><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatCoupQd()">新建</button><button class="qdEdit" onclick="editCoupQd()">编辑</button><button class="qdDelet" onclick="coupDelete()">删除</button></span>');
 
@@ -747,14 +757,7 @@ Array.prototype.unique = function(){
 }
 
 //点击保存按钮保存耦合清单 全国清单 本地清单 企业 行业 等信息
-var globelCheckedCity=[];//耦合后涉及的城市信息
-var globelCheckedQd=[];//保存选择的 行政-行业-清单 一一对应
-var allCity=[];//只要选择了清单 获取的所有城市的信息 包括重复的
-var singleCheckCity=[];
-var localQdId=[];
-var checkCityName=[];
-var meicCityConfig=[]
-var globelCheckedQdCurr=[];
+
 function saveAllId(){ //选好清单以后进行保存
     globelCheckedQdCurr=[];
     for(var i=0;i<industryData.length;i++){
@@ -793,8 +796,11 @@ function saveAllId(){ //选好清单以后进行保存
     }
 
     globelCheckedCity=allCity.unique()//对所有耦合涉及的城市进行去重
-
-
+    allCityCheck="";
+    for(var p=0;p<globelCheckedCity.length;p++){
+        allCityCheck+=(globelCheckedCity[p]+",");
+    }
+    allCityCheck=allCityCheck.substring(0,allCityCheck.length-1)
     for(var nm=0;nm<checkCity.length;nm++){
         checkCityName.push(checkCity[nm].cityId);
     }
@@ -832,11 +838,12 @@ function submitCheckQd() {
             meicCityConfig.push(globelCheckedQd[i][j]);
         }
     }
+
     ajaxPost('/NativeAndNation/doPost',{"userId":userId,
         "method":'saveCoupling',
         "nationId":checkQgQd.esNationId, //第一步全国清单ID
         "nativesId":localQdId, //第二步本地清单ID
-        "CouplingCity":globelCheckedCity, //耦合涉及的城市
+        "CouplingCity":allCityCheck, //耦合涉及的城市
         "nativeTpId":mbArray[$(".cloudui .coupSetCon #coupSetMb").val()].esNativeTpId,//第二步模板ID
         "couplingId":coupingQd.esCouplingId,//耦合清单的ID
         "meicCityConfig":JSON.stringify(meicCityConfig),}).success(function (res) {
