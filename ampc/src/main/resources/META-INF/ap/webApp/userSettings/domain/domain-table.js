@@ -182,12 +182,24 @@ function domainClaear(){
 function delDomain(th){
 	var url = "/Domain/deleteDomain";
 	var domain_id = $(th).attr('domain_id');
-	ajaxPost(url,{
-		'userId':userId,
-		'domainId':domain_id
-	}).success(function(){
-		$('.tr_'+domain_id).remove();
-		swal("删除成功");
+	swal({
+		title: "确定删除?",
+		text: "你确定删除这条信息？!",
+		type: "warning",
+		showCancelButton: true,
+		cancelButtonText:'取消',
+		confirmButtonColor: "#DD6B55",
+		confirmButtonText: "删除!",
+		closeOnConfirm: false
+	},
+	function(){
+		ajaxPost(url,{
+			'userId':userId,
+			'domainId':domain_id
+		}).success(function(){
+	    swal("删除成功!", "您已成功删除这条信息", "success");
+	    $('.tr_'+domain_id).remove();
+		});
 	});
 }
 

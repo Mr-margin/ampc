@@ -198,23 +198,63 @@ function pullPage(value){
  * 返回上一界面
  */
 function back(){
-	console.log($('.save').attr('disabled'));
+	var url = '/Domain/updateRangeAndCode';
+	var data = submitSave();
 	if($('.save').attr('disabled') == 'disabled'){
 		history.back(-1);
 	}else{
 		swal({
-		  title: "确定返回?",
-		  text: "请您确定数据以保存!",
-		  type: "warning",
-		  showCancelButton: true,
-		  confirmButtonColor: "#DD6B55",
-		  confirmButtonText: "确定",
-		  closeOnConfirm: false
+			title: "是否保存?",
+			text: "请您确定数据已经保存!",
+			type: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#DD6B55",
+			cancelButtonText:'取消',
+			confirmButtonText: "确定",
+			closeOnConfirm: false
 		},
-		function(){
-			$('.sweet-overlay').hide();
-			$('.visible').hide();
-		    history.back(-1);
+		function(isConfirm){
+			if (isConfirm) {
+		  		if(data.domainInfo.common.ref_lat == ''){
+					swal("请输入Latitude_Of_Origin");
+				}else if(data.domainInfo.common.ref_lon == ''){
+					swal("请输入Central_Meridian");
+				}else if(data.domainInfo.common.stand_lat1 == ''){
+					swal("请输入Standard_Parallel_1");
+				}else if(data.domainInfo.common.stand_lat2 == ''){
+					swal("请输入Standard_Parallel_2");
+				}else if($('.e_we1').val() == ''){
+					swal("请输入x方向网格边数");
+				}else if($('.e_sn1').val() == ''){
+					swal("请输入y方向网格边数");
+				}else if($('.btrim_select').find("option:selected").val() == '0'){
+					swal("请选择x,y向裁剪网格数");
+				}else if($('.domain_select').find("option:selected").text() == '请选择'){
+					swal("请选择x,y向分辨率(m)");
+				}else{
+					ajaxPost(url,{
+						'userId':data.userId,
+						'domainInfo':data.domainInfo,
+						'domainRange':data.domainRange,
+						'domainId':data.domainId,
+					}).success(function(res){
+						console.log(res);
+						if(res.msg == 'success'){
+							swal("保存成功");
+							$('.sweet-overlay').hide();
+							$('.visible').hide();
+						    history.back(-1);
+							$('.save').attr('disabled',true);
+						}else{
+							swal("保存失败");
+						}
+					});
+				}
+			} else {
+		  		$('.sweet-overlay').hide();
+				$('.visible').hide();
+			    history.back(-1);
+			}
 		});
 	}
 }
