@@ -537,7 +537,7 @@ function bianji(type, g_num, p , wind) {
 
                     app.mapimagelayer[g_num].addImage(mapImage);//将新的图片图层添加到地图
 
-                    $('#colorBar'+g_num).html("<img src='img/cb/"+par.species[0]+".png' width='75%' height='75px' />");//添加图例
+                    $('#colorBar'+g_num).html("<img src='img/cb/"+mappingSpecies[par.timePoint][$('#species').val()]+".png' width='75%' height='75px' />");//添加图例
                     zmblockUI1("#mapDiv"+g_num, "end");//打开锁屏控制
 
 //                    $.each(data.data, function (i, col) {
