@@ -99,7 +99,7 @@ $('.ref_lat').blur(function(){
 });
 $('.e_reolace').blur(function(){
 	var num = $(this).val();
-	if((num-1)%3 !== 0){
+	if((num-1)%3 !== 0 && num !== ''){
 		swal("请输入3的倍数+1的数字");
 		$(this).val('');
 	}
