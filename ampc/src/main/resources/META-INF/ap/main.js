@@ -1,3 +1,6 @@
+// 导航
+$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">首页</span>');
+
 //任务列表
 $("#renwu").datagrid({
     url:"/ampc/mission/get_mission_list",
