@@ -179,7 +179,6 @@ require(
             app.stlayerList[i] = new dong.gaodeLayer({layertype: "st"});
             app.labellayerList[i] = new dong.gaodeLayer({layertype: "label"});
             app.mapList[i].addLayer(app.baselayerList[i]);//添加高德地图到map容器
-            app.mapList[i].addLayers([app.baselayerList[i]]);//添加高德地图到map容器
             
             app.mapimagelayer[i] = new dong.MapImageLayer({"id":"myil"+i});
             app.mapList[i].addLayer(app.mapimagelayer[i]);
