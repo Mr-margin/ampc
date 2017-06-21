@@ -93,7 +93,9 @@ public class ExcelToDate {
     //SheetName错误信息
     public static final String SHEETNAME_ERROR="SheetName名称超过规定长度(要求在10个字符以内)!";
     
-   
+    //服务器访问验证文件的路径
+   public String checkExcelURL= "/home/xulili/apache-tomcat-8.5.13/webapps/ampc/WEB-INF/classes/checkFile/";
+    
     /**
      * 初始化Excel信息方法
      * @param path 要解析的路径
@@ -188,12 +190,12 @@ public class ExcelToDate {
   			 * TODO 本地配置
   			 */
 			//获取校验文件
-			//File directory = new File("");
-			//String path= directory.getCanonicalPath()+"\\src\\main\\resources\\checkFile\\"+jsonName;
+			File directory = new File("");
+			String path= directory.getCanonicalPath()+"\\src\\main\\resources\\checkFile\\"+jsonName;
 			/**
 			 * TODO外网配置
 			 */
-			String path="/home/xulili/apache-tomcat-8.5.13/webapps/ampc/WEB-INF/classes/checkFile/"+jsonName;
+			//String path=checkExcelURL+jsonName;
 			//解析文件获取解析信息
 			LinkedHashMap map=JsonUtil.readObjFromJsonFile(path, LinkedHashMap.class);
 			//返回信息
@@ -847,12 +849,12 @@ public class ExcelToDate {
   			/**
   			 * TODO 本地配置
   			 */
-     	  // File directory = new File("");
-     	  // String qdPath= directory.getCanonicalPath()+"\\src\\main\\resources\\checkFile\\应急系统新_3清单数据.json";
+     	   File directory = new File("");
+     	   String qdPath= directory.getCanonicalPath()+"\\src\\main\\resources\\checkFile\\应急系统新_3清单数据.json";
      	  /**
      	   * TODO 外网配置
      	   */
-  			String qdPath="/home/xulili/apache-tomcat-8.5.13/webapps/ampc/WEB-INF/classes/checkFile/应急系统新_3清单数据.json";
+  			//String qdPath=checkExcelURL+"应急系统新_3清单数据.json";
   			File txt=new File(qdPath);
             //保存清单校验文件
             if(!saveCheckFile(info,txt)){
