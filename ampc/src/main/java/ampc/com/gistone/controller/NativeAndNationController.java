@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.sql.Clob;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -1298,6 +1299,7 @@ public class NativeAndNationController {
 			int total=tEsCouplingMapper.selectTotalCoupling(couplingMap);
 			//存放数据集合
 			List couplingList = new ArrayList();
+			List MeiccityconfigList = new ArrayList();
 			//循环修改每个数据中的值
 			for(int i=0;i<list.size();i++){
 				Map tEsCouplingMap = list.get(i);
@@ -1317,35 +1319,56 @@ public class NativeAndNationController {
 			    if(clob != null){
 			    	//进行格式转换
 			    	detailinfo = clob.getSubString((long)1,(int)clob.length());
+			    	
+			    	//覆盖键值重新添加数据
+				    //存放新的清单数据
+				    String strs="["+detailinfo+"]";
+				    List<Map> listConfig = mapper.readValue(strs, List.class);
+				    
+				    for(int j=0;j<listConfig.size();j++){
+				    	Map	mapConfig = (Map)listConfig.get(j);
+				    	String nativeName= mapConfig.get("meicCityId").toString();
+				    	String meicCityName = tEsNativeMapper.selectNameByNativeId(Long.valueOf(nativeName));
+				    	String _parameter = mapConfig.get("regionId").toString()+"00";
+				    	String regionName = tAddressMapper.selectNameByCode(_parameter);
+				    	//清单id
+				    	mapConfig.put("meicCityId", meicCityName);
+				    	//城市id
+				    	mapConfig.put("regionId", regionName);
+				    	MeiccityconfigList.add(mapConfig);
+				    }
 			    }
-			    //覆盖键值重新添加数据
-			    //存放新的清单数据
-//			    List MeiccityconfigList = new ArrayList();
-//			    String[] listConfigStr=detailinfo.split(",");
-//			    List<String> listConfig= new ArrayList<String>();
-//			    for (String str : listConfigStr)
-//			    {
-//			    	listConfig.add(str);
-//			    }
-//			        
-//			    for(int j=0;j<listConfig.size();j++){
-//			    	Map	mapConfig = mapper.readValue(listConfig.get(j).toString(), Map.class);
-//			    	String nativeName= mapConfig.get("meicCityId").toString();
-//			    	String meicCityName = tEsNativeMapper.selectNameByNativeId(Long.valueOf(nativeName));
-//			    	String _parameter = mapConfig.get("regionId").toString()+"00";
-//			    	String regionName = tAddressMapper.selectNameByCode(_parameter);
-//			    	//清单id
-//			    	mapConfig.put("meicCityId", meicCityName);
-//			    	//城市id
-//			    	mapConfig.put("regionId", regionName);
-//			    }
-//			    //查询全国清单名称
-//				TEsNation tEsNation = tEsNationMapper.selectByPrimaryKey(Long.valueOf(tEsCouplingMap.get("esCouplingNationId").toString()));
-//				//查询本地清单名称
-//				TEsNativeTp tEsNativeTp  =tEsNativeTpMapper.selectByPrimaryKey(Long.valueOf(tEsCouplingMap.get("esCouplingNativetpId").toString()));
-//			    tEsCouplingMap.put("esCouplingNationId", tEsNation);
-//			    tEsCouplingMap.put("esCouplingNativeId", tEsNativeTp);
-				tEsCouplingMap.put("esCouplingMeiccityconfig", detailinfo);
+			    
+			    String tEsNationName;
+			    String tEsNativeTpName;
+			    if(tEsCouplingMap.get("esCouplingNationId")!=null){
+			    	//查询全国清单名称
+					TEsNation tEsNation = tEsNationMapper.selectByPrimaryKey(Long.valueOf(tEsCouplingMap.get("esCouplingNationId").toString()));
+					if(tEsNation==null){
+						tEsNationName = "-";
+					}else{
+						tEsNationName = tEsNation.getEsNationName().toString();
+					}
+					
+			    }else{
+			    	tEsNationName = "-";
+			    }
+			    
+			    if(tEsCouplingMap.get("esCouplingNativetpId")!=null){
+			    	//查询本地清单名称
+					TEsNativeTp tEsNativeTp = tEsNativeTpMapper.selectByPrimaryKey(Long.valueOf(tEsCouplingMap.get("esCouplingNativetpId").toString()));
+					if(tEsNativeTp==null){
+						tEsNativeTpName = "-";
+					}else{
+						tEsNativeTpName = tEsNativeTp.getEsNativeTpName();
+					}
+			    }else{
+			    	tEsNativeTpName = "-";
+			    }
+				
+			    tEsCouplingMap.put("esCouplingNationId", tEsNationName);
+			    tEsCouplingMap.put("esCouplingNativeId", tEsNativeTpName);
+				tEsCouplingMap.put("esCouplingMeiccityconfig", MeiccityconfigList);
 				//添加到集合中
 				couplingList.add(tEsCouplingMap);
 			}
