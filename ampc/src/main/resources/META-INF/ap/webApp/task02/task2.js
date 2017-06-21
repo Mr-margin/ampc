@@ -1348,7 +1348,6 @@ require(
         app.stlayerList1 = new dong.gaodeLayer({layertype: "st1"});
         app.labellayerList1 = new dong.gaodeLayer({layertype: "label1"});
         app.map1.addLayer(app.baselayerList1);//添加高德地图到map容器
-        app.map1.addLayers([app.baselayerList1]);//添加高德地图到map容器
         app.gLyr1 = new dong.GraphicsLayer({"id": "gLyr1"});
         app.map1.addLayer(app.gLyr1);
         app.map1.on("loaded", app2())
@@ -1365,7 +1364,6 @@ require(
         app.stlayerList = new dong.gaodeLayer({layertype: "st"});
         app.labellayerList = new dong.gaodeLayer({layertype: "label"});
         app.map.addLayer(app.baselayerList);//添加高德地图到map容器
-        app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
         app.gLyr = new dong.GraphicsLayer({"id": "gLyr"});
         app.map.addLayer(app.gLyr);
     });
@@ -1395,6 +1393,7 @@ function addLayer(data) {
         }
         if (t1 != "") {
             query.where = "ADMINCODE IN (" + t1.substring(0, t1.length - 1) + ")";
+            zmblockUI1("#mapDiv", "start");
             if (i == "0") {
                 app.featureLayer1.queryFeatures(query, modal_Result);
             } else if (i == "1") {
@@ -1422,6 +1421,7 @@ function modal_Result(featureSet) {
         app.gLyr.add(new dong.Graphic(graphic.geometry, app.symbol));
     }
     app.map.setExtent(extent_n.expand(1.5));
+    zmblockUI1("#mapDiv", "end");//打开锁屏控制
 }
 
 /**********************************任务管理进来地图*****************************************************/
