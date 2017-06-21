@@ -1367,7 +1367,7 @@ public class NativeAndNationController {
 			    }
 				
 			    tEsCouplingMap.put("esCouplingNationId", tEsNationName);
-			    tEsCouplingMap.put("esCouplingNativeId", tEsNativeTpName);
+			    tEsCouplingMap.put("esCouplingNativeTpId", tEsNativeTpName);
 				tEsCouplingMap.put("esCouplingMeiccityconfig", MeiccityconfigList);
 				//添加到集合中
 				couplingList.add(tEsCouplingMap);
@@ -1739,7 +1739,7 @@ public class NativeAndNationController {
 			param=data.get("nativesId");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 清单ID为空或出现非法字符!");
-				return AmpcResult.build(1003, "全国清单ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "清单ID为空或出现非法字符!");
 			}
 			String  nativesIdStr = param.toString();
 			String nativeIds=nativesIdStr.substring(1, nativesIdStr.length() -1);
