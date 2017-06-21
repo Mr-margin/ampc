@@ -1294,10 +1294,12 @@ public class NativeAndNationController {
 			List<Map> list=tEsCouplingMapper.selectAllCoupling(couplingMap);
 			//查询总条数
 			int total=tEsCouplingMapper.selectTotalCoupling(couplingMap);
-			
+			//存放数据集合
 			List couplingList = new ArrayList();
+			//循环修改每个数据中的值
 			for(int i=0;i<list.size();i++){
 				Map tEsCouplingMap = list.get(i);
+				//查询每条清单耦合数据是否被任务使用
 				int result = tMissionDetailMapper.selectTtotalByCouplingId(Long.valueOf(tEsCouplingMap.get("esCouplingId").toString()));
 				if(result>0){
 					//已经被使用
@@ -1306,7 +1308,7 @@ public class NativeAndNationController {
 					//未使用
 					tEsCouplingMap.put("employ", 0);
 				}
-				//获取clob类型
+				//clob类型字段的处理
 				Clob clob = (Clob) tEsCouplingMap.get("esCouplingMeiccityconfig");
 				String detailinfo = "";
 				//判断是否为空
@@ -1315,6 +1317,20 @@ public class NativeAndNationController {
 			    	detailinfo = clob.getSubString((long)1,(int)clob.length());
 			    }
 			    //覆盖键值重新添加数据
+			    //存放新的清单数据
+			    List MeiccityconfigList = new ArrayList();
+			    List listConfig= java.util.Arrays.asList(detailinfo);
+			    for(int j=0;j<listConfig.size();j++){
+			    	Map	mapConfig = mapper.readValue(listConfig.get(j).toString(), Map.class);
+//			    	mapConfig.get("").toString();
+			    	
+			    }
+			    //查询全国清单名称
+				TEsNation tEsNation = tEsNationMapper.selectByPrimaryKey(Long.valueOf(tEsCouplingMap.get("esCouplingNationId").toString()));
+				//查询本地清单名称
+				TEsNativeTp tEsNativeTp  =tEsNativeTpMapper.selectByPrimaryKey(Long.valueOf(tEsCouplingMap.get("esCouplingNativeId").toString()));
+			    tEsCouplingMap.put("esCouplingNationId", tEsNation);
+			    tEsCouplingMap.put("esCouplingNativeId", tEsNativeTp);
 				tEsCouplingMap.put("esCouplingMeiccityconfig", detailinfo);
 				//添加到集合中
 				couplingList.add(tEsCouplingMap);
@@ -1849,12 +1865,12 @@ public class NativeAndNationController {
 				//添加所需参数更新耦合配置信息
 				TEsCoupling tEsCoupling = new TEsCoupling();
 				tEsCoupling.setEsCouplingId(couplingId);
-				tEsCoupling.setEsCouplingCity(CouplingCity.substring(1, CouplingCity.length()-1));
+				tEsCoupling.setEsCouplingCity(CouplingCity);
 				tEsCoupling.setEsCouplingNativetpId(nativeTpId);
 				tEsCoupling.setEsCouplingNationId(nationId);
 				//该字段类型需修改为String类型
 				tEsCoupling.setEsCouplingNativeId(nativesId.substring(1, nativesId.length()-1));
-				tEsCoupling.setEsCouplingMeiccityconfig(meicCityConfig);
+				tEsCoupling.setEsCouplingMeiccityconfig(meicCityConfig.substring(1, meicCityConfig.length()-1));
 				//更新耦合清单数据
 				int result= tEsCouplingMapper.updateDataByPrimaryKey(tEsCoupling);
 				if(result>0){
