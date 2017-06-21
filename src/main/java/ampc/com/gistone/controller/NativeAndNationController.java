@@ -1318,18 +1318,18 @@ public class NativeAndNationController {
 			    }
 			    //覆盖键值重新添加数据
 			    //存放新的清单数据
-			    List MeiccityconfigList = new ArrayList();
-			    List listConfig= java.util.Arrays.asList(detailinfo);
-			    for(int j=0;j<listConfig.size();j++){
-			    	Map	mapConfig = mapper.readValue(listConfig.get(j).toString(), Map.class);
+//			    List MeiccityconfigList = new ArrayList();
+//			    List listConfig= java.util.Arrays.asList(detailinfo);
+//			    for(int j=0;j<listConfig.size();j++){
+//			    	Map	mapConfig = mapper.readValue(listConfig.get(j).toString(), Map.class);
 //			    	mapConfig.get("").toString();
 			    	
-			    }
+//			    }
 			    //查询全国清单名称
-				TEsNation tEsNation = tEsNationMapper.selectByPrimaryKey(Long.valueOf(tEsCouplingMap.get("esCouplingNationId").toString()));
+//				TEsNation tEsNation = tEsNationMapper.selectByPrimaryKey(Long.valueOf(tEsCouplingMap.get("esCouplingNationId").toString()));
 				//查询本地清单名称
 //				TEsNativeTp tEsNativeTp  =tEsNativeTpMapper.selectByPrimaryKey(Long.valueOf(tEsCouplingMap.get("esCouplingNativeId").toString()));
-			    tEsCouplingMap.put("esCouplingNationId", tEsNation);
+//			    tEsCouplingMap.put("esCouplingNationId", tEsNation);
 //			    tEsCouplingMap.put("esCouplingNativeId", tEsNativeTp);
 				tEsCouplingMap.put("esCouplingMeiccityconfig", detailinfo);
 				//添加到集合中
