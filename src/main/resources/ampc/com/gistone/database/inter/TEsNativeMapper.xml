@@ -266,4 +266,13 @@
 	WHERE
 		ES_NATIVE_NAME = #{esNativeName,jdbcType=OTHER}
   </select>
+  <!-- 根据id查询清单名称 -->
+ <select id="selectNameByNativeId" resultType="java.lang.String" parameterType="java.lang.Long" >
+    SELECT
+	ES_NATIVE_NAME
+FROM
+	"AMPC"."T_ES_NATIVE"
+WHERE
+	ES_NATIVE_ID = #{esNativeId,jdbcType=DECIMAL}
+  </select>
 </mapper>
