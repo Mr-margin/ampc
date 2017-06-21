@@ -198,20 +198,25 @@ function pullPage(value){
  * 返回上一界面
  */
 function back(){
-	swal({
-	  title: "确定返回?",
-	  text: "请您确定数据以保存!",
-	  type: "warning",
-	  showCancelButton: true,
-	  confirmButtonColor: "#DD6B55",
-	  confirmButtonText: "确定",
-	  closeOnConfirm: false
-	},
-	function(){
-		$('.sweet-overlay').hide();
-		$('.visible').hide();
-	    history.back(-1);
-	});
+	console.log($('.save').attr('disabled'));
+	if($('.save').attr('disabled') == 'disabled'){
+		history.back(-1);
+	}else{
+		swal({
+		  title: "确定返回?",
+		  text: "请您确定数据以保存!",
+		  type: "warning",
+		  showCancelButton: true,
+		  confirmButtonColor: "#DD6B55",
+		  confirmButtonText: "确定",
+		  closeOnConfirm: false
+		},
+		function(){
+			$('.sweet-overlay').hide();
+			$('.visible').hide();
+		    history.back(-1);
+		});
+	}
 }
 
 /**
