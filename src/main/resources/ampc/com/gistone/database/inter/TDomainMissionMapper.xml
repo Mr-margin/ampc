@@ -312,6 +312,7 @@
     <include refid="Blob_Column_List" />
     from T_DOMAIN_MISSION
     where ID_EFFECTIVE ='1' AND USER_ID = #{userId,jdbcType=DECIMAL}
+    ORDER BY ADD_TIME DESC
   </select>
   <update id="updateByUserId" parameterType="java.lang.Long" >
     update T_DOMAIN_MISSION
