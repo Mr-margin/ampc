@@ -1367,7 +1367,7 @@ public class NativeAndNationController {
 			    }
 				
 			    tEsCouplingMap.put("esCouplingNationId", tEsNationName);
-			    tEsCouplingMap.put("esCouplingNativeTpId", tEsNativeTpName);
+			    tEsCouplingMap.put("esCouplingNativetpId", tEsNativeTpName);
 				tEsCouplingMap.put("esCouplingMeiccityconfig", MeiccityconfigList);
 				//添加到集合中
 				couplingList.add(tEsCouplingMap);
