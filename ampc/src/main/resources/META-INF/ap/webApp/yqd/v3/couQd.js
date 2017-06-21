@@ -861,7 +861,11 @@ function saveAllId(){ //选好清单以后进行保存
 //城市表格生成
 var allCheckRow=[]
 function cityTable(cityData,checkRow) {
-    allCheckRow.push(checkRow)
+    if(checkRow.length>0){
+        for(var m=0;m<checkRow.length;m++){
+            allCheckRow.push(checkRow[m]);
+        }
+    }
     //生成城市选择表格
     $("#cityOptionTable").datagrid({
         columns:[[
