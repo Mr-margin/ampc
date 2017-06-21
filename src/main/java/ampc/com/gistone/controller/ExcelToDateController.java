@@ -280,9 +280,19 @@ public class ExcelToDateController {
 					throw new SQLException("ExcelToDateController 保存行业描述信息失败,数据库添加失败。");
 				}
 			}
+			//查询行业版本
+			TSectorExcel tSectorExcel=new TSectorExcel();
+			tSectorExcel.setUserId(userId);
+			tSectorExcel.setDetailedListId(templateId);
+			String version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
+			if(version==null||version.equals("")){
+				 tSectorExcel=new TSectorExcel();
+				 tSectorExcel.setDetailedListId(templateId);
+				 version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
+			}
 			filePath=URLEncoder.encode(filePath, "utf-8");
 			// 调用外部保存接口 并获取结果Json
-			String url=configUtil.getYunURL()+"/import/importTemplate?bigIndex="+templateId+"&version=1&filePath="+filePath;
+			String url=configUtil.getYunURL()+"/import/importTemplate?bigIndex="+templateId+"&version="+version+"&filePath="+filePath;
 			String getResult = ClientUtil.doPost(url,"");
 			// 并根据得到的结果进行Json的解析
 			Map resultMap=mapper.readValue(getResult, Map.class);
@@ -477,7 +487,7 @@ public class ExcelToDateController {
 				 version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
 			}
 			// 调用外部保存接口 并获取结果Json
-			String url=configUtil.getYunURL()+"/import/importData?templateId="+templateId+"&bigIndex="+qdId+"&version=1&filePath="+filePath+"&versionExcelId="+version;
+			String url=configUtil.getYunURL()+"/import/importData?templateId="+templateId+"&bigIndex="+qdId+"&version="+version+"&filePath="+filePath+"&versionExcelId="+version;
 			String getResult = ClientUtil.doPost(url,"");
 			// 并根据得到的结果进行Json的解析
 			Map resultMap=mapper.readValue(getResult, Map.class);
