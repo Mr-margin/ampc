@@ -1339,7 +1339,7 @@ function showTitleFun() {
 
     // var timeTwoFor=moment(changeMsg.sTimeD+"-"+changeMsg.eTime,"YYYY-MM-DD-YYYY-MM-DD").format("YYYY-MM-DD-YYYY-MM-DD");
     $('#showTitle .specieName').html("<span class='titleTab'><i class='en-layout' style='font-size: 16px;'></i>"+"&nbsp;物种：</span>"+changeMsg.species).css({"margin-right":"40px"});
-    $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(changeMsg.domain=='1'?'3KM':(changeMsg.domain=='2'?'9KM':'27km'))).css({"margin-right":"40px"});
+    $('#showTitle .spaceName').html("<span class='titleTab'><i class='en-flow-parallel' style='font-size: 16px;'></i>"+"&nbsp;空间分辨率：</span>"+(changeMsg.domain=='3'?'3KM':(changeMsg.domain=='2'?'9KM':'27km'))).css({"margin-right":"40px"});
     if(changeMsg.rms=='d'){
         $('#showTitle .timeName').html("<span class='titleTab'><i class='im-clock2' style='font-size: 16px;'></i>"+"&nbsp;时间分辨率：</span>"+'逐日').css({"margin-right":"40px"});
         $('#showTitle .dateStartName').html("<span class='titleTab'><i class='br-calendar' style='font-size: 16px;'></i>"+"&nbsp;日期：</span>"+timeStartFor).css({"margin-right":"40px"});
