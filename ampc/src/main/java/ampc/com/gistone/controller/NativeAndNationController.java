@@ -1,28 +1,18 @@
 package ampc.com.gistone.controller;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.sql.Clob;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -43,18 +33,15 @@ import ampc.com.gistone.database.inter.TEsNativeMapper;
 import ampc.com.gistone.database.inter.TEsNativeTpMapper;
 import ampc.com.gistone.database.inter.TMissionDetailMapper;
 import ampc.com.gistone.database.inter.TSectorExcelMapper;
-import ampc.com.gistone.database.model.TAddress;
 import ampc.com.gistone.database.model.TEsCoupling;
 import ampc.com.gistone.database.model.TEsNation;
 import ampc.com.gistone.database.model.TEsNative;
 import ampc.com.gistone.database.model.TEsNativeTp;
 import ampc.com.gistone.database.model.TSectorExcel;
-import ampc.com.gistone.extract.ExtractConfig;
 import ampc.com.gistone.extract.ResultPathUtil;
 import ampc.com.gistone.util.AmpcResult;
 import ampc.com.gistone.util.ClientUtil;
 import ampc.com.gistone.util.ConfigUtil;
-import ampc.com.gistone.util.DateUtil;
 import ampc.com.gistone.util.LogUtil;
 import ampc.com.gistone.util.RegUtil;
 
@@ -96,8 +83,6 @@ public class NativeAndNationController {
 	private ObjectMapper mapper=new ObjectMapper();
 	
 	private final static Logger logger = LoggerFactory.getLogger(ResultPathUtil.class);
-	
-	private ExtractConfig extractConfig;
 	
 	/**
 	 * 源清单请求过滤
@@ -172,6 +157,7 @@ public class NativeAndNationController {
 					listTps = verifyByCouplingName(requestDate,request,response);
 				}
 				else if("".equals(param)){
+					LogUtil.getLogger().info("NativeAndNationController doPost请求方法参数异常!");
 					return AmpcResult.build(1003, "NativeAndNationController 请求方法参数异常!");
 				}
 				
@@ -224,12 +210,9 @@ public class NativeAndNationController {
 	 * @param response 响应
 	 * @return 返回响应结果对象
 	 */
-//	@RequestMapping("/NativeAndNation/find_nation")
 	public AmpcResult find_nation(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
-			// 设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			//获取用户ID
 			Object param=data.get("userId");
@@ -402,8 +385,6 @@ public class NativeAndNationController {
 	public AmpcResult add_nation(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
-			// 设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			//获取用户ID
 			Object param=data.get("userId");
@@ -472,8 +453,6 @@ public class NativeAndNationController {
 	public AmpcResult update_nation(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
-			// 设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			
 			//获取用户ID
@@ -552,8 +531,6 @@ public class NativeAndNationController {
 	public AmpcResult delete_nation(@RequestBody Map<String, Object> requestDate,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
-			// 设置跨域
-			ClientUtil.SetCharsetAndHeader(request, response);
 			Map<String, Object> data = (Map) requestDate.get("data");
 			
 			Object param=data.get("nationId");
@@ -788,12 +765,10 @@ public class NativeAndNationController {
 			String newNativeTpName=param.toString();
 			
 			//修改FTP中对应文件夹的名称
-//			File file=new File(configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName);
 			File file=new File(new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName).toString().getBytes("iso-8859-1"),"utf-8"));
 			//判断之前创建的文件夹是否存在
 			if(file.exists()){
 				//如果存在修改文件夹名称为修改后的新名称
-//				File newfile=new File(configUtil.getFtpURL()+"/"+userId+"/"+newNativeTpName);
 				File newfile=new File(new String((configUtil.getFtpURL()+"/"+userId+"/"+newNativeTpName).toString().getBytes("iso-8859-1"),"utf-8"));
 				boolean bool=file.renameTo(newfile);
 				LogUtil.getLogger().info(String.valueOf(bool)+"true为清单模板文件夹名称修改成功");
@@ -927,37 +902,6 @@ public class NativeAndNationController {
 			String nativeTpName=param.toString();
 			
 			//服务器配置路径
-//			String nativefilePath = new String((configUtil.getFtpURL()+""+userId+"/"+nativeTpName+"/"+nativeName).toString().getBytes("iso-8859-1"),"utf-8");
-//			String nativesfilePath = new String((configUtil.getFtpURL()+""+userId+"/"+nativeTpName+"/"+nativeName).toString().getBytes("iso-8859-1"),"utf-8");
-//			String natives_filePath = "/"+userId+"/"+nativeTpName+"/"+nativeName;
-//			
-//			//获取file对象
-//			File files =new File(nativesfilePath);
-//			File file =new File(nativefilePath);
-//			//目录已经存在
-//			if(files.exists()){
-//				LogUtil.getLogger().info("NativeAndNationController 本地清单目录已存在!");
-//				//判断是否包含该文件模板
-////				if(file.exists()){
-////					System.out.println("该模板已经存在");
-////				}else{
-////					//模板文件夹不存在,进行创建
-////					file.mkdir();
-////				}
-//			}else{
-//				//不存在进行创建目录
-//				files.mkdir();
-//				LogUtil.getLogger().info("NativeAndNationController 本地清单目录已创建!");
-////				if(file.exists()){
-////					System.out.println("文件已存在");
-////				}else{
-////					//不存在创建文件
-////					//模板文件夹创建完成
-////					file.mkdir();
-////					System.out.println("模板文件夹创建完成");
-////				}
-//			}
-			
 			String nativesfilePath = new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName+"/"+nativeName).toString().getBytes("iso-8859-1"),"utf-8");
 			LogUtil.getLogger().info(nativesfilePath);
 			//调用接口所需参数
