@@ -937,7 +937,16 @@ function deleteFun(type) {
 
         $.when(ajaxPost(url, params), ajaxPost(url1, params1))
             .done(function (ajaxArgs,ajaxArgs1) {
-            	if(ajaxArgs1[0].status==1003){
+            	if(ajaxArgs[0].status==1002){
+            		swal({
+                        title: ajaxArgs[0].msg,
+                        type: 'warning',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+            		return ;
+            	}
+            	if(ajaxArgs1[0].status==1002){
             		swal({
                         title: '所选情景中有正在执行，删除操作已取消！',
                         type: 'warning',
