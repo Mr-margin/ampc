@@ -244,7 +244,7 @@ public class ExcelToDateController {
 	 * @return 返回响应结果对象
 	 * TODO 行业描述
 	 */
-	public Map update_SectorDocExcelData(Long userId,Long templateId,String filePath,String outPath) {
+	public Map update_SectorDocExcelData(Long userId,Long templateId,String filePath,String outPath,String checkExcelURL) {
 		//Ftp路径
 		filePath=configUtil.getFtpURL()+filePath;
 		//出错的文件保存路径
@@ -266,7 +266,7 @@ public class ExcelToDateController {
 			}
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			ExcelToDate ed=new ExcelToDate();
-			List<TSectordocExcel> tse = ed.ReadSectorDOC(filePath,versionId,userId,msg,newoutPath,templateId);
+			List<TSectordocExcel> tse = ed.ReadSectorDOC(filePath,versionId,userId,msg,newoutPath,templateId,checkExcelURL);
 			//如果错误信息大于0 则证明出错了
 			if(msg.size()>0||tse==null){
 				LogUtil.getLogger().error("读取行业描述Excel出错!");
@@ -333,7 +333,7 @@ public class ExcelToDateController {
 	 * @return 返回响应结果对象
 	 * TODO 条件
 	 */
-	public Map update_QueryExcelData(Long userId,Long templateId,String filePath,String outPath) {
+	public Map update_QueryExcelData(Long userId,Long templateId,String filePath,String outPath,String checkExcelURL) {
 		//Ftp路径
 		filePath=configUtil.getFtpURL()+filePath;
 		//出错的文件保存路径
@@ -355,7 +355,7 @@ public class ExcelToDateController {
 			}
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			ExcelToDate ed=new ExcelToDate();
-			List<TQueryExcel> tqe = ed.ReadQuery(filePath,versionId,userId,msg,newoutPath,templateId);
+			List<TQueryExcel> tqe = ed.ReadQuery(filePath,versionId,userId,msg,newoutPath,templateId,checkExcelURL);
 			//如果错误信息大于0 则证明出错了
 			if(msg.size()>0||tqe==null){
 				LogUtil.getLogger().error("读取行业筛选条件Excel出错!");
@@ -394,7 +394,7 @@ public class ExcelToDateController {
 	 * @param response    响应
 	 * @return 返回响应结果对象
 	 */
-	public Map update_SectorData(Long userId,Long templateId,String filePath,String outPath) {
+	public Map update_SectorData(Long userId,Long templateId,String filePath,String outPath,String checkExcelURL) {
 		//Ftp路径
 		filePath=configUtil.getFtpURL()+filePath;
 		//出错的文件保存路径
@@ -411,7 +411,7 @@ public class ExcelToDateController {
 			String versionId="行业文件"+time;
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			ExcelToDate ed=new ExcelToDate();
-			List<TSectorExcel> readSector = ed.ReadSector(filePath,versionId,userId,msg,newoutPath,templateId);
+			List<TSectorExcel> readSector = ed.ReadSector(filePath,versionId,userId,msg,newoutPath,templateId,checkExcelURL);
 			//如果错误信息大于0 则证明出错了
 			if(msg.size()>0||readSector==null){
 				LogUtil.getLogger().error("读取行业Excel出错!");
@@ -452,7 +452,7 @@ public class ExcelToDateController {
 	 * @return 返回响应结果对象
 	 */
 	@RequestMapping("excel/checkNative")
-	public Map check_nativeExcelData(Long userId,Long templateId,Long qdId,String filePath,String outPath) {
+	public Map check_nativeExcelData(Long userId,Long templateId,Long qdId,String filePath,String outPath,String checkExcelURL) {
 		//Ftp路径
 		filePath=configUtil.getFtpURL()+filePath;
 		//出错的文件保存路径
@@ -466,7 +466,7 @@ public class ExcelToDateController {
 		try {
 			//地址不确定  先写死了 获取到所有Excel中需要的数据
 			ExcelToDate ed=new ExcelToDate();
-			boolean isTrue = ed.CheckNative(filePath,msg,newoutPath);
+			boolean isTrue = ed.CheckNative(filePath,msg,newoutPath,checkExcelURL);
 			//如果错误信息大于0 则证明出错了
 			if(!isTrue){
 				LogUtil.getLogger().error("验证清单数据Excel出错!");
