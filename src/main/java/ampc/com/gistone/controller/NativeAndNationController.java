@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.sql.Clob;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1073,12 +1074,13 @@ public class NativeAndNationController {
 			//调用校验数据函数
 			boolean bool=excelToDateController.deleteExcelData(nativeTpId, userId);
 			if(bool==true){
-				Map  sectorDocExcel =excelToDateController.update_SectorDocExcelData(userId,nativeTpId,native_filePath+ "/"+"应急系统新_1描述文件.xlsx",esNativeTpOutPath);
-				if(sectorDocExcel==null){
+				Map  sector =excelToDateController.update_SectorData(userId,nativeTpId,native_filePath+ "/"+"应急系统新_4行业匹配.xlsx",esNativeTpOutPath);
+				if(sector==null){
 					Map  queryExcel =excelToDateController.update_QueryExcelData(userId,nativeTpId,native_filePath+ "/"+"应急系统新_2筛选逻辑.xlsx",esNativeTpOutPath);
 					if(queryExcel==null){
-						Map  sector =excelToDateController.update_SectorData(userId,nativeTpId,native_filePath+ "/"+"应急系统新_4行业匹配.xlsx",esNativeTpOutPath);
-						if(sector==null){
+						Map  sectorDocExcel =excelToDateController.update_SectorDocExcelData(userId,nativeTpId,native_filePath+ "/"+"应急系统新_1描述文件.xlsx",esNativeTpOutPath);
+						if(sectorDocExcel==null){
+							
 							//用户id,模板id,措施id
 							Map save_MS=excelToDateController.save_MS(userId,nativeTpId,"系统内置");
 							if(save_MS==null){
@@ -1104,7 +1106,7 @@ public class NativeAndNationController {
 							}
 						}else{
 							LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息失败!");
-							return AmpcResult.ok(sector);
+							return AmpcResult.ok(sectorDocExcel);
 						}
 					}else{
 						LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息失败!");
@@ -1112,7 +1114,7 @@ public class NativeAndNationController {
 					}
 				}else{
 					LogUtil.getLogger().info("NativeAndNationController 校验本地清单模板信息失败!");
-					return AmpcResult.ok(sectorDocExcel);
+					return AmpcResult.ok(sector);
 				}
 			}else{
 				LogUtil.getLogger().info("NativeAndNationController 删除Excel信息失败!");
@@ -1319,16 +1321,28 @@ public class NativeAndNationController {
 			    //覆盖键值重新添加数据
 			    //存放新的清单数据
 //			    List MeiccityconfigList = new ArrayList();
-//			    List listConfig= java.util.Arrays.asList(detailinfo);
+//			    String[] listConfigStr=detailinfo.split(",");
+//			    List<String> listConfig= new ArrayList<String>();
+//			    for (String str : listConfigStr)
+//			    {
+//			    	listConfig.add(str);
+//			    }
+//			        
 //			    for(int j=0;j<listConfig.size();j++){
 //			    	Map	mapConfig = mapper.readValue(listConfig.get(j).toString(), Map.class);
-//			    	mapConfig.get("").toString();
-			    	
+//			    	String nativeName= mapConfig.get("meicCityId").toString();
+//			    	String meicCityName = tEsNativeMapper.selectNameByNativeId(Long.valueOf(nativeName));
+//			    	String _parameter = mapConfig.get("regionId").toString()+"00";
+//			    	String regionName = tAddressMapper.selectNameByCode(_parameter);
+//			    	//清单id
+//			    	mapConfig.put("meicCityId", meicCityName);
+//			    	//城市id
+//			    	mapConfig.put("regionId", regionName);
 //			    }
-			    //查询全国清单名称
+//			    //查询全国清单名称
 //				TEsNation tEsNation = tEsNationMapper.selectByPrimaryKey(Long.valueOf(tEsCouplingMap.get("esCouplingNationId").toString()));
-				//查询本地清单名称
-//				TEsNativeTp tEsNativeTp  =tEsNativeTpMapper.selectByPrimaryKey(Long.valueOf(tEsCouplingMap.get("esCouplingNativeId").toString()));
+//				//查询本地清单名称
+//				TEsNativeTp tEsNativeTp  =tEsNativeTpMapper.selectByPrimaryKey(Long.valueOf(tEsCouplingMap.get("esCouplingNativetpId").toString()));
 //			    tEsCouplingMap.put("esCouplingNationId", tEsNation);
 //			    tEsCouplingMap.put("esCouplingNativeId", tEsNativeTp);
 				tEsCouplingMap.put("esCouplingMeiccityconfig", detailinfo);
