@@ -171,24 +171,31 @@ function innitdata(active){
                         }
                     }},
                     {field:"actor",title:"操作",width:100,align:'center',formatter:function(value,row,index){
-                        var addNativeDiv="<button id='addQdBtn'  style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='adgQdBtn(\""+row.id+"\")'>添加数据</button>"
-                        var addNativeDivEdit="<button id='addQdBtn'  style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='editQdBtn(\""+row.id+"\")'>编辑</button>"
-                        var addNativeDivDelet="<button id='addQdBtn'  style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='deleteQdBtn(\""+row.id+"\")'>删除</button>"
-                        var checkDiv="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='$(this).attr(\"disabled\",\"disabled\");$(this).css({\"background-color\":\"#D9D9D9\",\"border\":\"1px solid #666\"});checkData(\""+row.id+"\");'>校验</button>";
-                        console.log(row);
-                        if(row.id.indexOf("mb")==0){
-                            if(row.isVerify==1){
-                                return addNativeDiv;
-                            }else if(row.isVerify==0){
-                                return checkDiv;
-                            }
-                        }else if(row.id.indexOf("qd")==0){
-                            if(row.isVerify==0){
-                                return checkDiv+"<br>"+addNativeDivEdit+"<br>"+addNativeDivDelet;
-                            }else if(row.isVerify==1){
-                                return addNativeDivEdit+"<br>"+addNativeDivDelet;
+                        var addNativeDiv="<a id='addQdBtn'  style='cursor:pointer;' onclick='adgQdBtn(\""+row.id+"\")'>添加数据</a>"
+                        var addNativeDivEdit="<a id='addQdBtn'  style='cursor:pointer;' onclick='editQdBtn(\""+row.id+"\")'>编辑</a>"
+                        var addNativeDivDelet="<a id='addQdBtn'  style='cursor:pointer;' onclick='deleteQdBtn(\""+row.id+"\")'>删除</a>"
+                        var checkDiv="<a style='cursor:pointer' onclick='$(this).attr(\"disabled\",\"disabled\");checkData(\""+row.id+"\");'>校验</a>";
+                        if(Boolean(value)){
+                            return value;
+                        }else{
+                            if(row.id.indexOf("mb")==0){
+                                if(row.isVerify==1){
+                                    return addNativeDiv;
+                                }else if(row.isVerify==0){
+                                    return checkDiv;
+                                }
+                            }else if(row.id.indexOf("qd")==0){
+                                if(row.isVerify==0){
+                                    return "<div class='allQdBtn'><a href='javascript:' class='localQdMenu'><i class='fa fa-caret-down' aria-hidden='true'></i></a><ul class='qdBtn'><li>"+checkDiv+"</li><li>"+addNativeDivEdit+"</li><li>"+addNativeDivDelet+"</li></ul></div>"
+                                    // return checkDiv+"<br>"+addNativeDivEdit+"<br>"+addNativeDivDelet;
+                                }else if(row.isVerify==1){
+                                    return "<div class='allQdBtn'><a href='javascript:' class='localQdMenu'><i class='fa fa-caret-down' aria-hidden='true'></i></a><ul class='qdBtn'><li>"+addNativeDivEdit+"</li><li>"+addNativeDivDelet+"</li></ul></div>"
+
+                                    // return addNativeDivEdit+"<br>"+addNativeDivDelet;
+                                }
                             }
                         }
+
                         // if(row.isVerify==1){
                         //     if(row.id.indexOf("mb")==0){
                         //         return addNativeDiv;
@@ -820,3 +827,26 @@ $("#editTempQd #esLocalQdName").blur(
 
     });
 
+//树形结构操作
+//
+/*任务列表中设置的下拉框*/
+// $(".localQdMenu").click(function () {
+//     console.log("进来1");
+//     $(this).siblings().show();
+//     console.log("进来");
+// })
+// $("#localqd").on('click', '.allQdBtn>.localQdMenu', function (e) {
+//     console.log("出现1")
+//     $(this).siblings().show();
+//     console.log("出现")
+// });
+// $("#localqd").on('mouseleave', '.allQdBtn', function (e) {
+//     $(this).find('ul').hide();
+//     console.log("隐藏")
+// });
+$('.tableBox').on('click','.localQdMenu',function (e) {
+    $(this).parent().find('.qdBtn').show();
+})
+$(".tableBox").on('mouseleave', '.allQdBtn', function (e) {
+    $(this).find('ul').hide();
+});
