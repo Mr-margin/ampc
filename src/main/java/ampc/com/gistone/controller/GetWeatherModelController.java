@@ -395,7 +395,8 @@ public class GetWeatherModelController {
 			Date tasksScenarinoEndDate = tasksStatus.getTasksScenarinoEndDate();
 			Long stepindex = tasksStatus.getStepindex();
 //			tasksEndDate = tasksEndDate ==null?startdate:tasksEndDate;
-			if (null==tasksEndDate) {
+			if (null==tasksEndDate&&9!=scenarinoStatus) {
+				//排除模式运行出错的情况
 				//情景正在初始化中，不允许暂停或者终止
 				return AmpcResult.build(1004, "模式初始化中！请暂缓操作！");
 			}else {
