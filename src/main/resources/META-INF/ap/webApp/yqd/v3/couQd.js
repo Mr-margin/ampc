@@ -25,8 +25,8 @@ function innitdata(){  //耦合清单的初始化
             // {field:"ck",checkbox:true},
             {field:"esCouplingName",title:"清单名称",width:160,align:'cneter'},
             {field:"esCouplingDesc",title:"清单描述",width:200,align:'cneter'},
-            {field:"publishTime",title:"本地清单",width:100},
-            {field:"nationRemark",title:"全国清单",width:100},
+            {field:"esCouplingNativetpId",title:"本地清单",width:100},
+            {field:"esCouplingNationId",title:"全国清单",width:100},
             {field:"esCouplingYear",title:"年份",width:80},
             {field:"addTime",title:"创建时间",formatter:function(value,row,index){
             	var val=moment(value).format('YYYY-MM-DD HH:mm:ss');
@@ -173,7 +173,7 @@ function creatCoupQd(){
             $("#formCoup label").eq(i).remove();
         }
     }
-    $("#creatCoupQd").window("open");
+    $("#creatCoupQd").window("open").window('center');;
 }
 // 清除已经写入的数据
 function clearCoup() {
@@ -260,7 +260,7 @@ function editCoupQd(){
                 $("#editCoupQd label").eq(i).remove();
             }
         }
-        $("#editCoupQd").window('open');
+        $("#editCoupQd").window('open').window('center');;
     }else{
         swal('请先选择编辑清单', '', 'error');
     }
@@ -363,7 +363,7 @@ function closeDetail() {
 var detailRow;
 function viewDetail(coupId) {
     $("#coupDetail input").innerText="";
-    $("#coupDetail").window("open")
+    $("#coupDetail").window("open").window('center');
     var rowsAll=$("#couqd").datagrid("getRows");
     if(coupId){
         for(var i=0;i<rowsAll.length;i++){
@@ -544,7 +544,7 @@ function nextCoup(){//点击下一步按钮
                         // }
                         // $("#cityOption").append(cityList);
                         //打开城市选择窗口
-                        $("#citySelect").window('open')
+                        $("#citySelect").window('open').window('center');
                         cityTable(cityData,0)//初始化耦合列表
                         // coupCity(cityData,industryData)
                     }else{
@@ -888,7 +888,7 @@ function saveAllId(){ //选好清单以后进行保存
         checkCityName.push(checkCity[nm].cityId);
     }
     singleCheckCity=checkCityName.unique()//去重
-    $("#citySelect").window("open");
+    $("#citySelect").window("open").window('center');;
 }
 //城市表格生成
 var allCheckRow=[]
