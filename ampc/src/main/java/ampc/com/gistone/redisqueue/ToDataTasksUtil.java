@@ -850,7 +850,7 @@ public class ToDataTasksUtil {
 				ruku.readyRukuparamspostPevtion(tasksScenarinoId,tasksEndDate,oldStatus);
 			}
 		} catch (Exception e) {
-			LogUtil.getLogger().error("modelDataRukuMethod:调用模式入库处理方法！",e.getMessage(),e);
+			LogUtil.getLogger().error("modelDataRukuMethod:调用模式入库处理方法异常！",e.getMessage(),e);
 			e.getStackTrace();
 		}
 	}
