@@ -2005,7 +2005,6 @@ public class NativeAndNationController {
 			//添加本地清单名称
 			tEsCouplingMap.put("nativeTpName", tEsNativeTp.getEsNativeTpName());
 			
-			
 			LogUtil.getLogger().info("NativeAndNationController 查询耦合清单详细信息成功!");
 			return AmpcResult.ok(tEsCouplingMap);
 		} catch (Exception e) {
