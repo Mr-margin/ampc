@@ -276,9 +276,9 @@ WHERE
 	ES_NATIVE_ID = #{esNativeId,jdbcType=DECIMAL}
   </select>
   
-  <select id="selectByNativeName" resultType="ampc.com.gistone.database.model.TEsNative" parameterType="java.lang.String" >
+  <select id="selectByNativeName" resultMap="BaseResultMap" parameterType="java.lang.String" >
     SELECT
-	*
+	<include refid="Base_Column_List" />
 FROM
 	"AMPC"."T_ES_NATIVE"
 WHERE
