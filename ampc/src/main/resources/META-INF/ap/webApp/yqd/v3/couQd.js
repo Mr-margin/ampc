@@ -346,6 +346,7 @@ $("#coupDetail").window({
     collapsible:false, //easyui 自带的折叠按钮
     maximizable:false,//easyui 自带的最大按钮
     minimizable:false,//easyui 自带的最小按钮
+    height:500,
     modal:true,
     shadow:false,
     title:'详细信息',
@@ -355,47 +356,70 @@ $("#coupDetail").window({
 })
 function closeDetail() {
     $("#coupDetail").window("close")
+
 }
 //点击查看耦合清单详细信息
+var detailRow;
 function viewDetail(coupId) {
     $("#coupDetail input").innerText="";
     $("#coupDetail").window("open")
     var rowsAll=$("#couqd").datagrid("getRows");
-    var checkRow;
     if(coupId){
         for(var i=0;i<rowsAll.length;i++){
             if(rowsAll[i].esCouplingId==coupId){
-                checkRow=rowsAll[i];//获取选择的耦合清单的数据
+                detailRow=rowsAll[i];//获取选择的耦合清单的数据
             }
         }
     }
-    var param={};//详细信息接口的参数
-    param.userId=userId;
-    param.method="lookByCouplingId";
-    param.couplingId=checkRow.esCouplingId,
-    param.nationId=checkRow.esCouplingNationId,
-    param.nativesId=checkRow.esCouplingNativeId,
-    param.nativeTpId=checkRow.esCouplingNativetpId,
-    param.meicCityConfig='',
-        ajaxPost('/NativeAndNation/doPost',param).success(function (res) {
-            if(res.status==0){
-                var data=res.data.data;
-                //获取耦合清单的详细信息并且渲染在页面上面
-                $("#coupName").val(data.esCouplingName);
-                $("#coupName").attr('title',data.esCouplingName);
-                $("#coupYear").val(data.esCouplingYear);
-                $("#coupYear").attr('title',data.esCouplingYear);
-                $("#coupDes").val(data.esCouplingDesc);
-                $("#coupDate").val(moment(data.addTime).format("YYYY-MM-DD"));
-                $("#coupDate").attr('title',moment(data.addTime).format("YYYY-MM-DD"));
-                $("#coupLocal").val(data.nativeTpName);
-                $("#coupLocal").attr('title',data.nativeTpName);
-                $("#coupNation").val(data.nationName);
-                $("#coupNation").attr('title',data.nationName);
-            }else{
-                swal("参数错误",'',"erro")
+    $("#coupName").val(detailRow.esCouplingName);//耦合名称
+    $("#coupName").attr('title',detailRow.esCouplingName);
+    $("#coupYear").val(detailRow.esCouplingYear);//耦合清单年份
+    $("#coupYear").attr('title',detailRow.esCouplingYear);
+    $("#coupDate").val(moment(detailRow.addTime).format("YYYY-MM-DD"));//创建时间
+    $("#coupDate").attr('title',moment(detailRow.addTime).format("YYYY-MM-DD"));
+    $("#coupLocal").val(detailRow.esCouplingNativetpId);//本地清单
+    $("#coupLocal").attr('title',detailRow.esCouplingNativetpId);
+    $("#coupNation").val(detailRow.esCouplingNationId);//全国清单
+    $("#coupNation").attr('title',detailRow.esCouplingNationId);
+
+    if(detailRow.esCouplingDesc){
+        $("#coupDes").val(detailRow.esCouplingDesc);
+    }
+    $("#coupMeicTable").datagrid({
+        columns:[[  //表头
+            {field:"regionId",title:"行政区"},
+            {field:"sectorName",title:"行业"},
+            {field:"meicCityId",title:"清单"},
+        ]],
+        data:detailRow.esCouplingMeiccityconfig,
+        loadFilter:function (data) {
+            var indusCheckAll=[];
+            for(var i=0;i<data.length;i++){
+                indusCheckAll.push(data[i].sectorName)
             }
-        })
+            indusCheckAll=indusCheckAll.unique();
+            var indusClass=[];
+            var showIndus=[];
+            for(var ind=0;ind<indusCheckAll.length;ind++){
+                indusClass=[];
+                for(var qd=0;qd<data.length;qd++){
+                    if(indusCheckAll[ind]==data[qd].sectorName){
+                        indusClass.push(data[qd]);
+                    }
+                }
+                console.log(indusClass);
+                showIndus.push(indusClass)
+            }
+            console.log(showIndus);
+            for(var p=0;p<showIndus.lenght;p++){
+                for(var q=0;q<showIndus[p].length;q++){
+
+                }
+            }
+            return data;
+        }
+    })
+
 }
 
 //点击耦合清单
@@ -738,8 +762,6 @@ function coupCity(cityCurren,industryData) {
             }
         }
     }
-
-
 }
 //城市选择窗口
 $("#citySelect").window({
