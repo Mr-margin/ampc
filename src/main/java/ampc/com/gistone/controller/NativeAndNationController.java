@@ -1247,9 +1247,10 @@ public class NativeAndNationController {
 			int total=tEsCouplingMapper.selectTotalCoupling(couplingMap);
 			//存放数据集合
 			List couplingList = new ArrayList();
-			List MeiccityconfigList = new ArrayList();
+			
 			//循环修改每个数据中的值
 			for(int i=0;i<list.size();i++){
+				List MeiccityconfigList = new ArrayList();
 				Map tEsCouplingMap = list.get(i);
 				//查询每条清单耦合数据是否被任务使用
 				int result = tMissionDetailMapper.selectTtotalByCouplingId(Long.valueOf(tEsCouplingMap.get("esCouplingId").toString()));
