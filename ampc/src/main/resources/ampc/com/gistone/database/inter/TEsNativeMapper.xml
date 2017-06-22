@@ -275,4 +275,15 @@ FROM
 WHERE
 	ES_NATIVE_ID = #{esNativeId,jdbcType=DECIMAL}
   </select>
+  
+  <select id="selectByNativeName" resultType="ampc.com.gistone.database.model.TEsNative" parameterType="java.lang.String" >
+    SELECT
+	*
+FROM
+	"AMPC"."T_ES_NATIVE"
+WHERE
+	ES_NATIVE_NAME = #{esNativeName,jdbcType=OTHER}
+  </select>
+  
+  
 </mapper>
