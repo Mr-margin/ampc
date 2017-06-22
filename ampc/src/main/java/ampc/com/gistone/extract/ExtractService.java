@@ -187,7 +187,7 @@ public abstract class ExtractService {
 				.replace("$missionid", String.valueOf(params.getMissionId()))
 				.replace("$domain", String.valueOf(params.getDomain())).replace("$showType", params.getShowType())
 				.replace("$calcType", params.getCalcType())
-				.replace("$currDate", DateUtil.DATEtoString(date, DateUtil.DATE_FORMAT));
+				.replace("$currDate", DateUtil.DATEtoString(date, "yyyyMMdd"));
 		String day = "";
 		String scenario = "";
 		if (Constants.TIMEPOINT_A.equals(params.getTimePoint())) {
