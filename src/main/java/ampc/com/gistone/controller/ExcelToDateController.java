@@ -291,8 +291,13 @@ public class ExcelToDateController {
 				 version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
 			}
 			filePath=URLEncoder.encode(filePath, "utf-8");
+			/**
+			 * TODO
+			 * 默认版本写死1.0。以后根据晓东那在写活
+			 */
 			// 调用外部保存接口 并获取结果Json
-			String url=configUtil.getYunURL()+"/import/importTemplate?bigIndex="+templateId+"&version="+version+"&filePath="+filePath;
+			//String url=configUtil.getYunURL()+"/import/importTemplate?bigIndex="+templateId+"&version="+version+"&filePath="+filePath;
+			String url=configUtil.getYunURL()+"/import/importTemplate?bigIndex="+templateId+"&version=1.0&filePath="+filePath;
 			String getResult = ClientUtil.doPost(url,"");
 			// 并根据得到的结果进行Json的解析
 			Map resultMap=mapper.readValue(getResult, Map.class);
@@ -486,8 +491,13 @@ public class ExcelToDateController {
 				 tSectorExcel.setDetailedListId(templateId);
 				 version=tSectorExcelMapper.selectVersionsExcelId(tSectorExcel);
 			}
+			/**
+			 * TODO
+			 * 测试使用 版本写死1.0 以后修改成活数据。
+			 */
 			// 调用外部保存接口 并获取结果Json
-			String url=configUtil.getYunURL()+"/import/importData?templateId="+templateId+"&bigIndex="+qdId+"&version="+version+"&filePath="+filePath+"&versionExcelId="+version;
+			//String url=configUtil.getYunURL()+"/import/importData?templateId="+templateId+"&bigIndex="+qdId+"&version="+version+"&filePath="+filePath+"&versionExcelId="+version;
+			String url=configUtil.getYunURL()+"/import/importData?templateId="+templateId+"&bigIndex="+qdId+"&version=1.0&filePath="+filePath+"&versionExcelId="+version;
 			String getResult = ClientUtil.doPost(url,"");
 			// 并根据得到的结果进行Json的解析
 			Map resultMap=mapper.readValue(getResult, Map.class);
