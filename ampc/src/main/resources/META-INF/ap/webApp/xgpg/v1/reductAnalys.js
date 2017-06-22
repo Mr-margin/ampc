@@ -1058,6 +1058,7 @@ function gis_switch_table() {
             if ($(this).is('.active')) {
 
                 if ($(this).attr("val_name") == "gis") {
+                    $('#legendWrapper').removeClass('disNone')
 
                     $("#listModal").hide();
                     $("#map_showId").show();
@@ -1068,6 +1069,7 @@ function gis_switch_table() {
                    // bar();
 
                 } else if ($(this).attr("val_name") == "table") {
+                    $('#legendWrapper').addClass('disNone')
 
                     query_code = tj_paramsName.code;
                     query_Level = tj_paramsName.codeLevel;
