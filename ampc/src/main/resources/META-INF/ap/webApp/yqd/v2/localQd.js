@@ -186,10 +186,10 @@ function innitdata(active){
                                 }
                             }else if(row.id.indexOf("qd")==0){
                                 if(row.isVerify==0){
-                                    return "<div class='allQdBtn'><a href='javascript:' class='localQdMenu'><i class='fa fa-caret-down' aria-hidden='true'></i></a><ul class='qdBtn'><li>"+checkDiv+"</li><li>"+addNativeDivEdit+"</li><li>"+addNativeDivDelet+"</li></ul></div>"
+                                    return "<div class='allQdBtn'><a href='javascript:' class='localQdMenu'><i class='fa fa-caret-down' aria-hidden='true'></i></a><ul class='qdBtn'><li>"+checkDiv+"</li><li>"+addNativeDivEdit+"</li></ul></div>"
                                     // return checkDiv+"<br>"+addNativeDivEdit+"<br>"+addNativeDivDelet;
                                 }else if(row.isVerify==1){
-                                    return "<div class='allQdBtn'><a href='javascript:' class='localQdMenu'><i class='fa fa-caret-down' aria-hidden='true'></i></a><ul class='qdBtn'><li>"+addNativeDivEdit+"</li><li>"+addNativeDivDelet+"</li></ul></div>"
+                                    return "<div class='allQdBtn'><a href='javascript:' class='localQdMenu'><i class='fa fa-caret-down' aria-hidden='true'></i></a><ul class='qdBtn'><li>"+addNativeDivEdit+"</li></ul></div>"
 
                                     // return addNativeDivEdit+"<br>"+addNativeDivDelet;
                                 }
