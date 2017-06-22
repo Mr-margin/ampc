@@ -537,7 +537,7 @@ function deleteQdBtn(rowID){
         cancelButtonText: "取消",
         closeOnConfirm: false
     }, function() {
-        ajaxPost('/NativeAndNation/doPost',{"nativeId":rowDelete.esNativeId,"method":"delete_native"}).success(function(res){
+        ajaxPost('/NativeAndNation/doPost',{"nativeId":rowDelete.esNativeId,"method":"delete_native","userId":userId}).success(function(res){
             if(res.status==0){
                 $("#localqd").treegrid("remove",deleteQd);
                 innitdata("find_natives")
