@@ -484,8 +484,11 @@ function save_scene() {
         //添加任务名称
         $("#missionName").text("任务:"+sceneInitialization.missionName);
         setQjSelectBtn(data);
+        //每次选择情景以后 当选择时间分辨率为逐时 页面开始日期时间从0开始
+        if($('input[name=rms]').val()=="h"){
+            $("#sTime-h").val("00")
+        }
         $("#close_scene").click();
-
     }
 }
 //超链接显示 模态框
