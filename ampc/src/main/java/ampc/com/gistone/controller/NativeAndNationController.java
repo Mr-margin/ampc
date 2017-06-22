@@ -923,8 +923,6 @@ public class NativeAndNationController {
 			}
 			String nativeTpid=param.toString();
 			
-			
-			
 			//添加数据
 			TEsNative tEsNative=new TEsNative();
 			tEsNative.setUserId(userId);
