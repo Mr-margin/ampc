@@ -23,10 +23,12 @@ var allData = [];//保存所有区域时段信息
 var allData1 = null;  //临时存储区域、时段的临时变量
 var cnArea = false;//判断是否超过区域的最大数量
 var showCode = [{}, {}, {}];//保存所选的地区
+var showCode_ls = [{}, {}, {}];//保存所选的地区
 var editTimeDateObj = {};//作为编辑时段时存储时间段的变量
 var scenarino; //存储promise的变量
 var selectCopyPlan; //当进入情景编辑的时候，可以选择复制预案，存储的变量
 var areaIndex, timeIndex;//全局变量用于存储选中区域的序号和时段的序号
+var ajaxCode_ls;
 /*tree数配置*/
 var zTreeSetting = {
     check: {
@@ -67,6 +69,22 @@ var zTreeSetting = {
         }
     }
 };
+$('#codeListTree').tabs({
+    border:false,
+    height:'100%',
+    fit:true,
+    narrow:true,
+    onSelect:function(title){
+        showCode_ls = [{}, {}, {}];//初始化所选的地区
+        var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+        var treeObj_all = $.fn.zTree.getZTreeObj("adcodeTree_all");
+        if(treeObj)treeObj.checkAllNodes(false);
+        if(treeObj_all)treeObj_all.checkAllNodes(false);
+        // if(ajaxCode_ls){
+        //     setShowCode(ajaxCode_ls)
+        // }
+    }
+});
 //在这里做初始化操作
 (function () {
 //        页面布局的渲染
@@ -350,11 +368,15 @@ var zTreeSetting = {
         title: '定义区域范围',
         width: 900,
         onOpen: function () {
+            ajaxCode_ls = null;
             $('#settingqjbox').window('close');
             /*初始化tree树相关信息*/
             $.fn.zTree.init($("#adcodeTree"), zTreeSetting, zTreeData);//zTreeData是从home页面传过来的数据
+            $.fn.zTree.init($("#adcodeTree_all"), zTreeSetting, zTreeData);//zTreeData是从home页面传过来的数据
             var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+            var treeObj_all = $.fn.zTree.getZTreeObj("adcodeTree_all");
             var nodes = treeObj.getNodesByParam("level", 1);//获取地市一级的节点
+            var nodes_all = treeObj_all.getNodesByParam("level", 1);//获取地市一级的节点
             var code = qjMsg.esCodeRange; //获取当前
 //                对应的任务范围中市级下可显示县一级
             for (var i = 0; i < nodes.length; i++) {
@@ -362,6 +384,25 @@ var zTreeSetting = {
                 if ((code.indexOf(adcode.substr(0, 2)) == -1) && (code.indexOf(adcode.substr(0, 4)) == -1)) {
 //                        在这里将非当前任务范围中的县级给隐藏起来
                     treeObj.hideNodes(nodes[i].children);
+                    // treeObj.setChkDisabled(nodes[i], true, false, true);
+                    treeObj.removeNode(nodes[i])
+                    treeObj_all.hideNodes(nodes_all[i].children);
+                }else{
+                    // treeObj_all.setChkDisabled(nodes_all[i], true, false, true);
+                    treeObj_all.removeNode(nodes_all[i])
+                }
+            }
+
+            var nodes_pro = treeObj.getNodesByParam("level", 0);//获取地市零级的节点
+            var nodes_pro_all = treeObj_all.getNodesByParam("level", 0);//获取地市零级的节点
+            for(var p = 0; p<nodes_pro.length;p++){
+                var procode = nodes_pro[p].adcode;
+                if(code.indexOf(procode.substr(0, 2)) == -1){
+                    // treeObj.setChkDisabled(nodes_pro[p], true, false, true);
+                    treeObj.removeNode(nodes_pro[p])
+                }else{
+                    // treeObj_all.setChkDisabled(nodes_pro_all[p], true, false, true);
+                    treeObj_all.removeNode(nodes_pro_all[p])
                 }
             }
 
@@ -374,7 +415,7 @@ var zTreeSetting = {
             $('#adcodeListBox').empty();
             if (create) {
                 $('#areaName').val('').removeAttr('data-id');
-                showCode = [{}, {}, {}];
+                showCode_ls = [{}, {}, {}];
 //                    $('.adcodeList.mt20').empty();
                 	revise();
                     app.gLyr.clear();
@@ -387,8 +428,16 @@ var zTreeSetting = {
                 }).success(function (res) {
                     if (res.data) {
                         /*设置显示已选code*/
+                        ajaxCode_ls = res.data;
                         setShowCode(res.data);
-                            addLayer(showCode);
+                        addLayer(showCode_ls);
+
+                        if(res.data.provinceCodes==0&&res.data.cityCodes==0&&res.data.countyCodes==0){
+                            revise();
+                        }else{
+                            $('.adcodeList').show();
+                            $('.codeTree').hide();
+                        }
                     }
                     updataCodeList();
                     var proNum = res.data.provinceCodes.length;
@@ -1589,31 +1638,72 @@ function createNewAreaBtn() {
 /*前端设置disabled*/
 function setDisabled(data) {
     var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+    var treeObj_all = $.fn.zTree.getZTreeObj("adcodeTree_all");
     for (var i = 0; i < data.length; i++) {
         var name = '(' + data[i].areaName + ')';
 //            检索省份列表
         for (var pro = 0; pro < data[i].provinceCodes.length; pro++) {
             var node = treeObj.getNodeByParam("adcode", Object.keys(data[i].provinceCodes[pro]), null);
-            node.name += name;
-            //node.chkDisabled = true;
-            treeObj.setChkDisabled(node, true, false, true);
-            treeObj.updateNode(node);
+            var node_all = treeObj_all.getNodeByParam("adcode", Object.keys(data[i].provinceCodes[pro]), null);
+
+            if(node){
+                node.name += name;
+                treeObj.setChkDisabled(node, true, false, true);
+                treeObj.updateNode(node);
+            }
+            if(node_all){
+                node_all.name += name;
+                treeObj_all.setChkDisabled(node_all, true, false, true);
+                treeObj_all.updateNode(node_all);
+            }
         }
 //            检索市级列表
         for (var ci = 0; ci < data[i].cityCodes.length; ci++) {
             var node = treeObj.getNodeByParam("adcode", Object.keys(data[i].cityCodes[ci]), null);
-            node.name += name;
-            //node.chkDisabled = true;
-            treeObj.setChkDisabled(node, true, false, true);
-            treeObj.updateNode(node);
+            var node_all = treeObj_all.getNodeByParam("adcode", Object.keys(data[i].cityCodes[ci]), null);
+
+            if(node){
+                node.name += name;
+                treeObj.setChkDisabled(node, true, false, true);
+                treeObj.updateNode(node);
+            }
+            if(node_all){
+                node_all.name += name;
+                treeObj_all.setChkDisabled(node_all, true, false, true);
+                treeObj_all.updateNode(node_all);
+            }
+
+            // node.name += name;
+            // node_all.name += name;
+            // //node.chkDisabled = true;
+            // treeObj.setChkDisabled(node, true, false, true);
+            // treeObj_all.setChkDisabled(node_all, true, false, true);
+            // treeObj.updateNode(node);
+            // treeObj_all.updateNode(node_all);
         }
 //          检索县区级列表
         for (var ct = 0; ct < data[i].countyCodes.length; ct++) {
             var node = treeObj.getNodeByParam("adcode", Object.keys(data[i].countyCodes[ct]), null);
-            node.name += name;
-            //node.chkDisabled = true;
-            treeObj.setChkDisabled(node, true, false, true);
-            treeObj.updateNode(node);
+            var node_all = treeObj_all.getNodeByParam("adcode", Object.keys(data[i].countyCodes[ct]), null);
+
+            if(node){
+                node.name += name;
+                treeObj.setChkDisabled(node, true, false, true);
+                treeObj.updateNode(node);
+            }
+            if(node_all){
+                node_all.name += name;
+                treeObj_all.setChkDisabled(node_all, true, false, true);
+                treeObj_all.updateNode(node_all);
+            }
+
+            // node.name += name;
+            // node_all.name += name;
+            // //node.chkDisabled = true;
+            // treeObj.setChkDisabled(node, true, false, true);
+            // treeObj_all.setChkDisabled(node_all, true, false, true);
+            // treeObj.updateNode(node);
+            // treeObj_all.updateNode(node_all);
         }
     }
 }
@@ -1623,6 +1713,7 @@ function setDisabled(data) {
  */
 function updataCodeList() {
     var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");//获取ztree对象
+    showCode = $.extend(true,{},showCode_ls);
     $('#adcodeListBox').empty();//清空原有显示内容
     for (var i = 0; i < 3; i++) {  //遍历省市县三级地区
         switch (i) {
@@ -1682,12 +1773,12 @@ function level0(node) {
     var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
     var nodesDis = treeObj.getNodesByParam('chkDisabled', true, node);
     if (nodesDis.length == 0) {
-        showCode[node.level][node.adcode] = node.name;
-        delete showCode[node.level + 1][node.adcode];
-        for (var i = 1; i < showCode.length; i++) {
-            for (var a in showCode[i]) {
+        showCode_ls[node.level][node.adcode] = node.name;
+        delete showCode_ls[node.level + 1][node.adcode];
+        for (var i = 1; i < showCode_ls.length; i++) {
+            for (var a in showCode_ls[i]) {
                 if (a.toString().substr(0, 2) == node.adcode.toString().substr(0, 2)) {
-                    delete showCode[i][a];
+                    delete showCode_ls[i][a];
                 }
             }
         }
@@ -1709,12 +1800,12 @@ function level12(node) {
     var parNode = node.getParentNode();
 
     if (nodesDis.length == 0) {
-        if (!showCode[node.level][parNode.adcode]) {
-            showCode[node.level][parNode.adcode] = {}
+        if (!showCode_ls[node.level][parNode.adcode]) {
+            showCode_ls[node.level][parNode.adcode] = {}
         }
-        showCode[node.level][parNode.adcode][node.adcode] = node.name;
-        if (parNode.children.length == Object.keys(showCode[node.level][parNode.adcode]).length) {
-            delete showCode[node.level][parNode.adcode];
+        showCode_ls[node.level][parNode.adcode][node.adcode] = node.name;
+        if (parNode.children.length == Object.keys(showCode_ls[node.level][parNode.adcode]).length) {
+            delete showCode_ls[node.level][parNode.adcode];
             if (node.level == 1) {
                 level0(parNode);
             } else {
@@ -1722,18 +1813,18 @@ function level12(node) {
             }
         }
         if (node.level == 1) {
-            delete showCode[node.level + 1][node.adcode];
+            delete showCode_ls[node.level + 1][node.adcode];
         }
     } else {
-//    delete showCode[node.level][parNode.adcode];
+//    delete showCode_ls[node.level][parNode.adcode];
 //    treeObj.checkNode(node, false, false, false);
         var child = node.children;
-        if (!showCode[node.level + 1][node.adcode]) {
-            showCode[node.level + 1][node.adcode] = {};
+        if (!showCode_ls[node.level + 1][node.adcode]) {
+            showCode_ls[node.level + 1][node.adcode] = {};
         }
         for (var ch = 0; ch < child.length; ch++) {
             if (!child[ch].chkDisabled) {
-                showCode[node.level + 1][node.adcode][child[ch].adcode] = child[ch].name;
+                showCode_ls[node.level + 1][node.adcode][child[ch].adcode] = child[ch].name;
             }
         }
     }
@@ -1742,13 +1833,13 @@ function level12(node) {
 
 /*移除省级*/
 function delNode0(node) {
-    delete showCode[node.level][node.adcode];
-    delete showCode[node.level + 1][node.adcode];
+    delete showCode_ls[node.level][node.adcode];
+    delete showCode_ls[node.level + 1][node.adcode];
     var ad = node.adcode.substr(0, 2);
-    var show = showCode[2];
+    var show = showCode_ls[2];
     for (var i in show) {
         if (i.substr(0, 2) == ad) {
-            delete showCode[2][i];
+            delete showCode_ls[2][i];
         }
     }
 }
@@ -1757,9 +1848,9 @@ function delNode0(node) {
 function delNode12(node) {
     var parNode = node.getParentNode();
     var parTrue;
-    if (!showCode[node.level][parNode.adcode]) {
+    if (!showCode_ls[node.level][parNode.adcode]) {
         if (node.level == 1) {
-            if ($.isEmptyObject(showCode[node.level - 1])) {
+            if ($.isEmptyObject(showCode_ls[node.level - 1])) {
                 parTrue = true;
             } else {
                 parTrue = false;
@@ -1770,31 +1861,31 @@ function delNode12(node) {
         }
         if (node.level == 1) {
             if (!parTrue) {
-                showCode[node.level][parNode.adcode] = {};
+                showCode_ls[node.level][parNode.adcode] = {};
                 var child = parNode.children;
                 for (var n = 0; n < child.length; n++) {
                     if (!child[n].chkDisabled) {
-                        showCode[node.level][parNode.adcode][child[n].adcode] = child[n].name;
+                        showCode_ls[node.level][parNode.adcode][child[n].adcode] = child[n].name;
                     }
                 }
             }
         } else {
-            showCode[node.level][parNode.adcode] = {};
+            showCode_ls[node.level][parNode.adcode] = {};
             var child = parNode.children;
             for (var n = 0; n < child.length; n++) {
                 if (!child[n].chkDisabled) {
-                    showCode[node.level][parNode.adcode][child[n].adcode] = child[n].name;
+                    showCode_ls[node.level][parNode.adcode][child[n].adcode] = child[n].name;
                 }
             }
         }
 
     }
-    delete showCode[node.level][parNode.adcode][node.adcode];
-    if ($.isEmptyObject(showCode[node.level][parNode.adcode])) {
-        delete showCode[node.level][parNode.adcode];
+    delete showCode_ls[node.level][parNode.adcode][node.adcode];
+    if ($.isEmptyObject(showCode_ls[node.level][parNode.adcode])) {
+        delete showCode_ls[node.level][parNode.adcode];
     }
     if (node.level == 1) {
-        delete showCode[node.level + 1][node.adcode];
+        delete showCode_ls[node.level + 1][node.adcode];
     }
 }
 
@@ -1802,6 +1893,7 @@ function delNode12(node) {
  * 创建/编辑区域
  */
 function createEditArea() {
+    showCode = $.extend(true,{},showCode_ls);
     var url = '/area/saveorupdate_area';//新增和修改区域数据的接口
     var checkUrl = '/area/check_areaname';//新增区域时检查区域名称是否重复的
     var areaName = $('#areaName').val();//存储修改的区域名称
@@ -1942,50 +2034,72 @@ function createEditArea() {
 /*显示已选择code,并进行checked*/
 function setShowCode(data) {
     var treeObj = $.fn.zTree.getZTreeObj("adcodeTree");
+    var treeObj_all = $.fn.zTree.getZTreeObj("adcodeTree_all");
+    treeObj.checkAllNodes(false);
+    treeObj_all.checkAllNodes(false);
     var proNum = data.provinceCodes.length;
     var cityNum = data.cityCodes.length;
     var countyNum = data.countyCodes.length;
-    showCode[0] = {};
-    showCode[1] = {};
-    showCode[2] = {};
-    if(proNum==0&&cityNum==0&&countyNum==0){
-    	revise();
-    }else{
-    	$('.adcodeList').show();
-        $('.codeTree').hide();
-    }
+    showCode_ls[0] = {};
+    showCode_ls[1] = {};
+    showCode_ls[2] = {};
     if (proNum == 0) {
-        showCode[0] = {};
+        showCode_ls[0] = {};
     } else {
         for (var i = 0; i < proNum; i++) {
-            $.extend(showCode[0], data.provinceCodes[i]);
-
+            $.extend(showCode_ls[0], data.provinceCodes[i]);
             var node = treeObj.getNodeByParam("adcode", Object.keys(data.provinceCodes[i]), null);
-            treeObj.checkNode(node, true, true, false);
+            var node_all = treeObj_all.getNodeByParam("adcode", Object.keys(data.provinceCodes[i]), null);
+            if(node){
+                treeObj.checkNode(node, true, true, false);
+                $('#codeListTree').tabs('select','本地')
+            }
+            if(treeObj_all){
+                treeObj_all.checkNode(node_all, true, true, false);
+                $('#codeListTree').tabs('select','全国')
+            }
         }
     }
     if (cityNum == 0) {
-        showCode[1] = {};
+        showCode_ls[1] = {};
     } else {
         for (var ii = 0; ii < cityNum; ii++) {
             var adcode1 = Object.keys(data.cityCodes[ii])[0];
-            if (!showCode[1][adcode1.substr(0, 2) + '0000']) showCode[1][adcode1.substr(0, 2) + '0000'] = {};
-            $.extend(showCode[1][adcode1.substr(0, 2) + '0000'], data.cityCodes[ii]);
+            if (!showCode_ls[1][adcode1.substr(0, 2) + '0000']) showCode_ls[1][adcode1.substr(0, 2) + '0000'] = {};
+            $.extend(showCode_ls[1][adcode1.substr(0, 2) + '0000'], data.cityCodes[ii]);
 
             var node = treeObj.getNodeByParam("adcode", Object.keys(data.cityCodes[ii]), null);
-            treeObj.checkNode(node, true, true, false);
+            var node_all = treeObj_all.getNodeByParam("adcode", Object.keys(data.cityCodes[ii]), null);
+
+            if(node){
+                treeObj.checkNode(node, true, true, false);
+                $('#codeListTree').tabs('select','本地')
+            }
+            if(node_all){
+                treeObj_all.checkNode(node_all, true, true, false);
+                $('#codeListTree').tabs('select','全国')
+            }
         }
     }
     if (countyNum == 0) {
-        showCode[2] = {};
+        showCode_ls[2] = {};
     } else {
         for (var iii = 0; iii < countyNum; iii++) {
             var adcode2 = Object.keys(data.countyCodes[iii])[0];
-            if (!showCode[2][adcode2.substr(0, 4) + '00']) showCode[2][adcode2.substr(0, 4) + '00'] = {};
-            $.extend(showCode[2][adcode2.substr(0, 4) + '00'], data.countyCodes[iii]);
+            if (!showCode_ls[2][adcode2.substr(0, 4) + '00']) showCode_ls[2][adcode2.substr(0, 4) + '00'] = {};
+            $.extend(showCode_ls[2][adcode2.substr(0, 4) + '00'], data.countyCodes[iii]);
 
             var node = treeObj.getNodeByParam("adcode", Object.keys(data.countyCodes[iii]), null);
-            treeObj.checkNode(node, true, true, false);
+            var node_all = treeObj_all.getNodeByParam("adcode", Object.keys(data.countyCodes[iii]), null);
+
+            if(node){
+                treeObj.checkNode(node, true, true, false);
+                $('#codeListTree').tabs('select','本地')
+            }
+            if(node_all){
+                treeObj_all.checkNode(node_all, true, true, false);
+                $('#codeListTree').tabs('select','全国')
+            }
         }
     }
 }
