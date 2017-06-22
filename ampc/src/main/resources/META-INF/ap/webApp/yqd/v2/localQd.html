@@ -96,3 +96,31 @@
         <button type="button" class="btn btn-default claearQdBtn" onclick="claearTempQd()">清除</button>
     </div>
 </div>
+<!--编辑清单-->
+<div id="editLocalQd">
+    <form method="post" id="formLocalQd" >
+        <div class="rwCon">
+            <div class="form-group qdContent">
+                <label for="editLocalQdName" class="qdTitle">名称：</label>
+                <input class="form-control easyui-validatebox qdCon qdName" type="text" name="editLocalQdName" maxlength="20" data-options="required:true" id="editLocalQdName" style="color: #757575" />
+                <!--<div class="tipNameRepeat"></div>-->
+            </div>
+            <div class="form-group qdContent">
+                <label for="editLocalQdYear" class="qdTitle">年份：</label>
+                <input class="form-control easyui-validatebox qdCon qdYear" type="text" name="editLocalQdYear" data-options="required:true" id="editLocalQdYear" style="color: #757575" />
+                <!--<div class="tipYearRepeat"></div>-->
+            </div>
+        </div>
+        <div class="rwCon">
+            <div class="form-group qdContent qdMark">
+                <label for="editLocalQdMark" class="qdTitle">备注：</label>
+                <textarea rows="3" class="form-control easyui-validatebox qdCon" type="text" name="editLocalQdMark" data-options="required:true" id="editLocalQdMark" placeholder="添加清单备注...">
+                </textarea>
+            </div>
+        </div>
+    </form>
+    <div class="dlogFooter" >
+        <button type="button" class="btn btn-primary createQdBtn" onclick="innitdata('update_native')">提交</button>
+        <!--<button type="button" class="btn btn-default claearQdBtn" onclick="claearTempQd()">清除</button>-->
+    </div>
+</div>
