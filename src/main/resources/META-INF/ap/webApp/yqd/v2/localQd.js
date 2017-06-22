@@ -517,6 +517,36 @@ var creatQd;
 var editQd;
 var deleteQd;
 //删除清单
+function deleteQdBtn(rowID){
+    deleteQd=rowID;
+    // var row = $('#localqd').treegrid('getSelected');//获取所有选中的清单数据
+    var rowDelete=$("#localqd").treegrid('find',deleteQd)
+    swal({
+        title: "确定要删除?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "删除",
+        cancelButtonText: "取消",
+        closeOnConfirm: false
+    }, function() {
+        ajaxPost('/NativeAndNation/doPost',{"nativeId":rowDelete.esNativeId,"method":"delete_native"}).success(function(res){
+            if(res.status==0){
+                $("#localqd").treegrid("remove",deleteQd);
+                innitdata("find_natives")
+                swal({
+                    title: '已删除!',
+                    type: 'success',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            }else{
+                swal('参数错误', '', 'error');
+            }
+        })
+    });
+
+}
 //点击按钮创建模板下面的清单
 function adgQdBtn(rowId){
     creatQd=rowId
