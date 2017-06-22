@@ -726,8 +726,8 @@ function bianji(type, g_num, p , wind) {
                 par.windSymbol = 1;//1代表F风，F风最大到20级，箭头风最大到12级
                 fxOpacity = 1;
             }
-            par.rows = 20;
-            par.cols = 20;
+            par.rows = Math.round(($('#Route_conter')[0].offsetWidth-20)/90);
+            par.cols = Math.round($('#Route_conter')[0].offsetHeight/45);
 
             par.species = ['WSPD','WDIR'];
             app.gLyr[0].clear();
@@ -1467,18 +1467,11 @@ function updata(t) {
         } else {
 //    	zmblockUI("#mapDiv0", "start");
 //        zmblockUI("#mapDiv1", "start");
-
             for (var i = 0; i < changeMsg.showType.length; i++) {
                 p1.showType = changeMsg.showType[i];
-
-
-
                 p2.calcType = changeMsg.calcType;
                 p2.showType = changeMsg.showType[i];
                 //console.log('p2',$.extend({},p2),p2.showType);
-
-
-
                 if(i==0){
                     /*执行方法，进行左图添加*/
                     zmblockUI1("#mapDiv0", "start");
