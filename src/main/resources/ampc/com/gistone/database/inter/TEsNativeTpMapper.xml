@@ -326,12 +326,12 @@
 		ES_NATIVE_TP_NAME = #{esNativeTpName,jdbcType=VARCHAR}
   </select>
   
-  <select id="selectByNativeTpName" resultType="ampc.com.gistone.database.model.TEsNative" parameterType="java.lang.String" >
+  <select id="selectByNativeTpName" resultMap="BaseResultMap" parameterType="java.lang.String" >
     SELECT
-	*
+	<include refid="Base_Column_List" />
 FROM
-	"AMPC"."T_ES_NATIVE_TP"
+	T_ES_NATIVE_TP
 WHERE
-	ES_NATIVE_TP_NAME = #{nativeTpName,jdbcType=VARCHAR}
+	ES_NATIVE_TP_NAME = #{_parameter,jdbcType=VARCHAR}
   </select>
 </mapper>
