@@ -76,7 +76,7 @@ function creatQd(){ // 点击创建清单按钮 弹出创建窗口
             $("#creatQd label").eq(i).remove();
         }
     }
-    $("#creatQd").window('open');
+    $("#creatQd").window('open').window('center');;
 }
 $("#creatQd").window({  //创建全国清单窗口
     width:600,  //easyui 窗口宽度
@@ -161,7 +161,7 @@ function editQd(){ // 编辑全国清单
                 $("#editQd label").eq(i).remove();
             }
         }
-        $("#editQd").window('open');
+        $("#editQd").window('open').window('center');;
     }else{
         swal('请先选择编辑清单', '', 'error');
     }
