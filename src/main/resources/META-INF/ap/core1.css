@@ -1561,6 +1561,31 @@ dl, dd {
 .cloudui .rwCon .qdMark textarea{
   text-align: left;
 }
+/*本地清单*/
+.localQdMenu{padding: 1px 5px;font-size: 12px;line-height: 16px;text-align: center;border-radius: 2px;background: #fff;border:1px solid #dcdee0;color:#1a1a1a}
+.qdBtn{position: relative;}
+.allQdBtn{
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  padding-bottom: 1px;
+}
+.qdBtn{
+  display: none;
+  position: absolute;
+  float: left;
+  top: 100%;
+  right: 0;
+  border: medium none;
+  min-width: 110px;
+  font-size: 12px;
+  padding: 5px 0;
+  margin: 0;
+  z-index: 1000;
+  border-radius: 2px;
+  background: #fff;
+  box-shadow:0 0 3px rgba(86,96,117,.6);
+}
 /*清单耦合设计*/
 .cloudui #creatCoupQd .rwCon,.cloudui #editCoupQd .rwCon{overflow: hidden!important; }
 .cloudui #creatCoupQd .qdContent,.cloudui #editCoupQd .qdContent{
