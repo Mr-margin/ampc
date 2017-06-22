@@ -1995,28 +1995,17 @@ public class MissionAndScenarinoController {
 			//循环结果集合
 			for(Map ss:list){
 				TEsCoupling selectByPrimaryKey = tEsCouplingMapper.selectByPrimaryKey(Long.valueOf(ss.get("esCouplingId").toString()));
-				String NativeId=selectByPrimaryKey.getEsCouplingNativeId().toString();
-				List<String> citylist=Arrays.asList(NativeId.split(","));
+				String EsCouplingCity=selectByPrimaryKey.getEsCouplingCity();
+				List<String> citylist=Arrays.asList(EsCouplingCity.split(","));
 				String codestr="";
 				for(int x=1;x<=citylist.size();x++){
-					TEsNative tEsNative = tEsNativeMapper.selectByPrimaryKey(Long.valueOf(citylist.get(x-1)));
-					if(tEsNative==null){
-						continue;
-					}
-					String s="";
-					if(null!=tEsNative.getEsCodeRange()&&tEsNative.getEsCodeRange()!=""){
-						s=tEsNative.getEsCodeRange();
-					}else{
-						continue;
-					}
-							
+					String s=citylist.get(x-1);
+						
 						  if(x==citylist.size()){
-							  codestr=s;
+							  codestr+=s;
 						  }else{
-							  codestr=s+",";
+							  codestr+=s+",";
 						  }
-					  
-					
 				}
 				ss.put("esCodeRange", codestr);
 				//获取到范围ID
