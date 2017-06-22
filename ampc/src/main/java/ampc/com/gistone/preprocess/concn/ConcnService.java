@@ -115,20 +115,15 @@ public class ConcnService {
 				ObjectMapper mapper = new ObjectMapper();
 				dataMap = mapper.readValue(jsonObject.toString(), Map.class);
 			} else { // 从当前服务中的接口获取数据
-				try {
-					cityWorkerV2.exe(params, Constants.AREA_CITY, cites, Constants.SHOW_TYPE_CONCN);
-					dataMap = cityWorkerV2.getResult();
-
-				} catch (TransformException e) {
-					logger.error("ConcnService | requestConcnData TransformException", e);
-				} catch (FactoryException e) {
-					logger.error("ConcnService | requestConcnData FactoryException", e);
-				} catch (ParseException e) {
-					logger.error("ConcnService | requestConcnData ParseException", e);
-				}
+				long startTime = System.currentTimeMillis();
+				cityWorkerV2.exe(params, Constants.AREA_CITY, cites, Constants.SHOW_TYPE_CONCN);
+				dataMap = cityWorkerV2.getResult();
+				logger.info("request concn data times :" + (System.currentTimeMillis() - startTime) + "ms");
 			}
 			if (dataMap == null || dataMap.size() == 0)
 				return false;
+			
+			logger.info("start put concn data to database...");
 			preproUtil.updateRecord(tableName, params, dataMap, Constants.SHOW_TYPE_CONCN, type);
 
 			Map map = new HashMap();
@@ -137,6 +132,8 @@ public class ConcnService {
 
 			params.setMode(Constants.AREA_POINT2);
 			params.setFilter(stationList);
+			logger.info("start put concn point data to database...");
+			logger.info(params.toString());
 			preproUtil.updateRecord(tableName, params, dataMap, Constants.SHOW_TYPE_CONCN, type);
 
 			return true;
