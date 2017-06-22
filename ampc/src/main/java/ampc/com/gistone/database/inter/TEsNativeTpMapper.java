@@ -30,4 +30,6 @@ public interface TEsNativeTpMapper {
 	TEsNativeTp selectByKey(Map nativeTpMap);
 
 	int verifyNativeTpName(TEsNativeTp tEsNativeTp);
+
+	TEsNativeTp selectByNativeTpName(String nativeTpName);
 }
