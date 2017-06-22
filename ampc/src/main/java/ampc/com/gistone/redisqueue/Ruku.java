@@ -83,6 +83,7 @@ public class Ruku {
 			e.printStackTrace();
 		}
 		int domain = Integer.parseInt(max_dom.toString());
+		LogUtil.getLogger().info("readyRukuparamsBasis:max_dom:"+domain);
 		//tasksenddate 情景tasks的结束时间
 		Date endDate = DateUtil.DateToDate(tasksEndDate, "yyyy-MM-dd");
 		//情景开始时间
@@ -218,6 +219,7 @@ public class Ruku {
 			e.printStackTrace();
 		}
 		int domains = Integer.parseInt(max_dom.toString());
+		LogUtil.getLogger().info("readyRukuparamsRealPredict:max_dom:"+domains);
 //		int domains = 3;
 		Date endDate = DateUtil.DateToDate(tasksEndDate, "yyyy-MM-dd");
 		//情景开始时间
@@ -311,6 +313,7 @@ public class Ruku {
 			e.printStackTrace();
 		}
 		int domain = Integer.parseInt(max_dom.toString());
+		LogUtil.getLogger().info("readyRukuparamsRrePredict:max_dom:"+domain);
 //		int domain = 3;
 		Date endDate = DateUtil.DateToDate(tasksEndDate, "yyyy-MM-dd");
 		//情景结束时间
@@ -398,6 +401,7 @@ public class Ruku {
 			e.printStackTrace();
 		}
 		int domain = Integer.parseInt(max_dom.toString());
+		LogUtil.getLogger().info("readyRukuparamspostPevtion:max_dom:"+domain);
 //		int domain = 3;
 		Date endDate = DateUtil.DateToDate(tasksEndDate, "yyyy-MM-dd");
 		//情景开始时间
