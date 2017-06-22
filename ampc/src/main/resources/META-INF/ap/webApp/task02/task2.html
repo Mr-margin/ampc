@@ -255,9 +255,22 @@
         <div class="modal-body bcg">
             <div>
                 <div class="codeTree">
-                    <ul id="adcodeTree" class="ztree">
 
-                    </ul>
+                    <div id="codeListTree" class="easyui-tabs" style="width:500px;height:250px;">
+                        <div title="本地" data-options="closable:false" style="padding:20px;display:none;">
+                            <ul id="adcodeTree" class="ztree"></ul>
+                        </div>
+                        <div title="全国" data-options="closable:false" style="overflow:auto;padding:20px;display:none;">
+                            <ul id="adcodeTree_all" class="ztree"></ul>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
                     <!--当点击确定按钮后将ztree选择的区域在id为adcodelistbox的div中显示-->
                     <div class="adcodeTreeBtn">
                         <button class="zmbtn zmbtn-info" onclick="updataCodeList()"><i class="fa fa-check-square-o" aria-hidden="true"></i> 确定</button>
