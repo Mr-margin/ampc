@@ -477,6 +477,9 @@ function bianji_wanggepafang(type, g_num, p , wind){
         var par = p;
         var v1 = new Date().getTime();
         
+        app.dynamicData[g_num].hide();//清空现有显示的内容
+        $('#colorBar'+g_num).html("");//取消图例
+        
 //        ajaxPost_w('http://166.111.42.85:8300/ampc/extract/tiff', par).success(function (data) {
         ajaxPost('/extract/tiff', par).success(function (data) {
 
