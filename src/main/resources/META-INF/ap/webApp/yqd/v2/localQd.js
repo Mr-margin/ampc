@@ -2,7 +2,7 @@
  * Created by shanhaichushi on 2017/5/19.
  */
 // 导航
-$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">本地清单</span><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatTemp()">新建</button><button class="qdEdit" onclick="editTemp()">编辑</button><button class="qdDelet" onclick=innitdata("delete_nativeTp")>删除</button></span>');
+$("#crumb").html('<span style="padding-left: 15px;padding-right: 15px;">源清单</span><i class="en-arrow-right7" style="font-size:16px;"></i><span style="padding-left: 15px;padding-right: 15px;">本地清单</span><span class="navRight qdnavRight"><button class="qdCreat" onclick="creatTemp()">新建模板</button><button class="qdEdit" onclick="editTemp()">编辑模板</button><button class="qdDelet" onclick=innitdata("delete_nativeTp")>删除模板</button></span>');
 // 表单生成
 var tmp=1;
 innitdata("find_natives");
@@ -136,7 +136,7 @@ function innitdata(active){
                     // {field:"ck",checkbox:true},
                     {field:"esNativeTpName",title:"清单模板名称",width:160,formatter: function (value) {
                         return "<span title='" + value + "'>" + value + "</span>";}},
-                    {field:"esNativeTpYear",title:"年份",width:80},
+                    {field:"esNativeTpYear",title:"年份",width:50},
                     {field:"addTime",title:"创建时间",formatter:function(value,row,index){
                         if(isNaN(value)){
                             return "<span>创建时间</span>";
@@ -144,7 +144,7 @@ function innitdata(active){
                             var val=moment(value).format('YYYY-MM-DD HH:mm:ss');
                             return "<div title=\'"+val+"\'>"+val+"</div>";
                         }
-                    },width :160},
+                    },width :100},
                     {field:"esUploadTpTime",title:"上传时间",formatter:function(value,row,index){
                         if(isNaN(value)){
                             return "<span>上传时间</span>";
@@ -161,7 +161,7 @@ function innitdata(active){
                         }
                      }},
                     {field:"esComment",title:"备注",width:200},
-                    {field:"isVerify",title:"状态",width:100,formatter:function(value,row,index){
+                    {field:"isVerify",title:"状态",width:80,formatter:function(value,row,index){
                         if(value=="1"){
                             return "<span style='color: #009943'>已校验</span>"
                         }else if(value=="0"){
@@ -171,19 +171,35 @@ function innitdata(active){
                         }
                     }},
                     {field:"actor",title:"操作",width:100,align:'center',formatter:function(value,row,index){
-                        if(row.isVerify==1){
-                            if(row.id.indexOf("mb")==0){
-                                var addNativeDiv="<button id='addQdBtn'  style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='adgQdBtn(\""+row.id+"\")'>添加数据</button>"
+                        var addNativeDiv="<button id='addQdBtn'  style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='adgQdBtn(\""+row.id+"\")'>添加数据</button>"
+                        var addNativeDivEdit="<button id='addQdBtn'  style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='editQdBtn(\""+row.id+"\")'>编辑</button>"
+                        var addNativeDivDelet="<button id='addQdBtn'  style='cursor:pointer;width:76px;height:20px;background-color: #0fa35a;border:1px solid #00622d;color: white;border-radius:2px;box-sizing:border-box' onclick='deleteQdBtn(\""+row.id+"\")'>删除</button>"
+                        var checkDiv="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='$(this).attr(\"disabled\",\"disabled\");$(this).css({\"background-color\":\"#D9D9D9\",\"border\":\"1px solid #666\"});checkData(\""+row.id+"\");'>校验</button>";
+                        console.log(row);
+                        if(row.id.indexOf("mb")==0){
+                            if(row.isVerify==1){
                                 return addNativeDiv;
-                            }else{
-                                return "<span>校验成功</span>"
+                            }else if(row.isVerify==0){
+                                return checkDiv;
                             }
-                        }else if(row.isVerify==0){
-                            var checkDiv="<button style='cursor:pointer;width:76px;height:20px;background-color: #febb00;border:1px solid #cd8c00;color: white;border-radius:2px;box-sizing:border-box' onclick='$(this).attr(\"disabled\",\"disabled\");$(this).css({\"background-color\":\"#D9D9D9\",\"border\":\"1px solid #666\"});checkData(\""+row.id+"\");'>校验</button>"
-                            return checkDiv
-                        }else {
-                            return value;
+                        }else if(row.id.indexOf("qd")==0){
+                            if(row.isVerify==0){
+                                return checkDiv+"<br>"+addNativeDivEdit+"<br>"+addNativeDivDelet;
+                            }else if(row.isVerify==1){
+                                return addNativeDivEdit+"<br>"+addNativeDivDelet;
+                            }
                         }
+                        // if(row.isVerify==1){
+                        //     if(row.id.indexOf("mb")==0){
+                        //         return addNativeDiv;
+                        //     }else{
+                        //         return "<span>校验成功</span>"
+                        //     }
+                        // }else if(row.isVerify==0){
+                        //     return checkDiv
+                        // }else {
+                        //     return value;
+                        // }
                     }}
                 ]],
                 onClickRow:function (row) {
@@ -336,6 +352,10 @@ function innitdata(active){
                     ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark,"nativeTpId":rowDiv.esNativeTpId,"nativeTpName":rowDiv.esNativeTpName}).success(function(res){
                         if(res.status==0){
                             innitdata("find_natives");
+                            console.log("123");
+                            $('[node-id="'+creatQd+'"]').addClass('datagrid-row-clicked').siblings().removeClass('datagrid-row-clicked');
+                            $(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree .datagrid-row").removeClass('datagrid-row-clicked');
+                            $('#localqd').treegrid('collapseAll').treegrid('expand',creatQd);
                             $("#editTempQd").window('close');
                         }else{
                             swal('参数错误', '', 'error');
@@ -352,6 +372,46 @@ function innitdata(active){
                 // $("#editTempQd .tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入符合要求的名称</span>");
             }
 
+        }
+    }else if(active=="update_native"){
+        var rowNow=$("#localqd").treegrid('find',editQd)
+        var param={};//设置接口参数
+        param.userId=userId;
+        param.nativeName=$("#editLocalQdName").val();
+        param.nativeId=rowNow.esNativeId;
+        param.nativeRemark=$("#editLocalQdMark").val();
+        param.method="update_native";
+        param.nativeYear=$("#editLocalQdYear").val();
+
+
+        var myYear_=$("#editLocalQdYear").val()
+        var myName_=$("#editLocalQdYear").val()
+        if(myName_.length>0 && myName_.length<=20 &&  myName_!="不可超过15个字符（必填）"){
+            if(myYear_>=1990&&myYear_<=2100){//判断年份是否符合要求 符合提交编辑后数据
+                $("#formLocalQd").submit(
+                    ajaxPost('/NativeAndNation/doPost',param).success(function(res){
+                        if(res.status==0){
+                            $("#localqd").treegrid('update',{//更新清单列表编辑后的数据
+                                id: editQd,
+                                row: {
+                                    esNativeTpName: param.nativeName,
+                                    esNativeTpYear:param.nativeYear,
+                                    esComment:param.nativeRemark
+                                }
+
+                            })
+                            innitdata("find_natives")
+                        }else{
+                            swal('参数错误', '', 'error');
+                        }
+                    })
+                )
+                $("#editLocalQd").window('close');
+            }else{
+                swal('年份错误', '', 'error');
+            }
+        }else{
+            swal('请输入符合要求的名称', '', 'error');
         }
     }
 }
@@ -383,7 +443,7 @@ function creatTemp(){
             $("#creatTemp label").eq(i).remove();
         }
     }
-    $("#creatTemp").window("open");
+    $("#creatTemp").window("open").window('center');;
 }
 //清空弹窗输入框内容
 function claearTemp() {
@@ -435,7 +495,7 @@ function editTemp() {
                 $("#editTemp label").eq(i).remove();
             }
         }
-        $("#editTemp").window('open');
+        $("#editTemp").window('open').window('center');;
     }else{
         swal('请先选择编辑清单', '', 'error');
     }
@@ -453,7 +513,9 @@ $("#editTempQd").window({
     closed:true,
     cls:"cloudui"
 })
-var creatQd
+var creatQd;
+var editQd;
+var deleteQd;
 //点击按钮创建模板下面的清单
 function adgQdBtn(rowId){
     creatQd=rowId
@@ -470,7 +532,38 @@ function adgQdBtn(rowId){
             $("#editTempQd label").eq(i).remove();
         }
     }
-    $("#editTempQd").window("open");
+    $("#editTempQd").window("open").window('center');;
+}
+//编辑清单窗口
+$("#editLocalQd").window({
+    width:600,  //easyui 窗口宽度
+    collapsible:false, //easyui 自带的折叠按钮
+    maximizable:false,//easyui 自带的最大按钮
+    minimizable:false,//easyui 自带的最小按钮
+    modal:true,
+    shadow:false,
+    title:'编辑清单',
+    border:false,
+    closed:true,
+    cls:"cloudui"
+})
+//点击按钮编辑模板下面的清单
+function editQdBtn(rowId){
+    editQd=rowId;
+    var rowDiv=$("#localqd").treegrid('find',rowId);
+    console.log(rowDiv);
+    var e = e || window.event;
+    e.stopPropagation();//防止出现下拉
+    document.getElementById("editLocalQdName").value=rowDiv.esNativeTpName; //编辑窗口打开后 名称输入框显示所选数据的名称
+    document.getElementById("editLocalQdYear").value=rowDiv.esNativeTpYear;//编辑窗口打开后 年份输入框显示所选数据的名称
+    document.getElementById("editLocalQdMark").value=rowDiv.esComment;//编辑窗口打开后 备注输入框显示所选数据的名称
+    var labelDiv=$("#editTempQd label");
+    for(var i=0;i<labelDiv.length;i++){
+        if($("#editTempQd label").eq(i).attr("id")){
+            $("#editTempQd label").eq(i).remove();
+        }
+    }
+    $("#editLocalQd").window("open").window('center');;
 }
 //防止树形表单子节点点击出现下拉效果
 $(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree tr").click(function(){
@@ -587,7 +680,7 @@ $(".cloudui .rwCon .qdContent .qdName").blur(function () {//名称失去焦点
 })
 $(".cloudui .rwCon .qdContent .qdYear").blur(function () {//年份失去焦点
     if($(this).val()==""){
-        $(this).val("1990-2100（必填）")
+        $(this).val("1990-2100之间的年份")
         $(this).css({"color":"#757575"})
     }
 
