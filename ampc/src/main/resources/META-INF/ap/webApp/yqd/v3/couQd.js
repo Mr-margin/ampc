@@ -360,7 +360,6 @@ function closeDetail() {
 
 }
 //点击查看耦合清单详细信息
-$("#CoupDetailCon").layout();
 var detailRow;
 function viewDetail(coupId) {
     $("#coupDetail input").innerText="";
@@ -388,10 +387,14 @@ function viewDetail(coupId) {
     if(detailRow.esCouplingDesc){
         $("#coupDes").val(detailRow.esCouplingDesc);
     }
+    var allCoupData=detailRow.esCouplingMeiccityconfig;
+    for(var m=0;m<allCoupData.length;m++){
+
+    }
     $("#coupMeicTable").datagrid({
         columns:[[  //表头
-            {field:"regionId",title:"行政区"},
-            {field:"sectorName",title:"行业"},
+            {field:"regionId",title:"行政区",width:100},
+            {field:"sectorName",title:"行业",width:200},
             {field:"meicCityId",title:"清单"},
         ]],
         data:detailRow.esCouplingMeiccityconfig,
@@ -916,13 +919,13 @@ function cityTable(cityData,checkRow) {
 function submitCheckQd() {
     // meicCityConfig=globelCheckedQd;
     // var newArray=[]
+    meicCityConfig=[];
     for(var i=0;i<globelCheckedQd.length;i++){
         for(var j=0;j<globelCheckedQd[i].length;j++){
             // var meicCityConfig=[]
             meicCityConfig.push(globelCheckedQd[i][j]);
         }
     }
-
     ajaxPost('/NativeAndNation/doPost',{"userId":userId,
         "method":'saveCoupling',
         "nationId":checkQgQd.esNationId, //第一步全国清单ID
