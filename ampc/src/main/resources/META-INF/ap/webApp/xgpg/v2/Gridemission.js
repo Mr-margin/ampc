@@ -157,10 +157,9 @@ require(
             app.stlayerList[i] = new dong.gaodeLayer({layertype: "st"});
             app.labellayerList[i] = new dong.gaodeLayer({layertype: "label"});
             app.mapList[i].addLayer(app.baselayerList[i]);//添加高德地图到map容器
-            app.mapList[i].addLayers([app.baselayerList[i]]);//添加高德地图到map容器
             
-            app.mapimagelayer[i] = new dong.MapImageLayer({"id":"myil"+i});
-            app.mapList[i].addLayer(app.mapimagelayer[i]);
+//            app.mapimagelayer[i] = new dong.MapImageLayer({"id":"myil"+i});
+//            app.mapList[i].addLayer(app.mapimagelayer[i]);
             
             app.dynamicData[i] = new dong.ArcGISDynamicMapServiceLayer(ArcGisServerUrl + "/arcgis/rest/services/ampc/cms/MapServer");
             app.mapList[i].addLayer(app.dynamicData[i]);
@@ -490,7 +489,7 @@ function bianji_wanggepafang(type, g_num, p , wind){
     			dynamicLayerInfo.defaultVisibility = false;
     			dynamicLayerInfo.name = "reuslt";
     			var dataSource = new dong.RasterDataSource();
-    			dataSource.workspaceId = "tiffPath";
+    			dataSource.workspaceId = "gtf";
     			
 //    			dataSource.dataSourceName = "tiffPath/2017-06-05/1/1/372/3/emis/show/d-2016-11-17-0-0-PM25-509.tiff";
     			dataSource.dataSourceName = data.data;
