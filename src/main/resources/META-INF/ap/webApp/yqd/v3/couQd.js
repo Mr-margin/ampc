@@ -100,7 +100,7 @@ function innitdata(){  //耦合清单的初始化
 function qgqdTable() {
     $("#qgqd").datagrid({
         method:'post', //ajax 请求远程数据方法
-        url: "/ampc/NativeAndNation/find_nation", //请求数据
+        url: "/ampc/NativeAndNation/doPost", //请求数据
         dataType: "json",
         columns:[[  //表头
             // {field:"ck",checkbox:true},
@@ -115,7 +115,7 @@ function qgqdTable() {
             {field:"qgqdConfig",title:"操作",align:'cneter',width:100}//校验清单
         ]],
         loadFilter:function (data) { //过滤数据，转换成符合格式的数据
-            return data.data;
+            return data.data.data;
 
         },
         selectOnCheck:true, //true，单击复选框将永远选择行 false，选择行将不选中复选框。
@@ -137,6 +137,7 @@ function qgqdTable() {
             data.pageSize=params.pageSize; //初始化页面上面表单的数据行数
             data.pageNumber=params.pageNumber  //初始化页面的页码
             data.queryName="";
+            data.method="find_nation";
             return {"token": "", "data": data};
         },
     })
@@ -342,11 +343,11 @@ function coupDelete(){
 }
 //查看详情的窗口
 $("#coupDetail").window({
-    width:600,  //easyui 窗口宽度
+    width:1000,  //easyui 窗口宽度
     collapsible:false, //easyui 自带的折叠按钮
     maximizable:false,//easyui 自带的最大按钮
     minimizable:false,//easyui 自带的最小按钮
-    height:500,
+    height:800,
     modal:true,
     shadow:false,
     title:'详细信息',
@@ -359,6 +360,7 @@ function closeDetail() {
 
 }
 //点击查看耦合清单详细信息
+$("#CoupDetailCon").layout();
 var detailRow;
 function viewDetail(coupId) {
     $("#coupDetail input").innerText="";
@@ -371,6 +373,7 @@ function viewDetail(coupId) {
             }
         }
     }
+    $("#qdTitle").text(detailRow.esCouplingName+"耦合信息")
     $("#coupName").val(detailRow.esCouplingName);//耦合名称
     $("#coupName").attr('title',detailRow.esCouplingName);
     $("#coupYear").val(detailRow.esCouplingYear);//耦合清单年份
@@ -393,29 +396,33 @@ function viewDetail(coupId) {
         ]],
         data:detailRow.esCouplingMeiccityconfig,
         loadFilter:function (data) {
-            var indusCheckAll=[];
-            for(var i=0;i<data.length;i++){
-                indusCheckAll.push(data[i].sectorName)
-            }
-            indusCheckAll=indusCheckAll.unique();
-            var indusClass=[];
-            var showIndus=[];
-            for(var ind=0;ind<indusCheckAll.length;ind++){
-                indusClass=[];
-                for(var qd=0;qd<data.length;qd++){
-                    if(indusCheckAll[ind]==data[qd].sectorName){
-                        indusClass.push(data[qd]);
-                    }
-                }
-                console.log(indusClass);
-                showIndus.push(indusClass)
-            }
-            console.log(showIndus);
-            for(var p=0;p<showIndus.lenght;p++){
-                for(var q=0;q<showIndus[p].length;q++){
-
-                }
-            }
+            // var indusCheckAll=[];
+            // for(var i=0;i<data.length;i++){
+            //     indusCheckAll.push(data[i].sectorName)
+            // }
+            // indusCheckAll=indusCheckAll.unique();
+            // var indusClass=[];
+            // var showIndus=[];
+            // for(var ind=0;ind<indusCheckAll.length;ind++){
+            //     indusClass=[];
+            //     for(var qd=0;qd<data.length;qd++){
+            //         if(indusCheckAll[ind]==data[qd].sectorName){
+            //             indusClass.push(data[qd]);
+            //         }
+            //     }
+            //     console.log(indusClass);
+            //     showIndus.push(indusClass)
+            // }
+            // console.log(showIndus);
+            // var showData={};
+            // var showDataAll=[];
+            // for(var p=0;p<showIndus.lenght;p++){
+            //     for(var q=0;q<showIndus[p].length;q++){
+            //         showData.meicCityId=showIndus[0].meicCityId
+            //         showData.meicCityId=showIndus[0].meicCityId
+            //
+            //     }
+            // }
             return data;
         }
     })
