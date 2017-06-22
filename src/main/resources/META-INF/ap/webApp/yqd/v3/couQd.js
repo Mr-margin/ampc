@@ -387,10 +387,10 @@ function viewDetail(coupId) {
     if(detailRow.esCouplingDesc){
         $("#coupDes").val(detailRow.esCouplingDesc);
     }
-    var allCoupData=detailRow.esCouplingMeiccityconfig;
-    for(var m=0;m<allCoupData.length;m++){
-
-    }
+    // var allCoupData=detailRow.esCouplingMeiccityconfig;
+    // for(var m=0;m<allCoupData.length;m++){
+    //
+    // }
     $("#coupMeicTable").datagrid({
         columns:[[  //表头
             {field:"regionId",title:"行政区",width:100},
@@ -399,8 +399,6 @@ function viewDetail(coupId) {
         ]],
         data:detailRow.esCouplingMeiccityconfig,
         loadFilter:function (data) {
-
-            
             // var indusCheckAll=[];
             // for(var i=0;i<data.length;i++){
             //     indusCheckAll.push(data[i].sectorName)
