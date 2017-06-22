@@ -282,7 +282,7 @@ WHERE
 FROM
 	"AMPC"."T_ES_NATIVE"
 WHERE
-	ES_NATIVE_NAME = #{esNativeName,jdbcType=OTHER}
+	ES_NATIVE_NAME = #{nativeName,jdbcType=OTHER}
   </select>
   
   
