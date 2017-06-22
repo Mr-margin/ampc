@@ -399,6 +399,8 @@ function viewDetail(coupId) {
         ]],
         data:detailRow.esCouplingMeiccityconfig,
         loadFilter:function (data) {
+
+            
             // var indusCheckAll=[];
             // for(var i=0;i<data.length;i++){
             //     indusCheckAll.push(data[i].sectorName)
