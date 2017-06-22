@@ -1077,7 +1077,7 @@ public class NativeAndNationController {
 			
 			String yunURL=configUtil.getYunURL()+"/search/deleteByCityId";
 			
-			String result=ClientUtil.doPost(yunURL,data.get("nativeId").toString());
+//			String result=ClientUtil.doPost(yunURL,data.get("nativeId").toString());
 			
 			//执行删除操作
 			int total = tEsNativeMapper.deleteByPrimaryKey(nativeId);
