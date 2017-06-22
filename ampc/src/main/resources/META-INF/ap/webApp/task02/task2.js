@@ -369,6 +369,7 @@ $('#codeListTree').tabs({
         width: 900,
         onOpen: function () {
             ajaxCode_ls = null;
+            var pro_ls = [];
             $('#settingqjbox').window('close');
             /*初始化tree树相关信息*/
             $.fn.zTree.init($("#adcodeTree"), zTreeSetting, zTreeData);//zTreeData是从home页面传过来的数据
@@ -378,10 +379,13 @@ $('#codeListTree').tabs({
             var nodes = treeObj.getNodesByParam("level", 1);//获取地市一级的节点
             var nodes_all = treeObj_all.getNodesByParam("level", 1);//获取地市一级的节点
             var code = qjMsg.esCodeRange; //获取当前
+            for(var pl=0;pl<code.length;pl++){
+                pro_ls.push(code[pl].substr(0, 2))
+            }
 //                对应的任务范围中市级下可显示县一级
             for (var i = 0; i < nodes.length; i++) {
                 var adcode = nodes[i].adcode;
-                if ((code.indexOf(adcode.substr(0, 2)) == -1) && (code.indexOf(adcode.substr(0, 4)) == -1)) {
+                if ((pro_ls.indexOf(adcode.substr(0, 2)) == -1) && (code.indexOf(adcode.substr(0, 4)) == -1)) {
 //                        在这里将非当前任务范围中的县级给隐藏起来
                     treeObj.hideNodes(nodes[i].children);
                     // treeObj.setChkDisabled(nodes[i], true, false, true);
@@ -397,7 +401,7 @@ $('#codeListTree').tabs({
             var nodes_pro_all = treeObj_all.getNodesByParam("level", 0);//获取地市零级的节点
             for(var p = 0; p<nodes_pro.length;p++){
                 var procode = nodes_pro[p].adcode;
-                if(code.indexOf(procode.substr(0, 2)) == -1){
+                if(pro_ls.indexOf(procode.substr(0, 2)) == -1){
                     // treeObj.setChkDisabled(nodes_pro[p], true, false, true);
                     treeObj.removeNode(nodes_pro[p])
                 }else{
