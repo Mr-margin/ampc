@@ -719,7 +719,6 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
             app.stlayerList[i] = new dong.gaodeLayer({layertype: "st"});
             app.labellayerList[i] = new dong.gaodeLayer({layertype: "label"});
             app.mapList[i].addLayer(app.baselayerList[i]);//添加高德地图到map容器
-            app.mapList[i].addLayers([app.baselayerList[i]]);//添加高德地图到map容器
         }
         app.gLyr = new dong.GraphicsLayer({"id": "gLyr"});
         app.mapList[0].addLayer(app.gLyr);

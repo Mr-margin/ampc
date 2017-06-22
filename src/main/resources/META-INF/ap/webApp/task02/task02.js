@@ -2102,7 +2102,6 @@ require(
         app.stlayerList1 = new dong.gaodeLayer({layertype: "st1"});
         app.labellayerList1 = new dong.gaodeLayer({layertype: "label1"});
         app.map1.addLayer(app.baselayerList1);//添加高德地图到map容器
-        app.map1.addLayers([app.baselayerList1]);//添加高德地图到map容器
         app.gLyr1 = new dong.GraphicsLayer({"id": "gLyr1"});
         app.map1.addLayer(app.gLyr1);
         app.map1.on("loaded", app2())
@@ -2119,7 +2118,6 @@ require(
         app.stlayerList = new dong.gaodeLayer({layertype: "st"});
         app.labellayerList = new dong.gaodeLayer({layertype: "label"});
         app.map.addLayer(app.baselayerList);//添加高德地图到map容器
-        app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
         app.gLyr = new dong.GraphicsLayer({"id": "gLyr"});
         app.map.addLayer(app.gLyr);
     });

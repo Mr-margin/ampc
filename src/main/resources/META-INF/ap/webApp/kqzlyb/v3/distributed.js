@@ -283,7 +283,6 @@ require(
         app.stlayerList = new dong.gaodeLayer({layertype: "st"});//加载卫星图
         app.labellayerList = new dong.gaodeLayer({layertype: "label"});//加载标注图
         app.map.addLayer(app.baselayerList);//添加高德地图到map容器
-        app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
 
         app.gLyr = new dong.GraphicsLayer({"id": "gLyr"});
         app.map.addLayer(app.gLyr);

@@ -372,7 +372,6 @@ require(["esri/map", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer", "e
         app.map.on("load", shoe_data_start);//启动后立即执行获取数据
 
         app.map.addLayer(app.baselayerList);//添加高德地图到map容器
-        app.map.addLayers([app.baselayerList]);//添加高德地图到map容器
 
         app.map.graphics.clear();
 
