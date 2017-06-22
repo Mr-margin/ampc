@@ -2075,7 +2075,7 @@ public class AirController {
 			return AmpcResult.build(1003, "页签参数为空或出现非法字符!");
 		}
 		String tabType=param.toString();
-        System.out.println("1次"+new Date());
+     
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH");
 		SimpleDateFormat daysdf=new SimpleDateFormat("yyyy-MM-dd");
 		Date start=daysdf.parse(starttime);
@@ -2179,7 +2179,7 @@ public class AirController {
 			}
 			
 			
-			System.out.println("2次"+new Date());
+		
 			Map<Integer,Map<Date,Object>> pdMap=new HashMap();
 			
 			List<String> perlist=new ArrayList();
@@ -2326,7 +2326,7 @@ public class AirController {
 				}
 					pdMap.put(how, pddMap);	
 			}
-			System.out.println("3次"+new Date());
+	
 			Map<Integer,Map<Date,Object>> lastoMap=new HashMap();
 			Map<Integer,Map<Date,Object>> lastpMap=new HashMap();
 			Iterator<Entry<Integer,Map<Date,Object>>> oiter=odMap.entrySet().iterator();
@@ -2379,7 +2379,7 @@ public class AirController {
 			
 			
 			////////////////////////////////////////////////////////////////////////////////
-			System.out.println("4次"+new Date());
+		
 		Set<Integer> days=lastoMap.keySet();
 			
 		for(Integer how:days){
@@ -2726,7 +2726,7 @@ public class AirController {
 						String spc=spciter.getKey();
                        
 						if(spc.equals("CO")||spc.equals("O3_8h")||spc.equals("AQI")||spc.equals("PM10")||spc.equals("SO2")||spc.equals("O3")||spc.equals("NO2")||spc.equals("PM25")){
-							
+				
 							
 						}else{
 							continue;
@@ -2882,7 +2882,7 @@ public class AirController {
 		   listTemp.add(a);
 		  }  
 		 }  
-		 System.out.println(new Date());
+		 
 		return	AmpcResult.ok(lastMap);
 
 	}catch(Exception e){
