@@ -2075,7 +2075,7 @@ public class AirController {
 			return AmpcResult.build(1003, "页签参数为空或出现非法字符!");
 		}
 		String tabType=param.toString();
-
+        System.out.println("1次"+new Date());
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH");
 		SimpleDateFormat daysdf=new SimpleDateFormat("yyyy-MM-dd");
 		Date start=daysdf.parse(starttime);
@@ -2146,7 +2146,7 @@ public class AirController {
 					Date pathDate=daysdf.parse(addTimeDate);//对应情景起报日期
 					scenarinoEntity.setDate(thedate);
 					scenarinoEntity.setTableName(tables);
-					sclist=tPreProcessMapper.selectBysome2(scenarinoEntity);
+					sclist=tPreProcessMapper.selectBysome4(scenarinoEntity);
 					}else{
 						String tables="T_OBS_HOURLY_";
 						DateFormat df = new SimpleDateFormat("yyyy");
@@ -2166,7 +2166,7 @@ public class AirController {
 						Date pathDate=daysdf.parse(addTimeDate);//对应情景起报日期
 						scenarinoEntity.setDate(thedate);
 						scenarinoEntity.setTableName(tables);
-						sclist=tPreProcessMapper.selectBysome2(scenarinoEntity);
+						sclist=tPreProcessMapper.selectBysome4(scenarinoEntity);
 						
 					}
 					if(!sclist.isEmpty()){
@@ -2179,7 +2179,7 @@ public class AirController {
 			}
 			
 			
-			
+			System.out.println("2次"+new Date());
 			Map<Integer,Map<Date,Object>> pdMap=new HashMap();
 			
 			List<String> perlist=new ArrayList();
@@ -2248,9 +2248,9 @@ public class AirController {
 						scenarinoEntity.setsId(Long.valueOf(jztScenarino.getScenarinoId().toString()));
 						scenarinoEntity.setTableName(tables);
 						if(how==-1){
-						ssslist=tPreProcessMapper.selectBysome(scenarinoEntity);
+						ssslist=tPreProcessMapper.selectBysome3(scenarinoEntity);
 						}else{
-							ScenarinoEntity	sss=tPreProcessMapper.selectBysomes(scenarinoEntity);
+							ScenarinoEntity	sss=tPreProcessMapper.selectBysomes2(scenarinoEntity);
 							ssslist.add(sss);
 						}
 					}else{
@@ -2294,7 +2294,7 @@ public class AirController {
 							tables+="T_SCENARINO_FNL_HOURLY_";
 							scenarinoEntity.setDay(jztScenarino.getScenarinoStartDate());
 						}else{
-							tables+="T_SCENARINO_HOURLY_";	
+							tables+="T_SCENARINO_HOURLY_";
 							scenarinoEntity.setsId(Long.valueOf(jztScenarino.getScenarinoId().toString()));
 						}
 						Date tims=jztScenarino.getPathDate();
@@ -2311,9 +2311,9 @@ public class AirController {
 						
 						scenarinoEntity.setTableName(tables);
 						if(how==-1){
-						ssslist=tPreProcessMapper.selectBysome(scenarinoEntity);	
+						ssslist=tPreProcessMapper.selectBysome3(scenarinoEntity);	
 						}else{
-							ScenarinoEntity	sss=tPreProcessMapper.selectBysomes(scenarinoEntity);
+							ScenarinoEntity	sss=tPreProcessMapper.selectBysomes2(scenarinoEntity);
 							ssslist.add(sss);
 						}
 					}
@@ -2326,6 +2326,7 @@ public class AirController {
 				}
 					pdMap.put(how, pddMap);	
 			}
+			System.out.println("3次"+new Date());
 			Map<Integer,Map<Date,Object>> lastoMap=new HashMap();
 			Map<Integer,Map<Date,Object>> lastpMap=new HashMap();
 			Iterator<Entry<Integer,Map<Date,Object>>> oiter=odMap.entrySet().iterator();
@@ -2369,7 +2370,16 @@ public class AirController {
 				lastoMap.put(num, om);
 				lastpMap.put(num, pm);
 				}
-
+			
+			
+			
+			
+			
+			
+			
+			
+			////////////////////////////////////////////////////////////////////////////////
+			System.out.println("4次"+new Date());
 		Set<Integer> days=lastoMap.keySet();
 			
 		for(Integer how:days){
@@ -2872,6 +2882,7 @@ public class AirController {
 		   listTemp.add(a);
 		  }  
 		 }  
+		 System.out.println(new Date());
 		return	AmpcResult.ok(lastMap);
 
 	}catch(Exception e){
