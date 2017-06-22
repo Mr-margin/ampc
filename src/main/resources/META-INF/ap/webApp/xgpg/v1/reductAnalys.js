@@ -416,7 +416,8 @@ function baizhu_jianpai(gis_paramsName, sh_type) {
                     valMax = col;
                 }
             });
-            if (parseInt(valMax) <= 0) {//如果最大值小于等于0，地图不显示
+            valMax = valMax.toFixed(4);
+            if (valMax <= 0 ) {//如果最大值小于等于0，地图不显示
                 if (app.hasOwnProperty("legend")) {
                     app.legend.destroy();
                     dong.domConstruct.destroy(dojo.byId("legend"));
@@ -976,7 +977,7 @@ function pie() {
                     var ttgk = {};
                     ttgk.name = result.data[i].name;
                     legend_name.push(result.data[i].name);
-                    ttgk.value = result.data[i].value;
+                    ttgk.value = result.data[i].value.toFixed(2);
                     sum_value += result.data[i].value;
                     data_value.push(ttgk);
                 }
@@ -985,7 +986,7 @@ function pie() {
                 var optionPie = {
                     title: {
                         text: tj_paramsName.name + '-' + (tj_paramsName.type == "1" ? "分行业" : "分措施") + "-" + mappingSpecies[tj_paramsName.wz] + '-减排分析',
-                        subtext: '全部' + (tj_paramsName.type == "1" ? "行业" : "措施") + '合计减排：' + sum_value.toFixed(2),
+                        subtext: '全部' + (tj_paramsName.type == "1" ? "行业" : "措施") + '合计减排：' + sum_value.toFixed(2) + '吨',
                         left:'50%',
                         top:'1%',
                         textAlign:'center'
