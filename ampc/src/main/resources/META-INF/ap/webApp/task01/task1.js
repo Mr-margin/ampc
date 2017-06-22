@@ -411,7 +411,7 @@ function domainNameFormatter(value, row, index) {
 function esCouplingNameFormatter(value, row, index) {
     if (typeof row.esCouplingName === 'undefined') {
         if (typeof row.adminTitle === 'undefined') {
-            if (row.scenarinoStatus == 6 || row.scenarinoStatus == 7|| row.scenarinoStatus == 9) {
+            if (row.scenarinoStatus == 6 || row.scenarinoStatus == 7|| row.scenarinoStatus == 9|| row.scenarinoStatus == 10) {
                 return "<a href='javascript:stopBtn()' style='color: #377ab7'><i class='im-stop'> 终止</i></a>"
             } else {
                 return "<i class='im-stop'style='color: #ccc'> 终止</i>";
@@ -677,7 +677,7 @@ function selectType(type) {
         start = moment().subtract(32, 'd').format('YYYY-MM-DD');
         end = moment().subtract(2, 'd').format('YYYY-MM-DD');
         rwSelectType = '3';
-        $("#addRW").panel({title: '创建后估任务'});
+        $("#addRW").panel({title: '创建后评估任务'});
         //rwEndDate = moment().subtract(2, 'd').format('YYYY-MM-DD');
         initRwDate(startDate, endDate, start, end);
     }
@@ -1273,6 +1273,9 @@ function setOption(ele, res) {
     $(ele).empty();
     for (var i = 0; i < res.length; i++) {
         if (((ele == '#dbqj') || (ele == '#dbqj1')) && (res[i].scenarinoId == -1))continue;
+        if(res[i].ScenType=="3"||res[i].ScenType=="4"){
+        	continue;
+        }
         $(ele).append($('<option value="' + i + '">' + res[i].scenarinoName + '</option>'))
     }
 }
