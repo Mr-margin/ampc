@@ -916,12 +916,12 @@ public class NativeAndNationController {
 			}
 			Long nativeTpId=Long.parseLong(param.toString());
 			//获取本地清单模板名称
-			param=data.get("nativeTpid");
+			param=data.get("nativeTpName");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 本地清单模板id为空或出现非法字符!");
 				return AmpcResult.build(1003, "本地清单模板id为空或出现非法字符!");
 			}
-			String nativeTpid=param.toString();
+			String nativeTpName=param.toString();
 			
 			//添加数据
 			TEsNative tEsNative=new TEsNative();
@@ -936,14 +936,14 @@ public class NativeAndNationController {
 			TEsNative tEsNativeOne= tEsNativeMapper.selectByNativeName(nativeName);
 			Long nativeId= tEsNativeOne.getEsNativeId();
 			
-			String natives_filePath = "/"+userId+"/"+nativeTpid+"/"+nativeId;
+			String natives_filePath = "/"+userId+"/"+nativeTpId+"/"+nativeId;
 			TEsNative tEsNativeup=new TEsNative();
 			tEsNativeup.setEsNativeId(nativeId);
 			tEsNativeup.setFilePath(natives_filePath);
 			int result = tEsNativeMapper.updateByPrimaryKeySelective(tEsNativeup);
 			
 			//服务器配置路径
-			String nativesfilePath = new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpid+"/"+nativeId).toString().getBytes("iso-8859-1"),"utf-8");
+			String nativesfilePath = new String((configUtil.getFtpURL()+"\\"+userId+"\\"+nativeTpId+"\\"+nativeId).toString().getBytes("iso-8859-1"),"utf-8");
 			LogUtil.getLogger().info(nativesfilePath);
 			//获取file对象
 			File files =new File(nativesfilePath);
@@ -1077,7 +1077,7 @@ public class NativeAndNationController {
 			
 			String yunURL=configUtil.getYunURL()+"/search/deleteByCityId";
 			
-//			String result=ClientUtil.doPost(yunURL,data.get("nativeId").toString());
+			String result=ClientUtil.doPost(yunURL,data.get("nativeId").toString());
 			
 			//执行删除操作
 			int total = tEsNativeMapper.deleteByPrimaryKey(nativeId);
