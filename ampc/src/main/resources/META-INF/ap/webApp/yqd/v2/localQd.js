@@ -516,6 +516,7 @@ $("#editTempQd").window({
 var creatQd;
 var editQd;
 var deleteQd;
+//删除清单
 //点击按钮创建模板下面的清单
 function adgQdBtn(rowId){
     creatQd=rowId
