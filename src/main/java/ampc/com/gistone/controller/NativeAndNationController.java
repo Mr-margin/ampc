@@ -3,7 +3,9 @@ package ampc.com.gistone.controller;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.sql.Clob;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -123,6 +125,10 @@ public class NativeAndNationController {
 					listTps = delete_nativeTp(requestDate,request,response);
 				}else if("add_native".equals(param)){
 					listTps = add_native(requestDate,request,response);
+				}else if("update_native".equals(param)){
+					listTps = update_native(requestDate,request,response);
+				}else if("delete_native".equals(param)){
+					listTps = delete_native(requestDate,request,response);
 				}else if("checkNativeTp".equals(param)){
 					listTps = checkNativeTp(requestDate,request,response);
 				}else if("checkNative".equals(param)){
@@ -160,7 +166,7 @@ public class NativeAndNationController {
 					LogUtil.getLogger().info("NativeAndNationController doPost请求方法参数异常!");
 					return AmpcResult.build(1003, "NativeAndNationController 请求方法参数异常!");
 				}
-				
+//				return listTps;
 				return AmpcResult.ok(listTps);
 			} catch (UnsupportedEncodingException e) {
 				// TODO 自动生成的 catch 块
@@ -603,11 +609,37 @@ public class NativeAndNationController {
 			}
 			String nativeTpRemark=param.toString();
 			
+			
+			
+			//添加数据
+			TEsNativeTp tEsNativeTp=new TEsNativeTp();
+			tEsNativeTp.setUserId(userId);
+			tEsNativeTp.setEsNativeTpName(nativeTpName);
+			tEsNativeTp.setEsNativeTpYear(nativeTpYear);
+			tEsNativeTp.setEsComment(nativeTpRemark);
+			
+//			tEsNativeTp.setFilePath(native_filePath);
+//			tEsNativeTp.setEsNativeTpOutPath(nativesOutPath);
+			//插入数据
+			int total=tEsNativeTpMapper.insertSelective(tEsNativeTp);
+			
+			TEsNativeTp tEsNativeTpOne= tEsNativeTpMapper.selectByNativeTpName(nativeTpName);
+			Long nativeTpId= tEsNativeTpOne.getEsNativeTpId();
+			
+			String native_filePath = "/"+userId+"/"+nativeTpId;
+			String nativesOutPath = "/"+userId+"/"+nativeTpId+"/outPath";
+			TEsNativeTp TEsNativeTpup=new TEsNativeTp();
+			TEsNativeTpup.setEsNativeTpId(nativeTpId);
+			TEsNativeTpup.setFilePath(native_filePath);
+			TEsNativeTpup.setEsNativeTpOutPath(nativesOutPath);
+			int result = tEsNativeTpMapper.updateByPrimaryKeySelective(TEsNativeTpup);
+			
+			
 			//读取配置文件路径
-			String nativefilePath = new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName).toString().getBytes("iso-8859-1"),"utf-8");
+			String nativefilePath = new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpId).toString().getBytes("iso-8859-1"),"utf-8");
 			String nativesfilePath = new String(( configUtil.getFtpURL()+"/"+userId+"/").toString().getBytes("iso-8859-1"),"utf-8");
 			//用于展示给用户的路径
-			String native_filePath = "/"+userId+"/"+nativeTpName;
+//			String native_filePath = "/"+userId+"/"+nativeTpName;
 			
 			//获取file对象
 			File files =new File(nativesfilePath);
@@ -636,9 +668,9 @@ public class NativeAndNationController {
 			}
 			
 			//文件输出路径
-			String nativeOutPath = configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName+"/outPath";
+			String nativeOutPath = configUtil.getFtpURL()+"/"+userId+"/"+nativeTpId+"/outPath";
 			//用于展示给用户的路径
-			String nativesOutPath = "/"+userId+"/"+nativeTpName+"/outPath";
+//			String nativesOutPath = "/"+userId+"/"+nativeTpName+"/outPath";
 			
 			//获取file对象
 			File outPath =new File(nativeOutPath);
@@ -652,20 +684,10 @@ public class NativeAndNationController {
 				outPath.mkdirs();
 			}
 			
-			//添加数据
-			TEsNativeTp tEsNativeTp=new TEsNativeTp();
-			tEsNativeTp.setUserId(userId);
-			tEsNativeTp.setEsNativeTpName(nativeTpName);
-			tEsNativeTp.setEsNativeTpYear(nativeTpYear);
-			tEsNativeTp.setEsComment(nativeTpRemark);
 			
-			tEsNativeTp.setFilePath(native_filePath);
-			tEsNativeTp.setEsNativeTpOutPath(nativesOutPath);
-			//插入数据
-			int total=tEsNativeTpMapper.insertSelective(tEsNativeTp);
 			Map msgMap=new HashMap();
 			//清单模板数据成功入库
-			if(total>0){
+			if(result>0){
 				Map nativeTpMap=new HashMap();
 				nativeTpMap.put("userId", userId);
 				nativeTpMap.put("nativeTpName", nativeTpName);
@@ -886,27 +908,45 @@ public class NativeAndNationController {
 				return AmpcResult.build(1003, "本地清单备注为空或出现非法字符!");
 			}
 			String nativeRemark=param.toString();
-			//获取清单备注
+			//获取本地清单模板id
 			param=data.get("nativeTpId");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 本地清单模板id为空或出现非法字符!");
 				return AmpcResult.build(1003, "本地清单模板id为空或出现非法字符!");
 			}
 			Long nativeTpId=Long.parseLong(param.toString());
-			
-			param=data.get("nativeTpName");
+			//获取本地清单模板名称
+			param=data.get("nativeTpid");
 			if(!RegUtil.CheckParameter(param, "String", null, false)){
 				LogUtil.getLogger().error("NativeAndNationController 本地清单模板id为空或出现非法字符!");
 				return AmpcResult.build(1003, "本地清单模板id为空或出现非法字符!");
 			}
-			String nativeTpName=param.toString();
+			String nativeTpid=param.toString();
+			
+			
+			
+			//添加数据
+			TEsNative tEsNative=new TEsNative();
+			tEsNative.setUserId(userId);
+			tEsNative.setEsNativeName(nativeName);
+			tEsNative.setEsNativeYear(nativeYear);
+			tEsNative.setEsComment(nativeRemark);
+			tEsNative.setEsNativeTpId(nativeTpId);
+//			tEsNative.setFilePath(natives_filePath);
+			//插入数据
+			int total=tEsNativeMapper.insertSelective(tEsNative);
+			TEsNative tEsNativeOne= tEsNativeMapper.selectByNativeName(nativeName);
+			Long nativeId= tEsNativeOne.getEsNativeId();
+			
+			String natives_filePath = "/"+userId+"/"+nativeTpid+"/"+nativeId;
+			TEsNative tEsNativeup=new TEsNative();
+			tEsNativeup.setEsNativeId(nativeId);
+			tEsNativeup.setFilePath(natives_filePath);
+			int result = tEsNativeMapper.updateByPrimaryKeySelective(tEsNativeup);
 			
 			//服务器配置路径
-			String nativesfilePath = new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName+"/"+nativeName).toString().getBytes("iso-8859-1"),"utf-8");
+			String nativesfilePath = new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpid+"/"+nativeId).toString().getBytes("iso-8859-1"),"utf-8");
 			LogUtil.getLogger().info(nativesfilePath);
-			//调用接口所需参数
-			String natives_filePath = "/"+userId+"/"+nativeTpName+"/"+nativeName;
-			
 			//获取file对象
 			File files =new File(nativesfilePath);
 			//目录已经存在
@@ -918,18 +958,8 @@ public class NativeAndNationController {
 				LogUtil.getLogger().info(files+"本地清单文件夹创建成功");
 			}
 			
-			//添加数据
-			TEsNative tEsNative=new TEsNative();
-			tEsNative.setUserId(userId);
-			tEsNative.setEsNativeName(nativeName);
-			tEsNative.setEsNativeYear(nativeYear);
-			tEsNative.setEsComment(nativeRemark);
-			tEsNative.setEsNativeTpId(nativeTpId);
-			tEsNative.setFilePath(natives_filePath);
-			//插入数据
-			int total=tEsNativeMapper.insertSelective(tEsNative);
 			Map msgMap=new HashMap();
-			if(total>0){
+			if(result>0){
 				msgMap.put("msg", true);
 				LogUtil.getLogger().info("NativeAndNationController 创建本地清单信息成功!");
 			}else{
@@ -938,6 +968,128 @@ public class NativeAndNationController {
 			}
 			
 			return AmpcResult.ok(msgMap);
+		} catch (Exception e) {
+			// TODO: handle exception
+			LogUtil.getLogger().error("NativeAndNationController 创建本地清单异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 创建本地清单异常!");
+		}
+	}
+	
+	/**
+	 * 编辑本地清单数据
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public AmpcResult update_native(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			Long userId = Long.parseLong(param.toString());
+			//清单数据ID
+			param=data.get("nativeId");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单模板id为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单模板id为空或出现非法字符!");
+			}
+			Long nativeId=Long.parseLong(param.toString());
+			//获取清单名称
+			param=data.get("nativeName");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单名称为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单名称为空或出现非法字符!");
+			}
+			String nativeName = param.toString();
+			
+			//获取清单年份
+			param=data.get("nativeYear");
+			if(!RegUtil.CheckParameter(param, "Short", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单年份为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单年份为空或出现非法字符!");
+			}
+			Short nativeYear=Short.valueOf(param.toString());
+			//获取清单备注
+			param=data.get("nativeRemark");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单备注为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单备注为空或出现非法字符!");
+			}
+			String nativeRemark=param.toString();
+			//执行编辑操作
+			TEsNative tEsNative = new TEsNative();
+			tEsNative.setEsNativeId(nativeId);
+			tEsNative.setEsNativeName(nativeName);
+			tEsNative.setEsNativeYear(nativeYear);
+			tEsNative.setEsComment(nativeRemark);
+			
+			SimpleDateFormat simpleDateFormat= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String newDate= simpleDateFormat.format(new Date());
+			tEsNative.setUpdateTime(simpleDateFormat.parse(newDate));
+			int total = tEsNativeMapper.updateByPrimaryKeySelective(tEsNative);
+			boolean msg;
+			if(total>0){
+				msg = true;
+			}else{
+				msg = false;
+			}
+			return AmpcResult.ok(msg);
+		} catch (Exception e) {
+			// TODO: handle exception
+			LogUtil.getLogger().error("NativeAndNationController 创建本地清单异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 创建本地清单异常!");
+		}
+	}
+	
+	/**
+	 * 删除本地清单数据
+	 * @param requestDate
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public AmpcResult delete_native(@RequestBody Map<String, Object> requestDate,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> data = (Map) requestDate.get("data");
+			//获取用户ID
+			Object param=data.get("userId");
+			//进行参数判断
+			if(!RegUtil.CheckParameter(param, "Long", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 用户ID为空或出现非法字符!");
+				return AmpcResult.build(1003, "用户ID为空或出现非法字符!");
+			}
+			// 用户id
+			Long userId = Long.parseLong(param.toString());
+			//清单数据ID
+			param=data.get("nativeId");
+			if(!RegUtil.CheckParameter(param, "String", null, false)){
+				LogUtil.getLogger().error("NativeAndNationController 本地清单模板id为空或出现非法字符!");
+				return AmpcResult.build(1003, "本地清单模板id为空或出现非法字符!");
+			}
+			Long nativeId=Long.parseLong(param.toString());
+			
+			String yunURL=configUtil.getYunURL()+"/search/deleteByCityId";
+			
+			String result=ClientUtil.doPost(yunURL,data.get("nativeId").toString());
+			
+			//执行删除操作
+			int total = tEsNativeMapper.deleteByPrimaryKey(nativeId);
+			boolean msg;
+			if(total>0){
+				msg = true;
+			}else{
+				msg = false;
+			}
+			return AmpcResult.ok(msg);
 		} catch (Exception e) {
 			// TODO: handle exception
 			LogUtil.getLogger().error("NativeAndNationController 创建本地清单异常!",e);
@@ -1273,6 +1425,7 @@ public class NativeAndNationController {
 				    //存放新的清单数据
 				    String strs="["+detailinfo+"]";
 				    List<Map> listConfig = mapper.readValue(strs, List.class);
+//				    List<Map> listConfig = mapper.readValue(detailinfo, List.class);
 				    
 				    for(int j=0;j<listConfig.size();j++){
 				    	Map	mapConfig = (Map)listConfig.get(j);
@@ -1857,6 +2010,7 @@ public class NativeAndNationController {
 				//该字段类型需修改为String类型
 				tEsCoupling.setEsCouplingNativeId(nativesId.substring(1, nativesId.length()-1));
 				tEsCoupling.setEsCouplingMeiccityconfig(meicCityConfig.substring(1, meicCityConfig.length()-1));
+//				tEsCoupling.setEsCouplingMeiccityconfig(meicCityConfig);
 				//更新耦合清单数据
 				int result= tEsCouplingMapper.updateDataByPrimaryKey(tEsCoupling);
 				if(result>0){

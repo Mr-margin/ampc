@@ -34,6 +34,8 @@ public interface TEsNativeMapper {
 	int verifyNativeName(TEsNative tEsNative);
 
 	String selectNameByNativeId(Long esNativeId);
+
+	TEsNative selectByNativeName(String nativeName);
     
     
     
