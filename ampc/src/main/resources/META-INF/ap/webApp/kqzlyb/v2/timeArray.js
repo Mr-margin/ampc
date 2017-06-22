@@ -750,13 +750,13 @@ function initEcharts() {
             }else if("NO2"==tname[i]){
                 option.title.text = "NO₂"+('(μg/m³)');
             }else if("PRSFC"==tname[i]){
-                option.title.text = "气压"+('(℃)');
+                option.title.text = "气压"+('(hPa)');
             }else if("TEMP"==tname[i]){
-                option.title.text = "温度"+('(hPa)');
+                option.title.text = "温度"+('(℃)');
             }else if("RH"==tname[i]){
-                option.title.text = "湿度"+('(mm)');
+                option.title.text = "湿度"+('(%)');
             }else if("PT"==tname[i]){
-                option.title.text = "降水"+('(%)');
+                option.title.text = "降水"+('(mm)');
             }else if("WSPD"==tname[i]){
                 option.title.text = "风速"+('(m/s)');
             }
