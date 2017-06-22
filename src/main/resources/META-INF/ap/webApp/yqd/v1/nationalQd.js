@@ -12,7 +12,7 @@ innitdata()//全国清单表单初始化
 function innitdata(){
     $("#qgqd").datagrid({
         method:'post', //ajax 请求远程数据方法
-        url: "/ampc/NativeAndNation/find_nation", //请求数据
+        url: "/ampc/NativeAndNation/doPost", //请求数据
         dataType: "json",
         columns:[[  //表头
                     // {field:"ck",checkbox:true},
@@ -28,7 +28,7 @@ function innitdata(){
                     {field:"qgqdConfig",title:"操作",align:'cneter',width:100}//校验清单
                 ]],
         loadFilter:function (data) { //过滤数据，转换成符合格式的数据
-            return data.data;
+            return data.data.data;
         },
         toolbar: '#searchTool',
         // selectOnCheck:true, //true，单击复选框将永远选择行 false，选择行将不选中复选框。
@@ -50,6 +50,7 @@ function innitdata(){
             data.pageSize=params.pageSize; //初始化页面上面表单的数据行数
             data.pageNumber=params.pageNumber  //初始化页面的页码
             data.queryName=$("#companyname").val();
+            data.method="find_nation";
             return {"token": "", "data": data};
         },
         onClickRow:function (index,row) {
@@ -95,13 +96,14 @@ function submitQd(){ //点击提交按钮进行新建清单数据的提交
     param.nationName =$("#creatQd #esNationName").val(); //清单名字
     param.nationYear = $("#creatQd #esNationYear").val(); //清单年份
     param.nationRemark = $("#creatQd #esNationMark").val();//清单备注
+    param.method = "add_nation";
     //判断新建清单的年份是否在1990-2100之间
     var myYear=$("#creatQd #esNationYear").val()
     var myName=$("#creatQd #esNationName").val()
     if(myName.length>0 && myName.length<=20&&myName!="不可超过15个字符（必填）"){
         if(myYear>=1990&&myYear<=2100){    //判断年份
             $("#formQd").submit(
-                ajaxPost('/NativeAndNation/add_nation',param).success(function(res){
+                ajaxPost('/NativeAndNation/doPost',param).success(function(res){
                     if(res.status==0){
                         $("#qgqd").datagrid('insertRow',{ //在表格中插入新建清单
                             index: 0,	// 索引从0开始
@@ -188,12 +190,13 @@ function editSubmitQd(){//点击提交按钮进行编辑数据提交
     param.nationId = row.esNationId;
     param.nationRemark = qdMark;
     param.nationYear = qdYear;
+    param.method = "update_nation";
     var myYear=$("#esNationYear_edit").val();
     var myName=$("#editQd #esNationName_edit").val()
     if(myName.length>0 && myName.length<=20){
         if(myYear>=1990&&myYear<=2100&&myName!="不可超过15个字符（必填）"){//判断年份是否符合要求 符合提交编辑后数据
             $("#formQd").submit(
-                ajaxPost('/NativeAndNation/update_nation',param).success(function(res){
+                ajaxPost('/NativeAndNation/doPost',param).success(function(res){
                     if(res.status==0){
                         $("#qgqd").datagrid('updateRow',{//更新清单列表编辑后的数据
                             index: rowIndex,
@@ -235,7 +238,7 @@ function delectQd(){
         cancelButtonText: "取消",
         closeOnConfirm: false
     }, function() {
-        ajaxPost('/NativeAndNation/delete_nation',{"nationId":row.esNationId}).success(function(res){
+        ajaxPost('/NativeAndNation/doPost',{"nationId":row.esNationId,"method":'delete_nation'}).success(function(res){
             if(res.status==0){
                 var rowIndex = $('#qgqd').datagrid('getRowIndex', row);
                 $('#qgqd').datagrid('deleteRow', rowIndex);
