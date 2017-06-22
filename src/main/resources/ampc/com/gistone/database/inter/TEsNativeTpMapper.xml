@@ -332,6 +332,6 @@
 FROM
 	"AMPC"."T_ES_NATIVE_TP"
 WHERE
-	ES_NATIVE_TP_NAME = #{esNativeTpName,jdbcType=VARCHAR}
+	ES_NATIVE_TP_NAME = #{nativeTpName,jdbcType=VARCHAR}
   </select>
 </mapper>
