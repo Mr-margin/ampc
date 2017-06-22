@@ -284,4 +284,40 @@
        AND "DAY"=#{day,jdbcType=DATE}
       </if>
  </select>
+ 
+ <select id="selectBysomes2" parameterType="hashMap" resultMap="BaseResultMap">
+ 	select 
+		"CONTENT"
+	    from ${tableName} where "SID"=#{sId,jdbcType=DECIMAL} AND "MODE"=#{mode,jdbcType=VARCHAR} AND "CITY_STATION"=#{city_station,jdbcType=VARCHAR}  
+	     AND "DOMAIN"=#{domain,jdbcType=DECIMAL}
+	  <if test="date != null" >
+       AND "DATE" = #{date,jdbcType=DATE}
+      </if>
+         <if test="day != null" >
+       AND "DAY"=#{day,jdbcType=DATE}
+      </if>
+ </select>
+ <select id="selectBysome3" parameterType="hashMap" resultMap="ResultMapWithBLOBs">
+ 	select 
+		"CONTENT"
+	    from ${tableName} where "MODE"=#{mode,jdbcType=VARCHAR} AND "CITY_STATION"=#{city_station,jdbcType=VARCHAR}  
+	    AND "DOMAINID"=#{domainId,jdbcType=DECIMAL} AND "DOMAIN"=#{domain,jdbcType=DECIMAL}
+	    <if test="sId != null" >
+       AND "SID"=#{sId,jdbcType=DECIMAL}
+      </if>
+	  <if test="date != null" >
+       AND "DATE" = #{date,jdbcType=DATE}
+      </if>
+         <if test="day != null" >
+       AND "DAY"=#{day,jdbcType=DATE}
+      </if>
+ </select>
+ <select id="selectBysome4" parameterType="hashMap" resultMap="ResultMapWithBLOBs">
+ 	select 
+		"CONTENT"
+	    from ${tableName} where "MODE"=#{mode,jdbcType=VARCHAR} AND "CITY_STATION"=#{city_station,jdbcType=VARCHAR}  
+	  <if test="date != null" >
+       AND "DATE" = #{date,jdbcType=DATE}
+      </if>
+ </select>
 </mapper>
