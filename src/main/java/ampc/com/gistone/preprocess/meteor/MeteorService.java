@@ -61,8 +61,8 @@ public class MeteorService {
 			logger.error("MeteorService | requestMeteorData  jsonToObj IOException ",e1);
 		}
 		for (Map<String, Object> v : cityMap.values()) {
-		            cityListMap=(Map<String, String>) v.get("city");
-		            cites.addAll(cityListMap.keySet());
+            cityListMap=(Map<String, String>) v.get("city");
+            cites.addAll(cityListMap.keySet());
 		 }
 //		String[] filter = { "1101", "1201", "1301", "1302", "1303", "1304", "1305", "1306", "1307", "1308", "1309",
 //				"1310", "1311", "1402", "1403", "1404", "1407", "1409", "1504", "1509", "3701", "3703", "3705", "3707",
@@ -91,25 +91,17 @@ public class MeteorService {
 			logger.info(tableName);
 
 			Map dataMap = null;
-			logger.info("start request meteor data, the params : ");
+			logger.info("start request meteor city data, the params : ");
 			logger.info(params.toString());
-			try {
-
-				// 判断浓度、气象数据的文件路径，气象数据有fnl和gfs之分
-
-				cityWorkerV2.exe(params, Constants.AREA_CITY, cites, Constants.SHOW_TYPE_METEOR);
-				dataMap = cityWorkerV2.getResult();
-
-			} catch (TransformException e) {
-				logger.error("MeteorService | requestMeteorData TransformException");
-			} catch (FactoryException e) {
-				logger.error("MeteorService | requestMeteorData FactoryException");
-			} catch (ParseException e) {
-				logger.error("MeteorService | requestMeteorData ParseException");
-			}
+			// 判断浓度、气象数据的文件路径，气象数据有fnl和gfs之分
+			long startTime = System.currentTimeMillis();
+			cityWorkerV2.exe(params, Constants.AREA_CITY, cites, Constants.SHOW_TYPE_METEOR);
+			dataMap = cityWorkerV2.getResult();
+			logger.info("request meteor data times :" + (System.currentTimeMillis() - startTime) + "ms");
 			if (dataMap == null || dataMap.size() == 0)
 				return false;
-
+			
+			logger.info("start put meteor data to database...");
 			preproUtil.updateRecord(tableName, params, dataMap, Constants.SHOW_TYPE_METEOR, type);
 
 			Map map = new HashMap();
@@ -118,6 +110,8 @@ public class MeteorService {
 
 			params.setMode(Constants.AREA_POINT2);
 			params.setFilter(stationList);
+			logger.info("start put meteor point data to database...");
+			logger.info(params.toString());
 			preproUtil.updateRecord(tableName, params, dataMap, Constants.SHOW_TYPE_METEOR, type);
 
 			return true;
