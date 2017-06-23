@@ -821,8 +821,8 @@ public class NativeAndNationController {
 			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
-			LogUtil.getLogger().error("NativeAndNationController 编辑全国清单信息异常!",e);
-			return AmpcResult.build(1001, "NativeAndNationController 编辑全国清单信息异常!");
+			LogUtil.getLogger().error("NativeAndNationController 编辑本地清单模板异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 编辑本地清单模板异常!");
 		}
 	}
 	
@@ -859,8 +859,8 @@ public class NativeAndNationController {
 			return AmpcResult.ok(msgMap);
 		} catch (Exception e) {
 			// TODO: handle exception
-			LogUtil.getLogger().error("NativeAndNationController 删除全国清单信息异常!",e);
-			return AmpcResult.build(1001, "NativeAndNationController 删除全国清单信息异常!");
+			LogUtil.getLogger().error("NativeAndNationController 删除本地清单模板异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 删除本地清单模板异常!");
 		}
 	}
 	
@@ -1040,8 +1040,8 @@ public class NativeAndNationController {
 			return AmpcResult.ok(msg);
 		} catch (Exception e) {
 			// TODO: handle exception
-			LogUtil.getLogger().error("NativeAndNationController 创建本地清单异常!",e);
-			return AmpcResult.build(1001, "NativeAndNationController 创建本地清单异常!");
+			LogUtil.getLogger().error("NativeAndNationController 编辑本地清单数据异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 编辑本地清单数据异常!");
 		}
 	}
 	
@@ -1073,23 +1073,30 @@ public class NativeAndNationController {
 			}
 			Long nativeId=Long.parseLong(param.toString());
 			
-			String yunURL=configUtil.getYunURL()+"/search/deleteByCityId";
-			
-			String result=ClientUtil.doPost(yunURL,data.get("nativeId").toString());
-			
-			//执行删除操作
-			int total = tEsNativeMapper.deleteByPrimaryKey(nativeId);
+			String yunURL=configUtil.getYunURL()+"/search/deleteByCityId?meicCityId="+data.get("nativeId").toString();
+			//调用云计算删除本地清单数据
+			String result=ClientUtil.doPost(yunURL,"");
+			Map resultMap = mapper.readValue(result, Map.class);
 			boolean msg;
-			if(total>0){
-				msg = true;
+			if(resultMap.get("status")=="success"){
+				LogUtil.getLogger().info("删除本地清单数据成功");
+				//执行删除操作
+				int total = tEsNativeMapper.deleteByPrimaryKey(nativeId);
+				
+				if(total>0){
+					msg = true;
+				}else{
+					msg = false;
+				}
 			}else{
 				msg = false;
+				LogUtil.getLogger().error("删除本地清单数据失败");
 			}
 			return AmpcResult.ok(msg);
 		} catch (Exception e) {
 			// TODO: handle exception
-			LogUtil.getLogger().error("NativeAndNationController 创建本地清单异常!",e);
-			return AmpcResult.build(1001, "NativeAndNationController 创建本地清单异常!");
+			LogUtil.getLogger().error("NativeAndNationController 删除本地清单数据异常!",e);
+			return AmpcResult.build(1001, "NativeAndNationController 删除本地清单数据异常!");
 		}
 	}
 	
