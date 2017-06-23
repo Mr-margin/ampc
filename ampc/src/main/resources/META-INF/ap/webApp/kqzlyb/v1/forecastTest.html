@@ -71,18 +71,19 @@
     <div class="xgpgShow">
       <div class="searchT">
         <div id="showTitle">
+          <span class="classFyName titleDiv"></span>
           <span class="proName titleDiv"></span>
           <span class="cityName titleDiv"></span>
           <span class="stationName titleDiv"></span>
           <span class="rmsName titleDiv"></span>
           <span class="dateName titleDiv"></span>
         </div>
-        <div class="airtab">
-          <div class="btn-group switchBtn" data-toggle="buttons" style="margin: 2px auto;padding: 0;width: 100%">
-            <label class="col-md-6 btn btn-outline btn-success active" onclick="changeType('wrw')"><input type="radio" name="fenlei"><a href="#wrw"><i class="st-drink"></i>污染物</a></label>
-<!--             <label class="col-md-6 btn btn-outline btn-success" onclick="changeType('qxys')"><input checked type="radio" name="fenlei"><a href="#qxys"><i class="im-lightning"></i>气象要素</a></label> -->
-          </div>
-        </div>
+        <!--<div class="airtab">-->
+          <!--<div class="btn-group switchBtn" data-toggle="buttons" style="margin: 2px auto;padding: 0;width: 100%">-->
+            <!--<label class="col-md-6 btn btn-outline btn-success active" onclick="changeType('wrw')"><input type="radio" name="fenlei"><a href="#wrw"><i class="st-drink"></i>污染物</a></label>-->
+             <!--<label class="col-md-6 btn btn-outline btn-success" onclick="changeType('qxys')"><input checked type="radio" name="fenlei"><a href="#qxys"><i class="im-lightning"></i>气象要素</a></label>-->
+          <!--</div>-->
+        <!--</div>-->
         <div class="toolAll wrwTool" id="wrw">
           <div class="toolContent">
             <!--<div class="selectTool">-->
@@ -130,7 +131,10 @@
                 </div>
               </div>
             </div>
-            <div style="clear: both" class="selectTool">
+
+          </div>
+          <div class="toolContent">
+            <div class="selectTool">
               <h5>监测站点：</h5>
               <div class="selectTool_con">
                 <div class="row" style="margin:2px 0;padding-left:0px;">
@@ -155,6 +159,15 @@
                       </select>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+            <div class="selectTool">
+              <h5>类别：</h5>
+              <div class="selectTool_con">
+                <div class="btn-group switchBtn" data-toggle="buttons" style="margin: 2px auto;padding: 0;width: 100%">
+                  <label class="col-md-6 btn btn-outline btn-success active" onclick="changeType('wrw')"><input type="radio" name="fenlei"><a href="#wrw">污染物</a></label>
+                  <!--<label class="col-md-6 btn btn-outline btn-success" onclick="changeType('qxys')"><input checked type="radio" name="fenlei"><a href="#qxys">气象要素</a></label>-->
                 </div>
               </div>
             </div>
@@ -207,6 +220,9 @@
                 </div>
               </div>
             </div>
+
+          </div>
+          <div class="toolContent">
             <div class="selectTool">
               <h5>监测站点：</h5>
               <div class="selectTool_con">
@@ -232,6 +248,15 @@
                       </select>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+            <div class="selectTool">
+              <h5>类别：</h5>
+              <div class="selectTool_con">
+                <div class="btn-group switchBtn" data-toggle="buttons" style="margin: 2px auto;padding: 0;width: 100%">
+                  <label class="col-md-6 btn btn-outline btn-success active" onclick="changeType('wrw')"><input type="radio" name="fenlei"><a href="#wrw">污染物</a></label>
+                  <!--<label class="col-md-6 btn btn-outline btn-success" onclick="changeType('qxys')"><input checked type="radio" name="fenlei"><a href="#qxys">气象要素</a></label>-->
                 </div>
               </div>
             </div>
