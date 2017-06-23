@@ -186,7 +186,7 @@ function innitdata(active){
                                 }
                             }else if(row.id.indexOf("qd")==0){
                                 if(row.isVerify==0){
-                                    return "<div class='allQdBtn'><a href='javascript:' class='localQdMenu'><i class='fa fa-caret-down' aria-hidden='true'></i></a><ul class='qdBtn'><li>"+checkDiv+"</li><li>"+addNativeDivEdit+"</li></ul></div>"
+                                    return "<div class='allQdBtn'><a href='javascript:' class='localQdMenu'><i class='fa fa-caret-down' aria-hidden='true'></i></a><ul class='qdBtn'><li>"+checkDiv+"</li><li>"+addNativeDivEdit+"</li><li>"+addNativeDivDelet+"</li></ul></div>"
                                 }else if(row.isVerify==1){
                                     return "<div class='allQdBtn'><a href='javascript:' class='localQdMenu'><i class='fa fa-caret-down' aria-hidden='true'></i></a><ul class='qdBtn'><li>"+addNativeDivEdit+"</li></ul></div>"
                                 }
@@ -353,14 +353,17 @@ function innitdata(active){
         if(rowDiv){
             if(qdName.length>0 && qdName.length<=20 && qdName!="不可超过15个字符（必填）"){
                 if(qdYear>=1990&&qdYear<=2100){
-                    ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark,"nativeTpId":rowDiv.esNativeTpId,"nativeTpName":rowDiv.esNativeTpName}).success(function(res){
+
+                    add_nativeActor=ajaxPost('/NativeAndNation/doPost',{"userId":userId,"method":"add_native","nativeName":qdName,"nativeYear":qdYear,"nativeRemark":qdRemark,"nativeTpId":rowDiv.esNativeTpId,"nativeTpName":rowDiv.esNativeTpName}).success(function(res){
                         if(res.status==0){
                             innitdata("find_natives");
-                            console.log("123");
-                            $('[node-id="'+creatQd+'"]').addClass('datagrid-row-clicked').siblings().removeClass('datagrid-row-clicked');
-                            $(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree .datagrid-row").removeClass('datagrid-row-clicked');
-                            $('#localqd').treegrid('collapseAll').treegrid('expand',creatQd);
                             $("#editTempQd").window('close');
+                            swal({
+                                title: '清单数据添加成功!',
+                                type: 'success',
+                                timer: 1000,
+                                showConfirmButton: false
+                            });
                         }else{
                             swal('参数错误', '', 'error');
                         }
@@ -371,12 +374,13 @@ function innitdata(active){
                     // $("#editTempQd .tipYearRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入符合要求的年份</span>");
                 }
             }else{
-                swal('请输入符合要求的年份', '', 'error');
+                swal('清单名称错误', '', 'error');
                 // $("#editTempQd .tipNameRepeat span").remove();
                 // $("#editTempQd .tipNameRepeat").append("<span><i class='im-warning' style='color: red'></i>请输入符合要求的名称</span>");
             }
 
         }
+        // addLocal()
     }else if(active=="update_native"){
         var rowNow=$("#localqd").treegrid('find',editQd)
         var param={};//设置接口参数
@@ -847,3 +851,20 @@ $('.tableBox').on('click','.localQdMenu',function (e) {
 $(".tableBox").on('mouseleave', '.allQdBtn', function (e) {
     $(this).find('ul').hide();
 });
+var add_nativeActor;
+// function addLocal() {
+//     console.log(creatQd)
+//     if(Boolean(creatQd)){
+//         $.when(Boolean(add_nativeActor)).then(function () {
+//             console.log("进来")
+//             $('[node-id="'+creatQd+'"]').click();
+//             // $('[node-id="'+creatQd+'"]').addClass('datagrid-row-clicked').siblings().removeClass('datagrid-row-clicked');
+//             // $(".cloudui .treeTable .datagrid-btable .treegrid-tr-tree .datagrid-row").removeClass('datagrid-row-clicked');
+//             // $("#localqd").treegrid({
+//             //
+//             // })
+//             // $('#localqd').treegrid('collapseAll').treegrid('expand',creatQd);
+//         })
+//     }
+//
+// }
