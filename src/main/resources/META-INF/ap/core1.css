@@ -1323,7 +1323,7 @@ dl, dd {
 .cloudui .xgpgShow .searchT .toolAll .selectTool .selectTool_con input{width: 150px;}
 .cloudui .toolAll .selectTool .headerSwitch{display: inline-block;}
 /*标题*/
-.cloudui .xgpgShow .searchT #showTitle{border-top:1px solid #d9d9d9;background: linear-gradient(#fbfbfb, #f2f2f2); border-bottom:1px solid #d9d9d9;}
+.cloudui .xgpgShow .searchT #showTitle{border-top:1px solid #d9d9d9;background: linear-gradient(#fbfbfb, #f2f2f2); border-bottom:1px solid #d9d9d9;padding-left:5px;}
 .cloudui .xgpgShow .searchT #showTitle *{font-size: 12px;line-height:30px;color: #0275D8;}
 .cloudui .xgpgShow .searchT #showTitle .titleTab,.cloudui .xgpgShow .searchT #showTitle .titleTab i{color: #333;}
 .cloudui .xgpgShow .searchT #showTitle .titleDiv{display: inline-block;}
