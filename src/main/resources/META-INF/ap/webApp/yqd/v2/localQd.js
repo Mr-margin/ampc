@@ -540,14 +540,18 @@ function deleteQdBtn(rowID){
     }, function() {
         ajaxPost('/NativeAndNation/doPost',{"nativeId":rowDelete.esNativeId,"method":"delete_native","userId":userId}).success(function(res){
             if(res.status==0){
-                $("#localqd").treegrid("remove",deleteQd);
-                innitdata("find_natives")
-                swal({
-                    title: '已删除!',
-                    type: 'success',
-                    timer: 1000,
-                    showConfirmButton: false
-                });
+                if(res.data.msg=="success"){
+                    $("#localqd").treegrid("remove",deleteQd);
+                    innitdata("find_natives")
+                    swal({
+                        title: '已删除!',
+                        type: 'success',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                }else{
+                    swal('删除失败', '', 'error');
+                }
             }else{
                 swal('参数错误', '', 'error');
             }
