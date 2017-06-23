@@ -66,7 +66,13 @@ var msg = {
         title: '新增情景',
         border: false,
         closed: true,
-        cls: 'cloudui'
+        cls: 'cloudui',
+        onClose:function(){
+        	if($('#addYQJ .chengeDB').prop('checked')){
+        		$('#addYQJ .chengeDB').click();
+        	}
+        	
+        }
     });
 //    生成后评估的模态框
     $("#addHQJ").window({
@@ -79,7 +85,13 @@ var msg = {
         title: '新增情景',
         border: false,
         closed: true,
-        cls: 'cloudui'
+        cls: 'cloudui',
+        onClose:function(){
+        	if($('#addHQJ .chengeDB').prop('checked')){
+        		$('#addHQJ .chengeDB').click();
+        	}
+        }
+        
     });
 //    启动模式的模态框
     $("#startUp").window($.extend({},defaultwindowoption,{
@@ -1273,7 +1285,7 @@ function setOption(ele, res) {
     $(ele).empty();
     for (var i = 0; i < res.length; i++) {
         if (((ele == '#dbqj') || (ele == '#dbqj1')) && (res[i].scenarinoId == -1))continue;
-        if(res[i].ScenType=="3"||res[i].ScenType=="4"){
+        if((ele == '#dbqj1')&&(res[i].ScenType=="3"||res[i].ScenType=="4")){
         	continue;
         }
         $(ele).append($('<option value="' + i + '">' + res[i].scenarinoName + '</option>'))
@@ -1281,6 +1293,7 @@ function setOption(ele, res) {
 }
 
 function checkedDB(t) {
+	console.log(1);
     if ($(t)[0].checked) {
         $('#dbqj').removeAttr('disabled').removeClass('disabled');
         $('#jcqj').attr('disabled', true).addClass('disabled');
