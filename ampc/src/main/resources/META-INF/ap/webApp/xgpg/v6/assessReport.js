@@ -482,15 +482,16 @@ $('#cityStation').on('change', function (e) {
     //  $('#station').append($('<option value="' + station[s].code + '">' + station[s].name + '</option>'))
     //}
     //changeMsg.station = $('#station').val();
-
     updata();
 });
 
 $('#station').on('change', function (e) {
     var station = $(e.target).val();
+    // console.log(station,"信息")
     changeMsg.station = station;
     changeMsg.stationName = $(e.target)[0].selectedOptions[0].innerHTML;
-
+    // console.log(changeMsg.stationName,"站点")
+    $(".pgbgCon span").html("")
     updata();
 });
 
@@ -518,48 +519,50 @@ var czData;
 /*设置echarts图表*/
 var allData;
 function updata() {
-
-    showTitleFun();
-    shownPgbg()
-    ajaxPost('/Appraisal/report',{"mode":changeMsg.station == 'avg' ? 'city' : 'point',
-                     "startdate":changeMsg.sTimeD+" 00",
-                     "enddate":changeMsg.eTime+" 00",
-                     "userId":userId,
-                     "cityStation":changeMsg.station == 'avg' ? changeMsg.city.substr(0, 4) : changeMsg.station,
-                     "scenarinoId":changeMsg.qjId,
-                     "missionId":sceneInitialization.taskID}).success(function(res){
-        if(res.status==0){
-                        allData=res.data;
-                        $("#PM25_jp").html(allData.PM25_jp==null?"暂无":allData.PM25_jp)
-                        $("#SO2_jp").html(allData.SO2_jp==null?"暂无":allData.SO2_jp)
-                        $("#NOx_jp").html(allData.NOx_jp==null?"暂无":allData.NOx_jp)
-                        $("#VOC_jp").html(allData.VOC_jp==null?"暂无":allData.VOC_jp)
-                        $("#PM25").html(allData.PM25);
-                        $("#SO4").html(allData.SO4);
-                        $("#NH4").html(allData.NH4);
-                        $("#NO3").html(allData.NO3)
-                        $("#CO").html(allData.CO);
-                        $("#NO2").html(allData.NO2)
-                        $("#SO2").html(allData.SO2)
-                        $("#O3_8_MAX").html(allData.O3_8_MAX)
-                        $("#PM10").html(allData.PM10)
-                    } else {
-                        swal(res.msg, '', 'error');
-                        $("#PM25_jp").html("暂无")
-                        $("#SO2_jp").html("暂无")
-                        $("#NOx_jp").html("暂无")
-                        $("#VOC_jp").html("暂无")
-                        $("#PM25").html("暂无");
-                        $("#SO4").html("暂无");
-                        $("#NH4").html("暂无");
-                        $("#NO3").html("暂无")
-                        $("#CO").html("暂无");
-                        $("#NO2").html("暂无")
-                        $("#SO2").html("暂无")
-                        $("#O3_8_MAX").html("暂无")
-                        $("#PM10").html("暂无")
-                    }
+    $.when(dps_station).then(function () {
+        showTitleFun();
+        shownPgbg();
+        ajaxPost('/Appraisal/report',{"mode":changeMsg.station == 'avg' ? 'city' : 'point',
+            "startdate":changeMsg.sTimeD+" 00",
+            "enddate":changeMsg.eTime+" 00",
+            "userId":userId,
+            "cityStation":changeMsg.station == 'avg' ? changeMsg.city.substr(0, 4) : changeMsg.station,
+            "scenarinoId":changeMsg.qjId,
+            "missionId":sceneInitialization.taskID}).success(function(res){
+            if(res.status==0){
+                allData=res.data;
+                $("#PM25_jp").html(allData.PM25_jp==null?"暂无":allData.PM25_jp)
+                $("#SO2_jp").html(allData.SO2_jp==null?"暂无":allData.SO2_jp)
+                $("#NOx_jp").html(allData.NOx_jp==null?"暂无":allData.NOx_jp)
+                $("#VOC_jp").html(allData.VOC_jp==null?"暂无":allData.VOC_jp)
+                $("#PM25").html(allData.PM25);
+                $("#SO4").html(allData.SO4);
+                $("#NH4").html(allData.NH4);
+                $("#NO3").html(allData.NO3)
+                $("#CO").html(allData.CO);
+                $("#NO2").html(allData.NO2)
+                $("#SO2").html(allData.SO2)
+                $("#O3_8_MAX").html(allData.O3_8_MAX)
+                $("#PM10").html(allData.PM10)
+            } else {
+                swal(res.msg, '', 'error');
+                $("#PM25_jp").html("暂无")
+                $("#SO2_jp").html("暂无")
+                $("#NOx_jp").html("暂无")
+                $("#VOC_jp").html("暂无")
+                $("#PM25").html("暂无");
+                $("#SO4").html("暂无");
+                $("#NH4").html("暂无");
+                $("#NO3").html("暂无")
+                $("#CO").html("暂无");
+                $("#NO2").html("暂无")
+                $("#SO2").html("暂无")
+                $("#O3_8_MAX").html("暂无")
+                $("#PM10").html("暂无")
+            }
+        })
     })
+
 }
 
 function showTitleFun() {
@@ -586,7 +589,7 @@ function showTitleFun() {
             }
     }
 }
-function shownPgbg(){
+    function shownPgbg(){
     $('.pgbgContent span').empty();
     $(".pgbgContent #stationName").empty();
     $(".pgbgContent #pgbaStart").html(moment(changeMsg.sTimeD,"YYYYMMDD").format("YYYY年MM月DD日"));
@@ -594,9 +597,12 @@ function shownPgbg(){
     $(".pgbgContent #pgbgQjName").html(changeMsg.qjName);
 
     if (zhiCity.indexOf(changeMsg.pro) == -1) {
-            $('.pgbgContent #proName').html(changeMsg.proName);
-            $('.pgbgContent #cityName').html(changeMsg.cityName);
-            $('.pgbgContent #stationName').html(changeMsg.stationName);
+            // $('.pgbgContent #proName').html(changeMsg.proName);
+            // $('.pgbgContent #cityName').html(changeMsg.cityName);
+            // $('.pgbgContent #stationName').html(changeMsg.stationName);
+        $('.pgbgContent #proName').html(allCode[$("#proStation").val()].name);
+        $('.pgbgContent #cityName').html(allCode[$('#proStation').val()].city[$('#cityStation').val()]);
+        $('.pgbgContent #stationName').html(changeMsg.stationName);
     } else {
             $('.pgbgContent #cityName').html(changeMsg.cityName);
             $('.pgbgContent #stationName').html(changeMsg.stationName);
