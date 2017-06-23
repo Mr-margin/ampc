@@ -1078,7 +1078,8 @@ public class NativeAndNationController {
 			String result=ClientUtil.doPost(yunURL,"");
 			Map resultMap = mapper.readValue(result, Map.class);
 			boolean msg;
-			if(resultMap.get("status")=="success"){
+			System.out.println(resultMap.get("status").toString());
+			if("success".equals(resultMap.get("status").toString())){
 				LogUtil.getLogger().info("删除本地清单数据成功");
 				//执行删除操作
 				int total = tEsNativeMapper.deleteByPrimaryKey(nativeId);
