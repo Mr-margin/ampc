@@ -1144,10 +1144,10 @@ public class NativeAndNationController {
 			String esNativeTpOutPath = param.toString();
 			
 			//读取配置文件路径
-			String nativefilePath = new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName).toString().getBytes("iso-8859-1"),"utf-8");
+			String nativefilePath = new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpId).toString().getBytes("iso-8859-1"),"utf-8");
 			String nativesfilePath = new String((configUtil.getFtpURL()+"/"+userId+"/").toString().getBytes("iso-8859-1"),"utf-8");
 			//调用接口所需参数
-			String native_filePath = "/"+userId+"/"+nativeTpName;
+			String native_filePath = "/"+userId+"/"+nativeTpId;
 			
 			//获取file对象
 			File files =new File(nativesfilePath);
