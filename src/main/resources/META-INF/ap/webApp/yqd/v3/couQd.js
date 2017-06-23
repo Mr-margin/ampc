@@ -316,30 +316,35 @@ function submitEditCoup() {
 function coupDelete(){
     var row = $('#couqd').datagrid('getSelected');//获取所有选中的清单数据
     var rowIndex = $('#couqd').datagrid('getRowIndex', row);
-    swal({
-        title: "确定要删除?",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "删除",
-        cancelButtonText: "取消",
-        closeOnConfirm: false
-    }, function() {
-        ajaxPost('/NativeAndNation/doPost',{"couplingId":row.esCouplingId,"method":"delete_coupling"}).success(function(res){
-            if(res.status==0){
-                $('#couqd').datagrid('deleteRow', rowIndex);
-                $('#couqd').datagrid('reload');//删除后重新加载下
-                swal({
-                    title: '已删除!',
-                    type: 'success',
-                    timer: 1000,
-                    showConfirmButton: false
-                });
-            }else{
-                swal('参数错误', '', 'error');
-            }
-        })
-    });
+    if(row.employ!=1){
+        swal({
+            title: "确定要删除?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "删除",
+            cancelButtonText: "取消",
+            closeOnConfirm: false
+        }, function() {
+            ajaxPost('/NativeAndNation/doPost',{"couplingId":row.esCouplingId,"method":"delete_coupling"}).success(function(res){
+                if(res.status==0){
+                    $('#couqd').datagrid('deleteRow', rowIndex);
+                    $('#couqd').datagrid('reload');//删除后重新加载下
+                    swal({
+                        title: '已删除!',
+                        type: 'success',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                }else{
+                    swal('参数错误', '', 'error');
+                }
+            })
+        });
+    }else{
+        swal('该条信息正在使用，无法删除！', '', 'error');
+    }
+
 }
 //查看详情的窗口
 $("#coupDetail").window({
