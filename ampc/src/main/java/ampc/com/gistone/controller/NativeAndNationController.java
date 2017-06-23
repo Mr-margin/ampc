@@ -1073,12 +1073,11 @@ public class NativeAndNationController {
 			}
 			Long nativeId=Long.parseLong(param.toString());
 			
-			String yunURL=configUtil.getYunURL()+"/search/deleteByCityId?meicCityId="+data.get("nativeId").toString();
+			String yunURL=configUtil.getYunURL()+"/search/deleteByCityId";
 			//调用云计算删除本地清单数据
-			String result=ClientUtil.doPost(yunURL,"");
+			String result=ClientUtil.doPost(yunURL,data.get("nativeId").toString());
 			Map resultMap = mapper.readValue(result, Map.class);
 			boolean msg;
-			System.out.println(resultMap.get("status").toString());
 			if("success".equals(resultMap.get("status").toString())){
 				LogUtil.getLogger().info("删除本地清单数据成功");
 				//执行删除操作
