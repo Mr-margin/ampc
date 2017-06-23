@@ -5,7 +5,7 @@
 
 var ArcGisUrl = "http://192.168.1.103:18080";//ArcGis服务器javascript API地址
 var ArcGisServerUrl = "http://192.168.1.103:6080";//ArcGis地图服务器地址
-var jianpaiUrl = "http://192.168.2.248:8089";
+var jianpaiUrl = "http://192.168.7.98:8089";
 var pngUrl = "http://192.168.4.214:8091/Java";//png图片的本地路径
 
 
