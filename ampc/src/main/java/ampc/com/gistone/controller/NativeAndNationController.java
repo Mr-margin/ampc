@@ -1143,38 +1143,38 @@ public class NativeAndNationController {
 			}
 			String esNativeTpOutPath = param.toString();
 			
-			//读取配置文件路径
-			String nativefilePath = new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpId).toString().getBytes("iso-8859-1"),"utf-8");
-			String nativesfilePath = new String((configUtil.getFtpURL()+"/"+userId+"/").toString().getBytes("iso-8859-1"),"utf-8");
+//			//读取配置文件路径
+//			String nativefilePath = new String((configUtil.getFtpURL()+"/"+userId+"/"+nativeTpId).toString().getBytes("iso-8859-1"),"utf-8");
+//			String nativesfilePath = new String((configUtil.getFtpURL()+"/"+userId+"/").toString().getBytes("iso-8859-1"),"utf-8");
+//			
+//			//获取file对象
+//			File files =new File(nativesfilePath);
+//			File file =new File(nativefilePath);
+//			//目录已经存在
+//			if(files.exists()){
+//				System.out.println("目录已经存在!");
+//				//判断是否包含该文件模板
+//				if(file.exists()){
+//					System.out.println("该模板已经存在");
+//				}else{
+//					//模板文件夹不存在,进行创建
+//					file.mkdir();
+//				}
+//			}else{
+//				//不存在进行创建目录
+//				files.mkdirs();
+//				if(file.exists()){
+//					System.out.println("文件已存在");
+//				}else{
+//					//不存在创建文件
+//					//模板文件夹创建完成
+//					file.mkdir();
+//					System.out.println("模板文件夹创建完成");
+//				}
+//			}
+			
 			//调用接口所需参数
 			String native_filePath = "/"+userId+"/"+nativeTpId;
-			
-			//获取file对象
-			File files =new File(nativesfilePath);
-			File file =new File(nativefilePath);
-			//目录已经存在
-			if(files.exists()){
-				System.out.println("目录已经存在!");
-				//判断是否包含该文件模板
-				if(file.exists()){
-					System.out.println("该模板已经存在");
-				}else{
-					//模板文件夹不存在,进行创建
-					file.mkdir();
-				}
-			}else{
-				//不存在进行创建目录
-				files.mkdirs();
-				if(file.exists()){
-					System.out.println("文件已存在");
-				}else{
-					//不存在创建文件
-					//模板文件夹创建完成
-					file.mkdir();
-					System.out.println("模板文件夹创建完成");
-				}
-			}
-			
 			Map msgMap = new HashMap();
 			//调用校验数据函数
 			boolean bool=excelToDateController.deleteExcelData(nativeTpId, userId);
@@ -1291,37 +1291,37 @@ public class NativeAndNationController {
 			String esNativeTpOutPath = param.toString();
 			
 			//读取配置文件路径
-			String nativefilePath = configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName+"/"+nativeName;
-			String nativesfilePath = configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName+"/"+nativeName;
+//			String nativefilePath = configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName+"/"+nativeName;
+//			String nativesfilePath = configUtil.getFtpURL()+"/"+userId+"/"+nativeTpName+"/"+nativeName;
+//			
+//			//获取file对象
+//			File files =new File(nativesfilePath);
+//			File file =new File(nativefilePath);
+//			//目录已经存在
+//			if(files.exists()){
+//				System.out.println("目录已经存在!");
+//				//判断是否包含该文件模板
+//				if(file.exists()){
+//					System.out.println("该模板已经存在");
+//				}else{
+//					//模板文件夹不存在,进行创建
+//					file.mkdir();
+//				}
+//			}else{
+//				//不存在进行创建目录
+//				files.mkdirs();
+//				if(file.exists()){
+//					System.out.println("文件已存在");
+//				}else{
+//					//不存在创建文件
+//					//模板文件夹创建完成
+//					file.mkdir();
+//					System.out.println("模板文件夹创建完成");
+//				}
+//			}
+			
 			//调用接口所需参数
-			String native_filePath = "/"+userId+"/"+nativeTpName+"/"+nativeName;
-			
-			//获取file对象
-			File files =new File(nativesfilePath);
-			File file =new File(nativefilePath);
-			//目录已经存在
-			if(files.exists()){
-				System.out.println("目录已经存在!");
-				//判断是否包含该文件模板
-				if(file.exists()){
-					System.out.println("该模板已经存在");
-				}else{
-					//模板文件夹不存在,进行创建
-					file.mkdir();
-				}
-			}else{
-				//不存在进行创建目录
-				files.mkdirs();
-				if(file.exists()){
-					System.out.println("文件已存在");
-				}else{
-					//不存在创建文件
-					//模板文件夹创建完成
-					file.mkdir();
-					System.out.println("模板文件夹创建完成");
-				}
-			}
-			
+			String native_filePath = "/"+userId+"/"+nativeTpId+"/"+nativeId;
 			Map msgMap = new HashMap();
 //			String esNativeTpOutPathre = esNativeTpOutPath.replace("/", "\\");
 			String esNativeTpOutPathre = esNativeTpOutPath;
