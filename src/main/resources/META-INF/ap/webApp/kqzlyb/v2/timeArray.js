@@ -135,16 +135,21 @@ function initialize() {
  */
 function changeType(type) {
     if (changeMsg.type != type) {
-
         if (type == 'wrw') {
             $('.toolAll.qxysTool').addClass('disNone');
             $('.toolAll.wrwTool').removeClass('disNone');
+            // $('.toolAll.wrwTool').children('input[name="fenlei"]').removeClass("active");
+            // $('.toolAll.wrwTool').children('input[name="fenlei"]').val(changeMsg.type).addClass("active");
+            $('.toolAll.wrwTool input[name="fenlei"]').parent().removeClass("active");
+            $('.toolAll.wrwTool input[name="fenlei"]').eq(0).parent().addClass("active");
         } else {
             $('.toolAll.wrwTool').addClass('disNone');
             $('.toolAll.qxysTool').removeClass('disNone');
+            // $('.toolAll.qxysTool').children('input[name="fenlei"]').removeClass("active");
+            // $('.toolAll.qxysTool').children('input[name="fenlei"]').val(changeMsg.type).addClass("active");
+            $('.toolAll.qxysTool input[name="fenlei"]').parent().removeClass("active");
+            $('.toolAll.qxysTool input[name="fenlei"]').eq(1).parent().addClass("active");
         }
-
-
         changeMsg.type = type;
         if (!dps_Station[changeMsg.city + changeMsg.type]) {
             dps_Station[changeMsg.city + changeMsg.type] = setStation(changeMsg.city, changeMsg.type);
@@ -152,7 +157,6 @@ function changeType(type) {
         requestDate();
 //        updata();
     }
-
 }
 
 /**
@@ -1135,6 +1139,7 @@ $(".cloudui .verticalCon .searchT .upDown").hover(function(){
 function showTitleFun() {
     $('#showTitle span').empty();
     $('#showTitle span').css({"margin-right":"0px"});
+    $('#showTitle .classFyName').html("<span class='titleTab'><i class='ec-list'></i>"+"&nbsp;类别：</span>"+(changeMsg.type=="wrw"?"污染物":"气象要素")).css({"margin-right":"40px"});;
     if (zhiCity.indexOf(changeMsg.pro) == -1) {
         if (changeMsg.station == 'avg') {
             $('#showTitle .proName').html("<span class='titleTab'><i class='im-office'></i>"+"&nbsp;城市：</span>"+proStation);
