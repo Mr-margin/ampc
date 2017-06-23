@@ -162,6 +162,7 @@ require(
 //            app.mapList[i].addLayer(app.mapimagelayer[i]);
             
             app.dynamicData[i] = new dong.ArcGISDynamicMapServiceLayer(ArcGisServerUrl + "/arcgis/rest/services/ampc/cms/MapServer");
+            app.dynamicData[i].setOpacity(0.6);//设置图层的不透明度
             app.mapList[i].addLayer(app.dynamicData[i]);
             
         }
